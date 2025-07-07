@@ -85,11 +85,11 @@ class DanbooruRepository extends BooruRepositoryDefault {
     final dio = ref.watch(dioProvider(config));
 
     return () => DanbooruClient(
-          baseUrl: config.url,
-          dio: dio,
-          login: config.login,
-          apiKey: config.apiKey,
-        ).getPosts().then((value) => true);
+      baseUrl: config.url,
+      dio: dio,
+      login: config.login,
+      apiKey: config.apiKey,
+    ).getPosts().then((value) => true);
   }
 
   @override
@@ -159,12 +159,13 @@ class DanbooruGridThumbnailUrlGenerator implements GridThumbnailUrlGenerator {
     required GridThumbnailSettings settings,
   }) {
     return castOrNull<DanbooruPost>(post).toOption().fold(
-          () => const DefaultGridThumbnailUrlGenerator().generateUrl(
-            post,
-            settings: settings,
-          ),
-          (post) => DefaultGridThumbnailUrlGenerator(
-            gifImageQualityMapper: (_, __) => post.sampleImageUrl,
+      () => const DefaultGridThumbnailUrlGenerator().generateUrl(
+        post,
+        settings: settings,
+      ),
+      (post) =>
+          DefaultGridThumbnailUrlGenerator(
+            gifImageQualityMapper: (_, _) => post.sampleImageUrl,
             imageQualityMapper: (_, imageQuality) => switch (imageQuality) {
               ImageQuality.automatic => post.url720x720,
               ImageQuality.low => post.url360x360,
@@ -177,6 +178,6 @@ class DanbooruGridThumbnailUrlGenerator implements GridThumbnailUrlGenerator {
             post,
             settings: settings,
           ),
-        );
+    );
   }
 }

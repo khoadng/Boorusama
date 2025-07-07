@@ -24,18 +24,19 @@ import '../types/tag.dart';
 import '../types/tag_display.dart';
 import '../widgets/filterable_scope.dart';
 
-final selectedViewTagQueryProvider =
-    StateProvider.autoDispose<String>((ref) => '');
+final selectedViewTagQueryProvider = StateProvider.autoDispose<String>(
+  (ref) => '',
+);
 
 final _tagsProvider = FutureProvider.autoDispose
     .family<List<Tag>, (BooruConfigAuth, Post)>((ref, params) async {
-  final (config, post) = params;
-  final tagExtractor = ref.watch(tagExtractorProvider(config));
+      final (config, post) = params;
+      final tagExtractor = ref.watch(tagExtractorProvider(config));
 
-  if (tagExtractor == null) return [];
+      if (tagExtractor == null) return [];
 
-  return tagExtractor.extractTags(post);
-});
+      return tagExtractor.extractTags(post);
+    });
 
 class ShowTagListPage extends ConsumerWidget {
   const ShowTagListPage({
@@ -62,7 +63,9 @@ class ShowTagListPage extends ConsumerWidget {
     final globalNotifier = ref.watch(globalBlacklistedTagsProvider.notifier);
     final favoriteNotifier = ref.watch(favoriteTagsProvider.notifier);
 
-    return ref.watch(_tagsProvider(params)).when(
+    return ref
+        .watch(_tagsProvider(params))
+        .when(
           data: (tags) => ShowTagListPageInternal(
             tags: tags,
             auth: auth,
@@ -155,7 +158,7 @@ class _ShowTagListPageState extends ConsumerState<ShowTagListPageInternal> {
         controller: _multiSelectController,
         footer: ValueListenableBuilder(
           valueListenable: _multiSelectController.selectedItemsNotifier,
-          builder: (_, selectedItems, __) =>
+          builder: (_, selectedItems, _) =>
               _buildContent(selectedItems, context),
         ),
         child: Scaffold(
@@ -237,8 +240,9 @@ class _ShowTagListPageState extends ConsumerState<ShowTagListPageInternal> {
             ),
             child: Consumer(
               builder: (context, ref, _) {
-                final tags =
-                    selectedItems.map((index) => widget.tags[index]).toList();
+                final tags = selectedItems
+                    .map((index) => widget.tags[index])
+                    .toList();
                 return RichText(
                   text: TextSpan(
                     children: [
@@ -311,7 +315,7 @@ class _ShowTagListPageState extends ConsumerState<ShowTagListPageInternal> {
       actions: [
         ValueListenableBuilder(
           valueListenable: _multiSelectController.multiSelectNotifier,
-          builder: (_, multiSelect, __) => !multiSelect
+          builder: (_, multiSelect, _) => !multiSelect
               ? BooruPopupMenuButton(
                   onSelected: (value) {
                     switch (value) {
@@ -328,7 +332,7 @@ class _ShowTagListPageState extends ConsumerState<ShowTagListPageInternal> {
         ),
         ValueListenableBuilder(
           valueListenable: _multiSelectController.multiSelectNotifier,
-          builder: (_, multiSelect, __) => multiSelect
+          builder: (_, multiSelect, _) => multiSelect
               ? IconButton(
                   onPressed: () => _multiSelectController.selectAll(
                     List.generate(
@@ -342,7 +346,7 @@ class _ShowTagListPageState extends ConsumerState<ShowTagListPageInternal> {
         ),
         ValueListenableBuilder(
           valueListenable: _multiSelectController.multiSelectNotifier,
-          builder: (_, multiSelect, __) => multiSelect
+          builder: (_, multiSelect, _) => multiSelect
               ? IconButton(
                   onPressed: () {
                     _multiSelectController.clearSelected();
@@ -353,7 +357,7 @@ class _ShowTagListPageState extends ConsumerState<ShowTagListPageInternal> {
         ),
         ValueListenableBuilder(
           valueListenable: _multiSelectController.multiSelectNotifier,
-          builder: (_, multiSelect, __) => multiSelect
+          builder: (_, multiSelect, _) => multiSelect
               ? IconButton(
                   color: Theme.of(context).colorScheme.primary,
                   onPressed: () {
@@ -371,10 +375,10 @@ class _ShowTagListPageState extends ConsumerState<ShowTagListPageInternal> {
       automaticallyImplyLeading: false,
       title: ValueListenableBuilder(
         valueListenable: _multiSelectController.multiSelectNotifier,
-        builder: (_, multiSelect, __) => multiSelect
+        builder: (_, multiSelect, _) => multiSelect
             ? ValueListenableBuilder(
                 valueListenable: _multiSelectController.selectedItemsNotifier,
-                builder: (_, selected, __) => selected.isEmpty
+                builder: (_, selected, _) => selected.isEmpty
                     ? const Text('Select tags')
                     : Text('${selected.length} Tags selected'),
               )
@@ -398,8 +402,9 @@ class _ShowTagListPageState extends ConsumerState<ShowTagListPageInternal> {
   }
 
   void _copySelectedTags(Set<int> selectedItems) {
-    final selectedTags =
-        selectedItems.map((index) => widget.tags[index].rawName).join(' ');
+    final selectedTags = selectedItems
+        .map((index) => widget.tags[index].rawName)
+        .join(' ');
 
     AppClipboard.copyWithDefaultToast(
       context,
@@ -459,7 +464,7 @@ class _SelectableTagItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
       valueListenable: multiSelectController.multiSelectNotifier,
-      builder: (_, multiSelect, __) => Row(
+      builder: (_, multiSelect, _) => Row(
         children: [
           AnimatedContainer(
             duration: const Duration(milliseconds: 200),
@@ -472,7 +477,7 @@ class _SelectableTagItem extends StatelessWidget {
                   ? ValueListenableBuilder(
                       valueListenable:
                           multiSelectController.selectedItemsNotifier,
-                      builder: (_, selectedItems, __) => Checkbox(
+                      builder: (_, selectedItems, _) => Checkbox(
                         visualDensity: VisualDensity.compact,
                         value: selectedItems.contains(index),
                         onChanged: (value) {
@@ -494,7 +499,7 @@ class _SelectableTagItem extends StatelessWidget {
 
   Widget _buildTile(bool multiSelect, BuildContext context) {
     return Consumer(
-      builder: (_, ref, __) => ListTile(
+      builder: (_, ref, _) => ListTile(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
         ),
@@ -520,11 +525,12 @@ class _SelectableTagItem extends StatelessWidget {
         onTap: multiSelect
             ? () => multiSelectController.toggleSelection(index)
             : () => goToSearchPage(
-                  ref,
-                  tag: tag.rawName,
-                ),
-        trailing:
-            !isDesktopPlatform() ? const Icon(Symbols.chevron_right) : null,
+                ref,
+                tag: tag.rawName,
+              ),
+        trailing: !isDesktopPlatform()
+            ? const Icon(Symbols.chevron_right)
+            : null,
       ),
     );
   }

@@ -63,8 +63,9 @@ class _EntryPageState extends ConsumerState<EntryPage> {
                 onPressed: openAppSettings,
               ),
               behavior: SnackBarBehavior.fixed,
-              content:
-                  const Text('download.storage_permission_explanation').tr(),
+              content: const Text(
+                'download.storage_permission_explanation',
+              ).tr(),
             );
             ref
                 .read(deviceStoragePermissionProvider.notifier)
@@ -86,7 +87,7 @@ class _EntryPageState extends ConsumerState<EntryPage> {
                     right: false,
                     bottom: false,
                     child: _SidebarSettingsListener(
-                      builder: (_, bottom, __) => bottom
+                      builder: (_, bottom, _) => bottom
                           ? const SizedBox.shrink()
                           : const BooruSelector(),
                     ),
@@ -128,15 +129,16 @@ class _SidebarSettingsListener extends ConsumerWidget {
   const _SidebarSettingsListener({required this.builder});
 
   final Widget Function(BuildContext context, bool isBottom, bool hideLabel)
-      builder;
+  builder;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final pos = ref.watch(
       settingsProvider.select((value) => value.booruConfigSelectorPosition),
     );
-    final hideLabel = ref
-        .watch(settingsProvider.select((value) => value.hideBooruConfigLabel));
+    final hideLabel = ref.watch(
+      settingsProvider.select((value) => value.hideBooruConfigLabel),
+    );
 
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 300),
@@ -186,8 +188,8 @@ class _Boorus extends ConsumerWidget {
               Text(
                 'Select a profile from the list below to continue',
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.hintColor,
-                    ),
+                  color: Theme.of(context).colorScheme.hintColor,
+                ),
               ),
             const SizedBox(height: 16),
             Expanded(
@@ -199,7 +201,9 @@ class _Boorus extends ConsumerWidget {
                     title: Text(config.name),
                     subtitle: Text(config.url),
                     onTap: () {
-                      ref.read(currentBooruConfigProvider.notifier).update(
+                      ref
+                          .read(currentBooruConfigProvider.notifier)
+                          .update(
                             config,
                           );
                     },

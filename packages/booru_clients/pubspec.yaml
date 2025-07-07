@@ -3,7 +3,7 @@ description: Clients for various Booru sites.
 publish_to: none
 
 environment:
-  sdk: ^3.6.0
+  sdk: ^3.8.1
 
 resolution: workspace
 

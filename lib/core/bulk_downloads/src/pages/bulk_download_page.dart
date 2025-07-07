@@ -55,7 +55,7 @@ class BulkDownloadPageInternal extends StatelessWidget {
               children: [
                 const Text(DownloadTranslations.title).tr(),
                 Consumer(
-                  builder: (_, ref, __) => constraints.maxWidth >= 432
+                  builder: (_, ref, _) => constraints.maxWidth >= 432
                       ? _buildCreateButton(ref, dense: true)
                       : const SizedBox.shrink(),
                 ),
@@ -64,7 +64,7 @@ class BulkDownloadPageInternal extends StatelessWidget {
           ),
           actions: [
             Consumer(
-              builder: (_, ref, __) {
+              builder: (_, ref, _) {
                 final hasUnseen = ref.watch(
                   bulkDownloadProvider.select(
                     (state) => state.hasUnseenFinishedSessions,
@@ -86,7 +86,7 @@ class BulkDownloadPageInternal extends StatelessWidget {
               },
             ),
             Consumer(
-              builder: (_, ref, __) {
+              builder: (_, ref, _) {
                 return IconButton(
                   icon: const Icon(Symbols.bookmark),
                   onPressed: () {
@@ -98,9 +98,10 @@ class BulkDownloadPageInternal extends StatelessWidget {
           ],
         ),
         body: Consumer(
-          builder: (_, ref, __) {
-            final ready =
-                ref.watch(bulkDownloadProvider.select((state) => state.ready));
+          builder: (_, ref, _) {
+            final ready = ref.watch(
+              bulkDownloadProvider.select((state) => state.ready),
+            );
 
             return SafeArea(
               child: ready
@@ -166,65 +167,68 @@ class BulkDownloadActionSessions extends ConsumerWidget {
               session: sessions[index],
             ),
           )
-        : ref.watch(savedDownloadTasksProvider).when(
-              data: (tasks) => tasks.isEmpty
-                  ? Center(
-                      child: Text(
-                        DownloadTranslations.empty,
-                        style: textTheme.titleSmall?.copyWith(
-                          color: colorScheme.hintColor,
+        : ref
+              .watch(savedDownloadTasksProvider)
+              .when(
+                data: (tasks) => tasks.isEmpty
+                    ? Center(
+                        child: Text(
+                          DownloadTranslations.empty,
+                          style: textTheme.titleSmall?.copyWith(
+                            color: colorScheme.hintColor,
+                          ),
                         ),
-                      ),
-                    )
-                  : Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        SizedBox(
-                          height: 60,
-                          child: Center(
-                            child: Text(
-                              DownloadTranslations.empty,
-                              style: textTheme.titleSmall?.copyWith(
-                                color: colorScheme.hintColor,
+                      )
+                    : Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          SizedBox(
+                            height: 60,
+                            child: Center(
+                              child: Text(
+                                DownloadTranslations.empty,
+                                style: textTheme.titleSmall?.copyWith(
+                                  color: colorScheme.hintColor,
+                                ),
+                              ).tr(),
+                            ),
+                          ),
+                          const Divider(),
+                          const SizedBox(height: 8),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                            ),
+                            child: const Text(
+                              'Templates',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
                               ),
                             ).tr(),
                           ),
-                        ),
-                        const Divider(),
-                        const SizedBox(height: 8),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                          ),
-                          child: const Text(
-                            'Templates',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ).tr(),
-                        ),
-                        Expanded(
-                          child: ListView.builder(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 8,
-                              horizontal: 12,
-                            ),
-                            itemCount: tasks.length,
-                            itemBuilder: (context, index) => SavedTaskListTile(
-                              savedTask: tasks[index],
-                              enableTap: false,
+                          Expanded(
+                            child: ListView.builder(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 8,
+                                horizontal: 12,
+                              ),
+                              itemCount: tasks.length,
+                              itemBuilder: (context, index) =>
+                                  SavedTaskListTile(
+                                    savedTask: tasks[index],
+                                    enableTap: false,
+                                  ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-              error: (error, stack) => Center(
-                child: Text('Error: $error'),
-              ),
-              loading: () => const Center(
-                child: CircularProgressIndicator(),
-              ),
-            );
+                        ],
+                      ),
+                error: (error, stack) => Center(
+                  child: Text('Error: $error'),
+                ),
+                loading: () => const Center(
+                  child: CircularProgressIndicator(),
+                ),
+              );
   }
 }

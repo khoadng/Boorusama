@@ -121,7 +121,7 @@ class TagsTile extends StatelessWidget {
           itemBuilder: (context, tag) => GeneralTagContextMenu(
             tag: tag.rawName,
             child: Consumer(
-              builder: (_, ref, __) => PostTagListChip(
+              builder: (_, ref, _) => PostTagListChip(
                 tag: tag,
                 auth: ref.watchConfigAuth,
                 onTap: () => goToSearchPage(ref, tag: tag.rawName),

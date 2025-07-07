@@ -100,7 +100,7 @@ class _SelectedTagEditDialogState extends ConsumerState<SelectedTagEditDialog> {
         ),
         ValueListenableBuilder(
           valueListenable: controller,
-          builder: (_, query, __) {
+          builder: (_, query, _) {
             final currentQuery = query.text.lastQuery;
 
             if (currentQuery == null) return const SizedBox.shrink();
@@ -111,7 +111,7 @@ class _SelectedTagEditDialogState extends ConsumerState<SelectedTagEditDialog> {
 
             return ValueListenableBuilder(
               valueListenable: showSuggestions,
-              builder: (_, show, __) {
+              builder: (_, show, _) {
                 if (!show) return const SizedBox.shrink();
 
                 return Flexible(

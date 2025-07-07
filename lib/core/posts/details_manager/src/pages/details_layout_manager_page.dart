@@ -45,9 +45,10 @@ class DetailsLayoutManagerPage extends StatelessWidget {
             },
           ),
           Consumer(
-            builder: (_, ref, __) {
-              final notifier =
-                  ref.watch(detailsLayoutProvider(params).notifier);
+            builder: (_, ref, _) {
+              final notifier = ref.watch(
+                detailsLayoutProvider(params).notifier,
+              );
 
               return BooruPopupMenuButton(
                 onSelected: (value) {
@@ -82,7 +83,7 @@ class DetailsLayoutManagerPage extends StatelessWidget {
               ),
             ),
             Consumer(
-              builder: (_, ref, __) {
+              builder: (_, ref, _) {
                 final hasPremium = ref.watch(hasPremiumProvider);
 
                 return !hasPremium
@@ -197,10 +198,11 @@ class _Header extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       title: Consumer(
-        builder: (_, ref, __) {
+        builder: (_, ref, _) {
           final (selected, available) = ref.watch(
-            detailsLayoutProvider(params)
-                .select((value) => value.selectedPartsCount),
+            detailsLayoutProvider(
+              params,
+            ).select((value) => value.selectedPartsCount),
           );
 
           return Text(
@@ -210,7 +212,7 @@ class _Header extends StatelessWidget {
         },
       ),
       trailing: Consumer(
-        builder: (_, ref, __) {
+        builder: (_, ref, _) {
           final hasPremium = ref.watch(hasPremiumProvider);
 
           final canApply = ref.watch(

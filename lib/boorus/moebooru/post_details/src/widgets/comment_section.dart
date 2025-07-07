@@ -27,7 +27,9 @@ class MoebooruCommentSection extends ConsumerWidget {
     final params = (ref.watchConfigAuth, post.id);
 
     return SliverToBoxAdapter(
-      child: ref.watch(moebooruCommentsProvider(params)).when(
+      child: ref
+          .watch(moebooruCommentsProvider(params))
+          .when(
             data: (comments) => comments.isEmpty
                 ? const SizedBox.shrink()
                 : Padding(
@@ -58,7 +60,7 @@ class MoebooruCommentSection extends ConsumerWidget {
                     ),
                   ),
             loading: () => const SizedBox.shrink(),
-            error: (e, __) => const SizedBox.shrink(),
+            error: (e, _) => const SizedBox.shrink(),
           ),
     );
   }

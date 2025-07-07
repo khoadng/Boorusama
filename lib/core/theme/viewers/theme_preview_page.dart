@@ -61,9 +61,9 @@ class _ThemePreviewPageState extends State<ThemePreviewPage> {
                           top: viewPadding.top + 20,
                           bottom: !context.isLargeScreen
                               ? MediaQuery.sizeOf(context).height *
-                                      _kMinSheetSize -
-                                  viewPadding.top -
-                                  viewPadding.bottom
+                                        _kMinSheetSize -
+                                    viewPadding.top -
+                                    viewPadding.bottom
                               : 0,
                         ),
                         child: const Column(
@@ -105,18 +105,18 @@ class _ThemePreviewPageState extends State<ThemePreviewPage> {
               minChildSize: _kMinSheetSize,
               builder: (context, scrollController) =>
                   _ThemeSheetControllerListener(
-                sheetController: _sheetController,
-                child: ThemePreviewerSheet(
-                  scrollController: scrollController,
-                ),
-              ),
+                    sheetController: _sheetController,
+                    child: ThemePreviewerSheet(
+                      scrollController: scrollController,
+                    ),
+                  ),
             ),
           Positioned(
             top: 4,
             left: 12,
             child: SafeArea(
               child: Consumer(
-                builder: (_, ref, __) {
+                builder: (_, ref, _) {
                   final notifier = ref.watch(themePreviewerProvider.notifier);
 
                   return CircularIconButton(
@@ -137,7 +137,7 @@ class _ThemePreviewPageState extends State<ThemePreviewPage> {
             top: 0,
             right: 4,
             child: Consumer(
-              builder: (_, ref, __) {
+              builder: (_, ref, _) {
                 final hasPremium = ref.watch(hasPremiumProvider);
                 final notifier = ref.watch(themePreviewerProvider.notifier);
 
@@ -149,10 +149,12 @@ class _ThemePreviewPageState extends State<ThemePreviewPage> {
                             notifier.onExit();
                           },
                           child: switch (notifier.updateMethod) {
-                            ThemeUpdateMethod.applyDirectly =>
-                              const Text('Apply'),
-                            ThemeUpdateMethod.saveAndUpdateLater =>
-                              const Text('Save'),
+                            ThemeUpdateMethod.applyDirectly => const Text(
+                              'Apply',
+                            ),
+                            ThemeUpdateMethod.saveAndUpdateLater => const Text(
+                              'Save',
+                            ),
                           },
                         )
                       : TextButton(

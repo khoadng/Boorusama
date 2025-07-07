@@ -115,8 +115,9 @@ class _PostDetailPageScaffoldState<T extends Post>
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      final videoPlayerEngine =
-          ref.read(settingsProvider.select((value) => value.videoPlayerEngine));
+      final videoPlayerEngine = ref.read(
+        settingsProvider.select((value) => value.videoPlayerEngine),
+      );
 
       widget.controller.setPage(
         widget.controller.initialPage,
@@ -124,7 +125,9 @@ class _PostDetailPageScaffoldState<T extends Post>
       );
 
       if (widget.viewerConfig.autoFetchNotes) {
-        ref.read(notesProvider(widget.authConfig).notifier).load(
+        ref
+            .read(notesProvider(widget.authConfig).notifier)
+            .load(
               posts[widget.controller.initialPage],
             );
       }
@@ -232,9 +235,9 @@ class _PostDetailPageScaffoldState<T extends Post>
           LogicalKeyboardKey.keyF,
           control: true,
         ): () => goToOriginalImagePage(
-              ref,
-              widget.posts[_controller.page],
-            ),
+          ref,
+          widget.posts[_controller.page],
+        ),
       },
       child: CustomContextMenuOverlay(
         backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
@@ -271,15 +274,18 @@ class _PostDetailPageScaffoldState<T extends Post>
     final postGesturesHandler = booruBuilder?.postGestureHandlerBuilder;
     final gestures = widget.gestureConfig?.fullview;
 
-    final imageUrlBuilder = widget.imageUrlBuilder ??
+    final imageUrlBuilder =
+        widget.imageUrlBuilder ??
         defaultPostImageUrlBuilder(ref, widget.authConfig, widget.viewerConfig);
 
     final uiBuilder = widget.uiBuilder ?? booruBuilder?.postDetailsUIBuilder;
 
-    final videoPlayerEngine =
-        ref.watch(settingsProvider.select((value) => value.videoPlayerEngine));
-    final reduceAnimations =
-        ref.watch(settingsProvider.select((value) => value.reduceAnimations));
+    final videoPlayerEngine = ref.watch(
+      settingsProvider.select((value) => value.videoPlayerEngine),
+    );
+    final reduceAnimations = ref.watch(
+      settingsProvider.select((value) => value.reduceAnimations),
+    );
 
     void onItemTap() {
       final controller = widget.controller;
@@ -380,24 +386,26 @@ class _PostDetailPageScaffoldState<T extends Post>
         ],
         onSwipeDownThresholdReached:
             gestures.canSwipeDown && postGesturesHandler != null
-                ? () {
-                    _controller.resetSheet();
+            ? () {
+                _controller.resetSheet();
 
-                    postGesturesHandler(
-                      ref,
-                      gestures?.swipeDown,
-                      posts[_controller.page],
-                    );
-                  }
-                : null,
+                postGesturesHandler(
+                  ref,
+                  gestures?.swipeDown,
+                  posts[_controller.page],
+                );
+              }
+            : null,
         sheetBuilder: (context, scrollController) {
           return Consumer(
-            builder: (_, ref, __) {
+            builder: (_, ref, _) {
               final layoutDetails = ref.watch(
-                currentReadOnlyBooruConfigLayoutProvider
-                    .select((value) => value?.details),
+                currentReadOnlyBooruConfigLayoutProvider.select(
+                  (value) => value?.details,
+                ),
               );
-              final preferredParts = widget.preferredParts ??
+              final preferredParts =
+                  widget.preferredParts ??
                   getLayoutParsedParts(
                     details: layoutDetails,
                     hasPremium: ref.watch(hasPremiumProvider),
@@ -411,7 +419,8 @@ class _PostDetailPageScaffoldState<T extends Post>
                   sheetState: state,
                   uiBuilder: uiBuilder,
                   preferredParts: preferredParts,
-                  canCustomize: ref.watch(showPremiumFeatsProvider) &&
+                  canCustomize:
+                      ref.watch(showPremiumFeatsProvider) &&
                       widget.uiBuilder == null,
                 ),
               );
@@ -424,7 +433,7 @@ class _PostDetailPageScaffoldState<T extends Post>
 
           return ValueListenableBuilder(
             valueListenable: _controller.sheetState,
-            builder: (_, state, __) => GestureDetector(
+            builder: (_, state, _) => GestureDetector(
               // let the user tap the image to toggle overlay
               onTap: onItemTap,
               child: InteractiveViewerExtended(
@@ -438,20 +447,20 @@ class _PostDetailPageScaffoldState<T extends Post>
                 onTap: onItemTap,
                 onDoubleTap:
                     gestures.canDoubleTap && postGesturesHandler != null
-                        ? () => postGesturesHandler(
-                              ref,
-                              gestures?.doubleTap,
-                              posts[_controller.page],
-                            )
-                        : null,
+                    ? () => postGesturesHandler(
+                        ref,
+                        gestures?.doubleTap,
+                        posts[_controller.page],
+                      )
+                    : null,
                 onLongPress:
                     gestures.canLongPress && postGesturesHandler != null
-                        ? () => postGesturesHandler(
-                              ref,
-                              gestures?.longPress,
-                              posts[_controller.page],
-                            )
-                        : null,
+                    ? () => postGesturesHandler(
+                        ref,
+                        gestures?.longPress,
+                        posts[_controller.page],
+                      )
+                    : null,
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
@@ -465,7 +474,7 @@ class _PostDetailPageScaffoldState<T extends Post>
                       ),
                     ValueListenableBuilder(
                       valueListenable: _isInitPage,
-                      builder: (_, isInitPage, __) {
+                      builder: (_, isInitPage, _) {
                         final initialThumbnailUrl =
                             widget.controller.initialThumbnailUrl;
 
@@ -474,8 +483,8 @@ class _PostDetailPageScaffoldState<T extends Post>
                           imageUrlBuilder: imageUrlBuilder,
                           imageCacheManager: widget.imageCacheManager,
                           // This is used to make sure we have a thumbnail to show instead of a black placeholder
-                          thumbnailUrlBuilder: isInitPage &&
-                                  initialThumbnailUrl != null
+                          thumbnailUrlBuilder:
+                              isInitPage && initialThumbnailUrl != null
                               // Need to specify the type here to avoid type inference error
                               // ignore: avoid_types_on_closure_parameters
                               ? (Post _) => initialThumbnailUrl
@@ -524,11 +533,11 @@ class _PostDetailPageScaffoldState<T extends Post>
                                     VideoSoundScope(
                                       builder: (context, soundOn) =>
                                           SoundControlButton(
-                                        padding: const EdgeInsets.all(8),
-                                        soundOn: soundOn,
-                                        onSoundChanged: (value) =>
-                                            ref.setGlobalVideoSound(value),
-                                      ),
+                                            padding: const EdgeInsets.all(8),
+                                            soundOn: soundOn,
+                                            onSoundChanged: (value) =>
+                                                ref.setGlobalVideoSound(value),
+                                          ),
                                     ),
                                   ],
                                 ),
@@ -542,17 +551,18 @@ class _PostDetailPageScaffoldState<T extends Post>
           );
         },
         bottomSheet: Consumer(
-          builder: (_, ref, __) {
+          builder: (_, ref, _) {
             final layoutPreviewDetails = ref.watch(
-              currentReadOnlyBooruConfigLayoutProvider
-                  .select((value) => value?.previewDetails),
+              currentReadOnlyBooruConfigLayoutProvider.select(
+                (value) => value?.previewDetails,
+              ),
             );
 
             return widget.uiBuilder != null
                 ? _buildCustomPreview(widget.uiBuilder!, layoutPreviewDetails)
                 : uiBuilder != null && uiBuilder.preview.isNotEmpty
-                    ? _buildCustomPreview(uiBuilder, layoutPreviewDetails)
-                    : _buildFallbackPreview();
+                ? _buildCustomPreview(uiBuilder, layoutPreviewDetails)
+                : _buildFallbackPreview();
           },
         ),
         actions: [
@@ -582,14 +592,18 @@ class _PostDetailPageScaffoldState<T extends Post>
           widget.onExpanded?.call();
           // Reset zoom when expanded
           _transformController.value = Matrix4.identity();
-          ref.read(analyticsProvider).whenData(
+          ref
+              .read(analyticsProvider)
+              .whenData(
                 (analytics) => analytics?.logScreenView('/details/info'),
               );
         },
         onShrink: () {
           final routeName = ModalRoute.of(context)?.settings.name;
           if (routeName != null) {
-            ref.read(analyticsProvider).whenData(
+            ref
+                .read(analyticsProvider)
+                .whenData(
                   (analytics) => analytics?.logScreenView(routeName),
                 );
           }
@@ -602,7 +616,8 @@ class _PostDetailPageScaffoldState<T extends Post>
     PostDetailsUIBuilder uiBuilder,
     List<CustomDetailsPartKey>? layoutPreviewDetails,
   ) {
-    final preferredPreviewParts = widget.preferredPreviewParts ??
+    final preferredPreviewParts =
+        widget.preferredPreviewParts ??
         getLayoutPreviewParsedParts(
           previewDetails: layoutPreviewDetails,
           hasPremium: ref.watch(hasPremiumProvider),
@@ -625,7 +640,7 @@ class _PostDetailPageScaffoldState<T extends Post>
       slivers: [
         ValueListenableBuilder(
           valueListenable: widget.controller.currentPost,
-          builder: (_, post, __) => post.isVideo
+          builder: (_, post, _) => post.isVideo
               ? SliverToBoxAdapter(
                   child: DecoratedBox(
                     decoration: decoration,
@@ -638,7 +653,7 @@ class _PostDetailPageScaffoldState<T extends Post>
         ),
         ValueListenableBuilder(
           valueListenable: widget.controller.currentPost,
-          builder: (_, post, __) {
+          builder: (_, post, _) {
             final multiSliver = MultiSliver(
               children: preferredPreviewParts
                   .map((p) => uiBuilder.buildPart(context, p))

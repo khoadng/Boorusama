@@ -52,7 +52,7 @@ class PostGridConfigIconButton<T> extends ConsumerWidget {
 
   Widget _buildMenuButton(BuildContext context, WidgetRef ref) {
     return Consumer(
-      builder: (_, ref, __) {
+      builder: (_, ref, _) {
         final config = ref.watchConfigFilter;
 
         final settingsNotifier = ref.watch(settingsNotifierProvider.notifier);
@@ -60,12 +60,13 @@ class PostGridConfigIconButton<T> extends ConsumerWidget {
             .watch(booruBuilderProvider(config.auth))
             ?.postStatisticsPageBuilder;
 
-        final blacklistEntries =
-            ref.watch(blacklistTagEntriesProvider(config)).valueOrNull;
+        final blacklistEntries = ref
+            .watch(blacklistTagEntriesProvider(config))
+            .valueOrNull;
 
         return ValueListenableBuilder(
           valueListenable: postController.itemsNotifier,
-          builder: (_, posts, __) {
+          builder: (_, posts, _) {
             return posts.isNotEmpty
                 ? Container(
                     width: 32,
@@ -100,7 +101,8 @@ class PostGridConfigIconButton<T> extends ConsumerWidget {
                           }
                         } else if (value == 'edit_blacklist') {
                           // check if all entries are global then just open the global blacklist page
-                          final isGlobal = blacklistEntries?.every(
+                          final isGlobal =
+                              blacklistEntries?.every(
                                 (element) =>
                                     element.source == BlacklistSource.global,
                               ) ??
@@ -234,7 +236,9 @@ class EditBlacklistActionSheet extends ConsumerWidget {
     final config = ref.watchConfigFilter;
     final colorScheme = Theme.of(context).colorScheme;
 
-    return ref.watch(blacklistTagEntriesProvider(config)).when(
+    return ref
+        .watch(blacklistTagEntriesProvider(config))
+        .when(
           data: (entries) {
             final sources = entries.map((e) => e.source).toSet();
 
@@ -251,21 +255,21 @@ class EditBlacklistActionSheet extends ConsumerWidget {
                             ),
                             child: switch (e) {
                               BlacklistSource.global => Image.asset(
-                                  'assets/images/logo.png',
-                                  width: 24,
-                                  height: 24,
-                                  isAntiAlias: true,
-                                  filterQuality: FilterQuality.none,
-                                ),
+                                'assets/images/logo.png',
+                                width: 24,
+                                height: 24,
+                                isAntiAlias: true,
+                                filterQuality: FilterQuality.none,
+                              ),
                               BlacklistSource.booruSpecific => BooruLogo(
-                                  source: config.auth.url,
-                                  width: 24,
-                                  height: 24,
-                                ),
+                                source: config.auth.url,
+                                width: 24,
+                                height: 24,
+                              ),
                               BlacklistSource.config => Icon(
-                                  Icons.settings,
-                                  color: colorScheme.onSurfaceVariant,
-                                ),
+                                Icons.settings,
+                                color: colorScheme.onSurfaceVariant,
+                              ),
                             },
                           ),
                           onTap: () {
@@ -286,13 +290,15 @@ class EditBlacklistActionSheet extends ConsumerWidget {
                             Navigator.of(context).pop();
                           },
                           title: switch (e) {
-                            BlacklistSource.global =>
-                              const Text('Edit Global Blacklist').tr(),
-                            BlacklistSource.booruSpecific =>
-                              const Text("Edit Booru's Specific Blacklist")
-                                  .tr(),
-                            BlacklistSource.config =>
-                              const Text('Edit Profile Blacklist').tr(),
+                            BlacklistSource.global => const Text(
+                              'Edit Global Blacklist',
+                            ).tr(),
+                            BlacklistSource.booruSpecific => const Text(
+                              "Edit Booru's Specific Blacklist",
+                            ).tr(),
+                            BlacklistSource.config => const Text(
+                              'Edit Profile Blacklist',
+                            ).tr(),
                           },
                         ),
                       ),
@@ -329,13 +335,15 @@ class PostGridActionSheet extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final gridSize = ref
-        .watch(imageListingSettingsProvider.select((value) => value.gridSize));
+    final gridSize = ref.watch(
+      imageListingSettingsProvider.select((value) => value.gridSize),
+    );
     final imageListType = ref.watch(
       imageListingSettingsProvider.select((value) => value.imageListType),
     );
-    final pageMode = ref
-        .watch(imageListingSettingsProvider.select((value) => value.pageMode));
+    final pageMode = ref.watch(
+      imageListingSettingsProvider.select((value) => value.pageMode),
+    );
     final imageQuality = ref.watch(
       imageListingSettingsProvider.select((value) => value.imageQuality),
     );
@@ -368,8 +376,9 @@ class PostGridActionSheet extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   SettingsTile<PageMode>(
-                    title:
-                        const Text('settings.result_layout.result_layout').tr(),
+                    title: const Text(
+                      'settings.result_layout.result_layout',
+                    ).tr(),
                     selectedOption: pageMode,
                     items: const [...PageMode.values],
                     onChanged: (value) => onModeChanged(value),
@@ -377,8 +386,9 @@ class PostGridActionSheet extends ConsumerWidget {
                     visualDensity: VisualDensity.compact,
                   ),
                   SettingsTile<GridSize>(
-                    title: const Text('settings.image_grid.grid_size.grid_size')
-                        .tr(),
+                    title: const Text(
+                      'settings.image_grid.grid_size.grid_size',
+                    ).tr(),
                     selectedOption: gridSize,
                     items: GridSize.values,
                     onChanged: (value) => onGridChanged(value),

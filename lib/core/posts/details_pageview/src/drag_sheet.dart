@@ -27,7 +27,7 @@ class DragSheet extends StatefulWidget {
   });
 
   final Widget Function(BuildContext, ScrollController? scrollController)
-      sheetBuilder;
+  sheetBuilder;
   final PostDetailsPageViewController pageViewController;
   final ValueNotifier<bool>? isSheetAnimating;
 
@@ -79,12 +79,15 @@ class _DragSheetState extends State<DragSheet> {
   Widget build(BuildContext context) {
     return NotificationListener<DraggableScrollableNotification>(
       onNotification: (notification) {
-        final atMinExtent =
-            notification.extent.isApproximatelyEqual(notification.minExtent);
-        final atFullExtent =
-            notification.extent.isApproximatelyEqual(notification.maxExtent);
-        final atInitialExtent = notification.extent
-            .isApproximatelyEqual(notification.initialExtent);
+        final atMinExtent = notification.extent.isApproximatelyEqual(
+          notification.minExtent,
+        );
+        final atFullExtent = notification.extent.isApproximatelyEqual(
+          notification.maxExtent,
+        );
+        final atInitialExtent = notification.extent.isApproximatelyEqual(
+          notification.initialExtent,
+        );
         // direct comparison is needed here, to make sure when the sheet is animating pass the maxSize it won't be considered as atMaxExtent
         final atMaxExtent = notification.extent == maxSize;
 
@@ -132,7 +135,7 @@ class _DragSheetState extends State<DragSheet> {
         },
         child: ValueListenableBuilder(
           valueListenable: widget.pageViewController.sheetState,
-          builder: (_, state, __) {
+          builder: (_, state, _) {
             return DraggableScrollableSheet(
               controller: sheetController,
               // force maxSize when expanded
@@ -177,7 +180,7 @@ class _DragSheetState extends State<DragSheet> {
   Widget _buildScrollToTop() {
     return ValueListenableBuilder(
       valueListenable: widget.pageViewController.sheetState,
-      builder: (_, state, __) {
+      builder: (_, state, _) {
         return state.isExpanded
             ? ScrollToTop(
                 scrollController: _contentScrollController,
@@ -200,7 +203,7 @@ class _DragSheetState extends State<DragSheet> {
   Widget _buildDivider() {
     return ValueListenableBuilder(
       valueListenable: widget.pageViewController.isItemPushed,
-      builder: (_, pushed, __) => pushed
+      builder: (_, pushed, _) => pushed
           ? const Divider(
               height: 0,
               thickness: 0.75,

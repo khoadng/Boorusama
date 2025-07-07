@@ -38,7 +38,9 @@ class DanbooruUploadsPage extends ConsumerWidget {
     final config = ref.watchConfigAuth;
 
     return BooruConfigAuthFailsafe(
-      builder: (_) => ref.watch(danbooruCurrentUserProvider(config)).maybeWhen(
+      builder: (_) => ref
+          .watch(danbooruCurrentUserProvider(config))
+          .maybeWhen(
             data: (data) => data != null
                 ? DanbooruMyUploadsPageInternal(
                     userId: data.id,
@@ -73,8 +75,9 @@ class DanbooruMyUploadsPageInternal extends ConsumerStatefulWidget {
       _DanbooruMyUploadsPageState();
 }
 
-final _danbooruShowUploadHiddenProvider =
-    StateProvider.autoDispose<bool>((ref) => false);
+final _danbooruShowUploadHiddenProvider = StateProvider.autoDispose<bool>(
+  (ref) => false,
+);
 
 class _DanbooruMyUploadsPageState
     extends ConsumerState<DanbooruMyUploadsPageInternal>
@@ -187,29 +190,31 @@ class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
     return PostScope(
       fetcher: (page) => TaskEither.Do(
         ($) async {
-          final uploads =
-              await ref.read(danbooruUploadRepoProvider(config)).getUploads(
-                    page: page,
-                    userId: widget.userId,
-                    isPosted: switch (widget.type) {
-                      UploadTabType.posted => true,
-                      UploadTabType.unposted => false,
-                    },
-                  );
+          final uploads = await ref
+              .read(danbooruUploadRepoProvider(config))
+              .getUploads(
+                page: page,
+                userId: widget.userId,
+                isPosted: switch (widget.type) {
+                  UploadTabType.posted => true,
+                  UploadTabType.unposted => false,
+                },
+              );
 
           return uploads.map((e) => e.previewPost).nonNulls.toList().toResult();
         },
       ),
       builder: (context, controller) => LayoutBuilder(
-        builder: (context, constraints) =>
-            ref.watch(danbooruUploadHideMapProvider).maybeWhen(
-                  data: (data) => _buildGrid(
-                    controller,
-                    constraints,
-                    data,
-                  ),
-                  orElse: () => const SizedBox.shrink(),
-                ),
+        builder: (context, constraints) => ref
+            .watch(danbooruUploadHideMapProvider)
+            .maybeWhen(
+              data: (data) => _buildGrid(
+                controller,
+                constraints,
+                data,
+              ),
+              orElse: () => const SizedBox.shrink(),
+            ),
       ),
     );
   }
@@ -228,137 +233,147 @@ class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
     return PostGrid(
       controller: controller,
       itemBuilder:
-          (context, index, multiSelectController, scrollController, useHero) =>
-              ValueListenableBuilder(
-        valueListenable: controller.itemsNotifier,
-        builder: (_, posts, __) {
-          final post = posts[index];
-          final isHidden = hideMap[post.id] == true;
+          (
+            context,
+            index,
+            multiSelectController,
+            scrollController,
+            useHero,
+          ) => ValueListenableBuilder(
+            valueListenable: controller.itemsNotifier,
+            builder: (_, posts, _) {
+              final post = posts[index];
+              final isHidden = hideMap[post.id] == true;
 
-          return Stack(
-            children: [
-              DefaultDanbooruImageGridItem(
-                index: index,
-                multiSelectController: multiSelectController,
-                autoScrollController: scrollController,
-                controller: controller,
-                useHero: useHero,
-                contextMenu: GenericContextMenu(
-                  buttonConfigs: [
-                    ContextMenuButtonConfig(
-                      'Hide',
-                      onPressed: () {
-                        _changeVisibility(posts[index].id, false);
-                      },
+              return Stack(
+                children: [
+                  DefaultDanbooruImageGridItem(
+                    index: index,
+                    multiSelectController: multiSelectController,
+                    autoScrollController: scrollController,
+                    controller: controller,
+                    useHero: useHero,
+                    contextMenu: GenericContextMenu(
+                      buttonConfigs: [
+                        ContextMenuButtonConfig(
+                          'Hide',
+                          onPressed: () {
+                            _changeVisibility(posts[index].id, false);
+                          },
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-                onTap: () {
-                  if (widget.type == UploadTabType.unposted) {
-                    goToTagEditUploadPage(
-                      ref,
-                      post: post,
-                      uploadId: post.uploadId,
-                      //TODO: Refresh later
-                      // onSubmitted: () => controller.refresh(),
-                    );
-                  }
-                },
-                blockOverlay: isHidden
-                    ? BlockOverlayItem(
-                        overlay: Stack(
-                          children: [
-                            Positioned.fill(
-                              child: Container(
-                                color: Colors.black.withValues(alpha: 0.8),
-                              ),
+                    onTap: () {
+                      if (widget.type == UploadTabType.unposted) {
+                        goToTagEditUploadPage(
+                          ref,
+                          post: post,
+                          uploadId: post.uploadId,
+                          //TODO: Refresh later
+                          // onSubmitted: () => controller.refresh(),
+                        );
+                      }
+                    },
+                    blockOverlay: isHidden
+                        ? BlockOverlayItem(
+                            overlay: Stack(
+                              children: [
+                                Positioned.fill(
+                                  child: Container(
+                                    color: Colors.black.withValues(alpha: 0.8),
+                                  ),
+                                ),
+                                if (isHidden)
+                                  Positioned(
+                                    top: 0,
+                                    right: 0,
+                                    child: IconButton(
+                                      onPressed: () {
+                                        _changeVisibility(post.id, true);
+                                      },
+                                      icon: const Icon(Icons.visibility),
+                                    ),
+                                  ),
+                              ],
                             ),
-                            if (isHidden)
-                              Positioned(
-                                top: 0,
-                                right: 0,
-                                child: IconButton(
-                                  onPressed: () {
-                                    _changeVisibility(post.id, true);
-                                  },
-                                  icon: const Icon(Icons.visibility),
+                          )
+                        : null,
+                  ),
+                  if (widget.type == UploadTabType.unposted)
+                    _buildUnpostedChip(post),
+                  if (post.uploaderId != 0 &&
+                      post.uploaderId != widget.userId &&
+                      widget.type == UploadTabType.posted)
+                    _buildUploaderChip(context, post),
+                  if (post.mediaAssetCount > 1)
+                    _buildCountChip(post)
+                  else
+                    Positioned(
+                      bottom: 4,
+                      left: 4,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          post.source.whenWeb(
+                            (source) => Container(
+                              padding: const EdgeInsets.all(4),
+                              margin: const EdgeInsets.all(1),
+                              width: 25,
+                              height: 25,
+                              decoration: BoxDecoration(
+                                color: Colors.black.withValues(alpha: 0.7),
+                                borderRadius: const BorderRadius.all(
+                                  Radius.circular(4),
                                 ),
                               ),
-                          ],
-                        ),
-                      )
-                    : null,
-              ),
-              if (widget.type == UploadTabType.unposted)
-                _buildUnpostedChip(post),
-              if (post.uploaderId != 0 &&
-                  post.uploaderId != widget.userId &&
-                  widget.type == UploadTabType.posted)
-                _buildUploaderChip(context, post),
-              if (post.mediaAssetCount > 1)
-                _buildCountChip(post)
-              else
-                Positioned(
-                  bottom: 4,
-                  left: 4,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      post.source.whenWeb(
-                        (source) => Container(
-                          padding: const EdgeInsets.all(4),
-                          margin: const EdgeInsets.all(1),
-                          width: 25,
-                          height: 25,
-                          decoration: BoxDecoration(
-                            color: Colors.black.withValues(alpha: 0.7),
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(4)),
+                              child: ConfigAwareWebsiteLogo(
+                                url: source.faviconUrl,
+                              ),
+                            ),
+                            () => const SizedBox.shrink(),
                           ),
-                          child: ConfigAwareWebsiteLogo(url: source.faviconUrl),
-                        ),
-                        () => const SizedBox.shrink(),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.all(4),
-                        margin: const EdgeInsets.all(1),
-                        decoration: BoxDecoration(
-                          color: Colors.black.withValues(alpha: 0.7),
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(4)),
-                        ),
-                        child: Text(
-                          Filesize.parse(post.fileSize, round: 1),
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
+                          Container(
+                            padding: const EdgeInsets.all(4),
+                            margin: const EdgeInsets.all(1),
+                            decoration: BoxDecoration(
+                              color: Colors.black.withValues(alpha: 0.7),
+                              borderRadius: const BorderRadius.all(
+                                Radius.circular(4),
+                              ),
+                            ),
+                            child: Text(
+                              Filesize.parse(post.fileSize, round: 1),
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.all(4),
-                        margin: const EdgeInsets.all(1),
-                        decoration: BoxDecoration(
-                          color: Colors.black.withValues(alpha: 0.7),
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(4)),
-                        ),
-                        child: Text(
-                          '${post.width.toInt()}x${post.height.toInt()}',
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
+                          Container(
+                            padding: const EdgeInsets.all(4),
+                            margin: const EdgeInsets.all(1),
+                            decoration: BoxDecoration(
+                              color: Colors.black.withValues(alpha: 0.7),
+                              borderRadius: const BorderRadius.all(
+                                Radius.circular(4),
+                              ),
+                            ),
+                            child: Text(
+                              '${post.width.toInt()}x${post.height.toInt()}',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
                           ),
-                        ),
+                        ],
                       ),
-                    ],
-                  ),
-                ),
-            ],
-          );
-        },
-      ),
+                    ),
+                ],
+              );
+            },
+          ),
     );
   }
 
@@ -463,8 +478,9 @@ class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
                         TextSpan(
                           text: uploader.name,
                           style: theme.textTheme.bodySmall?.copyWith(
-                            color: DanbooruUserColor.of(context)
-                                .fromUser(uploader),
+                            color: DanbooruUserColor.of(
+                              context,
+                            ).fromUser(uploader),
                           ),
                         ),
                       ],

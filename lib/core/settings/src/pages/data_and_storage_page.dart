@@ -14,8 +14,9 @@ import '../providers/settings_provider.dart';
 import '../widgets/settings_header.dart';
 import '../widgets/settings_page_scaffold.dart';
 
-final bookmarkCacheInfoProvider =
-    FutureProvider.autoDispose<(int, int)>((ref) async {
+final bookmarkCacheInfoProvider = FutureProvider.autoDispose<(int, int)>((
+  ref,
+) async {
   final cacheManager = ref.watch(bookmarkImageCacheManagerProvider);
   return cacheManager.getCacheStats();
 });
@@ -45,8 +46,9 @@ class _DataAndStoragePageState extends ConsumerState<DataAndStoragePage> {
         _buildAllCache(cacheSizeAsync),
         SwitchListTile(
           value: settings.clearImageCacheOnStartup,
-          title: const Text('settings.data_and_storage.clear_cache_on_start_up')
-              .tr(),
+          title: const Text(
+            'settings.data_and_storage.clear_cache_on_start_up',
+          ).tr(),
           onChanged: (value) => notifier.updateSettings(
             settings.copyWith(clearImageCacheOnStartup: value),
           ),
@@ -68,7 +70,7 @@ class _DataAndStoragePageState extends ConsumerState<DataAndStoragePage> {
           Filesize.parse(data.$1),
         ),
         loading: () => const Text('Loading...'),
-        error: (_, __) => const Text('Error loading cache info'),
+        error: (_, _) => const Text('Error loading cache info'),
       ),
       trailing: FilledButton(
         onPressed: cacheInfo.isLoading
@@ -88,7 +90,7 @@ class _DataAndStoragePageState extends ConsumerState<DataAndStoragePage> {
       subtitle: cacheSizeAsync.when(
         data: (sizeInfo) => Text(Filesize.parse(sizeInfo.totalSize)),
         loading: () => const Text('Loading...'),
-        error: (_, __) => const Text('Error loading cache info'),
+        error: (_, _) => const Text('Error loading cache info'),
       ),
       trailing: FilledButton(
         onPressed: cacheSizeAsync.isLoading
@@ -105,7 +107,7 @@ class _DataAndStoragePageState extends ConsumerState<DataAndStoragePage> {
       subtitle: cacheSizeAsync.when(
         data: (sizeInfo) => Text(Filesize.parse(sizeInfo.tagCacheSize)),
         loading: () => const Text('Loading...'),
-        error: (_, __) => const Text('Error loading cache info'),
+        error: (_, _) => const Text('Error loading cache info'),
       ),
       trailing: FilledButton(
         onPressed: cacheSizeAsync.isLoading
@@ -133,7 +135,7 @@ class _DataAndStoragePageState extends ConsumerState<DataAndStoragePage> {
               ),
         ),
         loading: () => const Text('Loading...'),
-        error: (_, __) => const Text('Error loading cache info'),
+        error: (_, _) => const Text('Error loading cache info'),
       ),
       trailing: FilledButton(
         onPressed: cacheSizeAsync.isLoading

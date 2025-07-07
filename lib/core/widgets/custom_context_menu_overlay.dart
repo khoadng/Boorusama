@@ -30,7 +30,7 @@ class CustomContextMenuOverlay extends StatelessWidget {
           child: Column(children: children),
         ),
       ),
-      buttonBuilder: (context, config, [__]) => ContextMenuTile(config: config),
+      buttonBuilder: (context, config, [_]) => ContextMenuTile(config: config),
       child: child,
     );
   }
@@ -76,14 +76,13 @@ class _ContextMenuTileState extends State<ContextMenuTile> {
                 )
               : Text(
                   widget.config.label,
-                  style: widget.config.labelStyle ??
+                  style:
+                      widget.config.labelStyle ??
                       TextStyle(
                         color: kPreferredLayout.isMobile
                             ? Theme.of(context).colorScheme.onSurfaceVariant
-                            : Theme.of(context)
-                                .colorScheme
-                                .onSurfaceVariant
-                                .withValues(alpha: 0.75),
+                            : Theme.of(context).colorScheme.onSurfaceVariant
+                                  .withValues(alpha: 0.75),
                       ),
                 ),
         ),

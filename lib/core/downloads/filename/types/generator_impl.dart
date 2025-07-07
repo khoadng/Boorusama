@@ -34,7 +34,8 @@ class DownloadFileNameBuilder<T extends Post>
     baseTokenHandlers = {
       'id': (post, config) => post.id.toString(),
       'tags': (post, config) => post.tags.join(' '),
-      'extension': extensionHandler ??
+      'extension':
+          extensionHandler ??
           (post, config) => sanitizedExtension(config.downloadUrl).substring(1),
       if (hasMd5) 'md5': (post, config) => post.md5,
       if (hasRating) 'rating': (post, config) => post.rating.name,
@@ -63,11 +64,11 @@ class DownloadFileNameBuilder<T extends Post>
 
   @override
   Set<String> get availableTokens => {
-        ...baseTokenHandlers.keys,
-        ...asyncTokenHandlers.expand((h) => h.tokenKeys),
-        'date',
-        'uuid',
-      }.toSet();
+    ...baseTokenHandlers.keys,
+    ...asyncTokenHandlers.expand((h) => h.tokenKeys),
+    'date',
+    'uuid',
+  }.toSet();
 
   String _joinFileWithExtension(String rawFileName, String fileExt) {
     final fileName = sanitizedUrl(rawFileName);
@@ -108,8 +109,9 @@ class DownloadFileNameBuilder<T extends Post>
       } else {
         // Start async resolution
         final resolver = _asyncResolverGroups[groupKey]!;
-        pendingGroups[groupKey] =
-            resolver.resolve(post, options).catchError((error) {
+        pendingGroups[groupKey] = resolver.resolve(post, options).catchError((
+          error,
+        ) {
           // Fallback to empty on error
           return <String, String?>{
             for (final token in resolver.tokenKeys) token: '',
@@ -162,7 +164,7 @@ class DownloadFileNameBuilder<T extends Post>
       ...baseTokenHandlers,
       // Add async tokens as sync handlers with resolved values
       for (final entry in asyncTokenValues.entries)
-        entry.key: (_, __) => entry.value,
+        entry.key: (_, _) => entry.value,
     };
 
     final fileName = generateFileName(
@@ -188,15 +190,14 @@ class DownloadFileNameBuilder<T extends Post>
     T post, {
     required String downloadUrl,
     Map<String, String>? metadata,
-  }) =>
-      _generate(
-        settings,
-        config,
-        config.customDownloadFileNameFormat,
-        post,
-        metadata: metadata,
-        downloadUrl: downloadUrl,
-      );
+  }) => _generate(
+    settings,
+    config,
+    config.customDownloadFileNameFormat,
+    post,
+    metadata: metadata,
+    downloadUrl: downloadUrl,
+  );
 
   @override
   Future<String> generateForBulkDownload(
@@ -205,15 +206,14 @@ class DownloadFileNameBuilder<T extends Post>
     T post, {
     required String downloadUrl,
     Map<String, String>? metadata,
-  }) =>
-      _generate(
-        settings,
-        config,
-        config.customBulkDownloadFileNameFormat,
-        post,
-        metadata: metadata,
-        downloadUrl: downloadUrl,
-      );
+  }) => _generate(
+    settings,
+    config,
+    config.customBulkDownloadFileNameFormat,
+    post,
+    metadata: metadata,
+    downloadUrl: downloadUrl,
+  );
 
   @override
   List<String> getTokenOptions(String token) {
@@ -226,44 +226,44 @@ class DownloadFileNameBuilder<T extends Post>
 
   @override
   List<TextMatcher> get textMatchers => [
-        for (final token in availableTokens)
-          RegexMatcher(
-            pattern: RegExp(
-              '{($token[^{}]*?)}',
-              caseSensitive: false,
-            ),
-            spanBuilder: (match) => TextSpan(
-              text: match.text,
-              style: TextStyle(
-                fontWeight: FontWeight.w700,
-                color: switch (token) {
-                  'artist' => const Color.fromARGB(255, 255, 138, 139),
-                  'character' => const Color.fromARGB(255, 53, 198, 74),
-                  'copyright' => const Color.fromARGB(255, 199, 151, 255),
-                  'general' => const Color.fromARGB(255, 0, 155, 230),
-                  'meta' => const Color.fromARGB(255, 217, 187, 98),
-                  'species' => const Color(0xffed5d1f),
-                  'extension' => const Color.fromARGB(255, 204, 143, 180),
-                  'md5' => const Color.fromARGB(255, 204, 143, 180),
-                  'date' => const Color.fromARGB(255, 73, 170, 190),
-                  'index' => const Color.fromARGB(255, 176, 86, 182),
-                  'width' => const Color.fromARGB(255, 176, 86, 182),
-                  'height' => const Color.fromARGB(255, 176, 86, 182),
-                  'mpixels' => const Color.fromARGB(255, 176, 86, 182),
-                  'aspect_ratio' => const Color.fromARGB(255, 176, 86, 182),
-                  'id' => const Color.fromARGB(255, 176, 86, 182),
-                  _ => const Color.fromARGB(255, 0, 155, 230),
-                },
-              ),
-            ),
+    for (final token in availableTokens)
+      RegexMatcher(
+        pattern: RegExp(
+          '{($token[^{}]*?)}',
+          caseSensitive: false,
+        ),
+        spanBuilder: (match) => TextSpan(
+          text: match.text,
+          style: TextStyle(
+            fontWeight: FontWeight.w700,
+            color: switch (token) {
+              'artist' => const Color.fromARGB(255, 255, 138, 139),
+              'character' => const Color.fromARGB(255, 53, 198, 74),
+              'copyright' => const Color.fromARGB(255, 199, 151, 255),
+              'general' => const Color.fromARGB(255, 0, 155, 230),
+              'meta' => const Color.fromARGB(255, 217, 187, 98),
+              'species' => const Color(0xffed5d1f),
+              'extension' => const Color.fromARGB(255, 204, 143, 180),
+              'md5' => const Color.fromARGB(255, 204, 143, 180),
+              'date' => const Color.fromARGB(255, 73, 170, 190),
+              'index' => const Color.fromARGB(255, 176, 86, 182),
+              'width' => const Color.fromARGB(255, 176, 86, 182),
+              'height' => const Color.fromARGB(255, 176, 86, 182),
+              'mpixels' => const Color.fromARGB(255, 176, 86, 182),
+              'aspect_ratio' => const Color.fromARGB(255, 176, 86, 182),
+              'id' => const Color.fromARGB(255, 176, 86, 182),
+              _ => const Color.fromARGB(255, 0, 155, 230),
+            },
           ),
-      ];
+        ),
+      ),
+  ];
 
   @override
   String generateSample(String format) => sampleData.firstOption.fold(
-        () => '',
-        (data) => _generateSample(data, format),
-      );
+    () => '',
+    (data) => _generateSample(data, format),
+  );
 
   @override
   List<String> generateSamples(String format) =>

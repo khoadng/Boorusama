@@ -61,7 +61,7 @@ class _CommentBoxState extends ConsumerState<CommentBox> {
 
     return ValueListenableBuilder(
       valueListenable: widget.commentReply,
-      builder: (_, comment, __) => Container(
+      builder: (_, comment, _) => Container(
         decoration: BoxDecoration(
           border: Border(
             top: BorderSide(

@@ -42,11 +42,12 @@ class _MoebooruPopularPageState extends ConsumerState<MoebooruPopularPage> {
 
   PostsOrError _typeToData(MoebooruPopularType type, int page) =>
       switch (type) {
-        MoebooruPopularType.recent =>
-          repo.getPopularPostsRecent(MoebooruTimePeriod.day),
+        MoebooruPopularType.recent => repo.getPopularPostsRecent(
+          MoebooruTimePeriod.day,
+        ),
         MoebooruPopularType.day => repo.getPopularPostsByDay(selectedDate),
         MoebooruPopularType.week => repo.getPopularPostsByWeek(selectedDate),
-        MoebooruPopularType.month => repo.getPopularPostsByMonth(selectedDate)
+        MoebooruPopularType.month => repo.getPopularPostsByMonth(selectedDate),
       };
 
   @override
@@ -64,8 +65,9 @@ class _MoebooruPopularPageState extends ConsumerState<MoebooruPopularPage> {
                 SliverToBoxAdapter(
                   child: TimeScaleToggleSwitch(
                     onToggle: (category) {
-                      selectedPopular.value =
-                          _convertToMoebooruPopularType(category);
+                      selectedPopular.value = _convertToMoebooruPopularType(
+                        category,
+                      );
                       controller.refresh();
                     },
                   ),
@@ -80,19 +82,19 @@ class _MoebooruPopularPageState extends ConsumerState<MoebooruPopularPage> {
             ),
             child: ValueListenableBuilder<DateTime>(
               valueListenable: selectedDateNotifier,
-              builder: (context, d, __) =>
+              builder: (context, d, _) =>
                   ValueListenableBuilder<MoebooruPopularType>(
-                valueListenable: selectedPopular,
-                builder: (_, type, __) => DateTimeSelector(
-                  onDateChanged: (date) {
-                    selectedDateNotifier.value = date;
-                    controller.refresh();
-                  },
-                  date: d,
-                  scale: _convertToTimeScale(type),
-                  backgroundColor: Colors.transparent,
-                ),
-              ),
+                    valueListenable: selectedPopular,
+                    builder: (_, type, _) => DateTimeSelector(
+                      onDateChanged: (date) {
+                        selectedDateNotifier.value = date;
+                        controller.refresh();
+                      },
+                      date: d,
+                      scale: _convertToTimeScale(type),
+                      backgroundColor: Colors.transparent,
+                    ),
+                  ),
             ),
           ),
         ],
@@ -112,5 +114,5 @@ MoebooruPopularType _convertToMoebooruPopularType(TimeScale timeScale) =>
     switch (timeScale) {
       TimeScale.day => MoebooruPopularType.day,
       TimeScale.week => MoebooruPopularType.week,
-      TimeScale.month => MoebooruPopularType.month
+      TimeScale.month => MoebooruPopularType.month,
     };

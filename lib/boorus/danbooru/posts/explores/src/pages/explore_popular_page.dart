@@ -38,12 +38,13 @@ class _ExplorePopularPageState extends ConsumerState<ExplorePopularPage> {
 
     return CustomContextMenuOverlay(
       child: PostScope(
-        fetcher: (page) =>
-            ref.read(danbooruExploreRepoProvider(config)).getPopularPosts(
-                  selectedDateNotifier.value,
-                  page,
-                  selectedTimescale.value,
-                ),
+        fetcher: (page) => ref
+            .read(danbooruExploreRepoProvider(config))
+            .getPopularPosts(
+              selectedDateNotifier.value,
+              page,
+              selectedTimescale.value,
+            ),
         builder: (context, controller) => ColoredBox(
           color: colorScheme.surface,
           child: SafeArea(
@@ -53,20 +54,20 @@ class _ExplorePopularPageState extends ConsumerState<ExplorePopularPage> {
                   child: PostGrid(
                     controller: controller,
                     safeArea: false,
-                    itemBuilder: (
-                      context,
-                      index,
-                      multiSelectController,
-                      scrollController,
-                      useHero,
-                    ) =>
-                        DefaultDanbooruImageGridItem(
-                      index: index,
-                      multiSelectController: multiSelectController,
-                      autoScrollController: scrollController,
-                      controller: controller,
-                      useHero: useHero,
-                    ),
+                    itemBuilder:
+                        (
+                          context,
+                          index,
+                          multiSelectController,
+                          scrollController,
+                          useHero,
+                        ) => DefaultDanbooruImageGridItem(
+                          index: index,
+                          multiSelectController: multiSelectController,
+                          autoScrollController: scrollController,
+                          controller: controller,
+                          useHero: useHero,
+                        ),
                     sliverHeaders: [
                       ExploreSliverAppBar(
                         title: 'explore.popular'.tr(),
@@ -92,9 +93,9 @@ class _ExplorePopularPageState extends ConsumerState<ExplorePopularPage> {
                   color: colorScheme.surfaceContainer,
                   child: ValueListenableBuilder(
                     valueListenable: selectedDateNotifier,
-                    builder: (_, date, __) => ValueListenableBuilder(
+                    builder: (_, date, _) => ValueListenableBuilder(
                       valueListenable: selectedTimescale,
-                      builder: (_, scale, __) => DateTimeSelector(
+                      builder: (_, scale, _) => DateTimeSelector(
                         onDateChanged: (date) {
                           selectedDateNotifier.value = date;
                           controller.refresh();

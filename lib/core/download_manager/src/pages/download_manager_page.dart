@@ -44,8 +44,9 @@ class DownloadManagerGatewayPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return ProviderScope(
       overrides: [
-        downloadGroupProvider
-            .overrideWithValue(group ?? FileDownloader.defaultGroup),
+        downloadGroupProvider.overrideWithValue(
+          group ?? FileDownloader.defaultGroup,
+        ),
       ],
       child: DownloadManagerPage(
         filter: filter,
@@ -109,7 +110,7 @@ class _DownloadManagerPageState extends ConsumerState<DownloadManagerPage> {
       controller: _multiSelectController,
       footer: ValueListenableBuilder(
         valueListenable: _multiSelectController.selectedItemsNotifier,
-        builder: (_, selectedItems, __) => MultiSelectionActionBar(
+        builder: (_, selectedItems, _) => MultiSelectionActionBar(
           children: [
             MultiSelectButton(
               onPressed: selectedItems.isNotEmpty
@@ -153,7 +154,7 @@ class _DownloadManagerPageState extends ConsumerState<DownloadManagerPage> {
               ),
               ValueListenableBuilder(
                 valueListenable: _multiSelectController.multiSelectNotifier,
-                builder: (_, multiSelect, __) => AnimatedSwitcher(
+                builder: (_, multiSelect, _) => AnimatedSwitcher(
                   duration: const Duration(milliseconds: 200),
                   transitionBuilder: (child, animation) => SizeTransition(
                     sizeFactor: animation,
@@ -208,10 +209,10 @@ class _DownloadManagerPageState extends ConsumerState<DownloadManagerPage> {
     return AppBar(
       title: ValueListenableBuilder(
         valueListenable: _multiSelectController.multiSelectNotifier,
-        builder: (_, multiSelect, __) => multiSelect
+        builder: (_, multiSelect, _) => multiSelect
             ? ValueListenableBuilder(
                 valueListenable: _multiSelectController.selectedItemsNotifier,
-                builder: (_, selected, __) => selected.isEmpty
+                builder: (_, selected, _) => selected.isEmpty
                     ? const Text('Select items')
                     : Text('${selected.length} Items selected'),
               )
@@ -221,7 +222,7 @@ class _DownloadManagerPageState extends ConsumerState<DownloadManagerPage> {
         if (isDefaultGroup)
           ValueListenableBuilder(
             valueListenable: _multiSelectController.multiSelectNotifier,
-            builder: (_, multiSelect, __) => !multiSelect
+            builder: (_, multiSelect, _) => !multiSelect
                 ? IconButton(
                     icon: const Icon(Icons.settings),
                     onPressed: () {
@@ -232,24 +233,26 @@ class _DownloadManagerPageState extends ConsumerState<DownloadManagerPage> {
           ),
         ValueListenableBuilder(
           valueListenable: _multiSelectController.multiSelectNotifier,
-          builder: (_, multiSelect, __) => !multiSelect
+          builder: (_, multiSelect, _) => !multiSelect
               ? BooruPopupMenuButton(
                   onSelected: (value) {
                     switch (value) {
                       case 'clear':
                         // clear default group only
-                        ref.read(downloadTaskUpdatesProvider.notifier).clear(
-                          FileDownloader.defaultGroup,
-                          onFailed: () {
-                            showSimpleSnackBar(
-                              context: context,
-                              content: const Text(
-                                DownloadTranslations.downloadNothingToClear,
-                              ).tr(),
-                              duration: const Duration(seconds: 1),
+                        ref
+                            .read(downloadTaskUpdatesProvider.notifier)
+                            .clear(
+                              FileDownloader.defaultGroup,
+                              onFailed: () {
+                                showSimpleSnackBar(
+                                  context: context,
+                                  content: const Text(
+                                    DownloadTranslations.downloadNothingToClear,
+                                  ).tr(),
+                                  duration: const Duration(seconds: 1),
+                                );
+                              },
                             );
-                          },
-                        );
 
                       case 'select':
                         _multiSelectController.enableMultiSelect();
@@ -265,7 +268,7 @@ class _DownloadManagerPageState extends ConsumerState<DownloadManagerPage> {
         ),
         ValueListenableBuilder(
           valueListenable: _multiSelectController.multiSelectNotifier,
-          builder: (_, multiSelect, __) => multiSelect
+          builder: (_, multiSelect, _) => multiSelect
               ? IconButton(
                   onPressed: () => _multiSelectController.selectAll(
                     List.generate(
@@ -279,7 +282,7 @@ class _DownloadManagerPageState extends ConsumerState<DownloadManagerPage> {
         ),
         ValueListenableBuilder(
           valueListenable: _multiSelectController.multiSelectNotifier,
-          builder: (_, multiSelect, __) => multiSelect
+          builder: (_, multiSelect, _) => multiSelect
               ? IconButton(
                   onPressed: () {
                     _multiSelectController.clearSelected();

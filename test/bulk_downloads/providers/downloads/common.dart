@@ -157,8 +157,7 @@ class DummyPostRepository implements PostRepository {
     int page, {
     int? limit,
     PostFetchOptions? options,
-  }) =>
-      getPosts('', page);
+  }) => getPosts('', page);
 
   @override
   PostOrError<Post> getPost(PostId id, {PostFetchOptions? options}) {
@@ -166,8 +165,9 @@ class DummyPostRepository implements PostRepository {
 
     if (numericId == null) return TaskEither.right(null);
 
-    final post = DownloadTestConstants.posts
-        .firstWhere((element) => element.id == numericId.value);
+    final post = DownloadTestConstants.posts.firstWhere(
+      (element) => element.id == numericId.value,
+    );
 
     return TaskEither.right(post);
   }
@@ -367,16 +367,17 @@ List<Override> getTestOverrides({
 }) {
   return [
     internalDownloadRepositoryProvider.overrideWith((_) => downloadRepository),
-    currentReadOnlyBooruConfigSearchProvider
-        .overrideWithValue(booruConfigSearch),
+    currentReadOnlyBooruConfigSearchProvider.overrideWithValue(
+      booruConfigSearch,
+    ),
     currentReadOnlyBooruConfigAuthProvider.overrideWithValue(
       overrideConfig ?? booruConfigAuth,
     ),
     currentReadOnlyBooruConfigProvider.overrideWithValue(booruConfig),
-    postRepoProvider.overrideWith((__, _) => DummyPostRepository()),
+    postRepoProvider.overrideWith((_, _) => DummyPostRepository()),
     downloadServiceProvider.overrideWith((_) => DummyDownloadService()),
     downloadFilenameBuilderProvider.overrideWith(
-      (__, _) => dummyDownloadFileNameBuilder,
+      (_, _) => dummyDownloadFileNameBuilder,
     ),
     loggerProvider.overrideWithValue(DummyLogger()),
     mediaPermissionManagerProvider.overrideWithValue(
@@ -386,17 +387,20 @@ List<Override> getTestOverrides({
       AlwaysGrantedNotificationPermissionManager(),
     ),
     settingsProvider.overrideWithValue(Settings.defaultSettings),
-    downloadFileUrlExtractorProvider
-        .overrideWith((__, _) => const UrlInsidePostExtractor()),
-    cachedBypassDdosHeadersProvider.overrideWith((_, __) => {}),
+    downloadFileUrlExtractorProvider.overrideWith(
+      (_, _) => const UrlInsidePostExtractor(),
+    ),
+    cachedBypassDdosHeadersProvider.overrideWith((_, _) => {}),
     analyticsProvider.overrideWith((_) => NoAnalyticsInterface()),
-    booruBuilderProvider
-        .overrideWith((_, __) => booruBuilder ?? MockBooruBuilder()),
-    blacklistTagsProvider.overrideWith((_, __) => {}),
+    booruBuilderProvider.overrideWith(
+      (_, _) => booruBuilder ?? MockBooruBuilder(),
+    ),
+    blacklistTagsProvider.overrideWith((_, _) => {}),
     hasPremiumProvider.overrideWithValue(hasPremium),
-    downloadTaskStreamProvider
-        .overrideWith((_) => taskUpdateStream ?? emptyTaskUpdateStream),
-    taskFileSizeResolverProvider.overrideWith((_, __) => Future.value(0)),
+    downloadTaskStreamProvider.overrideWith(
+      (_) => taskUpdateStream ?? emptyTaskUpdateStream,
+    ),
+    taskFileSizeResolverProvider.overrideWith((_, _) => Future.value(0)),
     if (notifications != null)
       bulkDownloadNotificationProvider.overrideWith((_) => notifications),
   ];

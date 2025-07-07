@@ -20,10 +20,13 @@ class DanbooruBlacklistedTagsPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfigAuth;
-    final notifier =
-        ref.watch(danbooruBlacklistedTagsProvider(config).notifier);
+    final notifier = ref.watch(
+      danbooruBlacklistedTagsProvider(config).notifier,
+    );
 
-    return ref.watch(danbooruBlacklistedTagsProvider(config)).when(
+    return ref
+        .watch(danbooruBlacklistedTagsProvider(config))
+        .when(
           data: (tags) {
             return BlacklistedTagsViewScaffold(
               title: 'blacklisted_tags.blacklisted_tags'.tr(),
@@ -60,7 +63,7 @@ class DanbooruBlacklistedTagsPage extends ConsumerWidget {
               },
             );
           },
-          error: (e, __) => Scaffold(
+          error: (e, _) => Scaffold(
             body: Center(
               child: Text('Error: $e'),
             ),

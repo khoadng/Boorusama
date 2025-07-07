@@ -19,7 +19,9 @@ final connectivityProvider = StreamProvider<List<ConnectivityResult>>((ref) {
 });
 
 final networkStateProvider = Provider<NetworkState>((ref) {
-  return ref.watch(connectivityProvider).when(
+  return ref
+      .watch(connectivityProvider)
+      .when(
         data: (result) {
           if (result.isEmpty || result.contains(ConnectivityResult.none)) {
             return NetworkDisconnectedState();
@@ -28,7 +30,7 @@ final networkStateProvider = Provider<NetworkState>((ref) {
           return NetworkConnectedState(result: result);
         },
         loading: () => NetworkInitialState(),
-        error: (_, __) => NetworkDisconnectedState(),
+        error: (_, _) => NetworkDisconnectedState(),
       );
 });
 
@@ -105,7 +107,7 @@ final connectedToWifiProvider = Provider<bool>((ref) {
   return connectivityResult.when(
     data: (data) => data.contains(ConnectivityResult.wifi),
     loading: () => false,
-    error: (_, __) => false,
+    error: (_, _) => false,
   );
 });
 

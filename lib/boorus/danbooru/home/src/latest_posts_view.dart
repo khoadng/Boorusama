@@ -79,19 +79,19 @@ class _LatestViewState extends ConsumerState<LatestView> {
             child: PostGrid(
               controller: controller,
               scrollController: _autoScrollController,
-              itemBuilder: (
-                context,
-                index,
-                multiSelectController,
-                scrollController,
-                hero,
-              ) =>
-                  DefaultDanbooruImageGridItem(
-                index: index,
-                multiSelectController: multiSelectController,
-                autoScrollController: scrollController,
-                controller: controller,
-              ),
+              itemBuilder:
+                  (
+                    context,
+                    index,
+                    multiSelectController,
+                    scrollController,
+                    hero,
+                  ) => DefaultDanbooruImageGridItem(
+                    index: index,
+                    multiSelectController: multiSelectController,
+                    autoScrollController: scrollController,
+                    controller: controller,
+                  ),
               sliverHeaders: [
                 if (context.isLargeScreen ||
                     searchBarPosition == SearchBarPosition.top)
@@ -139,10 +139,11 @@ class _LatestViewState extends ConsumerState<LatestView> {
           if (searchBarPosition == SearchBarPosition.bottom &&
               !context.isLargeScreen)
             Consumer(
-              builder: (_, ref, __) {
+              builder: (_, ref, _) {
                 final position = ref.watch(
-                  settingsProvider
-                      .select((value) => value.booruConfigSelectorPosition),
+                  settingsProvider.select(
+                    (value) => value.booruConfigSelectorPosition,
+                  ),
                 );
 
                 return SafeArea(

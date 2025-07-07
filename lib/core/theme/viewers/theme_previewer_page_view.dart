@@ -39,7 +39,7 @@ class _ThemePreviewPageViewState extends State<ThemePreviewPageView> {
       mainAxisSize: MainAxisSize.min,
       children: [
         Consumer(
-          builder: (_, ref, __) {
+          builder: (_, ref, _) {
             final currentColors = ref.watch(themePreviewerColorsProvider);
             final name = currentColors.nickname ?? currentColors.name;
 
@@ -64,7 +64,7 @@ class _ThemePreviewPageViewState extends State<ThemePreviewPageView> {
             vertical: 16,
           ),
           child: Consumer(
-            builder: (_, ref, __) {
+            builder: (_, ref, _) {
               final colorScheme = ref.watch(themePreviewerSchemeProvider);
 
               return SmoothPageIndicator(

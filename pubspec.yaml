@@ -5,7 +5,7 @@ publish_to: "none"
 version: 4.1.3+162
 
 environment:
-  sdk: ">=3.6.0 <4.0.0"
+  sdk: ^3.8.1
 
 workspace:
   - packages/foundation
@@ -16,6 +16,7 @@ workspace:
   - packages/flutter_sqlite3_migration
   - packages/retriable
   - packages/rich_text_controller
+  - packages/i18n
 
 dependencies:
   # local packages

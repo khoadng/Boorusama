@@ -50,16 +50,17 @@ class DefaultDanbooruImageGridItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
       valueListenable: multiSelectController.multiSelectNotifier,
-      builder: (_, multiSelect, __) => ValueListenableBuilder(
+      builder: (_, multiSelect, _) => ValueListenableBuilder(
         valueListenable: controller.itemsNotifier,
-        builder: (_, posts, __) {
+        builder: (_, posts, _) {
           final post = posts[index];
 
           final artistTags = [...post.artistTags]..remove('banned_artist');
 
           return DefaultPostListContextMenuRegion(
             isEnabled: !multiSelect && !post.isBanned,
-            contextMenu: contextMenu ??
+            contextMenu:
+                contextMenu ??
                 DanbooruPostContextMenu(
                   onMultiSelect: () {
                     multiSelectController.enableMultiSelect(
@@ -77,14 +78,16 @@ class DefaultDanbooruImageGridItem extends StatelessWidget {
                   child: Builder(
                     builder: (context) {
                       final item = Consumer(
-                        builder: (_, ref, __) {
+                        builder: (_, ref, _) {
                           final config = ref.watchConfigAuth;
 
-                          final gridThumbnailUrlBuilder = ref
-                              .watch(gridThumbnailUrlGeneratorProvider(config));
+                          final gridThumbnailUrlBuilder = ref.watch(
+                            gridThumbnailUrlGeneratorProvider(config),
+                          );
 
-                          final gridThumbnailSettings =
-                              ref.watch(gridThumbnailSettingsProvider(config));
+                          final gridThumbnailSettings = ref.watch(
+                            gridThumbnailSettingsProvider(config),
+                          );
 
                           final imgUrl = gridThumbnailUrlBuilder.generateUrl(
                             post,
@@ -93,7 +96,8 @@ class DefaultDanbooruImageGridItem extends StatelessWidget {
                           return SliverPostGridImageGridItem(
                             post: post,
                             multiSelectEnabled: multiSelect,
-                            quickActionButton: !post.isBanned &&
+                            quickActionButton:
+                                !post.isBanned &&
                                     !multiSelect &&
                                     config.hasLoginDetails()
                                 ? DefaultImagePreviewQuickActionButton(
@@ -104,7 +108,8 @@ class DefaultDanbooruImageGridItem extends StatelessWidget {
                               controller: autoScrollController,
                               index: index,
                             ),
-                            onTap: onTap ??
+                            onTap:
+                                onTap ??
                                 (post.isBanned
                                     ? null
                                     : () {
@@ -119,7 +124,8 @@ class DefaultDanbooruImageGridItem extends StatelessWidget {
                                       }),
                             image: _buildImage(post, imgUrl),
                             score: post.isBanned ? null : post.score,
-                            blockOverlay: blockOverlay ??
+                            blockOverlay:
+                                blockOverlay ??
                                 (post.isBanned
                                     ? _buildBlockOverlayItem(
                                         post,
@@ -167,9 +173,9 @@ class DefaultDanbooruImageGridItem extends StatelessWidget {
               children: [
                 switch (post.source) {
                   final WebSource source => ConfigAwareWebsiteLogo(
-                      size: 18,
-                      url: source.faviconUrl,
-                    ),
+                    size: 18,
+                    url: source.faviconUrl,
+                  ),
                   _ => const SizedBox.shrink(),
                 },
                 const SizedBox(width: 4),
@@ -198,12 +204,14 @@ class DefaultDanbooruImageGridItem extends StatelessWidget {
                           tag.replaceAll('_', ' '),
                           maxLines: 1,
                           style: TextStyle(
-                            color:
-                                Theme.of(context).colorScheme.onErrorContainer,
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.onErrorContainer,
                           ),
                         ),
-                        backgroundColor:
-                            Theme.of(context).colorScheme.errorContainer,
+                        backgroundColor: Theme.of(
+                          context,
+                        ).colorScheme.errorContainer,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
@@ -230,7 +238,7 @@ class DefaultDanbooruImageGridItem extends StatelessWidget {
 
   Widget _buildImage(DanbooruPost post, String imgUrl) {
     return Consumer(
-      builder: (_, ref, __) {
+      builder: (_, ref, _) {
         final imageListType = ref.watch(
           imageListingSettingsProvider.select(
             (value) => value.imageListType,

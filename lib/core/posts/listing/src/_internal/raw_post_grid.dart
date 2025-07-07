@@ -188,8 +188,9 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
                   ),
                   actions: [
                     IconButton(
-                      onPressed: () => _multiSelectController
-                          .selectAll(items.map((e) => e.id).toList()),
+                      onPressed: () => _multiSelectController.selectAll(
+                        items.map((e) => e.id).toList(),
+                      ),
                       icon: const Icon(Symbols.select_all),
                     ),
                     IconButton(
@@ -200,7 +201,7 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
                   title: ValueListenableBuilder(
                     valueListenable:
                         _multiSelectController.selectedItemsNotifier,
-                    builder: (_, selected, __) => selected.isEmpty
+                    builder: (_, selected, _) => selected.isEmpty
                         ? const Text('Select items')
                         : Text('${selected.length} Items selected'),
                   ),
@@ -211,8 +212,9 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
               conditionalBuilder: (child) => RefreshIndicator(
                 edgeOffset: 60,
                 displacement: 50,
-                notificationPredicate:
-                    widget.enablePullToRefresh ? (_) => true : (_) => false,
+                notificationPredicate: widget.enablePullToRefresh
+                    ? (_) => true
+                    : (_) => false,
                 onRefresh: () async {
                   widget.onRefresh?.call();
                   _multiSelectController.clearSelected();
@@ -239,7 +241,7 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
                         child: ValueListenableBuilder(
                           valueListenable:
                               _multiSelectController.multiSelectNotifier,
-                          builder: (_, multiSelect, __) => PopScope(
+                          builder: (_, multiSelect, _) => PopScope(
                             canPop: !multiSelect,
                             onPopInvokedWithResult: (didPop, _) {
                               if (didPop) return;
@@ -256,7 +258,7 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
                           (e) => ValueListenableBuilder(
                             valueListenable:
                                 _multiSelectController.multiSelectNotifier,
-                            builder: (_, multiSelect, __) => SliverOffstage(
+                            builder: (_, multiSelect, _) => SliverOffstage(
                               offstage: multiSelect,
                               sliver: e,
                             ),
@@ -381,7 +383,7 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
             const SizedBox(width: 4),
             ValueListenableBuilder(
               valueListenable: controller.pageNotifier,
-              builder: (_, page, __) => Text('Page ${page - 1}'),
+              builder: (_, page, _) => Text('Page ${page - 1}'),
             ),
           ],
         ),
@@ -396,7 +398,7 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
           children: [
             ValueListenableBuilder(
               valueListenable: controller.pageNotifier,
-              builder: (_, page, __) => Text('Page ${page + 1}'),
+              builder: (_, page, _) => Text('Page ${page + 1}'),
             ),
             const SizedBox(width: 4),
             Icon(
@@ -494,7 +496,7 @@ class _CustomScrollViewState extends State<_CustomScrollView> {
           Expanded(
             child: ValueListenableBuilder(
               valueListenable: _gridWidth,
-              builder: (_, width, __) {
+              builder: (_, width, _) {
                 return PostGridConstraints(
                   maxWidth: width,
                   child: CustomScrollView(
@@ -529,7 +531,7 @@ class _SliverBottomGridPadding extends StatelessWidget {
 
     return ValueListenableBuilder(
       valueListenable: multiSelectController.multiSelectNotifier,
-      builder: (_, multiSelect, __) {
+      builder: (_, multiSelect, _) {
         return SliverSizedBox(
           height: switch (pageMode) {
             PageMode.infinite =>

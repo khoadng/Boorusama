@@ -20,7 +20,7 @@ class DownloadSelectableItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
       valueListenable: multiSelectController.multiSelectNotifier,
-      builder: (_, multiSelect, __) => Row(
+      builder: (_, multiSelect, _) => Row(
         children: [
           AnimatedContainer(
             duration: const Duration(milliseconds: 200),
@@ -33,7 +33,7 @@ class DownloadSelectableItem extends StatelessWidget {
                   ? ValueListenableBuilder(
                       valueListenable:
                           multiSelectController.selectedItemsNotifier,
-                      builder: (_, selectedItems, __) => Checkbox(
+                      builder: (_, selectedItems, _) => Checkbox(
                         value: selectedItems.contains(index),
                         onChanged: (value) {
                           if (value == null) return;

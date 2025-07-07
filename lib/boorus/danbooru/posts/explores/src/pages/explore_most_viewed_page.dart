@@ -42,8 +42,8 @@ class _ExploreMostViewedPageState extends ConsumerState<ExploreMostViewedPage> {
         fetcher: (page) => page > 1
             ? TaskEither.fromEither(Either.of(<DanbooruPost>[].toResult()))
             : ref
-                .read(danbooruExploreRepoProvider(config))
-                .getMostViewedPosts(selectedDateNotifier.value),
+                  .read(danbooruExploreRepoProvider(config))
+                  .getMostViewedPosts(selectedDateNotifier.value),
         builder: (context, controller) => ColoredBox(
           color: Theme.of(context).colorScheme.surface,
           child: SafeArea(
@@ -53,20 +53,20 @@ class _ExploreMostViewedPageState extends ConsumerState<ExploreMostViewedPage> {
                   child: PostGrid(
                     controller: controller,
                     safeArea: false,
-                    itemBuilder: (
-                      context,
-                      index,
-                      multiSelectController,
-                      scrollController,
-                      useHero,
-                    ) =>
-                        DefaultDanbooruImageGridItem(
-                      index: index,
-                      multiSelectController: multiSelectController,
-                      autoScrollController: scrollController,
-                      controller: controller,
-                      useHero: useHero,
-                    ),
+                    itemBuilder:
+                        (
+                          context,
+                          index,
+                          multiSelectController,
+                          scrollController,
+                          useHero,
+                        ) => DefaultDanbooruImageGridItem(
+                          index: index,
+                          multiSelectController: multiSelectController,
+                          autoScrollController: scrollController,
+                          controller: controller,
+                          useHero: useHero,
+                        ),
                     sliverHeaders: [
                       ExploreSliverAppBar(
                         title: 'explore.most_viewed'.tr(),
@@ -76,12 +76,12 @@ class _ExploreMostViewedPageState extends ConsumerState<ExploreMostViewedPage> {
                   ),
                 ),
                 Container(
-                  color: Theme.of(context)
-                      .bottomNavigationBarTheme
-                      .backgroundColor,
+                  color: Theme.of(
+                    context,
+                  ).bottomNavigationBarTheme.backgroundColor,
                   child: ValueListenableBuilder(
                     valueListenable: selectedDateNotifier,
-                    builder: (_, date, __) => DateTimeSelector(
+                    builder: (_, date, _) => DateTimeSelector(
                       onDateChanged: (date) {
                         selectedDateNotifier.value = date;
                         controller.refresh();

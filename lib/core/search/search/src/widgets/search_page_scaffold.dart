@@ -57,24 +57,26 @@ class SearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
   final List<Widget> Function(
     BuildContext context,
     PostGridController<T> postController,
-  )? extraHeaders;
+  )?
+  extraHeaders;
 
   final PostsOrErrorCore<T> Function(
     int page,
     SelectedTagController selectedTagController,
-  ) fetcher;
+  )
+  fetcher;
 
   final List<TextMatcher>? textMatchers;
 
   final IndexedSelectableSearchWidgetBuilder<T>? itemBuilder;
 
   final Widget? Function(BuildContext context, SearchPageController controller)?
-      metatags;
+  metatags;
   final Widget? Function(BuildContext context, SearchPageController controller)?
-      trending;
+  trending;
 
   final Widget Function(SearchPageController controller)?
-      innerSearchButtonBuilder;
+  innerSearchButtonBuilder;
 
   @override
   ConsumerState<SearchPageScaffold<T>> createState() =>
@@ -132,7 +134,7 @@ class _SearchPageScaffoldState<T extends Post>
       noticeBuilder: widget.noticeBuilder,
       extraHeaders: widget.extraHeaders,
       landingView: Consumer(
-        builder: (context, ref, __) {
+        builder: (context, ref, _) {
           final searchBarPosition = ref.watch(searchBarPositionProvider);
 
           return SearchLandingView(
@@ -163,7 +165,8 @@ class _SearchPageScaffoldState<T extends Post>
             ? ResultHeaderFromController(
                 controller: _postController!,
                 onRefresh: null,
-                hasCount: ref.watchConfigAuth.booruType.postCountMethod ==
+                hasCount:
+                    ref.watchConfigAuth.booruType.postCountMethod ==
                     PostCountMethod.search,
               )
             : const SizedBox.shrink(),
@@ -210,7 +213,8 @@ class DefaultSearchRegion extends ConsumerWidget {
         controller: controller.tagsController,
         config: ref.watchConfig,
       ),
-      innerSearchButton: innerSearchButton ??
+      innerSearchButton:
+          innerSearchButton ??
           DefaultInnerSearchButton(
             controller: controller,
           ),
@@ -256,8 +260,8 @@ class DefaultInnerSearchButton extends StatelessWidget {
           return searchOnce
               ? searchButton
               : allowSearch
-                  ? searchButton
-                  : const SizedBox.shrink();
+              ? searchButton
+              : const SizedBox.shrink();
         }
 
         return searchOnce
@@ -290,12 +294,12 @@ class DefaultTrailingSearchButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
       valueListenable: controller.didSearchOnce,
-      builder: (_, searchOnce, __) {
+      builder: (_, searchOnce, _) {
         return !searchOnce
             ? const SizedBox.shrink()
             : ValueListenableBuilder(
                 valueListenable: controller.state,
-                builder: (_, state, __) => state != SearchState.suggestions
+                builder: (_, state, _) => state != SearchState.suggestions
                     ? AnimatedRotation(
                         duration: const Duration(milliseconds: 150),
                         turns: state == SearchState.options ? 0.13 : 0,
@@ -344,7 +348,9 @@ class DefaultSearchSuggestions extends ConsumerWidget {
                 color: colorScheme.surface,
                 child: Column(
                   children: [
-                    ref.watch(analyticsProvider).maybeWhen(
+                    ref
+                        .watch(analyticsProvider)
+                        .maybeWhen(
                           data: (analytics) => SearchViewAnalyticsAnchor(
                             routeName: '/search_suggestions',
                             previousRoute: !searchOnce
@@ -358,8 +364,9 @@ class DefaultSearchSuggestions extends ConsumerWidget {
                       child: ValueListenableBuilder(
                         valueListenable: controller.textController,
                         builder: (context, query, child) {
-                          final suggestionTags = ref
-                              .watch(suggestionProvider((config, query.text)));
+                          final suggestionTags = ref.watch(
+                            suggestionProvider((config, query.text)),
+                          );
 
                           return TagSuggestionItems(
                             padding: const EdgeInsets.only(

@@ -120,8 +120,8 @@ class _SettingsPageState extends State<SettingsPage> {
     return Theme(
       data: Theme.of(context).copyWith(
         iconTheme: Theme.of(context).iconTheme.copyWith(
-              size: 18,
-            ),
+          size: 18,
+        ),
       ),
       child: Scaffold(
         appBar: AppBar(
@@ -145,7 +145,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                       child: ValueListenableBuilder(
                         valueListenable: _selected,
-                        builder: (_, selected, __) => SettingsLargePage(
+                        builder: (_, selected, _) => SettingsLargePage(
                           initial: selected ?? widget.initial,
                           onTabChanged: (tab) => _selected.value = tab,
                         ),
@@ -159,7 +159,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                       child: ValueListenableBuilder(
                         valueListenable: _selected,
-                        builder: (_, selected, __) => SettingsSmallPage(
+                        builder: (_, selected, _) => SettingsSmallPage(
                           initial: selected ?? widget.initial,
                         ),
                       ),
@@ -369,7 +369,9 @@ class _SettingsLargePageState extends ConsumerState<SettingsLargePage> {
                   showLeading: options.showIcon,
                   onTap: () => setState(() {
                     _selectedEntry = entries.indexOf(entry);
-                    ref.read(analyticsProvider).whenData(
+                    ref
+                        .read(analyticsProvider)
+                        .whenData(
                           (a) => a?.logScreenView(entry.name),
                         );
 
@@ -434,7 +436,9 @@ class SettingsPageOtherSection extends ConsumerWidget {
           label: 'settings.other_settings'.tr(),
         ),
         if (ref.watch(hasPremiumProvider))
-          ref.watch(premiumManagementURLProvider).maybeWhen(
+          ref
+              .watch(premiumManagementURLProvider)
+              .maybeWhen(
                 data: (url) => SettingTile(
                   title: 'Manage Subscription',
                   leading: const FaIcon(
@@ -610,8 +614,8 @@ class SettingTile extends StatelessWidget {
               vertical: dense
                   ? 4
                   : subtitle != null
-                      ? 6
-                      : 10,
+                  ? 6
+                  : 10,
             ),
             padding: EdgeInsets.symmetric(
               horizontal: 8,
@@ -726,10 +730,9 @@ class _SettingsSection extends StatelessWidget {
       ),
       child: Text(
         label.toUpperCase(),
-        style: Theme.of(context)
-            .textTheme
-            .titleSmall
-            ?.copyWith(color: Theme.of(context).colorScheme.hintColor),
+        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+          color: Theme.of(context).colorScheme.hintColor,
+        ),
       ),
     );
   }

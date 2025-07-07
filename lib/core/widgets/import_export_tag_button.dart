@@ -31,7 +31,7 @@ class ImportExportTagButton extends ConsumerWidget {
         if (value == 'import') {
           showGeneralDialog(
             context: context,
-            pageBuilder: (context, _, __) => ImportTagsDialog(
+            pageBuilder: (context, _, _) => ImportTagsDialog(
               padding: kPreferredLayout.isMobile ? 0 : 8,
               hint: _kHint,
               onImport: (tagString, _) {

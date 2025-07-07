@@ -89,7 +89,7 @@ class _MobileHomePageScaffoldState
           if (searchBarPosition == SearchBarPosition.bottom &&
               !context.isLargeScreen)
             Consumer(
-              builder: (_, ref, __) {
+              builder: (_, ref, _) {
                 final position = ref.watch(
                   settingsProvider.select(
                     (value) => value.booruConfigSelectorPosition,

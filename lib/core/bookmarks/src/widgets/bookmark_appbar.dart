@@ -31,7 +31,7 @@ class BookmarkAppBar extends ConsumerWidget {
       if (hasBookmarks)
         'download_all': ValueListenableBuilder(
           valueListenable: controller.itemsNotifier,
-          builder: (_, posts, __) => Text(
+          builder: (_, posts, _) => Text(
             'Download ${posts.length} bookmarks',
           ),
         ),

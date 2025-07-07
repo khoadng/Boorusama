@@ -29,13 +29,14 @@ import 'post_grid_controller.dart';
 import 'post_list_configuration_header.dart';
 import 'post_scope.dart';
 
-typedef IndexedSelectableWidgetBuilder<T extends Post> = Widget Function(
-  BuildContext context,
-  int index,
-  MultiSelectController multiSelectController,
-  AutoScrollController autoScrollController,
-  bool useHero,
-);
+typedef IndexedSelectableWidgetBuilder<T extends Post> =
+    Widget Function(
+      BuildContext context,
+      int index,
+      MultiSelectController multiSelectController,
+      AutoScrollController autoScrollController,
+      bool useHero,
+    );
 
 class PostGrid<T extends Post> extends StatefulWidget {
   const PostGrid({
@@ -104,11 +105,13 @@ class _PostGridState<T extends Post> extends State<PostGrid<T>> {
         ],
         scrollController: _autoScrollController,
         footer: Consumer(
-          builder: (_, ref, __) {
-            final booruBuilder =
-                ref.watch(booruBuilderProvider(ref.watchConfigAuth));
+          builder: (_, ref, _) {
+            final booruBuilder = ref.watch(
+              booruBuilderProvider(ref.watchConfigAuth),
+            );
 
-            final multiSelectActions = widget.multiSelectActions ??
+            final multiSelectActions =
+                widget.multiSelectActions ??
                 booruBuilder?.multiSelectionActionsBuilder?.call(
                   context,
                   _multiSelectController,
@@ -123,15 +126,17 @@ class _PostGridState<T extends Post> extends State<PostGrid<T>> {
         controller: widget.controller,
         safeArea: widget.safeArea,
         enablePullToRefresh: widget.enablePullToRefresh ?? true,
-        gridHeader: widget.header ??
+        gridHeader:
+            widget.header ??
             _GridHeader<T>(
               multiSelectController: _multiSelectController,
             ),
         topPageIndicator: Consumer(
-          builder: (_, ref, __) {
+          builder: (_, ref, _) {
             final visibleAtTop = ref.watch(
-              imageListingSettingsProvider
-                  .select((v) => v.pageIndicatorPosition.isVisibleAtTop),
+              imageListingSettingsProvider.select(
+                (v) => v.pageIndicatorPosition.isVisibleAtTop,
+              ),
             );
 
             return visibleAtTop
@@ -143,10 +148,11 @@ class _PostGridState<T extends Post> extends State<PostGrid<T>> {
           },
         ),
         bottomPageIndicator: Consumer(
-          builder: (_, ref, __) {
+          builder: (_, ref, _) {
             final visibleAtBottom = ref.watch(
-              imageListingSettingsProvider
-                  .select((v) => v.pageIndicatorPosition.isVisibleAtBottom),
+              imageListingSettingsProvider.select(
+                (v) => v.pageIndicatorPosition.isVisibleAtBottom,
+              ),
             );
 
             return visibleAtBottom
@@ -159,7 +165,8 @@ class _PostGridState<T extends Post> extends State<PostGrid<T>> {
                 : const SizedBox.shrink();
           },
         ),
-        scrollToTopButton: widget.scrollToTopButton ??
+        scrollToTopButton:
+            widget.scrollToTopButton ??
             PostGridScrollToTopButton(
               controller: widget.controller,
               multiSelectController: _multiSelectController,
@@ -173,12 +180,13 @@ class _PostGridState<T extends Post> extends State<PostGrid<T>> {
           widget.controller,
           _autoScrollController,
         ),
-        body: widget.body ??
+        body:
+            widget.body ??
             _SliverGrid(
               postController: widget.controller,
               itemBuilder: (context, index) => ValueListenableBuilder(
                 valueListenable: _disableHero,
-                builder: (_, disableHero, __) =>
+                builder: (_, disableHero, _) =>
                     widget.itemBuilder?.call(
                       context,
                       index,
@@ -221,7 +229,7 @@ class PostGridScrollToTopButton extends StatelessWidget {
     return _ScrollToTopPositioned(
       child: ValueListenableBuilder(
         valueListenable: multiSelectController.multiSelectNotifier,
-        builder: (_, multiSelect, __) => Padding(
+        builder: (_, multiSelect, _) => Padding(
           padding: multiSelect
               ? EdgeInsets.only(bottom: 60 + effectiveBottomPadding)
               : EdgeInsets.only(bottom: effectiveBottomPadding),
@@ -296,23 +304,23 @@ class _PageIndicator<T extends Post> extends ConsumerWidget {
 
     return ValueListenableBuilder(
       valueListenable: controller.count,
-      builder: (_, value, __) => ValueListenableBuilder(
+      builder: (_, value, _) => ValueListenableBuilder(
         valueListenable: controller.pageNotifier,
-        builder: (_, page, __) => PageSelector(
+        builder: (_, page, _) => PageSelector(
           totalResults: value,
           itemPerPage: postsPerPage,
           currentPage: page,
           onPrevious: controller.hasPreviousPage()
               ? () => _goToPreviousPage(
-                    controller,
-                    scrollController,
-                  )
+                  controller,
+                  scrollController,
+                )
               : null,
           onNext: controller.hasNextPage()
               ? () => _goToNextPage(
-                    controller,
-                    scrollController,
-                  )
+                  controller,
+                  scrollController,
+                )
               : null,
           onPageSelect: (page) async {
             await controller.jumpToPage(page);
@@ -352,13 +360,13 @@ class _GridHeader<T extends Post> extends ConsumerWidget {
 
     return ValueListenableBuilder(
       valueListenable: controller.hasBlacklist,
-      builder: (__, hasBlacklist, _) {
+      builder: (_, hasBlacklist, _) {
         return ValueListenableBuilder(
           valueListenable: controller.tagCounts,
-          builder: (__, tagCounts, _) {
+          builder: (_, tagCounts, _) {
             return ValueListenableBuilder(
               valueListenable: controller.activeFilters,
-              builder: (__, activeFilters, _) {
+              builder: (_, activeFilters, _) {
                 final expand = ref.watch(_expandedProvider);
                 final expandNotifier = ref.watch(_expandedProvider.notifier);
 
@@ -451,10 +459,10 @@ class _BlacklistedTagsInterceptedNotice extends ConsumerWidget {
       child: RichText(
         text: TextSpan(
           style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                color: colorScheme.hintColor,
-                fontSize: 12,
-                fontWeight: FontWeight.w400,
-              ),
+            color: colorScheme.hintColor,
+            fontSize: 12,
+            fontWeight: FontWeight.w400,
+          ),
           children: [
             if (blacklistConfigsMode == BlacklistCombinationMode.replace)
               const TextSpan(
@@ -507,14 +515,16 @@ class _SliverGrid<T extends Post> extends ConsumerWidget {
     final imageListType = ref.watch(
       imageListingSettingsProvider.select((value) => value.imageListType),
     );
-    final gridSize = ref
-        .watch(imageListingSettingsProvider.select((value) => value.gridSize));
+    final gridSize = ref.watch(
+      imageListingSettingsProvider.select((value) => value.gridSize),
+    );
     final imageGridSpacing = ref.watch(
       imageListingSettingsProvider.select((value) => value.imageGridSpacing),
     );
     final imageGridAspectRatio = ref.watch(
-      imageListingSettingsProvider
-          .select((value) => value.imageGridAspectRatio),
+      imageListingSettingsProvider.select(
+        (value) => value.imageGridAspectRatio,
+      ),
     );
     final postsPerPage = ref.watch(
       imageListingSettingsProvider.select((value) => value.postsPerPage),

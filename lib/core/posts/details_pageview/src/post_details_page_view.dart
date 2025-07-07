@@ -47,7 +47,7 @@ class PostDetailsPageView extends StatefulWidget {
   });
 
   final Widget Function(BuildContext, ScrollController? scrollController)
-      sheetBuilder;
+  sheetBuilder;
   final int itemCount;
   final IndexedWidgetBuilder itemBuilder;
   final double maxSize;
@@ -131,22 +131,31 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     );
 
     // Animate the displacement box width
-    _displacementAnim = Tween<double>(
-      begin: 0.0,
-      end: kSideSheetWidth,
-    ).animate(
-      CurvedAnimation(parent: _sheetAnimController, curve: Curves.easeInOut),
-    );
+    _displacementAnim =
+        Tween<double>(
+          begin: 0.0,
+          end: kSideSheetWidth,
+        ).animate(
+          CurvedAnimation(
+            parent: _sheetAnimController,
+            curve: Curves.easeInOut,
+          ),
+        );
 
     // Animate the side sheet’s position from offscreen to onscreen
-    _sideSheetSlideAnim = Tween<Offset>(
-      begin: const Offset(1.0, 0.0),
-      end: Offset.zero,
-    ).animate(
-      CurvedAnimation(parent: _sheetAnimController, curve: Curves.easeInOut),
-    );
+    _sideSheetSlideAnim =
+        Tween<Offset>(
+          begin: const Offset(1.0, 0.0),
+          end: Offset.zero,
+        ).animate(
+          CurvedAnimation(
+            parent: _sheetAnimController,
+            curve: Curves.easeInOut,
+          ),
+        );
 
-    _controller = widget.controller ??
+    _controller =
+        widget.controller ??
         PostDetailsPageViewController(
           initialPage: 0,
           checkIfLargeScreen: widget.checkIfLargeScreen,
@@ -403,7 +412,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
                   _buildSideSheet(),
                 ValueListenableBuilder(
                   valueListenable: _controller.sheetState,
-                  builder: (_, state, __) => PopScope(
+                  builder: (_, state, _) => PopScope(
                     canPop: switch (isLargeScreen) {
                       true => true,
                       false => !state.isExpanded,
@@ -460,9 +469,9 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
               Expanded(
                 child: ValueListenableBuilder(
                   valueListenable: _interacting,
-                  builder: (_, interacting, __) => ValueListenableBuilder(
+                  builder: (_, interacting, _) => ValueListenableBuilder(
                     valueListenable: _controller.swipe,
-                    builder: (_, swipe, __) => _buildPageView(
+                    builder: (_, swipe, _) => _buildPageView(
                       swipe,
                       interacting,
                     ),
@@ -478,18 +487,19 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
             alignment: Alignment.bottomCenter,
             child: ValueListenableBuilder(
               valueListenable: _controller.forceHideBottomSheet,
-              builder: (__, hide, _) => hide
+              builder: (_, hide, _) => hide
                   ? const SizedBox.shrink()
                   : _bottomInfoAnimController != null
-                      ? SlideTransition(
-                          position: Tween(
-                            begin: const Offset(0, 1),
-                            end: Offset.zero,
-                          ).animate(_bottomInfoAnimController),
-                          child: ColoredBox(
-                            color: Theme.of(context).colorScheme.surface,
-                            child: FadeTransition(
-                              opacity: Tween(
+                  ? SlideTransition(
+                      position: Tween(
+                        begin: const Offset(0, 1),
+                        end: Offset.zero,
+                      ).animate(_bottomInfoAnimController),
+                      child: ColoredBox(
+                        color: Theme.of(context).colorScheme.surface,
+                        child: FadeTransition(
+                          opacity:
+                              Tween(
                                 begin: 0.0,
                                 end: 1.0,
                               ).animate(
@@ -498,11 +508,11 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
                                   curve: Curves.easeInCubic,
                                 ),
                               ),
-                              child: bottomSheet,
-                            ),
-                          ),
-                        )
-                      : bottomSheet,
+                          child: bottomSheet,
+                        ),
+                      ),
+                    )
+                  : bottomSheet,
             ),
           ),
         Align(
@@ -521,7 +531,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
             builder: (context) {
               final overlay = ValueListenableBuilder(
                 valueListenable: _controller.sheetState,
-                builder: (_, state, __) => ConditionalParentWidget(
+                builder: (_, state, _) => ConditionalParentWidget(
                   condition: !state.isExpanded,
                   conditionalBuilder: (child) => ValueListenableBuilder(
                     valueListenable: _controller.freestyleMoving,
@@ -536,17 +546,17 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
 
               return ValueListenableBuilder(
                 valueListenable: _controller.forceHideOverlay,
-                builder: (_, hide, __) => hide
+                builder: (_, hide, _) => hide
                     ? const SizedBox.shrink()
                     : _overlayCurvedAnimation != null
-                        ? SlideTransition(
-                            position: Tween(
-                              begin: const Offset(0, -1),
-                              end: Offset.zero,
-                            ).animate(_overlayCurvedAnimation),
-                            child: overlay,
-                          )
-                        : overlay,
+                    ? SlideTransition(
+                        position: Tween(
+                          begin: const Offset(0, -1),
+                          end: Offset.zero,
+                        ).animate(_overlayCurvedAnimation),
+                        child: overlay,
+                      )
+                    : overlay,
               );
             },
           ),
@@ -620,9 +630,9 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     return !isLargeScreen
         ? ValueListenableBuilder(
             valueListenable: _controller.sheetMaxSize,
-            builder: (_, maxSize, __) => ValueListenableBuilder(
+            builder: (_, maxSize, _) => ValueListenableBuilder(
               valueListenable: _controller.sheetState,
-              builder: (_, state, __) => ValueListenableBuilder(
+              builder: (_, state, _) => ValueListenableBuilder(
                 valueListenable: _controller.displacement,
                 builder: (context, dis, child) {
                   final maxSheetSize =
@@ -637,7 +647,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
                         )
                       : ValueListenableBuilder(
                           valueListenable: _pointerCount,
-                          builder: (_, count, __) => SizedBox(
+                          builder: (_, count, _) => SizedBox(
                             height: dis,
                           ),
                         );
@@ -656,7 +666,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
 
     return ValueListenableBuilder(
       valueListenable: _controller.sheetState,
-      builder: (_, state, __) {
+      builder: (_, state, _) {
         final blockSwipe = !swipe || state.isExpanded || interacting;
 
         return PageView.builder(
@@ -703,16 +713,17 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
         Positioned.fill(
           child: ValueListenableBuilder(
             valueListenable: !isSmall ? _dummyAlwaysFalse : _controller.canPull,
-            builder: (_, canPull, __) => PointerCountOnScreen(
+            builder: (_, canPull, _) => PointerCountOnScreen(
               enable: isSmall,
               onCountChanged: (count) {
                 _pointerCount.value = count;
                 _interacting.value = count > 1;
               },
               child: ValueListenableBuilder(
-                valueListenable:
-                    !isSmall ? _dummyAlwaysFalse : _controller.pulling,
-                builder: (__, pulling, ___) => GestureDetector(
+                valueListenable: !isSmall
+                    ? _dummyAlwaysFalse
+                    : _controller.pulling,
+                builder: (_, pulling, _) => GestureDetector(
                   onVerticalDragStart: canPull && !_interacting.value
                       ? _onVerticalDragStart
                       : null,
@@ -767,14 +778,18 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
       final movePercent =
           details.globalPosition.dy - _freestyleMoveStartOffset.dy;
       final normalizedPercent = movePercent / widget.swipeDownThreshold;
-      _freestyleMoveScale = 1.0 -
-          (normalizedPercent * _kSwipeDownScaleFactor)
-              .clamp(0.0, _kSwipeDownScaleFactor);
+      _freestyleMoveScale =
+          1.0 -
+          (normalizedPercent * _kSwipeDownScaleFactor).clamp(
+            0.0,
+            _kSwipeDownScaleFactor,
+          );
 
       // Adjust translation based on scale
       final scaledOffset = details.globalPosition - _freestyleMoveStartOffset;
       // Apply scale compensation to keep the image centered
-      final scaleCompensation = (1 - _freestyleMoveScale) *
+      final scaleCompensation =
+          (1 - _freestyleMoveScale) *
           (_freestyleMoveStartOffset.dy - details.globalPosition.dy) /
           2;
 
@@ -818,15 +833,16 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
       vsync: this,
     );
 
-    final animation = Tween(
-      begin: startOffset,
-      end: Offset.zero,
-    ).animate(
-      CurvedAnimation(
-        parent: animController,
-        curve: Curves.easeOut,
-      ),
-    );
+    final animation =
+        Tween(
+          begin: startOffset,
+          end: Offset.zero,
+        ).animate(
+          CurvedAnimation(
+            parent: animController,
+            curve: Curves.easeOut,
+          ),
+        );
 
     animation.addListener(() {
       if (mounted) {
@@ -851,10 +867,10 @@ class DefaultPageViewScrollPhysics extends ScrollPhysics {
 
   @override
   SpringDescription get spring => const SpringDescription(
-        mass: 1,
-        stiffness: 400,
-        damping: 40,
-      );
+    mass: 1,
+    stiffness: 400,
+    damping: 40,
+  );
 }
 
 const _kSwipeDownScaleFactor = 0.2;

@@ -72,9 +72,9 @@ class _BookmarkScrollViewState extends ConsumerState<BookmarkScrollView> {
             tags: selectedTags,
             bookmarks: await (await ref.read(bookmarkRepoProvider.future))
                 .getAllBookmarksOrEmpty(
-              imageUrlResolver: (booruId) =>
-                  ref.read(bookmarkUrlResolverProvider(booruId)),
-            ),
+                  imageUrlResolver: (booruId) =>
+                      ref.read(bookmarkUrlResolverProvider(booruId)),
+                ),
             sortType: sortType,
             selectedBooruUrl: selectedBooruUrl,
           );
@@ -91,17 +91,17 @@ class _BookmarkScrollViewState extends ConsumerState<BookmarkScrollView> {
       builder: (context, controller) => Consumer(
         builder: (context, ref, child) {
           ref
-            ..listen(selectedTagsProvider, (_, __) {
+            ..listen(selectedTagsProvider, (_, _) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 controller.refresh();
               });
             })
-            ..listen(selectedBooruUrlProvider, (_, __) {
+            ..listen(selectedBooruUrlProvider, (_, _) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 controller.refresh();
               });
             })
-            ..listen(selectedBookmarkSortTypeProvider, (_, __) {
+            ..listen(selectedBookmarkSortTypeProvider, (_, _) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 controller.refresh();
               });
@@ -120,20 +120,21 @@ class _BookmarkScrollViewState extends ConsumerState<BookmarkScrollView> {
                 MultiSelectButton(
                   onPressed: selectedPosts.isNotEmpty
                       ? () {
-                          final bookmarks =
-                              selectedPosts.map((e) => e.bookmark).toList();
+                          final bookmarks = selectedPosts
+                              .map((e) => e.bookmark)
+                              .toList();
 
                           ref
                               .read(bookmarkProvider.notifier)
                               .removeBookmarks(bookmarks)
                               .then((_) {
-                            if (context.mounted) {
-                              controller.remove(
-                                selectedPosts.map((e) => e.id).toList(),
-                                (e) => e.id,
-                              );
-                            }
-                          });
+                                if (context.mounted) {
+                                  controller.remove(
+                                    selectedPosts.map((e) => e.id).toList(),
+                                    (e) => e.id,
+                                  );
+                                }
+                              });
 
                           _multiSelectController.disableMultiSelect();
                         }
@@ -152,7 +153,7 @@ class _BookmarkScrollViewState extends ConsumerState<BookmarkScrollView> {
                     padding: const EdgeInsets.symmetric(horizontal: 12),
                     child: ValueListenableBuilder(
                       valueListenable: controller.itemsNotifier,
-                      builder: (_, posts, __) => Text(
+                      builder: (_, posts, _) => Text(
                         '${posts.length} bookmarks',
                         style: Theme.of(context).textTheme.titleLarge,
                       ),
@@ -166,17 +167,17 @@ class _BookmarkScrollViewState extends ConsumerState<BookmarkScrollView> {
                 ],
               ),
             ),
-            itemBuilder: (
-              context,
-              index,
-              multiSelectController,
-              autoScrollController,
-              useHero,
-            ) =>
-                _buildItem(
-              index,
-              controller,
-            ),
+            itemBuilder:
+                (
+                  context,
+                  index,
+                  multiSelectController,
+                  autoScrollController,
+                  useHero,
+                ) => _buildItem(
+                  index,
+                  controller,
+                ),
             sliverHeaders: [
               SliverAppBar(
                 floating: true,
@@ -228,7 +229,7 @@ class _BookmarkScrollViewState extends ConsumerState<BookmarkScrollView> {
 
     return ValueListenableBuilder(
       valueListenable: controller.itemsNotifier,
-      builder: (_, posts, __) {
+      builder: (_, posts, _) {
         final post = posts[index];
 
         return Stack(
@@ -238,8 +239,9 @@ class _BookmarkScrollViewState extends ConsumerState<BookmarkScrollView> {
               multiSelectController: _multiSelectController,
               autoScrollController: widget.scrollController,
               controller: controller,
-              imageUrl:
-                  post.isVideo ? post.thumbnailImageUrl : post.sampleImageUrl,
+              imageUrl: post.isVideo
+                  ? post.thumbnailImageUrl
+                  : post.sampleImageUrl,
               imageCacheManager: ref.watch(bookmarkImageCacheManagerProvider),
               useHero: false,
               leadingIcons: [

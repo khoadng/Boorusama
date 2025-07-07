@@ -57,7 +57,7 @@ class CustomHomeContainer extends StatelessWidget {
     return Column(
       children: [
         Consumer(
-          builder: (_, ref, __) {
+          builder: (_, ref, _) {
             final state = ref.watch(networkStateProvider);
 
             return SafeArea(
@@ -114,7 +114,7 @@ class _AppBar extends StatelessWidget {
               Material(
                 color: Colors.transparent,
                 child: Consumer(
-                  builder: (_, ref, __) {
+                  builder: (_, ref, _) {
                     final appInfo = ref.watch(appInfoProvider);
                     final appName = appInfo.appName;
 
@@ -132,7 +132,7 @@ class _AppBar extends StatelessWidget {
               ),
               const SizedBox(width: 4),
               Consumer(
-                builder: (_, ref, __) {
+                builder: (_, ref, _) {
                   final config = ref.watchConfig;
 
                   return InkWell(

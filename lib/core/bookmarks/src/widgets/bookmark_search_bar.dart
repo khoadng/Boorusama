@@ -78,7 +78,7 @@ class _BookmarkSearchBarState extends ConsumerState<BookmarkSearchBar> {
           height: kPreferredLayout.isDesktop ? 34 : null,
           child: ValueListenableBuilder(
             valueListenable: _overlay,
-            builder: (_, overlay, __) {
+            builder: (_, overlay, _) {
               return PortalTarget(
                 anchor: const Aligned(
                   follower: Alignment.topCenter,
@@ -89,7 +89,8 @@ class _BookmarkSearchBarState extends ConsumerState<BookmarkSearchBar> {
                   suggestions,
                   Colors.black.withValues(alpha: 0.7),
                 ),
-                visible: overlay &&
+                visible:
+                    overlay &&
                     suggestions.isNotEmpty &&
                     widget.controller.text != selectedTag,
                 child: BooruSearchBar(
@@ -101,7 +102,7 @@ class _BookmarkSearchBarState extends ConsumerState<BookmarkSearchBar> {
                   ),
                   trailing: ValueListenableBuilder(
                     valueListenable: widget.controller,
-                    builder: (_, value, ___) => value.text.isNotEmpty
+                    builder: (_, value, _) => value.text.isNotEmpty
                         ? Padding(
                             padding: const EdgeInsets.only(right: 8),
                             child: InkWell(
@@ -212,7 +213,7 @@ class _BookmarkSearchBarState extends ConsumerState<BookmarkSearchBar> {
                 Expanded(
                   child: ValueListenableBuilder(
                     valueListenable: widget.controller,
-                    builder: (_, value, ___) => AppHtml(
+                    builder: (_, value, _) => AppHtml(
                       style: {
                         'p': Style(
                           fontSize: FontSize.medium,
@@ -233,7 +234,9 @@ class _BookmarkSearchBarState extends ConsumerState<BookmarkSearchBar> {
                     ),
                   ),
                 ),
-                ref.watch(tagCountProvider(tag)).maybeWhen(
+                ref
+                    .watch(tagCountProvider(tag))
+                    .maybeWhen(
                       data: (count) => Text(
                         count.toString(),
                         style: TextStyle(

@@ -97,9 +97,10 @@ class ThemePreviewerSheet extends ConsumerWidget {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Consumer(
-                                  builder: (_, ref, __) {
-                                    final state =
-                                        ref.watch(themePreviewerProvider);
+                                  builder: (_, ref, _) {
+                                    final state = ref.watch(
+                                      themePreviewerProvider,
+                                    );
 
                                     return switch (state.category) {
                                       ThemeCategory.basic =>

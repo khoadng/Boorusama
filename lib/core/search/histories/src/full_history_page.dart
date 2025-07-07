@@ -54,9 +54,10 @@ class _FullHistoryPageState extends ConsumerState<FullHistoryPage> {
                     child: const Text('generic.action.cancel').tr(),
                   ),
                   Consumer(
-                    builder: (_, ref, __) {
-                      final notifier =
-                          ref.watch(searchHistoryProvider.notifier);
+                    builder: (_, ref, _) {
+                      final notifier = ref.watch(
+                        searchHistoryProvider.notifier,
+                      );
 
                       return FilledButton(
                         onPressed: () {

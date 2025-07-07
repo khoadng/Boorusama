@@ -47,14 +47,14 @@ class _E621PopularPageState extends ConsumerState<E621PopularPage> {
             builder: (context, controller) => Column(
               children: [
                 Container(
-                  color: Theme.of(context)
-                      .bottomNavigationBarTheme
-                      .backgroundColor,
+                  color: Theme.of(
+                    context,
+                  ).bottomNavigationBarTheme.backgroundColor,
                   child: ValueListenableBuilder<DateTime>(
                     valueListenable: selectedDateNotifier,
-                    builder: (context, d, __) => ValueListenableBuilder(
+                    builder: (context, d, _) => ValueListenableBuilder(
                       valueListenable: selectedTimescale,
-                      builder: (_, scale, __) => DateTimeSelector(
+                      builder: (_, scale, _) => DateTimeSelector(
                         onDateChanged: (date) {
                           selectedDateNotifier.value = date;
                           controller.refresh();

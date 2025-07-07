@@ -35,7 +35,7 @@ void goToSavedSearchCreatePage(
       barrierDismissible: true,
       barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
       barrierColor: Colors.black54,
-      pageBuilder: (context, _, __) {
+      pageBuilder: (context, _, _) {
         return Dialog(
           child: Container(
             width: MediaQuery.sizeOf(context).width * 0.8,

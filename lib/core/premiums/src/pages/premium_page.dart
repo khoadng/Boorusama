@@ -51,7 +51,7 @@ class PremiumPage extends ConsumerWidget {
               }
             },
             loading: () {},
-            error: (_, __) {
+            error: (_, _) {
               _showFailedPurchase(context);
             },
           );
@@ -176,16 +176,20 @@ class _GetPremiumButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return PrimaryButton(
-      onPressed: ref.watch(packagePurchaseProvider).when(
+      onPressed: ref
+          .watch(packagePurchaseProvider)
+          .when(
             data: (_) {
               return () => _showPlans(context, ref);
             },
             loading: () => null,
-            error: (_, __) {
+            error: (_, _) {
               return () => _showPlans(context, ref);
             },
           ),
-      child: ref.watch(packagePurchaseProvider).maybeWhen(
+      child: ref
+          .watch(packagePurchaseProvider)
+          .maybeWhen(
             orElse: () => const Text('Get Plus'),
             loading: () => SizedBox(
               width: 16,
@@ -222,7 +226,9 @@ class _RestorePremiumButton extends ConsumerWidget {
         style: TextButton.styleFrom(
           foregroundColor: Theme.of(context).colorScheme.onSurface,
         ),
-        onPressed: ref.watch(packagePurchaseProvider).maybeWhen(
+        onPressed: ref
+            .watch(packagePurchaseProvider)
+            .maybeWhen(
               loading: () => null,
               orElse: () {
                 return () => restore(ref, context);
@@ -236,32 +242,36 @@ class _RestorePremiumButton extends ConsumerWidget {
   void restore(WidgetRef ref, BuildContext context) {
     final navigator = Navigator.of(context);
 
-    ref.read(subscriptionNotifierProvider.notifier).restoreSubscription().then(
-      (res) {
-        if (context.mounted) {
-          if (res) {
-            final navigatorContext = navigatorKey.currentContext;
-            navigator.pop();
+    ref
+        .read(subscriptionNotifierProvider.notifier)
+        .restoreSubscription()
+        .then(
+          (res) {
+            if (context.mounted) {
+              if (res) {
+                final navigatorContext = navigatorKey.currentContext;
+                navigator.pop();
 
-            if (navigatorContext != null) {
-              showSimpleSnackBar(
-                context: navigatorContext,
-                content: const Text('Subscription restored!'),
-                duration: const Duration(seconds: 2),
-              );
+                if (navigatorContext != null) {
+                  showSimpleSnackBar(
+                    context: navigatorContext,
+                    content: const Text('Subscription restored!'),
+                    duration: const Duration(seconds: 2),
+                  );
+                }
+              } else {
+                _showFailedRestore(context);
+              }
             }
-          } else {
-            _showFailedRestore(context);
-          }
-        }
-      },
-    ).catchError(
-      (e, st) {
-        if (context.mounted) {
-          _showFailedRestore(context);
-        }
-      },
-    );
+          },
+        )
+        .catchError(
+          (e, st) {
+            if (context.mounted) {
+              _showFailedRestore(context);
+            }
+          },
+        );
   }
 
   void _showFailedRestore(BuildContext context) {

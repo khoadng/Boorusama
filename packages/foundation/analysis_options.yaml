@@ -8,3 +8,6 @@ analyzer:
     missing_return: error
     todo: ignore
     parameter_assignments: error
+
+formatter:
+  trailing_commas: preserve

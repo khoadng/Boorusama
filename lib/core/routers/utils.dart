@@ -54,7 +54,7 @@ Future<Object?> goToFavoriteTagImportPage(
     routeSettings: const RouteSettings(
       name: RouterPageConstant.favoriteTagsImport,
     ),
-    pageBuilder: (context, _, __) => ImportTagsDialog(
+    pageBuilder: (context, _, _) => ImportTagsDialog(
       padding: kPreferredLayout.isMobile ? 0 : 8,
       onImport: (tagString, ref) =>
           ref.read(favoriteTagsProvider.notifier).import(tagString),
@@ -63,8 +63,9 @@ Future<Object?> goToFavoriteTagImportPage(
 }
 
 void goToCommentPage(BuildContext context, WidgetRef ref, int postId) {
-  final builder =
-      ref.read(booruBuilderProvider(ref.watchConfigAuth))?.commentPageBuilder;
+  final builder = ref
+      .read(booruBuilderProvider(ref.watchConfigAuth))
+      ?.commentPageBuilder;
 
   if (builder == null) return;
 

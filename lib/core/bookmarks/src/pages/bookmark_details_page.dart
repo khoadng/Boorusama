@@ -37,7 +37,7 @@ class BookmarkDetailsPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return ValueListenableBuilder(
       valueListenable: controller.itemsNotifier,
-      builder: (_, posts, __) {
+      builder: (_, posts, _) {
         return PostDetailsScope(
           initialIndex: initialIndex,
           initialThumbnailUrl: initialThumbnailUrl,

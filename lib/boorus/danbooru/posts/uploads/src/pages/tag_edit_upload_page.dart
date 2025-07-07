@@ -39,16 +39,19 @@ import 'tag_edit_scaffold.dart';
 final selectTagEditUploadModeProvider =
     StateProvider.autoDispose<TagEditExpandMode?>((ref) => null);
 
-final tagEditUploadViewExpandedProvider =
-    StateProvider.autoDispose<bool>((ref) => false);
+final tagEditUploadViewExpandedProvider = StateProvider.autoDispose<bool>(
+  (ref) => false,
+);
 
-final tagEditUploadSelectedTagProvider =
-    StateProvider.autoDispose<String?>((ref) => null);
+final tagEditUploadSelectedTagProvider = StateProvider.autoDispose<String?>(
+  (ref) => null,
+);
 
 final _lastWord = StateProvider.autoDispose<String?>((ref) => null);
 
-final tagEditUploadRelatedExpandedProvider =
-    StateProvider.autoDispose<bool>((ref) => false);
+final tagEditUploadRelatedExpandedProvider = StateProvider.autoDispose<bool>(
+  (ref) => false,
+);
 
 class TagEditUploadPage extends ConsumerStatefulWidget {
   const TagEditUploadPage({
@@ -66,8 +69,9 @@ class TagEditUploadPage extends ConsumerStatefulWidget {
 
 class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
   String _buildDetails(DanbooruPost post) {
-    final fileSizeText =
-        post.fileSize > 0 ? '• ${Filesize.parse(post.fileSize, round: 1)}' : '';
+    final fileSizeText = post.fileSize > 0
+        ? '• ${Filesize.parse(post.fileSize, round: 1)}'
+        : '';
     return '${post.width.toInt()}x${post.height.toInt()} • ${post.format.toUpperCase()} $fileSizeText';
   }
 
@@ -155,18 +159,18 @@ class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
                                 textColor: Colors.white,
                                 label: 'Pixel-Perfect Duplicate',
                                 onTap: () {},
-                                backgroundColor: Theme.of(context)
-                                    .colorScheme
-                                    .errorContainer,
+                                backgroundColor: Theme.of(
+                                  context,
+                                ).colorScheme.errorContainer,
                               )
                             else
                               CompactChip(
                                 textColor: Colors.white,
                                 label: 'Duplicate',
                                 onTap: () {},
-                                backgroundColor: Theme.of(context)
-                                    .colorScheme
-                                    .errorContainer,
+                                backgroundColor: Theme.of(
+                                  context,
+                                ).colorScheme.errorContainer,
                               ),
                           ],
                         )
@@ -180,12 +184,15 @@ class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
       maxSplit: ref.watch(tagEditUploadViewExpandedProvider),
       modeBuilder: (height) => const SizedBox.shrink(),
       contentBuilder: () {
-        return ref.watch(danbooruSourceProvider(widget.post.pageUrl)).maybeWhen(
+        return ref
+            .watch(danbooruSourceProvider(widget.post.pageUrl))
+            .maybeWhen(
               data: (source) {
                 final initialTags = source.artists?.map((e) => e.name);
                 return TagEditUploadTextControllerScope(
-                  initialText:
-                      initialTags != null ? '${initialTags.join(' ')} ' : '',
+                  initialText: initialTags != null
+                      ? '${initialTags.join(' ')} '
+                      : '',
                   builder: (controller) => DefaultTabController(
                     length: 3,
                     child: Column(
@@ -252,11 +259,11 @@ class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
                         itemCount: results.length,
                         gridDelegate:
                             const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 8,
-                          mainAxisSpacing: 8,
-                          childAspectRatio: 0.8,
-                        ),
+                              crossAxisCount: 2,
+                              crossAxisSpacing: 8,
+                              mainAxisSpacing: 8,
+                              childAspectRatio: 0.8,
+                            ),
                         itemBuilder: (context, index) {
                           final post = results[index].post != null
                               ? postDtoToPostNoMetadata(results[index].post!)
@@ -282,13 +289,11 @@ class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
                               // xx% similar
                               Text(
                                 '${similar.toInt()}% Similar',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodySmall
+                                style: Theme.of(context).textTheme.bodySmall
                                     ?.copyWith(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .hintColor,
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.hintColor,
                                     ),
                               ),
                             ],
@@ -326,7 +331,9 @@ class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
               ),
               color: Theme.of(context).colorScheme.secondaryContainer,
             ),
-            child: ref.watch(danbooruSourceProvider(widget.post.pageUrl)).when(
+            child: ref
+                .watch(danbooruSourceProvider(widget.post.pageUrl))
+                .when(
                   data: (source) => Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -410,7 +417,7 @@ class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
                         ),
                     ],
                   ),
-                  error: (_, __) => const SizedBox.shrink(),
+                  error: (_, _) => const SizedBox.shrink(),
                   loading: () => const Center(
                     child: SizedBox(
                       height: 24,
@@ -440,7 +447,9 @@ class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
           ),
         ),
         const SliverSizedBox(height: 16),
-        ref.watch(danbooruSourceProvider(widget.post.pageUrl)).maybeWhen(
+        ref
+            .watch(danbooruSourceProvider(widget.post.pageUrl))
+            .maybeWhen(
               data: (source) => SliverToBoxAdapter(
                 child: AutofillGroup(
                   child: BooruTextFormField(
@@ -462,7 +471,9 @@ class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
               orElse: () => const SliverSizedBox.shrink(),
             ),
         const SliverSizedBox(height: 16),
-        ref.watch(danbooruSourceProvider(widget.post.pageUrl)).maybeWhen(
+        ref
+            .watch(danbooruSourceProvider(widget.post.pageUrl))
+            .maybeWhen(
               data: (source) => SliverToBoxAdapter(
                 child: AutofillGroup(
                   child: BooruTextFormField(
@@ -533,8 +544,8 @@ class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
     return Theme(
       data: Theme.of(context).copyWith(
         listTileTheme: Theme.of(context).listTileTheme.copyWith(
-              visualDensity: const ShrinkVisualDensity(),
-            ),
+          visualDensity: const ShrinkVisualDensity(),
+        ),
         dividerColor: Colors.transparent,
       ),
       child: CustomScrollView(
@@ -574,7 +585,9 @@ class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
           ),
         ),
       if (source.translatedTags != null)
-        ...source.translatedTags!.where((e) => e.name != null).map(
+        ...source.translatedTags!
+            .where((e) => e.name != null)
+            .map(
               (e) => (
                 name: e.name!,
                 count: e.postCount,
@@ -675,7 +688,7 @@ class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
         final tags = value.text.split(' ');
         final selectedTag =
             ref.watch(tagEditUploadSelectedTagProvider)?.replaceAll('_', ' ') ??
-                '';
+            '';
 
         return ExpansionTile(
           controlAffinity: ListTileControlAffinity.leading,
@@ -781,9 +794,11 @@ class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
               OptionDropDownButton(
                 alignment: AlignmentDirectional.centerStart,
                 value: ref.watch(selectedTagEditRatingProvider(null)),
-                onChanged: (value) => ref
-                    .read(selectedTagEditRatingProvider(null).notifier)
-                    .state = value,
+                onChanged: (value) =>
+                    ref
+                            .read(selectedTagEditRatingProvider(null).notifier)
+                            .state =
+                        value,
                 items: [...Rating.values.where((e) => e != Rating.unknown)]
                     .map(
                       (value) => DropdownMenuItem(
@@ -804,8 +819,9 @@ class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
     TextEditingController textEditingController,
     Rating? rating,
   ) {
-    final notifier =
-        ref.watch(danbooruPostCreateProvider(ref.watchConfigAuth).notifier);
+    final notifier = ref.watch(
+      danbooruPostCreateProvider(ref.watchConfigAuth).notifier,
+    );
 
     return Row(
       children: [
@@ -834,28 +850,30 @@ class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
           valueListenable: textEditingController,
           builder: (context, value, child) {
             return TextButton(
-              onPressed: (value.text.isNotEmpty &&
+              onPressed:
+                  (value.text.isNotEmpty &&
                       rating != null &&
                       widget.post.source.url != null)
                   ? ref
-                      .watch(danbooruPostCreateProvider(ref.watchConfigAuth))
-                      .maybeWhen(
-                        loading: () => null,
-                        orElse: () => () {
-                          notifier.create(
-                            mediaAssetId: widget.post.mediaAssetId,
-                            uploadMediaAssetId: widget.post.uploadMediaAssetId,
-                            rating: rating,
-                            source: widget.post.pageUrl,
-                            tags: value.text.split(' '),
-                            artistCommentaryTitle: originalTitle,
-                            artistCommentaryDesc: originalDescription,
-                            translatedCommentaryTitle: translatedTitle,
-                            translatedCommentaryDesc: translatedDescription,
-                            parentId: parentId,
-                          );
-                        },
-                      )
+                        .watch(danbooruPostCreateProvider(ref.watchConfigAuth))
+                        .maybeWhen(
+                          loading: () => null,
+                          orElse: () => () {
+                            notifier.create(
+                              mediaAssetId: widget.post.mediaAssetId,
+                              uploadMediaAssetId:
+                                  widget.post.uploadMediaAssetId,
+                              rating: rating,
+                              source: widget.post.pageUrl,
+                              tags: value.text.split(' '),
+                              artistCommentaryTitle: originalTitle,
+                              artistCommentaryDesc: originalDescription,
+                              translatedCommentaryTitle: translatedTitle,
+                              translatedCommentaryDesc: translatedDescription,
+                              parentId: parentId,
+                            );
+                          },
+                        )
                   : null,
               child: const Text('Post'),
             );
@@ -879,8 +897,9 @@ class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
     final currentText = textEditingController.text;
 
     // append the selected tag
-    textEditingController.text =
-        currentText.isEmpty ? '$tag ' : '$currentText$tag ';
+    textEditingController.text = currentText.isEmpty
+        ? '$tag '
+        : '$currentText$tag ';
 
     ref.read(_lastWord.notifier).state = null;
   }
@@ -903,8 +922,9 @@ class TagEditUploadTextControllerScope extends ConsumerStatefulWidget {
 
 class _TagEditUploadTextControllerScopeState
     extends ConsumerState<TagEditUploadTextControllerScope> {
-  late final textEditingController =
-      TextEditingController(text: widget.initialText);
+  late final textEditingController = TextEditingController(
+    text: widget.initialText,
+  );
 
   @override
   void initState() {
@@ -940,8 +960,9 @@ class _TagEditUploadTextControllerScopeState
     var start = selection.baseOffset;
     var end = selection.extentOffset;
 
-    final trueLastWord =
-        lastWord != null && lastWord.isNotEmpty ? lastWord : previousLastWord;
+    final trueLastWord = lastWord != null && lastWord.isNotEmpty
+        ? lastWord
+        : previousLastWord;
 
     // check if the cursor is at the last character then just set the selected tag to the last word and return
     if (end == text.length || start == -1 || end == -1) {

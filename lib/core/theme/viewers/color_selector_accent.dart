@@ -53,7 +53,7 @@ class AccentColorSelector extends StatelessWidget {
 
   Widget _buildDarkThemeToggle() {
     return Consumer(
-      builder: (_, ref, __) {
+      builder: (_, ref, _) {
         final isDark = ref.watch(
           accentColorSelectorProvider.select((value) => value.isDark),
         );
@@ -78,7 +78,7 @@ class AccentColorSelector extends StatelessWidget {
 
   Widget _buildHarmonizeToggle() {
     return Consumer(
-      builder: (_, ref, __) {
+      builder: (_, ref, _) {
         final harmonize = ref.watch(
           accentColorSelectorProvider.select((value) => value.harmonize),
         );
@@ -106,7 +106,7 @@ class AccentColorSelector extends StatelessWidget {
 
   Widget _buildVariantSelector() {
     return Consumer(
-      builder: (_, ref, __) {
+      builder: (_, ref, _) {
         final notifier = ref.watch(accentColorSelectorProvider.notifier);
         final variant = ref.watch(
           accentColorSelectorProvider.select((value) => value.variant),
@@ -138,7 +138,7 @@ class AccentColorSelector extends StatelessWidget {
             ),
           ),
           Consumer(
-            builder: (_, ref, __) {
+            builder: (_, ref, _) {
               final viewAllColor = ref.watch(_viewAllColorProvider);
 
               return TextButton(
@@ -159,7 +159,7 @@ class AccentColorSelector extends StatelessWidget {
 
   Widget _buildColorSelector() {
     return Consumer(
-      builder: (_, ref, __) {
+      builder: (_, ref, _) {
         final viewAllColor = ref.watch(_viewAllColorProvider);
 
         final notifier = ref.watch(accentColorSelectorProvider.notifier);
