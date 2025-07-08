@@ -25,7 +25,9 @@ class BlacklistConfigsNotifier
 
     listenSelf(
       (prev, next) {
-        editNotifier.updateBlacklistConfigs(next);
+        if (prev != null && next != prev) {
+          editNotifier.updateBlacklistConfigs(next);
+        }
       },
     );
 

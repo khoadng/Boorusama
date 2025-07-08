@@ -14,7 +14,7 @@ import '../../core/downloads/filename/types.dart';
 import '../../core/http/providers.dart';
 import '../../core/notes/notes.dart';
 import '../../core/posts/count/count.dart';
-import '../../core/posts/favorites/providers.dart';
+import '../../core/posts/favorites/types.dart';
 import '../../core/posts/listing/list.dart';
 import '../../core/posts/listing/providers.dart';
 import '../../core/posts/post/post.dart';
@@ -69,7 +69,7 @@ class DanbooruRepository extends BooruRepositoryDefault {
 
   @override
   FavoriteRepository favorite(BooruConfigAuth config) {
-    return DanbooruFavoriteRepository(ref, config);
+    return ref.watch(danbooruFavoriteRepoProvider(config));
   }
 
   @override

@@ -72,7 +72,7 @@ class DefaultQuickFavoriteButton extends ConsumerWidget {
 
     return canFavorite
         ? QuickFavoriteButton(
-            isFaved: ref.watch(favoriteProvider(post.id)),
+            isFaved: ref.watch(favoriteProvider((config, post.id))),
             onFavToggle: (isFaved) async {
               if (isFaved) {
                 await notifier.add(post.id);

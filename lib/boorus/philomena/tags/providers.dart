@@ -18,7 +18,7 @@ final philomenaAutoCompleteRepoProvider =
           0 || 1 => Future.value([]),
           _ =>
             client
-                .getTags(query: '$query*')
+                .getTags(query: '${query.text}*')
                 .then(
                   (value) => value
                       .map(

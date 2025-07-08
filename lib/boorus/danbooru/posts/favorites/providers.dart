@@ -1,1 +1,1 @@
-export 'src/favorite_repository_impl.dart';
+export 'src/data/providers.dart';

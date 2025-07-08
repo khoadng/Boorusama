@@ -17,7 +17,7 @@ import '../../core/home/user_custom_home_builder.dart';
 import '../../core/posts/details/widgets.dart';
 import '../../core/posts/details_manager/types.dart';
 import '../../core/posts/details_parts/widgets.dart';
-import '../../core/posts/favorites/providers.dart';
+import '../../core/posts/favorites/widgets.dart';
 import '../../core/posts/listing/providers.dart';
 import '../../core/posts/listing/widgets.dart';
 import '../../core/posts/post/routes.dart';

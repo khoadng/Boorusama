@@ -27,7 +27,7 @@ class SzurubooruPostActionToolbar extends ConsumerWidget {
     final post = InheritedPost.of<SzurubooruPost>(context);
 
     final config = ref.watchConfigAuth;
-    final isFaved = ref.watch(favoriteProvider(post.id));
+    final isFaved = ref.watch(favoriteProvider((config, post.id)));
     final postVote = ref.watch(szurubooruPostVoteProvider(post.id));
     final voteState = postVote?.voteState ?? VoteState.unvote;
 

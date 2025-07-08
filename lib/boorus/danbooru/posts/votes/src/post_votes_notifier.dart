@@ -23,15 +23,12 @@ final danbooruPostVotesProvider =
       BooruConfigAuth
     >(
       PostVotesNotifier.new,
-      dependencies: [
-        danbooruPostVoteRepoProvider,
-      ],
     );
 
 final danbooruPostVoteProvider = Provider.autoDispose
-    .family<DanbooruPostVote?, int>(
-      (ref, postId) {
-        final config = ref.watchConfigAuth;
+    .family<DanbooruPostVote?, (BooruConfigAuth, int)>(
+      (ref, params) {
+        final (config, postId) = params;
         return ref.watch(danbooruPostVotesProvider(config))[postId];
       },
     );

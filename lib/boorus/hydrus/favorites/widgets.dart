@@ -67,7 +67,7 @@ class HydrusFavoritePostButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfigAuth;
-    final isFaved = ref.watch(favoriteProvider(post.id));
+    final isFaved = ref.watch(favoriteProvider((config, post.id)));
     final favNotifier = ref.watch(favoritesProvider(config).notifier);
 
     return FavoritePostButton(
@@ -97,7 +97,7 @@ class HydrusQuickFavoriteButton extends ConsumerWidget {
         .when(
           data: (canFavorite) => canFavorite
               ? QuickFavoriteButton(
-                  isFaved: ref.watch(favoriteProvider(post.id)),
+                  isFaved: ref.watch(favoriteProvider((config, post.id))),
                   onFavToggle: (isFaved) async {
                     if (isFaved) {
                       await notifier.add(post.id);

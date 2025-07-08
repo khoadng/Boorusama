@@ -3,12 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../../boorus/engine/providers.dart';
-import '../../../../configs/auth/auth.dart';
 import '../../../../configs/config.dart';
-import '../../../../configs/ref.dart';
 import '../../../post/post.dart';
-import 'favorite.dart';
+import '../data/providers.dart';
+import '../types/types.dart';
 
 final favoritesProvider =
     NotifierProvider.family<
@@ -19,32 +17,23 @@ final favoritesProvider =
       FavoritesNotifier.new,
     );
 
-final favoriteProvider = Provider.autoDispose.family<bool, int>(
-  (ref, postId) {
-    final config = ref.watchConfigAuth;
-    return ref.watch(favoritesProvider(config))[postId] ?? false;
-  },
-);
-
-final favoriteRepoProvider =
-    Provider.family<FavoriteRepository, BooruConfigAuth>(
-      (ref, config) {
-        final repo = ref
-            .watch(booruEngineRegistryProvider)
-            .getRepository(config.booruType);
-
-        final favoriteRepo = repo?.favorite(config);
-
-        if (favoriteRepo != null) {
-          return favoriteRepo;
-        }
-
-        return EmptyFavoriteRepository();
+final favoriteProvider = Provider.autoDispose
+    .family<bool, (BooruConfigAuth, int)>(
+      (ref, params) {
+        final (config, postId) = params;
+        return ref.watch(favoritesProvider(config))[postId] ?? false;
       },
     );
 
-class FavoritesNotifier extends FamilyNotifier<IMap<int, bool>, BooruConfigAuth>
-    with FavoritesNotifierMixin {
+final canFavoriteProvider = Provider.family<bool, BooruConfigAuth>((
+  ref,
+  config,
+) {
+  return ref.watch(favoriteRepoProvider(config)).canFavorite();
+});
+
+class FavoritesNotifier
+    extends FamilyNotifier<IMap<int, bool>, BooruConfigAuth> {
   @override
   IMap<int, bool> build(BooruConfigAuth arg) {
     return <int, bool>{}.lock;
@@ -56,10 +45,6 @@ class FavoritesNotifier extends FamilyNotifier<IMap<int, bool>, BooruConfigAuth>
     posts,
     selfFavorited: (post) => repo.isPostFavorited(post),
   );
-
-  @override
-  Future<AddFavoriteStatus> Function(int postId) get favoriteAdder =>
-      repo.addToFavorites;
 
   Future<void> checkFavorites(List<int> postIds) async {
     // Filter postIds not in cache
@@ -81,74 +66,45 @@ class FavoritesNotifier extends FamilyNotifier<IMap<int, bool>, BooruConfigAuth>
     state = cache.lock;
   }
 
-  @override
-  Future<bool> Function(int postId) get favoriteRemover =>
-      repo.removeFromFavorites;
+  Future<AddFavoriteStatus> add(int postId) async {
+    if (state[postId] == true) return AddFavoriteStatus.alreadyExists;
 
-  @override
-  IMap<int, bool> get favorites => state;
+    final status = await repo.addToFavorites(postId);
+    if (status == AddFavoriteStatus.success ||
+        status == AddFavoriteStatus.alreadyExists) {
+      final newData = state.add(postId, true);
+      state = newData;
+    }
 
-  @override
-  void Function(IMap<int, bool> data) get updateFavorites =>
-      (data) => state = data;
-}
-
-final canFavoriteProvider = Provider.family<bool, BooruConfigAuth>((
-  ref,
-  config,
-) {
-  return ref.watch(favoriteRepoProvider(config)).canFavorite();
-});
-
-extension FavX on WidgetRef {
-  FavoritesNotifier get favorites =>
-      read(favoritesProvider(readConfigAuth).notifier);
-
-  void toggleFavorite(int postId) {
-    guardLogin(this, () async {
-      final isFaved = read(favoriteProvider(postId));
-      if (isFaved) {
-        await favorites.remove(postId);
-        if (context.mounted) {
-          showSuccessSnackBar(
-            context,
-            'Removed from favorites',
-          );
-        }
-      } else {
-        await favorites.add(postId);
-        if (context.mounted) {
-          showSuccessSnackBar(
-            context,
-            'Added to favorites',
-          );
-        }
-      }
-    });
+    return status;
   }
-}
 
-class EmptyFavoriteRepository extends FavoriteRepository<Post> {
-  @override
-  bool canFavorite() => false;
+  Future<void> remove(int postId) async {
+    if (state[postId] == false) return;
 
-  @override
-  Future<AddFavoriteStatus> addToFavorites(int postId) async =>
-      AddFavoriteStatus.failure;
+    final success = await repo.removeFromFavorites(postId);
+    if (success) {
+      final newData = state.add(postId, false);
+      state = newData;
+    }
+  }
 
-  @override
-  Future<bool> removeFromFavorites(int postId) async => false;
+  void removeLocalFavorite(int postId) {
+    final newData = state.add(postId, false);
+    state = newData;
+  }
 
-  @override
-  bool isPostFavorited(Post post) => false;
-}
+  void preloadInternal<T extends Post>(
+    List<T> posts, {
+    bool Function(T post)? selfFavorited,
+  }) {
+    final data = <int, bool>{};
 
-abstract class FavoriteRepository<T extends Post> {
-  bool canFavorite();
-  Future<AddFavoriteStatus> addToFavorites(int postId);
-  Future<bool> removeFromFavorites(int postId);
-  bool isPostFavorited(T post);
-  Future<List<int>> filterFavoritedPosts(List<int> postIds) async {
-    return [];
+    for (final post in posts) {
+      final favorited = selfFavorited != null ? selfFavorited(post) : false;
+      data[post.id] = favorited;
+    }
+
+    state = data.lock;
   }
 }

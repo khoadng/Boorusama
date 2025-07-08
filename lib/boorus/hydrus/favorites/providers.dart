@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../core/configs/config.dart';
 import '../../../core/posts/favorites/providers.dart';
+import '../../../core/posts/favorites/types.dart';
 import '../client_provider.dart';
 import '../posts/types.dart';
 
@@ -35,29 +36,23 @@ final ratingServiceNameProvider =
       return services.firstWhereOrNull((e) => e.key == key)?.name;
     });
 
-class HydrusFavoriteRepository extends FavoriteRepository<HydrusPost> {
-  HydrusFavoriteRepository(this.ref, this.config);
+final hydrusFavoriteRepoProvider =
+    Provider.family<FavoriteRepository<HydrusPost>, BooruConfigAuth>(
+      (ref, config) {
+        final client = ref.watch(hydrusClientProvider(config));
 
-  final Ref ref;
-  final BooruConfigAuth config;
-
-  HydrusClient get client => ref.read(hydrusClientProvider(config));
-
-  @override
-  bool canFavorite() => true;
-
-  @override
-  Future<AddFavoriteStatus> addToFavorites(int postId) async => client
-      .changeLikeStatus(fileId: postId, liked: true)
-      .then(
-        (value) =>
-            value ? AddFavoriteStatus.success : AddFavoriteStatus.failure,
-      );
-
-  @override
-  Future<bool> removeFromFavorites(int postId) async =>
-      client.changeLikeStatus(fileId: postId, liked: null);
-
-  @override
-  bool isPostFavorited(HydrusPost post) => post.ownFavorite ?? false;
-}
+        return FavoriteRepositoryBuilder(
+          add: (postId) => client
+              .changeLikeStatus(fileId: postId, liked: true)
+              .then(
+                (value) => value
+                    ? AddFavoriteStatus.success
+                    : AddFavoriteStatus.failure,
+              ),
+          remove: (postId) =>
+              client.changeLikeStatus(fileId: postId, liked: null),
+          isFavorited: (post) => post.ownFavorite ?? false,
+          canFavorite: () => true,
+        );
+      },
+    );
