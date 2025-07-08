@@ -33,7 +33,7 @@ class CommentVotesNotifier
     return {};
   }
 
-  CommentVoteRepository<DanbooruCommentVote> get repo =>
+  CommentVoteRepository<DanbooruCommentVote> get _repo =>
       ref.read(danbooruCommentVoteRepoProvider(arg));
 
   Future<void> fetch(List<int> commentIds) async {
@@ -42,7 +42,7 @@ class CommentVotesNotifier
 
     if (ids.isEmpty) return;
 
-    final votes = await repo.getCommentVotes(ids);
+    final votes = await _repo.getCommentVotes(ids);
     state = {
       ...state,
       for (final vote in votes) vote.commentId: vote,
@@ -54,7 +54,7 @@ class CommentVotesNotifier
     int commentId, {
     void Function(String msg)? onFailed,
   }) async {
-    final vote = await repo.upvoteComment(commentId);
+    final vote = await _repo.upvoteComment(commentId);
     state = {
       ...state,
       commentId: vote,
@@ -63,7 +63,7 @@ class CommentVotesNotifier
 
   // downvote
   Future<void> downvote(int commentId) async {
-    final vote = await repo.downvoteComment(commentId);
+    final vote = await _repo.downvoteComment(commentId);
     state = {
       ...state,
       commentId: vote,
@@ -77,7 +77,7 @@ class CommentVotesNotifier
 
     if (currentVote == null) return;
 
-    final success = await repo.unvoteComment(commentVote.id);
+    final success = await _repo.unvoteComment(commentVote.id);
 
     if (!success) return;
 

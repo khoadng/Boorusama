@@ -98,5 +98,9 @@ linter:
     - use_to_and_as_if_applicable
     - use_truncating_division
 
+custom_lint:
+  rules:
+    - missing_provider_scope: false
+
 formatter:
   trailing_commas: preserve

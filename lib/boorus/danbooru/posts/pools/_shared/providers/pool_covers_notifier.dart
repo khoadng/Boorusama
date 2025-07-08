@@ -33,7 +33,7 @@ class PoolCoversNotifier
     return {};
   }
 
-  PostRepository<DanbooruPost> get postRepo =>
+  PostRepository<DanbooruPost> get _postRepo =>
       ref.watch(danbooruPostRepoProvider(arg));
 
   Future<void> load(List<DanbooruPool>? pools) async {
@@ -58,7 +58,7 @@ class PoolCoversNotifier
       for (final pool in poolsToFetch) pool.postIds.last: pool.id,
     };
 
-    final r = await postRepo
+    final r = await _postRepo
         .getPostsFromIds(postPoolMap.keys.toList())
         .run()
         .then(
