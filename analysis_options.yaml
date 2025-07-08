@@ -11,6 +11,8 @@ analyzer:
     missing_return: error
     todo: ignore
     parameter_assignments: error
+  plugins:
+    - custom_lint
 
 linter:
   rules:
