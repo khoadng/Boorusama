@@ -16,15 +16,15 @@ final danbooruUserMetatagsProvider =
 class UserMetatagsNotifier extends AsyncNotifier<List<String>> {
   @override
   Future<List<String>> build() async {
-    final repo = await repoFuture;
+    final repo = await _repoFuture;
     return repo.getAll();
   }
 
-  Future<UserMetatagRepository> get repoFuture =>
+  Future<UserMetatagRepository> get _repoFuture =>
       ref.watch(danbooruUserMetatagRepoProvider.future);
 
   Future<void> add(String tag) async {
-    final repo = await repoFuture;
+    final repo = await _repoFuture;
     await repo.put(tag);
     final tags = repo.getAll();
 
@@ -32,7 +32,7 @@ class UserMetatagsNotifier extends AsyncNotifier<List<String>> {
   }
 
   Future<void> delete(String tag) async {
-    final repo = await repoFuture;
+    final repo = await _repoFuture;
     await repo.delete(tag);
     final tags = repo.getAll();
     state = AsyncValue.data(tags);
