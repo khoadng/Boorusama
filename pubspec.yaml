@@ -151,6 +151,7 @@ dependencies:
 
 dev_dependencies:
   build_runner: ^2.4.13
+  custom_lint: ^0.7.0
   flutter_launcher_icons:
     git: https://github.com/fluttercommunity/flutter_launcher_icons.git
   flutter_lints: ^6.0.0
@@ -161,6 +162,7 @@ dev_dependencies:
   hive_ce_generator: ^1.9.3
   import_sorter: ^4.6.0
   mocktail: ^1.0.4
+  riverpod_lint: ^2.6.3
   test: ^1.25.2
 
 flutter:
