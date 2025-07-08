@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../theme/theme_configs.dart';
@@ -29,9 +30,9 @@ class ThemeListTile extends ConsumerWidget {
     return ListTile(
       contentPadding: EdgeInsets.zero,
       visualDensity: VisualDensity.compact,
-      title: const Text('Colors'),
+      title: Text('Colors'.hc),
       subtitle: Text(
-        colorSettings?.nickname ?? 'Default',
+        colorSettings?.nickname ?? 'Default'.hc,
       ),
       onTap: () {
         _customizeTheme(ref, context);
@@ -44,7 +45,7 @@ class ThemeListTile extends ConsumerWidget {
           ),
         ),
         onPressed: () => _customizeTheme(ref, context),
-        child: const Text('Customize'),
+        child: Text('Customize'.hc),
       ),
     );
   }

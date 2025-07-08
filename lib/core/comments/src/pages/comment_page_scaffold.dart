@@ -77,7 +77,7 @@ class _CommentPageScaffoldState extends ConsumerState<CommentPageScaffold> {
     return Scaffold(
       appBar: widget.useAppBar
           ? AppBar(
-              title: const Text('comment.comments').tr(),
+              title: Text(context.t.comment.comments),
             )
           : null,
       body: Padding(
@@ -106,11 +106,11 @@ class _CommentPageScaffoldState extends ConsumerState<CommentPageScaffold> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text('Error loading comments'),
+                      Text('Error loading comments'.hc),
                       const SizedBox(height: 16),
                       FilledButton(
                         onPressed: () => _pagingController.refresh(),
-                        child: const Text('Retry'),
+                        child: Text('Retry'.hc),
                       ),
                     ],
                   ),

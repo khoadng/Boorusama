@@ -39,7 +39,7 @@ class SourceLink extends StatelessWidget {
                   AppClipboard.copyAndToast(
                     context,
                     url.toString(),
-                    message: 'post.detail.copied'.tr(),
+                    message: context.t.post.detail.copied,
                   );
                 },
                 onTap: () {

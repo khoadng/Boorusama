@@ -8,7 +8,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:background_downloader/background_downloader.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gal/gal.dart';
-import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../../foundation/media_scanner.dart';
@@ -128,11 +127,11 @@ class _BackgroundDownloaderScopeState
           ),
           complete: TaskNotification(
             '{filename}',
-            DownloadTranslations.downloadCompletedNotification.tr(),
+            DownloadTranslations.downloadCompletedNotification,
           ),
           error: TaskNotification(
             '{filename}',
-            DownloadTranslations.downloadFailedNotification.tr(),
+            DownloadTranslations.downloadFailedNotification,
           ),
           progressBar: true,
         );

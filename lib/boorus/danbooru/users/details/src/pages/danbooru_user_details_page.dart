@@ -36,7 +36,7 @@ class DanbooruUserDetailsPage extends ConsumerWidget {
       actions: [
         BooruPopupMenuButton(
           itemBuilder: {
-            0: const Text('profile.copy_user_id').tr(),
+            0: Text(context.t.profile.copy_user_id),
           },
           onSelected: (value) {
             if (value == 0) {
@@ -111,7 +111,7 @@ class UserDetailsActionButtons extends ConsumerWidget {
                   context,
                 ).colorScheme.onSecondaryContainer,
               ),
-              child: const Text('My Uploads'),
+              child: Text('My Uploads'.hc),
               onPressed: () => goToMyUploadsPage(ref),
             ),
           const SizedBox(width: 8),
@@ -122,7 +122,7 @@ class UserDetailsActionButtons extends ConsumerWidget {
                 context,
               ).colorScheme.onSecondaryContainer,
             ),
-            child: const Text('profile.messages').tr(),
+            child: Text(context.t.profile.messages),
             onPressed: () => goToDmailPage(ref),
           ),
         ],

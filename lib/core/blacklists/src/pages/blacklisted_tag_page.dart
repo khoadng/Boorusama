@@ -28,7 +28,7 @@ class BlacklistedTagPage extends ConsumerWidget {
     final sortedTags = sortBlacklistedTags(tags, sortType);
 
     return BlacklistedTagsViewScaffold(
-      title: 'blacklist.manage.title'.tr(),
+      title: context.t.blacklist.manage.title,
       actions: [
         IconButton(
           onPressed: () {

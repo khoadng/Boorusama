@@ -29,7 +29,7 @@ class DefaultBooruLoginField extends ConsumerWidget {
 
     return CreateBooruLoginField(
       text: login,
-      labelText: labelText ?? 'booru.login_name_label'.tr(),
+      labelText: labelText ?? context.t.booru.login_name_label,
       hintText: hintText ?? 'e.g: my_login',
       onChanged: ref.editNotifier.updateLogin,
     );

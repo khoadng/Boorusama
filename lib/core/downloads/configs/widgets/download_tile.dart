@@ -128,7 +128,7 @@ class DownloadTileBuilder extends StatelessWidget {
                             visualDensity: const ShrinkVisualDensity(),
                           ),
                           onPressed: onCancel,
-                          child: const Text('generic.action.cancel').tr(),
+                          child: Text(context.t.generic.action.cancel),
                         )
                       else
                         const SizedBox(

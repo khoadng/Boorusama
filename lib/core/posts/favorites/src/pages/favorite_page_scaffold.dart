@@ -32,7 +32,7 @@ class FavoritesPageScaffold<T extends Post> extends ConsumerWidget {
           controller: controller,
           sliverHeaders: [
             SliverAppBar(
-              title: const Text('profile.favorites').tr(),
+              title: Text(context.t.profile.favorites),
               floating: true,
               elevation: 0,
               shadowColor: Colors.transparent,

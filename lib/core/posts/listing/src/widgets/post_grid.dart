@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/widgets.dart';
+import 'package:i18n/i18n.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
@@ -588,7 +589,7 @@ class _Error401ActionButton extends ConsumerWidget {
             config: config,
             initialTab: 'auth',
           ),
-          child: const Text('Edit credentials'),
+          child: Text('Edit credentials'.hc),
         ),
       ],
     );

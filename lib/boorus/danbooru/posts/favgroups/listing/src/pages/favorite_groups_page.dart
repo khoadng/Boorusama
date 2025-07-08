@@ -40,7 +40,7 @@ class FavoriteGroupsPageInternal extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('favorite_groups.favorite_groups').tr(),
+        title: Text(context.t.favorite_groups.favorite_groups),
         actions: [
           IconButton(
             onPressed: () => goToFavoriteGroupCreatePage(context),
@@ -74,8 +74,8 @@ class FavoriteGroupsPageInternal extends ConsumerWidget {
                       subtitle: Row(
                         children: [
                           Text(
-                            'favorite_groups.group_item_counter'.plural(
-                              group.totalCount,
+                            context.t.favorite_groups.group_item_counter(
+                              n: group.totalCount,
                             ),
                           ),
                           if (!group.isPublic)
@@ -84,7 +84,7 @@ class FavoriteGroupsPageInternal extends ConsumerWidget {
                               child: Text('|'),
                             ),
                           if (!group.isPublic)
-                            const Text('favorite_groups.private').tr(),
+                            Text(context.t.favorite_groups.private),
                         ],
                       ),
                       onTap: () {

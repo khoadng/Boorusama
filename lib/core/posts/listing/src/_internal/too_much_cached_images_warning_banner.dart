@@ -75,7 +75,7 @@ class TooMuchCachedImagesWarningBanner extends ConsumerWidget {
                         }
                       }
                     },
-                    child: const Text('settings.performance.clear_cache').tr(),
+                    child: Text(context.t.settings.performance.clear_cache),
                   ),
                   TextButton(
                     onPressed: () {
@@ -87,7 +87,7 @@ class TooMuchCachedImagesWarningBanner extends ConsumerWidget {
                               .state =
                           true;
                     },
-                    child: const Text("Don't show again"),
+                    child: Text("Don't show again".hc),
                   ),
                 ],
               );

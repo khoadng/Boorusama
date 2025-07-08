@@ -46,18 +46,18 @@ class GeneralPostContextMenu extends ConsumerWidget {
       buttonConfigs: [
         if (commentPageBuilder != null && post.hasComment)
           ContextMenuButtonConfig(
-            'post.action.view_comments'.tr(),
+            context.t.post.action.view_comments,
             onPressed: () => goToCommentPage(context, ref, post.id),
           ),
         ContextMenuButtonConfig(
-          'download.download'.tr(),
+          context.t.download.download,
           onPressed: () {
             ref.download(post);
           },
         ),
         if (!isBookmarked)
           ContextMenuButtonConfig(
-            'post.detail.add_to_bookmark'.tr(),
+            context.t.post.detail.add_to_bookmark,
             onPressed: () => ref.bookmarks
               ..addBookmarkWithToast(
                 context,
@@ -67,7 +67,7 @@ class GeneralPostContextMenu extends ConsumerWidget {
           )
         else
           ContextMenuButtonConfig(
-            'post.detail.remove_from_bookmark'.tr(),
+            context.t.post.detail.remove_from_bookmark,
             onPressed: () => ref.bookmarks
               ..removeBookmarkWithToast(
                 context,
@@ -82,13 +82,13 @@ class GeneralPostContextMenu extends ConsumerWidget {
         ),
         if (!booruConfig.hasStrictSFW)
           ContextMenuButtonConfig(
-            'post.detail.view_in_browser'.tr(),
+            context.t.post.detail.view_in_browser,
             onPressed: () =>
                 launchExternalUrlString(postLinkGenerator.getLink(post)),
           ),
         if (onMultiSelect != null)
           ContextMenuButtonConfig(
-            'post.action.select'.tr(),
+            context.t.post.action.select,
             onPressed: () {
               onMultiSelect?.call();
             },

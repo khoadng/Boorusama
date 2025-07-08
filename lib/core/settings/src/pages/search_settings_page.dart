@@ -30,10 +30,10 @@ class _SearchSettingsPageState extends ConsumerState<SearchSettingsPage> {
     final notifer = ref.watch(settingsNotifierProvider.notifier);
 
     return SettingsPageScaffold(
-      title: const Text('settings.search.search').tr(),
+      title: Text(context.t.settings.search.search),
       children: [
         ListTile(
-          title: const Text('settings.search.auto_focus_search_bar').tr(),
+          title: Text(context.t.settings.search.auto_focus_search_bar),
           trailing: Switch(
             value: settings.autoFocusSearchBar,
             onChanged: (value) {
@@ -46,10 +46,8 @@ class _SearchSettingsPageState extends ConsumerState<SearchSettingsPage> {
           ),
         ),
         ListTile(
-          title: const Text('Persistent search bar').tr(),
-          subtitle: const Text(
-            'Keep the search bar visible while scrolling.',
-          ).tr(),
+          title: Text('Persistent search bar'.hc),
+          subtitle: Text('Keep the search bar visible while scrolling.'.hc),
           trailing: Switch(
             value: settings.persistSearchBar,
             onChanged: (value) {
@@ -64,8 +62,8 @@ class _SearchSettingsPageState extends ConsumerState<SearchSettingsPage> {
           ),
         ),
         SettingsTile(
-          title: const Text('Search bar position').tr(),
-          subtitle: const Text('Only applies in portrait mode').tr(),
+          title: Text('Search bar position'.hc),
+          subtitle: Text('Only applies in portrait mode'.hc),
           selectedOption: settings.searchBarPosition,
           items: SearchBarPosition.values,
           onChanged: (value) {
@@ -73,12 +71,12 @@ class _SearchSettingsPageState extends ConsumerState<SearchSettingsPage> {
               settings.copyWith(searchBarPosition: value),
             );
           },
-          optionBuilder: (value) => Text(value.localize()).tr(),
+          optionBuilder: (value) => Text(value.localize(context)),
         ),
         ListTile(
-          title: const Text(
-            'settings.search.hide_bookmarked_posts_from_search_results',
-          ).tr(),
+          title: Text(
+            context.t.settings.search.hide_bookmarked_posts_from_search_results,
+          ),
           trailing: Switch(
             activeColor: Theme.of(context).colorScheme.primary,
             value: settings.shouldFilterBookmarks,

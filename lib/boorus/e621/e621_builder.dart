@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../core/boorus/engine/engine.dart';
@@ -149,11 +150,11 @@ class E621Builder
 final ke621AltHomeView = {
   ...kDefaultAltHomeView,
   const CustomHomeViewKey('favorites'): CustomHomeDataBuilder(
-    displayName: 'profile.favorites',
+    displayName: (context) => context.t.profile.favorites,
     builder: (context, _) => const E621FavoritesPage(),
   ),
   const CustomHomeViewKey('popular'): CustomHomeDataBuilder(
-    displayName: 'Popular',
+    displayName: (context) => 'Popular'.hc,
     builder: (context, _) => const E621PopularPage(),
   ),
 };

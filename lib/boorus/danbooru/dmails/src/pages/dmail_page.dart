@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:booru_clients/danbooru.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
@@ -39,7 +40,7 @@ class _DanbooruDmailPageState extends ConsumerState<DanbooruDmailPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Messages'),
+        title: Text('Messages'.hc),
         actions: [
           IconButton(
             icon: const Icon(Symbols.refresh),

@@ -1,8 +1,12 @@
 // Dart imports:
 import 'dart:async';
 
+// Flutter imports:
+import 'package:flutter/material.dart';
+
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../../../../core/configs/config.dart';
@@ -60,11 +64,13 @@ class FavoriteGroupsNotifier
   }
 
   Future<void> create({
+    required BuildContext context,
     required String initialIds,
     required String name,
     required bool isPrivate,
-    void Function(String message, bool translatable)? onFailure,
+    void Function(String message)? onFailure,
   }) async {
+    final t = context.t;
     final currentUser = await ref.read(
       danbooruCurrentUserProvider(arg.auth).future,
     );
@@ -74,7 +80,7 @@ class FavoriteGroupsNotifier
     if (state != null &&
         !isBooruGoldPlusAccount(currentUser.level) &&
         state!.length >= 10) {
-      onFailure?.call('favorite_groups.max_limit_warning', true);
+      onFailure?.call(t.favorite_groups.max_limit_warning);
 
       return;
     }
@@ -93,7 +99,7 @@ class FavoriteGroupsNotifier
     if (success) {
       unawaited(refresh());
     } else {
-      onFailure?.call('Fail to create favorite group', false);
+      onFailure?.call('Fail to create favorite group'.hc);
     }
   }
 
@@ -115,7 +121,7 @@ class FavoriteGroupsNotifier
     String? initialIds,
     String? name,
     bool? isPrivate,
-    void Function(String message, bool translatable)? onFailure,
+    void Function(String message)? onFailure,
   }) async {
     final idString = initialIds?.split(' ') ?? [];
     final ids = idString
@@ -136,23 +142,24 @@ class FavoriteGroupsNotifier
       unawaited(refresh());
       return true;
     } else {
-      onFailure?.call('Fail to edit favorite group', false);
+      onFailure?.call('Fail to edit favorite group'.hc);
       return false;
     }
   }
 
   Future<void> addToGroup({
+    required BuildContext context,
     required DanbooruFavoriteGroup group,
     required List<int> postIds,
-    void Function(String message, bool translatable)? onFailure,
+    void Function(String message)? onFailure,
     void Function(DanbooruFavoriteGroup group)? onSuccess,
   }) async {
+    final t = context.t;
     final duplicates = postIds.where((e) => group.postIds.contains(e)).toList();
 
     if (duplicates.isNotEmpty) {
       onFailure?.call(
-        'favorite_groups.duplicate_items_warning_notification',
-        true,
+        t.favorite_groups.duplicate_items_warning_notification,
       );
 
       return;
@@ -176,7 +183,7 @@ class FavoriteGroupsNotifier
       );
       unawaited(refresh());
     } else {
-      onFailure?.call('Failed to add posts to favgroup', false);
+      onFailure?.call('Failed to add posts to favgroup'.hc);
     }
   }
 
@@ -209,7 +216,7 @@ extension FavoriteGroupsNotifierX on FavoriteGroupsNotifier {
     required Set<int> newIds,
     required Set<int> oldIds,
     required Set<int> allIds,
-    void Function(String message, bool translatable)? onFailure,
+    void Function(String message)? onFailure,
   }) async {
     final updatedIds = updateOrder(allIds, oldIds, newIds);
 

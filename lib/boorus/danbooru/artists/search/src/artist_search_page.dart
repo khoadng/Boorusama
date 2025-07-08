@@ -6,6 +6,7 @@ import 'package:booru_clients/danbooru.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 import 'package:foundation/widgets.dart';
+import 'package:i18n/i18n.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 // Project imports:
@@ -75,10 +76,10 @@ class _DanbooruArtistSearchPageState
         onTap: () => focusScopeNode.unfocus(),
         child: Scaffold(
           appBar: AppBar(
-            title: const Text('Artists'),
+            title: Text('Artists'.hc),
             actions: [
               TextButton(
-                child: const Text('Search'),
+                child: Text('Search'.hc),
                 onPressed: () {
                   focusScopeNode.unfocus();
                   pagingController.refresh();

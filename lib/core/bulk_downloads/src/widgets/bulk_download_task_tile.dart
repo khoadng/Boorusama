@@ -173,12 +173,12 @@ class _MoreIndicator extends StatelessWidget {
           SizedBox(
             height: double.infinity,
             child: Text(
-              'tag.related.more',
+              context.t.tag.related.more,
               style: TextStyle(
                 color: colorScheme.hintColor,
                 fontSize: 11,
               ),
-            ).tr(),
+            ),
           ),
           SizedBox(
             height: double.infinity,
@@ -330,13 +330,13 @@ class _ContextMenu extends ConsumerWidget {
       contextMenu: GenericContextMenu(
         buttonConfigs: [
           ContextMenuButtonConfig(
-            DownloadTranslations.delete.tr(),
+            DownloadTranslations.delete,
             onPressed: () {
               ref.read(bulkDownloadProvider.notifier).deleteSession(session.id);
             },
           ),
           ContextMenuButtonConfig(
-            DownloadTranslations.copyPath.tr(),
+            DownloadTranslations.copyPath,
             onPressed: () => AppClipboard.copyWithDefaultToast(context, path),
           ),
         ],
@@ -372,8 +372,8 @@ class _DetailsInkWell extends ConsumerWidget {
                 showSimpleSnackBar(
                   context: context,
                   duration: const Duration(seconds: 3),
-                  content: const Text(
-                    'Nothing to show, download updates are empty',
+                  content: Text(
+                    'Nothing to show, download updates are empty'.hc,
                   ),
                 );
               }
@@ -473,14 +473,13 @@ class _InfoText extends ConsumerWidget {
 
     return Text(
       switch (status) {
-        DownloadSessionStatus.pending =>
-          DownloadTranslations.createdStatus.tr(),
+        DownloadSessionStatus.pending => DownloadTranslations.createdStatus,
         DownloadSessionStatus.dryRun => DownloadTranslations.inProgressStatus(
           pageProgress.completed,
-        ).tr(),
+        ),
         DownloadSessionStatus.failed => 'Error',
         DownloadSessionStatus.allSkipped =>
-          DownloadTranslations.allSkippedStatus.tr(),
+          DownloadTranslations.allSkippedStatus,
         _ => infoText,
       },
       maxLines: 1,

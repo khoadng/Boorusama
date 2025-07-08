@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
 
@@ -19,14 +18,16 @@ class LanguagePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final settings = ref.watch(settingsProvider);
+    final selectedLanguageString = ref.watch(
+      settingsProvider.select((s) => s.language),
+    );
     final notifer = ref.watch(settingsNotifierProvider.notifier);
 
     return ConditionalParentWidget(
       condition: !SettingsPageScope.of(context).options.dense,
       conditionalBuilder: (child) => Scaffold(
         appBar: AppBar(
-          title: const Text('settings.language.language').tr(),
+          title: Text(context.t.settings.language.language),
         ),
         body: child,
       ),
@@ -34,31 +35,35 @@ class LanguagePage extends ConsumerWidget {
         child: ref
             .watch(supportedLanguagesProvider)
             .when(
-              data: (supportedLanguages) => ListView.builder(
-                itemCount: supportedLanguages.length,
-                itemBuilder: (context, index) {
-                  final e = supportedLanguages[index].name;
+              data: (supportedLanguages) {
+                final selectedLanguage = findLanguageByNameOrLocale(
+                  supportedLanguages,
+                  selectedLanguageString,
+                );
 
-                  return RadioListTile(
-                    activeColor: Theme.of(context).colorScheme.primary,
-                    groupValue: settings.language,
-                    value: e,
-                    title: Text(e),
-                    onChanged: (value) {
-                      if (value == null) return;
-                      final locale = supportedLanguages
-                          .firstWhereOrNull(
-                            (element) => element.name == value,
-                          )
-                          ?.locale;
-                      notifer.updateSettings(
-                        settings.copyWith(language: value),
-                      );
-                      context.setLocaleFromString(locale);
-                    },
-                  );
-                },
-              ),
+                return ListView.builder(
+                  itemCount: supportedLanguages.length,
+                  itemBuilder: (context, index) {
+                    final language = supportedLanguages[index];
+
+                    return RadioListTile(
+                      activeColor: Theme.of(context).colorScheme.primary,
+                      groupValue: selectedLanguage,
+                      value: language,
+                      title: Text(language.name),
+                      onChanged: (value) {
+                        if (value == null) return;
+                        final settings = ref.read(settingsProvider);
+
+                        notifer.updateSettings(
+                          settings.copyWith(language: value.locale),
+                        );
+                        context.setLocaleLanguage(value);
+                      },
+                    );
+                  },
+                );
+              },
               error: (error, stackTrace) => Center(
                 child: Text('Error: $error'),
               ),

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../../foundation/toast.dart';
@@ -47,16 +48,17 @@ class TestProxyButton extends ConsumerWidget {
                       duration: const Duration(seconds: 3),
                       content: Text(
                         success
-                            ? 'Valid proxy settings'
-                            : 'Failed to connect to proxy, please check your settings and try again',
+                            ? 'Valid proxy settings'.hc
+                            : 'Failed to connect to proxy, please check your settings and try again'
+                                .hc,
                       ),
                     );
                   }
                 }
               : null,
           child: switch (status) {
-            TestProxyStatus.idle => const Text('Test Proxy'),
-            _ => const Text('Checking...'),
+            TestProxyStatus.idle => Text('Test Proxy'.hc),
+            _ => Text('Checking...'.hc),
           },
         ),
         if (status == TestProxyStatus.checkingPendingTimeout)
@@ -65,11 +67,11 @@ class TestProxyButton extends ConsumerWidget {
             child: RichText(
               text: TextSpan(
                 children: [
-                  const TextSpan(
-                    text: 'Slow response? ',
+                  TextSpan(
+                    text: 'Slow response? '.hc,
                   ),
                   TextSpan(
-                    text: 'Cancel',
+                    text: context.t.generic.action.cancel,
                     style: TextStyle(
                       color: colorScheme.primary,
                       fontWeight: FontWeight.bold,

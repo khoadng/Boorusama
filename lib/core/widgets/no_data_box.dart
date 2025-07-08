@@ -24,11 +24,11 @@ class NoDataBox extends StatelessWidget {
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: const Text(
-            'generic.errors.no_data',
-            style: TextStyle(fontWeight: FontWeight.bold),
+          child: Text(
+            context.t.generic.errors.no_data,
+            style: const TextStyle(fontWeight: FontWeight.bold),
             textAlign: TextAlign.center,
-          ).tr(),
+          ),
         ),
       ],
     );

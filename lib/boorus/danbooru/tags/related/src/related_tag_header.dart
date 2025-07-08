@@ -84,7 +84,7 @@ class _RelatedTagHeaderState extends ConsumerState<RelatedTagHeader> {
                 onAdded: widget.onAdded,
                 onNegated: widget.onNegated,
               ),
-              child: const Text('tag.related.more').tr(),
+              child: Text(context.t.tag.related.more),
             ),
           ),
           null => const VerticalDivider(

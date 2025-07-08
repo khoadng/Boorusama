@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/widgets.dart';
+import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
@@ -84,7 +85,7 @@ class ShowTagListPage extends ConsumerWidget {
 
               showSuccessToast(
                 context,
-                'Added',
+                'Added'.hc,
                 backgroundColor: Theme.of(context).colorScheme.onSurface,
                 textStyle: TextStyle(
                   color: Theme.of(context).colorScheme.surface,
@@ -96,7 +97,7 @@ class ShowTagListPage extends ConsumerWidget {
           ),
           error: (error, stack) => Scaffold(
             appBar: AppBar(
-              title: const Text('Error'),
+              title: Text('Error'.hc),
             ),
             body: Center(
               child: Text('Error loading tags: $error'),
@@ -379,10 +380,10 @@ class _ShowTagListPageState extends ConsumerState<ShowTagListPageInternal> {
             ? ValueListenableBuilder(
                 valueListenable: _multiSelectController.selectedItemsNotifier,
                 builder: (_, selected, _) => selected.isEmpty
-                    ? const Text('Select tags')
-                    : Text('${selected.length} Tags selected'),
+                    ? Text('Select tags'.hc)
+                    : Text('${selected.length} Tags selected'.hc),
               )
-            : const Text('Tags'),
+            : Text('Tags'.hc),
       ),
     );
   }
@@ -394,7 +395,7 @@ class _ShowTagListPageState extends ConsumerState<ShowTagListPageInternal> {
         vertical: 4,
       ),
       child: BooruSearchBar(
-        hintText: 'Filter...',
+        hintText: 'Filter...'.hc,
         onChanged: (value) =>
             ref.read(selectedViewTagQueryProvider.notifier).state = value,
       ),

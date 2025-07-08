@@ -48,7 +48,7 @@ class _MoebooruPasswordFieldState extends ConsumerState<MoebooruPasswordField> {
 
     return CreateBooruApiKeyField(
       controller: passwordController,
-      labelText: 'booru.password_label'.tr(),
+      labelText: context.t.booru.password_label,
       onChanged: (value) => setState(() {
         if (value.isEmpty) {
           ref.editNotifier.updateApiKey(value);

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../config/types.dart';
@@ -21,9 +22,9 @@ class EnableProxySwitch extends ConsumerWidget {
 
     return SwitchListTile(
       contentPadding: const EdgeInsets.only(left: 4),
-      title: const Text(
-        'Proxy',
-        style: TextStyle(
+      title: Text(
+        'Proxy'.hc,
+        style: const TextStyle(
           fontWeight: FontWeight.bold,
         ),
       ),

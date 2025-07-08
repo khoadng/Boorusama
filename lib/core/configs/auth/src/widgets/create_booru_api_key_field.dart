@@ -58,7 +58,7 @@ class _CreateBooruApiKeyFieldState extends State<CreateBooruApiKeyField> {
         obscureText: !revealKey,
         onChanged: widget.onChanged,
         decoration: InputDecoration(
-          labelText: widget.labelText ?? 'booru.password_api_key_label'.tr(),
+          labelText: widget.labelText ?? context.t.booru.password_api_key_label,
           hintText: widget.hintText,
           errorMaxLines: 2,
           suffixIcon: IconButton(

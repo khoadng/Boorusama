@@ -39,7 +39,7 @@ Future<Object?> goToFavoriteGroupCreatePage(
       name: 'favorite_group_create',
     ),
     builder: (_) => EditFavoriteGroupSheet(
-      title: 'favorite_groups.create_group'.tr(),
+      title: context.t.favorite_groups.create_group,
       enableManualDataInput: enableManualPostInput,
     ),
   );
@@ -57,7 +57,7 @@ Future<Object?> goToFavoriteGroupEditPage(
     ),
     builder: (_) => EditFavoriteGroupSheet(
       initialData: group,
-      title: 'favorite_groups.edit_group'.tr(),
+      title: context.t.favorite_groups.edit_group,
     ),
   );
 }

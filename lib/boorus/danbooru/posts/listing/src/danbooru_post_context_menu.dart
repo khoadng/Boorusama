@@ -46,18 +46,18 @@ class DanbooruPostContextMenu extends ConsumerWidget {
       buttonConfigs: [
         if (post.hasComment)
           ContextMenuButtonConfig(
-            'post.action.view_comments'.tr(),
+            context.t.post.action.view_comments,
             onPressed: () => goToCommentPage(context, ref, post.id),
           ),
         ContextMenuButtonConfig(
-          'download.download'.tr(),
+          context.t.download.download,
           onPressed: () {
             ref.download(post);
           },
         ),
         if (!isBookmarked)
           ContextMenuButtonConfig(
-            'post.detail.add_to_bookmark'.tr(),
+            context.t.post.detail.add_to_bookmark,
             onPressed: () => ref.bookmarks
               ..addBookmarkWithToast(
                 context,
@@ -67,7 +67,7 @@ class DanbooruPostContextMenu extends ConsumerWidget {
           )
         else
           ContextMenuButtonConfig(
-            'post.detail.remove_from_bookmark'.tr(),
+            context.t.post.detail.remove_from_bookmark,
             onPressed: () => ref.bookmarks
               ..removeBookmarkWithToast(
                 context,
@@ -76,7 +76,7 @@ class DanbooruPostContextMenu extends ConsumerWidget {
           ),
         if (hasAccount)
           ContextMenuButtonConfig(
-            'post.action.add_to_favorite_group'.tr(),
+            context.t.post.action.add_to_favorite_group,
             onPressed: () {
               goToAddToFavoriteGroupSelectionPage(
                 context,
@@ -86,7 +86,7 @@ class DanbooruPostContextMenu extends ConsumerWidget {
           ),
         if (!booruConfig.hasStrictSFW)
           ContextMenuButtonConfig(
-            'post.detail.view_in_browser'.tr(),
+            context.t.post.detail.view_in_browser,
             onPressed: () =>
                 launchExternalUrlString(postLinkGenerator.getLink(post)),
           ),
@@ -108,7 +108,7 @@ class DanbooruPostContextMenu extends ConsumerWidget {
           ),
         if (onMultiSelect != null)
           ContextMenuButtonConfig(
-            'post.action.select'.tr(),
+            context.t.post.action.select,
             onPressed: () {
               onMultiSelect?.call();
             },
@@ -138,7 +138,7 @@ class FavoriteGroupsPostContextMenu extends ConsumerWidget {
     return GenericContextMenu(
       buttonConfigs: [
         ContextMenuButtonConfig(
-          'download.download'.tr(),
+          context.t.download.download,
           onPressed: () {
             ref.download(post);
           },

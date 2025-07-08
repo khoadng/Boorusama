@@ -19,12 +19,12 @@ class HydrusHomePage extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext contex, WidgetRef ref) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return HomePageScaffold(
       mobileMenu: [
         SideMenuTile(
           icon: const Icon(Symbols.favorite),
-          title: Text('profile.favorites'.tr()),
+          title: Text(context.t.profile.favorites),
           onTap: () => goToFavoritesPage(ref),
         ),
       ],
@@ -34,7 +34,7 @@ class HydrusHomePage extends ConsumerWidget {
           constraints: constraints,
           selectedIcon: Symbols.favorite,
           icon: Symbols.favorite,
-          title: 'Favorites',
+          title: 'Favorites'.hc,
         ),
       ],
       desktopViews: const [

@@ -1,4 +1,5 @@
 // Package imports:
+import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'language.dart';
@@ -13,3 +14,12 @@ final supportedLanguagesProvider = FutureProvider<List<BooruLanguage>>((
 
   return supportedLanguages;
 });
+
+BooruLanguage? findLanguageByNameOrLocale(
+  List<BooruLanguage> languages,
+  String nameOrLocale,
+) {
+  return languages.firstWhereOrNull(
+    (lang) => lang.name == nameOrLocale || lang.locale == nameOrLocale,
+  );
+}

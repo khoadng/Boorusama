@@ -67,21 +67,21 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
     final editId = ref.watch(editBooruConfigIdProvider);
 
     final tabMap = {
-      if (authTab != null) const CreateBooruConfigCategory.auth(): authTab!,
-      const CreateBooruConfigCategory.listing():
+      if (authTab != null) CreateBooruConfigCategory.auth(context): authTab!,
+      CreateBooruConfigCategory.listing():
           listingTab ?? const DefaultBooruConfigListingView(),
       if (ref.watch(showPremiumFeatsProvider))
-        const CreateBooruConfigCategory.appearance():
+        CreateBooruConfigCategory.appearance(context):
             layoutTab ?? const DefaultBooruConfigLayoutView(),
-      const CreateBooruConfigCategory.download():
+      CreateBooruConfigCategory.download(context):
           downloadTab ?? const BooruConfigDownloadView(),
-      const CreateBooruConfigCategory.search():
+      CreateBooruConfigCategory.search():
           searchTab ?? const DefaultBooruConfigSearchView(),
-      const CreateBooruConfigCategory.gestures():
+      CreateBooruConfigCategory.gestures(context):
           gestureTab ?? const DefaultBooruConfigGesturesView(),
-      const CreateBooruConfigCategory.viewer():
+      CreateBooruConfigCategory.viewer(context):
           imageViewerTab ?? const BooruConfigViewerView(),
-      const CreateBooruConfigCategory.network():
+      CreateBooruConfigCategory.network():
           networkTab ?? const BooruConfigNetworkView(),
     };
 
@@ -124,8 +124,7 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
                       ),
                       isScrollable: true,
                       tabs: [
-                        for (final tab in tabMap.keys)
-                          Tab(text: tab.title.tr()),
+                        for (final tab in tabMap.keys) Tab(text: tab.title),
                       ],
                     ),
                     Expanded(
@@ -207,48 +206,48 @@ class CreateBooruConfigCategory extends Equatable {
     required this.title,
   });
 
-  const CreateBooruConfigCategory.auth()
-    : title = 'booru.authentication',
+  CreateBooruConfigCategory.auth(BuildContext context)
+    : title = context.t.booru.authentication,
       name = 'config/auth',
       id = 'auth';
 
-  const CreateBooruConfigCategory.listing()
-    : title = 'Listing',
+  CreateBooruConfigCategory.listing()
+    : title = 'Listing'.hc,
       name = 'config/listing',
       id = 'listing';
 
-  const CreateBooruConfigCategory.download()
-    : title = 'booru.download',
+  CreateBooruConfigCategory.download(BuildContext context)
+    : title = context.t.booru.download,
       name = 'config/download',
       id = 'download';
 
-  const CreateBooruConfigCategory.search()
-    : title = 'Search',
+  CreateBooruConfigCategory.search()
+    : title = 'Search'.hc,
       name = 'config/search',
       id = 'search';
 
-  const CreateBooruConfigCategory.gestures()
-    : title = 'booru.gestures',
+  CreateBooruConfigCategory.gestures(BuildContext context)
+    : title = context.t.booru.gestures,
       name = 'config/gestures',
       id = 'gestures';
 
-  const CreateBooruConfigCategory.viewer()
-    : title = 'settings.image_viewer.image_viewer',
+  CreateBooruConfigCategory.viewer(BuildContext context)
+    : title = context.t.settings.image_viewer.image_viewer,
       name = 'config/viewer',
       id = 'viewer';
 
-  const CreateBooruConfigCategory.network()
-    : title = 'Network',
+  CreateBooruConfigCategory.network()
+    : title = 'Network'.hc,
       name = 'config/network',
       id = 'network';
 
-  const CreateBooruConfigCategory.appearance()
-    : title = 'settings.appearance.appearance',
+  CreateBooruConfigCategory.appearance(BuildContext context)
+    : title = context.t.settings.appearance.appearance,
       name = 'config/appearance',
       id = 'appearance';
 
-  const CreateBooruConfigCategory.misc()
-    : title = 'booru.misc',
+  CreateBooruConfigCategory.misc(BuildContext context)
+    : title = context.t.booru.misc,
       name = 'config/misc',
       id = 'misc';
 

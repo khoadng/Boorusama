@@ -249,11 +249,11 @@ class ImportDataNotifier
 
     state = state.copyWith(
       tasks: [
-        for (final t in selectedTasks)
-          if (t.status == SelectStatus.selected)
-            t.copyWith(importStatus: const ImportQueued())
+        for (final tsk in selectedTasks)
+          if (tsk.status == SelectStatus.selected)
+            tsk.copyWith(importStatus: const ImportQueued())
           else
-            t,
+            tsk,
       ],
     );
 
@@ -268,11 +268,11 @@ class ImportDataNotifier
 
       state = state.copyWith(
         tasks: [
-          for (final t in state.tasks)
-            if (t.id == task.id)
+          for (final tsk in state.tasks)
+            if (tsk.id == task.id)
               task.copyWith(importStatus: const Importing())
             else
-              t,
+              tsk,
         ],
       );
 
@@ -412,21 +412,21 @@ class ImportDataNotifier
 
         state = state.copyWith(
           tasks: [
-            for (final t in state.tasks)
-              if (t.id == task.id)
+            for (final tsk in state.tasks)
+              if (tsk.id == task.id)
                 task.copyWith(importStatus: const ImportDone())
               else
-                t,
+                tsk,
           ],
         );
       } catch (e) {
         state = state.copyWith(
           tasks: [
-            for (final t in state.tasks)
-              if (t.id == task.id)
+            for (final tsk in state.tasks)
+              if (tsk.id == task.id)
                 task.copyWith(importStatus: ImportError(e.toString()))
               else
-                t,
+                tsk,
           ],
         );
       }
@@ -446,8 +446,8 @@ class ImportDataNotifier
 
     state = state.copyWith(
       tasks: [
-        for (final t in state.tasks)
-          if (t.id == id) newTask else t,
+        for (final tsk in state.tasks)
+          if (tsk.id == id) newTask else tsk,
       ],
     );
   }

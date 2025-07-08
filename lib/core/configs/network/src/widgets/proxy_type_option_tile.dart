@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../proxy/proxy.dart';
@@ -26,7 +27,7 @@ class ProxyTypeOptionTile extends ConsumerWidget {
     return ListTile(
       contentPadding: const EdgeInsets.only(left: 4),
       visualDensity: VisualDensity.compact,
-      title: const Text('Proxy Type'),
+      title: Text('Proxy Type'.hc),
       trailing: OptionDropDownButton(
         alignment: AlignmentDirectional.centerStart,
         value: proxySettings?.type,
@@ -39,7 +40,7 @@ class ProxyTypeOptionTile extends ConsumerWidget {
                 value: e,
                 child: Text(
                   switch (e) {
-                    ProxyType.unknown => '<Select>',
+                    ProxyType.unknown => '<Select>'.hc,
                     ProxyType.http => 'HTTP(S)',
                     ProxyType.socks5 => 'SOCKS5',
                   },

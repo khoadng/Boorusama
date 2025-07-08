@@ -32,9 +32,9 @@ class ExploreSection extends StatelessWidget {
               ? TextButton(
                   onPressed: onPressed,
                   child: Text(
-                    'explore.see_more',
+                    context.t.explore.see_more,
                     style: Theme.of(context).textTheme.labelLarge,
-                  ).tr(),
+                  ),
                 )
               : null,
         ),

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../foundation/iap/iap.dart';
@@ -219,7 +220,7 @@ class _PurchaseButton extends ConsumerWidget {
         child: ref
             .watch(packagePurchaseProvider)
             .maybeWhen(
-              orElse: () => const Text('Subscribe'),
+              orElse: () => Text('Subscribe'.hc),
               loading: () => SizedBox(
                 width: 16,
                 height: 16,

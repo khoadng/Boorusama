@@ -61,7 +61,7 @@ class RemoveBooruConfigAlertDialog extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 14),
                 child: Text(
-                  'generic.action.delete'.tr(),
+                  context.t.generic.action.delete,
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.onError,
                     fontWeight: FontWeight.w600,
@@ -77,7 +77,7 @@ class RemoveBooruConfigAlertDialog extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 14),
                 child: Text(
-                  'generic.action.cancel'.tr(),
+                  context.t.generic.action.cancel,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     color: Theme.of(context).colorScheme.onSurface,

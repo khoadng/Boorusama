@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../../../core/posts/statistics/widgets.dart';
@@ -30,7 +31,7 @@ class PostStatsApproverSection extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         PostStatsSectionTitle(
-          title: 'Approver',
+          title: 'Approver'.hc,
           onMore: () {
             showAppModalBarBottomSheet(
               context: context,
@@ -38,7 +39,7 @@ class PostStatsApproverSection extends ConsumerWidget {
               builder: (context) => CreatorStatisticSheet(
                 totalPosts: totalPosts,
                 stats: stats.approvers,
-                title: 'Approver',
+                title: 'Approver'.hc,
               ),
             );
           },

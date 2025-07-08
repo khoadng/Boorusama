@@ -48,7 +48,7 @@ class SliverRelatedPostsSection<T extends Post> extends ConsumerWidget {
             )
           : null,
       title: Text(
-        title ?? 'post.detail.related_posts'.tr(),
+        title ?? context.t.post.detail.related_posts,
         style: Theme.of(context).textTheme.titleLarge?.copyWith(
           fontWeight: FontWeight.bold,
         ),

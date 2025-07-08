@@ -61,7 +61,7 @@ class _CreateBooruConfigNameFieldState
         onChanged: widget.onChanged,
         decoration: InputDecoration(
           hintText: 'A label to identify this profile',
-          labelText: 'booru.config_name_label'.tr(),
+          labelText: context.t.booru.config_name_label,
         ),
       ),
     );

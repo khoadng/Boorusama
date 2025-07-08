@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../foundation/networking.dart';
@@ -30,7 +31,7 @@ class _ExportDataPageState extends ConsumerState<ExportDataPage> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Transfer data'),
+          title: Text('Transfer data'.hc),
         ),
         body: Padding(
           padding: const EdgeInsets.symmetric(
@@ -58,10 +59,11 @@ class _ExportDataPageState extends ConsumerState<ExportDataPage> {
                         style: Theme.of(context).textTheme.titleSmall?.copyWith(
                           color: Theme.of(context).colorScheme.hintColor,
                         ),
-                        children: const [
+                        children: [
                           TextSpan(
                             text:
-                                'WiFi connection required to transfer data. Please connect to a WiFi network and try again.',
+                                'WiFi connection required to transfer data. Please connect to a WiFi network and try again.'
+                                    .hc,
                           ),
                         ],
                       ),

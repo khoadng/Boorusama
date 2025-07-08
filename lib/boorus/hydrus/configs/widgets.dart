@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../core/configs/auth/widgets.dart';
@@ -45,14 +46,15 @@ class HydrusAuthConfigView extends ConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const SizedBox(height: 24),
-          const DefaultBooruApiKeyField(
-            labelText: 'API access key',
+          DefaultBooruApiKeyField(
+            labelText: 'API access key'.hc,
           ),
           const SizedBox(height: 8),
           WarningContainer(
-            title: 'Warning',
-            contentBuilder: (context) => const Text(
-              "It is recommended to not make any changes to Hydrus's services while using the app, you might see unexpected behavior.",
+            title: 'Warning'.hc,
+            contentBuilder: (context) => Text(
+              "It is recommended to not make any changes to Hydrus's services while using the app, you might see unexpected behavior."
+                  .hc,
             ),
           ),
         ],

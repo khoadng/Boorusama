@@ -27,10 +27,10 @@ extension BlacklistedTagsNotifierX on BlacklistedTagsNotifier {
     await add(
       tagSet: tags.toSet(),
       onSuccess: (tags) =>
-          showSuccessToast(context, 'blacklisted_tags.updated'.tr()),
+          showSuccessToast(context, context.t.blacklisted_tags.updated),
       onFailure: (e) => showErrorToast(
         context,
-        '${'blacklisted_tags.failed_to_add'.tr()}\n$e',
+        '${context.t.blacklisted_tags.failed_to_add}\n$e',
       ),
     );
   }
@@ -42,11 +42,11 @@ extension BlacklistedTagsNotifierX on BlacklistedTagsNotifier {
     tagSet: {tag},
     onSuccess: (tags) => showSuccessToast(
       context,
-      'blacklisted_tags.updated'.tr(),
+      context.t.blacklisted_tags.updated,
     ),
     onFailure: (e) => showErrorToast(
       context,
-      '${'blacklisted_tags.failed_to_add'.tr()}\n$e',
+      '${context.t.blacklisted_tags.failed_to_add}\n$e',
     ),
   );
 
@@ -57,11 +57,11 @@ extension BlacklistedTagsNotifierX on BlacklistedTagsNotifier {
     tag: tag,
     onSuccess: (tags) => showSuccessToast(
       context,
-      'blacklisted_tags.updated'.tr(),
+      context.t.blacklisted_tags.updated,
     ),
     onFailure: () => showErrorToast(
       context,
-      'blacklisted_tags.failed_to_remove'.tr(),
+      context.t.blacklisted_tags.failed_to_remove,
     ),
   );
 }

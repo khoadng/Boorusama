@@ -33,9 +33,9 @@ class HomeScreenSection extends ConsumerWidget {
       child: ListTile(
         contentPadding: EdgeInsets.zero,
         visualDensity: VisualDensity.compact,
-        title: const Text('Home screen'),
-        subtitle: const Text(
-          'Change the view of the home screen',
+        title: Text('Home screen'.hc),
+        subtitle: Text(
+          'Change the view of the home screen'.hc,
         ),
         trailing: OptionDropDownButton(
           alignment: AlignmentDirectional.centerStart,
@@ -47,7 +47,7 @@ class HomeScreenSection extends ConsumerWidget {
               .map(
                 (value) => DropdownMenuItem(
                   value: value,
-                  child: Text(_describeView(data, value)).tr(),
+                  child: Text(_describeView(context, data, value)),
                 ),
               )
               .toList(),
@@ -57,7 +57,8 @@ class HomeScreenSection extends ConsumerWidget {
   }
 
   String _describeView(
+    BuildContext context,
     Map<CustomHomeViewKey, CustomHomeDataBuilder> data,
     CustomHomeViewKey viewKey,
-  ) => data[viewKey]?.displayName ?? 'Unknown';
+  ) => data[viewKey]?.displayName(context) ?? 'Unknown'.hc;
 }

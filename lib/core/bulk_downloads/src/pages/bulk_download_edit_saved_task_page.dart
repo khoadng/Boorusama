@@ -56,9 +56,9 @@ class BulkDownloadEditSavedTaskPage extends ConsumerWidget {
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: const Text(
-                    'generic.action.cancel',
-                  ).tr(),
+                  child: Text(
+                    context.t.generic.action.cancel,
+                  ),
                 ),
               ),
               Expanded(
@@ -86,9 +86,9 @@ class BulkDownloadEditSavedTaskPage extends ConsumerWidget {
                           navigator.pop();
                         }
                       : null,
-                  child: const Text(
-                    'Save',
-                  ).tr(),
+                  child: Text(
+                    'Save'.hc,
+                  ),
                 ),
               ),
             ],

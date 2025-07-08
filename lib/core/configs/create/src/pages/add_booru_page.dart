@@ -231,7 +231,7 @@ class _AddBooruPageInternalState extends ConsumerState<AddBooruPageInternal> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'booru.add_a_booru_site'.tr(),
+                context.t.booru.add_a_booru_site,
                 style: Theme.of(context).textTheme.headlineSmall!.copyWith(
                   fontWeight: FontWeight.w900,
                 ),
@@ -279,7 +279,7 @@ class _AddBooruPageInternalState extends ConsumerState<AddBooruPageInternal> {
                 },
                 controller: urlController,
                 decoration: InputDecoration(
-                  labelText: 'booru.site_url'.tr(),
+                  labelText: context.t.booru.site_url,
                   suffixIcon: IconButton(
                     iconSize: 20,
                     onPressed: () {
@@ -309,7 +309,7 @@ class _AddBooruPageInternalState extends ConsumerState<AddBooruPageInternal> {
               child: ValueListenableBuilder(
                 valueListenable: inputText,
                 builder: (_, input, _) => Text(
-                  e.message(input),
+                  e.message(context, input),
                   style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                     color: Theme.of(context).colorScheme.error,
                   ),
@@ -326,11 +326,11 @@ class _AddBooruPageInternalState extends ConsumerState<AddBooruPageInternal> {
             child: error.fold(
               (e) => FilledButton(
                 onPressed: null,
-                child: const Text('booru.next_step').tr(),
+                child: Text(context.t.booru.next_step),
               ),
               (uri) => FilledButton(
                 onPressed: () => _onNext(uri.toString()),
-                child: const Text('booru.next_step').tr(),
+                child: Text(context.t.booru.next_step),
               ),
             ),
           ),
@@ -345,20 +345,20 @@ class _AddBooruPageInternalState extends ConsumerState<AddBooruPageInternal> {
 }
 
 extension BooruUrlErrorX on BooruUrlError {
-  String message(String url) => switch (this) {
+  String message(BuildContext context, String url) => switch (this) {
     BooruUrlError.nullUrl => 'URL is null',
-    BooruUrlError.emptyUrl => 'booru.validation_empty_url'.tr(),
+    BooruUrlError.emptyUrl => context.t.booru.validation_empty_url,
     BooruUrlError.invalidUrlFormat =>
-      'booru.validation_invalid_url'.tr().replaceAll('{0}', url),
+      context.t.booru.validation_invalid_url.replaceAll('{0}', url),
     BooruUrlError.notAnHttpOrHttpsUrl =>
-      'booru.validation_invalid_http_url'.tr().replaceAll('{0}', url),
+      context.t.booru.validation_invalid_http_url.replaceAll('{0}', url),
     BooruUrlError.missingLastSlash =>
-      'booru.validation_missing_trailing_slash'.tr().replaceAll('{0}', url),
+      context.t.booru.validation_missing_trailing_slash.replaceAll('{0}', url),
     BooruUrlError.redundantWww =>
-      'booru.validation_redundant_www'.tr().replaceAll('{0}', url),
+      context.t.booru.validation_redundant_www.replaceAll('{0}', url),
     BooruUrlError.stringHasInbetweenSpaces =>
-      'booru.validation_contains_spaces'.tr().replaceAll('{0}', url),
+      context.t.booru.validation_contains_spaces.replaceAll('{0}', url),
     BooruUrlError.missingScheme =>
-      'booru.validation_missing_scheme'.tr().replaceAll('{0}', url),
+      context.t.booru.validation_missing_scheme.replaceAll('{0}', url),
   };
 }

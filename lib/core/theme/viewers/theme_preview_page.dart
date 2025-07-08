@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
@@ -149,11 +150,9 @@ class _ThemePreviewPageState extends State<ThemePreviewPage> {
                             notifier.onExit();
                           },
                           child: switch (notifier.updateMethod) {
-                            ThemeUpdateMethod.applyDirectly => const Text(
-                              'Apply',
-                            ),
-                            ThemeUpdateMethod.saveAndUpdateLater => const Text(
-                              'Save',
+                            ThemeUpdateMethod.applyDirectly => Text('Apply'.hc),
+                            ThemeUpdateMethod.saveAndUpdateLater => Text(
+                              'Save'.hc,
                             ),
                           },
                         )
@@ -161,7 +160,7 @@ class _ThemePreviewPageState extends State<ThemePreviewPage> {
                           onPressed: () {
                             goToPremiumPage(ref);
                           },
-                          child: const Text('Upgrade'),
+                          child: Text('Upgrade'.hc),
                         ),
                 );
               },

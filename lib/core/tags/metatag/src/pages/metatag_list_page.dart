@@ -23,7 +23,7 @@ class MetatagListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Metatags'),
+        title: Text('Metatags'.hc),
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
@@ -35,9 +35,8 @@ class MetatagListPage extends StatelessWidget {
       body: Column(
         children: [
           InfoContainer(
-            title: 'Free tags',
-            contentBuilder: (context) =>
-                const Text('search.metatags_notice').tr(),
+            title: 'Free tags'.hc,
+            contentBuilder: (context) => Text(context.t.search.metatags_notice),
           ),
           Expanded(
             child: ListView.builder(
@@ -57,7 +56,7 @@ class MetatagListPage extends StatelessWidget {
                             context,
                           ).colorScheme.primary,
                           label: Text(
-                            'Free',
+                            'Free'.hc,
                             style: TextStyle(
                               color: Theme.of(context).colorScheme.onPrimary,
                             ),

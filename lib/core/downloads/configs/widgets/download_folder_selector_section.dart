@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:foundation/foundation.dart';
-import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
@@ -67,7 +66,7 @@ class _DownloadFolderSelectorSectionState
         const SizedBox(height: 16),
         widget.title ??
             Text(
-              DownloadTranslations.downloadPath.tr(),
+              DownloadTranslations.downloadPath(context),
             ),
         const SizedBox(height: 4),
         Material(
@@ -93,7 +92,9 @@ class _DownloadFolderSelectorSectionState
                           )
                         : Text(
                             widget.hint ??
-                                DownloadTranslations.downloadSelectFolder.tr(),
+                                DownloadTranslations.downloadSelectFolder(
+                                  context,
+                                ),
                             overflow: TextOverflow.fade,
                             style: Theme.of(context).textTheme.titleMedium
                                 ?.copyWith(
@@ -166,8 +167,7 @@ class DownloadPathWarning extends StatelessWidget {
     return WarningContainer(
       margin: padding,
       contentBuilder: (context) => AppHtml(
-        data: DownloadTranslations.downloadSelectFolderWarning
-            .tr()
+        data: DownloadTranslations.downloadSelectFolderWarning(context)
             .replaceAll('{0}', allowedFolders.join(', '))
             .replaceAll('{1}', releaseName),
       ),

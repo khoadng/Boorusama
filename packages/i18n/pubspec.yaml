@@ -1,7 +1,6 @@
 name: i18n
-description: "A new Flutter package project."
-version: 0.0.1
-homepage:
+description: A package for managing internationalization in Boorusama.
+publish_to: none
 
 environment:
   sdk: ^3.8.1
@@ -10,15 +9,17 @@ environment:
 resolution: workspace
 
 dependencies:
-  easy_localization: ^3.0.7
-  easy_logger: ^0.0.2
+  collection: ^1.19.1
   equatable: ^2.0.5
+  intl: ^0.20.2
   flutter:
+    sdk: flutter
+  flutter_localizations:
     sdk: flutter
   flutter_riverpod: ^2.5.1
   timeago: ^3.7.0
+  slang: ^4.7.3
+  slang_flutter: ^4.7.0
 
 dev_dependencies:
-  flutter_test:
-    sdk: flutter
   flutter_lints: ^6.0.0

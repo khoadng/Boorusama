@@ -43,7 +43,7 @@ class CreateBooruRatingOptionsTile extends StatelessWidget {
         ListTile(
           contentPadding: EdgeInsets.zero,
           visualDensity: VisualDensity.compact,
-          title: const Text('booru.content_filtering_label').tr(),
+          title: Text(context.t.booru.content_filtering_label),
           trailing: OptionDropDownButton(
             alignment: AlignmentDirectional.centerStart,
             value: value ?? BooruConfigRatingFilter.none,

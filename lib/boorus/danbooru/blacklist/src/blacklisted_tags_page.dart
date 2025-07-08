@@ -29,7 +29,7 @@ class DanbooruBlacklistedTagsPage extends ConsumerWidget {
         .when(
           data: (tags) {
             return BlacklistedTagsViewScaffold(
-              title: 'blacklisted_tags.blacklisted_tags'.tr(),
+              title: context.t.blacklisted_tags.blacklisted_tags,
               actions: [
                 if (tags != null)
                   ImportExportTagButton(

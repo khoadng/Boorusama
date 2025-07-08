@@ -53,7 +53,7 @@ class _DanbooruForumPageState extends ConsumerState<DanbooruForumPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('forum.forum').tr(),
+        title: Text(context.t.forum.forum),
       ),
       body: Container(
         padding: const EdgeInsets.symmetric(horizontal: 8),

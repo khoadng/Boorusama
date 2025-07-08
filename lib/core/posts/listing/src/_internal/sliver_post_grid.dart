@@ -54,13 +54,13 @@ class SliverPostGrid<T extends Post> extends StatelessWidget {
         valueListenable: postController.errors,
         builder: (_, error, _) {
           if (error != null) {
-            final message = translateBooruError(error);
+            final message = translateBooruError(context, error);
             final theme = Theme.of(context);
 
             return SliverToBoxAdapter(
               child: switch (error) {
                 AppError _ => ErrorBox(
-                  errorMessage: message.tr(),
+                  errorMessage: message,
                   onRetry: _onErrorRetry,
                 ),
                 final ServerError e => Column(
@@ -74,14 +74,14 @@ class SliverPostGrid<T extends Post> extends StatelessWidget {
                     ),
                     Builder(
                       builder: (context) {
-                        final serverError = translateServerError(e);
+                        final serverError = translateServerError(context, e);
 
                         return serverError != null
                             ? Padding(
                                 padding: const EdgeInsets.symmetric(
                                   vertical: 8,
                                 ),
-                                child: Text(serverError.tr()),
+                                child: Text(serverError),
                               )
                             : const SizedBox.shrink();
                       },
@@ -124,7 +124,7 @@ class SliverPostGrid<T extends Post> extends StatelessWidget {
                     if (e.isServerError)
                       FilledButton(
                         onPressed: _onErrorRetry,
-                        child: const Text('Retry'),
+                        child: Text('Retry'.hc),
                       ),
                   ],
                 ),
@@ -206,13 +206,14 @@ class SliverPostGrid<T extends Post> extends StatelessWidget {
   }
 }
 
-String? translateServerError(ServerError error) => switch (error) {
-  final ServerError e => switch (e.httpStatusCode) {
-    null => null,
-    401 => 'search.errors.forbidden',
-    403 => 'search.errors.access_denied',
-    429 => 'search.errors.rate_limited',
-    >= 500 => 'search.errors.down',
-    _ => null,
-  },
-};
+String? translateServerError(BuildContext context, ServerError error) =>
+    switch (error) {
+      final ServerError e => switch (e.httpStatusCode) {
+        null => null,
+        401 => context.t.search.errors.forbidden,
+        403 => context.t.search.errors.access_denied,
+        429 => context.t.search.errors.rate_limited,
+        >= 500 => context.t.search.errors.down,
+        _ => null,
+      },
+    };

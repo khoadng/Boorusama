@@ -28,11 +28,12 @@ class BulkDownloadPage extends ConsumerWidget {
     return config.booruType == BooruType.zerochan
         ? Scaffold(
             appBar: AppBar(
-              title: const Text(DownloadTranslations.title).tr(),
+              title: Text(DownloadTranslations.title(context)),
             ),
-            body: const Center(
+            body: Center(
               child: Text(
-                'Temporarily disabled due to an issue with getting the download link',
+                'Temporarily disabled due to an issue with getting the download link'
+                    .hc,
               ),
             ),
           )
@@ -53,7 +54,7 @@ class BulkDownloadPageInternal extends StatelessWidget {
           title: LayoutBuilder(
             builder: (context, constraints) => Row(
               children: [
-                const Text(DownloadTranslations.title).tr(),
+                Text(DownloadTranslations.title(context)),
                 Consumer(
                   builder: (_, ref, _) => constraints.maxWidth >= 432
                       ? _buildCreateButton(ref, dense: true)
@@ -146,7 +147,7 @@ class BulkDownloadPageInternal extends StatelessWidget {
       },
       child: Text(
         dense ? DownloadTranslations.createShort : DownloadTranslations.create,
-      ).tr(),
+      ),
     );
   }
 }
@@ -190,7 +191,7 @@ class BulkDownloadActionSessions extends ConsumerWidget {
                                 style: textTheme.titleSmall?.copyWith(
                                   color: colorScheme.hintColor,
                                 ),
-                              ).tr(),
+                              ),
                             ),
                           ),
                           const Divider(),
@@ -199,13 +200,13 @@ class BulkDownloadActionSessions extends ConsumerWidget {
                             padding: const EdgeInsets.symmetric(
                               horizontal: 12,
                             ),
-                            child: const Text(
-                              'Templates',
-                              style: TextStyle(
+                            child: Text(
+                              'Templates'.hc,
+                              style: const TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
                               ),
-                            ).tr(),
+                            ),
                           ),
                           Expanded(
                             child: ListView.builder(

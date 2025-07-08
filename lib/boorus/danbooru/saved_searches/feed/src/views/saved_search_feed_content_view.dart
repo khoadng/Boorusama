@@ -61,7 +61,7 @@ class _SavedSearchFeedContentViewState
             ),
         sliverHeaders: [
           SliverAppBar(
-            title: const Text('saved_search.saved_search_feed').tr(),
+            title: Text(context.t.saved_search.saved_search_feed),
             floating: true,
             actions: [
               IconButton(
@@ -145,7 +145,7 @@ class _SavedSearchList extends ConsumerWidget {
             vertical: 4,
             horizontal: text.fold(
               () => 12,
-              (t) => t.length < 4 ? 12 : 4,
+              (text) => text.length < 4 ? 12 : 4,
             ),
           ),
           labelPadding: const EdgeInsets.all(1),
@@ -157,7 +157,7 @@ class _SavedSearchList extends ConsumerWidget {
           label: Text(
             text.fold(
               () => '<empty>',
-              (t) => t.replaceAll('_', ' '),
+              (text) => text.replaceAll('_', ' '),
             ),
             overflow: TextOverflow.fade,
           ),

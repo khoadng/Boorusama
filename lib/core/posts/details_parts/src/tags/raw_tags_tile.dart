@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../../foundation/display/media_query_utils.dart';
@@ -80,13 +81,13 @@ class RawTagsTileTitle<T extends Post> extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final effectiveItemBuilder = {
-      'select': const Text('Select'),
+      'select': Text('Select'.hc),
       ...?itemBuilder,
     };
 
     return Row(
       children: [
-        Text('${count ?? '???'} tags'),
+        Text('${count ?? '???'} tags'.hc),
         BooruPopupMenuButton(
           iconColor: Theme.of(context).colorScheme.onSurface,
           onSelected: (value) {

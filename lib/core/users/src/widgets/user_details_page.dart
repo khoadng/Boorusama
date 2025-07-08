@@ -18,7 +18,7 @@ class UserDetailsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('profile.profile').tr(),
+        title: Text(context.t.profile.profile),
         actions: actions,
       ),
       body: SafeArea(

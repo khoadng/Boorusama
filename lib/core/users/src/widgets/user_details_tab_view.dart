@@ -1,9 +1,6 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
-// Package imports:
-import 'package:i18n/i18n.dart';
-
 class UserDetailsTabView extends StatelessWidget {
   const UserDetailsTabView({
     required this.sliverInfoOverview,
@@ -49,7 +46,7 @@ class UserDetailsTabView extends StatelessWidget {
                           ),
                           isScrollable: true,
                           tabs: [
-                            for (final tab in tabMap.keys) Tab(text: tab.tr()),
+                            for (final tab in tabMap.keys) Tab(text: tab),
                           ],
                         ),
                         const Divider(

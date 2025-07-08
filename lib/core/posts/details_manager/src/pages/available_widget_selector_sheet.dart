@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../providers/details_layout_provider.dart';
@@ -29,8 +30,8 @@ class AvailableWidgetSelectorSheet extends ConsumerWidget {
 
     return Scaffold(
       body: availableParts.isEmpty
-          ? const Center(
-              child: Text('No available widgets, all are selected'),
+          ? Center(
+              child: Text('No available widgets, all are selected'.hc),
             )
           : Column(
               mainAxisSize: MainAxisSize.min,
@@ -41,9 +42,9 @@ class AvailableWidgetSelectorSheet extends ConsumerWidget {
                     vertical: 20,
                     horizontal: 12,
                   ),
-                  child: const Text(
-                    'Available widgets',
-                    style: TextStyle(
+                  child: Text(
+                    'Available widgets'.hc,
+                    style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),

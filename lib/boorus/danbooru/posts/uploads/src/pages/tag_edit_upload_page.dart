@@ -8,6 +8,7 @@ import 'package:flutter_portal/flutter_portal.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 import 'package:foundation/widgets.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../../../core/configs/config.dart';
@@ -410,7 +411,7 @@ class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
                                     '${ref.readConfigAuth.url}/artists/new?artist[source]=${widget.post.pageUrl}';
                                 launchExternalUrlString(url);
                               },
-                              child: const Text('Create'),
+                              child: Text('Create'.hc),
                             ),
                             const SizedBox(width: 16),
                           ],
@@ -604,7 +605,7 @@ class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
 
               return ExpansionTile(
                 initiallyExpanded: true,
-                title: const Text('Translated'),
+                title: Text('Translated'.hc),
                 controlAffinity: ListTileControlAffinity.leading,
                 children: [
                   Column(
@@ -663,7 +664,7 @@ class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
         final tags = value.text.split(' ');
 
         return ExpansionTile(
-          title: const Text('Favorites'),
+          title: Text('Favorites'.hc),
           controlAffinity: ListTileControlAffinity.leading,
           children: [
             TagEditFavoriteView(
@@ -694,7 +695,7 @@ class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
           controlAffinity: ListTileControlAffinity.leading,
           title: Row(
             children: [
-              const Text('Related'),
+              Text('Related'.hc),
               const SizedBox(width: 8),
               if (selectedTag.isNotEmpty)
                 BooruChip(
@@ -875,7 +876,7 @@ class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
                           },
                         )
                   : null,
-              child: const Text('Post'),
+              child: Text('Post'.hc),
             );
           },
         ),

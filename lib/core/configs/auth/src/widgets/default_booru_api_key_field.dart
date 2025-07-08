@@ -31,7 +31,7 @@ class DefaultBooruApiKeyField extends ConsumerWidget {
 
     return CreateBooruApiKeyField(
       text: apiKey,
-      labelText: isPassword ? 'booru.password_label'.tr() : labelText,
+      labelText: isPassword ? context.t.booru.password_label : labelText,
       hintText: hintText ?? 'e.g: o6H5u8QrxC7dN3KvF9D2bM4p',
       onChanged: ref.editNotifier.updateApiKey,
     );

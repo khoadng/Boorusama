@@ -52,7 +52,7 @@ class DefaultMultiSelectionActions<T extends Post> extends ConsumerWidget {
                     }
                   : null,
               icon: const Icon(Symbols.download),
-              name: 'download.download'.tr(),
+              name: context.t.download.download,
             ),
             if (bookmark)
               AddBookmarksButton(

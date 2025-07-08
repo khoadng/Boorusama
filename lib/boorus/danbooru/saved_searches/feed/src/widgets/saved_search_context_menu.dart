@@ -32,7 +32,7 @@ class SavedSearchContextMenu extends ConsumerWidget
           copyButton(context, tag),
           searchButton(ref, tag),
           ContextMenuButtonConfig(
-            'download.bulk_download'.tr(),
+            context.t.download.download,
             onPressed: () {
               goToBulkDownloadPage(context, [tag], ref: ref);
             },

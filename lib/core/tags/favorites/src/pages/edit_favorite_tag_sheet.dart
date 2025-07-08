@@ -132,7 +132,7 @@ class _EditSavedSearchSheetState extends ConsumerState<EditFavoriteTagSheet> {
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: const Text('generic.action.cancel').tr(),
+                  child: Text(context.t.generic.action.cancel),
                 ),
                 FilledButton(
                   style: FilledButton.styleFrom(
@@ -142,7 +142,7 @@ class _EditSavedSearchSheetState extends ConsumerState<EditFavoriteTagSheet> {
                     ),
                   ),
                   onPressed: _onSubmit,
-                  child: const Text('generic.action.ok').tr(),
+                  child: Text(context.t.generic.action.ok),
                 ),
               ],
             ),

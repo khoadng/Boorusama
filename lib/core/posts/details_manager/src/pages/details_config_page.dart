@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../boorus/engine/engine.dart';
@@ -35,7 +36,7 @@ class DetailsConfigPage extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Widgets'),
+        title: Text('Widgets'.hc),
       ),
       body: Column(
         children: [
@@ -49,7 +50,7 @@ class DetailsConfigPage extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     _Title(
-                      title: 'Preview widgets',
+                      title: 'Preview widgets'.hc,
                       onPressed: () => goToDetailsLayoutManagerPage(
                         ref,
                         params: DetailsLayoutManagerParams(
@@ -70,7 +71,7 @@ class DetailsConfigPage extends ConsumerWidget {
                     _WidgetList(parts: previewDetails),
                     const SizedBox(height: 24),
                     _Title(
-                      title: 'Full informaton widgets',
+                      title: 'Full informaton widgets'.hc,
                       onPressed: () => goToDetailsLayoutManagerPage(
                         ref,
                         params: DetailsLayoutManagerParams(
@@ -95,7 +96,7 @@ class DetailsConfigPage extends ConsumerWidget {
           ),
           SafeArea(
             child: Text(
-              'All changes are saved to your current profile.',
+              'All changes are saved to your current profile.'.hc,
               style: Theme.of(context).textTheme.titleSmall?.copyWith(
                 color: Theme.of(context).colorScheme.hintColor,
                 fontSize: 14,
@@ -166,7 +167,7 @@ class _Title extends StatelessWidget {
         ),
         trailing: TextButton(
           onPressed: onPressed,
-          child: const Text('Customize'),
+          child: Text('Customize'.hc),
         ),
       ),
     );

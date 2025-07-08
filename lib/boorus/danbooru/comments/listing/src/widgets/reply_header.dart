@@ -27,7 +27,7 @@ class ReplyHeader extends StatelessWidget {
       child: Wrap(
         children: [
           Text(
-            '${'comment.list.reply_to'.tr()} ',
+            '${context.t.comment.list.reply_to} ',
             softWrap: true,
             style: TextStyle(
               color: Theme.of(context).colorScheme.hintColor,

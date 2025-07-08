@@ -43,7 +43,7 @@ class SearchHistorySection extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'search.history.history'.tr().toUpperCase(),
+                        context.t.search.history.history.toUpperCase(),
                         style: Theme.of(context).textTheme.titleSmall?.copyWith(
                           fontWeight: FontWeight.w700,
                         ),

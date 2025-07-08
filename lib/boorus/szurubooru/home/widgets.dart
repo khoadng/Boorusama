@@ -28,7 +28,7 @@ class SzurubooruHomePage extends ConsumerWidget {
         if (config.hasLoginDetails()) ...[
           SideMenuTile(
             icon: const Icon(Symbols.favorite),
-            title: Text('profile.favorites'.tr()),
+            title: Text(context.t.profile.favorites),
             onTap: () => goToFavoritesPage(ref),
           ),
         ],

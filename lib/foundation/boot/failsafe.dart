@@ -9,6 +9,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../animations/constants.dart';
@@ -77,10 +78,11 @@ class AppFailedToInitialize extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       const SizedBox(height: 16),
-                      const Text(
-                        'An error has occurred, please report this to the developer',
+                      Text(
+                        'An error has occurred, please report this to the developer'
+                            .hc,
                         textAlign: TextAlign.center,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
                         ),

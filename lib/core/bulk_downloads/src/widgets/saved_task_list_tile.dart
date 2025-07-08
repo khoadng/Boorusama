@@ -178,14 +178,14 @@ class _ModalOptions extends StatelessWidget {
           const DragLine(),
           const SizedBox(height: 8),
           ListTile(
-            title: const Text(DownloadTranslations.runTemplate).tr(),
+            title: Text(DownloadTranslations.runTemplate),
             onTap: () {
               onRun();
               navigator.pop();
             },
           ),
           ListTile(
-            title: const Text('generic.action.duplicate').tr(),
+            title: Text(context.t.generic.action.duplicate),
             onTap: () {
               onDuplicate();
               navigator.pop();
@@ -193,11 +193,11 @@ class _ModalOptions extends StatelessWidget {
           ),
           ListTile(
             title: Text(
-              'generic.action.delete',
+              context.t.generic.action.delete,
               style: TextStyle(
                 color: colorScheme.error,
               ),
-            ).tr(),
+            ),
             onTap: () {
               onDelete();
               navigator.pop();

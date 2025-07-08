@@ -15,7 +15,7 @@ class ChangelogPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('settings.changelog').tr(),
+        title: Text(context.t.settings.changelog),
         automaticallyImplyLeading: false,
         actions: [
           IconButton(

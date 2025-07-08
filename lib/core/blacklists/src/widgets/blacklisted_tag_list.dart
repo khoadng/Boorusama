@@ -33,9 +33,9 @@ class BlacklistedTagList extends StatelessWidget {
               slivers: [
                 SliverToBoxAdapter(
                   child: WarningContainer(
-                    title: 'Limitation',
+                    title: 'Limitation'.hc,
                     contentBuilder: (context) => AppHtml(
-                      data: 'blacklisted_tags.limitation_notice'.tr(),
+                      data: context.t.blacklisted_tags.limitation_notice,
                     ),
                   ),
                 ),

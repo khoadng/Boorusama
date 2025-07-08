@@ -65,17 +65,25 @@ class BasicColorSelector extends ConsumerWidget {
           ),
           const SizedBox(height: 8),
           SwitchListTile(
-            title: const Text('settings.theme.dynamic_color').tr(),
+            title: Text(context.t.settings.theme.dynamic_color),
             subtitle: dynamicColorSupported
                 ? !isDesktopPlatform()
-                      ? const Text(
-                          'settings.theme.dynamic_color_mobile_description',
-                        ).tr()
-                      : const Text(
-                          'settings.theme.dynamic_color_desktop_description',
-                        ).tr()
+                      ? Text(
+                          context
+                              .t
+                              .settings
+                              .theme
+                              .dynamic_color_mobile_description,
+                        )
+                      : Text(
+                          context
+                              .t
+                              .settings
+                              .theme
+                              .dynamic_color_desktop_description,
+                        )
                 : Text(
-                    '${!isDesktopPlatform() ? 'settings.theme.dynamic_color_mobile_description'.tr() : 'settings.theme.dynamic_color_desktop_description'.tr()}. ${'settings.theme.dynamic_color_unsupported_description'.tr()}',
+                    '${!isDesktopPlatform() ? context.t.settings.theme.dynamic_color_mobile_description : context.t.settings.theme.dynamic_color_desktop_description}. ${context.t.settings.theme.dynamic_color_unsupported_description}',
                   ),
             value: enableDynamicColoring,
             onChanged: dynamicColorSupported

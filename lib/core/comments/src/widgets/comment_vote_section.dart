@@ -78,7 +78,7 @@ class CommentVoteSection extends StatelessWidget {
         if (onReply != null)
           TextButton(
             onPressed: onReply,
-            child: const Text('comment.list.reply').tr(),
+            child: Text(context.t.comment.list.reply),
           ),
         if (moreBuilder != null) moreBuilder!(context),
       ],

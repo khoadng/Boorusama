@@ -50,12 +50,12 @@ class BooruConfigGesturesView extends ConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           BooruConfigSettingsHeader(
-            label: 'settings.image_viewer.image_viewer'.tr(),
+            label: context.t.settings.image_viewer.image_viewer,
           ),
           ListTile(
             contentPadding: EdgeInsets.zero,
             visualDensity: VisualDensity.compact,
-            title: const Text('gestures.swipe_down').tr(),
+            title: Text(context.t.gestures.swipe_down),
             trailing: OptionDropDownButton(
               alignment: AlignmentDirectional.centerStart,
               value: postGesturesConfigTyped?.fullview?.swipeDown,
@@ -81,7 +81,7 @@ class BooruConfigGesturesView extends ConsumerWidget {
           ListTile(
             contentPadding: EdgeInsets.zero,
             visualDensity: VisualDensity.compact,
-            title: const Text('gestures.double_tap').tr(),
+            title: Text(context.t.gestures.double_tap),
             trailing: OptionDropDownButton(
               alignment: AlignmentDirectional.centerStart,
               value: postGesturesConfigTyped?.fullview?.doubleTap,
@@ -108,7 +108,7 @@ class BooruConfigGesturesView extends ConsumerWidget {
           ListTile(
             contentPadding: EdgeInsets.zero,
             visualDensity: VisualDensity.compact,
-            title: const Text('gestures.long_press').tr(),
+            title: Text(context.t.gestures.long_press),
             trailing: OptionDropDownButton(
               alignment: AlignmentDirectional.centerStart,
               value: postGesturesConfigTyped?.fullview?.longPress,
@@ -138,7 +138,7 @@ class BooruConfigGesturesView extends ConsumerWidget {
           ListTile(
             contentPadding: EdgeInsets.zero,
             visualDensity: VisualDensity.compact,
-            title: const Text('gestures.tap').tr(),
+            title: Text(context.t.gestures.tap),
             trailing: OptionDropDownButton(
               alignment: AlignmentDirectional.centerStart,
               value: postGesturesConfigTyped?.preview?.tap,
@@ -164,7 +164,7 @@ class BooruConfigGesturesView extends ConsumerWidget {
           ListTile(
             contentPadding: EdgeInsets.zero,
             visualDensity: VisualDensity.compact,
-            title: const Text('gestures.long_press').tr(),
+            title: Text(context.t.gestures.long_press),
             trailing: OptionDropDownButton(
               alignment: AlignmentDirectional.centerStart,
               value: postGesturesConfigTyped?.preview?.longPress,

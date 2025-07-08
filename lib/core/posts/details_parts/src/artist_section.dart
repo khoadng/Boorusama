@@ -161,11 +161,11 @@ class _Link extends StatelessWidget {
                 switch (display) {
                   TranlationState.original => PopupMenuItem(
                     value: TranlationState.translated,
-                    child: const Text('post.detail.show_translated').tr(),
+                    child: Text(context.t.post.detail.show_translated),
                   ),
                   TranlationState.translated => PopupMenuItem(
                     value: TranlationState.original,
-                    child: const Text('post.detail.show_original').tr(),
+                    child: Text(context.t.post.detail.show_original),
                   ),
                 },
               ],

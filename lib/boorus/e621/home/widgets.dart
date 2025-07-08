@@ -35,13 +35,13 @@ class _E621HomePageState extends ConsumerState<E621HomePage> {
       mobileMenu: [
         SideMenuTile(
           icon: const Icon(Symbols.explore),
-          title: const Text('Popular'),
+          title: Text('Popular'.hc),
           onTap: () => Navigator.of(context).push(
             CupertinoPageRoute(
               settings: const RouteSettings(name: 'popular'),
               builder: (_) => Scaffold(
                 appBar: AppBar(
-                  title: const Text('Popular'),
+                  title: Text('Popular'.hc),
                 ),
                 body: const CustomContextMenuOverlay(
                   child: E621PopularPage(),
@@ -53,7 +53,7 @@ class _E621HomePageState extends ConsumerState<E621HomePage> {
         if (config.hasLoginDetails()) ...[
           SideMenuTile(
             icon: const Icon(Symbols.favorite),
-            title: Text('profile.favorites'.tr()),
+            title: Text(context.t.profile.favorites),
             onTap: () => goToFavoritesPage(ref),
           ),
         ],

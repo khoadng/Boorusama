@@ -1,0 +1,1 @@
+cd packages/i18n && dart run slang

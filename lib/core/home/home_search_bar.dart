@@ -76,11 +76,11 @@ class HomeSearchBar extends ConsumerWidget {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Text(
-                                    'app_update.update_available',
+                                    context.t.app_update.update_available,
                                     style: Theme.of(
                                       context,
                                     ).textTheme.titleLarge,
-                                  ).tr(),
+                                  ),
                                 ],
                               ),
                             ),
@@ -94,12 +94,12 @@ class HomeSearchBar extends ConsumerWidget {
                             Row(
                               children: [
                                 Text(
-                                  'app_update.whats_new',
+                                  context.t.app_update.whats_new,
                                   style: Theme.of(context).textTheme.titleMedium
                                       ?.copyWith(
                                         fontWeight: FontWeight.bold,
                                       ),
-                                ).tr(),
+                                ),
                               ],
                             ),
                             Flexible(
@@ -133,7 +133,7 @@ class HomeSearchBar extends ConsumerWidget {
                                   onPressed: () {
                                     Navigator.of(context).pop();
                                   },
-                                  child: const Text('app_update.later').tr(),
+                                  child: Text(context.t.app_update.later),
                                 ),
                                 const SizedBox(width: 16),
                                 FilledButton(
@@ -141,7 +141,7 @@ class HomeSearchBar extends ConsumerWidget {
                                     launchExternalUrlString(d.storeUrl);
                                     Navigator.of(context).pop();
                                   },
-                                  child: const Text('app_update.update').tr(),
+                                  child: Text(context.t.app_update.update),
                                 ),
                               ],
                             ),

@@ -25,7 +25,7 @@ class ModalFavoriteGroupAction extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              title: const Text('generic.action.edit').tr(),
+              title: Text(context.t.generic.action.edit),
               leading: const Icon(
                 Symbols.edit,
                 fill: 1,
@@ -36,7 +36,7 @@ class ModalFavoriteGroupAction extends StatelessWidget {
               },
             ),
             ListTile(
-              title: const Text('generic.action.delete').tr(),
+              title: Text(context.t.generic.action.delete),
               leading: const Icon(Symbols.clear),
               onTap: () {
                 Navigator.of(context).pop();

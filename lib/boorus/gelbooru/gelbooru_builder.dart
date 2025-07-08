@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../core/boorus/engine/engine.dart';
@@ -175,7 +176,7 @@ class GelbooruBuilder
 final kGelbooruAltHomeView = {
   ...kDefaultAltHomeView,
   const CustomHomeViewKey('favorites'): CustomHomeDataBuilder(
-    displayName: 'profile.favorites',
+    displayName: (context) => context.t.profile.favorites,
     builder: (context, _) => const GelbooruFavoritesPage(),
   ),
 };

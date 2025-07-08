@@ -50,7 +50,7 @@ class CreateDownloadOptionsSheet extends ConsumerWidget {
           context: context,
           content: Text(message),
           action: SnackBarAction(
-            label: 'generic.view'.tr(),
+            label: context.t.generic.view,
             textColor: colorScheme.surface,
             onPressed: () {
               goToBulkDownloadManagerPage(ref);
@@ -111,9 +111,9 @@ class CreateDownloadOptionsSheet extends ConsumerWidget {
                       navigator.pop();
                     }
                   : null,
-              child: const Text(
+              child: Text(
                 DownloadTranslations.addToQueue,
-              ).tr(),
+              ),
             ),
           ),
           Expanded(
@@ -147,9 +147,9 @@ class CreateDownloadOptionsSheet extends ConsumerWidget {
                       navigator.pop();
                     }
                   : null,
-              child: const Text(
-                DownloadTranslations.download,
-              ).tr(),
+              child: Text(
+                DownloadTranslations.download(context),
+              ),
             ),
           ),
         ],
@@ -214,7 +214,7 @@ class _CreateDownloadOptionsRawSheetState
           ),
           child: DownloadFolderSelectorSection(
             title: Text(
-              DownloadTranslations.saveToFolder.tr().toUpperCase(),
+              context.t.download.bulk_download_save_to_folder.toUpperCase(),
               style: textTheme.titleSmall?.copyWith(
                 color: colorScheme.hintColor,
                 fontWeight: FontWeight.w800,
@@ -226,16 +226,16 @@ class _CreateDownloadOptionsRawSheetState
             onPathChanged: (path) {
               notifier.setPath(path);
             },
-            hint: DownloadTranslations.selectFolder.tr(),
+            hint: context.t.download.bulk_download_folder_select_warning,
           ),
         ),
         if (widget.advancedToggle)
           Column(
             children: [
               SwitchListTile(
-                title: const Text(
+                title: Text(
                   DownloadTranslations.showAdvancedOptions,
-                ).tr(),
+                ),
                 value: advancedOptions,
                 onChanged: (value) {
                   setState(() {
@@ -259,9 +259,9 @@ class _CreateDownloadOptionsRawSheetState
                   contentPadding: const EdgeInsets.symmetric(
                     horizontal: 4,
                   ),
-                  title: const Text(
+                  title: Text(
                     DownloadTranslations.enableNotifications,
-                  ).tr(),
+                  ),
                   value: options.notifications,
                   onChanged: (value) {
                     notifier.setNotifications(value);
@@ -271,9 +271,7 @@ class _CreateDownloadOptionsRawSheetState
                   contentPadding: const EdgeInsets.symmetric(
                     horizontal: 4,
                   ),
-                  title: const Text(
-                    d.DownloadTranslations.skipDownloadIfExists,
-                  ).tr(),
+                  title: Text(d.DownloadTranslations.skipDownloadIfExists),
                   value: options.skipIfExists,
                   onChanged: (value) {
                     notifier.setSkipIfExists(value);
@@ -281,15 +279,23 @@ class _CreateDownloadOptionsRawSheetState
                 ),
                 SettingsTile(
                   padding: const EdgeInsets.symmetric(horizontal: 4),
-                  title: const Text('settings.download.quality').tr(),
+                  title: Text(context.t.settings.download.quality),
                   selectedOption:
                       options.quality ?? DownloadQuality.original.name,
                   items: DownloadQuality.values.map((e) => e.name).toList(),
                   onChanged: (value) {
                     notifier.setQuality(value);
                   },
-                  optionBuilder: (value) =>
-                      Text('settings.download.qualities.$value').tr(),
+                  optionBuilder: (value) => Text(
+                    switch (value) {
+                      'original' =>
+                        context.t.settings.download.qualities.original,
+                      'sample' => context.t.settings.download.qualities.sample,
+                      'preview' =>
+                        context.t.settings.download.qualities.preview,
+                      _ => value,
+                    },
+                  ),
                 ),
               ],
             ),

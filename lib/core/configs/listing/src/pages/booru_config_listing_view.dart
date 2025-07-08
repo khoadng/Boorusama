@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../settings/settings.dart';
@@ -69,9 +70,10 @@ class BooruConfigListingView extends ConsumerWidget {
             ListTile(
               contentPadding: EdgeInsets.zero,
               visualDensity: VisualDensity.compact,
-              title: const Text("Thumbnail's button"),
-              subtitle: const Text(
-                'Change the default button at the right bottom of the thumbnail.',
+              title: Text("Thumbnail's button".hc),
+              subtitle: Text(
+                'Change the default button at the right bottom of the thumbnail.'
+                    .hc,
               ),
               trailing: OptionDropDownButton(
                 alignment: AlignmentDirectional.centerStart,
@@ -98,9 +100,10 @@ class BooruConfigListingView extends ConsumerWidget {
             ),
             const Divider(),
             SwitchListTile(
-              title: const Text("Enable profile's specific settings"),
-              subtitle: const Text(
-                'Override the global settings for this the profile. If enabled, global settings will be ignored until this is disabled.',
+              title: Text("Enable profile's specific settings".hc),
+              subtitle: Text(
+                'Override the global settings for this the profile. If enabled, global settings will be ignored until this is disabled.'
+                    .hc,
               ),
               value: enable,
               onChanged: (value) => ref.editNotifier.updateListing(

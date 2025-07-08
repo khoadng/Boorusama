@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../../foundation/toast.dart';
@@ -25,7 +26,7 @@ class ThemeConfigsPage extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Theme'),
+        title: Text('Theme'.hc),
       ),
       body: ThemeSection(
         theme: theme,
@@ -34,8 +35,8 @@ class ThemeConfigsPage extends ConsumerWidget {
           showSimpleSnackBar(
             context: context,
             duration: const Duration(seconds: 3),
-            content: const Text(
-              'Your theme will be applied when you save this profile',
+            content: Text(
+              'Your theme will be applied when you save this profile'.hc,
             ),
           );
         },

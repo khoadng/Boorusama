@@ -11,6 +11,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 import 'package:i18n/i18n.dart';
+import 'package:intl/intl.dart';
 
 // Project imports:
 import '../../../../foundation/animations/constants.dart';
@@ -400,8 +401,8 @@ extension BookmarkCubitToastX on BookmarkNotifier {
     await addBookmark(
       config,
       post,
-      onSuccess: () => showSuccessToast(context, 'bookmark.added'.tr()),
-      onError: () => showErrorToast(context, 'bookmark.failed_to_add'.tr()),
+      onSuccess: () => showSuccessToast(context, context.t.bookmark.added),
+      onError: () => showErrorToast(context, context.t.bookmark.failed_to_add),
     );
   }
 
@@ -416,10 +417,10 @@ extension BookmarkCubitToastX on BookmarkNotifier {
       posts,
       onSuccess: (count) => showSuccessToast(
         context,
-        'bookmark.many_added'.tr().replaceAll('{0}', '$count'),
+        context.t.bookmark.many_added.replaceAll('{0}', '$count'),
       ),
       onError: () =>
-          showErrorToast(context, 'bookmark.failed_to_add_many'.tr()),
+          showErrorToast(context, context.t.bookmark.failed_to_add_many),
     );
   }
 
@@ -431,10 +432,11 @@ extension BookmarkCubitToastX on BookmarkNotifier {
     await removeBookmarkFromId(
       bookmarkId,
       onSuccess: () {
-        showSuccessToast(context, 'bookmark.removed'.tr());
+        showSuccessToast(context, context.t.bookmark.removed);
         onSuccess?.call();
       },
-      onError: () => showErrorToast(context, 'bookmark.failed_to_remove'.tr()),
+      onError: () =>
+          showErrorToast(context, context.t.bookmark.failed_to_remove),
     );
   }
 
@@ -455,7 +457,7 @@ extension BookmarkCubitToastX on BookmarkNotifier {
     await getAllBookmarks(
       onError: (error) => showErrorToast(
         context,
-        'bookmark.failed_to_load'.tr().replaceAll('{0}', error.toString()),
+        context.t.bookmark.failed_to_load.replaceAll('{0}', error.toString()),
       ),
     );
   }

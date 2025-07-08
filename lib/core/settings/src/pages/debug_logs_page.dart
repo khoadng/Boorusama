@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 import 'package:i18n/i18n.dart';
+import 'package:intl/intl.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:readmore/readmore.dart';
 
@@ -56,13 +57,13 @@ class _DebugLogsPageState extends ConsumerState<DebugLogsPage> {
       AppClipboard.copyAndToast(
         context,
         data,
-        message: 'settings.debug_logs.logs_copied'.tr(),
+        message: context.t.settings.debug_logs.logs_copied,
       );
     }
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('settings.debug_logs.debug_logs').tr(),
+        title: Text(context.t.settings.debug_logs.debug_logs),
         actions: [
           IconButton(
             icon: const Icon(Symbols.content_copy),

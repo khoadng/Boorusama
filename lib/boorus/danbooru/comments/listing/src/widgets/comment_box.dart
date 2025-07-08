@@ -86,7 +86,7 @@ class _CommentBoxState extends ConsumerState<CommentBox> {
                 hintStyle: TextStyle(
                   color: Theme.of(context).colorScheme.hintColor,
                 ),
-                hintText: 'comment.create.hint'.tr(),
+                hintText: context.t.comment.create.hint,
                 suffixIcon: IconButton(
                   icon: const Icon(Symbols.fullscreen),
                   onPressed: () {
@@ -140,7 +140,7 @@ class _CommentBoxState extends ConsumerState<CommentBox> {
                                       replyTo: comment,
                                     );
                               },
-                        child: const Text('comment.list.send').tr(),
+                        child: Text(context.t.comment.list.send),
                       ),
                     );
                   },

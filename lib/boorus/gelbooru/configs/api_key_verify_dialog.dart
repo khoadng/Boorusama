@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../core/configs/config.dart';
@@ -26,7 +27,7 @@ class ApiKeyVerifyDialog extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return AlertDialog(
-      title: const Text('Verify API Credentials'),
+      title: Text('Verify API Credentials'.hc),
       content: const Text(
         'The app will open a browser to test your API credentials by attempting to access your account.\n\n'
         'What to expect:\n'
@@ -40,7 +41,7 @@ class ApiKeyVerifyDialog extends ConsumerWidget {
             foregroundColor: Theme.of(context).colorScheme.hintColor,
           ),
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
+          child: Text(context.t.generic.action.cancel),
         ),
         TextButton(
           onPressed: () {
@@ -64,7 +65,7 @@ class ApiKeyVerifyDialog extends ConsumerWidget {
               );
             }
           },
-          child: const Text('Verify'),
+          child: Text('Verify'.hc),
         ),
       ],
     );

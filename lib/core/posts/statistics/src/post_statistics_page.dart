@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:collection/collection.dart';
+import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
@@ -29,7 +30,7 @@ class PostStatisticsPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Stats for nerds'),
+        title: Text('Stats for nerds'.hc),
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -37,73 +38,73 @@ class PostStatisticsPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Text(
-                'General',
-                style: TextStyle(
+              Text(
+                'General'.hc,
+                style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w700,
                 ),
               ),
               PostStatsTile(
-                title: 'Total posts',
+                title: 'Total posts'.hc,
                 value: totalPosts().toString(),
               ),
               const Divider(),
               PostStatsSectionTitle(
-                title: 'Score',
+                title: 'Score'.hc,
                 onMore: () {
                   showAppModalBarBottomSheet(
                     context: context,
                     settings: const RouteSettings(name: 'posts_score_stats'),
                     builder: (context) => StatisticalSummaryDetailsPage(
-                      title: 'Score',
+                      title: 'Score'.hc,
                       stats: stats.scores,
                     ),
                   );
                 },
               ),
               PostStatsTile(
-                title: 'Average',
+                title: 'Average'.hc,
                 value:
                     '${stats.scores.mean.toStringAsFixed(1)} ± ${stats.scores.standardDeviation.toStringAsFixed(1)}',
               ),
               const Divider(),
-              const Text(
-                'Rating',
-                style: TextStyle(
+              Text(
+                'Rating'.hc,
+                style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w700,
                 ),
               ),
               if (stats.generalRatingPercentage > 0)
                 PostStatsTile(
-                  title: 'General',
+                  title: 'General'.hc,
                   value: stats.generalRatingPercentageDisplay,
                 ),
               if (stats.sensitiveRatingPercentage > 0)
                 PostStatsTile(
-                  title: 'Sensitive',
+                  title: 'Sensitive'.hc,
                   value: stats.sensitiveRatingPercentageDisplay,
                 ),
               if (stats.questionableRatingPercentage > 0)
                 PostStatsTile(
-                  title: 'Questionable',
+                  title: 'Questionable'.hc,
                   value: stats.questionableRatingPercentageDisplay,
                 ),
               if (stats.explicitRatingPercentage > 0)
                 PostStatsTile(
-                  title: 'Explicit',
+                  title: 'Explicit'.hc,
                   value: stats.explicitRatingPercentageDisplay,
                 ),
               const Divider(),
               PostStatsSectionTitle(
-                title: 'Source',
+                title: 'Source'.hc,
                 onMore: () {
                   showAppModalBarBottomSheet(
                     context: context,
                     settings: const RouteSettings(name: 'posts_source_stats'),
                     builder: (context) => StatisticsFromMapPage(
-                      title: 'Source',
+                      title: 'Source'.hc,
                       total: totalPosts(),
                       data: stats.domains.topN(),
                     ),
@@ -120,9 +121,9 @@ class PostStatisticsPage extends StatelessWidget {
                     ),
                   ),
               const Divider(),
-              const Text(
-                'Media type',
-                style: TextStyle(
+              Text(
+                'Media type'.hc,
+                style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w700,
                 ),
@@ -137,20 +138,20 @@ class PostStatisticsPage extends StatelessWidget {
                   ),
               const Divider(),
               PostStatsSectionTitle(
-                title: 'Tags',
+                title: 'Tags'.hc,
                 onMore: () {
                   showAppModalBarBottomSheet(
                     context: context,
                     settings: const RouteSettings(name: 'posts_tags_stats'),
                     builder: (context) => StatisticalSummaryDetailsPage(
-                      title: 'Tags',
+                      title: 'Tags'.hc,
                       stats: stats.tags,
                     ),
                   );
                 },
               ),
               PostStatsTile(
-                title: 'Average',
+                title: 'Average'.hc,
                 value:
                     '${stats.tags.mean.toStringAsFixed(1)} ± ${stats.tags.standardDeviation.toStringAsFixed(1)}',
               ),
@@ -267,8 +268,8 @@ class PostStatsSectionTitle extends StatelessWidget {
         const Spacer(),
         TextButton(
           onPressed: onMore,
-          child: const Text(
-            'More',
+          child: Text(
+            'More'.hc,
           ),
         ),
       ],

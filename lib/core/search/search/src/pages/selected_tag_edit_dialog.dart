@@ -91,7 +91,7 @@ class _SelectedTagEditDialogState extends ConsumerState<SelectedTagEditDialog> {
               },
               decoration: InputDecoration(
                 suffixIcon: TextButton(
-                  child: const Text('generic.action.ok').tr(),
+                  child: Text(context.t.generic.action.ok),
                   onPressed: () => _submit(context),
                 ),
               ),

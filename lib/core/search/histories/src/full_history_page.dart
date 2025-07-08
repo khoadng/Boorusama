@@ -37,21 +37,21 @@ class _FullHistoryPageState extends ConsumerState<FullHistoryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('search.history.history').tr(),
+        title: Text(context.t.search.history.history),
         actions: [
           TextButton(
             onPressed: () => showDialog(
               context: context,
               routeSettings: const RouteSettings(name: 'clear_all_history'),
               builder: (context) => AlertDialog(
-                content: const Text('Are you sure?').tr(),
+                content: Text('Are you sure?'.hc),
                 actions: [
                   TextButton(
                     style: TextButton.styleFrom(
                       foregroundColor: Theme.of(context).colorScheme.onSurface,
                     ),
                     onPressed: () => Navigator.of(context).pop(),
-                    child: const Text('generic.action.cancel').tr(),
+                    child: Text(context.t.generic.action.cancel),
                   ),
                   Consumer(
                     builder: (_, ref, _) {
@@ -64,14 +64,14 @@ class _FullHistoryPageState extends ConsumerState<FullHistoryPage> {
                           notifier.clearHistories();
                           Navigator.of(context).pop();
                         },
-                        child: const Text('generic.action.ok').tr(),
+                        child: Text(context.t.generic.action.ok),
                       );
                     },
                   ),
                 ],
               ),
             ),
-            child: const Text('search.history.clear').tr(),
+            child: Text(context.t.search.history.clear),
           ),
         ],
       ),

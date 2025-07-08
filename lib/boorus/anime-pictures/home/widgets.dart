@@ -44,12 +44,12 @@ class _AnimePicturesHomePageState extends ConsumerState<AnimePicturesHomePage> {
             Symbols.explore,
             fill: 1,
           ),
-          title: const Text('Top'),
+          title: Text('Top'.hc),
           onTap: () => Navigator.of(context).push(
             CupertinoPageRoute(
               builder: (_) => Scaffold(
                 appBar: AppBar(
-                  title: const Text('Top'),
+                  title: Text('Top'.hc),
                 ),
                 body: const CustomContextMenuOverlay(
                   child: AnimePicturesTopPage(),
@@ -64,7 +64,7 @@ class _AnimePicturesHomePageState extends ConsumerState<AnimePicturesHomePage> {
               Symbols.favorite,
               fill: 1,
             ),
-            title: Text('profile.favorites'.tr()),
+            title: Text(context.t.profile.favorites),
             onTap: () {
               goToFavoritesPage(ref);
             },

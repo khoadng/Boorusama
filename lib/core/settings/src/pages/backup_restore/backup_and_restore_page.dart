@@ -52,7 +52,7 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
   @override
   Widget build(BuildContext context) {
     return SettingsPageScaffold(
-      title: const Text('settings.backup_and_restore.backup_and_restore').tr(),
+      title: Text(context.t.settings.backup_and_restore.backup_and_restore),
       padding: const EdgeInsets.symmetric(horizontal: 8),
       children: [
         const _Title(
@@ -179,11 +179,11 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
           }
         },
         itemBuilder: {
-          if (configs.isNotEmpty) 'export': const Text('Export'),
-          'import': const Text('Import'),
+          if (configs.isNotEmpty) 'export': Text('Export'.hc),
+          'import': Text('Import'.hc),
           if (configs.isNotEmpty)
-            'export_clipboard': const Text('Export to clipboard'),
-          'import_clipboard': const Text('Import from clipboard'),
+            'export_clipboard': Text('Export to clipboard'.hc),
+          'import_clipboard': Text('Import from clipboard'.hc),
         },
       ),
     );
@@ -194,8 +194,8 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
 
     return BackupRestoreTile(
       leadingIcon: Symbols.tag,
-      title: 'Blacklisted tags',
-      subtitle: '${blacklistedTags.length} tags',
+      title: 'Blacklisted tags'.hc,
+      subtitle: '${blacklistedTags.length} tags'.hc,
       trailing: ImportExportTagButton(
         onImport: (tagString) => ref
             .read(globalBlacklistedTagsProvider.notifier)
@@ -210,8 +210,8 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
 
     return BackupRestoreTile(
       leadingIcon: Symbols.favorite,
-      title: 'favorite_tags.favorite_tags'.tr(),
-      subtitle: '${tags.length} tags',
+      title: context.t.favorite_tags.favorite_tags,
+      subtitle: '${tags.length} tags'.hc,
       trailing: BooruPopupMenuButton(
         onSelected: (value) {
           if (value == 'import') {
@@ -224,7 +224,7 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
                     AppClipboard.copyAndToast(
                       context,
                       tagString,
-                      message: 'favorite_tags.export_notification'.tr(),
+                      message: context.t.favorite_tags.export_notification,
                     );
                   },
                 );
@@ -235,12 +235,11 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
           }
         },
         itemBuilder: {
+          if (tags.isNotEmpty) 'export': Text(context.t.favorite_tags.export),
+          'import': Text(context.t.favorite_tags.import),
           if (tags.isNotEmpty)
-            'export': const Text('favorite_tags.export').tr(),
-          'import': const Text('favorite_tags.import').tr(),
-          if (tags.isNotEmpty)
-            'export_with_labels': const Text('Export with labels'),
-          'import_with_labels': const Text('Import with labels'),
+            'export_with_labels': Text('Export with labels'.hc),
+          'import_with_labels': Text('Import with labels'.hc),
         },
       ),
     );
@@ -265,8 +264,8 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
           }
         },
         itemBuilder: {
-          if (hasBookmarks) 'export': const Text('Export'),
-          'import': const Text('Import'),
+          if (hasBookmarks) 'export': Text('Export'.hc),
+          'import': Text('Import'.hc),
         },
       ),
     );
@@ -275,7 +274,7 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
   Widget _buildSettings() {
     return BackupRestoreTile(
       leadingIcon: Symbols.settings,
-      title: 'Settings',
+      title: 'Settings'.hc,
       trailing: BooruPopupMenuButton(
         onSelected: (value) {
           switch (value) {
@@ -286,9 +285,9 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
             default:
           }
         },
-        itemBuilder: const {
-          'export': Text('Export'),
-          'import': Text('Import'),
+        itemBuilder: {
+          'export': Text('Export'.hc),
+          'import': Text('Import'.hc),
         },
       ),
     );
@@ -297,7 +296,7 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
   Widget _buildSearchHistories() {
     return BackupRestoreTile(
       leadingIcon: Symbols.history,
-      title: 'Search histories',
+      title: 'Search histories'.hc,
       trailing: BooruPopupMenuButton(
         onSelected: (value) {
           switch (value) {
@@ -308,9 +307,9 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
             default:
           }
         },
-        itemBuilder: const {
-          'export': Text('Export'),
-          'import': Text('Import'),
+        itemBuilder: {
+          'export': Text('Export'.hc),
+          'import': Text('Import'.hc),
         },
       ),
     );
@@ -319,7 +318,7 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
   Widget _buildBulkDownloads() {
     return BackupRestoreTile(
       leadingIcon: Symbols.folder_zip,
-      title: 'Bulk downloads',
+      title: 'Bulk downloads'.hc,
       trailing: BooruPopupMenuButton(
         onSelected: (value) {
           switch (value) {
@@ -330,9 +329,9 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
             default:
           }
         },
-        itemBuilder: const {
-          'export': Text('Export'),
-          'import': Text('Import'),
+        itemBuilder: {
+          'export': Text('Export'.hc),
+          'import': Text('Import'.hc),
         },
       ),
     );
@@ -346,15 +345,15 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
             final dbPath = await getSearchHistoryDbPath();
             final file = File(dbPath);
             if (!file.existsSync()) {
-              _showErrorToast('No search history found');
+              _showErrorToast('No search history found'.hc);
               return;
             }
 
             final destinationPath = join(path, kSearchHistoryDbName);
             await file.copy(destinationPath);
-            _showSuccessToast('Search history exported successfully');
+            _showSuccessToast('Search history exported successfully'.hc);
           } catch (e) {
-            _showErrorToast('Failed to export search history');
+            _showErrorToast('Failed to export search history'.hc);
           }
         },
       );
@@ -399,15 +398,15 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
             final dbPath = await getDownloadsDbPath();
             final file = File(dbPath);
             if (!file.existsSync()) {
-              _showErrorToast('No bulk downloads found');
+              _showErrorToast('No bulk downloads found'.hc);
               return;
             }
 
             final destinationPath = join(path, kDownloadDbName);
             await file.copy(destinationPath);
-            _showSuccessToast('Bulk downloads exported successfully');
+            _showSuccessToast('Bulk downloads exported successfully'.hc);
           } catch (e) {
-            _showErrorToast('Failed to export bulk downloads');
+            _showErrorToast('Failed to export bulk downloads'.hc);
           }
         },
       );

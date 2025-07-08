@@ -76,18 +76,17 @@ class GeneralMoreActionButton extends ConsumerWidget with CopyImageMixin {
             }
           },
           itemBuilder: {
-            'download': const Text('download.download').tr(),
-            'copy_image': const Text('Copy image'),
+            'download': Text(context.t.download.download),
+            'copy_image': Text('Copy image'.hc),
             if (!config.hasStrictSFW)
-              'view_in_browser': const Text('post.detail.view_in_browser').tr(),
-            if (post.tags.isNotEmpty) 'show_tag_list': const Text('View tags'),
+              'view_in_browser': Text(context.t.post.detail.view_in_browser),
+            if (post.tags.isNotEmpty) 'show_tag_list': Text('View tags'.hc),
             if (post.hasFullView)
-              'view_original': const Text(
-                'post.image_fullview.view_original',
-              ).tr(),
+              'view_original':
+                  Text(context.t.post.image_fullview.view_original),
             if (onStartSlideshow != null)
-              'start_slideshow': const Text('Slideshow'),
-            'settings': const Text('settings.settings').tr(),
+              'start_slideshow': Text('Slideshow'.hc),
+            'settings': Text(context.t.settings.settings),
           },
         ),
       ),

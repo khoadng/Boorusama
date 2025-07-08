@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:expandable/expandable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
@@ -129,7 +130,7 @@ class _DownloadFormatCardState extends ConsumerState<DownloadFormatCard> {
                           widget.onChanged?.call(widget.defaultFileNameFormat);
                         });
                       },
-                      child: const Text('Reset'),
+                      child: Text('Reset'.hc),
                     ),
                   ),
                 ],

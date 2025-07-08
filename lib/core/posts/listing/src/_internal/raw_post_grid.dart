@@ -7,6 +7,7 @@ import 'package:context_menus/context_menus.dart';
 import 'package:flutter_improved_scrolling/flutter_improved_scrolling.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:foundation/widgets.dart';
+import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:sliver_tools/sliver_tools.dart';
@@ -202,8 +203,8 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
                     valueListenable:
                         _multiSelectController.selectedItemsNotifier,
                     builder: (_, selected, _) => selected.isEmpty
-                        ? const Text('Select items')
-                        : Text('${selected.length} Items selected'),
+                        ? Text('Select items'.hc)
+                        : Text('${selected.length} Items selected'.hc),
                   ),
                 ),
           child: _Scaffold(

@@ -41,13 +41,13 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
             Symbols.explore,
             fill: 1,
           ),
-          title: const Text('Popular'),
+          title: Text('Popular'.hc),
           onTap: () => Navigator.of(context).push(
             CupertinoPageRoute(
               settings: const RouteSettings(name: 'popular'),
               builder: (_) => Scaffold(
                 appBar: AppBar(
-                  title: const Text('Popular'),
+                  title: Text('Popular'.hc),
                 ),
                 body: const CustomContextMenuOverlay(
                   child: MoebooruPopularPage(),
@@ -61,13 +61,13 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
             Symbols.local_fire_department,
             fill: 1,
           ),
-          title: const Text('Hot'),
+          title: Text('Hot'.hc),
           onTap: () => Navigator.of(context).push(
             CupertinoPageRoute(
               settings: const RouteSettings(name: 'hot'),
               builder: (_) => Scaffold(
                 appBar: AppBar(
-                  title: const Text('Hot'),
+                  title: Text('Hot'.hc),
                 ),
                 body: const CustomContextMenuOverlay(
                   child: MoebooruPopularRecentPage(),
@@ -82,7 +82,7 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
               Symbols.favorite,
               fill: 1,
             ),
-            title: Text('profile.favorites'.tr()),
+            title: Text(context.t.profile.favorites),
             onTap: () {
               goToFavoritesPage(ref);
             },

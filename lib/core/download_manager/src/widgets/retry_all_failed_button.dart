@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:background_downloader/background_downloader.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
-import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../configs/config.dart';
@@ -74,7 +73,7 @@ class RetryAllFailedButton extends ConsumerWidget {
                   );
                 }
               },
-              child: const Text(DownloadTranslations.retryAllFailed).tr(),
+              child: Text(DownloadTranslations.retryAllFailed),
             ),
           )
         : const SizedBox.shrink();

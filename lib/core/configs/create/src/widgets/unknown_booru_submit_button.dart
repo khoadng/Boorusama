@@ -66,8 +66,8 @@ class UnknownBooruSubmitButton extends ConsumerWidget {
                           }
                         : null,
                     child: value
-                        ? const Text('booru.config_booru_confirm').tr()
-                        : const Text('Verify'),
+                        ? Text(context.t.booru.config_booru_confirm)
+                        : Text('Verify'.hc),
                   ),
                 )
               : _buildVerifyButton(isValid, ref, engine, url, auth),
@@ -129,7 +129,7 @@ class UnknownBooruSubmitButton extends ConsumerWidget {
               });
             }
           : null,
-      child: const Text('Verify'),
+      child: Text('Verify'.hc),
     );
   }
 }

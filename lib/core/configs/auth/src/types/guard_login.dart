@@ -14,9 +14,9 @@ void guardLogin(WidgetRef ref, void Function() action) {
   if (!ref.readConfigAuth.hasLoginDetails()) {
     showSimpleSnackBar(
       context: ref.context,
-      content: const Text(
-        'post.detail.login_required_notice',
-      ).tr(),
+      content: Text(
+        ref.context.t.post.detail.login_required_notice,
+      ),
       duration: AppDurations.shortToast,
     );
 

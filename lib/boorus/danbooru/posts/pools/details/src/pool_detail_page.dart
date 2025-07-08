@@ -43,7 +43,7 @@ class PoolDetailPage extends ConsumerWidget {
         ids: ref.watch(poolPostIdsProvider(pool)),
         sliverHeaders: [
           SliverAppBar(
-            title: const Text('pool.pool').tr(),
+            title: Text(context.t.pool.pool),
             floating: true,
             actions: [
               IconButton(
@@ -76,7 +76,7 @@ class PoolDetailPage extends ConsumerWidget {
                 style: Theme.of(context).textTheme.titleLarge,
               ),
               subtitle: Text(
-                '${'pool.detail.last_updated'.tr()}: ${pool.updatedAt.fuzzify(locale: Localizations.localeOf(context))}',
+                '${context.t.pool.detail.last_updated}: ${pool.updatedAt.fuzzify(locale: Localizations.localeOf(context))}',
               ),
             ),
           ),

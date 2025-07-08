@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../../../core/configs/ref.dart';
@@ -50,7 +51,7 @@ class DanbooruTagsTile extends ConsumerWidget {
         post: post,
         count: count,
         itemBuilder: {
-          if (config.hasLoginDetails()) 'edit': const Text('Edit'),
+          if (config.hasLoginDetails()) 'edit': Text('Edit'.hc),
         },
         onMultiSelect: () {
           goToShowTaglistPage(

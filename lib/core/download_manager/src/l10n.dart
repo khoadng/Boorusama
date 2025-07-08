@@ -1,34 +1,37 @@
+// Package imports:
+import 'package:i18n/i18n.dart';
+
 // Project imports:
 import 'types/download_filter.dart';
 
 class DownloadTranslations {
   const DownloadTranslations._();
 
-  static const String downloadManagerTitle = 'Downloads';
+  static final String downloadManagerTitle = 'Downloads'.hc;
 
-  static const String retryAllFailed = 'Retry all';
+  static final String retryAllFailed = 'Retry all'.hc;
 
-  static const String downloadNothingToClear = 'Nothing to clear';
+  static final String downloadNothingToClear = 'Nothing to clear'.hc;
 }
 
 extension DownloadFilterLocalize on DownloadFilter? {
   String localize() => switch (this) {
-    DownloadFilter.pending => 'Pending',
-    DownloadFilter.paused => 'Paused',
-    DownloadFilter.inProgress => 'In Progress',
-    DownloadFilter.completed => 'Completed',
-    DownloadFilter.canceled => 'Canceled',
-    DownloadFilter.failed => 'Failed',
-    null => 'Unknown',
+    DownloadFilter.pending => 'Pending'.hc,
+    DownloadFilter.paused => 'Paused'.hc,
+    DownloadFilter.inProgress => 'In Progress'.hc,
+    DownloadFilter.completed => 'Completed'.hc,
+    DownloadFilter.canceled => 'Canceled'.hc,
+    DownloadFilter.failed => 'Failed'.hc,
+    null => 'Unknown'.hc,
   };
 
   String emptyLocalize() => switch (this) {
-    DownloadFilter.pending => 'No pending downloads',
-    DownloadFilter.paused => 'No paused downloads',
-    DownloadFilter.inProgress => 'No downloads in progress',
-    DownloadFilter.completed => 'No completed downloads',
-    DownloadFilter.canceled => 'No canceled downloads',
-    DownloadFilter.failed => 'No failed downloads',
-    null => 'No downloads',
+    DownloadFilter.pending => 'No pending downloads'.hc,
+    DownloadFilter.paused => 'No paused downloads'.hc,
+    DownloadFilter.inProgress => 'No downloads in progress'.hc,
+    DownloadFilter.completed => 'No completed downloads'.hc,
+    DownloadFilter.canceled => 'No canceled downloads'.hc,
+    DownloadFilter.failed => 'No failed downloads'.hc,
+    null => 'No downloads'.hc,
   };
 }

@@ -66,12 +66,12 @@ class ChangelogDialog extends ConsumerWidget {
                         child: Row(
                           children: [
                             Text(
-                              'app_update.whats_new',
+                              context.t.app_update.whats_new,
                               style: Theme.of(context).textTheme.titleMedium
                                   ?.copyWith(
                                     fontWeight: FontWeight.bold,
                                   ),
-                            ).tr(),
+                            ),
                             const SizedBox(width: 8),
                             CompactChip(
                               backgroundColor: colorScheme.primary,
@@ -111,7 +111,7 @@ class ChangelogDialog extends ConsumerWidget {
                             bottom: 4,
                           ),
                           child: Text(
-                            '${'comment.list.last_updated'.tr()}: ${u.lastUpdated?.fuzzify(locale: Localizations.localeOf(context))}',
+                            '${context.t.comment.list.last_updated}: ${u.lastUpdated?.fuzzify(locale: Localizations.localeOf(context))}',
                             style: TextStyle(
                               color: colorScheme.hintColor,
                               fontStyle: FontStyle.italic,

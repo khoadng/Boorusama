@@ -37,7 +37,7 @@ class _DownloadPageState extends ConsumerState<DownloadPage> {
     final notifer = ref.watch(settingsNotifierProvider.notifier);
 
     return SettingsPageScaffold(
-      title: const Text('settings.download.title').tr(),
+      title: Text(context.t.settings.download.title),
       children: [
         DownloadSettingsInteractionBlocker(
           child: DownloadFolderSelectorSection(
@@ -49,20 +49,26 @@ class _DownloadPageState extends ConsumerState<DownloadPage> {
         ),
         const SizedBox(height: 12),
         SettingsTile(
-          title: const Text('settings.download.quality').tr(),
+          title: Text(context.t.settings.download.quality),
           selectedOption: settings.downloadQuality,
           items: DownloadQuality.values,
           onChanged: (value) =>
               notifer.updateSettings(settings.copyWith(downloadQuality: value)),
-          optionBuilder: (value) =>
-              Text('settings.download.qualities.${value.name}').tr(),
+          optionBuilder: (value) => switch (value) {
+            DownloadQuality.original =>
+              Text(context.t.settings.download.qualities.original),
+            DownloadQuality.sample =>
+              Text(context.t.settings.download.qualities.sample),
+            DownloadQuality.preview =>
+              Text(context.t.settings.download.qualities.preview),
+          },
         ),
         const SizedBox(height: 4),
         ListTile(
-          title: const Text(DownloadTranslations.skipDownloadIfExists).tr(),
-          subtitle: const Text(
+          title: Text(DownloadTranslations.skipDownloadIfExists),
+          subtitle: Text(
             DownloadTranslations.skipDownloadIfExistsExplanation,
-          ).tr(),
+          ),
           trailing: Switch(
             value: settings.skipDownloadIfExists,
             onChanged: (value) async {

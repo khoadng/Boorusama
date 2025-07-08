@@ -40,7 +40,7 @@ class CreateSavedSearchSheet extends ConsumerWidget {
             ? (data) => showSimpleSnackBar(
                 context: navigatorContext,
                 duration: AppDurations.shortToast,
-                content: const Text('saved_search.saved_search_added').tr(),
+                content: Text(context.t.saved_search.saved_search_added),
               )
             : null,
       ),
@@ -64,7 +64,7 @@ class EditSavedSearchSheet extends ConsumerWidget {
     final navigatorContext = navigatorKey.currentContext;
 
     return SavedSearchSheet(
-      title: 'saved_search.update_saved_search'.tr(),
+      title: context.t.saved_search.update_saved_search,
       initialValue: savedSearch,
       onSubmit: (query, label) => notifier.edit(
         id: savedSearch.id,
@@ -74,9 +74,9 @@ class EditSavedSearchSheet extends ConsumerWidget {
             ? (data) => showSimpleSnackBar(
                 context: navigatorContext,
                 duration: AppDurations.shortToast,
-                content: const Text(
-                  'saved_search.saved_search_updated',
-                ).tr(),
+                content: Text(
+                  context.t.saved_search.saved_search_updated,
+                ),
               )
             : null,
       ),

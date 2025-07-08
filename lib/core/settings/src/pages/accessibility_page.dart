@@ -29,12 +29,13 @@ class _AccessibilityPageState extends ConsumerState<AccessibilityPage> {
     final notifer = ref.watch(settingsNotifierProvider.notifier);
 
     return SettingsPageScaffold(
-      title: const Text('settings.accessibility.accessibility').tr(),
+      title: Text(context.t.settings.accessibility.accessibility),
       children: [
         SwitchListTile(
-          title: const Text(
-            'settings.accessibility.reverseBooruConfigSelectorScrollDirection',
-          ).tr(),
+          title: Text(
+            context.t.settings.accessibility
+                .reverseBooruConfigSelectorScrollDirection,
+          ),
           value: settings.reverseBooruConfigSelectorScrollDirection,
           onChanged: (value) => notifer.updateSettings(
             settings.copyWith(
@@ -45,15 +46,13 @@ class _AccessibilityPageState extends ConsumerState<AccessibilityPage> {
           ),
         ),
         SettingsTile(
-          title: const Text(
-            'settings.accessibility.swipeAreaToOpenSidebar',
-          ).tr(),
+          title: Text(context.t.settings.accessibility.swipeAreaToOpenSidebar),
           subtitle: Text(
-            'settings.accessibility.swipeAreaToOpenSidebarDescription',
+            context.t.settings.accessibility.swipeAreaToOpenSidebarDescription,
             style: TextStyle(
               color: Theme.of(context).colorScheme.hintColor,
             ),
-          ).tr(),
+          ),
           selectedOption: settings.swipeAreaToOpenSidebarPercentage,
           items: getSwipeAreaPossibleValue(),
           onChanged: (newValue) {
@@ -66,9 +65,9 @@ class _AccessibilityPageState extends ConsumerState<AccessibilityPage> {
           ),
         ),
         SwitchListTile(
-          title: const Text('Reduce animations'),
-          subtitle: const Text(
-            'Some features may not work as expected when this is enabled.',
+          title: Text('Reduce animations'.hc),
+          subtitle: Text(
+            'Some features may not work as expected when this is enabled.'.hc,
           ),
           value: settings.reduceAnimations,
           onChanged: (value) => notifer.updateSettings(
@@ -78,10 +77,11 @@ class _AccessibilityPageState extends ConsumerState<AccessibilityPage> {
           ),
         ),
         SwitchListTile(
-          title: const Text('Use volume keys for navigation'),
-          subtitle: const Text(
-            'Navigate between posts using the volume keys when in image viewer.',
-          ).tr(),
+          title: Text('Use volume keys for navigation'.hc),
+          subtitle: Text(
+            'Navigate between posts using the volume keys when in image viewer.'
+                .hc,
+          ),
           value: settings.volumeKeyViewerNavigation,
           onChanged: (value) => notifer.updateSettings(
             settings.copyWith(

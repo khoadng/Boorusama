@@ -253,7 +253,7 @@ class _ModalOptions extends ConsumerWidget {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
-              title: const Text('post.detail.view_in_browser').tr(),
+              title: Text(context.t.post.detail.view_in_browser),
               onTap: () {
                 launchExternalUrlString(task.task.url);
                 navigator.pop();
@@ -264,7 +264,7 @@ class _ModalOptions extends ConsumerWidget {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
-                title: const Text('post.detail.share.image').tr(),
+                title: Text(context.t.post.detail.share.image),
                 onTap: () {
                   navigator.pop();
 

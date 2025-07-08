@@ -47,7 +47,7 @@ class PoolSearchBar extends ConsumerWidget {
         ref.read(danbooruPoolSearchModeProvider.notifier).state =
             PoolSearchMode.result;
       },
-      hintText: 'pool.search.hint'.tr(),
+      hintText: context.t.pool.search.hint,
       onTap: () => ref.read(danbooruPoolSearchModeProvider.notifier).state =
           PoolSearchMode.suggestion,
     );

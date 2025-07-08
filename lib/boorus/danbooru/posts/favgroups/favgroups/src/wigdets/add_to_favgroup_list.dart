@@ -72,23 +72,22 @@ class AddToFavgroupList extends ConsumerWidget {
               group.updatedAt.fuzzify(locale: Localizations.localeOf(context)),
             ),
             trailing: Text(
-              'favorite_groups.group_item_counter'.plural(
-                group.postIds.length,
+              context.t.favorite_groups.group_item_counter(
+                n: group.postIds.length,
               ),
             ),
             onTap: () {
               ref
                   .read(danbooruFavoriteGroupsProvider(config).notifier)
                   .addToGroup(
+                    context: context,
                     group: group,
                     postIds: posts.map((e) => e.id).toList(),
-                    onFailure: (message, translatable) {
+                    onFailure: (message) {
                       showSimpleSnackBar(
                         context: context,
                         duration: AppDurations.extraLongToast,
-                        content: translatable
-                            ? Text(message).tr()
-                            : Text(message),
+                        content: Text(message),
                       );
                     },
                     onSuccess: (newGroup) {
@@ -96,8 +95,8 @@ class AddToFavgroupList extends ConsumerWidget {
                         context: context,
                         duration: AppDurations.longToast,
                         content: Text(
-                          'favorite_groups.items_added_notification_popup'
-                              .tr()
+                          context
+                              .t.favorite_groups.items_added_notification_popup
                               .replaceAll('{0}', '${posts.length}')
                               .replaceAll(
                                 '{1}',

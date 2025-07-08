@@ -55,7 +55,7 @@ class CommentItem extends ConsumerWidget {
             Padding(
               padding: const EdgeInsets.only(top: 8),
               child: Text(
-                '${'comment.list.last_updated'.tr()}: ${updatedAt.fuzzify(locale: Localizations.localeOf(context))}',
+                '${context.t.comment.list.last_updated}: ${updatedAt.fuzzify(locale: Localizations.localeOf(context))}',
                 style: TextStyle(
                   color: Theme.of(context).colorScheme.hintColor,
                   fontStyle: FontStyle.italic,

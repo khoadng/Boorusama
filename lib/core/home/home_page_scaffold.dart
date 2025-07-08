@@ -280,6 +280,7 @@ List<Widget> coreDesktopTabBuilder(
   bool showPremium,
   bool isFossBuild,
 ) {
+  final context = ref.context;
   return [
     const Divider(),
     if (viewKey != null && viewKey.isAlt)
@@ -295,28 +296,28 @@ List<Widget> coreDesktopTabBuilder(
       constraints: constraints,
       selectedIcon: Symbols.bookmark,
       icon: Symbols.bookmark,
-      title: 'sideMenu.your_bookmarks'.tr(),
+      title: context.t.sideMenu.your_bookmarks,
     ),
     HomeNavigationTile(
       value: _v(3),
       constraints: constraints,
       selectedIcon: Symbols.list_alt,
       icon: Symbols.list_alt,
-      title: 'sideMenu.your_blacklist'.tr(),
+      title: context.t.sideMenu.your_blacklist,
     ),
     HomeNavigationTile(
       value: _v(4),
       constraints: constraints,
       selectedIcon: Symbols.tag,
       icon: Symbols.tag,
-      title: 'favorite_tags.favorite_tags'.tr(),
+      title: context.t.favorite_tags.favorite_tags,
     ),
     HomeNavigationTile(
       value: _v(5),
       constraints: constraints,
       selectedIcon: Symbols.sim_card_download,
       icon: Symbols.sim_card_download,
-      title: 'sideMenu.bulk_download'.tr(),
+      title: context.t.sideMenu.bulk_download,
     ),
     HomeNavigationTile(
       value: _v(6),
@@ -353,7 +354,7 @@ List<Widget> coreDesktopTabBuilder(
       constraints: constraints,
       selectedIcon: Symbols.settings,
       icon: Symbols.settings,
-      title: 'sideMenu.settings'.tr(),
+      title: context.t.sideMenu.settings,
       onTap: () => goToSettingsPage(ref),
     ),
     const SizedBox(height: 8),

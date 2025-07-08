@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:foundation/foundation.dart';
 import 'package:foundation/widgets.dart';
+import 'package:i18n/i18n.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
@@ -95,7 +96,7 @@ class _DanbooruMyUploadsPageState
     return CustomContextMenuOverlay(
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('My Uploads'),
+          title: Text('My Uploads'.hc),
           actions: [
             BooruPopupMenuButton(
               onSelected: (value) {
@@ -110,9 +111,9 @@ class _DanbooruMyUploadsPageState
               },
               itemBuilder: {
                 if (!ref.watch(_danbooruShowUploadHiddenProvider))
-                  'show_hidden': const Text('Show hidden')
+                  'show_hidden': Text('Show hidden'.hc)
                 else
-                  'hide_hidden': const Text('Hide hidden'),
+                  'hide_hidden': Text('Hide hidden'.hc),
               },
             ),
           ],

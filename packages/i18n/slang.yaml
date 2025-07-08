@@ -1,0 +1,6 @@
+base_locale: en-US
+input_directory: ../../assets/translations
+input_file_pattern: .json
+output_directory: lib/src/gen
+flat_map: false
+fallback_strategy: base_locale_empty_string

@@ -166,9 +166,9 @@ class _CreateSavedTaskButton extends ConsumerWidget {
           if (context.mounted) {
             showSimpleSnackBar(
               context: context,
-              content: const Text(DownloadTranslations.templateCreated),
+              content: Text(DownloadTranslations.templateCreated),
               action: SnackBarAction(
-                label: 'generic.view'.tr(),
+                label: context.t.generic.view,
                 textColor: colorScheme.surface,
                 onPressed: () {
                   goToBulkDownloadSavedTasksPage(ref);
@@ -268,7 +268,7 @@ class _ContextMenu extends ConsumerWidget {
       contextMenu: GenericContextMenu(
         buttonConfigs: [
           ContextMenuButtonConfig(
-            DownloadTranslations.delete.tr(),
+            DownloadTranslations.delete,
             onPressed: () async {
               await ref
                   .read(bulkDownloadProvider.notifier)
@@ -277,11 +277,11 @@ class _ContextMenu extends ConsumerWidget {
             },
           ),
           ContextMenuButtonConfig(
-            DownloadTranslations.copyPath.tr(),
+            DownloadTranslations.copyPath,
             onPressed: () => AppClipboard.copyWithDefaultToast(context, path),
           ),
           ContextMenuButtonConfig(
-            DownloadTranslations.createTemplate.tr(),
+            DownloadTranslations.createTemplate,
             onPressed: () async {
               final navigator = Navigator.of(context);
               final success = await ref

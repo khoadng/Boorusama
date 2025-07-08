@@ -80,7 +80,7 @@ class _EditFavoriteGroupDialogState
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 12),
             child: Text(
-              'favorite_groups.group_name'.tr().toUpperCase(),
+              context.t.favorite_groups.group_name.toUpperCase(),
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.w800,
               ),
@@ -92,7 +92,7 @@ class _EditFavoriteGroupDialogState
             maxLines: 1,
             textInputAction: TextInputAction.done,
             decoration: InputDecoration(
-              hintText: 'favorite_groups.group_name_hint'.tr(),
+              hintText: context.t.favorite_groups.group_name_hint,
             ),
           ),
           if (widget.enableManualDataInput)
@@ -101,7 +101,7 @@ class _EditFavoriteGroupDialogState
             ),
           if (widget.enableManualDataInput)
             Text(
-              'favorite_groups.all_posts'.tr().toUpperCase(),
+              context.t.favorite_groups.all_posts.toUpperCase(),
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.w800,
               ),
@@ -120,7 +120,7 @@ class _EditFavoriteGroupDialogState
                 decoration: InputDecoration(
                   hintMaxLines: 4,
                   hintText:
-                      '${'favorite_groups.initial_posts_hint'.tr()}\n\n\n\n\n',
+                      '${context.t.favorite_groups.initial_posts_hint}\n\n\n\n\n',
                 ),
               ),
             ),
@@ -144,7 +144,7 @@ class _EditFavoriteGroupDialogState
                   style: TextButton.styleFrom(
                     foregroundColor: Theme.of(context).colorScheme.onSurface,
                   ),
-                  child: const Text('favorite_groups.create_group_cancel').tr(),
+                  child: Text(context.t.favorite_groups.create_group_cancel),
                 ),
                 ValueListenableBuilder<TextEditingValue>(
                   valueListenable: nameController,
@@ -160,14 +160,14 @@ class _EditFavoriteGroupDialogState
                                     ).notifier,
                                   )
                                   .create(
+                                    context: context,
                                     initialIds: textController.text,
                                     name: value.text,
                                     isPrivate: isPrivate,
-                                    onFailure: (message, translatable) =>
-                                        showErrorToast(
-                                          context,
-                                          translatable ? message.tr() : message,
-                                        ),
+                                    onFailure: (message) => showErrorToast(
+                                      context,
+                                      message,
+                                    ),
                                   );
                             } else {
                               ref
@@ -181,16 +181,14 @@ class _EditFavoriteGroupDialogState
                                     name: value.text,
                                     isPrivate: isPrivate,
                                     initialIds: textController.text,
-                                    onFailure: (message, _) {
+                                    onFailure: (message) {
                                       showErrorToast(context, message);
                                     },
                                   );
                             }
                           }
                         : null,
-                    child: const Text(
-                      'favorite_groups.create_group_confirm',
-                    ).tr(),
+                    child: Text(context.t.favorite_groups.create_group_confirm),
                   ),
                 ),
               ],

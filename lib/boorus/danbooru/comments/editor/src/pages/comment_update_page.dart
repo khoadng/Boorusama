@@ -85,7 +85,7 @@ class _CommentUpdatePageState extends ConsumerState<CommentUpdatePage> {
                     child: BooruTextField(
                       controller: textEditingController,
                       decoration: InputDecoration(
-                        hintText: 'comment.create.hint'.tr(),
+                        hintText: '${context.t.comment.create.hint}...',
                         filled: false,
                         border: const OutlineInputBorder(),
                         focusedBorder: const OutlineInputBorder(),

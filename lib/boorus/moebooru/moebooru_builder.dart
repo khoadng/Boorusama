@@ -1,3 +1,6 @@
+// Package imports:
+import 'package:i18n/i18n.dart';
+
 // Project imports:
 import '../../core/boorus/engine/engine.dart';
 import '../../core/configs/config.dart';
@@ -133,15 +136,15 @@ class MoebooruBuilder
 final kMoebooruAltHomeView = {
   ...kDefaultAltHomeView,
   const CustomHomeViewKey('favorites'): CustomHomeDataBuilder(
-    displayName: 'profile.favorites',
+    displayName: (context) => context.t.profile.favorites,
     builder: (context, _) => const MoebooruFavoritesPage(),
   ),
   const CustomHomeViewKey('popular'): CustomHomeDataBuilder(
-    displayName: 'Popular',
+    displayName: (context) => 'Popular'.hc,
     builder: (context, _) => const MoebooruPopularPage(),
   ),
   const CustomHomeViewKey('hot'): CustomHomeDataBuilder(
-    displayName: 'Hot',
+    displayName: (context) => 'Hot'.hc,
     builder: (context, _) => const MoebooruPopularRecentPage(),
   ),
 };

@@ -55,8 +55,8 @@ class SelectedTagList extends StatelessWidget {
               }
             },
             itemBuilder: {
-              0: const Text('search.remove_all_selected').tr(),
-              1: const Text('sideMenu.bulk_download').tr(),
+              0: Text(context.t.search.remove_all_selected),
+              1: Text(context.t.sideMenu.bulk_download),
             },
           ),
           Expanded(
@@ -169,7 +169,7 @@ class SelectedTagContextMenu extends ConsumerWidget
         buttonConfigs: [
           copyButton(context, tag),
           ContextMenuButtonConfig(
-            'post.detail.add_to_favorites'.tr(),
+            context.t.post.detail.add_to_favorites,
             onPressed: () {
               ref.read(favoriteTagsProvider.notifier).add(tag, isRaw: true);
             },

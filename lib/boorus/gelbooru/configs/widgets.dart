@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../core/configs/auth/widgets.dart';
@@ -223,9 +224,10 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
                 const SizedBox(height: 8),
                 WarningContainer(
                   margin: EdgeInsets.zero,
-                  title: 'About the heart button state',
-                  contentBuilder: (context) => const Text(
-                    "There is no way to check if an image has already been favorited. Although you can see the visual indicator after favoriting an image, it will reset when you restart the app. Don't worry, your favorites are still saved on the website.",
+                  title: 'About the heart button state'.hc,
+                  contentBuilder: (context) => Text(
+                    "There is no way to check if an image has already been favorited. Although you can see the visual indicator after favoriting an image, it will reset when you restart the app. Don't worry, your favorites are still saved on the website."
+                        .hc,
                   ),
                 ),
               ],
@@ -253,9 +255,9 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Text(
-            'Logged in',
-            style: TextStyle(
+          Text(
+            'Logged in'.hc,
+            style: const TextStyle(
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -268,7 +270,7 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
                 onPressed: () {
                   _openBrowser(config);
                 },
-                label: const Text('Update'),
+                label: Text('Update'.hc),
               ),
               const SizedBox(width: 8),
               RawChip(
@@ -278,7 +280,7 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
                 onPressed: () {
                   ref.editNotifier.updatePassHash(null);
                 },
-                label: const Text('Clear'),
+                label: Text('Clear'.hc),
               ),
             ],
           ),

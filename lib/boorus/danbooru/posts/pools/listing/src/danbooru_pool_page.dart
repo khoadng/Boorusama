@@ -43,7 +43,7 @@ class _PostList extends ConsumerWidget {
             SliverAppBar(
               titleSpacing: 0,
               backgroundColor: Theme.of(context).colorScheme.surface,
-              title: const Text('pool.pool_gallery').tr(),
+              title: Text(context.t.pool.pool_gallery),
               actions: const [
                 PoolSearchButton(),
               ],
@@ -72,7 +72,11 @@ class _PostList extends ConsumerWidget {
                         (e) => e != DanbooruPoolCategory.unknown,
                       ))
                         Tab(
-                          text: 'pool.category.${e.name}'.tr(),
+                          text: switch (e) {
+                            DanbooruPoolCategory.collection =>
+                              context.t.pool.category.collection,
+                            _ => context.t.pool.category.series,
+                          },
                         ),
                     ],
                   ),

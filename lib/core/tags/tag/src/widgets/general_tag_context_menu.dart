@@ -35,7 +35,7 @@ class GeneralTagContextMenu extends ConsumerWidget
           copyButton(context, tag),
           searchButton(ref, tag),
           ContextMenuButtonConfig(
-            'post.detail.add_to_favorites'.tr(),
+            context.t.post.detail.add_to_favorites,
             onPressed: () {
               ref.read(favoriteTagsProvider.notifier).add(tag);
             },
@@ -66,7 +66,7 @@ mixin TagContextMenuButtonConfigMixin {
           AppClipboard.copyAndToast(
             context,
             tag,
-            message: 'post.detail.copied'.tr(),
+            message: context.t.post.detail.copied,
           );
         },
       );

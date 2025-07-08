@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../widgets/widgets.dart';
@@ -121,7 +122,7 @@ class AdditionalBlacklistedTags extends ConsumerWidget {
                       iconColor: colorScheme.onSurface,
                       foregroundColor: colorScheme.onSurface,
                     ),
-                    label: const Text('Edit'),
+                    label: Text('Edit'.hc),
                     icon: const Icon(
                       FontAwesomeIcons.pen,
                       size: 16,
@@ -136,7 +137,7 @@ class AdditionalBlacklistedTags extends ConsumerWidget {
                         iconColor: colorScheme.onSurface,
                         foregroundColor: colorScheme.onSurface,
                       ),
-                      label: const Text('Clear'),
+                      label: Text('Clear'.hc),
                       icon: const Icon(
                         FontAwesomeIcons.xmark,
                         size: 16,

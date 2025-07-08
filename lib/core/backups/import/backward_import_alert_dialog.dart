@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../foundation/info/package_info.dart';
@@ -42,9 +43,9 @@ class BackwardImportAlertDialog extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             const SizedBox(height: 20),
-            const Text(
-              'Importing from an older version detected',
-              style: TextStyle(
+            Text(
+              'Importing from an older version detected'.hc,
+              style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w700,
               ),
@@ -58,7 +59,7 @@ class BackwardImportAlertDialog extends ConsumerWidget {
                   color: Colors.black,
                 ),
                 children: [
-                  const TextSpan(text: 'Current version: '),
+                  TextSpan(text: 'Current version: '.hc),
                   TextSpan(
                     text: appVersion?.toString() ?? 'Unknown',
                     style: const TextStyle(
@@ -87,9 +88,9 @@ class BackwardImportAlertDialog extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: 20),
-            const Text(
-              'Backward import might not work as expected, are you sure?',
-              style: TextStyle(
+            Text(
+              'Backward import might not work as expected, are you sure?'.hc,
+              style: const TextStyle(
                 fontWeight: FontWeight.w400,
                 fontSize: 14,
               ),

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../../core/posts/statistics/stats.dart';
@@ -41,10 +42,10 @@ class DanbooruPostStatisticsPage extends ConsumerWidget {
           const Divider(),
           Row(
             children: [
-              const Expanded(
+              Expanded(
                 child: Text(
-                  'File size',
-                  style: TextStyle(
+                  'File size'.hc,
+                  style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w700,
                   ),
@@ -59,20 +60,20 @@ class DanbooruPostStatisticsPage extends ConsumerWidget {
                       name: 'posts_file_size_stats',
                     ),
                     builder: (context) => StatisticalSummaryDetailsPage(
-                      title: 'File size',
+                      title: 'File size'.hc,
                       stats: stats.fileSizes,
                       formatter: (value) => Filesize.parse(value.round()),
                     ),
                   );
                 },
-                child: const Text(
-                  'More',
+                child: Text(
+                  'More'.hc,
                 ),
               ),
             ],
           ),
           PostStatsTile(
-            title: 'Average',
+            title: 'Average'.hc,
             value:
                 '${Filesize.parse(stats.fileSizes.mean.round())} ± ${Filesize.parse(stats.fileSizes.standardDeviation.round())}',
           ),

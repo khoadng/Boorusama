@@ -253,7 +253,7 @@ class _BookmarkScrollViewState extends ConsumerState<BookmarkScrollView> {
               contextMenu: GenericContextMenu(
                 buttonConfigs: [
                   ContextMenuButtonConfig(
-                    'download.download'.tr(),
+                    context.t.download.download,
                     onPressed: () => ref.bookmarks.downloadBookmarks(
                       ref.readConfig,
                       [post.bookmark],
@@ -261,7 +261,7 @@ class _BookmarkScrollViewState extends ConsumerState<BookmarkScrollView> {
                   ),
                   // remove bookmark
                   ContextMenuButtonConfig(
-                    'post.detail.remove_from_bookmark'.tr(),
+                    context.t.post.detail.remove_from_bookmark,
                     onPressed: () => ref.bookmarks.removeBookmark(
                       post.bookmark,
                       onSuccess: () {

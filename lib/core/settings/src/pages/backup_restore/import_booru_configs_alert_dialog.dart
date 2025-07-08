@@ -1,6 +1,9 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Package imports:
+import 'package:i18n/i18n.dart';
+
 // Project imports:
 import '../../../../configs/export_import/types.dart';
 
@@ -24,16 +27,16 @@ class ImportBooruConfigsAlertDialog extends StatelessWidget {
           children: [
             const SizedBox(height: 20),
             Text(
-              'Importing ${data.data.length} profiles',
+              'Importing ${data.data.length} profiles'.hc,
               style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w700,
               ),
             ),
             const SizedBox(height: 20),
-            const Text(
-              'This will override ALL your current profiles, are you sure?',
-              style: TextStyle(
+            Text(
+              'This will override ALL your current profiles, are you sure?'.hc,
+              style: const TextStyle(
                 fontWeight: FontWeight.w400,
                 fontSize: 14,
               ),
@@ -51,7 +54,7 @@ class ImportBooruConfigsAlertDialog extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 14),
                 child: Text(
-                  'Sure',
+                  'Sure'.hc,
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.onErrorContainer,
                     fontWeight: FontWeight.w600,
@@ -67,7 +70,7 @@ class ImportBooruConfigsAlertDialog extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 14),
                 child: Text(
-                  'Cancel',
+                  context.t.generic.action.cancel,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     color: Theme.of(context).colorScheme.onSurface,

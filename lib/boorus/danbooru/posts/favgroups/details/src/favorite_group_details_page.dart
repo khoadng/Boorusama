@@ -149,10 +149,10 @@ class _FavoriteGroupDetailsPageState
                   allIds: postIds.toSet(),
                   newIds: reorderedPosts.map((e) => e.id).toSet(),
                   oldIds: controller.allItems.map((e) => e.id).toSet(),
-                  onFailure: (message, translatable) {
+                  onFailure: (message) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        content: Text(message.tr()),
+                        content: Text(message),
                       ),
                     );
                   },
@@ -210,7 +210,7 @@ class _FavoriteGroupEditPageState extends State<FavoriteGroupEditPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Edit'),
+        title: Text('Edit'.hc),
         actions: [
           IconButton(
             icon: const Icon(Icons.save),

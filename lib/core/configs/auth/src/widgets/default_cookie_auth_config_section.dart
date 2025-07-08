@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../../foundation/toast.dart';
@@ -85,9 +86,9 @@ class DefaultCookieAuthConfigSection extends ConsumerWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Text(
-            'Logged in',
-            style: TextStyle(
+          Text(
+            'Logged in'.hc,
+            style: const TextStyle(
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -100,7 +101,7 @@ class DefaultCookieAuthConfigSection extends ConsumerWidget {
                 onPressed: () {
                   _openBrowser(ref, context, config);
                 },
-                label: const Text('Update'),
+                label: Text('Update'.hc),
               ),
               const SizedBox(width: 8),
               RawChip(
@@ -110,7 +111,7 @@ class DefaultCookieAuthConfigSection extends ConsumerWidget {
                 onPressed: () {
                   ref.editNotifier.updatePassHash(null);
                 },
-                label: const Text('Clear'),
+                label: Text('Clear'.hc),
               ),
             ],
           ),

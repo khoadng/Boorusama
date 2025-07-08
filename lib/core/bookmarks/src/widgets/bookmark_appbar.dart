@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
@@ -27,17 +28,17 @@ class BookmarkAppBar extends ConsumerWidget {
     final hasBookmarks = ref.watch(hasBookmarkProvider);
 
     final itemBuilder = {
-      if (hasBookmarks) 'edit': const Text('Edit'),
+      if (hasBookmarks) 'edit': Text('Edit'.hc),
       if (hasBookmarks)
         'download_all': ValueListenableBuilder(
           valueListenable: controller.itemsNotifier,
           builder: (_, posts, _) => Text(
-            'Download ${posts.length} bookmarks',
+            'Download ${posts.length} bookmarks'.hc,
           ),
         ),
     };
     return AppBar(
-      title: const Text('Bookmarks'),
+      title: Text('Bookmarks'.hc),
       automaticallyImplyLeading: !edit,
       leading: edit
           ? IconButton(

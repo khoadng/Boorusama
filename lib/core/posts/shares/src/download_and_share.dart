@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:background_downloader/background_downloader.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:share_plus/share_plus.dart';
@@ -192,7 +193,7 @@ class DownloadAndShareDialogInternal extends ConsumerWidget {
                     ),
                   );
                 },
-                child: const Text('Share'),
+                child: Text('Share'.hc),
               ),
             )
           else
@@ -201,7 +202,7 @@ class DownloadAndShareDialogInternal extends ConsumerWidget {
               children: [
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(),
-                  child: const Text('Close'),
+                  child: Text('Close'.hc),
                 ),
               ],
             ),
@@ -230,17 +231,17 @@ class _CancelDownloadConfirmationDialog extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text(
-              'Cancel Download',
-              style: TextStyle(
+            Text(
+              'Cancel Download'.hc,
+              style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w700,
               ),
             ),
             const SizedBox(height: 20),
-            const Text(
-              'Are you sure you want to cancel this download?',
-              style: TextStyle(
+            Text(
+              'Are you sure you want to cancel this download?'.hc,
+              style: const TextStyle(
                 fontWeight: FontWeight.w400,
                 fontSize: 14,
               ),
@@ -260,7 +261,7 @@ class _CancelDownloadConfirmationDialog extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 14),
                 child: Text(
-                  'Cancel Download',
+                  'Cancel Download'.hc,
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.onError,
                     fontWeight: FontWeight.w600,
@@ -274,7 +275,7 @@ class _CancelDownloadConfirmationDialog extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 14),
                 child: Text(
-                  'Keep Downloading',
+                  'Keep Downloading'.hc,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     color: Theme.of(context).colorScheme.onSurface,

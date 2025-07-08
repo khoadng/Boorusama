@@ -44,13 +44,13 @@ class ImportExportTagButton extends ConsumerWidget {
             context,
             tags.join('\n'),
             //TODO: should create a new key for this instead of using the same key as favorite_tags.export_notification
-            message: 'favorite_tags.export_notification'.tr(),
+            message: context.t.favorite_tags.export_notification,
           );
         }
       },
       itemBuilder: {
-        'import': const Text('favorite_tags.import').tr(),
-        if (tags.isNotEmpty) 'export': const Text('favorite_tags.export').tr(),
+        'import': Text(context.t.favorite_tags.import),
+        if (tags.isNotEmpty) 'export': Text(context.t.favorite_tags.export),
       },
     );
   }

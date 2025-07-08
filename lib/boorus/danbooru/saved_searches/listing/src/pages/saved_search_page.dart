@@ -30,7 +30,7 @@ class SavedSearchPage extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('saved_search.saved_search').tr(),
+        title: Text(context.t.saved_search.saved_search),
         actions: [
           IconButton(
             onPressed: () => goToSavedSearchCreatePage(context),
@@ -64,7 +64,7 @@ class _SuccessView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return savedSearches.isEmpty
         ? GenericNoDataBox(
-            text: 'saved_search.empty_saved_search'.tr(),
+            text: context.t.saved_search.empty_saved_search,
           )
         : CustomScrollView(
             slivers: [
@@ -79,8 +79,8 @@ class _SuccessView extends ConsumerWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'saved_search.saved_search_counter'
-                            .plural(savedSearches.length)
+                        context.t.saved_search
+                            .saved_search_counter(n: savedSearches.length)
                             .toUpperCase(),
                         style: Theme.of(context).textTheme.titleMedium
                             ?.copyWith(

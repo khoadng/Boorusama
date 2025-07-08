@@ -26,7 +26,7 @@ class ResultCounter extends StatelessWidget {
       return Row(
         children: [
           Text(
-            'search.search_in_progress_notice'.tr(),
+            context.t.search.search_in_progress_notice,
             style: Theme.of(context).textTheme.titleLarge,
           ),
           const SizedBox(width: 10),
@@ -43,7 +43,7 @@ class ResultCounter extends StatelessWidget {
       return Row(
         children: [
           Text(
-            'search.result_counter'.plural(count),
+            context.t.search.result_counter(n: count),
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.w800,
             ),
@@ -57,7 +57,7 @@ class ResultCounter extends StatelessWidget {
       );
     } else {
       return Text(
-        'search.no_result_notice'.tr(),
+        context.t.search.no_result_notice,
         style: Theme.of(context).textTheme.titleLarge,
       );
     }

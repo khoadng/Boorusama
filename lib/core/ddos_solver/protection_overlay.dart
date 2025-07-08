@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:i18n/i18n.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class ProtectionOverlay extends StatefulWidget {
@@ -84,11 +85,11 @@ class _ProtectionOverlayState extends State<ProtectionOverlay> {
             side: const BorderSide(color: Colors.white),
             foregroundColor: Colors.white,
           ),
-          child: const Text('Cancel'),
+          child: Text(context.t.generic.action.cancel),
         ),
         FilledButton(
           onPressed: widget.onSolved,
-          child: const Text("I've Solved the Challenge"),
+          child: Text("I've Solved the Challenge".hc),
         ),
       ],
     );

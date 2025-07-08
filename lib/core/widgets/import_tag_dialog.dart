@@ -54,7 +54,7 @@ class _ImportTagsDialogState extends ConsumerState<ImportTagsDialog> {
             children: [
               Center(
                 child: Text(
-                  'favorite_tags.import'.tr(),
+                  context.t.favorite_tags.import,
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
               ),
@@ -68,7 +68,8 @@ class _ImportTagsDialogState extends ConsumerState<ImportTagsDialog> {
                   maxLines: null,
                   decoration: InputDecoration(
                     hintMaxLines: 6,
-                    hintText: widget.hint ?? 'favorite_tags.import_hint'.tr(),
+                    hintText:
+                        widget.hint ?? context.t.favorite_tags.import_hint,
                   ),
                 ),
               ),
@@ -82,13 +83,13 @@ class _ImportTagsDialogState extends ConsumerState<ImportTagsDialog> {
                           widget.onImport(value.text, ref);
                         }
                       : null,
-                  child: const Text('favorite_tags.import').tr(),
+                  child: Text(context.t.favorite_tags.import),
                 ),
               ),
               SizedBox(height: widget.padding ?? 0),
               FilledButton(
                 onPressed: () => Navigator.of(context).pop(),
-                child: const Text('favorite_tags.cancel').tr(),
+                child: Text(context.t.favorite_tags.cancel),
               ),
             ],
           ),

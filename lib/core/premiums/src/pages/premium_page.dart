@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../foundation/iap/iap.dart';
@@ -125,8 +126,9 @@ class PremiumPage extends ConsumerWidget {
   void _showFailedPurchase(BuildContext context) {
     return showSimpleSnackBar(
       context: context,
-      content: const Text(
-        'There was a problem purchasing your subscription. Please try again later.',
+      content: Text(
+        'There was a problem purchasing your subscription. Please try again later.'
+            .hc,
       ),
       duration: const Duration(seconds: 2),
     );
@@ -190,7 +192,7 @@ class _GetPremiumButton extends ConsumerWidget {
       child: ref
           .watch(packagePurchaseProvider)
           .maybeWhen(
-            orElse: () => const Text('Get Plus'),
+            orElse: () => Text('Get Plus'.hc),
             loading: () => SizedBox(
               width: 16,
               height: 16,
@@ -234,7 +236,7 @@ class _RestorePremiumButton extends ConsumerWidget {
                 return () => restore(ref, context);
               },
             ),
-        child: const Text('Restore subscription'),
+        child: Text('Restore subscription'.hc),
       ),
     );
   }
@@ -255,7 +257,7 @@ class _RestorePremiumButton extends ConsumerWidget {
                 if (navigatorContext != null) {
                   showSimpleSnackBar(
                     context: navigatorContext,
-                    content: const Text('Subscription restored!'),
+                    content: Text('Subscription restored!'.hc),
                     duration: const Duration(seconds: 2),
                   );
                 }
@@ -277,8 +279,9 @@ class _RestorePremiumButton extends ConsumerWidget {
   void _showFailedRestore(BuildContext context) {
     showSimpleSnackBar(
       context: context,
-      content: const Text(
-        'There was a problem restoring your subscription. Please try again later.',
+      content: Text(
+        'There was a problem restoring your subscription. Please try again later.'
+            .hc,
       ),
       duration: const Duration(seconds: 2),
     );

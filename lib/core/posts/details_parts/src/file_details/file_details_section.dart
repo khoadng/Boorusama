@@ -94,31 +94,31 @@ class FileDetailsSection extends StatelessWidget {
             ),
           ),
           FileDetailTile(
-            title: 'post.detail.rating'.tr(),
+            title: context.t.post.detail.rating,
             valueLabel: rating.name.pascalCase,
           ),
           if (post.fileSize > 0)
             FileDetailTile(
-              title: 'post.detail.size'.tr(),
+              title: context.t.post.detail.size,
               valueLabel: Filesize.parse(post.fileSize, round: 1),
             ),
           if (post.width > 0 && post.height > 0)
             FileDetailTile(
-              title: 'post.detail.resolution'.tr(),
+              title: context.t.post.detail.resolution,
               valueLabel: '${post.width.toInt()}x${post.height.toInt()}',
             ),
           FileDetailTile(
-            title: 'post.detail.file_format'.tr(),
+            title: context.t.post.detail.file_format,
             valueLabel: post.format,
           ),
           if (post.isVideo && post.duration > 0)
             FileDetailTile(
-              title: 'Duration',
-              valueLabel: '${post.duration.toInt()} seconds',
+              title: 'Duration'.hc,
+              valueLabel: '${post.duration.toInt()} seconds'.hc,
             ),
           if (uploader != null)
             FileDetailTile(
-              title: 'Uploader',
+              title: 'Uploader'.hc,
               value: uploader,
             ),
           if (customDetails != null) ...[
@@ -133,7 +133,7 @@ class FileDetailsSection extends StatelessWidget {
         return ExpansionTile(
           initiallyExpanded: initialExpanded,
           title: Text(
-            'post.detail.file_details'.tr(),
+            context.t.post.detail.file_details,
           ),
           subtitle: Text(
             '$resolutionText$fileFormatText$fileSizeText • $ratingText',

@@ -126,35 +126,35 @@ class SideBarMenu extends ConsumerWidget {
                         if (viewKey != null && viewKey.isAlt)
                           SideMenuTile(
                             icon: const Icon(Symbols.search),
-                            title: const Text('settings.search.search').tr(),
+                            title: Text(context.t.settings.search.search),
                             onTap: () {
                               goToSearchPage(ref);
                             },
                           ),
                         SideMenuTile(
                           icon: const Icon(Symbols.favorite),
-                          title: const Text('sideMenu.your_bookmarks').tr(),
+                          title: Text(context.t.sideMenu.your_bookmarks),
                           onTap: () {
                             goToBookmarkPage(ref);
                           },
                         ),
                         SideMenuTile(
                           icon: const Icon(Symbols.list),
-                          title: const Text('sideMenu.your_blacklist').tr(),
+                          title: Text(context.t.sideMenu.your_blacklist),
                           onTap: () {
                             goToGlobalBlacklistedTagsPage(ref);
                           },
                         ),
                         SideMenuTile(
                           icon: const Icon(Symbols.tag),
-                          title: const Text('favorite_tags.favorite_tags').tr(),
+                          title: Text(context.t.favorite_tags.favorite_tags),
                           onTap: () {
                             goToFavoriteTagsPage(ref);
                           },
                         ),
                         SideMenuTile(
                           icon: const Icon(Symbols.sim_card_download),
-                          title: const Text('sideMenu.bulk_download').tr(),
+                          title: Text(context.t.sideMenu.bulk_download),
                           onTap: () {
                             goToBulkDownloadPage(
                               context,
@@ -165,7 +165,7 @@ class SideBarMenu extends ConsumerWidget {
                         ),
                         SideMenuTile(
                           icon: const Icon(Symbols.download),
-                          title: const Text('Download manager'),
+                          title: Text('Download manager'.hc),
                           onTap: () {
                             goToDownloadManagerPage(ref);
                           },
@@ -181,7 +181,7 @@ class SideBarMenu extends ConsumerWidget {
                               fill: 1,
                               color: Colors.red,
                             ),
-                            title: const Text('Donate'),
+                            title: Text('Donate'.hc),
                             onTap: () {
                               goToDonationPage(ref);
                             },
@@ -195,7 +195,7 @@ class SideBarMenu extends ConsumerWidget {
                               fill: 1,
                               color: Colors.red,
                             ),
-                            title: const Text('Get $kPremiumBrandName'),
+                            title: Text('Get $kPremiumBrandName'.hc),
                             onTap: () {
                               goToPremiumPage(ref);
                             },
@@ -205,7 +205,7 @@ class SideBarMenu extends ConsumerWidget {
                             Symbols.question_mark,
                             fill: 1,
                           ),
-                          title: const Text('sideMenu.get_support').tr(),
+                          title: Text(context.t.sideMenu.get_support),
                           onTap: () {
                             goToSettingsPage(ref, scrollTo: 'support');
                           },
@@ -215,7 +215,7 @@ class SideBarMenu extends ConsumerWidget {
                             Symbols.settings,
                             fill: 1,
                           ),
-                          title: Text('sideMenu.settings'.tr()),
+                          title: Text(context.t.sideMenu.settings),
                           onTap: () {
                             goToSettingsPage(ref);
                           },

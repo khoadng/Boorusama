@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 // Project imports:
@@ -64,7 +65,7 @@ class _UserFeedbackPageState extends ConsumerState<UserFeedbackPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('User Feedbacks'),
+        title: Text('User Feedbacks'.hc),
       ),
       body: RefreshIndicator(
         onRefresh: () async => _pagingController.refresh(),
@@ -89,11 +90,11 @@ class _UserFeedbackPageState extends ConsumerState<UserFeedbackPage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text('Error loading feedbacks'),
+                    Text('Error loading feedbacks'.hc),
                     const SizedBox(height: 16),
                     FilledButton(
                       onPressed: () => _pagingController.refresh(),
-                      child: const Text('Retry'),
+                      child: Text('Retry'.hc),
                     ),
                   ],
                 ),

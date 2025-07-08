@@ -1,9 +1,6 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
-// Package imports:
-import 'package:i18n/i18n.dart';
-
 class SettingsSliderTile extends StatelessWidget {
   const SettingsSliderTile({
     required this.title,
@@ -45,7 +42,7 @@ class SettingsSliderTile extends StatelessWidget {
               style: const TextStyle(
                 fontSize: 16,
               ),
-            ).tr(),
+            ),
           ),
           Expanded(
             child: Slider(

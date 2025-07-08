@@ -47,7 +47,7 @@ class ExploreHotPage extends ConsumerWidget {
               ),
           sliverHeaders: [
             ExploreSliverAppBar(
-              title: 'explore.hot'.tr(),
+              title: context.t.explore.hot,
               onBack: onBack,
             ),
           ],

@@ -36,7 +36,7 @@ class FavoriteTagsSection extends ConsumerWidget {
       initialValue: selectedLabel,
       sortType: FavoriteTagsSortType.nameAZ,
       builder: (_, tags, labels, selected) => OptionTagsArenaNoEdit(
-        title: 'favorite_tags.favorites'.tr(),
+        title: context.t.favorite_tags.favorites,
         titleTrailing: FavoriteTagLabelSelectorField(
           selected: selected,
           labels: labels,
@@ -158,7 +158,7 @@ class ImportTagButton extends StatelessWidget {
     return FilledButton(
       style: FilledButton.styleFrom(shape: const StadiumBorder()),
       onPressed: () => goToFavoriteTagImportPage(context),
-      child: const Text('favorite_tags.import').tr(),
+      child: Text(context.t.favorite_tags.import),
     );
   }
 }

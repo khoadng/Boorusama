@@ -19,7 +19,7 @@ class SavedSearchLandingView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('saved_search.saved_search_feed').tr(),
+        title: Text(context.t.saved_search.saved_search_feed),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -33,18 +33,18 @@ class SavedSearchLandingView extends ConsumerWidget {
               child: Column(
                 children: [
                   GenericNoDataBox(
-                    text: 'saved_search.empty_saved_search'.tr(),
+                    text: context.t.saved_search.empty_saved_search,
                   ),
                   if (!ref.watchConfigAuth.hasStrictSFW)
                     TextButton(
                       onPressed: () => launchExternalUrl(
                         Uri.parse(savedSearchHelpUrl),
                       ),
-                      child: const Text('saved_search.saved_search_help').tr(),
+                      child: Text(context.t.saved_search.saved_search_help),
                     ),
                   FilledButton(
                     onPressed: () => _onAddSearch(ref, context),
-                    child: const Text('generic.action.add').tr(),
+                    child: Text(context.t.generic.action.add),
                   ),
                 ],
               ),
@@ -53,7 +53,7 @@ class SavedSearchLandingView extends ConsumerWidget {
               thickness: 2,
             ),
             ListTile(
-              title: const Text('saved_search.saved_search_examples').tr(),
+              title: Text(context.t.saved_search.saved_search_examples),
             ),
             _ExampleContainer(
               title: 'Follow artists',
@@ -152,7 +152,7 @@ class _ExampleContainer extends StatelessWidget {
                   const Spacer(),
                   FilledButton(
                     onPressed: () => onTry(query),
-                    child: const Text('saved_search.saved_search_try').tr(),
+                    child: Text(context.t.saved_search.saved_search_try),
                   ),
                 ],
               ),

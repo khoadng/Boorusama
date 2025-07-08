@@ -33,9 +33,9 @@ class CommentSideSheetContainer extends StatelessWidget {
               children: [
                 const SizedBox(width: 8),
                 Text(
-                  'comment.comments',
+                  context.t.comment.comments,
                   style: Theme.of(context).textTheme.titleLarge,
-                ).tr(),
+                ),
                 const Spacer(),
                 Material(
                   color: Colors.transparent,

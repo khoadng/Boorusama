@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/widgets.dart';
+import 'package:i18n/i18n.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
@@ -179,10 +180,10 @@ class DefaultDanbooruImageGridItem extends StatelessWidget {
                   _ => const SizedBox.shrink(),
                 },
                 const SizedBox(width: 4),
-                const Text(
+                Text(
                   maxLines: 1,
-                  'Banned post',
-                  style: TextStyle(
+                  'Banned post'.hc,
+                  style: const TextStyle(
                     fontWeight: FontWeight.bold,
                   ),
                 ),

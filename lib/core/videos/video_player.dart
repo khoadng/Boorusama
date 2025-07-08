@@ -5,6 +5,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:i18n/i18n.dart';
 import 'package:video_player/video_player.dart';
 
 // Project imports:
@@ -222,9 +223,10 @@ class _BooruVideoState extends State<BooruVideo> {
                     ),
                   ),
                   const SizedBox(height: 24),
-                  const Text(
-                    'If this happens on a regular basis, consider using a different video player engine in the settings.',
-                    style: TextStyle(
+                  Text(
+                    'If this happens on a regular basis, consider using a different video player engine in the settings.'
+                        .hc,
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 12,
                     ),
@@ -234,7 +236,7 @@ class _BooruVideoState extends State<BooruVideo> {
                   FilledButton(
                     onPressed: widget.onOpenSettings,
                     child: Text(
-                      'Open settings',
+                      'Open settings'.hc,
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.onPrimary,
                       ),

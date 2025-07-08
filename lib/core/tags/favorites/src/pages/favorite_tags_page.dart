@@ -35,7 +35,7 @@ class FavoriteTagsPage extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('favorite_tags.favorite_tags').tr(),
+        title: Text(context.t.favorite_tags.favorite_tags),
         actions: [
           IconButton(
             onPressed: () {

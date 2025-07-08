@@ -1,6 +1,9 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Package imports:
+import 'package:i18n/i18n.dart';
+
 // Project imports:
 import '../../../../theme/theme_configs.dart';
 import '../../../../widgets/widgets.dart';
@@ -27,9 +30,9 @@ class ThemeSection extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SwitchListTile(
-              title: const Text('Turn on'),
-              subtitle: const Text(
-                "Override the global theme using this profile's theme",
+              title: Text('Turn on'.hc),
+              subtitle: Text(
+                "Override the global theme using this profile's theme".hc,
               ),
               value: theme?.enable ?? false,
               onChanged: (value) => onThemeUpdated(

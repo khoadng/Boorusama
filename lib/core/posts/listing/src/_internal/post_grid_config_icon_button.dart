@@ -122,17 +122,17 @@ class PostGridConfigIconButton<T> extends ConsumerWidget {
                         }
                       },
                       itemBuilder: {
-                        'select': PostGridConfigOptionTile(
-                          title: const Text('Select').tr(),
-                          icon: const Icon(
+                        'select': const PostGridConfigOptionTile(
+                          title: Text('Select'),
+                          icon: Icon(
                             Symbols.select_all,
                             size: 18,
                           ),
                         ),
                         if (postStatsPageBuilder != null)
-                          'stats': PostGridConfigOptionTile(
-                            title: const Text('Stats').tr(),
-                            icon: const Icon(
+                          'stats': const PostGridConfigOptionTile(
+                            title: Text('Stats'),
+                            icon: Icon(
                               Symbols.bar_chart,
                               size: 18,
                             ),
@@ -140,16 +140,16 @@ class PostGridConfigIconButton<T> extends ConsumerWidget {
                         if (showBlacklist &&
                             blacklistEntries != null &&
                             blacklistEntries.isNotEmpty)
-                          'edit_blacklist': PostGridConfigOptionTile(
-                            title: const Text('Edit Blacklist').tr(),
-                            icon: const Icon(
+                          'edit_blacklist': const PostGridConfigOptionTile(
+                            title: Text('Edit Blacklist'),
+                            icon: Icon(
                               Symbols.block,
                               size: 18,
                             ),
                           ),
-                        'options': PostGridConfigOptionTile(
-                          title: const Text('View Options').tr(),
-                          icon: const Icon(
+                        'options': const PostGridConfigOptionTile(
+                          title: Text('View Options'),
+                          icon: Icon(
                             Symbols.settings,
                             size: 18,
                           ),
@@ -290,22 +290,22 @@ class EditBlacklistActionSheet extends ConsumerWidget {
                             Navigator.of(context).pop();
                           },
                           title: switch (e) {
-                            BlacklistSource.global => const Text(
-                              'Edit Global Blacklist',
-                            ).tr(),
-                            BlacklistSource.booruSpecific => const Text(
-                              "Edit Booru's Specific Blacklist",
-                            ).tr(),
-                            BlacklistSource.config => const Text(
-                              'Edit Profile Blacklist',
-                            ).tr(),
+                            BlacklistSource.global => Text(
+                              'Edit Global Blacklist'.hc,
+                            ),
+                            BlacklistSource.booruSpecific => Text(
+                              "Edit Booru's Specific Blacklist".hc,
+                            ),
+                            BlacklistSource.config => Text(
+                              'Edit Profile Blacklist'.hc,
+                            ),
                           },
                         ),
                       ),
                     ],
                   )
-                : const Center(
-                    child: Text('No blacklisted tags'),
+                : Center(
+                    child: Text('No blacklisted tags'.hc),
                   );
           },
           loading: () => const Center(child: CircularProgressIndicator()),
@@ -376,42 +376,40 @@ class PostGridActionSheet extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   SettingsTile<PageMode>(
-                    title: const Text(
-                      'settings.result_layout.result_layout',
-                    ).tr(),
+                    title: Text(context.t.settings.result_layout.result_layout),
                     selectedOption: pageMode,
                     items: const [...PageMode.values],
                     onChanged: (value) => onModeChanged(value),
-                    optionBuilder: (value) => Text(value.localize()).tr(),
+                    optionBuilder: (value) => Text(value.localize(context)),
                     visualDensity: VisualDensity.compact,
                   ),
                   SettingsTile<GridSize>(
-                    title: const Text(
-                      'settings.image_grid.grid_size.grid_size',
-                    ).tr(),
+                    title: Text(
+                      context.t.settings.image_grid.grid_size.grid_size,
+                    ),
                     selectedOption: gridSize,
                     items: GridSize.values,
                     onChanged: (value) => onGridChanged(value),
-                    optionBuilder: (value) => Text(value.localize().tr()),
+                    optionBuilder: (value) => Text(value.localize(context)),
                     visualDensity: VisualDensity.compact,
                   ),
                   SettingsTile<ImageListType>(
-                    title: const Text('settings.image_list.image_list').tr(),
+                    title: Text(context.t.settings.image_list.image_list),
                     selectedOption: imageListType,
                     items: ImageListType.values,
                     onChanged: (value) => onImageListChanged(value),
-                    optionBuilder: (value) => Text(value.localize()).tr(),
+                    optionBuilder: (value) => Text(value.localize(context)),
                     visualDensity: VisualDensity.compact,
                   ),
                   SettingsTile<ImageQuality>(
-                    title: const Text(
-                      'settings.image_grid.image_quality.image_quality',
-                    ).tr(),
+                    title: Text(
+                      context.t.settings.image_grid.image_quality.image_quality,
+                    ),
                     selectedOption: imageQuality,
                     items: [...ImageQuality.values]
                       ..remove(ImageQuality.original),
                     onChanged: (value) => onImageQualityChanged(value),
-                    optionBuilder: (value) => Text(value.localize()).tr(),
+                    optionBuilder: (value) => Text(value.localize(context)),
                     visualDensity: VisualDensity.compact,
                   ),
                 ],
@@ -428,7 +426,7 @@ class PostGridActionSheet extends ConsumerWidget {
                 Navigator.of(context).pop();
                 openAppearancePage(ref);
               },
-              child: const Text('More'),
+              child: Text('More'.hc),
             ),
           ),
         ],

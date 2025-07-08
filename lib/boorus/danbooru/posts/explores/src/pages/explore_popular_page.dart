@@ -70,7 +70,7 @@ class _ExplorePopularPageState extends ConsumerState<ExplorePopularPage> {
                         ),
                     sliverHeaders: [
                       ExploreSliverAppBar(
-                        title: 'explore.popular'.tr(),
+                        title: context.t.explore.popular,
                         onBack: widget.onBack,
                       ),
                       SliverList(

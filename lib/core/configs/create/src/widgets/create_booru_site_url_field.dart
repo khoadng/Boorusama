@@ -45,7 +45,7 @@ class _CreateBooruSiteUrlFieldState extends State<CreateBooruSiteUrlField> {
         controller: urlController,
         onChanged: widget.onChanged,
         decoration: InputDecoration(
-          labelText: 'booru.site_url_label'.tr(),
+          labelText: context.t.booru.site_url_label,
         ),
       ),
     );

@@ -27,7 +27,7 @@ class UnknownConfigBooruSelector extends ConsumerWidget {
         vertical: 8,
       ),
       child: ListTile(
-        title: const Text('booru.booru_engine_input_label').tr(),
+        title: Text(context.t.booru.booru_engine_input_label),
         trailing: OptionDropDownButton(
           alignment: AlignmentDirectional.centerStart,
           value: engine,

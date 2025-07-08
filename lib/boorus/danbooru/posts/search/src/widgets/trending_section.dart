@@ -55,7 +55,7 @@ class TrendingSection extends ConsumerWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Text(
-        'search.trending'.tr().toUpperCase(),
+        context.t.search.trending.toUpperCase(),
         style: Theme.of(context).textTheme.titleSmall?.copyWith(
           fontWeight: FontWeight.w700,
         ),

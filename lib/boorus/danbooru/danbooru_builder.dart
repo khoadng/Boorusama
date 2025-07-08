@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../core/boorus/engine/engine.dart';
@@ -264,31 +265,31 @@ class DanbooruBuilder implements BooruBuilder {
   final Map<CustomHomeViewKey, CustomHomeDataBuilder> customHomeViewBuilders = {
     ...kDefaultAltHomeView,
     const CustomHomeViewKey('explore'): CustomHomeDataBuilder(
-      displayName: 'explore.explore',
+      displayName: (context) => context.t.explore.explore,
       builder: (context, _) => const DanbooruExplorePage(),
     ),
     const CustomHomeViewKey('favorites'): CustomHomeDataBuilder(
-      displayName: 'profile.favorites',
+      displayName: (context) => context.t.profile.favorites,
       builder: (context, _) => const DanbooruFavoritesPage(),
     ),
     const CustomHomeViewKey('artists'): CustomHomeDataBuilder(
-      displayName: 'Artists',
+      displayName: (context) => 'Artists'.hc,
       builder: (context, _) => const DanbooruArtistSearchPage(),
     ),
     const CustomHomeViewKey('forum'): CustomHomeDataBuilder(
-      displayName: 'forum.forum',
+      displayName: (context) => context.t.forum.forum,
       builder: (context, _) => const DanbooruForumPage(),
     ),
     const CustomHomeViewKey('favgroup'): CustomHomeDataBuilder(
-      displayName: 'favorite_groups.favorite_groups',
+      displayName: (context) => context.t.favorite_groups.favorite_groups,
       builder: (context, _) => const FavoriteGroupsPage(),
     ),
     const CustomHomeViewKey('saved_searches'): CustomHomeDataBuilder(
-      displayName: 'saved_search.saved_search',
+      displayName: (context) => context.t.saved_search.saved_search,
       builder: (context, _) => const SavedSearchFeedPage(),
     ),
     const CustomHomeViewKey('pools'): CustomHomeDataBuilder(
-      displayName: 'Pools',
+      displayName: (context) => 'Pools'.hc,
       builder: (context, _) => const DanbooruPoolPage(),
     ),
   };

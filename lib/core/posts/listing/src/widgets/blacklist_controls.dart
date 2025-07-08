@@ -69,8 +69,8 @@ class BlacklistControls extends StatelessWidget {
             ),
           ),
           label: allTagsHidden
-              ? const Text('blacklisted_tags.reenable_all').tr()
-              : const Text('blacklisted_tags.disable_all').tr(),
+              ? Text(context.t.blacklisted_tags.reenable_all)
+              : Text(context.t.blacklisted_tags.disable_all),
           onPressed: allTagsHidden ? onEnableAll : onDisableAll,
         ),
     ];
@@ -163,9 +163,9 @@ class _TagPages extends ConsumerWidget {
               ),
               child: Text(
                 allTagsHidden
-                    ? 'blacklisted_tags.reenable_all'
-                    : 'blacklisted_tags.disable_all',
-              ).tr(),
+                    ? context.t.blacklisted_tags.reenable_all
+                    : context.t.blacklisted_tags.disable_all,
+              ),
             ),
           ],
         ),

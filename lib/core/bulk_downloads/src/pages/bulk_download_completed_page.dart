@@ -62,7 +62,7 @@ class _BulkDownloadCompletedPageState
     return CustomContextMenuOverlay(
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Completed'),
+          title: Text('Completed'.hc),
           actions: [
             BooruPopupMenuButton(
               onSelected: (value) {
@@ -71,8 +71,8 @@ class _BulkDownloadCompletedPageState
                   _refreshList();
                 }
               },
-              itemBuilder: const {
-                'clear_all': Text('Clear all'),
+              itemBuilder: {
+                'clear_all': Text('Clear all'.hc),
               },
             ),
           ],
@@ -90,11 +90,11 @@ class _BulkDownloadCompletedPageState
                       session: session,
                       onDelete: _refreshList,
                     ),
-                noItemsFoundIndicatorBuilder: (context) => Center(
-                  child: const Text(
+                noItemsFoundIndicatorBuilder: (context) => const Center(
+                  child: Text(
                     'No completed download sessions',
                     style: TextStyle(fontWeight: FontWeight.bold),
-                  ).tr(),
+                  ),
                 ),
               ),
             ),

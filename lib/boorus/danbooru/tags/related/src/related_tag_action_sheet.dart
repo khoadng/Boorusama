@@ -50,7 +50,7 @@ class _RelatedTagActionSheetState extends ConsumerState<RelatedTagActionSheet> {
         ],
         toolbarHeight: kToolbarHeight * 0.75,
         automaticallyImplyLeading: false,
-        title: const Text('tag.related.related').tr(),
+        title: Text(context.t.tag.related.related),
       ),
       body: ListView.builder(
         itemBuilder: (context, index) => ListTile(
@@ -80,9 +80,9 @@ class _RelatedTagActionSheetState extends ConsumerState<RelatedTagActionSheet> {
               }
             },
             itemBuilder: {
-              'add': const Text('Add'),
-              'negate': const Text('Negate'),
-              'open_wiki': const Text('tag.related.open_wiki').tr(),
+              'add': Text('Add'.hc),
+              'negate': Text('Negate'.hc),
+              'open_wiki': Text(context.t.tag.related.open_wiki),
             },
           ),
         ),

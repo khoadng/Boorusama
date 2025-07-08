@@ -24,16 +24,14 @@ class PrivacyPage extends ConsumerWidget {
     final tracker = ref.watch(trackerProvider);
 
     return SettingsPageScaffold(
-      title: const Text('settings.privacy.privacy').tr(),
+      title: Text(context.t.settings.privacy.privacy),
       children: [
         tracker.maybeWhen(
-          data: (t) => ListTile(
-            title: const Text(
-              'settings.privacy.enable_incognito_keyboard',
-            ).tr(),
-            subtitle: const Text(
-              'settings.privacy.enable_incognito_keyboard_notice',
-            ).tr(),
+          data: (_) => ListTile(
+            title: Text(context.t.settings.privacy.enable_incognito_keyboard),
+            subtitle: Text(
+              context.t.settings.privacy.enable_incognito_keyboard_notice,
+            ),
             trailing: Switch(
               value: settings.enableIncognitoModeForKeyboard,
               onChanged: (value) {
@@ -48,10 +46,10 @@ class PrivacyPage extends ConsumerWidget {
           orElse: () => const SizedBox.shrink(),
         ),
         ListTile(
-          title: const Text('settings.privacy.enable_biometric_lock').tr(),
-          subtitle: const Text(
-            'settings.privacy.enable_biometric_lock_notice',
-          ).tr(),
+          title: Text(context.t.settings.privacy.enable_biometric_lock),
+          subtitle: Text(
+            context.t.settings.privacy.enable_biometric_lock_notice,
+          ),
           trailing: Switch(
             value: settings.appLockType == AppLockType.biometrics,
             onChanged: (value) {

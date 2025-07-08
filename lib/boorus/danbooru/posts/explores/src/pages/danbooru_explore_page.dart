@@ -16,7 +16,7 @@ class DanbooruExplorePage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('explore.explore').tr(),
+        title: Text(context.t.explore.explore),
       ),
       body: const DanbooruExplorePageInternal(),
     );
@@ -72,7 +72,7 @@ class _MostViewedExploreState extends ConsumerState<MostViewedExplore> {
   @override
   Widget build(BuildContext context) {
     return ExploreSection(
-      title: 'explore.most_viewed'.tr(),
+      title: context.t.explore.most_viewed,
       builder: (_) => ref
           .watch(danbooruMostViewedTodayProvider)
           .maybeWhen(
@@ -100,7 +100,7 @@ class _HotExploreState extends ConsumerState<HotExplore> {
   @override
   Widget build(BuildContext context) {
     return ExploreSection(
-      title: 'explore.hot'.tr(),
+      title: context.t.explore.hot,
       builder: (_) => ref
           .watch(danbooruHotTodayProvider)
           .maybeWhen(
@@ -128,7 +128,7 @@ class _PopularExploreState extends ConsumerState<PopularExplore> {
   @override
   Widget build(BuildContext context) {
     return ExploreSection(
-      title: 'explore.popular'.tr(),
+      title: context.t.explore.popular,
       builder: (_) => ref
           .watch(danbooruPopularTodayProvider)
           .maybeWhen(

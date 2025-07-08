@@ -59,13 +59,11 @@ class _EntryPageState extends ConsumerState<EntryPage> {
             showSimpleSnackBar(
               context: context,
               action: SnackBarAction(
-                label: 'download.open_app_settings'.tr(),
+                label: context.t.download.open_app_settings,
                 onPressed: openAppSettings,
               ),
               behavior: SnackBarBehavior.fixed,
-              content: const Text(
-                'download.storage_permission_explanation',
-              ).tr(),
+              content: Text(context.t.download.storage_permission_explanation),
             );
             ref
                 .read(deviceStoragePermissionProvider.notifier)

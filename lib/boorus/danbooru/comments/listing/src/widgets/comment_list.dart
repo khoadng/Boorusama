@@ -65,10 +65,10 @@ class CommentList extends StatelessWidget {
                           },
                           itemBuilder: {
                             if (comment.isSelf)
-                              'edit': const Text('comment.list.edit').tr(),
-                            'reply': const Text('comment.list.reply').tr(),
+                              'edit': Text(context.t.comment.list.edit),
+                            'reply': Text(context.t.comment.list.reply),
                             if (comment.isSelf)
-                              'delete': const Text('comment.list.delete').tr(),
+                              'delete': Text(context.t.comment.list.delete),
                           },
                         )
                       : const SizedBox.shrink(),
@@ -77,6 +77,8 @@ class CommentList extends StatelessWidget {
             },
             itemCount: comments.length,
           )
-        : Center(child: Text('comment.list.noComments'.tr()));
+        : Center(
+            child: Text(context.t.comment.list.noComments),
+          );
   }
 }

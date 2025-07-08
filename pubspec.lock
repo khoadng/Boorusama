@@ -335,6 +335,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.2"
+  csv:
+    dependency: transitive
+    description:
+      name: csv
+      sha256: c6aa2679b2a18cb57652920f674488d89712efaf4d3fdf2e537215b35fc19d6c
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.0.0"
   cupertino_http:
     dependency: transitive
     description:
@@ -415,22 +423,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.7.0"
-  easy_localization:
-    dependency: transitive
-    description:
-      name: easy_localization
-      sha256: "0f5239c7b8ab06c66440cfb0e9aa4b4640429c6668d5a42fe389c5de42220b12"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.0.7+1"
-  easy_logger:
-    dependency: transitive
-    description:
-      name: easy_logger
-      sha256: c764a6e024846f33405a2342caf91c62e357c24b02c04dbc712ef232bf30ffb7
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.0.2"
   equatable:
     dependency: "direct main"
     description:
@@ -1692,6 +1684,22 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  slang:
+    dependency: transitive
+    description:
+      name: slang
+      sha256: bc9488b19acbc4756aa60a9de19720045f9d49a4a7524d56475e0a6965bcd8bd
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.7.3"
+  slang_flutter:
+    dependency: transitive
+    description:
+      name: slang_flutter
+      sha256: fff13b6fc8b0378ee23856c4f9fd7f8e2777b430090681f4d19ab14c47de9bc6
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.7.0"
   sliver_tools:
     dependency: "direct main"
     description:

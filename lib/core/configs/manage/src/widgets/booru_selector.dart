@@ -176,18 +176,18 @@ mixin BooruSelectorActionMixin<T extends ConsumerStatefulWidget>
       GenericContextMenu(
         buttonConfigs: [
           ContextMenuButtonConfig(
-            'generic.action.edit'.tr(),
+            context.t.generic.action.edit,
             onPressed: () => goToUpdateBooruConfigPage(
               ref,
               config: config,
             ),
           ),
           ContextMenuButtonConfig(
-            'generic.action.duplicate'.tr(),
+            context.t.generic.action.duplicate,
             onPressed: () => notifier.duplicate(config: config),
           ),
           ContextMenuButtonConfig(
-            'generic.action.delete'.tr(),
+            context.t.generic.action.delete,
             labelStyle: TextStyle(
               color: Theme.of(context).colorScheme.error,
             ),

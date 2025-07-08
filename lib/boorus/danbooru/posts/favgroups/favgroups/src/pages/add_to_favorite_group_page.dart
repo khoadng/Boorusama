@@ -29,9 +29,9 @@ class AddToFavoriteGroupPage extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'favorite_groups.add_to_group_dialog_title',
+          context.t.favorite_groups.add_to_group_dialog_title,
           style: Theme.of(context).textTheme.titleLarge,
-        ).tr(),
+        ),
       ),
       backgroundColor: Theme.of(context).colorScheme.surface,
       body: Column(
@@ -59,7 +59,7 @@ class AddToFavoriteGroupPage extends ConsumerWidget {
             child: ListTile(
               visualDensity: VisualDensity.compact,
               title: Text(
-                'favorite_groups.add_to'.tr().toUpperCase(),
+                context.t.favorite_groups.add_to.toUpperCase(),
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w800,
                 ),
@@ -72,7 +72,7 @@ class AddToFavoriteGroupPage extends ConsumerWidget {
                   context,
                   enableManualPostInput: false,
                 ),
-                child: const Text('favorite_groups.create').tr(),
+                child: Text(context.t.favorite_groups.create),
               ),
             ),
           ),

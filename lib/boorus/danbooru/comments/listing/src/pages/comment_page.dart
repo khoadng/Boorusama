@@ -93,7 +93,7 @@ class _CommentPageState extends ConsumerState<CommentPage> {
       child: Scaffold(
         appBar: widget.useAppBar
             ? AppBar(
-                title: const Text('comment.comments').tr(),
+                title: Text(context.t.comment.comments),
               )
             : null,
         body: SafeArea(

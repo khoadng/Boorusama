@@ -1,6 +1,9 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Package imports:
+import 'package:i18n/i18n.dart';
+
 // Project imports:
 import '../../../widgets/widgets.dart';
 import '../types/blacklisted_tags_sort_type.dart';
@@ -35,14 +38,14 @@ class BlacklistedTagConfigSheet extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Padding(
-                padding: EdgeInsets.symmetric(
+              Padding(
+                padding: const EdgeInsets.symmetric(
                   horizontal: 20,
                   vertical: 12,
                 ),
                 child: Text(
-                  'Sort by',
-                  style: TextStyle(
+                  'Sort by'.hc,
+                  style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
@@ -50,9 +53,9 @@ class BlacklistedTagConfigSheet extends StatelessWidget {
               ),
               const Divider(),
               ListTile(
-                title: const Text(
-                  'Recently added',
-                  style: TextStyle(
+                title: Text(
+                  'Recently added'.hc,
+                  style: const TextStyle(
                     fontSize: 16,
                   ),
                 ),
@@ -61,22 +64,10 @@ class BlacklistedTagConfigSheet extends StatelessWidget {
                   onSorted(BlacklistedTagsSortType.recentlyAdded);
                 },
               ),
-              // ListTile(
-              //   title: const Text(
-              //     'Recently updated',
-              //     style: TextStyle(
-              //       fontSize: 16,
-              //     ),
-              //   ),
-              //   onTap: () {
-              //     Navigator.pop(context);
-              //     onSorted(BlacklistedTagsSortType.recentlyUpdated);
-              //   },
-              // ),
               ListTile(
-                title: const Text(
-                  'Name (A-Z)',
-                  style: TextStyle(
+                title: Text(
+                  'Name (A-Z)'.hc,
+                  style: const TextStyle(
                     fontSize: 16,
                   ),
                 ),
@@ -87,9 +78,9 @@ class BlacklistedTagConfigSheet extends StatelessWidget {
               ),
               // name (z-a)
               ListTile(
-                title: const Text(
-                  'Name (Z-A)',
-                  style: TextStyle(
+                title: Text(
+                  'Name (Z-A)'.hc,
+                  style: const TextStyle(
                     fontSize: 16,
                   ),
                 ),

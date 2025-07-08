@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:reorderables/reorderables.dart';
@@ -28,7 +29,7 @@ class DetailsLayoutManagerPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Manage widgets'),
+        title: Text('Manage widgets'.hc),
         actions: [
           IconButton(
             icon: const Icon(Symbols.add),
@@ -92,7 +93,7 @@ class DetailsLayoutManagerPage extends StatelessWidget {
                           onPressed: () {
                             goToPremiumPage(ref);
                           },
-                          child: const Text('Upgrade to save'),
+                          child: Text('Upgrade to save'.hc),
                         ),
                       )
                     : const SizedBox.shrink();
@@ -229,7 +230,7 @@ class _Header extends StatelessWidget {
                           Navigator.of(context).pop();
                         }
                       : null,
-                  child: const Text('Apply'),
+                  child: Text('Apply'.hc),
                 )
               : const SizedBox.shrink();
         },

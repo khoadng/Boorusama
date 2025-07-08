@@ -36,9 +36,9 @@ class FavoritePostButton extends StatelessWidget {
               if (!isAuthorized) {
                 showSimpleSnackBar(
                   context: context,
-                  content: const Text(
-                    'post.detail.login_required_notice',
-                  ).tr(),
+                  content: Text(
+                    context.t.post.detail.login_required_notice,
+                  ),
                   duration: AppDurations.shortToast,
                 );
 

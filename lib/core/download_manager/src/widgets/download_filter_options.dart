@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:i18n/i18n.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
@@ -31,7 +30,7 @@ class DownloadFilterOptions extends ConsumerWidget {
       searchable: false,
       options: kFilterOptions,
       hasNullOption: false,
-      optionLabelBuilder: (value) => value!.localize().tr(),
+      optionLabelBuilder: (value) => value!.localize(),
       onSelected: (value) {
         if (value == null) return;
 

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../settings/routes.dart';
@@ -17,7 +18,7 @@ class DisabledDownloadManagerPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Downloads'),
+        title: Text('Downloads'.hc),
       ),
       body: SafeArea(
         child: Padding(
@@ -27,12 +28,13 @@ class DisabledDownloadManagerPage extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                'Download manager is disabled',
+                'Download manager is disabled'.hc,
                 style: Theme.of(context).textTheme.titleLarge,
               ),
               const SizedBox(height: 4),
               Text(
-                'You are using the legacy downloader. Please enable the new downloader in the settings.',
+                'You are using the legacy downloader. Please enable the new downloader in the settings.'
+                    .hc,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: Theme.of(context).colorScheme.hintColor,
                 ),
@@ -42,7 +44,7 @@ class DisabledDownloadManagerPage extends ConsumerWidget {
                 onPressed: () {
                   openDownloadSettingsPage(ref);
                 },
-                child: const Text('Open settings'),
+                child: Text('Open settings'.hc),
               ),
             ],
           ),

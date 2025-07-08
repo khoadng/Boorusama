@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../settings/providers.dart';
@@ -76,9 +77,9 @@ class ImportingStep extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         const SizedBox(height: 12),
-        const Text(
-          'Importing...',
-          style: TextStyle(
+        Text(
+          'Importing...'.hc,
+          style: const TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.w700,
           ),
@@ -162,9 +163,9 @@ class ImportingStep extends ConsumerWidget {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const Text(
-                      'PLEASE CLOSE AND REOPEN THE APP',
-                      style: TextStyle(
+                    Text(
+                      'PLEASE CLOSE AND REOPEN THE APP'.hc,
+                      style: const TextStyle(
                         fontWeight: FontWeight.w900,
                       ),
                     ),
@@ -281,23 +282,23 @@ class ImportingStep extends ConsumerWidget {
               final result = await showDialog<bool>(
                 context: context,
                 builder: (context) => AlertDialog(
-                  title: const Text('App Restart Required'),
-                  content: const Text(
-                    'To apply all changes, the app needs to restart.'
-                    '\n\nContinue without restarting? Some features may not work properly.',
+                  title: Text('App Restart Required'.hc),
+                  content: Text(
+                    'To apply all changes, the app needs to restart.\n\nContinue without restarting? Some features may not work properly.'
+                        .hc,
                   ),
                   actions: [
                     TextButton(
                       onPressed: () {
                         Navigator.of(context).pop(true);
                       },
-                      child: const Text('Continue Anyway'),
+                      child: Text('Continue Anyway'.hc),
                     ),
                     TextButton(
                       onPressed: () {
                         Navigator.of(context).pop(false);
                       },
-                      child: const Text('Restart Now'),
+                      child: Text('Restart Now'.hc),
                     ),
                   ],
                 ),
@@ -362,9 +363,9 @@ class SelectDataStep extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         const SizedBox(height: 12),
-        const Text(
-          'Choose data to import',
-          style: TextStyle(
+        Text(
+          'Choose data to import'.hc,
+          style: const TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.w700,
           ),
@@ -374,11 +375,11 @@ class SelectDataStep extends ConsumerWidget {
           children: [
             TextButton(
               onPressed: () => notifier.selectAllTasks(),
-              child: const Text('Select All'),
+              child: Text('Select All'.hc),
             ),
             TextButton(
               onPressed: () => notifier.deselectAllTasks(),
-              child: const Text('Deselect All'),
+              child: Text('Deselect All'.hc),
             ),
           ],
         ),

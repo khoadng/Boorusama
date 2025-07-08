@@ -82,7 +82,7 @@ class _CommentCreatePageState extends ConsumerState<CommentCreatePage> {
                     decoration: InputDecoration(
                       filled: false,
                       focusedBorder: InputBorder.none,
-                      hintText: '${'comment.create.hint'.tr()}...',
+                      hintText: '${context.t.comment.create.hint}...',
                     ),
                     autofocus: true,
                     keyboardType: TextInputType.multiline,

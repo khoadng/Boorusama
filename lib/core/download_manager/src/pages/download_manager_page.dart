@@ -128,7 +128,7 @@ class _DownloadManagerPageState extends ConsumerState<DownloadManagerPage> {
                     }
                   : null,
               icon: const Icon(Symbols.share),
-              name: 'post.detail.share.image'.tr(),
+              name: context.t.post.detail.share.image,
             ),
           ],
         ),
@@ -213,10 +213,10 @@ class _DownloadManagerPageState extends ConsumerState<DownloadManagerPage> {
             ? ValueListenableBuilder(
                 valueListenable: _multiSelectController.selectedItemsNotifier,
                 builder: (_, selected, _) => selected.isEmpty
-                    ? const Text('Select items')
-                    : Text('${selected.length} Items selected'),
+                    ? Text('Select items'.hc)
+                    : Text('${selected.length} Items selected'.hc),
               )
-            : const Text(DownloadTranslations.downloadManagerTitle).tr(),
+            : Text(DownloadTranslations.downloadManagerTitle),
       ),
       actions: [
         if (isDefaultGroup)
@@ -246,9 +246,9 @@ class _DownloadManagerPageState extends ConsumerState<DownloadManagerPage> {
                               onFailed: () {
                                 showSimpleSnackBar(
                                   context: context,
-                                  content: const Text(
+                                  content: Text(
                                     DownloadTranslations.downloadNothingToClear,
-                                  ).tr(),
+                                  ),
                                   duration: const Duration(seconds: 1),
                                 );
                               },
@@ -260,8 +260,8 @@ class _DownloadManagerPageState extends ConsumerState<DownloadManagerPage> {
                     }
                   },
                   itemBuilder: {
-                    'select': const Text('Select'),
-                    if (isDefaultGroup) 'clear': const Text('Clear'),
+                    'select': Text('Select'.hc),
+                    if (isDefaultGroup) 'clear': Text('Clear'.hc),
                   },
                 )
               : const SizedBox.shrink(),

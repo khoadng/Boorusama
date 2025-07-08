@@ -69,7 +69,7 @@ class _ExploreMostViewedPageState extends ConsumerState<ExploreMostViewedPage> {
                         ),
                     sliverHeaders: [
                       ExploreSliverAppBar(
-                        title: 'explore.most_viewed'.tr(),
+                        title: context.t.explore.most_viewed,
                         onBack: widget.onBack,
                       ),
                     ],

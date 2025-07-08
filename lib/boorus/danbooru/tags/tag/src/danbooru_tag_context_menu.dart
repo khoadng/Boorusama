@@ -30,16 +30,16 @@ class DanbooruTagContextMenu extends ConsumerWidget {
     return GeneralTagContextMenu(
       tag: tag,
       itemBindings: {
-        'post.detail.open_wiki'.tr(): () => launchWikiPage(
+        context.t.post.detail.open_wiki: () => launchWikiPage(
           config.url,
           tag,
         ),
         if (config.hasLoginDetails())
-          'post.detail.add_to_blacklist'.tr(): () => ref
+          context.t.post.detail.add_to_blacklist: () => ref
               .read(danbooruBlacklistedTagsProvider(config).notifier)
               .addWithToast(context: context, tag: tag),
         if (config.hasLoginDetails())
-          'post.detail.copy_and_open_saved_search'.tr(): () async {
+          context.t.post.detail.copy_and_open_saved_search: () async {
             await AppClipboard.copy(tag);
 
             if (context.mounted) {

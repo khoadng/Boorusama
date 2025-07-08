@@ -47,11 +47,11 @@ class RateMyAppService implements AppRatingService {
 
     rateMyApp.showRateDialog(
       context,
-      title: 'rating.rate_request'.tr(),
-      message: 'rating.rationale'.tr(),
-      rateButton: 'rating.rate'.tr(),
-      noButton: 'rating.cancel'.tr(),
-      laterButton: 'rating.later'.tr(),
+      title: context.t.rating.rate_request,
+      message: context.t.rating.rationale,
+      rateButton: context.t.rating.rate,
+      noButton: context.t.rating.cancel,
+      laterButton: context.t.rating.later,
     );
   }
 }

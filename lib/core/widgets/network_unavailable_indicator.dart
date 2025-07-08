@@ -33,12 +33,12 @@ class NetworkUnavailableIndicator extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(left: 6),
                 child: Text(
-                  'network.unavailable',
+                  context.t.network.unavailable,
                   style: TextStyle(
                     color: colorScheme.onSurface,
                     fontWeight: FontWeight.w500,
                   ),
-                ).tr(),
+                ),
               ),
             ],
           ),

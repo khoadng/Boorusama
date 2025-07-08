@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:filename_generator/filename_generator.dart';
+import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
@@ -27,7 +28,7 @@ class TokenOptionHelpModal extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Available options'),
+        title: Text('Available options'.hc),
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
