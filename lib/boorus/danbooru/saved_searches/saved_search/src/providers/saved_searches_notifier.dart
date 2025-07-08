@@ -21,14 +21,14 @@ class SavedSearchesNotifier
     extends FamilyAsyncNotifier<List<SavedSearch>, BooruConfigAuth> {
   @override
   Future<List<SavedSearch>> build(BooruConfigAuth arg) async {
-    final savedSearches = await repo.getSavedSearches(page: 1);
+    final savedSearches = await _repo.getSavedSearches(page: 1);
 
     final searches = _sort(savedSearches);
 
     return searches;
   }
 
-  SavedSearchRepository get repo =>
+  SavedSearchRepository get _repo =>
       ref.read(danbooruSavedSearchRepoProvider(arg));
 
   Future<void> create({
@@ -37,7 +37,7 @@ class SavedSearchesNotifier
     void Function(SavedSearch data)? onCreated,
     void Function()? onFailure,
   }) async {
-    final savedSearch = await repo.createSavedSearch(
+    final savedSearch = await _repo.createSavedSearch(
       query: query,
       label: label,
     );
@@ -66,7 +66,7 @@ class SavedSearchesNotifier
     if (currentState == null) return;
     if (!savedSearch.canDelete) return;
 
-    final success = await repo.deleteSavedSearch(savedSearch.id);
+    final success = await _repo.deleteSavedSearch(savedSearch.id);
 
     if (success) {
       state = AsyncData(
@@ -87,7 +87,7 @@ class SavedSearchesNotifier
   }) async {
     final currentState = state.value;
     if (currentState == null) return;
-    final success = await repo.updateSavedSearch(
+    final success = await _repo.updateSavedSearch(
       id,
       query: query,
       label: label,

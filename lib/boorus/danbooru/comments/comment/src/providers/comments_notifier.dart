@@ -38,7 +38,7 @@ class CommentsNotifier
     return {};
   }
 
-  CommentRepository<DanbooruComment> get repo =>
+  CommentRepository<DanbooruComment> get _repo =>
       ref.read(danbooruCommentRepoProvider(arg));
 
   Future<void> load(
@@ -49,7 +49,7 @@ class CommentsNotifier
 
     final user = await ref.read(danbooruCurrentUserProvider(arg).future);
 
-    final comments = await repo
+    final comments = await _repo
         .getComments(postId)
         .then(filterDeleted())
         .then(
@@ -100,7 +100,7 @@ class CommentsNotifier
     required String content,
     CommentData? replyTo,
   }) async {
-    await repo.createComment(
+    await _repo.createComment(
       postId,
       buildCommentContent(content: content, replyTo: replyTo),
     );
@@ -111,7 +111,7 @@ class CommentsNotifier
     required int postId,
     required CommentData comment,
   }) async {
-    await repo.deleteComment(comment.id);
+    await _repo.deleteComment(comment.id);
     await load(postId, force: true);
   }
 
@@ -120,7 +120,7 @@ class CommentsNotifier
     required CommentId commentId,
     required String content,
   }) async {
-    await repo.updateComment(commentId, content);
+    await _repo.updateComment(commentId, content);
     await load(postId, force: true);
   }
 }

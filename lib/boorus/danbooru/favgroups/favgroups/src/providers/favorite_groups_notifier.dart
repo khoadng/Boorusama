@@ -38,14 +38,14 @@ class FavoriteGroupsNotifier
     return null;
   }
 
-  FavoriteGroupRepository get repo =>
+  FavoriteGroupRepository get _repo =>
       ref.read(danbooruFavoriteGroupRepoProvider(arg.auth));
 
   Future<void> refresh() async {
     final loginDetails = ref.watch(danbooruLoginDetailsProvider(arg.auth));
 
     if (!loginDetails.hasLogin()) return;
-    final groups = await repo.getFavoriteGroupsByCreatorName(
+    final groups = await _repo.getFavoriteGroupsByCreatorName(
       name: arg.auth.login!,
     );
 
@@ -90,7 +90,7 @@ class FavoriteGroupsNotifier
 
     final validIds = ids.nonNulls.toList();
 
-    final success = await repo.createFavoriteGroup(
+    final success = await _repo.createFavoriteGroup(
       name: name,
       initialItems: validIds,
       isPrivate: isPrivate,
@@ -107,7 +107,7 @@ class FavoriteGroupsNotifier
   Future<void> delete({
     required DanbooruFavoriteGroup group,
   }) async {
-    final success = await repo.deleteFavoriteGroup(
+    final success = await _repo.deleteFavoriteGroup(
       id: group.id,
     );
 
@@ -131,7 +131,7 @@ class FavoriteGroupsNotifier
         .toList();
 
     final validIds = ids.nonNulls.toList();
-    final success = await repo.editFavoriteGroup(
+    final success = await _repo.editFavoriteGroup(
       id: group.id,
       name: name ?? group.name,
       itemIds: initialIds != null ? validIds : null,
@@ -170,7 +170,7 @@ class FavoriteGroupsNotifier
       ...postIds,
     ];
 
-    final success = await repo.addItemsToFavoriteGroup(
+    final success = await _repo.addItemsToFavoriteGroup(
       id: group.id,
       itemIds: items,
     );
@@ -196,7 +196,7 @@ class FavoriteGroupsNotifier
     final items = [...group.postIds]
       ..removeWhere((element) => postIds.contains(element));
 
-    final success = await repo.removeItemsFromFavoriteGroup(
+    final success = await _repo.removeItemsFromFavoriteGroup(
       id: group.id,
       itemIds: items,
     );

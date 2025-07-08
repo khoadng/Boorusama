@@ -132,5 +132,9 @@ linter:
     # conflicts with `prefer_relative_imports`
     always_use_package_imports: false
 
+custom_lint:
+  rules:
+    - missing_provider_scope: false
+
 formatter:
   trailing_commas: preserve

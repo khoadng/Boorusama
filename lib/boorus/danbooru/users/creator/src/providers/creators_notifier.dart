@@ -24,7 +24,7 @@ final danbooruCreatorProvider = Provider.family<Creator?, int?>((ref, id) {
 
 class CreatorsNotifier
     extends FamilyNotifier<IMap<int, Creator>, BooruConfigAuth> {
-  Future<CreatorRepository> get futureRepo =>
+  Future<CreatorRepository> get _futureRepo =>
       ref.watch(danbooruCreatorRepoProvider(arg).future);
 
   @override
@@ -36,7 +36,7 @@ class CreatorsNotifier
     // only load ids that are not already loaded
     final notInCached = ids.where((id) => !state.containsKey(id)).toList();
 
-    final repo = await futureRepo;
+    final repo = await _futureRepo;
     final creators = await repo.getCreatorsByIdStringComma(
       notInCached.join(','),
     );
