@@ -27,14 +27,14 @@ class DanbooruUserFeedback extends Equatable {
     required this.isDeleted,
   });
 
-  factory DanbooruUserFeedback.placeholder() => DanbooruUserFeedback(
+  factory DanbooruUserFeedback.placeholder() => const DanbooruUserFeedback(
     id: 0,
     userId: 0,
     creatorId: 0,
     body: '',
     category: UserFeedbackCategory.neutral,
-    createdAt: DateTime(1),
-    updatedAt: DateTime(1),
+    createdAt: null,
+    updatedAt: null,
     isDeleted: false,
   );
 
@@ -43,8 +43,8 @@ class DanbooruUserFeedback extends Equatable {
   final int creatorId;
   final String body;
   final UserFeedbackCategory category;
-  final DateTime createdAt;
-  final DateTime updatedAt;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
   final bool isDeleted;
 
   @override
@@ -85,5 +85,7 @@ extension DanbooruUserFeedbackX on DanbooruUserFeedback {
 abstract class DanbooruUserFeedbacksRepository {
   Future<List<DanbooruUserFeedback>> getUserFeedbacks({
     required int userId,
+    int? limit,
+    int? page,
   });
 }

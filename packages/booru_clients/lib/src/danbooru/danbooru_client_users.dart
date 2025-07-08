@@ -69,11 +69,15 @@ mixin DanbooruClientUsers {
   Future<List<UserFeedbackDto>> getUserFeedbacks({
     required int userId,
     CancelToken? cancelToken,
+    int? limit,
+    int? page,
   }) async {
     final response = await dio.get(
       '/user_feedbacks.json',
       queryParameters: {
         'search[user_id]': userId,
+        if (limit != null) 'limit': limit,
+        if (page != null) 'page': page,
       },
       cancelToken: cancelToken,
     );

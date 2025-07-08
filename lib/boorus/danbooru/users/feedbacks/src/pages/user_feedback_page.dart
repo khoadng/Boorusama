@@ -47,7 +47,10 @@ class _UserFeedbackPageState extends ConsumerState<UserFeedbackPage> {
     try {
       final config = ref.readConfigAuth;
       final repo = ref.read(danbooruUserFeedbackRepoProvider(config));
-      final feedbacks = await repo.getUserFeedbacks(userId: widget.userId);
+      final feedbacks = await repo.getUserFeedbacks(
+        userId: widget.userId,
+        page: pageKey,
+      );
 
       // Load creators
       final creatorsNotifier = ref.read(
@@ -146,15 +149,16 @@ class _UserFeedbackItem extends ConsumerWidget {
                 const SizedBox(width: 8),
                 _buildCategoryLabel(context),
                 const Spacer(),
-                Text(
-                  feedback.createdAt.fuzzify(
-                    locale: Localizations.localeOf(context),
+                if (feedback.createdAt case final DateTime createdAt)
+                  Text(
+                    createdAt.fuzzify(
+                      locale: Localizations.localeOf(context),
+                    ),
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.hintColor,
+                      fontSize: 12,
+                    ),
                   ),
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.hintColor,
-                    fontSize: 12,
-                  ),
-                ),
               ],
             ),
             const SizedBox(height: 8),
@@ -167,9 +171,9 @@ class _UserFeedbackItem extends ConsumerWidget {
 
   Widget _buildCategoryLabel(BuildContext context) {
     final (color, label) = switch (feedback.category) {
-      UserFeedbackCategory.positive => (Colors.green, 'Positive'),
-      UserFeedbackCategory.negative => (Colors.red, 'Negative'),
-      UserFeedbackCategory.neutral => (Colors.grey, 'Neutral'),
+      UserFeedbackCategory.positive => (Colors.green, 'Positive'.hc),
+      UserFeedbackCategory.negative => (Colors.red, 'Negative'.hc),
+      UserFeedbackCategory.neutral => (Colors.grey, 'Neutral'.hc),
     };
 
     return Text(
