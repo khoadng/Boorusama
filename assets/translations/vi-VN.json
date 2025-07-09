@@ -1,495 +1,495 @@
 {
-    "generic": {
-        "done": "Xong",
-        "errors": {
-            "no_data": "Không có dữ liệu",
-            "unknown": "Xảy ra lỗi ngoài dự kiến"
-        },
-        "action": {
-            "add": "Thêm",
-            "delete": "Xoá",
-            "edit": "Sửa",
-            "ok": "OK",
-            "cancel": "Huỷ",
-            "duplicate": "Tạo bản sao"
-        },
-        "view": "Xem"
+  "generic": {
+    "done": "Xong",
+    "errors": {
+      "no_data": "Không có dữ liệu",
+      "unknown": "Xảy ra lỗi ngoài dự kiến"
     },
-    "profile": {
-        "favorites": "Yêu thích",
-        "messages": "Tin nhắn",
-        "profile": "Hồ sơ",
-        "copy_user_id": "Copy ID người dùng"
+    "action": {
+      "add": "Thêm",
+      "delete": "Xoá",
+      "edit": "Sửa",
+      "ok": "OK",
+      "cancel": "Huỷ",
+      "duplicate": "Tạo bản sao"
     },
-    "network": {
-        "unavailable": "Không có mạng"
-    },
-    "tag": {
-        "related": {
-            "more": "Thêm",
-            "related": "Liên quan",
-            "add_to_current_search": "Thêm vào thanh tìm kiếm",
-            "open_wiki": "Mở wiki"
-        },
-        "explore": {
-            "new": "Mới",
-            "popular": "Phổ biến"
-        }
-    },
-    "post": {
-        "detail": {
-            "view": "Xem",
-            "view_in_browser": "Xem bằng trình duyệt",
-            "file_details": "Thông số ảnh",
-            "size": "Kích thước",
-            "resolution": "Độ phân giải",
-            "rating": "Xếp loại",
-            "file_format": "Định dạng file",
-            "share": {
-                "source": "Chia sẻ link nguồn",
-                "booru": "Chia sẻ link booru",
-                "image": "Chia sẻ ảnh"
-            },
-            "copied": "Đã sao chép",
-            "show_original": "Xem bản gốc",
-            "show_translated": "Xem bản dịch",
-            "login_required_notice": "Bạn cần đăng nhập để thực hiện tác vụ này",
-            "open_wiki": "Mở wiki",
-            "add_to_blacklist": "Thêm vào bộ lọc",
-            "add_to_favorites": "Thêm vào yêu thích",
-            "copy_and_open_saved_search": "Copy và mở saved search",
-            "score": {
-                "other": "Điểm",
-                "one": "Điểm"
-            },
-            "source_label": "Nguồn",
-            "related_posts": "Ảnh liên quan",
-            "add_to_bookmark": "Thêm đánh dấu",
-            "remove_from_bookmark": "Xoá đánh dấu"
-        },
-        "action": {
-            "preview": "Xem nhanh",
-            "view_comments": "Xem bình luận",
-            "add_to_favorite_group": "Thêm vào nhóm yêu thích",
-            "select": "Chọn"
-        },
-        "image_fullview": {
-            "view_original": "Xem ảnh gốc",
-            "view_resized": "Xem ảnh thường"
-        }
-    },
-    "comment": {
-        "comments": "Bình luận",
-        "create": {
-            "hint": "Bình luận",
-            "loading": "Đợi tí...",
-            "error": "Lỗi"
-        },
-        "list": {
-            "edit": "Sửa",
-            "reply": "Trả lời",
-            "reply_to": "Gửi tới",
-            "delete": "Xóa",
-            "noComments": "Không có bình luận",
-            "last_updated": "Cập nhật lần cuối",
-            "send": "Gửi"
-        },
-        "counter": {
-            "other": "Bình luận",
-            "one": "Bình luận"
-        }
+    "view": "Xem"
+  },
+  "profile": {
+    "favorites": "Yêu thích",
+    "profile": "Hồ sơ",
+    "copy_user_id": "Copy ID người dùng",
+    "messages": "Tin nhắn"
+  },
+  "network": {
+    "unavailable": "Không có mạng"
+  },
+  "tag": {
+    "related": {
+      "more": "Thêm",
+      "related": "Liên quan",
+      "add_to_current_search": "Thêm vào thanh tìm kiếm",
+      "open_wiki": "Mở wiki"
     },
     "explore": {
-        "latest": "Mới",
-        "popular": "Phổ biến",
-        "hot": "Hot",
-        "most_viewed": "Xem nhiều",
-        "see_more": "Xem thêm",
-        "explore": "Khám phá"
+      "new": "Mới",
+      "popular": "Phổ biến"
+    }
+  },
+  "post": {
+    "detail": {
+      "view": "Xem",
+      "view_in_browser": "Xem bằng trình duyệt",
+      "file_details": "Thông số ảnh",
+      "size": "Kích thước",
+      "resolution": "Độ phân giải",
+      "rating": "Xếp loại",
+      "file_format": "Định dạng file",
+      "share": {
+        "source": "Chia sẻ link nguồn",
+        "booru": "Chia sẻ link booru",
+        "image": "Chia sẻ ảnh"
+      },
+      "copied": "Đã sao chép",
+      "show_original": "Xem bản gốc",
+      "show_translated": "Xem bản dịch",
+      "login_required_notice": "Bạn cần đăng nhập để thực hiện tác vụ này",
+      "open_wiki": "Mở wiki",
+      "add_to_blacklist": "Thêm vào bộ lọc",
+      "add_to_favorites": "Thêm vào yêu thích",
+      "copy_and_open_saved_search": "Copy và mở saved search",
+      "score": {
+        "one": "Điểm",
+        "other": "Điểm"
+      },
+      "source_label": "Nguồn",
+      "related_posts": "Ảnh liên quan",
+      "add_to_bookmark": "Thêm đánh dấu",
+      "remove_from_bookmark": "Xoá đánh dấu"
+    },
+    "action": {
+      "preview": "Xem nhanh",
+      "view_comments": "Xem bình luận",
+      "add_to_favorite_group": "Thêm vào nhóm yêu thích",
+      "select": "Chọn"
+    },
+    "image_fullview": {
+      "view_original": "Xem ảnh gốc",
+      "view_resized": "Xem ảnh thường"
+    }
+  },
+  "comment": {
+    "comments": "Bình luận",
+    "create": {
+      "hint": "Bình luận",
+      "loading": "Đợi tí...",
+      "error": "Lỗi"
+    },
+    "list": {
+      "edit": "Sửa",
+      "reply": "Trả lời",
+      "reply_to": "Gửi tới",
+      "delete": "Xóa",
+      "noComments": "Không có bình luận",
+      "last_updated": "Cập nhật lần cuối",
+      "send": "Gửi"
+    },
+    "counter": {
+      "one": "Bình luận",
+      "other": "Bình luận"
+    }
+  },
+  "explore": {
+    "latest": "Mới",
+    "popular": "Phổ biến",
+    "hot": "Hot",
+    "most_viewed": "Xem nhiều",
+    "see_more": "Xem thêm",
+    "explore": "Khám phá"
+  },
+  "search": {
+    "errors": {
+      "generic": "Có lỗi xảy ra",
+      "tag_limit": "Số tag sử dụng vượt mức cho phép. Nâng cấp tài khoản để có thể dùng nhiều tag hơn.",
+      "database_timeout": "Search bị hủy do tốn quá nhiều thời gian.",
+      "rate_limited": "Bạn đã vượt giới hạn. Vui lòng thử lại sau",
+      "pagination_limit": "Đã đạt đến giới hạn phân trang, không thể cuộn thêm.",
+      "max_capacity": "Server không thể xử lý thêm yêu cầu, vui lòng thử lại sau.",
+      "down": "Server đang sập, thử lại sau.",
+      "access_denied": "Truy cập bị từ chối",
+      "forbidden": "Không có quyền truy cập",
+      "unknown": "Lỗi server không xác định, vui lòng báo cho dev"
+    },
+    "hint": "Tìm...",
+    "no_result": "Không tìm được kết quả phù hợp.",
+    "search_options": "Tùy chọn",
+    "metatags_notice": "Free metatags không tính vào giới hạn tag search",
+    "history": {
+      "history": "Lịch sử",
+      "clear": "Xóa",
+      "recent": "Gần đây"
+    },
+    "trending": "Xu hướng",
+    "remove_all_selected": "Xoá tất cả các tag đang chọn",
+    "result_counter": {
+      "one": "$n Kết quả",
+      "other": "$n Kết quả"
+    },
+    "no_result_notice": "Không có kết quả",
+    "search_in_progress_notice": "Đang tìm..."
+  },
+  "pool": {
+    "pool": "Ảnh bộ",
+    "pool_gallery": "Ảnh bộ",
+    "order": {
+      "recent": "Gần đây",
+      "new": "Mới",
+      "post_count": "Số lượng",
+      "name": "Tên"
+    },
+    "category": {
+      "series": "Series",
+      "collection": "Bộ sưu tập"
     },
     "search": {
-        "errors": {
-            "generic": "Có lỗi xảy ra",
-            "tag_limit": "Số tag sử dụng vượt mức cho phép. Nâng cấp tài khoản để có thể dùng nhiều tag hơn.",
-            "database_timeout": "Search bị hủy do tốn quá nhiều thời gian.",
-            "rate_limited": "Bạn đã vượt giới hạn. Vui lòng thử lại sau",
-            "pagination_limit": "Đã đạt đến giới hạn phân trang, không thể cuộn thêm.",
-            "max_capacity": "Server không thể xử lý thêm yêu cầu, vui lòng thử lại sau.",
-            "down": "Server đang sập, thử lại sau.",
-            "access_denied": "Truy cập bị từ chối",
-            "forbidden": "Không có quyền truy cập",
-            "unknown": "Lỗi server không xác định, vui lòng báo cho dev"
-        },
-        "hint": "Tìm...",
-        "no_result": "Không tìm được kết quả phù hợp.",
-        "search_options": "Tùy chọn",
-        "metatags_notice": "Free metatags không tính vào giới hạn tag search",
-        "history": {
-            "history": "Lịch sử",
-            "clear": "Xóa",
-            "recent": "Gần đây"
-        },
-        "trending": "Xu hướng",
-        "remove_all_selected": "Xoá tất cả các tag đang chọn",
-        "result_counter": {
-            "other": "$n Kết quả",
-            "one": "$n Kết quả"
-        },
-        "no_result_notice": "Không có kết quả",
-        "search_in_progress_notice": "Đang tìm..."
+      "hint": "Tìm ảnh"
     },
-    "pool": {
-        "pool": "Ảnh bộ",
-        "pool_gallery": "Ảnh bộ",
-        "order": {
-            "recent": "Gần đây",
-            "new": "Mới",
-            "post_count": "Số lượng",
-            "name": "Tên"
-        },
-        "category": {
-            "series": "Series",
-            "collection": "Bộ sưu tập"
-        },
-        "search": {
-            "hint": "Tìm ảnh"
-        },
-        "detail": {
-            "last_updated": "Cập nhật"
-        }
+    "detail": {
+      "last_updated": "Cập nhật"
+    }
+  },
+  "settings": {
+    "settings": "Cài đặt",
+    "app_settings": "Cài đặt ứng dụng",
+    "appearance": {
+      "appearance": "Hiển thị",
+      "show_scores": "Hiện điểm",
+      "show_post_list_config_header": "Hiển thị header tuỳ chỉnh",
+      "booru_config": "Hồ sơ booru",
+      "booru_config_placement": "Vị trí hồ sơ booru"
     },
-    "settings": {
-        "settings": "Cài đặt",
-        "app_settings": "Cài đặt ứng dụng",
-        "appearance": {
-            "appearance": "Hiển thị",
-            "show_scores": "Hiện điểm",
-            "show_post_list_config_header": "Hiển thị header tuỳ chỉnh",
-            "booru_config": "Hồ sơ booru",
-            "booru_config_placement": "Vị trí hồ sơ booru"
-        },
-        "general": "Chung",
-        "search": {
-            "search": "Tìm kiếm",
-            "auto_focus_search_bar": "Tự động focus vào thanh tìm kiếm khi mở lần đầu",
-            "hide_bookmarked_posts_from_search_results": "Không hiện ảnh đã đánh dấu khi tìm kiếm"
-        },
-        "information": "Thông tin",
-        "changelog": "Changelog",
-        "infinite_scroll_warning": "Có khả năng crash app nếu lướt quá lâu",
-        "result_layout": {
-            "result_layout": "Kiểu layout",
-            "infinite_scroll": "Lướt vô tận",
-            "pagination": "Chia trang"
-        },
-        "image_list": {
-            "image_list": "Kiểu list ảnh",
-            "standard": "Tiêu chuẩn",
-            "masonry": "Masonry"
-        },
-        "image_grid": {
-            "image_grid": "Lưới ảnh",
-            "grid_size": {
-                "grid_size": "Cỡ ảnh",
-                "small": "Nhỏ",
-                "medium": "Vừa",
-                "large": "Lớn"
-            },
-            "image_quality": {
-                "image_quality": "Chất lượng ảnh",
-                "high_quality_notice": "Ảnh chất lượng cao sẽ tải lâu hơn.",
-                "high": "Cao",
-                "low": "Thấp",
-                "original": "Gốc",
-                "automatic": "Tự động",
-                "highest": "Cao nhất"
-            },
-            "spacing": "Độ dãn cách",
-            "corner_radius": "Bo góc",
-            "aspect_ratio": "Tỉ lệ khung hình",
-            "padding": "Độ giãn cách & tỉ lệ hiển thị"
-        },
-        "image_viewer": {
-            "image_viewer": "Trình xem ảnh",
-            "full_res_as_default": "Luôn sử dụng ảnh gốc",
-            "full_res_notice": "Thời gian tải có thể sẽ lâu hơn tùy vào kích thước của ảnh",
-            "slideshow_modes": {
-                "random": "Ngẫu nhiên",
-                "forward": "Tiến tới",
-                "backward": "Lùi lại"
-            },
-            "slideshow": "Chuyển ảnh tự động",
-            "slideshow_mode": "Chế độ chuyển ảnh",
-            "slideshow_skip": "Bỏ qua hiệu ứng chuyển tiếp",
-            "slideshow_interval_explanation": "Giá trị ít hơn 1 giây sẽ tự động bỏ qua hiệu ứng chuyển tiếp",
-            "mute_video": "Tắt tiếng video theo mặc định",
-            "video_section_title": "Video",
-            "slideshow_interval": "Thời gian chuyển ảnh"
-        },
-        "image_detail": {
-            "image_detail": "Chi tiết ảnh"
-        },
-        "language": {
-            "language": "Ngôn ngữ",
-            "language_name": "Tiếng Việt"
-        },
-        "theme": {
-            "theme": "Nền",
-            "dark": "Tối",
-            "light": "Sáng",
-            "amoled_dark": "Đen",
-            "dynamic_color_mobile_description": "Đồng bộ tông màu app với ảnh bìa",
-            "dynamic_color": "Màu nền động",
-            "dynamic_color_desktop_description": "Đồng bộ màu nền với màu nhấn của hệ điều hành",
-            "dynamic_color_unsupported_description": "Thiết bị này không hỗ trợ màu sắc động."
-        },
-        "privacy": {
-            "privacy": "Riêng tư",
-            "send_error_data_notice": "Tự động gửi lỗi cho dev",
-            "enable_incognito_keyboard": "Bật bàn phím ẩn danh",
-            "enable_biometric_lock_notice": "Chỉ hoạt động nếu thiết bị có hỗ trợ và kích hoạt.",
-            "enable_biometric_lock": "Bật khoá sinh trắc học",
-            "enable_incognito_keyboard_notice": "Chỉ có tác dụng trên Android."
-        },
-        "performance": {
-            "performance": "Hiệu năng",
-            "posts_per_page": "Lượng bài đăng ở mỗi trang",
-            "posts_per_page_explain": "Tổng số ảnh hiển thị ở mỗi trang",
-            "cache_size": "Dung lượng cache",
-            "clear_cache": "Dọn",
-            "cache_size_info": "Chiếm {0} trong {1} tệp"
-        },
-        "debug_logs": {
-            "debug_logs": "Logs sửa lỗi",
-            "logs_copied": "Đã chép vào clipboard"
-        },
-        "download": {
-            "path": "Đường dẫn tới nơi lưu ảnh",
-            "select_a_folder": "Chọn thư mục",
-            "quality": "Chất lượng ảnh tải xuống",
-            "qualities": {
-                "original": "Gốc",
-                "sample": "Mẫu",
-                "preview": "Xem trước"
-            },
-            "title": "Tải xuống"
-        },
-        "help_us_translate": "Hỗ trợ dịch app",
-        "other_settings": "Cài đặt khác",
-        "data_and_storage": {
-            "data_and_storage": "Dữ liệu and Bộ nhớ",
-            "clear_cache_on_start_up": "Xoá bộ nhớ đệm ảnh khi khởi động app"
-        },
-        "backup_and_restore": {
-            "backup_and_restore": "Sao lưu và phục hồi dữ liệu"
-        },
-        "image_details": {
-            "ui_overlay": {
-                "show": "Hiện",
-                "hide": "Ẩn",
-                "ui_overlay": "Bố cục giao diện"
-            },
-            "image_details": "Chi tiết hình ảnh"
-        },
-        "contribute": "Đóng góp",
-        "source_code": "Mã nguồn",
-        "page_indicator": {
-            "bottom": "Dưới cùng",
-            "both": "Cả trên và dưới",
-            "page_indicator": "Vị trí thanh điều hướng trang",
-            "top": "Trên cùng"
-        },
-        "contact_developer_description": "Nếu có vấn đề hay góp ý thì liên hệ với mình qua địa chị email này",
-        "feature_request_and_bug_report": "Yêu cầu chức năng và báo cáo lỗi",
-        "feature_request_and_bug_report_description": "Gợi ý chức năng hoặc báo cáo lỗi thông qua GitHub repository",
-        "accessibility": {
-            "accessibility": "Trợ năng",
-            "reverseBooruConfigSelectorScrollDirection": "Đảo hướng cuộn thanh chọn hồ sơ booru",
-            "swipeAreaToOpenSidebar": "Khu vực vuốt thanh bên",
-            "swipeAreaToOpenSidebarDescription": "Tinh chỉnh khu vực trống bên trái màn hình để thực hiện thao tác vuốt. Lưu ý nếu giá trị thiết lập quá lớn thì sẽ không thể thực hiện các cử chỉ theo chiều ngang được"
-        },
-        "booru_settings": {
-            "edit_current_profile": "Chỉnh sửa hồ sơ hiện tại",
-            "booru_settings": "Cài đặt Booru"
-        },
-        "support": "Hỗ trợ",
-        "contact_developer": "Liên hệ với dev"
+    "general": "Chung",
+    "search": {
+      "search": "Tìm kiếm",
+      "auto_focus_search_bar": "Tự động focus vào thanh tìm kiếm khi mở lần đầu",
+      "hide_bookmarked_posts_from_search_results": "Không hiện ảnh đã đánh dấu khi tìm kiếm"
     },
-    "blacklisted_tags": {
-        "remove": "Xóa",
-        "edit": "Sửa",
-        "blacklisted_tags": "Lọc tag",
-        "load_error": "Có lỗi xảy ra khi tải dữ liệu",
-        "updated": "Tag đã được cập nhật",
-        "limitation_notice": "Chỉ hỗ trợ toán tử <b>NOT</b> và toán tử <b>OR</b>. <br><br>Chưa hỗ trợ lọc bằng metatags cho phiên bản hiện tại.",
-        "failed_to_add": "Thêm tag thất bại",
-        "failed_to_remove": "Xoá tag thất bại",
-        "blacklisted_header_title": "Đã chặn",
-        "reenable_all": "Hiện hết",
-        "disable_all": "Ẩn hết"
+    "information": "Thông tin",
+    "changelog": "Changelog",
+    "infinite_scroll_warning": "Có khả năng crash app nếu lướt quá lâu",
+    "result_layout": {
+      "result_layout": "Kiểu layout",
+      "infinite_scroll": "Lướt vô tận",
+      "pagination": "Chia trang"
+    },
+    "image_list": {
+      "image_list": "Kiểu list ảnh",
+      "standard": "Tiêu chuẩn",
+      "masonry": "Masonry"
+    },
+    "image_grid": {
+      "image_grid": "Lưới ảnh",
+      "grid_size": {
+        "grid_size": "Cỡ ảnh",
+        "small": "Nhỏ",
+        "medium": "Vừa",
+        "large": "Lớn"
+      },
+      "image_quality": {
+        "image_quality": "Chất lượng ảnh",
+        "high_quality_notice": "Ảnh chất lượng cao sẽ tải lâu hơn.",
+        "high": "Cao",
+        "low": "Thấp",
+        "original": "Gốc",
+        "automatic": "Tự động",
+        "highest": "Cao nhất"
+      },
+      "spacing": "Độ dãn cách",
+      "corner_radius": "Bo góc",
+      "padding": "Độ giãn cách & tỉ lệ hiển thị",
+      "aspect_ratio": "Tỉ lệ khung hình"
+    },
+    "image_viewer": {
+      "image_viewer": "Trình xem ảnh",
+      "full_res_as_default": "Luôn sử dụng ảnh gốc",
+      "full_res_notice": "Thời gian tải có thể sẽ lâu hơn tùy vào kích thước của ảnh",
+      "slideshow": "Chuyển ảnh tự động",
+      "slideshow_interval": "Thời gian chuyển ảnh",
+      "slideshow_mode": "Chế độ chuyển ảnh",
+      "slideshow_modes": {
+        "random": "Ngẫu nhiên",
+        "forward": "Tiến tới",
+        "backward": "Lùi lại"
+      },
+      "slideshow_skip": "Bỏ qua hiệu ứng chuyển tiếp",
+      "slideshow_interval_explanation": "Giá trị ít hơn 1 giây sẽ tự động bỏ qua hiệu ứng chuyển tiếp",
+      "mute_video": "Tắt tiếng video theo mặc định",
+      "video_section_title": "Video"
+    },
+    "image_detail": {
+      "image_detail": "Chi tiết ảnh"
+    },
+    "language": {
+      "language": "Ngôn ngữ",
+      "language_name": "Tiếng Việt"
+    },
+    "theme": {
+      "theme": "Nền",
+      "dark": "Tối",
+      "light": "Sáng",
+      "amoled_dark": "Đen",
+      "dynamic_color": "Màu nền động",
+      "dynamic_color_mobile_description": "Đồng bộ tông màu app với ảnh bìa",
+      "dynamic_color_desktop_description": "Đồng bộ màu nền với màu nhấn của hệ điều hành",
+      "dynamic_color_unsupported_description": "Thiết bị này không hỗ trợ màu sắc động."
+    },
+    "privacy": {
+      "privacy": "Riêng tư",
+      "send_error_data_notice": "Tự động gửi lỗi cho dev",
+      "enable_incognito_keyboard": "Bật bàn phím ẩn danh",
+      "enable_incognito_keyboard_notice": "Chỉ có tác dụng trên Android.",
+      "enable_biometric_lock": "Bật khoá sinh trắc học",
+      "enable_biometric_lock_notice": "Chỉ hoạt động nếu thiết bị có hỗ trợ và kích hoạt."
+    },
+    "performance": {
+      "performance": "Hiệu năng",
+      "posts_per_page": "Lượng bài đăng ở mỗi trang",
+      "posts_per_page_explain": "Tổng số ảnh hiển thị ở mỗi trang",
+      "cache_size": "Dung lượng cache",
+      "clear_cache": "Dọn",
+      "cache_size_info": "Chiếm {0} trong {1} tệp"
+    },
+    "debug_logs": {
+      "debug_logs": "Logs sửa lỗi",
+      "logs_copied": "Đã chép vào clipboard"
     },
     "download": {
-        "download": "Tải ảnh",
-        "bulk_download_save_to_folder": "Lưu vào thư mục",
-        "bulk_download_invalid_folder_name_error": "Tên thư mục không được chứa các kí tự sau: ",
-        "bulk_download_folder_select_warning": "Đối với Android 11+, app chỉ có thể lưu files ở thư mục chung <b>({0})</b> . <div>Không hỗ trợ lưu ở thẻ nhớ.</div> <div>Xin hãy chọn thư mục khác.</div> <div>Phiên bản Android của thiết bị này là {1}.</div>",
-        "open_app_settings": "Mở cài đặt",
-        "storage_permission_explanation": "App cần quyền truy cập bộ nhớ ngoài để lưu ảnh.",
-        "app_restart_request": "Cần khởi động lại app để thay đổi được áp dụng",
-        "image_counter": {
-            "other": "Tải $n ảnh",
-            "one": "Tải $n ảnh"
-        },
-        "bulk": {
-            "all_done_notification_message": "Đã tải hết tất cả ảnh"
-        }
+      "path": "Đường dẫn tới nơi lưu ảnh",
+      "select_a_folder": "Chọn thư mục",
+      "quality": "Chất lượng ảnh tải xuống",
+      "qualities": {
+        "original": "Gốc",
+        "sample": "Mẫu",
+        "preview": "Xem trước"
+      },
+      "title": "Tải xuống"
     },
-    "saved_search": {
-        "saved_search": "Saved search",
-        "saved_search_counter": {
-            "other": "$n search",
-            "one": "$n search"
-        },
-        "add_saved_search": "Thêm saved search",
-        "saved_search_added": "Đã thêm saved search",
-        "empty_saved_search": "Bạn chưa thêm search nào",
-        "update_saved_search": "Sửa saved search",
-        "saved_search_updated": "Saved search đã được sửa thành công",
-        "saved_search_feed": "Feed",
-        "saved_search_help": "Saved search là gì?",
-        "saved_search_examples": "Ví dụ",
-        "saved_search_try": "Thử",
-        "saved_search_query": "Từ khoá",
-        "saved_search_labels": "Nhãn*",
-        "saved_search_labels_description": "*Một danh sách tag dùng để phân loại search này. Dùng khoảng trắng để cách nhau."
+    "help_us_translate": "Hỗ trợ dịch app",
+    "other_settings": "Cài đặt khác",
+    "data_and_storage": {
+      "data_and_storage": "Dữ liệu and Bộ nhớ",
+      "clear_cache_on_start_up": "Xoá bộ nhớ đệm ảnh khi khởi động app"
     },
-    "favorites": {
-        "counter": {
-            "other": "Lượt thích",
-            "one": "Lượt thích"
-        },
-        "favorited": "Đã yêu thích",
-        "favorite": "Yêu thích"
+    "backup_and_restore": {
+      "backup_and_restore": "Sao lưu và phục hồi dữ liệu"
     },
-    "favorite_groups": {
-        "favorite_groups": "Nhóm yêu thích",
-        "empty_group_notice": "Chưa thêm nhóm nào",
-        "create_group": "Tạo nhóm",
-        "edit_group": "Sửa nhóm",
-        "add_to_group_dialog_title": "Thêm vào nhóm yêu thích",
-        "add_to": "Thêm vào",
-        "create": "Tạo",
-        "private": "Private",
-        "view_more_popup": "Xem",
-        "items_added_notification_popup": "Đã thêm {0} ảnh vào {1}",
-        "group_name": "Tên nhóm",
-        "group_name_hint": "Nhóm mới",
-        "all_posts": "Ảnh",
-        "initial_posts_hint": "Nhập các ID, cách nhau bằng dấu cách (Không bắt buộc)",
-        "is_private_group_option": "Nhóm kín",
-        "create_group_cancel": "Huỷ",
-        "create_group_confirm": "OK",
-        "max_limit_warning": "Member thường chỉ có thể tạo 10 nhóm",
-        "duplicate_items_warning_notification": "Có ID bị trùng trong nhóm",
-        "detete_confirmation": "Bạn có chắc là muốn xoá nhóm này không",
-        "group_item_counter": {
-            "other": "$n ảnh",
-            "one": "$n ảnh"
-        }
+    "image_details": {
+      "image_details": "Chi tiết hình ảnh",
+      "ui_overlay": {
+        "show": "Hiện",
+        "hide": "Ẩn",
+        "ui_overlay": "Bố cục giao diện"
+      }
     },
-    "favorite_tags": {
-        "favorites": "Yêu thích",
-        "import": "Nhập tay",
-        "import_hint": "Điền tag vào đây. Mỗi tag cách nhau bằng khoảng trắng.",
-        "cancel": "Huỷ",
-        "export": "Xuất tag",
-        "export_notification": "Tag đã được chép vào clipboard",
-        "favorite_tags": "Tag yêu thích"
+    "page_indicator": {
+      "page_indicator": "Vị trí thanh điều hướng trang",
+      "top": "Trên cùng",
+      "bottom": "Dưới cùng",
+      "both": "Cả trên và dưới"
     },
-    "rating": {
-        "rate_request": "Đánh giá app",
-        "rate": "Đánh giá",
-        "cancel": "Hủy",
-        "later": "Để sau",
-        "rationale": "Nếu bạn cảm thấy app này có ích thì đánh giá hộ mình nhé."
+    "accessibility": {
+      "accessibility": "Trợ năng",
+      "reverseBooruConfigSelectorScrollDirection": "Đảo hướng cuộn thanh chọn hồ sơ booru",
+      "swipeAreaToOpenSidebar": "Khu vực vuốt thanh bên",
+      "swipeAreaToOpenSidebarDescription": "Tinh chỉnh khu vực trống bên trái màn hình để thực hiện thao tác vuốt. Lưu ý nếu giá trị thiết lập quá lớn thì sẽ không thể thực hiện các cử chỉ theo chiều ngang được"
     },
-    "sideMenu": {
-        "settings": "Cài đặt",
-        "your_bookmarks": "Đánh dấu",
-        "your_blacklist": "Tag đã chặn",
-        "bulk_download": "Tải hàng loạt",
-        "get_support": "Nhận hỗ trợ"
+    "booru_settings": {
+      "edit_current_profile": "Chỉnh sửa hồ sơ hiện tại",
+      "booru_settings": "Cài đặt Booru"
     },
-    "dateRange": {
-        "day": "Ngày",
-        "week": "Tuần",
-        "month": "Tháng"
+    "contribute": "Đóng góp",
+    "source_code": "Mã nguồn",
+    "support": "Hỗ trợ",
+    "contact_developer": "Liên hệ với dev",
+    "contact_developer_description": "Nếu có vấn đề hay góp ý thì liên hệ với mình qua địa chị email này",
+    "feature_request_and_bug_report": "Yêu cầu chức năng và báo cáo lỗi",
+    "feature_request_and_bug_report_description": "Gợi ý chức năng hoặc báo cáo lỗi thông qua GitHub repository"
+  },
+  "blacklisted_tags": {
+    "remove": "Xóa",
+    "edit": "Sửa",
+    "blacklisted_tags": "Lọc tag",
+    "load_error": "Có lỗi xảy ra khi tải dữ liệu",
+    "updated": "Tag đã được cập nhật",
+    "limitation_notice": "Chỉ hỗ trợ toán tử <b>NOT</b> và toán tử <b>OR</b>. <br><br>Chưa hỗ trợ lọc bằng metatags cho phiên bản hiện tại.",
+    "failed_to_add": "Thêm tag thất bại",
+    "failed_to_remove": "Xoá tag thất bại",
+    "blacklisted_header_title": "Đã chặn",
+    "disable_all": "Ẩn hết",
+    "reenable_all": "Hiện hết"
+  },
+  "download": {
+    "download": "Tải ảnh",
+    "bulk_download_save_to_folder": "Lưu vào thư mục",
+    "bulk_download_invalid_folder_name_error": "Tên thư mục không được chứa các kí tự sau: ",
+    "bulk_download_folder_select_warning": "Đối với Android 11+, app chỉ có thể lưu files ở thư mục chung <b>({0})</b> . <div>Không hỗ trợ lưu ở thẻ nhớ.</div> <div>Xin hãy chọn thư mục khác.</div> <div>Phiên bản Android của thiết bị này là {1}.</div>",
+    "open_app_settings": "Mở cài đặt",
+    "storage_permission_explanation": "App cần quyền truy cập bộ nhớ ngoài để lưu ảnh.",
+    "app_restart_request": "Cần khởi động lại app để thay đổi được áp dụng",
+    "image_counter": {
+      "one": "Tải $n ảnh",
+      "other": "Tải $n ảnh"
     },
-    "booru": {
-        "booru_engine_input_label": "Booru engine (*)",
-        "config_name_label": "Tên hồ sơ  (*)",
-        "site_url_label": "URL của web",
-        "login_name_label": "Tên đăng nhập",
-        "password_api_key_label": "API key",
-        "password_hashed_label": "Mật khẩu đã được mã hóa (chỉ đọc)",
-        "password_label": "Mật khẩu",
-        "content_filtering_label": "Lọc nội dung",
-        "hide_deleted_label": "Ẩn ảnh bị xoá",
-        "config_booru_confirm": "Chốt",
-        "add_a_booru_site": "Tạo hồ sơ mới",
-        "next_step": "Tiếp",
-        "site_url": "Địa chỉ trang web",
-        "unsupported_warning": "Trang booru này chưa được hỗ trợ.",
-        "validation_empty_url": "URL rỗng",
-        "validation_invalid_url": "\"{0}\" không phải là một đường dẫn URL hợp lệ.",
-        "validation_invalid_http_url": "\"{0}\" không phải là một đường dẫn URL HTTP hoặc HTTPS.",
-        "validation_missing_trailing_slash": "\"{0}\" thiếu dấu gạch chéo phía sau",
-        "validation_redundant_www": "\"{0}\" chứa \"www\" thừa không cần thiết",
-        "validation_contains_spaces": "\"{0}\" chứa khoảng trắng không cần thiết ở giữa.",
-        "validation_missing_scheme": "\"{0}\" thiếu giao thức (ví dụ: https://)",
-        "misc": "Linh tinh",
-        "download": "Tuỳ chỉnh tải",
-        "authentication": "Xác thực",
-        "gestures": "Cử chỉ"
-    },
-    "blacklist": {
-        "manage": {
-            "title": "Tag đã chặn",
-            "empty_blacklist": "Không có tag đã chặn"
-        }
-    },
-    "bookmark": {
-        "added": "Đã đánh dấu",
-        "failed_to_add": "Đánh dấu không thành công",
-        "many_added": "Đã thêm {0} đánh dấu",
-        "failed_to_add_many": "Thêm đánh dấu không thành công",
-        "removed": "Đã xoá đánh dấu",
-        "updated": "Đã cập nhật",
-        "failed_to_remove": "Xoá đánh dấu không thành công",
-        "failed_to_update": "Cập nhật đánh dấu không thành công",
-        "failed_to_load": "Tải đánh dấu thất bại: {0}"
-    },
-    "app_update": {
-        "update": "Cập nhật",
-        "later": "Để sau",
-        "whats_new": "Có gì mới?",
-        "update_available": "Có cập nhật mới"
-    },
-    "forum": {
-        "forum": "Diễn đàn"
-    },
-    "gestures": {
-        "swipe_down": "Vuốt xuống",
-        "double_tap": "Chạm hai lần",
-        "long_press": "Nhấn và giữ",
-        "tap": "Chạm"
-    },
-    "time": {
-        "counters": {
-            "second": {
-                "one": "Giây",
-                "other": "Giây"
-            }
-        }
+    "bulk": {
+      "all_done_notification_message": "Đã tải hết tất cả ảnh"
     }
+  },
+  "saved_search": {
+    "saved_search": "Saved search",
+    "saved_search_counter": {
+      "one": "$n search",
+      "other": "$n search"
+    },
+    "add_saved_search": "Thêm saved search",
+    "saved_search_added": "Đã thêm saved search",
+    "empty_saved_search": "Bạn chưa thêm search nào",
+    "update_saved_search": "Sửa saved search",
+    "saved_search_updated": "Saved search đã được sửa thành công",
+    "saved_search_feed": "Feed",
+    "saved_search_help": "Saved search là gì?",
+    "saved_search_examples": "Ví dụ",
+    "saved_search_try": "Thử",
+    "saved_search_query": "Từ khoá",
+    "saved_search_labels": "Nhãn*",
+    "saved_search_labels_description": "*Một danh sách tag dùng để phân loại search này. Dùng khoảng trắng để cách nhau."
+  },
+  "favorites": {
+    "counter": {
+      "one": "Lượt thích",
+      "other": "Lượt thích"
+    },
+    "favorited": "Đã yêu thích",
+    "favorite": "Yêu thích"
+  },
+  "favorite_groups": {
+    "favorite_groups": "Nhóm yêu thích",
+    "empty_group_notice": "Chưa thêm nhóm nào",
+    "create_group": "Tạo nhóm",
+    "edit_group": "Sửa nhóm",
+    "add_to_group_dialog_title": "Thêm vào nhóm yêu thích",
+    "add_to": "Thêm vào",
+    "create": "Tạo",
+    "private": "Private",
+    "view_more_popup": "Xem",
+    "items_added_notification_popup": "Đã thêm {0} ảnh vào {1}",
+    "group_name": "Tên nhóm",
+    "group_name_hint": "Nhóm mới",
+    "all_posts": "Ảnh",
+    "initial_posts_hint": "Nhập các ID, cách nhau bằng dấu cách (Không bắt buộc)",
+    "is_private_group_option": "Nhóm kín",
+    "create_group_cancel": "Huỷ",
+    "create_group_confirm": "OK",
+    "max_limit_warning": "Member thường chỉ có thể tạo 10 nhóm",
+    "duplicate_items_warning_notification": "Có ID bị trùng trong nhóm",
+    "detete_confirmation": "Bạn có chắc là muốn xoá nhóm này không",
+    "group_item_counter": {
+      "one": "$n ảnh",
+      "other": "$n ảnh"
+    }
+  },
+  "favorite_tags": {
+    "favorites": "Yêu thích",
+    "import": "Nhập tay",
+    "import_hint": "Điền tag vào đây. Mỗi tag cách nhau bằng khoảng trắng.",
+    "cancel": "Huỷ",
+    "export": "Xuất tag",
+    "export_notification": "Tag đã được chép vào clipboard",
+    "favorite_tags": "Tag yêu thích"
+  },
+  "rating": {
+    "rate_request": "Đánh giá app",
+    "rate": "Đánh giá",
+    "cancel": "Hủy",
+    "later": "Để sau",
+    "rationale": "Nếu bạn cảm thấy app này có ích thì đánh giá hộ mình nhé."
+  },
+  "sideMenu": {
+    "settings": "Cài đặt",
+    "your_bookmarks": "Đánh dấu",
+    "your_blacklist": "Tag đã chặn",
+    "bulk_download": "Tải hàng loạt",
+    "get_support": "Nhận hỗ trợ"
+  },
+  "dateRange": {
+    "day": "Ngày",
+    "week": "Tuần",
+    "month": "Tháng"
+  },
+  "booru": {
+    "booru_engine_input_label": "Booru engine (*)",
+    "config_name_label": "Tên hồ sơ  (*)",
+    "site_url_label": "URL của web",
+    "login_name_label": "Tên đăng nhập",
+    "password_api_key_label": "API key",
+    "password_hashed_label": "Mật khẩu đã được mã hóa (chỉ đọc)",
+    "password_label": "Mật khẩu",
+    "content_filtering_label": "Lọc nội dung",
+    "hide_deleted_label": "Ẩn ảnh bị xoá",
+    "config_booru_confirm": "Chốt",
+    "add_a_booru_site": "Tạo hồ sơ mới",
+    "next_step": "Tiếp",
+    "site_url": "Địa chỉ trang web",
+    "unsupported_warning": "Trang booru này chưa được hỗ trợ.",
+    "validation_empty_url": "URL rỗng",
+    "validation_invalid_url": "\"{0}\" không phải là một đường dẫn URL hợp lệ.",
+    "validation_invalid_http_url": "\"{0}\" không phải là một đường dẫn URL HTTP hoặc HTTPS.",
+    "validation_missing_trailing_slash": "\"{0}\" thiếu dấu gạch chéo phía sau",
+    "validation_redundant_www": "\"{0}\" chứa \"www\" thừa không cần thiết",
+    "validation_contains_spaces": "\"{0}\" chứa khoảng trắng không cần thiết ở giữa.",
+    "validation_missing_scheme": "\"{0}\" thiếu giao thức (ví dụ: https://)",
+    "authentication": "Xác thực",
+    "download": "Tuỳ chỉnh tải",
+    "gestures": "Cử chỉ",
+    "misc": "Linh tinh"
+  },
+  "blacklist": {
+    "manage": {
+      "title": "Tag đã chặn",
+      "empty_blacklist": "Không có tag đã chặn"
+    }
+  },
+  "bookmark": {
+    "added": "Đã đánh dấu",
+    "failed_to_add": "Đánh dấu không thành công",
+    "many_added": "Đã thêm {0} đánh dấu",
+    "failed_to_add_many": "Thêm đánh dấu không thành công",
+    "removed": "Đã xoá đánh dấu",
+    "updated": "Đã cập nhật",
+    "failed_to_remove": "Xoá đánh dấu không thành công",
+    "failed_to_update": "Cập nhật đánh dấu không thành công",
+    "failed_to_load": "Tải đánh dấu thất bại: {0}"
+  },
+  "app_update": {
+    "update": "Cập nhật",
+    "later": "Để sau",
+    "whats_new": "Có gì mới?",
+    "update_available": "Có cập nhật mới"
+  },
+  "forum": {
+    "forum": "Diễn đàn"
+  },
+  "gestures": {
+    "swipe_down": "Vuốt xuống",
+    "double_tap": "Chạm hai lần",
+    "long_press": "Nhấn và giữ",
+    "tap": "Chạm"
+  },
+  "time": {
+    "counters": {
+      "second": {
+        "one": "Giây",
+        "other": "Giây"
+      }
+    }
+  }
 }
