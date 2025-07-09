@@ -132,8 +132,8 @@
         "trending": "டிரெண்டிங்",
         "remove_all_selected": "தேர்ந்தெடுக்கப்பட்ட அனைத்து குறிச்சொற்களையும் அகற்று",
         "result_counter": {
-            "one": "{} முடிவு",
-            "other": "}} முடிவுகள்"
+            "one": "$n முடிவு",
+            "other": "$n முடிவுகள்"
         },
         "no_result_notice": "முடிவு இல்லை",
         "search_in_progress_notice": "தேடுகிறது..."
@@ -338,7 +338,7 @@
         "app_restart_request": "இந்த மாற்றம் நடைமுறைக்கு வர நீங்கள் பயன்பாட்டை மறுதொடக்கம் செய்ய வேண்டும்",
         "image_counter": {
             "one": "பதிவிறக்கம்}} பட",
-            "other": "பதிவிறக்கம் {} படங்கள்"
+            "other": "பதிவிறக்கம் $n படங்கள்"
         },
         "bulk": {
             "all_done_notification_message": "எல்லா பதிவிறக்கங்களும் செய்யப்படுகின்றன"
@@ -347,8 +347,8 @@
     "saved_search": {
         "saved_search": "சேமித்த தேடல்",
         "saved_search_counter": {
-            "one": "{} தேடல்",
-            "other": "{} தேடல்கள்"
+            "one": "$n தேடல்",
+            "other": "$n தேடல்கள்"
         },
         "add_saved_search": "சேமித்த தேடலைச் சேர்க்கவும்",
         "saved_search_added": "சேமித்த தேடல் சேர்க்கப்பட்டுள்ளது",
@@ -394,7 +394,7 @@
         "detete_confirmation": "இந்தப் பிடித்த குழுவை நீக்க விரும்புகிறீர்களா",
         "group_item_counter": {
             "one": "}} இடுகை",
-            "other": "{} இடுகைகள்"
+            "other": "$n இடுகைகள்"
         }
     },
     "favorite_tags": {

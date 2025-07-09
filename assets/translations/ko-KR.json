@@ -132,8 +132,8 @@
         "trending": "트렌딩",
         "remove_all_selected": "선택한 태그 모두 삭제",
         "result_counter": {
-            "one": "{} 개 결과",
-            "other": "{} 개 결과"
+            "one": "$n 개 결과",
+            "other": "$n 개 결과"
         },
         "no_result_notice": "결과 없음",
         "search_in_progress_notice": "검색중..."
@@ -337,8 +337,8 @@
         "storage_permission_explanation": "다운로드한 파일을 저장하려면 저장 권한이 필요합니다.",
         "app_restart_request": "이 변경 사항이 적용되려면 앱을 다시 시작해야 합니다",
         "image_counter": {
-            "one": "다운로드 {}개 이미지",
-            "other": "다운로드 {}개 이미지"
+            "one": "다운로드 $n개 이미지",
+            "other": "다운로드 $n개 이미지"
         },
         "bulk": {
             "all_done_notification_message": "모든 다운로드 완료"
@@ -347,8 +347,8 @@
     "saved_search": {
         "saved_search": "저장된 검색",
         "saved_search_counter": {
-            "one": "{}개 검색",
-            "other": "{}개 검색"
+            "one": "$n개 검색",
+            "other": "$n개 검색"
         },
         "add_saved_search": "저장된 검색에 추가",
         "saved_search_added": "저장된 검색에 추가되었습니다",
@@ -393,8 +393,8 @@
         "duplicate_items_warning_notification": "입력하신 포스트는 이미 그룹에 있습니다",
         "detete_confirmation": "이 즐겨찾기 그룹을 정말로 삭제하시겠습니까?",
         "group_item_counter": {
-            "one": "{}개 포스트",
-            "other": "{}개 포스트"
+            "one": "$n개 포스트",
+            "other": "$n개 포스트"
         }
     },
     "favorite_tags": {

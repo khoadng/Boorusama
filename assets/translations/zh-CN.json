@@ -132,8 +132,8 @@
         "trending": "趋势",
         "remove_all_selected": "移除所有已选标签",
         "result_counter": {
-            "other": "{} 个结果",
-            "one": "{} 个结果"
+            "other": "$n 个结果",
+            "one": "$n 个结果"
         },
         "no_result_notice": "啥都木有",
         "search_in_progress_notice": "搜索…"
@@ -337,8 +337,8 @@
         "storage_permission_explanation": "需要存储权限来保存文件。",
         "app_restart_request": "该修改需要重启应用生效",
         "image_counter": {
-            "other": "下载 {} 张图片",
-            "one": "下载 {} 张图片"
+            "other": "下载 $n 张图片",
+            "one": "下载 $n 张图片"
         },
         "bulk": {
             "all_done_notification_message": "所有下载已完成"
@@ -347,8 +347,8 @@
     "saved_search": {
         "saved_search": "预设搜索",
         "saved_search_counter": {
-            "other": "{} 个搜索",
-            "one": "{} 个搜索"
+            "other": "$n 个搜索",
+            "one": "$n 个搜索"
         },
         "add_saved_search": "添加预设搜索",
         "saved_search_added": "已添加到预设搜索",
@@ -393,8 +393,8 @@
         "duplicate_items_warning_notification": "输入的帖子已存在组中",
         "detete_confirmation": "是否删除该喜爱组",
         "group_item_counter": {
-            "other": "{} 个提交",
-            "one": "{} 个提交"
+            "other": "$n 个提交",
+            "one": "$n 个提交"
         }
     },
     "favorite_tags": {

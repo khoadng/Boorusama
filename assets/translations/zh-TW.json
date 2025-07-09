@@ -132,8 +132,8 @@
         "trending": "趨勢",
         "remove_all_selected": "移除所有選取標籤",
         "result_counter": {
-            "one": "{} 個結果",
-            "other": "{} 個結果"
+            "one": "$n 個結果",
+            "other": "$n 個結果"
         },
         "no_result_notice": "這裡什麼都沒有",
         "search_in_progress_notice": "正在搜尋…"
@@ -307,7 +307,7 @@
         "storage_permission_explanation": "需要儲存權限以儲存下載文件",
         "app_restart_request": "請重新啟動應用程式以使此更改生效",
         "image_counter": {
-            "other": "下載 {} 圖片"
+            "other": "下載 $n 圖片"
         },
         "bulk": {
             "all_done_notification_message": "所有下載已完成"
@@ -316,7 +316,7 @@
     "saved_search": {
         "saved_search": "儲存搜尋",
         "saved_search_counter": {
-            "other": "{} 搜尋"
+            "other": "$n 搜尋"
         },
         "add_saved_search": "新增已儲存搜尋",
         "saved_search_added": "已新增儲存搜尋",
@@ -360,7 +360,7 @@
         "duplicate_items_warning_notification": "該貼圖已在於該群組中",
         "detete_confirmation": "確定要刪除此最愛群組嗎",
         "group_item_counter": {
-            "other": "{} 貼圖"
+            "other": "$n 貼圖"
         }
     },
     "favorite_tags": {

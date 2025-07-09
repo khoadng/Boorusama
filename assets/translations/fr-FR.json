@@ -134,9 +134,9 @@
         "trending": "Tendance",
         "remove_all_selected": "Supprimer les tags sélectionnés",
         "result_counter": {
-            "one": "{} résultat",
-            "many": "{} résultats",
-            "other": "{} résultats"
+            "one": "$n résultat",
+            "many": "$n résultats",
+            "other": "$n résultats"
         },
         "no_result_notice": "Aucun résultat",
         "search_in_progress_notice": "Recherche..."
@@ -337,18 +337,18 @@
         "bulk_download_invalid_folder_name_error": "Un dossier ne peut contenir aucun des caractères suivants : ",
         "bulk_download_folder_select_warning": "L'application peut télécharger des fichiers seulement dans des répertoires publics <b>({0})</b> sur Android 11+. <br><br>Exemples d'emplacements valides :<br><b>[Interne]</b> /storage/emulated/0/Download <br><b>[Carte SD]</b> /storage/A1B2-C3D4/Download<br><br>Merci de choisir un autre répertoire ou d'en créer un nouveau si cela n'existe pas. <br>Cet appareil a la version <b>{1}</b>.",
         "bulk_download_downloaded_counter": {
-            "many": "{} images téléchargées"
+            "many": "$n images téléchargées"
         },
         "bulk_download_skipped_counter": {
-            "many": "{} images passées"
+            "many": "$n images passées"
         },
         "open_app_settings": "Ouvrir les paramètres",
         "storage_permission_explanation": "L'autorisation de stockage est nécessaire pour stocker les fichiers téléchargés.",
         "app_restart_request": "Redémarrez l'application pour que le changement soit effectif",
         "image_counter": {
-            "one": "Téléchargement de {} image",
-            "many": "Téléchargement de {} images",
-            "other": "Téléchargement de {} images"
+            "one": "Téléchargement de $n image",
+            "many": "Téléchargement de $n images",
+            "other": "Téléchargement de $n images"
         },
         "bulk": {
             "all_done_notification_message": "Tous les téléchargements sont terminés"
@@ -357,9 +357,9 @@
     "saved_search": {
         "saved_search": "Recherche enregistrée",
         "saved_search_counter": {
-            "one": "{} recherche",
-            "many": "{} recherches",
-            "other": "{} recherches"
+            "one": "$n recherche",
+            "many": "$n recherches",
+            "other": "$n recherches"
         },
         "add_saved_search": "Ajouter une recherche à enregistrer",
         "saved_search_added": "La recherche a été enregistrée",
@@ -405,9 +405,9 @@
         "duplicate_items_warning_notification": "Les posts sélectionnés sont déjà dans le groupe",
         "detete_confirmation": "Êtes-vous sûr de vouloir supprimer ce groupe de favoris",
         "group_item_counter": {
-            "one": "{} post",
-            "many": "{} posts",
-            "other": "{} posts"
+            "one": "$n post",
+            "many": "$n posts",
+            "other": "$n posts"
         }
     },
     "favorite_tags": {

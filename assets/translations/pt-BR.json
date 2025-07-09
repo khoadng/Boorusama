@@ -129,8 +129,8 @@
         },
         "search_in_progress_notice": "Buscando...",
         "result_counter": {
-            "one": "{} Resultado",
-            "other": "{} Resultados"
+            "one": "$n Resultado",
+            "other": "$n Resultados"
         },
         "no_result_notice": "Nenhum resultado",
         "remove_all_selected": "Remover todas as tags selecionadas",
@@ -290,8 +290,8 @@
         "bulk_download_save_to_folder": "Salvar para a pasta",
         "storage_permission_explanation": "Permissão de armazenamento é necessária para guardar arquivos baixados.",
         "image_counter": {
-            "one": "Baixar imagem {}",
-            "other": "Baixar {} imagens"
+            "one": "Baixar imagem $n",
+            "other": "Baixar $n imagens"
         },
         "bulk": {
             "all_done_notification_message": "Todos os downloads foram concluídos"
@@ -338,8 +338,8 @@
     "saved_search": {
         "saved_search_feed": "Feed de pesquisa",
         "saved_search_counter": {
-            "other": "{} pesquisas",
-            "one": "{} pesquisar"
+            "other": "$n pesquisas",
+            "one": "$n pesquisar"
         },
         "update_saved_search": "Atualizar pesquisa salva",
         "saved_search_help": "Oque é?",
@@ -375,8 +375,8 @@
         "max_limit_warning": "Membros só podem criar 10 grupos favoritos",
         "duplicate_items_warning_notification": "Os posts escolhidos já existem neste grupo",
         "group_item_counter": {
-            "one": "{} post",
-            "other": "{} posts"
+            "one": "$n post",
+            "other": "$n posts"
         },
         "favorite_groups": "Grupos favoritos",
         "create_group": "Criar grupo",

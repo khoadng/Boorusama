@@ -112,8 +112,8 @@
         "hint": "Ara...",
         "no_result": "Derinlemesine aradık, fakat hiçbir sonuç bulunamadı.",
         "result_counter": {
-            "one": "{} Sonuç",
-            "other": "{} Sonuçlar"
+            "one": "$n Sonuç",
+            "other": "$n Sonuçlar"
         },
         "history": {
             "recent": "Son zamanlarda",

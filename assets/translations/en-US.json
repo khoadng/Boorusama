@@ -132,8 +132,8 @@
         "trending": "Trending",
         "remove_all_selected": "Remove all selected tags",
         "result_counter": {
-            "one": "{} Result",
-            "other": "{} Results"
+            "one": "$n Result",
+            "other": "$n Results"
         },
         "no_result_notice": "No result",
         "search_in_progress_notice": "Searching..."
@@ -337,8 +337,8 @@
         "storage_permission_explanation": "Storage permission is needed to store download files.",
         "app_restart_request": "You need to restart the app for this change to take effect",
         "image_counter": {
-            "one": "Download {} image",
-            "other": "Download {} images"
+            "one": "Download $n image",
+            "other": "Download $n images"
         },
         "bulk": {
             "all_done_notification_message": "All downloads are done"
@@ -347,8 +347,8 @@
     "saved_search": {
         "saved_search": "Saved search",
         "saved_search_counter": {
-            "one": "{} search",
-            "other": "{} searches"
+            "one": "$n search",
+            "other": "$n searches"
         },
         "add_saved_search": "Add a saved search",
         "saved_search_added": "Saved search has been added",
@@ -393,8 +393,8 @@
         "duplicate_items_warning_notification": "The entered posts already exist in the group",
         "detete_confirmation": "Are you sure you want to delete this favorite group?",
         "group_item_counter": {
-            "one": "{} post",
-            "other": "{} posts"
+            "one": "$n post",
+            "other": "$n posts"
         }
     },
     "favorite_tags": {

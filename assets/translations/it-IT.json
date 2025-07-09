@@ -132,8 +132,8 @@
         "trending": "Di tendenza",
         "remove_all_selected": "Rimuovi tutti i tag selezionati",
         "result_counter": {
-            "one": "{} Risultato",
-            "other": "{} Risultati"
+            "one": "$n Risultato",
+            "other": "$n Risultati"
         },
         "no_result_notice": "Nessun risultato",
         "search_in_progress_notice": "Sto cercando..."

@@ -132,8 +132,8 @@
         "trending": "Aktuell",
         "remove_all_selected": "Ausgewählte Tags entfernen",
         "result_counter": {
-            "one": "{} Ergebnis",
-            "other": "{} Ergebnisse"
+            "one": "$n Ergebnis",
+            "other": "$n Ergebnisse"
         },
         "no_result_notice": "Kein Ergebnis",
         "search_in_progress_notice": "Suche..."
@@ -320,8 +320,8 @@
         "storage_permission_explanation": "Zum Speichern von Dateien ist eine Speichererlaubnis erforderlich.",
         "app_restart_request": "Damit diese Änderung wirksam wird, muss die App neu gestartet werden",
         "image_counter": {
-            "one": "{} Bild herunterladen",
-            "other": "{} Bilder herunterladen"
+            "one": "$n Bild herunterladen",
+            "other": "$n Bilder herunterladen"
         },
         "bulk": {
             "all_done_notification_message": "Alle Downloads abgeschlossen"
@@ -330,8 +330,8 @@
     "saved_search": {
         "saved_search": "Gespeicherte Suchen",
         "saved_search_counter": {
-            "one": "{} Suche",
-            "other": "{} Suchen"
+            "one": "$n Suche",
+            "other": "$n Suchen"
         },
         "add_saved_search": "Suche speichern",
         "saved_search_added": "Gespeicherte Suche hinzugefügt",
@@ -376,8 +376,8 @@
         "duplicate_items_warning_notification": "Die eingegebenen Posts sind bereits in der Gruppe vorhanden",
         "detete_confirmation": "Bist du sicher, dass du diese Gruppe löschen möchtest",
         "group_item_counter": {
-            "one": "{} Post",
-            "other": "{} Posts"
+            "one": "$n Post",
+            "other": "$n Posts"
         }
     },
     "favorite_tags": {

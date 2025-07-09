@@ -134,8 +134,8 @@
         "search_in_progress_notice": "Поиск...",
         "no_result_notice": "Нет результатов",
         "result_counter": {
-            "other": "{} Результатов",
-            "one": "{} Результат"
+            "other": "$n Результатов",
+            "one": "$n Результат"
         }
     },
     "pool": {
@@ -337,8 +337,8 @@
         "storage_permission_explanation": "Разрешение на доступ к хранилищу необхдимо для сохранения загруженных файлов.",
         "app_restart_request": "Перезагрузите приложение для того, чтобы изменения вступили в силу",
         "image_counter": {
-            "other": "Скачать {} изображений",
-            "one": "Скачать {} изображение"
+            "other": "Скачать $n изображений",
+            "one": "Скачать $n изображение"
         },
         "bulk": {
             "all_done_notification_message": "Все загрузки завершены"
@@ -359,8 +359,8 @@
         "saved_search_labels": "Labels*",
         "saved_search_labels_description": "*Список тегов, которые помогут упорядочить данный поиск. Разделение пробелом.",
         "saved_search_counter": {
-            "one": "{} поиск",
-            "other": "{} поисковых запросов"
+            "one": "$n поиск",
+            "other": "$n поисковых запросов"
         }
     },
     "favorites": {
@@ -393,8 +393,8 @@
         "duplicate_items_warning_notification": "Это изображение уже присутствует в группе",
         "detete_confirmation": "Вы уверенны в том, что хотите удалить эту избранную группу",
         "group_item_counter": {
-            "one": "{} изображение",
-            "other": "{} изображений"
+            "one": "$n изображение",
+            "other": "$n изображений"
         }
     },
     "favorite_tags": {

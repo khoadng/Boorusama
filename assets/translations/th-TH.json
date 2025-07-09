@@ -132,8 +132,8 @@
         "trending": "กำลังเป็นที่นิยม",
         "remove_all_selected": "ลบแท็กที่เลือกไว้ทั้งหมด",
         "result_counter": {
-            "one": "พบ {} รายการ",
-            "other": "พบ {} รายการ"
+            "one": "พบ $n รายการ",
+            "other": "พบ $n รายการ"
         },
         "no_result_notice": "ไม่พบรายการ",
         "search_in_progress_notice": "กำลังค้นหา..."
@@ -324,8 +324,8 @@
         "storage_permission_explanation": "จำเป็นต้องให้การอนุญาตเข้าถึงพื้นที่จัดเก็บบนเครื่องเพื่อบันทึกไฟล์ที่ดาวน์โหลด",
         "app_restart_request": "คุณจำเป็นต้องรีสตาร์ทแอปเพื่อให้การเปลี่ยนแปลงนี้มีผล",
         "image_counter": {
-            "one": "ดาวน์โหลดภาพจำนวน {} ภาพ",
-            "other": "ดาวน์โหลดภาพจำนวน {} ภาพ"
+            "one": "ดาวน์โหลดภาพจำนวน $n ภาพ",
+            "other": "ดาวน์โหลดภาพจำนวน $n ภาพ"
         },
         "bulk": {
             "all_done_notification_message": "การดาวน์โหลดทั้งหมดเสร็จเรียบร้อย"
@@ -334,8 +334,8 @@
     "saved_search": {
         "saved_search": "การค้นหาที่บันทึกไว้",
         "saved_search_counter": {
-            "one": "การค้นหา {} รายการ",
-            "other": "การค้นหา {} รายการ"
+            "one": "การค้นหา $n รายการ",
+            "other": "การค้นหา $n รายการ"
         },
         "add_saved_search": "บันทึกการค้นหา",
         "saved_search_added": "คำค้นหาถูกบันทึกเรียบร้อย",
@@ -380,8 +380,8 @@
         "duplicate_items_warning_notification": "โพสต์ที่เพิ่มมามีอยู่แล้วในกลุ่มนี้",
         "detete_confirmation": "คุณยืนยันที่จะลบกลุ่มรายการโปรดนี้จริงๆใช้ไหม",
         "group_item_counter": {
-            "one": "{} โพสต์",
-            "other": "{} โพสต์"
+            "one": "$n โพสต์",
+            "other": "$n โพสต์"
         }
     },
     "favorite_tags": {

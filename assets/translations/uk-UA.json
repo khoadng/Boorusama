@@ -281,8 +281,8 @@
         "bulk_download_save_to_folder": "Зберегти в",
         "storage_permission_explanation": "Дозвіл на доступ до сховища необхідний для збереження завантажених файлів.",
         "image_counter": {
-            "other": "Скачати {} зображень",
-            "one": "Скачати {} зображення"
+            "other": "Скачати $n зображень",
+            "one": "Скачати $n зображення"
         },
         "bulk_download_invalid_folder_name_error": "Назва папки не маже мати наступний символ: ",
         "bulk_download_folder_select_warning": "Програма може завантажувати лише файли в загальнодоступних каталогах <b>({0})</b> для Android 11+. <br><br> Приклади дійсного розташування:<br><b>[Internal]</b> /storage/emulated/0/Download <br><b>[SD-карта]</b> /storage/A1B2- C3D4/Завантажити<br><br>Будь ласка, виберіть інший каталог або створіть новий, якщо він не існує. <br>Версія цього пристрою <b>{1}</b>.",
@@ -347,8 +347,8 @@
         "no_result": "Ми шукали і там, і тут, але так нічого і не знайшли.",
         "remove_all_selected": "Видалити всі вибрані теги",
         "result_counter": {
-            "one": "{} Результат",
-            "other": "{} Результатів"
+            "one": "$n Результат",
+            "other": "$n Результатів"
         },
         "search_in_progress_notice": "Пошук..."
     },
@@ -386,8 +386,8 @@
         "empty_group_notice": "Немає улюблених груп",
         "create_group_cancel": "Відміна",
         "group_item_counter": {
-            "one": "{} пост",
-            "other": "{} постів"
+            "one": "$n пост",
+            "other": "$n постів"
         },
         "max_limit_warning": "Учасник може створювати тільки 10 груп",
         "add_to": "Додати до",
@@ -424,8 +424,8 @@
         "saved_search": "Пошукові запити",
         "saved_search_help": "Що це?",
         "saved_search_counter": {
-            "one": "{} пошук",
-            "other": "{} пошукових запитів"
+            "one": "$n пошук",
+            "other": "$n пошукових запитів"
         },
         "saved_search_feed": "Стрічка",
         "saved_search_try": "Спробувати",

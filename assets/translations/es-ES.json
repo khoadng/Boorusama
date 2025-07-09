@@ -132,8 +132,8 @@
         "trending": "Tendencia",
         "remove_all_selected": "Remover todas las Etiquetas",
         "result_counter": {
-            "one": "{} Resultado",
-            "other": "{} Resultados"
+            "one": "$n Resultado",
+            "other": "$n Resultados"
         },
         "no_result_notice": "Ningún resultado",
         "search_in_progress_notice": "Buscando..."
@@ -337,8 +337,8 @@
         "storage_permission_explanation": "Permisos de almacenamiento necesarios para descargar imagenes.",
         "app_restart_request": "Necesitas reiniciar la aplicacion para que los cambios tengan efecto",
         "image_counter": {
-            "one": "Descargar {} imagen",
-            "other": "Descargar {} imagenes"
+            "one": "Descargar $n imagen",
+            "other": "Descargar $n imagenes"
         },
         "bulk": {
             "all_done_notification_message": "Todas las descargas estan listas"
@@ -347,8 +347,8 @@
     "saved_search": {
         "saved_search": "Busqueda guardada",
         "saved_search_counter": {
-            "one": "{} busqueda",
-            "other": "{} historial"
+            "one": "$n busqueda",
+            "other": "$n historial"
         },
         "add_saved_search": "Añadir al historial",
         "saved_search_added": "Busqueda añadida al historial",
@@ -393,8 +393,8 @@
         "duplicate_items_warning_notification": "Los posts introducidos ya existen en el grupo",
         "detete_confirmation": "¿Estás seguro de que quieres borrar este grupo de favoritos?",
         "group_item_counter": {
-            "one": "{} Post",
-            "other": "{} Posts"
+            "one": "$n Post",
+            "other": "$n Posts"
         }
     },
     "favorite_tags": {

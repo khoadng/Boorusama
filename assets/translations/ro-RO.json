@@ -132,8 +132,8 @@
         "trending": "În trend",
         "remove_all_selected": "Eliminați toate etichetele selectate",
         "result_counter": {
-            "one": "{} Rezultat",
-            "other": "{} Rezultate"
+            "one": "$n Rezultat",
+            "other": "$n Rezultate"
         },
         "no_result_notice": "Fără rezultate",
         "search_in_progress_notice": "Căutare..."
@@ -324,8 +324,8 @@
         "storage_permission_explanation": "Permisiunea de stocare este necesară pentru a stoca fișierele descărcate.",
         "app_restart_request": "Trebuie să reporniți aplicația pentru ca această modificare să intre în vigoare",
         "image_counter": {
-            "one": "Descărcați {} imagine",
-            "other": "Descărcați {} imagini"
+            "one": "Descărcați $n imagine",
+            "other": "Descărcați $n imagini"
         },
         "bulk": {
             "all_done_notification_message": "Toate descărcările s-au terminat"
@@ -334,8 +334,8 @@
     "saved_search": {
         "saved_search": "Căutare salvată",
         "saved_search_counter": {
-            "one": "{} căutare",
-            "other": "{} căutări"
+            "one": "$n căutare",
+            "other": "$n căutări"
         },
         "add_saved_search": "Adăugați o căutare salvată",
         "saved_search_added": "Căutarea salvată a fost adăugată",
@@ -380,8 +380,8 @@
         "duplicate_items_warning_notification": "Postările introduse există deja în grup",
         "detete_confirmation": "Sunteți sigur/ă că doriți să ștergeți acest grup favorit",
         "group_item_counter": {
-            "one": "{} postare",
-            "other": "{} postări"
+            "one": "$n postare",
+            "other": "$n postări"
         }
     },
     "favorite_tags": {
