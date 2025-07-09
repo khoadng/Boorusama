@@ -6,6 +6,7 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../../../../../../foundation/display.dart';
+import '../../../../../../foundation/platform.dart';
 
 class TagEditTagTile extends StatefulWidget {
   const TagEditTagTile({
@@ -24,16 +25,16 @@ class TagEditTagTile extends StatefulWidget {
 }
 
 class _TagEditTagTileState extends State<TagEditTagTile> {
-  final hover = ValueNotifier(false);
+  final _hover = ValueNotifier(false);
 
   @override
   Widget build(BuildContext context) {
     return MouseRegion(
       onEnter: (_) {
-        hover.value = true;
+        _hover.value = true;
       },
       onExit: (_) {
-        hover.value = false;
+        _hover.value = false;
       },
       child: InkWell(
         onTap: widget.onTap,
@@ -47,12 +48,13 @@ class _TagEditTagTileState extends State<TagEditTagTile> {
                 child: widget.title,
               ),
               ValueListenableBuilder(
-                valueListenable: hover,
-                builder: (_, value, child) =>
-                    !kPreferredLayout.isMobile && !value
-                    ? const SizedBox(
-                        height: 32,
-                      )
+                valueListenable: _hover,
+                builder: (_, hover, child) => isDesktopPlatform()
+                    ? hover
+                          ? child!
+                          : const SizedBox(
+                              height: 32,
+                            )
                     : child!,
                 child: IconButton(
                   splashRadius: 20,

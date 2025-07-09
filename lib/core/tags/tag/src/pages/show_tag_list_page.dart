@@ -395,6 +395,7 @@ class _ShowTagListPageState extends ConsumerState<ShowTagListPageInternal> {
         vertical: 4,
       ),
       child: BooruSearchBar(
+        dense: true,
         hintText: 'Filter...'.hc,
         onChanged: (value) =>
             ref.read(selectedViewTagQueryProvider.notifier).state = value,
@@ -465,74 +466,124 @@ class _SelectableTagItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
       valueListenable: multiSelectController.multiSelectNotifier,
-      builder: (_, multiSelect, _) => Row(
-        children: [
-          AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            curve: Curves.easeInOut,
-            width: multiSelect ? 48 : 0,
-            child: AnimatedOpacity(
-              duration: const Duration(milliseconds: 150),
-              opacity: multiSelect ? 1.0 : 0.0,
-              child: multiSelect
-                  ? ValueListenableBuilder(
-                      valueListenable:
-                          multiSelectController.selectedItemsNotifier,
-                      builder: (_, selectedItems, _) => Checkbox(
-                        visualDensity: VisualDensity.compact,
-                        value: selectedItems.contains(index),
-                        onChanged: (value) {
-                          if (value == null) return;
-                          multiSelectController.toggleSelection(index);
-                        },
-                      ),
-                    )
-                  : const SizedBox.shrink(),
+      builder: (_, multiSelect, _) => Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 12,
+        ),
+        child: Row(
+          children: [
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              curve: Curves.easeInOut,
+              width: multiSelect ? 36 : 0,
+              child: AnimatedOpacity(
+                duration: const Duration(milliseconds: 150),
+                opacity: multiSelect ? 1.0 : 0.0,
+                child: multiSelect
+                    ? ValueListenableBuilder(
+                        valueListenable:
+                            multiSelectController.selectedItemsNotifier,
+                        builder: (_, selectedItems, _) => Checkbox(
+                          visualDensity: VisualDensity.compact,
+                          value: selectedItems.contains(index),
+                          onChanged: (value) {
+                            if (value == null) return;
+                            multiSelectController.toggleSelection(index);
+                          },
+                        ),
+                      )
+                    : const SizedBox.shrink(),
+              ),
+            ),
+            Expanded(
+              child: _TagTile(
+                tag: tag,
+                auth: auth,
+                multiSelectController: multiSelectController,
+                index: index,
+                multiSelect: multiSelect,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _TagTile extends StatefulWidget {
+  const _TagTile({
+    required this.tag,
+    required this.auth,
+    required this.multiSelectController,
+    required this.index,
+    required this.multiSelect,
+  });
+
+  final Tag tag;
+  final BooruConfigAuth auth;
+  final MultiSelectController multiSelectController;
+  final int index;
+  final bool multiSelect;
+
+  @override
+  State<_TagTile> createState() => _TagTileState();
+}
+
+class _TagTileState extends State<_TagTile> {
+  final _hover = ValueNotifier<bool>(false);
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      onEnter: (_) => _hover.value = true,
+      onExit: (_) => _hover.value = false,
+      child: Consumer(
+        builder: (_, ref, _) => ListTile(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+          visualDensity: VisualDensity.compact,
+          dense: true,
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 8,
+          ),
+          title: Text(
+            widget.tag.displayName,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              color: ref.watch(
+                tagColorProvider(
+                  (widget.auth, widget.tag.category.name),
+                ),
+              ),
+              fontSize: 14,
             ),
           ),
-          Expanded(
-            child: _buildTile(multiSelect, context),
-          ),
-        ],
+          onTap: widget.multiSelect
+              ? () => widget.multiSelectController.toggleSelection(widget.index)
+              : () => goToSearchPage(
+                  ref,
+                  tag: widget.tag.rawName,
+                ),
+          trailing: isDesktopPlatform()
+              ? ValueListenableBuilder(
+                  valueListenable: _hover,
+                  builder: (_, isHovered, _) => isHovered
+                      ? _buildTrailing(context)
+                      : const SizedBox.shrink(),
+                )
+              : _buildTrailing(context),
+        ),
       ),
     );
   }
 
-  Widget _buildTile(bool multiSelect, BuildContext context) {
-    return Consumer(
-      builder: (_, ref, _) => ListTile(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
-        visualDensity: VisualDensity.compact,
-        dense: isDesktopPlatform(),
-        contentPadding: const EdgeInsets.only(
-          left: 16,
-          right: 12,
-        ),
-        title: Text(
-          tag.displayName,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: TextStyle(
-            color: ref.watch(
-              tagColorProvider(
-                (auth, tag.category.name),
-              ),
-            ),
-            fontSize: 14,
-          ),
-        ),
-        onTap: multiSelect
-            ? () => multiSelectController.toggleSelection(index)
-            : () => goToSearchPage(
-                ref,
-                tag: tag.rawName,
-              ),
-        trailing: !isDesktopPlatform()
-            ? const Icon(Symbols.chevron_right)
-            : null,
-      ),
+  Widget _buildTrailing(BuildContext context) {
+    return Icon(
+      Symbols.chevron_right,
+      color: Theme.of(context).colorScheme.outline,
     );
   }
 }
