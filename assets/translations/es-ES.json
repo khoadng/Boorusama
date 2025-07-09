@@ -3,7 +3,7 @@
         "done": "Hecho",
         "errors": {
             "no_data": "Datos no encontrados",
-            "unknown": "Algo fue mal"
+            "unknown": "Error desconocido"
         },
         "action": {
             "add": "Añadir",
@@ -22,38 +22,38 @@
         "messages": "Mensajes"
     },
     "network": {
-        "unavailable": "Servidor No disponible"
+        "unavailable": "Servidor no disponible"
     },
     "tag": {
         "related": {
             "more": "Más",
             "related": "Relacionado",
             "add_to_current_search": "Añadir a la busqueda",
-            "open_wiki": "Abrir Wiki"
+            "open_wiki": "Abrir wiki"
         },
         "explore": {
             "new": "Nuevo",
-            "popular": "Popular"
+            "popular": "Tendencias"
         }
     },
     "post": {
         "detail": {
             "view": "Ver",
-            "view_in_browser": "Ver en el Navegador",
-            "file_details": "Detalles del Archivo",
+            "view_in_browser": "Ver en el navegador",
+            "file_details": "Detalles del archivo",
             "size": "Tamaño",
-            "resolution": "Resolucíon",
+            "resolution": "Resolución",
             "rating": "Clasificación",
-            "file_format": "Formato del Archivo",
+            "file_format": "Formato del archivo",
             "share": {
-                "source": "Compartir Link de el orígen",
-                "booru": "Compartir Link de Booru",
-                "image": "Compartir Imagen"
+                "source": "Compartir link de el orígen",
+                "booru": "Compartir link de Booru",
+                "image": "Compartir imagen"
             },
             "copied": "Copiado",
             "show_original": "Mostrar original",
             "show_translated": "Mostrar Traduccido",
-            "login_required_notice": "Necesitas haber iniciado sesión para realizar esta acción",
+            "login_required_notice": "Tienes que iniciar sesión para realizar esta acción",
             "open_wiki": "Abrir Wiki",
             "add_to_blacklist": "Añadir a la Lista de Bloqueados",
             "add_to_favorites": "Añadir a La Lista de Favoritos",
@@ -81,7 +81,7 @@
     "comment": {
         "comments": "Comentarios",
         "create": {
-            "hint": "Comentar",
+            "hint": "Comenta",
             "loading": "Porfavor Espera...",
             "error": "Error"
         },
@@ -96,12 +96,12 @@
         },
         "counter": {
             "one": "Comentario",
-            "other": "Comentar"
+            "other": "Comentarios"
         }
     },
     "explore": {
         "latest": "Ultimo",
-        "popular": "Popular",
+        "popular": "Populares",
         "hot": "Caliente",
         "most_viewed": "Los más vistos",
         "see_more": "Mostrar mas",
@@ -109,12 +109,12 @@
     },
     "search": {
         "errors": {
-            "generic": "Algo debe estar Fallando",
-            "tag_limit": "Limite de Etiquetas Alcanzado. Actualiza tu cuenta para buscar con mas Etiquetas",
+            "generic": "Algo debe estar fallando",
+            "tag_limit": "Has llegado al límite máximo de etiquetas. Actualiza tu cuenta para buscar más etiquetas simultáneamente.",
             "database_timeout": "Tu búsqueda tardó demasiado en procesarse y fue cancelada.",
-            "rate_limited": "Estás siendo limitado/a. Por favor, inténtalo más tarde.",
+            "rate_limited": "Estás realizando demasiadas búsquedas. Inténtalo más tarde",
             "pagination_limit": "Has llegado al límite de paginación. No puedes desplazarte más",
-            "max_capacity": "El servidor está sobrecargado. Por favor, inténtalo más tarde.",
+            "max_capacity": "El servidor ha alcanzado su capacidad máxima. Por favor, inténtalo más tarde",
             "down": "El servidor está caído. Por favor, inténtalo más tarde",
             "access_denied": "Acceso denegado",
             "forbidden": "Autenticación fallida",
@@ -122,8 +122,8 @@
         },
         "hint": "Buscar...",
         "no_result": "Hemos buscado, pero no se encontraron resultados.",
-        "search_options": "Buscar Opciones",
-        "metatags_notice": "Las MetaEtiquetas Gratis no cuentan como etiquetas en la busqueda",
+        "search_options": "Buscar opciones",
+        "metatags_notice": "Los metatags gratuitos no afectan el límite de búsqueda de etiquetas",
         "history": {
             "history": "Historial",
             "clear": "Limpiar",
@@ -155,7 +155,7 @@
             "hint": "Buscar una Piscina"
         },
         "detail": {
-            "last_updated": "Ultima Actualizacion"
+            "last_updated": "Ultima actualización"
         }
     },
     "settings": {
@@ -174,7 +174,7 @@
             "auto_focus_search_bar": "Enfocar automáticamente la barra de búsqueda al abrir la vista de búsqueda por primera vez",
             "hide_bookmarked_posts_from_search_results": "Ocultar publicaciones marcadas como favoritas de los resultados de búsqueda"
         },
-        "information": "Informacion",
+        "information": "Información",
         "changelog": "Lista de Cambios",
         "infinite_scroll_warning": "Si haces un scroll excesivo, la aplicación podría bloquearse",
         "result_layout": {
@@ -184,8 +184,8 @@
         },
         "image_list": {
             "image_list": "Lista de Imágenes",
-            "standard": "Estandard",
-            "masonry": "Masonry"
+            "standard": "Estándar",
+            "masonry": "Mosaico"
         },
         "image_grid": {
             "image_grid": "Grid de Imágenes",
@@ -197,7 +197,7 @@
             },
             "image_quality": {
                 "image_quality": "Calidad De la imagen",
-                "high_quality_notice": "Alta calidad de la imagen, Tardara mas en cargar",
+                "high_quality_notice": "Imágenes en calidad alta tardarán más en cargar.",
                 "high": "Alto",
                 "low": "Bajo",
                 "original": "Original",
@@ -216,9 +216,15 @@
             "slideshow": "Presentación",
             "slideshow_mode": "Modo presentación",
             "slideshow_modes": {
-                "random": "Aleatorio"
+                "random": "Aleatorio",
+                "forward": "Adelante",
+                "backward": "Atras"
             },
-            "slideshow_interval": "Intervalo de presentación"
+            "slideshow_interval": "Intervalo de presentación",
+            "slideshow_skip": "Omitir imágenes",
+            "slideshow_interval_explanation": "Valor menor a 1 segundo omitirá automáticamente la transición",
+            "mute_video": "Silenciar video por predeterminado",
+            "video_section_title": "Video"
         },
         "image_detail": {
             "image_detail": "Calidad de la Imagen"
@@ -243,7 +249,7 @@
             "enable_biometric_lock": "Habilitar bloqueo biométrico",
             "enable_biometric_lock_notice": "Solo funciona en dispositivos con soporte biométrico y que hayan sido configurados.",
             "enable_incognito_keyboard": "Habilitar teclado en modo incognito",
-            "enable_incognito_keyboard_notice": "Solo efectos de Android"
+            "enable_incognito_keyboard_notice": "Solo afecta a Android."
         },
         "performance": {
             "performance": "Gestion",
@@ -264,8 +270,9 @@
             "qualities": {
                 "original": "Original",
                 "sample": "Calidad",
-                "preview": "Vista Previa"
-            }
+                "preview": "Miniatura"
+            },
+            "title": "Descargar"
         },
         "help_us_translate": "Ayúdenos a traducir",
         "other_settings": "Otros Ajustes",
@@ -273,7 +280,7 @@
             "accessibility": "Accesibilidad",
             "reverseBooruConfigSelectorScrollDirection": "Dirección de desplazamiento inverso de los perfiles booru",
             "swipeAreaToOpenSidebar": "Área de deslizamiento de la barra lateral",
-            "swipeAreaToOpenSidebarDescription": "La cantidad de área en el lado izquierdo de la pantalla que se puede usar para activar un deslizamiento.  Los valores grandes bloquearán todos los gestos horizontales, como el gesto de deslizar la paginación."
+            "swipeAreaToOpenSidebarDescription": "La cantidad de área en el lado izquierdo de la pantalla que se puede usar para activar un deslizamiento. Los valores grandes bloquearán todos los gestos horizontales, como el gesto de deslizar la paginación."
         },
         "booru_settings": {
             "booru_settings": "Configuraciónes de el Booru",
@@ -299,11 +306,13 @@
         "feature_request_and_bug_report": "Solicitud de funciones e informe de errores",
         "image_details": {
             "ui_overlay": {
-                "ui_overlay": "superposición de interfaz de usuario"
+                "ui_overlay": "superposición de interfaz de usuario",
+                "hide": "Esconder",
+                "show": "Mostrar"
             },
             "image_details": "Detalles de la imagen"
         },
-        "contact_developer": "Contacto con el desarrollador",
+        "contact_developer": "Contactar con el desarrollador",
         "feature_request_and_bug_report_description": "Sugerir funciones o informar errores a través del repositorio de GitHub"
     },
     "blacklisted_tags": {
@@ -323,7 +332,7 @@
         "download": "Descargar",
         "bulk_download_save_to_folder": "Guardar a carpeta",
         "bulk_download_invalid_folder_name_error": "La carpeta no puede contener los siguientes caracteres: ",
-        "bulk_download_folder_select_warning": "La aplicación solo puede almacenar archivos en directorios públicos <b>({0})</b> en Android 11+. <div>Las tarjetas SD tampoco son compatibles.</div> <div>Por favor, elija otra ubicación.</div> <div>La versión de este dispositivo es {1}.</div>",
+        "bulk_download_folder_select_warning": "La app solo puede descargar archivos dentro de directorios públicos <b>({0})</b> para Android 11+. <br><br>Ejemplos de ubicaciones válidas:<br><b>[Interno]</b> /storage/emulated/0/Download <br><b>[Tarjeta SD]</b> /storage/A1B2-C3D4/Download<br><br>Por favor, elige otro directorio o crea uno nuevo si no existe. <br>La versión de este dispositivo es <b>{1}</b>.",
         "open_app_settings": "Abrir Ajustes",
         "storage_permission_explanation": "Permisos de almacenamiento necesarios para descargar imagenes.",
         "app_restart_request": "Necesitas reiniciar la aplicacion para que los cambios tengan efecto",
@@ -346,7 +355,7 @@
         "empty_saved_search": "Todavia no has añadido ninguna busqueda",
         "update_saved_search": "Actualizar busqueda guardada",
         "saved_search_updated": "Busqueda actualizada",
-        "saved_search_feed": "Feed",
+        "saved_search_feed": "Feed de búsquedas guardadas",
         "saved_search_help": "Que es eso?",
         "saved_search_examples": "Ejemplos",
         "saved_search_try": "Intentalo",
@@ -359,7 +368,7 @@
             "one": "Favorito",
             "other": "Favoritos"
         },
-        "favorited": "Favoritos",
+        "favorited": "Marcado como favorito",
         "favorite": "Favorito"
     },
     "favorite_groups": {
@@ -381,7 +390,7 @@
         "create_group_cancel": "Cancelar",
         "create_group_confirm": "OK",
         "max_limit_warning": "Los miembros sólo pueden crear 10 grupos favoritos",
-        "duplicate_items_warning_notification": "Los mensajes introducidos ya existen en el grupo",
+        "duplicate_items_warning_notification": "Los posts introducidos ya existen en el grupo",
         "detete_confirmation": "¿Estás seguro de que quieres borrar este grupo de favoritos?",
         "group_item_counter": {
             "one": "{} Post",
@@ -402,7 +411,7 @@
         "rate": "Calificar",
         "cancel": "No gracias",
         "later": "Despues",
-        "rationale": "Si te gusta la aplicación, por favor, tómate un momento para dejar una reseña. \nNo te llevará más que unos segundos y realmente ayuda a este proyecto."
+        "rationale": "Si te gusta la aplicación, por favor, tómate un momento para dejar una reseña. No te llevará más que unos segundos y realmente ayuda a este proyecto."
     },
     "sideMenu": {
         "settings": "Configuración",
@@ -420,7 +429,7 @@
         "booru_engine_input_label": "Booru Engine (*)",
         "config_name_label": "Nombre de la configuracion (*)",
         "site_url_label": "URL del Booru",
-        "login_name_label": "Iniciar Sesion",
+        "login_name_label": "Iniciar sesión",
         "password_api_key_label": "Llave API",
         "password_hashed_label": "Contraseña segura (solo visible)",
         "password_label": "Contraseña",
@@ -430,7 +439,7 @@
         "add_a_booru_site": "Añadir un nuevo perfil",
         "next_step": "Siguiente",
         "site_url": "URL del sitio",
-        "unsupported_warning": "Este booru aún no está soportado.",
+        "unsupported_warning": "Este booru aún no es compatible.",
         "validation_empty_url": "La URL está vacía",
         "validation_invalid_url": "\"{0}\" no es una URL válida",
         "validation_invalid_http_url": "\"{0}\" no es una URL HTTP o HTTPS",
@@ -440,7 +449,7 @@
         "validation_missing_scheme": "A \"{0}\" le falta un esquema (por ejemplo, https://)",
         "download": "Descargar",
         "misc": "Varios",
-        "authentication": "Autenticacion",
+        "authentication": "Autenticación",
         "gestures": "Gestos"
     },
     "blacklist": {
@@ -472,6 +481,15 @@
     "gestures": {
         "long_press": "Pulsación larga",
         "swipe_down": "Deslizar hacia abajo",
-        "double_tap": "Doble toque"
+        "double_tap": "Doble toque",
+        "tap": "Toque"
+    },
+    "time": {
+        "counters": {
+            "second": {
+                "other": "Segundos",
+                "one": "Segundo"
+            }
+        }
     }
 }
