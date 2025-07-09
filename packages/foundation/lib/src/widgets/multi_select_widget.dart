@@ -1,5 +1,6 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -63,6 +64,7 @@ class _MultiSelectWidgetState<T> extends State<MultiSelectWidget<T>> {
         widget.onMultiSelectChanged?.call(_controller.multiSelectEnabled);
       }
       multiSelect = _controller.multiSelectEnabled;
+      HapticFeedback.lightImpact();
     });
   }
 

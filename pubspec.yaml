@@ -48,7 +48,7 @@ dependencies:
   context_menus:
     git:
       url: https://github.com/khoadng/flutter-context-menu.git
-      ref: 7a310fa2aacfaa95339ee2535f0797fcf84efeca
+      ref: 362571f357097500318361f1ef5e15eb761dd7b9
   cookie_jar: ^4.0.8
   cross_file: ^0.3.4+2
   crypto: ^3.0.5
