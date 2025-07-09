@@ -2,10 +2,10 @@
 import 'dart:async';
 
 // Project imports:
-import '../../../categories/tag_category.dart';
 import '../../../local/cached_tag.dart';
 import '../../../local/tag_cache_repository.dart';
 import '../../../local/tag_info.dart';
+import 'cached_tag_mapper.dart';
 import 'tag.dart';
 import 'tag_repository.dart';
 
@@ -13,12 +13,14 @@ class TagResolver {
   TagResolver({
     required this.tagCacheBuilder,
     required this.siteHost,
+    required this.cachedTagMapper,
     this.tagRepositoryBuilder,
   });
 
   final Future<TagCacheRepository> Function() tagCacheBuilder;
   final TagRepository Function()? tagRepositoryBuilder;
   final String siteHost;
+  final CachedTagMapper cachedTagMapper;
 
   Future<List<Tag>> resolvePartialTags(List<Tag> tags) async {
     if (tags.isEmpty) return [];
@@ -77,7 +79,7 @@ class TagResolver {
         .toList();
 
     final finalTags = [...result.found, ...resolvedTags, ...stillMissingTags];
-    final tags = _mapCachedTagsToTags(finalTags);
+    final tags = cachedTagMapper.mapCachedTagsToTags(finalTags);
 
     return tags;
   }
@@ -132,14 +134,4 @@ class TagResolver {
       return [];
     }
   }
-
-  List<Tag> _mapCachedTagsToTags(List<CachedTag> cachedTags) => cachedTags
-      .map(
-        (cachedTag) => Tag(
-          name: cachedTag.tagName,
-          category: TagCategory.fromLegacyIdString(cachedTag.category),
-          postCount: cachedTag.postCount ?? 0,
-        ),
-      )
-      .toList();
 }

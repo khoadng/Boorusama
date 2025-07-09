@@ -19,6 +19,7 @@ import '../../../theme/providers.dart';
 import '../../../theme/theme_configs.dart';
 import '../../local/providers.dart';
 import 'tag_repository_impl.dart';
+import 'types/cached_tag_mapper.dart';
 import 'types/tag.dart';
 import 'types/tag_colors.dart';
 import 'types/tag_group_item.dart';
@@ -141,6 +142,7 @@ final tagResolverProvider = Provider.family<TagResolver, BooruConfigAuth>((
   return TagResolver(
     tagCacheBuilder: () => ref.watch(tagCacheRepositoryProvider.future),
     siteHost: config.url,
+    cachedTagMapper: const CachedTagMapper(),
     tagRepositoryBuilder: () => ref.read(
       tagRepoProvider(config),
     ), // use read to avoid circular dependency

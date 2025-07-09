@@ -20,6 +20,7 @@ import '../../../posts/sources/source.dart';
 import '../../../widgets/widgets.dart';
 import '../data/bookmark_convert.dart';
 import '../providers/bookmark_provider.dart';
+import '../widgets/bookmark_tag_tiles.dart';
 
 class BookmarkDetailsPage extends ConsumerWidget {
   const BookmarkDetailsPage({
@@ -58,8 +59,7 @@ final bookmarkUiBuilder = PostDetailsUIBuilder(
   full: {
     DetailsPart.toolbar: (context) => const BookmarkPostActionToolbar(),
     DetailsPart.source: (context) => const BookmarkSourceSection(),
-    DetailsPart.tags: (context) =>
-        const DefaultInheritedBasicTagsTile<BookmarkPost>(),
+    DetailsPart.tags: (context) => const BookmarkTagTiles(),
     DetailsPart.fileDetails: (context) =>
         const DefaultInheritedFileDetailsSection<BookmarkPost>(),
   },

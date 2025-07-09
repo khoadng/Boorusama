@@ -60,7 +60,7 @@ class TagCategory extends Equatable {
   factory TagCategory.meta() => _metaTag;
 
   factory TagCategory.fromLegacyIdString(String? id) => switch (id) {
-    '0' || 'tag' => _generalTag,
+    '0' || 'tag' || 'general' => _generalTag,
     '1' || 'artist' => _artistTag,
     '3' || 'copyright' => _copyrightTag,
     '4' || 'character' => _characterTag,

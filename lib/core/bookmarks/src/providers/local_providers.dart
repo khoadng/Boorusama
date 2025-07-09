@@ -6,13 +6,17 @@ import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import '../../../../foundation/riverpod/riverpod.dart';
 import '../../../boorus/engine/engine.dart';
 import '../../../boorus/engine/providers.dart';
 import '../../../configs/config.dart';
 import '../../../tags/categories/providers.dart';
 import '../../../tags/tag/colors.dart';
+import '../../../tags/tag/providers.dart';
+import '../../../tags/tag/tag.dart';
 import '../../../theme.dart';
 import '../../providers.dart';
+import '../data/bookmark_convert.dart';
 import '../types/bookmark.dart';
 import '../types/bookmark_repository.dart';
 
@@ -152,3 +156,43 @@ final availableBooruUrlsProvider = FutureProvider.autoDispose<List<String>>((
     },
   ).toList();
 });
+
+final bookmarkTagGroupsProvider = FutureProvider.autoDispose
+    .family<List<TagGroupItem>?, (BooruConfigAuth, BookmarkPost)>((
+      ref,
+      params,
+    ) async {
+      ref.cacheFor(const Duration(seconds: 30));
+
+      final config = params.$1;
+      final post = params.$2;
+
+      final tagExtractor = ref.watch(bookmarkTagExtractorProvider(config));
+
+      final tags = await tagExtractor.extractTags(
+        post,
+      );
+
+      return createTagGroupItems(tags);
+    });
+
+final bookmarkTagExtractorProvider =
+    Provider.family<TagExtractor<BookmarkPost>, BooruConfigAuth>(
+      (ref, config) {
+        return TagExtractorBuilder(
+          sorter: TagSorter.defaults(),
+          fetcher: (post, options) {
+            // Use read to avoid circular dependency
+            final tagResolver = ref.read(tagResolverProvider(config));
+
+            if (post case final BookmarkPost bookmarkPost) {
+              final tags = bookmarkPost.tags;
+
+              return tagResolver.resolveRawTags(tags);
+            } else {
+              return TagExtractor.extractTagsFromGenericPost(post);
+            }
+          },
+        );
+      },
+    );
