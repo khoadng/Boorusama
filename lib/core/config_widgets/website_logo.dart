@@ -22,7 +22,7 @@ class ConfigAwareWebsiteLogo extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfigAuth;
-    final dio = ref.watch(dioProvider(config));
+    final dio = ref.watch(dioForWidgetProvider(config));
 
     return WebsiteLogo(
       url: url,

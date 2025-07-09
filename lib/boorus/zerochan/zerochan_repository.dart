@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:booru_clients/zerochan.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -10,12 +11,12 @@ import '../../core/boorus/engine/engine.dart';
 import '../../core/configs/config.dart';
 import '../../core/configs/create/create.dart';
 import '../../core/downloads/filename/types.dart';
-import '../../core/http/providers.dart';
 import '../../core/posts/post/post.dart';
 import '../../core/posts/post/providers.dart';
 import '../../core/tags/autocompletes/types.dart';
 import '../../core/tags/tag/colors.dart';
 import '../../core/tags/tag/tag.dart';
+import 'client_provider.dart';
 import 'posts/providers.dart';
 import 'tags/providers.dart';
 
@@ -40,7 +41,7 @@ class ZerochanRepository extends BooruRepositoryDefault {
 
   @override
   BooruSiteValidator? siteValidator(BooruConfigAuth config) {
-    final dio = ref.watch(dioProvider(config));
+    final dio = ref.watch(zerochanDioProvider(config));
 
     return () => ZerochanClient(
       dio: dio,
@@ -86,6 +87,11 @@ class ZerochanRepository extends BooruRepositoryDefault {
   @override
   TagExtractor tagExtractor(BooruConfigAuth config) {
     return ref.watch(zerochanTagExtractorProvider(config));
+  }
+
+  @override
+  Dio dio(BooruConfigAuth config) {
+    return ref.watch(zerochanDioProvider(config));
   }
 }
 

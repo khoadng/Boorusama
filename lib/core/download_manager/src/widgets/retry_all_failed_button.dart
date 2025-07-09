@@ -51,9 +51,7 @@ class RetryAllFailedButton extends ConsumerWidget {
                     (_) {
                       final headers = {
                         AppHttpHeaders.userAgentHeader: ref.read(
-                          userAgentProvider(
-                            config.auth.booruType,
-                          ),
+                          userAgentProvider(config.auth),
                         ),
                         ...ref.read(
                           extraHttpHeaderProvider(config.auth),

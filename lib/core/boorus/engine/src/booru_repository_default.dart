@@ -1,4 +1,5 @@
 // Package imports:
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
 
@@ -11,6 +12,7 @@ import '../../../configs/config.dart';
 import '../../../configs/create/create.dart';
 import '../../../downloads/urls/providers.dart';
 import '../../../downloads/urls/types.dart';
+import '../../../http/providers.dart';
 import '../../../notes/notes.dart';
 import '../../../posts/count/count.dart';
 import '../../../posts/favorites/providers.dart';
@@ -109,5 +111,10 @@ abstract class BooruRepositoryDefault implements BooruRepository {
   @override
   CommentRepository comment(BooruConfigAuth config) {
     return ref.watch(emptyCommentRepoProvider);
+  }
+
+  @override
+  Dio dio(BooruConfigAuth config) {
+    return ref.watch(defaultDioProvider(config));
   }
 }

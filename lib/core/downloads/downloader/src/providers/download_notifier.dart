@@ -165,7 +165,7 @@ Future<DownloadTaskInfo?> _download(
 
   final headers = {
     AppHttpHeaders.userAgentHeader: ref.read(
-      userAgentProvider(booruConfig.auth.booruType),
+      userAgentProvider(booruConfig.auth),
     ),
     ...ref.read(extraHttpHeaderProvider(booruConfig.auth)),
     ...ref.read(cachedBypassDdosHeadersProvider(booruConfig.url)),

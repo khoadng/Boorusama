@@ -8,7 +8,7 @@ import '../../core/http/providers.dart';
 
 final shimmie2ClientProvider = Provider.family<Shimmie2Client, BooruConfigAuth>(
   (ref, config) {
-    final dio = ref.watch(dioProvider(config));
+    final dio = ref.watch(defaultDioProvider(config));
 
     return Shimmie2Client(
       dio: dio,

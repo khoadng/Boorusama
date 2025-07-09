@@ -14,8 +14,8 @@ import '../../../foundation/info/app_info.dart';
 import '../../../foundation/info/package_info.dart';
 import '../../../foundation/loggers.dart';
 import '../../../foundation/vendors/google/providers.dart';
-import '../../boorus/booru/booru.dart';
 import '../../boorus/booru/providers.dart';
+import '../../boorus/engine/providers.dart';
 import '../../configs/config.dart';
 import '../../ddos_solver/protection_detector.dart';
 import '../../ddos_solver/protection_handler.dart';
@@ -26,10 +26,12 @@ import '../../router.dart';
 import 'cookie_jar_providers.dart';
 import 'dio/dio.dart';
 import 'dio/dio_options.dart';
+import 'http_utils.dart';
 
-final dioProvider = Provider.family<Dio, BooruConfigAuth>((ref, config) {
+final defaultDioProvider = Provider.family<Dio, BooruConfigAuth>((ref, config) {
   final ddosProtectionHandler = ref.watch(httpDdosProtectionBypassHandler);
-  final userAgent = ref.watch(userAgentProvider(config.booruType));
+  final appVersion = ref.watch(packageInfoProvider).version;
+  final appName = ref.watch(appInfoProvider).appName;
   final loggerService = ref.watch(loggerProvider);
   final booruDb = ref.watch(booruDbProvider);
   final cronetAvailable = ref.watch(isGooglePlayServiceAvailableProvider);
@@ -37,25 +39,42 @@ final dioProvider = Provider.family<Dio, BooruConfigAuth>((ref, config) {
   return newDio(
     options: DioOptions(
       ddosProtectionHandler: ddosProtectionHandler,
-      baseUrl: config.url,
-      userAgent: userAgent,
+      userAgent: '${appName.sentenceCase}/$appVersion',
       authConfig: config,
       loggerService: loggerService,
       booruDb: booruDb,
-      proxySettings: config.proxySettings,
       cronetAvailable: cronetAvailable,
     ),
   );
 });
 
-final userAgentProvider = Provider.family<String, BooruType>(
-  (ref, booruType) {
-    final appVersion = ref.watch(packageInfoProvider).version;
-    final appName = ref.watch(appInfoProvider).appName;
+// Don't use this provider inside any of other providers that used inside any of the booru repositories.
+// It is only used for widget only to prevent circular dependencies.
+final dioForWidgetProvider = Provider.family<Dio, BooruConfigAuth>(
+  (ref, config) {
+    final repository = ref
+        .watch(booruEngineRegistryProvider)
+        .getRepository(config.booruType);
 
-    return switch (booruType) {
-      BooruType.zerochan => '${appName.sentenceCase}/$appVersion - boorusama',
-      _ => '${appName.sentenceCase}/$appVersion',
+    if (repository == null) {
+      throw Exception('No repository found for ${config.booruType}');
+    }
+
+    return repository.dio(config);
+  },
+  name: 'dioProvider',
+);
+
+final userAgentProvider = Provider.family<String, BooruConfigAuth>(
+  (ref, config) {
+    final dio = ref.watch(dioForWidgetProvider(config));
+
+    final userAgent = dio.options.headers[AppHttpHeaders.userAgentHeader];
+
+    return switch (userAgent) {
+      final String ua => ua,
+      final List<String> uaList => uaList.firstOrNull ?? '',
+      _ => '',
     };
   },
 );

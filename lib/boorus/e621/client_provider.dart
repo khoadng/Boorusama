@@ -10,7 +10,7 @@ final e621ClientProvider = Provider.family<E621Client, BooruConfigAuth>((
   ref,
   config,
 ) {
-  final dio = ref.watch(dioProvider(config));
+  final dio = ref.watch(defaultDioProvider(config));
 
   return E621Client(
     baseUrl: config.url,

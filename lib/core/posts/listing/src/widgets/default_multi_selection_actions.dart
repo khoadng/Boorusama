@@ -24,12 +24,14 @@ class DefaultMultiSelectionActions<T extends Post> extends ConsumerWidget {
     required this.postController,
     super.key,
     this.extraActions,
+    this.onBulkDownload,
     this.bookmark = true,
   });
 
   final MultiSelectController controller;
   final PostGridController<T> postController;
   final bool bookmark;
+  final void Function(List<T> selectedPosts)? onBulkDownload;
   final List<Widget> Function(List<T> selectedPosts)? extraActions;
 
   @override
@@ -46,7 +48,11 @@ class DefaultMultiSelectionActions<T extends Post> extends ConsumerWidget {
             MultiSelectButton(
               onPressed: selectedPosts.isNotEmpty
                   ? () {
-                      ref.bulkDownload(selectedPosts);
+                      if (onBulkDownload != null) {
+                        onBulkDownload!(selectedPosts);
+                      } else {
+                        ref.bulkDownload(selectedPosts);
+                      }
 
                       controller.disableMultiSelect();
                     }

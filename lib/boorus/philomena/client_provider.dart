@@ -9,7 +9,7 @@ import '../../core/http/providers.dart';
 final philomenaClientProvider =
     Provider.family<PhilomenaClient, BooruConfigAuth>(
       (ref, config) {
-        final dio = ref.watch(dioProvider(config));
+        final dio = ref.watch(defaultDioProvider(config));
 
         return PhilomenaClient(
           dio: dio,

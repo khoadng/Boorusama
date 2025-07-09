@@ -8,7 +8,7 @@ import '../../core/http/providers.dart';
 
 final danbooruClientProvider = Provider.family<DanbooruClient, BooruConfigAuth>(
   (ref, config) {
-    final dio = ref.watch(dioProvider(config));
+    final dio = ref.watch(defaultDioProvider(config));
 
     return DanbooruClient(
       dio: dio,

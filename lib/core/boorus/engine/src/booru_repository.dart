@@ -1,4 +1,5 @@
 // Package imports:
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
 
@@ -40,4 +41,5 @@ abstract class BooruRepository {
   TextMatcher? queryMatcher(BooruConfigAuth config);
   TagExtractor tagExtractor(BooruConfigAuth config);
   CommentRepository comment(BooruConfigAuth config);
+  Dio dio(BooruConfigAuth config);
 }

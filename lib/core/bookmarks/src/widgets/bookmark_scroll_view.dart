@@ -116,6 +116,14 @@ class _BookmarkScrollViewState extends ConsumerState<BookmarkScrollView> {
               controller: _multiSelectController,
               postController: controller,
               bookmark: false,
+              onBulkDownload: (selectedPosts) {
+                ref
+                    .read(bookmarkProvider.notifier)
+                    .downloadBookmarks(
+                      ref.readConfig,
+                      selectedPosts.map((e) => e.bookmark).toList(),
+                    );
+              },
               extraActions: (selectedPosts) => [
                 MultiSelectButton(
                   onPressed: selectedPosts.isNotEmpty

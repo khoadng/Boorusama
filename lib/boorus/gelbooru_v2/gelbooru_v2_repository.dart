@@ -46,7 +46,7 @@ class GelbooruV2Repository extends BooruRepositoryDefault {
 
   @override
   BooruSiteValidator? siteValidator(BooruConfigAuth config) {
-    final dio = ref.watch(dioProvider(config));
+    final dio = ref.watch(defaultDioProvider(config));
 
     return () => GelbooruV2Client(
       baseUrl: config.url,

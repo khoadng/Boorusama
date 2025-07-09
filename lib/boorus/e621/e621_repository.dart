@@ -98,7 +98,7 @@ class E621Repository extends BooruRepositoryDefault {
 
   @override
   BooruSiteValidator? siteValidator(BooruConfigAuth config) {
-    final dio = ref.watch(dioProvider(config));
+    final dio = ref.watch(defaultDioProvider(config));
 
     return () => E621Client(
       baseUrl: config.url,

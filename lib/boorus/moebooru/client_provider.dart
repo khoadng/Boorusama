@@ -8,7 +8,7 @@ import '../../core/http/providers.dart';
 
 final moebooruClientProvider = Provider.family<MoebooruClient, BooruConfigAuth>(
   (ref, config) {
-    final dio = ref.watch(dioProvider(config));
+    final dio = ref.watch(defaultDioProvider(config));
 
     return MoebooruClient.custom(
       baseUrl: config.url,

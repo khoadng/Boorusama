@@ -353,7 +353,7 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
     final downloader = ref.read(downloadServiceProvider);
     final headers = {
       AppHttpHeaders.userAgentHeader: ref.read(
-        userAgentProvider(config.auth.booruType),
+        userAgentProvider(config.auth),
       ),
       ...ref.read(extraHttpHeaderProvider(config.auth)),
       ...ref.read(cachedBypassDdosHeadersProvider(config.url)),

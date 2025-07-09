@@ -30,7 +30,7 @@ class PostDetailsPreloadImage<T extends Post> extends ConsumerWidget {
     }
 
     final config = ref.watchConfigAuth;
-    final dio = ref.watch(dioProvider(config));
+    final dio = ref.watch(dioForWidgetProvider(config));
     final deviceInfo = ref.watch(deviceInfoProvider);
 
     return FutureBuilder(
@@ -54,7 +54,7 @@ class PostDetailsPreloadImage<T extends Post> extends ConsumerWidget {
           cacheWidth: 10,
           headers: {
             AppHttpHeaders.userAgentHeader: ref.watch(
-              userAgentProvider(config.booruType),
+              userAgentProvider(config),
             ),
             ...ref.watch(extraHttpHeaderProvider(config)),
             ...ref.watch(cachedBypassDdosHeadersProvider(config.url)),

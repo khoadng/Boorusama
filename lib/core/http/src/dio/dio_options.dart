@@ -8,14 +8,13 @@ import '../../../proxy/proxy.dart';
 class DioOptions {
   DioOptions({
     required this.ddosProtectionHandler,
-    required this.baseUrl,
     required this.userAgent,
     required this.authConfig,
     required this.loggerService,
     required this.booruDb,
-    required this.proxySettings,
     required this.cronetAvailable,
-  });
+  }) : baseUrl = authConfig.url,
+       proxySettings = authConfig.proxySettings;
 
   final HttpProtectionHandler ddosProtectionHandler;
   final String baseUrl;

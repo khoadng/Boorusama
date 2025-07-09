@@ -9,7 +9,7 @@ import '../../core/http/providers.dart';
 final animePicturesClientProvider =
     Provider.family<AnimePicturesClient, BooruConfigAuth>(
       (ref, config) {
-        final dio = ref.watch(dioProvider(config));
+        final dio = ref.watch(defaultDioProvider(config));
 
         return AnimePicturesClient(
           dio: dio,

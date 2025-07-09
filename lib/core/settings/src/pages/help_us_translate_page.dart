@@ -23,7 +23,7 @@ class HelpUseTranslatePage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final appInfo = ref.watch(appInfoProvider);
     final config = ref.watchConfigAuth;
-    final dio = ref.watch(dioProvider(config));
+    final dio = ref.watch(dioForWidgetProvider(config));
 
     return Scaffold(
       appBar: AppBar(

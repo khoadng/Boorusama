@@ -8,7 +8,7 @@ import '../../core/http/providers.dart';
 
 final hybooruClientProvider = Provider.family<HybooruClient, BooruConfigAuth>(
   (ref, config) {
-    final dio = ref.watch(dioProvider(config));
+    final dio = ref.watch(defaultDioProvider(config));
 
     return HybooruClient(
       dio: dio,

@@ -53,7 +53,7 @@ class BooruImage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfigAuth;
-    final dio = ref.watch(dioProvider(config));
+    final dio = ref.watch(dioForWidgetProvider(config));
     final imageQualitySettings = ref.watch(
       imageListingSettingsProvider.select((value) => value.imageQuality),
     );
@@ -79,7 +79,7 @@ class BooruImage extends ConsumerWidget {
       forceLoadPlaceholder: forceLoadPlaceholder,
       headers: {
         AppHttpHeaders.userAgentHeader: ref.watch(
-          userAgentProvider(config.booruType),
+          userAgentProvider(config),
         ),
         ...ref.watch(extraHttpHeaderProvider(config)),
         ...ref.watch(cachedBypassDdosHeadersProvider(config.url)),

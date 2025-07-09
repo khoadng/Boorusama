@@ -74,7 +74,7 @@ class PostMedia<T extends Post> extends ConsumerWidget {
                         sound: ref.isGlobalVideoSoundOn,
                         playbackSpeed: ref.watchPlaybackSpeed(post.videoUrl),
                         userAgent: ref.watch(
-                          userAgentProvider(config.booruType),
+                          userAgentProvider(config),
                         ),
                       )
                     : BooruVideo(

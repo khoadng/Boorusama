@@ -41,7 +41,7 @@ class SzurubooruRepository extends BooruRepositoryDefault {
 
   @override
   BooruSiteValidator? siteValidator(BooruConfigAuth config) {
-    final dio = ref.watch(dioProvider(config));
+    final dio = ref.watch(defaultDioProvider(config));
 
     return () => SzurubooruClient(
       baseUrl: config.url,

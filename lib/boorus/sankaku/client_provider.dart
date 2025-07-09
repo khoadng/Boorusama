@@ -9,7 +9,7 @@ import 'provider.dart';
 
 final sankakuClientProvider = Provider.family<SankakuClient, BooruConfigAuth>(
   (ref, config) {
-    final dio = ref.watch(dioProvider(config));
+    final dio = ref.watch(defaultDioProvider(config));
     final booru = ref.watch(sankakuProvider);
 
     return SankakuClient.extended(

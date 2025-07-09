@@ -10,7 +10,7 @@ final hydrusClientProvider = Provider.family<HydrusClient, BooruConfigAuth>((
   ref,
   config,
 ) {
-  final dio = ref.watch(dioProvider(config));
+  final dio = ref.watch(defaultDioProvider(config));
 
   return HydrusClient(
     dio: dio,

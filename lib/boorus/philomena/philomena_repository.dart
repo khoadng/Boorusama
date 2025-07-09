@@ -37,7 +37,7 @@ class PhilomenaRepository extends BooruRepositoryDefault {
 
   @override
   BooruSiteValidator? siteValidator(BooruConfigAuth config) {
-    final dio = ref.watch(dioProvider(config));
+    final dio = ref.watch(defaultDioProvider(config));
 
     return () => PhilomenaClient(
       baseUrl: config.url,

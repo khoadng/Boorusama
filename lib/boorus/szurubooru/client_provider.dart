@@ -9,7 +9,7 @@ import '../../core/http/providers.dart';
 final szurubooruClientProvider =
     Provider.family<SzurubooruClient, BooruConfigAuth>(
       (ref, config) {
-        final dio = ref.watch(dioProvider(config));
+        final dio = ref.watch(defaultDioProvider(config));
 
         return SzurubooruClient(
           dio: dio,

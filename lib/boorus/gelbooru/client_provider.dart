@@ -8,7 +8,7 @@ import '../../core/http/providers.dart';
 
 final gelbooruClientProvider = Provider.family<GelbooruClient, BooruConfigAuth>(
   (ref, config) {
-    final dio = ref.watch(dioProvider(config));
+    final dio = ref.watch(defaultDioProvider(config));
 
     return GelbooruClient.custom(
       baseUrl: config.url,

@@ -72,7 +72,7 @@ class AnimePicturesRepository extends BooruRepositoryDefault {
 
   @override
   BooruSiteValidator? siteValidator(BooruConfigAuth config) {
-    final dio = ref.watch(dioProvider(config));
+    final dio = ref.watch(defaultDioProvider(config));
 
     return () => AnimePicturesClient(
       baseUrl: config.url,
