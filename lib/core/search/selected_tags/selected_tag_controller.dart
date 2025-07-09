@@ -14,15 +14,15 @@ import 'tag_search_item.dart';
 class SelectedTagController extends ValueNotifier<List<TagSearchItem>> {
   SelectedTagController({
     required MetatagExtractor? metatagExtractor,
-  })  : _tagSet = SearchTagSet(metatagExtractor: metatagExtractor),
-        super([]);
+  }) : _tagSet = SearchTagSet(metatagExtractor: metatagExtractor),
+       super([]);
 
   SelectedTagController.fromBooruBuilder({
     required BooruBuilder? builder,
     required TagInfo tagInfo,
   }) : this(
-          metatagExtractor: builder?.metatagExtractorBuilder?.call(tagInfo),
-        );
+         metatagExtractor: builder?.metatagExtractorBuilder?.call(tagInfo),
+       );
 
   final SearchTagSet _tagSet;
 

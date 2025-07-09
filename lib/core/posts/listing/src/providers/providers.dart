@@ -10,22 +10,22 @@ import '../types/grid_thumbnail_url_generator_default.dart';
 
 final gridThumbnailSettingsProvider =
     Provider.family<GridThumbnailSettings, BooruConfigAuth>((ref, config) {
-  final (quality, animatedState) = ref.watch(
-    imageListingSettingsProvider.select(
-      (value) => (value.imageQuality, value.animatedPostsDefaultState),
-    ),
-  );
+      final (quality, animatedState) = ref.watch(
+        imageListingSettingsProvider.select(
+          (value) => (value.imageQuality, value.animatedPostsDefaultState),
+        ),
+      );
 
-  return GridThumbnailSettings(
-    imageQuality: quality,
-    animatedPostsDefaultState: animatedState,
-  );
-});
+      return GridThumbnailSettings(
+        imageQuality: quality,
+        animatedPostsDefaultState: animatedState,
+      );
+    });
 
 final gridThumbnailUrlGeneratorProvider =
     Provider.family<GridThumbnailUrlGenerator, BooruConfigAuth>((ref, config) {
-  final booruRepo = ref.watch(booruRepoProvider(config));
+      final booruRepo = ref.watch(booruRepoProvider(config));
 
-  return booruRepo?.gridThumbnailUrlGenerator() ??
-      const DefaultGridThumbnailUrlGenerator();
-});
+      return booruRepo?.gridThumbnailUrlGenerator() ??
+          const DefaultGridThumbnailUrlGenerator();
+    });

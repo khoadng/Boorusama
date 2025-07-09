@@ -11,9 +11,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../../foundation/display.dart';
-import '../../../../foundation/mobile.dart';
-import '../../../../foundation/platform.dart';
+import '../../../../../foundation/display.dart';
+import '../../../../../foundation/mobile.dart';
+import '../../../../../foundation/platform.dart';
 import '../../../../images/booru_image.dart';
 import '../../../../widgets/widgets.dart';
 import '../types/post.dart';
@@ -30,13 +30,13 @@ class OriginalImagePage extends ConsumerStatefulWidget {
   OriginalImagePage.post(
     Post post, {
     super.key,
-  })  : imageUrl = post.originalImageUrl,
-        aspectRatio = post.aspectRatio,
-        contentSize = Size(
-          post.width,
-          post.height,
-        ),
-        id = post.id;
+  }) : imageUrl = post.originalImageUrl,
+       aspectRatio = post.aspectRatio,
+       contentSize = Size(
+         post.width,
+         post.height,
+       ),
+       id = post.id;
 
   final String imageUrl;
   final int id;

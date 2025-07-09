@@ -5,11 +5,12 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
-import '../../../foundation/iap/iap.dart';
-import '../../../foundation/url_launcher.dart';
-import '../../../info/app_info.dart';
+import '../../../../foundation/iap/iap.dart';
+import '../../../../foundation/info/app_info.dart';
+import '../../../../foundation/url_launcher.dart';
 import '../../../widgets/widgets.dart';
 import '../internal_widgets/subscription_plan_tile.dart';
 import '../providers/premium_purchase_provider.dart';
@@ -59,7 +60,9 @@ class _SubscriptionPlans extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return ref.watch(premiumPurchaseProvider).when(
+    return ref
+        .watch(premiumPurchaseProvider)
+        .when(
           data: (state) => _buildPlans(context, state),
           error: (e, st) => SafeArea(
             child: Container(
@@ -204,7 +207,9 @@ class _PurchaseButton extends ConsumerWidget {
         style: FilledButton.styleFrom(
           minimumSize: const Size(0, 48),
         ),
-        onPressed: ref.watch(packagePurchaseProvider).maybeWhen(
+        onPressed: ref
+            .watch(packagePurchaseProvider)
+            .maybeWhen(
               orElse: () => () async {
                 await notifier.purchase();
 
@@ -212,8 +217,10 @@ class _PurchaseButton extends ConsumerWidget {
               },
               loading: () => null,
             ),
-        child: ref.watch(packagePurchaseProvider).maybeWhen(
-              orElse: () => const Text('Subscribe'),
+        child: ref
+            .watch(packagePurchaseProvider)
+            .maybeWhen(
+              orElse: () => Text('Subscribe'.hc),
               loading: () => SizedBox(
                 width: 16,
                 height: 16,
@@ -232,7 +239,9 @@ class _BackButtonBlocker extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return ref.watch(packagePurchaseProvider).maybeWhen(
+    return ref
+        .watch(packagePurchaseProvider)
+        .maybeWhen(
           orElse: () => const SizedBox.shrink(),
           loading: () => const PopScope(
             canPop: false,
@@ -259,10 +268,10 @@ class _LegalDisclaimerText extends ConsumerWidget {
         text: TextSpan(
           text: 'By subscribing, you agree to our ',
           style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                fontSize: 11,
-                fontWeight: FontWeight.w400,
-                color: colorScheme.onSurface.withValues(alpha: 0.6),
-              ),
+            fontSize: 11,
+            fontWeight: FontWeight.w400,
+            color: colorScheme.onSurface.withValues(alpha: 0.6),
+          ),
           children: [
             TextSpan(
               text: 'Terms of Service',
@@ -277,10 +286,10 @@ class _LegalDisclaimerText extends ConsumerWidget {
             TextSpan(
               text: ' and ',
               style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w400,
-                    color: colorScheme.onSurface.withValues(alpha: 0.6),
-                  ),
+                fontSize: 11,
+                fontWeight: FontWeight.w400,
+                color: colorScheme.onSurface.withValues(alpha: 0.6),
+              ),
             ),
             TextSpan(
               text: 'Privacy Policy',
@@ -313,7 +322,9 @@ class _PurchaseInProgressUIBlocker extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return AbsorbPointer(
-      absorbing: ref.watch(packagePurchaseProvider).maybeWhen(
+      absorbing: ref
+          .watch(packagePurchaseProvider)
+          .maybeWhen(
             loading: () => true,
             orElse: () => false,
           ),

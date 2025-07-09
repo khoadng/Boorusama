@@ -7,7 +7,7 @@ import 'package:hive/hive.dart';
 
 // Project imports:
 import '../../../../boorus/booru/booru.dart';
-import '../../../../downloads/filename.dart';
+import '../../../../downloads/filename/types.dart';
 import '../types/booru_config.dart';
 import '../types/booru_config_data.dart';
 import '../types/booru_config_repository.dart';
@@ -20,18 +20,18 @@ class HiveBooruConfigRepository implements BooruConfigRepository {
   final Box<String> box;
 
   static String defaultValue() => jsonEncode(
-        BooruConfigData.anonymous(
-          booru: BooruType.danbooru,
-          booruHint: BooruType.danbooru,
-          name: 'Default profile',
-          filter: BooruConfigRatingFilter.none,
-          url: 'https://safebooru.donmai.us/',
-          customDownloadFileNameFormat: kBoorusamaCustomDownloadFileNameFormat,
-          customBulkDownloadFileNameFormat:
-              kBoorusamaBulkDownloadCustomFileNameFormat,
-          imageDetaisQuality: null,
-        ),
-      );
+    BooruConfigData.anonymous(
+      booru: BooruType.danbooru,
+      booruHint: BooruType.danbooru,
+      name: 'Default profile',
+      filter: BooruConfigRatingFilter.none,
+      url: 'https://safebooru.donmai.us/',
+      customDownloadFileNameFormat: kBoorusamaCustomDownloadFileNameFormat,
+      customBulkDownloadFileNameFormat:
+          kBoorusamaBulkDownloadCustomFileNameFormat,
+      imageDetaisQuality: null,
+    ),
+  );
 
   @override
   Future<BooruConfig?> add(BooruConfigData booruConfigData) async {

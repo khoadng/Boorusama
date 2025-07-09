@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../core/blacklists/widgets.dart';
@@ -20,13 +20,16 @@ class DanbooruBlacklistedTagsPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfigAuth;
-    final notifier =
-        ref.watch(danbooruBlacklistedTagsProvider(config).notifier);
+    final notifier = ref.watch(
+      danbooruBlacklistedTagsProvider(config).notifier,
+    );
 
-    return ref.watch(danbooruBlacklistedTagsProvider(config)).when(
+    return ref
+        .watch(danbooruBlacklistedTagsProvider(config))
+        .when(
           data: (tags) {
             return BlacklistedTagsViewScaffold(
-              title: 'blacklisted_tags.blacklisted_tags'.tr(),
+              title: context.t.blacklisted_tags.blacklisted_tags,
               actions: [
                 if (tags != null)
                   ImportExportTagButton(
@@ -60,7 +63,7 @@ class DanbooruBlacklistedTagsPage extends ConsumerWidget {
               },
             );
           },
-          error: (e, __) => Scaffold(
+          error: (e, _) => Scaffold(
             body: Center(
               child: Text('Error: $e'),
             ),

@@ -27,35 +27,36 @@ class DanbooruPostDetailsPage extends StatelessWidget {
     final data = PostDetails.of<DanbooruPost>(context);
     final posts = data.posts;
     final detailsController = data.controller;
+    final pageViewController = data.pageViewController;
 
     return DanbooruCreatorPreloader(
       preloadable: PostCreatorsPreloadable.fromPosts(posts),
       child: Consumer(
         builder: (context, ref, child) {
           final config = ref.watchConfigAuth;
+          final configViewer = ref.watchConfigViewer;
+          final post = InheritedPost.of<DanbooruPost>(context);
 
           return PostDetailsPageScaffold(
+            pageViewController: pageViewController,
             controller: detailsController,
             posts: posts,
-            viewerConfig: ref.watchConfigViewer,
+            viewerConfig: configViewer,
             authConfig: config,
             gestureConfig: ref.watchPostGestures,
-            topRightButtonsBuilder: (controller) {
-              final post = InheritedPost.of<DanbooruPost>(context);
-
-              return [
-                NoteActionButtonWithProvider(
-                  post: post,
-                  config: config,
-                ),
-                const SizedBox(width: 8),
-                DanbooruMoreActionButton(
-                  post: post,
-                  config: config,
-                  onStartSlideshow: () => controller.startSlideshow(),
-                ),
-              ];
-            },
+            topRightButtons: [
+              NoteActionButtonWithProvider(
+                post: post,
+                config: config,
+              ),
+              const SizedBox(width: 8),
+              DanbooruMoreActionButton(
+                post: post,
+                config: config,
+                configViewer: configViewer,
+                onStartSlideshow: () => pageViewController.startSlideshow(),
+              ),
+            ],
           );
         },
       ),
@@ -80,8 +81,8 @@ class DanbooruPostStatsTile extends ConsumerWidget {
       favCount: post.favCount,
       totalComments: commentCount ?? 0,
       votePercentText: _generatePercentText(post),
-      onScoreTap: () => goToPostVotesDetails(context, post),
-      onFavCountTap: () => goToPostFavoritesDetails(context, post),
+      onScoreTap: () => goToPostVotesDetails(ref, post),
+      onFavCountTap: () => goToPostFavoritesDetails(ref, post),
       onTotalCommentsTap: () => goToCommentPage(context, ref, post.id),
     );
   }

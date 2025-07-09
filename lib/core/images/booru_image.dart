@@ -8,10 +8,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
+import '../../foundation/info/device_info.dart';
 import '../configs/ref.dart';
 import '../http/http.dart';
 import '../http/providers.dart';
-import '../info/device_info.dart';
 import '../settings/providers.dart';
 import '../settings/settings.dart';
 import 'providers.dart';
@@ -58,8 +58,9 @@ class BooruImage extends ConsumerWidget {
       imageListingSettingsProvider.select((value) => value.imageQuality),
     );
     final fallbackAspectRatio = ref.watch(
-      imageListingSettingsProvider
-          .select((value) => value.imageGridAspectRatio),
+      imageListingSettingsProvider.select(
+        (value) => value.imageGridAspectRatio,
+      ),
     );
     final deviceInfo = ref.watch(deviceInfoProvider);
 
@@ -77,8 +78,9 @@ class BooruImage extends ConsumerWidget {
       isLargeImage: imageQualitySettings != ImageQuality.low,
       forceLoadPlaceholder: forceLoadPlaceholder,
       headers: {
-        AppHttpHeaders.userAgentHeader:
-            ref.watch(userAgentProvider(config.booruType)),
+        AppHttpHeaders.userAgentHeader: ref.watch(
+          userAgentProvider(config.booruType),
+        ),
         ...ref.watch(extraHttpHeaderProvider(config)),
         ...ref.watch(cachedBypassDdosHeadersProvider(config.url)),
       },
@@ -144,7 +146,8 @@ class BooruRawImage extends StatelessWidget {
         builder: (context, constraints) {
           final width = constraints.maxWidth.roundToDouble();
           final height = constraints.maxHeight.roundToDouble();
-          final fit = this.fit ??
+          final fit =
+              this.fit ??
               // If the image is larger than the layout, just fill it to prevent distortion
               (forceFill &&
                       _shouldForceFill(
@@ -155,8 +158,8 @@ class BooruRawImage extends StatelessWidget {
                   ? BoxFit.fill
                   // Cover is for the standard grid that crops the image to fit the aspect ratio
                   : forceCover
-                      ? BoxFit.cover
-                      : BoxFit.contain);
+                  ? BoxFit.cover
+                  : BoxFit.contain);
           final borderRadius = this.borderRadius ?? _defaultRadius;
 
           return imageUrl.isNotEmpty
@@ -174,38 +177,39 @@ class BooruRawImage extends StatelessWidget {
                   platform: Theme.of(context).platform,
                   androidVersion: androidVersion,
                   cacheManager: imageCacheManager,
-                  placeholderWidget: placeholderWidget ??
+                  placeholderWidget:
+                      placeholderWidget ??
                       placeholderUrl.toOption().fold(
-                            () => imagePlaceHolder,
-                            (url) => Builder(
-                              builder: (context) {
-                                final hasNetworkPlaceholder =
-                                    _shouldLoadPlaceholderUrl(
+                        () => imagePlaceHolder,
+                        (url) => Builder(
+                          builder: (context) {
+                            final hasNetworkPlaceholder =
+                                _shouldLoadPlaceholderUrl(
                                   placeholderUrl: url,
                                   imageUrl: imageUrl,
                                   isLargeImage: isLargeImage,
                                   forceLoadPlaceholder: forceLoadPlaceholder,
                                 );
 
-                                return hasNetworkPlaceholder
-                                    ? ExtendedImage.network(
-                                        url,
-                                        dio: dio,
-                                        headers: headers,
-                                        borderRadius: borderRadius,
-                                        width: width,
-                                        height: height,
-                                        fit: fit,
-                                        fetchStrategy: _fetchStrategy,
-                                        placeholderWidget: imagePlaceHolder,
-                                        platform: Theme.of(context).platform,
-                                        androidVersion: androidVersion,
-                                        cacheManager: imageCacheManager,
-                                      )
-                                    : imagePlaceHolder;
-                              },
-                            ),
-                          ),
+                            return hasNetworkPlaceholder
+                                ? ExtendedImage.network(
+                                    url,
+                                    dio: dio,
+                                    headers: headers,
+                                    borderRadius: borderRadius,
+                                    width: width,
+                                    height: height,
+                                    fit: fit,
+                                    fetchStrategy: _fetchStrategy,
+                                    placeholderWidget: imagePlaceHolder,
+                                    platform: Theme.of(context).platform,
+                                    androidVersion: androidVersion,
+                                    cacheManager: imageCacheManager,
+                                  )
+                                : imagePlaceHolder;
+                          },
+                        ),
+                      ),
                   errorWidget: ErrorPlaceholder(
                     borderRadius: borderRadius,
                   ),
@@ -276,10 +280,9 @@ class ImagePlaceHolder extends StatelessWidget {
       width: width,
       height: height,
       decoration: BoxDecoration(
-        color: Theme.of(context)
-            .colorScheme
-            .surfaceContainerHigh
-            .withValues(alpha: 0.5),
+        color: Theme.of(
+          context,
+        ).colorScheme.surfaceContainerHigh.withValues(alpha: 0.5),
         borderRadius: borderRadius ?? _defaultRadius,
       ),
       child: const SizedBox.shrink(),

@@ -8,12 +8,13 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../analytics.dart';
+import '../../../../foundation/info/package_info.dart';
+import '../../../../foundation/loggers/providers.dart';
+import '../../../../foundation/toast.dart';
+import '../../../../foundation/version.dart';
+import '../../../analytics/providers.dart';
+import '../../../analytics/types.dart';
 import '../../../backups/import/backward_import_alert_dialog.dart';
-import '../../../foundation/loggers/providers.dart';
-import '../../../foundation/toast.dart';
-import '../../../foundation/version.dart';
-import '../../../info/package_info.dart';
 import '../data/providers.dart';
 import '../data/settings_io_handler.dart';
 import '../types/settings.dart';
@@ -57,7 +58,9 @@ class SettingsNotifier extends Notifier<Settings> {
         final ns = settings.props[i];
 
         if (cs != ns) {
-          ref.read(loggerProvider).logI(
+          ref
+              .read(loggerProvider)
+              .logI(
                 'Settings',
                 'Settings updated: ${cs.runtimeType} $cs -> $ns',
               );
@@ -65,7 +68,9 @@ class SettingsNotifier extends Notifier<Settings> {
       }
       state = settings;
 
-      ref.read(analyticsProvider).whenData(
+      ref
+          .read(analyticsProvider)
+          .whenData(
             (a) => a?.logSettingsChangedEvent(
               oldValue: currentSettings,
               newValue: settings,
@@ -93,8 +98,9 @@ class SettingsNotifier extends Notifier<Settings> {
             (r) async {
               //FIXME: Duplicate code, abstract import with check
               final appVersion = ref.read(appVersionProvider);
-              if (appVersion
-                  .significantlyLowerThan(r.exportData.exportVersion)) {
+              if (appVersion.significantlyLowerThan(
+                r.exportData.exportVersion,
+              )) {
                 final shouldImport = await showBackwardImportAlertDialog(
                   context: context,
                   data: r.exportData,

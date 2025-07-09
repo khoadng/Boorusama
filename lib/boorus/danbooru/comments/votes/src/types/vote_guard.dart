@@ -8,21 +8,20 @@ import 'danbooru_comment_vote.dart';
 
 extension CommentVotesNotifierX on CommentVotesNotifier {
   Future<void> guardUpvote(WidgetRef ref, int commentId) async => guardLogin(
-        ref,
-        () async => upvote(commentId),
-      );
+    ref,
+    () async => upvote(commentId),
+  );
 
   Future<void> guardDownvote(WidgetRef ref, int commentId) async => guardLogin(
-        ref,
-        () async => downvote(commentId),
-      );
+    ref,
+    () async => downvote(commentId),
+  );
 
   Future<void> guardUnvote(
     WidgetRef ref,
     DanbooruCommentVote? commentVote,
-  ) async =>
-      guardLogin(
-        ref,
-        () async => unvote(commentVote),
-      );
+  ) async => guardLogin(
+    ref,
+    () async => unvote(commentVote),
+  );
 }

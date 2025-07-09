@@ -4,17 +4,17 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
+import '../../../../foundation/info/device_info.dart';
 import '../../../configs/config/widgets.dart';
 import '../../../configs/create/routes.dart';
 import '../../../configs/manage/providers.dart';
 import '../../../configs/ref.dart';
-import '../../../downloads/downloader.dart';
+import '../../../downloads/configs/widgets.dart';
+import '../../../downloads/downloader/types.dart';
 import '../../../downloads/l10n.dart';
-import '../../../downloads/widgets.dart';
-import '../../../info/device_info.dart';
 import '../../widgets.dart';
 import '../providers/settings_notifier.dart';
 import '../providers/settings_provider.dart';
@@ -37,7 +37,7 @@ class _DownloadPageState extends ConsumerState<DownloadPage> {
     final notifer = ref.watch(settingsNotifierProvider.notifier);
 
     return SettingsPageScaffold(
-      title: const Text('settings.download.title').tr(),
+      title: Text(context.t.settings.download.title),
       children: [
         DownloadSettingsInteractionBlocker(
           child: DownloadFolderSelectorSection(
@@ -49,20 +49,26 @@ class _DownloadPageState extends ConsumerState<DownloadPage> {
         ),
         const SizedBox(height: 12),
         SettingsTile(
-          title: const Text('settings.download.quality').tr(),
+          title: Text(context.t.settings.download.quality),
           selectedOption: settings.downloadQuality,
           items: DownloadQuality.values,
           onChanged: (value) =>
               notifer.updateSettings(settings.copyWith(downloadQuality: value)),
-          optionBuilder: (value) =>
-              Text('settings.download.qualities.${value.name}').tr(),
+          optionBuilder: (value) => switch (value) {
+            DownloadQuality.original =>
+              Text(context.t.settings.download.qualities.original),
+            DownloadQuality.sample =>
+              Text(context.t.settings.download.qualities.sample),
+            DownloadQuality.preview =>
+              Text(context.t.settings.download.qualities.preview),
+          },
         ),
         const SizedBox(height: 4),
         ListTile(
-          title: const Text(DownloadTranslations.skipDownloadIfExists).tr(),
-          subtitle: const Text(
+          title: Text(DownloadTranslations.skipDownloadIfExists),
+          subtitle: Text(
             DownloadTranslations.skipDownloadIfExistsExplanation,
-          ).tr(),
+          ),
           trailing: Switch(
             value: settings.skipDownloadIfExists,
             onChanged: (value) async {
@@ -97,8 +103,9 @@ class DownloadSettingsInteractionBlocker extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final hasCustomDownload = ref.watch(
-      currentBooruConfigProvider
-          .select((value) => value.hasCustomDownloadLocation),
+      currentBooruConfigProvider.select(
+        (value) => value.hasCustomDownloadLocation,
+      ),
     );
     final config = ref.watchConfig;
     final theme = Theme.of(context);
@@ -122,7 +129,7 @@ class DownloadSettingsInteractionBlocker extends ConsumerWidget {
               recognizer: TapGestureRecognizer()
                 ..onTap = () {
                   goToUpdateBooruConfigPage(
-                    context,
+                    ref,
                     config: config,
                     initialTab: 'download',
                   );

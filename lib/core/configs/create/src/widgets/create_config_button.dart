@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../config/types.dart';
@@ -49,7 +49,9 @@ class CreateNewBooruConfigButton extends ConsumerWidget {
       builder: (data) => TextButton(
         onPressed: canSubmit(data) && data.name.isNotEmpty
             ? () {
-                ref.read(booruConfigProvider.notifier).addOrUpdate(
+                ref
+                    .read(booruConfigProvider.notifier)
+                    .addOrUpdate(
                       id: editId,
                       newConfig: data,
                       initialData: config,
@@ -58,7 +60,7 @@ class CreateNewBooruConfigButton extends ConsumerWidget {
                 Navigator.of(context).pop();
               }
             : null,
-        child: const Text('favorite_groups.create').tr(),
+        child: Text(context.t.favorite_groups.create),
       ),
     );
   }
@@ -80,7 +82,9 @@ class UpdateBooruConfigButton extends ConsumerWidget {
       builder: (data) => TextButton(
         onPressed: canSubmit(data)
             ? () {
-                ref.read(booruConfigProvider.notifier).addOrUpdate(
+                ref
+                    .read(booruConfigProvider.notifier)
+                    .addOrUpdate(
                       id: editId,
                       newConfig: data,
                     );
@@ -88,7 +92,7 @@ class UpdateBooruConfigButton extends ConsumerWidget {
                 Navigator.of(context).pop();
               }
             : null,
-        child: const Text('Save'),
+        child: Text('Save'.hc),
       ),
     );
   }

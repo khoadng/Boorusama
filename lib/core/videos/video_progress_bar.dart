@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
 // Project imports:
-import '../foundation/platform.dart';
+import '../../foundation/platform.dart';
 
 class VideoProgressBar extends StatefulWidget {
   const VideoProgressBar({
@@ -108,21 +108,21 @@ class _VideoProgressBarState extends State<VideoProgressBar> {
 
     return ValueListenableBuilder(
       valueListenable: isHovering,
-      builder: (_, hovering, __) => ValueListenableBuilder(
+      builder: (_, hovering, _) => ValueListenableBuilder(
         valueListenable: isDragging,
-        builder: (_, dragging, __) {
+        builder: (_, dragging, _) {
           final barHeight = isDesktop
               ? hovering
-                  ? widget.barHeight * 1.5
-                  : widget.barHeight
+                    ? widget.barHeight * 1.5
+                    : widget.barHeight
               : dragging
-                  ? widget.barHeight * 1.2
-                  : widget.barHeight;
+              ? widget.barHeight * 1.2
+              : widget.barHeight;
 
           return RepaintBoundary(
             child: ValueListenableBuilder(
               valueListenable: isIndeterminate,
-              builder: (_, indeterminate, __) => indeterminate
+              builder: (_, indeterminate, _) => indeterminate
                   ? Center(
                       child: SizedBox(
                         height: barHeight,
@@ -140,13 +140,13 @@ class _VideoProgressBarState extends State<VideoProgressBar> {
                         barHeight: barHeight,
                         handleHeight: isDesktop
                             ? !hovering
-                                ? 0
-                                : dragging
-                                    ? widget.handleHeight * 1.2
-                                    : widget.handleHeight
+                                  ? 0
+                                  : dragging
+                                  ? widget.handleHeight * 1.2
+                                  : widget.handleHeight
                             : !dragging
-                                ? widget.handleHeight
-                                : widget.handleHeight * 1.5,
+                            ? widget.handleHeight
+                            : widget.handleHeight * 1.5,
                         drawShadow: widget.drawShadow,
                         backgroundColor: widget.backgroundColor,
                         playedColor: widget.playedColor,
@@ -225,8 +225,9 @@ class _ProgressBarPainter extends CustomPainter {
       return;
     }
     final playedPartPercent = position.inMilliseconds / duration.inMilliseconds;
-    final playedPart =
-        playedPartPercent > 1 ? size.width : playedPartPercent * size.width;
+    final playedPart = playedPartPercent > 1
+        ? size.width
+        : playedPartPercent * size.width;
     for (final range in buffered) {
       final start = range.startFraction(duration) * size.width;
       final end = range.endFraction(duration) * size.width;

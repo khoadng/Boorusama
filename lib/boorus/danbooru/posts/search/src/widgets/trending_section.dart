@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../../../core/configs/ref.dart';
@@ -23,7 +23,9 @@ class TrendingSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfigFilter;
 
-    return ref.watch(top15TrendingTagsProvider(config)).when(
+    return ref
+        .watch(top15TrendingTagsProvider(config))
+        .when(
           data: (tags) => Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -53,10 +55,10 @@ class TrendingSection extends ConsumerWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Text(
-        'search.trending'.tr().toUpperCase(),
+        context.t.search.trending.toUpperCase(),
         style: Theme.of(context).textTheme.titleSmall?.copyWith(
-              fontWeight: FontWeight.w700,
-            ),
+          fontWeight: FontWeight.w700,
+        ),
       ),
     );
   }

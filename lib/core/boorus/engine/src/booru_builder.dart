@@ -36,6 +36,8 @@ abstract class BooruBuilder {
   Map<CustomHomeViewKey, CustomHomeDataBuilder> get customHomeViewBuilders;
 
   PostDetailsUIBuilder get postDetailsUIBuilder;
+
+  ViewTagListBuilder get viewTagListBuilder;
 }
 
 extension BooruBuilderFeatureCheck on BooruBuilder {

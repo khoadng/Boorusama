@@ -37,8 +37,8 @@ class _PoolSearchPageState extends ConsumerState<PoolSearchPage> {
       ),
       body: switch (mode) {
         PoolSearchMode.suggestion => PoolSearchSuggestionView(
-            textEditingController: textEditingController,
-          ),
+          textEditingController: textEditingController,
+        ),
         PoolSearchMode.result => const PoolSearchResultView(),
       },
     );

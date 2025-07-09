@@ -27,7 +27,7 @@ enum QueryType {
 }
 
 QueryType? parseQueryType(String? type) => switch (type) {
-      'simple' => QueryType.simple,
-      'list' => QueryType.list,
-      _ => null
-    };
+  'simple' => QueryType.simple,
+  'list' => QueryType.list,
+  _ => null,
+};

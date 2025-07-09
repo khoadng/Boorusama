@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
 import 'package:rxdart/rxdart.dart';
@@ -14,8 +15,8 @@ import 'package:rxdart/rxdart.dart';
 // Project imports:
 import '../../../../../../core/search/search/routes.dart';
 import '../../../../../../core/theme.dart';
-import '../../../../../../core/utils/stream/text_editing_controller_utils.dart';
 import '../../../../../../core/widgets/widgets.dart';
+import '../../../../../../foundation/utils/stream/text_editing_controller_utils.dart';
 import '../../../../syntax/providers.dart';
 import '../types/saved_search.dart';
 
@@ -99,7 +100,7 @@ class _SavedSearchSheetState extends ConsumerState<SavedSearchSheet> {
           Padding(
             padding: const EdgeInsets.only(top: 8, bottom: 8),
             child: Text(
-              widget.title ?? 'saved_search.add_saved_search'.tr(),
+              widget.title ?? context.t.saved_search.add_saved_search,
               style: textTheme.titleLarge,
             ),
           ),
@@ -113,7 +114,7 @@ class _SavedSearchSheetState extends ConsumerState<SavedSearchSheet> {
             maxLines: 5,
             textInputAction: TextInputAction.done,
             decoration: InputDecoration(
-              hintText: 'saved_search.saved_search_query'.tr(),
+              hintText: context.t.saved_search.saved_search_query,
               suffixIcon: Material(
                 color: Colors.transparent,
                 child: InkWell(
@@ -123,8 +124,10 @@ class _SavedSearchSheetState extends ConsumerState<SavedSearchSheet> {
                       context,
                       ref: ref,
                       onSelected: (tag, _) {
-                        final baseOffset =
-                            max(0, queryTextController.selection.baseOffset);
+                        final baseOffset = max(
+                          0,
+                          queryTextController.selection.baseOffset,
+                        );
                         queryTextController
                           ..text = queryTextController.text.addCharAtPosition(
                             tag,
@@ -158,7 +161,7 @@ class _SavedSearchSheetState extends ConsumerState<SavedSearchSheet> {
             maxLines: 2,
             textInputAction: TextInputAction.done,
             decoration: InputDecoration(
-              hintText: 'saved_search.saved_search_labels'.tr(),
+              hintText: context.t.saved_search.saved_search_labels,
               suffixIcon: ValueListenableBuilder(
                 valueListenable: labelsHasText,
                 builder: (context, hasText, _) => hasText
@@ -172,7 +175,7 @@ class _SavedSearchSheetState extends ConsumerState<SavedSearchSheet> {
           Container(
             margin: const EdgeInsets.all(8),
             child: Text(
-              'saved_search.saved_search_labels_description'.tr(),
+              context.t.saved_search.saved_search_labels_description,
               style: textTheme.titleSmall?.copyWith(
                 color: colorScheme.hintColor,
                 fontSize: 14,
@@ -197,7 +200,7 @@ class _SavedSearchSheetState extends ConsumerState<SavedSearchSheet> {
                   onPressed: () {
                     navigator.pop();
                   },
-                  child: const Text('generic.action.cancel').tr(),
+                  child: Text(context.t.generic.action.cancel),
                 ),
                 ValueListenableBuilder<bool>(
                   valueListenable: queryHasText,
@@ -217,7 +220,7 @@ class _SavedSearchSheetState extends ConsumerState<SavedSearchSheet> {
                             navigator.pop();
                           }
                         : null,
-                    child: const Text('generic.action.ok').tr(),
+                    child: Text(context.t.generic.action.ok),
                   ),
                 ),
               ],

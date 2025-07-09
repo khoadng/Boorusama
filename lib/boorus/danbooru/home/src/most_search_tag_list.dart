@@ -6,12 +6,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../core/configs/ref.dart';
+import '../../../../core/tags/tag/tag.dart';
 import '../../../../core/tags/tag/widgets.dart';
 import '../../../../core/theme/providers.dart';
-import '../../tags/tag/providers.dart';
 import '../../tags/tag/widgets.dart';
 import '../../tags/trending/providers.dart';
-import '../../tags/trending/trending.dart';
 
 class MostSearchTagList extends ConsumerWidget {
   const MostSearchTagList({
@@ -20,14 +19,16 @@ class MostSearchTagList extends ConsumerWidget {
     super.key,
   });
 
-  final void Function(Search search, bool value) onSelected;
+  final void Function(Tag search, bool value) onSelected;
   final String selected;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfigFilter;
 
-    return ref.watch(trendingTagsProvider(config)).when(
+    return ref
+        .watch(trendingTagsProvider(config))
+        .when(
           data: (searches) => searches.isNotEmpty
               ? SizedBox(
                   height: 40,
@@ -40,10 +41,10 @@ class MostSearchTagList extends ConsumerWidget {
                     itemCount: searches.length,
                     itemBuilder: (context, index) {
                       return DanbooruTagContextMenu(
-                        tag: searches[index].keyword,
+                        tag: searches[index].name,
                         child: _Chip(
                           search: searches[index],
-                          isSelected: selected == searches[index].keyword,
+                          isSelected: selected == searches[index].rawName,
                           onSelected: (value) =>
                               onSelected(searches[index], value),
                         ),
@@ -65,30 +66,25 @@ class _Chip extends ConsumerWidget {
     required this.search,
   });
 
-  final Search search;
+  final Tag search;
   final bool isSelected;
   final void Function(bool value) onSelected;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final colors =
-        ref.watch(danbooruTagCategoryProvider(search.keyword)).maybeWhen(
-              data: (data) => data != null
-                  ? ref.watch(
-                      chipColorsFromTagStringProvider(
-                        (ref.watchConfigAuth, data.name),
-                      ),
-                    )
-                  : null,
-              orElse: () => null,
-            );
+    final colors = ref.watch(
+      chipColorsFromTagStringProvider(
+        (ref.watchConfigAuth, search.category.name),
+      ),
+    );
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 4),
       child: ChoiceChip(
         showCheckmark: false,
         disabledColor: Theme.of(context).chipTheme.disabledColor,
-        backgroundColor: colors?.backgroundColor ??
+        backgroundColor:
+            colors?.backgroundColor ??
             Theme.of(context).chipTheme.backgroundColor,
         selectedColor: Theme.of(context).colorScheme.onSurface,
         selected: isSelected,
@@ -105,7 +101,7 @@ class _Chip extends ConsumerWidget {
         labelPadding: const EdgeInsets.all(1),
         visualDensity: VisualDensity.compact,
         label: Text(
-          search.keyword.replaceAll('_', ' '),
+          search.displayName,
           style: TextStyle(
             color: isSelected
                 ? Theme.of(context).colorScheme.surface

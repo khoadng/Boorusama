@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
@@ -40,7 +40,7 @@ class FavoriteGroupsPageInternal extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('favorite_groups.favorite_groups').tr(),
+        title: Text(context.t.favorite_groups.favorite_groups),
         actions: [
           IconButton(
             onPressed: () => goToFavoriteGroupCreatePage(context),
@@ -74,8 +74,9 @@ class FavoriteGroupsPageInternal extends ConsumerWidget {
                       subtitle: Row(
                         children: [
                           Text(
-                            'favorite_groups.group_item_counter'
-                                .plural(group.totalCount),
+                            context.t.favorite_groups.group_item_counter(
+                              n: group.totalCount,
+                            ),
                           ),
                           if (!group.isPublic)
                             const Padding(
@@ -83,11 +84,11 @@ class FavoriteGroupsPageInternal extends ConsumerWidget {
                               child: Text('|'),
                             ),
                           if (!group.isPublic)
-                            const Text('favorite_groups.private').tr(),
+                            Text(context.t.favorite_groups.private),
                         ],
                       ),
                       onTap: () {
-                        goToFavoriteGroupDetailsPage(context, group);
+                        goToFavoriteGroupDetailsPage(ref, group);
                       },
                       leading: _Preview(group: group),
                       trailing: IconButton(
@@ -128,8 +129,9 @@ class _Preview extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final preview = ref
-        .watch(danbooruFavoriteGroupPreviewProvider(group.postIds.firstOrNull));
+    final preview = ref.watch(
+      danbooruFavoriteGroupPreviewProvider(group.postIds.firstOrNull),
+    );
 
     return BooruImage(
       fit: BoxFit.cover,

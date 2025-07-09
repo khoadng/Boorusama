@@ -38,7 +38,8 @@ class BooruChip extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final colors = chipColors ??
+    final colors =
+        chipColors ??
         (color != null
             ? ref.watch(booruChipColorsProvider).fromColor(color)
             : null);
@@ -51,8 +52,8 @@ class BooruChip extends ConsumerWidget {
               padding: const EdgeInsets.only(left: 6, right: 2),
               backgroundColor: showBackground
                   ? !disabled
-                      ? colors?.backgroundColor
-                      : Colors.transparent
+                        ? colors?.backgroundColor
+                        : Colors.transparent
                   : Colors.transparent,
               shape: RoundedRectangleBorder(
                 borderRadius:
@@ -63,7 +64,7 @@ class BooruChip extends ConsumerWidget {
                       color: !disabled
                           ? colors?.borderColor ?? Colors.transparent
                           : colors?.borderColor.withAlpha(127) ??
-                              Colors.transparent,
+                                Colors.transparent,
                     )
                   : null,
             ),
@@ -79,8 +80,8 @@ class BooruChip extends ConsumerWidget {
                   contentPadding ?? const EdgeInsets.symmetric(horizontal: 8),
               backgroundColor: showBackground
                   ? !disabled
-                      ? colors?.backgroundColor
-                      : Colors.transparent
+                        ? colors?.backgroundColor
+                        : Colors.transparent
                   : Colors.transparent,
               shape: RoundedRectangleBorder(
                 borderRadius:
@@ -91,7 +92,7 @@ class BooruChip extends ConsumerWidget {
                       color: !disabled
                           ? colors?.borderColor ?? Colors.transparent
                           : colors?.borderColor.withAlpha(127) ??
-                              Colors.transparent,
+                                Colors.transparent,
                     )
                   : null,
             ),

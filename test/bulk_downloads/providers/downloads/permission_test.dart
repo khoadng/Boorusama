@@ -9,7 +9,7 @@ import 'package:boorusama/core/bulk_downloads/src/data/download_repository_sqlit
 import 'package:boorusama/core/bulk_downloads/src/providers/bulk_download_notifier.dart';
 import 'package:boorusama/core/bulk_downloads/src/types/bulk_download_error.dart';
 import 'package:boorusama/core/bulk_downloads/src/types/download_session.dart';
-import 'package:boorusama/core/foundation/permissions.dart';
+import 'package:boorusama/foundation/permissions.dart';
 import 'common.dart';
 
 final _options = DownloadTestConstants.defaultOptions;
@@ -46,10 +46,12 @@ void main() {
 
     test('should request permission when not already granted', () async {
       // Arrange
-      when(() => mediaPermissionManager.check())
-          .thenAnswer((_) async => PermissionStatus.denied);
-      when(() => mediaPermissionManager.request())
-          .thenAnswer((_) async => PermissionStatus.granted);
+      when(
+        () => mediaPermissionManager.check(),
+      ).thenAnswer((_) async => PermissionStatus.denied);
+      when(
+        () => mediaPermissionManager.request(),
+      ).thenAnswer((_) async => PermissionStatus.granted);
 
       final task = await repository.createTask(_options);
 
@@ -73,10 +75,12 @@ void main() {
 
     test('should fail when permission is denied', () async {
       // Arrange
-      when(() => mediaPermissionManager.check())
-          .thenAnswer((_) async => PermissionStatus.denied);
-      when(() => mediaPermissionManager.request())
-          .thenAnswer((_) async => PermissionStatus.denied);
+      when(
+        () => mediaPermissionManager.check(),
+      ).thenAnswer((_) async => PermissionStatus.denied);
+      when(
+        () => mediaPermissionManager.request(),
+      ).thenAnswer((_) async => PermissionStatus.denied);
 
       final task = await repository.createTask(_options);
 
@@ -101,8 +105,9 @@ void main() {
 
     test('should fail when permission is permanently denied', () async {
       // Arrange
-      when(() => mediaPermissionManager.check())
-          .thenAnswer((_) async => PermissionStatus.permanentlyDenied);
+      when(
+        () => mediaPermissionManager.check(),
+      ).thenAnswer((_) async => PermissionStatus.permanentlyDenied);
 
       final task = await repository.createTask(_options);
 

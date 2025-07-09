@@ -43,19 +43,19 @@ class CustomCachedNetworkAvifImage extends AvifImage {
     String? cacheKey,
     Duration? cacheMaxAge,
   }) : super(
-          image: CustomCachedNetworkAvifImageProvider(
-            url,
-            scale: scale,
-            overrideDurationMs: overrideDurationMs,
-            headers: headers,
-            cacheManager: cacheManager,
-            dio: dio,
-            cancelToken: cancelToken,
-            fetchStrategy: fetchStrategy,
-            cacheKey: cacheKey,
-            cacheMaxAge: cacheMaxAge,
-          ),
-        );
+         image: CustomCachedNetworkAvifImageProvider(
+           url,
+           scale: scale,
+           overrideDurationMs: overrideDurationMs,
+           headers: headers,
+           cacheManager: cacheManager,
+           dio: dio,
+           cancelToken: cancelToken,
+           fetchStrategy: fetchStrategy,
+           cacheKey: cacheKey,
+           cacheMaxAge: cacheMaxAge,
+         ),
+       );
 }
 
 class CustomCachedNetworkAvifImageProvider extends NetworkAvifImage {
@@ -81,7 +81,9 @@ class CustomCachedNetworkAvifImageProvider extends NetworkAvifImage {
 
   @override
   ImageStreamCompleter loadImage(
-      NetworkAvifImage key, ImageDecoderCallback decode) {
+    NetworkAvifImage key,
+    ImageDecoderCallback decode,
+  ) {
     final StreamController<ImageChunkEvent> chunkEvents =
         StreamController<ImageChunkEvent>();
 
@@ -108,8 +110,10 @@ class CustomCachedNetworkAvifImageProvider extends NetworkAvifImage {
   ) async {
     assert(key == this);
 
-    final cacheKey =
-        cacheManager.generateCacheKey(url, customKey: this.cacheKey);
+    final cacheKey = cacheManager.generateCacheKey(
+      url,
+      customKey: this.cacheKey,
+    );
     final hasValidCache = await cacheManager.hasValidCache(
       cacheKey,
       maxAge: cacheMaxAge,

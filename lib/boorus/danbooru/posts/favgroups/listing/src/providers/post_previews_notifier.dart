@@ -8,19 +8,24 @@ import '../../../../../../../core/posts/post/post.dart';
 import '../../../../post/post.dart';
 import '../../../../post/providers.dart';
 
-final danbooruFavoriteGroupPreviewsProvider = NotifierProvider.family<
-    FavoriteGroupPreviewsNotifier, Map<int, String>, BooruConfigSearch>(
-  FavoriteGroupPreviewsNotifier.new,
-  dependencies: [
-    danbooruPostRepoProvider,
-  ],
-);
+final danbooruFavoriteGroupPreviewsProvider =
+    NotifierProvider.family<
+      FavoriteGroupPreviewsNotifier,
+      Map<int, String>,
+      BooruConfigSearch
+    >(
+      FavoriteGroupPreviewsNotifier.new,
+      dependencies: [
+        danbooruPostRepoProvider,
+      ],
+    );
 
-final danbooruFavoriteGroupPreviewProvider =
-    Provider.autoDispose.family<String, int?>((ref, postId) {
-  final config = ref.watchConfigSearch;
-  return ref.watch(danbooruFavoriteGroupPreviewsProvider(config))[postId] ?? '';
-});
+final danbooruFavoriteGroupPreviewProvider = Provider.autoDispose
+    .family<String, int?>((ref, postId) {
+      final config = ref.watchConfigSearch;
+      return ref.watch(danbooruFavoriteGroupPreviewsProvider(config))[postId] ??
+          '';
+    });
 
 class FavoriteGroupPreviewsNotifier
     extends FamilyNotifier<Map<int, String>, BooruConfigSearch> {

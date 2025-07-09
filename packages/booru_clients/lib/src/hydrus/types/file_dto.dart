@@ -43,8 +43,11 @@ class FileDto {
     required this.faved,
   });
 
-  factory FileDto.fromJson(Map<String, dynamic> json, String baseUrl,
-      Map<String, dynamic> servicesJson) {
+  factory FileDto.fromJson(
+    Map<String, dynamic> json,
+    String baseUrl,
+    Map<String, dynamic> servicesJson,
+  ) {
     final fileId = json['file_id'] as int?;
     final imageUrl = baseUrl.endsWith('/')
         ? '${baseUrl}get_files/file?file_id=$fileId'
@@ -62,7 +65,8 @@ class FileDto {
 
     final favServiceKey = getLikeDislikeRatingKey(services);
 
-    final useFavService = ratings != null &&
+    final useFavService =
+        ratings != null &&
         favServiceKey != null &&
         ratings.containsKey(favServiceKey);
 
@@ -105,8 +109,9 @@ class FileDto {
           ? List<String>.from(json['known_urls'])
           : null,
       ratings: ratings,
-      tags: (json['tags'] as Map<String, dynamic>?)
-          ?.map((key, value) => MapEntry(key, value as Map<String, dynamic>)),
+      tags: (json['tags'] as Map<String, dynamic>?)?.map(
+        (key, value) => MapEntry(key, value as Map<String, dynamic>),
+      ),
       imageUrl: imageUrl,
       thumbnailUrl: thumbnailUrl,
       faved: faved,
@@ -156,9 +161,11 @@ extension FileDtoX on FileDto {
   Set<String> get allTags {
     // join all storage tags
     final storageTags = tags?.values
-        .map((e) => e['storage_tags'] != null
-            ? e['storage_tags'] as Map<String, dynamic>
-            : null)
+        .map(
+          (e) => e['storage_tags'] != null
+              ? e['storage_tags'] as Map<String, dynamic>
+              : null,
+        )
         .nonNulls
         .expand((e) => e.values)
         .expand((e) => e)
@@ -182,8 +189,9 @@ extension FileDtoX on FileDto {
 String? getLikeDislikeRatingKey(List<ServiceDto?>? services) {
   if (services == null) return null;
 
-  final favService = services
-      .firstWhereOrNull((e) => e?.type == ServiceType.likeDislikeRatingService);
+  final favService = services.firstWhereOrNull(
+    (e) => e?.type == ServiceType.likeDislikeRatingService,
+  );
 
   if (favService == null) return null;
 

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
@@ -61,7 +61,7 @@ class _CommentBoxState extends ConsumerState<CommentBox> {
 
     return ValueListenableBuilder(
       valueListenable: widget.commentReply,
-      builder: (_, comment, __) => Container(
+      builder: (_, comment, _) => Container(
         decoration: BoxDecoration(
           border: Border(
             top: BorderSide(
@@ -86,7 +86,7 @@ class _CommentBoxState extends ConsumerState<CommentBox> {
                 hintStyle: TextStyle(
                   color: Theme.of(context).colorScheme.hintColor,
                 ),
-                hintText: 'comment.create.hint'.tr(),
+                hintText: context.t.comment.create.hint,
                 suffixIcon: IconButton(
                   icon: const Icon(Symbols.fullscreen),
                   onPressed: () {
@@ -98,7 +98,7 @@ class _CommentBoxState extends ConsumerState<CommentBox> {
                     }
 
                     goToCommentCreatePage(
-                      context,
+                      ref,
                       postId: widget.postId,
                       initialContent: initialContent,
                     );
@@ -140,7 +140,7 @@ class _CommentBoxState extends ConsumerState<CommentBox> {
                                       replyTo: comment,
                                     );
                               },
-                        child: const Text('comment.list.send').tr(),
+                        child: Text(context.t.comment.list.send),
                       ),
                     );
                   },

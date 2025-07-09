@@ -3,11 +3,12 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:filename_generator/filename_generator.dart';
+import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../../downloads/filename.dart';
-import '../../../../foundation/clipboard.dart';
+import '../../../../../foundation/clipboard.dart';
+import '../../../../downloads/filename/types.dart';
 import '../../../../posts/post/post.dart';
 import '../../../../widgets/compact_chip.dart';
 
@@ -27,7 +28,7 @@ class TokenOptionHelpModal extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Available options'),
+        title: Text('Available options'.hc),
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
@@ -65,12 +66,18 @@ class TokenOptionHelpModal extends StatelessWidget {
                             Flexible(child: Text(option)),
                             const SizedBox(width: 8),
                             switch (docs?.tokenOption) {
-                              IntegerTokenOption _ =>
-                                _buildOptionChip(context, 'integer'),
-                              BooleanTokenOption _ =>
-                                _buildOptionChip(context, 'boolean'),
-                              StringTokenOption _ =>
-                                _buildOptionChip(context, 'string'),
+                              IntegerTokenOption _ => _buildOptionChip(
+                                context,
+                                'integer',
+                              ),
+                              BooleanTokenOption _ => _buildOptionChip(
+                                context,
+                                'boolean',
+                              ),
+                              StringTokenOption _ => _buildOptionChip(
+                                context,
+                                'string',
+                              ),
                               _ => const SizedBox.shrink(),
                             },
                           ],

@@ -10,9 +10,9 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:multi_split_view/multi_split_view.dart';
 
 // Project imports:
-import '../../../../../../core/foundation/display.dart';
 import '../../../../../../core/images/booru_image.dart';
 import '../../../../../../core/widgets/widgets.dart';
+import '../../../../../../foundation/display.dart';
 
 //FIXME: Split view is broken, need to fix it later, check tag_edit_page.dart for the correct implementation
 class TagEditUploadScaffold extends ConsumerStatefulWidget {
@@ -215,16 +215,16 @@ class _TagEditScaffoldState extends ConsumerState<TagEditUploadScaffold> {
           controller: splitController,
           builder: (context, area) => switch (area.data) {
             'image' => Column(
-                children: [
-                  Expanded(
-                    child: _buildImage(),
-                  ),
-                  const Divider(
-                    thickness: 1,
-                    height: 4,
-                  ),
-                ],
-              ),
+              children: [
+                Expanded(
+                  child: _buildImage(),
+                ),
+                const Divider(
+                  thickness: 1,
+                  height: 4,
+                ),
+              ],
+            ),
             'content' => widget.contentBuilder(),
             _ => const SizedBox(),
           },
@@ -251,8 +251,9 @@ class _TagEditScaffoldState extends ConsumerState<TagEditUploadScaffold> {
     BuildContext context,
     double maxHeight,
   ) {
-    final height =
-        viewExpanded ? max(maxHeight - kToolbarHeight - 120.0, 280) : 280.0;
+    final height = viewExpanded
+        ? max(maxHeight - kToolbarHeight - 120.0, 280)
+        : 280.0;
 
     return widget.modeBuilder(height.toDouble());
   }

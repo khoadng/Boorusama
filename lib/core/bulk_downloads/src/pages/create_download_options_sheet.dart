@@ -3,24 +3,24 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import '../../../../foundation/info/device_info.dart';
+import '../../../../foundation/toast.dart';
+import '../../../../foundation/utils/collection_utils.dart';
 import '../../../blacklists/providers.dart';
 import '../../../configs/ref.dart';
 import '../../../configs/search/search.dart';
+import '../../../downloads/configs/widgets/download_folder_selector_section.dart';
 import '../../../downloads/l10n.dart' as d;
-import '../../../downloads/widgets/download_folder_selector_section.dart';
-import '../../../foundation/toast.dart';
-import '../../../info/device_info.dart';
 import '../../../router.dart';
 import '../../../search/search/routes.dart';
 import '../../../settings/providers.dart';
 import '../../../settings/settings.dart';
 import '../../../settings/widgets.dart';
 import '../../../theme.dart';
-import '../../../utils/collection_utils.dart';
 import '../providers/bulk_download_notifier.dart';
 import '../providers/create_download_options_notifier.dart';
 import '../routes/route_utils.dart';
@@ -50,10 +50,10 @@ class CreateDownloadOptionsSheet extends ConsumerWidget {
           context: context,
           content: Text(message),
           action: SnackBarAction(
-            label: 'generic.view'.tr(),
+            label: context.t.generic.view,
             textColor: colorScheme.surface,
             onPressed: () {
-              goToBulkDownloadManagerPage(context);
+              goToBulkDownloadManagerPage(ref);
             },
           ),
         );
@@ -61,16 +61,18 @@ class CreateDownloadOptionsSheet extends ConsumerWidget {
     }
 
     final notifier = ref.watch(bulkDownloadProvider.notifier);
-    final quality =
-        ref.watch(settingsProvider.select((e) => e.downloadQuality));
+    final quality = ref.watch(
+      settingsProvider.select((e) => e.downloadQuality),
+    );
     final initial = DownloadOptions.initial(
       quality: quality.name,
       tags: initialValue,
     );
     final options = ref.watch(createDownloadOptionsProvider(initial));
     final androidSdkInt = ref.watch(
-      deviceInfoProvider
-          .select((value) => value.androidDeviceInfo?.version.sdkInt),
+      deviceInfoProvider.select(
+        (value) => value.androidDeviceInfo?.version.sdkInt,
+      ),
     );
     final validOptions = options.valid(androidSdkInt: androidSdkInt);
     final navigator = Navigator.of(context);
@@ -109,9 +111,9 @@ class CreateDownloadOptionsSheet extends ConsumerWidget {
                       navigator.pop();
                     }
                   : null,
-              child: const Text(
+              child: Text(
                 DownloadTranslations.addToQueue,
-              ).tr(),
+              ),
             ),
           ),
           Expanded(
@@ -145,9 +147,9 @@ class CreateDownloadOptionsSheet extends ConsumerWidget {
                       navigator.pop();
                     }
                   : null,
-              child: const Text(
-                DownloadTranslations.download,
-              ).tr(),
+              child: Text(
+                DownloadTranslations.download(context),
+              ),
             ),
           ),
         ],
@@ -212,7 +214,7 @@ class _CreateDownloadOptionsRawSheetState
           ),
           child: DownloadFolderSelectorSection(
             title: Text(
-              DownloadTranslations.saveToFolder.tr().toUpperCase(),
+              context.t.download.bulk_download_save_to_folder.toUpperCase(),
               style: textTheme.titleSmall?.copyWith(
                 color: colorScheme.hintColor,
                 fontWeight: FontWeight.w800,
@@ -224,16 +226,16 @@ class _CreateDownloadOptionsRawSheetState
             onPathChanged: (path) {
               notifier.setPath(path);
             },
-            hint: DownloadTranslations.selectFolder.tr(),
+            hint: context.t.download.bulk_download_folder_select_warning,
           ),
         ),
         if (widget.advancedToggle)
           Column(
             children: [
               SwitchListTile(
-                title: const Text(
+                title: Text(
                   DownloadTranslations.showAdvancedOptions,
-                ).tr(),
+                ),
                 value: advancedOptions,
                 onChanged: (value) {
                   setState(() {
@@ -257,9 +259,9 @@ class _CreateDownloadOptionsRawSheetState
                   contentPadding: const EdgeInsets.symmetric(
                     horizontal: 4,
                   ),
-                  title: const Text(
+                  title: Text(
                     DownloadTranslations.enableNotifications,
-                  ).tr(),
+                  ),
                   value: options.notifications,
                   onChanged: (value) {
                     notifier.setNotifications(value);
@@ -269,8 +271,7 @@ class _CreateDownloadOptionsRawSheetState
                   contentPadding: const EdgeInsets.symmetric(
                     horizontal: 4,
                   ),
-                  title: const Text(d.DownloadTranslations.skipDownloadIfExists)
-                      .tr(),
+                  title: Text(d.DownloadTranslations.skipDownloadIfExists),
                   value: options.skipIfExists,
                   onChanged: (value) {
                     notifier.setSkipIfExists(value);
@@ -278,15 +279,23 @@ class _CreateDownloadOptionsRawSheetState
                 ),
                 SettingsTile(
                   padding: const EdgeInsets.symmetric(horizontal: 4),
-                  title: const Text('settings.download.quality').tr(),
+                  title: Text(context.t.settings.download.quality),
                   selectedOption:
                       options.quality ?? DownloadQuality.original.name,
                   items: DownloadQuality.values.map((e) => e.name).toList(),
                   onChanged: (value) {
                     notifier.setQuality(value);
                   },
-                  optionBuilder: (value) =>
-                      Text('settings.download.qualities.$value').tr(),
+                  optionBuilder: (value) => Text(
+                    switch (value) {
+                      'original' =>
+                        context.t.settings.download.qualities.original,
+                      'sample' => context.t.settings.download.qualities.sample,
+                      'preview' =>
+                        context.t.settings.download.qualities.preview,
+                      _ => value,
+                    },
+                  ),
                 ),
               ],
             ),
@@ -322,7 +331,9 @@ class _ExcludedTagsSection extends ConsumerWidget {
     final extraTags = queryAsList(options.blacklistedTags);
     final config = ref.watchConfigAuth;
 
-    return ref.watch(blacklistTagEntriesProvider(ref.watchConfigFilter)).when(
+    return ref
+        .watch(blacklistTagEntriesProvider(ref.watchConfigFilter))
+        .when(
           data: (tags) => SettingsCard(
             title: 'Excluded tags',
             trailing: Tooltip(
@@ -465,7 +476,8 @@ class SettingsCard extends StatelessWidget {
     final title = this.title;
 
     return Container(
-      margin: margin ??
+      margin:
+          margin ??
           const EdgeInsets.only(
             left: 16,
             right: 16,
@@ -505,7 +517,8 @@ class SettingsCard extends StatelessWidget {
               ),
               onTap: onTap,
               child: Container(
-                padding: padding ??
+                padding:
+                    padding ??
                     const EdgeInsets.symmetric(
                       horizontal: 8,
                     ),

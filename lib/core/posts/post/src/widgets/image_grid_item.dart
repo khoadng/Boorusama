@@ -146,7 +146,8 @@ class ImageGridItem extends StatelessWidget {
                       style: TextStyle(
                         fontWeight: FontWeight.w800,
                         color: context
-                            .extendedColorScheme.onSurfaceContainerOverlayDim,
+                            .extendedColorScheme
+                            .onSurfaceContainerOverlayDim,
                       ),
                     ),
                   ],
@@ -263,7 +264,8 @@ class _ImageInkWellWithBorderOnFocusState
                 ? Positioned.fill(
                     child: Container(
                       decoration: BoxDecoration(
-                        borderRadius: widget.borderRadius ??
+                        borderRadius:
+                            widget.borderRadius ??
                             const BorderRadius.all(Radius.circular(8)),
                         border: Border.all(
                           color: Theme.of(context).colorScheme.primary,

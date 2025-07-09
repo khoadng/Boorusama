@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 import 'package:path/path.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -71,7 +72,7 @@ class BooruUrlField extends ConsumerWidget {
             onPressed: () {
               launchUrlString(join(config.url, 'ext_doc'));
             },
-            child: const Text('View extension documentation'),
+            child: Text('View extension documentation'.hc),
           ),
       ],
     );

@@ -14,30 +14,29 @@ class DanbooruPool extends Equatable {
   });
 
   factory DanbooruPool.empty() => DanbooruPool(
-        id: -1,
-        postIds: const [],
-        category: DanbooruPoolCategory.unknown,
-        description: '',
-        postCount: 0,
-        name: '',
-        createdAt: DateTime(1),
-        updatedAt: DateTime(1),
-      );
+    id: -1,
+    postIds: const [],
+    category: DanbooruPoolCategory.unknown,
+    description: '',
+    postCount: 0,
+    name: '',
+    createdAt: DateTime(1),
+    updatedAt: DateTime(1),
+  );
 
   DanbooruPool copyWith({
     PoolId? id,
     List<int>? postIds,
-  }) =>
-      DanbooruPool(
-        id: id ?? this.id,
-        postIds: postIds ?? this.postIds,
-        category: category,
-        description: description,
-        postCount: postCount,
-        name: name,
-        createdAt: createdAt,
-        updatedAt: updatedAt,
-      );
+  }) => DanbooruPool(
+    id: id ?? this.id,
+    postIds: postIds ?? this.postIds,
+    category: category,
+    description: description,
+    postCount: postCount,
+    name: name,
+    createdAt: createdAt,
+    updatedAt: updatedAt,
+  );
 
   final PoolId id;
   final List<int> postIds;
@@ -50,15 +49,15 @@ class DanbooruPool extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        postIds,
-        category,
-        description,
-        postCount,
-        name,
-        createdAt,
-        updatedAt,
-      ];
+    id,
+    postIds,
+    category,
+    description,
+    postCount,
+    name,
+    createdAt,
+    updatedAt,
+  ];
 }
 
 typedef PoolName = String;
@@ -66,17 +65,9 @@ typedef PoolDescription = String;
 typedef PoolPostCount = int;
 typedef PoolId = int;
 
-enum DanbooruPoolCategory {
-  unknown,
-  collection,
-  series;
-}
+enum DanbooruPoolCategory { unknown, collection, series }
 
-typedef PoolCover = ({
-  PoolId id,
-  String? url,
-  double? aspectRatio,
-});
+typedef PoolCover = ({PoolId id, String? url, double? aspectRatio});
 
 enum PoolDetailsOrder {
   latest,

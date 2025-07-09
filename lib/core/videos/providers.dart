@@ -8,14 +8,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../settings/providers.dart';
 
 final globalSoundStateProvider = StateProvider<bool>((ref) {
-  final isMuteByDefault =
-      ref.watch(settingsProvider.select((s) => s.muteAudioByDefault));
+  final isMuteByDefault = ref.watch(
+    settingsProvider.select((s) => s.muteAudioByDefault),
+  );
 
   return !isMuteByDefault;
 });
 
-final playbackSpeedProvider =
-    StateProvider.autoDispose.family<double, String>((ref, url) {
+final playbackSpeedProvider = StateProvider.autoDispose.family<double, String>((
+  ref,
+  url,
+) {
   return 1.0;
 });
 

@@ -2,8 +2,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../foundation/boot/providers.dart';
-import '../../../foundation/iap/iap.dart';
+import '../../../../foundation/boot/providers.dart';
+import '../../../../foundation/iap/iap.dart';
 import '../../premiums.dart';
 
 const _premiumMode = String.fromEnvironment('PREMIUM_MODE');
@@ -22,8 +22,9 @@ final hasPremiumProvider = Provider<bool>((ref) {
   return package.valueOrNull != null;
 });
 
-final premiumManagementURLProvider =
-    FutureProvider.autoDispose<String?>((ref) async {
+final premiumManagementURLProvider = FutureProvider.autoDispose<String?>((
+  ref,
+) async {
   final isFoss = ref.watch(isFossBuildProvider);
   if (isFoss) return null;
 

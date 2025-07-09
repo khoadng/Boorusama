@@ -1,11 +1,11 @@
-// Flutter imports:
-import 'package:flutter/widgets.dart';
+// Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../../../../core/router.dart';
 
-void goToPoolPage(BuildContext context) {
-  context.push(
+void goToPoolPage(WidgetRef ref) {
+  ref.router.push(
     Uri(
       pathSegments: [
         '',

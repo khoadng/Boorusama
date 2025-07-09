@@ -7,14 +7,15 @@ import 'package:context_menus/context_menus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:readmore/readmore.dart';
 
 // Project imports:
+import '../../../../foundation/clipboard.dart';
+import '../../../../foundation/toast.dart';
 import '../../../config_widgets/booru_logo.dart';
 import '../../../configs/ref.dart';
-import '../../../foundation/clipboard.dart';
-import '../../../foundation/toast.dart';
 import '../../../images/booru_image.dart';
 import '../../../theme/app_theme.dart';
 import '../../../widgets/widgets.dart';
@@ -165,12 +166,12 @@ class _CreateSavedTaskButton extends ConsumerWidget {
           if (context.mounted) {
             showSimpleSnackBar(
               context: context,
-              content: const Text(DownloadTranslations.templateCreated),
+              content: Text(DownloadTranslations.templateCreated),
               action: SnackBarAction(
-                label: 'generic.view'.tr(),
+                label: context.t.generic.view,
                 textColor: colorScheme.surface,
                 onPressed: () {
-                  goToBulkDownloadSavedTasksPage(context);
+                  goToBulkDownloadSavedTasksPage(ref);
                 },
               ),
             );
@@ -267,7 +268,7 @@ class _ContextMenu extends ConsumerWidget {
       contextMenu: GenericContextMenu(
         buttonConfigs: [
           ContextMenuButtonConfig(
-            DownloadTranslations.delete.tr(),
+            DownloadTranslations.delete,
             onPressed: () async {
               await ref
                   .read(bulkDownloadProvider.notifier)
@@ -276,11 +277,11 @@ class _ContextMenu extends ConsumerWidget {
             },
           ),
           ContextMenuButtonConfig(
-            DownloadTranslations.copyPath.tr(),
+            DownloadTranslations.copyPath,
             onPressed: () => AppClipboard.copyWithDefaultToast(context, path),
           ),
           ContextMenuButtonConfig(
-            DownloadTranslations.createTemplate.tr(),
+            DownloadTranslations.createTemplate,
             onPressed: () async {
               final navigator = Navigator.of(context);
               final success = await ref

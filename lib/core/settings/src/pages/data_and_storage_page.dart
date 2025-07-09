@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../bookmarks/providers.dart';
@@ -13,9 +14,10 @@ import '../providers/settings_provider.dart';
 import '../widgets/settings_header.dart';
 import '../widgets/settings_page_scaffold.dart';
 
-final bookmarkCacheInfoProvider =
-    FutureProvider.autoDispose<(int, int)>((ref) async {
-  final cacheManager = ref.read(bookmarkImageCacheManagerProvider);
+final bookmarkCacheInfoProvider = FutureProvider.autoDispose<(int, int)>((
+  ref,
+) async {
+  final cacheManager = ref.watch(bookmarkImageCacheManagerProvider);
   return cacheManager.getCacheStats();
 });
 
@@ -33,82 +35,113 @@ class _DataAndStoragePageState extends ConsumerState<DataAndStoragePage> {
   Widget build(BuildContext context) {
     final settings = ref.watch(settingsProvider);
     final notifier = ref.read(settingsNotifierProvider.notifier);
+    final cacheSizeAsync = ref.watch(cacheSizeProvider);
 
     return SettingsPageScaffold(
-      title: const Text('settings.data_and_storage.data_and_storage').tr(),
+      title: Text(context.t.settings.data_and_storage.data_and_storage),
       children: [
         const SettingsHeader(label: 'Cache'),
-        Builder(
-          builder: (context) {
-            final sizeInfo = ref.watch(cacheSizeProvider);
-            final imageCacheSize = sizeInfo.imageCacheSize;
-
-            return ListTile(
-              title: const Text('Image only cache'),
-              subtitle: Text(
-                'settings.performance.cache_size_info'
-                    .tr()
-                    .replaceAll('{0}', Filesize.parse(imageCacheSize.size))
-                    .replaceAll('{1}', imageCacheSize.fileCount.toString()),
-              ),
-              trailing: FilledButton(
-                onPressed: () =>
-                    ref.read(cacheSizeProvider.notifier).clearAppImageCache(),
-                child: const Text('settings.performance.clear_cache').tr(),
-              ),
-            );
-          },
-        ),
-        Builder(
-          builder: (context) {
-            final sizeInfo = ref.watch(cacheSizeProvider);
-            final size = sizeInfo.appCacheSize;
-
-            return ListTile(
-              title: const Text('All cache'),
-              subtitle: Text(Filesize.parse(size.size)),
-              trailing: FilledButton(
-                onPressed: () =>
-                    ref.read(cacheSizeProvider.notifier).clearAppCache(),
-                child: const Text('settings.performance.clear_cache').tr(),
-              ),
-            );
-          },
-        ),
+        _buildImageCache(cacheSizeAsync),
+        _buildTagCache(cacheSizeAsync),
+        _buildAllCache(cacheSizeAsync),
         SwitchListTile(
           value: settings.clearImageCacheOnStartup,
-          title: const Text('settings.data_and_storage.clear_cache_on_start_up')
-              .tr(),
+          title: Text(
+            context.t.settings.data_and_storage.clear_cache_on_start_up,
+          ),
           onChanged: (value) => notifier.updateSettings(
             settings.copyWith(clearImageCacheOnStartup: value),
           ),
         ),
         const Divider(),
-        const SettingsHeader(label: 'Data'),
-        Builder(
-          builder: (context) {
-            final cacheInfo = ref.watch(bookmarkCacheInfoProvider);
-
-            return ListTile(
-              title: const Text('Bookmark images'),
-              subtitle: cacheInfo.when(
-                data: (data) => Text(
-                  Filesize.parse(data.$1),
-                ),
-                loading: () => const Text('Loading...'),
-                error: (_, __) => const Text('Error loading cache info'),
-              ),
-              trailing: FilledButton(
-                onPressed: () {
-                  ref.read(bookmarkImageCacheManagerProvider).clearAllCache();
-                  ref.invalidate(bookmarkCacheInfoProvider);
-                },
-                child: const Text('settings.performance.clear_cache').tr(),
-              ),
-            );
-          },
-        ),
+        SettingsHeader(label: 'Data'.hc),
+        _buildBookmarkImageData(cacheSizeAsync.isLoading),
       ],
+    );
+  }
+
+  Widget _buildBookmarkImageData(bool isLoadingCache) {
+    final cacheInfo = ref.watch(bookmarkCacheInfoProvider);
+
+    return ListTile(
+      title: Text('Bookmark images'.hc),
+      subtitle: cacheInfo.when(
+        data: (data) => Text(
+          Filesize.parse(data.$1),
+        ),
+        loading: () => Text('Loading...'.hc),
+        error: (_, _) => Text('Error loading cache info'.hc),
+      ),
+      trailing: FilledButton(
+        onPressed: cacheInfo.isLoading
+            ? null
+            : () {
+                ref.read(bookmarkImageCacheManagerProvider).clearAllCache();
+                ref.invalidate(bookmarkCacheInfoProvider);
+              },
+        child: Text(context.t.settings.performance.clear_cache),
+      ),
+    );
+  }
+
+  Widget _buildAllCache(AsyncValue<CacheSizeInfo> cacheSizeAsync) {
+    return ListTile(
+      title: Text('All cache'.hc),
+      subtitle: cacheSizeAsync.when(
+        data: (sizeInfo) => Text(Filesize.parse(sizeInfo.totalSize)),
+        loading: () => Text('Loading...'.hc),
+        error: (_, _) => Text('Error loading cache info'.hc),
+      ),
+      trailing: FilledButton(
+        onPressed: cacheSizeAsync.isLoading
+            ? null
+            : () => ref.read(cacheSizeProvider.notifier).clearAllCache(),
+        child: Text(context.t.settings.performance.clear_cache),
+      ),
+    );
+  }
+
+  Widget _buildTagCache(AsyncValue<CacheSizeInfo> cacheSizeAsync) {
+    return ListTile(
+      title: Text('Tag cache'.hc),
+      subtitle: cacheSizeAsync.when(
+        data: (sizeInfo) => Text(Filesize.parse(sizeInfo.tagCacheSize)),
+        loading: () => Text('Loading...'.hc),
+        error: (_, _) => Text('Error loading cache info'.hc),
+      ),
+      trailing: FilledButton(
+        onPressed: cacheSizeAsync.isLoading
+            ? null
+            : () => ref.read(cacheSizeProvider.notifier).clearAppTagCache(),
+        child: Text(context.t.settings.performance.clear_cache),
+      ),
+    );
+  }
+
+  Widget _buildImageCache(AsyncValue<CacheSizeInfo> cacheSizeAsync) {
+    return ListTile(
+      title: Text('Image only cache'.hc),
+      subtitle: cacheSizeAsync.when(
+        data: (sizeInfo) => Text(
+          context.t.settings.performance.cache_size_info
+              .replaceAll(
+                '{0}',
+                Filesize.parse(sizeInfo.imageCacheSize.size),
+              )
+              .replaceAll(
+                '{1}',
+                sizeInfo.imageCacheSize.fileCount.toString(),
+              ),
+        ),
+        loading: () => Text('Loading...'.hc),
+        error: (_, _) => Text('Error loading cache info'.hc),
+      ),
+      trailing: FilledButton(
+        onPressed: cacheSizeAsync.isLoading
+            ? null
+            : () => ref.read(cacheSizeProvider.notifier).clearAppImageCache(),
+        child: Text(context.t.settings.performance.clear_cache),
+      ),
     );
   }
 }

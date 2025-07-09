@@ -23,8 +23,9 @@ String? granularRatingFilterToString(
 
   final ratingStrings = granularRatingFilters.map((e) => e.toShortString());
 
-  final effectiveRatingStrings =
-      shouldSort ? ratingStrings.sorted() : ratingStrings;
+  final effectiveRatingStrings = shouldSort
+      ? ratingStrings.sorted()
+      : ratingStrings;
 
   return effectiveRatingStrings.join('|');
 }

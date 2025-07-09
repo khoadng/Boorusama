@@ -17,8 +17,8 @@ class TagTitleName extends StatelessWidget {
         tagName.replaceAll('_', ' '),
         textAlign: TextAlign.center,
         style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.w900,
-            ),
+          fontWeight: FontWeight.w900,
+        ),
       ),
     );
   }

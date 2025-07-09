@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../widgets/widgets.dart';
@@ -33,8 +33,8 @@ class BlacklistedTagTile extends StatelessWidget {
           }
         },
         itemBuilder: {
-          'remove': const Text('blacklisted_tags.remove').tr(),
-          'edit': const Text('blacklisted_tags.edit').tr(),
+          'remove': Text(context.t.blacklisted_tags.remove),
+          'edit': Text(context.t.blacklisted_tags.edit),
         },
       ),
     );

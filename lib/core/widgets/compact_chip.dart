@@ -30,7 +30,8 @@ class CompactChip extends StatelessWidget {
         label,
         softWrap: false,
         maxLines: 1,
-        style: textStyle ??
+        style:
+            textStyle ??
             TextStyle(
               fontWeight: FontWeight.w600,
               color: textColor,
@@ -75,7 +76,8 @@ class RawCompactChip extends StatelessWidget {
             : null,
         onTap: () => onTap?.call(),
         child: Container(
-          padding: padding ??
+          padding:
+              padding ??
               const EdgeInsets.symmetric(
                 vertical: 2,
                 horizontal: 6,

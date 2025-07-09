@@ -6,9 +6,9 @@ import 'dart:isolate';
 import 'package:flutter/foundation.dart';
 
 // Project imports:
-import '../../../../foundation/error.dart';
+import '../../../../../foundation/error.dart';
+import '../../../../../foundation/utils/collection_utils.dart';
 import '../../../../settings/settings.dart';
-import '../../../../utils/collection_utils.dart';
 import '../../../filter/filter.dart';
 import '../../../post/post.dart';
 import 'post_duplicate_checker.dart';
@@ -19,9 +19,10 @@ const _kJumpStep = 1;
 typedef ItemFetcher<T extends Post> = Future<PostResult<T>> Function(int page);
 typedef ItemRefresher<T extends Post> = Future<PostResult<T>> Function();
 
-typedef PostGridFetcher<T extends Post> = PostsOrErrorCore<T> Function(
-  int page,
-);
+typedef PostGridFetcher<T extends Post> =
+    PostsOrErrorCore<T> Function(
+      int page,
+    );
 
 extension TagCountX on Map<String, Set<int>> {
   int get totalNonDuplicatesPostCount => values.expand((e) => e).toSet().length;
@@ -38,9 +39,9 @@ class PostGridController<T extends Post> extends ChangeNotifier {
     this.blacklistedUrlsFetcher,
     this.forcedPageMode = false,
     this.initialPage,
-  })  : _pageMode = pageMode,
-        _duplicateTracker = duplicateTracker,
-        _eventController = StreamController<PostControllerEvent>.broadcast() {
+  }) : _pageMode = pageMode,
+       _duplicateTracker = duplicateTracker,
+       _eventController = StreamController<PostControllerEvent>.broadcast() {
     // Initialize with initial page if provided
     if (initialPage != null) {
       _page = initialPage!;
@@ -167,16 +168,18 @@ class PostGridController<T extends Post> extends ChangeNotifier {
   }
 
   Future<void> enableAllTags() async {
-    activeFilters.value =
-        activeFilters.value.map((key, value) => MapEntry(key, true));
+    activeFilters.value = activeFilters.value.map(
+      (key, value) => MapEntry(key, true),
+    );
 
     await _filter();
     notifyListeners();
   }
 
   Future<void> disableAllTags() async {
-    activeFilters.value =
-        activeFilters.value.map((key, value) => MapEntry(key, false));
+    activeFilters.value = activeFilters.value.map(
+      (key, value) => MapEntry(key, false),
+    );
 
     await _filter();
     notifyListeners();
@@ -393,9 +396,9 @@ class PostGridController<T extends Post> extends ChangeNotifier {
     hasBlacklist.value = tagCounts.value.values.any((e) => e.isNotEmpty);
 
     // add unseen tags to activeFilters
-    final unseenTags = tagCounts.value.keys
-        .toSet()
-        .difference(activeFilters.value.keys.toSet());
+    final unseenTags = tagCounts.value.keys.toSet().difference(
+      activeFilters.value.keys.toSet(),
+    );
     activeFilters.value = {
       ...activeFilters.value,
       ...Map.fromIterable(unseenTags, value: (_) => true),
@@ -502,8 +505,9 @@ Map<String, Set<int>> _countInIsolate<T extends Post>(
 ) {
   final tagCounts = <String, Set<int>>{};
   try {
-    final preprocessed =
-        tags.map((tag) => tag.split(' ').map(TagExpression.parse).toList());
+    final preprocessed = tags.map(
+      (tag) => tag.split(' ').map(TagExpression.parse).toList(),
+    );
 
     for (final item in posts) {
       final filterData = item.extractTagFilterData();

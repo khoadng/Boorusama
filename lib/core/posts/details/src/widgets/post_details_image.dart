@@ -97,8 +97,9 @@ class _PostDetailsImageState extends ConsumerState<PostDetailsImage> {
     final post = widget.post;
     final config = ref.watchConfigAuth;
 
-    final gridThumbnailUrlBuilder =
-        ref.watch(gridThumbnailUrlGeneratorProvider(config));
+    final gridThumbnailUrlBuilder = ref.watch(
+      gridThumbnailUrlGeneratorProvider(config),
+    );
     final placeholderImageUrl = widget.thumbnailUrlBuilder != null
         ? widget.thumbnailUrlBuilder!(post)
         : gridThumbnailUrlBuilder.generateUrl(

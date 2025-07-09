@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../../../../core/configs/ref.dart';
-import '../../../../../../../core/foundation/toast.dart';
 import '../../../../../../../core/widgets/widgets.dart';
+import '../../../../../../../foundation/toast.dart';
 import '../providers/favorite_groups_notifier.dart';
 import '../types/danbooru_favorite_group.dart';
 import '../wigdets/privacy_toggle.dart';
@@ -80,10 +80,10 @@ class _EditFavoriteGroupDialogState
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 12),
             child: Text(
-              'favorite_groups.group_name'.tr().toUpperCase(),
+              context.t.favorite_groups.group_name.toUpperCase(),
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w800,
-                  ),
+                fontWeight: FontWeight.w800,
+              ),
             ),
           ),
           BooruTextField(
@@ -92,7 +92,7 @@ class _EditFavoriteGroupDialogState
             maxLines: 1,
             textInputAction: TextInputAction.done,
             decoration: InputDecoration(
-              hintText: 'favorite_groups.group_name_hint'.tr(),
+              hintText: context.t.favorite_groups.group_name_hint,
             ),
           ),
           if (widget.enableManualDataInput)
@@ -101,10 +101,10 @@ class _EditFavoriteGroupDialogState
             ),
           if (widget.enableManualDataInput)
             Text(
-              'favorite_groups.all_posts'.tr().toUpperCase(),
+              context.t.favorite_groups.all_posts.toUpperCase(),
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w800,
-                  ),
+                fontWeight: FontWeight.w800,
+              ),
             ),
           if (widget.enableManualDataInput)
             const SizedBox(
@@ -120,7 +120,7 @@ class _EditFavoriteGroupDialogState
                 decoration: InputDecoration(
                   hintMaxLines: 4,
                   hintText:
-                      '${'favorite_groups.initial_posts_hint'.tr()}\n\n\n\n\n',
+                      '${context.t.favorite_groups.initial_posts_hint}\n\n\n\n\n',
                 ),
               ),
             ),
@@ -144,7 +144,7 @@ class _EditFavoriteGroupDialogState
                   style: TextButton.styleFrom(
                     foregroundColor: Theme.of(context).colorScheme.onSurface,
                   ),
-                  child: const Text('favorite_groups.create_group_cancel').tr(),
+                  child: Text(context.t.favorite_groups.create_group_cancel),
                 ),
                 ValueListenableBuilder<TextEditingValue>(
                   valueListenable: nameController,
@@ -155,39 +155,40 @@ class _EditFavoriteGroupDialogState
                             if (widget.initialData == null) {
                               ref
                                   .read(
-                                    danbooruFavoriteGroupsProvider(config)
-                                        .notifier,
+                                    danbooruFavoriteGroupsProvider(
+                                      config,
+                                    ).notifier,
                                   )
                                   .create(
+                                    context: context,
                                     initialIds: textController.text,
                                     name: value.text,
                                     isPrivate: isPrivate,
-                                    onFailure: (message, translatable) =>
-                                        showErrorToast(
+                                    onFailure: (message) => showErrorToast(
                                       context,
-                                      translatable ? message.tr() : message,
+                                      message,
                                     ),
                                   );
                             } else {
                               ref
                                   .read(
-                                    danbooruFavoriteGroupsProvider(config)
-                                        .notifier,
+                                    danbooruFavoriteGroupsProvider(
+                                      config,
+                                    ).notifier,
                                   )
                                   .edit(
                                     group: widget.initialData!,
                                     name: value.text,
                                     isPrivate: isPrivate,
                                     initialIds: textController.text,
-                                    onFailure: (message, _) {
+                                    onFailure: (message) {
                                       showErrorToast(context, message);
                                     },
                                   );
                             }
                           }
                         : null,
-                    child:
-                        const Text('favorite_groups.create_group_confirm').tr(),
+                    child: Text(context.t.favorite_groups.create_group_confirm),
                   ),
                 ),
               ],

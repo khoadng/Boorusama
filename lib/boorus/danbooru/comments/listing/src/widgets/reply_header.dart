@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../../../core/theme.dart';
@@ -27,7 +27,7 @@ class ReplyHeader extends StatelessWidget {
       child: Wrap(
         children: [
           Text(
-            '${'comment.list.reply_to'.tr()} ',
+            '${context.t.comment.list.reply_to} ',
             softWrap: true,
             style: TextStyle(
               color: Theme.of(context).colorScheme.hintColor,
@@ -37,8 +37,9 @@ class ReplyHeader extends StatelessWidget {
             '@${comment.authorName}',
             softWrap: true,
             style: TextStyle(
-              color:
-                  DanbooruUserColor.of(context).fromLevel(comment.authorLevel),
+              color: DanbooruUserColor.of(
+                context,
+              ).fromLevel(comment.authorLevel),
             ),
           ),
         ],

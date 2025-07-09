@@ -2,27 +2,32 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../../core/comments/comment_vote.dart';
+import '../../../../../core/comments/types.dart';
 import '../../../../../core/configs/config.dart';
 import '../../../../../core/configs/ref.dart';
 import '../../comment/comment.dart';
 import 'data/providers.dart';
 import 'types/danbooru_comment_vote.dart';
 
-final danbooruCommentVotesProvider = NotifierProvider.family<
-    CommentVotesNotifier, Map<CommentId, DanbooruCommentVote>, BooruConfigAuth>(
-  CommentVotesNotifier.new,
-);
+final danbooruCommentVotesProvider =
+    NotifierProvider.family<
+      CommentVotesNotifier,
+      Map<CommentId, DanbooruCommentVote>,
+      BooruConfigAuth
+    >(
+      CommentVotesNotifier.new,
+    );
 
 final danbooruCommentVoteProvider = Provider.autoDispose
     .family<DanbooruCommentVote?, CommentId>((ref, commentId) {
-  final config = ref.watchConfigAuth;
-  final votes = ref.watch(danbooruCommentVotesProvider(config));
-  return votes[commentId];
-});
+      final config = ref.watchConfigAuth;
+      final votes = ref.watch(danbooruCommentVotesProvider(config));
+      return votes[commentId];
+    });
 
-class CommentVotesNotifier extends FamilyNotifier<
-    Map<CommentId, DanbooruCommentVote>, BooruConfigAuth> {
+class CommentVotesNotifier
+    extends
+        FamilyNotifier<Map<CommentId, DanbooruCommentVote>, BooruConfigAuth> {
   @override
   Map<int, DanbooruCommentVote> build(BooruConfigAuth arg) {
     return {};

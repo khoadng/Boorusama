@@ -52,7 +52,8 @@ class RawSearchRegion extends StatelessWidget {
                   searchOnce && state == SearchState.initial ? null : () {},
               },
               onSubmitted: (value) => controller.submit(value),
-              trailingSearchButton: trailingSearchButton ??
+              trailingSearchButton:
+                  trailingSearchButton ??
                   DefaultTrailingSearchButton(controller: controller),
               innerSearchButton: innerSearchButton,
               focusNode: controller.focus,

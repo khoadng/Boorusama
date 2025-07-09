@@ -14,14 +14,14 @@ ThemeMode mapAppThemeModeToSystemThemeMode(AppThemeMode theme) =>
       AppThemeMode.system => ThemeMode.system,
       AppThemeMode.dark => ThemeMode.dark,
       AppThemeMode.light => ThemeMode.light,
-      AppThemeMode.amoledDark => ThemeMode.dark
+      AppThemeMode.amoledDark => ThemeMode.dark,
     };
 
 extension ThemeModeX on AppThemeMode {
   bool get isDark => switch (this) {
-        AppThemeMode.light => false,
-        _ => true,
-      };
+    AppThemeMode.light => false,
+    _ => true,
+  };
 
   bool get isLight => !isDark;
 }

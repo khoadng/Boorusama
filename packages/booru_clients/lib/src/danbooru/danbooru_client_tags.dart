@@ -32,8 +32,10 @@ mixin DanbooruClientTags {
       cancelToken: cancelToken,
     );
 
-    return Isolate.run(() =>
-        (response.data as List).map((item) => TagDto.fromJson(item)).toList());
+    return Isolate.run(
+      () =>
+          (response.data as List).map((item) => TagDto.fromJson(item)).toList(),
+    );
   }
 
   Future<RelatedTagDto> getRelatedTag({

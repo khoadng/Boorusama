@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../../../core/configs/ref.dart';
-import '../../../../../../core/router.dart';
-import '../../../../../../core/utils/duration_utils.dart';
+import '../../../../../../foundation/utils/duration_utils.dart';
 import '../../../comment/comment.dart';
 import '../../../comment/providers.dart';
 import '../../../votes/providers.dart';
@@ -69,7 +69,7 @@ class _CommentPageState extends ConsumerState<CommentPage> {
     if (isEditing.value) {
       isEditing.value = false;
     } else {
-      context.pop();
+      Navigator.of(context).pop();
     }
   }
 
@@ -93,66 +93,66 @@ class _CommentPageState extends ConsumerState<CommentPage> {
       child: Scaffold(
         appBar: widget.useAppBar
             ? AppBar(
-                title: const Text('comment.comments').tr(),
+                title: Text(context.t.comment.comments),
               )
             : null,
         body: SafeArea(
           child: comments.toOption().fold(
-                () => const Center(
-                  child: CircularProgressIndicator.adaptive(),
-                ),
-                (comments) => GestureDetector(
-                  onTap: () => isEditing.value = false,
-                  child: Column(
-                    children: [
-                      Expanded(
-                        child: CommentList(
-                          comments: comments,
-                          authenticated: config.hasLoginDetails(),
-                          onEdit: (comment) {
-                            goToCommentUpdatePage(
-                              context,
-                              postId: widget.postId,
-                              commentId: comment.id,
-                              commentBody: comment.body,
-                            );
-                          },
-                          onReply: (comment) async {
-                            _commentReply.value = comment;
-                            await const Duration(milliseconds: 100).future;
-                            _focus.requestFocus();
-                          },
-                          onDelete: (comment) => ref
-                              .read(danbooruCommentsProvider(config).notifier)
-                              .delete(postId: widget.postId, comment: comment),
-                          onUpvote: (comment) => ref
-                              .read(
-                                danbooruCommentVotesProvider(config).notifier,
-                              )
-                              .guardUpvote(ref, comment.id),
-                          onDownvote: (comment) => ref
-                              .read(
-                                danbooruCommentVotesProvider(config).notifier,
-                              )
-                              .guardDownvote(ref, comment.id),
-                          onClearVote: (comment, commentVote) => ref
-                              .read(
-                                danbooruCommentVotesProvider(config).notifier,
-                              )
-                              .guardUnvote(ref, commentVote),
-                        ),
-                      ),
-                      if (config.hasLoginDetails())
-                        CommentBox(
-                          focus: _focus,
-                          commentReply: _commentReply,
+            () => const Center(
+              child: CircularProgressIndicator.adaptive(),
+            ),
+            (comments) => GestureDetector(
+              onTap: () => isEditing.value = false,
+              child: Column(
+                children: [
+                  Expanded(
+                    child: CommentList(
+                      comments: comments,
+                      authenticated: config.hasLoginDetails(),
+                      onEdit: (comment) {
+                        goToCommentUpdatePage(
+                          ref,
                           postId: widget.postId,
-                          isEditing: isEditing,
-                        ),
-                    ],
+                          commentId: comment.id,
+                          commentBody: comment.body,
+                        );
+                      },
+                      onReply: (comment) async {
+                        _commentReply.value = comment;
+                        await const Duration(milliseconds: 100).future;
+                        _focus.requestFocus();
+                      },
+                      onDelete: (comment) => ref
+                          .read(danbooruCommentsProvider(config).notifier)
+                          .delete(postId: widget.postId, comment: comment),
+                      onUpvote: (comment) => ref
+                          .read(
+                            danbooruCommentVotesProvider(config).notifier,
+                          )
+                          .guardUpvote(ref, comment.id),
+                      onDownvote: (comment) => ref
+                          .read(
+                            danbooruCommentVotesProvider(config).notifier,
+                          )
+                          .guardDownvote(ref, comment.id),
+                      onClearVote: (comment, commentVote) => ref
+                          .read(
+                            danbooruCommentVotesProvider(config).notifier,
+                          )
+                          .guardUnvote(ref, commentVote),
+                    ),
                   ),
-                ),
+                  if (config.hasLoginDetails())
+                    CommentBox(
+                      focus: _focus,
+                      commentReply: _commentReply,
+                      postId: widget.postId,
+                      isEditing: isEditing,
+                    ),
+                ],
               ),
+            ),
+          ),
         ),
       ),
     );

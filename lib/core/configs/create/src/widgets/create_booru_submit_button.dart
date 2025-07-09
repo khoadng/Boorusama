@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 
 class CreateBooruSubmitButton extends StatelessWidget {
   const CreateBooruSubmitButton({
@@ -26,7 +26,7 @@ class CreateBooruSubmitButton extends StatelessWidget {
           backgroundColor: backgroundColor,
         ),
         onPressed: onSubmit,
-        child: child ?? const Text('booru.config_booru_confirm').tr(),
+        child: child ?? Text(context.t.booru.config_booru_confirm),
       );
     }
 
@@ -35,7 +35,7 @@ class CreateBooruSubmitButton extends StatelessWidget {
         backgroundColor: backgroundColor,
       ),
       onPressed: onSubmit,
-      child: child ?? const Text('Save'),
+      child: child ?? Text('Save'.hc),
     );
   }
 }

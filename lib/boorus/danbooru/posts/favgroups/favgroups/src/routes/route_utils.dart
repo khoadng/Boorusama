@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../../../../core/widgets/widgets.dart';
@@ -39,7 +39,7 @@ Future<Object?> goToFavoriteGroupCreatePage(
       name: 'favorite_group_create',
     ),
     builder: (_) => EditFavoriteGroupSheet(
-      title: 'favorite_groups.create_group'.tr(),
+      title: context.t.favorite_groups.create_group,
       enableManualDataInput: enableManualPostInput,
     ),
   );
@@ -57,7 +57,7 @@ Future<Object?> goToFavoriteGroupEditPage(
     ),
     builder: (_) => EditFavoriteGroupSheet(
       initialData: group,
-      title: 'favorite_groups.edit_group'.tr(),
+      title: context.t.favorite_groups.edit_group,
     ),
   );
 }

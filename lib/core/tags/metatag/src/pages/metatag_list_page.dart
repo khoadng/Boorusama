@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
@@ -23,7 +23,7 @@ class MetatagListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Metatags'),
+        title: Text('Metatags'.hc),
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
@@ -35,9 +35,8 @@ class MetatagListPage extends StatelessWidget {
       body: Column(
         children: [
           InfoContainer(
-            title: 'Free tags',
-            contentBuilder: (context) =>
-                const Text('search.metatags_notice').tr(),
+            title: 'Free tags'.hc,
+            contentBuilder: (context) => Text(context.t.search.metatags_notice),
           ),
           Expanded(
             child: ListView.builder(
@@ -53,10 +52,11 @@ class MetatagListPage extends StatelessWidget {
                   title: Text(tag.name),
                   trailing: tag.isFree
                       ? Chip(
-                          backgroundColor:
-                              Theme.of(context).colorScheme.primary,
+                          backgroundColor: Theme.of(
+                            context,
+                          ).colorScheme.primary,
                           label: Text(
-                            'Free',
+                            'Free'.hc,
                             style: TextStyle(
                               color: Theme.of(context).colorScheme.onPrimary,
                             ),

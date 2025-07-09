@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../../core/configs/ref.dart';
@@ -52,43 +52,44 @@ class _RelatedTagHeaderState extends ConsumerState<RelatedTagHeader> {
         itemCount: data.length,
         itemBuilder: (context, index) => switch (data[index]) {
           final DanbooruRelatedTagItem item => RelatedTagButton(
-              backgroundColor: ref.watch(
-                tagColorProvider((ref.watchConfigAuth, item.category.name)),
-              ),
-              onAdd: () => widget.onAdded(item),
-              onRemove: () => widget.onNegated(item),
-              label: Text(
-                item.tag.replaceAll('_', ' '),
-                overflow: TextOverflow.fade,
-                maxLines: 1,
-                softWrap: false,
-              ),
+            backgroundColor: ref.watch(
+              tagColorProvider((ref.watchConfigAuth, item.category.name)),
             ),
+            onAdd: () => widget.onAdded(item),
+            onRemove: () => widget.onNegated(item),
+            label: Text(
+              item.tag.replaceAll('_', ' '),
+              overflow: TextOverflow.fade,
+              maxLines: 1,
+              softWrap: false,
+            ),
+          ),
           String _ => Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 8,
-              ),
-              child: FilledButton(
-                style: FilledButton.styleFrom(
-                  foregroundColor: Theme.of(context).iconTheme.color,
-                  backgroundColor:
-                      Theme.of(context).colorScheme.surfaceContainerHighest,
-                  side: BorderSide(
-                    color: Theme.of(context).colorScheme.hintColor,
-                  ),
-                ),
-                onPressed: () => goToRelatedTagsPage(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 8,
+            ),
+            child: FilledButton(
+              style: FilledButton.styleFrom(
+                foregroundColor: Theme.of(context).iconTheme.color,
+                backgroundColor: Theme.of(
                   context,
-                  relatedTag: widget.relatedTag,
-                  onAdded: widget.onAdded,
-                  onNegated: widget.onNegated,
+                ).colorScheme.surfaceContainerHighest,
+                side: BorderSide(
+                  color: Theme.of(context).colorScheme.hintColor,
                 ),
-                child: const Text('tag.related.more').tr(),
               ),
+              onPressed: () => goToRelatedTagsPage(
+                context,
+                relatedTag: widget.relatedTag,
+                onAdded: widget.onAdded,
+                onNegated: widget.onNegated,
+              ),
+              child: Text(context.t.tag.related.more),
             ),
+          ),
           null => const VerticalDivider(
-              thickness: 2,
-            ),
+            thickness: 2,
+          ),
           _ => const SizedBox.shrink(),
         },
       ),

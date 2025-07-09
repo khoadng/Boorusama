@@ -8,10 +8,9 @@ import 'package:rich_text_controller/rich_text_controller.dart';
 // Project imports:
 import '../../../../../core/configs/ref.dart';
 import '../../../../../core/posts/count/widgets.dart';
-import '../../../../../core/search/search/src/pages/search_page.dart';
 import '../../../../../core/search/search/widgets.dart';
 import '../../../../../core/tags/metatag/providers.dart';
-import '../../../../../core/utils/flutter_utils.dart';
+import '../../../../../foundation/utils/flutter_utils.dart';
 import '../../listing/widgets.dart';
 import '../../post/providers.dart';
 import 'widgets/danbooru_metatags_section.dart';
@@ -57,65 +56,66 @@ class _DanbooruSearchPageState extends ConsumerState<DanbooruSearchPage> {
       ],
       trending: (context, controller) => _Trending(controller),
       metatags: (context, controller) => _Metatags(controller),
-      itemBuilder: (
-        context,
-        index,
-        multiSelectController,
-        scrollController,
-        postController,
-        useHero,
-      ) =>
-          DefaultDanbooruImageGridItem(
-        index: index,
-        multiSelectController: multiSelectController,
-        autoScrollController: scrollController,
-        controller: postController,
-        useHero: useHero,
-      ),
-      extraHeaders: (
-        context,
-        postController,
-      ) {
-        final searchController = InheritedSearchPageController.of(context);
-        final selectedTagController = searchController.tagsController;
-        final selectedTagString = searchController.tagString;
-
-        return [
-          SliverToBoxAdapter(
-            child: ValueListenableBuilder(
-              valueListenable: selectedTagString,
-              builder: (context, selectedTags, _) => RelatedTagSection(
-                query: selectedTags,
-                onAdded: (tag) {
-                  selectedTagController.addTag(tag.tag);
-                  postController.refresh();
-                  searchController.search();
-                },
-                onNegated: (tag) {
-                  selectedTagController.negateTag(tag.tag);
-                  postController.refresh();
-                  searchController.search();
-                },
-              ),
-            ),
+      itemBuilder:
+          (
+            context,
+            index,
+            multiSelectController,
+            scrollController,
+            postController,
+            useHero,
+          ) => DefaultDanbooruImageGridItem(
+            index: index,
+            multiSelectController: multiSelectController,
+            autoScrollController: scrollController,
+            controller: postController,
+            useHero: useHero,
           ),
-          SliverToBoxAdapter(
-            child: Row(
-              children: [
-                ValueListenableBuilder(
+      extraHeaders:
+          (
+            context,
+            postController,
+          ) {
+            final searchController = InheritedSearchPageController.of(context);
+            final selectedTagController = searchController.tagsController;
+            final selectedTagString = searchController.tagString;
+
+            return [
+              SliverToBoxAdapter(
+                child: ValueListenableBuilder(
                   valueListenable: selectedTagString,
-                  builder: (context, selectedTags, _) =>
-                      ResultHeaderWithProvider(
-                    selectedTagsString: selectedTags,
-                    onRefresh: null,
+                  builder: (context, selectedTags, _) => RelatedTagSection(
+                    query: selectedTags,
+                    onAdded: (tag) {
+                      selectedTagController.addTag(tag.tag);
+                      postController.refresh();
+                      searchController.search();
+                    },
+                    onNegated: (tag) {
+                      selectedTagController.negateTag(tag.tag);
+                      postController.refresh();
+                      searchController.search();
+                    },
                   ),
                 ),
-                const Spacer(),
-              ],
-            ),
-          ),
-        ];
-      },
+              ),
+              SliverToBoxAdapter(
+                child: Row(
+                  children: [
+                    ValueListenableBuilder(
+                      valueListenable: selectedTagString,
+                      builder: (context, selectedTags, _) =>
+                          ResultHeaderWithProvider(
+                            selectedTagsString: selectedTags,
+                            onRefresh: null,
+                          ),
+                    ),
+                    const Spacer(),
+                  ],
+                ),
+              ),
+            ];
+          },
     );
   }
 }

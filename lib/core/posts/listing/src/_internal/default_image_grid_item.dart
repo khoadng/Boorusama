@@ -54,16 +54,17 @@ class DefaultImageGridItem<T extends Post> extends StatelessWidget {
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
       valueListenable: multiSelectController.multiSelectNotifier,
-      builder: (_, multiSelect, __) => ValueListenableBuilder(
+      builder: (_, multiSelect, _) => ValueListenableBuilder(
         valueListenable: controller.itemsNotifier,
-        builder: (_, posts, __) {
+        builder: (_, posts, _) {
           final post = posts[index];
 
           return DefaultPostListContextMenuRegion(
             isEnabled: !multiSelect,
-            contextMenu: contextMenu ??
+            contextMenu:
+                contextMenu ??
                 Consumer(
-                  builder: (_, ref, __) => GeneralPostContextMenu(
+                  builder: (_, ref, _) => GeneralPostContextMenu(
                     hasAccount: ref.watchConfigAuth.hasLoginDetails(),
                     onMultiSelect: () {
                       multiSelectController.enableMultiSelect(
@@ -82,13 +83,15 @@ class DefaultImageGridItem<T extends Post> extends StatelessWidget {
                   child: Builder(
                     builder: (context) {
                       final item = Consumer(
-                        builder: (_, ref, __) {
+                        builder: (_, ref, _) {
                           final config = ref.watchConfigAuth;
 
-                          final gridThumbnailUrlBuilder = ref
-                              .watch(gridThumbnailUrlGeneratorProvider(config));
+                          final gridThumbnailUrlBuilder = ref.watch(
+                            gridThumbnailUrlGeneratorProvider(config),
+                          );
 
-                          final imgUrl = imageUrl ??
+                          final imgUrl =
+                              imageUrl ??
                               gridThumbnailUrlBuilder.generateUrl(
                                 post,
                                 settings: ref.watch(
@@ -99,10 +102,11 @@ class DefaultImageGridItem<T extends Post> extends StatelessWidget {
                           return SliverPostGridImageGridItem(
                             post: post,
                             multiSelectEnabled: multiSelect,
-                            onTap: onTap ??
+                            onTap:
+                                onTap ??
                                 () {
                                   goToPostDetailsPageFromController(
-                                    context: context,
+                                    ref: ref,
                                     controller: controller,
                                     initialIndex: index,
                                     scrollController: autoScrollController,

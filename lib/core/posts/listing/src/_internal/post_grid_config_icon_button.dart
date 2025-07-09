@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
 import 'package:foundation/widgets.dart';
+import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
@@ -44,15 +44,7 @@ class PostGridConfigIconButton<T> extends ConsumerWidget {
       valueListenable: multiSelectController.multiSelectNotifier,
       builder: (context, multiSelect, child) {
         return !multiSelect
-            ? Container(
-                width: 32,
-                height: 32,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: context.extendedColorScheme.surfaceContainerOverlay,
-                ),
-                child: _buildMenuButton(context, ref),
-              )
+            ? _buildMenuButton(context, ref)
             : const SizedBox.shrink();
       },
     );
@@ -60,7 +52,7 @@ class PostGridConfigIconButton<T> extends ConsumerWidget {
 
   Widget _buildMenuButton(BuildContext context, WidgetRef ref) {
     return Consumer(
-      builder: (_, ref, __) {
+      builder: (_, ref, _) {
         final config = ref.watchConfigFilter;
 
         final settingsNotifier = ref.watch(settingsNotifierProvider.notifier);
@@ -68,91 +60,102 @@ class PostGridConfigIconButton<T> extends ConsumerWidget {
             .watch(booruBuilderProvider(config.auth))
             ?.postStatisticsPageBuilder;
 
-        final blacklistEntries =
-            ref.watch(blacklistTagEntriesProvider(config)).valueOrNull;
+        final blacklistEntries = ref
+            .watch(blacklistTagEntriesProvider(config))
+            .valueOrNull;
 
         return ValueListenableBuilder(
           valueListenable: postController.itemsNotifier,
-          builder: (_, posts, __) {
+          builder: (_, posts, _) {
             return posts.isNotEmpty
-                ? BooruPopupMenuButton(
-                    offset: const Offset(0, 36),
-                    iconColor:
-                        context.extendedColorScheme.onSurfaceContainerOverlay,
-                    onSelected: (value) {
-                      if (value == 'options') {
-                        _showViewOptions(context, settingsNotifier);
-                      } else if (value == 'select') {
-                        multiSelectController.enableMultiSelect();
-                      } else if (value == 'stats') {
-                        if (postStatsPageBuilder != null) {
-                          Navigator.of(context).push(
-                            CupertinoPageRoute(
-                              settings: const RouteSettings(
-                                name: 'post_statistics',
+                ? Container(
+                    width: 32,
+                    height: 32,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color:
+                          context.extendedColorScheme.surfaceContainerOverlay,
+                    ),
+                    child: BooruPopupMenuButton(
+                      offset: const Offset(0, 36),
+                      iconColor:
+                          context.extendedColorScheme.onSurfaceContainerOverlay,
+                      onSelected: (value) {
+                        if (value == 'options') {
+                          _showViewOptions(context, settingsNotifier);
+                        } else if (value == 'select') {
+                          multiSelectController.enableMultiSelect();
+                        } else if (value == 'stats') {
+                          if (postStatsPageBuilder != null) {
+                            Navigator.of(context).push(
+                              CupertinoPageRoute(
+                                settings: const RouteSettings(
+                                  name: 'post_statistics',
+                                ),
+                                builder: (_) => postStatsPageBuilder(
+                                  context,
+                                  postController.items,
+                                ),
                               ),
-                              builder: (_) => postStatsPageBuilder(
-                                context,
-                                postController.items,
-                              ),
-                            ),
-                          );
-                        }
-                      } else if (value == 'edit_blacklist') {
-                        // check if all entries are global then just open the global blacklist page
-                        final isGlobal = blacklistEntries?.every(
-                              (element) =>
-                                  element.source == BlacklistSource.global,
-                            ) ??
-                            false;
+                            );
+                          }
+                        } else if (value == 'edit_blacklist') {
+                          // check if all entries are global then just open the global blacklist page
+                          final isGlobal =
+                              blacklistEntries?.every(
+                                (element) =>
+                                    element.source == BlacklistSource.global,
+                              ) ??
+                              false;
 
-                        if (isGlobal) {
-                          goToGlobalBlacklistedTagsPage(context);
-                        } else {
-                          showBooruModalBottomSheet(
-                            context: context,
-                            routeSettings: const RouteSettings(
-                              name: 'edit_blacklist_select',
-                            ),
-                            builder: (_) => const EditBlacklistActionSheet(),
-                          );
+                          if (isGlobal) {
+                            goToGlobalBlacklistedTagsPage(ref);
+                          } else {
+                            showBooruModalBottomSheet(
+                              context: context,
+                              routeSettings: const RouteSettings(
+                                name: 'edit_blacklist_select',
+                              ),
+                              builder: (_) => const EditBlacklistActionSheet(),
+                            );
+                          }
                         }
-                      }
-                    },
-                    itemBuilder: {
-                      'select': PostGridConfigOptionTile(
-                        title: const Text('Select').tr(),
-                        icon: const Icon(
-                          Symbols.select_all,
-                          size: 18,
-                        ),
-                      ),
-                      if (postStatsPageBuilder != null)
-                        'stats': PostGridConfigOptionTile(
-                          title: const Text('Stats').tr(),
-                          icon: const Icon(
-                            Symbols.bar_chart,
+                      },
+                      itemBuilder: {
+                        'select': const PostGridConfigOptionTile(
+                          title: Text('Select'),
+                          icon: Icon(
+                            Symbols.select_all,
                             size: 18,
                           ),
                         ),
-                      if (showBlacklist &&
-                          blacklistEntries != null &&
-                          blacklistEntries.isNotEmpty)
-                        'edit_blacklist': PostGridConfigOptionTile(
-                          title: const Text('Edit Blacklist').tr(),
-                          icon: const Icon(
-                            Symbols.block,
+                        if (postStatsPageBuilder != null)
+                          'stats': const PostGridConfigOptionTile(
+                            title: Text('Stats'),
+                            icon: Icon(
+                              Symbols.bar_chart,
+                              size: 18,
+                            ),
+                          ),
+                        if (showBlacklist &&
+                            blacklistEntries != null &&
+                            blacklistEntries.isNotEmpty)
+                          'edit_blacklist': const PostGridConfigOptionTile(
+                            title: Text('Edit Blacklist'),
+                            icon: Icon(
+                              Symbols.block,
+                              size: 18,
+                            ),
+                          ),
+                        'options': const PostGridConfigOptionTile(
+                          title: Text('View Options'),
+                          icon: Icon(
+                            Symbols.settings,
                             size: 18,
                           ),
                         ),
-                      'options': PostGridConfigOptionTile(
-                        title: const Text('View Options').tr(),
-                        icon: const Icon(
-                          Symbols.settings,
-                          size: 18,
-                        ),
-                      ),
-                    },
+                      },
+                    ),
                   )
                 : const SizedBox.shrink();
           },
@@ -233,7 +236,9 @@ class EditBlacklistActionSheet extends ConsumerWidget {
     final config = ref.watchConfigFilter;
     final colorScheme = Theme.of(context).colorScheme;
 
-    return ref.watch(blacklistTagEntriesProvider(config)).when(
+    return ref
+        .watch(blacklistTagEntriesProvider(config))
+        .when(
           data: (entries) {
             final sources = entries.map((e) => e.source).toSet();
 
@@ -250,55 +255,57 @@ class EditBlacklistActionSheet extends ConsumerWidget {
                             ),
                             child: switch (e) {
                               BlacklistSource.global => Image.asset(
-                                  'assets/images/logo.png',
-                                  width: 24,
-                                  height: 24,
-                                  isAntiAlias: true,
-                                  filterQuality: FilterQuality.none,
-                                ),
+                                'assets/images/logo.png',
+                                width: 24,
+                                height: 24,
+                                isAntiAlias: true,
+                                filterQuality: FilterQuality.none,
+                              ),
                               BlacklistSource.booruSpecific => BooruLogo(
-                                  source: config.auth.url,
-                                  width: 24,
-                                  height: 24,
-                                ),
+                                source: config.auth.url,
+                                width: 24,
+                                height: 24,
+                              ),
                               BlacklistSource.config => Icon(
-                                  Icons.settings,
-                                  color: colorScheme.onSurfaceVariant,
-                                ),
+                                Icons.settings,
+                                color: colorScheme.onSurfaceVariant,
+                              ),
                             },
                           ),
                           onTap: () {
                             if (e == BlacklistSource.global) {
-                              goToGlobalBlacklistedTagsPage(context);
+                              goToGlobalBlacklistedTagsPage(ref);
                             } else if (e == BlacklistSource.config) {
                               goToUpdateBooruConfigPage(
-                                context,
+                                ref,
                                 config: ref.readConfig,
                                 initialTab: 'search',
                               );
                             } else {
                               //FIXME: if more booru specific blacklist pages are added, we should move this to the builder
                               if (config.auth.booruType == BooruType.danbooru) {
-                                goToBlacklistedTagPage(context);
+                                goToBlacklistedTagPage(ref);
                               }
                             }
                             Navigator.of(context).pop();
                           },
                           title: switch (e) {
-                            BlacklistSource.global =>
-                              const Text('Edit Global Blacklist').tr(),
-                            BlacklistSource.booruSpecific =>
-                              const Text("Edit Booru's Specific Blacklist")
-                                  .tr(),
-                            BlacklistSource.config =>
-                              const Text('Edit Profile Blacklist').tr(),
+                            BlacklistSource.global => Text(
+                              'Edit Global Blacklist'.hc,
+                            ),
+                            BlacklistSource.booruSpecific => Text(
+                              "Edit Booru's Specific Blacklist".hc,
+                            ),
+                            BlacklistSource.config => Text(
+                              'Edit Profile Blacklist'.hc,
+                            ),
                           },
                         ),
                       ),
                     ],
                   )
-                : const Center(
-                    child: Text('No blacklisted tags'),
+                : Center(
+                    child: Text('No blacklisted tags'.hc),
                   );
           },
           loading: () => const Center(child: CircularProgressIndicator()),
@@ -328,13 +335,15 @@ class PostGridActionSheet extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final gridSize = ref
-        .watch(imageListingSettingsProvider.select((value) => value.gridSize));
+    final gridSize = ref.watch(
+      imageListingSettingsProvider.select((value) => value.gridSize),
+    );
     final imageListType = ref.watch(
       imageListingSettingsProvider.select((value) => value.imageListType),
     );
-    final pageMode = ref
-        .watch(imageListingSettingsProvider.select((value) => value.pageMode));
+    final pageMode = ref.watch(
+      imageListingSettingsProvider.select((value) => value.pageMode),
+    );
     final imageQuality = ref.watch(
       imageListingSettingsProvider.select((value) => value.imageQuality),
     );
@@ -367,40 +376,40 @@ class PostGridActionSheet extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   SettingsTile<PageMode>(
-                    title:
-                        const Text('settings.result_layout.result_layout').tr(),
+                    title: Text(context.t.settings.result_layout.result_layout),
                     selectedOption: pageMode,
                     items: const [...PageMode.values],
                     onChanged: (value) => onModeChanged(value),
-                    optionBuilder: (value) => Text(value.localize()).tr(),
+                    optionBuilder: (value) => Text(value.localize(context)),
                     visualDensity: VisualDensity.compact,
                   ),
                   SettingsTile<GridSize>(
-                    title: const Text('settings.image_grid.grid_size.grid_size')
-                        .tr(),
+                    title: Text(
+                      context.t.settings.image_grid.grid_size.grid_size,
+                    ),
                     selectedOption: gridSize,
                     items: GridSize.values,
                     onChanged: (value) => onGridChanged(value),
-                    optionBuilder: (value) => Text(value.localize().tr()),
+                    optionBuilder: (value) => Text(value.localize(context)),
                     visualDensity: VisualDensity.compact,
                   ),
                   SettingsTile<ImageListType>(
-                    title: const Text('settings.image_list.image_list').tr(),
+                    title: Text(context.t.settings.image_list.image_list),
                     selectedOption: imageListType,
                     items: ImageListType.values,
                     onChanged: (value) => onImageListChanged(value),
-                    optionBuilder: (value) => Text(value.localize()).tr(),
+                    optionBuilder: (value) => Text(value.localize(context)),
                     visualDensity: VisualDensity.compact,
                   ),
                   SettingsTile<ImageQuality>(
-                    title: const Text(
-                      'settings.image_grid.image_quality.image_quality',
-                    ).tr(),
+                    title: Text(
+                      context.t.settings.image_grid.image_quality.image_quality,
+                    ),
                     selectedOption: imageQuality,
                     items: [...ImageQuality.values]
                       ..remove(ImageQuality.original),
                     onChanged: (value) => onImageQualityChanged(value),
-                    optionBuilder: (value) => Text(value.localize()).tr(),
+                    optionBuilder: (value) => Text(value.localize(context)),
                     visualDensity: VisualDensity.compact,
                   ),
                 ],
@@ -415,9 +424,9 @@ class PostGridActionSheet extends ConsumerWidget {
             child: FilledButton(
               onPressed: () {
                 Navigator.of(context).pop();
-                openAppearancePage(context);
+                openAppearancePage(ref);
               },
-              child: const Text('More'),
+              child: Text('More'.hc),
             ),
           ),
         ],

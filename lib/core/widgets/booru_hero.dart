@@ -21,8 +21,9 @@ class BooruHero extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final reduceAnimations =
-        ref.watch(settingsProvider.select((value) => value.reduceAnimations));
+    final reduceAnimations = ref.watch(
+      settingsProvider.select((value) => value.reduceAnimations),
+    );
     final heroTag = tag;
 
     return kEnableHeroTransition && heroTag != null && !reduceAnimations

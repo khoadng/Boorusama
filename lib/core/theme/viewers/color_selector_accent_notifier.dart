@@ -6,7 +6,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../utils/color_utils.dart';
+import '../../../foundation/utils/color_utils.dart';
 import '../named_colors.dart';
 import '../theme_configs.dart';
 import 'theme_previewer_notifier.dart';
@@ -20,7 +20,8 @@ class AccentColorSelectorNotifier
     return AccentColorSelectorState(
       harmonize: themePreviewerState.colors.harmonizeWithPrimary,
       isDark: themePreviewerState.colors.brightness == Brightness.dark,
-      variant: themePreviewerState.colors.dynamicSchemeVariant ??
+      variant:
+          themePreviewerState.colors.dynamicSchemeVariant ??
           DynamicSchemeVariant.tonalSpot,
       currentColorCode: themePreviewerState.colors.name,
     );
@@ -106,11 +107,11 @@ class AccentColorSelectorState extends Equatable {
 
   @override
   List<Object?> get props => [
-        isDark,
-        harmonize,
-        variant,
-        currentColorCode,
-      ];
+    isDark,
+    harmonize,
+    variant,
+    currentColorCode,
+  ];
 
   AccentColorSelectorState copyWith({
     bool? isDark,
@@ -128,10 +129,13 @@ class AccentColorSelectorState extends Equatable {
   }
 }
 
-final accentColorSelectorProvider = NotifierProvider.autoDispose<
-    AccentColorSelectorNotifier, AccentColorSelectorState>(
-  AccentColorSelectorNotifier.new,
-  dependencies: [
-    themePreviewerProvider,
-  ],
-);
+final accentColorSelectorProvider =
+    NotifierProvider.autoDispose<
+      AccentColorSelectorNotifier,
+      AccentColorSelectorState
+    >(
+      AccentColorSelectorNotifier.new,
+      dependencies: [
+        themePreviewerProvider,
+      ],
+    );

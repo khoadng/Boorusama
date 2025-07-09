@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 class NetworkUnavailableIndicator extends StatelessWidget {
@@ -33,12 +33,12 @@ class NetworkUnavailableIndicator extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(left: 6),
                 child: Text(
-                  'network.unavailable',
+                  context.t.network.unavailable,
                   style: TextStyle(
                     color: colorScheme.onSurface,
                     fontWeight: FontWeight.w500,
                   ),
-                ).tr(),
+                ),
               ),
             ],
           ),

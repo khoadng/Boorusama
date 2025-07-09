@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
@@ -32,8 +32,9 @@ class RelatedTagActionSheet extends ConsumerStatefulWidget {
 }
 
 class _RelatedTagActionSheetState extends ConsumerState<RelatedTagActionSheet> {
-  late final tags = widget.relatedTag.tags
-      .sorted((a, b) => b.cosineSimilarity.compareTo(a.cosineSimilarity));
+  late final tags = widget.relatedTag.tags.sorted(
+    (a, b) => b.cosineSimilarity.compareTo(a.cosineSimilarity),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +50,7 @@ class _RelatedTagActionSheetState extends ConsumerState<RelatedTagActionSheet> {
         ],
         toolbarHeight: kToolbarHeight * 0.75,
         automaticallyImplyLeading: false,
-        title: const Text('tag.related.related').tr(),
+        title: Text(context.t.tag.related.related),
       ),
       body: ListView.builder(
         itemBuilder: (context, index) => ListTile(
@@ -57,8 +58,9 @@ class _RelatedTagActionSheetState extends ConsumerState<RelatedTagActionSheet> {
           title: Text(
             tags[index].tag.replaceAll('_', ' '),
             style: TextStyle(
-              color: ref
-                  .watch(tagColorProvider((auth, tags[index].category.name))),
+              color: ref.watch(
+                tagColorProvider((auth, tags[index].category.name)),
+              ),
             ),
           ),
           trailing: BooruPopupMenuButton(
@@ -78,9 +80,9 @@ class _RelatedTagActionSheetState extends ConsumerState<RelatedTagActionSheet> {
               }
             },
             itemBuilder: {
-              'add': const Text('Add'),
-              'negate': const Text('Negate'),
-              'open_wiki': const Text('tag.related.open_wiki').tr(),
+              'add': Text('Add'.hc),
+              'negate': Text('Negate'.hc),
+              'open_wiki': Text(context.t.tag.related.open_wiki),
             },
           ),
         ),

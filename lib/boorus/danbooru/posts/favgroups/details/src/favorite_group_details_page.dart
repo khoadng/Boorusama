@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
@@ -81,21 +82,22 @@ class _FavoriteGroupDetailsPageState
                 backgroundColor: Theme.of(context).colorScheme.surface,
               ),
             ],
-            itemBuilder: (
-              context,
-              index,
-              multiSelectController,
-              autoScrollController,
-              useHero,
-            ) {
-              return DefaultDanbooruImageGridItem(
-                index: index,
-                multiSelectController: multiSelectController,
-                autoScrollController: autoScrollController,
-                controller: controller,
-                useHero: useHero,
-              );
-            },
+            itemBuilder:
+                (
+                  context,
+                  index,
+                  multiSelectController,
+                  autoScrollController,
+                  useHero,
+                ) {
+                  return DefaultDanbooruImageGridItem(
+                    index: index,
+                    multiSelectController: multiSelectController,
+                    autoScrollController: autoScrollController,
+                    controller: controller,
+                    useHero: useHero,
+                  );
+                },
           ),
         ),
       ),
@@ -119,7 +121,7 @@ class _FavoriteGroupDetailsPageState
     return IconButton(
       onPressed: () {
         goToSearchPage(
-          context,
+          ref,
           tag: widget.group.getQueryString(),
         );
       },
@@ -133,8 +135,9 @@ class _FavoriteGroupDetailsPageState
   ) {
     return IconButton(
       onPressed: () {
-        final notifier =
-            ref.read(danbooruFavoriteGroupsProvider(config).notifier);
+        final notifier = ref.read(
+          danbooruFavoriteGroupsProvider(config).notifier,
+        );
 
         Navigator.of(context).push(
           CupertinoPageRoute(
@@ -146,10 +149,10 @@ class _FavoriteGroupDetailsPageState
                   allIds: postIds.toSet(),
                   newIds: reorderedPosts.map((e) => e.id).toSet(),
                   oldIds: controller.allItems.map((e) => e.id).toSet(),
-                  onFailure: (message, translatable) {
+                  onFailure: (message) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        content: Text(message.tr()),
+                        content: Text(message),
                       ),
                     );
                   },
@@ -207,7 +210,7 @@ class _FavoriteGroupEditPageState extends State<FavoriteGroupEditPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Edit'),
+        title: Text('Edit'.hc),
         actions: [
           IconButton(
             icon: const Icon(Icons.save),

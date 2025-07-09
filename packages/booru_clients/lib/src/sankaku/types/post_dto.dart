@@ -52,8 +52,9 @@ class PostDto {
       id: SankakuId.maybeFrom(json['id']),
       rating: json['rating'],
       status: json['status'],
-      author:
-          json['author'] != null ? AuthorDto.fromJson(json['author']) : null,
+      author: json['author'] != null
+          ? AuthorDto.fromJson(json['author'])
+          : null,
       sampleUrl: json['sample_url'],
       sampleWidth: json['sample_width'],
       sampleHeight: json['sample_height'],

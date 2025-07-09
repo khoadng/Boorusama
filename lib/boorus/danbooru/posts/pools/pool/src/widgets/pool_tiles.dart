@@ -2,13 +2,14 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../../../details/providers.dart';
 import '../danbooru_pool.dart';
 
-class PoolTiles extends StatelessWidget {
+class PoolTiles extends ConsumerWidget {
   const PoolTiles({
     required this.pools,
     super.key,
@@ -17,7 +18,7 @@ class PoolTiles extends StatelessWidget {
   final List<DanbooruPool> pools;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     if (pools.isEmpty) {
       return const SizedBox.shrink();
     }
@@ -75,7 +76,7 @@ class PoolTiles extends StatelessWidget {
                       ),
                       subtitle: Text('${e.postCount} posts'),
                       trailing: const Icon(Symbols.keyboard_arrow_right),
-                      onTap: () => goToPoolDetailPage(context, e),
+                      onTap: () => goToPoolDetailPage(ref, e),
                     ),
                   ],
                 ),
@@ -83,28 +84,6 @@ class PoolTiles extends StatelessWidget {
             ],
           ),
         ),
-
-        // Column(
-        //   children: [
-        //     ...pools.mapIndexed(
-        //       (index, e) => ListTile(
-        //         dense: true,
-        //         onTap: () => goToPoolDetailPage(context, e),
-        //         visualDensity: const ShrinkVisualDensity(),
-        //         title: Text(
-        //           e.name.replaceAll('_', ' '),
-        //           overflow: TextOverflow.fade,
-        //           maxLines: 1,
-        //           softWrap: false,
-        //           style: Theme.of(context).textTheme.titleSmall,
-        //         ),
-        //         trailing: const Icon(
-        //           Symbols.keyboard_arrow_right,
-        //         ),
-        //       ),
-        //     ),
-        //   ],
-        // ),
       ),
     );
   }

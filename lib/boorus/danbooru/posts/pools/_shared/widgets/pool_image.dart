@@ -28,35 +28,40 @@ class PoolImage extends ConsumerWidget {
     return LayoutBuilder(
       builder: (context, constraints) => cover != null
           ? cover.url != null
-              ? BooruImage(
-                  aspectRatio: 0.6,
-                  imageUrl: cover.url!,
-                  fit: BoxFit.cover,
-                  borderRadius:
-                      BorderRadius.all(Radius.circular(imageBorderRadius)),
-                )
-              : AspectRatio(
-                  aspectRatio: 0.6,
-                  child: Container(
-                    width: constraints.maxWidth,
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.surfaceContainerLow,
-                      borderRadius:
-                          BorderRadius.all(Radius.circular(imageBorderRadius)),
+                ? BooruImage(
+                    aspectRatio: 0.6,
+                    imageUrl: cover.url!,
+                    fit: BoxFit.cover,
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(imageBorderRadius),
                     ),
-                    child: const Center(
-                      child: Text('No cover image'),
+                  )
+                : AspectRatio(
+                    aspectRatio: 0.6,
+                    child: Container(
+                      width: constraints.maxWidth,
+                      decoration: BoxDecoration(
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.surfaceContainerLow,
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(imageBorderRadius),
+                        ),
+                      ),
+                      child: const Center(
+                        child: Text('No cover image'),
+                      ),
                     ),
-                  ),
-                )
+                  )
           : AspectRatio(
               aspectRatio: 0.6,
               child: Container(
                 width: constraints.maxWidth,
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.surfaceContainerLow,
-                  borderRadius:
-                      BorderRadius.all(Radius.circular(imageBorderRadius)),
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(imageBorderRadius),
+                  ),
                 ),
               ),
             ),

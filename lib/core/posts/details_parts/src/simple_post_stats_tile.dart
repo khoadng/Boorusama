@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../theme.dart';
@@ -34,7 +34,8 @@ class SimplePostStatsTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DetailsWidgetSeparator(
-      padding: padding ??
+      padding:
+          padding ??
           const EdgeInsets.symmetric(
             horizontal: 8,
             vertical: 8,
@@ -53,7 +54,7 @@ class SimplePostStatsTile extends StatelessWidget {
                 ),
                 children: [
                   TextSpan(
-                    text: 'favorites.counter'.plural(favCount),
+                    text: context.t.favorites.counter(n: favCount),
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w400,
@@ -77,7 +78,7 @@ class SimplePostStatsTile extends StatelessWidget {
                 children: [
                   TextSpan(
                     text:
-                        '${'post.detail.score'.plural(score)} ${votePercentText ?? ''}',
+                        '${context.t.post.detail.score(n: score)} ${votePercentText ?? ''}',
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w400,
@@ -100,7 +101,7 @@ class SimplePostStatsTile extends StatelessWidget {
                 ),
                 children: [
                   TextSpan(
-                    text: 'comment.counter'.plural(totalComments),
+                    text: context.t.comment.counter(n: totalComments),
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w400,

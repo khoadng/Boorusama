@@ -1,6 +1,9 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Package imports:
+import 'package:i18n/i18n.dart';
+
 // Project imports:
 import '../../../theme.dart';
 import '../../../widgets/widgets.dart';
@@ -15,16 +18,16 @@ class PremiumThanksDialog extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Text(
-            'Thank you!',
-            style: TextStyle(
+          Text(
+            'Thank you!'.hc,
+            style: const TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w700,
             ),
           ),
           const SizedBox(height: 20),
           Text(
-            'You now can access premium features. Enjoy!',
+            'You now can access premium features. Enjoy!'.hc,
             style: TextStyle(
               fontWeight: FontWeight.w400,
               color: Theme.of(context).colorScheme.hintColor,
@@ -39,11 +42,11 @@ class PremiumThanksDialog extends StatelessWidget {
             onPressed: () {
               Navigator.pop(context);
             },
-            child: const Padding(
-              padding: EdgeInsets.symmetric(vertical: 14),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 14),
               child: Text(
-                'Got it!',
-                style: TextStyle(
+                'Got it!'.hc,
+                style: const TextStyle(
                   fontWeight: FontWeight.w600,
                 ),
               ),

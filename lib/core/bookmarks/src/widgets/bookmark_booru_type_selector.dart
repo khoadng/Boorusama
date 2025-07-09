@@ -18,7 +18,9 @@ class BookmarkBooruSourceUrlSelector extends ConsumerWidget {
     return Container(
       color: Theme.of(context).colorScheme.surface,
       padding: const EdgeInsets.only(bottom: 4),
-      child: ref.watch(availableBooruUrlsProvider).when(
+      child: ref
+          .watch(availableBooruUrlsProvider)
+          .when(
             data: (data) => ChoiceOptionSelectorList(
               options: data,
               sheetTitle: 'Source',

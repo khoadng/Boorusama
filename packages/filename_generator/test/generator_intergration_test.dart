@@ -60,8 +60,9 @@ void main() {
         '[{date:format=dd.MM.yyyy hh:mm}] {character:nomod,case=upper,sort[name]=desc} drawn by {artist:limit=1} - {md5:maxlength=6} ({index}).{extension}';
 
     // Act
-    final List<String> filenames =
-        metadata.map((e) => generateFileName(e, format, clock: clock)).toList();
+    final List<String> filenames = metadata
+        .map((e) => generateFileName(e, format, clock: clock))
+        .toList();
 
     // Assert
     expect(

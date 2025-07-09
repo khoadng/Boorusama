@@ -8,16 +8,17 @@ import 'tag_query_composer.dart';
 
 final tagQueryComposerProvider =
     Provider.family<TagQueryComposer, BooruConfigSearch>(
-  (ref, config) {
-    final repo =
-        ref.watch(booruEngineRegistryProvider).getRepository(config.booruType);
+      (ref, config) {
+        final repo = ref
+            .watch(booruEngineRegistryProvider)
+            .getRepository(config.booruType);
 
-    final composer = repo?.tagComposer(config);
+        final composer = repo?.tagComposer(config);
 
-    if (composer != null) {
-      return composer;
-    }
+        if (composer != null) {
+          return composer;
+        }
 
-    return DefaultTagQueryComposer(config: config);
-  },
-);
+        return DefaultTagQueryComposer(config: config);
+      },
+    );

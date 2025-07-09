@@ -30,21 +30,22 @@ class PostScope<T extends Post> extends ConsumerStatefulWidget {
   final Widget Function(
     BuildContext context,
     PostGridController<T> controller,
-  ) builder;
+  )
+  builder;
   final PageMode? pageMode;
   final int? initialPage;
   final DuplicateCheckMode duplicateCheckMode;
 
   static PostGridController<T>? maybeOf<T extends Post>(BuildContext context) {
-    final inherited =
-        context.dependOnInheritedWidgetOfExactType<_PostScope<T>>();
+    final inherited = context
+        .dependOnInheritedWidgetOfExactType<_PostScope<T>>();
 
     return inherited?.controller;
   }
 
   static PostGridController<T> of<T extends Post>(BuildContext context) {
-    final inherited =
-        context.dependOnInheritedWidgetOfExactType<_PostScope<T>>();
+    final inherited = context
+        .dependOnInheritedWidgetOfExactType<_PostScope<T>>();
 
     if (inherited == null) {
       throw Exception('No PostScope found in the widget tree');
@@ -74,7 +75,8 @@ class _PostScopeState<T extends Post> extends ConsumerState<PostScope<T>> {
 
         return ref.read(blacklistTagsProvider(ref.readConfigFilter).future);
       },
-      pageMode: widget.pageMode ??
+      pageMode:
+          widget.pageMode ??
           ref.read(
             imageListingSettingsProvider.select((value) => value.pageMode),
           ),
@@ -154,7 +156,8 @@ class RawPostScope<T extends Post> extends ConsumerStatefulWidget {
   final Widget Function(
     BuildContext context,
     PostGridController<T> controller,
-  ) builder;
+  )
+  builder;
 
   final DuplicateCheckMode duplicateCheckMode;
 
@@ -170,8 +173,9 @@ class _RawPostScopeState<T extends Post>
       mode: widget.duplicateCheckMode,
     ),
     blacklistedTagsFetcher: () async => {},
-    pageMode: ref
-        .read(imageListingSettingsProvider.select((value) => value.pageMode)),
+    pageMode: ref.read(
+      imageListingSettingsProvider.select((value) => value.pageMode),
+    ),
     mountedChecker: () => mounted,
   );
 

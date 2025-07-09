@@ -19,28 +19,27 @@ class DanbooruPostVote extends Equatable implements PostVote {
   });
 
   factory DanbooruPostVote.empty() => DanbooruPostVote(
-        id: -1,
-        postId: -1,
-        userId: -1,
-        createdAt: DateTime(1),
-        updatedAt: DateTime(1),
-        score: -9999,
-        isDeleted: false,
-      );
+    id: -1,
+    postId: -1,
+    userId: -1,
+    createdAt: DateTime(1),
+    updatedAt: DateTime(1),
+    score: -9999,
+    isDeleted: false,
+  );
 
   factory DanbooruPostVote.local({
     required int postId,
     required int score,
-  }) =>
-      DanbooruPostVote(
-        id: -99,
-        postId: postId,
-        userId: -99,
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-        score: score,
-        isDeleted: false,
-      );
+  }) => DanbooruPostVote(
+    id: -99,
+    postId: postId,
+    userId: -99,
+    createdAt: DateTime.now(),
+    updatedAt: DateTime.now(),
+    score: score,
+    isDeleted: false,
+  );
 
   @override
   final PostVoteId id;
@@ -55,14 +54,14 @@ class DanbooruPostVote extends Equatable implements PostVote {
 
   @override
   List<Object?> get props => [
-        id,
-        postId,
-        userId,
-        createdAt,
-        updatedAt,
-        score,
-        isDeleted,
-      ];
+    id,
+    postId,
+    userId,
+    createdAt,
+    updatedAt,
+    score,
+    isDeleted,
+  ];
 }
 
 extension PostVoteX on DanbooruPostVote {
@@ -77,14 +76,13 @@ extension PostVoteX on DanbooruPostVote {
     DateTime? updatedAt,
     int? score,
     bool? isDeleted,
-  }) =>
-      DanbooruPostVote(
-        id: id ?? this.id,
-        postId: postId ?? this.postId,
-        userId: userId ?? this.userId,
-        createdAt: createdAt ?? this.createdAt,
-        updatedAt: updatedAt ?? this.updatedAt,
-        score: score ?? this.score,
-        isDeleted: isDeleted ?? this.isDeleted,
-      );
+  }) => DanbooruPostVote(
+    id: id ?? this.id,
+    postId: postId ?? this.postId,
+    userId: userId ?? this.userId,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    score: score ?? this.score,
+    isDeleted: isDeleted ?? this.isDeleted,
+  );
 }

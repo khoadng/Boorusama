@@ -6,13 +6,14 @@ import 'package:animated_list_plus/animated_list_plus.dart';
 import 'package:animated_list_plus/transitions.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import '../../../../../../../core/configs/config.dart';
 import '../../../../../../../core/configs/ref.dart';
-import '../../../../../../../core/foundation/animations.dart';
-import '../../../../../../../core/foundation/toast.dart';
+import '../../../../../../../foundation/animations/constants.dart';
+import '../../../../../../../foundation/toast.dart';
 import '../../../../post/post.dart';
 import '../../favgroup.dart';
 import '../providers/favorite_groups_filterable_notifier.dart';
@@ -29,20 +30,21 @@ class AddToFavgroupList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfigSearch;
-    final filteredGroups =
-        ref.watch(danbooruFavoriteGroupFilterableProvider(config));
+    final filteredGroups = ref.watch(
+      danbooruFavoriteGroupFilterableProvider(config),
+    );
 
     return filteredGroups.toOption().fold(
-          () => const Padding(
-            padding: EdgeInsets.all(8),
-            child: Center(
-              child: CircularProgressIndicator.adaptive(),
-            ),
-          ),
-          (groups) => groups.isEmpty
-              ? const Center(child: Text('Empty'))
-              : _buildList(groups, context, ref, config),
-        );
+      () => const Padding(
+        padding: EdgeInsets.all(8),
+        child: Center(
+          child: CircularProgressIndicator.adaptive(),
+        ),
+      ),
+      (groups) => groups.isEmpty
+          ? const Center(child: Text('Empty'))
+          : _buildList(groups, context, ref, config),
+    );
   }
 
   Widget _buildList(
@@ -70,22 +72,22 @@ class AddToFavgroupList extends ConsumerWidget {
               group.updatedAt.fuzzify(locale: Localizations.localeOf(context)),
             ),
             trailing: Text(
-              'favorite_groups.group_item_counter'.plural(
-                group.postIds.length,
+              context.t.favorite_groups.group_item_counter(
+                n: group.postIds.length,
               ),
             ),
             onTap: () {
               ref
                   .read(danbooruFavoriteGroupsProvider(config).notifier)
                   .addToGroup(
+                    context: context,
                     group: group,
                     postIds: posts.map((e) => e.id).toList(),
-                    onFailure: (message, translatable) {
+                    onFailure: (message) {
                       showSimpleSnackBar(
                         context: context,
                         duration: AppDurations.extraLongToast,
-                        content:
-                            translatable ? Text(message).tr() : Text(message),
+                        content: Text(message),
                       );
                     },
                     onSuccess: (newGroup) {
@@ -93,8 +95,8 @@ class AddToFavgroupList extends ConsumerWidget {
                         context: context,
                         duration: AppDurations.longToast,
                         content: Text(
-                          'favorite_groups.items_added_notification_popup'
-                              .tr()
+                          context
+                              .t.favorite_groups.items_added_notification_popup
                               .replaceAll('{0}', '${posts.length}')
                               .replaceAll(
                                 '{1}',

@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
-import '../../utils/color_utils.dart';
+import '../../../foundation/utils/color_utils.dart';
 import 'color_selector_accent_notifier.dart';
 import 'theme_previewer_notifier.dart';
 import 'theme_widgets.dart';
@@ -53,7 +54,7 @@ class AccentColorSelector extends StatelessWidget {
 
   Widget _buildDarkThemeToggle() {
     return Consumer(
-      builder: (_, ref, __) {
+      builder: (_, ref, _) {
         final isDark = ref.watch(
           accentColorSelectorProvider.select((value) => value.isDark),
         );
@@ -65,7 +66,7 @@ class AccentColorSelector extends StatelessWidget {
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 4,
             ),
-            title: const Text('Dark mode'),
+            title: Text('Dark mode'.hc),
             value: isDark,
             onChanged: (value) {
               notifier.updateIsDark(value);
@@ -78,7 +79,7 @@ class AccentColorSelector extends StatelessWidget {
 
   Widget _buildHarmonizeToggle() {
     return Consumer(
-      builder: (_, ref, __) {
+      builder: (_, ref, _) {
         final harmonize = ref.watch(
           accentColorSelectorProvider.select((value) => value.harmonize),
         );
@@ -90,9 +91,9 @@ class AccentColorSelector extends StatelessWidget {
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 4,
             ),
-            title: const Text('Harmonize colors'),
-            subtitle: const Text(
-              'Adjusts tag colors to match the accent color',
+            title: Text('Harmonize colors'.hc),
+            subtitle: Text(
+              'Adjusts tag colors to match the accent color'.hc,
             ),
             value: harmonize,
             onChanged: (value) {
@@ -106,7 +107,7 @@ class AccentColorSelector extends StatelessWidget {
 
   Widget _buildVariantSelector() {
     return Consumer(
-      builder: (_, ref, __) {
+      builder: (_, ref, _) {
         final notifier = ref.watch(accentColorSelectorProvider.notifier);
         final variant = ref.watch(
           accentColorSelectorProvider.select((value) => value.variant),
@@ -130,15 +131,15 @@ class AccentColorSelector extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Text(
-            'Colors',
-            style: TextStyle(
+          Text(
+            'Colors'.hc,
+            style: const TextStyle(
               fontWeight: FontWeight.w600,
               fontSize: 16,
             ),
           ),
           Consumer(
-            builder: (_, ref, __) {
+            builder: (_, ref, _) {
               final viewAllColor = ref.watch(_viewAllColorProvider);
 
               return TextButton(
@@ -146,9 +147,8 @@ class AccentColorSelector extends StatelessWidget {
                   ref.read(_viewAllColorProvider.notifier).state =
                       !viewAllColor;
                 },
-                child: !viewAllColor
-                    ? const Text('Show all')
-                    : const Text('Show less'),
+                child:
+                    !viewAllColor ? Text('Show all'.hc) : Text('Show less'.hc),
               );
             },
           ),
@@ -159,7 +159,7 @@ class AccentColorSelector extends StatelessWidget {
 
   Widget _buildColorSelector() {
     return Consumer(
-      builder: (_, ref, __) {
+      builder: (_, ref, _) {
         final viewAllColor = ref.watch(_viewAllColorProvider);
 
         final notifier = ref.watch(accentColorSelectorProvider.notifier);

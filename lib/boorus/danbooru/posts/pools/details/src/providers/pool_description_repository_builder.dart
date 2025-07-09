@@ -1,5 +1,5 @@
 // Project imports:
-import '../../../../../../../core/foundation/caching.dart';
+import '../../../../../../../foundation/caching.dart';
 import '../types/pool_description_repository.dart';
 
 class PoolDescriptionRepoBuilder
@@ -20,9 +20,9 @@ class PoolDescriptionRepoBuilder
 
   @override
   Future<String> getDescription(int poolId) => tryGet(
-        'pool_desc_$poolId',
-        orElse: () => fetchDescription(poolId),
-      );
+    'pool_desc_$poolId',
+    orElse: () => fetchDescription(poolId),
+  );
 
   @override
   late Cache<String> cache;

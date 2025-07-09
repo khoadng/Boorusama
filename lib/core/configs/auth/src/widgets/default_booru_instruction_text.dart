@@ -17,10 +17,10 @@ class DefaultBooruInstructionText extends StatelessWidget {
     return Text(
       text,
       style: Theme.of(context).textTheme.titleSmall?.copyWith(
-            color: Theme.of(context).colorScheme.hintColor,
-            fontSize: 12,
-            fontWeight: FontWeight.w400,
-          ),
+        color: Theme.of(context).colorScheme.hintColor,
+        fontSize: 12,
+        fontWeight: FontWeight.w400,
+      ),
     );
   }
 }

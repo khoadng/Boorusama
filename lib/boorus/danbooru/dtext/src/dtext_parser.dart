@@ -2,42 +2,42 @@
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../../core/comments/utils.dart';
+import '../../../../core/html/styling.dart';
 
 String parseDtext(String text) => text.pipe([
-      bold,
-      italic,
-      underline,
-      strikethrough,
-      linkCustomText,
-      linkCustomTextNoBrackets,
-      linkMarkdownStyle,
-    ]);
+  bold,
+  italic,
+  underline,
+  strikethrough,
+  linkCustomText,
+  linkCustomTextNoBrackets,
+  linkMarkdownStyle,
+]);
 
 String bold(String text) => text.replaceAllMapped(
-      RegExp(r'\[b\](.*?)\[/b\]'),
-      (match) => '<strong>${match.group(1)}</strong>',
-    );
+  RegExp(r'\[b\](.*?)\[/b\]'),
+  (match) => '<strong>${match.group(1)}</strong>',
+);
 
 String italic(String text) => text.replaceAllMapped(
-      RegExp(r'\[i\](.*?)\[/i\]'),
-      (match) => '<em>${match.group(1)}</em>',
-    );
+  RegExp(r'\[i\](.*?)\[/i\]'),
+  (match) => '<em>${match.group(1)}</em>',
+);
 
 String underline(String text) => text.replaceAllMapped(
-      RegExp(r'\[u\](.*?)\[/u\]'),
-      (match) => '<u>${match.group(1)}</u>',
-    );
+  RegExp(r'\[u\](.*?)\[/u\]'),
+  (match) => '<u>${match.group(1)}</u>',
+);
 
 String strikethrough(String text) => text.replaceAllMapped(
-      RegExp(r'\[s\](.*?)\[/s\]'),
-      (match) => '<s>${match.group(1)}</s>',
-    );
+  RegExp(r'\[s\](.*?)\[/s\]'),
+  (match) => '<s>${match.group(1)}</s>',
+);
 
 String linkCustomText(String text) => text.replaceAllMapped(
-      RegExp(r'"(.*?)":\[(.*?)\]'),
-      (match) => linkify(title: match.group(1), address: match.group(2)),
-    );
+  RegExp(r'"(.*?)":\[(.*?)\]'),
+  (match) => linkify(title: match.group(1), address: match.group(2)),
+);
 
 String linkCustomTextNoBrackets(String text) {
   try {
@@ -56,6 +56,6 @@ String linkCustomTextNoBrackets(String text) {
 }
 
 String linkMarkdownStyle(String text) => text.replaceAllMapped(
-      RegExp(r'\[(.*?)\]\((.*?)\)'),
-      (match) => linkify(title: match.group(2), address: match.group(1)),
-    );
+  RegExp(r'\[(.*?)\]\((.*?)\)'),
+  (match) => linkify(title: match.group(2), address: match.group(1)),
+);

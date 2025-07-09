@@ -13,27 +13,26 @@ class DanbooruStyler extends TokenStyler<DanbooruTokenData> {
   ) {
     return switch (token.data) {
       DanbooruCommonToken(:final data) => switch (data.type) {
-          CommonTokenType.or => StylingUtils.buildOperatorSpan(
-              token.text,
-              style.operator,
-            ),
-          CommonTokenType.openParen ||
-          CommonTokenType.closeParen =>
-            StylingUtils.buildParenthesisSpan(
-              token.text,
-              style.groupingColor(data.level),
-              data.isFocused,
-            ),
-        },
+        CommonTokenType.or => StylingUtils.buildOperatorSpan(
+          token.text,
+          style.operator,
+        ),
+        CommonTokenType.openParen ||
+        CommonTokenType.closeParen => StylingUtils.buildParenthesisSpan(
+          token.text,
+          style.groupingColor(data.level),
+          data.isFocused,
+        ),
+      },
       DanbooruSpecificToken(:final data) => switch (data.type) {
-          DanbooruSpecificTokenType.tag => TextSpan(
-              text: token.text,
-              style: TextStyle(
-                color: style.defaultColor,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-        },
+        DanbooruSpecificTokenType.tag => TextSpan(
+          text: token.text,
+          style: TextStyle(
+            color: style.defaultColor,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      },
     };
   }
 }

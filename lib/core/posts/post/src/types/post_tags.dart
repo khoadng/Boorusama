@@ -1,18 +1,5 @@
 // Project imports:
-import '../../../../tags/categories/tag_category.dart';
-import '../../../../tags/tag/tag.dart';
 import 'post.dart';
-
-extension PostTagX on Post {
-  List<Tag> extractTags() => tags
-      .map(
-        (e) => Tag.noCount(
-          name: e,
-          category: TagCategory.unknown(),
-        ),
-      )
-      .toList();
-}
 
 extension TagListCheckX on Post {
   bool get isAI => tags.any(isAiTag);

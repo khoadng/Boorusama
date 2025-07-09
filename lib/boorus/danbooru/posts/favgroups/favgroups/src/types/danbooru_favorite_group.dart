@@ -32,16 +32,15 @@ extension FavoriteGroupX on DanbooruFavoriteGroup {
     String? name,
     bool? isPublic,
     List<int>? postIds,
-  }) =>
-      DanbooruFavoriteGroup(
-        id: id,
-        name: name ?? this.name,
-        creator: creator,
-        createdAt: createdAt,
-        updatedAt: updatedAt,
-        isPublic: isPublic ?? this.isPublic,
-        postIds: postIds ?? this.postIds,
-      );
+  }) => DanbooruFavoriteGroup(
+    id: id,
+    name: name ?? this.name,
+    creator: creator,
+    createdAt: createdAt,
+    updatedAt: updatedAt,
+    isPublic: isPublic ?? this.isPublic,
+    postIds: postIds ?? this.postIds,
+  );
 
   int get totalCount => postIds.length;
   String getQueryString() => 'favgroup:$id';

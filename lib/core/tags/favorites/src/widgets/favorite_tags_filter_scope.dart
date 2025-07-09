@@ -27,7 +27,8 @@ class FavoriteTagsFilterScope extends ConsumerStatefulWidget {
     List<FavoriteTag> tags,
     List<String> labels,
     String selectedLabel,
-  ) builder;
+  )
+  builder;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -75,15 +76,16 @@ class _FavoriteTagsFilterScopeState
     final sortedTags = filteredTagsWithQuery.toList()
       ..sort(
         (a, b) => switch (sortType) {
-          FavoriteTagsSortType.recentlyAdded =>
-            b.createdAt.compareTo(a.createdAt),
+          FavoriteTagsSortType.recentlyAdded => b.createdAt.compareTo(
+            a.createdAt,
+          ),
           FavoriteTagsSortType.recentlyUpdated => switch ((
-              a.updatedAt,
-              b.updatedAt
-            )) {
-              (final DateTime ua, final DateTime ub) => ub.compareTo(ua),
-              _ => 0,
-            },
+            a.updatedAt,
+            b.updatedAt,
+          )) {
+            (final DateTime ua, final DateTime ub) => ub.compareTo(ua),
+            _ => 0,
+          },
           FavoriteTagsSortType.nameAZ => a.name.compareTo(b.name),
           FavoriteTagsSortType.nameZA => b.name.compareTo(a.name),
         },

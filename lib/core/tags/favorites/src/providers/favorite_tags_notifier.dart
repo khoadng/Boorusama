@@ -6,18 +6,18 @@ import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../foundation/toast.dart';
+import '../../../../../foundation/toast.dart';
 import '../../../../search/selected_tags/tag.dart';
 import '../types/favorite_tag.dart';
 import 'providers.dart';
 
 final favoriteTagsProvider =
     NotifierProvider<FavoriteTagsNotifier, List<FavoriteTag>>(
-  FavoriteTagsNotifier.new,
-  dependencies: [
-    favoriteTagRepoProvider,
-  ],
-);
+      FavoriteTagsNotifier.new,
+      dependencies: [
+        favoriteTagRepoProvider,
+      ],
+    );
 
 final favoriteTagLabelsProvider = Provider<List<String>>((ref) {
   final tags = ref.watch(favoriteTagsProvider);

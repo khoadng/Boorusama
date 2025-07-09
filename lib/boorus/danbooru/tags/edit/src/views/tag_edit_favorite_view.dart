@@ -6,9 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../../../core/cache/providers.dart';
-import '../../../../../../core/foundation/platform.dart';
 import '../../../../../../core/tags/favorites/favorited.dart';
 import '../../../../../../core/tags/favorites/widgets.dart';
+import '../../../../../../foundation/platform.dart';
 
 const kTagEditFavoriteViewSelectedLabelKey =
     'tag_edit_favorite_view_selected_label';
@@ -33,8 +33,9 @@ class TagEditFavoriteView extends ConsumerStatefulWidget {
 class _TagEditFavoriteViewState extends ConsumerState<TagEditFavoriteView> {
   @override
   Widget build(BuildContext context) {
-    final selectedLabel =
-        ref.watch(miscDataProvider(kTagEditFavoriteViewSelectedLabelKey));
+    final selectedLabel = ref.watch(
+      miscDataProvider(kTagEditFavoriteViewSelectedLabelKey),
+    );
 
     return SingleChildScrollView(
       child: FavoriteTagsFilterScope(
@@ -54,8 +55,9 @@ class _TagEditFavoriteViewState extends ConsumerState<TagEditFavoriteView> {
                 onSelect: (value) {
                   ref
                       .read(
-                        miscDataProvider(kTagEditFavoriteViewSelectedLabelKey)
-                            .notifier,
+                        miscDataProvider(
+                          kTagEditFavoriteViewSelectedLabelKey,
+                        ).notifier,
                       )
                       .put(value);
                 },
@@ -75,8 +77,9 @@ class _TagEditFavoriteViewState extends ConsumerState<TagEditFavoriteView> {
                           showCheckmark: false,
                           visualDensity: VisualDensity.compact,
                           selectedColor: Theme.of(context).colorScheme.primary,
-                          backgroundColor:
-                              Theme.of(context).colorScheme.surface,
+                          backgroundColor: Theme.of(
+                            context,
+                          ).colorScheme.surface,
                           onSelected: (value) => value
                               ? widget.onAdded(tag.name)
                               : widget.onRemoved(tag.name),

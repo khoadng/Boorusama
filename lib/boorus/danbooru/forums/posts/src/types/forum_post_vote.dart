@@ -20,21 +20,21 @@ class DanbooruForumPostVote extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        forumPostId,
-        creatorId,
-        score,
-        createdAt,
-        updatedAt,
-      ];
+    id,
+    forumPostId,
+    creatorId,
+    score,
+    createdAt,
+    updatedAt,
+  ];
 }
 
 extension DanbooruForumPostVoteX on DanbooruForumPostVote {
   DanbooruForumPostVoteType get type => switch (score) {
-        > 0 => DanbooruForumPostVoteType.upvote,
-        < 0 => DanbooruForumPostVoteType.downvote,
-        _ => DanbooruForumPostVoteType.unsure,
-      };
+    > 0 => DanbooruForumPostVoteType.upvote,
+    < 0 => DanbooruForumPostVoteType.downvote,
+    _ => DanbooruForumPostVoteType.unsure,
+  };
 }
 
 enum DanbooruForumPostVoteType {

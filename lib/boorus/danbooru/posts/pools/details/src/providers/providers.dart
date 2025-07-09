@@ -6,7 +6,7 @@ import 'package:html/parser.dart';
 // Project imports:
 import '../../../../../../../core/configs/config.dart';
 import '../../../../../../../core/configs/ref.dart';
-import '../../../../../danbooru_provider.dart';
+import '../../../../../client_provider.dart';
 import '../../../pool/pool.dart';
 import '../types/pool_description_repository.dart';
 import 'pool_description_repository_builder.dart';
@@ -15,48 +15,48 @@ final selectedPoolDetailsOrderProvider = StateProvider.autoDispose<String>(
   (ref) => 'order',
 );
 
-final poolPostIdsProvider =
-    Provider.autoDispose.family<List<int>, DanbooruPool>(
-  (ref, pool) {
-    final selectedOrder = ref.watch(selectedPoolDetailsOrderProvider);
-    final postIds = [...pool.postIds];
+final poolPostIdsProvider = Provider.autoDispose
+    .family<List<int>, DanbooruPool>(
+      (ref, pool) {
+        final selectedOrder = ref.watch(selectedPoolDetailsOrderProvider);
+        final postIds = [...pool.postIds];
 
-    final sorted = switch (selectedOrder) {
-      'latest' => postIds.sorted((a, b) => b.compareTo(a)),
-      'oldest' => postIds.sorted((a, b) => a.compareTo(b)),
-      _ => postIds,
-    };
+        final sorted = switch (selectedOrder) {
+          'latest' => postIds.sorted((a, b) => b.compareTo(a)),
+          'oldest' => postIds.sorted((a, b) => a.compareTo(b)),
+          _ => postIds,
+        };
 
-    return sorted;
-  },
-);
+        return sorted;
+      },
+    );
 
 final poolDescriptionRepoProvider =
     Provider.family<PoolDescriptionRepository, BooruConfigAuth>((ref, config) {
-  return PoolDescriptionRepoBuilder(
-    fetchDescription: (poolId) async {
-      final html = await ref
-          .watch(danbooruClientProvider(config))
-          .getPoolDescriptionHtml(poolId);
+      return PoolDescriptionRepoBuilder(
+        fetchDescription: (poolId) async {
+          final html = await ref
+              .watch(danbooruClientProvider(config))
+              .getPoolDescriptionHtml(poolId);
 
-      final document = parse(html);
+          final document = parse(html);
 
-      return document.getElementById('description')?.outerHtml ?? '';
-    },
-  );
-});
+          return document.getElementById('description')?.outerHtml ?? '';
+        },
+      );
+    });
 
 final poolDescriptionProvider = FutureProvider.autoDispose
     .family<PoolDescriptionState, PoolId>((ref, poolId) async {
-  final config = ref.watchConfigAuth;
-  final repo = ref.watch(poolDescriptionRepoProvider(config));
-  final desc = await repo.getDescription(poolId);
+      final config = ref.watchConfigAuth;
+      final repo = ref.watch(poolDescriptionRepoProvider(config));
+      final desc = await repo.getDescription(poolId);
 
-  return (
-    description: desc,
-    descriptionEndpointRefUrl: config.url,
-  );
-});
+      return (
+        description: desc,
+        descriptionEndpointRefUrl: config.url,
+      );
+    });
 
 typedef PoolDescriptionState = ({
   String description,

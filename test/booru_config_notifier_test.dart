@@ -11,14 +11,14 @@ import 'package:test/test.dart';
 import 'package:boorusama/core/configs/config/src/data/booru_config_converter.dart';
 import 'package:boorusama/core/configs/config/types.dart';
 import 'package:boorusama/core/configs/manage/providers.dart';
-import 'package:boorusama/core/foundation/loggers.dart';
 import 'package:boorusama/core/settings/src/data/providers.dart';
 import 'package:boorusama/core/settings/src/providers/settings_notifier.dart';
 import 'package:boorusama/core/settings/src/providers/settings_provider.dart';
 import 'package:boorusama/core/settings/src/types/settings.dart';
 import 'package:boorusama/core/settings/src/types/settings_repository.dart';
-import 'package:boorusama/core/tracking.dart';
+import 'package:boorusama/core/tracking/providers.dart';
 import 'package:boorusama/core/tracking/types.dart';
+import 'package:boorusama/foundation/loggers.dart';
 import 'riverpod_test_utils.dart';
 
 class InMemoryBooruConfigRepository implements BooruConfigRepository {
@@ -118,8 +118,9 @@ ProviderContainer createBooruConfigContainer({
         (ref) => booruConfigRepository ?? InMemoryBooruConfigRepository(),
       ),
       settingsRepoProvider.overrideWithValue(settingsRepository),
-      settingsNotifierProvider
-          .overrideWith(() => SettingsNotifier(Settings.defaultSettings)),
+      settingsNotifierProvider.overrideWith(
+        () => SettingsNotifier(Settings.defaultSettings),
+      ),
       initialSettingsBooruConfigProvider.overrideWithValue(BooruConfig.empty),
       loggerProvider.overrideWithValue(mockLogger),
       trackerProvider.overrideWith((_) => DummyTracker()),
@@ -152,8 +153,9 @@ void main() {
         () async {
           reset(mockSettingsRepository);
 
-          when(() => mockSettingsRepository.save(any()))
-              .thenAnswer((_) async => true);
+          when(
+            () => mockSettingsRepository.save(any()),
+          ).thenAnswer((_) async => true);
 
           container = createBooruConfigContainer(
             settingsRepository: mockSettingsRepository,
@@ -439,8 +441,9 @@ void main() {
               test(
                 'should update current config to the first config',
                 () async {
-                  final currentConfig =
-                      container.read(currentBooruConfigProvider);
+                  final currentConfig = container.read(
+                    currentBooruConfigProvider,
+                  );
 
                   expect(
                     currentConfig.id,

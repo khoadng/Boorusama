@@ -17,8 +17,9 @@ import 'theme_configs.dart';
 import 'theme_mode.dart';
 
 final hasCustomThemeSettingsProvider = Provider<bool>((ref) {
-  final themeConfigs =
-      ref.watch(currentBooruConfigProvider.select((value) => value.theme));
+  final themeConfigs = ref.watch(
+    currentBooruConfigProvider.select((value) => value.theme),
+  );
 
   return themeConfigs != null && themeConfigs.enable;
 });
@@ -33,8 +34,9 @@ class ThemeBuilder extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme =
-        ref.watch(settingsProvider.select((value) => value.themeMode));
+    final theme = ref.watch(
+      settingsProvider.select((value) => value.themeMode),
+    );
     final enableDynamicColor = ref.watch(enableDynamicColoringProvider);
 
     final colors = ref.watch(settingsProvider.select((value) => value.colors));
@@ -46,26 +48,28 @@ class ThemeBuilder extends ConsumerWidget {
 
     return AppDynamicColorBuilder(
       builder: (lightOrigin, darkOrigin) {
-        final (light, dark) =
-            enableDynamicColor ? (lightOrigin, darkOrigin) : (null, null);
+        final (light, dark) = enableDynamicColor
+            ? (lightOrigin, darkOrigin)
+            : (null, null);
 
         final customColorScheme = hasPremium
             ? ref.watchThemeConfigs?.enable == true
-                ? getSchemeFromColorSettings(
-                    ref.watchThemeConfigs?.colors,
-                    dynamicDarkScheme: dark,
-                    dynamicLightScheme: light,
-                    systemDarkMode: systemDarkMode,
-                  )
-                : getSchemeFromColorSettings(
-                    colors,
-                    dynamicDarkScheme: dark,
-                    dynamicLightScheme: light,
-                    systemDarkMode: systemDarkMode,
-                  )
+                  ? getSchemeFromColorSettings(
+                      ref.watchThemeConfigs?.colors,
+                      dynamicDarkScheme: dark,
+                      dynamicLightScheme: light,
+                      systemDarkMode: systemDarkMode,
+                    )
+                  : getSchemeFromColorSettings(
+                      colors,
+                      dynamicDarkScheme: dark,
+                      dynamicLightScheme: light,
+                      systemDarkMode: systemDarkMode,
+                    )
             : null;
 
-        final scheme = customColorScheme ??
+        final scheme =
+            customColorScheme ??
             AppTheme.generateScheme(
               theme,
               dynamicDarkScheme: dark,
@@ -76,8 +80,9 @@ class ThemeBuilder extends ConsumerWidget {
         return Builder(
           builder: (context) => ProviderScope(
             overrides: [
-              dynamicColorSupportProvider
-                  .overrideWithValue(lightOrigin != null && darkOrigin != null),
+              dynamicColorSupportProvider.overrideWithValue(
+                lightOrigin != null && darkOrigin != null,
+              ),
               colorSchemeProvider.overrideWithValue(scheme),
             ],
             child: builder(

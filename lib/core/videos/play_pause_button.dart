@@ -20,7 +20,7 @@ class PlayPauseButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
       valueListenable: isPlaying,
-      builder: (_, playing, __) => Material(
+      builder: (_, playing, _) => Material(
         color: Colors.transparent,
         child: InkWell(
           customBorder: const CircleBorder(),

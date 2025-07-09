@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 
 class UserDetailsPage extends StatelessWidget {
   const UserDetailsPage({
@@ -18,7 +18,7 @@ class UserDetailsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('profile.profile').tr(),
+        title: Text(context.t.profile.profile),
         actions: actions,
       ),
       body: SafeArea(

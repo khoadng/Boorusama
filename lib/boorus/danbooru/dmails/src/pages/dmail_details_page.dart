@@ -3,13 +3,14 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
+import 'package:intl/intl.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../../../../../core/configs/ref.dart';
 import '../../../../../core/dtext/dtext.dart';
-import '../../../../../core/foundation/url_launcher.dart';
+import '../../../../../foundation/url_launcher.dart';
 import '../../../dtext/dtext.dart';
 import '../../../users/creator/providers.dart';
 import '../../../users/user/providers.dart';
@@ -65,8 +66,9 @@ class DanbooruDmailDetailsPage extends ConsumerWidget {
                   Text(
                     fromUser?.name ?? 'Anon',
                     style: theme.textTheme.titleMedium?.copyWith(
-                      color: DanbooruUserColor.of(context)
-                          .fromLevel(fromUser?.level),
+                      color: DanbooruUserColor.of(
+                        context,
+                      ).fromLevel(fromUser?.level),
                     ),
                   ),
                 ],
@@ -80,8 +82,9 @@ class DanbooruDmailDetailsPage extends ConsumerWidget {
                   Text(
                     toUser?.name ?? 'Anon',
                     style: theme.textTheme.titleMedium?.copyWith(
-                      color: DanbooruUserColor.of(context)
-                          .fromLevel(toUser?.level),
+                      color: DanbooruUserColor.of(
+                        context,
+                      ).fromLevel(toUser?.level),
                     ),
                   ),
                 ],
@@ -102,7 +105,7 @@ class DanbooruDmailDetailsPage extends ConsumerWidget {
                   onPressed: () {
                     launchExternalUrlString('${config.url}dmails/${dmail.id}');
                   },
-                  child: const Text('View in Browser (LOGGED IN REQUIRED))'),
+                  child: Text('View in Browser (LOGGED IN REQUIRED))'.hc),
                 ),
             ],
           ),

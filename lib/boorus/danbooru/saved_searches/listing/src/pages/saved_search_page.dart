@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:animated_list_plus/animated_list_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
@@ -24,12 +24,13 @@ class SavedSearchPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final searchesAsync =
-        ref.watch(danbooruSavedSearchesProvider(ref.watchConfigAuth));
+    final searchesAsync = ref.watch(
+      danbooruSavedSearchesProvider(ref.watchConfigAuth),
+    );
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('saved_search.saved_search').tr(),
+        title: Text(context.t.saved_search.saved_search),
         actions: [
           IconButton(
             onPressed: () => goToSavedSearchCreatePage(context),
@@ -63,7 +64,7 @@ class _SuccessView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return savedSearches.isEmpty
         ? GenericNoDataBox(
-            text: 'saved_search.empty_saved_search'.tr(),
+            text: context.t.saved_search.empty_saved_search,
           )
         : CustomScrollView(
             slivers: [
@@ -78,12 +79,10 @@ class _SuccessView extends ConsumerWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'saved_search.saved_search_counter'
-                            .plural(savedSearches.length)
+                        context.t.saved_search
+                            .saved_search_counter(n: savedSearches.length)
                             .toUpperCase(),
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleMedium
+                        style: Theme.of(context).textTheme.titleMedium
                             ?.copyWith(
                               color: Theme.of(context).colorScheme.hintColor,
                               fontWeight: FontWeight.bold,
@@ -111,9 +110,9 @@ class _SuccessView extends ConsumerWidget {
                         ),
                   onTap: savedSearch.labels.isNotEmpty
                       ? () => goToSearchPage(
-                            context,
-                            tag: 'search:${savedSearch.labels.first}',
-                          )
+                          ref,
+                          tag: 'search:${savedSearch.labels.first}',
+                        )
                       : null,
                   onLongPress: savedSearch.readOnly
                       ? null

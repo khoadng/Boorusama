@@ -4,14 +4,15 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../../analytics.dart';
+import '../../../../../foundation/clipboard.dart';
+import '../../../../analytics/providers.dart';
 import '../../../../boorus/booru/booru.dart';
 import '../../../../boorus/booru/providers.dart';
 import '../../../../boorus/engine/providers.dart';
-import '../../../../foundation/clipboard.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../config/types.dart';
 import '../types/edit_booru_config_id.dart';
@@ -51,37 +52,37 @@ class _AddBooruPageState extends ConsumerState<AddBooruPage> {
 
     return switch (phase) {
       AddBooruPhase.url => AnalyticsInitStateHook(
-          screenName: 'config/url_input',
-          child: AddBooruPageInternal(
-            backgroundColor: widget.backgroundColor,
-            setCurrentBooruOnSubmit: widget.setCurrentBooruOnSubmit,
-            onBooruSubmit: (url) => setState(() {
-              booru = intToBooruType(booruDb.getBooruFromUrl(url)?.id);
-              phase = booru == BooruType.unknown
-                  ? AddBooruPhase.newUnknownBooru
-                  : AddBooruPhase.newKnownBooru;
-              this.url = url;
-            }),
-          ),
+        screenName: 'config/url_input',
+        child: AddBooruPageInternal(
+          backgroundColor: widget.backgroundColor,
+          setCurrentBooruOnSubmit: widget.setCurrentBooruOnSubmit,
+          onBooruSubmit: (url) => setState(() {
+            booru = intToBooruType(booruDb.getBooruFromUrl(url)?.id);
+            phase = booru == BooruType.unknown
+                ? AddBooruPhase.newUnknownBooru
+                : AddBooruPhase.newKnownBooru;
+            this.url = url;
+          }),
         ),
+      ),
       AddBooruPhase.newUnknownBooru => CreateBooruConfigScope(
-          id: EditBooruConfigId.newId(
-            booruType: BooruType.unknown,
-            url: url,
-          ),
-          config: BooruConfig.defaultConfig(
-            booruType: BooruType.unknown,
-            url: url,
-            customDownloadFileNameFormat: null,
-          ),
-          child: AnalyticsInitStateHook(
-            screenName: 'config/create_unknown_booru',
-            child: AddUnknownBooruPage(
-              setCurrentBooruOnSubmit: widget.setCurrentBooruOnSubmit,
-              backgroundColor: widget.backgroundColor,
-            ),
+        id: EditBooruConfigId.newId(
+          booruType: BooruType.unknown,
+          url: url,
+        ),
+        config: BooruConfig.defaultConfig(
+          booruType: BooruType.unknown,
+          url: url,
+          customDownloadFileNameFormat: null,
+        ),
+        child: AnalyticsInitStateHook(
+          screenName: 'config/create_unknown_booru',
+          child: AddUnknownBooruPage(
+            setCurrentBooruOnSubmit: widget.setCurrentBooruOnSubmit,
+            backgroundColor: widget.backgroundColor,
           ),
         ),
+      ),
       AddBooruPhase.newKnownBooru => _buildNewKnownBooru(booru!, url),
     };
   }
@@ -137,7 +138,9 @@ class _AnalyticsInitStateHookState
   void initState() {
     super.initState();
 
-    ref.read(analyticsProvider).whenData(
+    ref
+        .read(analyticsProvider)
+        .whenData(
           (analytics) => analytics?.logScreenView(widget.screenName),
         );
   }
@@ -228,11 +231,10 @@ class _AddBooruPageInternalState extends ConsumerState<AddBooruPageInternal> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'booru.add_a_booru_site'.tr(),
-                style: Theme.of(context)
-                    .textTheme
-                    .headlineSmall!
-                    .copyWith(fontWeight: FontWeight.w900),
+                context.t.booru.add_a_booru_site,
+                style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                  fontWeight: FontWeight.w900,
+                ),
               ),
               IconButton(
                 onPressed: Navigator.of(context).pop,
@@ -254,7 +256,7 @@ class _AddBooruPageInternalState extends ConsumerState<AddBooruPageInternal> {
           ),
           child: ValueListenableBuilder(
             valueListenable: booruUrlError,
-            builder: (_, error, __) => AutofillGroup(
+            builder: (_, error, _) => AutofillGroup(
               child: BooruTextFormField(
                 validator: (p0) => null,
                 autocorrect: false,
@@ -269,14 +271,15 @@ class _AddBooruPageInternalState extends ConsumerState<AddBooruPageInternal> {
                 },
                 onFieldSubmitted: error.fold(
                   (l) => null,
-                  (r) => (_) => _onNext(r.toString()),
+                  (r) =>
+                      (_) => _onNext(r.toString()),
                 ),
                 onTapOutside: (event) {
                   FocusScope.of(context).unfocus();
                 },
                 controller: urlController,
                 decoration: InputDecoration(
-                  labelText: 'booru.site_url'.tr(),
+                  labelText: context.t.booru.site_url,
                   suffixIcon: IconButton(
                     iconSize: 20,
                     onPressed: () {
@@ -297,7 +300,7 @@ class _AddBooruPageInternalState extends ConsumerState<AddBooruPageInternal> {
         ),
         ValueListenableBuilder(
           valueListenable: booruUrlError,
-          builder: (_, error, __) => error.fold(
+          builder: (_, error, _) => error.fold(
             (e) => Padding(
               padding: const EdgeInsets.symmetric(
                 horizontal: 16,
@@ -305,11 +308,11 @@ class _AddBooruPageInternalState extends ConsumerState<AddBooruPageInternal> {
               ),
               child: ValueListenableBuilder(
                 valueListenable: inputText,
-                builder: (_, input, __) => Text(
-                  e.message(input),
+                builder: (_, input, _) => Text(
+                  e.message(context, input),
                   style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                        color: Theme.of(context).colorScheme.error,
-                      ),
+                    color: Theme.of(context).colorScheme.error,
+                  ),
                 ),
               ),
             ),
@@ -318,16 +321,16 @@ class _AddBooruPageInternalState extends ConsumerState<AddBooruPageInternal> {
         ),
         ValueListenableBuilder(
           valueListenable: booruUrlError,
-          builder: (_, error, __) => Padding(
+          builder: (_, error, _) => Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: error.fold(
               (e) => FilledButton(
                 onPressed: null,
-                child: const Text('booru.next_step').tr(),
+                child: Text(context.t.booru.next_step),
               ),
               (uri) => FilledButton(
                 onPressed: () => _onNext(uri.toString()),
-                child: const Text('booru.next_step').tr(),
+                child: Text(context.t.booru.next_step),
               ),
             ),
           ),
@@ -342,20 +345,20 @@ class _AddBooruPageInternalState extends ConsumerState<AddBooruPageInternal> {
 }
 
 extension BooruUrlErrorX on BooruUrlError {
-  String message(String url) => switch (this) {
-        BooruUrlError.nullUrl => 'URL is null',
-        BooruUrlError.emptyUrl => 'booru.validation_empty_url'.tr(),
-        BooruUrlError.invalidUrlFormat =>
-          'booru.validation_invalid_url'.tr().replaceAll('{0}', url),
-        BooruUrlError.notAnHttpOrHttpsUrl =>
-          'booru.validation_invalid_http_url'.tr().replaceAll('{0}', url),
-        BooruUrlError.missingLastSlash =>
-          'booru.validation_missing_trailing_slash'.tr().replaceAll('{0}', url),
-        BooruUrlError.redundantWww =>
-          'booru.validation_redundant_www'.tr().replaceAll('{0}', url),
-        BooruUrlError.stringHasInbetweenSpaces =>
-          'booru.validation_contains_spaces'.tr().replaceAll('{0}', url),
-        BooruUrlError.missingScheme =>
-          'booru.validation_missing_scheme'.tr().replaceAll('{0}', url),
-      };
+  String message(BuildContext context, String url) => switch (this) {
+    BooruUrlError.nullUrl => 'URL is null',
+    BooruUrlError.emptyUrl => context.t.booru.validation_empty_url,
+    BooruUrlError.invalidUrlFormat =>
+      context.t.booru.validation_invalid_url.replaceAll('{0}', url),
+    BooruUrlError.notAnHttpOrHttpsUrl =>
+      context.t.booru.validation_invalid_http_url.replaceAll('{0}', url),
+    BooruUrlError.missingLastSlash =>
+      context.t.booru.validation_missing_trailing_slash.replaceAll('{0}', url),
+    BooruUrlError.redundantWww =>
+      context.t.booru.validation_redundant_www.replaceAll('{0}', url),
+    BooruUrlError.stringHasInbetweenSpaces =>
+      context.t.booru.validation_contains_spaces.replaceAll('{0}', url),
+    BooruUrlError.missingScheme =>
+      context.t.booru.validation_missing_scheme.replaceAll('{0}', url),
+  };
 }

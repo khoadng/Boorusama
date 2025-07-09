@@ -6,13 +6,13 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
+import 'package:intl/intl.dart';
 
 // Project imports:
-import '../../autocompletes/autocompletes.dart';
+import '../../../foundation/html.dart';
 import '../../boorus/engine/providers.dart';
 import '../../configs/config.dart';
-import '../../foundation/html.dart';
+import '../../tags/autocompletes/types.dart';
 import '../../tags/configs/providers.dart';
 import '../../tags/metatag/metatag.dart';
 import '../../tags/tag/providers.dart';
@@ -117,8 +117,9 @@ class DefaultTagSuggestionItem extends ConsumerWidget {
         ? ref.watch(tagColorProvider((config, category)))
         : null;
     final booruBuilder = ref.watch(booruBuilderProvider(config));
-    final metatagExtractor =
-        booruBuilder?.metatagExtractorBuilder?.call(tagInfo);
+    final metatagExtractor = booruBuilder?.metatagExtractorBuilder?.call(
+      tagInfo,
+    );
 
     return TagSuggestionItem(
       key: ValueKey(tag.value),

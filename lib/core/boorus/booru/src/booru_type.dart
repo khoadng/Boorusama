@@ -138,22 +138,22 @@ class BooruType extends Equatable {
 
   /// Maps legacy IDs to the corresponding BooruType
   static BooruType fromLegacyId(int? value) => switch (value) {
-        1 || 2 || 3 || 5 || 20 => danbooru,
-        4 || 21 => gelbooru,
-        6 || 7 || 8 || 10 || 24 => moebooru,
-        9 || 23 => gelbooruV2,
-        11 || 12 || 25 => e621,
-        13 || 26 => zerochan,
-        14 || 22 => gelbooruV1,
-        27 => sankaku,
-        28 => philomena,
-        29 => shimmie2,
-        30 => szurubooru,
-        31 => hydrus,
-        32 => animePictures,
-        33 => hybooru,
-        _ => unknown
-      };
+    1 || 2 || 3 || 5 || 20 => danbooru,
+    4 || 21 => gelbooru,
+    6 || 7 || 8 || 10 || 24 => moebooru,
+    9 || 23 => gelbooruV2,
+    11 || 12 || 25 => e621,
+    13 || 26 => zerochan,
+    14 || 22 => gelbooruV1,
+    27 => sankaku,
+    28 => philomena,
+    29 => shimmie2,
+    30 => szurubooru,
+    31 => hydrus,
+    32 => animePictures,
+    33 => hybooru,
+    _ => unknown,
+  };
 
   @override
   List<Object?> get props => [id, yamlName, name, isSingleSite];

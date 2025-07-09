@@ -8,7 +8,7 @@ import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart';
 
 // Project imports:
-import '../../foundation/loggers/logger.dart';
+import '../../../foundation/loggers/logger.dart';
 
 const _kServerName = 'App Server';
 
@@ -57,14 +57,15 @@ class AppServer {
           .addMiddleware(_validateRequestMiddleware())
           .addHandler(_handleRequest);
 
-      final server = await serve(
-        handler,
-        address,
-        0,
-      ).timeout(
-        const Duration(seconds: 30),
-        onTimeout: () => throw TimeoutException('Server start timeout'),
-      );
+      final server =
+          await serve(
+            handler,
+            address,
+            0,
+          ).timeout(
+            const Duration(seconds: 30),
+            onTimeout: () => throw TimeoutException('Server start timeout'),
+          );
 
       logger.logI(
         _kServerName,

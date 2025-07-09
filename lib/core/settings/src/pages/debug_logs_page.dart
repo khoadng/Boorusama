@@ -7,16 +7,18 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
+import 'package:intl/intl.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:readmore/readmore.dart';
 
 // Project imports:
-import '../../../downloads/path.dart';
-import '../../../foundation/animations.dart';
-import '../../../foundation/clipboard.dart';
-import '../../../foundation/loggers.dart';
-import '../../../foundation/scrolling.dart';
-import '../../../foundation/toast.dart';
+import '../../../../foundation/animations/constants.dart';
+import '../../../../foundation/clipboard.dart';
+import '../../../../foundation/loggers.dart';
+import '../../../../foundation/scrolling.dart';
+import '../../../../foundation/toast.dart';
+import '../../../downloads/path/directory.dart';
 import '../../../theme.dart';
 import '../../../widgets/widgets.dart';
 import '../providers/settings_provider.dart';
@@ -55,13 +57,13 @@ class _DebugLogsPageState extends ConsumerState<DebugLogsPage> {
       AppClipboard.copyAndToast(
         context,
         data,
-        message: 'settings.debug_logs.logs_copied'.tr(),
+        message: context.t.settings.debug_logs.logs_copied,
       );
     }
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('settings.debug_logs.debug_logs').tr(),
+        title: Text(context.t.settings.debug_logs.debug_logs),
         actions: [
           IconButton(
             icon: const Icon(Symbols.content_copy),
@@ -113,33 +115,30 @@ class _DebugLogsPageState extends ConsumerState<DebugLogsPage> {
   Future<void> writeLogsToFile(
     BuildContext context,
     List<LogData> logs,
-  ) async =>
-      tryGetDownloadDirectory().run().then(
-            (value) => value.fold(
-              (error) => showErrorToast(context, error.name),
-              (directory) async {
-                final timestamp =
-                    DateFormat('yyyyMMdd_HHmmss').format(DateTime.now());
-                final file =
-                    File('${directory.path}/boorusama_logs_$timestamp.txt');
-                final buffer = StringBuffer();
-                for (final log in logs) {
-                  buffer.write(
-                    '[${log.dateTime}][${log.serviceName}]: ${log.message}\n',
-                  );
-                }
-                await file.writeAsString(buffer.toString());
-
-                if (context.mounted) {
-                  showSuccessToast(
-                    context,
-                    'Logs written to ${file.path}',
-                    duration: AppDurations.longToast,
-                  );
-                }
-              },
-            ),
+  ) async => tryGetDownloadDirectory().run().then(
+    (value) => value.fold(
+      (error) => showErrorToast(context, error.name),
+      (directory) async {
+        final timestamp = DateFormat('yyyyMMdd_HHmmss').format(DateTime.now());
+        final file = File('${directory.path}/boorusama_logs_$timestamp.txt');
+        final buffer = StringBuffer();
+        for (final log in logs) {
+          buffer.write(
+            '[${log.dateTime}][${log.serviceName}]: ${log.message}\n',
           );
+        }
+        await file.writeAsString(buffer.toString());
+
+        if (context.mounted) {
+          showSuccessToast(
+            context,
+            'Logs written to ${file.path}',
+            duration: AppDurations.longToast,
+          );
+        }
+      },
+    ),
+  );
 
   Widget _buildBody(List<LogData> logs) {
     return ListView.builder(
@@ -183,10 +182,9 @@ class _DebugLogsPageState extends ConsumerState<DebugLogsPage> {
                     style: TextStyle(
                       fontSize: 13,
                       color: switch (log.level) {
-                        LogLevel.info => Theme.of(context)
-                            .colorScheme
-                            .onSurface
-                            .withAlpha(222),
+                        LogLevel.info => Theme.of(
+                          context,
+                        ).colorScheme.onSurface.withAlpha(222),
                         LogLevel.warning => Colors.yellow.withAlpha(222),
                         LogLevel.error => Theme.of(context).colorScheme.error,
                       },

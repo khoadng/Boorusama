@@ -1,9 +1,9 @@
-// Flutter imports:
-import 'package:flutter/widgets.dart';
+// Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../router.dart';
 
-void goToPremiumPage(BuildContext context) {
-  context.push('/premium');
+void goToPremiumPage(WidgetRef ref) {
+  ref.router.push('/premium');
 }

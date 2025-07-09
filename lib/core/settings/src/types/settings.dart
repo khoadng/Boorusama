@@ -49,88 +49,86 @@ class Settings extends Equatable {
   });
 
   Settings.fromJson(Map<String, dynamic> json)
-      : safeMode = json['safeMode'] ?? true,
-        listing = ImageListingSettings.fromJson(json),
-        blacklistedTags = json['hideBlacklist'] ?? '',
-        themeMode = json['themeMode'] != null
-            ? AppThemeMode.values[json['themeMode']]
-            : AppThemeMode.amoledDark,
-        dataCollectingStatus = json['dataCollectingStatus'] != null
-            ? DataCollectingStatus.values[json['dataCollectingStatus']]
-            : DataCollectingStatus.allow,
-        language = json['language'] ?? 'en-US',
-        downloadPath = json['downloadPath'],
-        imageQualityInFullView = json['imageQualityInFullView'] != null
-            ? ImageQuality.values[json['imageQualityInFullView']]
-            : ImageQuality.automatic,
-        downloadQuality = json['downloadQuality'] != null
-            ? DownloadQuality.values[json['downloadQuality']]
-            : DownloadQuality.original,
-        autoFocusSearchBar = json['autoFocusSearchBar'] ?? true,
-        currentBooruConfigId = json['currentBooruConfigId'],
-        booruConfigIdOrders = json['booruConfigIdOrders'] != null
-            ? castOrFallback<String>(json['booruConfigIdOrders'], '')
-            : '',
-        enableIncognitoModeForKeyboard =
-            json['enableIncognitoModeForKeyboard'] ?? false,
-        enableDynamicColoring = json['enableDynamicColoring'] ?? false,
-        clearImageCacheOnStartup = json['clearImageCacheOnStartup'] ?? false,
-        appLockType = json['appLockType'] != null
-            ? AppLockType.values[json['appLockType']]
-            : AppLockType.none,
-        bookmarkFilterType = json['bookmarkFilterType'] != null
-            ? BookmarkFilterType.values[json['bookmarkFilterType']]
-            : BookmarkFilterType.none,
-        postDetailsOverlayInitialState =
-            json['postDetailsOverlayInitialState'] != null
-                ? PostDetailsOverlayInitialState
-                    .values[json['postDetailsOverlayInitialState']]
-                : PostDetailsOverlayInitialState.show,
-        booruConfigSelectorPosition =
-            json['booruConfigSelectorPosition'] != null
-                ? BooruConfigSelectorPosition
-                    .values[json['booruConfigSelectorPosition']]
-                : BooruConfigSelectorPosition.side,
-        booruConfigSelectorScrollDirection =
-            json['booruConfigSelectorScrollDirection'] != null
-                ? BooruConfigScrollDirection
-                    .values[json['booruConfigSelectorScrollDirection']]
-                : BooruConfigScrollDirection.normal,
-        booruConfigLabelVisibility = json['booruConfigLabelVisibility'] != null
-            ? BooruConfigLabelVisibility
+    : safeMode = json['safeMode'] ?? true,
+      listing = ImageListingSettings.fromJson(json),
+      blacklistedTags = json['hideBlacklist'] ?? '',
+      themeMode = json['themeMode'] != null
+          ? AppThemeMode.values[json['themeMode']]
+          : AppThemeMode.amoledDark,
+      dataCollectingStatus = json['dataCollectingStatus'] != null
+          ? DataCollectingStatus.values[json['dataCollectingStatus']]
+          : DataCollectingStatus.allow,
+      language = json['language'] ?? 'en-US',
+      downloadPath = json['downloadPath'],
+      imageQualityInFullView = json['imageQualityInFullView'] != null
+          ? ImageQuality.values[json['imageQualityInFullView']]
+          : ImageQuality.automatic,
+      downloadQuality = json['downloadQuality'] != null
+          ? DownloadQuality.values[json['downloadQuality']]
+          : DownloadQuality.original,
+      autoFocusSearchBar = json['autoFocusSearchBar'] ?? true,
+      currentBooruConfigId = json['currentBooruConfigId'],
+      booruConfigIdOrders = json['booruConfigIdOrders'] != null
+          ? castOrFallback<String>(json['booruConfigIdOrders'], '')
+          : '',
+      enableIncognitoModeForKeyboard =
+          json['enableIncognitoModeForKeyboard'] ?? false,
+      enableDynamicColoring = json['enableDynamicColoring'] ?? false,
+      clearImageCacheOnStartup = json['clearImageCacheOnStartup'] ?? false,
+      appLockType = json['appLockType'] != null
+          ? AppLockType.values[json['appLockType']]
+          : AppLockType.none,
+      bookmarkFilterType = json['bookmarkFilterType'] != null
+          ? BookmarkFilterType.values[json['bookmarkFilterType']]
+          : BookmarkFilterType.none,
+      postDetailsOverlayInitialState =
+          json['postDetailsOverlayInitialState'] != null
+          ? PostDetailsOverlayInitialState
+                .values[json['postDetailsOverlayInitialState']]
+          : PostDetailsOverlayInitialState.show,
+      booruConfigSelectorPosition = json['booruConfigSelectorPosition'] != null
+          ? BooruConfigSelectorPosition
+                .values[json['booruConfigSelectorPosition']]
+          : BooruConfigSelectorPosition.side,
+      booruConfigSelectorScrollDirection =
+          json['booruConfigSelectorScrollDirection'] != null
+          ? BooruConfigScrollDirection
+                .values[json['booruConfigSelectorScrollDirection']]
+          : BooruConfigScrollDirection.normal,
+      booruConfigLabelVisibility = json['booruConfigLabelVisibility'] != null
+          ? BooruConfigLabelVisibility
                 .values[json['booruConfigLabelVisibility']]
-            : BooruConfigLabelVisibility.always,
-        slideshowInterval = json['slideshowInterval'] ?? 6,
-        slideshowTransitionType = json['slideshowTransitionType'] != null
-            ? SlideshowTransitionType.values[json['slideshowTransitionType']]
-            : SlideshowTransitionType.natural,
-        slideshowDirection = json['slideshowDirection'] != null
-            ? SlideshowDirection.values[json['slideshowDirection']]
-            : SlideshowDirection.forward,
-        downloadFileExistedBehavior =
-            json['downloadFileExistedBehavior'] != null
-                ? DownloadFileExistedBehavior
-                    .values[json['downloadFileExistedBehavior']]
-                : DownloadFileExistedBehavior.appDecide,
-        videoAudioDefaultState = json['videoAudioDefaultState'] != null
-            ? VideoAudioDefaultState.values[json['videoAudioDefaultState']]
-            : VideoAudioDefaultState.unspecified,
-        colors = json['colors'] != null
-            ? ColorSettings.fromJson(json['colors'])
-            : null,
-        videoPlayerEngine = json['videoPlayerEngine'] != null
-            ? VideoPlayerEngine.values[json['videoPlayerEngine']]
-            : VideoPlayerEngine.auto,
-        searchBarScrollBehavior = json['searchBarScrollBehavior'] != null
-            ? SearchBarScrollBehavior.values[json['searchBarScrollBehavior']]
-            : SearchBarScrollBehavior.autoHide,
-        searchBarPosition = json['searchBarPosition'] != null
-            ? SearchBarPosition.values[json['searchBarPosition']]
-            : SearchBarPosition.top,
-        volumeKeyViewerNavigation = json['volumeKeyViewerNavigation'] ?? false,
-        reduceAnimations = json['reduceAnimations'] ?? false,
-        swipeAreaToOpenSidebarPercentage =
-            json['swipeAreaToOpenSidebarPercentage'] ?? 5;
+          : BooruConfigLabelVisibility.always,
+      slideshowInterval = json['slideshowInterval'] ?? 6,
+      slideshowTransitionType = json['slideshowTransitionType'] != null
+          ? SlideshowTransitionType.values[json['slideshowTransitionType']]
+          : SlideshowTransitionType.natural,
+      slideshowDirection = json['slideshowDirection'] != null
+          ? SlideshowDirection.values[json['slideshowDirection']]
+          : SlideshowDirection.forward,
+      downloadFileExistedBehavior = json['downloadFileExistedBehavior'] != null
+          ? DownloadFileExistedBehavior
+                .values[json['downloadFileExistedBehavior']]
+          : DownloadFileExistedBehavior.appDecide,
+      videoAudioDefaultState = json['videoAudioDefaultState'] != null
+          ? VideoAudioDefaultState.values[json['videoAudioDefaultState']]
+          : VideoAudioDefaultState.unspecified,
+      colors = json['colors'] != null
+          ? ColorSettings.fromJson(json['colors'])
+          : null,
+      videoPlayerEngine = json['videoPlayerEngine'] != null
+          ? VideoPlayerEngine.values[json['videoPlayerEngine']]
+          : VideoPlayerEngine.auto,
+      searchBarScrollBehavior = json['searchBarScrollBehavior'] != null
+          ? SearchBarScrollBehavior.values[json['searchBarScrollBehavior']]
+          : SearchBarScrollBehavior.autoHide,
+      searchBarPosition = json['searchBarPosition'] != null
+          ? SearchBarPosition.values[json['searchBarPosition']]
+          : SearchBarPosition.top,
+      volumeKeyViewerNavigation = json['volumeKeyViewerNavigation'] ?? false,
+      reduceAnimations = json['reduceAnimations'] ?? false,
+      swipeAreaToOpenSidebarPercentage =
+          json['swipeAreaToOpenSidebarPercentage'] ?? 5;
 
   static const defaultSettings = Settings(
     listing: ImageListingSettings(
@@ -279,57 +277,56 @@ class Settings extends Equatable {
     bool? volumeKeyViewerNavigation,
     SearchBarScrollBehavior? searchBarScrollBehavior,
     SearchBarPosition? searchBarPosition,
-  }) =>
-      Settings(
-        listing: listing ?? this.listing,
-        safeMode: safeMode ?? this.safeMode,
-        blacklistedTags: blacklistedTags ?? this.blacklistedTags,
-        themeMode: themeMode ?? this.themeMode,
-        language: language ?? this.language,
-        dataCollectingStatus: dataCollectingStatus ?? this.dataCollectingStatus,
-        downloadPath: downloadPath ?? this.downloadPath,
-        imageQualityInFullView:
-            imageQualityInFullView ?? this.imageQualityInFullView,
-        autoFocusSearchBar: autoFocusSearchBar ?? this.autoFocusSearchBar,
-        currentBooruConfigId: currentBooruConfigId ?? this.currentBooruConfigId,
-        booruConfigIdOrders: booruConfigIdOrders ?? this.booruConfigIdOrders,
-        downloadQuality: downloadQuality ?? this.downloadQuality,
-        enableIncognitoModeForKeyboard: enableIncognitoModeForKeyboard ??
-            this.enableIncognitoModeForKeyboard,
-        enableDynamicColoring:
-            enableDynamicColoring ?? this.enableDynamicColoring,
-        clearImageCacheOnStartup:
-            clearImageCacheOnStartup ?? this.clearImageCacheOnStartup,
-        appLockType: appLockType ?? this.appLockType,
-        bookmarkFilterType: bookmarkFilterType ?? this.bookmarkFilterType,
-        postDetailsOverlayInitialState: postDetailsOverlayInitialState ??
-            this.postDetailsOverlayInitialState,
-        booruConfigSelectorPosition:
-            booruConfigSelectorPosition ?? this.booruConfigSelectorPosition,
-        booruConfigSelectorScrollDirection:
-            booruConfigSelectorScrollDirection ??
-                this.booruConfigSelectorScrollDirection,
-        swipeAreaToOpenSidebarPercentage: swipeAreaToOpenSidebarPercentage ??
-            this.swipeAreaToOpenSidebarPercentage,
-        booruConfigLabelVisibility:
-            booruConfigLabelVisibility ?? this.booruConfigLabelVisibility,
-        slideshowInterval: slideshowInterval ?? this.slideshowInterval,
-        slideshowTransitionType:
-            slideshowTransitionType ?? this.slideshowTransitionType,
-        slideshowDirection: slideshowDirection ?? this.slideshowDirection,
-        reduceAnimations: reduceAnimations ?? this.reduceAnimations,
-        downloadFileExistedBehavior:
-            downloadFileExistedBehavior ?? this.downloadFileExistedBehavior,
-        videoAudioDefaultState:
-            videoAudioDefaultState ?? this.videoAudioDefaultState,
-        colors: colors ?? this.colors,
-        videoPlayerEngine: videoPlayerEngine ?? this.videoPlayerEngine,
-        volumeKeyViewerNavigation:
-            volumeKeyViewerNavigation ?? this.volumeKeyViewerNavigation,
-        searchBarScrollBehavior:
-            searchBarScrollBehavior ?? this.searchBarScrollBehavior,
-        searchBarPosition: searchBarPosition ?? this.searchBarPosition,
-      );
+  }) => Settings(
+    listing: listing ?? this.listing,
+    safeMode: safeMode ?? this.safeMode,
+    blacklistedTags: blacklistedTags ?? this.blacklistedTags,
+    themeMode: themeMode ?? this.themeMode,
+    language: language ?? this.language,
+    dataCollectingStatus: dataCollectingStatus ?? this.dataCollectingStatus,
+    downloadPath: downloadPath ?? this.downloadPath,
+    imageQualityInFullView:
+        imageQualityInFullView ?? this.imageQualityInFullView,
+    autoFocusSearchBar: autoFocusSearchBar ?? this.autoFocusSearchBar,
+    currentBooruConfigId: currentBooruConfigId ?? this.currentBooruConfigId,
+    booruConfigIdOrders: booruConfigIdOrders ?? this.booruConfigIdOrders,
+    downloadQuality: downloadQuality ?? this.downloadQuality,
+    enableIncognitoModeForKeyboard:
+        enableIncognitoModeForKeyboard ?? this.enableIncognitoModeForKeyboard,
+    enableDynamicColoring: enableDynamicColoring ?? this.enableDynamicColoring,
+    clearImageCacheOnStartup:
+        clearImageCacheOnStartup ?? this.clearImageCacheOnStartup,
+    appLockType: appLockType ?? this.appLockType,
+    bookmarkFilterType: bookmarkFilterType ?? this.bookmarkFilterType,
+    postDetailsOverlayInitialState:
+        postDetailsOverlayInitialState ?? this.postDetailsOverlayInitialState,
+    booruConfigSelectorPosition:
+        booruConfigSelectorPosition ?? this.booruConfigSelectorPosition,
+    booruConfigSelectorScrollDirection:
+        booruConfigSelectorScrollDirection ??
+        this.booruConfigSelectorScrollDirection,
+    swipeAreaToOpenSidebarPercentage:
+        swipeAreaToOpenSidebarPercentage ??
+        this.swipeAreaToOpenSidebarPercentage,
+    booruConfigLabelVisibility:
+        booruConfigLabelVisibility ?? this.booruConfigLabelVisibility,
+    slideshowInterval: slideshowInterval ?? this.slideshowInterval,
+    slideshowTransitionType:
+        slideshowTransitionType ?? this.slideshowTransitionType,
+    slideshowDirection: slideshowDirection ?? this.slideshowDirection,
+    reduceAnimations: reduceAnimations ?? this.reduceAnimations,
+    downloadFileExistedBehavior:
+        downloadFileExistedBehavior ?? this.downloadFileExistedBehavior,
+    videoAudioDefaultState:
+        videoAudioDefaultState ?? this.videoAudioDefaultState,
+    colors: colors ?? this.colors,
+    videoPlayerEngine: videoPlayerEngine ?? this.videoPlayerEngine,
+    volumeKeyViewerNavigation:
+        volumeKeyViewerNavigation ?? this.volumeKeyViewerNavigation,
+    searchBarScrollBehavior:
+        searchBarScrollBehavior ?? this.searchBarScrollBehavior,
+    searchBarPosition: searchBarPosition ?? this.searchBarPosition,
+  );
 
   Map<String, dynamic> toJson() {
     final listing = this.listing.toJson();
@@ -374,40 +371,40 @@ class Settings extends Equatable {
 
   @override
   List<Object?> get props => [
-        listing,
-        safeMode,
-        blacklistedTags,
-        themeMode,
-        language,
-        dataCollectingStatus,
-        downloadPath,
-        imageQualityInFullView,
-        autoFocusSearchBar,
-        currentBooruConfigId,
-        booruConfigIdOrders,
-        downloadQuality,
-        enableIncognitoModeForKeyboard,
-        enableDynamicColoring,
-        clearImageCacheOnStartup,
-        appLockType,
-        bookmarkFilterType,
-        postDetailsOverlayInitialState,
-        booruConfigSelectorPosition,
-        booruConfigSelectorScrollDirection,
-        swipeAreaToOpenSidebarPercentage,
-        booruConfigLabelVisibility,
-        slideshowInterval,
-        slideshowTransitionType,
-        slideshowDirection,
-        reduceAnimations,
-        downloadFileExistedBehavior,
-        videoAudioDefaultState,
-        colors,
-        videoPlayerEngine,
-        volumeKeyViewerNavigation,
-        searchBarScrollBehavior,
-        searchBarPosition,
-      ];
+    listing,
+    safeMode,
+    blacklistedTags,
+    themeMode,
+    language,
+    dataCollectingStatus,
+    downloadPath,
+    imageQualityInFullView,
+    autoFocusSearchBar,
+    currentBooruConfigId,
+    booruConfigIdOrders,
+    downloadQuality,
+    enableIncognitoModeForKeyboard,
+    enableDynamicColoring,
+    clearImageCacheOnStartup,
+    appLockType,
+    bookmarkFilterType,
+    postDetailsOverlayInitialState,
+    booruConfigSelectorPosition,
+    booruConfigSelectorScrollDirection,
+    swipeAreaToOpenSidebarPercentage,
+    booruConfigLabelVisibility,
+    slideshowInterval,
+    slideshowTransitionType,
+    slideshowDirection,
+    reduceAnimations,
+    downloadFileExistedBehavior,
+    videoAudioDefaultState,
+    colors,
+    videoPlayerEngine,
+    volumeKeyViewerNavigation,
+    searchBarScrollBehavior,
+    searchBarPosition,
+  ];
 
   bool get appLockEnabled => appLockType == AppLockType.biometrics;
   bool get shouldFilterBookmarks =>
@@ -459,16 +456,16 @@ class ListingConfigs extends Equatable {
   });
 
   ListingConfigs.undefined()
-      : settings = Settings.defaultSettings.listing,
-        enable = false;
+    : settings = Settings.defaultSettings.listing,
+      enable = false;
 
   factory ListingConfigs.fromJsonString(String? jsonString) =>
       switch (jsonString) {
         null => ListingConfigs.undefined(),
         final String s => tryDecodeJson(s).fold(
-            (_) => ListingConfigs.undefined(),
-            (json) => ListingConfigs.fromJson(json),
-          ),
+          (_) => ListingConfigs.undefined(),
+          (json) => ListingConfigs.fromJson(json),
+        ),
       };
 
   factory ListingConfigs.fromJson(Map<String, dynamic> json) {
@@ -494,9 +491,9 @@ class ListingConfigs extends Equatable {
   List<Object> get props => [settings, enable];
 
   Map<String, dynamic> toJson() => {
-        'settings': settings.toJson(),
-        'enable': enable,
-      };
+    'settings': settings.toJson(),
+    'enable': enable,
+  };
 
   String toJsonString() => jsonEncode(toJson());
 }
@@ -520,35 +517,34 @@ class ImageListingSettings extends Equatable {
   });
 
   ImageListingSettings.fromJson(Map<String, dynamic> json)
-      : gridSize = json['gridSize'] != null
-            ? GridSize.values[json['gridSize']]
-            : GridSize.normal,
-        imageQuality = json['imageQuality'] != null
-            ? ImageQuality.values[json['imageQuality']]
-            : ImageQuality.automatic,
-        imageListType = json['imageListType'] != null
-            ? ImageListType.values[json['imageListType']]
-            : ImageListType.masonry,
-        pageMode = json['contentOrganizationCategory'] != null
-            ? PageMode.values[json['contentOrganizationCategory']]
-            : PageMode.infinite,
-        showScoresInGrid = json['showScoresInGrid'] ?? false,
-        showPostListConfigHeader = json['showPostListConfigHeader'] ?? true,
-        imageBorderRadius = json['imageBorderRadius'],
-        pageIndicatorPosition = json['pageIndicatorPosition'] != null
-            ? PageIndicatorPosition.values[json['pageIndicatorPosition']]
-            : PageIndicatorPosition.bottom,
-        mediaBlurCondition = json['mediaBlurCondition'] != null
-            ? MediaBlurCondition.values[json['mediaBlurCondition']]
-            : MediaBlurCondition.none,
-        postsPerPage = json['postsPerPage'] ?? 60,
-        imageGridAspectRatio = json['imageGridAspectRatio'] ?? 0.7,
-        imageGridPadding = json['imageGridPadding'] ?? 16,
-        imageGridSpacing = json['imageGridSpacing'] ?? 4,
-        animatedPostsDefaultState = json['animatedPostsDefaultState'] != null
-            ? AnimatedPostsDefaultState
-                .values[json['animatedPostsDefaultState']]
-            : AnimatedPostsDefaultState.autoplay;
+    : gridSize = json['gridSize'] != null
+          ? GridSize.values[json['gridSize']]
+          : GridSize.normal,
+      imageQuality = json['imageQuality'] != null
+          ? ImageQuality.values[json['imageQuality']]
+          : ImageQuality.automatic,
+      imageListType = json['imageListType'] != null
+          ? ImageListType.values[json['imageListType']]
+          : ImageListType.masonry,
+      pageMode = json['contentOrganizationCategory'] != null
+          ? PageMode.values[json['contentOrganizationCategory']]
+          : PageMode.infinite,
+      showScoresInGrid = json['showScoresInGrid'] ?? false,
+      showPostListConfigHeader = json['showPostListConfigHeader'] ?? true,
+      imageBorderRadius = json['imageBorderRadius'],
+      pageIndicatorPosition = json['pageIndicatorPosition'] != null
+          ? PageIndicatorPosition.values[json['pageIndicatorPosition']]
+          : PageIndicatorPosition.bottom,
+      mediaBlurCondition = json['mediaBlurCondition'] != null
+          ? MediaBlurCondition.values[json['mediaBlurCondition']]
+          : MediaBlurCondition.none,
+      postsPerPage = json['postsPerPage'] ?? 60,
+      imageGridAspectRatio = json['imageGridAspectRatio'] ?? 0.7,
+      imageGridPadding = json['imageGridPadding'] ?? 16,
+      imageGridSpacing = json['imageGridSpacing'] ?? 4,
+      animatedPostsDefaultState = json['animatedPostsDefaultState'] != null
+          ? AnimatedPostsDefaultState.values[json['animatedPostsDefaultState']]
+          : AnimatedPostsDefaultState.autoplay;
 
   final GridSize gridSize;
   final ImageListType imageListType;
@@ -608,37 +604,37 @@ class ImageListingSettings extends Equatable {
   }
 
   Map<String, dynamic> toJson() => {
-        'gridSize': gridSize.index,
-        'imageListType': imageListType.index,
-        'imageQuality': imageQuality.index,
-        'contentOrganizationCategory': pageMode.index,
-        'pageIndicatorPosition': pageIndicatorPosition.index,
-        'showScoresInGrid': showScoresInGrid,
-        'showPostListConfigHeader': showPostListConfigHeader,
-        'mediaBlurCondition': mediaBlurCondition.index,
-        'imageGridSpacing': imageGridSpacing,
-        'imageBorderRadius': imageBorderRadius,
-        'imageGridPadding': imageGridPadding,
-        'imageGridAspectRatio': imageGridAspectRatio,
-        'postsPerPage': postsPerPage,
-        'animatedPostsDefaultState': animatedPostsDefaultState.index,
-      };
+    'gridSize': gridSize.index,
+    'imageListType': imageListType.index,
+    'imageQuality': imageQuality.index,
+    'contentOrganizationCategory': pageMode.index,
+    'pageIndicatorPosition': pageIndicatorPosition.index,
+    'showScoresInGrid': showScoresInGrid,
+    'showPostListConfigHeader': showPostListConfigHeader,
+    'mediaBlurCondition': mediaBlurCondition.index,
+    'imageGridSpacing': imageGridSpacing,
+    'imageBorderRadius': imageBorderRadius,
+    'imageGridPadding': imageGridPadding,
+    'imageGridAspectRatio': imageGridAspectRatio,
+    'postsPerPage': postsPerPage,
+    'animatedPostsDefaultState': animatedPostsDefaultState.index,
+  };
 
   @override
   List<Object> get props => [
-        gridSize,
-        imageListType,
-        imageQuality,
-        pageMode,
-        pageIndicatorPosition,
-        showScoresInGrid,
-        showPostListConfigHeader,
-        mediaBlurCondition,
-        imageGridSpacing,
-        imageBorderRadius,
-        imageGridPadding,
-        imageGridAspectRatio,
-        postsPerPage,
-        animatedPostsDefaultState,
-      ];
+    gridSize,
+    imageListType,
+    imageQuality,
+    pageMode,
+    pageIndicatorPosition,
+    showScoresInGrid,
+    showPostListConfigHeader,
+    mediaBlurCondition,
+    imageGridSpacing,
+    imageBorderRadius,
+    imageGridPadding,
+    imageGridAspectRatio,
+    postsPerPage,
+    animatedPostsDefaultState,
+  ];
 }

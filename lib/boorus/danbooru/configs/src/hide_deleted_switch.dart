@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../core/configs/config/types.dart';
@@ -29,8 +30,8 @@ class DanbooruHideDeletedSwitch extends ConsumerWidget {
     return CreateBooruHideDeletedSwitch(
       value: hideDeleted,
       onChanged: (value) => ref.editNotifier.updateDeletedItemBehavior(value),
-      subtitle: const Text(
-        'Hide low-quality images, some decent ones might also be hidden.',
+      subtitle: Text(
+        'Hide low-quality images, some decent ones might also be hidden.'.hc,
       ),
     );
   }
@@ -44,17 +45,18 @@ class DanbooruHideBannedSwitch extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final bannedVis = ref.watch(
-      editBooruConfigProvider(ref.watch(editBooruConfigIdProvider))
-          .select((value) => value.bannedPostVisibilityTyped),
+      editBooruConfigProvider(
+        ref.watch(editBooruConfigIdProvider),
+      ).select((value) => value.bannedPostVisibilityTyped),
     );
 
     return SwitchListTile(
       contentPadding: EdgeInsets.zero,
-      title: const Text('Hide banned posts'),
+      title: Text('Hide banned posts'.hc),
       value: bannedVis == BooruConfigBannedPostVisibility.hide,
       onChanged: (value) => ref.editNotifier.updateBannedPostVisibility(value),
-      subtitle: const Text(
-        'Completely hide banned images from listings.',
+      subtitle: Text(
+        'Completely hide banned images from listings.'.hc,
       ),
     );
   }
@@ -68,8 +70,9 @@ class DanbooruImageDetailsQualityProvider extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final imageDetailsQuality = ref.watch(
-      editBooruConfigProvider(ref.watch(editBooruConfigIdProvider))
-          .select((value) => value.imageDetaisQuality),
+      editBooruConfigProvider(
+        ref.watch(editBooruConfigIdProvider),
+      ).select((value) => value.imageDetaisQuality),
     );
 
     return CreateBooruImageDetailsResolutionOptionTile(

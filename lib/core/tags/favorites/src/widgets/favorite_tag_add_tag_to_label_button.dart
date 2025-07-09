@@ -26,20 +26,24 @@ class FavoriteTagAddTagToLabelButton extends ConsumerWidget {
           ref: ref,
           onSubmitted: (context, text, _) {
             Navigator.of(context).pop();
-            ref.read(favoriteTagsProvider.notifier).add(
-              text,
-              labels: [
-                label,
-              ],
-            );
+            ref
+                .read(favoriteTagsProvider.notifier)
+                .add(
+                  text,
+                  labels: [
+                    label,
+                  ],
+                );
           },
           onSelected: (tag, _) {
-            ref.read(favoriteTagsProvider.notifier).add(
-              tag,
-              labels: [
-                label,
-              ],
-            );
+            ref
+                .read(favoriteTagsProvider.notifier)
+                .add(
+                  tag,
+                  labels: [
+                    label,
+                  ],
+                );
           },
         );
       },

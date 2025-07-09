@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../create/providers.dart';
@@ -31,7 +31,7 @@ class DefaultBooruApiKeyField extends ConsumerWidget {
 
     return CreateBooruApiKeyField(
       text: apiKey,
-      labelText: isPassword ? 'booru.password_label'.tr() : labelText,
+      labelText: isPassword ? context.t.booru.password_label : labelText,
       hintText: hintText ?? 'e.g: o6H5u8QrxC7dN3KvF9D2bM4p',
       onChanged: ref.editNotifier.updateApiKey,
     );

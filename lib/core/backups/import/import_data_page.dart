@@ -4,12 +4,13 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:bonsoir/bonsoir.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 import 'package:version/version.dart';
 
 // Project imports:
-import '../../foundation/toast.dart';
-import '../../foundation/version.dart';
-import '../../info/package_info.dart';
+import '../../../foundation/info/package_info.dart';
+import '../../../foundation/toast.dart';
+import '../../../foundation/version.dart';
 import '../../theme/app_theme.dart';
 import '../servers/discovery_client.dart';
 import 'manual_device_input_dialog.dart';
@@ -74,7 +75,7 @@ class _ImportDataPageState extends ConsumerState<ImportDataPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Receive data'),
+        title: Text('Receive data'.hc),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -85,7 +86,7 @@ class _ImportDataPageState extends ConsumerState<ImportDataPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Nearby devices',
+                  'Nearby devices'.hc,
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
                 IconButton(
@@ -145,12 +146,13 @@ class _ImportDataPageState extends ConsumerState<ImportDataPage> {
                         'Version $appVersion',
                       ),
                       trailing: TextButton(
-                        child: const Text('Import'),
+                        child: Text('Import'.hc),
                         onPressed: () async {
                           if (appVersion == null) {
                             showErrorToast(
                               context,
-                              "Couldn't determine this device's version, aborting.",
+                              "Couldn't determine this device's version, aborting."
+                                  .hc,
                             );
                             return;
                           }
@@ -158,16 +160,20 @@ class _ImportDataPageState extends ConsumerState<ImportDataPage> {
                           if (currentVersion == null) {
                             showErrorToast(
                               context,
-                              "Couldn't determine the current version, aborting.",
+                              "Couldn't determine the current version, aborting."
+                                  .hc,
                             );
                             return;
                           }
 
                           final parsedVersion = Version.parse(appVersion);
-                          final shouldShowDialog = currentVersion
-                                  .significantlyLowerThan(parsedVersion) ||
-                              currentVersion
-                                  .significantlyHigherThan(parsedVersion);
+                          final shouldShowDialog =
+                              currentVersion.significantlyLowerThan(
+                                parsedVersion,
+                              ) ||
+                              currentVersion.significantlyHigherThan(
+                                parsedVersion,
+                              );
 
                           if (shouldShowDialog) {
                             final result = await showDialog(
@@ -204,8 +210,8 @@ class _ImportDataPageState extends ConsumerState<ImportDataPage> {
                     textAlign: TextAlign.center,
                     text: TextSpan(
                       style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                            color: Theme.of(context).colorScheme.hintColor,
-                          ),
+                        color: Theme.of(context).colorScheme.hintColor,
+                      ),
                       children: const [
                         TextSpan(
                           text:

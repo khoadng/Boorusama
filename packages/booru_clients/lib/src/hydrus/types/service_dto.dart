@@ -41,27 +41,27 @@ enum ServiceType {
 }
 
 ServiceType? intToServiceType(int? value) => switch (value) {
-      0 => ServiceType.tagRepository,
-      1 => ServiceType.fileRepository,
-      2 => ServiceType.localFileDomain,
-      5 => ServiceType.localTagDomain,
-      6 => ServiceType.numericalRatingService,
-      7 => ServiceType.likeDislikeRatingService,
-      10 => ServiceType.allKnownTags,
-      11 => ServiceType.allKnownFiles,
-      12 => ServiceType.localBooru,
-      13 => ServiceType.ipfs,
-      14 => ServiceType.trash,
-      15 => ServiceType.allLocalFiles,
-      17 => ServiceType.fileNotes,
-      18 => ServiceType.clientApi,
-      19 => ServiceType.deletedFromAnywhere,
-      20 => ServiceType.localUpdates,
-      21 => ServiceType.allMyFiles,
-      22 => ServiceType.incDecRatingService,
-      99 => ServiceType.serverAdministration,
-      _ => null,
-    };
+  0 => ServiceType.tagRepository,
+  1 => ServiceType.fileRepository,
+  2 => ServiceType.localFileDomain,
+  5 => ServiceType.localTagDomain,
+  6 => ServiceType.numericalRatingService,
+  7 => ServiceType.likeDislikeRatingService,
+  10 => ServiceType.allKnownTags,
+  11 => ServiceType.allKnownFiles,
+  12 => ServiceType.localBooru,
+  13 => ServiceType.ipfs,
+  14 => ServiceType.trash,
+  15 => ServiceType.allLocalFiles,
+  17 => ServiceType.fileNotes,
+  18 => ServiceType.clientApi,
+  19 => ServiceType.deletedFromAnywhere,
+  20 => ServiceType.localUpdates,
+  21 => ServiceType.allMyFiles,
+  22 => ServiceType.incDecRatingService,
+  99 => ServiceType.serverAdministration,
+  _ => null,
+};
 
 class ServiceDto {
   ServiceDto({
@@ -77,8 +77,9 @@ class ServiceDto {
     final type = intToServiceType(rawType);
     if (type == null) return null;
 
-    final prettyType =
-        json['type_pretty'] != null ? json['type_pretty'] as String : '';
+    final prettyType = json['type_pretty'] != null
+        ? json['type_pretty'] as String
+        : '';
 
     return ServiceDto(
       key: key,

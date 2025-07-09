@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
@@ -31,8 +31,8 @@ class PoolOptionsHeader extends ConsumerWidget {
         options: DanbooruPoolOrder.values,
         hasNullOption: false,
         optionLabelBuilder: (value) =>
-            value != null ? poolOrderToString(value).tr() : 'All',
-        sheetTitle: 'Sort by',
+            value != null ? poolOrderToString(context, value) : 'All'.hc,
+        sheetTitle: 'Sort by'.hc,
         onSelected: (value) {
           ref.read(danbooruSelectedPoolOrderProvider.notifier).state =
               value ?? DanbooruPoolOrder.newest;

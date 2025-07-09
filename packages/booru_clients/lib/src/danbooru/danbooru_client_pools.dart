@@ -57,8 +57,11 @@ mixin DanbooruClientPools {
       cancelToken: cancelToken,
     );
 
-    return Isolate.run(() =>
-        (response.data as List).map((item) => PoolDto.fromJson(item)).toList());
+    return Isolate.run(
+      () => (response.data as List)
+          .map((item) => PoolDto.fromJson(item))
+          .toList(),
+    );
   }
 
   Future<List<PoolDto>> getPoolsFromPostIds({

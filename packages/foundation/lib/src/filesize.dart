@@ -37,11 +37,11 @@ String _defaultFormatter(String size, String unit) => '$size $unit';
 
 class FilesizeOptions {
   factory FilesizeOptions() => FilesizeOptions._(
-        divider: 1024,
-        scalingFactors: _binaryScalingFactors,
-        unitBuilder: (idx) => _defaultUnitBuilder(idx, _defaultUnits),
-        formatter: _defaultFormatter,
-      );
+    divider: 1024,
+    scalingFactors: _binaryScalingFactors,
+    unitBuilder: (idx) => _defaultUnitBuilder(idx, _defaultUnits),
+    formatter: _defaultFormatter,
+  );
   const FilesizeOptions._({
     required this.divider,
     required this.scalingFactors,
@@ -53,28 +53,27 @@ class FilesizeOptions {
     required int divider,
     IndexToUnitMapper? unitBuilder,
     FizesizeFormatter? formatter,
-  }) =>
-      FilesizeOptions._(
-        divider: divider,
-        scalingFactors: null,
-        unitBuilder:
-            unitBuilder ?? (idx) => _defaultUnitBuilder(idx, _defaultUnits),
-        formatter: formatter ?? _defaultFormatter,
-      );
+  }) => FilesizeOptions._(
+    divider: divider,
+    scalingFactors: null,
+    unitBuilder:
+        unitBuilder ?? (idx) => _defaultUnitBuilder(idx, _defaultUnits),
+    formatter: formatter ?? _defaultFormatter,
+  );
 
   factory FilesizeOptions.binary() => FilesizeOptions._(
-        divider: 1024,
-        scalingFactors: _binaryScalingFactors,
-        unitBuilder: (idx) => _defaultUnitBuilder(idx, _binaryUnits),
-        formatter: _defaultFormatter,
-      );
+    divider: 1024,
+    scalingFactors: _binaryScalingFactors,
+    unitBuilder: (idx) => _defaultUnitBuilder(idx, _binaryUnits),
+    formatter: _defaultFormatter,
+  );
 
   factory FilesizeOptions.si() => FilesizeOptions._(
-        divider: 1000,
-        scalingFactors: _kiloScalingFactors,
-        unitBuilder: (idx) => _defaultUnitBuilder(idx, _defaultUnits),
-        formatter: _defaultFormatter,
-      );
+    divider: 1000,
+    scalingFactors: _kiloScalingFactors,
+    unitBuilder: (idx) => _defaultUnitBuilder(idx, _defaultUnits),
+    formatter: _defaultFormatter,
+  );
 
   final int divider;
   final List<int>? scalingFactors;
@@ -84,13 +83,12 @@ class FilesizeOptions {
   FilesizeOptions copyWith({
     IndexToUnitMapper? unitBuilder,
     FizesizeFormatter? formatter,
-  }) =>
-      FilesizeOptions._(
-        divider: divider,
-        scalingFactors: scalingFactors,
-        unitBuilder: unitBuilder ?? this.unitBuilder,
-        formatter: formatter ?? this.formatter,
-      );
+  }) => FilesizeOptions._(
+    divider: divider,
+    scalingFactors: scalingFactors,
+    unitBuilder: unitBuilder ?? this.unitBuilder,
+    formatter: formatter ?? this.formatter,
+  );
 }
 
 abstract class Filesize {
@@ -144,8 +142,8 @@ abstract class Filesize {
     var idx = 0;
     var value = size.toDouble();
 
-    while (
-        idx < scalingFactors.length - 1 && value >= scalingFactors[idx + 1]) {
+    while (idx < scalingFactors.length - 1 &&
+        value >= scalingFactors[idx + 1]) {
       idx++;
     }
 
@@ -159,6 +157,5 @@ abstract class Filesize {
     int? size, {
     int round = 2,
     FilesizeOptions? options,
-  }) =>
-      tryParse(size, round: round, options: options) ?? 'N/A';
+  }) => tryParse(size, round: round, options: options) ?? 'N/A';
 }

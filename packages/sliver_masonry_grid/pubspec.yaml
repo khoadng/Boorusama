@@ -2,7 +2,7 @@ name: sliver_masonry_grid
 description: A Flutter package that provides a sliver-based masonry grid.
 
 environment:
-  sdk: ^3.6.0
+  sdk: ^3.8.1
   flutter: ">=1.17.0"
 
 resolution: workspace

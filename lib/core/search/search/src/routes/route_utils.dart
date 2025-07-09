@@ -12,7 +12,7 @@ import '../../../selected_tags/tag.dart';
 import '../views/simple_tag_search_view.dart';
 
 void goToSearchPage(
-  BuildContext context, {
+  WidgetRef ref, {
   String? tag,
   int? page,
   int? position,
@@ -24,7 +24,7 @@ void goToSearchPage(
   if (position != null) params['position'] = position.toString();
   if (queryType != null) params['query_type'] = queryType.name;
 
-  context.push(
+  ref.router.push(
     Uri(
       path: '/search',
       queryParameters: params.isEmpty ? null : params,

@@ -49,7 +49,9 @@ class ExploreRepositoryCacher implements ExploreRepository {
       return TaskEither.of(_cache[name]!.$2.toResult());
     }
 
-    return repository.getPopularPosts(date, page, scale, limit: limit).flatMap(
+    return repository
+        .getPopularPosts(date, page, scale, limit: limit)
+        .flatMap(
           (r) => TaskEither(() async {
             _cache[name] = (DateTime.now(), r.posts);
             return Either.of(r);
@@ -66,7 +68,9 @@ class ExploreRepositoryCacher implements ExploreRepository {
       return TaskEither.of(_cache[name]!.$2.toResult());
     }
 
-    return repository.getMostViewedPosts(date).flatMap(
+    return repository
+        .getMostViewedPosts(date)
+        .flatMap(
           (r) => TaskEither(() async {
             _cache[name] = (DateTime.now(), r.posts);
             return Either.of(r);
@@ -85,7 +89,9 @@ class ExploreRepositoryCacher implements ExploreRepository {
       return TaskEither.of(_cache[name]!.$2.toResult());
     }
 
-    return repository.getHotPosts(page, limit: limit).flatMap(
+    return repository
+        .getHotPosts(page, limit: limit)
+        .flatMap(
           (r) => TaskEither(() async {
             _cache[name] = (DateTime.now(), r.posts);
             return Either.of(r);

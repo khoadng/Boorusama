@@ -11,10 +11,10 @@ class ExtendedColorScheme extends ThemeExtension<ExtendedColorScheme>
     Color? onSurfaceContainerOverlay,
     Color? surfaceContainerOverlayDim,
     Color? onSurfaceContainerOverlayDim,
-  })  : _surfaceContainerOverlay = surfaceContainerOverlay,
-        _onSurfaceContainerOverlay = onSurfaceContainerOverlay,
-        _surfaceContainerOverlayDim = surfaceContainerOverlayDim,
-        _onSurfaceContainerOverlayDim = onSurfaceContainerOverlayDim;
+  }) : _surfaceContainerOverlay = surfaceContainerOverlay,
+       _onSurfaceContainerOverlay = onSurfaceContainerOverlay,
+       _surfaceContainerOverlayDim = surfaceContainerOverlayDim,
+       _onSurfaceContainerOverlayDim = onSurfaceContainerOverlayDim;
 
   final Color? _surfaceContainerOverlay;
   final Color? _onSurfaceContainerOverlay;
@@ -48,9 +48,9 @@ class ExtendedColorScheme extends ThemeExtension<ExtendedColorScheme>
 
   @override
   List<Object?> get props => [
-        _surfaceContainerOverlay,
-        _onSurfaceContainerOverlay,
-        _surfaceContainerOverlayDim,
-        _onSurfaceContainerOverlayDim,
-      ];
+    _surfaceContainerOverlay,
+    _onSurfaceContainerOverlay,
+    _surfaceContainerOverlayDim,
+    _onSurfaceContainerOverlayDim,
+  ];
 }

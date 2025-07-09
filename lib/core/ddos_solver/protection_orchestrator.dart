@@ -15,9 +15,9 @@ class ProtectionOrchestrator {
     required List<ProtectionDetector> detectors,
     required List<ProtectionSolver> solvers,
     required UserAgentProvider userAgentProvider,
-  })  : _detectors = detectors,
-        _userAgentProvider = userAgentProvider,
-        _solvers = {for (var solver in solvers) solver.protectionType: solver};
+  }) : _detectors = detectors,
+       _userAgentProvider = userAgentProvider,
+       _solvers = {for (var solver in solvers) solver.protectionType: solver};
 
   final List<ProtectionDetector> _detectors;
   final Map<String, ProtectionSolver> _solvers;

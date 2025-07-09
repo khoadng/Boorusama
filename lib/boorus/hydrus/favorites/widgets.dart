@@ -9,9 +9,8 @@ import '../../../core/configs/ref.dart';
 import '../../../core/posts/favorites/providers.dart';
 import '../../../core/posts/favorites/widgets.dart';
 import '../../../core/posts/post/post.dart';
-import '../../../core/scaffolds/scaffolds.dart';
-import '../hydrus.dart';
-import 'favorites.dart';
+import '../posts/providers.dart';
+import 'providers.dart';
 
 class HydrusFavoritesPage extends ConsumerWidget {
   const HydrusFavoritesPage({
@@ -22,7 +21,9 @@ class HydrusFavoritesPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfigSearch;
 
-    return ref.watch(ratingServiceNameProvider(config.auth)).when(
+    return ref
+        .watch(ratingServiceNameProvider(config.auth))
+        .when(
           data: (serviceName) => serviceName == null || serviceName.isEmpty
               ? _buildError()
               : Builder(
@@ -66,7 +67,7 @@ class HydrusFavoritePostButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfigAuth;
-    final isFaved = ref.watch(favoriteProvider(post.id));
+    final isFaved = ref.watch(favoriteProvider((config, post.id)));
     final favNotifier = ref.watch(favoritesProvider(config).notifier);
 
     return FavoritePostButton(
@@ -91,10 +92,12 @@ class HydrusQuickFavoriteButton extends ConsumerWidget {
     final config = ref.watchConfigAuth;
     final notifier = ref.watch(favoritesProvider(config).notifier);
 
-    return ref.watch(hydrusCanFavoriteProvider(config)).when(
+    return ref
+        .watch(hydrusCanFavoriteProvider(config))
+        .when(
           data: (canFavorite) => canFavorite
               ? QuickFavoriteButton(
-                  isFaved: ref.watch(favoriteProvider(post.id)),
+                  isFaved: ref.watch(favoriteProvider((config, post.id))),
                   onFavToggle: (isFaved) async {
                     if (isFaved) {
                       await notifier.add(post.id);

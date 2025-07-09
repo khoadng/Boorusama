@@ -3,12 +3,13 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:reorderables/reorderables.dart';
 
 // Project imports:
-import '../../../../foundation/toast.dart';
+import '../../../../../foundation/toast.dart';
 import '../../../../premiums/providers.dart';
 import '../../../../premiums/routes.dart';
 import '../../../../theme/app_theme.dart';
@@ -28,7 +29,7 @@ class DetailsLayoutManagerPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Manage widgets'),
+        title: Text('Manage widgets'.hc),
         actions: [
           IconButton(
             icon: const Icon(Symbols.add),
@@ -45,9 +46,10 @@ class DetailsLayoutManagerPage extends StatelessWidget {
             },
           ),
           Consumer(
-            builder: (_, ref, __) {
-              final notifier =
-                  ref.watch(detailsLayoutProvider(params).notifier);
+            builder: (_, ref, _) {
+              final notifier = ref.watch(
+                detailsLayoutProvider(params).notifier,
+              );
 
               return BooruPopupMenuButton(
                 onSelected: (value) {
@@ -82,16 +84,16 @@ class DetailsLayoutManagerPage extends StatelessWidget {
               ),
             ),
             Consumer(
-              builder: (_, ref, __) {
+              builder: (_, ref, _) {
                 final hasPremium = ref.watch(hasPremiumProvider);
 
                 return !hasPremium
                     ? SafeArea(
                         child: PrimaryButton(
                           onPressed: () {
-                            goToPremiumPage(context);
+                            goToPremiumPage(ref);
                           },
-                          child: const Text('Upgrade to save'),
+                          child: Text('Upgrade to save'.hc),
                         ),
                       )
                     : const SizedBox.shrink();
@@ -197,10 +199,11 @@ class _Header extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       title: Consumer(
-        builder: (_, ref, __) {
+        builder: (_, ref, _) {
           final (selected, available) = ref.watch(
-            detailsLayoutProvider(params)
-                .select((value) => value.selectedPartsCount),
+            detailsLayoutProvider(
+              params,
+            ).select((value) => value.selectedPartsCount),
           );
 
           return Text(
@@ -210,7 +213,7 @@ class _Header extends StatelessWidget {
         },
       ),
       trailing: Consumer(
-        builder: (_, ref, __) {
+        builder: (_, ref, _) {
           final hasPremium = ref.watch(hasPremiumProvider);
 
           final canApply = ref.watch(
@@ -227,7 +230,7 @@ class _Header extends StatelessWidget {
                           Navigator.of(context).pop();
                         }
                       : null,
-                  child: const Text('Apply'),
+                  child: Text('Apply'.hc),
                 )
               : const SizedBox.shrink();
         },

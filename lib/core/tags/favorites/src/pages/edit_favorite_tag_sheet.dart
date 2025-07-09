@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 import 'package:rxdart/rxdart.dart';
 
 // Project imports:
 import '../../../../../core/widgets/widgets.dart';
+import '../../../../../foundation/utils/stream/text_editing_controller_utils.dart';
 import '../../../../theme.dart';
-import '../../../../utils/stream/text_editing_controller_utils.dart';
 import '../types/favorite_tag.dart';
 
 class EditFavoriteTagSheet extends ConsumerStatefulWidget {
@@ -132,7 +132,7 @@ class _EditSavedSearchSheetState extends ConsumerState<EditFavoriteTagSheet> {
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: const Text('generic.action.cancel').tr(),
+                  child: Text(context.t.generic.action.cancel),
                 ),
                 FilledButton(
                   style: FilledButton.styleFrom(
@@ -142,7 +142,7 @@ class _EditSavedSearchSheetState extends ConsumerState<EditFavoriteTagSheet> {
                     ),
                   ),
                   onPressed: _onSubmit,
-                  child: const Text('generic.action.ok').tr(),
+                  child: Text(context.t.generic.action.ok),
                 ),
               ],
             ),

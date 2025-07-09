@@ -31,19 +31,19 @@ class PostVariant extends Equatable {
   });
 
   factory PostVariant.original(String? url) => PostVariant(
-        type: PostQualityType.original,
-        url: url ?? '',
-      );
+    type: PostQualityType.original,
+    url: url ?? '',
+  );
 
   factory PostVariant.sample(String? url) => PostVariant(
-        type: PostQualityType.sample,
-        url: url ?? '',
-      );
+    type: PostQualityType.sample,
+    url: url ?? '',
+  );
 
   factory PostVariant.thumbnail(String? url) => PostVariant(
-        type: PostQualityType.v180x180,
-        url: url ?? '',
-      );
+    type: PostQualityType.v180x180,
+    url: url ?? '',
+  );
 
   final PostQualityType type;
   final String url;
@@ -58,15 +58,16 @@ class PostVariants {
   });
 
   const PostVariants.none()
-      : this._(
-          variants: const {},
-        );
+    : this._(
+        variants: const {},
+      );
 
   factory PostVariants.fromMap(
     Map<String?, String?>? map, {
     List<PostVariant> Function()? fallback,
   }) {
-    final variants = map?.entries
+    final variants =
+        map?.entries
             .map(
               (e) {
                 final type = PostQualityType.parse(e.key);

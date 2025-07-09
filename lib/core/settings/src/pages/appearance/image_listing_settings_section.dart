@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../theme/theme.dart';
@@ -71,69 +71,71 @@ class _ImageListingSettingsSectionState
 
   @override
   Widget build(BuildContext context) {
+    final tSettings = context.t.settings;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         SettingsTile(
-          title: const Text('settings.image_grid.grid_size.grid_size').tr(),
+          title: Text(tSettings.image_grid.grid_size.grid_size),
           selectedOption: settings.gridSize,
           items: GridSize.values,
           onChanged: (value) => _onUpdate(settings.copyWith(gridSize: value)),
-          optionBuilder: (value) => Text(value.localize().tr()),
+          optionBuilder: (value) => Text(value.localize(context)),
         ),
         SettingsTile(
-          title: const Text('settings.image_list.image_list').tr(),
+          title: Text(tSettings.image_list.image_list),
           selectedOption: settings.imageListType,
           items: ImageListType.values,
           onChanged: (value) =>
               _onUpdate(settings.copyWith(imageListType: value)),
-          optionBuilder: (value) => Text(value.localize()).tr(),
+          optionBuilder: (value) => Text(value.localize(context)),
         ),
         SettingsTile(
-          title: const Text(
-            'settings.image_grid.image_quality.image_quality',
-          ).tr(),
+          title: Text(
+            tSettings.image_grid.image_quality.image_quality,
+          ),
           subtitle: settings.imageQuality == ImageQuality.highest
               ? Text(
-                  'settings.image_grid.image_quality.high_quality_notice',
+                  tSettings.image_grid.image_quality.high_quality_notice,
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.hintColor,
                   ),
-                ).tr()
+                )
               : null,
           selectedOption: settings.imageQuality,
           items: [...ImageQuality.values]..remove(ImageQuality.original),
           onChanged: (value) =>
               _onUpdate(settings.copyWith(imageQuality: value)),
-          optionBuilder: (value) => Text(value.localize()).tr(),
+          optionBuilder: (value) => Text(value.localize(context)),
         ),
         SettingsTile(
-          title: const Text('settings.result_layout.result_layout').tr(),
+          title: Text(tSettings.result_layout.result_layout),
           selectedOption: settings.pageMode,
           subtitle: settings.pageMode == PageMode.infinite
-              ? const Text('settings.infinite_scroll_warning').tr()
+              ? Text(tSettings.infinite_scroll_warning)
               : null,
           items: const [...PageMode.values],
           onChanged: (value) => _onUpdate(settings.copyWith(pageMode: value)),
-          optionBuilder: (value) => Text(value.localize()).tr(),
+          optionBuilder: (value) => Text(value.localize(context)),
         ),
         if (settings.pageMode == PageMode.paginated)
           SettingsTile(
-            title: const Text('settings.page_indicator.page_indicator').tr(),
+            title: Text(tSettings.page_indicator.page_indicator),
             selectedOption: settings.pageIndicatorPosition,
             items: const [...PageIndicatorPosition.values],
             onChanged: (value) =>
                 _onUpdate(settings.copyWith(pageIndicatorPosition: value)),
-            optionBuilder: (value) => Text(value.localize()).tr(),
+            optionBuilder: (value) => Text(value.localize(context)),
           ),
         SettingsTile(
-          title: const Text('settings.performance.posts_per_page').tr(),
+          title: Text(tSettings.performance.posts_per_page),
           subtitle: Text(
-            'settings.performance.posts_per_page_explain',
+            tSettings.performance.posts_per_page_explain,
             style: TextStyle(
               color: Theme.of(context).colorScheme.hintColor,
             ),
-          ).tr(),
+          ),
           selectedOption: settings.postsPerPage,
           items: getPostsPerPagePossibleValue(),
           onChanged: (newValue) {
@@ -148,14 +150,15 @@ class _ImageListingSettingsSectionState
           ),
         ),
         SwitchListTile(
-          title: const Text('settings.appearance.show_scores').tr(),
+          title: Text(tSettings.appearance.show_scores),
           value: settings.showScoresInGrid,
           onChanged: (value) =>
               _onUpdate(settings.copyWith(showScoresInGrid: value)),
         ),
         SwitchListTile(
-          title: const Text('settings.appearance.show_post_list_config_header')
-              .tr(),
+          title: Text(
+            tSettings.appearance.show_post_list_config_header,
+          ),
           value: settings.showPostListConfigHeader,
           onChanged: (value) => _onUpdate(
             settings.copyWith(
@@ -164,7 +167,9 @@ class _ImageListingSettingsSectionState
           ),
         ),
         SwitchListTile(
-          title: const Text('Blur explicit content').tr(),
+          title: Text(
+            'Blur explicit content'.hc,
+          ),
           value: settings.blurExplicitMedia,
           onChanged: (value) => _onUpdate(
             settings.copyWith(
@@ -175,8 +180,9 @@ class _ImageListingSettingsSectionState
           ),
         ),
         SwitchListTile(
-          title: const Text('Autoplay GIFs').tr(),
-          value: settings.animatedPostsDefaultState ==
+          title: Text('Autoplay GIFs'.hc),
+          value:
+              settings.animatedPostsDefaultState ==
               AnimatedPostsDefaultState.autoplay,
           onChanged: (value) => _onUpdate(
             settings.copyWith(
@@ -205,7 +211,7 @@ class _ImageListingSettingsSectionState
       valueListenable: _borderRadiusSliderValue,
       builder: (context, value, child) {
         return SettingsSliderTile(
-          title: 'settings.image_grid.corner_radius',
+          title: context.t.settings.image_grid.corner_radius,
           divisions: 20,
           max: 20,
           value: value,
@@ -223,7 +229,7 @@ class _ImageListingSettingsSectionState
       valueListenable: _spacingSliderValue,
       builder: (context, value, child) {
         return SettingsSliderTile(
-          title: 'settings.image_grid.spacing',
+          title: context.t.settings.image_grid.spacing,
           divisions: 10,
           max: 10,
           value: value,
@@ -241,7 +247,7 @@ class _ImageListingSettingsSectionState
       valueListenable: _paddingSliderValue,
       builder: (context, value, child) {
         return SettingsSliderTile(
-          title: 'settings.image_grid.padding',
+          title: context.t.settings.image_grid.padding,
           divisions: 8,
           max: 32,
           value: value,
@@ -259,7 +265,7 @@ class _ImageListingSettingsSectionState
       valueListenable: _aspectRatioSliderValue,
       builder: (context, value, child) {
         return SettingsSliderTile(
-          title: 'settings.image_grid.aspect_ratio',
+          title: context.t.settings.image_grid.aspect_ratio,
           divisions: 10,
           max: 1.5,
           min: 0.5,
@@ -283,29 +289,32 @@ class LayoutSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final settings = ref.watch(settingsProvider);
     final notifier = ref.watch(settingsNotifierProvider.notifier);
+    final tSettings = context.t.settings;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SettingsHeader(label: 'settings.appearance.booru_config'.tr()),
+        SettingsHeader(
+          label: tSettings.appearance.booru_config,
+        ),
         SettingsTile(
-          title: const Text('settings.appearance.booru_config_placement').tr(),
+          title: Text(tSettings.appearance.booru_config_placement),
           selectedOption: settings.booruConfigSelectorPosition,
           items: const [...BooruConfigSelectorPosition.values],
           onChanged: (value) => notifier.updateSettings(
             settings.copyWith(booruConfigSelectorPosition: value),
           ),
-          optionBuilder: (value) => Text(value.localize()),
+          optionBuilder: (value) => Text(value.localize(context)),
         ),
         SettingsTile(
-          title: const Text('Label').tr(),
+          title: Text('Label'.hc),
           selectedOption: settings.booruConfigLabelVisibility,
           items: const [...BooruConfigLabelVisibility.values],
           onChanged: (value) => notifier.updateSettings(
             settings.copyWith(booruConfigLabelVisibility: value),
           ),
-          optionBuilder: (value) => Text(value.localize()),
+          optionBuilder: (value) => Text(value.localize(context)),
         ),
       ],
     );

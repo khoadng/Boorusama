@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../create/providers.dart';
@@ -22,8 +23,8 @@ class EnableAdditionalBlacklistSwitch extends ConsumerWidget {
 
     return SwitchListTile(
       contentPadding: const EdgeInsets.only(left: 4),
-      title: const Text(
-        'Enable profile-specific blacklist',
+      title: Text(
+        'Enable profile-specific blacklist'.hc,
       ),
       value: blacklistConfigs.enable,
       onChanged: (value) => notifier.changeEnable(value),

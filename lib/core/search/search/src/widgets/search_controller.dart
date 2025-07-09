@@ -85,8 +85,8 @@ class SearchPageController extends ChangeNotifier {
     final currentState = state.value;
     final nextState = query.isEmpty
         ? _previousState == SearchState.options
-            ? SearchState.options
-            : SearchState.initial
+              ? SearchState.options
+              : SearchState.initial
         : SearchState.suggestions;
 
     if (currentState != nextState) {

@@ -68,8 +68,11 @@ class _DanbooruTagEditPageState extends ConsumerState<DanbooruTagEditPage> {
             rating: initialRating,
             onChanged: (value) {
               ref
-                  .read(selectedTagEditRatingProvider(initialRating).notifier)
-                  .state = value;
+                      .read(
+                        selectedTagEditRatingProvider(initialRating).notifier,
+                      )
+                      .state =
+                  value;
             },
           ),
           scrollController: scrollController,

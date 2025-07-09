@@ -96,5 +96,5 @@ class SavedDownloadTasksNotifier
 
 final savedDownloadTasksProvider =
     AsyncNotifierProvider<SavedDownloadTasksNotifier, List<SavedDownloadTask>>(
-  SavedDownloadTasksNotifier.new,
-);
+      SavedDownloadTasksNotifier.new,
+    );

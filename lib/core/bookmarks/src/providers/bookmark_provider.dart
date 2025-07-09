@@ -10,22 +10,25 @@ import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
+import 'package:intl/intl.dart';
 
 // Project imports:
+import '../../../../foundation/animations/constants.dart';
+import '../../../../foundation/info/device_info.dart';
+import '../../../../foundation/path.dart';
+import '../../../../foundation/permissions.dart';
+import '../../../../foundation/toast.dart';
 import '../../../backups/types.dart';
 import '../../../boorus/booru/booru.dart';
 import '../../../boorus/engine/providers.dart';
 import '../../../configs/config.dart';
-import '../../../downloads/downloader.dart';
-import '../../../downloads/filename.dart';
-import '../../../foundation/animations.dart';
-import '../../../foundation/path.dart';
-import '../../../foundation/permissions.dart';
-import '../../../foundation/toast.dart';
+import '../../../downloads/downloader/providers.dart';
+import '../../../downloads/downloader/types.dart';
+import '../../../downloads/filename/types.dart';
 import '../../../http/http.dart';
 import '../../../http/providers.dart';
 import '../../../images/providers.dart';
-import '../../../info/device_info.dart';
 import '../../../posts/post/post.dart';
 import '../../../settings/providers.dart';
 import '../data/bookmark_convert.dart';
@@ -39,7 +42,6 @@ final bookmarkProvider = NotifierProvider<BookmarkNotifier, BookmarkState>(
   dependencies: [
     bookmarkRepoProvider,
     settingsProvider,
-    downloadServiceProvider,
   ],
 );
 
@@ -49,16 +51,16 @@ final hasBookmarkProvider = Provider.autoDispose<bool>((ref) {
   return bookmarks.isNotEmpty;
 });
 
-final bookmarkUrlResolverProvider =
-    Provider.autoDispose.family<ImageUrlResolver, int?>((ref, booruId) {
-  final booruType = intToBooruType(booruId);
+final bookmarkUrlResolverProvider = Provider.autoDispose
+    .family<ImageUrlResolver, int?>((ref, booruId) {
+      final booruType = intToBooruType(booruId);
 
-  final registry = ref.watch(booruEngineRegistryProvider);
+      final registry = ref.watch(booruEngineRegistryProvider);
 
-  final repo = registry.getRepository(booruType);
+      final repo = registry.getRepository(booruType);
 
-  return repo?.imageUrlResolver() ?? const DefaultImageUrlResolver();
-});
+      return repo?.imageUrlResolver() ?? const DefaultImageUrlResolver();
+    });
 
 final bookmarkImageCacheManagerProvider = Provider<BookmarkImageCacheManager>(
   (ref) => BookmarkImageCacheManager(),
@@ -90,8 +92,9 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
           (value) => value.match(
             (error) => onError?.call(error),
             (bookmarks) => state = state.copyWith(
-              bookmarks: {for (final bookmark in bookmarks) bookmark.uniqueId}
-                  .toISet(),
+              bookmarks: {
+                for (final bookmark in bookmarks) bookmark.uniqueId,
+              }.toISet(),
             ),
           ),
         );
@@ -121,8 +124,9 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
       );
       onSuccess?.call(filtered.length);
 
-      final ids =
-          filtered.map((p) => BookmarkUniqueId.fromPost(p, booruId)).toISet();
+      final ids = filtered
+          .map((p) => BookmarkUniqueId.fromPost(p, booruId))
+          .toISet();
 
       state = state.copyWith(bookmarks: state.bookmarks.addAll(ids));
     } catch (e) {
@@ -196,12 +200,15 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
       await (await bookmarkRepository).removeBookmark(bookmark);
       // Clear all image variants
       await Future.wait([
-        _cacheManager
-            .clearCache(_cacheManager.generateCacheKey(bookmark.originalUrl)),
-        _cacheManager
-            .clearCache(_cacheManager.generateCacheKey(bookmark.sampleUrl)),
-        _cacheManager
-            .clearCache(_cacheManager.generateCacheKey(bookmark.thumbnailUrl)),
+        _cacheManager.clearCache(
+          _cacheManager.generateCacheKey(bookmark.originalUrl),
+        ),
+        _cacheManager.clearCache(
+          _cacheManager.generateCacheKey(bookmark.sampleUrl),
+        ),
+        _cacheManager.clearCache(
+          _cacheManager.generateCacheKey(bookmark.thumbnailUrl),
+        ),
       ]);
       onSuccess?.call();
       state = state.copyWith(
@@ -223,12 +230,15 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
       await Future.wait(
         bookmarks.expand(
           (b) => [
-            _cacheManager
-                .clearCache(_cacheManager.generateCacheKey(b.originalUrl)),
-            _cacheManager
-                .clearCache(_cacheManager.generateCacheKey(b.sampleUrl)),
-            _cacheManager
-                .clearCache(_cacheManager.generateCacheKey(b.thumbnailUrl)),
+            _cacheManager.clearCache(
+              _cacheManager.generateCacheKey(b.originalUrl),
+            ),
+            _cacheManager.clearCache(
+              _cacheManager.generateCacheKey(b.sampleUrl),
+            ),
+            _cacheManager.clearCache(
+              _cacheManager.generateCacheKey(b.thumbnailUrl),
+            ),
           ],
         ),
       );
@@ -342,8 +352,9 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
     final settings = ref.read(settingsProvider);
     final downloader = ref.read(downloadServiceProvider);
     final headers = {
-      AppHttpHeaders.userAgentHeader:
-          ref.read(userAgentProvider(config.auth.booruType)),
+      AppHttpHeaders.userAgentHeader: ref.read(
+        userAgentProvider(config.auth.booruType),
+      ),
       ...ref.read(extraHttpHeaderProvider(config.auth)),
       ...ref.read(cachedBypassDdosHeadersProvider(config.url)),
     };
@@ -390,8 +401,8 @@ extension BookmarkCubitToastX on BookmarkNotifier {
     await addBookmark(
       config,
       post,
-      onSuccess: () => showSuccessToast(context, 'bookmark.added'.tr()),
-      onError: () => showErrorToast(context, 'bookmark.failed_to_add'.tr()),
+      onSuccess: () => showSuccessToast(context, context.t.bookmark.added),
+      onError: () => showErrorToast(context, context.t.bookmark.failed_to_add),
     );
   }
 
@@ -406,10 +417,10 @@ extension BookmarkCubitToastX on BookmarkNotifier {
       posts,
       onSuccess: (count) => showSuccessToast(
         context,
-        'bookmark.many_added'.tr().replaceAll('{0}', '$count'),
+        context.t.bookmark.many_added.replaceAll('{0}', '$count'),
       ),
       onError: () =>
-          showErrorToast(context, 'bookmark.failed_to_add_many'.tr()),
+          showErrorToast(context, context.t.bookmark.failed_to_add_many),
     );
   }
 
@@ -421,10 +432,11 @@ extension BookmarkCubitToastX on BookmarkNotifier {
     await removeBookmarkFromId(
       bookmarkId,
       onSuccess: () {
-        showSuccessToast(context, 'bookmark.removed'.tr());
+        showSuccessToast(context, context.t.bookmark.removed);
         onSuccess?.call();
       },
-      onError: () => showErrorToast(context, 'bookmark.failed_to_remove'.tr()),
+      onError: () =>
+          showErrorToast(context, context.t.bookmark.failed_to_remove),
     );
   }
 
@@ -445,7 +457,7 @@ extension BookmarkCubitToastX on BookmarkNotifier {
     await getAllBookmarks(
       onError: (error) => showErrorToast(
         context,
-        'bookmark.failed_to_load'.tr().replaceAll('{0}', error.toString()),
+        context.t.bookmark.failed_to_load.replaceAll('{0}', error.toString()),
       ),
     );
   }

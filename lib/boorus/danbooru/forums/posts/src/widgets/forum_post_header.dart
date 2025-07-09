@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:foundation/foundation.dart';
+import 'package:intl/intl.dart';
 
 // Project imports:
 import '../../../../../../core/theme.dart';

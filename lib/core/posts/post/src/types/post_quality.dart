@@ -6,10 +6,10 @@ enum GeneralPostQualityType {
 
 extension GeneralPostQualityTypeX on GeneralPostQualityType {
   String stringify() => switch (this) {
-        GeneralPostQualityType.preview => 'preview',
-        GeneralPostQualityType.sample => 'sample',
-        GeneralPostQualityType.original => 'original',
-      };
+    GeneralPostQualityType.preview => 'preview',
+    GeneralPostQualityType.sample => 'sample',
+    GeneralPostQualityType.original => 'original',
+  };
 }
 
 GeneralPostQualityType stringToGeneralPostQualityType(String? value) =>

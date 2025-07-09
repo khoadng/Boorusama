@@ -148,7 +148,8 @@ extension DownloadRepositoryX on DownloadRepository {
     final session = await getSession(sessionId);
     if (session == null) return DownloadSessionStats.empty;
 
-    final duration = session.completedAt?.difference(session.startedAt) ??
+    final duration =
+        session.completedAt?.difference(session.startedAt) ??
         DateTime.now().difference(session.startedAt);
 
     final stats = DownloadSessionStats(
@@ -164,8 +165,9 @@ extension DownloadRepositoryX on DownloadRepository {
           : fileSizes.reduce((a, b) => a + b) ~/ fileSizes.length,
       largestFileSize: fileSizes.isEmpty ? null : fileSizes.last,
       smallestFileSize: fileSizes.isEmpty ? null : fileSizes.first,
-      medianFileSize:
-          fileSizes.isEmpty ? null : fileSizes[fileSizes.length ~/ 2],
+      medianFileSize: fileSizes.isEmpty
+          ? null
+          : fileSizes[fileSizes.length ~/ 2],
       avgFilesPerPage: filesPerPage.isEmpty
           ? null
           : filesPerPage.reduce((a, b) => a + b) / filesPerPage.length,

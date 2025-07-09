@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../foundation/display.dart';
+import '../../../foundation/display.dart';
 import '../app_theme.dart';
 import 'color_selector_accent.dart';
 import 'color_selector_basic.dart';
@@ -97,9 +97,10 @@ class ThemePreviewerSheet extends ConsumerWidget {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Consumer(
-                                  builder: (_, ref, __) {
-                                    final state =
-                                        ref.watch(themePreviewerProvider);
+                                  builder: (_, ref, _) {
+                                    final state = ref.watch(
+                                      themePreviewerProvider,
+                                    );
 
                                     return switch (state.category) {
                                       ThemeCategory.basic =>

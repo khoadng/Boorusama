@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../../../core/foundation/display.dart';
 import '../../../../../../core/posts/statistics/widgets.dart';
-import '../../../../../../core/utils/statistics.dart';
+import '../../../../../../foundation/display.dart';
+import '../../../../../../foundation/utils/statistics.dart';
 import '../../../../users/creator/providers.dart';
 import '../../../../users/user/providers.dart';
 import '../post_stats.dart';
@@ -36,15 +36,17 @@ class PostStatsUploaderSection extends ConsumerWidget {
         ...stats.uploaders.topN(5).entries.map(
           (e) {
             final percent = (e.value / totalPosts) * 100;
-            final creator =
-                ref.watch(danbooruCreatorProvider(int.tryParse(e.key)));
+            final creator = ref.watch(
+              danbooruCreatorProvider(int.tryParse(e.key)),
+            );
 
             final valueText = '${e.value} (${percent.toStringAsFixed(1)}%)';
             return PostStatsTile(
               title: creator?.name ?? e.key,
               value: valueText,
-              titleColor:
-                  DanbooruUserColor.of(context).fromLevel(creator?.level),
+              titleColor: DanbooruUserColor.of(
+                context,
+              ).fromLevel(creator?.level),
             );
           },
         ),

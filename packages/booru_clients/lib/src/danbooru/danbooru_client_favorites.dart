@@ -75,8 +75,10 @@ mixin DanbooruClientFavorites {
       },
     );
 
-    return Isolate.run(() => (response.data as List)
-        .map((item) => FavoriteDto.fromJson(item))
-        .toList());
+    return Isolate.run(
+      () => (response.data as List)
+          .map((item) => FavoriteDto.fromJson(item))
+          .toList(),
+    );
   }
 }

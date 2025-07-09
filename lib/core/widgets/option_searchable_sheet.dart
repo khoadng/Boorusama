@@ -7,8 +7,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
-import '../foundation/display.dart';
-import '../foundation/platform.dart';
+import '../../foundation/display.dart';
+import '../../foundation/platform.dart';
 
 class OptionSearchableSheet<T extends Object> extends StatefulWidget {
   const OptionSearchableSheet({
@@ -86,7 +86,8 @@ class _OptionSearchableSheetState<T extends Object>
                       items: items,
                       itemBuilder: (context, animation, item, i) =>
                           widget.itemBuilder(context, item),
-                      areItemsTheSame: widget.areItemsTheSame ??
+                      areItemsTheSame:
+                          widget.areItemsTheSame ??
                           (oldItem, newItem) => oldItem == newItem,
                     ),
                   ),
@@ -130,7 +131,8 @@ class OptionSingleSearchableField<T extends Object> extends StatelessWidget {
       shadowColor: Colors.transparent,
       color: Colors.transparent,
       child: InkWell(
-        onTap: onTap ??
+        onTap:
+            onTap ??
             () {
               showAdaptiveBottomSheet(
                 context,
@@ -139,7 +141,8 @@ class OptionSingleSearchableField<T extends Object> extends StatelessWidget {
                   items: items,
                   scrollController: ModalScrollController.of(context),
                   onFilter: (query) => items.where((element) {
-                    final value = optionSheetValueBuilder?.call(element) ??
+                    final value =
+                        optionSheetValueBuilder?.call(element) ??
                         optionValueBuilder(element);
 
                     return value.toLowerCase().contains(query.toLowerCase());

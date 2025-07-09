@@ -5,8 +5,7 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../../../core/comments/comment.dart';
-import '../../../../../../core/comments/comment_parser.dart';
+import '../../../../../../core/comments/types.dart';
 import '../../../../../../core/configs/config.dart';
 import '../../../../../../core/configs/ref.dart';
 import '../../../../users/user/providers.dart';
@@ -17,16 +16,20 @@ import '../types/comment_data.dart';
 import '../types/constants.dart';
 import '../types/danbooru_comment.dart';
 
-final danbooruCommentsProvider = NotifierProvider.family<CommentsNotifier,
-    Map<int, List<CommentData>?>, BooruConfigAuth>(
-  CommentsNotifier.new,
-);
+final danbooruCommentsProvider =
+    NotifierProvider.family<
+      CommentsNotifier,
+      Map<int, List<CommentData>?>,
+      BooruConfigAuth
+    >(
+      CommentsNotifier.new,
+    );
 
-final danbooruCommentProvider =
-    Provider.autoDispose.family<List<CommentData>?, int>((ref, postId) {
-  final config = ref.watchConfigAuth;
-  return ref.watch(danbooruCommentsProvider(config))[postId];
-});
+final danbooruCommentProvider = Provider.autoDispose
+    .family<List<CommentData>?, int>((ref, postId) {
+      final config = ref.watchConfigAuth;
+      return ref.watch(danbooruCommentsProvider(config))[postId];
+    });
 
 class CommentsNotifier
     extends FamilyNotifier<Map<int, List<CommentData>?>, BooruConfigAuth> {

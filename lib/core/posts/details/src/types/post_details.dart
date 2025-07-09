@@ -2,6 +2,8 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
+import '../../../../settings/settings.dart';
+import '../../../details_pageview/widgets.dart';
 import '../../../post/post.dart';
 import '../widgets/post_details_controller.dart';
 
@@ -9,10 +11,12 @@ class PostDetailsData<T extends Post> {
   const PostDetailsData({
     required this.posts,
     required this.controller,
+    required this.pageViewController,
   });
 
   final List<T> posts;
   final PostDetailsController<T> controller;
+  final PostDetailsPageViewController pageViewController;
 }
 
 class PostDetails<T extends Post> extends InheritedWidget {
@@ -39,4 +43,12 @@ class PostDetails<T extends Post> extends InheritedWidget {
   bool updateShouldNotify(PostDetails<T> oldWidget) {
     return data != oldWidget.data;
   }
+}
+
+SlideshowOptions toSlideShowOptions(Settings settings) {
+  return SlideshowOptions(
+    duration: settings.slideshowDuration,
+    direction: settings.slideshowDirection,
+    skipTransition: settings.skipSlideshowTransition,
+  );
 }

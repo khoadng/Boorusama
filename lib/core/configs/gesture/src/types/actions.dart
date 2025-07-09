@@ -24,23 +24,23 @@ const kDefaultGestureActions = {
 };
 
 String describeDefaultGestureAction(String? action) => switch (action) {
-      kDownloadAction => 'Download',
-      kShareAction => 'Share',
-      kToggleBookmarkAction => 'Toggle bookmark',
-      kViewTagsAction => 'View tags',
-      kViewOriginalAction => 'View original',
-      kOpenSourceAction => 'Open source',
-      kDefaultAction => 'Default',
-      _ => 'None'
-    };
+  kDownloadAction => 'Download',
+  kShareAction => 'Share',
+  kToggleBookmarkAction => 'Toggle bookmark',
+  kViewTagsAction => 'View tags',
+  kViewOriginalAction => 'View original',
+  kOpenSourceAction => 'Open source',
+  kDefaultAction => 'Default',
+  _ => 'None',
+};
 
 String describeImagePreviewQuickAction(String? action) => switch (action) {
-      kDownloadAction => 'Download',
-      kToggleBookmarkAction => 'Bookmark',
-      kViewArtistAction => 'Artist',
-      '' => 'None',
-      _ => 'Use Default'
-    };
+  kDownloadAction => 'Download',
+  kToggleBookmarkAction => 'Bookmark',
+  kViewArtistAction => 'Artist',
+  '' => 'None',
+  _ => 'Use Default',
+};
 
 bool handleDefaultGestureAction(
   String? action, {

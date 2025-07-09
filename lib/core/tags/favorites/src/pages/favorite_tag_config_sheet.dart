@@ -1,6 +1,9 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Package imports:
+import 'package:i18n/i18n.dart';
+
 // Project imports:
 import '../../../../../core/widgets/widgets.dart';
 import '../types/favorite_tags_sort_type.dart';
@@ -50,9 +53,9 @@ class FavoriteTagConfigSheet extends StatelessWidget {
               ),
               const Divider(),
               ListTile(
-                title: const Text(
-                  'Recently added',
-                  style: TextStyle(
+                title: Text(
+                  'Recently added'.hc,
+                  style: const TextStyle(
                     fontSize: 16,
                   ),
                 ),
@@ -62,9 +65,9 @@ class FavoriteTagConfigSheet extends StatelessWidget {
                 },
               ),
               ListTile(
-                title: const Text(
-                  'Recently updated',
-                  style: TextStyle(
+                title: Text(
+                  'Recently updated'.hc,
+                  style: const TextStyle(
                     fontSize: 16,
                   ),
                 ),
@@ -74,9 +77,9 @@ class FavoriteTagConfigSheet extends StatelessWidget {
                 },
               ),
               ListTile(
-                title: const Text(
-                  'Name (A-Z)',
-                  style: TextStyle(
+                title: Text(
+                  'Name (A-Z)'.hc,
+                  style: const TextStyle(
                     fontSize: 16,
                   ),
                 ),
@@ -87,9 +90,9 @@ class FavoriteTagConfigSheet extends StatelessWidget {
               ),
               // name (z-a)
               ListTile(
-                title: const Text(
-                  'Name (Z-A)',
-                  style: TextStyle(
+                title: Text(
+                  'Name (Z-A)'.hc,
+                  style: const TextStyle(
                     fontSize: 16,
                   ),
                 ),

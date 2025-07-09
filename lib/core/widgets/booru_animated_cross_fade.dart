@@ -23,8 +23,9 @@ class BooruAnimatedCrossFade extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final reduceAnimations =
-        ref.watch(settingsProvider.select((value) => value.reduceAnimations));
+    final reduceAnimations = ref.watch(
+      settingsProvider.select((value) => value.reduceAnimations),
+    );
 
     if (reduceAnimations) {
       return crossFadeState == CrossFadeState.showFirst

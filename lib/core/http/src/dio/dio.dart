@@ -8,8 +8,8 @@ import 'package:dio_http2_adapter/dio_http2_adapter.dart';
 import 'package:socks5_proxy/socks.dart' as socks;
 
 // Project imports:
-import '../../../foundation/loggers.dart';
-import '../../../foundation/platform.dart';
+import '../../../../foundation/loggers.dart';
+import '../../../../foundation/platform.dart';
 import '../../../proxy/proxy.dart';
 import '../../../router.dart';
 import '../http_utils.dart';
@@ -29,21 +29,23 @@ Dio newGenericDio({
   ProxySettings? proxySettings,
   bool? cronetAvailable,
 }) {
-  final dio = Dio(
-    BaseOptions(
-      baseUrl: baseUrl,
-      headers: {
-        if (userAgent != null) AppHttpHeaders.userAgentHeader: userAgent,
-        ...?headers,
-      },
-    ),
-  )..httpClientAdapter = _createHttpClientAdapter(
-      logger: logger,
-      userAgent: userAgent,
-      supportsHttp2: supportsHttp2,
-      proxy: proxySettings,
-      cronetAvailable: cronetAvailable,
-    );
+  final dio =
+      Dio(
+          BaseOptions(
+            baseUrl: baseUrl,
+            headers: {
+              if (userAgent != null) AppHttpHeaders.userAgentHeader: userAgent,
+              ...?headers,
+            },
+          ),
+        )
+        ..httpClientAdapter = _createHttpClientAdapter(
+          logger: logger,
+          userAgent: userAgent,
+          supportsHttp2: supportsHttp2,
+          proxy: proxySettings,
+          cronetAvailable: cronetAvailable,
+        );
 
   dio.interceptors.add(ImageRequestDeduplicateInterceptor());
 
@@ -63,7 +65,8 @@ Dio newDio({required DioOptions options}) {
   final booruDb = options.booruDb;
   final baseUrl = options.baseUrl;
 
-  final booru = booruDb.getBooruFromUrl(baseUrl) ??
+  final booru =
+      booruDb.getBooruFromUrl(baseUrl) ??
       booruDb.getBooruFromId(booruConfig.booruIdHint);
   final supportsHttp2 =
       booru?.getSiteProtocol(baseUrl) == NetworkProtocol.https_2_0;
@@ -100,8 +103,8 @@ HttpClientAdapter _createHttpClientAdapter({
 }) {
   final proxySettings = proxy != null
       ? proxy.enable
-          ? proxy
-          : null
+            ? proxy
+            : null
       : null;
   final proxyAddress = proxySettings?.getProxyAddress();
   final hasHttp2Support = supportsHttp2 ?? false;
@@ -171,8 +174,8 @@ HttpClientAdapter _createHttpClientAdapter({
   if ((isAndroid() || isIOS() || isMacOS()) && proxySettings == null) {
     return isAndroid()
         ? cronetAvailable == true
-            ? createNativeAdapter()
-            : createDefaultAdapter()
+              ? createNativeAdapter()
+              : createDefaultAdapter()
         : createNativeAdapter();
   } else if (hasHttp2Support && proxySettings == null) {
     logger?.logI(

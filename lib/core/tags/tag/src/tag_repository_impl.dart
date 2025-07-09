@@ -2,10 +2,10 @@
 import 'package:dio/dio.dart';
 
 // Project imports:
-import '../../../foundation/caching.dart';
-import 'tag.dart';
-import 'tag_display.dart';
-import 'tag_repository.dart';
+import '../../../../foundation/caching.dart';
+import 'types/tag.dart';
+import 'types/tag_display.dart';
+import 'types/tag_repository.dart';
 
 bool storeTagLargerThan1000Posts(Tag tag) => tag.postCount > 1000;
 
@@ -15,8 +15,7 @@ class EmptyTagRepository implements TagRepository {
     Set<String> tags,
     int page, {
     CancelToken? cancelToken,
-  }) async =>
-      [];
+  }) async => [];
 }
 
 class TagRepositoryBuilder
@@ -45,22 +44,22 @@ class TagRepositoryBuilder
     Set<String> tags,
     int page, {
     CancelToken? cancelToken,
-  }) getTags;
+  })
+  getTags;
 
   @override
   Future<List<Tag>> getTagsByName(
     Set<String> tags,
     int page, {
     CancelToken? cancelToken,
-  }) =>
-      retrieve(
-        keys: tags,
-        fetcher: (freshTags) => getTags(
-          freshTags,
-          page,
-          cancelToken: cancelToken,
-        ),
-      );
+  }) => retrieve(
+    keys: tags,
+    fetcher: (freshTags) => getTags(
+      freshTags,
+      page,
+      cancelToken: cancelToken,
+    ),
+  );
 
   @override
   String get debugFetcherName => 'API';
@@ -72,7 +71,8 @@ class TagRepositoryBuilder
   Tag Function(Map<String, dynamic> json) get fromJson => Tag.fromJson;
 
   @override
-  String Function(Tag data) get getKey => (tag) => tag.rawName;
+  String Function(Tag data) get getKey =>
+      (tag) => tag.rawName;
 
   @override
   late PersistentCache persistentCache;
@@ -81,7 +81,8 @@ class TagRepositoryBuilder
   late Cache<Tag> tempCache;
 
   @override
-  Map<String, dynamic> Function(Tag data) get toJson => (tag) => tag.toJson();
+  Map<String, dynamic> Function(Tag data) get toJson =>
+      (tag) => tag.toJson();
 
   @override
   final bool Function(Tag data) shouldUsePersistentStorage;

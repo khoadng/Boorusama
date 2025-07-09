@@ -16,13 +16,13 @@ class TagChangedText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final positiveStyle = Theme.of(context).textTheme.bodySmall?.copyWith(
-          color: Colors.green,
-          fontWeight: FontWeight.w800,
-        );
+      color: Colors.green,
+      fontWeight: FontWeight.w800,
+    );
     final negativeStyle = Theme.of(context).textTheme.bodySmall?.copyWith(
-          color: Colors.red,
-          fontWeight: FontWeight.w800,
-        );
+      color: Colors.red,
+      fontWeight: FontWeight.w800,
+    );
 
     return RichText(
       text: TextSpan(

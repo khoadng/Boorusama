@@ -76,8 +76,9 @@ void main() {
           status: DownloadRecordStatus.completed,
         );
 
-        final records =
-            await repository.getRecordsBySessionId(record.sessionId);
+        final records = await repository.getRecordsBySessionId(
+          record.sessionId,
+        );
         expect(records.first.status, equals(DownloadRecordStatus.completed));
       });
 
@@ -154,38 +155,40 @@ void main() {
         expect(records, isNotEmpty);
       });
 
-      test('statistics should handle null session_id after session deletion',
-          () async {
-        final task = await repository.createTask(_options);
-        final session = await repository.createSession(task, _auth);
+      test(
+        'statistics should handle null session_id after session deletion',
+        () async {
+          final task = await repository.createTask(_options);
+          final session = await repository.createSession(task, _auth);
 
-        // Insert test statistics
-        db.execute(
-          '''
+          // Insert test statistics
+          db.execute(
+            '''
           INSERT INTO download_session_statistics 
           (session_id, total_files, total_size) 
           VALUES (?, 100, 1000)
         ''',
-          [session.id],
-        );
+            [session.id],
+          );
 
-        // Verify initial state
-        var stats = db.select(
-          'SELECT * FROM download_session_statistics WHERE session_id = ?',
-          [session.id],
-        ).first;
-        expect(stats['session_id'], equals(session.id));
+          // Verify initial state
+          var stats = db.select(
+            'SELECT * FROM download_session_statistics WHERE session_id = ?',
+            [session.id],
+          ).first;
+          expect(stats['session_id'], equals(session.id));
 
-        // Delete session
-        await repository.deleteSession(session.id);
+          // Delete session
+          await repository.deleteSession(session.id);
 
-        // Verify statistics entry still exists
-        stats = db.select(
-          'SELECT * FROM download_session_statistics WHERE id = ?',
-          [stats['id']],
-        ).first;
-        expect(stats['session_id'], isNotNull);
-      });
+          // Verify statistics entry still exists
+          stats = db.select(
+            'SELECT * FROM download_session_statistics WHERE id = ?',
+            [stats['id']],
+          ).first;
+          expect(stats['session_id'], isNotNull);
+        },
+      );
     });
 
     group('saved tasks', () {
@@ -199,19 +202,21 @@ void main() {
         expect(savedTasks.first.task.id, equals(task.id));
       });
 
-      test('should retrieve latest version when no active version specified',
-          () async {
-        // Create initial task
-        final task = await repository.createTask(_options);
-        await repository.createSavedTask(task, 'Task with versions');
+      test(
+        'should retrieve latest version when no active version specified',
+        () async {
+          // Create initial task
+          final task = await repository.createTask(_options);
+          await repository.createSavedTask(task, 'Task with versions');
 
-        // Make some edits
-        await repository.editTask(task.copyWith(path: '/path1'));
-        await repository.editTask(task.copyWith(path: '/path2'));
+          // Make some edits
+          await repository.editTask(task.copyWith(path: '/path1'));
+          await repository.editTask(task.copyWith(path: '/path2'));
 
-        final savedTasks = await repository.getSavedTasks();
-        expect(savedTasks.first.task.path, equals('/path2'));
-      });
+          final savedTasks = await repository.getSavedTasks();
+          expect(savedTasks.first.task.path, equals('/path2'));
+        },
+      );
     });
 
     group('session soft deletion', () {
@@ -248,8 +253,9 @@ void main() {
         expect(taskSessions, isEmpty);
 
         // Session should not appear in status queries
-        final pendingSessions =
-            await repository.getSessionsByStatus(DownloadSessionStatus.pending);
+        final pendingSessions = await repository.getSessionsByStatus(
+          DownloadSessionStatus.pending,
+        );
         expect(pendingSessions, isEmpty);
 
         // Session should not appear in multi-status queries
@@ -264,67 +270,73 @@ void main() {
         expect(records, isEmpty);
       });
 
-      test('should exclude soft deleted sessions from active sessions',
-          () async {
-        final task = await repository.createTask(_options);
-        final session = await repository.createSession(task, _auth);
+      test(
+        'should exclude soft deleted sessions from active sessions',
+        () async {
+          final task = await repository.createTask(_options);
+          final session = await repository.createSession(task, _auth);
 
-        // Verify session appears in active sessions initially
-        var activeSessions = await repository.getActiveSessions();
-        expect(activeSessions, hasLength(1));
+          // Verify session appears in active sessions initially
+          var activeSessions = await repository.getActiveSessions();
+          expect(activeSessions, hasLength(1));
 
-        // Delete session
-        await repository.deleteSession(session.id);
+          // Delete session
+          await repository.deleteSession(session.id);
 
-        // Session should not appear in active sessions
-        activeSessions = await repository.getActiveSessions();
-        expect(activeSessions, isEmpty);
-      });
+          // Session should not appear in active sessions
+          activeSessions = await repository.getActiveSessions();
+          expect(activeSessions, isEmpty);
+        },
+      );
 
-      test('should exclude soft deleted sessions from completed sessions',
-          () async {
-        final task = await repository.createTask(_options);
-        final session = await repository.createSession(task, _auth);
+      test(
+        'should exclude soft deleted sessions from completed sessions',
+        () async {
+          final task = await repository.createTask(_options);
+          final session = await repository.createSession(task, _auth);
 
-        // Complete the session
-        await repository.completeSession(session.id);
+          // Complete the session
+          await repository.completeSession(session.id);
 
-        // Verify session appears in completed sessions initially
-        var completedSessions = await repository.getCompletedSessions();
-        expect(completedSessions, hasLength(1));
+          // Verify session appears in completed sessions initially
+          var completedSessions = await repository.getCompletedSessions();
+          expect(completedSessions, hasLength(1));
 
-        // Delete session
-        await repository.deleteSession(session.id);
+          // Delete session
+          await repository.deleteSession(session.id);
 
-        // Session should not appear in completed sessions
-        completedSessions = await repository.getCompletedSessions();
-        expect(completedSessions, isEmpty);
-      });
+          // Session should not appear in completed sessions
+          completedSessions = await repository.getCompletedSessions();
+          expect(completedSessions, isEmpty);
+        },
+      );
 
-      test('should handle re-creating session with same ID after soft deletion',
-          () async {
-        final task = await repository.createTask(_options);
-        final session = await repository.createSession(task, _auth);
-        final sessionId = session.id;
+      test(
+        'should handle re-creating session with same ID after soft deletion',
+        () async {
+          final task = await repository.createTask(_options);
+          final session = await repository.createSession(task, _auth);
+          final sessionId = session.id;
 
-        // Delete session
-        await repository.deleteSession(sessionId);
+          // Delete session
+          await repository.deleteSession(sessionId);
 
-        // Try to create a new session with the same ID
-        final newSession = await repository.createSession(task, _auth);
-        expect(
-          newSession.id,
-          isNot(equals(sessionId)),
-          reason: 'New session should have different ID',
-        );
+          // Try to create a new session with the same ID
+          final newSession = await repository.createSession(task, _auth);
+          expect(
+            newSession.id,
+            isNot(equals(sessionId)),
+            reason: 'New session should have different ID',
+          );
 
-        final sessions = await repository.getSessionsByTaskId(task.id);
-        expect(
-          sessions.length,
-          equals(1),
-          reason: 'Should only have one active session',
-        );
-      });
+          final sessions = await repository.getSessionsByTaskId(task.id);
+          expect(
+            sessions.length,
+            equals(1),
+            reason: 'Should only have one active session',
+          );
+        },
+      );
 
       test('should handle session statistics after soft deletion', () async {
         final task = await repository.createTask(_options);

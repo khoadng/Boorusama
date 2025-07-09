@@ -6,9 +6,9 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../foundation/networking.dart';
-import '../../foundation/url_launcher.dart';
-import '../../info/app_info.dart';
+import '../../../foundation/info/app_info.dart';
+import '../../../foundation/networking.dart';
+import '../../../foundation/url_launcher.dart';
 import '../../posts/sources/source.dart';
 import '../../widgets/website_logo.dart';
 
@@ -61,8 +61,9 @@ class DonationPage extends ConsumerWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       spacing: 24,
-      children:
-          appInfo.donationUrls.map((url) => _DonationIcon(url: url)).toList(),
+      children: appInfo.donationUrls
+          .map((url) => _DonationIcon(url: url))
+          .toList(),
     );
   }
 }

@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
+import 'package:intl/intl.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
@@ -40,13 +41,13 @@ class UserDetailsInfoView extends ConsumerWidget {
           UserDetailsSectionCard(
             title: InkWell(
               onTap: hasFeedback
-                  ? () => goToUserFeedbackPage(context, user.id)
+                  ? () => goToUserFeedbackPage(ref, user.id)
                   : null,
               child: Row(
                 children: [
-                  const Text(
-                    'Feedbacks',
-                    style: TextStyle(
+                  Text(
+                    'Feedbacks'.hc,
+                    style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w700,
                     ),

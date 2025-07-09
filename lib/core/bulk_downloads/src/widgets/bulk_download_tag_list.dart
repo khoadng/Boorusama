@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../foundation/platform.dart';
+import '../../../../foundation/platform.dart';
 import '../../../search/histories/history.dart';
 import '../../../search/histories/providers.dart';
 import '../../../search/histories/widgets.dart';
@@ -40,8 +40,9 @@ class BulkDownloadTagList extends ConsumerWidget {
         children: [
           ...tags.list.map(
             (e) => Chip(
-              backgroundColor:
-                  Theme.of(context).colorScheme.surfaceContainerHighest,
+              backgroundColor: Theme.of(
+                context,
+              ).colorScheme.surfaceContainerHighest,
               label: Text(e.replaceAll('_', ' ')),
               deleteIcon: Icon(
                 Symbols.close,
@@ -60,19 +61,21 @@ class BulkDownloadTagList extends ConsumerWidget {
                 ref: ref,
                 emptyBuilder: (controller) => ValueListenableBuilder(
                   valueListenable: controller,
-                  builder: (_, value, __) => value.text.isEmpty
-                      ? ref.watch(searchHistoryProvider).maybeWhen(
-                            data: (data) => SearchHistorySection(
-                              maxHistory: 20,
-                              showTime: true,
-                              histories: data.histories,
-                              onHistoryTap: (history) {
-                                Navigator.of(context).pop();
-                                onHistoryTap(history);
-                              },
-                            ),
-                            orElse: () => const SizedBox.shrink(),
-                          )
+                  builder: (_, value, _) => value.text.isEmpty
+                      ? ref
+                            .watch(searchHistoryProvider)
+                            .maybeWhen(
+                              data: (data) => SearchHistorySection(
+                                maxHistory: 20,
+                                showTime: true,
+                                histories: data.histories,
+                                onHistoryTap: (history) {
+                                  Navigator.of(context).pop();
+                                  onHistoryTap(history);
+                                },
+                              ),
+                              orElse: () => const SizedBox.shrink(),
+                            )
                       : const SizedBox.shrink(),
                 ),
                 onSubmitted: (context, text, _) {

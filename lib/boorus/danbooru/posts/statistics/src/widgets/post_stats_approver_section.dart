@@ -3,11 +3,12 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
-import '../../../../../../core/foundation/display.dart';
 import '../../../../../../core/posts/statistics/widgets.dart';
-import '../../../../../../core/utils/statistics.dart';
+import '../../../../../../foundation/display.dart';
+import '../../../../../../foundation/utils/statistics.dart';
 import '../../../../users/creator/providers.dart';
 import '../../../../users/user/providers.dart';
 import '../post_stats.dart';
@@ -30,7 +31,7 @@ class PostStatsApproverSection extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         PostStatsSectionTitle(
-          title: 'Approver',
+          title: 'Approver'.hc,
           onMore: () {
             showAppModalBarBottomSheet(
               context: context,
@@ -38,7 +39,7 @@ class PostStatsApproverSection extends ConsumerWidget {
               builder: (context) => CreatorStatisticSheet(
                 totalPosts: totalPosts,
                 stats: stats.approvers,
-                title: 'Approver',
+                title: 'Approver'.hc,
               ),
             );
           },
@@ -48,14 +49,16 @@ class PostStatsApproverSection extends ConsumerWidget {
             final percent = (e.value / totalPosts) * 100;
             final valueText = '${e.value} (${percent.toStringAsFixed(1)}%)';
 
-            final creator =
-                ref.watch(danbooruCreatorProvider(int.tryParse(e.key)));
+            final creator = ref.watch(
+              danbooruCreatorProvider(int.tryParse(e.key)),
+            );
 
             return PostStatsTile(
               title: creator?.name ?? e.key,
               value: valueText,
-              titleColor:
-                  DanbooruUserColor.of(context).fromLevel(creator?.level),
+              titleColor: DanbooruUserColor.of(
+                context,
+              ).fromLevel(creator?.level),
             );
           },
         ),

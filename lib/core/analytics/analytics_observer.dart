@@ -5,7 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'analytics_providers.dart';
+import 'providers.dart';
 
 class AnalyticsObserver implements NavigatorObserver {
   AnalyticsObserver(this.ref);

@@ -27,9 +27,9 @@ void main() {
   });
 
   test('tag operations should work correctly', () {
-    final notifier = container
-        .read(createDownloadOptionsProvider(initial).notifier)
-      ..addTag('tag1');
+    final notifier = container.read(
+      createDownloadOptionsProvider(initial).notifier,
+    )..addTag('tag1');
 
     expect(
       listEquals(
@@ -72,8 +72,9 @@ void main() {
   });
 
   test('validation should work correctly', () {
-    final notifier =
-        container.read(createDownloadOptionsProvider(initial).notifier);
+    final notifier = container.read(
+      createDownloadOptionsProvider(initial).notifier,
+    );
 
     expect(notifier.state.valid(android: false), isFalse); // Initially invalid
 

@@ -2,7 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../foundation/loggers.dart';
+import '../../../../foundation/loggers.dart';
 import 'tag_info.dart';
 import 'tag_info_service.dart';
 
@@ -12,8 +12,9 @@ Future<Override> createTagInfoOverride({
   required BootLogger bootLogger,
 }) async {
   bootLogger.l('Initialize tag info');
-  final tagInfo =
-      await TagInfoService.create().then((value) => value.getInfo());
+  final tagInfo = await TagInfoService.create().then(
+    (value) => value.getInfo(),
+  );
 
   return tagInfoProvider.overrideWithValue(tagInfo);
 }

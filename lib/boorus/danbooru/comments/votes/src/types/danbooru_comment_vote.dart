@@ -2,7 +2,7 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import '../../../../../../core/comments/comment_vote.dart';
+import '../../../../../../core/comments/types.dart';
 import '../../../../users/user/user.dart';
 import '../../../comment/comment.dart';
 
@@ -20,14 +20,14 @@ class DanbooruCommentVote extends Equatable implements CommentVote {
   });
 
   factory DanbooruCommentVote.empty() => DanbooruCommentVote(
-        id: -1,
-        commentId: -1,
-        userId: -1,
-        score: 0,
-        createdAt: DateTime(1),
-        updatedAt: DateTime(1),
-        isDeleted: false,
-      );
+    id: -1,
+    commentId: -1,
+    userId: -1,
+    score: 0,
+    createdAt: DateTime(1),
+    updatedAt: DateTime(1),
+    isDeleted: false,
+  );
 
   final CommentVoteId id;
   @override
@@ -41,36 +41,35 @@ class DanbooruCommentVote extends Equatable implements CommentVote {
 
   @override
   List<Object?> get props => [
-        id,
-        commentId,
-        userId,
-        score,
-        createdAt,
-        updatedAt,
-        isDeleted,
-      ];
+    id,
+    commentId,
+    userId,
+    score,
+    createdAt,
+    updatedAt,
+    isDeleted,
+  ];
 }
 
 extension CommentVoteX on DanbooruCommentVote {
   CommentVoteState get voteState => switch (score) {
-        -1 => CommentVoteState.downvoted,
-        1 => CommentVoteState.upvoted,
-        _ => CommentVoteState.unvote,
-      };
+    -1 => CommentVoteState.downvoted,
+    1 => CommentVoteState.upvoted,
+    _ => CommentVoteState.unvote,
+  };
 
   DanbooruCommentVote copyWith({
     CommentVoteId? id,
     CommentId? commentId,
     UserId? userId,
     CommentScore? score,
-  }) =>
-      DanbooruCommentVote(
-        id: id ?? this.id,
-        commentId: commentId ?? this.commentId,
-        userId: userId ?? this.userId,
-        score: score ?? this.score,
-        createdAt: createdAt,
-        updatedAt: updatedAt,
-        isDeleted: isDeleted,
-      );
+  }) => DanbooruCommentVote(
+    id: id ?? this.id,
+    commentId: commentId ?? this.commentId,
+    userId: userId ?? this.userId,
+    score: score ?? this.score,
+    createdAt: createdAt,
+    updatedAt: updatedAt,
+    isDeleted: isDeleted,
+  );
 }

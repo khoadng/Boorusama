@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../boorus/engine/providers.dart';
@@ -27,7 +27,7 @@ class UnknownConfigBooruSelector extends ConsumerWidget {
         vertical: 8,
       ),
       child: ListTile(
-        title: const Text('booru.booru_engine_input_label').tr(),
+        title: Text(context.t.booru.booru_engine_input_label),
         trailing: OptionDropDownButton(
           alignment: AlignmentDirectional.centerStart,
           value: engine,

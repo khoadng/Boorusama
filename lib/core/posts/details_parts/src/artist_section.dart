@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_html/flutter_html.dart';
-import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../artists/artists.dart';
-import '../../../comments/comment_parser.dart';
-import '../../../foundation/html.dart';
-import '../../../foundation/url_launcher.dart';
+import '../../../../foundation/html.dart';
+import '../../../../foundation/url_launcher.dart';
+import '../../../artists/types.dart';
+import '../../../comments/types.dart';
 import '../../../widgets/widgets.dart';
 import '../../sources/source.dart';
 import 'source_link.dart';
@@ -61,18 +61,18 @@ class _ArtistSectionState extends State<ArtistSection> {
           if (artistTags.isNotEmpty)
             switch (widget.source) {
               final WebSource source => _Link(
-                  commentary: commentary,
-                  display: display,
-                  artistTags: artistTags,
-                  url: source.url,
-                  onChanged: onChanged,
-                ),
+                commentary: commentary,
+                display: display,
+                artistTags: artistTags,
+                url: source.url,
+                onChanged: onChanged,
+              ),
               NonWebSource _ => _Link(
-                  commentary: commentary,
-                  display: display,
-                  artistTags: artistTags,
-                  onChanged: onChanged,
-                ),
+                commentary: commentary,
+                display: display,
+                artistTags: artistTags,
+                onChanged: onChanged,
+              ),
               _ => const SizedBox.shrink(),
             }
           else
@@ -160,13 +160,13 @@ class _Link extends StatelessWidget {
               itemBuilder: (_) => [
                 switch (display) {
                   TranlationState.original => PopupMenuItem(
-                      value: TranlationState.translated,
-                      child: const Text('post.detail.show_translated').tr(),
-                    ),
+                    value: TranlationState.translated,
+                    child: Text(context.t.post.detail.show_translated),
+                  ),
                   TranlationState.translated => PopupMenuItem(
-                      value: TranlationState.original,
-                      child: const Text('post.detail.show_original').tr(),
-                    ),
+                    value: TranlationState.original,
+                    child: Text(context.t.post.detail.show_original),
+                  ),
                 },
               ],
             )

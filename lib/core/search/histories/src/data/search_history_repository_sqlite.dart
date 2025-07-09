@@ -3,7 +3,7 @@ import 'package:flutter_sqlite3_migration/flutter_sqlite3_migration.dart';
 import 'package:sqlite3/sqlite3.dart';
 
 // Project imports:
-import '../../../../database/utils.dart';
+import '../../../../../foundation/database/utils.dart';
 import '../../../selected_tags/tag.dart';
 import '../search_history.dart';
 import 'search_history_repository.dart';
@@ -50,8 +50,9 @@ class SearchHistoryRepositorySqlite
 
   @override
   Future<List<SearchHistory>> getHistories() async {
-    final result = db
-        .select('SELECT * FROM $kSearchHistoryTable ORDER BY updated_at DESC');
+    final result = db.select(
+      'SELECT * FROM $kSearchHistoryTable ORDER BY updated_at DESC',
+    );
 
     return result.map((row) {
       return SearchHistory(

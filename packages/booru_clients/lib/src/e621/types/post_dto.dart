@@ -142,7 +142,8 @@ class E621SampleDto {
       height: json['height'],
       width: json['width'],
       url: json['url'],
-      alternates: json['alternates'] != null &&
+      alternates:
+          json['alternates'] != null &&
               json['alternates'] is Map<String, dynamic>
           ? E621AlternatesDto.fromJson(json['alternates'])
           : null,
@@ -169,14 +170,14 @@ class E621AlternatesDto {
       original: json['original'] != null
           ? E621VideoInfoDto.fromJson(json['original'])
           : null,
-      variants: json['variants'] != null &&
-              json['variants'] is Map<String, dynamic>
+      variants:
+          json['variants'] != null && json['variants'] is Map<String, dynamic>
           ? (json['variants'] as Map<String, dynamic>).map(
               (key, value) => MapEntry(key, E621VideoInfoDto.fromJson(value)),
             )
           : {},
-      samples: json['samples'] != null &&
-              json['samples'] is Map<String, dynamic>
+      samples:
+          json['samples'] != null && json['samples'] is Map<String, dynamic>
           ? (json['samples'] as Map<String, dynamic>).map(
               (key, value) => MapEntry(key, E621VideoInfoDto.fromJson(value)),
             )

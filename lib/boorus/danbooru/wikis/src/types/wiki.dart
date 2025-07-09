@@ -10,11 +10,11 @@ class Wiki extends Equatable {
   });
 
   factory Wiki.empty() => const Wiki(
-        body: '',
-        id: 0,
-        title: '',
-        otherNames: [],
-      );
+    body: '',
+    id: 0,
+    title: '',
+    otherNames: [],
+  );
 
   final int id;
   final String title;

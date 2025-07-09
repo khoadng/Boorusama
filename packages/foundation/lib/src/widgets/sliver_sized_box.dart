@@ -11,9 +11,9 @@ class SliverSizedBox extends StatelessWidget {
 
   const SliverSizedBox.shrink({
     super.key,
-  })  : height = 0,
-        width = 0,
-        child = null;
+  }) : height = 0,
+       width = 0,
+       child = null;
 
   final double? height;
   final double? width;

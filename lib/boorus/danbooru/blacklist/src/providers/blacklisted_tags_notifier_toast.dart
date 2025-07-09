@@ -2,11 +2,11 @@
 import 'package:flutter/widgets.dart';
 
 // Package imports:
-import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../../core/blacklists/blacklist.dart';
-import '../../../../../core/foundation/toast.dart';
+import '../../../../../foundation/toast.dart';
 import 'blacklisted_tags_notifier.dart';
 
 extension BlacklistedTagsNotifierX on BlacklistedTagsNotifier {
@@ -27,10 +27,10 @@ extension BlacklistedTagsNotifierX on BlacklistedTagsNotifier {
     await add(
       tagSet: tags.toSet(),
       onSuccess: (tags) =>
-          showSuccessToast(context, 'blacklisted_tags.updated'.tr()),
+          showSuccessToast(context, context.t.blacklisted_tags.updated),
       onFailure: (e) => showErrorToast(
         context,
-        '${'blacklisted_tags.failed_to_add'.tr()}\n$e',
+        '${context.t.blacklisted_tags.failed_to_add}\n$e',
       ),
     );
   }
@@ -38,32 +38,30 @@ extension BlacklistedTagsNotifierX on BlacklistedTagsNotifier {
   Future<void> addWithToast({
     required BuildContext context,
     required String tag,
-  }) =>
-      add(
-        tagSet: {tag},
-        onSuccess: (tags) => showSuccessToast(
-          context,
-          'blacklisted_tags.updated'.tr(),
-        ),
-        onFailure: (e) => showErrorToast(
-          context,
-          '${'blacklisted_tags.failed_to_add'.tr()}\n$e',
-        ),
-      );
+  }) => add(
+    tagSet: {tag},
+    onSuccess: (tags) => showSuccessToast(
+      context,
+      context.t.blacklisted_tags.updated,
+    ),
+    onFailure: (e) => showErrorToast(
+      context,
+      '${context.t.blacklisted_tags.failed_to_add}\n$e',
+    ),
+  );
 
   Future<void> removeWithToast({
     required BuildContext context,
     required String tag,
-  }) =>
-      remove(
-        tag: tag,
-        onSuccess: (tags) => showSuccessToast(
-          context,
-          'blacklisted_tags.updated'.tr(),
-        ),
-        onFailure: () => showErrorToast(
-          context,
-          'blacklisted_tags.failed_to_remove'.tr(),
-        ),
-      );
+  }) => remove(
+    tag: tag,
+    onSuccess: (tags) => showSuccessToast(
+      context,
+      context.t.blacklisted_tags.updated,
+    ),
+    onFailure: () => showErrorToast(
+      context,
+      context.t.blacklisted_tags.failed_to_remove,
+    ),
+  );
 }

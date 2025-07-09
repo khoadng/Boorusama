@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../foundation/html.dart';
+import '../../foundation/html.dart';
 import '../theme/providers.dart';
 
 class DismissableInfoContainer extends StatefulWidget {
@@ -71,13 +71,14 @@ class _DismissableInfoContainerState extends State<DismissableInfoContainer> {
 
   Widget _buildContent() {
     return Consumer(
-      builder: (_, ref, __) {
+      builder: (_, ref, _) {
         final colors = ref
             .watch(booruChipColorsProvider)
             .fromColor(widget.mainColor ?? Colors.grey);
 
         return Container(
-          margin: widget.padding ??
+          margin:
+              widget.padding ??
               const EdgeInsets.symmetric(
                 horizontal: 16,
                 vertical: 8,

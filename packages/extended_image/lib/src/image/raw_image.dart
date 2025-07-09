@@ -148,11 +148,14 @@ class ExtendedRawImage extends LeafRenderObjectWidget {
 
   @override
   void updateRenderObject(
-      BuildContext context, ExtendedRenderImage renderObject) {
+    BuildContext context,
+    ExtendedRenderImage renderObject,
+  ) {
     assert(
-        image?.debugGetOpenHandleStackTraces()?.isNotEmpty ?? true,
-        'Creator of a RawImage disposed of the image when the RawImage still '
-        'needed it.');
+      image?.debugGetOpenHandleStackTraces()?.isNotEmpty ?? true,
+      'Creator of a RawImage disposed of the image when the RawImage still '
+      'needed it.',
+    );
     renderObject
       ..image = image?.clone()
       ..debugImageLabel = debugImageLabel
@@ -183,17 +186,35 @@ class ExtendedRawImage extends LeafRenderObjectWidget {
     properties.add(DoubleProperty('height', height, defaultValue: null));
     properties.add(DoubleProperty('scale', scale, defaultValue: 1.0));
     properties.add(ColorProperty('color', color, defaultValue: null));
-    properties.add(DiagnosticsProperty<Animation<double>?>('opacity', opacity,
-        defaultValue: null));
-    properties.add(EnumProperty<BlendMode>('colorBlendMode', colorBlendMode,
-        defaultValue: null));
+    properties.add(
+      DiagnosticsProperty<Animation<double>?>(
+        'opacity',
+        opacity,
+        defaultValue: null,
+      ),
+    );
+    properties.add(
+      EnumProperty<BlendMode>(
+        'colorBlendMode',
+        colorBlendMode,
+        defaultValue: null,
+      ),
+    );
     properties.add(EnumProperty<BoxFit>('fit', fit, defaultValue: null));
-    properties.add(DiagnosticsProperty<AlignmentGeometry>(
-        'alignment', alignment,
-        defaultValue: null));
+    properties.add(
+      DiagnosticsProperty<AlignmentGeometry>(
+        'alignment',
+        alignment,
+        defaultValue: null,
+      ),
+    );
     properties.add(EnumProperty<FilterQuality>('filterQuality', filterQuality));
-    properties.add(DiagnosticsProperty<BorderRadius>(
-        'borderRadius', borderRadius,
-        defaultValue: null));
+    properties.add(
+      DiagnosticsProperty<BorderRadius>(
+        'borderRadius',
+        borderRadius,
+        defaultValue: null,
+      ),
+    );
   }
 }

@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 
 class ExploreSection extends StatelessWidget {
   const ExploreSection({
@@ -24,18 +24,17 @@ class ExploreSection extends StatelessWidget {
           contentPadding: const EdgeInsets.symmetric(horizontal: 4),
           title: Text(
             title,
-            style: Theme.of(context)
-                .textTheme
-                .titleLarge!
-                .copyWith(fontWeight: FontWeight.w700),
+            style: Theme.of(
+              context,
+            ).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.w700),
           ),
           trailing: onPressed != null
               ? TextButton(
                   onPressed: onPressed,
                   child: Text(
-                    'explore.see_more',
+                    context.t.explore.see_more,
                     style: Theme.of(context).textTheme.labelLarge,
-                  ).tr(),
+                  ),
                 )
               : null,
         ),

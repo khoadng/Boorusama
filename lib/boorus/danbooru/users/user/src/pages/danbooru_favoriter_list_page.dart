@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../../../../core/configs/ref.dart';
 import '../../../../../../core/theme.dart';
-import '../../../../danbooru_provider.dart';
+import '../../../../client_provider.dart';
 import '../../providers.dart';
 import 'user_list_page.dart';
 
@@ -51,8 +51,10 @@ class DanbooruFavoriterListPage extends ConsumerWidget {
         slivers: [
           DanbooruSliverUserListPage(
             fetchUsers: (page) async {
-              final votes =
-                  await client.getFavorites(postId: postId, page: page);
+              final votes = await client.getFavorites(
+                postId: postId,
+                page: page,
+              );
               final userIds = votes.map((e) => e.userId).toList();
               final users = await userRepo.getUsersByIds(userIds);
               return users;

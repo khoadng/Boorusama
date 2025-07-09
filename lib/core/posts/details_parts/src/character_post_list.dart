@@ -11,7 +11,33 @@ import '../../../configs/ref.dart';
 import '../../../router.dart';
 import '../../../tags/tag/providers.dart';
 import '../../../widgets/widgets.dart';
+import '../../details/details.dart';
 import '../../details/widgets.dart';
+import '../../post/post.dart';
+
+class DefaultInheritedCharacterPostsSection<T extends Post>
+    extends ConsumerWidget {
+  const DefaultInheritedCharacterPostsSection({super.key});
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final post = InheritedPost.of<T>(context);
+
+    return ref
+        .watch(
+          artistCharacterGroupProvider(
+            (post: post, auth: ref.watchConfigAuth),
+          ),
+        )
+        .maybeWhen(
+          data: (data) => data.characterTags.isNotEmpty
+              ? SliverCharacterPostList(
+                  tags: data.characterTags,
+                )
+              : const SliverSizedBox.shrink(),
+          orElse: () => const SliverSizedBox.shrink(),
+        );
+  }
+}
 
 class SliverCharacterPostList extends ConsumerWidget {
   const SliverCharacterPostList({
@@ -60,8 +86,8 @@ class SliverCharacterPostList extends ConsumerWidget {
                   Text(
                     'Characters',
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ],
               ),
@@ -80,7 +106,7 @@ class SliverCharacterPostList extends ConsumerWidget {
                     color: ref.watch(
                       tagColorProvider((ref.watchConfigAuth, 'character')),
                     ),
-                    onPressed: () => goToCharacterPage(context, tag),
+                    onPressed: () => goToCharacterPage(ref, tag),
                     label: Text(
                       tag.replaceAll('_', ' '),
                       textAlign: TextAlign.center,

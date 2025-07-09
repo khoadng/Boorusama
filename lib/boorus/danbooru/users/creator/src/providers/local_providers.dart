@@ -10,12 +10,14 @@ import 'providers.dart';
 
 final danbooruCreatorRepoProvider =
     FutureProvider.family<CreatorRepository, BooruConfigAuth>(
-  (ref, config) async {
-    final box = await ref.watch(danbooruCreatorHiveBoxProvider(config).future);
+      (ref, config) async {
+        final box = await ref.watch(
+          danbooruCreatorHiveBoxProvider(config).future,
+        );
 
-    return CreatorRepositoryFromUserRepo(
-      ref.watch(danbooruUserRepoProvider(config)),
-      box,
+        return CreatorRepositoryFromUserRepo(
+          ref.watch(danbooruUserRepoProvider(config)),
+          box,
+        );
+      },
     );
-  },
-);

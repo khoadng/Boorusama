@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import 'providers.dart';
@@ -37,40 +37,41 @@ class _FullHistoryPageState extends ConsumerState<FullHistoryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('search.history.history').tr(),
+        title: Text(context.t.search.history.history),
         actions: [
           TextButton(
             onPressed: () => showDialog(
               context: context,
               routeSettings: const RouteSettings(name: 'clear_all_history'),
               builder: (context) => AlertDialog(
-                content: const Text('Are you sure?').tr(),
+                content: Text('Are you sure?'.hc),
                 actions: [
                   TextButton(
                     style: TextButton.styleFrom(
                       foregroundColor: Theme.of(context).colorScheme.onSurface,
                     ),
                     onPressed: () => Navigator.of(context).pop(),
-                    child: const Text('generic.action.cancel').tr(),
+                    child: Text(context.t.generic.action.cancel),
                   ),
                   Consumer(
-                    builder: (_, ref, __) {
-                      final notifier =
-                          ref.watch(searchHistoryProvider.notifier);
+                    builder: (_, ref, _) {
+                      final notifier = ref.watch(
+                        searchHistoryProvider.notifier,
+                      );
 
                       return FilledButton(
                         onPressed: () {
                           notifier.clearHistories();
                           Navigator.of(context).pop();
                         },
-                        child: const Text('generic.action.ok').tr(),
+                        child: Text(context.t.generic.action.ok),
                       );
                     },
                   ),
                 ],
               ),
             ),
-            child: const Text('search.history.clear').tr(),
+            child: Text(context.t.search.history.clear),
           ),
         ],
       ),

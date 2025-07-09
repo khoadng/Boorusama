@@ -43,8 +43,10 @@ class NavigationTile extends StatelessWidget {
           onTap: () => onTap(value),
           child: Container(
             margin: const EdgeInsets.symmetric(vertical: 4),
-            padding:
-                EdgeInsets.symmetric(horizontal: 8, vertical: showIcon ? 4 : 6),
+            padding: EdgeInsets.symmetric(
+              horizontal: 8,
+              vertical: showIcon ? 4 : 6,
+            ),
             child: showIcon && showTitle
                 ? Row(
                     children: [
@@ -54,10 +56,10 @@ class NavigationTile extends StatelessWidget {
                     ],
                   )
                 : showIcon
-                    ? selected
-                        ? selectedIcon
-                        : icon
-                    : title,
+                ? selected
+                      ? selectedIcon
+                      : icon
+                : title,
           ),
         ),
       ),

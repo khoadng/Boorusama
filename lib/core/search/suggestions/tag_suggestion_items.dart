@@ -6,9 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../autocompletes/autocompletes.dart';
 import '../../boorus/engine/providers.dart';
 import '../../configs/config.dart';
+import '../../tags/autocompletes/types.dart';
 import 'tag_suggestion_item.dart';
 
 class TagSuggestionItems extends ConsumerWidget {
@@ -53,7 +53,8 @@ class TagSuggestionItems extends ConsumerWidget {
                 borderRadius ?? const BorderRadius.all(Radius.circular(8)),
             child: ListView.builder(
               reverse: reverse ?? false,
-              padding: padding ??
+              padding:
+                  padding ??
                   const EdgeInsets.symmetric(
                     horizontal: 12,
                   ).copyWith(bottom: 16),
@@ -79,7 +80,7 @@ class TagSuggestionItems extends ConsumerWidget {
             ),
           )
         : emptyBuilder != null
-            ? emptyBuilder!()
-            : const SizedBox.shrink();
+        ? emptyBuilder!()
+        : const SizedBox.shrink();
   }
 }

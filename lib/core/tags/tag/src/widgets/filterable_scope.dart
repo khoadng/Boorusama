@@ -36,8 +36,8 @@ class _FilterableScopeState<T> extends State<FilterableScope<T>> {
     final items = query.isEmpty
         ? widget.originalItems
         : widget.originalItems
-            .where((element) => widget.filter(element, query))
-            .toList();
+              .where((element) => widget.filter(element, query))
+              .toList();
 
     return widget.builder(
       context,

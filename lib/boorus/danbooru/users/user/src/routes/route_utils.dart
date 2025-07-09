@@ -1,12 +1,12 @@
-// Flutter imports:
-import 'package:flutter/widgets.dart';
+// Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../../../core/router.dart';
 import '../../../../posts/post/post.dart';
 
-void goToPostFavoritesDetails(BuildContext context, DanbooruPost post) {
-  context.push(
+void goToPostFavoritesDetails(WidgetRef ref, DanbooruPost post) {
+  ref.router.push(
     Uri(
       pathSegments: [
         '',
@@ -20,8 +20,8 @@ void goToPostFavoritesDetails(BuildContext context, DanbooruPost post) {
   );
 }
 
-void goToPostVotesDetails(BuildContext context, DanbooruPost post) {
-  context.push(
+void goToPostVotesDetails(WidgetRef ref, DanbooruPost post) {
+  ref.router.push(
     Uri(
       pathSegments: [
         '',

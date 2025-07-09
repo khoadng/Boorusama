@@ -6,13 +6,17 @@ import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import '../../../../foundation/riverpod/riverpod.dart';
 import '../../../boorus/engine/engine.dart';
 import '../../../boorus/engine/providers.dart';
 import '../../../configs/config.dart';
 import '../../../tags/categories/providers.dart';
 import '../../../tags/tag/colors.dart';
+import '../../../tags/tag/providers.dart';
+import '../../../tags/tag/tag.dart';
 import '../../../theme.dart';
 import '../../providers.dart';
+import '../data/bookmark_convert.dart';
 import '../types/bookmark.dart';
 import '../types/bookmark_repository.dart';
 
@@ -48,7 +52,7 @@ List<Bookmark> filterBookmarks({
       .sorted(
         (a, b) => switch (sortType) {
           BookmarkSortType.newest => b.createdAt.compareTo(a.createdAt),
-          BookmarkSortType.oldest => a.createdAt.compareTo(b.createdAt)
+          BookmarkSortType.oldest => a.createdAt.compareTo(b.createdAt),
         },
       )
       .toList();
@@ -56,40 +60,44 @@ List<Bookmark> filterBookmarks({
 
 final bookmarkEditProvider = StateProvider.autoDispose<bool>((ref) => false);
 
-final tagCountProvider =
-    FutureProvider.autoDispose.family<int, String>((ref, tag) async {
+final tagCountProvider = FutureProvider.autoDispose.family<int, String>((
+  ref,
+  tag,
+) async {
   final tagMap = await ref.watch(tagMapProvider.future);
 
   return tagMap[tag] ?? 0;
 });
 
-final bookmarkTagColorProvider =
-    FutureProvider.autoDispose.family<Color?, (BooruConfigAuth, String)>(
-  (ref, params) async {
-    final (config, tag) = params;
-    final tagTypeStore = await ref.watch(booruTagTypeStoreProvider.future);
-    final tagType = await tagTypeStore.getTagCategory(config.url, tag);
-    final colorScheme = ref.watch(colorSchemeProvider);
+final bookmarkTagColorProvider = FutureProvider.autoDispose
+    .family<Color?, (BooruConfigAuth, String)>(
+      (ref, params) async {
+        final (config, tag) = params;
+        final tagTypeStore = await ref.watch(booruTagTypeStoreProvider.future);
+        final tagType = await tagTypeStore.getTagCategory(config.url, tag);
+        final colorScheme = ref.watch(colorSchemeProvider);
 
-    final color =
-        ref.watch(booruRepoProvider(config))?.tagColorGenerator().generateColor(
+        final color = ref
+            .watch(booruRepoProvider(config))
+            ?.tagColorGenerator()
+            .generateColor(
               TagColorOptions(
                 tagType: tagType,
                 colors: TagColors.fromBrightness(colorScheme.brightness),
               ),
             );
 
-    return color;
-  },
-  dependencies: [colorSchemeProvider],
-);
+        return color;
+      },
+      dependencies: [colorSchemeProvider],
+    );
 
 final tagMapProvider = FutureProvider<Map<String, int>>((ref) async {
   final bookmarks = await (await ref.watch(bookmarkRepoProvider.future))
       .getAllBookmarksOrEmpty(
-    imageUrlResolver: (booruId) =>
-        ref.read(bookmarkUrlResolverProvider(booruId)),
-  );
+        imageUrlResolver: (booruId) =>
+            ref.read(bookmarkUrlResolverProvider(booruId)),
+      );
 
   return bookmarks.fold<Map<String, int>>(
     {},
@@ -102,10 +110,17 @@ final tagMapProvider = FutureProvider<Map<String, int>>((ref) async {
   );
 });
 
-final tagSuggestionsProvider =
-    FutureProvider.autoDispose<List<String>>((ref) async {
-  final tag = ref.watch(tagInputProvider);
-  if (tag.isEmpty) return const [];
+final tagSuggestionsProvider = FutureProvider.autoDispose<List<String>>((
+  ref,
+) async {
+  final tagString = ref.watch(tagInputProvider);
+  if (tagString.isEmpty) return const [];
+
+  final tags = tagString.trim().split(' ');
+
+  final tag = tags.lastOrNull?.trim();
+
+  if (tag == null || tag.isEmpty) return const [];
 
   final tagMap = await ref.watch(tagMapProvider.future);
 
@@ -126,16 +141,17 @@ final selectedBooruUrlProvider = StateProvider.autoDispose<String?>((ref) {
 
 final selectedBookmarkSortTypeProvider =
     StateProvider.autoDispose<BookmarkSortType>(
-  (ref) => BookmarkSortType.newest,
-);
+      (ref) => BookmarkSortType.newest,
+    );
 
-final availableBooruUrlsProvider =
-    FutureProvider.autoDispose<List<String>>((ref) async {
+final availableBooruUrlsProvider = FutureProvider.autoDispose<List<String>>((
+  ref,
+) async {
   final bookmarks = await (await ref.watch(bookmarkRepoProvider.future))
       .getAllBookmarksOrEmpty(
-    imageUrlResolver: (booruId) =>
-        ref.read(bookmarkUrlResolverProvider(booruId)),
-  );
+        imageUrlResolver: (booruId) =>
+            ref.read(bookmarkUrlResolverProvider(booruId)),
+      );
 
   return bookmarks.fold(
     <String>{},
@@ -146,3 +162,43 @@ final availableBooruUrlsProvider =
     },
   ).toList();
 });
+
+final bookmarkTagGroupsProvider = FutureProvider.autoDispose
+    .family<List<TagGroupItem>?, (BooruConfigAuth, BookmarkPost)>((
+      ref,
+      params,
+    ) async {
+      ref.cacheFor(const Duration(seconds: 30));
+
+      final config = params.$1;
+      final post = params.$2;
+
+      final tagExtractor = ref.watch(bookmarkTagExtractorProvider(config));
+
+      final tags = await tagExtractor.extractTags(
+        post,
+      );
+
+      return createTagGroupItems(tags);
+    });
+
+final bookmarkTagExtractorProvider =
+    Provider.family<TagExtractor<BookmarkPost>, BooruConfigAuth>(
+      (ref, config) {
+        return TagExtractorBuilder(
+          sorter: TagSorter.defaults(),
+          fetcher: (post, options) {
+            // Use read to avoid circular dependency
+            final tagResolver = ref.read(tagResolverProvider(config));
+
+            if (post case final BookmarkPost bookmarkPost) {
+              final tags = bookmarkPost.tags;
+
+              return tagResolver.resolveRawTags(tags);
+            } else {
+              return TagExtractor.extractTagsFromGenericPost(post);
+            }
+          },
+        );
+      },
+    );

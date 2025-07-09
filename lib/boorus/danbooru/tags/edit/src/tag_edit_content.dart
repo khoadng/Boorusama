@@ -8,7 +8,7 @@ import 'package:foundation/widgets.dart';
 // Project imports:
 import '../../../../../core/configs/ref.dart';
 import '../../../../../core/search/search/routes.dart';
-import '../../../danbooru_provider.dart';
+import '../../../danbooru.dart';
 import 'providers/tag_edit_notifier.dart';
 import 'tag_edit_state.dart';
 import 'tag_edit_view_controller.dart';
@@ -68,72 +68,73 @@ class TagEditExpandContent extends ConsumerWidget {
     final aiTagSupport = booru.hasAiTagSupported(config.url);
 
     final notifier = ref.watch(tagEditProvider.notifier);
-    final expandMode =
-        ref.watch(tagEditProvider.select((value) => value.expandMode));
+    final expandMode = ref.watch(
+      tagEditProvider.select((value) => value.expandMode),
+    );
 
     return switch (expandMode) {
       TagEditExpandMode.favorite => TagEditContainer(
-          title: 'Favorites',
-          maxHeight: maxHeight,
-          viewController: viewController,
-          child: const TagEditFavoriteViewWithStates(),
-        ),
+        title: 'Favorites',
+        maxHeight: maxHeight,
+        viewController: viewController,
+        child: const TagEditFavoriteViewWithStates(),
+      ),
       TagEditExpandMode.related => TagEditContainer(
-          title: 'Related',
-          maxHeight: maxHeight,
-          viewController: viewController,
-          child: const TagEditWikiViewWithStates(),
-        ),
+        title: 'Related',
+        maxHeight: maxHeight,
+        viewController: viewController,
+        child: const TagEditWikiViewWithStates(),
+      ),
       TagEditExpandMode.aiTag => TagEditContainer(
-          title: 'Suggested',
-          maxHeight: maxHeight,
-          viewController: viewController,
-          child: const TagEditAITagViewWithStates(),
-        ),
+        title: 'Suggested',
+        maxHeight: maxHeight,
+        viewController: viewController,
+        child: const TagEditAITagViewWithStates(),
+      ),
       null => Container(
-          margin: const EdgeInsets.only(left: 8, bottom: 8, top: 8),
-          height: 42,
-          child: ListView(
-            scrollDirection: Axis.horizontal,
-            children: [
-              RawTagEditSelectButton(
-                title: 'Search',
-                onPressed: () {
-                  goToQuickSearchPage(
-                    context,
-                    ref: ref,
-                    onSelected: (tag, isRaw) {
-                      if (isRaw) {
-                        final tags = tag.split(' ');
+        margin: const EdgeInsets.only(left: 8, bottom: 8, top: 8),
+        height: 42,
+        child: ListView(
+          scrollDirection: Axis.horizontal,
+          children: [
+            RawTagEditSelectButton(
+              title: 'Search',
+              onPressed: () {
+                goToQuickSearchPage(
+                  context,
+                  ref: ref,
+                  onSelected: (tag, isRaw) {
+                    if (isRaw) {
+                      final tags = tag.split(' ');
 
-                        notifier.addTags(tags);
-                      } else {
-                        notifier.addTag(tag);
-                      }
-                    },
-                  );
-                },
-              ),
+                      notifier.addTags(tags);
+                    } else {
+                      notifier.addTag(tag);
+                    }
+                  },
+                );
+              },
+            ),
+            const SizedBox(width: 4),
+            const TagEditModeSelectButton(
+              title: 'Favorites',
+              mode: TagEditExpandMode.favorite,
+            ),
+            const SizedBox(width: 4),
+            const TagEditModeSelectButton(
+              title: 'Related',
+              mode: TagEditExpandMode.related,
+            ),
+            if (aiTagSupport) ...[
               const SizedBox(width: 4),
               const TagEditModeSelectButton(
-                title: 'Favorites',
-                mode: TagEditExpandMode.favorite,
+                title: 'Suggested',
+                mode: TagEditExpandMode.aiTag,
               ),
-              const SizedBox(width: 4),
-              const TagEditModeSelectButton(
-                title: 'Related',
-                mode: TagEditExpandMode.related,
-              ),
-              if (aiTagSupport) ...[
-                const SizedBox(width: 4),
-                const TagEditModeSelectButton(
-                  title: 'Suggested',
-                  mode: TagEditExpandMode.aiTag,
-                ),
-              ],
             ],
-          ),
+          ],
         ),
+      ),
     };
   }
 }
@@ -168,8 +169,9 @@ class TagEditWikiViewWithStates extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final notifier = ref.watch(tagEditProvider.notifier);
     final tags = ref.watch(tagEditProvider.select((value) => value.tags));
-    final selectedTag =
-        ref.watch(tagEditProvider.select((value) => value.selectedTag));
+    final selectedTag = ref.watch(
+      tagEditProvider.select((value) => value.selectedTag),
+    );
 
     return TagEditWikiView(
       tag: selectedTag,

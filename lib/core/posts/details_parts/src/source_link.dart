@@ -3,11 +3,12 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
-import '../../../foundation/clipboard.dart';
-import '../../../foundation/display/media_query_utils.dart';
-import '../../../foundation/url_launcher.dart';
+import '../../../../foundation/clipboard.dart';
+import '../../../../foundation/display/media_query_utils.dart';
+import '../../../../foundation/url_launcher.dart';
 
 class SourceLink extends StatelessWidget {
   const SourceLink({
@@ -38,7 +39,7 @@ class SourceLink extends StatelessWidget {
                   AppClipboard.copyAndToast(
                     context,
                     url.toString(),
-                    message: 'post.detail.copied'.tr(),
+                    message: context.t.post.detail.copied,
                   );
                 },
                 onTap: () {

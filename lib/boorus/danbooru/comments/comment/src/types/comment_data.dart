@@ -25,26 +25,26 @@ class CommentData extends Equatable {
   final UserLevel authorLevel;
   final UserId authorId;
   final String body;
-  final DateTime createdAt;
-  final DateTime updatedAt;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
   final bool isSelf;
   final bool isEdited;
   final List<Uri> uris;
 
   @override
   List<Object?> get props => [
-        id,
-        score,
-        authorName,
-        authorLevel,
-        authorId,
-        body,
-        createdAt,
-        updatedAt,
-        isSelf,
-        isEdited,
-        uris,
-      ];
+    id,
+    score,
+    authorName,
+    authorLevel,
+    authorId,
+    body,
+    createdAt,
+    updatedAt,
+    isSelf,
+    isEdited,
+    uris,
+  ];
 }
 
 String buildCommentContent({

@@ -187,8 +187,8 @@ class MediaAssetDto {
       pixelHash: json['pixel_hash'],
       variants: json['variants'] != null
           ? (json['variants'] as List)
-              .map((variant) => VariantDto.fromJson(variant))
-              .toList()
+                .map((variant) => VariantDto.fromJson(variant))
+                .toList()
           : null,
     );
   }

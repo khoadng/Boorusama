@@ -23,12 +23,12 @@ Future<void> goToBulkDownloadPage(
       initialValue: tags,
     );
   } else {
-    return goToBulkDownloadManagerPage(context);
+    return goToBulkDownloadManagerPage(ref);
   }
 }
 
 Future<void> goToBulkDownloadManagerPage(
-  BuildContext context, {
+  WidgetRef ref, {
   bool go = false,
 }) async {
   final uri = Uri(
@@ -38,8 +38,8 @@ Future<void> goToBulkDownloadManagerPage(
     ],
   ).toString();
   if (go) {
-    context.go(uri);
+    ref.router.go(uri);
   } else {
-    await context.push(uri);
+    await ref.router.push(uri);
   }
 }

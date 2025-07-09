@@ -21,31 +21,29 @@ class FavoriteGroupRepositoryApi implements FavoriteGroupRepository {
   Future<List<DanbooruFavoriteGroup>> getFavoriteGroupsByCreatorName({
     required String name,
     int? page,
-  }) =>
-      client
-          .getFavoriteGroups(
-            page: page,
-            creatorName: name,
-            limit: _favGroupLimit,
-          )
-          .then(
-            (groups) => groups.map(favoriteGroupDtoToFavoriteGroup).toList(),
-          );
+  }) => client
+      .getFavoriteGroups(
+        page: page,
+        creatorName: name,
+        limit: _favGroupLimit,
+      )
+      .then(
+        (groups) => groups.map(favoriteGroupDtoToFavoriteGroup).toList(),
+      );
 
   @override
   Future<bool> createFavoriteGroup({
     required String name,
     List<int>? initialItems,
     bool isPrivate = false,
-  }) =>
-      client
-          .postFavoriteGroups(
-            name: name,
-            postIds: initialItems ?? [],
-            isPrivate: isPrivate,
-          )
-          .then((value) => true)
-          .catchError((e) => false);
+  }) => client
+      .postFavoriteGroups(
+        name: name,
+        postIds: initialItems ?? [],
+        isPrivate: isPrivate,
+      )
+      .then((value) => true)
+      .catchError((e) => false);
 
   @override
   Future<bool> deleteFavoriteGroup({required int id}) => client
@@ -57,27 +55,25 @@ class FavoriteGroupRepositoryApi implements FavoriteGroupRepository {
   Future<bool> addItemsToFavoriteGroup({
     required int id,
     required List<int> itemIds,
-  }) =>
-      client
-          .patchFavoriteGroups(
-            groupId: id,
-            postIds: itemIds,
-          )
-          .then((value) => true)
-          .catchError((e) => false);
+  }) => client
+      .patchFavoriteGroups(
+        groupId: id,
+        postIds: itemIds,
+      )
+      .then((value) => true)
+      .catchError((e) => false);
 
   @override
   Future<bool> removeItemsFromFavoriteGroup({
     required int id,
     required List<int> itemIds,
-  }) =>
-      client
-          .patchFavoriteGroups(
-            groupId: id,
-            postIds: itemIds,
-          )
-          .then((value) => true)
-          .catchError((e) => false);
+  }) => client
+      .patchFavoriteGroups(
+        groupId: id,
+        postIds: itemIds,
+      )
+      .then((value) => true)
+      .catchError((e) => false);
 
   @override
   Future<bool> editFavoriteGroup({
@@ -112,8 +108,9 @@ DanbooruFavoriteGroup favoriteGroupDtoToFavoriteGroup(FavoriteGroupDto d) =>
     DanbooruFavoriteGroup(
       id: d.id!,
       name: d.name ?? '',
-      creator:
-          d.creator == null ? Creator.empty() : creatorDtoToCreator(d.creator),
+      creator: d.creator == null
+          ? Creator.empty()
+          : creatorDtoToCreator(d.creator),
       createdAt: d.createdAt!,
       updatedAt: d.updatedAt!,
       isPublic: d.isPublic ?? false,

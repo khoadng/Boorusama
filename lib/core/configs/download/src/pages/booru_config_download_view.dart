@@ -3,10 +3,11 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
-import '../../../../downloads/widgets.dart';
-import '../../../../info/device_info.dart';
+import '../../../../../foundation/info/device_info.dart';
+import '../../../../downloads/configs/widgets.dart';
 import '../../../../theme.dart';
 import '../../../create/providers.dart';
 import '../widgets/custom_download_file_name_section.dart';
@@ -21,12 +22,14 @@ class BooruConfigDownloadView extends ConsumerWidget {
     final config = ref.watch(initialBooruConfigProvider);
     final id = ref.watch(editBooruConfigIdProvider);
     final customDownloadFileNameFormat = ref.watch(
-      editBooruConfigProvider(id)
-          .select((value) => value.customDownloadFileNameFormat),
+      editBooruConfigProvider(
+        id,
+      ).select((value) => value.customDownloadFileNameFormat),
     );
     final customDownloadLocation = ref.watch(
-      editBooruConfigProvider(ref.watch(editBooruConfigIdProvider))
-          .select((value) => value.customDownloadLocation),
+      editBooruConfigProvider(
+        ref.watch(editBooruConfigIdProvider),
+      ).select((value) => value.customDownloadLocation),
     );
 
     return SingleChildScrollView(
@@ -40,18 +43,18 @@ class BooruConfigDownloadView extends ConsumerWidget {
             deviceInfo: ref.watch(deviceInfoProvider),
             onPathChanged: (path) =>
                 ref.editNotifier.updateCustomDownloadLocation(path),
-            title: const Text(
-              'Download location',
+            title: Text(
+              'Download location'.hc,
             ),
           ),
           const SizedBox(height: 4),
           Text(
-            'Leave empty to use the download location in settings.',
+            'Leave empty to use the download location in settings.'.hc,
             style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  color: Theme.of(context).colorScheme.hintColor,
-                  fontSize: 11,
-                  fontWeight: FontWeight.w400,
-                ),
+              color: Theme.of(context).colorScheme.hintColor,
+              fontSize: 11,
+              fontWeight: FontWeight.w400,
+            ),
           ),
           const SizedBox(height: 8),
           CustomDownloadFileNameSection(

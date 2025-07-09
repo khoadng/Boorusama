@@ -7,5 +7,6 @@ import '../../pool/pool.dart';
 final danbooruSelectedPoolCategoryProvider =
     StateProvider<DanbooruPoolCategory>((ref) => DanbooruPoolCategory.series);
 
-final danbooruSelectedPoolOrderProvider =
-    StateProvider<DanbooruPoolOrder>((ref) => DanbooruPoolOrder.latest);
+final danbooruSelectedPoolOrderProvider = StateProvider<DanbooruPoolOrder>(
+  (ref) => DanbooruPoolOrder.latest,
+);

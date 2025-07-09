@@ -88,17 +88,6 @@ class BookmarkImageCacheManager implements ImageCacheManager {
       final cacheFile = File(join(cacheDir.path, key));
 
       if (cacheFile.existsSync()) {
-        // For bookmarks, we might want to ignore maxAge since these are meant to be permanent
-        // But we'll still respect it if provided for consistency
-        if (maxAge != null) {
-          final now = DateTime.now();
-          final fileStats = cacheFile.statSync();
-
-          if (now.subtract(maxAge).isAfter(fileStats.modified)) {
-            // For bookmarks, we might want to refresh but not auto-delete
-            return false;
-          }
-        }
         return true;
       }
     } catch (e) {

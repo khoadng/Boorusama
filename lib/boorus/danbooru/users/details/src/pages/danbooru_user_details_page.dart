@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
-import '../../../../../../core/foundation/clipboard.dart';
-import '../../../../../../core/info/package_info.dart';
 import '../../../../../../core/users/widgets.dart';
 import '../../../../../../core/widgets/widgets.dart';
+import '../../../../../../foundation/clipboard.dart';
+import '../../../../../../foundation/info/package_info.dart';
 import '../../../../dmails/routes.dart';
 import '../../../../posts/uploads/routes.dart';
 import '../../../user/providers.dart';
@@ -36,7 +36,7 @@ class DanbooruUserDetailsPage extends ConsumerWidget {
       actions: [
         BooruPopupMenuButton(
           itemBuilder: {
-            0: const Text('profile.copy_user_id').tr(),
+            0: Text(context.t.profile.copy_user_id),
           },
           onSelected: (value) {
             if (value == 0) {
@@ -47,7 +47,9 @@ class DanbooruUserDetailsPage extends ConsumerWidget {
       ],
       body: SafeArea(
         bottom: false,
-        child: ref.watch(danbooruUserProvider(uid)).when(
+        child: ref
+            .watch(danbooruUserProvider(uid))
+            .when(
               data: (user) => UserDetailsTabView(
                 sliverInfoOverview: UserOverviewScaffold(
                   userInfo: DanbooruUserInfoBox(user: user),
@@ -102,23 +104,26 @@ class UserDetailsActionButtons extends ConsumerWidget {
           if (ref.watch(isDevEnvironmentProvider))
             FilledButton(
               style: FilledButton.styleFrom(
-                backgroundColor:
-                    Theme.of(context).colorScheme.secondaryContainer,
-                foregroundColor:
-                    Theme.of(context).colorScheme.onSecondaryContainer,
+                backgroundColor: Theme.of(
+                  context,
+                ).colorScheme.secondaryContainer,
+                foregroundColor: Theme.of(
+                  context,
+                ).colorScheme.onSecondaryContainer,
               ),
-              child: const Text('My Uploads'),
-              onPressed: () => goToMyUploadsPage(context),
+              child: Text('My Uploads'.hc),
+              onPressed: () => goToMyUploadsPage(ref),
             ),
           const SizedBox(width: 8),
           FilledButton(
             style: FilledButton.styleFrom(
               backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
-              foregroundColor:
-                  Theme.of(context).colorScheme.onSecondaryContainer,
+              foregroundColor: Theme.of(
+                context,
+              ).colorScheme.onSecondaryContainer,
             ),
-            child: const Text('profile.messages').tr(),
-            onPressed: () => goToDmailPage(context),
+            child: Text(context.t.profile.messages),
+            onPressed: () => goToDmailPage(ref),
           ),
         ],
       ),

@@ -4,9 +4,9 @@ import 'package:path/path.dart' show join;
 import 'package:path_provider/path_provider.dart';
 
 // Project imports:
-import '../../../../database/providers.dart';
-import '../../../../database/utils.dart';
-import '../../../../foundation/loggers.dart';
+import '../../../../../foundation/database/providers.dart';
+import '../../../../../foundation/database/utils.dart';
+import '../../../../../foundation/loggers.dart';
 import 'empty_search_history_repository.dart';
 import 'search_history_repository.dart';
 import 'search_history_repository_sqlite.dart';

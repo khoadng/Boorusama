@@ -7,11 +7,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
+import '../../../../foundation/url_launcher.dart';
 import '../../../boorus/engine/engine.dart';
 import '../../../boorus/engine/providers.dart';
 import '../../../config_widgets/website_logo.dart';
 import '../../../configs/ref.dart';
-import '../../../foundation/url_launcher.dart';
 import '../../../router.dart';
 import '../../../tags/categories/tag_category.dart';
 import '../../../tags/tag/widgets.dart';
@@ -74,7 +74,8 @@ class InformationSection extends ConsumerWidget {
     final createdAt = this.createdAt;
 
     return Padding(
-      padding: padding ??
+      padding:
+          padding ??
           const EdgeInsets.only(
             top: 4,
             bottom: 4,
@@ -91,14 +92,14 @@ class InformationSection extends ConsumerWidget {
               children: [
                 if (characterTags.isNotEmpty) ...[
                   Text(
-                    generateCharacterOnlyReadableName(characterTags)
-                        .replaceAll('_', ' ')
-                        .titleCase,
+                    generateCharacterOnlyReadableName(
+                      characterTags,
+                    ).replaceAll('_', ' ').titleCase,
                     overflow: TextOverflow.fade,
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w800,
-                        ),
+                      fontSize: 20,
+                      fontWeight: FontWeight.w800,
+                    ),
                     maxLines: 1,
                     softWrap: false,
                   ),
@@ -106,9 +107,9 @@ class InformationSection extends ConsumerWidget {
                 ],
                 if (copyrightTags.isNotEmpty)
                   Text(
-                    generateCopyrightOnlyReadableName(copyrightTags)
-                        .replaceAll('_', ' ')
-                        .titleCase,
+                    generateCopyrightOnlyReadableName(
+                      copyrightTags,
+                    ).replaceAll('_', ' ').titleCase,
                     overflow: TextOverflow.fade,
                     style: Theme.of(context).textTheme.bodyLarge,
                     maxLines: 1,
@@ -135,13 +136,12 @@ class InformationSection extends ConsumerWidget {
                             createdAt.fuzzify(
                               locale: Localizations.localeOf(context),
                             ),
-                            style:
-                                Theme.of(context).textTheme.bodySmall?.copyWith(
-                                      color: Theme.of(context)
-                                          .listTileTheme
-                                          .subtitleTextStyle
-                                          ?.color,
-                                    ),
+                            style: Theme.of(context).textTheme.bodySmall
+                                ?.copyWith(
+                                  color: Theme.of(
+                                    context,
+                                  ).listTileTheme.subtitleTextStyle?.color,
+                                ),
                           ),
                         ),
                       ),
@@ -265,7 +265,7 @@ class SimpleInformationSection extends ConsumerWidget {
       source: post.source,
       showSource: showSource,
       onArtistTagTap: supportArtist
-          ? (context, artist) => goToArtistPage(context, artist)
+          ? (context, artist) => goToArtistPage(ref, artist)
           : null,
     );
   }

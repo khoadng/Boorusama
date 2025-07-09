@@ -63,10 +63,12 @@ List<RelatedTagDto>? _parseRelatedTags(String? relatedTags) {
     final tag = parts[i];
     final score = double.tryParse(parts[i + 1]) ?? 0.0;
 
-    tags.add(RelatedTagDto(
-      tag: tag,
-      score: score,
-    ));
+    tags.add(
+      RelatedTagDto(
+        tag: tag,
+        score: score,
+      ),
+    );
   }
 
   return tags;

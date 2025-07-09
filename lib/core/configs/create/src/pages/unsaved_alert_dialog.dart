@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../widgets/booru_dialog.dart';
@@ -33,17 +33,18 @@ class UnsavedAlertDialog extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             const SizedBox(height: 20),
-            const Text(
-              'You have unsaved changes',
-              style: TextStyle(
+            Text(
+              'You have unsaved changes'.hc,
+              style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w700,
               ),
             ),
             const SizedBox(height: 20),
-            const Text(
-              "Do you want to save your changes? Your changes will be lost if you don't save them.",
-              style: TextStyle(
+            Text(
+              "Do you want to save your changes? Your changes will be lost if you don't save them."
+                  .hc,
+              style: const TextStyle(
                 fontWeight: FontWeight.w400,
                 fontSize: 14,
               ),
@@ -100,7 +101,7 @@ class UnsavedAlertDialog extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 14),
                 child: Text(
-                  'generic.action.cancel'.tr(),
+                  context.t.generic.action.cancel,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     color: colorScheme.onSurface,

@@ -5,9 +5,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../boorus/entry_page.dart';
-import '../app_rating/app_rating.dart';
-import '../applock/applock.dart';
+import '../../foundation/app_rating/app_rating.dart';
+import '../../foundation/applock/applock.dart';
 import '../blacklists/routes.dart';
 import '../bookmarks/routes.dart';
 import '../boorus/engine/providers.dart';
@@ -16,8 +15,9 @@ import '../configs/config/routes.dart';
 import '../configs/create/routes.dart';
 import '../configs/ref.dart';
 import '../donate/routes.dart';
-import '../downloads/downloader.dart';
-import '../downloads/routes/routes.dart';
+import '../download_manager/routes.dart';
+import '../downloads/downloader/widgets.dart';
+import '../home/entry_page.dart';
 import '../posts/details/routes.dart';
 import '../posts/details_manager/routes.dart';
 import '../posts/favorites/routes.dart';
@@ -25,6 +25,7 @@ import '../posts/post/routes.dart';
 import '../premiums/routes.dart';
 import '../router.dart';
 import '../search/search/routes.dart';
+import '../settings/providers.dart';
 import '../settings/routes.dart';
 import '../tags/favorites/routes.dart';
 import '../widgets/widgets.dart';
@@ -51,70 +52,70 @@ const kCharacterNameKey = 'name';
 
 class Routes {
   static GoRoute home(Ref ref) => GoRoute(
-        path: '/',
-        builder: (context, state) => BooruConfigDeepLinkResolver(
-          path: state.uri.toString(),
-          child: const AppLockWithSettings(
-            child: AppRatingScope(
-              child: BackgroundDownloaderBuilder(
-                child: CustomContextMenuOverlay(
-                  child: Focus(
-                    autofocus: true,
-                    child: EntryPage(),
-                  ),
-                ),
+    path: '/',
+    builder: (context, state) => BooruConfigDeepLinkResolver(
+      path: state.uri.toString(),
+      child: const AppLockWithSettings(
+        child: AppRatingScope(
+          child: BackgroundDownloaderBuilder(
+            child: CustomContextMenuOverlay(
+              child: Focus(
+                autofocus: true,
+                child: EntryPage(),
               ),
             ),
           ),
         ),
-        routes: [
-          addBooruConfigRoutes(ref),
-          updateBooruConfigRoutes(ref),
-          searchRoutes(ref),
-          postDetailsRoutes(ref),
-          singlePostDetailsRoutes(ref),
-          postFavoritesRoutes(ref),
-          artists(ref),
-          characters(ref),
-          settingsRoutes,
-          settingsDesktopRoutes,
-          bookmarkRoutes,
-          globalBlacklistedTagsRoutes,
-          downloadManagerRoutes,
-          bulkDownloadsRoutes,
-          favoriteTags(),
-          originalImageRoutes,
-          premiumRoutes(ref),
-          donationRoutes(ref),
-          detailsManagerRoutes,
-        ],
-      );
+      ),
+    ),
+    routes: [
+      addBooruConfigRoutes(ref),
+      updateBooruConfigRoutes(ref),
+      searchRoutes(ref),
+      postDetailsRoutes(ref),
+      singlePostDetailsRoutes(ref),
+      postFavoritesRoutes(ref),
+      artists(ref),
+      characters(ref),
+      settingsRoutes,
+      settingsDesktopRoutes,
+      bookmarkRoutes,
+      globalBlacklistedTagsRoutes,
+      downloadManagerRoutes,
+      bulkDownloadsRoutes,
+      favoriteTags(),
+      originalImageRoutes,
+      premiumRoutes(ref),
+      donationRoutes(ref),
+      detailsManagerRoutes,
+    ],
+  );
 
   static GoRoute artists(Ref ref) => GoRoute(
-        path: 'artists',
-        name: '/artists',
-        pageBuilder: largeScreenAwarePageBuilder(
-          builder: (context, state) {
-            return InheritedArtistName(
-              artistName: state.uri.queryParameters[kArtistNameKey],
-              child: const ArtistPage(),
-            );
-          },
-        ),
-      );
+    path: 'artists',
+    name: '/artists',
+    pageBuilder: largeScreenAwarePageBuilder(
+      builder: (context, state) {
+        return InheritedArtistName(
+          artistName: state.uri.queryParameters[kArtistNameKey],
+          child: const ArtistPage(),
+        );
+      },
+    ),
+  );
 
   static GoRoute characters(Ref ref) => GoRoute(
-        path: 'characters',
-        name: '/characters',
-        pageBuilder: largeScreenAwarePageBuilder(
-          builder: (context, state) {
-            return InheritedCharacterName(
-              characterName: state.uri.queryParameters[kCharacterNameKey],
-              child: const CharacterPage(),
-            );
-          },
-        ),
-      );
+    path: 'characters',
+    name: '/characters',
+    pageBuilder: largeScreenAwarePageBuilder(
+      builder: (context, state) {
+        return InheritedCharacterName(
+          characterName: state.uri.queryParameters[kCharacterNameKey],
+          child: const CharacterPage(),
+        );
+      },
+    ),
+  );
 }
 
 class ArtistPage extends ConsumerWidget {
@@ -128,8 +129,8 @@ class ArtistPage extends ConsumerWidget {
 
     return builder != null
         ? artistName != null
-            ? builder(context, artistName)
-            : const InvalidPage(message: 'Invalid artist name')
+              ? builder(context, artistName)
+              : const InvalidPage(message: 'Invalid artist name')
         : const UnimplementedPage();
   }
 }
@@ -164,8 +165,8 @@ class CharacterPage extends ConsumerWidget {
 
     return builder != null
         ? characterName != null
-            ? builder(context, characterName)
-            : const InvalidPage(message: 'Invalid character name')
+              ? builder(context, characterName)
+              : const InvalidPage(message: 'Invalid character name')
         : const UnimplementedPage();
   }
 }
@@ -186,5 +187,22 @@ class InheritedCharacterName extends InheritedWidget {
   @override
   bool updateShouldNotify(InheritedCharacterName oldWidget) {
     return characterName != oldWidget.characterName;
+  }
+}
+
+class AppLockWithSettings extends ConsumerWidget {
+  const AppLockWithSettings({
+    required this.child,
+    super.key,
+  });
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return AppLock(
+      enable: ref.watch(settingsProvider.select((s) => s.appLockEnabled)),
+      child: child,
+    );
   }
 }

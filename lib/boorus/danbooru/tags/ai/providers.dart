@@ -6,7 +6,8 @@ import '../../../../core/configs/ref.dart';
 import '../../../../core/tags/categories/providers.dart';
 import '../../../../core/tags/categories/tag_category.dart';
 import '../../../../core/tags/tag/tag.dart';
-import '../../danbooru_provider.dart';
+import '../../client_provider.dart';
+import '../../danbooru.dart';
 import 'ai.dart';
 
 final danbooruAITagsProvider = FutureProvider.family<List<AITag>, int>(
@@ -19,7 +20,9 @@ final danbooruAITagsProvider = FutureProvider.family<List<AITag>, int>(
 
     final client = ref.watch(danbooruClientProvider(config));
 
-    final tags = await client.getAITags(query: 'id:$postId').then(
+    final tags = await client
+        .getAITags(query: 'id:$postId')
+        .then(
           (value) => value
               .map(
                 (e) => AITag(

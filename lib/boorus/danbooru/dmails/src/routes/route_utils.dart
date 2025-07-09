@@ -1,12 +1,12 @@
-// Flutter imports:
-import 'package:flutter/widgets.dart';
+// Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../../core/router.dart';
 import '../types/dmail.dart';
 
-void goToDmailPage(BuildContext context) {
-  context.push(
+void goToDmailPage(WidgetRef ref) {
+  ref.router.push(
     Uri(
       pathSegments: [
         '',
@@ -18,10 +18,10 @@ void goToDmailPage(BuildContext context) {
 }
 
 void goToDmailDetailsPage(
-  BuildContext context, {
+  WidgetRef ref, {
   required Dmail dmail,
 }) {
-  context.push(
+  ref.router.push(
     Uri(
       pathSegments: [
         '',

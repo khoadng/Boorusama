@@ -5,12 +5,12 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../../../../../core/widgets/widgets.dart';
-import '../../../../foundation/toast.dart';
+import '../../../../../foundation/toast.dart';
 import '../../../../search/search/routes.dart';
 import '../../../../search/search/widgets.dart';
 import '../providers/favorite_tags_notifier.dart';
@@ -35,7 +35,7 @@ class FavoriteTagsPage extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('favorite_tags.favorite_tags').tr(),
+        title: Text(context.t.favorite_tags.favorite_tags),
         actions: [
           IconButton(
             onPressed: () {
@@ -103,29 +103,37 @@ class FavoriteTagsPage extends ConsumerWidget {
                   Expanded(
                     child: BooruSearchBar(
                       hintText: 'Filter...',
-                      onChanged: (value) => ref
-                          .read(selectedFavoriteTagQueryProvider.notifier)
-                          .state = value,
+                      onChanged: (value) =>
+                          ref
+                                  .read(
+                                    selectedFavoriteTagQueryProvider.notifier,
+                                  )
+                                  .state =
+                              value,
                     ),
                   ),
                   IconButton(
                     onPressed: () {
                       showModalBottomSheet(
                         context: context,
-                        routeSettings:
-                            const RouteSettings(name: 'favorite_tag_config'),
-                        backgroundColor:
-                            Theme.of(context).colorScheme.surfaceContainer,
+                        routeSettings: const RouteSettings(
+                          name: 'favorite_tag_config',
+                        ),
+                        backgroundColor: Theme.of(
+                          context,
+                        ).colorScheme.surfaceContainer,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
                         builder: (context) => FavoriteTagConfigSheet(
                           onSorted: (value) {
                             ref
-                                .read(
-                                  selectedFavoriteTagsSortTypeProvider.notifier,
-                                )
-                                .state = value;
+                                    .read(
+                                      selectedFavoriteTagsSortTypeProvider
+                                          .notifier,
+                                    )
+                                    .state =
+                                value;
                           },
                         ),
                       );
@@ -176,7 +184,7 @@ class FavoriteTagsPage extends ConsumerWidget {
           ),
           onTap: () {
             goToSearchPage(
-              context,
+              ref,
               tag: tag.name,
               queryType: tag.queryType,
             );
@@ -205,14 +213,17 @@ class FavoriteTagsPage extends ConsumerWidget {
                 case 'edit':
                   showBooruModalBottomSheet(
                     context: context,
-                    routeSettings:
-                        const RouteSettings(name: 'edit_favorite_tag'),
+                    routeSettings: const RouteSettings(
+                      name: 'edit_favorite_tag',
+                    ),
                     resizeToAvoidBottomInset: true,
                     builder: (context) => EditFavoriteTagSheet(
                       initialValue: tag,
                       title: tag.name,
                       onSubmit: (tag) {
-                        ref.read(favoriteTagsProvider.notifier).update(
+                        ref
+                            .read(favoriteTagsProvider.notifier)
+                            .update(
                               tag.name,
                               tag,
                             );

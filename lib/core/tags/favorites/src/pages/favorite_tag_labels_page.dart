@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../providers/favorite_tags_notifier.dart';
@@ -19,7 +20,7 @@ class FavoriteTagLabelsPage extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Labels'),
+        title: Text('Labels'.hc),
       ),
       body: labels.isNotEmpty
           ? ListView.builder(
@@ -31,7 +32,7 @@ class FavoriteTagLabelsPage extends ConsumerWidget {
                     .length;
                 return ListTile(
                   title: Text(label),
-                  subtitle: Text('$count tags'),
+                  subtitle: Text('$count tags'.hc),
                   onTap: () {
                     Navigator.of(context).push(
                       CupertinoPageRoute(
@@ -44,8 +45,8 @@ class FavoriteTagLabelsPage extends ConsumerWidget {
                 );
               },
             )
-          : const Center(
-              child: Text('No labels'),
+          : Center(
+              child: Text('No labels'.hc),
             ),
     );
   }

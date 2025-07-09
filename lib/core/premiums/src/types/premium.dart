@@ -49,7 +49,7 @@ enum PremiumMode {
 }
 
 PremiumMode parsePremiumMode(String? mode) => switch (mode) {
-      'free' || 'disable' => PremiumMode.free,
-      'premium' || 'enable' => PremiumMode.premium,
-      _ => PremiumMode.hidden,
-    };
+  'free' || 'disable' => PremiumMode.free,
+  'premium' || 'enable' => PremiumMode.premium,
+  _ => PremiumMode.hidden,
+};

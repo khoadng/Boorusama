@@ -3,10 +3,11 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
-import '../../../foundation/iap/iap.dart';
-import '../../../foundation/toast.dart';
+import '../../../../foundation/iap/iap.dart';
+import '../../../../foundation/toast.dart';
 import '../../../router.dart';
 import '../../../widgets/widgets.dart';
 import '../internal_widgets/benefit_card.dart';
@@ -51,7 +52,7 @@ class PremiumPage extends ConsumerWidget {
               }
             },
             loading: () {},
-            error: (_, __) {
+            error: (_, _) {
               _showFailedPurchase(context);
             },
           );
@@ -125,8 +126,9 @@ class PremiumPage extends ConsumerWidget {
   void _showFailedPurchase(BuildContext context) {
     return showSimpleSnackBar(
       context: context,
-      content: const Text(
-        'There was a problem purchasing your subscription. Please try again later.',
+      content: Text(
+        'There was a problem purchasing your subscription. Please try again later.'
+            .hc,
       ),
       duration: const Duration(seconds: 2),
     );
@@ -176,17 +178,21 @@ class _GetPremiumButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return PrimaryButton(
-      onPressed: ref.watch(packagePurchaseProvider).when(
+      onPressed: ref
+          .watch(packagePurchaseProvider)
+          .when(
             data: (_) {
               return () => _showPlans(context, ref);
             },
             loading: () => null,
-            error: (_, __) {
+            error: (_, _) {
               return () => _showPlans(context, ref);
             },
           ),
-      child: ref.watch(packagePurchaseProvider).maybeWhen(
-            orElse: () => const Text('Get Plus'),
+      child: ref
+          .watch(packagePurchaseProvider)
+          .maybeWhen(
+            orElse: () => Text('Get Plus'.hc),
             loading: () => SizedBox(
               width: 16,
               height: 16,
@@ -222,13 +228,15 @@ class _RestorePremiumButton extends ConsumerWidget {
         style: TextButton.styleFrom(
           foregroundColor: Theme.of(context).colorScheme.onSurface,
         ),
-        onPressed: ref.watch(packagePurchaseProvider).maybeWhen(
+        onPressed: ref
+            .watch(packagePurchaseProvider)
+            .maybeWhen(
               loading: () => null,
               orElse: () {
                 return () => restore(ref, context);
               },
             ),
-        child: const Text('Restore subscription'),
+        child: Text('Restore subscription'.hc),
       ),
     );
   }
@@ -236,39 +244,44 @@ class _RestorePremiumButton extends ConsumerWidget {
   void restore(WidgetRef ref, BuildContext context) {
     final navigator = Navigator.of(context);
 
-    ref.read(subscriptionNotifierProvider.notifier).restoreSubscription().then(
-      (res) {
-        if (context.mounted) {
-          if (res) {
-            final navigatorContext = navigatorKey.currentContext;
-            navigator.pop();
+    ref
+        .read(subscriptionNotifierProvider.notifier)
+        .restoreSubscription()
+        .then(
+          (res) {
+            if (context.mounted) {
+              if (res) {
+                final navigatorContext = navigatorKey.currentContext;
+                navigator.pop();
 
-            if (navigatorContext != null) {
-              showSimpleSnackBar(
-                context: navigatorContext,
-                content: const Text('Subscription restored!'),
-                duration: const Duration(seconds: 2),
-              );
+                if (navigatorContext != null) {
+                  showSimpleSnackBar(
+                    context: navigatorContext,
+                    content: Text('Subscription restored!'.hc),
+                    duration: const Duration(seconds: 2),
+                  );
+                }
+              } else {
+                _showFailedRestore(context);
+              }
             }
-          } else {
-            _showFailedRestore(context);
-          }
-        }
-      },
-    ).catchError(
-      (e, st) {
-        if (context.mounted) {
-          _showFailedRestore(context);
-        }
-      },
-    );
+          },
+        )
+        .catchError(
+          (e, st) {
+            if (context.mounted) {
+              _showFailedRestore(context);
+            }
+          },
+        );
   }
 
   void _showFailedRestore(BuildContext context) {
     showSimpleSnackBar(
       context: context,
-      content: const Text(
-        'There was a problem restoring your subscription. Please try again later.',
+      content: Text(
+        'There was a problem restoring your subscription. Please try again later.'
+            .hc,
       ),
       duration: const Duration(seconds: 2),
     );

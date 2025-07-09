@@ -1,11 +1,11 @@
-// Flutter imports:
-import 'package:flutter/material.dart';
+// Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../../../core/router.dart';
 
-void goToForumPage(BuildContext context) {
-  context.push(
+void goToForumPage(WidgetRef ref) {
+  ref.router.push(
     Uri(
       pathSegments: [
         '',

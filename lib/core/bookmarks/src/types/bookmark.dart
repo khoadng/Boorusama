@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../foundation/path.dart';
+import '../../../../foundation/path.dart';
 import '../../../posts/post/post.dart';
 
 class Bookmark extends Equatable with ImageInfoMixin, TagListCheckMixin {
@@ -25,10 +25,10 @@ class Bookmark extends Equatable with ImageInfoMixin, TagListCheckMixin {
     required ImageUrlResolver imageUrlResolver,
     required this.postId,
     required this.metadata,
-  })  : _originalUrl = originalUrl,
-        _sampleUrl = sampleUrl,
-        _thumbnailUrl = thumbnailUrl,
-        _resolver = imageUrlResolver;
+  }) : _originalUrl = originalUrl,
+       _sampleUrl = sampleUrl,
+       _thumbnailUrl = thumbnailUrl,
+       _resolver = imageUrlResolver;
 
   factory Bookmark.fromJson(
     Map<String, dynamic> json, {
@@ -51,7 +51,8 @@ class Bookmark extends Equatable with ImageInfoMixin, TagListCheckMixin {
       format: json['format'] as String?,
       imageUrlResolver: imageUrlResolver,
       postId: json['postId'] as int?,
-      metadata: (json['metadata'] as Map<String, dynamic>?)?.map(
+      metadata:
+          (json['metadata'] as Map<String, dynamic>?)?.map(
             (k, v) => MapEntry(k, v.toString()),
           ) ??
           {},
@@ -120,9 +121,9 @@ class Bookmark extends Equatable with ImageInfoMixin, TagListCheckMixin {
   }
 
   BookmarkUniqueId get uniqueId => BookmarkUniqueId(
-        booruId: booruId,
-        url: originalUrl,
-      );
+    booruId: booruId,
+    url: originalUrl,
+  );
 
   static Bookmark empty = Bookmark(
     id: -1,
@@ -146,23 +147,23 @@ class Bookmark extends Equatable with ImageInfoMixin, TagListCheckMixin {
 
   @override
   List<Object?> get props => [
-        id,
-        booruId,
-        createdAt,
-        updatedAt,
-        thumbnailUrl,
-        sampleUrl,
-        originalUrl,
-        sourceUrl,
-        width,
-        height,
-        md5,
-        tags,
-        realSourceUrl,
-        format,
-        postId,
-        metadata,
-      ];
+    id,
+    booruId,
+    createdAt,
+    updatedAt,
+    thumbnailUrl,
+    sampleUrl,
+    originalUrl,
+    sourceUrl,
+    width,
+    height,
+    md5,
+    tags,
+    realSourceUrl,
+    format,
+    postId,
+    metadata,
+  ];
 
   Bookmark copyWith({
     int? id,
@@ -195,8 +196,9 @@ class Bookmark extends Equatable with ImageInfoMixin, TagListCheckMixin {
       height: height ?? this.height,
       md5: md5 ?? this.md5,
       tags: tags ?? this.tags,
-      realSourceUrl:
-          realSourceUrl != null ? realSourceUrl() : this.realSourceUrl,
+      realSourceUrl: realSourceUrl != null
+          ? realSourceUrl()
+          : this.realSourceUrl,
       format: format != null ? format() : this.format,
       imageUrlResolver: _resolver,
       postId: postId != null ? postId() : this.postId,
@@ -227,18 +229,18 @@ class Bookmark extends Equatable with ImageInfoMixin, TagListCheckMixin {
 }
 
 Set<String> _parseTags(dynamic tags) => switch (tags) {
-      final String s => tryDecodeJson(s).fold(
-          (l) => const {},
-          (r) => _parseJsonTags(r),
-        ),
-      final List l => l.map((e) => e.toString()).toSet(),
-      _ => const {},
-    };
+  final String s => tryDecodeJson(s).fold(
+    (l) => const {},
+    (r) => _parseJsonTags(r),
+  ),
+  final List l => l.map((e) => e.toString()).toSet(),
+  _ => const {},
+};
 
 Set<String> _parseJsonTags(dynamic tags) => switch (tags) {
-      final List l => l.map((e) => e.toString()).toSet(),
-      _ => const {},
-    };
+  final List l => l.map((e) => e.toString()).toSet(),
+  _ => const {},
+};
 
 enum BookmarkGetError {
   nullField,
@@ -255,7 +257,7 @@ class BookmarkUniqueId extends Equatable {
   });
 
   BookmarkUniqueId.fromPost(Post post, this.booruId)
-      : url = post.originalImageUrl;
+    : url = post.originalImageUrl;
 
   final int booruId;
   final String url;

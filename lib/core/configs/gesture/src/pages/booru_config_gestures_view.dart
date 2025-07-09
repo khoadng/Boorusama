@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../theme.dart';
@@ -38,8 +38,9 @@ class BooruConfigGesturesView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final postGesturesConfigTyped = ref.watch(
-      editBooruConfigProvider(ref.watch(editBooruConfigIdProvider))
-          .select((value) => value.postGesturesConfigTyped),
+      editBooruConfigProvider(
+        ref.watch(editBooruConfigIdProvider),
+      ).select((value) => value.postGesturesConfigTyped),
     );
 
     return SingleChildScrollView(
@@ -49,12 +50,12 @@ class BooruConfigGesturesView extends ConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           BooruConfigSettingsHeader(
-            label: 'settings.image_viewer.image_viewer'.tr(),
+            label: context.t.settings.image_viewer.image_viewer,
           ),
           ListTile(
             contentPadding: EdgeInsets.zero,
             visualDensity: VisualDensity.compact,
-            title: const Text('gestures.swipe_down').tr(),
+            title: Text(context.t.gestures.swipe_down),
             trailing: OptionDropDownButton(
               alignment: AlignmentDirectional.centerStart,
               value: postGesturesConfigTyped?.fullview?.swipeDown,
@@ -80,7 +81,7 @@ class BooruConfigGesturesView extends ConsumerWidget {
           ListTile(
             contentPadding: EdgeInsets.zero,
             visualDensity: VisualDensity.compact,
-            title: const Text('gestures.double_tap').tr(),
+            title: Text(context.t.gestures.double_tap),
             trailing: OptionDropDownButton(
               alignment: AlignmentDirectional.centerStart,
               value: postGesturesConfigTyped?.fullview?.doubleTap,
@@ -107,7 +108,7 @@ class BooruConfigGesturesView extends ConsumerWidget {
           ListTile(
             contentPadding: EdgeInsets.zero,
             visualDensity: VisualDensity.compact,
-            title: const Text('gestures.long_press').tr(),
+            title: Text(context.t.gestures.long_press),
             trailing: OptionDropDownButton(
               alignment: AlignmentDirectional.centerStart,
               value: postGesturesConfigTyped?.fullview?.longPress,
@@ -137,7 +138,7 @@ class BooruConfigGesturesView extends ConsumerWidget {
           ListTile(
             contentPadding: EdgeInsets.zero,
             visualDensity: VisualDensity.compact,
-            title: const Text('gestures.tap').tr(),
+            title: Text(context.t.gestures.tap),
             trailing: OptionDropDownButton(
               alignment: AlignmentDirectional.centerStart,
               value: postGesturesConfigTyped?.preview?.tap,
@@ -163,7 +164,7 @@ class BooruConfigGesturesView extends ConsumerWidget {
           ListTile(
             contentPadding: EdgeInsets.zero,
             visualDensity: VisualDensity.compact,
-            title: const Text('gestures.long_press').tr(),
+            title: Text(context.t.gestures.long_press),
             trailing: OptionDropDownButton(
               alignment: AlignmentDirectional.centerStart,
               value: postGesturesConfigTyped?.preview?.longPress,
@@ -190,10 +191,10 @@ class BooruConfigGesturesView extends ConsumerWidget {
           Text(
             'Override the default gestures for this profile, select "None" to keep the original behavior.',
             style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  color: Theme.of(context).colorScheme.hintColor,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400,
-                ),
+              color: Theme.of(context).colorScheme.hintColor,
+              fontSize: 14,
+              fontWeight: FontWeight.w400,
+            ),
           ),
         ],
       ),

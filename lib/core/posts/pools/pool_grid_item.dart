@@ -78,14 +78,16 @@ class PoolGridItem extends ConsumerWidget {
                     style: TextStyle(
                       fontWeight: FontWeight.w700,
                       color: context
-                          .extendedColorScheme.onSurfaceContainerOverlayDim,
+                          .extendedColorScheme
+                          .onSurfaceContainerOverlayDim,
                     ),
                   ),
                   const SizedBox(width: 4),
                   Icon(
                     Symbols.photo_library,
                     color: context
-                        .extendedColorScheme.onSurfaceContainerOverlayDim,
+                        .extendedColorScheme
+                        .onSurfaceContainerOverlayDim,
                     fill: 1,
                     size: 18,
                   ),

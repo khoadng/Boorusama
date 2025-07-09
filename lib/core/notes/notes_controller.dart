@@ -17,17 +17,16 @@ class NotesControllerState extends Equatable {
   });
 
   factory NotesControllerState.initial() => const NotesControllerState(
-        enableNotes: true,
-      );
+    enableNotes: true,
+  );
 
   final bool enableNotes;
 
   NotesControllerState copyWith({
     bool? enableNotes,
-  }) =>
-      NotesControllerState(
-        enableNotes: enableNotes ?? this.enableNotes,
-      );
+  }) => NotesControllerState(
+    enableNotes: enableNotes ?? this.enableNotes,
+  );
 
   @override
   List<Object?> get props => [enableNotes];

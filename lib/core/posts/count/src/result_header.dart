@@ -33,7 +33,9 @@ class ResultHeaderWithProvider extends ConsumerWidget {
         ? cachedPostCountProvider(selectedTagsString)
         : postCountProvider(selectedTagsString);
 
-    return ref.watch(provider).when(
+    return ref
+        .watch(provider)
+        .when(
           data: (data) => data != null
               ? ResultHeader(
                   count: data,

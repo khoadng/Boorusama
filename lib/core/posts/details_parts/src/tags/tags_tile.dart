@@ -6,11 +6,79 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../configs/ref.dart';
-import '../../../../foundation/display/media_query_utils.dart';
+import '../../../../search/search/routes.dart';
+import '../../../../tags/tag/providers.dart';
 import '../../../../tags/tag/tag.dart';
 import '../../../../tags/tag/widgets.dart';
+import '../../../details/details.dart';
 import '../../../post/post.dart';
-import '../_internal/details_widget_frame.dart';
+import 'basic_tags_tile.dart';
+import 'raw_tags_tile.dart';
+
+class DefaultInheritedTagsTile<T extends Post> extends ConsumerStatefulWidget {
+  const DefaultInheritedTagsTile({
+    super.key,
+  });
+
+  @override
+  ConsumerState<DefaultInheritedTagsTile<T>> createState() =>
+      _DefaultInheritedTagsTileState<T>();
+}
+
+class _DefaultInheritedTagsTileState<T extends Post>
+    extends ConsumerState<DefaultInheritedTagsTile<T>> {
+  var expanded = false;
+  Object? error;
+
+  @override
+  Widget build(BuildContext context) {
+    final post = InheritedPost.of<T>(context);
+    final params = (ref.watchConfigAuth, post);
+
+    if (expanded) {
+      ref.listen(
+        tagGroupsProvider(params),
+        (previous, next) {
+          next.when(
+            data: (data) {
+              if (!mounted) return;
+
+              if (data == null || (data.isEmpty && post.tags.isNotEmpty)) {
+                // Just a dummy data so the check below will branch into the else block
+                setState(() => error = 'No tags found');
+              }
+            },
+            loading: () {},
+            error: (error, stackTrace) {
+              if (!mounted) return;
+              setState(() => this.error = error);
+            },
+          );
+        },
+      );
+    }
+
+    return SliverToBoxAdapter(
+      child: error == null
+          ? TagsTile(
+              tags: expanded
+                  ? ref.watch(tagGroupsProvider(params)).valueOrNull
+                  : null,
+              post: post,
+              onExpand: () => setState(() => expanded = true),
+              onCollapse: () {
+                // Don't set expanded to false to prevent rebuilding the tags list
+                setState(() => error = null);
+              },
+            )
+          : BasicTagsTile(
+              post: post,
+              tags: post.tags,
+              auth: ref.watchConfigAuth,
+            ),
+    );
+  }
+}
 
 class TagsTile extends StatelessWidget {
   const TagsTile({
@@ -19,73 +87,51 @@ class TagsTile extends StatelessWidget {
     super.key,
     this.onExpand,
     this.onCollapse,
-    this.onTagTap,
     this.initialExpanded = false,
     this.tagColorBuilder,
     this.padding,
-    this.initialCount,
   });
 
   final Post post;
   final void Function()? onExpand;
   final void Function()? onCollapse;
-  final void Function(Tag tag)? onTagTap;
   final bool initialExpanded;
   final List<TagGroupItem>? tags;
   final Color? Function(Tag tag)? tagColorBuilder;
   final EdgeInsetsGeometry? padding;
-  final int? initialCount;
 
   @override
   Widget build(BuildContext context) {
-    final count = initialCount ?? post.tags.length;
+    final count = post.tags.isEmpty
+        ? tags?.expand((tag) => tag.tags).length
+        : post.tags.length;
 
-    return DetailsWidgetSeparator(
-      child: Theme(
-        data: Theme.of(context).copyWith(
-          listTileTheme: Theme.of(context).listTileTheme.copyWith(
-                visualDensity: VisualDensity.compact,
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                ),
+    return RawTagsTile(
+      title: RawTagsTileTitle(
+        post: post,
+        count: count,
+      ),
+      initiallyExpanded: initialExpanded,
+      onExpansionChanged: (value) =>
+          value ? onExpand?.call() : onCollapse?.call(),
+      children: [
+        PostTagList(
+          padding: padding,
+          tags: tags,
+          itemBuilder: (context, tag) => GeneralTagContextMenu(
+            tag: tag.rawName,
+            child: Consumer(
+              builder: (_, ref, _) => PostTagListChip(
+                tag: tag,
+                auth: ref.watchConfigAuth,
+                onTap: () => goToSearchPage(ref, tag: tag.rawName),
+                color: tagColorBuilder != null ? tagColorBuilder!(tag) : null,
               ),
-          dividerColor: Colors.transparent,
-        ),
-        child: RemoveLeftPaddingOnLargeScreen(
-          child: DetailsWidgetSeparator(
-            child: ExpansionTile(
-              initiallyExpanded: initialExpanded,
-              title: Text('$count tags'),
-              controlAffinity: ListTileControlAffinity.trailing,
-              onExpansionChanged: (value) =>
-                  value ? onExpand?.call() : onCollapse?.call(),
-              children: [
-                Padding(
-                  padding:
-                      padding ?? const EdgeInsets.symmetric(horizontal: 12),
-                  child: PostTagList(
-                    tags: tags,
-                    itemBuilder: (context, tag) => GeneralTagContextMenu(
-                      tag: tag.rawName,
-                      child: Consumer(
-                        builder: (_, ref, __) => PostTagListChip(
-                          tag: tag,
-                          auth: ref.watchConfigAuth,
-                          onTap: () => onTagTap?.call(tag),
-                          color: tagColorBuilder != null
-                              ? tagColorBuilder!(tag)
-                              : null,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 8),
-              ],
             ),
           ),
         ),
-      ),
+        const SizedBox(height: 8),
+      ],
     );
   }
 }

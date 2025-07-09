@@ -72,12 +72,12 @@ class ExtendedImage extends StatefulWidget {
     this.controller,
     this.placeholderWidget,
     this.errorWidget,
-  })  : assert(constraints == null || constraints.debugAssertIsValid()),
-        _avif = false,
-        constraints = (width != null || height != null)
-            ? constraints?.tighten(width: width, height: height) ??
-                BoxConstraints.tightFor(width: width, height: height)
-            : constraints;
+  }) : assert(constraints == null || constraints.debugAssertIsValid()),
+       _avif = false,
+       constraints = (width != null || height != null)
+           ? constraints?.tighten(width: width, height: height) ??
+                 BoxConstraints.tightFor(width: width, height: height)
+           : constraints;
 
   ExtendedImage.network(
     String url, {
@@ -114,59 +114,61 @@ class ExtendedImage extends StatefulWidget {
     TargetPlatform? platform,
     int? androidVersion,
     ImageCacheManager? cacheManager,
-  })  : assert(cacheWidth == null || cacheWidth > 0),
-        assert(cacheHeight == null || cacheHeight > 0),
-        _avif = shouldUseAvif(
-          url,
-          platform: platform,
-          androidVersion: androidVersion,
-        ),
-        image = ExtendedResizeImage.resizeIfNeeded(
-          provider: shouldUseAvif(
-            url,
-            platform: platform,
-            androidVersion: androidVersion,
-          )
-              ? CustomCachedNetworkAvifImage(
-                  url,
-                  scale: scale,
-                  headers: headers,
-                  cacheManager: cacheManager,
-                  dio: dio,
-                  cancelToken: cancelToken,
-                  fetchStrategy: fetchStrategy,
-                  cacheKey: cacheKey,
-                  cacheMaxAge: cacheMaxAge ?? kDefaultImageCacheDuration,
-                ).image as CustomCachedNetworkAvifImageProvider
-              : DioExtendedNetworkImageProvider(
-                  url,
-                  dio: dio,
-                  scale: scale,
-                  headers: headers,
-                  cache: cache,
-                  cancelToken: cancelToken,
-                  cacheKey: cacheKey,
-                  printError: printError,
-                  cacheRawData: cacheRawData,
-                  imageCacheName: imageCacheName,
-                  cacheMaxAge: cacheMaxAge ?? kDefaultImageCacheDuration,
-                  fetchStrategy: fetchStrategy,
-                  cacheManager: cacheManager,
-                ),
-          compressionRatio: compressionRatio,
-          maxBytes: maxBytes,
-          cacheWidth: cacheWidth,
-          cacheHeight: cacheHeight,
-          cacheRawData: cacheRawData,
-          imageCacheName: imageCacheName,
-        ),
-        constraints = (width != null || height != null)
-            ? constraints?.tighten(width: width, height: height) ??
-                BoxConstraints.tightFor(width: width, height: height)
-            : constraints,
-        assert(constraints == null || constraints.debugAssertIsValid()),
-        assert(cacheWidth == null || cacheWidth > 0),
-        assert(cacheHeight == null || cacheHeight > 0);
+  }) : assert(cacheWidth == null || cacheWidth > 0),
+       assert(cacheHeight == null || cacheHeight > 0),
+       _avif = shouldUseAvif(
+         url,
+         platform: platform,
+         androidVersion: androidVersion,
+       ),
+       image = ExtendedResizeImage.resizeIfNeeded(
+         provider:
+             shouldUseAvif(
+               url,
+               platform: platform,
+               androidVersion: androidVersion,
+             )
+             ? CustomCachedNetworkAvifImage(
+                     url,
+                     scale: scale,
+                     headers: headers,
+                     cacheManager: cacheManager,
+                     dio: dio,
+                     cancelToken: cancelToken,
+                     fetchStrategy: fetchStrategy,
+                     cacheKey: cacheKey,
+                     cacheMaxAge: cacheMaxAge ?? kDefaultImageCacheDuration,
+                   ).image
+                   as CustomCachedNetworkAvifImageProvider
+             : DioExtendedNetworkImageProvider(
+                 url,
+                 dio: dio,
+                 scale: scale,
+                 headers: headers,
+                 cache: cache,
+                 cancelToken: cancelToken,
+                 cacheKey: cacheKey,
+                 printError: printError,
+                 cacheRawData: cacheRawData,
+                 imageCacheName: imageCacheName,
+                 cacheMaxAge: cacheMaxAge ?? kDefaultImageCacheDuration,
+                 fetchStrategy: fetchStrategy,
+                 cacheManager: cacheManager,
+               ),
+         compressionRatio: compressionRatio,
+         maxBytes: maxBytes,
+         cacheWidth: cacheWidth,
+         cacheHeight: cacheHeight,
+         cacheRawData: cacheRawData,
+         imageCacheName: imageCacheName,
+       ),
+       constraints = (width != null || height != null)
+           ? constraints?.tighten(width: width, height: height) ??
+                 BoxConstraints.tightFor(width: width, height: height)
+           : constraints,
+       assert(constraints == null || constraints.debugAssertIsValid()),
+       assert(cacheWidth == null || cacheWidth > 0),
+       assert(cacheHeight == null || cacheHeight > 0);
 
   final bool _avif;
 
@@ -301,13 +303,22 @@ class ExtendedImage extends StatefulWidget {
     properties.add(DoubleProperty('width', width, defaultValue: null));
     properties.add(DoubleProperty('height', height, defaultValue: null));
     properties.add(EnumProperty<BoxFit>('fit', fit, defaultValue: null));
-    properties.add(DiagnosticsProperty<AlignmentGeometry>(
-        'alignment', alignment,
-        defaultValue: null));
     properties.add(
-        StringProperty('semanticLabel', semanticLabel, defaultValue: null));
-    properties.add(DiagnosticsProperty<bool>(
-        'this.excludeFromSemantics', excludeFromSemantics));
+      DiagnosticsProperty<AlignmentGeometry>(
+        'alignment',
+        alignment,
+        defaultValue: null,
+      ),
+    );
+    properties.add(
+      StringProperty('semanticLabel', semanticLabel, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty<bool>(
+        'this.excludeFromSemantics',
+        excludeFromSemantics,
+      ),
+    );
   }
 }
 
@@ -326,29 +337,30 @@ class _ExtendedImageState extends State<ExtendedImage>
   Widget build(BuildContext context) {
     final current = ValueListenableBuilder(
       valueListenable: _controller.loadState,
-      builder: (_, state, __) => switch (state) {
-        LoadState.loading => widget.placeholderWidget ??
-            Container(
-              width: widget.width,
-              height: widget.height,
-              decoration: BoxDecoration(
-                color: Theme.of(context)
-                    .colorScheme
-                    .surfaceContainerHigh
-                    .withValues(alpha: 0.5),
-                borderRadius: widget.borderRadius,
+      builder: (_, state, _) => switch (state) {
+        LoadState.loading =>
+          widget.placeholderWidget ??
+              Container(
+                width: widget.width,
+                height: widget.height,
+                decoration: BoxDecoration(
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.surfaceContainerHigh.withValues(alpha: 0.5),
+                  borderRadius: widget.borderRadius,
+                ),
+                child: const SizedBox.shrink(),
               ),
-              child: const SizedBox.shrink(),
-            ),
         LoadState.completed => _getCompletedWidget(),
-        LoadState.failed => widget.errorWidget ??
-            Container(
-              alignment: Alignment.center,
-              child: GestureDetector(
-                onTap: () => reLoadImage(),
-                child: const Text('Failed to load image'),
+        LoadState.failed =>
+          widget.errorWidget ??
+              Container(
+                alignment: Alignment.center,
+                child: GestureDetector(
+                  onTap: () => reLoadImage(),
+                  child: const Text('Failed to load image'),
+                ),
               ),
-            ),
       },
     );
 
@@ -417,10 +429,10 @@ class _ExtendedImageState extends State<ExtendedImage>
       widget.image
           .obtainCacheStatus(configuration: ImageConfiguration.empty)
           .then((ImageCacheStatus? value) {
-        if (value?.keepAlive ?? false) {
-          widget.image.evict();
-        }
-      });
+            if (value?.keepAlive ?? false) {
+              widget.image.evict();
+            }
+          });
     }
 
     super.dispose();
@@ -516,10 +528,13 @@ class _ExtendedImageState extends State<ExtendedImage>
     );
 
     final ImageStream newStream = provider.resolve(
-        createLocalImageConfiguration(context,
-            size: widget.width != null && widget.height != null
-                ? Size(widget.width!, widget.height!)
-                : null));
+      createLocalImageConfiguration(
+        context,
+        size: widget.width != null && widget.height != null
+            ? Size(widget.width!, widget.height!)
+            : null,
+      ),
+    );
 
     if (_controller.imageInfo.value != null &&
         !rebuild &&
@@ -597,12 +612,12 @@ class _ImageOptions extends Equatable {
 
   @override
   List<Object?> get props => [
-        width,
-        height,
-        fit,
-        alignment,
-        borderRadius,
-      ];
+    width,
+    height,
+    fit,
+    alignment,
+    borderRadius,
+  ];
 }
 
 class ExtendedImageController extends ChangeNotifier {
@@ -642,8 +657,9 @@ class ExtendedImageController extends ChangeNotifier {
   void clearImage() {
     final oldImageInfo = imageInfo.value;
 
-    SchedulerBinding.instance
-        .addPostFrameCallback((_) => oldImageInfo?.dispose());
+    SchedulerBinding.instance.addPostFrameCallback(
+      (_) => oldImageInfo?.dispose(),
+    );
 
     imageInfo.value = null;
   }
@@ -659,8 +675,9 @@ class ExtendedImageController extends ChangeNotifier {
     }
 
     if (oldImageInfo != null) {
-      SchedulerBinding.instance
-          .addPostFrameCallback((_) => oldImageInfo.dispose());
+      SchedulerBinding.instance.addPostFrameCallback(
+        (_) => oldImageInfo.dispose(),
+      );
     }
 
     imageInfo.value = info;
@@ -686,8 +703,8 @@ class _InheritedImageInfo extends InheritedWidget {
   final ImageInfo? imageInfo;
 
   static ImageInfo? of(BuildContext context) {
-    final result =
-        context.dependOnInheritedWidgetOfExactType<_InheritedImageInfo>();
+    final result = context
+        .dependOnInheritedWidgetOfExactType<_InheritedImageInfo>();
 
     return result?.imageInfo;
   }
@@ -707,16 +724,17 @@ class _InheritedImageOptions extends InheritedWidget {
   final _ImageOptions options;
 
   static _ImageOptions of(BuildContext context) {
-    final _InheritedImageOptions? result =
-        context.dependOnInheritedWidgetOfExactType<_InheritedImageOptions>();
+    final _InheritedImageOptions? result = context
+        .dependOnInheritedWidgetOfExactType<_InheritedImageOptions>();
 
     if (result == null) {
       throw FlutterError(
-          '_ImageOptions.of() called with a context that does not contain an _ImageOptions.\n'
-          'No _ImageOptions ancestor could be found starting from the context that was passed to _ImageOptions.of(). '
-          'This can happen because you do not have a _ImageOptions widget above the Image widget building your image.\n'
-          'The context used was:\n'
-          '  $context');
+        '_ImageOptions.of() called with a context that does not contain an _ImageOptions.\n'
+        'No _ImageOptions ancestor could be found starting from the context that was passed to _ImageOptions.of(). '
+        'This can happen because you do not have a _ImageOptions widget above the Image widget building your image.\n'
+        'The context used was:\n'
+        '  $context',
+      );
     }
 
     return result.options;

@@ -6,12 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:booru_clients/danbooru.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../../../../../core/configs/ref.dart';
 import '../../../../../core/widgets/widgets.dart';
-import '../../../danbooru_provider.dart';
+import '../../../client_provider.dart';
 import '../../../users/creator/providers.dart';
 import '../../../users/user/providers.dart';
 import '../data/providers.dart';
@@ -39,7 +40,7 @@ class _DanbooruDmailPageState extends ConsumerState<DanbooruDmailPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Messages'),
+        title: Text('Messages'.hc),
         actions: [
           IconButton(
             icon: const Icon(Symbols.refresh),
@@ -68,7 +69,9 @@ class _DanbooruDmailPageState extends ConsumerState<DanbooruDmailPage> {
                   .toList(),
             ),
           ),
-          ref.watch(dmailProvider).when(
+          ref
+              .watch(dmailProvider)
+              .when(
                 data: (dmails) => dmails.isNotEmpty
                     ? Expanded(
                         child: ListView.builder(
@@ -93,8 +96,9 @@ class _DanbooruDmailPageState extends ConsumerState<DanbooruDmailPage> {
                                     danbooruCreatorProvider(dmail.fromId),
                                   );
 
-                                  final color =
-                                      userColor.fromLevel(fromUser?.level);
+                                  final color = userColor.fromLevel(
+                                    fromUser?.level,
+                                  );
 
                                   return Text(
                                     fromUser?.name ?? '...',
@@ -120,7 +124,9 @@ class _DanbooruDmailPageState extends ConsumerState<DanbooruDmailPage> {
                               ),
                               onTap: () {
                                 if (!dmail.isRead) {
-                                  client.markDmailAsRead(id: dmail.id).then(
+                                  client
+                                      .markDmailAsRead(id: dmail.id)
+                                      .then(
                                         (value) =>
                                             ref.invalidate(dmailProvider),
                                       );
@@ -134,16 +140,17 @@ class _DanbooruDmailPageState extends ConsumerState<DanbooruDmailPage> {
                                     ),
                                     builder: (context) =>
                                         DanbooruDmailDetailsPage(
-                                      dmail: dmail,
-                                      onDmailUnread: (context, dmail) {
-                                        client
-                                            .markDmailAsUnread(id: dmail.id)
-                                            .then(
-                                              (value) =>
-                                                  ref.invalidate(dmailProvider),
-                                            );
-                                      },
-                                    ),
+                                          dmail: dmail,
+                                          onDmailUnread: (context, dmail) {
+                                            client
+                                                .markDmailAsUnread(id: dmail.id)
+                                                .then(
+                                                  (value) => ref.invalidate(
+                                                    dmailProvider,
+                                                  ),
+                                                );
+                                          },
+                                        ),
                                   ),
                                 );
                               },

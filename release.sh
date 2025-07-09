@@ -14,5 +14,5 @@ git push --tags
 
 # Build the appbundle for the prod flavor
 echo "Building the appbundle for the prod flavor"
-./appbundle.sh prod
+./build.sh aab -f prod
 

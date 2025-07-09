@@ -4,11 +4,12 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:expandable/expandable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
 import '../../../../boorus/engine/providers.dart';
-import '../../../../downloads/filename.dart';
+import '../../../../downloads/filename/types.dart';
 import '../../../../posts/post/post.dart';
 import '../../../config/types.dart';
 import 'filename_preview.dart';
@@ -35,7 +36,8 @@ class DownloadFormatCard extends ConsumerStatefulWidget {
   final Widget Function(
     DownloadFilenameGenerator<Post> generator,
     String format,
-  )? previewBuilder;
+  )?
+  previewBuilder;
 
   @override
   ConsumerState<DownloadFormatCard> createState() => _DownloadFormatCardState();
@@ -75,8 +77,9 @@ class _DownloadFormatCardState extends ConsumerState<DownloadFormatCard> {
                 : Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 12),
                     child: FilenamePreview(
-                      filename: widget.downloadFilenameBuilder!
-                          .generateSample(value.text),
+                      filename: widget.downloadFilenameBuilder!.generateSample(
+                        value.text,
+                      ),
                     ),
                   ),
           )
@@ -127,7 +130,7 @@ class _DownloadFormatCardState extends ConsumerState<DownloadFormatCard> {
                           widget.onChanged?.call(widget.defaultFileNameFormat);
                         });
                       },
-                      child: const Text('Reset'),
+                      child: Text('Reset'.hc),
                     ),
                   ),
                 ],

@@ -16,41 +16,38 @@ class SavedSearchRepositoryApi implements SavedSearchRepository {
   @override
   Future<List<SavedSearch>> getSavedSearches({
     required int page,
-  }) =>
-      client
-          .getSavedSearches(
-            page: page,
-            //TODO: shouldn't hardcode it
-            limit: 1000,
-          )
-          .then((value) => value.map(savedSearchDtoToSaveSearch).toList());
+  }) => client
+      .getSavedSearches(
+        page: page,
+        //TODO: shouldn't hardcode it
+        limit: 1000,
+      )
+      .then((value) => value.map(savedSearchDtoToSaveSearch).toList());
 
   @override
   Future<SavedSearch?> createSavedSearch({
     required String query,
     String? label,
-  }) =>
-      client
-          .postSavedSearch(
-            query: query,
-            label: label,
-          )
-          .then(savedSearchDtoToSaveSearch);
+  }) => client
+      .postSavedSearch(
+        query: query,
+        label: label,
+      )
+      .then(savedSearchDtoToSaveSearch);
 
   @override
   Future<bool> updateSavedSearch(
     int id, {
     String? query,
     String? label,
-  }) =>
-      client
-          .patchSavedSearch(
-            id: id,
-            query: query,
-            label: label,
-          )
-          .then((value) => true)
-          .catchError((obj) => false);
+  }) => client
+      .patchSavedSearch(
+        id: id,
+        query: query,
+        label: label,
+      )
+      .then((value) => true)
+      .catchError((obj) => false);
 
   @override
   Future<bool> deleteSavedSearch(int id) => client

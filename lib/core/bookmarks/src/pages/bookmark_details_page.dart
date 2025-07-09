@@ -8,7 +8,7 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import '../../../boorus/engine/engine.dart';
 import '../../../configs/ref.dart';
-import '../../../downloads/downloader.dart';
+import '../../../downloads/downloader/providers.dart';
 import '../../../posts/details/details.dart';
 import '../../../posts/details/widgets.dart';
 import '../../../posts/details_manager/types.dart';
@@ -20,6 +20,7 @@ import '../../../posts/sources/source.dart';
 import '../../../widgets/widgets.dart';
 import '../data/bookmark_convert.dart';
 import '../providers/bookmark_provider.dart';
+import '../widgets/bookmark_tag_tiles.dart';
 
 class BookmarkDetailsPage extends ConsumerWidget {
   const BookmarkDetailsPage({
@@ -37,7 +38,7 @@ class BookmarkDetailsPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return ValueListenableBuilder(
       valueListenable: controller.itemsNotifier,
-      builder: (_, posts, __) {
+      builder: (_, posts, _) {
         return PostDetailsScope(
           initialIndex: initialIndex,
           initialThumbnailUrl: initialThumbnailUrl,
@@ -58,8 +59,7 @@ final bookmarkUiBuilder = PostDetailsUIBuilder(
   full: {
     DetailsPart.toolbar: (context) => const BookmarkPostActionToolbar(),
     DetailsPart.source: (context) => const BookmarkSourceSection(),
-    DetailsPart.tags: (context) =>
-        const DefaultInheritedTagList<BookmarkPost>(),
+    DetailsPart.tags: (context) => const BookmarkTagTiles(),
     DetailsPart.fileDetails: (context) =>
         const DefaultInheritedFileDetailsSection<BookmarkPost>(),
   },
@@ -82,16 +82,19 @@ class _BookmarkDetailsPageState
     final data = PostDetails.of<BookmarkPost>(context);
     final posts = data.posts;
     final controller = data.controller;
+    final pageViewController = data.pageViewController;
     final imageCacheManager = ref.watch(bookmarkImageCacheManagerProvider);
     final auth = ref.watchConfigAuth;
+    final viewer = ref.watchConfigViewer;
+    final post = InheritedPost.of<BookmarkPost>(context);
 
     return PostDetailsPageScaffold(
+      pageViewController: data.pageViewController,
       controller: controller,
       posts: posts,
       viewerConfig: ref.watchConfigViewer,
       authConfig: auth,
       gestureConfig: ref.watchPostGestures,
-
       // Needed to prevent type inference error
       // ignore: avoid_types_on_closure_parameters
       imageUrlBuilder: (Post post) => post.originalImageUrl,
@@ -99,28 +102,25 @@ class _BookmarkDetailsPageState
       uiBuilder: bookmarkUiBuilder,
       preferredParts: bookmarkUiBuilder.full.keys.toSet(),
       preferredPreviewParts: bookmarkUiBuilder.preview.keys.toSet(),
-      topRightButtonsBuilder: (controller) {
-        final post = InheritedPost.of<BookmarkPost>(context);
-
-        return [
-          GeneralMoreActionButton(
-            post: post,
-            config: auth,
-            onStartSlideshow: () => controller.startSlideshow(),
-            onDownload: (_) {
-              ref.bookmarks.downloadBookmarks(
-                ref.readConfig,
-                [
-                  post.toBookmark(
-                    imageUrlResolver: (booruId) =>
-                        ref.read(bookmarkUrlResolverProvider(booruId)),
-                  ),
-                ],
-              );
-            },
-          ),
-        ];
-      },
+      topRightButtons: [
+        GeneralMoreActionButton(
+          post: post,
+          config: auth,
+          configViewer: viewer,
+          onStartSlideshow: () => pageViewController.startSlideshow(),
+          onDownload: (_) {
+            ref.bookmarks.downloadBookmarks(
+              ref.readConfig,
+              [
+                post.toBookmark(
+                  imageUrlResolver: (booruId) =>
+                      ref.read(bookmarkUrlResolverProvider(booruId)),
+                ),
+              ],
+            );
+          },
+        ),
+      ],
     );
   }
 }

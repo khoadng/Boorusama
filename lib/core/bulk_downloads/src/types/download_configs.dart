@@ -2,10 +2,10 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import '../../../downloads/downloader.dart';
-import '../../../downloads/filename.dart';
-import '../../../downloads/urls.dart';
-import '../../../foundation/permissions/permission_utils.dart';
+import '../../../../foundation/permissions/permission_utils.dart';
+import '../../../downloads/downloader/types.dart';
+import '../../../downloads/filename/types.dart';
+import '../../../downloads/urls/types.dart';
 import '../../../settings/settings.dart';
 
 class DownloadConfigs {

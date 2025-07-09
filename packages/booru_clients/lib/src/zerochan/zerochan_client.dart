@@ -18,13 +18,16 @@ class ZerochanClient {
     Dio? dio,
     String? baseUrl,
     this.logger,
-  }) : _dio = dio ??
-            Dio(BaseOptions(
-              baseUrl: baseUrl ?? _kZerochanUrl,
-              headers: {
-                'User-Agent': 'My test client - anon',
-              },
-            ));
+  }) : _dio =
+           dio ??
+           Dio(
+             BaseOptions(
+               baseUrl: baseUrl ?? _kZerochanUrl,
+               headers: {
+                 'User-Agent': 'My test client - anon',
+               },
+             ),
+           );
 
   final Dio _dio;
   final void Function(String message)? logger;
@@ -38,7 +41,8 @@ class ZerochanClient {
     ZerochanSortOrder? sort,
     bool strict = false,
   }) async {
-    final tagString = tags
+    final tagString =
+        tags
             ?.map((e) => e.replaceAll('_', ' '))
             .map((e) => e.replaceAll(' ', '+'))
             .join(',') ??
@@ -62,8 +66,9 @@ class ZerochanClient {
 
       // return empty if response is HTML
       if (response.data.toString().startsWith('<!DOCTYPE html>') && !strict) {
-        logger
-            ?.call('Response is HTML, returning empty list. Input tags: $tags');
+        logger?.call(
+          'Response is HTML, returning empty list. Input tags: $tags',
+        );
         return [];
       }
 

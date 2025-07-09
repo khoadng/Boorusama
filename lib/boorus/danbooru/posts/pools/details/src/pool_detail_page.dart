@@ -5,18 +5,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 import 'package:foundation/widgets.dart';
+import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
 import '../../../../../../core/bulk_downloads/routes.dart';
 import '../../../../../../core/configs/ref.dart';
-import '../../../../../../core/foundation/html.dart';
-import '../../../../../../core/foundation/url_launcher.dart';
 import '../../../../../../core/posts/listing/widgets.dart';
 import '../../../../../../core/search/search/routes.dart';
-import '../../../../../../core/utils/html_utils.dart';
 import '../../../../../../core/widgets/widgets.dart';
+import '../../../../../../foundation/html.dart';
+import '../../../../../../foundation/url_launcher.dart';
+import '../../../../../../foundation/utils/html_utils.dart';
 import '../../../post/post.dart';
 import '../../pool/pool.dart';
 import 'providers/providers.dart';
@@ -42,14 +43,14 @@ class PoolDetailPage extends ConsumerWidget {
         ids: ref.watch(poolPostIdsProvider(pool)),
         sliverHeaders: [
           SliverAppBar(
-            title: const Text('pool.pool').tr(),
+            title: Text(context.t.pool.pool),
             floating: true,
             actions: [
               IconButton(
                 icon: const Icon(Symbols.search),
                 onPressed: () {
                   goToSearchPage(
-                    context,
+                    ref,
                     tag: pool.toSearchQuery(),
                   );
                 },
@@ -75,7 +76,7 @@ class PoolDetailPage extends ConsumerWidget {
                 style: Theme.of(context).textTheme.titleLarge,
               ),
               subtitle: Text(
-                '${'pool.detail.last_updated'.tr()}: ${pool.updatedAt.fuzzify(locale: Localizations.localeOf(context))}',
+                '${context.t.pool.detail.last_updated}: ${pool.updatedAt.fuzzify(locale: Localizations.localeOf(context))}',
               ),
             ),
           ),
@@ -84,16 +85,17 @@ class PoolDetailPage extends ConsumerWidget {
               horizontal: 12,
             ),
             sliver: poolDesc.maybeWhen(
-              data: (data) => data.description.isNotEmpty &&
+              data: (data) =>
+                  data.description.isNotEmpty &&
                       hasTextBetweenDiv(data.description)
                   ? SliverToBoxAdapter(
                       child: AppHtml(
                         onLinkTap: !config.hasStrictSFW
                             ? (url, attributes, element) => _onHtmlLinkTapped(
-                                  attributes,
-                                  url,
-                                  data.descriptionEndpointRefUrl,
-                                )
+                                attributes,
+                                url,
+                                data.descriptionEndpointRefUrl,
+                              )
                             : null,
                         data: data.description,
                       ),
@@ -154,10 +156,10 @@ void _onHtmlLinkTapped(
     );
     // ignore: no-empty-block
   } else if (att.contains('dtext-post-search-link')) {
-// AppRouter.router.navigateTo(
-//             context,
-//             "/posts/search",
-//             routeSettings: RouteSettings(arguments: [tag.rawName]),
-//           )
+    // AppRouter.router.navigateTo(
+    //             context,
+    //             "/posts/search",
+    //             routeSettings: RouteSettings(arguments: [tag.rawName]),
+    //           )
   }
 }

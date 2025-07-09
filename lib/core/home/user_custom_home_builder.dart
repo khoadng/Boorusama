@@ -6,11 +6,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import '../../foundation/info/app_info.dart';
+import '../../foundation/networking.dart';
 import '../boorus/engine/providers.dart';
 import '../configs/create/routes.dart';
 import '../configs/ref.dart';
-import '../foundation/networking.dart';
-import '../info/app_info.dart';
 import 'custom_home.dart';
 import 'home_page_controller.dart';
 
@@ -57,7 +57,7 @@ class CustomHomeContainer extends StatelessWidget {
     return Column(
       children: [
         Consumer(
-          builder: (_, ref, __) {
+          builder: (_, ref, _) {
             final state = ref.watch(networkStateProvider);
 
             return SafeArea(
@@ -114,7 +114,7 @@ class _AppBar extends StatelessWidget {
               Material(
                 color: Colors.transparent,
                 child: Consumer(
-                  builder: (_, ref, __) {
+                  builder: (_, ref, _) {
                     final appInfo = ref.watch(appInfoProvider);
                     final appName = appInfo.appName;
 
@@ -132,13 +132,13 @@ class _AppBar extends StatelessWidget {
               ),
               const SizedBox(width: 4),
               Consumer(
-                builder: (_, ref, __) {
+                builder: (_, ref, _) {
                   final config = ref.watchConfig;
 
                   return InkWell(
                     customBorder: const CircleBorder(),
                     onTap: () => goToUpdateBooruConfigPage(
-                      context,
+                      ref,
                       config: config,
                       initialTab: 'appearance',
                     ),

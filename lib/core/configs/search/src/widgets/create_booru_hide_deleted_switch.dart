@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 
 class CreateBooruHideDeletedSwitch extends StatelessWidget {
   const CreateBooruHideDeletedSwitch({
@@ -20,7 +20,7 @@ class CreateBooruHideDeletedSwitch extends StatelessWidget {
   Widget build(BuildContext context) {
     return SwitchListTile(
       contentPadding: EdgeInsets.zero,
-      title: const Text('booru.hide_deleted_label').tr(),
+      title: Text(context.t.booru.hide_deleted_label),
       value: value ?? false,
       onChanged: onChanged,
       subtitle: subtitle,

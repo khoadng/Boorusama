@@ -7,8 +7,8 @@ import 'package:flutter_portal/flutter_portal.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 
 // Project imports:
-import '../../foundation/display.dart';
-import '../../foundation/html.dart';
+import '../../../foundation/display.dart';
+import '../../../foundation/html.dart';
 import '../notes.dart';
 
 class NoteStyle extends Equatable {
@@ -24,10 +24,10 @@ class NoteStyle extends Equatable {
 
   @override
   List<Object?> get props => [
-        borderColor,
-        backgroundColor,
-        foregroundColor,
-      ];
+    borderColor,
+    backgroundColor,
+    foregroundColor,
+  ];
 }
 
 class PostNote extends StatelessWidget {
@@ -230,24 +230,26 @@ class _NoteContainerMobile extends StatelessWidget {
         top: coordinate.y,
       ),
       child: PortalTarget(
-        anchor: switch (
-            coordinate.calculateQuadrant(screenWidth, screenHeight)) {
+        anchor: switch (coordinate.calculateQuadrant(
+          screenWidth,
+          screenHeight,
+        )) {
           NoteQuadrant.topLeft => const Aligned(
-              follower: Alignment.topLeft,
-              target: Alignment.bottomLeft,
-            ),
+            follower: Alignment.topLeft,
+            target: Alignment.bottomLeft,
+          ),
           NoteQuadrant.topRight => const Aligned(
-              follower: Alignment.topRight,
-              target: Alignment.bottomRight,
-            ),
+            follower: Alignment.topRight,
+            target: Alignment.bottomRight,
+          ),
           NoteQuadrant.bottomLeft => const Aligned(
-              follower: Alignment.bottomLeft,
-              target: Alignment.topLeft,
-            ),
+            follower: Alignment.bottomLeft,
+            target: Alignment.topLeft,
+          ),
           NoteQuadrant.bottomRight => const Aligned(
-              follower: Alignment.bottomRight,
-              target: Alignment.topRight,
-            ),
+            follower: Alignment.bottomRight,
+            target: Alignment.topRight,
+          ),
         },
         visible: visible,
         portalFollower: Container(

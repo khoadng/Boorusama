@@ -19,9 +19,9 @@ class BookmarkSortButton extends ConsumerWidget {
     return OptionDropDownButton(
       alignment: AlignmentDirectional.centerStart,
       value: ref.watch(selectedBookmarkSortTypeProvider),
-      onChanged: (value) => ref
-          .read(selectedBookmarkSortTypeProvider.notifier)
-          .state = value ?? BookmarkSortType.newest,
+      onChanged: (value) =>
+          ref.read(selectedBookmarkSortTypeProvider.notifier).state =
+              value ?? BookmarkSortType.newest,
       items: BookmarkSortType.values
           .map(
             (value) => DropdownMenuItem(

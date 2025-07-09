@@ -7,11 +7,11 @@ import 'user_metatag_repository.dart';
 
 final danbooruUserMetatagsProvider =
     AsyncNotifierProvider<UserMetatagsNotifier, List<String>>(
-  UserMetatagsNotifier.new,
-  dependencies: [
-    danbooruUserMetatagRepoProvider,
-  ],
-);
+      UserMetatagsNotifier.new,
+      dependencies: [
+        danbooruUserMetatagRepoProvider,
+      ],
+    );
 
 class UserMetatagsNotifier extends AsyncNotifier<List<String>> {
   @override

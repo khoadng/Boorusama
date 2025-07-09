@@ -44,9 +44,11 @@ mixin DanbooruClientComments {
       cancelToken: cancelToken,
     );
 
-    return Isolate.run(() => (response.data as List)
-        .map((item) => CommentDto.fromJson(item))
-        .toList());
+    return Isolate.run(
+      () => (response.data as List)
+          .map((item) => CommentDto.fromJson(item))
+          .toList(),
+    );
   }
 
   Future<CommentDto> postComment({
@@ -142,17 +144,15 @@ mixin DanbooruClientComments {
 
   Future<CommentVoteDto> upvoteComment({
     required int commentId,
-  }) =>
-      voteComment(
-        commentId: commentId,
-        score: 1,
-      );
+  }) => voteComment(
+    commentId: commentId,
+    score: 1,
+  );
 
   Future<CommentVoteDto> downvoteComment({
     required int commentId,
-  }) =>
-      voteComment(
-        commentId: commentId,
-        score: -1,
-      );
+  }) => voteComment(
+    commentId: commentId,
+    score: -1,
+  );
 }

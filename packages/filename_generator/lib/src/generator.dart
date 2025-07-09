@@ -51,23 +51,21 @@ String applyTokenOptions(
   TokenContext context, {
   Clock? clock,
   required Uuid uuid,
-}) =>
-    context.options
-        .where(
-          (o) =>
-              context.config.tokenDefinitions.containsKey(context.token.name) &&
-              context.config.tokenDefinitions[context.token.name]!
-                  .contains(o.name),
-        )
-        .fold(
-          data,
-          (data, option) => getTokenOptionHandler(
-            data,
-            option,
-            clock: clock,
-            uuid: uuid,
-          )(context),
-        );
+}) => context.options
+    .where(
+      (o) =>
+          context.config.tokenDefinitions.containsKey(context.token.name) &&
+          context.config.tokenDefinitions[context.token.name]!.contains(o.name),
+    )
+    .fold(
+      data,
+      (data, option) => getTokenOptionHandler(
+        data,
+        option,
+        clock: clock,
+        uuid: uuid,
+      )(context),
+    );
 
 List<TokenOption> filterDuplicatedOptions(List<TokenOption> options) {
   final m = <String, List<int>>{};

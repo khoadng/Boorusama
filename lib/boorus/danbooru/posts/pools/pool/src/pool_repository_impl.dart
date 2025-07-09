@@ -1,5 +1,5 @@
 // Project imports:
-import '../../../../../../core/foundation/caching.dart';
+import '../../../../../../foundation/caching.dart';
 import 'danbooru_pool.dart';
 import 'pool_repository.dart';
 
@@ -24,7 +24,8 @@ class PoolRepositoryBuilder
     DanbooruPoolOrder? order,
     String? name,
     String? description,
-  }) fetchMany;
+  })
+  fetchMany;
 
   final Future<List<DanbooruPool>> Function(int postId) fetchByPostId;
 
@@ -35,20 +36,19 @@ class PoolRepositoryBuilder
     DanbooruPoolOrder? order,
     String? name,
     String? description,
-  }) =>
-      fetchMany(
-        page,
-        category: category,
-        order: order,
-        name: name,
-        description: description,
-      );
+  }) => fetchMany(
+    page,
+    category: category,
+    order: order,
+    name: name,
+    description: description,
+  );
 
   @override
   Future<List<DanbooruPool>> getPoolsByPostId(int postId) => tryGet(
-        'pool-by-post-$postId',
-        orElse: () => fetchByPostId(postId),
-      );
+    'pool-by-post-$postId',
+    orElse: () => fetchByPostId(postId),
+  );
 
   @override
   late Cache<List<DanbooruPool>> cache;

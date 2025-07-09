@@ -14,19 +14,20 @@ import 'global_blacklisted_tag_notifier.dart';
 
 final blacklistTagsRefRepoProvider =
     Provider.family<BlacklistTagRefRepository, BooruConfigAuth>(
-  (ref, config) {
-    final repo =
-        ref.watch(booruEngineRegistryProvider).getRepository(config.booruType);
+      (ref, config) {
+        final repo = ref
+            .watch(booruEngineRegistryProvider)
+            .getRepository(config.booruType);
 
-    final blacklistTagRefRepo = repo?.blacklistTagRef(config);
+        final blacklistTagRefRepo = repo?.blacklistTagRef(config);
 
-    if (blacklistTagRefRepo != null) {
-      return blacklistTagRefRepo;
-    }
+        if (blacklistTagRefRepo != null) {
+          return blacklistTagRefRepo;
+        }
 
-    return EmptyBooruSpecificBlacklistTagRefRepository(ref);
-  },
-);
+        return EmptyBooruSpecificBlacklistTagRefRepository(ref);
+      },
+    );
 
 class BlacklistedTagsState extends Equatable {
   const BlacklistedTagsState({
@@ -46,11 +47,14 @@ class BlacklistedTagsNotifier
   @override
   FutureOr<BlacklistedTagsState> build(BooruConfigFilter arg) async {
     final repo = ref.watch(blacklistTagsRefRepoProvider(arg.auth));
-    final booruSpecificBlacklistedTags =
-        await repo.getBlacklistedTags(arg.auth);
+    final booruSpecificBlacklistedTags = await repo.getBlacklistedTags(
+      arg.auth,
+    );
 
-    final globalBlacklistedTags =
-        ref.watch(globalBlacklistedTagsProvider).map((e) => e.name).toSet();
+    final globalBlacklistedTags = ref
+        .watch(globalBlacklistedTagsProvider)
+        .map((e) => e.name)
+        .toSet();
 
     return BlacklistedTagsState(
       tags: _combineTags(
@@ -107,24 +111,28 @@ Set<BlacklistedTagEntry> _combineTags(
   }
 }
 
-final blacklistedTagsNotifierProvider = AsyncNotifierProvider.family<
-    BlacklistedTagsNotifier, BlacklistedTagsState, BooruConfigFilter>(
-  BlacklistedTagsNotifier.new,
-);
+final blacklistedTagsNotifierProvider =
+    AsyncNotifierProvider.family<
+      BlacklistedTagsNotifier,
+      BlacklistedTagsState,
+      BooruConfigFilter
+    >(
+      BlacklistedTagsNotifier.new,
+    );
 
 final blacklistTagEntriesProvider = FutureProvider.autoDispose
     .family<Set<BlacklistedTagEntry>, BooruConfigFilter>((ref, config) {
-  return ref
-      .watch(blacklistedTagsNotifierProvider(config).future)
-      .then((value) => value.tags);
-});
+      return ref
+          .watch(blacklistedTagsNotifierProvider(config).future)
+          .then((value) => value.tags);
+    });
 
 final blacklistTagsProvider = FutureProvider.autoDispose
     .family<Set<String>, BooruConfigFilter>((ref, config) {
-  return ref
-      .watch(blacklistedTagsNotifierProvider(config).future)
-      .then((value) => value.tags.map((e) => e.tag).toSet());
-});
+      return ref
+          .watch(blacklistedTagsNotifierProvider(config).future)
+          .then((value) => value.tags.map((e) => e.tag).toSet());
+    });
 
 class EmptyBooruSpecificBlacklistTagRefRepository
     implements BlacklistTagRefRepository {

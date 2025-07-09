@@ -23,13 +23,13 @@ import '../servers/server_providers.dart';
 
 final importDataProvider = NotifierProvider.autoDispose
     .family<ImportDataNotifier, ImportDataState, String>(
-  ImportDataNotifier.new,
-);
+      ImportDataNotifier.new,
+    );
 
 final serverCheckProvider =
     NotifierProvider.autoDispose<ServerCheckNotifier, ServerCheckStatus>(
-  ServerCheckNotifier.new,
-);
+      ServerCheckNotifier.new,
+    );
 
 enum ServerCheckStatus {
   initial,
@@ -194,19 +194,20 @@ class ImportDataState extends Equatable {
     return ImportDataState(
       tasks: tasks ?? this.tasks,
       step: step ?? this.step,
-      reloadPayload:
-          reloadPayload != null ? reloadPayload() : this.reloadPayload,
+      reloadPayload: reloadPayload != null
+          ? reloadPayload()
+          : this.reloadPayload,
       forceReload: forceReload ?? this.forceReload,
     );
   }
 
   @override
   List<Object?> get props => [
-        tasks,
-        step,
-        reloadPayload,
-        forceReload,
-      ];
+    tasks,
+    step,
+    reloadPayload,
+    forceReload,
+  ];
 }
 
 class ImportDataNotifier
@@ -248,11 +249,11 @@ class ImportDataNotifier
 
     state = state.copyWith(
       tasks: [
-        for (final t in selectedTasks)
-          if (t.status == SelectStatus.selected)
-            t.copyWith(importStatus: const ImportQueued())
+        for (final tsk in selectedTasks)
+          if (tsk.status == SelectStatus.selected)
+            tsk.copyWith(importStatus: const ImportQueued())
           else
-            t,
+            tsk,
       ],
     );
 
@@ -267,11 +268,11 @@ class ImportDataNotifier
 
       state = state.copyWith(
         tasks: [
-          for (final t in state.tasks)
-            if (t.id == task.id)
+          for (final tsk in state.tasks)
+            if (tsk.id == task.id)
               task.copyWith(importStatus: const Importing())
             else
-              t,
+              tsk,
         ],
       );
 
@@ -296,7 +297,9 @@ class ImportDataNotifier
 
             final jsonString = res.data;
 
-            await ref.read(booruConfigProvider.notifier).importFromRawString(
+            await ref
+                .read(booruConfigProvider.notifier)
+                .importFromRawString(
                   jsonString: jsonString,
                   onWillImport: (data) async => true,
                   onSuccess: (message, configs) {
@@ -321,7 +324,9 @@ class ImportDataNotifier
 
             final settings = Settings.fromJson(json);
 
-            await ref.read(settingsNotifierProvider.notifier).updateSettings(
+            await ref
+                .read(settingsNotifierProvider.notifier)
+                .updateSettings(
                   settings,
                 );
 
@@ -333,22 +338,25 @@ class ImportDataNotifier
             final map = jsonDecode(jsonData) as Map<String, dynamic>;
             final tagString = map['tags'] as String;
 
-            await ref.read(globalBlacklistedTagsProvider.notifier).addTagString(
-              tagString,
-              onError: () {
-                throw Exception('Failed to import blacklisted tags');
-              },
-            );
+            await ref
+                .read(globalBlacklistedTagsProvider.notifier)
+                .addTagString(
+                  tagString,
+                  onError: () {
+                    throw Exception('Failed to import blacklisted tags');
+                  },
+                );
 
           case 'bookmarks':
-            final bookmarkRepository =
-                await ref.read(bookmarkRepoProvider.future);
-            final bookmarkNotifier = ref.read(bookmarkProvider.notifier);
-            final currentBookmarks =
-                await bookmarkRepository.getAllBookmarksOrEmpty(
-              imageUrlResolver: (booruId) =>
-                  ref.read(bookmarkUrlResolverProvider(booruId)),
+            final bookmarkRepository = await ref.read(
+              bookmarkRepoProvider.future,
             );
+            final bookmarkNotifier = ref.read(bookmarkProvider.notifier);
+            final currentBookmarks = await bookmarkRepository
+                .getAllBookmarksOrEmpty(
+                  imageUrlResolver: (booruId) =>
+                      ref.read(bookmarkUrlResolverProvider(booruId)),
+                );
 
             final res = await dio.get('/bookmarks');
 
@@ -359,8 +367,9 @@ class ImportDataNotifier
             final bookmarks = json
                 .map((bookmark) {
                   final booruId = bookmark['booruId'] as int?;
-                  final resolver =
-                      ref.read(bookmarkUrlResolverProvider(booruId));
+                  final resolver = ref.read(
+                    bookmarkUrlResolverProvider(booruId),
+                  );
 
                   return Bookmark.fromJson(
                     bookmark,
@@ -370,8 +379,9 @@ class ImportDataNotifier
                 .toList()
                 // remove duplicates
                 .where(
-                  (bookmark) => !currentBookmarks
-                      .any((e) => e.originalUrl == bookmark.originalUrl),
+                  (bookmark) => !currentBookmarks.any(
+                    (e) => e.originalUrl == bookmark.originalUrl,
+                  ),
                 )
                 .toList();
 
@@ -402,21 +412,21 @@ class ImportDataNotifier
 
         state = state.copyWith(
           tasks: [
-            for (final t in state.tasks)
-              if (t.id == task.id)
+            for (final tsk in state.tasks)
+              if (tsk.id == task.id)
                 task.copyWith(importStatus: const ImportDone())
               else
-                t,
+                tsk,
           ],
         );
       } catch (e) {
         state = state.copyWith(
           tasks: [
-            for (final t in state.tasks)
-              if (t.id == task.id)
+            for (final tsk in state.tasks)
+              if (tsk.id == task.id)
                 task.copyWith(importStatus: ImportError(e.toString()))
               else
-                t,
+                tsk,
           ],
         );
       }
@@ -436,8 +446,8 @@ class ImportDataNotifier
 
     state = state.copyWith(
       tasks: [
-        for (final t in state.tasks)
-          if (t.id == id) newTask else t,
+        for (final tsk in state.tasks)
+          if (tsk.id == id) newTask else tsk,
       ],
     );
   }

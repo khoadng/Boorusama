@@ -12,7 +12,7 @@ enum BooruUrlError {
   missingScheme, // e.g. danbooru.donmai.us
   notAnHttpOrHttpsUrl, // e.g. ftp://danbooru.donmai.us
   missingLastSlash, // e.g. https://danbooru.donmai.us
-  redundantWww // e.g. https://www.danbooru.donmai.us/
+  redundantWww, // e.g. https://www.danbooru.donmai.us/
 }
 
 typedef BooruUriOrError = Either<BooruUrlError, Uri>;

@@ -24,8 +24,11 @@ mixin DanbooruClientPosts {
       },
     );
 
-    return Isolate.run(() =>
-        (response.data as List).map((item) => PostDto.fromJson(item)).toList());
+    return Isolate.run(
+      () => (response.data as List)
+          .map((item) => PostDto.fromJson(item))
+          .toList(),
+    );
   }
 
   Future<PostDto?> getPost(int id) async {
@@ -89,14 +92,14 @@ mixin DanbooruClientPosts {
   }
 
   Future<PostVoteDto> upvotePost(int postId) => votePost(
-        postId: postId,
-        score: 1,
-      );
+    postId: postId,
+    score: 1,
+  );
 
   Future<PostVoteDto> downvotePost(int postId) => votePost(
-        postId: postId,
-        score: -1,
-      );
+    postId: postId,
+    score: -1,
+  );
 
   Future<bool> removePostVote(
     int postId,
@@ -118,14 +121,13 @@ mixin DanbooruClientPosts {
     required int userId,
     bool? isDeleted,
     int limit = 100,
-  }) =>
-      getPostVotes(
-        page: page,
-        postIds: postIds,
-        userId: userId,
-        isDeleted: isDeleted,
-        limit: limit,
-      );
+  }) => getPostVotes(
+    page: page,
+    postIds: postIds,
+    userId: userId,
+    isDeleted: isDeleted,
+    limit: limit,
+  );
 
   Future<List<PostVoteDto>> getPostVotes({
     int? page,
@@ -149,9 +151,11 @@ mixin DanbooruClientPosts {
       },
     );
 
-    return Isolate.run(() => (response.data as List)
-        .map((item) => PostVoteDto.fromJson(item))
-        .toList());
+    return Isolate.run(
+      () => (response.data as List)
+          .map((item) => PostVoteDto.fromJson(item))
+          .toList(),
+    );
   }
 
   Future<PostDto> putTags({

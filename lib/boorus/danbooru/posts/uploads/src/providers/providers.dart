@@ -9,43 +9,47 @@ import 'package:hive/hive.dart';
 // Project imports:
 import '../../../../../../core/configs/config.dart';
 import '../../../../../../core/configs/ref.dart';
-import '../../../../danbooru_provider.dart';
+import '../../../../client_provider.dart';
 import 'danbooru_upload_repository.dart';
 
 final danbooruUploadRepoProvider =
     Provider.family<DanbooruUploadRepository, BooruConfigAuth>((ref, config) {
-  final client = ref.watch(danbooruClientProvider(config));
+      final client = ref.watch(danbooruClientProvider(config));
 
-  return DanbooruUploadRepository(client: client);
-});
+      return DanbooruUploadRepository(client: client);
+    });
 
 final danbooruUploadHideBoxProvider =
     FutureProvider.family<Box<String>, BooruConfigAuth>((ref, config) async {
-  final box = await Hive.openBox<String>(
-    '${Uri.encodeComponent(config.url)}_hide_uploads_v1',
-  );
+      final box = await Hive.openBox<String>(
+        '${Uri.encodeComponent(config.url)}_hide_uploads_v1',
+      );
 
-  return box;
-});
+      return box;
+    });
 
-final danbooruIqdbResultProvider =
-    FutureProvider.autoDispose.family<List<IqdbResultDto>, int>(
-  (ref, mediaAssetId) async {
-    final client = ref.watch(danbooruClientProvider(ref.watchConfigAuth));
+final danbooruIqdbResultProvider = FutureProvider.autoDispose
+    .family<List<IqdbResultDto>, int>(
+      (ref, mediaAssetId) async {
+        final client = ref.watch(danbooruClientProvider(ref.watchConfigAuth));
 
-    return client.iqdb(mediaAssetId: mediaAssetId);
-  },
-);
+        return client.iqdb(mediaAssetId: mediaAssetId);
+      },
+    );
 
-final danbooruUploadHideMapProvider = AsyncNotifierProvider.autoDispose<
-    DanbooruUploadHideNotifier, Map<int, bool>>(DanbooruUploadHideNotifier.new);
+final danbooruUploadHideMapProvider =
+    AsyncNotifierProvider.autoDispose<
+      DanbooruUploadHideNotifier,
+      Map<int, bool>
+    >(DanbooruUploadHideNotifier.new);
 
 class DanbooruUploadHideNotifier
     extends AutoDisposeAsyncNotifier<Map<int, bool>> {
   @override
   FutureOr<Map<int, bool>> build() async {
-    final box = await ref
-        .watch(danbooruUploadHideBoxProvider(ref.watchConfigAuth).future);
+    final box = await ref.watch(
+      danbooruUploadHideBoxProvider(ref.watchConfigAuth).future,
+    );
 
     final map = <int, bool>{};
 
@@ -75,8 +79,9 @@ class DanbooruUploadHideNotifier
     state = AsyncData(map);
 
     // update box
-    final box = await ref
-        .watch(danbooruUploadHideBoxProvider(ref.watchConfigAuth).future);
+    final box = await ref.watch(
+      danbooruUploadHideBoxProvider(ref.watchConfigAuth).future,
+    );
 
     if (visible) {
       await box.delete(id.toString());

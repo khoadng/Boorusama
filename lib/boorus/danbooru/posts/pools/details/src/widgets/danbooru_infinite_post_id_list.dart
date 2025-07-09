@@ -75,8 +75,9 @@ class _DanbooruInfinitePostIdListState
             final ordered = <DanbooruPost>[];
 
             for (final id in ids) {
-              final post =
-                  posts.posts.firstWhereOrNull((post) => post.id == id);
+              final post = posts.posts.firstWhereOrNull(
+                (post) => post.id == id,
+              );
               if (post != null) {
                 ordered.add(post);
               }
@@ -89,20 +90,20 @@ class _DanbooruInfinitePostIdListState
         ),
         builder: (context, controller) => PostGrid(
           controller: controller,
-          itemBuilder: (
-            context,
-            index,
-            multiSelectController,
-            scrollController,
-            useHero,
-          ) =>
-              DefaultDanbooruImageGridItem(
-            index: index,
-            multiSelectController: multiSelectController,
-            autoScrollController: scrollController,
-            controller: controller,
-            useHero: useHero,
-          ),
+          itemBuilder:
+              (
+                context,
+                index,
+                multiSelectController,
+                scrollController,
+                useHero,
+              ) => DefaultDanbooruImageGridItem(
+                index: index,
+                multiSelectController: multiSelectController,
+                autoScrollController: scrollController,
+                controller: controller,
+                useHero: useHero,
+              ),
           sliverHeaders: [
             if (widget.sliverHeaders != null) ...widget.sliverHeaders!,
           ],

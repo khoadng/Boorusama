@@ -34,7 +34,8 @@ class PostDto {
     final extRaw = json['ext'];
     final haveAlpha = json['have_alpha'];
 
-    final small = json['small_preview'] ??
+    final small =
+        json['small_preview'] ??
         createUrl(
           baseUrl,
           json['md5'],
@@ -43,7 +44,8 @@ class PostDto {
           haveAlpha,
         );
 
-    final medium = json['medium_preview'] ??
+    final medium =
+        json['medium_preview'] ??
         createUrl(
           baseUrl,
           json['md5'],
@@ -52,7 +54,8 @@ class PostDto {
           haveAlpha,
         );
 
-    final big = json['big_preview'] ??
+    final big =
+        json['big_preview'] ??
         createUrl(
           baseUrl,
           json['md5'],
@@ -190,28 +193,29 @@ class PostDetailsDto {
 
   factory PostDetailsDto.fromJson(Map<String, dynamic> json, String baseUrl) {
     return PostDetailsDto(
-      post:
-          json['post'] != null ? PostDto.fromJson(json['post'], baseUrl) : null,
+      post: json['post'] != null
+          ? PostDto.fromJson(json['post'], baseUrl)
+          : null,
       user: json['user'] != null ? UserDto.fromJson(json['user']) : null,
       moderator: json['moderator'] != null
           ? UserDto.fromJson(json['moderator'])
           : null,
       tags: json['tags'] != null
           ? (json['tags'] as List)
-              .map((item) => PostDetailsTagDto.fromJson(item))
-              .toList()
+                .map((item) => PostDetailsTagDto.fromJson(item))
+                .toList()
           : null,
       starIt: json['star_it'],
       favoritesUsers: json['favorites_users'] != null
           ? (json['favorites_users'] as List)
-              .map((item) => PostDetailsFavoritesUserDto.fromJson(item))
-              .toList()
+                .map((item) => PostDetailsFavoritesUserDto.fromJson(item))
+                .toList()
           : null,
       fileUrl: json['file_url'],
       tied: json['tied'] != null
           ? (json['tied'] as List)
-              .map((item) => PostDto.fromJson(item, baseUrl))
-              .toList()
+                .map((item) => PostDto.fromJson(item, baseUrl))
+                .toList()
           : null,
     );
   }
@@ -238,8 +242,10 @@ String? createUrl(
   if (haveAlpha == null) return null;
 
   final url = switch (type) {
-    ImageUrlType.original =>
-      baseUrl.replaceFirst('https://api.', 'https://oimages.'),
+    ImageUrlType.original => baseUrl.replaceFirst(
+      'https://api.',
+      'https://oimages.',
+    ),
     _ => baseUrl.replaceFirst('https://api.', 'https://opreviews.'),
   };
 

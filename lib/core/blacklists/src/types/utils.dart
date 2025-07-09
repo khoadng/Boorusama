@@ -18,14 +18,19 @@ String joinBlackTagItems(List<String> tagItems, String currentQuery) {
 List<BlacklistedTag> sortBlacklistedTags(
   IList<BlacklistedTag> tags,
   BlacklistedTagsSortType sortType,
-) =>
-    switch (sortType) {
-      BlacklistedTagsSortType.recentlyAdded =>
-        tags.sortedByCompare((e) => e.createdDate, (a, b) => b.compareTo(a)),
-      // BlacklistedTagsSortType.recentlyUpdated =>
-      //   tags.sortedByCompare((e) => e.updatedDate, (a, b) => b.compareTo(a)),
-      BlacklistedTagsSortType.nameAZ =>
-        tags.sortedByCompare((e) => e.name, (a, b) => a.compareTo(b)),
-      BlacklistedTagsSortType.nameZA =>
-        tags.sortedByCompare((e) => e.name, (a, b) => b.compareTo(a))
-    };
+) => switch (sortType) {
+  BlacklistedTagsSortType.recentlyAdded => tags.sortedByCompare(
+    (e) => e.createdDate,
+    (a, b) => b.compareTo(a),
+  ),
+  // BlacklistedTagsSortType.recentlyUpdated =>
+  //   tags.sortedByCompare((e) => e.updatedDate, (a, b) => b.compareTo(a)),
+  BlacklistedTagsSortType.nameAZ => tags.sortedByCompare(
+    (e) => e.name,
+    (a, b) => a.compareTo(b),
+  ),
+  BlacklistedTagsSortType.nameZA => tags.sortedByCompare(
+    (e) => e.name,
+    (a, b) => b.compareTo(a),
+  ),
+};

@@ -174,8 +174,8 @@ class TokenizerConfigs {
       .toList();
 
   TokenOptionDocs? tokenOptionDocsOf(String? token, String tokenOption) {
-    final desc = tokenOptionDocs[
-        token != null && namespacedTokens.contains(token)
+    final desc =
+        tokenOptionDocs[token != null && namespacedTokens.contains(token)
             ? '$token:$tokenOption'
             : tokenOption];
 

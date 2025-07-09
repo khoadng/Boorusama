@@ -5,13 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import '../../../../foundation/info/app_info.dart';
+import '../../../../foundation/url_launcher.dart';
 import '../../../configs/ref.dart';
-import '../../../foundation/url_launcher.dart';
 import '../../../http/providers.dart';
-import '../../../info/app_info.dart';
 
 class HelpUseTranslatePage extends ConsumerWidget {
   const HelpUseTranslatePage({
@@ -85,8 +86,8 @@ class HelpUseTranslatePage extends ConsumerWidget {
                     appInfo.translationProjectUrl,
                   );
                 },
-                child: const Text(
-                  'Contribute',
+                child: Text(
+                  'Contribute'.hc,
                 ),
               ),
             ),

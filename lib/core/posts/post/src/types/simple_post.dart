@@ -146,17 +146,17 @@ class DemoPost extends Equatable
 
   @override
   Set<String> get tags => {
-        'artist1',
-        'artist2',
-        'character1',
-        'character2',
-        'copy1',
-        'copy2',
-        'general1',
-        'general2',
-        'meta1',
-        'meta2',
-      };
+    'artist1',
+    'artist2',
+    'character1',
+    'character2',
+    'copy1',
+    'copy2',
+    'general1',
+    'general2',
+    'meta1',
+    'meta2',
+  };
 
   @override
   Rating get rating => Rating.general;

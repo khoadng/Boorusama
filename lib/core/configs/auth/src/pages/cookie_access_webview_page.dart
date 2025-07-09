@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:cookie_jar/cookie_jar.dart';
+import 'package:i18n/i18n.dart';
 import 'package:webview_cookie_manager/webview_cookie_manager.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -38,18 +39,19 @@ class _CookieAccessWebViewPageState extends State<CookieAccessWebViewPage> {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
-        title: const Text('Login'),
+        title: Text('Login'.hc),
       ),
       body: Column(
         children: [
-          _buildBanner('Press the button below after you logged in.'),
+          _buildBanner('Press the button below after you logged in.'.hc),
           FilledButton(
             onPressed: () async {
-              final cookies =
-                  await WebviewCookieManager().getCookies(widget.url);
+              final cookies = await WebviewCookieManager().getCookies(
+                widget.url,
+              );
               widget.onGet(cookies);
             },
-            child: const Text('Access Cookie'),
+            child: Text('Access Cookie'.hc),
           ),
           const SizedBox(height: 16),
           Expanded(

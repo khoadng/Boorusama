@@ -11,7 +11,7 @@ import 'package:video_player/video_player.dart';
 
 // Project imports:
 import '../../../../../../core/widgets/widgets.dart';
-import '../../../../foundation/platform.dart';
+import '../../../../../foundation/platform.dart';
 import '../../../../videos/video_progress.dart';
 import '../../../post/post.dart';
 
@@ -23,9 +23,9 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
     required this.initialThumbnailUrl,
     required this.reduceAnimations,
     required this.dislclaimer,
-  })  : currentPage = ValueNotifier(initialPage),
-        _initialPage = initialPage,
-        currentPost = ValueNotifier(posts[initialPage]);
+  }) : currentPage = ValueNotifier(initialPage),
+       _initialPage = initialPage,
+       currentPost = ValueNotifier(posts[initialPage]);
   final AutoScrollController? scrollController;
   final bool reduceAnimations;
   final List<T> posts;

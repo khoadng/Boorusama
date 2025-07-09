@@ -7,19 +7,19 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:share_handler/share_handler.dart';
 
 // Project imports:
 import '../../../../core/configs/ref.dart';
-import '../../../../core/foundation/platform.dart';
-import '../../../../core/foundation/url_launcher.dart';
 import '../../../../core/home/home_navigation_tile.dart';
 import '../../../../core/home/home_page_scaffold.dart';
 import '../../../../core/home/side_menu_tile.dart';
 import '../../../../core/posts/favorites/routes.dart';
 import '../../../../core/theme.dart';
+import '../../../../foundation/platform.dart';
+import '../../../../foundation/url_launcher.dart';
 import '../../artists/search/routes.dart';
 import '../../artists/search/widgets.dart';
 import '../../blacklist/routes.dart';
@@ -63,8 +63,9 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
     // Only support Android for now
     if (!isAndroid()) return;
 
-    _sharedMediaSubscription =
-        ShareHandler.instance.sharedMediaStream.listen(_onSharedTextsReceived);
+    _sharedMediaSubscription = ShareHandler.instance.sharedMediaStream.listen(
+      _onSharedTextsReceived,
+    );
   }
 
   void _onSharedTextsReceived(SharedMedia media) {
@@ -83,16 +84,17 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
           settings: const RouteSettings(name: 'upload_to_booru_confirmation'),
           builder: (context) {
             return AlertDialog(
-              title: const Text('Upload to Danbooru'),
+              title: Text('Upload to Danbooru'.hc),
               content: Text(
-                'Are you sure you want to upload to Danbooru?\n\n$text \n\nYou need to be logged in the browser to upload.',
+                'Are you sure you want to upload to Danbooru?\n\n$text \n\nYou need to be logged in the browser to upload.'
+                    .hc,
               ),
               actions: [
                 TextButton(
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  child: const Text('Cancel'),
+                  child: Text(context.t.generic.action.cancel),
                 ),
                 TextButton(
                   onPressed: () {
@@ -102,7 +104,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
                     final url = '${booruUrl}uploads/new?url=$encodedUri';
                     launchExternalUrlString(url);
                   },
-                  child: const Text('OK'),
+                  child: Text(context.t.generic.action.ok),
                 ),
               ],
             );
@@ -123,7 +125,9 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
     final configFilter = ref.watchConfigFilter;
     final config = configFilter.auth;
 
-    final userId = ref.watch(danbooruCurrentUserProvider(config)).maybeWhen(
+    final userId = ref
+        .watch(danbooruCurrentUserProvider(config))
+        .maybeWhen(
           data: (user) => user?.id,
           orElse: () => null,
         );
@@ -142,43 +146,43 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
             icon: const _Icon(
               Symbols.account_box,
             ),
-            title: const Text('profile.profile').tr(),
+            title: Text(context.t.profile.profile),
             onTap: () {
-              goToProfilePage(context);
+              goToProfilePage(ref);
             },
           ),
         SideMenuTile(
           icon: const _Icon(
             Symbols.explore,
           ),
-          title: const Text('explore.explore').tr(),
-          onTap: () => goToExplorePage(context),
+          title: Text(context.t.explore.explore),
+          onTap: () => goToExplorePage(ref),
         ),
         SideMenuTile(
           icon: const _Icon(
             Symbols.photo_album,
           ),
-          title: const Text('Pools'),
+          title: Text('Pools'.hc),
           onTap: () {
-            goToPoolPage(context);
+            goToPoolPage(ref);
           },
         ),
         SideMenuTile(
           icon: const _Icon(
             Symbols.forum,
           ),
-          title: const Text('forum.forum').tr(),
+          title: Text(context.t.forum.forum),
           onTap: () {
-            goToForumPage(context);
+            goToForumPage(ref);
           },
         ),
         SideMenuTile(
           icon: const _Icon(
             Symbols.search,
           ),
-          title: const Text('Artists'),
+          title: Text('Artists'.hc),
           onTap: () {
-            goToArtistSearchPage(context);
+            goToArtistSearchPage(ref);
           },
         ),
         if (config.hasLoginDetails()) ...[
@@ -186,38 +190,38 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
             icon: const _Icon(
               Symbols.favorite,
             ),
-            title: Text('profile.favorites'.tr()),
+            title: Text(context.t.profile.favorites),
             onTap: () {
-              goToFavoritesPage(context);
+              goToFavoritesPage(ref);
             },
           ),
           SideMenuTile(
             icon: const _Icon(
               Symbols.collections,
             ),
-            title: const Text('favorite_groups.favorite_groups').tr(),
+            title: Text(context.t.favorite_groups.favorite_groups),
             onTap: () {
-              goToFavoriteGroupPage(context);
+              goToFavoriteGroupPage(ref);
             },
           ),
           SideMenuTile(
             icon: const _Icon(
               Symbols.search,
             ),
-            title: const Text('saved_search.saved_search').tr(),
+            title: Text(context.t.saved_search.saved_search),
             onTap: () {
-              goToSavedSearchPage(context);
+              goToSavedSearchPage(ref);
             },
           ),
           SideMenuTile(
             icon: const _Icon(
               Symbols.tag,
             ),
-            title: const Text(
-              'blacklisted_tags.blacklisted_tags',
-            ).tr(),
+            title: Text(
+              context.t.blacklisted_tags.blacklisted_tags,
+            ),
             onTap: () {
-              goToBlacklistedTagPage(context);
+              goToBlacklistedTagPage(ref);
             },
           ),
         ],
@@ -228,7 +232,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
           constraints: constraints,
           selectedIcon: Symbols.explore,
           icon: Symbols.explore,
-          title: 'explore.explore'.tr(),
+          title: context.t.explore.explore,
         ),
         HomeNavigationTile(
           value: 2,
@@ -242,7 +246,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
           constraints: constraints,
           selectedIcon: Symbols.forum,
           icon: Symbols.forum,
-          title: 'forum.forum'.tr(),
+          title: context.t.forum.forum,
         ),
         HomeNavigationTile(
           value: 4,
@@ -258,7 +262,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
               constraints: constraints,
               selectedIcon: Symbols.account_box,
               icon: Symbols.account_box,
-              title: 'profile.profile'.tr(),
+              title: context.t.profile.profile,
             ),
           HomeNavigationTile(
             value: 6,
@@ -272,21 +276,21 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
             constraints: constraints,
             selectedIcon: Symbols.collections,
             icon: Symbols.collections,
-            title: 'favorite_groups.favorite_groups'.tr(),
+            title: context.t.favorite_groups.favorite_groups,
           ),
           HomeNavigationTile(
             value: 8,
             constraints: constraints,
             selectedIcon: Symbols.saved_search,
             icon: Symbols.saved_search,
-            title: 'saved_search.saved_search'.tr(),
+            title: context.t.saved_search.saved_search,
           ),
           HomeNavigationTile(
             value: 9,
             constraints: constraints,
             selectedIcon: Symbols.tag,
             icon: Symbols.tag,
-            title: 'blacklisted_tags.blacklisted_tags'.tr(),
+            title: context.t.blacklisted_tags.blacklisted_tags,
           ),
         ],
       ],

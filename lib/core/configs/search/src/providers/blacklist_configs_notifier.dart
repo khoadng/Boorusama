@@ -14,8 +14,8 @@ import '../types/utils.dart';
 
 final blacklistConfigsProvider = NotifierProvider.autoDispose
     .family<BlacklistConfigsNotifier, BlacklistConfigs, EditBooruConfigId>(
-  BlacklistConfigsNotifier.new,
-);
+      BlacklistConfigsNotifier.new,
+    );
 
 class BlacklistConfigsNotifier
     extends AutoDisposeFamilyNotifier<BlacklistConfigs, EditBooruConfigId> {
@@ -25,13 +25,16 @@ class BlacklistConfigsNotifier
 
     listenSelf(
       (prev, next) {
-        editNotifier.updateBlacklistConfigs(next);
+        if (prev != null && next != prev) {
+          editNotifier.updateBlacklistConfigs(next);
+        }
       },
     );
 
     return ref.watch(
-          editBooruConfigProvider(arg)
-              .select((value) => value.blacklistConfigsTyped),
+          editBooruConfigProvider(
+            arg,
+          ).select((value) => value.blacklistConfigsTyped),
         ) ??
         BlacklistConfigs.defaults();
   }

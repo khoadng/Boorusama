@@ -45,16 +45,16 @@ class DanbooruForumTopic extends Equatable implements ForumTopic {
 
   @override
   List<Object?> get props => [
-        id,
-        title,
-        creatorId,
-        updaterId,
-        responseCount,
-        isSticky,
-        isLocked,
-        createdAt,
-        updatedAt,
-        isDeleted,
-        category,
-      ];
+    id,
+    title,
+    creatorId,
+    updaterId,
+    responseCount,
+    isSticky,
+    isLocked,
+    createdAt,
+    updatedAt,
+    isDeleted,
+    category,
+  ];
 }

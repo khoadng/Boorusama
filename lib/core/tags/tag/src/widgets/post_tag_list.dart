@@ -2,18 +2,14 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../../../core/widgets/widgets.dart';
 import '../../../../configs/config.dart';
-import '../../../../theme.dart';
-import '../../../../theme/providers.dart';
-import '../tag.dart';
-import '../tag_display.dart';
-import '../tag_group_item.dart';
+import '../../../../posts/details_parts/widgets.dart';
+import '../types/tag.dart';
+import '../types/tag_display.dart';
+import '../types/tag_group_item.dart';
 
 class PostTagList extends StatelessWidget {
   const PostTagList({
@@ -21,11 +17,13 @@ class PostTagList extends StatelessWidget {
     required this.tags,
     super.key,
     this.maxTagWidth,
+    this.padding,
   });
 
   final double? maxTagWidth;
   final Widget Function(BuildContext context, Tag tag) itemBuilder;
   final List<TagGroupItem>? tags;
+  final EdgeInsetsGeometry? padding;
 
   @override
   Widget build(BuildContext context) {
@@ -53,11 +51,14 @@ class PostTagList extends StatelessWidget {
         );
     }
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        ...widgets,
-      ],
+    return Padding(
+      padding: padding ?? const EdgeInsets.symmetric(horizontal: 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          ...widgets,
+        ],
+      ),
     );
   }
 
@@ -83,7 +84,7 @@ class PostTagList extends StatelessWidget {
   }
 }
 
-class PostTagListChip extends ConsumerWidget {
+class PostTagListChip extends StatelessWidget {
   const PostTagListChip({
     required this.tag,
     required this.auth,
@@ -100,66 +101,18 @@ class PostTagListChip extends ConsumerWidget {
   final BooruConfigAuth auth;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final colors = color != null
-        ? ref.watch(booruChipColorsProvider).fromColor(color)
-        : ref.watch(
-            chipColorsFromTagStringProvider(
-              (auth, tag.category.name),
-            ),
-          );
-    final screenWith = MediaQuery.sizeOf(context).width;
-
-    return RawCompactChip(
+  Widget build(BuildContext context) {
+    return TagChip(
+      text: tag.displayName,
+      auth: auth,
+      category: tag.category.name,
+      postCount: tag.postCount,
       onTap: onTap,
-      padding: const EdgeInsets.symmetric(
-        horizontal: 8,
-        vertical: 6,
-      ),
-      foregroundColor: colors?.foregroundColor,
-      backgroundColor: colors?.backgroundColor,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
-        side: colors != null
-            ? BorderSide(
-                color: colors.borderColor,
-              )
-            : BorderSide.none,
-      ),
-      label: ConstrainedBox(
-        constraints: BoxConstraints(
-          maxWidth: maxTagWidth ?? screenWith * 0.7,
-        ),
-        child: RichText(
-          overflow: TextOverflow.ellipsis,
-          text: TextSpan(
-            text: _getTagStringDisplayName(tag),
-            style: TextStyle(
-              color: colors?.foregroundColor,
-              fontWeight: FontWeight.w600,
-            ),
-            children: [
-              if (!auth.hasStrictSFW && tag.postCount > 0)
-                TextSpan(
-                  text: '  ${NumberFormat.compact().format(tag.postCount)}',
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        fontSize: 11,
-                        color: Theme.of(context).brightness.isLight
-                            ? Colors.white.withValues(alpha: 0.85)
-                            : Colors.grey.withValues(alpha: 0.85),
-                      ),
-                ),
-            ],
-          ),
-        ),
-      ),
+      maxWidth: maxTagWidth,
+      colorOverride: color,
     );
   }
 }
-
-String _getTagStringDisplayName(Tag tag) => tag.displayName.length > 30
-    ? '${tag.displayName.substring(0, 30)}...'
-    : tag.displayName;
 
 class _TagBlockTitle extends StatelessWidget {
   const _TagBlockTitle({
@@ -202,10 +155,9 @@ class _TagHeader extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 1),
       child: Text(
         title,
-        style: Theme.of(context)
-            .textTheme
-            .bodyLarge
-            ?.copyWith(fontWeight: FontWeight.w900),
+        style: Theme.of(
+          context,
+        ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w900),
       ),
     );
   }

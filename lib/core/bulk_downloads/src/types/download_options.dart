@@ -3,8 +3,8 @@ import 'package:equatable/equatable.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../downloads/path.dart';
-import '../../../foundation/platform.dart';
+import '../../../../foundation/platform.dart';
+import '../../../downloads/path/validator.dart';
 import '../../../search/selected_tags/tag.dart';
 import 'download_task.dart';
 
@@ -91,8 +91,9 @@ class DownloadOptions extends Equatable with DownloadPathValidatorMixin {
       perPage: perPage ?? this.perPage,
       concurrency: concurrency ?? this.concurrency,
       tags: tags ?? this.tags,
-      blacklistedTags:
-          blacklistedTags != null ? blacklistedTags() : this.blacklistedTags,
+      blacklistedTags: blacklistedTags != null
+          ? blacklistedTags()
+          : this.blacklistedTags,
     );
   }
 
@@ -101,15 +102,15 @@ class DownloadOptions extends Equatable with DownloadPathValidatorMixin {
 
   @override
   List<Object?> get props => [
-        path,
-        notifications,
-        skipIfExists,
-        quality,
-        perPage,
-        concurrency,
-        tags,
-        blacklistedTags,
-      ];
+    path,
+    notifications,
+    skipIfExists,
+    quality,
+    perPage,
+    concurrency,
+    tags,
+    blacklistedTags,
+  ];
 }
 
 extension DownloadOptionsX on DownloadOptions {

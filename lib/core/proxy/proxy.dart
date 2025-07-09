@@ -22,11 +22,11 @@ class ProxySettings extends Equatable {
   });
 
   factory ProxySettings.unknown() => const ProxySettings(
-        type: ProxyType.unknown,
-        host: '',
-        port: 0,
-        enable: false,
-      );
+    type: ProxyType.unknown,
+    host: '',
+    port: 0,
+    enable: false,
+  );
 
   factory ProxySettings.fromJsonString(String? jsonString) {
     if (jsonString == null || jsonString.isEmpty) {
@@ -93,13 +93,13 @@ class ProxySettings extends Equatable {
 
   @override
   List<Object?> get props => [
-        type,
-        host,
-        port,
-        username,
-        password,
-        enable,
-      ];
+    type,
+    host,
+    port,
+    username,
+    password,
+    enable,
+  ];
 
   @override
   String toString() {

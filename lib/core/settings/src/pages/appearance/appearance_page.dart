@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
+import '../../../../../foundation/platform.dart';
 import '../../../../configs/appearance/types.dart';
 import '../../../../configs/appearance/widgets.dart';
 import '../../../../configs/config/widgets.dart';
-import '../../../../foundation/platform.dart';
 import '../../../../premiums/premiums.dart';
 import '../../../../premiums/providers.dart';
 import '../../../../theme/theme.dart';
@@ -40,11 +40,12 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
     final settings = ref.watch(settingsProvider);
     final notifier = ref.watch(settingsNotifierProvider.notifier);
     final hasPremium = ref.watch(hasPremiumProvider);
+    final tSettings = context.t.settings;
 
     return SettingsPageScaffold(
-      title: const Text('settings.appearance.appearance').tr(),
+      title: Text(tSettings.appearance.appearance),
       children: [
-        SettingsHeader(label: 'settings.general'.tr()),
+        SettingsHeader(label: tSettings.general),
         if (!hasPremium)
           _buildSimpleTheme(settings)
         else
@@ -67,7 +68,7 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
             ),
           ),
         const Divider(thickness: 1),
-        SettingsHeader(label: 'settings.image_grid.image_grid'.tr()),
+        SettingsHeader(label: tSettings.image_grid.image_grid),
         ListingSettingsInteractionBlocker(
           child: ImageListingSettingsSection(
             listing: settings.listing,
@@ -87,38 +88,40 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
     final dynamicColorSupported = ref.watch(dynamicColorSupportProvider);
     final notifier = ref.watch(settingsNotifierProvider.notifier);
     final colorScheme = Theme.of(context).colorScheme;
+    final tSettings = context.t.settings;
+    final tTheme = tSettings.theme;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SettingsTile(
-          title: const Text('settings.theme.theme').tr(),
+          title: Text(tTheme.theme),
           selectedOption: settings.themeMode,
           items: AppThemeMode.values,
           onChanged: (value) =>
               notifier.updateSettings(settings.copyWith(themeMode: value)),
-          optionBuilder: (value) => Text(value.localize()).tr(),
+          optionBuilder: (value) => Text(value.localize(context)),
         ),
         Builder(
           builder: (context) {
             return SwitchListTile(
-              title: const Text('settings.theme.dynamic_color').tr(),
+              title: Text(tTheme.dynamic_color),
               subtitle: dynamicColorSupported
                   ? !isDesktopPlatform()
-                      ? const Text(
-                          'settings.theme.dynamic_color_mobile_description',
-                        ).tr()
-                      : const Text(
-                          'settings.theme.dynamic_color_desktop_description',
-                        ).tr()
+                        ? Text(
+                            tTheme.dynamic_color_mobile_description,
+                          )
+                        : Text(
+                            tTheme.dynamic_color_desktop_description,
+                          )
                   : Text(
-                      '${!isDesktopPlatform() ? 'settings.theme.dynamic_color_mobile_description'.tr() : 'settings.theme.dynamic_color_desktop_description'.tr()}. ${'settings.theme.dynamic_color_unsupported_description'.tr()}',
+                      '${!isDesktopPlatform() ? tTheme.dynamic_color_mobile_description : tTheme.dynamic_color_desktop_description}. ${tTheme.dynamic_color_unsupported_description}',
                     ),
               value: settings.enableDynamicColoring,
               onChanged: dynamicColorSupported
                   ? (value) => notifier.updateSettings(
-                        settings.copyWith(enableDynamicColoring: value),
-                      )
+                      settings.copyWith(enableDynamicColoring: value),
+                    )
                   : null,
             );
           },
@@ -149,7 +152,7 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
                     style: TextStyle(
                       color: colorScheme.hintColor,
                     ),
-                  ).tr(),
+                  ),
                 ),
                 TextButton(
                   onPressed: () {
@@ -167,7 +170,7 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
                       ),
                     );
                   },
-                  child: const Text('Preview').tr(),
+                  child: Text(context.t.generic.view),
                 ),
               ],
             ),

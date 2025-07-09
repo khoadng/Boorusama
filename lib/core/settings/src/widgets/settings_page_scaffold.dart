@@ -45,7 +45,8 @@ class SettingsPageScaffold extends StatelessWidget {
               ),
             ),
             child: ListView(
-              padding: padding ??
+              padding:
+                  padding ??
                   const EdgeInsets.symmetric(
                     horizontal: 16,
                   ),
@@ -106,13 +107,14 @@ class SettingsPageDynamicScope extends InheritedWidget {
   });
 
   static SettingsPageDynamicScope of(BuildContext context) {
-    final item =
-        context.dependOnInheritedWidgetOfExactType<SettingsPageDynamicScope>();
+    final item = context
+        .dependOnInheritedWidgetOfExactType<SettingsPageDynamicScope>();
 
     if (item == null) {
       throw FlutterError(
-          'SettingsPageDynamicScope.of was called with a context that '
-          'does not contain a SettingsPageDynamicScope.');
+        'SettingsPageDynamicScope.of was called with a context that '
+        'does not contain a SettingsPageDynamicScope.',
+      );
     }
 
     return item;
@@ -134,12 +136,14 @@ class SettingsPageScope extends InheritedWidget {
   });
 
   static SettingsPageScope of(BuildContext context) {
-    final item =
-        context.dependOnInheritedWidgetOfExactType<SettingsPageScope>();
+    final item = context
+        .dependOnInheritedWidgetOfExactType<SettingsPageScope>();
 
     if (item == null) {
-      throw FlutterError('SettingsPageScope.of was called with a context that '
-          'does not contain a SettingsPageScope.');
+      throw FlutterError(
+        'SettingsPageScope.of was called with a context that '
+        'does not contain a SettingsPageScope.',
+      );
     }
 
     return item;

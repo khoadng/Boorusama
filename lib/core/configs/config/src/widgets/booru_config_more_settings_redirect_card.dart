@@ -57,7 +57,7 @@ class BooruConfigMoreSettingsRedirectCard extends ConsumerWidget {
           label: 'Profile',
           onPressed: () {
             goToUpdateBooruConfigPage(
-              context,
+              ref,
               config: config,
               initialTab: initialTab,
             );

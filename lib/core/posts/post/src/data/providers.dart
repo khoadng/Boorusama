@@ -13,8 +13,9 @@ final emptyPostRepoProvider = Provider<PostRepository>(
 
 final postRepoProvider = Provider.family<PostRepository, BooruConfigSearch>(
   (ref, config) {
-    final repo =
-        ref.watch(booruEngineRegistryProvider).getRepository(config.booruType);
+    final repo = ref
+        .watch(booruEngineRegistryProvider)
+        .getRepository(config.booruType);
 
     final postRepo = repo?.post(config);
 

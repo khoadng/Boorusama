@@ -1,9 +1,6 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
-// Package imports:
-import 'package:foundation/foundation.dart';
-
 class SettingsSliderTile extends StatelessWidget {
   const SettingsSliderTile({
     required this.title,
@@ -29,7 +26,8 @@ class SettingsSliderTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: padding ??
+      margin:
+          padding ??
           const EdgeInsets.only(
             left: 16,
             right: 16,
@@ -44,7 +42,7 @@ class SettingsSliderTile extends StatelessWidget {
               style: const TextStyle(
                 fontSize: 16,
               ),
-            ).tr(),
+            ),
           ),
           Expanded(
             child: Slider(

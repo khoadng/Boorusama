@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../widgets/booru_text_form_field.dart';
@@ -19,8 +19,9 @@ class BooruConfigNameField extends ConsumerWidget {
     final id = ref.watch(editBooruConfigIdProvider);
 
     return CreateBooruConfigNameField(
-      text:
-          ref.watch(editBooruConfigProvider(id).select((value) => value.name)),
+      text: ref.watch(
+        editBooruConfigProvider(id).select((value) => value.name),
+      ),
       onChanged: (value) => ref.editNotifier.updateName(value),
     );
   }
@@ -60,7 +61,7 @@ class _CreateBooruConfigNameFieldState
         onChanged: widget.onChanged,
         decoration: InputDecoration(
           hintText: 'A label to identify this profile',
-          labelText: 'booru.config_name_label'.tr(),
+          labelText: context.t.booru.config_name_label,
         ),
       ),
     );

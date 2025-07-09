@@ -63,7 +63,7 @@ class _SideSheetState extends State<SideSheet> {
         ),
         child: ValueListenableBuilder(
           valueListenable: widget.controller.cooldown,
-          builder: (_, cooldown, __) => cooldown
+          builder: (_, cooldown, _) => cooldown
               ? const Center(
                   child: CircularProgressIndicator(),
                 )
@@ -74,10 +74,10 @@ class _SideSheetState extends State<SideSheet> {
 
     return ValueListenableBuilder(
       valueListenable: _animating,
-      builder: (_, animating, __) => animating
+      builder: (_, animating, _) => animating
           ? ValueListenableBuilder(
               valueListenable: widget.controller.sheetState,
-              builder: (__, state, _) => switch (state) {
+              builder: (_, state, _) => switch (state) {
                 // collapsed -> expanded, don't show the side sheet to prevent building it while animating
                 SheetState.collapsed => const SizedBox.shrink(),
                 _ => child,
@@ -86,12 +86,12 @@ class _SideSheetState extends State<SideSheet> {
             )
           : ValueListenableBuilder(
               valueListenable: widget.controller.sheetState,
-              builder: (__, state, _) => switch (state) {
+              builder: (_, state, _) => switch (state) {
                 SheetState.expanded => child,
                 SheetState.collapsed => const SizedBox.shrink(),
                 SheetState.hidden => Offstage(
-                    child: child,
-                  ),
+                  child: child,
+                ),
               },
             ),
     );

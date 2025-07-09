@@ -2,7 +2,7 @@
 import 'package:booru_clients/danbooru.dart';
 
 // Project imports:
-import '../../../../../../core/artists/artists.dart';
+import '../../../../../../core/artists/types.dart';
 
 ArtistCommentary artistCommentaryDtoToArtistCommentary(
   ArtistCommentaryDto? d,

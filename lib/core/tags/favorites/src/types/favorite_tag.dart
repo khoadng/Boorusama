@@ -14,22 +14,22 @@ class FavoriteTag extends Equatable with QueryTypeMixin {
   });
 
   factory FavoriteTag.fromJson(Map<String, dynamic> json) => FavoriteTag(
-        name: json['name'] as String,
-        createdAt: DateTime.parse(json['createdAt'] as String),
-        updatedAt: json['updatedAt'] != null
-            ? DateTime.parse(json['updatedAt'] as String)
-            : null,
-        labels: (json['labels'] as List<dynamic>?)
-            ?.map((e) => e as String)
-            .toList(),
-      );
+    name: json['name'] as String,
+    createdAt: DateTime.parse(json['createdAt'] as String),
+    updatedAt: json['updatedAt'] != null
+        ? DateTime.parse(json['updatedAt'] as String)
+        : null,
+    labels: (json['labels'] as List<dynamic>?)
+        ?.map((e) => e as String)
+        .toList(),
+  );
 
   factory FavoriteTag.empty() => FavoriteTag(
-        name: '',
-        createdAt: DateTime(1),
-        updatedAt: null,
-        labels: null,
-      );
+    name: '',
+    createdAt: DateTime(1),
+    updatedAt: null,
+    labels: null,
+  );
 
   final String name;
   final DateTime createdAt;
@@ -51,31 +51,30 @@ class FavoriteTag extends Equatable with QueryTypeMixin {
     DateTime? Function()? updatedAt,
     List<String>? Function()? labels,
     QueryType? Function()? queryType,
-  }) =>
-      FavoriteTag(
-        name: name ?? this.name,
-        createdAt: createdAt ?? this.createdAt,
-        updatedAt: updatedAt != null ? updatedAt() : this.updatedAt,
-        labels: labels != null ? labels() : this.labels,
-        queryType: queryType != null ? queryType() : this.queryType,
-      );
+  }) => FavoriteTag(
+    name: name ?? this.name,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt != null ? updatedAt() : this.updatedAt,
+    labels: labels != null ? labels() : this.labels,
+    queryType: queryType != null ? queryType() : this.queryType,
+  );
 
   Map<String, dynamic> toJson() => {
-        'name': name,
-        'createdAt': createdAt.toIso8601String(),
-        'updatedAt': updatedAt?.toIso8601String(),
-        'labels': labels,
-        'queryType': queryType,
-      };
+    'name': name,
+    'createdAt': createdAt.toIso8601String(),
+    'updatedAt': updatedAt?.toIso8601String(),
+    'labels': labels,
+    'queryType': queryType,
+  };
 
   @override
   List<Object?> get props => [
-        name,
-        createdAt,
-        updatedAt,
-        labels,
-        queryType,
-      ];
+    name,
+    createdAt,
+    updatedAt,
+    labels,
+    queryType,
+  ];
 }
 
 extension FavoriteTagX on FavoriteTag {

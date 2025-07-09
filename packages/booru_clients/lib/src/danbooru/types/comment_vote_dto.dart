@@ -10,18 +10,18 @@ class CommentVoteDto {
   });
 
   factory CommentVoteDto.fromJson(Map<String, dynamic> json) => CommentVoteDto(
-        id: json['id'],
-        commentId: json['comment_id'],
-        userId: json['user_id'],
-        score: json['score'],
-        createdAt: json['created_at'] == null
-            ? null
-            : DateTime.parse(json['created_at']),
-        updatedAt: json['updated_at'] == null
-            ? null
-            : DateTime.parse(json['updated_at']),
-        isDeleted: json['is_deleted'],
-      );
+    id: json['id'],
+    commentId: json['comment_id'],
+    userId: json['user_id'],
+    score: json['score'],
+    createdAt: json['created_at'] == null
+        ? null
+        : DateTime.parse(json['created_at']),
+    updatedAt: json['updated_at'] == null
+        ? null
+        : DateTime.parse(json['updated_at']),
+    isDeleted: json['is_deleted'],
+  );
 
   final int? id;
   final int? commentId;

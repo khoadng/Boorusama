@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../../../core/configs/ref.dart';
-import '../../../../../../core/router.dart';
 import '../../../_shared/tag_list_notifier.dart';
 import '../providers/providers.dart';
 import '../providers/tag_edit_notifier.dart';
@@ -19,14 +19,17 @@ class TagEditSubmitButton extends ConsumerWidget {
     final notifier = ref.watch(tagEditProvider.notifier);
     final initialRating = notifier.initialRating;
     final postId = notifier.postId;
-    final addedTags =
-        ref.watch(tagEditProvider.select((value) => value.toBeAdded));
-    final removedTags =
-        ref.watch(tagEditProvider.select((value) => value.toBeRemoved));
+    final addedTags = ref.watch(
+      tagEditProvider.select((value) => value.toBeAdded),
+    );
+    final removedTags = ref.watch(
+      tagEditProvider.select((value) => value.toBeRemoved),
+    );
     final rating = ref.watch(selectedTagEditRatingProvider(initialRating));
 
     return TextButton(
-      onPressed: (addedTags.isNotEmpty ||
+      onPressed:
+          (addedTags.isNotEmpty ||
               removedTags.isNotEmpty ||
               rating != initialRating)
           ? () {
@@ -38,10 +41,10 @@ class TagEditSubmitButton extends ConsumerWidget {
                     removedTags: removedTags.toList(),
                     rating: rating != initialRating ? rating : null,
                   );
-              context.pop();
+              Navigator.of(context).pop();
             }
           : null,
-      child: const Text('Submit'),
+      child: Text('Submit'.hc),
     );
   }
 }

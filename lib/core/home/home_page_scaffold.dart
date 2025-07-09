@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
 import 'package:foundation/widgets.dart';
+import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import '../../foundation/boot/providers.dart';
+import '../../foundation/display.dart';
 import '../blacklists/widgets.dart';
 import '../bookmarks/widgets.dart';
 import '../boorus/engine/providers.dart';
@@ -16,9 +18,7 @@ import '../cache/providers.dart';
 import '../configs/manage/widgets.dart';
 import '../configs/ref.dart';
 import '../donate/routes.dart';
-import '../downloads/manager.dart';
-import '../foundation/boot/providers.dart';
-import '../foundation/display.dart';
+import '../download_manager/widgets.dart';
 import '../premiums/premiums.dart';
 import '../premiums/providers.dart';
 import '../premiums/routes.dart';
@@ -46,7 +46,8 @@ class HomePageScaffold extends ConsumerStatefulWidget {
   final List<Widget> Function(
     BuildContext context,
     BoxConstraints constraints,
-  )? desktopMenuBuilder;
+  )?
+  desktopMenuBuilder;
 
   final List<Widget>? desktopViews;
 
@@ -155,7 +156,8 @@ class HomeSideMenu extends ConsumerWidget {
   final List<Widget> Function(
     BuildContext context,
     BoxConstraints constraints,
-  )? desktopMenuBuilder;
+  )?
+  desktopMenuBuilder;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -205,7 +207,7 @@ class HomeSideMenu extends ConsumerWidget {
                                   constraints,
                                 ),
                               ...coreDesktopTabBuilder(
-                                context,
+                                ref,
                                 constraints,
                                 viewKey,
                                 ref.watch(hasPremiumProvider),
@@ -231,8 +233,9 @@ class CustomHomePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final customHome =
-        ref.watch(booruBuilderProvider(ref.watchConfigAuth))?.homeViewBuilder;
+    final customHome = ref
+        .watch(booruBuilderProvider(ref.watchConfigAuth))
+        ?.homeViewBuilder;
 
     return customHome != null
         ? customHome(context)
@@ -251,7 +254,8 @@ List<Widget> coreDesktopViewBuilder({
   required CustomHomeViewKey? viewKey,
 }) {
   // skip previousItemCount to prevent access the wrong index
-  final totalPlaceholder = _kPlaceholderOffset -
+  final totalPlaceholder =
+      _kPlaceholderOffset -
       previousItemCount +
       (viewKey != null && viewKey.isAlt ? 1 : 2);
 
@@ -269,13 +273,14 @@ List<Widget> coreDesktopViewBuilder({
 }
 
 List<Widget> coreDesktopTabBuilder(
-  BuildContext context,
+  WidgetRef ref,
   BoxConstraints constraints,
   CustomHomeViewKey? viewKey,
   bool hasPremium,
   bool showPremium,
   bool isFossBuild,
 ) {
+  final context = ref.context;
   return [
     const Divider(),
     if (viewKey != null && viewKey.isAlt)
@@ -291,28 +296,28 @@ List<Widget> coreDesktopTabBuilder(
       constraints: constraints,
       selectedIcon: Symbols.bookmark,
       icon: Symbols.bookmark,
-      title: 'sideMenu.your_bookmarks'.tr(),
+      title: context.t.sideMenu.your_bookmarks,
     ),
     HomeNavigationTile(
       value: _v(3),
       constraints: constraints,
       selectedIcon: Symbols.list_alt,
       icon: Symbols.list_alt,
-      title: 'sideMenu.your_blacklist'.tr(),
+      title: context.t.sideMenu.your_blacklist,
     ),
     HomeNavigationTile(
       value: _v(4),
       constraints: constraints,
       selectedIcon: Symbols.tag,
       icon: Symbols.tag,
-      title: 'favorite_tags.favorite_tags'.tr(),
+      title: context.t.favorite_tags.favorite_tags,
     ),
     HomeNavigationTile(
       value: _v(5),
       constraints: constraints,
       selectedIcon: Symbols.sim_card_download,
       icon: Symbols.sim_card_download,
-      title: 'sideMenu.bulk_download'.tr(),
+      title: context.t.sideMenu.bulk_download,
     ),
     HomeNavigationTile(
       value: _v(6),
@@ -329,7 +334,7 @@ List<Widget> coreDesktopTabBuilder(
         selectedIcon: Symbols.favorite,
         icon: Symbols.favorite,
         title: 'Donate',
-        onTap: () => goToDonationPage(context),
+        onTap: () => goToDonationPage(ref),
         forceFillIcon: true,
         forceIconColor: Colors.red,
       )
@@ -340,7 +345,7 @@ List<Widget> coreDesktopTabBuilder(
         selectedIcon: Symbols.favorite,
         icon: Symbols.favorite,
         title: 'Get $kPremiumBrandName',
-        onTap: () => goToPremiumPage(context),
+        onTap: () => goToPremiumPage(ref),
         forceFillIcon: true,
         forceIconColor: Colors.red,
       ),
@@ -349,8 +354,8 @@ List<Widget> coreDesktopTabBuilder(
       constraints: constraints,
       selectedIcon: Symbols.settings,
       icon: Symbols.settings,
-      title: 'sideMenu.settings'.tr(),
-      onTap: () => goToSettingsPage(context),
+      title: context.t.sideMenu.settings,
+      onTap: () => goToSettingsPage(ref),
     ),
     const SizedBox(height: 8),
   ];

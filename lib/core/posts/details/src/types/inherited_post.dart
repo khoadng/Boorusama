@@ -14,15 +14,15 @@ class InheritedPost<T extends Post> extends InheritedWidget {
   final T post;
 
   static T of<T extends Post>(BuildContext context) {
-    final widget =
-        context.dependOnInheritedWidgetOfExactType<InheritedPost<T>>();
+    final widget = context
+        .dependOnInheritedWidgetOfExactType<InheritedPost<T>>();
     return widget?.post ??
         (throw Exception('No InheritedPost found in context'));
   }
 
   static T? maybeOf<T extends Post>(BuildContext context) {
-    final widget =
-        context.dependOnInheritedWidgetOfExactType<InheritedPost<T>>();
+    final widget = context
+        .dependOnInheritedWidgetOfExactType<InheritedPost<T>>();
 
     return widget?.post;
   }

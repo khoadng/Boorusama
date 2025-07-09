@@ -28,128 +28,136 @@ void main() {
   });
 
   group('Running Sessions', () {
-    test('non-premium users cannot have more than one running session',
-        () async {
-      // Arrange
-      final container = createBulkDownloadContainer(
-        downloadRepository: repository,
-        booruBuilder: MockBooruBuilder(),
-        hasPremium: false,
-      );
+    test(
+      'non-premium users cannot have more than one running session',
+      () async {
+        // Arrange
+        final container = createBulkDownloadContainer(
+          downloadRepository: repository,
+          booruBuilder: MockBooruBuilder(),
+          hasPremium: false,
+        );
 
-      final notifier = container.read(bulkDownloadProvider.notifier);
-      final task =
-          await repository.createTask(DownloadTestConstants.defaultOptions);
+        final notifier = container.read(bulkDownloadProvider.notifier);
+        final task = await repository.createTask(
+          DownloadTestConstants.defaultOptions,
+        );
 
-      // Act - Create first session
-      await notifier.downloadFromTask(
-        task,
-        downloadConfigs: _defaultConfigs,
-      );
+        // Act - Create first session
+        await notifier.downloadFromTask(
+          task,
+          downloadConfigs: _defaultConfigs,
+        );
 
-      // Try to create second session
-      await notifier.downloadFromTask(
-        task,
-        downloadConfigs: _defaultConfigs,
-      );
+        // Try to create second session
+        await notifier.downloadFromTask(
+          task,
+          downloadConfigs: _defaultConfigs,
+        );
 
-      final state = container.read(bulkDownloadProvider);
-      expect(
-        state.error.toString(),
-        const FreeUserMultipleDownloadSessionsError().toString(),
-      );
-    });
+        final state = container.read(bulkDownloadProvider);
+        expect(
+          state.error.toString(),
+          const FreeUserMultipleDownloadSessionsError().toString(),
+        );
+      },
+    );
 
     test(
-        'non-premium users cannot start pending session when there is already an running session',
-        () async {
-      // Arrange
-      final container = createBulkDownloadContainer(
-        downloadRepository: repository,
-        booruBuilder: MockBooruBuilder(),
-        hasPremium: false,
-      );
+      'non-premium users cannot start pending session when there is already an running session',
+      () async {
+        // Arrange
+        final container = createBulkDownloadContainer(
+          downloadRepository: repository,
+          booruBuilder: MockBooruBuilder(),
+          hasPremium: false,
+        );
 
-      final notifier = container.read(bulkDownloadProvider.notifier);
-      final task =
-          await repository.createTask(DownloadTestConstants.defaultOptions);
+        final notifier = container.read(bulkDownloadProvider.notifier);
+        final task = await repository.createTask(
+          DownloadTestConstants.defaultOptions,
+        );
 
-      // Act - Create first session and start downloading
-      await notifier.downloadFromTaskId(
-        task.id,
-        downloadConfigs: _defaultConfigs,
-      );
+        // Act - Create first session and start downloading
+        await notifier.downloadFromTaskId(
+          task.id,
+          downloadConfigs: _defaultConfigs,
+        );
 
-      // Create second session but don't start downloading yet
-      await notifier.queueDownloadLater(
-        DownloadTestConstants.defaultOptions,
-        downloadConfigs: _defaultConfigs.copyWith(
-          delayBetweenDownloads: null,
-          androidSdkVersion: AndroidVersions.android15,
-        ),
-      );
+        // Create second session but don't start downloading yet
+        await notifier.queueDownloadLater(
+          DownloadTestConstants.defaultOptions,
+          downloadConfigs: _defaultConfigs.copyWith(
+            delayBetweenDownloads: null,
+            androidSdkVersion: AndroidVersions.android15,
+          ),
+        );
 
-      // Try to start the pending session
-      final pendingSession = await repository.getSessionsByStatus(
-        DownloadSessionStatus.pending,
-      );
+        // Try to start the pending session
+        final pendingSession = await repository.getSessionsByStatus(
+          DownloadSessionStatus.pending,
+        );
 
-      await notifier.startPendingSession(
-        pendingSession.first.id,
-        downloadConfigs: _defaultConfigs.copyWith(
-          delayBetweenDownloads: null,
-          androidSdkVersion: AndroidVersions.android15,
-        ),
-      );
+        await notifier.startPendingSession(
+          pendingSession.first.id,
+          downloadConfigs: _defaultConfigs.copyWith(
+            delayBetweenDownloads: null,
+            androidSdkVersion: AndroidVersions.android15,
+          ),
+        );
 
-      final state = container.read(bulkDownloadProvider);
-      expect(
-        state.error.toString(),
-        const FreeUserMultipleDownloadSessionsError().toString(),
-      );
-    });
+        final state = container.read(bulkDownloadProvider);
+        expect(
+          state.error.toString(),
+          const FreeUserMultipleDownloadSessionsError().toString(),
+        );
+      },
+    );
 
     test(
-        'non-premium users cannot start a new session after pausing an existing one',
-        () async {
-      // Arrange
-      final container = createBulkDownloadContainer(
-        downloadRepository: repository,
-        booruBuilder: MockBooruBuilder(),
-        hasPremium: false,
-      );
+      'non-premium users cannot start a new session after pausing an existing one',
+      () async {
+        // Arrange
+        final container = createBulkDownloadContainer(
+          downloadRepository: repository,
+          booruBuilder: MockBooruBuilder(),
+          hasPremium: false,
+        );
 
-      final notifier = container.read(bulkDownloadProvider.notifier);
+        final notifier = container.read(bulkDownloadProvider.notifier);
 
-      // Create and start first session
-      final firstTask =
-          await repository.createTask(DownloadTestConstants.defaultOptions);
-      await notifier.downloadFromTask(
-        firstTask,
-        downloadConfigs: _defaultConfigs,
-      );
+        // Create and start first session
+        final firstTask = await repository.createTask(
+          DownloadTestConstants.defaultOptions,
+        );
+        await notifier.downloadFromTask(
+          firstTask,
+          downloadConfigs: _defaultConfigs,
+        );
 
-      // Pause first session
-      final session = await repository.getSessionsByStatus(
-        DownloadSessionStatus.running,
-      );
-      await notifier.pauseSession(session.first.id);
+        // Pause first session
+        final session = await repository.getSessionsByStatus(
+          DownloadSessionStatus.running,
+        );
+        await notifier.pauseSession(session.first.id);
 
-      // Try to start second session
-      final secondTask =
-          await repository.createTask(DownloadTestConstants.defaultOptions);
-      await notifier.downloadFromTask(
-        secondTask,
-        downloadConfigs: _defaultConfigs,
-      );
+        // Try to start second session
+        final secondTask = await repository.createTask(
+          DownloadTestConstants.defaultOptions,
+        );
+        await notifier.downloadFromTask(
+          secondTask,
+          downloadConfigs: _defaultConfigs,
+        );
 
-      // Assert
-      final state = container.read(bulkDownloadProvider);
-      expect(
-        state.error.toString(),
-        const FreeUserMultipleDownloadSessionsError().toString(),
-      );
-    });
+        // Assert
+        final state = container.read(bulkDownloadProvider);
+        expect(
+          state.error.toString(),
+          const FreeUserMultipleDownloadSessionsError().toString(),
+        );
+      },
+    );
   });
 
   group('Suspend/Resume', () {
@@ -162,8 +170,9 @@ void main() {
       );
 
       final notifier = container.read(bulkDownloadProvider.notifier);
-      final task =
-          await repository.createTask(DownloadTestConstants.defaultOptions);
+      final task = await repository.createTask(
+        DownloadTestConstants.defaultOptions,
+      );
       final session = await repository.createSession(task, _auth);
 
       // Set session to running state
@@ -196,8 +205,9 @@ void main() {
       );
 
       final notifier = container.read(bulkDownloadProvider.notifier);
-      final task =
-          await repository.createTask(DownloadTestConstants.defaultOptions);
+      final task = await repository.createTask(
+        DownloadTestConstants.defaultOptions,
+      );
       final session = await repository.createSession(task, _auth);
 
       // Set session to suspended state
@@ -232,15 +242,17 @@ void main() {
       );
 
       final notifier = container.read(bulkDownloadProvider.notifier);
-      final task =
-          await repository.createTask(DownloadTestConstants.defaultOptions);
+      final task = await repository.createTask(
+        DownloadTestConstants.defaultOptions,
+      );
 
       // Act - Create first saved task
       await notifier.createSavedTask(task, name: 'First Task');
 
       // Try to create second saved task
-      final secondTask =
-          await repository.createTask(DownloadTestConstants.defaultOptions);
+      final secondTask = await repository.createTask(
+        DownloadTestConstants.defaultOptions,
+      );
       await notifier.createSavedTask(secondTask, name: 'Second Task');
 
       // Assert
@@ -256,8 +268,7 @@ void main() {
       expect(savedTasks.first.name, 'First Task');
     });
 
-    test('locks all saved tasks except first one when premium expires',
-        () async {
+    test('locks all saved tasks except first one when premium expires', () async {
       // Arrange - Create container with premium enabled
       final container = createBulkDownloadContainer(
         downloadRepository: repository,
@@ -268,12 +279,15 @@ void main() {
       final notifier = container.read(bulkDownloadProvider.notifier);
 
       // Create multiple saved tasks while having premium
-      final task1 =
-          await repository.createTask(DownloadTestConstants.defaultOptions);
-      final task2 =
-          await repository.createTask(DownloadTestConstants.defaultOptions);
-      final task3 =
-          await repository.createTask(DownloadTestConstants.defaultOptions);
+      final task1 = await repository.createTask(
+        DownloadTestConstants.defaultOptions,
+      );
+      final task2 = await repository.createTask(
+        DownloadTestConstants.defaultOptions,
+      );
+      final task3 = await repository.createTask(
+        DownloadTestConstants.defaultOptions,
+      );
 
       final savedTask1 = await notifier.createSavedTask(task1, name: 'Task 1');
       await Future.delayed(const Duration(milliseconds: 5));
@@ -294,8 +308,9 @@ void main() {
       );
 
       // Verify lock states
-      final lockState =
-          await nonPremiumContainer.read(savedTaskLockProvider.future);
+      final lockState = await nonPremiumContainer.read(
+        savedTaskLockProvider.future,
+      );
       expect(
         lockState.lockedIds,
         // All except the newest task should be locked
@@ -303,59 +318,70 @@ void main() {
       );
     });
 
-    test('automatically unlocks saved tasks when premium is restored',
-        () async {
-      // Arrange - Start with premium to create tasks
-      final initContainer = createBulkDownloadContainer(
-        downloadRepository: repository,
-        booruBuilder: MockBooruBuilder(),
-        hasPremium: true,
-      );
+    test(
+      'automatically unlocks saved tasks when premium is restored',
+      () async {
+        // Arrange - Start with premium to create tasks
+        final initContainer = createBulkDownloadContainer(
+          downloadRepository: repository,
+          booruBuilder: MockBooruBuilder(),
+          hasPremium: true,
+        );
 
-      final initNotifier = initContainer.read(bulkDownloadProvider.notifier);
+        final initNotifier = initContainer.read(bulkDownloadProvider.notifier);
 
-      // Create multiple tasks while premium
-      final task1 =
-          await repository.createTask(DownloadTestConstants.defaultOptions);
-      final task2 =
-          await repository.createTask(DownloadTestConstants.defaultOptions);
-      final task3 =
-          await repository.createTask(DownloadTestConstants.defaultOptions);
+        // Create multiple tasks while premium
+        final task1 = await repository.createTask(
+          DownloadTestConstants.defaultOptions,
+        );
+        final task2 = await repository.createTask(
+          DownloadTestConstants.defaultOptions,
+        );
+        final task3 = await repository.createTask(
+          DownloadTestConstants.defaultOptions,
+        );
 
-      final savedTask1 =
-          await initNotifier.createSavedTask(task1, name: 'Task 1');
-      await Future.delayed(const Duration(milliseconds: 5));
-      final savedTask2 =
-          await initNotifier.createSavedTask(task2, name: 'Task 2');
-      await Future.delayed(const Duration(milliseconds: 5));
-      final _ = await initNotifier.createSavedTask(task3, name: 'Task 3');
+        final savedTask1 = await initNotifier.createSavedTask(
+          task1,
+          name: 'Task 1',
+        );
+        await Future.delayed(const Duration(milliseconds: 5));
+        final savedTask2 = await initNotifier.createSavedTask(
+          task2,
+          name: 'Task 2',
+        );
+        await Future.delayed(const Duration(milliseconds: 5));
+        final _ = await initNotifier.createSavedTask(task3, name: 'Task 3');
 
-      // Act - Simulate premium expiration
-      final nonPremiumContainer = createBulkDownloadContainer(
-        downloadRepository: repository,
-        booruBuilder: MockBooruBuilder(),
-        hasPremium: false,
-      );
+        // Act - Simulate premium expiration
+        final nonPremiumContainer = createBulkDownloadContainer(
+          downloadRepository: repository,
+          booruBuilder: MockBooruBuilder(),
+          hasPremium: false,
+        );
 
-      // Verify tasks are locked when premium expires
-      final nonPremiumLockState =
-          await nonPremiumContainer.read(savedTaskLockProvider.future);
-      expect(
-        nonPremiumLockState.lockedIds,
-        {savedTask1!.task.id, savedTask2!.task.id},
-      );
+        // Verify tasks are locked when premium expires
+        final nonPremiumLockState = await nonPremiumContainer.read(
+          savedTaskLockProvider.future,
+        );
+        expect(
+          nonPremiumLockState.lockedIds,
+          {savedTask1!.task.id, savedTask2!.task.id},
+        );
 
-      // Act - Simulate premium restoration
-      final premiumContainer = createBulkDownloadContainer(
-        downloadRepository: repository,
-        booruBuilder: MockBooruBuilder(),
-        hasPremium: true,
-      );
+        // Act - Simulate premium restoration
+        final premiumContainer = createBulkDownloadContainer(
+          downloadRepository: repository,
+          booruBuilder: MockBooruBuilder(),
+          hasPremium: true,
+        );
 
-      // Assert - All tasks should be unlocked
-      final restoredLockState =
-          await premiumContainer.read(savedTaskLockProvider.future);
-      expect(restoredLockState.lockedIds, isEmpty);
-    });
+        // Assert - All tasks should be unlocked
+        final restoredLockState = await premiumContainer.read(
+          savedTaskLockProvider.future,
+        );
+        expect(restoredLockState.lockedIds, isEmpty);
+      },
+    );
   });
 }

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:context_menus/context_menus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../../../core/bulk_downloads/routes.dart';
@@ -30,9 +30,9 @@ class SavedSearchContextMenu extends ConsumerWidget
       contextMenu: GenericContextMenu(
         buttonConfigs: [
           copyButton(context, tag),
-          searchButton(context, tag),
+          searchButton(ref, tag),
           ContextMenuButtonConfig(
-            'download.bulk_download'.tr(),
+            context.t.download.download,
             onPressed: () {
               goToBulkDownloadPage(context, [tag], ref: ref);
             },

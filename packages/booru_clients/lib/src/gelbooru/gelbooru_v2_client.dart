@@ -11,10 +11,7 @@ import 'package:xml/xml.dart';
 import 'gelbooru_client_favorites.dart';
 import 'types/types.dart';
 
-typedef GelbooruV2Posts = ({
-  List<PostV2Dto> posts,
-  int? count,
-});
+typedef GelbooruV2Posts = ({List<PostV2Dto> posts, int? count});
 
 class GelbooruV2Client with GelbooruClientFavorites {
   GelbooruV2Client({
@@ -24,27 +21,15 @@ class GelbooruV2Client with GelbooruClientFavorites {
     this.apiKey,
     this.passHash,
     Dio? dio,
-  })  : _dio = dio ??
-            Dio(BaseOptions(
-              baseUrl: baseUrl ?? '',
-              headers: headers ?? {},
-            )),
-        _baseUrl = baseUrl;
-
-  factory GelbooruV2Client.custom({
-    Dio? dio,
-    String? login,
-    String? apiKey,
-    String? passHash,
-    required String baseUrl,
-  }) =>
-      GelbooruV2Client(
-        baseUrl: baseUrl,
-        dio: dio,
-        userId: login,
-        apiKey: apiKey,
-        passHash: passHash,
-      );
+  }) : _dio =
+           dio ??
+           Dio(
+             BaseOptions(
+               baseUrl: '',
+               headers: headers ?? {},
+             ),
+           ),
+       _baseUrl = baseUrl;
 
   final Dio _dio;
   final String? _baseUrl;
@@ -56,6 +41,37 @@ class GelbooruV2Client with GelbooruClientFavorites {
   @override
   Dio get dio => _dio;
 
+  String _path(String path) {
+    if (_baseUrl == null || _baseUrl.isEmpty) return path;
+    return '$_baseUrl$path';
+  }
+
+  String _pathAutocomplete(String path) {
+    if (_baseUrl == null || _baseUrl.isEmpty) return path;
+
+    //FIXME: Hotfix for this specific site since they are using subdomain for autocomplete, need to find a better way to handle this
+    return _baseUrl.contains('rule34.xxx')
+        ? () {
+            final uri = Uri.tryParse(_baseUrl);
+
+            if (uri == null) return path;
+            final authority = uri.authority;
+            // if the authority is using any subdomain, we need to remove it
+            final removedSubdomain = authority.split('.').length > 2
+                ? authority.split('.').sublist(1).join('.')
+                : authority;
+            final withSubdomain = 'api.$removedSubdomain';
+
+            return uri
+                .replace(
+                  host: withSubdomain,
+                  path: path,
+                )
+                .toString();
+          }()
+        : _path(path);
+  }
+
   Future<GelbooruV2Posts> getPosts({
     int? page,
     int? limit,
@@ -64,7 +80,7 @@ class GelbooruV2Client with GelbooruClientFavorites {
     final baseUrl = _dio.options.baseUrl;
 
     final response = await _dio.get(
-      '/index.php',
+      _path('/index.php'),
       queryParameters: {
         'page': 'dapi',
         's': 'post',
@@ -82,31 +98,31 @@ class GelbooruV2Client with GelbooruClientFavorites {
 
     final result = switch (data) {
       final Map m => () {
-          final count = m['@attributes']['count'] as int?;
+        final count = m['@attributes']['count'] as int?;
 
-          return (
-            posts: m.containsKey('post')
-                ? (m['post'] as List)
+        return (
+          posts: m.containsKey('post')
+              ? (m['post'] as List)
                     .map((item) => PostV2Dto.fromJson(item, baseUrl))
                     .toList()
-                : <PostV2Dto>[],
-            count: count,
-          );
-        }(),
+              : <PostV2Dto>[],
+          count: count,
+        );
+      }(),
       final List l => (
-          posts: l.map((item) => PostV2Dto.fromJson(item, baseUrl)).toList(),
-          count: null,
-        ),
+        posts: l.map((item) => PostV2Dto.fromJson(item, baseUrl)).toList(),
+        count: null,
+      ),
       final String s => (
-          posts: (jsonDecode(s) as List<dynamic>)
-              .map<PostV2Dto>((item) => PostV2Dto.fromJson(item, baseUrl))
-              .toList(),
-          count: null,
-        ),
+        posts: (jsonDecode(s) as List<dynamic>)
+            .map<PostV2Dto>((item) => PostV2Dto.fromJson(item, baseUrl))
+            .toList(),
+        count: null,
+      ),
       _ => (
-          posts: <PostV2Dto>[],
-          count: null,
-        ),
+        posts: <PostV2Dto>[],
+        count: null,
+      ),
     };
 
     final filterNulls = result.posts.where((e) => e.hash != null).toList();
@@ -119,7 +135,7 @@ class GelbooruV2Client with GelbooruClientFavorites {
 
   Future<PostV2Dto?> getPost(int id) async {
     final response = await _dio.get(
-      '/index.php',
+      _path('/index.php'),
       queryParameters: {
         'page': 'dapi',
         's': 'post',
@@ -150,7 +166,7 @@ class GelbooruV2Client with GelbooruClientFavorites {
   }) async {
     try {
       final response = await _dio.get(
-        '/autocomplete.php',
+        _pathAutocomplete('/autocomplete.php'),
         queryParameters: {
           'q': term,
           if (userId != null) 'user_id': userId,
@@ -161,9 +177,10 @@ class GelbooruV2Client with GelbooruClientFavorites {
       return switch (response.data) {
         final List l =>
           l.map((item) => AutocompleteDto.fromJson(item)).toList(),
-        final String s => (jsonDecode(s) as List<dynamic>)
-            .map((item) => AutocompleteDto.fromJson(item))
-            .toList(),
+        final String s =>
+          (jsonDecode(s) as List<dynamic>)
+              .map((item) => AutocompleteDto.fromJson(item))
+              .toList(),
         _ => <AutocompleteDto>[],
       };
     } on Exception catch (_) {
@@ -175,7 +192,7 @@ class GelbooruV2Client with GelbooruClientFavorites {
     required int postId,
   }) async {
     final response = await _dio.get(
-      '/index.php',
+      _path('/index.php'),
       queryParameters: {
         'page': 'dapi',
         's': 'comment',
@@ -200,7 +217,7 @@ class GelbooruV2Client with GelbooruClientFavorites {
     );
 
     final response = await crawlerDio.get(
-      '/index.php',
+      _path('/index.php'),
       queryParameters: {
         'page': 'post',
         's': 'view',
@@ -218,15 +235,20 @@ class GelbooruV2Client with GelbooruClientFavorites {
 
       if (style == null || idString == null) return null;
       final width = int.tryParse(
-          RegExp(r'width: (\d+)px;').firstMatch(style)?.group(1) ?? '');
+        RegExp(r'width: (\d+)px;').firstMatch(style)?.group(1) ?? '',
+      );
       final height = int.tryParse(
-          RegExp(r'height: (\d+)px;').firstMatch(style)?.group(1) ?? '');
+        RegExp(r'height: (\d+)px;').firstMatch(style)?.group(1) ?? '',
+      );
       final top = int.tryParse(
-          RegExp(r'top: (\d+)px;').firstMatch(style)?.group(1) ?? '');
+        RegExp(r'top: (\d+)px;').firstMatch(style)?.group(1) ?? '',
+      );
       final left = int.tryParse(
-          RegExp(r'left: (\d+)px;').firstMatch(style)?.group(1) ?? '');
+        RegExp(r'left: (\d+)px;').firstMatch(style)?.group(1) ?? '',
+      );
       final id = int.tryParse(
-          RegExp(r'note-box-(\d+)').firstMatch(idString)?.group(1) ?? '');
+        RegExp(r'note-box-(\d+)').firstMatch(idString)?.group(1) ?? '',
+      );
 
       return NoteDto(
         id: id,
@@ -236,8 +258,9 @@ class GelbooruV2Client with GelbooruClientFavorites {
         x: left,
       );
     }).toList();
-    final notesWithBody =
-        notes?.where((e) => e != null).map((e) => e!).map((e) {
+    final notesWithBody = notes?.where((e) => e != null).map((e) => e!).map((
+      e,
+    ) {
       final body = html.getElementById('note-body-${e.id}')?.text;
 
       return e.copyWith(
@@ -257,7 +280,7 @@ class GelbooruV2Client with GelbooruClientFavorites {
     );
 
     final response = await crawlerDio.get(
-      '/index.php',
+      _path('/index.php'),
       queryParameters: {
         'page': 'post',
         's': 'view',

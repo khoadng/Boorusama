@@ -7,8 +7,9 @@ class TagDto {
 
   factory TagDto.fromJson(Map<String, dynamic> json) {
     return TagDto(
-      names:
-          (json['names'] as List<dynamic>?)?.map((e) => e as String).toList(),
+      names: (json['names'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
       category: json['category'] as String?,
       usages: json['usages'] as int?,
     );

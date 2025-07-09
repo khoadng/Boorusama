@@ -21,8 +21,9 @@ class FavoriteTagLabelDetailsPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tags = ref.watch(favoriteTagsProvider);
-    final filtered =
-        tags.where((e) => e.labels?.contains(label) ?? false).toList();
+    final filtered = tags
+        .where((e) => e.labels?.contains(label) ?? false)
+        .toList();
 
     return Scaffold(
       appBar: AppBar(
@@ -41,7 +42,9 @@ class FavoriteTagLabelDetailsPage extends ConsumerWidget {
             title: Text(tag.name),
             trailing: IconButton(
               onPressed: () {
-                ref.read(favoriteTagsProvider.notifier).update(
+                ref
+                    .read(favoriteTagsProvider.notifier)
+                    .update(
                       tag.name,
                       tag.removeLabel(label),
                     );

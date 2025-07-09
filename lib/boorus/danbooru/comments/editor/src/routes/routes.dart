@@ -16,8 +16,9 @@ final danbooruCommentEditorRoutes = GoRoute(
       builder: (context) {
         final postId = int.tryParse(state.pathParameters['id'] ?? '');
         final text = state.uri.queryParameters['text'];
-        final commentId =
-            int.tryParse(state.uri.queryParameters['comment_id'] ?? '');
+        final commentId = int.tryParse(
+          state.uri.queryParameters['comment_id'] ?? '',
+        );
 
         if (postId == null) {
           return const InvalidPage(

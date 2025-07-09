@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
-import 'package:go_router/go_router.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../configs/config/widgets.dart';
+import '../../../router.dart';
 import '../providers/settings_notifier.dart';
 import '../providers/settings_provider.dart';
 import '../types/types.dart';
@@ -33,36 +33,39 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
     final notifer = ref.watch(settingsNotifierProvider.notifier);
 
     return SettingsPageScaffold(
-      title: const Text('settings.image_viewer.image_viewer').tr(),
+      title: Text(context.t.settings.image_viewer.image_viewer),
       children: [
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SettingsHeader(label: 'settings.general'.tr()),
+            SettingsHeader(label: context.t.settings.general),
             SettingsTile(
-              title: const Text('settings.image_details.ui_overlay.ui_overlay')
-                  .tr(),
+              title: Text(
+                context.t.settings.image_details.ui_overlay.ui_overlay,
+              ),
               selectedOption: settings.postDetailsOverlayInitialState,
               items: PostDetailsOverlayInitialState.values,
               onChanged: (value) => notifer.updateSettings(
                 settings.copyWith(postDetailsOverlayInitialState: value),
               ),
-              optionBuilder: (value) => Text(value.localize().tr()),
+              optionBuilder: (value) => Text(value.localize(context)),
             ),
             const Divider(thickness: 1),
-            const SettingsHeader(label: 'Slideshow'),
+            SettingsHeader(label: 'Slideshow'.hc),
             SettingsTile(
-              title: const Text('Slideshow mode'),
+              title: Text('Slideshow mode'.hc),
               selectedOption: settings.slideshowDirection,
               items: SlideshowDirection.values,
-              onChanged: (value) => notifer
-                  .updateSettings(settings.copyWith(slideshowDirection: value)),
-              optionBuilder: (value) => Text(value.localize().tr()),
+              onChanged: (value) => notifer.updateSettings(
+                settings.copyWith(slideshowDirection: value),
+              ),
+              optionBuilder: (value) => Text(value.localize(context)),
             ),
             SettingsTile(
-              title: const Text('Slideshow interval'),
-              subtitle: const Text(
-                'Value less than 1 second will automatically skip transition',
+              title: Text('Slideshow interval'.hc),
+              subtitle: Text(
+                'Value less than 1 second will automatically skip transition'
+                    .hc,
               ),
               selectedOption: settings.slideshowInterval,
               items: getSlideShowIntervalPossibleValue(),
@@ -72,11 +75,11 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
                 );
               },
               optionBuilder: (value) => Text(
-                '${value.toStringAsFixed(value < 1 ? 2 : 0)} sec',
+                '${value.toStringAsFixed(value < 1 ? 2 : 0)} sec'.hc,
               ),
             ),
             SwitchListTile(
-              title: const Text('Skip slideshow transition'),
+              title: Text('Skip slideshow transition'.hc),
               value: settings.skipSlideshowTransition,
               onChanged: (value) => notifer.updateSettings(
                 settings.copyWith(
@@ -87,9 +90,9 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
               ),
             ),
             const Divider(thickness: 1),
-            const SettingsHeader(label: 'Video'),
+            SettingsHeader(label: 'Video'.hc),
             SwitchListTile(
-              title: const Text('Mute video by default'),
+              title: Text('Mute video by default'.hc),
               value: settings.muteAudioByDefault,
               onChanged: (value) => notifer.updateSettings(
                 settings.copyWith(
@@ -102,15 +105,16 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
           ],
         ),
         SettingsCard(
-          title: 'Video player engine',
-          subtitle: 'App restart is required for the change to take effect',
+          title: 'Video player engine'.hc,
+          subtitle: 'App restart is required for the change to take effect'.hc,
           entries: [
             SettingsCardEntry(
               title: 'Default',
               value: VideoPlayerEngine.auto.name,
               groupValue: settings.videoPlayerEngine.name,
               subtitle:
-                  'Works well with most devices, may have issues with some video formats or older devices.',
+                  'Works well with most devices, may have issues with some video formats or older devices.'
+                      .hc,
               onSelected: (value) {
                 notifer.updateSettings(
                   settings.copyWith(
@@ -124,7 +128,8 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
               value: VideoPlayerEngine.mdk.name,
               groupValue: settings.videoPlayerEngine.name,
               subtitle:
-                  'Experimental, better performance for certain video formats, may cause crashes. Use at your own risk.',
+                  'Experimental, better performance for certain video formats, may cause crashes. Use at your own risk.'
+                      .hc,
               onSelected: (value) {
                 notifer.updateSettings(
                   settings.copyWith(
@@ -138,9 +143,9 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
         BooruConfigMoreSettingsRedirectCard.imageViewer(
           extraActions: [
             RedirectAction(
-              label: 'settings.accessibility.accessibility'.tr(),
+              label: context.t.settings.accessibility.accessibility,
               onPressed: () {
-                context.push(
+                ref.router.push(
                   Uri(
                     path: '/settings',
                     queryParameters: {
@@ -158,11 +163,11 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
 }
 
 List<double> getSlideShowIntervalPossibleValue() => [
-      0.1,
-      0.25,
-      0.5,
-      ...[for (var i = 1; i <= 30; i += 1) i.toDouble()],
-    ];
+  0.1,
+  0.25,
+  0.5,
+  ...[for (var i = 1; i <= 30; i += 1) i.toDouble()],
+];
 
 class SettingsCardEntry extends StatelessWidget {
   const SettingsCardEntry({
@@ -216,7 +221,8 @@ class SettingsCard extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Container(
-      padding: padding ??
+      padding:
+          padding ??
           const EdgeInsets.symmetric(
             vertical: 8,
           ),

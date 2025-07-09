@@ -6,7 +6,7 @@ import 'package:dynamic_color/dynamic_color.dart';
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import '../utils/color_utils.dart';
+import '../../foundation/utils/color_utils.dart';
 
 class BooruChipColors {
   factory BooruChipColors.colorScheme(

@@ -15,48 +15,48 @@ class MoebooruClient {
     this.login,
     this.passwordHashed,
     Dio? dio,
-  }) : _dio = dio ??
-            Dio(BaseOptions(
-              baseUrl: baseUrl ?? '',
-              headers: headers ?? {},
-            ));
+  }) : _dio =
+           dio ??
+           Dio(
+             BaseOptions(
+               baseUrl: baseUrl ?? '',
+               headers: headers ?? {},
+             ),
+           );
 
   factory MoebooruClient.yandere({
     Dio? dio,
     String? login,
     String? passwordHashed,
-  }) =>
-      MoebooruClient(
-        baseUrl: _kYandereUrl,
-        dio: dio,
-        login: login,
-        passwordHashed: passwordHashed,
-      );
+  }) => MoebooruClient(
+    baseUrl: _kYandereUrl,
+    dio: dio,
+    login: login,
+    passwordHashed: passwordHashed,
+  );
 
   factory MoebooruClient.konachan({
     Dio? dio,
     String? login,
     String? passwordHashed,
-  }) =>
-      MoebooruClient(
-        baseUrl: _kKonachanUrl,
-        dio: dio,
-        login: login,
-        passwordHashed: passwordHashed,
-      );
+  }) => MoebooruClient(
+    baseUrl: _kKonachanUrl,
+    dio: dio,
+    login: login,
+    passwordHashed: passwordHashed,
+  );
 
   factory MoebooruClient.custom({
     required String baseUrl,
     Dio? dio,
     String? login,
     String? apiKey,
-  }) =>
-      MoebooruClient(
-        baseUrl: baseUrl,
-        dio: dio,
-        login: login,
-        passwordHashed: apiKey,
-      );
+  }) => MoebooruClient(
+    baseUrl: baseUrl,
+    dio: dio,
+    login: login,
+    passwordHashed: apiKey,
+  );
 
   final Dio _dio;
   final String? login;
@@ -76,7 +76,7 @@ class MoebooruClient {
         if (login != null && passwordHashed != null) ...{
           'login': login,
           'password_hash': passwordHashed,
-        }
+        },
       },
     );
 
@@ -92,7 +92,7 @@ class MoebooruClient {
         if (login != null && passwordHashed != null) ...{
           'login': login,
           'password_hash': passwordHashed,
-        }
+        },
       },
     );
 
@@ -109,12 +109,12 @@ class MoebooruClient {
           TimePeriod.day => '1d',
           TimePeriod.week => '1w',
           TimePeriod.month => '1m',
-          TimePeriod.year => '1y'
+          TimePeriod.year => '1y',
         },
         if (login != null && passwordHashed != null) ...{
           'login': login,
           'password_hash': passwordHashed,
-        }
+        },
       },
     );
 
@@ -137,7 +137,7 @@ class MoebooruClient {
         if (login != null && passwordHashed != null) ...{
           'login': login,
           'password_hash': passwordHashed,
-        }
+        },
       },
     );
 
@@ -160,7 +160,7 @@ class MoebooruClient {
         if (login != null && passwordHashed != null) ...{
           'login': login,
           'password_hash': passwordHashed,
-        }
+        },
       },
     );
 
@@ -182,7 +182,7 @@ class MoebooruClient {
         if (login != null && passwordHashed != null) ...{
           'login': login,
           'password_hash': passwordHashed,
-        }
+        },
       },
     );
 
@@ -201,7 +201,7 @@ class MoebooruClient {
         if (login != null && passwordHashed != null) ...{
           'login': login,
           'password_hash': passwordHashed,
-        }
+        },
       },
     );
 
@@ -222,7 +222,7 @@ class MoebooruClient {
         if (login != null && passwordHashed != null) ...{
           'login': login,
           'password_hash': passwordHashed,
-        }
+        },
       },
     );
   }
@@ -309,10 +309,12 @@ class MoebooruClient {
     // Extract dimensions
     final sizeRegex = RegExp(r'<li>Size: (\d+)x(\d+)</li>');
     final sizeMatch = sizeRegex.firstMatch(html);
-    final width =
-        sizeMatch != null ? int.tryParse(sizeMatch.group(1) ?? '') : null;
-    final height =
-        sizeMatch != null ? int.tryParse(sizeMatch.group(2) ?? '') : null;
+    final width = sizeMatch != null
+        ? int.tryParse(sizeMatch.group(1) ?? '')
+        : null;
+    final height = sizeMatch != null
+        ? int.tryParse(sizeMatch.group(2) ?? '')
+        : null;
 
     // Extract MD5 - try to find it in file URLs
     String? md5;
@@ -343,8 +345,9 @@ class MoebooruClient {
     // Extract score
     final scoreRegex = RegExp(r'<span id="post-score-\d+">(\d+)</span>');
     final scoreMatch = scoreRegex.firstMatch(html);
-    final score =
-        scoreMatch != null ? int.tryParse(scoreMatch.group(1) ?? '') : null;
+    final score = scoreMatch != null
+        ? int.tryParse(scoreMatch.group(1) ?? '')
+        : null;
 
     // Extract file extension
     String? fileExt;
@@ -369,8 +372,9 @@ class MoebooruClient {
     }
 
     // Check if this post is deleted
-    final isDeleted = html
-        .contains('<div class="status-notice">\n    This post was deleted.');
+    final isDeleted = html.contains(
+      '<div class="status-notice">\n    This post was deleted.',
+    );
 
     return PostDto(
       id: id,

@@ -60,7 +60,7 @@ class SelectedTagListWithData extends ConsumerWidget {
                   extraTagsCount: tagComposer.compose([]).length,
                   onOtherTagsCountTap: () {
                     goToUpdateBooruConfigPage(
-                      context,
+                      ref,
                       config: config,
                       initialTab: 'search',
                     );

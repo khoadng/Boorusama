@@ -104,16 +104,16 @@ class UserUploadDailyDeltaChart extends ConsumerWidget {
               return BarTooltipItem(
                 '${date.day}/${date.month}/${date.year}',
                 Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Theme.of(context).textTheme.bodyLarge?.color,
-                        ) ??
+                      color: Theme.of(context).textTheme.bodyLarge?.color,
+                    ) ??
                     const TextStyle(),
                 children: [
                   TextSpan(
                     text: '\n${rod.toY.toInt()} posts',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Theme.of(context).colorScheme.primary,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      color: Theme.of(context).colorScheme.primary,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ],
               );
@@ -128,7 +128,7 @@ class UserUploadDailyDeltaChart extends ConsumerWidget {
               reservedSize: 30,
               showTitles: true,
               getTitlesWidget: (value, meta) => SideTitleWidget(
-                axisSide: meta.axisSide,
+                meta: meta,
                 child: Text(
                   titles[value.toInt()]!,
                 ),

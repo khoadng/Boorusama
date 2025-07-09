@@ -27,7 +27,7 @@ class ForumTopicDto {
       updatedAt: json['updated_at'],
       isDeleted: json['is_deleted'],
       categoryId: json['category_id'],
-      minLevel: json['min_level'],
+      minLevel: _parseMinLevel(json['min_level']),
     );
   }
   final int? id;
@@ -41,8 +41,16 @@ class ForumTopicDto {
   final String? updatedAt;
   final bool? isDeleted;
   final int? categoryId;
-  final int? minLevel;
+  final String? minLevel;
 
   @override
   String toString() => title ?? '';
+}
+
+String _parseMinLevel(dynamic minLevel) {
+  return switch (minLevel) {
+    int _ => minLevel.toString(),
+    String _ => minLevel,
+    _ => '',
+  };
 }

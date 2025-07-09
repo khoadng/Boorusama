@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 
 class ResultCounter extends StatelessWidget {
   const ResultCounter({
@@ -26,7 +26,7 @@ class ResultCounter extends StatelessWidget {
       return Row(
         children: [
           Text(
-            'search.search_in_progress_notice'.tr(),
+            context.t.search.search_in_progress_notice,
             style: Theme.of(context).textTheme.titleLarge,
           ),
           const SizedBox(width: 10),
@@ -43,10 +43,10 @@ class ResultCounter extends StatelessWidget {
       return Row(
         children: [
           Text(
-            'search.result_counter'.plural(count),
+            context.t.search.result_counter(n: count),
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.w800,
-                ),
+              fontWeight: FontWeight.w800,
+            ),
           ),
           const SizedBox(width: 4),
           if (onRefresh != null)
@@ -57,7 +57,7 @@ class ResultCounter extends StatelessWidget {
       );
     } else {
       return Text(
-        'search.no_result_notice'.tr(),
+        context.t.search.no_result_notice,
         style: Theme.of(context).textTheme.titleLarge,
       );
     }

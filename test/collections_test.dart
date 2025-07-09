@@ -2,7 +2,7 @@
 import 'package:test/test.dart';
 
 // Project imports:
-import 'package:boorusama/core/utils/collection_utils.dart';
+import 'package:boorusama/foundation/utils/collection_utils.dart';
 
 void main() {
   test('Replace a element at index in an immutable list', () {

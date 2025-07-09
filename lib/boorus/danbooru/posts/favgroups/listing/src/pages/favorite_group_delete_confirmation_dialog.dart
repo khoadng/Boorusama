@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../../../../core/configs/ref.dart';
@@ -23,14 +23,14 @@ class FavoriteGroupDeleteConfirmationDialog extends ConsumerWidget {
     final config = ref.watchConfigSearch;
 
     return AlertDialog(
-      content: const Text('favorite_groups.detete_confirmation').tr(),
+      content: Text(context.t.favorite_groups.detete_confirmation),
       actions: [
         TextButton(
           style: TextButton.styleFrom(
             foregroundColor: Theme.of(context).colorScheme.onSurface,
           ),
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('generic.action.cancel').tr(),
+          child: Text(context.t.generic.action.cancel),
         ),
         FilledButton(
           onPressed: () {
@@ -39,7 +39,7 @@ class FavoriteGroupDeleteConfirmationDialog extends ConsumerWidget {
                 .read(danbooruFavoriteGroupsProvider(config).notifier)
                 .delete(group: favGroup);
           },
-          child: const Text('generic.action.ok').tr(),
+          child: Text(context.t.generic.action.ok),
         ),
       ],
     );

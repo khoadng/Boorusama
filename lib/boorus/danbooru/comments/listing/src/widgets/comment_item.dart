@@ -4,12 +4,11 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
-import '../../../../../../core/comments/comment_vote.dart';
-import '../../../../../../core/comments/comment_vote_section.dart';
-import '../../../../../../core/comments/vote_event.dart';
-import '../../../../../../core/comments/youtube_preview_box.dart';
+import '../../../../../../core/comments/types.dart';
+import '../../../../../../core/comments/widgets.dart';
 import '../../../../../../core/dtext/dtext.dart';
 import '../../../../../../core/theme.dart';
 import '../../../../dtext/dtext.dart';
@@ -31,7 +30,7 @@ class CommentItem extends ConsumerWidget {
   final VoidCallback? onReply;
   final bool hasVoteSection;
   final void Function(VoteEvent event, DanbooruCommentVote? commentVote)
-      onVoteChanged;
+  onVoteChanged;
   final Widget Function(BuildContext context)? moreBuilder;
 
   @override
@@ -52,17 +51,18 @@ class CommentItem extends ConsumerWidget {
             .where((e) => e.host == youtubeUrl)
             .map((e) => YoutubePreviewBox(uri: e)),
         if (comment.isEdited)
-          Padding(
-            padding: const EdgeInsets.only(top: 8),
-            child: Text(
-              '${'comment.list.last_updated'.tr()}: ${comment.updatedAt.fuzzify(locale: Localizations.localeOf(context))}',
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.hintColor,
-                fontStyle: FontStyle.italic,
-                fontSize: 12,
+          if (comment.updatedAt case final DateTime updatedAt)
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Text(
+                '${context.t.comment.list.last_updated}: ${updatedAt.fuzzify(locale: Localizations.localeOf(context))}',
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.hintColor,
+                  fontStyle: FontStyle.italic,
+                  fontSize: 12,
+                ),
               ),
             ),
-          ),
         if (!hasVoteSection) const SizedBox(height: 8),
         if (hasVoteSection)
           CommentVoteSection(

@@ -7,38 +7,43 @@ import 'package:boorusama/boorus/danbooru/posts/favgroups/favgroups/src/types/up
 void main() {
   group('updateOrder', () {
     test(
-        'should reorder items while maintaining original positions of unchanged items - case 1',
-        () {
-      final allIds = {1, 2, 3, 4, 5, 6, 7, 8, 9};
-      final oldIds = {1, 2, 3, 4};
-      final newIds = {1, 3, 4, 2};
+      'should reorder items while maintaining original positions of unchanged items - case 1',
+      () {
+        final allIds = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+        final oldIds = {1, 2, 3, 4};
+        final newIds = {1, 3, 4, 2};
 
-      final result = updateOrder(allIds, oldIds, newIds);
+        final result = updateOrder(allIds, oldIds, newIds);
 
-      expect(result, [1, 3, 4, 2, 5, 6, 7, 8, 9]);
-    });
+        expect(result, [1, 3, 4, 2, 5, 6, 7, 8, 9]);
+      },
+    );
 
-    test('should reorder middle section while preserving outer items - case 2',
-        () {
-      final allIds = {1, 2, 3, 4, 5, 6, 7, 8, 9};
-      final oldIds = {4, 5, 6, 7};
-      final newIds = {7, 5, 6, 4};
+    test(
+      'should reorder middle section while preserving outer items - case 2',
+      () {
+        final allIds = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+        final oldIds = {4, 5, 6, 7};
+        final newIds = {7, 5, 6, 4};
 
-      final result = updateOrder(allIds, oldIds, newIds);
+        final result = updateOrder(allIds, oldIds, newIds);
 
-      expect(result, [1, 2, 3, 7, 5, 6, 4, 8, 9]);
-    });
+        expect(result, [1, 2, 3, 7, 5, 6, 4, 8, 9]);
+      },
+    );
 
-    test('should handle deleted items and preserve remaining order - case 3',
-        () {
-      final allIds = {1, 2, 3, 4, 5, 6, 7, 8, 9};
-      final oldIds = {1, 2, 3, 4, 5};
-      final newIds = {3, 2};
+    test(
+      'should handle deleted items and preserve remaining order - case 3',
+      () {
+        final allIds = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+        final oldIds = {1, 2, 3, 4, 5};
+        final newIds = {3, 2};
 
-      final result = updateOrder(allIds, oldIds, newIds);
+        final result = updateOrder(allIds, oldIds, newIds);
 
-      expect(result, [3, 2, 6, 7, 8, 9]);
-    });
+        expect(result, [3, 2, 6, 7, 8, 9]);
+      },
+    );
 
     test('should throw if oldIds and allIds not have a same sequence', () {
       final allIds = {1111, 2222, 3333, 4444, 5555, 6666, 7777, 8888, 9999};

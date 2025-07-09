@@ -9,7 +9,6 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../../../core/boorus/engine/providers.dart';
 import '../../../../core/configs/ref.dart';
-import '../../../../core/foundation/display.dart';
 import '../../../../core/home/home_search_bar.dart';
 import '../../../../core/posts/count/widgets.dart';
 import '../../../../core/posts/listing/widgets.dart';
@@ -17,6 +16,8 @@ import '../../../../core/search/selected_tags/providers.dart';
 import '../../../../core/settings/providers.dart';
 import '../../../../core/settings/settings.dart';
 import '../../../../core/tags/configs/providers.dart';
+import '../../../../core/tags/tag/tag.dart';
+import '../../../../foundation/display.dart';
 import '../../dmails/widgets.dart';
 import '../../posts/listing/widgets.dart';
 import '../../posts/post/providers.dart';
@@ -78,19 +79,19 @@ class _LatestViewState extends ConsumerState<LatestView> {
             child: PostGrid(
               controller: controller,
               scrollController: _autoScrollController,
-              itemBuilder: (
-                context,
-                index,
-                multiSelectController,
-                scrollController,
-                hero,
-              ) =>
-                  DefaultDanbooruImageGridItem(
-                index: index,
-                multiSelectController: multiSelectController,
-                autoScrollController: scrollController,
-                controller: controller,
-              ),
+              itemBuilder:
+                  (
+                    context,
+                    index,
+                    multiSelectController,
+                    scrollController,
+                    hero,
+                  ) => DefaultDanbooruImageGridItem(
+                    index: index,
+                    multiSelectController: multiSelectController,
+                    autoScrollController: scrollController,
+                    controller: controller,
+                  ),
               sliverHeaders: [
                 if (context.isLargeScreen ||
                     searchBarPosition == SearchBarPosition.top)
@@ -116,13 +117,13 @@ class _LatestViewState extends ConsumerState<LatestView> {
                         selected: value,
                         onSelected: (search, sel) {
                           _selectedMostSearchedTag.value =
-                              search.keyword == value ? '' : search.keyword;
+                              search.rawName == value ? '' : search.rawName;
 
-                          selectedTagString.value = search.keyword;
+                          selectedTagString.value = search.rawName;
                           if (sel) {
                             selectedTagController
                               ..clear()
-                              ..addTag(search.keyword);
+                              ..addTag(search.rawName);
                           } else {
                             selectedTagController.clear();
                           }
@@ -138,10 +139,11 @@ class _LatestViewState extends ConsumerState<LatestView> {
           if (searchBarPosition == SearchBarPosition.bottom &&
               !context.isLargeScreen)
             Consumer(
-              builder: (_, ref, __) {
+              builder: (_, ref, _) {
                 final position = ref.watch(
-                  settingsProvider
-                      .select((value) => value.booruConfigSelectorPosition),
+                  settingsProvider.select(
+                    (value) => value.booruConfigSelectorPosition,
+                  ),
                 );
 
                 return SafeArea(

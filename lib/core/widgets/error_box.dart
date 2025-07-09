@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 import 'package:lottie/lottie.dart';
 
 class ErrorBox extends StatelessWidget {
@@ -32,15 +32,15 @@ class ErrorBox extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Text(
-            errorMessage ?? 'generic.errors.unknown',
+            errorMessage ?? context.t.generic.errors.unknown,
             style: const TextStyle(fontWeight: FontWeight.bold),
             textAlign: TextAlign.center,
-          ).tr(),
+          ),
         ),
         const SizedBox(height: 16),
         FilledButton(
           onPressed: onRetry,
-          child: const Text('Retry'),
+          child: Text('Retry'.hc),
         ),
       ],
     );

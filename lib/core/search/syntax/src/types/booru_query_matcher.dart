@@ -14,11 +14,11 @@ class BooruQueryMatcher extends FunctionMatcher {
     required this.style,
     super.priority,
     super.options,
-  })  : _grammar = grammar,
-        super(
-          finder: (context) => _parseToMatchResults(grammar, context),
-          spanBuilder: (candidate) => _buildSpan(grammar, candidate, style),
-        );
+  }) : _grammar = grammar,
+       super(
+         finder: (context) => _parseToMatchResults(grammar, context),
+         spanBuilder: (candidate) => _buildSpan(grammar, candidate, style),
+       );
 
   final BooruGrammar _grammar;
   final QueryHighlightStyle style;

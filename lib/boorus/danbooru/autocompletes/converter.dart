@@ -2,7 +2,7 @@
 import 'package:booru_clients/danbooru.dart';
 
 // Project imports:
-import '../../../core/autocompletes/autocompletes.dart';
+import '../../../core/tags/autocompletes/types.dart';
 
 AutocompleteData convertAutocompleteDtoToData(AutocompleteDto dto) {
   try {

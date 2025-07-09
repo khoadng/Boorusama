@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../configs/create/routes.dart';
@@ -61,19 +62,19 @@ class _EmptyBooruConfigHomePageState
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'No profiles available',
+                      'No profiles available'.hc,
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
                     Text(
-                      'Add a profile to continue',
+                      'Add a profile to continue'.hc,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            color: Theme.of(context).colorScheme.hintColor,
-                          ),
+                        color: Theme.of(context).colorScheme.hintColor,
+                      ),
                     ),
                     const SizedBox(height: 16),
                     FilledButton(
-                      onPressed: () => goToAddBooruConfigPage(context),
-                      child: const Text('Add Profile'),
+                      onPressed: () => goToAddBooruConfigPage(ref),
+                      child: Text('Add Profile'.hc),
                     ),
                   ],
                 ),

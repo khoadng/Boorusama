@@ -1,11 +1,11 @@
-// Flutter imports:
-import 'package:flutter/material.dart';
-
 // Package imports:
-import 'package:go_router/go_router.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-void goToFavoriteTagsPage(BuildContext context) {
-  context.push(
+// Project imports:
+import '../../../../router.dart';
+
+void goToFavoriteTagsPage(WidgetRef ref) {
+  ref.router.push(
     Uri(
       path: '/favorite_tags',
     ).toString(),

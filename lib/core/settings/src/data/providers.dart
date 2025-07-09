@@ -3,10 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 
 // Project imports:
+import '../../../../foundation/info/device_info.dart';
+import '../../../../foundation/loggers.dart';
 import '../../../backups/data_io_handler.dart';
 import '../../../backups/providers.dart';
-import '../../../foundation/loggers.dart';
-import '../../../info/device_info.dart';
 import '../types/settings_repository.dart';
 import 'setting_repository_hive.dart';
 import 'settings_io_handler.dart';

@@ -77,8 +77,9 @@ class _SearchLandingViewState extends ConsumerState<SearchLandingView>
 
   @override
   Widget build(BuildContext context) {
-    final selectedLabel =
-        ref.watch(miscDataProvider(kSearchSelectedFavoriteTagLabelKey));
+    final selectedLabel = ref.watch(
+      miscDataProvider(kSearchSelectedFavoriteTagLabelKey),
+    );
 
     final children = [
       const SizedBox(height: 8),
@@ -121,7 +122,9 @@ class _SearchLandingViewState extends ConsumerState<SearchLandingView>
         ),
         const SizedBox(height: 8),
       ],
-      ref.watch(searchHistoryProvider).maybeWhen(
+      ref
+          .watch(searchHistoryProvider)
+          .maybeWhen(
             data: (histories) => Column(
               children: [
                 const Divider(thickness: 1),
@@ -156,8 +159,9 @@ class _SearchLandingViewState extends ConsumerState<SearchLandingView>
       controller: widget.scrollController,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children:
-            (widget.reverse ?? false) ? children.reversed.toList() : children,
+        children: (widget.reverse ?? false)
+            ? children.reversed.toList()
+            : children,
       ),
     );
 
@@ -217,8 +221,9 @@ class QueryActionsSection extends StatelessWidget {
                     style: FilledButton.styleFrom(
                       padding: const EdgeInsets.only(left: 4, right: 8),
                       visualDensity: VisualDensity.compact,
-                      backgroundColor:
-                          Theme.of(context).colorScheme.surfaceContainerHighest,
+                      backgroundColor: Theme.of(
+                        context,
+                      ).colorScheme.surfaceContainerHighest,
                     ),
                     onPressed: () {
                       showDialog(
@@ -248,8 +253,9 @@ class QueryActionsSection extends StatelessWidget {
                         Text(
                           'Raw query',
                           style: TextStyle(
-                            color:
-                                Theme.of(context).colorScheme.onSurfaceVariant,
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.onSurfaceVariant,
                           ),
                         ),
                       ],

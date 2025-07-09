@@ -23,8 +23,8 @@ class BooruLogo extends ConsumerWidget {
     super.key,
     this.width,
     this.height,
-  })  : source = _sourceFromType(config.booruType, config.url),
-        _isFixedIcon = _isFixed(config.booruType);
+  }) : source = _sourceFromType(config.booruType, config.url),
+       _isFixedIcon = _isFixed(config.booruType);
 
   BooruLogo.fromBooruType(
     BooruType booruType,
@@ -32,8 +32,8 @@ class BooruLogo extends ConsumerWidget {
     super.key,
     this.width,
     this.height,
-  })  : source = _sourceFromType(booruType, url),
-        _isFixedIcon = _isFixed(booruType);
+  }) : source = _sourceFromType(booruType, url),
+       _isFixedIcon = _isFixed(booruType);
 
   static String _sourceFromType(BooruType booruType, String url) =>
       booruType == BooruType.hydrus ? 'assets/images/hydrus-logo.png' : url;

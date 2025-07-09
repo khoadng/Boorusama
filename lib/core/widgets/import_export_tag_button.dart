@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
-import '../foundation/clipboard.dart';
-import '../foundation/display.dart';
+import '../../foundation/clipboard.dart';
+import '../../foundation/display.dart';
 import 'booru_popup_menu_button.dart';
 import 'import_tag_dialog.dart';
 
@@ -31,7 +31,7 @@ class ImportExportTagButton extends ConsumerWidget {
         if (value == 'import') {
           showGeneralDialog(
             context: context,
-            pageBuilder: (context, _, __) => ImportTagsDialog(
+            pageBuilder: (context, _, _) => ImportTagsDialog(
               padding: kPreferredLayout.isMobile ? 0 : 8,
               hint: _kHint,
               onImport: (tagString, _) {
@@ -44,13 +44,13 @@ class ImportExportTagButton extends ConsumerWidget {
             context,
             tags.join('\n'),
             //TODO: should create a new key for this instead of using the same key as favorite_tags.export_notification
-            message: 'favorite_tags.export_notification'.tr(),
+            message: context.t.favorite_tags.export_notification,
           );
         }
       },
       itemBuilder: {
-        'import': const Text('favorite_tags.import').tr(),
-        if (tags.isNotEmpty) 'export': const Text('favorite_tags.export').tr(),
+        'import': Text(context.t.favorite_tags.import),
+        if (tags.isNotEmpty) 'export': Text(context.t.favorite_tags.export),
       },
     );
   }

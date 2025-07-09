@@ -2,13 +2,13 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
+import '../../foundation/utils/color_utils.dart';
 import '../theme.dart';
-import '../utils/color_utils.dart';
 
 Color? _parse(dynamic value) => switch (value) {
-      final String hex => ColorUtils.hexToColor(hex),
-      _ => null,
-    };
+  final String hex => ColorUtils.hexToColor(hex),
+  _ => null,
+};
 
 ColorScheme? colorSchemeFromJson(Map<String, dynamic>? json) {
   if (json == null) return null;
@@ -34,8 +34,9 @@ ColorScheme? colorSchemeFromJson(Map<String, dynamic>? json) {
   }
 
   return ColorScheme(
-    brightness:
-        json['brightness'] == 'dark' ? Brightness.dark : Brightness.light,
+    brightness: json['brightness'] == 'dark'
+        ? Brightness.dark
+        : Brightness.light,
     primary: primary,
     surfaceTint: _parse(json['surfaceTint']),
     onPrimary: onPrimary,
@@ -145,8 +146,9 @@ ExtendedColorScheme? extendedColorSchemeFromJson(Map<String, dynamic>? json) {
   final surfaceContainerOverlay = _parse(json['surfaceContainerOverlay']);
   final onSurfaceContainerOverlay = _parse(json['onSurfaceContainerOverlay']);
   final surfaceContainerOverlayDim = _parse(json['surfaceContainerOverlayDim']);
-  final onSurfaceContainerOverlayDim =
-      _parse(json['onSurfaceContainerOverlayDim']);
+  final onSurfaceContainerOverlayDim = _parse(
+    json['onSurfaceContainerOverlayDim'],
+  );
 
   return ExtendedColorScheme(
     surfaceContainerOverlay: surfaceContainerOverlay,

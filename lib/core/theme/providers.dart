@@ -13,8 +13,9 @@ import 'utils.dart';
 
 final enableDynamicColoringProvider = Provider<bool>(
   (ref) {
-    final settingsValue = ref
-        .watch(settingsProvider.select((value) => value.enableDynamicColoring));
+    final settingsValue = ref.watch(
+      settingsProvider.select((value) => value.enableDynamicColoring),
+    );
 
     final settingsColorsValue = ref.watch(
       settingsProvider.select((value) => value.colors?.enableDynamicColoring),
@@ -63,17 +64,18 @@ final customColorsProvider = Provider<ColorSettings?>(
 
 final chipColorsFromTagStringProvider =
     Provider.family<ChipColors?, (BooruConfigAuth, String?)>(
-  (ref, params) {
-    final (config, tag) = params;
-    final color =
-        tag != null ? ref.watch(tagColorProvider((config, tag))) : null;
-    final booruChipColors = ref.watch(booruChipColorsProvider);
+      (ref, params) {
+        final (config, tag) = params;
+        final color = tag != null
+            ? ref.watch(tagColorProvider((config, tag)))
+            : null;
+        final booruChipColors = ref.watch(booruChipColorsProvider);
 
-    return booruChipColors.fromColor(color);
-  },
-  dependencies: [
-    booruChipColorsProvider,
-    tagColorProvider,
-  ],
-  name: 'booruChipColorsFromTagStringProvider',
-);
+        return booruChipColors.fromColor(color);
+      },
+      dependencies: [
+        booruChipColorsProvider,
+        tagColorProvider,
+      ],
+      name: 'booruChipColorsFromTagStringProvider',
+    );

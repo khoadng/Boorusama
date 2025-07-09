@@ -8,8 +8,8 @@ import 'package:sqlite3/sqlite3.dart';
 import 'package:uuid/uuid.dart';
 
 // Project imports:
+import '../../../../foundation/database/utils.dart';
 import '../../../configs/config.dart';
-import '../../../database/utils.dart';
 import '../types/bulk_download_session.dart';
 import '../types/download_options.dart';
 import '../types/download_record.dart';
@@ -218,8 +218,9 @@ class DownloadRepositorySqlite
 
   @override
   Future<List<DownloadTask>> getTasks() async {
-    final results =
-        db.select('SELECT * FROM download_tasks ORDER BY created_at DESC');
+    final results = db.select(
+      'SELECT * FROM download_tasks ORDER BY created_at DESC',
+    );
     return results.map(mapToTask).toList();
   }
 
@@ -366,10 +367,12 @@ class DownloadRepositorySqlite
         notifications: row['notifications'] == 1,
         skipIfExists: row['skip_if_exists'] == 1,
         quality: row['quality'] as String?,
-        createdAt:
-            DateTime.fromMillisecondsSinceEpoch(row['task_created_at'] as int),
-        updatedAt:
-            DateTime.fromMillisecondsSinceEpoch(row['task_updated_at'] as int),
+        createdAt: DateTime.fromMillisecondsSinceEpoch(
+          row['task_created_at'] as int,
+        ),
+        updatedAt: DateTime.fromMillisecondsSinceEpoch(
+          row['task_updated_at'] as int,
+        ),
         perPage: row['per_page'] as int,
         concurrency: row['concurrency'] as int,
         tags: row['tags'] as String?,
@@ -405,8 +408,8 @@ class DownloadRepositorySqlite
     final sanitizedLimit = limit <= 0
         ? 20
         : limit > _maxLimit
-            ? _maxLimit
-            : limit;
+        ? _maxLimit
+        : limit;
 
     final whereClauses = ['s.status = ?', 's.deleted_at IS NULL'];
     final params = [DownloadSessionStatus.completed.name];
@@ -421,7 +424,8 @@ class DownloadRepositorySqlite
       params.add(endDate.millisecondsSinceEpoch.toString());
     }
 
-    final query = '''
+    final query =
+        '''
       SELECT 
         s.id as session_id,
         s.task_id,
@@ -461,22 +465,25 @@ class DownloadRepositorySqlite
     final results = db.select(query, params);
 
     return results.map((row) {
-      final taskJson = tryDecodeJson<Map<String, dynamic>?>(row['task'])
-          .getOrElse((_) => null);
+      final taskJson = tryDecodeJson<Map<String, dynamic>?>(
+        row['task'],
+      ).getOrElse((_) => null);
       final task = taskJson != null ? DownloadTask.fromJson(taskJson) : null;
 
       final session = DownloadSession(
         id: row['session_id'] as String,
         taskId: row['task_id'] as String,
         task: task,
-        startedAt:
-            DateTime.fromMillisecondsSinceEpoch(row['started_at'] as int),
+        startedAt: DateTime.fromMillisecondsSinceEpoch(
+          row['started_at'] as int,
+        ),
         completedAt: row['completed_at'] != null
             ? DateTime.fromMillisecondsSinceEpoch(row['completed_at'] as int)
             : null,
         currentPage: row['current_page'] as int,
-        status: DownloadSessionStatus.values
-            .byName(row['session_status'] as String),
+        status: DownloadSessionStatus.values.byName(
+          row['session_status'] as String,
+        ),
         totalPages: row['total_pages'] as int?,
         error: row['error'] as String?,
         siteUrl: row['site_url'] as String?,
@@ -561,8 +568,9 @@ class DownloadRepositorySqlite
       }
       if (error != null) {
         setValues.add('error = ?');
-        params
-            .add(error.isEmpty ? null : error); // Convert empty string to null
+        params.add(
+          error.isEmpty ? null : error,
+        ); // Convert empty string to null
       }
 
       if (setValues.isNotEmpty) {
@@ -857,7 +865,6 @@ class DownloadRepositorySqlite
         ''',
           sessionIds,
         )
-
         // Reset sessions to pending state
         ..execute(
           '''
@@ -899,29 +906,32 @@ class DownloadRepositorySqlite
 
     transaction(() {
       db
-        ..execute('''
+        ..execute(
+          '''
         INSERT OR REPLACE INTO download_session_statistics (
           session_id, cover_url, site_url, total_files, total_size, average_duration,
           average_file_size, largest_file_size, smallest_file_size,
           median_file_size, avg_files_per_page, max_files_per_page,
           min_files_per_page, extension_counts
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-      ''', [
-          sessionId,
-          stats.coverUrl,
-          stats.siteUrl,
-          stats.totalItems,
-          stats.totalSize,
-          stats.averageDuration?.inMilliseconds,
-          stats.averageFileSize,
-          stats.largestFileSize,
-          stats.smallestFileSize,
-          stats.medianFileSize,
-          stats.avgFilesPerPage,
-          stats.maxFilesPerPage,
-          stats.minFilesPerPage,
-          jsonEncode(stats.extensionCounts),
-        ])
+      ''',
+          [
+            sessionId,
+            stats.coverUrl,
+            stats.siteUrl,
+            stats.totalItems,
+            stats.totalSize,
+            stats.averageDuration?.inMilliseconds,
+            stats.averageFileSize,
+            stats.largestFileSize,
+            stats.smallestFileSize,
+            stats.medianFileSize,
+            stats.avgFilesPerPage,
+            stats.maxFilesPerPage,
+            stats.minFilesPerPage,
+            jsonEncode(stats.extensionCounts),
+          ],
+        )
         ..execute(
           'DELETE FROM download_records WHERE session_id = ?',
           [sessionId],
@@ -991,10 +1001,12 @@ class DownloadRepositorySqlite
         notifications: row['notifications'] == 1,
         skipIfExists: row['skip_if_exists'] == 1,
         quality: row['quality'] as String?,
-        createdAt:
-            DateTime.fromMillisecondsSinceEpoch(row['task_created_at'] as int),
-        updatedAt:
-            DateTime.fromMillisecondsSinceEpoch(row['task_updated_at'] as int),
+        createdAt: DateTime.fromMillisecondsSinceEpoch(
+          row['task_created_at'] as int,
+        ),
+        updatedAt: DateTime.fromMillisecondsSinceEpoch(
+          row['task_updated_at'] as int,
+        ),
         perPage: row['per_page'] as int,
         concurrency: row['concurrency'] as int,
         tags: row['tags'] as String?,
@@ -1005,8 +1017,9 @@ class DownloadRepositorySqlite
         id: row['id'] as int,
         task: task,
         name: row['name'] as String?,
-        createdAt:
-            DateTime.fromMillisecondsSinceEpoch(row['created_at'] as int),
+        createdAt: DateTime.fromMillisecondsSinceEpoch(
+          row['created_at'] as int,
+        ),
         updatedAt: row['updated_at'] != null
             ? DateTime.fromMillisecondsSinceEpoch(row['updated_at'] as int)
             : null,
@@ -1057,10 +1070,12 @@ class DownloadRepositorySqlite
       notifications: row['notifications'] == 1,
       skipIfExists: row['skip_if_exists'] == 1,
       quality: row['quality'] as String?,
-      createdAt:
-          DateTime.fromMillisecondsSinceEpoch(row['task_created_at'] as int),
-      updatedAt:
-          DateTime.fromMillisecondsSinceEpoch(row['task_updated_at'] as int),
+      createdAt: DateTime.fromMillisecondsSinceEpoch(
+        row['task_created_at'] as int,
+      ),
+      updatedAt: DateTime.fromMillisecondsSinceEpoch(
+        row['task_updated_at'] as int,
+      ),
       perPage: row['per_page'] as int,
       concurrency: row['concurrency'] as int,
       tags: row['tags'] as String?,

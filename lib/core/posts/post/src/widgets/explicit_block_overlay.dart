@@ -49,23 +49,23 @@ class _ExplicitContentBlockOverlayState
 
   Widget _buildButton() {
     return Consumer(
-      builder: (_, ref, __) {
+      builder: (_, ref, _) {
         final enable = ref.watch(
-          imageListingSettingsProvider
-              .select((value) => value.blurExplicitMedia),
+          imageListingSettingsProvider.select(
+            (value) => value.blurExplicitMedia,
+          ),
         );
 
         return enable
             ? ValueListenableBuilder(
                 valueListenable: _block,
-                builder: (_, block, __) => block
+                builder: (_, block, _) => block
                     ? Positioned.fill(
                         child: ActionChip(
                           side: BorderSide(
-                            color: Theme.of(context)
-                                .colorScheme
-                                .outline
-                                .withAlpha(25),
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.outline.withAlpha(25),
                           ),
                           label: Text(
                             'Explicit'.toUpperCase(),
@@ -88,20 +88,22 @@ class _ExplicitContentBlockOverlayState
 
   Widget _buildCover() {
     return Consumer(
-      builder: (_, ref, __) {
+      builder: (_, ref, _) {
         final enable = ref.watch(
-          imageListingSettingsProvider
-              .select((value) => value.blurExplicitMedia),
+          imageListingSettingsProvider.select(
+            (value) => value.blurExplicitMedia,
+          ),
         );
 
         return enable
             ? ValueListenableBuilder(
                 valueListenable: _block,
-                builder: (_, block, __) => block
+                builder: (_, block, _) => block
                     ? Positioned.fill(
                         child: Container(
-                          color:
-                              Theme.of(context).colorScheme.surfaceContainerLow,
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.surfaceContainerLow,
                         ),
                       )
                     : const SizedBox.shrink(),

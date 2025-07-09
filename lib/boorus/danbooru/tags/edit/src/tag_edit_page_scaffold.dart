@@ -10,12 +10,11 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:multi_split_view/multi_split_view.dart';
 
 // Project imports:
-import '../../../../../core/foundation/display.dart';
-import '../../../../../core/foundation/scrolling.dart';
 import '../../../../../core/images/booru_image.dart';
-import '../../../../../core/router.dart';
 import '../../../../../core/settings/providers.dart';
 import '../../../../../core/widgets/widgets.dart';
+import '../../../../../foundation/display.dart';
+import '../../../../../foundation/scrolling.dart';
 import 'providers/tag_edit_notifier.dart';
 import 'tag_edit_content.dart';
 import 'tag_edit_view_controller.dart';
@@ -65,21 +64,23 @@ class _TagEditPageScaffoldState extends ConsumerState<TagEditPageScaffold> {
   void _pop() {
     if (!mounted) return;
 
-    final expandMode =
-        ref.read(tagEditProvider.select((value) => value.expandMode));
+    final expandMode = ref.read(
+      tagEditProvider.select((value) => value.expandMode),
+    );
 
     if (expandMode != null) {
       ref.read(tagEditProvider.notifier).setExpandMode(null);
       viewController.setDefaultSplit();
     } else {
-      context.pop();
+      Navigator.of(context).pop();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final expandMode =
-        ref.watch(tagEditProvider.select((value) => value.expandMode));
+    final expandMode = ref.watch(
+      tagEditProvider.select((value) => value.expandMode),
+    );
 
     ref
       ..listen(
@@ -87,7 +88,8 @@ class _TagEditPageScaffoldState extends ConsumerState<TagEditPageScaffold> {
         (prev, current) {
           if ((prev?.length ?? 0) < (current.length)) {
             // Hacky way to scroll to the end of the list, somehow if it is currently on top, it won't scroll to last item
-            final offset = scrollController.offset ==
+            final offset =
+                scrollController.offset ==
                     scrollController.position.maxScrollExtent
                 ? 0
                 : scrollController.position.maxScrollExtent / current.length;
@@ -210,16 +212,16 @@ class _TagEditPageScaffoldState extends ConsumerState<TagEditPageScaffold> {
           controller: viewController.splitController,
           builder: (context, area) => switch (area.data) {
             'image' => const Column(
-                children: [
-                  Expanded(
-                    child: TagEditImageSection(),
-                  ),
-                  Divider(
-                    thickness: 1,
-                    height: 4,
-                  ),
-                ],
-              ),
+              children: [
+                Expanded(
+                  child: TagEditImageSection(),
+                ),
+                Divider(
+                  thickness: 1,
+                  height: 4,
+                ),
+              ],
+            ),
             'content' => widget.content,
             _ => const SizedBox.shrink(),
           },

@@ -6,18 +6,18 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import '../../foundation/boot/providers.dart';
 import '../blacklists/routes.dart';
 import '../bookmarks/routes.dart';
 import '../bulk_downloads/routes.dart';
 import '../configs/config/providers.dart';
 import '../configs/manage/widgets.dart';
 import '../donate/routes.dart';
-import '../downloads/routes.dart';
-import '../foundation/boot/providers.dart';
+import '../download_manager/routes.dart';
 import '../premiums/premiums.dart';
 import '../premiums/providers.dart';
 import '../premiums/routes.dart';
@@ -126,35 +126,35 @@ class SideBarMenu extends ConsumerWidget {
                         if (viewKey != null && viewKey.isAlt)
                           SideMenuTile(
                             icon: const Icon(Symbols.search),
-                            title: const Text('settings.search.search').tr(),
+                            title: Text(context.t.settings.search.search),
                             onTap: () {
-                              goToSearchPage(context);
+                              goToSearchPage(ref);
                             },
                           ),
                         SideMenuTile(
                           icon: const Icon(Symbols.favorite),
-                          title: const Text('sideMenu.your_bookmarks').tr(),
+                          title: Text(context.t.sideMenu.your_bookmarks),
                           onTap: () {
-                            goToBookmarkPage(context);
+                            goToBookmarkPage(ref);
                           },
                         ),
                         SideMenuTile(
                           icon: const Icon(Symbols.list),
-                          title: const Text('sideMenu.your_blacklist').tr(),
+                          title: Text(context.t.sideMenu.your_blacklist),
                           onTap: () {
-                            goToGlobalBlacklistedTagsPage(context);
+                            goToGlobalBlacklistedTagsPage(ref);
                           },
                         ),
                         SideMenuTile(
                           icon: const Icon(Symbols.tag),
-                          title: const Text('favorite_tags.favorite_tags').tr(),
+                          title: Text(context.t.favorite_tags.favorite_tags),
                           onTap: () {
-                            goToFavoriteTagsPage(context);
+                            goToFavoriteTagsPage(ref);
                           },
                         ),
                         SideMenuTile(
                           icon: const Icon(Symbols.sim_card_download),
-                          title: const Text('sideMenu.bulk_download').tr(),
+                          title: Text(context.t.sideMenu.bulk_download),
                           onTap: () {
                             goToBulkDownloadPage(
                               context,
@@ -165,9 +165,9 @@ class SideBarMenu extends ConsumerWidget {
                         ),
                         SideMenuTile(
                           icon: const Icon(Symbols.download),
-                          title: const Text('Download manager'),
+                          title: Text('Download manager'.hc),
                           onTap: () {
-                            goToDownloadManagerPage(context);
+                            goToDownloadManagerPage(ref);
                           },
                         ),
                         const Divider(
@@ -181,9 +181,9 @@ class SideBarMenu extends ConsumerWidget {
                               fill: 1,
                               color: Colors.red,
                             ),
-                            title: const Text('Donate'),
+                            title: Text('Donate'.hc),
                             onTap: () {
-                              goToDonationPage(context);
+                              goToDonationPage(ref);
                             },
                           )
                         else if (ref.watch(showPremiumFeatsProvider) &&
@@ -195,9 +195,9 @@ class SideBarMenu extends ConsumerWidget {
                               fill: 1,
                               color: Colors.red,
                             ),
-                            title: const Text('Get $kPremiumBrandName'),
+                            title: Text('Get $kPremiumBrandName'.hc),
                             onTap: () {
-                              goToPremiumPage(context);
+                              goToPremiumPage(ref);
                             },
                           ),
                         SideMenuTile(
@@ -205,9 +205,9 @@ class SideBarMenu extends ConsumerWidget {
                             Symbols.question_mark,
                             fill: 1,
                           ),
-                          title: const Text('sideMenu.get_support').tr(),
+                          title: Text(context.t.sideMenu.get_support),
                           onTap: () {
-                            goToSettingsPage(context, scrollTo: 'support');
+                            goToSettingsPage(ref, scrollTo: 'support');
                           },
                         ),
                         SideMenuTile(
@@ -215,9 +215,9 @@ class SideBarMenu extends ConsumerWidget {
                             Symbols.settings,
                             fill: 1,
                           ),
-                          title: Text('sideMenu.settings'.tr()),
+                          title: Text(context.t.sideMenu.settings),
                           onTap: () {
-                            goToSettingsPage(context);
+                            goToSettingsPage(ref);
                           },
                         ),
                       ].map(

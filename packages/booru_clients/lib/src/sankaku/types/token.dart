@@ -8,11 +8,11 @@ class Token {
   });
 
   const Token.empty()
-      : success = false,
-        tokenType = null,
-        accessToken = null,
-        refreshToken = null,
-        currentUser = null;
+    : success = false,
+      tokenType = null,
+      accessToken = null,
+      refreshToken = null,
+      currentUser = null;
 
   factory Token.fromJson(Map<String, dynamic> json) {
     return Token(

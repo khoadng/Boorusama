@@ -55,37 +55,37 @@ class SliverPostGridPlaceHolder extends ConsumerWidget {
 
           return switch (imageListType) {
             ImageListType.masonry => SliverMasonryGrid.count(
+              crossAxisCount: crossAxisCount,
+              mainAxisSpacing: imageGridSpacing,
+              crossAxisSpacing: imageGridSpacing,
+              childCount: perPage,
+              addRepaintBoundaries: false,
+              addAutomaticKeepAlives: false,
+              addSemanticIndexes: false,
+              itemBuilder: (context, index) {
+                return createRandomPlaceholderContainer(
+                  context,
+                  borderRadius: imageBorderRadius,
+                );
+              },
+            ),
+            _ => SliverGrid(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                childAspectRatio: imageGridAspectRatio,
                 crossAxisCount: crossAxisCount,
                 mainAxisSpacing: imageGridSpacing,
                 crossAxisSpacing: imageGridSpacing,
+              ),
+              delegate: SliverChildBuilderDelegate(
+                (context, _) => ImagePlaceHolder(
+                  borderRadius: imageBorderRadius,
+                ),
                 childCount: perPage,
                 addRepaintBoundaries: false,
                 addAutomaticKeepAlives: false,
                 addSemanticIndexes: false,
-                itemBuilder: (context, index) {
-                  return createRandomPlaceholderContainer(
-                    context,
-                    borderRadius: imageBorderRadius,
-                  );
-                },
               ),
-            _ => SliverGrid(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  childAspectRatio: imageGridAspectRatio,
-                  crossAxisCount: crossAxisCount,
-                  mainAxisSpacing: imageGridSpacing,
-                  crossAxisSpacing: imageGridSpacing,
-                ),
-                delegate: SliverChildBuilderDelegate(
-                  (context, _) => ImagePlaceHolder(
-                    borderRadius: imageBorderRadius,
-                  ),
-                  childCount: perPage,
-                  addRepaintBoundaries: false,
-                  addAutomaticKeepAlives: false,
-                  addSemanticIndexes: false,
-                ),
-              ),
+            ),
           };
         },
       ),

@@ -6,8 +6,9 @@ import '../../../../../../core/configs/ref.dart';
 import '../../pool/pool.dart';
 import '../../pool/providers.dart';
 
-final danbooruPoolQueryProvider =
-    StateProvider.autoDispose<String?>((ref) => null);
+final danbooruPoolQueryProvider = StateProvider.autoDispose<String?>(
+  (ref) => null,
+);
 
 enum PoolSearchMode {
   suggestion,
@@ -16,19 +17,19 @@ enum PoolSearchMode {
 
 final danbooruPoolSearchModeProvider =
     StateProvider.autoDispose<PoolSearchMode>(
-  (ref) => PoolSearchMode.suggestion,
-);
+      (ref) => PoolSearchMode.suggestion,
+    );
 
 final poolSuggestionsProvider = FutureProvider.autoDispose
     .family<List<DanbooruPool>, String>((ref, query) async {
-  if (query.isEmpty) return [];
+      if (query.isEmpty) return [];
 
-  final config = ref.watchConfigAuth;
-  final repo = ref.watch(danbooruPoolRepoProvider(config));
+      final config = ref.watchConfigAuth;
+      final repo = ref.watch(danbooruPoolRepoProvider(config));
 
-  return repo.getPools(
-    1,
-    name: query,
-    order: DanbooruPoolOrder.postCount,
-  );
-});
+      return repo.getPools(
+        1,
+        name: query,
+        order: DanbooruPoolOrder.postCount,
+      );
+    });

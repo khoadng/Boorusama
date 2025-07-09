@@ -2,10 +2,10 @@ name: boorusama
 description: A mobile client for Booru sites.
 
 publish_to: "none"
-version: 4.1.1+160
+version: 4.1.4+163
 
 environment:
-  sdk: ">=3.6.0 <4.0.0"
+  sdk: ^3.8.1
 
 workspace:
   - packages/foundation
@@ -16,11 +16,14 @@ workspace:
   - packages/flutter_sqlite3_migration
   - packages/retriable
   - packages/rich_text_controller
+  - packages/i18n
 
 dependencies:
   # local packages
   foundation:
     path: packages/foundation
+  i18n:
+    path: packages/i18n
   booru_clients:
     path: packages/booru_clients
   filename_generator:
@@ -58,7 +61,7 @@ dependencies:
   expandable: ^5.0.1
   fast_immutable_collections: ^11.0.0
   file_picker: ^10.2.0
-  fl_chart: ^0.69.0
+  fl_chart: ^1.0.0
   flutter:
     sdk: flutter
   flutter_html: ^3.0.0-beta.2
@@ -72,14 +75,14 @@ dependencies:
   flutter_svg: ^2.0.10+1
   flutter_widget_from_html_core: ^0.16.0
   font_awesome_flutter: ^10.7.0
-  fvp: ^0.32.1
+  fvp: ^0.33.0
   gal: ^2.3.0
-  go_router: ^15.2.3
+  go_router: ^16.0.0
   google_api_availability: ^5.0.0
   hive: ^2.2.3
   html: ^0.15.4
   http: ^1.1.0
-  infinite_scroll_pagination: 4.0.0 # 5.0.0 contains breaking changes
+  infinite_scroll_pagination: ^5.1.0
   intl: ^0.20.2
   like_button: ^2.0.5
   local_auth: ^2.3.0
@@ -87,9 +90,10 @@ dependencies:
   material_symbols_icons: ^4.2785.1
   modal_bottom_sheet: ^3.0.0-pre
   multi_split_view: ^3.5.0
-  native_dio_adapter: 1.3.0 # 1.4.0 introduces cupertino_http 2.0.0 which causes hangs on iOS
+  native_dio_adapter: ^1.4.0
   oktoast: ^3.4.0
   package_info_plus: ^8.0.2
+  pasteboard: ^0.4.0
   path: ^1.8.3
   path_drawing: ^1.0.1
   path_provider: ^2.1.2

@@ -7,8 +7,10 @@ bool checkIfTagsContainsRawTagExpression(
   final String tagExpression,
 ) {
   // Split the tagExpression by spaces to handle multiple tags
-  final expressions =
-      tagExpression.split(' ').map(TagExpression.parse).toList();
+  final expressions = tagExpression
+      .split(' ')
+      .map(TagExpression.parse)
+      .toList();
 
   return checkIfTagsContainsTagExpression(
     filterData,

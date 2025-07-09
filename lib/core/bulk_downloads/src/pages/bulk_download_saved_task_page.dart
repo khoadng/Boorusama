@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
@@ -28,7 +27,7 @@ class BulkDownloadSavedTaskPage extends ConsumerWidget {
     return CustomContextMenuOverlay(
       child: Scaffold(
         appBar: AppBar(
-          title: const Text(DownloadTranslations.templates).tr(),
+          title: Text(DownloadTranslations.templates),
           actions: const [
             _AddButton(),
           ],
@@ -39,10 +38,10 @@ class BulkDownloadSavedTaskPage extends ConsumerWidget {
             loading: () => const Center(child: CircularProgressIndicator()),
             error: (error, stack) => Center(child: Text('Error: $error')),
             data: (tasks) => tasks.isEmpty
-                ? const Center(
+                ? Center(
                     child: Text(
                       DownloadTranslations.emptyTemplates,
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                   )
                 : ListView.builder(
@@ -68,8 +67,9 @@ class _AddButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final bulkNotifier = ref.watch(bulkDownloadProvider.notifier);
-    final hasSavedTaskLocked =
-        ref.watch(hasAnySavedTaskLockedProvider).valueOrNull;
+    final hasSavedTaskLocked = ref
+        .watch(hasAnySavedTaskLockedProvider)
+        .valueOrNull;
 
     return IconButton(
       icon: const Icon(Symbols.add),

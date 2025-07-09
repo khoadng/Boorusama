@@ -3,40 +3,46 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../autocompletes/autocompletes.dart';
-import '../../autocompletes/providers.dart';
+import '../../../foundation/debounce_mixin.dart';
 import '../../configs/config.dart';
-import '../../foundation/debounce_mixin.dart';
+import '../../tags/autocompletes/providers.dart';
+import '../../tags/autocompletes/types.dart';
 import '../../tags/configs/providers.dart';
 import '../queries/filter_operator.dart';
 import '../queries/query_utils.dart';
 
-final suggestionsNotifierProvider = NotifierProvider.family<SuggestionsNotifier,
-    IMap<String, IList<AutocompleteData>>, BooruConfigAuth>(
-  SuggestionsNotifier.new,
-);
+final suggestionsNotifierProvider =
+    NotifierProvider.family<
+      SuggestionsNotifier,
+      IMap<String, IList<AutocompleteData>>,
+      BooruConfigAuth
+    >(
+      SuggestionsNotifier.new,
+    );
 
 final fallbackSuggestionsProvider =
     StateProvider.autoDispose<IList<AutocompleteData>>((ref) {
-  return <AutocompleteData>[].lock;
-});
+      return <AutocompleteData>[].lock;
+    });
 
 final suggestionProvider = Provider.autoDispose
     .family<IList<AutocompleteData>, (BooruConfigAuth, String)>(
-  (ref, params) {
-    final (config, tag) = params;
-    final suggestions = ref.watch(suggestionsNotifierProvider(config));
-    return suggestions[sanitizeQuery(tag)] ??
-        ref.watch(fallbackSuggestionsProvider);
-  },
-  dependencies: [
-    suggestionsNotifierProvider,
-    fallbackSuggestionsProvider,
-  ],
-);
+      (ref, params) {
+        final (config, tag) = params;
+        final suggestions = ref.watch(suggestionsNotifierProvider(config));
+        return suggestions[sanitizeQuery(tag)] ??
+            ref.watch(fallbackSuggestionsProvider);
+      },
+      dependencies: [
+        suggestionsNotifierProvider,
+        fallbackSuggestionsProvider,
+      ],
+    );
 
-class SuggestionsNotifier extends FamilyNotifier<
-    IMap<String, IList<AutocompleteData>>, BooruConfigAuth> with DebounceMixin {
+class SuggestionsNotifier
+    extends
+        FamilyNotifier<IMap<String, IList<AutocompleteData>>, BooruConfigAuth>
+    with DebounceMixin {
   SuggestionsNotifier() : super();
 
   @override
@@ -68,8 +74,9 @@ class SuggestionsNotifier extends FamilyNotifier<
     debounce(
       'suggestions',
       () async {
-        final data = await autocompleteRepo
-            .getAutocomplete(AutocompleteQuery.text(sanitized));
+        final data = await autocompleteRepo.getAutocomplete(
+          AutocompleteQuery.text(sanitized),
+        );
 
         final filter = filterNsfw(
           data,

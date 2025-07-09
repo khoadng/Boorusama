@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../../../../core/configs/ref.dart';
@@ -29,9 +29,9 @@ class AddToFavoriteGroupPage extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'favorite_groups.add_to_group_dialog_title',
+          context.t.favorite_groups.add_to_group_dialog_title,
           style: Theme.of(context).textTheme.titleLarge,
-        ).tr(),
+        ),
       ),
       backgroundColor: Theme.of(context).colorScheme.surface,
       body: Column(
@@ -59,10 +59,10 @@ class AddToFavoriteGroupPage extends ConsumerWidget {
             child: ListTile(
               visualDensity: VisualDensity.compact,
               title: Text(
-                'favorite_groups.add_to'.tr().toUpperCase(),
+                context.t.favorite_groups.add_to.toUpperCase(),
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w800,
-                    ),
+                  fontWeight: FontWeight.w800,
+                ),
               ),
               trailing: FilledButton(
                 style: FilledButton.styleFrom(
@@ -72,7 +72,7 @@ class AddToFavoriteGroupPage extends ConsumerWidget {
                   context,
                   enableManualPostInput: false,
                 ),
-                child: const Text('favorite_groups.create').tr(),
+                child: Text(context.t.favorite_groups.create),
               ),
             ),
           ),

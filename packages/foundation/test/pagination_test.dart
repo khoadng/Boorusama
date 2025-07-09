@@ -25,16 +25,17 @@ void main() {
     });
 
     test(
-        'Scenario 3: 200 per page, total 1,000,000, current page somewhere in the middle',
-        () {
-      final pages = generatePage(
-        current: 2500,
-        total: 1000000,
-        itemPerPage: 200,
-        maxSelectablePage: 5,
-      );
-      expect(pages, [2498, 2499, 2500, 2501, 2502]);
-    });
+      'Scenario 3: 200 per page, total 1,000,000, current page somewhere in the middle',
+      () {
+        final pages = generatePage(
+          current: 2500,
+          total: 1000000,
+          itemPerPage: 200,
+          maxSelectablePage: 5,
+        );
+        expect(pages, [2498, 2499, 2500, 2501, 2502]);
+      },
+    );
 
     test('Edge Case: maxSelectablePage = 1', () {
       final pages = generatePage(

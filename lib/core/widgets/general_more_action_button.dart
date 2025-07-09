@@ -3,32 +3,36 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
+import '../../foundation/url_launcher.dart';
 import '../boorus/engine/providers.dart';
 import '../configs/config.dart';
-import '../downloads/downloader.dart';
-import '../foundation/url_launcher.dart';
+import '../downloads/downloader/providers.dart';
+import '../images/copy.dart';
 import '../posts/post/post.dart';
 import '../posts/post/routes.dart';
-import '../posts/post/tags.dart';
 import '../settings/routes.dart';
 import '../tags/tag/routes.dart';
 import '../theme.dart';
 import 'booru_popup_menu_button.dart';
 
-class GeneralMoreActionButton extends ConsumerWidget {
+class GeneralMoreActionButton extends ConsumerWidget with CopyImageMixin {
   const GeneralMoreActionButton({
     required this.post,
     required this.config,
+    required this.configViewer,
     super.key,
     this.onDownload,
     this.onStartSlideshow,
   });
 
   final Post post;
+  @override
   final BooruConfigAuth config;
+  @override
+  final BooruConfigViewer configViewer;
   final void Function(Post post)? onDownload;
   final void Function()? onStartSlideshow;
 
@@ -51,38 +55,38 @@ class GeneralMoreActionButton extends ConsumerWidget {
                 } else {
                   ref.download(post);
                 }
+              case 'copy_image':
+                copyImage(ref, post);
               case 'view_in_browser':
                 launchExternalUrlString(
                   postLinkGenerator.getLink(post),
                 );
               case 'show_tag_list':
-                goToShowTaglistPage(
-                  context,
-                  post.extractTags(),
-                );
+                goToShowTaglistPage(ref, post);
               case 'view_original':
-                goToOriginalImagePage(context, post);
+                goToOriginalImagePage(ref, post);
               case 'start_slideshow':
                 if (onStartSlideshow != null) {
                   onStartSlideshow!();
                 }
               case 'settings':
-                openImageViewerSettingsPage(context);
+                openImageViewerSettingsPage(ref);
               // ignore: no_default_cases
               default:
             }
           },
           itemBuilder: {
-            'download': const Text('download.download').tr(),
+            'download': Text(context.t.download.download),
+            'copy_image': Text('Copy image'.hc),
             if (!config.hasStrictSFW)
-              'view_in_browser': const Text('post.detail.view_in_browser').tr(),
-            if (post.tags.isNotEmpty) 'show_tag_list': const Text('View tags'),
+              'view_in_browser': Text(context.t.post.detail.view_in_browser),
+            if (post.tags.isNotEmpty) 'show_tag_list': Text('View tags'.hc),
             if (post.hasFullView)
               'view_original':
-                  const Text('post.image_fullview.view_original').tr(),
+                  Text(context.t.post.image_fullview.view_original),
             if (onStartSlideshow != null)
-              'start_slideshow': const Text('Slideshow'),
-            'settings': const Text('settings.settings').tr(),
+              'start_slideshow': Text('Slideshow'.hc),
+            'settings': Text(context.t.settings.settings),
           },
         ),
       ),

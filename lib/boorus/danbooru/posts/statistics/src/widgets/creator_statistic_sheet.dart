@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../../../../core/configs/ref.dart';
 import '../../../../../../core/posts/statistics/widgets.dart';
-import '../../../../../../core/utils/statistics.dart';
+import '../../../../../../foundation/utils/statistics.dart';
 import '../../../../users/creator/providers.dart';
 
 class CreatorStatisticSheet extends ConsumerWidget {

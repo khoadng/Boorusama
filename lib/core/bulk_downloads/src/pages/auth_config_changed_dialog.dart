@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../configs/ref.dart';
@@ -33,9 +33,9 @@ class AuthConfigChangedDialog extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             const SizedBox(height: 20),
-            const Text(
-              'Profile mismatch',
-              style: TextStyle(
+            Text(
+              'Profile mismatch'.hc,
+              style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w700,
               ),
@@ -50,7 +50,7 @@ class AuthConfigChangedDialog extends ConsumerWidget {
                     color: Theme.of(context).colorScheme.hintColor,
                   ),
                   children: [
-                    const TextSpan(text: 'Current site: '),
+                    TextSpan(text: 'Current site: '.hc),
                     TextSpan(
                       text: currentUrl.url,
                       style: const TextStyle(
@@ -68,7 +68,7 @@ class AuthConfigChangedDialog extends ConsumerWidget {
                     color: Theme.of(context).colorScheme.hintColor,
                   ),
                   children: [
-                    const TextSpan(text: 'Download site: '),
+                    TextSpan(text: 'Download site: '.hc),
                     TextSpan(
                       text: sessionUrl,
                       style: const TextStyle(
@@ -81,18 +81,19 @@ class AuthConfigChangedDialog extends ConsumerWidget {
               const SizedBox(height: 20),
             ],
             if (hasMismatch)
-              const Text(
-                'The download site does not match the current site profile. Please change your profile to match the download site.',
-                style: TextStyle(
+              Text(
+                'The download site does not match the current site profile. Please change your profile to match the download site.'
+                    .hc,
+                style: const TextStyle(
                   fontWeight: FontWeight.w400,
                   fontSize: 14,
                 ),
               )
             else
-              const Text(
-                'This download session was initiated using a profile from the same site but with different credentials. This may lead to issues. '
-                '\n\nDo you want to continue?',
-                style: TextStyle(
+              Text(
+                'This download session was initiated using a profile from the same site but with different credentials. This may lead to issues. \n\nDo you want to continue?'
+                    .hc,
+                style: const TextStyle(
                   fontWeight: FontWeight.w400,
                   fontSize: 14,
                 ),
@@ -111,7 +112,7 @@ class AuthConfigChangedDialog extends ConsumerWidget {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 14),
                   child: Text(
-                    'generic.action.ok'.tr(),
+                    context.t.generic.action.ok,
                     style: TextStyle(
                       color: Theme.of(context).colorScheme.onErrorContainer,
                       fontWeight: FontWeight.w600,
@@ -132,7 +133,7 @@ class AuthConfigChangedDialog extends ConsumerWidget {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 14),
                   child: Text(
-                    'Continue anyway',
+                    'Continue anyway'.hc,
                     style: TextStyle(
                       color: Theme.of(context).colorScheme.onErrorContainer,
                       fontWeight: FontWeight.w600,
@@ -148,7 +149,7 @@ class AuthConfigChangedDialog extends ConsumerWidget {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 14),
                   child: Text(
-                    'Cancel',
+                    context.t.generic.action.cancel,
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
                       color: Theme.of(context).colorScheme.onSurface,

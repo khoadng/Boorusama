@@ -11,11 +11,11 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../../../../../boorus/danbooru/posts/search/src/widgets/danbooru_metatags_section.dart';
+import '../../../../../foundation/display.dart';
+import '../../../../../foundation/platform.dart';
+import '../../../../../foundation/utils/flutter_utils.dart';
 import '../../../../boorus/booru/booru.dart';
 import '../../../../configs/ref.dart';
-import '../../../../foundation/display.dart';
-import '../../../../foundation/platform.dart';
-import '../../../../utils/flutter_utils.dart';
 import '../../../queries/query_utils.dart';
 import '../../../selected_tags/selected_tag_controller.dart';
 import '../../../suggestions/suggestions_notifier.dart';
@@ -143,8 +143,9 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
       child: ValueListenableBuilder(
         valueListenable: textEditingController,
         builder: (context, query, child) {
-          final suggestionTags =
-              ref.watch(suggestionProvider((ref.watchConfigAuth, query.text)));
+          final suggestionTags = ref.watch(
+            suggestionProvider((ref.watchConfigAuth, query.text)),
+          );
 
           return Stack(
             children: [
@@ -196,16 +197,17 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
                     },
                     metatags:
                         ref.watchConfigAuth.booruType == BooruType.danbooru
-                            ? DanbooruMetatagsSection(
-                                onOptionTap: (value) {
-                                  textEditingController.text = '$value:';
-                                  // ignore: cascade_invocations
-                                  textEditingController
-                                      .setTextAndCollapseSelection('$value:');
-                                  setState(() {});
-                                },
-                              )
-                            : null,
+                        ? DanbooruMetatagsSection(
+                            onOptionTap: (value) {
+                              textEditingController.text = '$value:';
+                              // ignore: cascade_invocations
+                              textEditingController.setTextAndCollapseSelection(
+                                '$value:',
+                              );
+                              setState(() {});
+                            },
+                          )
+                        : null,
                   ),
                 ),
               if (kPreferredLayout.isMobile)

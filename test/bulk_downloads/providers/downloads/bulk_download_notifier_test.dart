@@ -38,49 +38,53 @@ void main() {
   });
 
   group('Download Operations', () {
-    test('should process multiple pages and create records for all posts',
-        () async {
-      // Arrange
-      final task = await repository.createTask(_options);
+    test(
+      'should process multiple pages and create records for all posts',
+      () async {
+        // Arrange
+        final task = await repository.createTask(_options);
 
-      // Act
-      final notifier = container.read(bulkDownloadProvider.notifier);
-      await notifier.downloadFromTask(
-        task,
-        downloadConfigs: _defaultConfigs,
-      );
+        // Act
+        final notifier = container.read(bulkDownloadProvider.notifier);
+        await notifier.downloadFromTask(
+          task,
+          downloadConfigs: _defaultConfigs,
+        );
 
-      // Assert
-      final sessions = await repository.getSessionsByTaskId(task.id);
-      expect(sessions.length, 1);
-      expect(sessions.first.status, DownloadSessionStatus.running);
-      expect(sessions.first.totalPages, DownloadTestConstants.lastPage);
-      expect(sessions.first.currentPage, DownloadTestConstants.lastPage);
-      expect(sessions.first.error, isNull);
+        // Assert
+        final sessions = await repository.getSessionsByTaskId(task.id);
+        expect(sessions.length, 1);
+        expect(sessions.first.status, DownloadSessionStatus.running);
+        expect(sessions.first.totalPages, DownloadTestConstants.lastPage);
+        expect(sessions.first.currentPage, DownloadTestConstants.lastPage);
+        expect(sessions.first.error, isNull);
 
-      final records = await repository.getRecordsBySessionId(sessions.first.id);
-      expect(records.length, DownloadTestConstants.posts.length);
+        final records = await repository.getRecordsBySessionId(
+          sessions.first.id,
+        );
+        expect(records.length, DownloadTestConstants.posts.length);
 
-      // Verify page 1 records
-      final page1Records = records.where((r) => r.page == 1).toList();
-      expect(page1Records.length, equals(2));
-      expect(page1Records[0].url, equals('test-original-url-1'));
-      expect(page1Records[0].downloadId, 'test-original-url-1');
-      expect(page1Records[1].url, equals('test-original-url-2'));
-      expect(page1Records[1].downloadId, 'test-original-url-2');
+        // Verify page 1 records
+        final page1Records = records.where((r) => r.page == 1).toList();
+        expect(page1Records.length, equals(2));
+        expect(page1Records[0].url, equals('test-original-url-1'));
+        expect(page1Records[0].downloadId, 'test-original-url-1');
+        expect(page1Records[1].url, equals('test-original-url-2'));
+        expect(page1Records[1].downloadId, 'test-original-url-2');
 
-      // Verify page 2 records
-      final page2Records = records.where((r) => r.page == 2).toList();
-      expect(page2Records.length, equals(2));
-      expect(page2Records[0].url, equals('test-original-url-3'));
-      expect(page2Records[0].downloadId, 'test-original-url-3');
-      expect(page2Records[1].url, equals('test-original-url-4'));
-      expect(page2Records[1].downloadId, 'test-original-url-4');
+        // Verify page 2 records
+        final page2Records = records.where((r) => r.page == 2).toList();
+        expect(page2Records.length, equals(2));
+        expect(page2Records[0].url, equals('test-original-url-3'));
+        expect(page2Records[0].downloadId, 'test-original-url-3');
+        expect(page2Records[1].url, equals('test-original-url-4'));
+        expect(page2Records[1].downloadId, 'test-original-url-4');
 
-      // Verify state
-      final state = container.read(bulkDownloadProvider);
-      expect(state.sessions.length, equals(1));
-    });
+        // Verify state
+        final state = container.read(bulkDownloadProvider);
+        expect(state.sessions.length, equals(1));
+      },
+    );
 
     test('should exclude posts containing blacklisted tags', () async {
       final task = await repository.createTask(_options);
@@ -121,62 +125,67 @@ void main() {
     });
 
     test(
-        'should continue downloading when first page is completely filtered out',
-        () async {
-      // Arrange
-      final task = await repository.createTask(_options);
-      final notifier = container.read(bulkDownloadProvider.notifier);
+      'should continue downloading when first page is completely filtered out',
+      () async {
+        // Arrange
+        final task = await repository.createTask(_options);
+        final notifier = container.read(bulkDownloadProvider.notifier);
 
-      // Act
-      await notifier.downloadFromTaskId(
-        task.id,
-        downloadConfigs: _defaultConfigs.copyWith(
-          blacklistedTags: {
-            'tag1',
-            'tag3',
-          }, // This will filter out all posts from page 1
-        ),
-      );
+        // Act
+        await notifier.downloadFromTaskId(
+          task.id,
+          downloadConfigs: _defaultConfigs.copyWith(
+            blacklistedTags: {
+              'tag1',
+              'tag3',
+            }, // This will filter out all posts from page 1
+          ),
+        );
 
-      // Assert
-      final sessions = await repository.getSessionsByTaskId(task.id);
-      expect(sessions.length, equals(1));
+        // Assert
+        final sessions = await repository.getSessionsByTaskId(task.id);
+        expect(sessions.length, equals(1));
 
-      final records = await repository.getRecordsBySessionId(sessions.first.id);
-      expect(
-        records.length,
-        _posts.length - 2,
-      );
+        final records = await repository.getRecordsBySessionId(
+          sessions.first.id,
+        );
+        expect(
+          records.length,
+          _posts.length - 2,
+        );
 
-      // Verify records are not from page 1
-      final pages = records.map((r) => r.page).toSet();
-      expect(pages, isNot(contains(1)));
+        // Verify records are not from page 1
+        final pages = records.map((r) => r.page).toSet();
+        expect(pages, isNot(contains(1)));
 
-      // Verify session status
-      expect(sessions.first.status, equals(DownloadSessionStatus.running));
-    });
+        // Verify session status
+        expect(sessions.first.status, equals(DownloadSessionStatus.running));
+      },
+    );
 
-    test('should have session stats available when session is running',
-        () async {
-      // Arrange
-      final task = await repository.createTask(_options);
-      final notifier = container.read(bulkDownloadProvider.notifier);
+    test(
+      'should have session stats available when session is running',
+      () async {
+        // Arrange
+        final task = await repository.createTask(_options);
+        final notifier = container.read(bulkDownloadProvider.notifier);
 
-      // Act
-      await notifier.downloadFromTask(
-        task,
-        downloadConfigs: _defaultConfigs,
-      );
+        // Act
+        await notifier.downloadFromTask(
+          task,
+          downloadConfigs: _defaultConfigs,
+        );
 
-      // Assert
-      final sessions = await repository.getSessionsByTaskId(task.id);
-      expect(sessions.length, equals(1));
+        // Assert
+        final sessions = await repository.getSessionsByTaskId(task.id);
+        expect(sessions.length, equals(1));
 
-      final stats = await repository.getActiveSessionStats(sessions.first.id);
-      expect(stats.totalItems, equals(_posts.length));
-      expect(stats.coverUrl, equals('test-thumbnail-url-1'));
-      expect(stats.siteUrl, equals('test-url'));
-    });
+        final stats = await repository.getActiveSessionStats(sessions.first.id);
+        expect(stats.totalItems, equals(_posts.length));
+        expect(stats.coverUrl, equals('test-thumbnail-url-1'));
+        expect(stats.siteUrl, equals('test-url'));
+      },
+    );
 
     test('should handle multiple running sessions for the same task', () async {
       // Arrange
@@ -269,23 +278,25 @@ void main() {
   });
 
   group('Error Scenarios', () {
-    test('should handle task operations gracefully when errors occur',
-        () async {
-      // Arrange
-      const taskId = 'test-task-id';
+    test(
+      'should handle task operations gracefully when errors occur',
+      () async {
+        // Arrange
+        const taskId = 'test-task-id';
 
-      // Act
-      final notifier = container.read(bulkDownloadProvider.notifier);
-      await notifier.downloadFromTaskId(
-        taskId,
-        downloadConfigs: _defaultConfigs,
-      );
+        // Act
+        final notifier = container.read(bulkDownloadProvider.notifier);
+        await notifier.downloadFromTaskId(
+          taskId,
+          downloadConfigs: _defaultConfigs,
+        );
 
-      // Assert
-      final state = container.read(bulkDownloadProvider);
-      expect(state.error, isNotNull);
-      expect(state.sessions, isEmpty);
-    });
+        // Assert
+        final state = container.read(bulkDownloadProvider);
+        expect(state.error, isNotNull);
+        expect(state.sessions, isEmpty);
+      },
+    );
 
     test('should clear error state when requested', () async {
       // Arrange
@@ -336,8 +347,9 @@ void main() {
 
     test('should not accept empty tag in tag list', () async {
       // Arrange
-      final task = await repository
-          .createTask(_options.copyWith(tags: SearchTagSet.fromString('')));
+      final task = await repository.createTask(
+        _options.copyWith(tags: SearchTagSet.fromString('')),
+      );
 
       // Act
       final notifier = container.read(bulkDownloadProvider.notifier);
@@ -359,8 +371,9 @@ void main() {
 
     test('should not accept whitespace-only tags', () async {
       // Arrange
-      final task = await repository
-          .createTask(_options.copyWith(tags: SearchTagSet.fromString('   ')));
+      final task = await repository.createTask(
+        _options.copyWith(tags: SearchTagSet.fromString('   ')),
+      );
 
       // Act
       final notifier = container.read(bulkDownloadProvider.notifier);
@@ -381,53 +394,56 @@ void main() {
     });
 
     test(
-        'should continue downloading when multiple consecutive pages are filtered out',
-        () async {
-      // Arrange
-      final task = await repository.createTask(_options);
-      final notifier = container.read(bulkDownloadProvider.notifier);
+      'should continue downloading when multiple consecutive pages are filtered out',
+      () async {
+        // Arrange
+        final task = await repository.createTask(_options);
+        final notifier = container.read(bulkDownloadProvider.notifier);
 
-      // Act
-      await notifier.downloadFromTaskId(
-        task.id,
-        downloadConfigs: _defaultConfigs.copyWith(
-          blacklistedTags: {
-            'tag5',
-            'tag7',
-            'tag8',
-            'tag9',
-          },
-        ),
-      );
+        // Act
+        await notifier.downloadFromTaskId(
+          task.id,
+          downloadConfigs: _defaultConfigs.copyWith(
+            blacklistedTags: {
+              'tag5',
+              'tag7',
+              'tag8',
+              'tag9',
+            },
+          ),
+        );
 
-      // Assert
-      final sessions = await repository.getSessionsByTaskId(task.id);
-      expect(sessions.length, equals(1));
+        // Assert
+        final sessions = await repository.getSessionsByTaskId(task.id);
+        expect(sessions.length, equals(1));
 
-      final records = await repository.getRecordsBySessionId(sessions.first.id);
-      expect(
-        records.length,
-        equals(3),
-      ); // Should have records from pages 1 and 4
+        final records = await repository.getRecordsBySessionId(
+          sessions.first.id,
+        );
+        expect(
+          records.length,
+          equals(3),
+        ); // Should have records from pages 1 and 4
 
-      // Verify records are from correct pages
-      final pages = records.map((r) => r.page).toSet();
-      expect(pages, equals({1, 4}));
+        // Verify records are from correct pages
+        final pages = records.map((r) => r.page).toSet();
+        expect(pages, equals({1, 4}));
 
-      // Verify URLs are correct
-      final urls = records.map((r) => r.url).toSet();
-      expect(
-        urls,
-        equals({
-          'test-original-url-1',
-          'test-original-url-2',
-          'test-original-url-7',
-        }),
-      );
+        // Verify URLs are correct
+        final urls = records.map((r) => r.url).toSet();
+        expect(
+          urls,
+          equals({
+            'test-original-url-1',
+            'test-original-url-2',
+            'test-original-url-7',
+          }),
+        );
 
-      // Verify session status
-      expect(sessions.first.status, equals(DownloadSessionStatus.running));
-    });
+        // Verify session status
+        expect(sessions.first.status, equals(DownloadSessionStatus.running));
+      },
+    );
   });
 
   group('Record Updates', () {

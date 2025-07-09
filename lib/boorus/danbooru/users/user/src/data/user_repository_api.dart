@@ -20,15 +20,14 @@ class UserRepositoryApi implements UserRepository {
   Future<List<DanbooruUser>> getUsersByIds(
     List<int> ids, {
     CancelToken? cancelToken,
-  }) =>
-      client
-          .getUsersByIds(
-            ids: ids,
-            limit: 1000,
-            cancelToken: cancelToken,
-          )
-          .then(parseUsers)
-          .catchError((e) => <DanbooruUser>[]);
+  }) => client
+      .getUsersByIds(
+        ids: ids,
+        limit: 1000,
+        cancelToken: cancelToken,
+      )
+      .then(parseUsers)
+      .catchError((e) => <DanbooruUser>[]);
 
   @override
   Future<DanbooruUser> getUserById(int id) =>

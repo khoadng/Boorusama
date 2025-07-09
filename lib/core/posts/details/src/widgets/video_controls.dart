@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../../foundation/display.dart';
+import '../../../../../foundation/display.dart';
 import '../../../../settings/providers.dart';
 import '../../../../settings/settings.dart';
 import '../../../../theme.dart';
@@ -129,7 +129,7 @@ class PostDetailsVideoControls<T extends Post> extends ConsumerWidget {
   Widget _buildRightTime() {
     return ValueListenableBuilder(
       valueListenable: controller.videoProgress,
-      builder: (_, progress, __) => VideoTimeText(
+      builder: (_, progress, _) => VideoTimeText(
         duration: progress.duration,
         forceHigherThanOneSecond: progress.duration.inSeconds != 0,
       ),
@@ -139,7 +139,7 @@ class PostDetailsVideoControls<T extends Post> extends ConsumerWidget {
   Widget _buildLeftTime() {
     return ValueListenableBuilder(
       valueListenable: controller.videoProgress,
-      builder: (_, progress, __) => VideoTimeText(
+      builder: (_, progress, _) => VideoTimeText(
         duration: progress.position,
         forceHigherThanOneSecond: false,
       ),
@@ -149,7 +149,7 @@ class PostDetailsVideoControls<T extends Post> extends ConsumerWidget {
   Widget _buildPlayPauseButton(bool isLarge, bool useDefaultEngine) {
     return ValueListenableBuilder(
       valueListenable: controller.currentPost,
-      builder: (_, post, __) => PlayPauseButton(
+      builder: (_, post, _) => PlayPauseButton(
         padding: !isLarge ? const EdgeInsets.all(8) : null,
         isPlaying: controller.isVideoPlaying,
         onPlayingChanged: (value) {

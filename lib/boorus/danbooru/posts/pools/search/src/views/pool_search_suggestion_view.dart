@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
+import 'package:intl/intl.dart';
 
 // Project imports:
-import '../../../../../../../core/foundation/debounce_mixin.dart';
 import '../../../../../../../core/tags/tag/colors.dart';
 import '../../../../../../../core/theme.dart';
+import '../../../../../../../foundation/debounce_mixin.dart';
 import '../../../pool/pool.dart';
 import '../providers.dart';
 
@@ -30,7 +30,9 @@ class PoolSearchSuggestionView extends ConsumerWidget {
           return const SizedBox.shrink();
         }
 
-        return ref.watch(poolSuggestionsProvider(query)).maybeWhen(
+        return ref
+            .watch(poolSuggestionsProvider(query))
+            .maybeWhen(
               data: (pools) => pools.isEmpty
                   ? const SizedBox.shrink()
                   : ListView.builder(
@@ -55,13 +57,16 @@ class PoolSearchSuggestionView extends ConsumerWidget {
                           ),
                           onTap: () {
                             FocusManager.instance.primaryFocus?.unfocus();
-                            textEditingController.text =
-                                pool.name.replaceAll('_', ' ');
+                            textEditingController.text = pool.name.replaceAll(
+                              '_',
+                              ' ',
+                            );
                             ref.read(danbooruPoolQueryProvider.notifier).state =
                                 pool.name;
                             ref
                                 .read(danbooruPoolSearchModeProvider.notifier)
-                                .state = PoolSearchMode.result;
+                                .state = PoolSearchMode
+                                .result;
                           },
                         );
                       },
@@ -74,6 +79,6 @@ class PoolSearchSuggestionView extends ConsumerWidget {
 }
 
 Color _poolCategoryToColor(DanbooruPoolCategory category) => switch (category) {
-      DanbooruPoolCategory.series => TagColors.dark().copyright,
-      _ => TagColors.dark().general,
-    };
+  DanbooruPoolCategory.series => TagColors.dark().copyright,
+  _ => TagColors.dark().general,
+};

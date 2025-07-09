@@ -96,3 +96,5 @@ linter:
     - use_to_and_as_if_applicable
     - use_truncating_division
 
+formatter:
+  trailing_commas: preserve

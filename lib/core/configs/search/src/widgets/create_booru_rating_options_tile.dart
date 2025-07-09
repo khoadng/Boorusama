@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../boorus/engine/providers.dart';
@@ -43,7 +43,7 @@ class CreateBooruRatingOptionsTile extends StatelessWidget {
         ListTile(
           contentPadding: EdgeInsets.zero,
           visualDensity: VisualDensity.compact,
-          title: const Text('booru.content_filtering_label').tr(),
+          title: Text(context.t.booru.content_filtering_label),
           trailing: OptionDropDownButton(
             alignment: AlignmentDirectional.centerStart,
             value: value ?? BooruConfigRatingFilter.none,
@@ -68,11 +68,10 @@ class CreateBooruRatingOptionsTile extends StatelessWidget {
           Text(
             'Choose ${singleSelection ? 'a rating' : 'rating(s)'} that you want to exclude from the search.',
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Theme.of(context)
-                      .colorScheme
-                      .onSurface
-                      .withValues(alpha: 0.6),
-                ),
+              color: Theme.of(
+                context,
+              ).colorScheme.onSurface.withValues(alpha: 0.6),
+            ),
           ),
           const SizedBox(height: 8),
           CreateBooruConfigGranularRatingOptions(
@@ -115,7 +114,8 @@ class _CreateBooruConfigGranularRatingOptionsState
 
   @override
   Widget build(BuildContext context) {
-    final options = widget.options ??
+    final options =
+        widget.options ??
         ref
             .watch(booruBuilderProvider(widget.config.auth))
             ?.granularRatingOptionsBuilder

@@ -6,10 +6,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../../../core/configs/ref.dart';
-import '../../../../../../core/foundation/platform.dart';
 import '../../../../../../core/theme.dart';
 import '../../../../../../core/theme/providers.dart';
 import '../../../../../../core/widgets/widgets.dart';
+import '../../../../../../foundation/platform.dart';
 import '../../../ai/providers.dart';
 
 class TagEditAITagView extends ConsumerStatefulWidget {
@@ -98,27 +98,26 @@ class _TagEditAITagViewState extends ConsumerState<TagEditAITagView> {
                           style: TextStyle(
                             color: selected
                                 ? colors?.foregroundColor
-                                : Theme.of(context)
-                                    .colorScheme
-                                    .onSurfaceVariant,
+                                : Theme.of(
+                                    context,
+                                  ).colorScheme.onSurfaceVariant,
                             fontWeight: FontWeight.w500,
                           ),
                           children: [
                             TextSpan(
                               text: '  ${d.score}%',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall
+                              style: Theme.of(context).textTheme.bodySmall
                                   ?.copyWith(
                                     fontSize: 11,
                                     color: Theme.of(context).brightness.isLight
                                         ? !selected
-                                            ? null
-                                            : Colors.white
-                                                .withValues(alpha: 0.85)
-                                        : Theme.of(context)
-                                            .colorScheme
-                                            .hintColor,
+                                              ? null
+                                              : Colors.white.withValues(
+                                                  alpha: 0.85,
+                                                )
+                                        : Theme.of(
+                                            context,
+                                          ).colorScheme.hintColor,
                                   ),
                             ),
                           ],

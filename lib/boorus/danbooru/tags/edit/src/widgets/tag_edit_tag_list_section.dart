@@ -20,14 +20,14 @@ import '../../../../../../core/widgets/widgets.dart';
 import '../providers/tag_edit_notifier.dart';
 import 'tag_edit_tag_tile.dart';
 
-final tagEditFilteredListProvider =
-    Provider.autoDispose.family<List<String>, Set<String>>((ref, tags) {
-  final filter = ref.watch(tagEditCurrentFilterProvider);
+final tagEditFilteredListProvider = Provider.autoDispose
+    .family<List<String>, Set<String>>((ref, tags) {
+      final filter = ref.watch(tagEditCurrentFilterProvider);
 
-  if (filter.isEmpty) return tags.toList();
+      if (filter.isEmpty) return tags.toList();
 
-  return tags.where((tag) => tag.contains(filter)).toList();
-});
+      return tags.where((tag) => tag.contains(filter)).toList();
+    });
 
 class DanbooruTagEditColorNotifier
     extends FamilyNotifier<Map<String, ChipColors?>, BooruConfigAuth> {
@@ -89,19 +89,23 @@ class DanbooruTagEditColorNotifier
   }
 }
 
-final danbooruTagEditColorsProvider = NotifierProvider.family<
-    DanbooruTagEditColorNotifier, Map<String, ChipColors?>, BooruConfigAuth>(
-  DanbooruTagEditColorNotifier.new,
-  dependencies: [
-    _tagsProvider,
-    colorSchemeProvider,
-    settingsProvider,
-    tagColorProvider,
-    tagEditFilteredListProvider,
-    booruChipColorsProvider,
-  ],
-  name: 'danbooruTagEditColorsProvider',
-);
+final danbooruTagEditColorsProvider =
+    NotifierProvider.family<
+      DanbooruTagEditColorNotifier,
+      Map<String, ChipColors?>,
+      BooruConfigAuth
+    >(
+      DanbooruTagEditColorNotifier.new,
+      dependencies: [
+        _tagsProvider,
+        colorSchemeProvider,
+        settingsProvider,
+        tagColorProvider,
+        tagEditFilteredListProvider,
+        booruChipColorsProvider,
+      ],
+      name: 'danbooruTagEditColorsProvider',
+    );
 
 final _tagColorProvider = Provider.autoDispose.family<ChipColors?, String>(
   (ref, tag) {
@@ -177,8 +181,9 @@ class _SliverTagEditListViewState
   Widget build(BuildContext context) {
     final tags = ref.watch(_tagsProvider);
     final filtered = ref.watch(tagEditFilteredListProvider(tags));
-    final toBeAdded =
-        ref.watch(tagEditProvider.select((value) => value.toBeAdded));
+    final toBeAdded = ref.watch(
+      tagEditProvider.select((value) => value.toBeAdded),
+    );
 
     final notifier = ref.watch(tagEditProvider.notifier);
 
@@ -245,8 +250,8 @@ class TagEditFilterHeader extends ConsumerWidget {
           Text(
             '$tagCount tag${tagCount > 1 ? 's' : ''}',
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  fontSize: 20,
-                ),
+              fontSize: 20,
+            ),
           ),
           if (filterOn)
             Expanded(
@@ -262,9 +267,11 @@ class TagEditFilterHeader extends ConsumerWidget {
                           vertical: 8,
                         ),
                         hintText: 'Filter...',
-                        onChanged: (value) => ref
-                            .read(tagEditCurrentFilterProvider.notifier)
-                            .state = value,
+                        onChanged: (value) =>
+                            ref
+                                    .read(tagEditCurrentFilterProvider.notifier)
+                                    .state =
+                                value,
                       ),
                     ),
                     FilledButton(

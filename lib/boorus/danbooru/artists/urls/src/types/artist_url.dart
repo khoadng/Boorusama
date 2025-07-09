@@ -21,9 +21,8 @@ extension DanbooruArtistUrlX on DanbooruArtistUrl {
   DanbooruArtistUrl copyWith({
     String? url,
     bool? isActive,
-  }) =>
-      DanbooruArtistUrl(
-        url: url ?? this.url,
-        isActive: isActive ?? this.isActive,
-      );
+  }) => DanbooruArtistUrl(
+    url: url ?? this.url,
+    isActive: isActive ?? this.isActive,
+  );
 }

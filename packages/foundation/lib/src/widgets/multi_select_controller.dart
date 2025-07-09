@@ -2,11 +2,17 @@
 import 'package:flutter/foundation.dart';
 
 class MultiSelectController extends ChangeNotifier {
-  bool _multiSelectEnabled = false;
+  MultiSelectController({
+    bool initialMultiSelectEnabled = false,
+  }) : _multiSelectEnabled = initialMultiSelectEnabled;
+
+  bool _multiSelectEnabled;
   final Set<int> _selectedItems = <int>{};
 
   final ValueNotifier<Set<int>> selectedItemsNotifier = ValueNotifier({});
-  final ValueNotifier<bool> multiSelectNotifier = ValueNotifier(false);
+  late final ValueNotifier<bool> multiSelectNotifier = ValueNotifier(
+    _multiSelectEnabled,
+  );
 
   bool get multiSelectEnabled => _multiSelectEnabled;
 

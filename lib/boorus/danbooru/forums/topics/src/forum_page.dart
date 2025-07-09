@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 // Project imports:
@@ -24,39 +24,28 @@ class DanbooruForumPage extends ConsumerStatefulWidget {
 }
 
 class _DanbooruForumPageState extends ConsumerState<DanbooruForumPage> {
-  final pagingController = PagingController<int, DanbooruForumTopic>(
-    firstPageKey: 1,
+  late final pagingController = PagingController(
+    getNextPageKey: (state) =>
+        state.lastPageIsEmpty ? null : state.nextIntPageKey,
+    fetchPage: _fetchPage,
   );
 
-  @override
-  void initState() {
-    super.initState();
-    pagingController.addPageRequestListener(_fetchPage);
-  }
+  Future<List<DanbooruForumTopic>> _fetchPage(int pageKey) async {
+    try {
+      final config = ref.readConfigAuth;
+      final creatorsNotifier = ref.read(
+        danbooruCreatorsProvider(config).notifier,
+      );
 
-  @override
-  void dispose() {
-    pagingController.dispose();
-    super.dispose();
-  }
+      final topics = await ref
+          .read(danbooruForumTopicRepoProvider(config))
+          .getForumTopicsOrEmpty(pageKey);
 
-  Future<void> _fetchPage(int pageKey) async {
-    final config = ref.readConfigAuth;
-    final creatorsNotifier =
-        ref.read(danbooruCreatorsProvider(config).notifier);
+      await creatorsNotifier.load(topics.map((e) => e.creatorId).toList());
 
-    final topics = await ref
-        .read(danbooruForumTopicRepoProvider(config))
-        .getForumTopicsOrEmpty(pageKey);
-
-    await creatorsNotifier.load(topics.map((e) => e.creatorId).toList());
-
-    if (!mounted) return;
-
-    if (topics.isEmpty) {
-      pagingController.appendLastPage([]);
-    } else {
-      pagingController.appendPage(topics, pageKey + 1);
+      return topics;
+    } catch (e) {
+      throw Exception('Failed to fetch forum topics: $e');
     }
   }
 
@@ -64,17 +53,21 @@ class _DanbooruForumPageState extends ConsumerState<DanbooruForumPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('forum.forum').tr(),
+        title: Text(context.t.forum.forum),
       ),
       body: Container(
         padding: const EdgeInsets.symmetric(horizontal: 8),
-        child: PagedListView<int, DanbooruForumTopic>(
-          pagingController: pagingController,
-          builderDelegate: PagedChildBuilderDelegate<DanbooruForumTopic>(
-            itemBuilder: (context, topic, index) =>
-                DanbooruForumCard(topic: topic),
-            firstPageProgressIndicatorBuilder: (context) => _buildLoading(),
-            newPageProgressIndicatorBuilder: (context) => _buildLoading(),
+        child: PagingListener(
+          controller: pagingController,
+          builder: (context, state, fetchNextPage) => PagedListView(
+            state: state,
+            fetchNextPage: fetchNextPage,
+            builderDelegate: PagedChildBuilderDelegate<DanbooruForumTopic>(
+              itemBuilder: (context, topic, index) =>
+                  DanbooruForumCard(topic: topic),
+              firstPageProgressIndicatorBuilder: (context) => _buildLoading(),
+              newPageProgressIndicatorBuilder: (context) => _buildLoading(),
+            ),
           ),
         ),
       ),

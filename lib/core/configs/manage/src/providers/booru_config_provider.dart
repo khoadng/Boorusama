@@ -7,11 +7,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
+import '../../../../../foundation/loggers.dart';
+import '../../../../../foundation/utils/collection_utils.dart';
 import '../../../../analytics/analytics_interface.dart';
-import '../../../../analytics/analytics_providers.dart';
-import '../../../../foundation/loggers.dart';
+import '../../../../analytics/providers.dart';
 import '../../../../settings/providers.dart';
-import '../../../../utils/collection_utils.dart';
 import '../../../config/data.dart';
 import '../../../config/types.dart';
 import '../../../create/create.dart';
@@ -25,13 +25,13 @@ final booruConfigRepoProvider = Provider<BooruConfigRepository>(
 
 final booruConfigProvider =
     NotifierProvider<BooruConfigNotifier, List<BooruConfig>>(
-  () => throw UnimplementedError(),
-  dependencies: [
-    booruConfigRepoProvider,
-    settingsProvider,
-  ],
-  name: 'booruConfigProvider',
-);
+      () => throw UnimplementedError(),
+      dependencies: [
+        booruConfigRepoProvider,
+        settingsProvider,
+      ],
+      name: 'booruConfigProvider',
+    );
 
 class BooruConfigNotifier extends Notifier<List<BooruConfig>>
     with BooruConfigExportImportMixin {
@@ -147,8 +147,8 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>>
             ...baseParams,
             'delete_type': deleteCurrent
                 ? deleteFirst
-                    ? 'current_first'
-                    : 'current'
+                      ? 'current_first'
+                      : 'current'
                 : 'normal',
           },
         ),
@@ -180,8 +180,9 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>>
         return;
       }
 
-      final oldConfig =
-          state.firstWhereOrNull((element) => element.id == oldConfigId);
+      final oldConfig = state.firstWhereOrNull(
+        (element) => element.id == oldConfigId,
+      );
 
       final updatedConfig = await ref
           .read(booruConfigRepoProvider)
@@ -201,7 +202,9 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>>
       state = newConfigs;
       onSuccess?.call(updatedConfig);
 
-      ref.read(analyticsProvider).whenData(
+      ref
+          .read(analyticsProvider)
+          .whenData(
             (a) => a?.logEvent(
               'config_update',
               parameters: {
@@ -213,7 +216,9 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>>
           );
 
       if (oldConfig != null) {
-        ref.read(analyticsProvider).whenData(
+        ref
+            .read(analyticsProvider)
+            .whenData(
               (a) => a?.logConfigChangedEvent(
                 oldValue: oldConfig,
                 newValue: updatedConfig,
@@ -251,7 +256,9 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>>
 
       await _add(config);
 
-      ref.read(analyticsProvider).whenData(
+      ref
+          .read(analyticsProvider)
+          .whenData(
             (a) => a?.logEvent(
               'site_add',
               parameters: {
@@ -259,16 +266,18 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>>
                 'total_sites': state.length,
                 'hint_site': config.auth.booruType.name,
                 'has_login': config.apiKey.toOption().fold(
-                      () => false,
-                      (a) => a.isNotEmpty,
-                    ),
+                  () => false,
+                  (a) => a.isNotEmpty,
+                ),
                 'is_copy': isCopy ?? false,
               },
             ),
           );
 
       if (initialConfig != null) {
-        ref.read(analyticsProvider).whenData(
+        ref
+            .read(analyticsProvider)
+            .whenData(
               (a) => a?.logConfigChangedEvent(
                 oldValue: initialConfig,
                 newValue: config,
@@ -302,10 +311,11 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>>
     Iterable<BooruConfig> orderedConfigs,
   ) {
     final orders = ref.read(settingsProvider).booruConfigIdOrderList;
-    final newOrders = orders.isEmpty || orders.length != orderedConfigs.length
-        ? [for (final config in orderedConfigs) config.id]
-        : orders.toList()
-      ..reorder(oldIndex, newIndex);
+    final newOrders =
+        orders.isEmpty || orders.length != orderedConfigs.length
+              ? [for (final config in orderedConfigs) config.id]
+              : orders.toList()
+          ..reorder(oldIndex, newIndex);
 
     updateOrder(newOrders);
   }
@@ -330,12 +340,16 @@ extension BooruConfigNotifierX on BooruConfigNotifier {
     BooruConfig? initialData,
   }) {
     if (id.isNew) {
-      ref.read(booruConfigProvider.notifier).add(
+      ref
+          .read(booruConfigProvider.notifier)
+          .add(
             data: newConfig,
             initialConfig: initialData,
           );
     } else {
-      ref.read(booruConfigProvider.notifier).update(
+      ref
+          .read(booruConfigProvider.notifier)
+          .update(
             booruConfigData: newConfig,
             oldConfigId: id.id,
             onSuccess: (booruConfig) {

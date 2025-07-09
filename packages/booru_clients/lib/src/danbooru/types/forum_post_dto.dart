@@ -15,19 +15,20 @@ class ForumPostDto {
   });
 
   factory ForumPostDto.fromJson(Map<String, dynamic> json) => ForumPostDto(
-        id: json['id'],
-        createdAt: json['created_at'],
-        updatedAt: json['updated_at'],
-        body: json['body'],
-        isDeleted: json['is_deleted'],
-        topicId: json['topic_id'],
-        creatorId: json['creator_id'],
-        updaterId: json['updater_id'],
-        votes: json['votes'] != null
-            ? List<ForumPostVoteDto>.from(
-                json['votes'].map((x) => ForumPostVoteDto.fromJson(x)))
-            : null,
-      );
+    id: json['id'],
+    createdAt: json['created_at'],
+    updatedAt: json['updated_at'],
+    body: json['body'],
+    isDeleted: json['is_deleted'],
+    topicId: json['topic_id'],
+    creatorId: json['creator_id'],
+    updaterId: json['updater_id'],
+    votes: json['votes'] != null
+        ? List<ForumPostVoteDto>.from(
+            json['votes'].map((x) => ForumPostVoteDto.fromJson(x)),
+          )
+        : null,
+  );
 
   final int? id;
   final String? createdAt;

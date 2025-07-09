@@ -1,7 +1,7 @@
 // Project imports:
 import 'boot.dart';
-import 'core/foundation/boot.dart';
-import 'core/foundation/iap/iap.dart';
+import 'foundation/boot.dart';
+import 'foundation/iap/iap.dart';
 
 void main() async {
   await initializeApp(

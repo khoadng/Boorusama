@@ -15,7 +15,7 @@ String defaultImageQualityMapper(
     ImageQuality.highest =>
       post.isVideo ? post.thumbnailImageUrl : post.sampleImageUrl,
     ImageQuality.original =>
-      post.isVideo ? post.thumbnailImageUrl : post.originalImageUrl
+      post.isVideo ? post.thumbnailImageUrl : post.originalImageUrl,
   };
 }
 
@@ -28,7 +28,7 @@ String defaultGifImageQualityMapper(
     ImageQuality.low => post.thumbnailImageUrl,
     ImageQuality.high => post.sampleImageUrl,
     ImageQuality.highest => post.sampleImageUrl,
-    ImageQuality.original => post.originalImageUrl
+    ImageQuality.original => post.originalImageUrl,
   };
 }
 

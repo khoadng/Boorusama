@@ -1,5 +1,5 @@
 // Project imports:
-import '../../../foundation/loggers.dart';
+import '../../../../foundation/loggers.dart';
 import '../../local/tag_cache_repository.dart';
 import '../../local/tag_info.dart';
 import 'tag_type_store.dart';

@@ -14,7 +14,9 @@ class InvalidBooruWarningContainer extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
 
-    return ref.watch(validateConfigProvider).maybeWhen(
+    return ref
+        .watch(validateConfigProvider)
+        .maybeWhen(
           orElse: () => const SizedBox(),
           data: (value) => value == false
               ? WarningContainer(

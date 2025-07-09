@@ -19,7 +19,8 @@ class SearchPage extends ConsumerWidget {
     final booruBuilder = ref.watch(booruBuilderProvider(ref.watchConfigAuth));
     final builder = booruBuilder?.searchPageBuilder;
 
-    final params = InheritedInitialSearchQuery.maybeOf(context)?.params ??
+    final params =
+        InheritedInitialSearchQuery.maybeOf(context)?.params ??
         const SearchParams();
 
     return builder != null

@@ -25,11 +25,11 @@ class MigrationStartedEvent extends MigrationEvent {
 
   @override
   List<Object?> get props => [
-        ...super.props,
-        fromVersion,
-        targetVersion,
-        totalSteps,
-      ];
+    ...super.props,
+    fromVersion,
+    targetVersion,
+    totalSteps,
+  ];
 }
 
 class MigrationStepEvent extends MigrationEvent {
@@ -45,11 +45,11 @@ class MigrationStepEvent extends MigrationEvent {
 
   @override
   List<Object?> get props => [
-        ...super.props,
-        version,
-        currentStep,
-        totalSteps,
-      ];
+    ...super.props,
+    version,
+    currentStep,
+    totalSteps,
+  ];
 }
 
 class MigrationCompletedEvent extends MigrationEvent {
@@ -63,10 +63,10 @@ class MigrationCompletedEvent extends MigrationEvent {
 
   @override
   List<Object?> get props => [
-        ...super.props,
-        finalVersion,
-        duration,
-      ];
+    ...super.props,
+    finalVersion,
+    duration,
+  ];
 }
 
 class MigrationFailedEvent extends MigrationEvent {
@@ -80,10 +80,10 @@ class MigrationFailedEvent extends MigrationEvent {
 
   @override
   List<Object?> get props => [
-        ...super.props,
-        version,
-        error,
-      ];
+    ...super.props,
+    version,
+    error,
+  ];
 }
 
 abstract class ProgressListener {

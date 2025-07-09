@@ -150,14 +150,14 @@ class TagIdolDto {
   });
 
   factory TagIdolDto.fromJson(Map<String, dynamic> json) => TagIdolDto(
-        id: SankakuId.maybeFrom(json['id']),
-        name: json['name'],
-        nameEn: json['name_en'],
-        nameJa: json['name_ja'],
-        count: json['count'],
-        type: json['type'],
-        rating: json['rating'],
-      );
+    id: SankakuId.maybeFrom(json['id']),
+    name: json['name'],
+    nameEn: json['name_en'],
+    nameJa: json['name_ja'],
+    count: json['count'],
+    type: json['type'],
+    rating: json['rating'],
+  );
 
   final SankakuId? id;
   final String? name;
@@ -196,30 +196,30 @@ class TagCountsDto {
   });
 
   factory TagCountsDto.fromJson(Map<String, dynamic> json) => TagCountsDto(
-        meta: json['meta'],
-        pose: json['pose'],
-        role: json['role'],
-        fauna: json['fauna'],
-        flora: json['flora'],
-        genre: json['genre'],
-        tagme: json['tagme'],
-        total: json['total'],
-        artist: json['artist'],
-        entity: json['entity'],
-        medium: json['medium'],
-        object: json['object'],
-        studio: json['studio'],
-        anatomy: json['anatomy'],
-        fashion: json['fashion'],
-        general: json['general'],
-        setting: json['setting'],
-        activity: json['activity'],
-        language: json['language'],
-        automatic: json['automatic'],
-        character: json['character'],
-        copyright: json['copyright'],
-        substance: json['substance'],
-      );
+    meta: json['meta'],
+    pose: json['pose'],
+    role: json['role'],
+    fauna: json['fauna'],
+    flora: json['flora'],
+    genre: json['genre'],
+    tagme: json['tagme'],
+    total: json['total'],
+    artist: json['artist'],
+    entity: json['entity'],
+    medium: json['medium'],
+    object: json['object'],
+    studio: json['studio'],
+    anatomy: json['anatomy'],
+    fashion: json['fashion'],
+    general: json['general'],
+    setting: json['setting'],
+    activity: json['activity'],
+    language: json['language'],
+    automatic: json['automatic'],
+    character: json['character'],
+    copyright: json['copyright'],
+    substance: json['substance'],
+  );
 
   final int? meta;
   final int? pose;
@@ -262,10 +262,10 @@ class MicroPostIdolDto {
       id: SankakuId.maybeFrom(json['id']),
       tags: tags is String
           ? tags
-              .split(' ')
-              .where((t) => t.isNotEmpty)
-              .map((t) => t.trim())
-              .toList()
+                .split(' ')
+                .where((t) => t.isNotEmpty)
+                .map((t) => t.trim())
+                .toList()
           : null,
       author: json['author'],
       rating: json['rating'],

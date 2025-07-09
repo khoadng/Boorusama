@@ -2,10 +2,10 @@
 import 'package:test/test.dart';
 
 // Project imports:
-import 'package:boorusama/core/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/posts/filter/src/check_tag.dart';
 import 'package:boorusama/core/posts/filter/src/tag_filter_data.dart';
 import 'package:boorusama/core/posts/rating/rating.dart';
+import 'package:boorusama/core/tags/autocompletes/types.dart';
 
 void main() {
   final simpleTestData = {'a', 'b', 'c'}.toTagFilterData();
@@ -158,16 +158,18 @@ void main() {
     });
 
     group('NOT operator', () {
-      test('should match when required tags exist and excluded tags do not',
-          () {
-        expect(
-          checkIfTagsContainsRawTagExpression(
-            {'a', 'b', 'q', 'w'}.toTagFilterData(),
-            'a b -c -d',
-          ),
-          true,
-        );
-      });
+      test(
+        'should match when required tags exist and excluded tags do not',
+        () {
+          expect(
+            checkIfTagsContainsRawTagExpression(
+              {'a', 'b', 'q', 'w'}.toTagFilterData(),
+              'a b -c -d',
+            ),
+            true,
+          );
+        },
+      );
 
       test('should not match when excluded tags exist', () {
         expect(
@@ -225,21 +227,25 @@ void main() {
         );
       });
 
-      test('should not match when required tag exists but no OR tags match',
-          () {
-        expect(
-          checkIfTagsContainsRawTagExpression(simpleTestData, 'a ~d ~e'),
-          false,
-        );
-      });
+      test(
+        'should not match when required tag exists but no OR tags match',
+        () {
+          expect(
+            checkIfTagsContainsRawTagExpression(simpleTestData, 'a ~d ~e'),
+            false,
+          );
+        },
+      );
 
-      test('should not match when OR tags exist but required tag is missing',
-          () {
-        expect(
-          checkIfTagsContainsRawTagExpression(simpleTestData, 'd ~a ~b'),
-          false,
-        );
-      });
+      test(
+        'should not match when OR tags exist but required tag is missing',
+        () {
+          expect(
+            checkIfTagsContainsRawTagExpression(simpleTestData, 'd ~a ~b'),
+            false,
+          );
+        },
+      );
 
       test('should not match when both required and OR tags are missing', () {
         expect(
@@ -704,8 +710,7 @@ void main() {
       );
     });
 
-    test('should return false for uploaderid metatag with non-numeric value',
-        () {
+    test('should return false for uploaderid metatag with non-numeric value', () {
       // "uploaderid:abc" yields uploader id -1, so evaluation returns false unless "-1" is in tags.
       final data = TagFilterData(
         tags: {'uploaderid:abc'},

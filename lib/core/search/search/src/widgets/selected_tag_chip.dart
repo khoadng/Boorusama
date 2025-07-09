@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import '../../../../../foundation/utils/flutter_utils.dart';
 import '../../../../tags/tag/colors.dart';
-import '../../../../utils/flutter_utils.dart';
 import '../../../queries/filter_operator.dart';
 import '../../../selected_tags/tag_search_item.dart';
 import '../pages/selected_tag_edit_dialog.dart';

@@ -3,18 +3,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
-import '../../../autocompletes/autocompletes.dart';
 import '../../../blacklists/blacklist.dart';
+import '../../../comments/types.dart';
 import '../../../configs/config.dart';
 import '../../../configs/create/create.dart';
-import '../../../downloads/filename.dart';
-import '../../../downloads/urls.dart';
+import '../../../downloads/filename/types.dart';
+import '../../../downloads/urls/types.dart';
 import '../../../notes/notes.dart';
 import '../../../posts/count/count.dart';
-import '../../../posts/favorites/providers.dart';
+import '../../../posts/favorites/types.dart';
 import '../../../posts/listing/list.dart';
 import '../../../posts/post/post.dart';
 import '../../../search/queries/query.dart';
+import '../../../tags/autocompletes/types.dart';
 import '../../../tags/tag/colors.dart';
 import '../../../tags/tag/tag.dart';
 
@@ -37,4 +38,6 @@ abstract class BooruRepository {
   TagColorGenerator tagColorGenerator();
   DownloadFilenameGenerator downloadFilenameBuilder(BooruConfigAuth config);
   TextMatcher? queryMatcher(BooruConfigAuth config);
+  TagExtractor tagExtractor(BooruConfigAuth config);
+  CommentRepository comment(BooruConfigAuth config);
 }

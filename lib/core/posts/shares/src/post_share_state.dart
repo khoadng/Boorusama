@@ -10,9 +10,7 @@ class PostShareState extends Equatable {
     required this.sourceLink,
   });
 
-  PostShareState.initial()
-      : booruLink = '',
-        sourceLink = PostSource.none();
+  PostShareState.initial() : booruLink = '', sourceLink = PostSource.none();
 
   final String booruLink;
   final PostSource sourceLink;

@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../widgets/widgets.dart';
@@ -22,7 +22,7 @@ class TimeScaleToggleSwitch extends StatelessWidget {
       child: BooruSegmentedButton(
         segments: {
           for (final entry in TimeScale.values)
-            entry: _timeScaleToString(entry).tr(),
+            entry: _timeScaleToString(context, entry),
         },
         initialValue: TimeScale.day,
         onChanged: (value) => onToggle(value),
@@ -31,8 +31,9 @@ class TimeScaleToggleSwitch extends StatelessWidget {
   }
 }
 
-String _timeScaleToString(TimeScale scale) => switch (scale) {
-      TimeScale.month => 'dateRange.month',
-      TimeScale.week => 'dateRange.week',
-      TimeScale.day => 'dateRange.day'
+String _timeScaleToString(BuildContext context, TimeScale scale) =>
+    switch (scale) {
+      TimeScale.month => context.t.dateRange.month,
+      TimeScale.week => context.t.dateRange.week,
+      TimeScale.day => context.t.dateRange.day,
     };

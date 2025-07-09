@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
-import '../../foundation/networking.dart';
+import '../../../foundation/networking.dart';
 import '../../theme/app_theme.dart';
 import 'export_data_notifier.dart';
 
@@ -30,20 +31,22 @@ class _ExportDataPageState extends ConsumerState<ExportDataPage> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Transfer data'),
+          title: Text('Transfer data'.hc),
         ),
         body: Padding(
           padding: const EdgeInsets.symmetric(
             horizontal: 12,
           ),
           child: connectedToWifi
-              ? ref.watch(exportDataProvider).when(
-                    data: (data) => _buildBody(data),
-                    error: (error, _) => Text('Error: $error'),
-                    loading: () => const Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  )
+              ? ref
+                    .watch(exportDataProvider)
+                    .when(
+                      data: (data) => _buildBody(data),
+                      error: (error, _) => Text('Error: $error'),
+                      loading: () => const Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    )
               : Center(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
@@ -54,12 +57,13 @@ class _ExportDataPageState extends ConsumerState<ExportDataPage> {
                       textAlign: TextAlign.center,
                       text: TextSpan(
                         style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                              color: Theme.of(context).colorScheme.hintColor,
-                            ),
-                        children: const [
+                          color: Theme.of(context).colorScheme.hintColor,
+                        ),
+                        children: [
                           TextSpan(
                             text:
-                                'WiFi connection required to transfer data. Please connect to a WiFi network and try again.',
+                                'WiFi connection required to transfer data. Please connect to a WiFi network and try again.'
+                                    .hc,
                           ),
                         ],
                       ),
@@ -169,8 +173,9 @@ class _ExportDataPageState extends ConsumerState<ExportDataPage> {
                           horizontal: 8,
                         ),
                         decoration: BoxDecoration(
-                          color:
-                              colorScheme.errorContainer.withValues(alpha: 0.2),
+                          color: colorScheme.errorContainer.withValues(
+                            alpha: 0.2,
+                          ),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Row(

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
@@ -91,7 +91,7 @@ class _SelectedTagEditDialogState extends ConsumerState<SelectedTagEditDialog> {
               },
               decoration: InputDecoration(
                 suffixIcon: TextButton(
-                  child: const Text('generic.action.ok').tr(),
+                  child: Text(context.t.generic.action.ok),
                   onPressed: () => _submit(context),
                 ),
               ),
@@ -100,7 +100,7 @@ class _SelectedTagEditDialogState extends ConsumerState<SelectedTagEditDialog> {
         ),
         ValueListenableBuilder(
           valueListenable: controller,
-          builder: (_, query, __) {
+          builder: (_, query, _) {
             final currentQuery = query.text.lastQuery;
 
             if (currentQuery == null) return const SizedBox.shrink();
@@ -111,7 +111,7 @@ class _SelectedTagEditDialogState extends ConsumerState<SelectedTagEditDialog> {
 
             return ValueListenableBuilder(
               valueListenable: showSuggestions,
-              builder: (_, show, __) {
+              builder: (_, show, _) {
                 if (!show) return const SizedBox.shrink();
 
                 return Flexible(

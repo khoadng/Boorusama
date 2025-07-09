@@ -10,19 +10,19 @@ import 'hive/tag_repository.dart';
 
 final globalBlacklistedTagRepoProvider =
     FutureProvider<GlobalBlacklistedTagRepository>(
-  (ref) async {
-    final adapter = BlacklistedTagHiveObjectAdapter();
+      (ref) async {
+        final adapter = BlacklistedTagHiveObjectAdapter();
 
-    if (!Hive.isAdapterRegistered(adapter.typeId)) {
-      Hive.registerAdapter(adapter);
-    }
+        if (!Hive.isAdapterRegistered(adapter.typeId)) {
+          Hive.registerAdapter(adapter);
+        }
 
-    final dbPath = await ref.watch(dbPathProvider.future);
+        final dbPath = await ref.watch(dbPathProvider.future);
 
-    final globalBlacklistedTags = HiveBlacklistedTagRepository();
-    await globalBlacklistedTags.init(dbPath);
+        final globalBlacklistedTags = HiveBlacklistedTagRepository();
+        await globalBlacklistedTags.init(dbPath);
 
-    return globalBlacklistedTags;
-  },
-  name: 'globalBlacklistedTagRepoProvider',
-);
+        return globalBlacklistedTags;
+      },
+      name: 'globalBlacklistedTagRepoProvider',
+    );

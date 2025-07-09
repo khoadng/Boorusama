@@ -2,17 +2,13 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../../utils/flutter_utils.dart';
+import '../../../../../foundation/utils/flutter_utils.dart';
 
-typedef HiddenData = ({
-  String name,
-  int count,
-  bool active,
-});
+typedef HiddenData = ({String name, int count, bool active});
 
 class PostListConfigurationHeader extends StatefulWidget {
   const PostListConfigurationHeader({
@@ -88,9 +84,9 @@ class _PostListConfigurationHeaderState
                     return Row(
                       children: [
                         const SizedBox(width: 8),
-                        const Text(
-                          'blacklisted_tags.blacklisted_header_title',
-                        ).tr(),
+                        Text(
+                          context.t.blacklisted_tags.blacklisted_header_title,
+                        ),
                         if (constraints.maxWidth > 250)
                           const SizedBox(width: 8),
                         if (widget.hiddenCount != null)

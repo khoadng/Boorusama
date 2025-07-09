@@ -18,42 +18,43 @@ import 'tag_cloud.dart';
 
 const _kTagCloudTotal = 30;
 
-final danbooruRelatedTagCloudProvider =
-    FutureProvider.autoDispose.family<List<DanbooruRelatedTagItem>, String>(
-  (ref, tag) async {
-    final repo = ref.watch(danbooruRelatedTagRepProvider(ref.watchConfigAuth));
-    final relatedTag = await repo.getRelatedTag(tag);
+final danbooruRelatedTagCloudProvider = FutureProvider.autoDispose
+    .family<List<DanbooruRelatedTagItem>, String>(
+      (ref, tag) async {
+        final repo = ref.watch(
+          danbooruRelatedTagRepProvider(ref.watchConfigAuth),
+        );
+        final relatedTag = await repo.getRelatedTag(tag);
 
-    final sorted = relatedTag.tags.sorted(
-      (a, b) => b.cosineSimilarity.compareTo(a.cosineSimilarity),
+        final sorted = relatedTag.tags.sorted(
+          (a, b) => b.cosineSimilarity.compareTo(a.cosineSimilarity),
+        );
+
+        return sorted.take(_kTagCloudTotal).toList();
+      },
     );
 
-    return sorted.take(_kTagCloudTotal).toList();
-  },
-);
+typedef TagColorParams = ({String categories, BooruConfigAuth auth});
 
-typedef TagColorParams = ({
-  String categories,
-  BooruConfigAuth auth,
-});
+final _tagCategoryColorsProvider = FutureProvider.autoDispose
+    .family<Map<String, Color?>, TagColorParams>(
+      (ref, params) async {
+        final colors = <String, Color?>{};
 
-final _tagCategoryColorsProvider =
-    FutureProvider.autoDispose.family<Map<String, Color?>, TagColorParams>(
-  (ref, params) async {
-    final colors = <String, Color?>{};
+        final categories = params.categories.split('|');
 
-    final categories = params.categories.split('|');
+        for (final category in categories) {
+          colors[category] = ref.watch(
+            tagColorProvider((params.auth, category)),
+          );
+        }
 
-    for (final category in categories) {
-      colors[category] = ref.watch(tagColorProvider((params.auth, category)));
-    }
-
-    return colors;
-  },
-  dependencies: [
-    tagColorProvider,
-  ],
-);
+        return colors;
+      },
+      dependencies: [
+        tagColorProvider,
+      ],
+    );
 
 class ArtistTagCloud extends ConsumerWidget {
   const ArtistTagCloud({
@@ -67,7 +68,9 @@ class ArtistTagCloud extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return ref.watch(danbooruRelatedTagCloudProvider(tagName)).when(
+    return ref
+        .watch(danbooruRelatedTagCloudProvider(tagName))
+        .when(
           data: (tags) {
             if (tags.isEmpty) return const SizedBox.shrink();
 
@@ -80,7 +83,9 @@ class ArtistTagCloud extends ConsumerWidget {
               auth: ref.watchConfigAuth,
             );
 
-            return ref.watch(_tagCategoryColorsProvider(params)).when(
+            return ref
+                .watch(_tagCategoryColorsProvider(params))
+                .when(
                   data: (tagColors) => TagCloud(
                     scaleFactor: scaleFactor,
                     itemCount: tags.length,
@@ -91,7 +96,7 @@ class ArtistTagCloud extends ConsumerWidget {
                         tag: tags[i].tag,
                         color: tagColors[tags[i].category.name],
                         onPressed: () => goToSearchPage(
-                          context,
+                          ref,
                           tag: tags[i].tag,
                         ),
                       ),

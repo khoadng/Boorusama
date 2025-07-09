@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 import 'package:version/version.dart';
 
 // Project imports:
@@ -45,9 +46,9 @@ class VersionMismatchAlertDialog extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             const SizedBox(height: 20),
-            const Text(
-              'Importing from a different version detected',
-              style: TextStyle(
+            Text(
+              'Importing from a different version detected'.hc,
+              style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w700,
               ),
@@ -61,7 +62,7 @@ class VersionMismatchAlertDialog extends ConsumerWidget {
                   color: Theme.of(context).colorScheme.hintColor,
                 ),
                 children: [
-                  const TextSpan(text: 'Current version: '),
+                  TextSpan(text: 'Current version: '.hc),
                   TextSpan(
                     text: currentVersion.toString(),
                     style: const TextStyle(
@@ -79,7 +80,7 @@ class VersionMismatchAlertDialog extends ConsumerWidget {
                   color: Theme.of(context).colorScheme.hintColor,
                 ),
                 children: [
-                  const TextSpan(text: 'Import version: '),
+                  TextSpan(text: 'Import version: '.hc),
                   TextSpan(
                     text: importVersion.toString(),
                     style: const TextStyle(
@@ -90,11 +91,10 @@ class VersionMismatchAlertDialog extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: 20),
-            const Text(
-              'The app version of the device you are trying to import is different from the current version of the app.'
-              ' This may cause compatibility issues and potential data loss.'
-              '\n\nAre you sure you want to continue?',
-              style: TextStyle(
+            Text(
+              'The app version of the device you are trying to import is different from the current version of the app. This may cause compatibility issues and potential data loss. \n\nAre you sure you want to continue?'
+                  .hc,
+              style: const TextStyle(
                 fontWeight: FontWeight.w400,
                 fontSize: 14,
               ),
@@ -112,7 +112,7 @@ class VersionMismatchAlertDialog extends ConsumerWidget {
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 14),
                 child: Text(
-                  'Sure',
+                  'Sure'.hc,
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.onErrorContainer,
                     fontWeight: FontWeight.w600,
@@ -128,7 +128,7 @@ class VersionMismatchAlertDialog extends ConsumerWidget {
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 14),
                 child: Text(
-                  'Cancel',
+                  context.t.generic.action.cancel,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     color: Theme.of(context).colorScheme.onSurface,

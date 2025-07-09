@@ -1,5 +1,5 @@
 // Project imports:
-import '../../../foundation/loggers.dart';
+import '../../../../foundation/loggers.dart';
 import '../types/settings.dart';
 import '../types/settings_repository.dart';
 

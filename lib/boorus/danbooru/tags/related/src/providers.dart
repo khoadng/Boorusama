@@ -8,7 +8,7 @@ import '../../../../../core/configs/ref.dart';
 import '../../../../../core/tags/categories/providers.dart';
 import '../../../../../core/tags/categories/tag_category.dart';
 import '../../../../../core/tags/tag/tag.dart';
-import '../../../danbooru_provider.dart';
+import '../../../client_provider.dart';
 import 'danbooru_related_tag.dart';
 import 'related_tag_repository.dart';
 
@@ -16,57 +16,59 @@ const _kTagLimit = 300;
 
 final danbooruRelatedTagRepProvider =
     Provider.family<RelatedTagRepository, BooruConfigAuth>((ref, config) {
-  final client = ref.watch(danbooruClientProvider(config));
+      final client = ref.watch(danbooruClientProvider(config));
 
-  return RelatedTagRepositoryBuilder(
-    fetch: (query, {category, order, limit}) async {
-      final related = await client
-          .getRelatedTag(
-            query: query,
-            category: _toDanbooruTagCategory(category),
-            order: switch (order) {
-              RelatedType.cosine => danbooru.RelatedType.cosine,
-              RelatedType.jaccard => danbooru.RelatedType.jaccard,
-              RelatedType.overlap => danbooru.RelatedType.overlap,
-              RelatedType.frequency => danbooru.RelatedType.frequency,
-              null => null,
-            },
-            limit: limit ?? _kTagLimit,
-          )
-          .then(relatedTagDtoToRelatedTag)
-          .catchError((obj) => const DanbooruRelatedTag.empty());
+      return RelatedTagRepositoryBuilder(
+        fetch: (query, {category, order, limit}) async {
+          final related = await client
+              .getRelatedTag(
+                query: query,
+                category: _toDanbooruTagCategory(category),
+                order: switch (order) {
+                  RelatedType.cosine => danbooru.RelatedType.cosine,
+                  RelatedType.jaccard => danbooru.RelatedType.jaccard,
+                  RelatedType.overlap => danbooru.RelatedType.overlap,
+                  RelatedType.frequency => danbooru.RelatedType.frequency,
+                  null => null,
+                },
+                limit: limit ?? _kTagLimit,
+              )
+              .then(relatedTagDtoToRelatedTag)
+              .catchError((obj) => const DanbooruRelatedTag.empty());
 
-      final tagTypeStore = await ref.watch(booruTagTypeStoreProvider.future);
+          final tagTypeStore = await ref.watch(
+            booruTagTypeStoreProvider.future,
+          );
 
-      await tagTypeStore.saveTagIfNotExist(
-        config.url,
-        related.tags
-            .map(
-              (e) => Tag(
-                name: e.tag,
-                category: e.category,
-                postCount: e.postCount,
-              ),
-            )
-            .toList(),
+          await tagTypeStore.saveTagIfNotExist(
+            config.url,
+            related.tags
+                .map(
+                  (e) => Tag(
+                    name: e.tag,
+                    category: e.category,
+                    postCount: e.postCount,
+                  ),
+                )
+                .toList(),
+          );
+
+          return related;
+        },
       );
-
-      return related;
-    },
-  );
-});
+    });
 
 final danbooruRelatedTagProvider = FutureProvider.autoDispose
     .family<DanbooruRelatedTag, String>((ref, tag) async {
-  if (tag.isEmpty) return const DanbooruRelatedTag.empty();
+      if (tag.isEmpty) return const DanbooruRelatedTag.empty();
 
-  final config = ref.watchConfigAuth;
+      final config = ref.watchConfigAuth;
 
-  final repo = ref.watch(danbooruRelatedTagRepProvider(config));
-  final relatedTag = await repo.getRelatedTag(tag);
+      final repo = ref.watch(danbooruRelatedTagRepProvider(config));
+      final relatedTag = await repo.getRelatedTag(tag);
 
-  return relatedTag;
-});
+      return relatedTag;
+    });
 
 final danbooruWikiTagsProvider = FutureProvider.family<List<Tag>, String>(
   (ref, tag) async {
@@ -95,14 +97,19 @@ final danbooruRelatedTagsProvider = FutureProvider.family<List<Tag>, String>(
     final repo = ref.watch(danbooruRelatedTagRepProvider(ref.watchConfigAuth));
     final related = await repo.getRelatedTag(tag, limit: 30);
 
-    final tags = related.tags
-        .map(
-          (e) => Tag(name: e.tag, category: e.category, postCount: e.postCount),
-        )
-        .toList()
-      ..sort(
-        (a, b) => (a.category.order ?? 0).compareTo(b.category.order ?? 0),
-      );
+    final tags =
+        related.tags
+            .map(
+              (e) => Tag(
+                name: e.tag,
+                category: e.category,
+                postCount: e.postCount,
+              ),
+            )
+            .toList()
+          ..sort(
+            (a, b) => (a.category.order ?? 0).compareTo(b.category.order ?? 0),
+          );
 
     return tags;
   },
@@ -129,7 +136,8 @@ danbooru.TagCategory? _toDanbooruTagCategory(TagCategory? category) {
 DanbooruRelatedTag relatedTagDtoToRelatedTag(danbooru.RelatedTagDto dto) =>
     DanbooruRelatedTag(
       query: dto.query ?? '',
-      wikiPageTags: dto.wikiPageTags
+      wikiPageTags:
+          dto.wikiPageTags
               ?.map(
                 (e) => Tag(
                   name: e.name ?? '',
@@ -141,17 +149,17 @@ DanbooruRelatedTag relatedTagDtoToRelatedTag(danbooru.RelatedTagDto dto) =>
           [],
       tags: dto.relatedTags != null
           ? dto.relatedTags!
-              .map(
-                (e) => DanbooruRelatedTagItem(
-                  tag: e.tag?.name ?? '',
-                  category: TagCategory.fromLegacyId(e.tag?.category),
-                  jaccardSimilarity: e.jaccardSimilarity ?? 0.0,
-                  cosineSimilarity: e.cosineSimilarity ?? 0.0,
-                  overlapCoefficient: e.overlapCoefficient ?? 0.0,
-                  frequency: e.frequency ?? 0,
-                  postCount: e.tag?.postCount ?? 0,
-                ),
-              )
-              .toList()
+                .map(
+                  (e) => DanbooruRelatedTagItem(
+                    tag: e.tag?.name ?? '',
+                    category: TagCategory.fromLegacyId(e.tag?.category),
+                    jaccardSimilarity: e.jaccardSimilarity ?? 0.0,
+                    cosineSimilarity: e.cosineSimilarity ?? 0.0,
+                    overlapCoefficient: e.overlapCoefficient ?? 0.0,
+                    frequency: e.frequency ?? 0,
+                    postCount: e.tag?.postCount ?? 0,
+                  ),
+                )
+                .toList()
           : [],
     );

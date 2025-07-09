@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../settings/providers.dart';
@@ -38,8 +39,8 @@ class TransferDataDialog extends ConsumerWidget {
         child: switch (step) {
           ImportStep.selection => SelectDataStep(url: url),
           _ => ImportingStep(
-              url: url,
-            ),
+            url: url,
+          ),
         },
       ),
     );
@@ -64,19 +65,21 @@ class ImportingStep extends ConsumerWidget {
 
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final reloadPayload =
-        ref.watch(importDataProvider(url).select((s) => s.reloadPayload));
-    final forceRestart =
-        ref.watch(importDataProvider(url).select((s) => s.forceReload));
+    final reloadPayload = ref.watch(
+      importDataProvider(url).select((s) => s.reloadPayload),
+    );
+    final forceRestart = ref.watch(
+      importDataProvider(url).select((s) => s.forceReload),
+    );
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         const SizedBox(height: 12),
-        const Text(
-          'Importing...',
-          style: TextStyle(
+        Text(
+          'Importing...'.hc,
+          style: const TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.w700,
           ),
@@ -92,61 +95,61 @@ class ImportingStep extends ConsumerWidget {
                 return switch (task.importStatus) {
                   ImportNotStarted _ => Text(task.name),
                   Importing _ => Row(
-                      children: [
-                        const SizedBox(
-                          width: 12,
-                          height: 12,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                          ),
+                    children: [
+                      const SizedBox(
+                        width: 12,
+                        height: 12,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
                         ),
-                        const SizedBox(width: 16),
-                        Text(task.name),
-                      ],
-                    ),
+                      ),
+                      const SizedBox(width: 16),
+                      Text(task.name),
+                    ],
+                  ),
                   ImportQueued _ => Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(width: 28),
-                        Text(
-                          task.name,
-                          style: TextStyle(
-                            color: colorScheme.hintColor,
-                          ),
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(width: 28),
+                      Text(
+                        task.name,
+                        style: TextStyle(
+                          color: colorScheme.hintColor,
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
+                  ),
                   final ImportError error => Row(
-                      children: [
-                        Icon(
-                          Icons.close,
+                    children: [
+                      Icon(
+                        Icons.close,
+                        color: colorScheme.error,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(task.name),
+                      const SizedBox(width: 8),
+                      Tooltip(
+                        message: error.message,
+                        triggerMode: TooltipTriggerMode.tap,
+                        showDuration: const Duration(seconds: 5),
+                        child: Icon(
+                          Icons.error,
+                          size: 16,
                           color: colorScheme.error,
                         ),
-                        const SizedBox(width: 4),
-                        Text(task.name),
-                        const SizedBox(width: 8),
-                        Tooltip(
-                          message: error.message,
-                          triggerMode: TooltipTriggerMode.tap,
-                          showDuration: const Duration(seconds: 5),
-                          child: Icon(
-                            Icons.error,
-                            size: 16,
-                            color: colorScheme.error,
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
+                  ),
                   ImportDone _ => Row(
-                      children: [
-                        Icon(
-                          Icons.check,
-                          color: colorScheme.primary,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(task.name),
-                      ],
-                    ),
+                    children: [
+                      Icon(
+                        Icons.check,
+                        color: colorScheme.primary,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(task.name),
+                    ],
+                  ),
                 };
               }),
             ],
@@ -160,9 +163,9 @@ class ImportingStep extends ConsumerWidget {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const Text(
-                      'PLEASE CLOSE AND REOPEN THE APP',
-                      style: TextStyle(
+                    Text(
+                      'PLEASE CLOSE AND REOPEN THE APP'.hc,
+                      style: const TextStyle(
                         fontWeight: FontWeight.w900,
                       ),
                     ),
@@ -173,8 +176,9 @@ class ImportingStep extends ConsumerWidget {
                         horizontal: 8,
                       ),
                       decoration: BoxDecoration(
-                        color:
-                            colorScheme.errorContainer.withValues(alpha: 0.2),
+                        color: colorScheme.errorContainer.withValues(
+                          alpha: 0.2,
+                        ),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Row(
@@ -198,54 +202,54 @@ class ImportingStep extends ConsumerWidget {
                   ],
                 )
               : reloadPayload != null
-                  ? Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        FilledButton(
-                          onPressed: () {
-                            Reboot.start(
-                              context,
-                              RebootData(
-                                config: reloadPayload.selectedConfig,
-                                configs: reloadPayload.configs,
-                                settings: reloadPayload.settings ?? settings,
-                              ),
-                            );
-                          },
-                          child: const Padding(
-                            padding: EdgeInsets.symmetric(vertical: 14),
-                            child: Text(
-                              'Restart App',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        _buildCancelButton(
-                          context,
-                          isDone,
-                          reloadPayload,
-                          settings,
-                        ),
-                      ],
-                    )
-                  : FilledButton(
+              ? Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    FilledButton(
                       onPressed: () {
-                        Navigator.of(context).pop();
+                        Reboot.start(
+                          context,
+                          RebootData(
+                            config: reloadPayload.selectedConfig,
+                            configs: reloadPayload.configs,
+                            settings: reloadPayload.settings ?? settings,
+                          ),
+                        );
                       },
                       child: const Padding(
                         padding: EdgeInsets.symmetric(vertical: 14),
                         child: Text(
-                          'Done',
+                          'Restart App',
                           style: TextStyle(
                             fontWeight: FontWeight.w600,
                           ),
                         ),
                       ),
                     ),
+                    const SizedBox(height: 8),
+                    _buildCancelButton(
+                      context,
+                      isDone,
+                      reloadPayload,
+                      settings,
+                    ),
+                  ],
+                )
+              : FilledButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 14),
+                    child: Text(
+                      'Done',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
       ],
     );
   }
@@ -278,23 +282,23 @@ class ImportingStep extends ConsumerWidget {
               final result = await showDialog<bool>(
                 context: context,
                 builder: (context) => AlertDialog(
-                  title: const Text('App Restart Required'),
-                  content: const Text(
-                    'To apply all changes, the app needs to restart.'
-                    '\n\nContinue without restarting? Some features may not work properly.',
+                  title: Text('App Restart Required'.hc),
+                  content: Text(
+                    'To apply all changes, the app needs to restart.\n\nContinue without restarting? Some features may not work properly.'
+                        .hc,
                   ),
                   actions: [
                     TextButton(
                       onPressed: () {
                         Navigator.of(context).pop(true);
                       },
-                      child: const Text('Continue Anyway'),
+                      child: Text('Continue Anyway'.hc),
                     ),
                     TextButton(
                       onPressed: () {
                         Navigator.of(context).pop(false);
                       },
-                      child: const Text('Restart Now'),
+                      child: Text('Restart Now'.hc),
                     ),
                   ],
                 ),
@@ -359,9 +363,9 @@ class SelectDataStep extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         const SizedBox(height: 12),
-        const Text(
-          'Choose data to import',
-          style: TextStyle(
+        Text(
+          'Choose data to import'.hc,
+          style: const TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.w700,
           ),
@@ -371,11 +375,11 @@ class SelectDataStep extends ConsumerWidget {
           children: [
             TextButton(
               onPressed: () => notifier.selectAllTasks(),
-              child: const Text('Select All'),
+              child: Text('Select All'.hc),
             ),
             TextButton(
               onPressed: () => notifier.deselectAllTasks(),
-              child: const Text('Deselect All'),
+              child: Text('Deselect All'.hc),
             ),
           ],
         ),
@@ -395,11 +399,11 @@ class SelectDataStep extends ConsumerWidget {
           onPressed: state.atLeastOneSelected
               ? switch (serverCheckStatus) {
                   ServerCheckStatus.initial => () {
-                      serverCheckNotifier.check(url);
-                    },
+                    serverCheckNotifier.check(url);
+                  },
                   ServerCheckStatus.available => () {
-                      notifier.startImport();
-                    },
+                    notifier.startImport();
+                  },
                   _ => null,
                 }
               : null,

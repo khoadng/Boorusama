@@ -30,8 +30,10 @@ mixin DanbooruClientReports {
       cancelToken: cancelToken,
     );
 
-    return Isolate.run(() => (response.data as List)
-        .map((item) => ReportDataPointDto.fromJson(item))
-        .toList());
+    return Isolate.run(
+      () => (response.data as List)
+          .map((item) => ReportDataPointDto.fromJson(item))
+          .toList(),
+    );
   }
 }

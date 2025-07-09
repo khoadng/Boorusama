@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 // Package imports:
 import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../bookmarks/widgets.dart';
@@ -50,8 +51,8 @@ class CustomHomeViewKey extends Equatable {
   String toString() => name;
 
   Map<String, dynamic> toJson() => {
-        'name': name,
-      };
+    'name': name,
+  };
 
   @override
   List<Object?> get props => [name];
@@ -68,33 +69,33 @@ class CustomHomeDataBuilder extends Equatable {
     required this.builder,
   });
 
-  final String displayName;
+  final String Function(BuildContext context) displayName;
   final Widget Function(BuildContext context, BooruBuilder booruBuilder)?
-      builder;
+  builder;
 
   @override
   List<Object?> get props => [
-        displayName,
-        builder,
-      ];
+    displayName,
+    builder,
+  ];
 }
 
 final kDefaultAltHomeView = {
-  const CustomHomeViewKey.defaultValue(): const CustomHomeDataBuilder(
-    displayName: 'Default',
+  const CustomHomeViewKey.defaultValue(): CustomHomeDataBuilder(
+    displayName: (context) => 'Default'.hc,
     builder: null,
   ),
   const CustomHomeViewKey('search'): CustomHomeDataBuilder(
-    displayName: 'settings.search.search',
+    displayName: (context) => context.t.settings.search.search,
     builder: (context, booruBuilder) =>
         booruBuilder.searchPageBuilder(context, const SearchParams()),
   ),
   const CustomHomeViewKey('bookmark'): CustomHomeDataBuilder(
-    displayName: 'sideMenu.your_bookmarks',
+    displayName: (context) => context.t.sideMenu.your_bookmarks,
     builder: (context, booruBuilder) => const BookmarkPage(),
   ),
   const CustomHomeViewKey('bulk_download'): CustomHomeDataBuilder(
-    displayName: 'sideMenu.bulk_download',
+    displayName: (context) => context.t.sideMenu.bulk_download,
     builder: (context, booruBuilder) => const BulkDownloadPage(),
   ),
 };

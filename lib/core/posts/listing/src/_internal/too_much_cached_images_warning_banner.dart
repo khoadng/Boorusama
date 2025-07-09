@@ -4,12 +4,13 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
+import '../../../../../foundation/toast.dart';
+import '../../../../../foundation/utils/file_utils.dart';
 import '../../../../cache/providers.dart';
-import '../../../../foundation/toast.dart';
 import '../../../../router.dart';
-import '../../../../utils/file_utils.dart';
 import '../../../../widgets/widgets.dart';
 
 // Only need check once at the start
@@ -42,7 +43,9 @@ class TooMuchCachedImagesWarningBanner extends ConsumerWidget {
 
     if (performed) return const SizedBox.shrink();
 
-    return ref.watch(_imageCachesProvider).when(
+    return ref
+        .watch(_imageCachesProvider)
+        .when(
           data: (cacheSize) {
             if (cacheSize > threshold) {
               final miscData = ref.watch(miscDataBoxProvider);
@@ -55,8 +58,11 @@ class TooMuchCachedImagesWarningBanner extends ConsumerWidget {
                   FilledButton(
                     onPressed: () async {
                       ref
-                          .read(_cacheImageActionsPerformedProvider.notifier)
-                          .state = true;
+                              .read(
+                                _cacheImageActionsPerformedProvider.notifier,
+                              )
+                              .state =
+                          true;
                       final success = await clearImageCache();
 
                       final c = navigatorKey.currentState?.context;
@@ -69,16 +75,19 @@ class TooMuchCachedImagesWarningBanner extends ConsumerWidget {
                         }
                       }
                     },
-                    child: const Text('settings.performance.clear_cache').tr(),
+                    child: Text(context.t.settings.performance.clear_cache),
                   ),
                   TextButton(
                     onPressed: () {
                       miscData.put(_kHideImageCacheWarningKey, 'true');
                       ref
-                          .read(_cacheImageActionsPerformedProvider.notifier)
-                          .state = true;
+                              .read(
+                                _cacheImageActionsPerformedProvider.notifier,
+                              )
+                              .state =
+                          true;
                     },
-                    child: const Text("Don't show again"),
+                    child: Text("Don't show again".hc),
                   ),
                 ],
               );

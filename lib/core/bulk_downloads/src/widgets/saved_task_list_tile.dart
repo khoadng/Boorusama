@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
-import '../../../foundation/toast.dart';
+import '../../../../foundation/toast.dart';
 import '../../../premiums/routes.dart';
 import '../../../widgets/widgets.dart';
 import '../pages/bulk_download_edit_saved_task_page.dart';
@@ -52,7 +52,7 @@ class SavedTaskListTile extends ConsumerWidget {
       opacity: 0.2,
       grayedOut: isLocked,
       onTap: () {
-        goToPremiumPage(context);
+        goToPremiumPage(ref);
       },
       stackOverlay: const [
         Positioned.fill(
@@ -81,8 +81,9 @@ class SavedTaskListTile extends ConsumerWidget {
                 ? () async {
                     await showBooruModalBottomSheet(
                       context: context,
-                      routeSettings:
-                          const RouteSettings(name: 'bulk_download_create'),
+                      routeSettings: const RouteSettings(
+                        name: 'bulk_download_create',
+                      ),
                       builder: (_) => BulkDownloadEditSavedTaskPage(
                         savedTask: savedTask,
                         edit: true,
@@ -177,14 +178,14 @@ class _ModalOptions extends StatelessWidget {
           const DragLine(),
           const SizedBox(height: 8),
           ListTile(
-            title: const Text(DownloadTranslations.runTemplate).tr(),
+            title: Text(DownloadTranslations.runTemplate),
             onTap: () {
               onRun();
               navigator.pop();
             },
           ),
           ListTile(
-            title: const Text('generic.action.duplicate').tr(),
+            title: Text(context.t.generic.action.duplicate),
             onTap: () {
               onDuplicate();
               navigator.pop();
@@ -192,11 +193,11 @@ class _ModalOptions extends StatelessWidget {
           ),
           ListTile(
             title: Text(
-              'generic.action.delete',
+              context.t.generic.action.delete,
               style: TextStyle(
                 color: colorScheme.error,
               ),
-            ).tr(),
+            ),
             onTap: () {
               onDelete();
               navigator.pop();

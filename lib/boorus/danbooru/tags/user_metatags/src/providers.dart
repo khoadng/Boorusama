@@ -5,8 +5,9 @@ import 'package:hive/hive.dart';
 // Project imports:
 import 'user_metatag_repository.dart';
 
-final danbooruUserMetatagRepoProvider =
-    FutureProvider<UserMetatagRepository>((ref) async {
+final danbooruUserMetatagRepoProvider = FutureProvider<UserMetatagRepository>((
+  ref,
+) async {
   Box<String> userMetatagBox;
   if (await Hive.boxExists('user_metatags')) {
     userMetatagBox = await Hive.openBox<String>('user_metatags');

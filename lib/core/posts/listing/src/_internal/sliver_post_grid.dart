@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 import 'package:sliver_masonry_grid/sliver_masonry_grid.dart';
 
 // Project imports:
 import '../../../../../boorus/danbooru/errors.dart';
-import '../../../../foundation/error.dart';
+import '../../../../../foundation/error.dart';
 import '../../../../settings/settings.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../post/post.dart';
@@ -44,7 +44,7 @@ class SliverPostGrid<T extends Post> extends StatelessWidget {
   final IndexedWidgetBuilder itemBuilder;
 
   final Widget Function(BuildContext context, int httpStatusCode)?
-      httpErrorActionBuilder;
+  httpErrorActionBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -52,82 +52,82 @@ class SliverPostGrid<T extends Post> extends StatelessWidget {
       padding: padding ?? EdgeInsets.zero,
       sliver: ValueListenableBuilder(
         valueListenable: postController.errors,
-        builder: (_, error, __) {
+        builder: (_, error, _) {
           if (error != null) {
-            final message = translateBooruError(error);
+            final message = translateBooruError(context, error);
             final theme = Theme.of(context);
 
             return SliverToBoxAdapter(
               child: switch (error) {
                 AppError _ => ErrorBox(
-                    errorMessage: message.tr(),
-                    onRetry: _onErrorRetry,
-                  ),
+                  errorMessage: message,
+                  onRetry: _onErrorRetry,
+                ),
                 final ServerError e => Column(
-                    children: [
-                      const SizedBox(height: 24),
-                      Text(
-                        e.httpStatusCode.toString(),
-                        style: theme.textTheme.headlineMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                  children: [
+                    const SizedBox(height: 24),
+                    Text(
+                      e.httpStatusCode.toString(),
+                      style: theme.textTheme.headlineMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
                       ),
-                      Builder(
-                        builder: (context) {
-                          final serverError = translateServerError(e);
+                    ),
+                    Builder(
+                      builder: (context) {
+                        final serverError = translateServerError(context, e);
 
-                          return serverError != null
-                              ? Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 8),
-                                  child: Text(serverError.tr()),
-                                )
-                              : const SizedBox.shrink();
+                        return serverError != null
+                            ? Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 8,
+                                ),
+                                child: Text(serverError),
+                              )
+                            : const SizedBox.shrink();
+                      },
+                    ),
+                    if (httpErrorActionBuilder != null &&
+                        e.httpStatusCode != null)
+                      httpErrorActionBuilder!(context, e.httpStatusCode!),
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                        vertical: e.isServerError ? 4 : 24,
+                      ),
+                      child: Builder(
+                        builder: (context) {
+                          try {
+                            final data = wrapIntoJsonToCodeBlock(
+                              prettyPrintJson(e.message),
+                            );
+
+                            return MarkdownBody(
+                              styleSheet: MarkdownStyleSheet(
+                                codeblockPadding: const EdgeInsets.symmetric(
+                                  vertical: 8,
+                                  horizontal: 8,
+                                ),
+                                codeblockDecoration: BoxDecoration(
+                                  color: theme.colorScheme.surfaceContainerLow,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                              ),
+                              data: data,
+                            );
+                          } catch (err) {
+                            return Text(
+                              e.message.toString(),
+                            );
+                          }
                         },
                       ),
-                      if (httpErrorActionBuilder != null &&
-                          e.httpStatusCode != null)
-                        httpErrorActionBuilder!(context, e.httpStatusCode!),
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                          vertical: e.isServerError ? 4 : 24,
-                        ),
-                        child: Builder(
-                          builder: (context) {
-                            try {
-                              final data = wrapIntoJsonToCodeBlock(
-                                prettyPrintJson(e.message),
-                              );
-
-                              return MarkdownBody(
-                                styleSheet: MarkdownStyleSheet(
-                                  codeblockPadding: const EdgeInsets.symmetric(
-                                    vertical: 8,
-                                    horizontal: 8,
-                                  ),
-                                  codeblockDecoration: BoxDecoration(
-                                    color:
-                                        theme.colorScheme.surfaceContainerLow,
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                ),
-                                data: data,
-                              );
-                            } catch (err) {
-                              return Text(
-                                e.message.toString(),
-                              );
-                            }
-                          },
-                        ),
+                    ),
+                    if (e.isServerError)
+                      FilledButton(
+                        onPressed: _onErrorRetry,
+                        child: Text('Retry'.hc),
                       ),
-                      if (e.isServerError)
-                        FilledButton(
-                          onPressed: _onErrorRetry,
-                          child: const Text('Retry'),
-                        ),
-                    ],
-                  ),
+                  ],
+                ),
                 UnknownError _ => ErrorBox(errorMessage: message),
               },
             );
@@ -135,7 +135,7 @@ class SliverPostGrid<T extends Post> extends StatelessWidget {
 
           return ValueListenableBuilder(
             valueListenable: postController.refreshingNotifier,
-            builder: (_, refreshing, __) {
+            builder: (_, refreshing, _) {
               return refreshing
                   ? SliverPostGridPlaceHolder(
                       padding: padding,
@@ -165,7 +165,7 @@ class SliverPostGrid<T extends Post> extends StatelessWidget {
       ),
       sliver: ValueListenableBuilder(
         valueListenable: postController.itemsNotifier,
-        builder: (_, data, __) {
+        builder: (_, data, _) {
           final crossAxisCount = calculateGridCount(
             constraints?.maxWidth ?? MediaQuery.sizeOf(context).width,
             size ?? GridSize.normal,
@@ -175,24 +175,24 @@ class SliverPostGrid<T extends Post> extends StatelessWidget {
           return data.isNotEmpty
               ? switch (imageListType) {
                   ImageListType.masonry => SliverMasonryGrid.count(
+                    crossAxisCount: crossAxisCount,
+                    mainAxisSpacing: spacing ?? 4,
+                    crossAxisSpacing: spacing ?? 4,
+                    childCount: data.length,
+                    itemBuilder: itemBuilder,
+                  ),
+                  _ => SliverGrid(
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      childAspectRatio: aspectRatio ?? 1,
                       crossAxisCount: crossAxisCount,
                       mainAxisSpacing: spacing ?? 4,
                       crossAxisSpacing: spacing ?? 4,
+                    ),
+                    delegate: SliverChildBuilderDelegate(
+                      itemBuilder,
                       childCount: data.length,
-                      itemBuilder: itemBuilder,
                     ),
-                  _ => SliverGrid(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        childAspectRatio: aspectRatio ?? 1,
-                        crossAxisCount: crossAxisCount,
-                        mainAxisSpacing: spacing ?? 4,
-                        crossAxisSpacing: spacing ?? 4,
-                      ),
-                      delegate: SliverChildBuilderDelegate(
-                        itemBuilder,
-                        childCount: data.length,
-                      ),
-                    ),
+                  ),
                 }
               : const SliverToBoxAdapter(
                   child: Padding(
@@ -206,13 +206,14 @@ class SliverPostGrid<T extends Post> extends StatelessWidget {
   }
 }
 
-String? translateServerError(ServerError error) => switch (error) {
+String? translateServerError(BuildContext context, ServerError error) =>
+    switch (error) {
       final ServerError e => switch (e.httpStatusCode) {
-          null => null,
-          401 => 'search.errors.forbidden',
-          403 => 'search.errors.access_denied',
-          429 => 'search.errors.rate_limited',
-          >= 500 => 'search.errors.down',
-          _ => null,
-        },
+        null => null,
+        401 => context.t.search.errors.forbidden,
+        403 => context.t.search.errors.access_denied,
+        429 => context.t.search.errors.rate_limited,
+        >= 500 => context.t.search.errors.down,
+        _ => null,
+      },
     };

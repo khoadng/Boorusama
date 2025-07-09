@@ -9,8 +9,8 @@ import 'types/wiki.dart';
 
 final danbooruWikisProvider =
     NotifierProvider.family<WikisNotifier, Map<String, Wiki?>, BooruConfigAuth>(
-  WikisNotifier.new,
-);
+      WikisNotifier.new,
+    );
 
 final danbooruWikiProvider = Provider.family<WikiState, String>((ref, tag) {
   final config = ref.watchConfigAuth;

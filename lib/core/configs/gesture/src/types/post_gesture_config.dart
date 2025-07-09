@@ -13,9 +13,7 @@ class PostGestureConfig extends Equatable {
     required this.fullview,
   });
 
-  const PostGestureConfig.undefined()
-      : preview = null,
-        fullview = null;
+  const PostGestureConfig.undefined() : preview = null, fullview = null;
 
   factory PostGestureConfig.fromJson(Map<String, dynamic> json) {
     return PostGestureConfig(

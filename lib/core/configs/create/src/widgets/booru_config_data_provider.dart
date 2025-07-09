@@ -18,8 +18,9 @@ class BooruConfigDataProvider extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final data = ref
-        .watch(editBooruConfigProvider(ref.watch(editBooruConfigIdProvider)));
+    final data = ref.watch(
+      editBooruConfigProvider(ref.watch(editBooruConfigIdProvider)),
+    );
 
     return builder(data);
   }

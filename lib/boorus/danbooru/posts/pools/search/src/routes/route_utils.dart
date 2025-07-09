@@ -1,11 +1,11 @@
-// Flutter imports:
-import 'package:flutter/widgets.dart';
+// Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../../../../core/router.dart';
 
-void goToPoolSearchPage(BuildContext context) {
-  context.push(
+void goToPoolSearchPage(WidgetRef ref) {
+  ref.router.push(
     Uri(
       path: '/danbooru/pools/search',
     ).toString(),

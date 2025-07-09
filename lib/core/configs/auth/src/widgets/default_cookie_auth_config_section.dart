@@ -4,9 +4,10 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
-import '../../../../foundation/toast.dart';
+import '../../../../../foundation/toast.dart';
 import '../../../../theme/app_theme.dart';
 import '../../../config/types.dart';
 import '../../../create/providers.dart';
@@ -38,19 +39,19 @@ class DefaultCookieAuthConfigSection extends ConsumerWidget {
         Text(
           'Cookie Auth',
           style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                color: Theme.of(context).colorScheme.hintColor,
-                fontSize: 14,
-                fontWeight: FontWeight.w700,
-              ),
+            color: Theme.of(context).colorScheme.hintColor,
+            fontSize: 14,
+            fontWeight: FontWeight.w700,
+          ),
         ),
         const SizedBox(height: 4),
         Text(
           'Provide this information so the app can access more content. Note that if you change your password or something looks wrong after some time, try to login again.',
           style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                color: Theme.of(context).colorScheme.hintColor,
-                fontSize: 12,
-                fontWeight: FontWeight.w400,
-              ),
+            color: Theme.of(context).colorScheme.hintColor,
+            fontSize: 12,
+            fontWeight: FontWeight.w400,
+          ),
         ),
         if (passHash == null)
           _buildLoginButton(ref, context, config: config)
@@ -85,30 +86,32 @@ class DefaultCookieAuthConfigSection extends ConsumerWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Text(
-            'Logged in',
-            style: TextStyle(
+          Text(
+            'Logged in'.hc,
+            style: const TextStyle(
               fontWeight: FontWeight.bold,
             ),
           ),
           Row(
             children: [
               RawChip(
-                backgroundColor:
-                    Theme.of(context).colorScheme.secondaryContainer,
+                backgroundColor: Theme.of(
+                  context,
+                ).colorScheme.secondaryContainer,
                 onPressed: () {
                   _openBrowser(ref, context, config);
                 },
-                label: const Text('Update'),
+                label: Text('Update'.hc),
               ),
               const SizedBox(width: 8),
               RawChip(
-                backgroundColor:
-                    Theme.of(context).colorScheme.secondaryContainer,
+                backgroundColor: Theme.of(
+                  context,
+                ).colorScheme.secondaryContainer,
                 onPressed: () {
                   ref.editNotifier.updatePassHash(null);
                 },
-                label: const Text('Clear'),
+                label: Text('Clear'.hc),
               ),
             ],
           ),

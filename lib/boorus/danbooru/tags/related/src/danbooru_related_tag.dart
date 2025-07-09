@@ -13,9 +13,9 @@ class DanbooruRelatedTag extends Equatable {
   });
 
   const DanbooruRelatedTag.empty()
-      : query = '',
-        wikiPageTags = const [],
-        tags = const [];
+    : query = '',
+      wikiPageTags = const [],
+      tags = const [];
 
   final String query;
   final List<DanbooruRelatedTagItem> tags;
@@ -25,12 +25,11 @@ class DanbooruRelatedTag extends Equatable {
     List<DanbooruRelatedTagItem>? tags,
     List<Tag>? wikiPageTags,
     String? query,
-  }) =>
-      DanbooruRelatedTag(
-        query: query ?? this.query,
-        wikiPageTags: wikiPageTags ?? this.wikiPageTags,
-        tags: tags ?? this.tags,
-      );
+  }) => DanbooruRelatedTag(
+    query: query ?? this.query,
+    wikiPageTags: wikiPageTags ?? this.wikiPageTags,
+    tags: tags ?? this.tags,
+  );
 
   @override
   List<Object?> get props => [query, tags, wikiPageTags];
@@ -57,13 +56,13 @@ class DanbooruRelatedTagItem extends Equatable {
 
   @override
   List<Object?> get props => [
-        tag,
-        category,
-        jaccardSimilarity,
-        cosineSimilarity,
-        overlapCoefficient,
-        frequency,
-      ];
+    tag,
+    category,
+    jaccardSimilarity,
+    cosineSimilarity,
+    overlapCoefficient,
+    frequency,
+  ];
 }
 
 enum RelatedType {

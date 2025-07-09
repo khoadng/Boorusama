@@ -1,6 +1,10 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
+
 // Project imports:
 import '../../../../boorus/engine/engine.dart';
 import '../../../../configs/config.dart';
@@ -10,7 +14,7 @@ import '../providers/details_layout_provider.dart';
 import '../routes/route_utils.dart';
 import '../types/custom_details.dart';
 
-class DetailsConfigPage extends StatelessWidget {
+class DetailsConfigPage extends ConsumerWidget {
   const DetailsConfigPage({
     required this.uiBuilder,
     required this.layout,
@@ -23,15 +27,16 @@ class DetailsConfigPage extends StatelessWidget {
   final void Function(LayoutConfigs layout) onLayoutUpdated;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final details =
         layout.details ?? convertDetailsParts(uiBuilder.full.keys.toList());
-    final previewDetails = layout.previewDetails ??
+    final previewDetails =
+        layout.previewDetails ??
         convertDetailsParts(uiBuilder.preview.keys.toList());
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Widgets'),
+        title: Text('Widgets'.hc),
       ),
       body: Column(
         children: [
@@ -45,13 +50,13 @@ class DetailsConfigPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     _Title(
-                      title: 'Preview widgets',
+                      title: 'Preview widgets'.hc,
                       onPressed: () => goToDetailsLayoutManagerPage(
-                        context,
+                        ref,
                         params: DetailsLayoutManagerParams(
                           details: previewDetails,
-                          availableParts:
-                              uiBuilder.buildablePreviewParts.toSet(),
+                          availableParts: uiBuilder.buildablePreviewParts
+                              .toSet(),
                           defaultParts: uiBuilder.preview.keys.toSet(),
                           onUpdate: (parts) {
                             onLayoutUpdated(
@@ -66,9 +71,9 @@ class DetailsConfigPage extends StatelessWidget {
                     _WidgetList(parts: previewDetails),
                     const SizedBox(height: 24),
                     _Title(
-                      title: 'Full informaton widgets',
+                      title: 'Full informaton widgets'.hc,
                       onPressed: () => goToDetailsLayoutManagerPage(
-                        context,
+                        ref,
                         params: DetailsLayoutManagerParams(
                           details: details,
                           availableParts: uiBuilder.full.keys.toSet(),
@@ -91,12 +96,12 @@ class DetailsConfigPage extends StatelessWidget {
           ),
           SafeArea(
             child: Text(
-              'All changes are saved to your current profile.',
+              'All changes are saved to your current profile.'.hc,
               style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                    color: Theme.of(context).colorScheme.hintColor,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w400,
-                  ),
+                color: Theme.of(context).colorScheme.hintColor,
+                fontSize: 14,
+                fontWeight: FontWeight.w400,
+              ),
             ),
           ),
         ],
@@ -162,7 +167,7 @@ class _Title extends StatelessWidget {
         ),
         trailing: TextButton(
           onPressed: onPressed,
-          child: const Text('Customize'),
+          child: Text('Customize'.hc),
         ),
       ),
     );

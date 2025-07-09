@@ -10,10 +10,7 @@ import 'types/types.dart';
 
 const _kClientApiAccessKey = 'Hydrus-Client-API-Access-Key';
 
-typedef HydrusFiles = ({
-  List<FileDto> files,
-  int? count,
-});
+typedef HydrusFiles = ({List<FileDto> files, int? count});
 
 class HydrusClient {
   HydrusClient({
@@ -21,10 +18,13 @@ class HydrusClient {
     required String apiKey,
     Dio? dio,
   }) {
-    _dio = dio ??
-        Dio(BaseOptions(
-          baseUrl: baseUrl,
-        ));
+    _dio =
+        dio ??
+        Dio(
+          BaseOptions(
+            baseUrl: baseUrl,
+          ),
+        );
     if (apiKey.isNotEmpty) {
       _dio.options.headers[_kClientApiAccessKey] = apiKey;
     }
@@ -33,9 +33,8 @@ class HydrusClient {
   late Dio _dio;
 
   Map<String, String> get apiKeyHeader => {
-        _kClientApiAccessKey:
-            _dio.options.headers[_kClientApiAccessKey] as String,
-      };
+    _kClientApiAccessKey: _dio.options.headers[_kClientApiAccessKey] as String,
+  };
 
   // virtual session for each search, since hydrus doesn't use pagination
   final _sessions = <String, SearchSession>{};
@@ -77,7 +76,9 @@ class HydrusClient {
     final session = sessionId != null
         ? _sessions[sessionId]!
         : SearchSession.create(
-            tags: tags, fileIds: [for (final id in ids) id as int]);
+            tags: tags,
+            fileIds: [for (final id in ids) id as int],
+          );
 
     if (sessionId == null) {
       _sessions[session.id] = session;
@@ -130,11 +131,13 @@ class HydrusClient {
     _updateServices(services);
 
     return metadata
-        .map((e) => FileDto.fromJson(
-              e,
-              _dio.options.baseUrl,
-              services,
-            ))
+        .map(
+          (e) => FileDto.fromJson(
+            e,
+            _dio.options.baseUrl,
+            services,
+          ),
+        )
         .toList();
   }
 
@@ -237,7 +240,7 @@ class SearchSession {
   });
 
   SearchSession.create({required this.tags, required this.fileIds})
-      : id = DateTime.now().millisecondsSinceEpoch.toString();
+    : id = DateTime.now().millisecondsSinceEpoch.toString();
 
   final String id;
   final dynamic tags;

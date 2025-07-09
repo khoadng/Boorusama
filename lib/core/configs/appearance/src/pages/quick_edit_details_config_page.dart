@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../boorus/engine/providers.dart';
@@ -25,17 +26,18 @@ class QuickEditDetailsConfigPage extends ConsumerWidget {
     if (uiBuilder == null) {
       return Scaffold(
         appBar: AppBar(
-          title: const Text('Details'),
+          title: Text('Details'.hc),
         ),
-        body: const Center(
-          child: Text('No builder found'),
+        body: Center(
+          child: Text('No builder found'.hc),
         ),
       );
     }
 
     final notifier = ref.watch(booruConfigProvider.notifier);
-    final currentConfigNotifier =
-        ref.watch(currentBooruConfigProvider.notifier);
+    final currentConfigNotifier = ref.watch(
+      currentBooruConfigProvider.notifier,
+    );
     final config = ref.watchConfig;
 
     return DetailsConfigPage(

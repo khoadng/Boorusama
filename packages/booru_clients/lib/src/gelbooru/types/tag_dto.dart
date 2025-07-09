@@ -58,10 +58,12 @@ const _kExcludedTextElements = {'?', '+', '-'};
 List<String> _extractTextNodes(Element element) {
   return element.nodes
       .map((node) => node.text?.trim())
-      .where((text) =>
-          text != null &&
-          text.isNotEmpty &&
-          !_kExcludedTextElements.contains(text))
+      .where(
+        (text) =>
+            text != null &&
+            text.isNotEmpty &&
+            !_kExcludedTextElements.contains(text),
+      )
       .nonNulls
       .toList();
 }

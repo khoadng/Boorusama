@@ -26,7 +26,7 @@ class DefaultSelectableItem<T extends Post> extends StatelessWidget {
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
       valueListenable: multiSelectController.selectedItemsNotifier,
-      builder: (_, selectedItems, __) => SelectableItem(
+      builder: (_, selectedItems, _) => SelectableItem(
         index: index,
         isSelected: selectedItems.contains(post.id),
         onTap: () => multiSelectController.toggleSelection(post.id),

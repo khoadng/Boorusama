@@ -6,15 +6,17 @@ import 'package:context_menus/context_menus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:readmore/readmore.dart';
 
 // Project imports:
+import '../../../../foundation/clipboard.dart';
+import '../../../../foundation/toast.dart';
 import '../../../config_widgets/booru_logo.dart';
-import '../../../downloads/manager.dart';
-import '../../../foundation/clipboard.dart';
-import '../../../foundation/toast.dart';
+import '../../../download_manager/providers.dart';
+import '../../../download_manager/types.dart';
 import '../../../images/booru_image.dart';
 import '../../../premiums/providers.dart';
 import '../../../router.dart';
@@ -95,8 +97,9 @@ class BulkDownloadTaskTile extends ConsumerWidget {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Padding(
-                                    padding:
-                                        const EdgeInsets.symmetric(vertical: 4),
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 4,
+                                    ),
                                     child: _InfoText(session),
                                   ),
                                   if (ref.watch(showPremiumFeatsProvider))
@@ -170,12 +173,12 @@ class _MoreIndicator extends StatelessWidget {
           SizedBox(
             height: double.infinity,
             child: Text(
-              'tag.related.more',
+              context.t.tag.related.more,
               style: TextStyle(
                 color: colorScheme.hintColor,
                 fontSize: 11,
               ),
-            ).tr(),
+            ),
           ),
           SizedBox(
             height: double.infinity,
@@ -327,13 +330,13 @@ class _ContextMenu extends ConsumerWidget {
       contextMenu: GenericContextMenu(
         buttonConfigs: [
           ContextMenuButtonConfig(
-            DownloadTranslations.delete.tr(),
+            DownloadTranslations.delete,
             onPressed: () {
               ref.read(bulkDownloadProvider.notifier).deleteSession(session.id);
             },
           ),
           ContextMenuButtonConfig(
-            DownloadTranslations.copyPath.tr(),
+            DownloadTranslations.copyPath,
             onPressed: () => AppClipboard.copyWithDefaultToast(context, path),
           ),
         ],
@@ -362,15 +365,15 @@ class _DetailsInkWell extends ConsumerWidget {
               final updates = ref.read(downloadTaskUpdatesProvider).all(id);
 
               if (updates.isNotEmpty) {
-                context.push(
+                ref.router.push(
                   '/download_manager?group=$id',
                 );
               } else {
                 showSimpleSnackBar(
                   context: context,
                   duration: const Duration(seconds: 3),
-                  content: const Text(
-                    'Nothing to show, download updates are empty',
+                  content: Text(
+                    'Nothing to show, download updates are empty'.hc,
                   ),
                 );
               }
@@ -470,14 +473,13 @@ class _InfoText extends ConsumerWidget {
 
     return Text(
       switch (status) {
-        DownloadSessionStatus.pending =>
-          DownloadTranslations.createdStatus.tr(),
+        DownloadSessionStatus.pending => DownloadTranslations.createdStatus,
         DownloadSessionStatus.dryRun => DownloadTranslations.inProgressStatus(
-            pageProgress.completed,
-          ).tr(),
+          pageProgress.completed,
+        ),
         DownloadSessionStatus.failed => 'Error',
         DownloadSessionStatus.allSkipped =>
-          DownloadTranslations.allSkippedStatus.tr(),
+          DownloadTranslations.allSkippedStatus,
         _ => infoText,
       },
       maxLines: 1,
@@ -558,20 +560,20 @@ class _ProgressBar extends ConsumerWidget {
     return switch (status) {
       DownloadSessionStatus.dryRun => _buildLinear(),
       _ => Builder(
-          builder: (context) {
-            final progressMap = ref.watch(
-              bulkDownloadProgressProvider,
-            );
+        builder: (context) {
+          final progressMap = ref.watch(
+            bulkDownloadProgressProvider,
+          );
 
-            final progress = progressMap[sessionId];
+          final progress = progressMap[sessionId];
 
-            return progress != null
-                ? _buildPercent(
-                    progress,
-                  )
-                : _buildLinear();
-          },
-        ),
+          return progress != null
+              ? _buildPercent(
+                  progress,
+                )
+              : _buildLinear();
+        },
+      ),
     };
   }
 
@@ -692,19 +694,22 @@ class _ResumeSuspensionButton extends ConsumerWidget {
         FontAwesomeIcons.play,
       ),
       onPressed: () {
-        ref.read(bulkDownloadProvider.notifier).resumeSuspendedSession(
-          sessionId,
-          downloadConfigs: DownloadConfigs(
-            authChangedConfirmation: () async {
-              final confirmed = await showDialog<bool>(
-                context: context,
-                builder: (context) => AuthConfigChangedDialog(session: session),
-              );
+        ref
+            .read(bulkDownloadProvider.notifier)
+            .resumeSuspendedSession(
+              sessionId,
+              downloadConfigs: DownloadConfigs(
+                authChangedConfirmation: () async {
+                  final confirmed = await showDialog<bool>(
+                    context: context,
+                    builder: (context) =>
+                        AuthConfigChangedDialog(session: session),
+                  );
 
-              return confirmed ?? false;
-            },
-          ),
-        );
+                  return confirmed ?? false;
+                },
+              ),
+            );
       },
     );
   }
@@ -726,19 +731,22 @@ class _ResumeAllButton extends ConsumerWidget {
         FontAwesomeIcons.play,
       ),
       onPressed: () {
-        ref.read(bulkDownloadProvider.notifier).resumeSession(
-          sessionId,
-          downloadConfigs: DownloadConfigs(
-            authChangedConfirmation: () async {
-              final confirmed = await showDialog<bool>(
-                context: context,
-                builder: (context) => AuthConfigChangedDialog(session: session),
-              );
+        ref
+            .read(bulkDownloadProvider.notifier)
+            .resumeSession(
+              sessionId,
+              downloadConfigs: DownloadConfigs(
+                authChangedConfirmation: () async {
+                  final confirmed = await showDialog<bool>(
+                    context: context,
+                    builder: (context) =>
+                        AuthConfigChangedDialog(session: session),
+                  );
 
-              return confirmed ?? false;
-            },
-          ),
-        );
+                  return confirmed ?? false;
+                },
+              ),
+            );
       },
     );
   }

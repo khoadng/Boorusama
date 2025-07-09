@@ -33,27 +33,26 @@ class PostRepositoryBuilder<T extends Post> implements PostRepository<T> {
     int page, {
     int? limit,
     PostFetchOptions? options,
-  }) =>
-      TaskEither.Do(($) async {
-        var lim = limit;
+  }) => TaskEither.Do(($) async {
+    var lim = limit;
 
-        lim ??= await getSettings().then((value) => value.postsPerPage);
+    lim ??= await getSettings().then((value) => value.postsPerPage);
 
-        final newTags = tags.isEmpty ? <String>[] : tags.split(' ');
+    final newTags = tags.isEmpty ? <String>[] : tags.split(' ');
 
-        final tags2 = tagComposer.compose(newTags);
+    final tags2 = tagComposer.compose(newTags);
 
-        return $(
-          tryFetchRemoteData(
-            fetcher: () => fetch(
-              tags2,
-              page,
-              limit: lim,
-              options: options,
-            ),
-          ),
-        );
-      });
+    return $(
+      tryFetchRemoteData(
+        fetcher: () => fetch(
+          tags2,
+          page,
+          limit: lim,
+          options: options,
+        ),
+      ),
+    );
+  });
 
   @override
   PostsOrError<T> getPostsFromController(
@@ -61,44 +60,42 @@ class PostRepositoryBuilder<T extends Post> implements PostRepository<T> {
     int page, {
     int? limit,
     PostFetchOptions? options,
-  }) =>
-      fetchFromController != null
-          ? TaskEither.Do(($) async {
-              var lim = limit;
+  }) => fetchFromController != null
+      ? TaskEither.Do(($) async {
+          var lim = limit;
 
-              lim ??= await getSettings().then((value) => value.postsPerPage);
+          lim ??= await getSettings().then((value) => value.postsPerPage);
 
-              return $(
-                tryFetchRemoteData(
-                  fetcher: () => fetchFromController!(
-                    controller,
-                    page,
-                    limit: lim,
-                    options: options,
-                  ),
-                ),
-              );
-            })
-          : getPosts(
-              controller.rawTagsString,
-              page,
-              limit: limit,
-              options: options,
-            );
+          return $(
+            tryFetchRemoteData(
+              fetcher: () => fetchFromController!(
+                controller,
+                page,
+                limit: lim,
+                options: options,
+              ),
+            ),
+          );
+        })
+      : getPosts(
+          controller.rawTagsString,
+          page,
+          limit: limit,
+          options: options,
+        );
 
   @override
   PostOrError<T> getPost(
     PostId id, {
     PostFetchOptions? options,
-  }) =>
-      TaskEither.Do(($) async {
-        return $(
-          tryFetchRemoteData(
-            fetcher: () => fetchSingle(
-              id,
-              options: options,
-            ),
-          ),
-        );
-      });
+  }) => TaskEither.Do(($) async {
+    return $(
+      tryFetchRemoteData(
+        fetcher: () => fetchSingle(
+          id,
+          options: options,
+        ),
+      ),
+    );
+  });
 }

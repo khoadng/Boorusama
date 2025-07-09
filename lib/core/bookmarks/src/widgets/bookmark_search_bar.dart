@@ -11,9 +11,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import '../../../../foundation/display.dart';
+import '../../../../foundation/html.dart';
 import '../../../configs/ref.dart';
-import '../../../foundation/display.dart';
-import '../../../foundation/html.dart';
 import '../../../search/search/widgets.dart';
 import '../../../theme.dart';
 import '../providers/bookmark_provider.dart';
@@ -78,7 +78,7 @@ class _BookmarkSearchBarState extends ConsumerState<BookmarkSearchBar> {
           height: kPreferredLayout.isDesktop ? 34 : null,
           child: ValueListenableBuilder(
             valueListenable: _overlay,
-            builder: (_, overlay, __) {
+            builder: (_, overlay, _) {
               return PortalTarget(
                 anchor: const Aligned(
                   follower: Alignment.topCenter,
@@ -89,7 +89,8 @@ class _BookmarkSearchBarState extends ConsumerState<BookmarkSearchBar> {
                   suggestions,
                   Colors.black.withValues(alpha: 0.7),
                 ),
-                visible: overlay &&
+                visible:
+                    overlay &&
                     suggestions.isNotEmpty &&
                     widget.controller.text != selectedTag,
                 child: BooruSearchBar(
@@ -101,7 +102,7 @@ class _BookmarkSearchBarState extends ConsumerState<BookmarkSearchBar> {
                   ),
                   trailing: ValueListenableBuilder(
                     valueListenable: widget.controller,
-                    builder: (_, value, ___) => value.text.isNotEmpty
+                    builder: (_, value, _) => value.text.isNotEmpty
                         ? Padding(
                             padding: const EdgeInsets.only(right: 8),
                             child: InkWell(
@@ -119,6 +120,10 @@ class _BookmarkSearchBarState extends ConsumerState<BookmarkSearchBar> {
                           )
                         : const SizedBox.shrink(),
                   ),
+                  onSubmitted: (value) {
+                    ref.read(selectedTagsProvider.notifier).state =
+                        value.trim().replaceAll(RegExp(r'\s+'), ' ');
+                  },
                 ),
               );
             },
@@ -179,6 +184,8 @@ class _BookmarkSearchBarState extends ConsumerState<BookmarkSearchBar> {
 
   Widget _buildItem(WidgetRef ref, String tag, BuildContext context) {
     final config = ref.watchConfigAuth;
+    final color =
+        ref.watch(bookmarkTagColorProvider((config, tag))).valueOrNull;
 
     return Material(
       shape: RoundedRectangleBorder(
@@ -190,10 +197,16 @@ class _BookmarkSearchBarState extends ConsumerState<BookmarkSearchBar> {
           borderRadius: BorderRadius.circular(8),
         ),
         onTap: () {
-          ref.read(selectedTagsProvider.notifier).state = tag;
-          widget.controller.text = tag;
-          widget.focusNode.unfocus();
-          _overlay.value = false;
+          // trim excess spaces, keep only the final space
+          final currentTag = ref
+              .read(selectedTagsProvider)
+              .trim()
+              .replaceAll(RegExp(r'\s+'), ' ');
+
+          final newTagString =
+              currentTag.isEmpty ? '$tag ' : '$currentTag $tag ';
+          ref.read(selectedTagsProvider.notifier).state = newTagString;
+          widget.controller.text = newTagString;
         },
         child: IgnorePointer(
           child: Container(
@@ -212,16 +225,11 @@ class _BookmarkSearchBarState extends ConsumerState<BookmarkSearchBar> {
                 Expanded(
                   child: ValueListenableBuilder(
                     valueListenable: widget.controller,
-                    builder: (_, value, ___) => AppHtml(
+                    builder: (_, value, _) => AppHtml(
                       style: {
                         'p': Style(
                           fontSize: FontSize.medium,
-                          color: ref
-                              .watch(bookmarkTagColorProvider((config, tag)))
-                              .maybeWhen(
-                                data: (color) => color,
-                                orElse: () => null,
-                              ),
+                          color: color,
                           margin: Margins.zero,
                         ),
                         'b': Style(
@@ -233,7 +241,9 @@ class _BookmarkSearchBarState extends ConsumerState<BookmarkSearchBar> {
                     ),
                   ),
                 ),
-                ref.watch(tagCountProvider(tag)).maybeWhen(
+                ref
+                    .watch(tagCountProvider(tag))
+                    .maybeWhen(
                       data: (count) => Text(
                         count.toString(),
                         style: TextStyle(

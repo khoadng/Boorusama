@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../core/autocompletes/autocompletes.dart';
 import '../../../core/boorus/engine/providers.dart';
 import '../../../core/configs/config.dart';
 import '../../../core/configs/ref.dart';
 import '../../../core/search/suggestions/widgets.dart';
+import '../../../core/tags/autocompletes/types.dart';
 import '../../../core/tags/configs/providers.dart';
 import '../../../core/tags/tag/providers.dart';
 import '../users/user/providers.dart';

@@ -5,12 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../../../core/foundation/platform.dart';
+import '../../../../../../core/tags/tag/tag.dart';
 import '../../../../../../core/theme.dart';
 import '../../../../../../core/theme/utils.dart';
 import '../../../../../../core/widgets/booru_chip.dart';
+import '../../../../../../foundation/platform.dart';
 import '../../../../tags/tag/widgets.dart';
-import '../trending_tag.dart';
 
 class TrendingTags extends ConsumerWidget {
   const TrendingTags({
@@ -21,7 +21,7 @@ class TrendingTags extends ConsumerWidget {
   });
 
   final ValueChanged<String>? onTagTap;
-  final List<TrendingTag>? tags;
+  final List<Tag>? tags;
   final Color? Function(BuildContext context, String name)? colorBuilder;
 
   @override
@@ -31,18 +31,16 @@ class TrendingTags extends ConsumerWidget {
             spacing: 6,
             runSpacing: isMobilePlatform() ? -2 : 8,
             children: tags!.map((e) {
-              final color = e.category == null
-                  ? null
-                  : colorBuilder?.call(context, e.category!.name);
+              final color = colorBuilder?.call(context, e.category.name);
 
               return DanbooruTagContextMenu(
-                tag: e.name.keyword,
+                tag: e.name,
                 child: BooruChip(
                   visualDensity: VisualDensity.compact,
                   color: color,
-                  onPressed: () => onTagTap?.call(e.name.keyword),
+                  onPressed: () => onTagTap?.call(e.name),
                   label: Text(
-                    e.name.keyword.replaceAll('_', ' '),
+                    e.displayName,
                     style: TextStyle(
                       color: Theme.of(context).brightness.isDark ? color : null,
                     ),
@@ -61,7 +59,7 @@ class TrendingTagsPlaceholder extends StatelessWidget {
     super.key,
   });
 
-  final List<TrendingTag> tags;
+  final List<Tag> tags;
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +76,7 @@ class TrendingTagsPlaceholder extends StatelessWidget {
           visualDensity: VisualDensity.compact,
           onPressed: () {},
           label: Text(
-            e.name.keyword,
+            e.name,
             style: const TextStyle(
               color: Colors.transparent,
             ),

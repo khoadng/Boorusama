@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import '../../../../../foundation/platform.dart';
 import '../../../../cache/providers.dart';
-import '../../../../foundation/platform.dart';
 import '../../../../router.dart';
 import '../../../../tags/favorites/favorited.dart';
 import '../../../../tags/favorites/widgets.dart';
@@ -28,14 +28,15 @@ class FavoriteTagsSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final notifier = ref
-        .watch(miscDataProvider(kSearchSelectedFavoriteTagLabelKey).notifier);
+    final notifier = ref.watch(
+      miscDataProvider(kSearchSelectedFavoriteTagLabelKey).notifier,
+    );
 
     return FavoriteTagsFilterScope(
       initialValue: selectedLabel,
       sortType: FavoriteTagsSortType.nameAZ,
       builder: (_, tags, labels, selected) => OptionTagsArenaNoEdit(
-        title: 'favorite_tags.favorites'.tr(),
+        title: context.t.favorite_tags.favorites,
         titleTrailing: FavoriteTagLabelSelectorField(
           selected: selected,
           labels: labels,
@@ -52,7 +53,9 @@ class FavoriteTagsSection extends ConsumerWidget {
   ) {
     return [
       ...tags.mapIndexed((index, tag) {
-        final colors = ref.watch(booruChipColorsProvider).fromColor(
+        final colors = ref
+            .watch(booruChipColorsProvider)
+            .fromColor(
               Theme.of(ref.context).colorScheme.onSurface,
             );
 
@@ -85,7 +88,7 @@ class FavoriteTagsSection extends ConsumerWidget {
   }
 }
 
-class OptionTagsArenaNoEdit extends StatelessWidget {
+class OptionTagsArenaNoEdit extends ConsumerWidget {
   const OptionTagsArenaNoEdit({
     required this.title,
     required this.children,
@@ -98,7 +101,7 @@ class OptionTagsArenaNoEdit extends StatelessWidget {
   final List<Widget> children;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -110,8 +113,8 @@ class OptionTagsArenaNoEdit extends StatelessWidget {
                 Text(
                   title.toUpperCase(),
                   style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
                 FilledButton(
                   style: FilledButton.styleFrom(
@@ -119,10 +122,11 @@ class OptionTagsArenaNoEdit extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 12),
                     minimumSize: const Size(32, 32),
                     shape: const CircleBorder(),
-                    backgroundColor:
-                        Theme.of(context).colorScheme.surfaceContainerHighest,
+                    backgroundColor: Theme.of(
+                      context,
+                    ).colorScheme.surfaceContainerHighest,
                   ),
-                  onPressed: () => context.push('/favorite_tags'),
+                  onPressed: () => ref.router.push('/favorite_tags'),
                   child: Icon(
                     Symbols.settings,
                     size: 16,
@@ -154,7 +158,7 @@ class ImportTagButton extends StatelessWidget {
     return FilledButton(
       style: FilledButton.styleFrom(shape: const StadiumBorder()),
       onPressed: () => goToFavoriteTagImportPage(context),
-      child: const Text('favorite_tags.import').tr(),
+      child: Text(context.t.favorite_tags.import),
     );
   }
 }

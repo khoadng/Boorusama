@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
@@ -44,27 +45,27 @@ class _SavedSearchFeedContentViewState
           .getPosts(_selectedSearch.toQuery(), page),
       builder: (context, controller) => PostGrid(
         controller: controller,
-        itemBuilder: (
-          context,
-          index,
-          multiSelectController,
-          scrollController,
-          useHero,
-        ) =>
-            DefaultDanbooruImageGridItem(
-          index: index,
-          multiSelectController: multiSelectController,
-          autoScrollController: scrollController,
-          controller: controller,
-          useHero: useHero,
-        ),
+        itemBuilder:
+            (
+              context,
+              index,
+              multiSelectController,
+              scrollController,
+              useHero,
+            ) => DefaultDanbooruImageGridItem(
+              index: index,
+              multiSelectController: multiSelectController,
+              autoScrollController: scrollController,
+              controller: controller,
+              useHero: useHero,
+            ),
         sliverHeaders: [
           SliverAppBar(
-            title: const Text('saved_search.saved_search_feed').tr(),
+            title: Text(context.t.saved_search.saved_search_feed),
             floating: true,
             actions: [
               IconButton(
-                onPressed: () => goToSavedSearchEditPage(context),
+                onPressed: () => goToSavedSearchEditPage(ref),
                 icon: const Icon(
                   Symbols.settings,
                   fill: 1,
@@ -144,7 +145,7 @@ class _SavedSearchList extends ConsumerWidget {
             vertical: 4,
             horizontal: text.fold(
               () => 12,
-              (t) => t.length < 4 ? 12 : 4,
+              (text) => text.length < 4 ? 12 : 4,
             ),
           ),
           labelPadding: const EdgeInsets.all(1),
@@ -156,7 +157,7 @@ class _SavedSearchList extends ConsumerWidget {
           label: Text(
             text.fold(
               () => '<empty>',
-              (t) => t.replaceAll('_', ' '),
+              (text) => text.replaceAll('_', ' '),
             ),
             overflow: TextOverflow.fade,
           ),

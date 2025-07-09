@@ -94,7 +94,7 @@ class DefaultPostActionToolbar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfigAuth;
-    final isFaved = ref.watch(favoriteProvider(post.id));
+    final isFaved = ref.watch(favoriteProvider((config, post.id)));
     final notifier = ref.watch(favoritesProvider(config).notifier);
     final canFavorite = ref.watch(canFavoriteProvider(config));
 

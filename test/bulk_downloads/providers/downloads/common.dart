@@ -9,7 +9,7 @@ import 'package:foundation/foundation.dart';
 import 'package:mocktail/mocktail.dart';
 
 // Project imports:
-import 'package:boorusama/core/analytics.dart';
+import 'package:boorusama/core/analytics/providers.dart';
 import 'package:boorusama/core/blacklists/providers.dart';
 import 'package:boorusama/core/boorus/booru/booru.dart';
 import 'package:boorusama/core/boorus/engine/engine.dart';
@@ -22,14 +22,12 @@ import 'package:boorusama/core/bulk_downloads/src/types/download_options.dart';
 import 'package:boorusama/core/bulk_downloads/src/types/download_repository.dart';
 import 'package:boorusama/core/configs/config.dart';
 import 'package:boorusama/core/configs/manage/providers.dart';
-import 'package:boorusama/core/downloads/downloader.dart';
-import 'package:boorusama/core/downloads/filename.dart';
-import 'package:boorusama/core/downloads/manager.dart';
-import 'package:boorusama/core/downloads/urls.dart';
-import 'package:boorusama/core/foundation/loggers.dart';
-import 'package:boorusama/core/foundation/permissions.dart';
+import 'package:boorusama/core/download_manager/providers.dart';
+import 'package:boorusama/core/downloads/downloader/providers.dart';
+import 'package:boorusama/core/downloads/downloader/types.dart';
+import 'package:boorusama/core/downloads/filename/types.dart';
+import 'package:boorusama/core/downloads/urls/providers.dart';
 import 'package:boorusama/core/http/providers.dart';
-import 'package:boorusama/core/info/device_info.dart';
 import 'package:boorusama/core/posts/post/post.dart';
 import 'package:boorusama/core/posts/post/providers.dart';
 import 'package:boorusama/core/premiums/providers.dart';
@@ -37,6 +35,9 @@ import 'package:boorusama/core/search/queries/query.dart';
 import 'package:boorusama/core/search/selected_tags/tag.dart';
 import 'package:boorusama/core/settings/providers.dart';
 import 'package:boorusama/core/settings/settings.dart';
+import 'package:boorusama/foundation/info/device_info.dart';
+import 'package:boorusama/foundation/loggers.dart';
+import 'package:boorusama/foundation/permissions.dart';
 import '../../common.dart';
 
 class MockMediaPermissionManager extends Mock
@@ -156,8 +157,7 @@ class DummyPostRepository implements PostRepository {
     int page, {
     int? limit,
     PostFetchOptions? options,
-  }) =>
-      getPosts('', page);
+  }) => getPosts('', page);
 
   @override
   PostOrError<Post> getPost(PostId id, {PostFetchOptions? options}) {
@@ -165,8 +165,9 @@ class DummyPostRepository implements PostRepository {
 
     if (numericId == null) return TaskEither.right(null);
 
-    final post = DownloadTestConstants.posts
-        .firstWhere((element) => element.id == numericId.value);
+    final post = DownloadTestConstants.posts.firstWhere(
+      (element) => element.id == numericId.value,
+    );
 
     return TaskEither.right(post);
   }
@@ -366,16 +367,17 @@ List<Override> getTestOverrides({
 }) {
   return [
     internalDownloadRepositoryProvider.overrideWith((_) => downloadRepository),
-    currentReadOnlyBooruConfigSearchProvider
-        .overrideWithValue(booruConfigSearch),
+    currentReadOnlyBooruConfigSearchProvider.overrideWithValue(
+      booruConfigSearch,
+    ),
     currentReadOnlyBooruConfigAuthProvider.overrideWithValue(
       overrideConfig ?? booruConfigAuth,
     ),
     currentReadOnlyBooruConfigProvider.overrideWithValue(booruConfig),
-    postRepoProvider.overrideWith((__, _) => DummyPostRepository()),
+    postRepoProvider.overrideWith((_, _) => DummyPostRepository()),
     downloadServiceProvider.overrideWith((_) => DummyDownloadService()),
     downloadFilenameBuilderProvider.overrideWith(
-      (__, _) => dummyDownloadFileNameBuilder,
+      (_, _) => dummyDownloadFileNameBuilder,
     ),
     loggerProvider.overrideWithValue(DummyLogger()),
     mediaPermissionManagerProvider.overrideWithValue(
@@ -385,17 +387,20 @@ List<Override> getTestOverrides({
       AlwaysGrantedNotificationPermissionManager(),
     ),
     settingsProvider.overrideWithValue(Settings.defaultSettings),
-    downloadFileUrlExtractorProvider
-        .overrideWith((__, _) => const UrlInsidePostExtractor()),
-    cachedBypassDdosHeadersProvider.overrideWith((_, __) => {}),
+    downloadFileUrlExtractorProvider.overrideWith(
+      (_, _) => const UrlInsidePostExtractor(),
+    ),
+    cachedBypassDdosHeadersProvider.overrideWith((_, _) => {}),
     analyticsProvider.overrideWith((_) => NoAnalyticsInterface()),
-    booruBuilderProvider
-        .overrideWith((_, __) => booruBuilder ?? MockBooruBuilder()),
-    blacklistTagsProvider.overrideWith((_, __) => {}),
+    booruBuilderProvider.overrideWith(
+      (_, _) => booruBuilder ?? MockBooruBuilder(),
+    ),
+    blacklistTagsProvider.overrideWith((_, _) => {}),
     hasPremiumProvider.overrideWithValue(hasPremium),
-    downloadTaskStreamProvider
-        .overrideWith((_) => taskUpdateStream ?? emptyTaskUpdateStream),
-    taskFileSizeResolverProvider.overrideWith((_, __) => Future.value(0)),
+    downloadTaskStreamProvider.overrideWith(
+      (_) => taskUpdateStream ?? emptyTaskUpdateStream,
+    ),
+    taskFileSizeResolverProvider.overrideWith((_, _) => Future.value(0)),
     if (notifications != null)
       bulkDownloadNotificationProvider.overrideWith((_) => notifications),
   ];

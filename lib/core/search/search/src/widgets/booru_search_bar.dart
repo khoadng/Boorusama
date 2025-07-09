@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../theme/theme.dart';
@@ -109,11 +109,12 @@ class _BooruSearchBarState extends State<BooruSearchBar> {
                   errorBorder: InputBorder.none,
                   disabledBorder: InputBorder.none,
                   hoverColor: Colors.transparent,
-                  contentPadding: widget.contentPadding ??
+                  contentPadding:
+                      widget.contentPadding ??
                       const EdgeInsets.symmetric(
                         vertical: 12,
                       ),
-                  hintText: widget.hintText ?? 'search.hint'.tr(),
+                  hintText: widget.hintText ?? context.t.search.hint,
                   hintStyle: TextStyle(
                     color: colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
                   ),

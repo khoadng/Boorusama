@@ -108,13 +108,13 @@ class PaginationInfo extends Equatable {
 
   @override
   List<Object?> get props => [
-        pages,
-        maxSelectablePage,
-        isLowPageCount,
-        isSinglePage,
-        isLastPage,
-        pageInputVisible,
-      ];
+    pages,
+    maxSelectablePage,
+    isLowPageCount,
+    isSinglePage,
+    isLastPage,
+    pageInputVisible,
+  ];
 }
 
 PaginationInfo calculatePaginationInfo({
@@ -133,8 +133,9 @@ PaginationInfo calculatePaginationInfo({
   );
 
   final lastPage = visiblePages.lastOrNull;
-  final isLowPageCount =
-      lastPage != null ? lastPage < visiblePages.length : false;
+  final isLowPageCount = lastPage != null
+      ? lastPage < visiblePages.length
+      : false;
   final isSinglePage = visiblePages.length == 1 && visiblePages.first == 1;
   final isLastPage = lastPage != null && lastPage == totalResults;
   final pageInputVisible = visiblePages.length > 1;
@@ -192,11 +193,13 @@ class _PageSelectorState extends State<PageSelector> {
           itemPerPage: widget.itemPerPage,
         );
 
-        final showLastPageButton = widget.showLastPage &&
+        final showLastPageButton =
+            widget.showLastPage &&
             totalPages != null &&
             !paginationInfo.pages.contains(totalPages);
 
-        final enableNextButton = totalPages != null &&
+        final enableNextButton =
+            totalPages != null &&
             widget.currentPage < totalPages &&
             !paginationInfo.isLastPage;
 

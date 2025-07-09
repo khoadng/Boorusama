@@ -1,8 +1,12 @@
 // Dart imports:
 import 'dart:async';
 
+// Flutter imports:
+import 'package:flutter/material.dart';
+
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../../../../core/configs/config.dart';
@@ -13,14 +17,18 @@ import '../../favgroup.dart';
 import '../types/update_order.dart';
 import 'local_providers.dart';
 
-final danbooruFavoriteGroupsProvider = NotifierProvider.family<
-    FavoriteGroupsNotifier, List<DanbooruFavoriteGroup>?, BooruConfigSearch>(
-  FavoriteGroupsNotifier.new,
-  dependencies: [
-    danbooruFavoriteGroupRepoProvider,
-    danbooruCurrentUserProvider,
-  ],
-);
+final danbooruFavoriteGroupsProvider =
+    NotifierProvider.family<
+      FavoriteGroupsNotifier,
+      List<DanbooruFavoriteGroup>?,
+      BooruConfigSearch
+    >(
+      FavoriteGroupsNotifier.new,
+      dependencies: [
+        danbooruFavoriteGroupRepoProvider,
+        danbooruCurrentUserProvider,
+      ],
+    );
 
 class FavoriteGroupsNotifier
     extends FamilyNotifier<List<DanbooruFavoriteGroup>?, BooruConfigSearch> {
@@ -35,8 +43,9 @@ class FavoriteGroupsNotifier
 
   Future<void> refresh() async {
     if (!arg.auth.hasLoginDetails()) return;
-    final groups =
-        await repo.getFavoriteGroupsByCreatorName(name: arg.auth.login!);
+    final groups = await repo.getFavoriteGroupsByCreatorName(
+      name: arg.auth.login!,
+    );
 
     //TODO: shouldn't load everything
     final ids = groups
@@ -55,20 +64,23 @@ class FavoriteGroupsNotifier
   }
 
   Future<void> create({
+    required BuildContext context,
     required String initialIds,
     required String name,
     required bool isPrivate,
-    void Function(String message, bool translatable)? onFailure,
+    void Function(String message)? onFailure,
   }) async {
-    final currentUser =
-        await ref.read(danbooruCurrentUserProvider(arg.auth).future);
+    final t = context.t;
+    final currentUser = await ref.read(
+      danbooruCurrentUserProvider(arg.auth).future,
+    );
 
     if (currentUser == null) return;
 
     if (state != null &&
         !isBooruGoldPlusAccount(currentUser.level) &&
         state!.length >= 10) {
-      onFailure?.call('favorite_groups.max_limit_warning', true);
+      onFailure?.call(t.favorite_groups.max_limit_warning);
 
       return;
     }
@@ -87,7 +99,7 @@ class FavoriteGroupsNotifier
     if (success) {
       unawaited(refresh());
     } else {
-      onFailure?.call('Fail to create favorite group', false);
+      onFailure?.call('Fail to create favorite group'.hc);
     }
   }
 
@@ -109,7 +121,7 @@ class FavoriteGroupsNotifier
     String? initialIds,
     String? name,
     bool? isPrivate,
-    void Function(String message, bool translatable)? onFailure,
+    void Function(String message)? onFailure,
   }) async {
     final idString = initialIds?.split(' ') ?? [];
     final ids = idString
@@ -130,23 +142,24 @@ class FavoriteGroupsNotifier
       unawaited(refresh());
       return true;
     } else {
-      onFailure?.call('Fail to edit favorite group', false);
+      onFailure?.call('Fail to edit favorite group'.hc);
       return false;
     }
   }
 
   Future<void> addToGroup({
+    required BuildContext context,
     required DanbooruFavoriteGroup group,
     required List<int> postIds,
-    void Function(String message, bool translatable)? onFailure,
+    void Function(String message)? onFailure,
     void Function(DanbooruFavoriteGroup group)? onSuccess,
   }) async {
+    final t = context.t;
     final duplicates = postIds.where((e) => group.postIds.contains(e)).toList();
 
     if (duplicates.isNotEmpty) {
       onFailure?.call(
-        'favorite_groups.duplicate_items_warning_notification',
-        true,
+        t.favorite_groups.duplicate_items_warning_notification,
       );
 
       return;
@@ -170,7 +183,7 @@ class FavoriteGroupsNotifier
       );
       unawaited(refresh());
     } else {
-      onFailure?.call('Failed to add posts to favgroup', false);
+      onFailure?.call('Failed to add posts to favgroup'.hc);
     }
   }
 
@@ -203,7 +216,7 @@ extension FavoriteGroupsNotifierX on FavoriteGroupsNotifier {
     required Set<int> newIds,
     required Set<int> oldIds,
     required Set<int> allIds,
-    void Function(String message, bool translatable)? onFailure,
+    void Function(String message)? onFailure,
   }) async {
     final updatedIds = updateOrder(allIds, oldIds, newIds);
 

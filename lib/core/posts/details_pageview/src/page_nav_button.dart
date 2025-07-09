@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import '../../../foundation/display.dart';
+import '../../../../foundation/display.dart';
 import '../../../theme.dart';
 import 'post_details_page_view_controller.dart';
 
@@ -41,14 +41,16 @@ class PageNavButton extends StatelessWidget {
                   child: MaterialButton(
                     color: context.extendedColorScheme.surfaceContainerOverlay,
                     shape: const CircleBorder(),
-                    padding:
-                        context.isLargeScreen ? const EdgeInsets.all(8) : null,
+                    padding: context.isLargeScreen
+                        ? const EdgeInsets.all(8)
+                        : null,
                     onPressed: onPressed,
                     child: Theme(
                       data: theme.copyWith(
                         iconTheme: theme.iconTheme.copyWith(
                           color: context
-                              .extendedColorScheme.onSurfaceContainerOverlay,
+                              .extendedColorScheme
+                              .onSurfaceContainerOverlay,
                         ),
                       ),
                       child: icon,

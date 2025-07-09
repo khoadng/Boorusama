@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../foundation/toast.dart';
+import '../../../../foundation/toast.dart';
 import '../../../premiums/src/routes/routes.dart';
 import '../../providers.dart';
 import '../../routes.dart';
@@ -41,7 +41,7 @@ class BulkDownloadNotificationScope extends ConsumerWidget {
                   ? SnackBarAction(
                       label: 'Upgrade',
                       textColor: Theme.of(context).colorScheme.surface,
-                      onPressed: () => goToPremiumPage(context),
+                      onPressed: () => goToPremiumPage(ref),
                     )
                   : null,
             );
@@ -54,7 +54,7 @@ class BulkDownloadNotificationScope extends ConsumerWidget {
         (prev, cur) {
           if (prev == null) return;
 
-          goToBulkDownloadManagerPage(context, go: true);
+          goToBulkDownloadManagerPage(ref, go: true);
         },
       );
 

@@ -50,7 +50,8 @@ class PreviewFrame extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Container(
-      padding: padding ??
+      padding:
+          padding ??
           const EdgeInsets.symmetric(
             vertical: 12,
             horizontal: 12,
@@ -101,7 +102,7 @@ class PreviewHome extends StatelessWidget {
               child: SizedBox(
                 height: 40,
                 child: Consumer(
-                  builder: (_, ref, __) {
+                  builder: (_, ref, _) {
                     final colorScheme = ref.watch(themePreviewerSchemeProvider);
                     final colors = ref.watch(themePreviewerColorsProvider);
                     final booruChipColors = BooruChipColors.colorScheme(
@@ -109,7 +110,8 @@ class PreviewHome extends StatelessWidget {
                       harmonizeWithPrimary: colors.harmonizeWithPrimary,
                     );
 
-                    final tagColors = getTagColorsFromColorSettings(colors) ??
+                    final tagColors =
+                        getTagColorsFromColorSettings(colors) ??
                         TagColors.fromBrightness(
                           colorScheme.brightness,
                         );
@@ -153,7 +155,7 @@ class PreviewHome extends StatelessWidget {
               child: PostListConfigurationHeader(
                 blacklistControls: BlacklistControls(
                   hiddenTags: hiddenTags,
-                  onChanged: (_, __) {},
+                  onChanged: (_, _) {},
                   onEnableAll: () {},
                   onDisableAll: () {},
                   axis: Axis.horizontal,
@@ -211,7 +213,7 @@ class PreviewDetails extends StatelessWidget {
             ),
             SliverToBoxAdapter(
               child: Consumer(
-                builder: (__, ref, _) {
+                builder: (_, ref, _) {
                   final colorScheme = ref.watch(themePreviewerSchemeProvider);
 
                   return ProviderScope(
@@ -309,7 +311,8 @@ class PreviewTagsTile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colors = ref.watch(themePreviewerColorsProvider);
-    final tagColors = getTagColorsFromColorSettings(colors) ??
+    final tagColors =
+        getTagColorsFromColorSettings(colors) ??
         TagColors.fromBrightness(colorScheme.brightness);
 
     return TagsTile(

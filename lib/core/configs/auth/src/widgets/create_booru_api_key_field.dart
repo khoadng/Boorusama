@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../widgets/booru_text_form_field.dart';
@@ -58,7 +58,7 @@ class _CreateBooruApiKeyFieldState extends State<CreateBooruApiKeyField> {
         obscureText: !revealKey,
         onChanged: widget.onChanged,
         decoration: InputDecoration(
-          labelText: widget.labelText ?? 'booru.password_api_key_label'.tr(),
+          labelText: widget.labelText ?? context.t.booru.password_api_key_label,
           hintText: widget.hintText,
           errorMaxLines: 2,
           suffixIcon: IconButton(

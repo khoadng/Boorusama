@@ -9,13 +9,13 @@ import '../../../../router.dart';
 import '../pages/favorites_page.dart';
 
 GoRoute postFavoritesRoutes(Ref ref) => GoRoute(
-      path: 'favorites',
-      name: '/favorites',
-      pageBuilder: (context, state) {
-        return CupertinoPage(
-          key: state.pageKey,
-          name: state.name,
-          child: const FavoritesPage(),
-        );
-      },
+  path: 'favorites',
+  name: '/favorites',
+  pageBuilder: (context, state) {
+    return CupertinoPage(
+      key: state.pageKey,
+      name: state.name,
+      child: const FavoritesPage(),
     );
+  },
+);

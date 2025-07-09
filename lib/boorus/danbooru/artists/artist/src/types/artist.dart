@@ -19,16 +19,16 @@ class DanbooruArtist extends Equatable {
   });
 
   factory DanbooruArtist.empty() => DanbooruArtist(
-        createdAt: DateTime(1),
-        id: 0,
-        name: '',
-        groupName: '',
-        isBanned: false,
-        isDeleted: false,
-        otherNames: const [],
-        updatedAt: DateTime(1),
-        urls: const [],
-      );
+    createdAt: DateTime(1),
+    id: 0,
+    name: '',
+    groupName: '',
+    isBanned: false,
+    isDeleted: false,
+    otherNames: const [],
+    updatedAt: DateTime(1),
+    urls: const [],
+  );
 
   final int id;
   final DateTime createdAt;
@@ -43,17 +43,17 @@ class DanbooruArtist extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        createdAt,
-        updatedAt,
-        isDeleted,
-        groupName,
-        isBanned,
-        otherNames,
-        name,
-        urls,
-        postCount,
-      ];
+    id,
+    createdAt,
+    updatedAt,
+    isDeleted,
+    groupName,
+    isBanned,
+    otherNames,
+    name,
+    urls,
+    postCount,
+  ];
 }
 
 extension DanbooruArtistX on DanbooruArtist {
@@ -63,19 +63,18 @@ extension DanbooruArtistX on DanbooruArtist {
     int? id,
     String? name,
     List<String>? otherNames,
-  }) =>
-      DanbooruArtist(
-        id: id ?? this.id,
-        createdAt: createdAt,
-        updatedAt: updatedAt,
-        isBanned: isBanned,
-        groupName: groupName,
-        isDeleted: isDeleted,
-        otherNames: otherNames ?? this.otherNames,
-        name: name ?? this.name,
-        urls: urls,
-        postCount: postCount,
-      );
+  }) => DanbooruArtist(
+    id: id ?? this.id,
+    createdAt: createdAt,
+    updatedAt: updatedAt,
+    isBanned: isBanned,
+    groupName: groupName,
+    isDeleted: isDeleted,
+    otherNames: otherNames ?? this.otherNames,
+    name: name ?? this.name,
+    urls: urls,
+    postCount: postCount,
+  );
 
   List<DanbooruArtistUrl> get activeUrls {
     final urls = this.urls.filterActive().filterDuplicates().toList()

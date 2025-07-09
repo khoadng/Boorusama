@@ -57,7 +57,8 @@ class BackupRestoreTile extends StatelessWidget {
                 if (subtitle != null)
                   Text(
                     subtitle!,
-                    style: subtitleStyle ??
+                    style:
+                        subtitleStyle ??
                         TextStyle(
                           fontWeight: FontWeight.w400,
                           color: Theme.of(context).colorScheme.hintColor,

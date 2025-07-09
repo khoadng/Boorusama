@@ -8,8 +8,10 @@ import '../../../configs/ref.dart';
 import '../../post/providers.dart';
 import 'post_count_repository.dart';
 
-final postCountProvider =
-    FutureProvider.autoDispose.family<int?, String>((ref, tags) async {
+final postCountProvider = FutureProvider.autoDispose.family<int?, String>((
+  ref,
+  tags,
+) async {
   final config = ref.watchConfigSearch;
   final fetcher = ref.watch(postCountRepoProvider(config));
   final tagComposer = ref.watch(postRepoProvider(config)).tagComposer;
@@ -21,19 +23,23 @@ final postCountProvider =
   return postCount;
 });
 
-final cachedPostCountProvider =
-    FutureProvider.family<int?, String>((ref, tags) async {
+final cachedPostCountProvider = FutureProvider.family<int?, String>((
+  ref,
+  tags,
+) async {
   return ref.watch(postCountProvider(tags).future);
 });
 
-final emptyPostCountRepoProvider =
-    Provider<PostCountRepository>((ref) => const EmptyPostCountRepository());
+final emptyPostCountRepoProvider = Provider<PostCountRepository>(
+  (ref) => const EmptyPostCountRepository(),
+);
 
 final postCountRepoProvider =
     Provider.family<PostCountRepository?, BooruConfigSearch>(
-  (ref, config) {
-    final repo =
-        ref.watch(booruEngineRegistryProvider).getRepository(config.booruType);
-    return repo?.postCount(config);
-  },
-);
+      (ref, config) {
+        final repo = ref
+            .watch(booruEngineRegistryProvider)
+            .getRepository(config.booruType);
+        return repo?.postCount(config);
+      },
+    );

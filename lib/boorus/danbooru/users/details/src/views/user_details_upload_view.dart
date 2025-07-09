@@ -4,19 +4,19 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
 import '../../../../../../core/configs/ref.dart';
-import '../../../../../../core/foundation/platform.dart';
-import '../../../../../../core/posts/details/routes.dart';
 import '../../../../../../core/posts/details_parts/widgets.dart';
 import '../../../../../../core/search/search/routes.dart';
 import '../../../../../../core/tags/categories/tag_category.dart';
 import '../../../../../../core/tags/tag/providers.dart';
 import '../../../../../../core/theme.dart';
-import '../../../../../../core/utils/flutter_utils.dart';
 import '../../../../../../core/widgets/widgets.dart';
+import '../../../../../../foundation/platform.dart';
+import '../../../../../../foundation/utils/flutter_utils.dart';
 import '../../../../posts/post/post.dart';
 import '../../../../tags/related/related.dart';
 import '../../../user/user.dart';
@@ -126,8 +126,8 @@ class _UserUploadViewState extends ConsumerState<UserDetailsUploadView>
                       _kTopCopyrigthTags.toString(),
                     ),
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const SizedBox(height: 4),
                   ref
@@ -161,28 +161,29 @@ class _UserUploadViewState extends ConsumerState<UserDetailsUploadView>
     return Wrap(
       spacing: 8,
       runSpacing: isDesktopPlatform() ? 4 : 0,
-      children: [
-        'aaaaaaaaaaaaa',
-        'fffffffffffffffff',
-        'ccccccccccccccccc',
-        'dddddddddd',
-        'bbbddddddbb',
-      ]
-          .map(
-            (e) => BooruChip(
-              visualDensity: VisualDensity.compact,
-              label: ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxWidth: MediaQuery.sizeOf(context).width * 0.8,
+      children:
+          [
+                'aaaaaaaaaaaaa',
+                'fffffffffffffffff',
+                'ccccccccccccccccc',
+                'dddddddddd',
+                'bbbddddddbb',
+              ]
+              .map(
+                (e) => BooruChip(
+                  visualDensity: VisualDensity.compact,
+                  label: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxWidth: MediaQuery.sizeOf(context).width * 0.8,
+                    ),
+                    child: Text(
+                      e,
+                      style: const TextStyle(color: Colors.transparent),
+                    ),
+                  ),
                 ),
-                child: Text(
-                  e,
-                  style: const TextStyle(color: Colors.transparent),
-                ),
-              ),
-            ),
-          )
-          .toList(),
+              )
+              .toList(),
     );
   }
 
@@ -200,7 +201,7 @@ class _UserUploadViewState extends ConsumerState<UserDetailsUploadView>
                 ),
               ),
               onPressed: () => goToSearchPage(
-                context,
+                ref,
                 tag: e.tag,
               ),
               label: ConstrainedBox(
@@ -228,10 +229,10 @@ class _UserUploadViewState extends ConsumerState<UserDetailsUploadView>
                       TextSpan(
                         text: '  ${(e.frequency * 100).toStringAsFixed(1)}%',
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: Theme.of(context).brightness.isLight
-                                  ? Colors.white.withValues(alpha: 0.85)
-                                  : null,
-                            ),
+                          color: Theme.of(context).brightness.isLight
+                              ? Colors.white.withValues(alpha: 0.85)
+                              : null,
+                        ),
                       ),
                     ],
                   ),
@@ -279,24 +280,19 @@ class SliverUploadPostList extends ConsumerWidget {
               ),
               visualDensity: const ShrinkVisualDensity(),
               trailing: TextButton(
-                onPressed: () =>
-                    goToSearchPage(context, tag: 'user:${user.name}'),
-                child: const Text('View all'),
+                onPressed: () => goToSearchPage(ref, tag: 'user:${user.name}'),
+                child: Text('View all'.hc),
               ),
             ),
           ),
         ),
         SliverPadding(
           padding: const EdgeInsets.symmetric(horizontal: 8),
-          sliver: ref.watch(danbooruUserUploadsProvider(params)).maybeWhen(
+          sliver: ref
+              .watch(danbooruUserUploadsProvider(params))
+              .maybeWhen(
                 data: (data) => SliverPreviewPostGrid(
                   posts: data,
-                  onTap: (postIdx) => goToPostDetailsPageFromPosts(
-                    context: context,
-                    posts: data,
-                    initialIndex: postIdx,
-                    initialThumbnailUrl: data[postIdx].url360x360,
-                  ),
                   imageUrl: (item) => item.url360x360,
                 ),
                 orElse: () => const SliverPreviewPostGridPlaceholder(),

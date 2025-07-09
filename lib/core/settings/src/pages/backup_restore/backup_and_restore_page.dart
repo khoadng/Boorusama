@@ -8,10 +8,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:path/path.dart' show join;
 
 // Project imports:
+import '../../../../../foundation/clipboard.dart';
+import '../../../../../foundation/info/device_info.dart';
+import '../../../../../foundation/info/package_info.dart';
+import '../../../../../foundation/path.dart' as p;
+import '../../../../../foundation/picker.dart';
+import '../../../../../foundation/platform.dart';
+import '../../../../../foundation/toast.dart';
 import '../../../../backups/routes.dart';
 import '../../../../backups/sync_data_page.dart';
 import '../../../../blacklists/providers.dart';
@@ -21,13 +29,6 @@ import '../../../../config_widgets/booru_logo.dart';
 import '../../../../configs/config.dart';
 import '../../../../configs/export_import/types.dart';
 import '../../../../configs/manage/providers.dart';
-import '../../../../foundation/clipboard.dart';
-import '../../../../foundation/path.dart' as p;
-import '../../../../foundation/picker.dart';
-import '../../../../foundation/platform.dart';
-import '../../../../foundation/toast.dart';
-import '../../../../info/device_info.dart';
-import '../../../../info/package_info.dart';
 import '../../../../router.dart';
 import '../../../../search/histories/providers.dart';
 import '../../../../tags/favorites/providers.dart';
@@ -51,7 +52,7 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
   @override
   Widget build(BuildContext context) {
     return SettingsPageScaffold(
-      title: const Text('settings.backup_and_restore.backup_and_restore').tr(),
+      title: Text(context.t.settings.backup_and_restore.backup_and_restore),
       padding: const EdgeInsets.symmetric(horizontal: 8),
       children: [
         const _Title(
@@ -159,13 +160,17 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
             case 'import':
               _pickProfileFile(ref);
             case 'export_clipboard':
-              ref.read(booruConfigProvider.notifier).exportClipboard(
+              ref
+                  .read(booruConfigProvider.notifier)
+                  .exportClipboard(
                     onSuccess: (message) => showSuccessToast(context, message),
                     onFailure: (message) => showErrorToast(context, message),
                     appVersion: ref.read(appVersionProvider),
                   );
             case 'import_clipboard':
-              ref.read(booruConfigProvider.notifier).importClipboard(
+              ref
+                  .read(booruConfigProvider.notifier)
+                  .importClipboard(
                     onSuccess: _onImportSuccess,
                     onWillImport: _showImportBooruConfigsAlertDialog,
                     onFailure: (message) => showErrorToast(context, message),
@@ -174,11 +179,11 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
           }
         },
         itemBuilder: {
-          if (configs.isNotEmpty) 'export': const Text('Export'),
-          'import': const Text('Import'),
+          if (configs.isNotEmpty) 'export': Text('Export'.hc),
+          'import': Text('Import'.hc),
           if (configs.isNotEmpty)
-            'export_clipboard': const Text('Export to clipboard'),
-          'import_clipboard': const Text('Import from clipboard'),
+            'export_clipboard': Text('Export to clipboard'.hc),
+          'import_clipboard': Text('Import from clipboard'.hc),
         },
       ),
     );
@@ -189,8 +194,8 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
 
     return BackupRestoreTile(
       leadingIcon: Symbols.tag,
-      title: 'Blacklisted tags',
-      subtitle: '${blacklistedTags.length} tags',
+      title: 'Blacklisted tags'.hc,
+      subtitle: '${blacklistedTags.length} tags'.hc,
       trailing: ImportExportTagButton(
         onImport: (tagString) => ref
             .read(globalBlacklistedTagsProvider.notifier)
@@ -205,22 +210,24 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
 
     return BackupRestoreTile(
       leadingIcon: Symbols.favorite,
-      title: 'favorite_tags.favorite_tags'.tr(),
-      subtitle: '${tags.length} tags',
+      title: context.t.favorite_tags.favorite_tags,
+      subtitle: '${tags.length} tags'.hc,
       trailing: BooruPopupMenuButton(
         onSelected: (value) {
           if (value == 'import') {
             goToFavoriteTagImportPage(context);
           } else if (value == 'export') {
-            ref.read(favoriteTagsProvider.notifier).export(
-              onDone: (tagString) {
-                AppClipboard.copyAndToast(
-                  context,
-                  tagString,
-                  message: 'favorite_tags.export_notification'.tr(),
+            ref
+                .read(favoriteTagsProvider.notifier)
+                .export(
+                  onDone: (tagString) {
+                    AppClipboard.copyAndToast(
+                      context,
+                      tagString,
+                      message: context.t.favorite_tags.export_notification,
+                    );
+                  },
                 );
-              },
-            );
           } else if (value == 'export_with_labels') {
             _pickFavoriteTagsFolder(ref);
           } else if (value == 'import_with_labels') {
@@ -228,12 +235,11 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
           }
         },
         itemBuilder: {
+          if (tags.isNotEmpty) 'export': Text(context.t.favorite_tags.export),
+          'import': Text(context.t.favorite_tags.import),
           if (tags.isNotEmpty)
-            'export': const Text('favorite_tags.export').tr(),
-          'import': const Text('favorite_tags.import').tr(),
-          if (tags.isNotEmpty)
-            'export_with_labels': const Text('Export with labels'),
-          'import_with_labels': const Text('Import with labels'),
+            'export_with_labels': Text('Export with labels'.hc),
+          'import_with_labels': Text('Import with labels'.hc),
         },
       ),
     );
@@ -258,8 +264,8 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
           }
         },
         itemBuilder: {
-          if (hasBookmarks) 'export': const Text('Export'),
-          'import': const Text('Import'),
+          if (hasBookmarks) 'export': Text('Export'.hc),
+          'import': Text('Import'.hc),
         },
       ),
     );
@@ -268,7 +274,7 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
   Widget _buildSettings() {
     return BackupRestoreTile(
       leadingIcon: Symbols.settings,
-      title: 'Settings',
+      title: 'Settings'.hc,
       trailing: BooruPopupMenuButton(
         onSelected: (value) {
           switch (value) {
@@ -279,9 +285,9 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
             default:
           }
         },
-        itemBuilder: const {
-          'export': Text('Export'),
-          'import': Text('Import'),
+        itemBuilder: {
+          'export': Text('Export'.hc),
+          'import': Text('Import'.hc),
         },
       ),
     );
@@ -290,7 +296,7 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
   Widget _buildSearchHistories() {
     return BackupRestoreTile(
       leadingIcon: Symbols.history,
-      title: 'Search histories',
+      title: 'Search histories'.hc,
       trailing: BooruPopupMenuButton(
         onSelected: (value) {
           switch (value) {
@@ -301,9 +307,9 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
             default:
           }
         },
-        itemBuilder: const {
-          'export': Text('Export'),
-          'import': Text('Import'),
+        itemBuilder: {
+          'export': Text('Export'.hc),
+          'import': Text('Import'.hc),
         },
       ),
     );
@@ -312,7 +318,7 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
   Widget _buildBulkDownloads() {
     return BackupRestoreTile(
       leadingIcon: Symbols.folder_zip,
-      title: 'Bulk downloads',
+      title: 'Bulk downloads'.hc,
       trailing: BooruPopupMenuButton(
         onSelected: (value) {
           switch (value) {
@@ -323,9 +329,9 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
             default:
           }
         },
-        itemBuilder: const {
-          'export': Text('Export'),
-          'import': Text('Import'),
+        itemBuilder: {
+          'export': Text('Export'.hc),
+          'import': Text('Import'.hc),
         },
       ),
     );
@@ -339,50 +345,50 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
             final dbPath = await getSearchHistoryDbPath();
             final file = File(dbPath);
             if (!file.existsSync()) {
-              _showErrorToast('No search history found');
+              _showErrorToast('No search history found'.hc);
               return;
             }
 
             final destinationPath = join(path, kSearchHistoryDbName);
             await file.copy(destinationPath);
-            _showSuccessToast('Search history exported successfully');
+            _showSuccessToast('Search history exported successfully'.hc);
           } catch (e) {
-            _showErrorToast('Failed to export search history');
+            _showErrorToast('Failed to export search history'.hc);
           }
         },
       );
 
   void _pickSearchHistoryFile(WidgetRef ref) => _pickFile(
-        allowedExtensions: ['db'],
-        forceAnyFileType: true,
-        onPick: (path) async {
-          try {
-            final sourceFile = File(path);
+    allowedExtensions: ['db'],
+    forceAnyFileType: true,
+    onPick: (path) async {
+      try {
+        final sourceFile = File(path);
 
-            // Check SQLite header magic number
-            final bytes = await sourceFile.openRead(0, 16).first;
-            final header = bytes.take(16).toList();
-            if (!_isSQLiteFile(header)) {
-              _showErrorToast('Invalid database file');
-              return;
-            }
+        // Check SQLite header magic number
+        final bytes = await sourceFile.openRead(0, 16).first;
+        final header = bytes.take(16).toList();
+        if (!_isSQLiteFile(header)) {
+          _showErrorToast('Invalid database file');
+          return;
+        }
 
-            final dbPath = await getSearchHistoryDbPath();
-            final destFile = File(dbPath);
+        final dbPath = await getSearchHistoryDbPath();
+        final destFile = File(dbPath);
 
-            if (destFile.existsSync()) {
-              await destFile.delete();
-            }
+        if (destFile.existsSync()) {
+          await destFile.delete();
+        }
 
-            await sourceFile.copy(dbPath);
-            _showSuccessToast('Search history imported successfully');
+        await sourceFile.copy(dbPath);
+        _showSuccessToast('Search history imported successfully');
 
-            ref.invalidate(searchHistoryRepoProvider);
-          } catch (e) {
-            _showErrorToast('Failed to import search history');
-          }
-        },
-      );
+        ref.invalidate(searchHistoryRepoProvider);
+      } catch (e) {
+        _showErrorToast('Failed to import search history');
+      }
+    },
+  );
 
   Future<void> _pickBulkDownloadsFolder(WidgetRef ref) =>
       pickDirectoryPathToastOnError(
@@ -392,50 +398,50 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
             final dbPath = await getDownloadsDbPath();
             final file = File(dbPath);
             if (!file.existsSync()) {
-              _showErrorToast('No bulk downloads found');
+              _showErrorToast('No bulk downloads found'.hc);
               return;
             }
 
             final destinationPath = join(path, kDownloadDbName);
             await file.copy(destinationPath);
-            _showSuccessToast('Bulk downloads exported successfully');
+            _showSuccessToast('Bulk downloads exported successfully'.hc);
           } catch (e) {
-            _showErrorToast('Failed to export bulk downloads');
+            _showErrorToast('Failed to export bulk downloads'.hc);
           }
         },
       );
 
   void _pickBulkDownloadsFile(WidgetRef ref) => _pickFile(
-        onPick: (path) async {
-          try {
-            final sourceFile = File(path);
+    onPick: (path) async {
+      try {
+        final sourceFile = File(path);
 
-            // Check SQLite header magic number
-            final bytes = await sourceFile.openRead(0, 16).first;
-            final header = bytes.take(16).toList();
-            if (!_isSQLiteFile(header)) {
-              _showErrorToast('Invalid database file');
-              return;
-            }
+        // Check SQLite header magic number
+        final bytes = await sourceFile.openRead(0, 16).first;
+        final header = bytes.take(16).toList();
+        if (!_isSQLiteFile(header)) {
+          _showErrorToast('Invalid database file');
+          return;
+        }
 
-            final dbPath = await getDownloadsDbPath();
+        final dbPath = await getDownloadsDbPath();
 
-            final destFile = File(dbPath);
+        final destFile = File(dbPath);
 
-            if (destFile.existsSync()) {
-              await destFile.delete();
-            }
+        if (destFile.existsSync()) {
+          await destFile.delete();
+        }
 
-            await sourceFile.copy(dbPath);
+        await sourceFile.copy(dbPath);
 
-            _showSuccessToast('Bulk downloads imported successfully');
+        _showSuccessToast('Bulk downloads imported successfully');
 
-            ref.invalidate(internalDownloadRepositoryProvider);
-          } catch (e) {
-            _showErrorToast('Failed to import bulk downloads');
-          }
-        },
-      );
+        ref.invalidate(internalDownloadRepositoryProvider);
+      } catch (e) {
+        _showErrorToast('Failed to import bulk downloads');
+      }
+    },
+  );
 
   // SQLite files start with "SQLite format 3\0"
   bool _isSQLiteFile(List<int> header) {
@@ -509,17 +515,19 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
       );
 
   void _pickBookmarkFile(WidgetRef ref) => _pickFile(
-        onPick: (path) {
-          final file = File(path);
-          ref.bookmarks.importBookmarks(context, file);
-        },
-      );
+    onPick: (path) {
+      final file = File(path);
+      ref.bookmarks.importBookmarks(context, file);
+    },
+  );
 
   Future<void> _pickProfileFolder(WidgetRef ref) =>
       pickDirectoryPathToastOnError(
         context: context,
         onPick: (path) {
-          ref.read(booruConfigProvider.notifier).export(
+          ref
+              .read(booruConfigProvider.notifier)
+              .export(
                 path: path,
                 onSuccess: (message) => showSuccessToast(context, message),
                 onFailure: (message) => showErrorToast(context, message),
@@ -537,8 +545,11 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
     }
 
     if (isAndroid()) {
-      final androidVersion =
-          ref.read(deviceInfoProvider).androidDeviceInfo?.version.sdkInt;
+      final androidVersion = ref
+          .read(deviceInfoProvider)
+          .androidDeviceInfo
+          ?.version
+          .sdkInt;
       // Android 9 or lower will need to use any file type
       if (androidVersion != null &&
           androidVersion <= AndroidVersions.android9) {
@@ -557,35 +568,36 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
   Future<void> _pickFileManualExtensionCheck(
     List<String> allowedExtensions,
     void Function(String path) onPick,
-  ) =>
-      pickSingleFilePathToastOnError(
-        context: context,
-        onPick: (path) {
-          final ext = p.extension(path);
+  ) => pickSingleFilePathToastOnError(
+    context: context,
+    onPick: (path) {
+      final ext = p.extension(path);
 
-          if (!allowedExtensions.contains(ext.substring(1))) {
-            showErrorToast(
-              context,
-              'Invalid file type, only ${allowedExtensions.map((e) => '.$e').join(', ')} files are allowed',
-            );
-            return;
-          }
+      if (!allowedExtensions.contains(ext.substring(1))) {
+        showErrorToast(
+          context,
+          'Invalid file type, only ${allowedExtensions.map((e) => '.$e').join(', ')} files are allowed',
+        );
+        return;
+      }
 
-          onPick(path);
-        },
-      );
+      onPick(path);
+    },
+  );
 
   void _pickProfileFile(WidgetRef ref) => _pickFile(
-        onPick: (path) {
-          ref.read(booruConfigProvider.notifier).import(
-                context: context,
-                path: path,
-                onSuccess: _onImportSuccess,
-                onWillImport: _showImportBooruConfigsAlertDialog,
-                onFailure: (message) => showErrorToast(context, message),
-              );
-        },
-      );
+    onPick: (path) {
+      ref
+          .read(booruConfigProvider.notifier)
+          .import(
+            context: context,
+            path: path,
+            onSuccess: _onImportSuccess,
+            onWillImport: _showImportBooruConfigsAlertDialog,
+            onFailure: (message) => showErrorToast(context, message),
+          );
+    },
+  );
 
   Future<void> _pickSettingsFolder(WidgetRef ref) =>
       pickDirectoryPathToastOnError(
@@ -598,24 +610,28 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
       );
 
   void _pickSettingsFile(WidgetRef ref) => _pickFile(
-        onPick: (path) {
-          ref.read(settingsNotifierProvider.notifier).importSettings(
-                context: context,
-                path: path,
-                onWillImport: (data) async => true,
-                onFailure: (message) => showErrorToast(context, message),
-                onSuccess: (message, _) {
-                  showSuccessToast(context, message);
-                },
-              );
-        },
-      );
+    onPick: (path) {
+      ref
+          .read(settingsNotifierProvider.notifier)
+          .importSettings(
+            context: context,
+            path: path,
+            onWillImport: (data) async => true,
+            onFailure: (message) => showErrorToast(context, message),
+            onSuccess: (message, _) {
+              showSuccessToast(context, message);
+            },
+          );
+    },
+  );
 
   Future<void> _pickFavoriteTagsFolder(WidgetRef ref) =>
       pickDirectoryPathToastOnError(
         context: context,
         onPick: (path) {
-          ref.read(favoriteTagsProvider.notifier).exportWithLabels(
+          ref
+              .read(favoriteTagsProvider.notifier)
+              .exportWithLabels(
                 context: context,
                 path: path,
               );
@@ -623,13 +639,15 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
       );
 
   void _pickFavoriteTagsFile(WidgetRef ref) => _pickFile(
-        onPick: (path) {
-          ref.read(favoriteTagsProvider.notifier).importWithLabels(
-                context: context,
-                path: path,
-              );
-        },
-      );
+    onPick: (path) {
+      ref
+          .read(favoriteTagsProvider.notifier)
+          .importWithLabels(
+            context: context,
+            path: path,
+          );
+    },
+  );
 }
 
 class _Title extends StatelessWidget {

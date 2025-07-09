@@ -1,14 +1,14 @@
 // Project imports:
 import 'boot.dart';
-import 'core/app_rating/providers.dart';
-import 'core/app_update/src/play_store_update_checker.dart';
-import 'core/app_update/types.dart';
-import 'core/foundation/boot.dart';
-import 'core/foundation/iap/iap.dart';
-import 'core/foundation/loggers.dart';
-import 'core/foundation/platform.dart';
-import 'core/foundation/revenuecat/revenuecat.dart';
-import 'core/google/google_play_services_impl.dart';
+import 'foundation/app_rating/providers.dart';
+import 'foundation/app_update/src/play_store_update_checker.dart';
+import 'foundation/app_update/types.dart';
+import 'foundation/boot.dart';
+import 'foundation/iap/iap.dart';
+import 'foundation/loggers.dart';
+import 'foundation/platform.dart';
+import 'foundation/vendors/google/google_play_services_impl.dart';
+import 'foundation/vendors/revenuecat/revenuecat.dart';
 
 void main() async {
   await initializeApp(

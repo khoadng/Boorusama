@@ -2,7 +2,7 @@
 import 'package:flutter_test/flutter_test.dart';
 
 // Project imports:
-import 'package:boorusama/core/autocompletes/autocompletes.dart';
+import 'package:boorusama/core/tags/autocompletes/types.dart';
 import 'package:boorusama/core/tags/metatag/metatag.dart';
 import 'package:boorusama/core/tags/metatag/src/default_extractor.dart';
 import 'common.dart';

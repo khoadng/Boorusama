@@ -43,20 +43,20 @@ class DownloadSessionStats extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        sessionId,
-        coverUrl,
-        totalItems,
-        siteUrl,
-        totalSize,
-        averageDuration,
-        averageFileSize,
-        largestFileSize,
-        smallestFileSize,
-        medianFileSize,
-        avgFilesPerPage,
-        maxFilesPerPage,
-        minFilesPerPage,
-        extensionCounts,
-      ];
+    id,
+    sessionId,
+    coverUrl,
+    totalItems,
+    siteUrl,
+    totalSize,
+    averageDuration,
+    averageFileSize,
+    largestFileSize,
+    smallestFileSize,
+    medianFileSize,
+    avgFilesPerPage,
+    maxFilesPerPage,
+    minFilesPerPage,
+    extensionCounts,
+  ];
 }

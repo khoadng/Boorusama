@@ -45,8 +45,9 @@ class ImageDto {
       return ImageDto(
         tagCount: json['tag_count'],
         deletionReason: json['deletion_reason'],
-        sourceUrls:
-            (json['source_urls'] as List?)?.map((e) => e as String).toList(),
+        sourceUrls: (json['source_urls'] as List?)
+            ?.map((e) => e as String)
+            .toList(),
         mimeType: json['mime_type'],
         downvotes: json['downvotes'],
         intensities: IntensitiesDto.fromJson(json['intensities']),

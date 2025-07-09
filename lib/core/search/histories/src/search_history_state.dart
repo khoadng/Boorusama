@@ -9,9 +9,9 @@ class SearchHistoryState {
   });
 
   SearchHistoryState.initial()
-      : histories = [],
-        filteredHistories = [],
-        currentQuery = '';
+    : histories = [],
+      filteredHistories = [],
+      currentQuery = '';
 
   final List<SearchHistory> histories;
   final List<SearchHistory> filteredHistories;

@@ -2,8 +2,8 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import '../../../../../core/utils/collection_utils.dart';
-import '../../../../../core/utils/statistics.dart';
+import '../../../../../foundation/utils/collection_utils.dart';
+import '../../../../../foundation/utils/statistics.dart';
 import '../../post/post.dart';
 
 class DanbooruPostStats extends Equatable {
@@ -34,8 +34,9 @@ class DanbooruPostStats extends Equatable {
       copyrights: copyrightMap,
       fileSizes: calculateStats(fileSizes),
       uploaders: uploaders.count(selector: (e) => e.toString()),
-      approvers:
-          approvers.count(selector: (e) => e != null ? e.toString() : '<None>'),
+      approvers: approvers.count(
+        selector: (e) => e != null ? e.toString() : '<None>',
+      ),
       resolutions: resolutions.count(selector: (e) => e),
     );
   }
@@ -49,11 +50,11 @@ class DanbooruPostStats extends Equatable {
 
   @override
   List<Object?> get props => [
-        copyrights,
-        characters,
-        uploaders,
-        approvers,
-        fileSizes,
-        resolutions,
-      ];
+    copyrights,
+    characters,
+    uploaders,
+    approvers,
+    fileSizes,
+    resolutions,
+  ];
 }

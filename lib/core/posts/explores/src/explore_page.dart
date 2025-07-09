@@ -6,10 +6,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/widgets.dart';
 
 // Project imports:
+import '../../../../foundation/display.dart';
 import '../../../blacklists/providers.dart';
 import '../../../boorus/engine/engine.dart';
 import '../../../configs/ref.dart';
-import '../../../foundation/display.dart';
 import '../../../images/booru_image.dart';
 import '../../../images/utils.dart';
 import '../../../videos/video_play_duration_icon.dart';
@@ -36,8 +36,9 @@ class ExplorePage extends ConsumerWidget {
         primary: false,
         slivers: [
           SliverSizedBox(
-            height:
-                useAppBarPadding ? MediaQuery.viewPaddingOf(context).top : 0,
+            height: useAppBarPadding
+                ? MediaQuery.viewPaddingOf(context).top
+                : 0,
           ),
           ...sliverOverviews,
           const SliverSizedBox(height: kBottomNavigationBarHeight + 20),
@@ -144,7 +145,9 @@ class ExploreList extends ConsumerWidget {
     final height = context.screen.size == ScreenSize.small ? 200.0 : 250.0;
     final config = ref.watchConfigFilter;
 
-    return ref.watch(blacklistTagsProvider(config)).when(
+    return ref
+        .watch(blacklistTagsProvider(config))
+        .when(
           data: (blacklistedTags) {
             final filteredPosts = posts
                 .where(
@@ -183,7 +186,7 @@ class ExploreList extends ConsumerWidget {
               padding: const EdgeInsets.symmetric(horizontal: 2),
               child: GestureDetector(
                 onTap: () => goToPostDetailsPageFromPosts(
-                  context: context,
+                  ref: ref,
                   posts: filteredPosts,
                   initialIndex: index,
                   initialThumbnailUrl: defaultPostImageUrlBuilder(
@@ -227,10 +230,10 @@ class ExploreList extends ConsumerWidget {
                       bottom: 1,
                       child: Text(
                         '${index + 1}',
-                        style:
-                            Theme.of(context).textTheme.displayMedium?.copyWith(
-                                  color: Colors.white,
-                                ),
+                        style: Theme.of(context).textTheme.displayMedium
+                            ?.copyWith(
+                              color: Colors.white,
+                            ),
                       ),
                     ),
                   ],

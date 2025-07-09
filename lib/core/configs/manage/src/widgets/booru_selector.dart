@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:context_menus/context_menus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
 import 'package:foundation/widgets.dart';
+import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:reorderables/reorderables.dart';
 
 // Project imports:
-import '../../../../foundation/toast.dart';
+import '../../../../../foundation/toast.dart';
 import '../../../../router.dart';
 import '../../../../settings/providers.dart';
 import '../../../config/providers.dart';
@@ -58,7 +58,9 @@ class _BooruSelectorVerticalState extends ConsumerState<BooruSelectorVertical>
       color: Theme.of(context).colorScheme.surface,
       child: ScrollConfiguration(
         behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
-        child: ref.watch(orderedConfigsProvider).maybeWhen(
+        child: ref
+            .watch(orderedConfigsProvider)
+            .maybeWhen(
               data: (configs) => CustomScrollView(
                 reverse: reverseScroll,
                 slivers: [
@@ -73,7 +75,7 @@ class _BooruSelectorVerticalState extends ConsumerState<BooruSelectorVertical>
                           hideLabel: hideLabel,
                           config: config,
                           show: () => show(config, notifier),
-                          onTap: () => context.go('/?cid=${config.id}'),
+                          onTap: () => ref.router.go('/?cid=${config.id}'),
                           selected: currentConfig == config,
                         );
                       },
@@ -127,7 +129,9 @@ class _BooruSelectorHorizontalState
       color: Theme.of(context).colorScheme.surface,
       child: ScrollConfiguration(
         behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
-        child: ref.watch(orderedConfigsProvider).maybeWhen(
+        child: ref
+            .watch(orderedConfigsProvider)
+            .maybeWhen(
               data: (configs) => Row(
                 children: [
                   if (reverseScroll) addButton,
@@ -147,7 +151,7 @@ class _BooruSelectorHorizontalState
                               hideLabel: hideLabel,
                               config: config,
                               show: () => show(config, notifier),
-                              onTap: () => context.go('/?cid=${config.id}'),
+                              onTap: () => ref.router.go('/?cid=${config.id}'),
                               selected: currentConfig == config,
                               direction: Axis.horizontal,
                             ),
@@ -172,18 +176,18 @@ mixin BooruSelectorActionMixin<T extends ConsumerStatefulWidget>
       GenericContextMenu(
         buttonConfigs: [
           ContextMenuButtonConfig(
-            'generic.action.edit'.tr(),
+            context.t.generic.action.edit,
             onPressed: () => goToUpdateBooruConfigPage(
-              context,
+              ref,
               config: config,
             ),
           ),
           ContextMenuButtonConfig(
-            'generic.action.duplicate'.tr(),
+            context.t.generic.action.duplicate,
             onPressed: () => notifier.duplicate(config: config),
           ),
           ContextMenuButtonConfig(
-            'generic.action.delete'.tr(),
+            context.t.generic.action.delete,
             labelStyle: TextStyle(
               color: Theme.of(context).colorScheme.error,
             ),
@@ -215,16 +219,17 @@ mixin BooruSelectorActionMixin<T extends ConsumerStatefulWidget>
   }
 
   bool get reverseScroll => ref.watch(
-        settingsProvider
-            .select((value) => value.reverseBooruConfigSelectorScrollDirection),
-      );
+    settingsProvider.select(
+      (value) => value.reverseBooruConfigSelectorScrollDirection,
+    ),
+  );
 
   bool get hideLabel =>
       ref.watch(settingsProvider.select((value) => value.hideBooruConfigLabel));
 
   Widget get addButton => IconButton(
-        splashRadius: 20,
-        onPressed: () => goToAddBooruConfigPage(context),
-        icon: const Icon(Symbols.add),
-      );
+    splashRadius: 20,
+    onPressed: () => goToAddBooruConfigPage(ref),
+    icon: const Icon(Symbols.add),
+  );
 }

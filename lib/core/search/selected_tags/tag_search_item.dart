@@ -17,10 +17,10 @@ class TagSearchItem extends Equatable {
 
   const TagSearchItem.raw({
     required this.tag,
-  })  : operator = FilterOperator.none,
-        isRaw = true,
-        originalTag = tag,
-        metatag = null;
+  }) : operator = FilterOperator.none,
+       isRaw = true,
+       originalTag = tag,
+       metatag = null;
 
   factory TagSearchItem.fromString(
     String query,
@@ -62,5 +62,5 @@ class TagSearchItem extends Equatable {
   String toString() => isRaw
       ? tag
       : '${filterOperatorToString(operator)}${metatag ?? ''}${metatag != null ? ':' : ''}$tag'
-          .replaceAll(' ', '_');
+            .replaceAll(' ', '_');
 }

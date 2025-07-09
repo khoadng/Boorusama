@@ -4,16 +4,17 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/widgets.dart';
+import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../../../../../core/configs/ref.dart';
 import '../../../../../core/images/booru_image.dart';
-import '../../../../../core/info/package_info.dart';
 import '../../../../../core/posts/listing/providers.dart';
 import '../../../../../core/posts/listing/widgets.dart';
 import '../../../../../core/posts/rating/rating.dart';
 import '../../../../../core/widgets/widgets.dart';
+import '../../../../../foundation/info/package_info.dart';
 import '../../../tags/_shared/tag_list_notifier.dart';
 import '../../../tags/edit/widgets.dart';
 import '../../../users/user/providers.dart';
@@ -57,17 +58,19 @@ class DanbooruMultiSelectionActions extends ConsumerWidget {
           ),
         if (ref.watch(isDevEnvironmentProvider))
           if (config.hasLoginDetails())
-            ref.watch(danbooruCurrentUserProvider(config)).when(
+            ref
+                .watch(danbooruCurrentUserProvider(config))
+                .when(
                   data: (user) => DanbooruUserLevel.of(user?.level).isUnres
                       ? MultiSelectButton(
                           onPressed: selectedPosts.isNotEmpty
                               ? () async {
                                   final shouldEnd =
                                       await goToMassEditRatingSheet(
-                                    context,
-                                    ref,
-                                    selectedPosts,
-                                  );
+                                        context,
+                                        ref,
+                                        selectedPosts,
+                                      );
                                   if (shouldEnd != null && shouldEnd) {
                                     controller.disableMultiSelect();
                                   }
@@ -100,8 +103,9 @@ Future<bool?> goToMassEditRatingSheet(
   );
 }
 
-final _selectedRatingProvider =
-    StateProvider.autoDispose<Rating?>((ref) => null);
+final _selectedRatingProvider = StateProvider.autoDispose<Rating?>(
+  (ref) => null,
+);
 
 class MassEditRatingSheet extends ConsumerWidget {
   const MassEditRatingSheet({
@@ -114,8 +118,9 @@ class MassEditRatingSheet extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedRating = ref.watch(_selectedRatingProvider);
-    final notifier =
-        ref.watch(danbooruTagListProvider(ref.watchConfigAuth).notifier);
+    final notifier = ref.watch(
+      danbooruTagListProvider(ref.watchConfigAuth).notifier,
+    );
 
     return Material(
       color: Theme.of(context).colorScheme.surfaceContainer,
@@ -165,7 +170,7 @@ class MassEditRatingSheet extends ConsumerWidget {
                         }
                       }
                     : null,
-                child: const Text('Submit'),
+                child: Text('Submit'.hc),
               ),
             ),
           ],

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
@@ -47,7 +47,7 @@ class PoolSearchBar extends ConsumerWidget {
         ref.read(danbooruPoolSearchModeProvider.notifier).state =
             PoolSearchMode.result;
       },
-      hintText: 'pool.search.hint'.tr(),
+      hintText: context.t.pool.search.hint,
       onTap: () => ref.read(danbooruPoolSearchModeProvider.notifier).state =
           PoolSearchMode.suggestion,
     );

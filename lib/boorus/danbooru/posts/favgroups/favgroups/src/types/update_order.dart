@@ -41,9 +41,11 @@ List<int> updateOrder(
 
   // Replace section with new order
   final newIdsOrdered = validNewIds.toList();
-  for (var i = 0;
-      i < newIdsOrdered.length && (startIndex + i) < result.length;
-      i++) {
+  for (
+    var i = 0;
+    i < newIdsOrdered.length && (startIndex + i) < result.length;
+    i++
+  ) {
     result[startIndex + i] = newIdsOrdered[i];
   }
 

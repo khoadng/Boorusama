@@ -47,21 +47,21 @@ class VideoPlayDurationIcon extends StatelessWidget {
             ),
           ),
           hasSound.toOption().fold(
-                () => const SizedBox.shrink(),
-                (sound) => sound
-                    ? Icon(
-                        Symbols.volume_up_rounded,
-                        color: foreground,
-                        size: 18,
-                        fill: 1,
-                      )
-                    : Icon(
-                        Symbols.volume_off_rounded,
-                        color: foreground,
-                        size: 18,
-                        fill: 1,
-                      ),
-              ),
+            () => const SizedBox.shrink(),
+            (sound) => sound
+                ? Icon(
+                    Symbols.volume_up_rounded,
+                    color: foreground,
+                    size: 18,
+                    fill: 1,
+                  )
+                : Icon(
+                    Symbols.volume_off_rounded,
+                    color: foreground,
+                    size: 18,
+                    fill: 1,
+                  ),
+          ),
         ],
       ),
     );

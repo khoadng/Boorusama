@@ -8,8 +8,9 @@ class FavoriteDto {
   });
 
   factory FavoriteDto.fromJson(Map<String, dynamic> json) {
-    final addtime =
-        json['addtime'] != null ? DateTime.tryParse(json['addtime']) : null;
+    final addtime = json['addtime'] != null
+        ? DateTime.tryParse(json['addtime'])
+        : null;
 
     return FavoriteDto(
       id: json['id'],

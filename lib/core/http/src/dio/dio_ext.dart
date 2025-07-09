@@ -18,7 +18,7 @@ NativeAdapter newNativeAdapter({String? userAgent}) {
         URLSessionConfiguration.ephemeralSessionConfiguration()
           // We have our own cache interceptor
           ..requestCachePolicy =
-              URLRequestCachePolicy.reloadIgnoringLocalCacheData
+              NSURLRequestCachePolicy.NSURLRequestReloadIgnoringLocalCacheData
           // We have our own cookie handling with CF
           ..httpShouldSetCookies = false,
   );

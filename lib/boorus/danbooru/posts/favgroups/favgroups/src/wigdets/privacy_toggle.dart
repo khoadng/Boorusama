@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../../../../core/configs/ref.dart';
@@ -30,7 +30,7 @@ class PrivacyToggle extends ConsumerWidget {
       firstChild: const SizedBox.shrink(),
       secondChild: ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 4),
-        title: const Text('favorite_groups.is_private_group_option').tr(),
+        title: Text(context.t.favorite_groups.is_private_group_option),
         trailing: Switch(
           value: isPrivate,
           onChanged: onChanged,

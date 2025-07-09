@@ -8,6 +8,7 @@ PODS:
     - Flutter
   - cupertino_http (0.0.1):
     - Flutter
+    - FlutterMacOS
   - device_info_plus (0.0.1):
     - Flutter
   - DKImagePickerController/Core (4.3.9):
@@ -49,7 +50,7 @@ PODS:
     - Flutter
   - flutter_local_notifications (0.0.1):
     - Flutter
-  - fvp (0.32.1):
+  - fvp (0.33.0):
     - Flutter
     - FlutterMacOS
     - mdk (~> 0.33.0)
@@ -59,23 +60,27 @@ PODS:
   - local_auth_darwin (0.0.1):
     - Flutter
     - FlutterMacOS
-  - mdk (0.33.0)
+  - mdk (0.33.1)
+  - objective_c (0.0.1):
+    - Flutter
   - package_info_plus (0.4.5):
+    - Flutter
+  - pasteboard (0.0.1):
     - Flutter
   - path_provider_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
   - permission_handler_apple (9.3.0):
     - Flutter
-  - purchases_flutter (8.10.3):
+  - purchases_flutter (8.10.5):
     - Flutter
-    - PurchasesHybridCommon (= 13.37.0)
-  - PurchasesHybridCommon (13.37.0):
-    - RevenueCat (= 5.29.0)
-  - rate_my_app (2.3.0):
+    - PurchasesHybridCommon (= 14.0.2)
+  - PurchasesHybridCommon (14.0.2):
+    - RevenueCat (= 5.30.0)
+  - rate_my_app (2.3.2):
     - Flutter
     - FlutterMacOS
-  - RevenueCat (5.29.0)
+  - RevenueCat (5.30.0)
   - SDWebImage (5.21.1):
     - SDWebImage/Core (= 5.21.1)
   - SDWebImage/Core (5.21.1)
@@ -130,7 +135,7 @@ DEPENDENCIES:
   - background_downloader (from `.symlinks/plugins/background_downloader/ios`)
   - bonsoir_darwin (from `.symlinks/plugins/bonsoir_darwin/darwin`)
   - connectivity_plus (from `.symlinks/plugins/connectivity_plus/ios`)
-  - cupertino_http (from `.symlinks/plugins/cupertino_http/ios`)
+  - cupertino_http (from `.symlinks/plugins/cupertino_http/darwin`)
   - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
   - file_picker (from `.symlinks/plugins/file_picker/ios`)
   - Flutter (from `Flutter`)
@@ -139,7 +144,9 @@ DEPENDENCIES:
   - fvp (from `.symlinks/plugins/fvp/darwin`)
   - gal (from `.symlinks/plugins/gal/darwin`)
   - local_auth_darwin (from `.symlinks/plugins/local_auth_darwin/darwin`)
+  - objective_c (from `.symlinks/plugins/objective_c/ios`)
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
+  - pasteboard (from `.symlinks/plugins/pasteboard/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
   - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
   - purchases_flutter (from `.symlinks/plugins/purchases_flutter/ios`)
@@ -173,7 +180,7 @@ EXTERNAL SOURCES:
   connectivity_plus:
     :path: ".symlinks/plugins/connectivity_plus/ios"
   cupertino_http:
-    :path: ".symlinks/plugins/cupertino_http/ios"
+    :path: ".symlinks/plugins/cupertino_http/darwin"
   device_info_plus:
     :path: ".symlinks/plugins/device_info_plus/ios"
   file_picker:
@@ -190,8 +197,12 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/gal/darwin"
   local_auth_darwin:
     :path: ".symlinks/plugins/local_auth_darwin/darwin"
+  objective_c:
+    :path: ".symlinks/plugins/objective_c/ios"
   package_info_plus:
     :path: ".symlinks/plugins/package_info_plus/ios"
+  pasteboard:
+    :path: ".symlinks/plugins/pasteboard/ios"
   path_provider_foundation:
     :path: ".symlinks/plugins/path_provider_foundation/darwin"
   permission_handler_apple:
@@ -223,7 +234,7 @@ SPEC CHECKSUMS:
   background_downloader: 50e91d979067b82081aba359d7d916b3ba5fadad
   bonsoir_darwin: 29c7ccf356646118844721f36e1de4b61f6cbd0e
   connectivity_plus: cb623214f4e1f6ef8fe7403d580fdad517d2f7dd
-  cupertino_http: e28016db19efdfa3df3b46961e762a20a62276e5
+  cupertino_http: 94ac07f5ff090b8effa6c5e2c47871d48ab7c86c
   device_info_plus: 21fcca2080fbcd348be798aa36c3e5ed849eefbe
   DKImagePickerController: 946cec48c7873164274ecc4624d19e3da4c1ef3c
   DKPhotoGallery: b3834fecb755ee09a593d7c9e389d8b5d6deed60
@@ -231,17 +242,19 @@ SPEC CHECKSUMS:
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   flutter_avif_ios: 2553d2aafda56339cf924e943da89ad3f40af2dd
   flutter_local_notifications: a5a732f069baa862e728d839dd2ebb904737effb
-  fvp: 3f9a3f729e969cb76d1692c615c9e33508563121
+  fvp: 6a1a8e62cd61b90a4afeec44a367892d726bf377
   gal: baecd024ebfd13c441269ca7404792a7152fde89
-  local_auth_darwin: 553ce4f9b16d3fdfeafce9cf042e7c9f77c1c391
-  mdk: 7cccbeebec9a85f4e240ac14d9f603273636bb3b
+  local_auth_darwin: d2e8c53ef0c4f43c646462e3415432c4dab3ae19
+  mdk: 622e3452cea55a982c0712ec9ce931d8ec718b22
+  objective_c: 89e720c30d716b036faf9c9684022048eee1eee2
   package_info_plus: af8e2ca6888548050f16fa2f1938db7b5a5df499
+  pasteboard: 49088aeb6119d51f976a421db60d8e1ab079b63c
   path_provider_foundation: 080d55be775b7414fd5a5ef3ac137b97b097e564
   permission_handler_apple: 4ed2196e43d0651e8ff7ca3483a069d469701f2d
-  purchases_flutter: 9191525a18bf11df40eb303047d507dd64cccb25
-  PurchasesHybridCommon: 1583b4532763b795f8ae61913102d6ef9ed556a8
-  rate_my_app: 567848e885b804d65eb9443f96e9fc2c30a06abb
-  RevenueCat: 5fa12c42c14b390dd2423897e925f407f474b8fa
+  purchases_flutter: cdbf8b0a0fcb110437c46be4b64515005452bd31
+  PurchasesHybridCommon: e1dbc7e7105c0845444cf82cf9d7c85eb9dbf918
+  rate_my_app: cbb89973f870601f80f7bad63aba107260cabc5b
+  RevenueCat: 16058ecaa0b868e04cc7cf53a5de3fe0b96ca7d1
   SDWebImage: f29024626962457f3470184232766516dee8dfea
   share_handler_ios: e2244e990f826b2c8eaa291ac3831569438ba0fb
   share_handler_ios_models: fc638c9b4330dc7f082586c92aee9dfa0b87b871

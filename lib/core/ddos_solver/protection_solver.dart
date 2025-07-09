@@ -189,11 +189,10 @@ class CloudflareSolver implements ProtectionSolver {
   Future<bool> solve({
     required Uri uri,
     String? userAgent,
-  }) =>
-      _solver.solve(
-        uri: uri,
-        userAgent: userAgent,
-      );
+  }) => _solver.solve(
+    uri: uri,
+    userAgent: userAgent,
+  );
 
   @override
   Future<void> cancel() => _solver.cancel();
@@ -226,11 +225,10 @@ class McChallengeSolver implements ProtectionSolver {
   Future<bool> solve({
     required Uri uri,
     String? userAgent,
-  }) =>
-      _solver.solve(
-        uri: uri,
-        userAgent: userAgent,
-      );
+  }) => _solver.solve(
+    uri: uri,
+    userAgent: userAgent,
+  );
 
   @override
   Future<void> cancel() => _solver.cancel();
@@ -266,11 +264,10 @@ class AftV2Solver implements ProtectionSolver {
   Future<bool> solve({
     required Uri uri,
     String? userAgent,
-  }) =>
-      _solver.solve(
-        uri: uri,
-        userAgent: userAgent,
-      );
+  }) => _solver.solve(
+    uri: uri,
+    userAgent: userAgent,
+  );
 
   @override
   Future<void> cancel() => _solver.cancel();

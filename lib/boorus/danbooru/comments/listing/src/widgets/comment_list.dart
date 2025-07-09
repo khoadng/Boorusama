@@ -2,10 +2,10 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
-import '../../../../../../core/comments/vote_event.dart';
+import '../../../../../../core/comments/types.dart';
 import '../../../../../../core/widgets/widgets.dart';
 import '../../../comment/comment.dart';
 import '../../../votes/vote.dart';
@@ -32,7 +32,7 @@ class CommentList extends StatelessWidget {
   final void Function(CommentData comment) onUpvote;
   final void Function(CommentData comment) onDownvote;
   final void Function(CommentData comment, DanbooruCommentVote? commentVote)
-      onClearVote;
+  onClearVote;
 
   @override
   Widget build(BuildContext context) {
@@ -65,10 +65,10 @@ class CommentList extends StatelessWidget {
                           },
                           itemBuilder: {
                             if (comment.isSelf)
-                              'edit': const Text('comment.list.edit').tr(),
-                            'reply': const Text('comment.list.reply').tr(),
+                              'edit': Text(context.t.comment.list.edit),
+                            'reply': Text(context.t.comment.list.reply),
                             if (comment.isSelf)
-                              'delete': const Text('comment.list.delete').tr(),
+                              'delete': Text(context.t.comment.list.delete),
                           },
                         )
                       : const SizedBox.shrink(),
@@ -77,6 +77,8 @@ class CommentList extends StatelessWidget {
             },
             itemCount: comments.length,
           )
-        : Center(child: Text('comment.list.noComments'.tr()));
+        : Center(
+            child: Text(context.t.comment.list.noComments),
+          );
   }
 }

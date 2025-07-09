@@ -4,16 +4,18 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../../../core/configs/config.dart';
-import '../../../../core/foundation/loggers.dart';
 import '../../../../core/posts/rating/rating.dart';
-import '../../danbooru_provider.dart';
+import '../../../../foundation/loggers.dart';
+import '../../client_provider.dart';
 import '../../posts/post/post.dart';
 import '../../posts/post/providers.dart';
 
-final danbooruTagListProvider = NotifierProviderFamily<
-    DanbooruTagListNotifier,
-    IMap<int, DanbooruTagDetails>,
-    BooruConfigAuth>(DanbooruTagListNotifier.new);
+final danbooruTagListProvider =
+    NotifierProviderFamily<
+      DanbooruTagListNotifier,
+      IMap<int, DanbooruTagDetails>,
+      BooruConfigAuth
+    >(DanbooruTagListNotifier.new);
 
 class DanbooruTagListNotifier
     extends FamilyNotifier<IMap<int, DanbooruTagDetails>, BooruConfigAuth> {
@@ -43,7 +45,9 @@ class DanbooruTagListNotifier
         .putTags(postId: postId, tags: tags)
         .then(postDtoToPostNoMetadata);
 
-    ref.read(loggerProvider).logI(
+    ref
+        .read(loggerProvider)
+        .logI(
           'Tag Edit',
           [
             if (addedTags != null && addedTags.isNotEmpty) 'Added: $addedTags',

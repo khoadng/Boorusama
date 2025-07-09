@@ -5,7 +5,7 @@ import 'dart:async';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 // Project imports:
-import '../../../foundation/platform.dart';
+import '../../../../foundation/platform.dart';
 
 class BulkDownloadNotifications {
   BulkDownloadNotifications._(
@@ -28,8 +28,9 @@ class BulkDownloadNotifications {
       android: AndroidInitializationSettings('@mipmap/ic_launcher'),
       iOS: DarwinInitializationSettings(),
       macOS: DarwinInitializationSettings(),
-      linux:
-          LinuxInitializationSettings(defaultActionName: 'Open notification'),
+      linux: LinuxInitializationSettings(
+        defaultActionName: 'Open notification',
+      ),
     );
 
     // No need to close cause it is used in the main function

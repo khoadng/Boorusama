@@ -50,8 +50,9 @@ Future<Response<T>?> tryGetResponse<T>(
               totalDuration: stopwatch.elapsed,
               attemptCount: attemptCount,
               originalException: error,
-              httpStatusCode:
-                  error is DioException ? error.response?.statusCode : null,
+              httpStatusCode: error is DioException
+                  ? error.response?.statusCode
+                  : null,
               uri: instructions.uri,
             );
       instructions = await strategy(instructions.uri, lastFailure);

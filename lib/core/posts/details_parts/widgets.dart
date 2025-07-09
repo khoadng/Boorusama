@@ -11,7 +11,10 @@ export 'src/artist_section.dart';
 export 'src/toolbars/simple_post_action_toolbar.dart';
 
 export 'src/tags/tags_tile.dart';
-export 'src/tags/basic_tag_list.dart';
+export 'src/tags/basic_tags_tile.dart';
+export 'src/tags/raw_tags_tile.dart';
+export 'src/tags/raw_tag_chip.dart';
+export 'src/tags/tag_chip.dart';
 
 export 'src/toolbars/bookmark_post_button.dart';
 export 'src/toolbars/comment_post_button.dart';

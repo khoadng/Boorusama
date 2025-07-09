@@ -125,8 +125,8 @@ class PostV2Dto {
 }
 
 bool? _parseBool(dynamic value) => switch (value) {
-      final int i => i > 0 ? true : false,
-      final bool b => b,
-      final String s => bool.tryParse(s),
-      _ => null,
-    };
+  final int i => i > 0 ? true : false,
+  final bool b => b,
+  final String s => bool.tryParse(s),
+  _ => null,
+};

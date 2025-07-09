@@ -6,10 +6,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:multi_split_view/multi_split_view.dart';
 
 // Project imports:
+import '../../foundation/display.dart';
+import '../../foundation/platform.dart';
 import '../cache/providers.dart';
 import '../configs/manage/widgets.dart';
-import '../foundation/display.dart';
-import '../foundation/platform.dart';
 import '../settings/providers.dart';
 import '../settings/settings.dart';
 import 'constants.dart';
@@ -109,8 +109,9 @@ class _BooruScopeState extends ConsumerState<BooruScope> {
     final colorScheme = Theme.of(context).colorScheme;
 
     final swipeArea = ref.watch(
-      settingsProvider
-          .select((value) => value.swipeAreaToOpenSidebarPercentage),
+      settingsProvider.select(
+        (value) => value.swipeAreaToOpenSidebarPercentage,
+      ),
     );
 
     final position = ref.watch(
@@ -121,8 +122,8 @@ class _BooruScopeState extends ConsumerState<BooruScope> {
       key: widget.controller.scaffoldKey,
       bottomNavigationBar:
           !isDesktop && position == BooruConfigSelectorPosition.bottom
-              ? const BooruSelectorWithBottomPadding()
-              : null,
+          ? const BooruSelectorWithBottomPadding()
+          : null,
       drawer: !isDesktop
           ? SideBarMenu(
               width: 300,
@@ -137,8 +138,8 @@ class _BooruScopeState extends ConsumerState<BooruScope> {
         data: MultiSplitViewThemeData(
           dividerThickness: !isDesktopPlatform()
               ? Screen.of(context).size.isLarge
-                  ? 24
-                  : 16
+                    ? 24
+                    : 16
               : 4,
           dividerPainter: isDesktopPlatform()
               ? DividerPainters.background(
@@ -172,13 +173,13 @@ class _BooruScopeState extends ConsumerState<BooruScope> {
           builder: (context, area) => isDesktop
               ? switch (area.data) {
                   'menu' => LayoutBuilder(
-                      builder: (_, c) {
-                        // no need to set state here, just a quick hack to get the current width of the menu
-                        menuWidth.value = c.maxWidth;
+                    builder: (_, c) {
+                      // no need to set state here, just a quick hack to get the current width of the menu
+                      menuWidth.value = c.maxWidth;
 
-                        return widget.menu;
-                      },
-                    ),
+                      return widget.menu;
+                    },
+                  ),
                   'content' => widget.content,
                   _ => const SizedBox.shrink(),
                 }
@@ -231,8 +232,9 @@ class BooruSelectorWithBottomPadding extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final hideLabel = ref
-        .watch(settingsProvider.select((value) => value.hideBooruConfigLabel));
+    final hideLabel = ref.watch(
+      settingsProvider.select((value) => value.hideBooruConfigLabel),
+    );
 
     return Container(
       color: Colors.transparent,

@@ -1,10 +1,13 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 // Project imports:
-import '../../../../../../core/foundation/display.dart';
 import '../../../../../../core/router.dart';
 import '../../../../../../core/widgets/widgets.dart';
+import '../../../../../../foundation/display.dart';
 import '../pages/edit_saved_search_sheet.dart';
 import '../types/saved_search.dart';
 
@@ -32,7 +35,7 @@ void goToSavedSearchCreatePage(
       barrierDismissible: true,
       barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
       barrierColor: Colors.black54,
-      pageBuilder: (context, _, __) {
+      pageBuilder: (context, _, _) {
         return Dialog(
           child: Container(
             width: MediaQuery.sizeOf(context).width * 0.8,
@@ -72,8 +75,8 @@ void goToSavedSearchPatchPage(
   );
 }
 
-void goToSavedSearchEditPage(BuildContext context) {
-  context.push(
+void goToSavedSearchEditPage(WidgetRef ref) {
+  ref.router.push(
     Uri(
       pathSegments: [
         '',

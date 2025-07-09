@@ -7,7 +7,7 @@ import 'package:foundation/foundation.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 // Project imports:
-import '../../foundation/display.dart';
+import '../../../foundation/display.dart';
 import 'page_preview.dart';
 import 'theme_previewer_notifier.dart';
 
@@ -39,7 +39,7 @@ class _ThemePreviewPageViewState extends State<ThemePreviewPageView> {
       mainAxisSize: MainAxisSize.min,
       children: [
         Consumer(
-          builder: (_, ref, __) {
+          builder: (_, ref, _) {
             final currentColors = ref.watch(themePreviewerColorsProvider);
             final name = currentColors.nickname ?? currentColors.name;
 
@@ -64,7 +64,7 @@ class _ThemePreviewPageViewState extends State<ThemePreviewPageView> {
             vertical: 16,
           ),
           child: Consumer(
-            builder: (_, ref, __) {
+            builder: (_, ref, _) {
               final colorScheme = ref.watch(themePreviewerSchemeProvider);
 
               return SmoothPageIndicator(

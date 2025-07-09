@@ -44,13 +44,14 @@ class TagEditRatingSelectorSection extends ConsumerWidget {
           Center(
             child: BooruSegmentedButton(
               segments: {
-                for (final rating
-                    in Rating.values.where((e) => e != Rating.unknown))
+                for (final rating in Rating.values.where(
+                  (e) => e != Rating.unknown,
+                ))
                   rating: constraints.maxWidth > 360
                       ? rating.name.sentenceCase
                       : rating.name.sentenceCase
-                          .getFirstCharacter()
-                          .toUpperCase(),
+                            .getFirstCharacter()
+                            .toUpperCase(),
               },
               initialValue: rating,
               onChanged: onChanged,

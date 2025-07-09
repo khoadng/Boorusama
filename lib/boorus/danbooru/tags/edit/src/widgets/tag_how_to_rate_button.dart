@@ -8,7 +8,7 @@ import 'package:path/path.dart';
 
 // Project imports:
 import '../../../../../../core/configs/ref.dart';
-import '../../../../../../core/foundation/url_launcher.dart';
+import '../../../../../../foundation/url_launcher.dart';
 
 const _kHowToRateUrlPath = 'wiki_pages/howto:rate';
 

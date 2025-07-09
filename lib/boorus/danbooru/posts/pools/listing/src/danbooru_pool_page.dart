@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
@@ -43,7 +43,7 @@ class _PostList extends ConsumerWidget {
             SliverAppBar(
               titleSpacing: 0,
               backgroundColor: Theme.of(context).colorScheme.surface,
-              title: const Text('pool.pool_gallery').tr(),
+              title: Text(context.t.pool.pool_gallery),
               actions: const [
                 PoolSearchButton(),
               ],
@@ -54,25 +54,29 @@ class _PostList extends ConsumerWidget {
                 child: DefaultTabController(
                   initialIndex:
                       ref.watch(danbooruSelectedPoolCategoryProvider) ==
-                              DanbooruPoolCategory.collection
-                          ? 0
-                          : 1,
+                          DanbooruPoolCategory.collection
+                      ? 0
+                      : 1,
                   length: 2,
                   child: TabBar(
                     isScrollable: true,
                     onTap: (value) {
                       ref
                           .read(danbooruSelectedPoolCategoryProvider.notifier)
-                          .state = value ==
-                              0
+                          .state = value == 0
                           ? DanbooruPoolCategory.collection
                           : DanbooruPoolCategory.series;
                     },
                     tabs: [
-                      for (final e in DanbooruPoolCategory.values
-                          .where((e) => e != DanbooruPoolCategory.unknown))
+                      for (final e in DanbooruPoolCategory.values.where(
+                        (e) => e != DanbooruPoolCategory.unknown,
+                      ))
                         Tab(
-                          text: 'pool.category.${e.name}'.tr(),
+                          text: switch (e) {
+                            DanbooruPoolCategory.collection =>
+                              context.t.pool.category.collection,
+                            _ => context.t.pool.category.series,
+                          },
                         ),
                     ],
                   ),
@@ -104,7 +108,7 @@ class PoolSearchButton extends ConsumerWidget {
     return IconButton(
       splashRadius: 24,
       onPressed: () {
-        goToPoolSearchPage(context);
+        goToPoolSearchPage(ref);
       },
       icon: const Icon(Symbols.search),
     );

@@ -4,11 +4,12 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
-import '../../../../../core/foundation/display.dart';
 import '../../../../../core/posts/statistics/stats.dart';
 import '../../../../../core/posts/statistics/widgets.dart';
+import '../../../../../foundation/display.dart';
 import '../../_shared/danbooru_creator_preloader.dart';
 import '../../_shared/post_creator_preloadable.dart';
 import '../../post/post.dart';
@@ -41,10 +42,10 @@ class DanbooruPostStatisticsPage extends ConsumerWidget {
           const Divider(),
           Row(
             children: [
-              const Expanded(
+              Expanded(
                 child: Text(
-                  'File size',
-                  style: TextStyle(
+                  'File size'.hc,
+                  style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w700,
                   ),
@@ -55,23 +56,24 @@ class DanbooruPostStatisticsPage extends ConsumerWidget {
                 onPressed: () {
                   showAppModalBarBottomSheet(
                     context: context,
-                    settings:
-                        const RouteSettings(name: 'posts_file_size_stats'),
+                    settings: const RouteSettings(
+                      name: 'posts_file_size_stats',
+                    ),
                     builder: (context) => StatisticalSummaryDetailsPage(
-                      title: 'File size',
+                      title: 'File size'.hc,
                       stats: stats.fileSizes,
                       formatter: (value) => Filesize.parse(value.round()),
                     ),
                   );
                 },
-                child: const Text(
-                  'More',
+                child: Text(
+                  'More'.hc,
                 ),
               ),
             ],
           ),
           PostStatsTile(
-            title: 'Average',
+            title: 'Average'.hc,
             value:
                 '${Filesize.parse(stats.fileSizes.mean.round())} ± ${Filesize.parse(stats.fileSizes.standardDeviation.round())}',
           ),

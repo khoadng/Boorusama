@@ -7,10 +7,10 @@ import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
 import '../../../../../../core/configs/ref.dart';
-import '../../../../../../core/foundation/url_launcher.dart';
 import '../../../../../../core/search/search/widgets.dart';
 import '../../../../../../core/tags/metatag/providers.dart';
-import '../../../../danbooru_provider.dart';
+import '../../../../../../foundation/url_launcher.dart';
+import '../../../../danbooru.dart';
 import '../../../../tags/user_metatags/providers.dart';
 
 class DanbooruMetatagsSection extends ConsumerWidget {
@@ -32,7 +32,9 @@ class DanbooruMetatagsSection extends ConsumerWidget {
     return MetatagsSection(
       onOptionTap: onOptionTap,
       metatags: metatags.toList(),
-      userMetatags: ref.watch(danbooruUserMetatagsProvider).maybeWhen(
+      userMetatags: ref
+          .watch(danbooruUserMetatagsProvider)
+          .maybeWhen(
             data: (tags) => tags,
             orElse: () => null,
           ),

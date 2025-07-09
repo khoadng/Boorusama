@@ -3,22 +3,26 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
-import '../../../autocompletes/autocomplete_repository.dart';
 import '../../../blacklists/blacklist.dart';
 import '../../../blacklists/providers.dart';
+import '../../../comments/providers.dart';
+import '../../../comments/types.dart';
 import '../../../configs/config.dart';
 import '../../../configs/create/create.dart';
-import '../../../downloads/urls/download_url.dart';
+import '../../../downloads/urls/providers.dart';
+import '../../../downloads/urls/types.dart';
 import '../../../notes/notes.dart';
 import '../../../posts/count/count.dart';
 import '../../../posts/favorites/providers.dart';
+import '../../../posts/favorites/types.dart';
 import '../../../posts/listing/list.dart';
 import '../../../posts/listing/providers.dart';
 import '../../../posts/post/post.dart';
 import '../../../search/queries/tag_query_composer.dart';
+import '../../../tags/autocompletes/autocomplete_repository.dart';
 import '../../../tags/tag/colors.dart';
 import '../../../tags/tag/providers.dart';
-import '../../../tags/tag/src/tag_repository.dart';
+import '../../../tags/tag/tag.dart';
 import 'booru_repository.dart';
 
 abstract class BooruRepositoryDefault implements BooruRepository {
@@ -92,5 +96,18 @@ abstract class BooruRepositoryDefault implements BooruRepository {
   @override
   TextMatcher? queryMatcher(BooruConfigAuth config) {
     return null;
+  }
+
+  @override
+  TagExtractor tagExtractor(BooruConfigAuth config) {
+    return TagExtractorBuilder(
+      sorter: TagSorter.defaults(),
+      fetcher: (post, options) => TagExtractor.extractTagsFromGenericPost(post),
+    );
+  }
+
+  @override
+  CommentRepository comment(BooruConfigAuth config) {
+    return ref.watch(emptyCommentRepoProvider);
   }
 }

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:context_menus/context_menus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
@@ -55,8 +55,8 @@ class SelectedTagList extends StatelessWidget {
               }
             },
             itemBuilder: {
-              0: const Text('search.remove_all_selected').tr(),
-              1: const Text('sideMenu.bulk_download').tr(),
+              0: Text(context.t.search.remove_all_selected),
+              1: Text(context.t.sideMenu.bulk_download),
             },
           ),
           Expanded(
@@ -72,70 +72,66 @@ class SelectedTagList extends StatelessWidget {
 
                   return switch (it) {
                     final TagSearchItem item => Builder(
-                        builder: (context) {
-                          final chip = SelectedTagChip(
-                            tagSearchItem: item,
-                            onDeleted: () => onDelete(item),
-                            onUpdated: (tag) => onUpdate?.call(item, tag),
-                          );
+                      builder: (context) {
+                        final chip = SelectedTagChip(
+                          tagSearchItem: item,
+                          onDeleted: () => onDelete(item),
+                          onUpdated: (tag) => onUpdate?.call(item, tag),
+                        );
 
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 4),
-                            child: item.isRaw
-                                ? SelectedTagContextMenu(
-                                    tag: item.toString(),
-                                    child: chip,
-                                  )
-                                : GeneralTagContextMenu(
-                                    tag: item.rawTag,
-                                    child: chip,
-                                  ),
-                          );
-                        },
-                      ),
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 4),
+                          child: item.isRaw
+                              ? SelectedTagContextMenu(
+                                  tag: item.toString(),
+                                  child: chip,
+                                )
+                              : GeneralTagContextMenu(
+                                  tag: item.rawTag,
+                                  child: chip,
+                                ),
+                        );
+                      },
+                    ),
                     final String otherTagsCount => Center(
-                        child: Material(
-                          color: Colors.transparent,
-                          child: InkWell(
-                            customBorder: const RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(12)),
+                      child: Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          customBorder: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(12)),
+                          ),
+                          onTap: onOtherTagsCountTap,
+                          child: Container(
+                            margin: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
                             ),
-                            onTap: onOtherTagsCountTap,
-                            child: Container(
-                              margin: const EdgeInsets.symmetric(
-                                horizontal: 8,
-                                vertical: 4,
-                              ),
-                              child: Row(
-                                children: [
-                                  Icon(
-                                    Symbols.add,
-                                    size: 14,
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .outline
-                                        .withValues(alpha: 0.75),
-                                  ),
-                                  Text(
-                                    otherTagsCount,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodySmall
-                                        ?.copyWith(
-                                          letterSpacing: 0,
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .outline
-                                              .withValues(alpha: 0.5),
-                                        ),
-                                  ),
-                                ],
-                              ),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Symbols.add,
+                                  size: 14,
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.outline.withValues(alpha: 0.75),
+                                ),
+                                Text(
+                                  otherTagsCount,
+                                  style: Theme.of(context).textTheme.bodySmall
+                                      ?.copyWith(
+                                        letterSpacing: 0,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .outline
+                                            .withValues(alpha: 0.5),
+                                      ),
+                                ),
+                              ],
                             ),
                           ),
                         ),
                       ),
+                    ),
                     _ => Text('Unknown type: ${it.runtimeType}'),
                   };
                 },
@@ -173,9 +169,9 @@ class SelectedTagContextMenu extends ConsumerWidget
         buttonConfigs: [
           copyButton(context, tag),
           ContextMenuButtonConfig(
-            'post.detail.add_to_favorites'.tr(),
+            context.t.post.detail.add_to_favorites,
             onPressed: () {
-              ref.read(favoriteTagsProvider.notifier).add(tag);
+              ref.read(favoriteTagsProvider.notifier).add(tag, isRaw: true);
             },
           ),
         ],

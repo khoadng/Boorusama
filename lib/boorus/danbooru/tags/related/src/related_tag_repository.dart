@@ -2,8 +2,8 @@
 import 'dart:convert';
 
 // Project imports:
-import '../../../../../core/foundation/caching.dart';
 import '../../../../../core/tags/categories/tag_category.dart';
+import '../../../../../foundation/caching.dart';
 import 'danbooru_related_tag.dart';
 
 abstract class RelatedTagRepository {
@@ -32,7 +32,8 @@ class RelatedTagRepositoryBuilder
     TagCategory? category,
     RelatedType? order,
     int? limit,
-  }) fetch;
+  })
+  fetch;
 
   @override
   Future<DanbooruRelatedTag> getRelatedTag(
@@ -40,21 +41,20 @@ class RelatedTagRepositoryBuilder
     TagCategory? category,
     RelatedType? order,
     int? limit,
-  }) =>
-      tryGet(
-        jsonEncode({
-          'query': query,
-          'category': category?.name,
-          'order': order?.name,
-          'limit': limit,
-        }),
-        orElse: () => fetch(
-          query,
-          category: category,
-          order: order,
-          limit: limit,
-        ),
-      );
+  }) => tryGet(
+    jsonEncode({
+      'query': query,
+      'category': category?.name,
+      'order': order?.name,
+      'limit': limit,
+    }),
+    orElse: () => fetch(
+      query,
+      category: category,
+      order: order,
+      limit: limit,
+    ),
+  );
 
   @override
   late Cache<DanbooruRelatedTag> cache;

@@ -62,10 +62,12 @@ class AnimePicturesClient {
     final results = response.data['posts'] as List;
 
     return results
-        .map((item) => PostDto.fromJson(
-              item,
-              _dio.options.baseUrl,
-            ))
+        .map(
+          (item) => PostDto.fromJson(
+            item,
+            _dio.options.baseUrl,
+          ),
+        )
         .toList();
   }
 
@@ -132,8 +134,9 @@ class AnimePicturesClient {
 
     final location = res.headers['location']?.firstOrNull;
     final cookieValue = res.headers['set-cookie']?.firstOrNull;
-    final cookie =
-        cookieValue != null ? Cookie.fromSetCookieValue(cookieValue) : null;
+    final cookie = cookieValue != null
+        ? Cookie.fromSetCookieValue(cookieValue)
+        : null;
 
     if (location == null || cookie == null) {
       return null;
@@ -170,10 +173,12 @@ class AnimePicturesClient {
     final results = resp.data['top'] as List;
 
     return results
-        .map((item) => PostDto.fromJson(
-              item,
-              _dio.options.baseUrl,
-            ))
+        .map(
+          (item) => PostDto.fromJson(
+            item,
+            _dio.options.baseUrl,
+          ),
+        )
         .toList();
   }
 
@@ -188,7 +193,4 @@ class AnimePicturesClient {
   }
 }
 
-typedef AnimePicturesDownloadUrlData = ({
-  String url,
-  String cookie,
-});
+typedef AnimePicturesDownloadUrlData = ({String url, String cookie});

@@ -28,10 +28,12 @@ class TagEditContainer extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final viewExpanded =
-        ref.watch(tagEditProvider.select((value) => value.viewExpanded));
-    final height =
-        viewExpanded ? max(maxHeight - kToolbarHeight - 120.0, 280) : 280.0;
+    final viewExpanded = ref.watch(
+      tagEditProvider.select((value) => value.viewExpanded),
+    );
+    final height = viewExpanded
+        ? max(maxHeight - kToolbarHeight - 120.0, 280)
+        : 280.0;
 
     return Container(
       height: height.toDouble(),
@@ -53,8 +55,9 @@ class TagEditContainer extends ConsumerWidget {
     String title,
   ) {
     final notifier = ref.watch(tagEditProvider.notifier);
-    final viewExpanded =
-        ref.watch(tagEditProvider.select((value) => value.viewExpanded));
+    final viewExpanded = ref.watch(
+      tagEditProvider.select((value) => value.viewExpanded),
+    );
 
     return Row(
       children: [

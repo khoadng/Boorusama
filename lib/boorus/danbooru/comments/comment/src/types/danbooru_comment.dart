@@ -2,7 +2,7 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import '../../../../../../core/comments/comment.dart';
+import '../../../../../../core/comments/types.dart';
 import '../../../../users/user/user.dart';
 
 typedef CommentId = int;
@@ -23,16 +23,16 @@ class DanbooruComment extends Equatable implements Comment {
     required this.creator,
   });
 
-  factory DanbooruComment.emty() => DanbooruComment(
-        id: -1,
-        score: 0,
-        body: '',
-        postId: -1,
-        createdAt: DateTime(1),
-        updatedAt: DateTime(1),
-        isDeleted: false,
-        creator: null,
-      );
+  factory DanbooruComment.emty() => const DanbooruComment(
+    id: -1,
+    score: 0,
+    body: '',
+    postId: -1,
+    createdAt: null,
+    updatedAt: null,
+    isDeleted: false,
+    creator: null,
+  );
 
   @override
   final CommentId id;
@@ -41,9 +41,9 @@ class DanbooruComment extends Equatable implements Comment {
   final CommentBody body;
   final CommentPostId postId;
   @override
-  final DateTime createdAt;
+  final DateTime? createdAt;
   @override
-  final DateTime updatedAt;
+  final DateTime? updatedAt;
   final bool isDeleted;
   final DanbooruUser? creator;
 
@@ -55,14 +55,14 @@ class DanbooruComment extends Equatable implements Comment {
 
   @override
   List<Object?> get props => [
-        id,
-        score,
-        body,
-        postId,
-        createdAt,
-        updatedAt,
-        isDeleted,
-      ];
+    id,
+    score,
+    body,
+    postId,
+    createdAt,
+    updatedAt,
+    isDeleted,
+  ];
 }
 
 extension CommentX on DanbooruComment {
@@ -73,19 +73,18 @@ extension CommentX on DanbooruComment {
     bool? isDeleted,
     String? body,
     int? score,
-  }) =>
-      DanbooruComment(
-        id: id ?? this.id,
-        score: score ?? this.score,
-        body: body ?? this.body,
-        postId: postId,
-        createdAt: createdAt,
-        updatedAt: updatedAt,
-        isDeleted: isDeleted ?? this.isDeleted,
-        creator: creator,
-      );
+  }) => DanbooruComment(
+    id: id ?? this.id,
+    score: score ?? this.score,
+    body: body ?? this.body,
+    postId: postId,
+    createdAt: createdAt,
+    updatedAt: updatedAt,
+    isDeleted: isDeleted ?? this.isDeleted,
+    creator: creator,
+  );
 }
 
 List<DanbooruComment> Function(List<DanbooruComment> comments)
-    filterDeleted() =>
-        (comments) => comments.where((e) => !e.isDeleted).toList();
+filterDeleted() =>
+    (comments) => comments.where((e) => !e.isDeleted).toList();

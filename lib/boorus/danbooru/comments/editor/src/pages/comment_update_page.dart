@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
@@ -30,8 +30,9 @@ class CommentUpdatePage extends ConsumerStatefulWidget {
 }
 
 class _CommentUpdatePageState extends ConsumerState<CommentUpdatePage> {
-  late final textEditingController =
-      TextEditingController(text: widget.initialContent);
+  late final textEditingController = TextEditingController(
+    text: widget.initialContent,
+  );
 
   @override
   void dispose() {
@@ -84,7 +85,7 @@ class _CommentUpdatePageState extends ConsumerState<CommentUpdatePage> {
                     child: BooruTextField(
                       controller: textEditingController,
                       decoration: InputDecoration(
-                        hintText: 'comment.create.hint'.tr(),
+                        hintText: '${context.t.comment.create.hint}...',
                         filled: false,
                         border: const OutlineInputBorder(),
                         focusedBorder: const OutlineInputBorder(),
@@ -105,7 +106,9 @@ class _CommentUpdatePageState extends ConsumerState<CommentUpdatePage> {
 
   void _handleSave(String content, BooruConfigAuth config) {
     FocusScope.of(context).unfocus();
-    ref.read(danbooruCommentsProvider(config).notifier).update(
+    ref
+        .read(danbooruCommentsProvider(config).notifier)
+        .update(
           postId: widget.postId,
           commentId: widget.commentId,
           content: content,

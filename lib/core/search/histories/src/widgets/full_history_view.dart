@@ -10,7 +10,7 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../../../../../../core/widgets/widgets.dart';
-import '../../../../foundation/display.dart';
+import '../../../../../foundation/display.dart';
 import '../../../../theme.dart';
 import '../../../search/widgets.dart';
 import '../providers.dart';
@@ -41,7 +41,9 @@ class FullHistoryView extends ConsumerWidget {
             onChanged: (value) => notifier.filterHistories(value),
           ),
         ),
-        ref.watch(searchHistoryProvider).maybeWhen(
+        ref
+            .watch(searchHistoryProvider)
+            .maybeWhen(
               data: (histories) => Expanded(
                 child: ImplicitlyAnimatedList(
                   items: histories.filteredHistories,
@@ -51,39 +53,40 @@ class FullHistoryView extends ConsumerWidget {
                   removeDuration: const Duration(milliseconds: 250),
                   itemBuilder: (context, animation, history, index) =>
                       SizeFadeTransition(
-                    sizeFraction: 0.7,
-                    curve: Curves.easeInOut,
-                    animation: animation,
-                    child: ListTile(
-                      key: ValueKey(history.query),
-                      title: SearchHistoryQueryWidget(history: history),
-                      subtitle: DateTooltip(
-                        date: history.createdAt,
-                        child: Text(
-                          history.createdAt
-                              .fuzzify(locale: Localizations.localeOf(context)),
-                        ),
-                      ),
-                      onTap: () {
-                        onHistoryTap(history);
-                      },
-                      contentPadding: kPreferredLayout.isDesktop
-                          ? const EdgeInsets.symmetric(
-                              horizontal: 12,
-                            )
-                          : const EdgeInsets.only(
-                              left: 16,
+                        sizeFraction: 0.7,
+                        curve: Curves.easeInOut,
+                        animation: animation,
+                        child: ListTile(
+                          key: ValueKey(history.query),
+                          title: SearchHistoryQueryWidget(history: history),
+                          subtitle: DateTooltip(
+                            date: history.createdAt,
+                            child: Text(
+                              history.createdAt.fuzzify(
+                                locale: Localizations.localeOf(context),
+                              ),
                             ),
-                      minTileHeight: kPreferredLayout.isDesktop ? 0 : null,
-                      trailing: IconButton(
-                        onPressed: () => notifier.removeHistory(history),
-                        icon: Icon(
-                          Symbols.close,
-                          color: Theme.of(context).colorScheme.hintColor,
+                          ),
+                          onTap: () {
+                            onHistoryTap(history);
+                          },
+                          contentPadding: kPreferredLayout.isDesktop
+                              ? const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                )
+                              : const EdgeInsets.only(
+                                  left: 16,
+                                ),
+                          minTileHeight: kPreferredLayout.isDesktop ? 0 : null,
+                          trailing: IconButton(
+                            onPressed: () => notifier.removeHistory(history),
+                            icon: Icon(
+                              Symbols.close,
+                              color: Theme.of(context).colorScheme.hintColor,
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                  ),
                 ),
               ),
               orElse: () => const SizedBox.shrink(),

@@ -20,9 +20,11 @@ class AppearanceDetailsPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final layout = ref.watch(
-          editBooruConfigProvider(ref.watch(editBooruConfigIdProvider))
-              .select((value) => value.layoutTyped),
+    final layout =
+        ref.watch(
+          editBooruConfigProvider(
+            ref.watch(editBooruConfigIdProvider),
+          ).select((value) => value.layoutTyped),
         ) ??
         const LayoutConfigs.undefined();
 

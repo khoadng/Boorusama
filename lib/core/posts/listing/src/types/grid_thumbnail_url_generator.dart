@@ -12,15 +12,17 @@ abstract class GridThumbnailUrlGenerator {
   });
 }
 
-typedef ImageQualityMapper = String Function(
-  Post post,
-  ImageQuality imageQuality,
-);
+typedef ImageQualityMapper =
+    String Function(
+      Post post,
+      ImageQuality imageQuality,
+    );
 
-typedef GifImageQualityMapper = String Function(
-  Post post,
-  ImageQuality imageQuality,
-);
+typedef GifImageQualityMapper =
+    String Function(
+      Post post,
+      ImageQuality imageQuality,
+    );
 
 class GridThumbnailSettings extends Equatable {
   const GridThumbnailSettings({
@@ -33,7 +35,7 @@ class GridThumbnailSettings extends Equatable {
 
   @override
   List<Object?> get props => [
-        imageQuality,
-        animatedPostsDefaultState,
-      ];
+    imageQuality,
+    animatedPostsDefaultState,
+  ];
 }

@@ -61,18 +61,19 @@ class SliverPostGridImageGridItem<T extends Post> extends ConsumerWidget {
     return GestureDetector(
       onLongPress: gestures.canLongPress && postGesturesHandler != null
           ? () => postGesturesHandler(
-                ref,
-                gestures?.longPress,
-                post,
-              )
+              ref,
+              gestures?.longPress,
+              post,
+            )
           : null,
       child: Stack(
         children: [
           Consumer(
-            builder: (__, ref, _) {
+            builder: (_, ref, _) {
               final imageBorderRadius = ref.watch(
-                imageListingSettingsProvider
-                    .select((value) => value.imageBorderRadius),
+                imageListingSettingsProvider.select(
+                  (value) => value.imageBorderRadius,
+                ),
               );
 
               return ImageGridItem(
@@ -104,17 +105,18 @@ class SliverPostGridImageGridItem<T extends Post> extends ConsumerWidget {
                 hasSound: post.hasSound,
                 duration: post.duration,
                 scoreWidget: Consumer(
-                  builder: (_, ref, __) {
+                  builder: (_, ref, _) {
                     final showScoresInGrid = ref.watch(
-                      imageListingSettingsProvider
-                          .select((value) => value.showScoresInGrid),
+                      imageListingSettingsProvider.select(
+                        (value) => value.showScoresInGrid,
+                      ),
                     );
 
                     final scoreWidget = showScoresInGrid
                         ? score.toOption().fold(
-                              () => null,
-                              (s) => ImageScoreWidget(score: s),
-                            )
+                            () => null,
+                            (s) => ImageScoreWidget(score: s),
+                          )
                         : null;
 
                     return scoreWidget ?? const SizedBox.shrink();

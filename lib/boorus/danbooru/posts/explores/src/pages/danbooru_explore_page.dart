@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../../../core/posts/explores/widgets.dart';
@@ -16,7 +16,7 @@ class DanbooruExplorePage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('explore.explore').tr(),
+        title: Text(context.t.explore.explore),
       ),
       body: const DanbooruExplorePageInternal(),
     );
@@ -38,17 +38,17 @@ class DanbooruExplorePageInternal extends ConsumerWidget {
       sliverOverviews: [
         SliverToBoxAdapter(
           child: PopularExplore(
-            onPressed: () => goToExplorePopularPage(context),
+            onPressed: () => goToExplorePopularPage(ref),
           ),
         ),
         SliverToBoxAdapter(
           child: HotExplore(
-            onPressed: () => goToExploreHotPage(context),
+            onPressed: () => goToExploreHotPage(ref),
           ),
         ),
         SliverToBoxAdapter(
           child: MostViewedExplore(
-            onPressed: () => goToExploreMostViewedPage(context),
+            onPressed: () => goToExploreMostViewedPage(ref),
           ),
         ),
       ],
@@ -72,8 +72,10 @@ class _MostViewedExploreState extends ConsumerState<MostViewedExplore> {
   @override
   Widget build(BuildContext context) {
     return ExploreSection(
-      title: 'explore.most_viewed'.tr(),
-      builder: (_) => ref.watch(danbooruMostViewedTodayProvider).maybeWhen(
+      title: context.t.explore.most_viewed,
+      builder: (_) => ref
+          .watch(danbooruMostViewedTodayProvider)
+          .maybeWhen(
             data: (r) => ExploreList(posts: r.posts),
             orElse: () => const ExploreList(posts: []),
           ),
@@ -98,8 +100,10 @@ class _HotExploreState extends ConsumerState<HotExplore> {
   @override
   Widget build(BuildContext context) {
     return ExploreSection(
-      title: 'explore.hot'.tr(),
-      builder: (_) => ref.watch(danbooruHotTodayProvider).maybeWhen(
+      title: context.t.explore.hot,
+      builder: (_) => ref
+          .watch(danbooruHotTodayProvider)
+          .maybeWhen(
             data: (r) => ExploreList(posts: r.posts),
             orElse: () => const ExploreList(posts: []),
           ),
@@ -124,8 +128,10 @@ class _PopularExploreState extends ConsumerState<PopularExplore> {
   @override
   Widget build(BuildContext context) {
     return ExploreSection(
-      title: 'explore.popular'.tr(),
-      builder: (_) => ref.watch(danbooruPopularTodayProvider).maybeWhen(
+      title: context.t.explore.popular,
+      builder: (_) => ref
+          .watch(danbooruPopularTodayProvider)
+          .maybeWhen(
             data: (r) => ExploreList(posts: r.posts),
             orElse: () => const ExploreList(posts: []),
           ),

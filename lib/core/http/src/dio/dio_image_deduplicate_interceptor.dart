@@ -5,7 +5,7 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 
 // Project imports:
-import '../../../downloads/urls.dart';
+import '../../../downloads/urls/sanitizer.dart';
 
 const _kImageExtensions = {
   '.jpg',

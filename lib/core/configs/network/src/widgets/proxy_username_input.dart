@@ -15,8 +15,9 @@ class ProxyUsernameInput extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final proxySettings = ref.watch(
-      editBooruConfigProvider(ref.watch(editBooruConfigIdProvider))
-          .select((value) => value.proxySettingsTyped),
+      editBooruConfigProvider(
+        ref.watch(editBooruConfigIdProvider),
+      ).select((value) => value.proxySettingsTyped),
     );
 
     return BooruTextFormField(

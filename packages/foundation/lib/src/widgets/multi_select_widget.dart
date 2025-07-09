@@ -7,10 +7,11 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 // Project imports:
 import 'multi_select_controller.dart';
 
-typedef FooterBuilder = Widget Function(
-  BuildContext context,
-  List<int> selectedItems,
-);
+typedef FooterBuilder =
+    Widget Function(
+      BuildContext context,
+      List<int> selectedItems,
+    );
 
 const _kAnimDuration = Duration(milliseconds: 100);
 
@@ -158,13 +159,16 @@ class _SelectableItemState extends State<SelectableItem>
       duration: const Duration(milliseconds: 80),
     );
 
-    _scaleAnimation = Tween<double>(
-      begin: 1.0,
-      end: 0.97,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeOut,
-    ));
+    _scaleAnimation =
+        Tween<double>(
+          begin: 1.0,
+          end: 0.97,
+        ).animate(
+          CurvedAnimation(
+            parent: _animationController,
+            curve: Curves.easeOut,
+          ),
+        );
   }
 
   @override
@@ -178,9 +182,9 @@ class _SelectableItemState extends State<SelectableItem>
     super.didUpdateWidget(oldWidget);
 
     if (oldWidget.isSelected != widget.isSelected) {
-      _animationController
-          .forward()
-          .then((value) => _animationController.reverse());
+      _animationController.forward().then(
+        (value) => _animationController.reverse(),
+      );
     }
   }
 

@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
-import '../../../../analytics.dart';
+import '../../../../../foundation/display.dart';
+import '../../../../analytics/providers.dart';
 import '../../../../boorus/booru/booru.dart';
 import '../../../../config_widgets/booru_logo.dart';
-import '../../../../foundation/display.dart';
 import '../../../../posts/sources/source.dart';
 import '../../../../premiums/providers.dart';
 import '../../../../theme.dart';
@@ -67,21 +67,21 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
     final editId = ref.watch(editBooruConfigIdProvider);
 
     final tabMap = {
-      if (authTab != null) const CreateBooruConfigCategory.auth(): authTab!,
-      const CreateBooruConfigCategory.listing():
+      if (authTab != null) CreateBooruConfigCategory.auth(context): authTab!,
+      CreateBooruConfigCategory.listing():
           listingTab ?? const DefaultBooruConfigListingView(),
       if (ref.watch(showPremiumFeatsProvider))
-        const CreateBooruConfigCategory.appearance():
+        CreateBooruConfigCategory.appearance(context):
             layoutTab ?? const DefaultBooruConfigLayoutView(),
-      const CreateBooruConfigCategory.download():
+      CreateBooruConfigCategory.download(context):
           downloadTab ?? const BooruConfigDownloadView(),
-      const CreateBooruConfigCategory.search():
+      CreateBooruConfigCategory.search():
           searchTab ?? const DefaultBooruConfigSearchView(),
-      const CreateBooruConfigCategory.gestures():
+      CreateBooruConfigCategory.gestures(context):
           gestureTab ?? const DefaultBooruConfigGesturesView(),
-      const CreateBooruConfigCategory.viewer():
+      CreateBooruConfigCategory.viewer(context):
           imageViewerTab ?? const BooruConfigViewerView(),
-      const CreateBooruConfigCategory.network():
+      CreateBooruConfigCategory.network():
           networkTab ?? const BooruConfigNetworkView(),
     };
 
@@ -111,8 +111,9 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
                 ),
                 tabMap: tabMap,
                 length: tabMap.length,
-                animationDuration:
-                    Screen.of(context).size.isLarge ? Duration.zero : null,
+                animationDuration: Screen.of(context).size.isLarge
+                    ? Duration.zero
+                    : null,
                 builder: (controller) => Column(
                   children: [
                     const SizedBox(height: 4),
@@ -123,8 +124,7 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
                       ),
                       isScrollable: true,
                       tabs: [
-                        for (final tab in tabMap.keys)
-                          Tab(text: tab.title.tr()),
+                        for (final tab in tabMap.keys) Tab(text: tab.title),
                       ],
                     ),
                     Expanded(
@@ -151,12 +151,11 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
                           children: [
                             Text(
                               'Not sure? Leave it as it is, you can change it later.',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleSmall
+                              style: Theme.of(context).textTheme.titleSmall
                                   ?.copyWith(
-                                    color:
-                                        Theme.of(context).colorScheme.hintColor,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.hintColor,
                                     fontSize: 12,
                                     fontWeight: FontWeight.w400,
                                   ),
@@ -207,50 +206,50 @@ class CreateBooruConfigCategory extends Equatable {
     required this.title,
   });
 
-  const CreateBooruConfigCategory.auth()
-      : title = 'booru.authentication',
-        name = 'config/auth',
-        id = 'auth';
+  CreateBooruConfigCategory.auth(BuildContext context)
+    : title = context.t.booru.authentication,
+      name = 'config/auth',
+      id = 'auth';
 
-  const CreateBooruConfigCategory.listing()
-      : title = 'Listing',
-        name = 'config/listing',
-        id = 'listing';
+  CreateBooruConfigCategory.listing()
+    : title = 'Listing'.hc,
+      name = 'config/listing',
+      id = 'listing';
 
-  const CreateBooruConfigCategory.download()
-      : title = 'booru.download',
-        name = 'config/download',
-        id = 'download';
+  CreateBooruConfigCategory.download(BuildContext context)
+    : title = context.t.booru.download,
+      name = 'config/download',
+      id = 'download';
 
-  const CreateBooruConfigCategory.search()
-      : title = 'Search',
-        name = 'config/search',
-        id = 'search';
+  CreateBooruConfigCategory.search()
+    : title = 'Search'.hc,
+      name = 'config/search',
+      id = 'search';
 
-  const CreateBooruConfigCategory.gestures()
-      : title = 'booru.gestures',
-        name = 'config/gestures',
-        id = 'gestures';
+  CreateBooruConfigCategory.gestures(BuildContext context)
+    : title = context.t.booru.gestures,
+      name = 'config/gestures',
+      id = 'gestures';
 
-  const CreateBooruConfigCategory.viewer()
-      : title = 'settings.image_viewer.image_viewer',
-        name = 'config/viewer',
-        id = 'viewer';
+  CreateBooruConfigCategory.viewer(BuildContext context)
+    : title = context.t.settings.image_viewer.image_viewer,
+      name = 'config/viewer',
+      id = 'viewer';
 
-  const CreateBooruConfigCategory.network()
-      : title = 'Network',
-        name = 'config/network',
-        id = 'network';
+  CreateBooruConfigCategory.network()
+    : title = 'Network'.hc,
+      name = 'config/network',
+      id = 'network';
 
-  const CreateBooruConfigCategory.appearance()
-      : title = 'settings.appearance.appearance',
-        name = 'config/appearance',
-        id = 'appearance';
+  CreateBooruConfigCategory.appearance(BuildContext context)
+    : title = context.t.settings.appearance.appearance,
+      name = 'config/appearance',
+      id = 'appearance';
 
-  const CreateBooruConfigCategory.misc()
-      : title = 'booru.misc',
-        name = 'config/misc',
-        id = 'misc';
+  CreateBooruConfigCategory.misc(BuildContext context)
+    : title = context.t.booru.misc,
+      name = 'config/misc',
+      id = 'misc';
 
   final String title;
   final String id;
@@ -329,7 +328,9 @@ class _TabControllerProviderState extends ConsumerState<_TabControllerProvider>
       final item = widget.tabMap.keys.elementAtOrNull(_controller.index);
 
       if (item != null) {
-        ref.read(analyticsProvider).whenData(
+        ref
+            .read(analyticsProvider)
+            .whenData(
               (a) => a?.logScreenView(item.name),
             );
       }
@@ -390,8 +391,9 @@ class BooruConfigPopScope extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final initialData =
-        ref.watch(initialBooruConfigProvider).toBooruConfigData();
+    final initialData = ref
+        .watch(initialBooruConfigProvider)
+        .toBooruConfigData();
     final editId = ref.watch(editBooruConfigIdProvider);
     final configData = ref.watch(
       editBooruConfigProvider(editId),

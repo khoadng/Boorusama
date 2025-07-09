@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
@@ -28,11 +28,12 @@ class BulkDownloadPage extends ConsumerWidget {
     return config.booruType == BooruType.zerochan
         ? Scaffold(
             appBar: AppBar(
-              title: const Text(DownloadTranslations.title).tr(),
+              title: Text(DownloadTranslations.title(context)),
             ),
-            body: const Center(
+            body: Center(
               child: Text(
-                'Temporarily disabled due to an issue with getting the download link',
+                'Temporarily disabled due to an issue with getting the download link'
+                    .hc,
               ),
             ),
           )
@@ -50,10 +51,21 @@ class BulkDownloadPageInternal extends StatelessWidget {
     return CustomContextMenuOverlay(
       child: Scaffold(
         appBar: AppBar(
-          title: const Text(DownloadTranslations.title).tr(),
+          title: LayoutBuilder(
+            builder: (context, constraints) => Row(
+              children: [
+                Text(DownloadTranslations.title(context)),
+                Consumer(
+                  builder: (_, ref, _) => constraints.maxWidth >= 432
+                      ? _buildCreateButton(ref, dense: true)
+                      : const SizedBox.shrink(),
+                ),
+              ],
+            ),
+          ),
           actions: [
             Consumer(
-              builder: (_, ref, __) {
+              builder: (_, ref, _) {
                 final hasUnseen = ref.watch(
                   bulkDownloadProvider.select(
                     (state) => state.hasUnseenFinishedSessions,
@@ -68,24 +80,29 @@ class BulkDownloadPageInternal extends StatelessWidget {
                     child: const Icon(Symbols.history),
                   ),
                   onPressed: () {
-                    goToBulkDownloadCompletedPage(context);
+                    goToBulkDownloadCompletedPage(ref);
                     notifier.clearUnseenFinishedSessions();
                   },
                 );
               },
             ),
-            IconButton(
-              icon: const Icon(Symbols.bookmark),
-              onPressed: () {
-                goToBulkDownloadSavedTasksPage(context);
+            Consumer(
+              builder: (_, ref, _) {
+                return IconButton(
+                  icon: const Icon(Symbols.bookmark),
+                  onPressed: () {
+                    goToBulkDownloadSavedTasksPage(ref);
+                  },
+                );
               },
             ),
           ],
         ),
         body: Consumer(
-          builder: (_, ref, __) {
-            final ready =
-                ref.watch(bulkDownloadProvider.select((state) => state.ready));
+          builder: (_, ref, _) {
+            final ready = ref.watch(
+              bulkDownloadProvider.select((state) => state.ready),
+            );
 
             return SafeArea(
               child: ready
@@ -95,18 +112,12 @@ class BulkDownloadPageInternal extends StatelessWidget {
                         const Expanded(
                           child: BulkDownloadActionSessions(),
                         ),
-                        PrimaryButton(
-                          onPressed: () {
-                            goToNewBulkDownloadTaskPage(
-                              ref,
-                              context,
-                              initialValue: null,
-                              showStartNotification: false,
-                            );
+                        LayoutBuilder(
+                          builder: (context, constraints) {
+                            return constraints.maxWidth < 600
+                                ? _buildCreateButton(ref)
+                                : const SizedBox.shrink();
                           },
-                          child: const Text(
-                            DownloadTranslations.create,
-                          ).tr(),
                         ),
                       ],
                     )
@@ -116,6 +127,26 @@ class BulkDownloadPageInternal extends StatelessWidget {
             );
           },
         ),
+      ),
+    );
+  }
+
+  Widget _buildCreateButton(
+    WidgetRef ref, {
+    bool dense = false,
+  }) {
+    return PrimaryButton(
+      dense: dense,
+      onPressed: () {
+        goToNewBulkDownloadTaskPage(
+          ref,
+          ref.context,
+          initialValue: null,
+          showStartNotification: false,
+        );
+      },
+      child: Text(
+        dense ? DownloadTranslations.createShort : DownloadTranslations.create,
       ),
     );
   }
@@ -137,65 +168,68 @@ class BulkDownloadActionSessions extends ConsumerWidget {
               session: sessions[index],
             ),
           )
-        : ref.watch(savedDownloadTasksProvider).when(
-              data: (tasks) => tasks.isEmpty
-                  ? Center(
-                      child: Text(
-                        DownloadTranslations.empty,
-                        style: textTheme.titleSmall?.copyWith(
-                          color: colorScheme.hintColor,
+        : ref
+              .watch(savedDownloadTasksProvider)
+              .when(
+                data: (tasks) => tasks.isEmpty
+                    ? Center(
+                        child: Text(
+                          DownloadTranslations.empty,
+                          style: textTheme.titleSmall?.copyWith(
+                            color: colorScheme.hintColor,
+                          ),
                         ),
-                      ),
-                    )
-                  : Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        SizedBox(
-                          height: 60,
-                          child: Center(
-                            child: Text(
-                              DownloadTranslations.empty,
-                              style: textTheme.titleSmall?.copyWith(
-                                color: colorScheme.hintColor,
+                      )
+                    : Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          SizedBox(
+                            height: 60,
+                            child: Center(
+                              child: Text(
+                                DownloadTranslations.empty,
+                                style: textTheme.titleSmall?.copyWith(
+                                  color: colorScheme.hintColor,
+                                ),
                               ),
-                            ).tr(),
-                          ),
-                        ),
-                        const Divider(),
-                        const SizedBox(height: 8),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                          ),
-                          child: const Text(
-                            'Templates',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
                             ),
-                          ).tr(),
-                        ),
-                        Expanded(
-                          child: ListView.builder(
+                          ),
+                          const Divider(),
+                          const SizedBox(height: 8),
+                          Padding(
                             padding: const EdgeInsets.symmetric(
-                              vertical: 8,
                               horizontal: 12,
                             ),
-                            itemCount: tasks.length,
-                            itemBuilder: (context, index) => SavedTaskListTile(
-                              savedTask: tasks[index],
-                              enableTap: false,
+                            child: Text(
+                              'Templates'.hc,
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-              error: (error, stack) => Center(
-                child: Text('Error: $error'),
-              ),
-              loading: () => const Center(
-                child: CircularProgressIndicator(),
-              ),
-            );
+                          Expanded(
+                            child: ListView.builder(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 8,
+                                horizontal: 12,
+                              ),
+                              itemCount: tasks.length,
+                              itemBuilder: (context, index) =>
+                                  SavedTaskListTile(
+                                    savedTask: tasks[index],
+                                    enableTap: false,
+                                  ),
+                            ),
+                          ),
+                        ],
+                      ),
+                error: (error, stack) => Center(
+                  child: Text('Error: $error'),
+                ),
+                loading: () => const Center(
+                  child: CircularProgressIndicator(),
+                ),
+              );
   }
 }

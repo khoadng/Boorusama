@@ -5,24 +5,26 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../../../../core/configs/config.dart';
 import '../../../../../../core/forums/forum_topic.dart';
-import '../../../../danbooru_provider.dart';
+import '../../../../client_provider.dart';
 import '../types/forum_topic.dart';
 import 'converter.dart';
 
 final danbooruForumTopicRepoProvider =
-    Provider.family<ForumTopicRepository<DanbooruForumTopic>, BooruConfigAuth>(
-        (ref, config) {
-  final client = ref.watch(danbooruClientProvider(config));
+    Provider.family<ForumTopicRepository<DanbooruForumTopic>, BooruConfigAuth>((
+      ref,
+      config,
+    ) {
+      final client = ref.watch(danbooruClientProvider(config));
 
-  return ForumTopicRepositoryBuilder(
-    fetch: (page) => client
-        .getForumTopics(
-          order: TopicOrder.sticky,
-          page: page,
-          limit: 50,
-        )
-        .then(
-          (value) => value.map((dto) => dtoToTopic(dto)).toList(),
-        ),
-  );
-});
+      return ForumTopicRepositoryBuilder(
+        fetch: (page) => client
+            .getForumTopics(
+              order: TopicOrder.sticky,
+              page: page,
+              limit: 50,
+            )
+            .then(
+              (value) => value.map((dto) => dtoToTopic(dto)).toList(),
+            ),
+      );
+    });

@@ -95,8 +95,8 @@ enum TestProxyStatus {
 
 final testProxyProvider =
     NotifierProvider.autoDispose<TestProxyNotifier, TestProxyState>(
-  TestProxyNotifier.new,
-);
+      TestProxyNotifier.new,
+    );
 
 class TestProxyState extends Equatable {
   const TestProxyState(this.status, {this.cancelToken});
