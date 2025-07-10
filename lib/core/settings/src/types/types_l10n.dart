@@ -86,9 +86,12 @@ extension BooruConfigLabelVisibilityTranslated on BooruConfigLabelVisibility {
 
 extension SlideshowDirectionTranslated on SlideshowDirection {
   String localize(BuildContext context) => switch (this) {
-    SlideshowDirection.forward => 'Forward'.hc,
-    SlideshowDirection.backward => 'Backward'.hc,
-    SlideshowDirection.random => 'Random'.hc,
+    SlideshowDirection.forward =>
+      context.t.settings.image_viewer.slideshow_modes.forward,
+    SlideshowDirection.backward =>
+      context.t.settings.image_viewer.slideshow_modes.backward,
+    SlideshowDirection.random =>
+      context.t.settings.image_viewer.slideshow_modes.random,
   };
 }
 

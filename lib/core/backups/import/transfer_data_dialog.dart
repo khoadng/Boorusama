@@ -240,11 +240,11 @@ class ImportingStep extends ConsumerWidget {
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 14),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 14),
                     child: Text(
-                      'Done',
-                      style: TextStyle(
+                      context.t.generic.done,
+                      style: const TextStyle(
                         fontWeight: FontWeight.w600,
                       ),
                     ),

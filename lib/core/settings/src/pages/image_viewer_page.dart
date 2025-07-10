@@ -51,9 +51,9 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
               optionBuilder: (value) => Text(value.localize(context)),
             ),
             const Divider(thickness: 1),
-            SettingsHeader(label: 'Slideshow'.hc),
+            SettingsHeader(label: context.t.settings.image_viewer.slideshow),
             SettingsTile(
-              title: Text('Slideshow mode'.hc),
+              title: Text(context.t.settings.image_viewer.slideshow_mode),
               selectedOption: settings.slideshowDirection,
               items: SlideshowDirection.values,
               onChanged: (value) => notifer.updateSettings(
@@ -62,10 +62,9 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
               optionBuilder: (value) => Text(value.localize(context)),
             ),
             SettingsTile(
-              title: Text('Slideshow interval'.hc),
+              title: Text(context.t.settings.image_viewer.slideshow_interval),
               subtitle: Text(
-                'Value less than 1 second will automatically skip transition'
-                    .hc,
+                context.t.settings.image_viewer.slideshow_interval_explanation,
               ),
               selectedOption: settings.slideshowInterval,
               items: getSlideShowIntervalPossibleValue(),
@@ -79,7 +78,7 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
               ),
             ),
             SwitchListTile(
-              title: Text('Skip slideshow transition'.hc),
+              title: Text(context.t.settings.image_viewer.slideshow_skip),
               value: settings.skipSlideshowTransition,
               onChanged: (value) => notifer.updateSettings(
                 settings.copyWith(
@@ -90,9 +89,11 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
               ),
             ),
             const Divider(thickness: 1),
-            SettingsHeader(label: 'Video'.hc),
+            SettingsHeader(
+              label: context.t.settings.image_viewer.video_section_title,
+            ),
             SwitchListTile(
-              title: Text('Mute video by default'.hc),
+              title: Text(context.t.settings.image_viewer.mute_video),
               value: settings.muteAudioByDefault,
               onChanged: (value) => notifer.updateSettings(
                 settings.copyWith(

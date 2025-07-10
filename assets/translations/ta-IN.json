@@ -74,8 +74,7 @@
       "select": "தேர்ந்தெடு"
     },
     "image_fullview": {
-      "view_original": "அசல் காண்க",
-      "view_resized": "மறுஅளவாக்கப்பட்டதைக் காண்க"
+      "view_original": "அசல் காண்க"
     }
   },
   "comment": {
@@ -211,8 +210,6 @@
     },
     "image_viewer": {
       "image_viewer": "பட பார்வையாளர்",
-      "full_res_as_default": "முழு தெளிவுத்திறனை இயல்புநிலையாகக் காட்டுங்கள்",
-      "full_res_notice": "படத்தின் அளவைப் பொறுத்தது ஏற்றுவதற்கு சிறிது நேரம் ஆகும்",
       "slideshow": "ச்லைடுசோ",
       "slideshow_interval": "ச்லைடுசோ இடைவெளி",
       "slideshow_mode": "ச்லைடுசோ பயன்முறை",
@@ -225,9 +222,6 @@
       "slideshow_interval_explanation": "1 நொடிக்கு குறைவான மதிப்பு தானாகவே மாற்றத்தைத் தவிர்க்கும்",
       "mute_video": "முன்னிருப்பாக முடக்கு வீடியோ",
       "video_section_title": "ஒளிதோற்றம்"
-    },
-    "image_detail": {
-      "image_detail": "பட விவரம்"
     },
     "language": {
       "language": "மொழி",
@@ -245,7 +239,6 @@
     },
     "privacy": {
       "privacy": "தனியுரிமை",
-      "send_error_data_notice": "பிழை உள்நுழைவதற்கு அநாமதேய தரவை அனுப்பவும்",
       "enable_incognito_keyboard": "மறைநிலை விசைப்பலகை இயக்கவும்",
       "enable_incognito_keyboard_notice": "ஆண்ட்ராய்டு ஐ மட்டுமே பாதிக்கிறது.",
       "enable_biometric_lock": "பயோமெட்ரிக் பூட்டை இயக்கவும்",
@@ -282,14 +275,6 @@
     },
     "backup_and_restore": {
       "backup_and_restore": "காப்புப்பிரதி மற்றும் மீட்டமை"
-    },
-    "image_details": {
-      "image_details": "பட விவரங்கள்",
-      "ui_overlay": {
-        "show": "காட்டு",
-        "hide": "மறை",
-        "ui_overlay": "இடைமுகம் மேலடுக்கு"
-      }
     },
     "page_indicator": {
       "page_indicator": "பக்க காட்டி நிலை",
@@ -439,7 +424,6 @@
     "add_a_booru_site": "புதிய சுயவிவரத்தை உருவாக்கவும்",
     "next_step": "அடுத்தது",
     "site_url": "தள முகவரி",
-    "unsupported_warning": "இந்த பூரூ இன்னும் ஆதரிக்கப்படவில்லை.",
     "validation_empty_url": "முகவரி காலியாக உள்ளது",
     "validation_invalid_url": "\"{0}\" என்பது சரியான முகவரி அல்ல",
     "validation_invalid_http_url": "\"{0}\" என்பது ஒரு http அல்லது https முகவரி அல்ல",

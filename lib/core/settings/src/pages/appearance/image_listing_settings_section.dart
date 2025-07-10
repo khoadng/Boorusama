@@ -71,20 +71,18 @@ class _ImageListingSettingsSectionState
 
   @override
   Widget build(BuildContext context) {
-    final tSettings = context.t.settings;
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         SettingsTile(
-          title: Text(tSettings.image_grid.grid_size.grid_size),
+          title: Text(context.t.settings.image_grid.grid_size.grid_size),
           selectedOption: settings.gridSize,
           items: GridSize.values,
           onChanged: (value) => _onUpdate(settings.copyWith(gridSize: value)),
           optionBuilder: (value) => Text(value.localize(context)),
         ),
         SettingsTile(
-          title: Text(tSettings.image_list.image_list),
+          title: Text(context.t.settings.image_list.image_list),
           selectedOption: settings.imageListType,
           items: ImageListType.values,
           onChanged: (value) =>
@@ -93,11 +91,16 @@ class _ImageListingSettingsSectionState
         ),
         SettingsTile(
           title: Text(
-            tSettings.image_grid.image_quality.image_quality,
+            context.t.settings.image_grid.image_quality.image_quality,
           ),
           subtitle: settings.imageQuality == ImageQuality.highest
               ? Text(
-                  tSettings.image_grid.image_quality.high_quality_notice,
+                  context
+                      .t
+                      .settings
+                      .image_grid
+                      .image_quality
+                      .high_quality_notice,
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.hintColor,
                   ),
@@ -110,10 +113,10 @@ class _ImageListingSettingsSectionState
           optionBuilder: (value) => Text(value.localize(context)),
         ),
         SettingsTile(
-          title: Text(tSettings.result_layout.result_layout),
+          title: Text(context.t.settings.result_layout.result_layout),
           selectedOption: settings.pageMode,
           subtitle: settings.pageMode == PageMode.infinite
-              ? Text(tSettings.infinite_scroll_warning)
+              ? Text(context.t.settings.infinite_scroll_warning)
               : null,
           items: const [...PageMode.values],
           onChanged: (value) => _onUpdate(settings.copyWith(pageMode: value)),
@@ -121,7 +124,7 @@ class _ImageListingSettingsSectionState
         ),
         if (settings.pageMode == PageMode.paginated)
           SettingsTile(
-            title: Text(tSettings.page_indicator.page_indicator),
+            title: Text(context.t.settings.page_indicator.page_indicator),
             selectedOption: settings.pageIndicatorPosition,
             items: const [...PageIndicatorPosition.values],
             onChanged: (value) =>
@@ -129,9 +132,9 @@ class _ImageListingSettingsSectionState
             optionBuilder: (value) => Text(value.localize(context)),
           ),
         SettingsTile(
-          title: Text(tSettings.performance.posts_per_page),
+          title: Text(context.t.settings.performance.posts_per_page),
           subtitle: Text(
-            tSettings.performance.posts_per_page_explain,
+            context.t.settings.performance.posts_per_page_explain,
             style: TextStyle(
               color: Theme.of(context).colorScheme.hintColor,
             ),
@@ -150,14 +153,14 @@ class _ImageListingSettingsSectionState
           ),
         ),
         SwitchListTile(
-          title: Text(tSettings.appearance.show_scores),
+          title: Text(context.t.settings.appearance.show_scores),
           value: settings.showScoresInGrid,
           onChanged: (value) =>
               _onUpdate(settings.copyWith(showScoresInGrid: value)),
         ),
         SwitchListTile(
           title: Text(
-            tSettings.appearance.show_post_list_config_header,
+            context.t.settings.appearance.show_post_list_config_header,
           ),
           value: settings.showPostListConfigHeader,
           onChanged: (value) => _onUpdate(
@@ -289,17 +292,16 @@ class LayoutSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final settings = ref.watch(settingsProvider);
     final notifier = ref.watch(settingsNotifierProvider.notifier);
-    final tSettings = context.t.settings;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SettingsHeader(
-          label: tSettings.appearance.booru_config,
+          label: context.t.settings.appearance.booru_config,
         ),
         SettingsTile(
-          title: Text(tSettings.appearance.booru_config_placement),
+          title: Text(context.t.settings.appearance.booru_config_placement),
           selectedOption: settings.booruConfigSelectorPosition,
           items: const [...BooruConfigSelectorPosition.values],
           onChanged: (value) => notifier.updateSettings(

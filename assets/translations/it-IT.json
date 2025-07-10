@@ -74,8 +74,7 @@
       "select": "Seleziona"
     },
     "image_fullview": {
-      "view_original": "Visualizza l'originale",
-      "view_resized": "Visualizza ridimensionato"
+      "view_original": "Visualizza l'originale"
     }
   },
   "comment": {
@@ -211,8 +210,6 @@
     },
     "image_viewer": {
       "image_viewer": "Visualizzatore immagine",
-      "full_res_as_default": "Mostra risoluzione intera di default",
-      "full_res_notice": "Ci vorrà più o meno tempo a caricare in base alla dimensione dell'immagine",
       "slideshow": "Diapositive",
       "slideshow_interval": "Intervallo diapositive",
       "slideshow_mode": "Modalità diapositive",
@@ -225,9 +222,6 @@
       "slideshow_interval_explanation": "Valori minori di 1 secondo faranno saltare in automatico la transizione",
       "mute_video": "Muta il video di default",
       "video_section_title": "Video"
-    },
-    "image_detail": {
-      "image_detail": "Dettaglio dell'immagine"
     },
     "language": {
       "language": "Lingua",
@@ -245,7 +239,6 @@
     },
     "privacy": {
       "privacy": "Privacy",
-      "send_error_data_notice": "Invia dati anonimi per la registrazione degli errori",
       "enable_incognito_keyboard": "Abilita la tastiera in incognito",
       "enable_incognito_keyboard_notice": "Funziona solo su Android",
       "enable_biometric_lock": "Abilita il lucchetto biometrico",
@@ -282,14 +275,6 @@
     },
     "backup_and_restore": {
       "backup_and_restore": "Backup e recupero dati"
-    },
-    "image_details": {
-      "image_details": "Dettagli immagine",
-      "ui_overlay": {
-        "show": "Mostra",
-        "hide": "Nascondi",
-        "ui_overlay": "Sovrapposizione dell'interfaccia utente"
-      }
     },
     "page_indicator": {
       "page_indicator": "Indicatore di posizione della pagina",
@@ -439,7 +424,6 @@
     "add_a_booru_site": "Crea un nuovo profilo",
     "next_step": "Prossimo",
     "site_url": "URL sito",
-    "unsupported_warning": "Questo Booru non è ancora supportato",
     "validation_empty_url": "Il campo URL è vuoto",
     "validation_invalid_url": "\"{0}\" non è un URL valido",
     "validation_invalid_http_url": "\"{0}\" non è un URL HTTP o HTTPS",

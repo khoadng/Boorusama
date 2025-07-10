@@ -70,8 +70,7 @@
       "select": "Velg"
     },
     "image_fullview": {
-      "view_original": "Vis original",
-      "view_resized": ""
+      "view_original": "Vis original"
     }
   },
   "comment": {
@@ -199,12 +198,7 @@
       "corner_radius": "Hjørneavrunding"
     },
     "image_viewer": {
-      "image_viewer": "Bildeviser",
-      "full_res_as_default": "Vis fulloppløsning som forvalg",
-      "full_res_notice": ""
-    },
-    "image_detail": {
-      "image_detail": "Bildedetaljer"
+      "image_viewer": "Bildeviser"
     },
     "language": {
       "language": "Språk",
@@ -217,8 +211,7 @@
       "amoled_dark": "Svart"
     },
     "privacy": {
-      "privacy": "Personvern",
-      "send_error_data_notice": ""
+      "privacy": "Personvern"
     },
     "performance": {
       "performance": "Ytelse",
@@ -364,7 +357,6 @@
     "add_a_booru_site": "",
     "next_step": "Neste",
     "site_url": "",
-    "unsupported_warning": "",
     "validation_empty_url": "",
     "validation_invalid_url": "",
     "validation_invalid_http_url": "",

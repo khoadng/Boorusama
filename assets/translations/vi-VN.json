@@ -74,8 +74,7 @@
       "select": "Chọn"
     },
     "image_fullview": {
-      "view_original": "Xem ảnh gốc",
-      "view_resized": "Xem ảnh thường"
+      "view_original": "Xem ảnh gốc"
     }
   },
   "comment": {
@@ -211,8 +210,6 @@
     },
     "image_viewer": {
       "image_viewer": "Trình xem ảnh",
-      "full_res_as_default": "Luôn sử dụng ảnh gốc",
-      "full_res_notice": "Thời gian tải có thể sẽ lâu hơn tùy vào kích thước của ảnh",
       "slideshow": "Chuyển ảnh tự động",
       "slideshow_interval": "Thời gian chuyển ảnh",
       "slideshow_mode": "Chế độ chuyển ảnh",
@@ -225,9 +222,6 @@
       "slideshow_interval_explanation": "Giá trị ít hơn 1 giây sẽ tự động bỏ qua hiệu ứng chuyển tiếp",
       "mute_video": "Tắt tiếng video theo mặc định",
       "video_section_title": "Video"
-    },
-    "image_detail": {
-      "image_detail": "Chi tiết ảnh"
     },
     "language": {
       "language": "Ngôn ngữ",
@@ -245,7 +239,6 @@
     },
     "privacy": {
       "privacy": "Riêng tư",
-      "send_error_data_notice": "Tự động gửi lỗi cho dev",
       "enable_incognito_keyboard": "Bật bàn phím ẩn danh",
       "enable_incognito_keyboard_notice": "Chỉ có tác dụng trên Android.",
       "enable_biometric_lock": "Bật khoá sinh trắc học",
@@ -282,14 +275,6 @@
     },
     "backup_and_restore": {
       "backup_and_restore": "Sao lưu và phục hồi dữ liệu"
-    },
-    "image_details": {
-      "image_details": "Chi tiết hình ảnh",
-      "ui_overlay": {
-        "show": "Hiện",
-        "hide": "Ẩn",
-        "ui_overlay": "Bố cục giao diện"
-      }
     },
     "page_indicator": {
       "page_indicator": "Vị trí thanh điều hướng trang",
@@ -439,7 +424,6 @@
     "add_a_booru_site": "Tạo hồ sơ mới",
     "next_step": "Tiếp",
     "site_url": "Địa chỉ trang web",
-    "unsupported_warning": "Trang booru này chưa được hỗ trợ.",
     "validation_empty_url": "URL rỗng",
     "validation_invalid_url": "\"{0}\" không phải là một đường dẫn URL hợp lệ.",
     "validation_invalid_http_url": "\"{0}\" không phải là một đường dẫn URL HTTP hoặc HTTPS.",

@@ -40,12 +40,11 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
     final settings = ref.watch(settingsProvider);
     final notifier = ref.watch(settingsNotifierProvider.notifier);
     final hasPremium = ref.watch(hasPremiumProvider);
-    final tSettings = context.t.settings;
 
     return SettingsPageScaffold(
-      title: Text(tSettings.appearance.appearance),
+      title: Text(context.t.settings.appearance.appearance),
       children: [
-        SettingsHeader(label: tSettings.general),
+        SettingsHeader(label: context.t.settings.general),
         if (!hasPremium)
           _buildSimpleTheme(settings)
         else
@@ -68,7 +67,7 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
             ),
           ),
         const Divider(thickness: 1),
-        SettingsHeader(label: tSettings.image_grid.image_grid),
+        SettingsHeader(label: context.t.settings.image_grid.image_grid),
         ListingSettingsInteractionBlocker(
           child: ImageListingSettingsSection(
             listing: settings.listing,
@@ -88,14 +87,12 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
     final dynamicColorSupported = ref.watch(dynamicColorSupportProvider);
     final notifier = ref.watch(settingsNotifierProvider.notifier);
     final colorScheme = Theme.of(context).colorScheme;
-    final tSettings = context.t.settings;
-    final tTheme = tSettings.theme;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SettingsTile(
-          title: Text(tTheme.theme),
+          title: Text(context.t.settings.theme.theme),
           selectedOption: settings.themeMode,
           items: AppThemeMode.values,
           onChanged: (value) =>
@@ -105,17 +102,25 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
         Builder(
           builder: (context) {
             return SwitchListTile(
-              title: Text(tTheme.dynamic_color),
+              title: Text(context.t.settings.theme.dynamic_color),
               subtitle: dynamicColorSupported
                   ? !isDesktopPlatform()
                         ? Text(
-                            tTheme.dynamic_color_mobile_description,
+                            context
+                                .t
+                                .settings
+                                .theme
+                                .dynamic_color_mobile_description,
                           )
                         : Text(
-                            tTheme.dynamic_color_desktop_description,
+                            context
+                                .t
+                                .settings
+                                .theme
+                                .dynamic_color_desktop_description,
                           )
                   : Text(
-                      '${!isDesktopPlatform() ? tTheme.dynamic_color_mobile_description : tTheme.dynamic_color_desktop_description}. ${tTheme.dynamic_color_unsupported_description}',
+                      '${!isDesktopPlatform() ? context.t.settings.theme.dynamic_color_mobile_description : context.t.settings.theme.dynamic_color_desktop_description}. ${context.t.settings.theme.dynamic_color_unsupported_description}',
                     ),
               value: settings.enableDynamicColoring,
               onChanged: dynamicColorSupported

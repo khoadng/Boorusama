@@ -74,8 +74,7 @@
       "select": ""
     },
     "image_fullview": {
-      "view_original": "",
-      "view_resized": ""
+      "view_original": ""
     }
   },
   "comment": {
@@ -210,12 +209,7 @@
       "aspect_ratio": ""
     },
     "image_viewer": {
-      "image_viewer": "",
-      "full_res_as_default": "",
-      "full_res_notice": ""
-    },
-    "image_detail": {
-      "image_detail": ""
+      "image_viewer": ""
     },
     "language": {
       "language": "",
@@ -233,7 +227,6 @@
     },
     "privacy": {
       "privacy": "",
-      "send_error_data_notice": "",
       "enable_incognito_keyboard": "",
       "enable_incognito_keyboard_notice": "",
       "enable_biometric_lock": "",
@@ -269,14 +262,6 @@
     },
     "backup_and_restore": {
       "backup_and_restore": ""
-    },
-    "image_details": {
-      "image_details": "",
-      "ui_overlay": {
-        "show": "",
-        "hide": "",
-        "ui_overlay": ""
-      }
     },
     "page_indicator": {
       "page_indicator": "",
@@ -426,7 +411,6 @@
     "add_a_booru_site": "",
     "next_step": "",
     "site_url": "",
-    "unsupported_warning": "",
     "validation_empty_url": "",
     "validation_invalid_url": "",
     "validation_invalid_http_url": "",

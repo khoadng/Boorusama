@@ -68,7 +68,11 @@ class BlacklistedTagList extends StatelessWidget {
                 ),
               ],
             )
-          : const Center(child: Text('No blacklisted tags')),
+          : Center(
+              child: Text(
+                context.t.blacklist.manage.empty_blacklist,
+              ),
+            ),
     );
   }
 }

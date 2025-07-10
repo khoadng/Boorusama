@@ -74,8 +74,7 @@
       "select": "Selecionar"
     },
     "image_fullview": {
-      "view_original": "Ver original",
-      "view_resized": "Ver completo"
+      "view_original": "Ver original"
     }
   },
   "comment": {
@@ -210,12 +209,7 @@
       "aspect_ratio": "Proporção da imagem"
     },
     "image_viewer": {
-      "image_viewer": "Visualizador de imagem",
-      "full_res_as_default": "Mostrar a resolução completa como padrão",
-      "full_res_notice": "Vai levar um tempo para carregar dependendo do tamanho da imagem"
-    },
-    "image_detail": {
-      "image_detail": "Detalhe da imagem"
+      "image_viewer": "Visualizador de imagem"
     },
     "language": {
       "language": "Idioma",
@@ -233,7 +227,6 @@
     },
     "privacy": {
       "privacy": "Privacidade",
-      "send_error_data_notice": "Envie dados anônimos de registros de erros",
       "enable_incognito_keyboard": "Ativar teclado icógnito",
       "enable_incognito_keyboard_notice": "Só afeta Android.",
       "enable_biometric_lock": "Ativar desbloqueio biométrico",
@@ -270,14 +263,6 @@
     },
     "backup_and_restore": {
       "backup_and_restore": "Backup e Restaurar"
-    },
-    "image_details": {
-      "image_details": "Detalhes da imagem",
-      "ui_overlay": {
-        "show": "Mostrar",
-        "hide": "Esconder",
-        "ui_overlay": "Overlay de IU"
-      }
     },
     "page_indicator": {
       "page_indicator": "Posição do indicador de página",
@@ -427,7 +412,6 @@
     "add_a_booru_site": "Criar um novo perfil",
     "next_step": "Próximo",
     "site_url": "URL do site",
-    "unsupported_warning": "Este booru ainda não é suportado.",
     "validation_empty_url": "A URL esta vazia",
     "validation_invalid_url": "\"{0}\" não é uma URL válida",
     "validation_invalid_http_url": "\"{0}\" não é uma URL HTTP ou HTTPS",

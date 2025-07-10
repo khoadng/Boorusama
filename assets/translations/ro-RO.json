@@ -74,8 +74,7 @@
       "select": "Selectați"
     },
     "image_fullview": {
-      "view_original": "Vizualizați originalul",
-      "view_resized": "Vizualizați redimensionat"
+      "view_original": "Vizualizați originalul"
     }
   },
   "comment": {
@@ -210,12 +209,7 @@
       "aspect_ratio": "Raportul de aspect"
     },
     "image_viewer": {
-      "image_viewer": "Vizualizorul de imagini",
-      "full_res_as_default": "Afișați implicit rezoluția maximă",
-      "full_res_notice": "Încărcarea va dura ceva timp, în funcție de dimensiunea imaginii"
-    },
-    "image_detail": {
-      "image_detail": "Detaliul imaginii"
+      "image_viewer": "Vizualizorul de imagini"
     },
     "language": {
       "language": "Limba",
@@ -233,7 +227,6 @@
     },
     "privacy": {
       "privacy": "Confidențialitate",
-      "send_error_data_notice": "Trimiteți date anonime pentru înregistrarea de erori",
       "enable_incognito_keyboard": "Activați modul incognito al tastaturii",
       "enable_incognito_keyboard_notice": "Funcționează doar pe Android.",
       "enable_biometric_lock": "Activați blocarea biometrică",
@@ -269,14 +262,6 @@
     },
     "backup_and_restore": {
       "backup_and_restore": "Copie de rezervă și restaurare"
-    },
-    "image_details": {
-      "image_details": "Detaliile imaginii",
-      "ui_overlay": {
-        "show": "Afișați",
-        "hide": "Ascundeți",
-        "ui_overlay": "Suprapunerea interfeței de utilizare"
-      }
     },
     "page_indicator": {
       "page_indicator": "Poziția indicatorului de pagină",
@@ -426,7 +411,6 @@
     "add_a_booru_site": "Creați un profil nou",
     "next_step": "Următorul",
     "site_url": "URL Site",
-    "unsupported_warning": "Acest booru nu este suportat încă.",
     "validation_empty_url": "URL este gol",
     "validation_invalid_url": "\"{0}\" nu este un URL valid",
     "validation_invalid_http_url": "\"{0}\" nu este un URL HTTP sau HTTPS",

@@ -74,8 +74,7 @@
       "select": "Выбрать"
     },
     "image_fullview": {
-      "view_original": "Просмотреть оригинальное изображение",
-      "view_resized": "Просмотреть изменённое изображение"
+      "view_original": "Просмотреть оригинальное изображение"
     }
   },
   "comment": {
@@ -211,8 +210,6 @@
     },
     "image_viewer": {
       "image_viewer": "Просмотр изображений",
-      "full_res_as_default": "Всегда отображать полное разрешение",
-      "full_res_notice": "Загрузка займёт какое-то время, в зависимости от размеров изображения",
       "slideshow": "Слайдшоу",
       "slideshow_interval": "Интервал между слайдами",
       "slideshow_mode": "Режим слайдшоу",
@@ -225,9 +222,6 @@
       "slideshow_interval_explanation": "Значение меньше 1 секунды автоматически отключает анимацию перехода",
       "mute_video": "Воспроизводить без звука",
       "video_section_title": "Видео"
-    },
-    "image_detail": {
-      "image_detail": "Детали изображения"
     },
     "language": {
       "language": "Язык",
@@ -245,7 +239,6 @@
     },
     "privacy": {
       "privacy": "Приватность",
-      "send_error_data_notice": "Отправлять анонимные данные для обработки ошибок",
       "enable_incognito_keyboard": "Включить клавиатуру в режиме инкогнито",
       "enable_incognito_keyboard_notice": "Влияет только на Android.",
       "enable_biometric_lock": "Включить биометрическую блокировку",
@@ -282,14 +275,6 @@
     },
     "backup_and_restore": {
       "backup_and_restore": "Резервное копирование и восстановление"
-    },
-    "image_details": {
-      "image_details": "Детали изoбражения",
-      "ui_overlay": {
-        "show": "Показать",
-        "hide": "Скрыть",
-        "ui_overlay": "Наложение пользовательского интерфейса"
-      }
     },
     "page_indicator": {
       "page_indicator": "Положение индикатора страницы",
@@ -439,7 +424,6 @@
     "add_a_booru_site": "Создать новый профиль",
     "next_step": "Далее",
     "site_url": "Ссылка на сайт",
-    "unsupported_warning": "Этот booru еще не поддерживается.",
     "validation_empty_url": "Ссылка пуста",
     "validation_invalid_url": "\"{0}\" не является действительной URL",
     "validation_invalid_http_url": "\"{0}\" не является HTTP или HTTPS URL",

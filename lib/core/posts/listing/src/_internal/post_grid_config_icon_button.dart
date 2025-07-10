@@ -305,7 +305,9 @@ class EditBlacklistActionSheet extends ConsumerWidget {
                     ],
                   )
                 : Center(
-                    child: Text('No blacklisted tags'.hc),
+                    child: Text(
+                      context.t.blacklist.manage.empty_blacklist,
+                    ),
                   );
           },
           loading: () => const Center(child: CircularProgressIndicator()),

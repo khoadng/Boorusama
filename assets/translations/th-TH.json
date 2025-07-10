@@ -74,8 +74,7 @@
       "select": "เลือก"
     },
     "image_fullview": {
-      "view_original": "ดูขนาดต้นฉบับ",
-      "view_resized": "ดูขนาดที่ย่อแล้ว"
+      "view_original": "ดูขนาดต้นฉบับ"
     }
   },
   "comment": {
@@ -210,12 +209,7 @@
       "aspect_ratio": "อัตราส่วนภาพ"
     },
     "image_viewer": {
-      "image_viewer": "โปรแกรมในการดูภาพ",
-      "full_res_as_default": "แสดงภาพขนาดเต็มเป็นค่าเริ่มต้น",
-      "full_res_notice": "จะใช้เวลาในการโหลดนานขึ้น ขึ้นอยู่กับขนาดของรูปภาพ"
-    },
-    "image_detail": {
-      "image_detail": "รายละเอียดภาพ"
+      "image_viewer": "โปรแกรมในการดูภาพ"
     },
     "language": {
       "language": "ภาษา",
@@ -233,7 +227,6 @@
     },
     "privacy": {
       "privacy": "ความเป็นส่วนตัว",
-      "send_error_data_notice": "ส่งข้อมูลที่ไม่ระบุตัวตนสำหรับข้อมูลข้อผิดพลาดต่างๆ",
       "enable_incognito_keyboard": "เปิดโหมดคีย์บอร์ดไม่เก็บข้อมูล",
       "enable_incognito_keyboard_notice": "มีผลใช้งานกับระบบ Android",
       "enable_biometric_lock": "เปิดการปลดล็อกด้วยสแกนลายนิ้วมือ",
@@ -269,14 +262,6 @@
     },
     "backup_and_restore": {
       "backup_and_restore": "สำรอง และเรียกคืนข้อมูล"
-    },
-    "image_details": {
-      "image_details": "รายละเอียดรูปภาพ",
-      "ui_overlay": {
-        "show": "แสดง",
-        "hide": "ซ่อน",
-        "ui_overlay": "การแสดงปุ่มซ้อนทับบนภาพ"
-      }
     },
     "page_indicator": {
       "page_indicator": "ตำแหน่งตัวนำทางหน้า",
@@ -426,7 +411,6 @@
     "add_a_booru_site": "สร้างโปรไฟล์เว็บใหม่",
     "next_step": "ถัดไป",
     "site_url": "ลิงค์เว็บไซต์",
-    "unsupported_warning": "เว็บไซต์ booru นี้ยังไม่รองรับกับแอป",
     "validation_empty_url": "ช่องลิงค์เว็บไซค์ว่างเปล่า",
     "validation_invalid_url": "ลิงค์ \"{0}\" ไม่ใช่ลิงค์ที่ถูกต้อง",
     "validation_invalid_http_url": "ลิงค์ \"{0}\" ไม่ใช่ลิงค์รูปแบบของ HTTP หรือ HTTPS",

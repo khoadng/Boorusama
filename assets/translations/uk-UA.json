@@ -76,8 +76,7 @@
       "select": "Вибрати"
     },
     "image_fullview": {
-      "view_original": "Подивитися оригінальне зображення",
-      "view_resized": "Подивитися змінене у розмірі"
+      "view_original": "Подивитися оригінальне зображення"
     }
   },
   "comment": {
@@ -213,8 +212,6 @@
     },
     "image_viewer": {
       "image_viewer": "Перегляд зображень",
-      "full_res_as_default": "Завжди відображати повну роздільну здатність",
-      "full_res_notice": "Завантаження може зайняти деякий час, залежно від розміру зображення",
       "slideshow": "Слайд-шоу",
       "slideshow_interval": "Інтервал показу слайдів",
       "slideshow_mode": "Режим слайд-шоу",
@@ -227,9 +224,6 @@
       "slideshow_interval_explanation": "Якщо значення менше 1 секунди, перехід буде автоматично пропущено",
       "mute_video": "Вимкнути відео за замовчуванням",
       "video_section_title": "Відео"
-    },
-    "image_detail": {
-      "image_detail": "Деталі зображення"
     },
     "language": {
       "language": "Мова",
@@ -247,7 +241,6 @@
     },
     "privacy": {
       "privacy": "Приватність",
-      "send_error_data_notice": "Відправляти анонімні данні про обробку помилок",
       "enable_incognito_keyboard": "Активувати режим інкогніто в клавіатурі",
       "enable_incognito_keyboard_notice": "Впливає тільки на Android.",
       "enable_biometric_lock": "Увімкнути біометричні блокування",
@@ -284,14 +277,6 @@
     },
     "backup_and_restore": {
       "backup_and_restore": "Резервне копіювання та відновлення"
-    },
-    "image_details": {
-      "image_details": "Деталі зображення",
-      "ui_overlay": {
-        "show": "Показати",
-        "hide": "Сховати",
-        "ui_overlay": "Накладання інтерфейсу"
-      }
     },
     "page_indicator": {
       "page_indicator": "Положення індикатора сторінки",
@@ -441,7 +426,6 @@
     "add_a_booru_site": "Створити новий профіль",
     "next_step": "Далі",
     "site_url": "Посилання на сайт",
-    "unsupported_warning": "Цей booru не підтримується.",
     "validation_empty_url": "Посилання пусте",
     "validation_invalid_url": "\"{0}\" не є дійсним URL",
     "validation_invalid_http_url": "\"{0}\" не є HTTP чи HTTPS URL",

@@ -74,8 +74,7 @@
       "select": "선택"
     },
     "image_fullview": {
-      "view_original": "원본 보기",
-      "view_resized": "리사이즈 보기"
+      "view_original": "원본 보기"
     }
   },
   "comment": {
@@ -211,8 +210,6 @@
     },
     "image_viewer": {
       "image_viewer": "이미지 뷰어",
-      "full_res_as_default": "최대 해상도 표시를 기본으로 설정",
-      "full_res_notice": "이미지 크기에 따라 로딩 시간이 걸릴 수 있습니다",
       "slideshow": "슬라이드 쇼",
       "slideshow_interval": "슬라이드 쇼 간격",
       "slideshow_mode": "슬라이드 쇼 모드",
@@ -225,9 +222,6 @@
       "slideshow_interval_explanation": "1초 미만의 값은 자동으로 전환을 건너뜁니다",
       "mute_video": "동영상 음소거를 기본으로 설정",
       "video_section_title": "동영상"
-    },
-    "image_detail": {
-      "image_detail": "이미지 디테일"
     },
     "language": {
       "language": "언어",
@@ -245,7 +239,6 @@
     },
     "privacy": {
       "privacy": "개인정보 보호",
-      "send_error_data_notice": "에러 로그 수집을 위해 익명 데이터를 보냅니다",
       "enable_incognito_keyboard": "개인정보 보호 키보드 활성화",
       "enable_incognito_keyboard_notice": "Android에만 해당됩니다.",
       "enable_biometric_lock": "생체인식 잠금 활성화",
@@ -282,14 +275,6 @@
     },
     "backup_and_restore": {
       "backup_and_restore": "백업 및 복원"
-    },
-    "image_details": {
-      "image_details": "이미지 디테일",
-      "ui_overlay": {
-        "show": "보기",
-        "hide": "숨김",
-        "ui_overlay": "UI 오버레이"
-      }
     },
     "page_indicator": {
       "page_indicator": "페이지 표시 위치",
@@ -439,7 +424,6 @@
     "add_a_booru_site": "새 프로필 생성",
     "next_step": "다음",
     "site_url": "사이트 주소",
-    "unsupported_warning": "이 Booru는 아직 지원하지 않습니다.",
     "validation_empty_url": "URL이 비었습니다",
     "validation_invalid_url": "\"{0}\"은(는) 올바른 URL 형식이 아닙니다",
     "validation_invalid_http_url": "\"{0}\"은(는) HTTP나 HTTPS URL이 아닙니다",

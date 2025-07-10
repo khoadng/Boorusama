@@ -74,8 +74,7 @@
       "select": "Auswählen"
     },
     "image_fullview": {
-      "view_original": "Original anzeigen",
-      "view_resized": "In veränderter Größe anzeigen"
+      "view_original": "Original anzeigen"
     }
   },
   "comment": {
@@ -209,12 +208,7 @@
       "aspect_ratio": "Seitenverhältnis"
     },
     "image_viewer": {
-      "image_viewer": "Bildbetrachter",
-      "full_res_as_default": "Standardmäßig volle Auflösung anzeigen",
-      "full_res_notice": "Basierend auf der größe des Bildes, wird das laden länger dauern"
-    },
-    "image_detail": {
-      "image_detail": "Bild-Detail"
+      "image_viewer": "Bildbetrachter"
     },
     "language": {
       "language": "Sprache",
@@ -232,7 +226,6 @@
     },
     "privacy": {
       "privacy": "Datenschutz",
-      "send_error_data_notice": "Anonyme Daten zur Fehlerprotokollierung senden",
       "enable_incognito_keyboard": "Inkognito-Tastatur aktivieren",
       "enable_incognito_keyboard_notice": "Betrifft nur Android.",
       "enable_biometric_lock": "Biometrische Sperre einschalten"
@@ -267,14 +260,6 @@
     },
     "backup_and_restore": {
       "backup_and_restore": "Sichern und Wiederherstellen"
-    },
-    "image_details": {
-      "image_details": "Bild-Details",
-      "ui_overlay": {
-        "show": "Anzeigen",
-        "hide": "Ausblenden",
-        "ui_overlay": "UI-Overlay"
-      }
     },
     "page_indicator": {
       "page_indicator": "Position der Seitenanzeige",
@@ -422,7 +407,6 @@
     "add_a_booru_site": "Neues Profil erstellen",
     "next_step": "Weiter",
     "site_url": "URL",
-    "unsupported_warning": "Dieses Booru wird momentan nicht unterstützt.",
     "validation_empty_url": "URL ist leer",
     "validation_invalid_url": "\"{0}\" ist keine gültige URL",
     "validation_invalid_http_url": "\"{0}\" ist keine HTTP oder HTTPS URL",

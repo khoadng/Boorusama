@@ -167,8 +167,7 @@
       "amoled_dark": "AMOLEDダーク"
     },
     "privacy": {
-      "privacy": "プライバシー",
-      "send_error_data_notice": "エラーログ用の匿名データを送信する"
+      "privacy": "プライバシー"
     },
     "performance": {
       "performance": "パフォーマンス",
@@ -238,8 +237,7 @@
     "password_hashed_label": "ハッシュ化されたパスワード（読み取り専用）",
     "password_label": "パスワード",
     "config_booru_confirm": "OK",
-    "add_a_booru_site": "ボールサイトを追加",
-    "unsupported_warning": "このボールはまだサポートされていません。"
+    "add_a_booru_site": "ボールサイトを追加"
   },
   "bookmark": {
     "added": "ブックマーク追加",

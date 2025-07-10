@@ -74,8 +74,7 @@
       "select": "选择"
     },
     "image_fullview": {
-      "view_original": "显示原图",
-      "view_resized": "调整视窗大小"
+      "view_original": "显示原图"
     }
   },
   "comment": {
@@ -211,8 +210,6 @@
     },
     "image_viewer": {
       "image_viewer": "图片查看器",
-      "full_res_as_default": "默认显示原始分辨率",
-      "full_res_notice": "加载时间取决于图片大小",
       "slideshow": "幻灯片放映",
       "slideshow_interval": "放映间隔",
       "slideshow_mode": "放映模式",
@@ -225,9 +222,6 @@
       "slideshow_interval_explanation": "选值低于1秒会自动跳过放映动画",
       "mute_video": "视频默认静音",
       "video_section_title": "视频"
-    },
-    "image_detail": {
-      "image_detail": "图片详情"
     },
     "language": {
       "language": "语言",
@@ -245,7 +239,6 @@
     },
     "privacy": {
       "privacy": "隐私",
-      "send_error_data_notice": "发送匿名错误日志",
       "enable_incognito_keyboard": "启用隐私键盘",
       "enable_incognito_keyboard_notice": "仅在安卓上生效。",
       "enable_biometric_lock": "启用指纹锁",
@@ -282,14 +275,6 @@
     },
     "backup_and_restore": {
       "backup_and_restore": "备份与恢复"
-    },
-    "image_details": {
-      "image_details": "图片详情",
-      "ui_overlay": {
-        "show": "显示",
-        "hide": "隐藏",
-        "ui_overlay": "UI叠加"
-      }
     },
     "page_indicator": {
       "page_indicator": "页码位置",
@@ -439,7 +424,6 @@
     "add_a_booru_site": "添加新配置",
     "next_step": "下一步",
     "site_url": "网站地址",
-    "unsupported_warning": "这个booru尚未支持。",
     "validation_empty_url": "地址为空",
     "validation_invalid_url": "\"{0}\" 不是有效的地址",
     "validation_invalid_http_url": "\"{0}\" 不是HTTP或HTTPS地址",

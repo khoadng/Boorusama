@@ -61,8 +61,7 @@
       "select": "Select"
     },
     "image_fullview": {
-      "view_original": "Паглядзець арыгінальны малюнак",
-      "view_resized": "Паглядзець зменены малюнак"
+      "view_original": "Паглядзець арыгінальны малюнак"
     }
   },
   "comment": {
@@ -177,12 +176,7 @@
       "corner_radius": "Колькасць кутоў"
     },
     "image_viewer": {
-      "image_viewer": "Прагляд малюнкаў",
-      "full_res_as_default": "Заўсёды адлюстроўваць поўны малюнак",
-      "full_res_notice": "Загрузка зойме нейкае час, у залежнасці ад памераў малюнка"
-    },
-    "image_detail": {
-      "image_detail": "Дэталі малюнка"
+      "image_viewer": "Прагляд малюнкаў"
     },
     "language": {
       "language": "Мова",
@@ -195,8 +189,7 @@
       "amoled_dark": "AMOLED цёмная"
     },
     "privacy": {
-      "privacy": "Прыватнасць",
-      "send_error_data_notice": "Адпраўляць ананімныя дадзеныя для апрацоўкі памылак"
+      "privacy": "Прыватнасць"
     },
     "performance": {
       "performance": "Performance",

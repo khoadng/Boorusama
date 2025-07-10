@@ -75,8 +75,7 @@
       "select": "Sélectionner"
     },
     "image_fullview": {
-      "view_original": "Voir l'original",
-      "view_resized": "Redimensionner"
+      "view_original": "Voir l'original"
     }
   },
   "comment": {
@@ -214,8 +213,6 @@
     },
     "image_viewer": {
       "image_viewer": "Visionneuse d'images",
-      "full_res_as_default": "Afficher la résolution max par défaut",
-      "full_res_notice": "Le temps de chargement dépend de la taille de l'image",
       "slideshow": "Diaporama",
       "slideshow_interval": "Intervalle du diaporama",
       "slideshow_mode": "Mode du diaporama",
@@ -228,9 +225,6 @@
       "slideshow_interval_explanation": "Si la valeur est inférieure à 1 seconde, la transition est automatiquement ignorée",
       "mute_video": "Rendre muet la vidéo par défaut",
       "video_section_title": "Vidéo"
-    },
-    "image_detail": {
-      "image_detail": "Détails de l'image"
     },
     "language": {
       "language": "Langues",
@@ -248,7 +242,6 @@
     },
     "privacy": {
       "privacy": "Confidentialité",
-      "send_error_data_notice": "Envoyer les données de rapports d'erreurs de façon anonyme",
       "enable_incognito_keyboard": "Activer le clavier incognito",
       "enable_incognito_keyboard_notice": "Affecte seulement Android.",
       "enable_biometric_lock": "Activer le verouillage biométrique",
@@ -285,14 +278,6 @@
     },
     "backup_and_restore": {
       "backup_and_restore": "Sauvegarder et Restaurer"
-    },
-    "image_details": {
-      "image_details": "Détails de l'image",
-      "ui_overlay": {
-        "show": "Afficher",
-        "hide": "Masquer",
-        "ui_overlay": "Superposition de l'UI"
-      }
     },
     "page_indicator": {
       "page_indicator": "Position de l'indiacteur de page",
@@ -452,7 +437,6 @@
     "add_a_booru_site": "Créer un nouveau profil",
     "next_step": "Suivant",
     "site_url": "URL du site",
-    "unsupported_warning": "Ce booru n'est pas encore supporté.",
     "validation_empty_url": "URL vide",
     "validation_invalid_url": "«{0}» n'est pas une URL valide",
     "validation_invalid_http_url": "«{0}» n'est pas une URL HTTP ou HTTPS",

@@ -74,8 +74,7 @@
       "select": "選擇"
     },
     "image_fullview": {
-      "view_original": "檢視原圖",
-      "view_resized": "檢視縮圖"
+      "view_original": "檢視原圖"
     }
   },
   "comment": {
@@ -210,12 +209,7 @@
       "aspect_ratio": "外觀比例"
     },
     "image_viewer": {
-      "image_viewer": "圖片檢視器",
-      "full_res_as_default": "預設顯示完整解析度",
-      "full_res_notice": "根據圖片的大小，載入可能需要一些時間"
-    },
-    "image_detail": {
-      "image_detail": "圖片詳情"
+      "image_viewer": "圖片檢視器"
     },
     "language": {
       "language": "語言",
@@ -233,7 +227,6 @@
     },
     "privacy": {
       "privacy": "隱私",
-      "send_error_data_notice": "傳送匿名錯誤日誌",
       "enable_incognito_keyboard": "啟用隱身鍵盤",
       "enable_incognito_keyboard_notice": "僅影響安卓。",
       "enable_biometric_lock": "啟用生物特徵辨識鎖定",
@@ -269,14 +262,6 @@
     },
     "backup_and_restore": {
       "backup_and_restore": "備份與還原"
-    },
-    "image_details": {
-      "image_details": "圖像詳細資料",
-      "ui_overlay": {
-        "show": "顯示",
-        "hide": "隱藏",
-        "ui_overlay": "UI 覆疊"
-      }
     },
     "page_indicator": {
       "page_indicator": "頁面指示器位置",

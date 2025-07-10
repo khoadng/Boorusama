@@ -74,8 +74,7 @@
       "select": "Seç"
     },
     "image_fullview": {
-      "view_original": "Orijinalini göster",
-      "view_resized": "Yeniden boyutlanmış olarak görüntüle"
+      "view_original": "Orijinalini göster"
     }
   },
   "comment": {

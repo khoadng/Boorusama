@@ -337,7 +337,7 @@ class _ExcludedTagsSection extends ConsumerWidget {
           data: (tags) => SettingsCard(
             title: 'Excluded tags',
             trailing: Tooltip(
-              message: _buildTitle(tags),
+              message: _buildTitle(context, tags),
               triggerMode: TooltipTriggerMode.tap,
               showDuration: const Duration(seconds: 5),
               child: Padding(
@@ -429,9 +429,9 @@ class _ExcludedTagsSection extends ConsumerWidget {
         );
   }
 
-  String _buildTitle(Set<BlacklistedTagEntry> tags) {
+  String _buildTitle(BuildContext context, Set<BlacklistedTagEntry> tags) {
     if (tags.isEmpty) {
-      return 'No blacklisted tags';
+      return context.t.blacklist.manage.empty_blacklist;
     }
 
     final grouped = tags.groupBy((e) => e.source);
