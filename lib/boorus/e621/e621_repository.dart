@@ -16,6 +16,7 @@ import '../../core/notes/notes.dart';
 import '../../core/posts/favorites/types.dart';
 import '../../core/posts/post/post.dart';
 import '../../core/posts/post/providers.dart';
+import '../../core/search/queries/providers.dart';
 import '../../core/search/queries/query.dart';
 import '../../core/tags/autocompletes/types.dart';
 import '../../core/tags/tag/colors.dart';
@@ -110,7 +111,7 @@ class E621Repository extends BooruRepositoryDefault {
 
   @override
   TagQueryComposer tagComposer(BooruConfigSearch config) {
-    return LegacyTagQueryComposer(config: config);
+    return ref.watch(legacyTagQueryComposerProvider(config));
   }
 
   @override

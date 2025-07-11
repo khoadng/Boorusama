@@ -16,6 +16,7 @@ final hydrusPostRepoProvider =
     Provider.family<PostRepository, BooruConfigSearch>(
       (ref, config) {
         final client = ref.watch(hydrusClientProvider(config.auth));
+        final tagComposer = ref.watch(defaultTagQueryComposerProvider(config));
 
         Future<PostResult<HydrusPost>> getPosts(
           List<String> tags,
@@ -55,7 +56,7 @@ final hydrusPostRepoProvider =
         }
 
         return PostRepositoryBuilder(
-          getComposer: () => ref.read(tagQueryComposerProvider(config)),
+          tagComposer: tagComposer,
           getSettings: () async => ref.read(imageListingSettingsProvider),
           fetchSingle: (id, {options}) async {
             final numericId = id as NumericPostId?;
@@ -68,10 +69,9 @@ final hydrusPostRepoProvider =
           },
           fetchFromController: (controller, page, {limit, options}) {
             final tags = controller.tags.map((e) => e.originalTag).toList();
-            final composer = ref.read(tagQueryComposerProvider(config));
 
             return getPosts(
-              composer.compose(tags),
+              tagComposer.compose(tags),
               page,
               limit: limit,
             );

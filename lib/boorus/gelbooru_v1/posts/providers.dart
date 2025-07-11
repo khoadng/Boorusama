@@ -14,9 +14,10 @@ final gelbooruV1PostRepoProvider =
     Provider.family<PostRepository, BooruConfigSearch>(
       (ref, config) {
         final client = ref.watch(gelbooruV1ClientProvider(config.auth));
+        final tagComposer = ref.watch(defaultTagQueryComposerProvider(config));
 
         return PostRepositoryBuilder(
-          getComposer: () => ref.read(tagQueryComposerProvider(config)),
+          tagComposer: tagComposer,
           getSettings: () async => ref.read(imageListingSettingsProvider),
           fetchSingle: (id, {options}) async {
             final numericId = id as NumericPostId?;

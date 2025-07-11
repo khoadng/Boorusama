@@ -15,9 +15,10 @@ final moebooruPostRepoProvider =
     Provider.family<PostRepository<MoebooruPost>, BooruConfigSearch>(
       (ref, config) {
         final client = ref.watch(moebooruClientProvider(config.auth));
+        final tagComposer = ref.watch(defaultTagQueryComposerProvider(config));
 
         return PostRepositoryBuilder(
-          getComposer: () => ref.read(tagQueryComposerProvider(config)),
+          tagComposer: tagComposer,
           fetchSingle: (id, {options}) async {
             final numericId = id as NumericPostId?;
 

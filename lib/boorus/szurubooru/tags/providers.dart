@@ -4,12 +4,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../core/configs/config/types.dart';
+import '../../../core/search/queries/query.dart';
 import '../../../core/tags/autocompletes/types.dart';
 import '../../../core/tags/categories/tag_category.dart';
 import '../../../core/tags/tag/tag.dart';
 import '../../../foundation/utils/color_utils.dart';
 import '../client_provider.dart';
 import '../posts/types.dart';
+import 'query_composer.dart';
 
 final szurubooruAutocompleteRepoProvider =
     Provider.family<AutocompleteRepository, BooruConfigAuth>(
@@ -69,6 +71,11 @@ final szurubooruTagCategoriesProvider =
             )
             .toList();
       },
+    );
+
+final szurubooruTagQueryComposerProvider =
+    Provider.family<TagQueryComposer, BooruConfigSearch>(
+      (ref, config) => SzurubooruTagQueryComposer(config: config),
     );
 
 final szurubooruTagExtractorProvider =

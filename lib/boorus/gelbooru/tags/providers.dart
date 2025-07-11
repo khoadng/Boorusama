@@ -3,12 +3,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../core/configs/config/types.dart';
+import '../../../core/search/queries/query.dart';
 import '../../../core/tags/autocompletes/types.dart';
 import '../../../core/tags/tag/providers.dart';
 import '../../../core/tags/tag/tag.dart';
 import '../client_provider.dart';
 import '../posts/types.dart';
 import 'parser.dart';
+import 'query_composer.dart';
 
 final gelbooruTagRepoProvider = Provider.family<TagRepository, BooruConfigAuth>(
   (ref, config) {
@@ -27,6 +29,11 @@ final gelbooruTagRepoProvider = Provider.family<TagRepository, BooruConfigAuth>(
     );
   },
 );
+
+final gelbooruTagQueryComposerProvider =
+    Provider.family<TagQueryComposer, BooruConfigSearch>(
+      (ref, config) => GelbooruTagQueryComposer(config: config),
+    );
 
 final invalidTags = [
   ':&lt;',

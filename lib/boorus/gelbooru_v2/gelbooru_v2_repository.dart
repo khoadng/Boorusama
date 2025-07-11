@@ -58,7 +58,7 @@ class GelbooruV2Repository extends BooruRepositoryDefault {
 
   @override
   TagQueryComposer tagComposer(BooruConfigSearch config) {
-    return GelbooruV2TagQueryComposer(config: config);
+    return ref.watch(gelbooruV2TagQueryComposerProvider(config));
   }
 
   @override

@@ -14,9 +14,10 @@ final hybooruPostRepoProvider =
     Provider.family<PostRepository, BooruConfigSearch>(
       (ref, config) {
         final client = ref.watch(hybooruClientProvider(config.auth));
+        final tagComposer = ref.watch(defaultTagQueryComposerProvider(config));
 
         return PostRepositoryBuilder(
-          getComposer: () => ref.read(tagQueryComposerProvider(config)),
+          tagComposer: tagComposer,
           fetchSingle: (id, {options}) async {
             final numericId = id as NumericPostId?;
 

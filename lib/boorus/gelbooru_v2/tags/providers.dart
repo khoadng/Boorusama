@@ -3,11 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../core/configs/config.dart';
+import '../../../core/search/queries/query.dart';
 import '../../../core/tags/autocompletes/types.dart';
 import '../../../core/tags/tag/tag.dart';
 import '../../../foundation/riverpod/riverpod.dart';
 import '../client_provider.dart';
 import 'parser.dart';
+import 'query_composer.dart';
 
 final gelbooruV2TagsFromIdProvider = FutureProvider.autoDispose
     .family<List<Tag>, (BooruConfigAuth, int)>(
@@ -21,6 +23,11 @@ final gelbooruV2TagsFromIdProvider = FutureProvider.autoDispose
 
         return data.map(mapGelbooruV2TagDtoToTag).toList();
       },
+    );
+
+final gelbooruV2TagQueryComposerProvider =
+    Provider.family<TagQueryComposer, BooruConfigSearch>(
+      (ref, config) => GelbooruV2TagQueryComposer(config: config),
     );
 
 final gelbooruV2TagExtractorProvider =

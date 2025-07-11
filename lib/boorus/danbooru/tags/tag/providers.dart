@@ -3,11 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../core/configs/config.dart';
+import '../../../../core/search/queries/query.dart';
 import '../../../../core/tags/categories/tag_category.dart';
 import '../../../../core/tags/tag/providers.dart';
 import '../../../../core/tags/tag/tag.dart';
 import '../../client_provider.dart';
 import '../../posts/post/post.dart';
+import 'src/query_composer.dart';
 
 final danbooruTagRepoProvider = Provider.family<TagRepository, BooruConfigAuth>(
   (ref, config) {
@@ -36,6 +38,11 @@ final danbooruTagRepoProvider = Provider.family<TagRepository, BooruConfigAuth>(
     );
   },
 );
+
+final danbooruTagQueryComposerProvider =
+    Provider.family<TagQueryComposer, BooruConfigSearch>(
+      (ref, config) => DanbooruTagQueryComposer(config: config),
+    );
 
 final danbooruTagExtractorProvider =
     Provider.family<TagExtractor<DanbooruPost>, BooruConfigAuth>(

@@ -20,6 +20,7 @@ import '../../../posts/favorites/types.dart';
 import '../../../posts/listing/list.dart';
 import '../../../posts/listing/providers.dart';
 import '../../../posts/post/post.dart';
+import '../../../search/queries/providers.dart';
 import '../../../search/queries/tag_query_composer.dart';
 import '../../../tags/autocompletes/autocomplete_repository.dart';
 import '../../../tags/tag/colors.dart';
@@ -87,7 +88,7 @@ abstract class BooruRepositoryDefault implements BooruRepository {
 
   @override
   TagQueryComposer tagComposer(BooruConfigSearch config) {
-    return DefaultTagQueryComposer(config: config);
+    return ref.watch(defaultTagQueryComposerProvider(config));
   }
 
   @override

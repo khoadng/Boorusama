@@ -9,7 +9,6 @@ import '../../../core/configs/config.dart';
 import '../../../core/posts/favorites/providers.dart';
 import '../../../core/posts/post/post.dart';
 import '../../../core/posts/post/providers.dart';
-import '../../../core/search/queries/providers.dart';
 import '../../../core/settings/providers.dart';
 import '../client_provider.dart';
 import '../post_votes/providers.dart';
@@ -20,9 +19,12 @@ final szurubooruPostRepoProvider =
     Provider.family<PostRepository, BooruConfigSearch>(
       (ref, config) {
         final client = ref.watch(szurubooruClientProvider(config.auth));
+        final tagComposer = ref.watch(
+          szurubooruTagQueryComposerProvider(config),
+        );
 
         return PostRepositoryBuilder(
-          getComposer: () => ref.read(tagQueryComposerProvider(config)),
+          tagComposer: tagComposer,
           fetchSingle: (id, {options}) async {
             final numericId = id as NumericPostId?;
 

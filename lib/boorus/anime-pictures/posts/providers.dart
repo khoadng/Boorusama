@@ -16,9 +16,10 @@ final animePicturesPostRepoProvider =
     Provider.family<PostRepository, BooruConfigSearch>(
       (ref, config) {
         final client = ref.watch(animePicturesClientProvider(config.auth));
+        final tagComposer = ref.watch(defaultTagQueryComposerProvider(config));
 
         return PostRepositoryBuilder(
-          getComposer: () => ref.read(tagQueryComposerProvider(config)),
+          tagComposer: tagComposer,
           fetchSingle: (id, {options}) {
             final numericId = id as NumericPostId?;
 

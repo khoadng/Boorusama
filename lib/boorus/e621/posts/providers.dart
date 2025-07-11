@@ -15,9 +15,10 @@ import 'types.dart';
 final e621PostRepoProvider =
     Provider.family<PostRepository<E621Post>, BooruConfigSearch>((ref, config) {
       final client = ref.watch(e621ClientProvider(config.auth));
+      final tagComposer = ref.watch(legacyTagQueryComposerProvider(config));
 
       return PostRepositoryBuilder(
-        getComposer: () => ref.read(tagQueryComposerProvider(config)),
+        tagComposer: tagComposer,
         fetchSingle: (id, {options}) async {
           final numericId = id as NumericPostId?;
 

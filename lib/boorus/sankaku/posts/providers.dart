@@ -20,9 +20,10 @@ final sankakuPostRepoProvider =
       (ref, config) {
         final client = ref.watch(sankakuClientProvider(config.auth));
         final idGenerator = ref.watch(sankakuPseudoIdGeneratorProvider);
+        final tagComposer = ref.watch(defaultTagQueryComposerProvider(config));
 
         return PostRepositoryBuilder(
-          getComposer: () => ref.read(tagQueryComposerProvider(config)),
+          tagComposer: tagComposer,
           getSettings: () async => ref.read(imageListingSettingsProvider),
           fetchSingle: (id, {options}) async {
             final stringId = id as StringPostId?;

@@ -19,6 +19,16 @@ final tagQueryComposerProvider =
           return composer;
         }
 
-        return DefaultTagQueryComposer(config: config);
+        return ref.watch(defaultTagQueryComposerProvider(config));
       },
+    );
+
+final defaultTagQueryComposerProvider =
+    Provider.family<TagQueryComposer, BooruConfigSearch>(
+      (ref, config) => DefaultTagQueryComposer(config: config),
+    );
+
+final legacyTagQueryComposerProvider =
+    Provider.family<TagQueryComposer, BooruConfigSearch>(
+      (ref, config) => LegacyTagQueryComposer(config: config),
     );

@@ -53,7 +53,7 @@ class SzurubooruRepository extends BooruRepositoryDefault {
 
   @override
   TagQueryComposer tagComposer(BooruConfigSearch config) {
-    return SzurubooruTagQueryComposer(config: config);
+    return ref.watch(szurubooruTagQueryComposerProvider(config));
   }
 
   @override

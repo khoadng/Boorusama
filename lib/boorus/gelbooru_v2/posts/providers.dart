@@ -7,10 +7,10 @@ import '../../../core/blacklists/providers.dart';
 import '../../../core/configs/config.dart';
 import '../../../core/posts/post/post.dart';
 import '../../../core/posts/post/providers.dart';
-import '../../../core/search/queries/providers.dart';
 import '../../../core/settings/providers.dart';
 import '../../../foundation/caching/lru_cacher.dart';
 import '../client_provider.dart';
+import '../tags/providers.dart';
 import 'parser.dart';
 import 'types.dart';
 
@@ -18,9 +18,12 @@ final gelbooruV2PostRepoProvider =
     Provider.family<PostRepository<GelbooruV2Post>, BooruConfigSearch>(
       (ref, config) {
         final client = ref.watch(gelbooruV2ClientProvider(config.auth));
+        final tagComposer = ref.watch(
+          gelbooruV2TagQueryComposerProvider(config),
+        );
 
         return PostRepositoryBuilder(
-          getComposer: () => ref.read(tagQueryComposerProvider(config)),
+          tagComposer: tagComposer,
           fetch: client.getPostResults,
           fetchSingle: (id, {options}) async {
             final numericId = id as NumericPostId?;
@@ -36,9 +39,7 @@ final gelbooruV2PostRepoProvider =
           fetchFromController: (controller, page, {limit, options}) {
             final tags = controller.tags.map((e) => e.originalTag).toList();
 
-            final newTags = ref
-                .read(tagQueryComposerProvider(config))
-                .compose(tags);
+            final newTags = tagComposer.compose(tags);
 
             return client.getPostResults(newTags, page, limit: limit);
           },

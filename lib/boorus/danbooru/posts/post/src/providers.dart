@@ -9,10 +9,10 @@ import '../../../../../core/configs/config.dart';
 import '../../../../../core/posts/favorites/providers.dart';
 import '../../../../../core/posts/post/post.dart';
 import '../../../../../core/posts/post/providers.dart';
-import '../../../../../core/search/queries/providers.dart';
 import '../../../../../core/settings/providers.dart';
 import '../../../client_provider.dart';
 import '../../../tags/_shared/tag_list_notifier.dart';
+import '../../../tags/tag/providers.dart';
 import '../../../users/user/providers.dart';
 import '../../votes/providers.dart';
 import 'converter.dart';
@@ -24,9 +24,10 @@ final danbooruPostRepoProvider =
       config,
     ) {
       final client = ref.watch(danbooruClientProvider(config.auth));
+      final tagComposer = ref.watch(danbooruTagQueryComposerProvider(config));
 
       return PostRepositoryBuilder(
-        getComposer: () => ref.read(tagQueryComposerProvider(config)),
+        tagComposer: tagComposer,
         fetchSingle: (id, {options}) async {
           final numericId = id as NumericPostId?;
 

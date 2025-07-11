@@ -94,7 +94,7 @@ class DanbooruRepository extends BooruRepositoryDefault {
 
   @override
   TagQueryComposer tagComposer(BooruConfigSearch config) {
-    return DanbooruTagQueryComposer(config: config);
+    return ref.watch(danbooruTagQueryComposerProvider(config));
   }
 
   @override
