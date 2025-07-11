@@ -217,6 +217,7 @@ class DefaultSearchRegion extends ConsumerWidget {
           innerSearchButton ??
           DefaultInnerSearchButton(
             controller: controller,
+            postController: postController,
           ),
       initialQuery: initialQuery,
     );

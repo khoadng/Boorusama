@@ -45,7 +45,9 @@ class _PostDetailsImageState extends ConsumerState<PostDetailsImage> {
     if (imageUrl.isEmpty) {
       return NullableAspectRatio(
         aspectRatio: aspectRatio,
-        child: const ImagePlaceHolder(),
+        child: const ImagePlaceHolder(
+          borderRadius: BorderRadius.zero,
+        ),
       );
     }
 
