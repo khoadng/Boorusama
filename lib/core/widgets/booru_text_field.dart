@@ -1,4 +1,8 @@
+// Dart imports:
+import 'dart:ui' as ui;
+
 // Flutter imports:
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -43,17 +47,25 @@ class BooruTextField extends ConsumerWidget {
     this.onAppPrivateCommand,
     this.inputFormatters,
     this.enabled,
+    this.statesController,
+    this.ignorePointers,
     this.cursorWidth = 2.0,
     this.cursorHeight,
     this.cursorRadius,
     this.cursorOpacityAnimates,
     this.cursorColor,
+    this.cursorErrorColor,
+    this.selectionHeightStyle,
+    this.selectionWidthStyle,
     this.keyboardAppearance,
     this.scrollPadding = const EdgeInsets.all(20),
+    this.dragStartBehavior,
     this.enableInteractiveSelection,
     this.selectionControls,
     this.onTap,
+    this.onTapAlwaysCalled = false,
     this.onTapOutside,
+    this.onTapUpOutside,
     this.mouseCursor,
     this.buildCounter,
     this.scrollController,
@@ -62,11 +74,13 @@ class BooruTextField extends ConsumerWidget {
     this.contentInsertionConfiguration,
     this.clipBehavior = Clip.hardEdge,
     this.restorationId,
+    this.scribbleEnabled = true,
     this.stylusHandwritingEnabled = true,
     this.enableIMEPersonalizedLearning,
-    this.canRequestFocus = true,
+    this.contextMenuBuilder,
     this.spellCheckConfiguration,
     this.magnifierConfiguration,
+    this.groupId,
   });
 
   final TextEditingController? controller;
@@ -101,17 +115,25 @@ class BooruTextField extends ConsumerWidget {
   final AppPrivateCommandCallback? onAppPrivateCommand;
   final List<TextInputFormatter>? inputFormatters;
   final bool? enabled;
+  final WidgetStatesController? statesController;
+  final bool? ignorePointers;
   final double cursorWidth;
   final double? cursorHeight;
   final Radius? cursorRadius;
   final bool? cursorOpacityAnimates;
   final Color? cursorColor;
+  final Color? cursorErrorColor;
+  final ui.BoxHeightStyle? selectionHeightStyle;
+  final ui.BoxWidthStyle? selectionWidthStyle;
   final Brightness? keyboardAppearance;
   final EdgeInsets scrollPadding;
+  final DragStartBehavior? dragStartBehavior;
   final bool? enableInteractiveSelection;
   final TextSelectionControls? selectionControls;
   final GestureTapCallback? onTap;
+  final bool onTapAlwaysCalled;
   final TapRegionCallback? onTapOutside;
+  final TapRegionUpCallback? onTapUpOutside;
   final MouseCursor? mouseCursor;
   final InputCounterWidgetBuilder? buildCounter;
   final ScrollController? scrollController;
@@ -120,11 +142,13 @@ class BooruTextField extends ConsumerWidget {
   final ContentInsertionConfiguration? contentInsertionConfiguration;
   final Clip clipBehavior;
   final String? restorationId;
+  final bool scribbleEnabled;
   final bool stylusHandwritingEnabled;
   final bool? enableIMEPersonalizedLearning;
-  final bool canRequestFocus;
   final SpellCheckConfiguration? spellCheckConfiguration;
   final TextMagnifierConfiguration? magnifierConfiguration;
+  final EditableTextContextMenuBuilder? contextMenuBuilder;
+  final Object? groupId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -151,6 +175,7 @@ class BooruTextField extends ConsumerWidget {
       readOnly: readOnly,
       showCursor: showCursor,
       autofocus: autofocus,
+      statesController: statesController,
       obscuringCharacter: obscuringCharacter,
       obscureText: obscureText,
       autocorrect: autocorrect,
@@ -168,17 +193,24 @@ class BooruTextField extends ConsumerWidget {
       onAppPrivateCommand: onAppPrivateCommand,
       inputFormatters: inputFormatters,
       enabled: enabled,
+      ignorePointers: ignorePointers,
       cursorWidth: cursorWidth,
       cursorHeight: cursorHeight,
       cursorRadius: cursorRadius,
       cursorOpacityAnimates: cursorOpacityAnimates,
       cursorColor: cursorColor,
+      cursorErrorColor: cursorErrorColor,
+      selectionHeightStyle: selectionHeightStyle ?? ui.BoxHeightStyle.tight,
+      selectionWidthStyle: selectionWidthStyle ?? ui.BoxWidthStyle.tight,
       keyboardAppearance: keyboardAppearance,
       scrollPadding: scrollPadding,
+      dragStartBehavior: dragStartBehavior ?? DragStartBehavior.start,
       enableInteractiveSelection: enableInteractiveSelection,
       selectionControls: selectionControls,
       onTap: onTap,
+      onTapAlwaysCalled: onTapAlwaysCalled,
       onTapOutside: onTapOutside,
+      onTapUpOutside: onTapUpOutside,
       mouseCursor: mouseCursor,
       buildCounter: buildCounter,
       scrollController: scrollController,
@@ -187,12 +219,13 @@ class BooruTextField extends ConsumerWidget {
       contentInsertionConfiguration: contentInsertionConfiguration,
       clipBehavior: clipBehavior,
       restorationId: restorationId,
-      // stylusHandwritingEnabled: stylusHandwritingEnabled,
+      stylusHandwritingEnabled: stylusHandwritingEnabled,
       enableIMEPersonalizedLearning:
           enableIMEPersonalizedLearning ?? !enableIncognitoModeForKeyboard,
-      canRequestFocus: canRequestFocus,
+      contextMenuBuilder: contextMenuBuilder,
       spellCheckConfiguration: spellCheckConfiguration,
       magnifierConfiguration: magnifierConfiguration,
+      groupId: groupId ?? EditableText,
     );
   }
 }
