@@ -159,6 +159,11 @@ typedef ViewTagListBuilder =
       bool initiallyMultiSelectEnabled,
     );
 
+typedef CreateUnknownBooruWidgetsBuilder =
+    Widget Function(
+      BuildContext context,
+    );
+
 const kDefaultPostDetailsPreviewPart = {
   DetailsPart.info,
   DetailsPart.toolbar,

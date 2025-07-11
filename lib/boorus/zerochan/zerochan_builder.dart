@@ -92,4 +92,8 @@ class ZerochanBuilder
           const DefaultInheritedFileDetailsSection<ZerochanPost>(),
     },
   );
+
+  @override
+  CreateUnknownBooruWidgetsBuilder get unknownBooruWidgetsBuilder =>
+      (context) => const AnonUnknownBooruWidgets();
 }

@@ -3,6 +3,7 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../core/boorus/engine/engine.dart';
+import '../../core/configs/auth/widgets.dart';
 import '../../core/configs/config.dart';
 import '../../core/configs/create/widgets.dart';
 import '../../core/configs/manage/widgets.dart';
@@ -127,4 +128,11 @@ class PhilomenaBuilder
           const DefaultInheritedFileDetailsSection<PhilomenaPost>(),
     },
   );
+
+  @override
+  CreateUnknownBooruWidgetsBuilder get unknownBooruWidgetsBuilder =>
+      (context) => const UnknownBooruWidgetsBuilder(
+        loginField: null,
+        apiKeyField: DefaultBooruApiKeyField(),
+      );
 }

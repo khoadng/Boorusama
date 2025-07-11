@@ -79,6 +79,33 @@ final userAgentProvider = Provider.family<String, BooruConfigAuth>(
   },
 );
 
+final httpHeadersProvider =
+    Provider.family<Map<String, String>, BooruConfigAuth>(
+      (ref, config) {
+        return {
+          AppHttpHeaders.userAgentHeader: ref.watch(userAgentProvider(config)),
+          ...ref.watch(extraHttpHeaderProvider(config)),
+          ...ref.watch(cachedBypassDdosHeadersProvider(config.url)),
+        };
+      },
+    );
+
+final extraHttpHeaderProvider =
+    Provider.family<Map<String, String>, BooruConfigAuth>(
+      (ref, config) {
+        final headers = ref
+            .watch(booruEngineRegistryProvider)
+            .getRepository(config.booruType)
+            ?.extraHttpHeaders(config);
+
+        if (headers == null) {
+          return {};
+        }
+
+        return headers;
+      },
+    );
+
 final httpDdosProtectionBypassHandler = Provider<HttpProtectionHandler>(
   (ref) {
     final cookieJar = ref.watch(cookieJarProvider);

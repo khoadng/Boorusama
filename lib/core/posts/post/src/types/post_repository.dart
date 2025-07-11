@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../../../foundation/error.dart';
+import '../../../../errors/types.dart';
 import '../../../../search/queries/query.dart';
 import '../../../../search/selected_tags/tag.dart';
 import 'post.dart';

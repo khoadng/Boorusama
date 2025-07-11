@@ -79,6 +79,10 @@ class GelbooruV1Builder
   @override
   final PostDetailsUIBuilder postDetailsUIBuilder =
       kFallbackPostDetailsUIBuilder;
+
+  @override
+  CreateUnknownBooruWidgetsBuilder get unknownBooruWidgetsBuilder =>
+      (context) => const AnonUnknownBooruWidgets();
 }
 
 class GelbooruV1SearchPage extends ConsumerWidget {

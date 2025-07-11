@@ -13,7 +13,7 @@ import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../animations/constants.dart';
-import '../error.dart';
+import '../error_monitor.dart';
 import '../info/device_info.dart';
 import '../loggers.dart';
 import '../picker.dart';

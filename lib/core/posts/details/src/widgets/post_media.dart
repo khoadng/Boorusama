@@ -52,7 +52,7 @@ class PostMedia<T extends Post> extends ConsumerWidget {
         (value) => value.videoPlayerEngine != VideoPlayerEngine.mdk,
       ),
     );
-    final headers = ref.watch(cachedBypassDdosHeadersProvider(config.url));
+    final headers = ref.watch(httpHeadersProvider(config));
     final heroTag = '${post.id}_hero';
 
     return post.isVideo

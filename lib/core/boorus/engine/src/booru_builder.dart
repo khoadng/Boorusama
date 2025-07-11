@@ -38,6 +38,8 @@ abstract class BooruBuilder {
   PostDetailsUIBuilder get postDetailsUIBuilder;
 
   ViewTagListBuilder get viewTagListBuilder;
+
+  CreateUnknownBooruWidgetsBuilder get unknownBooruWidgetsBuilder;
 }
 
 extension BooruBuilderFeatureCheck on BooruBuilder {

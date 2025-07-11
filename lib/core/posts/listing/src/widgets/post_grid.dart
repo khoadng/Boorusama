@@ -16,6 +16,7 @@ import '../../../../boorus/engine/providers.dart';
 import '../../../../configs/create/routes.dart';
 import '../../../../configs/ref.dart';
 import '../../../../configs/search/search.dart';
+import '../../../../errors/providers.dart';
 import '../../../../settings/providers.dart';
 import '../../../../settings/settings.dart';
 import '../../../../theme/theme.dart';
@@ -535,9 +536,14 @@ class _SliverGrid<T extends Post> extends ConsumerWidget {
       imageListingSettingsProvider.select((value) => value.imageBorderRadius),
     );
 
+    final appErrorTranslator = ref.watch(
+      appErrorTranslatorProvider(ref.watchConfigAuth),
+    );
+
     return SliverPostGrid(
       itemBuilder: itemBuilder,
       postController: postController,
+      errorTranslator: appErrorTranslator,
       padding: EdgeInsets.symmetric(
         horizontal: imageGridPadding,
       ),

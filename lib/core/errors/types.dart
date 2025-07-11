@@ -1,15 +1,23 @@
 // Flutter imports:
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 // Package imports:
 import 'package:i18n/i18n.dart';
 
 // Project imports:
-import '../../foundation/error.dart';
+import 'error.dart';
 
-String translateBooruError(BuildContext context, BooruError error) =>
-    switch (error) {
-      final AppError e => switch (e.type) {
+export 'error.dart';
+
+abstract interface class AppErrorTranslator {
+  String translateAppError(BuildContext context, AppError error);
+  String translateServerError(BuildContext context, ServerError error);
+}
+
+class DefaultAppErrorTranslator implements AppErrorTranslator {
+  @override
+  String translateAppError(BuildContext context, AppError error) =>
+      switch (error.type) {
         AppErrorType.cannotReachServer =>
           'Cannot reach server, please check your connection',
         AppErrorType.failedToParseJSON =>
@@ -18,9 +26,12 @@ String translateBooruError(BuildContext context, BooruError error) =>
         AppErrorType.loadDataFromServerFailed =>
           'Failed to load data from server, please try again later',
         AppErrorType.booruConfigNotFound => 'Booru config not found',
-        AppErrorType.unknown => 'generic.errors.unknown',
-      },
-      final ServerError e => switch (e.httpStatusCode) {
+        AppErrorType.unknown => context.t.generic.errors.unknown,
+      };
+
+  @override
+  String translateServerError(BuildContext context, ServerError error) =>
+      switch (error.httpStatusCode) {
         401 => context.t.search.errors.forbidden,
         403 => context.t.search.errors.access_denied,
         410 => context.t.search.errors.pagination_limit,
@@ -30,6 +41,5 @@ String translateBooruError(BuildContext context, BooruError error) =>
         502 => context.t.search.errors.max_capacity,
         503 => context.t.search.errors.down,
         _ => context.t.generic.errors.unknown,
-      },
-      final UnknownError e => e.error.toString(),
-    };
+      };
+}

@@ -54,7 +54,9 @@ import 'saved_searches/feed/widgets.dart';
 import 'tags/details/widgets.dart';
 import 'tags/tag/widgets.dart';
 
-class DanbooruBuilder implements BooruBuilder {
+class DanbooruBuilder
+    with DefaultUnknownBooruWidgetsBuilderMixin
+    implements BooruBuilder {
   DanbooruBuilder();
 
   @override

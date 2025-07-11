@@ -90,4 +90,8 @@ class HybooruBuilder
       DetailsPart.fileDetails: (context) => const HybooruFileDetailsSection(),
     },
   );
+
+  @override
+  CreateUnknownBooruWidgetsBuilder get unknownBooruWidgetsBuilder =>
+      (context) => const AnonUnknownBooruWidgets();
 }

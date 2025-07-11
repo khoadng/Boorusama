@@ -10,9 +10,7 @@ import 'package:foundation/foundation.dart';
 import '../../../configs/config.dart';
 import '../../../configs/config/providers.dart';
 import '../../../downloads/downloader/providers.dart';
-import '../../../http/http.dart';
 import '../../../http/providers.dart';
-import '../../../images/providers.dart';
 import '../../types.dart';
 import '../l10n.dart';
 import '../providers/download_task_updates_notifier.dart';
@@ -49,19 +47,9 @@ class RetryAllFailedButton extends ConsumerWidget {
                   ref.invalidate(cachedBypassDdosHeadersProvider);
                   WidgetsBinding.instance.addPostFrameCallback(
                     (_) {
-                      final headers = {
-                        AppHttpHeaders.userAgentHeader: ref.read(
-                          userAgentProvider(config.auth),
-                        ),
-                        ...ref.read(
-                          extraHttpHeaderProvider(config.auth),
-                        ),
-                        ...ref.read(
-                          cachedBypassDdosHeadersProvider(
-                            config.url,
-                          ),
-                        ),
-                      };
+                      final headers = ref.read(
+                        httpHeadersProvider(config.auth),
+                      );
 
                       FileDownloader().retryTask(
                         dt,

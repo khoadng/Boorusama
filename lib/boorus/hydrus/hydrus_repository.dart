@@ -12,6 +12,7 @@ import '../../core/posts/favorites/types.dart';
 import '../../core/posts/post/post.dart';
 import '../../core/posts/post/providers.dart';
 import '../../core/tags/autocompletes/types.dart';
+import 'client_provider.dart';
 import 'favorites/providers.dart';
 import 'posts/providers.dart';
 import 'tags/providers.dart';
@@ -67,5 +68,12 @@ class HydrusRepository extends BooruRepositoryDefault {
         AspectRatioTokenHandler(),
       ],
     );
+  }
+
+  @override
+  Map<String, String> extraHttpHeaders(BooruConfigAuth config) {
+    return {
+      ...ref.watch(hydrusClientProvider(config)).apiKeyHeader,
+    };
   }
 }

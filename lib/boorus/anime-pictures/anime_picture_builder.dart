@@ -107,4 +107,8 @@ class AnimePicturesBuilder
           const AnimePicturesRelatedPostsSection(),
     },
   );
+
+  @override
+  CreateUnknownBooruWidgetsBuilder get unknownBooruWidgetsBuilder =>
+      (context) => const AnonUnknownBooruWidgets();
 }

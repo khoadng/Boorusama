@@ -6,8 +6,8 @@ import 'dart:isolate';
 import 'package:flutter/foundation.dart';
 
 // Project imports:
-import '../../../../../foundation/error.dart';
 import '../../../../../foundation/utils/collection_utils.dart';
+import '../../../../errors/types.dart';
 import '../../../../settings/settings.dart';
 import '../../../filter/filter.dart';
 import '../../../post/post.dart';

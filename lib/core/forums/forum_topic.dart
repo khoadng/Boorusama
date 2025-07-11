@@ -2,7 +2,7 @@
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../foundation/error.dart';
+import '../errors/types.dart';
 import '../http/http.dart';
 
 abstract class ForumTopic {

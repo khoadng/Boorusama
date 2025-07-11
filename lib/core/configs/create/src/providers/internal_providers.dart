@@ -21,10 +21,6 @@ final booruEngineProvider = StateProvider.autoDispose<BooruType?>(
   (ref) => null,
 );
 
-final siteUrlProvider = StateProvider.autoDispose.family<String?, BooruConfig>(
-  (ref, config) => config.url,
-);
-
 final targetConfigToValidateProvider =
     StateProvider.autoDispose<BooruConfigAuth?>((ref) {
       return null;
@@ -110,6 +106,10 @@ class EditBooruConfigNotifier
   void updateName(
     String name,
   ) => state = state.copyWith(name: name);
+
+  void updateUrl(
+    String? url,
+  ) => state = state.copyWith(url: url);
 
   void updateAlwaysIncludeTags(
     String? alwaysIncludeTags,

@@ -10,11 +10,9 @@ import 'package:foundation/foundation.dart';
 // Project imports:
 import '../../foundation/info/device_info.dart';
 import '../configs/ref.dart';
-import '../http/http.dart';
 import '../http/providers.dart';
 import '../settings/providers.dart';
 import '../settings/settings.dart';
-import 'providers.dart';
 
 const _defaultRadius = BorderRadius.all(Radius.circular(8));
 
@@ -77,13 +75,7 @@ class BooruImage extends ConsumerWidget {
       forceFill: forceFill,
       isLargeImage: imageQualitySettings != ImageQuality.low,
       forceLoadPlaceholder: forceLoadPlaceholder,
-      headers: {
-        AppHttpHeaders.userAgentHeader: ref.watch(
-          userAgentProvider(config),
-        ),
-        ...ref.watch(extraHttpHeaderProvider(config)),
-        ...ref.watch(cachedBypassDdosHeadersProvider(config.url)),
-      },
+      headers: ref.watch(httpHeadersProvider(config)),
       placeholderWidget: placeholderWidget,
       controller: controller,
       androidVersion: deviceInfo.androidDeviceInfo?.version.sdkInt,

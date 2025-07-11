@@ -3,7 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../foundation/error.dart';
+import '../../errors/types.dart';
 
 typedef DataFetcher<T> = Future<T> Function();
 

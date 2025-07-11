@@ -16,9 +16,7 @@ import '../../../../foundation/toast.dart';
 import '../../../configs/config.dart';
 import '../../../configs/ref.dart';
 import '../../../downloads/downloader/providers.dart';
-import '../../../http/http.dart';
 import '../../../http/providers.dart';
-import '../../../images/providers.dart';
 import '../../../settings/routes.dart';
 import '../../../widgets/widgets.dart';
 import '../../types.dart';
@@ -334,19 +332,7 @@ class _DownloadManagerPageState extends ConsumerState<DownloadManagerPage> {
               ref.invalidate(cachedBypassDdosHeadersProvider);
               WidgetsBinding.instance.addPostFrameCallback(
                 (_) {
-                  final headers = {
-                    AppHttpHeaders.userAgentHeader: ref.read(
-                      userAgentProvider(config.auth),
-                    ),
-                    ...ref.read(
-                      extraHttpHeaderProvider(config.auth),
-                    ),
-                    ...ref.read(
-                      cachedBypassDdosHeadersProvider(
-                        config.url,
-                      ),
-                    ),
-                  };
+                  final headers = ref.read(httpHeadersProvider(config.auth));
 
                   FileDownloader().retryTask(
                     task.task,

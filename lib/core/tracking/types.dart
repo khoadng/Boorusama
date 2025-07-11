@@ -1,5 +1,5 @@
 // Project imports:
-import '../../foundation/errors/reporter.dart';
+import '../../foundation/error_monitor.dart';
 import '../analytics/providers.dart';
 import '../analytics/types.dart';
 

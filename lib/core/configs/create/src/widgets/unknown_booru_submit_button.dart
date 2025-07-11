@@ -16,10 +16,17 @@ import '../types/utils.dart';
 import 'booru_config_data_provider.dart';
 import 'create_booru_submit_button.dart';
 
+bool _defaultValidate(AuthConfigData auth) {
+  return auth.isValid;
+}
+
 class UnknownBooruSubmitButton extends ConsumerWidget {
   const UnknownBooruSubmitButton({
     super.key,
+    this.validate,
   });
+
+  final bool Function(AuthConfigData auth)? validate;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -33,13 +40,16 @@ class UnknownBooruSubmitButton extends ConsumerWidget {
     final configName = ref.watch(
       editBooruConfigProvider(editId).select((value) => value.name),
     );
-    final url = ref.watch(siteUrlProvider(config));
+    final url = ref.watch(
+      editBooruConfigProvider(editId).select((value) => value.url),
+    );
     final engine = ref.watch(booruEngineProvider);
+    final effectiveValidate = validate ?? _defaultValidate;
 
     final isValid =
         engine != null &&
-        //FIXME: make this check customisable
-        (engine == BooruType.hydrus ? auth.apiKey.isNotEmpty : auth.isValid) &&
+        url.isNotEmpty &&
+        effectiveValidate(auth) &&
         configName.isNotEmpty;
 
     return ref

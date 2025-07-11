@@ -7,8 +7,8 @@ import 'package:i18n/i18n.dart';
 import 'package:sliver_masonry_grid/sliver_masonry_grid.dart';
 
 // Project imports:
-import '../../../../../boorus/danbooru/errors.dart';
-import '../../../../../foundation/error.dart';
+import '../../../../../foundation/error_monitor.dart';
+import '../../../../errors/types.dart';
 import '../../../../settings/settings.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../post/post.dart';
@@ -21,6 +21,7 @@ class SliverPostGrid<T extends Post> extends StatelessWidget {
   const SliverPostGrid({
     required this.postController,
     required this.itemBuilder,
+    required this.errorTranslator,
     super.key,
     this.padding,
     this.listType,
@@ -46,6 +47,8 @@ class SliverPostGrid<T extends Post> extends StatelessWidget {
   final Widget Function(BuildContext context, int httpStatusCode)?
   httpErrorActionBuilder;
 
+  final AppErrorTranslator errorTranslator;
+
   @override
   Widget build(BuildContext context) {
     return SliverPadding(
@@ -54,13 +57,12 @@ class SliverPostGrid<T extends Post> extends StatelessWidget {
         valueListenable: postController.errors,
         builder: (_, error, _) {
           if (error != null) {
-            final message = translateBooruError(context, error);
             final theme = Theme.of(context);
 
             return SliverToBoxAdapter(
               child: switch (error) {
-                AppError _ => ErrorBox(
-                  errorMessage: message,
+                final AppError e => ErrorBox(
+                  errorMessage: errorTranslator.translateAppError(context, e),
                   onRetry: _onErrorRetry,
                 ),
                 final ServerError e => Column(
@@ -72,19 +74,13 @@ class SliverPostGrid<T extends Post> extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    Builder(
-                      builder: (context) {
-                        final serverError = translateServerError(context, e);
-
-                        return serverError != null
-                            ? Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 8,
-                                ),
-                                child: Text(serverError),
-                              )
-                            : const SizedBox.shrink();
-                      },
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 8,
+                      ),
+                      child: Text(
+                        errorTranslator.translateServerError(context, e),
+                      ),
                     ),
                     if (httpErrorActionBuilder != null &&
                         e.httpStatusCode != null)
@@ -128,7 +124,9 @@ class SliverPostGrid<T extends Post> extends StatelessWidget {
                       ),
                   ],
                 ),
-                UnknownError _ => ErrorBox(errorMessage: message),
+                final UnknownError e => ErrorBox(
+                  errorMessage: e.error.toString(),
+                ),
               },
             );
           }

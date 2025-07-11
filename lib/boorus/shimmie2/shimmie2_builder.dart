@@ -6,6 +6,7 @@ import '../../core/configs/manage/widgets.dart';
 import '../../core/posts/details/widgets.dart';
 import '../../core/posts/details_manager/types.dart';
 import '../../core/posts/details_parts/widgets.dart';
+import 'configs/widgets.dart';
 import 'posts/types.dart';
 import 'posts/widgets.dart';
 
@@ -91,4 +92,10 @@ class Shimmie2Builder
       DetailsPart.fileDetails: (context) => const Shimmie2FileDetailsSection(),
     },
   );
+
+  @override
+  CreateUnknownBooruWidgetsBuilder get unknownBooruWidgetsBuilder =>
+      (context) => const UnknownBooruWidgetsBuilder(
+        urlField: Shimmie2BooruUrlField(),
+      );
 }

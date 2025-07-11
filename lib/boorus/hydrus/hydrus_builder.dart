@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../core/configs/create/widgets.dart';
 import '../../core/boorus/engine/engine.dart';
+import '../../core/configs/auth/widgets.dart';
 import '../../core/configs/config.dart';
 import '../../core/configs/manage/widgets.dart';
 import '../../core/configs/ref.dart';
@@ -126,6 +127,15 @@ class HydrusBuilder
           ),
     },
   );
+
+  @override
+  CreateUnknownBooruWidgetsBuilder get unknownBooruWidgetsBuilder =>
+      (context) => const UnknownBooruWidgetsBuilder(
+        loginField: null,
+        apiKeyField: DefaultBooruApiKeyField(),
+        credentialsNeeded: true,
+        submitButton: HydrusUnknownBooruSubmitButton(),
+      );
 }
 
 class HydrusSearchPage extends ConsumerWidget {

@@ -9,6 +9,7 @@ import 'package:foundation/foundation.dart';
 import '../../../../foundation/display.dart';
 import '../../../../foundation/url_launcher.dart';
 import '../../../configs/config.dart';
+import '../../../configs/create/widgets.dart';
 import '../../../configs/gesture/gesture.dart';
 import '../../../configs/ref.dart';
 import '../../../downloads/downloader/providers.dart';
@@ -135,6 +136,12 @@ mixin DefaultPostGesturesHandlerMixin on BooruBuilder {
   @override
   PostGestureHandlerBuilder get postGestureHandlerBuilder =>
       (ref, action, post) => _postGestureHandler.handle(ref, action, post);
+}
+
+mixin DefaultUnknownBooruWidgetsBuilderMixin implements BooruBuilder {
+  @override
+  CreateUnknownBooruWidgetsBuilder get unknownBooruWidgetsBuilder =>
+      (context) => const DefaultUnknownBooruWidgets();
 }
 
 class PostGestureHandler {

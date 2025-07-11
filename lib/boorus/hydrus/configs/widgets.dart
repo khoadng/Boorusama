@@ -62,3 +62,16 @@ class HydrusAuthConfigView extends ConsumerWidget {
     );
   }
 }
+
+class HydrusUnknownBooruSubmitButton extends ConsumerWidget {
+  const HydrusUnknownBooruSubmitButton({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return UnknownBooruSubmitButton(
+      validate: (auth) {
+        return auth.apiKey.isNotEmpty;
+      },
+    );
+  }
+}

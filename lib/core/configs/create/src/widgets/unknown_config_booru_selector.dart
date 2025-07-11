@@ -23,8 +23,7 @@ class UnknownConfigBooruSelector extends ConsumerWidget {
 
     return Padding(
       padding: const EdgeInsets.symmetric(
-        horizontal: 8,
-        vertical: 8,
+        vertical: 12,
       ),
       child: ListTile(
         title: Text(context.t.booru.booru_engine_input_label),

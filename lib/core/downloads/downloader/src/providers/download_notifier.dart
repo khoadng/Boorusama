@@ -16,7 +16,6 @@ import '../../../../configs/config/providers.dart';
 import '../../../../configs/config/types.dart';
 import '../../../../http/http.dart';
 import '../../../../http/providers.dart';
-import '../../../../images/providers.dart';
 import '../../../../posts/post/post.dart';
 import '../../../../posts/sources/source.dart';
 import '../../../../router.dart';
@@ -163,13 +162,7 @@ Future<DownloadTaskInfo?> _download(
   );
   final logger = ref.read(loggerProvider);
 
-  final headers = {
-    AppHttpHeaders.userAgentHeader: ref.read(
-      userAgentProvider(booruConfig.auth),
-    ),
-    ...ref.read(extraHttpHeaderProvider(booruConfig.auth)),
-    ...ref.read(cachedBypassDdosHeadersProvider(booruConfig.url)),
-  };
+  final headers = ref.read(httpHeadersProvider(booruConfig.auth));
 
   final deviceStoragePermissionNotifier = ref.read(
     deviceStoragePermissionProvider.notifier,

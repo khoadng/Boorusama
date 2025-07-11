@@ -214,12 +214,13 @@ class BooruConfig extends Equatable {
     String? apiKey,
     String? login,
     String? name,
+    int? booruIdHint,
     LayoutConfigs? Function()? layout,
   }) {
     return BooruConfig(
       id: id,
       booruId: booruId,
-      booruIdHint: booruIdHint,
+      booruIdHint: booruIdHint ?? this.booruIdHint,
       url: url ?? this.url,
       apiKey: apiKey ?? this.apiKey,
       login: login ?? this.login,
