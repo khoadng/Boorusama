@@ -1543,6 +1543,15 @@ packages:
       url: "https://github.com/khoadng/searchfield.git"
     source: git
     version: "1.2.4"
+  selection_mode:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: fc0c0fba8a6a5d9a09eb3bec427e6ed0a0c93e83
+      resolved-ref: fc0c0fba8a6a5d9a09eb3bec427e6ed0a0c93e83
+      url: "https://github.com/khoadng/selection_mode.git"
+    source: git
+    version: "0.0.1"
   share_handler:
     dependency: "direct main"
     description:

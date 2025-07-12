@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/widgets.dart';
 import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:selection_mode/selection_mode.dart';
 
 // Project imports:
 import '../../../../../core/widgets/widgets.dart';
@@ -18,6 +18,7 @@ import '../../../../configs/config.dart';
 import '../../../../posts/post/post.dart';
 import '../../../../search/search/routes.dart';
 import '../../../../search/search/widgets.dart';
+import '../../../../widgets/animated_footer.dart';
 import '../../../favorites/providers.dart';
 import '../../widgets.dart';
 import '../tag_providers.dart';
@@ -141,13 +142,19 @@ class ShowTagListPageInternal extends ConsumerStatefulWidget {
 }
 
 class _ShowTagListPageState extends ConsumerState<ShowTagListPageInternal> {
-  late final _multiSelectController = MultiSelectController(
-    initialMultiSelectEnabled: widget.initiallyMultiSelectEnabled,
+  late final _selectionModeController = SelectionModeController(
+    options: const SelectionModeOptions(
+      enableLongPress: false,
+      selectionBehavior: SelectionBehavior.manual,
+    ),
+    initialEnabled: widget.initiallyMultiSelectEnabled,
   );
+  final _scrollController = ScrollController();
 
   @override
   void dispose() {
-    _multiSelectController.dispose();
+    _selectionModeController.dispose();
+    _scrollController.dispose();
 
     super.dispose();
   }
@@ -155,235 +162,217 @@ class _ShowTagListPageState extends ConsumerState<ShowTagListPageInternal> {
   @override
   Widget build(BuildContext context) {
     return CustomContextMenuOverlay(
-      child: MultiSelectWidget(
-        controller: _multiSelectController,
-        footer: ValueListenableBuilder(
-          valueListenable: _multiSelectController.selectedItemsNotifier,
-          builder: (_, selectedItems, _) =>
-              _buildContent(selectedItems, context),
-        ),
+      child: SelectionMode(
+        scrollController: _scrollController,
+        controller: _selectionModeController,
         child: Scaffold(
-          appBar: _buildAppBar(),
-          body: FilterableScope(
-            originalItems: widget.tags,
-            query: ref.watch(selectedViewTagQueryProvider),
-            filter: (item, query) => item.rawName.contains(query),
-            builder: (context, items) => Column(
-              children: [
-                PopScope(
-                  canPop: false,
-                  onPopInvokedWithResult: (didPop, result) {
-                    if (didPop) return;
+          appBar: SelectionAppBarBuilder(
+            controller: _selectionModeController,
+            builder: (context, controller, isSelectionMode) => !isSelectionMode
+                ? AppBar(
+                    title: Text('Tags'.hc),
+                    actions: [
+                      BooruPopupMenuButton(
+                        onSelected: (value) {
+                          switch (value) {
+                            case 'select':
+                              controller.enable();
+                            default:
+                          }
+                        },
+                        itemBuilder: const {
+                          'select': Text('Select'),
+                        },
+                      ),
+                      IconButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        icon: const Icon(Symbols.close),
+                      ),
+                    ],
+                  )
+                : AppBar(
+                    title: ListenableBuilder(
+                      listenable: controller,
+                      builder: (context, _) {
+                        final selectedItems = controller.selectedItems;
 
-                    if (_multiSelectController.multiSelectEnabled) {
-                      _multiSelectController.disableMultiSelect();
-                    } else {
-                      Navigator.of(context).pop();
-                    }
-                  },
-                  child: const SizedBox.shrink(),
-                ),
-                _buildSearchBar(),
-                const SizedBox(height: 4),
-                Expanded(
-                  child: ListView.builder(
-                    itemBuilder: (context, index) {
-                      final tag = items[index];
-                      final child = _SelectableTagItem(
-                        multiSelectController: _multiSelectController,
-                        index: index,
-                        tag: tag,
-                        auth: widget.auth,
-                        onAddToBlacklist: widget.onAddToBlacklist,
-                        onAddToGlobalBlacklist: widget.onAddToGlobalBlacklist,
-                        onAddToFavoriteTags: widget.onAddToFavoriteTags,
-                        onOpenWiki: widget.onOpenWiki,
-                      );
-
-                      return widget.contextMenuBuilder != null
-                          ? widget.contextMenuBuilder!(
-                              child,
-                              tag.rawName,
-                            )
-                          : GeneralTagContextMenu(
-                              tag: tag.rawName,
-                              child: child,
-                            );
-                    },
-                    itemCount: items.length,
+                        return selectedItems.isEmpty
+                            ? Text('Select tags'.hc)
+                            : Text(
+                                '${selectedItems.length} Tags selected'.hc,
+                              );
+                      },
+                    ),
+                    actions: [
+                      IconButton(
+                        onPressed: () => controller.selectAll(
+                          List.generate(
+                            widget.tags.length,
+                            (index) => index,
+                          ),
+                        ),
+                        icon: const Icon(Symbols.select_all),
+                      ),
+                      IconButton(
+                        onPressed: () => controller.clearSelected(),
+                        icon: const Icon(Symbols.clear_all),
+                      ),
+                      IconButton(
+                        color: Theme.of(context).colorScheme.primary,
+                        onPressed: () => controller.disable(),
+                        icon: const Icon(Symbols.check),
+                      ),
+                    ],
                   ),
+          ),
+          body: Stack(
+            children: [
+              FilterableScope(
+                originalItems: widget.tags,
+                query: ref.watch(selectedViewTagQueryProvider),
+                filter: (item, query) => item.rawName.contains(query),
+                builder: (context, items) => Column(
+                  children: [
+                    _buildSearchBar(),
+                    const SizedBox(height: 4),
+                    Expanded(
+                      child: ListView.builder(
+                        controller: _scrollController,
+                        itemBuilder: (context, index) {
+                          final tag = items[index];
+                          final child = _SelectableTagItem(
+                            index: index,
+                            tag: tag,
+                            auth: widget.auth,
+                            onAddToBlacklist: widget.onAddToBlacklist,
+                            onAddToGlobalBlacklist:
+                                widget.onAddToGlobalBlacklist,
+                            onAddToFavoriteTags: widget.onAddToFavoriteTags,
+                            onOpenWiki: widget.onOpenWiki,
+                          );
+
+                          return widget.contextMenuBuilder != null
+                              ? widget.contextMenuBuilder!(
+                                  child,
+                                  tag.rawName,
+                                )
+                              : GeneralTagContextMenu(
+                                  tag: tag.rawName,
+                                  child: child,
+                                );
+                        },
+                        itemCount: items.length,
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+              ListenableBuilder(
+                listenable: _selectionModeController,
+                builder: (context, _) => Positioned(
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  child: _buildContent(context),
+                ),
+              ),
+            ],
           ),
         ),
       ),
     );
   }
 
-  Widget _buildContent(Set<int> selectedItems, BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        if (selectedItems.isNotEmpty)
-          Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 12,
-              vertical: 8,
-            ),
-            decoration: BoxDecoration(
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(12),
-                topRight: Radius.circular(12),
+  Widget _buildContent(BuildContext context) {
+    final selectedItems = _selectionModeController.selectedItems;
+
+    return SelectionModeAnimatedFooter(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          if (selectedItems.isNotEmpty)
+            Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: 8,
               ),
-              color: Theme.of(context).colorScheme.surfaceContainer,
-            ),
-            child: Consumer(
-              builder: (context, ref, _) {
-                final tags = selectedItems
-                    .map((index) => widget.tags[index])
-                    .toList();
-                return RichText(
-                  text: TextSpan(
-                    children: [
-                      ...tags.map(
-                        (tag) => TextSpan(
-                          text: '${tag.displayName}  ',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                            color: ref.watch(
-                              tagColorProvider(
-                                (widget.auth, tag.category.name),
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(12),
+                  topRight: Radius.circular(12),
+                ),
+                color: Theme.of(context).colorScheme.surfaceContainer,
+              ),
+              child: Consumer(
+                builder: (context, ref, _) {
+                  final tags = selectedItems
+                      .map((index) => widget.tags[index])
+                      .toList();
+                  return RichText(
+                    text: TextSpan(
+                      children: [
+                        ...tags.map(
+                          (tag) => TextSpan(
+                            text: '${tag.displayName}  ',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              color: ref.watch(
+                                tagColorProvider(
+                                  (widget.auth, tag.category.name),
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                );
-              },
+                      ],
+                    ),
+                  );
+                },
+              ),
             ),
-          ),
-        MultiSelectionActionBar(
-          height: 68,
-          children: [
-            MultiSelectButton(
-              onPressed: selectedItems.isNotEmpty
-                  ? () => _copySelectedTags(selectedItems)
-                  : null,
-              icon: const Icon(Symbols.content_copy),
-              name: 'Copy Tags',
-              mainAxisAlignment: MainAxisAlignment.start,
-            ),
-            if (widget.onAddToBlacklist != null)
+          MultiSelectionActionBar(
+            height: 68,
+            children: [
               MultiSelectButton(
                 onPressed: selectedItems.isNotEmpty
-                    ? () => _addSelectedToBlacklist(selectedItems)
+                    ? () => _copySelectedTags(selectedItems)
+                    : null,
+                icon: const Icon(Symbols.content_copy),
+                name: 'Copy Tags',
+                mainAxisAlignment: MainAxisAlignment.start,
+              ),
+              if (widget.onAddToBlacklist != null)
+                MultiSelectButton(
+                  onPressed: selectedItems.isNotEmpty
+                      ? () => _addSelectedToBlacklist(selectedItems)
+                      : null,
+                  icon: const Icon(Symbols.block),
+                  name: 'Add to Blacklist',
+                  maxLines: 2,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                ),
+              MultiSelectButton(
+                onPressed: selectedItems.isNotEmpty
+                    ? () => _addSelectedToGlobalBlacklist(selectedItems)
                     : null,
                 icon: const Icon(Symbols.block),
-                name: 'Add to Blacklist',
+                name: 'Add to Global Blacklist',
                 maxLines: 2,
                 mainAxisAlignment: MainAxisAlignment.start,
               ),
-            MultiSelectButton(
-              onPressed: selectedItems.isNotEmpty
-                  ? () => _addSelectedToGlobalBlacklist(selectedItems)
-                  : null,
-              icon: const Icon(Symbols.block),
-              name: 'Add to Global Blacklist',
-              maxLines: 2,
-              mainAxisAlignment: MainAxisAlignment.start,
-            ),
-            MultiSelectButton(
-              onPressed: selectedItems.isNotEmpty
-                  ? () => _addSelectedToFavorites(selectedItems)
-                  : null,
-              icon: const Icon(Symbols.favorite),
-              name: 'Add to Favorites',
-              maxLines: 2,
-              mainAxisAlignment: MainAxisAlignment.start,
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  AppBar _buildAppBar() {
-    return AppBar(
-      actions: [
-        ValueListenableBuilder(
-          valueListenable: _multiSelectController.multiSelectNotifier,
-          builder: (_, multiSelect, _) => !multiSelect
-              ? BooruPopupMenuButton(
-                  onSelected: (value) {
-                    switch (value) {
-                      case 'select':
-                        _multiSelectController.enableMultiSelect();
-                      default:
-                    }
-                  },
-                  itemBuilder: const {
-                    'select': Text('Select'),
-                  },
-                )
-              : const SizedBox.shrink(),
-        ),
-        ValueListenableBuilder(
-          valueListenable: _multiSelectController.multiSelectNotifier,
-          builder: (_, multiSelect, _) => multiSelect
-              ? IconButton(
-                  onPressed: () => _multiSelectController.selectAll(
-                    List.generate(
-                      widget.tags.length,
-                      (index) => index,
-                    ),
-                  ),
-                  icon: const Icon(Symbols.select_all),
-                )
-              : const SizedBox.shrink(),
-        ),
-        ValueListenableBuilder(
-          valueListenable: _multiSelectController.multiSelectNotifier,
-          builder: (_, multiSelect, _) => multiSelect
-              ? IconButton(
-                  onPressed: () {
-                    _multiSelectController.clearSelected();
-                  },
-                  icon: const Icon(Symbols.clear_all),
-                )
-              : const SizedBox.shrink(),
-        ),
-        ValueListenableBuilder(
-          valueListenable: _multiSelectController.multiSelectNotifier,
-          builder: (_, multiSelect, _) => multiSelect
-              ? IconButton(
-                  color: Theme.of(context).colorScheme.primary,
-                  onPressed: () {
-                    _multiSelectController.disableMultiSelect();
-                  },
-                  icon: const Icon(Symbols.check),
-                )
-              : IconButton(
-                  onPressed: Navigator.of(context).pop,
-                  icon: const Icon(Symbols.close),
-                ),
-        ),
-      ],
-      toolbarHeight: kToolbarHeight * 0.9,
-      automaticallyImplyLeading: false,
-      title: ValueListenableBuilder(
-        valueListenable: _multiSelectController.multiSelectNotifier,
-        builder: (_, multiSelect, _) => multiSelect
-            ? ValueListenableBuilder(
-                valueListenable: _multiSelectController.selectedItemsNotifier,
-                builder: (_, selected, _) => selected.isEmpty
-                    ? Text('Select tags'.hc)
-                    : Text('${selected.length} Tags selected'.hc),
-              )
-            : Text('Tags'.hc),
+              MultiSelectButton(
+                onPressed: selectedItems.isNotEmpty
+                    ? () => _addSelectedToFavorites(selectedItems)
+                    : null,
+                icon: const Icon(Symbols.favorite),
+                name: 'Add to Favorites',
+                maxLines: 2,
+                mainAxisAlignment: MainAxisAlignment.start,
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
@@ -413,7 +402,7 @@ class _ShowTagListPageState extends ConsumerState<ShowTagListPageInternal> {
       selectedTags,
     );
 
-    _multiSelectController.disableMultiSelect();
+    _selectionModeController.disable();
   }
 
   void _addSelectedToBlacklist(Set<int> selectedItems) {
@@ -421,7 +410,7 @@ class _ShowTagListPageState extends ConsumerState<ShowTagListPageInternal> {
       widget.onAddToBlacklist?.call(widget.tags[index]);
     }
 
-    _multiSelectController.disableMultiSelect();
+    _selectionModeController.disable();
   }
 
   void _addSelectedToGlobalBlacklist(Set<int> selectedItems) {
@@ -429,7 +418,7 @@ class _ShowTagListPageState extends ConsumerState<ShowTagListPageInternal> {
       widget.onAddToGlobalBlacklist?.call(widget.tags[index]);
     }
 
-    _multiSelectController.disableMultiSelect();
+    _selectionModeController.disable();
   }
 
   void _addSelectedToFavorites(Set<int> selectedItems) {
@@ -437,13 +426,12 @@ class _ShowTagListPageState extends ConsumerState<ShowTagListPageInternal> {
       widget.onAddToFavoriteTags?.call(widget.tags[index]);
     }
 
-    _multiSelectController.disableMultiSelect();
+    _selectionModeController.disable();
   }
 }
 
 class _SelectableTagItem extends StatelessWidget {
   const _SelectableTagItem({
-    required this.multiSelectController,
     required this.index,
     required this.tag,
     required this.auth,
@@ -453,7 +441,6 @@ class _SelectableTagItem extends StatelessWidget {
     this.onOpenWiki,
   });
 
-  final MultiSelectController multiSelectController;
   final int index;
   final Tag tag;
   final BooruConfigAuth auth;
@@ -464,49 +451,49 @@ class _SelectableTagItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: multiSelectController.multiSelectNotifier,
-      builder: (_, multiSelect, _) => Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 12,
-        ),
-        child: Row(
-          children: [
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              curve: Curves.easeInOut,
-              width: multiSelect ? 36 : 0,
-              child: AnimatedOpacity(
-                duration: const Duration(milliseconds: 150),
-                opacity: multiSelect ? 1.0 : 0.0,
-                child: multiSelect
-                    ? ValueListenableBuilder(
-                        valueListenable:
-                            multiSelectController.selectedItemsNotifier,
-                        builder: (_, selectedItems, _) => Checkbox(
+    return SelectionBuilder(
+      index: index,
+      builder: (context, isSelected) {
+        final controller = SelectionMode.of(context);
+        final multiSelect = controller.enabled;
+
+        return Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 12,
+          ),
+          child: Row(
+            children: [
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                curve: Curves.easeInOut,
+                width: multiSelect ? 36 : 0,
+                child: AnimatedOpacity(
+                  duration: const Duration(milliseconds: 150),
+                  opacity: multiSelect ? 1.0 : 0.0,
+                  child: multiSelect
+                      ? Checkbox(
                           visualDensity: VisualDensity.compact,
-                          value: selectedItems.contains(index),
+                          value: isSelected,
                           onChanged: (value) {
                             if (value == null) return;
-                            multiSelectController.toggleSelection(index);
+                            controller.toggleSelection(index);
                           },
-                        ),
-                      )
-                    : const SizedBox.shrink(),
+                        )
+                      : const SizedBox.shrink(),
+                ),
               ),
-            ),
-            Expanded(
-              child: _TagTile(
-                tag: tag,
-                auth: auth,
-                multiSelectController: multiSelectController,
-                index: index,
-                multiSelect: multiSelect,
+              Expanded(
+                child: _TagTile(
+                  tag: tag,
+                  auth: auth,
+                  index: index,
+                  multiSelect: multiSelect,
+                ),
               ),
-            ),
-          ],
-        ),
-      ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
@@ -515,14 +502,12 @@ class _TagTile extends StatefulWidget {
   const _TagTile({
     required this.tag,
     required this.auth,
-    required this.multiSelectController,
     required this.index,
     required this.multiSelect,
   });
 
   final Tag tag;
   final BooruConfigAuth auth;
-  final MultiSelectController multiSelectController;
   final int index;
   final bool multiSelect;
 
@@ -535,6 +520,8 @@ class _TagTileState extends State<_TagTile> {
 
   @override
   Widget build(BuildContext context) {
+    final controller = SelectionMode.of(context);
+
     return MouseRegion(
       onEnter: (_) => _hover.value = true,
       onExit: (_) => _hover.value = false,
@@ -562,7 +549,7 @@ class _TagTileState extends State<_TagTile> {
             ),
           ),
           onTap: widget.multiSelect
-              ? () => widget.multiSelectController.toggleSelection(widget.index)
+              ? () => controller.toggleSelection(widget.index)
               : () => goToSearchPage(
                   ref,
                   tag: widget.tag.rawName,
