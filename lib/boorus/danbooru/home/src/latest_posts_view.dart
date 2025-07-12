@@ -79,16 +79,9 @@ class _LatestViewState extends ConsumerState<LatestView> {
             child: PostGrid(
               controller: controller,
               scrollController: _autoScrollController,
-              itemBuilder:
-                  (
-                    context,
-                    index,
-                    multiSelectController,
-                    scrollController,
-                    hero,
-                  ) => DefaultDanbooruImageGridItem(
+              itemBuilder: (context, index, scrollController, hero) =>
+                  DefaultDanbooruImageGridItem(
                     index: index,
-                    multiSelectController: multiSelectController,
                     autoScrollController: scrollController,
                     controller: controller,
                   ),

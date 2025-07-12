@@ -254,11 +254,9 @@ class DanbooruBuilder
 
         return isDanController
             ? DanbooruMultiSelectionActions(
-                controller: controller,
                 postController: postController,
               )
             : DefaultMultiSelectionActions(
-                controller: controller,
                 postController: postController,
               );
       };

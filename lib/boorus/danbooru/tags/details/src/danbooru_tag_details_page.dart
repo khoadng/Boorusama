@@ -67,16 +67,9 @@ class _DanbooruTagDetailsPageState
         ],
         gridBuilder: (context, slivers) => PostGrid(
           controller: controller,
-          itemBuilder:
-              (
-                context,
-                index,
-                multiSelectController,
-                scrollController,
-                useHero,
-              ) => DefaultDanbooruImageGridItem(
+          itemBuilder: (context, index, scrollController, useHero) =>
+              DefaultDanbooruImageGridItem(
                 index: index,
-                multiSelectController: multiSelectController,
                 autoScrollController: scrollController,
                 controller: controller,
                 useHero: useHero,

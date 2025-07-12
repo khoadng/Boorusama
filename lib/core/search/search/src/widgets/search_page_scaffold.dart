@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/widgets.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
+import 'package:selection_mode/selection_mode.dart';
 
 // Project imports:
 import '../../../../analytics/providers.dart';
@@ -87,7 +87,12 @@ class _SearchPageScaffoldState<T extends Post>
     extends ConsumerState<SearchPageScaffold<T>> {
   late final SelectedTagController _tagsController;
   late final SearchPageController _controller;
-  final MultiSelectController _multiSelectController = MultiSelectController();
+  final SelectionModeController _multiSelectController =
+      SelectionModeController(
+        options: const SelectionModeOptions(
+          selectionBehavior: SelectionBehavior.manual,
+        ),
+      );
   PostGridController<T>? _postController;
 
   @override
@@ -125,7 +130,7 @@ class _SearchPageScaffoldState<T extends Post>
       params: widget.params,
       tagsController: _tagsController,
       controller: _controller,
-      multiSelectController: _multiSelectController,
+      selectionModeController: _multiSelectController,
       onQueryChanged: (query) {
         ref
             .read(suggestionsNotifierProvider(ref.readConfigAuth).notifier)
@@ -330,7 +335,7 @@ class DefaultSearchSuggestions extends ConsumerWidget {
     super.key,
   });
 
-  final MultiSelectController multiSelectController;
+  final SelectionModeController multiSelectController;
   final BooruConfigAuth config;
 
   @override
@@ -340,7 +345,7 @@ class DefaultSearchSuggestions extends ConsumerWidget {
     final searchBarPosition = ref.watch(searchBarPositionProvider);
 
     return SearchRegionSafeArea(
-      multiSelectController: multiSelectController,
+      selectionModeController: multiSelectController,
       child: MultiValueListenableBuilder2(
         first: controller.state,
         second: controller.didSearchOnce,

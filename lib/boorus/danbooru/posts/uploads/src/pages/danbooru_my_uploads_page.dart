@@ -6,9 +6,9 @@ import 'package:context_menus/context_menus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:foundation/foundation.dart';
-import 'package:foundation/widgets.dart';
 import 'package:i18n/i18n.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
+import 'package:selection_mode/selection_mode.dart';
 
 // Project imports:
 import '../../../../../../core/config_widgets/website_logo.dart';
@@ -175,7 +175,11 @@ class DanbooruUploadGrid extends ConsumerStatefulWidget {
 class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
   late final AutoScrollController _autoScrollController =
       AutoScrollController();
-  final multiSelectController = MultiSelectController();
+  final multiSelectController = SelectionModeController(
+    options: const SelectionModeOptions(
+      selectionBehavior: SelectionBehavior.manual,
+    ),
+  );
 
   @override
   void dispose() {
@@ -233,14 +237,8 @@ class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
   ) {
     return PostGrid(
       controller: controller,
-      itemBuilder:
-          (
-            context,
-            index,
-            multiSelectController,
-            scrollController,
-            useHero,
-          ) => ValueListenableBuilder(
+      itemBuilder: (context, index, scrollController, useHero) =>
+          ValueListenableBuilder(
             valueListenable: controller.itemsNotifier,
             builder: (_, posts, _) {
               final post = posts[index];
@@ -250,7 +248,6 @@ class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
                 children: [
                   DefaultDanbooruImageGridItem(
                     index: index,
-                    multiSelectController: multiSelectController,
                     autoScrollController: scrollController,
                     controller: controller,
                     useHero: useHero,

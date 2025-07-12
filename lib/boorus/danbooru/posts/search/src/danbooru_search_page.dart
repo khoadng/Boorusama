@@ -57,20 +57,13 @@ class _DanbooruSearchPageState extends ConsumerState<DanbooruSearchPage> {
       trending: (context, controller) => _Trending(controller),
       metatags: (context, controller) => _Metatags(controller),
       itemBuilder:
-          (
-            context,
-            index,
-            multiSelectController,
-            scrollController,
-            postController,
-            useHero,
-          ) => DefaultDanbooruImageGridItem(
-            index: index,
-            multiSelectController: multiSelectController,
-            autoScrollController: scrollController,
-            controller: postController,
-            useHero: useHero,
-          ),
+          (context, index, scrollController, postController, useHero) =>
+              DefaultDanbooruImageGridItem(
+                index: index,
+                autoScrollController: scrollController,
+                controller: postController,
+                useHero: useHero,
+              ),
       extraHeaders:
           (
             context,

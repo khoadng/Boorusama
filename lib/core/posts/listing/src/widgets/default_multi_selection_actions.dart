@@ -6,9 +6,9 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/widgets.dart';
 import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:selection_mode/selection_mode.dart';
 
 // Project imports:
 import '../../../../../../core/widgets/widgets.dart';
@@ -20,7 +20,6 @@ import 'post_grid_controller.dart';
 
 class DefaultMultiSelectionActions<T extends Post> extends ConsumerWidget {
   const DefaultMultiSelectionActions({
-    required this.controller,
     required this.postController,
     super.key,
     this.extraActions,
@@ -28,7 +27,6 @@ class DefaultMultiSelectionActions<T extends Post> extends ConsumerWidget {
     this.bookmark = true,
   });
 
-  final MultiSelectController controller;
   final PostGridController<T> postController;
   final bool bookmark;
   final void Function(List<T> selectedPosts)? onBulkDownload;
@@ -36,10 +34,12 @@ class DefaultMultiSelectionActions<T extends Post> extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return ValueListenableBuilder(
-      valueListenable: controller.selectedItemsNotifier,
-      builder: (context, selectedKeys, child) {
-        final selectedPosts = postController.getPostsFromIds(
+    final controller = SelectionMode.of(context);
+    return ListenableBuilder(
+      listenable: controller,
+      builder: (context, _) {
+        final selectedKeys = controller.selectedItems;
+        final selectedPosts = postController.getPostsFromIndexes(
           selectedKeys.toList(),
         );
 
@@ -54,7 +54,7 @@ class DefaultMultiSelectionActions<T extends Post> extends ConsumerWidget {
                         ref.bulkDownload(selectedPosts);
                       }
 
-                      controller.disableMultiSelect();
+                      controller.disable();
                     }
                   : null,
               icon: const Icon(Symbols.download),
@@ -63,7 +63,7 @@ class DefaultMultiSelectionActions<T extends Post> extends ConsumerWidget {
             if (bookmark)
               AddBookmarksButton(
                 posts: selectedPosts,
-                onPressed: controller.disableMultiSelect,
+                onPressed: controller.disable,
               ),
             if (extraActions != null) ...extraActions!(selectedPosts),
           ],

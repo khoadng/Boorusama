@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/widgets.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
+import 'package:selection_mode/selection_mode.dart';
 
 // Project imports:
 import '../../../../../foundation/utils/stream/text_editing_controller_utils.dart';
@@ -30,7 +31,6 @@ typedef IndexedSelectableSearchWidgetBuilder<T extends Post> =
     Widget Function(
       BuildContext context,
       int index,
-      MultiSelectController multiSelectController,
       AutoScrollController autoScrollController,
       PostGridController<T> controller,
       bool useHero,
@@ -54,7 +54,7 @@ class RawSearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
     required this.params,
     required this.tagsController,
     required this.controller,
-    required this.multiSelectController,
+    required this.selectionModeController,
     required this.onQueryChanged,
     required this.searchRegion,
     required this.searchSuggestions,
@@ -93,7 +93,7 @@ class RawSearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
 
   final SelectedTagController tagsController;
   final SearchPageController controller;
-  final MultiSelectController multiSelectController;
+  final SelectionModeController selectionModeController;
   final void Function(String value) onQueryChanged;
   final Widget searchRegion;
   final Widget searchSuggestions;
@@ -119,8 +119,8 @@ class _SearchPageScaffoldState<T extends Post>
     duration: const Duration(milliseconds: 300),
   );
 
-  MultiSelectController get _multiSelectController =>
-      widget.multiSelectController;
+  SelectionModeController get _selectionModeController =>
+      widget.selectionModeController;
 
   var _hasScrolledToInitialPosition = false;
 
@@ -151,14 +151,14 @@ class _SearchPageScaffoldState<T extends Post>
     _tagsController.addListener(_onSelectedTagChanged);
     _controller.tagString.addListener(_onTagChanged);
 
-    _previousMultiSelectState = _multiSelectController.multiSelectEnabled;
-    _multiSelectController.multiSelectNotifier.addListener(
+    _previousMultiSelectState = _selectionModeController.enabled;
+    _selectionModeController.addListener(
       _onMultiSelectChanged,
     );
   }
 
   void _onMultiSelectChanged() {
-    final currentSelected = _multiSelectController.multiSelectEnabled;
+    final currentSelected = _selectionModeController.enabled;
 
     if (_previousMultiSelectState != currentSelected) {
       final currentOffset = _scrollController.offset;
@@ -206,7 +206,7 @@ class _SearchPageScaffoldState<T extends Post>
   void dispose() {
     _tagsController.removeListener(_onSelectedTagChanged);
     _controller.tagString.removeListener(_onTagChanged);
-    _multiSelectController.multiSelectNotifier.removeListener(
+    _selectionModeController.removeListener(
       _onMultiSelectChanged,
     );
 
@@ -259,17 +259,17 @@ class _SearchPageScaffoldState<T extends Post>
                         ? _buildResult()
                         : _Landing(
                             landingView: widget.landingView,
-                            multiSelectController: _multiSelectController,
+                            selectionModeController: _selectionModeController,
                           );
                   },
                 ),
                 _SearchOptionsView(
                   landingView: widget.landingView,
-                  multiSelectController: _multiSelectController,
+                  selectionModeController: _selectionModeController,
                 ),
                 widget.searchSuggestions,
                 _SearchBarPositioned(
-                  multiSelectController: _multiSelectController,
+                  selectionModeController: _selectionModeController,
                   searchBarAnimController: _searchBarAnimController,
                   child: widget.searchRegion,
                 ),
@@ -368,21 +368,14 @@ class _SearchPageScaffoldState<T extends Post>
       child: SafeArea(
         bottom: false,
         child: PostGrid<T>(
-          multiSelectController: _multiSelectController,
+          selectionModeController: _selectionModeController,
           scrollController: _scrollController,
           controller: controller,
           itemBuilder: widget.itemBuilder != null
-              ? (
-                  context,
-                  index,
-                  multiSelectController,
-                  scrollController,
-                  useHero,
-                ) {
+              ? (context, index, scrollController, useHero) {
                   return widget.itemBuilder!(
                     context,
                     index,
-                    multiSelectController,
                     _scrollController,
                     controller,
                     useHero,
@@ -393,12 +386,11 @@ class _SearchPageScaffoldState<T extends Post>
             valueListenable: _tagsController,
             builder: (_, tags, _) {
               return _ScrollToTopButtonPadding(
-                multiSelectController: _multiSelectController,
+                selectionModeController: _selectionModeController,
                 searchBarAnimController: _searchBarAnimController,
                 builder: (context, value) {
                   return PostGridScrollToTopButton(
                     controller: controller,
-                    multiSelectController: _multiSelectController,
                     autoScrollController: _scrollController,
                     bottomPadding: (1 - value) * _calcSearchRegionHeight(tags),
                   );
@@ -410,7 +402,7 @@ class _SearchPageScaffoldState<T extends Post>
             if (searchBarPosition == SearchBarPosition.top)
               SliverToBoxAdapter(
                 child: _Displacement(
-                  multiSelectController: _multiSelectController,
+                  selectionModeController: _selectionModeController,
                 ),
               ),
             const SearchResultAnalyticsAnchor(),
@@ -438,17 +430,17 @@ class _SearchPageScaffoldState<T extends Post>
 class SearchRegionSafeArea extends ConsumerWidget {
   const SearchRegionSafeArea({
     required this.child,
-    required this.multiSelectController,
+    required this.selectionModeController,
     super.key,
   });
 
   final Widget child;
-  final MultiSelectController multiSelectController;
+  final SelectionModeController selectionModeController;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final displacement = _Displacement(
-      multiSelectController: multiSelectController,
+      selectionModeController: selectionModeController,
     );
     final searchBarPosition = ref.watch(searchBarPositionProvider);
 
@@ -468,7 +460,7 @@ class _ScrollToTopButtonPadding extends ConsumerStatefulWidget {
   const _ScrollToTopButtonPadding({
     required this.builder,
     required this.searchBarAnimController,
-    required this.multiSelectController,
+    required this.selectionModeController,
   });
 
   final Widget Function(
@@ -478,7 +470,7 @@ class _ScrollToTopButtonPadding extends ConsumerStatefulWidget {
   builder;
 
   final AnimationController searchBarAnimController;
-  final MultiSelectController multiSelectController;
+  final SelectionModeController selectionModeController;
 
   @override
   ConsumerState<_ScrollToTopButtonPadding> createState() =>
@@ -503,9 +495,10 @@ class __ScrollToTopButtonPaddingState
   Widget build(BuildContext context) {
     final searchBarPosition = ref.watch(searchBarPositionProvider);
 
-    return ValueListenableBuilder(
-      valueListenable: widget.multiSelectController.multiSelectNotifier,
-      builder: (_, multiSelect, _) {
+    return ListenableBuilder(
+      listenable: widget.selectionModeController,
+      builder: (_, _) {
+        final multiSelect = widget.selectionModeController.enabled;
         if (multiSelect || searchBarPosition == SearchBarPosition.top) {
           return widget.builder(context, 1);
         }
@@ -527,13 +520,13 @@ class __ScrollToTopButtonPaddingState
 class _SearchBarPositioned extends ConsumerStatefulWidget {
   const _SearchBarPositioned({
     required this.searchBarAnimController,
-    required this.multiSelectController,
+    required this.selectionModeController,
     required this.child,
   });
 
   final Widget child;
   final AnimationController searchBarAnimController;
-  final MultiSelectController multiSelectController;
+  final SelectionModeController selectionModeController;
 
   @override
   ConsumerState<_SearchBarPositioned> createState() =>
@@ -558,12 +551,12 @@ class __SearchBarPositionedState extends ConsumerState<_SearchBarPositioned> {
     final controller = InheritedSearchPageController.of(context);
     final searchBarPosition = ref.watch(searchBarPositionProvider);
 
-    return MultiValueListenableBuilder4(
+    return MultiValueListenableBuilder3(
       first: controller.didSearchOnce,
       second: controller.state,
       third: controller.tagsController,
-      fourth: widget.multiSelectController.multiSelectNotifier,
-      builder: (_, searchOnce, state, selectedTags, multiSelect) {
+
+      builder: (_, searchOnce, state, selectedTags) {
         final baseSearchRegionHeight = _calcSearchRegionHeight(selectedTags);
         final viewPadding = searchBarPosition == SearchBarPosition.bottom
             ? MediaQuery.viewPaddingOf(context).bottom
@@ -572,27 +565,33 @@ class __SearchBarPositionedState extends ConsumerState<_SearchBarPositioned> {
 
         return NotificationListener<ScrollNotification>(
           onNotification: (notification) => true,
-          child: AnimatedBuilder(
-            animation: _searchBarCurve,
+          child: ListenableBuilder(
+            listenable: widget.selectionModeController,
             builder: (context, _) {
-              final padding = multiSelect
-                  ? -searchRegionHeight
-                  : searchOnce
-                  ? state == SearchState.suggestions
-                        ? 0.0
-                        : -(_searchBarCurve.value * searchRegionHeight)
-                  : 0.0;
+              final multiSelect = widget.selectionModeController.enabled;
+              return AnimatedBuilder(
+                animation: _searchBarCurve,
+                builder: (context, _) {
+                  final padding = multiSelect
+                      ? -searchRegionHeight
+                      : searchOnce
+                      ? state == SearchState.suggestions
+                            ? 0.0
+                            : -(_searchBarCurve.value * searchRegionHeight)
+                      : 0.0;
 
-              return Positioned(
-                bottom: searchBarPosition == SearchBarPosition.bottom
-                    ? padding
-                    : null,
-                top: searchBarPosition == SearchBarPosition.top
-                    ? padding
-                    : null,
-                left: 0,
-                right: 0,
-                child: widget.child,
+                  return Positioned(
+                    bottom: searchBarPosition == SearchBarPosition.bottom
+                        ? padding
+                        : null,
+                    top: searchBarPosition == SearchBarPosition.top
+                        ? padding
+                        : null,
+                    left: 0,
+                    right: 0,
+                    child: widget.child,
+                  );
+                },
               );
             },
           ),
@@ -604,44 +603,48 @@ class __SearchBarPositionedState extends ConsumerState<_SearchBarPositioned> {
 
 class _Displacement extends ConsumerWidget {
   const _Displacement({
-    required this.multiSelectController,
+    required this.selectionModeController,
   });
 
-  final MultiSelectController multiSelectController;
+  final SelectionModeController selectionModeController;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final controller = InheritedSearchPageController.of(context);
     final searchBarPosition = ref.watch(searchBarPositionProvider);
 
-    return MultiValueListenableBuilder4(
-      first: controller.tagsController,
-      second: controller.state,
-      third: controller.didSearchOnce,
-      fourth: multiSelectController.multiSelectNotifier,
-      builder: (_, value, state, searchOnce, multiSelect) {
-        if (multiSelect) {
-          return const SizedBox.shrink();
-        }
+    return ListenableBuilder(
+      listenable: selectionModeController,
+      builder: (context, _) => MultiValueListenableBuilder3(
+        first: controller.tagsController,
+        second: controller.state,
+        third: controller.didSearchOnce,
 
-        final viewInsets = MediaQuery.viewInsetsOf(context).bottom;
-        final viewPadding = MediaQuery.viewPaddingOf(context).bottom;
-        final padding = max(viewInsets, viewPadding);
+        builder: (_, value, state, searchOnce) {
+          final multiSelect = selectionModeController.enabled;
+          if (multiSelect) {
+            return const SizedBox.shrink();
+          }
 
-        final effectivePadding = searchOnce
-            ? state != SearchState.suggestions && state != SearchState.options
-                  ? 0
-                  : padding
-            : padding;
+          final viewInsets = MediaQuery.viewInsetsOf(context).bottom;
+          final viewPadding = MediaQuery.viewPaddingOf(context).bottom;
+          final padding = max(viewInsets, viewPadding);
 
-        final baseHeight = searchBarPosition == SearchBarPosition.bottom
-            ? effectivePadding + _calcBaseSearchHeight(value)
-            : _calcBaseSearchHeight(value);
+          final effectivePadding = searchOnce
+              ? state != SearchState.suggestions && state != SearchState.options
+                    ? 0
+                    : padding
+              : padding;
 
-        return SizedBox(
-          height: baseHeight,
-        );
-      },
+          final baseHeight = searchBarPosition == SearchBarPosition.bottom
+              ? effectivePadding + _calcBaseSearchHeight(value)
+              : _calcBaseSearchHeight(value);
+
+          return SizedBox(
+            height: baseHeight,
+          );
+        },
+      ),
     );
   }
 }
@@ -649,16 +652,16 @@ class _Displacement extends ConsumerWidget {
 class _Landing extends ConsumerWidget {
   const _Landing({
     required this.landingView,
-    required this.multiSelectController,
+    required this.selectionModeController,
   });
 
   final Widget landingView;
-  final MultiSelectController multiSelectController;
+  final SelectionModeController selectionModeController;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return SearchRegionSafeArea(
-      multiSelectController: multiSelectController,
+      selectionModeController: selectionModeController,
       child: landingView,
     );
   }
@@ -667,11 +670,11 @@ class _Landing extends ConsumerWidget {
 class _SearchOptionsView extends ConsumerWidget {
   const _SearchOptionsView({
     required this.landingView,
-    required this.multiSelectController,
+    required this.selectionModeController,
   });
 
   final Widget landingView;
-  final MultiSelectController multiSelectController;
+  final SelectionModeController selectionModeController;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -679,7 +682,7 @@ class _SearchOptionsView extends ConsumerWidget {
     final colorScheme = Theme.of(context).colorScheme;
 
     return SearchRegionSafeArea(
-      multiSelectController: multiSelectController,
+      selectionModeController: selectionModeController,
       child: ValueListenableBuilder(
         valueListenable: controller.state,
         builder: (context, state, child) => state == SearchState.options

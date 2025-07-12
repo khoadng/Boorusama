@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/widgets.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
+import 'package:selection_mode/selection_mode.dart';
 
 // Project imports:
 import '../../../../boorus/engine/engine.dart';
@@ -27,7 +27,6 @@ import '../widgets/sliver_post_grid_image_grid_item.dart';
 class DefaultImageGridItem<T extends Post> extends StatelessWidget {
   const DefaultImageGridItem({
     required this.index,
-    required this.multiSelectController,
     required this.autoScrollController,
     required this.controller,
     required this.useHero,
@@ -40,7 +39,6 @@ class DefaultImageGridItem<T extends Post> extends StatelessWidget {
   });
 
   final int index;
-  final MultiSelectController multiSelectController;
   final AutoScrollController autoScrollController;
   final PostGridController<T> controller;
   final bool useHero;
@@ -52,13 +50,15 @@ class DefaultImageGridItem<T extends Post> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: multiSelectController.multiSelectNotifier,
-      builder: (_, multiSelect, _) => ValueListenableBuilder(
+    final selectionModeController = SelectionMode.of(context);
+
+    return ListenableBuilder(
+      listenable: selectionModeController,
+      builder: (context, _) => ValueListenableBuilder(
         valueListenable: controller.itemsNotifier,
         builder: (_, posts, _) {
+          final multiSelect = selectionModeController.enabled;
           final post = posts[index];
-
           return DefaultPostListContextMenuRegion(
             isEnabled: !multiSelect,
             contextMenu:
@@ -67,8 +67,8 @@ class DefaultImageGridItem<T extends Post> extends StatelessWidget {
                   builder: (_, ref, _) => GeneralPostContextMenu(
                     hasAccount: ref.watchConfigAuth.hasLoginDetails(),
                     onMultiSelect: () {
-                      multiSelectController.enableMultiSelect(
-                        initialSelected: [post.id],
+                      selectionModeController.enable(
+                        initialSelected: [index],
                       );
                     },
                     post: post,
@@ -101,6 +101,7 @@ class DefaultImageGridItem<T extends Post> extends StatelessWidget {
 
                           return SliverPostGridImageGridItem(
                             post: post,
+                            index: index,
                             multiSelectEnabled: multiSelect,
                             onTap:
                                 onTap ??
@@ -133,14 +134,11 @@ class DefaultImageGridItem<T extends Post> extends StatelessWidget {
                         },
                       );
 
-                      return multiSelect
-                          ? DefaultSelectableItem(
-                              multiSelectController: multiSelectController,
-                              index: index,
-                              post: post,
-                              item: item,
-                            )
-                          : item;
+                      return DefaultSelectableItem(
+                        index: index,
+                        post: post,
+                        item: item,
+                      );
                     },
                   ),
                 ),

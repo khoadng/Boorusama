@@ -10,6 +10,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/widgets.dart';
 import 'package:i18n/i18n.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
+import 'package:selection_mode/selection_mode.dart';
 
 // Project imports:
 import '../../../../boorus/engine/providers.dart';
@@ -35,7 +36,6 @@ typedef IndexedSelectableWidgetBuilder<T extends Post> =
     Widget Function(
       BuildContext context,
       int index,
-      MultiSelectController multiSelectController,
       AutoScrollController autoScrollController,
       bool useHero,
     );
@@ -47,7 +47,7 @@ class PostGrid<T extends Post> extends StatefulWidget {
     this.sliverHeaders,
     this.scrollController,
     this.blacklistedIdString,
-    this.multiSelectController,
+    this.selectionModeController,
     this.safeArea = true,
     this.itemBuilder,
     this.body,
@@ -61,7 +61,7 @@ class PostGrid<T extends Post> extends StatefulWidget {
   final AutoScrollController? scrollController;
   final bool safeArea;
   final String? blacklistedIdString;
-  final MultiSelectController? multiSelectController;
+  final SelectionModeController? selectionModeController;
   final PostGridController<T> controller;
   final IndexedSelectableWidgetBuilder<T>? itemBuilder;
   final Widget? body;
@@ -77,16 +77,21 @@ class PostGrid<T extends Post> extends StatefulWidget {
 class _PostGridState<T extends Post> extends State<PostGrid<T>> {
   late final AutoScrollController _autoScrollController =
       widget.scrollController ?? AutoScrollController();
-  late final _multiSelectController =
-      widget.multiSelectController ?? MultiSelectController();
+  late final _selectionModeController =
+      widget.selectionModeController ??
+      SelectionModeController(
+        options: const SelectionModeOptions(
+          selectionBehavior: SelectionBehavior.manual,
+        ),
+      );
 
   final ValueNotifier<bool> _disableHero = ValueNotifier(false);
 
   @override
   void dispose() {
     super.dispose();
-    if (widget.multiSelectController == null) {
-      _multiSelectController.dispose();
+    if (widget.selectionModeController == null) {
+      _selectionModeController.dispose();
     }
 
     if (widget.scrollController == null) {
@@ -116,7 +121,7 @@ class _PostGridState<T extends Post> extends State<PostGrid<T>> {
                 widget.multiSelectActions ??
                 booruBuilder?.multiSelectionActionsBuilder?.call(
                   context,
-                  _multiSelectController,
+                  _selectionModeController,
                   widget.controller,
                 );
 
@@ -124,15 +129,11 @@ class _PostGridState<T extends Post> extends State<PostGrid<T>> {
           },
         ),
         blacklistedIdString: widget.blacklistedIdString,
-        multiSelectController: _multiSelectController,
+        selectionModeController: _selectionModeController,
         controller: widget.controller,
         safeArea: widget.safeArea,
         enablePullToRefresh: widget.enablePullToRefresh ?? true,
-        gridHeader:
-            widget.header ??
-            _GridHeader<T>(
-              multiSelectController: _multiSelectController,
-            ),
+        gridHeader: widget.header ?? _GridHeader<T>(),
         topPageIndicator: Consumer(
           builder: (_, ref, _) {
             final visibleAtTop = ref.watch(
@@ -171,7 +172,6 @@ class _PostGridState<T extends Post> extends State<PostGrid<T>> {
             widget.scrollToTopButton ??
             PostGridScrollToTopButton(
               controller: widget.controller,
-              multiSelectController: _multiSelectController,
               autoScrollController: _autoScrollController,
             ),
         onNextPage: () => _goToNextPage(
@@ -192,13 +192,11 @@ class _PostGridState<T extends Post> extends State<PostGrid<T>> {
                     widget.itemBuilder?.call(
                       context,
                       index,
-                      _multiSelectController,
                       _autoScrollController,
                       !disableHero,
                     ) ??
                     DefaultImageGridItem(
                       index: index,
-                      multiSelectController: _multiSelectController,
                       autoScrollController: _autoScrollController,
                       controller: widget.controller,
                       useHero: !disableHero,
@@ -213,43 +211,46 @@ class _PostGridState<T extends Post> extends State<PostGrid<T>> {
 class PostGridScrollToTopButton extends StatelessWidget {
   const PostGridScrollToTopButton({
     required this.controller,
-    required this.multiSelectController,
     required this.autoScrollController,
     super.key,
     this.bottomPadding,
   });
 
   final PostGridController controller;
-  final MultiSelectController multiSelectController;
   final AutoScrollController autoScrollController;
   final double? bottomPadding;
 
   @override
   Widget build(BuildContext context) {
     final effectiveBottomPadding = bottomPadding ?? 0;
+    final selectionModeController = SelectionMode.of(context);
 
     return _ScrollToTopPositioned(
-      child: ValueListenableBuilder(
-        valueListenable: multiSelectController.multiSelectNotifier,
-        builder: (_, multiSelect, _) => Padding(
-          padding: multiSelect
-              ? EdgeInsets.only(bottom: 60 + effectiveBottomPadding)
-              : EdgeInsets.only(bottom: effectiveBottomPadding),
-          child: ScrollToTop(
-            scrollController: autoScrollController,
-            onBottomReached: () {
-              if (controller.pageMode == PageMode.infinite &&
-                  controller.hasMore) {
-                controller.fetchMore();
-              }
-            },
-            child: BooruScrollToTopButton(
-              onPressed: () {
-                autoScrollController.jumpTo(0);
+      child: ListenableBuilder(
+        listenable: selectionModeController,
+        builder: (_, _) {
+          final multiSelect = selectionModeController.enabled;
+
+          return Padding(
+            padding: multiSelect
+                ? EdgeInsets.only(bottom: 60 + effectiveBottomPadding)
+                : EdgeInsets.only(bottom: effectiveBottomPadding),
+            child: ScrollToTop(
+              scrollController: autoScrollController,
+              onBottomReached: () {
+                if (controller.pageMode == PageMode.infinite &&
+                    controller.hasMore) {
+                  controller.fetchMore();
+                }
               },
+              child: BooruScrollToTopButton(
+                onPressed: () {
+                  autoScrollController.jumpTo(0);
+                },
+              ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }
@@ -338,13 +339,11 @@ final _expandedProvider = StateProvider.autoDispose<bool?>((ref) => null);
 
 class _GridHeader<T extends Post> extends ConsumerWidget {
   const _GridHeader({
-    required this.multiSelectController,
     this.axis = Axis.horizontal,
     super.key,
   });
 
   final Axis axis;
-  final MultiSelectController multiSelectController;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -416,7 +415,6 @@ class _GridHeader<T extends Post> extends ConsumerWidget {
                     hasBlacklist: hasBlacklist,
                     trailing: axis == Axis.horizontal
                         ? PostGridConfigIconButton(
-                            multiSelectController: multiSelectController,
                             postController: controller,
                           )
                         : null,

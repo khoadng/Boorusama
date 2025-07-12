@@ -54,16 +54,9 @@ class _ExplorePopularPageState extends ConsumerState<ExplorePopularPage> {
                   child: PostGrid(
                     controller: controller,
                     safeArea: false,
-                    itemBuilder:
-                        (
-                          context,
-                          index,
-                          multiSelectController,
-                          scrollController,
-                          useHero,
-                        ) => DefaultDanbooruImageGridItem(
+                    itemBuilder: (context, index, scrollController, useHero) =>
+                        DefaultDanbooruImageGridItem(
                           index: index,
-                          multiSelectController: multiSelectController,
                           autoScrollController: scrollController,
                           controller: controller,
                           useHero: useHero,

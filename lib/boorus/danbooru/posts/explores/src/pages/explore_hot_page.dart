@@ -31,16 +31,9 @@ class ExploreHotPage extends ConsumerWidget {
             ref.read(danbooruExploreRepoProvider(config)).getHotPosts(page),
         builder: (context, controller) => PostGrid(
           controller: controller,
-          itemBuilder:
-              (
-                context,
-                index,
-                multiSelectController,
-                scrollController,
-                useHero,
-              ) => DefaultDanbooruImageGridItem(
+          itemBuilder: (context, index, scrollController, useHero) =>
+              DefaultDanbooruImageGridItem(
                 index: index,
-                multiSelectController: multiSelectController,
                 autoScrollController: scrollController,
                 controller: controller,
                 useHero: useHero,

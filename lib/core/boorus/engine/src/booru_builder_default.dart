@@ -211,7 +211,6 @@ mixin DefaultMultiSelectionActionsBuilderMixin on BooruBuilder {
   @override
   MultiSelectionActionsBuilder? get multiSelectionActionsBuilder =>
       (context, controller, postController) => DefaultMultiSelectionActions(
-        controller: controller,
         postController: postController,
       );
 }

@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:background_downloader/background_downloader.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
-import 'package:foundation/widgets.dart';
 import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
+import 'package:selection_mode/selection_mode.dart';
 import 'package:share_plus/share_plus.dart';
 
 // Project imports:
@@ -68,7 +68,11 @@ class DownloadManagerPage extends ConsumerStatefulWidget {
 
 class _DownloadManagerPageState extends ConsumerState<DownloadManagerPage> {
   final scrollController = AutoScrollController();
-  final _multiSelectController = MultiSelectController();
+  final _selectionModeController = SelectionModeController(
+    options: const SelectionModeOptions(
+      selectionBehavior: SelectionBehavior.manual,
+    ),
+  );
 
   @override
   void initState() {
@@ -94,7 +98,7 @@ class _DownloadManagerPageState extends ConsumerState<DownloadManagerPage> {
   @override
   void dispose() {
     scrollController.dispose();
-    _multiSelectController.dispose();
+    _selectionModeController.dispose();
 
     super.dispose();
   }
@@ -104,192 +108,189 @@ class _DownloadManagerPageState extends ConsumerState<DownloadManagerPage> {
     final tasks = ref.watch(downloadFilteredProvider(widget.filter));
     final config = ref.watchConfig;
 
-    return MultiSelectWidget(
-      controller: _multiSelectController,
-      footer: ValueListenableBuilder(
-        valueListenable: _multiSelectController.selectedItemsNotifier,
-        builder: (_, selectedItems, _) => MultiSelectionActionBar(
-          children: [
-            MultiSelectButton(
-              onPressed: selectedItems.isNotEmpty
-                  ? () async {
-                      final futures = selectedItems
-                          .map((index) => tasks[index].task.filePath())
-                          .toList();
-                      final paths = await Future.wait(futures);
+    return SelectionMode(
+      controller: _selectionModeController,
+      scrollController: scrollController,
 
-                      await SharePlus.instance.share(
-                        ShareParams(
-                          files: paths.map((path) => XFile(path)).toList(),
-                        ),
-                      );
-                    }
-                  : null,
-              icon: const Icon(Symbols.share),
-              name: context.t.post.detail.share.image,
-            ),
-          ],
-        ),
-      ),
       child: Scaffold(
-        appBar: _buildAppBar(tasks),
-        body: SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              PopScope(
-                canPop: false,
-                onPopInvokedWithResult: (didPop, result) {
-                  if (didPop) return;
+        appBar: SelectionAppBarBuilder(
+          builder: (context, controller, isSelectionMode) {
+            final group = ref.watch(downloadGroupProvider);
+            final isDefaultGroup = group == FileDownloader.defaultGroup;
 
-                  if (_multiSelectController.multiSelectEnabled) {
-                    _multiSelectController.disableMultiSelect();
-                  } else {
-                    Navigator.of(context).pop();
-                  }
-                },
-                child: const SizedBox.shrink(),
-              ),
-              ValueListenableBuilder(
-                valueListenable: _multiSelectController.multiSelectNotifier,
-                builder: (_, multiSelect, _) => AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 200),
-                  transitionBuilder: (child, animation) => SizeTransition(
-                    sizeFactor: animation,
-                    child: FadeTransition(
-                      opacity: animation,
-                      child: child,
+            return !isSelectionMode
+                ? AppBar(
+                    title: Text(DownloadTranslations.downloadManagerTitle),
+                    actions: [
+                      if (isDefaultGroup)
+                        IconButton(
+                          icon: const Icon(Icons.settings),
+                          onPressed: () {
+                            openDownloadSettingsPage(ref);
+                          },
+                        ),
+                      BooruPopupMenuButton(
+                        onSelected: (value) {
+                          switch (value) {
+                            case 'select':
+                              _selectionModeController.enable();
+                            case 'clear':
+                              // clear default group only
+                              ref
+                                  .read(downloadTaskUpdatesProvider.notifier)
+                                  .clear(
+                                    FileDownloader.defaultGroup,
+                                    onFailed: () {
+                                      showSimpleSnackBar(
+                                        context: context,
+                                        content: Text(
+                                          DownloadTranslations
+                                              .downloadNothingToClear,
+                                        ),
+                                        duration: const Duration(seconds: 1),
+                                      );
+                                    },
+                                  );
+                          }
+                        },
+                        itemBuilder: {
+                          'select': Text('Select'.hc),
+                          'clear': Text('Clear'.hc),
+                        },
+                      ),
+                    ],
+                  )
+                : AppBar(
+                    title: ListenableBuilder(
+                      listenable: controller,
+                      builder: (context, _) {
+                        final selectedItems = controller.selectedItems;
+
+                        return selectedItems.isEmpty
+                            ? Text('Select items'.hc)
+                            : Text(
+                                '${selectedItems.length} Items selected'.hc,
+                              );
+                      },
+                    ),
+                    actions: [
+                      IconButton(
+                        icon: const Icon(Symbols.select_all),
+                        onPressed: () => _selectionModeController.selectAll(
+                          List.generate(
+                            tasks.length,
+                            (index) => index,
+                          ),
+                        ),
+                      ),
+                      IconButton(
+                        icon: const Icon(Symbols.clear_all),
+                        onPressed: () {
+                          _selectionModeController.clearSelected();
+                        },
+                      ),
+                    ],
+                  );
+          },
+        ),
+        body: SafeArea(
+          child: Stack(
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  ListenableBuilder(
+                    listenable: _selectionModeController,
+                    builder: (_, _) {
+                      final multiSelect = _selectionModeController.enabled;
+                      return AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 200),
+                        transitionBuilder: (child, animation) => SizeTransition(
+                          sizeFactor: animation,
+                          child: FadeTransition(
+                            opacity: animation,
+                            child: child,
+                          ),
+                        ),
+                        child: multiSelect
+                            ? const SizedBox.shrink()
+                            : DownloadFilterOptions(
+                                scrollController: scrollController,
+                                filter: widget.filter,
+                              ),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 4),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      child: tasks.isNotEmpty
+                          ? _buildList(tasks, config)
+                          : Column(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 24,
+                                  ),
+                                  child: Text(
+                                    ref
+                                        .watch(
+                                          downloadFilterProvider(widget.filter),
+                                        )
+                                        .emptyLocalize(),
+                                  ),
+                                ),
+                                const Spacer(),
+                              ],
+                            ),
                     ),
                   ),
-                  child: multiSelect
-                      ? const SizedBox.shrink()
-                      : DownloadFilterOptions(
-                          scrollController: scrollController,
-                          filter: widget.filter,
-                        ),
-                ),
+                  RetryAllFailedButton(filter: widget.filter),
+                ],
               ),
-              const SizedBox(height: 4),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  child: tasks.isNotEmpty
-                      ? _buildList(tasks, config)
-                      : Column(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.symmetric(vertical: 24),
-                              child: Text(
-                                ref
-                                    .watch(
-                                      downloadFilterProvider(widget.filter),
-                                    )
-                                    .emptyLocalize(),
-                              ),
-                            ),
-                            const Spacer(),
-                          ],
+              ListenableBuilder(
+                listenable: _selectionModeController,
+                builder: (context, _) {
+                  final selectedItems = _selectionModeController.selectedItems;
+
+                  return Positioned(
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    child: MultiSelectionActionBar(
+                      children: [
+                        MultiSelectButton(
+                          onPressed: selectedItems.isNotEmpty
+                              ? () async {
+                                  final futures = selectedItems
+                                      .map(
+                                        (index) => tasks[index].task.filePath(),
+                                      )
+                                      .toList();
+                                  final paths = await Future.wait(futures);
+
+                                  await SharePlus.instance.share(
+                                    ShareParams(
+                                      files: paths
+                                          .map((path) => XFile(path))
+                                          .toList(),
+                                    ),
+                                  );
+                                }
+                              : null,
+                          icon: const Icon(Symbols.share),
+                          name: context.t.post.detail.share.image,
                         ),
-                ),
+                      ],
+                    ),
+                  );
+                },
               ),
-              RetryAllFailedButton(filter: widget.filter),
             ],
           ),
         ),
       ),
-    );
-  }
-
-  AppBar _buildAppBar(List<TaskUpdate> tasks) {
-    final group = ref.watch(downloadGroupProvider);
-    final isDefaultGroup = group == FileDownloader.defaultGroup;
-
-    return AppBar(
-      title: ValueListenableBuilder(
-        valueListenable: _multiSelectController.multiSelectNotifier,
-        builder: (_, multiSelect, _) => multiSelect
-            ? ValueListenableBuilder(
-                valueListenable: _multiSelectController.selectedItemsNotifier,
-                builder: (_, selected, _) => selected.isEmpty
-                    ? Text('Select items'.hc)
-                    : Text('${selected.length} Items selected'.hc),
-              )
-            : Text(DownloadTranslations.downloadManagerTitle),
-      ),
-      actions: [
-        if (isDefaultGroup)
-          ValueListenableBuilder(
-            valueListenable: _multiSelectController.multiSelectNotifier,
-            builder: (_, multiSelect, _) => !multiSelect
-                ? IconButton(
-                    icon: const Icon(Icons.settings),
-                    onPressed: () {
-                      openDownloadSettingsPage(ref);
-                    },
-                  )
-                : const SizedBox.shrink(),
-          ),
-        ValueListenableBuilder(
-          valueListenable: _multiSelectController.multiSelectNotifier,
-          builder: (_, multiSelect, _) => !multiSelect
-              ? BooruPopupMenuButton(
-                  onSelected: (value) {
-                    switch (value) {
-                      case 'clear':
-                        // clear default group only
-                        ref
-                            .read(downloadTaskUpdatesProvider.notifier)
-                            .clear(
-                              FileDownloader.defaultGroup,
-                              onFailed: () {
-                                showSimpleSnackBar(
-                                  context: context,
-                                  content: Text(
-                                    DownloadTranslations.downloadNothingToClear,
-                                  ),
-                                  duration: const Duration(seconds: 1),
-                                );
-                              },
-                            );
-
-                      case 'select':
-                        _multiSelectController.enableMultiSelect();
-                      default:
-                    }
-                  },
-                  itemBuilder: {
-                    'select': Text('Select'.hc),
-                    if (isDefaultGroup) 'clear': Text('Clear'.hc),
-                  },
-                )
-              : const SizedBox.shrink(),
-        ),
-        ValueListenableBuilder(
-          valueListenable: _multiSelectController.multiSelectNotifier,
-          builder: (_, multiSelect, _) => multiSelect
-              ? IconButton(
-                  onPressed: () => _multiSelectController.selectAll(
-                    List.generate(
-                      tasks.length,
-                      (index) => index,
-                    ),
-                  ),
-                  icon: const Icon(Symbols.select_all),
-                )
-              : const SizedBox.shrink(),
-        ),
-        ValueListenableBuilder(
-          valueListenable: _multiSelectController.multiSelectNotifier,
-          builder: (_, multiSelect, _) => multiSelect
-              ? IconButton(
-                  onPressed: () {
-                    _multiSelectController.clearSelected();
-                  },
-                  icon: const Icon(Symbols.clear_all),
-                )
-              : const SizedBox.shrink(),
-        ),
-      ],
     );
   }
 
@@ -299,12 +300,11 @@ class _DownloadManagerPageState extends ConsumerState<DownloadManagerPage> {
       itemBuilder: (context, index) {
         final task = tasks[index];
         return DownloadSelectableItem(
-          multiSelectController: _multiSelectController,
           index: index,
           item: SimpleDownloadTile(
             task: task,
             onTap: () {
-              _multiSelectController.toggleSelection(index);
+              _selectionModeController.toggleSelection(index);
             },
             onResume: () {
               final dt = castOrNull<DownloadTask>(task.task);

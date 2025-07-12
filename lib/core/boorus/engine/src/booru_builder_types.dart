@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/widgets.dart';
+import 'package:selection_mode/selection_mode.dart';
 
 // Project imports:
 import '../../../configs/config.dart';
@@ -67,7 +67,7 @@ typedef QuickFavoriteButtonBuilder =
 typedef MultiSelectionActionsBuilder =
     Widget Function(
       BuildContext context,
-      MultiSelectController controller,
+      SelectionModeController controller,
       PostGridController<Post> postController,
     );
 

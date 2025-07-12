@@ -9,6 +9,7 @@ import 'package:foundation/widgets.dart';
 import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
+import 'package:selection_mode/selection_mode.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
@@ -49,11 +50,15 @@ class BookmarkScrollView extends ConsumerStatefulWidget {
 }
 
 class _BookmarkScrollViewState extends ConsumerState<BookmarkScrollView> {
-  final _multiSelectController = MultiSelectController();
+  final _selectionModeController = SelectionModeController(
+    options: const SelectionModeOptions(
+      selectionBehavior: SelectionBehavior.manual,
+    ),
+  );
 
   @override
   void dispose() {
-    _multiSelectController.dispose();
+    _selectionModeController.dispose();
 
     super.dispose();
   }
@@ -108,12 +113,11 @@ class _BookmarkScrollViewState extends ConsumerState<BookmarkScrollView> {
             });
 
           return PostGrid(
-            multiSelectController: _multiSelectController,
+            selectionModeController: _selectionModeController,
             scrollController: widget.scrollController,
             controller: controller,
             enablePullToRefresh: false,
             multiSelectActions: DefaultMultiSelectionActions(
-              controller: _multiSelectController,
               postController: controller,
               bookmark: false,
               onBulkDownload: (selectedPosts) {
@@ -144,7 +148,7 @@ class _BookmarkScrollViewState extends ConsumerState<BookmarkScrollView> {
                                 }
                               });
 
-                          _multiSelectController.disableMultiSelect();
+                          _selectionModeController.disable();
                         }
                       : null,
                   icon: const Icon(Symbols.bookmark_remove),
@@ -168,21 +172,14 @@ class _BookmarkScrollViewState extends ConsumerState<BookmarkScrollView> {
                     ),
                   ),
                   PostGridConfigIconButton(
-                    multiSelectController: _multiSelectController,
                     postController: controller,
                     showBlacklist: false,
                   ),
                 ],
               ),
             ),
-            itemBuilder:
-                (
-                  context,
-                  index,
-                  multiSelectController,
-                  autoScrollController,
-                  useHero,
-                ) => _buildItem(
+            itemBuilder: (context, index, autoScrollController, useHero) =>
+                _buildItem(
                   index,
                   controller,
                 ),
@@ -244,7 +241,6 @@ class _BookmarkScrollViewState extends ConsumerState<BookmarkScrollView> {
           children: [
             DefaultImageGridItem(
               index: index,
-              multiSelectController: _multiSelectController,
               autoScrollController: widget.scrollController,
               controller: controller,
               imageUrl: post.isVideo

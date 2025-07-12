@@ -10,6 +10,7 @@ import 'package:foundation/widgets.dart';
 import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
+import 'package:selection_mode/selection_mode.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
@@ -17,6 +18,7 @@ import '../../../../../foundation/display.dart';
 import '../../../../../foundation/keyboard.dart';
 import '../../../../settings/settings.dart';
 import '../../../../theme/app_theme.dart';
+import '../../../../widgets/animated_footer.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../post/post.dart';
 import '../utils/conditional_value_listenable_builder.dart';
@@ -44,7 +46,7 @@ class RawPostGrid<T extends Post> extends StatefulWidget {
     this.footer,
     this.header,
     this.blacklistedIdString,
-    this.multiSelectController,
+    this.selectionModeController,
     this.refreshAtStart = true,
     this.enablePullToRefresh = true,
     this.safeArea = true,
@@ -71,7 +73,7 @@ class RawPostGrid<T extends Post> extends StatefulWidget {
 
   final String? blacklistedIdString;
 
-  final MultiSelectController? multiSelectController;
+  final SelectionModeController? selectionModeController;
 
   final PostGridController<T> controller;
 
@@ -82,7 +84,7 @@ class RawPostGrid<T extends Post> extends StatefulWidget {
 class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
     with TickerProviderStateMixin, KeyboardListenerMixin {
   late final AutoScrollController _autoScrollController;
-  late final MultiSelectController _multiSelectController;
+  late final SelectionModeController _selectionModeController;
 
   PostGridController<T> get controller => widget.controller;
 
@@ -96,8 +98,13 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
   void initState() {
     super.initState();
     _autoScrollController = widget.scrollController ?? AutoScrollController();
-    _multiSelectController =
-        widget.multiSelectController ?? MultiSelectController();
+    _selectionModeController =
+        widget.selectionModeController ??
+        SelectionModeController(
+          options: const SelectionModeOptions(
+            selectionBehavior: SelectionBehavior.manual,
+          ),
+        );
 
     controller.addListener(_onControllerChange);
     if (widget.refreshAtStart) {
@@ -124,8 +131,8 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
       _autoScrollController.dispose();
     }
 
-    if (widget.multiSelectController == null) {
-      _multiSelectController.dispose();
+    if (widget.selectionModeController == null) {
+      _selectionModeController.dispose();
     }
 
     widget.controller.removeListener(_onControllerChange);
@@ -141,8 +148,8 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
       refreshing.value = true;
 
       // reset multi select if something is selected
-      if (_multiSelectController.selectedItems.isNotEmpty) {
-        _multiSelectController.clearSelected();
+      if (_selectionModeController.selectedItems.isNotEmpty) {
+        _selectionModeController.clearSelected();
       }
 
       return;
@@ -176,35 +183,40 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
           left: false,
           child: child,
         ),
-        child: MultiSelectWidget(
+        child: _SelectionMode(
           footer: widget.footer,
-          controller: _multiSelectController,
+          selectionModeController: _selectionModeController,
+          autoScrollController: _autoScrollController,
           header: widget.header != null
               ? widget.header!
               : AppBar(
                   leading: IconButton(
-                    onPressed: () =>
-                        _multiSelectController.disableMultiSelect(),
+                    onPressed: () => _selectionModeController.disable(),
                     icon: const Icon(Symbols.close),
                   ),
                   actions: [
                     IconButton(
-                      onPressed: () => _multiSelectController.selectAll(
-                        items.map((e) => e.id).toList(),
+                      onPressed: () => _selectionModeController.selectAll(
+                        List.generate(
+                          items.length,
+                          (index) => index,
+                        ),
                       ),
                       icon: const Icon(Symbols.select_all),
                     ),
                     IconButton(
-                      onPressed: _multiSelectController.clearSelected,
+                      onPressed: _selectionModeController.clearSelected,
                       icon: const Icon(Symbols.clear_all),
                     ),
                   ],
-                  title: ValueListenableBuilder(
-                    valueListenable:
-                        _multiSelectController.selectedItemsNotifier,
-                    builder: (_, selected, _) => selected.isEmpty
-                        ? Text('Select items'.hc)
-                        : Text('${selected.length} Items selected'.hc),
+                  title: ListenableBuilder(
+                    listenable: _selectionModeController,
+                    builder: (_, _) {
+                      final selected = _selectionModeController.selectedItems;
+                      return selected.isEmpty
+                          ? Text('Select items'.hc)
+                          : Text('${selected.length} Items selected'.hc);
+                    },
                   ),
                 ),
           child: _Scaffold(
@@ -218,7 +230,7 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
                     : (_) => false,
                 onRefresh: () async {
                   widget.onRefresh?.call();
-                  _multiSelectController.clearSelected();
+                  _selectionModeController.clearSelected();
                   await controller.refresh(
                     maintainPage: true,
                   );
@@ -238,31 +250,19 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
                   child: _CustomScrollView(
                     controller: _autoScrollController,
                     slivers: [
-                      SliverToBoxAdapter(
-                        child: ValueListenableBuilder(
-                          valueListenable:
-                              _multiSelectController.multiSelectNotifier,
-                          builder: (_, multiSelect, _) => PopScope(
-                            canPop: !multiSelect,
-                            onPopInvokedWithResult: (didPop, _) {
-                              if (didPop) return;
-                              if (multiSelect) {
-                                _multiSelectController.disableMultiSelect();
-                              }
-                            },
-                            child: const SizedBox.shrink(),
-                          ),
-                        ),
-                      ),
                       if (widget.sliverHeaders != null)
                         ...widget.sliverHeaders!.map(
-                          (e) => ValueListenableBuilder(
-                            valueListenable:
-                                _multiSelectController.multiSelectNotifier,
-                            builder: (_, multiSelect, _) => SliverOffstage(
-                              offstage: multiSelect,
-                              sliver: e,
-                            ),
+                          (e) => ListenableBuilder(
+                            listenable: _selectionModeController,
+                            builder: (_, _) {
+                              final multiSelect =
+                                  _selectionModeController.enabled;
+
+                              return SliverOffstage(
+                                offstage: multiSelect,
+                                sliver: e,
+                              );
+                            },
                           ),
                         ),
                       SliverToBoxAdapter(
@@ -343,7 +343,7 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
                           ),
                         ),
                       _SliverBottomGridPadding(
-                        multiSelectController: _multiSelectController,
+                        selectionModeController: _selectionModeController,
                         pageMode: pageMode,
                       ),
                     ],
@@ -460,6 +460,61 @@ class PostGridConstraints extends InheritedWidget {
   }
 }
 
+class _SelectionMode extends StatelessWidget {
+  const _SelectionMode({
+    required this.selectionModeController,
+    required this.child,
+    this.footer,
+    this.header,
+    this.autoScrollController,
+  });
+
+  final Widget? footer;
+  final Widget? header;
+  final Widget child;
+  final SelectionModeController selectionModeController;
+  final AutoScrollController? autoScrollController;
+
+  @override
+  Widget build(BuildContext context) {
+    return SelectionMode(
+      controller: selectionModeController,
+      scrollController: autoScrollController,
+      child: ListenableBuilder(
+        listenable: selectionModeController,
+        builder: (context, _) {
+          final controller = selectionModeController;
+          final multiSelect = controller.enabled;
+
+          return Stack(
+            children: [
+              Column(
+                children: [
+                  if (multiSelect && header != null)
+                    SizedBox(
+                      height: kToolbarHeight,
+                      child: header,
+                    ),
+                  Expanded(child: child),
+                ],
+              ),
+              if (footer case final Widget footer)
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  child: SelectionModeAnimatedFooter(
+                    child: footer,
+                  ),
+                ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+}
+
 class _CustomScrollView extends StatefulWidget {
   const _CustomScrollView({
     required this.slivers,
@@ -519,20 +574,21 @@ class _CustomScrollViewState extends State<_CustomScrollView> {
 
 class _SliverBottomGridPadding extends StatelessWidget {
   const _SliverBottomGridPadding({
-    required this.multiSelectController,
+    required this.selectionModeController,
     required this.pageMode,
   });
 
-  final MultiSelectController multiSelectController;
+  final SelectionModeController selectionModeController;
   final PageMode pageMode;
 
   @override
   Widget build(BuildContext context) {
     final bottomPadding = MediaQuery.viewPaddingOf(context).bottom;
 
-    return ValueListenableBuilder(
-      valueListenable: multiSelectController.multiSelectNotifier,
-      builder: (_, multiSelect, _) {
+    return ListenableBuilder(
+      listenable: selectionModeController,
+      builder: (_, _) {
+        final multiSelect = selectionModeController.enabled;
         return SliverSizedBox(
           height: switch (pageMode) {
             PageMode.infinite =>

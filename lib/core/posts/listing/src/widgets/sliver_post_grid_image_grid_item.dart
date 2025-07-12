@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 import 'package:foundation/widgets.dart';
+import 'package:selection_mode/selection_mode.dart';
 
 // Project imports:
 import '../../../../boorus/engine/providers.dart';
@@ -28,6 +29,7 @@ class BlockOverlayItem {
 class SliverPostGridImageGridItem<T extends Post> extends ConsumerWidget {
   const SliverPostGridImageGridItem({
     required this.post,
+    required this.index,
     required this.quickActionButton,
     required this.autoScrollOptions,
     required this.onTap,
@@ -40,6 +42,7 @@ class SliverPostGridImageGridItem<T extends Post> extends ConsumerWidget {
   });
 
   final T post;
+  final int index;
   final Widget? quickActionButton;
   final AutoScrollOptions? autoScrollOptions;
   final VoidCallback? onTap;
@@ -85,7 +88,9 @@ class SliverPostGridImageGridItem<T extends Post> extends ConsumerWidget {
                 quickActionButton: quickActionButton,
                 autoScrollOptions: autoScrollOptions,
                 onTap: multiSelectEnabled
-                    ? null
+                    ? () {
+                        SelectionMode.of(context).toggleSelection(index);
+                      }
                     : () {
                         if (gestures.canTap && postGesturesHandler != null) {
                           postGesturesHandler(

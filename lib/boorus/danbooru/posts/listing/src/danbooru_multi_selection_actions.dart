@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/widgets.dart';
 import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:selection_mode/selection_mode.dart';
 
 // Project imports:
 import '../../../../../core/configs/ref.dart';
@@ -24,20 +24,18 @@ import '../../post/post.dart';
 
 class DanbooruMultiSelectionActions extends ConsumerWidget {
   const DanbooruMultiSelectionActions({
-    required this.controller,
     required this.postController,
     super.key,
   });
 
-  final MultiSelectController controller;
   final PostGridController<DanbooruPost> postController;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfigAuth;
+    final controller = SelectionMode.of(context);
 
     return DefaultMultiSelectionActions(
-      controller: controller,
       postController: postController,
       extraActions: (selectedPosts) => [
         if (config.hasLoginDetails())
@@ -49,7 +47,7 @@ class DanbooruMultiSelectionActions extends ConsumerWidget {
                       selectedPosts,
                     );
                     if (shouldEnd != null && shouldEnd) {
-                      controller.disableMultiSelect();
+                      controller.disable();
                     }
                   }
                 : null,
@@ -72,7 +70,7 @@ class DanbooruMultiSelectionActions extends ConsumerWidget {
                                         selectedPosts,
                                       );
                                   if (shouldEnd != null && shouldEnd) {
-                                    controller.disableMultiSelect();
+                                    controller.disable();
                                   }
                                 }
                               : null,

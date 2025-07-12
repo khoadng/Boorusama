@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/widgets.dart';
 import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:selection_mode/selection_mode.dart';
 
 // Project imports:
 import '../../../../../boorus/danbooru/blacklist/routes.dart';
@@ -29,21 +29,21 @@ import '../widgets/post_grid_controller.dart';
 class PostGridConfigIconButton<T> extends ConsumerWidget {
   const PostGridConfigIconButton({
     required this.postController,
-    required this.multiSelectController,
     super.key,
     this.showBlacklist = true,
   });
 
   final PostGridController<Post> postController;
-  final MultiSelectController multiSelectController;
   final bool showBlacklist;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return ValueListenableBuilder(
-      valueListenable: multiSelectController.multiSelectNotifier,
-      builder: (context, multiSelect, child) {
-        return !multiSelect
+    final selectionModeController = SelectionMode.of(context);
+
+    return ListenableBuilder(
+      listenable: selectionModeController,
+      builder: (context, _) {
+        return !selectionModeController.enabled
             ? _buildMenuButton(context, ref)
             : const SizedBox.shrink();
       },
@@ -63,6 +63,7 @@ class PostGridConfigIconButton<T> extends ConsumerWidget {
         final blacklistEntries = ref
             .watch(blacklistTagEntriesProvider(config))
             .valueOrNull;
+        final selectionModeController = SelectionMode.of(context);
 
         return ValueListenableBuilder(
           valueListenable: postController.itemsNotifier,
@@ -84,7 +85,7 @@ class PostGridConfigIconButton<T> extends ConsumerWidget {
                         if (value == 'options') {
                           _showViewOptions(context, settingsNotifier);
                         } else if (value == 'select') {
-                          multiSelectController.enableMultiSelect();
+                          selectionModeController.enable();
                         } else if (value == 'stats') {
                           if (postStatsPageBuilder != null) {
                             Navigator.of(context).push(

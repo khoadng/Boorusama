@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/widgets.dart';
 import 'package:i18n/i18n.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
+import 'package:selection_mode/selection_mode.dart';
 
 // Project imports:
 import '../../../../../core/boorus/engine/engine.dart';
@@ -28,7 +28,6 @@ import 'danbooru_post_context_menu.dart';
 class DefaultDanbooruImageGridItem extends StatelessWidget {
   const DefaultDanbooruImageGridItem({
     required this.index,
-    required this.multiSelectController,
     required this.autoScrollController,
     required this.controller,
     super.key,
@@ -39,7 +38,6 @@ class DefaultDanbooruImageGridItem extends StatelessWidget {
   });
 
   final int index;
-  final MultiSelectController multiSelectController;
   final AutoScrollController autoScrollController;
   final PostGridController<DanbooruPost> controller;
   final BlockOverlayItem? blockOverlay;
@@ -49,12 +47,15 @@ class DefaultDanbooruImageGridItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: multiSelectController.multiSelectNotifier,
-      builder: (_, multiSelect, _) => ValueListenableBuilder(
+    final selectionModeController = SelectionMode.of(context);
+
+    return ListenableBuilder(
+      listenable: selectionModeController,
+      builder: (_, _) => ValueListenableBuilder(
         valueListenable: controller.itemsNotifier,
         builder: (_, posts, _) {
           final post = posts[index];
+          final multiSelect = selectionModeController.enabled;
 
           final artistTags = [...post.artistTags]..remove('banned_artist');
 
@@ -64,8 +65,8 @@ class DefaultDanbooruImageGridItem extends StatelessWidget {
                 contextMenu ??
                 DanbooruPostContextMenu(
                   onMultiSelect: () {
-                    multiSelectController.enableMultiSelect(
-                      initialSelected: [post.id],
+                    selectionModeController.enable(
+                      initialSelected: [index],
                     );
                   },
                   post: post,
@@ -96,6 +97,7 @@ class DefaultDanbooruImageGridItem extends StatelessWidget {
                           );
                           return SliverPostGridImageGridItem(
                             post: post,
+                            index: index,
                             multiSelectEnabled: multiSelect,
                             quickActionButton:
                                 !post.isBanned &&
@@ -138,14 +140,11 @@ class DefaultDanbooruImageGridItem extends StatelessWidget {
                         },
                       );
 
-                      return multiSelect
-                          ? DefaultSelectableItem(
-                              multiSelectController: multiSelectController,
-                              index: index,
-                              post: post,
-                              item: item,
-                            )
-                          : item;
+                      return DefaultSelectableItem(
+                        index: index,
+                        post: post,
+                        item: item,
+                      );
                     },
                   ),
                 ),

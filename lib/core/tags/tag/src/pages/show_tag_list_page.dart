@@ -144,7 +144,6 @@ class ShowTagListPageInternal extends ConsumerStatefulWidget {
 class _ShowTagListPageState extends ConsumerState<ShowTagListPageInternal> {
   late final _selectionModeController = SelectionModeController(
     options: const SelectionModeOptions(
-      enableLongPress: false,
       selectionBehavior: SelectionBehavior.manual,
     ),
     initialEnabled: widget.initiallyMultiSelectEnabled,
