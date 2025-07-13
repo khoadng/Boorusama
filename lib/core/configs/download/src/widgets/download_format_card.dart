@@ -8,7 +8,7 @@ import 'package:i18n/i18n.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
-import '../../../../boorus/engine/providers.dart';
+import '../../../../downloads/filename/providers.dart';
 import '../../../../downloads/filename/types.dart';
 import '../../../../posts/post/post.dart';
 import '../../../config/types.dart';

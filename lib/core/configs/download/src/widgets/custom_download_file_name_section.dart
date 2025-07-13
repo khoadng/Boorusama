@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
-import '../../../../boorus/engine/providers.dart';
+import '../../../../downloads/filename/providers.dart';
 import '../../../config/types.dart';
 import 'available_tokens.dart';
 import 'download_format_card.dart';

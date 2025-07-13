@@ -9,10 +9,10 @@ import 'package:i18n/i18n.dart';
 // Project imports:
 import '../../../../../core/bookmarks/bookmark.dart';
 import '../../../../../core/bookmarks/providers.dart';
-import '../../../../../core/boorus/engine/providers.dart';
 import '../../../../../core/configs/ref.dart';
 import '../../../../../core/downloads/downloader/providers.dart';
 import '../../../../../core/posts/post/post.dart';
+import '../../../../../core/posts/post/providers.dart';
 import '../../../../../core/router.dart';
 import '../../../../../core/tags/tag/routes.dart';
 import '../../../../../foundation/url_launcher.dart';

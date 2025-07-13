@@ -7,13 +7,13 @@ import 'package:i18n/i18n.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
-import '../../../../boorus/engine/providers.dart';
 import '../../../../configs/ref.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../queries/query_utils.dart';
 import '../../../selected_tags/tag_search_item.dart';
 import '../../../suggestions/suggestions_notifier.dart';
 import '../../../suggestions/tag_suggestion_items.dart';
+import '../../../syntax/providers.dart';
 
 class SelectedTagEditDialog extends ConsumerStatefulWidget {
   const SelectedTagEditDialog({

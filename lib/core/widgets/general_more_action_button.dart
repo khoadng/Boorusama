@@ -7,11 +7,11 @@ import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../foundation/url_launcher.dart';
-import '../boorus/engine/providers.dart';
 import '../configs/config.dart';
 import '../downloads/downloader/providers.dart';
 import '../images/copy.dart';
 import '../posts/post/post.dart';
+import '../posts/post/providers.dart';
 import '../posts/post/routes.dart';
 import '../settings/routes.dart';
 import '../tags/tag/routes.dart';
@@ -82,8 +82,9 @@ class GeneralMoreActionButton extends ConsumerWidget with CopyImageMixin {
               'view_in_browser': Text(context.t.post.detail.view_in_browser),
             if (post.tags.isNotEmpty) 'show_tag_list': Text('View tags'.hc),
             if (post.hasFullView)
-              'view_original':
-                  Text(context.t.post.image_fullview.view_original),
+              'view_original': Text(
+                context.t.post.image_fullview.view_original,
+              ),
             if (onStartSlideshow != null)
               'start_slideshow': Text('Slideshow'.hc),
             'settings': Text(context.t.settings.settings),

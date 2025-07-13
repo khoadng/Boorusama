@@ -6,11 +6,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
-import '../../../../../../core/boorus/engine/providers.dart';
 import '../../../../../../core/configs/config.dart';
 import '../../../../../../core/downloads/downloader/providers.dart';
 import '../../../../../../core/images/copy.dart';
 import '../../../../../../core/posts/post/post.dart';
+import '../../../../../../core/posts/post/providers.dart';
 import '../../../../../../core/posts/post/routes.dart';
 import '../../../../../../core/settings/routes.dart';
 import '../../../../../../core/tags/tag/routes.dart';
@@ -79,15 +79,17 @@ class DanbooruMoreActionButton extends ConsumerWidget with CopyImageMixin {
             'download': Text(context.t.download.download),
             'copy_image': Text('Copy image'.hc),
             if (config.hasLoginDetails())
-              'add_to_favgroup':
-                  Text(context.t.post.action.add_to_favorite_group),
+              'add_to_favgroup': Text(
+                context.t.post.action.add_to_favorite_group,
+              ),
             if (post.tags.isNotEmpty) 'show_tag_list': Text('View tags'.hc),
             'tag_history': Text('View tag history'.hc),
             if (!config.hasStrictSFW)
               'view_in_browser': Text(context.t.post.detail.view_in_browser),
             if (post.hasFullView)
-              'view_original':
-                  Text(context.t.post.image_fullview.view_original),
+              'view_original': Text(
+                context.t.post.image_fullview.view_original,
+              ),
             if (onStartSlideshow != null)
               'start_slideshow': Text('Slideshow'.hc),
             'settings': Text(context.t.settings.settings),

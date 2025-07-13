@@ -16,6 +16,7 @@ import '../../../../downloads/downloader/providers.dart';
 import '../../../../router.dart';
 import '../../../../tags/tag/routes.dart';
 import '../../../post/post.dart';
+import '../../../post/providers.dart';
 
 class GeneralPostContextMenu extends ConsumerWidget {
   const GeneralPostContextMenu({

@@ -8,11 +8,11 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 // Project imports:
 import '../../../../foundation/html.dart';
-import '../../../boorus/engine/providers.dart';
 import '../../../configs/config.dart';
 import '../../../configs/ref.dart';
 import '../../../dtext/dtext.dart';
 import '../../../widgets/widgets.dart';
+import '../data/providers.dart';
 import '../types/comment.dart';
 import '../widgets/comment_header.dart';
 

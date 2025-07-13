@@ -2,10 +2,10 @@
 import 'package:dio/dio.dart';
 
 // Project imports:
-import '../../../../foundation/caching.dart';
-import 'types/tag.dart';
-import 'types/tag_display.dart';
-import 'types/tag_repository.dart';
+import '../../../../../foundation/caching.dart';
+import '../types/tag.dart';
+import '../types/tag_display.dart';
+import '../types/tag_repository.dart';
 
 bool storeTagLargerThan1000Posts(Tag tag) => tag.postCount > 1000;
 

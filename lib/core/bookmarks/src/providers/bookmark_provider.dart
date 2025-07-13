@@ -28,6 +28,7 @@ import '../../../downloads/downloader/types.dart';
 import '../../../downloads/filename/types.dart';
 import '../../../http/providers.dart';
 import '../../../posts/post/post.dart';
+import '../../../posts/post/providers.dart';
 import '../../../settings/providers.dart';
 import '../data/bookmark_convert.dart';
 import '../data/providers.dart';

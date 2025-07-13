@@ -25,6 +25,7 @@ import 'package:boorusama/core/configs/manage/providers.dart';
 import 'package:boorusama/core/download_manager/providers.dart';
 import 'package:boorusama/core/downloads/downloader/providers.dart';
 import 'package:boorusama/core/downloads/downloader/types.dart';
+import 'package:boorusama/core/downloads/filename/providers.dart';
 import 'package:boorusama/core/downloads/filename/types.dart';
 import 'package:boorusama/core/downloads/urls/providers.dart';
 import 'package:boorusama/core/http/providers.dart';

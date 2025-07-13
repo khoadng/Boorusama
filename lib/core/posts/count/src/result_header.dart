@@ -25,13 +25,15 @@ class ResultHeaderWithProvider extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfigSearch;
+    final params = (config, selectedTagsString);
     final fetcher = ref.watch(postCountRepoProvider(ref.watchConfigSearch));
 
     if (fetcher == null) return const SizedBox.shrink();
 
     final provider = cache
-        ? cachedPostCountProvider(selectedTagsString)
-        : postCountProvider(selectedTagsString);
+        ? cachedPostCountProvider(params)
+        : postCountProvider(params);
 
     return ref
         .watch(provider)
