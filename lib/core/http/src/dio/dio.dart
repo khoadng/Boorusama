@@ -28,6 +28,7 @@ Dio newGenericDio({
   Map<String, dynamic>? headers,
   ProxySettings? proxySettings,
   bool? cronetAvailable,
+  List<Interceptor>? additionalInterceptors,
 }) {
   final dio =
       Dio(
@@ -57,10 +58,17 @@ Dio newGenericDio({
     );
   }
 
+  for (final interceptor in additionalInterceptors ?? []) {
+    dio.interceptors.add(interceptor);
+  }
+
   return dio;
 }
 
-Dio newDio({required DioOptions options}) {
+Dio newDio({
+  required DioOptions options,
+  List<Interceptor>? additionalInterceptors,
+}) {
   final booruConfig = options.authConfig;
   final booruDb = options.booruDb;
   final baseUrl = options.baseUrl;
@@ -79,6 +87,7 @@ Dio newDio({required DioOptions options}) {
     supportsHttp2: supportsHttp2,
     proxySettings: options.proxySettings,
     cronetAvailable: options.cronetAvailable,
+    additionalInterceptors: additionalInterceptors,
   );
 
   final context = navigatorKey.currentContext;

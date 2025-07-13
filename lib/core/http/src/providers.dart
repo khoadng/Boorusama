@@ -7,7 +7,6 @@ import 'package:flutter/widgets.dart';
 // Package imports:
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../../foundation/info/app_info.dart';
@@ -27,11 +26,12 @@ import 'cookie_jar_providers.dart';
 import 'dio/dio.dart';
 import 'dio/dio_options.dart';
 import 'http_utils.dart';
+import 'user_agent.dart';
 
 final defaultDioProvider = Provider.family<Dio, BooruConfigAuth>((ref, config) {
   final ddosProtectionHandler = ref.watch(httpDdosProtectionBypassHandler);
-  final appVersion = ref.watch(packageInfoProvider).version;
-  final appName = ref.watch(appInfoProvider).appName;
+  final packageInfo = ref.watch(packageInfoProvider);
+  final appInfo = ref.watch(appInfoProvider);
   final loggerService = ref.watch(loggerProvider);
   final booruDb = ref.watch(booruDbProvider);
   final cronetAvailable = ref.watch(isGooglePlayServiceAvailableProvider);
@@ -39,7 +39,7 @@ final defaultDioProvider = Provider.family<Dio, BooruConfigAuth>((ref, config) {
   return newDio(
     options: DioOptions(
       ddosProtectionHandler: ddosProtectionHandler,
-      userAgent: '${appName.sentenceCase}/$appVersion',
+      userAgent: getDefaultUserAgent(appInfo, packageInfo),
       authConfig: config,
       loggerService: loggerService,
       booruDb: booruDb,

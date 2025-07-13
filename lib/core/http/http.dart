@@ -4,3 +4,4 @@ export 'src/dio/dio_ext.dart';
 export 'src/network_protocol.dart';
 export 'src/dio/dio_options.dart';
 export 'src/dio/dio.dart';
+export 'src/user_agent.dart';
