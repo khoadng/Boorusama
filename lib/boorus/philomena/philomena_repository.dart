@@ -10,12 +10,12 @@ import '../../core/boorus/engine/engine.dart';
 import '../../core/configs/config.dart';
 import '../../core/configs/create/create.dart';
 import '../../core/downloads/filename/types.dart';
-import '../../core/http/providers.dart';
 import '../../core/posts/post/post.dart';
 import '../../core/posts/post/providers.dart';
 import '../../core/tags/autocompletes/types.dart';
 import '../../core/tags/tag/colors.dart';
 import '../../core/theme.dart';
+import 'client_provider.dart';
 import 'posts/providers.dart';
 import 'tags/providers.dart';
 
@@ -37,7 +37,7 @@ class PhilomenaRepository extends BooruRepositoryDefault {
 
   @override
   BooruSiteValidator? siteValidator(BooruConfigAuth config) {
-    final dio = ref.watch(defaultDioProvider(config));
+    final dio = ref.watch(philomenaDioProvider(config));
 
     return () => PhilomenaClient(
       baseUrl: config.url,

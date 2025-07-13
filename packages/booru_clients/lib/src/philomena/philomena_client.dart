@@ -2,6 +2,7 @@
 import 'package:dio/dio.dart';
 
 // Project imports:
+import 'types/constants.dart';
 import 'types/types.dart';
 
 typedef PhilomenaImages = ({List<ImageDto> images, int? count});
@@ -35,7 +36,7 @@ class PhilomenaClient {
     int? perPage,
   }) async {
     final response = await _dio.get(
-      '/api/v1/json/search/images',
+      '$kAPISearchPath/images',
       queryParameters: {
         if (tags != null)
           'q': tags.map((e) => e.replaceAll('_', ' ')).join(','),
@@ -75,7 +76,7 @@ class PhilomenaClient {
     int? perPage,
   }) async {
     final response = await _dio.get(
-      '/api/v1/json/search/tags',
+      '$kAPISearchPath/tags',
       queryParameters: {
         'q': query.replaceAll('_', ' '),
         if (page != null) 'page': page,
