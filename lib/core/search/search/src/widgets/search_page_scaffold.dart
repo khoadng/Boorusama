@@ -89,8 +89,8 @@ class _SearchPageScaffoldState<T extends Post>
   late final SearchPageController _controller;
   final SelectionModeController _multiSelectController =
       SelectionModeController(
-        options: const SelectionModeOptions(
-          selectionBehavior: SelectionBehavior.manual,
+        options: const SelectionOptions(
+          behavior: SelectionBehavior.manual,
         ),
       );
   PostGridController<T>? _postController;

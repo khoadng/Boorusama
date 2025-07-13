@@ -89,7 +89,7 @@ class SliverPostGridImageGridItem<T extends Post> extends ConsumerWidget {
                 autoScrollOptions: autoScrollOptions,
                 onTap: multiSelectEnabled
                     ? () {
-                        SelectionMode.of(context).toggleSelection(index);
+                        SelectionMode.of(context).toggleItem(index);
                       }
                     : () {
                         if (gestures.canTap && postGesturesHandler != null) {

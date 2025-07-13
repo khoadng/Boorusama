@@ -57,7 +57,7 @@ class DefaultImageGridItem<T extends Post> extends StatelessWidget {
       builder: (context, _) => ValueListenableBuilder(
         valueListenable: controller.itemsNotifier,
         builder: (_, posts, _) {
-          final multiSelect = selectionModeController.enabled;
+          final multiSelect = selectionModeController.isActive;
           final post = posts[index];
           return DefaultPostListContextMenuRegion(
             isEnabled: !multiSelect,

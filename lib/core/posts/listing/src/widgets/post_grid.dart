@@ -80,8 +80,8 @@ class _PostGridState<T extends Post> extends State<PostGrid<T>> {
   late final _selectionModeController =
       widget.selectionModeController ??
       SelectionModeController(
-        options: const SelectionModeOptions(
-          selectionBehavior: SelectionBehavior.manual,
+        options: const SelectionOptions(
+          behavior: SelectionBehavior.manual,
         ),
       );
 
@@ -229,7 +229,7 @@ class PostGridScrollToTopButton extends StatelessWidget {
       child: ListenableBuilder(
         listenable: selectionModeController,
         builder: (_, _) {
-          final multiSelect = selectionModeController.enabled;
+          final multiSelect = selectionModeController.isActive;
 
           return Padding(
             padding: multiSelect

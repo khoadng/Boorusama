@@ -55,7 +55,7 @@ class DefaultDanbooruImageGridItem extends StatelessWidget {
         valueListenable: controller.itemsNotifier,
         builder: (_, posts, _) {
           final post = posts[index];
-          final multiSelect = selectionModeController.enabled;
+          final multiSelect = selectionModeController.isActive;
 
           final artistTags = [...post.artistTags]..remove('banned_artist');
 

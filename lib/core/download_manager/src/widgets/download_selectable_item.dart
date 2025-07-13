@@ -20,8 +20,8 @@ class DownloadSelectableItem extends StatelessWidget {
       index: index,
       builder: (context, isSelected) {
         final controller = SelectionMode.of(context);
-        final multiSelect = controller.enabled;
-        final selectedItems = controller.selectedItems;
+        final multiSelect = controller.isActive;
+        final selectedItems = controller.selection;
 
         return Row(
           children: [
@@ -37,7 +37,7 @@ class DownloadSelectableItem extends StatelessWidget {
                         value: selectedItems.contains(index),
                         onChanged: (value) {
                           if (value == null) return;
-                          controller.toggleSelection(index);
+                          controller.toggleItem(index);
                         },
                       )
                     : const SizedBox.shrink(),

@@ -151,14 +151,14 @@ class _SearchPageScaffoldState<T extends Post>
     _tagsController.addListener(_onSelectedTagChanged);
     _controller.tagString.addListener(_onTagChanged);
 
-    _previousMultiSelectState = _selectionModeController.enabled;
+    _previousMultiSelectState = _selectionModeController.isActive;
     _selectionModeController.addListener(
       _onMultiSelectChanged,
     );
   }
 
   void _onMultiSelectChanged() {
-    final currentSelected = _selectionModeController.enabled;
+    final currentSelected = _selectionModeController.isActive;
 
     if (_previousMultiSelectState != currentSelected) {
       final currentOffset = _scrollController.offset;
@@ -498,7 +498,7 @@ class __ScrollToTopButtonPaddingState
     return ListenableBuilder(
       listenable: widget.selectionModeController,
       builder: (_, _) {
-        final multiSelect = widget.selectionModeController.enabled;
+        final multiSelect = widget.selectionModeController.isActive;
         if (multiSelect || searchBarPosition == SearchBarPosition.top) {
           return widget.builder(context, 1);
         }
@@ -568,7 +568,7 @@ class __SearchBarPositionedState extends ConsumerState<_SearchBarPositioned> {
           child: ListenableBuilder(
             listenable: widget.selectionModeController,
             builder: (context, _) {
-              final multiSelect = widget.selectionModeController.enabled;
+              final multiSelect = widget.selectionModeController.isActive;
               return AnimatedBuilder(
                 animation: _searchBarCurve,
                 builder: (context, _) {
@@ -621,7 +621,7 @@ class _Displacement extends ConsumerWidget {
         third: controller.didSearchOnce,
 
         builder: (_, value, state, searchOnce) {
-          final multiSelect = selectionModeController.enabled;
+          final multiSelect = selectionModeController.isActive;
           if (multiSelect) {
             return const SizedBox.shrink();
           }

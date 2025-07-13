@@ -143,8 +143,8 @@ class ShowTagListPageInternal extends ConsumerStatefulWidget {
 
 class _ShowTagListPageState extends ConsumerState<ShowTagListPageInternal> {
   late final _selectionModeController = SelectionModeController(
-    options: const SelectionModeOptions(
-      selectionBehavior: SelectionBehavior.manual,
+    options: const SelectionOptions(
+      behavior: SelectionBehavior.manual,
     ),
     initialEnabled: widget.initiallyMultiSelectEnabled,
   );
@@ -193,7 +193,7 @@ class _ShowTagListPageState extends ConsumerState<ShowTagListPageInternal> {
                     title: ListenableBuilder(
                       listenable: controller,
                       builder: (context, _) {
-                        final selectedItems = controller.selectedItems;
+                        final selectedItems = controller.selection;
 
                         return selectedItems.isEmpty
                             ? Text('Select tags'.hc)
@@ -213,7 +213,7 @@ class _ShowTagListPageState extends ConsumerState<ShowTagListPageInternal> {
                         icon: const Icon(Symbols.select_all),
                       ),
                       IconButton(
-                        onPressed: () => controller.clearSelected(),
+                        onPressed: () => controller.deselectAll(),
                         icon: const Icon(Symbols.clear_all),
                       ),
                       IconButton(
@@ -283,7 +283,7 @@ class _ShowTagListPageState extends ConsumerState<ShowTagListPageInternal> {
   }
 
   Widget _buildContent(BuildContext context) {
-    final selectedItems = _selectionModeController.selectedItems;
+    final selectedItems = _selectionModeController.selection;
 
     return SelectionModeAnimatedFooter(
       child: Column(
@@ -454,7 +454,7 @@ class _SelectableTagItem extends StatelessWidget {
       index: index,
       builder: (context, isSelected) {
         final controller = SelectionMode.of(context);
-        final multiSelect = controller.enabled;
+        final multiSelect = controller.isActive;
 
         return Padding(
           padding: const EdgeInsets.symmetric(
@@ -475,7 +475,7 @@ class _SelectableTagItem extends StatelessWidget {
                           value: isSelected,
                           onChanged: (value) {
                             if (value == null) return;
-                            controller.toggleSelection(index);
+                            controller.toggleItem(index);
                           },
                         )
                       : const SizedBox.shrink(),
@@ -548,7 +548,7 @@ class _TagTileState extends State<_TagTile> {
             ),
           ),
           onTap: widget.multiSelect
-              ? () => controller.toggleSelection(widget.index)
+              ? () => controller.toggleItem(widget.index)
               : () => goToSearchPage(
                   ref,
                   tag: widget.tag.rawName,

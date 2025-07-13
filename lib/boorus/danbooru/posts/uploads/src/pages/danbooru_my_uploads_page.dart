@@ -176,8 +176,8 @@ class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
   late final AutoScrollController _autoScrollController =
       AutoScrollController();
   final multiSelectController = SelectionModeController(
-    options: const SelectionModeOptions(
-      selectionBehavior: SelectionBehavior.manual,
+    options: const SelectionOptions(
+      behavior: SelectionBehavior.manual,
     ),
   );
 

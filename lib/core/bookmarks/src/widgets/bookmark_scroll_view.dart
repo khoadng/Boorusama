@@ -51,8 +51,8 @@ class BookmarkScrollView extends ConsumerStatefulWidget {
 
 class _BookmarkScrollViewState extends ConsumerState<BookmarkScrollView> {
   final _selectionModeController = SelectionModeController(
-    options: const SelectionModeOptions(
-      selectionBehavior: SelectionBehavior.manual,
+    options: const SelectionOptions(
+      behavior: SelectionBehavior.manual,
     ),
   );
 

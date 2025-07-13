@@ -43,7 +43,7 @@ class PostGridConfigIconButton<T> extends ConsumerWidget {
     return ListenableBuilder(
       listenable: selectionModeController,
       builder: (context, _) {
-        return !selectionModeController.enabled
+        return !selectionModeController.isActive
             ? _buildMenuButton(context, ref)
             : const SizedBox.shrink();
       },

@@ -101,8 +101,8 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
     _selectionModeController =
         widget.selectionModeController ??
         SelectionModeController(
-          options: const SelectionModeOptions(
-            selectionBehavior: SelectionBehavior.manual,
+          options: const SelectionOptions(
+            behavior: SelectionBehavior.manual,
           ),
         );
 
@@ -148,8 +148,8 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
       refreshing.value = true;
 
       // reset multi select if something is selected
-      if (_selectionModeController.selectedItems.isNotEmpty) {
-        _selectionModeController.clearSelected();
+      if (_selectionModeController.selection.isNotEmpty) {
+        _selectionModeController.deselectAll();
       }
 
       return;
@@ -205,14 +205,14 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
                       icon: const Icon(Symbols.select_all),
                     ),
                     IconButton(
-                      onPressed: _selectionModeController.clearSelected,
+                      onPressed: _selectionModeController.deselectAll,
                       icon: const Icon(Symbols.clear_all),
                     ),
                   ],
                   title: ListenableBuilder(
                     listenable: _selectionModeController,
                     builder: (_, _) {
-                      final selected = _selectionModeController.selectedItems;
+                      final selected = _selectionModeController.selection;
                       return selected.isEmpty
                           ? Text('Select items'.hc)
                           : Text('${selected.length} Items selected'.hc);
@@ -230,7 +230,7 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
                     : (_) => false,
                 onRefresh: () async {
                   widget.onRefresh?.call();
-                  _selectionModeController.clearSelected();
+                  _selectionModeController.deselectAll();
                   await controller.refresh(
                     maintainPage: true,
                   );
@@ -256,7 +256,7 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
                             listenable: _selectionModeController,
                             builder: (_, _) {
                               final multiSelect =
-                                  _selectionModeController.enabled;
+                                  _selectionModeController.isActive;
 
                               return SliverOffstage(
                                 offstage: multiSelect,
@@ -484,7 +484,7 @@ class _SelectionMode extends StatelessWidget {
         listenable: selectionModeController,
         builder: (context, _) {
           final controller = selectionModeController;
-          final multiSelect = controller.enabled;
+          final multiSelect = controller.isActive;
 
           return Stack(
             children: [
@@ -588,7 +588,7 @@ class _SliverBottomGridPadding extends StatelessWidget {
     return ListenableBuilder(
       listenable: selectionModeController,
       builder: (_, _) {
-        final multiSelect = selectionModeController.enabled;
+        final multiSelect = selectionModeController.isActive;
         return SliverSizedBox(
           height: switch (pageMode) {
             PageMode.infinite =>

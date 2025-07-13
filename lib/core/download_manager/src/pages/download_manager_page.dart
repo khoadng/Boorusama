@@ -69,8 +69,8 @@ class DownloadManagerPage extends ConsumerStatefulWidget {
 class _DownloadManagerPageState extends ConsumerState<DownloadManagerPage> {
   final scrollController = AutoScrollController();
   final _selectionModeController = SelectionModeController(
-    options: const SelectionModeOptions(
-      selectionBehavior: SelectionBehavior.manual,
+    options: const SelectionOptions(
+      behavior: SelectionBehavior.manual,
     ),
   );
 
@@ -164,7 +164,7 @@ class _DownloadManagerPageState extends ConsumerState<DownloadManagerPage> {
                     title: ListenableBuilder(
                       listenable: controller,
                       builder: (context, _) {
-                        final selectedItems = controller.selectedItems;
+                        final selectedItems = controller.selection;
 
                         return selectedItems.isEmpty
                             ? Text('Select items'.hc)
@@ -186,7 +186,7 @@ class _DownloadManagerPageState extends ConsumerState<DownloadManagerPage> {
                       IconButton(
                         icon: const Icon(Symbols.clear_all),
                         onPressed: () {
-                          _selectionModeController.clearSelected();
+                          _selectionModeController.deselectAll();
                         },
                       ),
                     ],
@@ -202,7 +202,7 @@ class _DownloadManagerPageState extends ConsumerState<DownloadManagerPage> {
                   ListenableBuilder(
                     listenable: _selectionModeController,
                     builder: (_, _) {
-                      final multiSelect = _selectionModeController.enabled;
+                      final multiSelect = _selectionModeController.isActive;
                       return AnimatedSwitcher(
                         duration: const Duration(milliseconds: 200),
                         transitionBuilder: (child, animation) => SizeTransition(
@@ -252,7 +252,7 @@ class _DownloadManagerPageState extends ConsumerState<DownloadManagerPage> {
               ListenableBuilder(
                 listenable: _selectionModeController,
                 builder: (context, _) {
-                  final selectedItems = _selectionModeController.selectedItems;
+                  final selectedItems = _selectionModeController.selection;
 
                   return Positioned(
                     left: 0,
@@ -304,7 +304,7 @@ class _DownloadManagerPageState extends ConsumerState<DownloadManagerPage> {
           item: SimpleDownloadTile(
             task: task,
             onTap: () {
-              _selectionModeController.toggleSelection(index);
+              _selectionModeController.toggleItem(index);
             },
             onResume: () {
               final dt = castOrNull<DownloadTask>(task.task);

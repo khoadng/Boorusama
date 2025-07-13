@@ -18,7 +18,7 @@ class SelectionModeAnimatedFooter extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final controller = SelectionMode.of(context);
-    final enable = controller.enabled;
+    final enable = controller.isActive;
 
     return Material(
       color: enable ? colorScheme.surface : Colors.transparent,

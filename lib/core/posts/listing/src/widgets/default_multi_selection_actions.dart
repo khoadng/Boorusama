@@ -38,7 +38,7 @@ class DefaultMultiSelectionActions<T extends Post> extends ConsumerWidget {
     return ListenableBuilder(
       listenable: controller,
       builder: (context, _) {
-        final selectedKeys = controller.selectedItems;
+        final selectedKeys = controller.selection;
         final selectedPosts = postController.getPostsFromIndexes(
           selectedKeys.toList(),
         );
