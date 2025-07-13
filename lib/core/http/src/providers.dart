@@ -26,6 +26,7 @@ import 'cookie_jar_providers.dart';
 import 'dio/dio.dart';
 import 'dio/dio_options.dart';
 import 'http_utils.dart';
+import 'sliding_window_rate_limit_interceptor.dart';
 import 'user_agent.dart';
 
 final defaultDioProvider = Provider.family<Dio, BooruConfigAuth>((ref, config) {
@@ -45,6 +46,16 @@ final defaultDioProvider = Provider.family<Dio, BooruConfigAuth>((ref, config) {
       booruDb: booruDb,
       cronetAvailable: cronetAvailable,
     ),
+    additionalInterceptors: [
+      // 10 requests per second
+      SlidingWindowRateLimitInterceptor(
+        config: const SlidingWindowRateLimitConfig(
+          requestsPerWindow: 10,
+          windowSizeMs: 1000,
+          maxDelayMs: 5000,
+        ),
+      ),
+    ],
   );
 });
 

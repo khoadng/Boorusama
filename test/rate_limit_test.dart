@@ -7,36 +7,75 @@ import 'package:boorusama/core/http/src/sliding_window_rate_limit_interceptor.da
 
 void main() {
   group('SlidingWindowRateLimitInterceptor', () {
-    late SlidingWindowRateLimitInterceptor interceptor;
     late MockRequestInterceptorHandler handler;
 
     setUp(() {
-      const config = SlidingWindowRateLimitConfig(
-        requestsPerWindow: 10,
-        windowSizeMs: 1000,
-      );
-      interceptor = SlidingWindowRateLimitInterceptor(config: config);
       handler = MockRequestInterceptorHandler();
     });
 
-    test('should pass through non-GET requests immediately', () async {
-      final options = RequestOptions(path: '/test', method: 'POST');
+    test('should skip rate limiting when resolver returns false', () async {
+      bool isImageUrl(RequestOptions options) {
+        return options.path.endsWith('.jpg') || options.path.endsWith('.png');
+      }
 
+      final config = SlidingWindowRateLimitConfig(
+        requestsPerWindow: 2,
+        windowSizeMs: 1000,
+        resolver: (options) => !isImageUrl(options), // Don't rate limit images
+      );
+      final testInterceptor = SlidingWindowRateLimitInterceptor(config: config);
+
+      // Image requests should not be rate limited
+      final imageOptions = RequestOptions(path: '/image.jpg', method: 'GET');
+
+      // Make many image requests quickly
+      for (var i = 0; i < 5; i++) {
+        final stopwatch = Stopwatch()..start();
+        await testInterceptor.onRequest(imageOptions, handler);
+        stopwatch.stop();
+
+        expect(stopwatch.elapsedMilliseconds, lessThan(50));
+        expect(handler.nextCalled, isTrue);
+        handler.reset();
+      }
+    });
+
+    test('should apply rate limiting when resolver returns true', () async {
+      bool isImageUrl(RequestOptions options) {
+        return options.path.endsWith('.jpg') || options.path.endsWith('.png');
+      }
+
+      final config = SlidingWindowRateLimitConfig(
+        requestsPerWindow: 2,
+        windowSizeMs: 1000,
+        resolver: (options) => !isImageUrl(options), // Don't rate limit images
+      );
+      final testInterceptor = SlidingWindowRateLimitInterceptor(config: config);
+
+      // API requests should be rate limited
+      final apiOptions = RequestOptions(path: '/api/posts', method: 'GET');
+
+      // Fill the window
+      await testInterceptor.onRequest(apiOptions, handler);
+      await testInterceptor.onRequest(apiOptions, handler);
+
+      // Third request should be delayed
+      handler.reset();
       final stopwatch = Stopwatch()..start();
-      await interceptor.onRequest(options, handler);
+      await testInterceptor.onRequest(apiOptions, handler);
       stopwatch.stop();
 
-      expect(stopwatch.elapsedMilliseconds, lessThan(10));
+      expect(stopwatch.elapsedMilliseconds, greaterThan(500));
       expect(handler.nextCalled, isTrue);
     });
 
-    test('should delay GET requests when exceeding rate limit', () async {
+    test('should delay requests when exceeding rate limit', () async {
       const config = SlidingWindowRateLimitConfig(
         requestsPerWindow: 2,
         windowSizeMs: 1000,
       );
       final testInterceptor = SlidingWindowRateLimitInterceptor(config: config);
-      final options = RequestOptions(path: '/test', method: 'GET');
+      final options = RequestOptions(path: '/test', method: 'POST');
 
       // Fill the window
       await testInterceptor.onRequest(options, handler);
@@ -58,7 +97,7 @@ void main() {
         windowSizeMs: 100,
       );
       final testInterceptor = SlidingWindowRateLimitInterceptor(config: config);
-      final options = RequestOptions(path: '/test', method: 'GET');
+      final options = RequestOptions(path: '/test', method: 'PUT');
 
       // Fill the window
       await testInterceptor.onRequest(options, handler);
@@ -84,7 +123,7 @@ void main() {
         maxDelayMs: 100, // Very short max delay
       );
       final testInterceptor = SlidingWindowRateLimitInterceptor(config: config);
-      final options = RequestOptions(path: '/test', method: 'GET');
+      final options = RequestOptions(path: '/test', method: 'DELETE');
 
       // First request fills the window
       await testInterceptor.onRequest(options, handler);
@@ -106,7 +145,7 @@ void main() {
         windowSizeMs: 1000,
       );
       final testInterceptor = SlidingWindowRateLimitInterceptor(config: config);
-      final options = RequestOptions(path: '/test', method: 'GET');
+      final options = RequestOptions(path: '/test', method: 'PATCH');
 
       // First 3 requests should go through quickly
       for (var i = 0; i < 3; i++) {

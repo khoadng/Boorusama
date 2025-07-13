@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
+import '../../downloads/urls/sanitizer.dart';
 import '../../errors/types.dart';
 
 typedef DataFetcher<T> = Future<T> Function();
@@ -26,4 +27,26 @@ abstract interface class AppHttpHeaders {
   static const cookieHeader = 'cookie';
   static const contentLengthHeader = 'content-length';
   static const userAgentHeader = 'user-agent';
+}
+
+const _kImageExtensions = {
+  '.jpg',
+  '.jpeg',
+  '.png',
+  '.gif',
+  '.webp',
+  '.avif',
+  '.svg',
+};
+
+bool defaultImageRequestChecker(Uri uri) {
+  final ext = sanitizedExtension(uri.toString());
+
+  return _kImageExtensions.contains(ext);
+}
+
+class HttpUtils {
+  static bool isImageRequest(RequestOptions options) {
+    return defaultImageRequestChecker(options.uri);
+  }
 }

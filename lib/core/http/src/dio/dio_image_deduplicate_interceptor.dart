@@ -5,26 +5,11 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 
 // Project imports:
-import '../../../downloads/urls/sanitizer.dart';
-
-const _kImageExtensions = {
-  '.jpg',
-  '.jpeg',
-  '.png',
-  '.gif',
-  '.webp',
-  '.avif',
-};
-
-bool _defaultImageRequestChecker(Uri uri) {
-  final ext = sanitizedExtension(uri.toString());
-
-  return _kImageExtensions.contains(ext);
-}
+import '../http_utils.dart';
 
 class ImageRequestDeduplicateInterceptor extends Interceptor {
   ImageRequestDeduplicateInterceptor({
-    this.isImageRequest = _defaultImageRequestChecker,
+    this.isImageRequest = defaultImageRequestChecker,
   });
 
   final bool Function(Uri uri) isImageRequest;

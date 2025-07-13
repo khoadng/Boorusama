@@ -1,16 +1,28 @@
 // Package imports:
 import 'package:dio/dio.dart';
 
+import 'http_utils.dart';
+
+/// A resolver function to determine if a request should be rate-limited.
+typedef RateLimitResolver = bool Function(RequestOptions options);
+
+bool _defaultRateLimitResolver(RequestOptions options) {
+  // Default resolver will not rate limit image requests
+  return !HttpUtils.isImageRequest(options);
+}
+
 class SlidingWindowRateLimitConfig {
   const SlidingWindowRateLimitConfig({
     required this.requestsPerWindow,
     required this.windowSizeMs,
     this.maxDelayMs = 5000,
+    this.resolver = _defaultRateLimitResolver,
   });
 
   final int requestsPerWindow;
   final int windowSizeMs;
   final int maxDelayMs;
+  final RateLimitResolver resolver;
 }
 
 class SlidingWindowRateLimitInterceptor extends Interceptor {
@@ -26,8 +38,8 @@ class SlidingWindowRateLimitInterceptor extends Interceptor {
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
-    // Only apply rate limiting to GET requests (read requests)
-    if (options.method.toUpperCase() != 'GET') {
+    // Check if rate limiting should be applied using resolver
+    if (!_config.resolver(options)) {
       handler.next(options);
       return;
     }
