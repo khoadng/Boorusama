@@ -1,5 +1,6 @@
 // Package imports:
 import 'package:booru_clients/danbooru.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
@@ -11,7 +12,6 @@ import '../../core/comments/types.dart';
 import '../../core/configs/config.dart';
 import '../../core/configs/create/create.dart';
 import '../../core/downloads/filename/types.dart';
-import '../../core/http/providers.dart';
 import '../../core/notes/notes.dart';
 import '../../core/posts/count/count.dart';
 import '../../core/posts/favorites/types.dart';
@@ -25,6 +25,7 @@ import '../../core/tags/autocompletes/types.dart';
 import '../../core/tags/tag/tag.dart';
 import 'autocompletes/providers.dart';
 import 'blacklist/providers.dart';
+import 'client_provider.dart';
 import 'comments/comment/data.dart';
 import 'notes/providers.dart';
 import 'posts/count/providers.dart';
@@ -82,7 +83,7 @@ class DanbooruRepository extends BooruRepositoryDefault {
 
   @override
   BooruSiteValidator? siteValidator(BooruConfigAuth config) {
-    final dio = ref.watch(defaultDioProvider(config));
+    final dio = ref.watch(danbooruDioProvider(config));
 
     return () => DanbooruClient(
       baseUrl: config.url,
@@ -147,6 +148,11 @@ class DanbooruRepository extends BooruRepositoryDefault {
   @override
   CommentRepository comment(BooruConfigAuth config) {
     return ref.watch(danbooruCommentRepoProvider(config));
+  }
+
+  @override
+  Dio dio(BooruConfigAuth config) {
+    return ref.watch(danbooruDioProvider(config));
   }
 }
 

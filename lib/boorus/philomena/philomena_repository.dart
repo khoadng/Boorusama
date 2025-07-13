@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -71,6 +72,11 @@ class PhilomenaRepository extends BooruRepositoryDefault {
         AspectRatioTokenHandler(),
       ],
     );
+  }
+
+  @override
+  Dio dio(BooruConfigAuth config) {
+    return ref.watch(philomenaDioProvider(config));
   }
 }
 
