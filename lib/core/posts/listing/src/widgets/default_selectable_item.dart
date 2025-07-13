@@ -1,12 +1,16 @@
+// Dart imports:
+import 'dart:math' as math;
+
 // Flutter imports:
 import 'package:flutter/material.dart';
-import 'dart:math' as math;
 
 // Package imports:
 import 'package:selection_mode/selection_mode.dart';
 
 // Project imports:
+import '../../../../widgets/shadow_gradient_overlay.dart';
 import '../../../post/post.dart';
+import '../../../post/routes.dart';
 
 const _kDefaultAnimationDuration = Duration(milliseconds: 200);
 
@@ -128,35 +132,29 @@ class _DefaultSelectableItemState<T extends Post>
             }
           },
           child: Stack(
-            alignment: Alignment.bottomRight,
             children: [
               widget.item,
-              if (isInSelectionMode)
-                Container(
-                  margin: const EdgeInsets.all(8),
-                  width: 32,
-                  height: 32,
-                  child: AnimatedBuilder(
-                    animation: Listenable.merge([
-                      _selectionAnimation,
-                      _checkAnimation,
-                    ]),
-                    builder: (context, _) => RepaintBoundary(
-                      child: IgnorePointer(
-                        child: CustomPaint(
-                          painter: SelectionIndicatorPainter(
-                            fillProgress: _selectionAnimation.value,
-                            checkProgress: _checkAnimation.value,
-                            isSelected: isSelected,
-                            primaryColor: colorScheme.primary,
-                            onPrimaryColor: colorScheme.onPrimary,
-                          ),
-                          size: const Size.square(32),
-                        ),
-                      ),
-                    ),
+              if (isInSelectionMode) ...[
+                Positioned.fill(
+                  child: ShadowGradientOverlay(
+                    alignment: Alignment.topCenter,
+                    colors: [
+                      const Color.fromARGB(52, 0, 0, 0),
+                      Colors.black12.withValues(alpha: 0),
+                    ],
                   ),
                 ),
+                Positioned(
+                  top: 0,
+                  right: 4,
+                  child: _buildPreviewButton(context),
+                ),
+                Positioned(
+                  bottom: 0,
+                  right: 0,
+                  child: _buildCheckmark(isSelected, colorScheme),
+                ),
+              ],
             ],
           ),
         );
@@ -174,6 +172,45 @@ class _DefaultSelectableItemState<T extends Post>
           ),
         );
       },
+    );
+  }
+
+  Widget _buildPreviewButton(BuildContext context) {
+    return IconButton(
+      visualDensity: VisualDensity.compact,
+      icon: const Icon(Icons.zoom_in),
+      onPressed: () {
+        goToImagePreviewPage(context, widget.post);
+      },
+      tooltip: 'Preview',
+    );
+  }
+
+  Widget _buildCheckmark(bool isSelected, ColorScheme colorScheme) {
+    return Container(
+      margin: const EdgeInsets.all(4),
+      width: 32,
+      height: 32,
+      child: AnimatedBuilder(
+        animation: Listenable.merge([
+          _selectionAnimation,
+          _checkAnimation,
+        ]),
+        builder: (context, _) => RepaintBoundary(
+          child: IgnorePointer(
+            child: CustomPaint(
+              painter: SelectionIndicatorPainter(
+                fillProgress: _selectionAnimation.value,
+                checkProgress: _checkAnimation.value,
+                isSelected: isSelected,
+                primaryColor: colorScheme.primary,
+                onPrimaryColor: colorScheme.onPrimary,
+              ),
+              size: const Size.square(32),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
