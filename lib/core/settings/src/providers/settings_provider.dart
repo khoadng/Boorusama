@@ -1,5 +1,6 @@
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:selection_mode/selection_mode.dart';
 
 // Project imports:
 import '../types/settings.dart';
@@ -16,3 +17,17 @@ final searchBarPositionProvider = Provider<SearchBarPosition>(
   (ref) => ref.watch(settingsProvider.select((s) => s.searchBarPosition)),
   name: 'searchBarPositionProvider',
 );
+
+final selectionOptionsProvider = Provider<SelectionOptions>((ref) {
+  final level = ref.watch(
+    settingsProvider.select((s) => s.hapticFeedbackLevel),
+  );
+
+  return SelectionOptions(
+    behavior: SelectionBehavior.manual,
+    haptics: switch (level) {
+      HapticFeedbackLevel.reduced => HapticFeedbackResolver.none,
+      _ => HapticFeedbackResolver.all,
+    },
+  );
+});

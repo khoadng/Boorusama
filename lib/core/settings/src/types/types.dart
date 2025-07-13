@@ -135,3 +135,9 @@ enum SearchBarPosition {
   top,
   bottom,
 }
+
+enum HapticFeedbackLevel {
+  reduced,
+  balanced,
+  full,
+}

@@ -18,6 +18,7 @@ import '../../../../../../core/posts/listing/providers.dart';
 import '../../../../../../core/posts/listing/widgets.dart';
 import '../../../../../../core/posts/post/post.dart';
 import '../../../../../../core/posts/sources/source.dart';
+import '../../../../../../core/settings/providers.dart';
 import '../../../../../../core/widgets/widgets.dart';
 import '../../../../users/user/providers.dart';
 import '../../../listing/widgets.dart';
@@ -175,17 +176,23 @@ class DanbooruUploadGrid extends ConsumerStatefulWidget {
 class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
   late final AutoScrollController _autoScrollController =
       AutoScrollController();
-  final multiSelectController = SelectionModeController(
-    options: const SelectionOptions(
-      behavior: SelectionBehavior.manual,
-    ),
-  );
+  late final SelectionModeController _selectionModeController;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _selectionModeController = SelectionModeController(
+      options: ref.read(selectionOptionsProvider),
+    );
+  }
 
   @override
   void dispose() {
-    super.dispose();
     _autoScrollController.dispose();
-    multiSelectController.dispose();
+    _selectionModeController.dispose();
+
+    super.dispose();
   }
 
   @override

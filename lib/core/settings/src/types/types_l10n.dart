@@ -109,3 +109,11 @@ extension SearchBarPositionTranslated on SearchBarPosition {
     SearchBarPosition.bottom => 'Bottom'.hc,
   };
 }
+
+extension HapticFeedbackLevelTranslated on HapticFeedbackLevel {
+  String localize(BuildContext context) => switch (this) {
+    HapticFeedbackLevel.reduced => 'Reduced'.hc,
+    HapticFeedbackLevel.balanced => 'Balanced'.hc,
+    HapticFeedbackLevel.full => 'Full'.hc,
+  };
+}

@@ -10,6 +10,7 @@ import '../../../theme.dart';
 import '../providers/settings_notifier.dart';
 import '../providers/settings_provider.dart';
 import '../types/types.dart';
+import '../types/types_l10n.dart';
 import '../widgets/settings_page_scaffold.dart';
 import '../widgets/settings_tile.dart';
 
@@ -33,7 +34,10 @@ class _AccessibilityPageState extends ConsumerState<AccessibilityPage> {
       children: [
         SwitchListTile(
           title: Text(
-            context.t.settings.accessibility
+            context
+                .t
+                .settings
+                .accessibility
                 .reverseBooruConfigSelectorScrollDirection,
           ),
           value: settings.reverseBooruConfigSelectorScrollDirection,
@@ -87,6 +91,22 @@ class _AccessibilityPageState extends ConsumerState<AccessibilityPage> {
             settings.copyWith(
               volumeKeyViewerNavigation: value,
             ),
+          ),
+        ),
+        SettingsTile(
+          title: Text('Haptic feedback'.hc),
+          subtitle: Text(
+            'Some feedback can only be disabled through system settings.'.hc,
+          ),
+          selectedOption: settings.hapticFeedbackLevel,
+          items: HapticFeedbackLevel.values,
+          onChanged: (newValue) {
+            notifer.updateSettings(
+              settings.copyWith(hapticFeedbackLevel: newValue),
+            );
+          },
+          optionBuilder: (value) => Text(
+            value.localize(context),
           ),
         ),
       ],

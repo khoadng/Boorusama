@@ -46,6 +46,7 @@ class Settings extends Equatable {
     required this.volumeKeyViewerNavigation,
     required this.searchBarScrollBehavior,
     required this.searchBarPosition,
+    required this.hapticFeedbackLevel,
   });
 
   Settings.fromJson(Map<String, dynamic> json)
@@ -125,6 +126,9 @@ class Settings extends Equatable {
       searchBarPosition = json['searchBarPosition'] != null
           ? SearchBarPosition.values[json['searchBarPosition']]
           : SearchBarPosition.top,
+      hapticFeedbackLevel = json['hapticFeedbackLevel'] != null
+          ? HapticFeedbackLevel.values[json['hapticFeedbackLevel']]
+          : HapticFeedbackLevel.balanced,
       volumeKeyViewerNavigation = json['volumeKeyViewerNavigation'] ?? false,
       reduceAnimations = json['reduceAnimations'] ?? false,
       swipeAreaToOpenSidebarPercentage =
@@ -179,6 +183,7 @@ class Settings extends Equatable {
     volumeKeyViewerNavigation: false,
     searchBarScrollBehavior: SearchBarScrollBehavior.autoHide,
     searchBarPosition: SearchBarPosition.top,
+    hapticFeedbackLevel: HapticFeedbackLevel.balanced,
   );
 
   final ImageListingSettings listing;
@@ -242,6 +247,8 @@ class Settings extends Equatable {
 
   final SearchBarPosition searchBarPosition;
 
+  final HapticFeedbackLevel hapticFeedbackLevel;
+
   Settings copyWith({
     String? blacklistedTags,
     String? language,
@@ -277,6 +284,7 @@ class Settings extends Equatable {
     bool? volumeKeyViewerNavigation,
     SearchBarScrollBehavior? searchBarScrollBehavior,
     SearchBarPosition? searchBarPosition,
+    HapticFeedbackLevel? hapticFeedbackLevel,
   }) => Settings(
     listing: listing ?? this.listing,
     safeMode: safeMode ?? this.safeMode,
@@ -326,6 +334,7 @@ class Settings extends Equatable {
     searchBarScrollBehavior:
         searchBarScrollBehavior ?? this.searchBarScrollBehavior,
     searchBarPosition: searchBarPosition ?? this.searchBarPosition,
+    hapticFeedbackLevel: hapticFeedbackLevel ?? this.hapticFeedbackLevel,
   );
 
   Map<String, dynamic> toJson() {
@@ -366,6 +375,7 @@ class Settings extends Equatable {
       'volumeKeyViewerNavigation': volumeKeyViewerNavigation,
       'searchBarScrollBehavior': searchBarScrollBehavior.index,
       'searchBarPosition': searchBarPosition.index,
+      'hapticFeedbackLevel': hapticFeedbackLevel.index,
     };
   }
 
@@ -404,6 +414,7 @@ class Settings extends Equatable {
     volumeKeyViewerNavigation,
     searchBarScrollBehavior,
     searchBarPosition,
+    hapticFeedbackLevel,
   ];
 
   bool get appLockEnabled => appLockType == AppLockType.biometrics;

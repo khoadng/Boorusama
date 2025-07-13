@@ -18,6 +18,7 @@ import '../../../../configs/config.dart';
 import '../../../../posts/post/post.dart';
 import '../../../../search/search/routes.dart';
 import '../../../../search/search/widgets.dart';
+import '../../../../settings/providers.dart';
 import '../../../../widgets/animated_footer.dart';
 import '../../../favorites/providers.dart';
 import '../../widgets.dart';
@@ -142,13 +143,18 @@ class ShowTagListPageInternal extends ConsumerStatefulWidget {
 }
 
 class _ShowTagListPageState extends ConsumerState<ShowTagListPageInternal> {
-  late final _selectionModeController = SelectionModeController(
-    options: const SelectionOptions(
-      behavior: SelectionBehavior.manual,
-    ),
-    initialEnabled: widget.initiallyMultiSelectEnabled,
-  );
+  late final SelectionModeController _selectionModeController;
   final _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    _selectionModeController = SelectionModeController(
+      options: ref.read(selectionOptionsProvider),
+      initialEnabled: widget.initiallyMultiSelectEnabled,
+    );
+  }
 
   @override
   void dispose() {

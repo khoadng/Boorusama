@@ -87,17 +87,17 @@ class _SearchPageScaffoldState<T extends Post>
     extends ConsumerState<SearchPageScaffold<T>> {
   late final SelectedTagController _tagsController;
   late final SearchPageController _controller;
-  final SelectionModeController _multiSelectController =
-      SelectionModeController(
-        options: const SelectionOptions(
-          behavior: SelectionBehavior.manual,
-        ),
-      );
+  late final SelectionModeController _searchModeController;
+
   PostGridController<T>? _postController;
 
   @override
   void initState() {
     super.initState();
+
+    _searchModeController = SelectionModeController(
+      options: ref.read(selectionOptionsProvider),
+    );
 
     _tagsController = SelectedTagController.fromBooruBuilder(
       builder: ref.read(booruBuilderProvider(ref.readConfigAuth)),
@@ -119,7 +119,7 @@ class _SearchPageScaffoldState<T extends Post>
   void dispose() {
     _tagsController.dispose();
     _controller.dispose();
-    _multiSelectController.dispose();
+    _searchModeController.dispose();
     super.dispose();
   }
 
@@ -130,7 +130,7 @@ class _SearchPageScaffoldState<T extends Post>
       params: widget.params,
       tagsController: _tagsController,
       controller: _controller,
-      selectionModeController: _multiSelectController,
+      selectionModeController: _searchModeController,
       onQueryChanged: (query) {
         ref
             .read(suggestionsNotifierProvider(ref.readConfigAuth).notifier)
@@ -161,7 +161,7 @@ class _SearchPageScaffoldState<T extends Post>
       ),
       itemBuilder: widget.itemBuilder,
       searchSuggestions: DefaultSearchSuggestions(
-        multiSelectController: _multiSelectController,
+        multiSelectController: _searchModeController,
         config: ref.watchConfigAuth,
       ),
       resultHeader: ValueListenableBuilder(

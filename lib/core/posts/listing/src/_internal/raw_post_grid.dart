@@ -38,6 +38,7 @@ class RawPostGrid<T extends Post> extends StatefulWidget {
     required this.controller,
     required this.onNextPage,
     required this.onPreviousPage,
+    required this.selectionModeController,
     super.key,
     this.onLoadMore,
     this.onRefresh,
@@ -46,7 +47,6 @@ class RawPostGrid<T extends Post> extends StatefulWidget {
     this.footer,
     this.header,
     this.blacklistedIdString,
-    this.selectionModeController,
     this.refreshAtStart = true,
     this.enablePullToRefresh = true,
     this.safeArea = true,
@@ -73,7 +73,7 @@ class RawPostGrid<T extends Post> extends StatefulWidget {
 
   final String? blacklistedIdString;
 
-  final SelectionModeController? selectionModeController;
+  final SelectionModeController selectionModeController;
 
   final PostGridController<T> controller;
 
@@ -98,13 +98,7 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
   void initState() {
     super.initState();
     _autoScrollController = widget.scrollController ?? AutoScrollController();
-    _selectionModeController =
-        widget.selectionModeController ??
-        SelectionModeController(
-          options: const SelectionOptions(
-            behavior: SelectionBehavior.manual,
-          ),
-        );
+    _selectionModeController = widget.selectionModeController;
 
     controller.addListener(_onControllerChange);
     if (widget.refreshAtStart) {
@@ -129,10 +123,6 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
 
     if (widget.scrollController == null) {
       _autoScrollController.dispose();
-    }
-
-    if (widget.selectionModeController == null) {
-      _selectionModeController.dispose();
     }
 
     widget.controller.removeListener(_onControllerChange);

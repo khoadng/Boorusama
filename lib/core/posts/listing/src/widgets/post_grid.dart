@@ -40,7 +40,7 @@ typedef IndexedSelectableWidgetBuilder<T extends Post> =
       bool useHero,
     );
 
-class PostGrid<T extends Post> extends StatefulWidget {
+class PostGrid<T extends Post> extends ConsumerStatefulWidget {
   const PostGrid({
     required this.controller,
     super.key,
@@ -71,21 +71,26 @@ class PostGrid<T extends Post> extends StatefulWidget {
   final bool? enablePullToRefresh;
 
   @override
-  State<PostGrid<T>> createState() => _PostGridState();
+  ConsumerState<PostGrid<T>> createState() => _PostGridState();
 }
 
-class _PostGridState<T extends Post> extends State<PostGrid<T>> {
+class _PostGridState<T extends Post> extends ConsumerState<PostGrid<T>> {
   late final AutoScrollController _autoScrollController =
       widget.scrollController ?? AutoScrollController();
-  late final _selectionModeController =
-      widget.selectionModeController ??
-      SelectionModeController(
-        options: const SelectionOptions(
-          behavior: SelectionBehavior.manual,
-        ),
-      );
+  late final SelectionModeController _selectionModeController;
 
   final ValueNotifier<bool> _disableHero = ValueNotifier(false);
+
+  @override
+  void initState() {
+    super.initState();
+
+    _selectionModeController =
+        widget.selectionModeController ??
+        SelectionModeController(
+          options: ref.read(selectionOptionsProvider),
+        );
+  }
 
   @override
   void dispose() {

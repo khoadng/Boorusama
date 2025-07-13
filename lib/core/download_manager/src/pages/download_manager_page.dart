@@ -17,6 +17,7 @@ import '../../../configs/config.dart';
 import '../../../configs/ref.dart';
 import '../../../downloads/downloader/providers.dart';
 import '../../../http/providers.dart';
+import '../../../settings/providers.dart';
 import '../../../settings/routes.dart';
 import '../../../widgets/widgets.dart';
 import '../../types.dart';
@@ -68,15 +69,15 @@ class DownloadManagerPage extends ConsumerStatefulWidget {
 
 class _DownloadManagerPageState extends ConsumerState<DownloadManagerPage> {
   final scrollController = AutoScrollController();
-  final _selectionModeController = SelectionModeController(
-    options: const SelectionOptions(
-      behavior: SelectionBehavior.manual,
-    ),
-  );
+  late final SelectionModeController _selectionModeController;
 
   @override
   void initState() {
     super.initState();
+
+    _selectionModeController = SelectionModeController(
+      options: ref.read(selectionOptionsProvider),
+    );
 
     if (widget.filter != null) {
       // scroll to the selected filter

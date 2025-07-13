@@ -21,6 +21,7 @@ import '../../../posts/listing/src/_internal/default_image_grid_item.dart';
 import '../../../posts/listing/src/_internal/post_grid_config_icon_button.dart';
 import '../../../posts/listing/widgets.dart';
 import '../../../posts/post/post.dart';
+import '../../../settings/providers.dart';
 import '../../../widgets/widgets.dart';
 import '../../bookmark.dart';
 import '../data/bookmark_convert.dart';
@@ -50,11 +51,16 @@ class BookmarkScrollView extends ConsumerStatefulWidget {
 }
 
 class _BookmarkScrollViewState extends ConsumerState<BookmarkScrollView> {
-  final _selectionModeController = SelectionModeController(
-    options: const SelectionOptions(
-      behavior: SelectionBehavior.manual,
-    ),
-  );
+  late final SelectionModeController _selectionModeController;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _selectionModeController = SelectionModeController(
+      options: ref.read(selectionOptionsProvider),
+    );
+  }
 
   @override
   void dispose() {
