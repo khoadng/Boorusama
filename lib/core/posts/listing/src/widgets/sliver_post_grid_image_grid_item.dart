@@ -87,6 +87,7 @@ class SliverPostGridImageGridItem<T extends Post> extends ConsumerWidget {
                 hideOverlay: hideOverlay,
                 quickActionButton: quickActionButton,
                 autoScrollOptions: autoScrollOptions,
+                splashColor: multiSelectEnabled ? Colors.transparent : null,
                 onTap: multiSelectEnabled
                     ? () {
                         SelectionMode.of(context).toggleItem(index);

@@ -43,6 +43,7 @@ class ImageGridItem extends StatelessWidget {
     this.quickActionButton,
     this.borderRadius,
     this.leadingIcons,
+    this.splashColor,
   });
 
   final AutoScrollOptions? autoScrollOptions;
@@ -62,6 +63,7 @@ class ImageGridItem extends StatelessWidget {
   final Widget? quickActionButton;
   final BorderRadius? borderRadius;
   final List<Widget>? leadingIcons;
+  final Color? splashColor;
 
   @override
   Widget build(BuildContext context) {
@@ -173,6 +175,7 @@ class ImageGridItem extends StatelessWidget {
             child: ImageInkWellWithBorderOnFocus(
               onTap: onTap,
               borderRadius: borderRadius,
+              splashColor: splashColor,
             ),
           ),
         ),
@@ -221,10 +224,12 @@ class ImageInkWellWithBorderOnFocus extends StatefulWidget {
     super.key,
     this.onTap,
     this.borderRadius,
+    this.splashColor,
   });
 
   final void Function()? onTap;
   final BorderRadius? borderRadius;
+  final Color? splashColor;
 
   @override
   State<ImageInkWellWithBorderOnFocus> createState() =>
@@ -282,7 +287,7 @@ class _ImageInkWellWithBorderOnFocusState
           focusColor: Theme.of(context).colorScheme.primary.withAlpha(50),
           highlightColor: Colors.transparent,
           splashFactory: FasterInkSplash.splashFactory,
-          splashColor: Colors.black38,
+          splashColor: widget.splashColor ?? Colors.black38,
           onTap: widget.onTap,
         ),
       ],
