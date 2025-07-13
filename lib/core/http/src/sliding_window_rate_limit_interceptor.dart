@@ -1,24 +1,24 @@
 // Package imports:
 import 'package:dio/dio.dart';
 
-class DanbooruRateLimitConfig {
-  const DanbooruRateLimitConfig({
-    this.requestsPerSecond = 10,
-    this.windowSizeMs = 1000,
-    this.maxDelayMs = 5000, // Safety limit to prevent excessive waits
+class SlidingWindowRateLimitConfig {
+  const SlidingWindowRateLimitConfig({
+    required this.requestsPerWindow,
+    required this.windowSizeMs,
+    this.maxDelayMs = 5000,
   });
 
-  final int requestsPerSecond;
+  final int requestsPerWindow;
   final int windowSizeMs;
   final int maxDelayMs;
 }
 
-class DanbooruRateLimitInterceptor extends Interceptor {
-  DanbooruRateLimitInterceptor({
-    DanbooruRateLimitConfig? config,
-  }) : _config = config ?? const DanbooruRateLimitConfig();
+class SlidingWindowRateLimitInterceptor extends Interceptor {
+  SlidingWindowRateLimitInterceptor({
+    required SlidingWindowRateLimitConfig config,
+  }) : _config = config;
 
-  final DanbooruRateLimitConfig _config;
+  final SlidingWindowRateLimitConfig _config;
   final List<DateTime> _requestTimestamps = [];
 
   @override
@@ -41,7 +41,7 @@ class DanbooruRateLimitInterceptor extends Interceptor {
     );
 
     // Calculate delay needed if we would exceed the limit
-    if (_requestTimestamps.length >= _config.requestsPerSecond) {
+    if (_requestTimestamps.length >= _config.requestsPerWindow) {
       final oldestInWindow = _requestTimestamps.first;
       final timeSinceOldest = now.difference(oldestInWindow).inMilliseconds;
       final delayNeeded = _config.windowSizeMs - timeSinceOldest;
@@ -52,14 +52,14 @@ class DanbooruRateLimitInterceptor extends Interceptor {
 
         // Update now after delay and clean timestamps again
         final delayedNow = DateTime.now();
-        _requestTimestamps.removeWhere(
-          (timestamp) =>
-              delayedNow.difference(timestamp).inMilliseconds >=
-              _config.windowSizeMs,
-        );
-
-        // Add the actual request timestamp
-        _requestTimestamps.add(delayedNow);
+        _requestTimestamps
+          ..removeWhere(
+            (timestamp) =>
+                delayedNow.difference(timestamp).inMilliseconds >=
+                _config.windowSizeMs,
+          )
+          // Add the actual request timestamp
+          ..add(delayedNow);
       } else {
         _requestTimestamps.add(now);
       }

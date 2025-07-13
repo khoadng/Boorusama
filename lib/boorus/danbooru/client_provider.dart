@@ -47,7 +47,14 @@ final danbooruDioProvider = Provider.family<Dio, BooruConfigAuth>((
       cronetAvailable: cronetAvailable,
     ),
     additionalInterceptors: [
-      DanbooruRateLimitInterceptor(),
+      // 10 requests per second
+      SlidingWindowRateLimitInterceptor(
+        config: const SlidingWindowRateLimitConfig(
+          requestsPerWindow: 10,
+          windowSizeMs: 1000,
+          maxDelayMs: 5000,
+        ),
+      ),
     ],
   );
 });

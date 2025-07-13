@@ -1,9 +1,9 @@
 // Flutter imports:
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:booru_clients/philomena.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
