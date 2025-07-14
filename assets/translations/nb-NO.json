@@ -1,270 +1,270 @@
 {
-    "generic": {
-        "done": "Ferdig",
-        "errors": {
-            "no_data": "Ingen data tilgjengelig",
-            "unknown": "Noe gikk galt"
-        },
-        "action": {
-            "add": "Legg til",
-            "delete": "Slett",
-            "edit": "Rediger",
-            "ok": "OK",
-            "cancel": "Avbryt"
-        },
-        "view": "Vis"
+  "generic": {
+    "done": "Ferdig",
+    "errors": {
+      "no_data": "Ingen data tilgjengelig",
+      "unknown": "Noe gikk galt"
     },
-    "profile": {
-        "favorites": "Favoritter"
+    "action": {
+      "add": "Legg til",
+      "delete": "Slett",
+      "edit": "Rediger",
+      "ok": "OK",
+      "cancel": "Avbryt"
     },
-    "network": {
-        "unavailable": "Nettverk utilgjengelig"
-    },
-    "tag": {
-        "related": {
-            "more": "Mer",
-            "related": "Relatert",
-            "add_to_current_search": "Legg til i nåværende søk",
-            "open_wiki": "Åpne wiki"
-        },
-        "explore": {
-            "new": "Ny",
-            "popular": "Populært"
-        }
-    },
-    "post": {
-        "detail": {
-            "view": "Vis",
-            "view_in_browser": "Vis i nettleser",
-            "file_details": "Fildetaljer",
-            "size": "Størrelse",
-            "resolution": "Oppløsning",
-            "rating": "Vurdering",
-            "file_format": "Filformat",
-            "share": {
-                "source": "Del kildelenke",
-                "booru": "Del booru-lenke",
-                "image": "Del bilde"
-            },
-            "copied": "Kopiert",
-            "show_original": "Vis original",
-            "show_translated": "Vis oversatt",
-            "login_required_notice": "Du må logge inn for å utføre denne handlingen",
-            "open_wiki": "Åpne wiki",
-            "add_to_blacklist": "Svartelist",
-            "add_to_favorites": "Favorittmerk",
-            "copy_and_open_saved_search": "Kopier og åpne lagrede søk",
-            "score": {
-                "one": "Poeng",
-                "other": "Poeng"
-            },
-            "source_label": "Kilde",
-            "related_posts": "Relaterte innlegg",
-            "add_to_bookmark": "Bokmerk",
-            "remove_from_bookmark": "Fjern bokmerke"
-        },
-        "action": {
-            "preview": "Forhåndsvis",
-            "view_comments": "Vis kommentarer",
-            "add_to_favorite_group": "Legg til i favorittgruppe",
-            "select": "Velg"
-        },
-        "image_fullview": {
-            "view_original": "Vis original"
-        }
-    },
-    "comment": {
-        "comments": "Kommentarer",
-        "create": {
-            "hint": "Kommentar",
-            "loading": "Vent …",
-            "error": "Feil"
-        },
-        "list": {
-            "edit": "Rediger",
-            "reply": "Svar",
-            "reply_to": "Besvarer",
-            "delete": "Slett",
-            "noComments": "Ingen kommentarer",
-            "last_updated": "Sist oppdatert",
-            "send": "Send"
-        },
-        "counter": {
-            "one": "Kommentar",
-            "other": "Kommentarer"
-        }
+    "view": "Vis"
+  },
+  "profile": {
+    "favorites": "Favoritter"
+  },
+  "network": {
+    "unavailable": "Nettverk utilgjengelig"
+  },
+  "tag": {
+    "related": {
+      "more": "Mer",
+      "related": "Relatert",
+      "add_to_current_search": "Legg til i nåværende søk",
+      "open_wiki": "Åpne wiki"
     },
     "explore": {
-        "latest": "Seneste",
-        "popular": "Populært",
-        "hot": "På vei opp",
-        "most_viewed": "Mest sett",
-        "see_more": "Vis mer"
+      "new": "Ny",
+      "popular": "Populært"
+    }
+  },
+  "post": {
+    "detail": {
+      "view": "Vis",
+      "view_in_browser": "Vis i nettleser",
+      "file_details": "Fildetaljer",
+      "size": "Størrelse",
+      "resolution": "Oppløsning",
+      "rating": "Vurdering",
+      "file_format": "Filformat",
+      "share": {
+        "source": "Del kildelenke",
+        "booru": "Del booru-lenke",
+        "image": "Del bilde"
+      },
+      "copied": "Kopiert",
+      "show_original": "Vis original",
+      "show_translated": "Vis oversatt",
+      "login_required_notice": "Du må logge inn for å utføre denne handlingen",
+      "open_wiki": "Åpne wiki",
+      "add_to_blacklist": "Svartelist",
+      "add_to_favorites": "Favorittmerk",
+      "copy_and_open_saved_search": "Kopier og åpne lagrede søk",
+      "score": {
+        "one": "Poeng",
+        "other": "Poeng"
+      },
+      "source_label": "Kilde",
+      "related_posts": "Relaterte innlegg",
+      "add_to_bookmark": "Bokmerk",
+      "remove_from_bookmark": "Fjern bokmerke"
     },
+    "action": {
+      "preview": "Forhåndsvis",
+      "view_comments": "Vis kommentarer",
+      "add_to_favorite_group": "Legg til i favorittgruppe",
+      "select": "Velg"
+    },
+    "image_fullview": {
+      "view_original": "Vis original"
+    }
+  },
+  "comment": {
+    "comments": "Kommentarer",
+    "create": {
+      "hint": "Kommentar",
+      "loading": "Vent …",
+      "error": "Feil"
+    },
+    "list": {
+      "edit": "Rediger",
+      "reply": "Svar",
+      "reply_to": "Besvarer",
+      "delete": "Slett",
+      "noComments": "Ingen kommentarer",
+      "last_updated": "Sist oppdatert",
+      "send": "Send"
+    },
+    "counter": {
+      "one": "Kommentar",
+      "other": "Kommentarer"
+    }
+  },
+  "explore": {
+    "latest": "Seneste",
+    "popular": "Populært",
+    "hot": "På vei opp",
+    "most_viewed": "Mest sett",
+    "see_more": "Vis mer"
+  },
+  "search": {
+    "errors": {
+      "generic": "Noe gikk galt"
+    }
+  },
+  "pool": {
+    "category": {
+      "collection": "Samling"
+    },
+    "detail": {
+      "last_updated": "Sist oppdatert"
+    }
+  },
+  "settings": {
+    "settings": "Innstillinger",
+    "app_settings": "Programinnstillinger",
+    "appearance": {
+      "appearance": "Utseende",
+      "show_scores": "Vis poengsummer"
+    },
+    "general": "Generelt",
     "search": {
-        "errors": {
-            "generic": "Noe gikk galt"
-        }
+      "search": "Søk"
     },
-    "pool": {
-        "category": {
-            "collection": "Samling"
-        },
-        "detail": {
-            "last_updated": "Sist oppdatert"
-        }
+    "information": "Info",
+    "changelog": "Endringslogg",
+    "result_layout": {
+      "infinite_scroll": "Uendelig rulling"
     },
-    "settings": {
-        "settings": "Innstillinger",
-        "app_settings": "Programinnstillinger",
-        "appearance": {
-            "appearance": "Utseende",
-            "show_scores": "Vis poengsummer"
-        },
-        "general": "Generelt",
-        "search": {
-            "search": "Søk"
-        },
-        "information": "Info",
-        "changelog": "Endringslogg",
-        "result_layout": {
-            "infinite_scroll": "Uendelig rulling"
-        },
-        "image_list": {
-            "image_list": "Bildeliste",
-            "standard": "Standard",
-            "masonry": "Flislagt"
-        },
-        "image_grid": {
-            "image_grid": "Bilderutenett",
-            "grid_size": {
-                "grid_size": "Rutenettsstørrelse",
-                "small": "Lite",
-                "medium": "Middels",
-                "large": "Stort"
-            },
-            "image_quality": {
-                "image_quality": "Bildekvalitet",
-                "high": "Høy",
-                "low": "Lav",
-                "original": "Opprinnelig",
-                "automatic": "Automatisk",
-                "highest": "Høyeste"
-            },
-            "corner_radius": "Hjørneavrunding"
-        },
-        "image_viewer": {
-            "image_viewer": "Bildeviser"
-        },
-        "language": {
-            "language": "Språk",
-            "language_name": "Norsk bokmål"
-        },
-        "theme": {
-            "theme": "Drakt",
-            "dark": "Mørk",
-            "light": "Lys",
-            "amoled_dark": "Svart"
-        },
-        "privacy": {
-            "privacy": "Personvern"
-        },
-        "performance": {
-            "performance": "Ytelse",
-            "posts_per_page": "Innlegg per side",
-            "clear_cache": "Tøm"
-        },
-        "download": {
-            "select_a_folder": "Velg en mappe",
-            "qualities": {
-                "original": "Opprinnelig",
-                "preview": "Forhåndsvis"
-            }
-        },
-        "help_us_translate": "Bistå oversettelsen",
-        "other_settings": "Andre innstillinger"
+    "image_list": {
+      "image_list": "Bildeliste",
+      "standard": "Standard",
+      "masonry": "Flislagt"
     },
-    "blacklisted_tags": {
-        "remove": "Fjern",
-        "edit": "Rediger",
-        "blacklisted_tags": "Svartelistede etiketter",
-        "updated": "Svartelistede etiketter oppdatert"
+    "image_grid": {
+      "image_grid": "Bilderutenett",
+      "grid_size": {
+        "grid_size": "Rutenettsstørrelse",
+        "small": "Lite",
+        "medium": "Middels",
+        "large": "Stort"
+      },
+      "image_quality": {
+        "image_quality": "Bildekvalitet",
+        "high": "Høy",
+        "low": "Lav",
+        "original": "Opprinnelig",
+        "automatic": "Automatisk",
+        "highest": "Høyeste"
+      },
+      "corner_radius": "Hjørneavrunding"
+    },
+    "image_viewer": {
+      "image_viewer": "Bildeviser"
+    },
+    "language": {
+      "language": "Språk",
+      "language_name": "Norsk bokmål"
+    },
+    "theme": {
+      "theme": "Drakt",
+      "dark": "Mørk",
+      "light": "Lys",
+      "amoled_dark": "Svart"
+    },
+    "privacy": {
+      "privacy": "Personvern"
+    },
+    "performance": {
+      "performance": "Ytelse",
+      "posts_per_page": "Innlegg per side",
+      "clear_cache": "Tøm"
     },
     "download": {
-        "download": "Last ned",
-        "bulk_download_save_to_folder": "Lagre i mappe",
-        "open_app_settings": "Åpne innstillinger"
+      "select_a_folder": "Velg en mappe",
+      "qualities": {
+        "original": "Opprinnelig",
+        "preview": "Forhåndsvis"
+      }
     },
-    "saved_search": {
-        "saved_search_examples": "Eksempler",
-        "saved_search_try": "Prøv det",
-        "saved_search_query": "Spørring",
-        "saved_search_labels": "Etiketter"
+    "help_us_translate": "Bistå oversettelsen",
+    "other_settings": "Andre innstillinger"
+  },
+  "blacklisted_tags": {
+    "remove": "Fjern",
+    "edit": "Rediger",
+    "blacklisted_tags": "Svartelistede etiketter",
+    "updated": "Svartelistede etiketter oppdatert"
+  },
+  "download": {
+    "download": "Last ned",
+    "bulk_download_save_to_folder": "Lagre i mappe",
+    "open_app_settings": "Åpne innstillinger"
+  },
+  "saved_search": {
+    "saved_search_examples": "Eksempler",
+    "saved_search_try": "Prøv det",
+    "saved_search_query": "Spørring",
+    "saved_search_labels": "Etiketter"
+  },
+  "favorites": {
+    "counter": {
+      "one": "Favoritt",
+      "other": "Favoritter"
     },
-    "favorites": {
-        "counter": {
-            "one": "Favoritt",
-            "other": "Favoritter"
-        },
-        "favorited": "Favorittmerket",
-        "favorite": "Favoritt"
-    },
-    "favorite_groups": {
-        "create": "Opprett",
-        "private": "Privat",
-        "view_more_popup": "Vis",
-        "group_name": "Gruppenavn",
-        "group_name_hint": "Ny gruppe",
-        "all_posts": "Innlegg",
-        "is_private_group_option": "Privat gruppe",
-        "create_group_cancel": "Avbryt",
-        "create_group_confirm": "OK"
-    },
-    "favorite_tags": {
-        "favorites": "Favoritter",
-        "import": "Importer",
-        "cancel": "Avbryt",
-        "export": "Eksporter"
-    },
-    "rating": {
-        "rate_request": "Vurder dette programmet",
-        "rate": "Vurder",
-        "cancel": "Nei takk",
-        "later": "Kanskje senere"
-    },
-    "sideMenu": {
-        "settings": "Innstillinger",
-        "your_bookmarks": "Dine bokmerker",
-        "your_blacklist": "Din svarteliste"
-    },
-    "dateRange": {
-        "day": "Dag",
-        "week": "Uke",
-        "month": "Måned"
-    },
-    "booru": {
-        "booru_engine_input_label": "Booru-motor (*)",
-        "config_name_label": "Profilnavn (*)",
-        "password_api_key_label": "API-nøkkel",
-        "password_label": "Passord",
-        "content_filtering_label": "Innholdsfiltrering",
-        "hide_deleted_label": "Skjul slettede innlegg",
-        "config_booru_confirm": "OK",
-        "next_step": "Neste"
-    },
-    "blacklist": {
-        "manage": {
-            "title": "Svarteliste",
-            "empty_blacklist": "Ingen svartelistede etiketter"
-        }
-    },
-    "bookmark": {
-        "added": "Bokmerket"
-    },
-    "app_update": {
-        "update_available": "Ny versjon tilgjengelig"
-    },
-    "forum": {
-        "forum": "Forum"
+    "favorited": "Favorittmerket",
+    "favorite": "Favoritt"
+  },
+  "favorite_groups": {
+    "create": "Opprett",
+    "private": "Privat",
+    "view_more_popup": "Vis",
+    "group_name": "Gruppenavn",
+    "group_name_hint": "Ny gruppe",
+    "all_posts": "Innlegg",
+    "is_private_group_option": "Privat gruppe",
+    "create_group_cancel": "Avbryt",
+    "create_group_confirm": "OK"
+  },
+  "favorite_tags": {
+    "favorites": "Favoritter",
+    "import": "Importer",
+    "cancel": "Avbryt",
+    "export": "Eksporter"
+  },
+  "rating": {
+    "rate_request": "Vurder dette programmet",
+    "rate": "Vurder",
+    "cancel": "Nei takk",
+    "later": "Kanskje senere"
+  },
+  "sideMenu": {
+    "settings": "Innstillinger",
+    "your_bookmarks": "Dine bokmerker",
+    "your_blacklist": "Din svarteliste"
+  },
+  "dateRange": {
+    "day": "Dag",
+    "week": "Uke",
+    "month": "Måned"
+  },
+  "booru": {
+    "booru_engine_input_label": "Booru-motor (*)",
+    "config_name_label": "Profilnavn (*)",
+    "password_api_key_label": "API-nøkkel",
+    "password_label": "Passord",
+    "content_filtering_label": "Innholdsfiltrering",
+    "hide_deleted_label": "Skjul slettede innlegg",
+    "config_booru_confirm": "OK",
+    "next_step": "Neste"
+  },
+  "blacklist": {
+    "manage": {
+      "title": "Svarteliste",
+      "empty_blacklist": "Ingen svartelistede etiketter"
     }
+  },
+  "bookmark": {
+    "added": "Bokmerket"
+  },
+  "app_update": {
+    "update_available": "Ny versjon tilgjengelig"
+  },
+  "forum": {
+    "forum": "Forum"
+  }
 }
