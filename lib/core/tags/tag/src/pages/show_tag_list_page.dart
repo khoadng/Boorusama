@@ -288,14 +288,14 @@ class _ShowTagListPageState extends ConsumerState<ShowTagListPageInternal> {
   }
 
   Widget _buildContent(BuildContext context) {
-    final selectedItems = _selectionModeController.selection;
+    final tags = _selectionModeController.selectedFrom(widget.tags).toList();
 
     return SelectionModeAnimatedFooter(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          if (selectedItems.isNotEmpty)
+          if (tags.isNotEmpty)
             Container(
               padding: const EdgeInsets.symmetric(
                 horizontal: 12,
@@ -308,39 +308,32 @@ class _ShowTagListPageState extends ConsumerState<ShowTagListPageInternal> {
                 ),
                 color: Theme.of(context).colorScheme.surfaceContainer,
               ),
-              child: Consumer(
-                builder: (context, ref, _) {
-                  final tags = selectedItems
-                      .map((index) => widget.tags[index])
-                      .toList();
-                  return RichText(
-                    text: TextSpan(
-                      children: [
-                        ...tags.map(
-                          (tag) => TextSpan(
-                            text: '${tag.displayName}  ',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              color: ref.watch(
-                                tagColorProvider(
-                                  (widget.auth, tag.category.name),
-                                ),
-                              ),
+              child: RichText(
+                text: TextSpan(
+                  children: [
+                    ...tags.map(
+                      (tag) => TextSpan(
+                        text: '${tag.displayName}  ',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          color: ref.watch(
+                            tagColorProvider(
+                              (widget.auth, tag.category.name),
                             ),
                           ),
                         ),
-                      ],
+                      ),
                     ),
-                  );
-                },
+                  ],
+                ),
               ),
             ),
           MultiSelectionActionBar(
             height: 68,
             children: [
               MultiSelectButton(
-                onPressed: selectedItems.isNotEmpty
-                    ? () => _copySelectedTags(selectedItems)
+                onPressed: tags.isNotEmpty
+                    ? () => _copySelectedTags(tags)
                     : null,
                 icon: const Icon(Symbols.content_copy),
                 name: 'Copy Tags',
@@ -348,8 +341,8 @@ class _ShowTagListPageState extends ConsumerState<ShowTagListPageInternal> {
               ),
               if (widget.onAddToBlacklist != null)
                 MultiSelectButton(
-                  onPressed: selectedItems.isNotEmpty
-                      ? () => _addSelectedToBlacklist(selectedItems)
+                  onPressed: tags.isNotEmpty
+                      ? () => _addSelectedToBlacklist(tags)
                       : null,
                   icon: const Icon(Symbols.block),
                   name: 'Add to Blacklist',
@@ -357,8 +350,8 @@ class _ShowTagListPageState extends ConsumerState<ShowTagListPageInternal> {
                   mainAxisAlignment: MainAxisAlignment.start,
                 ),
               MultiSelectButton(
-                onPressed: selectedItems.isNotEmpty
-                    ? () => _addSelectedToGlobalBlacklist(selectedItems)
+                onPressed: tags.isNotEmpty
+                    ? () => _addSelectedToGlobalBlacklist(tags)
                     : null,
                 icon: const Icon(Symbols.block),
                 name: 'Add to Global Blacklist',
@@ -366,8 +359,8 @@ class _ShowTagListPageState extends ConsumerState<ShowTagListPageInternal> {
                 mainAxisAlignment: MainAxisAlignment.start,
               ),
               MultiSelectButton(
-                onPressed: selectedItems.isNotEmpty
-                    ? () => _addSelectedToFavorites(selectedItems)
+                onPressed: tags.isNotEmpty
+                    ? () => _addSelectedToFavorites(tags)
                     : null,
                 icon: const Icon(Symbols.favorite),
                 name: 'Add to Favorites',
@@ -396,10 +389,8 @@ class _ShowTagListPageState extends ConsumerState<ShowTagListPageInternal> {
     );
   }
 
-  void _copySelectedTags(Set<int> selectedItems) {
-    final selectedTags = selectedItems
-        .map((index) => widget.tags[index].rawName)
-        .join(' ');
+  void _copySelectedTags(List<Tag> tags) {
+    final selectedTags = tags.join(' ');
 
     AppClipboard.copyWithDefaultToast(
       context,
@@ -409,27 +400,26 @@ class _ShowTagListPageState extends ConsumerState<ShowTagListPageInternal> {
     _selectionModeController.disable();
   }
 
-  void _addSelectedToBlacklist(Set<int> selectedItems) {
-    for (final index in selectedItems) {
-      widget.onAddToBlacklist?.call(widget.tags[index]);
+  void _addSelectedToBlacklist(List<Tag> tags) {
+    for (final tag in tags) {
+      widget.onAddToBlacklist?.call(tag);
     }
 
     _selectionModeController.disable();
   }
 
-  void _addSelectedToGlobalBlacklist(Set<int> selectedItems) {
-    for (final index in selectedItems) {
-      widget.onAddToGlobalBlacklist?.call(widget.tags[index]);
+  void _addSelectedToGlobalBlacklist(List<Tag> tags) {
+    for (final tag in tags) {
+      widget.onAddToGlobalBlacklist?.call(tag);
     }
 
     _selectionModeController.disable();
   }
 
-  void _addSelectedToFavorites(Set<int> selectedItems) {
-    for (final index in selectedItems) {
-      widget.onAddToFavoriteTags?.call(widget.tags[index]);
+  void _addSelectedToFavorites(List<Tag> tags) {
+    for (final tag in tags) {
+      widget.onAddToFavoriteTags?.call(tag);
     }
-
     _selectionModeController.disable();
   }
 }

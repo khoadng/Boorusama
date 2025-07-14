@@ -98,6 +98,7 @@ class _DefaultSelectableItemState<T extends Post>
     final colorScheme = Theme.of(context).colorScheme;
 
     return SelectionBuilder(
+      key: ValueKey(widget.post.id),
       index: widget.index,
       builder: (context, isSelected) {
         final selectionMode = SelectionMode.of(context);

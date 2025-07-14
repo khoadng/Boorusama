@@ -253,7 +253,9 @@ class _DownloadManagerPageState extends ConsumerState<DownloadManagerPage> {
               ListenableBuilder(
                 listenable: _selectionModeController,
                 builder: (context, _) {
-                  final selectedItems = _selectionModeController.selection;
+                  final selectedItems = _selectionModeController
+                      .selectedFrom(tasks)
+                      .toList();
 
                   return Positioned(
                     left: 0,
@@ -266,7 +268,7 @@ class _DownloadManagerPageState extends ConsumerState<DownloadManagerPage> {
                               ? () async {
                                   final futures = selectedItems
                                       .map(
-                                        (index) => tasks[index].task.filePath(),
+                                        (task) => task.task.filePath(),
                                       )
                                       .toList();
                                   final paths = await Future.wait(futures);
