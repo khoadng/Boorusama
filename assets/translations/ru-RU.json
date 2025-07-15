@@ -276,6 +276,14 @@
     "backup_and_restore": {
       "backup_and_restore": "Резервное копирование и восстановление"
     },
+    "image_details": {
+      "image_details": "Детали изoбражения",
+      "ui_overlay": {
+        "show": "Показать",
+        "hide": "Скрыть",
+        "ui_overlay": "Наложение пользовательского интерфейса"
+      }
+    },
     "page_indicator": {
       "page_indicator": "Положение индикатора страницы",
       "top": "Вверху",

@@ -210,6 +210,14 @@
     "image_viewer": {
       "image_viewer": "Bildbetrachter"
     },
+    "image_details": {
+      "image_details": "Bild-Details",
+      "ui_overlay": {
+        "show": "Anzeigen",
+        "hide": "Ausblenden",
+        "ui_overlay": "UI-Overlay"
+      }
+    },
     "language": {
       "language": "Sprache",
       "language_name": "Deutsch"

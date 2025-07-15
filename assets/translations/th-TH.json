@@ -263,6 +263,14 @@
     "backup_and_restore": {
       "backup_and_restore": "สำรอง และเรียกคืนข้อมูล"
     },
+    "image_details": {
+      "image_details": "รายละเอียดรูปภาพ",
+      "ui_overlay": {
+        "show": "แสดง",
+        "hide": "ซ่อน",
+        "ui_overlay": "การแสดงปุ่มซ้อนทับบนภาพ"
+      }
+    },
     "page_indicator": {
       "page_indicator": "ตำแหน่งตัวนำทางหน้า",
       "top": "บน",

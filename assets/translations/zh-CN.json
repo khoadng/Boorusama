@@ -276,6 +276,14 @@
     "backup_and_restore": {
       "backup_and_restore": "备份与恢复"
     },
+    "image_details": {
+      "image_details": "图片详情",
+      "ui_overlay": {
+        "show": "显示",
+        "hide": "隐藏",
+        "ui_overlay": "UI叠加"
+      }
+    },
     "page_indicator": {
       "page_indicator": "页码位置",
       "top": "顶部",

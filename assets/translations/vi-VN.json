@@ -276,6 +276,14 @@
     "backup_and_restore": {
       "backup_and_restore": "Sao lưu và phục hồi dữ liệu"
     },
+    "image_details": {
+      "image_details": "Chi tiết hình ảnh",
+      "ui_overlay": {
+        "show": "Hiện",
+        "hide": "Ẩn",
+        "ui_overlay": "Bố cục giao diện"
+      }
+    },
     "page_indicator": {
       "page_indicator": "Vị trí thanh điều hướng trang",
       "top": "Trên cùng",

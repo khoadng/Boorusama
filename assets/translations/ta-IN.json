@@ -276,6 +276,14 @@
     "backup_and_restore": {
       "backup_and_restore": "காப்புப்பிரதி மற்றும் மீட்டமை"
     },
+    "image_details": {
+      "image_details": "பட விவரங்கள்",
+      "ui_overlay": {
+        "show": "காட்டு",
+        "hide": "மறை",
+        "ui_overlay": "இடைமுகம் மேலடுக்கு"
+      }
+    },
     "page_indicator": {
       "page_indicator": "பக்க காட்டி நிலை",
       "top": "மேலே",

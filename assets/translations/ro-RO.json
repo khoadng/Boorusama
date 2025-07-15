@@ -263,6 +263,14 @@
     "backup_and_restore": {
       "backup_and_restore": "Copie de rezervă și restaurare"
     },
+    "image_details": {
+      "image_details": "Detaliile imaginii",
+      "ui_overlay": {
+        "show": "Afișați",
+        "hide": "Ascundeți",
+        "ui_overlay": "Suprapunerea interfeței de utilizare"
+      }
+    },
     "page_indicator": {
       "page_indicator": "Poziția indicatorului de pagină",
       "top": "Sus",

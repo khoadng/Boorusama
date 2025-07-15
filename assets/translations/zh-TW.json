@@ -263,6 +263,14 @@
     "backup_and_restore": {
       "backup_and_restore": "備份與還原"
     },
+    "image_details": {
+      "image_details": "圖像詳細資料",
+      "ui_overlay": {
+        "show": "顯示",
+        "hide": "隱藏",
+        "ui_overlay": "UI 覆疊"
+      }
+    },
     "page_indicator": {
       "page_indicator": "頁面指示器位置",
       "top": "頂部",

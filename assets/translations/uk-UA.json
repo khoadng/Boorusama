@@ -278,6 +278,14 @@
     "backup_and_restore": {
       "backup_and_restore": "Резервне копіювання та відновлення"
     },
+    "image_details": {
+      "image_details": "Деталі зображення",
+      "ui_overlay": {
+        "show": "Показати",
+        "hide": "Сховати",
+        "ui_overlay": "Накладання інтерфейсу"
+      }
+    },
     "page_indicator": {
       "page_indicator": "Положення індикатора сторінки",
       "top": "Згори",

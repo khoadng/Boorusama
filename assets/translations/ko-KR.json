@@ -276,6 +276,14 @@
     "backup_and_restore": {
       "backup_and_restore": "백업 및 복원"
     },
+    "image_details": {
+      "image_details": "이미지 디테일",
+      "ui_overlay": {
+        "show": "보기",
+        "hide": "숨김",
+        "ui_overlay": "UI 오버레이"
+      }
+    },
     "page_indicator": {
       "page_indicator": "페이지 표시 위치",
       "top": "위",

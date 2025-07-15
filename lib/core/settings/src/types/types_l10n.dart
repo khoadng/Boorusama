@@ -18,7 +18,7 @@ extension PageModeTranslated on PageMode {
 extension ThemeModeTranslated on AppThemeMode {
   String localize(BuildContext context) => switch (this) {
     AppThemeMode.dark => context.t.settings.theme.dark,
-    AppThemeMode.system => 'System'.hc,
+    AppThemeMode.system => context.t.settings.theme.system,
     AppThemeMode.amoledDark => context.t.settings.theme.amoled_dark,
     AppThemeMode.light => context.t.settings.theme.light,
   };
@@ -28,14 +28,14 @@ extension ImageListTypeTranslated on ImageListType {
   String localize(BuildContext context) => switch (this) {
     ImageListType.standard => context.t.settings.image_list.standard,
     ImageListType.masonry => context.t.settings.image_list.masonry,
-    ImageListType.classic => 'Classic'.hc,
+    ImageListType.classic => context.t.settings.image_list.classic,
   };
 }
 
 extension ImageGridSizeTranslated on GridSize {
   String localize(BuildContext context) => switch (this) {
-    GridSize.micro => 'Micro'.hc,
-    GridSize.tiny => 'Tiny'.hc,
+    GridSize.micro => context.t.settings.image_grid.grid_size.micro,
+    GridSize.tiny => context.t.settings.image_grid.grid_size.tiny,
     GridSize.large => context.t.settings.image_grid.grid_size.large,
     GridSize.small => context.t.settings.image_grid.grid_size.small,
     GridSize.normal => context.t.settings.image_grid.grid_size.medium,

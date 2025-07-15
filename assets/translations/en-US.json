@@ -183,6 +183,7 @@
     },
     "image_list": {
       "image_list": "Image list",
+      "classic": "Classic",
       "standard": "Standard",
       "masonry": "Masonry"
     },
@@ -190,6 +191,8 @@
       "image_grid": "Image grid",
       "grid_size": {
         "grid_size": "Grid size",
+        "micro": "Micro",
+        "tiny": "Tiny",
         "small": "Small",
         "medium": "Medium",
         "large": "Large"
@@ -231,7 +234,8 @@
       "theme": "Theme",
       "dark": "Dark",
       "light": "Light",
-      "amoled_dark": "Black",
+      "system": "System",
+      "amoled_dark": "Midnight",
       "dynamic_color": "Dynamic theme color",
       "dynamic_color_mobile_description": "Sync theme color with wallpaper",
       "dynamic_color_desktop_description": "Sync theme color with OS's accent color",
@@ -275,6 +279,14 @@
     },
     "backup_and_restore": {
       "backup_and_restore": "Backup and Restore"
+    },
+    "image_details": {
+      "image_details": "Image details",
+      "ui_overlay": {
+        "show": "Show",
+        "hide": "Hide",
+        "ui_overlay": "UI overlay"
+      }
     },
     "page_indicator": {
       "page_indicator": "Page indicator position",

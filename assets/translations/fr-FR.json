@@ -279,6 +279,14 @@
     "backup_and_restore": {
       "backup_and_restore": "Sauvegarder et Restaurer"
     },
+    "image_details": {
+      "image_details": "Détails de l'image",
+      "ui_overlay": {
+        "show": "Afficher",
+        "hide": "Masquer",
+        "ui_overlay": "Superposition de l'UI"
+      }
+    },
     "page_indicator": {
       "page_indicator": "Position de l'indiacteur de page",
       "top": "Haut",
