@@ -95,9 +95,6 @@ class _AccessibilityPageState extends ConsumerState<AccessibilityPage> {
         ),
         SettingsTile(
           title: Text('Haptic feedback'.hc),
-          subtitle: Text(
-            'Some feedback can only be disabled through system settings.'.hc,
-          ),
           selectedOption: settings.hapticFeedbackLevel,
           items: HapticFeedbackLevel.values,
           onChanged: (newValue) {

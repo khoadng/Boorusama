@@ -1,3 +1,4 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Flutter imports:
 import 'package:flutter/material.dart';
 
@@ -6,8 +7,10 @@ import 'package:context_menus/context_menus.dart';
 
 // Project imports:
 import '../../foundation/display.dart';
+import '../settings/providers.dart';
+import '../settings/settings.dart';
 
-class CustomContextMenuOverlay extends StatelessWidget {
+class CustomContextMenuOverlay extends ConsumerWidget {
   const CustomContextMenuOverlay({
     required this.child,
     super.key,
@@ -18,7 +21,11 @@ class CustomContextMenuOverlay extends StatelessWidget {
   final Widget child;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final hapticFeedbackLevel = ref.watch(
+      settingsProvider.select((s) => s.hapticFeedbackLevel),
+    );
+
     return ContextMenuOverlay(
       cardBuilder: (context, children) => Material(
         color:
@@ -31,6 +38,7 @@ class CustomContextMenuOverlay extends StatelessWidget {
         ),
       ),
       buttonBuilder: (context, config, [_]) => ContextMenuTile(config: config),
+      hapticFeedbackOnStart: hapticFeedbackLevel != HapticFeedbackLevel.none,
       child: child,
     );
   }

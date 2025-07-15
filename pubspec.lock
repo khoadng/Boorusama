@@ -274,8 +274,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "362571f357097500318361f1ef5e15eb761dd7b9"
-      resolved-ref: "362571f357097500318361f1ef5e15eb761dd7b9"
+      ref: "3e46518ea7823aebae8838754c21353bd2d44189"
+      resolved-ref: "3e46518ea7823aebae8838754c21353bd2d44189"
       url: "https://github.com/khoadng/flutter-context-menu.git"
     source: git
     version: "2.0.0+1"
