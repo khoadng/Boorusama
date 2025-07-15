@@ -150,7 +150,6 @@ class _ShowTagListPageState extends ConsumerState<ShowTagListPageInternal> {
     super.initState();
 
     _selectionModeController = SelectionModeController(
-      options: ref.read(selectionOptionsProvider),
       initialEnabled: widget.initiallyMultiSelectEnabled,
     );
   }
@@ -169,6 +168,7 @@ class _ShowTagListPageState extends ConsumerState<ShowTagListPageInternal> {
       child: SelectionMode(
         scrollController: _scrollController,
         controller: _selectionModeController,
+        options: ref.watch(selectionOptionsProvider),
         child: Scaffold(
           appBar: SelectionAppBarBuilder(
             controller: _selectionModeController,

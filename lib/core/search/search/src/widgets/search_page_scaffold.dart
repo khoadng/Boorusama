@@ -95,9 +95,7 @@ class _SearchPageScaffoldState<T extends Post>
   void initState() {
     super.initState();
 
-    _searchModeController = SelectionModeController(
-      options: ref.read(selectionOptionsProvider),
-    );
+    _searchModeController = SelectionModeController();
 
     _tagsController = SelectedTagController.fromBooruBuilder(
       builder: ref.read(booruBuilderProvider(ref.readConfigAuth)),

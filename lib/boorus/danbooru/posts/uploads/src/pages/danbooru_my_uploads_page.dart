@@ -176,16 +176,8 @@ class DanbooruUploadGrid extends ConsumerStatefulWidget {
 class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
   late final AutoScrollController _autoScrollController =
       AutoScrollController();
-  late final SelectionModeController _selectionModeController;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _selectionModeController = SelectionModeController(
-      options: ref.read(selectionOptionsProvider),
-    );
-  }
+  final SelectionModeController _selectionModeController =
+      SelectionModeController();
 
   @override
   void dispose() {
@@ -199,34 +191,42 @@ class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
   Widget build(BuildContext context) {
     final config = ref.watchConfigAuth;
 
-    return PostScope(
-      fetcher: (page) => TaskEither.Do(
-        ($) async {
-          final uploads = await ref
-              .read(danbooruUploadRepoProvider(config))
-              .getUploads(
-                page: page,
-                userId: widget.userId,
-                isPosted: switch (widget.type) {
-                  UploadTabType.posted => true,
-                  UploadTabType.unposted => false,
-                },
-              );
+    return SelectionMode(
+      controller: _selectionModeController,
+      options: ref.watch(selectionOptionsProvider),
+      child: PostScope(
+        fetcher: (page) => TaskEither.Do(
+          ($) async {
+            final uploads = await ref
+                .read(danbooruUploadRepoProvider(config))
+                .getUploads(
+                  page: page,
+                  userId: widget.userId,
+                  isPosted: switch (widget.type) {
+                    UploadTabType.posted => true,
+                    UploadTabType.unposted => false,
+                  },
+                );
 
-          return uploads.map((e) => e.previewPost).nonNulls.toList().toResult();
-        },
-      ),
-      builder: (context, controller) => LayoutBuilder(
-        builder: (context, constraints) => ref
-            .watch(danbooruUploadHideMapProvider)
-            .maybeWhen(
-              data: (data) => _buildGrid(
-                controller,
-                constraints,
-                data,
+            return uploads
+                .map((e) => e.previewPost)
+                .nonNulls
+                .toList()
+                .toResult();
+          },
+        ),
+        builder: (context, controller) => LayoutBuilder(
+          builder: (context, constraints) => ref
+              .watch(danbooruUploadHideMapProvider)
+              .maybeWhen(
+                data: (data) => _buildGrid(
+                  controller,
+                  constraints,
+                  data,
+                ),
+                orElse: () => const SizedBox.shrink(),
               ),
-              orElse: () => const SizedBox.shrink(),
-            ),
+        ),
       ),
     );
   }

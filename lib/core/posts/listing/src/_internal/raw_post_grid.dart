@@ -39,6 +39,7 @@ class RawPostGrid<T extends Post> extends StatefulWidget {
     required this.onNextPage,
     required this.onPreviousPage,
     required this.selectionModeController,
+    required this.selectionOptions,
     super.key,
     this.onLoadMore,
     this.onRefresh,
@@ -74,6 +75,7 @@ class RawPostGrid<T extends Post> extends StatefulWidget {
   final String? blacklistedIdString;
 
   final SelectionModeController selectionModeController;
+  final SelectionOptions selectionOptions;
 
   final PostGridController<T> controller;
 
@@ -85,6 +87,7 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
     with TickerProviderStateMixin, KeyboardListenerMixin {
   late final AutoScrollController _autoScrollController;
   late final SelectionModeController _selectionModeController;
+  late SelectionOptions _selectionOptions;
 
   PostGridController<T> get controller => widget.controller;
 
@@ -105,7 +108,20 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
       controller.refresh();
     }
 
+    _selectionOptions = widget.selectionOptions;
+
     registerListener(_handleKeyEvent);
+  }
+
+  @override
+  void didUpdateWidget(RawPostGrid<T> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (widget.selectionOptions != oldWidget.selectionOptions) {
+      setState(() {
+        _selectionOptions = widget.selectionOptions;
+      });
+    }
   }
 
   bool _handleKeyEvent(KeyEvent event) {
@@ -176,6 +192,7 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
         child: _SelectionMode(
           footer: widget.footer,
           selectionModeController: _selectionModeController,
+          selectionOptions: _selectionOptions,
           autoScrollController: _autoScrollController,
           header: widget.header != null
               ? widget.header!
@@ -453,6 +470,7 @@ class PostGridConstraints extends InheritedWidget {
 class _SelectionMode extends StatelessWidget {
   const _SelectionMode({
     required this.selectionModeController,
+    required this.selectionOptions,
     required this.child,
     this.footer,
     this.header,
@@ -464,11 +482,13 @@ class _SelectionMode extends StatelessWidget {
   final Widget child;
   final SelectionModeController selectionModeController;
   final AutoScrollController? autoScrollController;
+  final SelectionOptions? selectionOptions;
 
   @override
   Widget build(BuildContext context) {
     return SelectionMode(
       controller: selectionModeController,
+      options: selectionOptions,
       scrollController: autoScrollController,
       child: ListenableBuilder(
         listenable: selectionModeController,

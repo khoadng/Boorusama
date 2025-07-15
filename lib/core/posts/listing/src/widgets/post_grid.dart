@@ -86,10 +86,7 @@ class _PostGridState<T extends Post> extends ConsumerState<PostGrid<T>> {
     super.initState();
 
     _selectionModeController =
-        widget.selectionModeController ??
-        SelectionModeController(
-          options: ref.read(selectionOptionsProvider),
-        );
+        widget.selectionModeController ?? SelectionModeController();
   }
 
   @override
@@ -135,6 +132,7 @@ class _PostGridState<T extends Post> extends ConsumerState<PostGrid<T>> {
         ),
         blacklistedIdString: widget.blacklistedIdString,
         selectionModeController: _selectionModeController,
+        selectionOptions: ref.watch(selectionOptionsProvider),
         controller: widget.controller,
         safeArea: widget.safeArea,
         enablePullToRefresh: widget.enablePullToRefresh ?? true,
