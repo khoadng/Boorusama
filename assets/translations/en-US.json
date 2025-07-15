@@ -165,12 +165,32 @@
       "show_scores": "Show scores",
       "show_post_list_config_header": "Show posts configuration header",
       "booru_config": "Booru profile",
-      "booru_config_placement": "Booru profile placement"
+      "booru_config_placement": "Booru profile placement",
+      "booru_config_placement_options": {
+        "side": "Side",
+        "bottom": "Bottom"
+      },
+      "booru_config_label": "Show label",
+      "booru_config_label_options": {
+        "always": "Always",
+        "never": "Never"
+      }
     },
     "general": "General",
     "search": {
       "search": "Search",
       "auto_focus_search_bar": "Auto focus search bar when first open search view",
+      "search_bar": {
+        "position": {
+          "search_bar_position": "Search bar position",
+          "top": "Top",
+          "bottom": "Bottom"
+        },
+        "scroll_behavior": {
+          "persistent": "Persistent search bar",
+          "persistent_description": "Keep the search bar visible while scrolling."
+        }
+      },
       "hide_bookmarked_posts_from_search_results": "Hide bookmarked posts from search results"
     },
     "information": "Information",
@@ -298,7 +318,16 @@
       "accessibility": "Accessibility",
       "reverseBooruConfigSelectorScrollDirection": "Reverse scroll direction of booru profiles",
       "swipeAreaToOpenSidebar": "Sidebar's swiping area",
-      "swipeAreaToOpenSidebarDescription": "The amount of area on the left side of the screen that can be used to trigger a swipe. Large values will block all horizontal gestures like the pagination swipe gesture."
+      "swipeAreaToOpenSidebarDescription": "The amount of area on the left side of the screen that can be used to trigger a swipe. Large values will block all horizontal gestures like the pagination swipe gesture.",
+      "haptic_feedback": {
+        "haptic_feedback": "Haptic feedback",
+        "haptic_feedback_level": {
+          "none": "None",
+          "subtle": "Subtle",
+          "standard": "Standard",
+          "playful": "Playful"
+        }
+      }
     },
     "booru_settings": {
       "edit_current_profile": "Edit current profile",

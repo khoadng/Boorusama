@@ -74,15 +74,19 @@ extension PageIndicatorPositionTranslated on PageIndicatorPosition {
 
 extension BooruConfigSelectorPositionTranslated on BooruConfigSelectorPosition {
   String localize(BuildContext context) => switch (this) {
-    BooruConfigSelectorPosition.side => 'Side'.hc,
-    BooruConfigSelectorPosition.bottom => 'Bottom'.hc,
+    BooruConfigSelectorPosition.side =>
+      context.t.settings.appearance.booru_config_placement_options.side,
+    BooruConfigSelectorPosition.bottom =>
+      context.t.settings.appearance.booru_config_placement_options.bottom,
   };
 }
 
 extension BooruConfigLabelVisibilityTranslated on BooruConfigLabelVisibility {
   String localize(BuildContext context) => switch (this) {
-    BooruConfigLabelVisibility.always => 'On'.hc,
-    BooruConfigLabelVisibility.never => 'Off'.hc,
+    BooruConfigLabelVisibility.always =>
+      context.t.settings.appearance.booru_config_label_options.always,
+    BooruConfigLabelVisibility.never =>
+      context.t.settings.appearance.booru_config_label_options.never,
   };
 }
 
@@ -107,16 +111,45 @@ extension VideoPlayerEngineTranslated on VideoPlayerEngine {
 
 extension SearchBarPositionTranslated on SearchBarPosition {
   String localize(BuildContext context) => switch (this) {
-    SearchBarPosition.top => 'Top'.hc,
-    SearchBarPosition.bottom => 'Bottom'.hc,
+    SearchBarPosition.top => context.t.settings.search.search_bar.position.top,
+    SearchBarPosition.bottom =>
+      context.t.settings.search.search_bar.position.bottom,
   };
 }
 
 extension HapticFeedbackLevelTranslated on HapticFeedbackLevel {
   String localize(BuildContext context) => switch (this) {
-    HapticFeedbackLevel.none => 'None'.hc,
-    HapticFeedbackLevel.reduced => 'Subtle'.hc,
-    HapticFeedbackLevel.balanced => 'Standard'.hc,
-    HapticFeedbackLevel.full => 'Playful'.hc,
+    HapticFeedbackLevel.none =>
+      context
+          .t
+          .settings
+          .accessibility
+          .haptic_feedback
+          .haptic_feedback_level
+          .none,
+    HapticFeedbackLevel.reduced =>
+      context
+          .t
+          .settings
+          .accessibility
+          .haptic_feedback
+          .haptic_feedback_level
+          .subtle,
+    HapticFeedbackLevel.balanced =>
+      context
+          .t
+          .settings
+          .accessibility
+          .haptic_feedback
+          .haptic_feedback_level
+          .standard,
+    HapticFeedbackLevel.full =>
+      context
+          .t
+          .settings
+          .accessibility
+          .haptic_feedback
+          .haptic_feedback_level
+          .playful,
   };
 }

@@ -310,7 +310,7 @@ class LayoutSection extends ConsumerWidget {
           optionBuilder: (value) => Text(value.localize(context)),
         ),
         SettingsTile(
-          title: Text('Label'.hc),
+          title: Text(context.t.settings.appearance.booru_config_label),
           selectedOption: settings.booruConfigLabelVisibility,
           items: const [...BooruConfigLabelVisibility.values],
           onChanged: (value) => notifier.updateSettings(

@@ -46,8 +46,18 @@ class _SearchSettingsPageState extends ConsumerState<SearchSettingsPage> {
           ),
         ),
         ListTile(
-          title: Text('Persistent search bar'.hc),
-          subtitle: Text('Keep the search bar visible while scrolling.'.hc),
+          title: Text(
+            context.t.settings.search.search_bar.scroll_behavior.persistent,
+          ),
+          subtitle: Text(
+            context
+                .t
+                .settings
+                .search
+                .search_bar
+                .scroll_behavior
+                .persistent_description,
+          ),
           trailing: Switch(
             value: settings.persistSearchBar,
             onChanged: (value) {
@@ -62,7 +72,9 @@ class _SearchSettingsPageState extends ConsumerState<SearchSettingsPage> {
           ),
         ),
         SettingsTile(
-          title: Text('Search bar position'.hc),
+          title: Text(
+            context.t.settings.search.search_bar.position.search_bar_position,
+          ),
           subtitle: Text('Only applies in portrait mode'.hc),
           selectedOption: settings.searchBarPosition,
           items: SearchBarPosition.values,
