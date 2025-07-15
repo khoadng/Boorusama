@@ -10,6 +10,8 @@ enum GridSize {
   small,
   normal,
   large,
+  tiny,
+  micro,
 }
 
 enum ImageListType {
@@ -119,6 +121,14 @@ extension PageIndicatorPositionX on PageIndicatorPosition {
   bool get isVisibleAtTop =>
       this == PageIndicatorPosition.top || this == PageIndicatorPosition.both;
 }
+
+const kSortedGridSizes = [
+  GridSize.micro,
+  GridSize.tiny,
+  GridSize.small,
+  GridSize.normal,
+  GridSize.large,
+];
 
 enum VideoPlayerEngine {
   auto,

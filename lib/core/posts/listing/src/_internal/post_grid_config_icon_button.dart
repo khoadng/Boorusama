@@ -391,7 +391,7 @@ class PostGridActionSheet extends ConsumerWidget {
                       context.t.settings.image_grid.grid_size.grid_size,
                     ),
                     selectedOption: gridSize,
-                    items: GridSize.values,
+                    items: kSortedGridSizes,
                     onChanged: (value) => onGridChanged(value),
                     optionBuilder: (value) => Text(value.localize(context)),
                     visualDensity: VisualDensity.compact,

@@ -34,6 +34,8 @@ extension ImageListTypeTranslated on ImageListType {
 
 extension ImageGridSizeTranslated on GridSize {
   String localize(BuildContext context) => switch (this) {
+    GridSize.micro => 'Micro'.hc,
+    GridSize.tiny => 'Tiny'.hc,
     GridSize.large => context.t.settings.image_grid.grid_size.large,
     GridSize.small => context.t.settings.image_grid.grid_size.small,
     GridSize.normal => context.t.settings.image_grid.grid_size.medium,

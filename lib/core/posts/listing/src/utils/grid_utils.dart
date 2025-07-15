@@ -4,6 +4,8 @@ import '../../../../settings/settings.dart';
 int calculateGridCount(double? width, GridSize size) {
   if (width == null) {
     return switch (size) {
+      GridSize.micro => 5,
+      GridSize.tiny => 4,
       GridSize.small => 3,
       GridSize.normal => 2,
       GridSize.large => 1,
@@ -11,9 +13,45 @@ int calculateGridCount(double? width, GridSize size) {
   }
 
   return switch (size) {
+    GridSize.micro => _getMicroGridColumns(width),
+    GridSize.tiny => _getTinyGridColumns(width),
     GridSize.small => _getSmallGridColumns(width),
     GridSize.normal => _getNormalGridColumns(width),
     GridSize.large => _getLargeGridColumns(width),
+  };
+}
+
+int _getMicroGridColumns(double width) {
+  return switch (width) {
+    < 500 => 5,
+    < 600 => 6,
+    < 700 => 7,
+    < 800 => 8,
+    < 1000 => 9,
+    < 1200 => 10,
+    < 1400 => 11,
+    < 1600 => 12,
+    < 2000 => 13,
+    < 2400 => 14,
+    < 2800 => 15,
+    _ => 16,
+  };
+}
+
+int _getTinyGridColumns(double width) {
+  return switch (width) {
+    < 500 => 4,
+    < 600 => 5,
+    < 700 => 6,
+    < 800 => 7,
+    < 1000 => 8,
+    < 1200 => 9,
+    < 1400 => 10,
+    < 1600 => 11,
+    < 2000 => 12,
+    < 2400 => 13,
+    < 2800 => 14,
+    _ => 15,
   };
 }
 

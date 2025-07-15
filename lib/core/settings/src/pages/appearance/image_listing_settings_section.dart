@@ -77,7 +77,7 @@ class _ImageListingSettingsSectionState
         SettingsTile(
           title: Text(context.t.settings.image_grid.grid_size.grid_size),
           selectedOption: settings.gridSize,
-          items: GridSize.values,
+          items: kSortedGridSizes,
           onChanged: (value) => _onUpdate(settings.copyWith(gridSize: value)),
           optionBuilder: (value) => Text(value.localize(context)),
         ),
