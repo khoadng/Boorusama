@@ -10,15 +10,20 @@ import '../types/grid_thumbnail_url_generator_default.dart';
 
 final gridThumbnailSettingsProvider =
     Provider.family<GridThumbnailSettings, BooruConfigAuth>((ref, config) {
-      final (quality, animatedState) = ref.watch(
+      final (quality, animatedState, gridSize) = ref.watch(
         imageListingSettingsProvider.select(
-          (value) => (value.imageQuality, value.animatedPostsDefaultState),
+          (value) => (
+            value.imageQuality,
+            value.animatedPostsDefaultState,
+            value.gridSize,
+          ),
         ),
       );
 
       return GridThumbnailSettings(
         imageQuality: quality,
         animatedPostsDefaultState: animatedState,
+        gridSize: gridSize,
       );
     });
 
