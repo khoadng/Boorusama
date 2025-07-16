@@ -7,8 +7,8 @@ import '../../../../../../core/posts/post/providers.dart';
 import '../../../../posts/favorites/favorite.dart';
 import '../../../../posts/post/post.dart';
 import '../../../../posts/post/providers.dart';
+import '../data/providers.dart';
 import '../types/user.dart';
-import 'providers.dart';
 
 final danbooruUserProvider = AsyncNotifierProvider.autoDispose
     .family<UserNotifier, DanbooruUser, int>(

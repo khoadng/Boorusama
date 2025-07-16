@@ -1,26 +1,13 @@
 // Package imports:
-import 'package:booru_clients/danbooru.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../../../core/cache/providers.dart';
 import '../../../../../../core/configs/config.dart';
-import '../../../../../../core/http/providers.dart';
-import '../../../../../../core/tags/configs/providers.dart';
-import '../../../../client_provider.dart';
-import '../data/user_repository_api.dart';
+import '../data/providers.dart';
 import '../types/user.dart';
-import '../types/user_repository.dart';
 
 const _kCurrentUserIdKey = '_current_uid';
-
-final danbooruUserRepoProvider =
-    Provider.family<UserRepository, BooruConfigAuth>((ref, config) {
-      return UserRepositoryApi(
-        ref.watch(danbooruClientProvider(config)),
-        ref.watch(tagInfoProvider).defaultBlacklistedTags,
-      );
-    });
 
 final danbooruCurrentUserProvider =
     FutureProvider.family<UserSelf?, BooruConfigAuth>((ref, config) async {
@@ -35,19 +22,11 @@ final danbooruCurrentUserProvider =
 
       // If the cached id is null, we need to fetch it from the api
       if (id == null) {
-        final dio = ref.watch(defaultDioProvider(config));
+        final user = await ref.watch(
+          danbooruUserProfileProvider(config).future,
+        );
 
-        final data = await DanbooruClient(
-          dio: dio,
-          baseUrl: config.url,
-          apiKey: config.apiKey,
-          login: config.login,
-        ).getProfile().then((value) => value.data['id']);
-
-        id = switch (data) {
-          final int i => i,
-          _ => null,
-        };
+        id = user?.id;
 
         // If the id is not null, we cache it
         if (id != null) {

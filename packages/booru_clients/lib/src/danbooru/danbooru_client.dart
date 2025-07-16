@@ -71,12 +71,16 @@ class DanbooruClient
   @override
   Dio get dio => _dio;
 
-  Future<Response> getProfile() async {
+  Future<UserDto?> getProfile() async {
     final response = await dio.get(
       '/profile.json',
     );
 
-    return response;
+    final user = UserDto.fromJson(response.data);
+
+    if (user.id == null) return null;
+
+    return user;
   }
 
   Future<int?> countPosts({
