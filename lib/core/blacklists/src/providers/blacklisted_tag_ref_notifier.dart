@@ -51,10 +51,8 @@ class BlacklistedTagsNotifier
       arg.auth,
     );
 
-    final globalBlacklistedTags = ref
-        .watch(globalBlacklistedTagsProvider)
-        .map((e) => e.name)
-        .toSet();
+    final tags = await ref.watch(globalBlacklistedTagsProvider.future);
+    final globalBlacklistedTags = tags.map((e) => e.name).toSet();
 
     return BlacklistedTagsState(
       tags: _combineTags(

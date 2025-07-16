@@ -190,19 +190,37 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
   }
 
   Widget _buildBlacklistedTags() {
-    final blacklistedTags = ref.watch(globalBlacklistedTagsProvider);
-
-    return BackupRestoreTile(
-      leadingIcon: Symbols.tag,
-      title: 'Blacklisted tags'.hc,
-      subtitle: '${blacklistedTags.length} tags'.hc,
-      trailing: ImportExportTagButton(
-        onImport: (tagString) => ref
-            .read(globalBlacklistedTagsProvider.notifier)
-            .addTagStringWithToast(context, tagString),
-        tags: blacklistedTags.map((e) => e.name).toList(),
-      ),
-    );
+    return ref
+        .watch(globalBlacklistedTagsProvider)
+        .when(
+          data: (blacklistedTags) => BackupRestoreTile(
+            leadingIcon: Symbols.tag,
+            title: 'Blacklisted tags'.hc,
+            subtitle: '${blacklistedTags.length} tags'.hc,
+            trailing: ImportExportTagButton(
+              onImport: (tagString) => ref
+                  .read(globalBlacklistedTagsProvider.notifier)
+                  .addTagStringWithToast(context, tagString),
+              tags: blacklistedTags.map((e) => e.name).toList(),
+            ),
+          ),
+          error: (error, stackTrace) {
+            return BackupRestoreTile(
+              leadingIcon: Symbols.tag,
+              title: 'Blacklisted tags'.hc,
+              subtitle: 'Error loading blacklisted tags'.hc,
+              trailing: const SizedBox.shrink(),
+            );
+          },
+          loading: () {
+            return BackupRestoreTile(
+              leadingIcon: Symbols.tag,
+              title: 'Blacklisted tags'.hc,
+              subtitle: 'Loading...'.hc,
+              trailing: const SizedBox.shrink(),
+            );
+          },
+        );
   }
 
   Widget _buildFavoriteTags() {

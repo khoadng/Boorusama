@@ -86,8 +86,8 @@ final exportCategoriesProvider = Provider<List<ExportCategory>>((ref) {
       displayName: 'Blacklisted tags',
       route: 'blacklisted_tags',
       handler: (request) async {
-        final blacklistedTags = ref.read(globalBlacklistedTagsProvider);
-        final tags = blacklistedTags.map((e) => e.name).join('\n');
+        final blacklistedTags = ref.read(globalBlacklistedTagsProvider.future);
+        final tags = (await blacklistedTags).map((e) => e.name).join('\n');
         final map = {'tags': tags};
 
         return Response.ok(jsonEncode(map));

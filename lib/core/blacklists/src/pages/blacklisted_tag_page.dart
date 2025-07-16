@@ -23,77 +23,106 @@ class BlacklistedTagPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tags = ref.watch(globalBlacklistedTagsProvider);
-    final sortType = ref.watch(selectedBlacklistedTagsSortTypeProvider);
-    final sortedTags = sortBlacklistedTags(tags, sortType);
+    return ref
+        .watch(globalBlacklistedTagsProvider)
+        .when(
+          data: (tags) {
+            final sortType = ref.watch(selectedBlacklistedTagsSortTypeProvider);
+            final sortedTags = sortBlacklistedTags(tags, sortType);
 
-    return BlacklistedTagsViewScaffold(
-      title: context.t.blacklist.manage.title,
-      actions: [
-        IconButton(
-          onPressed: () {
-            showModalBottomSheet(
-              context: context,
-              routeSettings: const RouteSettings(name: 'blacklisted_tag_sort'),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
+            return BlacklistedTagsViewScaffold(
+              title: context.t.blacklist.manage.title,
+              actions: [
+                IconButton(
+                  onPressed: () {
+                    showModalBottomSheet(
+                      context: context,
+                      routeSettings: const RouteSettings(
+                        name: 'blacklisted_tag_sort',
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      builder: (context) => BlacklistedTagConfigSheet(
+                        onSorted: (value) {
+                          ref
+                                  .read(
+                                    selectedBlacklistedTagsSortTypeProvider
+                                        .notifier,
+                                  )
+                                  .state =
+                              value;
+                        },
+                      ),
+                    );
+                  },
+                  icon: const Icon(
+                    Icons.sort,
+                    fill: 1,
+                    size: 20,
+                  ),
+                ),
+              ],
+              tags: sortedTags.map((e) => e.name).toList(),
+              onAddTag: (tag) {
+                ref
+                    .read(globalBlacklistedTagsProvider.notifier)
+                    .addTagWithToast(context, tag);
+              },
+              onEditTap: (oldTag, newTag) {
+                final oldBlacklistedTag = sortedTags.firstWhereOrNull(
+                  (e) => e.name == oldTag,
+                );
+
+                if (oldBlacklistedTag == null) {
+                  showErrorToast(context, 'Cannot find tag $oldTag');
+                  return;
+                }
+
+                ref
+                    .read(globalBlacklistedTagsProvider.notifier)
+                    .updateTag(
+                      oldTag: oldBlacklistedTag,
+                      newTag: newTag,
+                    );
+              },
+              onRemoveTag: (tag) {
+                final blacklistedTag = sortedTags.firstWhereOrNull(
+                  (e) => e.name == tag,
+                );
+
+                if (blacklistedTag == null) {
+                  showErrorToast(context, 'Cannot find tag $tag');
+                  return;
+                }
+
+                ref
+                    .read(globalBlacklistedTagsProvider.notifier)
+                    .removeTag(blacklistedTag);
+              },
+            );
+          },
+          error: (error, stackTrace) {
+            return Scaffold(
+              appBar: AppBar(
+                title: Text(context.t.blacklist.manage.title),
               ),
-              builder: (context) => BlacklistedTagConfigSheet(
-                onSorted: (value) {
-                  ref
-                          .read(
-                            selectedBlacklistedTagsSortTypeProvider.notifier,
-                          )
-                          .state =
-                      value;
-                },
+              body: Center(
+                child: Text(
+                  error.toString(),
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
               ),
             );
           },
-          icon: const Icon(
-            Icons.sort,
-            fill: 1,
-            size: 20,
-          ),
-        ),
-      ],
-      tags: sortedTags.map((e) => e.name).toList(),
-      onAddTag: (tag) {
-        ref
-            .read(globalBlacklistedTagsProvider.notifier)
-            .addTagWithToast(context, tag);
-      },
-      onEditTap: (oldTag, newTag) {
-        final oldBlacklistedTag = sortedTags.firstWhereOrNull(
-          (e) => e.name == oldTag,
-        );
-
-        if (oldBlacklistedTag == null) {
-          showErrorToast(context, 'Cannot find tag $oldTag');
-          return;
-        }
-
-        ref
-            .read(globalBlacklistedTagsProvider.notifier)
-            .updateTag(
-              oldTag: oldBlacklistedTag,
-              newTag: newTag,
+          loading: () {
+            return Scaffold(
+              appBar: AppBar(),
+              body: const Center(
+                child: CircularProgressIndicator(),
+              ),
             );
-      },
-      onRemoveTag: (tag) {
-        final blacklistedTag = sortedTags.firstWhereOrNull(
-          (e) => e.name == tag,
+          },
         );
-
-        if (blacklistedTag == null) {
-          showErrorToast(context, 'Cannot find tag $tag');
-          return;
-        }
-
-        ref
-            .read(globalBlacklistedTagsProvider.notifier)
-            .removeTag(blacklistedTag);
-      },
-    );
   }
 }

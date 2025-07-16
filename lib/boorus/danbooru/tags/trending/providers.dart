@@ -22,8 +22,8 @@ final popularSearchProvider =
       },
     );
 
-final trendingTagsProvider = FutureProvider.autoDispose
-    .family<List<Tag>, BooruConfigFilter>((ref, arg) async {
+final trendingTagsProvider =
+    FutureProvider.family<List<Tag>, BooruConfigFilter>((ref, arg) async {
       ref.invalidateSelfAfter(const Duration(minutes: 15));
 
       final popularSearchRepository = ref.watch(

@@ -35,7 +35,6 @@ import '../../posts/pools/listing/routes.dart';
 import '../../posts/pools/listing/widgets.dart';
 import '../../saved_searches/feed/routes.dart';
 import '../../saved_searches/feed/widgets.dart';
-import '../../tags/trending/providers.dart';
 import '../../users/details/routes.dart';
 import '../../users/details/widgets.dart';
 import '../../users/user/providers.dart';
@@ -131,13 +130,6 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
           data: (user) => user?.id,
           orElse: () => null,
         );
-
-    ref.listen(
-      trendingTagsProvider(configFilter),
-      (previous, next) {
-        // Only used to prevent the provider from being disposed
-      },
-    );
 
     return HomePageScaffold(
       mobileMenu: [

@@ -1,4 +1,6 @@
 // Flutter imports:
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -12,26 +14,22 @@ import '../types/blacklisted_tag.dart';
 import '../types/blacklisted_tag_repository.dart';
 
 final globalBlacklistedTagsProvider =
-    NotifierProvider<GlobalBlacklistedTagsNotifier, IList<BlacklistedTag>>(
+    AsyncNotifierProvider<GlobalBlacklistedTagsNotifier, IList<BlacklistedTag>>(
       GlobalBlacklistedTagsNotifier.new,
     );
 
-class GlobalBlacklistedTagsNotifier extends Notifier<IList<BlacklistedTag>> {
+class GlobalBlacklistedTagsNotifier
+    extends AsyncNotifier<IList<BlacklistedTag>> {
   @override
-  IList<BlacklistedTag> build() {
-    getBlacklist();
-    return <BlacklistedTag>[].lock;
+  FutureOr<IList<BlacklistedTag>> build() async {
+    final repo = await futureRepo;
+    final tags = await repo.getBlacklist();
+
+    return tags.lock;
   }
 
   Future<GlobalBlacklistedTagRepository> get futureRepo =>
       ref.read(globalBlacklistedTagRepoProvider.future);
-
-  Future<void> getBlacklist() async {
-    final repo = await futureRepo;
-    final tags = await repo.getBlacklist();
-
-    state = tags.lock;
-  }
 
   Future<void> addTag(
     String tag, {
@@ -45,7 +43,7 @@ class GlobalBlacklistedTagsNotifier extends Notifier<IList<BlacklistedTag>> {
       // If tag already exists, do nothing
       if (newTag == null) return;
 
-      state = state.add(newTag);
+      state = AsyncValue.data((await future).add(newTag));
 
       onSuccess?.call();
     } catch (e) {
@@ -75,7 +73,7 @@ class GlobalBlacklistedTagsNotifier extends Notifier<IList<BlacklistedTag>> {
         if (newTag != null) newTags.add(newTag);
       }
 
-      state = state.addAll(newTags);
+      state = AsyncValue.data((await future).addAll(newTags));
 
       onSuccess?.call(newTags);
     } catch (e) {
@@ -92,7 +90,7 @@ class GlobalBlacklistedTagsNotifier extends Notifier<IList<BlacklistedTag>> {
       final repo = await futureRepo;
       await repo.removeTag(tag.id);
 
-      state = state.remove(tag);
+      state = AsyncValue.data((await future).remove(tag));
 
       onSuccess?.call();
     } catch (e) {
@@ -110,7 +108,9 @@ class GlobalBlacklistedTagsNotifier extends Notifier<IList<BlacklistedTag>> {
       final repo = await futureRepo;
       final updatedTag = await repo.updateTag(oldTag.id, newTag);
 
-      state = state.remove(oldTag).add(updatedTag);
+      state = AsyncValue.data(
+        (await future).remove(oldTag).add(updatedTag),
+      );
 
       onSuccess?.call();
     } catch (e) {
