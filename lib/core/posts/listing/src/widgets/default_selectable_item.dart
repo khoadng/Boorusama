@@ -20,11 +20,13 @@ class DefaultSelectableItem<T extends Post> extends StatefulWidget {
     required this.post,
     required this.item,
     super.key,
+    this.indicatorSize,
   });
 
   final int index;
   final T post;
   final Widget item;
+  final double? indicatorSize;
 
   @override
   State<DefaultSelectableItem<T>> createState() =>
@@ -147,7 +149,7 @@ class _DefaultSelectableItemState<T extends Post>
                 ),
                 Positioned(
                   top: 0,
-                  right: 4,
+                  right: 0,
                   child: _buildPreviewButton(context),
                 ),
                 Positioned(
@@ -178,6 +180,7 @@ class _DefaultSelectableItemState<T extends Post>
 
   Widget _buildPreviewButton(BuildContext context) {
     return IconButton(
+      padding: EdgeInsets.zero,
       visualDensity: VisualDensity.compact,
       icon: const Icon(Icons.zoom_in),
       onPressed: () {
@@ -188,10 +191,12 @@ class _DefaultSelectableItemState<T extends Post>
   }
 
   Widget _buildCheckmark(bool isSelected, ColorScheme colorScheme) {
+    final size = widget.indicatorSize ?? 32;
+
     return Container(
       margin: const EdgeInsets.all(4),
-      width: 32,
-      height: 32,
+      width: size,
+      height: size,
       child: AnimatedBuilder(
         animation: Listenable.merge([
           _selectionAnimation,
@@ -207,7 +212,7 @@ class _DefaultSelectableItemState<T extends Post>
                 primaryColor: colorScheme.primary,
                 onPrimaryColor: colorScheme.onPrimary,
               ),
-              size: const Size.square(32),
+              size: Size.square(size),
             ),
           ),
         ),
@@ -234,7 +239,7 @@ class SelectionIndicatorPainter extends CustomPainter {
   late final Paint _borderPaint = Paint()
     ..color = Colors.white
     ..style = PaintingStyle.stroke
-    ..strokeWidth = 2.0
+    ..strokeWidth = 1.0
     ..strokeCap = StrokeCap.round;
 
   late final Paint _fillPaint = Paint()..style = PaintingStyle.fill;
@@ -290,7 +295,7 @@ class SelectionIndicatorPainter extends CustomPainter {
 
     // End point (right side of check) - further right and higher
     final endX = center.dx + checkSize * 0.5;
-    final endY = center.dy - checkSize * 0.3;
+    final endY = center.dy - checkSize * 0.4;
 
     path
       ..moveTo(startX, startY)

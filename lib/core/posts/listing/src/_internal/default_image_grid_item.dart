@@ -134,10 +134,17 @@ class DefaultImageGridItem<T extends Post> extends StatelessWidget {
                         },
                       );
 
-                      return DefaultSelectableItem(
-                        index: index,
-                        post: post,
-                        item: item,
+                      return Consumer(
+                        builder: (_, ref, _) {
+                          return DefaultSelectableItem(
+                            index: index,
+                            post: post,
+                            item: item,
+                            indicatorSize: ref.watch(
+                              selectionIndicatorSizeProvider,
+                            ),
+                          );
+                        },
                       );
                     },
                   ),

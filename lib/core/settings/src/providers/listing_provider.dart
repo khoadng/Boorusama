@@ -37,3 +37,19 @@ final imageListingQualityProvider = Provider<ImageQuality>((ref) {
     imageListingSettingsProvider.select((value) => value.imageQuality),
   );
 });
+
+final selectionIndicatorSizeProvider = Provider<double>((ref) {
+  final gridSize = ref.watch(
+    imageListingSettingsProvider.select((value) => value.gridSize),
+  );
+
+  return 32 * _getGridSizeFactor(gridSize);
+});
+
+double _getGridSizeFactor(GridSize gridSize) => switch (gridSize) {
+  GridSize.small => 0.95,
+  GridSize.normal => 1.0,
+  GridSize.large => 1.05,
+  GridSize.tiny => 0.85,
+  GridSize.micro => 0.75,
+};
