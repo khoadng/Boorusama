@@ -25,11 +25,13 @@ class WebsiteLogo extends StatelessWidget {
     required this.dio,
     super.key,
     this.size = kFaviconSize,
+    this.cacheManager,
   });
 
   final String? url;
   final double size;
   final Dio dio;
+  final ImageCacheManager? cacheManager;
 
   @override
   Widget build(BuildContext context) {
@@ -60,6 +62,7 @@ class WebsiteLogo extends StatelessWidget {
                   strokeWidth: 1.5,
                 ),
               ),
+              cacheManager: cacheManager,
               errorWidget: _buildFallback(),
             )
           : _buildFallback(),

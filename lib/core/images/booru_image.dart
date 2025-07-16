@@ -13,6 +13,7 @@ import '../configs/ref.dart';
 import '../http/providers.dart';
 import '../settings/providers.dart';
 import '../settings/settings.dart';
+import 'providers.dart';
 
 const _defaultRadius = BorderRadius.all(Radius.circular(8));
 
@@ -61,6 +62,9 @@ class BooruImage extends ConsumerWidget {
       ),
     );
     final deviceInfo = ref.watch(deviceInfoProvider);
+    final fallbackCacheManager = ref.watch(
+      defaultImageCacheManagerProvider,
+    );
 
     return BooruRawImage(
       dio: dio,
@@ -79,7 +83,7 @@ class BooruImage extends ConsumerWidget {
       placeholderWidget: placeholderWidget,
       controller: controller,
       androidVersion: deviceInfo.androidDeviceInfo?.version.sdkInt,
-      imageCacheManager: imageCacheManager,
+      imageCacheManager: imageCacheManager ?? fallbackCacheManager,
     );
   }
 }

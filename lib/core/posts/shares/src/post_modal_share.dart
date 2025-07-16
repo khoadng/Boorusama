@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -12,6 +11,7 @@ import 'package:share_plus/share_plus.dart';
 import '../../../config_widgets/booru_logo.dart';
 import '../../../config_widgets/website_logo.dart';
 import '../../../downloads/urls/sanitizer.dart';
+import '../../../images/providers.dart';
 import '../../post/post.dart';
 import '../../sources/source.dart';
 import 'download_and_share.dart';
@@ -27,7 +27,7 @@ final _cachedImageFileProvider = FutureProvider.autoDispose
         final ext = sanitizedExtension(imageUrl);
         final effectiveExt = ext.isNotEmpty ? ext : imageExt;
 
-        final cacheManager = DefaultImageCacheManager();
+        final cacheManager = ref.watch(defaultImageCacheManagerProvider);
         final cacheKey = cacheManager.generateCacheKey(imageUrl);
         final file = await cacheManager.getCachedFile(cacheKey);
 

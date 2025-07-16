@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../configs/ref.dart';
 import '../http/providers.dart';
+import '../images/providers.dart';
 import '../widgets/website_logo.dart';
 
 class ConfigAwareWebsiteLogo extends ConsumerWidget {
@@ -28,6 +29,7 @@ class ConfigAwareWebsiteLogo extends ConsumerWidget {
       url: url,
       dio: dio,
       size: size,
+      cacheManager: ref.watch(defaultImageCacheManagerProvider),
     );
   }
 }

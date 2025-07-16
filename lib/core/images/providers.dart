@@ -8,10 +8,24 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 final defaultCachedImageFileProvider = FutureProvider.autoDispose
     .family<Uint8List?, String>(
       (ref, imageUrl) async {
-        final cacheManager = DefaultImageCacheManager();
+        final cacheManager = ref.watch(defaultImageCacheManagerProvider);
         final cacheKey = cacheManager.generateCacheKey(imageUrl);
         final bytes = await cacheManager.getCachedFileBytes(cacheKey);
 
         return bytes;
       },
     );
+
+final defaultImageCacheManagerProvider = Provider<ImageCacheManager>(
+  (ref) {
+    final manager = DefaultImageCacheManager(
+      enableLogging: kDebugMode,
+    );
+
+    ref.onDispose(() {
+      manager.dispose();
+    });
+
+    return manager;
+  },
+);

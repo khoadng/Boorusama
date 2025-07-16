@@ -165,7 +165,7 @@ class DioExtendedNetworkImageProvider
   ) async {
     // Skip caching if disabled
     if (!cache) {
-      return await _loadNetwork(chunkEvents);
+      return _loadNetwork(chunkEvents);
     }
 
     final manager = _getEffectiveCacheManager();
@@ -174,14 +174,28 @@ class DioExtendedNetworkImageProvider
       customKey: cacheKey,
     );
 
-    final hasValidCache = await manager.hasValidCache(
+    final hasValidCacheResult = manager.hasValidCache(
       effectiveCacheKey,
       maxAge: cacheMaxAge,
     );
 
+    bool hasValidCache;
+    if (hasValidCacheResult is Future<bool>) {
+      hasValidCache = await hasValidCacheResult;
+    } else {
+      hasValidCache = hasValidCacheResult;
+    }
+
     // Try to load from cache
     if (hasValidCache) {
-      final cachedData = await manager.getCachedFileBytes(effectiveCacheKey);
+      final cachedDataResult = manager.getCachedFileBytes(effectiveCacheKey);
+      Uint8List? cachedData;
+      if (cachedDataResult is Future<Uint8List?>) {
+        cachedData = await cachedDataResult;
+      } else {
+        cachedData = cachedDataResult;
+      }
+
       if (cachedData != null && cachedData.isNotEmpty) {
         return cachedData;
       }
@@ -252,9 +266,7 @@ class DioExtendedNetworkImageProvider
   @override
   Future<Uint8List?> getNetworkImageData({
     StreamController<ImageChunkEvent>? chunkEvents,
-  }) async {
-    return _fetchImageBytes(chunkEvents);
-  }
+  }) => _fetchImageBytes(chunkEvents);
 
   void _print(Object error) {
     if (printError && kDebugMode) {

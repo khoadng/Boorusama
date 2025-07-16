@@ -13,6 +13,7 @@ import '../../../../foundation/info/app_info.dart';
 import '../../../../foundation/url_launcher.dart';
 import '../../../configs/ref.dart';
 import '../../../http/providers.dart';
+import '../../../images/providers.dart';
 
 class HelpUseTranslatePage extends ConsumerWidget {
   const HelpUseTranslatePage({
@@ -65,6 +66,7 @@ class HelpUseTranslatePage extends ConsumerWidget {
                       appInfo.translationBadgeUrl,
                       height: 66,
                       width: 287,
+                      cacheManager: ref.watch(defaultImageCacheManagerProvider),
                     ),
                     const SizedBox(height: 24),
                     SvgPicture.network(

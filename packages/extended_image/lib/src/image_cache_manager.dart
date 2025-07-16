@@ -13,16 +13,16 @@ import 'package:path_provider/path_provider.dart';
 /// Abstract interface for image caching operations
 abstract class ImageCacheManager {
   /// Retrieves the cached file for the given key
-  Future<File?> getCachedFile(String key);
+  FutureOr<File?> getCachedFile(String key);
 
   /// Retrieves cached file data for the given key
-  Future<Uint8List?> getCachedFileBytes(String key);
+  FutureOr<Uint8List?> getCachedFileBytes(String key);
 
   /// Saves file data to cache with the specified key
   Future<void> saveFile(String key, Uint8List bytes);
 
   /// Checks if a valid cache exists for the key
-  Future<bool> hasValidCache(String key, {Duration? maxAge});
+  FutureOr<bool> hasValidCache(String key, {Duration? maxAge});
 
   /// Clears the cached file for the specified key
   Future<void> clearCache(String key);
@@ -44,53 +44,89 @@ class DefaultImageCacheManager implements ImageCacheManager {
   final String cacheDirName;
   final bool enableLogging;
   Directory? _cacheDir;
+  Future<Directory>? _cacheDirFuture;
 
   /// Get the cache directory, creating it if needed
-  Future<Directory> getCacheDirectory() async {
+  FutureOr<Directory> getCacheDirectory() {
+    // Return cached directory immediately if available (synchronous)
     if (_cacheDir != null) {
       return _cacheDir!;
     }
 
+    // If initialization is already in progress, await that same future
+    if (_cacheDirFuture != null) {
+      return _cacheDirFuture!;
+    }
+
+    // Start initialization and cache the future
+    _cacheDirFuture = _initializeCacheDirectory();
+
+    return _cacheDirFuture!
+        .then((dir) {
+          _cacheDir = dir;
+          return dir;
+        })
+        .catchError((e) {
+          _cacheDirFuture = null;
+          throw e;
+        });
+  }
+
+  Future<Directory> _initializeCacheDirectory() async {
     final tempDir = await getTemporaryDirectory();
-    final dir = Directory(join(tempDir.path, cacheDirName));
+    final dirPath = join(tempDir.path, cacheDirName);
+    final dir = Directory(dirPath);
 
     if (!dir.existsSync()) {
       await dir.create(recursive: true);
     }
 
-    _cacheDir = dir;
     return dir;
   }
 
   @override
-  Future<File?> getCachedFile(String key) async {
+  FutureOr<File?> getCachedFile(String key) {
+    final dirResult = getCacheDirectory();
+
+    if (dirResult is Future<Directory>) {
+      return dirResult.then((cacheDir) => _getFileIfExists(cacheDir, key));
+    }
+
+    final cacheDir = dirResult;
+    return _getFileIfExists(cacheDir, key);
+  }
+
+  File? _getFileIfExists(Directory cacheDir, String key) {
     try {
-      final cacheDir = await getCacheDirectory();
       final cacheFile = File(join(cacheDir.path, key));
-
-      if (cacheFile.existsSync()) {
-        return cacheFile;
-      }
-
-      return null;
+      return cacheFile.existsSync() ? cacheFile : null;
     } catch (e) {
       _log('Error getting cached file: $e');
+      return null;
     }
-    return null;
   }
 
   @override
-  Future<Uint8List?> getCachedFileBytes(String key) async {
+  FutureOr<Uint8List?> getCachedFileBytes(String key) {
+    final fileResult = getCachedFile(key);
+
+    if (fileResult is Future<File?>) {
+      return fileResult.then((file) => _readFileBytes(file));
+    }
+
+    final file = fileResult;
+    return _readFileBytes(file);
+  }
+
+  FutureOr<Uint8List?> _readFileBytes(File? file) {
+    if (file == null) return null;
+
     try {
-      final cacheFile = await getCachedFile(key);
-      if (cacheFile != null) {
-        return await cacheFile.readAsBytes();
-      }
-      return null;
+      return file.readAsBytes();
     } catch (e) {
       _log('Error reading cache: $e');
+      return null;
     }
-    return null;
   }
 
   @override
@@ -104,33 +140,48 @@ class DefaultImageCacheManager implements ImageCacheManager {
     }
   }
 
-  @override
-  Future<bool> hasValidCache(String key, {Duration? maxAge}) async {
-    try {
-      final cacheDir = await getCacheDirectory();
-      final cacheFile = File(join(cacheDir.path, key));
-
-      if (cacheFile.existsSync()) {
-        if (maxAge != null) {
-          final now = DateTime.now();
-          final fileStats = cacheFile.statSync();
-
-          if (now.subtract(maxAge).isAfter(fileStats.modified)) {
-            // File is expired, delete it
-            try {
-              await cacheFile.delete();
-            } catch (e) {
-              _log('Error deleting expired cache file: $e');
-            }
-            return false;
-          }
-        }
-        return true;
-      }
-    } catch (e) {
-      _log('Error checking cache: $e');
+  FutureOr<bool> _deleteExpired(File cacheFile, Duration? maxAge) {
+    if (maxAge == null) {
+      return true; // No expiration check needed
     }
-    return false;
+
+    final now = DateTime.now();
+    final fileStats = cacheFile.statSync();
+
+    final isExpired = now.subtract(maxAge).isAfter(fileStats.modified);
+    if (!isExpired) return true;
+
+    return cacheFile.delete().then((_) => false).catchError((e) {
+      _log('Error deleting expired cache file: $e');
+      return false;
+    });
+  }
+
+  File? _getFile(Directory cacheDir, String key) {
+    final cacheFile = File(join(cacheDir.path, key));
+    final exists = cacheFile.existsSync();
+    if (!exists) return null;
+    return cacheFile;
+  }
+
+  @override
+  FutureOr<bool> hasValidCache(String key, {Duration? maxAge}) {
+    final dirResult = getCacheDirectory();
+
+    if (dirResult is Future<Directory>) {
+      return dirResult.then((cacheDir) {
+        final cacheFile = _getFile(cacheDir, key);
+        if (cacheFile == null) return false;
+
+        return _deleteExpired(cacheFile, maxAge);
+      });
+    }
+
+    final cacheDir = dirResult;
+    final cacheFile = _getFile(cacheDir, key);
+    if (cacheFile == null) return false;
+
+    return _deleteExpired(cacheFile, maxAge);
   }
 
   @override
@@ -172,6 +223,7 @@ class DefaultImageCacheManager implements ImageCacheManager {
   @override
   Future<void> dispose() async {
     _cacheDir = null;
+    _cacheDirFuture = null;
   }
 
   void _log(String message) {

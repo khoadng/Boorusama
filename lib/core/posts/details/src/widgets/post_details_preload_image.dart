@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../../foundation/info/device_info.dart';
 import '../../../../configs/ref.dart';
 import '../../../../http/providers.dart';
+import '../../../../images/providers.dart';
 import '../../../post/post.dart';
 
 class PostDetailsPreloadImage<T extends Post> extends ConsumerWidget {
@@ -53,6 +54,7 @@ class PostDetailsPreloadImage<T extends Post> extends ConsumerWidget {
           headers: ref.watch(httpHeadersProvider(config)),
           platform: Theme.of(context).platform,
           androidVersion: deviceInfo.androidDeviceInfo?.version.sdkInt,
+          cacheManager: ref.watch(defaultImageCacheManagerProvider),
         );
       },
     );

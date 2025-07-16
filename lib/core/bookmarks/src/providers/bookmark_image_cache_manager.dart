@@ -40,7 +40,7 @@ class BookmarkImageCacheManager implements ImageCacheManager {
   }
 
   @override
-  Future<File?> getCachedFile(String key) async {
+  FutureOr<File?> getCachedFile(String key) async {
     try {
       final cacheDir = await getCacheDirectory();
       final cacheFile = File(join(cacheDir.path, key));
@@ -57,7 +57,7 @@ class BookmarkImageCacheManager implements ImageCacheManager {
   }
 
   @override
-  Future<Uint8List?> getCachedFileBytes(String key) async {
+  FutureOr<Uint8List?> getCachedFileBytes(String key) async {
     try {
       final cacheFile = await getCachedFile(key);
       if (cacheFile != null) {
@@ -82,7 +82,7 @@ class BookmarkImageCacheManager implements ImageCacheManager {
   }
 
   @override
-  Future<bool> hasValidCache(String key, {Duration? maxAge}) async {
+  FutureOr<bool> hasValidCache(String key, {Duration? maxAge}) async {
     try {
       final cacheDir = await getCacheDirectory();
       final cacheFile = File(join(cacheDir.path, key));
