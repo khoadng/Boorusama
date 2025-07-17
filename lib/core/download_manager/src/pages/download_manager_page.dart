@@ -253,6 +253,10 @@ class _DownloadManagerPageState extends ConsumerState<DownloadManagerPage> {
                       .selectedFrom(tasks)
                       .toList();
 
+                  if (!_selectionModeController.isActive) {
+                    return const SizedBox.shrink();
+                  }
+
                   return Positioned(
                     left: 0,
                     right: 0,

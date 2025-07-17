@@ -14,10 +14,10 @@ DownloadFilter convertFilter(String? filter) => switch (filter) {
 };
 
 const kFilterOptions = [
-  DownloadFilter.completed,
   DownloadFilter.inProgress,
   DownloadFilter.pending,
   DownloadFilter.paused,
+  DownloadFilter.completed,
   DownloadFilter.failed,
   DownloadFilter.canceled,
 ];
