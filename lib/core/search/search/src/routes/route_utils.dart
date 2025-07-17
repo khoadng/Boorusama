@@ -17,12 +17,16 @@ void goToSearchPage(
   int? page,
   int? position,
   QueryType? queryType,
+  bool? fromSearchBar,
 }) {
   final params = <String, String>{};
   if (tag != null) params[kInitialQueryKey] = tag;
   if (page != null) params['page'] = page.toString();
   if (position != null) params['position'] = position.toString();
   if (queryType != null) params['query_type'] = queryType.name;
+  if (fromSearchBar != null) {
+    params['from_search_bar'] = fromSearchBar.toString();
+  }
 
   ref.router.push(
     Uri(

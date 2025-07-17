@@ -1,6 +1,7 @@
 // Package imports:
 import 'package:dio/dio.dart';
 
+// Project imports:
 import 'http_utils.dart';
 
 /// A resolver function to determine if a request should be rate-limited.

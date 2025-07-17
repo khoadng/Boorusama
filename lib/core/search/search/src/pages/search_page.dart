@@ -60,13 +60,21 @@ class SearchParams extends Equatable {
     this.initialPage,
     this.initialScrollPosition,
     this.initialQueryType,
+    this.fromSearchBar,
   });
 
   final String? initialQuery;
   final int? initialPage;
   final int? initialScrollPosition;
   final QueryType? initialQueryType;
+  final bool? fromSearchBar;
 
   @override
-  List<Object?> get props => [initialQuery, initialPage, initialScrollPosition];
+  List<Object?> get props => [
+    initialQuery,
+    initialPage,
+    initialScrollPosition,
+    initialQueryType,
+    fromSearchBar,
+  ];
 }

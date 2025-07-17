@@ -21,6 +21,8 @@ GoRoute searchRoutes(Ref ref) => GoRoute(
       state.uri.queryParameters['position'] ?? '',
     );
     final queryTypeParam = state.uri.queryParameters['query_type'];
+    final fromSearchBarParam =
+        state.uri.queryParameters['from_search_bar'] == 'true';
     final customHomeViewKey = ref.read(customHomeViewKeyProvider);
 
     final page = InheritedInitialSearchQuery(
@@ -29,11 +31,18 @@ GoRoute searchRoutes(Ref ref) => GoRoute(
         initialPage: pageParam,
         initialScrollPosition: positionParam,
         initialQueryType: parseQueryType(queryTypeParam),
+        fromSearchBar: fromSearchBarParam,
       ),
       child: const SearchPage(),
     );
 
     return customHomeViewKey != null && customHomeViewKey.isAlt
+        ? CupertinoPage(
+            key: state.pageKey,
+            name: state.name,
+            child: page,
+          )
+        : !fromSearchBarParam
         ? CupertinoPage(
             key: state.pageKey,
             name: state.name,
