@@ -16,6 +16,7 @@ typedef ImageQualityMapper =
     String Function(
       Post post,
       ImageQuality imageQuality,
+      GridSize gridSize,
     );
 
 typedef GifImageQualityMapper =

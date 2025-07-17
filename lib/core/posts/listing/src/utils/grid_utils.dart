@@ -1,6 +1,15 @@
 // Project imports:
 import '../../../../settings/settings.dart';
 
+// the smaller the grid size, the larger the cache extent so that more items can be preloaded
+double calculateCacheExtentFactor(GridSize size) => switch (size) {
+  GridSize.micro => 2.0,
+  GridSize.tiny => 1.6,
+  GridSize.small => 1.2,
+  GridSize.normal => 1,
+  GridSize.large => 0.8,
+};
+
 int calculateGridCount(double? width, GridSize size) {
   if (width == null) {
     return switch (size) {

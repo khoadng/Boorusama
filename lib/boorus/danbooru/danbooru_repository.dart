@@ -172,31 +172,32 @@ class DanbooruGridThumbnailUrlGenerator implements GridThumbnailUrlGenerator {
       (post) =>
           DefaultGridThumbnailUrlGenerator(
             gifImageQualityMapper: (_, _) => post.sampleImageUrl,
-            imageQualityMapper: (_, imageQuality) => switch (imageQuality) {
-              ImageQuality.automatic => switch (settings.gridSize) {
-                GridSize.micro => post.url180x180,
-                GridSize.tiny => post.url360x360,
-                _ => post.url720x720,
-              },
-              ImageQuality.low => switch (settings.gridSize) {
-                GridSize.micro || GridSize.tiny => post.url180x180,
-                _ => post.url360x360,
-              },
-              ImageQuality.high => switch (settings.gridSize) {
-                GridSize.micro => post.url180x180,
-                GridSize.tiny => post.url360x360,
-                _ => post.url720x720,
-              },
-              ImageQuality.highest =>
-                post.isVideo
-                    ? post.url720x720
-                    : switch (settings.gridSize) {
-                        GridSize.micro => post.url360x360,
-                        GridSize.tiny => post.url720x720,
-                        _ => post.urlSample,
-                      },
-              ImageQuality.original => post.urlOriginal,
-            },
+            imageQualityMapper: (_, imageQuality, gridSize) =>
+                switch (imageQuality) {
+                  ImageQuality.automatic => switch (gridSize) {
+                    GridSize.micro => post.url180x180,
+                    GridSize.tiny => post.url360x360,
+                    _ => post.url720x720,
+                  },
+                  ImageQuality.low => switch (gridSize) {
+                    GridSize.micro || GridSize.tiny => post.url180x180,
+                    _ => post.url360x360,
+                  },
+                  ImageQuality.high => switch (gridSize) {
+                    GridSize.micro => post.url180x180,
+                    GridSize.tiny => post.url360x360,
+                    _ => post.url720x720,
+                  },
+                  ImageQuality.highest =>
+                    post.isVideo
+                        ? post.url720x720
+                        : switch (gridSize) {
+                            GridSize.micro => post.url360x360,
+                            GridSize.tiny => post.url720x720,
+                            _ => post.urlSample,
+                          },
+                  ImageQuality.original => post.urlOriginal,
+                },
           ).generateUrl(
             post,
             settings: settings,

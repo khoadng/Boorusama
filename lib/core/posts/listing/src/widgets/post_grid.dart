@@ -27,6 +27,7 @@ import '../_internal/default_image_grid_item.dart';
 import '../_internal/post_grid_config_icon_button.dart';
 import '../_internal/raw_post_grid.dart';
 import '../_internal/sliver_post_grid.dart';
+import '../providers/internal_providers.dart';
 import 'blacklist_controls.dart';
 import 'post_grid_controller.dart';
 import 'post_list_configuration_header.dart';
@@ -108,6 +109,9 @@ class _PostGridState<T extends Post> extends ConsumerState<PostGrid<T>> {
     return _InheritedAutoScrollController(
       controller: _autoScrollController,
       child: RawPostGrid(
+        options: PostGridOptions(
+          cacheExtent: ref.watch(gridCacheExtentProvider),
+        ),
         sliverHeaders: [
           ...widget.sliverHeaders ?? [],
           _DisableGridItemHeroOnPop(disableHero: _disableHero),
