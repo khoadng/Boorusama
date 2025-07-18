@@ -132,13 +132,15 @@ class DefaultImageCacheManager implements ImageCacheManager {
     return _readFileBytes(file, key);
   }
 
-  Future<Uint8List?> _readFileBytes(File? file, String key) async {
+  FutureOr<Uint8List?> _readFileBytes(File? file, String key) {
     if (file == null) return null;
 
     try {
-      final bytes = await file.readAsBytes();
-      _cacheInMemoryIfEligible(key, bytes);
-      return bytes;
+      final bytes = file.readAsBytes();
+      return bytes.then((data) {
+        _cacheInMemoryIfEligible(key, data);
+        return data;
+      });
     } catch (e) {
       _log('Error reading cache: $e');
       return null;
