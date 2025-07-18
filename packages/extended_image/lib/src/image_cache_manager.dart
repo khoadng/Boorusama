@@ -10,6 +10,9 @@ import 'package:flutter/foundation.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
+// Import the memory cache
+import 'memory_cache.dart';
+
 /// Abstract interface for image caching operations
 abstract class ImageCacheManager {
   /// Retrieves the cached file for the given key
@@ -39,10 +42,13 @@ class DefaultImageCacheManager implements ImageCacheManager {
   DefaultImageCacheManager({
     this.cacheDirName = 'cacheimage',
     this.enableLogging = false,
-  });
+    MemoryCache? memoryCache,
+  }) : _memoryCache = memoryCache;
 
   final String cacheDirName;
   final bool enableLogging;
+  final MemoryCache? _memoryCache;
+
   Directory? _cacheDir;
   Future<Directory>? _cacheDirFuture;
 
@@ -108,33 +114,53 @@ class DefaultImageCacheManager implements ImageCacheManager {
 
   @override
   FutureOr<Uint8List?> getCachedFileBytes(String key) {
+    // Check memory cache first
+    final memoryData = _memoryCache?.get(key);
+    if (memoryData != null) {
+      _log('Memory cache hit for key: $key');
+      return memoryData;
+    }
+
+    // Fall back to file cache
     final fileResult = getCachedFile(key);
 
     if (fileResult is Future<File?>) {
-      return fileResult.then((file) => _readFileBytes(file));
+      return fileResult.then((file) => _readFileBytes(file, key));
     }
 
     final file = fileResult;
-    return _readFileBytes(file);
+    return _readFileBytes(file, key);
   }
 
-  FutureOr<Uint8List?> _readFileBytes(File? file) {
+  Future<Uint8List?> _readFileBytes(File? file, String key) async {
     if (file == null) return null;
 
     try {
-      return file.readAsBytes();
+      final bytes = await file.readAsBytes();
+      _cacheInMemoryIfEligible(key, bytes);
+      return bytes;
     } catch (e) {
       _log('Error reading cache: $e');
       return null;
     }
   }
 
+  void _cacheInMemoryIfEligible(String key, Uint8List bytes) {
+    _memoryCache?.put(key, bytes);
+  }
+
   @override
   Future<void> saveFile(String key, Uint8List bytes) async {
     try {
+      // Save to file system
       final cacheDir = await getCacheDirectory();
       final cacheFile = File(join(cacheDir.path, key));
       await cacheFile.writeAsBytes(bytes);
+
+      // Save to memory cache if eligible
+      _cacheInMemoryIfEligible(key, bytes);
+
+      _log('Saved file to cache: $key (${bytes.length} bytes)');
     } catch (e) {
       _log('Failed to write cache: $e');
     }
@@ -166,6 +192,13 @@ class DefaultImageCacheManager implements ImageCacheManager {
 
   @override
   FutureOr<bool> hasValidCache(String key, {Duration? maxAge}) {
+    // Check memory cache first - always valid if present
+    if (_memoryCache?.contains(key) == true) {
+      _log('Memory cache contains key: $key');
+      return true;
+    }
+
+    // Check file cache
     final dirResult = getCacheDirectory();
 
     if (dirResult is Future<Directory>) {
@@ -187,12 +220,18 @@ class DefaultImageCacheManager implements ImageCacheManager {
   @override
   Future<void> clearCache(String key) async {
     try {
+      // Clear from memory cache
+      _memoryCache?.remove(key);
+
+      // Clear from file cache
       final cacheDir = await getCacheDirectory();
       final cacheFile = File(join(cacheDir.path, key));
 
       if (cacheFile.existsSync()) {
         await cacheFile.delete();
       }
+
+      _log('Cleared cache for key: $key');
     } catch (e) {
       _log('Error clearing cache: $e');
     }
@@ -222,6 +261,7 @@ class DefaultImageCacheManager implements ImageCacheManager {
 
   @override
   Future<void> dispose() async {
+    _memoryCache?.clear();
     _cacheDir = null;
     _cacheDirFuture = null;
   }
