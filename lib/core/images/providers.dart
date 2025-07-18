@@ -20,6 +20,9 @@ final defaultImageCacheManagerProvider = Provider<ImageCacheManager>(
   (ref) {
     final manager = DefaultImageCacheManager(
       enableLogging: kDebugMode,
+      memoryCache: LRUMemoryCache(
+        maxEntries: 500,
+      ),
     );
 
     ref.onDispose(() {
