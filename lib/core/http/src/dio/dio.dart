@@ -78,10 +78,9 @@ Dio newDio({
       booruDb.getBooruFromId(booruConfig.booruIdHint);
   final supportsHttp2 =
       booru?.getSiteProtocol(baseUrl) == NetworkProtocol.https_2_0;
-  final apiUrl = booru?.getApiUrl(baseUrl) ?? baseUrl;
 
   final dio = newGenericDio(
-    baseUrl: _cleanUrl(apiUrl),
+    baseUrl: _cleanUrl(baseUrl),
     userAgent: options.userAgent,
     logger: options.loggerService,
     supportsHttp2: supportsHttp2,

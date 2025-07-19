@@ -40,8 +40,56 @@
       - https://gelbooru.com/
 
 - gelbooru_v2:
+    global-user-params:
+      user-id: "user_id"
+      api-key: "api_key"
+    
+    features:
+      posts:
+        type: api
+        endpoint: "/index.php?page=dapi&s=post&q=index&json=1"
+        user-params: {tags: "tags", page: "pid", limit: "limit"}
+
+      post:
+        type: api
+        endpoint: "/index.php?page=dapi&s=post&q=index&json=1"
+        user-params: {post-id: "id"}
+      
+      autocomplete:
+        type: api
+        endpoint: "/autocomplete.php"
+        user-params: {query: "q"}
+      
+      comments:
+        type: api
+        endpoint: "/index.php?page=dapi&s=comment&q=index"
+        user-params: {post-id: "post_id"}
+      
+      notes:
+        type: html
+        endpoint: "/index.php?page=post&s=view"
+        parser: "gelbooru-notes-html"
+        user-params: {post-id: "id"}
+      
+      tags:
+        type: html
+        endpoint: "/index.php?page=post&s=view"
+        parser: "gelbooru-tags-sidebar"
+        user-params: {post-id: "id"}
+      
+      favorites:
+        type: api
+        endpoint: "/index.php?page=favorites&s=list"
+        user-params: {}
+
     sites:
       - url: https://rule34.xxx/
+        overrides:
+          autocomplete:
+            type: api      
+            endpoint: "https://api.rule34.xxx/autocomplete.php"
+            user-params: {query: "q"}
+
       - url: https://hypnohub.net/
       - url: https://realbooru.com/
       - url: https://xbooru.com/
