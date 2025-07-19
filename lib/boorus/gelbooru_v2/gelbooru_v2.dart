@@ -1,65 +1,69 @@
 // Package imports:
-import 'package:collection/collection.dart';
+import 'package:booru_clients/core.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../core/boorus/booru/booru.dart';
+import '../../core/boorus/booru/providers.dart';
 import '../../core/boorus/engine/engine.dart';
 import '../../core/http/http.dart';
 import 'gelbooru_v2_builder.dart';
 import 'gelbooru_v2_repository.dart';
 
 BooruComponents createGelbooruV2() => BooruComponents(
-  parser: GelbooruV2Parser(),
+  parser: const GelbooruV2Parser(),
   createBuilder: GelbooruV2Builder.new,
   createRepository: (ref) => GelbooruV2Repository(ref: ref),
 );
 
-typedef GelbooruV2Site = ({String url, String? apiUrl});
+final gelbooruV2Provider = Provider<GelbooruV2>((ref) {
+  final booruDb = ref.watch(booruDbProvider);
+  final booru = booruDb.getBooru<GelbooruV2>();
 
-class GelbooruV2 extends Booru {
+  if (booru == null) {
+    throw Exception('Booru not found for type: ${BooruType.gelbooruV2}');
+  }
+
+  return booru;
+});
+
+class GelbooruV2 extends FeatureAwareBooru {
   const GelbooruV2({
     required super.name,
     required super.protocol,
-    required List<GelbooruV2Site> sites,
-  }) : _sites = sites;
-
-  final List<GelbooruV2Site> _sites;
+    required super.siteCapabilities,
+    required super.globalUserParams,
+    required super.featureRegistry,
+    required this.sites,
+  });
 
   @override
-  Iterable<String> get sites => _sites.map((e) => e.url);
+  final Iterable<String> sites;
 
   @override
   BooruType get type => BooruType.gelbooruV2;
-
-  @override
-  String getApiUrl(String url) =>
-      _sites.firstWhereOrNull((e) => url.contains(e.url))?.apiUrl ?? url;
 }
 
-class GelbooruV2Parser extends BooruParser {
+class GelbooruV2Parser implements BooruParser {
+  const GelbooruV2Parser();
+
   @override
   BooruType get booruType => BooruType.gelbooruV2;
 
   @override
   Booru parse(String name, dynamic data) {
-    final sites = <GelbooruV2Site>[];
-
-    for (final item in data['sites']) {
-      final url = item['url'] as String;
-      final apiUrl = item['api-url'];
-
-      sites.add(
-        (
-          url: url,
-          apiUrl: apiUrl,
-        ),
-      );
-    }
-
     return GelbooruV2(
       name: name,
-      protocol: parseProtocol(data['protocol']),
-      sites: sites,
+      protocol: _parseProtocol(data['protocol']),
+      globalUserParams: GelbooruV2Config.globalUserParams,
+      sites: GelbooruV2Config.sites,
+      siteCapabilities: GelbooruV2Config.siteCapabilities,
+      featureRegistry: BooruFeatureRegistry(
+        GelbooruV2Config.createAllFeatures(),
+      ),
     );
   }
+
+  NetworkProtocol _parseProtocol(dynamic protocol) =>
+      parseProtocol(protocol ?? 'https_2');
 }
