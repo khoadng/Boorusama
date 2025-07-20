@@ -14,15 +14,18 @@ class UserInfoBox extends ConsumerWidget {
     required this.userLevel,
     super.key,
     this.joinedDate,
+    this.loading,
   });
 
   final Widget username;
   final DateTime? joinedDate;
   final Widget userLevel;
+  final bool? loading;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
+    final isLoading = loading ?? false;
 
     return Row(
       children: [
@@ -34,6 +37,8 @@ class UserInfoBox extends ConsumerWidget {
               Text(
                 joinedDate != null
                     ? DateFormat('yyyy-MM-dd').format(joinedDate!)
+                    : isLoading
+                    ? 'Loading...'
                     : 'N/A',
                 style: TextStyle(
                   color: colorScheme.hintColor,

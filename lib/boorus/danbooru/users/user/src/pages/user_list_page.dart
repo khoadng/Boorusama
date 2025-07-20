@@ -7,6 +7,7 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 // Project imports:
 import '../../../details/routes.dart';
+import '../../../details/types.dart';
 import '../providers/colors.dart';
 import '../types/user.dart';
 
@@ -63,7 +64,7 @@ class _DanbooruUserListPageState
             onTap: () {
               goToUserDetailsPage(
                 ref,
-                uid: user.id,
+                details: UserDetails.fromUser(user),
               );
             },
           ),

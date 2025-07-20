@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../../../../core/comments/widgets.dart';
 import '../../../../users/details/routes.dart';
+import '../../../../users/details/types.dart';
 import '../../../../users/user/providers.dart';
 import '../../../comment/comment.dart';
 
@@ -28,7 +29,11 @@ class DanbooruCommentHeader extends ConsumerWidget {
       createdAt: comment.createdAt,
       onTap: () => goToUserDetailsPage(
         ref,
-        uid: comment.authorId,
+        details: UserDetails(
+          id: comment.authorId,
+          name: comment.authorName,
+          level: comment.authorLevel,
+        ),
       ),
     );
   }

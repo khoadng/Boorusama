@@ -10,7 +10,7 @@ import 'package:foundation/foundation.dart';
 // Project imports:
 import '../../../../reports/report.dart';
 import '../providers/local_providers.dart';
-import '../types/upload_date_range_selector_type.dart';
+import '../types/upload_date_range.dart';
 
 class UserUploadDailyDeltaChart extends ConsumerWidget {
   const UserUploadDailyDeltaChart({
@@ -24,9 +24,9 @@ class UserUploadDailyDeltaChart extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final titles = <int, String>{};
     final dateRange = ref.watch(selectedUploadDateRangeSelectorTypeProvider);
-    final isWeeklyChart = dateRange == UploadDateRangeSelectorType.last7Days;
-    final isMonthlyChart = dateRange == UploadDateRangeSelectorType.last30Days;
-    final isYearlyChart = dateRange == UploadDateRangeSelectorType.lastYear;
+    final isWeeklyChart = dateRange == UploadDateRange.last7Days;
+    final isMonthlyChart = dateRange == UploadDateRange.last30Days;
+    final isYearlyChart = dateRange == UploadDateRange.lastYear;
 
     if (isWeeklyChart) {
       // Sep 5 7 9 11 13
@@ -143,11 +143,11 @@ class UserUploadDailyDeltaChart extends ConsumerWidget {
                 barRods: [
                   BarChartRodData(
                     width: switch (dateRange) {
-                      UploadDateRangeSelectorType.last7Days => 28,
-                      UploadDateRangeSelectorType.last30Days => 8,
-                      UploadDateRangeSelectorType.last3Months => 2.5,
-                      UploadDateRangeSelectorType.last6Months => 1.25,
-                      UploadDateRangeSelectorType.lastYear => 0.75,
+                      UploadDateRange.last7Days => 28,
+                      UploadDateRange.last30Days => 8,
+                      UploadDateRange.last3Months => 2.5,
+                      UploadDateRange.last6Months => 1.25,
+                      UploadDateRange.lastYear => 0.75,
                     },
                     borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(1),

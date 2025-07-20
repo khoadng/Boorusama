@@ -3,11 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../../../core/router.dart';
+import '../types/user_details.dart';
 
 void goToUserDetailsPage(
   WidgetRef ref, {
-  required int uid,
+  required UserDetails details,
 }) {
+  final uid = details.id;
   ref.router.push(
     Uri(
       pathSegments: [
@@ -16,6 +18,9 @@ void goToUserDetailsPage(
         'users',
         '$uid',
       ],
+      queryParameters: {
+        ...details.toQueryParams(),
+      },
     ).toString(),
   );
 }

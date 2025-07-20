@@ -9,6 +9,7 @@ import '../../../../../../core/theme/providers.dart';
 import '../../../../../../core/widgets/widgets.dart';
 import '../../../../users/creator/providers.dart';
 import '../../../../users/details/routes.dart';
+import '../../../../users/details/types.dart';
 import '../../../../users/user/providers.dart';
 import '../../../posts/routes.dart';
 import '../types/forum_topic.dart';
@@ -44,10 +45,12 @@ class DanbooruForumCard extends ConsumerWidget {
             label: creatorName.replaceAll('_', ' '),
             backgroundColor: colors?.backgroundColor,
             textColor: colors?.foregroundColor,
-            onTap: () => goToUserDetailsPage(
-              ref,
-              uid: topic.creatorId,
-            ),
+            onTap: creator != null
+                ? () => goToUserDetailsPage(
+                    ref,
+                    details: UserDetails.fromCreator(creator),
+                  )
+                : null,
           );
         },
       ),

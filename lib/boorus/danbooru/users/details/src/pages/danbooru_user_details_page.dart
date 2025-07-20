@@ -13,6 +13,7 @@ import '../../../../../../foundation/info/package_info.dart';
 import '../../../../dmails/routes.dart';
 import '../../../../posts/uploads/routes.dart';
 import '../../../user/providers.dart';
+import '../types/user_details.dart';
 import '../views/user_details_info_view.dart';
 import '../views/user_details_tag_changes.dart';
 import '../views/user_details_upload_view.dart';
@@ -20,18 +21,20 @@ import '../widgets/danbooru_user_info_box.dart';
 
 class DanbooruUserDetailsPage extends ConsumerWidget {
   const DanbooruUserDetailsPage({
-    required this.uid,
+    required this.details,
     super.key,
     this.hasAppBar = true,
     this.isSelf = false,
   });
 
-  final int uid;
+  final UserDetails details;
   final bool hasAppBar;
   final bool isSelf;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final uid = details.id;
+
     return UserDetailsPage(
       actions: [
         BooruPopupMenuButton(
@@ -52,7 +55,9 @@ class DanbooruUserDetailsPage extends ConsumerWidget {
             .when(
               data: (user) => UserDetailsTabView(
                 sliverInfoOverview: UserOverviewScaffold(
-                  userInfo: DanbooruUserInfoBox(user: user),
+                  userInfo: DanbooruUserInfoBox(
+                    user: UserDetails.fromUser(user),
+                  ),
                   action: UserDetailsActionButtons(uid: uid),
                   isSelf: isSelf,
                 ),
@@ -78,10 +83,35 @@ class DanbooruUserDetailsPage extends ConsumerWidget {
               error: (error, stackTrace) => const Center(
                 child: Text('Fail to load profile'),
               ),
-              loading: () => const Center(
-                child: CircularProgressIndicator.adaptive(),
-              ),
+              loading: () => _buildLoading(uid),
             ),
+      ),
+    );
+  }
+
+  Widget _buildLoading(int uid) {
+    return UserDetailsViewScaffold(
+      sliverInfoOverview: UserOverviewScaffold(
+        userInfo: DanbooruUserInfoBox(
+          user: details,
+          loading: true,
+        ),
+        action: UserDetailsActionButtons(uid: uid),
+        isSelf: isSelf,
+      ),
+      body: const Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.only(
+              top: 36,
+            ),
+            child: SizedBox(
+              height: 12,
+              width: 12,
+              child: CircularProgressIndicator(),
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../../../../core/widgets/widgets.dart';
 import '../providers/local_providers.dart';
-import '../types/upload_date_range_selector_type.dart';
+import '../types/upload_date_range.dart';
 
 class UploadDateRangeSelectorButton extends ConsumerWidget {
   const UploadDateRangeSelectorButton({
@@ -21,8 +21,8 @@ class UploadDateRangeSelectorButton extends ConsumerWidget {
       value: ref.watch(selectedUploadDateRangeSelectorTypeProvider),
       onChanged: (value) =>
           ref.read(selectedUploadDateRangeSelectorTypeProvider.notifier).state =
-              value ?? UploadDateRangeSelectorType.last30Days,
-      items: UploadDateRangeSelectorType.values
+              value ?? UploadDateRange.last30Days,
+      items: UploadDateRange.values
           .map(
             (value) => DropdownMenuItem(
               value: value,

@@ -23,6 +23,48 @@ class UserDetailsTabView extends StatelessWidget {
       if (tagChanges != null) 'Changes': tagChanges!,
     };
 
+    return UserDetailsViewScaffold(
+      sliverInfoOverview: sliverInfoOverview,
+      body: tabMap.isEmpty
+          ? const Center(child: Text('No content'))
+          : DefaultTabController(
+              length: tabMap.length,
+              child: Column(
+                children: [
+                  TabBar(
+                    labelPadding: const EdgeInsets.symmetric(horizontal: 12),
+                    isScrollable: true,
+                    tabs: [
+                      for (final tab in tabMap.keys) Tab(text: tab),
+                    ],
+                  ),
+                  const Divider(thickness: 1, height: 0),
+                  Expanded(
+                    child: TabBarView(
+                      children: [
+                        for (final tab in tabMap.values) tab,
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+    );
+  }
+}
+
+class UserDetailsViewScaffold extends StatelessWidget {
+  const UserDetailsViewScaffold({
+    required this.sliverInfoOverview,
+    required this.body,
+    super.key,
+  });
+
+  final Widget sliverInfoOverview;
+  final Widget body;
+
+  @override
+  Widget build(BuildContext context) {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
@@ -32,37 +74,7 @@ class UserDetailsTabView extends StatelessWidget {
         slivers: [
           sliverInfoOverview,
           SliverFillRemaining(
-            child: tabMap.isEmpty
-                ? const Center(
-                    child: Text('No content'),
-                  )
-                : DefaultTabController(
-                    length: tabMap.length,
-                    child: Column(
-                      children: [
-                        TabBar(
-                          labelPadding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                          ),
-                          isScrollable: true,
-                          tabs: [
-                            for (final tab in tabMap.keys) Tab(text: tab),
-                          ],
-                        ),
-                        const Divider(
-                          thickness: 1,
-                          height: 0,
-                        ),
-                        Expanded(
-                          child: TabBarView(
-                            children: [
-                              for (final tab in tabMap.values) tab,
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+            child: body,
           ),
         ],
       ),

@@ -11,6 +11,7 @@ import '../../../../../core/widgets/widgets.dart';
 import '../../../../core/images/booru_image.dart';
 import '../../posts/post/post.dart';
 import '../../users/details/routes.dart';
+import '../../users/details/types.dart';
 import 'providers/version_providers.dart';
 import 'widgets/tag_edit_history_card.dart';
 
@@ -178,7 +179,7 @@ class _Content extends ConsumerWidget {
                       version: data[index],
                       onUserTap: () => goToUserDetailsPage(
                         ref,
-                        uid: data[index].updater.id,
+                        details: UserDetails.fromCreator(data[index].updater),
                       ),
                     ),
                     childCount: data.length,

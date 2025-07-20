@@ -21,13 +21,13 @@ import '../../../../posts/post/post.dart';
 import '../../../../tags/related/related.dart';
 import '../../../user/user.dart';
 import '../providers/local_providers.dart';
-import '../types/danbooru_report_data_params.dart';
+import '../types/report_data_params.dart';
 import '../widgets/upload_date_range_selector_button.dart';
 import '../widgets/user_charts.dart';
 
 const _kTopCopyrigthTags = 5;
 
-class UserDetailsUploadView extends ConsumerStatefulWidget {
+class UserDetailsUploadView extends ConsumerWidget {
   const UserDetailsUploadView({
     required this.uid,
     required this.username,
@@ -42,21 +42,10 @@ class UserDetailsUploadView extends ConsumerStatefulWidget {
   final DanbooruUser user;
 
   @override
-  ConsumerState<UserDetailsUploadView> createState() => _UserUploadViewState();
-}
-
-class _UserUploadViewState extends ConsumerState<UserDetailsUploadView>
-    with AutomaticKeepAliveClientMixin {
-  @override
-  bool get wantKeepAlive => true;
-
-  @override
-  Widget build(BuildContext context) {
-    super.build(context);
-
+  Widget build(BuildContext context, WidgetRef ref) {
     return CustomScrollView(
       slivers: [
-        if (widget.user.uploadCount > 0)
+        if (user.uploadCount > 0)
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.only(
@@ -68,7 +57,7 @@ class _UserUploadViewState extends ConsumerState<UserDetailsUploadView>
                 child: ref
                     .watch(
                       userDataProvider(
-                        DanbooruReportDataParams.forUser(widget.user),
+                        DanbooruReportDataParams.forUser(user),
                       ),
                     )
                     .maybeWhen(
@@ -113,7 +102,7 @@ class _UserUploadViewState extends ConsumerState<UserDetailsUploadView>
               ),
             ),
           ),
-        if (widget.user.uploadCount > 0)
+        if (user.uploadCount > 0)
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.only(top: 24, left: 12),
@@ -134,13 +123,14 @@ class _UserUploadViewState extends ConsumerState<UserDetailsUploadView>
                       .watch(
                         userCopyrightDataProvider(
                           (
-                            username: widget.username,
-                            uploadCount: widget.user.uploadCount,
+                            username: username,
+                            uploadCount: user.uploadCount,
                           ),
                         ),
                       )
                       .maybeWhen(
                         data: (data) => _buildTags(
+                          ref,
                           data.tags.take(_kTopCopyrigthTags).toList(),
                         ),
                         orElse: () => _buildPlaceHolderTags(context),
@@ -151,7 +141,7 @@ class _UserUploadViewState extends ConsumerState<UserDetailsUploadView>
           ),
         SliverUploadPostList(
           title: 'Uploads',
-          user: widget.user,
+          user: user,
         ),
       ],
     );
@@ -187,7 +177,8 @@ class _UserUploadViewState extends ConsumerState<UserDetailsUploadView>
     );
   }
 
-  Widget _buildTags(List<DanbooruRelatedTagItem> tags) {
+  Widget _buildTags(WidgetRef ref, List<DanbooruRelatedTagItem> tags) {
+    final context = ref.context;
     return Wrap(
       spacing: 8,
       runSpacing: isDesktopPlatform() ? 4 : 0,

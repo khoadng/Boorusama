@@ -3,16 +3,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../../../core/configs/ref.dart';
+import '../../../../../../core/posts/post/post.dart';
 import '../../../../../../core/posts/post/providers.dart';
 import '../../../../../../core/tags/categories/tag_category.dart';
+import '../../../../../../foundation/riverpod/riverpod.dart';
 import '../../../../posts/post/post.dart';
 import '../../../../posts/post/providers.dart';
 import '../../../../reports/providers.dart';
 import '../../../../reports/report.dart';
 import '../../../../tags/related/providers.dart';
 import '../../../../tags/related/related.dart';
-import '../types/danbooru_report_data_params.dart';
-import '../types/upload_date_range_selector_type.dart';
+import '../types/report_data_params.dart';
+import '../types/upload_date_range.dart';
 
 typedef DanbooruUserUploadParams = ({String username, int uploadCount});
 
@@ -21,6 +23,8 @@ final danbooruUserUploadsProvider =
       ref,
       params,
     ) async {
+      ref.cacheFor(const Duration(seconds: 15));
+
       final uploadCount = params.uploadCount;
       final name = params.username;
 
@@ -31,14 +35,15 @@ final danbooruUserUploadsProvider =
       final uploads = await repo.getPostsFromTagsOrEmpty(
         'user:$name',
         limit: 50,
+        options: PostFetchOptions.raw,
       );
 
       return uploads.posts;
     });
 
 final selectedUploadDateRangeSelectorTypeProvider =
-    StateProvider.autoDispose<UploadDateRangeSelectorType>(
-      (ref) => UploadDateRangeSelectorType.last30Days,
+    StateProvider.autoDispose<UploadDateRange>(
+      (ref) => UploadDateRange.last30Days,
     );
 
 final userDataProvider = FutureProvider.autoDispose
@@ -46,6 +51,8 @@ final userDataProvider = FutureProvider.autoDispose
       ref,
       params,
     ) async {
+      ref.cacheFor(const Duration(minutes: 1));
+
       final tag = params.tag;
       final config = ref.watchConfigAuth;
       final now = DateTime.now();
@@ -54,19 +61,19 @@ final userDataProvider = FutureProvider.autoDispose
         selectedUploadDateRangeSelectorTypeProvider,
       );
       final from = switch (selectedRange) {
-        UploadDateRangeSelectorType.last7Days => now.subtract(
+        UploadDateRange.last7Days => now.subtract(
           const Duration(days: 7),
         ),
-        UploadDateRangeSelectorType.last30Days => now.subtract(
+        UploadDateRange.last30Days => now.subtract(
           const Duration(days: 30),
         ),
-        UploadDateRangeSelectorType.last3Months => now.subtract(
+        UploadDateRange.last3Months => now.subtract(
           const Duration(days: 90),
         ),
-        UploadDateRangeSelectorType.last6Months => now.subtract(
+        UploadDateRange.last6Months => now.subtract(
           const Duration(days: 180),
         ),
-        UploadDateRangeSelectorType.lastYear => now.subtract(
+        UploadDateRange.lastYear => now.subtract(
           const Duration(days: 365),
         ),
       };
@@ -92,6 +99,8 @@ final userCopyrightDataProvider =
       ref,
       params,
     ) async {
+      ref.cacheFor(const Duration(minutes: 10));
+
       final username = params.username;
       final config = ref.watchConfigAuth;
       return ref

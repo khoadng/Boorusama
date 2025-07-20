@@ -10,15 +10,17 @@ import '../../../../../../core/theme.dart';
 import '../../../../../../core/theme/providers.dart';
 import '../../../../../../core/users/widgets.dart';
 import '../../../user/providers.dart';
-import '../../../user/user.dart';
+import '../types/user_details.dart';
 
 class DanbooruUserInfoBox extends ConsumerWidget {
   const DanbooruUserInfoBox({
     required this.user,
     super.key,
+    this.loading,
   });
 
-  final DanbooruUser user;
+  final UserDetails user;
+  final bool? loading;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -27,19 +29,20 @@ class DanbooruUserInfoBox extends ConsumerWidget {
     final colors = ref
         .watch(booruChipColorsProvider)
         .fromColor(
-          userColor.fromUser(user),
+          userColor.fromLevel(user.level),
         );
 
     return UserInfoBox(
+      loading: loading,
       username: UserInfoNameText(
-        name: user.name,
+        name: user.name ?? 'Unknown',
         color: theme.brightness.isLight
-            ? userColor.fromUser(user)
+            ? userColor.fromLevel(user.level)
             : colors?.foregroundColor,
       ),
       userLevel: Chip(
         label: Text(
-          user.level.name.sentenceCase,
+          user.level?.name.sentenceCase ?? 'Unknown',
           style: TextStyle(
             color: colors?.foregroundColor,
           ),

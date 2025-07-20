@@ -15,6 +15,7 @@ import '../../../../../foundation/html.dart';
 import '../../../../../foundation/url_launcher.dart';
 import '../../../users/creator/providers.dart';
 import '../../../users/details/routes.dart';
+import '../../../users/details/types.dart';
 import '../../../users/user/user.dart';
 import '../../topics/topic.dart';
 import 'data/providers.dart';
@@ -143,10 +144,12 @@ class _DanbooruForumPostsPageState
                 authorName: creatorName,
                 createdAt: post.createdAt,
                 authorLevel: creatorLevel,
-                onTap: () => goToUserDetailsPage(
-                  ref,
-                  uid: post.creatorId,
-                ),
+                onTap: creator != null
+                    ? () => goToUserDetailsPage(
+                        ref,
+                        details: UserDetails.fromCreator(creator),
+                      )
+                    : null,
               );
             },
           ),

@@ -10,6 +10,7 @@ import '../../../../../../core/posts/details_parts/widgets.dart';
 import '../../../../tags/_shared/tag_list_notifier.dart';
 import '../../../../users/creator/providers.dart';
 import '../../../../users/details/routes.dart';
+import '../../../../users/details/types.dart';
 import '../../../../users/user/providers.dart';
 import '../../../post/post.dart';
 
@@ -49,7 +50,7 @@ class DanbooruFileDetails extends ConsumerWidget {
                         ),
                         onTap: () => goToUserDetailsPage(
                           ref,
-                          uid: uploader.id,
+                          details: UserDetails.fromCreator(uploader),
                         ),
                         child: Text(
                           uploader.name.replaceAll('_', ' '),
@@ -78,7 +79,7 @@ class DanbooruFileDetails extends ConsumerWidget {
                   child: InkWell(
                     onTap: () => goToUserDetailsPage(
                       ref,
-                      uid: approver.id,
+                      details: UserDetails.fromCreator(approver),
                     ),
                     child: Text(
                       approver.name.replaceAll('_', ' '),
