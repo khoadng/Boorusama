@@ -28,11 +28,6 @@ class GelbooruV2Client with GelbooruClientFavorites {
           feature: GelbooruV2Config.defaultFeatures[BooruFeatureId.posts]!,
           parser: parsePostsResponse,
         ),
-        //FIXME: this need rework to support path parameters replacement, need to update the YAML too
-        Endpoint<PostV2Dto?>.fromFeature(
-          feature: GelbooruV2Config.defaultFeatures[BooruFeatureId.post]!,
-          parser: parsePostResponse,
-        ),
         Endpoint<List<AutocompleteDto>>.fromFeature(
           feature:
               GelbooruV2Config.defaultFeatures[BooruFeatureId.autocomplete]!,
@@ -74,8 +69,8 @@ class GelbooruV2Client with GelbooruClientFavorites {
       baseUrl: _baseUrl,
       config: _config,
       buildAuthParams: () => {
-        if (userId != null) 'user-id': userId!,
-        if (apiKey != null) 'api-key': apiKey!,
+        if (userId != null) P.userId: userId!,
+        if (apiKey != null) P.apiKey: apiKey!,
       },
       buildContext: (extra) => {'baseUrl': _baseUrl, ...?extra},
     );
@@ -101,15 +96,15 @@ class GelbooruV2Client with GelbooruClientFavorites {
   }) => _requestHandler.makeRequest(
     featureId: BooruFeatureId.posts,
     params: {
-      if (tags?.isNotEmpty == true) 'tags': tags!.join(' '),
-      if (page != null) 'page': page - 1,
-      if (limit != null) 'limit': limit,
+      if (tags?.isNotEmpty == true) P.tags: tags!.join(' '),
+      if (page != null) P.page: page - 1,
+      if (limit != null) P.limit: limit,
     },
   );
 
   Future<PostV2Dto?> getPost(int id) => _requestHandler.makeRequest(
     featureId: BooruFeatureId.post,
-    params: {'post-id': id},
+    params: {P.postId: id},
   );
 
   Future<List<AutocompleteDto>> autocomplete({
@@ -120,8 +115,8 @@ class GelbooruV2Client with GelbooruClientFavorites {
       return await _requestHandler.makeRequest(
         featureId: BooruFeatureId.autocomplete,
         params: {
-          'query': term,
-          if (limit != null) 'limit': limit,
+          P.query: term,
+          if (limit != null) P.limit: limit,
         },
       );
     } on Exception catch (_) {
@@ -133,20 +128,20 @@ class GelbooruV2Client with GelbooruClientFavorites {
     required int postId,
   }) => _requestHandler.makeRequest(
     featureId: BooruFeatureId.comments,
-    params: {'post-id': postId},
+    params: {P.postId: postId},
   );
 
   Future<List<NoteDto>> getNotesFromPostId({required int postId}) =>
       _requestHandler.makeRequest(
         featureId: BooruFeatureId.notes,
-        params: {'post-id': postId},
-        context: {'post-id': postId},
+        params: {P.postId: postId},
+        context: {P.postId: postId},
       );
 
   Future<List<TagDto>> getTagsFromPostId({required int postId}) =>
       _requestHandler.makeRequest(
         featureId: BooruFeatureId.tags,
-        params: {'post-id': postId},
-        context: {'post-id': postId},
+        params: {P.postId: postId},
+        context: {P.postId: postId},
       );
 }

@@ -75,19 +75,17 @@ class Endpoint<T> {
 }
 
 class EndpointConfig {
-  const EndpointConfig({
+  EndpointConfig({
     this.globalUserParams,
     required this.endpoints,
-  });
+  }) : _endpointMap = {for (final e in endpoints) e.featureId: e};
 
-  final Map<String, String>? globalUserParams;
+  final Map<BooruFeatureId, Endpoint> _endpointMap;
   final List<Endpoint> endpoints;
+  final Map<String, String>? globalUserParams;
 
-  T? getEndpoint<T>(BooruFeatureId featureId) {
-    return endpoints
-            .where((endpoint) => endpoint.featureId == featureId)
-            .firstOrNull
-        as T?;
+  Endpoint? getEndpoint(BooruFeatureId featureId) {
+    return _endpointMap[featureId];
   }
 
   String buildUrl({
@@ -95,7 +93,7 @@ class EndpointConfig {
     required String baseUrl,
     required Map<String, String> userParams,
   }) {
-    final endpoint = getEndpoint<Endpoint>(featureId);
+    final endpoint = getEndpoint(featureId);
     if (endpoint == null) {
       throw ArgumentError('Feature not supported: ${featureId.name}');
     }
@@ -108,7 +106,7 @@ class EndpointConfig {
     required Response response,
     required Map<String, dynamic> context,
   }) {
-    final endpoint = getEndpoint<Endpoint<T>>(featureId);
+    final endpoint = getEndpoint(featureId);
     if (endpoint == null) {
       throw ArgumentError('Feature not supported: ${featureId.name}');
     }

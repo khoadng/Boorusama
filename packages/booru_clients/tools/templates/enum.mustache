@@ -1,0 +1,15 @@
+enum BooruFeatureId {
+{{#featureIds}}
+  {{name}}('{{name}}'){{^isLast}},{{/isLast}}{{#isLast}};{{/isLast}}
+{{/featureIds}}
+
+  const BooruFeatureId(this.name);
+  final String name;
+
+  static BooruFeatureId? fromName(String name) {
+    for (final feature in values) {
+      if (feature.name == name) return feature;
+    }
+    return null;
+  }
+}

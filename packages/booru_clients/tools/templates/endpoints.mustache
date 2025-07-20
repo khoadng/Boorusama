@@ -1,0 +1,19 @@
+{{#endpoints}}
+  static const _{{featureId}}Endpoint = FeatureEndpoint(
+    featureId: BooruFeatureId.{{featureId}},
+    type: EndpointType.{{type}},
+    path: '{{{path}}}',{{#hasParser}}
+    parserStrategy: '{{{parser}}}',{{/hasParser}}
+    paramMapping: {{{paramMapping}}},
+  );
+{{/endpoints}}
+
+  static const globalUserParams = {{{globalParamsMap}}};
+  
+  static const sites = {{{sitesList}}};
+  
+  static const defaultFeatures = <BooruFeatureId, FeatureEndpoint>{
+{{#defaultFeatures}}
+    BooruFeatureId.{{featureId}}: _{{featureId}}Endpoint,
+{{/defaultFeatures}}
+  };

@@ -1,0 +1,103 @@
+abstract class BooruFeature extends Equatable {
+  const BooruFeature(this.id);
+  final BooruFeatureId id;
+
+  @override
+  List<Object?> get props => [id];
+}
+
+{{#featureClasses}}
+class {{className}} extends BooruFeature {
+{{#hasCapabilities}}
+  const {{className}}({
+{{#capabilities}}
+    required this.{{name}},
+{{/capabilities}}
+  }) : super(BooruFeatureId.{{featureId}});
+
+{{#capabilities}}
+  final {{type}} {{name}};
+{{/capabilities}}
+
+  @override
+  List<Object?> get props => [
+    ...super.props,
+{{#capabilities}}
+    {{name}},
+{{/capabilities}}
+  ];
+{{/hasCapabilities}}
+{{^hasCapabilities}}
+  const {{className}}() : super(BooruFeatureId.{{featureId}});
+{{/hasCapabilities}}
+}
+
+{{/featureClasses}}
+enum EndpointType {
+  api('api'),
+  html('html');
+
+  const EndpointType(this.name);
+  final String name;
+
+  static EndpointType fromString(String? typeStr) {
+    for (final type in values) {
+      if (type.name == typeStr) return type;
+    }
+    return EndpointType.api;
+  }
+}
+
+class FeatureEndpoint {
+  const FeatureEndpoint({
+    required this.featureId,
+    required this.type,
+    required this.path,
+    this.baseUrl,
+    this.parserStrategy,
+    this.paramMapping = const {},
+  });
+
+  final BooruFeatureId featureId;
+  final EndpointType type;
+  final String path;
+  final String? baseUrl;
+  final String? parserStrategy;
+  final Map<String, String> paramMapping;
+}
+
+class EndpointOverride {
+  const EndpointOverride({
+    this.parserStrategy,
+    this.path,
+    this.baseUrl,
+    this.paramMapping,
+    this.type,
+    this.capabilities,
+  });
+
+  final String? parserStrategy;
+  final String? path;
+  final String? baseUrl;
+  final Map<String, String>? paramMapping;
+  final EndpointType? type;
+  final Map<String, dynamic>? capabilities;
+}
+
+class SiteCapabilities {
+  const SiteCapabilities({
+    required this.siteUrl,
+    required this.overrides,
+  });
+
+  final String siteUrl;
+  final Map<BooruFeatureId, EndpointOverride> overrides;
+
+  bool hasOverride(BooruFeatureId featureId) {
+    return overrides.containsKey(featureId);
+  }
+
+  EndpointOverride? getOverride(BooruFeatureId featureId) {
+    return overrides[featureId];
+  }
+}

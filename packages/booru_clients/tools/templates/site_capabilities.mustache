@@ -1,0 +1,18 @@
+  static const siteCapabilities = <String, SiteCapabilities>{
+{{#sites}}
+    '{{{url}}}': SiteCapabilities(
+      siteUrl: '{{{url}}}',
+      overrides: {{#hasOverrides}}{
+{{#overrides}}
+        BooruFeatureId.{{featureId}}: EndpointOverride(
+{{#hasType}}          type: EndpointType.{{type}},
+{{/hasType}}{{#hasPath}}          path: '{{{path}}}',
+{{/hasPath}}{{#hasParser}}          parserStrategy: '{{{parser}}}',
+{{/hasParser}}{{#hasParams}}          paramMapping: {{{paramMapping}}},
+{{/hasParams}}{{#hasCapabilities}}          capabilities: {{{capabilities}}},
+{{/hasCapabilities}}        ),
+{{/overrides}}
+      }{{/hasOverrides}}{{^hasOverrides}}{}{{/hasOverrides}},
+    ),
+{{/sites}}
+  };

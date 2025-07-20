@@ -65,19 +65,23 @@ abstract class FeatureAwareBooru extends Booru {
     }
 
     final endpointOverrides = <BooruFeatureId, Endpoint>{};
-    capabilities.featureEndpoints.forEach((featureId, featureEndpoint) {
-      final baseEndpoint = baseConfig.getEndpoint<Endpoint>(featureId);
-      if (baseEndpoint != null) {
-        final parser = featureEndpoint.parserStrategy != null
-            ? parserResolver(featureEndpoint.parserStrategy) ??
-                  baseEndpoint.parser
-            : baseEndpoint.parser;
 
-        endpointOverrides[featureId] = Endpoint.fromFeature(
-          feature: featureEndpoint,
-          parser: parser,
-        );
+    capabilities.overrides.forEach((featureId, override) {
+      final baseEndpoint = baseConfig.getEndpoint(featureId);
+      if (baseEndpoint == null) return;
+
+      ResponseParser? parser = baseEndpoint.parser;
+      if (override.parserStrategy != null) {
+        parser = parserResolver(override.parserStrategy) ?? parser;
       }
+
+      endpointOverrides[featureId] = baseEndpoint.copyWith(
+        parser: parser,
+        path: override.path,
+        baseUrl: override.baseUrl,
+        userParams: override.paramMapping,
+        type: override.type,
+      );
     });
 
     return baseConfig.withOverrides(endpointOverrides);

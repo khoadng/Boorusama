@@ -2,6 +2,16 @@
 
 import 'package:equatable/equatable.dart';
 
+class P {
+  static const apiKey = 'api-key';
+  static const limit = 'limit';
+  static const page = 'page';
+  static const postId = 'post-id';
+  static const query = 'query';
+  static const tags = 'tags';
+  static const userId = 'user-id';
+}
+
 enum BooruFeatureId {
   posts('posts'),
   post('post'),
@@ -31,7 +41,17 @@ abstract class BooruFeature extends Equatable {
 }
 
 class PostsFeature extends BooruFeature {
-  const PostsFeature() : super(BooruFeatureId.posts);
+  const PostsFeature({
+    required this.thumbnailOnly,
+  }) : super(BooruFeatureId.posts);
+
+  final bool thumbnailOnly;
+
+  @override
+  List<Object?> get props => [
+    ...super.props,
+    thumbnailOnly,
+  ];
 }
 
 class PostFeature extends BooruFeature {
@@ -81,7 +101,6 @@ class FeatureEndpoint {
     this.baseUrl,
     this.parserStrategy,
     this.paramMapping = const {},
-    this.additionalConfig = const {},
   });
 
   final BooruFeatureId featureId;
@@ -90,26 +109,44 @@ class FeatureEndpoint {
   final String? baseUrl;
   final String? parserStrategy;
   final Map<String, String> paramMapping;
-  final Map<String, dynamic> additionalConfig;
+}
+
+class EndpointOverride {
+  const EndpointOverride({
+    this.parserStrategy,
+    this.path,
+    this.baseUrl,
+    this.paramMapping,
+    this.type,
+    this.capabilities,
+  });
+
+  final String? parserStrategy;
+  final String? path;
+  final String? baseUrl;
+  final Map<String, String>? paramMapping;
+  final EndpointType? type;
+  final Map<String, dynamic>? capabilities;
 }
 
 class SiteCapabilities {
   const SiteCapabilities({
     required this.siteUrl,
-    required this.featureEndpoints,
+    required this.overrides,
   });
 
   final String siteUrl;
-  final Map<BooruFeatureId, FeatureEndpoint> featureEndpoints;
+  final Map<BooruFeatureId, EndpointOverride> overrides;
 
-  FeatureEndpoint? getEndpoint(BooruFeatureId featureId) {
-    return featureEndpoints[featureId];
+  bool hasOverride(BooruFeatureId featureId) {
+    return overrides.containsKey(featureId);
   }
 
-  bool hasFeature(BooruFeatureId featureId) {
-    return featureEndpoints.containsKey(featureId);
+  EndpointOverride? getOverride(BooruFeatureId featureId) {
+    return overrides[featureId];
   }
 }
+
 
 class GelbooruV2Config {
   static const _postsEndpoint = FeatureEndpoint(
@@ -120,8 +157,8 @@ class GelbooruV2Config {
   );
   static const _postEndpoint = FeatureEndpoint(
     featureId: BooruFeatureId.post,
-    type: EndpointType.api,
-    path: '/index.php?page=dapi&s=post&q=index&json=1',
+    type: EndpointType.html,
+    path: '/index.php?page=post&s=view',
     paramMapping: {'post-id': 'id'},
   );
   static const _autocompleteEndpoint = FeatureEndpoint(
@@ -157,13 +194,6 @@ class GelbooruV2Config {
     paramMapping: {},
   );
 
-  static const _rule34xxxAutocompleteEndpoint = FeatureEndpoint(
-    featureId: BooruFeatureId.autocomplete,
-    type: EndpointType.api,
-    path: 'https://api.rule34.xxx/autocomplete.php',
-    paramMapping: {'query': 'q'},
-  );
-
   static const globalUserParams = <String, String>{'user-id': 'user_id', 'api-key': 'api_key'};
   
   static const sites = <String>['https://rule34.xxx/', 'https://hypnohub.net/', 'https://realbooru.com/', 'https://xbooru.com/', 'https://tbib.org/', 'https://safebooru.org/'];
@@ -177,84 +207,46 @@ class GelbooruV2Config {
     BooruFeatureId.tags: _tagsEndpoint,
     BooruFeatureId.favorites: _favoritesEndpoint,
   };
-  
+
   static const siteCapabilities = <String, SiteCapabilities>{
     'https://rule34.xxx/': SiteCapabilities(
       siteUrl: 'https://rule34.xxx/',
-      featureEndpoints: {
-        BooruFeatureId.posts: _postsEndpoint,
-        BooruFeatureId.post: _postEndpoint,
-        BooruFeatureId.autocomplete: _rule34xxxAutocompleteEndpoint,
-        BooruFeatureId.comments: _commentsEndpoint,
-        BooruFeatureId.notes: _notesEndpoint,
-        BooruFeatureId.tags: _tagsEndpoint,
-        BooruFeatureId.favorites: _favoritesEndpoint,
+      overrides: {
+        BooruFeatureId.autocomplete: EndpointOverride(
+          path: 'https://api.rule34.xxx/autocomplete.php',
+        ),
       },
     ),
     'https://hypnohub.net/': SiteCapabilities(
       siteUrl: 'https://hypnohub.net/',
-      featureEndpoints: {
-        BooruFeatureId.posts: _postsEndpoint,
-        BooruFeatureId.post: _postEndpoint,
-        BooruFeatureId.autocomplete: _autocompleteEndpoint,
-        BooruFeatureId.comments: _commentsEndpoint,
-        BooruFeatureId.notes: _notesEndpoint,
-        BooruFeatureId.tags: _tagsEndpoint,
-        BooruFeatureId.favorites: _favoritesEndpoint,
-      },
+      overrides: {},
     ),
     'https://realbooru.com/': SiteCapabilities(
       siteUrl: 'https://realbooru.com/',
-      featureEndpoints: {
-        BooruFeatureId.posts: _postsEndpoint,
-        BooruFeatureId.post: _postEndpoint,
-        BooruFeatureId.autocomplete: _autocompleteEndpoint,
-        BooruFeatureId.comments: _commentsEndpoint,
-        BooruFeatureId.notes: _notesEndpoint,
-        BooruFeatureId.tags: _tagsEndpoint,
-        BooruFeatureId.favorites: _favoritesEndpoint,
+      overrides: {
+        BooruFeatureId.posts: EndpointOverride(
+          capabilities: <String, dynamic>{
+            'thumbnailOnly': true,
+          },
+        ),
       },
     ),
     'https://xbooru.com/': SiteCapabilities(
       siteUrl: 'https://xbooru.com/',
-      featureEndpoints: {
-        BooruFeatureId.posts: _postsEndpoint,
-        BooruFeatureId.post: _postEndpoint,
-        BooruFeatureId.autocomplete: _autocompleteEndpoint,
-        BooruFeatureId.comments: _commentsEndpoint,
-        BooruFeatureId.notes: _notesEndpoint,
-        BooruFeatureId.tags: _tagsEndpoint,
-        BooruFeatureId.favorites: _favoritesEndpoint,
-      },
+      overrides: {},
     ),
     'https://tbib.org/': SiteCapabilities(
       siteUrl: 'https://tbib.org/',
-      featureEndpoints: {
-        BooruFeatureId.posts: _postsEndpoint,
-        BooruFeatureId.post: _postEndpoint,
-        BooruFeatureId.autocomplete: _autocompleteEndpoint,
-        BooruFeatureId.comments: _commentsEndpoint,
-        BooruFeatureId.notes: _notesEndpoint,
-        BooruFeatureId.tags: _tagsEndpoint,
-        BooruFeatureId.favorites: _favoritesEndpoint,
-      },
+      overrides: {},
     ),
     'https://safebooru.org/': SiteCapabilities(
       siteUrl: 'https://safebooru.org/',
-      featureEndpoints: {
-        BooruFeatureId.posts: _postsEndpoint,
-        BooruFeatureId.post: _postEndpoint,
-        BooruFeatureId.autocomplete: _autocompleteEndpoint,
-        BooruFeatureId.comments: _commentsEndpoint,
-        BooruFeatureId.notes: _notesEndpoint,
-        BooruFeatureId.tags: _tagsEndpoint,
-        BooruFeatureId.favorites: _favoritesEndpoint,
-      },
+      overrides: {},
     ),
   };
 
   static BooruFeature? createFeature(BooruFeatureId id) => switch (id) {
-    BooruFeatureId.posts => const PostsFeature(),
+    BooruFeatureId.posts => const PostsFeature(thumbnailOnly: false),
     BooruFeatureId.post => const PostFeature(),
     BooruFeatureId.autocomplete => const AutocompleteFeature(),
     BooruFeatureId.comments => const CommentsFeature(),
