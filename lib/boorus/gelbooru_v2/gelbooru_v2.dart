@@ -31,9 +31,7 @@ class GelbooruV2 extends FeatureAwareBooru {
   const GelbooruV2({
     required super.name,
     required super.protocol,
-    required super.siteCapabilities,
     required super.globalUserParams,
-    required super.featureRegistry,
     required this.sites,
   });
 
@@ -57,10 +55,6 @@ class GelbooruV2Parser implements BooruParser {
       protocol: _parseProtocol(data['protocol']),
       globalUserParams: GelbooruV2Config.globalUserParams,
       sites: GelbooruV2Config.sites,
-      siteCapabilities: GelbooruV2Config.siteCapabilities,
-      featureRegistry: BooruFeatureRegistry(
-        GelbooruV2Config.createAllFeatures(),
-      ),
     );
   }
 

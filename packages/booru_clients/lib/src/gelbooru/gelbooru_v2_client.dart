@@ -6,7 +6,8 @@ import '../common/endpoint.dart';
 import '../common/feature.dart';
 import '../common/request_handler.dart';
 import 'gelbooru_client_favorites.dart';
-import 'parsers/response_parsers.dart';
+import 'parsers/gel_parsers.dart';
+import 'parsers/rb_parsers.dart';
 import 'types/types.dart';
 
 class GelbooruV2Client with GelbooruClientFavorites {
@@ -14,6 +15,9 @@ class GelbooruV2Client with GelbooruClientFavorites {
     return switch (parserName) {
       'gelbooru-notes-html' => parseNotesHtml,
       'gelbooru-tags-sidebar' => parseTagsHtml,
+      'rb-posts-html' => parseRbPostsHtml,
+      'rb-post-html' => parseRbPostHtml,
+      'rb-tags-html' => parseRbTagsHtml,
       _ => null,
     };
   }
@@ -27,6 +31,10 @@ class GelbooruV2Client with GelbooruClientFavorites {
         Endpoint<GelbooruV2Posts>.fromFeature(
           feature: GelbooruV2Config.defaultFeatures[BooruFeatureId.posts]!,
           parser: parsePostsResponse,
+        ),
+        Endpoint<PostV2Dto?>.fromFeature(
+          feature: GelbooruV2Config.defaultFeatures[BooruFeatureId.post]!,
+          parser: parsePostResponse,
         ),
         Endpoint<List<AutocompleteDto>>.fromFeature(
           feature:

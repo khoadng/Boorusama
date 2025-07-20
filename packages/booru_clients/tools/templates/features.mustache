@@ -66,14 +66,13 @@ class FeatureEndpoint {
   final Map<String, String> paramMapping;
 }
 
-class EndpointOverride {
+abstract class EndpointOverride {
   const EndpointOverride({
     this.parserStrategy,
     this.path,
     this.baseUrl,
     this.paramMapping,
     this.type,
-    this.capabilities,
   });
 
   final String? parserStrategy;
@@ -81,8 +80,9 @@ class EndpointOverride {
   final String? baseUrl;
   final Map<String, String>? paramMapping;
   final EndpointType? type;
-  final Map<String, dynamic>? capabilities;
 }
+
+{{{overrideClasses}}}
 
 class SiteCapabilities {
   const SiteCapabilities({
@@ -93,11 +93,5 @@ class SiteCapabilities {
   final String siteUrl;
   final Map<BooruFeatureId, EndpointOverride> overrides;
 
-  bool hasOverride(BooruFeatureId featureId) {
-    return overrides.containsKey(featureId);
-  }
-
-  EndpointOverride? getOverride(BooruFeatureId featureId) {
-    return overrides[featureId];
-  }
+{{{featureGetters}}}
 }

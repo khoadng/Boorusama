@@ -1,18 +1,28 @@
-  static const siteCapabilities = <String, SiteCapabilities>{
+static const _defaults = <BooruFeatureId, BooruFeature>{
+{{#defaults}}
+    BooruFeatureId.{{featureId}}: {{{featureConstructor}}},
+{{/defaults}}
+  };
+
+  static const _siteCapabilities = <String, SiteCapabilities>{
 {{#sites}}
     '{{{url}}}': SiteCapabilities(
       siteUrl: '{{{url}}}',
       overrides: {{#hasOverrides}}{
 {{#overrides}}
-        BooruFeatureId.{{featureId}}: EndpointOverride(
+        BooruFeatureId.{{featureId}}: {{overrideClassName}}(
 {{#hasType}}          type: EndpointType.{{type}},
 {{/hasType}}{{#hasPath}}          path: '{{{path}}}',
 {{/hasPath}}{{#hasParser}}          parserStrategy: '{{{parser}}}',
 {{/hasParser}}{{#hasParams}}          paramMapping: {{{paramMapping}}},
-{{/hasParams}}{{#hasCapabilities}}          capabilities: {{{capabilities}}},
-{{/hasCapabilities}}        ),
+{{/hasParams}}{{#hasFeature}}          feature: {{{featureConstructor}}},
+{{/hasFeature}}        ),
 {{/overrides}}
       }{{/hasOverrides}}{{^hasOverrides}}{}{{/hasOverrides}},
     ),
 {{/sites}}
   };
+
+  static SiteCapabilities? siteCapabilities(String siteUrl) {
+    return _siteCapabilities[siteUrl];
+  }

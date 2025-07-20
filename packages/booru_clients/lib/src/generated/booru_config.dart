@@ -55,7 +55,17 @@ class PostsFeature extends BooruFeature {
 }
 
 class PostFeature extends BooruFeature {
-  const PostFeature() : super(BooruFeatureId.post);
+  const PostFeature({
+    required this.cacheSeconds,
+  }) : super(BooruFeatureId.post);
+
+  final int cacheSeconds;
+
+  @override
+  List<Object?> get props => [
+    ...super.props,
+    cacheSeconds,
+  ];
 }
 
 class AutocompleteFeature extends BooruFeature {
@@ -111,14 +121,13 @@ class FeatureEndpoint {
   final Map<String, String> paramMapping;
 }
 
-class EndpointOverride {
+abstract class EndpointOverride {
   const EndpointOverride({
     this.parserStrategy,
     this.path,
     this.baseUrl,
     this.paramMapping,
     this.type,
-    this.capabilities,
   });
 
   final String? parserStrategy;
@@ -126,7 +135,58 @@ class EndpointOverride {
   final String? baseUrl;
   final Map<String, String>? paramMapping;
   final EndpointType? type;
-  final Map<String, dynamic>? capabilities;
+}
+
+class AutocompleteEndpointOverride extends EndpointOverride {
+  const AutocompleteEndpointOverride({
+    super.parserStrategy,
+    super.path,
+    super.baseUrl,
+    super.paramMapping,
+    super.type,
+    this.feature,
+  });
+
+  final AutocompleteFeature? feature;
+}
+
+class PostsEndpointOverride extends EndpointOverride {
+  const PostsEndpointOverride({
+    super.parserStrategy,
+    super.path,
+    super.baseUrl,
+    super.paramMapping,
+    super.type,
+    this.feature,
+  });
+
+  final PostsFeature? feature;
+}
+
+class PostEndpointOverride extends EndpointOverride {
+  const PostEndpointOverride({
+    super.parserStrategy,
+    super.path,
+    super.baseUrl,
+    super.paramMapping,
+    super.type,
+    this.feature,
+  });
+
+  final PostFeature? feature;
+}
+
+class TagsEndpointOverride extends EndpointOverride {
+  const TagsEndpointOverride({
+    super.parserStrategy,
+    super.path,
+    super.baseUrl,
+    super.paramMapping,
+    super.type,
+    this.feature,
+  });
+
+  final TagsFeature? feature;
 }
 
 class SiteCapabilities {
@@ -138,12 +198,28 @@ class SiteCapabilities {
   final String siteUrl;
   final Map<BooruFeatureId, EndpointOverride> overrides;
 
-  bool hasOverride(BooruFeatureId featureId) {
-    return overrides.containsKey(featureId);
+  AutocompleteFeature? get autocomplete {
+    final override = overrides[BooruFeatureId.autocomplete] as AutocompleteEndpointOverride?;
+    if (override?.feature != null) return override!.feature;
+    return GelbooruV2Config._defaults[BooruFeatureId.autocomplete] as AutocompleteFeature?;
   }
 
-  EndpointOverride? getOverride(BooruFeatureId featureId) {
-    return overrides[featureId];
+  PostsFeature? get posts {
+    final override = overrides[BooruFeatureId.posts] as PostsEndpointOverride?;
+    if (override?.feature != null) return override!.feature;
+    return GelbooruV2Config._defaults[BooruFeatureId.posts] as PostsFeature?;
+  }
+
+  PostFeature? get post {
+    final override = overrides[BooruFeatureId.post] as PostEndpointOverride?;
+    if (override?.feature != null) return override!.feature;
+    return GelbooruV2Config._defaults[BooruFeatureId.post] as PostFeature?;
+  }
+
+  TagsFeature? get tags {
+    final override = overrides[BooruFeatureId.tags] as TagsEndpointOverride?;
+    if (override?.feature != null) return override!.feature;
+    return GelbooruV2Config._defaults[BooruFeatureId.tags] as TagsFeature?;
   }
 }
 
@@ -208,11 +284,25 @@ class GelbooruV2Config {
     BooruFeatureId.favorites: _favoritesEndpoint,
   };
 
-  static const siteCapabilities = <String, SiteCapabilities>{
+static const _defaults = <BooruFeatureId, BooruFeature>{
+    BooruFeatureId.posts: PostsFeature(
+      thumbnailOnly: false,
+    ),
+    BooruFeatureId.post: PostFeature(
+      cacheSeconds: 600,
+    ),
+    BooruFeatureId.autocomplete: AutocompleteFeature(),
+    BooruFeatureId.comments: CommentsFeature(),
+    BooruFeatureId.notes: NotesFeature(),
+    BooruFeatureId.tags: TagsFeature(),
+    BooruFeatureId.favorites: FavoritesFeature(),
+  };
+
+  static const _siteCapabilities = <String, SiteCapabilities>{
     'https://rule34.xxx/': SiteCapabilities(
       siteUrl: 'https://rule34.xxx/',
       overrides: {
-        BooruFeatureId.autocomplete: EndpointOverride(
+        BooruFeatureId.autocomplete: AutocompleteEndpointOverride(
           path: 'https://api.rule34.xxx/autocomplete.php',
         ),
       },
@@ -224,10 +314,19 @@ class GelbooruV2Config {
     'https://realbooru.com/': SiteCapabilities(
       siteUrl: 'https://realbooru.com/',
       overrides: {
-        BooruFeatureId.posts: EndpointOverride(
-          capabilities: <String, dynamic>{
-            'thumbnailOnly': true,
-          },
+        BooruFeatureId.posts: PostsEndpointOverride(
+          type: EndpointType.html,
+          path: '/index.php?page=post&s=list',
+          parserStrategy: 'rb-posts-html',
+          feature: PostsFeature(
+            thumbnailOnly: true,
+          ),
+        ),
+        BooruFeatureId.post: PostEndpointOverride(
+          parserStrategy: 'rb-post-html',
+        ),
+        BooruFeatureId.tags: TagsEndpointOverride(
+          parserStrategy: 'rb-tags-html',
         ),
       },
     ),
@@ -245,16 +344,30 @@ class GelbooruV2Config {
     ),
   };
 
-  static BooruFeature? createFeature(BooruFeatureId id) => switch (id) {
-    BooruFeatureId.posts => const PostsFeature(thumbnailOnly: false),
-    BooruFeatureId.post => const PostFeature(),
-    BooruFeatureId.autocomplete => const AutocompleteFeature(),
-    BooruFeatureId.comments => const CommentsFeature(),
-    BooruFeatureId.notes => const NotesFeature(),
-    BooruFeatureId.tags => const TagsFeature(),
-    BooruFeatureId.favorites => const FavoritesFeature(),
-  };
+  static SiteCapabilities? siteCapabilities(String siteUrl) {
+    return _siteCapabilities[siteUrl];
+  }
 
-  static List<BooruFeature> createAllFeatures() => 
-      defaultFeatures.keys.map(createFeature).whereType<BooruFeature>().toList();
+}
+
+class BooruConfigRegistry {
+  static T? getFeature<T extends BooruFeature>(String booruType, String siteUrl) {
+    final capabilities = getSiteCapabilities(booruType, siteUrl);
+    if (capabilities == null) return null;
+    
+    return switch (T) {
+      AutocompleteFeature _ => capabilities.autocomplete,
+      PostsFeature _ => capabilities.posts,
+      PostFeature _ => capabilities.post,
+      TagsFeature _ => capabilities.tags,
+      _ => null,
+    } as T?;
+  }
+  
+  static SiteCapabilities? getSiteCapabilities(String booruType, String url) {
+    return switch (booruType) {
+      'gelbooru_v2' => GelbooruV2Config.siteCapabilities(url),
+      _ => null,
+    };
+  }
 }

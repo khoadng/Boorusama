@@ -8,7 +8,6 @@ import '../types/types.dart';
 
 typedef GelbooruV2Posts = ({List<PostV2Dto> posts, int? count});
 
-// Posts response parser
 GelbooruV2Posts parsePostsResponse(
   Response response,
   Map<String, dynamic> context,
@@ -53,7 +52,6 @@ GelbooruV2Posts parsePostsResponse(
   );
 }
 
-// Single post response parser
 PostV2Dto? parsePostResponse(Response response, Map<String, dynamic> context) {
   final baseUrl = context['baseUrl'] as String? ?? '';
   final data = response.data;
@@ -68,7 +66,6 @@ PostV2Dto? parsePostResponse(Response response, Map<String, dynamic> context) {
   };
 }
 
-// Autocomplete response parser
 List<AutocompleteDto> parseAutocompleteResponse(
   Response response,
   Map<String, dynamic> context,
@@ -83,7 +80,6 @@ List<AutocompleteDto> parseAutocompleteResponse(
   };
 }
 
-// Comments response parser
 List<CommentDto> parseCommentsResponse(
   Response response,
   Map<String, dynamic> context,
@@ -97,13 +93,11 @@ List<CommentDto> parseCommentsResponse(
   return dtos;
 }
 
-// Notes HTML parser wrapper
 List<NoteDto> parseNotesHtml(Response response, Map<String, dynamic> context) {
   final html = response.data as String;
   return parseGelbooruNotes(html, context);
 }
 
-// Tags HTML parser wrapper
 List<TagDto> parseTagsHtml(Response response, Map<String, dynamic> context) {
   final html = response.data as String;
   return parseGelbooruTags(html, context);
@@ -152,7 +146,6 @@ List<NoteDto> parseGelbooruNotes(String html, Map<String, dynamic> context) {
   return notesWithBody ?? [];
 }
 
-// Tags parser function
 List<TagDto> parseGelbooruTags(String html, Map<String, dynamic> context) {
   final document = parse(html);
   final sideBar = document.getElementById('tag-sidebar');

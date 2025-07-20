@@ -56,6 +56,8 @@
         type: html
         endpoint: "/index.php?page=post&s=view"
         user-params: {post-id: "id"}
+        capabilities:
+          cache-seconds: 600
       
       autocomplete:
         type: api
@@ -94,8 +96,15 @@
       - url: https://realbooru.com/
         overrides:
           posts:
+            type: html
+            endpoint: "/index.php?page=post&s=list"
+            parser: "rb-posts-html"
             capabilities:
               thumbnailOnly: true
+          post:
+            parser: "rb-post-html"
+          tags:
+            parser: "rb-tags-html"
 
       - url: https://xbooru.com/
       - url: https://tbib.org/

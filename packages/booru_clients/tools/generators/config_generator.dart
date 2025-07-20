@@ -18,13 +18,21 @@ class ConfigGenerator {
     final endpointGen = EndpointGenerator();
     final siteGen = SiteGenerator();
 
+    final overrideClasses = siteGen.generateOverrideClasses(config);
+    final siteContext = siteGen.buildContext(config);
+    final featureGetters = siteContext['featureGetters'] as String;
+
     final context = {
       'paramClass': paramGen.generate(allParams),
       'featureIdEnum': enumGen.generate(featureIds),
-      'featureClasses': featureGen.generate(config),
+      'featureClasses': featureGen.generateWithOverrides(
+        config,
+        overrideClasses,
+        featureGetters,
+      ),
       'endpointsSection': endpointGen.generate(config),
       'siteCapabilities': siteGen.generate(config),
-      'featureMethods': featureGen.generateFeatureMethods(config),
+      'registrySection': featureGen.generateRegistry(config),
     };
 
     final template = TemplateManager().loadTemplate('config.mustache');

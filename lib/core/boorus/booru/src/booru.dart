@@ -5,7 +5,6 @@ import 'package:equatable/equatable.dart';
 // Project imports:
 import '../../../http/http.dart';
 import 'booru_type.dart';
-import 'feature_registry.dart';
 
 abstract class Booru extends Equatable {
   const Booru({
@@ -39,17 +38,13 @@ abstract class FeatureAwareBooru extends Booru {
   const FeatureAwareBooru({
     required super.name,
     required super.protocol,
-    required this.siteCapabilities,
-    required this.featureRegistry,
     required this.globalUserParams,
   });
 
-  final Map<String, SiteCapabilities> siteCapabilities;
   final Map<String, String> globalUserParams;
-  final BooruFeatureRegistry featureRegistry;
 
   SiteCapabilities? getCapabilitiesForSite(String siteUrl) {
-    return siteCapabilities[siteUrl];
+    return BooruConfigRegistry.getSiteCapabilities(type.yamlName, siteUrl);
   }
 
   Map<String, String> getGlobalUserParams() => globalUserParams;
@@ -86,10 +81,4 @@ abstract class FeatureAwareBooru extends Booru {
 
     return baseConfig.withOverrides(endpointOverrides);
   }
-
-  bool hasFeature(BooruFeatureId featureId) =>
-      featureRegistry.hasFeature(featureId);
-
-  T? getFeature<T extends BooruFeature>(BooruFeatureId featureId) =>
-      featureRegistry.get<T>(featureId);
 }

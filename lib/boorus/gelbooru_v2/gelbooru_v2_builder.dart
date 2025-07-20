@@ -14,7 +14,6 @@ import '../../core/configs/manage/widgets.dart';
 import '../../core/configs/ref.dart';
 import '../../core/downloads/filename/types.dart';
 import '../../core/home/custom_home.dart';
-import '../../core/posts/details/widgets.dart';
 import '../../core/posts/details_manager/types.dart';
 import '../../core/posts/details_parts/widgets.dart';
 import '../../core/posts/rating/rating.dart';
@@ -88,15 +87,8 @@ class GelbooruV2Builder
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder => (context, payload) {
-    final posts = payload.posts.map((e) => e as GelbooruV2Post).toList();
-
-    return PostDetailsScope(
-      initialIndex: payload.initialIndex,
-      initialThumbnailUrl: payload.initialThumbnailUrl,
-      posts: posts,
-      scrollController: payload.scrollController,
-      dislclaimer: payload.dislclaimer,
-      child: const DefaultPostDetailsPage<GelbooruV2Post>(),
+    return GelbooruV2PostDetailsPage(
+      payload: payload,
     );
   };
 

@@ -1,4 +1,5 @@
 import 'generator.dart';
+import 'template_manager.dart';
 import '../utils/string_utils.dart';
 import '../models/booru_config.dart';
 
@@ -8,6 +9,28 @@ class FeatureGenerator extends TemplateGenerator<BooruConfig> {
 
   @override
   Map<String, dynamic> buildContext(BooruConfig config) {
+    return _buildContextWithOverrides(config, '', '');
+  }
+
+  String generateWithOverrides(
+    BooruConfig config,
+    String overrideClasses,
+    String featureGetters,
+  ) {
+    final template = TemplateManager().loadTemplate(templateName);
+    final context = _buildContextWithOverrides(
+      config,
+      overrideClasses,
+      featureGetters,
+    );
+    return TemplateManager().render(template, context);
+  }
+
+  Map<String, dynamic> _buildContextWithOverrides(
+    BooruConfig config,
+    String overrideClasses,
+    String featureGetters,
+  ) {
     final featureClasses = config.features.entries.map((entry) {
       final featureId = entry.key;
       final feature = entry.value;
@@ -26,57 +49,47 @@ class FeatureGenerator extends TemplateGenerator<BooruConfig> {
               },
             )
             .toList(),
-        'constructorParams': capabilities
-            .map(
-              (cap) => {
-                'name': kebabToCamel(cap.name),
-                'isLast': cap == capabilities.last,
-              },
-            )
-            .toList(),
       };
     }).toList();
 
     return {
       'featureClasses': featureClasses,
+      'overrideClasses': overrideClasses,
+      'featureGetters': featureGetters,
     };
   }
 
-  String generateFeatureMethods(BooruConfig config) {
-    final switchCases = config.features.entries
-        .map((entry) {
-          final featureId = entry.key;
-          final feature = entry.value;
-          final capabilities = feature.capabilities ?? [];
+  String generateRegistry(BooruConfig config) {
+    // Only generate switch cases for features that have overrides
+    final featuresWithOverrides = <String>{};
+    for (final site in config.sites) {
+      featuresWithOverrides.addAll(site.overrides.keys);
+    }
 
-          if (capabilities.isEmpty) {
-            return '    BooruFeatureId.$featureId => const ${featureId.capitalize()}Feature(),';
-          }
-
-          final params = capabilities
-              .map(
-                (cap) =>
-                    '${kebabToCamel(cap.name)}: ${_formatDartValue(cap.value)}',
-              )
-              .join(', ');
-
-          return '    BooruFeatureId.$featureId => const ${featureId.capitalize()}Feature($params),';
+    final switchCases = featuresWithOverrides
+        .map((featureId) {
+          final className = '${featureId.capitalize()}Feature';
+          return "      $className _ => capabilities.$featureId,";
         })
         .join('\n');
 
-    return '''  static BooruFeature? createFeature(BooruFeatureId id) => switch (id) {
+    return '''class BooruConfigRegistry {
+  static T? getFeature<T extends BooruFeature>(String booruType, String siteUrl) {
+    final capabilities = getSiteCapabilities(booruType, siteUrl);
+    if (capabilities == null) return null;
+    
+    return switch (T) {
 $switchCases
-  };
-
-  static List<BooruFeature> createAllFeatures() => 
-      defaultFeatures.keys.map(createFeature).whereType<BooruFeature>().toList();''';
+      _ => null,
+    } as T?;
   }
-
-  String _formatDartValue(dynamic value) {
-    return switch (value.runtimeType) {
-      const (bool) || const (int) || const (double) => value.toString(),
-      const (String) => "'$value'",
-      _ => "'$value'",
+  
+  static SiteCapabilities? getSiteCapabilities(String booruType, String url) {
+    return switch (booruType) {
+      'gelbooru_v2' => GelbooruV2Config.siteCapabilities(url),
+      _ => null,
     };
+  }
+}''';
   }
 }

@@ -9,7 +9,9 @@ import '../../../core/posts/post/post.dart';
 import '../../../core/posts/post/providers.dart';
 import '../../../core/settings/providers.dart';
 import '../../../foundation/caching/lru_cacher.dart';
+import '../../../foundation/riverpod/riverpod.dart';
 import '../client_provider.dart';
+import '../gelbooru_v2.dart';
 import '../tags/providers.dart';
 import 'parser.dart';
 import 'types.dart';
@@ -47,6 +49,29 @@ final gelbooruV2PostRepoProvider =
         );
       },
     );
+
+final gelbooruV2PostProvider =
+    FutureProvider.family<Post?, (PostId, BooruConfigSearch)>((
+      ref,
+      params,
+    ) async {
+      final (id, config) = params;
+      final gelbooruV2 = ref.watch(gelbooruV2Provider);
+      final cacheDuration = gelbooruV2
+          .getCapabilitiesForSite(config.auth.url)
+          ?.post
+          ?.cacheSeconds;
+
+      if (cacheDuration != null && cacheDuration > 0) {
+        ref.cacheFor(Duration(seconds: cacheDuration));
+      }
+
+      final postRepo = ref.watch(gelbooruV2PostRepoProvider(config));
+
+      final result = await postRepo.getPost(id).run();
+
+      return result.getOrElse((_) => null);
+    });
 
 final gelbooruV2ArtistCharacterPostRepoProvider =
     Provider.family<PostRepository, BooruConfigSearch>(
