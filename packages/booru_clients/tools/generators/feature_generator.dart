@@ -1,6 +1,4 @@
-import 'generator.dart';
-import 'template_manager.dart';
-import '../utils/string_utils.dart';
+import 'package:codegen/codegen.dart';
 import '../models/booru_config.dart';
 
 class FeatureGenerator extends TemplateGenerator<BooruConfig> {

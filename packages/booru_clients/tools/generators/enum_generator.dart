@@ -1,4 +1,4 @@
-import 'generator.dart';
+import 'package:codegen/codegen.dart';
 
 class EnumGenerator extends TemplateGenerator<List<String>> {
   @override

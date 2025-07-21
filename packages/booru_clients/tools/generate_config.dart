@@ -1,32 +1,29 @@
-import 'dart:io';
 import 'package:yaml/yaml.dart';
+import 'package:codegen/codegen.dart';
 import 'parsers/data_extractor.dart';
 import 'generators/config_generator.dart';
 
 void main() async {
-  final yamlFile = File('../../boorus.yaml');
-  if (!yamlFile.existsSync()) {
-    print('boorus.yaml not found');
-    return;
-  }
+  await CodegenRunner().runWithInput(
+    config: CodegenConfig(
+      templateDirectory: 'tools/templates',
+      inputPath: '../../boorus.yaml',
+      outputPath: 'lib/src/generated/booru_config.dart',
+    ),
+    inputLoader: (data) async {
+      final yamlData = loadYaml(data);
+      final gelbooruV2Config = DataExtractor.extractGelbooruV2Config(yamlData);
 
-  final yamlContent = await yamlFile.readAsString();
-  final yamlData = loadYaml(yamlContent) as YamlList;
+      if (gelbooruV2Config == null) {
+        throw Exception('Failed to extract config from YAML data');
+      }
 
-  final gelbooruV2Config = DataExtractor.extractGelbooruV2Config(yamlData);
-  if (gelbooruV2Config == null) {
-    print('gelbooru_v2 config not found');
-    return;
-  }
-
-  final allParams = DataExtractor.extractAllParams(yamlData);
-
-  final generator = ConfigGenerator();
-  final generated = generator.generate(gelbooruV2Config, allParams);
-
-  final outputFile = File('lib/src/generated/booru_config.dart');
-  await outputFile.create(recursive: true);
-  await outputFile.writeAsString(generated);
-
-  print('Generated booru_config.dart');
+      final allParams = DataExtractor.extractAllParams(yamlData);
+      return (gelbooruV2Config, allParams);
+    },
+    generator: (input) async {
+      final (config, allParams) = input;
+      return ConfigGenerator().generate(config, allParams);
+    },
+  );
 }

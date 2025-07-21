@@ -1,5 +1,4 @@
-import '../utils/template_utils.dart';
-import 'generator.dart';
+import 'package:codegen/codegen.dart';
 import '../models/booru_config.dart';
 
 class EndpointGenerator extends TemplateGenerator<BooruConfig> {

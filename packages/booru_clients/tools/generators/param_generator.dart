@@ -1,5 +1,4 @@
-import '../utils/string_utils.dart';
-import 'generator.dart';
+import 'package:codegen/codegen.dart';
 
 class ParamGenerator extends TemplateGenerator<Set<String>> {
   @override

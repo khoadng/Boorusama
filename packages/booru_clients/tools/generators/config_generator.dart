@@ -1,10 +1,10 @@
+import 'package:codegen/codegen.dart';
 import '../models/booru_config.dart';
 import 'param_generator.dart';
 import 'enum_generator.dart';
 import 'feature_generator.dart';
 import 'endpoint_generator.dart';
 import 'site_generator.dart';
-import 'template_manager.dart';
 
 class ConfigGenerator {
   const ConfigGenerator();

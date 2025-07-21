@@ -17,6 +17,7 @@ workspace:
   - packages/retriable
   - packages/rich_text_controller
   - packages/i18n
+  - packages/codegen
 
 dependencies:
   # local packages
