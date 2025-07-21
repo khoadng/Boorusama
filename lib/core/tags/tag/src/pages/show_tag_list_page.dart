@@ -175,22 +175,22 @@ class _ShowTagListPageState extends ConsumerState<ShowTagListPageInternal> {
             builder: (context, controller, isSelectionMode) => !isSelectionMode
                 ? AppBar(
                     title: Text('Tags'.hc),
+                    centerTitle: false,
                     actions: [
-                      BooruPopupMenuButton(
-                        onSelected: (value) {
-                          switch (value) {
-                            case 'select':
-                              controller.enable();
-                            default:
-                          }
-                        },
-                        itemBuilder: const {
-                          'select': Text('Select'),
-                        },
-                      ),
-                      IconButton(
-                        onPressed: () => Navigator.of(context).pop(),
-                        icon: const Icon(Symbols.close),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        child: BooruPopupMenuButton(
+                          onSelected: (value) {
+                            switch (value) {
+                              case 'select':
+                                controller.enable();
+                              default:
+                            }
+                          },
+                          itemBuilder: const {
+                            'select': Text('Select'),
+                          },
+                        ),
                       ),
                     ],
                   )
