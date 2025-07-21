@@ -4,4 +4,3 @@ input_file_pattern: .json
 output_directory: lib/src/gen
 flat_map: false
 fallback_strategy: base_locale_empty_string
-lazy: false

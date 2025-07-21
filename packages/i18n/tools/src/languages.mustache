@@ -1,24 +1,29 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // Generated from {{count}} translation files
 
+import 'dart:ui';
 import '../language.dart';
 
 class GeneratedLanguages {
+{{#languages}}
+  static const _{{localeVar}} = BooruLanguage(locale: '{{locale}}', name: '{{name}}');
+{{/languages}}
+
   static const List<BooruLanguage> all = [
 {{#languages}}
-    BooruLanguage(locale: '{{locale}}', name: '{{name}}'){{^isLast}},{{/isLast}}
+    _{{localeVar}}{{^isLast}},{{/isLast}}
 {{/languages}}
   ];
 
   static const Map<String, BooruLanguage> _byLocale = {
 {{#languages}}
-    '{{locale}}': BooruLanguage(locale: '{{locale}}', name: '{{name}}'){{^isLast}},{{/isLast}}
+    '{{locale}}': _{{localeVar}}{{^isLast}},{{/isLast}}
 {{/languages}}
   };
 
   static const Map<String, BooruLanguage> _byName = {
 {{#languages}}
-    '{{name}}': BooruLanguage(locale: '{{locale}}', name: '{{name}}'){{^isLast}},{{/isLast}}
+    '{{name}}': _{{localeVar}}{{^isLast}},{{/isLast}}
 {{/languages}}
   };
 
@@ -30,3 +35,9 @@ class GeneratedLanguages {
     return _byLocale[localeOrName] ?? _byName[localeOrName];
   }
 }
+
+const supportedLocales = [
+{{#locales}}
+  Locale('{{languageCode}}', '{{countryCode}}'), // {{comment}}
+{{/locales}}
+];

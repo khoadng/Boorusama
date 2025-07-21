@@ -14,13 +14,28 @@ class LanguageGenerator extends TemplateGenerator<List<LanguageData>> {
 
       return {
         'locale': language.locale,
+        'localeVar': _sanitizeIdentifier(language.locale),
         'name': _escapeString(language.name),
+        'isLast': index == languages.length - 1,
+      };
+    }).toList();
+
+    final localeEntries = languages.asMap().entries.map((entry) {
+      final index = entry.key;
+      final language = entry.value;
+      final localeParts = _parseLocale(language.locale);
+
+      return {
+        'languageCode': localeParts['languageCode'],
+        'countryCode': localeParts['countryCode'],
+        'comment': _escapeString(language.name),
         'isLast': index == languages.length - 1,
       };
     }).toList();
 
     return {
       'languages': languageEntries,
+      'locales': localeEntries,
       'count': languages.length,
     };
   }
@@ -32,5 +47,17 @@ class LanguageGenerator extends TemplateGenerator<List<LanguageData>> {
         .replaceAll('\n', '\\n')
         .replaceAll('\r', '\\r')
         .replaceAll('\t', '\\t');
+  }
+
+  String _sanitizeIdentifier(String value) {
+    return value.replaceAll('-', '_');
+  }
+
+  Map<String, String> _parseLocale(String locale) {
+    final parts = locale.split('-');
+    return {
+      'languageCode': parts.isNotEmpty ? parts[0] : '',
+      'countryCode': parts.length > 1 ? parts[1] : '',
+    };
   }
 }
