@@ -22,6 +22,11 @@ class LanguagePage extends ConsumerWidget {
       settingsProvider.select((s) => s.language),
     );
     final notifer = ref.watch(settingsNotifierProvider.notifier);
+    final supportedLanguages = ref.watch(supportedLanguagesProvider);
+    final selectedLanguage = findLanguageByNameOrLocale(
+      supportedLanguages,
+      selectedLanguageString,
+    );
 
     return ConditionalParentWidget(
       condition: !SettingsPageScope.of(context).options.dense,
@@ -32,45 +37,28 @@ class LanguagePage extends ConsumerWidget {
         body: child,
       ),
       child: SafeArea(
-        child: ref
-            .watch(supportedLanguagesProvider)
-            .when(
-              data: (supportedLanguages) {
-                final selectedLanguage = findLanguageByNameOrLocale(
-                  supportedLanguages,
-                  selectedLanguageString,
+        child: ListView.builder(
+          itemCount: supportedLanguages.length,
+          itemBuilder: (context, index) {
+            final language = supportedLanguages[index];
+
+            return RadioListTile(
+              activeColor: Theme.of(context).colorScheme.primary,
+              groupValue: selectedLanguage,
+              value: language,
+              title: Text(language.name),
+              onChanged: (value) {
+                if (value == null) return;
+                final settings = ref.read(settingsProvider);
+
+                notifer.updateSettings(
+                  settings.copyWith(language: value.locale),
                 );
-
-                return ListView.builder(
-                  itemCount: supportedLanguages.length,
-                  itemBuilder: (context, index) {
-                    final language = supportedLanguages[index];
-
-                    return RadioListTile(
-                      activeColor: Theme.of(context).colorScheme.primary,
-                      groupValue: selectedLanguage,
-                      value: language,
-                      title: Text(language.name),
-                      onChanged: (value) {
-                        if (value == null) return;
-                        final settings = ref.read(settingsProvider);
-
-                        notifer.updateSettings(
-                          settings.copyWith(language: value.locale),
-                        );
-                        context.setLocaleLanguage(value);
-                      },
-                    );
-                  },
-                );
+                context.setLocaleLanguage(value);
               },
-              error: (error, stackTrace) => Center(
-                child: Text('Error: $error'),
-              ),
-              loading: () => const Center(
-                child: CircularProgressIndicator(),
-              ),
-            ),
+            );
+          },
+        ),
       ),
     );
   }

@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
@@ -7,9 +6,9 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:timeago/timeago.dart';
 
 // Project imports:
+import 'gen/languages.g.dart';
 import 'gen/strings.g.dart';
 import 'language.dart';
-import 'loader.dart';
 import 'locales.dart';
 
 extension StringTranslateX on String {
@@ -25,7 +24,7 @@ extension I18nX on BuildContext {
   List<Locale> get supportedLocales => AppLocaleUtils.supportedLocales;
 
   void setLocale(Locale locale) =>
-      LocaleSettings.setLocaleRaw(locale.languageCode);
+      LocaleSettings.setLocaleRawSync(locale.languageCode);
 
   void setLocaleLanguage(BooruLanguage? lang) {
     if (lang == null) return;
@@ -42,19 +41,18 @@ extension LocaleX on Locale {
   String toLanguageTag() => '$languageCode-${countryCode ?? ''}';
 }
 
-Future<void> ensureI18nInitialized(String localeRaw) async {
-  final allLanguages = await loadLanguageNames();
-
-  final language = allLanguages.firstWhereOrNull(
-    (lang) => lang.name == localeRaw || lang.locale == localeRaw,
-  );
+void ensureI18nInitialized(String localeRaw) {
+  final language = GeneratedLanguages.findLanguage(localeRaw);
 
   if (language != null) {
-    await LocaleSettings.setLocaleRaw(language.locale);
+    LocaleSettings.setLocaleRawSync(language.locale);
   }
 
   for (final locale in supportedLocales) {
-    setLocaleMessages(locale.toLanguageTag(), getMessagesForLocale(locale));
+    setLocaleMessages(
+      locale.toLanguageTag(),
+      getMessagesForLocale(locale),
+    );
   }
 }
 

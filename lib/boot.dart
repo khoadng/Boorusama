@@ -147,7 +147,7 @@ Future<void> boot(BootData bootData) async {
   ).getDeviceInfo();
 
   bootLogger.l('Initialize i18n');
-  await ensureI18nInitialized(settings.language);
+  ensureI18nInitialized(settings.language);
 
   FlutterError.demangleStackTrace = (stack) {
     if (stack is Trace) return stack.vmTrace;

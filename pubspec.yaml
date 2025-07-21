@@ -163,7 +163,6 @@ flutter:
     - assets/animations/
     - assets/icon/
     - assets/images/
-    - assets/translations/
     - assets/information.json
     - assets/tagdef.json
     - assets/ca/isrgrootx1.pem

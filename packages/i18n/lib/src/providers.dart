@@ -5,10 +5,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'language.dart';
 import 'loader.dart';
 
-final supportedLanguagesProvider = FutureProvider<List<BooruLanguage>>((
+final supportedLanguagesProvider = Provider<List<BooruLanguage>>((
   ref,
-) async {
-  final names = await loadLanguageNames();
+) {
+  final names = loadLanguageNames().toList();
 
   final supportedLanguages = names..sort((a, b) => a.name.compareTo(b.name));
 

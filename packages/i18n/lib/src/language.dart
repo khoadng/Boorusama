@@ -3,7 +3,10 @@ import 'package:equatable/equatable.dart';
 import 'dart:ui';
 
 class BooruLanguage extends Equatable {
-  const BooruLanguage({required this.name, required this.locale});
+  const BooruLanguage({
+    required this.name,
+    required this.locale,
+  });
 
   final String name;
   final String locale;
