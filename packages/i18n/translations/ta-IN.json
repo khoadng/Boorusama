@@ -11,7 +11,8 @@
       "edit": "தொகு",
       "ok": "சரி",
       "cancel": "ரத்துசெய்",
-      "duplicate": "நகல்"
+      "duplicate": "நகல்",
+      "select": "தேர்ந்தெடு"
     },
     "view": "பார்வை"
   },
@@ -70,8 +71,7 @@
     "action": {
       "preview": "முன்னோட்டம்",
       "view_comments": "கருத்துகளைக் காண்க",
-      "add_to_favorite_group": "பிடித்த குழுவில் சேர்க்கவும்",
-      "select": "தேர்ந்தெடு"
+      "add_to_favorite_group": "பிடித்த குழுவில் சேர்க்கவும்"
     },
     "image_fullview": {
       "view_original": "அசல் காண்க"

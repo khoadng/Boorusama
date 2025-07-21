@@ -11,7 +11,8 @@
       "edit": "Editar",
       "ok": "Ok",
       "cancel": "Cancelar",
-      "duplicate": "Duplicar"
+      "duplicate": "Duplicar",
+      "select": "Seleccionar"
     },
     "view": "Ver"
   },
@@ -70,8 +71,7 @@
     "action": {
       "preview": "Vista previa",
       "view_comments": "Ver comentarios",
-      "add_to_favorite_group": "Añadir al grupo de Favoritos",
-      "select": "Seleccionar"
+      "add_to_favorite_group": "Añadir al grupo de Favoritos"
     },
     "image_fullview": {
       "view_original": "Ver Original"

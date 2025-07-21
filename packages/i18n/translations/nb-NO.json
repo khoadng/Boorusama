@@ -10,7 +10,8 @@
       "delete": "Slett",
       "edit": "Rediger",
       "ok": "OK",
-      "cancel": "Avbryt"
+      "cancel": "Avbryt",
+      "select": "Velg"
     },
     "view": "Vis"
   },
@@ -66,8 +67,7 @@
     "action": {
       "preview": "Forhåndsvis",
       "view_comments": "Vis kommentarer",
-      "add_to_favorite_group": "Legg til i favorittgruppe",
-      "select": "Velg"
+      "add_to_favorite_group": "Legg til i favorittgruppe"
     },
     "image_fullview": {
       "view_original": "Vis original"

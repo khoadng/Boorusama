@@ -11,7 +11,8 @@
       "edit": "Düzenle",
       "ok": "Tamam",
       "cancel": "İptal",
-      "duplicate": "Çoğalt"
+      "duplicate": "Çoğalt",
+      "select": "Seç"
     },
     "view": "Görünüm"
   },
@@ -70,8 +71,7 @@
     "action": {
       "preview": "Önizleme",
       "view_comments": "Yorumları görüntüle",
-      "add_to_favorite_group": "Favori gruba ekle",
-      "select": "Seç"
+      "add_to_favorite_group": "Favori gruba ekle"
     },
     "image_fullview": {
       "view_original": "Orijinalini göster"

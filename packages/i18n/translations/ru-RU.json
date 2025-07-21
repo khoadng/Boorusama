@@ -11,7 +11,8 @@
       "edit": "Изменить",
       "ok": "OK",
       "cancel": "Отмена",
-      "duplicate": "Дубликат"
+      "duplicate": "Дубликат",
+      "select": "Выбрать"
     },
     "view": "Посмотреть"
   },
@@ -70,8 +71,7 @@
     "action": {
       "preview": "Предпросмотр",
       "view_comments": "Просмотреть комментарии",
-      "add_to_favorite_group": "Добавить в любимое",
-      "select": "Выбрать"
+      "add_to_favorite_group": "Добавить в любимое"
     },
     "image_fullview": {
       "view_original": "Просмотреть оригинальное изображение"

@@ -89,7 +89,7 @@ class GeneralPostContextMenu extends ConsumerWidget {
           ),
         if (onMultiSelect != null)
           ContextMenuButtonConfig(
-            context.t.post.action.select,
+            context.t.generic.action.select,
             onPressed: () {
               onMultiSelect?.call();
             },

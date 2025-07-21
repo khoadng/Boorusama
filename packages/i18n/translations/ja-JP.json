@@ -10,7 +10,8 @@
       "delete": "削除",
       "edit": "編集",
       "ok": "OK",
-      "cancel": "キャンセル"
+      "cancel": "キャンセル",
+      "select": "セレクト"
     }
   },
   "profile": {
@@ -55,8 +56,7 @@
       "source_label": "ソース"
     },
     "action": {
-      "view_comments": "コメントを見る",
-      "select": "セレクト"
+      "view_comments": "コメントを見る"
     },
     "image_fullview": {
       "view_original": "オリジナルを表示"

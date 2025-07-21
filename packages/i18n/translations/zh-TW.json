@@ -11,7 +11,8 @@
       "edit": "編輯",
       "ok": "確定",
       "cancel": "取消",
-      "duplicate": "複製"
+      "duplicate": "複製",
+      "select": "選擇"
     },
     "view": "檢視"
   },
@@ -70,8 +71,7 @@
     "action": {
       "preview": "預覽",
       "view_comments": "查看評論",
-      "add_to_favorite_group": "新增至最愛群組",
-      "select": "選擇"
+      "add_to_favorite_group": "新增至最愛群組"
     },
     "image_fullview": {
       "view_original": "檢視原圖"

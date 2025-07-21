@@ -11,7 +11,8 @@
       "edit": "แก้ไข",
       "ok": "ตกลง",
       "cancel": "ยกเลิก",
-      "duplicate": "ทำสำเนา"
+      "duplicate": "ทำสำเนา",
+      "select": "เลือก"
     },
     "view": "ดู"
   },
@@ -70,8 +71,7 @@
     "action": {
       "preview": "แสดงตัวอย่าง",
       "view_comments": "ดูความคิดเห็น",
-      "add_to_favorite_group": "เพิ่มเข้าในกลุ่มรายการโปรด",
-      "select": "เลือก"
+      "add_to_favorite_group": "เพิ่มเข้าในกลุ่มรายการโปรด"
     },
     "image_fullview": {
       "view_original": "ดูขนาดต้นฉบับ"

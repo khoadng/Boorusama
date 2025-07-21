@@ -11,7 +11,8 @@
       "edit": "수정",
       "ok": "확인",
       "cancel": "취소",
-      "duplicate": "복제"
+      "duplicate": "복제",
+      "select": "선택"
     },
     "view": "보기"
   },
@@ -70,8 +71,7 @@
     "action": {
       "preview": "미리보기",
       "view_comments": "댓글 보기",
-      "add_to_favorite_group": "즐겨찾기 그룹에 추가",
-      "select": "선택"
+      "add_to_favorite_group": "즐겨찾기 그룹에 추가"
     },
     "image_fullview": {
       "view_original": "원본 보기"

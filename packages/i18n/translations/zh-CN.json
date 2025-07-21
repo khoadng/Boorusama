@@ -11,7 +11,8 @@
       "edit": "编辑",
       "ok": "确定",
       "cancel": "取消",
-      "duplicate": "复制"
+      "duplicate": "复制",
+      "select": "选择"
     },
     "view": "显示"
   },
@@ -70,8 +71,7 @@
     "action": {
       "preview": "预览",
       "view_comments": "查看评论",
-      "add_to_favorite_group": "添加到喜爱组",
-      "select": "选择"
+      "add_to_favorite_group": "添加到喜爱组"
     },
     "image_fullview": {
       "view_original": "显示原图"

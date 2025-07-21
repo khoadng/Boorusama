@@ -11,7 +11,8 @@
       "edit": "Editați",
       "ok": "OK",
       "cancel": "Anulați",
-      "duplicate": "Duplicați"
+      "duplicate": "Duplicați",
+      "select": "Selectați"
     },
     "view": "Vizualizați"
   },
@@ -70,8 +71,7 @@
     "action": {
       "preview": "Previzualizați",
       "view_comments": "Vizualizați comentariile",
-      "add_to_favorite_group": "Adăugați la grupul de favorite",
-      "select": "Selectați"
+      "add_to_favorite_group": "Adăugați la grupul de favorite"
     },
     "image_fullview": {
       "view_original": "Vizualizați originalul"

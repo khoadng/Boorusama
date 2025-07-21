@@ -11,7 +11,8 @@
       "edit": "Sửa",
       "ok": "OK",
       "cancel": "Huỷ",
-      "duplicate": "Tạo bản sao"
+      "duplicate": "Tạo bản sao",
+      "select": "Chọn"
     },
     "view": "Xem"
   },
@@ -70,8 +71,7 @@
     "action": {
       "preview": "Xem nhanh",
       "view_comments": "Xem bình luận",
-      "add_to_favorite_group": "Thêm vào nhóm yêu thích",
-      "select": "Chọn"
+      "add_to_favorite_group": "Thêm vào nhóm yêu thích"
     },
     "image_fullview": {
       "view_original": "Xem ảnh gốc"

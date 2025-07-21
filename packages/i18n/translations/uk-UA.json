@@ -11,7 +11,8 @@
       "edit": "Змінити",
       "ok": "ОК",
       "cancel": "Відмінити",
-      "duplicate": "Дублювати"
+      "duplicate": "Дублювати",
+      "select": "Вибрати"
     },
     "view": "Переглянути"
   },
@@ -72,8 +73,7 @@
     "action": {
       "preview": "Попередній перегляд",
       "view_comments": "Подивитися коментарі",
-      "add_to_favorite_group": "Додати в улюблене",
-      "select": "Вибрати"
+      "add_to_favorite_group": "Додати в улюблене"
     },
     "image_fullview": {
       "view_original": "Подивитися оригінальне зображення"
