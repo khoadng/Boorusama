@@ -6,9 +6,9 @@ import 'src/language_extractor.dart';
 import 'src/language_generator.dart';
 
 void main() async {
-  final translationsDir = Directory('../../assets/translations');
+  final translationsDir = Directory('translations');
   if (!translationsDir.existsSync()) {
-    print('assets/translations directory not found');
+    print('translations directory not found');
     return;
   }
 
