@@ -16,7 +16,7 @@ class DownloadSelectableItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SelectionBuilder(
+    return SelectableBuilder(
       index: index,
       builder: (context, isSelected) {
         final controller = SelectionMode.of(context);

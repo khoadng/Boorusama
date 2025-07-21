@@ -99,7 +99,7 @@ class _DefaultSelectableItemState<T extends Post>
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
-    return SelectionBuilder(
+    return SelectableBuilder(
       key: ValueKey(widget.post.id),
       index: widget.index,
       builder: (context, isSelected) {

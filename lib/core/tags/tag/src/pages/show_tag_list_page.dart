@@ -19,6 +19,7 @@ import '../../../../search/search/routes.dart';
 import '../../../../search/search/widgets.dart';
 import '../../../../settings/providers.dart';
 import '../../../../widgets/animated_footer.dart';
+import '../../../../widgets/selection_app_bar_builder.dart';
 import '../../../favorites/providers.dart';
 import '../../widgets.dart';
 import '../data/providers.dart';
@@ -171,7 +172,6 @@ class _ShowTagListPageState extends ConsumerState<ShowTagListPageInternal> {
         options: ref.watch(selectionOptionsProvider),
         child: Scaffold(
           appBar: SelectionAppBarBuilder(
-            controller: _selectionModeController,
             builder: (context, controller, isSelectionMode) => !isSelectionMode
                 ? AppBar(
                     title: Text('Tags'.hc),
@@ -445,7 +445,7 @@ class _SelectableTagItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SelectionBuilder(
+    return SelectableBuilder(
       index: index,
       builder: (context, isSelected) {
         final controller = SelectionMode.of(context);

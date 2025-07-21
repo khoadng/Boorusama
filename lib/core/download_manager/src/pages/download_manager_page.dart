@@ -18,6 +18,7 @@ import '../../../configs/ref.dart';
 import '../../../downloads/downloader/providers.dart';
 import '../../../http/providers.dart';
 import '../../../settings/routes.dart';
+import '../../../widgets/selection_app_bar_builder.dart';
 import '../../../widgets/widgets.dart';
 import '../../types.dart';
 import '../l10n.dart';

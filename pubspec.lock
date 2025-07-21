@@ -1555,11 +1555,11 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: b41059e4c52469036c47254e97c59afc13dea868
-      resolved-ref: b41059e4c52469036c47254e97c59afc13dea868
+      ref: "0174267ba6d910633b2a3eee14f20ca5ca91c294"
+      resolved-ref: "0174267ba6d910633b2a3eee14f20ca5ca91c294"
       url: "https://github.com/khoadng/selection_mode.git"
     source: git
-    version: "0.0.2"
+    version: "0.0.3"
   share_handler:
     dependency: "direct main"
     description:
