@@ -27,6 +27,39 @@ class DataExtractor {
     return allParams;
   }
 
+  static Set<String> extractParserNames(YamlList yamlData) {
+    final parsers = <String>{};
+
+    for (final entry in yamlData) {
+      if (entry is YamlMap && entry.containsKey('gelbooru_v2')) {
+        _extractParsersFromConfig(entry['gelbooru_v2'], parsers);
+      }
+    }
+
+    return parsers;
+  }
+
+  static void _extractParsersFromConfig(YamlMap config, Set<String> parsers) {
+    final features = config['features'] as YamlMap?;
+    features?.values.forEach((feature) {
+      if (feature is YamlMap && feature['parser'] != null) {
+        parsers.add(feature['parser']);
+      }
+    });
+
+    final sites = config['sites'] as YamlList?;
+    sites?.forEach((site) {
+      if (site is YamlMap) {
+        final overrides = site['overrides'] as YamlMap?;
+        overrides?.values.forEach((override) {
+          if (override is YamlMap && override['parser'] != null) {
+            parsers.add(override['parser']);
+          }
+        });
+      }
+    });
+  }
+
   static BooruConfig _parseGelbooruV2Config(YamlMap configMap) {
     final globalParams = _parseGlobalParams(configMap['global-user-params']);
     final features = _parseFeatures(configMap['features']);

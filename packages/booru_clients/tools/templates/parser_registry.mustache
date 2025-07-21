@@ -1,0 +1,11 @@
+typedef ResponseParser<T> = T Function(Response response, Map<String, dynamic> context);
+
+class ParserRegistry {
+  static const _parsers = <String, ResponseParser>{
+{{#parsers}}
+    '{{name}}': {{name}},
+{{/parsers}}
+  };
+  
+  static ResponseParser? resolve(String? name) => _parsers[name];
+}

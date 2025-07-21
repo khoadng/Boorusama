@@ -72,13 +72,13 @@
       notes:
         type: html
         endpoint: "/index.php?page=post&s=view"
-        parser: "gelbooru-notes-html"
+        parser: "parseGelNotesHtml"
         user-params: {post-id: "id"}
       
       tags:
         type: html
         endpoint: "/index.php?page=post&s=view"
-        parser: "gelbooru-tags-sidebar"
+        parser: "parseGelTagsHtml"
         user-params: {post-id: "id"}
       
       favorites:
@@ -98,13 +98,13 @@
           posts:
             type: html
             endpoint: "/index.php?page=post&s=list"
-            parser: "rb-posts-html"
+            parser: "parseRbPostsHtml"
             capabilities:
               thumbnailOnly: true
           post:
-            parser: "rb-post-html"
+            parser: "parseRbPostHtml"
           tags:
-            parser: "rb-tags-html"
+            parser: "parseRbTagsHtml"
 
       - url: https://xbooru.com/
       - url: https://tbib.org/

@@ -1,6 +1,8 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
+import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
+import '../gelbooru/parsers/parsers.dart';
 
 class P {
   static const apiKey = 'api-key';
@@ -223,6 +225,19 @@ class SiteCapabilities {
   }
 }
 
+typedef ResponseParser<T> = T Function(Response response, Map<String, dynamic> context);
+
+class ParserRegistry {
+  static const _parsers = <String, ResponseParser>{
+    'parseGelNotesHtml': parseGelNotesHtml,
+    'parseGelTagsHtml': parseGelTagsHtml,
+    'parseRbPostHtml': parseRbPostHtml,
+    'parseRbPostsHtml': parseRbPostsHtml,
+    'parseRbTagsHtml': parseRbTagsHtml,
+  };
+  
+  static ResponseParser? resolve(String? name) => _parsers[name];
+}
 
 class GelbooruV2Config {
   static const _postsEndpoint = FeatureEndpoint(
@@ -253,14 +268,14 @@ class GelbooruV2Config {
     featureId: BooruFeatureId.notes,
     type: EndpointType.html,
     path: '/index.php?page=post&s=view',
-    parserStrategy: 'gelbooru-notes-html',
+    parserStrategy: 'parseGelNotesHtml',
     paramMapping: {'post-id': 'id'},
   );
   static const _tagsEndpoint = FeatureEndpoint(
     featureId: BooruFeatureId.tags,
     type: EndpointType.html,
     path: '/index.php?page=post&s=view',
-    parserStrategy: 'gelbooru-tags-sidebar',
+    parserStrategy: 'parseGelTagsHtml',
     paramMapping: {'post-id': 'id'},
   );
   static const _favoritesEndpoint = FeatureEndpoint(
@@ -317,16 +332,16 @@ static const _defaults = <BooruFeatureId, BooruFeature>{
         BooruFeatureId.posts: PostsEndpointOverride(
           type: EndpointType.html,
           path: '/index.php?page=post&s=list',
-          parserStrategy: 'rb-posts-html',
+          parserStrategy: 'parseRbPostsHtml',
           feature: PostsFeature(
             thumbnailOnly: true,
           ),
         ),
         BooruFeatureId.post: PostEndpointOverride(
-          parserStrategy: 'rb-post-html',
+          parserStrategy: 'parseRbPostHtml',
         ),
         BooruFeatureId.tags: TagsEndpointOverride(
-          parserStrategy: 'rb-tags-html',
+          parserStrategy: 'parseRbTagsHtml',
         ),
       },
     ),

@@ -7,21 +7,9 @@ import '../common/feature.dart';
 import '../common/request_handler.dart';
 import 'gelbooru_client_favorites.dart';
 import 'parsers/gel_parsers.dart';
-import 'parsers/rb_parsers.dart';
 import 'types/types.dart';
 
 class GelbooruV2Client with GelbooruClientFavorites {
-  static ResponseParser? resolveParser(String? parserName) {
-    return switch (parserName) {
-      'gelbooru-notes-html' => parseNotesHtml,
-      'gelbooru-tags-sidebar' => parseTagsHtml,
-      'rb-posts-html' => parseRbPostsHtml,
-      'rb-post-html' => parseRbPostHtml,
-      'rb-tags-html' => parseRbTagsHtml,
-      _ => null,
-    };
-  }
-
   static EndpointConfig defaultEndpoints({
     Map<String, String>? globalUserParams,
   }) {
@@ -30,28 +18,28 @@ class GelbooruV2Client with GelbooruClientFavorites {
       endpoints: [
         Endpoint<GelbooruV2Posts>.fromFeature(
           feature: GelbooruV2Config.defaultFeatures[BooruFeatureId.posts]!,
-          parser: parsePostsResponse,
+          parser: parseGelPosts,
         ),
         Endpoint<PostV2Dto?>.fromFeature(
           feature: GelbooruV2Config.defaultFeatures[BooruFeatureId.post]!,
-          parser: parsePostResponse,
+          parser: parseGelPost,
         ),
         Endpoint<List<AutocompleteDto>>.fromFeature(
           feature:
               GelbooruV2Config.defaultFeatures[BooruFeatureId.autocomplete]!,
-          parser: parseAutocompleteResponse,
+          parser: parseGelAutocomplete,
         ),
         Endpoint<List<CommentDto>>.fromFeature(
           feature: GelbooruV2Config.defaultFeatures[BooruFeatureId.comments]!,
-          parser: parseCommentsResponse,
+          parser: parseGelComments,
         ),
         Endpoint<List<NoteDto>>.fromFeature(
           feature: GelbooruV2Config.defaultFeatures[BooruFeatureId.notes]!,
-          parser: parseNotesHtml,
+          parser: parseGelNotesHtml,
         ),
         Endpoint<List<TagDto>>.fromFeature(
           feature: GelbooruV2Config.defaultFeatures[BooruFeatureId.tags]!,
-          parser: parseTagsHtml,
+          parser: parseGelTagsHtml,
         ),
         Endpoint<List<PostFavoriteDto>>.fromFeature(
           feature: GelbooruV2Config.defaultFeatures[BooruFeatureId.favorites]!,

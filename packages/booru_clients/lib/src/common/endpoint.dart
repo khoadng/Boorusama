@@ -1,9 +1,6 @@
 import 'package:dio/dio.dart';
 import 'feature.dart';
 
-typedef ResponseParser<T> =
-    T Function(Response response, Map<String, dynamic> context);
-
 class Endpoint<T> {
   const Endpoint({
     required this.featureId,

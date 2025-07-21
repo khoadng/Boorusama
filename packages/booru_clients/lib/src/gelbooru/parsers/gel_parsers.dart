@@ -8,7 +8,7 @@ import '../types/types.dart';
 
 typedef GelbooruV2Posts = ({List<PostV2Dto> posts, int? count});
 
-GelbooruV2Posts parsePostsResponse(
+GelbooruV2Posts parseGelPosts(
   Response response,
   Map<String, dynamic> context,
 ) {
@@ -52,7 +52,7 @@ GelbooruV2Posts parsePostsResponse(
   );
 }
 
-PostV2Dto? parsePostResponse(Response response, Map<String, dynamic> context) {
+PostV2Dto? parseGelPost(Response response, Map<String, dynamic> context) {
   final baseUrl = context['baseUrl'] as String? ?? '';
   final data = response.data;
   if (data == null) return null;
@@ -66,7 +66,7 @@ PostV2Dto? parsePostResponse(Response response, Map<String, dynamic> context) {
   };
 }
 
-List<AutocompleteDto> parseAutocompleteResponse(
+List<AutocompleteDto> parseGelAutocomplete(
   Response response,
   Map<String, dynamic> context,
 ) {
@@ -80,7 +80,7 @@ List<AutocompleteDto> parseAutocompleteResponse(
   };
 }
 
-List<CommentDto> parseCommentsResponse(
+List<CommentDto> parseGelComments(
   Response response,
   Map<String, dynamic> context,
 ) {
@@ -93,17 +93,11 @@ List<CommentDto> parseCommentsResponse(
   return dtos;
 }
 
-List<NoteDto> parseNotesHtml(Response response, Map<String, dynamic> context) {
+List<NoteDto> parseGelNotesHtml(
+  Response response,
+  Map<String, dynamic> context,
+) {
   final html = response.data as String;
-  return parseGelbooruNotes(html, context);
-}
-
-List<TagDto> parseTagsHtml(Response response, Map<String, dynamic> context) {
-  final html = response.data as String;
-  return parseGelbooruTags(html, context);
-}
-
-List<NoteDto> parseGelbooruNotes(String html, Map<String, dynamic> context) {
   final document = parse(html);
   final noteContainer = document.getElementById('note-container');
 
@@ -146,7 +140,8 @@ List<NoteDto> parseGelbooruNotes(String html, Map<String, dynamic> context) {
   return notesWithBody ?? [];
 }
 
-List<TagDto> parseGelbooruTags(String html, Map<String, dynamic> context) {
+List<TagDto> parseGelTagsHtml(Response response, Map<String, dynamic> context) {
+  final html = response.data as String;
   final document = parse(html);
   final sideBar = document.getElementById('tag-sidebar');
 

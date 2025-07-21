@@ -1,4 +1,5 @@
 // Package imports:
+import 'package:booru_clients/core.dart';
 import 'package:booru_clients/gelbooru.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -22,7 +23,7 @@ final gelbooruV2ClientProvider =
             globalUserParams: gelbooruV2.getGlobalUserParams(),
           ),
           siteUrl: config.url,
-          parserResolver: GelbooruV2Client.resolveParser,
+          parserResolver: ParserRegistry.resolve,
         ),
       );
     });
