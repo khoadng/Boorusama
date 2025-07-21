@@ -1,5 +1,4 @@
 // Package imports:
-import 'package:booru_clients/e621.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -10,13 +9,21 @@ import '../../../core/tags/tag/tag.dart';
 import '../client_provider.dart';
 import '../posts/types.dart';
 import 'parser.dart';
-import 'types.dart';
 
-final e621TagRepoProvider = Provider.family<E621TagRepository, BooruConfigAuth>(
+final e621TagRepoProvider = Provider.family<TagRepository, BooruConfigAuth>(
   (ref, config) {
-    return E621TagRepositoryApi(
-      ref.watch(e621ClientProvider(config)),
-      config,
+    final client = ref.watch(e621ClientProvider(config));
+
+    return TagRepositoryBuilder(
+      persistentStorageKey: '${Uri.encodeComponent(config.url)}_tags_cache_v1',
+      getTags: (tags, page, {cancelToken}) async {
+        final data = await client.getTagsByNames(
+          page: page,
+          tags: tags.toList(),
+        );
+
+        return data.map(e621TagDtoToTag).toList();
+      },
     );
   },
 );
@@ -119,22 +126,3 @@ final e621AutocompleteRepoProvider =
         },
       );
     });
-
-class E621TagRepositoryApi implements E621TagRepository {
-  E621TagRepositoryApi(
-    this.client,
-    this.booruConfig,
-  );
-
-  final E621Client client;
-  final BooruConfigAuth booruConfig;
-
-  @override
-  Future<List<E621Tag>> getTagsWithWildcard(
-    String tag, {
-    TagSortOrder order = TagSortOrder.count,
-  }) => client
-      .getTags(name: tag)
-      .then((value) => value.map(e621TagDtoToTag).toList())
-      .catchError((e, stackTrace) => <E621Tag>[]);
-}

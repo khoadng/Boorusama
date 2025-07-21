@@ -93,6 +93,11 @@ class E621Repository extends BooruRepositoryDefault {
   }
 
   @override
+  TagRepository tag(BooruConfigAuth config) {
+    return ref.read(e621TagRepoProvider(config));
+  }
+
+  @override
   FavoriteRepository favorite(BooruConfigAuth config) {
     return ref.watch(e621FavoriteRepoProvider(config));
   }

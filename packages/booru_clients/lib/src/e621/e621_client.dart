@@ -160,6 +160,32 @@ class E621Client {
     return (data as List).map((item) => PostDto.fromJson(item)).toList();
   }
 
+  Future<List<TagDto>> getTagsByNames({
+    required List<String> tags,
+    TagSortOrder order = TagSortOrder.count,
+    int? page,
+    int limit = 20,
+    CancelToken? cancelToken,
+  }) async {
+    if (tags.isEmpty) return [];
+
+    final response = await _dio.get(
+      '/tags.json',
+      queryParameters: {
+        'search[name]': tags.join(','),
+        'search[order]': order.name,
+        if (page != null) 'page': page,
+        'limit': limit,
+      },
+      cancelToken: cancelToken,
+    );
+
+    return switch (response.data) {
+      List l => l.map((item) => TagDto.fromJson(item)).toList(),
+      _ => [],
+    };
+  }
+
   Future<List<TagDto>> getTags({
     required String name,
     TagSortOrder order = TagSortOrder.count,
