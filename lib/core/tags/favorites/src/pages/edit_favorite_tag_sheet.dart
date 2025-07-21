@@ -84,7 +84,7 @@ class _EditSavedSearchSheetState extends ConsumerState<EditFavoriteTagSheet> {
           Padding(
             padding: const EdgeInsets.only(top: 8, bottom: 8),
             child: Text(
-              widget.title ?? 'Edit',
+              widget.title ?? context.t.generic.action.edit,
               style: textTheme.titleLarge,
             ),
           ),

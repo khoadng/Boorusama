@@ -202,7 +202,7 @@ class _FavoriteGroupEditPageState extends State<FavoriteGroupEditPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Edit'.hc),
+        title: Text(context.t.generic.action.edit),
         actions: [
           IconButton(
             icon: const Icon(Icons.save),

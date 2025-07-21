@@ -28,7 +28,7 @@ class BookmarkAppBar extends ConsumerWidget {
     final hasBookmarks = ref.watch(hasBookmarkProvider);
 
     final itemBuilder = {
-      if (hasBookmarks) 'edit': Text('Edit'.hc),
+      if (hasBookmarks) 'edit': Text(context.t.generic.action.edit),
       if (hasBookmarks)
         'download_all': ValueListenableBuilder(
           valueListenable: controller.itemsNotifier,

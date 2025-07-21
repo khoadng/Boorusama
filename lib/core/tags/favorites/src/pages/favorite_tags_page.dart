@@ -232,9 +232,9 @@ class FavoriteTagsPage extends ConsumerWidget {
                   );
               }
             },
-            itemBuilder: const {
-              'edit': Text('Edit'),
-              'delete': Text('Delete'),
+            itemBuilder: {
+              'edit': Text(context.t.generic.action.edit),
+              'delete': Text(context.t.generic.action.delete),
             },
           ),
         );

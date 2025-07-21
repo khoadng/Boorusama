@@ -187,8 +187,8 @@ class _ShowTagListPageState extends ConsumerState<ShowTagListPageInternal> {
                               default:
                             }
                           },
-                          itemBuilder: const {
-                            'select': Text('Select'),
+                          itemBuilder: {
+                            'select': Text(context.t.generic.action.select),
                           },
                         ),
                       ),

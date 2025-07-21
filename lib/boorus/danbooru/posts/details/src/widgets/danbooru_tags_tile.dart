@@ -51,7 +51,8 @@ class DanbooruTagsTile extends ConsumerWidget {
         post: post,
         count: count,
         itemBuilder: {
-          if (config.hasLoginDetails()) 'edit': Text('Edit'.hc),
+          if (config.hasLoginDetails())
+            'edit': Text(context.t.generic.action.edit),
         },
         onMultiSelect: () {
           goToShowTaglistPage(

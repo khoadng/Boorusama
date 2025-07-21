@@ -152,7 +152,7 @@ class _DownloadManagerPageState extends ConsumerState<DownloadManagerPage> {
                           }
                         },
                         itemBuilder: {
-                          'select': Text('Select'.hc),
+                          'select': Text(context.t.generic.action.select),
                           'clear': Text('Clear'.hc),
                         },
                       ),

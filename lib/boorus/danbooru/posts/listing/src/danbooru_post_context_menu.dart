@@ -103,7 +103,7 @@ class DanbooruPostContextMenu extends ConsumerWidget {
         ),
         if (hasAccount)
           ContextMenuButtonConfig(
-            'Edit',
+            context.t.generic.action.edit,
             onPressed: () => ref.danbooruEdit(post),
           ),
         if (onMultiSelect != null)
@@ -151,7 +151,7 @@ class FavoriteGroupsPostContextMenu extends ConsumerWidget {
             },
           ),
         ContextMenuButtonConfig(
-          'Select',
+          context.t.generic.action.select,
           onPressed: () {
             onMultiSelect?.call();
           },

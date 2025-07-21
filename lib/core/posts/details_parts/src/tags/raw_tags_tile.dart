@@ -81,7 +81,7 @@ class RawTagsTileTitle<T extends Post> extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final effectiveItemBuilder = {
-      'select': Text('Select'.hc),
+      'select': Text(context.t.generic.action.select),
       ...?itemBuilder,
     };
 

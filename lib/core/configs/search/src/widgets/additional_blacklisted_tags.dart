@@ -122,7 +122,7 @@ class AdditionalBlacklistedTags extends ConsumerWidget {
                       iconColor: colorScheme.onSurface,
                       foregroundColor: colorScheme.onSurface,
                     ),
-                    label: Text('Edit'.hc),
+                    label: Text(context.t.generic.action.edit),
                     icon: const Icon(
                       FontAwesomeIcons.pen,
                       size: 16,

@@ -123,9 +123,9 @@ class PostGridConfigIconButton<T> extends ConsumerWidget {
                         }
                       },
                       itemBuilder: {
-                        'select': const PostGridConfigOptionTile(
-                          title: Text('Select'),
-                          icon: Icon(
+                        'select': PostGridConfigOptionTile(
+                          title: Text(context.t.generic.action.select),
+                          icon: const Icon(
                             Symbols.select_all,
                             size: 18,
                           ),
