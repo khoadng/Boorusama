@@ -8,6 +8,7 @@ import '../../configs/config.dart';
 import '../../tags/autocompletes/providers.dart';
 import '../../tags/autocompletes/types.dart';
 import '../../tags/configs/providers.dart';
+import '../../tags/local/providers.dart';
 import '../queries/filter_operator.dart';
 import '../queries/query_utils.dart';
 
@@ -78,11 +79,33 @@ class SuggestionsNotifier
           AutocompleteQuery.text(sanitized),
         );
 
-        final filter = filterNsfw(
+        var filter = filterNsfw(
           data,
           tagInfo.r18Tags,
           shouldFilter: arg.hasSoftSFW,
         );
+
+        if (filter.isNotEmpty) {
+          final tagCache = await ref.read(tagCacheRepositoryProvider.future);
+          final result = await tagCache.resolveTags(
+            arg.url,
+            filter.map((e) => e.value).toList(),
+          );
+
+          if (result.found.isNotEmpty) {
+            final found = {
+              for (final tag in result.found) tag.tagName: tag,
+            };
+
+            filter = filter
+                .map((e) {
+                  final cachedTag = found[e.value];
+                  return cachedTag != null ? e.resolveCached(cachedTag) : e;
+                })
+                .toList()
+                .lock;
+          }
+        }
 
         state = state.add(sanitized, filter);
 
@@ -93,3 +116,11 @@ class SuggestionsNotifier
     );
   }
 }
+
+//   AutocompleteData _resolveCached(AutocompleteData autocomplete, CachedTag tag) {
+//     return autocomplete.copyWith(
+//  type: autocomplete.type ?? tag.category,
+//  postCount: tag.postCount,
+//     );
+
+//   }

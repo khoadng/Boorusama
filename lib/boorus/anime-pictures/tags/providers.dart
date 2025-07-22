@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../core/configs/config/types.dart';
 import '../../../core/tags/autocompletes/types.dart';
+import '../../../core/tags/local/providers.dart';
 import '../../../core/tags/tag/tag.dart';
 import '../client_provider.dart';
 import '../posts/providers.dart';
@@ -29,6 +30,8 @@ final animePicturesAutocompleteRepoProvider =
 final animePicturesTagExtractorProvider =
     Provider.family<TagExtractor, BooruConfigAuth>((ref, config) {
       return TagExtractorBuilder(
+        siteHost: config.url,
+        tagCache: ref.watch(tagCacheRepositoryProvider.future),
         sorter: TagSorter.defaults(),
         fetcher: (post, options) async {
           final postDetails = await ref.read(

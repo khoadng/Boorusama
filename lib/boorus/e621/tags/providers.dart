@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../core/configs/config.dart';
 import '../../../core/tags/autocompletes/types.dart';
+import '../../../core/tags/local/providers.dart';
 import '../../../core/tags/tag/providers.dart';
 import '../../../core/tags/tag/tag.dart';
 import '../client_provider.dart';
@@ -32,6 +33,8 @@ final e621TagExtractorProvider =
     Provider.family<TagExtractor<E621Post>, BooruConfigAuth>(
       (ref, config) {
         return TagExtractorBuilder(
+          siteHost: config.url,
+          tagCache: ref.watch(tagCacheRepositoryProvider.future),
           sorter: TagSorter.defaults(),
           fetcher: (post, options) {
             // Use read to avoid circular dependency

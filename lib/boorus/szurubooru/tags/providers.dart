@@ -7,6 +7,7 @@ import '../../../core/configs/config/types.dart';
 import '../../../core/search/queries/query.dart';
 import '../../../core/tags/autocompletes/types.dart';
 import '../../../core/tags/categories/tag_category.dart';
+import '../../../core/tags/local/providers.dart';
 import '../../../core/tags/tag/tag.dart';
 import '../../../foundation/utils/color_utils.dart';
 import '../client_provider.dart';
@@ -82,6 +83,8 @@ final szurubooruTagExtractorProvider =
     Provider.family<TagExtractor<SzurubooruPost>, BooruConfigAuth>(
       (ref, config) {
         return TagExtractorBuilder(
+          siteHost: config.url,
+          tagCache: ref.watch(tagCacheRepositoryProvider.future),
           sorter: TagSorter.defaults(),
           fetcher: (post, options) {
             if (post case final SzurubooruPost szurubooruPost) {

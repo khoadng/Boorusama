@@ -11,6 +11,7 @@ import '../../../boorus/engine/engine.dart';
 import '../../../boorus/engine/providers.dart';
 import '../../../configs/config.dart';
 import '../../../tags/categories/providers.dart';
+import '../../../tags/local/providers.dart';
 import '../../../tags/tag/colors.dart';
 import '../../../tags/tag/providers.dart';
 import '../../../tags/tag/tag.dart';
@@ -186,6 +187,8 @@ final bookmarkTagExtractorProvider =
     Provider.family<TagExtractor<BookmarkPost>, BooruConfigAuth>(
       (ref, config) {
         return TagExtractorBuilder(
+          siteHost: config.url,
+          tagCache: ref.watch(tagCacheRepositoryProvider.future),
           sorter: TagSorter.defaults(),
           fetcher: (post, options) {
             // Use read to avoid circular dependency

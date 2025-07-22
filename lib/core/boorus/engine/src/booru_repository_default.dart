@@ -25,6 +25,7 @@ import '../../../posts/post/post.dart';
 import '../../../search/queries/providers.dart';
 import '../../../search/queries/tag_query_composer.dart';
 import '../../../tags/autocompletes/autocomplete_repository.dart';
+import '../../../tags/local/providers.dart';
 import '../../../tags/tag/colors.dart';
 import '../../../tags/tag/providers.dart';
 import '../../../tags/tag/tag.dart';
@@ -106,6 +107,8 @@ abstract class BooruRepositoryDefault implements BooruRepository {
   @override
   TagExtractor tagExtractor(BooruConfigAuth config) {
     return TagExtractorBuilder(
+      siteHost: config.url,
+      tagCache: ref.watch(tagCacheRepositoryProvider.future),
       sorter: TagSorter.defaults(),
       fetcher: (post, options) => TagExtractor.extractTagsFromGenericPost(post),
     );

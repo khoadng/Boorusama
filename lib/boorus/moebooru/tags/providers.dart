@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/boorus/booru/booru.dart';
 import '../../../core/configs/config/types.dart';
 import '../../../core/tags/categories/tag_category.dart';
+import '../../../core/tags/local/providers.dart';
 import '../../../core/tags/tag/tag.dart';
 import '../posts/types.dart';
 import '../tag_summary/providers.dart';
@@ -23,6 +24,8 @@ final moebooruTagExtractorProvider =
     Provider.family<TagExtractor<MoebooruPost>, BooruConfigAuth>(
       (ref, config) {
         return TagExtractorBuilder(
+          siteHost: config.url,
+          tagCache: ref.watch(tagCacheRepositoryProvider.future),
           sorter: TagSorter.defaults(),
           fetcher: (post, options) async {
             final allTagMap = await ref.read(

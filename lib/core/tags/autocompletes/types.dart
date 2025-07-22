@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
+import '../local/cached_tag.dart';
 import '../metatag/metatag.dart';
 import '../tag/tag.dart';
 
@@ -33,6 +34,33 @@ class AutocompleteData extends Equatable {
       postCount: json['post_count'],
       level: json['level'],
       antecedent: json['antecedent'],
+    );
+  }
+
+  AutocompleteData resolveCached(CachedTag tag) {
+    return copyWith(
+      category: category ?? tag.category,
+      postCount: postCount ?? tag.postCount,
+    );
+  }
+
+  AutocompleteData copyWith({
+    String? type,
+    AutocompleteLabel? label,
+    AutocompleteValue? value,
+    String? category,
+    PostCount? postCount,
+    String? level,
+    AutocompleteAntecedent? antecedent,
+  }) {
+    return AutocompleteData(
+      type: type ?? this.type,
+      label: label ?? this.label,
+      value: value ?? this.value,
+      category: category ?? this.category,
+      postCount: postCount ?? this.postCount,
+      level: level ?? this.level,
+      antecedent: antecedent ?? this.antecedent,
     );
   }
 
