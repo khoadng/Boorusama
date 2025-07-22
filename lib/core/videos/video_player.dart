@@ -61,9 +61,6 @@ class _BooruVideoState extends State<BooruVideo> {
 
   Map<String, String> _buildHeaders() => {
         if (widget.headers != null) ...widget.headers!,
-        'Range': 'bytes=0-',
-        'Acept-Encoding': 'identity;q=1, *;q=0',
-        'Priority': 'i',
       };
 
   void _initVideoPlayerController() {
