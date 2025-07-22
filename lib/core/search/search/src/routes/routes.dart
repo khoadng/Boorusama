@@ -16,6 +16,7 @@ GoRoute searchRoutes(Ref ref) => GoRoute(
   name: '/search',
   pageBuilder: (context, state) {
     final query = state.uri.queryParameters[kInitialQueryKey];
+    final tagsParam = state.uri.queryParameters['tags'];
     final pageParam = int.tryParse(state.uri.queryParameters['page'] ?? '');
     final positionParam = int.tryParse(
       state.uri.queryParameters['position'] ?? '',
@@ -28,6 +29,9 @@ GoRoute searchRoutes(Ref ref) => GoRoute(
     final page = InheritedInitialSearchQuery(
       params: SearchParams(
         initialQuery: query,
+        initialTags: tagsParam != null
+            ? SearchTagSet.fromString(tagsParam)
+            : null,
         initialPage: pageParam,
         initialScrollPosition: positionParam,
         initialQueryType: parseQueryType(queryTypeParam),

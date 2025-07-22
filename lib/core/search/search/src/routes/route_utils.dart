@@ -14,6 +14,8 @@ import '../views/simple_tag_search_view.dart';
 void goToSearchPage(
   WidgetRef ref, {
   String? tag,
+  //FIXME: migrate to SearchTagSet instead of String
+  SearchTagSet? tags,
   int? page,
   int? position,
   QueryType? queryType,
@@ -21,6 +23,7 @@ void goToSearchPage(
 }) {
   final params = <String, String>{};
   if (tag != null) params[kInitialQueryKey] = tag;
+  if (tags != null) params['tags'] = tags.toString();
   if (page != null) params['page'] = page.toString();
   if (position != null) params['position'] = position.toString();
   if (queryType != null) params['query_type'] = queryType.name;

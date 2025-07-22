@@ -41,6 +41,14 @@ class SelectedTagController extends ValueNotifier<List<TagSearchItem>> {
     value = _tagSet.tags;
   }
 
+  void merge(
+    SearchTagSet tags, {
+    bool isRaw = false,
+  }) {
+    _tagSet.merge(tags, isRaw: isRaw);
+    value = _tagSet.tags;
+  }
+
   void addTag(
     String tag, {
     bool isRaw = false,

@@ -130,9 +130,17 @@ class _SearchPageScaffoldState<T extends Post>
 
     if (widget.initialPage != null) {
       _controller.skipToResultWithTag('');
-    } else if (widget.initialQuery != null) {
+    } else if (widget.initialQuery case final String query) {
       _controller.skipToResultWithTag(
-        widget.initialQuery!,
+        query,
+        queryType: widget.params.initialQueryType,
+      );
+      ref
+          .read(searchHistoryProvider.notifier)
+          .addHistoryFromController(_tagsController);
+    } else if (widget.params.initialTags case final SearchTagSet tags) {
+      _controller.skipToResultWithTags(
+        tags,
         queryType: widget.params.initialQueryType,
       );
       ref

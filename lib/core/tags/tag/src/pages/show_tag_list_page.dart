@@ -17,6 +17,7 @@ import '../../../../configs/config.dart';
 import '../../../../posts/post/post.dart';
 import '../../../../search/search/routes.dart';
 import '../../../../search/search/widgets.dart';
+import '../../../../search/selected_tags/tag.dart';
 import '../../../../settings/providers.dart';
 import '../../../../widgets/animated_footer.dart';
 import '../../../../widgets/selection_app_bar_builder.dart';
@@ -331,12 +332,27 @@ class _ShowTagListPageState extends ConsumerState<ShowTagListPageInternal> {
           MultiSelectionActionBar(
             height: 68,
             children: [
+              // Search
+              MultiSelectButton(
+                width: 80,
+                onPressed: tags.isNotEmpty
+                    ? () => goToSearchPage(
+                        ref,
+                        tags: SearchTagSet.fromList(
+                          tags.map((e) => e.rawName).toList(),
+                        ),
+                      )
+                    : null,
+                icon: const Icon(Symbols.search),
+                name: 'Search'.hc,
+                mainAxisAlignment: MainAxisAlignment.start,
+              ),
               MultiSelectButton(
                 onPressed: tags.isNotEmpty
                     ? () => _copySelectedTags(tags)
                     : null,
                 icon: const Icon(Symbols.content_copy),
-                name: 'Copy Tags',
+                name: 'Copy Tags'.hc,
                 mainAxisAlignment: MainAxisAlignment.start,
               ),
               if (widget.onAddToBlacklist != null)
@@ -345,7 +361,7 @@ class _ShowTagListPageState extends ConsumerState<ShowTagListPageInternal> {
                       ? () => _addSelectedToBlacklist(tags)
                       : null,
                   icon: const Icon(Symbols.block),
-                  name: 'Add to Blacklist',
+                  name: 'Add to Blacklist'.hc,
                   maxLines: 2,
                   mainAxisAlignment: MainAxisAlignment.start,
                 ),
@@ -354,7 +370,7 @@ class _ShowTagListPageState extends ConsumerState<ShowTagListPageInternal> {
                     ? () => _addSelectedToGlobalBlacklist(tags)
                     : null,
                 icon: const Icon(Symbols.block),
-                name: 'Add to Global Blacklist',
+                name: 'Add to Global Blacklist'.hc,
                 maxLines: 2,
                 mainAxisAlignment: MainAxisAlignment.start,
               ),
@@ -363,7 +379,7 @@ class _ShowTagListPageState extends ConsumerState<ShowTagListPageInternal> {
                     ? () => _addSelectedToFavorites(tags)
                     : null,
                 icon: const Icon(Symbols.favorite),
-                name: 'Add to Favorites',
+                name: 'Add to Favorites'.hc,
                 maxLines: 2,
                 mainAxisAlignment: MainAxisAlignment.start,
               ),

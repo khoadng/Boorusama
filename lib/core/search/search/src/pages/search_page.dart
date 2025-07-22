@@ -57,6 +57,7 @@ class InheritedInitialSearchQuery extends InheritedWidget {
 class SearchParams extends Equatable {
   const SearchParams({
     this.initialQuery,
+    this.initialTags,
     this.initialPage,
     this.initialScrollPosition,
     this.initialQueryType,
@@ -64,6 +65,7 @@ class SearchParams extends Equatable {
   });
 
   final String? initialQuery;
+  final SearchTagSet? initialTags;
   final int? initialPage;
   final int? initialScrollPosition;
   final QueryType? initialQueryType;
@@ -72,6 +74,7 @@ class SearchParams extends Equatable {
   @override
   List<Object?> get props => [
     initialQuery,
+    initialTags,
     initialPage,
     initialScrollPosition,
     initialQueryType,

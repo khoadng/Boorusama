@@ -63,15 +63,33 @@ class SearchPageController extends ChangeNotifier {
     tagString.value = tag;
     didSearchOnce.value = true;
 
-    final isRaw = switch (queryType) {
-      QueryType.simple => true,
-      QueryType.list => false,
-      null => false,
-    };
+    final isRaw = _isRaw(queryType);
 
     tagsController
       ..clear()
       ..addTag(tag, isRaw: isRaw);
+  }
+
+  void skipToResultWithTags(
+    SearchTagSet tags, {
+    QueryType? queryType,
+  }) {
+    tagString.value = tags.spaceDelimitedOriginalTags;
+    didSearchOnce.value = true;
+
+    final isRaw = _isRaw(queryType);
+
+    tagsController
+      ..clear()
+      ..merge(tags, isRaw: isRaw);
+  }
+
+  bool _isRaw(QueryType? queryType) {
+    return switch (queryType) {
+      QueryType.simple => true,
+      QueryType.list => false,
+      null => false,
+    };
   }
 
   void search() {

@@ -20,6 +20,18 @@ class SearchTagSet extends Equatable {
 
   factory SearchTagSet.empty() => SearchTagSet();
 
+  factory SearchTagSet.only(
+    String tag, {
+    MetatagExtractor? metatagExtractor,
+    bool isRaw = false,
+  }) {
+    final tagSet = SearchTagSet(
+      metatagExtractor: metatagExtractor,
+    )..addTag(tag, isRaw: isRaw);
+
+    return tagSet;
+  }
+
   factory SearchTagSet.fromString(
     String? tags, {
     MetatagExtractor? metatagExtractor,
@@ -75,6 +87,23 @@ class SearchTagSet extends Equatable {
       tag.name,
       isRaw: tag.queryType == QueryType.simple,
     );
+  }
+
+  void merge(
+    SearchTagSet other, {
+    bool isRaw = false,
+  }) {
+    if (other.isEmpty) return;
+
+    for (final tag in other._tags) {
+      addTag(
+        tag.originalTag,
+        isRaw: isRaw
+            ? true
+            : tag.isRaw, // force all tags to be raw if isRaw is true
+        operator: tag.operator,
+      );
+    }
   }
 
   TagSearchItem? addTag(
