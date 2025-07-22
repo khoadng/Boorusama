@@ -181,8 +181,9 @@ Future<void> boot(BootData bootData) async {
         configs: allConfigs,
         settings: settings,
       ),
-      builder: (context, data) => BooruLocalization(
+      builder: (context, data, key) => BooruLocalization(
         child: ProviderScope(
+          key: key,
           overrides: [
             booruEngineRegistryProvider.overrideWith(
               (ref) => ref.watch(

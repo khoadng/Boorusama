@@ -34,6 +34,8 @@ class Reboot extends StatefulWidget {
   final Widget Function(
     BuildContext context,
     RebootData rebootData,
+    // Need to pass a key to force child rebuild
+    Key uniqueKey,
   )
   builder;
 
@@ -65,7 +67,7 @@ class _RebootState extends State<Reboot> {
   Widget build(BuildContext context) {
     return KeyedSubtree(
       key: _key,
-      child: widget.builder(context, _rebootData),
+      child: widget.builder(context, _rebootData, _key),
     );
   }
 }
