@@ -1,3 +1,6 @@
+// Flutter imports:
+import 'package:flutter/services.dart';
+
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -19,14 +22,16 @@ final dummyPackageInfoProvider = Provider<PackageInfo>((ref) {
   );
 });
 
-const kEnvironment = String.fromEnvironment('ENV_NAME');
+const _kDevEnvironment = 'dev';
+
+const kEnvironment = appFlavor ?? _kDevEnvironment;
 
 final currentEnvironmentProvider = Provider<String>((ref) {
   return kEnvironment;
 });
 
 final isDevEnvironmentProvider = Provider<bool>((ref) {
-  return ref.watch(currentEnvironmentProvider) == 'dev';
+  return ref.watch(currentEnvironmentProvider) == _kDevEnvironment;
 });
 
 final appVersionProvider = Provider<Version?>((ref) {
