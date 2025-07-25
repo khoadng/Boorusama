@@ -165,13 +165,33 @@
       "show_scores": "显示评分",
       "show_post_list_config_header": "显示提交的配置信息",
       "booru_config": "Booru配置",
-      "booru_config_placement": "Booru配置对齐位置"
+      "booru_config_placement": "Booru配置对齐位置",
+      "booru_config_placement_options": {
+        "side": "侧边",
+        "bottom": "底部"
+      },
+      "booru_config_label": "显示标签",
+      "booru_config_label_options": {
+        "always": "总是",
+        "never": "从不"
+      }
     },
     "general": "通用",
     "search": {
       "search": "搜索",
       "auto_focus_search_bar": "首次打开搜索窗口时自动聚焦到搜索栏",
-      "hide_bookmarked_posts_from_search_results": "搜索结果中隐藏已收藏书签的图片"
+      "hide_bookmarked_posts_from_search_results": "搜索结果中隐藏已收藏书签的图片",
+      "search_bar": {
+        "position": {
+          "search_bar_position": "搜索栏位置",
+          "top": "顶部",
+          "bottom": "底部"
+        },
+        "scroll_behavior": {
+          "persistent": "持续显示搜索栏",
+          "persistent_description": "滚动时保持搜索栏可见。"
+        }
+      }
     },
     "information": "关于",
     "changelog": "更新日志",
@@ -184,15 +204,18 @@
     "image_list": {
       "image_list": "图片列表",
       "standard": "标准",
-      "masonry": "紧凑"
+      "masonry": "紧凑",
+      "classic": "经典"
     },
     "image_grid": {
       "image_grid": "图像网格",
       "grid_size": {
         "grid_size": "网格大小",
-        "small": "小",
+        "small": "较小",
         "medium": "中",
-        "large": "大"
+        "large": "大",
+        "micro": "微小",
+        "tiny": "小"
       },
       "image_quality": {
         "image_quality": "图片质量",
@@ -235,7 +258,8 @@
       "dynamic_color": "动态主题颜色",
       "dynamic_color_mobile_description": "将主题颜色与壁纸同步",
       "dynamic_color_desktop_description": "将主题颜色与系统强调色同步",
-      "dynamic_color_unsupported_description": "该设备不支持动态颜色。"
+      "dynamic_color_unsupported_description": "该设备不支持动态颜色。",
+      "system": "跟随系统"
     },
     "privacy": {
       "privacy": "隐私",
@@ -294,7 +318,16 @@
       "accessibility": "无障碍",
       "reverseBooruConfigSelectorScrollDirection": "反轉 booru 配置的對齊方向",
       "swipeAreaToOpenSidebar": "侧边栏滑出宽度",
-      "swipeAreaToOpenSidebarDescription": "从左侧拉出侧边栏的触发区域。设置过大值会使其它水平手势（比如翻页）不可用。"
+      "swipeAreaToOpenSidebarDescription": "从左侧拉出侧边栏的触发区域。设置过大值会使其它水平手势（比如翻页）不可用。",
+      "haptic_feedback": {
+        "haptic_feedback": "触觉反馈",
+        "haptic_feedback_level": {
+          "none": "无",
+          "subtle": "轻微",
+          "standard": "标准",
+          "playful": "明显"
+        }
+      }
     },
     "booru_settings": {
       "edit_current_profile": "编辑当前资料",
