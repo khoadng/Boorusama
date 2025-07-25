@@ -25,6 +25,7 @@ final selectionOptionsProvider = Provider<SelectionOptions>((ref) {
 
   return SelectionOptions(
     behavior: SelectionBehavior.manual,
+    dragSelection: const DragSelectionOptions(),
     haptics: switch (level) {
       HapticFeedbackLevel.none => HapticFeedbackResolver.none,
       HapticFeedbackLevel.reduced => HapticFeedbackResolver.modeOnly,

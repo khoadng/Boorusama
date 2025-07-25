@@ -121,7 +121,7 @@ dependencies:
   selection_mode:
     git:
       url: https://github.com/khoadng/selection_mode.git
-      ref: 0174267ba6d910633b2a3eee14f20ca5ca91c294
+      ref: 14d636de979280b2cb141e63713f27eac16c1b54
   sliver_tools: ^0.2.12
   smooth_page_indicator: ^1.1.0
   socks5_proxy: ^2.0.0

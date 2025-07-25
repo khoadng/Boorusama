@@ -8,7 +8,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:foundation/foundation.dart';
 import 'package:i18n/i18n.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
-import 'package:selection_mode/selection_mode.dart';
 
 // Project imports:
 import '../../../../../../core/config_widgets/website_logo.dart';
@@ -18,7 +17,6 @@ import '../../../../../../core/posts/listing/providers.dart';
 import '../../../../../../core/posts/listing/widgets.dart';
 import '../../../../../../core/posts/post/post.dart';
 import '../../../../../../core/posts/sources/source.dart';
-import '../../../../../../core/settings/providers.dart';
 import '../../../../../../core/widgets/widgets.dart';
 import '../../../../users/user/providers.dart';
 import '../../../listing/widgets.dart';
@@ -176,13 +174,10 @@ class DanbooruUploadGrid extends ConsumerStatefulWidget {
 class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
   late final AutoScrollController _autoScrollController =
       AutoScrollController();
-  final SelectionModeController _selectionModeController =
-      SelectionModeController();
 
   @override
   void dispose() {
     _autoScrollController.dispose();
-    _selectionModeController.dispose();
 
     super.dispose();
   }
@@ -191,42 +186,34 @@ class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
   Widget build(BuildContext context) {
     final config = ref.watchConfigAuth;
 
-    return SelectionMode(
-      controller: _selectionModeController,
-      options: ref.watch(selectionOptionsProvider),
-      child: PostScope(
-        fetcher: (page) => TaskEither.Do(
-          ($) async {
-            final uploads = await ref
-                .read(danbooruUploadRepoProvider(config))
-                .getUploads(
-                  page: page,
-                  userId: widget.userId,
-                  isPosted: switch (widget.type) {
-                    UploadTabType.posted => true,
-                    UploadTabType.unposted => false,
-                  },
-                );
+    return PostScope(
+      fetcher: (page) => TaskEither.Do(
+        ($) async {
+          final uploads = await ref
+              .read(danbooruUploadRepoProvider(config))
+              .getUploads(
+                page: page,
+                userId: widget.userId,
+                isPosted: switch (widget.type) {
+                  UploadTabType.posted => true,
+                  UploadTabType.unposted => false,
+                },
+              );
 
-            return uploads
-                .map((e) => e.previewPost)
-                .nonNulls
-                .toList()
-                .toResult();
-          },
-        ),
-        builder: (context, controller) => LayoutBuilder(
-          builder: (context, constraints) => ref
-              .watch(danbooruUploadHideMapProvider)
-              .maybeWhen(
-                data: (data) => _buildGrid(
-                  controller,
-                  constraints,
-                  data,
-                ),
-                orElse: () => const SizedBox.shrink(),
+          return uploads.map((e) => e.previewPost).nonNulls.toList().toResult();
+        },
+      ),
+      builder: (context, controller) => LayoutBuilder(
+        builder: (context, constraints) => ref
+            .watch(danbooruUploadHideMapProvider)
+            .maybeWhen(
+              data: (data) => _buildGrid(
+                controller,
+                constraints,
+                data,
               ),
-        ),
+              orElse: () => const SizedBox.shrink(),
+            ),
       ),
     );
   }

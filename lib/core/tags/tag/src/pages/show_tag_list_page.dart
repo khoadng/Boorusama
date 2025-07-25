@@ -241,32 +241,34 @@ class _ShowTagListPageState extends ConsumerState<ShowTagListPageInternal> {
                     _buildSearchBar(),
                     const SizedBox(height: 4),
                     Expanded(
-                      child: ListView.builder(
-                        controller: _scrollController,
-                        itemBuilder: (context, index) {
-                          final tag = items[index];
-                          final child = _SelectableTagItem(
-                            index: index,
-                            tag: tag,
-                            auth: widget.auth,
-                            onAddToBlacklist: widget.onAddToBlacklist,
-                            onAddToGlobalBlacklist:
-                                widget.onAddToGlobalBlacklist,
-                            onAddToFavoriteTags: widget.onAddToFavoriteTags,
-                            onOpenWiki: widget.onOpenWiki,
-                          );
+                      child: SelectionCanvas(
+                        child: ListView.builder(
+                          controller: _scrollController,
+                          itemBuilder: (context, index) {
+                            final tag = items[index];
+                            final child = _SelectableTagItem(
+                              index: index,
+                              tag: tag,
+                              auth: widget.auth,
+                              onAddToBlacklist: widget.onAddToBlacklist,
+                              onAddToGlobalBlacklist:
+                                  widget.onAddToGlobalBlacklist,
+                              onAddToFavoriteTags: widget.onAddToFavoriteTags,
+                              onOpenWiki: widget.onOpenWiki,
+                            );
 
-                          return widget.contextMenuBuilder != null
-                              ? widget.contextMenuBuilder!(
-                                  child,
-                                  tag.rawName,
-                                )
-                              : GeneralTagContextMenu(
-                                  tag: tag.rawName,
-                                  child: child,
-                                );
-                        },
-                        itemCount: items.length,
+                            return widget.contextMenuBuilder != null
+                                ? widget.contextMenuBuilder!(
+                                    child,
+                                    tag.rawName,
+                                  )
+                                : GeneralTagContextMenu(
+                                    tag: tag.rawName,
+                                    child: child,
+                                  );
+                          },
+                          itemCount: items.length,
+                        ),
                       ),
                     ),
                   ],

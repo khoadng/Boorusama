@@ -109,7 +109,6 @@ class _DownloadManagerPageState extends ConsumerState<DownloadManagerPage> {
     return SelectionMode(
       controller: _selectionModeController,
       scrollController: scrollController,
-
       child: Scaffold(
         appBar: SelectionAppBarBuilder(
           builder: (context, controller, isSelectionMode) {
@@ -159,9 +158,8 @@ class _DownloadManagerPageState extends ConsumerState<DownloadManagerPage> {
                     ],
                   )
                 : AppBar(
-                    title: ListenableBuilder(
-                      listenable: controller,
-                      builder: (context, _) {
+                    title: Builder(
+                      builder: (context) {
                         final selectedItems = controller.selection;
 
                         return selectedItems.isEmpty
@@ -197,10 +195,9 @@ class _DownloadManagerPageState extends ConsumerState<DownloadManagerPage> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  ListenableBuilder(
-                    listenable: _selectionModeController,
-                    builder: (_, _) {
-                      final multiSelect = _selectionModeController.isActive;
+                  SelectionConsumer(
+                    builder: (_, controller, _) {
+                      final multiSelect = controller.isActive;
                       return AnimatedSwitcher(
                         duration: const Duration(milliseconds: 200),
                         transitionBuilder: (child, animation) => SizeTransition(
@@ -224,7 +221,9 @@ class _DownloadManagerPageState extends ConsumerState<DownloadManagerPage> {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 12),
                       child: tasks.isNotEmpty
-                          ? _buildList(tasks, config)
+                          ? SelectionCanvas(
+                              child: _buildList(tasks, config),
+                            )
                           : Column(
                               children: [
                                 Container(
@@ -247,14 +246,11 @@ class _DownloadManagerPageState extends ConsumerState<DownloadManagerPage> {
                   RetryAllFailedButton(filter: widget.filter),
                 ],
               ),
-              ListenableBuilder(
-                listenable: _selectionModeController,
-                builder: (context, _) {
-                  final selectedItems = _selectionModeController
-                      .selectedFrom(tasks)
-                      .toList();
+              SelectionConsumer(
+                builder: (context, controller, _) {
+                  final selectedItems = controller.selectedFrom(tasks).toList();
 
-                  if (!_selectionModeController.isActive) {
+                  if (!controller.isActive) {
                     return const SizedBox.shrink();
                   }
 

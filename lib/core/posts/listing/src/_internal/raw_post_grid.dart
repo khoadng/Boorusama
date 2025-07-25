@@ -526,36 +526,38 @@ class _SelectionMode extends StatelessWidget {
       controller: selectionModeController,
       options: selectionOptions,
       scrollController: autoScrollController,
-      child: ListenableBuilder(
-        listenable: selectionModeController,
-        builder: (context, _) {
-          final controller = selectionModeController;
-          final multiSelect = controller.isActive;
+      child: SelectionCanvas(
+        child: ListenableBuilder(
+          listenable: selectionModeController,
+          builder: (context, _) {
+            final controller = selectionModeController;
+            final multiSelect = controller.isActive;
 
-          return Stack(
-            children: [
-              Column(
-                children: [
-                  if (multiSelect && header != null)
-                    SizedBox(
-                      height: kToolbarHeight,
-                      child: header,
-                    ),
-                  Expanded(child: child),
-                ],
-              ),
-              if (footer case final Widget footer)
-                Positioned(
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  child: SelectionModeAnimatedFooter(
-                    child: footer,
-                  ),
+            return Stack(
+              children: [
+                Column(
+                  children: [
+                    if (multiSelect && header != null)
+                      SizedBox(
+                        height: kToolbarHeight,
+                        child: header,
+                      ),
+                    Expanded(child: child),
+                  ],
                 ),
-            ],
-          );
-        },
+                if (footer case final Widget footer)
+                  Positioned(
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    child: SelectionModeAnimatedFooter(
+                      child: footer,
+                    ),
+                  ),
+              ],
+            );
+          },
+        ),
       ),
     );
   }
