@@ -65,6 +65,7 @@ class SimplePostActionToolbar extends ConsumerWidget {
         GeneralMoreActionButton(
           post: post,
           config: config,
+          configViewer: ref.watchConfigViewer,
         ),
       ],
     );

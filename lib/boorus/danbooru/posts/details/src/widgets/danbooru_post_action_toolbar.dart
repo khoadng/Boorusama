@@ -79,6 +79,7 @@ class DanbooruPostActionToolbar extends ConsumerWidget {
           DanbooruMoreActionButton(
             post: post,
             config: config,
+            configViewer: ref.watchConfigViewer,
           ),
         ],
       ),
