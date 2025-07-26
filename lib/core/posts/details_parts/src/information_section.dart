@@ -15,6 +15,7 @@ import '../../../configs/ref.dart';
 import '../../../router.dart';
 import '../../../tags/categories/tag_category.dart';
 import '../../../tags/tag/widgets.dart';
+import '../../../theme/app_theme.dart';
 import '../../../theme/providers.dart';
 import '../../../widgets/widgets.dart';
 import '../../details/details.dart';
@@ -71,96 +72,160 @@ class InformationSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final compact = constraints.maxWidth > 600;
+
+        return Padding(
+          padding:
+              padding ??
+              const EdgeInsets.only(
+                top: 4,
+                bottom: 4,
+                left: 12,
+                right: 12,
+              ),
+          child: compact
+              ? _buildCompactLayout(context, ref)
+              : _buildVerticalLayout(context, ref),
+        );
+      },
+    );
+  }
+
+  Widget _buildVerticalLayout(BuildContext context, WidgetRef ref) {
     final createdAt = this.createdAt;
 
-    return Padding(
-      padding:
-          padding ??
-          const EdgeInsets.only(
-            top: 4,
-            bottom: 4,
-            left: 12,
-            right: 12,
-          ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Flexible(
-            flex: 5,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (characterTags.isNotEmpty) ...[
-                  Text(
-                    generateCharacterOnlyReadableName(
-                      characterTags,
-                    ).replaceAll('_', ' ').titleCase,
-                    overflow: TextOverflow.fade,
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w800,
-                    ),
-                    maxLines: 1,
-                    softWrap: false,
-                  ),
-                  const SizedBox(height: 4),
-                ],
-                if (copyrightTags.isNotEmpty)
-                  Text(
-                    generateCopyrightOnlyReadableName(
-                      copyrightTags,
-                    ).replaceAll('_', ' ').titleCase,
-                    overflow: TextOverflow.fade,
-                    style: Theme.of(context).textTheme.bodyLarge,
-                    maxLines: 1,
-                    softWrap: false,
-                  ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Flexible(
+          flex: 5,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (characterTags.isNotEmpty) ...[
+                _buildCharacters(context),
                 const SizedBox(height: 4),
-                Row(
-                  children: [
-                    if (artistTags.isNotEmpty) ...[
-                      ArtistNameInfoChip(
-                        artistTags: artistTags,
-                        onTap: (artist) =>
-                            onArtistTagTap?.call(context, artist),
-                      ),
-                      const SizedBox(width: 4),
-                    ],
-                    if (createdAt != null)
-                      DateTooltip(
-                        date: createdAt,
-                        child: TimePulse(
-                          initial: createdAt,
-                          updateInterval: const Duration(minutes: 1),
-                          builder: (context, _) => Text(
-                            createdAt.fuzzify(
-                              locale: Localizations.localeOf(context),
-                            ),
-                            style: Theme.of(context).textTheme.bodySmall
-                                ?.copyWith(
-                                  color: Theme.of(
-                                    context,
-                                  ).listTileTheme.subtitleTextStyle?.color,
-                                ),
-                          ),
-                        ),
-                      ),
-                  ],
-                ),
               ],
-            ),
-          ),
-          if (source != null && showSource)
-            source!.whenWeb(
-              (source) => GestureDetector(
-                onTap: () => launchExternalUrl(source.uri),
-                child: ConfigAwareWebsiteLogo(
-                  url: source.faviconUrl,
-                ),
+              if (copyrightTags.isNotEmpty) _buildCopyright(context),
+              const SizedBox(height: 4),
+              Row(
+                children: [
+                  if (artistTags.isNotEmpty) ...[
+                    ArtistNameInfoChip(
+                      artistTags: artistTags,
+                      onTap: (artist) => onArtistTagTap?.call(context, artist),
+                    ),
+                    const SizedBox(width: 4),
+                  ],
+                  if (createdAt != null) _buildDate(createdAt),
+                ],
               ),
-              () => const SizedBox.shrink(),
-            ),
+            ],
+          ),
+        ),
+        if (source != null && showSource)
+          if (source case final WebSource source) ...[
+            _buildSource(source),
+          ],
+      ],
+    );
+  }
+
+  Text _buildCopyright(BuildContext context) {
+    return Text(
+      generateCopyrightOnlyReadableName(
+        copyrightTags,
+      ).replaceAll('_', ' ').titleCase,
+      overflow: TextOverflow.fade,
+      style: Theme.of(context).textTheme.bodyLarge,
+      maxLines: 1,
+      softWrap: false,
+    );
+  }
+
+  Widget _buildCharacters(BuildContext context) {
+    return Text(
+      generateCharacterOnlyReadableName(
+        characterTags,
+      ).replaceAll('_', ' ').titleCase,
+      overflow: TextOverflow.fade,
+      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+        fontSize: 20,
+        fontWeight: FontWeight.w800,
+      ),
+      maxLines: 1,
+      softWrap: false,
+    );
+  }
+
+  Widget _buildDate(DateTime createdAt) {
+    return DateTooltip(
+      date: createdAt,
+      child: TimePulse(
+        initial: createdAt,
+        updateInterval: const Duration(minutes: 1),
+        builder: (context, _) => Text(
+          createdAt.fuzzify(
+            locale: Localizations.localeOf(context),
+          ),
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            color: Theme.of(
+              context,
+            ).listTileTheme.subtitleTextStyle?.color,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCompactLayout(BuildContext context, WidgetRef ref) {
+    final createdAt = this.createdAt;
+
+    return Row(
+      children: [
+        if (artistTags.isNotEmpty) ...[
+          ArtistNameInfoChip(
+            artistTags: artistTags,
+            onTap: (artist) => onArtistTagTap?.call(context, artist),
+          ),
         ],
+
+        if (characterTags.isNotEmpty) ...[
+          const _DotSeparator(),
+          Flexible(
+            child: _buildCharacters(context),
+          ),
+        ],
+
+        if (copyrightTags.isNotEmpty) ...[
+          const _DotSeparator(),
+          Flexible(
+            child: _buildCopyright(context),
+          ),
+        ],
+
+        if (createdAt != null) ...[
+          const _DotSeparator(),
+          _buildDate(createdAt),
+        ],
+
+        if (source != null && showSource)
+          if (source case final WebSource source) ...[
+            const _DotSeparator(),
+            _buildSource(source),
+          ],
+      ],
+    );
+  }
+
+  Widget _buildSource(WebSource source) {
+    return GestureDetector(
+      onTap: () => launchExternalUrl(source.uri),
+      child: ConfigAwareWebsiteLogo(
+        url: source.faviconUrl,
+        size: 20,
       ),
     );
   }
@@ -205,6 +270,27 @@ String chooseArtistTag(Set<String> artistTags) {
   );
 
   return artist ?? 'Unknown artist';
+}
+
+class _DotSeparator extends StatelessWidget {
+  const _DotSeparator();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      child: Text(
+        '•',
+        style: TextStyle(
+          color: colorScheme.hintColor,
+          fontSize: 16,
+        ),
+      ),
+    );
+  }
 }
 
 class ArtistNameInfoChip extends ConsumerWidget {
