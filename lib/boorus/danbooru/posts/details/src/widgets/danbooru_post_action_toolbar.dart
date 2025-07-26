@@ -76,7 +76,7 @@ class DanbooruPostActionToolbar extends ConsumerWidget with CopyImageMixin {
     final postLinkGenerator = ref.watch(postLinkGeneratorProvider(config));
 
     return SliverToBoxAdapter(
-      child: OverflowButtonRow(
+      child: AdaptiveButtonRow.menu(
         buttonWidth: 52,
         buttons: [
           if (config.hasLoginDetails())
