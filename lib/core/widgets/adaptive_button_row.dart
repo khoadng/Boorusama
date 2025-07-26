@@ -292,12 +292,12 @@ class _AdaptiveButtonRowState extends State<AdaptiveButtonRow> {
   ) {
     return MenuAnchor(
       consumeOutsideTap: true,
-      alignmentOffset: const Offset(0, 20),
+      alignmentOffset: const Offset(0, 12),
       style: MenuStyle(
         padding: WidgetStateProperty.all(
           const EdgeInsets.symmetric(
             horizontal: 8,
-            vertical: 16,
+            vertical: 8,
           ),
         ),
       ),

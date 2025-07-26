@@ -76,7 +76,7 @@ class DanbooruPostActionToolbar extends ConsumerWidget with CopyImageMixin {
         onStartSlideshow: onStartSlideshow,
         builder: (context, buttons) {
           return AdaptiveButtonRow.menu(
-            buttonWidth: 52,
+            buttonWidth: 48,
             buttons: [
               if (config.hasLoginDetails())
                 ButtonData(
@@ -115,18 +115,18 @@ class DanbooruPostActionToolbar extends ConsumerWidget with CopyImageMixin {
                 title: context.t.post.action.bookmark,
               ),
               ButtonData(
-                widget: CommentPostButton(
-                  onPressed: () => goToCommentPage(context, ref, post.id),
-                ),
-                title: context.t.comment.comments,
-              ),
-              ButtonData(
                 widget: DownloadPostButton(post: post),
                 title: context.t.download.download,
               ),
               ButtonData(
                 widget: SharePostButton(post: post),
                 title: context.t.post.action.share,
+              ),
+              ButtonData(
+                widget: CommentPostButton(
+                  onPressed: () => goToCommentPage(context, ref, post.id),
+                ),
+                title: context.t.comment.comments,
               ),
               if (config.hasLoginDetails())
                 SimpleButtonData(
