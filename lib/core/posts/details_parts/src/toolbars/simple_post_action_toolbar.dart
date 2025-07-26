@@ -29,6 +29,8 @@ import 'download_post_button.dart';
 class SimplePostActionToolbar extends ConsumerWidget with CopyImageMixin {
   const SimplePostActionToolbar({
     required this.post,
+    required this.config,
+    required this.configViewer,
     super.key,
     this.isFaved,
     this.isAuthorized,
@@ -49,10 +51,9 @@ class SimplePostActionToolbar extends ConsumerWidget with CopyImageMixin {
   final void Function()? onStartSlideshow;
 
   @override
-  BooruConfigAuth get config => throw UnimplementedError();
-
+  final BooruConfigAuth config;
   @override
-  BooruConfigViewer get configViewer => throw UnimplementedError();
+  final BooruConfigViewer configViewer;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -178,6 +179,8 @@ class DefaultPostActionToolbar extends ConsumerWidget {
 
     return SimplePostActionToolbar(
       post: post,
+      config: config,
+      configViewer: ref.watchConfigViewer,
       isFaved: isFaved,
       isAuthorized: config.hasLoginDetails(),
       addFavorite: canFavorite ? () => notifier.add(post.id) : null,

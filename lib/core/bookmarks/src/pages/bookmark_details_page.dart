@@ -3,21 +3,29 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import '../../../../foundation/url_launcher.dart';
 import '../../../boorus/engine/engine.dart';
+import '../../../configs/config/types.dart';
 import '../../../configs/ref.dart';
 import '../../../downloads/downloader/providers.dart';
+import '../../../images/copy.dart';
 import '../../../posts/details/details.dart';
 import '../../../posts/details/widgets.dart';
 import '../../../posts/details_manager/types.dart';
 import '../../../posts/details_parts/widgets.dart';
 import '../../../posts/listing/providers.dart';
 import '../../../posts/post/post.dart';
+import '../../../posts/post/providers.dart';
+import '../../../posts/post/routes.dart';
 import '../../../posts/shares/widgets.dart';
 import '../../../posts/sources/source.dart';
-import '../../../widgets/widgets.dart';
+import '../../../settings/routes.dart';
+import '../../../tags/tag/routes.dart';
+import '../../../widgets/adaptive_button_row.dart';
 import '../data/bookmark_convert.dart';
 import '../providers/bookmark_provider.dart';
 import '../widgets/bookmark_tag_tiles.dart';
@@ -54,10 +62,10 @@ class BookmarkDetailsPage extends ConsumerWidget {
 
 final bookmarkUiBuilder = PostDetailsUIBuilder(
   preview: {
-    DetailsPart.toolbar: (context) => const BookmarkPostActionToolbar(),
+    DetailsPart.toolbar: (context) => const _BookmarkPostActionToolbar(),
   },
   full: {
-    DetailsPart.toolbar: (context) => const BookmarkPostActionToolbar(),
+    DetailsPart.toolbar: (context) => const _BookmarkPostActionToolbar(),
     DetailsPart.source: (context) => const BookmarkSourceSection(),
     DetailsPart.tags: (context) => const BookmarkTagTiles(),
     DetailsPart.fileDetails: (context) =>
@@ -82,11 +90,8 @@ class _BookmarkDetailsPageState
     final data = PostDetails.of<BookmarkPost>(context);
     final posts = data.posts;
     final controller = data.controller;
-    final pageViewController = data.pageViewController;
     final imageCacheManager = ref.watch(bookmarkImageCacheManagerProvider);
     final auth = ref.watchConfigAuth;
-    final viewer = ref.watchConfigViewer;
-    final post = InheritedPost.of<BookmarkPost>(context);
 
     return PostDetailsPageScaffold(
       pageViewController: data.pageViewController,
@@ -102,25 +107,6 @@ class _BookmarkDetailsPageState
       uiBuilder: bookmarkUiBuilder,
       preferredParts: bookmarkUiBuilder.full.keys.toSet(),
       preferredPreviewParts: bookmarkUiBuilder.preview.keys.toSet(),
-      topRightButtons: [
-        GeneralMoreActionButton(
-          post: post,
-          config: auth,
-          configViewer: viewer,
-          onStartSlideshow: () => pageViewController.startSlideshow(),
-          onDownload: (_) {
-            ref.bookmarks.downloadBookmarks(
-              ref.readConfig,
-              [
-                post.toBookmark(
-                  imageUrlResolver: (booruId) =>
-                      ref.read(bookmarkUrlResolverProvider(booruId)),
-                ),
-              ],
-            );
-          },
-        ),
-      ],
     );
   }
 }
@@ -152,38 +138,109 @@ class BookmarkSourceSection extends ConsumerWidget {
   }
 }
 
-class BookmarkPostActionToolbar extends ConsumerWidget {
+class _BookmarkPostActionToolbar extends ConsumerWidget {
+  const _BookmarkPostActionToolbar();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfigAuth;
+    final configViewer = ref.watchConfigViewer;
+
+    return BookmarkPostActionToolbar(
+      config: config,
+      configViewer: configViewer,
+    );
+  }
+}
+
+class BookmarkPostActionToolbar extends ConsumerWidget with CopyImageMixin {
   const BookmarkPostActionToolbar({
+    required this.config,
+    required this.configViewer,
     super.key,
   });
 
   @override
+  final BooruConfigAuth config;
+  @override
+  final BooruConfigViewer configViewer;
+
+  @override
   Widget build(BuildContext context, WidgetRef ref) {
     final post = InheritedPost.of<BookmarkPost>(context);
+    final controller = PostDetails.of<BookmarkPost>(context).pageViewController;
+    final postLinkGenerator = ref.watch(postLinkGeneratorProvider(config));
 
     return SliverToBoxAdapter(
-      child: PostActionToolbar(
-        children: [
-          BookmarkPostButton(post: post),
-          IconButton(
-            splashRadius: 16,
-            onPressed: () {
-              showDownloadStartToast(context);
-              ref.bookmarks.downloadBookmarks(
-                ref.watchConfig,
-                [
-                  post.toBookmark(
-                    imageUrlResolver: (booruId) =>
-                        ref.read(bookmarkUrlResolverProvider(booruId)),
-                  ),
-                ],
-              );
-            },
-            icon: const Icon(
-              Symbols.download,
-            ),
+      child: AdaptiveButtonRow.menu(
+        buttonWidth: 52,
+        buttons: [
+          ButtonData(
+            behavior: ButtonBehavior.alwaysVisible,
+            widget: BookmarkPostButton(post: post),
+            title: context.t.post.action.bookmark,
           ),
-          SharePostButton(post: post),
+          ButtonData(
+            behavior: ButtonBehavior.alwaysVisible,
+            widget: IconButton(
+              splashRadius: 16,
+              onPressed: () {
+                showDownloadStartToast(context);
+                ref.bookmarks.downloadBookmarks(
+                  ref.watchConfig,
+                  [
+                    post.toBookmark(
+                      imageUrlResolver: (booruId) =>
+                          ref.read(bookmarkUrlResolverProvider(booruId)),
+                    ),
+                  ],
+                );
+              },
+              icon: const Icon(
+                Symbols.download,
+              ),
+            ),
+            title: context.t.download.download,
+          ),
+          ButtonData(
+            behavior: ButtonBehavior.alwaysVisible,
+            widget: SharePostButton(post: post),
+            title: context.t.post.action.share,
+          ),
+          SimpleButtonData(
+            icon: Icons.copy,
+            title: 'Copy image',
+            onPressed: () => copyImage(ref, post),
+          ),
+          if (post.tags.isNotEmpty)
+            SimpleButtonData(
+              icon: Icons.label,
+              title: 'View tags',
+              onPressed: () => goToShowTaglistPage(ref, post),
+            ),
+          if (!config.hasStrictSFW)
+            SimpleButtonData(
+              icon: Icons.open_in_browser,
+              title: context.t.post.detail.view_in_browser,
+              onPressed: () =>
+                  launchExternalUrlString(postLinkGenerator.getLink(post)),
+            ),
+          if (post.hasFullView)
+            SimpleButtonData(
+              icon: Icons.fullscreen,
+              title: context.t.post.image_fullview.view_original,
+              onPressed: () => goToOriginalImagePage(ref, post),
+            ),
+          SimpleButtonData(
+            icon: Icons.slideshow,
+            title: 'Slideshow',
+            onPressed: () => controller.startSlideshow(),
+          ),
+          SimpleButtonData(
+            icon: Icons.settings,
+            title: context.t.settings.settings,
+            onPressed: () => openImageViewerSettingsPage(ref),
+          ),
         ],
       ),
     );
