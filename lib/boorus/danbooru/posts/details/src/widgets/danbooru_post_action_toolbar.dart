@@ -22,7 +22,7 @@ import '../../../../../../core/posts/votes/widgets.dart';
 import '../../../../../../core/router.dart';
 import '../../../../../../core/settings/routes.dart';
 import '../../../../../../core/tags/tag/routes.dart';
-import '../../../../../../core/widgets/overflow_button_row.dart';
+import '../../../../../../core/widgets/adaptive_button_row.dart';
 import '../../../../../../foundation/url_launcher.dart';
 import '../../../../versions/routes.dart';
 import '../../../favgroups/favgroups/routes.dart';
