@@ -26,7 +26,7 @@ class GelbooruV2ArtistPage extends ConsumerWidget {
     return ArtistPageScaffold(
       artistName: artistName,
       fetcher: (page, selectedCategory) => ref
-          .read(gelbooruV2ArtistCharacterPostRepoProvider(config))
+          .read(gelbooruV2PostRepoProvider(config))
           .getPosts(
             queryFromTagFilterCategory(
               category: selectedCategory,

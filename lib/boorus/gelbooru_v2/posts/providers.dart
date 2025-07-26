@@ -8,7 +8,6 @@ import '../../../core/configs/config.dart';
 import '../../../core/posts/post/post.dart';
 import '../../../core/posts/post/providers.dart';
 import '../../../core/settings/providers.dart';
-import '../../../foundation/caching/lru_cacher.dart';
 import '../../../foundation/riverpod/riverpod.dart';
 import '../client_provider.dart';
 import '../gelbooru_v2.dart';
@@ -72,16 +71,6 @@ final gelbooruV2PostProvider =
 
       return result.getOrElse((_) => null);
     });
-
-final gelbooruV2ArtistCharacterPostRepoProvider =
-    Provider.family<PostRepository, BooruConfigSearch>(
-      (ref, config) {
-        return PostRepositoryCacher(
-          repository: ref.watch(gelbooruV2PostRepoProvider(config)),
-          cache: LruCacher<String, List<Post>>(capacity: 100),
-        );
-      },
-    );
 
 final gelbooruV2ChildPostsProvider = FutureProvider.autoDispose
     .family<

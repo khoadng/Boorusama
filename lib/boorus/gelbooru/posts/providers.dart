@@ -7,7 +7,6 @@ import '../../../core/configs/config.dart';
 import '../../../core/posts/post/post.dart';
 import '../../../core/posts/post/providers.dart';
 import '../../../core/settings/providers.dart';
-import '../../../foundation/caching/lru_cacher.dart';
 import '../client_provider.dart';
 import '../tags/providers.dart';
 import 'parser.dart';
@@ -41,16 +40,6 @@ final gelbooruPostRepoProvider =
             return client.getPostResults(newTags, page, limit: limit);
           },
           getSettings: () async => ref.read(imageListingSettingsProvider),
-        );
-      },
-    );
-
-final gelbooruArtistCharacterPostRepoProvider =
-    Provider.family<PostRepository, BooruConfigSearch>(
-      (ref, config) {
-        return PostRepositoryCacher(
-          repository: ref.watch(gelbooruPostRepoProvider(config)),
-          cache: LruCacher<String, List<Post>>(capacity: 100),
         );
       },
     );
