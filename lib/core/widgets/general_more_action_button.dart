@@ -17,6 +17,7 @@ import '../settings/routes.dart';
 import '../tags/tag/routes.dart';
 import 'booru_popup_menu_button.dart';
 
+@Deprecated('Use AdaptiveButtonRow.menu instead')
 class GeneralMoreActionButton extends ConsumerWidget with CopyImageMixin {
   const GeneralMoreActionButton({
     required this.post,
