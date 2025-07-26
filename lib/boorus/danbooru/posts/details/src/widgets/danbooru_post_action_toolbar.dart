@@ -8,7 +8,6 @@ import 'package:i18n/i18n.dart';
 // Project imports:
 import '../../../../../../core/configs/config.dart';
 import '../../../../../../core/configs/ref.dart';
-import '../../../../../../core/downloads/downloader/providers.dart';
 import '../../../../../../core/images/copy.dart';
 import '../../../../../../core/posts/details/details.dart';
 import '../../../../../../core/posts/details_parts/widgets.dart';
@@ -79,145 +78,108 @@ class DanbooruPostActionToolbar extends ConsumerWidget with CopyImageMixin {
     return SliverToBoxAdapter(
       child: OverflowButtonRow(
         buttonWidth: 52,
-        onOverflow: (index) {
-          // Handle overflow button actions
-          final allActions = [
-            if (config.hasLoginDetails()) 'favorite',
-            if (config.hasLoginDetails()) 'upvote',
-            if (config.hasLoginDetails()) 'downvote',
-            'bookmark',
-            'comment',
-            'download',
-            'share',
-            'copy_image',
-            if (config.hasLoginDetails()) 'add_to_favgroup',
-            if (post.tags.isNotEmpty) 'show_tag_list',
-            'tag_history',
-            if (!config.hasStrictSFW) 'view_in_browser',
-            if (post.hasFullView) 'view_original',
-            if (onStartSlideshow != null) 'start_slideshow',
-            'settings',
-          ];
+        buttons: [
+          if (config.hasLoginDetails())
+            ButtonData(
+              behavior: ButtonBehavior.alwaysVisible,
+              widget: FavoritePostButton(
+                isFaved: isFaved,
+                isAuthorized: config.hasLoginDetails(),
+                addFavorite: () => notifier.add(post.id),
+                removeFavorite: () => notifier.remove(post.id),
+              ),
+              title: context.t.post.action.favorite,
+            ),
+          if (config.hasLoginDetails())
+            ButtonData(
+              behavior: ButtonBehavior.alwaysVisible,
 
-          if (index < allActions.length) {
-            _handleAction(
-              allActions[index],
-              context,
-              ref,
-              config,
-              configViewer,
-              postLinkGenerator,
-            );
-          }
-        },
-        children: [
-          if (config.hasLoginDetails())
-            FavoritePostButton(
-              isFaved: isFaved,
-              isAuthorized: config.hasLoginDetails(),
-              addFavorite: () => notifier.add(post.id),
-              removeFavorite: () => notifier.remove(post.id),
+              widget: UpvotePostButton(
+                voteState: voteState,
+                onUpvote: () => ref.danbooruUpvote(post.id),
+                onRemoveUpvote: () => ref.danbooruRemoveVote(post.id),
+              ),
+              title: 'Upvote',
             ),
           if (config.hasLoginDetails())
-            UpvotePostButton(
-              voteState: voteState,
-              onUpvote: () => ref.danbooruUpvote(post.id),
-              onRemoveUpvote: () => ref.danbooruRemoveVote(post.id),
+            ButtonData(
+              behavior: ButtonBehavior.alwaysVisible,
+
+              widget: DownvotePostButton(
+                voteState: voteState,
+                onDownvote: () => ref.danbooruDownvote(post.id),
+                onRemoveDownvote: () => ref.danbooruRemoveVote(post.id),
+              ),
+              title: 'Downvote',
             ),
-          if (config.hasLoginDetails())
-            DownvotePostButton(
-              voteState: voteState,
-              onDownvote: () => ref.danbooruDownvote(post.id),
-              onRemoveDownvote: () => ref.danbooruRemoveVote(post.id),
-            ),
-          BookmarkPostButton(post: post),
-          CommentPostButton(
-            onPressed: () => goToCommentPage(context, ref, post.id),
+          ButtonData(
+            behavior: ButtonBehavior.alwaysVisible,
+            widget: BookmarkPostButton(post: post),
+            title: context.t.post.action.bookmark,
           ),
-          DownloadPostButton(post: post),
-          SharePostButton(post: post),
-          IconButton(
-            icon: const Icon(Icons.copy),
+          ButtonData(
+            widget: CommentPostButton(
+              onPressed: () => goToCommentPage(context, ref, post.id),
+            ),
+            title: context.t.comment.comments,
+          ),
+          ButtonData(
+            widget: DownloadPostButton(post: post),
+            title: context.t.download.download,
+          ),
+          ButtonData(
+            widget: SharePostButton(post: post),
+            title: context.t.post.action.share,
+          ),
+          SimpleButtonData(
+            icon: Icons.copy,
+            title: 'Copy image',
             onPressed: () => copyImage(ref, post),
-            tooltip: 'Copy image',
           ),
           if (config.hasLoginDetails())
-            IconButton(
-              icon: const Icon(Icons.folder_special),
+            SimpleButtonData(
+              icon: Icons.folder_special,
+              title: context.t.post.action.add_to_favorite_group,
               onPressed: () =>
                   goToAddToFavoriteGroupSelectionPage(context, [post]),
-              tooltip: context.t.post.action.add_to_favorite_group,
             ),
           if (post.tags.isNotEmpty)
-            IconButton(
-              icon: const Icon(Icons.label),
+            SimpleButtonData(
+              icon: Icons.label,
+              title: 'View tags',
               onPressed: () => goToShowTaglistPage(ref, post),
-              tooltip: 'View tags',
             ),
-          IconButton(
-            icon: const Icon(Icons.history),
+          SimpleButtonData(
+            icon: Icons.history,
+            title: 'View tag history',
             onPressed: () => goToPostVersionPage(ref, post),
-            tooltip: 'View tag history',
           ),
           if (!config.hasStrictSFW)
-            IconButton(
-              icon: const Icon(Icons.open_in_browser),
+            SimpleButtonData(
+              icon: Icons.open_in_browser,
+              title: context.t.post.detail.view_in_browser,
               onPressed: () =>
                   launchExternalUrlString(postLinkGenerator.getLink(post)),
-              tooltip: context.t.post.detail.view_in_browser,
             ),
           if (post.hasFullView)
-            IconButton(
-              icon: const Icon(Icons.fullscreen),
+            SimpleButtonData(
+              icon: Icons.fullscreen,
+              title: context.t.post.image_fullview.view_original,
               onPressed: () => goToOriginalImagePage(ref, post),
-              tooltip: context.t.post.image_fullview.view_original,
             ),
           if (onStartSlideshow != null)
-            IconButton(
-              icon: const Icon(Icons.slideshow),
-              onPressed: onStartSlideshow,
-              tooltip: 'Slideshow',
+            SimpleButtonData(
+              icon: Icons.slideshow,
+              title: 'Slideshow',
+              onPressed: onStartSlideshow!,
             ),
-          IconButton(
-            icon: const Icon(Icons.settings),
+          SimpleButtonData(
+            icon: Icons.settings,
+            title: context.t.settings.settings,
             onPressed: () => openImageViewerSettingsPage(ref),
-            tooltip: context.t.settings.settings,
           ),
         ],
       ),
     );
-  }
-
-  void _handleAction(
-    String action,
-    BuildContext context,
-    WidgetRef ref,
-    BooruConfigAuth config,
-    BooruConfigViewer configViewer,
-    PostLinkGenerator postLinkGenerator,
-  ) {
-    switch (action) {
-      case 'download':
-        ref.download(post);
-      case 'copy_image':
-        copyImage(ref, post);
-      case 'add_to_favgroup':
-        goToAddToFavoriteGroupSelectionPage(context, [post]);
-      case 'show_tag_list':
-        goToShowTaglistPage(ref, post);
-      case 'view_in_browser':
-        launchExternalUrlString(postLinkGenerator.getLink(post));
-      case 'view_original':
-        goToOriginalImagePage(ref, post);
-      case 'start_slideshow':
-        if (onStartSlideshow != null) {
-          onStartSlideshow!();
-        }
-      case 'tag_history':
-        goToPostVersionPage(ref, post);
-      case 'settings':
-        openImageViewerSettingsPage(ref);
-      default:
-    }
   }
 }

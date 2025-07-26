@@ -70,6 +70,9 @@
     },
     "action": {
       "preview": "Preview",
+      "share": "Share",
+      "bookmark": "Bookmark",
+      "favorite": "Favorite",
       "view_comments": "View comments",
       "add_to_favorite_group": "Add to favorite group"
     },
