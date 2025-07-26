@@ -1,6 +1,3 @@
-// Dart imports:
-import 'dart:isolate';
-
 // Package imports:
 import 'package:dio/dio.dart';
 
@@ -24,11 +21,9 @@ mixin DanbooruClientPosts {
       },
     );
 
-    return Isolate.run(
-      () => (response.data as List)
-          .map((item) => PostDto.fromJson(item))
-          .toList(),
-    );
+    return (response.data as List)
+        .map((item) => PostDto.fromJson(item))
+        .toList();
   }
 
   Future<PostDto?> getPost(int id) async {
@@ -88,7 +83,7 @@ mixin DanbooruClientPosts {
       },
     );
 
-    return Isolate.run(() => PostVoteDto.fromJson(response.data));
+    return PostVoteDto.fromJson(response.data);
   }
 
   Future<PostVoteDto> upvotePost(int postId) => votePost(
@@ -151,11 +146,9 @@ mixin DanbooruClientPosts {
       },
     );
 
-    return Isolate.run(
-      () => (response.data as List)
-          .map((item) => PostVoteDto.fromJson(item))
-          .toList(),
-    );
+    return (response.data as List)
+        .map((item) => PostVoteDto.fromJson(item))
+        .toList();
   }
 
   Future<PostDto> putTags({

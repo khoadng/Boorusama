@@ -1,6 +1,3 @@
-// Dart imports:
-import 'dart:isolate';
-
 // Package imports:
 import 'package:dio/dio.dart';
 
@@ -44,11 +41,9 @@ mixin DanbooruClientComments {
       cancelToken: cancelToken,
     );
 
-    return Isolate.run(
-      () => (response.data as List)
-          .map((item) => CommentDto.fromJson(item))
-          .toList(),
-    );
+    return (response.data as List)
+        .map((item) => CommentDto.fromJson(item))
+        .toList();
   }
 
   Future<CommentDto> postComment({
