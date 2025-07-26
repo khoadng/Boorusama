@@ -57,6 +57,7 @@ class PostGridController<T extends Post> extends ChangeNotifier {
   final Set<String> Function()? blacklistedUrlsFetcher;
 
   Set<String>? blacklistedTags;
+  List<List<TagExpression>>? _cachedParsedTags;
   final Future<Set<String>> Function() blacklistedTagsFetcher;
 
   // Terrible hack to check if the widget is mounted, should have a better way to do this
@@ -133,7 +134,11 @@ class PostGridController<T extends Post> extends ChangeNotifier {
     final newTags = tags.toSet();
     blacklistedTags = newTags;
 
-    tagCounts.value = await _count(_items, newTags);
+    _cachedParsedTags = newTags
+        .map((tag) => tag.split(' ').map(TagExpression.parse).toList())
+        .toList();
+
+    tagCounts.value = await _count(_items, _cachedParsedTags!);
 
     if (!mountedChecker()) return;
 
@@ -185,22 +190,22 @@ class PostGridController<T extends Post> extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<Set<String>> _getBlacklistedTags() async {
+  Future<List<List<TagExpression>>> _getBlacklistedTags() async {
     // lazy load blacklisted tags
     if (blacklistedTags == null) {
       final tags = await blacklistedTagsFetcher();
-
       blacklistedTags = tags;
 
-      return tags;
-    } else {
-      return blacklistedTags!;
+      _cachedParsedTags = tags
+          .map((tag) => tag.split(' ').map(TagExpression.parse).toList())
+          .toList();
     }
+
+    return _cachedParsedTags!;
   }
 
   Future<void> _filter() async {
-    // filter using tagCounts and activeFilters
-    final filteredItems = await __filter(
+    final filteredItems = _filterPosts(
       _items,
       tagCounts.value,
       activeFilters.value,
@@ -433,7 +438,7 @@ class PostGridController<T extends Post> extends ChangeNotifier {
   }
 }
 
-List<T> _filterInIsolate<T extends Post>(
+List<T> _filterPosts<T extends Post>(
   List<T> items,
   Map<String, Set<int>> tagCounts,
   Map<String, bool> activeFilters,
@@ -453,51 +458,36 @@ List<T> _filterInIsolate<T extends Post>(
   }).toList();
 }
 
+typedef PostCountData = ({TagFilterData filterData, int id});
+
 Future<Map<String, Set<int>>> _count<T extends Post>(
   Iterable<T> posts,
-  Iterable<String> tags,
+  List<List<TagExpression>> parsedTags,
 ) async {
   // If there are no tags, return an empty map to prevent isolate overhead
-  if (tags.isEmpty) return {};
+  if (parsedTags.isEmpty) return {};
+
+  final payload = posts
+      .map((post) => (filterData: post.extractTagFilterData(), id: post.id))
+      .toList();
 
   return Isolate.run(
-    () => _countInIsolate(posts, tags),
+    () => _countInIsolate(payload, parsedTags),
   );
 }
 
-Future<List<T>> __filter<T extends Post>(
-  List<T> items,
-  Map<String, Set<int>> tagCounts,
-  Map<String, bool> activeFilters,
-  Set<String> blacklistedUrls,
-) async {
-  // If there are no tags, active filters, or blacklisted urls, return the items as is to prevent isolate overhead
-  if (tagCounts.isEmpty && blacklistedUrls.isEmpty) {
-    return items.toList();
-  }
-
-  return Isolate.run(
-    () => _filterInIsolate(items, tagCounts, activeFilters, blacklistedUrls),
-  );
-}
-
-Map<String, Set<int>> _countInIsolate<T extends Post>(
-  Iterable<T> posts,
-  Iterable<String> tags,
+Map<String, Set<int>> _countInIsolate(
+  List<PostCountData> postData,
+  List<List<TagExpression>> parsedTags,
 ) {
   final tagCounts = <String, Set<int>>{};
   try {
-    final preprocessed = tags.map(
-      (tag) => tag.split(' ').map(TagExpression.parse).toList(),
-    );
-
-    for (final item in posts) {
-      final filterData = item.extractTagFilterData();
-      for (final pattern in preprocessed) {
-        if (checkIfTagsContainsTagExpression(filterData, pattern)) {
+    for (final data in postData) {
+      for (final pattern in parsedTags) {
+        if (checkIfTagsContainsTagExpression(data.filterData, pattern)) {
           final key = pattern.rawString;
           tagCounts.putIfAbsent(key, () => <int>{});
-          tagCounts[key]!.add(item.id);
+          tagCounts[key]!.add(data.id);
         }
       }
     }
