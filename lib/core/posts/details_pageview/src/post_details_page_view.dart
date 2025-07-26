@@ -595,11 +595,11 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
               children: [
                 ...widget.actions,
                 const SizedBox(width: 8),
-                if (!isLargeScreen)
-                  const SizedBox.shrink()
-                else
-                  CircularIconButton(
-                    onPressed: () {
+                CircularIconButton(
+                  onPressed: () {
+                    if (!isLargeScreen) {
+                      _controller.expandToSnapPoint();
+                    } else {
                       _controller.toggleExpanded(
                         MediaQuery.sizeOf(context).longestSide,
                         () async {
@@ -615,9 +615,10 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
                           }
                         },
                       );
-                    },
-                    icon: const Icon(Symbols.info),
-                  ),
+                    }
+                  },
+                  icon: const Icon(Symbols.info),
+                ),
               ],
             ),
           ),

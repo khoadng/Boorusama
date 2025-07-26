@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/widgets.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../images/booru_image.dart';
@@ -18,6 +19,7 @@ import '../../search/search/widgets.dart';
 import '../../tags/categories/tag_category.dart';
 import '../../tags/tag/colors.dart';
 import '../../tags/tag/tag.dart';
+import '../../widgets/adaptive_button_row.dart';
 import '../../widgets/widgets.dart';
 import '../providers.dart';
 import '../theme_configs.dart';
@@ -265,34 +267,54 @@ class PreviewPostActionToolbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PostActionToolbar(
-      children: [
-        FavoritePostButton(
-          isFaved: true,
-          isAuthorized: true,
-          addFavorite: () async {
-            return;
-          },
-          removeFavorite: () async {
-            return;
-          },
+    return AdaptiveButtonRow.menu(
+      buttonWidth: 48,
+      buttons: [
+        ButtonData(
+          widget: FavoritePostButton(
+            isFaved: true,
+            isAuthorized: true,
+            addFavorite: () async {
+              return;
+            },
+            removeFavorite: () async {
+              return;
+            },
+          ),
+          title: context.t.post.action.favorite,
         ),
-        UpvotePostButton(
-          voteState: VoteState.upvoted,
-          onUpvote: () async {
-            return;
-          },
-          onRemoveUpvote: () async {
-            return;
-          },
+        ButtonData(
+          widget: UpvotePostButton(
+            voteState: VoteState.upvoted,
+            onUpvote: () async {
+              return;
+            },
+            onRemoveUpvote: () async {
+              return;
+            },
+          ),
+          title: context.t.post.action.upvote,
         ),
-        DownvotePostButton(
-          voteState: VoteState.downvoted,
-          onDownvote: () => {},
-          onRemoveDownvote: () => {},
+        ButtonData(
+          widget: DownvotePostButton(
+            voteState: VoteState.downvoted,
+            onDownvote: () => {},
+            onRemoveDownvote: () => {},
+          ),
+          title: context.t.post.action.downvote,
         ),
-        const IgnorePointer(child: DownloadPostButton(post: _previewPost)),
-        const IgnorePointer(child: SharePostButton(post: _previewPost)),
+        ButtonData(
+          widget: const IgnorePointer(
+            child: DownloadPostButton(post: _previewPost),
+          ),
+          title: context.t.download.download,
+        ),
+        ButtonData(
+          widget: const IgnorePointer(
+            child: SharePostButton(post: _previewPost),
+          ),
+          title: context.t.post.action.share,
+        ),
       ],
     );
   }

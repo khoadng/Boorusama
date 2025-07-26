@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
@@ -17,7 +18,7 @@ import '../../../posts/listing/providers.dart';
 import '../../../posts/post/post.dart';
 import '../../../posts/shares/widgets.dart';
 import '../../../posts/sources/source.dart';
-import '../../../widgets/widgets.dart';
+import '../../../widgets/adaptive_button_row.dart';
 import '../data/bookmark_convert.dart';
 import '../providers/bookmark_provider.dart';
 import '../widgets/bookmark_tag_tiles.dart';
@@ -82,11 +83,8 @@ class _BookmarkDetailsPageState
     final data = PostDetails.of<BookmarkPost>(context);
     final posts = data.posts;
     final controller = data.controller;
-    final pageViewController = data.pageViewController;
     final imageCacheManager = ref.watch(bookmarkImageCacheManagerProvider);
     final auth = ref.watchConfigAuth;
-    final viewer = ref.watchConfigViewer;
-    final post = InheritedPost.of<BookmarkPost>(context);
 
     return PostDetailsPageScaffold(
       pageViewController: data.pageViewController,
@@ -102,25 +100,6 @@ class _BookmarkDetailsPageState
       uiBuilder: bookmarkUiBuilder,
       preferredParts: bookmarkUiBuilder.full.keys.toSet(),
       preferredPreviewParts: bookmarkUiBuilder.preview.keys.toSet(),
-      topRightButtons: [
-        GeneralMoreActionButton(
-          post: post,
-          config: auth,
-          configViewer: viewer,
-          onStartSlideshow: () => pageViewController.startSlideshow(),
-          onDownload: (_) {
-            ref.bookmarks.downloadBookmarks(
-              ref.readConfig,
-              [
-                post.toBookmark(
-                  imageUrlResolver: (booruId) =>
-                      ref.read(bookmarkUrlResolverProvider(booruId)),
-                ),
-              ],
-            );
-          },
-        ),
-      ],
     );
   }
 }
@@ -160,31 +139,52 @@ class BookmarkPostActionToolbar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final post = InheritedPost.of<BookmarkPost>(context);
+    final controller = PostDetails.of<BookmarkPost>(context).pageViewController;
 
     return SliverToBoxAdapter(
-      child: PostActionToolbar(
-        children: [
-          BookmarkPostButton(post: post),
-          IconButton(
-            splashRadius: 16,
-            onPressed: () {
-              showDownloadStartToast(context);
-              ref.bookmarks.downloadBookmarks(
-                ref.watchConfig,
-                [
-                  post.toBookmark(
-                    imageUrlResolver: (booruId) =>
-                        ref.read(bookmarkUrlResolverProvider(booruId)),
+      child: CommonPostButtonsBuilder(
+        post: post,
+        onStartSlideshow: controller.startSlideshow,
+        builder: (context, buttons) {
+          return AdaptiveButtonRow.menu(
+            buttonWidth: 52,
+            buttons: [
+              ButtonData(
+                behavior: ButtonBehavior.alwaysVisible,
+                widget: BookmarkPostButton(post: post),
+                title: context.t.post.action.bookmark,
+              ),
+              ButtonData(
+                behavior: ButtonBehavior.alwaysVisible,
+                widget: IconButton(
+                  splashRadius: 16,
+                  onPressed: () {
+                    showDownloadStartToast(context);
+                    ref.bookmarks.downloadBookmarks(
+                      ref.watchConfig,
+                      [
+                        post.toBookmark(
+                          imageUrlResolver: (booruId) =>
+                              ref.read(bookmarkUrlResolverProvider(booruId)),
+                        ),
+                      ],
+                    );
+                  },
+                  icon: const Icon(
+                    Symbols.download,
                   ),
-                ],
-              );
-            },
-            icon: const Icon(
-              Symbols.download,
-            ),
-          ),
-          SharePostButton(post: post),
-        ],
+                ),
+                title: context.t.download.download,
+              ),
+              ButtonData(
+                behavior: ButtonBehavior.alwaysVisible,
+                widget: SharePostButton(post: post),
+                title: context.t.post.action.share,
+              ),
+              ...buttons,
+            ],
+          );
+        },
       ),
     );
   }

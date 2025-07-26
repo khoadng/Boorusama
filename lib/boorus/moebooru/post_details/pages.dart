@@ -11,7 +11,6 @@ import '../../../core/posts/details/providers.dart';
 import '../../../core/posts/details/widgets.dart';
 import '../../../core/posts/details_parts/widgets.dart';
 import '../../../core/posts/post/post.dart';
-import '../../../core/widgets/widgets.dart';
 import '../client_provider.dart';
 import '../favorites/providers.dart';
 import '../moebooru.dart';
@@ -96,8 +95,6 @@ class _MoebooruPostDetailsPageState
 
   @override
   Widget build(BuildContext context) {
-    final config = ref.watchConfigAuth;
-    final configViewer = ref.watchConfigViewer;
     final pageViewController = data.pageViewController;
 
     return PostDetailsPageScaffold(
@@ -107,16 +104,6 @@ class _MoebooruPostDetailsPageState
       viewerConfig: ref.watchConfigViewer,
       authConfig: ref.watchConfigAuth,
       gestureConfig: ref.watchPostGestures,
-      topRightButtons: [
-        GeneralMoreActionButton(
-          config: config,
-          configViewer: configViewer,
-          post: InheritedPost.of<MoebooruPost>(context),
-          onStartSlideshow: config.hasLoginDetails()
-              ? null
-              : () => pageViewController.startSlideshow(),
-        ),
-      ],
     );
   }
 }
@@ -149,18 +136,18 @@ class MoebooruPostDetailsActionToolbar extends ConsumerWidget {
 
     return SliverToBoxAdapter(
       child: booru.supportsFavorite(config.url)
-          ? _Toolbar(post: post)
-          : DefaultPostActionToolbar(post: post),
+          ? _Toolbar<MoebooruPost>(post: post)
+          : DefaultPostActionToolbar<MoebooruPost>(post: post),
     );
   }
 }
 
-class _Toolbar extends ConsumerWidget {
+class _Toolbar<T extends Post> extends ConsumerWidget {
   const _Toolbar({
     required this.post,
   });
 
-  final Post post;
+  final T post;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -168,6 +155,10 @@ class _Toolbar extends ConsumerWidget {
     final notifier = ref.watch(moebooruFavoritesProvider(post.id).notifier);
 
     return SimplePostActionToolbar(
+      post: post,
+      onStartSlideshow: PostDetails.of<T>(
+        context,
+      ).pageViewController.startSlideshow,
       isFaved: ref
           .watch(moebooruFavoritesProvider(post.id))
           ?.contains(config.login),
@@ -185,7 +176,6 @@ class _Toolbar extends ConsumerWidget {
           }),
       isAuthorized: config.hasLoginDetails(),
       forceHideFav: !config.hasLoginDetails(),
-      post: post,
     );
   }
 }

@@ -3,16 +3,19 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../boorus/engine/providers.dart';
 import '../../../../configs/ref.dart';
 import '../../../../router.dart';
+import '../../../../widgets/adaptive_button_row.dart';
 import '../../../details/details.dart';
 import '../../../favorites/providers.dart';
 import '../../../favorites/widgets.dart';
 import '../../../post/post.dart';
 import '../../../shares/widgets.dart';
+import '../common_post_buttons.dart';
 import 'bookmark_post_button.dart';
 import 'comment_post_button.dart';
 import 'download_post_button.dart';
@@ -20,12 +23,14 @@ import 'download_post_button.dart';
 class SimplePostActionToolbar extends ConsumerWidget {
   const SimplePostActionToolbar({
     required this.post,
+    required this.onStartSlideshow,
     super.key,
     this.isFaved,
     this.isAuthorized,
     this.addFavorite,
     this.removeFavorite,
     this.forceHideFav = false,
+    this.onDownload,
   });
 
   final Post post;
@@ -34,33 +39,62 @@ class SimplePostActionToolbar extends ConsumerWidget {
   final bool forceHideFav;
   final Future<void> Function()? addFavorite;
   final Future<void> Function()? removeFavorite;
+  final void Function(Post post)? onDownload;
+  final void Function() onStartSlideshow;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final booruBuilder = ref.watch(booruBuilderProvider(ref.watchConfigAuth));
     final commentPageBuilder = booruBuilder?.commentPageBuilder;
 
-    return PostActionToolbar(
-      children: [
-        if (!forceHideFav)
-          if (isAuthorized != null &&
-              addFavorite != null &&
-              removeFavorite != null &&
-              booruBuilder != null)
-            FavoritePostButton(
-              isFaved: isFaved,
-              isAuthorized: isAuthorized!,
-              addFavorite: addFavorite!,
-              removeFavorite: removeFavorite!,
+    return CommonPostButtonsBuilder(
+      post: post,
+      onStartSlideshow: onStartSlideshow,
+      builder: (context, buttons) {
+        return AdaptiveButtonRow.menu(
+          buttonWidth: 52,
+          buttons: [
+            if (!forceHideFav &&
+                isAuthorized != null &&
+                addFavorite != null &&
+                removeFavorite != null &&
+                booruBuilder != null)
+              ButtonData(
+                behavior: ButtonBehavior.alwaysVisible,
+                widget: FavoritePostButton(
+                  isFaved: isFaved,
+                  isAuthorized: isAuthorized!,
+                  addFavorite: addFavorite!,
+                  removeFavorite: removeFavorite!,
+                ),
+                title: context.t.post.action.favorite,
+              ),
+            ButtonData(
+              behavior: ButtonBehavior.alwaysVisible,
+              widget: BookmarkPostButton(post: post),
+              title: context.t.post.action.bookmark,
             ),
-        BookmarkPostButton(post: post),
-        DownloadPostButton(post: post),
-        if (commentPageBuilder != null)
-          CommentPostButton(
-            onPressed: () => goToCommentPage(context, ref, post.id),
-          ),
-        SharePostButton(post: post),
-      ],
+            ButtonData(
+              behavior: ButtonBehavior.alwaysVisible,
+              widget: DownloadPostButton(post: post),
+              title: context.t.download.download,
+            ),
+            ButtonData(
+              behavior: ButtonBehavior.alwaysVisible,
+              widget: SharePostButton(post: post),
+              title: context.t.post.action.share,
+            ),
+            if (commentPageBuilder != null)
+              ButtonData(
+                widget: CommentPostButton(
+                  onPressed: () => goToCommentPage(context, ref, post.id),
+                ),
+                title: context.t.comment.comments,
+              ),
+            ...buttons,
+          ],
+        );
+      },
     );
   }
 }
@@ -75,13 +109,13 @@ class DefaultInheritedPostActionToolbar<T extends Post>
 
     return SliverToBoxAdapter(
       child: post != null
-          ? DefaultPostActionToolbar(post: post)
+          ? DefaultPostActionToolbar<T>(post: post)
           : const SizedBox.shrink(),
     );
   }
 }
 
-class DefaultPostActionToolbar extends ConsumerWidget {
+class DefaultPostActionToolbar<T extends Post> extends ConsumerWidget {
   const DefaultPostActionToolbar({
     required this.post,
     super.key,
@@ -104,23 +138,10 @@ class DefaultPostActionToolbar extends ConsumerWidget {
       isAuthorized: config.hasLoginDetails(),
       addFavorite: canFavorite ? () => notifier.add(post.id) : null,
       removeFavorite: canFavorite ? () => notifier.remove(post.id) : null,
-    );
-  }
-}
-
-class PostActionToolbar extends StatelessWidget {
-  const PostActionToolbar({
-    required this.children,
-    super.key,
-  });
-
-  final List<Widget> children;
-
-  @override
-  Widget build(BuildContext context) {
-    return OverflowBar(
-      alignment: MainAxisAlignment.spaceEvenly,
-      children: children,
+      forceHideFav: forceHideFav,
+      onStartSlideshow: PostDetails.of<T>(
+        context,
+      ).pageViewController.startSlideshow,
     );
   }
 }

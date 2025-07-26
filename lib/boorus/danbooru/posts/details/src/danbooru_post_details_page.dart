@@ -15,7 +15,6 @@ import '../../../users/user/routes.dart';
 import '../../_shared/danbooru_creator_preloader.dart';
 import '../../_shared/post_creator_preloadable.dart';
 import '../../post/post.dart';
-import 'widgets/danbooru_more_action_button.dart';
 
 class DanbooruPostDetailsPage extends StatelessWidget {
   const DanbooruPostDetailsPage({
@@ -48,13 +47,6 @@ class DanbooruPostDetailsPage extends StatelessWidget {
               NoteActionButtonWithProvider(
                 post: post,
                 config: config,
-              ),
-              const SizedBox(width: 8),
-              DanbooruMoreActionButton(
-                post: post,
-                config: config,
-                configViewer: configViewer,
-                onStartSlideshow: () => pageViewController.startSlideshow(),
               ),
             ],
           );
