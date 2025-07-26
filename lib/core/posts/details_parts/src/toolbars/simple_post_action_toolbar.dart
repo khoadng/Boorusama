@@ -115,6 +115,7 @@ class DefaultPostActionToolbar extends ConsumerWidget {
   }
 }
 
+@Deprecated('Use AdaptiveButtonRow.menu instead.')
 class PostActionToolbar extends StatelessWidget {
   const PostActionToolbar({
     required this.children,
