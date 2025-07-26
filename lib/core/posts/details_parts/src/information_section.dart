@@ -171,9 +171,7 @@ class InformationSection extends ConsumerWidget {
             locale: Localizations.localeOf(context),
           ),
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            color: Theme.of(
-              context,
-            ).listTileTheme.subtitleTextStyle?.color,
+            color: Theme.of(context).listTileTheme.subtitleTextStyle?.color,
           ),
         ),
       ),
@@ -214,18 +212,21 @@ class InformationSection extends ConsumerWidget {
         if (source != null && showSource)
           if (source case final WebSource source) ...[
             const _DotSeparator(),
-            _buildSource(source),
+            _buildSource(source, compact: true),
           ],
       ],
     );
   }
 
-  Widget _buildSource(WebSource source) {
+  Widget _buildSource(
+    WebSource source, {
+    bool compact = false,
+  }) {
     return GestureDetector(
       onTap: () => launchExternalUrl(source.uri),
       child: ConfigAwareWebsiteLogo(
         url: source.faviconUrl,
-        size: 20,
+        size: compact ? 20 : kFaviconSize,
       ),
     );
   }
