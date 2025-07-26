@@ -149,18 +149,18 @@ class MoebooruPostDetailsActionToolbar extends ConsumerWidget {
 
     return SliverToBoxAdapter(
       child: booru.supportsFavorite(config.url)
-          ? _Toolbar(post: post)
-          : DefaultPostActionToolbar(post: post),
+          ? _Toolbar<MoebooruPost>(post: post)
+          : DefaultPostActionToolbar<MoebooruPost>(post: post),
     );
   }
 }
 
-class _Toolbar extends ConsumerWidget {
+class _Toolbar<T extends Post> extends ConsumerWidget {
   const _Toolbar({
     required this.post,
   });
 
-  final Post post;
+  final T post;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -169,8 +169,9 @@ class _Toolbar extends ConsumerWidget {
 
     return SimplePostActionToolbar(
       post: post,
-      config: config,
-      configViewer: ref.watchConfigViewer,
+      onStartSlideshow: PostDetails.of<T>(
+        context,
+      ).pageViewController.startSlideshow,
       isFaved: ref
           .watch(moebooruFavoritesProvider(post.id))
           ?.contains(config.login),

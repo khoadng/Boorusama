@@ -7,7 +7,6 @@ import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../../foundation/url_launcher.dart';
 import '../../../boorus/engine/engine.dart';
 import '../../../configs/config/types.dart';
 import '../../../configs/ref.dart';
@@ -19,12 +18,8 @@ import '../../../posts/details_manager/types.dart';
 import '../../../posts/details_parts/widgets.dart';
 import '../../../posts/listing/providers.dart';
 import '../../../posts/post/post.dart';
-import '../../../posts/post/providers.dart';
-import '../../../posts/post/routes.dart';
 import '../../../posts/shares/widgets.dart';
 import '../../../posts/sources/source.dart';
-import '../../../settings/routes.dart';
-import '../../../tags/tag/routes.dart';
 import '../../../widgets/adaptive_button_row.dart';
 import '../data/bookmark_convert.dart';
 import '../providers/bookmark_provider.dart';
@@ -169,79 +164,53 @@ class BookmarkPostActionToolbar extends ConsumerWidget with CopyImageMixin {
   Widget build(BuildContext context, WidgetRef ref) {
     final post = InheritedPost.of<BookmarkPost>(context);
     final controller = PostDetails.of<BookmarkPost>(context).pageViewController;
-    final postLinkGenerator = ref.watch(postLinkGeneratorProvider(config));
 
     return SliverToBoxAdapter(
-      child: AdaptiveButtonRow.menu(
-        buttonWidth: 52,
-        buttons: [
-          ButtonData(
-            behavior: ButtonBehavior.alwaysVisible,
-            widget: BookmarkPostButton(post: post),
-            title: context.t.post.action.bookmark,
-          ),
-          ButtonData(
-            behavior: ButtonBehavior.alwaysVisible,
-            widget: IconButton(
-              splashRadius: 16,
-              onPressed: () {
-                showDownloadStartToast(context);
-                ref.bookmarks.downloadBookmarks(
-                  ref.watchConfig,
-                  [
-                    post.toBookmark(
-                      imageUrlResolver: (booruId) =>
-                          ref.read(bookmarkUrlResolverProvider(booruId)),
-                    ),
-                  ],
-                );
-              },
-              icon: const Icon(
-                Symbols.download,
+      child: CommonPostButtonsBuilder(
+        post: post,
+        config: config,
+        configViewer: configViewer,
+        onStartSlideshow: controller.startSlideshow,
+        builder: (context, buttons) {
+          return AdaptiveButtonRow.menu(
+            buttonWidth: 52,
+            buttons: [
+              ButtonData(
+                behavior: ButtonBehavior.alwaysVisible,
+                widget: BookmarkPostButton(post: post),
+                title: context.t.post.action.bookmark,
               ),
-            ),
-            title: context.t.download.download,
-          ),
-          ButtonData(
-            behavior: ButtonBehavior.alwaysVisible,
-            widget: SharePostButton(post: post),
-            title: context.t.post.action.share,
-          ),
-          SimpleButtonData(
-            icon: Icons.copy,
-            title: 'Copy image',
-            onPressed: () => copyImage(ref, post),
-          ),
-          if (post.tags.isNotEmpty)
-            SimpleButtonData(
-              icon: Icons.label,
-              title: 'View tags',
-              onPressed: () => goToShowTaglistPage(ref, post),
-            ),
-          if (!config.hasStrictSFW)
-            SimpleButtonData(
-              icon: Icons.open_in_browser,
-              title: context.t.post.detail.view_in_browser,
-              onPressed: () =>
-                  launchExternalUrlString(postLinkGenerator.getLink(post)),
-            ),
-          if (post.hasFullView)
-            SimpleButtonData(
-              icon: Icons.fullscreen,
-              title: context.t.post.image_fullview.view_original,
-              onPressed: () => goToOriginalImagePage(ref, post),
-            ),
-          SimpleButtonData(
-            icon: Icons.slideshow,
-            title: 'Slideshow',
-            onPressed: () => controller.startSlideshow(),
-          ),
-          SimpleButtonData(
-            icon: Icons.settings,
-            title: context.t.settings.settings,
-            onPressed: () => openImageViewerSettingsPage(ref),
-          ),
-        ],
+              ButtonData(
+                behavior: ButtonBehavior.alwaysVisible,
+                widget: IconButton(
+                  splashRadius: 16,
+                  onPressed: () {
+                    showDownloadStartToast(context);
+                    ref.bookmarks.downloadBookmarks(
+                      ref.watchConfig,
+                      [
+                        post.toBookmark(
+                          imageUrlResolver: (booruId) =>
+                              ref.read(bookmarkUrlResolverProvider(booruId)),
+                        ),
+                      ],
+                    );
+                  },
+                  icon: const Icon(
+                    Symbols.download,
+                  ),
+                ),
+                title: context.t.download.download,
+              ),
+              ButtonData(
+                behavior: ButtonBehavior.alwaysVisible,
+                widget: SharePostButton(post: post),
+                title: context.t.post.action.share,
+              ),
+              ...buttons,
+            ],
+          );
+        },
       ),
     );
   }

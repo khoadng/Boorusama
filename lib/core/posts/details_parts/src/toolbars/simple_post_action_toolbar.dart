@@ -6,31 +6,24 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
-import '../../../../../foundation/url_launcher.dart';
 import '../../../../boorus/engine/providers.dart';
-import '../../../../configs/config/types.dart';
 import '../../../../configs/ref.dart';
-import '../../../../images/copy.dart';
 import '../../../../router.dart';
-import '../../../../settings/routes.dart';
-import '../../../../tags/tag/routes.dart';
 import '../../../../widgets/adaptive_button_row.dart';
 import '../../../details/details.dart';
 import '../../../favorites/providers.dart';
 import '../../../favorites/widgets.dart';
 import '../../../post/post.dart';
-import '../../../post/providers.dart';
-import '../../../post/routes.dart';
 import '../../../shares/widgets.dart';
+import '../common_post_buttons.dart';
 import 'bookmark_post_button.dart';
 import 'comment_post_button.dart';
 import 'download_post_button.dart';
 
-class SimplePostActionToolbar extends ConsumerWidget with CopyImageMixin {
+class SimplePostActionToolbar extends ConsumerWidget {
   const SimplePostActionToolbar({
     required this.post,
-    required this.config,
-    required this.configViewer,
+    required this.onStartSlideshow,
     super.key,
     this.isFaved,
     this.isAuthorized,
@@ -38,7 +31,6 @@ class SimplePostActionToolbar extends ConsumerWidget with CopyImageMixin {
     this.removeFavorite,
     this.forceHideFav = false,
     this.onDownload,
-    this.onStartSlideshow,
   });
 
   final Post post;
@@ -48,98 +40,63 @@ class SimplePostActionToolbar extends ConsumerWidget with CopyImageMixin {
   final Future<void> Function()? addFavorite;
   final Future<void> Function()? removeFavorite;
   final void Function(Post post)? onDownload;
-  final void Function()? onStartSlideshow;
-
-  @override
-  final BooruConfigAuth config;
-  @override
-  final BooruConfigViewer configViewer;
+  final void Function() onStartSlideshow;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final booruBuilder = ref.watch(booruBuilderProvider(ref.watchConfigAuth));
     final commentPageBuilder = booruBuilder?.commentPageBuilder;
-    final config = ref.watchConfigAuth;
-    final postLinkGenerator = ref.watch(postLinkGeneratorProvider(config));
 
-    return AdaptiveButtonRow.menu(
-      buttonWidth: 52,
-      buttons: [
-        if (!forceHideFav &&
-            isAuthorized != null &&
-            addFavorite != null &&
-            removeFavorite != null &&
-            booruBuilder != null)
-          ButtonData(
-            behavior: ButtonBehavior.alwaysVisible,
-            widget: FavoritePostButton(
-              isFaved: isFaved,
-              isAuthorized: isAuthorized!,
-              addFavorite: addFavorite!,
-              removeFavorite: removeFavorite!,
+    return CommonPostButtonsBuilder(
+      post: post,
+      config: ref.watchConfigAuth,
+      configViewer: ref.watchConfigViewer,
+      onStartSlideshow: onStartSlideshow,
+      builder: (context, buttons) {
+        return AdaptiveButtonRow.menu(
+          buttonWidth: 52,
+          buttons: [
+            if (!forceHideFav &&
+                isAuthorized != null &&
+                addFavorite != null &&
+                removeFavorite != null &&
+                booruBuilder != null)
+              ButtonData(
+                behavior: ButtonBehavior.alwaysVisible,
+                widget: FavoritePostButton(
+                  isFaved: isFaved,
+                  isAuthorized: isAuthorized!,
+                  addFavorite: addFavorite!,
+                  removeFavorite: removeFavorite!,
+                ),
+                title: context.t.post.action.favorite,
+              ),
+            ButtonData(
+              behavior: ButtonBehavior.alwaysVisible,
+              widget: BookmarkPostButton(post: post),
+              title: context.t.post.action.bookmark,
             ),
-            title: context.t.post.action.favorite,
-          ),
-        ButtonData(
-          behavior: ButtonBehavior.alwaysVisible,
-          widget: BookmarkPostButton(post: post),
-          title: context.t.post.action.bookmark,
-        ),
-        ButtonData(
-          behavior: ButtonBehavior.alwaysVisible,
-          widget: DownloadPostButton(post: post),
-          title: context.t.download.download,
-        ),
-        ButtonData(
-          behavior: ButtonBehavior.alwaysVisible,
-          widget: SharePostButton(post: post),
-          title: context.t.post.action.share,
-        ),
-
-        if (commentPageBuilder != null)
-          ButtonData(
-            widget: CommentPostButton(
-              onPressed: () => goToCommentPage(context, ref, post.id),
+            ButtonData(
+              behavior: ButtonBehavior.alwaysVisible,
+              widget: DownloadPostButton(post: post),
+              title: context.t.download.download,
             ),
-            title: context.t.comment.comments,
-          ),
-        SimpleButtonData(
-          icon: Icons.copy,
-          title: 'Copy image',
-          onPressed: () => copyImage(ref, post),
-        ),
-        if (!config.hasStrictSFW)
-          SimpleButtonData(
-            icon: Icons.open_in_browser,
-            title: context.t.post.detail.view_in_browser,
-            onPressed: () => launchExternalUrlString(
-              postLinkGenerator.getLink(post),
+            ButtonData(
+              behavior: ButtonBehavior.alwaysVisible,
+              widget: SharePostButton(post: post),
+              title: context.t.post.action.share,
             ),
-          ),
-        if (post.tags.isNotEmpty)
-          SimpleButtonData(
-            icon: Icons.label,
-            title: 'View tags',
-            onPressed: () => goToShowTaglistPage(ref, post),
-          ),
-        if (post.hasFullView)
-          SimpleButtonData(
-            icon: Icons.fullscreen,
-            title: context.t.post.image_fullview.view_original,
-            onPressed: () => goToOriginalImagePage(ref, post),
-          ),
-        if (onStartSlideshow != null)
-          SimpleButtonData(
-            icon: Icons.slideshow,
-            title: 'Slideshow',
-            onPressed: onStartSlideshow!,
-          ),
-        SimpleButtonData(
-          icon: Icons.settings,
-          title: context.t.settings.settings,
-          onPressed: () => openImageViewerSettingsPage(ref),
-        ),
-      ],
+            if (commentPageBuilder != null)
+              ButtonData(
+                widget: CommentPostButton(
+                  onPressed: () => goToCommentPage(context, ref, post.id),
+                ),
+                title: context.t.comment.comments,
+              ),
+            ...buttons,
+          ],
+        );
+      },
     );
   }
 }
@@ -154,13 +111,13 @@ class DefaultInheritedPostActionToolbar<T extends Post>
 
     return SliverToBoxAdapter(
       child: post != null
-          ? DefaultPostActionToolbar(post: post)
+          ? DefaultPostActionToolbar<T>(post: post)
           : const SizedBox.shrink(),
     );
   }
 }
 
-class DefaultPostActionToolbar extends ConsumerWidget {
+class DefaultPostActionToolbar<T extends Post> extends ConsumerWidget {
   const DefaultPostActionToolbar({
     required this.post,
     super.key,
@@ -179,13 +136,14 @@ class DefaultPostActionToolbar extends ConsumerWidget {
 
     return SimplePostActionToolbar(
       post: post,
-      config: config,
-      configViewer: ref.watchConfigViewer,
       isFaved: isFaved,
       isAuthorized: config.hasLoginDetails(),
       addFavorite: canFavorite ? () => notifier.add(post.id) : null,
       removeFavorite: canFavorite ? () => notifier.remove(post.id) : null,
       forceHideFav: forceHideFav,
+      onStartSlideshow: PostDetails.of<T>(
+        context,
+      ).pageViewController.startSlideshow,
     );
   }
 }
