@@ -11,7 +11,6 @@ import '../../../core/posts/details/providers.dart';
 import '../../../core/posts/details/widgets.dart';
 import '../../../core/posts/details_parts/widgets.dart';
 import '../../../core/posts/post/post.dart';
-import '../../../core/widgets/widgets.dart';
 import '../client_provider.dart';
 import '../favorites/providers.dart';
 import '../moebooru.dart';
@@ -96,8 +95,6 @@ class _MoebooruPostDetailsPageState
 
   @override
   Widget build(BuildContext context) {
-    final config = ref.watchConfigAuth;
-    final configViewer = ref.watchConfigViewer;
     final pageViewController = data.pageViewController;
 
     return PostDetailsPageScaffold(
@@ -107,16 +104,6 @@ class _MoebooruPostDetailsPageState
       viewerConfig: ref.watchConfigViewer,
       authConfig: ref.watchConfigAuth,
       gestureConfig: ref.watchPostGestures,
-      topRightButtons: [
-        GeneralMoreActionButton(
-          config: config,
-          configViewer: configViewer,
-          post: InheritedPost.of<MoebooruPost>(context),
-          onStartSlideshow: config.hasLoginDetails()
-              ? null
-              : () => pageViewController.startSlideshow(),
-        ),
-      ],
     );
   }
 }

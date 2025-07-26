@@ -147,21 +147,3 @@ class DefaultPostActionToolbar<T extends Post> extends ConsumerWidget {
     );
   }
 }
-
-@Deprecated('Use AdaptiveButtonRow.menu instead.')
-class PostActionToolbar extends StatelessWidget {
-  const PostActionToolbar({
-    required this.children,
-    super.key,
-  });
-
-  final List<Widget> children;
-
-  @override
-  Widget build(BuildContext context) {
-    return OverflowBar(
-      alignment: MainAxisAlignment.spaceEvenly,
-      children: children,
-    );
-  }
-}

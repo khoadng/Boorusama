@@ -73,6 +73,8 @@
       "share": "Share",
       "bookmark": "Bookmark",
       "favorite": "Favorite",
+      "upvote": "Upvote",
+      "downvote": "Downvote",
       "view_comments": "View comments",
       "add_to_favorite_group": "Add to favorite group"
     },
