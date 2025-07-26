@@ -9,17 +9,13 @@ class MultiSelectButton extends StatelessWidget {
     required this.icon,
     required this.name,
     required this.onPressed,
-    this.width,
-    this.maxLines,
-    this.mainAxisAlignment,
     super.key,
   });
 
+  factory MultiSelectButton.shrink() => const _ShrinkButton();
+
   final Widget icon;
   final String name;
-  final int? maxLines;
-  final double? width;
-  final MainAxisAlignment? mainAxisAlignment;
   final void Function()? onPressed;
 
   @override
@@ -33,43 +29,52 @@ class MultiSelectButton extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
       ),
       onTap: onPressed,
-      child: SizedBox(
-        width: width ?? 100,
-        child: Column(
-          mainAxisAlignment: mainAxisAlignment ?? MainAxisAlignment.center,
-          children: [
-            const SizedBox(height: 4),
-            Theme(
-              data: ThemeData(
-                iconTheme: iconTheme.copyWith(
-                  color: onPressed != null
-                      ? colorScheme.onSurface
-                      : colorScheme.hintColor,
-                ),
-              ),
-              child: icon,
-            ),
-            const SizedBox(height: 4),
-            Padding(
-              padding: const EdgeInsets.only(
-                left: 4,
-                right: 4,
-                bottom: 4,
-              ),
-              child: Text(
-                name,
-                textAlign: TextAlign.center,
-                maxLines: maxLines ?? 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: 11,
-                  color: onPressed != null ? null : colorScheme.hintColor,
-                ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const SizedBox(height: 4),
+          Theme(
+            data: ThemeData(
+              iconTheme: iconTheme.copyWith(
+                color: onPressed != null
+                    ? colorScheme.onSurface
+                    : colorScheme.hintColor,
               ),
             ),
-          ],
-        ),
+            child: icon,
+          ),
+          const SizedBox(height: 4),
+          Padding(
+            padding: const EdgeInsets.only(
+              left: 4,
+              right: 4,
+              bottom: 4,
+            ),
+            child: Text(
+              name,
+              textAlign: TextAlign.center,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 10,
+                letterSpacing: 0.5,
+                color: onPressed != null ? null : colorScheme.hintColor,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
+}
+
+class _ShrinkButton extends MultiSelectButton {
+  const _ShrinkButton()
+    : super(
+        icon: const SizedBox.shrink(),
+        name: '',
+        onPressed: null,
+      );
+
+  @override
+  Widget build(BuildContext context) => const SizedBox.shrink();
 }

@@ -52,7 +52,7 @@ class DanbooruMultiSelectionActions extends ConsumerWidget {
                   }
                 : null,
             icon: const Icon(Symbols.add),
-            name: 'Add to Group',
+            name: 'Add to Group'.hc,
           ),
         if (ref.watch(isDevEnvironmentProvider))
           if (config.hasLoginDetails())
@@ -75,11 +75,11 @@ class DanbooruMultiSelectionActions extends ConsumerWidget {
                                 }
                               : null,
                           icon: const Icon(Symbols.edit_square),
-                          name: 'Edit Rating',
+                          name: 'Edit Rating'.hc,
                         )
-                      : const SizedBox.shrink(),
-                  error: (error, _) => const SizedBox.shrink(),
-                  loading: () => const SizedBox.shrink(),
+                      : MultiSelectButton.shrink(),
+                  error: (error, _) => MultiSelectButton.shrink(),
+                  loading: () => MultiSelectButton.shrink(),
                 ),
       ],
     );

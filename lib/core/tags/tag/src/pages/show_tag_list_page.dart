@@ -336,7 +336,6 @@ class _ShowTagListPageState extends ConsumerState<ShowTagListPageInternal> {
             children: [
               // Search
               MultiSelectButton(
-                width: 80,
                 onPressed: tags.isNotEmpty
                     ? () => goToSearchPage(
                         ref,
@@ -346,8 +345,7 @@ class _ShowTagListPageState extends ConsumerState<ShowTagListPageInternal> {
                       )
                     : null,
                 icon: const Icon(Symbols.search),
-                name: 'Search'.hc,
-                mainAxisAlignment: MainAxisAlignment.start,
+                name: 'Search Tags'.hc,
               ),
               MultiSelectButton(
                 onPressed: tags.isNotEmpty
@@ -355,7 +353,6 @@ class _ShowTagListPageState extends ConsumerState<ShowTagListPageInternal> {
                     : null,
                 icon: const Icon(Symbols.content_copy),
                 name: 'Copy Tags'.hc,
-                mainAxisAlignment: MainAxisAlignment.start,
               ),
               if (widget.onAddToBlacklist != null)
                 MultiSelectButton(
@@ -363,27 +360,21 @@ class _ShowTagListPageState extends ConsumerState<ShowTagListPageInternal> {
                       ? () => _addSelectedToBlacklist(tags)
                       : null,
                   icon: const Icon(Symbols.block),
-                  name: 'Add to Blacklist'.hc,
-                  maxLines: 2,
-                  mainAxisAlignment: MainAxisAlignment.start,
+                  name: 'Blacklist'.hc,
                 ),
               MultiSelectButton(
                 onPressed: tags.isNotEmpty
                     ? () => _addSelectedToGlobalBlacklist(tags)
                     : null,
                 icon: const Icon(Symbols.block),
-                name: 'Add to Global Blacklist'.hc,
-                maxLines: 2,
-                mainAxisAlignment: MainAxisAlignment.start,
+                name: 'Blacklist (Global)'.hc,
               ),
               MultiSelectButton(
                 onPressed: tags.isNotEmpty
                     ? () => _addSelectedToFavorites(tags)
                     : null,
                 icon: const Icon(Symbols.favorite),
-                name: 'Add to Favorites'.hc,
-                maxLines: 2,
-                mainAxisAlignment: MainAxisAlignment.start,
+                name: context.t.post.action.favorite,
               ),
             ],
           ),

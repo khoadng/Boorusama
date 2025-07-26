@@ -30,11 +30,12 @@ class DefaultMultiSelectionActions<T extends Post> extends ConsumerWidget {
   final PostGridController<T> postController;
   final bool bookmark;
   final void Function(List<T> selectedPosts)? onBulkDownload;
-  final List<Widget> Function(List<T> selectedPosts)? extraActions;
+  final List<MultiSelectButton> Function(List<T> selectedPosts)? extraActions;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final controller = SelectionMode.of(context);
+    final booruConfig = ref.watchConfigAuth;
     return ListenableBuilder(
       listenable: controller,
       builder: (context, _) {
@@ -60,48 +61,27 @@ class DefaultMultiSelectionActions<T extends Post> extends ConsumerWidget {
               name: context.t.download.download,
             ),
             if (bookmark)
-              AddBookmarksButton(
-                posts: selectedPosts,
-                onPressed: controller.disable,
+              MultiSelectButton(
+                name: context.t.post.action.bookmark,
+                onPressed: selectedPosts.isNotEmpty
+                    ? () async {
+                        unawaited(
+                          ref.bookmarks.addBookmarksWithToast(
+                            context,
+                            booruConfig,
+                            booruConfig.url,
+                            selectedPosts,
+                          ),
+                        );
+                        controller.disable();
+                      }
+                    : null,
+                icon: const Icon(Symbols.bookmark_add),
               ),
             if (extraActions != null) ...extraActions!(selectedPosts),
           ],
         );
       },
-    );
-  }
-}
-
-class AddBookmarksButton extends ConsumerWidget {
-  const AddBookmarksButton({
-    required this.posts,
-    required this.onPressed,
-    super.key,
-  });
-
-  final void Function() onPressed;
-  final List<Post> posts;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final booruConfig = ref.watchConfigAuth;
-
-    return MultiSelectButton(
-      name: 'Bookmark',
-      onPressed: posts.isNotEmpty
-          ? () async {
-              unawaited(
-                ref.bookmarks.addBookmarksWithToast(
-                  context,
-                  booruConfig,
-                  booruConfig.url,
-                  posts,
-                ),
-              );
-              onPressed();
-            }
-          : null,
-      icon: const Icon(Symbols.bookmark_add),
     );
   }
 }
