@@ -40,61 +40,61 @@ import 'privacy_page.dart';
 import 'search_settings_page.dart';
 
 List<SettingEntry> _entries(BuildContext context) => [
-      SettingEntry(
-        name: '/settings/appearance',
-        title: context.t.settings.appearance.appearance,
-        icon: FontAwesomeIcons.paintRoller,
-        content: const AppearancePage(),
-      ),
-      SettingEntry(
-        name: '/settings/language',
-        title: context.t.settings.language.language,
-        icon: Symbols.translate,
-        content: const LanguagePage(),
-      ),
-      SettingEntry(
-        name: '/settings/download',
-        title: context.t.settings.download.title,
-        icon: FontAwesomeIcons.download,
-        content: const DownloadPage(),
-      ),
-      SettingEntry(
-        name: '/settings/data_and_storage',
-        title: context.t.settings.data_and_storage.data_and_storage,
-        icon: FontAwesomeIcons.database,
-        content: const DataAndStoragePage(),
-      ),
-      SettingEntry(
-        name: '/settings/backup_and_restore',
-        title: context.t.settings.backup_and_restore.backup_and_restore,
-        icon: FontAwesomeIcons.cloudArrowDown,
-        content: const BackupAndRestorePage(),
-      ),
-      SettingEntry(
-        name: '/settings/search',
-        title: context.t.settings.search.search,
-        icon: FontAwesomeIcons.magnifyingGlass,
-        content: const SearchSettingsPage(),
-      ),
-      SettingEntry(
-        name: '/settings/accessibility',
-        title: context.t.settings.accessibility.accessibility,
-        icon: FontAwesomeIcons.universalAccess,
-        content: const AccessibilityPage(),
-      ),
-      SettingEntry(
-        name: '/settings/image_viewer',
-        title: context.t.settings.image_viewer.image_viewer,
-        icon: FontAwesomeIcons.image,
-        content: const ImageViewerPage(),
-      ),
-      SettingEntry(
-        name: '/settings/privacy',
-        title: context.t.settings.privacy.privacy,
-        icon: FontAwesomeIcons.shieldHalved,
-        content: const PrivacyPage(),
-      ),
-    ];
+  SettingEntry(
+    name: '/settings/appearance',
+    title: context.t.settings.appearance.appearance,
+    icon: FontAwesomeIcons.paintRoller,
+    content: const AppearancePage(),
+  ),
+  SettingEntry(
+    name: '/settings/language',
+    title: context.t.settings.language.language,
+    icon: Symbols.translate,
+    content: const LanguagePage(),
+  ),
+  SettingEntry(
+    name: '/settings/download',
+    title: context.t.settings.download.title,
+    icon: FontAwesomeIcons.download,
+    content: const DownloadPage(),
+  ),
+  SettingEntry(
+    name: '/settings/data_and_storage',
+    title: context.t.settings.data_and_storage.data_and_storage,
+    icon: FontAwesomeIcons.database,
+    content: const DataAndStoragePage(),
+  ),
+  SettingEntry(
+    name: '/settings/backup_and_restore',
+    title: context.t.settings.backup_and_restore.backup_and_restore,
+    icon: FontAwesomeIcons.cloudArrowDown,
+    content: const BackupAndRestorePage(),
+  ),
+  SettingEntry(
+    name: '/settings/search',
+    title: context.t.settings.search.search,
+    icon: FontAwesomeIcons.magnifyingGlass,
+    content: const SearchSettingsPage(),
+  ),
+  SettingEntry(
+    name: '/settings/accessibility',
+    title: context.t.settings.accessibility.accessibility,
+    icon: FontAwesomeIcons.universalAccess,
+    content: const AccessibilityPage(),
+  ),
+  SettingEntry(
+    name: '/settings/image_viewer',
+    title: context.t.settings.image_viewer.image_viewer,
+    icon: FontAwesomeIcons.image,
+    content: const ImageViewerPage(),
+  ),
+  SettingEntry(
+    name: '/settings/privacy',
+    title: context.t.settings.privacy.privacy,
+    icon: FontAwesomeIcons.shieldHalved,
+    content: const PrivacyPage(),
+  ),
+];
 
 const double _kThresholdWidth = 650;
 
@@ -281,39 +281,7 @@ class _SettingsSmallPageState extends ConsumerState<SettingsSmallPage> {
                 ),
                 for (final entry in options.entries) ...[
                   SettingTile(
-                    title: entry.title == 'settings.appearance.appearance'
-                        ? context.t.settings.appearance.appearance
-                        : entry.title == 'settings.language.language'
-                            ? context.t.settings.language.language
-                            : entry.title == 'settings.download.title'
-                                ? context.t.settings.download.title
-                                : entry.title ==
-                                        'settings.data_and_storage.data_and_storage'
-                                    ? context.t.settings.data_and_storage
-                                        .data_and_storage
-                                    : entry.title ==
-                                            'settings.backup_and_restore.backup_and_restore'
-                                        ? context.t.settings.backup_and_restore
-                                            .backup_and_restore
-                                        : entry.title ==
-                                                'settings.search.search'
-                                            ? context.t.settings.search.search
-                                            : entry.title ==
-                                                    'settings.accessibility.accessibility'
-                                                ? context.t.settings
-                                                    .accessibility.accessibility
-                                                : entry.title ==
-                                                        'settings.image_viewer.image_viewer'
-                                                    ? context
-                                                        .t
-                                                        .settings
-                                                        .image_viewer
-                                                        .image_viewer
-                                                    : entry.title ==
-                                                            'settings.privacy.privacy'
-                                                        ? context.t.settings
-                                                            .privacy.privacy
-                                                        : entry.title,
+                    title: entry.title,
                     leading: FaIcon(
                       entry.icon,
                     ),

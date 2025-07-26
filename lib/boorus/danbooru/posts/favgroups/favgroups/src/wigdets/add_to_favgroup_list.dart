@@ -96,7 +96,9 @@ class AddToFavgroupList extends ConsumerWidget {
                         duration: AppDurations.longToast,
                         content: Text(
                           context
-                              .t.favorite_groups.items_added_notification_popup
+                              .t
+                              .favorite_groups
+                              .items_added_notification_popup
                               .replaceAll('{0}', '${posts.length}')
                               .replaceAll(
                                 '{1}',

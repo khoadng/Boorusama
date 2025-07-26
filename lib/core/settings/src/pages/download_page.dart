@@ -55,12 +55,15 @@ class _DownloadPageState extends ConsumerState<DownloadPage> {
           onChanged: (value) =>
               notifer.updateSettings(settings.copyWith(downloadQuality: value)),
           optionBuilder: (value) => switch (value) {
-            DownloadQuality.original =>
-              Text(context.t.settings.download.qualities.original),
-            DownloadQuality.sample =>
-              Text(context.t.settings.download.qualities.sample),
-            DownloadQuality.preview =>
-              Text(context.t.settings.download.qualities.preview),
+            DownloadQuality.original => Text(
+              context.t.settings.download.qualities.original,
+            ),
+            DownloadQuality.sample => Text(
+              context.t.settings.download.qualities.sample,
+            ),
+            DownloadQuality.preview => Text(
+              context.t.settings.download.qualities.preview,
+            ),
           },
         ),
         const SizedBox(height: 4),

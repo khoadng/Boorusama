@@ -147,8 +147,9 @@ class AccentColorSelector extends StatelessWidget {
                   ref.read(_viewAllColorProvider.notifier).state =
                       !viewAllColor;
                 },
-                child:
-                    !viewAllColor ? Text('Show all'.hc) : Text('Show less'.hc),
+                child: !viewAllColor
+                    ? Text('Show all'.hc)
+                    : Text('Show less'.hc),
               );
             },
           ),

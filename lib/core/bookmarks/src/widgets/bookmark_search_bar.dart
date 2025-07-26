@@ -121,8 +121,9 @@ class _BookmarkSearchBarState extends ConsumerState<BookmarkSearchBar> {
                         : const SizedBox.shrink(),
                   ),
                   onSubmitted: (value) {
-                    ref.read(selectedTagsProvider.notifier).state =
-                        value.trim().replaceAll(RegExp(r'\s+'), ' ');
+                    ref.read(selectedTagsProvider.notifier).state = value
+                        .trim()
+                        .replaceAll(RegExp(r'\s+'), ' ');
                   },
                 ),
               );
@@ -184,8 +185,9 @@ class _BookmarkSearchBarState extends ConsumerState<BookmarkSearchBar> {
 
   Widget _buildItem(WidgetRef ref, String tag, BuildContext context) {
     final config = ref.watchConfigAuth;
-    final color =
-        ref.watch(bookmarkTagColorProvider((config, tag))).valueOrNull;
+    final color = ref
+        .watch(bookmarkTagColorProvider((config, tag)))
+        .valueOrNull;
 
     return Material(
       shape: RoundedRectangleBorder(
@@ -203,8 +205,9 @@ class _BookmarkSearchBarState extends ConsumerState<BookmarkSearchBar> {
               .trim()
               .replaceAll(RegExp(r'\s+'), ' ');
 
-          final newTagString =
-              currentTag.isEmpty ? '$tag ' : '$currentTag $tag ';
+          final newTagString = currentTag.isEmpty
+              ? '$tag '
+              : '$currentTag $tag ';
           ref.read(selectedTagsProvider.notifier).state = newTagString;
           widget.controller.text = newTagString;
         },

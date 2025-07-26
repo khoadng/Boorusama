@@ -50,7 +50,7 @@ class TestProxyButton extends ConsumerWidget {
                         success
                             ? 'Valid proxy settings'.hc
                             : 'Failed to connect to proxy, please check your settings and try again'
-                                .hc,
+                                  .hc,
                       ),
                     );
                   }
