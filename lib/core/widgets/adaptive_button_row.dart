@@ -292,6 +292,8 @@ class _AdaptiveButtonRowState extends State<AdaptiveButtonRow> {
     int visibleCount,
   ) {
     return MenuAnchor(
+      consumeOutsideTap: true,
+      alignmentOffset: const Offset(0, 20),
       builder: (context, controller, child) =>
           widget.overflowButtonBuilder?.call(() {
             controller.isOpen ? controller.close() : controller.open();
