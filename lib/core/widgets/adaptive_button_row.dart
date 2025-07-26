@@ -46,7 +46,6 @@ class SimpleButtonData extends ButtonData {
     super.behavior,
   }) : super(
          widget: IconButton(
-           splashRadius: 16,
            icon: Icon(icon),
            onPressed: onPressed,
            tooltip: tooltip ?? title,
@@ -294,6 +293,14 @@ class _AdaptiveButtonRowState extends State<AdaptiveButtonRow> {
     return MenuAnchor(
       consumeOutsideTap: true,
       alignmentOffset: const Offset(0, 20),
+      style: MenuStyle(
+        padding: WidgetStateProperty.all(
+          const EdgeInsets.symmetric(
+            horizontal: 8,
+            vertical: 16,
+          ),
+        ),
+      ),
       builder: (context, controller, child) =>
           widget.overflowButtonBuilder?.call(() {
             controller.isOpen ? controller.close() : controller.open();
