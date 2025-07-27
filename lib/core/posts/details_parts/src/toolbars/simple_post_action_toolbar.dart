@@ -54,7 +54,7 @@ class SimplePostActionToolbar extends ConsumerWidget {
       config: config,
       configViewer: ref.watchConfigViewer,
       builder: (context, buttons) {
-        return AdaptiveButtonRow.menu(
+        return AdaptiveButtonRow.scrollable(
           buttonWidth: 52,
           buttons: [
             if (!forceHideFav &&
@@ -63,7 +63,7 @@ class SimplePostActionToolbar extends ConsumerWidget {
                 removeFavorite != null &&
                 booruBuilder != null)
               ButtonData(
-                behavior: ButtonBehavior.alwaysVisible,
+                required: true,
                 widget: FavoritePostButton(
                   isFaved: isFaved,
                   isAuthorized: isAuthorized!,
@@ -73,17 +73,17 @@ class SimplePostActionToolbar extends ConsumerWidget {
                 title: context.t.post.action.favorite,
               ),
             ButtonData(
-              behavior: ButtonBehavior.alwaysVisible,
+              required: true,
               widget: BookmarkPostButton(post: post, config: config),
               title: context.t.post.action.bookmark,
             ),
             ButtonData(
-              behavior: ButtonBehavior.alwaysVisible,
+              required: true,
               widget: DownloadPostButton(post: post),
               title: context.t.download.download,
             ),
             ButtonData(
-              behavior: ButtonBehavior.alwaysVisible,
+              required: true,
               widget: SharePostButton(
                 post: post,
                 auth: config,

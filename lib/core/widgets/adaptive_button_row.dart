@@ -21,15 +21,15 @@ enum OverflowStrategy {
   scrollable,
 }
 
-enum ButtonBehavior {
-  /// Can overflow to menu
-  normal,
+enum ButtonPlacement {
+  /// Main row if space, else menu
+  flexible,
 
-  /// Always in main row
-  alwaysVisible,
+  /// Main row if space, else disappear
+  hideOnOverflow,
 
-  /// Disappears when no space
-  secondary,
+  /// Always in menu
+  menuOnly,
 }
 
 class ButtonData {
@@ -37,13 +37,15 @@ class ButtonData {
     required this.widget,
     required this.title,
     this.onTap,
-    this.behavior = ButtonBehavior.normal,
+    this.required = false,
+    this.placement = ButtonPlacement.flexible,
   });
 
   final Widget widget;
   final String title;
   final VoidCallback? onTap;
-  final ButtonBehavior behavior;
+  final bool required;
+  final ButtonPlacement placement;
 }
 
 class SimpleButtonData extends ButtonData {
@@ -52,7 +54,8 @@ class SimpleButtonData extends ButtonData {
     required super.title,
     required VoidCallback onPressed,
     String? tooltip,
-    super.behavior,
+    super.required,
+    super.placement,
   }) : super(
          widget: IconButton(
            icon: Icon(icon),
@@ -75,6 +78,7 @@ class AdaptiveButtonRow extends StatefulWidget {
     this.scrollController,
     this.runSpacing = _kDefaultSpacing,
     this.alignment = WrapAlignment.center,
+    this.maxVisibleButtons,
     super.key,
   });
 
@@ -85,6 +89,7 @@ class AdaptiveButtonRow extends StatefulWidget {
     Widget? overflowIcon,
     Widget Function(VoidCallback)? overflowButtonBuilder,
     ValueChanged<int>? onOverflow,
+    int? maxVisibleButtons,
     Key? key,
   }) => AdaptiveButtonRow._(
     buttons: buttons,
@@ -94,6 +99,7 @@ class AdaptiveButtonRow extends StatefulWidget {
     overflowIcon: overflowIcon,
     overflowButtonBuilder: overflowButtonBuilder,
     onOverflow: onOverflow,
+    maxVisibleButtons: maxVisibleButtons,
     key: key,
   );
 
@@ -102,6 +108,7 @@ class AdaptiveButtonRow extends StatefulWidget {
     double? buttonWidth,
     double spacing = _kDefaultSpacing,
     ScrollController? scrollController,
+    int? maxVisibleButtons,
     Key? key,
   }) => AdaptiveButtonRow._(
     buttons: buttons,
@@ -109,6 +116,7 @@ class AdaptiveButtonRow extends StatefulWidget {
     buttonWidth: buttonWidth,
     spacing: spacing,
     scrollController: scrollController,
+    maxVisibleButtons: maxVisibleButtons,
     key: key,
   );
 
@@ -118,6 +126,7 @@ class AdaptiveButtonRow extends StatefulWidget {
     double spacing = _kWrapSpacing,
     double runSpacing = _kWrapSpacing,
     WrapAlignment alignment = WrapAlignment.center,
+    int? maxVisibleButtons,
     Key? key,
   }) => AdaptiveButtonRow._(
     buttons: buttons,
@@ -126,6 +135,7 @@ class AdaptiveButtonRow extends StatefulWidget {
     spacing: spacing,
     runSpacing: runSpacing,
     alignment: alignment,
+    maxVisibleButtons: maxVisibleButtons,
     key: key,
   );
 
@@ -133,6 +143,7 @@ class AdaptiveButtonRow extends StatefulWidget {
   final OverflowStrategy overflowStrategy;
   final double? buttonWidth;
   final double spacing;
+  final int? maxVisibleButtons;
 
   // Menu-specific
   final Widget? overflowIcon;
@@ -162,6 +173,24 @@ class _AdaptiveButtonRowState extends State<AdaptiveButtonRow> {
     };
   }
 
+  Widget _buildRowWithOptionalOverflow(
+    List<ButtonData> mainButtons,
+    List<ButtonData> overflowButtons,
+    double buttonWidth,
+  ) {
+    if (overflowButtons.isEmpty) {
+      return _buildRow(mainButtons, buttonWidth);
+    }
+
+    return _buildRow([
+      ...mainButtons,
+      ButtonData(
+        widget: _buildOverflowButton(overflowButtons, mainButtons.length),
+        title: 'More'.hc,
+      ),
+    ], buttonWidth);
+  }
+
   Widget _buildMenuLayout() {
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -172,76 +201,107 @@ class _AdaptiveButtonRowState extends State<AdaptiveButtonRow> {
               _kMaxButtonWidth,
             );
 
-        final maxButtons =
+        final spaceBasedMaxButtons =
             ((constraints.maxWidth + widget.spacing) /
                     (effectiveButtonWidth + widget.spacing))
                 .floor();
 
-        final alwaysVisible = widget.buttons
-            .where((b) => b.behavior == ButtonBehavior.alwaysVisible)
+        final maxButtons = widget.maxVisibleButtons != null
+            ? widget.maxVisibleButtons!.clamp(1, spaceBasedMaxButtons)
+            : spaceBasedMaxButtons;
+
+        final requiredButtons = widget.buttons
+            .where((b) => b.required)
             .toList();
-        final canOverflow = widget.buttons
-            .where((b) => b.behavior == ButtonBehavior.normal)
+        final optionalFlexibleButtons = widget.buttons
+            .where(
+              (b) => !b.required && b.placement == ButtonPlacement.flexible,
+            )
             .toList();
-        final secondary = widget.buttons
-            .where((b) => b.behavior == ButtonBehavior.secondary)
+        final optionalHideButtons = widget.buttons
+            .where(
+              (b) =>
+                  !b.required && b.placement == ButtonPlacement.hideOnOverflow,
+            )
+            .toList();
+        final menuOnlyButtons = widget.buttons
+            .where((b) => b.placement == ButtonPlacement.menuOnly)
             .toList();
 
-        final availableSpace = maxButtons - alwaysVisible.length;
+        final hasMenuOnlyButtons = menuOnlyButtons.isNotEmpty;
+        final effectiveMaxButtons = hasMenuOnlyButtons
+            ? maxButtons - 1
+            : maxButtons;
 
         assert(
-          alwaysVisible.length <= maxButtons,
-          'Too many alwaysVisible buttons (${alwaysVisible.length}) for available space ($maxButtons)',
+          requiredButtons.length <= effectiveMaxButtons,
+          'Too many required buttons (${requiredButtons.length}) for max visible buttons ($effectiveMaxButtons)',
         );
 
+        final availableSpace = effectiveMaxButtons - requiredButtons.length;
+
         if (availableSpace <= 0) {
-          return _buildRow(alwaysVisible, effectiveButtonWidth);
+          return _buildRowWithOptionalOverflow(
+            requiredButtons,
+            hasMenuOnlyButtons ? menuOnlyButtons : [],
+            effectiveButtonWidth,
+          );
         }
 
-        final visibleSecondary = secondary.take(availableSpace).toList();
-        final remainingSpace = availableSpace - visibleSecondary.length;
+        final visibleHideButtons = optionalHideButtons
+            .take(availableSpace)
+            .toList();
+        final remainingSpace = availableSpace - visibleHideButtons.length;
 
         if (remainingSpace <= 0) {
           return _buildRow(
             [
-              ...alwaysVisible,
-              ...visibleSecondary,
+              ...requiredButtons,
+              ...visibleHideButtons,
             ],
             effectiveButtonWidth,
           );
         }
 
-        if (canOverflow.length <= remainingSpace) {
-          return _buildRow(
+        if (optionalFlexibleButtons.length <= remainingSpace) {
+          return _buildRowWithOptionalOverflow(
             [
-              ...alwaysVisible,
-              ...visibleSecondary,
-              ...canOverflow,
+              ...requiredButtons,
+              ...visibleHideButtons,
+              ...optionalFlexibleButtons,
             ],
+            menuOnlyButtons,
             effectiveButtonWidth,
           );
         }
 
-        final visibleOverflowable = canOverflow
+        // Need space for overflow button
+        if (remainingSpace <= 1) {
+          return _buildRowWithOptionalOverflow(
+            [
+              ...requiredButtons,
+              ...visibleHideButtons,
+            ],
+            menuOnlyButtons,
+            effectiveButtonWidth,
+          );
+        }
+
+        final visibleFlexibleButtons = optionalFlexibleButtons
             .take(remainingSpace - 1)
             .toList();
-        final overflowButtons = canOverflow.skip(remainingSpace - 1).toList();
+        final overflowButtons = [
+          ...optionalFlexibleButtons.skip(remainingSpace - 1),
+          ...menuOnlyButtons,
+        ];
 
-        return _buildRow(
+        return _buildRowWithOptionalOverflow(
           [
-            ...alwaysVisible,
-            ...visibleSecondary,
-            ...visibleOverflowable,
-            ButtonData(
-              widget: _buildOverflowButton(
-                overflowButtons,
-                alwaysVisible.length +
-                    visibleSecondary.length +
-                    visibleOverflowable.length,
-              ),
-              title: 'More'.hc,
-            ),
+            ...requiredButtons,
+            ...visibleHideButtons,
+            ...visibleFlexibleButtons,
           ],
+          overflowButtons,
           effectiveButtonWidth,
         );
       },
@@ -249,7 +309,11 @@ class _AdaptiveButtonRowState extends State<AdaptiveButtonRow> {
   }
 
   Widget _buildScrollableLayout() {
-    final length = widget.buttons.length;
+    final buttonsToShow = widget.maxVisibleButtons != null
+        ? widget.buttons.take(widget.maxVisibleButtons!).toList()
+        : widget.buttons;
+
+    final length = buttonsToShow.length;
     final effectiveButtonWidth = widget.buttonWidth ?? _kMinButtonWidth;
     final requiredWidth =
         (effectiveButtonWidth * length) + (widget.spacing * (length - 1));
@@ -261,19 +325,15 @@ class _AdaptiveButtonRowState extends State<AdaptiveButtonRow> {
           true => Row(
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
-            children: _buildButtonWidgets(),
+            children: _buildButtonWidgets(buttonsToShow),
           ),
           // Otherwise, use horizontal scroll
           false => SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             controller: widget.scrollController,
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              controller: widget.scrollController,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: _buildButtonWidgets(),
-              ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: _buildButtonWidgets(buttonsToShow),
             ),
           ),
         };
@@ -282,18 +342,23 @@ class _AdaptiveButtonRowState extends State<AdaptiveButtonRow> {
   }
 
   Widget _buildWrapLayout() {
+    final buttonsToShow = widget.maxVisibleButtons != null
+        ? widget.buttons.take(widget.maxVisibleButtons!).toList()
+        : widget.buttons;
+
     return Wrap(
       spacing: widget.spacing,
       runSpacing: widget.runSpacing,
       alignment: widget.alignment,
-      children: _buildButtonWidgets(),
+      children: _buildButtonWidgets(buttonsToShow),
     );
   }
 
-  List<Widget> _buildButtonWidgets() {
+  List<Widget> _buildButtonWidgets([List<ButtonData>? buttons]) {
+    final buttonsToUse = buttons ?? widget.buttons;
     final effectiveButtonWidth = widget.buttonWidth;
 
-    return widget.buttons
+    return buttonsToUse
         .asMap()
         .entries
         .map(
@@ -305,7 +370,7 @@ class _AdaptiveButtonRowState extends State<AdaptiveButtonRow> {
               )
             else
               entry.value.widget,
-            if (entry.key < widget.buttons.length - 1)
+            if (entry.key < buttonsToUse.length - 1)
               SizedBox(width: widget.spacing),
           ],
         )

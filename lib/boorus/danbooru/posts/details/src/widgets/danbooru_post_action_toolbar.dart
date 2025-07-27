@@ -69,7 +69,7 @@ class DanbooruPostActionToolbar extends ConsumerWidget {
             buttons: [
               if (config.hasLoginDetails())
                 ButtonData(
-                  behavior: ButtonBehavior.alwaysVisible,
+                  required: true,
                   widget: FavoritePostButton(
                     isFaved: isFaved,
                     isAuthorized: config.hasLoginDetails(),
@@ -80,7 +80,7 @@ class DanbooruPostActionToolbar extends ConsumerWidget {
                 ),
               if (config.hasLoginDetails())
                 ButtonData(
-                  behavior: ButtonBehavior.alwaysVisible,
+                  required: true,
                   widget: UpvotePostButton(
                     voteState: voteState,
                     onUpvote: () => ref.danbooruUpvote(post.id),
@@ -90,7 +90,7 @@ class DanbooruPostActionToolbar extends ConsumerWidget {
                 ),
               if (config.hasLoginDetails())
                 ButtonData(
-                  behavior: ButtonBehavior.alwaysVisible,
+                  required: true,
                   widget: DownvotePostButton(
                     voteState: voteState,
                     onDownvote: () => ref.danbooruDownvote(post.id),
@@ -99,7 +99,7 @@ class DanbooruPostActionToolbar extends ConsumerWidget {
                   title: context.t.post.action.downvote,
                 ),
               ButtonData(
-                behavior: ButtonBehavior.alwaysVisible,
+                required: true,
                 widget: BookmarkPostButton(
                   post: post,
                   config: config,

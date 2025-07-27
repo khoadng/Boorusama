@@ -43,12 +43,12 @@ class HydrusPostActionToolbar extends ConsumerWidget {
             buttons: [
               if (canFav)
                 ButtonData(
-                  behavior: ButtonBehavior.alwaysVisible,
+                  required: true,
                   widget: HydrusFavoritePostButton(post: post),
                   title: context.t.post.action.favorite,
                 ),
               ButtonData(
-                behavior: ButtonBehavior.alwaysVisible,
+                required: true,
                 widget: BookmarkPostButton(
                   post: post,
                   config: config,
@@ -56,7 +56,7 @@ class HydrusPostActionToolbar extends ConsumerWidget {
                 title: context.t.post.action.bookmark,
               ),
               ButtonData(
-                behavior: ButtonBehavior.alwaysVisible,
+                required: true,
                 widget: DownloadPostButton(post: post),
                 title: context.t.download.download,
               ),

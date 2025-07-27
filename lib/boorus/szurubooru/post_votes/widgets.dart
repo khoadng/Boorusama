@@ -53,7 +53,7 @@ class SzurubooruPostActionToolbar extends ConsumerWidget {
             buttons: [
               if (config.hasLoginDetails())
                 ButtonData(
-                  behavior: ButtonBehavior.alwaysVisible,
+                  required: true,
                   widget: FavoritePostButton(
                     isFaved: isFaved,
                     isAuthorized: config.hasLoginDetails(),
@@ -64,7 +64,7 @@ class SzurubooruPostActionToolbar extends ConsumerWidget {
                 ),
               if (config.hasLoginDetails())
                 ButtonData(
-                  behavior: ButtonBehavior.alwaysVisible,
+                  required: true,
                   widget: UpvotePostButton(
                     voteState: voteState,
                     onUpvote: () => voteNotifier.upvote(post.id),
@@ -74,7 +74,7 @@ class SzurubooruPostActionToolbar extends ConsumerWidget {
                 ),
               if (config.hasLoginDetails())
                 ButtonData(
-                  behavior: ButtonBehavior.alwaysVisible,
+                  required: true,
                   widget: DownvotePostButton(
                     voteState: voteState,
                     onDownvote: () => voteNotifier.downvote(post.id),
@@ -83,12 +83,12 @@ class SzurubooruPostActionToolbar extends ConsumerWidget {
                   title: context.t.post.action.downvote,
                 ),
               ButtonData(
-                behavior: ButtonBehavior.alwaysVisible,
+                required: true,
                 widget: BookmarkPostButton(post: post, config: config),
                 title: context.t.post.action.bookmark,
               ),
               ButtonData(
-                behavior: ButtonBehavior.alwaysVisible,
+                required: true,
                 widget: DownloadPostButton(post: post),
                 title: context.t.download.download,
               ),

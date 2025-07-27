@@ -158,7 +158,7 @@ class BookmarkPostActionToolbar extends ConsumerWidget {
             buttons: [
               if (config != null)
                 ButtonData(
-                  behavior: ButtonBehavior.alwaysVisible,
+                  required: true,
                   widget: BookmarkPostButton(
                     post: post,
                     config: config.auth,
@@ -167,7 +167,7 @@ class BookmarkPostActionToolbar extends ConsumerWidget {
                 ),
               if (config != null)
                 ButtonData(
-                  behavior: ButtonBehavior.alwaysVisible,
+                  required: true,
                   widget: IconButton(
                     splashRadius: 16,
                     onPressed: () {
