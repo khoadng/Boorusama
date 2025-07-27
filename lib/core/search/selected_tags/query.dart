@@ -1,6 +1,9 @@
 // Dart imports:
 import 'dart:convert';
 
+// Package imports:
+import 'package:collection/collection.dart';
+
 mixin QueryTypeMixin {
   String get query;
   QueryType? get queryType;
@@ -20,14 +23,25 @@ mixin QueryTypeMixin {
 
 enum QueryType {
   /// Example: `tag1 -tag2`
-  simple,
+  simple('simple'),
 
   /// Example: ["tag1", "tag2", "tag3"]
-  list,
+  list('list');
+
+  const QueryType(this.type);
+
+  final String type;
+
+  static QueryType? fromString(String? type) {
+    if (type == null) return null;
+
+    return QueryType.values.firstWhereOrNull(
+      (e) => e.type == type,
+    );
+  }
+
+  @override
+  String toString() => type;
 }
 
-QueryType? parseQueryType(String? type) => switch (type) {
-      'simple' => QueryType.simple,
-      'list' => QueryType.list,
-      _ => null
-    };
+QueryType? parseQueryType(String? type) => QueryType.fromString(type);
