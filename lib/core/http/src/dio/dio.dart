@@ -161,11 +161,16 @@ HttpClientAdapter _createHttpClientAdapter({
   }
 
   HttpClientAdapter createNativeAdapter() {
-    logger?.logI('Network', 'Using native adapter');
-
-    return newNativeAdapter(
-      userAgent: userAgent,
-    );
+    try {
+      logger?.logI('Network', 'Using native adapter');
+      return newNativeAdapter(userAgent: userAgent);
+    } catch (e) {
+      logger?.logW(
+        'Network',
+        'Native adapter failed, falling back to default: $e',
+      );
+      return createDefaultAdapter();
+    }
   }
 
   if ((isAndroid() || isIOS() || isMacOS()) && proxySettings == null) {
