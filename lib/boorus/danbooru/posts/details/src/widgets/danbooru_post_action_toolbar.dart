@@ -61,6 +61,8 @@ class DanbooruPostActionToolbar extends ConsumerWidget {
       child: CommonPostButtonsBuilder(
         post: post,
         onStartSlideshow: onStartSlideshow,
+        config: config,
+        configViewer: ref.watchConfigViewer,
         builder: (context, buttons) {
           return AdaptiveButtonRow.menu(
             buttonWidth: 48,
@@ -98,7 +100,10 @@ class DanbooruPostActionToolbar extends ConsumerWidget {
                 ),
               ButtonData(
                 behavior: ButtonBehavior.alwaysVisible,
-                widget: BookmarkPostButton(post: post),
+                widget: BookmarkPostButton(
+                  post: post,
+                  config: config,
+                ),
                 title: context.t.post.action.bookmark,
               ),
               ButtonData(
@@ -106,7 +111,10 @@ class DanbooruPostActionToolbar extends ConsumerWidget {
                 title: context.t.download.download,
               ),
               ButtonData(
-                widget: SharePostButton(post: post),
+                widget: SharePostButton(
+                  post: post,
+                  auth: config,
+                ),
                 title: context.t.post.action.share,
               ),
               ButtonData(

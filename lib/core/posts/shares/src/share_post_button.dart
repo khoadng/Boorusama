@@ -8,6 +8,7 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import '../../../../foundation/display.dart';
 import '../../../boorus/engine/engine.dart';
+import '../../../configs/config/types.dart';
 import '../../../configs/ref.dart';
 import '../../post/post.dart';
 import 'post_modal_share.dart';
@@ -17,10 +18,12 @@ import 'post_share_state.dart';
 class SharePostButton extends ConsumerWidget {
   const SharePostButton({
     required this.post,
+    required this.auth,
     super.key,
   });
 
   final Post post;
+  final BooruConfigAuth auth;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -29,7 +32,7 @@ class SharePostButton extends ConsumerWidget {
       onPressed: () => ref.sharePost(
         post,
         context: context,
-        state: ref.watch(postShareProvider(post)),
+        state: ref.watch(postShareProvider((auth, post))),
       ),
       icon: const Icon(
         Symbols.share,

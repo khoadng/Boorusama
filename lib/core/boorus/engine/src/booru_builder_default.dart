@@ -183,7 +183,7 @@ class PostGestureHandler {
     ref.sharePost(
       post,
       context: ref.context,
-      state: ref.read(postShareProvider(post)),
+      state: ref.read(postShareProvider((ref.readConfigAuth, post))),
     );
   }
 
@@ -192,7 +192,11 @@ class PostGestureHandler {
   }
 
   void handleViewTags(WidgetRef ref, Post post) {
-    goToShowTaglistPage(ref, post);
+    goToShowTaglistPage(
+      ref,
+      post,
+      auth: ref.readConfigAuth,
+    );
   }
 
   void handleViewOriginal(WidgetRef ref, Post post) {
@@ -308,27 +312,31 @@ mixin DefaultHomeMixin implements BooruBuilder {
 mixin DefaultViewTagListBuilderMixin implements BooruBuilder {
   @override
   ViewTagListBuilder get viewTagListBuilder =>
-      (context, post, initiallyMultiSelectEnabled) => _DefaultShowTagListPage(
-        post: post,
-        initiallyMultiSelectEnabled: initiallyMultiSelectEnabled,
-      );
+      (context, post, initiallyMultiSelectEnabled, auth) =>
+          _DefaultShowTagListPage(
+            post: post,
+            initiallyMultiSelectEnabled: initiallyMultiSelectEnabled,
+            auth: auth,
+          );
 }
 
-class _DefaultShowTagListPage extends ConsumerWidget {
+class _DefaultShowTagListPage extends StatelessWidget {
   const _DefaultShowTagListPage({
     required this.post,
     required this.initiallyMultiSelectEnabled,
+    required this.auth,
   });
 
   final Post post;
+  final BooruConfigAuth auth;
   final bool initiallyMultiSelectEnabled;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return ShowTagListPage(
       post: post,
       initiallyMultiSelectEnabled: initiallyMultiSelectEnabled,
-      auth: ref.watchConfigAuth,
+      auth: auth,
     );
   }
 }

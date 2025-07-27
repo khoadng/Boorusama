@@ -9,6 +9,7 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import '../../../../bookmarks/bookmark.dart';
 import '../../../../bookmarks/providers.dart';
+import '../../../../configs/config/types.dart';
 import '../../../../configs/ref.dart';
 import '../../../../theme.dart';
 import '../../../post/post.dart';
@@ -16,18 +17,19 @@ import '../../../post/post.dart';
 class BookmarkPostButton extends ConsumerWidget {
   const BookmarkPostButton({
     required this.post,
+    required this.config,
     super.key,
   });
 
   final Post post;
+  final BooruConfigAuth config;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final booruConfig = ref.watchConfigAuth;
     final bookmarkState = ref.watch(bookmarkProvider);
     final isBookmarked = bookmarkState.isBookmarked(
       post,
-      booruConfig.booruIdHint,
+      config.booruIdHint,
     );
 
     return isBookmarked
@@ -36,7 +38,7 @@ class BookmarkPostButton extends ConsumerWidget {
             onPressed: () {
               ref.bookmarks.removeBookmarkWithToast(
                 context,
-                BookmarkUniqueId.fromPost(post, booruConfig.booruIdHint),
+                BookmarkUniqueId.fromPost(post, config.booruIdHint),
               );
             },
             icon: Icon(
@@ -50,7 +52,7 @@ class BookmarkPostButton extends ConsumerWidget {
             onPressed: () {
               ref.bookmarks.addBookmarkWithToast(
                 context,
-                booruConfig,
+                config,
                 post,
               );
             },

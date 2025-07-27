@@ -30,7 +30,7 @@ final sankakuAutocompleteRepoProvider =
     });
 
 final sankakuTagExtractorProvider =
-    Provider.family<TagExtractor<SankakuPost>, BooruConfigAuth>(
+    Provider.family<TagExtractor, BooruConfigAuth>(
       (ref, config) {
         return TagExtractorBuilder(
           siteHost: config.url,

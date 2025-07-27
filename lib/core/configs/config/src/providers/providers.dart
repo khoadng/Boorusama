@@ -1,4 +1,5 @@
 // Package imports:
+import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
@@ -32,3 +33,12 @@ final orderedConfigsProvider = FutureProvider.autoDispose<IList<BooruConfig>>((
     return configMap.values.toIList();
   }
 });
+
+final firstMatchingConfigProvider = Provider.family<BooruConfig?, int>(
+  (ref, id) {
+    final configs = ref.watch(booruConfigProvider);
+    return configs.firstWhereOrNull(
+      (config) => config.auth.booruIdHint == id || config.booruId == id,
+    );
+  },
+);

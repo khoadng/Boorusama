@@ -161,7 +161,7 @@ class E621Repository extends BooruRepositoryDefault {
   }
 
   @override
-  TagExtractor<Post> tagExtractor(BooruConfigAuth config) {
+  TagExtractor tagExtractor(BooruConfigAuth config) {
     return ref.watch(e621TagExtractorProvider(config));
   }
 

@@ -182,6 +182,7 @@ class Bookmark extends Equatable with ImageInfoMixin, TagListCheckMixin {
     String? Function()? format,
     int? Function()? postId,
     Map<String, String>? metadata,
+    ImageUrlResolver? imageUrlResolver,
   }) {
     return Bookmark(
       id: id ?? this.id,
@@ -200,7 +201,7 @@ class Bookmark extends Equatable with ImageInfoMixin, TagListCheckMixin {
           ? realSourceUrl()
           : this.realSourceUrl,
       format: format != null ? format() : this.format,
-      imageUrlResolver: _resolver,
+      imageUrlResolver: imageUrlResolver ?? _resolver,
       postId: postId != null ? postId() : this.postId,
       metadata: metadata ?? this.metadata,
     );

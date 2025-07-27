@@ -9,7 +9,6 @@ import '../../../core/tags/local/providers.dart';
 import '../../../core/tags/tag/providers.dart';
 import '../../../core/tags/tag/tag.dart';
 import '../client_provider.dart';
-import '../posts/types.dart';
 import 'parser.dart';
 import 'query_composer.dart';
 
@@ -41,7 +40,7 @@ final invalidTags = [
 ];
 
 final gelbooruTagExtractorProvider =
-    Provider.family<TagExtractor<GelbooruPost>, BooruConfigAuth>(
+    Provider.family<TagExtractor, BooruConfigAuth>(
       (ref, config) {
         return TagExtractorBuilder(
           siteHost: config.url,

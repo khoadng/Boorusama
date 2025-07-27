@@ -78,7 +78,11 @@ class GeneralPostContextMenu extends ConsumerWidget {
         ContextMenuButtonConfig(
           'View tags',
           onPressed: () {
-            goToShowTaglistPage(ref, post);
+            goToShowTaglistPage(
+              ref,
+              post,
+              auth: booruConfig,
+            );
           },
         ),
         if (!booruConfig.hasStrictSFW)

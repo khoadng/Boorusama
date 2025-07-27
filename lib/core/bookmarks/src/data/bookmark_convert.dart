@@ -9,7 +9,6 @@ import '../../../posts/sources/source.dart';
 import '../types/bookmark.dart';
 import 'hive/object.dart';
 
-// map BoxError to BookmarkGetError
 BookmarkGetError mapBoxErrorToBookmarkGetError(BoxError error) =>
     switch (error) {
       BoxError.boxClosed => BookmarkGetError.databaseClosed,
@@ -48,7 +47,6 @@ Either<BookmarkGetError, List<Bookmark>> tryMapBookmarkHiveObjectsToBookmarks(
   },
 );
 
-// map BookmarkHiveObject to Bookmark
 Either<BookmarkGetError, Bookmark> tryMapBookmarkHiveObjectToBookmark(
   BookmarkHiveObject hiveObject,
   ImageUrlResolver Function(int? booruId) imageUrlResolver,
@@ -127,11 +125,19 @@ class BookmarkPost extends SimplePost {
   final PostSource realSourceUrl;
   final Bookmark bookmark;
   final int? originalPostId;
+
+  Post toOriginalPost() {
+    return bookmark.toPost(
+      overridePostId: originalPostId,
+    );
+  }
 }
 
 extension BookmarkToPost on Bookmark {
-  BookmarkPost toPost() => BookmarkPost(
-    id: id,
+  BookmarkPost toPost({
+    int? overridePostId,
+  }) => BookmarkPost(
+    id: overridePostId ?? id,
     thumbnailImageUrl: thumbnailUrl,
     sampleImageUrl: sampleUrl,
     originalImageUrl: originalUrl,
@@ -156,29 +162,5 @@ extension BookmarkToPost on Bookmark {
     metadata: null,
     bookmark: this,
     originalPostId: postId,
-  );
-}
-
-extension PostToBookmark on BookmarkPost {
-  Bookmark toBookmark({
-    required ImageUrlResolver Function(int? booruId) imageUrlResolver,
-  }) => Bookmark(
-    id: id,
-    booruId: -1,
-    createdAt: createdAt ?? DateTime.now(),
-    updatedAt: createdAt ?? DateTime.now(),
-    thumbnailUrl: thumbnailImageUrl,
-    sampleUrl: sampleImageUrl,
-    originalUrl: originalImageUrl,
-    sourceUrl: '',
-    width: width,
-    height: height,
-    md5: md5,
-    tags: tags,
-    realSourceUrl: source.url,
-    format: format,
-    imageUrlResolver: imageUrlResolver(-1),
-    postId: originalPostId,
-    metadata: Bookmark.toMetadata(metadata),
   );
 }

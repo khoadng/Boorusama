@@ -184,7 +184,7 @@ final bookmarkTagGroupsProvider = FutureProvider.autoDispose
     });
 
 final bookmarkTagExtractorProvider =
-    Provider.family<TagExtractor<BookmarkPost>, BooruConfigAuth>(
+    Provider.family<TagExtractor, BooruConfigAuth>(
       (ref, config) {
         return TagExtractorBuilder(
           siteHost: config.url,

@@ -80,7 +80,7 @@ final szurubooruTagQueryComposerProvider =
     );
 
 final szurubooruTagExtractorProvider =
-    Provider.family<TagExtractor<SzurubooruPost>, BooruConfigAuth>(
+    Provider.family<TagExtractor, BooruConfigAuth>(
       (ref, config) {
         return TagExtractorBuilder(
           siteHost: config.url,

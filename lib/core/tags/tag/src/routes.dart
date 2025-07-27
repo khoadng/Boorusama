@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../../foundation/display.dart';
 import '../../../boorus/engine/providers.dart';
-import '../../../configs/config/providers.dart';
+import '../../../configs/config/types.dart';
 import '../../../posts/post/post.dart';
 import '../../../router.dart';
 import 'pages/show_tag_list_page.dart';
@@ -15,9 +15,9 @@ import 'pages/show_tag_list_page.dart';
 Future<bool?> goToShowTaglistPage(
   WidgetRef ref,
   Post post, {
+  required BooruConfigAuth auth,
   bool initiallyMultiSelectEnabled = false,
 }) {
-  final auth = ref.readConfigAuth;
   final booruBuilder = ref.read(booruBuilderProvider(auth));
   final viewTagListBuilder = booruBuilder?.viewTagListBuilder;
 
@@ -46,6 +46,7 @@ Future<bool?> goToShowTaglistPage(
       context,
       post,
       initiallyMultiSelectEnabled,
+      auth,
     ),
   );
 }

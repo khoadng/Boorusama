@@ -2,40 +2,43 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../configs/ref.dart';
+import '../../../configs/config/types.dart';
 import '../../post/post.dart';
 import '../../post/providers.dart';
 import 'post_share_state.dart';
 
+typedef PostShareParams = (BooruConfigAuth config, Post post);
+
 final postShareProvider = NotifierProvider.autoDispose
-    .family<PostShareNotifier, PostShareState, Post>(
+    .family<PostShareNotifier, PostShareState, PostShareParams>(
       PostShareNotifier.new,
     );
 
 class PostShareNotifier
-    extends AutoDisposeFamilyNotifier<PostShareState, Post> {
+    extends AutoDisposeFamilyNotifier<PostShareState, PostShareParams> {
   @override
-  PostShareState build(Post arg) {
+  PostShareState build(PostShareParams arg) {
+    final (config, post) = arg;
     final postLinkGenerator = ref.watch(
-      postLinkGeneratorProvider(ref.watchConfigAuth),
+      postLinkGeneratorProvider(config),
     );
 
-    final booruLink = postLinkGenerator.getLink(arg);
+    final booruLink = postLinkGenerator.getLink(post);
 
     return PostShareState(
       booruLink: booruLink,
-      sourceLink: arg.source,
+      sourceLink: post.source,
     );
   }
 
   void updateInformation(Post post) {
-    final booruLink = ref
-        .read(postLinkGeneratorProvider(ref.readConfigAuth))
-        .getLink(post);
+    final (config, currPost) = arg;
+
+    final booruLink = ref.read(postLinkGeneratorProvider(config)).getLink(post);
 
     state = state.copyWith(
       booruLink: booruLink,
-      sourceLink: arg.source,
+      sourceLink: post.source,
     );
   }
 }

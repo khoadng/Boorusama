@@ -340,7 +340,9 @@ class _PostDetailPageScaffoldState<T extends Post>
             _clearAutoHideVideoControlsTimer();
           }
 
-          ref.read(postShareProvider(post).notifier).updateInformation(post);
+          ref
+              .read(postShareProvider((widget.authConfig, post)).notifier)
+              .updateInformation(post);
 
           if (widget.viewerConfig.autoFetchNotes) {
             ref.read(notesProvider(widget.authConfig).notifier).load(post);

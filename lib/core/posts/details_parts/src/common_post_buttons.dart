@@ -12,7 +12,6 @@ import '../../../../foundation/clipboard.dart';
 import '../../../../foundation/toast.dart';
 import '../../../../foundation/url_launcher.dart';
 import '../../../boorus/engine/engine.dart';
-import '../../../configs/config/providers.dart';
 import '../../../configs/config/types.dart';
 import '../../../images/providers.dart';
 import '../../../settings/routes.dart';
@@ -27,39 +26,56 @@ class CommonPostButtonsBuilder extends ConsumerWidget {
     required this.builder,
     required this.post,
     required this.onStartSlideshow,
+    required this.config,
+    required this.configViewer,
     super.key,
+    this.copy = true,
   });
 
+  final BooruConfigAuth? config;
+  final BooruConfigViewer? configViewer;
   final Widget Function(BuildContext context, List<ButtonData> commonButtons)
   builder;
   final Post post;
   final VoidCallback onStartSlideshow;
+  final bool copy;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfigAuth;
-    final configViewer = ref.watchConfigViewer;
-    final postLinkGenerator = ref.watch(postLinkGeneratorProvider(config));
+    final config = this.config;
+    final configViewer = this.configViewer;
+
+    final postLinkGenerator = config != null
+        ? ref.watch(postLinkGeneratorProvider(config))
+        : null;
 
     final commonButtons = [
-      SimpleButtonData(
-        icon: Icons.copy,
-        title: 'Copy image',
-        onPressed: () => copyImage(ref, post, config, configViewer),
-      ),
-      if (!config.hasStrictSFW)
-        SimpleButtonData(
-          icon: Icons.open_in_browser,
-          title: context.t.post.detail.view_in_browser,
-          onPressed: () =>
-              launchExternalUrlString(postLinkGenerator.getLink(post)),
-        ),
-      if (post.tags.isNotEmpty)
-        SimpleButtonData(
-          icon: Icons.label,
-          title: 'View tags',
-          onPressed: () => goToShowTaglistPage(ref, post),
-        ),
+      if (copy)
+        if (config != null && configViewer != null)
+          SimpleButtonData(
+            icon: Icons.copy,
+            title: 'Copy image',
+            onPressed: () => copyImage(ref, post, config, configViewer),
+          ),
+      if (postLinkGenerator != null && config != null)
+        if (!config.hasStrictSFW)
+          SimpleButtonData(
+            icon: Icons.open_in_browser,
+            title: context.t.post.detail.view_in_browser,
+            onPressed: () =>
+                launchExternalUrlString(postLinkGenerator.getLink(post)),
+          ),
+      if (config != null)
+        if (post.tags.isNotEmpty)
+          SimpleButtonData(
+            icon: Icons.label,
+            title: 'View tags',
+            onPressed: () => goToShowTaglistPage(
+              ref,
+              post,
+              auth: config,
+            ),
+          ),
       if (post.hasFullView)
         SimpleButtonData(
           icon: Icons.fullscreen,

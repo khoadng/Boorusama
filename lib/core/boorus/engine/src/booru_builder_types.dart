@@ -157,6 +157,7 @@ typedef ViewTagListBuilder =
       BuildContext context,
       Post post,
       bool initiallyMultiSelectEnabled,
+      BooruConfigAuth auth,
     );
 
 typedef CreateUnknownBooruWidgetsBuilder =

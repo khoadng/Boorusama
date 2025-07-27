@@ -11,6 +11,7 @@ import '../../core/configs/config.dart';
 import '../../core/configs/create/widgets.dart';
 import '../../core/configs/gesture/gesture.dart';
 import '../../core/configs/manage/widgets.dart';
+import '../../core/configs/ref.dart';
 import '../../core/downloads/downloader/providers.dart';
 import '../../core/downloads/filename/types.dart';
 import '../../core/home/custom_home.dart';
@@ -144,10 +145,14 @@ class DanbooruBuilder
         onShare: () => ref.sharePost(
           post,
           context: ref.context,
-          state: ref.read(postShareProvider(post)),
+          state: ref.read(postShareProvider((ref.readConfigAuth, post))),
         ),
         onToggleBookmark: () => ref.toggleBookmark(post),
-        onViewTags: () => goToShowTaglistPage(ref, post),
+        onViewTags: () => goToShowTaglistPage(
+          ref,
+          post,
+          auth: ref.readConfigAuth,
+        ),
         onViewOriginal: () => goToOriginalImagePage(ref, post),
         onOpenSource: () => post.source.whenWeb(
           (source) => launchExternalUrlString(source.url),
@@ -335,7 +340,7 @@ class DanbooruBuilder
 
   @override
   ViewTagListBuilder get viewTagListBuilder =>
-      (context, post, initiallyMultiSelectEnabled) {
+      (context, post, initiallyMultiSelectEnabled, auth) {
         return DanbooruShowTagListPage(
           post: post,
           initiallyMultiSelectEnabled: initiallyMultiSelectEnabled,

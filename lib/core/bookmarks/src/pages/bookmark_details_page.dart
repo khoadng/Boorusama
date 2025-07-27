@@ -8,7 +8,8 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../../../boorus/engine/engine.dart';
-import '../../../configs/ref.dart';
+import '../../../configs/config/providers.dart';
+import '../../../configs/config/types.dart';
 import '../../../downloads/downloader/providers.dart';
 import '../../../posts/details/details.dart';
 import '../../../posts/details/widgets.dart';
@@ -16,7 +17,6 @@ import '../../../posts/details_manager/types.dart';
 import '../../../posts/details_parts/widgets.dart';
 import '../../../posts/listing/providers.dart';
 import '../../../posts/post/post.dart';
-import '../../../posts/shares/widgets.dart';
 import '../../../posts/sources/source.dart';
 import '../../../widgets/adaptive_button_row.dart';
 import '../data/bookmark_convert.dart';
@@ -140,47 +140,50 @@ class BookmarkPostActionToolbar extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final post = InheritedPost.of<BookmarkPost>(context);
     final controller = PostDetails.of<BookmarkPost>(context).pageViewController;
+    final config = ref.watch(
+      firstMatchingConfigProvider(post.bookmark.booruId),
+    );
+    final originalPost = post.toOriginalPost();
 
     return SliverToBoxAdapter(
       child: CommonPostButtonsBuilder(
-        post: post,
+        post: originalPost,
         onStartSlideshow: controller.startSlideshow,
+        config: config?.auth,
+        configViewer: config?.viewer,
+        copy: false,
         builder: (context, buttons) {
           return AdaptiveButtonRow.menu(
             buttonWidth: 52,
             buttons: [
-              ButtonData(
-                behavior: ButtonBehavior.alwaysVisible,
-                widget: BookmarkPostButton(post: post),
-                title: context.t.post.action.bookmark,
-              ),
-              ButtonData(
-                behavior: ButtonBehavior.alwaysVisible,
-                widget: IconButton(
-                  splashRadius: 16,
-                  onPressed: () {
-                    showDownloadStartToast(context);
-                    ref.bookmarks.downloadBookmarks(
-                      ref.watchConfig,
-                      [
-                        post.toBookmark(
-                          imageUrlResolver: (booruId) =>
-                              ref.read(bookmarkUrlResolverProvider(booruId)),
-                        ),
-                      ],
-                    );
-                  },
-                  icon: const Icon(
-                    Symbols.download,
+              if (config != null)
+                ButtonData(
+                  behavior: ButtonBehavior.alwaysVisible,
+                  widget: BookmarkPostButton(
+                    post: post,
+                    config: config.auth,
                   ),
+                  title: context.t.post.action.bookmark,
                 ),
-                title: context.t.download.download,
-              ),
-              ButtonData(
-                behavior: ButtonBehavior.alwaysVisible,
-                widget: SharePostButton(post: post),
-                title: context.t.post.action.share,
-              ),
+              if (config != null)
+                ButtonData(
+                  behavior: ButtonBehavior.alwaysVisible,
+                  widget: IconButton(
+                    splashRadius: 16,
+                    onPressed: () {
+                      showDownloadStartToast(context);
+                      ref.bookmarks.downloadBookmarks(
+                        config,
+                        [post.bookmark],
+                      );
+                    },
+                    icon: const Icon(
+                      Symbols.download,
+                    ),
+                  ),
+                  title: context.t.download.download,
+                ),
+
               ...buttons,
             ],
           );

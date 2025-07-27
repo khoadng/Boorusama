@@ -29,10 +29,13 @@ class HydrusPostActionToolbar extends ConsumerWidget {
           orElse: () => false,
         );
     final controller = PostDetails.of<HydrusPost>(context).pageViewController;
+    final config = ref.watchConfigAuth;
 
     return CommonPostButtonsBuilder(
       post: post,
       onStartSlideshow: controller.startSlideshow,
+      config: config,
+      configViewer: ref.watchConfigViewer,
       builder: (context, buttons) {
         return SliverToBoxAdapter(
           child: AdaptiveButtonRow.menu(
@@ -46,7 +49,10 @@ class HydrusPostActionToolbar extends ConsumerWidget {
                 ),
               ButtonData(
                 behavior: ButtonBehavior.alwaysVisible,
-                widget: BookmarkPostButton(post: post),
+                widget: BookmarkPostButton(
+                  post: post,
+                  config: config,
+                ),
                 title: context.t.post.action.bookmark,
               ),
               ButtonData(

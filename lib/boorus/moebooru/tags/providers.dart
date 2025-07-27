@@ -8,7 +8,6 @@ import '../../../core/configs/config/types.dart';
 import '../../../core/tags/categories/tag_category.dart';
 import '../../../core/tags/local/providers.dart';
 import '../../../core/tags/tag/tag.dart';
-import '../posts/types.dart';
 import '../tag_summary/providers.dart';
 import 'parser.dart';
 import 'repository.dart';
@@ -21,7 +20,7 @@ final moebooruTagRepoProvider =
     });
 
 final moebooruTagExtractorProvider =
-    Provider.family<TagExtractor<MoebooruPost>, BooruConfigAuth>(
+    Provider.family<TagExtractor, BooruConfigAuth>(
       (ref, config) {
         return TagExtractorBuilder(
           siteHost: config.url,

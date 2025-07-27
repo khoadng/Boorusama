@@ -46,7 +46,7 @@ final danbooruTagQueryComposerProvider =
     );
 
 final danbooruTagExtractorProvider =
-    Provider.family<TagExtractor<DanbooruPost>, BooruConfigAuth>(
+    Provider.family<TagExtractor, BooruConfigAuth>(
       (ref, config) {
         return TagExtractorBuilder(
           siteHost: config.url,

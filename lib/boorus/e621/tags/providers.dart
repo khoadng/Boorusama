@@ -29,32 +29,31 @@ final e621TagRepoProvider = Provider.family<TagRepository, BooruConfigAuth>(
   },
 );
 
-final e621TagExtractorProvider =
-    Provider.family<TagExtractor<E621Post>, BooruConfigAuth>(
-      (ref, config) {
-        return TagExtractorBuilder(
-          siteHost: config.url,
-          tagCache: ref.watch(tagCacheRepositoryProvider.future),
-          sorter: TagSorter.defaults(),
-          fetcher: (post, options) {
-            // Use read to avoid circular dependency
-            final tagResolver = ref.read(tagResolverProvider(config));
+final e621TagExtractorProvider = Provider.family<TagExtractor, BooruConfigAuth>(
+  (ref, config) {
+    return TagExtractorBuilder(
+      siteHost: config.url,
+      tagCache: ref.watch(tagCacheRepositoryProvider.future),
+      sorter: TagSorter.defaults(),
+      fetcher: (post, options) {
+        // Use read to avoid circular dependency
+        final tagResolver = ref.read(tagResolverProvider(config));
 
-            if (post case final E621Post e621Post) {
-              final tags = _extractTagsFromPost(e621Post);
+        if (post case final E621Post e621Post) {
+          final tags = _extractTagsFromPost(e621Post);
 
-              if (!options.fetchTagCount) {
-                return tags;
-              }
+          if (!options.fetchTagCount) {
+            return tags;
+          }
 
-              return tagResolver.resolvePartialTags(tags);
-            } else {
-              return TagExtractor.extractTagsFromGenericPost(post);
-            }
-          },
-        );
+          return tagResolver.resolvePartialTags(tags);
+        } else {
+          return TagExtractor.extractTagsFromGenericPost(post);
+        }
       },
     );
+  },
+);
 
 List<Tag> _extractTagsFromPost(E621Post post) {
   return [

@@ -46,10 +46,13 @@ class SimplePostActionToolbar extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final booruBuilder = ref.watch(booruBuilderProvider(ref.watchConfigAuth));
     final commentPageBuilder = booruBuilder?.commentPageBuilder;
+    final config = ref.watchConfigAuth;
 
     return CommonPostButtonsBuilder(
       post: post,
       onStartSlideshow: onStartSlideshow,
+      config: config,
+      configViewer: ref.watchConfigViewer,
       builder: (context, buttons) {
         return AdaptiveButtonRow.menu(
           buttonWidth: 52,
@@ -71,7 +74,7 @@ class SimplePostActionToolbar extends ConsumerWidget {
               ),
             ButtonData(
               behavior: ButtonBehavior.alwaysVisible,
-              widget: BookmarkPostButton(post: post),
+              widget: BookmarkPostButton(post: post, config: config),
               title: context.t.post.action.bookmark,
             ),
             ButtonData(
@@ -81,7 +84,10 @@ class SimplePostActionToolbar extends ConsumerWidget {
             ),
             ButtonData(
               behavior: ButtonBehavior.alwaysVisible,
-              widget: SharePostButton(post: post),
+              widget: SharePostButton(
+                post: post,
+                auth: config,
+              ),
               title: context.t.post.action.share,
             ),
             if (commentPageBuilder != null)

@@ -7,6 +7,7 @@ import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../../foundation/display/media_query_utils.dart';
+import '../../../../configs/config/providers.dart';
 import '../../../../tags/tag/routes.dart';
 import '../../../../widgets/booru_popup_menu_button.dart';
 import '../../../post/post.dart';
@@ -99,6 +100,7 @@ class RawTagsTileTitle<T extends Post> extends ConsumerWidget {
                   ref,
                   post,
                   initiallyMultiSelectEnabled: true,
+                  auth: ref.readConfigAuth,
                 );
               }
             } else {

@@ -9,9 +9,9 @@ import '../../../local/tag_info.dart';
 import 'tag.dart';
 import 'tag_sorter.dart';
 
-abstract class TagExtractor<T extends Post> {
+abstract class TagExtractor {
   FutureOr<List<Tag>> extractTags(
-    T post, {
+    Post post, {
     ExtractOptions options = const ExtractOptions(),
   });
 
@@ -27,7 +27,7 @@ abstract class TagExtractor<T extends Post> {
   }
 }
 
-class TagExtractorBuilder<T extends Post> implements TagExtractor<T> {
+class TagExtractorBuilder implements TagExtractor {
   TagExtractorBuilder({
     required this.siteHost,
     required this.fetcher,
@@ -42,7 +42,7 @@ class TagExtractorBuilder<T extends Post> implements TagExtractor<T> {
 
   @override
   FutureOr<List<Tag>> extractTags(
-    T post, {
+    Post post, {
     ExtractOptions options = const ExtractOptions(),
   }) async {
     final tags = await fetcher(post, options);

@@ -27,6 +27,9 @@ class SzurubooruPostActionToolbar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final post = InheritedPost.of<SzurubooruPost>(context);
+    final controller = PostDetails.of<SzurubooruPost>(
+      context,
+    ).pageViewController;
 
     final config = ref.watchConfigAuth;
     final isFaved = ref.watch(favoriteProvider((config, post.id)));
@@ -41,9 +44,9 @@ class SzurubooruPostActionToolbar extends ConsumerWidget {
     return SliverToBoxAdapter(
       child: CommonPostButtonsBuilder(
         post: post,
-        onStartSlideshow: PostDetails.of<SzurubooruPost>(
-          context,
-        ).pageViewController.startSlideshow,
+        onStartSlideshow: controller.startSlideshow,
+        config: config,
+        configViewer: ref.watchConfigViewer,
         builder: (context, buttons) {
           return AdaptiveButtonRow.menu(
             buttonWidth: 52,
@@ -81,7 +84,7 @@ class SzurubooruPostActionToolbar extends ConsumerWidget {
                 ),
               ButtonData(
                 behavior: ButtonBehavior.alwaysVisible,
-                widget: BookmarkPostButton(post: post),
+                widget: BookmarkPostButton(post: post, config: config),
                 title: context.t.post.action.bookmark,
               ),
               ButtonData(
@@ -90,7 +93,10 @@ class SzurubooruPostActionToolbar extends ConsumerWidget {
                 title: context.t.download.download,
               ),
               ButtonData(
-                widget: SharePostButton(post: post),
+                widget: SharePostButton(
+                  post: post,
+                  auth: config,
+                ),
                 title: context.t.post.action.share,
               ),
               ButtonData(

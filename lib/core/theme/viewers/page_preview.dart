@@ -7,6 +7,7 @@ import 'package:foundation/widgets.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
+import '../../configs/config/types.dart';
 import '../../images/booru_image.dart';
 import '../../posts/details_parts/widgets.dart';
 import '../../posts/favorites/widgets.dart';
@@ -310,8 +311,11 @@ class PreviewPostActionToolbar extends StatelessWidget {
           title: context.t.download.download,
         ),
         ButtonData(
-          widget: const IgnorePointer(
-            child: SharePostButton(post: _previewPost),
+          widget: IgnorePointer(
+            child: SharePostButton(
+              post: _previewPost,
+              auth: BooruConfigAuth.fromConfig(BooruConfig.empty),
+            ),
           ),
           title: context.t.post.action.share,
         ),

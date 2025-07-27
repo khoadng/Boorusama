@@ -59,6 +59,7 @@ class DanbooruTagsTile extends ConsumerWidget {
             ref,
             post,
             initiallyMultiSelectEnabled: true,
+            auth: config,
           );
         },
         onSelected: (value) {
