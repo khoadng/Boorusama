@@ -114,6 +114,7 @@ class DanbooruPostActionToolbar extends ConsumerWidget {
                   onPressed: () => goToCommentPage(context, ref, post.id),
                 ),
                 title: context.t.comment.comments,
+                onTap: () => goToCommentPage(context, ref, post.id),
               ),
               if (config.hasLoginDetails())
                 SimpleButtonData(

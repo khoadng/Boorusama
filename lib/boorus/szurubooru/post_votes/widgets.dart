@@ -98,6 +98,7 @@ class SzurubooruPostActionToolbar extends ConsumerWidget {
                   onPressed: () => goToCommentPage(context, ref, post.id),
                 ),
                 title: context.t.post.action.view_comments,
+                onTap: () => goToCommentPage(context, ref, post.id),
               ),
               ...buttons,
             ],
