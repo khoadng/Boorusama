@@ -184,7 +184,20 @@ class FavoriteTagsNotifier extends Notifier<List<FavoriteTag>> {
         .then(
           (value) => value.fold(
             (l) => showErrorToast(context, l.toString()),
-            (r) => repo.createFrom(r).then((value) => load()),
+            (r) => repo
+                .createFrom(r)
+                .then(
+                  (value) => load().then(
+                    (_) {
+                      if (context.mounted) {
+                        showSuccessToast(
+                          context,
+                          'Favorite tags imported from $path',
+                        );
+                      }
+                    },
+                  ),
+                ),
           ),
         );
   }

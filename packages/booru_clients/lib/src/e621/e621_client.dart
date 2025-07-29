@@ -111,9 +111,10 @@ class E621Client {
       },
     );
 
-    return (response.data as List)
-        .map((item) => CommentDto.fromJson(item))
-        .toList();
+    return switch (response.data) {
+      List list => list.map((item) => CommentDto.fromJson(item)).toList(),
+      _ => [],
+    };
   }
 
   Future<ArtistDto> getArtist({
@@ -204,9 +205,10 @@ class E621Client {
       cancelToken: cancelToken,
     );
 
-    return (response.data as List)
-        .map((item) => TagDto.fromJson(item))
-        .toList();
+    return switch (response.data) {
+      List list => list.map((item) => TagDto.fromJson(item)).toList(),
+      _ => [],
+    };
   }
 
   Future<List<AutocompleteDto>> getAutocomplete({

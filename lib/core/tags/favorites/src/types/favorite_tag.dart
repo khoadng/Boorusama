@@ -22,6 +22,7 @@ class FavoriteTag extends Equatable with QueryTypeMixin {
     labels: (json['labels'] as List<dynamic>?)
         ?.map((e) => e as String)
         .toList(),
+    queryType: parseQueryType(json['queryType'] as String?),
   );
 
   factory FavoriteTag.empty() => FavoriteTag(
@@ -64,7 +65,7 @@ class FavoriteTag extends Equatable with QueryTypeMixin {
     'createdAt': createdAt.toIso8601String(),
     'updatedAt': updatedAt?.toIso8601String(),
     'labels': labels,
-    'queryType': queryType,
+    'queryType': queryType.toString(),
   };
 
   @override
