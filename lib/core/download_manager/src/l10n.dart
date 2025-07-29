@@ -1,3 +1,6 @@
+// Flutter imports:
+import 'package:flutter/material.dart';
+
 // Package imports:
 import 'package:i18n/i18n.dart';
 
@@ -15,14 +18,14 @@ class DownloadTranslations {
 }
 
 extension DownloadFilterLocalize on DownloadFilter? {
-  String localize() => switch (this) {
-    DownloadFilter.pending => 'Pending'.hc,
-    DownloadFilter.paused => 'Paused'.hc,
-    DownloadFilter.inProgress => 'In Progress'.hc,
-    DownloadFilter.completed => 'Completed'.hc,
-    DownloadFilter.canceled => 'Canceled'.hc,
-    DownloadFilter.failed => 'Failed'.hc,
-    null => 'Unknown'.hc,
+  String localize(BuildContext context) => switch (this) {
+    DownloadFilter.pending => context.t.download.status.pending,
+    DownloadFilter.paused => context.t.download.status.paused,
+    DownloadFilter.inProgress => context.t.download.status.in_progress,
+    DownloadFilter.completed => context.t.download.status.completed,
+    DownloadFilter.canceled => context.t.download.status.canceled,
+    DownloadFilter.failed => context.t.download.status.failed,
+    null => context.t.download.status.unknown,
   };
 
   String emptyLocalize() => switch (this) {

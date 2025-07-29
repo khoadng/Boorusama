@@ -30,7 +30,7 @@ class DownloadFilterOptions extends ConsumerWidget {
       searchable: false,
       options: kFilterOptions,
       hasNullOption: false,
-      optionLabelBuilder: (value) => value!.localize(),
+      optionLabelBuilder: (value) => value.localize(context),
       onSelected: (value) {
         if (value == null) return;
 

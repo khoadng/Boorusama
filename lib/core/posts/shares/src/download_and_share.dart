@@ -193,7 +193,7 @@ class DownloadAndShareDialogInternal extends ConsumerWidget {
                     ),
                   );
                 },
-                child: Text('Share'.hc),
+                child: Text(context.t.post.action.share),
               ),
             )
           else

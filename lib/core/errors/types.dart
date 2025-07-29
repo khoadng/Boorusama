@@ -19,12 +19,12 @@ class DefaultAppErrorTranslator implements AppErrorTranslator {
   String translateAppError(BuildContext context, AppError error) =>
       switch (error.type) {
         AppErrorType.cannotReachServer =>
-          'Cannot reach server, please check your connection',
+          context.t.search.errors.cannot_reach_server,
         AppErrorType.failedToParseJSON =>
           'Failed to parse data, please report this issue to the developer',
         AppErrorType.failedToLoadBooruConfig => 'Failed to load booru config',
         AppErrorType.loadDataFromServerFailed =>
-          'Failed to load data from server, please try again later',
+          context.t.search.errors.failed_to_load_data,
         AppErrorType.booruConfigNotFound => 'Booru config not found',
         AppErrorType.unknown => context.t.generic.errors.unknown,
       };

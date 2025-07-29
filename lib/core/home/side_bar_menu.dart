@@ -165,7 +165,7 @@ class SideBarMenu extends ConsumerWidget {
                         ),
                         SideMenuTile(
                           icon: const Icon(Symbols.download),
-                          title: Text('Download manager'.hc),
+                          title: Text(context.t.sideMenu.download_manager),
                           onTap: () {
                             goToDownloadManagerPage(ref);
                           },

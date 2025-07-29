@@ -324,7 +324,7 @@ List<Widget> coreDesktopTabBuilder(
       constraints: constraints,
       selectedIcon: Symbols.download,
       icon: Symbols.download,
-      title: 'Download manager',
+      title: context.t.sideMenu.download_manager,
     ),
     const Divider(),
     if (isFossBuild)

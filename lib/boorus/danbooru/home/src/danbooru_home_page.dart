@@ -154,7 +154,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
           icon: const _Icon(
             Symbols.photo_album,
           ),
-          title: Text('Pools'.hc),
+          title: Text(context.t.pool.pools),
           onTap: () {
             goToPoolPage(ref);
           },
@@ -231,7 +231,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
           constraints: constraints,
           selectedIcon: Symbols.photo_album,
           icon: Symbols.photo_album,
-          title: 'Pools',
+          title: context.t.pool.pools,
         ),
         HomeNavigationTile(
           value: 3,

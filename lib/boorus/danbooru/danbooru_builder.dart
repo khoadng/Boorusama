@@ -294,7 +294,7 @@ class DanbooruBuilder
       builder: (context, _) => const SavedSearchFeedPage(),
     ),
     const CustomHomeViewKey('pools'): CustomHomeDataBuilder(
-      displayName: (context) => 'Pools'.hc,
+      displayName: (context) => context.t.pool.pools,
       builder: (context, _) => const DanbooruPoolPage(),
     ),
   };

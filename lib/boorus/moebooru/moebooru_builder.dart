@@ -141,11 +141,11 @@ final kMoebooruAltHomeView = {
     builder: (context, _) => const MoebooruFavoritesPage(),
   ),
   const CustomHomeViewKey('popular'): CustomHomeDataBuilder(
-    displayName: (context) => 'Popular'.hc,
+    displayName: (context) => context.t.explore.popular,
     builder: (context, _) => const MoebooruPopularPage(),
   ),
   const CustomHomeViewKey('hot'): CustomHomeDataBuilder(
-    displayName: (context) => 'Hot'.hc,
+    displayName: (context) => context.t.explore.hot,
     builder: (context, _) => const MoebooruPopularRecentPage(),
   ),
 };

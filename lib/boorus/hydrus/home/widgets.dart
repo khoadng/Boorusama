@@ -34,7 +34,7 @@ class HydrusHomePage extends ConsumerWidget {
           constraints: constraints,
           selectedIcon: Symbols.favorite,
           icon: Symbols.favorite,
-          title: 'Favorites'.hc,
+          title: context.t.profile.favorites,
         ),
       ],
       desktopViews: const [
