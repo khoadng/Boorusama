@@ -41,54 +41,63 @@ import 'search_settings_page.dart';
 
 List<SettingEntry> _entries(BuildContext context) => [
   SettingEntry(
+    id: 'appearance',
     name: '/settings/appearance',
     title: context.t.settings.appearance.appearance,
     icon: FontAwesomeIcons.paintRoller,
     content: const AppearancePage(),
   ),
   SettingEntry(
+    id: 'language',
     name: '/settings/language',
     title: context.t.settings.language.language,
     icon: Symbols.translate,
     content: const LanguagePage(),
   ),
   SettingEntry(
+    id: 'download',
     name: '/settings/download',
     title: context.t.settings.download.title,
     icon: FontAwesomeIcons.download,
     content: const DownloadPage(),
   ),
   SettingEntry(
+    id: 'data_and_storage',
     name: '/settings/data_and_storage',
     title: context.t.settings.data_and_storage.data_and_storage,
     icon: FontAwesomeIcons.database,
     content: const DataAndStoragePage(),
   ),
   SettingEntry(
+    id: 'backup_and_restore',
     name: '/settings/backup_and_restore',
     title: context.t.settings.backup_and_restore.backup_and_restore,
     icon: FontAwesomeIcons.cloudArrowDown,
     content: const BackupAndRestorePage(),
   ),
   SettingEntry(
+    id: 'search',
     name: '/settings/search',
     title: context.t.settings.search.search,
     icon: FontAwesomeIcons.magnifyingGlass,
     content: const SearchSettingsPage(),
   ),
   SettingEntry(
+    id: 'accessibility',
     name: '/settings/accessibility',
     title: context.t.settings.accessibility.accessibility,
     icon: FontAwesomeIcons.universalAccess,
     content: const AccessibilityPage(),
   ),
   SettingEntry(
+    id: 'viewer',
     name: '/settings/image_viewer',
     title: context.t.settings.image_viewer.image_viewer,
     icon: FontAwesomeIcons.image,
     content: const ImageViewerPage(),
   ),
   SettingEntry(
+    id: 'privacy',
     name: '/settings/privacy',
     title: context.t.settings.privacy.privacy,
     icon: FontAwesomeIcons.shieldHalved,
@@ -248,7 +257,7 @@ class _SettingsSmallPageState extends ConsumerState<SettingsSmallPage> {
     final options = SettingsPageScope.of(context).options;
     for (final entry in options.entries) {
       // fuzzy search
-      if (entry.title.toLowerCase().contains(initial.toLowerCase())) {
+      if (entry.id.toLowerCase().contains(initial.toLowerCase())) {
         return entry;
       }
     }

@@ -63,12 +63,14 @@ class SettingsPageScaffold extends StatelessWidget {
 
 class SettingEntry {
   const SettingEntry({
+    required this.id,
     required this.title,
     required this.content,
     required this.icon,
     required this.name,
   });
 
+  final String id;
   final String title;
   final Widget content;
   final IconData icon;
