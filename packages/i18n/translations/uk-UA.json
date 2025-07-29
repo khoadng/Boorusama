@@ -17,7 +17,7 @@
     "view": "Переглянути"
   },
   "profile": {
-    "favorites": "Улюблене",
+    "favorites": "Улюблені",
     "profile": "Профіль",
     "copy_user_id": "Копіювати ID користувача",
     "messages": "Сповіщення"
@@ -34,7 +34,7 @@
     },
     "explore": {
       "new": "Нове",
-      "popular": "Популярне"
+      "popular": "Популярні"
     }
   },
   "post": {
@@ -73,7 +73,12 @@
     "action": {
       "preview": "Попередній перегляд",
       "view_comments": "Подивитися коментарі",
-      "add_to_favorite_group": "Додати в улюблене"
+      "add_to_favorite_group": "Додати в улюблене",
+      "share": "Поділитися",
+      "bookmark": "Закладка",
+      "favorite": "Улюблене",
+      "upvote": "Проголосувати за",
+      "downvote": "Проголосувати проти"
     },
     "image_fullview": {
       "view_original": "Подивитися оригінальне зображення"
@@ -102,7 +107,7 @@
   },
   "explore": {
     "latest": "Останнє",
-    "popular": "Популярне",
+    "popular": "Популярні",
     "hot": "Гаряче",
     "most_viewed": "Найбільш переглянуті",
     "see_more": "Подивитися більше",
@@ -130,7 +135,7 @@
       "clear": "Очистити",
       "recent": "Останнє"
     },
-    "trending": "Популярне",
+    "trending": "Трендів",
     "remove_all_selected": "Видалити всі вибрані теги",
     "result_counter": {
       "one": "$n Результат",
@@ -167,13 +172,33 @@
       "show_scores": "Показати оцінки",
       "show_post_list_config_header": "Показувати заголовок конфігурації дописів",
       "booru_config": "Профіль Booru",
-      "booru_config_placement": "Розміщення профілю Booru"
+      "booru_config_placement": "Розміщення профілю Booru",
+      "booru_config_placement_options": {
+        "side": "Сторона",
+        "bottom": "Вниз"
+      },
+      "booru_config_label": "Показати мітку",
+      "booru_config_label_options": {
+        "always": "Завжди",
+        "never": "Ніколи"
+      }
     },
     "general": "Головне",
     "search": {
       "search": "Пошук",
       "auto_focus_search_bar": "Панель пошуку з автофокусом при першому відкритті режиму пошуку",
-      "hide_bookmarked_posts_from_search_results": "Сховати пости із закладок з результатів пошуку"
+      "hide_bookmarked_posts_from_search_results": "Сховати пости із закладок з результатів пошуку",
+      "search_bar": {
+        "position": {
+          "search_bar_position": "Позиція рядка пошуку",
+          "top": "Верх",
+          "bottom": "Вниз"
+        },
+        "scroll_behavior": {
+          "persistent": "Постійний рядок пошуку",
+          "persistent_description": "Тримайте рядок пошуку видимим під час прокручування."
+        }
+      }
     },
     "information": "Інформація",
     "changelog": "Історія змінення",
@@ -186,7 +211,8 @@
     "image_list": {
       "image_list": "Відображення фото",
       "standard": "Стандартне",
-      "masonry": "Кладкове"
+      "masonry": "Кладкове",
+      "classic": "Класичний"
     },
     "image_grid": {
       "image_grid": "Сітка зображень",
@@ -194,7 +220,9 @@
         "grid_size": "Розмір сітки",
         "small": "Мала",
         "medium": "Середня",
-        "large": "Велика"
+        "large": "Велика",
+        "micro": "Мікро",
+        "tiny": "Крихітний"
       },
       "image_quality": {
         "image_quality": "Якість зображень",
@@ -237,7 +265,8 @@
       "dynamic_color": "Динамічний колір теми",
       "dynamic_color_mobile_description": "Синхронізувати колір теми зі шпалерами",
       "dynamic_color_desktop_description": "Синхронізувати колір теми з акцентованого кольору ОС",
-      "dynamic_color_unsupported_description": "Цей пристрій не підтримує динамічний колір."
+      "dynamic_color_unsupported_description": "Цей пристрій не підтримує динамічний колір.",
+      "system": "Система"
     },
     "privacy": {
       "privacy": "Приватність",
@@ -296,7 +325,16 @@
       "accessibility": "Доступність",
       "reverseBooruConfigSelectorScrollDirection": "Зворотний напрямок прокрутки профілів booru",
       "swipeAreaToOpenSidebar": "Область прокручування бокової панелі",
-      "swipeAreaToOpenSidebarDescription": "Розмір області на лівій стороні екрана, яку можна використовувати для активації свайпу. Великі значення блокуватимуть всі горизонтальні жести, такі як жест пагінації."
+      "swipeAreaToOpenSidebarDescription": "Розмір області на лівій стороні екрана, яку можна використовувати для активації свайпу. Великі значення блокуватимуть всі горизонтальні жести, такі як жест пагінації.",
+      "haptic_feedback": {
+        "haptic_feedback": "Тактильний зворотний зв'язок",
+        "haptic_feedback_level": {
+          "none": "Жоден",
+          "subtle": "Тонкий",
+          "standard": "Стандартний",
+          "playful": "Грайливий"
+        }
+      }
     },
     "booru_settings": {
       "edit_current_profile": "Редагувати поточний профіль",
@@ -361,7 +399,7 @@
   "favorites": {
     "counter": {
       "one": "Улюблене",
-      "other": "Улюблене"
+      "other": "Улюблені"
     },
     "favorited": "В улюблених",
     "favorite": "Улюблене"
@@ -386,14 +424,14 @@
     "create_group_confirm": "OK",
     "max_limit_warning": "Учасник може створювати тільки 10 груп",
     "duplicate_items_warning_notification": "Це зображення вже є в групі",
-    "detete_confirmation": "Ви впевнені, що хочете видалити цю улюблену групу",
+    "detete_confirmation": "Ви впевнені, що хочете видалити цю улюблену групу?",
     "group_item_counter": {
       "one": "$n пост",
       "other": "$n постів"
     }
   },
   "favorite_tags": {
-    "favorites": "Улюблене",
+    "favorites": "Улюблені",
     "import": "Імпорт",
     "import_hint": "Введіть теги. Розділяйте пробілом.",
     "cancel": "Відміна",
@@ -406,7 +444,7 @@
     "rate": "Оцінити",
     "cancel": "Ні, дякую",
     "later": "Можливо пізніше",
-    "rationale": "Якщо вам сподобалося додаток, не могли б ви його оцінити?\nЦе займе лише кілька секунд і дуже допоможе проекту у розвитку."
+    "rationale": "Якщо вам сподобалося додаток, не могли б ви його оцінити?Це займе лише кілька секунд і дуже допоможе проекту у розвитку."
   },
   "sideMenu": {
     "settings": "Налаштування",
