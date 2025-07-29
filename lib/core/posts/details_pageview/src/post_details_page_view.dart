@@ -746,7 +746,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
                 ? _dummyAlwaysFalse
                 : _controller.canPull,
             builder: (_, canPull, _) => PointerCountOnScreen(
-              enable: isSmall && !useVerticalLayout,
+              enable: isSmall,
               onCountChanged: (count) {
                 _pointerCount.value = count;
                 _interacting.value = count > 1;
@@ -790,15 +790,13 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
         ),
         if (isDesktopPlatform())
           ...buildNavButtons()
-        else if (!isSmall || useVerticalLayout)
+        else if (!isSmall)
           if (blockSwipe) ...buildNavButtons(),
       ],
     );
   }
 
   void _onVerticalDragStart(DragStartDetails details) {
-    if (useVerticalLayout) return;
-
     _controller.pulling.value = true;
 
     if (!_controller.isExpanded) {
@@ -808,8 +806,6 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
   }
 
   void _onVerticalDragUpdate(DragUpdateDetails details) {
-    if (useVerticalLayout) return;
-
     _controller.dragUpdate(details);
 
     if (_controller.freestyleMoving.value) {
@@ -842,8 +838,6 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
   }
 
   void _onVerticalDragEnd(DragEndDetails details) {
-    if (useVerticalLayout) return;
-
     _controller.pulling.value = false;
 
     // Check if drag distance exceeds threshold for dismissal
