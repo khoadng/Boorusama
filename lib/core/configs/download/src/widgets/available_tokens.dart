@@ -22,7 +22,8 @@ class AvailableTokens extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final availableTokens = downloadFilenameBuilder?.availableTokens ?? {};
+    final availableTokens =
+        downloadFilenameBuilder?.availableTokens ?? <TokenInfo>{};
 
     return Wrap(
       runSpacing: isDesktopPlatform() ? 4 : -4,
@@ -34,10 +35,15 @@ class AvailableTokens extends ConsumerWidget {
           RawChip(
             backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
             visualDensity: VisualDensity.compact,
-            label: Text(token),
+            label: Text(token.name),
+            avatar: token.type == TokenType.async
+                ? const Icon(
+                    Icons.access_time,
+                  )
+                : null,
             onPressed: () {
               final tokenOptions = downloadFilenameBuilder?.getTokenOptions(
-                token,
+                token.name,
               );
 
               if (tokenOptions == null) {
@@ -49,7 +55,7 @@ class AvailableTokens extends ConsumerWidget {
                 context,
                 settings: const RouteSettings(name: 'download_token_options'),
                 builder: (context) => TokenOptionHelpModal(
-                  token: token,
+                  token: token.name,
                   tokenOptions: tokenOptions,
                   downloadFilenameBuilder: downloadFilenameBuilder,
                 ),

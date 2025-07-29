@@ -1,4 +1,5 @@
 // Package imports:
+import 'package:equatable/equatable.dart';
 import 'package:filename_generator/filename_generator.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
 
@@ -8,8 +9,23 @@ import '../../../posts/post/post.dart';
 import '../../../settings/settings.dart';
 import 'token_options.dart';
 
+enum TokenType { sync, async }
+
+class TokenInfo extends Equatable {
+  const TokenInfo(
+    this.name,
+    this.type,
+  );
+
+  final String name;
+  final TokenType type;
+
+  @override
+  List<Object?> get props => [name, type];
+}
+
 abstract class DownloadFilenameGenerator<T extends Post> {
-  Set<String> get availableTokens;
+  List<TokenInfo> get availableTokens;
 
   List<TextMatcher> get textMatchers;
 

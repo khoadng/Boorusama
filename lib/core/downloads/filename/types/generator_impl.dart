@@ -63,12 +63,26 @@ class DownloadFileNameBuilder<T extends Post>
   final TokenizerConfigs tokenizerConfigs = TokenizerConfigs.defaultConfigs();
 
   @override
-  Set<String> get availableTokens => {
-    ...baseTokenHandlers.keys,
-    ...asyncTokenHandlers.expand((h) => h.tokenKeys),
-    'date',
-    'uuid',
-  }.toSet();
+  List<TokenInfo> get availableTokens {
+    final syncTokens = baseTokenHandlers.keys.map(
+      (name) => TokenInfo(name, TokenType.sync),
+    );
+
+    final asyncTokens = asyncTokenHandlers
+        .expand((h) => h.tokenKeys)
+        .map((name) => TokenInfo(name, TokenType.async));
+
+    final builtinTokens = [
+      const TokenInfo('date', TokenType.sync),
+      const TokenInfo('uuid', TokenType.sync),
+    ];
+
+    return [
+      ...syncTokens,
+      ...asyncTokens,
+      ...builtinTokens,
+    ];
+  }
 
   String _joinFileWithExtension(String rawFileName, String fileExt) {
     final fileName = sanitizedUrl(rawFileName);
@@ -226,7 +240,7 @@ class DownloadFileNameBuilder<T extends Post>
 
   @override
   List<TextMatcher> get textMatchers => [
-    for (final token in availableTokens)
+    for (final token in availableTokens.map((t) => t.name))
       RegexMatcher(
         pattern: RegExp(
           '{($token[^{}]*?)}',
