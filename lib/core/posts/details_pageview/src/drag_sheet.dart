@@ -6,7 +6,6 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../../widgets/widgets.dart';
-import 'post_details_page_view.dart';
 import 'post_details_page_view_controller.dart';
 import 'sheet_dragline.dart';
 

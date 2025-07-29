@@ -607,3 +607,18 @@ class PostDetailsPageViewController extends ChangeNotifier
     super.dispose();
   }
 }
+
+enum SheetState {
+  /// When the sheet is completely expanded
+  expanded,
+
+  /// When the sheet haven't expanded yet
+  collapsed,
+
+  /// When the sheet has exanded once and then collapsed
+  hidden,
+}
+
+extension SheetExpansionStateX on SheetState {
+  bool get isExpanded => this == SheetState.expanded;
+}

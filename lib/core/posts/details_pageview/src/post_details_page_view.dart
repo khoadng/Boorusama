@@ -6,7 +6,6 @@ import 'dart:async';
 
 // Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:material_symbols_icons/symbols.dart';
@@ -20,7 +19,9 @@ import 'constants.dart';
 import 'drag_sheet.dart';
 import 'page_nav_button.dart';
 import 'pointer_count_on_screen.dart';
+import 'post_details_overlay.dart';
 import 'post_details_page_view_controller.dart';
+import 'post_details_shortcuts.dart';
 import 'sheet_state_storage.dart';
 import 'side_sheet.dart';
 
@@ -368,98 +369,74 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
 
   @override
   Widget build(BuildContext context) {
-    return CallbackShortcuts(
-      bindings: {
-        SingleActivator(
-          useVerticalLayout
-              ? LogicalKeyboardKey.arrowDown
-              : LogicalKeyboardKey.arrowRight,
-        ): () {
-          _controller.nextPage(
-            duration: isLargeScreen ? Duration.zero : null,
-          );
-        },
-        SingleActivator(
-          useVerticalLayout
-              ? LogicalKeyboardKey.arrowUp
-              : LogicalKeyboardKey.arrowLeft,
-        ): () {
-          _controller.previousPage(
-            duration: isLargeScreen ? Duration.zero : null,
-          );
-        },
-        const SingleActivator(LogicalKeyboardKey.keyO): () =>
-            _controller.toggleOverlay(),
-        const SingleActivator(LogicalKeyboardKey.escape): () =>
-            Navigator.of(context).maybePop(),
-      },
-      child: Focus(
-        autofocus: true,
-        child: Stack(
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: ValueListenableBuilder(
-                    valueListenable: _controller.slideshow,
-                    builder: (context, slideshow, child) => GestureDetector(
-                      behavior: slideshow ? HitTestBehavior.opaque : null,
-                      onTap: () => _controller.stopSlideshow(),
-                      child: IgnorePointer(
-                        ignoring: slideshow,
-                        child: child,
-                      ),
-                    ),
-                    child: MouseRegion(
-                      onEnter: (_) => _onHover(true),
-                      onExit: (_) => _onHover(false),
-                      child: _buildMain(),
+    return PostDetailsShortcuts(
+      controller: _controller,
+      useVerticalLayout: useVerticalLayout,
+      isLargeScreen: isLargeScreen,
+      child: Stack(
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: ValueListenableBuilder(
+                  valueListenable: _controller.slideshow,
+                  builder: (context, slideshow, child) => GestureDetector(
+                    behavior: slideshow ? HitTestBehavior.opaque : null,
+                    onTap: () => _controller.stopSlideshow(),
+                    child: IgnorePointer(
+                      ignoring: slideshow,
+                      child: child,
                     ),
                   ),
-                ),
-                if (!isLargeScreen)
-                  const SizedBox.shrink()
-                else if (!widget.disableAnimation)
-                  AnimatedBuilder(
-                    animation: _displacementAnim,
-                    builder: (context, child) {
-                      return SizedBox(width: _displacementAnim.value);
-                    },
-                  )
-                else
-                  _buildSideSheet(),
-                ValueListenableBuilder(
-                  valueListenable: _controller.sheetState,
-                  builder: (_, state, _) => PopScope(
-                    canPop: switch (isLargeScreen) {
-                      true => true,
-                      false => !state.isExpanded,
-                    },
-                    onPopInvokedWithResult: (didPop, _) {
-                      if (didPop) {
-                        _onPop();
-                      } else {
-                        if (_controller.isExpanded) {
-                          _controller.resetSheet();
-                          return;
-                        }
-                      }
-                    },
-                    child: const SizedBox.shrink(),
+                  child: MouseRegion(
+                    onEnter: (_) => _onHover(true),
+                    onExit: (_) => _onHover(false),
+                    child: _buildMain(),
                   ),
-                ),
-              ],
-            ),
-            if (isLargeScreen && !widget.disableAnimation)
-              Align(
-                alignment: Alignment.centerRight,
-                child: SlideTransition(
-                  position: _sideSheetSlideAnim,
-                  child: _buildSideSheet(),
                 ),
               ),
-          ],
-        ),
+              if (!isLargeScreen)
+                const SizedBox.shrink()
+              else if (!widget.disableAnimation)
+                AnimatedBuilder(
+                  animation: _displacementAnim,
+                  builder: (context, child) {
+                    return SizedBox(width: _displacementAnim.value);
+                  },
+                )
+              else
+                _buildSideSheet(),
+              ValueListenableBuilder(
+                valueListenable: _controller.sheetState,
+                builder: (_, state, _) => PopScope(
+                  canPop: switch (isLargeScreen) {
+                    true => true,
+                    false => !state.isExpanded,
+                  },
+                  onPopInvokedWithResult: (didPop, _) {
+                    if (didPop) {
+                      _onPop();
+                    } else {
+                      if (_controller.isExpanded) {
+                        _controller.resetSheet();
+                        return;
+                      }
+                    }
+                  },
+                  child: const SizedBox.shrink(),
+                ),
+              ),
+            ],
+          ),
+          if (isLargeScreen && !widget.disableAnimation)
+            Align(
+              alignment: Alignment.centerRight,
+              child: SlideTransition(
+                position: _sideSheetSlideAnim,
+                child: _buildSideSheet(),
+              ),
+            ),
+        ],
       ),
     );
   }
@@ -543,107 +520,17 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
                 )
               : const SizedBox.shrink(),
         ),
-        Align(
-          alignment: Alignment.topCenter,
-          child: Builder(
-            builder: (context) {
-              final overlay = ValueListenableBuilder(
-                valueListenable: _controller.sheetState,
-                builder: (_, state, _) => ConditionalParentWidget(
-                  condition: !state.isExpanded,
-                  conditionalBuilder: (child) => ValueListenableBuilder(
-                    valueListenable: _controller.freestyleMoving,
-                    builder: (context, moving, _) => child,
-                  ),
-                  child: SafeArea(
-                    right: isLargeScreen,
-                    child: _buildOverlay(),
-                  ),
-                ),
-              );
-
-              return ValueListenableBuilder(
-                valueListenable: _controller.forceHideOverlay,
-                builder: (_, hide, _) => hide
-                    ? const SizedBox.shrink()
-                    : _overlayCurvedAnimation != null
-                    ? SlideTransition(
-                        position: Tween(
-                          begin: const Offset(0, -1),
-                          end: Offset.zero,
-                        ).animate(_overlayCurvedAnimation),
-                        child: overlay,
-                      )
-                    : overlay,
-              );
-            },
-          ),
+        PostDetailsOverlay(
+          controller: _controller,
+          leftActions: widget.leftActions,
+          actions: widget.actions,
+          useVerticalLayout: useVerticalLayout,
+          isLargeScreen: isLargeScreen,
+          sheetAnimController: _sheetAnimController,
+          overlayCurvedAnimation: _overlayCurvedAnimation,
+          disableAnimation: widget.disableAnimation,
         ),
       ],
-    );
-  }
-
-  Widget _buildOverlay() {
-    return Container(
-      margin: const EdgeInsets.all(8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Flexible(
-            child: OverflowBar(
-              children: [
-                CircularIconButton(
-                  icon: const Padding(
-                    padding: EdgeInsets.only(left: 8),
-                    child: Icon(
-                      Symbols.arrow_back_ios,
-                    ),
-                  ),
-                  onPressed: Navigator.of(context).maybePop,
-                ),
-                const SizedBox(
-                  width: 4,
-                ),
-                ...widget.leftActions,
-              ],
-            ),
-          ),
-          Flexible(
-            child: OverflowBar(
-              children: [
-                ...widget.actions,
-                const SizedBox(width: 8),
-                CircularIconButton(
-                  onPressed: () {
-                    if (useVerticalLayout) {
-                      _controller.expandToSnapPoint();
-                    } else if (!isLargeScreen) {
-                      _controller.expandToSnapPoint();
-                    } else {
-                      _controller.toggleExpanded(
-                        MediaQuery.sizeOf(context).longestSide,
-                        () async {
-                          if (!widget.disableAnimation) {
-                            // if animation is running, ignore
-                            if (_sheetAnimController.isAnimating) return;
-
-                            if (_controller.isExpanded) {
-                              await _sheetAnimController.reverse();
-                            } else {
-                              await _sheetAnimController.forward();
-                            }
-                          }
-                        },
-                      );
-                    }
-                  },
-                  icon: const Icon(Symbols.info),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
     );
   }
 
@@ -918,19 +805,4 @@ double _clampToZero(
 }) {
   if (value.isNaN) return 0.0;
   return value.abs() < threshold ? 0.0 : value;
-}
-
-enum SheetState {
-  /// When the sheet is completely expanded
-  expanded,
-
-  /// When the sheet haven't expanded yet
-  collapsed,
-
-  /// When the sheet has exanded once and then collapsed
-  hidden,
-}
-
-extension SheetExpansionStateX on SheetState {
-  bool get isExpanded => this == SheetState.expanded;
 }

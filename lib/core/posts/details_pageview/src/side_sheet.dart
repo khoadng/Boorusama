@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 // Project imports:
 import '../../../theme.dart';
 import 'constants.dart';
-import 'post_details_page_view.dart';
 import 'post_details_page_view_controller.dart';
 
 class SideSheet extends StatefulWidget {
