@@ -1,6 +1,3 @@
-// Dart imports:
-import 'dart:async';
-
 // Flutter imports:
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -32,7 +29,6 @@ import '../../../../theme/app_theme.dart';
 import '../../../../videos/play_pause_button.dart';
 import '../../../../videos/providers.dart';
 import '../../../../videos/sound_control_button.dart';
-import '../../../../videos/video_progress.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../details_manager/types.dart';
 import '../../../details_pageview/widgets.dart';
@@ -104,10 +100,6 @@ class _PostDetailPageScaffoldState<T extends Post>
   ValueNotifier<bool> visibilityNotifier = ValueNotifier(false);
   final _isInitPage = ValueNotifier(true);
 
-  Timer? _autoHideVideoControlsTimer;
-  bool _videoControlsHiddenByTimer = false;
-  StreamSubscription<VideoProgress>? _seekStreamSubscription;
-
   List<T> get posts => _posts;
 
   @override
@@ -131,19 +123,9 @@ class _PostDetailPageScaffoldState<T extends Post>
               posts[widget.controller.initialPage],
             );
       }
-
-      if (posts[widget.controller.initialPage].isVideo) {
-        _startAutoHideVideoControlsTimer();
-      }
     });
 
     widget.controller.isVideoPlaying.addListener(_isVideoPlayingChanged);
-    _seekStreamSubscription = widget.controller.seekStream.listen(
-      (event) {
-        // cancel the timer when user is seeking
-        _clearAutoHideVideoControlsTimer();
-      },
-    );
 
     _volumeKeyPageNavigator.initialize();
   }
@@ -153,9 +135,6 @@ class _PostDetailPageScaffoldState<T extends Post>
     _transformController.dispose();
     _volumeKeyPageNavigator.dispose();
     widget.controller.isVideoPlaying.removeListener(_isVideoPlayingChanged);
-    _autoHideVideoControlsTimer?.cancel();
-    _autoHideVideoControlsTimer = null;
-    _seekStreamSubscription?.cancel();
 
     super.dispose();
   }
@@ -164,36 +143,6 @@ class _PostDetailPageScaffoldState<T extends Post>
 
   bool _isDefaultEngine(VideoPlayerEngine engine) {
     return engine != VideoPlayerEngine.mdk;
-  }
-
-  void _startAutoHideVideoControlsTimer() {
-    final settings = ref.read(settingsProvider);
-
-    if (settings.hidePostDetailsOverlay) return;
-
-    _clearAutoHideVideoControlsTimer();
-
-    _autoHideVideoControlsTimer = Timer(const Duration(seconds: 4), () {
-      if (mounted) {
-        if (!settings.reduceAnimations) {
-          _controller.hideAllUI();
-        }
-
-        _videoControlsHiddenByTimer = true;
-      }
-    });
-  }
-
-  void _clearAutoHideVideoControlsTimer() {
-    _autoHideVideoControlsTimer?.cancel();
-    _autoHideVideoControlsTimer = null;
-
-    // if the video controls are hidden by the timer, show them again
-    if (_videoControlsHiddenByTimer) {
-      _controller.showAllUI();
-    }
-
-    _videoControlsHiddenByTimer = false;
   }
 
   void _isVideoPlayingChanged() {
@@ -339,12 +288,6 @@ class _PostDetailPageScaffoldState<T extends Post>
             } else {
               _controller.disableHoverToControlOverlay();
             }
-          }
-
-          if (post.isVideo) {
-            _startAutoHideVideoControlsTimer();
-          } else {
-            _clearAutoHideVideoControlsTimer();
           }
 
           ref
