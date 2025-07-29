@@ -165,7 +165,10 @@
       "show_scores": "แสดงคะแนน",
       "show_post_list_config_header": "แสดงการกำหนดค่าโพสต์ที่ด้านบน",
       "booru_config": "โปรไฟล์ Booru",
-      "booru_config_placement": "การปรับตำแหน่งโปรไฟล์ Booru"
+      "booru_config_placement": "การปรับตำแหน่งโปรไฟล์ Booru",
+      "booru_config_placement_options": {
+        "side": "สไลด์"
+      }
     },
     "general": "ทั่วไป",
     "search": {
