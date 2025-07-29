@@ -2,8 +2,8 @@
   "generic": {
     "done": "完了",
     "errors": {
-      "no_data": "データなし",
-      "unknown": "何かが間違っていた"
+      "no_data": "データがありません",
+      "unknown": "エラーが発生しました"
     },
     "action": {
       "add": "追加",
@@ -11,21 +11,29 @@
       "edit": "編集",
       "ok": "OK",
       "cancel": "キャンセル",
-      "select": "セレクト"
-    }
+      "duplicate": "複製",
+      "select": "選択"
+    },
+    "view": "表示"
   },
   "profile": {
-    "favorites": "いいね"
+    "favorites": "いいね",
+    "profile": "プロフィール",
+    "copy_user_id": "ユーザーIDをコピーする",
+    "messages": "メッセージ"
   },
   "network": {
-    "unavailable": "ネットワーク利用不可"
+    "unavailable": "ネットワークに接続できません"
   },
   "tag": {
     "related": {
-      "more": "すべて見る",
+      "more": "もっと見る",
+      "related": "関連",
+      "add_to_current_search": "検索に追加",
       "open_wiki": "Wikiを開く"
     },
     "explore": {
+      "new": "最新",
       "popular": "人気"
     }
   },
@@ -43,20 +51,30 @@
         "booru": "booruのリンクを共有する",
         "image": "画像を共有する"
       },
-      "copied": "コピー",
+      "copied": "クリップボードにコピーしました",
       "show_original": "オリジナルを表示",
       "show_translated": "翻訳表示",
-      "login_required_notice": "ログインする必要があります",
+      "login_required_notice": "この操作にはログインが必要",
       "open_wiki": "Wikiを開く",
       "add_to_blacklist": "ブラックリストに追加",
       "add_to_favorites": "いいねする",
       "score": {
         "other": "ポイント"
       },
-      "source_label": "ソース"
+      "source_label": "ソース",
+      "related_posts": "関連投稿",
+      "add_to_bookmark": "ブックマークに追加",
+      "remove_from_bookmark": "ブックマークから削除"
     },
     "action": {
-      "view_comments": "コメントを見る"
+      "preview": "プレビュー",
+      "share": "シェア",
+      "bookmark": "ブックマークする",
+      "favorite": "お気に入りに追加",
+      "upvote": "高評価",
+      "downvote": "低評価",
+      "view_comments": "コメントを見る",
+      "add_to_favorite_group": "お気に入りグループに追加"
     },
     "image_fullview": {
       "view_original": "オリジナルを表示"
@@ -65,15 +83,16 @@
   "comment": {
     "comments": "コメント",
     "create": {
-      "hint": "コメント",
-      "loading": "お待ちください...",
+      "hint": "コメントを入力",
+      "loading": "読み込み中...",
       "error": "エラー"
     },
     "list": {
       "edit": "編集",
       "reply": "返信",
+      "reply_to": "返信先",
       "delete": "削除",
-      "noComments": "コメントなし",
+      "noComments": "コメントがありません",
       "last_updated": "最終更新",
       "send": "送信"
     },
@@ -84,15 +103,17 @@
   "explore": {
     "latest": "最新",
     "popular": "人気",
-    "hot": "ホット",
-    "see_more": "すべて見る"
+    "hot": "トレンド",
+    "most_viewed": "人気の投稿",
+    "see_more": "もっと見る",
+    "explore": "探索"
   },
   "search": {
     "errors": {
-      "generic": "何かが間違っていた",
+      "generic": "エラーが発生しました",
       "tag_limit": "タグの上限に達しました。",
-      "database_timeout": "検索に時間がかかりすぎたため、検索がキャンセルされました。",
-      "rate_limited": "料金が制限されています。後でもう一度お試しください",
+      "database_timeout": "検索がタイムアウトしました",
+      "rate_limited": "レート制限されています。後でもう一度お試しください",
       "pagination_limit": "ページネーションの制限に達しています。これ以上はスクロールできません",
       "max_capacity": "サーバーが高負荷のため、リクエストを処理できません",
       "down": "サーバーがダウンしています。",
@@ -101,20 +122,38 @@
       "unknown": "不明なサーバーエラーが発生しました"
     },
     "hint": "検索...",
+    "no_result": "検索しましたが、結果が見つかりませんでした。",
     "search_options": "検索オプション",
-    "metatags_notice": "フリーメタタグはタグ検索制限にカウントされない",
+    "metatags_notice": "メタタグは検索制限に含まれません",
     "history": {
       "history": "履歴",
       "clear": "消去",
       "recent": "最近"
     },
     "trending": "トレンド",
-    "remove_all_selected": "すべて削除"
+    "remove_all_selected": "すべて削除",
+    "result_counter": {
+      "one": "$n件の結果",
+      "other": "$n件の結果"
+    },
+    "no_result_notice": "結果なし",
+    "search_in_progress_notice": "検索中..."
   },
   "pool": {
+    "pool": "プール",
+    "pool_gallery": "プールギャラリー",
     "order": {
       "recent": "最近",
-      "new": "新しい順"
+      "new": "新しい順",
+      "post_count": "投稿数",
+      "name": "名前"
+    },
+    "category": {
+      "series": "シリーズ",
+      "collection": "コレクション"
+    },
+    "search": {
+      "hint": "プール名を入力"
     },
     "detail": {
       "last_updated": "最終更新"
@@ -125,36 +164,96 @@
     "app_settings": "アプリ設定",
     "appearance": {
       "appearance": "テーマ",
-      "show_scores": "スコアを表示"
+      "show_scores": "スコアを表示",
+      "show_post_list_config_header": "投稿一覧設定ヘッダーを表示",
+      "booru_config": "Booruプロフィール",
+      "booru_config_placement": "Booruプロフィール配置",
+      "booru_config_placement_options": {
+        "side": "サイド",
+        "bottom": "下部"
+      },
+      "booru_config_label_options": {
+        "always": "常に",
+        "never": "しない"
+      }
     },
     "general": "一般",
     "search": {
-      "search": "検索"
+      "search": "検索",
+      "auto_focus_search_bar": "検索ビューを最初に開いたときに検索バーに自動フォーカス",
+      "search_bar": {
+        "position": {
+          "search_bar_position": "検索バーの位置",
+          "top": "上部",
+          "bottom": "下部"
+        },
+        "scroll_behavior": {
+          "persistent": "固定検索バー",
+          "persistent_description": "スクロール中も検索バーを表示し続ける"
+        }
+      },
+      "hide_bookmarked_posts_from_search_results": "検索結果からブックマーク投稿を非表示"
     },
     "information": "情報",
     "changelog": "チェンジログ",
-    "infinite_scroll_warning": "長時間スクロールするとアプリがクラッシュすることがあります",
+    "infinite_scroll_warning": "長くスクロールするとアプリがクラッシュする場合があります",
     "result_layout": {
+      "result_layout": "ページモード",
       "infinite_scroll": "無限スクロール",
       "pagination": "ページ分け"
     },
     "image_list": {
-      "image_list": "イメージ一覧"
+      "image_list": "イメージ一覧",
+      "standard": "標準",
+      "masonry": "マソニー",
+      "classic": "クラシック"
     },
     "image_grid": {
+      "image_grid": "画像グリッド",
       "grid_size": {
+        "grid_size": "グリッドサイズ",
         "small": "小",
         "medium": "中",
-        "large": "大"
+        "large": "大",
+        "tiny": "タイニー",
+        "micro": "マイクロ"
       },
       "image_quality": {
         "image_quality": "画質",
-        "high_quality_notice": "高画質の画像はロードに時間がかかります。",
+        "high_quality_notice": "高画質の画像は読み込みに時間がかかります。",
         "high": "高い",
         "low": "低い",
         "original": "オリジナル",
-        "automatic": "自動"
-      }
+        "automatic": "自動",
+        "highest": "最高"
+      },
+      "spacing": "間隔",
+      "corner_radius": "角の半径",
+      "padding": "余白",
+      "aspect_ratio": "アスペクト比"
+    },
+    "image_viewer": {
+      "image_viewer": "画像ビューア",
+      "slideshow": "スライドショー",
+      "slideshow_interval": "スライドショー間隔",
+      "slideshow_mode": "スライドショーモード",
+      "slideshow_modes": {
+        "random": "ランダム",
+        "forward": "順方向",
+        "backward": "逆方向"
+      },
+      "slideshow_skip": "スライドショー遷移をスキップ",
+      "slideshow_interval_explanation": "1秒未満では自動でスキップします",
+      "swipe_mode": "スワイプモード",
+      "swipe_mode_disclaimer": "一部のカスタムジェスチャーはすべてのモードで動作しない場合があります",
+      "swipe_modes": {
+        "horizontal": "水平",
+        "horizontal_description": "ギャラリー形式の左右スワイプ。写真ギャラリーやメディアアプリのような操作",
+        "vertical": "垂直",
+        "vertical_description": "TikTok形式の上下スワイプ。ショートビデオプラットフォームで人気。ポートレートモードのみ"
+      },
+      "mute_video": "デフォルトで動画をミュート",
+      "video_section_title": "動画設定"
     },
     "language": {
       "language": "言語",
@@ -164,86 +263,258 @@
       "theme": "テーマ",
       "dark": "ダーク",
       "light": "ライト",
-      "amoled_dark": "AMOLEDダーク"
+      "system": "システム",
+      "amoled_dark": "深夜モード",
+      "dynamic_color": "ダイナミックテーマカラー",
+      "dynamic_color_mobile_description": "テーマカラーを壁紙と同期",
+      "dynamic_color_desktop_description": "テーマカラーをOSのアクセントカラーと同期",
+      "dynamic_color_unsupported_description": "このデバイスはダイナミックカラーをサポートしていません。"
     },
     "privacy": {
-      "privacy": "プライバシー"
+      "privacy": "プライバシー",
+      "enable_incognito_keyboard": "シークレットキーボードを有効にする",
+      "enable_incognito_keyboard_notice": "この設定はAndroidにのみ適用されます",
+      "enable_biometric_lock": "生体認証ロックを有効にする",
+      "enable_biometric_lock_notice": "生体認証をサポートし、設定されているデバイスでのみ動作します。"
     },
     "performance": {
       "performance": "パフォーマンス",
       "posts_per_page": "ページあたりの投稿数",
-      "posts_per_page_explain": "1ページあたりのサムネイル数",
+      "posts_per_page_explain": "ページごとのサムネイル数",
       "cache_size": "キャッシュサイズ",
-      "clear_cache": "クリア"
+      "clear_cache": "クリア",
+      "cache_size_info": "{1}ファイル中{0}"
+    },
+    "debug_logs": {
+      "debug_logs": "デバッグログ",
+      "logs_copied": "ログがクリップボードにコピーされました"
     },
     "download": {
+      "path": "ダウンロードパス",
+      "select_a_folder": "フォルダを選択",
+      "quality": "ダウンロード画像品質",
       "qualities": {
         "original": "オリジナル",
         "sample": "サンプル",
         "preview": "プレビュー"
-      }
+      },
+      "title": "ダウンロード"
     },
     "help_us_translate": "翻訳に協力する",
     "other_settings": "その他の設定",
     "data_and_storage": {
-      "data_and_storage": "データとストレージ"
+      "data_and_storage": "データとストレージ",
+      "clear_cache_on_start_up": "起動時に画像キャッシュを削除"
     },
     "backup_and_restore": {
       "backup_and_restore": "バックアップとリストア"
-    }
+    },
+    "image_details": {
+      "image_details": "画像詳細",
+      "ui_overlay": {
+        "show": "表示",
+        "hide": "非表示",
+        "ui_overlay": "UIオーバーレイ"
+      }
+    },
+    "page_indicator": {
+      "page_indicator": "ページインジケータ位置",
+      "top": "上部",
+      "bottom": "下部",
+      "both": "両方"
+    },
+    "accessibility": {
+      "accessibility": "アクセシビリティ",
+      "reverseBooruConfigSelectorScrollDirection": "Booruプロフィールのスクロール方向を反転",
+      "swipeAreaToOpenSidebar": "サイドバーのスワイプエリア",
+      "swipeAreaToOpenSidebarDescription": "画面左側のスワイプ領域のサイズ。大きいとページネーションなどの水平ジェスチャーをブロックします。"
+    },
+    "booru_settings": {
+      "edit_current_profile": "現在のプロフィールを編集",
+      "booru_settings": "Booru設定"
+    },
+    "contribute": "貢献",
+    "source_code": "ソースコード",
+    "support": "サポート",
+    "contact_developer": "開発者に連絡",
+    "contact_developer_description": "問題や提案がある場合は、このオプションを通じてメールを送信してください",
+    "feature_request_and_bug_report": "機能リクエストとバグ報告",
+    "feature_request_and_bug_report_description": "GitHubリポジトリを通じて機能を提案またはバグを報告"
   },
   "blacklisted_tags": {
     "remove": "削除",
     "edit": "編集",
-    "blacklisted_tags": "ブラックリスト入りタグ"
+    "blacklisted_tags": "ブラックリスト入りタグ",
+    "load_error": "ブラックリストタグの読み込みに失敗しました",
+    "updated": "ブラックリストタグが更新されました",
+    "limitation_notice": "現在のバージョンでは<b>NOT</b>、<b>OR</b>、<b>score</b>、<b>rating</b>メタタグのみサポートしています。他のメタタグは使用できません。",
+    "failed_to_add": "タグの追加に失敗しました",
+    "failed_to_remove": "タグの削除に失敗しました",
+    "blacklisted_header_title": "ブラックリスト済み",
+    "disable_all": "すべて無効化",
+    "reenable_all": "すべて再有効化"
   },
   "download": {
     "download": "ダウンロード",
     "bulk_download_save_to_folder": "フォルダに保存",
+    "bulk_download_invalid_folder_name_error": "フォルダには次の文字を含めることはできません： ",
+    "bulk_download_folder_select_warning": "Android 11+では、<b>({0})</b>内のフォルダにのみダウンロードできます。例：<b>内部</b> /storage/emulated/0/Download、<b>SDカード</b> /storage/A1B2-C3D4/Download。別のフォルダを選ぶか、新しく作成してください。デバイスバージョン：<b>{1}</b>",
     "open_app_settings": "設定を開く",
+    "storage_permission_explanation": "ダウンロードファイルを保存するにはストレージ権限が必要です。",
+    "app_restart_request": "この変更を有効にするにはアプリを再起動する必要があります",
+    "image_counter": {
+      "one": "$n枚の画像をダウンロード",
+      "other": "$n枚の画像をダウンロード"
+    },
     "bulk": {
       "all_done_notification_message": "全てのダウンロードが完了"
     }
   },
+  "saved_search": {
+    "saved_search": "保存された検索",
+    "saved_search_counter": {
+      "one": "$n件の検索",
+      "other": "$n件の検索"
+    },
+    "add_saved_search": "保存された検索を追加",
+    "saved_search_added": "保存された検索が追加されました",
+    "empty_saved_search": "まだ検索を追加していません",
+    "update_saved_search": "保存された検索を更新",
+    "saved_search_updated": "保存された検索が更新されました",
+    "saved_search_feed": "フィード",
+    "saved_search_help": "保存検索とは？",
+    "saved_search_examples": "例",
+    "saved_search_try": "試してみる",
+    "saved_search_query": "クエリ",
+    "saved_search_labels": "ラベル*",
+    "saved_search_labels_description": "*この検索を分類するためのタグのリスト。スペース区切り。"
+  },
   "favorites": {
     "counter": {
+      "one": "お気に入り",
       "other": "いいね"
-    }
+    },
+    "favorited": "お気に入りに追加済み",
+    "favorite": "お気に入り"
   },
   "favorite_groups": {
+    "favorite_groups": "お気に入りグループ",
+    "empty_group_notice": "お気に入りグループはありません",
+    "create_group": "グループを作成",
+    "edit_group": "グループを編集",
+    "add_to_group_dialog_title": "お気に入りグループに追加",
+    "add_to": "追加先",
+    "create": "作成",
+    "private": "プライベート",
+    "view_more_popup": "表示",
+    "items_added_notification_popup": "{0}件の投稿が{1}に追加されました",
+    "group_name": "グループ名",
+    "group_name_hint": "グループ名を入力",
+    "all_posts": "投稿",
+    "initial_posts_hint": "ID番号をスペース区切りで入力（オプション）",
+    "is_private_group_option": "プライベートグループ",
     "create_group_cancel": "キャンセル",
-    "create_group_confirm": "OK"
+    "create_group_confirm": "OK",
+    "max_limit_warning": "メンバーはお気に入りグループを10個まで作成できます",
+    "duplicate_items_warning_notification": "入力された投稿は既にグループに存在します",
+    "detete_confirmation": "このお気に入りグループを削除しますか？",
+    "group_item_counter": {
+      "one": "$n件の投稿",
+      "other": "$n件の投稿"
+    }
   },
   "favorite_tags": {
+    "favorites": "お気に入り",
     "import": "インポート",
+    "import_hint": "タグをスペースで区切って入力",
     "cancel": "キャンセル",
     "export": "エクスポート",
+    "export_notification": "タグをクリップボードにコピーしました",
     "favorite_tags": "お気に入りタグ"
+  },
+  "rating": {
+    "rate_request": "このアプリを評価",
+    "rate": "評価",
+    "cancel": "やめておく",
+    "later": "後で",
+    "rationale": "アプリを気に入ったら、ぜひレビューを！数秒で終わり、プロジェクトの大きな助けになります。"
   },
   "sideMenu": {
     "settings": "設定",
     "your_bookmarks": "ブックマーク",
-    "your_blacklist": "ブラックリスト"
+    "your_blacklist": "ブラックリスト",
+    "bulk_download": "一括ダウンロード",
+    "get_support": "サポートを受ける"
   },
   "dateRange": {
-    "day": "デイリー",
-    "week": "ウィークリー",
-    "month": "マンスリー"
+    "day": "日",
+    "week": "週",
+    "month": "月"
   },
   "booru": {
+    "booru_engine_input_label": "Booruエンジン (*)",
+    "config_name_label": "プロフィール名 (*)",
     "site_url_label": "サイトURL",
     "login_name_label": "ログイン",
     "password_api_key_label": "APIキー",
     "password_hashed_label": "ハッシュ化されたパスワード（読み取り専用）",
     "password_label": "パスワード",
+    "content_filtering_label": "コンテンツフィルタリング",
+    "hide_deleted_label": "削除された投稿を非表示",
     "config_booru_confirm": "OK",
-    "add_a_booru_site": "ボールサイトを追加"
+    "add_a_booru_site": "新しいプロフィールを作成",
+    "next_step": "次へ",
+    "site_url": "サイトURL",
+    "validation_empty_url": "URLが空です",
+    "validation_invalid_url": "\"{0}\"は有効なURLではありません",
+    "validation_invalid_http_url": "\"{0}\"はHTTPまたはHTTPS URLではありません",
+    "validation_missing_trailing_slash": "\"{0}\"は末尾のスラッシュがありません",
+    "validation_redundant_www": "\"{0}\"には冗長な\"www\"が含まれています",
+    "validation_contains_spaces": "\"{0}\"にスペースが含まれています",
+    "validation_missing_scheme": "\"{0}\"にはスキーマがありません（例：https://）",
+    "authentication": "認証",
+    "download": "ダウンロード",
+    "gestures": "ジェスチャー",
+    "misc": "その他"
+  },
+  "blacklist": {
+    "manage": {
+      "title": "ブラックリスト",
+      "empty_blacklist": "ブラックリストにタグがありません"
+    }
   },
   "bookmark": {
     "added": "ブックマーク追加",
-    "many_added": "{0}ブックマーク追加"
+    "failed_to_add": "ブックマークの追加に失敗しました",
+    "many_added": "{0}ブックマーク追加",
+    "failed_to_add_many": "ブックマークの追加に失敗しました",
+    "removed": "ブックマークが削除されました",
+    "updated": "ブックマークが更新されました",
+    "failed_to_remove": "ブックマークの削除に失敗しました",
+    "failed_to_update": "ブックマークの更新に失敗しました",
+    "failed_to_load": "ブックマークの読み込みに失敗しました：{0}"
+  },
+  "app_update": {
+    "update": "アップデート",
+    "later": "後で",
+    "whats_new": "新機能",
+    "update_available": "アップデートが利用可能"
   },
   "forum": {
     "forum": "フォーラム"
+  },
+  "gestures": {
+    "swipe_down": "下にスワイプ",
+    "double_tap": "ダブルタップ",
+    "long_press": "長押し",
+    "tap": "タップ"
+  },
+  "time": {
+    "counters": {
+      "second": {
+        "one": "秒",
+        "other": "秒"
+      }
+    }
   }
 }
