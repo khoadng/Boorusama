@@ -248,6 +248,14 @@
       },
       "slideshow_skip": "Skip slideshow transition",
       "slideshow_interval_explanation": "Value less than 1 second will automatically skip transition",
+      "swipe_mode": "Swipe mode",
+      "swipe_mode_disclaimer": "Some custom gestures may not work in all modes",
+      "swipe_modes": {
+        "horizontal": "Horizontal",
+        "horizontal_description": "Gallery-style left/right swiping. Like photo galleries and media apps.",
+        "vertical": "Vertical",
+        "vertical_description": "TikTok-style up/down swiping. Popular on short video platforms. Portrait mode only."
+      },
       "mute_video": "Mute video by default",
       "video_section_title": "Video"
     },

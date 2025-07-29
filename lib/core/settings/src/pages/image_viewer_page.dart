@@ -50,6 +50,48 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
               ),
               optionBuilder: (value) => Text(value.localize(context)),
             ),
+            SettingsCard(
+              title: context.t.settings.image_viewer.swipe_mode,
+              subtitle: context.t.settings.image_viewer.swipe_mode_disclaimer,
+              entries: [
+                SettingsCardEntry(
+                  title: context.t.settings.image_viewer.swipe_modes.horizontal,
+                  value: PostDetailsSwipeMode.horizontal.name,
+                  groupValue: settings.swipeMode.name,
+                  subtitle: context
+                      .t
+                      .settings
+                      .image_viewer
+                      .swipe_modes
+                      .horizontal_description,
+                  onSelected: (value) {
+                    notifer.updateSettings(
+                      settings.copyWith(
+                        swipeMode: PostDetailsSwipeMode.horizontal,
+                      ),
+                    );
+                  },
+                ),
+                SettingsCardEntry(
+                  title: context.t.settings.image_viewer.swipe_modes.vertical,
+                  value: PostDetailsSwipeMode.vertical.name,
+                  groupValue: settings.swipeMode.name,
+                  subtitle: context
+                      .t
+                      .settings
+                      .image_viewer
+                      .swipe_modes
+                      .vertical_description,
+                  onSelected: (value) {
+                    notifer.updateSettings(
+                      settings.copyWith(
+                        swipeMode: PostDetailsSwipeMode.vertical,
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
             const Divider(thickness: 1),
             SettingsHeader(label: context.t.settings.image_viewer.slideshow),
             SettingsTile(

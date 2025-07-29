@@ -286,6 +286,9 @@ class _PostDetailPageScaffoldState<T extends Post>
     final reduceAnimations = ref.watch(
       settingsProvider.select((value) => value.reduceAnimations),
     );
+    final swipeMode = ref.watch(
+      settingsProvider.select((value) => value.swipeMode),
+    );
 
     void onItemTap() {
       final controller = widget.controller;
@@ -315,6 +318,10 @@ class _PostDetailPageScaffoldState<T extends Post>
 
     return Scaffold(
       body: PostDetailsPageView(
+        viewMode: switch (swipeMode) {
+          PostDetailsSwipeMode.horizontal => ViewMode.horizontal,
+          PostDetailsSwipeMode.vertical => ViewMode.vertical,
+        },
         disableAnimation: reduceAnimations,
         onPageChanged: (page) {
           final post = posts[page];

@@ -24,6 +24,11 @@ import 'post_details_page_view_controller.dart';
 import 'sheet_state_storage.dart';
 import 'side_sheet.dart';
 
+enum ViewMode {
+  horizontal,
+  vertical,
+}
+
 class PostDetailsPageView extends StatefulWidget {
   const PostDetailsPageView({
     required this.sheetBuilder,
@@ -44,6 +49,7 @@ class PostDetailsPageView extends StatefulWidget {
     this.bottomSheet,
     this.sheetStateStorage,
     this.disableAnimation = false,
+    this.viewMode = ViewMode.horizontal,
   });
 
   final Widget Function(BuildContext, ScrollController? scrollController)
@@ -68,6 +74,7 @@ class PostDetailsPageView extends StatefulWidget {
 
   final bool disableAnimation;
   final bool Function() checkIfLargeScreen;
+  final ViewMode viewMode;
 
   @override
   State<PostDetailsPageView> createState() => _PostDetailsPageViewState();
@@ -119,6 +126,8 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
   late Animation<Offset> _sideSheetSlideAnim;
 
   bool get isLargeScreen => widget.checkIfLargeScreen();
+  bool get isVerticalMode => widget.viewMode == ViewMode.vertical;
+  bool get useVerticalLayout => isVerticalMode && !isLargeScreen;
 
   @override
   void initState() {
@@ -142,7 +151,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
           ),
         );
 
-    // Animate the side sheet’s position from offscreen to onscreen
+    // Animate the side sheet's position from offscreen to onscreen
     _sideSheetSlideAnim =
         Tween<Offset>(
           begin: const Offset(1.0, 0.0),
@@ -160,6 +169,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
           initialPage: 0,
           checkIfLargeScreen: widget.checkIfLargeScreen,
           totalPage: widget.itemCount,
+          viewMode: widget.viewMode,
         );
 
     _controller.pageController.addListener(_onPageChanged);
@@ -175,7 +185,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     final currentExpanded = _controller.sheetState.value.isExpanded;
 
     // auto expand side sheet if it was expanded before
-    if (isLargeScreen && !currentExpanded) {
+    if (isLargeScreen && !currentExpanded && !isVerticalMode) {
       final expanded = widget.sheetStateStorage?.loadExpandedState();
 
       if (expanded == true) {
@@ -318,7 +328,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
       }
     }
 
-    if (isLargeScreen) {
+    if (isLargeScreen && !isVerticalMode) {
       widget.sheetStateStorage?.persistExpandedState(_controller.isExpanded);
     }
 
@@ -360,12 +370,20 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
   Widget build(BuildContext context) {
     return CallbackShortcuts(
       bindings: {
-        const SingleActivator(LogicalKeyboardKey.arrowRight): () {
+        SingleActivator(
+          useVerticalLayout
+              ? LogicalKeyboardKey.arrowDown
+              : LogicalKeyboardKey.arrowRight,
+        ): () {
           _controller.nextPage(
             duration: isLargeScreen ? Duration.zero : null,
           );
         },
-        const SingleActivator(LogicalKeyboardKey.arrowLeft): () {
+        SingleActivator(
+          useVerticalLayout
+              ? LogicalKeyboardKey.arrowUp
+              : LogicalKeyboardKey.arrowLeft,
+        ): () {
           _controller.previousPage(
             duration: isLargeScreen ? Duration.zero : null,
           );
@@ -597,7 +615,9 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
                 const SizedBox(width: 8),
                 CircularIconButton(
                   onPressed: () {
-                    if (!isLargeScreen) {
+                    if (useVerticalLayout) {
+                      _controller.expandToSnapPoint();
+                    } else if (!isLargeScreen) {
                       _controller.expandToSnapPoint();
                     } else {
                       _controller.toggleExpanded(
@@ -671,6 +691,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
         final blockSwipe = !swipe || state.isExpanded || interacting;
 
         return PageView.builder(
+          scrollDirection: useVerticalLayout ? Axis.vertical : Axis.horizontal,
           onPageChanged: blockSwipe && !isPortrait
               ? (_) => _controller.startCooldownTimer()
               : null,
@@ -689,19 +710,27 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
 
   Widget _buildItem(int index, bool blockSwipe) {
     List<Widget> buildNavButtons() {
+      final isVertical = useVerticalLayout;
+
       return [
         PageNavButton(
-          alignment: Alignment.centerRight,
+          alignment: isVertical
+              ? Alignment.bottomCenter
+              : Alignment.centerRight,
           controller: _controller,
           visibleWhen: (page) => page < widget.itemCount - 1,
-          icon: const Icon(Symbols.arrow_forward),
+          icon: Icon(
+            isVertical ? Symbols.keyboard_arrow_down : Symbols.arrow_forward,
+          ),
           onPressed: () => _controller.nextPage(duration: Duration.zero),
         ),
         PageNavButton(
-          alignment: Alignment.centerLeft,
+          alignment: isVertical ? Alignment.topCenter : Alignment.centerLeft,
           controller: _controller,
           visibleWhen: (page) => page > 0,
-          icon: const Icon(Symbols.arrow_back),
+          icon: Icon(
+            isVertical ? Symbols.keyboard_arrow_up : Symbols.arrow_back,
+          ),
           onPressed: () => _controller.previousPage(duration: Duration.zero),
         ),
       ];
@@ -713,23 +742,30 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
       children: [
         Positioned.fill(
           child: ValueListenableBuilder(
-            valueListenable: !isSmall ? _dummyAlwaysFalse : _controller.canPull,
+            valueListenable: !isSmall || useVerticalLayout
+                ? _dummyAlwaysFalse
+                : _controller.canPull,
             builder: (_, canPull, _) => PointerCountOnScreen(
-              enable: isSmall,
+              enable: isSmall && !useVerticalLayout,
               onCountChanged: (count) {
                 _pointerCount.value = count;
                 _interacting.value = count > 1;
               },
               child: ValueListenableBuilder(
-                valueListenable: !isSmall
+                valueListenable: !isSmall || useVerticalLayout
                     ? _dummyAlwaysFalse
                     : _controller.pulling,
                 builder: (_, pulling, _) => GestureDetector(
-                  onVerticalDragStart: canPull && !_interacting.value
+                  onVerticalDragStart:
+                      canPull && !_interacting.value && !useVerticalLayout
                       ? _onVerticalDragStart
                       : null,
-                  onVerticalDragUpdate: pulling ? _onVerticalDragUpdate : null,
-                  onVerticalDragEnd: pulling ? _onVerticalDragEnd : null,
+                  onVerticalDragUpdate: pulling && !useVerticalLayout
+                      ? _onVerticalDragUpdate
+                      : null,
+                  onVerticalDragEnd: pulling && !useVerticalLayout
+                      ? _onVerticalDragEnd
+                      : null,
                   child: AnimatedBuilder(
                     animation: Listenable.merge([
                       _controller.freestyleMoveOffset,
@@ -754,13 +790,15 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
         ),
         if (isDesktopPlatform())
           ...buildNavButtons()
-        else if (!isSmall)
+        else if (!isSmall || useVerticalLayout)
           if (blockSwipe) ...buildNavButtons(),
       ],
     );
   }
 
   void _onVerticalDragStart(DragStartDetails details) {
+    if (useVerticalLayout) return;
+
     _controller.pulling.value = true;
 
     if (!_controller.isExpanded) {
@@ -770,6 +808,8 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
   }
 
   void _onVerticalDragUpdate(DragUpdateDetails details) {
+    if (useVerticalLayout) return;
+
     _controller.dragUpdate(details);
 
     if (_controller.freestyleMoving.value) {
@@ -802,6 +842,8 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
   }
 
   void _onVerticalDragEnd(DragEndDetails details) {
+    if (useVerticalLayout) return;
+
     _controller.pulling.value = false;
 
     // Check if drag distance exceeds threshold for dismissal

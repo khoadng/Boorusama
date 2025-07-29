@@ -152,3 +152,8 @@ enum HapticFeedbackLevel {
   balanced,
   full,
 }
+
+enum PostDetailsSwipeMode {
+  horizontal,
+  vertical,
+}

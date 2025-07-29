@@ -47,6 +47,7 @@ class Settings extends Equatable {
     required this.searchBarScrollBehavior,
     required this.searchBarPosition,
     required this.hapticFeedbackLevel,
+    required this.swipeMode,
   });
 
   Settings.fromJson(Map<String, dynamic> json)
@@ -129,6 +130,9 @@ class Settings extends Equatable {
       hapticFeedbackLevel = json['hapticFeedbackLevel'] != null
           ? HapticFeedbackLevel.values[json['hapticFeedbackLevel']]
           : HapticFeedbackLevel.balanced,
+      swipeMode = json['swipeMode'] != null
+          ? PostDetailsSwipeMode.values[json['swipeMode']]
+          : PostDetailsSwipeMode.horizontal,
       volumeKeyViewerNavigation = json['volumeKeyViewerNavigation'] ?? false,
       reduceAnimations = json['reduceAnimations'] ?? false,
       swipeAreaToOpenSidebarPercentage =
@@ -184,6 +188,7 @@ class Settings extends Equatable {
     searchBarScrollBehavior: SearchBarScrollBehavior.autoHide,
     searchBarPosition: SearchBarPosition.top,
     hapticFeedbackLevel: HapticFeedbackLevel.balanced,
+    swipeMode: PostDetailsSwipeMode.horizontal,
   );
 
   final ImageListingSettings listing;
@@ -249,6 +254,8 @@ class Settings extends Equatable {
 
   final HapticFeedbackLevel hapticFeedbackLevel;
 
+  final PostDetailsSwipeMode swipeMode;
+
   Settings copyWith({
     String? blacklistedTags,
     String? language,
@@ -285,6 +292,7 @@ class Settings extends Equatable {
     SearchBarScrollBehavior? searchBarScrollBehavior,
     SearchBarPosition? searchBarPosition,
     HapticFeedbackLevel? hapticFeedbackLevel,
+    PostDetailsSwipeMode? swipeMode,
   }) => Settings(
     listing: listing ?? this.listing,
     safeMode: safeMode ?? this.safeMode,
@@ -335,6 +343,7 @@ class Settings extends Equatable {
         searchBarScrollBehavior ?? this.searchBarScrollBehavior,
     searchBarPosition: searchBarPosition ?? this.searchBarPosition,
     hapticFeedbackLevel: hapticFeedbackLevel ?? this.hapticFeedbackLevel,
+    swipeMode: swipeMode ?? this.swipeMode,
   );
 
   Map<String, dynamic> toJson() {
@@ -376,6 +385,7 @@ class Settings extends Equatable {
       'searchBarScrollBehavior': searchBarScrollBehavior.index,
       'searchBarPosition': searchBarPosition.index,
       'hapticFeedbackLevel': hapticFeedbackLevel.index,
+      'swipeMode': swipeMode.index,
     };
   }
 
@@ -415,6 +425,7 @@ class Settings extends Equatable {
     searchBarScrollBehavior,
     searchBarPosition,
     hapticFeedbackLevel,
+    swipeMode,
   ];
 
   bool get appLockEnabled => appLockType == AppLockType.biometrics;

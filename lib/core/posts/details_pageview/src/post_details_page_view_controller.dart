@@ -26,6 +26,7 @@ class PostDetailsPageViewController extends ChangeNotifier
     this.maxSize = 0.7,
     this.thresholdSizeToExpand = 0.02,
     SlideshowOptions slideshowOptions = const SlideshowOptions(),
+    this.viewMode = ViewMode.horizontal,
   }) : currentPage = ValueNotifier(initialPage),
        _slideshowOptions = slideshowOptions,
        overlay = ValueNotifier(!initialHideOverlay),
@@ -39,6 +40,7 @@ class PostDetailsPageViewController extends ChangeNotifier
   final double maxSize;
   final double thresholdSizeToExpand;
   final bool disableAnimation;
+  final ViewMode viewMode;
 
   late SlideshowOptions _slideshowOptions;
 
@@ -55,6 +57,9 @@ class PostDetailsPageViewController extends ChangeNotifier
 
   int get page => currentPage.value;
   bool get isExpanded => sheetState.value.isExpanded;
+  bool get useVerticalLayout =>
+      viewMode == ViewMode.vertical && !checkIfLargeScreen();
+
   @override
   PageController get pageController => _pageController;
 
@@ -288,7 +293,7 @@ class PostDetailsPageViewController extends ChangeNotifier
   }
 
   void dragUpdate(DragUpdateDetails details) {
-    if (isExpanded) return;
+    if (isExpanded || useVerticalLayout) return;
 
     final dy = details.delta.dy;
     verticalPosition.value = verticalPosition.value + dy;
@@ -316,6 +321,8 @@ class PostDetailsPageViewController extends ChangeNotifier
   }
 
   Future<void> dragEnd() async {
+    if (useVerticalLayout) return;
+
     final size = sheetController.size;
 
     if (size > thresholdSizeToExpand) {
@@ -469,6 +476,20 @@ class PostDetailsPageViewController extends ChangeNotifier
     double longestSide,
     Future<void> Function() anim,
   ) async {
+    void setSheetState() {
+      sheetState.value = switch (sheetState.value) {
+        SheetState.collapsed => SheetState.expanded,
+        SheetState.expanded => SheetState.hidden,
+        SheetState.hidden => SheetState.expanded,
+      };
+    }
+
+    if (useVerticalLayout) {
+      await anim();
+      setSheetState();
+      return;
+    }
+
     if (sheetState.value.isExpanded) {
       sheetMaxSize.value = maxSize;
       setDisplacement(0.0);
@@ -478,11 +499,7 @@ class PostDetailsPageViewController extends ChangeNotifier
 
     await anim();
 
-    sheetState.value = switch (sheetState.value) {
-      SheetState.collapsed => SheetState.expanded,
-      SheetState.expanded => SheetState.hidden,
-      SheetState.hidden => SheetState.expanded,
-    };
+    setSheetState();
   }
 
   void onZoomUpdated(bool value) {
