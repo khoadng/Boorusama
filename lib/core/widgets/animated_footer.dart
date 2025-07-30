@@ -17,24 +17,28 @@ class SelectionModeAnimatedFooter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final controller = SelectionMode.of(context);
-    final enable = controller.isActive;
 
-    return Material(
-      color: enable ? colorScheme.surface : Colors.transparent,
-      child: SafeArea(
-        top: false,
-        child: AnimatedSlide(
-          duration: _kAnimDuration,
-          curve: Curves.easeInOut,
-          offset: enable ? Offset.zero : const Offset(0, 1),
-          child: AnimatedOpacity(
-            duration: _kAnimDuration,
-            opacity: enable ? 1.0 : 0.0,
-            child: enable ? child : const SizedBox.shrink(),
+    return SelectionConsumer(
+      builder: (context, controller, _) {
+        final enable = controller.isActive;
+
+        return Material(
+          color: enable ? colorScheme.surface : Colors.transparent,
+          child: SafeArea(
+            top: false,
+            child: AnimatedSlide(
+              duration: _kAnimDuration,
+              curve: Curves.easeInOut,
+              offset: enable ? Offset.zero : const Offset(0, 1),
+              child: AnimatedOpacity(
+                duration: _kAnimDuration,
+                opacity: enable ? 1.0 : 0.0,
+                child: enable ? child : const SizedBox.shrink(),
+              ),
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

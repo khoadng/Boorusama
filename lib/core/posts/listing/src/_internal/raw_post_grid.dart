@@ -526,38 +526,38 @@ class _SelectionMode extends StatelessWidget {
       controller: selectionModeController,
       options: selectionOptions,
       scrollController: autoScrollController,
-      child: SelectionCanvas(
-        child: ListenableBuilder(
-          listenable: selectionModeController,
-          builder: (context, _) {
-            final controller = selectionModeController;
-            final multiSelect = controller.isActive;
-
-            return Stack(
-              children: [
-                Column(
-                  children: [
-                    if (multiSelect && header != null)
-                      SizedBox(
-                        height: kToolbarHeight,
-                        child: header,
-                      ),
-                    Expanded(child: child),
-                  ],
+      child: Stack(
+        children: [
+          Column(
+            children: [
+              SelectionConsumer(
+                builder: (context, controller, child) {
+                  final multiSelect = controller.isActive;
+                  return multiSelect && header != null
+                      ? SizedBox(
+                          height: kToolbarHeight,
+                          child: header,
+                        )
+                      : const SizedBox.shrink();
+                },
+              ),
+              Expanded(
+                child: SelectionCanvas(
+                  child: child,
                 ),
-                if (footer case final Widget footer)
-                  Positioned(
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    child: SelectionModeAnimatedFooter(
-                      child: footer,
-                    ),
-                  ),
-              ],
-            );
-          },
-        ),
+              ),
+            ],
+          ),
+          if (footer case final Widget footer)
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 0,
+              child: SelectionModeAnimatedFooter(
+                child: footer,
+              ),
+            ),
+        ],
       ),
     );
   }
