@@ -19,6 +19,7 @@ import '../configs/config.dart';
 import '../configs/manage/providers.dart';
 import '../configs/manage/widgets.dart';
 import '../configs/ref.dart';
+import '../premiums/widgets.dart';
 import '../settings/providers.dart';
 import '../settings/settings.dart';
 import '../theme.dart';
@@ -73,7 +74,7 @@ class _EntryPageState extends ConsumerState<EntryPage> {
       );
     }
 
-    return BulkDownloadNotificationScope(
+    return _NotificationScope(
       child: Column(
         children: [
           Expanded(
@@ -118,6 +119,23 @@ class _EntryPageState extends ConsumerState<EntryPage> {
                   : const SizedBox.shrink(),
             ),
         ],
+      ),
+    );
+  }
+}
+
+class _NotificationScope extends StatelessWidget {
+  const _NotificationScope({
+    required this.child,
+  });
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return BulkDownloadNotificationScope(
+      child: LayoutPreviewNotificationScope(
+        child: child,
       ),
     );
   }

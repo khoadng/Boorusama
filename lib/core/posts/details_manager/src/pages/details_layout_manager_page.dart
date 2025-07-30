@@ -11,7 +11,7 @@ import 'package:reorderables/reorderables.dart';
 // Project imports:
 import '../../../../../foundation/toast.dart';
 import '../../../../premiums/providers.dart';
-import '../../../../premiums/routes.dart';
+import '../../../../premiums/widgets.dart';
 import '../../../../theme/app_theme.dart';
 import '../../../../widgets/widgets.dart';
 import '../providers/details_layout_provider.dart';
@@ -82,22 +82,6 @@ class DetailsLayoutManagerPage extends StatelessWidget {
                   ],
                 ),
               ),
-            ),
-            Consumer(
-              builder: (_, ref, _) {
-                final hasPremium = ref.watch(hasPremiumProvider);
-
-                return !hasPremium
-                    ? SafeArea(
-                        child: PrimaryButton(
-                          onPressed: () {
-                            goToPremiumPage(ref);
-                          },
-                          child: Text('Upgrade to save'.hc),
-                        ),
-                      )
-                    : const SizedBox.shrink();
-              },
             ),
           ],
         ),
@@ -222,17 +206,36 @@ class _Header extends StatelessWidget {
 
           final notifier = ref.watch(detailsLayoutProvider(params).notifier);
 
-          return hasPremium
-              ? FilledButton(
-                  onPressed: canApply
-                      ? () {
-                          notifier.save();
-                          Navigator.of(context).pop();
-                        }
-                      : null,
-                  child: Text('Apply'.hc),
-                )
-              : const SizedBox.shrink();
+          return FilledButton(
+            onPressed: canApply
+                ? () {
+                    final layoutPreviewState = ref.read(
+                      premiumLayoutPreviewProvider,
+                    );
+
+                    final isInitiallyOff =
+                        layoutPreviewState.status == LayoutPreviewStatus.off;
+
+                    if (!hasPremium) {
+                      showDialog(
+                        context: context,
+                        builder: (context) => PremiumLayoutPreviewDialog(
+                          firstTime: isInitiallyOff,
+                          onApplyLayout: () => notifier.save(),
+                          onStartPreview: () {
+                            notifier.save();
+                          },
+                        ),
+                      );
+                      return;
+                    }
+
+                    notifier.save();
+                    Navigator.of(context).pop();
+                  }
+                : null,
+            child: Text('Apply'.hc),
+          );
         },
       ),
     );

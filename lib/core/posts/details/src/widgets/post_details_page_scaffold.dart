@@ -360,7 +360,7 @@ class _PostDetailPageScaffoldState<T extends Post>
                   widget.preferredParts ??
                   getLayoutParsedParts(
                     details: layoutDetails,
-                    hasPremium: ref.watch(hasPremiumProvider),
+                    hasPremium: ref.watch(hasPremiumLayoutProvider),
                   ) ??
                   uiBuilder?.full.keys.toSet();
 
@@ -562,7 +562,7 @@ class _PostDetailPageScaffoldState<T extends Post>
         widget.preferredPreviewParts ??
         getLayoutPreviewParsedParts(
           previewDetails: layoutPreviewDetails,
-          hasPremium: ref.watch(hasPremiumProvider),
+          hasPremium: ref.watch(hasPremiumLayoutProvider),
         ) ??
         uiBuilder.preview.keys.toSet();
 
