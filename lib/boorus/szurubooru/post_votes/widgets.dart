@@ -50,6 +50,7 @@ class SzurubooruPostActionToolbar extends ConsumerWidget {
         builder: (context, buttons) {
           return AdaptiveButtonRow.menu(
             buttonWidth: 52,
+            maxVisibleButtons: 5,
             buttons: [
               if (config.hasLoginDetails())
                 ButtonData(

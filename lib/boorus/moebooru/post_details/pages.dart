@@ -156,6 +156,7 @@ class _Toolbar<T extends Post> extends ConsumerWidget {
 
     return SimplePostActionToolbar(
       post: post,
+      maxVisibleButtons: 4,
       onStartSlideshow: PostDetails.of<T>(
         context,
       ).pageViewController.startSlideshow,

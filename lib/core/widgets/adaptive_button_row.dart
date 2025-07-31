@@ -77,8 +77,9 @@ class AdaptiveButtonRow extends StatefulWidget {
     this.onOverflow,
     this.scrollController,
     this.runSpacing = _kDefaultSpacing,
-    this.alignment = WrapAlignment.center,
+    this.alignment,
     this.maxVisibleButtons,
+    this.padding,
     super.key,
   });
 
@@ -90,6 +91,8 @@ class AdaptiveButtonRow extends StatefulWidget {
     Widget Function(VoidCallback)? overflowButtonBuilder,
     ValueChanged<int>? onOverflow,
     int? maxVisibleButtons,
+    MainAxisAlignment? alignment,
+    EdgeInsetsGeometry? padding,
     Key? key,
   }) => AdaptiveButtonRow._(
     buttons: buttons,
@@ -100,6 +103,8 @@ class AdaptiveButtonRow extends StatefulWidget {
     overflowButtonBuilder: overflowButtonBuilder,
     onOverflow: onOverflow,
     maxVisibleButtons: maxVisibleButtons,
+    alignment: alignment,
+    padding: padding,
     key: key,
   );
 
@@ -109,6 +114,8 @@ class AdaptiveButtonRow extends StatefulWidget {
     double spacing = _kDefaultSpacing,
     ScrollController? scrollController,
     int? maxVisibleButtons,
+    MainAxisAlignment? alignment,
+    EdgeInsetsGeometry? padding,
     Key? key,
   }) => AdaptiveButtonRow._(
     buttons: buttons,
@@ -117,6 +124,8 @@ class AdaptiveButtonRow extends StatefulWidget {
     spacing: spacing,
     scrollController: scrollController,
     maxVisibleButtons: maxVisibleButtons,
+    alignment: alignment,
+    padding: padding,
     key: key,
   );
 
@@ -125,8 +134,9 @@ class AdaptiveButtonRow extends StatefulWidget {
     double? buttonWidth,
     double spacing = _kWrapSpacing,
     double runSpacing = _kWrapSpacing,
-    WrapAlignment alignment = WrapAlignment.center,
+    MainAxisAlignment? alignment,
     int? maxVisibleButtons,
+    EdgeInsetsGeometry? padding,
     Key? key,
   }) => AdaptiveButtonRow._(
     buttons: buttons,
@@ -136,6 +146,7 @@ class AdaptiveButtonRow extends StatefulWidget {
     runSpacing: runSpacing,
     alignment: alignment,
     maxVisibleButtons: maxVisibleButtons,
+    padding: padding,
     key: key,
   );
 
@@ -144,6 +155,8 @@ class AdaptiveButtonRow extends StatefulWidget {
   final double? buttonWidth;
   final double spacing;
   final int? maxVisibleButtons;
+  final MainAxisAlignment? alignment;
+  final EdgeInsetsGeometry? padding;
 
   // Menu-specific
   final Widget? overflowIcon;
@@ -155,7 +168,6 @@ class AdaptiveButtonRow extends StatefulWidget {
 
   // Wrap-specific
   final double runSpacing;
-  final WrapAlignment alignment;
 
   @override
   State<AdaptiveButtonRow> createState() => _AdaptiveButtonRowState();
@@ -166,11 +178,14 @@ class _AdaptiveButtonRowState extends State<AdaptiveButtonRow> {
   Widget build(BuildContext context) {
     if (widget.buttons.isEmpty) return const SizedBox.shrink();
 
-    return switch (widget.overflowStrategy) {
-      OverflowStrategy.menu => _buildMenuLayout(),
-      OverflowStrategy.scrollable => _buildScrollableLayout(),
-      OverflowStrategy.wrap => _buildWrapLayout(),
-    };
+    return Padding(
+      padding: widget.padding ?? const EdgeInsets.symmetric(horizontal: 12),
+      child: switch (widget.overflowStrategy) {
+        OverflowStrategy.menu => _buildMenuLayout(),
+        OverflowStrategy.scrollable => _buildScrollableLayout(),
+        OverflowStrategy.wrap => _buildWrapLayout(),
+      },
+    );
   }
 
   Widget _buildRowWithOptionalOverflow(
@@ -297,9 +312,10 @@ class _AdaptiveButtonRowState extends State<AdaptiveButtonRow> {
     return LayoutBuilder(
       builder: (context, constraints) {
         return switch (requiredWidth <= constraints.maxWidth) {
-          // If content fits, use centered row
+          // If content fits, use aligned row
           true => Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment:
+                widget.alignment ?? MainAxisAlignment.spaceEvenly,
             mainAxisSize: MainAxisSize.min,
             children: _buildButtonWidgets(buttonsToShow),
           ),
@@ -325,9 +341,22 @@ class _AdaptiveButtonRowState extends State<AdaptiveButtonRow> {
     return Wrap(
       spacing: widget.spacing,
       runSpacing: widget.runSpacing,
-      alignment: widget.alignment,
+      alignment: _mainAxisToWrapAlignment(
+        widget.alignment ?? MainAxisAlignment.spaceEvenly,
+      ),
       children: _buildButtonWidgets(buttonsToShow),
     );
+  }
+
+  WrapAlignment _mainAxisToWrapAlignment(MainAxisAlignment alignment) {
+    return switch (alignment) {
+      MainAxisAlignment.start => WrapAlignment.start,
+      MainAxisAlignment.end => WrapAlignment.end,
+      MainAxisAlignment.center => WrapAlignment.center,
+      MainAxisAlignment.spaceBetween => WrapAlignment.spaceBetween,
+      MainAxisAlignment.spaceAround => WrapAlignment.spaceAround,
+      MainAxisAlignment.spaceEvenly => WrapAlignment.spaceEvenly,
+    };
   }
 
   List<Widget> _buildButtonWidgets([List<ButtonData>? buttons]) {
@@ -357,7 +386,7 @@ class _AdaptiveButtonRowState extends State<AdaptiveButtonRow> {
   Widget _buildRow(List<ButtonData> buttons, double width) {
     return Row(
       mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: widget.alignment ?? MainAxisAlignment.spaceEvenly,
       children: buttons
           .asMap()
           .entries

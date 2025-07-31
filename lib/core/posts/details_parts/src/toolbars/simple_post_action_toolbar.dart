@@ -31,9 +31,11 @@ class SimplePostActionToolbar extends ConsumerWidget {
     this.removeFavorite,
     this.forceHideFav = false,
     this.onDownload,
+    this.maxVisibleButtons,
   });
 
   final Post post;
+  final int? maxVisibleButtons;
   final bool? isFaved;
   final bool? isAuthorized;
   final bool forceHideFav;
@@ -54,8 +56,9 @@ class SimplePostActionToolbar extends ConsumerWidget {
       config: config,
       configViewer: ref.watchConfigViewer,
       builder: (context, buttons) {
-        return AdaptiveButtonRow.scrollable(
+        return AdaptiveButtonRow.menu(
           buttonWidth: 52,
+          maxVisibleButtons: maxVisibleButtons,
           buttons: [
             if (!forceHideFav &&
                 isAuthorized != null &&
@@ -143,6 +146,7 @@ class DefaultPostActionToolbar<T extends Post> extends ConsumerWidget {
       post: post,
       isFaved: isFaved,
       isAuthorized: config.hasLoginDetails(),
+      maxVisibleButtons: 5,
       addFavorite: canFavorite ? () => notifier.add(post.id) : null,
       removeFavorite: canFavorite ? () => notifier.remove(post.id) : null,
       forceHideFav: forceHideFav,

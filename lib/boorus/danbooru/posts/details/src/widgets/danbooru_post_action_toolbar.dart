@@ -56,6 +56,7 @@ class DanbooruPostActionToolbar extends ConsumerWidget {
     final postVote = ref.watch(danbooruPostVoteProvider(params));
     final voteState = postVote?.voteState ?? VoteState.unvote;
     final notifier = ref.watch(favoritesProvider(config).notifier);
+    final hasLogin = config.hasLoginDetails();
 
     return SliverToBoxAdapter(
       child: CommonPostButtonsBuilder(
@@ -66,8 +67,9 @@ class DanbooruPostActionToolbar extends ConsumerWidget {
         builder: (context, buttons) {
           return AdaptiveButtonRow.menu(
             buttonWidth: 48,
+            maxVisibleButtons: hasLogin ? 7 : 4,
             buttons: [
-              if (config.hasLoginDetails())
+              if (hasLogin)
                 ButtonData(
                   required: true,
                   widget: FavoritePostButton(
@@ -78,7 +80,7 @@ class DanbooruPostActionToolbar extends ConsumerWidget {
                   ),
                   title: context.t.post.action.favorite,
                 ),
-              if (config.hasLoginDetails())
+              if (hasLogin)
                 ButtonData(
                   required: true,
                   widget: UpvotePostButton(
@@ -88,7 +90,7 @@ class DanbooruPostActionToolbar extends ConsumerWidget {
                   ),
                   title: context.t.post.action.upvote,
                 ),
-              if (config.hasLoginDetails())
+              if (hasLogin)
                 ButtonData(
                   required: true,
                   widget: DownvotePostButton(
@@ -124,7 +126,7 @@ class DanbooruPostActionToolbar extends ConsumerWidget {
                 title: context.t.comment.comments,
                 onTap: () => goToCommentPage(context, ref, post.id),
               ),
-              if (config.hasLoginDetails())
+              if (hasLogin)
                 SimpleButtonData(
                   icon: Icons.folder_special,
                   title: context.t.post.action.add_to_favorite_group,
