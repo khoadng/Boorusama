@@ -111,6 +111,7 @@ class _PostGridState<T extends Post> extends ConsumerState<PostGrid<T>> {
       child: RawPostGrid(
         options: PostGridOptions(
           cacheExtent: ref.watch(gridCacheExtentProvider),
+          hapticFeedbackLevel: ref.watch(hapticFeedbackLevelProvider),
         ),
         sliverHeaders: [
           ...widget.sliverHeaders ?? [],

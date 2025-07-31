@@ -1,5 +1,6 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,6 +9,8 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../../../../configs/ref.dart';
+import '../../../../settings/providers.dart';
+import '../../../../settings/settings.dart';
 import '../../../../theme.dart';
 import '../../../post/post.dart';
 import '../providers/favorites_notifier.dart';
@@ -24,6 +27,8 @@ class QuickFavoriteButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final hapticsLevel = ref.watch(hapticFeedbackLevelProvider);
+
     return Container(
       padding: const EdgeInsets.only(
         top: 2,
@@ -38,9 +43,14 @@ class QuickFavoriteButton extends ConsumerWidget {
       child: LikeButton(
         isLiked: isFaved,
         onTap: (isLiked) {
+          final liked = !isLiked;
           onFavToggle?.call(!isLiked);
 
-          return Future.value(!isLiked);
+          if (liked && hapticsLevel.isBalanceAndAbove) {
+            HapticFeedback.mediumImpact();
+          }
+
+          return Future.value(liked);
         },
         likeBuilder: (isLiked) {
           return Icon(

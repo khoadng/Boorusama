@@ -1,5 +1,6 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class SwipeTo extends StatefulWidget {
   const SwipeTo({
@@ -13,6 +14,7 @@ class SwipeTo extends StatefulWidget {
     this.enabled = true,
     this.swipeLeftEnabled = true,
     this.swipeRightEnabled = true,
+    this.hapticFeedbackEnabled = false,
   });
   final Widget child;
   final Duration animationDuration;
@@ -24,6 +26,7 @@ class SwipeTo extends StatefulWidget {
   final bool enabled;
   final bool swipeLeftEnabled;
   final bool swipeRightEnabled;
+  final bool hapticFeedbackEnabled;
 
   @override
   State<SwipeTo> createState() => _SwipeToState();
@@ -34,8 +37,10 @@ class _SwipeToState extends State<SwipeTo> with SingleTickerProviderStateMixin {
 
   Offset _dragStartOffset = Offset.zero;
   Offset _dragUpdateOffset = Offset.zero;
+  bool _hasTriggeredThresholdHaptic = false;
 
   double get maxSwipeThreshold => 0.35;
+  double get swipeExecutionThreshold => 0.3;
 
   double calculateIconOpacity(double swipeDistanceFraction) {
     return (swipeDistanceFraction * 3).clamp(0.0, 1.0);
@@ -73,6 +78,7 @@ class _SwipeToState extends State<SwipeTo> with SingleTickerProviderStateMixin {
 
   void _handleDragStart(DragStartDetails details) {
     _dragStartOffset = details.globalPosition;
+    _hasTriggeredThresholdHaptic = false;
   }
 
   void _handleDragUpdate(DragUpdateDetails details) {
@@ -95,6 +101,14 @@ class _SwipeToState extends State<SwipeTo> with SingleTickerProviderStateMixin {
       dx = dx.clamp(-maxSwipeThreshold, 0);
     }
 
+    // Trigger subtle haptic feedback when crossing execution threshold
+    if (widget.hapticFeedbackEnabled &&
+        !_hasTriggeredThresholdHaptic &&
+        dx.abs() >= swipeExecutionThreshold) {
+      HapticFeedback.selectionClick();
+      _hasTriggeredThresholdHaptic = true;
+    }
+
     setState(() {
       _dragUpdateOffset = Offset(dx, 0);
     });
@@ -102,8 +116,13 @@ class _SwipeToState extends State<SwipeTo> with SingleTickerProviderStateMixin {
 
   void _handleDragEnd(DragEndDetails details) {
     final dx = _dragUpdateOffset.dx;
-    if (dx.abs() > 0.3) {
+    if (dx.abs() > swipeExecutionThreshold) {
       final swipeRight = dx > 0;
+
+      if (widget.hapticFeedbackEnabled) {
+        HapticFeedback.mediumImpact();
+      }
+
       if (swipeRight && widget.onRightSwipe != null) {
         widget.onRightSwipe!(details);
       } else if (!swipeRight && widget.onLeftSwipe != null) {
@@ -116,6 +135,7 @@ class _SwipeToState extends State<SwipeTo> with SingleTickerProviderStateMixin {
     setState(() {
       _dragUpdateOffset = Offset.zero;
       _swipeDirection = null;
+      _hasTriggeredThresholdHaptic = false;
     });
   }
 

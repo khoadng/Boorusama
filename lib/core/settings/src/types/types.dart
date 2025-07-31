@@ -153,6 +153,19 @@ enum HapticFeedbackLevel {
   full,
 }
 
+extension HapticFeedbackLevelX on HapticFeedbackLevel {
+  bool get isReducedOrAbove => switch (this) {
+    HapticFeedbackLevel.reduced ||
+    HapticFeedbackLevel.balanced ||
+    HapticFeedbackLevel.full => true,
+    _ => false,
+  };
+  bool get isBalanceAndAbove => switch (this) {
+    HapticFeedbackLevel.balanced || HapticFeedbackLevel.full => true,
+    _ => false,
+  };
+}
+
 enum PostDetailsSwipeMode {
   horizontal,
   vertical,

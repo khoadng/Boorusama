@@ -18,10 +18,13 @@ final searchBarPositionProvider = Provider<SearchBarPosition>(
   name: 'searchBarPositionProvider',
 );
 
+final hapticFeedbackLevelProvider = Provider<HapticFeedbackLevel>(
+  (ref) => ref.watch(settingsProvider.select((s) => s.hapticFeedbackLevel)),
+  name: 'hapticFeedbackLevelProvider',
+);
+
 final selectionOptionsProvider = Provider<SelectionOptions>((ref) {
-  final level = ref.watch(
-    settingsProvider.select((s) => s.hapticFeedbackLevel),
-  );
+  final level = ref.watch(hapticFeedbackLevelProvider);
 
   return SelectionOptions(
     behavior: SelectionBehavior.manual,

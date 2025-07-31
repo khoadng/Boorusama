@@ -263,8 +263,15 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
                 enableMMBScrolling: true,
                 child: ValueListenableBuilder(
                   valueListenable: refreshing,
-                  builder: (_, refreshing, child) =>
-                      _buildPaginatedSwipe(child!, refreshing),
+                  builder: (_, refreshing, child) => _SwipeTo(
+                    pageMode: pageMode,
+                    controller: controller,
+                    refreshing: refreshing,
+                    onNextPage: widget.onNextPage,
+                    onPreviousPage: widget.onPreviousPage,
+                    options: _options,
+                    child: child!,
+                  ),
                   child: PostGridOptionsProvider(
                     options: _options,
                     child: _CustomScrollView(
@@ -378,17 +385,37 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
       ),
     );
   }
+}
 
-  Widget _buildPaginatedSwipe(
-    Widget child,
-    bool refreshing,
-  ) {
+class _SwipeTo extends StatelessWidget {
+  const _SwipeTo({
+    required this.pageMode,
+    required this.controller,
+    required this.refreshing,
+    required this.onNextPage,
+    required this.onPreviousPage,
+    required this.options,
+    required this.child,
+  });
+
+  final PageMode pageMode;
+  final PostGridController controller;
+  final bool refreshing;
+  final VoidCallback onNextPage;
+  final VoidCallback onPreviousPage;
+  final PostGridOptions options;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
     return SwipeTo(
       enabled: pageMode == PageMode.paginated && !refreshing,
       swipeRightEnabled: controller.hasPreviousPage(),
       swipeLeftEnabled: controller.hasNextPage(),
+      hapticFeedbackEnabled:
+          options.hapticFeedbackLevel?.isBalanceAndAbove ?? false,
       rightSwipeWidget: Chip(
         visualDensity: VisualDensity.compact,
         side: BorderSide(
@@ -431,8 +458,8 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
           ],
         ),
       ),
-      onLeftSwipe: (_) => widget.onNextPage(),
-      onRightSwipe: (_) => widget.onPreviousPage(),
+      onLeftSwipe: (_) => onNextPage(),
+      onRightSwipe: (_) => onPreviousPage(),
       child: child,
     );
   }
@@ -658,10 +685,15 @@ const _kImageCacheThreshold = 1000 * 1024 * 1024;
 class PostGridOptions extends Equatable {
   const PostGridOptions({
     this.cacheExtent,
+    this.hapticFeedbackLevel,
   });
 
   final double? cacheExtent;
+  final HapticFeedbackLevel? hapticFeedbackLevel;
 
   @override
-  List<Object?> get props => [cacheExtent];
+  List<Object?> get props => [
+    cacheExtent,
+    hapticFeedbackLevel,
+  ];
 }

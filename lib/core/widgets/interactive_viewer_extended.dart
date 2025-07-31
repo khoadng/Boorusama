@@ -3,6 +3,14 @@ import 'dart:math';
 
 // Flutter imports:
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+// Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+// Project imports:
+import '../settings/providers.dart';
+import '../settings/settings.dart';
 
 /// Fallback max zoom scale when content size is unknown. Limits zoom-in.
 const _kFallbackMaxScale = 10.0;
@@ -19,7 +27,7 @@ const _kDoubleTapScale = 3.0;
 /// Factor to determine when content is much larger than the container.
 const _kImageExceedsContainerThreshold = 3.0;
 
-class InteractiveViewerExtended extends StatefulWidget {
+class InteractiveViewerExtended extends ConsumerWidget {
   const InteractiveViewerExtended({
     required this.child,
     super.key,
@@ -38,6 +46,48 @@ class InteractiveViewerExtended extends StatefulWidget {
   final VoidCallback? onLongPress;
   final void Function(bool zoomed)? onZoomUpdated;
   final TransformationController? controller;
+  final bool enable;
+  final Size? contentSize;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final hapticLevel = ref.watch(hapticFeedbackLevelProvider);
+    final enableHapticFeedback = hapticLevel.isReducedOrAbove;
+
+    return RawInteractiveViewerExtended(
+      onTap: onTap,
+      onDoubleTap: onDoubleTap,
+      onLongPress: onLongPress,
+      controller: controller,
+      onZoomUpdated: onZoomUpdated,
+      enable: enable,
+      contentSize: contentSize,
+      enableHapticFeedback: enableHapticFeedback,
+      child: child,
+    );
+  }
+}
+
+class RawInteractiveViewerExtended extends StatefulWidget {
+  const RawInteractiveViewerExtended({
+    required this.child,
+    super.key,
+    this.onTap,
+    this.onDoubleTap,
+    this.onLongPress,
+    this.controller,
+    this.onZoomUpdated,
+    this.enable = true,
+    this.contentSize,
+    this.enableHapticFeedback = false,
+  });
+
+  final Widget child;
+  final VoidCallback? onTap;
+  final VoidCallback? onDoubleTap;
+  final VoidCallback? onLongPress;
+  final void Function(bool zoomed)? onZoomUpdated;
+  final TransformationController? controller;
 
   // This is needed to keep the state of the child widget, remove this widget will cause its child to be recreated
   final bool enable;
@@ -45,12 +95,16 @@ class InteractiveViewerExtended extends StatefulWidget {
   // The intrinsic size (e.g. resolution) of the content
   final Size? contentSize;
 
+  // Enable haptic feedback for interactions
+  final bool enableHapticFeedback;
+
   @override
-  State<InteractiveViewerExtended> createState() =>
-      _InteractiveViewerExtendedState();
+  State<RawInteractiveViewerExtended> createState() =>
+      _RawInteractiveViewerExtendedState();
 }
 
-class _InteractiveViewerExtendedState extends State<InteractiveViewerExtended>
+class _RawInteractiveViewerExtendedState
+    extends State<RawInteractiveViewerExtended>
     with SingleTickerProviderStateMixin {
   late var _controller = widget.controller ?? TransformationController();
   TapDownDetails? _doubleTapDetails;
@@ -60,8 +114,13 @@ class _InteractiveViewerExtendedState extends State<InteractiveViewerExtended>
 
   late var enable = widget.enable;
 
+  late var _enableHapticFeedback = widget.enableHapticFeedback;
+
   // Store the latest layout constraints.
   Size? _containerSize;
+
+  // Track if max zoom haptic feedback has been triggered
+  bool _hasTriggeredMaxZoomHaptic = false;
 
   @override
   void initState() {
@@ -75,7 +134,7 @@ class _InteractiveViewerExtendedState extends State<InteractiveViewerExtended>
   }
 
   @override
-  void didUpdateWidget(covariant InteractiveViewerExtended oldWidget) {
+  void didUpdateWidget(covariant RawInteractiveViewerExtended oldWidget) {
     super.didUpdateWidget(oldWidget);
 
     // Handle controller changes
@@ -95,6 +154,11 @@ class _InteractiveViewerExtendedState extends State<InteractiveViewerExtended>
         enable = widget.enable;
       });
     }
+
+    if (oldWidget.enableHapticFeedback != widget.enableHapticFeedback) {
+      _enableHapticFeedback = widget.enableHapticFeedback;
+      _hasTriggeredMaxZoomHaptic = false;
+    }
   }
 
   void _onAnimationChanged() => _controller.value = _animation.value;
@@ -105,6 +169,21 @@ class _InteractiveViewerExtendedState extends State<InteractiveViewerExtended>
       _controller.value.up.y,
       _controller.value.forward.z,
     );
+
+    if (_enableHapticFeedback) {
+      final currentScale = _controller.value.getMaxScaleOnAxis();
+      final maxScale = _calcMaxScale(
+        widget.contentSize,
+        _containerSize ?? const Size(1, 1),
+      );
+
+      if (currentScale >= maxScale * 0.95 && !_hasTriggeredMaxZoomHaptic) {
+        HapticFeedback.selectionClick();
+        _hasTriggeredMaxZoomHaptic = true;
+      } else if (currentScale < maxScale * 0.9) {
+        _hasTriggeredMaxZoomHaptic = false;
+      }
+    }
 
     widget.onZoomUpdated?.call(!clampedMatrix.isIdentity());
   }
