@@ -8,6 +8,7 @@ import 'package:i18n/i18n.dart';
 // Project imports:
 import '../../../configs/config/widgets.dart';
 import '../../../router.dart';
+import '../../../widgets/widgets.dart';
 import '../providers/settings_notifier.dart';
 import '../providers/settings_provider.dart';
 import '../types/types.dart';
@@ -119,7 +120,7 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
                 '${value.toStringAsFixed(value < 1 ? 2 : 0)} sec'.hc,
               ),
             ),
-            SwitchListTile(
+            BooruSwitchListTile(
               title: Text(context.t.settings.image_viewer.slideshow_skip),
               value: settings.skipSlideshowTransition,
               onChanged: (value) => notifer.updateSettings(
@@ -134,7 +135,7 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
             SettingsHeader(
               label: context.t.settings.image_viewer.video_section_title,
             ),
-            SwitchListTile(
+            BooruSwitchListTile(
               title: Text(context.t.settings.image_viewer.mute_video),
               value: settings.muteAudioByDefault,
               onChanged: (value) => notifer.updateSettings(

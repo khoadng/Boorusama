@@ -28,13 +28,11 @@ class PrivacyToggle extends ConsumerWidget {
 
     return BooruAnimatedCrossFade(
       firstChild: const SizedBox.shrink(),
-      secondChild: ListTile(
+      secondChild: BooruSwitchListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 4),
         title: Text(context.t.favorite_groups.is_private_group_option),
-        trailing: Switch(
-          value: isPrivate,
-          onChanged: onChanged,
-        ),
+        value: isPrivate,
+        onChanged: onChanged,
       ),
       crossFadeState: currentUser.maybeWhen(
         data: (user) => user != null && isBooruGoldPlusAccount(user.level)

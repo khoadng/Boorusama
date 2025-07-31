@@ -29,7 +29,7 @@ class ThemeSection extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SwitchListTile(
+            BooruSwitchListTile(
               title: Text('Turn on'.hc),
               subtitle: Text(
                 "Override the global theme using this profile's theme".hc,

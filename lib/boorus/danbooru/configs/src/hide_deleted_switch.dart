@@ -10,6 +10,7 @@ import '../../../../core/configs/config/types.dart';
 import '../../../../core/configs/create/providers.dart';
 import '../../../../core/configs/search/widgets.dart';
 import '../../../../core/configs/viewer/widgets.dart';
+import '../../../../core/widgets/widgets.dart';
 import '../../posts/post/post.dart';
 
 class DanbooruHideDeletedSwitch extends ConsumerWidget {
@@ -50,7 +51,7 @@ class DanbooruHideBannedSwitch extends ConsumerWidget {
       ).select((value) => value.bannedPostVisibilityTyped),
     );
 
-    return SwitchListTile(
+    return BooruSwitchListTile(
       contentPadding: EdgeInsets.zero,
       title: Text('Hide banned posts'.hc),
       value: bannedVis == BooruConfigBannedPostVisibility.hide,

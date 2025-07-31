@@ -7,6 +7,7 @@ import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../tracking/providers.dart';
+import '../../../widgets/widgets.dart';
 import '../providers/settings_notifier.dart';
 import '../providers/settings_provider.dart';
 import '../types/types.dart';
@@ -27,41 +28,35 @@ class PrivacyPage extends ConsumerWidget {
       title: Text(context.t.settings.privacy.privacy),
       children: [
         tracker.maybeWhen(
-          data: (_) => ListTile(
+          data: (_) => BooruSwitchListTile(
             title: Text(context.t.settings.privacy.enable_incognito_keyboard),
             subtitle: Text(
               context.t.settings.privacy.enable_incognito_keyboard_notice,
             ),
-            trailing: Switch(
-              value: settings.enableIncognitoModeForKeyboard,
-              onChanged: (value) {
-                notifer.updateSettings(
-                  settings.copyWith(
-                    enableIncognitoModeForKeyboard: value,
-                  ),
-                );
-              },
-            ),
-          ),
-          orElse: () => const SizedBox.shrink(),
-        ),
-        ListTile(
-          title: Text(context.t.settings.privacy.enable_biometric_lock),
-          subtitle: Text(
-            context.t.settings.privacy.enable_biometric_lock_notice,
-          ),
-          trailing: Switch(
-            value: settings.appLockType == AppLockType.biometrics,
+            value: settings.enableIncognitoModeForKeyboard,
             onChanged: (value) {
               notifer.updateSettings(
                 settings.copyWith(
-                  appLockType: value
-                      ? AppLockType.biometrics
-                      : AppLockType.none,
+                  enableIncognitoModeForKeyboard: value,
                 ),
               );
             },
           ),
+          orElse: () => const SizedBox.shrink(),
+        ),
+        BooruSwitchListTile(
+          title: Text(context.t.settings.privacy.enable_biometric_lock),
+          subtitle: Text(
+            context.t.settings.privacy.enable_biometric_lock_notice,
+          ),
+          value: settings.appLockType == AppLockType.biometrics,
+          onChanged: (value) {
+            notifer.updateSettings(
+              settings.copyWith(
+                appLockType: value ? AppLockType.biometrics : AppLockType.none,
+              ),
+            );
+          },
         ),
       ],
     );

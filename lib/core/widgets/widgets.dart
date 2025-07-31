@@ -7,6 +7,8 @@ export 'booru_hero.dart';
 export 'booru_popup_menu_button.dart';
 export 'booru_scroll_to_top_button.dart';
 export 'booru_segmented_button.dart';
+export 'booru_slider.dart';
+export 'booru_switch_list_tile.dart';
 export 'booru_text_field.dart';
 export 'booru_text_form_field.dart';
 export 'center_play_button.dart';

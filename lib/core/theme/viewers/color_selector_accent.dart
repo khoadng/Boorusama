@@ -7,6 +7,7 @@ import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../foundation/utils/color_utils.dart';
+import '../../widgets/widgets.dart';
 import 'color_selector_accent_notifier.dart';
 import 'theme_previewer_notifier.dart';
 import 'theme_widgets.dart';
@@ -62,7 +63,7 @@ class AccentColorSelector extends StatelessWidget {
 
         return Padding(
           padding: padding,
-          child: SwitchListTile(
+          child: BooruSwitchListTile(
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 4,
             ),
@@ -87,7 +88,7 @@ class AccentColorSelector extends StatelessWidget {
 
         return Padding(
           padding: padding,
-          child: SwitchListTile(
+          child: BooruSwitchListTile(
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 4,
             ),

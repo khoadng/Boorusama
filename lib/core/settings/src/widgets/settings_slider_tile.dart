@@ -1,6 +1,9 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Project imports:
+import '../../../widgets/widgets.dart';
+
 class SettingsSliderTile extends StatelessWidget {
   const SettingsSliderTile({
     required this.title,
@@ -45,7 +48,7 @@ class SettingsSliderTile extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: Slider(
+            child: BooruSlider(
               label: value.toStringAsFixed(1),
               divisions: divisions,
               max: max,

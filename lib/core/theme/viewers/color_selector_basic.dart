@@ -7,6 +7,7 @@ import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../foundation/platform.dart';
+import '../../widgets/widgets.dart';
 import '../colors.dart';
 import 'theme_previewer_notifier.dart';
 import 'theme_widgets.dart';
@@ -64,7 +65,7 @@ class BasicColorSelector extends ConsumerWidget {
             ],
           ),
           const SizedBox(height: 8),
-          SwitchListTile(
+          BooruSwitchListTile(
             title: Text(context.t.settings.theme.dynamic_color),
             subtitle: dynamicColorSupported
                 ? !isDesktopPlatform()

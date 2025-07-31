@@ -7,6 +7,7 @@ import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../configs/config/widgets.dart';
+import '../../../widgets/widgets.dart';
 import '../providers/settings_notifier.dart';
 import '../providers/settings_provider.dart';
 import '../types/types.dart';
@@ -32,20 +33,18 @@ class _SearchSettingsPageState extends ConsumerState<SearchSettingsPage> {
     return SettingsPageScaffold(
       title: Text(context.t.settings.search.search),
       children: [
-        ListTile(
+        BooruSwitchListTile(
           title: Text(context.t.settings.search.auto_focus_search_bar),
-          trailing: Switch(
-            value: settings.autoFocusSearchBar,
-            onChanged: (value) {
-              notifer.updateSettings(
-                settings.copyWith(
-                  autoFocusSearchBar: value,
-                ),
-              );
-            },
-          ),
+          value: settings.autoFocusSearchBar,
+          onChanged: (value) {
+            notifer.updateSettings(
+              settings.copyWith(
+                autoFocusSearchBar: value,
+              ),
+            );
+          },
         ),
-        ListTile(
+        BooruSwitchListTile(
           title: Text(
             context.t.settings.search.search_bar.scroll_behavior.persistent,
           ),
@@ -58,18 +57,16 @@ class _SearchSettingsPageState extends ConsumerState<SearchSettingsPage> {
                 .scroll_behavior
                 .persistent_description,
           ),
-          trailing: Switch(
-            value: settings.persistSearchBar,
-            onChanged: (value) {
-              notifer.updateSettings(
-                settings.copyWith(
-                  searchBarScrollBehavior: value
-                      ? SearchBarScrollBehavior.persistent
-                      : SearchBarScrollBehavior.autoHide,
-                ),
-              );
-            },
-          ),
+          value: settings.persistSearchBar,
+          onChanged: (value) {
+            notifer.updateSettings(
+              settings.copyWith(
+                searchBarScrollBehavior: value
+                    ? SearchBarScrollBehavior.persistent
+                    : SearchBarScrollBehavior.autoHide,
+              ),
+            );
+          },
         ),
         SettingsTile(
           title: Text(
@@ -85,23 +82,20 @@ class _SearchSettingsPageState extends ConsumerState<SearchSettingsPage> {
           },
           optionBuilder: (value) => Text(value.localize(context)),
         ),
-        ListTile(
+        BooruSwitchListTile(
           title: Text(
             context.t.settings.search.hide_bookmarked_posts_from_search_results,
           ),
-          trailing: Switch(
-            activeColor: Theme.of(context).colorScheme.primary,
-            value: settings.shouldFilterBookmarks,
-            onChanged: (value) {
-              notifer.updateSettings(
-                settings.copyWith(
-                  bookmarkFilterType: value
-                      ? BookmarkFilterType.hideAll
-                      : BookmarkFilterType.none,
-                ),
-              );
-            },
-          ),
+          value: settings.shouldFilterBookmarks,
+          onChanged: (value) {
+            notifer.updateSettings(
+              settings.copyWith(
+                bookmarkFilterType: value
+                    ? BookmarkFilterType.hideAll
+                    : BookmarkFilterType.none,
+              ),
+            );
+          },
         ),
         const BooruConfigMoreSettingsRedirectCard.search(),
       ],

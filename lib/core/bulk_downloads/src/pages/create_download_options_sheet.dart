@@ -21,6 +21,7 @@ import '../../../settings/providers.dart';
 import '../../../settings/settings.dart';
 import '../../../settings/widgets.dart';
 import '../../../theme.dart';
+import '../../../widgets/widgets.dart';
 import '../providers/bulk_download_notifier.dart';
 import '../providers/create_download_options_notifier.dart';
 import '../routes/route_utils.dart';
@@ -232,7 +233,7 @@ class _CreateDownloadOptionsRawSheetState
         if (widget.advancedToggle)
           Column(
             children: [
-              SwitchListTile(
+              BooruSwitchListTile(
                 title: Text(
                   DownloadTranslations.showAdvancedOptions,
                 ),
@@ -255,7 +256,7 @@ class _CreateDownloadOptionsRawSheetState
             title: 'Other options',
             child: Column(
               children: [
-                SwitchListTile(
+                BooruSwitchListTile(
                   contentPadding: const EdgeInsets.symmetric(
                     horizontal: 4,
                   ),
@@ -267,7 +268,7 @@ class _CreateDownloadOptionsRawSheetState
                     notifier.setNotifications(value);
                   },
                 ),
-                SwitchListTile(
+                BooruSwitchListTile(
                   contentPadding: const EdgeInsets.symmetric(
                     horizontal: 4,
                   ),

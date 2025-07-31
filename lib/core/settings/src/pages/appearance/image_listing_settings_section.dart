@@ -7,6 +7,7 @@ import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../theme/theme.dart';
+import '../../../../widgets/widgets.dart';
 import '../../../widgets.dart';
 import '../../providers/settings_notifier.dart';
 import '../../providers/settings_provider.dart';
@@ -152,13 +153,13 @@ class _ImageListingSettingsSectionState
             value.toString(),
           ),
         ),
-        SwitchListTile(
+        BooruSwitchListTile(
           title: Text(context.t.settings.appearance.show_scores),
           value: settings.showScoresInGrid,
           onChanged: (value) =>
               _onUpdate(settings.copyWith(showScoresInGrid: value)),
         ),
-        SwitchListTile(
+        BooruSwitchListTile(
           title: Text(
             context.t.settings.appearance.show_post_list_config_header,
           ),
@@ -169,7 +170,7 @@ class _ImageListingSettingsSectionState
             ),
           ),
         ),
-        SwitchListTile(
+        BooruSwitchListTile(
           title: Text(
             'Blur explicit content'.hc,
           ),
@@ -182,7 +183,7 @@ class _ImageListingSettingsSectionState
             ),
           ),
         ),
-        SwitchListTile(
+        BooruSwitchListTile(
           title: Text('Autoplay GIFs'.hc),
           value:
               settings.animatedPostsDefaultState ==

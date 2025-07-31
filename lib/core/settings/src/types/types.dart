@@ -164,6 +164,8 @@ extension HapticFeedbackLevelX on HapticFeedbackLevel {
     HapticFeedbackLevel.balanced || HapticFeedbackLevel.full => true,
     _ => false,
   };
+
+  bool get isFull => this == HapticFeedbackLevel.full;
 }
 
 enum PostDetailsSwipeMode {

@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
+import '../../../../widgets/widgets.dart';
 import '../../../create/providers.dart';
 import '../providers/blacklist_configs_notifier.dart';
 
@@ -21,7 +22,7 @@ class EnableAdditionalBlacklistSwitch extends ConsumerWidget {
       blacklistConfigsProvider(ref.watch(editBooruConfigIdProvider)).notifier,
     );
 
-    return SwitchListTile(
+    return BooruSwitchListTile(
       contentPadding: const EdgeInsets.only(left: 4),
       title: Text(
         'Enable profile-specific blacklist'.hc,

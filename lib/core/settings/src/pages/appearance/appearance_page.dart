@@ -15,6 +15,7 @@ import '../../../../premiums/premiums.dart';
 import '../../../../premiums/providers.dart';
 import '../../../../theme/theme.dart';
 import '../../../../theme/viewers/widgets.dart';
+import '../../../../widgets/widgets.dart';
 import '../../providers/settings_notifier.dart';
 import '../../providers/settings_provider.dart';
 import '../../types/settings.dart';
@@ -101,7 +102,7 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
         ),
         Builder(
           builder: (context) {
-            return SwitchListTile(
+            return BooruSwitchListTile(
               title: Text(context.t.settings.theme.dynamic_color),
               subtitle: dynamicColorSupported
                   ? !isDesktopPlatform()

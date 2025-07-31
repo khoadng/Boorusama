@@ -7,6 +7,7 @@ import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../theme.dart';
+import '../../../widgets/widgets.dart';
 import '../providers/settings_notifier.dart';
 import '../providers/settings_provider.dart';
 import '../types/types.dart';
@@ -32,7 +33,7 @@ class _AccessibilityPageState extends ConsumerState<AccessibilityPage> {
     return SettingsPageScaffold(
       title: Text(context.t.settings.accessibility.accessibility),
       children: [
-        SwitchListTile(
+        BooruSwitchListTile(
           title: Text(
             context
                 .t
@@ -68,7 +69,7 @@ class _AccessibilityPageState extends ConsumerState<AccessibilityPage> {
             '$value%',
           ),
         ),
-        SwitchListTile(
+        BooruSwitchListTile(
           title: Text('Reduce animations'.hc),
           subtitle: Text(
             'Some features may not work as expected when this is enabled.'.hc,
@@ -80,7 +81,7 @@ class _AccessibilityPageState extends ConsumerState<AccessibilityPage> {
             ),
           ),
         ),
-        SwitchListTile(
+        BooruSwitchListTile(
           title: Text('Use volume keys for navigation'.hc),
           subtitle: Text(
             'Navigate between posts using the volume keys when in image viewer.'

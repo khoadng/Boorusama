@@ -9,6 +9,7 @@ import 'package:i18n/i18n.dart';
 // Project imports:
 import '../../../bookmarks/providers.dart';
 import '../../../cache/providers.dart';
+import '../../../widgets/widgets.dart';
 import '../providers/settings_notifier.dart';
 import '../providers/settings_provider.dart';
 import '../widgets/settings_header.dart';
@@ -44,7 +45,7 @@ class _DataAndStoragePageState extends ConsumerState<DataAndStoragePage> {
         _buildImageCache(cacheSizeAsync),
         _buildTagCache(cacheSizeAsync),
         _buildAllCache(cacheSizeAsync),
-        SwitchListTile(
+        BooruSwitchListTile(
           value: settings.clearImageCacheOnStartup,
           title: Text(
             context.t.settings.data_and_storage.clear_cache_on_start_up,
