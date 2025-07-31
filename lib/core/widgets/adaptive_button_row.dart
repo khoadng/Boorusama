@@ -213,12 +213,12 @@ class _AdaptiveButtonRowState extends State<AdaptiveButtonRow> {
         final requiredButtons = widget.buttons
             .where((b) => b.required)
             .toList();
-        final optionalFlexibleButtons = widget.buttons
+        final flexibleButtons = widget.buttons
             .where(
               (b) => !b.required && b.placement == ButtonPlacement.flexible,
             )
             .toList();
-        final optionalHideButtons = widget.buttons
+        final hideOnOverflowButtons = widget.buttons
             .where(
               (b) =>
                   !b.required && b.placement == ButtonPlacement.hideOnOverflow,
@@ -228,79 +228,55 @@ class _AdaptiveButtonRowState extends State<AdaptiveButtonRow> {
             .where((b) => b.placement == ButtonPlacement.menuOnly)
             .toList();
 
-        final hasMenuOnlyButtons = menuOnlyButtons.isNotEmpty;
-        final effectiveMaxButtons = hasMenuOnlyButtons
-            ? maxButtons - 1
-            : maxButtons;
-
+        // Ensure required buttons fit
         assert(
-          requiredButtons.length <= effectiveMaxButtons,
-          'Too many required buttons (${requiredButtons.length}) for max visible buttons ($effectiveMaxButtons)',
+          requiredButtons.length <= maxButtons,
+          'Too many required buttons (${requiredButtons.length}) for max visible buttons ($maxButtons)',
         );
 
-        final availableSpace = effectiveMaxButtons - requiredButtons.length;
+        // Build visible and overflow button lists
+        final visibleButtons = <ButtonData>[];
+        final overflowButtons = <ButtonData>[];
 
-        if (availableSpace <= 0) {
-          return _buildRowWithOptionalOverflow(
-            requiredButtons,
-            hasMenuOnlyButtons ? menuOnlyButtons : [],
-            effectiveButtonWidth,
-          );
-        }
+        // Always add required buttons
+        visibleButtons.addAll(requiredButtons);
 
-        final visibleHideButtons = optionalHideButtons
-            .take(availableSpace)
+        // Add hideOnOverflow buttons if they fit
+        final availableAfterRequired = maxButtons - visibleButtons.length;
+        final hideButtonsToShow = hideOnOverflowButtons
+            .take(availableAfterRequired)
             .toList();
-        final remainingSpace = availableSpace - visibleHideButtons.length;
+        visibleButtons.addAll(hideButtonsToShow);
 
-        if (remainingSpace <= 0) {
-          return _buildRow(
-            [
-              ...requiredButtons,
-              ...visibleHideButtons,
-            ],
-            effectiveButtonWidth,
+        // Calculate remaining space
+        final remainingSpace = maxButtons - visibleButtons.length;
+
+        // Determine if we need overflow button
+        final hasOverflowContent =
+            menuOnlyButtons.isNotEmpty ||
+            flexibleButtons.length > remainingSpace;
+
+        if (hasOverflowContent) {
+          // Reserve space for overflow button
+          final spaceForFlexible = (remainingSpace - 1).clamp(
+            0,
+            flexibleButtons.length,
           );
-        }
 
-        if (optionalFlexibleButtons.length <= remainingSpace) {
-          return _buildRowWithOptionalOverflow(
-            [
-              ...requiredButtons,
-              ...visibleHideButtons,
-              ...optionalFlexibleButtons,
-            ],
-            menuOnlyButtons,
-            effectiveButtonWidth,
-          );
-        }
+          // Add flexible buttons that fit
+          visibleButtons.addAll(flexibleButtons.take(spaceForFlexible));
 
-        // Need space for overflow button
-        if (remainingSpace <= 1) {
-          return _buildRowWithOptionalOverflow(
-            [
-              ...requiredButtons,
-              ...visibleHideButtons,
-            ],
-            menuOnlyButtons,
-            effectiveButtonWidth,
-          );
+          // Remaining flexible buttons go to overflow
+          overflowButtons
+            ..addAll(flexibleButtons.skip(spaceForFlexible))
+            ..addAll(menuOnlyButtons);
+        } else {
+          // No overflow needed, add all remaining buttons
+          visibleButtons.addAll(flexibleButtons);
         }
-
-        final visibleFlexibleButtons = optionalFlexibleButtons
-            .take(remainingSpace - 1)
-            .toList();
-        final overflowButtons = [
-          ...optionalFlexibleButtons.skip(remainingSpace - 1),
-          ...menuOnlyButtons,
-        ];
 
         return _buildRowWithOptionalOverflow(
-          [
-            ...requiredButtons,
-            ...visibleHideButtons,
-            ...visibleFlexibleButtons,
-          ],
+          visibleButtons,
           overflowButtons,
           effectiveButtonWidth,
         );
