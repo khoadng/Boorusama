@@ -32,5 +32,6 @@ final detailsArtistPostsProvider = FutureProvider.autoDispose
           .getPostsFromTagWithBlacklist(
             tag: artistName,
             blacklist: ref.watch(blacklistTagsProvider(filter).future),
+            options: PostFetchOptions.raw,
           );
     });
