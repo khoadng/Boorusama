@@ -102,10 +102,10 @@ class PostDetailsOverlay extends StatelessWidget {
                 const SizedBox(width: 8),
                 CircularIconButton(
                   onPressed: () {
-                    if (useVerticalLayout) {
-                      controller.expandToSnapPoint();
-                    } else if (!isLargeScreen) {
-                      controller.expandToSnapPoint();
+                    if (!isLargeScreen || useVerticalLayout) {
+                      controller
+                        ..expandToSnapPoint()
+                        ..hideBottomSheet();
                     } else {
                       controller.toggleExpanded(
                         MediaQuery.sizeOf(context).longestSide,
