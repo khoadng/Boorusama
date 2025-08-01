@@ -7,6 +7,35 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:equatable/equatable.dart';
 
+class PaginationContext {
+  const PaginationContext({
+    required this.currentPage,
+    required this.totalPages,
+    required this.info,
+  });
+
+  final int currentPage;
+  final int? totalPages;
+  final PaginationInfo info;
+}
+
+typedef ButtonEnableCallback = bool Function(PaginationContext context);
+
+class PaginationEnablers {
+  static bool hasNextPage(PaginationContext context) =>
+      context.totalPages != null &&
+      context.currentPage < context.totalPages! &&
+      !context.info.isLastPage;
+
+  static bool hasPreviousPage(PaginationContext context) =>
+      context.currentPage > 1;
+
+  static bool notOnLastPage(PaginationContext context) =>
+      !context.info.isLastPage;
+
+  static bool alwaysEnabled(PaginationContext context) => true;
+}
+
 class ViewportBreakpoint {
   const ViewportBreakpoint(this.width, this.pageCount);
 
@@ -161,6 +190,8 @@ class PageSelector extends StatefulWidget {
     required this.onPageSelect,
     this.pageInput = true,
     this.showLastPage = false,
+    this.enableNextButton,
+    this.enablePreviousButton,
   });
 
   final int currentPage;
@@ -171,6 +202,8 @@ class PageSelector extends StatefulWidget {
   final void Function(int page) onPageSelect;
   final bool pageInput;
   final bool showLastPage;
+  final ButtonEnableCallback? enableNextButton;
+  final ButtonEnableCallback? enablePreviousButton;
 
   @override
   State<PageSelector> createState() => _PageSelectorState();
@@ -198,12 +231,21 @@ class _PageSelectorState extends State<PageSelector> {
             totalPages != null &&
             !paginationInfo.pages.contains(totalPages);
 
-        final enableNextButton =
-            totalPages != null &&
-            widget.currentPage < totalPages &&
-            !paginationInfo.isLastPage;
+        final paginationContext = PaginationContext(
+          currentPage: widget.currentPage,
+          totalPages: totalPages,
+          info: paginationInfo,
+        );
 
-        final enablePreviousButton = widget.currentPage > 1;
+        final enableNextButton =
+            widget.enableNextButton?.call(paginationContext) ??
+            PaginationEnablers.hasNextPage(paginationContext);
+
+        final enablePreviousButton =
+            widget.enablePreviousButton?.call(paginationContext) ??
+            (widget.onPrevious != null
+                ? PaginationEnablers.hasPreviousPage(paginationContext)
+                : false);
 
         return OverflowBar(
           alignment: MainAxisAlignment.center,

@@ -321,6 +321,8 @@ class _PageIndicator<T extends Post> extends ConsumerWidget {
           totalResults: value,
           itemPerPage: postsPerPage,
           currentPage: page,
+          enableNextButton: PaginationEnablers.notOnLastPage,
+          enablePreviousButton: PaginationEnablers.alwaysEnabled,
           onPrevious: controller.hasPreviousPage()
               ? () => _goToPreviousPage(
                   controller,
