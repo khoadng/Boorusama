@@ -5,82 +5,80 @@ import 'dart:io';
 // Package imports:
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart' hide Response;
-import 'package:foundation/foundation.dart';
 import 'package:path/path.dart';
 import 'package:shelf/shelf.dart';
 
 // Project imports:
-import '../data_converter.dart';
+import '../data_converter2.dart';
 import '../types.dart';
 
 class BackupUtils {
-  static TaskEither<ExportError, String> encodeJson(dynamic data) =>
-      TaskEither.tryCatch(
-        () async => jsonEncode(data),
-        (e, st) => JsonEncodingError(error: e, stackTrace: st),
-      );
+  static String encodeJson(dynamic data) {
+    try {
+      return jsonEncode(data);
+    } catch (e, st) {
+      throw JsonEncodingError(error: e, stackTrace: st);
+    }
+  }
 
-  static TaskEither<ImportError, T> decodeJson<T>(
+  static T decodeJson<T>(
     String json,
     T Function(Map<String, dynamic>) factory,
-  ) => TaskEither.tryCatch(
-    () async {
+  ) {
+    try {
       final map = jsonDecode(json) as Map<String, dynamic>;
       return factory(map);
-    },
-    (e, st) => const ImportInvalidJson(),
-  );
+    } catch (e) {
+      throw const ImportInvalidJson();
+    }
+  }
 
-  static TaskEither<ImportError, List<T>> decodeJsonList<T>(
+  static List<T> decodeJsonList<T>(
     String json,
     T Function(Map<String, dynamic>) factory,
-  ) => TaskEither.tryCatch(
-    () async {
+  ) {
+    try {
       final list = jsonDecode(json) as List<dynamic>;
       return list.cast<Map<String, dynamic>>().map(factory).toList();
-    },
-    (e, st) => const ImportInvalidJson(),
-  );
+    } catch (e) {
+      throw const ImportInvalidJson();
+    }
+  }
 
-  static TaskEither<ExportError, String> encodeWithVersion(
-    DataBackupConverter converter,
+  static String encodeWithVersion(
+    DataBackupConverter2 converter,
     List<dynamic> payload,
-  ) => TaskEither.fromEither(
-    converter.tryEncode(payload: payload),
-  );
+  ) {
+    return converter.encode(payload: payload);
+  }
 
-  static TaskEither<ImportError, ExportDataPayload> decodeWithVersion(
-    DataBackupConverter converter,
+  static ExportDataPayload decodeWithVersion(
+    DataBackupConverter2 converter,
     String data,
-  ) => TaskEither.fromEither(
-    converter.tryDecode(data: data),
-  );
+  ) {
+    return converter.decode(data: data);
+  }
 
-  static TaskEither<ExportError, Unit> writeFile(
-    String path,
-    String content,
-  ) => TaskEither.tryCatch(
-    () async {
+  static Future<void> writeFile(String path, String content) async {
+    try {
       final file = File(path);
       await file.writeAsString(content);
-      return unit;
-    },
-    (e, st) {
+    } catch (e, st) {
       if (e is PathAccessException) {
-        return DataExportNotPermitted(error: e, stackTrace: st);
+        throw DataExportNotPermitted(error: e, stackTrace: st);
       }
-      return DataExportError(error: e, stackTrace: st);
-    },
-  );
+      throw DataExportError(error: e, stackTrace: st);
+    }
+  }
 
-  static TaskEither<ImportError, String> readFile(String path) =>
-      TaskEither.tryCatch(
-        () async {
-          final file = File(path);
-          return file.readAsString();
-        },
-        (e, st) => const ImportInvalidJson(),
-      );
+  static Future<String> readFile(String path) async {
+    try {
+      final file = File(path);
+      return await file.readAsString();
+    } catch (e) {
+      throw const ImportInvalidJson();
+    }
+  }
 
   static Future<Response> streamFile(String path, String fileName) async {
     final file = File(path);
@@ -149,12 +147,12 @@ class BackupUtils {
     await tempFile.rename(filePath);
   }
 
-  static TaskEither<ExportError, Unit> writeFileToDirectory(
+  static Future<void> writeFileToDirectory(
     String directoryPath,
     String fileName,
     String content,
-  ) => TaskEither.tryCatch(
-    () async {
+  ) async {
+    try {
       final dir = Directory(directoryPath);
       if (!dir.existsSync()) {
         await dir.create(recursive: true);
@@ -162,15 +160,13 @@ class BackupUtils {
 
       final file = File(join(directoryPath, fileName));
       await file.writeAsString(content);
-      return unit;
-    },
-    (e, st) {
+    } catch (e, st) {
       if (e is PathAccessException) {
-        return DataExportNotPermitted(error: e, stackTrace: st);
+        throw DataExportNotPermitted(error: e, stackTrace: st);
       }
-      return DataExportError(error: e, stackTrace: st);
-    },
-  );
+      throw DataExportError(error: e, stackTrace: st);
+    }
+  }
 
   static Response jsonResponse(dynamic data) {
     final json = jsonEncode(data);
@@ -180,14 +176,14 @@ class BackupUtils {
     );
   }
 
-  // Create version-wrapped JSON response
-  static TaskEither<ExportError, Response> versionedJsonResponse(
-    DataBackupConverter converter,
+  static Response versionedJsonResponse(
+    DataBackupConverter2 converter,
     List<dynamic> payload,
-  ) => encodeWithVersion(converter, payload).map(
-    (json) => Response.ok(
+  ) {
+    final json = encodeWithVersion(converter, payload);
+    return Response.ok(
       json,
       headers: {'Content-Type': 'application/json'},
-    ),
-  );
+    );
+  }
 }

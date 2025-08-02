@@ -1,7 +1,6 @@
 // Package imports:
 import 'package:dio/dio.dart' hide Response;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
 import 'package:intl/intl.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:shelf/shelf.dart';
@@ -11,7 +10,7 @@ import '../../../../../foundation/clipboard.dart';
 import '../../../foundation/info/package_info.dart';
 import '../../settings/providers.dart';
 import '../../settings/settings.dart';
-import '../data_converter.dart';
+import '../data_converter2.dart';
 import '../registry/backup_data_source.dart';
 import '../registry/backup_utils.dart';
 import '../types.dart';
@@ -24,8 +23,8 @@ class SettingsBackupSource implements BackupDataSource {
   final Ref ref;
 
   @override
-  Future<Either<ImportError, ExportDataPayload>> parseImportData(String data) {
-    return Future.value(converter.tryDecode(data: data));
+  Future<ExportDataPayload> parseImportData(String data) async {
+    return BackupUtils.decodeWithVersion(converter, data);
   }
 
   @override
@@ -41,7 +40,7 @@ class SettingsBackupSource implements BackupDataSource {
   int get version => kSettingsBackupVersion;
 
   @override
-  DataBackupConverter get converter => DataBackupConverter(
+  DataBackupConverter2 get converter => DataBackupConverter2(
     version: version,
     exportVersion: ref.read(appVersionProvider),
   );
@@ -75,128 +74,97 @@ class SettingsBackupSource implements BackupDataSource {
   }
 
   @override
-  Future<Either<ExportError, Response>> serveData(Request request) async {
+  Future<Response> serveData(Request request) async {
     return BackupUtils.versionedJsonResponse(
       converter,
       [_currentSettings.toJson()],
-    ).run();
+    );
   }
 
   @override
-  Future<Either<ImportError, Unit>> consumeData(String serverUrl) async {
-    return TaskEither.tryCatch(
-      () async {
-        final dio = Dio(BaseOptions(baseUrl: serverUrl));
-        final response = await dio.get('/settings');
+  Future<void> consumeData(String serverUrl) async {
+    try {
+      final dio = Dio(BaseOptions(baseUrl: serverUrl));
+      final response = await dio.get('/settings');
 
-        final exportData = await BackupUtils.decodeWithVersion(
-          converter,
-          response.data,
-        ).run();
+      final exportData = BackupUtils.decodeWithVersion(
+        converter,
+        response.data,
+      );
 
-        return exportData.fold(
-          (error) => throw Exception(error.toString()),
-          (data) async {
-            final settings = Settings.fromJson(data.data.first);
-            await _updateSettings(settings);
-            return unit;
-          },
-        );
-      },
-      (e, st) => const ImportInvalidJson(),
-    ).run();
+      final settings = Settings.fromJson(exportData.data.first);
+      await _updateSettings(settings);
+    } catch (e) {
+      throw const ImportInvalidJson();
+    }
   }
 
   @override
-  Future<Either<ExportError, Unit>> exportToDirectory(
-    String directoryPath,
-  ) async {
-    return BackupUtils.encodeWithVersion(
-          converter,
-          [_currentSettings.toJson()],
-        )
-        .flatMap(
-          (json) => BackupUtils.writeFileToDirectory(
-            directoryPath,
-            _generateFileName(),
-            json,
-          ),
-        )
-        .run();
-  }
-
-  @override
-  Future<Either<ExportError, Unit>> exportToFile(String filePath) async {
-    return BackupUtils.encodeWithVersion(
+  Future<void> exportToDirectory(String directoryPath) async {
+    final json = BackupUtils.encodeWithVersion(
       converter,
       [_currentSettings.toJson()],
-    ).flatMap((json) => BackupUtils.writeFile(filePath, json)).run();
+    );
+
+    await BackupUtils.writeFileToDirectory(
+      directoryPath,
+      _generateFileName(),
+      json,
+    );
   }
 
   @override
-  Future<Either<ImportError, Unit>> importFromFile(String path) async {
-    return BackupUtils.readFile(path)
-        .flatMap(
-          (content) => BackupUtils.decodeWithVersion(converter, content),
-        )
-        .flatMap(
-          (exportData) => TaskEither.tryCatch(
-            () async {
-              final settings = Settings.fromJson(exportData.data.first);
-              await _updateSettings(settings);
-              return unit;
-            },
-            (e, st) => const ImportInvalidJsonField(),
-          ),
-        )
-        .run();
+  Future<void> exportToFile(String filePath) async {
+    final json = BackupUtils.encodeWithVersion(
+      converter,
+      [_currentSettings.toJson()],
+    );
+
+    await BackupUtils.writeFile(filePath, json);
   }
 
   @override
-  Future<Either<ExportError, Unit>> exportToClipboard() async {
-    return BackupUtils.encodeWithVersion(
-          converter,
-          [_currentSettings.toJson()],
-        )
-        .flatMap(
-          (json) => TaskEither.tryCatch(
-            () async {
-              await AppClipboard.copy(json);
-              return unit;
-            },
-            (e, st) => DataExportError(error: e, stackTrace: st),
-          ),
-        )
-        .run();
+  Future<void> importFromFile(String path) async {
+    try {
+      final content = await BackupUtils.readFile(path);
+      final exportData = BackupUtils.decodeWithVersion(converter, content);
+      final settings = Settings.fromJson(exportData.data.first);
+      await _updateSettings(settings);
+    } catch (e) {
+      if (e is ImportError) rethrow;
+      throw const ImportInvalidJsonField();
+    }
   }
 
   @override
-  Future<Either<ImportError, Unit>> importFromClipboard() async {
-    return TaskEither.tryCatch(
-          () async {
-            final jsonString = await AppClipboard.paste('text/plain');
+  Future<void> exportToClipboard() async {
+    try {
+      final json = BackupUtils.encodeWithVersion(
+        converter,
+        [_currentSettings.toJson()],
+      );
 
-            if (jsonString == null || jsonString.isEmpty) {
-              throw Exception('Clipboard is empty');
-            }
+      await AppClipboard.copy(json);
+    } catch (e, st) {
+      throw DataExportError(error: e, stackTrace: st);
+    }
+  }
 
-            return jsonString;
-          },
-          (e, st) => const ImportErrorEmpty() as ImportError,
-        )
-        .flatMap(
-          (content) => BackupUtils.decodeWithVersion(converter, content),
-        )
-        .flatMap(
-          (exportData) => TaskEither.tryCatch(
-            () async {
-              final settings = Settings.fromJson(exportData.data.first);
-              await _updateSettings(settings);
-              return unit;
-            },
-            (e, st) => const ImportInvalidJsonField() as ImportError,
-          ),
-        )
-        .run();
+  @override
+  Future<void> importFromClipboard() async {
+    try {
+      final jsonString = await AppClipboard.paste('text/plain');
+
+      if (jsonString == null || jsonString.isEmpty) {
+        throw const ImportErrorEmpty();
+      }
+
+      final exportData = BackupUtils.decodeWithVersion(converter, jsonString);
+      final settings = Settings.fromJson(exportData.data.first);
+      await _updateSettings(settings);
+    } catch (e) {
+      if (e is ImportError) rethrow;
+      throw const ImportInvalidJsonField();
+    }
   }
 }

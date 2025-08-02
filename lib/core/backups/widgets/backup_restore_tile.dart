@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../../../../foundation/info/package_info.dart';
@@ -84,19 +83,21 @@ class BackupSourceTile extends ConsumerWidget {
     pickDirectoryPathToastOnError(
       context: context,
       onPick: (path) async {
-        final result = await source.exportToDirectory(path);
-
-        if (context.mounted) {
-          result.fold(
-            (error) => showErrorToast(
-              context,
-              'Failed to export ${source.displayName.toLowerCase()}: ${error.message}',
-            ),
-            (_) => showSuccessToast(
+        try {
+          await source.exportToDirectory(path);
+          if (context.mounted) {
+            showSuccessToast(
               context,
               '${source.displayName} exported successfully',
-            ),
-          );
+            );
+          }
+        } catch (error) {
+          if (context.mounted) {
+            showErrorToast(
+              context,
+              'Failed to export ${source.displayName.toLowerCase()}: $error',
+            );
+          }
         }
       },
     );
@@ -112,24 +113,21 @@ class BackupSourceTile extends ConsumerWidget {
       type: FileType.custom,
       allowedExtensions: ['json'],
       onPick: (path) async {
-        final result = await _importWithVersionCheck(
-          context,
-          ref,
-          source,
-          path,
-        );
-
-        if (context.mounted) {
-          result.fold(
-            (error) => showErrorToast(
-              context,
-              'Failed to import ${source.displayName.toLowerCase()}: ${error.message}',
-            ),
-            (_) => showSuccessToast(
+        try {
+          await _importWithVersionCheck(context, ref, source, path);
+          if (context.mounted) {
+            showSuccessToast(
               context,
               '${source.displayName} imported successfully',
-            ),
-          );
+            );
+          }
+        } catch (error) {
+          if (context.mounted) {
+            showErrorToast(
+              context,
+              'Failed to import ${source.displayName.toLowerCase()}: $error',
+            );
+          }
         }
       },
     );
@@ -139,19 +137,21 @@ class BackupSourceTile extends ConsumerWidget {
     BuildContext context,
     BackupDataSource source,
   ) async {
-    final result = await source.exportToClipboard();
-
-    if (context.mounted) {
-      result.fold(
-        (error) => showErrorToast(
-          context,
-          'Failed to copy ${source.displayName.toLowerCase()}: ${error.message}',
-        ),
-        (_) => showSuccessToast(
+    try {
+      await source.exportToClipboard();
+      if (context.mounted) {
+        showSuccessToast(
           context,
           '${source.displayName} copied to clipboard',
-        ),
-      );
+        );
+      }
+    } catch (error) {
+      if (context.mounted) {
+        showErrorToast(
+          context,
+          'Failed to copy ${source.displayName.toLowerCase()}: $error',
+        );
+      }
     }
   }
 
@@ -160,56 +160,48 @@ class BackupSourceTile extends ConsumerWidget {
     WidgetRef ref,
     BackupDataSource source,
   ) async {
-    final result = await _importFromClipboardWithVersionCheck(
-      context,
-      ref,
-      source,
-    );
-
-    if (context.mounted) {
-      result.fold(
-        (error) => showErrorToast(
-          context,
-          'Failed to paste ${source.displayName.toLowerCase()}: ${error.message}',
-        ),
-        (_) => showSuccessToast(
+    try {
+      await _importFromClipboardWithVersionCheck(context, ref, source);
+      if (context.mounted) {
+        showSuccessToast(
           context,
           '${source.displayName} imported from clipboard',
-        ),
-      );
+        );
+      }
+    } catch (error) {
+      if (context.mounted) {
+        showErrorToast(
+          context,
+          'Failed to paste ${source.displayName.toLowerCase()}: $error',
+        );
+      }
     }
   }
 
-  Future<Either<ImportError, Unit>> _importWithVersionCheck(
+  Future<void> _importWithVersionCheck(
     BuildContext context,
     WidgetRef ref,
     BackupDataSource source,
     String path,
   ) async {
     // First, read and parse the file to check version
-    final readResult = await source.parseImportData(
-      await _readFile(path),
+    final content = await _readFile(path);
+    final exportData = await source.parseImportData(content);
+
+    final shouldImport = await _checkVersionCompatibility(
+      context,
+      ref,
+      exportData,
     );
 
-    return readResult.fold(
-      (error) => left(error),
-      (exportData) async {
-        final shouldImport = await _checkVersionCompatibility(
-          context,
-          ref,
-          exportData,
-        );
+    if (!shouldImport) {
+      throw const ImportInvalidJson();
+    }
 
-        if (!shouldImport) {
-          return left(const ImportInvalidJson());
-        }
-
-        return source.importFromFile(path);
-      },
-    );
+    await source.importFromFile(path);
   }
 
-  Future<Either<ImportError, Unit>> _importFromClipboardWithVersionCheck(
+  Future<void> _importFromClipboardWithVersionCheck(
     BuildContext context,
     WidgetRef ref,
     BackupDataSource source,
@@ -217,28 +209,23 @@ class BackupSourceTile extends ConsumerWidget {
     // Get clipboard content
     final clipboardContent = await _getClipboardContent();
     if (clipboardContent.isEmpty) {
-      return left(const ImportErrorEmpty());
+      throw const ImportErrorEmpty();
     }
 
     // Parse to check version
-    final parseResult = await source.parseImportData(clipboardContent);
+    final exportData = await source.parseImportData(clipboardContent);
 
-    return parseResult.fold(
-      (error) => left(error),
-      (exportData) async {
-        final shouldImport = await _checkVersionCompatibility(
-          context,
-          ref,
-          exportData,
-        );
-
-        if (!shouldImport) {
-          return left(const ImportInvalidJson());
-        }
-
-        return source.importFromClipboard();
-      },
+    final shouldImport = await _checkVersionCompatibility(
+      context,
+      ref,
+      exportData,
     );
+
+    if (!shouldImport) {
+      throw const ImportInvalidJson();
+    }
+
+    await source.importFromClipboard();
   }
 
   Future<bool> _checkVersionCompatibility(

@@ -2,11 +2,10 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:foundation/foundation.dart';
 import 'package:shelf/shelf.dart';
 
 // Project imports:
-import '../data_converter.dart';
+import '../data_converter2.dart';
 import '../types.dart';
 
 enum BackupActionType { export, import, exportClipboard, importClipboard }
@@ -45,25 +44,21 @@ abstract class BackupDataSource {
   BackupSourceConfig get uiConfig;
 
   // Converter for version metadata handling
-  DataBackupConverter get converter;
+  DataBackupConverter2 get converter;
 
-  Future<Either<ExportError, Response>> serveData(Request request);
-  Future<Either<ImportError, Unit>> consumeData(String serverUrl);
-  Future<Either<ExportError, Unit>> exportToDirectory(String directoryPath);
-  Future<Either<ExportError, Unit>> exportToFile(String filePath);
-  Future<Either<ImportError, Unit>> importFromFile(String filePath);
+  Future<Response> serveData(Request request);
+  Future<void> consumeData(String serverUrl);
+  Future<void> exportToDirectory(String directoryPath);
+  Future<void> exportToFile(String filePath);
+  Future<void> importFromFile(String filePath);
 
-  Future<Either<ExportError, Unit>> exportToClipboard() => Future.value(
-    left(
-      const DataExportError(
-        error: 'Clipboard export not supported for this data type',
-        stackTrace: StackTrace.empty,
-      ),
-    ),
+  Future<void> exportToClipboard() => throw UnsupportedError(
+    'Clipboard export not supported for this data type',
   );
 
-  Future<Either<ImportError, Unit>> importFromClipboard() =>
-      Future.value(left(const ImportInvalidJson()));
+  Future<void> importFromClipboard() => throw UnsupportedError(
+    'Clipboard import not supported for this data type',
+  );
 
-  Future<Either<ImportError, ExportDataPayload>> parseImportData(String data);
+  Future<ExportDataPayload> parseImportData(String data);
 }

@@ -257,12 +257,6 @@ class ImportDataNotifier
       ],
     );
 
-    final dio = Dio(
-      BaseOptions(
-        baseUrl: arg,
-      ),
-    );
-
     while (tasks.isNotEmpty) {
       final task = tasks.removeFirst();
 
@@ -284,131 +278,10 @@ class ImportDataNotifier
         final registry = ref.read(backupRegistryProvider);
         if (registry.hasSource(task.id)) {
           final source = registry.getSource(task.id)!;
-          final result = await source.consumeData(arg);
-
-          result.fold(
-            (error) => throw Exception(error.toString()),
-            (_) {}, // Success, continue
-          );
+          await source.consumeData(arg);
         } else {
           // Legacy fallback
-          switch (task.id) {
-            case 'favorite_tags':
-              final res = await dio.get('/favorite_tags');
-
-              final tagString = res.data;
-
-              final favTagsNotifier = ref.read(favoriteTagsProvider.notifier);
-
-              await favTagsNotifier.importWithLabelsFromRawString(
-                text: tagString,
-              );
-
-            case 'booru_configs':
-              final res = await dio.get('/configs');
-
-              final jsonString = res.data;
-
-              await ref
-                  .read(booruConfigProvider.notifier)
-                  .importFromRawString(
-                    jsonString: jsonString,
-                    onWillImport: (data) async => true,
-                    onSuccess: (message, configs) {
-                      final config = configs.first;
-
-                      state = state.copyWith(
-                        reloadPayload: () => ReloadPayload(
-                          configs: configs,
-                          selectedConfig: config,
-                        ),
-                      );
-                    },
-                    onFailure: (message) => throw Exception(message),
-                  );
-
-            case 'blacklisted_tags':
-              final res = await dio.get('/blacklisted_tags');
-
-              final jsonData = res.data;
-
-              final map = jsonDecode(jsonData) as Map<String, dynamic>;
-              final tagString = map['tags'] as String;
-
-              await ref
-                  .read(globalBlacklistedTagsProvider.notifier)
-                  .addTagString(
-                    tagString,
-                    onError: () {
-                      throw Exception('Failed to import blacklisted tags');
-                    },
-                  );
-
-            case 'bookmarks':
-              final bookmarkRepository = await ref.read(
-                bookmarkRepoProvider.future,
-              );
-              final bookmarkNotifier = ref.read(bookmarkProvider.notifier);
-              final currentBookmarks = await bookmarkRepository
-                  .getAllBookmarksOrEmpty(
-                    imageUrlResolver: (booruId) =>
-                        ref.read(bookmarkUrlResolverProvider(booruId)),
-                  );
-
-              final res = await dio.get('/bookmarks');
-
-              final jsonString = res.data;
-
-              final json = jsonDecode(jsonString) as List<dynamic>;
-
-              final bookmarks = json
-                  .map((bookmark) {
-                    final booruId = bookmark['booruId'] as int?;
-                    final resolver = ref.read(
-                      bookmarkUrlResolverProvider(booruId),
-                    );
-
-                    return Bookmark.fromJson(
-                      bookmark,
-                      imageUrlResolver: resolver,
-                    );
-                  })
-                  .toList()
-                  // remove duplicates
-                  .where(
-                    (bookmark) => !currentBookmarks.any(
-                      (e) => e.originalUrl == bookmark.originalUrl,
-                    ),
-                  )
-                  .toList();
-
-              await bookmarkRepository.addBookmarkWithBookmarks(bookmarks);
-
-              await bookmarkNotifier.getAllBookmarks();
-
-            case 'search_histories':
-              final dbPath = await getSearchHistoryDbPath();
-              await downloadAndReplaceDb(
-                dio: dio,
-                url: '/search_histories',
-                filePath: dbPath,
-              );
-
-              ref.invalidate(searchHistoryRepoProvider);
-
-            case 'downloads':
-              final dbPath = await getDownloadsDbPath();
-              await downloadAndReplaceDb(
-                dio: dio,
-                url: '/downloads',
-                filePath: dbPath,
-              );
-
-              ref.invalidate(internalDownloadRepositoryProvider);
-
-            default:
-              throw Exception('Unknown backup source: ${task.id}');
-          }
+          await _handleLegacyImport(task, arg);
         }
 
         state = state.copyWith(
@@ -431,6 +304,112 @@ class ImportDataNotifier
           ],
         );
       }
+    }
+  }
+
+  Future<void> _handleLegacyImport(ImportTask task, String serverUrl) async {
+    final dio = Dio(BaseOptions(baseUrl: serverUrl));
+
+    switch (task.id) {
+      case 'favorite_tags':
+        final res = await dio.get('/favorite_tags');
+        final tagString = res.data;
+        final favTagsNotifier = ref.read(favoriteTagsProvider.notifier);
+        await favTagsNotifier.importWithLabelsFromRawString(text: tagString);
+
+      case 'booru_configs':
+        final res = await dio.get('/configs');
+        final jsonString = res.data;
+
+        await ref
+            .read(booruConfigProvider.notifier)
+            .importFromRawString(
+              jsonString: jsonString,
+              onWillImport: (data) async => true,
+              onSuccess: (message, configs) {
+                final config = configs.first;
+                state = state.copyWith(
+                  reloadPayload: () => ReloadPayload(
+                    configs: configs,
+                    selectedConfig: config,
+                  ),
+                );
+              },
+              onFailure: (message) => throw Exception(message),
+            );
+
+      case 'blacklisted_tags':
+        final res = await dio.get('/blacklisted_tags');
+        final jsonData = res.data;
+        final map = jsonDecode(jsonData) as Map<String, dynamic>;
+        final tagString = map['tags'] as String;
+
+        await ref
+            .read(globalBlacklistedTagsProvider.notifier)
+            .addTagString(
+              tagString,
+              onError: () {
+                throw Exception('Failed to import blacklisted tags');
+              },
+            );
+
+      case 'bookmarks':
+        final bookmarkRepository = await ref.read(bookmarkRepoProvider.future);
+        final bookmarkNotifier = ref.read(bookmarkProvider.notifier);
+        final currentBookmarks = await bookmarkRepository
+            .getAllBookmarksOrEmpty(
+              imageUrlResolver: (booruId) =>
+                  ref.read(bookmarkUrlResolverProvider(booruId)),
+            );
+
+        final res = await dio.get('/bookmarks');
+        final jsonString = res.data;
+        final json = jsonDecode(jsonString) as List<dynamic>;
+
+        final bookmarks = json
+            .map((bookmark) {
+              final booruId = bookmark['booruId'] as int?;
+              final resolver = ref.read(
+                bookmarkUrlResolverProvider(booruId),
+              );
+
+              return Bookmark.fromJson(
+                bookmark,
+                imageUrlResolver: resolver,
+              );
+            })
+            .toList()
+            // remove duplicates
+            .where(
+              (bookmark) => !currentBookmarks.any(
+                (e) => e.originalUrl == bookmark.originalUrl,
+              ),
+            )
+            .toList();
+
+        await bookmarkRepository.addBookmarkWithBookmarks(bookmarks);
+        await bookmarkNotifier.getAllBookmarks();
+
+      case 'search_histories':
+        final dbPath = await getSearchHistoryDbPath();
+        await downloadAndReplaceDb(
+          dio: dio,
+          url: '/search_histories',
+          filePath: dbPath,
+        );
+        ref.invalidate(searchHistoryRepoProvider);
+
+      case 'downloads':
+        final dbPath = await getDownloadsDbPath();
+        await downloadAndReplaceDb(
+          dio: dio,
+          url: '/downloads',
+          filePath: dbPath,
+        );
+        ref.invalidate(internalDownloadRepositoryProvider);
+
+      default:
+        throw Exception('Unknown backup source: ${task.id}');
     }
   }
 

@@ -3,7 +3,6 @@ import 'dart:io';
 
 // Package imports:
 import 'package:collection/collection.dart';
-import 'package:foundation/foundation.dart';
 import 'package:intl/intl.dart';
 
 // Project imports:
@@ -30,7 +29,7 @@ class BackupRegistry {
     return _sources.containsKey(id);
   }
 
-  Future<Either<ExportError, Unit>> exportAll(String basePath) async {
+  Future<void> exportAll(String basePath) async {
     final sources = getAllSources();
     final timestamp = DateFormat('yyyy.MM.dd.HH.mm.ss').format(DateTime.now());
     final exportDir = Directory(join(basePath, 'backup_$timestamp'));
@@ -40,19 +39,20 @@ class BackupRegistry {
     }
 
     for (final source in sources) {
-      final result = await source.exportToFile(
-        join(exportDir.path, '${source.id}.json'),
-      );
-
-      if (result.isLeft()) {
-        return result;
+      try {
+        await source.exportToFile(
+          join(exportDir.path, '${source.id}.json'),
+        );
+      } catch (e, st) {
+        if (e is ExportError) {
+          rethrow;
+        }
+        throw DataExportError(error: e, stackTrace: st);
       }
     }
-
-    return right(unit);
   }
 
-  Future<Either<ImportError, Unit>> importAll(String basePath) async {
+  Future<void> importAll(String basePath) async {
     final sources = getAllSources();
 
     for (final source in sources) {
@@ -60,14 +60,15 @@ class BackupRegistry {
       final file = File(filePath);
 
       if (file.existsSync()) {
-        final result = await source.importFromFile(filePath);
-
-        if (result.isLeft()) {
-          return result;
+        try {
+          await source.importFromFile(filePath);
+        } catch (e) {
+          if (e is ImportError) {
+            rethrow;
+          }
+          throw const ImportInvalidJson();
         }
       }
     }
-
-    return right(unit);
   }
 }

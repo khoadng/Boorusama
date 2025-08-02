@@ -52,11 +52,11 @@ final exportCategoriesProvider = Provider<List<ExportCategory>>((ref) {
           displayName: source.displayName,
           route: source.id,
           handler: (request) async {
-            final result = await source.serveData(request);
-            return result.fold(
-              (error) => Response.internalServerError(body: error.toString()),
-              (response) => response,
-            );
+            try {
+              return await source.serveData(request);
+            } catch (error) {
+              return Response.internalServerError(body: error.toString());
+            }
           },
         ),
       )
@@ -69,11 +69,15 @@ final exportCategoriesProvider = Provider<List<ExportCategory>>((ref) {
       displayName: 'Favorite tags',
       route: 'favorite_tags',
       handler: (request) async {
-        final value = await ref
-            .read(favoriteTagsProvider.notifier)
-            .exportWithLabelsToRawString();
+        try {
+          final value = await ref
+              .read(favoriteTagsProvider.notifier)
+              .exportWithLabelsToRawString();
 
-        return Response.ok(value);
+          return Response.ok(value);
+        } catch (e) {
+          return Response.internalServerError(body: e.toString());
+        }
       },
     ),
     ExportCategory(
@@ -81,19 +85,23 @@ final exportCategoriesProvider = Provider<List<ExportCategory>>((ref) {
       displayName: 'Booru profiles',
       route: 'configs',
       handler: (request) async {
-        final repo = ref.read(booruConfigRepoProvider);
-        final configs = await repo.getAll();
-        final converter = ref.read(
-          defaultBackupConverterProvider(
-            kBooruConfigsExporterImporterVersion,
-          ),
-        );
-        final result = converter.tryEncode(payload: configs);
+        try {
+          final repo = ref.read(booruConfigRepoProvider);
+          final configs = await repo.getAll();
+          final converter = ref.read(
+            defaultBackupConverterProvider(
+              kBooruConfigsExporterImporterVersion,
+            ),
+          );
+          final result = converter.tryEncode(payload: configs);
 
-        return result.fold(
-          (l) => Response.internalServerError(body: l.toString()),
-          (r) => Response.ok(r),
-        );
+          return result.fold(
+            (error) => Response.internalServerError(body: error.toString()),
+            (json) => Response.ok(json),
+          );
+        } catch (e) {
+          return Response.internalServerError(body: e.toString());
+        }
       },
     ),
     ExportCategory(
@@ -101,11 +109,17 @@ final exportCategoriesProvider = Provider<List<ExportCategory>>((ref) {
       displayName: 'Blacklisted tags',
       route: 'blacklisted_tags',
       handler: (request) async {
-        final blacklistedTags = ref.read(globalBlacklistedTagsProvider.future);
-        final tags = (await blacklistedTags).map((e) => e.name).join('\n');
-        final map = {'tags': tags};
+        try {
+          final blacklistedTags = ref.read(
+            globalBlacklistedTagsProvider.future,
+          );
+          final tags = (await blacklistedTags).map((e) => e.name).join('\n');
+          final map = {'tags': tags};
 
-        return Response.ok(jsonEncode(map));
+          return Response.ok(jsonEncode(map));
+        } catch (e) {
+          return Response.internalServerError(body: e.toString());
+        }
       },
     ),
     ExportCategory(
@@ -113,15 +127,19 @@ final exportCategoriesProvider = Provider<List<ExportCategory>>((ref) {
       displayName: 'Bookmarks',
       route: 'bookmarks',
       handler: (request) async {
-        final bookmarks = await (await ref.read(bookmarkRepoProvider.future))
-            .getAllBookmarksOrEmpty(
-              imageUrlResolver: (booruId) =>
-                  ref.read(bookmarkUrlResolverProvider(booruId)),
-            );
-        final json = bookmarks.map((bookmark) => bookmark.toJson()).toList();
-        final jsonString = jsonEncode(json);
+        try {
+          final bookmarks = await (await ref.read(bookmarkRepoProvider.future))
+              .getAllBookmarksOrEmpty(
+                imageUrlResolver: (booruId) =>
+                    ref.read(bookmarkUrlResolverProvider(booruId)),
+              );
+          final json = bookmarks.map((bookmark) => bookmark.toJson()).toList();
+          final jsonString = jsonEncode(json);
 
-        return Response.ok(jsonString);
+          return Response.ok(jsonString);
+        } catch (e) {
+          return Response.internalServerError(body: e.toString());
+        }
       },
     ),
     ExportCategory(
@@ -129,12 +147,16 @@ final exportCategoriesProvider = Provider<List<ExportCategory>>((ref) {
       displayName: 'Search histories',
       route: 'search_histories',
       handler: (request) async {
-        final dbPath = await getSearchHistoryDbPath();
+        try {
+          final dbPath = await getSearchHistoryDbPath();
 
-        return createDbStreamResponse(
-          filePath: dbPath,
-          fileName: kSearchHistoryDbName,
-        );
+          return await createDbStreamResponse(
+            filePath: dbPath,
+            fileName: kSearchHistoryDbName,
+          );
+        } catch (e) {
+          return Response.internalServerError(body: e.toString());
+        }
       },
     ),
     ExportCategory(
@@ -142,12 +164,16 @@ final exportCategoriesProvider = Provider<List<ExportCategory>>((ref) {
       displayName: 'Downloads',
       route: 'downloads',
       handler: (request) async {
-        final dbPath = await getDownloadsDbPath();
+        try {
+          final dbPath = await getDownloadsDbPath();
 
-        return createDbStreamResponse(
-          filePath: dbPath,
-          fileName: kDownloadDbName,
-        );
+          return await createDbStreamResponse(
+            filePath: dbPath,
+            fileName: kDownloadDbName,
+          );
+        } catch (e) {
+          return Response.internalServerError(body: e.toString());
+        }
       },
     ),
   ];

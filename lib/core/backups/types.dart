@@ -1,7 +1,7 @@
 // Package imports:
 import 'package:version/version.dart';
 
-sealed class ExportError {
+sealed class ExportError implements Exception {
   const ExportError._(this.message);
 
   final String message;
@@ -48,7 +48,7 @@ final class DataExportNotPermitted extends ExportError {
   final StackTrace stackTrace;
 }
 
-sealed class ImportError {
+sealed class ImportError implements Exception {
   const ImportError._(this.message);
 
   final String message;
