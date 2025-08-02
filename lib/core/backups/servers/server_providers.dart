@@ -17,10 +17,10 @@ import '../../bulk_downloads/providers.dart';
 import '../../configs/export_import/types.dart';
 import '../../configs/manage/providers.dart';
 import '../../search/histories/providers.dart';
-import '../../settings/providers.dart';
 import '../../tags/favorites/providers.dart';
 import '../db_transfer.dart';
 import '../providers.dart';
+import '../registry/backup_providers.dart';
 import 'server.dart';
 
 class ExportCategory {
@@ -38,7 +38,32 @@ class ExportCategory {
 }
 
 final exportCategoriesProvider = Provider<List<ExportCategory>>((ref) {
-  return [
+  // Ensure all backup sources are registered
+  ref.watch(allBackupSourcesProvider);
+
+  final registry = ref.watch(backupRegistryProvider);
+
+  // Get categories from the new registry system
+  final registryCategories = registry
+      .getAllSources()
+      .map(
+        (source) => ExportCategory(
+          name: source.id,
+          displayName: source.displayName,
+          route: source.id,
+          handler: (request) async {
+            final result = await source.serveData(request);
+            return result.fold(
+              (error) => Response.internalServerError(body: error.toString()),
+              (response) => response,
+            );
+          },
+        ),
+      )
+      .toList();
+
+  // Legacy hardcoded sources (remove as they're migrated)
+  final legacyCategories = [
     ExportCategory(
       name: 'favorite_tags',
       displayName: 'Favorite tags',
@@ -69,16 +94,6 @@ final exportCategoriesProvider = Provider<List<ExportCategory>>((ref) {
           (l) => Response.internalServerError(body: l.toString()),
           (r) => Response.ok(r),
         );
-      },
-    ),
-    ExportCategory(
-      name: 'settings',
-      displayName: 'Settings',
-      route: 'settings',
-      handler: (request) async {
-        final settings = ref.read(settingsProvider);
-
-        return Response.ok(jsonEncode(settings.toJson()));
       },
     ),
     ExportCategory(
@@ -136,6 +151,13 @@ final exportCategoriesProvider = Provider<List<ExportCategory>>((ref) {
       },
     ),
   ];
+
+  // Filter out legacy categories that have been migrated to registry
+  final filteredLegacyCategories = legacyCategories
+      .where((legacy) => !registry.hasSource(legacy.name))
+      .toList();
+
+  return [...registryCategories, ...filteredLegacyCategories];
 });
 
 final dataSyncServerProvider = Provider<AppServer>((ref) {

@@ -15,10 +15,10 @@ import '../../bulk_downloads/providers.dart';
 import '../../configs/config.dart';
 import '../../configs/manage/providers.dart';
 import '../../search/histories/providers.dart';
-import '../../settings/providers.dart';
 import '../../settings/settings.dart';
 import '../../tags/favorites/providers.dart';
 import '../db_transfer.dart';
+import '../registry/backup_providers.dart';
 import '../servers/server_providers.dart';
 
 final importDataProvider = NotifierProvider.autoDispose
@@ -280,134 +280,135 @@ class ImportDataNotifier
       await Future.delayed(const Duration(milliseconds: 250));
 
       try {
-        switch (task.id) {
-          case 'favorite_tags':
-            final res = await dio.get('/favorite_tags');
+        // Check registry first (new system)
+        final registry = ref.read(backupRegistryProvider);
+        if (registry.hasSource(task.id)) {
+          final source = registry.getSource(task.id)!;
+          final result = await source.consumeData(arg);
 
-            final tagString = res.data;
+          result.fold(
+            (error) => throw Exception(error.toString()),
+            (_) {}, // Success, continue
+          );
+        } else {
+          // Legacy fallback
+          switch (task.id) {
+            case 'favorite_tags':
+              final res = await dio.get('/favorite_tags');
 
-            final favTagsNotifier = ref.read(favoriteTagsProvider.notifier);
+              final tagString = res.data;
 
-            await favTagsNotifier.importWithLabelsFromRawString(
-              text: tagString,
-            );
+              final favTagsNotifier = ref.read(favoriteTagsProvider.notifier);
 
-          case 'booru_configs':
-            final res = await dio.get('/configs');
+              await favTagsNotifier.importWithLabelsFromRawString(
+                text: tagString,
+              );
 
-            final jsonString = res.data;
+            case 'booru_configs':
+              final res = await dio.get('/configs');
 
-            await ref
-                .read(booruConfigProvider.notifier)
-                .importFromRawString(
-                  jsonString: jsonString,
-                  onWillImport: (data) async => true,
-                  onSuccess: (message, configs) {
-                    final config = configs.first;
+              final jsonString = res.data;
 
-                    state = state.copyWith(
-                      reloadPayload: () => ReloadPayload(
-                        configs: configs,
-                        selectedConfig: config,
-                      ),
+              await ref
+                  .read(booruConfigProvider.notifier)
+                  .importFromRawString(
+                    jsonString: jsonString,
+                    onWillImport: (data) async => true,
+                    onSuccess: (message, configs) {
+                      final config = configs.first;
+
+                      state = state.copyWith(
+                        reloadPayload: () => ReloadPayload(
+                          configs: configs,
+                          selectedConfig: config,
+                        ),
+                      );
+                    },
+                    onFailure: (message) => throw Exception(message),
+                  );
+
+            case 'blacklisted_tags':
+              final res = await dio.get('/blacklisted_tags');
+
+              final jsonData = res.data;
+
+              final map = jsonDecode(jsonData) as Map<String, dynamic>;
+              final tagString = map['tags'] as String;
+
+              await ref
+                  .read(globalBlacklistedTagsProvider.notifier)
+                  .addTagString(
+                    tagString,
+                    onError: () {
+                      throw Exception('Failed to import blacklisted tags');
+                    },
+                  );
+
+            case 'bookmarks':
+              final bookmarkRepository = await ref.read(
+                bookmarkRepoProvider.future,
+              );
+              final bookmarkNotifier = ref.read(bookmarkProvider.notifier);
+              final currentBookmarks = await bookmarkRepository
+                  .getAllBookmarksOrEmpty(
+                    imageUrlResolver: (booruId) =>
+                        ref.read(bookmarkUrlResolverProvider(booruId)),
+                  );
+
+              final res = await dio.get('/bookmarks');
+
+              final jsonString = res.data;
+
+              final json = jsonDecode(jsonString) as List<dynamic>;
+
+              final bookmarks = json
+                  .map((bookmark) {
+                    final booruId = bookmark['booruId'] as int?;
+                    final resolver = ref.read(
+                      bookmarkUrlResolverProvider(booruId),
                     );
-                  },
-                  onFailure: (message) => throw Exception(message),
-                );
 
-          case 'settings':
-            final res = await dio.get('/settings');
+                    return Bookmark.fromJson(
+                      bookmark,
+                      imageUrlResolver: resolver,
+                    );
+                  })
+                  .toList()
+                  // remove duplicates
+                  .where(
+                    (bookmark) => !currentBookmarks.any(
+                      (e) => e.originalUrl == bookmark.originalUrl,
+                    ),
+                  )
+                  .toList();
 
-            final jsonString = res.data;
+              await bookmarkRepository.addBookmarkWithBookmarks(bookmarks);
 
-            final json = jsonDecode(jsonString) as Map<String, dynamic>;
+              await bookmarkNotifier.getAllBookmarks();
 
-            final settings = Settings.fromJson(json);
+            case 'search_histories':
+              final dbPath = await getSearchHistoryDbPath();
+              await downloadAndReplaceDb(
+                dio: dio,
+                url: '/search_histories',
+                filePath: dbPath,
+              );
 
-            await ref
-                .read(settingsNotifierProvider.notifier)
-                .updateSettings(
-                  settings,
-                );
+              ref.invalidate(searchHistoryRepoProvider);
 
-          case 'blacklisted_tags':
-            final res = await dio.get('/blacklisted_tags');
+            case 'downloads':
+              final dbPath = await getDownloadsDbPath();
+              await downloadAndReplaceDb(
+                dio: dio,
+                url: '/downloads',
+                filePath: dbPath,
+              );
 
-            final jsonData = res.data;
+              ref.invalidate(internalDownloadRepositoryProvider);
 
-            final map = jsonDecode(jsonData) as Map<String, dynamic>;
-            final tagString = map['tags'] as String;
-
-            await ref
-                .read(globalBlacklistedTagsProvider.notifier)
-                .addTagString(
-                  tagString,
-                  onError: () {
-                    throw Exception('Failed to import blacklisted tags');
-                  },
-                );
-
-          case 'bookmarks':
-            final bookmarkRepository = await ref.read(
-              bookmarkRepoProvider.future,
-            );
-            final bookmarkNotifier = ref.read(bookmarkProvider.notifier);
-            final currentBookmarks = await bookmarkRepository
-                .getAllBookmarksOrEmpty(
-                  imageUrlResolver: (booruId) =>
-                      ref.read(bookmarkUrlResolverProvider(booruId)),
-                );
-
-            final res = await dio.get('/bookmarks');
-
-            final jsonString = res.data;
-
-            final json = jsonDecode(jsonString) as List<dynamic>;
-
-            final bookmarks = json
-                .map((bookmark) {
-                  final booruId = bookmark['booruId'] as int?;
-                  final resolver = ref.read(
-                    bookmarkUrlResolverProvider(booruId),
-                  );
-
-                  return Bookmark.fromJson(
-                    bookmark,
-                    imageUrlResolver: resolver,
-                  );
-                })
-                .toList()
-                // remove duplicates
-                .where(
-                  (bookmark) => !currentBookmarks.any(
-                    (e) => e.originalUrl == bookmark.originalUrl,
-                  ),
-                )
-                .toList();
-
-            await bookmarkRepository.addBookmarkWithBookmarks(bookmarks);
-
-            await bookmarkNotifier.getAllBookmarks();
-
-          case 'search_histories':
-            final dbPath = await getSearchHistoryDbPath();
-            await downloadAndReplaceDb(
-              dio: dio,
-              url: '/search_histories',
-              filePath: dbPath,
-            );
-
-            ref.invalidate(searchHistoryRepoProvider);
-
-          case 'downloads':
-            final dbPath = await getDownloadsDbPath();
-            await downloadAndReplaceDb(
-              dio: dio,
-              url: '/downloads',
-              filePath: dbPath,
-            );
-
-            ref.invalidate(internalDownloadRepositoryProvider);
+            default:
+              throw Exception('Unknown backup source: ${task.id}');
+          }
         }
 
         state = state.copyWith(

@@ -22,6 +22,7 @@ import '../../../../../foundation/platform.dart';
 import '../../../../../foundation/toast.dart';
 import '../../../../backups/routes.dart';
 import '../../../../backups/sync_data_page.dart';
+import '../../../../backups/widgets/backup_restore_tile.dart';
 import '../../../../blacklists/providers.dart';
 import '../../../../bookmarks/providers.dart';
 import '../../../../bulk_downloads/providers.dart';
@@ -290,25 +291,7 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
   }
 
   Widget _buildSettings() {
-    return BackupRestoreTile(
-      leadingIcon: Symbols.settings,
-      title: 'Settings'.hc,
-      trailing: BooruPopupMenuButton(
-        onSelected: (value) {
-          switch (value) {
-            case 'export':
-              _pickSettingsFolder(ref);
-            case 'import':
-              _pickSettingsFile(ref);
-            default:
-          }
-        },
-        itemBuilder: {
-          'export': Text('Export'.hc),
-          'import': Text('Import'.hc),
-        },
-      ),
-    );
+    return const BackupSourceTile(sourceId: 'settings');
   }
 
   Widget _buildSearchHistories() {
@@ -613,32 +596,6 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
             onSuccess: _onImportSuccess,
             onWillImport: _showImportBooruConfigsAlertDialog,
             onFailure: (message) => showErrorToast(context, message),
-          );
-    },
-  );
-
-  Future<void> _pickSettingsFolder(WidgetRef ref) =>
-      pickDirectoryPathToastOnError(
-        context: context,
-        onPick: (path) {
-          ref
-              .read(settingsNotifierProvider.notifier)
-              .exportSettings(context, path);
-        },
-      );
-
-  void _pickSettingsFile(WidgetRef ref) => _pickFile(
-    onPick: (path) {
-      ref
-          .read(settingsNotifierProvider.notifier)
-          .importSettings(
-            context: context,
-            path: path,
-            onWillImport: (data) async => true,
-            onFailure: (message) => showErrorToast(context, message),
-            onSuccess: (message, _) {
-              showSuccessToast(context, message);
-            },
           );
     },
   );
