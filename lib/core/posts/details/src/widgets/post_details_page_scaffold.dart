@@ -19,19 +19,19 @@ import '../../../../boorus/engine/providers.dart';
 import '../../../../cache/providers.dart';
 import '../../../../configs/config.dart';
 import '../../../../configs/gesture/gesture.dart';
-import '../../../../configs/manage/providers.dart';
 import '../../../../notes/notes.dart';
 import '../../../../premiums/providers.dart';
 import '../../../../router.dart';
 import '../../../../settings/providers.dart';
 import '../../../../settings/settings.dart';
-import '../../../../theme/app_theme.dart';
+import '../../../../theme.dart';
 import '../../../../videos/play_pause_button.dart';
 import '../../../../videos/providers.dart';
 import '../../../../videos/sound_control_button.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../details_manager/types.dart';
 import '../../../details_pageview/widgets.dart';
+import '../../../details_parts/widgets.dart';
 import '../../../post/post.dart';
 import '../../../post/routes.dart';
 import '../../../shares/providers.dart';
@@ -53,6 +53,7 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
     required this.viewerConfig,
     required this.authConfig,
     required this.gestureConfig,
+    required this.layoutConfig,
     super.key,
     this.onExpanded,
     this.imageUrlBuilder,
@@ -75,6 +76,7 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
   final Set<DetailsPart>? preferredPreviewParts;
   final BooruConfigViewer viewerConfig;
   final BooruConfigAuth authConfig;
+  final LayoutConfigs? layoutConfig;
   final PostGestureConfig? gestureConfig;
 
   @override
@@ -351,11 +353,8 @@ class _PostDetailPageScaffoldState<T extends Post>
         sheetBuilder: (context, scrollController) {
           return Consumer(
             builder: (_, ref, _) {
-              final layoutDetails = ref.watch(
-                currentReadOnlyBooruConfigLayoutProvider.select(
-                  (value) => value?.details,
-                ),
-              );
+              final layoutDetails = widget.layoutConfig?.details;
+
               final preferredParts =
                   widget.preferredParts ??
                   getLayoutParsedParts(
@@ -504,11 +503,7 @@ class _PostDetailPageScaffoldState<T extends Post>
         },
         bottomSheet: Consumer(
           builder: (_, ref, _) {
-            final layoutPreviewDetails = ref.watch(
-              currentReadOnlyBooruConfigLayoutProvider.select(
-                (value) => value?.previewDetails,
-              ),
-            );
+            final layoutPreviewDetails = widget.layoutConfig?.previewDetails;
 
             return widget.uiBuilder != null
                 ? _buildCustomPreview(widget.uiBuilder!, layoutPreviewDetails)
@@ -529,6 +524,41 @@ class _PostDetailPageScaffoldState<T extends Post>
               ),
             ),
           ],
+
+          Consumer(
+            builder: (context, ref, _) {
+              final layoutPreviewDetails = widget.layoutConfig?.previewDetails;
+
+              final hasToolbar =
+                  layoutPreviewDetails?.any(
+                    (part) => part == convertDetailsPart(DetailsPart.toolbar),
+                  ) ??
+                  true;
+
+              if (ref.watch(hasPremiumLayoutProvider) && !hasToolbar) {
+                return ValueListenableBuilder(
+                  valueListenable: widget.controller.currentPost,
+                  builder: (context, post, _) => SizedBox(
+                    width: 40,
+                    child: Material(
+                      color:
+                          context.extendedColorScheme.surfaceContainerOverlay,
+                      shape: const CircleBorder(),
+                      child: CommonPostPopupMenu(
+                        post: post,
+                        onStartSlideshow: () =>
+                            widget.pageViewController.startSlideshow(),
+                        config: widget.authConfig,
+                        configViewer: widget.viewerConfig,
+                      ),
+                    ),
+                  ),
+                );
+              }
+
+              return const SizedBox.shrink();
+            },
+          ),
         ],
         onExpanded: () {
           widget.onExpanded?.call();

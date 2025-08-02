@@ -14,9 +14,11 @@ import '../../../../foundation/url_launcher.dart';
 import '../../../boorus/engine/engine.dart';
 import '../../../configs/config/types.dart';
 import '../../../images/providers.dart';
+import '../../../premiums/providers.dart';
 import '../../../settings/routes.dart';
 import '../../../tags/tag/routes.dart';
 import '../../../widgets/adaptive_button_row.dart';
+import '../../details_manager/routes.dart';
 import '../../post/src/data/providers.dart';
 import '../../post/src/routes/route_utils.dart';
 import '../../post/src/types/post.dart';
@@ -87,9 +89,19 @@ class CommonPostButtonsBuilder extends ConsumerWidget {
         title: 'Slideshow',
         onPressed: onStartSlideshow,
       ),
+      if (ref.watch(showPremiumFeatsProvider))
+        SimpleButtonData(
+          icon: Icons.brush,
+          title: context.t.settings.appearance.customize,
+          placement: ButtonPlacement.menuOnly,
+          onPressed: () {
+            goToDetailsLayoutManagerForPreviewWidgets(ref);
+          },
+        ),
       SimpleButtonData(
         icon: Icons.settings,
         title: context.t.settings.settings,
+        placement: ButtonPlacement.menuOnly,
         onPressed: () => openImageViewerSettingsPage(ref),
       ),
     ];

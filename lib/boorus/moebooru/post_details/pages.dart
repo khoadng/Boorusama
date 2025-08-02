@@ -104,6 +104,7 @@ class _MoebooruPostDetailsPageState
       viewerConfig: ref.watchConfigViewer,
       authConfig: ref.watchConfigAuth,
       gestureConfig: ref.watchPostGestures,
+      layoutConfig: ref.watchLayoutConfigs,
     );
   }
 }

@@ -170,6 +170,7 @@
     "app_settings": "App Settings",
     "appearance": {
       "appearance": "Appearance",
+      "customize": "Customize",
       "show_scores": "Show scores",
       "show_post_list_config_header": "Show posts configuration header",
       "booru_config": "Booru profile",

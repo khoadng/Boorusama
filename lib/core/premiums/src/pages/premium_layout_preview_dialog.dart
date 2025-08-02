@@ -15,13 +15,11 @@ import '../routes/route_utils.dart';
 class PremiumLayoutPreviewDialog extends ConsumerWidget {
   const PremiumLayoutPreviewDialog({
     required this.onStartPreview,
-    required this.onApplyLayout,
     required this.firstTime,
     super.key,
   });
 
   final void Function() onStartPreview;
-  final void Function() onApplyLayout;
   final bool firstTime;
 
   @override
@@ -77,8 +75,7 @@ class PremiumLayoutPreviewDialog extends ConsumerWidget {
                 elevation: 0,
               ),
               onPressed: () {
-                Navigator.pop(context);
-                onApplyLayout();
+                Navigator.pop(context, true);
               },
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 14),
@@ -95,7 +92,7 @@ class PremiumLayoutPreviewDialog extends ConsumerWidget {
           ],
           ElevatedButton(
             onPressed: () {
-              Navigator.pop(context);
+              Navigator.pop(context, false);
               goToPremiumPage(ref);
             },
             child: Padding(

@@ -3,11 +3,12 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
-import '../../../../configs/appearance/routes.dart';
 import '../../../../theme/app_theme.dart';
 import '../../../../widgets/dotted_border.dart';
+import '../routes/route_utils.dart';
 
 class AddCustomDetailsButton extends ConsumerWidget {
   const AddCustomDetailsButton({
@@ -24,11 +25,9 @@ class AddCustomDetailsButton extends ConsumerWidget {
       child: DottedBorderButton(
         borderColor: Theme.of(context).colorScheme.hintColor,
         onTap: () {
-          goToQuickEditPostDetailsLayoutPage(
-            context,
-          );
+          goToDetailsLayoutManagerForFullWidgets(ref);
         },
-        title: 'Customize',
+        title: context.t.settings.appearance.customize,
       ),
     );
   }

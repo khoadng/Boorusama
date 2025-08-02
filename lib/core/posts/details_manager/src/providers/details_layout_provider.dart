@@ -14,75 +14,98 @@ class DetailsLayoutNotifier
         > {
   @override
   DetailsLayoutState build(DetailsLayoutManagerParams arg) {
+    // Convert initial details to parts and create ordered list
+    final selectedParts = arg.details
+        .map((e) => parseDetailsPart(e.name))
+        .nonNulls
+        .toSet();
+
+    final selectedOrder = arg.details
+        .map((e) => parseDetailsPart(e.name))
+        .nonNulls
+        .toList();
+
+    final unselectedParts = arg.availableParts
+        .difference(selectedParts)
+        .toList();
+    final allPartsInOrder = [...selectedOrder, ...unselectedParts];
+
     return DetailsLayoutState(
-      details: arg.details,
+      allPartsInOrder: allPartsInOrder,
+      selectedParts: selectedParts,
       availableParts: arg.availableParts,
     );
   }
 
   void reorder(int oldIndex, int newIndex) {
-    final newDetails = state.details.toList();
+    final newOrder = List<DetailsPart>.from(state.allPartsInOrder);
+    final item = newOrder.removeAt(oldIndex);
+    newOrder.insert(newIndex, item);
 
-    final item = newDetails.removeAt(oldIndex);
-    newDetails.insert(newIndex, item);
-
-    state = state.copyWith(
-      details: newDetails,
-    );
+    state = state.copyWith(allPartsInOrder: newOrder);
   }
 
-  void remove(CustomDetailsPartKey key) {
-    final newDetails = state.details
-        .where((element) => element != key)
-        .toList();
+  void toggle(DetailsPart part) {
+    final newSelectedParts = Set<DetailsPart>.from(state.selectedParts);
 
-    state = state.copyWith(
-      details: newDetails,
-    );
-  }
+    if (newSelectedParts.contains(part)) {
+      newSelectedParts.remove(part);
+    } else {
+      newSelectedParts.add(part);
+    }
 
-  void add(DetailsPart part) {
-    state = state.copyWith(
-      details: [
-        ...state.details,
-        convertDetailsPart(part),
-      ],
-    );
+    state = state.copyWith(selectedParts: newSelectedParts);
   }
 
   void resetToDefault() {
+    final defaultSelectedParts = arg.defaultParts;
+    final unselectedParts = arg.availableParts
+        .difference(defaultSelectedParts)
+        .toList();
+    final allPartsInOrder = [...defaultSelectedParts, ...unselectedParts];
+
     state = state.copyWith(
-      details: arg.defaultParts.map(convertDetailsPart).toList(),
+      selectedParts: defaultSelectedParts,
+      allPartsInOrder: allPartsInOrder,
     );
   }
 
   void save() {
-    final parts = convertDetailsParts(state.selectedParts.toList());
+    // Convert selected parts back to the format expected by the callback
+    final orderedSelectedParts = state.allPartsInOrder
+        .where((part) => state.selectedParts.contains(part))
+        .toList();
+
+    final parts = orderedSelectedParts.map(convertDetailsPart).toList();
     arg.onUpdate(parts);
   }
 }
 
 class DetailsLayoutState extends Equatable {
   const DetailsLayoutState({
-    required this.details,
+    required this.allPartsInOrder,
+    required this.selectedParts,
     required this.availableParts,
   });
 
-  final List<CustomDetailsPartKey> details;
+  final List<DetailsPart> allPartsInOrder;
+  final Set<DetailsPart> selectedParts;
   final Set<DetailsPart> availableParts;
 
   DetailsLayoutState copyWith({
-    List<CustomDetailsPartKey>? details,
+    List<DetailsPart>? allPartsInOrder,
+    Set<DetailsPart>? selectedParts,
     Set<DetailsPart>? availableParts,
   }) {
     return DetailsLayoutState(
-      details: details ?? this.details,
+      allPartsInOrder: allPartsInOrder ?? this.allPartsInOrder,
+      selectedParts: selectedParts ?? this.selectedParts,
       availableParts: availableParts ?? this.availableParts,
     );
   }
 
   @override
-  List<Object?> get props => [details, availableParts];
+  List<Object?> get props => [allPartsInOrder, selectedParts, availableParts];
 }
 
 extension DetailsLayoutStateX on DetailsLayoutState {
@@ -90,12 +113,9 @@ extension DetailsLayoutStateX on DetailsLayoutState {
     return availableParts.difference(selectedParts).toList();
   }
 
-  Set<DetailsPart> get selectedParts {
-    return details.map((e) => parseDetailsPart(e.name)).nonNulls.toSet();
+  bool isSelected(DetailsPart part) {
+    return selectedParts.contains(part);
   }
-
-  (int, int) get selectedPartsCount =>
-      (selectedParts.length, availableParts.length);
 
   bool get canApply => selectedParts.isNotEmpty;
 }

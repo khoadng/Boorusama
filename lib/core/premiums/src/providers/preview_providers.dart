@@ -14,7 +14,7 @@ enum LayoutPreviewStatus {
   on,
 }
 
-const kPreviewDuration = Duration(minutes: 10);
+const kPreviewDuration = Duration(minutes: 5);
 
 class LayoutPreviewState extends Equatable {
   const LayoutPreviewState({

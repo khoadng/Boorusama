@@ -39,6 +39,7 @@ class DanbooruPostDetailsPage extends StatelessWidget {
           return PostDetailsPageScaffold(
             pageViewController: pageViewController,
             controller: detailsController,
+            layoutConfig: ref.watchLayoutConfigs,
             posts: posts,
             viewerConfig: configViewer,
             authConfig: config,

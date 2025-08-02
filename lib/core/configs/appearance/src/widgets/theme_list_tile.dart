@@ -45,7 +45,7 @@ class ThemeListTile extends ConsumerWidget {
           ),
         ),
         onPressed: () => _customizeTheme(ref, context),
-        child: Text('Customize'.hc),
+        child: Text(context.t.settings.appearance.customize),
       ),
     );
   }

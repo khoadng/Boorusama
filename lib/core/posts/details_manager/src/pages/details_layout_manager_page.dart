@@ -4,65 +4,73 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
-import 'package:material_symbols_icons/symbols.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:reorderables/reorderables.dart';
 
 // Project imports:
-import '../../../../../foundation/toast.dart';
 import '../../../../premiums/providers.dart';
 import '../../../../premiums/widgets.dart';
 import '../../../../theme/app_theme.dart';
-import '../../../../widgets/widgets.dart';
 import '../providers/details_layout_provider.dart';
 import '../routes/routes.dart';
-import 'available_widget_selector_sheet.dart';
 
-class DetailsLayoutManagerPage extends StatelessWidget {
+class DetailsLayoutManagerPage extends ConsumerWidget {
   const DetailsLayoutManagerPage({
     super.key,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final params = InheritedDetailsLayoutManagerParams.of(context);
+
+    final notifier = ref.watch(
+      detailsLayoutProvider(params).notifier,
+    );
+
+    final hasPremium = ref.watch(hasPremiumProvider);
+
+    final canApply = ref.watch(
+      detailsLayoutProvider(params).select((value) => value.canApply),
+    );
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Manage widgets'.hc),
+        title: Text('Custom'.hc),
         actions: [
-          IconButton(
-            icon: const Icon(Symbols.add),
-            onPressed: () {
-              showBarModalBottomSheet(
-                context: context,
-                builder: (context) {
-                  return AvailableWidgetSelectorSheet(
-                    params: params,
-                    controller: ModalScrollController.of(context),
-                  );
-                },
-              );
-            },
-          ),
-          Consumer(
-            builder: (_, ref, _) {
-              final notifier = ref.watch(
-                detailsLayoutProvider(params).notifier,
-              );
+          ElevatedButton(
+            onPressed: canApply
+                ? () async {
+                    final navigator = Navigator.of(context);
+                    final layoutPreviewState = ref.read(
+                      premiumLayoutPreviewProvider,
+                    );
 
-              return BooruPopupMenuButton(
-                onSelected: (value) {
-                  switch (value) {
-                    case 'reset_layout':
-                      notifier.resetToDefault();
+                    final isInitiallyOff =
+                        layoutPreviewState.status == LayoutPreviewStatus.off;
+
+                    if (!hasPremium) {
+                      final result = await showDialog<bool?>(
+                        context: context,
+                        builder: (context) => PremiumLayoutPreviewDialog(
+                          firstTime: isInitiallyOff,
+                          onStartPreview: () {
+                            notifier.save();
+                          },
+                        ),
+                      );
+
+                      if (result == true) {
+                        notifier.save();
+                        navigator.pop();
+                      }
+
+                      return;
+                    }
+
+                    notifier.save();
+                    navigator.pop();
                   }
-                },
-                itemBuilder: const {
-                  'reset_layout': Text('Reset to default'),
-                },
-              );
-            },
+                : null,
+            child: Text('Apply'.hc),
           ),
         ],
       ),
@@ -75,10 +83,21 @@ class DetailsLayoutManagerPage extends StatelessWidget {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    _Header(
-                      params: params,
-                    ),
                     _List(params: params),
+                    const SizedBox(height: 16),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        FilledButton.tonal(
+                          onPressed: () {
+                            notifier.resetToDefault();
+                          },
+                          child: Text(
+                            'Reset'.hc,
+                          ),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ),
@@ -101,16 +120,15 @@ class _List extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
     final notifier = ref.watch(detailsLayoutProvider(params).notifier);
-    final details = ref.watch(
-      detailsLayoutProvider(params).select((value) => value.details),
-    );
+    final state = ref.watch(detailsLayoutProvider(params));
+    final allParts = state.allPartsInOrder;
 
     return ReorderableColumn(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       header: Padding(
         padding: const EdgeInsets.all(8),
         child: Text(
-          'Long press and drag to reorder',
+          'Rearrange items or hide content'.hc,
           style: TextStyle(
             color: colorScheme.hintColor,
           ),
@@ -119,125 +137,58 @@ class _List extends ConsumerWidget {
       onReorder: (oldIndex, newIndex) {
         notifier.reorder(oldIndex, newIndex);
       },
-      children: details
-          .map(
-            (e) => Container(
-              key: ValueKey(e),
-              padding: const EdgeInsets.symmetric(
-                horizontal: 4,
-              ),
-              margin: const EdgeInsets.symmetric(
-                vertical: 4,
-              ),
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: colorScheme.outlineVariant,
-                  width: 0.1,
-                ),
-                color: colorScheme.surfaceContainerLow,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: ListTile(
-                leading: Icon(
-                  Icons.drag_indicator,
-                  color: colorScheme.hintColor,
-                ),
-                trailing: BooruPopupMenuButton(
-                  onSelected: (value) {
-                    if (value == 'remove') {
-                      if (details.length == 1) {
-                        showErrorToast(
-                          context,
-                          'At least one item is required',
-                        );
-                        return;
-                      }
-
-                      notifier.remove(e);
-                    }
-                  },
-                  itemBuilder: const {
-                    'remove': Text('Remove'),
-                  },
-                ),
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 8,
-                ),
-                title: Text(e.name),
-              ),
+      children: allParts.map(
+        (part) {
+          final isSelected = state.isSelected(part);
+          return Container(
+            key: ValueKey(part),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 4,
             ),
-          )
-          .toList(),
-    );
-  }
-}
-
-class _Header extends StatelessWidget {
-  const _Header({
-    required this.params,
-  });
-
-  final DetailsLayoutManagerParams params;
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      title: Consumer(
-        builder: (_, ref, _) {
-          final (selected, available) = ref.watch(
-            detailsLayoutProvider(
-              params,
-            ).select((value) => value.selectedPartsCount),
-          );
-
-          return Text(
-            '$selected/$available selected',
-            style: Theme.of(context).textTheme.titleLarge,
-          );
-        },
-      ),
-      trailing: Consumer(
-        builder: (_, ref, _) {
-          final hasPremium = ref.watch(hasPremiumProvider);
-
-          final canApply = ref.watch(
-            detailsLayoutProvider(params).select((value) => value.canApply),
-          );
-
-          final notifier = ref.watch(detailsLayoutProvider(params).notifier);
-
-          return FilledButton(
-            onPressed: canApply
-                ? () {
-                    final layoutPreviewState = ref.read(
-                      premiumLayoutPreviewProvider,
-                    );
-
-                    final isInitiallyOff =
-                        layoutPreviewState.status == LayoutPreviewStatus.off;
-
-                    if (!hasPremium) {
-                      showDialog(
-                        context: context,
-                        builder: (context) => PremiumLayoutPreviewDialog(
-                          firstTime: isInitiallyOff,
-                          onApplyLayout: () => notifier.save(),
-                          onStartPreview: () {
-                            notifier.save();
-                          },
-                        ),
-                      );
-                      return;
-                    }
-
-                    notifier.save();
-                    Navigator.of(context).pop();
-                  }
-                : null,
-            child: Text('Apply'.hc),
+            margin: const EdgeInsets.symmetric(
+              vertical: 4,
+            ),
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: colorScheme.outlineVariant,
+                width: 0.1,
+              ),
+              color: isSelected
+                  ? colorScheme.surfaceContainerLow
+                  : colorScheme.surfaceContainerLowest,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: ListTile(
+              leading: Icon(
+                Icons.drag_indicator,
+                color: isSelected
+                    ? colorScheme.hintColor
+                    : colorScheme.hintColor.withValues(alpha: 0.5),
+              ),
+              trailing: Checkbox(
+                value: isSelected,
+                onChanged: (value) {
+                  notifier.toggle(part);
+                },
+              ),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 8,
+              ),
+              title: Text(
+                part.name,
+                style: TextStyle(
+                  color: isSelected
+                      ? null
+                      : colorScheme.onSurface.withValues(alpha: 0.6),
+                ),
+              ),
+              onTap: () {
+                notifier.toggle(part);
+              },
+            ),
           );
         },
-      ),
+      ).toList(),
     );
   }
 }

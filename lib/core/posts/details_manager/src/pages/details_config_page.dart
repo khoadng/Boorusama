@@ -167,7 +167,7 @@ class _Title extends StatelessWidget {
         ),
         trailing: TextButton(
           onPressed: onPressed,
-          child: Text('Customize'.hc),
+          child: Text(context.t.settings.appearance.customize),
         ),
       ),
     );

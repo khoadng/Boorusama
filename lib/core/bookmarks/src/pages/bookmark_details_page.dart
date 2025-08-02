@@ -93,6 +93,7 @@ class _BookmarkDetailsPageState
       viewerConfig: ref.watchConfigViewer,
       authConfig: auth,
       gestureConfig: ref.watchPostGestures,
+      layoutConfig: ref.watchLayoutConfigs,
       // Needed to prevent type inference error
       // ignore: avoid_types_on_closure_parameters
       imageUrlBuilder: (Post post) => post.originalImageUrl,
