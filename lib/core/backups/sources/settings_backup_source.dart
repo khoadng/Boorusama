@@ -8,16 +8,25 @@ import 'package:shelf/shelf.dart';
 
 // Project imports:
 import '../../../../../foundation/clipboard.dart';
+import '../../../foundation/info/package_info.dart';
+import '../../settings/providers.dart';
+import '../../settings/settings.dart';
+import '../data_converter.dart';
 import '../registry/backup_data_source.dart';
 import '../registry/backup_utils.dart';
 import '../types.dart';
-import '../../settings/providers.dart';
-import '../../settings/settings.dart';
+
+const kSettingsBackupVersion = 1;
 
 class SettingsBackupSource implements BackupDataSource {
   SettingsBackupSource(this.ref);
 
   final Ref ref;
+
+  @override
+  Future<Either<ImportError, ExportDataPayload>> parseImportData(String data) {
+    return Future.value(converter.tryDecode(data: data));
+  }
 
   @override
   String get id => 'settings';
@@ -27,6 +36,15 @@ class SettingsBackupSource implements BackupDataSource {
 
   @override
   int get priority => 0;
+
+  @override
+  int get version => kSettingsBackupVersion;
+
+  @override
+  DataBackupConverter get converter => DataBackupConverter(
+    version: version,
+    exportVersion: ref.read(appVersionProvider),
+  );
 
   @override
   BackupSourceConfig get uiConfig => const BackupSourceConfig(
@@ -58,9 +76,10 @@ class SettingsBackupSource implements BackupDataSource {
 
   @override
   Future<Either<ExportError, Response>> serveData(Request request) async {
-    return BackupUtils.encodeJson(
-      _currentSettings.toJson(),
-    ).map(BackupUtils.jsonResponse).run();
+    return BackupUtils.versionedJsonResponse(
+      converter,
+      [_currentSettings.toJson()],
+    ).run();
   }
 
   @override
@@ -69,9 +88,20 @@ class SettingsBackupSource implements BackupDataSource {
       () async {
         final dio = Dio(BaseOptions(baseUrl: serverUrl));
         final response = await dio.get('/settings');
-        final settings = Settings.fromJson(response.data);
-        await _updateSettings(settings);
-        return unit;
+
+        final exportData = await BackupUtils.decodeWithVersion(
+          converter,
+          response.data,
+        ).run();
+
+        return exportData.fold(
+          (error) => throw Exception(error.toString()),
+          (data) async {
+            final settings = Settings.fromJson(data.data.first);
+            await _updateSettings(settings);
+            return unit;
+          },
+        );
       },
       (e, st) => const ImportInvalidJson(),
     ).run();
@@ -81,7 +111,10 @@ class SettingsBackupSource implements BackupDataSource {
   Future<Either<ExportError, Unit>> exportToDirectory(
     String directoryPath,
   ) async {
-    return BackupUtils.encodeJson(_currentSettings.toJson())
+    return BackupUtils.encodeWithVersion(
+          converter,
+          [_currentSettings.toJson()],
+        )
         .flatMap(
           (json) => BackupUtils.writeFileToDirectory(
             directoryPath,
@@ -94,8 +127,9 @@ class SettingsBackupSource implements BackupDataSource {
 
   @override
   Future<Either<ExportError, Unit>> exportToFile(String filePath) async {
-    return BackupUtils.encodeJson(
-      _currentSettings.toJson(),
+    return BackupUtils.encodeWithVersion(
+      converter,
+      [_currentSettings.toJson()],
     ).flatMap((json) => BackupUtils.writeFile(filePath, json)).run();
   }
 
@@ -103,14 +137,12 @@ class SettingsBackupSource implements BackupDataSource {
   Future<Either<ImportError, Unit>> importFromFile(String path) async {
     return BackupUtils.readFile(path)
         .flatMap(
-          (content) => BackupUtils.decodeJson(
-            content,
-            Settings.fromJson,
-          ),
+          (content) => BackupUtils.decodeWithVersion(converter, content),
         )
         .flatMap(
-          (settings) => TaskEither.tryCatch(
+          (exportData) => TaskEither.tryCatch(
             () async {
+              final settings = Settings.fromJson(exportData.data.first);
               await _updateSettings(settings);
               return unit;
             },
@@ -122,7 +154,10 @@ class SettingsBackupSource implements BackupDataSource {
 
   @override
   Future<Either<ExportError, Unit>> exportToClipboard() async {
-    return BackupUtils.encodeJson(_currentSettings.toJson())
+    return BackupUtils.encodeWithVersion(
+          converter,
+          [_currentSettings.toJson()],
+        )
         .flatMap(
           (json) => TaskEither.tryCatch(
             () async {
@@ -150,11 +185,12 @@ class SettingsBackupSource implements BackupDataSource {
           (e, st) => const ImportErrorEmpty() as ImportError,
         )
         .flatMap(
-          (content) => BackupUtils.decodeJson(content, Settings.fromJson),
+          (content) => BackupUtils.decodeWithVersion(converter, content),
         )
         .flatMap(
-          (settings) => TaskEither.tryCatch(
+          (exportData) => TaskEither.tryCatch(
             () async {
+              final settings = Settings.fromJson(exportData.data.first);
               await _updateSettings(settings);
               return unit;
             },

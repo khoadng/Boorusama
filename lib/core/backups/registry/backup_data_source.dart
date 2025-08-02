@@ -6,6 +6,7 @@ import 'package:foundation/foundation.dart';
 import 'package:shelf/shelf.dart';
 
 // Project imports:
+import '../data_converter.dart';
 import '../types.dart';
 
 enum BackupActionType { export, import, exportClipboard, importClipboard }
@@ -40,7 +41,11 @@ abstract class BackupDataSource {
   String get id; // unique identifier (e.g., 'settings')
   String get displayName; // UI label (e.g., 'Settings')
   int get priority; // export/import order (0 = highest)
+  int get version; // data format version
   BackupSourceConfig get uiConfig;
+
+  // Converter for version metadata handling
+  DataBackupConverter get converter;
 
   Future<Either<ExportError, Response>> serveData(Request request);
   Future<Either<ImportError, Unit>> consumeData(String serverUrl);
@@ -59,4 +64,6 @@ abstract class BackupDataSource {
 
   Future<Either<ImportError, Unit>> importFromClipboard() =>
       Future.value(left(const ImportInvalidJson()));
+
+  Future<Either<ImportError, ExportDataPayload>> parseImportData(String data);
 }

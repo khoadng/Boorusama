@@ -10,6 +10,7 @@ import 'package:path/path.dart';
 import 'package:shelf/shelf.dart';
 
 // Project imports:
+import '../data_converter.dart';
 import '../types.dart';
 
 class BackupUtils {
@@ -39,6 +40,20 @@ class BackupUtils {
       return list.cast<Map<String, dynamic>>().map(factory).toList();
     },
     (e, st) => const ImportInvalidJson(),
+  );
+
+  static TaskEither<ExportError, String> encodeWithVersion(
+    DataBackupConverter converter,
+    List<dynamic> payload,
+  ) => TaskEither.fromEither(
+    converter.tryEncode(payload: payload),
+  );
+
+  static TaskEither<ImportError, ExportDataPayload> decodeWithVersion(
+    DataBackupConverter converter,
+    String data,
+  ) => TaskEither.fromEither(
+    converter.tryDecode(data: data),
   );
 
   static TaskEither<ExportError, Unit> writeFile(
@@ -164,4 +179,15 @@ class BackupUtils {
       headers: {'Content-Type': 'application/json'},
     );
   }
+
+  // Create version-wrapped JSON response
+  static TaskEither<ExportError, Response> versionedJsonResponse(
+    DataBackupConverter converter,
+    List<dynamic> payload,
+  ) => encodeWithVersion(converter, payload).map(
+    (json) => Response.ok(
+      json,
+      headers: {'Content-Type': 'application/json'},
+    ),
+  );
 }

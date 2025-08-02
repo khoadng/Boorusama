@@ -2,9 +2,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import '../sources/settings_backup_source.dart';
 import 'backup_data_source.dart';
 import 'backup_registry.dart';
-import '../sources/settings_backup_source.dart';
 
 final settingsBackupSourceProvider = Provider<BackupDataSource>((ref) {
   return SettingsBackupSource(ref);
