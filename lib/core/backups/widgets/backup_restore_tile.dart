@@ -116,7 +116,7 @@ class BackupSourceTile extends ConsumerWidget {
     );
   }
 
-  void _handleExportClipboard(
+  Future<void> _handleExportClipboard(
     BuildContext context,
     BackupDataSource source,
   ) async {
@@ -136,7 +136,7 @@ class BackupSourceTile extends ConsumerWidget {
     }
   }
 
-  void _handleImportClipboard(
+  Future<void> _handleImportClipboard(
     BuildContext context,
     BackupDataSource source,
   ) async {
