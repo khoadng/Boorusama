@@ -269,7 +269,6 @@ class PreviewPostActionToolbar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AdaptiveButtonRow.menu(
-      buttonWidth: 48,
       buttons: [
         ButtonData(
           widget: FavoritePostButton(

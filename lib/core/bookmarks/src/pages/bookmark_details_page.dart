@@ -155,7 +155,6 @@ class BookmarkPostActionToolbar extends ConsumerWidget {
         copy: false,
         builder: (context, buttons) {
           return AdaptiveButtonRow.menu(
-            buttonWidth: 52,
             maxVisibleButtons: 4,
             buttons: [
               if (config != null)

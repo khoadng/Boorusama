@@ -57,7 +57,6 @@ class SimplePostActionToolbar extends ConsumerWidget {
       configViewer: ref.watchConfigViewer,
       builder: (context, buttons) {
         return AdaptiveButtonRow.menu(
-          buttonWidth: 52,
           maxVisibleButtons: maxVisibleButtons,
           buttons: [
             if (!forceHideFav &&

@@ -66,7 +66,6 @@ class DanbooruPostActionToolbar extends ConsumerWidget {
         configViewer: ref.watchConfigViewer,
         builder: (context, buttons) {
           return AdaptiveButtonRow.menu(
-            buttonWidth: 48,
             maxVisibleButtons: hasLogin ? 7 : 4,
             buttons: [
               if (hasLogin)

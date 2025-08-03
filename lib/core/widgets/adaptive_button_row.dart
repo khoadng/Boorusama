@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:i18n/i18n.dart';
 
-const double _kMinButtonWidth = 80;
+const double _kMinButtonWidth = 40;
 const double _kMaxButtonWidth = 150;
 const double _kDefaultSpacing = 8;
 const double _kWrapSpacing = 4;

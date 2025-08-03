@@ -39,7 +39,6 @@ class HydrusPostActionToolbar extends ConsumerWidget {
       builder: (context, buttons) {
         return SliverToBoxAdapter(
           child: AdaptiveButtonRow.menu(
-            buttonWidth: 52,
             maxVisibleButtons: 4,
             buttons: [
               if (canFav)
