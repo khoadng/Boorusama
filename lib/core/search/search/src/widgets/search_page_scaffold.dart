@@ -89,7 +89,7 @@ class _SearchPageScaffoldState<T extends Post>
   late final SearchPageController _controller;
   late final SelectionModeController _searchModeController;
 
-  PostGridController<T>? _postController;
+  late final ValueNotifier<PostGridController<T>?> _postController;
 
   @override
   void initState() {
@@ -111,6 +111,8 @@ class _SearchPageScaffoldState<T extends Post>
       textMatchers: widget.textMatchers,
       tagsController: _tagsController,
     );
+
+    _postController = ValueNotifier(null);
   }
 
   @override
@@ -118,6 +120,7 @@ class _SearchPageScaffoldState<T extends Post>
     _tagsController.dispose();
     _controller.dispose();
     _searchModeController.dispose();
+    _postController.dispose();
     super.dispose();
   }
 
@@ -164,15 +167,18 @@ class _SearchPageScaffoldState<T extends Post>
       ),
       resultHeader: ValueListenableBuilder(
         valueListenable: _controller.tagString,
-        builder: (context, value, _) => _postController != null
-            ? ResultHeaderFromController(
-                controller: _postController!,
-                onRefresh: null,
-                hasCount:
-                    ref.watchConfigAuth.booruType.postCountMethod ==
-                    PostCountMethod.search,
-              )
-            : const SizedBox.shrink(),
+        builder: (context, value, _) => ValueListenableBuilder(
+          valueListenable: _postController,
+          builder: (context, postController, child) => postController != null
+              ? ResultHeaderFromController(
+                  controller: postController,
+                  onRefresh: null,
+                  hasCount:
+                      ref.watchConfigAuth.booruType.postCountMethod ==
+                      PostCountMethod.search,
+                )
+              : const SizedBox.shrink(),
+        ),
       ),
       searchRegion: DefaultSearchRegion(
         controller: _controller,
@@ -181,7 +187,7 @@ class _SearchPageScaffoldState<T extends Post>
         innerSearchButton: widget.innerSearchButtonBuilder?.call(_controller),
       ),
       onPostControllerCreated: (controller) {
-        _postController = controller;
+        _postController.value = controller;
       },
     );
   }
@@ -197,7 +203,7 @@ class DefaultSearchRegion extends ConsumerWidget {
   });
 
   final SearchPageController controller;
-  final PostGridController? postController;
+  final ValueNotifier<PostGridController?> postController;
   final String? initialQuery;
   final Widget? innerSearchButton;
 
@@ -208,21 +214,26 @@ class DefaultSearchRegion extends ConsumerWidget {
     );
     final searchBarPosition = ref.watch(searchBarPositionProvider);
 
-    return RawSearchRegion(
-      searchBarPosition: searchBarPosition,
-      autoFocusSearchBar: autoFocusSearchBar,
-      controller: controller,
-      tagList: SelectedTagListWithData(
-        controller: controller.tagsController,
-        config: ref.watchConfig,
-      ),
-      innerSearchButton:
-          innerSearchButton ??
-          DefaultInnerSearchButton(
-            controller: controller,
-            postController: postController,
+    return ValueListenableBuilder(
+      valueListenable: postController,
+      builder: (context, postControllerValue, _) {
+        return RawSearchRegion(
+          searchBarPosition: searchBarPosition,
+          autoFocusSearchBar: autoFocusSearchBar,
+          controller: controller,
+          tagList: SelectedTagListWithData(
+            controller: controller.tagsController,
+            config: ref.watchConfig,
           ),
-      initialQuery: initialQuery,
+          innerSearchButton:
+              innerSearchButton ??
+              DefaultInnerSearchButton(
+                controller: controller,
+                postController: postControllerValue,
+              ),
+          initialQuery: initialQuery,
+        );
+      },
     );
   }
 }
