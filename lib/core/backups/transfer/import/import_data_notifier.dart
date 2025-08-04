@@ -1,6 +1,3 @@
-// Dart imports:
-import 'dart:convert';
-
 // Package imports:
 import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
@@ -8,18 +5,12 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../blacklists/providers.dart';
-import '../../bookmarks/bookmark.dart';
-import '../../bookmarks/providers.dart';
-import '../../bulk_downloads/providers.dart';
-import '../../configs/config.dart';
-import '../../configs/manage/providers.dart';
-import '../../search/histories/providers.dart';
-import '../../settings/providers.dart';
-import '../../settings/settings.dart';
-import '../../tags/favorites/providers.dart';
-import '../db_transfer.dart';
-import '../servers/server_providers.dart';
+import '../../../configs/config.dart';
+import '../../../configs/manage/providers.dart';
+import '../../../settings/providers.dart';
+import '../../../settings/settings.dart';
+import '../../servers/server_providers.dart';
+import '../../sources/providers.dart';
 
 final importDataProvider = NotifierProvider.autoDispose
     .family<ImportDataNotifier, ImportDataState, String>(
@@ -257,12 +248,6 @@ class ImportDataNotifier
       ],
     );
 
-    final dio = Dio(
-      BaseOptions(
-        baseUrl: arg,
-      ),
-    );
-
     while (tasks.isNotEmpty) {
       final task = tasks.removeFirst();
 
@@ -280,135 +265,7 @@ class ImportDataNotifier
       await Future.delayed(const Duration(milliseconds: 250));
 
       try {
-        switch (task.id) {
-          case 'favorite_tags':
-            final res = await dio.get('/favorite_tags');
-
-            final tagString = res.data;
-
-            final favTagsNotifier = ref.read(favoriteTagsProvider.notifier);
-
-            await favTagsNotifier.importWithLabelsFromRawString(
-              text: tagString,
-            );
-
-          case 'booru_configs':
-            final res = await dio.get('/configs');
-
-            final jsonString = res.data;
-
-            await ref
-                .read(booruConfigProvider.notifier)
-                .importFromRawString(
-                  jsonString: jsonString,
-                  onWillImport: (data) async => true,
-                  onSuccess: (message, configs) {
-                    final config = configs.first;
-
-                    state = state.copyWith(
-                      reloadPayload: () => ReloadPayload(
-                        configs: configs,
-                        selectedConfig: config,
-                      ),
-                    );
-                  },
-                  onFailure: (message) => throw Exception(message),
-                );
-
-          case 'settings':
-            final res = await dio.get('/settings');
-
-            final jsonString = res.data;
-
-            final json = jsonDecode(jsonString) as Map<String, dynamic>;
-
-            final settings = Settings.fromJson(json);
-
-            await ref
-                .read(settingsNotifierProvider.notifier)
-                .updateSettings(
-                  settings,
-                );
-
-          case 'blacklisted_tags':
-            final res = await dio.get('/blacklisted_tags');
-
-            final jsonData = res.data;
-
-            final map = jsonDecode(jsonData) as Map<String, dynamic>;
-            final tagString = map['tags'] as String;
-
-            await ref
-                .read(globalBlacklistedTagsProvider.notifier)
-                .addTagString(
-                  tagString,
-                  onError: () {
-                    throw Exception('Failed to import blacklisted tags');
-                  },
-                );
-
-          case 'bookmarks':
-            final bookmarkRepository = await ref.read(
-              bookmarkRepoProvider.future,
-            );
-            final bookmarkNotifier = ref.read(bookmarkProvider.notifier);
-            final currentBookmarks = await bookmarkRepository
-                .getAllBookmarksOrEmpty(
-                  imageUrlResolver: (booruId) =>
-                      ref.read(bookmarkUrlResolverProvider(booruId)),
-                );
-
-            final res = await dio.get('/bookmarks');
-
-            final jsonString = res.data;
-
-            final json = jsonDecode(jsonString) as List<dynamic>;
-
-            final bookmarks = json
-                .map((bookmark) {
-                  final booruId = bookmark['booruId'] as int?;
-                  final resolver = ref.read(
-                    bookmarkUrlResolverProvider(booruId),
-                  );
-
-                  return Bookmark.fromJson(
-                    bookmark,
-                    imageUrlResolver: resolver,
-                  );
-                })
-                .toList()
-                // remove duplicates
-                .where(
-                  (bookmark) => !currentBookmarks.any(
-                    (e) => e.originalUrl == bookmark.originalUrl,
-                  ),
-                )
-                .toList();
-
-            await bookmarkRepository.addBookmarkWithBookmarks(bookmarks);
-
-            await bookmarkNotifier.getAllBookmarks();
-
-          case 'search_histories':
-            final dbPath = await getSearchHistoryDbPath();
-            await downloadAndReplaceDb(
-              dio: dio,
-              url: '/search_histories',
-              filePath: dbPath,
-            );
-
-            ref.invalidate(searchHistoryRepoProvider);
-
-          case 'downloads':
-            final dbPath = await getDownloadsDbPath();
-            await downloadAndReplaceDb(
-              dio: dio,
-              url: '/downloads',
-              filePath: dbPath,
-            );
-
-            ref.invalidate(internalDownloadRepositoryProvider);
-        }
+        await _handleTask(task, arg);
 
         state = state.copyWith(
           tasks: [
@@ -431,6 +288,40 @@ class ImportDataNotifier
         );
       }
     }
+
+    final importedTaskIds = selectedTasks.map((t) => t.id).toSet();
+    if (importedTaskIds.contains('profiles')) {
+      final configRepo = ref.read(booruConfigRepoProvider);
+      final configs = await configRepo.getAll();
+
+      if (configs.isNotEmpty) {
+        state = state.copyWith(
+          reloadPayload: () => ReloadPayload(
+            configs: configs,
+            selectedConfig: configs.first,
+            settings: ref.read(settingsProvider),
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _handleTask(ImportTask task, String serverUrl) async {
+    final registry = ref.read(backupRegistryProvider);
+    final source = registry.getSource(task.id);
+
+    if (source == null) {
+      throw Exception('Unknown backup source: ${task.id}');
+    }
+
+    final preparation = await source.capabilities.server.prepareImport(
+      serverUrl,
+      null, // No UI context for server transfers
+    );
+
+    // For server transfers, we accept all version checks automatically
+    // since the transfer was already initiated by the user
+    await preparation.executeImport();
   }
 
   void toggleTask(String id) {

@@ -2,21 +2,40 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
+import 'package:version/version.dart';
 
 // Project imports:
-import '../../../../configs/export_import/types.dart';
+import '../../../foundation/info/package_info.dart';
 
-class ImportBooruConfigsAlertDialog extends StatelessWidget {
-  const ImportBooruConfigsAlertDialog({
-    required this.data,
+Future<bool?> showBackwardImportAlertDialog({
+  required BuildContext context,
+  required Version exportVersion,
+}) {
+  return showDialog<bool>(
+    routeSettings: const RouteSettings(name: 'backward_import'),
+    context: context,
+    builder: (context) {
+      return BackwardImportAlertDialog(
+        exportVersion: exportVersion,
+      );
+    },
+  );
+}
+
+class BackwardImportAlertDialog extends ConsumerWidget {
+  const BackwardImportAlertDialog({
+    required this.exportVersion,
     super.key,
   });
 
-  final BooruConfigExportData data;
+  final Version exportVersion;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final appVersion = ref.watch(appVersionProvider);
+
     return Dialog(
       child: Container(
         constraints: const BoxConstraints(maxWidth: 650),
@@ -27,15 +46,52 @@ class ImportBooruConfigsAlertDialog extends StatelessWidget {
           children: [
             const SizedBox(height: 20),
             Text(
-              'Importing ${data.data.length} profiles'.hc,
+              'Importing from an older version detected'.hc,
               style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w700,
               ),
             ),
+            const SizedBox(height: 4),
+            RichText(
+              text: TextSpan(
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.black,
+                ),
+                children: [
+                  TextSpan(text: 'Current version: '.hc),
+                  TextSpan(
+                    text: appVersion?.toString() ?? 'Unknown',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            RichText(
+              text: TextSpan(
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.black,
+                ),
+                children: [
+                  const TextSpan(text: 'Exported version: '),
+                  TextSpan(
+                    text: exportVersion.toString(),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+            ),
             const SizedBox(height: 20),
             Text(
-              'This will override ALL your current profiles, are you sure?'.hc,
+              'Backward import might not work as expected, are you sure?'.hc,
               style: const TextStyle(
                 fontWeight: FontWeight.w400,
                 fontSize: 14,
@@ -54,7 +110,7 @@ class ImportBooruConfigsAlertDialog extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 14),
                 child: Text(
-                  'Sure'.hc,
+                  'Sure',
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.onErrorContainer,
                     fontWeight: FontWeight.w600,
@@ -70,7 +126,7 @@ class ImportBooruConfigsAlertDialog extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 14),
                 child: Text(
-                  context.t.generic.action.cancel,
+                  'Cancel',
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     color: Theme.of(context).colorScheme.onSurface,

@@ -15,7 +15,6 @@ import '../../../../settings/providers.dart';
 import '../../../config/data.dart';
 import '../../../config/types.dart';
 import '../../../create/create.dart';
-import '../../../export_import/providers.dart';
 import '../../../ref.dart';
 import 'current_booru_providers.dart';
 
@@ -33,8 +32,7 @@ final booruConfigProvider =
       name: 'booruConfigProvider',
     );
 
-class BooruConfigNotifier extends Notifier<List<BooruConfig>>
-    with BooruConfigExportImportMixin {
+class BooruConfigNotifier extends Notifier<List<BooruConfig>> {
   BooruConfigNotifier({
     required this.initialConfigs,
   });

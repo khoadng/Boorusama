@@ -35,6 +35,30 @@ class HiveBlacklistedTagRepository implements GlobalBlacklistedTagRepository {
   }
 
   @override
+  Future<List<BlacklistedTag>> addTags(List<BlacklistedTag> tags) async {
+    final addedTags = <BlacklistedTag>[];
+    final now = DateTime.now();
+
+    for (final tag in tags) {
+      final existingTag = _box.values.firstWhereOrNull(
+        (e) => e.name == tag.name,
+      );
+      if (existingTag != null) continue;
+
+      final obj = BlacklistedTagHiveObject(
+        name: tag.name,
+        isActive: tag.isActive,
+        createdDate: now,
+        updatedDate: now,
+      );
+      final index = await _box.add(obj);
+      addedTags.add(convertFromHiveObject(obj).copyWith(id: index));
+    }
+
+    return addedTags;
+  }
+
+  @override
   Future<void> removeTag(int tagId) async {
     await _box.delete(tagId);
   }

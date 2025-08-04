@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
-import '../../../foundation/toast.dart';
-import '../../widgets/widgets.dart';
+import '../../../../foundation/toast.dart';
+import '../../../widgets/widgets.dart';
 
 class ManualDeviceInputDialog extends StatefulWidget {
   const ManualDeviceInputDialog({

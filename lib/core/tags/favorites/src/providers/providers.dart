@@ -3,13 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 
 // Project imports:
-import '../../../../../foundation/info/device_info.dart';
-import '../../../../backups/data_io_handler.dart';
-import '../../../../backups/providers.dart';
 import '../data/favorite_tag_hive_object.dart';
 import '../data/favorite_tag_repository_hive.dart';
 import '../types/favorite_tag.dart';
-import 'favorite_tag_io_handler.dart';
 
 final favoriteTagRepoProvider = FutureProvider<FavoriteTagRepository>((
   ref,
@@ -33,15 +29,3 @@ final favoriteTagRepoProvider = FutureProvider<FavoriteTagRepository>((
 
   return favoriteTagsRepo;
 });
-
-final favoriteTagsIOHandlerProvider = Provider<FavoriteTagsIOHandler>(
-  (ref) => FavoriteTagsIOHandler(
-    handler: DataIOHandler.file(
-      converter: ref.watch(
-        defaultBackupConverterProvider(1),
-      ),
-      deviceInfo: ref.watch(deviceInfoProvider),
-      prefixName: 'boorusama_favorite_tags',
-    ),
-  ),
-);

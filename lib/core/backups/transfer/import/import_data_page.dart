@@ -8,14 +8,14 @@ import 'package:i18n/i18n.dart';
 import 'package:version/version.dart';
 
 // Project imports:
-import '../../../foundation/info/package_info.dart';
-import '../../../foundation/toast.dart';
-import '../../../foundation/version.dart';
-import '../../theme/app_theme.dart';
-import '../servers/discovery_client.dart';
+import '../../../../foundation/info/package_info.dart';
+import '../../../../foundation/toast.dart';
+import '../../../../foundation/version.dart';
+import '../../../theme/app_theme.dart';
+import '../../preparation/version_mismatch_alert_dialog.dart';
+import '../../servers/discovery_client.dart';
 import 'manual_device_input_dialog.dart';
 import 'transfer_data_dialog.dart';
-import 'version_mismatch_alert_dialog.dart';
 
 class ImportDataPage extends ConsumerStatefulWidget {
   const ImportDataPage({super.key});

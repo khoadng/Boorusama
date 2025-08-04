@@ -6,10 +6,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
-import '../../settings/providers.dart';
-import '../../settings/settings.dart';
-import '../../theme.dart';
-import '../../widgets/widgets.dart';
+import '../../../settings/providers.dart';
+import '../../../settings/settings.dart';
+import '../../../theme.dart';
+import '../../../widgets/widgets.dart';
 import 'import_data_notifier.dart';
 
 class TransferDataDialog extends ConsumerWidget {

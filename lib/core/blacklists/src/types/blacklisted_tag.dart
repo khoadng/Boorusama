@@ -9,6 +9,15 @@ class BlacklistedTag extends Equatable {
     required this.createdDate,
     required this.updatedDate,
   });
+
+  factory BlacklistedTag.fromJson(Map<String, dynamic> json) => BlacklistedTag(
+    id: json['id'] as int,
+    name: json['name'] as String,
+    isActive: json['isActive'] as bool,
+    createdDate: DateTime.parse(json['createdDate'] as String),
+    updatedDate: DateTime.parse(json['updatedDate'] as String),
+  );
+
   final int id;
   final String name;
   final bool isActive;
@@ -33,6 +42,14 @@ class BlacklistedTag extends Equatable {
       updatedDate: updatedDate ?? this.updatedDate,
     );
   }
+
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'name': name,
+    'isActive': isActive,
+    'createdDate': createdDate.toIso8601String(),
+    'updatedDate': updatedDate.toIso8601String(),
+  };
 }
 
 List<String>? sanitizeBlacklistTagString(String tagString) {
