@@ -2,11 +2,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:equatable/equatable.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class BooruSegmentedButton<T> extends StatefulWidget {
+// Project imports:
+import '../settings/providers.dart';
+import '../settings/settings.dart';
+
+class BooruSegmentedButton<T> extends ConsumerStatefulWidget {
   const BooruSegmentedButton({
     required this.segments,
     required this.initialValue,
@@ -29,15 +35,18 @@ class BooruSegmentedButton<T> extends StatefulWidget {
   final TextStyle? unselectedTextStyle;
 
   @override
-  State<BooruSegmentedButton<T>> createState() => _BooruSegmentedButtonState();
+  ConsumerState<BooruSegmentedButton<T>> createState() =>
+      _BooruSegmentedButtonState();
 }
 
-class _BooruSegmentedButtonState<T> extends State<BooruSegmentedButton<T>> {
+class _BooruSegmentedButtonState<T>
+    extends ConsumerState<BooruSegmentedButton<T>> {
   late var selected = widget.initialValue;
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final hapticLevel = ref.watch(hapticFeedbackLevelProvider);
 
     return CustomSlidingSegmentedControl(
       initialValue: selected,
@@ -71,6 +80,9 @@ class _BooruSegmentedButtonState<T> extends State<BooruSegmentedButton<T>> {
       ),
       onValueChanged: (v) {
         setState(() {
+          if (hapticLevel.isFull) {
+            HapticFeedback.selectionClick();
+          }
           selected = v;
           widget.onChanged(v);
         });

@@ -19,6 +19,7 @@ import '../../../posts/listing/providers.dart';
 import '../../../posts/post/post.dart';
 import '../../../posts/sources/source.dart';
 import '../../../widgets/adaptive_button_row.dart';
+import '../../../widgets/booru_menu_button_row.dart';
 import '../data/bookmark_convert.dart';
 import '../providers/bookmark_provider.dart';
 import '../widgets/bookmark_tag_tiles.dart';
@@ -154,7 +155,7 @@ class BookmarkPostActionToolbar extends ConsumerWidget {
         configViewer: config?.viewer,
         copy: false,
         builder: (context, buttons) {
-          return AdaptiveButtonRow.menu(
+          return BooruMenuButtonRow(
             maxVisibleButtons: 4,
             buttons: [
               if (config != null)

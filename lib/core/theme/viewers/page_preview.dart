@@ -21,6 +21,7 @@ import '../../tags/categories/tag_category.dart';
 import '../../tags/tag/colors.dart';
 import '../../tags/tag/tag.dart';
 import '../../widgets/adaptive_button_row.dart';
+import '../../widgets/booru_menu_button_row.dart';
 import '../../widgets/widgets.dart';
 import '../providers.dart';
 import '../theme_configs.dart';
@@ -268,7 +269,7 @@ class PreviewPostActionToolbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AdaptiveButtonRow.menu(
+    return BooruMenuButtonRow(
       buttons: [
         ButtonData(
           widget: FavoritePostButton(

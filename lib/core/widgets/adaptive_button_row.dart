@@ -80,6 +80,9 @@ class AdaptiveButtonRow extends StatefulWidget {
     this.alignment,
     this.maxVisibleButtons,
     this.padding,
+    this.onOpened,
+    this.onClosed,
+    this.onMenuTap,
     super.key,
   });
 
@@ -93,6 +96,9 @@ class AdaptiveButtonRow extends StatefulWidget {
     int? maxVisibleButtons,
     MainAxisAlignment? alignment,
     EdgeInsetsGeometry? padding,
+    VoidCallback? onOpened,
+    VoidCallback? onClosed,
+    VoidCallback? onMenuTap,
     Key? key,
   }) => AdaptiveButtonRow._(
     buttons: buttons,
@@ -105,6 +111,9 @@ class AdaptiveButtonRow extends StatefulWidget {
     maxVisibleButtons: maxVisibleButtons,
     alignment: alignment,
     padding: padding,
+    onOpened: onOpened,
+    onClosed: onClosed,
+    onMenuTap: onMenuTap,
     key: key,
   );
 
@@ -162,6 +171,11 @@ class AdaptiveButtonRow extends StatefulWidget {
   final Widget? overflowIcon;
   final Widget Function(VoidCallback onPressed)? overflowButtonBuilder;
   final ValueChanged<int>? onOverflow;
+
+  // Menu callbacks
+  final VoidCallback? onOpened;
+  final VoidCallback? onClosed;
+  final VoidCallback? onMenuTap;
 
   // Scroll-specific
   final ScrollController? scrollController;
@@ -420,6 +434,8 @@ class _AdaptiveButtonRowState extends State<AdaptiveButtonRow> {
           ),
         ),
       ),
+      onOpen: widget.onOpened,
+      onClose: widget.onClosed,
       builder: (context, controller, child) =>
           widget.overflowButtonBuilder?.call(() {
             controller.isOpen ? controller.close() : controller.open();
@@ -436,6 +452,7 @@ class _AdaptiveButtonRowState extends State<AdaptiveButtonRow> {
           .map(
             (entry) => MenuItemButton(
               onPressed: () {
+                widget.onMenuTap?.call();
                 final globalIndex = entry.key + visibleCount;
                 if (entry.value.onTap != null) {
                   entry.value.onTap!();

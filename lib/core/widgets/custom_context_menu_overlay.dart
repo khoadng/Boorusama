@@ -1,5 +1,6 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:context_menus/context_menus.dart';
@@ -44,7 +45,7 @@ class CustomContextMenuOverlay extends ConsumerWidget {
   }
 }
 
-class ContextMenuTile extends StatefulWidget {
+class ContextMenuTile extends ConsumerStatefulWidget {
   const ContextMenuTile({
     required this.config,
     super.key,
@@ -53,14 +54,16 @@ class ContextMenuTile extends StatefulWidget {
   final ContextMenuButtonConfig config;
 
   @override
-  State<ContextMenuTile> createState() => _ContextMenuTileState();
+  ConsumerState<ContextMenuTile> createState() => _ContextMenuTileState();
 }
 
-class _ContextMenuTileState extends State<ContextMenuTile> {
+class _ContextMenuTileState extends ConsumerState<ContextMenuTile> {
   var isMouseOver = false;
 
   @override
   Widget build(BuildContext context) {
+    final hapticLevel = ref.watch(hapticFeedbackLevelProvider);
+
     return MouseRegion(
       onEnter: (_) => setState(() => isMouseOver = true),
       onExit: (_) => setState(() => isMouseOver = false),
@@ -70,7 +73,17 @@ class _ContextMenuTileState extends State<ContextMenuTile> {
           hoverColor: widget.config.labelStyle == null
               ? Theme.of(context).colorScheme.primary
               : widget.config.labelStyle?.color,
-          onTap: widget.config.onPressed,
+          onTap: () {
+            final callback = widget.config.onPressed;
+
+            if (hapticLevel.isFull) {
+              HapticFeedback.selectionClick();
+            }
+
+            if (callback != null) {
+              callback();
+            }
+          },
           title: isMouseOver
               ? Text(
                   widget.config.label,

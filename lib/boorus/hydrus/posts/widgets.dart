@@ -10,6 +10,7 @@ import '../../../core/configs/config/providers.dart';
 import '../../../core/posts/details/details.dart';
 import '../../../core/posts/details_parts/widgets.dart';
 import '../../../core/widgets/adaptive_button_row.dart';
+import '../../../core/widgets/booru_menu_button_row.dart';
 import '../favorites/providers.dart';
 import '../favorites/widgets.dart';
 import 'types.dart';
@@ -38,7 +39,7 @@ class HydrusPostActionToolbar extends ConsumerWidget {
       configViewer: ref.watchConfigViewer,
       builder: (context, buttons) {
         return SliverToBoxAdapter(
-          child: AdaptiveButtonRow.menu(
+          child: BooruMenuButtonRow(
             maxVisibleButtons: 4,
             buttons: [
               if (canFav)

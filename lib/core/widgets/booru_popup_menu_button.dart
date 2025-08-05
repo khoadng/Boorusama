@@ -1,14 +1,18 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 // Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../../foundation/display.dart';
+import '../settings/providers.dart';
+import '../settings/settings.dart';
 import 'conditional_parent_widget.dart';
 
-class BooruPopupMenuButton<T> extends StatelessWidget {
+class BooruPopupMenuButton<T> extends ConsumerWidget {
   const BooruPopupMenuButton({
     required this.itemBuilder,
     super.key,
@@ -24,7 +28,9 @@ class BooruPopupMenuButton<T> extends StatelessWidget {
   final Offset? offset;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final hapticLevel = ref.watch(hapticFeedbackLevelProvider);
+
     return PopupMenuButton(
       offset: offset ?? Offset.zero,
       constraints: kPreferredLayout.isDesktop
@@ -43,6 +49,11 @@ class BooruPopupMenuButton<T> extends StatelessWidget {
             ),
       iconColor: iconColor,
       padding: EdgeInsets.zero,
+      onOpened: () {
+        if (hapticLevel.isFull) {
+          HapticFeedback.selectionClick();
+        }
+      },
       itemBuilder: (context) => [
         for (final item in itemBuilder.entries)
           PopupMenuItem(
@@ -60,7 +71,15 @@ class BooruPopupMenuButton<T> extends StatelessWidget {
             ),
           ),
       ],
-      onSelected: onSelected,
+      onSelected: (item) {
+        if (hapticLevel.isFull) {
+          HapticFeedback.selectionClick();
+        }
+
+        if (onSelected case final callback?) {
+          callback(item);
+        }
+      },
     );
   }
 }

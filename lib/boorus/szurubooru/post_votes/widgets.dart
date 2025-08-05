@@ -16,6 +16,7 @@ import '../../../core/posts/votes/vote.dart';
 import '../../../core/posts/votes/widgets.dart';
 import '../../../core/router.dart';
 import '../../../core/widgets/adaptive_button_row.dart';
+import '../../../core/widgets/booru_menu_button_row.dart';
 import '../posts/types.dart';
 import 'providers.dart';
 
@@ -48,7 +49,7 @@ class SzurubooruPostActionToolbar extends ConsumerWidget {
         config: config,
         configViewer: ref.watchConfigViewer,
         builder: (context, buttons) {
-          return AdaptiveButtonRow.menu(
+          return BooruMenuButtonRow(
             maxVisibleButtons: 5,
             buttons: [
               if (config.hasLoginDetails())

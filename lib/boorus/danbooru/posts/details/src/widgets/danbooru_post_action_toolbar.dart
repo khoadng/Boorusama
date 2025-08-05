@@ -16,6 +16,7 @@ import '../../../../../../core/posts/votes/vote.dart';
 import '../../../../../../core/posts/votes/widgets.dart';
 import '../../../../../../core/router.dart';
 import '../../../../../../core/widgets/adaptive_button_row.dart';
+import '../../../../../../core/widgets/booru_menu_button_row.dart';
 import '../../../../versions/routes.dart';
 import '../../../favgroups/favgroups/routes.dart';
 import '../../../post/post.dart';
@@ -65,7 +66,7 @@ class DanbooruPostActionToolbar extends ConsumerWidget {
         config: config,
         configViewer: ref.watchConfigViewer,
         builder: (context, buttons) {
-          return AdaptiveButtonRow.menu(
+          return BooruMenuButtonRow(
             maxVisibleButtons: hasLogin ? 7 : 4,
             buttons: [
               if (hasLogin)

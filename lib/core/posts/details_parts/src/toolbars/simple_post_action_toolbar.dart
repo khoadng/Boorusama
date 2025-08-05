@@ -10,6 +10,7 @@ import '../../../../boorus/engine/providers.dart';
 import '../../../../configs/ref.dart';
 import '../../../../router.dart';
 import '../../../../widgets/adaptive_button_row.dart';
+import '../../../../widgets/booru_menu_button_row.dart';
 import '../../../details/details.dart';
 import '../../../favorites/providers.dart';
 import '../../../favorites/widgets.dart';
@@ -56,7 +57,7 @@ class SimplePostActionToolbar extends ConsumerWidget {
       config: config,
       configViewer: ref.watchConfigViewer,
       builder: (context, buttons) {
-        return AdaptiveButtonRow.menu(
+        return BooruMenuButtonRow(
           maxVisibleButtons: maxVisibleButtons,
           buttons: [
             if (!forceHideFav &&
