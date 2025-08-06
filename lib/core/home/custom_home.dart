@@ -82,7 +82,7 @@ class CustomHomeDataBuilder extends Equatable {
 
 final kDefaultAltHomeView = {
   const CustomHomeViewKey.defaultValue(): CustomHomeDataBuilder(
-    displayName: (context) => 'Default'.hc,
+    displayName: (context) => context.t.generic.kDefault,
     builder: null,
   ),
   const CustomHomeViewKey('search'): CustomHomeDataBuilder(

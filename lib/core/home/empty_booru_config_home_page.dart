@@ -62,11 +62,11 @@ class _EmptyBooruConfigHomePageState
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'No profiles available'.hc,
+                      context.t.booru.no_profiles_available,
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
                     Text(
-                      'Add a profile to continue'.hc,
+                      context.t.booru.add_profile_to_continue,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         color: Theme.of(context).colorScheme.hintColor,
                       ),
@@ -74,7 +74,7 @@ class _EmptyBooruConfigHomePageState
                     const SizedBox(height: 16),
                     FilledButton(
                       onPressed: () => goToAddBooruConfigPage(ref),
-                      child: Text('Add Profile'.hc),
+                      child: Text(context.t.booru.add_profile),
                     ),
                   ],
                 ),

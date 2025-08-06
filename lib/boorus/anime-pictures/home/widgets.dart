@@ -44,12 +44,12 @@ class _AnimePicturesHomePageState extends ConsumerState<AnimePicturesHomePage> {
             Symbols.explore,
             fill: 1,
           ),
-          title: Text('Top'.hc),
+          title: Text(context.t.explore.top),
           onTap: () => Navigator.of(context).push(
             CupertinoPageRoute(
               builder: (_) => Scaffold(
                 appBar: AppBar(
-                  title: Text('Top'.hc),
+                  title: Text(context.t.explore.top),
                 ),
                 body: const CustomContextMenuOverlay(
                   child: AnimePicturesTopPage(),
@@ -76,7 +76,7 @@ class _AnimePicturesHomePageState extends ConsumerState<AnimePicturesHomePage> {
           constraints: constraints,
           selectedIcon: Symbols.explore,
           icon: Symbols.explore,
-          title: 'Top',
+          title: context.t.explore.top,
         ),
         if (favoritePageBuilder != null && config.passHash != null)
           HomeNavigationTile(
@@ -84,7 +84,7 @@ class _AnimePicturesHomePageState extends ConsumerState<AnimePicturesHomePage> {
             constraints: constraints,
             selectedIcon: Symbols.favorite,
             icon: Symbols.favorite,
-            title: 'Favorites',
+            title: context.t.profile.favorites,
           ),
       ],
       desktopViews: [

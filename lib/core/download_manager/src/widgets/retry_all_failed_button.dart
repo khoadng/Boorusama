@@ -59,7 +59,7 @@ class RetryAllFailedButton extends ConsumerWidget {
                   );
                 }
               },
-              child: Text(DownloadTranslations.retryAllFailed),
+              child: Text(DownloadTranslations.retryAllFailed(context)),
             ),
           )
         : const SizedBox.shrink();

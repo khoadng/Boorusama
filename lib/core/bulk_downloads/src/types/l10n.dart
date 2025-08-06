@@ -7,9 +7,9 @@ import 'package:i18n/i18n.dart';
 class DownloadTranslations {
   const DownloadTranslations._();
   static String title(BuildContext context) => context.t.sideMenu.bulk_download;
-  static final String create = 'New download'.hc;
-  static final String createShort = 'Create'.hc;
-  static final String empty = 'No active download sessions'.hc;
+  static final String create = 'New download'.hc; // TODO: Replace with context.t.hardcoded_strings.download_manager.new_download
+  static final String createShort = 'Create'.hc; // TODO: Replace with context.t.hardcoded_strings.actions.create
+  static final String empty = 'No active download sessions'.hc; // TODO: Replace with context.t.hardcoded_strings.download_manager.no_active_sessions
   static final String delete = 'Delete'.hc;
   static final String copyPath = 'Copy path'.hc;
   static final String createdStatus = 'Created'.hc;

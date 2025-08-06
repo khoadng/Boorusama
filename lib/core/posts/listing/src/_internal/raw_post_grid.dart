@@ -232,8 +232,8 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
                     builder: (_, _) {
                       final selected = _selectionModeController.selection;
                       return selected.isEmpty
-                          ? Text('Select items'.hc)
-                          : Text('${selected.length} Items selected'.hc);
+                          ? Text(context.t.download.select_items)
+                          : Text('${selected.length} ${context.t.download.items_selected}');
                     },
                   ),
                 ),

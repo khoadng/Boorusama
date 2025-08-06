@@ -203,6 +203,7 @@ class _AdaptiveButtonRowState extends State<AdaptiveButtonRow> {
   }
 
   Widget _buildRowWithOptionalOverflow(
+    BuildContext context,
     List<ButtonData> mainButtons,
     List<ButtonData> overflowButtons,
     double buttonWidth,
@@ -215,7 +216,7 @@ class _AdaptiveButtonRowState extends State<AdaptiveButtonRow> {
       ...mainButtons,
       ButtonData(
         widget: _buildOverflowButton(overflowButtons, mainButtons.length),
-        title: 'More'.hc,
+        title: context.t.generic.action.more,
       ),
     ], buttonWidth);
   }
@@ -305,6 +306,7 @@ class _AdaptiveButtonRowState extends State<AdaptiveButtonRow> {
         }
 
         return _buildRowWithOptionalOverflow(
+          context,
           visibleButtons,
           overflowButtons,
           effectiveButtonWidth,

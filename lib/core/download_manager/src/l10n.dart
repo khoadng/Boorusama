@@ -10,11 +10,11 @@ import 'types/download_filter.dart';
 class DownloadTranslations {
   const DownloadTranslations._();
 
-  static final String downloadManagerTitle = 'Downloads'.hc;
+  static String downloadManagerTitle(BuildContext context) => context.t.download.downloads;
 
-  static final String retryAllFailed = 'Retry all'.hc;
+  static String retryAllFailed(BuildContext context) => context.t.download.retry_all;
 
-  static final String downloadNothingToClear = 'Nothing to clear'.hc;
+  static String downloadNothingToClear(BuildContext context) => context.t.download.nothing_to_clear;
 }
 
 extension DownloadFilterLocalize on DownloadFilter? {
@@ -28,13 +28,13 @@ extension DownloadFilterLocalize on DownloadFilter? {
     null => context.t.download.status.unknown,
   };
 
-  String emptyLocalize() => switch (this) {
-    DownloadFilter.pending => 'No pending downloads'.hc,
-    DownloadFilter.paused => 'No paused downloads'.hc,
-    DownloadFilter.inProgress => 'No downloads in progress'.hc,
-    DownloadFilter.completed => 'No completed downloads'.hc,
-    DownloadFilter.canceled => 'No canceled downloads'.hc,
-    DownloadFilter.failed => 'No failed downloads'.hc,
-    null => 'No downloads'.hc,
+  String emptyLocalize(BuildContext context) => switch (this) {
+    DownloadFilter.pending => context.t.download.empty_states.no_pending_downloads,
+    DownloadFilter.paused => context.t.download.empty_states.no_paused_downloads,
+    DownloadFilter.inProgress => context.t.download.empty_states.no_downloads_in_progress,
+    DownloadFilter.completed => context.t.download.empty_states.no_completed_downloads,
+    DownloadFilter.canceled => context.t.download.empty_states.no_canceled_downloads,
+    DownloadFilter.failed => context.t.download.empty_states.no_failed_downloads,
+    null => context.t.download.empty_states.no_downloads,
   };
 }

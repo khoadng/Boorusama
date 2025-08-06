@@ -292,13 +292,13 @@ class EditBlacklistActionSheet extends ConsumerWidget {
                           },
                           title: switch (e) {
                             BlacklistSource.global => Text(
-                              'Edit Global Blacklist'.hc,
+                              context.t.blacklisted_tags.edit_global_blacklist,
                             ),
                             BlacklistSource.booruSpecific => Text(
-                              "Edit Booru's Specific Blacklist".hc,
+                              context.t.blacklisted_tags.edit_booru_specific_blacklist,
                             ),
                             BlacklistSource.config => Text(
-                              'Edit Profile Blacklist'.hc,
+                              context.t.blacklisted_tags.edit_profile_blacklist,
                             ),
                           },
                         ),
@@ -429,7 +429,7 @@ class PostGridActionSheet extends ConsumerWidget {
                 Navigator.of(context).pop();
                 openAppearancePage(ref);
               },
-              child: Text('More'.hc),
+              child: Text(context.t.generic.action.more),
             ),
           ),
         ],

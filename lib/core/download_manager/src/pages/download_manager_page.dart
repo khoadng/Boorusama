@@ -117,7 +117,7 @@ class _DownloadManagerPageState extends ConsumerState<DownloadManagerPage> {
 
             return !isSelectionMode
                 ? AppBar(
-                    title: Text(DownloadTranslations.downloadManagerTitle),
+                    title: Text(DownloadTranslations.downloadManagerTitle(context)),
                     actions: [
                       if (isDefaultGroup)
                         IconButton(
@@ -142,7 +142,7 @@ class _DownloadManagerPageState extends ConsumerState<DownloadManagerPage> {
                                         context: context,
                                         content: Text(
                                           DownloadTranslations
-                                              .downloadNothingToClear,
+                                              .downloadNothingToClear(context),
                                         ),
                                         duration: const Duration(seconds: 1),
                                       );
@@ -152,7 +152,7 @@ class _DownloadManagerPageState extends ConsumerState<DownloadManagerPage> {
                         },
                         itemBuilder: {
                           'select': Text(context.t.generic.action.select),
-                          'clear': Text('Clear'.hc),
+                          'clear': Text(context.t.generic.action.clear),
                         },
                       ),
                     ],
@@ -163,9 +163,9 @@ class _DownloadManagerPageState extends ConsumerState<DownloadManagerPage> {
                         final selectedItems = controller.selection;
 
                         return selectedItems.isEmpty
-                            ? Text('Select items'.hc)
+                            ? Text(context.t.download.select_items)
                             : Text(
-                                '${selectedItems.length} Items selected'.hc,
+                                '${selectedItems.length} ${context.t.download.items_selected}',
                               );
                       },
                     ),
@@ -235,7 +235,7 @@ class _DownloadManagerPageState extends ConsumerState<DownloadManagerPage> {
                                         .watch(
                                           downloadFilterProvider(widget.filter),
                                         )
-                                        .emptyLocalize(),
+                                        .emptyLocalize(context),
                                   ),
                                 ),
                                 const Spacer(),

@@ -34,7 +34,7 @@ class UnsavedAlertDialog extends StatelessWidget {
           children: [
             const SizedBox(height: 20),
             Text(
-              'You have unsaved changes'.hc,
+              context.t.booru.unsaved_changes,
               style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w700,
@@ -63,7 +63,7 @@ class UnsavedAlertDialog extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 14),
                 child: Text(
-                  'Save',
+                  context.t.generic.action.save,
                   style: TextStyle(
                     color: colorScheme.onPrimaryContainer,
                     fontWeight: FontWeight.w600,

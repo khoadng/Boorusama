@@ -77,10 +77,10 @@ class UnknownBooruSubmitButton extends ConsumerWidget {
                         : null,
                     child: value
                         ? Text(context.t.booru.config_booru_confirm)
-                        : Text('Verify'.hc),
+                        : Text(context.t.generic.action.verify),
                   ),
                 )
-              : _buildVerifyButton(isValid, ref, engine, url, auth),
+              : _buildVerifyButton(context, isValid, ref, engine, url, auth),
           loading: () => CreateBooruSubmitButton(
             fill: true,
             backgroundColor: Theme.of(context).colorScheme.hintColor,
@@ -94,6 +94,7 @@ class UnknownBooruSubmitButton extends ConsumerWidget {
             ),
           ),
           error: (err, _) => _buildVerifyButton(
+            context,
             isValid,
             ref,
             engine,
@@ -105,6 +106,7 @@ class UnknownBooruSubmitButton extends ConsumerWidget {
   }
 
   Widget _buildVerifyButton(
+    BuildContext context,
     bool isValid,
     WidgetRef ref,
     BooruType? engine,
@@ -139,7 +141,7 @@ class UnknownBooruSubmitButton extends ConsumerWidget {
               });
             }
           : null,
-      child: Text('Verify'.hc),
+      child: Text(context.t.generic.action.verify),
     );
   }
 }

@@ -92,7 +92,7 @@ class UpdateBooruConfigButton extends ConsumerWidget {
                 Navigator.of(context).pop();
               }
             : null,
-        child: Text('Save'.hc),
+        child: Text(context.t.generic.action.save),
       ),
     );
   }

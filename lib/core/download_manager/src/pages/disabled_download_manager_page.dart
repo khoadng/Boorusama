@@ -18,7 +18,7 @@ class DisabledDownloadManagerPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Downloads'.hc),
+        title: Text(context.t.download.downloads),
       ),
       body: SafeArea(
         child: Padding(
@@ -28,7 +28,7 @@ class DisabledDownloadManagerPage extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                'Download manager is disabled'.hc,
+                context.t.download.download_manager_disabled,
                 style: Theme.of(context).textTheme.titleLarge,
               ),
               const SizedBox(height: 4),
@@ -44,7 +44,7 @@ class DisabledDownloadManagerPage extends ConsumerWidget {
                 onPressed: () {
                   openDownloadSettingsPage(ref);
                 },
-                child: Text('Open settings'.hc),
+                child: Text(context.t.download.open_settings),
               ),
             ],
           ),

@@ -212,7 +212,7 @@ class CreateBooruConfigCategory extends Equatable {
       id = 'auth';
 
   CreateBooruConfigCategory.listing()
-    : title = 'Listing'.hc,
+    : title = 'Listing'.hc, // TODO: Replace with context.t.hardcoded_strings.booru_configs.listing
       name = 'config/listing',
       id = 'listing';
 
@@ -222,7 +222,7 @@ class CreateBooruConfigCategory extends Equatable {
       id = 'download';
 
   CreateBooruConfigCategory.search()
-    : title = 'Search'.hc,
+    : title = 'Search'.hc, // TODO: Replace with context.t.hardcoded_strings.booru_configs.search
       name = 'config/search',
       id = 'search';
 
@@ -237,7 +237,7 @@ class CreateBooruConfigCategory extends Equatable {
       id = 'viewer';
 
   CreateBooruConfigCategory.network()
-    : title = 'Network'.hc,
+    : title = 'Network'.hc, // TODO: Replace with context.t.hardcoded_strings.booru_configs.network
       name = 'config/network',
       id = 'network';
 

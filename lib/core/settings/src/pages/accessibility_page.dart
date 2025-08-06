@@ -70,9 +70,9 @@ class _AccessibilityPageState extends ConsumerState<AccessibilityPage> {
           ),
         ),
         BooruSwitchListTile(
-          title: Text('Reduce animations'.hc),
+          title: Text(context.t.settings.accessibility.reduce_animations),
           subtitle: Text(
-            'Some features may not work as expected when this is enabled.'.hc,
+            context.t.settings.accessibility.reduce_animations_description,
           ),
           value: settings.reduceAnimations,
           onChanged: (value) => notifer.updateSettings(
@@ -82,10 +82,9 @@ class _AccessibilityPageState extends ConsumerState<AccessibilityPage> {
           ),
         ),
         BooruSwitchListTile(
-          title: Text('Use volume keys for navigation'.hc),
+          title: Text(context.t.settings.accessibility.volume_navigation),
           subtitle: Text(
-            'Navigate between posts using the volume keys when in image viewer.'
-                .hc,
+            context.t.settings.accessibility.volume_navigation_description,
           ),
           value: settings.volumeKeyViewerNavigation,
           onChanged: (value) => notifer.updateSettings(
@@ -95,7 +94,7 @@ class _AccessibilityPageState extends ConsumerState<AccessibilityPage> {
           ),
         ),
         SettingsTile(
-          title: Text('Haptic feedback'.hc),
+          title: Text(context.t.settings.accessibility.haptic_feedback.haptic_feedback),
           selectedOption: settings.hapticFeedbackLevel,
           items: HapticFeedbackLevel.values,
           onChanged: (newValue) {

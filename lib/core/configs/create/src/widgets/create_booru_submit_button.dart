@@ -35,7 +35,7 @@ class CreateBooruSubmitButton extends StatelessWidget {
         backgroundColor: backgroundColor,
       ),
       onPressed: onSubmit,
-      child: child ?? Text('Save'.hc),
+      child: child ?? Text(context.t.generic.action.save),
     );
   }
 }
