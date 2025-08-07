@@ -17,7 +17,6 @@ import '../../../foundation/clipboard.dart';
 import '../preparation/preparation_pipeline.dart';
 import '../preparation/version_checking.dart';
 import '../types/backup_data_source.dart';
-import '../types/types.dart';
 import '../utils/backup_utils.dart';
 import '../utils/data_converter.dart';
 import '../utils/json_handler.dart';
@@ -157,7 +156,7 @@ abstract class JsonBackupSource<T> implements BackupDataSource {
   ) async {
     final content = await AppClipboard.paste('text/plain');
     if (content == null || content.isEmpty) {
-      throw const ImportErrorEmpty();
+      throw Exception('Clipboard is empty or invalid');
     }
 
     if (uiContext == null || !uiContext.mounted) {
@@ -185,39 +184,28 @@ abstract class JsonBackupSource<T> implements BackupDataSource {
     String fileName,
     String content,
   ) async {
+    final dir = Directory(directoryPath);
+    if (!dir.existsSync()) {
+      await dir.create(recursive: true);
+    }
+
+    final finalPath = join(directoryPath, fileName);
+    final tempPath = '$finalPath.tmp';
+    final tempFile = File(tempPath);
+
     try {
-      final dir = Directory(directoryPath);
-      if (!dir.existsSync()) {
-        await dir.create(recursive: true);
+      await tempFile.writeAsString(content);
+      await tempFile.rename(finalPath);
+    } catch (e) {
+      if (tempFile.existsSync()) {
+        await tempFile.delete();
       }
-
-      final finalPath = join(directoryPath, fileName);
-      final tempPath = '$finalPath.tmp';
-      final tempFile = File(tempPath);
-
-      try {
-        await tempFile.writeAsString(content);
-        await tempFile.rename(finalPath);
-      } catch (e) {
-        if (tempFile.existsSync()) {
-          await tempFile.delete();
-        }
-        rethrow;
-      }
-    } catch (e, st) {
-      if (e is PathAccessException) {
-        throw DataExportNotPermitted(error: e, stackTrace: st);
-      }
-      throw DataExportError(error: e, stackTrace: st);
+      rethrow;
     }
   }
 
   Future<String> readFile(String path) async {
-    try {
-      final file = File(path);
-      return await file.readAsString();
-    } catch (e) {
-      throw const ImportInvalidJson();
-    }
+    final file = File(path);
+    return file.readAsString();
   }
 }

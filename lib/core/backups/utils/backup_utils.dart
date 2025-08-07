@@ -7,7 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../foundation/info/device_info.dart';
 import '../../../foundation/permissions.dart';
-import '../types/types.dart';
 
 class BackupUtils {
   static Future<void> ensureStoragePermissions(Ref ref) async {
@@ -17,7 +16,9 @@ class BackupUtils {
     if (status != PermissionStatus.granted) {
       final newStatus = await requestMediaPermissions(deviceInfo);
       if (newStatus != PermissionStatus.granted) {
-        throw const StoragePermissionDenied();
+        throw Exception(
+          'Storage permissions are required to perform backups.',
+        );
       }
     }
   }

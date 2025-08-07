@@ -14,7 +14,6 @@ import 'package:shelf/shelf.dart' as shelf;
 // Project imports:
 import '../preparation/version_checking.dart';
 import '../types/backup_data_source.dart';
-import '../types/types.dart';
 import '../utils/backup_utils.dart';
 import '../utils/db_transfer.dart';
 
@@ -94,10 +93,7 @@ abstract class SqliteBackupSource implements BackupDataSource {
     final file = File(dbPath);
 
     if (!file.existsSync()) {
-      throw DataExportError(
-        error: Exception('No ${displayName.toLowerCase()} found'),
-        stackTrace: StackTrace.current,
-      );
+      return;
     }
 
     final timestamp = DateFormat('yyyy.MM.dd.HH.mm.ss').format(DateTime.now());
@@ -117,7 +113,9 @@ abstract class SqliteBackupSource implements BackupDataSource {
     final header = bytes.take(16).toList();
 
     if (!_isSQLiteFile(header)) {
-      throw const ImportInvalidDatabase();
+      throw Exception(
+        'Invalid SQLite file: $filePath',
+      );
     }
 
     return ImportPreparation(

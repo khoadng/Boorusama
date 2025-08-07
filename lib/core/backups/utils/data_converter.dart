@@ -33,7 +33,7 @@ class DataBackupConverter {
 
   T decodeSingle<T>(String data, T Function(Map<String, dynamic>) parser) {
     final payload = decode(data: data);
-    if (payload.data.isEmpty) throw const ImportInvalidJsonField();
+    if (payload.data.isEmpty) throw Exception('No data found in payload');
     return parser(payload.data.first as Map<String, dynamic>);
   }
 }
@@ -51,37 +51,25 @@ String encodeData({
     data: payload,
   ).toJson();
 
-  try {
-    return jsonEncode(data);
-  } catch (e, st) {
-    throw JsonEncodingError(error: e, stackTrace: st);
-  }
+  return jsonEncode(data);
 }
 
 ExportDataPayload decodeData({required String data}) {
   late final Map<String, dynamic> json;
 
-  try {
-    json = jsonDecode(data) as Map<String, dynamic>;
-  } catch (e) {
-    throw const ImportInvalidJson();
-  }
+  json = jsonDecode(data) as Map<String, dynamic>;
 
-  try {
-    final version = json['version'] as int;
-    final date = DateTime.parse(json['date'] as String);
-    final exportVersion = json['exportVersion'] != null
-        ? Version.parse(json['exportVersion'] as String)
-        : null;
-    final payload = json['data'] as List<dynamic>;
+  final version = json['version'] as int;
+  final date = DateTime.parse(json['date'] as String);
+  final exportVersion = json['exportVersion'] != null
+      ? Version.parse(json['exportVersion'] as String)
+      : null;
+  final payload = json['data'] as List<dynamic>;
 
-    return ExportDataPayload(
-      version: version,
-      exportDate: date,
-      exportVersion: exportVersion,
-      data: payload,
-    );
-  } catch (e) {
-    throw const ImportInvalidJsonField();
-  }
+  return ExportDataPayload(
+    version: version,
+    exportDate: date,
+    exportVersion: exportVersion,
+    data: payload,
+  );
 }

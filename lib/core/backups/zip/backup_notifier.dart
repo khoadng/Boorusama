@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:io';
+
 // Flutter imports:
 import 'package:flutter/material.dart';
 
@@ -8,12 +11,14 @@ import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../foundation/info/device_info.dart';
+import '../../../foundation/loggers.dart';
 import '../../../foundation/picker.dart';
 import '../../../foundation/toast.dart';
 import '../../settings/providers.dart';
 import '../auto/auto_backup_service.dart';
 import '../auto/auto_backup_settings.dart';
 import '../sources/providers.dart';
+import '../types/types.dart';
 import '../utils/backup_file_picker.dart';
 import 'bulk_backup_service.dart';
 
@@ -75,6 +80,8 @@ final backupProvider =
     );
 
 class BackupNotifier extends AutoDisposeNotifier<BackupState> {
+  Logger get _logger => ref.read(loggerProvider);
+
   @override
   BackupState build() {
     return const BackupState(status: BackupStatus.idle);
@@ -89,12 +96,15 @@ class BackupNotifier extends AutoDisposeNotifier<BackupState> {
 
   Future<void> exportToZip(BuildContext context, List<String> sourceIds) async {
     if (state.isActive) {
+      _logger.logW('Backup.UI', 'Export requested but backup already in progress');
       showErrorToast(
         context,
         context.t.settings.backup_and_restore.backup_in_progress,
       );
       return;
     }
+
+    _logger.logI('Backup.UI', 'Starting export for ${sourceIds.length} sources: ${sourceIds.join(', ')}');
 
     try {
       state = state.copyWith(
@@ -105,9 +115,12 @@ class BackupNotifier extends AutoDisposeNotifier<BackupState> {
 
       final path = await _pickExportDirectory(context);
       if (path == null) {
+        _logger.logI('Backup.UI', 'Export cancelled - no directory selected');
         state = state.copyWith(status: BackupStatus.idle);
         return;
       }
+
+      _logger.logI('Backup.UI', 'Exporting to directory: $path');
 
       final service = ref.read(bulkBackupServiceProvider);
       final result = await service.exportToZip(
@@ -124,20 +137,28 @@ class BackupNotifier extends AutoDisposeNotifier<BackupState> {
         progress: 1,
       );
 
+      _logger.logI('Backup.UI', 'Export completed: ${result.exported.length} exported, ${result.failed.length} failed');
+
       if (context.mounted) {
         _showExportResult(context, result);
       }
-    } catch (e) {
+    } on Exception catch (e) {
+      final errorMessage = _isPathAccessException(e)
+          ? kInvalidLocationMessage
+          : e.toString();
+
+      _logger.logE('Backup.UI', 'Export failed: $errorMessage');
+
       state = state.copyWith(
         status: BackupStatus.error,
-        error: e.toString(),
+        error: errorMessage,
       );
 
       if (context.mounted) {
         showErrorToast(
           context,
           context.t.settings.backup_and_restore.export_operation_failed
-              .replaceAll('{error}', e.toString()),
+              .replaceAll('{error}', errorMessage),
         );
       }
     }
@@ -148,12 +169,16 @@ class BackupNotifier extends AutoDisposeNotifier<BackupState> {
     List<String>? onlySourceIds,
   }) async {
     if (state.isActive) {
+      _logger.logW('Backup.UI', 'Import requested but backup already in progress');
       showErrorToast(
         context,
         context.t.settings.backup_and_restore.backup_in_progress,
       );
       return;
     }
+
+    final sourceFilter = onlySourceIds != null ? 'filtering for ${onlySourceIds.join(', ')}' : 'all sources';
+    _logger.logI('Backup.UI', 'Starting import - $sourceFilter');
 
     try {
       state = state.copyWith(
@@ -167,6 +192,8 @@ class BackupNotifier extends AutoDisposeNotifier<BackupState> {
         androidDeviceInfo: ref.read(deviceInfoProvider).androidDeviceInfo,
         allowedExtensions: ['zip'],
         onPick: (path) async {
+          _logger.logI('Backup.UI', 'Importing from file: $path');
+          
           final service = ref.read(bulkBackupServiceProvider);
           final result = await service.importFromZip(
             path,
@@ -180,6 +207,8 @@ class BackupNotifier extends AutoDisposeNotifier<BackupState> {
             progress: 1,
           );
 
+          _logger.logI('Backup.UI', 'Import completed: ${result.imported.length} imported, ${result.failed.length} failed, ${result.skipped.length} skipped');
+
           if (context.mounted) {
             _showImportResult(context, result);
           }
@@ -188,9 +217,12 @@ class BackupNotifier extends AutoDisposeNotifier<BackupState> {
 
       // If we get here without importing, user cancelled
       if (state.status == BackupStatus.importing) {
+        _logger.logI('Backup.UI', 'Import cancelled - no file selected');
         state = state.copyWith(status: BackupStatus.idle);
       }
     } catch (e) {
+      _logger.logE('Backup.UI', 'Import failed: $e');
+      
       state = state.copyWith(
         status: BackupStatus.error,
         error: e.toString(),
@@ -208,16 +240,27 @@ class BackupNotifier extends AutoDisposeNotifier<BackupState> {
 
   // Auto backup operations
   Future<void> performAutoBackupIfNeeded(AutoBackupSettings settings) async {
-    if (state.isActive) return;
+    if (state.isActive) {
+      _logger.logW('Backup.Auto', 'Auto backup skipped - backup already in progress');
+      return;
+    }
 
-    if (!settings.shouldBackup) return;
+    if (!settings.shouldBackup) {
+      _logger.logI('Backup.Auto', 'Auto backup skipped - conditions not met');
+      return;
+    }
 
+    _logger.logI('Backup.Auto', 'Starting automatic backup');
     await _performAutoBackup(settings, isManual: false);
   }
 
   Future<void> performManualAutoBackup(AutoBackupSettings settings) async {
-    if (state.isActive) return;
+    if (state.isActive) {
+      _logger.logW('Backup.Auto', 'Manual auto backup skipped - backup already in progress');
+      return;
+    }
 
+    _logger.logI('Backup.Auto', 'Starting manual auto backup');
     await _performAutoBackup(settings, isManual: true);
   }
 
@@ -226,6 +269,9 @@ class BackupNotifier extends AutoDisposeNotifier<BackupState> {
     required bool isManual,
   }) async {
     final startTime = DateTime.now();
+    final backupType = isManual ? 'manual auto' : 'automatic';
+
+    _logger.logI('Backup.Auto', 'Performing $backupType backup');
 
     try {
       state = state.copyWith(
@@ -243,6 +289,8 @@ class BackupNotifier extends AutoDisposeNotifier<BackupState> {
       );
 
       if (result.success) {
+        _logger.logI('Backup.Auto', 'Auto backup completed successfully - updating last backup time');
+        
         // Update settings after successful backup
         await ref
             .read(settingsNotifierProvider.notifier)
@@ -253,6 +301,8 @@ class BackupNotifier extends AutoDisposeNotifier<BackupState> {
                 ),
               ),
             );
+      } else {
+        _logger.logW('Backup.Auto', 'Auto backup completed but with no success');
       }
 
       state = state.copyWith(
@@ -261,6 +311,8 @@ class BackupNotifier extends AutoDisposeNotifier<BackupState> {
         progress: 1,
       );
     } catch (e) {
+      _logger.logE('Backup.Auto', 'Auto backup failed: $e');
+      
       state = state.copyWith(
         status: BackupStatus.error,
         error: e.toString(),
@@ -273,6 +325,9 @@ class BackupNotifier extends AutoDisposeNotifier<BackupState> {
           Duration(milliseconds: 1000 - elapsed.inMilliseconds),
         );
       }
+      
+      final duration = DateTime.now().difference(startTime);
+      _logger.logI('Backup.Auto', 'Auto backup process completed in ${duration.inMilliseconds}ms');
     }
   }
 
@@ -354,4 +409,9 @@ class BackupNotifier extends AutoDisposeNotifier<BackupState> {
       );
     }
   }
+}
+
+bool _isPathAccessException(Exception e) {
+  return e is PathAccessException ||
+      e.toString().contains('PathAccessException');
 }

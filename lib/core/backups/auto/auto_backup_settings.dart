@@ -13,7 +13,7 @@ class AutoBackupSettings extends Equatable {
   const AutoBackupSettings({
     this.enabled = false,
     this.frequency = AutoBackupFrequency.weekly,
-    this.maxBackups = 2,
+    this.maxBackups = 3,
     this.userSelectedPath,
     this.lastBackupTime,
   });
@@ -36,7 +36,7 @@ class AutoBackupSettings extends Equatable {
   static const disabled = AutoBackupSettings(
     enabled: false,
     frequency: AutoBackupFrequency.weekly,
-    maxBackups: 5,
+    maxBackups: 3,
     userSelectedPath: null,
     lastBackupTime: null,
   );
