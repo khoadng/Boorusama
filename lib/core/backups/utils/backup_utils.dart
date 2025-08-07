@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:io';
+
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -16,6 +19,30 @@ class BackupUtils {
       if (newStatus != PermissionStatus.granted) {
         throw const StoragePermissionDenied();
       }
+    }
+  }
+
+  static Future<void> replaceFile(
+    String sourcePath,
+    String destPath,
+  ) async {
+    final tempPath = '$destPath.${DateTime.now().microsecondsSinceEpoch}.tmp';
+
+    try {
+      await File(sourcePath).copy(tempPath);
+
+      final destFile = File(destPath);
+      if (destFile.existsSync()) {
+        await destFile.delete();
+      }
+
+      await File(tempPath).rename(destPath);
+    } catch (e) {
+      final tempFile = File(tempPath);
+      if (tempFile.existsSync()) {
+        await tempFile.delete();
+      }
+      rethrow;
     }
   }
 }

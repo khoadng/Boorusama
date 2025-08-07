@@ -6,6 +6,7 @@ import 'package:equatable/equatable.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
+import '../../../backups/auto/auto_backup_settings.dart';
 import '../../../configs/gesture/gesture.dart';
 import '../../../theme/theme_configs.dart';
 import '../../../theme/theme_mode.dart';
@@ -48,6 +49,7 @@ class Settings extends Equatable {
     required this.searchBarPosition,
     required this.hapticFeedbackLevel,
     required this.swipeMode,
+    required this.autoBackup,
   });
 
   Settings.fromJson(Map<String, dynamic> json)
@@ -136,7 +138,10 @@ class Settings extends Equatable {
       volumeKeyViewerNavigation = json['volumeKeyViewerNavigation'] ?? false,
       reduceAnimations = json['reduceAnimations'] ?? false,
       swipeAreaToOpenSidebarPercentage =
-          json['swipeAreaToOpenSidebarPercentage'] ?? 5;
+          json['swipeAreaToOpenSidebarPercentage'] ?? 5,
+      autoBackup = json['autoBackup'] != null
+          ? AutoBackupSettings.fromJson(json['autoBackup'])
+          : AutoBackupSettings.disabled;
 
   static const defaultSettings = Settings(
     listing: ImageListingSettings(
@@ -189,6 +194,7 @@ class Settings extends Equatable {
     searchBarPosition: SearchBarPosition.top,
     hapticFeedbackLevel: HapticFeedbackLevel.balanced,
     swipeMode: PostDetailsSwipeMode.horizontal,
+    autoBackup: AutoBackupSettings.disabled,
   );
 
   final ImageListingSettings listing;
@@ -256,6 +262,8 @@ class Settings extends Equatable {
 
   final PostDetailsSwipeMode swipeMode;
 
+  final AutoBackupSettings autoBackup;
+
   Settings copyWith({
     String? blacklistedTags,
     String? language,
@@ -293,6 +301,7 @@ class Settings extends Equatable {
     SearchBarPosition? searchBarPosition,
     HapticFeedbackLevel? hapticFeedbackLevel,
     PostDetailsSwipeMode? swipeMode,
+    AutoBackupSettings? autoBackup,
   }) => Settings(
     listing: listing ?? this.listing,
     safeMode: safeMode ?? this.safeMode,
@@ -344,6 +353,7 @@ class Settings extends Equatable {
     searchBarPosition: searchBarPosition ?? this.searchBarPosition,
     hapticFeedbackLevel: hapticFeedbackLevel ?? this.hapticFeedbackLevel,
     swipeMode: swipeMode ?? this.swipeMode,
+    autoBackup: autoBackup ?? this.autoBackup,
   );
 
   Map<String, dynamic> toJson() {
@@ -386,6 +396,7 @@ class Settings extends Equatable {
       'searchBarPosition': searchBarPosition.index,
       'hapticFeedbackLevel': hapticFeedbackLevel.index,
       'swipeMode': swipeMode.index,
+      'autoBackup': autoBackup.toJson(),
     };
   }
 
@@ -426,6 +437,7 @@ class Settings extends Equatable {
     searchBarPosition,
     hapticFeedbackLevel,
     swipeMode,
+    autoBackup,
   ];
 
   bool get appLockEnabled => appLockType == AppLockType.biometrics;

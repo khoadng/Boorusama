@@ -50,7 +50,7 @@ class BooruConfigsBackupSource extends JsonBackupSource<List<BooruConfig>> {
   BooruConfigsBackupSource(Ref ref)
     : super(
         id: 'profiles',
-        priority: -1, // Highest priority - show first
+        priority: 99999, // Lowest priority - show last
         version: kBooruConfigsExporterImporterVersion,
         appVersion: ref.read(appVersionProvider),
         dataGetter: () async => ref.read(booruConfigProvider),

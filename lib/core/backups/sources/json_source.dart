@@ -180,7 +180,7 @@ abstract class JsonBackupSource<T> implements BackupDataSource {
         null,
       );
 
-  static Future<void> writeFileToDirectory(
+  Future<void> writeFileToDirectory(
     String directoryPath,
     String fileName,
     String content,
@@ -191,8 +191,19 @@ abstract class JsonBackupSource<T> implements BackupDataSource {
         await dir.create(recursive: true);
       }
 
-      final file = File(join(directoryPath, fileName));
-      await file.writeAsString(content);
+      final finalPath = join(directoryPath, fileName);
+      final tempPath = '$finalPath.tmp';
+      final tempFile = File(tempPath);
+
+      try {
+        await tempFile.writeAsString(content);
+        await tempFile.rename(finalPath);
+      } catch (e) {
+        if (tempFile.existsSync()) {
+          await tempFile.delete();
+        }
+        rethrow;
+      }
     } catch (e, st) {
       if (e is PathAccessException) {
         throw DataExportNotPermitted(error: e, stackTrace: st);

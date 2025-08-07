@@ -7,11 +7,13 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
+import '../../../../backups/auto/auto_backup_section.dart';
 import '../../../../backups/routes.dart';
-import '../../../../backups/sources/providers.dart';
 import '../../../../backups/transfer/sync_data_page.dart';
-import '../../../../theme/app_theme.dart';
+import '../../../../backups/widgets.dart';
+import '../../../../backups/zip/providers.dart';
 import '../../widgets/settings_page_scaffold.dart';
+import 'data_transfer_card.dart';
 
 class BackupAndRestorePage extends ConsumerStatefulWidget {
   const BackupAndRestorePage({
@@ -19,18 +21,19 @@ class BackupAndRestorePage extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<BackupAndRestorePage> createState() => _DownloadPageState();
+  ConsumerState<BackupAndRestorePage> createState() =>
+      _BackupAndRestorePageState();
 }
 
-class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
+class _BackupAndRestorePageState extends ConsumerState<BackupAndRestorePage> {
   @override
   Widget build(BuildContext context) {
     return SettingsPageScaffold(
       title: Text(context.t.settings.backup_and_restore.backup_and_restore),
       padding: const EdgeInsets.symmetric(horizontal: 8),
       children: [
-        const _Title(
-          title: 'Transfer data',
+        _Title(
+          title: context.t.settings.backup_and_restore.transfer_data,
         ),
         Padding(
           padding: const EdgeInsets.symmetric(
@@ -47,7 +50,7 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
                   icon: const FaIcon(
                     FontAwesomeIcons.paperPlane,
                   ),
-                  title: 'Send',
+                  title: context.t.settings.backup_and_restore.send,
                   onPressed: () {
                     goToSyncDataPage(context, mode: TransferMode.export);
                   },
@@ -58,7 +61,7 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
                   icon: const FaIcon(
                     FontAwesomeIcons.download,
                   ),
-                  title: 'Receive',
+                  title: context.t.settings.backup_and_restore.receive,
                   onPressed: () {
                     goToSyncDataPage(context, mode: TransferMode.import);
                   },
@@ -67,71 +70,94 @@ class _DownloadPageState extends ConsumerState<BackupAndRestorePage> {
             ],
           ),
         ),
-        const SizedBox(height: 28),
-        const _Title(
-          title: 'Manual backup',
+        const SizedBox(height: 20),
+        _Title(
+          title: context.t.settings.backup_and_restore.backup_data,
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(
+            vertical: 8,
+            horizontal: 12,
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            spacing: 12,
+            children: [
+              Expanded(
+                child: DataTransferCard(
+                  icon: const FaIcon(
+                    FontAwesomeIcons.fileExport,
+                  ),
+                  title: context.t.settings.backup_and_restore.export,
+                  onPressed: () => _handleExportAll(),
+                ),
+              ),
+              Expanded(
+                child: DataTransferCard(
+                  icon: const FaIcon(
+                    FontAwesomeIcons.fileImport,
+                  ),
+                  title: context.t.settings.backup_and_restore.import,
+                  onPressed: () => _handleImport(),
+                ),
+              ),
+            ],
+          ),
+        ),
+        Center(
+          child: TextButton.icon(
+            onPressed: () => _navigateToManualBackup(),
+            icon: const Icon(Icons.tune, size: 16),
+            label: Text(
+              context.t.settings.backup_and_restore.advanced_export_import,
+            ),
+          ),
+        ),
+        const SizedBox(height: 20),
+        _Title(
+          title: context.t.settings.backup_and_restore.auto_backup,
+          extra: Tooltip(
+            message: context.t.settings.backup_and_restore.auto_backup_tooltip,
+            triggerMode: TooltipTriggerMode.tap,
+            showDuration: const Duration(seconds: 5),
+            child: const Icon(
+              Icons.info,
+            ),
+          ),
         ),
         const SizedBox(height: 8),
-        _buildProfiles(),
-        const SizedBox(height: 8),
-        _buildFavoriteTags(),
-        const SizedBox(height: 8),
-        _buildBookmarks(),
-        const SizedBox(height: 8),
-        _buildBlacklistedTags(),
-        const SizedBox(height: 8),
-        _buildSearchHistories(),
-        const SizedBox(height: 8),
-        _buildBulkDownloads(),
-        const SizedBox(height: 8),
-        _buildSettings(),
-        const SizedBox(height: 8),
+        const AutoBackupSection(),
+        const SizedBox(height: 16),
       ],
     );
   }
 
-  Widget _buildProfiles() {
-    final source = ref.watch(booruConfigsBackupSourceProvider);
-    return source.buildTile(context);
+  void _handleExportAll() {
+    ref.read(backupProvider.notifier).exportAll(context);
   }
 
-  Widget _buildBlacklistedTags() {
-    final source = ref.watch(blacklistedTagsBackupSourceProvider);
-    return source.buildTile(context);
+  void _navigateToManualBackup() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => const ManualBackupPage(),
+      ),
+    );
   }
 
-  Widget _buildFavoriteTags() {
-    final source = ref.watch(favoriteTagsBackupSourceProvider);
-    return source.buildTile(context);
-  }
-
-  Widget _buildBookmarks() {
-    final source = ref.watch(bookmarksBackupSourceProvider);
-    return source.buildTile(context);
-  }
-
-  Widget _buildSettings() {
-    final source = ref.watch(settingsBackupSourceProvider);
-    return source.buildTile(context);
-  }
-
-  Widget _buildSearchHistories() {
-    final source = ref.watch(searchHistoryBackupSourceProvider);
-    return source.buildTile(context);
-  }
-
-  Widget _buildBulkDownloads() {
-    final source = ref.watch(downloadsBackupSourceProvider);
-    return source.buildTile(context);
+  void _handleImport() {
+    ref.read(backupProvider.notifier).importFromZip(context);
   }
 }
 
 class _Title extends StatelessWidget {
   const _Title({
     required this.title,
+    this.extra,
   });
 
   final String title;
+  final Widget? extra;
 
   @override
   Widget build(BuildContext context) {
@@ -140,79 +166,20 @@ class _Title extends StatelessWidget {
         vertical: 12,
         horizontal: 8,
       ),
-      child: Text(
-        title,
-        style: const TextStyle(
-          fontWeight: FontWeight.w700,
-          fontSize: 18,
-        ),
-      ),
-    );
-  }
-}
-
-class DataTransferCard extends StatelessWidget {
-  const DataTransferCard({
-    required this.icon,
-    required this.title,
-    required this.onPressed,
-    super.key,
-  });
-
-  final Widget icon;
-  final String title;
-  final void Function() onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final iconTheme = theme.iconTheme;
-    final borderRadius = BorderRadius.circular(16);
-
-    return Material(
-      color: Theme.of(context).colorScheme.surfaceContainer,
-      shape: RoundedRectangleBorder(
-        borderRadius: borderRadius,
-      ),
-      child: InkWell(
-        customBorder: RoundedRectangleBorder(
-          borderRadius: borderRadius,
-        ),
-        onTap: onPressed,
-        child: Container(
-          padding: const EdgeInsets.symmetric(
-            vertical: 16,
+      child: Row(
+        children: [
+          Text(
+            title,
+            style: const TextStyle(
+              fontWeight: FontWeight.w700,
+              fontSize: 18,
+            ),
           ),
-          child: Column(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.surface,
-                  shape: BoxShape.circle,
-                ),
-                child: Theme(
-                  data: theme.copyWith(
-                    iconTheme: iconTheme.copyWith(
-                      size: 18,
-                      color: theme.colorScheme.hintColor,
-                    ),
-                  ),
-                  child: icon,
-                ),
-              ),
-              const SizedBox(height: 12),
-              Text(
-                title,
-                style: TextStyle(
-                  color: theme.colorScheme.onSurfaceVariant,
-                  fontWeight: FontWeight.w700,
-                  fontSize: 16,
-                ),
-              ),
-            ],
-          ),
-        ),
+          if (extra != null) ...[
+            const SizedBox(width: 8),
+            extra!,
+          ],
+        ],
       ),
     );
   }

@@ -2,12 +2,11 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:foundation/foundation.dart';
 import 'package:path/path.dart' as p;
 
 // Project imports:
-import '../../../../foundation/info/device_info.dart';
 import '../../../../foundation/picker.dart';
 import '../../../../foundation/platform.dart';
 import '../../../../foundation/toast.dart';
@@ -15,7 +14,7 @@ import '../../../../foundation/toast.dart';
 class BackupFilePicker {
   static Future<void> pickFile({
     required BuildContext context,
-    required WidgetRef ref,
+    required AndroidDeviceInfo? androidDeviceInfo,
     required void Function(String path) onPick,
     List<String> allowedExtensions = const ['json'],
     bool forceAnyFileType = false,
@@ -25,11 +24,7 @@ class BackupFilePicker {
     }
 
     if (isAndroid()) {
-      final androidVersion = ref
-          .read(deviceInfoProvider)
-          .androidDeviceInfo
-          ?.version
-          .sdkInt;
+      final androidVersion = androidDeviceInfo?.version.sdkInt;
       // Android 9 or lower will need to use any file type
       if (androidVersion != null &&
           androidVersion <= AndroidVersions.android9) {

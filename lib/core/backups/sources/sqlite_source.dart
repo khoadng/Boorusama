@@ -133,15 +133,9 @@ abstract class SqliteBackupSource implements BackupDataSource {
   Future<void> _executeFileImport(String sourcePath) async {
     await BackupUtils.ensureStoragePermissions(ref);
 
-    final sourceFile = File(sourcePath);
     final dbPath = await dbPathGetter();
-    final destFile = File(dbPath);
 
-    if (destFile.existsSync()) {
-      await destFile.delete();
-    }
-
-    await sourceFile.copy(dbPath);
+    await BackupUtils.replaceFile(sourcePath, dbPath);
     onImportComplete();
   }
 

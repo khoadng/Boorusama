@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
+import '../../../foundation/info/device_info.dart';
 import '../../../foundation/picker.dart';
 import '../../../foundation/toast.dart';
 import '../../theme.dart';
@@ -25,6 +27,9 @@ class DefaultBackupTile extends ConsumerWidget {
     this.customActions = const {},
     this.onCustomAction,
     this.extra,
+    this.isSelectionMode = false,
+    this.isSelected = false,
+    this.onSelectionTap,
     super.key,
   });
 
@@ -38,6 +43,9 @@ class DefaultBackupTile extends ConsumerWidget {
   final Map<String, Widget> customActions;
   final void Function(BuildContext, WidgetRef, String)? onCustomAction;
   final List<Widget>? extra;
+  final bool isSelectionMode;
+  final bool isSelected;
+  final VoidCallback? onSelectionTap;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -45,66 +53,84 @@ class DefaultBackupTile extends ConsumerWidget {
     final actions = <String, Widget>{};
 
     if (capabilities.file != null) {
-      actions['export'] = const Text('Export');
-      actions['import'] = const Text('Import');
+      actions['export'] = Text(context.t.settings.backup_and_restore.export);
+      actions['import'] = Text(context.t.settings.backup_and_restore.import);
     }
 
     if (capabilities.clipboard != null) {
-      actions['exportClipboard'] = const Text('Export to clipboard');
-      actions['importClipboard'] = const Text('Import from clipboard');
+      actions['exportClipboard'] = Text(
+        context.t.settings.backup_and_restore.export_to_clipboard,
+      );
+      actions['importClipboard'] = Text(
+        context.t.settings.backup_and_restore.import_from_clipboard,
+      );
     }
 
     actions.addAll(customActions);
 
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainer,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Row(
-        children: [
-          CircleAvatar(
-            radius: 22,
-            backgroundColor: Theme.of(context).colorScheme.surface,
-            child: Icon(
-              icon,
-              color: Theme.of(context).colorScheme.onSurface,
-              fill: 1,
+    return GestureDetector(
+      onTap: isSelectionMode ? onSelectionTap : null,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? Theme.of(
+                  context,
+                ).colorScheme.primaryContainer.withValues(alpha: 0.3)
+              : Theme.of(context).colorScheme.surfaceContainer,
+          borderRadius: BorderRadius.circular(8),
+          border: isSelected
+              ? Border.all(
+                  color: Theme.of(context).colorScheme.primary,
+                  width: 2,
+                )
+              : null,
+        ),
+        child: Row(
+          children: [
+            CircleAvatar(
+              radius: 22,
+              backgroundColor: Theme.of(context).colorScheme.surface,
+              child: Icon(
+                icon,
+                color: Theme.of(context).colorScheme.onSurface,
+                fill: 1,
+              ),
             ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const SizedBox(height: 4),
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                if (subtitle != null)
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 4),
                   Text(
-                    subtitle!,
-                    style:
-                        subtitleStyle ??
-                        TextStyle(
-                          fontWeight: FontWeight.w400,
-                          color: Theme.of(context).colorScheme.hintColor,
-                        ),
+                    title,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
-                if (extra != null) ...extra!,
-              ],
+                  if (subtitle != null)
+                    Text(
+                      subtitle!,
+                      style:
+                          subtitleStyle ??
+                          TextStyle(
+                            fontWeight: FontWeight.w400,
+                            color: Theme.of(context).colorScheme.hintColor,
+                          ),
+                    ),
+                  if (extra != null) ...extra!,
+                ],
+              ),
             ),
-          ),
-          BooruPopupMenuButton(
-            onSelected: (value) => _handleAction(context, ref, value),
-            itemBuilder: actions,
-          ),
-        ],
+            if (!isSelectionMode)
+              BooruPopupMenuButton(
+                onSelected: (value) => _handleAction(context, ref, value),
+                itemBuilder: actions,
+              ),
+          ],
+        ),
       ),
     );
   }
@@ -136,14 +162,19 @@ class DefaultBackupTile extends ConsumerWidget {
           if (context.mounted) {
             showSuccessToast(
               context,
-              '${source.displayName} exported successfully',
+              context.t.settings.backup_and_restore.export_success.replaceAll(
+                '{source}',
+                source.displayName,
+              ),
             );
           }
         } catch (error) {
           if (context.mounted) {
             showErrorToast(
               context,
-              'Failed to export ${source.displayName.toLowerCase()}: $error',
+              context.t.settings.backup_and_restore.export_failed
+                  .replaceAll('{source}', source.displayName.toLowerCase())
+                  .replaceAll('{error}', error.toString()),
             );
           }
         }
@@ -157,7 +188,7 @@ class DefaultBackupTile extends ConsumerWidget {
 
     BackupFilePicker.pickFile(
       context: context,
-      ref: ref,
+      androidDeviceInfo: ref.read(deviceInfoProvider).androidDeviceInfo,
       allowedExtensions: fileExtensions,
       forceAnyFileType: forceAnyFileType,
       onPick: (path) async {
@@ -167,7 +198,10 @@ class DefaultBackupTile extends ConsumerWidget {
           if (context.mounted) {
             showSuccessToast(
               context,
-              '${source.displayName} imported successfully',
+              context.t.settings.backup_and_restore.import_success.replaceAll(
+                '{source}',
+                source.displayName,
+              ),
             );
           }
         } on ImportCancelledException {
@@ -176,7 +210,9 @@ class DefaultBackupTile extends ConsumerWidget {
           if (context.mounted) {
             showErrorToast(
               context,
-              'Failed to import ${source.displayName.toLowerCase()}: $error',
+              context.t.settings.backup_and_restore.import_failed
+                  .replaceAll('{source}', source.displayName.toLowerCase())
+                  .replaceAll('{error}', error.toString()),
             );
           }
         }
@@ -193,14 +229,17 @@ class DefaultBackupTile extends ConsumerWidget {
       if (context.mounted) {
         showSuccessToast(
           context,
-          '${source.displayName} copied to clipboard',
+          context.t.settings.backup_and_restore.clipboard_export_success
+              .replaceAll('{source}', source.displayName),
         );
       }
     } catch (error) {
       if (context.mounted) {
         showErrorToast(
           context,
-          'Failed to copy ${source.displayName.toLowerCase()}: $error',
+          context.t.settings.backup_and_restore.clipboard_export_failed
+              .replaceAll('{source}', source.displayName.toLowerCase())
+              .replaceAll('{error}', error.toString()),
         );
       }
     }
@@ -216,7 +255,8 @@ class DefaultBackupTile extends ConsumerWidget {
       if (context.mounted) {
         showSuccessToast(
           context,
-          '${source.displayName} imported from clipboard',
+          context.t.settings.backup_and_restore.clipboard_import_success
+              .replaceAll('{source}', source.displayName),
         );
       }
     } on ImportCancelledException {
@@ -225,7 +265,9 @@ class DefaultBackupTile extends ConsumerWidget {
       if (context.mounted) {
         showErrorToast(
           context,
-          'Failed to paste ${source.displayName.toLowerCase()}: $error',
+          context.t.settings.backup_and_restore.clipboard_import_failed
+              .replaceAll('{source}', source.displayName.toLowerCase())
+              .replaceAll('{error}', error.toString()),
         );
       }
     }
