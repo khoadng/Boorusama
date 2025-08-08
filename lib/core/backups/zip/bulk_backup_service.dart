@@ -22,59 +22,7 @@ import '../sources/providers.dart';
 import '../types/backup_data_source.dart';
 import '../types/backup_registry.dart';
 import '../utils/backup_utils.dart';
-
-class BulkBackupManifest {
-  const BulkBackupManifest({
-    required this.version,
-    required this.appVersion,
-    required this.exportDate,
-    required this.sourceFiles,
-    required this.failed,
-  });
-
-  factory BulkBackupManifest.fromJson(Map<String, dynamic> json) {
-    return BulkBackupManifest(
-      version: json['version'] as int,
-      appVersion: json['appVersion'] as String?,
-      exportDate: DateTime.parse(json['exportDate'] as String),
-      sourceFiles: Map<String, String>.from(json['sourceFiles'] as Map? ?? {}),
-      failed: List<String>.from(json['failed'] as List? ?? []),
-    );
-  }
-
-  final int version;
-  final String? appVersion;
-  final DateTime exportDate;
-  final Map<String, String> sourceFiles; // sourceId -> filename
-  final List<String> failed;
-
-  List<String> get sources => sourceFiles.keys.toList();
-
-  Map<String, dynamic> toJson() => {
-    'version': version,
-    if (appVersion != null) 'appVersion': appVersion,
-    'exportDate': exportDate.toIso8601String(),
-    'sourceFiles': sourceFiles,
-    'failed': failed,
-  };
-}
-
-class BulkExportResult {
-  const BulkExportResult({
-    required this.success,
-    required this.exported,
-    required this.failed,
-    required this.filePath,
-  });
-
-  final bool success;
-  final List<String> exported;
-  final List<String> failed;
-  final String filePath;
-
-  bool get hasFailures => failed.isNotEmpty;
-  int get totalSources => exported.length + failed.length;
-}
+import 'types.dart';
 
 class ZipCreationMessage {
   const ZipCreationMessage({
@@ -102,23 +50,6 @@ class ZipProgressUpdate {
   final String? error;
 
   double get progress => totalFiles > 0 ? filesProcessed / totalFiles : 0.0;
-}
-
-class BulkImportResult {
-  const BulkImportResult({
-    required this.success,
-    required this.imported,
-    required this.failed,
-    required this.skipped,
-  });
-
-  final bool success;
-  final List<String> imported;
-  final List<String> failed;
-  final List<String> skipped;
-
-  bool get hasFailures => failed.isNotEmpty;
-  int get totalProcessed => imported.length + failed.length + skipped.length;
 }
 
 final bulkBackupServiceProvider = Provider<BulkBackupService>((ref) {
@@ -192,6 +123,74 @@ class BulkBackupService {
           error: e.toString(),
         ),
       );
+    }
+  }
+
+  Future<ZipPreviewResult> previewZip(String zipPath) async {
+    logger.logI('Backup.Preview', 'Starting streaming zip preview: $zipPath');
+
+    try {
+      // Use streaming decoder to avoid loading entire zip into memory
+      final inputStream = InputFileStream(zipPath);
+      final archive = ZipDecoder().decodeStream(inputStream);
+
+      // Find manifest file without extracting other files
+      ArchiveFile? manifestFile;
+      for (final file in archive.files) {
+        if (file.name == _manifestFileName) {
+          manifestFile = file;
+          break;
+        }
+      }
+
+      await inputStream.close();
+
+      if (manifestFile == null) {
+        throw Exception('Manifest file not found in zip: $_manifestFileName');
+      }
+
+      // Read manifest content directly from archive file
+      final manifestContent = manifestFile.readBytes();
+
+      if (manifestContent == null || manifestContent.isEmpty) {
+        throw Exception('Manifest file is empty: $_manifestFileName');
+      }
+
+      final manifestJson =
+          jsonDecode(utf8.decode(manifestContent)) as Map<String, dynamic>;
+      final manifest = BulkBackupManifest.fromJson(manifestJson);
+
+      logger.logI(
+        'Backup.Preview',
+        'Loaded manifest with ${manifest.sources.length} sources: ${manifest.sources.join(', ')}',
+      );
+
+      // Check which sources are available in current registry
+      final availableSources = <BackupDataSource>[];
+      final missingSources = <String>[];
+
+      for (final sourceId in manifest.sources) {
+        final source = registry.getSource(sourceId);
+        if (source != null) {
+          availableSources.add(source);
+        } else {
+          missingSources.add(sourceId);
+        }
+      }
+
+      logger.logI(
+        'Backup.Preview',
+        'Preview result: ${availableSources.length} available, ${missingSources.length} missing',
+      );
+
+      return ZipPreviewResult(
+        manifest: manifest,
+        availableSources: availableSources,
+        missingSources: missingSources,
+      );
+    } catch (e) {
+      logger.logE('Backup.Preview', 'Streaming preview failed: $e');
+      rethrow;
     }
   }
 

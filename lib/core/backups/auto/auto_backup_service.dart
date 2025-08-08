@@ -12,6 +12,7 @@ import '../../downloads/path/directory.dart';
 import '../sources/providers.dart';
 import '../types/backup_registry.dart';
 import '../zip/bulk_backup_service.dart';
+import '../zip/types.dart';
 import 'auto_backup_settings.dart';
 
 final autoBackupServiceProvider = Provider<AutoBackupService>((ref) {
