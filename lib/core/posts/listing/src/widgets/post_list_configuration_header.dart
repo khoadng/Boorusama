@@ -8,8 +8,6 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import '../../../../../foundation/utils/flutter_utils.dart';
 
-typedef HiddenData = ({String name, int count, bool active});
-
 class PostListConfigurationHeader extends StatefulWidget {
   const PostListConfigurationHeader({
     required this.hiddenCount,

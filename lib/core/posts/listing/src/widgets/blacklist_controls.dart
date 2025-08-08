@@ -11,7 +11,7 @@ import '../../../../../foundation/display.dart';
 import '../../../../../foundation/utils/flutter_utils.dart';
 import '../../../../../foundation/utils/int_utils.dart';
 import '../../../../theme/app_theme.dart';
-import 'post_list_configuration_header.dart';
+import 'post_grid_controller.dart';
 
 final _currentPageProvider = StateProvider<int>((ref) => 1);
 const _tagThreshold = 30;

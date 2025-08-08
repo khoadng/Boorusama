@@ -19,6 +19,8 @@ const _kJumpStep = 1;
 typedef ItemFetcher<T extends Post> = Future<PostResult<T>> Function(int page);
 typedef ItemRefresher<T extends Post> = Future<PostResult<T>> Function();
 
+typedef HiddenData = ({String name, int count, bool active});
+
 typedef PostGridFetcher<T extends Post> =
     PostsOrErrorCore<T> Function(
       int page,
@@ -98,6 +100,7 @@ class PostGridController<T extends Post> extends ChangeNotifier {
   final activeFilters = ValueNotifier<Map<String, bool>>({});
   final tagCounts = ValueNotifier<Map<String, Set<int>>>({});
   final hasBlacklist = ValueNotifier(false);
+  final visibleHiddenTags = ValueNotifier<List<HiddenData>>([]);
 
   final errors = ValueNotifier<BooruError?>(null);
 
@@ -213,6 +216,20 @@ class PostGridController<T extends Post> extends ChangeNotifier {
     );
 
     _setFilteringItems(filteredItems);
+    _updateVisibleHiddenTags();
+  }
+
+  void _updateVisibleHiddenTags() {
+    visibleHiddenTags.value = activeFilters.value.keys
+        .map(
+          (e) => (
+            name: e,
+            count: tagCounts.value[e]?.length ?? 0,
+            active: activeFilters.value[e] ?? false,
+          ),
+        )
+        .where((e) => e.count > 0)
+        .toList();
   }
 
   // Set the page mode and reset the state
@@ -402,6 +419,7 @@ class PostGridController<T extends Post> extends ChangeNotifier {
     tagCounts.value = {};
     hasBlacklist.value = false;
     activeFilters.value = {};
+    visibleHiddenTags.value = [];
     notifyListeners();
   }
 
@@ -432,6 +450,7 @@ class PostGridController<T extends Post> extends ChangeNotifier {
     activeFilters.dispose();
     tagCounts.dispose();
     hasBlacklist.dispose();
+    visibleHiddenTags.dispose();
     errors.dispose();
 
     super.dispose();

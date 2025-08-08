@@ -375,63 +375,51 @@ class _GridHeader<T extends Post> extends ConsumerWidget {
         return ValueListenableBuilder(
           valueListenable: controller.tagCounts,
           builder: (_, tagCounts, _) {
-            return ValueListenableBuilder(
-              valueListenable: controller.activeFilters,
-              builder: (_, activeFilters, _) {
-                final expand = ref.watch(_expandedProvider);
-                final expandNotifier = ref.watch(_expandedProvider.notifier);
-
-                return Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: imageGridPadding,
-                  ),
-                  child: PostListConfigurationHeader(
-                    blacklistControls: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        BlacklistControls(
-                          hiddenTags: activeFilters.keys
-                              .map(
-                                (e) => (
-                                  name: e,
-                                  count: tagCounts[e]?.length ?? 0,
-                                  active: activeFilters[e] ?? false,
-                                ),
-                              )
-                              .where((e) => e.count > 0)
-                              .toList(),
-                          onDisableAll: () {
-                            controller.disableAllTags();
-                          },
-                          onEnableAll: () {
-                            controller.enableAllTags();
-                          },
-                          onChanged: (tag, hide) {
-                            if (hide) {
-                              controller.enableTag(tag);
-                            } else {
-                              controller.disableTag(tag);
-                            }
-                          },
-                          axis: axis,
-                        ),
-                        const _BlacklistedTagsInterceptedNotice(),
-                      ],
+            final expand = ref.watch(_expandedProvider);
+            final expandNotifier = ref.watch(_expandedProvider.notifier);
+            return Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: imageGridPadding,
+              ),
+              child: PostListConfigurationHeader(
+                blacklistControls: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ValueListenableBuilder(
+                      valueListenable: controller.visibleHiddenTags,
+                      builder: (_, hiddenTags, _) => BlacklistControls(
+                        hiddenTags: hiddenTags,
+                        onDisableAll: () {
+                          controller.disableAllTags();
+                        },
+                        onEnableAll: () {
+                          controller.enableAllTags();
+                        },
+                        onChanged: (tag, hide) {
+                          if (hide) {
+                            controller.enableTag(tag);
+                          } else {
+                            controller.disableTag(tag);
+                          }
+                        },
+                        axis: axis,
+                      ),
                     ),
-                    axis: axis,
-                    postCount: controller.total,
-                    initiallyExpanded: axis == Axis.vertical || expand == true,
-                    onExpansionChanged: (value) => expandNotifier.state = value,
-                    hasBlacklist: hasBlacklist,
-                    trailing: axis == Axis.horizontal
-                        ? PostGridConfigIconButton(
-                            postController: controller,
-                          )
-                        : null,
-                    hiddenCount: tagCounts.totalNonDuplicatesPostCount,
-                  ),
-                );
-              },
+                    const _BlacklistedTagsInterceptedNotice(),
+                  ],
+                ),
+                axis: axis,
+                postCount: controller.total,
+                initiallyExpanded: axis == Axis.vertical || expand == true,
+                onExpansionChanged: (value) => expandNotifier.state = value,
+                hasBlacklist: hasBlacklist,
+                trailing: axis == Axis.horizontal
+                    ? PostGridConfigIconButton(
+                        postController: controller,
+                      )
+                    : null,
+                hiddenCount: tagCounts.totalNonDuplicatesPostCount,
+              ),
             );
           },
         );
