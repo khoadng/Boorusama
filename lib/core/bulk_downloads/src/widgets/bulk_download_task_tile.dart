@@ -330,7 +330,7 @@ class _ContextMenu extends ConsumerWidget {
       contextMenu: GenericContextMenu(
         buttonConfigs: [
           ContextMenuButtonConfig(
-            DownloadTranslations.delete,
+            DownloadTranslations.delete(context),
             onPressed: () {
               ref.read(bulkDownloadProvider.notifier).deleteSession(session.id);
             },
@@ -473,13 +473,13 @@ class _InfoText extends ConsumerWidget {
 
     return Text(
       switch (status) {
-        DownloadSessionStatus.pending => DownloadTranslations.createdStatus,
+        DownloadSessionStatus.pending => DownloadTranslations.createdStatus(context),
         DownloadSessionStatus.dryRun => DownloadTranslations.inProgressStatus(
           pageProgress.completed,
         ),
         DownloadSessionStatus.failed => 'Error',
         DownloadSessionStatus.allSkipped =>
-          DownloadTranslations.allSkippedStatus,
+          DownloadTranslations.allSkippedStatus(context),
         _ => infoText,
       },
       maxLines: 1,

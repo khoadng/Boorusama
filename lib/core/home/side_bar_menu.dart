@@ -181,7 +181,7 @@ class SideBarMenu extends ConsumerWidget {
                               fill: 1,
                               color: Colors.red,
                             ),
-                            title: Text('Donate'.hc),
+                            title: Text(context.t.donation.donate),
                             onTap: () {
                               goToDonationPage(ref);
                             },

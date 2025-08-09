@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../../../core/images/booru_image.dart';
@@ -48,8 +49,8 @@ class PoolImage extends ConsumerWidget {
                           Radius.circular(imageBorderRadius),
                         ),
                       ),
-                      child: const Center(
-                        child: Text('No cover image'),
+                      child: Center(
+                        child: Text(context.t.pool.no_cover_image),
                       ),
                     ),
                   )

@@ -86,6 +86,9 @@
       "add_to_bookmark": "Add to bookmark",
       "remove_from_bookmark": "Remove from bookmark"
     },
+    "statistics": {
+      "stats_for_nerds": "Stats for nerds"
+    },
     "action": {
       "preview": "Preview",
       "share": "Share",
@@ -170,6 +173,7 @@
     "pool": "Pool",
     "pools": "Pools",
     "pool_gallery": "Pool Gallery",
+    "no_cover_image": "No cover image",
     "order": {
       "recent": "Recent",
       "new": "New",
@@ -664,5 +668,18 @@
         "other": "Seconds"
       }
     }
+  },
+  "donation": {
+    "donate": "Donate"
+  },
+  "bulk_downloads": {
+    "new_download": "New download",
+    "create": "Create",
+    "delete": "Delete",
+    "created": "Created",
+    "completed_with_no_new_files": "Completed with no new files"
+  },
+  "auth": {
+    "login_required": "You need to provide login details to use this feature."
   }
 }

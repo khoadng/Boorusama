@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../core/configs/config/providers.dart';
@@ -28,21 +29,21 @@ class AnimePicturesCurrentUserIdScope extends ConsumerWidget {
                   ],
                   child: child,
                 )
-              : _buildInvalidPage(),
+              : _buildInvalidPage(context),
           loading: () => Scaffold(
             appBar: AppBar(),
             body: const Center(
               child: CircularProgressIndicator(),
             ),
           ),
-          error: (e, _) => _buildInvalidPage(),
+          error: (e, _) => _buildInvalidPage(context),
         );
   }
 
-  Widget _buildInvalidPage() {
-    return const Scaffold(
+  Widget _buildInvalidPage(BuildContext context) {
+    return Scaffold(
       body: Center(
-        child: Text('You need to provide login details to use this feature.'),
+        child: Text(context.t.auth.login_required),
       ),
     );
   }

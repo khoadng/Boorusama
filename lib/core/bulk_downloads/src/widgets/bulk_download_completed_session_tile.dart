@@ -268,7 +268,7 @@ class _ContextMenu extends ConsumerWidget {
       contextMenu: GenericContextMenu(
         buttonConfigs: [
           ContextMenuButtonConfig(
-            DownloadTranslations.delete,
+            DownloadTranslations.delete(context),
             onPressed: () async {
               await ref
                   .read(bulkDownloadProvider.notifier)

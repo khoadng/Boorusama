@@ -7,15 +7,15 @@ import 'package:i18n/i18n.dart';
 class DownloadTranslations {
   const DownloadTranslations._();
   static String title(BuildContext context) => context.t.sideMenu.bulk_download;
-  static final String create = 'New download'.hc; // TODO: Replace with context.t.hardcoded_strings.download_manager.new_download
-  static final String createShort = 'Create'.hc; // TODO: Replace with context.t.hardcoded_strings.actions.create
+  static String create(BuildContext context) => context.t.bulk_downloads.new_download;
+  static String createShort(BuildContext context) => context.t.bulk_downloads.create;
   static final String empty = 'No active download sessions'.hc; // TODO: Replace with context.t.hardcoded_strings.download_manager.no_active_sessions
-  static final String delete = 'Delete'.hc;
+  static String delete(BuildContext context) => context.t.bulk_downloads.delete;
   static final String copyPath = 'Copy path'.hc;
-  static final String createdStatus = 'Created'.hc;
+  static String createdStatus(BuildContext context) => context.t.bulk_downloads.created;
   static String download(BuildContext context) => context.t.download.download;
   static final String addToQueue = 'Add to List'.hc;
-  static final String allSkippedStatus = 'Completed with no new files'.hc;
+  static String allSkippedStatus(BuildContext context) => context.t.bulk_downloads.completed_with_no_new_files;
   static String inProgressStatus(int? completed) =>
       'Scanning${completed != null ? ' page $completed ' : ''}...'.hc;
   static String titleInfoCounter(bool plural) =>

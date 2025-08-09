@@ -30,7 +30,7 @@ class PostStatisticsPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Stats for nerds'.hc),
+        title: Text(context.t.post.statistics.stats_for_nerds),
       ),
       body: SingleChildScrollView(
         child: Container(
