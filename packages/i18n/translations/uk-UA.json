@@ -1,9 +1,15 @@
 {
   "generic": {
-    "done": "Завершено",
+    "done": "Готово",
     "errors": {
       "no_data": "Нема доступних даних",
-      "unknown": "Щось пішло не так"
+      "unknown": "Щось пішло не так",
+      "failed_to_load_image": "Не вдалося завантажити зображення",
+      "config_not_found": "Конфігурацію не знайдено",
+      "error_loading_tags": "Помилка завантаження тегів",
+      "fail_to_load_profile": "Не вдалося завантажити профіль",
+      "page_not_implemented": "Сторінку ще не реалізовано",
+      "no_home_view_builder": "Конструктор переглядів будинків не знайдено"
     },
     "action": {
       "add": "Додати",
@@ -12,9 +18,21 @@
       "ok": "ОК",
       "cancel": "Відмінити",
       "duplicate": "Дублювати",
-      "select": "Вибрати"
+      "select": "Вибрати",
+      "save": "Зберегти",
+      "verify": "Перевірити",
+      "retry": "Повторити спробу",
+      "clear": "Очистити",
+      "create": "Створити",
+      "more": "Більше"
     },
-    "view": "Переглянути"
+    "view": "Переглянути",
+    "empty_states": {
+      "no_tags": "Без тегів",
+      "no_content": "Без контенту",
+      "no_options_available": "Немає доступних опцій"
+    },
+    "default": "За замовчуванням"
   },
   "profile": {
     "favorites": "Улюблені",
@@ -106,12 +124,16 @@
     }
   },
   "explore": {
-    "latest": "Останнє",
+    "latest": "Останні",
     "popular": "Популярні",
     "hot": "Гаряче",
     "most_viewed": "Найбільш переглянуті",
     "see_more": "Подивитися більше",
-    "explore": "Дослідити"
+    "explore": "Дослідити",
+    "top": "Верх",
+    "daily": "Щоденно",
+    "weekly": "Щотижнево",
+    "stats": "Статистика"
   },
   "search": {
     "errors": {
@@ -124,7 +146,9 @@
       "down": "Сервер не працює. Спробуйте пізніше",
       "access_denied": "Доступ заборонено",
       "forbidden": "Невдала спроба",
-      "unknown": "Невідома помилка серверу, будь ласка, повідомте про неї розробникам"
+      "unknown": "Невідома помилка серверу, будь ласка, повідомте про неї розробникам",
+      "cannot_reach_server": "Не вдається зв'язатися з сервером, перевірте з'єднання",
+      "failed_to_load_data": "Не вдалося завантажити дані із сервера, спробуйте пізніше"
     },
     "hint": "Пошук...",
     "no_result": "Ми шукали і там, і тут, але так нічого і не знайшли.",
@@ -162,7 +186,8 @@
     },
     "detail": {
       "last_updated": "Останнє оновлення"
-    }
+    },
+    "pools": "Басейни"
   },
   "settings": {
     "settings": "Налаштування",
@@ -181,7 +206,8 @@
       "booru_config_label_options": {
         "always": "Завжди",
         "never": "Ніколи"
-      }
+      },
+      "customize": "Налаштувати"
     },
     "general": "Головне",
     "search": {
@@ -251,7 +277,15 @@
       "slideshow_skip": "Пропустити перехід слайд-шоу",
       "slideshow_interval_explanation": "Якщо значення менше 1 секунди, перехід буде автоматично пропущено",
       "mute_video": "Вимкнути відео за замовчуванням",
-      "video_section_title": "Відео"
+      "video_section_title": "Відео",
+      "swipe_mode": "Режим пальцем",
+      "swipe_mode_disclaimer": "Деякі користувацькі жести можуть працювати не в усіх режимах",
+      "swipe_modes": {
+        "horizontal": "Горизонтальний",
+        "horizontal_description": "Проведення пальцем вліво/вправо в стилі галереї. Як у фотогалереях та медіадодатках.",
+        "vertical": "Вертикальний",
+        "vertical_description": "Свайп вгору/вниз у стилі TikTok. Популярний на платформах коротких відео. Тільки портретний режим."
+      }
     },
     "language": {
       "language": "Мова",
@@ -302,12 +336,59 @@
     "other_settings": "Інші налаштування",
     "data_and_storage": {
       "data_and_storage": "Данні та сховище",
-      "clear_cache_on_start_up": "Очистити кеш зображень при запуску"
+      "clear_cache_on_start_up": "Очистити кеш зображень при запуску",
+      "cache": "Кеш",
+      "data": "Дані",
+      "all_cache": "Весь кеш",
+      "tag_cache": "Кеш тегів",
+      "image_only_cache": "Кеш лише зображень",
+      "bookmark_images": "Додати зображення до закладок",
+      "loading": "Завантаження...",
+      "error_loading_cache_info": "Помилка завантаження інформації кешу"
     },
     "backup_and_restore": {
       "backup_and_restore": "Резервне копіювання та відновлення",
+      "advanced_backup": "Розширене резервне копіювання",
+      "select_items": "Вибрати елементи",
+      "items_selected": "{count} вибраний",
+      "exporting": "Експортуємо...",
+      "export": "Експорт",
       "import": "Імпорт",
-      "export": "Експорт"
+      "export_to_clipboard": "Експортувати в буфер обміну",
+      "import_from_clipboard": "Імпорт з буфера обміну",
+      "no_sources_selected": "Джерела не вибрано",
+      "export_success": "{source} експортовано успішно",
+      "export_failed": "Не вдалося експортувати {source}: {error}",
+      "import_success": "{source} успішно імпортовано",
+      "import_failed": "Не вдалося імпортувати {source}: {error}",
+      "clipboard_export_success": "{source} скопійовано в буфер обміну",
+      "clipboard_export_failed": "Не вдалося скопіювати {source}: {error}",
+      "clipboard_import_success": "{source} імпортовано з буфера обміну",
+      "clipboard_import_failed": "Не вдалося вставити {source}: {error}",
+      "transfer_data": "Передача даних",
+      "send": "Надіслати",
+      "receive": "Отримати",
+      "backup_data": "Резервне копіювання даних",
+      "advanced_export_import": "Розширений експорт/імпорт",
+      "auto_backup": "Автоматичне резервне копіювання",
+      "auto_backup_tooltip": "Резервні копії створюються під час відкриття програми. Після закриття програми резервні копії не створюються.",
+      "backup_in_progress": "Резервне копіювання вже виконується",
+      "export_operation_failed": "Експорт не вдалося: {error}",
+      "import_operation_failed": "Імпорт не вдалося: {error}",
+      "export_partial_success": "Експортовано {exported}/{total} елементів. Не вдалося {failed}.",
+      "export_complete_success": "Успішно експортовано {exported} елементів",
+      "export_no_items": "Не вдалося експортувати: елементи не вдалося експортувати",
+      "import_results": "Імпорт завершено: {results}",
+      "import_no_items": "Не вдалося імпортувати: елементи не вдалося імпортувати",
+      "imported_count": "{count} імпортовані",
+      "skipped_count": "{count} пропущено",
+      "failed_count": "{count} невдало",
+      "default_backup_location": "Розташування резервного копіювання за замовчуванням",
+      "never": "Ніколи",
+      "days_ago": "{days} днів тому",
+      "hours_ago": "{hours} години тому",
+      "minutes_ago": "{minutes} хвилин тому",
+      "just_now": "Щойно"
     },
     "image_details": {
       "image_details": "Деталі зображення",
@@ -336,7 +417,11 @@
           "standard": "Стандартний",
           "playful": "Грайливий"
         }
-      }
+      },
+      "reduce_animations": "Зменшити анімацію",
+      "reduce_animations_description": "Деякі функції можуть працювати неналежним чином, якщо цю опцію ввімкнено.",
+      "volume_navigation": "Використовуйте клавіші гучності для навігації",
+      "volume_navigation_description": "Переміщайтеся між публікаціями за допомогою клавіш гучності в режимі перегляду зображень."
     },
     "booru_settings": {
       "edit_current_profile": "Редагувати поточний профіль",
@@ -348,7 +433,27 @@
     "contact_developer": "Зв'язок з розробниками",
     "contact_developer_description": "Якщо у вас є будь які пропозиція, напишіть мені на електронну пошту за допомогою цієї опції",
     "feature_request_and_bug_report": "Запропонувати оновлення і звіт про помилку",
-    "feature_request_and_bug_report_description": "Пропонуйте функції чи повідомляйте про помилки через репозиторій GitHub"
+    "feature_request_and_bug_report_description": "Пропонуйте функції чи повідомляйте про помилки через репозиторій GitHub",
+    "auto_backup": {
+      "enable_auto_backup": "Увімкнути автоматичне резервне копіювання",
+      "backup_frequency": "Частота резервного копіювання",
+      "backup_location": "Резервне розташування",
+      "maximum_backups": "Максимальна кількість резервних копій",
+      "frequency": {
+        "daily": "Щоденно",
+        "weekly": "Щотижнево"
+      },
+      "backup_count": {
+        "one": "$n резервна копія",
+        "other": "$n резервні копії"
+      },
+      "change": "Зміна",
+      "last_backup": "Остання резервна копія: $lastBackup",
+      "backup_needed": "Потрібна резервна копія",
+      "up_to_date": "Оновлено",
+      "backing_up": "Резервне копіювання...",
+      "backup_now": "Зробити Резервне копіювання зараз"
+    }
   },
   "blacklisted_tags": {
     "remove": "Видалити",
@@ -361,7 +466,10 @@
     "failed_to_remove": "Не вдалося прибрати тег",
     "blacklisted_header_title": "В чорному списку",
     "disable_all": "Вимкнути все",
-    "reenable_all": "Повторно увімкнути все"
+    "reenable_all": "Повторно увімкнути все",
+    "edit_global_blacklist": "Редагувати глобальний чорний список",
+    "edit_booru_specific_blacklist": "Редагувати чорний список конкретного Боору",
+    "edit_profile_blacklist": "Редагувати чорний список профілю"
   },
   "download": {
     "download": "Скачати",
@@ -377,6 +485,34 @@
     },
     "bulk": {
       "all_done_notification_message": "Всі завантаження завершено"
+    },
+    "status": {
+      "in_progress": "У процесі",
+      "pending": "Очікує на розгляд",
+      "paused": "Призупинено",
+      "completed": "Завершено",
+      "failed": "Не вдалося",
+      "canceled": "Скасовано",
+      "unknown": "Невідомо"
+    },
+    "downloads": "Завантаженням",
+    "retry_all": "Повторити всі спроби",
+    "nothing_to_clear": "Нічого не очищувати",
+    "select_items": "Вибрати елементи",
+    "items_selected": "Вибрані елементи",
+    "download_manager_disabled": "Менеджер завантажень вимкнено",
+    "open_settings": "Відкрити налаштування",
+    "new_download": "Нове завантаження",
+    "no_active_sessions": "Немає активних сеансів завантаження",
+    "nothing_to_show": "Нічого не відображати, завантаження оновлень порожнє",
+    "empty_states": {
+      "no_pending_downloads": "Немає завантажень, що очікують на виконання",
+      "no_paused_downloads": "Немає призупинених завантажень",
+      "no_downloads_in_progress": "Немає завантажень",
+      "no_completed_downloads": "Немає завершених завантажень",
+      "no_canceled_downloads": "Немає скасованих завантажень",
+      "no_failed_downloads": "Немає невдалих завантажень",
+      "no_downloads": "Немає завантажень'"
     }
   },
   "saved_search": {
@@ -450,7 +586,8 @@
     "your_bookmarks": "Ваші закладки",
     "your_blacklist": "Ваший чорний список",
     "bulk_download": "Масове завантаження",
-    "get_support": "Отримати підтримку"
+    "get_support": "Отримати підтримку",
+    "download_manager": "Менеджер завантажень"
   },
   "dateRange": {
     "day": "День",
@@ -481,7 +618,14 @@
     "authentication": "Аутентифікація",
     "download": "Завантаження",
     "gestures": "Жести",
-    "misc": "Різне"
+    "misc": "Різне",
+    "no_profiles_available": "Немає доступних профілів",
+    "add_profile_to_continue": "Додайте профіль, щоб продовжити",
+    "add_profile": "Додати профіль",
+    "unsaved_changes": "У вас є незбережені зміни",
+    "listing": "Лістинг",
+    "search": "Пошук",
+    "network": "Мережа"
   },
   "blacklist": {
     "manage": {
