@@ -137,7 +137,7 @@ class AdditionalBlacklistedTags extends ConsumerWidget {
                         iconColor: colorScheme.onSurface,
                         foregroundColor: colorScheme.onSurface,
                       ),
-                      label: Text('Clear'.hc),
+                      label: Text(context.t.generic.action.clear),
                       icon: const Icon(
                         FontAwesomeIcons.xmark,
                         size: 16,

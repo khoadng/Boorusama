@@ -43,12 +43,14 @@ class BlacklistConfigs extends Equatable {
 
   BlacklistConfigs copyWith({
     String? combinationMode,
-    String? blacklistedTags,
+    String? Function()? blacklistedTags,
     bool? enable,
   }) {
     return BlacklistConfigs(
       combinationMode: combinationMode ?? this.combinationMode,
-      blacklistedTags: blacklistedTags ?? this.blacklistedTags,
+      blacklistedTags: blacklistedTags != null
+          ? blacklistedTags()
+          : this.blacklistedTags,
       enable: enable ?? this.enable,
     );
   }

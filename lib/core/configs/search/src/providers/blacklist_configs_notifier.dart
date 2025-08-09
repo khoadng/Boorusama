@@ -53,7 +53,7 @@ class BlacklistConfigsNotifier
     final tagString = jsonEncode(newTags);
 
     state = state.copyWith(
-      blacklistedTags: tagString,
+      blacklistedTags: () => tagString,
     );
   }
 
@@ -63,13 +63,13 @@ class BlacklistConfigsNotifier
     final tagString = jsonEncode(newTags);
 
     state = state.copyWith(
-      blacklistedTags: tagString,
+      blacklistedTags: () => tagString,
     );
   }
 
   void clearTags() {
     state = state.copyWith(
-      blacklistedTags: null,
+      blacklistedTags: () => null,
     );
   }
 
@@ -79,7 +79,7 @@ class BlacklistConfigsNotifier
     final tagString = jsonEncode(newTags);
 
     state = state.copyWith(
-      blacklistedTags: tagString,
+      blacklistedTags: () => tagString,
     );
   }
 }
