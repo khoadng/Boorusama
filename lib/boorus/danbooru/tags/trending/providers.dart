@@ -22,28 +22,36 @@ final popularSearchProvider =
       },
     );
 
+final cachedPopularSearchesProvider =
+    FutureProvider.family<List<Search>, BooruConfigAuth>(
+      (ref, config) async {
+        ref.invalidateSelfAfter(const Duration(minutes: 30));
+
+        final repository = ref.watch(popularSearchProvider(config));
+        final searches = await repository.getSearchByDate(DateTime.now());
+
+        if (searches.isEmpty) {
+          // If no searches for today, try yesterday
+          return repository.getSearchByDate(
+            DateTime.now().subtract(const Duration(days: 1)),
+          );
+        }
+
+        return searches;
+      },
+    );
+
 final trendingTagsProvider =
     FutureProvider.family<List<Tag>, BooruConfigFilter>((ref, arg) async {
-      ref.invalidateSelfAfter(const Duration(minutes: 15));
-
-      final popularSearchRepository = ref.watch(
-        popularSearchProvider(arg.auth),
-      );
-
       final bl = await ref.watch(blacklistTagsProvider(arg).future);
       final excludedTags = {
         ...ref.watch(tagInfoProvider).r18Tags,
         ...bl,
       };
 
-      var searches = await popularSearchRepository.getSearchByDate(
-        DateTime.now(),
+      final searches = await ref.watch(
+        cachedPopularSearchesProvider(arg.auth).future,
       );
-      if (searches.isEmpty) {
-        searches = await popularSearchRepository.getSearchByDate(
-          DateTime.now().subtract(const Duration(days: 1)),
-        );
-      }
 
       final filtered = searches
           .where((s) => !excludedTags.contains(s.keyword))
