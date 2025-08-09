@@ -187,7 +187,9 @@ class _SearchPageScaffoldState<T extends Post>
         innerSearchButton: widget.innerSearchButtonBuilder?.call(_controller),
       ),
       onPostControllerCreated: (controller) {
-        _postController.value = controller;
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _postController.value = controller;
+        });
       },
     );
   }
