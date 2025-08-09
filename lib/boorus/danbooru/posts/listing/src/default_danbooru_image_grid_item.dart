@@ -25,6 +25,8 @@ import '../../../../../foundation/url_launcher.dart';
 import '../../post/post.dart';
 import 'danbooru_post_context_menu.dart';
 
+const _kBannedTextThreshold = 200.0;
+
 class DefaultDanbooruImageGridItem extends StatelessWidget {
   const DefaultDanbooruImageGridItem({
     required this.index,
@@ -186,11 +188,21 @@ class DefaultDanbooruImageGridItem extends StatelessWidget {
                   _ => const SizedBox.shrink(),
                 },
                 const SizedBox(width: 4),
-                Text(
-                  maxLines: 1,
-                  'Banned post'.hc,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
+                ConstrainedBox(
+                  constraints: const BoxConstraints(
+                    maxWidth: _kBannedTextThreshold,
+                  ),
+                  child: LayoutBuilder(
+                    builder: (context, constraints) =>
+                        constraints.maxWidth > _kBannedTextThreshold
+                        ? Text(
+                            maxLines: 1,
+                            'Banned post'.hc,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          )
+                        : const SizedBox.shrink(),
                   ),
                 ),
               ],
