@@ -117,7 +117,9 @@ class _DownloadManagerPageState extends ConsumerState<DownloadManagerPage> {
 
             return !isSelectionMode
                 ? AppBar(
-                    title: Text(DownloadTranslations.downloadManagerTitle(context)),
+                    title: Text(
+                      DownloadTranslations.downloadManagerTitle(context),
+                    ),
                     actions: [
                       if (isDefaultGroup)
                         IconButton(
@@ -141,8 +143,9 @@ class _DownloadManagerPageState extends ConsumerState<DownloadManagerPage> {
                                       showSimpleSnackBar(
                                         context: context,
                                         content: Text(
-                                          DownloadTranslations
-                                              .downloadNothingToClear(context),
+                                          DownloadTranslations.downloadNothingToClear(
+                                            context,
+                                          ),
                                         ),
                                         duration: const Duration(seconds: 1),
                                       );

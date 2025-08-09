@@ -94,7 +94,9 @@ class _AccessibilityPageState extends ConsumerState<AccessibilityPage> {
           ),
         ),
         SettingsTile(
-          title: Text(context.t.settings.accessibility.haptic_feedback.haptic_feedback),
+          title: Text(
+            context.t.settings.accessibility.haptic_feedback.haptic_feedback,
+          ),
           selectedOption: settings.hapticFeedbackLevel,
           items: HapticFeedbackLevel.values,
           onChanged: (newValue) {
