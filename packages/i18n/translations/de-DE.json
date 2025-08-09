@@ -267,7 +267,9 @@
       "clear_cache_on_start_up": "Bild-Cache beim Starten löschen"
     },
     "backup_and_restore": {
-      "backup_and_restore": "Sichern und Wiederherstellen"
+      "backup_and_restore": "Sichern und Wiederherstellen",
+      "import": "Importieren",
+      "export": "Exportieren"
     },
     "page_indicator": {
       "page_indicator": "Position der Seitenanzeige",
@@ -375,10 +377,7 @@
   },
   "favorite_tags": {
     "favorites": "Favoriten",
-    "import": "Importieren",
     "import_hint": "Tag-String hier eingeben. Durch Leerzeichen getrennt.",
-    "cancel": "Abbrechen",
-    "export": "Exportieren",
     "export_notification": "Tag-String in die Zwischenablage kopiert",
     "favorite_tags": "Gespeicherte Tags"
   },

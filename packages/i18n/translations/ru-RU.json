@@ -274,7 +274,9 @@
       "clear_cache_on_start_up": "Очистить кеш изображений при запуске"
     },
     "backup_and_restore": {
-      "backup_and_restore": "Резервное копирование и восстановление"
+      "backup_and_restore": "Резервное копирование и восстановление",
+      "import": "Импорт",
+      "export": "Экспорт"
     },
     "image_details": {
       "image_details": "Детали изoбражения",
@@ -392,10 +394,7 @@
   },
   "favorite_tags": {
     "favorites": "Избранные",
-    "import": "Импорт",
     "import_hint": "Введите теги. Разделяйте пробелом.",
-    "cancel": "Отмена",
-    "export": "Экспорт",
     "export_notification": "Строка с тегами скопирована в буфер обмена",
     "favorite_tags": "Избранные теги"
   },

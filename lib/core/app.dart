@@ -15,6 +15,7 @@ import '../foundation/platform.dart';
 import '../foundation/scrolling.dart';
 import '../foundation/windows.dart';
 import 'analytics/widgets.dart';
+import 'backups/auto/auto_backup_trigger.dart';
 import 'router.dart';
 import 'settings/providers.dart';
 import 'theme/theme.dart';
@@ -28,8 +29,10 @@ class App extends StatelessWidget {
     return const Portal(
       child: OKToast(
         child: AnalyticsScope(
-          child: NetworkListener(
-            child: _App(),
+          child: AutoBackupAppLifecycle(
+            child: NetworkListener(
+              child: _App(),
+            ),
           ),
         ),
       ),

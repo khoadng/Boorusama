@@ -264,7 +264,9 @@
       "clear_cache_on_start_up": "ลบไฟล์แคชตอนเปิดแอป"
     },
     "backup_and_restore": {
-      "backup_and_restore": "สำรอง และเรียกคืนข้อมูล"
+      "backup_and_restore": "สำรอง และเรียกคืนข้อมูล",
+      "import": "นำเข้า",
+      "export": "นำออก"
     },
     "image_details": {
       "image_details": "รายละเอียดรูปภาพ",
@@ -382,10 +384,7 @@
   },
   "favorite_tags": {
     "favorites": "รายการโปรด",
-    "import": "นำเข้า",
     "import_hint": "ใส่คำเฉพาะของแท็กของคุณที่นี่ แยกคำโดยการเว้นวรรค",
-    "cancel": "ยกเลิก",
-    "export": "นำออก",
     "export_notification": "คัดลอกคำเฉพาะของแท็กไว้ในคลิปบอร์ดเรียบร้อย",
     "favorite_tags": "แท็กรายการโปรด"
   },

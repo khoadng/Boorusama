@@ -298,7 +298,9 @@
       "clear_cache_on_start_up": "启动时清理图片缓存"
     },
     "backup_and_restore": {
-      "backup_and_restore": "备份与恢复"
+      "backup_and_restore": "备份与恢复",
+      "import": "导入",
+      "export": "导出"
     },
     "image_details": {
       "image_details": "图片详情",
@@ -425,10 +427,7 @@
   },
   "favorite_tags": {
     "favorites": "喜爱",
-    "import": "导入",
     "import_hint": "在此输入标签。使用空格分隔。",
-    "cancel": "取消",
-    "export": "导出",
     "export_notification": "标签已复制到剪切板",
     "favorite_tags": "喜爱tag"
   },

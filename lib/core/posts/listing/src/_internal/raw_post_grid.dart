@@ -233,7 +233,9 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
                       final selected = _selectionModeController.selection;
                       return selected.isEmpty
                           ? Text(context.t.download.select_items)
-                          : Text('${selected.length} ${context.t.download.items_selected}');
+                          : Text(
+                              '${selected.length} ${context.t.download.items_selected}',
+                            );
                     },
                   ),
                 ),

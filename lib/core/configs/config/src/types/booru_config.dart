@@ -102,11 +102,7 @@ class BooruConfig extends Equatable {
           ? null
           : ThemeConfigs.fromJson(json['theme'] as Map<String, dynamic>),
       alwaysIncludeTags: json['alwaysIncludeTags'] as String?,
-      blacklistConfigs: json['blacklistedConfigs'] != null
-          ? BlacklistConfigs.fromJson(
-              json['blacklistedConfigs'] as Map<String, dynamic>,
-            )
-          : null,
+      blacklistConfigs: _parseBlacklistConfigs(json),
       layout: json['layout'] == null
           ? null
           : LayoutConfigs.fromJson(json['layout'] as Map<String, dynamic>),
@@ -311,6 +307,20 @@ class BooruConfig extends Equatable {
       'viewerNotesFetchBehavior': viewerNotesFetchBehavior?.index,
     };
   }
+}
+
+BlacklistConfigs? _parseBlacklistConfigs(Map<String, dynamic> json) {
+  if (json['blacklistedConfigs'] != null) {
+    return BlacklistConfigs.fromJson(
+      json['blacklistedConfigs'] as Map<String, dynamic>,
+    );
+  }
+  if (json['blacklistedTags'] != null) {
+    return BlacklistConfigs.fromJson(
+      json['blacklistedTags'] as Map<String, dynamic>,
+    );
+  }
+  return null;
 }
 
 class BooruConfigAuth extends Equatable with BooruConfigAuthMixin {

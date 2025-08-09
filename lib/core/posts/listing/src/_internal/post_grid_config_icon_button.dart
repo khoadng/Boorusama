@@ -295,7 +295,10 @@ class EditBlacklistActionSheet extends ConsumerWidget {
                               context.t.blacklisted_tags.edit_global_blacklist,
                             ),
                             BlacklistSource.booruSpecific => Text(
-                              context.t.blacklisted_tags.edit_booru_specific_blacklist,
+                              context
+                                  .t
+                                  .blacklisted_tags
+                                  .edit_booru_specific_blacklist,
                             ),
                             BlacklistSource.config => Text(
                               context.t.blacklisted_tags.edit_profile_blacklist,

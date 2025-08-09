@@ -12,6 +12,7 @@ import '../../../../boorus/engine/providers.dart';
 import '../../../../configs/gesture/gesture.dart';
 import '../../../../configs/ref.dart';
 import '../../../../settings/providers.dart';
+import '../../../../settings/settings.dart';
 import '../../../post/post.dart';
 import '../../../post/tags.dart';
 import '../../../post/widgets.dart';
@@ -61,6 +62,29 @@ class SliverPostGridImageGridItem<T extends Post> extends ConsumerWidget {
     final postGesturesHandler = booruBuilder?.postGestureHandlerBuilder;
     final gestures = ref.watchPostGestures?.preview;
 
+    final imageBorderRadius = ref.watch(
+      imageListingSettingsProvider.select(
+        (value) => value.imageBorderRadius,
+      ),
+    );
+
+    final showScoresInGrid = ref.watch(
+      imageListingSettingsProvider.select(
+        (value) => value.showScoresInGrid,
+      ),
+    );
+
+    final scoreWidget = showScoresInGrid
+        ? score.toOption().fold(
+            () => null,
+            (s) => ImageScoreWidget(score: s),
+          )
+        : null;
+
+    final imageListType = ref.watch(
+      imageListingSettingsProvider.select((v) => v.imageListType),
+    );
+
     return GestureDetector(
       onLongPress: gestures.canLongPress && postGesturesHandler != null
           ? () => postGesturesHandler(
@@ -71,65 +95,38 @@ class SliverPostGridImageGridItem<T extends Post> extends ConsumerWidget {
           : null,
       child: Stack(
         children: [
-          Consumer(
-            builder: (_, ref, _) {
-              final imageBorderRadius = ref.watch(
-                imageListingSettingsProvider.select(
-                  (value) => value.imageBorderRadius,
-                ),
-              );
-
-              return ImageGridItem(
-                leadingIcons: leadingIcons,
-                borderRadius: BorderRadius.circular(imageBorderRadius),
-                isGif: post.isGif,
-                isAI: post.isAI,
-                hideOverlay: hideOverlay,
-                quickActionButton: quickActionButton,
-                autoScrollOptions: autoScrollOptions,
-                splashColor: multiSelectEnabled ? Colors.transparent : null,
-                onTap: multiSelectEnabled
-                    ? () {
-                        SelectionMode.of(context).toggleItem(index);
-                      }
-                    : () {
-                        if (gestures.canTap && postGesturesHandler != null) {
-                          postGesturesHandler(
-                            ref,
-                            gestures?.tap,
-                            post,
-                          );
-                        } else {
-                          onTap?.call();
-                        }
-                      },
-                image: image,
-                isAnimated: post.isAnimated,
-                isTranslated: post.isTranslated,
-                hasComments: post.hasComment,
-                hasParentOrChildren: post.hasParentOrChildren,
-                hasSound: post.hasSound,
-                duration: post.duration,
-                scoreWidget: Consumer(
-                  builder: (_, ref, _) {
-                    final showScoresInGrid = ref.watch(
-                      imageListingSettingsProvider.select(
-                        (value) => value.showScoresInGrid,
-                      ),
-                    );
-
-                    final scoreWidget = showScoresInGrid
-                        ? score.toOption().fold(
-                            () => null,
-                            (s) => ImageScoreWidget(score: s),
-                          )
-                        : null;
-
-                    return scoreWidget ?? const SizedBox.shrink();
+          ImageGridItem(
+            leadingIcons: leadingIcons,
+            borderRadius: BorderRadius.circular(imageBorderRadius),
+            isGif: post.isGif,
+            isAI: post.isAI,
+            hideOverlay: hideOverlay,
+            quickActionButton: quickActionButton,
+            autoScrollOptions: autoScrollOptions,
+            splashColor: multiSelectEnabled ? Colors.transparent : null,
+            onTap: multiSelectEnabled
+                ? () {
+                    SelectionMode.of(context).toggleItem(index);
+                  }
+                : () {
+                    if (gestures.canTap && postGesturesHandler != null) {
+                      postGesturesHandler(
+                        ref,
+                        gestures?.tap,
+                        post,
+                      );
+                    } else {
+                      onTap?.call();
+                    }
                   },
-                ),
-              );
-            },
+            image: image,
+            isAnimated: post.isAnimated,
+            isTranslated: post.isTranslated,
+            hasComments: post.hasComment,
+            hasParentOrChildren: post.hasParentOrChildren,
+            hasSound: post.hasSound,
+            duration: post.duration,
+            scoreWidget: scoreWidget ?? const SizedBox.shrink(),
           ),
           if (overlay != null) ...[
             Positioned.fill(
@@ -140,11 +137,17 @@ class SliverPostGridImageGridItem<T extends Post> extends ConsumerWidget {
                 onTap: blockOverlay?.onTap,
               ),
             ),
-            Positioned.fill(
-              child: Center(
+            if (imageListType == ImageListType.masonry)
+              Positioned.fill(
+                child: Center(
+                  child: overlay.overlay,
+                ),
+              )
+            else
+              Align(
+                alignment: Alignment.center,
                 child: overlay.overlay,
               ),
-            ),
           ],
         ],
       ),

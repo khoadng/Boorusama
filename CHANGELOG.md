@@ -1,3 +1,17 @@
+# Prereleased-2025.8.8
+- TikTok swiping support in image viewer
+- Improved backup system with batch export/import and automatic backup support
+- Improved haptic feedback throughout the app
+- Grouped tags by category for a few sites that previously didn't support it
+- Copy image to clipboard functionality
+- New grid size options: "tiny" and "micro" for more compact viewing
+- Enhanced multi-select functionality across multiple screens
+- Removed all analytics/tracking
+- Added Hybooru support
+- Bring back support for a certain site that previously had data parsing issues
+- Added basic syntax highlighting for raw tag queries
+- Various UI/UX improvements, translation update and bug fixes
+
 # 4.1.0
 - Add profile-specific blacklist
 - Support adding custom blacklist tags for each individual bulk download task and template

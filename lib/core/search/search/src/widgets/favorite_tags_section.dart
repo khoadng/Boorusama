@@ -158,7 +158,7 @@ class ImportTagButton extends StatelessWidget {
     return FilledButton(
       style: FilledButton.styleFrom(shape: const StadiumBorder()),
       onPressed: () => goToFavoriteTagImportPage(context),
-      child: Text(context.t.favorite_tags.import),
+      child: Text(context.t.settings.backup_and_restore.import),
     );
   }
 }

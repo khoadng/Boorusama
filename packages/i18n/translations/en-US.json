@@ -568,10 +568,7 @@
   },
   "favorite_tags": {
     "favorites": "Favorites",
-    "import": "Import",
     "import_hint": "Enter your tag string here. Space delimited.",
-    "cancel": "Cancel",
-    "export": "Export",
     "export_notification": "Tag string copied to clipboard",
     "favorite_tags": "Favorite tags"
   },

@@ -570,10 +570,7 @@
   },
   "favorite_tags": {
     "favorites": "Улюблені",
-    "import": "Імпорт",
     "import_hint": "Введіть теги. Розділяйте пробілом.",
-    "cancel": "Відміна",
-    "export": "Експорт",
     "export_notification": "Теги скопійовано в буфер обміну",
     "favorite_tags": "Улюблені теги"
   },

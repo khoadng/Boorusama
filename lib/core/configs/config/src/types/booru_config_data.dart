@@ -104,7 +104,9 @@ class BooruConfigData extends Equatable {
         listing: json['listing'] as String?,
         theme: json['theme'] as String?,
         alwaysIncludeTags: json['alwaysIncludeTags'] as String?,
-        blacklistConfigs: json['blacklistConfigs'] as String?,
+        blacklistConfigs:
+            json['blacklistConfigs'] as String? ??
+            json['blacklistedTags'] as String?,
         layout: json['layout'] as String?,
         proxySettings: json['proxySettings'] as String?,
         viewerNotesFetchBehavior: json['viewerNotesFetchBehavior'] as int?,

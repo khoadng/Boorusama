@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:archive/archive_io.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 import 'package:intl/intl.dart';
@@ -472,8 +473,15 @@ class BulkBackupService {
         }
       }
 
+      final sourcesToImport = sourcesToProcess
+          .map((id) => registry.getSource(id))
+          .where((source) => source != null)
+          .nonNulls
+          .sorted((a, b) => a.priority.compareTo(b.priority));
+
       // Import each available source
-      for (final sourceId in sourcesToProcess) {
+      for (final source in sourcesToImport) {
+        final sourceId = source.id;
         logger.logI('Backup.Import', 'Processing source: $sourceId');
 
         try {
