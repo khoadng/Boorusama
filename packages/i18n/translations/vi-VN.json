@@ -274,7 +274,9 @@
       "clear_cache_on_start_up": "Xoá bộ nhớ đệm ảnh khi khởi động app"
     },
     "backup_and_restore": {
-      "backup_and_restore": "Sao lưu và phục hồi dữ liệu"
+      "backup_and_restore": "Sao lưu và phục hồi dữ liệu",
+      "import": "Nhập dữ liệu",
+      "export": "Xuất dữ liệu"
     },
     "image_details": {
       "image_details": "Chi tiết hình ảnh",
@@ -392,10 +394,7 @@
   },
   "favorite_tags": {
     "favorites": "Yêu thích",
-    "import": "Nhập tay",
     "import_hint": "Điền tag vào đây. Mỗi tag cách nhau bằng khoảng trắng.",
-    "cancel": "Huỷ",
-    "export": "Xuất tag",
     "export_notification": "Tag đã được chép vào clipboard",
     "favorite_tags": "Tag yêu thích"
   },

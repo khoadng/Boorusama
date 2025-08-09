@@ -9,7 +9,6 @@ import 'package:i18n/i18n.dart';
 import 'booru_dialog.dart';
 import 'booru_text_field.dart';
 
-//FIXME: don't reuse translation keys with favorites tags
 class ImportTagsDialog extends ConsumerStatefulWidget {
   const ImportTagsDialog({
     required this.onImport,
@@ -54,7 +53,7 @@ class _ImportTagsDialogState extends ConsumerState<ImportTagsDialog> {
             children: [
               Center(
                 child: Text(
-                  context.t.favorite_tags.import,
+                  context.t.settings.backup_and_restore.import,
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
               ),
@@ -83,13 +82,13 @@ class _ImportTagsDialogState extends ConsumerState<ImportTagsDialog> {
                           widget.onImport(value.text, ref);
                         }
                       : null,
-                  child: Text(context.t.favorite_tags.import),
+                  child: Text(context.t.settings.backup_and_restore.import),
                 ),
               ),
               SizedBox(height: widget.padding ?? 0),
               FilledButton(
                 onPressed: () => Navigator.of(context).pop(),
-                child: Text(context.t.favorite_tags.cancel),
+                child: Text(context.t.generic.action.cancel),
               ),
             ],
           ),

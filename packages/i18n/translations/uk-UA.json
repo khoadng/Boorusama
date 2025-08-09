@@ -305,7 +305,9 @@
       "clear_cache_on_start_up": "Очистити кеш зображень при запуску"
     },
     "backup_and_restore": {
-      "backup_and_restore": "Резервне копіювання та відновлення"
+      "backup_and_restore": "Резервне копіювання та відновлення",
+      "import": "Імпорт",
+      "export": "Експорт"
     },
     "image_details": {
       "image_details": "Деталі зображення",
@@ -432,10 +434,7 @@
   },
   "favorite_tags": {
     "favorites": "Улюблені",
-    "import": "Імпорт",
     "import_hint": "Введіть теги. Розділяйте пробілом.",
-    "cancel": "Відміна",
-    "export": "Експорт",
     "export_notification": "Теги скопійовано в буфер обміну",
     "favorite_tags": "Улюблені теги"
   },

@@ -195,6 +195,10 @@
       "performance": "Performance",
       "posts_per_page": "Posts per page",
       "posts_per_page_explain": "Number of thumbnails per page"
+    },
+    "backup_and_restore": {
+      "import": "Імпарт",
+      "export": "Экспарт"
     }
   },
   "blacklisted_tags": {
@@ -257,10 +261,7 @@
   },
   "favorite_tags": {
     "favorites": "Любімае",
-    "import": "Імпарт",
     "import_hint": "Увядзіце тэгі(абмежавана)",
-    "cancel": "Адмена",
-    "export": "Экспарт",
     "export_notification": "Радок з тэгамі скапіраван ў буфер абмену"
   },
   "rating": {

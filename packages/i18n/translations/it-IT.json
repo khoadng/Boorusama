@@ -274,7 +274,9 @@
       "clear_cache_on_start_up": "Elimina la cache delle immagini all'avvio"
     },
     "backup_and_restore": {
-      "backup_and_restore": "Backup e recupero dati"
+      "backup_and_restore": "Backup e recupero dati",
+      "import": "Importa",
+      "export": "Esporta"
     },
     "image_details": {
       "image_details": "Dettagli immagine",
@@ -306,10 +308,7 @@
     "contact_developer": "Contatta lo sviluppatore"
   },
   "favorite_tags": {
-    "import": "Importa",
     "import_hint": "Inserisci qui la tua stringa di tag. Delimitata da spazi.",
-    "cancel": "Elimina",
-    "export": "Esporta",
     "export_notification": "Stringa di tag copiata",
     "favorite_tags": "Tag preferiti"
   },

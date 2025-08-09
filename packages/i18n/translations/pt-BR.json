@@ -262,7 +262,9 @@
       "clear_cache_on_start_up": "Limpar cache de imagem ao iniciar"
     },
     "backup_and_restore": {
-      "backup_and_restore": "Backup e Restaurar"
+      "backup_and_restore": "Backup e Restaurar",
+      "import": "Importar",
+      "export": "Exportar"
     },
     "image_details": {
       "image_details": "Detalhes da imagem",
@@ -380,10 +382,7 @@
   },
   "favorite_tags": {
     "favorites": "Favoritos",
-    "import": "Importar",
     "import_hint": "Preencha sua linha de tag aqui. Espaço delimitado.",
-    "cancel": "Cancelar",
-    "export": "Exportar",
     "export_notification": "Linha de tag copiada para a área de transferência",
     "favorite_tags": "Tags favoritas"
   },

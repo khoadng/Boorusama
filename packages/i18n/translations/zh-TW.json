@@ -261,7 +261,9 @@
       "clear_cache_on_start_up": "啟動時清除圖像快取"
     },
     "backup_and_restore": {
-      "backup_and_restore": "備份與還原"
+      "backup_and_restore": "備份與還原",
+      "import": "匯入",
+      "export": "匯出"
     },
     "image_details": {
       "image_details": "圖像詳細資料",
@@ -358,10 +360,7 @@
   },
   "favorite_tags": {
     "favorites": "最愛",
-    "import": "匯入",
     "import_hint": "在此輸入標籤，以空格分隔",
-    "cancel": "取消",
-    "export": "匯出",
     "export_notification": "標籤已複製到剪貼簿"
   },
   "rating": {

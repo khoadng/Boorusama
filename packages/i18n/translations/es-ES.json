@@ -274,7 +274,9 @@
       "clear_cache_on_start_up": "Borrar caché de imágenes al iniciar"
     },
     "backup_and_restore": {
-      "backup_and_restore": "Copia de seguridad y restaurar"
+      "backup_and_restore": "Copia de seguridad y restaurar",
+      "import": "Importar",
+      "export": "Exportar"
     },
     "image_details": {
       "image_details": "Detalles de la imagen",
@@ -392,10 +394,7 @@
   },
   "favorite_tags": {
     "favorites": "Favoritos",
-    "import": "Importar",
     "import_hint": "Introduzca su etiqueta aqui. Espacio delimitado.",
-    "cancel": "Cancelar",
-    "export": "Exportar",
     "export_notification": "Etiquetas copiadas a tu portapapeles",
     "favorite_tags": "Etiquetas favoritas"
   },

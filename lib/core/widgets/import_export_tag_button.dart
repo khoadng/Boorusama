@@ -49,8 +49,9 @@ class ImportExportTagButton extends ConsumerWidget {
         }
       },
       itemBuilder: {
-        'import': Text(context.t.favorite_tags.import),
-        if (tags.isNotEmpty) 'export': Text(context.t.favorite_tags.export),
+        'import': Text(context.t.settings.backup_and_restore.import),
+        if (tags.isNotEmpty)
+          'export': Text(context.t.settings.backup_and_restore.export),
       },
     );
   }

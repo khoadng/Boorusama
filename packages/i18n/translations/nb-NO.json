@@ -182,7 +182,11 @@
       }
     },
     "help_us_translate": "Bistå oversettelsen",
-    "other_settings": "Andre innstillinger"
+    "other_settings": "Andre innstillinger",
+    "backup_and_restore": {
+      "import": "Importer",
+      "export": "Eksporter"
+    }
   },
   "blacklisted_tags": {
     "remove": "Fjern",
@@ -221,10 +225,7 @@
     "create_group_confirm": "OK"
   },
   "favorite_tags": {
-    "favorites": "Favoritter",
-    "import": "Importer",
-    "cancel": "Avbryt",
-    "export": "Eksporter"
+    "favorites": "Favoritter"
   },
   "rating": {
     "rate_request": "Vurder dette programmet",

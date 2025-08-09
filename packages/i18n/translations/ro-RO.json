@@ -261,7 +261,9 @@
       "clear_cache_on_start_up": "Goliți memoria cache a imaginilor când deschideți aplicația"
     },
     "backup_and_restore": {
-      "backup_and_restore": "Copie de rezervă și restaurare"
+      "backup_and_restore": "Copie de rezervă și restaurare",
+      "import": "Importați",
+      "export": "Exportați"
     },
     "image_details": {
       "image_details": "Detaliile imaginii",
@@ -379,10 +381,7 @@
   },
   "favorite_tags": {
     "favorites": "Favorite",
-    "import": "Importați",
     "import_hint": "Introduceți seria de etichete aici. Spațiu delimitat.",
-    "cancel": "Anulați",
-    "export": "Exportați",
     "export_notification": "Seria de etichete copiată în clipboard",
     "favorite_tags": "Etichete favorite"
   },

@@ -307,7 +307,9 @@
       "clear_cache_on_start_up": "起動時に画像キャッシュを削除"
     },
     "backup_and_restore": {
-      "backup_and_restore": "バックアップとリストア"
+      "backup_and_restore": "バックアップとリストア",
+      "import": "インポート",
+      "export": "エクスポート"
     },
     "image_details": {
       "image_details": "画像詳細",
@@ -425,10 +427,7 @@
   },
   "favorite_tags": {
     "favorites": "お気に入り",
-    "import": "インポート",
     "import_hint": "タグをスペースで区切って入力",
-    "cancel": "キャンセル",
-    "export": "エクスポート",
     "export_notification": "タグをクリップボードにコピーしました",
     "favorite_tags": "お気に入りタグ"
   },
