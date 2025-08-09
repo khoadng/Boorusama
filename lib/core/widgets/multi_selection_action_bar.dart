@@ -19,7 +19,7 @@ class MultiSelectionActionBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(top: 8),
-      child: AdaptiveButtonRow.scrollable(
+      child: AdaptiveButtonRow.menu(
         buttons: children
             .map(
               (button) => ButtonData(
