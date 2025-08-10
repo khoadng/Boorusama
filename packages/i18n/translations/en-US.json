@@ -351,8 +351,6 @@
     "backup_and_restore": {
       "backup_and_restore": "Backup and Restore",
       "advanced_backup": "Advanced Backup",
-      "select_items": "Select items",
-      "items_selected": "{count} selected",
       "exporting": "Exporting...",
       "export": "Export",
       "import": "Import",
@@ -478,8 +476,6 @@
     "downloads": "Downloads",
     "retry_all": "Retry all",
     "nothing_to_clear": "Nothing to clear",
-    "select_items": "Select items",
-    "items_selected": "Items selected",
     "download_manager_disabled": "Download manager is disabled",
     "open_settings": "Open settings",
     "new_download": "New download",
@@ -681,5 +677,12 @@
   },
   "auth": {
     "login_required": "You need to provide login details to use this feature."
+  },
+  "select": {
+    "selected_items": "Select items",
+    "items_selected": {
+      "one": "$n item selected",
+      "other": "$n items selected"
+    }
   }
 }

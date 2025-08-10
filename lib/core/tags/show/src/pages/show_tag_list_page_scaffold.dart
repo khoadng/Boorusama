@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
-import 'package:material_symbols_icons/symbols.dart';
 import 'package:selection_mode/selection_mode.dart';
 
 // Project imports:
@@ -12,7 +11,7 @@ import '../../../../configs/config/types.dart';
 import '../../../../posts/post/post.dart';
 import '../../../../search/search/widgets.dart';
 import '../../../../settings/providers.dart';
-import '../../../../widgets/selection_app_bar_builder.dart';
+import '../../../../widgets/default_selection_bar.dart';
 import '../../../../widgets/widgets.dart';
 import '../providers.dart';
 
@@ -69,68 +68,29 @@ class _ShowTagListPageScaffoldState
         controller: _selectionModeController,
         options: ref.watch(selectionOptionsProvider),
         child: Scaffold(
-          appBar: SelectionAppBarBuilder(
-            builder: (context, controller, isSelectionMode) => !isSelectionMode
-                ? AppBar(
-                    title: Text('Tags'.hc),
-                    centerTitle: false,
-                    actions: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        child: BooruPopupMenuButton(
-                          onSelected: (value) {
-                            switch (value) {
-                              case 'select':
-                                controller.enable();
-                              default:
-                            }
-                          },
-                          itemBuilder: {
-                            'select': Text(context.t.generic.action.select),
-                          },
-                        ),
-                      ),
-                    ],
-                  )
-                : AppBar(
-                    title: ListenableBuilder(
-                      listenable: controller,
-                      builder: (context, _) {
-                        final selectedItems = controller.selection;
-
-                        return selectedItems.isEmpty
-                            ? Text('Select tags'.hc)
-                            : Text(
-                                '${selectedItems.length} Tags selected'.hc,
-                              );
-                      },
-                    ),
-                    actions: [
-                      ref
-                          .watch(showTagsProvider(params))
-                          .maybeWhen(
-                            data: (tags) => IconButton(
-                              onPressed: () => controller.selectAll(
-                                List.generate(
-                                  tags.length,
-                                  (index) => index,
-                                ),
-                              ),
-                              icon: const Icon(Symbols.select_all),
-                            ),
-                            orElse: () => const SizedBox.shrink(),
-                          ),
-                      IconButton(
-                        onPressed: () => controller.deselectAll(),
-                        icon: const Icon(Symbols.clear_all),
-                      ),
-                      IconButton(
-                        color: Theme.of(context).colorScheme.primary,
-                        onPressed: () => controller.disable(),
-                        icon: const Icon(Symbols.check),
-                      ),
-                    ],
+          appBar: DefaultSelectionAppBar(
+            itemsCount: ref.watch(showTagsProvider(params)).valueOrNull?.length,
+            appBar: AppBar(
+              title: Text('Tags'.hc),
+              centerTitle: false,
+              actions: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: BooruPopupMenuButton(
+                    onSelected: (value) {
+                      switch (value) {
+                        case 'select':
+                          _selectionModeController.enable();
+                        default:
+                      }
+                    },
+                    itemBuilder: {
+                      'select': Text(context.t.generic.action.select),
+                    },
                   ),
+                ),
+              ],
+            ),
           ),
           body: Stack(
             children: [

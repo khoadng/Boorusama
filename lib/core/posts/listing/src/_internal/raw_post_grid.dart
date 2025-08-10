@@ -8,7 +8,6 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_improved_scrolling/flutter_improved_scrolling.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:foundation/widgets.dart';
-import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:selection_mode/selection_mode.dart';
@@ -20,6 +19,7 @@ import '../../../../../foundation/keyboard.dart';
 import '../../../../settings/settings.dart';
 import '../../../../theme/app_theme.dart';
 import '../../../../widgets/animated_footer.dart';
+import '../../../../widgets/default_selection_bar.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../post/post.dart';
 import '../utils/conditional_value_listenable_builder.dart';
@@ -47,7 +47,6 @@ class RawPostGrid<T extends Post> extends StatefulWidget {
     this.sliverHeaders,
     this.scrollController,
     this.footer,
-    this.header,
     this.blacklistedIdString,
     this.refreshAtStart = true,
     this.enablePullToRefresh = true,
@@ -67,7 +66,6 @@ class RawPostGrid<T extends Post> extends StatefulWidget {
   final bool safeArea;
 
   final Widget? footer;
-  final Widget? header;
   final Widget body;
   final Widget gridHeader;
   final Widget topPageIndicator;
@@ -205,40 +203,10 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
           selectionModeController: _selectionModeController,
           selectionOptions: _selectionOptions,
           autoScrollController: _autoScrollController,
-          header: widget.header != null
-              ? widget.header!
-              : AppBar(
-                  leading: IconButton(
-                    onPressed: () => _selectionModeController.disable(),
-                    icon: const Icon(Symbols.close),
-                  ),
-                  actions: [
-                    IconButton(
-                      onPressed: () => _selectionModeController.selectAll(
-                        List.generate(
-                          items.length,
-                          (index) => index,
-                        ),
-                      ),
-                      icon: const Icon(Symbols.select_all),
-                    ),
-                    IconButton(
-                      onPressed: _selectionModeController.deselectAll,
-                      icon: const Icon(Symbols.clear_all),
-                    ),
-                  ],
-                  title: ListenableBuilder(
-                    listenable: _selectionModeController,
-                    builder: (_, _) {
-                      final selected = _selectionModeController.selection;
-                      return selected.isEmpty
-                          ? Text(context.t.download.select_items)
-                          : Text(
-                              '${selected.length} ${context.t.download.items_selected}',
-                            );
-                    },
-                  ),
-                ),
+          header: DefaultSelectionBar(
+            itemsCount: items.length,
+            appBar: const SizedBox.shrink(),
+          ),
           child: _Scaffold(
             body: ConditionalParentWidget(
               condition: kPreferredLayout.isMobile,
@@ -559,17 +527,7 @@ class _SelectionMode extends StatelessWidget {
         children: [
           Column(
             children: [
-              SelectionConsumer(
-                builder: (context, controller, child) {
-                  final multiSelect = controller.isActive;
-                  return multiSelect && header != null
-                      ? SizedBox(
-                          height: kToolbarHeight,
-                          child: header,
-                        )
-                      : const SizedBox.shrink();
-                },
-              ),
+              if (header case final Widget header) header,
               Expanded(
                 child: SelectionCanvas(
                   child: child,

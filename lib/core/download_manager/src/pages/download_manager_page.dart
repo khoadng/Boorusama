@@ -18,7 +18,7 @@ import '../../../configs/ref.dart';
 import '../../../downloads/downloader/providers.dart';
 import '../../../http/providers.dart';
 import '../../../settings/routes.dart';
-import '../../../widgets/selection_app_bar_builder.dart';
+import '../../../widgets/default_selection_bar.dart';
 import '../../../widgets/widgets.dart';
 import '../../types.dart';
 import '../l10n.dart';
@@ -105,92 +105,59 @@ class _DownloadManagerPageState extends ConsumerState<DownloadManagerPage> {
   Widget build(BuildContext context) {
     final tasks = ref.watch(downloadFilteredProvider(widget.filter));
     final config = ref.watchConfig;
+    final group = ref.watch(downloadGroupProvider);
+    final isDefaultGroup = group == FileDownloader.defaultGroup;
 
     return SelectionMode(
       controller: _selectionModeController,
       scrollController: scrollController,
       child: Scaffold(
-        appBar: SelectionAppBarBuilder(
-          builder: (context, controller, isSelectionMode) {
-            final group = ref.watch(downloadGroupProvider);
-            final isDefaultGroup = group == FileDownloader.defaultGroup;
-
-            return !isSelectionMode
-                ? AppBar(
-                    title: Text(
-                      DownloadTranslations.downloadManagerTitle(context),
-                    ),
-                    actions: [
-                      if (isDefaultGroup)
-                        IconButton(
-                          icon: const Icon(Icons.settings),
-                          onPressed: () {
-                            openDownloadSettingsPage(ref);
-                          },
-                        ),
-                      BooruPopupMenuButton(
-                        onSelected: (value) {
-                          switch (value) {
-                            case 'select':
-                              _selectionModeController.enable();
-                            case 'clear':
-                              // clear default group only
-                              ref
-                                  .read(downloadTaskUpdatesProvider.notifier)
-                                  .clear(
-                                    FileDownloader.defaultGroup,
-                                    onFailed: () {
-                                      showSimpleSnackBar(
-                                        context: context,
-                                        content: Text(
-                                          DownloadTranslations.downloadNothingToClear(
-                                            context,
-                                          ),
-                                        ),
-                                        duration: const Duration(seconds: 1),
-                                      );
-                                    },
-                                  );
-                          }
-                        },
-                        itemBuilder: {
-                          'select': Text(context.t.generic.action.select),
-                          'clear': Text(context.t.generic.action.clear),
-                        },
-                      ),
-                    ],
-                  )
-                : AppBar(
-                    title: Builder(
-                      builder: (context) {
-                        final selectedItems = controller.selection;
-
-                        return selectedItems.isEmpty
-                            ? Text(context.t.download.select_items)
-                            : Text(
-                                '${selectedItems.length} ${context.t.download.items_selected}',
+        appBar: DefaultSelectionAppBar(
+          itemsCount: tasks.length,
+          appBar: AppBar(
+            title: Text(
+              DownloadTranslations.downloadManagerTitle(context),
+            ),
+            actions: [
+              if (isDefaultGroup)
+                IconButton(
+                  icon: const Icon(Icons.settings),
+                  onPressed: () {
+                    openDownloadSettingsPage(ref);
+                  },
+                ),
+              BooruPopupMenuButton(
+                onSelected: (value) {
+                  switch (value) {
+                    case 'select':
+                      _selectionModeController.enable();
+                    case 'clear':
+                      // clear default group only
+                      ref
+                          .read(downloadTaskUpdatesProvider.notifier)
+                          .clear(
+                            FileDownloader.defaultGroup,
+                            onFailed: () {
+                              showSimpleSnackBar(
+                                context: context,
+                                content: Text(
+                                  DownloadTranslations.downloadNothingToClear(
+                                    context,
+                                  ),
+                                ),
+                                duration: const Duration(seconds: 1),
                               );
-                      },
-                    ),
-                    actions: [
-                      IconButton(
-                        icon: const Icon(Symbols.select_all),
-                        onPressed: () => _selectionModeController.selectAll(
-                          List.generate(
-                            tasks.length,
-                            (index) => index,
-                          ),
-                        ),
-                      ),
-                      IconButton(
-                        icon: const Icon(Symbols.clear_all),
-                        onPressed: () {
-                          _selectionModeController.deselectAll();
-                        },
-                      ),
-                    ],
-                  );
-          },
+                            },
+                          );
+                  }
+                },
+                itemBuilder: {
+                  'select': Text(context.t.generic.action.select),
+                  'clear': Text(context.t.generic.action.clear),
+                },
+              ),
+            ],
+          ),
         ),
         body: SafeArea(
           child: Stack(

@@ -349,8 +349,6 @@
     "backup_and_restore": {
       "backup_and_restore": "Резервне копіювання та відновлення",
       "advanced_backup": "Розширене резервне копіювання",
-      "select_items": "Вибрати елементи",
-      "items_selected": "{count} вибраний",
       "exporting": "Експортуємо...",
       "export": "Експорт",
       "import": "Імпорт",
@@ -665,6 +663,13 @@
         "one": "Секунд",
         "other": "Секунди"
       }
+    }
+  },
+  "select": {
+    "selected_items": "Вибрати елементи",
+    "items_selected": {
+      "one": "$n вибраний",
+      "other": "$n вибраних"
     }
   }
 }

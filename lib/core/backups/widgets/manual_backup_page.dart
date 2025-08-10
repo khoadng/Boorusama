@@ -4,12 +4,11 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
-import 'package:material_symbols_icons/symbols.dart';
 import 'package:selection_mode/selection_mode.dart';
 
 // Project imports:
 import '../../../foundation/toast.dart';
-import '../../widgets/selection_app_bar_builder.dart';
+import '../../widgets/default_selection_bar.dart';
 import '../../widgets/widgets.dart';
 import '../sources/providers.dart';
 import '../types/backup_data_source.dart';
@@ -57,60 +56,8 @@ class _ManualBackupPageState extends ConsumerState<ManualBackupPage> {
         behavior: SelectionBehavior.manual,
       ),
       child: Scaffold(
-        appBar: SelectionAppBarBuilder(
-          builder: (context, controller, isSelectionMode) => !isSelectionMode
-              ? AppBar(
-                  title: Text(
-                    context.t.settings.backup_and_restore.advanced_backup,
-                  ),
-                  actions: [
-                    TextButton(
-                      onPressed: () => controller.enable(),
-                      child: Text(context.t.generic.action.select),
-                    ),
-                  ],
-                )
-              : AppBar(
-                  title: ListenableBuilder(
-                    listenable: controller,
-                    builder: (context, _) {
-                      final selectedCount = controller.selection.length;
-                      return Text(
-                        selectedCount == 0
-                            ? context.t.settings.backup_and_restore.select_items
-                            : context
-                                  .t
-                                  .settings
-                                  .backup_and_restore
-                                  .items_selected
-                                  .replaceAll(
-                                    '{count}',
-                                    selectedCount.toString(),
-                                  ),
-                      );
-                    },
-                  ),
-                  leading: IconButton(
-                    icon: const Icon(Icons.close),
-                    onPressed: () => controller.disable(),
-                  ),
-                  actions: [
-                    IconButton(
-                      onPressed: () => controller.selectAll(
-                        List.generate(sources.length, (index) => index),
-                      ),
-                      icon: const Icon(Symbols.select_all),
-                    ),
-                    IconButton(
-                      onPressed: () => controller.deselectAll(),
-                      icon: const Icon(Symbols.clear_all),
-                    ),
-                    TextButton(
-                      onPressed: () => _selectionController.disable(),
-                      child: Text(context.t.generic.done),
-                    ),
-                  ],
-                ),
+        appBar: DefaultSelectionAppBar(
+          itemsCount: sources.length,
         ),
         body: Stack(
           children: [
