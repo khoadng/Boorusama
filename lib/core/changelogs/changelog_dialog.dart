@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:math' as math;
+
 // Flutter imports:
 import 'package:flutter/material.dart';
 
@@ -28,128 +31,161 @@ class ChangelogDialog extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final version = data.version;
-    final colorScheme = Theme.of(context).colorScheme;
     final significantUpdate = isSignificantUpdate(
       data.previousVersion,
       data.version,
     );
     final hasPrem =
         ref.watch(showPremiumFeatsProvider) && ref.watch(hasPremiumProvider);
+    final size = MediaQuery.sizeOf(context);
+    final screenHeight = size.height;
+    final screenWidth = size.width;
 
     return Dialog(
       insetPadding: const EdgeInsets.symmetric(
-        horizontal: 28,
-        vertical: 24,
+        horizontal: 20,
+        vertical: 20,
       ),
       child: Container(
-        constraints: const BoxConstraints(maxWidth: 650),
+        constraints: BoxConstraints(
+          maxWidth: math.min(screenWidth * 0.9, 450),
+          maxHeight: math.min(screenHeight * 0.8, 550),
+        ),
         margin: const EdgeInsets.symmetric(
           horizontal: 4,
           vertical: 4,
         ),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 4,
-                  horizontal: 4,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Expanded(
-                      child: Container(
-                        margin: const EdgeInsets.only(left: 8),
-                        child: Row(
-                          children: [
-                            Text(
-                              context.t.app_update.whats_new,
-                              style: Theme.of(context).textTheme.titleMedium
-                                  ?.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                            ),
-                            const SizedBox(width: 8),
-                            CompactChip(
-                              backgroundColor: colorScheme.primary,
-                              textColor: colorScheme.onPrimary,
-                              label: version.toString(),
-                            ),
-                          ],
-                        ),
-                      ),
+                    _Header(version: version),
+                    const Divider(
+                      thickness: 1,
+                      height: 0,
                     ),
-                    IconButton(
-                      splashRadius: 18,
-                      onPressed: () => Navigator.of(context).maybePop(),
-                      icon: const Icon(Icons.close),
+                    Flexible(
+                      child: _Content(data: data),
                     ),
                   ],
                 ),
               ),
-              const Divider(
-                thickness: 1,
-                height: 0,
-              ),
-              Flexible(
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                    left: 4,
-                    bottom: 12,
-                    top: 4,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      switch (data.version) {
-                        final Prereleased u => Padding(
-                          padding: const EdgeInsets.only(
-                            left: 8,
-                            bottom: 4,
-                          ),
-                          child: Text(
-                            '${context.t.comment.list.last_updated}: ${u.lastUpdated?.fuzzify(locale: Localizations.localeOf(context))}',
-                            style: TextStyle(
-                              color: colorScheme.hintColor,
-                              fontStyle: FontStyle.italic,
-                              fontSize: 12,
-                            ),
-                          ),
-                        ),
-                        _ => const SizedBox.shrink(),
-                      },
-                      SingleChildScrollView(
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: MarkdownBody(
-                                data: data.content,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              if (significantUpdate) ...[
-                const SizedBox(height: 8),
-                Divider(
-                  thickness: 2,
-                  endIndent: 32,
-                  indent: 32,
-                  height: 8,
-                  color: colorScheme.primary,
-                ),
-                if (!hasPrem) const _SupportBanner() else const _ThanksBanner(),
-              ],
+            ),
+            if (significantUpdate) ...[
+              if (!hasPrem) const _SupportBanner() else const _ThanksBanner(),
             ],
-          ),
+          ],
         ),
+      ),
+    );
+  }
+}
+
+class _Content extends StatelessWidget {
+  const _Content({
+    required this.data,
+  });
+
+  final ChangelogData data;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Padding(
+      padding: const EdgeInsets.only(
+        left: 4,
+        bottom: 12,
+        top: 4,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          switch (data.version) {
+            final Prereleased u => Padding(
+              padding: const EdgeInsets.only(
+                top: 4,
+                left: 8,
+                bottom: 8,
+              ),
+              child: Text(
+                '${context.t.comment.list.last_updated}: ${u.lastUpdated?.fuzzify(locale: Localizations.localeOf(context))}',
+                style: TextStyle(
+                  color: colorScheme.hintColor,
+                  fontStyle: FontStyle.italic,
+                  fontSize: 12,
+                ),
+              ),
+            ),
+            _ => const SizedBox.shrink(),
+          },
+          SingleChildScrollView(
+            child: Row(
+              children: [
+                Expanded(
+                  child: MarkdownBody(
+                    data: data.content,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _Header extends StatelessWidget {
+  const _Header({
+    required this.version,
+  });
+
+  final ReleaseVersion version;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        vertical: 4,
+        horizontal: 4,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: Container(
+              margin: const EdgeInsets.only(left: 8),
+              child: Row(
+                children: [
+                  Text(
+                    context.t.app_update.whats_new,
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  CompactChip(
+                    backgroundColor: colorScheme.primary,
+                    textColor: colorScheme.onPrimary,
+                    label: version.toString(),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          IconButton(
+            splashRadius: 18,
+            onPressed: () => Navigator.of(context).maybePop(),
+            icon: const Icon(Icons.close),
+          ),
+        ],
       ),
     );
   }
