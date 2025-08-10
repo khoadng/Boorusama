@@ -14,7 +14,7 @@ import '../../../../../core/downloads/downloader/providers.dart';
 import '../../../../../core/posts/post/post.dart';
 import '../../../../../core/posts/post/providers.dart';
 import '../../../../../core/router.dart';
-import '../../../../../core/tags/tag/routes.dart';
+import '../../../../../core/tags/show/routes.dart';
 import '../../../../../foundation/url_launcher.dart';
 import '../../../versions/routes.dart';
 import '../../favgroups/favgroups/routes.dart';

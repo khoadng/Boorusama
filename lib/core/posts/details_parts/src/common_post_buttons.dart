@@ -16,7 +16,7 @@ import '../../../configs/config/types.dart';
 import '../../../images/providers.dart';
 import '../../../premiums/providers.dart';
 import '../../../settings/routes.dart';
-import '../../../tags/tag/routes.dart';
+import '../../../tags/show/routes.dart';
 import '../../../widgets/adaptive_button_row.dart';
 import '../../details_manager/routes.dart';
 import '../../post/src/data/providers.dart';

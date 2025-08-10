@@ -31,7 +31,7 @@ import '../../core/posts/statistics/stats.dart';
 import '../../core/posts/statistics/widgets.dart';
 import '../../core/settings/settings.dart';
 import '../../core/tags/metatag/providers.dart';
-import '../../core/tags/tag/routes.dart';
+import '../../core/tags/show/routes.dart';
 import '../../foundation/url_launcher.dart';
 import 'artists/artist/widgets.dart';
 import 'artists/search/widgets.dart';
