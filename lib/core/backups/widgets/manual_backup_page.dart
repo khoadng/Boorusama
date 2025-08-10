@@ -116,7 +116,6 @@ class _ManualBackupPageState extends ConsumerState<ManualBackupPage> {
           children: [
             Positioned.fill(
               child: SelectionCanvas(
-                onBackgroundTap: () {},
                 child: ListView.separated(
                   controller: _scrollController,
                   padding: const EdgeInsets.all(12),
