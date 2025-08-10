@@ -36,7 +36,7 @@ class DiscoveryClient {
       _isDiscovering = true;
       _discovery = BonsoirDiscovery(type: '_boorusama._tcp');
 
-      await _discovery?.ready.timeout(
+      await _discovery?.initialize().timeout(
         timeout,
         onTimeout: () {
           _cleanupResources();
@@ -89,19 +89,20 @@ class DiscoveryClient {
         return;
       }
 
-      switch (event.type) {
-        case BonsoirDiscoveryEventType.discoveryServiceFound:
+      switch (event) {
+        case BonsoirDiscoveryServiceFoundEvent():
           onServiceFound?.call(service);
           _handleServiceResolution(service, discovery);
-        case BonsoirDiscoveryEventType.discoveryServiceResolved:
+        case BonsoirDiscoveryServiceResolvedEvent():
           onServiceResolved?.call(service);
-        case BonsoirDiscoveryEventType.discoveryServiceLost:
+        case BonsoirDiscoveryServiceLostEvent():
           onServiceLost?.call(service);
-        case BonsoirDiscoveryEventType.discoveryServiceResolveFailed:
+        case BonsoirDiscoveryServiceResolveFailedEvent():
           onError?.call('Service resolve failed');
-        case BonsoirDiscoveryEventType.discoveryStarted:
-        case BonsoirDiscoveryEventType.discoveryStopped:
-        case BonsoirDiscoveryEventType.unknown:
+        case BonsoirDiscoveryStartedEvent():
+        case BonsoirDiscoveryStoppedEvent():
+        case BonsoirDiscoveryUnknownEvent():
+        case BonsoirDiscoveryServiceUpdatedEvent():
           break;
       }
     } catch (e) {

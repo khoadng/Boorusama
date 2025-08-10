@@ -44,7 +44,7 @@ dependencies:
   archive: ^4.0.7
   animated_list_plus: ^0.5.2
   background_downloader: ^9.1.1
-  bonsoir: ^5.1.11
+  bonsoir: ^6.0.1
   collection: ^1.17.0
   connectivity_plus: ^6.1.0
   context_menus:
@@ -75,7 +75,7 @@ dependencies:
   flutter_scatter: ^0.2.0
   flutter_spinkit: ^5.2.0
   flutter_svg: ^2.0.10+1
-  flutter_widget_from_html_core: ^0.16.0
+  flutter_widget_from_html_core: ^0.17.0
   font_awesome_flutter: ^10.7.0
   fvp: ^0.33.0
   gal: ^2.3.0
@@ -102,7 +102,7 @@ dependencies:
   percent_indicator: ^4.2.3
   permission_handler: ^12.0.0+1
   petitparser: ^6.0.2
-  purchases_flutter: ^8.4.1
+  purchases_flutter: ^9.2.0
   rate_my_app: ^2.2.0
   readmore: ^3.0.0
   reorderable_grid_view: ^2.2.8
@@ -141,7 +141,7 @@ dependencies:
        ref: 8572dd54c437c919aedc8dca6c5bffd25fe74b3c
   webview_flutter: ^4.10.0
   webview_flutter_android: ^4.0.0
-  window_manager: 0.4.3 # https://github.com/leanflutter/window_manager/issues/550
+  window_manager: ^0.5.1 
   yaml: ^3.1.2
 
 dev_dependencies:

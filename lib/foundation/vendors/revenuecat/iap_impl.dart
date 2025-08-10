@@ -100,9 +100,10 @@ class RevenuecatPurchase implements i.Purchaser {
     }
 
     try {
-      final customerInfo = await Purchases.purchasePackage(revenuecatPackage);
+      final purchaseResult = await Purchases.purchasePackage(revenuecatPackage);
 
-      final entitlement = customerInfo.entitlements.all[kPremiumKey];
+      final entitlement =
+          purchaseResult.customerInfo.entitlements.all[kPremiumKey];
 
       if (entitlement == null) {
         logger.logE(_kServiceName, 'Entitlement not found: $kPremiumKey');

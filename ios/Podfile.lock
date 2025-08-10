@@ -50,10 +50,10 @@ PODS:
     - Flutter
   - flutter_local_notifications (0.0.1):
     - Flutter
-  - fvp (0.33.0):
+  - fvp (0.33.1):
     - Flutter
     - FlutterMacOS
-    - mdk (~> 0.33.0)
+    - mdk (~> 0.33.1)
   - gal (1.0.0):
     - Flutter
     - FlutterMacOS
@@ -72,15 +72,15 @@ PODS:
     - FlutterMacOS
   - permission_handler_apple (9.3.0):
     - Flutter
-  - purchases_flutter (8.10.5):
+  - purchases_flutter (9.2.0):
     - Flutter
-    - PurchasesHybridCommon (= 14.0.2)
-  - PurchasesHybridCommon (14.0.2):
-    - RevenueCat (= 5.30.0)
+    - PurchasesHybridCommon (= 16.2.0)
+  - PurchasesHybridCommon (16.2.0):
+    - RevenueCat (= 5.34.0)
   - rate_my_app (2.3.2):
     - Flutter
     - FlutterMacOS
-  - RevenueCat (5.30.0)
+  - RevenueCat (5.34.0)
   - SDWebImage (5.21.1):
     - SDWebImage/Core (= 5.21.1)
   - SDWebImage/Core (5.21.1)
@@ -97,28 +97,31 @@ PODS:
   - shared_preferences_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
-  - sqlite3 (3.50.1):
-    - sqlite3/common (= 3.50.1)
-  - sqlite3/common (3.50.1)
-  - sqlite3/dbstatvtab (3.50.1):
+  - sqlite3 (3.50.4):
+    - sqlite3/common (= 3.50.4)
+  - sqlite3/common (3.50.4)
+  - sqlite3/dbstatvtab (3.50.4):
     - sqlite3/common
-  - sqlite3/fts5 (3.50.1):
+  - sqlite3/fts5 (3.50.4):
     - sqlite3/common
-  - sqlite3/math (3.50.1):
+  - sqlite3/math (3.50.4):
     - sqlite3/common
-  - sqlite3/perf-threadsafe (3.50.1):
+  - sqlite3/perf-threadsafe (3.50.4):
     - sqlite3/common
-  - sqlite3/rtree (3.50.1):
+  - sqlite3/rtree (3.50.4):
+    - sqlite3/common
+  - sqlite3/session (3.50.4):
     - sqlite3/common
   - sqlite3_flutter_libs (0.0.1):
     - Flutter
     - FlutterMacOS
-    - sqlite3 (~> 3.50.1)
+    - sqlite3 (~> 3.50.4)
     - sqlite3/dbstatvtab
     - sqlite3/fts5
     - sqlite3/math
     - sqlite3/perf-threadsafe
     - sqlite3/rtree
+    - sqlite3/session
   - SwiftyGif (5.4.5)
   - url_launcher_ios (0.0.1):
     - Flutter
@@ -242,7 +245,7 @@ SPEC CHECKSUMS:
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   flutter_avif_ios: 2553d2aafda56339cf924e943da89ad3f40af2dd
   flutter_local_notifications: a5a732f069baa862e728d839dd2ebb904737effb
-  fvp: 6a1a8e62cd61b90a4afeec44a367892d726bf377
+  fvp: ed100b827d10aff53789fb9cb9dfdd85a87d037d
   gal: baecd024ebfd13c441269ca7404792a7152fde89
   local_auth_darwin: d2e8c53ef0c4f43c646462e3415432c4dab3ae19
   mdk: 622e3452cea55a982c0712ec9ce931d8ec718b22
@@ -251,17 +254,17 @@ SPEC CHECKSUMS:
   pasteboard: 49088aeb6119d51f976a421db60d8e1ab079b63c
   path_provider_foundation: 080d55be775b7414fd5a5ef3ac137b97b097e564
   permission_handler_apple: 4ed2196e43d0651e8ff7ca3483a069d469701f2d
-  purchases_flutter: cdbf8b0a0fcb110437c46be4b64515005452bd31
-  PurchasesHybridCommon: e1dbc7e7105c0845444cf82cf9d7c85eb9dbf918
+  purchases_flutter: b0a7ec52cb03768814b5758b2e8dc7c9a1f381da
+  PurchasesHybridCommon: 55e97b4e090015ed138988e6559def2bd4c50ebe
   rate_my_app: cbb89973f870601f80f7bad63aba107260cabc5b
-  RevenueCat: 16058ecaa0b868e04cc7cf53a5de3fe0b96ca7d1
+  RevenueCat: eb2aa042789d9c99ad5172bd96e28b96286d6ada
   SDWebImage: f29024626962457f3470184232766516dee8dfea
   share_handler_ios: e2244e990f826b2c8eaa291ac3831569438ba0fb
   share_handler_ios_models: fc638c9b4330dc7f082586c92aee9dfa0b87b871
   share_plus: 50da8cb520a8f0f65671c6c6a99b3617ed10a58a
   shared_preferences_foundation: 9e1978ff2562383bd5676f64ec4e9aa8fa06a6f7
-  sqlite3: 1d85290c3321153511f6e900ede7a1608718bbd5
-  sqlite3_flutter_libs: e7fc8c9ea2200ff3271f08f127842131746b70e2
+  sqlite3: 73513155ec6979715d3904ef53a8d68892d4032b
+  sqlite3_flutter_libs: 83f8e9f5b6554077f1d93119fe20ebaa5f3a9ef1
   SwiftyGif: 706c60cf65fa2bc5ee0313beece843c8eb8194d4
   url_launcher_ios: 694010445543906933d732453a59da0a173ae33d
   video_player_avfoundation: 2cef49524dd1f16c5300b9cd6efd9611ce03639b
