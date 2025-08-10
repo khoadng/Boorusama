@@ -25,7 +25,6 @@ import '../../core/posts/listing/widgets.dart';
 import '../../core/posts/post/routes.dart';
 import '../../core/posts/rating/rating.dart';
 import '../../core/posts/shares/providers.dart';
-import '../../core/posts/shares/widgets.dart';
 import '../../core/posts/sources/source.dart';
 import '../../core/posts/statistics/stats.dart';
 import '../../core/posts/statistics/widgets.dart';
@@ -142,11 +141,14 @@ class DanbooruBuilder
       (ref, action, post) => handleDanbooruGestureAction(
         action,
         onDownload: () => ref.download(post),
-        onShare: () => ref.sharePost(
-          post,
-          context: ref.context,
-          state: ref.read(postShareProvider((ref.readConfigAuth, post))),
-        ),
+        onShare: () => ref
+            .read(shareProvider)
+            .sharePost(
+              post,
+              ref.readConfigAuth,
+              context: ref.context,
+              configViewer: ref.readConfigViewer,
+            ),
         onToggleBookmark: () => ref.toggleBookmark(post),
         onViewTags: () => goToShowTaglistPage(
           ref,

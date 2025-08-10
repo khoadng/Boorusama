@@ -8,11 +8,14 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:share_plus/share_plus.dart';
 
 // Project imports:
+import '../../../boorus/engine/engine.dart';
 import '../../../config_widgets/booru_logo.dart';
 import '../../../config_widgets/website_logo.dart';
+import '../../../configs/config/src/types/booru_config.dart';
 import '../../../downloads/urls/sanitizer.dart';
 import '../../../images/providers.dart';
 import '../../post/post.dart';
+import '../../post/providers.dart';
 import '../../sources/source.dart';
 import 'download_and_share.dart';
 
@@ -46,20 +49,31 @@ typedef ModalShareImageData = ({String? imageUrl, String? imageExt});
 
 class PostModalShare extends ConsumerWidget {
   const PostModalShare({
-    required this.booruLink,
-    required this.sourceLink,
-    required this.imageData,
     required this.post,
+    required this.auth,
+    required this.viewer,
     super.key,
   });
 
-  final String booruLink;
-  final PostSource sourceLink;
-  final ModalShareImageData Function() imageData;
   final Post post;
+  final BooruConfigAuth auth;
+  final BooruConfigViewer viewer;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final imageData = (
+      imageUrl: defaultPostImageUrlBuilder(
+        ref,
+        auth,
+        viewer,
+      )(post),
+      imageExt: post.format,
+    );
+
+    final postLinkGenerator = ref.watch(postLinkGeneratorProvider(auth));
+    final booruLink = postLinkGenerator.getLink(post);
+    final sourceLink = post.source;
+
     return Material(
       child: SafeArea(
         top: false,
@@ -94,7 +108,7 @@ class PostModalShare extends ConsumerWidget {
                 },
               ),
             ref
-                .watch(_cachedImageFileProvider(imageData()))
+                .watch(_cachedImageFileProvider(imageData))
                 .when(
                   data: (file) {
                     return file != null

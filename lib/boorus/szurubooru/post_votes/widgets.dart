@@ -33,6 +33,7 @@ class SzurubooruPostActionToolbar extends ConsumerWidget {
     ).pageViewController;
 
     final config = ref.watchConfigAuth;
+    final configViewer = ref.watchConfigViewer;
     final isFaved = ref.watch(favoriteProvider((config, post.id)));
     final postVote = ref.watch(szurubooruPostVoteProvider(post.id));
     final voteState = postVote?.voteState ?? VoteState.unvote;
@@ -47,7 +48,7 @@ class SzurubooruPostActionToolbar extends ConsumerWidget {
         post: post,
         onStartSlideshow: controller.startSlideshow,
         config: config,
-        configViewer: ref.watchConfigViewer,
+        configViewer: configViewer,
         builder: (context, buttons) {
           return BooruMenuButtonRow(
             maxVisibleButtons: 5,
@@ -97,6 +98,7 @@ class SzurubooruPostActionToolbar extends ConsumerWidget {
                 widget: SharePostButton(
                   post: post,
                   auth: config,
+                  configViewer: configViewer,
                 ),
                 title: context.t.post.action.share,
               ),

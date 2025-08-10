@@ -34,7 +34,6 @@ import '../../../details_pageview/widgets.dart';
 import '../../../details_parts/widgets.dart';
 import '../../../post/post.dart';
 import '../../../post/routes.dart';
-import '../../../shares/providers.dart';
 import '../types/post_details.dart';
 import 'post_details_controller.dart';
 import 'post_details_full_info_sheet.dart';
@@ -291,10 +290,6 @@ class _PostDetailPageScaffoldState<T extends Post>
               _controller.disableHoverToControlOverlay();
             }
           }
-
-          ref
-              .read(postShareProvider((widget.authConfig, post)).notifier)
-              .updateInformation(post);
 
           if (widget.viewerConfig.autoFetchNotes) {
             ref.read(notesProvider(widget.authConfig).notifier).load(post);

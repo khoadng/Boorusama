@@ -315,6 +315,7 @@ class PreviewPostActionToolbar extends StatelessWidget {
             child: SharePostButton(
               post: _previewPost,
               auth: BooruConfigAuth.fromConfig(BooruConfig.empty),
+              configViewer: BooruConfigViewer.fromConfig(BooruConfig.empty),
             ),
           ),
           title: context.t.post.action.share,

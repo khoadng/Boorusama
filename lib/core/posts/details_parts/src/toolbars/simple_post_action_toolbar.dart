@@ -50,12 +50,13 @@ class SimplePostActionToolbar extends ConsumerWidget {
     final booruBuilder = ref.watch(booruBuilderProvider(ref.watchConfigAuth));
     final commentPageBuilder = booruBuilder?.commentPageBuilder;
     final config = ref.watchConfigAuth;
+    final configViewer = ref.watchConfigViewer;
 
     return CommonPostButtonsBuilder(
       post: post,
       onStartSlideshow: onStartSlideshow,
       config: config,
-      configViewer: ref.watchConfigViewer,
+      configViewer: configViewer,
       builder: (context, buttons) {
         return BooruMenuButtonRow(
           maxVisibleButtons: maxVisibleButtons,
@@ -90,6 +91,7 @@ class SimplePostActionToolbar extends ConsumerWidget {
               widget: SharePostButton(
                 post: post,
                 auth: config,
+                configViewer: configViewer,
               ),
               title: context.t.post.action.share,
             ),

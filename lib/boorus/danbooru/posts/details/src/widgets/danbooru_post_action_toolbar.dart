@@ -52,6 +52,7 @@ class DanbooruPostActionToolbar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfigAuth;
+    final configViewer = ref.watchConfigViewer;
     final params = (config, post.id);
     final isFaved = ref.watch(favoriteProvider(params));
     final postVote = ref.watch(danbooruPostVoteProvider(params));
@@ -64,7 +65,7 @@ class DanbooruPostActionToolbar extends ConsumerWidget {
         post: post,
         onStartSlideshow: onStartSlideshow,
         config: config,
-        configViewer: ref.watchConfigViewer,
+        configViewer: configViewer,
         builder: (context, buttons) {
           return BooruMenuButtonRow(
             maxVisibleButtons: hasLogin ? 7 : 4,
@@ -116,6 +117,7 @@ class DanbooruPostActionToolbar extends ConsumerWidget {
                 widget: SharePostButton(
                   post: post,
                   auth: config,
+                  configViewer: configViewer,
                 ),
                 title: context.t.post.action.share,
               ),

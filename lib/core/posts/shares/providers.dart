@@ -1,1 +1,1 @@
-export 'src/post_share_notifier.dart';
+export 'src/share.dart';

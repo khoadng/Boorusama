@@ -28,7 +28,6 @@ import '../../../posts/post/providers.dart';
 import '../../../posts/post/routes.dart';
 import '../../../posts/rating/rating.dart';
 import '../../../posts/shares/providers.dart';
-import '../../../posts/shares/widgets.dart';
 import '../../../posts/sources/source.dart';
 import '../../../posts/statistics/stats.dart';
 import '../../../posts/statistics/widgets.dart';
@@ -181,11 +180,14 @@ class PostGestureHandler {
   }
 
   void handleShare(WidgetRef ref, Post post) {
-    ref.sharePost(
-      post,
-      context: ref.context,
-      state: ref.read(postShareProvider((ref.readConfigAuth, post))),
-    );
+    ref
+        .read(shareProvider)
+        .sharePost(
+          post,
+          ref.readConfigAuth,
+          context: ref.context,
+          configViewer: ref.readConfigViewer,
+        );
   }
 
   void handleBookmark(WidgetRef ref, Post post) {
