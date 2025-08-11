@@ -3,7 +3,13 @@
     "done": "Xong",
     "errors": {
       "no_data": "Không có dữ liệu",
-      "unknown": "Xảy ra lỗi ngoài dự kiến"
+      "unknown": "Xảy ra lỗi ngoài dự kiến",
+      "failed_to_load_image": "Không tải được hình ảnh",
+      "config_not_found": "Cấu hình không được tìm thấy",
+      "error_loading_tags": "Lỗi khi tải thẻ",
+      "fail_to_load_profile": "Không thể tải cấu hình",
+      "page_not_implemented": "Trang chưa được triển khai",
+      "no_home_view_builder": "Không tìm thấy trình tạo giao diện trang chủ"
     },
     "action": {
       "add": "Thêm",
@@ -12,9 +18,21 @@
       "ok": "OK",
       "cancel": "Huỷ",
       "duplicate": "Tạo bản sao",
-      "select": "Chọn"
+      "select": "Chọn",
+      "save": "Lưu",
+      "verify": "Xác nhận",
+      "retry": "Thử lại",
+      "clear": "Xoá",
+      "create": "Tạo",
+      "more": "Thêm"
     },
-    "view": "Xem"
+    "view": "Xem",
+    "empty_states": {
+      "no_tags": "Không có thẻ",
+      "no_content": "Không có nội dung",
+      "no_options_available": "Không có tùy chọn nào khả dụng"
+    },
+    "default": "Mặc định"
   },
   "profile": {
     "favorites": "Yêu thích",
@@ -71,10 +89,18 @@
     "action": {
       "preview": "Xem nhanh",
       "view_comments": "Xem bình luận",
-      "add_to_favorite_group": "Thêm vào nhóm yêu thích"
+      "add_to_favorite_group": "Thêm vào nhóm yêu thích",
+      "share": "Chia sẻ",
+      "bookmark": "Dấu trang",
+      "favorite": "Yêu thích",
+      "upvote": "Bình chọn",
+      "downvote": "Hạ điểm"
     },
     "image_fullview": {
       "view_original": "Xem ảnh gốc"
+    },
+    "statistics": {
+      "stats_for_nerds": "Thống kê dành cho người mọt sách"
     }
   },
   "comment": {
@@ -104,7 +130,11 @@
     "hot": "Hot",
     "most_viewed": "Xem nhiều",
     "see_more": "Xem thêm",
-    "explore": "Khám phá"
+    "explore": "Khám phá",
+    "top": "Hàng đầu",
+    "daily": "Hằng ngày",
+    "weekly": "Hằng tuần",
+    "stats": "Thống kê"
   },
   "search": {
     "errors": {
@@ -117,7 +147,9 @@
       "down": "Server đang sập, thử lại sau.",
       "access_denied": "Truy cập bị từ chối",
       "forbidden": "Không có quyền truy cập",
-      "unknown": "Lỗi server không xác định, vui lòng báo cho dev"
+      "unknown": "Lỗi server không xác định, vui lòng báo cho dev",
+      "cannot_reach_server": "Không thể kết nối tới máy chủ, vui lòng kiểm tra kết nối của bạn",
+      "failed_to_load_data": "Không tải được dữ liệu từ máy chủ, vui lòng thử lại sau"
     },
     "hint": "Tìm...",
     "no_result": "Không tìm được kết quả phù hợp.",
@@ -155,7 +187,9 @@
     },
     "detail": {
       "last_updated": "Cập nhật"
-    }
+    },
+    "pools": "Ảnh bộ",
+    "no_cover_image": "Không có ảnh bìa"
   },
   "settings": {
     "settings": "Cài đặt",
@@ -165,13 +199,28 @@
       "show_scores": "Hiện điểm",
       "show_post_list_config_header": "Hiển thị header tuỳ chỉnh",
       "booru_config": "Hồ sơ booru",
-      "booru_config_placement": "Vị trí hồ sơ booru"
+      "booru_config_placement": "Vị trí hồ sơ booru",
+      "customize": "Tùy chỉnh",
+      "booru_config_placement_options": {
+        "side": "Bên cạnh",
+        "bottom": "Ở dưới"
+      },
+      "booru_config_label": "Hiển thị nhãn",
+      "booru_config_label_options": {
+        "always": "Luôn luôn",
+        "never": "Không bao giờ"
+      }
     },
     "general": "Chung",
     "search": {
       "search": "Tìm kiếm",
       "auto_focus_search_bar": "Tự động focus vào thanh tìm kiếm khi mở lần đầu",
-      "hide_bookmarked_posts_from_search_results": "Không hiện ảnh đã đánh dấu khi tìm kiếm"
+      "hide_bookmarked_posts_from_search_results": "Không hiện ảnh đã đánh dấu khi tìm kiếm",
+      "search_bar": {
+        "position": {
+          "search_bar_position": "Vị trí thanh tìm kiếm"
+        }
+      }
     },
     "information": "Thông tin",
     "changelog": "Changelog",
@@ -482,5 +531,12 @@
         "other": "Giây"
       }
     }
+  },
+  "bulk_downloads": {
+    "new_download": "Bắt đầu tải xuống",
+    "create": "Tạo",
+    "delete": "Xoá",
+    "created": "Đã tạo",
+    "completed_with_no_new_files": "Đã hoàn thành mà không có tệp mới nào"
   }
 }
