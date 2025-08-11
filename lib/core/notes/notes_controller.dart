@@ -46,34 +46,39 @@ class NotesControllerNotifier
   }
 }
 
-class NoteActionButtonWithProvider extends ConsumerWidget {
+class NoteActionButtonWithProvider<T extends Post> extends ConsumerWidget {
   const NoteActionButtonWithProvider({
-    required this.post,
+    required this.currentPost,
     required this.config,
     super.key,
   });
 
-  final Post post;
+  final ValueNotifier<T> currentPost;
   final BooruConfigAuth config;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final noteState = ref.watch(notesControllerProvider(post));
-    final allNotes = ref.watch(notesProvider(config));
-    final notes = allNotes[post.id] ?? const <Note>[].lock;
+    return ValueListenableBuilder(
+      valueListenable: currentPost,
+      builder: (context, post, child) {
+        final noteState = ref.watch(notesControllerProvider(post));
+        final allNotes = ref.watch(notesProvider(config));
+        final notes = allNotes[post.id] ?? const <Note>[].lock;
 
-    if (allNotes.containsKey(post.id) && notes.isEmpty) {
-      return const SizedBox.shrink();
-    }
+        if (allNotes.containsKey(post.id) && notes.isEmpty) {
+          return const SizedBox.shrink();
+        }
 
-    return NoteActionButton(
-      post: post,
-      showDownload: notes.isEmpty,
-      enableNotes: noteState.enableNotes,
-      onDownload: () => ref.read(notesProvider(config).notifier).load(post),
-      onToggleNotes: () => ref
-          .read(notesControllerProvider(post).notifier)
-          .toggleNoteVisibility(),
+        return NoteActionButton(
+          post: post,
+          showDownload: notes.isEmpty,
+          enableNotes: noteState.enableNotes,
+          onDownload: () => ref.read(notesProvider(config).notifier).load(post),
+          onToggleNotes: () => ref
+              .read(notesControllerProvider(post).notifier)
+              .toggleNoteVisibility(),
+        );
+      },
     );
   }
 }

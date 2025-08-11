@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../../foundation/info/device_info.dart';
-import '../../../../configs/ref.dart';
+import '../../../../configs/config/types.dart';
 import '../../../../http/providers.dart';
 import '../../../../images/providers.dart';
 import '../../../post/post.dart';
@@ -16,11 +16,13 @@ class PostDetailsPreloadImage<T extends Post> extends ConsumerWidget {
   const PostDetailsPreloadImage({
     required this.url,
     required this.post,
+    required this.config,
     super.key,
   });
 
   final T post;
   final String url;
+  final BooruConfigAuth config;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -28,7 +30,6 @@ class PostDetailsPreloadImage<T extends Post> extends ConsumerWidget {
       return const SizedBox.shrink();
     }
 
-    final config = ref.watchConfigAuth;
     final dio = ref.watch(dioForWidgetProvider(config));
     final deviceInfo = ref.watch(deviceInfoProvider);
 

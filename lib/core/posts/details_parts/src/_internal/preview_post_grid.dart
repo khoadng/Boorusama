@@ -1,7 +1,11 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 // Project imports:
+import '../../../../configs/config/providers.dart';
 import '../../../../images/booru_image.dart';
 import '../../../post/post.dart';
 import '../../../post/tags.dart';
@@ -49,12 +53,15 @@ class PreviewPostList<T extends Post> extends StatelessWidget {
                 onTap: () => onTap(index),
                 image: imageBuilder != null
                     ? imageBuilder!(post)
-                    : BooruImage(
-                        forceCover: true,
-                        aspectRatio: 0.6,
-                        imageUrl: imageUrl(post),
-                        placeholderUrl: post.thumbnailImageUrl,
-                        fit: BoxFit.cover,
+                    : Consumer(
+                        builder: (_, ref, _) => BooruImage(
+                          config: ref.watchConfigAuth,
+                          forceCover: true,
+                          aspectRatio: 0.6,
+                          imageUrl: imageUrl(post),
+                          placeholderUrl: post.thumbnailImageUrl,
+                          fit: BoxFit.cover,
+                        ),
                       ),
               ),
             );

@@ -10,6 +10,7 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../../../config_widgets/website_logo.dart';
+import '../../../configs/config/providers.dart';
 import '../../../images/booru_image.dart';
 import '../../../theme.dart';
 import '../../post/post.dart';
@@ -85,6 +86,7 @@ class SliverRelatedPostsSection<T extends Post> extends ConsumerWidget {
                 imageBuilder: (post) => Stack(
                   children: [
                     BooruImage(
+                      config: ref.watchConfigAuth,
                       aspectRatio: 0.6,
                       imageUrl: imageUrl(post),
                       placeholderUrl: post.thumbnailImageUrl,

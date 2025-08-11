@@ -9,7 +9,7 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../foundation/info/device_info.dart';
-import '../configs/ref.dart';
+import '../configs/config/types.dart';
 import '../http/providers.dart';
 import '../settings/providers.dart';
 import '../settings/settings.dart';
@@ -20,6 +20,7 @@ const _defaultRadius = BorderRadius.all(Radius.circular(8));
 class BooruImage extends ConsumerWidget {
   const BooruImage({
     required this.imageUrl,
+    required this.config,
     super.key,
     this.placeholderUrl,
     this.borderRadius,
@@ -35,6 +36,7 @@ class BooruImage extends ConsumerWidget {
     this.imageCacheManager,
   });
 
+  final BooruConfigAuth config;
   final String imageUrl;
   final String? placeholderUrl;
   final BorderRadius? borderRadius;
@@ -51,7 +53,6 @@ class BooruImage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfigAuth;
     final dio = ref.watch(dioForWidgetProvider(config));
     final imageQualitySettings = ref.watch(
       imageListingSettingsProvider.select((value) => value.imageQuality),

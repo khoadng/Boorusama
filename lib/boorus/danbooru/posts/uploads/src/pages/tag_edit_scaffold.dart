@@ -10,6 +10,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:multi_split_view/multi_split_view.dart';
 
 // Project imports:
+import '../../../../../../core/configs/ref.dart';
 import '../../../../../../core/images/booru_image.dart';
 import '../../../../../../core/widgets/widgets.dart';
 import '../../../../../../foundation/display.dart';
@@ -181,6 +182,7 @@ class _TagEditScaffoldState extends ConsumerState<TagEditUploadScaffold> {
                 Expanded(
                   child: InteractiveViewerExtended(
                     child: BooruImage(
+                      config: ref.watchConfigAuth,
                       imageUrl: widget.imageUrl,
                       fit: BoxFit.contain,
                       borderRadius: BorderRadius.zero,

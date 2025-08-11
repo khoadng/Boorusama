@@ -10,6 +10,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:multi_split_view/multi_split_view.dart';
 
 // Project imports:
+import '../../../../../core/configs/ref.dart';
 import '../../../../../core/images/booru_image.dart';
 import '../../../../../core/settings/providers.dart';
 import '../../../../../core/widgets/widgets.dart';
@@ -257,6 +258,7 @@ class _Image extends ConsumerWidget {
 
     return InteractiveViewerExtended(
       child: BooruImage(
+        config: ref.watchConfigAuth,
         imageUrl: notifer.imageUrl,
         fit: BoxFit.contain,
         borderRadius: BorderRadius.zero,

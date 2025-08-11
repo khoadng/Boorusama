@@ -34,11 +34,25 @@ final orderedConfigsProvider = FutureProvider.autoDispose<IList<BooruConfig>>((
   }
 });
 
-final firstMatchingConfigProvider = Provider.family<BooruConfig?, int>(
-  (ref, id) {
-    final configs = ref.watch(booruConfigProvider);
-    return configs.firstWhereOrNull(
-      (config) => config.auth.booruIdHint == id || config.booruId == id,
+final firstMatchingConfigProvider =
+    Provider.family<BooruConfig?, (int, String)>(
+      (ref, params) {
+        final (id, url) = params;
+        final configs = ref.watch(booruConfigProvider);
+        final idResult = configs
+            .where(
+              (config) => config.auth.booruIdHint == id || config.booruId == id,
+            )
+            .toList();
+
+        if (idResult.isEmpty) {
+          return null;
+        }
+
+        final config = idResult.firstWhereOrNull(
+          (config) => config.auth.url == url,
+        );
+
+        return config ?? idResult.firstOrNull;
+      },
     );
-  },
-);

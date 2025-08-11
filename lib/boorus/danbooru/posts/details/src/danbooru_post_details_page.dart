@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import '../../../../../core/boorus/engine/engine.dart';
+import '../../../../../core/boorus/engine/providers.dart';
 import '../../../../../core/configs/ref.dart';
 import '../../../../../core/notes/notes.dart';
 import '../../../../../core/posts/details/details.dart';
@@ -16,10 +18,25 @@ import '../../_shared/danbooru_creator_preloader.dart';
 import '../../_shared/post_creator_preloadable.dart';
 import '../../post/post.dart';
 
-class DanbooruPostDetailsPage extends StatelessWidget {
+class DanbooruPostDetailsPage extends StatefulWidget {
   const DanbooruPostDetailsPage({
     super.key,
   });
+
+  @override
+  State<DanbooruPostDetailsPage> createState() =>
+      _DanbooruPostDetailsPageState();
+}
+
+class _DanbooruPostDetailsPageState extends State<DanbooruPostDetailsPage> {
+  final _transformController = TransformationController();
+  final _isInitPage = ValueNotifier(true);
+
+  @override
+  void dispose() {
+    _transformController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,24 +49,61 @@ class DanbooruPostDetailsPage extends StatelessWidget {
       preloadable: PostCreatorsPreloadable.fromPosts(posts),
       child: Consumer(
         builder: (context, ref, child) {
-          final config = ref.watchConfigAuth;
+          final auth = ref.watchConfigAuth;
           final configViewer = ref.watchConfigViewer;
-          final post = InheritedPost.of<DanbooruPost>(context);
+          final gestures = ref.watchPostGestures;
+          final layout = ref.watchLayoutConfigs;
+          final booruBuilder = ref.watch(booruBuilderProvider(auth));
+          final postGesturesHandler = booruBuilder?.postGestureHandlerBuilder;
+          final uiBuilder = booruBuilder?.postDetailsUIBuilder;
 
-          return PostDetailsPageScaffold(
-            pageViewController: pageViewController,
-            controller: detailsController,
-            layoutConfig: ref.watchLayoutConfigs,
+          return PostDetailsNotes(
             posts: posts,
+            pageViewController: pageViewController,
             viewerConfig: configViewer,
-            authConfig: config,
-            gestureConfig: ref.watchPostGestures,
-            topRightButtons: [
-              NoteActionButtonWithProvider(
-                post: post,
-                config: config,
+            authConfig: auth,
+            child: PostDetailsPageScaffold(
+              isInitPage: _isInitPage,
+              transformController: _transformController,
+              pageViewController: pageViewController,
+              controller: detailsController,
+              layoutConfig: layout,
+              posts: posts,
+              postGestureHandlerBuilder: postGesturesHandler,
+              uiBuilder: uiBuilder,
+              gestureConfig: gestures,
+              itemBuilder: (context, index) {
+                return PostDetailsItem(
+                  index: index,
+                  posts: posts,
+                  transformController: _transformController,
+                  isInitPageListenable: _isInitPage,
+                  authConfig: auth,
+                  gestureConfig: gestures,
+                  imageCacheManager: null,
+                  pageViewController: pageViewController,
+                  detailsController: detailsController,
+                  imageUrlBuilder: defaultPostImageUrlBuilder(
+                    ref,
+                    auth,
+                    configViewer,
+                  ),
+                );
+              },
+              actions: defaultActions(
+                note: NoteActionButtonWithProvider(
+                  currentPost: detailsController.currentPost,
+                  config: auth,
+                ),
+                fallbackMoreButton: DefaultFallbackBackupMoreButton(
+                  layoutConfig: layout,
+                  controller: detailsController,
+                  pageViewController: pageViewController,
+                  authConfig: auth,
+                  viewerConfig: configViewer,
+                ),
               ),
-            ],
+            ),
           );
         },
       ),

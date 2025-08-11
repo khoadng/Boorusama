@@ -8,6 +8,7 @@ import 'package:multi_split_view/multi_split_view.dart';
 
 // Project imports:
 import '../../../../../core/widgets/widgets.dart';
+import '../../../../core/configs/config/providers.dart';
 import '../../../../core/images/booru_image.dart';
 import '../../posts/post/post.dart';
 import '../../users/details/routes.dart';
@@ -138,6 +139,7 @@ class _Image extends ConsumerWidget {
             builder: (context, constraints) => constraints.maxHeight > 80
                 ? InteractiveViewerExtended(
                     child: BooruImage(
+                      config: ref.watchConfigAuth,
                       imageUrl: imageUrl,
                       fit: BoxFit.contain,
                       borderRadius: BorderRadius.zero,

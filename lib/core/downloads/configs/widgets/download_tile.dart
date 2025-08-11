@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -9,6 +10,7 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import '../../../../foundation/utils/flutter_utils.dart';
 import '../../../config_widgets/booru_logo.dart';
+import '../../../configs/config/providers.dart';
 import '../../../images/booru_image.dart';
 import '../../../theme.dart';
 import '../../urls/sanitizer.dart';
@@ -236,9 +238,12 @@ class _Thumbnail extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 2),
-      child: BooruImage(
-        imageUrl: url ?? '',
-        fit: BoxFit.cover,
+      child: Consumer(
+        builder: (_, ref, _) => BooruImage(
+          config: ref.watchConfigAuth,
+          imageUrl: url ?? '',
+          fit: BoxFit.cover,
+        ),
       ),
     );
   }

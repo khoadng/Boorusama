@@ -136,6 +136,10 @@ enum VideoPlayerEngine {
   mdk,
 }
 
+extension VideoPlayerEngineX on VideoPlayerEngine {
+  bool get isDefault => this != VideoPlayerEngine.mdk;
+}
+
 enum SearchBarScrollBehavior {
   autoHide,
   persistent,

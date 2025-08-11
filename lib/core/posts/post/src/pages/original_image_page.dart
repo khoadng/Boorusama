@@ -14,6 +14,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import '../../../../../foundation/display.dart';
 import '../../../../../foundation/mobile.dart';
 import '../../../../../foundation/platform.dart';
+import '../../../../configs/config/providers.dart';
 import '../../../../images/booru_image.dart';
 import '../../../../widgets/widgets.dart';
 import '../types/post.dart';
@@ -246,6 +247,7 @@ class __ImageViewerState extends ConsumerState<_ImageViewer> {
   @override
   Widget build(BuildContext context) {
     return BooruImage(
+      config: ref.watchConfigAuth,
       imageUrl: widget.imageUrl,
       controller: _controller,
       borderRadius: BorderRadius.zero,

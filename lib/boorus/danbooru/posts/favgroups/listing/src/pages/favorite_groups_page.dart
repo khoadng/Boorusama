@@ -134,6 +134,7 @@ class _Preview extends ConsumerWidget {
     );
 
     return BooruImage(
+      config: ref.watchConfigAuth,
       fit: BoxFit.cover,
       imageUrl: preview,
     );

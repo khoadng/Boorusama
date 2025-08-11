@@ -10,7 +10,7 @@ import '../../../../../core/widgets/widgets.dart';
 import '../../../../../foundation/display.dart';
 import '../../../../../foundation/path.dart';
 import '../../../../../foundation/platform.dart';
-import '../../../../configs/ref.dart';
+import '../../../../configs/config/types.dart';
 import '../../../../http/providers.dart';
 import '../../../../settings/providers.dart';
 import '../../../../settings/routes.dart';
@@ -26,6 +26,7 @@ import 'video_controls.dart';
 class PostMedia<T extends Post> extends ConsumerWidget {
   const PostMedia({
     required this.post,
+    required this.config,
     required this.imageUrlBuilder,
     required this.thumbnailUrlBuilder,
     required this.controller,
@@ -34,10 +35,11 @@ class PostMedia<T extends Post> extends ConsumerWidget {
   });
 
   final T post;
+  final BooruConfigAuth config;
   final PostDetailsPageViewController controller;
   final String Function(T post)? imageUrlBuilder;
   final String Function(T post)? thumbnailUrlBuilder;
-  final ImageCacheManager Function(Post post)? imageCacheManager;
+  final ImageCacheManager? imageCacheManager;
 
   void _openSettings(WidgetRef ref) {
     openImageViewerSettingsPage(ref);
@@ -46,7 +48,6 @@ class PostMedia<T extends Post> extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final details = PostDetails.of<T>(context);
-    final config = ref.watchConfigAuth;
     final useDefault = ref.watch(
       settingsProvider.select(
         (value) => value.videoPlayerEngine != VideoPlayerEngine.mdk,
@@ -113,6 +114,7 @@ class PostMedia<T extends Post> extends ConsumerWidget {
             thumbnailUrlBuilder: thumbnailUrlBuilder,
             imageCacheManager: imageCacheManager,
             post: post,
+            config: config,
           );
   }
 }

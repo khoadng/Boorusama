@@ -8,6 +8,7 @@ import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../../core/configs/config.dart';
+import '../../../../../core/configs/config/providers.dart';
 import '../../../../../core/images/booru_image.dart';
 import '../../../../../core/posts/details/routes.dart';
 import '../../../../../core/posts/post/post.dart';
@@ -73,7 +74,10 @@ class TagEditHistoryCard extends StatelessWidget {
                               );
                             }
                           : null,
-                      child: BooruImage(imageUrl: thumbnail),
+                      child: BooruImage(
+                        config: ref.watchConfigAuth,
+                        imageUrl: thumbnail,
+                      ),
                     ),
                   ),
                 );

@@ -2,3 +2,6 @@ export 'src/widgets/post_details_page_scaffold.dart';
 export 'src/widgets/post_details_scope.dart';
 export 'src/widgets/post_details_full_info_sheet.dart';
 export 'src/widgets/post_details_page.dart';
+export 'src/widgets/post_details_item.dart';
+export 'src/widgets/post_details_notes.dart';
+export 'src/widgets/post_details_actions.dart';

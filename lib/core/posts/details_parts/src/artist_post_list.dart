@@ -168,6 +168,7 @@ class SliverPreviewPostGrid<T extends Post> extends ConsumerWidget {
           isAnimated: post.isAnimated,
           isTranslated: post.isTranslated,
           image: BooruImage(
+            config: ref.watchConfigAuth,
             forceCover: true,
             imageUrl: imageUrl(post),
             placeholderUrl: post.thumbnailImageUrl,

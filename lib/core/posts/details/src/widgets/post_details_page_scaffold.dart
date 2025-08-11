@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 // Package imports:
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/widgets.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -15,30 +14,22 @@ import '../../../../../foundation/display.dart';
 import '../../../../../foundation/platform.dart';
 import '../../../../analytics/providers.dart';
 import '../../../../boorus/engine/engine.dart';
-import '../../../../boorus/engine/providers.dart';
 import '../../../../cache/providers.dart';
 import '../../../../configs/config.dart';
 import '../../../../configs/gesture/gesture.dart';
-import '../../../../notes/notes.dart';
 import '../../../../premiums/providers.dart';
 import '../../../../router.dart';
 import '../../../../settings/providers.dart';
 import '../../../../settings/settings.dart';
 import '../../../../theme.dart';
-import '../../../../videos/play_pause_button.dart';
-import '../../../../videos/providers.dart';
-import '../../../../videos/sound_control_button.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../details_manager/types.dart';
 import '../../../details_pageview/widgets.dart';
-import '../../../details_parts/widgets.dart';
 import '../../../post/post.dart';
 import '../../../post/routes.dart';
 import '../types/post_details.dart';
 import 'post_details_controller.dart';
 import 'post_details_full_info_sheet.dart';
-import 'post_details_preload_image.dart';
-import 'post_media.dart';
 import 'video_controls.dart';
 import 'volume_key_page_navigator.dart';
 
@@ -49,34 +40,34 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
     required this.posts,
     required this.controller,
     required this.pageViewController,
-    required this.viewerConfig,
-    required this.authConfig,
     required this.gestureConfig,
     required this.layoutConfig,
+    required this.itemBuilder,
+    required this.transformController,
+    required this.isInitPage,
+    required this.actions,
+    required this.postGestureHandlerBuilder,
+    required this.uiBuilder,
     super.key,
     this.onExpanded,
-    this.imageUrlBuilder,
-    this.topRightButtons,
-    this.uiBuilder,
     this.preferredParts,
     this.preferredPreviewParts,
-    this.imageCacheManager,
   });
 
   final List<T> posts;
   final void Function()? onExpanded;
-  final String Function(T post)? imageUrlBuilder;
-  final ImageCacheManager Function(Post post)? imageCacheManager;
-  final List<Widget>? topRightButtons;
   final PostDetailsController<T> controller;
   final PostDetailsPageViewController pageViewController;
   final PostDetailsUIBuilder? uiBuilder;
   final Set<DetailsPart>? preferredParts;
   final Set<DetailsPart>? preferredPreviewParts;
-  final BooruConfigViewer viewerConfig;
-  final BooruConfigAuth authConfig;
   final LayoutConfigs? layoutConfig;
   final PostGestureConfig? gestureConfig;
+  final IndexedWidgetBuilder itemBuilder;
+  final TransformationController transformController;
+  final ValueNotifier<bool> isInitPage;
+  final List<Widget> actions;
+  final PostGestureHandlerBuilder? postGestureHandlerBuilder;
 
   @override
   ConsumerState<PostDetailsPageScaffold<T>> createState() =>
@@ -96,10 +87,8 @@ class _PostDetailPageScaffoldState<T extends Post>
     ),
   );
 
-  final _transformController = TransformationController();
-
   ValueNotifier<bool> visibilityNotifier = ValueNotifier(false);
-  final _isInitPage = ValueNotifier(true);
+  late final _isInitPage = widget.isInitPage;
 
   List<T> get posts => _posts;
 
@@ -114,16 +103,8 @@ class _PostDetailPageScaffoldState<T extends Post>
 
       widget.controller.setPage(
         widget.controller.initialPage,
-        useDefaultEngine: _isDefaultEngine(videoPlayerEngine),
+        useDefaultEngine: videoPlayerEngine.isDefault,
       );
-
-      if (widget.viewerConfig.autoFetchNotes) {
-        ref
-            .read(notesProvider(widget.authConfig).notifier)
-            .load(
-              posts[widget.controller.initialPage],
-            );
-      }
     });
 
     widget.controller.isVideoPlaying.addListener(_isVideoPlayingChanged);
@@ -133,7 +114,6 @@ class _PostDetailPageScaffoldState<T extends Post>
 
   @override
   void dispose() {
-    _transformController.dispose();
     _volumeKeyPageNavigator.dispose();
     widget.controller.isVideoPlaying.removeListener(_isVideoPlayingChanged);
 
@@ -141,10 +121,6 @@ class _PostDetailPageScaffoldState<T extends Post>
   }
 
   var _previouslyPlaying = false;
-
-  bool _isDefaultEngine(VideoPlayerEngine engine) {
-    return engine != VideoPlayerEngine.mdk;
-  }
 
   void _isVideoPlayingChanged() {
     if (context.isLargeScreen && isDesktopPlatform()) {
@@ -163,7 +139,7 @@ class _PostDetailPageScaffoldState<T extends Post>
   Widget build(BuildContext context) {
     final useDefaultEngine = ref.watch(
       settingsProvider.select(
-        (value) => _isDefaultEngine(value.videoPlayerEngine),
+        (value) => value.videoPlayerEngine.isDefault,
       ),
     );
 
@@ -220,15 +196,10 @@ class _PostDetailPageScaffoldState<T extends Post>
   }
 
   Widget _build() {
-    final booruBuilder = ref.watch(booruBuilderProvider(widget.authConfig));
-    final postGesturesHandler = booruBuilder?.postGestureHandlerBuilder;
+    final postGesturesHandler = widget.postGestureHandlerBuilder;
     final gestures = widget.gestureConfig?.fullview;
 
-    final imageUrlBuilder =
-        widget.imageUrlBuilder ??
-        defaultPostImageUrlBuilder(ref, widget.authConfig, widget.viewerConfig);
-
-    final uiBuilder = widget.uiBuilder ?? booruBuilder?.postDetailsUIBuilder;
+    final uiBuilder = widget.uiBuilder;
 
     final videoPlayerEngine = ref.watch(
       settingsProvider.select((value) => value.videoPlayerEngine),
@@ -239,32 +210,6 @@ class _PostDetailPageScaffoldState<T extends Post>
     final swipeMode = ref.watch(
       settingsProvider.select((value) => value.swipeMode),
     );
-
-    void onItemTap() {
-      final controller = widget.controller;
-
-      if (isDesktopPlatform()) {
-        if (controller.currentPost.value.isVideo) {
-          if (controller.isVideoPlaying.value) {
-            controller.pauseCurrentVideo(
-              useDefaultEngine: _isDefaultEngine(videoPlayerEngine),
-            );
-          } else {
-            controller.playCurrentVideo(
-              useDefaultEngine: _isDefaultEngine(videoPlayerEngine),
-            );
-          }
-        } else {
-          if (_controller.isExpanded) return;
-
-          _controller.toggleOverlay();
-        }
-      } else {
-        if (_controller.isExpanded) return;
-
-        _controller.toggleOverlay();
-      }
-    }
 
     return Scaffold(
       body: PostDetailsPageView(
@@ -278,7 +223,7 @@ class _PostDetailPageScaffoldState<T extends Post>
 
           widget.controller.setPage(
             page,
-            useDefaultEngine: _isDefaultEngine(videoPlayerEngine),
+            useDefaultEngine: videoPlayerEngine.isDefault,
           );
 
           _isInitPage.value = false;
@@ -289,10 +234,6 @@ class _PostDetailPageScaffoldState<T extends Post>
             } else {
               _controller.disableHoverToControlOverlay();
             }
-          }
-
-          if (widget.viewerConfig.autoFetchNotes) {
-            ref.read(notesProvider(widget.authConfig).notifier).load(post);
           }
         },
         sheetStateStorage: SheetStateStorageBuilder(
@@ -305,8 +246,6 @@ class _PostDetailPageScaffoldState<T extends Post>
         checkIfLargeScreen: () => context.isLargeScreen,
         controller: _controller,
         onExit: () {
-          ref.invalidate(notesProvider(widget.authConfig));
-
           widget.controller.onExit();
         },
         itemCount: posts.length,
@@ -373,129 +312,7 @@ class _PostDetailPageScaffoldState<T extends Post>
             },
           );
         },
-        itemBuilder: (context, index) {
-          final post = posts[index];
-          final (previousPost, nextPost) = posts.getPrevAndNextPosts(index);
-
-          return ValueListenableBuilder(
-            valueListenable: _controller.sheetState,
-            builder: (_, state, _) => GestureDetector(
-              // let the user tap the image to toggle overlay
-              onTap: onItemTap,
-              child: InteractiveViewerExtended(
-                contentSize: Size(post.width, post.height),
-                controller: _transformController,
-                enable: switch (state.isExpanded) {
-                  true => context.isLargeScreen,
-                  false => true,
-                },
-                onZoomUpdated: _controller.onZoomUpdated,
-                onTap: onItemTap,
-                onDoubleTap:
-                    gestures.canDoubleTap && postGesturesHandler != null
-                    ? () => postGesturesHandler(
-                        ref,
-                        gestures?.doubleTap,
-                        posts[_controller.page],
-                      )
-                    : null,
-                onLongPress:
-                    gestures.canLongPress && postGesturesHandler != null
-                    ? () => postGesturesHandler(
-                        ref,
-                        gestures?.longPress,
-                        posts[_controller.page],
-                      )
-                    : null,
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    // preload next image only, not the post itself
-                    if (nextPost != null && !nextPost.isVideo)
-                      Offstage(
-                        child: PostDetailsPreloadImage(
-                          post: nextPost,
-                          url: imageUrlBuilder(nextPost),
-                        ),
-                      ),
-                    ValueListenableBuilder(
-                      valueListenable: _isInitPage,
-                      builder: (_, isInitPage, _) {
-                        final initialThumbnailUrl =
-                            widget.controller.initialThumbnailUrl;
-
-                        return PostMedia<T>(
-                          post: post,
-                          imageUrlBuilder: imageUrlBuilder,
-                          imageCacheManager: widget.imageCacheManager,
-                          // This is used to make sure we have a thumbnail to show instead of a black placeholder
-                          thumbnailUrlBuilder:
-                              isInitPage && initialThumbnailUrl != null
-                              // Need to specify the type here to avoid type inference error
-                              // ignore: avoid_types_on_closure_parameters
-                              ? (Post _) => initialThumbnailUrl
-                              : null,
-                          controller: _controller,
-                        );
-                      },
-                    ),
-                    if (previousPost != null && !previousPost.isVideo)
-                      Offstage(
-                        child: PostDetailsPreloadImage(
-                          post: previousPost,
-                          url: imageUrlBuilder(previousPost),
-                        ),
-                      ),
-                    if (post.isVideo)
-                      Align(
-                        alignment: Alignment.bottomRight,
-                        child: state.isExpanded && !context.isLargeScreen
-                            ? Padding(
-                                padding: const EdgeInsets.all(8),
-                                child: Row(
-                                  children: [
-                                    // duplicate codes, maybe refactor later
-                                    PlayPauseButton(
-                                      isPlaying:
-                                          widget.controller.isVideoPlaying,
-                                      onPlayingChanged: (value) {
-                                        if (value) {
-                                          widget.controller.pauseVideo(
-                                            post.id,
-                                            post.isWebm,
-                                            _isDefaultEngine(videoPlayerEngine),
-                                          );
-                                        } else if (!value) {
-                                          widget.controller.playVideo(
-                                            post.id,
-                                            post.isWebm,
-                                            _isDefaultEngine(videoPlayerEngine),
-                                          );
-                                        } else {
-                                          // do nothing
-                                        }
-                                      },
-                                    ),
-                                    VideoSoundScope(
-                                      builder: (context, soundOn) =>
-                                          SoundControlButton(
-                                            padding: const EdgeInsets.all(8),
-                                            soundOn: soundOn,
-                                            onSoundChanged: (value) =>
-                                                ref.setGlobalVideoSound(value),
-                                          ),
-                                    ),
-                                  ],
-                                ),
-                              )
-                            : const SizedBox.shrink(),
-                      ),
-                  ],
-                ),
-              ),
-            ),
-          );
-        },
+        itemBuilder: widget.itemBuilder,
         bottomSheet: Consumer(
           builder: (_, ref, _) {
             final layoutPreviewDetails = widget.layoutConfig?.previewDetails;
@@ -507,58 +324,11 @@ class _PostDetailPageScaffoldState<T extends Post>
                 : _buildFallbackPreview();
           },
         ),
-        actions: [
-          if (widget.topRightButtons case final List<Widget> buttons)
-            ...buttons
-          else ...[
-            ValueListenableBuilder(
-              valueListenable: widget.controller.currentPost,
-              builder: (context, post, _) => NoteActionButtonWithProvider(
-                post: post,
-                config: widget.authConfig,
-              ),
-            ),
-          ],
-
-          Consumer(
-            builder: (context, ref, _) {
-              final layoutPreviewDetails = widget.layoutConfig?.previewDetails;
-
-              final hasToolbar =
-                  layoutPreviewDetails?.any(
-                    (part) => part == convertDetailsPart(DetailsPart.toolbar),
-                  ) ??
-                  true;
-
-              if (ref.watch(hasPremiumLayoutProvider) && !hasToolbar) {
-                return ValueListenableBuilder(
-                  valueListenable: widget.controller.currentPost,
-                  builder: (context, post, _) => SizedBox(
-                    width: 40,
-                    child: Material(
-                      color:
-                          context.extendedColorScheme.surfaceContainerOverlay,
-                      shape: const CircleBorder(),
-                      child: CommonPostPopupMenu(
-                        post: post,
-                        onStartSlideshow: () =>
-                            widget.pageViewController.startSlideshow(),
-                        config: widget.authConfig,
-                        configViewer: widget.viewerConfig,
-                      ),
-                    ),
-                  ),
-                );
-              }
-
-              return const SizedBox.shrink();
-            },
-          ),
-        ],
+        actions: widget.actions,
         onExpanded: () {
           widget.onExpanded?.call();
           // Reset zoom when expanded
-          _transformController.value = Matrix4.identity();
+          widget.transformController.value = Matrix4.identity();
           ref
               .read(analyticsProvider)
               .whenData(
@@ -714,14 +484,5 @@ class _SliverBottomPadding extends StatelessWidget {
         height: MediaQuery.paddingOf(context).bottom,
       ),
     );
-  }
-}
-
-extension PostDetailsUtils<T extends Post> on List<T> {
-  (T? prev, T? next) getPrevAndNextPosts(int index) {
-    final next = index + 1 < length ? this[index + 1] : null;
-    final prev = index - 1 >= 0 ? this[index - 1] : null;
-
-    return (prev, next);
   }
 }

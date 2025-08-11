@@ -5,11 +5,13 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
 import 'package:video_player/video_player.dart';
 
 // Project imports:
 import '../../foundation/utils/duration_utils.dart';
+import '../configs/config/providers.dart';
 import '../images/booru_image.dart';
 import '../widgets/widgets.dart';
 
@@ -182,12 +184,15 @@ class _BooruVideoState extends State<BooruVideo> {
                   children: [
                     if (thumb != null)
                       Positioned.fill(
-                        child: BooruImage(
-                          borderRadius: BorderRadius.zero,
-                          aspectRatio:
-                              widget.aspectRatio ??
-                              _videoPlayerController.value.aspectRatio,
-                          imageUrl: thumb,
+                        child: Consumer(
+                          builder: (_, ref, _) => BooruImage(
+                            config: ref.watchConfigAuth,
+                            borderRadius: BorderRadius.zero,
+                            aspectRatio:
+                                widget.aspectRatio ??
+                                _videoPlayerController.value.aspectRatio,
+                            imageUrl: thumb,
+                          ),
                         ),
                       ),
                     Positioned.fill(
@@ -250,12 +255,15 @@ class _BooruVideoState extends State<BooruVideo> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Flexible(
-                          child: BooruImage(
-                            borderRadius: BorderRadius.zero,
-                            aspectRatio:
-                                widget.aspectRatio ??
-                                _videoPlayerController.value.aspectRatio,
-                            imageUrl: thumb,
+                          child: Consumer(
+                            builder: (_, ref, _) => BooruImage(
+                              config: ref.watchConfigAuth,
+                              borderRadius: BorderRadius.zero,
+                              aspectRatio:
+                                  widget.aspectRatio ??
+                                  _videoPlayerController.value.aspectRatio,
+                              imageUrl: thumb,
+                            ),
                           ),
                         ),
                       ],

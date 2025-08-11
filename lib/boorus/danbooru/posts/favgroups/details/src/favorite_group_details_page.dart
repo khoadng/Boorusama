@@ -234,9 +234,12 @@ class _FavoriteGroupEditPageState extends State<FavoriteGroupEditPage> {
                       onTap: () => goToImagePreviewPage(context, post),
                       child: LimitedBox(
                         maxWidth: 80,
-                        child: BooruImage(
-                          fit: BoxFit.cover,
-                          imageUrl: post.thumbnailImageUrl,
+                        child: Consumer(
+                          builder: (_, ref, _) => BooruImage(
+                            config: ref.watchConfigAuth,
+                            fit: BoxFit.cover,
+                            imageUrl: post.thumbnailImageUrl,
+                          ),
                         ),
                       ),
                     ),

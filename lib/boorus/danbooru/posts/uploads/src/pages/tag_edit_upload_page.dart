@@ -276,6 +276,7 @@ class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
                             children: [
                               Expanded(
                                 child: BooruImage(
+                                  config: ref.watchConfigAuth,
                                   fit: BoxFit.contain,
                                   imageUrl: post.url720x720,
                                 ),

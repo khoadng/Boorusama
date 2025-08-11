@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
+import '../../../../../../core/configs/ref.dart';
 import '../../../../../../core/images/booru_image.dart';
 import '../../../../../../core/settings/providers.dart';
 import '../../pool/pool.dart';
@@ -30,6 +31,7 @@ class PoolImage extends ConsumerWidget {
       builder: (context, constraints) => cover != null
           ? cover.url != null
                 ? BooruImage(
+                    config: ref.watchConfigAuth,
                     aspectRatio: 0.6,
                     imageUrl: cover.url!,
                     fit: BoxFit.cover,

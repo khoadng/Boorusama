@@ -9,7 +9,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import '../../posts/post/post.dart';
 import '../../widgets/circular_icon_button.dart';
 
-class NoteActionButton extends StatelessWidget {
+class NoteActionButton<T extends Post> extends StatelessWidget {
   const NoteActionButton({
     required this.post,
     required this.showDownload,
@@ -19,7 +19,7 @@ class NoteActionButton extends StatelessWidget {
     super.key,
   });
 
-  final Post post;
+  final T post;
   final bool showDownload;
   final bool enableNotes;
   final VoidCallback onDownload;

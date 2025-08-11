@@ -199,6 +199,7 @@ class ExploreList extends ConsumerWidget {
                   alignment: Alignment.center,
                   children: [
                     BooruImage(
+                      config: configAuth,
                       aspectRatio: post.aspectRatio,
                       imageUrl: defaultPostImageUrlBuilder(
                         ref,

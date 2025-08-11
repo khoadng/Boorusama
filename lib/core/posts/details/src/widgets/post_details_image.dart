@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../../configs/ref.dart';
+import '../../../../configs/config/types.dart';
 import '../../../../images/booru_image.dart';
 import '../../../../notes/notes.dart';
 import '../../../../widgets/widgets.dart';
@@ -16,6 +16,7 @@ import '../../../post/post.dart';
 
 class PostDetailsImage<T extends Post> extends ConsumerStatefulWidget {
   const PostDetailsImage({
+    required this.config,
     required this.imageUrlBuilder,
     required this.thumbnailUrlBuilder,
     required this.post,
@@ -24,11 +25,12 @@ class PostDetailsImage<T extends Post> extends ConsumerStatefulWidget {
     this.imageCacheManager,
   });
 
+  final BooruConfigAuth config;
   final String? heroTag;
   final String Function(T post)? imageUrlBuilder;
   final String Function(T post)? thumbnailUrlBuilder;
-  final ImageCacheManager Function(Post post)? imageCacheManager;
-  final Post post;
+  final ImageCacheManager? imageCacheManager;
+  final T post;
 
   @override
   ConsumerState<PostDetailsImage> createState() => _PostDetailsImageState();
@@ -72,8 +74,9 @@ class _PostDetailsImageState extends ConsumerState<PostDetailsImage> {
   List<Widget> _buildNotes() {
     final post = widget.post;
 
+    final params = (widget.config, post);
     final noteState = ref.watch(notesControllerProvider(post));
-    final notes = ref.watch(currentNotesProvider(post)) ?? <Note>[].lock;
+    final notes = ref.watch(currentNotesProvider(params)) ?? <Note>[].lock;
 
     return [
       if (noteState.enableNotes)
@@ -97,7 +100,7 @@ class _PostDetailsImageState extends ConsumerState<PostDetailsImage> {
 
   Widget _buildImage(String imageUrl) {
     final post = widget.post;
-    final config = ref.watchConfigAuth;
+    final config = widget.config;
 
     final gridThumbnailUrlBuilder = ref.watch(
       gridThumbnailUrlGeneratorProvider(config),
@@ -110,6 +113,7 @@ class _PostDetailsImageState extends ConsumerState<PostDetailsImage> {
           );
 
     return BooruImage(
+      config: config,
       imageUrl: imageUrl,
       placeholderUrl: placeholderImageUrl,
       aspectRatio: post.aspectRatio,
@@ -119,9 +123,7 @@ class _PostDetailsImageState extends ConsumerState<PostDetailsImage> {
       forceFill: true,
       borderRadius: BorderRadius.zero,
       forceLoadPlaceholder: true,
-      imageCacheManager: widget.imageCacheManager != null
-          ? widget.imageCacheManager!(post)
-          : null,
+      imageCacheManager: widget.imageCacheManager,
     );
   }
 }

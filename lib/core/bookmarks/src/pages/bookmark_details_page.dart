@@ -8,6 +8,7 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../../../boorus/engine/engine.dart';
+import '../../../boorus/engine/providers.dart';
 import '../../../configs/config/providers.dart';
 import '../../../configs/config/types.dart';
 import '../../../downloads/downloader/providers.dart';
@@ -79,6 +80,15 @@ class BookmarkDetailsPageInternal extends ConsumerStatefulWidget {
 
 class _BookmarkDetailsPageState
     extends ConsumerState<BookmarkDetailsPageInternal> {
+  final _transformController = TransformationController();
+  final _isInitPage = ValueNotifier(true);
+
+  @override
+  void dispose() {
+    _transformController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final data = PostDetails.of<BookmarkPost>(context);
@@ -86,22 +96,70 @@ class _BookmarkDetailsPageState
     final controller = data.controller;
     final imageCacheManager = ref.watch(bookmarkImageCacheManagerProvider);
     final auth = ref.watchConfigAuth;
+    final viewer = ref.watchConfigViewer;
+    final layout = ref.watchLayoutConfigs;
+    final gestures = ref.watchPostGestures;
+    final booruBuilder = ref.watch(booruBuilderProvider(auth));
+    final postGesturesHandler = booruBuilder?.postGestureHandlerBuilder;
 
     return PostDetailsPageScaffold(
+      isInitPage: _isInitPage,
+      transformController: _transformController,
       pageViewController: data.pageViewController,
       controller: controller,
       posts: posts,
-      viewerConfig: ref.watchConfigViewer,
-      authConfig: auth,
-      gestureConfig: ref.watchPostGestures,
-      layoutConfig: ref.watchLayoutConfigs,
-      // Needed to prevent type inference error
-      // ignore: avoid_types_on_closure_parameters
-      imageUrlBuilder: (Post post) => post.originalImageUrl,
-      imageCacheManager: (_) => imageCacheManager,
+      postGestureHandlerBuilder: postGesturesHandler,
+      gestureConfig: gestures,
+      layoutConfig: layout,
       uiBuilder: bookmarkUiBuilder,
       preferredParts: bookmarkUiBuilder.full.keys.toSet(),
       preferredPreviewParts: bookmarkUiBuilder.preview.keys.toSet(),
+      actions: defaultActions(
+        note: null,
+        fallbackMoreButton: ValueListenableBuilder(
+          valueListenable: controller.currentPost,
+          builder: (context, post, child) {
+            final config = ref.watch(
+              firstMatchingConfigProvider((
+                post.bookmark.booruId,
+                post.bookmark.sourceUrl,
+              )),
+            );
+
+            return DefaultFallbackBackupMoreButton(
+              layoutConfig: layout,
+              controller: controller,
+              pageViewController: data.pageViewController,
+              authConfig: config?.auth,
+              viewerConfig: viewer,
+            );
+          },
+        ),
+      ),
+      itemBuilder: (context, index) {
+        final post = posts[index];
+        final config = ref.watch(
+          firstMatchingConfigProvider((
+            post.bookmark.booruId,
+            post.bookmark.sourceUrl,
+          )),
+        );
+
+        return PostDetailsItem(
+          index: index,
+          posts: posts,
+          transformController: _transformController,
+          isInitPageListenable: _isInitPage,
+          authConfig: config?.auth ?? auth,
+          gestureConfig: gestures,
+          imageCacheManager: imageCacheManager,
+          pageViewController: data.pageViewController,
+          detailsController: controller,
+          // Needed to prevent type inference error
+          // ignore: avoid_types_on_closure_parameters
+          imageUrlBuilder: (Post post) => post.originalImageUrl,
+        );
+      },
     );
   }
 }
@@ -143,7 +201,10 @@ class BookmarkPostActionToolbar extends ConsumerWidget {
     final post = InheritedPost.of<BookmarkPost>(context);
     final controller = PostDetails.of<BookmarkPost>(context).pageViewController;
     final config = ref.watch(
-      firstMatchingConfigProvider(post.bookmark.booruId),
+      firstMatchingConfigProvider((
+        post.bookmark.booruId,
+        post.bookmark.sourceUrl,
+      )),
     );
     final originalPost = post.toOriginalPost();
 

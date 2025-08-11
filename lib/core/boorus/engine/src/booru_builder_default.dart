@@ -17,6 +17,7 @@ import '../../../home/custom_home.dart';
 import '../../../home/home_page_scaffold.dart';
 import '../../../home/mobile_home_page_scaffold.dart';
 import '../../../home/user_custom_home_builder.dart';
+import '../../../notes/notes.dart';
 import '../../../posts/details/details.dart';
 import '../../../posts/details/widgets.dart';
 import '../../../posts/details_manager/types.dart';
@@ -256,25 +257,87 @@ mixin DefaultBooruUIMixin implements BooruBuilder {
   };
 }
 
-class DefaultPostDetailsPage<T extends Post> extends ConsumerWidget {
+class DefaultPostDetailsPage<T extends Post> extends ConsumerStatefulWidget {
   const DefaultPostDetailsPage({
     super.key,
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<DefaultPostDetailsPage<T>> createState() =>
+      _DefaultPostDetailsPageState<T>();
+}
+
+class _DefaultPostDetailsPageState<T extends Post>
+    extends ConsumerState<DefaultPostDetailsPage<T>> {
+  final _transformController = TransformationController();
+  final _isInitPage = ValueNotifier(true);
+
+  @override
+  void dispose() {
+    _transformController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final data = PostDetails.of<T>(context);
     final posts = data.posts;
     final controller = data.controller;
+    final auth = ref.watchConfigAuth;
+    final viewer = ref.watchConfigViewer;
+    final layout = ref.watchLayoutConfigs;
+    final gestures = ref.watchPostGestures;
+    final booruBuilder = ref.watch(booruBuilderProvider(auth));
+    final postGesturesHandler = booruBuilder?.postGestureHandlerBuilder;
+    final uiBuilder = booruBuilder?.postDetailsUIBuilder;
 
-    return PostDetailsPageScaffold(
-      pageViewController: data.pageViewController,
-      controller: controller,
+    return PostDetailsNotes(
       posts: posts,
-      viewerConfig: ref.watchConfigViewer,
-      authConfig: ref.watchConfigAuth,
-      gestureConfig: ref.watchPostGestures,
-      layoutConfig: ref.watchLayoutConfigs,
+      pageViewController: data.pageViewController,
+      viewerConfig: viewer,
+      authConfig: auth,
+      child: PostDetailsPageScaffold(
+        transformController: _transformController,
+        isInitPage: _isInitPage,
+        pageViewController: data.pageViewController,
+        controller: controller,
+        posts: posts,
+        postGestureHandlerBuilder: postGesturesHandler,
+        uiBuilder: uiBuilder,
+        gestureConfig: gestures,
+        layoutConfig: layout,
+        actions: defaultActions(
+          note: NoteActionButtonWithProvider(
+            currentPost: controller.currentPost,
+            config: auth,
+          ),
+          fallbackMoreButton: DefaultFallbackBackupMoreButton(
+            layoutConfig: layout,
+            controller: controller,
+            pageViewController: data.pageViewController,
+            authConfig: auth,
+            viewerConfig: viewer,
+          ),
+        ),
+        itemBuilder: (context, index) {
+          return PostDetailsItem(
+            index: index,
+            posts: posts,
+            transformController: _transformController,
+            isInitPageListenable: _isInitPage,
+            authConfig: auth,
+            gestureConfig: gestures,
+            imageCacheManager: null,
+            pageViewController: data.pageViewController,
+            detailsController: controller,
+            imageUrlBuilder: defaultPostImageUrlBuilder(
+              ref,
+              auth,
+              viewer,
+            ),
+          );
+        },
+      ),
     );
   }
 }

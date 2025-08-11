@@ -180,6 +180,7 @@ class _Image<T extends Post> extends ConsumerWidget {
     );
 
     return BooruImage(
+      config: ref.watchConfigAuth,
       aspectRatio: post.aspectRatio,
       imageUrl: imageUrl,
       borderRadius: BorderRadius.circular(

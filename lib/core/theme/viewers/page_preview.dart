@@ -7,6 +7,7 @@ import 'package:foundation/widgets.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
+import '../../configs/config/providers.dart';
 import '../../configs/config/types.dart';
 import '../../images/booru_image.dart';
 import '../../posts/details_parts/widgets.dart';
@@ -204,12 +205,17 @@ class PreviewDetails extends StatelessWidget {
         ),
         body: CustomScrollView(
           slivers: [
-            const SliverToBoxAdapter(
+            SliverToBoxAdapter(
               child: Padding(
-                padding: EdgeInsets.symmetric(
+                padding: const EdgeInsets.symmetric(
                   horizontal: 8,
                 ),
-                child: BooruImage(imageUrl: ''),
+                child: Consumer(
+                  builder: (_, ref, _) => BooruImage(
+                    config: ref.watchConfigAuth,
+                    imageUrl: '',
+                  ),
+                ),
               ),
             ),
             const SliverToBoxAdapter(

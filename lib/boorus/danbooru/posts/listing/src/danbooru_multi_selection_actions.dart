@@ -144,6 +144,7 @@ class MassEditRatingSheet extends ConsumerWidget {
                 itemBuilder: (_, index) => Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 2),
                   child: BooruImage(
+                    config: ref.watchConfigAuth,
                     imageUrl: posts[index].url720x720,
                     aspectRatio: posts[index].aspectRatio,
                   ),

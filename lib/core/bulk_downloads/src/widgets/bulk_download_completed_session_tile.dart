@@ -241,9 +241,12 @@ class _Thumbnail extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 2),
-      child: BooruImage(
-        imageUrl: url ?? '',
-        fit: BoxFit.cover,
+      child: Consumer(
+        builder: (_, ref, _) => BooruImage(
+          config: ref.watchConfigAuth,
+          imageUrl: url ?? '',
+          fit: BoxFit.cover,
+        ),
       ),
     );
   }

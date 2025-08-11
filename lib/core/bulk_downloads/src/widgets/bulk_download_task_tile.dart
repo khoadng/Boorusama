@@ -15,6 +15,7 @@ import 'package:readmore/readmore.dart';
 import '../../../../foundation/clipboard.dart';
 import '../../../../foundation/toast.dart';
 import '../../../config_widgets/booru_logo.dart';
+import '../../../configs/config/providers.dart';
 import '../../../download_manager/providers.dart';
 import '../../../download_manager/types.dart';
 import '../../../images/booru_image.dart';
@@ -473,7 +474,9 @@ class _InfoText extends ConsumerWidget {
 
     return Text(
       switch (status) {
-        DownloadSessionStatus.pending => DownloadTranslations.createdStatus(context),
+        DownloadSessionStatus.pending => DownloadTranslations.createdStatus(
+          context,
+        ),
         DownloadSessionStatus.dryRun => DownloadTranslations.inProgressStatus(
           pageProgress.completed,
         ),
@@ -810,9 +813,12 @@ class _Thumbnail extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 2),
-      child: BooruImage(
-        imageUrl: url ?? '',
-        fit: BoxFit.cover,
+      child: Consumer(
+        builder: (_, ref, _) => BooruImage(
+          config: ref.watchConfigAuth,
+          imageUrl: url ?? '',
+          fit: BoxFit.cover,
+        ),
       ),
     );
   }

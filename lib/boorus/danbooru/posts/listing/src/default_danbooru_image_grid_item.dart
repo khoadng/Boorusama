@@ -271,6 +271,7 @@ class DefaultDanbooruImageGridItem extends StatelessWidget {
         );
 
         return BooruImage(
+          config: ref.watchConfigAuth,
           aspectRatio: post.isBanned ? 0.8 : post.aspectRatio,
           imageUrl: imgUrl,
           borderRadius: BorderRadius.circular(

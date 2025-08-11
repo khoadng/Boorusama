@@ -5,7 +5,6 @@ import 'package:foundation/foundation.dart';
 // Project imports:
 import '../boorus/engine/providers.dart';
 import '../configs/config.dart';
-import '../configs/ref.dart';
 import '../posts/post/post.dart';
 import 'notes.dart';
 
@@ -21,14 +20,13 @@ final notesProvider =
       BooruConfigAuth
     >(NotesNotifier.new);
 
-final currentNotesProvider = Provider.autoDispose.family<IList<Note>?, Post>((
-  ref,
-  post,
-) {
-  final allNotes = ref.watch(notesProvider(ref.watchConfigAuth));
+final currentNotesProvider = Provider.autoDispose
+    .family<IList<Note>?, (BooruConfigAuth, Post)>((ref, params) {
+      final (auth, post) = params;
+      final allNotes = ref.watch(notesProvider(auth));
 
-  return allNotes[post.id];
-});
+      return allNotes[post.id];
+    });
 
 final emptyNoteRepoProvider = Provider<NoteRepository>(
   (_) => const EmptyNoteRepository(),
