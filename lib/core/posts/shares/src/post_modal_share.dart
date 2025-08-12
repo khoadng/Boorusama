@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -13,7 +14,6 @@ import '../../../config_widgets/booru_logo.dart';
 import '../../../config_widgets/website_logo.dart';
 import '../../../configs/config/src/types/booru_config.dart';
 import '../../../downloads/urls/sanitizer.dart';
-import '../../../images/providers.dart';
 import '../../post/post.dart';
 import '../../post/providers.dart';
 import '../../sources/source.dart';
@@ -30,7 +30,7 @@ final _cachedImageFileProvider = FutureProvider.autoDispose
         final ext = sanitizedExtension(imageUrl);
         final effectiveExt = ext.isNotEmpty ? ext : imageExt;
 
-        final cacheManager = ref.watch(defaultImageCacheManagerProvider);
+        final cacheManager = data.imageCacheManager;
         final cacheKey = cacheManager.generateCacheKey(imageUrl);
         final file = await cacheManager.getCachedFile(cacheKey);
 
@@ -45,19 +45,25 @@ final _cachedImageFileProvider = FutureProvider.autoDispose
       },
     );
 
-typedef ModalShareImageData = ({String? imageUrl, String? imageExt});
+typedef ModalShareImageData = ({
+  String? imageUrl,
+  String? imageExt,
+  ImageCacheManager imageCacheManager,
+});
 
 class PostModalShare extends ConsumerWidget {
   const PostModalShare({
     required this.post,
     required this.auth,
     required this.viewer,
+    required this.imageCacheManager,
     super.key,
   });
 
   final Post post;
   final BooruConfigAuth auth;
   final BooruConfigViewer viewer;
+  final ImageCacheManager imageCacheManager;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -68,6 +74,7 @@ class PostModalShare extends ConsumerWidget {
         viewer,
       )(post),
       imageExt: post.format,
+      imageCacheManager: imageCacheManager,
     );
 
     final postLinkGenerator = ref.watch(postLinkGeneratorProvider(auth));
@@ -156,7 +163,10 @@ class PostModalShare extends ConsumerWidget {
 
                 showDialog(
                   context: context,
-                  builder: (context) => DownloadAndShareDialog(post: post),
+                  builder: (context) => DownloadAndShareDialog(
+                    post: post,
+                    auth: auth,
+                  ),
                 );
               },
             ),

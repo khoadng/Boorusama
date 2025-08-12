@@ -18,6 +18,7 @@ import '../../../posts/details_manager/types.dart';
 import '../../../posts/details_parts/widgets.dart';
 import '../../../posts/listing/providers.dart';
 import '../../../posts/post/post.dart';
+import '../../../posts/shares/widgets.dart';
 import '../../../posts/sources/source.dart';
 import '../../../widgets/adaptive_button_row.dart';
 import '../../../widgets/booru_menu_button_row.dart';
@@ -245,6 +246,20 @@ class BookmarkPostActionToolbar extends ConsumerWidget {
                     ),
                   ),
                   title: context.t.download.download,
+                ),
+
+              if (config != null)
+                ButtonData(
+                  required: true,
+                  widget: SharePostButton(
+                    post: originalPost,
+                    auth: config.auth,
+                    configViewer: config.viewer,
+                    imageCacheManager: ref.watch(
+                      bookmarkImageCacheManagerProvider,
+                    ),
+                  ),
+                  title: context.t.post.action.bookmark,
                 ),
 
               ...buttons,

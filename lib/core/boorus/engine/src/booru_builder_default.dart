@@ -17,6 +17,7 @@ import '../../../home/custom_home.dart';
 import '../../../home/home_page_scaffold.dart';
 import '../../../home/mobile_home_page_scaffold.dart';
 import '../../../home/user_custom_home_builder.dart';
+import '../../../images/providers.dart';
 import '../../../notes/notes.dart';
 import '../../../posts/details/details.dart';
 import '../../../posts/details/widgets.dart';
@@ -188,6 +189,7 @@ class PostGestureHandler {
           ref.readConfigAuth,
           context: ref.context,
           configViewer: ref.readConfigViewer,
+          imageCacheManager: ref.read(defaultImageCacheManagerProvider),
         );
   }
 

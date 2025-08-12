@@ -159,3 +159,7 @@ final httpCacheDirProvider = Provider<Directory>(
   (ref) => throw UnimplementedError(),
   name: 'httpCacheDirProvider',
 );
+
+final faviconDioProvider = Provider<Dio>((ref) {
+  return Dio();
+});

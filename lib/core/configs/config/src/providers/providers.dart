@@ -50,7 +50,7 @@ final firstMatchingConfigProvider =
         }
 
         final config = idResult.firstWhereOrNull(
-          (config) => config.auth.url == url,
+          (config) => url.contains(config.auth.url),
         );
 
         return config ?? idResult.firstOrNull;

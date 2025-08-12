@@ -16,6 +16,7 @@ import '../../core/downloads/downloader/providers.dart';
 import '../../core/downloads/filename/types.dart';
 import '../../core/home/custom_home.dart';
 import '../../core/home/user_custom_home_builder.dart';
+import '../../core/images/providers.dart';
 import '../../core/posts/details/widgets.dart';
 import '../../core/posts/details_manager/types.dart';
 import '../../core/posts/details_parts/widgets.dart';
@@ -148,6 +149,7 @@ class DanbooruBuilder
               ref.readConfigAuth,
               context: ref.context,
               configViewer: ref.readConfigViewer,
+              imageCacheManager: ref.read(defaultImageCacheManagerProvider),
             ),
         onToggleBookmark: () => ref.toggleBookmark(post),
         onViewTags: () => goToShowTaglistPage(

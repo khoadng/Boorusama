@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../configs/ref.dart';
 import '../http/providers.dart';
 import '../images/providers.dart';
 import '../widgets/website_logo.dart';
@@ -22,8 +21,7 @@ class ConfigAwareWebsiteLogo extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfigAuth;
-    final dio = ref.watch(dioForWidgetProvider(config));
+    final dio = ref.watch(faviconDioProvider);
 
     return WebsiteLogo(
       url: url,

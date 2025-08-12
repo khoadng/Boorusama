@@ -13,7 +13,6 @@ import 'package:share_plus/share_plus.dart';
 // Project imports:
 import '../../../../foundation/path.dart';
 import '../../../configs/config.dart';
-import '../../../configs/config/providers.dart';
 import '../../../download_manager/providers.dart';
 import '../../../download_manager/types.dart';
 import '../../../downloads/configs/widgets.dart';
@@ -49,15 +48,17 @@ final _downloadProvider =
 class DownloadAndShareDialog extends ConsumerWidget {
   const DownloadAndShareDialog({
     required this.post,
+    required this.auth,
     super.key,
   });
 
   final Post post;
+  final BooruConfigAuth auth;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return ref
-        .watch(_downloadProvider((ref.watchConfigAuth, post)))
+        .watch(_downloadProvider((auth, post)))
         .when(
           data: (info) {
             if (info == null) {
