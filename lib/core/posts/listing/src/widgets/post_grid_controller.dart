@@ -56,7 +56,7 @@ class PostGridController<T extends Post> extends ChangeNotifier {
   final PostGridFetcher<T> fetcher;
   PageMode _pageMode;
 
-  final Set<String> Function()? blacklistedUrlsFetcher;
+  final Future<Set<String>> Function()? blacklistedUrlsFetcher;
 
   Set<String>? blacklistedTags;
   List<List<TagExpression>>? _cachedParsedTags;
@@ -212,7 +212,9 @@ class PostGridController<T extends Post> extends ChangeNotifier {
       _items,
       tagCounts.value,
       activeFilters.value,
-      blacklistedUrlsFetcher != null ? blacklistedUrlsFetcher!() : {},
+      blacklistedUrlsFetcher != null
+          ? await blacklistedUrlsFetcher!()
+          : const {},
     );
 
     _setFilteringItems(filteredItems);

@@ -3,11 +3,9 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../../../blacklists/providers.dart';
-import '../../../../bookmarks/bookmark.dart';
 import '../../../../bookmarks/providers.dart';
 import '../../../../configs/ref.dart';
 import '../../../../settings/providers.dart';
@@ -80,17 +78,17 @@ class _PostScopeState<T extends Post> extends ConsumerState<PostScope<T>> {
           ref.read(
             imageListingSettingsProvider.select((value) => value.pageMode),
           ),
-      blacklistedUrlsFetcher: () {
+      blacklistedUrlsFetcher: () async {
         try {
           final settings = ref.read(settingsProvider);
 
-          final bookmarks = settings.shouldFilterBookmarks
-              ? ref.read(bookmarkProvider).bookmarks
-              : const ISet<BookmarkUniqueId>.empty();
+          if (!settings.shouldFilterBookmarks) return const {};
 
-          return bookmarks.map((e) => e.url).toSet();
+          final bookmarkState = await ref.read(bookmarkProvider.future);
+
+          return bookmarkState.bookmarks.map((e) => e.url).toSet();
         } catch (_) {
-          return {};
+          return const {};
         }
       },
       mountedChecker: () => mounted,

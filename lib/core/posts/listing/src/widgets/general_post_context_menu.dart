@@ -33,15 +33,19 @@ class GeneralPostContextMenu extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final booruConfig = ref.watchConfigAuth;
-    final bookmarkState = ref.watch(bookmarkProvider);
-    final isBookmarked = bookmarkState.isBookmarked(
-      post,
-      booruConfig.booruIdHint,
-    );
+    final bookmarkStateAsync = ref.watch(bookmarkProvider);
     final commentPageBuilder = ref
         .watch(booruBuilderProvider(booruConfig))
         ?.commentPageBuilder;
     final postLinkGenerator = ref.watch(postLinkGeneratorProvider(booruConfig));
+
+    final isBookmarked =
+        bookmarkStateAsync.valueOrNull?.isBookmarked(
+          post,
+          booruConfig.booruIdHint,
+        ) ??
+        false;
+    final isBookmarkLoading = bookmarkStateAsync.isLoading;
 
     return GenericContextMenu(
       buttonConfigs: [
@@ -59,21 +63,23 @@ class GeneralPostContextMenu extends ConsumerWidget {
         if (!isBookmarked)
           ContextMenuButtonConfig(
             context.t.post.detail.add_to_bookmark,
-            onPressed: () => ref.bookmarks
-              ..addBookmarkWithToast(
-                context,
-                booruConfig,
-                post,
-              ),
+            onPressed: isBookmarkLoading
+                ? null
+                : () => ref.bookmarks
+                    ..addBookmarkWithToast(
+                      booruConfig,
+                      post,
+                    ),
           )
         else
           ContextMenuButtonConfig(
             context.t.post.detail.remove_from_bookmark,
-            onPressed: () => ref.bookmarks
-              ..removeBookmarkWithToast(
-                context,
-                BookmarkUniqueId.fromPost(post, booruConfig.booruIdHint),
-              ),
+            onPressed: isBookmarkLoading
+                ? null
+                : () => ref.bookmarks
+                    ..removeBookmarkWithToast(
+                      BookmarkUniqueId.fromPost(post, booruConfig.booruIdHint),
+                    ),
           ),
         ContextMenuButtonConfig(
           'View tags',

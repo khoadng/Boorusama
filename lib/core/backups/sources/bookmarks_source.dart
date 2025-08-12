@@ -34,13 +34,18 @@ class BookmarksBackupSource extends JsonBackupSource<List<Bookmark>> {
           final bookmarkRepository = await ref.read(
             bookmarkRepoProvider.future,
           );
-          final bookmarkNotifier = ref.read(bookmarkProvider.notifier);
-          final bookmarkState = ref.read(bookmarkProvider);
+          final currentBookmarks = await bookmarkRepository
+              .getAllBookmarksOrEmpty(
+                imageUrlResolver: (booruId) =>
+                    ref.read(bookmarkUrlResolverProvider(booruId)),
+              );
+          final currentBookmarkIds = currentBookmarks
+              .map((bookmark) => bookmark.uniqueId)
+              .toSet();
 
           final filteredBookmarks = bookmarks
               .where(
-                (bookmark) =>
-                    !bookmarkState.bookmarks.contains(bookmark.uniqueId),
+                (bookmark) => !currentBookmarkIds.contains(bookmark.uniqueId),
               )
               .toList();
 
@@ -48,7 +53,7 @@ class BookmarksBackupSource extends JsonBackupSource<List<Bookmark>> {
             await bookmarkRepository.addBookmarkWithBookmarks(
               filteredBookmarks,
             );
-            await bookmarkNotifier.getAllBookmarks();
+            ref.invalidate(bookmarkProvider);
           }
         },
         handler: ListHandler<Bookmark>(
@@ -69,16 +74,19 @@ class BookmarksBackupSource extends JsonBackupSource<List<Bookmark>> {
   Widget buildTile(BuildContext context) {
     return Consumer(
       builder: (context, ref, child) {
-        final hasBookmarksAsync = ref.watch(hasBookmarkProvider);
-        final bookmarksCount = ref.watch(bookmarkProvider).bookmarks.length;
-
         return DefaultBackupTile(
           source: this,
           title: 'Bookmarks',
           icon: Symbols.bookmark,
-          subtitle: hasBookmarksAsync
-              ? '$bookmarksCount bookmarks'
-              : 'No bookmarks',
+          subtitle: ref
+              .watch(bookmarkProvider)
+              .when(
+                data: (bookmarkState) => bookmarkState.bookmarks.isNotEmpty
+                    ? '${bookmarkState.bookmarks.length} bookmarks'
+                    : 'No bookmarks',
+                loading: () => 'Loading...',
+                error: (_, _) => 'Error loading bookmarks',
+              ),
         );
       },
     );

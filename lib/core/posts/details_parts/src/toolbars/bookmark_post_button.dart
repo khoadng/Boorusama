@@ -26,21 +26,25 @@ class BookmarkPostButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final bookmarkState = ref.watch(bookmarkProvider);
-    final isBookmarked = bookmarkState.isBookmarked(
-      post,
-      config.booruIdHint,
-    );
+    final bookmarkStateAsync = ref.watch(bookmarkProvider);
+    final isBookmarked =
+        bookmarkStateAsync.valueOrNull?.isBookmarked(
+          post,
+          config.booruIdHint,
+        ) ??
+        false;
+    final isLoading = bookmarkStateAsync.isLoading;
 
     return isBookmarked
         ? IconButton(
             splashRadius: 16,
-            onPressed: () {
-              ref.bookmarks.removeBookmarkWithToast(
-                context,
-                BookmarkUniqueId.fromPost(post, config.booruIdHint),
-              );
-            },
+            onPressed: isLoading
+                ? null
+                : () {
+                    ref.bookmarks.removeBookmarkWithToast(
+                      BookmarkUniqueId.fromPost(post, config.booruIdHint),
+                    );
+                  },
             icon: Icon(
               Symbols.bookmark,
               fill: 1,
@@ -49,13 +53,14 @@ class BookmarkPostButton extends ConsumerWidget {
           )
         : IconButton(
             splashRadius: 16,
-            onPressed: () {
-              ref.bookmarks.addBookmarkWithToast(
-                context,
-                config,
-                post,
-              );
-            },
+            onPressed: isLoading
+                ? null
+                : () {
+                    ref.bookmarks.addBookmarkWithToast(
+                      config,
+                      post,
+                    );
+                  },
             icon: const Icon(
               Symbols.bookmark,
             ),
@@ -74,30 +79,33 @@ class BookmarkPostLikeButtonButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final booruConfig = ref.watchConfigAuth;
-    final bookmarkState = ref.watch(bookmarkProvider);
-    final isBookmarked = bookmarkState.isBookmarked(
-      post,
-      booruConfig.booruIdHint,
-    );
+    final bookmarkStateAsync = ref.watch(bookmarkProvider);
+    final isBookmarked =
+        bookmarkStateAsync.valueOrNull?.isBookmarked(
+          post,
+          booruConfig.booruIdHint,
+        ) ??
+        false;
+    final isLoading = bookmarkStateAsync.isLoading;
 
     return LikeButton(
       isLiked: isBookmarked,
-      onTap: (isLiked) {
-        if (isLiked) {
-          ref.bookmarks.removeBookmarkWithToast(
-            context,
-            BookmarkUniqueId.fromPost(post, booruConfig.booruIdHint),
-          );
-        } else {
-          ref.bookmarks.addBookmarkWithToast(
-            context,
-            booruConfig,
-            post,
-          );
-        }
+      onTap: isLoading
+          ? null
+          : (isLiked) {
+              if (isLiked) {
+                ref.bookmarks.removeBookmarkWithToast(
+                  BookmarkUniqueId.fromPost(post, booruConfig.booruIdHint),
+                );
+              } else {
+                ref.bookmarks.addBookmarkWithToast(
+                  booruConfig,
+                  post,
+                );
+              }
 
-        return Future.value(!isLiked);
-      },
+              return Future.value(!isLiked);
+            },
       likeBuilder: (isLiked) {
         return Icon(
           isLiked ? Symbols.bookmark : Symbols.bookmark,
@@ -114,23 +122,24 @@ class BookmarkPostLikeButtonButton extends ConsumerWidget {
 extension BookmarkPostX on WidgetRef {
   void toggleBookmark(Post post) {
     final booruConfig = readConfigAuth;
-    final bookmarkState = read(bookmarkProvider);
-    final isBookmarked = bookmarkState.isBookmarked(
-      post,
-      booruConfig.booruIdHint,
-    );
+    read(bookmarkProvider).whenOrNull(
+      data: (bookmarkState) {
+        final isBookmarked = bookmarkState.isBookmarked(
+          post,
+          booruConfig.booruIdHint,
+        );
 
-    if (isBookmarked) {
-      bookmarks.removeBookmarkWithToast(
-        context,
-        BookmarkUniqueId.fromPost(post, booruConfig.booruIdHint),
-      );
-    } else {
-      bookmarks.addBookmarkWithToast(
-        context,
-        booruConfig,
-        post,
-      );
-    }
+        if (isBookmarked) {
+          bookmarks.removeBookmarkWithToast(
+            BookmarkUniqueId.fromPost(post, booruConfig.booruIdHint),
+          );
+        } else {
+          bookmarks.addBookmarkWithToast(
+            booruConfig,
+            post,
+          );
+        }
+      },
+    );
   }
 }

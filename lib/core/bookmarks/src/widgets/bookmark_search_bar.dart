@@ -14,20 +14,22 @@ import 'package:material_symbols_icons/symbols.dart';
 import '../../../../foundation/display.dart';
 import '../../../../foundation/html.dart';
 import '../../../configs/ref.dart';
+import '../../../posts/listing/providers.dart';
 import '../../../search/search/widgets.dart';
 import '../../../theme.dart';
-import '../providers/bookmark_provider.dart';
 import '../providers/local_providers.dart';
 
 class BookmarkSearchBar extends ConsumerStatefulWidget {
   const BookmarkSearchBar({
     required this.focusNode,
     required this.controller,
+    required this.postController,
     super.key,
   });
 
   final FocusNode focusNode;
   final TextEditingController controller;
+  final PostGridController postController;
 
   @override
   ConsumerState<BookmarkSearchBar> createState() => _BookmarkSearchBarState();
@@ -61,10 +63,14 @@ class _BookmarkSearchBarState extends ConsumerState<BookmarkSearchBar> {
 
   @override
   Widget build(BuildContext context) {
-    final hasBookmarks = ref.watch(hasBookmarkProvider);
+    return ValueListenableBuilder(
+      valueListenable: widget.postController.itemsNotifier,
+      builder: (_, posts, _) =>
+          posts.isNotEmpty ? _buildSearch() : const SizedBox.shrink(),
+    );
+  }
 
-    if (!hasBookmarks) return const SizedBox.shrink();
-
+  Widget _buildSearch() {
     return LayoutBuilder(
       builder: (context, constraints) {
         final suggestions = ref.watch(tagSuggestionsProvider).valueOrNull ?? [];
@@ -112,7 +118,11 @@ class _BookmarkSearchBarState extends ConsumerState<BookmarkSearchBar> {
                               child: const Icon(Symbols.clear),
                               onTap: () {
                                 widget.controller.clear();
-                                ref.read(selectedTagsProvider.notifier).state =
+                                ref
+                                        .read(
+                                          selectedTagsProvider.notifier,
+                                        )
+                                        .state =
                                     '';
                                 widget.focusNode.unfocus();
                               },

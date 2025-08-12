@@ -62,8 +62,6 @@ class _BookmarkScrollViewState extends ConsumerState<BookmarkScrollView> {
 
   @override
   Widget build(BuildContext context) {
-    final hasBookmarks = ref.watch(hasBookmarkProvider);
-
     return RawPostScope<BookmarkPost>(
       fetcher: (page) => TaskEither.Do(
         ($) async {
@@ -200,24 +198,33 @@ class _BookmarkScrollViewState extends ConsumerState<BookmarkScrollView> {
                 child: BookmarkSearchBar(
                   focusNode: widget.focusNode,
                   controller: widget.searchController,
+                  postController: controller,
                 ),
               ),
-              if (hasBookmarks)
-                const SliverPinnedHeader(
-                  child: BookmarkBooruSourceUrlSelector(),
-                ),
+              ValueListenableBuilder(
+                valueListenable: controller.itemsNotifier,
+                builder: (_, posts, _) => posts.isNotEmpty
+                    ? const SliverPinnedHeader(
+                        child: BookmarkBooruSourceUrlSelector(),
+                      )
+                    : const SliverSizedBox.shrink(),
+              ),
               const SliverSizedBox(height: 8),
-              if (hasBookmarks)
-                const SliverToBoxAdapter(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 8),
-                    child: Row(
-                      children: [
-                        BookmarkSortButton(),
-                      ],
-                    ),
-                  ),
-                ),
+              ValueListenableBuilder(
+                valueListenable: controller.itemsNotifier,
+                builder: (_, posts, _) => posts.isNotEmpty
+                    ? const SliverToBoxAdapter(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 8),
+                          child: Row(
+                            children: [
+                              BookmarkSortButton(),
+                            ],
+                          ),
+                        ),
+                      )
+                    : const SliverSizedBox.shrink(),
+              ),
             ],
           );
         },

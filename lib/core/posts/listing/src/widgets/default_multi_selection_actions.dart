@@ -67,7 +67,6 @@ class DefaultMultiSelectionActions<T extends Post> extends ConsumerWidget {
                     ? () async {
                         unawaited(
                           ref.bookmarks.addBookmarksWithToast(
-                            context,
                             booruConfig,
                             booruConfig.url,
                             selectedPosts,

@@ -25,20 +25,19 @@ class BookmarkAppBar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final edit = ref.watch(bookmarkEditProvider);
-    final hasBookmarks = ref.watch(hasBookmarkProvider);
     final auth = ref.watchConfigAuth;
     final download = ref.watchConfigDownload;
 
     final itemBuilder = {
-      if (hasBookmarks) 'edit': Text(context.t.generic.action.edit),
-      if (hasBookmarks)
-        'download_all': ValueListenableBuilder(
-          valueListenable: controller.itemsNotifier,
-          builder: (_, posts, _) => Text(
-            'Download ${posts.length} bookmarks'.hc,
-          ),
+      'edit': Text(context.t.generic.action.edit),
+      'download_all': ValueListenableBuilder(
+        valueListenable: controller.itemsNotifier,
+        builder: (_, posts, _) => Text(
+          'Download ${posts.length} bookmarks'.hc,
         ),
+      ),
     };
+
     return AppBar(
       title: Text('Bookmarks'.hc),
       automaticallyImplyLeading: !edit,
@@ -54,22 +53,26 @@ class BookmarkAppBar extends ConsumerWidget {
           : null,
       actions: [
         if (!edit)
-          if (itemBuilder.isNotEmpty)
-            BooruPopupMenuButton(
-              onSelected: (value) {
-                switch (value) {
-                  case 'edit':
-                    ref.read(bookmarkEditProvider.notifier).state = true;
-                  case 'download_all':
-                    ref.bookmarks.downloadBookmarks(
-                      auth,
-                      download,
-                      controller.items.map((e) => e.bookmark).toList(),
-                    );
-                }
-              },
-              itemBuilder: itemBuilder,
-            ),
+          ValueListenableBuilder(
+            valueListenable: controller.itemsNotifier,
+            builder: (context, posts, child) => posts.isNotEmpty
+                ? BooruPopupMenuButton(
+                    onSelected: (value) {
+                      switch (value) {
+                        case 'edit':
+                          ref.read(bookmarkEditProvider.notifier).state = true;
+                        case 'download_all':
+                          ref.bookmarks.downloadBookmarks(
+                            auth,
+                            download,
+                            controller.items.map((e) => e.bookmark).toList(),
+                          );
+                      }
+                    },
+                    itemBuilder: itemBuilder,
+                  )
+                : const SizedBox.shrink(),
+          ),
       ],
     );
   }

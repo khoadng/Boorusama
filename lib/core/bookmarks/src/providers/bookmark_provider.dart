@@ -1,9 +1,5 @@
 // Dart imports:
-import 'dart:convert';
-import 'dart:io';
-
-// Flutter imports:
-import 'package:flutter/material.dart';
+import 'dart:async';
 
 // Package imports:
 import 'package:collection/collection.dart';
@@ -11,15 +7,9 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 import 'package:i18n/i18n.dart';
-import 'package:intl/intl.dart';
 
 // Project imports:
-import '../../../../foundation/animations/constants.dart';
-import '../../../../foundation/info/device_info.dart';
-import '../../../../foundation/path.dart';
-import '../../../../foundation/permissions.dart';
 import '../../../../foundation/toast.dart';
-import '../../../backups/types.dart';
 import '../../../boorus/booru/booru.dart';
 import '../../../boorus/engine/providers.dart';
 import '../../../configs/config.dart';
@@ -29,6 +19,7 @@ import '../../../downloads/filename/types.dart';
 import '../../../http/providers.dart';
 import '../../../posts/post/post.dart';
 import '../../../posts/post/providers.dart';
+import '../../../router.dart';
 import '../../../settings/providers.dart';
 import '../data/bookmark_convert.dart';
 import '../data/providers.dart';
@@ -36,19 +27,12 @@ import '../types/bookmark.dart';
 import '../types/bookmark_repository.dart';
 import 'bookmark_image_cache_manager.dart';
 
-final bookmarkProvider = NotifierProvider<BookmarkNotifier, BookmarkState>(
+final bookmarkProvider = AsyncNotifierProvider<BookmarkNotifier, BookmarkState>(
   BookmarkNotifier.new,
   dependencies: [
-    bookmarkRepoProvider,
     settingsProvider,
   ],
 );
-
-final hasBookmarkProvider = Provider.autoDispose<bool>((ref) {
-  final bookmarks = ref.watch(bookmarkProvider).bookmarks;
-
-  return bookmarks.isNotEmpty;
-});
 
 final bookmarkUrlResolverProvider = Provider.autoDispose
     .family<ImageUrlResolver, int?>((ref, booruId) {
@@ -65,39 +49,31 @@ final bookmarkImageCacheManagerProvider = Provider<BookmarkImageCacheManager>(
   (ref) => BookmarkImageCacheManager(),
 );
 
-class BookmarkNotifier extends Notifier<BookmarkState> {
+class BookmarkNotifier extends AsyncNotifier<BookmarkState> {
   BookmarkImageCacheManager get _cacheManager =>
       ref.read(bookmarkImageCacheManagerProvider);
 
   @override
-  BookmarkState build() {
-    getAllBookmarks();
-    return const BookmarkState(bookmarks: ISet.empty());
-  }
-
-  Future<BookmarkRepository> get bookmarkRepository =>
-      ref.read(bookmarkRepoProvider.future);
-
-  Future<void> getAllBookmarks({
-    void Function(BookmarkGetError error)? onError,
-  }) async {
-    return (await bookmarkRepository)
+  FutureOr<BookmarkState> build() async {
+    final bookmarks = await (await bookmarkRepository)
         .getAllBookmarks(
           imageUrlResolver: (booruId) =>
               ref.read(bookmarkUrlResolverProvider(booruId)),
         )
-        .run()
-        .then(
-          (value) => value.match(
-            (error) => onError?.call(error),
-            (bookmarks) => state = state.copyWith(
-              bookmarks: {
-                for (final bookmark in bookmarks) bookmark.uniqueId,
-              }.toISet(),
-            ),
-          ),
-        );
+        .run();
+
+    return bookmarks.fold(
+      (error) => const BookmarkState(bookmarks: ISet.empty()),
+      (bookmarks) => BookmarkState(
+        bookmarks: {
+          for (final bookmark in bookmarks) bookmark.uniqueId,
+        }.toISet(),
+      ),
+    );
   }
+
+  Future<BookmarkRepository> get bookmarkRepository =>
+      ref.read(bookmarkRepoProvider.future);
 
   Future<void> addBookmarks(
     BooruConfigAuth config,
@@ -107,10 +83,11 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
   }) async {
     try {
       final booruId = config.booruIdHint;
+      final currentState = await future;
 
       // filter out already bookmarked posts
       final filtered = posts.where(
-        (post) => !state.isBookmarked(post, booruId),
+        (post) => !currentState.isBookmarked(post, booruId),
       );
 
       await (await bookmarkRepository).addBookmarks(
@@ -127,7 +104,11 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
           .map((p) => BookmarkUniqueId.fromPost(p, booruId))
           .toISet();
 
-      state = state.copyWith(bookmarks: state.bookmarks.addAll(ids));
+      state = AsyncValue.data(
+        currentState.copyWith(
+          bookmarks: currentState.bookmarks.addAll(ids),
+        ),
+      );
     } catch (e) {
       onError?.call();
     }
@@ -141,9 +122,10 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
   }) async {
     try {
       final booruId = config.booruIdHint;
+      final currentState = await future;
 
       // check if post is already bookmarked
-      if (state.isBookmarked(post, booruId)) {
+      if (currentState.isBookmarked(post, booruId)) {
         return;
       }
 
@@ -156,8 +138,10 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
             ref.read(postLinkGeneratorProvider(config)),
       );
       onSuccess?.call();
-      state = state.copyWith(
-        bookmarks: state.bookmarks.add(bookmark.uniqueId),
+      state = AsyncValue.data(
+        currentState.copyWith(
+          bookmarks: currentState.bookmarks.add(bookmark.uniqueId),
+        ),
       );
     } catch (e) {
       onError?.call();
@@ -210,8 +194,11 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
         ),
       ]);
       onSuccess?.call();
-      state = state.copyWith(
-        bookmarks: state.bookmarks.remove(bookmark.uniqueId),
+      final currentState = await future;
+      state = AsyncValue.data(
+        currentState.copyWith(
+          bookmarks: currentState.bookmarks.remove(bookmark.uniqueId),
+        ),
       );
     } catch (e) {
       onError?.call();
@@ -242,105 +229,16 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
         ),
       );
       onSuccess?.call();
-      state = state.copyWith(
-        bookmarks: state.bookmarks.difference(
-          bookmarks.map((b) => b.uniqueId).toISet(),
+      final currentState = await future;
+      state = AsyncValue.data(
+        currentState.copyWith(
+          bookmarks: currentState.bookmarks.difference(
+            bookmarks.map((b) => b.uniqueId).toISet(),
+          ),
         ),
       );
     } catch (e) {
       onError?.call();
-    }
-  }
-
-  Future<void> exportAllBookmarks(BuildContext context, String path) async {
-    try {
-      // request permission
-      final deviceInfo = ref.read(deviceInfoProvider);
-      final status = await checkMediaPermissions(deviceInfo);
-
-      if (status != PermissionStatus.granted) {
-        final status = await requestMediaPermissions(deviceInfo);
-
-        if (context.mounted && status != PermissionStatus.granted) {
-          showErrorToast(context, 'Permission to access storage denied');
-          return;
-        }
-      }
-      final bookmarks = await (await bookmarkRepository).getAllBookmarksOrEmpty(
-        imageUrlResolver: (booruId) =>
-            ref.read(bookmarkUrlResolverProvider(booruId)),
-      );
-
-      final dir = Directory(path);
-      final date = DateFormat('yyyy.MM.dd.mm.ss').format(DateTime.now());
-      final file = File(join(dir.path, 'boorusama_bookmarks_$date.json'));
-      final json = bookmarks.map((bookmark) => bookmark.toJson()).toList();
-      final jsonString = jsonEncode(json);
-      await file.writeAsString(jsonString);
-
-      if (context.mounted) {
-        showSuccessToast(
-          context,
-          '${state.bookmarks.length} bookmarks exported to ${file.path}',
-          duration: AppDurations.longToast,
-        );
-      }
-    } catch (e) {
-      if (context.mounted) {
-        if (e is PathAccessException) {
-          showErrorToast(context, kInvalidLocationMessage);
-        } else {
-          showErrorToast(context, 'Failed to export bookmarks: $e');
-        }
-      }
-    }
-  }
-
-  Future<void> importBookmarks(BuildContext context, File file) async {
-    try {
-      final jsonString = await file.readAsString();
-      final json = jsonDecode(jsonString) as List<dynamic>;
-
-      try {
-        final bookmarks = json
-            .map((bookmark) {
-              final booruId = bookmark['booruId'] as int?;
-              final resolver = ref.read(bookmarkUrlResolverProvider(booruId));
-
-              return Bookmark.fromJson(
-                bookmark,
-                imageUrlResolver: resolver,
-              );
-            })
-            .toList()
-            // remove duplicates
-            .where(
-              (bookmark) => !state.bookmarks.contains(bookmark.uniqueId),
-            )
-            .toList();
-
-        await (await bookmarkRepository).addBookmarkWithBookmarks(bookmarks);
-        await getAllBookmarks();
-
-        if (context.mounted) {
-          showSuccessToast(
-            context,
-            '${bookmarks.length} bookmarks imported',
-            duration: AppDurations.longToast,
-          );
-        }
-      } catch (e) {
-        if (context.mounted) {
-          showErrorToast(
-            context,
-            'Failed to import bookmarks',
-          );
-        }
-      }
-    } catch (e) {
-      if (context.mounted) {
-        showErrorToast(context, 'Invalid export file');
-      }
     }
   }
 
@@ -388,10 +286,15 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
 
 extension BookmarkCubitToastX on BookmarkNotifier {
   Future<void> addBookmarkWithToast(
-    BuildContext context,
     BooruConfigAuth config,
     Post post,
   ) async {
+    final context = navigatorKey.currentContext;
+
+    if (context == null || !context.mounted) {
+      return;
+    }
+
     await addBookmark(
       config,
       post,
@@ -401,11 +304,16 @@ extension BookmarkCubitToastX on BookmarkNotifier {
   }
 
   Future<void> addBookmarksWithToast(
-    BuildContext context,
     BooruConfigAuth config,
     String booruUrl,
     Iterable<Post> posts,
   ) async {
+    final context = navigatorKey.currentContext;
+
+    if (context == null || !context.mounted) {
+      return;
+    }
+
     await addBookmarks(
       config,
       posts,
@@ -419,10 +327,15 @@ extension BookmarkCubitToastX on BookmarkNotifier {
   }
 
   Future<void> removeBookmarkWithToast(
-    BuildContext context,
     BookmarkUniqueId bookmarkId, {
     void Function()? onSuccess,
   }) async {
+    final context = navigatorKey.currentContext;
+
+    if (context == null || !context.mounted) {
+      return;
+    }
+
     await removeBookmarkFromId(
       bookmarkId,
       onSuccess: () {
@@ -431,28 +344,6 @@ extension BookmarkCubitToastX on BookmarkNotifier {
       },
       onError: () =>
           showErrorToast(context, context.t.bookmark.failed_to_remove),
-    );
-  }
-
-  // Future<void> updateBookmarkWithToast(
-  //   BuildContext context,
-  //   Bookmark bookmark,
-  // ) async {
-  //   await updateBookmark(
-  //     bookmark,
-  //     onSuccess: () => showSuccessToast(context, 'bookmark.updated'.tr()),
-  //     onError: () => showErrorToast(context, 'bookmark.failed_to_update'.tr()),
-  //   );
-  // }
-
-  Future<void> getAllBookmarksWithToast(
-    BuildContext context,
-  ) async {
-    await getAllBookmarks(
-      onError: (error) => showErrorToast(
-        context,
-        context.t.bookmark.failed_to_load.replaceAll('{0}', error.toString()),
-      ),
     );
   }
 }
