@@ -8,6 +8,8 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../../../configs/config/types.dart';
+import '../../../downloads/filename/providers.dart';
+import '../../../downloads/filename/types.dart';
 import '../../../images/providers.dart';
 import '../../post/post.dart';
 import 'share.dart';
@@ -17,6 +19,8 @@ class SharePostButton extends ConsumerWidget {
     required this.post,
     required this.auth,
     required this.configViewer,
+    required this.download,
+    this.filenameBuilder,
     this.imageCacheManager,
     super.key,
   });
@@ -24,6 +28,8 @@ class SharePostButton extends ConsumerWidget {
   final Post post;
   final BooruConfigAuth auth;
   final BooruConfigViewer configViewer;
+  final BooruConfigDownload download;
+  final DownloadFilenameGenerator? filenameBuilder;
   final ImageCacheManager? imageCacheManager;
 
   @override
@@ -31,6 +37,11 @@ class SharePostButton extends ConsumerWidget {
     final defaultImageCacheManager = ref.watch(
       defaultImageCacheManagerProvider,
     );
+    final effectiveDownloadFilenameBuilder =
+        filenameBuilder ??
+        ref.watch(
+          downloadFilenameBuilderProvider(auth),
+        );
 
     return IconButton(
       splashRadius: 16,
@@ -41,6 +52,8 @@ class SharePostButton extends ConsumerWidget {
             auth,
             context: context,
             configViewer: configViewer,
+            download: download,
+            filenameBuilder: effectiveDownloadFilenameBuilder,
             imageCacheManager: imageCacheManager ?? defaultImageCacheManager,
           ),
       icon: const Icon(Symbols.share),

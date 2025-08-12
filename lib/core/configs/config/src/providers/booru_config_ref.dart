@@ -44,6 +44,12 @@ extension BooruWidgetRef on WidgetRef {
 
   BooruConfigViewer get watchConfigViewer =>
       watch(currentReadOnlyBooruConfigViewerProvider);
+
+  BooruConfigDownload get readConfigDownload =>
+      read(currentReadOnlyBooruConfigDownloadProvider);
+
+  BooruConfigDownload get watchConfigDownload =>
+      watch(currentReadOnlyBooruConfigDownloadProvider);
 }
 
 extension BooruAutoDisposeProviderRef<T> on Ref<T> {

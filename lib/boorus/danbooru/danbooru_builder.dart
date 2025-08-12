@@ -13,6 +13,7 @@ import '../../core/configs/gesture/gesture.dart';
 import '../../core/configs/manage/widgets.dart';
 import '../../core/configs/ref.dart';
 import '../../core/downloads/downloader/providers.dart';
+import '../../core/downloads/filename/providers.dart';
 import '../../core/downloads/filename/types.dart';
 import '../../core/home/custom_home.dart';
 import '../../core/home/user_custom_home_builder.dart';
@@ -149,6 +150,10 @@ class DanbooruBuilder
               ref.readConfigAuth,
               context: ref.context,
               configViewer: ref.readConfigViewer,
+              download: ref.readConfigDownload,
+              filenameBuilder: ref.read(
+                downloadFilenameBuilderProvider(ref.readConfigAuth),
+              ),
               imageCacheManager: ref.read(defaultImageCacheManagerProvider),
             ),
         onToggleBookmark: () => ref.toggleBookmark(post),

@@ -13,6 +13,7 @@ import '../../../boorus/engine/engine.dart';
 import '../../../config_widgets/booru_logo.dart';
 import '../../../config_widgets/website_logo.dart';
 import '../../../configs/config/src/types/booru_config.dart';
+import '../../../downloads/filename/types.dart';
 import '../../../downloads/urls/sanitizer.dart';
 import '../../post/post.dart';
 import '../../post/providers.dart';
@@ -56,6 +57,8 @@ class PostModalShare extends ConsumerWidget {
     required this.post,
     required this.auth,
     required this.viewer,
+    required this.download,
+    required this.filenameBuilder,
     required this.imageCacheManager,
     super.key,
   });
@@ -63,6 +66,8 @@ class PostModalShare extends ConsumerWidget {
   final Post post;
   final BooruConfigAuth auth;
   final BooruConfigViewer viewer;
+  final BooruConfigDownload download;
+  final DownloadFilenameGenerator? filenameBuilder;
   final ImageCacheManager imageCacheManager;
 
   @override
@@ -166,6 +171,8 @@ class PostModalShare extends ConsumerWidget {
                   builder: (context) => DownloadAndShareDialog(
                     post: post,
                     auth: auth,
+                    download: download,
+                    filenameBuilder: filenameBuilder,
                   ),
                 );
               },

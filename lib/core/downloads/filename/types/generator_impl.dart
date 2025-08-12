@@ -149,7 +149,7 @@ class DownloadFileNameBuilder<T extends Post>
 
   Future<String> _generate(
     Settings settings,
-    BooruConfig config,
+    BooruConfigDownload config,
     String? format,
     T post, {
     required Map<String, String>? metadata,
@@ -200,14 +200,14 @@ class DownloadFileNameBuilder<T extends Post>
   @override
   Future<String> generate(
     Settings settings,
-    BooruConfig config,
+    BooruConfigDownload config,
     T post, {
     required String downloadUrl,
     Map<String, String>? metadata,
   }) => _generate(
     settings,
     config,
-    config.customDownloadFileNameFormat,
+    config.fileNameFormat,
     post,
     metadata: metadata,
     downloadUrl: downloadUrl,
@@ -216,14 +216,14 @@ class DownloadFileNameBuilder<T extends Post>
   @override
   Future<String> generateForBulkDownload(
     Settings settings,
-    BooruConfig config,
+    BooruConfigDownload config,
     T post, {
     required String downloadUrl,
     Map<String, String>? metadata,
   }) => _generate(
     settings,
     config,
-    config.customBulkDownloadFileNameFormat,
+    config.bulkFileNameFormat,
     post,
     metadata: metadata,
     downloadUrl: downloadUrl,

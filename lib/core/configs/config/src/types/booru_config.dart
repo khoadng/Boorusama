@@ -550,6 +550,33 @@ class BooruConfigViewer extends Equatable {
   ];
 }
 
+class BooruConfigDownload extends Equatable {
+  const BooruConfigDownload({
+    required this.fileNameFormat,
+    required this.bulkFileNameFormat,
+    required this.location,
+  });
+
+  factory BooruConfigDownload.fromConfig(BooruConfig config) {
+    return BooruConfigDownload(
+      fileNameFormat: config.customDownloadFileNameFormat,
+      bulkFileNameFormat: config.customBulkDownloadFileNameFormat,
+      location: config.customDownloadLocation,
+    );
+  }
+
+  final String? fileNameFormat;
+  final String? bulkFileNameFormat;
+  final String? location;
+
+  @override
+  List<Object?> get props => [
+    fileNameFormat,
+    bulkFileNameFormat,
+    location,
+  ];
+}
+
 mixin BooruConfigAuthMixin {
   int? get booruIdHint;
   int get booruId;
@@ -605,6 +632,7 @@ extension BooruConfigX on BooruConfig {
   BooruConfigSearch get search => BooruConfigSearch.fromConfig(this);
   BooruConfigFilter get filter => BooruConfigFilter.fromConfig(this);
   BooruConfigViewer get viewer => BooruConfigViewer.fromConfig(this);
+  BooruConfigDownload get download => BooruConfigDownload.fromConfig(this);
 }
 
 enum ImageQuickActionType {

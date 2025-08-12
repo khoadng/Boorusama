@@ -13,6 +13,7 @@ import '../../../configs/create/widgets.dart';
 import '../../../configs/gesture/gesture.dart';
 import '../../../configs/ref.dart';
 import '../../../downloads/downloader/providers.dart';
+import '../../../downloads/filename/providers.dart';
 import '../../../home/custom_home.dart';
 import '../../../home/home_page_scaffold.dart';
 import '../../../home/mobile_home_page_scaffold.dart';
@@ -189,6 +190,10 @@ class PostGestureHandler {
           ref.readConfigAuth,
           context: ref.context,
           configViewer: ref.readConfigViewer,
+          download: ref.readConfigDownload,
+          filenameBuilder: ref.read(
+            downloadFilenameBuilderProvider(ref.readConfigAuth),
+          ),
           imageCacheManager: ref.read(defaultImageCacheManagerProvider),
         );
   }

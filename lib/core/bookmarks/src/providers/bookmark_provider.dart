@@ -345,12 +345,13 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
   }
 
   Future<void> downloadBookmarks(
-    BooruConfig config,
+    BooruConfigAuth auth,
+    BooruConfigDownload download,
     List<Bookmark> bookmarks,
   ) async {
     final settings = ref.read(settingsProvider);
     final downloader = ref.read(downloadServiceProvider);
-    final headers = ref.read(httpHeadersProvider(config.auth));
+    final headers = ref.read(httpHeadersProvider(auth));
 
     final fileNameBuilder = fallbackFileNameBuilder;
 
@@ -358,7 +359,7 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
       (bookmark) async {
         final fileName = await fileNameBuilder.generate(
           settings,
-          config,
+          download,
           bookmark.toPost(),
           downloadUrl: bookmark.originalUrl,
         );
@@ -366,7 +367,7 @@ class BookmarkNotifier extends Notifier<BookmarkState> {
         return downloader
             .downloadWithSettings(
               settings,
-              config: config,
+              config: download,
               url: bookmark.originalUrl,
               metadata: DownloaderMetadata(
                 thumbnailUrl: bookmark.thumbnailUrl,

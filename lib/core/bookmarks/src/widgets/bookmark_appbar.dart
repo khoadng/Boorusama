@@ -26,6 +26,8 @@ class BookmarkAppBar extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final edit = ref.watch(bookmarkEditProvider);
     final hasBookmarks = ref.watch(hasBookmarkProvider);
+    final auth = ref.watchConfigAuth;
+    final download = ref.watchConfigDownload;
 
     final itemBuilder = {
       if (hasBookmarks) 'edit': Text(context.t.generic.action.edit),
@@ -60,7 +62,8 @@ class BookmarkAppBar extends ConsumerWidget {
                     ref.read(bookmarkEditProvider.notifier).state = true;
                   case 'download_all':
                     ref.bookmarks.downloadBookmarks(
-                      ref.readConfig,
+                      auth,
+                      download,
                       controller.items.map((e) => e.bookmark).toList(),
                     );
                 }

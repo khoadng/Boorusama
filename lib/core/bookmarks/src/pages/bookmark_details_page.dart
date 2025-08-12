@@ -12,6 +12,7 @@ import '../../../boorus/engine/providers.dart';
 import '../../../configs/config/providers.dart';
 import '../../../configs/config/types.dart';
 import '../../../downloads/downloader/providers.dart';
+import '../../../downloads/filename/types.dart';
 import '../../../posts/details/details.dart';
 import '../../../posts/details/widgets.dart';
 import '../../../posts/details_manager/types.dart';
@@ -237,7 +238,8 @@ class BookmarkPostActionToolbar extends ConsumerWidget {
                     onPressed: () {
                       showDownloadStartToast(context);
                       ref.bookmarks.downloadBookmarks(
-                        config,
+                        config.auth,
+                        config.download,
                         [post.bookmark],
                       );
                     },
@@ -255,9 +257,11 @@ class BookmarkPostActionToolbar extends ConsumerWidget {
                     post: originalPost,
                     auth: config.auth,
                     configViewer: config.viewer,
+                    download: config.download,
                     imageCacheManager: ref.watch(
                       bookmarkImageCacheManagerProvider,
                     ),
+                    filenameBuilder: fallbackFileNameBuilder,
                   ),
                   title: context.t.post.action.bookmark,
                 ),

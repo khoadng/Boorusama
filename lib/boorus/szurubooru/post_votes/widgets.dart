@@ -34,6 +34,7 @@ class SzurubooruPostActionToolbar extends ConsumerWidget {
 
     final config = ref.watchConfigAuth;
     final configViewer = ref.watchConfigViewer;
+    final download = ref.watchConfigDownload;
     final isFaved = ref.watch(favoriteProvider((config, post.id)));
     final postVote = ref.watch(szurubooruPostVoteProvider(post.id));
     final voteState = postVote?.voteState ?? VoteState.unvote;
@@ -99,6 +100,7 @@ class SzurubooruPostActionToolbar extends ConsumerWidget {
                   post: post,
                   auth: config,
                   configViewer: configViewer,
+                  download: download,
                 ),
                 title: context.t.post.action.share,
               ),

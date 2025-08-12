@@ -54,7 +54,7 @@ extension DownloadWithSettingsX on DownloadService {
     Settings settings, {
     required String url,
     required String filename,
-    required BooruConfig config,
+    required BooruConfigDownload config,
     required Map<String, String>? headers,
     DownloaderMetadata? metadata,
     String? folderName,
@@ -63,7 +63,7 @@ extension DownloadWithSettingsX on DownloadService {
     final downloadPath =
         path ??
         (config.hasCustomDownloadLocation
-            ? config.customDownloadLocation
+            ? config.location
             : settings.downloadPath);
 
     return downloadPath != null && downloadPath.isNotEmpty
@@ -95,7 +95,7 @@ String removeFileExtension(String url) {
   }
 }
 
-extension BooruConfigDownloadX on BooruConfig {
+extension BooruConfigDownloadX on BooruConfigDownload {
   bool get hasCustomDownloadLocation =>
-      customDownloadLocation != null && customDownloadLocation!.isNotEmpty;
+      location != null && location!.isNotEmpty;
 }

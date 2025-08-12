@@ -5,13 +5,23 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import '../../../../configs/config/providers.dart';
 import '../../../../posts/post/post.dart';
+import '../../../filename/providers.dart';
 import '../../providers.dart';
 import '../types/download.dart';
 
 extension PostDownloadX on WidgetRef {
   Future<DownloadTaskInfo?> download(Post post) async {
-    return read(downloadNotifierProvider.notifier).download(post);
+    return read(
+      downloadNotifierProvider((
+        auth: readConfigAuth,
+        download: readConfigDownload,
+        filenameBuilder: read(
+          downloadFilenameBuilderProvider(readConfigAuth),
+        ),
+      )).notifier,
+    ).download(post);
   }
 
   Future<void> bulkDownload(
@@ -19,7 +29,15 @@ extension PostDownloadX on WidgetRef {
     String? group,
     String? downloadPath,
   }) async {
-    return read(downloadNotifierProvider.notifier).bulkDownload(
+    return read(
+      downloadNotifierProvider((
+        auth: readConfigAuth,
+        download: readConfigDownload,
+        filenameBuilder: read(
+          downloadFilenameBuilderProvider(readConfigAuth),
+        ),
+      )).notifier,
+    ).bulkDownload(
       posts,
       group: group,
       downloadPath: downloadPath,

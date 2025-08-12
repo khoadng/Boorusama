@@ -109,6 +109,9 @@ class _BookmarkScrollViewState extends ConsumerState<BookmarkScrollView> {
               });
             });
 
+          final auth = ref.watchConfigAuth;
+          final download = ref.watchConfigDownload;
+
           return PostGrid(
             selectionModeController: _selectionModeController,
             scrollController: widget.scrollController,
@@ -121,7 +124,8 @@ class _BookmarkScrollViewState extends ConsumerState<BookmarkScrollView> {
                 ref
                     .read(bookmarkProvider.notifier)
                     .downloadBookmarks(
-                      ref.readConfig,
+                      auth,
+                      download,
                       selectedPosts.map((e) => e.bookmark).toList(),
                     );
               },
@@ -227,7 +231,8 @@ class _BookmarkScrollViewState extends ConsumerState<BookmarkScrollView> {
   ) {
     final edit = ref.watch(bookmarkEditProvider);
 
-    final config = ref.watchConfigAuth;
+    final auth = ref.watchConfigAuth;
+    final download = ref.watchConfigDownload;
 
     return ValueListenableBuilder(
       valueListenable: controller.itemsNotifier,
@@ -256,7 +261,8 @@ class _BookmarkScrollViewState extends ConsumerState<BookmarkScrollView> {
                   ContextMenuButtonConfig(
                     context.t.download.download,
                     onPressed: () => ref.bookmarks.downloadBookmarks(
-                      ref.readConfig,
+                      auth,
+                      download,
                       [post.bookmark],
                     ),
                   ),
@@ -270,7 +276,7 @@ class _BookmarkScrollViewState extends ConsumerState<BookmarkScrollView> {
                       },
                     ),
                   ),
-                  if (!config.hasStrictSFW)
+                  if (!auth.hasStrictSFW)
                     ContextMenuButtonConfig(
                       'Open source in browser',
                       onPressed: () =>

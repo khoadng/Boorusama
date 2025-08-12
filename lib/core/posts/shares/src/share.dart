@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../../foundation/display.dart';
 import '../../../configs/config/types.dart';
+import '../../../downloads/filename/types.dart';
 import '../../post/post.dart';
 import 'post_modal_share.dart';
 
@@ -23,12 +24,16 @@ class ShareService {
     BooruConfigAuth config, {
     required BuildContext context,
     required BooruConfigViewer configViewer,
+    required BooruConfigDownload download,
+    required DownloadFilenameGenerator? filenameBuilder,
     required ImageCacheManager imageCacheManager,
   }) {
     final modal = PostModalShare(
       post: post,
       auth: config,
       viewer: configViewer,
+      download: download,
+      filenameBuilder: filenameBuilder,
       imageCacheManager: imageCacheManager,
     );
 

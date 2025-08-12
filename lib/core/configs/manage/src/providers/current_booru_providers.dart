@@ -70,6 +70,14 @@ final currentReadOnlyBooruConfigViewerProvider = Provider<BooruConfigViewer>(
   name: 'currentReadOnlyBooruConfigViewerProvider',
 );
 
+final currentReadOnlyBooruConfigDownloadProvider =
+    Provider<BooruConfigDownload>(
+      (ref) => ref.watch(
+        currentBooruConfigProvider.select((value) => value.download),
+      ),
+      name: 'currentReadOnlyBooruConfigDownloadProvider',
+    );
+
 class CurrentBooruConfigNotifier extends Notifier<BooruConfig> {
   @override
   BooruConfig build() {

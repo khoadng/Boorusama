@@ -322,6 +322,7 @@ class PreviewPostActionToolbar extends StatelessWidget {
               post: _previewPost,
               auth: BooruConfigAuth.fromConfig(BooruConfig.empty),
               configViewer: BooruConfigViewer.fromConfig(BooruConfig.empty),
+              download: BooruConfigDownload.fromConfig(BooruConfig.empty),
             ),
           ),
           title: context.t.post.action.share,

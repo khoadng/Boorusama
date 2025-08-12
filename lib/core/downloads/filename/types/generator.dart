@@ -34,7 +34,7 @@ abstract class DownloadFilenameGenerator<T extends Post> {
 
   Future<String> generate(
     Settings settings,
-    BooruConfig config,
+    BooruConfigDownload config,
     T post, {
     required String downloadUrl,
     Map<String, String>? metadata,
@@ -42,7 +42,7 @@ abstract class DownloadFilenameGenerator<T extends Post> {
 
   Future<String> generateForBulkDownload(
     Settings settings,
-    BooruConfig config,
+    BooruConfigDownload config,
     T post, {
     required String downloadUrl,
     Map<String, String>? metadata,

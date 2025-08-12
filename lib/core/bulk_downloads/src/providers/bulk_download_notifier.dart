@@ -622,7 +622,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
 
           final fileName = await fileNameBuilder.generateForBulkDownload(
             settings,
-            config,
+            config.download,
             item,
             metadata: {
               'index': cumulativeIndex.toString(),

@@ -11,7 +11,6 @@ import '../../../../../foundation/permissions.dart';
 import '../../../../../foundation/platform.dart';
 import '../../../../../foundation/toast.dart';
 import '../../../../analytics/providers.dart';
-import '../../../../configs/config/providers.dart';
 import '../../../../configs/config/types.dart';
 import '../../../../http/http.dart';
 import '../../../../http/providers.dart';
@@ -20,7 +19,7 @@ import '../../../../posts/sources/source.dart';
 import '../../../../router.dart';
 import '../../../../settings/providers.dart';
 import '../../../../settings/settings.dart';
-import '../../../filename/providers.dart';
+import '../../../filename/types.dart';
 import '../../../l10n.dart';
 import '../../../urls/providers.dart';
 import '../../../urls/types.dart';
@@ -28,13 +27,20 @@ import '../types/download.dart';
 import '../types/metadata.dart';
 import 'service_provider.dart';
 
-final downloadNotifierProvider = NotifierProvider<DownloadNotifier, void>(
-  DownloadNotifier.new,
-);
+final downloadNotifierProvider =
+    NotifierProvider.family<DownloadNotifier, void, DownloadNotifierParams>(
+      DownloadNotifier.new,
+    );
 
-class DownloadNotifier extends Notifier<void> {
+typedef DownloadNotifierParams = ({
+  BooruConfigAuth auth,
+  BooruConfigDownload download,
+  DownloadFilenameGenerator? filenameBuilder,
+});
+
+class DownloadNotifier extends FamilyNotifier<void, DownloadNotifierParams> {
   @override
-  void build() {
+  void build(DownloadNotifierParams arg) {
     return;
   }
 
@@ -52,9 +58,10 @@ class DownloadNotifier extends Notifier<void> {
   }
 
   Future<DownloadTaskInfo?> download(Post post) async {
+    final auth = arg.auth;
     final settings = ref.read(settingsProvider);
     final urlExtractor = ref.read(
-      downloadFileUrlExtractorProvider(ref.readConfigAuth),
+      downloadFileUrlExtractorProvider(auth),
     );
     final perm = await _getPermissionStatus();
     final analyticsAsync = ref.read(analyticsProvider);
@@ -62,6 +69,7 @@ class DownloadNotifier extends Notifier<void> {
     final info = await _download(
       ref,
       post,
+      params: arg,
       permission: perm,
       settings: settings,
       downloadFileUrlExtractor: urlExtractor,
@@ -76,8 +84,8 @@ class DownloadNotifier extends Notifier<void> {
             analytics?.logEvent(
               'single_download_start',
               parameters: {
-                'hint_site': ref.readConfigAuth.booruType.name,
-                'url': Uri.tryParse(ref.readConfig.url)?.host,
+                'hint_site': auth.booruType.name,
+                'url': Uri.tryParse(auth.url)?.host,
               },
             );
           },
@@ -94,7 +102,7 @@ class DownloadNotifier extends Notifier<void> {
     String? downloadPath,
   }) async {
     final settings = ref.read(settingsProvider);
-    final config = ref.readConfigAuth;
+    final config = arg.auth;
     final urlExtractor = ref.read(downloadFileUrlExtractorProvider(config));
     final analyticsAsync = ref.read(analyticsProvider);
 
@@ -130,6 +138,7 @@ class DownloadNotifier extends Notifier<void> {
       await _download(
         ref,
         post,
+        params: arg,
         permission: perm,
         settings: settings,
         group: group,
@@ -149,20 +158,20 @@ Future<DownloadTaskInfo?> _download(
   Post downloadable, {
   required Settings settings,
   required DownloadFileUrlExtractor downloadFileUrlExtractor,
+  required DownloadNotifierParams params,
   PermissionStatus? permission,
   String? group,
   String? downloadPath,
   Map<String, String>? bulkMetadata,
   void Function()? onStarted,
 }) async {
-  final booruConfig = ref.readConfig;
+  final auth = params.auth;
+  final downloadConfig = params.download;
   final service = ref.read(downloadServiceProvider);
-  final fileNameBuilder = ref.read(
-    downloadFilenameBuilderProvider(booruConfig.auth),
-  );
+  final fileNameBuilder = params.filenameBuilder;
   final logger = ref.read(loggerProvider);
 
-  final headers = ref.read(httpHeadersProvider(booruConfig.auth));
+  final headers = ref.read(httpHeadersProvider(auth));
 
   final deviceStoragePermissionNotifier = ref.read(
     deviceStoragePermissionProvider.notifier,
@@ -199,14 +208,14 @@ Future<DownloadTaskInfo?> _download(
     final fileNameFuture = bulkMetadata != null
         ? fileNameBuilder.generateForBulkDownload(
             settings,
-            booruConfig,
+            downloadConfig,
             downloadable,
             metadata: bulkMetadata,
             downloadUrl: urlData.url,
           )
         : fileNameBuilder.generate(
             settings,
-            booruConfig,
+            downloadConfig,
             downloadable,
             downloadUrl: urlData.url,
           );
@@ -216,7 +225,7 @@ Future<DownloadTaskInfo?> _download(
     final result = await service
         .downloadWithSettings(
           settings,
-          config: booruConfig,
+          config: downloadConfig,
           metadata: DownloaderMetadata(
             thumbnailUrl: downloadable.thumbnailImageUrl,
             fileSize: downloadable.fileSize,

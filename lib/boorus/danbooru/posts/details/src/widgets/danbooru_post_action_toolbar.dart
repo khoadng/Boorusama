@@ -53,6 +53,7 @@ class DanbooruPostActionToolbar extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfigAuth;
     final configViewer = ref.watchConfigViewer;
+    final download = ref.watchConfigDownload;
     final params = (config, post.id);
     final isFaved = ref.watch(favoriteProvider(params));
     final postVote = ref.watch(danbooruPostVoteProvider(params));
@@ -118,6 +119,7 @@ class DanbooruPostActionToolbar extends ConsumerWidget {
                   post: post,
                   auth: config,
                   configViewer: configViewer,
+                  download: download,
                 ),
                 title: context.t.post.action.share,
               ),

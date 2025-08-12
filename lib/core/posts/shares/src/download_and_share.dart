@@ -18,6 +18,7 @@ import '../../../download_manager/types.dart';
 import '../../../downloads/configs/widgets.dart';
 import '../../../downloads/downloader/providers.dart';
 import '../../../downloads/downloader/types.dart';
+import '../../../downloads/filename/types.dart';
 import '../../../widgets/booru_dialog.dart';
 import '../../post/post.dart';
 
@@ -37,28 +38,43 @@ final _downloadTaskDetailsProvider = Provider.autoDispose
     });
 
 final _downloadProvider =
-    FutureProvider.family<DownloadTaskInfo?, (BooruConfigAuth, Post)>((
+    FutureProvider.family<
+      DownloadTaskInfo?,
+      (BooruConfigAuth, BooruConfigDownload, DownloadFilenameGenerator?, Post)
+    >((
       ref,
       params,
     ) async {
-      final (_, post) = params;
-      return ref.watch(downloadNotifierProvider.notifier).download(post);
+      final (auth, download, filenameBuilder, post) = params;
+      return ref
+          .watch(
+            downloadNotifierProvider((
+              auth: auth,
+              download: download,
+              filenameBuilder: filenameBuilder,
+            )).notifier,
+          )
+          .download(post);
     });
 
 class DownloadAndShareDialog extends ConsumerWidget {
   const DownloadAndShareDialog({
     required this.post,
     required this.auth,
+    required this.download,
+    required this.filenameBuilder,
     super.key,
   });
 
   final Post post;
   final BooruConfigAuth auth;
+  final BooruConfigDownload download;
+  final DownloadFilenameGenerator? filenameBuilder;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return ref
-        .watch(_downloadProvider((auth, post)))
+        .watch(_downloadProvider((auth, download, filenameBuilder, post)))
         .when(
           data: (info) {
             if (info == null) {
