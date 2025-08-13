@@ -23,6 +23,19 @@ enum DownloadSessionStatus {
   }
 }
 
+class DownloadSessionAuth extends Equatable {
+  const DownloadSessionAuth({
+    required this.authHash,
+    required this.siteUrl,
+  });
+
+  final String? authHash;
+  final String? siteUrl;
+
+  @override
+  List<Object?> get props => [authHash, siteUrl];
+}
+
 class DownloadSession extends Equatable {
   const DownloadSession({
     required this.id,
@@ -30,12 +43,11 @@ class DownloadSession extends Equatable {
     required this.startedAt,
     required this.currentPage,
     required this.status,
+    required this.auth,
     this.completedAt,
     this.totalPages,
     this.error,
     this.task,
-    this.authHash,
-    this.siteUrl,
   });
 
   final String id;
@@ -47,8 +59,7 @@ class DownloadSession extends Equatable {
   final DownloadSessionStatus status;
   final String? error;
   final DownloadTask? task;
-  final String? authHash;
-  final String? siteUrl;
+  final DownloadSessionAuth auth;
 
   DownloadSession copyWith({
     String? id,
@@ -59,8 +70,7 @@ class DownloadSession extends Equatable {
     int? totalPages,
     DownloadSessionStatus? status,
     String? error,
-    String? authHash,
-    String? siteUrl,
+    DownloadSessionAuth? auth,
   }) {
     return DownloadSession(
       id: id ?? this.id,
@@ -72,8 +82,7 @@ class DownloadSession extends Equatable {
       status: status ?? this.status,
       error: error ?? this.error,
       task: task,
-      authHash: authHash ?? this.authHash,
-      siteUrl: siteUrl ?? this.siteUrl,
+      auth: auth ?? this.auth,
     );
   }
 
@@ -88,7 +97,6 @@ class DownloadSession extends Equatable {
     status,
     error,
     task,
-    authHash,
-    siteUrl,
+    auth,
   ];
 }

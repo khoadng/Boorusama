@@ -51,8 +51,10 @@ DownloadSession mapToSession(Row row) {
     status: DownloadSessionStatus.fromString(row['status']),
     error: row['error'],
     task: task != null ? DownloadTask.fromJson(task) : null,
-    siteUrl: row['site_url'],
-    authHash: row['auth_hash'],
+    auth: DownloadSessionAuth(
+      authHash: row['auth_hash'],
+      siteUrl: row['site_url'],
+    ),
   );
 }
 

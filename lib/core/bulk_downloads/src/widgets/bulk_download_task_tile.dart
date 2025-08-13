@@ -433,7 +433,7 @@ class _Logo extends ConsumerWidget {
         ? Padding(
             padding: const EdgeInsets.only(right: 4),
             child: BooruLogo(
-              source: session.session.siteUrl,
+              source: session.session.auth.siteUrl,
               width: 18,
               height: 18,
             ),

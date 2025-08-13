@@ -263,8 +263,10 @@ class DownloadRepositorySqlite
       startedAt: DateTime.now(),
       currentPage: 1,
       status: DownloadSessionStatus.pending,
-      authHash: auth.computeHash(),
-      siteUrl: auth.url,
+      auth: DownloadSessionAuth(
+        authHash: auth.computeHash(),
+        siteUrl: auth.url,
+      ),
     );
 
     db.execute(
@@ -283,8 +285,8 @@ class DownloadRepositorySqlite
         session.status.name,
         session.totalPages,
         jsonEncode(task.toJson()),
-        session.authHash,
-        session.siteUrl,
+        session.auth.authHash,
+        session.auth.siteUrl,
       ],
     );
     return session;
@@ -486,8 +488,10 @@ class DownloadRepositorySqlite
         ),
         totalPages: row['total_pages'] as int?,
         error: row['error'] as String?,
-        siteUrl: row['site_url'] as String?,
-        authHash: row['auth_hash'] as String?,
+        auth: DownloadSessionAuth(
+          authHash: row['auth_hash'] as String?,
+          siteUrl: row['site_url'] as String?,
+        ),
       );
 
       final stats = DownloadSessionStats(

@@ -20,7 +20,7 @@ class AuthConfigChangedDialog extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final sessionUrl = session.session.siteUrl;
+    final sessionUrl = session.session.auth.siteUrl;
     final currentUrl = ref.watchConfigAuth;
     final hasMismatch = sessionUrl != currentUrl.url;
 

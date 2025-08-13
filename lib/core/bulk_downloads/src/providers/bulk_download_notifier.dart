@@ -1246,7 +1246,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
   }) async {
     // Check if auth config is not changed
     final currentAuthHash = ref.readConfigAuth.computeHash();
-    final sessionAuthHash = currentSession.authHash;
+    final sessionAuthHash = currentSession.auth.authHash;
 
     if (sessionAuthHash != currentAuthHash) {
       final confirmation = downloadConfigs?.authChangedConfirmation;
