@@ -37,6 +37,8 @@ class _SwipeToState extends State<SwipeTo> with SingleTickerProviderStateMixin {
 
   Offset _dragStartOffset = Offset.zero;
   Offset _dragUpdateOffset = Offset.zero;
+  double _currentVelocity = 0;
+  bool _wasStationary = false;
   bool _hasTriggeredThresholdHaptic = false;
 
   double get maxSwipeThreshold => 0.35;
@@ -78,6 +80,8 @@ class _SwipeToState extends State<SwipeTo> with SingleTickerProviderStateMixin {
 
   void _handleDragStart(DragStartDetails details) {
     _dragStartOffset = details.globalPosition;
+    _currentVelocity = 0.0;
+    _wasStationary = false;
     _hasTriggeredThresholdHaptic = false;
   }
 
@@ -101,6 +105,13 @@ class _SwipeToState extends State<SwipeTo> with SingleTickerProviderStateMixin {
       dx = dx.clamp(-maxSwipeThreshold, 0);
     }
 
+    // Track velocity and detect if user is stationary at threshold
+    _currentVelocity = details.delta.dx.abs();
+
+    if (_currentVelocity < 1.5 && dx.abs() >= swipeExecutionThreshold) {
+      _wasStationary = true;
+    }
+
     // Trigger subtle haptic feedback when crossing execution threshold
     if (widget.hapticFeedbackEnabled &&
         !_hasTriggeredThresholdHaptic &&
@@ -119,7 +130,8 @@ class _SwipeToState extends State<SwipeTo> with SingleTickerProviderStateMixin {
     if (dx.abs() > swipeExecutionThreshold) {
       final swipeRight = dx > 0;
 
-      if (widget.hapticFeedbackEnabled) {
+      // Trigger exit confirmation haptic only if user was stationary at threshold
+      if (widget.hapticFeedbackEnabled && _wasStationary) {
         HapticFeedback.mediumImpact();
       }
 
@@ -135,6 +147,8 @@ class _SwipeToState extends State<SwipeTo> with SingleTickerProviderStateMixin {
     setState(() {
       _dragUpdateOffset = Offset.zero;
       _swipeDirection = null;
+      _currentVelocity = 0.0;
+      _wasStationary = false;
       _hasTriggeredThresholdHaptic = false;
     });
   }
