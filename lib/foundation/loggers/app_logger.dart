@@ -47,8 +47,33 @@ class AppLogger implements Logger {
     );
   }
 
+  @override
+  void verbose(String serviceName, String message) {
+    _logs.add(
+      (
+        dateTime: DateTime.now(),
+        serviceName: serviceName,
+        message: message,
+        level: LogLevel.verbose,
+      ),
+    );
+  }
+
+  @override
+  void debug(String serviceName, String message) {
+    _logs.add(
+      (
+        dateTime: DateTime.now(),
+        serviceName: serviceName,
+        message: message,
+        level: LogLevel.debug,
+      ),
+    );
+  }
+
   List<LogData> get logs => _logs;
 
+  @override
   String dump() {
     final buffer = StringBuffer();
     for (final log in logs) {

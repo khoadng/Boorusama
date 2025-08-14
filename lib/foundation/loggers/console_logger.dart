@@ -62,4 +62,17 @@ class ConsoleLogger extends Logger {
   void error(String serviceName, String message) {
     developer.log(_composeMessage(serviceName, message, red));
   }
+
+  @override
+  void verbose(String serviceName, String message) {
+    developer.log(_composeMessage(serviceName, message, cyan));
+  }
+
+  @override
+  void debug(String serviceName, String message) {
+    developer.log(_composeMessage(serviceName, message, green));
+  }
+
+  @override
+  String dump() => '';
 }

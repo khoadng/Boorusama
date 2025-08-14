@@ -28,4 +28,33 @@ class MultiChannelLogger implements Logger {
       logger.warn(serviceName, message);
     }
   }
+
+  @override
+  void verbose(String serviceName, String message) {
+    for (final logger in loggers) {
+      logger.verbose(serviceName, message);
+    }
+  }
+
+  @override
+  void debug(String serviceName, String message) {
+    for (final logger in loggers) {
+      logger.debug(serviceName, message);
+    }
+  }
+
+  @override
+  String dump() {
+    final buffer = StringBuffer();
+    for (final logger in loggers) {
+      final logDump = logger.dump();
+      if (logDump.isNotEmpty) {
+        buffer
+          ..writeln('--- ${logger.runtimeType} ---')
+          ..writeln(logDump)
+          ..writeln('--- End of ${logger.runtimeType} ---\n');
+      }
+    }
+    return buffer.toString();
+  }
 }

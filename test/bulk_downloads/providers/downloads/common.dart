@@ -53,6 +53,15 @@ class DummyLogger implements Logger {
 
   @override
   void warn(String serviceName, String message) {}
+
+  @override
+  void verbose(String serviceName, String message) {}
+
+  @override
+  void debug(String serviceName, String message) {}
+
+  @override
+  String dump() => '';
 }
 
 class DownloadTestConstants {
