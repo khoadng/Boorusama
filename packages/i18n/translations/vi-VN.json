@@ -248,8 +248,7 @@
         "grid_size": "Cỡ ảnh",
         "small": "Nhỏ",
         "medium": "Vừa",
-        "large": "Lớn",
-        "tiny": ""
+        "large": "Lớn"
       },
       "image_quality": {
         "image_quality": "Chất lượng ảnh",
@@ -278,8 +277,7 @@
       "slideshow_skip": "Bỏ qua hiệu ứng chuyển tiếp ảnh",
       "slideshow_interval_explanation": "Giá trị ít hơn 1 giây sẽ tự động bỏ qua hiệu ứng chuyển tiếp",
       "mute_video": "Tắt tiếng video theo mặc định",
-      "video_section_title": "Video",
-      "swipe_mode": ""
+      "video_section_title": "Video"
     },
     "language": {
       "language": "Ngôn ngữ",
