@@ -214,26 +214,33 @@
     "general": "Chung",
     "search": {
       "search": "Tìm kiếm",
-      "auto_focus_search_bar": "Tự động focus vào thanh tìm kiếm khi mở lần đầu",
+      "auto_focus_search_bar": "Tự động bật bàn phím lên mỗi khi bấm vào thanh tìm kiếm",
       "hide_bookmarked_posts_from_search_results": "Không hiện ảnh đã đánh dấu khi tìm kiếm",
       "search_bar": {
         "position": {
-          "search_bar_position": "Vị trí thanh tìm kiếm"
+          "search_bar_position": "Vị trí thanh tìm kiếm",
+          "top": "Trên cùng",
+          "bottom": "Dưới cùng"
+        },
+        "scroll_behavior": {
+          "persistent": "Thanh tìm kiếm cố định",
+          "persistent_description": "Hiển thị thanh tìm kiếm khi khi cuộn."
         }
       }
     },
     "information": "Thông tin",
-    "changelog": "Changelog",
-    "infinite_scroll_warning": "Có khả năng crash app nếu lướt quá lâu",
+    "changelog": "Nhật ký thay đổi",
+    "infinite_scroll_warning": "Có khả năng sập ứng dụng nếu lướt quá lâu",
     "result_layout": {
-      "result_layout": "Kiểu layout",
+      "result_layout": "Chế độ trang",
       "infinite_scroll": "Lướt vô tận",
-      "pagination": "Chia trang"
+      "pagination": "Phân trang"
     },
     "image_list": {
-      "image_list": "Kiểu list ảnh",
+      "image_list": "Kiểu bố cục ảnh",
       "standard": "Tiêu chuẩn",
-      "masonry": "Masonry"
+      "masonry": "Masonry",
+      "classic": "Cổ điển"
     },
     "image_grid": {
       "image_grid": "Lưới ảnh",
@@ -241,7 +248,8 @@
         "grid_size": "Cỡ ảnh",
         "small": "Nhỏ",
         "medium": "Vừa",
-        "large": "Lớn"
+        "large": "Lớn",
+        "tiny": ""
       },
       "image_quality": {
         "image_quality": "Chất lượng ảnh",
@@ -252,7 +260,7 @@
         "automatic": "Tự động",
         "highest": "Cao nhất"
       },
-      "spacing": "Độ dãn cách",
+      "spacing": "Độ giãn cách",
       "corner_radius": "Bo góc",
       "padding": "Độ giãn cách & tỉ lệ hiển thị",
       "aspect_ratio": "Tỉ lệ khung hình"
@@ -267,43 +275,45 @@
         "forward": "Tiến tới",
         "backward": "Lùi lại"
       },
-      "slideshow_skip": "Bỏ qua hiệu ứng chuyển tiếp",
+      "slideshow_skip": "Bỏ qua hiệu ứng chuyển tiếp ảnh",
       "slideshow_interval_explanation": "Giá trị ít hơn 1 giây sẽ tự động bỏ qua hiệu ứng chuyển tiếp",
       "mute_video": "Tắt tiếng video theo mặc định",
-      "video_section_title": "Video"
+      "video_section_title": "Video",
+      "swipe_mode": ""
     },
     "language": {
       "language": "Ngôn ngữ",
       "language_name": "Tiếng Việt"
     },
     "theme": {
-      "theme": "Nền",
+      "theme": "Chủ đề",
       "dark": "Tối",
       "light": "Sáng",
       "amoled_dark": "Đen",
-      "dynamic_color": "Màu nền động",
-      "dynamic_color_mobile_description": "Đồng bộ tông màu app với ảnh bìa",
-      "dynamic_color_desktop_description": "Đồng bộ màu nền với màu nhấn của hệ điều hành",
-      "dynamic_color_unsupported_description": "Thiết bị này không hỗ trợ màu sắc động."
+      "dynamic_color": "Màu chủ đề động",
+      "dynamic_color_mobile_description": "Đồng bộ màu chủ đề ứng dụng giống hình nền",
+      "dynamic_color_desktop_description": "Đồng bộ màu chủ đề với màu nhấn của hệ điều hành",
+      "dynamic_color_unsupported_description": "Thiết bị này không hỗ trợ màu động.",
+      "system": "Theo hệ thống"
     },
     "privacy": {
-      "privacy": "Riêng tư",
+      "privacy": "Quyền riêng tư",
       "enable_incognito_keyboard": "Bật bàn phím ẩn danh",
       "enable_incognito_keyboard_notice": "Chỉ có tác dụng trên Android.",
       "enable_biometric_lock": "Bật khoá sinh trắc học",
-      "enable_biometric_lock_notice": "Chỉ hoạt động nếu thiết bị có hỗ trợ và kích hoạt."
+      "enable_biometric_lock_notice": "Chỉ hoạt động nếu thiết bị có hỗ trợ và đã bật khoá."
     },
     "performance": {
       "performance": "Hiệu năng",
-      "posts_per_page": "Lượng bài đăng ở mỗi trang",
+      "posts_per_page": "Số lượng ảnh ở mỗi trang",
       "posts_per_page_explain": "Tổng số ảnh hiển thị ở mỗi trang",
-      "cache_size": "Dung lượng cache",
+      "cache_size": "Kích cỡ bộ nhớ đệm",
       "clear_cache": "Dọn",
       "cache_size_info": "Chiếm {0} trong {1} tệp"
     },
     "debug_logs": {
-      "debug_logs": "Logs sửa lỗi",
-      "logs_copied": "Đã chép vào clipboard"
+      "debug_logs": "Nhật ký sửa lỗi",
+      "logs_copied": "Đã sao chép vào bảng nhớ tạm"
     },
     "download": {
       "path": "Đường dẫn tới nơi lưu ảnh",
