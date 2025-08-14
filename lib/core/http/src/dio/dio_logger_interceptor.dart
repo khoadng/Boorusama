@@ -30,7 +30,7 @@ class LoggingInterceptor extends Interceptor {
       return;
     }
 
-    logger.logI('Network', 'Sending ${options.method} to ${options.uri}');
+    logger.info('Network', 'Sending ${options.method} to ${options.uri}');
     requestTimeLogs[options.uri.toString()] = DateTime.now();
     super.onRequest(options, handler);
   }
@@ -47,7 +47,7 @@ class LoggingInterceptor extends Interceptor {
     final serverRuntime = response.headers.value('x-runtime');
     final serverRuntimeText = _parseServerRuntime(serverRuntime);
 
-    logger.logI(
+    logger.info(
       'Network',
       'Completed ${response.requestOptions.method} to ${response.requestOptions.uri} with status: ${response.statusCodeOrZero}$durationText$serverRuntimeText',
     );
@@ -67,12 +67,12 @@ class LoggingInterceptor extends Interceptor {
     final durationText = _parseRequestDuration(duration);
 
     if (response != null) {
-      logger.logI(
+      logger.info(
         'Network',
         'Completed ${response.requestOptions.method} to ${response.requestOptions.uri} with status: ${response.statusCodeOrZero}, body ${response.data}$durationText',
       );
     } else {
-      logger.logE('Network', 'Completed with error: ${err.message}');
+      logger.error('Network', 'Completed with error: ${err.message}');
     }
     super.onError(err, handler);
   }

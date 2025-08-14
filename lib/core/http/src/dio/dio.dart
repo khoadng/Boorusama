@@ -118,7 +118,7 @@ HttpClientAdapter _createHttpClientAdapter({
   final hasHttp2Support = supportsHttp2 ?? false;
 
   HttpClientAdapter createDefaultAdapter() {
-    logger?.logI('Network', 'Using default adapter');
+    logger?.info('Network', 'Using default adapter');
     return IOHttpClientAdapter(
       createHttpClient: proxySettings != null && proxyAddress != null
           ? () {
@@ -128,7 +128,7 @@ HttpClientAdapter _createHttpClientAdapter({
               final port = proxySettings.port;
               final host = proxySettings.host;
 
-              logger?.logI(
+              logger?.info(
                 'Network',
                 'Using proxy: ${proxySettings.type.name.toUpperCase()} $host:$port',
               );
@@ -173,10 +173,10 @@ HttpClientAdapter _createHttpClientAdapter({
 
   HttpClientAdapter createNativeAdapter() {
     try {
-      logger?.logI('Network', 'Using native adapter');
+      logger?.info('Network', 'Using native adapter');
       return newNativeAdapter(userAgent: userAgent);
     } catch (e) {
-      logger?.logW(
+      logger?.warn(
         'Network',
         'Native adapter failed, falling back to default: $e',
       );
@@ -191,7 +191,7 @@ HttpClientAdapter _createHttpClientAdapter({
               : createDefaultAdapter()
         : createNativeAdapter();
   } else if (hasHttp2Support && proxySettings == null) {
-    logger?.logI(
+    logger?.info(
       'Network',
       'Using HTTP2 adapter',
     );

@@ -22,7 +22,7 @@ Future<bool> initRevenuecat({
 
   // check if key is available
   if (!hasKey) {
-    logger?.logE(
+    logger?.error(
       'Revenuecat',
       'Revenuecat API key is empty, make sure to set it in your environment',
     );

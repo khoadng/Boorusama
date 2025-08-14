@@ -7,7 +7,7 @@ class BootLogger implements Logger {
   final List<BootLogData> _logs = [];
 
   @override
-  void logE(String serviceName, String message) {
+  void error(String serviceName, String message) {
     _logs.add(
       (
         dateTime: DateTime.now(),
@@ -18,7 +18,7 @@ class BootLogger implements Logger {
   }
 
   @override
-  void logI(String serviceName, String message) {
+  void info(String serviceName, String message) {
     _logs.add(
       (
         dateTime: DateTime.now(),
@@ -29,7 +29,7 @@ class BootLogger implements Logger {
   }
 
   @override
-  void logW(String serviceName, String message) {
+  void warn(String serviceName, String message) {
     _logs.add(
       (
         dateTime: DateTime.now(),
@@ -39,25 +39,10 @@ class BootLogger implements Logger {
     );
   }
 
-  @override
-  void log(
-    String serviceName,
-    String message, {
-    LogLevel? level,
-  }) {
-    _logs.add(
-      (
-        dateTime: DateTime.now(),
-        message: message,
-        level: level ?? LogLevel.info,
-      ),
-    );
-  }
-
   List<BootLogData> get logs => _logs;
 
   void l(String message) {
-    log('Boot', message);
+    info('Boot', message);
   }
 
   String dump() {

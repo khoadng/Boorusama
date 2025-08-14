@@ -52,7 +52,7 @@ class SettingsNotifier extends Notifier<Settings> {
         if (cs != ns) {
           ref
               .read(loggerProvider)
-              .logI(
+              .info(
                 'Settings',
                 'Settings updated: ${cs.runtimeType} $cs -> $ns',
               );

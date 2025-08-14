@@ -187,7 +187,7 @@ Future<DownloadTaskInfo?> _download(
   );
 
   if (fileNameBuilder == null) {
-    logger.logE('Single Download', 'No file name builder found, aborting...');
+    logger.error('Single Download', 'No file name builder found, aborting...');
     // if (ref.context.mounted) {
     //   showErrorToast(ref.context, 'Download aborted, cannot create file name');
     // }
@@ -195,7 +195,7 @@ Future<DownloadTaskInfo?> _download(
   }
 
   if (urlData == null || urlData.url.isEmpty) {
-    logger.logE('Single Download', 'No download url found, aborting...');
+    logger.error('Single Download', 'No download url found, aborting...');
     // if (ref.context.mounted) {
     //   showErrorToast(ref.context, 'Download aborted, no download url found');
     // }
@@ -259,7 +259,7 @@ Future<DownloadTaskInfo?> _download(
   if (permission == PermissionStatus.granted) {
     return download();
   } else {
-    logger.logI('Single Download', 'Permission not granted, requesting...');
+    logger.info('Single Download', 'Permission not granted, requesting...');
     DownloadTaskInfo? info;
 
     await deviceStoragePermissionNotifier.requestPermission(
@@ -267,7 +267,7 @@ Future<DownloadTaskInfo?> _download(
         if (isGranted) {
           info = await download();
         } else {
-          logger.logI(
+          logger.info(
             'Single Download',
             'Storage permission request denied, aborting...',
           );

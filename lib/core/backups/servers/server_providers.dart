@@ -54,7 +54,7 @@ final dataSyncServerProvider = Provider<AppServer>((ref) {
     serverName: ref.watch(deviceInfoProvider).deviceName ?? 'Unknown server',
     appVersion: ref.watch(packageInfoProvider).version,
     onError: (message) {
-      ref.read(loggerProvider).logE('DataSyncServer', message);
+      ref.read(loggerProvider).error('DataSyncServer', message);
     },
     routes: {
       'health': (request) async => Response(204),

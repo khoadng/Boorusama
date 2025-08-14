@@ -49,7 +49,7 @@ final localIPAddressProvider = FutureProvider.autoDispose<String?>((ref) async {
 
   // If WiFi isn't active, return immediately.
   if (!connectivityResult.contains(ConnectivityResult.wifi)) {
-    logger.logW(_serviceName, 'Not connected to WiFi');
+    logger.warn(_serviceName, 'Not connected to WiFi');
     return null;
   }
 
@@ -72,7 +72,7 @@ final localIPAddressProvider = FutureProvider.autoDispose<String?>((ref) async {
     }).toList();
 
     if (candidates.isEmpty) {
-      logger.logW(
+      logger.warn(
         _serviceName,
         'No valid network interfaces found.',
       );
@@ -93,10 +93,10 @@ final localIPAddressProvider = FutureProvider.autoDispose<String?>((ref) async {
 
     return ipv4.address;
   } catch (e) {
-    logger.logE(_serviceName, 'Error getting IP address: $e');
+    logger.error(_serviceName, 'Error getting IP address: $e');
   }
 
-  logger.logW(_serviceName, 'Failed to get local IP address.');
+  logger.warn(_serviceName, 'Failed to get local IP address.');
 
   return null;
 });
@@ -129,21 +129,21 @@ class NetworkListener extends ConsumerWidget {
         next.when(
           data: (data) {
             if (data.isEmpty || data.contains(ConnectivityResult.none)) {
-              logger.logW(_serviceName, 'Network disconnected');
+              logger.warn(_serviceName, 'Network disconnected');
             } else {
-              logger.logI(
+              logger.info(
                 _serviceName,
                 'Connected to ${data.prettyString}',
               );
             }
           },
           error: (error, stackTrace) {
-            logger.logE(
+            logger.error(
               _serviceName,
               'Error: $error',
             );
           },
-          loading: () => logger.logI(_serviceName, 'Network connecting...'),
+          loading: () => logger.info(_serviceName, 'Network connecting...'),
         );
       },
     );

@@ -21,7 +21,7 @@ final zerochanClientProvider = Provider.family<ZerochanClient, BooruConfigAuth>(
 
     return ZerochanClient(
       dio: dio,
-      logger: (message) => logger.logE('ZerochanClient', message),
+      logger: (message) => logger.error('ZerochanClient', message),
     );
   },
 );

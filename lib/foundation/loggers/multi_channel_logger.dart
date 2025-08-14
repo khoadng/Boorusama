@@ -9,34 +9,23 @@ class MultiChannelLogger implements Logger {
   final List<Logger> loggers;
 
   @override
-  void logE(String serviceName, String message) {
+  void error(String serviceName, String message) {
     for (final logger in loggers) {
-      logger.logE(serviceName, message);
+      logger.error(serviceName, message);
     }
   }
 
   @override
-  void logI(String serviceName, String message) {
+  void info(String serviceName, String message) {
     for (final logger in loggers) {
-      logger.logI(serviceName, message);
+      logger.info(serviceName, message);
     }
   }
 
   @override
-  void logW(String serviceName, String message) {
+  void warn(String serviceName, String message) {
     for (final logger in loggers) {
-      logger.logW(serviceName, message);
-    }
-  }
-
-  @override
-  void log(
-    String serviceName,
-    String message, {
-    LogLevel? level,
-  }) {
-    for (final logger in loggers) {
-      logger.log(serviceName, message, level: level);
+      logger.warn(serviceName, message);
     }
   }
 }

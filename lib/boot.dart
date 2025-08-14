@@ -52,7 +52,7 @@ Future<void> boot(BootData bootData) async {
   final appLogger = bootData.appLogger;
 
   final stopwatch = Stopwatch()..start();
-  logger.logI('Start up', 'App Start up');
+  logger.info('Start up', 'App Start up');
 
   if (isDesktopPlatform()) {
     await window.initialize();
@@ -156,7 +156,7 @@ Future<void> boot(BootData bootData) async {
   };
 
   if (settings.clearImageCacheOnStartup) {
-    logger.logI('Start up', 'Clearing image cache on startup');
+    logger.info('Start up', 'Clearing image cache on startup');
     bootLogger.l('Clear image cache');
     await clearImageCache();
   }
@@ -166,7 +166,7 @@ Future<void> boot(BootData bootData) async {
   // Prepare for Android 15
   unawaited(showSystemStatus());
 
-  logger.logI(
+  logger.info(
     'Start up',
     'Initialization done in ${stopwatch.elapsed.inMilliseconds}ms',
   );

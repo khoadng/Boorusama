@@ -12,7 +12,7 @@ class AppLogger implements Logger {
   final List<LogData> _logs = [];
 
   @override
-  void logE(String serviceName, String message) {
+  void error(String serviceName, String message) {
     _logs.add(
       (
         dateTime: DateTime.now(),
@@ -24,7 +24,7 @@ class AppLogger implements Logger {
   }
 
   @override
-  void logI(String serviceName, String message) {
+  void info(String serviceName, String message) {
     _logs.add(
       (
         dateTime: DateTime.now(),
@@ -36,29 +36,13 @@ class AppLogger implements Logger {
   }
 
   @override
-  void logW(String serviceName, String message) {
+  void warn(String serviceName, String message) {
     _logs.add(
       (
         dateTime: DateTime.now(),
         serviceName: serviceName,
         message: message,
         level: LogLevel.warning,
-      ),
-    );
-  }
-
-  @override
-  void log(
-    String serviceName,
-    String message, {
-    LogLevel? level,
-  }) {
-    _logs.add(
-      (
-        dateTime: DateTime.now(),
-        serviceName: serviceName,
-        message: message,
-        level: level ?? LogLevel.info,
       ),
     );
   }

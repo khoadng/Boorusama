@@ -26,7 +26,7 @@ final searchHistoryRepoProvider = FutureProvider<SearchHistoryRepository>(
     );
 
     if (db == null) {
-      logger.logW(_kServiceName, 'Fallback to empty search history repository');
+      logger.warn(_kServiceName, 'Fallback to empty search history repository');
       return EmptySearchHistoryRepository();
     }
 
@@ -38,11 +38,11 @@ final searchHistoryRepoProvider = FutureProvider<SearchHistoryRepository>(
       return SearchHistoryRepositorySqlite(db: db)..initialize();
     } on Exception catch (e) {
       logger
-        ..logE(
+        ..error(
           _kServiceName,
           'Failed to initialize SQLite database for search history: $e',
         )
-        ..logW(_kServiceName, 'Fallback to empty search history repository');
+        ..warn(_kServiceName, 'Fallback to empty search history repository');
 
       db.dispose();
       return EmptySearchHistoryRepository();

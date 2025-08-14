@@ -128,7 +128,7 @@ class BulkBackupService {
   }
 
   Future<ZipPreviewResult> previewZip(String zipPath) async {
-    logger.logI('Backup.Preview', 'Starting streaming zip preview: $zipPath');
+    logger.info('Backup.Preview', 'Starting streaming zip preview: $zipPath');
 
     try {
       // Use streaming decoder to avoid loading entire zip into memory
@@ -161,7 +161,7 @@ class BulkBackupService {
           jsonDecode(utf8.decode(manifestContent)) as Map<String, dynamic>;
       final manifest = BulkBackupManifest.fromJson(manifestJson);
 
-      logger.logI(
+      logger.info(
         'Backup.Preview',
         'Loaded manifest with ${manifest.sources.length} sources: ${manifest.sources.join(', ')}',
       );
@@ -179,7 +179,7 @@ class BulkBackupService {
         }
       }
 
-      logger.logI(
+      logger.info(
         'Backup.Preview',
         'Preview result: ${availableSources.length} available, ${missingSources.length} missing',
       );
@@ -190,7 +190,7 @@ class BulkBackupService {
         missingSources: missingSources,
       );
     } catch (e) {
-      logger.logE('Backup.Preview', 'Streaming preview failed: $e');
+      logger.error('Backup.Preview', 'Streaming preview failed: $e');
       rethrow;
     }
   }
@@ -200,7 +200,7 @@ class BulkBackupService {
     List<String> sourceIds, {
     void Function(ZipProgressUpdate)? onProgress,
   }) async {
-    logger.logI(
+    logger.info(
       'Backup.Export',
       'Starting export to zip for ${sourceIds.length} sources: ${sourceIds.join(', ')}',
     );
@@ -211,10 +211,10 @@ class BulkBackupService {
     final zipFileName = 'boorusama_backup_$timestamp.zip';
     final zipPath = p.join(directoryPath, zipFileName);
 
-    logger.logI('Backup.Export', 'Export target: $zipPath');
+    logger.info('Backup.Export', 'Export target: $zipPath');
 
     final tempDir = await Directory.systemTemp.createTemp('boorusama_backup_');
-    logger.logI('Backup.Export', 'Created temp directory: ${tempDir.path}');
+    logger.info('Backup.Export', 'Created temp directory: ${tempDir.path}');
 
     try {
       // Filter sources by provided IDs
@@ -223,7 +223,7 @@ class BulkBackupService {
           .where((source) => sourceIds.contains(source.id))
           .toList();
 
-      logger.logI(
+      logger.info(
         'Backup.Export',
         'Found ${selectedSources.length} sources to export from ${allSources.length} total sources',
       );
@@ -233,18 +233,18 @@ class BulkBackupService {
 
       // Export each selected source to temp directory
       for (final source in selectedSources) {
-        logger.logI('Backup.Export', 'Exporting source: ${source.id}');
+        logger.info('Backup.Export', 'Exporting source: ${source.id}');
         final result = await _exportSource(source, tempDir);
         result.fold(
           (error) {
-            logger.logE(
+            logger.error(
               'Backup.Export',
               'Failed to export source ${source.id}: $error',
             );
             failed.add(source.id);
           },
           (fileName) {
-            logger.logI(
+            logger.info(
               'Backup.Export',
               'Successfully exported source ${source.id} to $fileName',
             );
@@ -259,14 +259,14 @@ class BulkBackupService {
         (id) => !existingSourceIds.contains(id),
       );
       if (missingSourceIds.isNotEmpty) {
-        logger.logW(
+        logger.warn(
           'Backup.Export',
           'Missing source IDs not found in registry: ${missingSourceIds.join(', ')}',
         );
         failed.addAll(missingSourceIds);
       }
 
-      logger.logI(
+      logger.info(
         'Backup.Export',
         'Export summary: ${sourceFiles.length} successful, ${failed.length} failed',
       );
@@ -283,10 +283,10 @@ class BulkBackupService {
       final manifestFile = File(p.join(tempDir.path, _manifestFileName));
       await manifestFile.writeAsString(jsonEncode(manifest.toJson()));
       logger
-        ..logI('Backup.Export', 'Created manifest file')
-        ..logI('Backup.Export', 'Starting zip creation');
+        ..info('Backup.Export', 'Created manifest file')
+        ..info('Backup.Export', 'Starting zip creation');
       await _createZipWithProgress(tempDir.path, zipPath, onProgress);
-      logger.logI('Backup.Export', 'Zip creation completed');
+      logger.info('Backup.Export', 'Zip creation completed');
 
       return BulkExportResult(
         success: sourceFiles.isNotEmpty,
@@ -295,15 +295,15 @@ class BulkBackupService {
         filePath: zipPath,
       );
     } catch (e) {
-      logger.logE('Backup.Export', 'Export failed with exception: $e');
+      logger.error('Backup.Export', 'Export failed with exception: $e');
       rethrow;
     } finally {
       // Cleanup temp directory
       try {
         await tempDir.delete(recursive: true);
-        logger.logI('Backup.Export', 'Cleaned up temp directory');
+        logger.info('Backup.Export', 'Cleaned up temp directory');
       } catch (e) {
-        logger.logW('Backup.Export', 'Failed to cleanup temp directory: $e');
+        logger.warn('Backup.Export', 'Failed to cleanup temp directory: $e');
       }
     }
   }
@@ -389,7 +389,7 @@ class BulkBackupService {
     final sourceFilter = onlySourceIds != null
         ? 'filtering for ${onlySourceIds.join(', ')}'
         : 'all sources';
-    logger.logI(
+    logger.info(
       'Backup.Import',
       'Starting import from zip: $zipPath - $sourceFilter',
     );
@@ -397,17 +397,17 @@ class BulkBackupService {
     await BackupUtils.ensureStoragePermissions(ref);
 
     final tempDir = await Directory.systemTemp.createTemp('boorusama_import_');
-    logger.logI(
+    logger.info(
       'Backup.Import',
       'Created temp directory for import: ${tempDir.path}',
     );
 
     try {
       final bytes = await File(zipPath).readAsBytes();
-      logger.logI('Backup.Import', 'Read ${bytes.length} bytes from zip file');
+      logger.info('Backup.Import', 'Read ${bytes.length} bytes from zip file');
 
       final archive = ZipDecoder().decodeBytes(bytes);
-      logger.logI(
+      logger.info(
         'Backup.Import',
         'Decoded zip archive with ${archive.length} files',
       );
@@ -421,12 +421,12 @@ class BulkBackupService {
           await extractedFile.writeAsBytes(data);
         }
       }
-      logger.logI('Backup.Import', 'Extracted all files from archive');
+      logger.info('Backup.Import', 'Extracted all files from archive');
 
       // Read manifest
       final manifestFile = File(p.join(tempDir.path, _manifestFileName));
       if (!manifestFile.existsSync()) {
-        logger.logE(
+        logger.error(
           'Backup.Import',
           'Manifest file not found: $_manifestFileName',
         );
@@ -439,7 +439,7 @@ class BulkBackupService {
       final manifestJson = jsonDecode(manifestContent) as Map<String, dynamic>;
       final manifest = BulkBackupManifest.fromJson(manifestJson);
 
-      logger.logI(
+      logger.info(
         'Backup.Import',
         'Loaded manifest with ${manifest.sources.length} sources: ${manifest.sources.join(', ')}',
       );
@@ -449,7 +449,7 @@ class BulkBackupService {
           ? manifest.sources.where((id) => onlySourceIds.contains(id)).toList()
           : manifest.sources;
 
-      logger.logI(
+      logger.info(
         'Backup.Import',
         'Processing ${sourcesToProcess.length} sources: ${sourcesToProcess.join(', ')}',
       );
@@ -465,7 +465,7 @@ class BulkBackupService {
           (id) => !zipSourceIds.contains(id),
         );
         if (notInZip.isNotEmpty) {
-          logger.logW(
+          logger.warn(
             'Backup.Import',
             'Requested sources not found in zip: ${notInZip.join(', ')}',
           );
@@ -482,12 +482,12 @@ class BulkBackupService {
       // Import each available source
       for (final source in sourcesToImport) {
         final sourceId = source.id;
-        logger.logI('Backup.Import', 'Processing source: $sourceId');
+        logger.info('Backup.Import', 'Processing source: $sourceId');
 
         try {
           final source = registry.getSource(sourceId);
           if (source == null) {
-            logger.logW(
+            logger.warn(
               'Backup.Import',
               'Source not found in registry, skipping: $sourceId',
             );
@@ -497,7 +497,7 @@ class BulkBackupService {
 
           final fileCapability = source.capabilities.file;
           if (fileCapability == null) {
-            logger.logW(
+            logger.warn(
               'Backup.Import',
               'Source has no file capability, skipping: $sourceId',
             );
@@ -508,7 +508,7 @@ class BulkBackupService {
           // Get exact filename from manifest
           final fileName = manifest.sourceFiles[sourceId];
           if (fileName == null) {
-            logger.logE(
+            logger.error(
               'Backup.Import',
               'No filename found in manifest for source: $sourceId',
             );
@@ -518,7 +518,7 @@ class BulkBackupService {
 
           final sourceFile = File(p.join(tempDir.path, fileName));
           if (!sourceFile.existsSync()) {
-            logger.logE(
+            logger.error(
               'Backup.Import',
               'Source file does not exist: $fileName for source: $sourceId',
             );
@@ -527,7 +527,7 @@ class BulkBackupService {
           }
 
           if (uiContext == null || !uiContext.mounted) {
-            logger.logE(
+            logger.error(
               'Backup.Import',
               'UI context not available for source: $sourceId',
             );
@@ -535,7 +535,7 @@ class BulkBackupService {
             continue;
           }
 
-          logger.logI(
+          logger.info(
             'Backup.Import',
             'Preparing import for source $sourceId from file: $fileName',
           );
@@ -545,18 +545,21 @@ class BulkBackupService {
           );
 
           await preparation.executeImport();
-          logger.logI(
+          logger.info(
             'Backup.Import',
             'Successfully imported source: $sourceId',
           );
           imported.add(sourceId);
         } catch (e) {
-          logger.logE('Backup.Import', 'Failed to import source $sourceId: $e');
+          logger.error(
+            'Backup.Import',
+            'Failed to import source $sourceId: $e',
+          );
           failed.add(sourceId);
         }
       }
 
-      logger.logI(
+      logger.info(
         'Backup.Import',
         'Import completed: ${imported.length} imported, ${failed.length} failed, ${skipped.length} skipped',
       );
@@ -568,15 +571,15 @@ class BulkBackupService {
         skipped: skipped,
       );
     } catch (e) {
-      logger.logE('Backup.Import', 'Import failed with exception: $e');
+      logger.error('Backup.Import', 'Import failed with exception: $e');
       rethrow;
     } finally {
       // Cleanup temp directory
       try {
         await tempDir.delete(recursive: true);
-        logger.logI('Backup.Import', 'Cleaned up temp directory');
+        logger.info('Backup.Import', 'Cleaned up temp directory');
       } catch (e) {
-        logger.logW('Backup.Import', 'Failed to cleanup temp directory: $e');
+        logger.warn('Backup.Import', 'Failed to cleanup temp directory: $e');
       }
     }
   }

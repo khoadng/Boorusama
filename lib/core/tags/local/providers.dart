@@ -26,7 +26,7 @@ final tagCacheRepositoryProvider = FutureProvider<TagCacheRepository>(
     );
 
     if (db == null) {
-      logger.logW(_kServiceName, 'Fallback to empty tag cache repository');
+      logger.warn(_kServiceName, 'Fallback to empty tag cache repository');
       return EmptyTagCacheRepository();
     }
 
@@ -38,11 +38,11 @@ final tagCacheRepositoryProvider = FutureProvider<TagCacheRepository>(
       return TagCacheRepositorySqlite(db: db)..initialize();
     } on Exception catch (e) {
       logger
-        ..logE(
+        ..error(
           _kServiceName,
           'Failed to initialize SQLite database for tag cache: $e',
         )
-        ..logW(_kServiceName, 'Fallback to empty tag cache repository');
+        ..warn(_kServiceName, 'Fallback to empty tag cache repository');
 
       db.dispose();
       return EmptyTagCacheRepository();

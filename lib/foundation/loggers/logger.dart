@@ -5,31 +5,25 @@ enum LogLevel {
 }
 
 abstract class Logger {
-  void logI(String serviceName, String message);
-  void logW(String serviceName, String message);
-  void logE(String serviceName, String message);
-  void log(
-    String serviceName,
-    String message, {
-    LogLevel? level,
-  });
+  void info(String serviceName, String message);
+  void warn(String serviceName, String message);
+  void error(String serviceName, String message);
 }
 
-mixin LoggerMixin {
-  Logger get logger;
-
-  void logI(String serviceName, String message) =>
-      logger.logI(serviceName, message);
-
-  void logW(String serviceName, String message) =>
-      logger.logW(serviceName, message);
-
-  void logE(String serviceName, String message) =>
-      logger.logE(serviceName, message);
-
+extension LoggerX on Logger {
   void log(
     String serviceName,
     String message, {
     LogLevel? level,
-  }) => logger.log(serviceName, message, level: level);
+  }) {
+    switch (level) {
+      case LogLevel.warning:
+        warn(serviceName, message);
+      case LogLevel.error:
+        error(serviceName, message);
+      case LogLevel.info:
+      case null:
+        info(serviceName, message);
+    }
+  }
 }
