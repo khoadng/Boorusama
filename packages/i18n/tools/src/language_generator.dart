@@ -50,11 +50,15 @@ class LanguageGenerator extends TemplateGenerator<List<LanguageData>> {
   }
 
   String _sanitizeIdentifier(String value) {
-    return value.replaceAll('-', '_');
+    return value
+        .replaceAll('-', '_')
+        .replaceAll('\\', '_')
+        .replaceAll('/', '_');
   }
 
   Map<String, String> _parseLocale(String locale) {
-    final parts = locale.split('-');
+    final normalizedLocale = locale.replaceAll('\\', '/');
+    final parts = normalizedLocale.split('-');
     return {
       'languageCode': parts.isNotEmpty ? parts[0] : '',
       'countryCode': parts.length > 1 ? parts[1] : '',

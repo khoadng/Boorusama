@@ -52,10 +52,12 @@ class LanguageExtractor {
   }
 
   static String? _extractLocaleFromFilename(String filePath) {
-    final fileName = filePath.split('/').last;
+    final fileName = filePath.split('/').last.split('\\').last;
     if (!fileName.endsWith('.json')) return null;
 
-    return fileName.substring(0, fileName.length - 5); // Remove '.json'
+    final locale = fileName.substring(0, fileName.length - 5); // Remove '.json'
+
+    return locale.replaceAll('\\', '-');
   }
 
   static String? _extractLanguageName(Map<String, dynamic> json) {
