@@ -42,11 +42,8 @@ class LanguagePage extends ConsumerWidget {
           itemBuilder: (context, index) {
             final language = supportedLanguages[index];
 
-            return RadioListTile(
-              activeColor: Theme.of(context).colorScheme.primary,
+            return RadioGroup(
               groupValue: selectedLanguage,
-              value: language,
-              title: Text(language.name),
               onChanged: (value) {
                 if (value == null) return;
                 final settings = ref.read(settingsProvider);
@@ -56,6 +53,11 @@ class LanguagePage extends ConsumerWidget {
                 );
                 context.setLocaleLanguage(value);
               },
+              child: RadioListTile(
+                activeColor: Theme.of(context).colorScheme.primary,
+                value: language,
+                title: Text(language.name),
+              ),
             );
           },
         ),
