@@ -98,7 +98,7 @@ class BackupNotifier extends AutoDisposeNotifier<BackupState> {
     final logger = ref.read(loggerProvider);
 
     if (state.isActive) {
-      logger.logW(
+      logger.warn(
         'Backup.UI',
         'Export requested but backup already in progress',
       );
@@ -109,7 +109,7 @@ class BackupNotifier extends AutoDisposeNotifier<BackupState> {
       return;
     }
 
-    logger.logI(
+    logger.verbose(
       'Backup.UI',
       'Starting export for ${sourceIds.length} sources: ${sourceIds.join(', ')}',
     );
@@ -123,12 +123,12 @@ class BackupNotifier extends AutoDisposeNotifier<BackupState> {
 
       final path = await _pickExportDirectory(context);
       if (path == null) {
-        logger.logI('Backup.UI', 'Export cancelled - no directory selected');
+        logger.info('Backup.UI', 'Export cancelled - no directory selected');
         state = state.copyWith(status: BackupStatus.idle);
         return;
       }
 
-      logger.logI('Backup.UI', 'Exporting to directory: $path');
+      logger.verbose('Backup.UI', 'Exporting to directory: $path');
 
       final service = ref.read(bulkBackupServiceProvider);
       final result = await service.exportToZip(
@@ -145,7 +145,7 @@ class BackupNotifier extends AutoDisposeNotifier<BackupState> {
         progress: 1,
       );
 
-      logger.logI(
+      logger.verbose(
         'Backup.UI',
         'Export completed: ${result.exported.length} exported, ${result.failed.length} failed',
       );
@@ -158,7 +158,7 @@ class BackupNotifier extends AutoDisposeNotifier<BackupState> {
           ? kInvalidLocationMessage
           : e.toString();
 
-      logger.logE('Backup.UI', 'Export failed: $errorMessage');
+      logger.error('Backup.UI', 'Export failed: $errorMessage');
 
       state = state.copyWith(
         status: BackupStatus.error,
@@ -182,7 +182,7 @@ class BackupNotifier extends AutoDisposeNotifier<BackupState> {
     final logger = ref.read(loggerProvider);
 
     if (state.isActive) {
-      logger.logW(
+      logger.warn(
         'Backup.UI',
         'Import requested but backup already in progress',
       );
@@ -196,7 +196,7 @@ class BackupNotifier extends AutoDisposeNotifier<BackupState> {
     final sourceFilter = onlySourceIds != null
         ? 'filtering for ${onlySourceIds.join(', ')}'
         : 'all sources';
-    logger.logI('Backup.UI', 'Starting import with preview - $sourceFilter');
+    logger.verbose('Backup.UI', 'Starting import with preview - $sourceFilter');
 
     try {
       await BackupFilePicker.pickFile(
@@ -208,7 +208,7 @@ class BackupNotifier extends AutoDisposeNotifier<BackupState> {
         },
       );
     } catch (e) {
-      logger.logE('Backup.UI', 'Import failed: $e');
+      logger.error('Backup.UI', 'Import failed: $e');
 
       if (context.mounted) {
         showErrorToast(
@@ -228,7 +228,7 @@ class BackupNotifier extends AutoDisposeNotifier<BackupState> {
     final logger = ref.read(loggerProvider);
 
     try {
-      logger.logI('Backup.UI', 'Previewing zip: $zipPath');
+      logger.verbose('Backup.UI', 'Previewing zip: $zipPath');
 
       // Show loading state for preview
       state = state.copyWith(
@@ -252,7 +252,7 @@ class BackupNotifier extends AutoDisposeNotifier<BackupState> {
       );
 
       if (selectedSourceIds == null || selectedSourceIds.isEmpty) {
-        logger.logI('Backup.UI', 'Import cancelled or no sources selected');
+        logger.info('Backup.UI', 'Import cancelled or no sources selected');
         return;
       }
 
@@ -262,7 +262,7 @@ class BackupNotifier extends AutoDisposeNotifier<BackupState> {
           : selectedSourceIds;
 
       if (finalSourceIds.isEmpty) {
-        logger.logI('Backup.UI', 'No matching sources selected for import');
+        logger.verbose('Backup.UI', 'No matching sources selected for import');
         if (context.mounted) {
           showErrorToast(
             context,
@@ -272,7 +272,7 @@ class BackupNotifier extends AutoDisposeNotifier<BackupState> {
         return;
       }
 
-      logger.logI(
+      logger.verbose(
         'Backup.UI',
         'Proceeding with import for sources: ${finalSourceIds.join(', ')}',
       );
@@ -298,7 +298,7 @@ class BackupNotifier extends AutoDisposeNotifier<BackupState> {
         progress: 1,
       );
 
-      logger.logI(
+      logger.verbose(
         'Backup.UI',
         'Import completed: ${result.imported.length} imported, ${result.failed.length} failed, ${result.skipped.length} skipped',
       );
@@ -307,7 +307,7 @@ class BackupNotifier extends AutoDisposeNotifier<BackupState> {
         _showImportResult(context, result);
       }
     } catch (e) {
-      logger.logE('Backup.UI', 'Import failed: $e');
+      logger.error('Backup.UI', 'Import failed: $e');
 
       state = state.copyWith(
         status: BackupStatus.error,
@@ -329,7 +329,7 @@ class BackupNotifier extends AutoDisposeNotifier<BackupState> {
     final logger = ref.read(loggerProvider);
 
     if (state.isActive) {
-      logger.logW(
+      logger.warn(
         'Backup.Auto',
         'Auto backup skipped - backup already in progress',
       );
@@ -337,11 +337,11 @@ class BackupNotifier extends AutoDisposeNotifier<BackupState> {
     }
 
     if (!settings.shouldBackup) {
-      logger.logI('Backup.Auto', 'Auto backup skipped - conditions not met');
+      logger.verbose('Backup.Auto', 'Auto backup skipped - conditions not met');
       return;
     }
 
-    logger.logI('Backup.Auto', 'Starting automatic backup');
+    logger.verbose('Backup.Auto', 'Starting automatic backup');
     await _performAutoBackup(settings, isManual: false);
   }
 
@@ -349,14 +349,14 @@ class BackupNotifier extends AutoDisposeNotifier<BackupState> {
     final logger = ref.read(loggerProvider);
 
     if (state.isActive) {
-      logger.logW(
+      logger.warn(
         'Backup.Auto',
         'Manual auto backup skipped - backup already in progress',
       );
       return;
     }
 
-    logger.logI('Backup.Auto', 'Starting manual auto backup');
+    logger.verbose('Backup.Auto', 'Starting manual auto backup');
     await _performAutoBackup(settings, isManual: true);
   }
 
@@ -369,7 +369,7 @@ class BackupNotifier extends AutoDisposeNotifier<BackupState> {
     final startTime = DateTime.now();
     final backupType = isManual ? 'manual auto' : 'automatic';
 
-    logger.logI('Backup.Auto', 'Performing $backupType backup');
+    logger.verbose('Backup.Auto', 'Performing $backupType backup');
 
     try {
       state = state.copyWith(
@@ -387,7 +387,7 @@ class BackupNotifier extends AutoDisposeNotifier<BackupState> {
       );
 
       if (result.success) {
-        logger.logI(
+        logger.verbose(
           'Backup.Auto',
           'Auto backup completed successfully - updating last backup time',
         );
@@ -403,7 +403,7 @@ class BackupNotifier extends AutoDisposeNotifier<BackupState> {
               ),
             );
       } else {
-        logger.logW(
+        logger.warn(
           'Backup.Auto',
           'Auto backup completed but with no success',
         );
@@ -415,7 +415,7 @@ class BackupNotifier extends AutoDisposeNotifier<BackupState> {
         progress: 1,
       );
     } catch (e) {
-      logger.logE('Backup.Auto', 'Auto backup failed: $e');
+      logger.error('Backup.Auto', 'Auto backup failed: $e');
 
       state = state.copyWith(
         status: BackupStatus.error,
@@ -431,7 +431,7 @@ class BackupNotifier extends AutoDisposeNotifier<BackupState> {
       }
 
       final duration = DateTime.now().difference(startTime);
-      logger.logI(
+      logger.verbose(
         'Backup.Auto',
         'Auto backup process completed in ${duration.inMilliseconds}ms',
       );

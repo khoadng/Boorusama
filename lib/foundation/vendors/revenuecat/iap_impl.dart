@@ -22,11 +22,11 @@ class RevenuecatPurchase implements i.Purchaser {
   final Map<String, Package> _packages = {};
 
   Future<void> init() async {
-    logger.logI(_kServiceName, 'Initializing...');
+    logger.info(_kServiceName, 'Initializing...');
 
     final appUserId = await Purchases.appUserID;
 
-    logger.logI(_kServiceName, 'App user ID: $appUserId');
+    logger.info(_kServiceName, 'App user ID: $appUserId');
 
     await getAvailablePackages();
   }
@@ -37,7 +37,7 @@ class RevenuecatPurchase implements i.Purchaser {
 
     if (offerings.current == null ||
         offerings.current!.availablePackages.isEmpty) {
-      logger.logW(_kServiceName, 'No available packages found');
+      logger.warn(_kServiceName, 'No available packages found');
 
       return [];
     }
@@ -94,7 +94,7 @@ class RevenuecatPurchase implements i.Purchaser {
     final revenuecatPackage = _packages[package.id];
 
     if (revenuecatPackage == null) {
-      logger.logE(_kServiceName, 'Package not found: ${package.id}');
+      logger.error(_kServiceName, 'Package not found: ${package.id}');
 
       return Future.value(false);
     }
@@ -106,7 +106,7 @@ class RevenuecatPurchase implements i.Purchaser {
           purchaseResult.customerInfo.entitlements.all[kPremiumKey];
 
       if (entitlement == null) {
-        logger.logE(_kServiceName, 'Entitlement not found: $kPremiumKey');
+        logger.error(_kServiceName, 'Entitlement not found: $kPremiumKey');
 
         return Future.value(false);
       }
@@ -115,7 +115,7 @@ class RevenuecatPurchase implements i.Purchaser {
     } on PlatformException catch (e) {
       final errorCode = PurchasesErrorHelper.getErrorCode(e);
 
-      logger.logE(
+      logger.error(
         _kServiceName,
         'Failed to purchase package: ${package.id}, $errorCode',
       );
@@ -136,14 +136,14 @@ class RevenuecatPurchase implements i.Purchaser {
       final entitlement = customerInfo.entitlements.all[kPremiumKey];
 
       if (entitlement == null) {
-        logger.logE(_kServiceName, 'Entitlement not found: $kPremiumKey');
+        logger.error(_kServiceName, 'Entitlement not found: $kPremiumKey');
 
         return Future.value(false);
       }
 
       logger
-        ..logI(_kServiceName, 'Restored purchases successfully')
-        ..logI(
+        ..info(_kServiceName, 'Restored purchases successfully')
+        ..info(
           _kServiceName,
           'Entitlement status: ${entitlement.isActive}, period: ${entitlement.periodType.name}',
         );
@@ -152,7 +152,7 @@ class RevenuecatPurchase implements i.Purchaser {
     } on PlatformException catch (e) {
       final errorCode = PurchasesErrorHelper.getErrorCode(e);
 
-      logger.logE(
+      logger.error(
         _kServiceName,
         'Failed to restore purchases, $errorCode',
       );
@@ -207,7 +207,7 @@ class RevenuecatSubscriptionManager implements i.SubscriptionManager {
     var managementURL = customerInfo.managementURL;
 
     if (managementURL == null) {
-      logger.logW(_kServiceName, 'Management URL is null, using fallback');
+      logger.warn(_kServiceName, 'Management URL is null, using fallback');
 
       managementURL = isAndroid() ? _kFallbackAndroidManagementURL : null;
     }

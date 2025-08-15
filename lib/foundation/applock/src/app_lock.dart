@@ -43,22 +43,22 @@ class _AppLockState extends ConsumerState<AppLock> {
 
   Future<void> _authenticate(LocalAuthentication localAuth) async {
     final logger = ref.read(loggerProvider)
-      ..logI('Local Auth', 'Authenticating...');
+      ..info('Local Auth', 'Authenticating...');
 
     try {
       final didAuthenticate = await startAuthenticate(localAuth);
 
       if (didAuthenticate) {
         setState(() {
-          logger.logI('Local Auth', 'Authenticated');
+          logger.info('Local Auth', 'Authenticated');
           unlocked = true;
         });
       }
     } catch (e) {
       setState(() {
         logger
-          ..logE('Local Auth', 'Failed to authenticate: $e')
-          ..logI('Local Auth', 'Auto unlocked');
+          ..error('Local Auth', 'Failed to authenticate: $e')
+          ..info('Local Auth', 'Auto unlocked');
         unlocked = true;
       });
     }

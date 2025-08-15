@@ -12,7 +12,10 @@ class AppLogger implements Logger {
   final List<LogData> _logs = [];
 
   @override
-  void logE(String serviceName, String message) {
+  String getDebugName() => 'App Logger';
+
+  @override
+  void error(String serviceName, String message) {
     _logs.add(
       (
         dateTime: DateTime.now(),
@@ -24,7 +27,7 @@ class AppLogger implements Logger {
   }
 
   @override
-  void logI(String serviceName, String message) {
+  void info(String serviceName, String message) {
     _logs.add(
       (
         dateTime: DateTime.now(),
@@ -36,7 +39,7 @@ class AppLogger implements Logger {
   }
 
   @override
-  void logW(String serviceName, String message) {
+  void warn(String serviceName, String message) {
     _logs.add(
       (
         dateTime: DateTime.now(),
@@ -48,28 +51,42 @@ class AppLogger implements Logger {
   }
 
   @override
-  void log(
-    String serviceName,
-    String message, {
-    LogLevel? level,
-  }) {
+  void verbose(String serviceName, String message) {
     _logs.add(
       (
         dateTime: DateTime.now(),
         serviceName: serviceName,
         message: message,
-        level: level ?? LogLevel.info,
+        level: LogLevel.verbose,
+      ),
+    );
+  }
+
+  @override
+  void debug(String serviceName, String message) {
+    _logs.add(
+      (
+        dateTime: DateTime.now(),
+        serviceName: serviceName,
+        message: message,
+        level: LogLevel.debug,
       ),
     );
   }
 
   List<LogData> get logs => _logs;
 
+  @override
   String dump() {
     final buffer = StringBuffer();
     for (final log in logs) {
       buffer.write('[${log.dateTime}][${log.serviceName}]: ${log.message}\n');
     }
     return buffer.toString();
+  }
+
+  @override
+  void clearLogsAtOrBelow(LogLevel level) {
+    _logs.removeWhere((log) => log.level.priority <= level.priority);
   }
 }

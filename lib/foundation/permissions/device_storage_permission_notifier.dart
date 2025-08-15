@@ -38,7 +38,7 @@ class DeviceStoragePermissionNotifier
       final logger = ref.watch(loggerProvider);
       final deviceInfo = ref.watch(deviceInfoProvider);
 
-      logger.logI('Permission', 'Fetching storage permission');
+      logger.verbose('Permission', 'Fetching storage permission');
       final status = await checkMediaPermissions(deviceInfo);
 
       logger.log(
@@ -67,14 +67,14 @@ class DeviceStoragePermissionNotifier
     final logger = ref.watch(loggerProvider);
 
     if (state.value == null) {
-      logger.logW('Permission', 'Permission state is null');
+      logger.warn('Permission', 'Permission state is null');
       return;
     }
 
     final deviceInfo = ref.read(deviceInfoProvider);
-    logger.logI('Permission', 'Requesting storage permission');
+    logger.verbose('Permission', 'Requesting storage permission');
     final status = await requestMediaPermissions(deviceInfo);
-    logger.logI('Permission', 'Storage permission status: $status');
+    logger.info('Permission', 'Storage permission status: $status');
 
     state = AsyncData(
       state.value!.copyWith(
@@ -89,7 +89,7 @@ class DeviceStoragePermissionNotifier
   void markNotificationAsRead() {
     final logger = ref.watch(loggerProvider);
     if (state.value == null) {
-      logger.logW('Permission', 'Permission state is null');
+      logger.warn('Permission', 'Permission state is null');
       return;
     }
 

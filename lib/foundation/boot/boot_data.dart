@@ -9,7 +9,6 @@ import '../loggers.dart';
 
 class BootData {
   const BootData({
-    required this.bootLogger,
     required this.logger,
     required this.appLogger,
     this.iapFunc,
@@ -20,7 +19,6 @@ class BootData {
   });
 
   BootData copyWith({
-    BootLogger? bootLogger,
     Logger? logger,
     AppLogger? appLogger,
     Future<IAP> Function()? iapFunc,
@@ -30,7 +28,6 @@ class BootData {
     AppUpdateBuilder? appUpdateChecker,
   }) {
     return BootData(
-      bootLogger: bootLogger ?? this.bootLogger,
       logger: logger ?? this.logger,
       appLogger: appLogger ?? this.appLogger,
       iapFunc: iapFunc ?? this.iapFunc,
@@ -41,7 +38,6 @@ class BootData {
     );
   }
 
-  final BootLogger bootLogger;
   final Logger logger;
   final AppLogger appLogger;
   final Future<IAP> Function()? iapFunc;

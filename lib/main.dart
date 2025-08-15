@@ -13,7 +13,7 @@ import 'foundation/vendors/revenuecat/revenuecat.dart';
 void main() async {
   await initializeApp(
     bootFunc: (data) async {
-      data.bootLogger.l('Check Google Play Services availability');
+      data.logger.debugBoot('Check Google Play Services availability');
       final gServices = GooglePlayServicesImpl();
       final googleApiAvailable = await gServices.isAvailable();
 

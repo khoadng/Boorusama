@@ -40,7 +40,7 @@ class PackagePurchaseNotifier extends AutoDisposeAsyncNotifier<bool?> {
     try {
       state = const AsyncLoading();
 
-      logger.logI(
+      logger.info(
         _kServiceName,
         'Starting purchase for package: ${package.id}...',
       );
@@ -49,7 +49,7 @@ class PackagePurchaseNotifier extends AutoDisposeAsyncNotifier<bool?> {
 
       final success = await notifier.purchasePackage(package);
 
-      logger.logI(
+      logger.info(
         _kServiceName,
         'Purchase result for package: ${package.id}, $success',
       );
@@ -58,7 +58,7 @@ class PackagePurchaseNotifier extends AutoDisposeAsyncNotifier<bool?> {
 
       return success;
     } on Exception catch (e, st) {
-      logger.logE(
+      logger.error(
         _kServiceName,
         'Failed to purchase package: ${package.id}, $e',
       );
@@ -104,19 +104,19 @@ class SubscriptionNotifier extends AsyncNotifier<Package?> {
 
   Future<bool> restoreSubscription() async {
     final logger = ref.read(loggerProvider)
-      ..logI('Subscription', 'Restoring subscription...');
+      ..info('Subscription', 'Restoring subscription...');
 
     final iap = await ref.watch(iapProvider.future);
     final manager = iap.subscriptionManager;
 
     final res = await iap.purchaser.restorePurchases();
 
-    logger.logI('Subscription', 'Restore result: $res');
+    logger.info('Subscription', 'Restore result: $res');
 
     final activePackages = await getActiveSubscriptionPackages(manager);
     final activePackage = activePackages?.firstOrNull;
 
-    logger.logI('Subscription', 'Active package: ${activePackage?.id}');
+    logger.info('Subscription', 'Active package: ${activePackage?.id}');
 
     if (activePackage != null) {
       state = AsyncData(activePackage);
@@ -124,7 +124,7 @@ class SubscriptionNotifier extends AsyncNotifier<Package?> {
 
     final success = res == true && activePackage != null;
 
-    logger.logI('Subscription', 'Restore success: $success');
+    logger.info('Subscription', 'Restore success: $success');
 
     return success;
   }

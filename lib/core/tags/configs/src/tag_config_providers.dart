@@ -9,9 +9,9 @@ import 'tag_info_service.dart';
 final tagInfoProvider = Provider<TagInfo>((ref) => throw UnimplementedError());
 
 Future<Override> createTagInfoOverride({
-  required BootLogger bootLogger,
+  required Logger logger,
 }) async {
-  bootLogger.l('Initialize tag info');
+  logger.debugBoot('Initialize tag info');
   final tagInfo = await TagInfoService.create().then(
     (value) => value.getInfo(),
   );

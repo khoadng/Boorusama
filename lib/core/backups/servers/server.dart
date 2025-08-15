@@ -67,7 +67,7 @@ class AppServer {
             onTimeout: () => throw TimeoutException('Server start timeout'),
           );
 
-      logger.logI(
+      logger.info(
         _kServerName,
         'Server running on http://${server.address.host}:${server.port}',
       );
@@ -78,7 +78,7 @@ class AppServer {
       return _server;
     } catch (e) {
       _isRunning = false;
-      logger.logE(_kServerName, 'Failed to start server: $e');
+      logger.error(_kServerName, 'Failed to start server: $e');
       onError('Failed to start server: $e');
       return null;
     }
@@ -115,7 +115,7 @@ class AppServer {
       } catch (e) {
         retries++;
         if (retries == maxRetries || !enableRetry) {
-          logger.logE(
+          logger.error(
             _kServerName,
             'Broadcast failed after $retries attempts: $e',
           );
@@ -136,9 +136,9 @@ class AppServer {
       _server = null;
       _isRunning = false;
 
-      logger.logI(_kServerName, 'Server stopped');
+      logger.info(_kServerName, 'Server stopped');
     } catch (e) {
-      logger.logE(_kServerName, 'Stop server failed: $e');
+      logger.error(_kServerName, 'Stop server failed: $e');
       onError('Stop server failed: $e');
     }
   }

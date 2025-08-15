@@ -47,39 +47,38 @@ import 'foundation/vendors/google/providers.dart';
 import 'foundation/windows.dart' as window;
 
 Future<void> boot(BootData bootData) async {
-  final bootLogger = bootData.bootLogger;
   final logger = bootData.logger;
   final appLogger = bootData.appLogger;
 
   final stopwatch = Stopwatch()..start();
-  logger.logI('Start up', 'App Start up');
+  logger.info('Start up', 'App Start up');
 
   if (isDesktopPlatform()) {
     await window.initialize();
   }
 
-  bootLogger.l("Load database's directory");
+  logger.debugBoot("Load database's directory");
   final dbDirectory = await _initDbDirectory();
 
-  bootLogger.l('Initialize Hive');
+  logger.debugBoot('Initialize Hive');
   Hive.init(dbDirectory.path);
 
-  bootLogger.l('Load app info');
+  logger.debugBoot('Load app info');
   final appInfo = await getAppInfo();
 
   final booruRegistry = createBooruRegistry();
 
-  bootLogger.l('Load boorus from assets');
+  logger.debugBoot('Load boorus from assets');
   final boorus = await loadBoorusFromAssets(booruRegistry);
 
-  bootLogger.l('Initialize settings repository');
+  logger.debugBoot('Initialize settings repository');
   final settingRepository = await createSettingsRepo(logger: logger);
 
-  bootLogger.l('Set certificate to trusted certificates');
+  logger.debugBoot('Set certificate to trusted certificates');
   await _initCert();
 
   final booruUserRepo = await createBooruConfigsRepo(
-    logger: bootLogger,
+    logger: logger,
     onCreateNew: !bootData.isFossBuild
         ? (id) async {
             final settings = await settingRepository.load().run().then(
@@ -89,7 +88,7 @@ Future<void> boot(BootData bootData) async {
               ),
             );
 
-            bootLogger.l('Save default booru config');
+            logger.debugBoot('Save default booru config');
             await settingRepository.save(
               settings.copyWith(currentBooruConfigId: id),
             );
@@ -98,7 +97,7 @@ Future<void> boot(BootData bootData) async {
         : null,
   );
 
-  bootLogger.l('Load settings');
+  logger.debugBoot('Load settings');
   final settings = await settingRepository.load().run().then(
     (value) => value.fold(
       (l) => Settings.defaultSettings,
@@ -118,35 +117,35 @@ Future<void> boot(BootData bootData) async {
     },
   );
 
-  bootLogger
-    ..l('Settings: ${settings.toJson()}')
-    ..l('Load current booru config');
+  logger
+    ..debugBoot('Settings: ${settings.toJson()}')
+    ..debugBoot('Load current booru config');
   final initialConfig = await booruUserRepo.getCurrentBooruConfigFrom(settings);
 
-  bootLogger.l('Load all configs');
+  logger.debugBoot('Load all configs');
   final allConfigs = await booruUserRepo.getAll();
 
   final tempPath = await getAppTemporaryDirectory();
 
-  bootLogger.l('Initialize misc data box');
+  logger.debugBoot('Initialize misc data box');
   final miscDataBox = await Hive.openBox<String>(
     'misc_data_v1',
     path: tempPath.path,
   );
 
-  bootLogger.l('Initialize package info');
+  logger.debugBoot('Initialize package info');
   final packageInfo = await PackageInfo.fromPlatform();
 
   final tagInfoOverride = await createTagInfoOverride(
-    bootLogger: bootLogger,
+    logger: logger,
   );
 
-  bootLogger.l('Initialize device info');
+  logger.debugBoot('Initialize device info');
   final deviceInfo = await DeviceInfoService(
     plugin: DeviceInfoPlugin(),
   ).getDeviceInfo();
 
-  bootLogger.l('Initialize i18n');
+  logger.debugBoot('Initialize i18n');
   await ensureI18nInitialized(settings.language);
 
   FlutterError.demangleStackTrace = (stack) {
@@ -156,8 +155,9 @@ Future<void> boot(BootData bootData) async {
   };
 
   if (settings.clearImageCacheOnStartup) {
-    logger.logI('Start up', 'Clearing image cache on startup');
-    bootLogger.l('Clear image cache');
+    logger
+      ..info('Start up', 'Clearing image cache on startup')
+      ..debugBoot('Clear image cache');
     await clearImageCache();
   }
 
@@ -166,13 +166,15 @@ Future<void> boot(BootData bootData) async {
   // Prepare for Android 15
   unawaited(showSystemStatus());
 
-  logger.logI(
+  logger.info(
     'Start up',
     'Initialization done in ${stopwatch.elapsed.inMilliseconds}ms',
   );
   stopwatch.stop();
 
-  bootLogger.l('Run app');
+  logger
+    ..debugBoot('Run app')
+    ..clearLogsAtOrBelow(LogLevel.verbose);
 
   runApp(
     Reboot(

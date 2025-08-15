@@ -41,7 +41,7 @@ class BooruTagTypeStore extends TagTypeStore {
     try {
       await cacheRepository.saveTagsBatch(tagInfos);
     } catch (e) {
-      logger.logE(
+      logger.error(
         'BooruTagTypeStore',
         'Failed to save tags batch: $e',
       );

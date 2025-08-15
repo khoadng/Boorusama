@@ -47,7 +47,7 @@ class DanbooruTagListNotifier
 
     ref
         .read(loggerProvider)
-        .logI(
+        .info(
           'Tag Edit',
           [
             if (addedTags != null && addedTags.isNotEmpty) 'Added: $addedTags',

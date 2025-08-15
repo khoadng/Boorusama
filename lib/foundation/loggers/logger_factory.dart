@@ -7,22 +7,21 @@ import 'logger.dart';
 import 'multi_channel_logger.dart';
 
 Future<Logger> loggerWith(Logger logger) async {
-  if (!kReleaseMode) {
-    return MultiChannelLogger(
-      loggers: [
-        ConsoleLogger(
-          options: const ConsoleLoggerOptions(
-            decodeUriParameters: true,
+  return MultiChannelLogger(
+    loggers: [
+      if (!kReleaseMode)
+        ThresholdLogger(
+          delegate: ConsoleLogger(
+            options: const ConsoleLoggerOptions(
+              decodeUriParameters: true,
+            ),
           ),
+          initialLevel: LogLevel.verbose,
         ),
-        logger,
-      ],
-    );
-  } else {
-    return MultiChannelLogger(
-      loggers: [
-        logger,
-      ],
-    );
-  }
+      ThresholdLogger(
+        delegate: logger,
+        initialLevel: LogLevel.debug,
+      ),
+    ],
+  );
 }

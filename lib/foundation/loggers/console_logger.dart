@@ -49,35 +49,38 @@ class ConsoleLogger extends Logger {
   }
 
   @override
-  void logI(String serviceName, String message) {
+  String getDebugName() => 'Console Logger';
+
+  @override
+  void info(String serviceName, String message) {
     developer.log(_composeMessage(serviceName, message, blue));
   }
 
   @override
-  void logW(String serviceName, String message) {
+  void warn(String serviceName, String message) {
     developer.log(_composeMessage(serviceName, message, yellow));
   }
 
   @override
-  void logE(String serviceName, String message) {
+  void error(String serviceName, String message) {
     developer.log(_composeMessage(serviceName, message, red));
   }
 
   @override
-  void log(
-    String serviceName,
-    String message, {
-    LogLevel? level,
-  }) {
-    switch (level) {
-      case LogLevel.info:
-        logI(serviceName, message);
-      case LogLevel.warning:
-        logW(serviceName, message);
-      case LogLevel.error:
-        logE(serviceName, message);
-      case null:
-        logI(serviceName, message);
-    }
+  void verbose(String serviceName, String message) {
+    developer.log(_composeMessage(serviceName, message, cyan));
+  }
+
+  @override
+  void debug(String serviceName, String message) {
+    developer.log(_composeMessage(serviceName, message, green));
+  }
+
+  @override
+  String dump() => '';
+
+  @override
+  void clearLogsAtOrBelow(LogLevel level) {
+    // ConsoleLogger does not store logs, so this is a no-op.
   }
 }

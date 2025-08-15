@@ -46,16 +46,28 @@ class MockMediaPermissionManager extends Mock
 
 class DummyLogger implements Logger {
   @override
-  void log(String serviceName, String message, {LogLevel? level}) {}
+  String getDebugName() => 'Dummy Logger';
 
   @override
-  void logE(String serviceName, String message) {}
+  void error(String serviceName, String message) {}
 
   @override
-  void logI(String serviceName, String message) {}
+  void info(String serviceName, String message) {}
 
   @override
-  void logW(String serviceName, String message) {}
+  void warn(String serviceName, String message) {}
+
+  @override
+  void verbose(String serviceName, String message) {}
+
+  @override
+  void debug(String serviceName, String message) {}
+
+  @override
+  String dump() => '';
+
+  @override
+  void clearLogsAtOrBelow(LogLevel level) {}
 }
 
 class DownloadTestConstants {

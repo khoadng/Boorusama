@@ -59,7 +59,10 @@ class BackupTriggerNotifier extends Notifier<BackupTriggerState> {
 
     // Guard against concurrent backups
     if (state.isInProgress) {
-      logger.logI('AutoBackupTrigger', 'Backup already in progress, skipping');
+      logger.verbose(
+        'AutoBackupTrigger',
+        'Backup already in progress, skipping',
+      );
       return;
     }
 
@@ -70,14 +73,14 @@ class BackupTriggerNotifier extends Notifier<BackupTriggerState> {
         hasTriggeredOnce: isInitialTrigger ? true : null,
       );
 
-      logger.logI('AutoBackupTrigger', 'Checking auto backup on app launch');
+      logger.verbose('AutoBackupTrigger', 'Checking auto backup on app launch');
 
       final autoBackupSettings = ref.read(settingsProvider).autoBackup;
       await ref
           .read(backupProvider.notifier)
           .performAutoBackupIfNeeded(autoBackupSettings);
     } catch (e) {
-      logger.logE('AutoBackupTrigger', 'Auto backup trigger failed: $e');
+      logger.error('AutoBackupTrigger', 'Auto backup trigger failed: $e');
     } finally {
       state = state.copyWith(isInProgress: false);
     }

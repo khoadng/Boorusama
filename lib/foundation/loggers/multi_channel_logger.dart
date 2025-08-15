@@ -9,34 +9,62 @@ class MultiChannelLogger implements Logger {
   final List<Logger> loggers;
 
   @override
-  void logE(String serviceName, String message) {
+  String getDebugName() => 'Multi Channel Logger';
+
+  @override
+  void error(String serviceName, String message) {
     for (final logger in loggers) {
-      logger.logE(serviceName, message);
+      logger.error(serviceName, message);
     }
   }
 
   @override
-  void logI(String serviceName, String message) {
+  void info(String serviceName, String message) {
     for (final logger in loggers) {
-      logger.logI(serviceName, message);
+      logger.info(serviceName, message);
     }
   }
 
   @override
-  void logW(String serviceName, String message) {
+  void warn(String serviceName, String message) {
     for (final logger in loggers) {
-      logger.logW(serviceName, message);
+      logger.warn(serviceName, message);
     }
   }
 
   @override
-  void log(
-    String serviceName,
-    String message, {
-    LogLevel? level,
-  }) {
+  void verbose(String serviceName, String message) {
     for (final logger in loggers) {
-      logger.log(serviceName, message, level: level);
+      logger.verbose(serviceName, message);
+    }
+  }
+
+  @override
+  void debug(String serviceName, String message) {
+    for (final logger in loggers) {
+      logger.debug(serviceName, message);
+    }
+  }
+
+  @override
+  String dump() {
+    final buffer = StringBuffer();
+    for (final logger in loggers) {
+      final logDump = logger.dump();
+      if (logDump.isNotEmpty) {
+        buffer
+          ..writeln('--- ${logger.getDebugName()} ---')
+          ..writeln(logDump)
+          ..writeln('--- End of ${logger.getDebugName()} ---\n');
+      }
+    }
+    return buffer.toString();
+  }
+
+  @override
+  void clearLogsAtOrBelow(LogLevel level) {
+    for (final logger in loggers) {
+      logger.clearLogsAtOrBelow(level);
     }
   }
 }

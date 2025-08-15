@@ -36,18 +36,18 @@ Future<DownloadRepository> _createRepository(
   Database? db,
 ) async {
   if (db == null) {
-    logger?.logW(_kServiceName, 'Fallback to empty repository');
+    logger?.warn(_kServiceName, 'Fallback to empty repository');
     return DownloadRepositoryEmpty();
   } else {
     try {
       final sqliteRepo = DownloadRepositorySqlite(db)..initialize();
       return sqliteRepo;
     } on Exception catch (e) {
-      logger?.logE(
+      logger?.error(
         _kServiceName,
         'Failed to initialize SQLite repository for download: $e',
       );
-      logger?.logW(_kServiceName, 'Fallback to empty repository');
+      logger?.warn(_kServiceName, 'Fallback to empty repository');
 
       db.dispose();
       return DownloadRepositoryEmpty();

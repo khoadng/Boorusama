@@ -34,7 +34,7 @@ Future<Database?> createDb({
 
     return sqlite3.open(join(folderPath, name));
   } on Exception catch (e) {
-    logger?.logE(
+    logger?.error(
       name,
       'Failed to initialize SQLite database: $e',
     );

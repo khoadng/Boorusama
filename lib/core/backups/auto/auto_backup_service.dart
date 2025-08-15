@@ -95,7 +95,7 @@ class AutoBackupService {
     AutoBackupSettings settings, {
     void Function(double progress)? onProgress,
   }) async {
-    logger.logI('AutoBackup', 'Starting auto backup');
+    logger.verbose('AutoBackup', 'Starting auto backup');
 
     final backupDir = await _getBackupDirectory(settings);
     await _cleanupOldBackups(backupDir, settings.maxBackups);
@@ -115,19 +115,19 @@ class AutoBackupService {
     if (result.success) {
       await _updateManifest(backupDir, result.filePath);
 
-      logger.logI(
+      logger.verbose(
         'AutoBackup',
         'Auto backup completed: ${result.exported.length} sources exported',
       );
 
       if (result.hasFailures) {
-        logger.logW(
+        logger.warn(
           'AutoBackup',
           'Some sources failed: ${result.failed.join(', ')}',
         );
       }
     } else {
-      logger.logE('AutoBackup', 'Auto backup failed: no sources exported');
+      logger.error('AutoBackup', 'Auto backup failed: no sources exported');
     }
 
     return result;
@@ -165,7 +165,7 @@ class AutoBackupService {
       final json = jsonDecode(content) as Map<String, dynamic>;
       return AutoBackupManifest.fromJson(json);
     } catch (e) {
-      logger.logW('AutoBackup', 'Failed to load manifest, creating new: $e');
+      logger.warn('AutoBackup', 'Failed to load manifest, creating new: $e');
       return const AutoBackupManifest(backups: []);
     }
   }
@@ -216,7 +216,7 @@ class AutoBackupService {
 
     if (validBackups.length != manifest.backups.length) {
       final removedCount = manifest.backups.length - validBackups.length;
-      logger.logI(
+      logger.verbose(
         'AutoBackup',
         'Reconciled manifest: removed $removedCount missing entries',
       );
@@ -247,7 +247,10 @@ class AutoBackupService {
         final file = File(p.join(backupDir.path, backup.fileName));
         if (file.existsSync()) {
           await file.delete();
-          logger.logI('AutoBackup', 'Deleted old backup: ${backup.fileName}');
+          logger.verbose(
+            'AutoBackup',
+            'Deleted old backup: ${backup.fileName}',
+          );
         }
       }
 
@@ -255,7 +258,7 @@ class AutoBackupService {
       final updatedManifest = manifest.copyWith(backups: remainingBackups);
       await _saveManifest(backupDir, updatedManifest);
     } catch (e) {
-      logger.logW('AutoBackup', 'Failed to cleanup old backups: $e');
+      logger.warn('AutoBackup', 'Failed to cleanup old backups: $e');
     }
   }
 }

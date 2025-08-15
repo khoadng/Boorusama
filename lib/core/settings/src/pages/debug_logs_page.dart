@@ -141,6 +141,8 @@ class _DebugLogsPageState extends ConsumerState<DebugLogsPage> {
   );
 
   Widget _buildBody(List<LogData> logs) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return ListView.builder(
       padding: const EdgeInsets.symmetric(horizontal: 8),
       controller: scrollController,
@@ -161,7 +163,7 @@ class _DebugLogsPageState extends ConsumerState<DebugLogsPage> {
               Text(
                 log.dateTime.toString(),
                 style: TextStyle(
-                  color: Theme.of(context).colorScheme.hintColor,
+                  color: colorScheme.hintColor,
                 ),
               ),
               Wrap(
@@ -170,7 +172,7 @@ class _DebugLogsPageState extends ConsumerState<DebugLogsPage> {
                     '[${log.serviceName}]: ',
                     style: TextStyle(
                       fontWeight: FontWeight.w800,
-                      color: Theme.of(context).colorScheme.primary,
+                      color: colorScheme.primary,
                     ),
                   ),
                   ReadMoreText(
@@ -182,11 +184,13 @@ class _DebugLogsPageState extends ConsumerState<DebugLogsPage> {
                     style: TextStyle(
                       fontSize: 13,
                       color: switch (log.level) {
-                        LogLevel.info => Theme.of(
-                          context,
-                        ).colorScheme.onSurface.withAlpha(222),
+                        LogLevel.info => colorScheme.onSurface.withAlpha(222),
                         LogLevel.warning => Colors.yellow.withAlpha(222),
-                        LogLevel.error => Theme.of(context).colorScheme.error,
+                        LogLevel.error => colorScheme.error,
+                        LogLevel.verbose => colorScheme.onSurface.withAlpha(
+                          222,
+                        ),
+                        LogLevel.debug => colorScheme.onSurface.withAlpha(222),
                       },
                     ),
                   ),

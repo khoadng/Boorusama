@@ -323,11 +323,11 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>> {
   }
 
   void _logError(String message) {
-    ref.read(loggerProvider).logE('Configs', message);
+    ref.read(loggerProvider).error('Configs', message);
   }
 
   void _logInfo(String message) {
-    ref.read(loggerProvider).logI('Configs', message);
+    ref.read(loggerProvider).verbose('Configs', message);
   }
 }
 
