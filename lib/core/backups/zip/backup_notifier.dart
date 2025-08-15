@@ -109,7 +109,7 @@ class BackupNotifier extends AutoDisposeNotifier<BackupState> {
       return;
     }
 
-    logger.verbose(
+    logger.info(
       'Backup.UI',
       'Starting export for ${sourceIds.length} sources: ${sourceIds.join(', ')}',
     );
@@ -123,12 +123,12 @@ class BackupNotifier extends AutoDisposeNotifier<BackupState> {
 
       final path = await _pickExportDirectory(context);
       if (path == null) {
-        logger.verbose('Backup.UI', 'Export cancelled - no directory selected');
+        logger.info('Backup.UI', 'Export cancelled - no directory selected');
         state = state.copyWith(status: BackupStatus.idle);
         return;
       }
 
-      logger.verbose('Backup.UI', 'Exporting to directory: $path');
+      logger.info('Backup.UI', 'Exporting to directory: $path');
 
       final service = ref.read(bulkBackupServiceProvider);
       final result = await service.exportToZip(
@@ -145,7 +145,7 @@ class BackupNotifier extends AutoDisposeNotifier<BackupState> {
         progress: 1,
       );
 
-      logger.verbose(
+      logger.info(
         'Backup.UI',
         'Export completed: ${result.exported.length} exported, ${result.failed.length} failed',
       );
@@ -196,7 +196,7 @@ class BackupNotifier extends AutoDisposeNotifier<BackupState> {
     final sourceFilter = onlySourceIds != null
         ? 'filtering for ${onlySourceIds.join(', ')}'
         : 'all sources';
-    logger.verbose('Backup.UI', 'Starting import with preview - $sourceFilter');
+    logger.info('Backup.UI', 'Starting import with preview - $sourceFilter');
 
     try {
       await BackupFilePicker.pickFile(
@@ -228,7 +228,7 @@ class BackupNotifier extends AutoDisposeNotifier<BackupState> {
     final logger = ref.read(loggerProvider);
 
     try {
-      logger.verbose('Backup.UI', 'Previewing zip: $zipPath');
+      logger.info('Backup.UI', 'Previewing zip: $zipPath');
 
       // Show loading state for preview
       state = state.copyWith(
@@ -252,7 +252,7 @@ class BackupNotifier extends AutoDisposeNotifier<BackupState> {
       );
 
       if (selectedSourceIds == null || selectedSourceIds.isEmpty) {
-        logger.verbose('Backup.UI', 'Import cancelled or no sources selected');
+        logger.info('Backup.UI', 'Import cancelled or no sources selected');
         return;
       }
 
@@ -262,7 +262,7 @@ class BackupNotifier extends AutoDisposeNotifier<BackupState> {
           : selectedSourceIds;
 
       if (finalSourceIds.isEmpty) {
-        logger.verbose('Backup.UI', 'No matching sources selected for import');
+        logger.info('Backup.UI', 'No matching sources selected for import');
         if (context.mounted) {
           showErrorToast(
             context,
@@ -272,7 +272,7 @@ class BackupNotifier extends AutoDisposeNotifier<BackupState> {
         return;
       }
 
-      logger.verbose(
+      logger.info(
         'Backup.UI',
         'Proceeding with import for sources: ${finalSourceIds.join(', ')}',
       );
@@ -298,7 +298,7 @@ class BackupNotifier extends AutoDisposeNotifier<BackupState> {
         progress: 1,
       );
 
-      logger.verbose(
+      logger.info(
         'Backup.UI',
         'Import completed: ${result.imported.length} imported, ${result.failed.length} failed, ${result.skipped.length} skipped',
       );
@@ -337,11 +337,11 @@ class BackupNotifier extends AutoDisposeNotifier<BackupState> {
     }
 
     if (!settings.shouldBackup) {
-      logger.verbose('Backup.Auto', 'Auto backup skipped - conditions not met');
+      logger.info('Backup.Auto', 'Auto backup skipped - conditions not met');
       return;
     }
 
-    logger.verbose('Backup.Auto', 'Starting automatic backup');
+    logger.info('Backup.Auto', 'Starting automatic backup');
     await _performAutoBackup(settings, isManual: false);
   }
 
@@ -356,7 +356,7 @@ class BackupNotifier extends AutoDisposeNotifier<BackupState> {
       return;
     }
 
-    logger.verbose('Backup.Auto', 'Starting manual auto backup');
+    logger.info('Backup.Auto', 'Starting manual auto backup');
     await _performAutoBackup(settings, isManual: true);
   }
 
@@ -369,7 +369,7 @@ class BackupNotifier extends AutoDisposeNotifier<BackupState> {
     final startTime = DateTime.now();
     final backupType = isManual ? 'manual auto' : 'automatic';
 
-    logger.verbose('Backup.Auto', 'Performing $backupType backup');
+    logger.info('Backup.Auto', 'Performing $backupType backup');
 
     try {
       state = state.copyWith(
@@ -387,7 +387,7 @@ class BackupNotifier extends AutoDisposeNotifier<BackupState> {
       );
 
       if (result.success) {
-        logger.verbose(
+        logger.info(
           'Backup.Auto',
           'Auto backup completed successfully - updating last backup time',
         );
@@ -431,7 +431,7 @@ class BackupNotifier extends AutoDisposeNotifier<BackupState> {
       }
 
       final duration = DateTime.now().difference(startTime);
-      logger.verbose(
+      logger.info(
         'Backup.Auto',
         'Auto backup process completed in ${duration.inMilliseconds}ms',
       );

@@ -59,10 +59,7 @@ class BackupTriggerNotifier extends Notifier<BackupTriggerState> {
 
     // Guard against concurrent backups
     if (state.isInProgress) {
-      logger.verbose(
-        'AutoBackupTrigger',
-        'Backup already in progress, skipping',
-      );
+      logger.info('AutoBackupTrigger', 'Backup already in progress, skipping');
       return;
     }
 
@@ -73,7 +70,7 @@ class BackupTriggerNotifier extends Notifier<BackupTriggerState> {
         hasTriggeredOnce: isInitialTrigger ? true : null,
       );
 
-      logger.verbose('AutoBackupTrigger', 'Checking auto backup on app launch');
+      logger.info('AutoBackupTrigger', 'Checking auto backup on app launch');
 
       final autoBackupSettings = ref.read(settingsProvider).autoBackup;
       await ref

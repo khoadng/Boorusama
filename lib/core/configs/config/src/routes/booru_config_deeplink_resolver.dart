@@ -52,7 +52,7 @@ class _BooruConfigDeepLinkResolverState
   void _print(String message) {
     if (!kDebugMode) return;
 
-    ref.read(loggerProvider).verbose('Deeplink', message);
+    ref.read(loggerProvider).info('Deeplink', message);
   }
 
   @override
