@@ -95,7 +95,7 @@ class BooruSwitchListTile extends ConsumerWidget {
       title: title,
       subtitle: subtitle,
       secondary: secondary,
-      activeColor: activeColor,
+      activeThumbColor: activeColor,
       activeTrackColor: activeTrackColor,
       inactiveThumbColor: inactiveThumbColor,
       inactiveTrackColor: inactiveTrackColor,

@@ -220,7 +220,7 @@ class AppTheme {
     appBarTheme: AppBarTheme(
       scrolledUnderElevation: 0,
       surfaceTintColor: Colors.transparent,
-      color: Colors.transparent,
+      backgroundColor: Colors.transparent,
       systemOverlayStyle: colorScheme.brightness.isLight
           ? SystemUiOverlayStyle.dark
           : SystemUiOverlayStyle.light,
