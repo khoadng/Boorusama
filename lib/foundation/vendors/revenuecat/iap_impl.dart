@@ -22,11 +22,11 @@ class RevenuecatPurchase implements i.Purchaser {
   final Map<String, Package> _packages = {};
 
   Future<void> init() async {
-    logger.info(_kServiceName, 'Initializing...');
+    logger.verbose(_kServiceName, 'Initializing...');
 
     final appUserId = await Purchases.appUserID;
 
-    logger.info(_kServiceName, 'App user ID: $appUserId');
+    logger.verbose(_kServiceName, 'App user ID: $appUserId');
 
     await getAvailablePackages();
   }

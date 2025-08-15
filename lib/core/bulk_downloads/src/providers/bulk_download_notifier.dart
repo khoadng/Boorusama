@@ -523,7 +523,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
     }
 
     final permission = await mediaPermManager.check();
-    logger.info(
+    logger.verbose(
       _serviceName,
       'Download requested for "${task.prettyTags}" at "${task.path}" with permission status: $permission',
     );

@@ -67,7 +67,7 @@ class AppServer {
             onTimeout: () => throw TimeoutException('Server start timeout'),
           );
 
-      logger.info(
+      logger.verbose(
         _kServerName,
         'Server running on http://${server.address.host}:${server.port}',
       );
@@ -136,7 +136,7 @@ class AppServer {
       _server = null;
       _isRunning = false;
 
-      logger.info(_kServerName, 'Server stopped');
+      logger.verbose(_kServerName, 'Server stopped');
     } catch (e) {
       logger.error(_kServerName, 'Stop server failed: $e');
       onError('Stop server failed: $e');

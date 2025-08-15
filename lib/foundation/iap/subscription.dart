@@ -40,7 +40,7 @@ class PackagePurchaseNotifier extends AutoDisposeAsyncNotifier<bool?> {
     try {
       state = const AsyncLoading();
 
-      logger.info(
+      logger.verbose(
         _kServiceName,
         'Starting purchase for package: ${package.id}...',
       );
@@ -49,7 +49,7 @@ class PackagePurchaseNotifier extends AutoDisposeAsyncNotifier<bool?> {
 
       final success = await notifier.purchasePackage(package);
 
-      logger.info(
+      logger.verbose(
         _kServiceName,
         'Purchase result for package: ${package.id}, $success',
       );
@@ -104,19 +104,19 @@ class SubscriptionNotifier extends AsyncNotifier<Package?> {
 
   Future<bool> restoreSubscription() async {
     final logger = ref.read(loggerProvider)
-      ..info('Subscription', 'Restoring subscription...');
+      ..verbose('Subscription', 'Restoring subscription...');
 
     final iap = await ref.watch(iapProvider.future);
     final manager = iap.subscriptionManager;
 
     final res = await iap.purchaser.restorePurchases();
 
-    logger.info('Subscription', 'Restore result: $res');
+    logger.verbose('Subscription', 'Restore result: $res');
 
     final activePackages = await getActiveSubscriptionPackages(manager);
     final activePackage = activePackages?.firstOrNull;
 
-    logger.info('Subscription', 'Active package: ${activePackage?.id}');
+    logger.verbose('Subscription', 'Active package: ${activePackage?.id}');
 
     if (activePackage != null) {
       state = AsyncData(activePackage);
@@ -124,7 +124,7 @@ class SubscriptionNotifier extends AsyncNotifier<Package?> {
 
     final success = res == true && activePackage != null;
 
-    logger.info('Subscription', 'Restore success: $success');
+    logger.verbose('Subscription', 'Restore success: $success');
 
     return success;
   }

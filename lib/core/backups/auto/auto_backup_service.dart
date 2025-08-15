@@ -95,7 +95,7 @@ class AutoBackupService {
     AutoBackupSettings settings, {
     void Function(double progress)? onProgress,
   }) async {
-    logger.info('AutoBackup', 'Starting auto backup');
+    logger.verbose('AutoBackup', 'Starting auto backup');
 
     final backupDir = await _getBackupDirectory(settings);
     await _cleanupOldBackups(backupDir, settings.maxBackups);
@@ -115,7 +115,7 @@ class AutoBackupService {
     if (result.success) {
       await _updateManifest(backupDir, result.filePath);
 
-      logger.info(
+      logger.verbose(
         'AutoBackup',
         'Auto backup completed: ${result.exported.length} sources exported',
       );
@@ -216,7 +216,7 @@ class AutoBackupService {
 
     if (validBackups.length != manifest.backups.length) {
       final removedCount = manifest.backups.length - validBackups.length;
-      logger.info(
+      logger.verbose(
         'AutoBackup',
         'Reconciled manifest: removed $removedCount missing entries',
       );
@@ -247,7 +247,10 @@ class AutoBackupService {
         final file = File(p.join(backupDir.path, backup.fileName));
         if (file.existsSync()) {
           await file.delete();
-          logger.info('AutoBackup', 'Deleted old backup: ${backup.fileName}');
+          logger.verbose(
+            'AutoBackup',
+            'Deleted old backup: ${backup.fileName}',
+          );
         }
       }
 
