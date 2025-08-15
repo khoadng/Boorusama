@@ -24,7 +24,7 @@ val hasValidKeystore = keystorePropertiesFile.exists() &&
 
 android {
     namespace = "com.degenk.boorusama"
-    compileSdk = 35
+    compileSdk = 36
     ndkVersion = "27.0.12077973"
 
     compileOptions {
