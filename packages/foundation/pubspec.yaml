@@ -3,7 +3,7 @@ description: Building blocks for Boorusama
 publish_to: none
 
 environment:
-  sdk: ^3.8.1
+  sdk: ^3.9.0
   flutter: ">=1.17.0"
 
 resolution: workspace
