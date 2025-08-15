@@ -21,7 +21,6 @@ import '../../../../widgets/widgets.dart';
 import '../../../details_pageview/widgets.dart';
 import '../../../post/post.dart';
 import 'post_details_controller.dart';
-import 'post_details_preload_image.dart';
 import 'post_media.dart';
 
 class PostDetailsItem<T extends Post> extends ConsumerWidget {
@@ -53,7 +52,6 @@ class PostDetailsItem<T extends Post> extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final post = posts[index];
-    final (previousPost, nextPost) = posts.getPrevAndNextPosts(index);
 
     final videoPlayerEngine = ref.watch(
       settingsProvider.select((value) => value.videoPlayerEngine),
@@ -122,15 +120,6 @@ class PostDetailsItem<T extends Post> extends ConsumerWidget {
           child: Stack(
             alignment: Alignment.center,
             children: [
-              // preload next image only, not the post itself
-              if (nextPost != null && !nextPost.isVideo)
-                Offstage(
-                  child: PostDetailsPreloadImage(
-                    post: nextPost,
-                    url: imageUrlBuilder(nextPost),
-                    config: authConfig,
-                  ),
-                ),
               ValueListenableBuilder(
                 valueListenable: isInitPageListenable,
                 builder: (_, isInitPage, _) {
@@ -150,14 +139,6 @@ class PostDetailsItem<T extends Post> extends ConsumerWidget {
                   );
                 },
               ),
-              if (previousPost != null && !previousPost.isVideo)
-                Offstage(
-                  child: PostDetailsPreloadImage(
-                    post: previousPost,
-                    url: imageUrlBuilder(previousPost),
-                    config: authConfig,
-                  ),
-                ),
               if (post.isVideo)
                 Align(
                   alignment: Alignment.bottomRight,
@@ -206,14 +187,5 @@ class PostDetailsItem<T extends Post> extends ConsumerWidget {
         ),
       ),
     );
-  }
-}
-
-extension PostDetailsUtils<T extends Post> on List<T> {
-  (T? prev, T? next) getPrevAndNextPosts(int index) {
-    final next = index + 1 < length ? this[index + 1] : null;
-    final prev = index - 1 >= 0 ? this[index - 1] : null;
-
-    return (prev, next);
   }
 }

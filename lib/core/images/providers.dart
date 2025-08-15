@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+// Project imports:
 import '../configs/config/types.dart';
 import '../http/providers.dart';
 
@@ -44,7 +45,7 @@ final imagePreloaderProvider = Provider.family<ImagePreloader, BooruConfigAuth>(
     return ImagePreloader(
       cacheManager: cacheManager,
       dio: dio,
-      enableLogging: true,
+      enableLogging: kDebugMode,
     );
   },
 );

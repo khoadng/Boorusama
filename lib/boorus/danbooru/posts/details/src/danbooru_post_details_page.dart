@@ -50,57 +50,60 @@ class _DanbooruPostDetailsPageState extends State<DanbooruPostDetailsPage> {
       child: Consumer(
         builder: (context, ref, child) {
           final auth = ref.watchConfigAuth;
-          final configViewer = ref.watchConfigViewer;
+          final viewer = ref.watchConfigViewer;
           final gestures = ref.watchPostGestures;
           final layout = ref.watchLayoutConfigs;
           final booruBuilder = ref.watch(booruBuilderProvider(auth));
           final postGesturesHandler = booruBuilder?.postGestureHandlerBuilder;
           final uiBuilder = booruBuilder?.postDetailsUIBuilder;
+          final imageUrlBuilder = defaultPostImageUrlBuilder(ref, auth, viewer);
 
-          return PostDetailsNotes(
+          return PostDetailsImagePreloader(
+            authConfig: auth,
             posts: posts,
             pageViewController: pageViewController,
-            viewerConfig: configViewer,
-            authConfig: auth,
-            child: PostDetailsPageScaffold(
-              isInitPage: _isInitPage,
-              transformController: _transformController,
-              pageViewController: pageViewController,
-              controller: detailsController,
-              layoutConfig: layout,
+            imageUrlBuilder: imageUrlBuilder,
+            child: PostDetailsNotes(
               posts: posts,
-              postGestureHandlerBuilder: postGesturesHandler,
-              uiBuilder: uiBuilder,
-              gestureConfig: gestures,
-              itemBuilder: (context, index) {
-                return PostDetailsItem(
-                  index: index,
-                  posts: posts,
-                  transformController: _transformController,
-                  isInitPageListenable: _isInitPage,
-                  authConfig: auth,
-                  gestureConfig: gestures,
-                  imageCacheManager: null,
-                  pageViewController: pageViewController,
-                  detailsController: detailsController,
-                  imageUrlBuilder: defaultPostImageUrlBuilder(
-                    ref,
-                    auth,
-                    configViewer,
+              pageViewController: pageViewController,
+              viewerConfig: viewer,
+              authConfig: auth,
+              child: PostDetailsPageScaffold(
+                isInitPage: _isInitPage,
+                transformController: _transformController,
+                pageViewController: pageViewController,
+                controller: detailsController,
+                layoutConfig: layout,
+                posts: posts,
+                postGestureHandlerBuilder: postGesturesHandler,
+                uiBuilder: uiBuilder,
+                gestureConfig: gestures,
+                itemBuilder: (context, index) {
+                  return PostDetailsItem(
+                    index: index,
+                    posts: posts,
+                    transformController: _transformController,
+                    isInitPageListenable: _isInitPage,
+                    authConfig: auth,
+                    gestureConfig: gestures,
+                    imageCacheManager: null,
+                    pageViewController: pageViewController,
+                    detailsController: detailsController,
+                    imageUrlBuilder: imageUrlBuilder,
+                  );
+                },
+                actions: defaultActions(
+                  note: NoteActionButtonWithProvider(
+                    currentPost: detailsController.currentPost,
+                    config: auth,
                   ),
-                );
-              },
-              actions: defaultActions(
-                note: NoteActionButtonWithProvider(
-                  currentPost: detailsController.currentPost,
-                  config: auth,
-                ),
-                fallbackMoreButton: DefaultFallbackBackupMoreButton(
-                  layoutConfig: layout,
-                  controller: detailsController,
-                  pageViewController: pageViewController,
-                  authConfig: auth,
-                  viewerConfig: configViewer,
+                  fallbackMoreButton: DefaultFallbackBackupMoreButton(
+                    layoutConfig: layout,
+                    controller: detailsController,
+                    pageViewController: pageViewController,
+                    authConfig: auth,
+                    viewerConfig: viewer,
+                  ),
                 ),
               ),
             ),
