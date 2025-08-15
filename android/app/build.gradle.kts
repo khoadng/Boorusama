@@ -39,7 +39,7 @@ android {
 
     defaultConfig {
         applicationId = "com.degenk.boorusama"
-        minSdk = 21
+        minSdkVersion = 24
         targetSdk = 35
         versionCode = flutter.versionCode
         versionName = flutter.versionName
