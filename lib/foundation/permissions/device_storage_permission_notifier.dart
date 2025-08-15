@@ -38,7 +38,7 @@ class DeviceStoragePermissionNotifier
       final logger = ref.watch(loggerProvider);
       final deviceInfo = ref.watch(deviceInfoProvider);
 
-      logger.info('Permission', 'Fetching storage permission');
+      logger.verbose('Permission', 'Fetching storage permission');
       final status = await checkMediaPermissions(deviceInfo);
 
       logger.log(
@@ -72,7 +72,7 @@ class DeviceStoragePermissionNotifier
     }
 
     final deviceInfo = ref.read(deviceInfoProvider);
-    logger.info('Permission', 'Requesting storage permission');
+    logger.verbose('Permission', 'Requesting storage permission');
     final status = await requestMediaPermissions(deviceInfo);
     logger.info('Permission', 'Storage permission status: $status');
 

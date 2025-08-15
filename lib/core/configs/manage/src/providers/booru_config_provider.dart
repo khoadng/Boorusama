@@ -327,7 +327,7 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>> {
   }
 
   void _logInfo(String message) {
-    ref.read(loggerProvider).info('Configs', message);
+    ref.read(loggerProvider).verbose('Configs', message);
   }
 }
 
