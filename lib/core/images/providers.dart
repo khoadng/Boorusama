@@ -5,6 +5,9 @@ import 'package:flutter/foundation.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../configs/config/types.dart';
+import '../http/providers.dart';
+
 final defaultCachedImageFileProvider = FutureProvider.autoDispose
     .family<Uint8List?, String>(
       (ref, imageUrl) async {
@@ -30,5 +33,18 @@ final defaultImageCacheManagerProvider = Provider<ImageCacheManager>(
     });
 
     return manager;
+  },
+);
+
+final imagePreloaderProvider = Provider.family<ImagePreloader, BooruConfigAuth>(
+  (ref, config) {
+    final dio = ref.watch(defaultDioProvider(config));
+    final cacheManager = ref.watch(defaultImageCacheManagerProvider);
+
+    return ImagePreloader(
+      cacheManager: cacheManager,
+      dio: dio,
+      enableLogging: true,
+    );
   },
 );

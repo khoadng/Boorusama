@@ -12,6 +12,7 @@ import 'package:dio/dio.dart';
 import 'package:retriable/retriable.dart';
 
 import 'image_cache_manager.dart';
+import 'image_fetcher.dart';
 
 class DioExtendedNetworkImageProvider
     extends ImageProvider<ExtendedNetworkImageProvider>
@@ -210,22 +211,18 @@ class DioExtendedNetworkImageProvider
     return networkData;
   }
 
-  /// Get the image from network
+  /// Get the image from network using shared ImageFetcher logic
   Future<Uint8List?> _loadNetwork(
     StreamController<ImageChunkEvent>? chunkEvents,
   ) async {
     try {
-      final resolved = Uri.base.resolve(url);
-
-      final response = await tryGetResponse<List<int>>(
-        resolved,
+      final bytes = await ImageFetcher.fetchImageBytes(
+        url: url,
         dio: dio,
-        cancelToken: cancelToken,
+        headers: headers,
         fetchStrategy: fetchStrategy,
-        options: Options(
-          responseType: ResponseType.bytes,
-          headers: headers,
-        ),
+        cancelToken: cancelToken,
+        printError: printError,
         onReceiveProgress: chunkEvents != null
             ? (count, total) {
                 if (!chunkEvents.isClosed && total >= 0) {
@@ -240,39 +237,18 @@ class DioExtendedNetworkImageProvider
             : null,
       );
 
-      if (response == null || response.data == null) {
-        return null;
-      }
-
-      final bytes = Uint8List.fromList(response.data!);
-      if (bytes.lengthInBytes == 0) {
-        return Future<Uint8List>.error(
-          StateError('NetworkImage is an empty file: $resolved'),
-        );
-      }
-
       return bytes;
-    } on OperationCanceledError catch (_) {
-      _print('User cancel request $url.');
-      return Future<Uint8List>.error(StateError('User cancel request $url.'));
     } catch (e) {
-      _print(e);
+      return null;
     } finally {
       await chunkEvents?.close();
     }
-    return null;
   }
 
   @override
   Future<Uint8List?> getNetworkImageData({
     StreamController<ImageChunkEvent>? chunkEvents,
   }) => _fetchImageBytes(chunkEvents);
-
-  void _print(Object error) {
-    if (printError && kDebugMode) {
-      debugPrint('[DioExtendedImageProvider] $error');
-    }
-  }
 
   @override
   bool operator ==(Object other) {
