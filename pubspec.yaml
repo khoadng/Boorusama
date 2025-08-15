@@ -6,6 +6,7 @@ version: 4.1.5+164
 
 environment:
   sdk: ^3.9.0
+  flutter: ^3.35.0
 
 workspace:
   - packages/foundation
