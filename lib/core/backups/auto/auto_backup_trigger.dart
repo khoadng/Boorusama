@@ -54,49 +54,30 @@ class BackupTriggerNotifier extends Notifier<BackupTriggerState> {
     await _performTrigger(isInitialTrigger: true);
   }
 
-  Future<void> triggerOnLifecycleResume() async {
-    if (!state.hasTriggeredOnce) return;
-    await _performTrigger(isInitialTrigger: false);
-  }
-
   Future<void> _performTrigger({required bool isInitialTrigger}) async {
+    final logger = ref.read(loggerProvider);
+
     // Guard against concurrent backups
     if (state.isInProgress) {
-      ref
-          .read(loggerProvider)
-          .logI('AutoBackupTrigger', 'Backup already in progress, skipping');
-      return;
-    }
-
-    // Debounce frequent app resumes
-    final now = DateTime.now();
-    if (state.lastTriggerTime != null &&
-        now.difference(state.lastTriggerTime!).inMinutes < 5) {
-      ref
-          .read(loggerProvider)
-          .logI('AutoBackupTrigger', 'Recent trigger, skipping');
+      logger.logI('AutoBackupTrigger', 'Backup already in progress, skipping');
       return;
     }
 
     try {
       state = state.copyWith(
         isInProgress: true,
-        lastTriggerTime: () => now,
+        lastTriggerTime: () => DateTime.now(),
         hasTriggeredOnce: isInitialTrigger ? true : null,
       );
 
-      ref
-          .read(loggerProvider)
-          .logI('AutoBackupTrigger', 'Checking auto backup on app launch');
+      logger.logI('AutoBackupTrigger', 'Checking auto backup on app launch');
 
       final autoBackupSettings = ref.read(settingsProvider).autoBackup;
       await ref
           .read(backupProvider.notifier)
           .performAutoBackupIfNeeded(autoBackupSettings);
     } catch (e) {
-      ref
-          .read(loggerProvider)
-          .logE('AutoBackupTrigger', 'Auto backup trigger failed: $e');
+      logger.logE('AutoBackupTrigger', 'Auto backup trigger failed: $e');
     } finally {
       state = state.copyWith(isInProgress: false);
     }
@@ -131,14 +112,6 @@ class _AutoBackupAppLifecycleState extends ConsumerState<AutoBackupAppLifecycle>
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    super.didChangeAppLifecycleState(state);
-    if (state == AppLifecycleState.resumed) {
-      ref.read(backupTriggerProvider.notifier).triggerOnLifecycleResume();
-    }
   }
 
   @override
