@@ -12,6 +12,9 @@ class AppLogger implements Logger {
   final List<LogData> _logs = [];
 
   @override
+  String getDebugName() => 'App Logger';
+
+  @override
   void error(String serviceName, String message) {
     _logs.add(
       (
@@ -80,5 +83,10 @@ class AppLogger implements Logger {
       buffer.write('[${log.dateTime}][${log.serviceName}]: ${log.message}\n');
     }
     return buffer.toString();
+  }
+
+  @override
+  void clearLogsAtOrBelow(LogLevel level) {
+    _logs.removeWhere((log) => log.level.priority <= level.priority);
   }
 }

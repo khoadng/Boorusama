@@ -46,6 +46,9 @@ class MockMediaPermissionManager extends Mock
 
 class DummyLogger implements Logger {
   @override
+  String getDebugName() => 'Dummy Logger';
+
+  @override
   void error(String serviceName, String message) {}
 
   @override
@@ -62,6 +65,9 @@ class DummyLogger implements Logger {
 
   @override
   String dump() => '';
+
+  @override
+  void clearLogsAtOrBelow(LogLevel level) {}
 }
 
 class DownloadTestConstants {

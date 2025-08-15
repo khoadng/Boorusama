@@ -172,7 +172,9 @@ Future<void> boot(BootData bootData) async {
   );
   stopwatch.stop();
 
-  logger.debugBoot('Run app');
+  logger
+    ..debugBoot('Run app')
+    ..clearLogsAtOrBelow(LogLevel.verbose);
 
   runApp(
     Reboot(

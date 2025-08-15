@@ -49,6 +49,9 @@ class ConsoleLogger extends Logger {
   }
 
   @override
+  String getDebugName() => 'Console Logger';
+
+  @override
   void info(String serviceName, String message) {
     developer.log(_composeMessage(serviceName, message, blue));
   }
@@ -75,4 +78,9 @@ class ConsoleLogger extends Logger {
 
   @override
   String dump() => '';
+
+  @override
+  void clearLogsAtOrBelow(LogLevel level) {
+    // ConsoleLogger does not store logs, so this is a no-op.
+  }
 }

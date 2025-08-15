@@ -10,12 +10,18 @@ Future<Logger> loggerWith(Logger logger) async {
   return MultiChannelLogger(
     loggers: [
       if (!kReleaseMode)
-        ConsoleLogger(
-          options: const ConsoleLoggerOptions(
-            decodeUriParameters: true,
+        ThresholdLogger(
+          delegate: ConsoleLogger(
+            options: const ConsoleLoggerOptions(
+              decodeUriParameters: true,
+            ),
           ),
+          initialLevel: LogLevel.verbose,
         ),
-      logger,
+      ThresholdLogger(
+        delegate: logger,
+        initialLevel: LogLevel.debug,
+      ),
     ],
   );
 }
