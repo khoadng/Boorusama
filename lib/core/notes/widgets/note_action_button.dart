@@ -33,7 +33,6 @@ class NoteActionButton<T extends Post> extends StatelessWidget {
       return CircularIconButton(
         icon: const FaIcon(
           Symbols.translate,
-          size: 22,
         ),
         onPressed: onDownload,
       );
@@ -41,19 +40,13 @@ class NoteActionButton<T extends Post> extends StatelessWidget {
 
     return CircularIconButton(
       icon: enableNotes
-          ? const Padding(
-              padding: EdgeInsets.all(4),
-              child: FaIcon(
-                FontAwesomeIcons.eyeSlash,
-                size: 18,
-              ),
+          ? const Icon(
+              FontAwesomeIcons.eyeSlash,
+              size: 18,
             )
-          : const Padding(
-              padding: EdgeInsets.all(4),
-              child: FaIcon(
-                FontAwesomeIcons.eye,
-                size: 18,
-              ),
+          : const Icon(
+              FontAwesomeIcons.eye,
+              size: 18,
             ),
       onPressed: onToggleNotes,
     );

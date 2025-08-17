@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../../widgets/widgets.dart';
@@ -78,53 +77,10 @@ class ColorVariantSelector extends ConsumerWidget {
   }
 }
 
-class DarkModeToggleButton extends StatelessWidget {
-  const DarkModeToggleButton({
-    required this.isDark,
-    required this.onChanged,
-    super.key,
-  });
-
-  final bool isDark;
-  final void Function(bool value) onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    return CircularIconButton(
-      padding: const EdgeInsets.all(8),
-      backgroundColor: isDark
-          ? colorScheme.primary
-          : colorScheme.surfaceContainerHighest,
-      iconColor: isDark ? colorScheme.onPrimary : colorScheme.onSurface,
-      icon: const Icon(Symbols.dark_mode),
-      onPressed: () {
-        onChanged(!isDark);
-      },
-    );
-  }
-}
-
 enum ThemeCategory {
   basic,
   builtIn,
   accent,
-}
-
-class SplashClipper extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    final path = Path()
-      ..moveTo(size.width, 0)
-      ..lineTo(size.width, size.height)
-      ..lineTo(0, size.height)
-      ..lineTo(size.width, 0);
-
-    return path;
-  }
-
-  @override
-  bool shouldReclip(covariant CustomClipper<Path> oldClipper) => false;
 }
 
 class ThemeCategoryToggleSwitch extends ConsumerWidget {
