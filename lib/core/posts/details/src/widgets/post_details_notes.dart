@@ -32,9 +32,8 @@ class PostDetailsNotes<T extends Post> extends ConsumerStatefulWidget {
 
 class _PostDetailsNotesState<T extends Post>
     extends ConsumerState<PostDetailsNotes<T>> {
-  
   PostDetailsPageViewController? _pageViewController;
-  
+
   PostDetailsPageViewController get _controller {
     return _pageViewController ??= PostDetailsPageViewScope.of(context);
   }
@@ -42,10 +41,10 @@ class _PostDetailsNotesState<T extends Post>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    
+
     if (_pageViewController == null) {
       final controller = _controller;
-      
+
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         if (widget.viewerConfig.autoFetchNotes) {
           ref

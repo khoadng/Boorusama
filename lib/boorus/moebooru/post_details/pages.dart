@@ -117,12 +117,12 @@ class _MoebooruPostDetailsPageState
       imageUrlBuilder: imageUrlBuilder,
       child: PostDetailsNotes(
         posts: posts,
-          viewerConfig: viewer,
+        viewerConfig: viewer,
         authConfig: auth,
         child: PostDetailsPageScaffold(
           isInitPage: _isInitPage,
           transformController: _transformController,
-              controller: controller,
+          controller: controller,
           posts: posts,
           postGestureHandlerBuilder: postGesturesHandler,
           uiBuilder: uiBuilder,
@@ -136,7 +136,7 @@ class _MoebooruPostDetailsPageState
             fallbackMoreButton: DefaultFallbackBackupMoreButton(
               layoutConfig: layout,
               controller: controller,
-                      authConfig: auth,
+              authConfig: auth,
               viewerConfig: viewer,
             ),
           ),
@@ -149,7 +149,7 @@ class _MoebooruPostDetailsPageState
               authConfig: auth,
               gestureConfig: gestures,
               imageCacheManager: null,
-                      detailsController: controller,
+              detailsController: controller,
               imageUrlBuilder: imageUrlBuilder,
             );
           },

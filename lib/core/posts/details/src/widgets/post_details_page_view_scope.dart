@@ -14,12 +14,15 @@ class PostDetailsPageViewScope extends InheritedWidget {
   final PostDetailsPageViewController controller;
 
   static PostDetailsPageViewController of(BuildContext context) {
-    final widget = context.dependOnInheritedWidgetOfExactType<PostDetailsPageViewScope>();
-    return widget?.controller ?? (throw Exception('No PostDetailsPageViewScope found in context'));
+    final widget = context
+        .dependOnInheritedWidgetOfExactType<PostDetailsPageViewScope>();
+    return widget?.controller ??
+        (throw Exception('No PostDetailsPageViewScope found in context'));
   }
 
   static PostDetailsPageViewController? maybeOf(BuildContext context) {
-    final widget = context.dependOnInheritedWidgetOfExactType<PostDetailsPageViewScope>();
+    final widget = context
+        .dependOnInheritedWidgetOfExactType<PostDetailsPageViewScope>();
     return widget?.controller;
   }
 

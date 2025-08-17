@@ -146,7 +146,9 @@ class BulkDownloadPageInternal extends StatelessWidget {
         );
       },
       child: Text(
-        dense ? DownloadTranslations.createShort(ref.context) : DownloadTranslations.create(ref.context),
+        dense
+            ? DownloadTranslations.createShort(ref.context)
+            : DownloadTranslations.create(ref.context),
       ),
     );
   }

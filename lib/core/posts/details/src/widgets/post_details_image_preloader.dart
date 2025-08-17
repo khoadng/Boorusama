@@ -34,9 +34,9 @@ class PostDetailsImagePreloader<T extends Post> extends ConsumerStatefulWidget {
 class _PostDetailsImagePreloaderState<T extends Post>
     extends ConsumerState<PostDetailsImagePreloader<T>> {
   final _preloadedUrls = <String>{};
-  
+
   PostDetailsPageViewController? _pageViewController;
-  
+
   PostDetailsPageViewController get _controller {
     return _pageViewController ??= PostDetailsPageViewScope.of(context);
   }
@@ -44,10 +44,10 @@ class _PostDetailsImagePreloaderState<T extends Post>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    
+
     if (_pageViewController == null) {
       final controller = _controller;
-      
+
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _preloadAdjacentPages(controller.initialPage);
       });

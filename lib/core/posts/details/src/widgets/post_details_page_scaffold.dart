@@ -75,12 +75,12 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
 class _PostDetailPageScaffoldState<T extends Post>
     extends ConsumerState<PostDetailsPageScaffold<T>> {
   late final _posts = widget.posts;
-  
+
   PostDetailsPageViewController? _pageViewController;
   PostDetailsPageViewController get _controller {
     return _pageViewController ??= PostDetailsPageViewScope.of(context);
   }
-  
+
   VolumeKeyPageNavigator? _volumeKeyPageNavigator;
 
   ValueNotifier<bool> visibilityNotifier = ValueNotifier(false);
@@ -109,7 +109,7 @@ class _PostDetailPageScaffoldState<T extends Post>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    
+
     _volumeKeyPageNavigator ??= VolumeKeyPageNavigator(
       pageViewController: _controller,
       totalPosts: _posts.length,

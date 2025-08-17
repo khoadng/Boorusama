@@ -63,12 +63,12 @@ class _DanbooruPostDetailsPageState extends State<DanbooruPostDetailsPage> {
             imageUrlBuilder: imageUrlBuilder,
             child: PostDetailsNotes(
               posts: posts,
-                viewerConfig: viewer,
+              viewerConfig: viewer,
               authConfig: auth,
               child: PostDetailsPageScaffold(
                 isInitPage: _isInitPage,
                 transformController: _transformController,
-                    controller: detailsController,
+                controller: detailsController,
                 layoutConfig: layout,
                 posts: posts,
                 postGestureHandlerBuilder: postGesturesHandler,
@@ -83,7 +83,7 @@ class _DanbooruPostDetailsPageState extends State<DanbooruPostDetailsPage> {
                     authConfig: auth,
                     gestureConfig: gestures,
                     imageCacheManager: null,
-                            detailsController: detailsController,
+                    detailsController: detailsController,
                     imageUrlBuilder: imageUrlBuilder,
                   );
                 },
@@ -95,7 +95,7 @@ class _DanbooruPostDetailsPageState extends State<DanbooruPostDetailsPage> {
                   fallbackMoreButton: DefaultFallbackBackupMoreButton(
                     layoutConfig: layout,
                     controller: detailsController,
-                            authConfig: auth,
+                    authConfig: auth,
                     viewerConfig: viewer,
                   ),
                 ),

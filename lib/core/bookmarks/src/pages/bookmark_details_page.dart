@@ -130,7 +130,7 @@ class _BookmarkDetailsPageState
             return DefaultFallbackBackupMoreButton(
               layoutConfig: layout,
               controller: controller,
-                      authConfig: config?.auth,
+              authConfig: config?.auth,
               viewerConfig: viewer,
             );
           },
@@ -153,7 +153,7 @@ class _BookmarkDetailsPageState
           authConfig: config?.auth ?? auth,
           gestureConfig: gestures,
           imageCacheManager: imageCacheManager,
-              detailsController: controller,
+          detailsController: controller,
           // Needed to prevent type inference error
           // ignore: avoid_types_on_closure_parameters
           imageUrlBuilder: (Post post) => post.originalImageUrl,

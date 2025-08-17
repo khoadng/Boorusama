@@ -305,12 +305,12 @@ class _DefaultPostDetailsPageState<T extends Post>
       imageUrlBuilder: imageUrlBuilder,
       child: PostDetailsNotes(
         posts: posts,
-          viewerConfig: viewer,
+        viewerConfig: viewer,
         authConfig: auth,
         child: PostDetailsPageScaffold(
           transformController: _transformController,
           isInitPage: _isInitPage,
-              controller: controller,
+          controller: controller,
           posts: posts,
           postGestureHandlerBuilder: postGesturesHandler,
           uiBuilder: uiBuilder,
@@ -324,7 +324,7 @@ class _DefaultPostDetailsPageState<T extends Post>
             fallbackMoreButton: DefaultFallbackBackupMoreButton(
               layoutConfig: layout,
               controller: controller,
-                      authConfig: auth,
+              authConfig: auth,
               viewerConfig: viewer,
             ),
           ),
@@ -337,7 +337,7 @@ class _DefaultPostDetailsPageState<T extends Post>
               authConfig: auth,
               gestureConfig: gestures,
               imageCacheManager: null,
-                      detailsController: controller,
+              detailsController: controller,
               imageUrlBuilder: imageUrlBuilder,
             );
           },
