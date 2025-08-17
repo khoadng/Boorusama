@@ -76,5 +76,5 @@ String dateToE621Date(DateTime date) =>
 
 String timeScaleToE621TimeScale(TimeScale timeScale) => timeScale.name;
 
-List<E621Post> filterPostWithNoImage(List<E621Post> posts) =>
-    posts.where((post) => !post.hasNoImage).toList();
+List<E621Post> filterPostWithNoImage(List<E621Post?> posts) =>
+    posts.nonNulls.where((post) => !post.hasNoImage).toList();
