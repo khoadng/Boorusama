@@ -51,6 +51,7 @@ final e621PostRepoProvider =
                     ),
                   ),
                 )
+                .nonNulls
                 .toList(),
           );
 
@@ -72,33 +73,44 @@ final e621PopularPostRepoProvider =
   );
 });
 
-E621Post postDtoToPostNoMetadata(PostDto dto) {
+E621Post? postDtoToPostNoMetadata(PostDto dto) {
   return postDtoToPost(dto, null);
 }
 
-E621Post postDtoToPost(PostDto dto, PostMetadata? metadata) {
+E621Post? postDtoToPost(PostDto dto, PostMetadata? metadata) {
+  final file = dto.file;
+
+  if (file == null || file.url == null) return null;
+
   final videoUrl = extractSampleVideoUrl(dto);
-  final format = videoUrl.isNotEmpty ? extension(videoUrl).substring(1) : '';
+  final videoFormat =
+      videoUrl.isNotEmpty ? extension(videoUrl).substring(1) : '';
+
+  final format = videoFormat.isNotEmpty ? videoFormat : file.ext ?? '';
+  final isGif = format.toLowerCase() == 'gif' || format.toLowerCase() == '.gif';
+  final previewUrl = dto.preview?.url ?? '';
+  final sampleUrl = dto.sample?.url;
+  final originalUrl = dto.file?.url ?? '';
 
   return E621Post(
     id: dto.id ?? 0,
     source: PostSource.from(dto.sources?.firstOrNull),
-    thumbnailImageUrl: dto.preview?.url ?? '',
-    sampleImageUrl: dto.sample?.url ?? '',
-    originalImageUrl: dto.file?.url ?? '',
+    thumbnailImageUrl: previewUrl,
+    sampleImageUrl: isGif ? originalUrl : sampleUrl ?? originalUrl,
+    originalImageUrl: originalUrl,
     rating: mapStringToRating(dto.rating),
     hasComment: dto.commentCount != null && dto.commentCount! > 0,
     isTranslated: dto.hasNotes ?? false,
     hasParentOrChildren: dto.relationships?.hasChildren ??
         false || dto.relationships?.parentId != null,
-    format: format.isEmpty ? dto.file?.ext ?? '' : format,
+    format: format,
     videoUrl: videoUrl,
-    width: dto.file?.width?.toDouble() ?? 0,
-    height: dto.file?.height?.toDouble() ?? 0,
-    md5: dto.file?.md5 ?? '',
-    fileSize: dto.file?.size ?? 0,
+    width: file.width?.toDouble() ?? 0,
+    height: file.height?.toDouble() ?? 0,
+    md5: file.md5 ?? '',
+    fileSize: file.size ?? 0,
     score: dto.score?.total ?? 0,
-    createdAt: DateTime.parse(dto.createdAt ?? ''),
+    createdAt: DateTime.tryParse(dto.createdAt ?? '') ?? DateTime.now(),
     duration: dto.duration ?? 0,
     characterTags: Set<String>.from(dto.tags?['character'] ?? {}).toSet(),
     copyrightTags: Set<String>.from(dto.tags?['copyright'] ?? {}).toSet(),
