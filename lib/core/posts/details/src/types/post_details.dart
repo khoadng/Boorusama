@@ -11,12 +11,10 @@ class PostDetailsData<T extends Post> {
   const PostDetailsData({
     required this.posts,
     required this.controller,
-    required this.pageViewController,
   });
 
   final List<T> posts;
   final PostDetailsController<T> controller;
-  final PostDetailsPageViewController pageViewController;
 }
 
 class PostDetails<T extends Post> extends InheritedWidget {

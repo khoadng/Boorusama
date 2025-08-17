@@ -28,9 +28,7 @@ class SzurubooruPostActionToolbar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final post = InheritedPost.of<SzurubooruPost>(context);
-    final controller = PostDetails.of<SzurubooruPost>(
-      context,
-    ).pageViewController;
+    final controller = PostDetailsPageViewScope.of(context);
 
     final config = ref.watchConfigAuth;
     final configViewer = ref.watchConfigViewer;

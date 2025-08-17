@@ -13,6 +13,7 @@ import '../../../post/post.dart';
 import '../types/inherited_post.dart';
 import '../types/post_details.dart';
 import 'post_details_controller.dart';
+import 'post_details_page_view_scope.dart';
 
 class PostDetailsScope<T extends Post> extends ConsumerStatefulWidget {
   const PostDetailsScope({
@@ -84,15 +85,17 @@ class _PostDetailsLayoutSwitcherState<T extends Post>
 
   @override
   Widget build(BuildContext context) {
-    return PostDetails(
-      data: PostDetailsData(
-        posts: widget.posts,
-        controller: _controller,
-        pageViewController: _pageViewController,
-      ),
-      child: CurrentPostScope(
-        post: _controller.currentPost,
-        child: widget.child,
+    return PostDetailsPageViewScope(
+      controller: _pageViewController,
+      child: PostDetails(
+        data: PostDetailsData(
+          posts: widget.posts,
+          controller: _controller,
+        ),
+        child: CurrentPostScope(
+          post: _controller.currentPost,
+          child: widget.child,
+        ),
       ),
     );
   }

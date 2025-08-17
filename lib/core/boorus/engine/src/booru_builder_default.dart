@@ -302,18 +302,15 @@ class _DefaultPostDetailsPageState<T extends Post>
     return PostDetailsImagePreloader(
       authConfig: auth,
       posts: posts,
-      pageViewController: data.pageViewController,
       imageUrlBuilder: imageUrlBuilder,
       child: PostDetailsNotes(
         posts: posts,
-        pageViewController: data.pageViewController,
-        viewerConfig: viewer,
+          viewerConfig: viewer,
         authConfig: auth,
         child: PostDetailsPageScaffold(
           transformController: _transformController,
           isInitPage: _isInitPage,
-          pageViewController: data.pageViewController,
-          controller: controller,
+              controller: controller,
           posts: posts,
           postGestureHandlerBuilder: postGesturesHandler,
           uiBuilder: uiBuilder,
@@ -327,8 +324,7 @@ class _DefaultPostDetailsPageState<T extends Post>
             fallbackMoreButton: DefaultFallbackBackupMoreButton(
               layoutConfig: layout,
               controller: controller,
-              pageViewController: data.pageViewController,
-              authConfig: auth,
+                      authConfig: auth,
               viewerConfig: viewer,
             ),
           ),
@@ -341,8 +337,7 @@ class _DefaultPostDetailsPageState<T extends Post>
               authConfig: auth,
               gestureConfig: gestures,
               imageCacheManager: null,
-              pageViewController: data.pageViewController,
-              detailsController: controller,
+                      detailsController: controller,
               imageUrlBuilder: imageUrlBuilder,
             );
           },

@@ -102,7 +102,6 @@ class _MoebooruPostDetailsPageState
 
   @override
   Widget build(BuildContext context) {
-    final pageViewController = data.pageViewController;
     final auth = ref.watchConfigAuth;
     final viewer = ref.watchConfigViewer;
     final layout = ref.watchLayoutConfigs;
@@ -115,18 +114,15 @@ class _MoebooruPostDetailsPageState
     return PostDetailsImagePreloader(
       authConfig: auth,
       posts: posts,
-      pageViewController: pageViewController,
       imageUrlBuilder: imageUrlBuilder,
       child: PostDetailsNotes(
         posts: posts,
-        pageViewController: pageViewController,
-        viewerConfig: viewer,
+          viewerConfig: viewer,
         authConfig: auth,
         child: PostDetailsPageScaffold(
           isInitPage: _isInitPage,
           transformController: _transformController,
-          pageViewController: pageViewController,
-          controller: controller,
+              controller: controller,
           posts: posts,
           postGestureHandlerBuilder: postGesturesHandler,
           uiBuilder: uiBuilder,
@@ -140,8 +136,7 @@ class _MoebooruPostDetailsPageState
             fallbackMoreButton: DefaultFallbackBackupMoreButton(
               layoutConfig: layout,
               controller: controller,
-              pageViewController: pageViewController,
-              authConfig: auth,
+                      authConfig: auth,
               viewerConfig: viewer,
             ),
           ),
@@ -154,8 +149,7 @@ class _MoebooruPostDetailsPageState
               authConfig: auth,
               gestureConfig: gestures,
               imageCacheManager: null,
-              pageViewController: pageViewController,
-              detailsController: controller,
+                      detailsController: controller,
               imageUrlBuilder: imageUrlBuilder,
             );
           },
@@ -214,9 +208,7 @@ class _Toolbar<T extends Post> extends ConsumerWidget {
     return SimplePostActionToolbar(
       post: post,
       maxVisibleButtons: 4,
-      onStartSlideshow: PostDetails.of<T>(
-        context,
-      ).pageViewController.startSlideshow,
+      onStartSlideshow: PostDetailsPageViewScope.of(context).startSlideshow,
       isFaved: ref
           .watch(moebooruFavoritesProvider(post.id))
           ?.contains(config.login),

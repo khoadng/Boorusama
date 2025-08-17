@@ -27,7 +27,7 @@ import '../../../details_manager/types.dart';
 import '../../../details_pageview/widgets.dart';
 import '../../../post/post.dart';
 import '../../../post/routes.dart';
-import '../types/post_details.dart';
+import '../../details.dart';
 import 'post_details_controller.dart';
 import 'post_details_full_info_sheet.dart';
 import 'video_controls.dart';
@@ -39,7 +39,6 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
   const PostDetailsPageScaffold({
     required this.posts,
     required this.controller,
-    required this.pageViewController,
     required this.gestureConfig,
     required this.layoutConfig,
     required this.itemBuilder,
@@ -57,7 +56,6 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
   final List<T> posts;
   final void Function()? onExpanded;
   final PostDetailsController<T> controller;
-  final PostDetailsPageViewController pageViewController;
   final PostDetailsUIBuilder? uiBuilder;
   final Set<DetailsPart>? preferredParts;
   final Set<DetailsPart>? preferredPreviewParts;
@@ -77,15 +75,13 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
 class _PostDetailPageScaffoldState<T extends Post>
     extends ConsumerState<PostDetailsPageScaffold<T>> {
   late final _posts = widget.posts;
-  late final _controller = widget.pageViewController;
-  late final _volumeKeyPageNavigator = VolumeKeyPageNavigator(
-    pageViewController: _controller,
-    totalPosts: _posts.length,
-    visibilityNotifier: visibilityNotifier,
-    enableVolumeKeyViewerNavigation: () => ref.read(
-      settingsProvider.select((value) => value.volumeKeyViewerNavigation),
-    ),
-  );
+  
+  PostDetailsPageViewController? _pageViewController;
+  PostDetailsPageViewController get _controller {
+    return _pageViewController ??= PostDetailsPageViewScope.of(context);
+  }
+  
+  VolumeKeyPageNavigator? _volumeKeyPageNavigator;
 
   ValueNotifier<bool> visibilityNotifier = ValueNotifier(false);
   late final _isInitPage = widget.isInitPage;
@@ -108,13 +104,25 @@ class _PostDetailPageScaffoldState<T extends Post>
     });
 
     widget.controller.isVideoPlaying.addListener(_isVideoPlayingChanged);
+  }
 
-    _volumeKeyPageNavigator.initialize();
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    
+    _volumeKeyPageNavigator ??= VolumeKeyPageNavigator(
+      pageViewController: _controller,
+      totalPosts: _posts.length,
+      visibilityNotifier: visibilityNotifier,
+      enableVolumeKeyViewerNavigation: () => ref.read(
+        settingsProvider.select((value) => value.volumeKeyViewerNavigation),
+      ),
+    )..initialize();
   }
 
   @override
   void dispose() {
-    _volumeKeyPageNavigator.dispose();
+    _volumeKeyPageNavigator?.dispose();
     widget.controller.isVideoPlaying.removeListener(_isVideoPlayingChanged);
 
     super.dispose();

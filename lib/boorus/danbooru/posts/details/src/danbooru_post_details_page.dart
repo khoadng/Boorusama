@@ -43,7 +43,6 @@ class _DanbooruPostDetailsPageState extends State<DanbooruPostDetailsPage> {
     final data = PostDetails.of<DanbooruPost>(context);
     final posts = data.posts;
     final detailsController = data.controller;
-    final pageViewController = data.pageViewController;
 
     return DanbooruCreatorPreloader(
       preloadable: PostCreatorsPreloadable.fromPosts(posts),
@@ -61,18 +60,15 @@ class _DanbooruPostDetailsPageState extends State<DanbooruPostDetailsPage> {
           return PostDetailsImagePreloader(
             authConfig: auth,
             posts: posts,
-            pageViewController: pageViewController,
             imageUrlBuilder: imageUrlBuilder,
             child: PostDetailsNotes(
               posts: posts,
-              pageViewController: pageViewController,
-              viewerConfig: viewer,
+                viewerConfig: viewer,
               authConfig: auth,
               child: PostDetailsPageScaffold(
                 isInitPage: _isInitPage,
                 transformController: _transformController,
-                pageViewController: pageViewController,
-                controller: detailsController,
+                    controller: detailsController,
                 layoutConfig: layout,
                 posts: posts,
                 postGestureHandlerBuilder: postGesturesHandler,
@@ -87,8 +83,7 @@ class _DanbooruPostDetailsPageState extends State<DanbooruPostDetailsPage> {
                     authConfig: auth,
                     gestureConfig: gestures,
                     imageCacheManager: null,
-                    pageViewController: pageViewController,
-                    detailsController: detailsController,
+                            detailsController: detailsController,
                     imageUrlBuilder: imageUrlBuilder,
                   );
                 },
@@ -100,8 +95,7 @@ class _DanbooruPostDetailsPageState extends State<DanbooruPostDetailsPage> {
                   fallbackMoreButton: DefaultFallbackBackupMoreButton(
                     layoutConfig: layout,
                     controller: detailsController,
-                    pageViewController: pageViewController,
-                    authConfig: auth,
+                            authConfig: auth,
                     viewerConfig: viewer,
                   ),
                 ),

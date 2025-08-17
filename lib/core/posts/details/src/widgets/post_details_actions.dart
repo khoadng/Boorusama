@@ -9,9 +9,9 @@ import '../../../../configs/config/types.dart';
 import '../../../../premiums/providers.dart';
 import '../../../../theme.dart';
 import '../../../details_manager/types.dart';
-import '../../../details_pageview/widgets.dart';
 import '../../../details_parts/widgets.dart';
 import '../../../post/post.dart';
+import '../../details.dart';
 import 'post_details_controller.dart';
 
 List<Widget> defaultActions({
@@ -27,7 +27,6 @@ List<Widget> defaultActions({
 class DefaultFallbackBackupMoreButton<T extends Post> extends ConsumerWidget {
   const DefaultFallbackBackupMoreButton({
     required this.controller,
-    required this.pageViewController,
     this.layoutConfig,
     this.authConfig,
     this.viewerConfig,
@@ -36,12 +35,12 @@ class DefaultFallbackBackupMoreButton<T extends Post> extends ConsumerWidget {
 
   final LayoutConfigs? layoutConfig;
   final PostDetailsController<T> controller;
-  final PostDetailsPageViewController pageViewController;
   final BooruConfigAuth? authConfig;
   final BooruConfigViewer? viewerConfig;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final pageViewController = PostDetailsPageViewScope.of(context);
     final layoutPreviewDetails = layoutConfig?.previewDetails;
 
     final hasToolbar =

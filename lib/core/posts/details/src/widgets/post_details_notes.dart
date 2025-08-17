@@ -9,6 +9,7 @@ import '../../../../configs/config/types.dart';
 import '../../../../notes/notes.dart';
 import '../../../details_pageview/widgets.dart';
 import '../../../post/post.dart';
+import '../../details.dart';
 
 class PostDetailsNotes<T extends Post> extends ConsumerStatefulWidget {
   const PostDetailsNotes({
@@ -16,7 +17,6 @@ class PostDetailsNotes<T extends Post> extends ConsumerStatefulWidget {
     required this.viewerConfig,
     required this.authConfig,
     required this.posts,
-    required this.pageViewController,
     super.key,
   });
 
@@ -24,7 +24,6 @@ class PostDetailsNotes<T extends Post> extends ConsumerStatefulWidget {
   final BooruConfigAuth authConfig;
   final List<T> posts;
   final Widget child;
-  final PostDetailsPageViewController pageViewController;
 
   @override
   ConsumerState<PostDetailsNotes<T>> createState() =>
@@ -33,24 +32,35 @@ class PostDetailsNotes<T extends Post> extends ConsumerStatefulWidget {
 
 class _PostDetailsNotesState<T extends Post>
     extends ConsumerState<PostDetailsNotes<T>> {
+  
+  PostDetailsPageViewController? _pageViewController;
+  
+  PostDetailsPageViewController get _controller {
+    return _pageViewController ??= PostDetailsPageViewScope.of(context);
+  }
+
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    
+    if (_pageViewController == null) {
+      final controller = _controller;
+      
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        if (widget.viewerConfig.autoFetchNotes) {
+          ref
+              .read(notesProvider(widget.authConfig).notifier)
+              .load(widget.posts[controller.initialPage]);
+        }
+      });
 
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      if (widget.viewerConfig.autoFetchNotes) {
-        ref
-            .read(notesProvider(widget.authConfig).notifier)
-            .load(widget.posts[widget.pageViewController.initialPage]);
-      }
-    });
-
-    widget.pageViewController.currentPage.addListener(_onPageChanged);
+      controller.currentPage.addListener(_onPageChanged);
+    }
   }
 
   void _onPageChanged() {
     if (!mounted) return;
-    final post = widget.posts[widget.pageViewController.page];
+    final post = widget.posts[_controller.page];
 
     if (widget.viewerConfig.autoFetchNotes) {
       ref.read(notesProvider(widget.authConfig).notifier).load(post);
@@ -59,7 +69,7 @@ class _PostDetailsNotesState<T extends Post>
 
   @override
   void dispose() {
-    widget.pageViewController.currentPage.removeListener(_onPageChanged);
+    _controller.currentPage.removeListener(_onPageChanged);
 
     super.dispose();
   }

@@ -29,7 +29,7 @@ class HydrusPostActionToolbar extends ConsumerWidget {
           data: (fav) => fav,
           orElse: () => false,
         );
-    final controller = PostDetails.of<HydrusPost>(context).pageViewController;
+    final controller = PostDetailsPageViewScope.of(context);
     final config = ref.watchConfigAuth;
 
     return CommonPostButtonsBuilder(

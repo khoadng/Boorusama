@@ -154,9 +154,7 @@ class DefaultPostActionToolbar<T extends Post> extends ConsumerWidget {
       addFavorite: canFavorite ? () => notifier.add(post.id) : null,
       removeFavorite: canFavorite ? () => notifier.remove(post.id) : null,
       forceHideFav: forceHideFav,
-      onStartSlideshow: PostDetails.of<T>(
-        context,
-      ).pageViewController.startSlideshow,
+      onStartSlideshow: PostDetailsPageViewScope.of(context).startSlideshow,
     );
   }
 }

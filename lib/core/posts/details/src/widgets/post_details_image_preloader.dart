@@ -10,13 +10,13 @@ import '../../../../http/providers.dart';
 import '../../../../images/providers.dart';
 import '../../../details_pageview/widgets.dart';
 import '../../../post/post.dart';
+import '../../details.dart';
 
 class PostDetailsImagePreloader<T extends Post> extends ConsumerStatefulWidget {
   const PostDetailsImagePreloader({
     required this.child,
     required this.authConfig,
     required this.posts,
-    required this.pageViewController,
     required this.imageUrlBuilder,
     super.key,
   });
@@ -24,7 +24,6 @@ class PostDetailsImagePreloader<T extends Post> extends ConsumerStatefulWidget {
   final BooruConfigAuth authConfig;
   final List<T> posts;
   final Widget child;
-  final PostDetailsPageViewController pageViewController;
   final String Function(T post) imageUrlBuilder;
 
   @override
@@ -35,21 +34,31 @@ class PostDetailsImagePreloader<T extends Post> extends ConsumerStatefulWidget {
 class _PostDetailsImagePreloaderState<T extends Post>
     extends ConsumerState<PostDetailsImagePreloader<T>> {
   final _preloadedUrls = <String>{};
+  
+  PostDetailsPageViewController? _pageViewController;
+  
+  PostDetailsPageViewController get _controller {
+    return _pageViewController ??= PostDetailsPageViewScope.of(context);
+  }
 
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    
+    if (_pageViewController == null) {
+      final controller = _controller;
+      
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        _preloadAdjacentPages(controller.initialPage);
+      });
 
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      _preloadAdjacentPages(widget.pageViewController.initialPage);
-    });
-
-    widget.pageViewController.currentPage.addListener(_onPageChanged);
+      controller.currentPage.addListener(_onPageChanged);
+    }
   }
 
   void _onPageChanged() {
     if (!mounted) return;
-    _preloadAdjacentPages(widget.pageViewController.page);
+    _preloadAdjacentPages(_controller.page);
   }
 
   Future<void> _preloadAdjacentPages(int currentPage) async {
@@ -101,7 +110,7 @@ class _PostDetailsImagePreloaderState<T extends Post>
 
   @override
   void dispose() {
-    widget.pageViewController.currentPage.removeListener(_onPageChanged);
+    _controller.currentPage.removeListener(_onPageChanged);
 
     super.dispose();
   }

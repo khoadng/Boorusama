@@ -107,7 +107,6 @@ class _BookmarkDetailsPageState
     return PostDetailsPageScaffold(
       isInitPage: _isInitPage,
       transformController: _transformController,
-      pageViewController: data.pageViewController,
       controller: controller,
       posts: posts,
       postGestureHandlerBuilder: postGesturesHandler,
@@ -131,8 +130,7 @@ class _BookmarkDetailsPageState
             return DefaultFallbackBackupMoreButton(
               layoutConfig: layout,
               controller: controller,
-              pageViewController: data.pageViewController,
-              authConfig: config?.auth,
+                      authConfig: config?.auth,
               viewerConfig: viewer,
             );
           },
@@ -155,8 +153,7 @@ class _BookmarkDetailsPageState
           authConfig: config?.auth ?? auth,
           gestureConfig: gestures,
           imageCacheManager: imageCacheManager,
-          pageViewController: data.pageViewController,
-          detailsController: controller,
+              detailsController: controller,
           // Needed to prevent type inference error
           // ignore: avoid_types_on_closure_parameters
           imageUrlBuilder: (Post post) => post.originalImageUrl,
@@ -201,7 +198,7 @@ class BookmarkPostActionToolbar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final post = InheritedPost.of<BookmarkPost>(context);
-    final controller = PostDetails.of<BookmarkPost>(context).pageViewController;
+    final controller = PostDetailsPageViewScope.of(context);
     final config = ref.watch(
       firstMatchingConfigProvider((
         post.bookmark.booruId,

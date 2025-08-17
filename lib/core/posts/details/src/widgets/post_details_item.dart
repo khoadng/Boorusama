@@ -20,6 +20,7 @@ import '../../../../videos/sound_control_button.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../details_pageview/widgets.dart';
 import '../../../post/post.dart';
+import '../../details.dart';
 import 'post_details_controller.dart';
 import 'post_media.dart';
 
@@ -30,7 +31,6 @@ class PostDetailsItem<T extends Post> extends ConsumerWidget {
     required this.transformController,
     required this.isInitPageListenable,
     required this.imageCacheManager,
-    required this.pageViewController,
     required this.detailsController,
     required this.authConfig,
     required this.gestureConfig,
@@ -43,7 +43,6 @@ class PostDetailsItem<T extends Post> extends ConsumerWidget {
   final TransformationController transformController;
   final ValueListenable<bool> isInitPageListenable;
   final ImageCacheManager? imageCacheManager;
-  final PostDetailsPageViewController pageViewController;
   final PostDetailsController<T> detailsController;
   final BooruConfigAuth authConfig;
   final PostGestureConfig? gestureConfig;
@@ -51,6 +50,7 @@ class PostDetailsItem<T extends Post> extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final pageViewController = PostDetailsPageViewScope.of(context);
     final post = posts[index];
 
     final videoPlayerEngine = ref.watch(

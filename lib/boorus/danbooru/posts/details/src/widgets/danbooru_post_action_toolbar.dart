@@ -28,7 +28,7 @@ class DanbooruInheritedPostActionToolbar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final post = InheritedPost.maybeOf<DanbooruPost>(context);
-    final controller = PostDetails.of<DanbooruPost>(context).pageViewController;
+    final controller = PostDetailsPageViewScope.of(context);
 
     return post != null
         ? DanbooruPostActionToolbar(
