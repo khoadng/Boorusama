@@ -1,5 +1,5 @@
-// Package imports:
-import 'package:path/path.dart';
+// Project imports:
+import '../../../../downloads/urls.dart';
 
 mixin VideoInfoMixin {
   String get format;
@@ -12,7 +12,7 @@ mixin VideoInfoMixin {
   String get videoThumbnailUrl;
 
   String _format() {
-    final ext = extension(videoUrl);
+    final ext = sanitizedExtension(videoUrl);
     if (ext.isEmpty) return format;
 
     return ext.substring(1);
