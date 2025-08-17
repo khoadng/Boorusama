@@ -3,7 +3,11 @@
     "done": "เสร็จ",
     "errors": {
       "no_data": "ไม่มีข้อมูลในขณะนี้",
-      "unknown": "มีบางอย่างผิดปรกติ"
+      "unknown": "มีบางอย่างผิดปรกติ",
+      "failed_to_load_image": "พบปัญหาการโหลดรูปภาพ",
+      "config_not_found": "ไม่พบการตั้งค่า",
+      "error_loading_tags": "พบปัญหาการโหลดแท็ก",
+      "fail_to_load_profile": "ไม่สามารถโหลดโปรไฟล์ได้"
     },
     "action": {
       "add": "เพิ่ม",
@@ -12,9 +16,20 @@
       "ok": "ตกลง",
       "cancel": "ยกเลิก",
       "duplicate": "ทำสำเนา",
-      "select": "เลือก"
+      "select": "เลือก",
+      "save": "บันทึก",
+      "verify": "ยืนยัน",
+      "retry": "ลองอีกครั้ง",
+      "clear": "ลบข้อมูล",
+      "create": "สร้าง",
+      "more": "เพิ่มเติม"
     },
-    "view": "ดู"
+    "view": "ดู",
+    "empty_states": {
+      "no_tags": "ไม่มีแท็ก",
+      "no_content": "ไม่มีเนื้อหา"
+    },
+    "default": "ค่าเริ่มต้น"
   },
   "profile": {
     "favorites": "รายการโปรด",
@@ -71,10 +86,18 @@
     "action": {
       "preview": "แสดงตัวอย่าง",
       "view_comments": "ดูความคิดเห็น",
-      "add_to_favorite_group": "เพิ่มเข้าในกลุ่มรายการโปรด"
+      "add_to_favorite_group": "เพิ่มเข้าในกลุ่มรายการโปรด",
+      "share": "แบ่งปัน",
+      "bookmark": "บุ๊กมาร์ก",
+      "favorite": "รายการโปรด",
+      "upvote": "โหวตเพิ่ม",
+      "downvote": "ลดโหวต"
     },
     "image_fullview": {
       "view_original": "ดูขนาดต้นฉบับ"
+    },
+    "statistics": {
+      "stats_for_nerds": "สถิติสำหรับเด็กเนิร์ด"
     }
   },
   "comment": {
@@ -104,7 +127,10 @@
     "hot": "ร้องแรงอย่างสุด",
     "most_viewed": "ดูเยอะที่สุด",
     "see_more": "ดูเพิ่มเติม",
-    "explore": "สำรวจ"
+    "explore": "สำรวจ",
+    "daily": "ประจำวัน",
+    "weekly": "ประจำสัปดาห์",
+    "stats": "จำนวนดาว"
   },
   "search": {
     "errors": {
@@ -117,7 +143,9 @@
       "down": "ขณะนี้เซิร์ฟเวอร์ล่ม โปรดลองอีกครั้งในภายหลัง",
       "access_denied": "ไม่มีสิทธิ์เข้าถึง",
       "forbidden": "การยืนยันใบรับรองล้มเหลว",
-      "unknown": "เกิดข้อผิดพลาดของระบบที่ไม่สามารถระบุได้ โปรดติดต่อและรายงานปัญหานี้กับทางนักพัฒนา"
+      "unknown": "เกิดข้อผิดพลาดของระบบที่ไม่สามารถระบุได้ โปรดติดต่อและรายงานปัญหานี้กับทางนักพัฒนา",
+      "cannot_reach_server": "ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้ ตรวจสอบอินเทอร์เน็ตแล้วลองอีกครั้ง",
+      "failed_to_load_data": "พบปัญหาการโหลดข้อมูลจากเซิร์ฟเวอร์ โปรดลองใหม่อีกครั้งภายหลัง"
     },
     "hint": "ค้นหา...",
     "no_result": "พวกเราได้ค้นหาในทุกๆทางและในหลายๆท่าแล้ว แต่ไม่พบการค้นหา",
@@ -155,7 +183,8 @@
     },
     "detail": {
       "last_updated": "อัปเดตล่าสุด"
-    }
+    },
+    "no_cover_image": "ไม่มีภาพปก"
   },
   "settings": {
     "settings": "การตั้งค่า",
@@ -168,13 +197,30 @@
       "booru_config_placement": "การปรับตำแหน่งโปรไฟล์ Booru",
       "booru_config_placement_options": {
         "side": "สไลด์"
+      },
+      "customize": "การปรับแต่ง",
+      "booru_config_label": "แสดงป้ายกำกับ",
+      "booru_config_label_options": {
+        "always": "ตลอดเวลา",
+        "never": "ไม่เลย"
       }
     },
     "general": "ทั่วไป",
     "search": {
       "search": "การค้นหา",
       "auto_focus_search_bar": "ปรับให้โฟกัสแถบค้นหาอัตโนมัติเมื่อแตะการค้นหาในครั้งแรก",
-      "hide_bookmarked_posts_from_search_results": "ซ่อนโพสค์ที่บุ๊กมาร์กจากผลการค้นหา"
+      "hide_bookmarked_posts_from_search_results": "ซ่อนโพสค์ที่บุ๊กมาร์กจากผลการค้นหา",
+      "search_bar": {
+        "position": {
+          "search_bar_position": "ตำแหน่งกล่องค้นหา",
+          "top": "ด้านบน",
+          "bottom": "ด้านล่าง"
+        },
+        "scroll_behavior": {
+          "persistent_description": "ทำให้กล่องค้นหาเห็นได้ตลอดขณะกำลังเลื่อน",
+          "persistent": "ล็อกตำแหน่งกล่องค้นหา"
+        }
+      }
     },
     "information": "ข้อมูลแอป",
     "changelog": "ประวัติการอัปเดต",
@@ -187,7 +233,8 @@
     "image_list": {
       "image_list": "การแสดงผลภาพ",
       "standard": "มาตรฐาน",
-      "masonry": "กำแพงอิฐ"
+      "masonry": "กำแพงอิฐ",
+      "classic": "คลาสสิค"
     },
     "image_grid": {
       "image_grid": "การจัดองค์ประกอบของภาพ",
@@ -195,7 +242,9 @@
         "grid_size": "ขนาด",
         "small": "เล็ก",
         "medium": "กลาง",
-        "large": "ใหญ่"
+        "large": "ใหญ่",
+        "micro": "ขนาดไมโคร",
+        "tiny": "ขนาดเล็กๆ"
       },
       "image_quality": {
         "image_quality": "คุณภาพของภาพ",
@@ -212,7 +261,27 @@
       "aspect_ratio": "อัตราส่วนภาพ"
     },
     "image_viewer": {
-      "image_viewer": "โปรแกรมในการดูภาพ"
+      "image_viewer": "โปรแกรมในการดูภาพ",
+      "slideshow": "สไลดโชว์",
+      "slideshow_modes": {
+        "backward": "ย้อนกลับ",
+        "random": "สุ่ม",
+        "forward": "ไปข้างหน้า"
+      },
+      "slideshow_mode": "โหมดการแสดงสไลด์",
+      "slideshow_interval": "ระยะเวลาสไลด์",
+      "slideshow_skip": "ไม่ใช้เอฟเฟกต์สไลด์ภาพ",
+      "slideshow_interval_explanation": "หากเลือกน้อยกว่า 1 วินาทีระบบจะไม่ใช้งานเอฟเฟกต์เมื่อเปลี่ยนภาพทันที",
+      "swipe_modes": {
+        "horizontal": "แนวนอน",
+        "vertical": "แนวตั้ง",
+        "horizontal_description": "แบบสไตล์อัลบั้มภาพ ปัดภาพซ้ายหรือขาวไปมา แบบปัดดูภาพบนแอปคลังภาพ หรือดูภาพในอัลบั้ม Facebook",
+        "vertical_description": "แบบสไตล์ Tiktok ปัดขึ้นและปัดลง นิยมใช้กับพวกแพลตฟอร์มวิดีโอสั้นๆ และเป็นโหมดแนวตั้งเท่านั้น"
+      },
+      "swipe_mode_disclaimer": "ท่าทางที่ตั้งด้วยตนเองบางอย่างอาจไม่ทำงานในทุกๆโหมด",
+      "swipe_mode": "โหมดปัด",
+      "mute_video": "ปิดเสียงวิดีโอเป็นค่าเริ่มต้น",
+      "video_section_title": "วิดีโอ"
     },
     "language": {
       "language": "ภาษา",
@@ -226,7 +295,8 @@
       "dynamic_color": "ธีมสีไดนามิก",
       "dynamic_color_mobile_description": "เปลี่ยนธีมสีตามหน้าภาพหน้าจอ",
       "dynamic_color_desktop_description": "เปลี่ยนธีมสีตามสีหลักของระบบปฏิบัติการ",
-      "dynamic_color_unsupported_description": "อุปกรณ์นี้ไม่รองรับระบบสีไดนามิก"
+      "dynamic_color_unsupported_description": "อุปกรณ์นี้ไม่รองรับระบบสีไดนามิก",
+      "system": "สีตามระบบ"
     },
     "privacy": {
       "privacy": "ความเป็นส่วนตัว",
@@ -255,18 +325,63 @@
         "original": "ขนาดต้นฉบับ",
         "sample": "ขนาดตัวอย่าง",
         "preview": "ขนาดที่แสดงผล"
-      }
+      },
+      "title": "ดาวน์โหลด"
     },
     "help_us_translate": "ช่วยพวกเราในการแปลภาษา",
     "other_settings": "การตั้งค่าอื่นๆ",
     "data_and_storage": {
       "data_and_storage": "ข้อมูล และพื้นที่จัดเก็บ",
-      "clear_cache_on_start_up": "ลบไฟล์แคชตอนเปิดแอป"
+      "clear_cache_on_start_up": "ลบไฟล์แคชตอนเปิดแอป",
+      "cache": "แคช",
+      "data": "ข้อมูล",
+      "all_cache": "ข้อมูลแคชทั้งหมด",
+      "tag_cache": "แคชแท็ก",
+      "image_only_cache": "รูปภาพที่แคชไว้เท่านั้น",
+      "bookmark_images": "ภาพบุ๊กมาร์ก",
+      "loading": "กำลังโหลด...",
+      "error_loading_cache_info": "พบปัญหาโหลดข้อมูลแคช"
     },
     "backup_and_restore": {
       "backup_and_restore": "สำรอง และเรียกคืนข้อมูล",
       "import": "นำเข้า",
-      "export": "นำออก"
+      "export": "นำออก",
+      "advanced_backup": "การสำรองข้อมูลขั้นสูง",
+      "exporting": "กำลังบันทึก...",
+      "export_to_clipboard": "คัดลอกไปยังคลิปบอร์ด",
+      "import_from_clipboard": "นำเข้าจากคลิปบอร์ด",
+      "export_success": "ดำเนินการส่งออก {source} สำเร็จแล้ว",
+      "export_failed": "ไม่สามารถส่งออก {source} ได้เพราะ:",
+      "import_success": "นำเข้า {source} สำเร็จแล้ว",
+      "import_failed": "ไม่สามารถนำเข้า {source} ได้เพราะ: {error}",
+      "clipboard_export_success": "คัดลอก {source} ไปที่คลิปบอร์ดเรียบร้อย",
+      "clipboard_export_failed": "ไม่สามารถคัดลอก {source} ได้เพราะ: {error}",
+      "clipboard_import_success": "นำเข้า {source} จากคลิปบอร์ดสำเร็จแล้ว",
+      "clipboard_import_failed": "ไม่สามารถวาง {source} ได้เพราะ: {error}",
+      "transfer_data": "ปริมาณข้อมูลที่โอน",
+      "send": "ส่ง",
+      "receive": "รับ",
+      "backup_data": "สำรองข้อมูล",
+      "advanced_export_import": "การส่งออก/นำเข้าขั้นสูง",
+      "auto_backup": "สำรองข้อมูลอัตโนมัติ",
+      "auto_backup_tooltip": "ตัวสำรองข้อมูลถูกสร้างเมื่อคุณเปิดแอป จะไม่มีการสำรองข้อมูลระหว่างแอปปิดอยู่",
+      "backup_in_progress": "การสำรองข้อมูลกำลังอยู่ระหว่างดำเนินการ",
+      "export_operation_failed": "ส่งออกไม่สำเร็จ: Export failed",
+      "import_operation_failed": "นำเข้าไม่สำเร็จ: {error}",
+      "export_partial_success": "ส่งออกไปแล้ว {exported}/{total} อย่าง และไม่สำเร็จ {failed} อย่าง",
+      "export_complete_success": "ส่งออกสำเร็จแล้วทั้ง {exported} อย่าง",
+      "export_no_items": "ส่งออกไม่สำเร็จ: ไม่มีรายการที่สามารถส่งออกได้",
+      "import_results": "การนำเข้าเสร็จสิ้น: {results}",
+      "import_no_items": "การนำเข้าไม่สำเร็จ: ไม่มีรายการที่สามารถนำเข้ามาได้",
+      "imported_count": "นำเข้าแล้ว {count}",
+      "skipped_count": "ข้ามไปแล้ว {count}",
+      "failed_count": "ไม่สำเร็จไปแล้ว {count}",
+      "default_backup_location": "ค่าเริ่มต้นตำแหน่งที่เก็บสำรองข้อมูล",
+      "never": "ไม่เคยเลย",
+      "days_ago": "{days} วันที่แล้ว",
+      "hours_ago": "{hours} ชั่วโมงที่แล้ว",
+      "minutes_ago": "{minutes} นาทีที่แล้ว",
+      "just_now": "ตอนนี้"
     },
     "image_details": {
       "image_details": "รายละเอียดรูปภาพ",
@@ -286,7 +401,19 @@
       "accessibility": "การช่วยเหลือพิเศษ",
       "reverseBooruConfigSelectorScrollDirection": "เลื่อนสลับทิศทางของโปรไฟล์ Booru",
       "swipeAreaToOpenSidebar": "พื้นที่การปัดของแถบด้านข้าง",
-      "swipeAreaToOpenSidebarDescription": "ขนาดพื้นที่ของแถบด้านซ้ายบนหน้าจอจะสามารถใช้เป็นพื้นที่ในการปัด จำนวนพื้นที่ใหญ่จะปิดกั้นท่าทางสัมผัสในแนวนอนทั้งหมดเช่นทาทางการปัดเลื่อนไปหน้าอื่น"
+      "swipeAreaToOpenSidebarDescription": "ขนาดพื้นที่ของแถบด้านซ้ายบนหน้าจอจะสามารถใช้เป็นพื้นที่ในการปัด จำนวนพื้นที่ใหญ่จะปิดกั้นท่าทางสัมผัสในแนวนอนทั้งหมดเช่นทาทางการปัดเลื่อนไปหน้าอื่น",
+      "reduce_animations": "ลดการเคลื่อนไหวของภาพ",
+      "reduce_animations_description": "เมื่อเปิดแล้วบางฟังก์ชั่นอาจจะทำงานไม่ถูกต้อง",
+      "volume_navigation": "ใช้ปุ่มเพิ่ม-ลดเสียงเพื่อควบคุมการเลื่อน",
+      "volume_navigation_description": "ควบคุมการเลื่อนระหว่างโพสต์โดยใช้ปุ่มเพิ่ม-ลดเสียงเมื่อกำลังดูภาพ",
+      "haptic_feedback": {
+        "haptic_feedback": "การตอบสนองแบบสั่น",
+        "haptic_feedback_level": {
+          "subtle": "นุ่มนวล",
+          "standard": "มาตรฐาน",
+          "playful": "สนุกสนาน"
+        }
+      }
     },
     "booru_settings": {
       "edit_current_profile": "แก้ไขโปรไฟล์ปัจจุบัน",
@@ -298,7 +425,22 @@
     "contact_developer": "ติดต่อนักพัฒนาแอพ",
     "contact_developer_description": "หากพบปัญหาในการใช้งานต่างๆ หรือต้องการให้ขอเสนอแนะ สามารถส่งอีเมลมาหาเราได้ผ่านช่องทางนี้",
     "feature_request_and_bug_report": "ร้องขอฟังกชั่นต่างๆ และรายงานปัญหา",
-    "feature_request_and_bug_report_description": "แนะนำฟังก์ชั่นต่างๆ หรือรายงานปัญหาผ่านโปรเจกต์ใน GitHub"
+    "feature_request_and_bug_report_description": "แนะนำฟังก์ชั่นต่างๆ หรือรายงานปัญหาผ่านโปรเจกต์ใน GitHub",
+    "auto_backup": {
+      "enable_auto_backup": "เปิดการสำรองอัตโนมัติ",
+      "backup_frequency": "ความถี่ในการสำรอง",
+      "backup_location": "ตำแหน่งที่ตั้งสำรองข้อมูล",
+      "frequency": {
+        "daily": "ทุกวัน",
+        "weekly": "รายสัปดาห์"
+      },
+      "change": "เปลี่ยนแปลง",
+      "last_backup": "การสำรองข้อมูลล่าสุด: $lastBackup",
+      "backup_needed": "จำเป็นต้องสำรองข้อมูล",
+      "up_to_date": "ข้อมูลเป็นปัจจุบัน",
+      "backing_up": "กำลังสำรอง...",
+      "backup_now": "สำรองเดี๋ยวนี้"
+    }
   },
   "blacklisted_tags": {
     "remove": "ลบ",

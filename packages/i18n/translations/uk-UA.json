@@ -86,7 +86,7 @@
       "source_label": "Джерело",
       "related_posts": "Схожі пости",
       "add_to_bookmark": "Додати в обране",
-      "remove_from_bookmark": "Прибрати з обраного"
+      "remove_from_bookmark": "Вилучити з обраного"
     },
     "action": {
       "preview": "Попередній перегляд",
@@ -100,6 +100,9 @@
     },
     "image_fullview": {
       "view_original": "Подивитися оригінальне зображення"
+    },
+    "statistics": {
+      "stats_for_nerds": "Статистика для ботаніків"
     }
   },
   "comment": {
@@ -160,7 +163,7 @@
       "recent": "Останнє"
     },
     "trending": "Трендів",
-    "remove_all_selected": "Видалити всі вибрані теги",
+    "remove_all_selected": "Вилучити всі вибрані теги",
     "result_counter": {
       "one": "$n Результат",
       "other": "$n Результатів"
@@ -187,7 +190,8 @@
     "detail": {
       "last_updated": "Останнє оновлення"
     },
-    "pools": "Басейни"
+    "pools": "Басейни",
+    "no_cover_image": "Без зображення обкладинки"
   },
   "settings": {
     "settings": "Налаштування",
@@ -454,14 +458,14 @@
     }
   },
   "blacklisted_tags": {
-    "remove": "Видалити",
+    "remove": "Вилучити",
     "edit": "Редагувати",
     "blacklisted_tags": "Чорний список тегів",
     "load_error": "Помилка завантаження чорного списку",
     "updated": "Чорний список оновлено",
     "limitation_notice": "Підтримує тільки <b>NOT</b> оператор і <b>OR</b> оператор, <b>score</b> метатег і <b>rating</b> метатег\n\nВикористання чорного списку з іншими метатегами не працює в поточної версії.",
     "failed_to_add": "Не вдалося додати тег",
-    "failed_to_remove": "Не вдалося прибрати тег",
+    "failed_to_remove": "Не вдалося вилучити тег",
     "blacklisted_header_title": "В чорному списку",
     "disable_all": "Вимкнути все",
     "reenable_all": "Повторно увімкнути все",
@@ -636,9 +640,9 @@
     "failed_to_add": "Не вдалося додати закладку",
     "many_added": "Додано {0} закладок",
     "failed_to_add_many": "Не вдалося додати закладки",
-    "removed": "Закладка видалена",
+    "removed": "Закладка вилучено",
     "updated": "Закладка оновлена",
-    "failed_to_remove": "Не вдалося видалити закладку",
+    "failed_to_remove": "Не вдалося вилучити закладку",
     "failed_to_update": "Не вдалося оновити закладку",
     "failed_to_load": "Не вдалося завантажити закладок: {0}"
   },
@@ -671,5 +675,18 @@
       "one": "$n вибраний",
       "other": "$n вибраних"
     }
+  },
+  "donation": {
+    "donate": "Пожертвувати"
+  },
+  "bulk_downloads": {
+    "new_download": "Нове завантаження",
+    "create": "Створити",
+    "delete": "Видалити",
+    "created": "Створено",
+    "completed_with_no_new_files": "Завершено без нових файлів"
+  },
+  "auth": {
+    "login_required": "Щоб скористатися цією функцією, вам потрібно надати дані для входу."
   }
 }
