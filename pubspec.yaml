@@ -2,7 +2,7 @@ name: boorusama
 description: A mobile client for Booru sites.
 
 publish_to: "none"
-version: 4.1.5+164
+version: 4.1.6+165
 
 environment:
   sdk: ^3.8.1
