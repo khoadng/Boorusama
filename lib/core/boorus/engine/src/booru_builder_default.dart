@@ -297,53 +297,56 @@ class _DefaultPostDetailsPageState<T extends Post>
     final booruBuilder = ref.watch(booruBuilderProvider(auth));
     final postGesturesHandler = booruBuilder?.postGestureHandlerBuilder;
     final uiBuilder = booruBuilder?.postDetailsUIBuilder;
+    final imageUrlBuilder = defaultPostImageUrlBuilder(ref, auth, viewer);
 
-    return PostDetailsNotes(
+    return PostDetailsImagePreloader(
+      authConfig: auth,
       posts: posts,
       pageViewController: data.pageViewController,
-      viewerConfig: viewer,
-      authConfig: auth,
-      child: PostDetailsPageScaffold(
-        transformController: _transformController,
-        isInitPage: _isInitPage,
-        pageViewController: data.pageViewController,
-        controller: controller,
+      imageUrlBuilder: imageUrlBuilder,
+      child: PostDetailsNotes(
         posts: posts,
-        postGestureHandlerBuilder: postGesturesHandler,
-        uiBuilder: uiBuilder,
-        gestureConfig: gestures,
-        layoutConfig: layout,
-        actions: defaultActions(
-          note: NoteActionButtonWithProvider(
-            currentPost: controller.currentPost,
-            config: auth,
-          ),
-          fallbackMoreButton: DefaultFallbackBackupMoreButton(
-            layoutConfig: layout,
-            controller: controller,
-            pageViewController: data.pageViewController,
-            authConfig: auth,
-            viewerConfig: viewer,
-          ),
-        ),
-        itemBuilder: (context, index) {
-          return PostDetailsItem(
-            index: index,
-            posts: posts,
-            transformController: _transformController,
-            isInitPageListenable: _isInitPage,
-            authConfig: auth,
-            gestureConfig: gestures,
-            imageCacheManager: null,
-            pageViewController: data.pageViewController,
-            detailsController: controller,
-            imageUrlBuilder: defaultPostImageUrlBuilder(
-              ref,
-              auth,
-              viewer,
+        pageViewController: data.pageViewController,
+        viewerConfig: viewer,
+        authConfig: auth,
+        child: PostDetailsPageScaffold(
+          transformController: _transformController,
+          isInitPage: _isInitPage,
+          pageViewController: data.pageViewController,
+          controller: controller,
+          posts: posts,
+          postGestureHandlerBuilder: postGesturesHandler,
+          uiBuilder: uiBuilder,
+          gestureConfig: gestures,
+          layoutConfig: layout,
+          actions: defaultActions(
+            note: NoteActionButtonWithProvider(
+              currentPost: controller.currentPost,
+              config: auth,
             ),
-          );
-        },
+            fallbackMoreButton: DefaultFallbackBackupMoreButton(
+              layoutConfig: layout,
+              controller: controller,
+              pageViewController: data.pageViewController,
+              authConfig: auth,
+              viewerConfig: viewer,
+            ),
+          ),
+          itemBuilder: (context, index) {
+            return PostDetailsItem(
+              index: index,
+              posts: posts,
+              transformController: _transformController,
+              isInitPageListenable: _isInitPage,
+              authConfig: auth,
+              gestureConfig: gestures,
+              imageCacheManager: null,
+              pageViewController: data.pageViewController,
+              detailsController: controller,
+              imageUrlBuilder: imageUrlBuilder,
+            );
+          },
+        ),
       ),
     );
   }

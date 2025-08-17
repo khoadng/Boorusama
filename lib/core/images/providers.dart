@@ -2,6 +2,7 @@
 import 'package:flutter/foundation.dart';
 
 // Package imports:
+import 'package:dio/dio.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -30,5 +31,16 @@ final defaultImageCacheManagerProvider = Provider<ImageCacheManager>(
     });
 
     return manager;
+  },
+);
+
+final imagePreloaderProvider = Provider.family<ImagePreloader, Dio>(
+  (ref, dio) {
+    final cacheManager = ref.watch(defaultImageCacheManagerProvider);
+
+    return ImagePreloader(
+      cacheManager: cacheManager,
+      dio: dio,
+    );
   },
 );
