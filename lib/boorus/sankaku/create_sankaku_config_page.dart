@@ -45,7 +45,7 @@ class SankakuAuthConfigView extends ConsumerWidget {
           SizedBox(height: 16),
           DefaultBooruApiKeyField(
             isPassword: true,
-            hintText: '',
+            hintText: 'Your password',
           ),
           SizedBox(height: 8),
           DefaultBooruInstructionText(
