@@ -1,5 +1,5 @@
 // Project imports:
-import '../../../../downloads/urls.dart';
+import '../../../../downloads/urls/sanitizer.dart';
 
 mixin VideoInfoMixin {
   String get format;

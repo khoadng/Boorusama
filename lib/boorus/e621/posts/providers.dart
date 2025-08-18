@@ -47,6 +47,7 @@ final e621PostRepoProvider =
                         ),
                       ),
                     )
+                    .nonNulls
                     .toList(),
               );
 
