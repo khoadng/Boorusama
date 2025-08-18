@@ -227,7 +227,7 @@ class _CreateDownloadOptionsRawSheetState
             onPathChanged: (path) {
               notifier.setPath(path);
             },
-            hint: context.t.download.bulk_download_folder_select_warning,
+            hint: context.t.settings.download.select_a_folder,
           ),
         ),
         if (widget.advancedToggle)
