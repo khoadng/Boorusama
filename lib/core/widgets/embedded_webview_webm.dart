@@ -12,6 +12,7 @@ import 'package:webview_flutter_android/webview_flutter_android.dart';
 import '../../foundation/utils/color_utils.dart';
 import '../../foundation/utils/object_utils.dart';
 import 'booru_hero.dart';
+import 'interactive_viewer_extended.dart';
 
 class WebmVideoController {
   WebmVideoController({
@@ -179,7 +180,7 @@ class EmbeddedWebViewWebm extends StatefulWidget {
     this.autoPlay = false,
     this.sound = true,
     this.userAgent,
-    this.onZoomUpdated,
+    this.onTransformationChanged,
     this.heroTag,
   });
 
@@ -192,7 +193,7 @@ class EmbeddedWebViewWebm extends StatefulWidget {
   final bool sound;
   final double playbackSpeed;
   final String? userAgent;
-  final void Function(bool value)? onZoomUpdated;
+  final void Function(TransformationDetails details)? onTransformationChanged;
   final String? heroTag;
 
   @override

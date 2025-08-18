@@ -27,6 +27,78 @@ const _kDoubleTapScale = 3.0;
 /// Factor to determine when content is much larger than the container.
 const _kImageExceedsContainerThreshold = 3.0;
 
+class TransformationDetails {
+  const TransformationDetails({
+    required this.scale,
+    required this.translation,
+    required this.contentSize,
+    required this.containerSize,
+    required this.maxScale,
+    required this.minScale,
+    required this.transformationMatrix,
+    required this.isZoomed,
+  });
+
+  final double scale;
+  final Offset translation;
+  final Size? contentSize;
+  final Size? containerSize;
+  final double maxScale;
+  final double minScale;
+  final Matrix4 transformationMatrix;
+  final bool isZoomed;
+
+  /// Whether the content is at maximum zoom level
+  bool get isAtMaxZoom => scale >= maxScale * 0.95;
+
+  /// Whether the content is at minimum zoom level
+  bool get isAtMinZoom => scale <= minScale * 1.05;
+
+  /// Calculate the maximum translation bounds for the current scale
+  Offset get maxTranslation {
+    final containter = containerSize;
+    final content = contentSize;
+
+    if (content == null || containter == null) return Offset.zero;
+
+    if (!_isValidSize(contentSize) || !_isValidSize(containerSize)) {
+      return Offset.zero;
+    }
+
+    final scaledWidth = content.width * scale;
+    final scaledHeight = content.height * scale;
+
+    final double maxX = max(0, (scaledWidth - containter.width) / 2);
+    final double maxY = max(0, (scaledHeight - containter.height) / 2);
+
+    return Offset(maxX, maxY);
+  }
+
+  /// Whether the current translation has hit the left boundary
+  bool get isAtLeftBoundary => translation.dx >= maxTranslation.dx - 1;
+
+  /// Whether the current translation has hit the right boundary
+  bool get isAtRightBoundary => translation.dx <= -maxTranslation.dx + 1;
+
+  /// Whether the current translation has hit the top boundary
+  bool get isAtTopBoundary => translation.dy >= maxTranslation.dy - 1;
+
+  /// Whether the current translation has hit the bottom boundary
+  bool get isAtBottomBoundary => translation.dy <= -maxTranslation.dy + 1;
+
+  /// Whether any boundary is currently hit
+  bool get isAtAnyBoundary =>
+      isAtLeftBoundary ||
+      isAtRightBoundary ||
+      isAtTopBoundary ||
+      isAtBottomBoundary;
+
+  @override
+  String toString() =>
+      'TransformationDetails(scale: $scale, translation: $translation, '
+      'isZoomed: $isZoomed, isAtMaxZoom: $isAtMaxZoom, isAtAnyBoundary: $isAtAnyBoundary)';
+}
+
 class InteractiveViewerExtended extends ConsumerWidget {
   const InteractiveViewerExtended({
     required this.child,
@@ -35,7 +107,7 @@ class InteractiveViewerExtended extends ConsumerWidget {
     this.onDoubleTap,
     this.onLongPress,
     this.controller,
-    this.onZoomUpdated,
+    this.onTransformationChanged,
     this.enable = true,
     this.contentSize,
   });
@@ -44,7 +116,7 @@ class InteractiveViewerExtended extends ConsumerWidget {
   final VoidCallback? onTap;
   final VoidCallback? onDoubleTap;
   final VoidCallback? onLongPress;
-  final void Function(bool zoomed)? onZoomUpdated;
+  final void Function(TransformationDetails details)? onTransformationChanged;
   final TransformationController? controller;
   final bool enable;
   final Size? contentSize;
@@ -59,7 +131,7 @@ class InteractiveViewerExtended extends ConsumerWidget {
       onDoubleTap: onDoubleTap,
       onLongPress: onLongPress,
       controller: controller,
-      onZoomUpdated: onZoomUpdated,
+      onTransformationChanged: onTransformationChanged,
       enable: enable,
       contentSize: contentSize,
       enableHapticFeedback: enableHapticFeedback,
@@ -76,7 +148,7 @@ class RawInteractiveViewerExtended extends StatefulWidget {
     this.onDoubleTap,
     this.onLongPress,
     this.controller,
-    this.onZoomUpdated,
+    this.onTransformationChanged,
     this.enable = true,
     this.contentSize,
     this.enableHapticFeedback = false,
@@ -86,7 +158,7 @@ class RawInteractiveViewerExtended extends StatefulWidget {
   final VoidCallback? onTap;
   final VoidCallback? onDoubleTap;
   final VoidCallback? onLongPress;
-  final void Function(bool zoomed)? onZoomUpdated;
+  final void Function(TransformationDetails details)? onTransformationChanged;
   final TransformationController? controller;
 
   // This is needed to keep the state of the child widget, remove this widget will cause its child to be recreated
@@ -164,20 +236,30 @@ class _RawInteractiveViewerExtendedState
   void _onAnimationChanged() => _controller.value = _animation.value;
 
   void _onChanged() {
-    final clampedMatrix = Matrix4.diagonal3Values(
-      _controller.value.right.x,
-      _controller.value.up.y,
-      _controller.value.forward.z,
+    final currentScale = _controller.value.getMaxScaleOnAxis();
+    final translationVector = _controller.value.getTranslation();
+    final containerSize = _containerSize;
+    final contentSize = widget.contentSize;
+
+    final maxScale = _calcMaxScale(widget.contentSize, containerSize);
+
+    final details = TransformationDetails(
+      scale: currentScale,
+      translation: Offset(translationVector.x, translationVector.y),
+      contentSize: contentSize,
+      containerSize: containerSize,
+      maxScale: maxScale,
+      minScale: _kFallbackMinScale,
+      transformationMatrix: _controller.value,
+      isZoomed: !Matrix4.diagonal3Values(
+        _controller.value.right.x,
+        _controller.value.up.y,
+        _controller.value.forward.z,
+      ).isIdentity(),
     );
 
     if (_enableHapticFeedback) {
-      final currentScale = _controller.value.getMaxScaleOnAxis();
-      final maxScale = _calcMaxScale(
-        widget.contentSize,
-        _containerSize ?? const Size(1, 1),
-      );
-
-      if (currentScale >= maxScale * 0.95 && !_hasTriggeredMaxZoomHaptic) {
+      if (details.isAtMaxZoom && !_hasTriggeredMaxZoomHaptic) {
         HapticFeedback.selectionClick();
         _hasTriggeredMaxZoomHaptic = true;
       } else if (currentScale < maxScale * 0.9) {
@@ -185,7 +267,7 @@ class _RawInteractiveViewerExtendedState
       }
     }
 
-    widget.onZoomUpdated?.call(!clampedMatrix.isIdentity());
+    widget.onTransformationChanged?.call(details);
   }
 
   @override
@@ -345,8 +427,8 @@ Matrix4 _calcZoomMatrixFromZoomValue({
     ..translate(-focalPoint.dx, -focalPoint.dy);
 }
 
-double _calcMaxScale(Size? contentSize, Size containerSize) {
-  if (contentSize == null) {
+double _calcMaxScale(Size? contentSize, Size? containerSize) {
+  if (contentSize == null || containerSize == null) {
     return _kFallbackMaxScale;
   }
 

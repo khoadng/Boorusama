@@ -101,7 +101,7 @@ class PostDetailsItem<T extends Post> extends ConsumerWidget {
             true => context.isLargeScreen,
             false => true,
           },
-          onZoomUpdated: pageViewController.onZoomUpdated,
+          onTransformationChanged: pageViewController.onTransformationChanged,
           onTap: onItemTap,
           onDoubleTap: gestures.canDoubleTap && postGesturesHandler != null
               ? () => postGesturesHandler(

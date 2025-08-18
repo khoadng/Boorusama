@@ -164,9 +164,9 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
         ),
         body: InteractiveViewerExtended(
           contentSize: widget.contentSize,
-          onZoomUpdated: (value) {
+          onTransformationChanged: (details) {
             setState(() {
-              zoom = value;
+              zoom = details.isZoomed;
             });
           },
           child: Stack(

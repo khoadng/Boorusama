@@ -502,12 +502,13 @@ class PostDetailsPageViewController extends ChangeNotifier
     setSheetState();
   }
 
-  void onZoomUpdated(bool value) {
+  void onTransformationChanged(TransformationDetails details) {
+    final isZoomed = details.isZoomed;
     // ignore same value
-    if (zoom.value == value) return;
+    if (zoom.value == isZoomed) return;
 
-    zoom.value = value;
-    if (value) {
+    zoom.value = isZoomed;
+    if (isZoomed) {
       if (!initialHideOverlay) {
         hideAllUI();
       }
