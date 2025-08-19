@@ -160,6 +160,7 @@ class GelbooruV2Builder
             ),
             child: CreateGelbooruV2ConfigPage(
               backgroundColor: backgroundColor,
+              url: id.url,
             ),
           );
 
@@ -179,6 +180,7 @@ class GelbooruV2Builder
             child: CreateGelbooruV2ConfigPage(
               backgroundColor: backgroundColor,
               initialTab: initialTab,
+              url: id.url,
             ),
           );
 
