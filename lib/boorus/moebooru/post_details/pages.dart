@@ -18,6 +18,7 @@ import '../client_provider.dart';
 import '../favorites/providers.dart';
 import '../moebooru.dart';
 import '../posts/types.dart';
+import 'src/favorite_loader.dart';
 
 class MoebooruPostDetailsPage extends StatelessWidget {
   const MoebooruPostDetailsPage({super.key});
@@ -25,9 +26,14 @@ class MoebooruPostDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final data = PostDetails.of<MoebooruPost>(context);
+    final controller = PostDetailsPageViewScope.of(context);
 
-    return MoebooruPostDetailsPageInternal(
+    return MoebooruFavoritesLoader(
       data: data,
+      controller: controller,
+      child: MoebooruPostDetailsPageInternal(
+        data: data,
+      ),
     );
   }
 }
@@ -55,46 +61,18 @@ class _MoebooruPostDetailsPageState
   PostDetailsController<MoebooruPost> get controller => data.controller;
 
   @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _loadFavoriteUsers(posts[controller.initialPage].id);
-    });
-
-    data.controller.currentPage.addListener(_onPageChanged);
-  }
-
-  @override
   void didUpdateWidget(covariant MoebooruPostDetailsPageInternal oldWidget) {
     super.didUpdateWidget(oldWidget);
 
     if (oldWidget.data != widget.data) {
-      controller.currentPage.removeListener(_onPageChanged);
       setState(() {
         data = widget.data;
-        controller.currentPage.addListener(_onPageChanged);
       });
-    }
-  }
-
-  void _onPageChanged() {
-    _loadFavoriteUsers(posts[controller.currentPage.value].id);
-  }
-
-  Future<void> _loadFavoriteUsers(int postId) async {
-    final config = ref.readConfigAuth;
-    final booru = ref.read(moebooruProvider);
-
-    if (booru.supportsFavorite(config.url) && config.hasLoginDetails()) {
-      return ref
-          .read(moebooruFavoritesProvider(postId).notifier)
-          .loadFavoriteUsers();
     }
   }
 
   @override
   void dispose() {
-    controller.currentPage.removeListener(_onPageChanged);
     _transformController.dispose();
 
     super.dispose();
