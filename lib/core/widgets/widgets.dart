@@ -48,3 +48,4 @@ export 'square_chip.dart';
 export 'time_pulse.dart';
 export 'website_logo.dart';
 export 'multi_select_button.dart';
+export 'info_circle_painter.dart';

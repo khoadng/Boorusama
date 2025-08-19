@@ -100,34 +100,103 @@ class PostDetailsOverlay extends StatelessWidget {
               children: [
                 ...actions,
                 const SizedBox(width: 8),
-                CircularIconButton(
-                  onPressed: () {
-                    if (!isLargeScreen || useVerticalLayout) {
-                      controller
-                        ..expandToSnapPoint()
-                        ..hideBottomSheet();
-                    } else {
-                      controller.toggleExpanded(
-                        MediaQuery.sizeOf(context).longestSide,
-                        () async {
-                          if (!disableAnimation) {
-                            if (sheetAnimController.isAnimating) return;
-                            if (controller.isExpanded) {
-                              await sheetAnimController.reverse();
-                            } else {
-                              await sheetAnimController.forward();
-                            }
-                          }
-                        },
-                      );
-                    }
-                  },
-                  icon: const Icon(Symbols.info),
+                _SheetControlButton(
+                  controller: controller,
+                  isLargeScreen: isLargeScreen,
+                  useVerticalLayout: useVerticalLayout,
+                  disableAnimation: disableAnimation,
+                  sheetAnimController: sheetAnimController,
                 ),
               ],
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _SheetControlButton extends StatelessWidget {
+  const _SheetControlButton({
+    required this.controller,
+    required this.isLargeScreen,
+    required this.useVerticalLayout,
+    required this.disableAnimation,
+    required this.sheetAnimController,
+  });
+
+  final PostDetailsPageViewController controller;
+  final bool isLargeScreen;
+  final bool useVerticalLayout;
+  final bool disableAnimation;
+  final AnimationController sheetAnimController;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return ValueListenableBuilder(
+      valueListenable: controller.sheetState,
+      builder: (context, state, child) {
+        final isExpanded = state.isExpanded;
+
+        return !isExpanded
+            ? _buildExpandButton(context)
+            : _buildCollapseButton(context, colorScheme);
+      },
+    );
+  }
+
+  Widget _buildCollapseButton(BuildContext context, ColorScheme colorScheme) {
+    return CircularIconButton(
+      onPressed: () {
+        if (controller.animating.value) return;
+
+        if (!isLargeScreen || useVerticalLayout) {
+          controller.resetSheet();
+        } else {
+          controller.toggleExpanded(
+            MediaQuery.sizeOf(context).longestSide,
+            () async {
+              if (!disableAnimation) {
+                if (sheetAnimController.isAnimating) return;
+                await sheetAnimController.reverse();
+              }
+            },
+          );
+        }
+      },
+      icon: InfoCircleIcon(
+        style: InfoCircleStyle.solid,
+        color: colorScheme.primary,
+      ),
+    );
+  }
+
+  Widget _buildExpandButton(BuildContext context) {
+    return CircularIconButton(
+      onPressed: () {
+        if (controller.animating.value) return;
+
+        if (!isLargeScreen || useVerticalLayout) {
+          controller
+            ..expandToSnapPoint()
+            ..hideBottomSheet();
+        } else {
+          controller.toggleExpanded(
+            MediaQuery.sizeOf(context).longestSide,
+            () async {
+              if (!disableAnimation) {
+                if (sheetAnimController.isAnimating) return;
+
+                await sheetAnimController.forward();
+              }
+            },
+          );
+        }
+      },
+      icon: const InfoCircleIcon(
+        style: InfoCircleStyle.outline,
       ),
     );
   }
