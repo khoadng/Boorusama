@@ -104,21 +104,22 @@ class PostModalShare extends ConsumerWidget {
               ),
               _ => const SizedBox.shrink(),
             },
-            if (Uri.tryParse(booruLink) case final Uri uri)
-              ListTile(
-                title: Text(context.t.post.detail.share.booru),
-                subtitle: Text(booruLink),
-                leading: BooruLogo(source: booruLink),
-                onTap: () {
-                  Navigator.of(context).pop();
-                  SharePlus.instance.share(
-                    ShareParams(
-                      uri: uri,
-                      subject: booruLink,
-                    ),
-                  );
-                },
-              ),
+            if (booruLink.isNotEmpty)
+              if (Uri.tryParse(booruLink) case final Uri uri)
+                ListTile(
+                  title: Text(context.t.post.detail.share.booru),
+                  subtitle: Text(booruLink),
+                  leading: BooruLogo(source: booruLink),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    SharePlus.instance.share(
+                      ShareParams(
+                        uri: uri,
+                        subject: booruLink,
+                      ),
+                    );
+                  },
+                ),
             ref
                 .watch(_cachedImageFileProvider(imageData))
                 .when(

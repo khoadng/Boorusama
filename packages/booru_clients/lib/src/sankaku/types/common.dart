@@ -1,15 +1,12 @@
 sealed class SankakuId {
   const SankakuId();
 
-  static SankakuId? maybeFrom(dynamic value) {
-    if (value is int) {
-      return IntId(value);
-    } else if (value is String) {
-      return StringId(value);
-    } else {
-      return null;
-    }
-  }
+  static SankakuId? maybeFrom(dynamic value) => switch (value) {
+    int() => IntId(value),
+    String() => StringId(value),
+    IntId() || StringId() => value,
+    _ => null,
+  };
 }
 
 final class IntId extends SankakuId {
