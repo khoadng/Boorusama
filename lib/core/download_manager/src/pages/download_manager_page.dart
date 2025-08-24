@@ -274,7 +274,9 @@ class _DownloadManagerPageState extends ConsumerState<DownloadManagerPage> {
           item: SimpleDownloadTile(
             task: task,
             onTap: () {
-              _selectionModeController.toggleItem(index);
+              if (_selectionModeController.isActive) {
+                _selectionModeController.toggleItem(index);
+              }
             },
             onResume: () {
               final dt = castOrNull<DownloadTask>(task.task);
