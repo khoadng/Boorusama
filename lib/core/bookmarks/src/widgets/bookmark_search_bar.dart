@@ -63,14 +63,6 @@ class _BookmarkSearchBarState extends ConsumerState<BookmarkSearchBar> {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: widget.postController.itemsNotifier,
-      builder: (_, posts, _) =>
-          posts.isNotEmpty ? _buildSearch() : const SizedBox.shrink(),
-    );
-  }
-
-  Widget _buildSearch() {
     return LayoutBuilder(
       builder: (context, constraints) {
         final suggestions = ref.watch(tagSuggestionsProvider).valueOrNull ?? [];
