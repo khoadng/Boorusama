@@ -35,6 +35,16 @@ final gelbooruTagQueryComposerProvider =
       (ref, config) => GelbooruTagQueryComposer(config: config),
     );
 
+final gelbooruTagResolverProvider =
+    Provider.family<TagResolver, BooruConfigAuth>((ref, config) {
+      return TagResolver(
+        tagCacheBuilder: () => ref.watch(tagCacheRepositoryProvider.future),
+        siteHost: config.url,
+        cachedTagMapper: const CachedTagMapper(),
+        tagRepositoryBuilder: () => ref.read(gelbooruTagRepoProvider(config)),
+      );
+    });
+
 final invalidTags = [
   ':&lt;',
 ];
@@ -47,8 +57,7 @@ final gelbooruTagExtractorProvider =
           tagCache: ref.watch(tagCacheRepositoryProvider.future),
           sorter: TagSorter.defaults(),
           fetcher: (post, options) async {
-            // Use read to avoid circular dependency
-            final tagResolver = ref.read(tagResolverProvider(config));
+            final tagResolver = ref.read(gelbooruTagResolverProvider(config));
 
             final tagList = post.tags;
 

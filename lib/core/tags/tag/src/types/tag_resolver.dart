@@ -90,8 +90,14 @@ class TagResolver {
         )
         .toList();
 
-    final finalTags = [...result.found, ...resolvedTags, ...stillMissingTags];
-    final tags = cachedTagMapper.mapCachedTagsToTags(finalTags);
+    final finalTags = {
+      ...result.found.where(
+        (tag) => !resolvedTagNames.contains(tag.tagName),
+      ), // remove resolved tags from found
+      ...resolvedTags,
+      ...stillMissingTags,
+    };
+    final tags = cachedTagMapper.mapCachedTagsToTags(finalTags.toList());
 
     return tags;
   }

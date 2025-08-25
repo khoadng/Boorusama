@@ -15,8 +15,7 @@ final e621TagRepoProvider = Provider.family<TagRepository, BooruConfigAuth>(
   (ref, config) {
     final client = ref.watch(e621ClientProvider(config));
 
-    return TagRepositoryBuilder(
-      persistentStorageKey: '${Uri.encodeComponent(config.url)}_tags_cache_v1',
+    return TagRepositoryBuilderNoCache(
       getTags: (tags, page, {cancelToken}) async {
         final data = await client.getTagsByNames(
           page: page,
@@ -29,6 +28,21 @@ final e621TagRepoProvider = Provider.family<TagRepository, BooruConfigAuth>(
   },
 );
 
+final e621TagResolverProvider = Provider.family<TagResolver, BooruConfigAuth>((
+  ref,
+  config,
+) {
+  return TagResolver(
+    tagCacheBuilder: () => ref.watch(tagCacheRepositoryProvider.future),
+    siteHost: config.url,
+    cachedTagMapper: CachedTagMapper(
+      categoryMapper: (cachedTag) =>
+          stringToE621TagCategory(cachedTag.category),
+    ),
+    tagRepositoryBuilder: () => ref.read(e621TagRepoProvider(config)),
+  );
+});
+
 final e621TagExtractorProvider = Provider.family<TagExtractor, BooruConfigAuth>(
   (ref, config) {
     return TagExtractorBuilder(
@@ -36,8 +50,7 @@ final e621TagExtractorProvider = Provider.family<TagExtractor, BooruConfigAuth>(
       tagCache: ref.watch(tagCacheRepositoryProvider.future),
       sorter: TagSorter.defaults(),
       fetcher: (post, options) {
-        // Use read to avoid circular dependency
-        final tagResolver = ref.read(tagResolverProvider(config));
+        final tagResolver = ref.read(e621TagResolverProvider(config));
 
         if (post case final E621Post e621Post) {
           final tags = _extractTagsFromPost(e621Post);
@@ -48,7 +61,7 @@ final e621TagExtractorProvider = Provider.family<TagExtractor, BooruConfigAuth>(
 
           return tagResolver.resolvePartialTags(tags);
         } else {
-          return TagExtractor.extractTagsFromGenericPost(post);
+          return tagResolver.resolveRawTags(post.tags);
         }
       },
     );

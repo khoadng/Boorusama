@@ -7,10 +7,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/blacklists/providers.dart';
 import '../../../../core/configs/config.dart';
 import '../../../../core/tags/configs/providers.dart';
-import '../../../../core/tags/tag/providers.dart';
 import '../../../../core/tags/tag/tag.dart';
 import '../../../../foundation/riverpod/riverpod.dart';
 import '../../client_provider.dart';
+import '../tag/providers.dart';
 import 'types.dart';
 
 final popularSearchProvider =
@@ -57,7 +57,7 @@ final trendingTagsProvider =
           .where((s) => !excludedTags.contains(s.keyword))
           .toList();
 
-      final tagResolver = ref.watch(tagResolverProvider(arg.auth));
+      final tagResolver = ref.watch(danbooruTagResolverProvider(arg.auth));
 
       final tags = await tagResolver.resolveRawTags(
         filtered.map((e) => e.keyword).toList(),

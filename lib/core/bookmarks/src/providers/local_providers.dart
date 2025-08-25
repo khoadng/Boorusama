@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../boorus/anime-pictures/tags/providers.dart';
+import '../../../../boorus/e621/tags/providers.dart';
 import '../../../../boorus/gelbooru_v2/tags/providers.dart';
 import '../../../../boorus/hybooru/tags/providers.dart';
 import '../../../../foundation/riverpod/riverpod.dart';
@@ -195,6 +196,16 @@ final bookmarkTagGroupsProvider = FutureProvider.autoDispose
       return createTagGroupItems(tags);
     });
 
+final bookmarkTagResolverProvider =
+    Provider.family<TagResolver, BooruConfigAuth>((ref, config) {
+      return TagResolver(
+        tagCacheBuilder: () => ref.watch(tagCacheRepositoryProvider.future),
+        siteHost: config.url,
+        cachedTagMapper: const CachedTagMapper(),
+        tagRepositoryBuilder: () => ref.read(tagRepoProvider(config)),
+      );
+    });
+
 final bookmarkTagExtractorProvider =
     Provider.family<TagExtractor, BooruConfigAuth>(
       (ref, config) {
@@ -203,8 +214,7 @@ final bookmarkTagExtractorProvider =
           tagCache: ref.watch(tagCacheRepositoryProvider.future),
           sorter: TagSorter.defaults(),
           fetcher: (post, options) async {
-            // Use read to avoid circular dependency
-            final tagResolver = ref.read(tagResolverProvider(config));
+            final tagResolver = ref.read(bookmarkTagResolverProvider(config));
 
             if (post case final BookmarkPost bookmarkPost) {
               final originalPost = bookmarkPost.toOriginalPost();
@@ -232,6 +242,10 @@ final bookmarkTagExtractorProvider =
                     originalPost.id,
                   )).future,
                 );
+              } else if (config.booruType == BooruType.e621) {
+                final resolver = ref.read(e621TagResolverProvider(config));
+
+                return resolver.resolveRawTags(bookmarkPost.tags);
               } else {
                 final tags = bookmarkPost.tags;
 

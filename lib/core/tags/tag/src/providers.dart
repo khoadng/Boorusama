@@ -10,12 +10,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../foundation/riverpod/riverpod.dart';
 import '../../../configs/config.dart';
 import '../../../posts/post/post.dart';
-import '../../local/providers.dart';
 import 'data/providers.dart';
-import 'types/cached_tag_mapper.dart';
 import 'types/tag.dart';
 import 'types/tag_group_item.dart';
-import 'types/tag_resolver.dart';
 
 final tagGroupsProvider = FutureProvider.autoDispose
     .family<List<TagGroupItem>?, (BooruConfigAuth, Post)>((ref, params) async {
@@ -37,20 +34,6 @@ final tagGroupsProvider = FutureProvider.autoDispose
 
       return createTagGroupItems(tags);
     });
-
-final tagResolverProvider = Provider.family<TagResolver, BooruConfigAuth>((
-  ref,
-  config,
-) {
-  return TagResolver(
-    tagCacheBuilder: () => ref.watch(tagCacheRepositoryProvider.future),
-    siteHost: config.url,
-    cachedTagMapper: const CachedTagMapper(),
-    tagRepositoryBuilder: () => ref.read(
-      tagRepoProvider(config),
-    ), // use read to avoid circular dependency
-  );
-});
 
 final artistCharacterGroupProvider = AsyncNotifierProvider.autoDispose
     .family<

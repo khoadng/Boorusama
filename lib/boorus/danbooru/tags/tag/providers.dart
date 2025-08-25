@@ -45,6 +45,16 @@ final danbooruTagQueryComposerProvider =
       (ref, config) => DanbooruTagQueryComposer(config: config),
     );
 
+final danbooruTagResolverProvider =
+    Provider.family<TagResolver, BooruConfigAuth>((ref, config) {
+      return TagResolver(
+        tagCacheBuilder: () => ref.watch(tagCacheRepositoryProvider.future),
+        siteHost: config.url,
+        cachedTagMapper: const CachedTagMapper(),
+        tagRepositoryBuilder: () => ref.read(danbooruTagRepoProvider(config)),
+      );
+    });
+
 final danbooruTagExtractorProvider =
     Provider.family<TagExtractor, BooruConfigAuth>(
       (ref, config) {
@@ -53,8 +63,7 @@ final danbooruTagExtractorProvider =
           tagCache: ref.watch(tagCacheRepositoryProvider.future),
           sorter: TagSorter.defaults(),
           fetcher: (post, options) {
-            // Use read to avoid circular dependency
-            final tagResolver = ref.read(tagResolverProvider(config));
+            final tagResolver = ref.read(danbooruTagResolverProvider(config));
 
             if (post case final DanbooruPost danbooruPost) {
               final tags = _extractTagsFromPost(danbooruPost);

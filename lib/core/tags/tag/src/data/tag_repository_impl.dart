@@ -90,3 +90,27 @@ class TagRepositoryBuilder
   @override
   final bool enableDebugPrint = false;
 }
+
+class TagRepositoryBuilderNoCache implements TagRepository {
+  TagRepositoryBuilderNoCache({
+    required this.getTags,
+  });
+
+  final Future<List<Tag>> Function(
+    Set<String> tags,
+    int page, {
+    CancelToken? cancelToken,
+  })
+  getTags;
+
+  @override
+  Future<List<Tag>> getTagsByName(
+    Set<String> tags,
+    int page, {
+    CancelToken? cancelToken,
+  }) => getTags(
+    tags,
+    page,
+    cancelToken: cancelToken,
+  );
+}
