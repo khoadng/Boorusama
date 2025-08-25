@@ -65,7 +65,7 @@ final danbooruTagExtractorProvider =
 
               return tagResolver.resolvePartialTags(tags);
             } else {
-              return TagExtractor.extractTagsFromGenericPost(post);
+              return tagResolver.resolveRawTags(post.tags);
             }
           },
         );

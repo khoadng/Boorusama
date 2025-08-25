@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../configs/ref.dart';
+import '../../../../configs/config/providers.dart';
+import '../../../../configs/config/types.dart';
 import '../../../../search/search/routes.dart';
 import '../../../../tags/tag/providers.dart';
 import '../../../../tags/tag/tag.dart';
@@ -33,7 +34,8 @@ class _DefaultInheritedTagsTileState<T extends Post>
   @override
   Widget build(BuildContext context) {
     final post = InheritedPost.of<T>(context);
-    final params = (ref.watchConfigAuth, post);
+    final auth = ref.watchConfigAuth;
+    final params = (auth, post);
 
     if (expanded) {
       ref.listen(
@@ -61,6 +63,7 @@ class _DefaultInheritedTagsTileState<T extends Post>
     return SliverToBoxAdapter(
       child: error == null
           ? TagsTile(
+              auth: auth,
               tags: expanded
                   ? ref.watch(tagGroupsProvider(params)).valueOrNull
                   : null,
@@ -74,7 +77,7 @@ class _DefaultInheritedTagsTileState<T extends Post>
           : BasicTagsTile(
               post: post,
               tags: post.tags,
-              auth: ref.watchConfigAuth,
+              auth: auth,
             ),
     );
   }
@@ -84,6 +87,7 @@ class TagsTile extends StatelessWidget {
   const TagsTile({
     required this.post,
     required this.tags,
+    required this.auth,
     super.key,
     this.onExpand,
     this.onCollapse,
@@ -99,6 +103,7 @@ class TagsTile extends StatelessWidget {
   final List<TagGroupItem>? tags;
   final Color? Function(Tag tag)? tagColorBuilder;
   final EdgeInsetsGeometry? padding;
+  final BooruConfigAuth auth;
 
   @override
   Widget build(BuildContext context) {
@@ -108,6 +113,7 @@ class TagsTile extends StatelessWidget {
 
     return RawTagsTile(
       title: RawTagsTileTitle(
+        auth: auth,
         post: post,
         count: count,
       ),
@@ -123,7 +129,7 @@ class TagsTile extends StatelessWidget {
             child: Consumer(
               builder: (_, ref, _) => PostTagListChip(
                 tag: tag,
-                auth: ref.watchConfigAuth,
+                auth: auth,
                 onTap: () => goToSearchPage(ref, tag: tag.rawName),
                 color: tagColorBuilder != null ? tagColorBuilder!(tag) : null,
               ),

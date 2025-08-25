@@ -26,6 +26,7 @@ class _BookmarkTagTilesState extends ConsumerState<BookmarkTagTiles> {
   @override
   Widget build(BuildContext context) {
     final post = InheritedPost.of<BookmarkPost>(context);
+    final originalPost = post.toOriginalPost();
     final config = ref.watch(
       firstMatchingConfigProvider((
         post.bookmark.booruId,
@@ -65,10 +66,11 @@ class _BookmarkTagTilesState extends ConsumerState<BookmarkTagTiles> {
     return SliverToBoxAdapter(
       child: error == null
           ? TagsTile(
+              auth: config.auth,
               tags: expanded
                   ? ref.watch(bookmarkTagGroupsProvider(params)).valueOrNull
                   : null,
-              post: post,
+              post: originalPost,
               onExpand: () => setState(() => expanded = true),
               onCollapse: () {
                 // Don't set expanded to false to prevent rebuilding the tags list

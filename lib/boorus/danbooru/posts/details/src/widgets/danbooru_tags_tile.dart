@@ -48,6 +48,7 @@ class DanbooruTagsTile extends ConsumerWidget {
 
     return RawTagsTile(
       title: RawTagsTileTitle(
+        auth: config,
         post: post,
         count: count,
         itemBuilder: {

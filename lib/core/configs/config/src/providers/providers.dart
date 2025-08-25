@@ -49,9 +49,13 @@ final firstMatchingConfigProvider =
           return null;
         }
 
-        final config = idResult.firstWhereOrNull(
-          (config) => url.contains(config.auth.url),
-        );
+        final config = idResult.firstWhereOrNull((config) {
+          final authUrl = config.auth.url.endsWith('/')
+              ? config.auth.url.substring(0, config.auth.url.length - 1)
+              : config.auth.url;
+
+          return url.contains(authUrl);
+        });
 
         return config ?? idResult.firstOrNull;
       },

@@ -350,6 +350,7 @@ class PreviewTagsTile extends ConsumerWidget {
         TagColors.fromBrightness(colorScheme.brightness);
 
     return TagsTile(
+      auth: BooruConfigAuth.fromConfig(BooruConfig.empty),
       post: post,
       initialExpanded: true,
       tagColorBuilder: (tag) => switch (tag.category.id) {

@@ -353,6 +353,7 @@ class DanbooruBuilder
         return DanbooruShowTagListPage(
           post: post,
           initiallyMultiSelectEnabled: initiallyMultiSelectEnabled,
+          auth: auth,
         );
       };
 }

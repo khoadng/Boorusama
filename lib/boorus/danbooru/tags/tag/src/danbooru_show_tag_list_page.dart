@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../../core/configs/ref.dart';
+import '../../../../../core/configs/config/types.dart';
 import '../../../../../core/posts/post/post.dart';
 import '../../../../../core/tags/show/widgets.dart';
 import '../../../../../core/tags/tag/tag.dart';
@@ -15,24 +15,25 @@ import 'danbooru_tag_context_menu.dart';
 
 class DanbooruShowTagListPage extends ConsumerWidget {
   const DanbooruShowTagListPage({
+    required this.auth,
     required this.post,
     required this.initiallyMultiSelectEnabled,
     super.key,
   });
 
+  final BooruConfigAuth auth;
   final Post post;
   final bool initiallyMultiSelectEnabled;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfigAuth;
     final blacklistNotifier = ref.watch(
-      danbooruBlacklistedTagsProvider(config).notifier,
+      danbooruBlacklistedTagsProvider(auth).notifier,
     );
 
     return ShowTagListPage(
       post: post,
-      auth: config,
+      auth: auth,
       initiallyMultiSelectEnabled: initiallyMultiSelectEnabled,
       contextMenuBuilder: (child, tag) => DanbooruTagContextMenu(
         tag: tag,
@@ -40,11 +41,11 @@ class DanbooruShowTagListPage extends ConsumerWidget {
       ),
       onOpenWiki: (tag) {
         launchWikiPage(
-          config.url,
+          auth.url,
           tag.rawName,
         );
       },
-      onAddToBlacklist: config.hasLoginDetails()
+      onAddToBlacklist: auth.hasLoginDetails()
           ? (tag) {
               blacklistNotifier.addWithToast(
                 context: ref.context,

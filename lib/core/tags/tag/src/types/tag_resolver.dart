@@ -67,9 +67,15 @@ class TagResolver {
 
     final tagCache = await tagCacheBuilder();
     final result = await tagCache.resolveTags(siteHost, tagNames.toList());
+    final unknownCachedTags = result.found
+        .where((cachedTag) => cachedTag.category == 'unknown')
+        .map((cachedTag) => cachedTag.tagName)
+        .toList();
+
+    final allMissingTags = [...result.missing, ...unknownCachedTags];
 
     // Try to resolve unknown tags if tag repository is available
-    final resolvedTags = await _resolveUnknownTags(result.missing);
+    final resolvedTags = await _resolveUnknownTags(allMissingTags);
 
     final resolvedTagNames = resolvedTags.map((tag) => tag.tagName).toSet();
 

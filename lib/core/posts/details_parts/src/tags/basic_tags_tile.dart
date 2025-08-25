@@ -62,6 +62,7 @@ class BasicTagsTile extends ConsumerWidget {
 
     return RawTagsTile(
       title: RawTagsTileTitle(
+        auth: auth,
         post: post,
         count: tags.length,
       ),

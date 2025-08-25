@@ -47,31 +47,36 @@ class ShowTagList extends ConsumerWidget {
         selectedViewTagQueryProvider,
       ),
       filter: (item, query) => item.rawName.contains(query),
-      builder: (context, items) => ListView.builder(
-        controller: scrollController,
-        itemBuilder: (context, index) {
-          final tag = items[index];
-          final child = _SelectableTagItem(
-            index: index,
-            tag: tag,
-            auth: auth,
-            onAddToBlacklist: onAddToBlacklist,
-            onAddToGlobalBlacklist: onAddToGlobalBlacklist,
-            onAddToFavoriteTags: onAddToFavoriteTags,
-            onOpenWiki: onOpenWiki,
-          );
+      builder: (context, items) => SelectionConsumer(
+        builder: (_, controller, _) => ListView.builder(
+          padding: controller.isActive
+              ? const EdgeInsets.only(bottom: 100)
+              : null,
+          controller: scrollController,
+          itemBuilder: (context, index) {
+            final tag = items[index];
+            final child = _SelectableTagItem(
+              index: index,
+              tag: tag,
+              auth: auth,
+              onAddToBlacklist: onAddToBlacklist,
+              onAddToGlobalBlacklist: onAddToGlobalBlacklist,
+              onAddToFavoriteTags: onAddToFavoriteTags,
+              onOpenWiki: onOpenWiki,
+            );
 
-          return contextMenuBuilder != null
-              ? contextMenuBuilder!(
-                  child,
-                  tag.rawName,
-                )
-              : GeneralTagContextMenu(
-                  tag: tag.rawName,
-                  child: child,
-                );
-        },
-        itemCount: items.length,
+            return contextMenuBuilder != null
+                ? contextMenuBuilder!(
+                    child,
+                    tag.rawName,
+                  )
+                : GeneralTagContextMenu(
+                    tag: tag.rawName,
+                    child: child,
+                  );
+          },
+          itemCount: items.length,
+        ),
       ),
     );
   }

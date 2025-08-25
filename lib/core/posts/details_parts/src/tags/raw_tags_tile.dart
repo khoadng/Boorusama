@@ -7,7 +7,7 @@ import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../../foundation/display/media_query_utils.dart';
-import '../../../../configs/config/providers.dart';
+import '../../../../configs/config/types.dart';
 import '../../../../tags/show/routes.dart';
 import '../../../../widgets/booru_popup_menu_button.dart';
 import '../../../post/post.dart';
@@ -67,12 +67,14 @@ class RawTagsTileTitle<T extends Post> extends ConsumerWidget {
   const RawTagsTileTitle({
     required this.count,
     required this.post,
+    required this.auth,
     this.itemBuilder,
     this.onSelected,
     this.onMultiSelect,
     super.key,
   });
 
+  final BooruConfigAuth auth;
   final int? count;
   final T post;
   final Map<String, Widget>? itemBuilder;
@@ -100,7 +102,7 @@ class RawTagsTileTitle<T extends Post> extends ConsumerWidget {
                   ref,
                   post,
                   initiallyMultiSelectEnabled: true,
-                  auth: ref.readConfigAuth,
+                  auth: auth,
                 );
               }
             } else {

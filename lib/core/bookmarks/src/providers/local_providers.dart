@@ -6,7 +6,11 @@ import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import '../../../../boorus/anime-pictures/tags/providers.dart';
+import '../../../../boorus/gelbooru_v2/tags/providers.dart';
+import '../../../../boorus/hybooru/tags/providers.dart';
 import '../../../../foundation/riverpod/riverpod.dart';
+import '../../../boorus/booru/booru.dart';
 import '../../../boorus/engine/engine.dart';
 import '../../../boorus/engine/providers.dart';
 import '../../../configs/config.dart';
@@ -198,14 +202,41 @@ final bookmarkTagExtractorProvider =
           siteHost: config.url,
           tagCache: ref.watch(tagCacheRepositoryProvider.future),
           sorter: TagSorter.defaults(),
-          fetcher: (post, options) {
+          fetcher: (post, options) async {
             // Use read to avoid circular dependency
             final tagResolver = ref.read(tagResolverProvider(config));
 
             if (post case final BookmarkPost bookmarkPost) {
-              final tags = bookmarkPost.tags;
+              final originalPost = bookmarkPost.toOriginalPost();
 
-              return tagResolver.resolveRawTags(tags);
+              //FIXME: Need a better way to handle different booru types
+              if (config.booruType == BooruType.gelbooruV2) {
+                return ref.read(
+                  gelbooruV2TagsFromIdProvider((
+                    config,
+                    originalPost.id,
+                  )).future,
+                );
+              } else if (config.booruType == BooruType.hybooru) {
+                return ref.read(
+                  hybooruTagsFromIdProvider((config, originalPost.id)).future,
+                );
+              } else if (config.booruType == BooruType.zerochan) {
+                return ref.read(
+                  hybooruTagsFromIdProvider((config, originalPost.id)).future,
+                );
+              } else if (config.booruType == BooruType.animePictures) {
+                return ref.read(
+                  animePicturesTagsFromIdProvider((
+                    config,
+                    originalPost.id,
+                  )).future,
+                );
+              } else {
+                final tags = bookmarkPost.tags;
+
+                return tagResolver.resolveRawTags(tags);
+              }
             } else {
               return TagExtractor.extractTagsFromGenericPost(post);
             }
