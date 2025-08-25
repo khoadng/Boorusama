@@ -2,12 +2,11 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import '../../../configs/config/providers.dart';
 import '../../../configs/config/types.dart';
-import '../../../configs/manage/providers.dart';
 import '../../../posts/details/details.dart';
 import '../../../posts/details_parts/widgets.dart';
 import '../data/bookmark_convert.dart';
@@ -27,11 +26,11 @@ class _BookmarkTagTilesState extends ConsumerState<BookmarkTagTiles> {
   @override
   Widget build(BuildContext context) {
     final post = InheritedPost.of<BookmarkPost>(context);
-    final configs = ref.watch(booruConfigProvider);
-    final config = configs.firstWhereOrNull(
-      (config) =>
-          config.booruId == post.bookmark.booruId ||
-          config.booruIdHint == post.bookmark.booruId,
+    final config = ref.watch(
+      firstMatchingConfigProvider((
+        post.bookmark.booruId,
+        post.bookmark.sourceUrl,
+      )),
     );
 
     if (config == null) {

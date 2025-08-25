@@ -93,7 +93,10 @@ final bookmarkTagColorProvider = FutureProvider.autoDispose
       dependencies: [colorSchemeProvider],
     );
 
-final tagMapProvider = FutureProvider<Map<String, int>>((ref) async {
+final tagMapProvider = FutureProvider.autoDispose<Map<String, int>>((
+  ref,
+) async {
+  ref.cacheFor(const Duration(seconds: 3));
   final bookmarks = await (await ref.watch(bookmarkRepoProvider.future))
       .getAllBookmarksOrEmpty(
         imageUrlResolver: (booruId) =>
@@ -111,6 +114,16 @@ final tagMapProvider = FutureProvider<Map<String, int>>((ref) async {
   );
 });
 
+final sortedTagsProvider =
+    FutureProvider.autoDispose<List<MapEntry<String, int>>>((
+      ref,
+    ) async {
+      final tagMap = await ref.watch(tagMapProvider.future);
+      return tagMap.entries
+          .sorted((a, b) => b.value.compareTo(a.value))
+          .toList();
+    });
+
 final tagSuggestionsProvider = FutureProvider.autoDispose<List<String>>((
   ref,
 ) async {
@@ -123,14 +136,9 @@ final tagSuggestionsProvider = FutureProvider.autoDispose<List<String>>((
 
   if (tag == null || tag.isEmpty) return const [];
 
-  final tagMap = await ref.watch(tagMapProvider.future);
+  final sortedTags = await ref.watch(sortedTagsProvider.future);
 
-  return tagMap.entries
-      .where((e) => e.key.contains(tag))
-      .sorted((a, b) => b.value.compareTo(a.value))
-      .take(10)
-      .map((e) => e.key)
-      .toList();
+  return sortedTags.take(10).map((e) => e.key).toList();
 });
 
 final selectedTagsProvider = StateProvider.autoDispose<String>((ref) => '');
