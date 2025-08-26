@@ -49,12 +49,22 @@ class TagExtractorBuilder implements TagExtractor {
 
     if (tags.isNotEmpty) {
       if (tagCache != null) {
-        final cache = await tagCache;
-        await cache?.saveTagsBatch(
-          tags
-              .map((tag) => TagInfo.fromTag(siteHost: siteHost, tag: tag))
-              .toList(),
-        );
+        // Only save tags with meaningful data to prevent cache degradation
+        final qualityTags = tags
+            .where(
+              (tag) =>
+                  tag.category != TagCategory.unknown() && tag.postCount > 0,
+            )
+            .toList();
+
+        if (qualityTags.isNotEmpty) {
+          final cache = await tagCache;
+          await cache?.saveTagsBatch(
+            qualityTags
+                .map((tag) => TagInfo.fromTag(siteHost: siteHost, tag: tag))
+                .toList(),
+          );
+        }
       }
     }
 

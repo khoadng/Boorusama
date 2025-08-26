@@ -4,7 +4,6 @@ import 'dart:async';
 // Project imports:
 import '../../../local/cached_tag.dart';
 import '../../../local/tag_cache_repository.dart';
-import '../../../local/tag_info.dart';
 import 'cached_tag_mapper.dart';
 import 'tag.dart';
 import 'tag_repository.dart';
@@ -126,24 +125,6 @@ class TagResolver {
           postCount: tag.postCount,
         );
         resolvedTags.add(cachedTag);
-      }
-
-      // Save to cache for future use
-      if (resolvedTags.isNotEmpty) {
-        final tagCache = await tagCacheBuilder();
-        await tagCache.saveTagsBatch(
-          resolvedTags
-              .map(
-                (tag) => TagInfo(
-                  siteHost: siteHost,
-                  tagName: tag.tagName,
-                  category: tag.category,
-                  postCount: tag.postCount,
-                  metadata: tag.metadata,
-                ),
-              )
-              .toList(),
-        );
       }
 
       return resolvedTags;

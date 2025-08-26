@@ -11,18 +11,30 @@ import '../client_provider.dart';
 import '../posts/types.dart';
 import 'parser.dart';
 
+const _kMaxTagsPerRequest = 50;
+
 final e621TagRepoProvider = Provider.family<TagRepository, BooruConfigAuth>(
   (ref, config) {
     final client = ref.watch(e621ClientProvider(config));
 
     return TagRepositoryBuilderNoCache(
       getTags: (tags, page, {cancelToken}) async {
-        final data = await client.getTagsByNames(
-          page: page,
-          tags: tags.toList(),
-        );
-
-        return data.map(e621TagDtoToTag).toList();
+        final batches = <Future<List<Tag>>>[];
+        for (var i = 0; i < tags.length; i += _kMaxTagsPerRequest) {
+          final batch = tags.skip(i).take(_kMaxTagsPerRequest).toList();
+          batches.add(
+            client
+                .getTagsByNames(
+                  page: page,
+                  tags: batch,
+                  limit: _kMaxTagsPerRequest,
+                  cancelToken: cancelToken,
+                )
+                .then((data) => data.map(e621TagDtoToTag).toList()),
+          );
+        }
+        final results = await Future.wait(batches);
+        return results.expand((x) => x).toList();
       },
     );
   },
