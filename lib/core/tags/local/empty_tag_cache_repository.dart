@@ -66,4 +66,9 @@ class EmptyTagCacheRepository implements TagCacheRepository {
       missing: tagNames,
     );
   }
+
+  @override
+  Future<void> dispose() async {
+    // No-op
+  }
 }

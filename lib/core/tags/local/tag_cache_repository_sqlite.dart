@@ -42,6 +42,7 @@ class TagCacheRepositorySqlite
 
   @override
   final Database db;
+  bool _disposed = false;
 
   void initialize() {
     db.execute('PRAGMA foreign_keys = ON');
@@ -343,5 +344,13 @@ class TagCacheRepositorySqlite
       found: foundTags,
       missing: missingTags,
     );
+  }
+
+  @override
+  Future<void> dispose() async {
+    if (!_disposed) {
+      db.dispose();
+      _disposed = true;
+    }
   }
 }

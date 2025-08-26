@@ -36,4 +36,6 @@ abstract class TagCacheRepository {
 
   Future<void> clearTags();
   Future<void> clearAliases();
+
+  Future<void> dispose();
 }

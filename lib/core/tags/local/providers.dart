@@ -30,12 +30,14 @@ final tagCacheRepositoryProvider = FutureProvider<TagCacheRepository>(
       return EmptyTagCacheRepository();
     }
 
+    final repo = TagCacheRepositorySqlite(db: db);
+
     ref.onDispose(() {
-      db.dispose();
+      repo.dispose();
     });
 
     try {
-      return TagCacheRepositorySqlite(db: db)..initialize();
+      return repo..initialize();
     } on Exception catch (e) {
       logger
         ..error(
@@ -44,7 +46,7 @@ final tagCacheRepositoryProvider = FutureProvider<TagCacheRepository>(
         )
         ..warn(_kServiceName, 'Fallback to empty tag cache repository');
 
-      db.dispose();
+      await repo.dispose();
       return EmptyTagCacheRepository();
     }
   },

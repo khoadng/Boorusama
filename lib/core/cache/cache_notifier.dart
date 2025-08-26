@@ -48,7 +48,7 @@ class CacheSizeNotifier extends AutoDisposeAsyncNotifier<CacheSizeInfo> {
     await _withMinimumDelay(() async {
       await clearImageCache();
       await clearCache();
-      await clearTagCacheDatabase();
+      await clearTagCacheDatabase(ref);
     });
     refreshCacheSize();
   }
@@ -64,7 +64,7 @@ class CacheSizeNotifier extends AutoDisposeAsyncNotifier<CacheSizeInfo> {
   Future<void> clearAppTagCache() async {
     state = const AsyncValue.loading();
     await _withMinimumDelay(() async {
-      await clearTagCacheDatabase();
+      await clearTagCacheDatabase(ref);
     });
     refreshCacheSize();
   }
@@ -83,14 +83,16 @@ class CacheSizeNotifier extends AutoDisposeAsyncNotifier<CacheSizeInfo> {
 }
 
 Future<CacheSizeInfo> calculateCacheSize() async {
-  final cacheSize = await getCacheSize();
-  final imageCacheSize = await getImageCacheSize();
-  final tagCacheSize = await _getTagCacheSize();
+  final results = await Future.wait([
+    getCacheSize().catchError((_) => DirectorySizeInfo.zero),
+    getImageCacheSize().catchError((_) => DirectorySizeInfo.zero),
+    _getTagCacheSize().catchError((_) => 0),
+  ]);
 
   return CacheSizeInfo(
-    appCacheSize: cacheSize,
-    imageCacheSize: imageCacheSize,
-    tagCacheSize: tagCacheSize,
+    appCacheSize: results[0] as DirectorySizeInfo,
+    imageCacheSize: results[1] as DirectorySizeInfo,
+    tagCacheSize: results[2] as int,
   );
 }
 
@@ -99,11 +101,19 @@ Future<int> _getTagCacheSize() async {
   return dbFile.existsSync() ? dbFile.statSync().size : 0;
 }
 
-Future<bool> clearTagCacheDatabase() async {
+Future<bool> clearTagCacheDatabase(Ref ref) async {
   try {
+    final currentRepo = await ref.read(tagCacheRepositoryProvider.future);
+    await currentRepo.dispose();
+
+    ref.invalidate(tagCacheRepositoryProvider);
+
     final dbFile = await _getTagCacheFile();
     if (dbFile.existsSync()) {
       await dbFile.delete();
+
+      // Invalidate to make sure we not use the old database connection
+      ref.invalidate(tagCacheRepositoryProvider);
 
       return true;
     }
