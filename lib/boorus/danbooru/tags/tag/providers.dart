@@ -17,7 +17,6 @@ final danbooruTagRepoProvider = Provider.family<TagRepository, BooruConfigAuth>(
     final client = ref.watch(danbooruClientProvider(config));
 
     return TagRepositoryBuilder(
-      persistentStorageKey: '${Uri.encodeComponent(config.url)}_tags_cache_v1',
       getTags: (tags, page, {cancelToken}) async {
         final data = await client.getTagsByName(
           page: page,

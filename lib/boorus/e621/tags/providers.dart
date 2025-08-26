@@ -17,7 +17,7 @@ final e621TagRepoProvider = Provider.family<TagRepository, BooruConfigAuth>(
   (ref, config) {
     final client = ref.watch(e621ClientProvider(config));
 
-    return TagRepositoryBuilderNoCache(
+    return TagRepositoryBuilder(
       getTags: (tags, page, {cancelToken}) async {
         final batches = <Future<List<Tag>>>[];
         for (var i = 0; i < tags.length; i += _kMaxTagsPerRequest) {
