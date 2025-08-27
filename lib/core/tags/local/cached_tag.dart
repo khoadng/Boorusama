@@ -8,6 +8,7 @@ class CachedTag extends Equatable {
     required this.category,
     this.postCount,
     this.metadata,
+    this.updatedAt,
   });
 
   const CachedTag.unknown({
@@ -15,13 +16,15 @@ class CachedTag extends Equatable {
     required this.tagName,
   }) : postCount = null,
        category = '',
-       metadata = null;
+       metadata = null,
+       updatedAt = null;
 
   final String siteHost;
   final String tagName;
   final String category;
   final int? postCount;
   final Map<String, dynamic>? metadata;
+  final DateTime? updatedAt;
 
   @override
   List<Object?> get props => [
@@ -30,6 +33,7 @@ class CachedTag extends Equatable {
     category,
     postCount,
     metadata,
+    updatedAt,
   ];
 }
 

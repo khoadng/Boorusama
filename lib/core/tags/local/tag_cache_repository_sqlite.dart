@@ -283,26 +283,23 @@ class TagCacheRepositorySqlite
       return const TagResolutionResult(found: [], missing: []);
     }
 
-    // Normalize tag names (lowercase, replace spaces with underscores)
     final normalizedTagNames = tagNames
         .map((tag) => tag.toLowerCase().replaceAll(' ', '_'))
         .toList();
     final tagNameSet = normalizedTagNames.toSet();
 
-    // Create placeholders for IN clause
     final placeholders = List.filled(tagNameSet.length, '?').join(', ');
 
-    // Query cached tags
     final result = db.select(
       '''
-    SELECT $_kTagsSiteHostColumn, $_kTagsTagNameColumn, $_kTagsCategoryColumn, $_kTagsPostCountColumn, $_kTagsMetadataColumn 
+    SELECT $_kTagsSiteHostColumn, $_kTagsTagNameColumn, $_kTagsCategoryColumn, 
+           $_kTagsPostCountColumn, $_kTagsMetadataColumn, $_kTagsUpdatedAtColumn 
     FROM $kTagsTable 
     WHERE $_kTagsSiteHostColumn = ? AND $_kTagsTagNameColumn IN ($placeholders) COLLATE NOCASE
     ''',
       [siteHost, ...tagNameSet],
     );
 
-    // Convert results to CachedTag objects
     final foundTags = <CachedTag>[];
     final foundTagNames = <String>{};
 
@@ -311,13 +308,13 @@ class TagCacheRepositorySqlite
       final category = row[_kTagsCategoryColumn] as String;
       final postCount = row[_kTagsPostCountColumn] as int?;
       final metadataJson = row[_kTagsMetadataColumn] as String?;
+      final updatedAtMs = row[_kTagsUpdatedAtColumn] as int;
 
       Map<String, dynamic>? metadata;
       if (metadataJson != null) {
         try {
           metadata = jsonDecode(metadataJson) as Map<String, dynamic>;
         } catch (e) {
-          // If JSON parsing fails, leave metadata as null
           metadata = null;
         }
       }
@@ -329,13 +326,13 @@ class TagCacheRepositorySqlite
           category: category,
           postCount: postCount,
           metadata: metadata,
+          updatedAt: DateTime.fromMillisecondsSinceEpoch(updatedAtMs),
         ),
       );
 
       foundTagNames.add(tagName);
     }
 
-    // Find missing tags
     final missingTags = tagNameSet
         .where((tag) => !foundTagNames.contains(tag))
         .toList();

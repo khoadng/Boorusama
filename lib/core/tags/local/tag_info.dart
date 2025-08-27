@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 
 // Project imports:
 import '../tag/tag.dart';
+import 'cached_tag.dart';
 
 class TagInfo extends Equatable {
   const TagInfo({
@@ -24,6 +25,16 @@ class TagInfo extends Equatable {
       category: tag.category.name,
       postCount: tag.postCount > 0 ? tag.postCount : null,
       metadata: additionalMetadata,
+    );
+  }
+
+  factory TagInfo.fromCachedTag(CachedTag cachedTag) {
+    return TagInfo(
+      siteHost: cachedTag.siteHost,
+      tagName: cachedTag.tagName,
+      category: cachedTag.category,
+      postCount: cachedTag.postCount,
+      metadata: cachedTag.metadata,
     );
   }
 
