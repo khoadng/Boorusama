@@ -61,7 +61,7 @@ class SankakuClient {
     String? username,
     String? password,
   }) {
-    final isIdol = baseUrl.contains('idol.');
+    final isIdol = baseUrl.contains('idol.') || baseUrl.contains('idolcomplex');
 
     return isIdol
         ? SankakuIdolClient(

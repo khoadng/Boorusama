@@ -16,6 +16,8 @@ const _kSankakuIdolApiUrl = 'https://iapi.sankakucomplex.com';
 
 const _kSankakuIdolKnownUrls = [
   'idol.sankakucomplex.com',
+  'www.idolcomplex.com',
+  'idolcomplex.com',
 ];
 
 String _convertBaseUrlToApiUrl(String url) {
