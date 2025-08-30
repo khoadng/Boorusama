@@ -14,7 +14,7 @@ import '../../../../blacklists/providers.dart';
 import '../../../../blacklists/routes.dart';
 import '../../../../boorus/booru/booru.dart';
 import '../../../../boorus/engine/providers.dart';
-import '../../../../config_widgets/booru_logo.dart';
+import '../../../../config_widgets/website_logo.dart';
 import '../../../../configs/create/routes.dart';
 import '../../../../configs/ref.dart';
 import '../../../../settings/providers.dart';
@@ -262,11 +262,12 @@ class EditBlacklistActionSheet extends ConsumerWidget {
                                 isAntiAlias: true,
                                 filterQuality: FilterQuality.none,
                               ),
-                              BlacklistSource.booruSpecific => BooruLogo(
-                                source: config.auth.url,
-                                width: 24,
-                                height: 24,
-                              ),
+                              BlacklistSource.booruSpecific =>
+                                ConfigAwareWebsiteLogo(
+                                  url: config.auth.url,
+                                  width: 24,
+                                  height: 24,
+                                ),
                               BlacklistSource.config => Icon(
                                 Icons.settings,
                                 color: colorScheme.onSurfaceVariant,

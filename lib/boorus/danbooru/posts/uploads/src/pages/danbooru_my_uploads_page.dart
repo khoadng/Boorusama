@@ -320,7 +320,7 @@ class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
                                 ),
                               ),
                               child: ConfigAwareWebsiteLogo(
-                                url: source.faviconUrl,
+                                url: source.url,
                               ),
                             ),
                             () => const SizedBox.shrink(),

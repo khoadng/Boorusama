@@ -9,7 +9,7 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../../../../foundation/utils/flutter_utils.dart';
-import '../../../config_widgets/booru_logo.dart';
+import '../../../config_widgets/website_logo.dart';
 import '../../../configs/config/providers.dart';
 import '../../../images/booru_image.dart';
 import '../../../theme.dart';
@@ -104,8 +104,8 @@ class DownloadTileBuilder extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       if (siteUrl != null && siteUrl!.isNotEmpty)
-                        BooruLogo(
-                          source: siteUrl,
+                        ConfigAwareWebsiteLogo(
+                          url: siteUrl,
                           width: 18,
                           height: 18,
                         ),

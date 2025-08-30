@@ -183,7 +183,7 @@ class DefaultDanbooruImageGridItem extends StatelessWidget {
                 switch (post.source) {
                   final WebSource source => ConfigAwareWebsiteLogo(
                     size: 18,
-                    url: source.faviconUrl,
+                    url: source.url,
                   ),
                   _ => const SizedBox.shrink(),
                 },

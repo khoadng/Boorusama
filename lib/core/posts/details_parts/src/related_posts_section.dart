@@ -113,7 +113,7 @@ class SliverRelatedPostsSection<T extends Post> extends ConsumerWidget {
                                 ),
                               ),
                               child: ConfigAwareWebsiteLogo(
-                                url: source.faviconUrl,
+                                url: source.url,
                               ),
                             ),
                             () => const SizedBox.shrink(),

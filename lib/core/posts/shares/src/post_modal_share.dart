@@ -10,7 +10,6 @@ import 'package:share_plus/share_plus.dart';
 
 // Project imports:
 import '../../../boorus/engine/engine.dart';
-import '../../../config_widgets/booru_logo.dart';
 import '../../../config_widgets/website_logo.dart';
 import '../../../configs/config/src/types/booru_config.dart';
 import '../../../downloads/filename/types.dart';
@@ -96,7 +95,7 @@ class PostModalShare extends ConsumerWidget {
               final WebSource s => ListTile(
                 title: Text(context.t.post.detail.share.source),
                 subtitle: Text(s.uri.toString()),
-                leading: ConfigAwareWebsiteLogo(url: s.faviconUrl),
+                leading: ConfigAwareWebsiteLogo(url: s.url),
                 onTap: () {
                   Navigator.of(context).pop();
                   SharePlus.instance.share(ShareParams(uri: s.uri));
@@ -109,7 +108,7 @@ class PostModalShare extends ConsumerWidget {
                 ListTile(
                   title: Text(context.t.post.detail.share.booru),
                   subtitle: Text(booruLink),
-                  leading: BooruLogo(source: booruLink),
+                  leading: ConfigAwareWebsiteLogo(url: booruLink),
                   onTap: () {
                     Navigator.of(context).pop();
                     SharePlus.instance.share(

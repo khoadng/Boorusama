@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../../config_widgets/booru_logo.dart';
+import '../../../../config_widgets/website_logo.dart';
 import '../../../../posts/sources/source.dart';
 import '../../../config/providers.dart';
 import '../../../create/routes.dart';
@@ -48,7 +48,7 @@ class _Logo extends ConsumerWidget {
 
     return Padding(
       padding: const EdgeInsets.all(8),
-      child: BooruLogo.fromConfig(config),
+      child: ConfigAwareWebsiteLogo.fromConfig(config),
     );
   }
 }

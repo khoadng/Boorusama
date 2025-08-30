@@ -225,7 +225,7 @@ class InformationSection extends ConsumerWidget {
     return GestureDetector(
       onTap: () => launchExternalUrl(source.uri),
       child: ConfigAwareWebsiteLogo(
-        url: source.faviconUrl,
+        url: source.url,
         size: compact ? 20 : kFaviconSize,
       ),
     );

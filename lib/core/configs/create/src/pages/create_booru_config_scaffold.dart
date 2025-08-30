@@ -10,7 +10,7 @@ import 'package:i18n/i18n.dart';
 import '../../../../../foundation/display.dart';
 import '../../../../analytics/providers.dart';
 import '../../../../boorus/booru/booru.dart';
-import '../../../../config_widgets/booru_logo.dart';
+import '../../../../config_widgets/website_logo.dart';
 import '../../../../posts/sources/source.dart';
 import '../../../../premiums/providers.dart';
 import '../../../../theme.dart';
@@ -212,7 +212,7 @@ class CreateBooruConfigCategory extends Equatable {
       id = 'auth';
 
   CreateBooruConfigCategory.listing()
-    : title = 'Listing'.hc, // TODO: Replace with context.t.hardcoded_strings.booru_configs.listing
+    : title = 'Listing'.hc,
       name = 'config/listing',
       id = 'listing';
 
@@ -222,7 +222,7 @@ class CreateBooruConfigCategory extends Equatable {
       id = 'download';
 
   CreateBooruConfigCategory.search()
-    : title = 'Search'.hc, // TODO: Replace with context.t.hardcoded_strings.booru_configs.search
+    : title = 'Search'.hc,
       name = 'config/search',
       id = 'search';
 
@@ -237,7 +237,7 @@ class CreateBooruConfigCategory extends Equatable {
       id = 'viewer';
 
   CreateBooruConfigCategory.network()
-    : title = 'Network'.hc, // TODO: Replace with context.t.hardcoded_strings.booru_configs.network
+    : title = 'Network'.hc,
       name = 'config/network',
       id = 'network';
 
@@ -370,7 +370,7 @@ class SelectedBooruChip extends StatelessWidget {
       horizontalTitleGap: 12,
       contentPadding: EdgeInsets.zero,
       visualDensity: VisualDensity.compact,
-      leading: BooruLogo.fromBooruType(booruType, url),
+      leading: ConfigAwareWebsiteLogo.fromBooruType(booruType, url),
       title: Text(
         source.whenWeb(
           (source) => source.uri.host,

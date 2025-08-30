@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 // Project imports:
 import '../../../../../foundation/display.dart';
-import '../../../../config_widgets/booru_logo.dart';
+import '../../../../config_widgets/website_logo.dart';
 import '../../../../widgets/conditional_parent_widget.dart';
 import '../../../config/types.dart';
 
@@ -156,7 +156,7 @@ class BooruSelectorItem extends StatelessWidget {
                         : null,
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(8),
-                      child: BooruLogo.fromConfig(
+                      child: ConfigAwareWebsiteLogo.fromConfig(
                         config.auth,
                         width: logoSize,
                         height: logoSize,

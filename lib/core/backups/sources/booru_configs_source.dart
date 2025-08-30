@@ -8,7 +8,7 @@ import 'package:version/version.dart';
 
 // Project imports:
 import '../../../foundation/info/package_info.dart';
-import '../../config_widgets/booru_logo.dart';
+import '../../config_widgets/website_logo.dart';
 import '../../configs/config.dart';
 import '../../configs/manage/providers.dart';
 import '../../settings/providers.dart';
@@ -108,7 +108,7 @@ class BooruConfigsBackupSource extends JsonBackupSource<List<BooruConfig>> {
                       ...first5Configs.map(
                         (e) => ClipRRect(
                           borderRadius: BorderRadius.circular(12),
-                          child: BooruLogo.fromConfig(e.auth),
+                          child: ConfigAwareWebsiteLogo.fromConfig(e.auth),
                         ),
                       ),
                       if (first5Configs.length < configs.length)

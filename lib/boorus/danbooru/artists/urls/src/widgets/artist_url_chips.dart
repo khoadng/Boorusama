@@ -30,7 +30,7 @@ class DanbooruArtistUrlChips extends StatelessWidget {
               child: InkWell(
                 onTap: () => launchExternalUrlString(source.url),
                 child: ConfigAwareWebsiteLogo(
-                  url: source.faviconUrl,
+                  url: source.url,
                   size: 24,
                 ),
               ),

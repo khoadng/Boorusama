@@ -14,7 +14,7 @@ import '../boorus/engine/providers.dart';
 import '../bulk_downloads/providers.dart';
 import '../cache/providers.dart';
 import '../changelogs/utils.dart';
-import '../config_widgets/booru_logo.dart';
+import '../config_widgets/website_logo.dart';
 import '../configs/config.dart';
 import '../configs/manage/providers.dart';
 import '../configs/manage/widgets.dart';
@@ -225,7 +225,7 @@ class _Boorus extends ConsumerWidget {
                     },
                     leading: ClipRRect(
                       borderRadius: BorderRadius.circular(12),
-                      child: BooruLogo(source: config.url),
+                      child: ConfigAwareWebsiteLogo(url: config.url),
                     ),
                   );
                 },

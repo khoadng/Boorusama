@@ -14,7 +14,7 @@ import 'package:readmore/readmore.dart';
 // Project imports:
 import '../../../../foundation/clipboard.dart';
 import '../../../../foundation/toast.dart';
-import '../../../config_widgets/booru_logo.dart';
+import '../../../config_widgets/website_logo.dart';
 import '../../../configs/config/providers.dart';
 import '../../../download_manager/providers.dart';
 import '../../../download_manager/types.dart';
@@ -432,8 +432,8 @@ class _Logo extends ConsumerWidget {
     return stats != DownloadSessionStats.empty
         ? Padding(
             padding: const EdgeInsets.only(right: 4),
-            child: BooruLogo(
-              source: session.session.auth.siteUrl,
+            child: ConfigAwareWebsiteLogo(
+              url: session.session.auth.siteUrl,
               width: 18,
               height: 18,
             ),

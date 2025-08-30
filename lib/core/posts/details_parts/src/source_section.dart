@@ -79,7 +79,7 @@ class SourceSection extends StatelessWidget {
                   padding: const EdgeInsets.all(8),
                   child: Row(
                     children: [
-                      ConfigAwareWebsiteLogo(url: source.faviconUrl),
+                      ConfigAwareWebsiteLogo(url: source.url),
                       const SizedBox(width: 8),
                       Expanded(
                         flex: 10,

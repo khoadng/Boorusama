@@ -14,7 +14,7 @@ import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
 import '../../../../foundation/url_launcher.dart';
-import '../../../config_widgets/booru_logo.dart';
+import '../../../config_widgets/website_logo.dart';
 import '../../../configs/ref.dart';
 import '../../../posts/listing/providers.dart';
 import '../../../posts/listing/src/_internal/default_image_grid_item.dart';
@@ -260,7 +260,7 @@ class _BookmarkScrollViewState extends ConsumerState<BookmarkScrollView> {
               leadingIcons: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(8),
-                  child: BooruLogo(source: post.bookmark.sourceUrl),
+                  child: ConfigAwareWebsiteLogo(url: post.bookmark.sourceUrl),
                 ),
               ],
               contextMenu: GenericContextMenu(

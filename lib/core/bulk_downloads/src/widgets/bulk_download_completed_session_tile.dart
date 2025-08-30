@@ -14,7 +14,7 @@ import 'package:readmore/readmore.dart';
 // Project imports:
 import '../../../../foundation/clipboard.dart';
 import '../../../../foundation/toast.dart';
-import '../../../config_widgets/booru_logo.dart';
+import '../../../config_widgets/website_logo.dart';
 import '../../../configs/ref.dart';
 import '../../../images/booru_image.dart';
 import '../../../theme/app_theme.dart';
@@ -221,7 +221,7 @@ class _Logo extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return stats != DownloadSessionStats.empty
-        ? BooruLogo.fromConfig(
+        ? ConfigAwareWebsiteLogo.fromConfig(
             ref.watchConfigAuth,
             width: 18,
             height: 18,
