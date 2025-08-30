@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -141,50 +140,13 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
             controller: apiKeyController,
           ),
           const SizedBox(height: 8),
-          RichText(
-            text: TextSpan(
-              style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                color: Theme.of(context).colorScheme.hintColor,
-                fontSize: 12,
-                fontWeight: FontWeight.w400,
-              ),
-              children: [
-                const TextSpan(
-                  text: '*Log in to your account in the browser, visit ',
-                ),
-                TextSpan(
-                  text: 'My Account > Options > API Access Credentials',
-                  recognizer: TapGestureRecognizer()
-                    ..onTap = () {
-                      launchExternalUrlString(
-                        getGelbooruProfileUrl(config.url),
-                      );
-                    },
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                ),
-                const TextSpan(
-                  text: ' and fill in the values manually.',
-                ),
-              ],
-            ),
+          DefaultBooruInstructionHtmlText(
+            context.t.booru.api_key_instructions.variants_5,
+            onApiLinkTap: () {
+              launchExternalUrlString(getGelbooruProfileUrl(config.url));
+            },
           ),
-          const SizedBox(height: 8),
-          const Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'or',
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 16,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 12),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

@@ -3,17 +3,15 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:booru_clients/core.dart' as c;
-import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
+import '../../../core/configs/auth/widgets.dart';
 import '../../../core/configs/create/providers.dart';
 import '../../../core/configs/create/widgets.dart';
 import '../../../core/configs/search/widgets.dart';
 import '../../../core/configs/viewer/widgets.dart';
-import '../../../core/theme/app_theme.dart';
-import '../../../foundation/html.dart';
 import '../../../foundation/url_launcher.dart';
 import '../../gelbooru/configs/_internal_widgets.dart';
 import 'internal_widgets.dart';
@@ -85,11 +83,10 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruV2AuthView> {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
     final authConfig = widget.authConfig;
     final instructionsText = switch (authConfig?.instructionsKey) {
       final String key when key.isNotEmpty => context.t[key],
-      _ => context.t.booru.auth_instructions.variants_2,
+      _ => context.t.booru.api_key_instructions.variants_2,
     };
     final hasAuthConfig = authConfig != null;
 
@@ -108,30 +105,12 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruV2AuthView> {
             controller: apiKeyController,
           ),
           const SizedBox(height: 8),
-          AppHtml(
-            data: instructionsText,
-            style: {
-              'a': Style(
-                textDecoration: TextDecoration.none,
-                color: colorScheme.primary,
-              ),
-              'b': Style(
-                textDecoration: TextDecoration.underline,
-                textDecorationColor: colorScheme.hintColor,
-                fontWeight: FontWeight.bold,
-              ),
-              'body': Style(
-                margin: Margins.zero,
-                color: colorScheme.hintColor,
-              ),
-            },
-            onLinkTap: switch (authConfig?.apiKeyUrl) {
-              final String apiKeyUrl when apiKeyUrl.isNotEmpty =>
-                (url, attributes, element) {
-                  if (url != null && url == 'api-credentials') {
-                    launchExternalUrlString(apiKeyUrl);
-                  }
-                },
+          DefaultBooruInstructionHtmlText(
+            instructionsText,
+            onApiLinkTap: switch (authConfig?.apiKeyUrl) {
+              final String apiKeyUrl when apiKeyUrl.isNotEmpty => () {
+                launchExternalUrlString(apiKeyUrl);
+              },
               _ => null,
             },
           ),

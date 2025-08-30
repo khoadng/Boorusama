@@ -335,7 +335,7 @@ static const _defaults = <BooruFeatureId, BooruFeature>{
       },
       auth: AuthConfig(
         apiKeyUrl: 'https://rule34.xxx/index.php?page=account&s=options',
-        instructionsKey: 'booru.auth_instructions.variants_1',
+        instructionsKey: 'booru.api_key_instructions.variants_1',
       ),
     ),
     'https://hypnohub.net/': SiteCapabilities(
