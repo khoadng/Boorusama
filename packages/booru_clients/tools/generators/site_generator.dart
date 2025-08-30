@@ -54,6 +54,9 @@ class SiteGenerator extends TemplateGenerator<BooruConfig> {
         'url': site.url,
         'hasOverrides': overrides.isNotEmpty,
         'overrides': overrides,
+        'hasAuth': site.auth != null,
+        'apiKeyUrl': site.auth?.apiKeyUrl ?? '',
+        'instructionsKey': site.auth?.instructionsKey ?? '',
         'isLast': index == config.sites.length - 1,
       };
     }).toList();

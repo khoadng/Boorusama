@@ -88,6 +88,9 @@
 
     sites:
       - url: https://rule34.xxx/
+        auth:
+          api-key-url: "https://rule34.xxx/index.php?page=account&s=options"
+          instructions-key: "booru.auth_instructions.variants_1"
         overrides:
           autocomplete:
             endpoint: "https://api.rule34.xxx/autocomplete.php"

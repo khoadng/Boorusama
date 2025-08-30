@@ -18,7 +18,11 @@ static const _defaults = <BooruFeatureId, BooruFeature>{
 {{/hasParams}}{{#hasFeature}}          feature: {{{featureConstructor}}},
 {{/hasFeature}}        ),
 {{/overrides}}
-      }{{/hasOverrides}}{{^hasOverrides}}{}{{/hasOverrides}},
+      }{{/hasOverrides}}{{^hasOverrides}}{}{{/hasOverrides}},{{#hasAuth}}
+      auth: AuthConfig(
+{{#apiKeyUrl}}        apiKeyUrl: '{{{apiKeyUrl}}}',
+{{/apiKeyUrl}}{{#instructionsKey}}        instructionsKey: '{{{instructionsKey}}}',
+{{/instructionsKey}}      ),{{/hasAuth}}
     ),
 {{/sites}}
   };

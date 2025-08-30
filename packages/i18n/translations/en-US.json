@@ -593,6 +593,10 @@
     "month": "Month"
   },
   "booru": {
+    "auth_instructions": {
+      "variants_1": "*Log in to your account in the browser and visit <b><a href=\"api-credentials\">My Account > Options > API Access Credentials</a></b> to get your API key. If you see empty API key like <b>&api_key=&user_id=<your_id></b>, tick <b>Generate New Key?</b> and click the <b>Save</b> button at the very bottom to generate a new API key. Otherwise, copy the key and paste it into the field above. You can also copy the whole string from the <b>API Access Credentials</b> section and choose <b>Paste from clipboard</b> button below.",
+      "variants_2": "*Log in to your account on the browser, visit <b>My Account > Options > API Access Credentials</b>. Check if it is there. If not, the site does not support credentials, and you can ignore this."
+    },
     "booru_engine_input_label": "Booru engine (*)",
     "config_name_label": "Profile name (*)",
     "no_profiles_available": "No profiles available",

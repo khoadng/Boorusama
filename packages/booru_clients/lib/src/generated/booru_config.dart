@@ -139,6 +139,16 @@ abstract class EndpointOverride {
   final EndpointType? type;
 }
 
+class AuthConfig {
+  const AuthConfig({
+    this.apiKeyUrl,
+    this.instructionsKey,
+  });
+
+  final String? apiKeyUrl;
+  final String? instructionsKey;
+}
+
 class AutocompleteEndpointOverride extends EndpointOverride {
   const AutocompleteEndpointOverride({
     super.parserStrategy,
@@ -195,10 +205,12 @@ class SiteCapabilities {
   const SiteCapabilities({
     required this.siteUrl,
     required this.overrides,
+    this.auth,
   });
 
   final String siteUrl;
   final Map<BooruFeatureId, EndpointOverride> overrides;
+  final AuthConfig? auth;
 
   AutocompleteFeature? get autocomplete {
     final override = overrides[BooruFeatureId.autocomplete] as AutocompleteEndpointOverride?;
@@ -321,6 +333,10 @@ static const _defaults = <BooruFeatureId, BooruFeature>{
           path: 'https://api.rule34.xxx/autocomplete.php',
         ),
       },
+      auth: AuthConfig(
+        apiKeyUrl: 'https://rule34.xxx/index.php?page=account&s=options',
+        instructionsKey: 'booru.auth_instructions.variants_1',
+      ),
     ),
     'https://hypnohub.net/': SiteCapabilities(
       siteUrl: 'https://hypnohub.net/',

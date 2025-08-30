@@ -32,10 +32,22 @@ class SiteConfig {
   const SiteConfig({
     required this.url,
     required this.overrides,
+    this.auth,
   });
 
   final String url;
   final Map<String, OverrideConfig> overrides;
+  final AuthConfig? auth;
+}
+
+class AuthConfig {
+  const AuthConfig({
+    this.apiKeyUrl,
+    this.instructionsKey,
+  });
+
+  final String? apiKeyUrl;
+  final String? instructionsKey;
 }
 
 class OverrideConfig {

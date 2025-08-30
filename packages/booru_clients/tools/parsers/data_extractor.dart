@@ -140,12 +140,29 @@ class DataExtractor {
       if (site is YamlMap) {
         final url = site['url'] as String;
         final overrides = _parseOverrides(site['overrides']);
+        final auth = _parseAuthConfig(site['auth']);
 
-        result.add(SiteConfig(url: url, overrides: overrides));
+        result.add(
+          SiteConfig(
+            url: url,
+            overrides: overrides,
+            auth: auth,
+          ),
+        );
       }
     }
 
     return result;
+  }
+
+  static AuthConfig? _parseAuthConfig(dynamic auth) {
+    if (auth == null) return null;
+
+    final authMap = auth as YamlMap;
+    return AuthConfig(
+      apiKeyUrl: authMap['api-key-url'] as String?,
+      instructionsKey: authMap['instructions-key'] as String?,
+    );
   }
 
   static Map<String, OverrideConfig> _parseOverrides(dynamic overrides) {

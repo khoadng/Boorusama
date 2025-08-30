@@ -82,16 +82,28 @@ abstract class EndpointOverride {
   final EndpointType? type;
 }
 
+class AuthConfig {
+  const AuthConfig({
+    this.apiKeyUrl,
+    this.instructionsKey,
+  });
+
+  final String? apiKeyUrl;
+  final String? instructionsKey;
+}
+
 {{{overrideClasses}}}
 
 class SiteCapabilities {
   const SiteCapabilities({
     required this.siteUrl,
     required this.overrides,
+    this.auth,
   });
 
   final String siteUrl;
   final Map<BooruFeatureId, EndpointOverride> overrides;
+  final AuthConfig? auth;
 
 {{{featureGetters}}}
 }
