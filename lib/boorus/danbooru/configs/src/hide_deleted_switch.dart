@@ -32,7 +32,7 @@ class DanbooruHideDeletedSwitch extends ConsumerWidget {
       value: hideDeleted,
       onChanged: (value) => ref.editNotifier.updateDeletedItemBehavior(value),
       subtitle: Text(
-        'Hide low-quality images, some decent ones might also be hidden.'.hc,
+        context.t.booru.hide_deleted_description,
       ),
     );
   }
@@ -53,11 +53,11 @@ class DanbooruHideBannedSwitch extends ConsumerWidget {
 
     return BooruSwitchListTile(
       contentPadding: EdgeInsets.zero,
-      title: Text('Hide banned posts'.hc),
+      title: Text(context.t.booru.hide_banned_label),
       value: bannedVis == BooruConfigBannedPostVisibility.hide,
       onChanged: (value) => ref.editNotifier.updateBannedPostVisibility(value),
       subtitle: Text(
-        'Completely hide banned images from listings.'.hc,
+        context.t.booru.hide_banned_description,
       ),
     );
   }

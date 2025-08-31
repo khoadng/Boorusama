@@ -65,7 +65,7 @@ class ShowTagActionBar extends ConsumerWidget {
                           }
                         : null,
                     icon: const Icon(Symbols.search),
-                    name: 'Search Tags'.hc,
+                    name: context.t.tags.actions.search,
                   ),
                   MultiSelectButton(
                     onPressed: tags.isNotEmpty
@@ -76,7 +76,7 @@ class ShowTagActionBar extends ConsumerWidget {
                           )
                         : null,
                     icon: const Icon(Symbols.content_copy),
-                    name: 'Copy Tags'.hc,
+                    name: context.t.tags.actions.copy,
                   ),
                   if (onAddToBlacklist != null)
                     MultiSelectButton(
@@ -87,7 +87,7 @@ class ShowTagActionBar extends ConsumerWidget {
                             )
                           : null,
                       icon: const Icon(Symbols.block),
-                      name: 'Blacklist'.hc,
+                      name: context.t.tags.actions.blacklist,
                     ),
                   MultiSelectButton(
                     onPressed: tags.isNotEmpty
@@ -97,7 +97,7 @@ class ShowTagActionBar extends ConsumerWidget {
                           )
                         : null,
                     icon: const Icon(Symbols.block),
-                    name: 'Blacklist (Global)'.hc,
+                    name: context.t.tags.actions.blacklist_global,
                   ),
                   MultiSelectButton(
                     onPressed: tags.isNotEmpty

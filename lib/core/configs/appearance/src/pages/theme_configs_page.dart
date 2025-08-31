@@ -26,7 +26,7 @@ class ThemeConfigsPage extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Theme'.hc),
+        title: Text(context.t.settings.theme.theme),
       ),
       body: ThemeSection(
         theme: theme,

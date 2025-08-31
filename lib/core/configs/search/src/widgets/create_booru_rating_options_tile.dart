@@ -58,7 +58,7 @@ class CreateBooruRatingOptionsTile extends StatelessWidget {
                 .map(
                   (value) => DropdownMenuItem(
                     value: value,
-                    child: Text(value.getFilterRatingTerm()),
+                    child: Text(value.getFilterRatingTerm(context)),
                   ),
                 )
                 .toList(),
@@ -66,7 +66,9 @@ class CreateBooruRatingOptionsTile extends StatelessWidget {
         ),
         if (value == BooruConfigRatingFilter.custom) ...[
           Text(
-            'Choose ${singleSelection ? 'a rating' : 'rating(s)'} that you want to exclude from the search.',
+            context.t.booru.choose_a_custom_filtering(
+              n: singleSelection ? 1 : 2,
+            ),
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
               color: Theme.of(
                 context,
@@ -164,4 +166,15 @@ class _CreateBooruConfigGranularRatingOptionsState
       ],
     );
   }
+}
+
+extension BooruConfigRatingFilterX on BooruConfigRatingFilter {
+  String getFilterRatingTerm(BuildContext context) => switch (this) {
+    BooruConfigRatingFilter.none => context.t.booru.content_filtering.none,
+    BooruConfigRatingFilter.hideExplicit =>
+      context.t.booru.content_filtering.moderate,
+    BooruConfigRatingFilter.hideNSFW =>
+      context.t.booru.content_filtering.aggressive,
+    BooruConfigRatingFilter.custom => context.t.booru.content_filtering.custom,
+  };
 }

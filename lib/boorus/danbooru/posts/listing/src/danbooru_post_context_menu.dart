@@ -91,13 +91,13 @@ class DanbooruPostContextMenu extends ConsumerWidget {
           ),
         if (!booruConfig.hasStrictSFW)
           ContextMenuButtonConfig(
-            context.t.post.detail.view_in_browser,
+            context.t.post.action.view_in_browser,
             onPressed: () =>
                 launchExternalUrlString(postLinkGenerator.getLink(post)),
           ),
         if (post.tags.isNotEmpty)
           ContextMenuButtonConfig(
-            'View tags',
+            context.t.post.action.view_tags,
             onPressed: () {
               goToShowTaglistPage(
                 ref,
@@ -107,7 +107,7 @@ class DanbooruPostContextMenu extends ConsumerWidget {
             },
           ),
         ContextMenuButtonConfig(
-          'View tag history',
+          context.t.post.action.view_tag_history,
           onPressed: () => goToPostVersionPage(ref, post),
         ),
         if (hasAccount)

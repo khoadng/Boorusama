@@ -1,31 +1,26 @@
+// Flutter imports:
+import 'package:flutter/widgets.dart';
+
 // Package imports:
 import 'package:equatable/equatable.dart';
+import 'package:i18n/i18n.dart';
 
-const defaultBenefits = <Benefit>[
+List<Benefit> defaultBenefits(BuildContext context) => [
   Benefit(
-    title: 'Exclusive Themes',
-    description:
-        'Pick from a variety of themes to personalize each profile’s look',
+    title: context.t.premium.benefits.exclusive_themes,
+    description: context.t.premium.benefits.exclusive_themes_description,
   ),
   Benefit(
-    title: 'Layout & Home Screen',
-    description:
-        'Customize how much info you see, and set your preferred home screen (Bookmarks, Search, etc.)',
+    title: context.t.premium.benefits.layout_customization,
+    description: context.t.premium.benefits.layout_customization_description,
   ),
   Benefit(
-    title: 'Enhanced Bulk Downloader',
-    description:
-        'Unlimited templates, multiple sessions and seamless resume after restart.',
+    title: context.t.premium.benefits.enhanced_bulk_download,
+    description: context.t.premium.benefits.enhanced_bulk_download_description,
   ),
   Benefit(
-    title: 'Early Access',
-    description:
-        'Get a first look at experimental features before everyone else.',
-  ),
-  Benefit(
-    title: 'Support Development',
-    description:
-        'Help a solo developer keep the project going with regular updates and improvements.',
+    title: context.t.premium.benefits.support_development,
+    description: context.t.premium.benefits.support_development_description,
   ),
 ];
 

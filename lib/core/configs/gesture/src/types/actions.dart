@@ -1,3 +1,9 @@
+// Flutter imports:
+import 'package:flutter/widgets.dart';
+
+// Package imports:
+import 'package:i18n/i18n.dart';
+
 const kDownloadAction = 'download';
 const kShareAction = 'share';
 const kToggleBookmarkAction = 'toggleBookmark';
@@ -23,24 +29,26 @@ const kDefaultGestureActions = {
   kOpenSourceAction,
 };
 
-String describeDefaultGestureAction(String? action) => switch (action) {
-  kDownloadAction => 'Download',
-  kShareAction => 'Share',
-  kToggleBookmarkAction => 'Toggle bookmark',
-  kViewTagsAction => 'View tags',
-  kViewOriginalAction => 'View original',
-  kOpenSourceAction => 'Open source',
-  kDefaultAction => 'Default',
-  _ => 'None',
-};
+String describeDefaultGestureAction(String? action, BuildContext context) =>
+    switch (action) {
+      kDownloadAction => context.t.download.download,
+      kShareAction => context.t.post.action.share,
+      kToggleBookmarkAction => context.t.post.action.toggle_bookmark,
+      kViewTagsAction => context.t.post.action.view_tags,
+      kViewOriginalAction => context.t.post.action.view_original,
+      kOpenSourceAction => context.t.post.action.view_in_browser,
+      kDefaultAction => context.t.post.action.use_default,
+      _ => context.t.post.action.none,
+    };
 
-String describeImagePreviewQuickAction(String? action) => switch (action) {
-  kDownloadAction => 'Download',
-  kToggleBookmarkAction => 'Bookmark',
-  kViewArtistAction => 'Artist',
-  '' => 'None',
-  _ => 'Use Default',
-};
+String describeImagePreviewQuickAction(String? action, BuildContext context) =>
+    switch (action) {
+      kDownloadAction => context.t.download.download,
+      kToggleBookmarkAction => context.t.post.action.bookmark,
+      kViewArtistAction => context.t.post.action.view_artist,
+      '' => context.t.post.action.none,
+      _ => context.t.post.action.use_default,
+    };
 
 bool handleDefaultGestureAction(
   String? action, {

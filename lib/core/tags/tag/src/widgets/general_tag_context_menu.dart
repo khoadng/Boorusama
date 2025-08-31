@@ -41,7 +41,7 @@ class GeneralTagContextMenu extends ConsumerWidget
             },
           ),
           ContextMenuButtonConfig(
-            'Add to global blacklist',
+            context.t.tags.actions.add_to_blacklist_global,
             onPressed: () {
               globalNotifier.addTagWithToast(context, tag);
             },
@@ -61,19 +61,19 @@ class GeneralTagContextMenu extends ConsumerWidget
 mixin TagContextMenuButtonConfigMixin {
   ContextMenuButtonConfig copyButton(BuildContext context, String tag) =>
       ContextMenuButtonConfig(
-        'Copy',
+        context.t.tags.actions.copy_single,
         onPressed: () {
           AppClipboard.copyAndToast(
             context,
             tag,
-            message: context.t.post.detail.copied,
+            message: context.t.generic.copied,
           );
         },
       );
 
   ContextMenuButtonConfig searchButton(WidgetRef ref, String tag) =>
       ContextMenuButtonConfig(
-        'Search',
+        ref.context.t.tags.actions.search_single,
         onPressed: () {
           goToSearchPage(ref, tag: tag);
         },

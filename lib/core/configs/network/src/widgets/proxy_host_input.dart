@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../widgets/booru_text_form_field.dart';
@@ -27,9 +28,9 @@ class ProxyHostInput extends ConsumerWidget {
           proxySettings?.copyWith(host: value),
         );
       },
-      decoration: const InputDecoration(
-        labelText: 'Host or IP (*)',
-        hintText: 'proxy.host.com or 123.456.789.0',
+      decoration: InputDecoration(
+        labelText: context.t.booru.network.proxy.host_or_ip,
+        hintText: context.t.booru.network.proxy.host_or_ip_hint,
       ),
     );
   }

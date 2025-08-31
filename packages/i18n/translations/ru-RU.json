@@ -12,9 +12,11 @@
       "ok": "OK",
       "cancel": "Отмена",
       "duplicate": "Дубликат",
-      "select": "Выбрать"
+      "select": "Выбрать",
+      "view": "Посмотреть"
     },
-    "view": "Посмотреть"
+    "copied": "Скопировано",
+    "app_restart_request": "Перезагрузите приложение для того, чтобы изменения вступили в силу"
   },
   "profile": {
     "favorites": "Избранные",
@@ -39,8 +41,6 @@
   },
   "post": {
     "detail": {
-      "view": "Просмотр",
-      "view_in_browser": "Открыть в браузере",
       "file_details": "Детали",
       "size": "Размер",
       "resolution": "Разрешение",
@@ -51,12 +51,10 @@
         "booru": "Поделиться ссылкой на сайт",
         "image": "Поделиться изображением"
       },
-      "copied": "Скопировано",
       "show_original": "Показать оригинал",
       "show_translated": "Показать перевод",
       "login_required_notice": "Вы должны войти в аккаунт для совершения действия",
       "open_wiki": "Открыть wiki",
-      "add_to_blacklist": "Добавить в чёрный список",
       "add_to_favorites": "Добавить в любимое",
       "copy_and_open_saved_search": "Сохранить и открыть сохранённый запрос",
       "score": {
@@ -71,9 +69,8 @@
     "action": {
       "preview": "Предпросмотр",
       "view_comments": "Просмотреть комментарии",
-      "add_to_favorite_group": "Добавить в любимое"
-    },
-    "image_fullview": {
+      "add_to_favorite_group": "Добавить в любимое",
+      "view_in_browser": "Открыть в браузере",
       "view_original": "Просмотреть оригинальное изображение"
     }
   },
@@ -308,7 +305,8 @@
     "contact_developer": "Связаться с разработчиком",
     "contact_developer_description": "Если у вас есть какие-либо вопросы или предложения, напишите мне по электронной почте с помощью этой опции",
     "feature_request_and_bug_report": "Предложения и отчет об ошибках",
-    "feature_request_and_bug_report_description": "Предлагайте функции или сообщайте об ошибках через репозиторий GitHub"
+    "feature_request_and_bug_report_description": "Предлагайте функции или сообщайте об ошибках через репозиторий GitHub",
+    "open_app_settings": "Открыть настройки"
   },
   "blacklisted_tags": {
     "remove": "Удалить",
@@ -328,9 +326,7 @@
     "bulk_download_save_to_folder": "Сохранить в",
     "bulk_download_invalid_folder_name_error": "Название папки не может содержать следующие символы: ",
     "bulk_download_folder_select_warning": "Приложение может сохранять файлы только в публичные папки <b>({0})</b> в Android 11+. <br><br> Примеры правильного местоположения:<br><b>[Внутреннее]</b> /storage/emulated/0/Download <br><b>[SD карта]</b> /storage/A1B2-C3D4/Download<br><br>Пожалуйста, выберите другое расположение или создайте новое если не существует. <br>Версия этого устройства: <b>{1}</b>.",
-    "open_app_settings": "Открыть настройки",
     "storage_permission_explanation": "Разрешение на доступ к хранилищу необхдимо для сохранения загруженных файлов.",
-    "app_restart_request": "Перезагрузите приложение для того, чтобы изменения вступили в силу",
     "image_counter": {
       "one": "Скачать $n изображение",
       "other": "Скачать $n изображений"
@@ -438,10 +434,16 @@
     "validation_redundant_www": "\"{0}\" содержит лишний \"www\"",
     "validation_contains_spaces": "\"{0}\" содержит промежуточные пробелы",
     "validation_missing_scheme": "В \"{0}\" отсутствует схема (например, https://)",
-    "authentication": "Аутентификация",
-    "download": "Загрузка",
-    "gestures": "Жесты",
-    "misc": "Разное"
+    "misc": "Разное",
+    "authentication": {
+      "title": "Аутентификация"
+    },
+    "gestures": {
+      "title": "Жесты"
+    },
+    "downloads": {
+      "title": "Загрузка"
+    }
   },
   "blacklist": {
     "manage": {
@@ -481,6 +483,11 @@
         "one": "Секунда",
         "other": "Секунд(-ы)"
       }
+    }
+  },
+  "tags": {
+    "actions": {
+      "add_to_blacklist": "Добавить в чёрный список"
     }
   }
 }

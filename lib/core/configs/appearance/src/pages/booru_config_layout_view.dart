@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
@@ -49,7 +50,7 @@ class BooruConfigLayoutView extends ConsumerWidget {
                 Expanded(
                   child: AppearanceConfigCard(
                     icon: const Icon(Symbols.color_lens),
-                    title: 'Theme',
+                    title: context.t.settings.theme.theme,
                     onPressed: () {
                       Navigator.of(context).push(
                         CupertinoPageRoute(
@@ -71,7 +72,8 @@ class BooruConfigLayoutView extends ConsumerWidget {
                   Expanded(
                     child: AppearanceConfigCard(
                       icon: const Icon(Symbols.info_rounded),
-                      title: 'Details',
+                      title:
+                          context.t.booru.appearance.image_viewer_layout.title,
                       onPressed: () {
                         Navigator.of(context).push(
                           CupertinoPageRoute(

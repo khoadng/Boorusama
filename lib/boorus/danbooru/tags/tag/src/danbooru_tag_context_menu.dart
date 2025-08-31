@@ -35,7 +35,7 @@ class DanbooruTagContextMenu extends ConsumerWidget {
           tag,
         ),
         if (config.hasLoginDetails())
-          context.t.post.detail.add_to_blacklist: () => ref
+          context.t.tags.actions.add_to_blacklist: () => ref
               .read(danbooruBlacklistedTagsProvider(config).notifier)
               .addWithToast(context: context, tag: tag),
         if (config.hasLoginDetails())

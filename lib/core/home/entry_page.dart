@@ -60,7 +60,7 @@ class _EntryPageState extends ConsumerState<EntryPage> {
             showSimpleSnackBar(
               context: context,
               action: SnackBarAction(
-                label: context.t.download.open_app_settings,
+                label: context.t.settings.open_app_settings,
                 onPressed: openAppSettings,
               ),
               behavior: SnackBarBehavior.fixed,

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
@@ -48,7 +49,12 @@ class CombinationModeSelector extends ConsumerWidget {
           child: Row(
             children: [
               Text(
-                selectedMode.name,
+                switch (selectedMode) {
+                  BlacklistCombinationMode.merge =>
+                    context.t.booru.search.blacklist_combine_mode.merge,
+                  BlacklistCombinationMode.replace =>
+                    context.t.booru.search.blacklist_combine_mode.replace,
+                },
               ),
               Icon(
                 Symbols.keyboard_arrow_down,
@@ -79,14 +85,14 @@ class CombinationModeSheet extends ConsumerWidget {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const Padding(
-          padding: EdgeInsets.symmetric(
+        Padding(
+          padding: const EdgeInsets.symmetric(
             vertical: 8,
             horizontal: 16,
           ),
           child: Text(
-            'Combination Mode',
-            style: TextStyle(
+            context.t.booru.search.blacklist_combine_mode.title,
+            style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w600,
             ),
@@ -95,8 +101,23 @@ class CombinationModeSheet extends ConsumerWidget {
         ...kBlacklistCombinationModes.map(
           (e) => CombinationModeOptionTile(
             selected: selectedMode == e,
-            title: e.name,
-            subtitle: e.description,
+            title: switch (e) {
+              BlacklistCombinationMode.merge =>
+                context.t.booru.search.blacklist_combine_mode.merge,
+              BlacklistCombinationMode.replace =>
+                context.t.booru.search.blacklist_combine_mode.replace,
+            },
+            subtitle: switch (e) {
+              BlacklistCombinationMode.merge =>
+                context.t.booru.search.blacklist_combine_mode.merge_description,
+              BlacklistCombinationMode.replace =>
+                context
+                    .t
+                    .booru
+                    .search
+                    .blacklist_combine_mode
+                    .replace_description,
+            },
             onTap: () {
               ref.read(blacklistConfigsProvider(id).notifier).changeMode(e);
               Navigator.of(context).pop();

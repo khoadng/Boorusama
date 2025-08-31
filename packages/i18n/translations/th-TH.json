@@ -3,11 +3,7 @@
     "done": "เสร็จ",
     "errors": {
       "no_data": "ไม่มีข้อมูลในขณะนี้",
-      "unknown": "มีบางอย่างผิดปรกติ",
-      "failed_to_load_image": "พบปัญหาการโหลดรูปภาพ",
-      "config_not_found": "ไม่พบการตั้งค่า",
-      "error_loading_tags": "พบปัญหาการโหลดแท็ก",
-      "fail_to_load_profile": "ไม่สามารถโหลดโปรไฟล์ได้"
+      "unknown": "มีบางอย่างผิดปรกติ"
     },
     "action": {
       "add": "เพิ่ม",
@@ -22,20 +18,20 @@
       "retry": "ลองอีกครั้ง",
       "clear": "ลบข้อมูล",
       "create": "สร้าง",
-      "more": "เพิ่มเติม"
+      "more": "เพิ่มเติม",
+      "view": "ดู"
     },
-    "view": "ดู",
-    "empty_states": {
-      "no_tags": "ไม่มีแท็ก",
-      "no_content": "ไม่มีเนื้อหา"
-    },
-    "default": "ค่าเริ่มต้น"
+    "default": "ค่าเริ่มต้น",
+    "copied": "คัดลอกเรียบร้อย",
+    "no_content": "ไม่มีเนื้อหา",
+    "app_restart_request": "คุณจำเป็นต้องรีสตาร์ทแอปเพื่อให้การเปลี่ยนแปลงนี้มีผล"
   },
   "profile": {
     "favorites": "รายการโปรด",
     "profile": "โปรไฟล์",
     "copy_user_id": "คัดลอก User ID",
-    "messages": "ข้อความ"
+    "messages": "ข้อความ",
+    "fail_to_load_profile": "ไม่สามารถโหลดโปรไฟล์ได้"
   },
   "network": {
     "unavailable": "ระบบเน็ตไม่พร้อมใช้งาน"
@@ -54,8 +50,6 @@
   },
   "post": {
     "detail": {
-      "view": "ดูรายละเอียด",
-      "view_in_browser": "ดูรายละเอียดบนเบราเซอร์",
       "file_details": "รายละเอียดไฟล์",
       "size": "ขนาด",
       "resolution": "ขนาดความละเอียด",
@@ -66,12 +60,10 @@
         "booru": "แชร์ลิงค์จากเว็บ Booru",
         "image": "แชร์ภาพ"
       },
-      "copied": "คัดลอกเรียบร้อย",
       "show_original": "แสดงขนาดต้นฉบับ",
       "show_translated": "แสดงที่แปลมาแล้ว",
       "login_required_notice": "คุณต้องเข้าสู่ระบบก่อนเพื่อดำเนินการ",
       "open_wiki": "เปิดคลังวิกิ",
-      "add_to_blacklist": "เพิ่มเป็นคำต้องห้ามแสดง",
       "add_to_favorites": "เพิ่มเป็นรายการโปรด",
       "copy_and_open_saved_search": "คัดลอกและเปิดการค้นหาที่บันทึกไว้",
       "score": {
@@ -91,9 +83,8 @@
       "bookmark": "บุ๊กมาร์ก",
       "favorite": "รายการโปรด",
       "upvote": "โหวตเพิ่ม",
-      "downvote": "ลดโหวต"
-    },
-    "image_fullview": {
+      "downvote": "ลดโหวต",
+      "view_in_browser": "ดูรายละเอียดบนเบราเซอร์",
       "view_original": "ดูขนาดต้นฉบับ"
     },
     "statistics": {
@@ -129,8 +120,7 @@
     "see_more": "ดูเพิ่มเติม",
     "explore": "สำรวจ",
     "daily": "ประจำวัน",
-    "weekly": "ประจำสัปดาห์",
-    "stats": "จำนวนดาว"
+    "weekly": "ประจำสัปดาห์"
   },
   "search": {
     "errors": {
@@ -440,7 +430,8 @@
       "up_to_date": "ข้อมูลเป็นปัจจุบัน",
       "backing_up": "กำลังสำรอง...",
       "backup_now": "สำรองเดี๋ยวนี้"
-    }
+    },
+    "open_app_settings": "ตั้งค่าการเปิด"
   },
   "blacklisted_tags": {
     "remove": "ลบ",
@@ -460,9 +451,7 @@
     "bulk_download_save_to_folder": "บันทึกไปที่โฟลเดอร์",
     "bulk_download_invalid_folder_name_error": "โฟลเดอร์จะต้องไม่มีตัวอักษรตามที่ระบุดังนี้: ",
     "bulk_download_folder_select_warning": "แอปสามารถบันทึกไฟล์ไว้ในโฟลเดอร์ที่เข้าถึงได้อย่างสาธารณะได้แก่ <b>({0})</b> ในตั้งแต่ Android เวอร์ชั่น 11 เป็นต้นไป <div>และไม่รองรับการบันทึกไฟล์ลงเมมโมรี่การ์ด (SD การ์ด) ด้วยเช่นกัน</div> <div>โปรดเลือกที่จะบันทึกในที่อื่น</div> <div>อุปกรณ์นี้ใช้งาน Android เวอร์ชั่น {1}</div>",
-    "open_app_settings": "ตั้งค่าการเปิด",
     "storage_permission_explanation": "จำเป็นต้องให้การอนุญาตเข้าถึงพื้นที่จัดเก็บบนเครื่องเพื่อบันทึกไฟล์ที่ดาวน์โหลด",
-    "app_restart_request": "คุณจำเป็นต้องรีสตาร์ทแอปเพื่อให้การเปลี่ยนแปลงนี้มีผล",
     "image_counter": {
       "one": "ดาวน์โหลดภาพจำนวน $n ภาพ",
       "other": "ดาวน์โหลดภาพจำนวน $n ภาพ"
@@ -570,10 +559,16 @@
     "validation_redundant_www": "พบคำว่า \"www\" อยู่ในลิงค์ \"{0}\"",
     "validation_contains_spaces": "ลิงค์ \"{0}\" มีการเว้นวรรคอยู่",
     "validation_missing_scheme": "ไม่พบการระบุโปรโตคอลของเว็บ (เช่น https://) ในลิงค์ \"{0}\"",
-    "authentication": "การยืนยันตัวตน",
-    "download": "ดาวน์โหลด",
-    "gestures": "ท่าทางสัมผัส",
-    "misc": "อื่นๆ"
+    "misc": "อื่นๆ",
+    "authentication": {
+      "title": "การยืนยันตัวตน"
+    },
+    "gestures": {
+      "title": "ท่าทางสัมผัส"
+    },
+    "downloads": {
+      "title": "ดาวน์โหลด"
+    }
   },
   "blacklist": {
     "manage": {
@@ -606,5 +601,17 @@
     "double_tap": "แตะสองครั้ง",
     "long_press": "แตะค้าง",
     "tap": "แตะ"
+  },
+  "tags": {
+    "loading_tags_error": "พบปัญหาการโหลดแท็ก: $error",
+    "actions": {
+      "add_to_blacklist": "เพิ่มเป็นคำต้องห้ามแสดง"
+    }
+  },
+  "posts": {
+    "action": {},
+    "actions": {
+      "stats": "จำนวนดาว"
+    }
   }
 }

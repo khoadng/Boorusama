@@ -149,16 +149,20 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
           ],
         ),
         SettingsCard(
-          title: 'Video player engine'.hc,
-          subtitle: 'App restart is required for the change to take effect'.hc,
+          title: context.t.settings.image_viewer.video.video_player_engine,
+          subtitle: context.t.generic.app_restart_request,
           entries: [
             SettingsCardEntry(
-              title: 'Default',
+              title: context.t.settings.image_viewer.video.engine.kDefault,
               value: VideoPlayerEngine.auto.name,
               groupValue: settings.videoPlayerEngine.name,
-              subtitle:
-                  'Works well with most devices, may have issues with some video formats or older devices.'
-                      .hc,
+              subtitle: context
+                  .t
+                  .settings
+                  .image_viewer
+                  .video
+                  .engine
+                  .default_description,
               onSelected: (value) {
                 notifer.updateSettings(
                   settings.copyWith(
@@ -172,8 +176,7 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
               value: VideoPlayerEngine.mdk.name,
               groupValue: settings.videoPlayerEngine.name,
               subtitle:
-                  'Experimental, better performance for certain video formats, may cause crashes. Use at your own risk.'
-                      .hc,
+                  context.t.settings.image_viewer.video.engine.mdk_description,
               onSelected: (value) {
                 notifer.updateSettings(
                   settings.copyWith(

@@ -1,6 +1,5 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
 
 // Project imports:
 import '../../../../../foundation/html.dart';
@@ -43,24 +42,7 @@ class DefaultBooruInstructionHtmlText extends StatelessWidget {
 
     return AppHtml(
       data: text,
-      style: {
-        'a': Style(
-          textDecoration: TextDecoration.none,
-          color: colorScheme.primary,
-          fontSize: FontSize(12),
-        ),
-        'b': Style(
-          textDecoration: TextDecoration.underline,
-          textDecorationColor: colorScheme.hintColor,
-          fontWeight: FontWeight.bold,
-          fontSize: FontSize(12),
-        ),
-        'body': Style(
-          margin: Margins.zero,
-          color: colorScheme.hintColor,
-          fontSize: FontSize(12),
-        ),
-      },
+      style: AppHtml.hintStyle(colorScheme),
       onLinkTap: onApiLinkTap != null
           ? (url, attributes, element) {
               if (url == 'api-credentials') {

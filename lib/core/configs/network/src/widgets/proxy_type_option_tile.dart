@@ -27,7 +27,9 @@ class ProxyTypeOptionTile extends ConsumerWidget {
     return ListTile(
       contentPadding: const EdgeInsets.only(left: 4),
       visualDensity: VisualDensity.compact,
-      title: Text('Proxy Type'.hc),
+      title: Text(
+        context.t.booru.network.proxy.type,
+      ),
       trailing: OptionDropDownButton(
         alignment: AlignmentDirectional.centerStart,
         value: proxySettings?.type,
@@ -40,7 +42,8 @@ class ProxyTypeOptionTile extends ConsumerWidget {
                 value: e,
                 child: Text(
                   switch (e) {
-                    ProxyType.unknown => '<Select>'.hc,
+                    ProxyType.unknown =>
+                      context.t.booru.network.proxy.select_type,
                     ProxyType.http => 'HTTP(S)',
                     ProxyType.socks5 => 'SOCKS5',
                   },

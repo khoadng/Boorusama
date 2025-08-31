@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../create/create.dart';
@@ -28,8 +29,8 @@ class UpdateBooruConfigScope extends ConsumerWidget {
     if (config == null) {
       return Scaffold(
         appBar: AppBar(),
-        body: const Center(
-          child: Text('Config not found'),
+        body: Center(
+          child: Text(context.t.generic.no_content),
         ),
       );
     }

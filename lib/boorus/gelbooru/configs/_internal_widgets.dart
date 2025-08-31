@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
@@ -129,7 +130,7 @@ class GelbooruConfigPasteFromClipboardButton extends ConsumerWidget {
         color: Theme.of(context).colorScheme.onSecondaryContainer,
       ),
       label: Text(
-        'Paste from clipboard',
+        context.t.booru.paste_from_clipboard,
         style: TextStyle(
           color: Theme.of(context).colorScheme.onSecondaryContainer,
         ),

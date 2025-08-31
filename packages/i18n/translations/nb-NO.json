@@ -11,9 +11,10 @@
       "edit": "Rediger",
       "ok": "OK",
       "cancel": "Avbryt",
-      "select": "Velg"
+      "select": "Velg",
+      "view": "Vis"
     },
-    "view": "Vis"
+    "copied": "Kopiert"
   },
   "profile": {
     "favorites": "Favoritter"
@@ -35,8 +36,6 @@
   },
   "post": {
     "detail": {
-      "view": "Vis",
-      "view_in_browser": "Vis i nettleser",
       "file_details": "Fildetaljer",
       "size": "Størrelse",
       "resolution": "Oppløsning",
@@ -47,12 +46,10 @@
         "booru": "Del booru-lenke",
         "image": "Del bilde"
       },
-      "copied": "Kopiert",
       "show_original": "Vis original",
       "show_translated": "Vis oversatt",
       "login_required_notice": "Du må logge inn for å utføre denne handlingen",
       "open_wiki": "Åpne wiki",
-      "add_to_blacklist": "Svartelist",
       "add_to_favorites": "Favorittmerk",
       "copy_and_open_saved_search": "Kopier og åpne lagrede søk",
       "score": {
@@ -67,9 +64,8 @@
     "action": {
       "preview": "Forhåndsvis",
       "view_comments": "Vis kommentarer",
-      "add_to_favorite_group": "Legg til i favorittgruppe"
-    },
-    "image_fullview": {
+      "add_to_favorite_group": "Legg til i favorittgruppe",
+      "view_in_browser": "Vis i nettleser",
       "view_original": "Vis original"
     }
   },
@@ -186,7 +182,8 @@
     "backup_and_restore": {
       "import": "Importer",
       "export": "Eksporter"
-    }
+    },
+    "open_app_settings": "Åpne innstillinger"
   },
   "blacklisted_tags": {
     "remove": "Fjern",
@@ -196,8 +193,7 @@
   },
   "download": {
     "download": "Last ned",
-    "bulk_download_save_to_folder": "Lagre i mappe",
-    "open_app_settings": "Åpne innstillinger"
+    "bulk_download_save_to_folder": "Lagre i mappe"
   },
   "saved_search": {
     "saved_search_examples": "Eksempler",
@@ -267,5 +263,10 @@
   },
   "forum": {
     "forum": "Forum"
+  },
+  "tags": {
+    "actions": {
+      "add_to_blacklist": "Svartelist"
+    }
   }
 }

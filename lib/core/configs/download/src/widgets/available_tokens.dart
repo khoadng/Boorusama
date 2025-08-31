@@ -30,7 +30,9 @@ class AvailableTokens extends ConsumerWidget {
       spacing: 4,
       crossAxisAlignment: WrapCrossAlignment.center,
       children: [
-        Text('Available tokens: '.hc),
+        Text(
+          context.t.booru.downloads.filename.available_tokens,
+        ),
         for (final token in availableTokens)
           RawChip(
             backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
@@ -47,7 +49,12 @@ class AvailableTokens extends ConsumerWidget {
               );
 
               if (tokenOptions == null) {
-                showErrorToast(context, 'Token $token is not available'.hc);
+                showErrorToast(
+                  context,
+                  context.t.booru.downloads.filename.no_token_error(
+                    token: token.name,
+                  ),
+                );
                 return;
               }
 

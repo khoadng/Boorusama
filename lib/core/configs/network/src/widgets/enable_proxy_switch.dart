@@ -24,7 +24,7 @@ class EnableProxySwitch extends ConsumerWidget {
     return BooruSwitchListTile(
       contentPadding: const EdgeInsets.only(left: 4),
       title: Text(
-        'Proxy'.hc,
+        context.t.booru.network.proxy.title,
         style: const TextStyle(
           fontWeight: FontWeight.bold,
         ),

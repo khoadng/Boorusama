@@ -154,7 +154,9 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
-                    'Unlock more themes with $kPremiumBrandName',
+                    context.t.premium.unlock_more_theme_with_premium(
+                      brand: kPremiumBrandName,
+                    ),
                     style: TextStyle(
                       color: colorScheme.hintColor,
                     ),
@@ -176,7 +178,7 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
                       ),
                     );
                   },
-                  child: Text(context.t.generic.view),
+                  child: Text(context.t.generic.action.view),
                 ),
               ],
             ),

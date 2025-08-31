@@ -42,8 +42,7 @@ class UnsavedAlertDialog extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             Text(
-              "Do you want to save your changes? Your changes will be lost if you don't save them."
-                  .hc,
+              context.t.booru.unsaved_changes_reconfirm_question,
               style: const TextStyle(
                 fontWeight: FontWeight.w400,
                 fontSize: 14,
@@ -83,11 +82,11 @@ class UnsavedAlertDialog extends StatelessWidget {
                 Navigator.pop(context);
                 onDiscard();
               },
-              child: const Padding(
-                padding: EdgeInsets.symmetric(vertical: 14),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 14),
                 child: Text(
-                  "Don't Save",
-                  style: TextStyle(
+                  context.t.booru.unsaved_changes_discard,
+                  style: const TextStyle(
                     fontWeight: FontWeight.w600,
                   ),
                 ),

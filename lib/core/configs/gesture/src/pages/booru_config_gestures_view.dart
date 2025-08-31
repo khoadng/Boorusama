@@ -71,7 +71,7 @@ class BooruConfigGesturesView extends ConsumerWidget {
                       child: Text(
                         describePostDetailsAction != null
                             ? describePostDetailsAction!(value)
-                            : describeDefaultGestureAction(value),
+                            : describeDefaultGestureAction(value, context),
                       ),
                     ),
                   )
@@ -97,7 +97,7 @@ class BooruConfigGesturesView extends ConsumerWidget {
                       child: Text(
                         describePostDetailsAction != null
                             ? describePostDetailsAction!(value)
-                            : describeDefaultGestureAction(value),
+                            : describeDefaultGestureAction(value, context),
                       ),
                     ),
                   )
@@ -124,7 +124,7 @@ class BooruConfigGesturesView extends ConsumerWidget {
                       child: Text(
                         describePostDetailsAction != null
                             ? describePostDetailsAction!(value)
-                            : describeDefaultGestureAction(value),
+                            : describeDefaultGestureAction(value, context),
                       ),
                     ),
                   )
@@ -133,7 +133,9 @@ class BooruConfigGesturesView extends ConsumerWidget {
           ),
 
           const Divider(thickness: 0.5, height: 32),
-          const BooruConfigSettingsHeader(label: 'Image preview'),
+          BooruConfigSettingsHeader(
+            label: context.t.settings.image_grid.image_grid,
+          ),
           // tap
           ListTile(
             contentPadding: EdgeInsets.zero,
@@ -154,7 +156,7 @@ class BooruConfigGesturesView extends ConsumerWidget {
                       child: Text(
                         describePostDetailsAction != null
                             ? describePostDetailsAction!(value)
-                            : describeDefaultGestureAction(value),
+                            : describeDefaultGestureAction(value, context),
                       ),
                     ),
                   )
@@ -180,7 +182,7 @@ class BooruConfigGesturesView extends ConsumerWidget {
                       child: Text(
                         describePostDetailsAction != null
                             ? describePostDetailsAction!(value)
-                            : describeDefaultGestureAction(value),
+                            : describeDefaultGestureAction(value, context),
                       ),
                     ),
                   )
@@ -189,7 +191,7 @@ class BooruConfigGesturesView extends ConsumerWidget {
           ),
           const SizedBox(height: 32),
           Text(
-            'Override the default gestures for this profile, select "None" to keep the original behavior.',
+            context.t.booru.gestures.override_notice,
             style: Theme.of(context).textTheme.titleSmall?.copyWith(
               color: Theme.of(context).colorScheme.hintColor,
               fontSize: 14,

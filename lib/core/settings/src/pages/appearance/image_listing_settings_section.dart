@@ -172,7 +172,7 @@ class _ImageListingSettingsSectionState
         ),
         BooruSwitchListTile(
           title: Text(
-            'Blur explicit content'.hc,
+            context.t.settings.appearance.blur_explicit_media,
           ),
           value: settings.blurExplicitMedia,
           onChanged: (value) => _onUpdate(
@@ -184,7 +184,9 @@ class _ImageListingSettingsSectionState
           ),
         ),
         BooruSwitchListTile(
-          title: Text('Autoplay GIFs'.hc),
+          title: Text(
+            context.t.settings.appearance.auto_play_gif,
+          ),
           value:
               settings.animatedPostsDefaultState ==
               AnimatedPostsDefaultState.autoplay,

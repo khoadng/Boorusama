@@ -12,9 +12,11 @@
       "ok": "De acordo",
       "cancel": "Cancelar",
       "duplicate": "Duplica",
-      "select": "Selecionar"
+      "select": "Selecionar",
+      "view": "Visualizar"
     },
-    "view": "Visualizar"
+    "copied": "Copiado",
+    "app_restart_request": "Você precisa reiniciar o aplicativo para esta mudança ter efeito"
   },
   "profile": {
     "favorites": "Favoritos",
@@ -39,8 +41,6 @@
   },
   "post": {
     "detail": {
-      "view": "Visualizar",
-      "view_in_browser": "Visualizar no navegador",
       "file_details": "Detalhes do arquivo",
       "size": "Tamanho",
       "resolution": "Resolução",
@@ -51,12 +51,10 @@
         "booru": "Compartilhar link do booru",
         "image": "Compartilhar imagem"
       },
-      "copied": "Copiado",
       "show_original": "Mostrar original",
       "show_translated": "Mostrar traduzido",
       "login_required_notice": "Você precisa fazer login para executar esta ação",
       "open_wiki": "Abrir wiki",
-      "add_to_blacklist": "Adicionar na lista negra",
       "add_to_favorites": "Adicionar aos favoritos",
       "copy_and_open_saved_search": "Copiar e abrir pesquisa salva",
       "score": {
@@ -71,9 +69,8 @@
     "action": {
       "preview": "Pré-visualização",
       "view_comments": "Ver comentários",
-      "add_to_favorite_group": "Adicionar ao grupo favorito"
-    },
-    "image_fullview": {
+      "add_to_favorite_group": "Adicionar ao grupo favorito",
+      "view_in_browser": "Visualizar no navegador",
       "view_original": "Ver original"
     }
   },
@@ -296,7 +293,8 @@
     "contact_developer": "Contate o desenvolvedor",
     "contact_developer_description": "Se tiver problemas ou sugestões, sinta-se livre para me mandar um email por essa opção",
     "feature_request_and_bug_report": "Pedir funções e relatar bugs",
-    "feature_request_and_bug_report_description": "Sugira funções ou relate um bug pelo repositório no Github"
+    "feature_request_and_bug_report_description": "Sugira funções ou relate um bug pelo repositório no Github",
+    "open_app_settings": "Abrir configuração"
   },
   "blacklisted_tags": {
     "remove": "Remover",
@@ -316,9 +314,7 @@
     "bulk_download_save_to_folder": "Salvar para a pasta",
     "bulk_download_invalid_folder_name_error": "Uma pasta não pode conter os seguintes caracteres: ",
     "bulk_download_folder_select_warning": "O aplicativo só pode guardar arquivos dentro de pastas públicas <b>({0})</b> no Android 11+. <div>Cartões SD também não são suportados.</div> <div>Por favor escolha outro local.</div> <div>A versão deste dispositivo é {1}.</div>",
-    "open_app_settings": "Abrir configuração",
     "storage_permission_explanation": "Permissão de armazenamento é necessária para guardar arquivos baixados.",
-    "app_restart_request": "Você precisa reiniciar o aplicativo para esta mudança ter efeito",
     "image_counter": {
       "one": "Baixar imagem $n",
       "other": "Baixar $n imagens"
@@ -426,10 +422,16 @@
     "validation_redundant_www": "\"{0}\" contém um \"www\" redundante",
     "validation_contains_spaces": "\"{0}\" contém espaços entre linhas",
     "validation_missing_scheme": "\"{0}\" está faltando um esquema (e.g. https://)",
-    "authentication": "Autenticação",
-    "download": "Download",
-    "gestures": "Gestos",
-    "misc": "Outros"
+    "misc": "Outros",
+    "authentication": {
+      "title": "Autenticação"
+    },
+    "gestures": {
+      "title": "Gestos"
+    },
+    "downloads": {
+      "title": "Download"
+    }
   },
   "blacklist": {
     "manage": {
@@ -462,5 +464,10 @@
     "double_tap": "Toque duplo",
     "long_press": "Toque longo",
     "tap": "Toque"
+  },
+  "tags": {
+    "actions": {
+      "add_to_blacklist": "Adicionar na lista negra"
+    }
   }
 }

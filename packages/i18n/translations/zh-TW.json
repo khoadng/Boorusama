@@ -12,9 +12,11 @@
       "ok": "確定",
       "cancel": "取消",
       "duplicate": "複製",
-      "select": "選擇"
+      "select": "選擇",
+      "view": "檢視"
     },
-    "view": "檢視"
+    "copied": "已複製",
+    "app_restart_request": "請重新啟動應用程式以使此更改生效"
   },
   "profile": {
     "favorites": "最愛",
@@ -39,8 +41,6 @@
   },
   "post": {
     "detail": {
-      "view": "檢視",
-      "view_in_browser": "在瀏覽器中查看",
       "file_details": "檔案詳細資訊",
       "size": "檔案大小",
       "resolution": "解析度",
@@ -51,12 +51,10 @@
         "booru": "分享booru連結",
         "image": "分享圖片"
       },
-      "copied": "已複製",
       "show_original": "顯示原圖",
       "show_translated": "顯示翻譯",
       "login_required_notice": "您必須登入才能執行此操作",
       "open_wiki": "開啟 Wiki",
-      "add_to_blacklist": "新增至黑名單",
       "add_to_favorites": "新增至最愛",
       "copy_and_open_saved_search": "複製並開啟已保存的搜尋",
       "score": {
@@ -71,9 +69,8 @@
     "action": {
       "preview": "預覽",
       "view_comments": "查看評論",
-      "add_to_favorite_group": "新增至最愛群組"
-    },
-    "image_fullview": {
+      "add_to_favorite_group": "新增至最愛群組",
+      "view_in_browser": "在瀏覽器中查看",
       "view_original": "檢視原圖"
     }
   },
@@ -283,7 +280,8 @@
       "accessibility": "無障礙",
       "reverseBooruConfigSelectorScrollDirection": "反轉 booru 配置的對齊方向",
       "swipeAreaToOpenSidebar": "側邊欄的滑動區域"
-    }
+    },
+    "open_app_settings": "開啟設定"
   },
   "blacklisted_tags": {
     "remove": "移除",
@@ -298,9 +296,7 @@
     "bulk_download_save_to_folder": "儲存至資料夾",
     "bulk_download_invalid_folder_name_error": "資料夾不可包含以下字符： ",
     "bulk_download_folder_select_warning": "在 Android 11+ 上，此應用程式僅能儲存在 內部公共資料夾 <b>({0})</b> 中. <div>不支援SD卡。</div> <div>請選擇其他路徑。</div> <div>此裝置的版本是 {1}.</div>",
-    "open_app_settings": "開啟設定",
     "storage_permission_explanation": "需要儲存權限以儲存下載文件",
-    "app_restart_request": "請重新啟動應用程式以使此更改生效",
     "image_counter": {
       "other": "下載 $n 圖片"
     },
@@ -418,5 +414,10 @@
   },
   "forum": {
     "forum": "論壇"
+  },
+  "tags": {
+    "actions": {
+      "add_to_blacklist": "新增至黑名單"
+    }
   }
 }

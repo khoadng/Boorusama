@@ -30,11 +30,16 @@ class LayoutPreviewNotificationScope extends ConsumerWidget {
             context: context,
             duration: const Duration(seconds: 10),
             content: Text(
-              'Your layout preview has ended. Upgrade to continue using premium layouts or start a new preview.'
-                  .hc,
+              context
+                  .t
+                  .booru
+                  .appearance
+                  .image_viewer_layout
+                  .preview
+                  .preview_expired,
             ),
             action: SnackBarAction(
-              label: 'Upgrade'.hc,
+              label: context.t.premium.upgrade,
               textColor: Theme.of(context).colorScheme.surface,
               onPressed: () => goToPremiumPage(ref),
             ),

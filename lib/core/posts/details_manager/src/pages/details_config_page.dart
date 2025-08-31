@@ -13,6 +13,7 @@ import '../../../../widgets/widgets.dart';
 import '../providers/details_layout_provider.dart';
 import '../routes/route_utils.dart';
 import '../types/custom_details.dart';
+import '../types/details_part.dart';
 
 class DetailsConfigPage extends ConsumerWidget {
   const DetailsConfigPage({
@@ -36,7 +37,9 @@ class DetailsConfigPage extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Widgets'.hc),
+        title: Text(
+          context.t.booru.appearance.image_viewer_layout.widget_title,
+        ),
       ),
       body: Column(
         children: [
@@ -50,7 +53,12 @@ class DetailsConfigPage extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     _Title(
-                      title: 'Preview widgets'.hc,
+                      title: context
+                          .t
+                          .booru
+                          .appearance
+                          .image_viewer_layout
+                          .preview_widgets,
                       onPressed: () => goToDetailsLayoutManagerPage(
                         ref,
                         params: DetailsLayoutManagerParams(
@@ -71,7 +79,12 @@ class DetailsConfigPage extends ConsumerWidget {
                     _WidgetList(parts: previewDetails),
                     const SizedBox(height: 24),
                     _Title(
-                      title: 'Full informaton widgets'.hc,
+                      title: context
+                          .t
+                          .booru
+                          .appearance
+                          .image_viewer_layout
+                          .full_info_widgets,
                       onPressed: () => goToDetailsLayoutManagerPage(
                         ref,
                         params: DetailsLayoutManagerParams(
@@ -96,7 +109,7 @@ class DetailsConfigPage extends ConsumerWidget {
           ),
           SafeArea(
             child: Text(
-              'All changes are saved to your current profile.'.hc,
+              context.t.booru.appearance.image_viewer_layout.storage_tooltip,
               style: Theme.of(context).textTheme.titleSmall?.copyWith(
                 color: Theme.of(context).colorScheme.hintColor,
                 fontSize: 14,
@@ -130,7 +143,7 @@ class _WidgetList extends StatelessWidget {
                 horizontal: 12,
               ),
               borderRadius: BorderRadius.circular(12),
-              label: part.name,
+              label: translateRawDetailsPartName(context, part.name),
               backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
             ),
           )

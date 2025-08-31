@@ -26,17 +26,17 @@ class AccentColorSelector extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        _buildColorSelectorHeader(),
+        _buildColorSelectorHeader(context),
         const SizedBox(height: 4),
         _buildColorSelector(),
         const SizedBox(height: 16),
         Container(
           padding: padding,
-          child: const Row(
+          child: Row(
             children: [
               Text(
-                'Color Variants',
-                style: TextStyle(
+                context.t.settings.theme.viewer.color_variants,
+                style: const TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 16,
                 ),
@@ -46,14 +46,14 @@ class AccentColorSelector extends StatelessWidget {
         ),
         _buildVariantSelector(),
         const SizedBox(height: 16),
-        _buildDarkThemeToggle(),
-        _buildHarmonizeToggle(),
+        _buildDarkThemeToggle(context),
+        _buildHarmonizeToggle(context),
         const SizedBox(height: 48),
       ],
     );
   }
 
-  Widget _buildDarkThemeToggle() {
+  Widget _buildDarkThemeToggle(BuildContext context) {
     return Consumer(
       builder: (_, ref, _) {
         final isDark = ref.watch(
@@ -67,7 +67,7 @@ class AccentColorSelector extends StatelessWidget {
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 4,
             ),
-            title: Text('Dark mode'.hc),
+            title: Text(context.t.settings.theme.viewer.dark_mode),
             value: isDark,
             onChanged: (value) {
               notifier.updateIsDark(value);
@@ -78,7 +78,7 @@ class AccentColorSelector extends StatelessWidget {
     );
   }
 
-  Widget _buildHarmonizeToggle() {
+  Widget _buildHarmonizeToggle(BuildContext context) {
     return Consumer(
       builder: (_, ref, _) {
         final harmonize = ref.watch(
@@ -92,9 +92,9 @@ class AccentColorSelector extends StatelessWidget {
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 4,
             ),
-            title: Text('Harmonize colors'.hc),
+            title: Text(context.t.settings.theme.viewer.harmonize_colors),
             subtitle: Text(
-              'Adjusts tag colors to match the accent color'.hc,
+              context.t.settings.theme.viewer.harmonize_colors_description,
             ),
             value: harmonize,
             onChanged: (value) {
@@ -126,14 +126,14 @@ class AccentColorSelector extends StatelessWidget {
     );
   }
 
-  Widget _buildColorSelectorHeader() {
+  Widget _buildColorSelectorHeader(BuildContext context) {
     return Container(
       padding: padding,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            'Colors'.hc,
+            context.t.settings.theme.viewer.colors,
             style: const TextStyle(
               fontWeight: FontWeight.w600,
               fontSize: 16,
@@ -149,8 +149,8 @@ class AccentColorSelector extends StatelessWidget {
                       !viewAllColor;
                 },
                 child: !viewAllColor
-                    ? Text('Show all'.hc)
-                    : Text('Show less'.hc),
+                    ? Text(context.t.generic.action.show_all)
+                    : Text(context.t.generic.action.show_less),
               );
             },
           ),

@@ -9,6 +9,7 @@ import 'package:i18n/i18n.dart';
 // Project imports:
 import '../../../theme.dart';
 import '../../../widgets/widgets.dart';
+import '../../premiums.dart';
 import '../providers/preview_providers.dart';
 import '../routes/route_utils.dart';
 
@@ -38,7 +39,7 @@ class PremiumLayoutPreviewDialog extends ConsumerWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            'Layout Preview'.hc,
+            context.t.booru.appearance.image_viewer_layout.preview.title,
             style: const TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w700,
@@ -60,7 +61,10 @@ class PremiumLayoutPreviewDialog extends ConsumerWidget {
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 14),
                 child: Text(
-                  'Start $previewMinutes-minute Preview'.hc,
+                  context.t.booru.appearance.image_viewer_layout.preview
+                      .start_limited_preview(
+                        previewMinutes: previewMinutes,
+                      ),
                   style: const TextStyle(
                     fontWeight: FontWeight.w600,
                   ),
@@ -80,7 +84,13 @@ class PremiumLayoutPreviewDialog extends ConsumerWidget {
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 14),
                 child: Text(
-                  'Continue Preview & Apply'.hc,
+                  context
+                      .t
+                      .booru
+                      .appearance
+                      .image_viewer_layout
+                      .preview
+                      .continue_preview_and_apply,
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                     fontWeight: FontWeight.w600,
@@ -98,7 +108,7 @@ class PremiumLayoutPreviewDialog extends ConsumerWidget {
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 14),
               child: Text(
-                'Upgrade'.hc,
+                context.t.premium.upgrade,
                 style: const TextStyle(
                   fontWeight: FontWeight.w600,
                 ),
@@ -138,7 +148,13 @@ class _PreviewText extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
-            'You are currently previewing a custom layout.'.hc,
+            context
+                .t
+                .booru
+                .appearance
+                .image_viewer_layout
+                .preview
+                .currently_in_preview,
             style: TextStyle(
               fontWeight: FontWeight.w400,
               color: colorScheme.hintColor,
@@ -149,7 +165,13 @@ class _PreviewText extends ConsumerWidget {
             child: Column(
               children: [
                 Text(
-                  'Time left:'.hc,
+                  context
+                      .t
+                      .booru
+                      .appearance
+                      .image_viewer_layout
+                      .preview
+                      .time_left,
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w400,
@@ -173,8 +195,10 @@ class _PreviewText extends ConsumerWidget {
       );
     } else {
       return Text(
-        'Preview your custom layout for $previewMinutes minutes. After that, you can either upgrade to premium to keep using it or retry as many times as you want.'
-            .hc,
+        context.t.booru.appearance.image_viewer_layout.preview.description(
+          previewMinutes: previewMinutes,
+          brand: kPremiumBrandName,
+        ),
         style: TextStyle(
           fontWeight: FontWeight.w400,
           color: colorScheme.hintColor,

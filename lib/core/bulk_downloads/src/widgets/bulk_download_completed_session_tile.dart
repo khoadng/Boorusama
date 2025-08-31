@@ -168,7 +168,7 @@ class _CreateSavedTaskButton extends ConsumerWidget {
               context: context,
               content: Text(DownloadTranslations.templateCreated),
               action: SnackBarAction(
-                label: context.t.generic.view,
+                label: context.t.generic.action.view,
                 textColor: colorScheme.surface,
                 onPressed: () {
                   goToBulkDownloadSavedTasksPage(ref);

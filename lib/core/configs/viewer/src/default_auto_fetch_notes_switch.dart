@@ -26,9 +26,9 @@ class DefaultAutoFetchNotesSwitch extends ConsumerWidget {
     );
 
     return BooruSwitchListTile(
-      title: Text('Auto-fetch notes'.hc),
+      title: Text(context.t.booru.viewer.auto_fetch_notes),
       subtitle: Text(
-        'Automatically fetch and display notes whenever possible.'.hc,
+        context.t.booru.viewer.auto_fetch_notes_description,
       ),
       value: autoLoadNotes,
       onChanged: (value) =>

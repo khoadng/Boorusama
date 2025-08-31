@@ -12,9 +12,11 @@
       "ok": "确定",
       "cancel": "取消",
       "duplicate": "复制",
-      "select": "选择"
+      "select": "选择",
+      "view": "显示"
     },
-    "view": "显示"
+    "copied": "已复制",
+    "app_restart_request": "该修改需要重启应用生效"
   },
   "profile": {
     "favorites": "喜爱",
@@ -39,8 +41,6 @@
   },
   "post": {
     "detail": {
-      "view": "打开",
-      "view_in_browser": "在浏览器中打开",
       "file_details": "文件详情",
       "size": "大小",
       "resolution": "分辨率",
@@ -51,12 +51,10 @@
         "booru": "分享booru链接",
         "image": "分享图片"
       },
-      "copied": "已复制",
       "show_original": "显示原图",
       "show_translated": "显示翻译",
       "login_required_notice": "你需要登陆来完成该操作",
       "open_wiki": "打开wiki",
-      "add_to_blacklist": "添加到黑名单",
       "add_to_favorites": "添加到喜爱中",
       "copy_and_open_saved_search": "复制并打开预设搜索",
       "score": {
@@ -71,9 +69,8 @@
     "action": {
       "preview": "预览",
       "view_comments": "查看评论",
-      "add_to_favorite_group": "添加到喜爱组"
-    },
-    "image_fullview": {
+      "add_to_favorite_group": "添加到喜爱组",
+      "view_in_browser": "在浏览器中打开",
       "view_original": "显示原图"
     }
   },
@@ -341,7 +338,8 @@
     "contact_developer": "联系开发者",
     "contact_developer_description": "如果你有任何问题和建议，请通过该选项给我发送邮件（最好使用英文）",
     "feature_request_and_bug_report": "新功能请求和报告bug",
-    "feature_request_and_bug_report_description": "通过Github仓库提交新功能建议或报告bug"
+    "feature_request_and_bug_report_description": "通过Github仓库提交新功能建议或报告bug",
+    "open_app_settings": "打开设置"
   },
   "blacklisted_tags": {
     "remove": "移除",
@@ -361,9 +359,7 @@
     "bulk_download_save_to_folder": "保存到文件夹",
     "bulk_download_invalid_folder_name_error": "文件夹不能包含以下字符： ",
     "bulk_download_folder_select_warning": "在Android 11+系统中，此应用只能将文件保存在内部公共路径<b>({0})</b>中。<br><br>有效保存位置示例：<br><b>[内部]</b> /storage/emulated/0/Download <br><b>[SD卡]</b> /storage/A1B2-C3D4/Download<br><br>请选择其他路径，若不存在请新建。<br>此设备版本为<b>{1}</b>。",
-    "open_app_settings": "打开设置",
     "storage_permission_explanation": "需要存储权限来保存文件。",
-    "app_restart_request": "该修改需要重启应用生效",
     "image_counter": {
       "one": "下载 $n 张图片",
       "other": "下载 $n 张图片"
@@ -471,10 +467,16 @@
     "validation_redundant_www": "\"{0}\" 包含了多余的 \"WWW\"",
     "validation_contains_spaces": "\"{0}\" 中包含了空格",
     "validation_missing_scheme": "\"{0}\" 未指明协议（比如https://）",
-    "authentication": "授权",
-    "download": "下载",
-    "gestures": "姿势",
-    "misc": "混杂"
+    "misc": "混杂",
+    "authentication": {
+      "title": "授权"
+    },
+    "gestures": {
+      "title": "姿势"
+    },
+    "downloads": {
+      "title": "下载"
+    }
   },
   "blacklist": {
     "manage": {
@@ -514,6 +516,11 @@
         "one": "秒",
         "other": "秒"
       }
+    }
+  },
+  "tags": {
+    "actions": {
+      "add_to_blacklist": "添加到黑名单"
     }
   }
 }

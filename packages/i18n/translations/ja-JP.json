@@ -12,9 +12,11 @@
       "ok": "OK",
       "cancel": "キャンセル",
       "duplicate": "複製",
-      "select": "選択"
+      "select": "選択",
+      "view": "表示"
     },
-    "view": "表示"
+    "copied": "クリップボードにコピーしました",
+    "app_restart_request": "この変更を有効にするにはアプリを再起動する必要があります"
   },
   "profile": {
     "favorites": "いいね",
@@ -39,8 +41,6 @@
   },
   "post": {
     "detail": {
-      "view": "表示",
-      "view_in_browser": "ブラウザで開く",
       "file_details": "ファイルの詳細",
       "size": "サイズ",
       "resolution": "解像度",
@@ -51,12 +51,10 @@
         "booru": "booruのリンクを共有する",
         "image": "画像を共有する"
       },
-      "copied": "クリップボードにコピーしました",
       "show_original": "オリジナルを表示",
       "show_translated": "翻訳表示",
       "login_required_notice": "この操作にはログインが必要",
       "open_wiki": "Wikiを開く",
-      "add_to_blacklist": "ブラックリストに追加",
       "add_to_favorites": "いいねする",
       "score": {
         "other": "ポイント"
@@ -74,9 +72,8 @@
       "upvote": "高評価",
       "downvote": "低評価",
       "view_comments": "コメントを見る",
-      "add_to_favorite_group": "お気に入りグループに追加"
-    },
-    "image_fullview": {
+      "add_to_favorite_group": "お気に入りグループに追加",
+      "view_in_browser": "ブラウザで開く",
       "view_original": "オリジナルを表示"
     }
   },
@@ -341,7 +338,8 @@
     "contact_developer": "開発者に連絡",
     "contact_developer_description": "問題や提案がある場合は、このオプションを通じてメールを送信してください",
     "feature_request_and_bug_report": "機能リクエストとバグ報告",
-    "feature_request_and_bug_report_description": "GitHubリポジトリを通じて機能を提案またはバグを報告"
+    "feature_request_and_bug_report_description": "GitHubリポジトリを通じて機能を提案またはバグを報告",
+    "open_app_settings": "設定を開く"
   },
   "blacklisted_tags": {
     "remove": "削除",
@@ -361,9 +359,7 @@
     "bulk_download_save_to_folder": "フォルダに保存",
     "bulk_download_invalid_folder_name_error": "フォルダには次の文字を含めることはできません： ",
     "bulk_download_folder_select_warning": "Android 11+では、<b>({0})</b>内のフォルダにのみダウンロードできます。例：<b>内部</b> /storage/emulated/0/Download、<b>SDカード</b> /storage/A1B2-C3D4/Download。別のフォルダを選ぶか、新しく作成してください。デバイスバージョン：<b>{1}</b>",
-    "open_app_settings": "設定を開く",
     "storage_permission_explanation": "ダウンロードファイルを保存するにはストレージ権限が必要です。",
-    "app_restart_request": "この変更を有効にするにはアプリを再起動する必要があります",
     "image_counter": {
       "one": "$n枚の画像をダウンロード",
       "other": "$n枚の画像をダウンロード"
@@ -471,10 +467,16 @@
     "validation_redundant_www": "\"{0}\"には冗長な\"www\"が含まれています",
     "validation_contains_spaces": "\"{0}\"にスペースが含まれています",
     "validation_missing_scheme": "\"{0}\"にはスキーマがありません（例：https://）",
-    "authentication": "認証",
-    "download": "ダウンロード",
-    "gestures": "ジェスチャー",
-    "misc": "その他"
+    "misc": "その他",
+    "authentication": {
+      "title": "認証"
+    },
+    "gestures": {
+      "title": "ジェスチャー"
+    },
+    "downloads": {
+      "title": "ダウンロード"
+    }
   },
   "blacklist": {
     "manage": {
@@ -514,6 +516,11 @@
         "one": "秒",
         "other": "秒"
       }
+    }
+  },
+  "tags": {
+    "actions": {
+      "add_to_blacklist": "ブラックリストに追加"
     }
   }
 }

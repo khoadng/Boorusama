@@ -3,13 +3,7 @@
     "done": "Готово",
     "errors": {
       "no_data": "Нема доступних даних",
-      "unknown": "Щось пішло не так",
-      "failed_to_load_image": "Не вдалося завантажити зображення",
-      "config_not_found": "Конфігурацію не знайдено",
-      "error_loading_tags": "Помилка завантаження тегів",
-      "fail_to_load_profile": "Не вдалося завантажити профіль",
-      "page_not_implemented": "Сторінку ще не реалізовано",
-      "no_home_view_builder": "Конструктор переглядів будинків не знайдено"
+      "unknown": "Щось пішло не так"
     },
     "action": {
       "add": "Додати",
@@ -24,21 +18,20 @@
       "retry": "Повторити спробу",
       "clear": "Очистити",
       "create": "Створити",
-      "more": "Більше"
+      "more": "Більше",
+      "view": "Переглянути"
     },
-    "view": "Переглянути",
-    "empty_states": {
-      "no_tags": "Без тегів",
-      "no_content": "Без контенту",
-      "no_options_available": "Немає доступних опцій"
-    },
-    "default": "За замовчуванням"
+    "default": "За замовчуванням",
+    "copied": "Скопійоване",
+    "no_content": "Без контенту",
+    "app_restart_request": "Перезагрузіть додаток, щоб зміни вступили в силу"
   },
   "profile": {
     "favorites": "Улюблені",
     "profile": "Профіль",
     "copy_user_id": "Копіювати ID користувача",
-    "messages": "Сповіщення"
+    "messages": "Сповіщення",
+    "fail_to_load_profile": "Не вдалося завантажити профіль"
   },
   "network": {
     "unavailable": "Мережа недоступна"
@@ -57,8 +50,6 @@
   },
   "post": {
     "detail": {
-      "view": "Дивитись",
-      "view_in_browser": "Дивитись у браузері",
       "file_details": "Деталі файлу",
       "size": "Вага",
       "resolution": "Роздільна здатність",
@@ -69,12 +60,10 @@
         "booru": "Ділитись посиланням на Booru",
         "image": "Ділитись зображенням"
       },
-      "copied": "Скопійоване",
       "show_original": "Показати оригінал",
       "show_translated": "Показати переклад",
       "login_required_notice": "Ви повинні увійти, щоб виконати цю дію",
       "open_wiki": "Відкрити Вікі",
-      "add_to_blacklist": "Додати до чорного списку",
       "add_to_favorites": "Додати до улюбленого",
       "copy_and_open_saved_search": "Копіювати та відкрити збереженний пошук",
       "score": {
@@ -96,9 +85,8 @@
       "bookmark": "Закладка",
       "favorite": "Улюблене",
       "upvote": "Проголосувати за",
-      "downvote": "Проголосувати проти"
-    },
-    "image_fullview": {
+      "downvote": "Проголосувати проти",
+      "view_in_browser": "Дивитись у браузері",
       "view_original": "Подивитися оригінальне зображення"
     },
     "statistics": {
@@ -135,8 +123,7 @@
     "explore": "Дослідити",
     "top": "Верх",
     "daily": "Щоденно",
-    "weekly": "Щотижнево",
-    "stats": "Статистика"
+    "weekly": "Щотижнево"
   },
   "search": {
     "errors": {
@@ -455,7 +442,8 @@
       "up_to_date": "Оновлено",
       "backing_up": "Резервне копіювання...",
       "backup_now": "Зробити Резервне копіювання зараз"
-    }
+    },
+    "open_app_settings": "Відкрити налаштування"
   },
   "blacklisted_tags": {
     "remove": "Вилучити",
@@ -468,19 +456,14 @@
     "failed_to_remove": "Не вдалося вилучити тег",
     "blacklisted_header_title": "В чорному списку",
     "disable_all": "Вимкнути все",
-    "reenable_all": "Повторно увімкнути все",
-    "edit_global_blacklist": "Редагувати глобальний чорний список",
-    "edit_booru_specific_blacklist": "Редагувати чорний список конкретного Боору",
-    "edit_profile_blacklist": "Редагувати чорний список профілю"
+    "reenable_all": "Повторно увімкнути все"
   },
   "download": {
     "download": "Скачати",
     "bulk_download_save_to_folder": "Зберегти в",
     "bulk_download_invalid_folder_name_error": "Назва папки не маже мати наступний символ: ",
     "bulk_download_folder_select_warning": "Програма може завантажувати лише файли в загальнодоступних каталогах <b>({0})</b> для Android 11+. <br><br> Приклади дійсного розташування:<br><b>[Internal]</b> /storage/emulated/0/Download <br><b>[SD-карта]</b> /storage/A1B2- C3D4/Завантажити<br><br>Будь ласка, виберіть інший каталог або створіть новий, якщо він не існує. <br>Версія цього пристрою <b>{1}</b>.",
-    "open_app_settings": "Відкрити налаштування",
     "storage_permission_explanation": "Дозвіл на доступ до сховища необхідний для збереження завантажених файлів.",
-    "app_restart_request": "Перезагрузіть додаток, щоб зміни вступили в силу",
     "image_counter": {
       "one": "Скачати $n зображення",
       "other": "Скачати $n зображень"
@@ -500,10 +483,6 @@
     "downloads": "Завантаженням",
     "retry_all": "Повторити всі спроби",
     "nothing_to_clear": "Нічого не очищувати",
-    "select_items": "Вибрати елементи",
-    "items_selected": "Вибрані елементи",
-    "download_manager_disabled": "Менеджер завантажень вимкнено",
-    "open_settings": "Відкрити налаштування",
     "new_download": "Нове завантаження",
     "no_active_sessions": "Немає активних сеансів завантаження",
     "nothing_to_show": "Нічого не відображати, завантаження оновлень порожнє",
@@ -617,17 +596,32 @@
     "validation_redundant_www": "\"{0}\" має лишній \"www\"",
     "validation_contains_spaces": "\"{0}\" містить проміжні пробіли",
     "validation_missing_scheme": "В \"{0}\" відсутня схема (наприклад, https://)",
-    "authentication": "Аутентифікація",
-    "download": "Завантаження",
-    "gestures": "Жести",
     "misc": "Різне",
     "no_profiles_available": "Немає доступних профілів",
     "add_profile_to_continue": "Додайте профіль, щоб продовжити",
     "add_profile": "Додати профіль",
     "unsaved_changes": "У вас є незбережені зміни",
-    "listing": "Лістинг",
-    "search": "Пошук",
-    "network": "Мережа"
+    "authentication": {
+      "title": "Аутентифікація"
+    },
+    "listing": {
+      "title": "Лістинг"
+    },
+    "search": {
+      "title": "Пошук"
+    },
+    "network": {
+      "title": "Мережа"
+    },
+    "gestures": {
+      "title": "Жести"
+    },
+    "downloads": {
+      "title": "Завантаження",
+      "filename": {
+        "no_options_available": "Немає доступних опцій"
+      }
+    }
   },
   "blacklist": {
     "manage": {
@@ -688,5 +682,19 @@
   },
   "auth": {
     "login_required": "Щоб скористатися цією функцією, вам потрібно надати дані для входу."
+  },
+  "tags": {
+    "loading_tags_error": "Помилка завантаження тегів: $error",
+    "actions": {
+      "add_to_blacklist": "Додати до чорного списку"
+    }
+  },
+  "posts": {
+    "actions": {
+      "edit_global_blacklist": "Редагувати глобальний чорний список",
+      "edit_booru_specific_blacklist": "Редагувати чорний список конкретного Боору",
+      "edit_profile_blacklist": "Редагувати чорний список профілю",
+      "stats": "Статистика"
+    }
   }
 }

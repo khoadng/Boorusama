@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../search/queries/providers.dart';
@@ -45,7 +46,7 @@ class EffectiveTagPreview extends ConsumerWidget {
 
     return TagListPreview(
       header: Text(
-        'Preview',
+        context.t.booru.search.preview_tags,
         style: Theme.of(context).textTheme.bodySmall?.copyWith(
           color: colorScheme.onSurfaceVariant,
         ),
@@ -59,7 +60,7 @@ class EffectiveTagPreview extends ConsumerWidget {
             child: RawCompactChip(
               backgroundColor: Colors.transparent,
               label: Text(
-                '<any search query>',
+                context.t.booru.search.any_search_query,
                 style: TextStyle(
                   color: Theme.of(
                     context,

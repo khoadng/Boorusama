@@ -51,7 +51,7 @@ class CreateDownloadOptionsSheet extends ConsumerWidget {
           context: context,
           content: Text(message),
           action: SnackBarAction(
-            label: context.t.generic.view,
+            label: context.t.generic.action.view,
             textColor: colorScheme.surface,
             onPressed: () {
               goToBulkDownloadManagerPage(ref);

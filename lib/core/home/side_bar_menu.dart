@@ -195,7 +195,11 @@ class SideBarMenu extends ConsumerWidget {
                               fill: 1,
                               color: Colors.red,
                             ),
-                            title: Text('Get $kPremiumBrandName'.hc),
+                            title: Text(
+                              context.t.premium.get_premium(
+                                brand: kPremiumBrandName,
+                              ),
+                            ),
                             onTap: () {
                               goToPremiumPage(ref);
                             },

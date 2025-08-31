@@ -12,9 +12,10 @@
       "ok": "Tamam",
       "cancel": "İptal",
       "duplicate": "Çoğalt",
-      "select": "Seç"
+      "select": "Seç",
+      "view": "Görünüm"
     },
-    "view": "Görünüm"
+    "copied": "Kopyalandı"
   },
   "profile": {
     "favorites": "Favoriler",
@@ -39,8 +40,6 @@
   },
   "post": {
     "detail": {
-      "view": "Gör(incele)",
-      "view_in_browser": "Tarayıcıda aç",
       "file_details": "Dosya detayları",
       "size": "Ölçek",
       "resolution": "Çözünürlük",
@@ -51,12 +50,10 @@
         "booru": "Booru linkini paylaş",
         "image": "Görüntüyü paylaş"
       },
-      "copied": "Kopyalandı",
       "show_original": "Orijinali göster",
       "show_translated": "Çevrilmişi göster",
       "login_required_notice": "Bu eylemi gerçekleştirmek için giriş yapman lazım",
       "open_wiki": "Wiki'yi aç",
-      "add_to_blacklist": "Karalisteye ekle",
       "add_to_favorites": "Favorilere ekle",
       "copy_and_open_saved_search": "Kopyala ve kayıtlı aramayı aç",
       "score": {
@@ -71,9 +68,8 @@
     "action": {
       "preview": "Önizleme",
       "view_comments": "Yorumları görüntüle",
-      "add_to_favorite_group": "Favori gruba ekle"
-    },
-    "image_fullview": {
+      "add_to_favorite_group": "Favori gruba ekle",
+      "view_in_browser": "Tarayıcıda aç",
       "view_original": "Orijinalini göster"
     }
   },
@@ -172,5 +168,10 @@
   },
   "forum": {
     "forum": "Forum"
+  },
+  "tags": {
+    "actions": {
+      "add_to_blacklist": "Karalisteye ekle"
+    }
   }
 }

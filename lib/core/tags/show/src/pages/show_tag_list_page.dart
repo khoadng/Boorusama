@@ -51,6 +51,9 @@ class _ShowTagListPageState extends ConsumerState<ShowTagListPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+    final colorScheme = theme.colorScheme;
     final globalNotifier = ref.watch(globalBlacklistedTagsProvider.notifier);
     final favoriteNotifier = ref.watch(favoriteTagsProvider.notifier);
     final params = (widget.auth, widget.post);
@@ -69,10 +72,10 @@ class _ShowTagListPageState extends ConsumerState<ShowTagListPage> {
 
       showSuccessToast(
         context,
-        'Added'.hc,
-        backgroundColor: Theme.of(context).colorScheme.onSurface,
+        context.t.tags.added,
+        backgroundColor: colorScheme.onSurface,
         textStyle: TextStyle(
-          color: Theme.of(context).colorScheme.surface,
+          color: colorScheme.surface,
         ),
       );
     }
@@ -100,10 +103,8 @@ class _ShowTagListPageState extends ConsumerState<ShowTagListPage> {
             data: (tags) => tags.isEmpty
                 ? Center(
                     child: Text(
-                      'No tags found'.hc,
-                      style: Theme.of(
-                        context,
-                      ).textTheme.bodyLarge,
+                      context.t.tags.no_tags_found,
+                      style: textTheme.bodyLarge,
                     ),
                   )
                 : ShowTagList(
@@ -118,8 +119,8 @@ class _ShowTagListPageState extends ConsumerState<ShowTagListPage> {
                   ),
             error: (error, stack) => Center(
               child: Text(
-                'Error loading tags: $error',
-                style: Theme.of(context).textTheme.bodyLarge,
+                context.t.tags.loading_tags_error(error: error),
+                style: textTheme.bodyLarge,
               ),
             ),
             loading: ShowTagListPlaceholder.new,

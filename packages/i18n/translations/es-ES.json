@@ -12,9 +12,11 @@
       "ok": "Ok",
       "cancel": "Cancelar",
       "duplicate": "Duplicar",
-      "select": "Seleccionar"
+      "select": "Seleccionar",
+      "view": "Ver"
     },
-    "view": "Ver"
+    "copied": "Copiado",
+    "app_restart_request": "Necesitas reiniciar la aplicacion para que los cambios tengan efecto"
   },
   "profile": {
     "favorites": "Favoritos",
@@ -39,8 +41,6 @@
   },
   "post": {
     "detail": {
-      "view": "Ver",
-      "view_in_browser": "Ver en el navegador",
       "file_details": "Detalles del archivo",
       "size": "Tamaño",
       "resolution": "Resolución",
@@ -51,12 +51,10 @@
         "booru": "Compartir link de Booru",
         "image": "Compartir imagen"
       },
-      "copied": "Copiado",
       "show_original": "Mostrar original",
       "show_translated": "Mostrar Traduccido",
       "login_required_notice": "Tienes que iniciar sesión para realizar esta acción",
       "open_wiki": "Abrir Wiki",
-      "add_to_blacklist": "Añadir a la Lista de Bloqueados",
       "add_to_favorites": "Añadir a La Lista de Favoritos",
       "copy_and_open_saved_search": "Copiar y Abrir en la web",
       "score": {
@@ -71,9 +69,8 @@
     "action": {
       "preview": "Vista previa",
       "view_comments": "Ver comentarios",
-      "add_to_favorite_group": "Añadir al grupo de Favoritos"
-    },
-    "image_fullview": {
+      "add_to_favorite_group": "Añadir al grupo de Favoritos",
+      "view_in_browser": "Ver en el navegador",
       "view_original": "Ver Original"
     }
   },
@@ -308,7 +305,8 @@
     "contact_developer": "Contactar con el desarrollador",
     "contact_developer_description": "Si tiene algún problema o sugerencia, no dude en enviarme un correo electrónico a través de esta opción",
     "feature_request_and_bug_report": "Solicitud de funciones e informe de errores",
-    "feature_request_and_bug_report_description": "Sugerir funciones o informar errores a través del repositorio de GitHub"
+    "feature_request_and_bug_report_description": "Sugerir funciones o informar errores a través del repositorio de GitHub",
+    "open_app_settings": "Abrir Ajustes"
   },
   "blacklisted_tags": {
     "remove": "Remover",
@@ -328,9 +326,7 @@
     "bulk_download_save_to_folder": "Guardar a carpeta",
     "bulk_download_invalid_folder_name_error": "La carpeta no puede contener los siguientes caracteres: ",
     "bulk_download_folder_select_warning": "La app solo puede descargar archivos dentro de directorios públicos <b>({0})</b> para Android 11+. <br><br>Ejemplos de ubicaciones válidas:<br><b>[Interno]</b> /storage/emulated/0/Download <br><b>[Tarjeta SD]</b> /storage/A1B2-C3D4/Download<br><br>Por favor, elige otro directorio o crea uno nuevo si no existe. <br>La versión de este dispositivo es <b>{1}</b>.",
-    "open_app_settings": "Abrir Ajustes",
     "storage_permission_explanation": "Permisos de almacenamiento necesarios para descargar imagenes.",
-    "app_restart_request": "Necesitas reiniciar la aplicacion para que los cambios tengan efecto",
     "image_counter": {
       "one": "Descargar $n imagen",
       "other": "Descargar $n imagenes"
@@ -438,10 +434,16 @@
     "validation_redundant_www": "\"{0}\" contiene \"www\" redundante",
     "validation_contains_spaces": "\"{0}\" contiene espacios intermedios",
     "validation_missing_scheme": "A \"{0}\" le falta un esquema (por ejemplo, https://)",
-    "authentication": "Autenticación",
-    "download": "Descargar",
-    "gestures": "Gestos",
-    "misc": "Varios"
+    "misc": "Varios",
+    "authentication": {
+      "title": "Autenticación"
+    },
+    "gestures": {
+      "title": "Gestos"
+    },
+    "downloads": {
+      "title": "Descargar"
+    }
   },
   "blacklist": {
     "manage": {
@@ -481,6 +483,11 @@
         "one": "Segundo",
         "other": "Segundos"
       }
+    }
+  },
+  "tags": {
+    "actions": {
+      "add_to_blacklist": "Añadir a la Lista de Bloqueados"
     }
   }
 }

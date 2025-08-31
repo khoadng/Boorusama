@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../widgets/booru_text_form_field.dart';
@@ -36,9 +37,9 @@ class ProxyPortInput extends ConsumerWidget {
         );
       },
       keyboardType: TextInputType.number,
-      decoration: const InputDecoration(
-        labelText: 'Port (*)',
-        hintText: '8080',
+      decoration: InputDecoration(
+        labelText: context.t.booru.network.proxy.port,
+        hintText: context.t.booru.network.proxy.port_hint,
       ),
     );
   }

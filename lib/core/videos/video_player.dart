@@ -238,7 +238,7 @@ class _BooruVideoState extends State<BooruVideo> {
                   FilledButton(
                     onPressed: widget.onOpenSettings,
                     child: Text(
-                      'Open settings'.hc,
+                      context.t.settings.open_app_settings,
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.onPrimary,
                       ),

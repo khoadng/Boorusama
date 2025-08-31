@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
@@ -80,7 +81,7 @@ class _CustomDownloadFileNameSectionState
         const SizedBox(height: 16),
         RichText(
           text: TextSpan(
-            text: 'Custom filename format',
+            text: context.t.booru.downloads.custom_filename_format,
             style: TextStyle(
               color: Theme.of(context).colorScheme.onSurface,
             ),
@@ -88,7 +89,7 @@ class _CustomDownloadFileNameSectionState
         ),
         const SizedBox(height: 8),
         DownloadFormatCard(
-          title: 'Individual download',
+          title: context.t.booru.downloads.custom_filename_format_invidual,
           downloadFilenameBuilder: downloadFilenameBuilder,
           defaultFileNameFormat: defaultFileNameFormat,
           format: widget.format,
@@ -97,7 +98,7 @@ class _CustomDownloadFileNameSectionState
         ),
         const SizedBox(height: 8),
         DownloadFormatCard(
-          title: 'Bulk download',
+          title: context.t.booru.downloads.custom_filename_format_bulk,
           downloadFilenameBuilder: downloadFilenameBuilder,
           defaultFileNameFormat: defaultBulkDownloadFileNameFormat,
           format: widget.config.customBulkDownloadFileNameFormat,

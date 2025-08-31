@@ -65,7 +65,7 @@ class AdditionalBlacklistedTags extends ConsumerWidget {
             ),
             child: TagListPreview(
               header: Text(
-                'Blacklist',
+                context.t.booru.search.blacklist,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   color: colorScheme.onSurfaceVariant,
                 ),
@@ -92,7 +92,7 @@ class AdditionalBlacklistedTags extends ConsumerWidget {
                     )
                   else
                     Text(
-                      'No tags',
+                      context.t.booru.search.empty_blacklist,
                       style: TextStyle(
                         color: colorScheme.outline,
                       ),
@@ -102,7 +102,11 @@ class AdditionalBlacklistedTags extends ConsumerWidget {
                     Padding(
                       padding: const EdgeInsets.only(top: 8),
                       child: Text(
-                        'Empty blacklist with replace mode will effectively disable blacklist entirely.',
+                        context
+                            .t
+                            .booru
+                            .search
+                            .empty_blacklist_with_replace_notice,
                         style: TextStyle(
                           color: colorScheme.error,
                         ),

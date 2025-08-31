@@ -70,10 +70,9 @@ class BooruConfigListingView extends ConsumerWidget {
             ListTile(
               contentPadding: EdgeInsets.zero,
               visualDensity: VisualDensity.compact,
-              title: Text("Thumbnail's button".hc),
+              title: Text(context.t.booru.listing.thumbnail_button),
               subtitle: Text(
-                'Change the default button at the right bottom of the thumbnail.'
-                    .hc,
+                context.t.booru.listing.thumbnail_button_description,
               ),
               trailing: OptionDropDownButton(
                 alignment: AlignmentDirectional.centerStart,
@@ -91,7 +90,7 @@ class BooruConfigListingView extends ConsumerWidget {
                         child: Text(
                           describePostPreviewQuickAction != null
                               ? describePostPreviewQuickAction!(value)
-                              : describeImagePreviewQuickAction(value),
+                              : describeImagePreviewQuickAction(value, context),
                         ),
                       ),
                     )
@@ -100,10 +99,15 @@ class BooruConfigListingView extends ConsumerWidget {
             ),
             const Divider(),
             BooruSwitchListTile(
-              title: Text("Enable profile's specific settings".hc),
+              title: Text(
+                context.t.booru.listing.enable_profile_specific_settings,
+              ),
               subtitle: Text(
-                'Override the global settings for this the profile. If enabled, global settings will be ignored until this is disabled.'
-                    .hc,
+                context
+                    .t
+                    .booru
+                    .listing
+                    .enable_profile_specific_settings_description,
               ),
               value: enable,
               onChanged: (value) => ref.editNotifier.updateListing(

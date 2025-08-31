@@ -112,7 +112,7 @@ class PremiumPage extends ConsumerWidget {
   Widget _buildBenefits(WidgetRef ref) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: defaultBenefits
+      children: defaultBenefits(ref.context)
           .map(
             (benefit) => BenefitCard(
               title: benefit.title,
@@ -192,7 +192,9 @@ class _GetPremiumButton extends ConsumerWidget {
       child: ref
           .watch(packagePurchaseProvider)
           .maybeWhen(
-            orElse: () => Text('Get Plus'.hc),
+            orElse: () => Text(
+              context.t.premium.get_premium(brand: kPremiumBrandName),
+            ),
             loading: () => SizedBox(
               width: 16,
               height: 16,
@@ -236,7 +238,7 @@ class _RestorePremiumButton extends ConsumerWidget {
                 return () => restore(ref, context);
               },
             ),
-        child: Text('Restore subscription'.hc),
+        child: Text(context.t.premium.restore_subscription),
       ),
     );
   }

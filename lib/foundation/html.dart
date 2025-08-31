@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_html/flutter_html.dart';
 
+// Project imports:
+import '../core/theme/app_theme.dart';
+
 class AppHtml extends StatefulWidget {
   const AppHtml({
     required this.data,
@@ -17,6 +20,25 @@ class AppHtml extends StatefulWidget {
   final Map<String, Style>? style;
   final OnTap? onLinkTap;
   final bool selectable;
+
+  static Map<String, Style> hintStyle(ColorScheme colorScheme) => {
+    'a': Style(
+      textDecoration: TextDecoration.none,
+      color: colorScheme.primary,
+      fontSize: FontSize(12),
+    ),
+    'b': Style(
+      textDecoration: TextDecoration.underline,
+      textDecorationColor: colorScheme.hintColor,
+      fontWeight: FontWeight.bold,
+      fontSize: FontSize(12),
+    ),
+    'body': Style(
+      margin: Margins.zero,
+      color: colorScheme.hintColor,
+      fontSize: FontSize(12),
+    ),
+  };
 
   @override
   State<AppHtml> createState() => _AppHtmlState();

@@ -131,9 +131,9 @@ class PostGridConfigIconButton<T> extends ConsumerWidget {
                           ),
                         ),
                         if (postStatsPageBuilder != null)
-                          'stats': const PostGridConfigOptionTile(
-                            title: Text('Stats'),
-                            icon: Icon(
+                          'stats': PostGridConfigOptionTile(
+                            title: Text(context.t.posts.actions.stats),
+                            icon: const Icon(
                               Symbols.bar_chart,
                               size: 18,
                             ),
@@ -141,16 +141,20 @@ class PostGridConfigIconButton<T> extends ConsumerWidget {
                         if (showBlacklist &&
                             blacklistEntries != null &&
                             blacklistEntries.isNotEmpty)
-                          'edit_blacklist': const PostGridConfigOptionTile(
-                            title: Text('Edit Blacklist'),
-                            icon: Icon(
+                          'edit_blacklist': PostGridConfigOptionTile(
+                            title: Text(
+                              context.t.posts.actions.edit_blacklist,
+                            ),
+                            icon: const Icon(
                               Symbols.block,
                               size: 18,
                             ),
                           ),
-                        'options': const PostGridConfigOptionTile(
-                          title: Text('View Options'),
-                          icon: Icon(
+                        'options': PostGridConfigOptionTile(
+                          title: Text(
+                            context.t.posts.actions.view_options,
+                          ),
+                          icon: const Icon(
                             Symbols.settings,
                             size: 18,
                           ),
@@ -293,16 +297,17 @@ class EditBlacklistActionSheet extends ConsumerWidget {
                           },
                           title: switch (e) {
                             BlacklistSource.global => Text(
-                              context.t.blacklisted_tags.edit_global_blacklist,
+                              context.t.posts.actions.edit_global_blacklist,
                             ),
                             BlacklistSource.booruSpecific => Text(
                               context
                                   .t
-                                  .blacklisted_tags
+                                  .posts
+                                  .actions
                                   .edit_booru_specific_blacklist,
                             ),
                             BlacklistSource.config => Text(
-                              context.t.blacklisted_tags.edit_profile_blacklist,
+                              context.t.posts.actions.edit_profile_blacklist,
                             ),
                           },
                         ),

@@ -80,8 +80,8 @@ class DanbooruUserDetailsPage extends ConsumerWidget {
                       )
                     : null,
               ),
-              error: (error, stackTrace) => const Center(
-                child: Text('Fail to load profile'),
+              error: (error, stackTrace) => Center(
+                child: Text(context.t.profile.fail_to_load_profile),
               ),
               loading: () => _buildLoading(uid),
             ),

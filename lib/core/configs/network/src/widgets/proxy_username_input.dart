@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../widgets/booru_text_form_field.dart';
@@ -27,9 +28,9 @@ class ProxyUsernameInput extends ConsumerWidget {
           proxySettings?.copyWith(username: () => value),
         );
       },
-      decoration: const InputDecoration(
-        labelText: 'Username',
-        hintText: 'username (optional)',
+      decoration: InputDecoration(
+        labelText: context.t.booru.network.proxy.username,
+        hintText: context.t.booru.network.proxy.username_hint,
       ),
     );
   }

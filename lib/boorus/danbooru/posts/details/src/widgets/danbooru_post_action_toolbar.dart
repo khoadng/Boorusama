@@ -139,7 +139,7 @@ class DanbooruPostActionToolbar extends ConsumerWidget {
                 ),
               SimpleButtonData(
                 icon: Icons.history,
-                title: 'View tag history'.hc,
+                title: context.t.post.action.view_tag_history,
                 onPressed: () => goToPostVersionPage(ref, post),
               ),
               ...buttons,

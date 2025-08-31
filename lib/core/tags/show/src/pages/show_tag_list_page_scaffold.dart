@@ -71,7 +71,7 @@ class _ShowTagListPageScaffoldState
           appBar: DefaultSelectionAppBar(
             itemsCount: ref.watch(showTagsProvider(params)).valueOrNull?.length,
             appBar: AppBar(
-              title: Text('Tags'.hc),
+              title: Text(context.t.tags.title),
               centerTitle: false,
               actions: [
                 Padding(
@@ -129,7 +129,7 @@ class _ShowTagListPageScaffoldState
       ),
       child: BooruSearchBar(
         dense: true,
-        hintText: 'Filter...'.hc,
+        hintText: context.t.tags.filter_hint,
         onChanged: (value) =>
             ref.read(selectedViewTagQueryProvider.notifier).state = value,
       ),

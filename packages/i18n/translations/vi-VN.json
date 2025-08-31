@@ -3,13 +3,7 @@
     "done": "Xong",
     "errors": {
       "no_data": "Không có dữ liệu",
-      "unknown": "Xảy ra lỗi ngoài dự kiến",
-      "failed_to_load_image": "Không tải được hình ảnh",
-      "config_not_found": "Cấu hình không được tìm thấy",
-      "error_loading_tags": "Lỗi khi tải thẻ",
-      "fail_to_load_profile": "Không thể tải cấu hình",
-      "page_not_implemented": "Trang chưa được triển khai",
-      "no_home_view_builder": "Không tìm thấy trình tạo giao diện trang chủ"
+      "unknown": "Xảy ra lỗi ngoài dự kiến"
     },
     "action": {
       "add": "Thêm",
@@ -24,21 +18,24 @@
       "retry": "Thử lại",
       "clear": "Xoá",
       "create": "Tạo",
-      "more": "Thêm"
+      "reset": "Đặt lại",
+      "more": "Thêm",
+      "view": "Xem",
+      "apply": "Áp dụng",
+      "show_all": "Hiện tất cả",
+      "show_less": "Hiện ít hơn"
     },
-    "view": "Xem",
-    "empty_states": {
-      "no_tags": "Không có thẻ",
-      "no_content": "Không có nội dung",
-      "no_options_available": "Không có tùy chọn nào khả dụng"
-    },
-    "default": "Mặc định"
+    "default": "Mặc định",
+    "copied": "Đã sao chép",
+    "no_content": "Không có nội dung",
+    "app_restart_request": "Cần khởi động lại ứng dụng để áp dụng thay đổi"
   },
   "profile": {
     "favorites": "Yêu thích",
     "profile": "Hồ sơ",
     "copy_user_id": "Copy ID người dùng",
-    "messages": "Tin nhắn"
+    "messages": "Tin nhắn",
+    "fail_to_load_profile": "Không thể tải cấu hình"
   },
   "network": {
     "unavailable": "Không có mạng"
@@ -57,8 +54,6 @@
   },
   "post": {
     "detail": {
-      "view": "Xem",
-      "view_in_browser": "Xem bằng trình duyệt",
       "file_details": "Thông số ảnh",
       "size": "Kích thước",
       "resolution": "Độ phân giải",
@@ -69,12 +64,10 @@
         "booru": "Chia sẻ link booru",
         "image": "Chia sẻ ảnh"
       },
-      "copied": "Đã sao chép",
       "show_original": "Xem bản gốc",
       "show_translated": "Xem bản dịch",
       "login_required_notice": "Bạn cần đăng nhập để thực hiện tác vụ này",
       "open_wiki": "Mở wiki",
-      "add_to_blacklist": "Thêm vào bộ lọc",
       "add_to_favorites": "Thêm vào yêu thích",
       "copy_and_open_saved_search": "Copy và mở saved search",
       "score": {
@@ -84,7 +77,21 @@
       "source_label": "Nguồn",
       "related_posts": "Ảnh liên quan",
       "add_to_bookmark": "Thêm đánh dấu",
-      "remove_from_bookmark": "Xoá đánh dấu"
+      "remove_from_bookmark": "Xoá đánh dấu",
+      "widgets": {
+        "toolbar": "Thanh công cụ",
+        "tags": "Tag",
+        "info_panel": "Bảng thông tin",
+        "file_details": "Chi tiết file",
+        "pool": "Ảnh bộ",
+        "artist_info": "Thông tin họa sĩ",
+        "stats": "Thống kê",
+        "comments": "Bình luận",
+        "artist_posts": "Ảnh của họa sĩ",
+        "related_posts": "Ảnh liên quan",
+        "character_list": "Danh sách nhân vật",
+        "source": "Nguồn"
+      }
     },
     "action": {
       "preview": "Xem nhanh",
@@ -94,9 +101,18 @@
       "bookmark": "Dấu trang",
       "favorite": "Yêu thích",
       "upvote": "Bình chọn",
-      "downvote": "Hạ điểm"
-    },
-    "image_fullview": {
+      "downvote": "Hạ điểm",
+      "view_artist": "Xem họa sĩ",
+      "view_tags": "Xem tag",
+      "view_tag_history": "Xem lịch sử tag",
+      "copy_image": "Sao chép ảnh",
+      "slideshow": "Trình chiếu",
+      "none": "Trống",
+      "edit": "Sửa",
+      "use_default": "Dùng mặc định",
+      "toggle_bookmark": "Đảo chiều đánh dấu",
+      "toggle_favorite": "Đảo chiều yêu thích",
+      "view_in_browser": "Xem bằng trình duyệt",
       "view_original": "Xem ảnh gốc"
     },
     "statistics": {
@@ -133,8 +149,7 @@
     "explore": "Khám phá",
     "top": "Hàng đầu",
     "daily": "Hằng ngày",
-    "weekly": "Hằng tuần",
-    "stats": "Thống kê"
+    "weekly": "Hằng tuần"
   },
   "search": {
     "errors": {
@@ -196,11 +211,13 @@
     "app_settings": "Cài đặt ứng dụng",
     "appearance": {
       "appearance": "Hiển thị",
+      "customize": "Tùy chỉnh",
       "show_scores": "Hiện điểm",
       "show_post_list_config_header": "Hiển thị header tuỳ chỉnh",
+      "auto_play_gif": "Tự động phát GIF",
+      "blur_explicit_media": "Làm mờ nội dung nhạy cảm",
       "booru_config": "Hồ sơ booru",
       "booru_config_placement": "Vị trí hồ sơ booru",
-      "customize": "Tùy chỉnh",
       "booru_config_placement_options": {
         "side": "Bên cạnh",
         "bottom": "Ở dưới"
@@ -252,6 +269,7 @@
       },
       "image_quality": {
         "image_quality": "Chất lượng ảnh",
+        "auto": "Tự động",
         "high_quality_notice": "Ảnh chất lượng cao sẽ tải lâu hơn.",
         "high": "Cao",
         "low": "Thấp",
@@ -266,18 +284,34 @@
     },
     "image_viewer": {
       "image_viewer": "Trình xem ảnh",
-      "slideshow": "Chuyển ảnh tự động",
-      "slideshow_interval": "Thời gian chuyển ảnh",
-      "slideshow_mode": "Chế độ chuyển ảnh",
+      "slideshow": "Trình chiếu",
+      "slideshow_interval": "Khoảng thời gian chuyển ảnh",
+      "slideshow_mode": "Chế độ trình chiếu",
       "slideshow_modes": {
         "random": "Ngẫu nhiên",
         "forward": "Tiến tới",
         "backward": "Lùi lại"
       },
-      "slideshow_skip": "Bỏ qua hiệu ứng chuyển tiếp ảnh",
-      "slideshow_interval_explanation": "Giá trị ít hơn 1 giây sẽ tự động bỏ qua hiệu ứng chuyển tiếp",
-      "mute_video": "Tắt tiếng video theo mặc định",
-      "video_section_title": "Video"
+      "slideshow_skip": "Bỏ qua hiệu ứng chuyển tiếp",
+      "slideshow_interval_explanation": "Nếu đặt dưới 1 giây sẽ tự động bỏ qua hiệu ứng chuyển tiếp",
+      "swipe_mode": "Chế độ vuốt",
+      "swipe_mode_disclaimer": "Một số thao tác vuốt tùy chỉnh có thể không hoạt động trong mọi chế độ",
+      "swipe_modes": {
+        "horizontal": "Ngang",
+        "horizontal_description": "Vuốt trái/phải kiểu thư viện ảnh. Giống các ứng dụng xem ảnh và đa phương tiện.",
+        "vertical": "Dọc",
+        "vertical_description": "Vuốt lên/xuống kiểu TikTok. Phổ biến trên các nền tảng video ngắn. Chỉ dùng chế độ dọc."
+      },
+      "mute_video": "Mặc định tắt tiếng video",
+      "video_section_title": "Video",
+      "video": {
+        "video_player_engine": "Trình phát video",
+        "engine": {
+          "default": "Mặc định",
+          "default_description": "Hoạt động tốt với hầu hết thiết bị, có thể gặp sự cố với một số định dạng video hoặc thiết bị cũ.",
+          "mdk_description": "Thử nghiệm, hiệu suất tốt hơn với một số định dạng video nhất định, có thể gây sập ứng dụng. Tự chịu rủi ro khi dùng."
+        }
+      }
     },
     "language": {
       "language": "Ngôn ngữ",
@@ -288,11 +322,23 @@
       "dark": "Tối",
       "light": "Sáng",
       "amoled_dark": "Đen",
+      "system": "Theo hệ thống",
       "dynamic_color": "Màu chủ đề động",
       "dynamic_color_mobile_description": "Đồng bộ màu chủ đề ứng dụng giống hình nền",
       "dynamic_color_desktop_description": "Đồng bộ màu chủ đề với màu nhấn của hệ điều hành",
       "dynamic_color_unsupported_description": "Thiết bị này không hỗ trợ màu động.",
-      "system": "Theo hệ thống"
+      "viewer": {
+        "colors": "Màu sắc",
+        "color_variants": "Biến thể màu",
+        "dark_mode": "Chế độ tối",
+        "harmonize_colors": "Hài hoà màu sắc",
+        "harmonize_colors_description": "Điều chỉnh màu tag để phù hợp với màu nhấn",
+        "groups": {
+          "basic": "Cơ bản",
+          "builtin": "Tích hợp",
+          "accent": "Màu nhấn"
+        }
+      }
     },
     "privacy": {
       "privacy": "Quyền riêng tư",
@@ -325,6 +371,7 @@
       "title": "Tải xuống"
     },
     "help_us_translate": "Hỗ trợ dịch app",
+    "need_more_questions": "Tùy biến thêm?",
     "other_settings": "Cài đặt khác",
     "data_and_storage": {
       "data_and_storage": "Dữ liệu and Bộ nhớ",
@@ -332,8 +379,65 @@
     },
     "backup_and_restore": {
       "backup_and_restore": "Sao lưu và phục hồi dữ liệu",
+      "advanced_backup": "Sao lưu nâng cao",
+      "exporting": "Đang xuất...",
+      "export": "Xuất dữ liệu",
       "import": "Nhập dữ liệu",
-      "export": "Xuất dữ liệu"
+      "export_to_clipboard": "Xuất vào clipboard",
+      "import_from_clipboard": "Nhập từ clipboard",
+      "no_sources_selected": "Chưa chọn nguồn nào",
+      "export_success": "Xuất {source} thành công",
+      "export_failed": "Xuất {source} thất bại: {error}",
+      "import_success": "Nhập {source} thành công",
+      "import_failed": "Nhập {source} thất bại: {error}",
+      "clipboard_export_success": "Đã sao chép {source} vào clipboard",
+      "clipboard_export_failed": "Không thể sao chép {source}: {error}",
+      "clipboard_import_success": "Đã nhập {source} từ clipboard",
+      "clipboard_import_failed": "Không thể dán {source}: {error}",
+      "transfer_data": "Truyền dữ liệu",
+      "send": "Gửi",
+      "receive": "Nhận",
+      "backup_data": "Sao lưu dữ liệu",
+      "advanced_export_import": "Xuất/nhập nâng cao",
+      "auto_backup": "Tự động sao lưu",
+      "auto_backup_tooltip": "Sao lưu sẽ được tạo khi bạn mở ứng dụng. Không sao lưu khi ứng dụng đóng.",
+      "backup_in_progress": "Đang có tiến trình sao lưu",
+      "export_operation_failed": "Xuất thất bại: {error}",
+      "import_operation_failed": "Nhập thất bại: {error}",
+      "export_partial_success": "Đã xuất {exported}/{total} mục. {failed} mục thất bại.",
+      "export_complete_success": "Xuất thành công {exported} mục",
+      "export_no_items": "Xuất thất bại: Không có mục nào được xuất",
+      "import_results": "Hoàn tất nhập: {results}",
+      "import_no_items": "Nhập thất bại: Không có mục nào được nhập",
+      "imported_count": "Đã nhập {count}",
+      "skipped_count": "Bỏ qua {count}",
+      "failed_count": "Thất bại {count}",
+      "default_backup_location": "Vị trí sao lưu mặc định",
+      "never": "Chưa bao giờ",
+      "days_ago": "{days} ngày trước",
+      "hours_ago": "{hours} giờ trước",
+      "minutes_ago": "{minutes} phút trước",
+      "just_now": "Vừa xong"
+    },
+    "auto_backup": {
+      "enable_auto_backup": "Bật tự động sao lưu",
+      "backup_frequency": "Tần suất sao lưu",
+      "backup_location": "Vị trí sao lưu",
+      "maximum_backups": "Số bản sao lưu tối đa",
+      "frequency": {
+        "daily": "Hàng ngày",
+        "weekly": "Hàng tuần"
+      },
+      "backup_count": {
+        "one": "$n bản sao lưu",
+        "other": "$n bản sao lưu"
+      },
+      "change": "Thay đổi",
+      "last_backup": "Lần sao lưu gần nhất: $lastBackup",
+      "backup_needed": "Cần sao lưu",
+      "up_to_date": "Đã cập nhật",
+      "backing_up": "Đang sao lưu...",
+      "backup_now": "Sao lưu ngay"
     },
     "image_details": {
       "image_details": "Chi tiết hình ảnh",
@@ -365,7 +469,8 @@
     "contact_developer": "Liên hệ với dev",
     "contact_developer_description": "Nếu có vấn đề hay góp ý thì liên hệ với mình qua địa chị email này",
     "feature_request_and_bug_report": "Yêu cầu chức năng và báo cáo lỗi",
-    "feature_request_and_bug_report_description": "Gợi ý chức năng hoặc báo cáo lỗi thông qua GitHub repository"
+    "feature_request_and_bug_report_description": "Gợi ý chức năng hoặc báo cáo lỗi thông qua GitHub repository",
+    "open_app_settings": "Mở cài đặt"
   },
   "blacklisted_tags": {
     "remove": "Xóa",
@@ -381,19 +486,41 @@
     "reenable_all": "Hiện hết"
   },
   "download": {
-    "download": "Tải ảnh",
+    "download": "Tải xuống",
+    "downloads": "Tải xuống",
+    "retry_all": "Thử lại tất cả",
+    "nothing_to_clear": "Không có gì để xóa",
+    "new_download": "Tải mới",
+    "no_active_sessions": "Không có phiên tải xuống nào đang chạy",
+    "nothing_to_show": "Không có gì để hiển thị, danh sách tải trống",
+    "status": {
+      "in_progress": "Đang tải",
+      "pending": "Đang chờ",
+      "paused": "Tạm dừng",
+      "completed": "Hoàn tất",
+      "failed": "Thất bại",
+      "canceled": "Đã hủy",
+      "unknown": "Không rõ"
+    },
+    "empty_states": {
+      "no_pending_downloads": "Không có tải xuống đang chờ",
+      "no_paused_downloads": "Không có tải xuống tạm dừng",
+      "no_downloads_in_progress": "Không có tải xuống đang chạy",
+      "no_completed_downloads": "Không có tải xuống hoàn tất",
+      "no_canceled_downloads": "Không có tải xuống bị hủy",
+      "no_failed_downloads": "Không có tải xuống thất bại",
+      "no_downloads": "Chưa có tải xuống"
+    },
     "bulk_download_save_to_folder": "Lưu vào thư mục",
-    "bulk_download_invalid_folder_name_error": "Tên thư mục không được chứa các kí tự sau: ",
-    "bulk_download_folder_select_warning": "Đối với Android 11+, app chỉ có thể lưu files ở thư mục chung <b>({0})</b> . <div>Không hỗ trợ lưu ở thẻ nhớ.</div> <div>Xin hãy chọn thư mục khác.</div> <div>Phiên bản Android của thiết bị này là {1}.</div>",
-    "open_app_settings": "Mở cài đặt",
-    "storage_permission_explanation": "App cần quyền truy cập bộ nhớ ngoài để lưu ảnh.",
-    "app_restart_request": "Cần khởi động lại app để thay đổi được áp dụng",
+    "bulk_download_invalid_folder_name_error": "Tên thư mục không được chứa các ký tự sau: ",
+    "bulk_download_folder_select_warning": "Đối với Android 11+, ứng dụng chỉ có thể lưu file vào thư mục chung <b>({0})</b>.<br><br>Ví dụ vị trí hợp lệ:<br><b>[Bộ nhớ trong]</b> /storage/emulated/0/Download<br><b>[Thẻ SD]</b> /storage/A1B2-C3D4/Download<br><br>Vui lòng chọn thư mục khác hoặc tạo mới nếu chưa có.<br>Phiên bản Android của thiết bị này là <b>{1}</b>.",
+    "storage_permission_explanation": "Ứng dụng cần quyền lưu trữ để tải file xuống.",
     "image_counter": {
       "one": "Tải $n ảnh",
       "other": "Tải $n ảnh"
     },
     "bulk": {
-      "all_done_notification_message": "Đã tải hết tất cả ảnh"
+      "all_done_notification_message": "Đã tải xong tất cả"
     }
   },
   "saved_search": {
@@ -475,15 +602,43 @@
     "month": "Tháng"
   },
   "booru": {
+    "api_key_instructions": {
+      "variants_1": "*Đăng nhập tài khoản trên trình duyệt, vào <b><a href=\"api-credentials\">My Account > Options > API Access Credentials</a></b> để lấy API key. Nếu thấy API key trống như <b>&api_key=&user_id=<your_id></b>, hãy tick <b>Generate New Key?</b> rồi bấm <b>Save</b> ở cuối trang để tạo API key mới. Nếu đã có key, chỉ cần copy và dán vào ô bên trên. Bạn cũng có thể copy toàn bộ chuỗi trong phần <b>API Access Credentials</b> rồi bấm nút bên dưới.",
+      "variants_2": "*Đăng nhập tài khoản trên trình duyệt, vào <b>My Account > Options > API Access Credentials</b>. Nếu có key thì dùng, nếu không thì trang này không hỗ trợ và bạn có thể bỏ qua.",
+      "variants_3": "*Đăng nhập tài khoản trên trình duyệt, vào <b><a href=\"api-credentials\">My Account > API Key</a></b>. Copy key của bạn, hoặc tạo key mới nếu cần, nhớ bật đủ permissions để app hoạt động đúng.",
+      "variants_4": "*Đăng nhập tài khoản trên trình duyệt, vào <b>Account > Login tokens</b>. Copy <b>Web Login Token</b> hoặc tạo mới nếu cần rồi dán vào đây. Lưu ý: nếu bạn logout khỏi trình duyệt thì token này sẽ bị vô hiệu.",
+      "variants_5": "*Đăng nhập tài khoản trên trình duyệt, vào <b><a href=\"api-credentials\">My Account > Options > API Access Credentials</a></b> để lấy API key. Copy key rồi dán vào ô bên trên. Bạn cũng có thể copy toàn bộ chuỗi trong phần <b>API Access Credentials</b> rồi bấm nút bên dưới."
+    },
+    "using_status": "dùng ${booru}",
+    "paste_from_clipboard": "Dán từ clipboard",
     "booru_engine_input_label": "Booru engine (*)",
     "config_name_label": "Tên hồ sơ  (*)",
+    "no_profiles_available": "Không có hồ sơ nào",
+    "add_profile_to_continue": "Thêm hồ sơ để tiếp tục",
+    "add_profile": "Thêm hồ sơ",
+    "unsaved_changes": "Bạn có thay đổi chưa lưu",
+    "unsaved_changes_discard": "Không lưu",
+    "unsaved_changes_reconfirm_question": "Bạn có muốn lưu thay đổi không? Thay đổi sẽ bị mất nếu bạn không lưu.",
     "site_url_label": "URL của web",
     "login_name_label": "Tên đăng nhập",
     "password_api_key_label": "API key",
     "password_hashed_label": "Mật khẩu đã được mã hóa (chỉ đọc)",
     "password_label": "Mật khẩu",
     "content_filtering_label": "Lọc nội dung",
+    "content_filtering": {
+      "none": "Không lọc",
+      "moderate": "Lọc nhẹ",
+      "aggressive": "Lọc mạnh",
+      "custom": "Tùy chỉnh"
+    },
+    "choose_a_custom_filtering": {
+      "one": "Chọn một mức rating để loại khỏi kết quả tìm.",
+      "other": "Chọn các mức rating để loại khỏi kết quả tìm."
+    },
     "hide_deleted_label": "Ẩn ảnh bị xoá",
+    "hide_deleted_description": "Ẩn ảnh kém chất lượng, có thể ẩn luôn cả vài ảnh ổn.",
+    "hide_banned_label": "Ẩn ảnh bị cấm",
+    "hide_banned_description": "Ẩn toàn bộ các ảnh đã bị cấm bởi quản trị viên.",
     "config_booru_confirm": "Chốt",
     "add_a_booru_site": "Tạo hồ sơ mới",
     "next_step": "Tiếp",
@@ -495,10 +650,119 @@
     "validation_redundant_www": "\"{0}\" chứa \"www\" thừa không cần thiết",
     "validation_contains_spaces": "\"{0}\" chứa khoảng trắng không cần thiết ở giữa.",
     "validation_missing_scheme": "\"{0}\" thiếu giao thức (ví dụ: https://)",
-    "authentication": "Xác thực",
-    "download": "Tuỳ chỉnh tải",
-    "gestures": "Cử chỉ",
-    "misc": "Linh tinh"
+    "misc": "Linh tinh",
+    "authentication": {
+      "title": "Đăng nhập",
+      "gelbooru": {
+        "basic_auth": "Đăng nhập cơ bản (bắt buộc)",
+        "basic_auth_description": "Thông tin này cho phép ứng dụng truy cập để đọc dữ liệu từ tài khoản của bạn. Gelbooru bắt buộc từ 06/2025.",
+        "advanced_auth": "Đăng nhập nâng cao (tùy chọn)",
+        "advanced_auth_description": "Nếu nhập thêm thông tin này, bạn có thể chỉnh sửa danh sách yêu thích và có quyền thay đổi dữ liệu trong tài khoản. Lưu ý: nếu đổi mật khẩu, bạn sẽ phải đăng nhập lại.",
+        "fav_button_tooltip_title": "Về nút Yêu thích",
+        "fav_button_tooltip_description": "Ứng dụng không thể kiểm tra xem ảnh đã được thêm vào yêu thích hay chưa. Sau khi bấm yêu thích bạn sẽ thấy báo hiệu, nhưng nó sẽ biến mất khi bạn mở lại ứng dụng. Đừng lo, danh sách yêu thích của bạn vẫn lưu trên trang web.",
+        "logged_in": "Đã đăng nhập",
+        "relogin": "Đăng nhập lại",
+        "clear_credentials": "Xóa thông tin"
+      }
+    },
+    "listing": {
+      "title": "Listing",
+      "thumbnail_button": "Nút trên ảnh thu nhỏ",
+      "thumbnail_button_description": "Chọn nút mặc định hiển thị ở góc dưới bên phải ảnh thu nhỏ.",
+      "enable_profile_specific_settings": "Dùng cài đặt riêng cho hồ sơ này",
+      "enable_profile_specific_settings_description": "Khi bật, hồ sơ này sẽ dùng cài đặt riêng thay vì theo cài đặt chung.",
+      "overridden_notice": "Cài đặt này bị ghi đè bởi listing tùy chỉnh. Vui lòng chỉnh trong phần <b><a href=\"booru-profiles\">Listing của Hồ sơ</a></b>."
+    },
+    "search": {
+      "title": "Tìm kiếm",
+      "include_in_search": "Tag luôn được thêm",
+      "exclude_from_search": "Tag luôn bị loại",
+      "include_exclude_tooltip": "Các tag này sẽ tự động áp dụng cho mọi lần tìm, kể cả khi bạn không nhập thủ công.",
+      "preview_tags": "Xem trước",
+      "any_search_query": "<truy vấn tìm kiếm bất kỳ>",
+      "enable_profile_specific_settings": "Dùng danh sách chặn riêng cho profile",
+      "blacklist": "Danh sách chặn",
+      "empty_blacklist": "Chưa có tag",
+      "empty_blacklist_with_replace_notice": "Nếu danh sách chặn trống và chọn chế độ thay thế, chức năng chặn sẽ bị tắt hoàn toàn.",
+      "blacklist_combine_mode": {
+        "title": "Cách kết hợp danh sách chặn",
+        "merge": "Gộp chung",
+        "merge_description": "Kết hợp danh sách chặn này với danh sách chặn khác.",
+        "replace": "Thay thế",
+        "replace_description": "Chỉ dùng danh sách chặn này, bỏ qua danh sách chung. Hữu ích khi bạn muốn chặn riêng cho profile."
+      }
+    },
+    "network": {
+      "title": "Mạng",
+      "proxy": {
+        "title": "Proxy",
+        "select_type": "<Chọn>",
+        "type": "Loại Proxy",
+        "host_or_ip": "Host hoặc IP (*)",
+        "host_or_ip_hint": "vd: proxy.host.com hoặc 123.456.789.0",
+        "port": "Cổng (*)",
+        "port_hint": "vd: 8080",
+        "username": "Tên đăng nhập",
+        "username_hint": "tên đăng nhập (không bắt buộc)",
+        "password": "Mật khẩu",
+        "password_hint": "mật khẩu (không bắt buộc)",
+        "test": {
+          "state": {
+            "idle": "Kiểm tra proxy",
+            "testing": "Đang kiểm tra...",
+            "slow": "Phản hồi chậm?"
+          },
+          "success": "Proxy hợp lệ",
+          "failure": "Kết nối proxy thất bại, vui lòng kiểm tra cài đặt và thử lại"
+        }
+      }
+    },
+    "viewer": {
+      "auto_fetch_notes": "Tự động lấy ghi chú",
+      "auto_fetch_notes_description": "Tự động tải và hiển thị ghi chú khi có thể."
+    },
+    "gestures": {
+      "title": "Cử chỉ",
+      "override_notice": "Thay đổi cử chỉ mặc định cho profile này. Chọn \"Trống\" để giữ như ban đầu."
+    },
+    "downloads": {
+      "title": "Tuỳ chỉnh tải",
+      "leave_empty_to_use_global": "Để trống để dùng đường dẫn tải mặc định trong cài đặt.",
+      "custom_filename_format": "Định dạng tên file tùy chỉnh",
+      "custom_filename_format_invidual": "Tải riêng lẻ",
+      "custom_filename_format_bulk": "Tải hàng loạt",
+      "filename": {
+        "available_tokens": "Token có thể dùng: ",
+        "no_token_error": "Token $token không khả dụng",
+        "available_token_options": "Các tùy chọn token",
+        "no_options_available": "Không có tùy chọn nào khả dụng"
+      }
+    },
+    "appearance": {
+      "title": "Hiển thị",
+      "image_viewer_layout": {
+        "title": "Bố cục trình xem ảnh",
+        "preview_widgets": "Tiện ích xem trước",
+        "full_info_widgets": "Tiện ích đầy đủ",
+        "widget_title": "Tiện ích",
+        "storage_tooltip": "Tất cả thay đổi được lưu vào hồ sơ hiện tại của bạn.",
+        "rearrange_tip": "Sắp xếp lại các mục hoặc ẩn nội dung",
+        "preview": {
+          "title": "Dùng thử bố cục tùy chỉnh",
+          "description": "Xem trước bố cục tùy chỉnh của bạn trong $previewMinutes phút. Sau đó, bạn có thể nâng cấp lên $brand để tiếp tục sử dụng hoặc thử lại bao nhiêu lần tùy thích.",
+          "start_limited_preview": "Bắt đầu dùng thử $previewMinutes phút",
+          "continue_preview_and_apply": "Tiếp tục dùng thử và áp dụng",
+          "currently_in_preview": "Bạn đang dùng thử bố cục tùy chỉnh.",
+          "time_left": "Thời gian còn lại:",
+          "preview_expired": "Bố cục tùy chỉnh đã hết hạn. Nâng cấp để tiếp tục sử dụng hoặc thử lại bao nhiêu lần tùy thích."
+        }
+      },
+      "home_screen": "Trang chủ",
+      "home_screen_description": "Thay đổi trang chủ mặc định khi mở hồ sơ này.",
+      "turn_on": "Bật",
+      "turn_on_description": "Ghi đè chủ đề chung bằng chủ đề của hồ sơ này",
+      "overridden_notice": "Cài đặt này bị ghi đè bởi hiển thị tùy chỉnh. Vui lòng chỉnh trong phần <b><a href=\"booru-profiles\">Hiển thị của Hồ sơ</a></b>."
+    }
   },
   "blacklist": {
     "manage": {
@@ -507,6 +771,7 @@
     }
   },
   "bookmark": {
+    "title": "Đánh dấu",
     "added": "Đã đánh dấu",
     "failed_to_add": "Đánh dấu không thành công",
     "many_added": "Đã thêm {0} đánh dấu",
@@ -546,5 +811,55 @@
     "delete": "Xoá",
     "created": "Đã tạo",
     "completed_with_no_new_files": "Đã hoàn thành mà không có tệp mới nào"
+  },
+  "select": {
+    "selected_items": "Chọn mục",
+    "items_selected": {
+      "one": "Đã chọn $n mục",
+      "other": "Đã chọn $n mục"
+    }
+  },
+  "tags": {
+    "title": "Tag",
+    "filter_hint": "Lọc...",
+    "loading_tags_error": "Lỗi tải tag: $error",
+    "no_tags_found": "Không tìm thấy tag nào",
+    "added": "Đã thêm",
+    "actions": {
+      "search": "Tìm tag",
+      "search_single": "Tìm",
+      "copy": "Sao chép tag",
+      "copy_single": "Sao chép",
+      "blacklist": "Chặn tag",
+      "blacklist_global": "Chặn tag (toàn app)",
+      "add_to_blacklist": "Thêm vào bộ lọc",
+      "add_to_blacklist_global": "Thêm vào bộ lọc (toàn app)"
+    }
+  },
+  "posts": {
+    "actions": {
+      "view_options": "Tùy chọn hiển thị",
+      "edit_blacklist": "Sửa tag đã chặn",
+      "edit_global_blacklist": "Sửa tag đã chặn (toàn app)",
+      "edit_booru_specific_blacklist": "Sửa tag đã chặn của Booru",
+      "edit_profile_blacklist": "Sửa tag đã chặn của Hồ sơ",
+      "stats": "Thống kê"
+    }
+  },
+  "premium": {
+    "get_premium": "Nâng cấp $brand",
+    "unlock_more_theme_with_premium": "Mở khoá thêm nhiều chủ đề với $brand",
+    "upgrade": "Nâng cấp",
+    "restore_subscription": "Khôi phục gói",
+    "benefits": {
+      "exclusive_themes": "Chủ đề độc quyền",
+      "exclusive_themes_description": "Nhiều chủ đề riêng để bạn đổi diện mạo từng hồ sơ",
+      "layout_customization": "Tùy chỉnh bố cục & màn hình chính",
+      "layout_customization_description": "Chọn lượng thông tin hiển thị và đặt màn hình chính bạn muốn (Đánh dấu, Tìm kiếm, ...)",
+      "enhanced_bulk_download": "Trình tải nhiều ảnh nâng cao",
+      "enhanced_bulk_download_description": "Không giới hạn mẫu, hỗ trợ nhiều phiên tải và tự tiếp tục sau khi khởi động lại.",
+      "support_development": "Ủng hộ nhà phát triển",
+      "support_development_description": "Giúp dev solo duy trì dự án với các bản cập nhật và cải tiến liên tục."
+    }
   }
 }

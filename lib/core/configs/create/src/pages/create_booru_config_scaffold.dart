@@ -68,20 +68,20 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
 
     final tabMap = {
       if (authTab != null) CreateBooruConfigCategory.auth(context): authTab!,
-      CreateBooruConfigCategory.listing():
+      CreateBooruConfigCategory.listing(context):
           listingTab ?? const DefaultBooruConfigListingView(),
       if (ref.watch(showPremiumFeatsProvider))
         CreateBooruConfigCategory.appearance(context):
             layoutTab ?? const DefaultBooruConfigLayoutView(),
       CreateBooruConfigCategory.download(context):
           downloadTab ?? const BooruConfigDownloadView(),
-      CreateBooruConfigCategory.search():
+      CreateBooruConfigCategory.search(context):
           searchTab ?? const DefaultBooruConfigSearchView(),
       CreateBooruConfigCategory.gestures(context):
           gestureTab ?? const DefaultBooruConfigGesturesView(),
       CreateBooruConfigCategory.viewer(context):
           imageViewerTab ?? const BooruConfigViewerView(),
-      CreateBooruConfigCategory.network():
+      CreateBooruConfigCategory.network(context):
           networkTab ?? const BooruConfigNetworkView(),
     };
 
@@ -207,27 +207,27 @@ class CreateBooruConfigCategory extends Equatable {
   });
 
   CreateBooruConfigCategory.auth(BuildContext context)
-    : title = context.t.booru.authentication,
+    : title = context.t.booru.authentication.title,
       name = 'config/auth',
       id = 'auth';
 
-  CreateBooruConfigCategory.listing()
-    : title = 'Listing'.hc,
+  CreateBooruConfigCategory.listing(BuildContext context)
+    : title = context.t.booru.listing.title,
       name = 'config/listing',
       id = 'listing';
 
   CreateBooruConfigCategory.download(BuildContext context)
-    : title = context.t.booru.download,
+    : title = context.t.booru.downloads.title,
       name = 'config/download',
       id = 'download';
 
-  CreateBooruConfigCategory.search()
-    : title = 'Search'.hc,
+  CreateBooruConfigCategory.search(BuildContext context)
+    : title = context.t.booru.search.title,
       name = 'config/search',
       id = 'search';
 
   CreateBooruConfigCategory.gestures(BuildContext context)
-    : title = context.t.booru.gestures,
+    : title = context.t.booru.gestures.title,
       name = 'config/gestures',
       id = 'gestures';
 
@@ -236,13 +236,13 @@ class CreateBooruConfigCategory extends Equatable {
       name = 'config/viewer',
       id = 'viewer';
 
-  CreateBooruConfigCategory.network()
-    : title = 'Network'.hc,
+  CreateBooruConfigCategory.network(BuildContext context)
+    : title = context.t.booru.network.title,
       name = 'config/network',
       id = 'network';
 
   CreateBooruConfigCategory.appearance(BuildContext context)
-    : title = context.t.settings.appearance.appearance,
+    : title = context.t.booru.appearance.title,
       name = 'config/appearance',
       id = 'appearance';
 
@@ -381,7 +381,9 @@ class SelectedBooruChip extends StatelessWidget {
         softWrap: false,
         overflow: TextOverflow.ellipsis,
       ),
-      subtitle: Text('using ${booruType.displayName}'),
+      subtitle: Text(
+        context.t.booru.using_status(booru: booruType.displayName),
+      ),
     );
   }
 }

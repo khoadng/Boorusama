@@ -52,7 +52,7 @@ class CreateBooruImageDetailsResolutionOptionTile<T> extends StatelessWidget {
       visualDensity: VisualDensity.compact,
       title: Text(context.t.settings.image_grid.image_quality.image_quality),
       subtitle: Text(
-        'Higher quality will take longer to load.'.hc,
+        context.t.settings.image_grid.image_quality.high_quality_notice,
       ),
       trailing: OptionDropDownButton(
         alignment: AlignmentDirectional.centerStart,
@@ -63,7 +63,9 @@ class CreateBooruImageDetailsResolutionOptionTile<T> extends StatelessWidget {
             .map(
               (e) => DropdownMenuItem(
                 value: e,
-                child: Text(e.sentenceCase),
+                child: e == 'Auto'
+                    ? Text(context.t.settings.image_grid.image_quality.auto)
+                    : Text(e.sentenceCase),
               ),
             )
             .toList(),

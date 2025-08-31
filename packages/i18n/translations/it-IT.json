@@ -12,9 +12,10 @@
       "ok": "Ok",
       "cancel": "Elimina",
       "duplicate": "Duplica",
-      "select": "Seleziona"
+      "select": "Seleziona",
+      "view": "Visualizza"
     },
-    "view": "Visualizza"
+    "copied": "Copiato"
   },
   "profile": {
     "favorites": "Preferiti",
@@ -39,8 +40,6 @@
   },
   "post": {
     "detail": {
-      "view": "Visualizza",
-      "view_in_browser": "Visualizza nel browser",
       "file_details": "Dettagli dei files",
       "size": "Dimensione",
       "resolution": "Risoluzione",
@@ -51,12 +50,10 @@
         "booru": "Condividi il link Booru",
         "image": "Condividi immagine"
       },
-      "copied": "Copiato",
       "show_original": "Mostra l'originale",
       "show_translated": "Mostra tradotto",
       "login_required_notice": "Devi fare l'accesso per questa azione",
       "open_wiki": "Apri la Wiki",
-      "add_to_blacklist": "Aggiungi alla Blacklist",
       "add_to_favorites": "Aggiungi ai preferiti",
       "copy_and_open_saved_search": "Copia e apri la ricerca salvata",
       "score": {
@@ -71,9 +68,8 @@
     "action": {
       "preview": "Anteprima",
       "view_comments": "Visualizza commenti",
-      "add_to_favorite_group": "Aggiungi al gruppo dei preferiti"
-    },
-    "image_fullview": {
+      "add_to_favorite_group": "Aggiungi al gruppo dei preferiti",
+      "view_in_browser": "Visualizza nel browser",
       "view_original": "Visualizza l'originale"
     }
   },
@@ -352,10 +348,16 @@
     "validation_redundant_www": "\"{0}\" contiene \"www\" ridondanti",
     "validation_contains_spaces": "\"{0}\" contiene spazi in mezzo",
     "validation_missing_scheme": "\"{0}\" manca uno schema (ad esempio https://)",
-    "authentication": "Autenticazione",
-    "download": "Scarica",
-    "gestures": "Gesti",
-    "misc": "Varie"
+    "misc": "Varie",
+    "authentication": {
+      "title": "Autenticazione"
+    },
+    "gestures": {
+      "title": "Gesti"
+    },
+    "downloads": {
+      "title": "Scarica"
+    }
   },
   "blacklist": {
     "manage": {
@@ -365,5 +367,10 @@
   },
   "bookmark": {
     "added": "Bookmark aggiunto"
+  },
+  "tags": {
+    "actions": {
+      "add_to_blacklist": "Aggiungi alla Blacklist"
+    }
   }
 }

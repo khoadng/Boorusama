@@ -1,6 +1,9 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Package imports:
+import 'package:i18n/i18n.dart';
+
 class UserDetailsTabView extends StatelessWidget {
   const UserDetailsTabView({
     required this.sliverInfoOverview,
@@ -26,7 +29,7 @@ class UserDetailsTabView extends StatelessWidget {
     return UserDetailsViewScaffold(
       sliverInfoOverview: sliverInfoOverview,
       body: tabMap.isEmpty
-          ? const Center(child: Text('No content'))
+          ? Center(child: Text(context.t.generic.no_content))
           : DefaultTabController(
               length: tabMap.length,
               child: Column(

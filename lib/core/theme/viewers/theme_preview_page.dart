@@ -150,9 +150,11 @@ class _ThemePreviewPageState extends State<ThemePreviewPage> {
                             notifier.onExit();
                           },
                           child: switch (notifier.updateMethod) {
-                            ThemeUpdateMethod.applyDirectly => Text('Apply'.hc),
+                            ThemeUpdateMethod.applyDirectly => Text(
+                              context.t.generic.action.apply,
+                            ),
                             ThemeUpdateMethod.saveAndUpdateLater => Text(
-                              'Save'.hc,
+                              context.t.generic.action.save,
                             ),
                           },
                         )
@@ -160,7 +162,9 @@ class _ThemePreviewPageState extends State<ThemePreviewPage> {
                           onPressed: () {
                             goToPremiumPage(ref);
                           },
-                          child: Text('Upgrade'.hc),
+                          child: Text(
+                            context.t.premium.upgrade,
+                          ),
                         ),
                 );
               },

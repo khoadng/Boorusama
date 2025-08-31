@@ -33,9 +33,9 @@ class HomeScreenSection extends ConsumerWidget {
       child: ListTile(
         contentPadding: EdgeInsets.zero,
         visualDensity: VisualDensity.compact,
-        title: Text('Home screen'.hc),
+        title: Text(context.t.booru.appearance.home_screen),
         subtitle: Text(
-          'Change the view of the home screen'.hc,
+          context.t.booru.appearance.home_screen_description,
         ),
         trailing: OptionDropDownButton(
           alignment: AlignmentDirectional.centerStart,

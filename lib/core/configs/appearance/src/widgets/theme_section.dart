@@ -30,9 +30,9 @@ class ThemeSection extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             BooruSwitchListTile(
-              title: Text('Turn on'.hc),
+              title: Text(context.t.booru.appearance.turn_on),
               subtitle: Text(
-                "Override the global theme using this profile's theme".hc,
+                context.t.booru.appearance.turn_on_description,
               ),
               value: theme?.enable ?? false,
               onChanged: (value) => onThemeUpdated(

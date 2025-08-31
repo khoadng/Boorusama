@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
@@ -52,6 +53,7 @@ class BooruConfigSearchView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final colorScheme = Theme.of(context).colorScheme;
     final alwaysIncludeTags = ref.watch(
       editBooruConfigProvider(
         ref.watch(editBooruConfigIdProvider),
@@ -78,17 +80,15 @@ class BooruConfigSearchView extends ConsumerWidget {
             children: [
               Flexible(
                 child: Text(
-                  'Include these tags in every search',
+                  context.t.booru.search.include_in_search,
                   style: TextStyle(
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.onSurface.withValues(alpha: 0.8),
+                    color: colorScheme.onSurface.withValues(alpha: 0.8),
                     fontSize: 13,
                   ),
                 ),
               ),
               const SizedBox(width: 8),
-              _buildTooltip(),
+              _buildTooltip(context),
             ],
           ),
           const SizedBox(height: 8),
@@ -105,17 +105,15 @@ class BooruConfigSearchView extends ConsumerWidget {
             children: [
               Flexible(
                 child: Text(
-                  'Exclude these tags in every search',
+                  context.t.booru.search.exclude_from_search,
                   style: TextStyle(
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.onSurface.withValues(alpha: 0.8),
+                    color: colorScheme.onSurface.withValues(alpha: 0.8),
                     fontSize: 13,
                   ),
                 ),
               ),
               const SizedBox(width: 8),
-              _buildTooltip(),
+              _buildTooltip(context),
             ],
           ),
           const SizedBox(height: 8),
@@ -159,13 +157,12 @@ class BooruConfigSearchView extends ConsumerWidget {
     );
   }
 
-  Widget _buildTooltip() {
-    return const Tooltip(
-      message:
-          'These tags will be appended to every search that the app makes, not just the ones you make manually.',
+  Widget _buildTooltip(BuildContext context) {
+    return Tooltip(
+      message: context.t.booru.search.include_exclude_tooltip,
       triggerMode: TooltipTriggerMode.tap,
-      showDuration: Duration(seconds: 5),
-      child: Icon(
+      showDuration: const Duration(seconds: 5),
+      child: const Icon(
         Symbols.info,
         size: 14,
       ),
@@ -178,6 +175,7 @@ class BooruConfigSearchView extends ConsumerWidget {
     bool exclude = false,
   }) {
     final context = ref.context;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Wrap(
       runAlignment: WrapAlignment.center,
@@ -186,14 +184,14 @@ class BooruConfigSearchView extends ConsumerWidget {
       children: [
         ...tags.map(
           (e) => Chip(
-            backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
+            backgroundColor: colorScheme.secondaryContainer,
             label: exclude
                 ? Text(e.substring(1).replaceAll('_', ' '))
                 : Text(e.replaceAll('_', ' ')),
             deleteIcon: Icon(
               Symbols.close,
               size: 16,
-              color: Theme.of(context).colorScheme.error,
+              color: colorScheme.error,
             ),
             onDeleted: () => _removeTag(ref, e),
           ),

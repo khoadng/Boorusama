@@ -48,17 +48,20 @@ class TestProxyButton extends ConsumerWidget {
                       duration: const Duration(seconds: 3),
                       content: Text(
                         success
-                            ? 'Valid proxy settings'.hc
-                            : 'Failed to connect to proxy, please check your settings and try again'
-                                  .hc,
+                            ? context.t.booru.network.proxy.test.success
+                            : context.t.booru.network.proxy.test.failure,
                       ),
                     );
                   }
                 }
               : null,
           child: switch (status) {
-            TestProxyStatus.idle => Text('Test Proxy'.hc),
-            _ => Text('Checking...'.hc),
+            TestProxyStatus.idle => Text(
+              context.t.booru.network.proxy.test.state.idle,
+            ),
+            _ => Text(
+              context.t.booru.network.proxy.test.state.testing,
+            ),
           },
         ),
         if (status == TestProxyStatus.checkingPendingTimeout)
@@ -68,7 +71,7 @@ class TestProxyButton extends ConsumerWidget {
               text: TextSpan(
                 children: [
                   TextSpan(
-                    text: 'Slow response? '.hc,
+                    text: '${context.t.booru.network.proxy.test.state.slow} ',
                   ),
                   TextSpan(
                     text: context.t.generic.action.cancel,

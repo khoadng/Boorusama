@@ -82,7 +82,7 @@ class GeneralPostContextMenu extends ConsumerWidget {
                     ),
           ),
         ContextMenuButtonConfig(
-          'View tags',
+          context.t.post.action.view_tags,
           onPressed: () {
             goToShowTaglistPage(
               ref,
@@ -93,7 +93,7 @@ class GeneralPostContextMenu extends ConsumerWidget {
         ),
         if (!booruConfig.hasStrictSFW)
           ContextMenuButtonConfig(
-            context.t.post.detail.view_in_browser,
+            context.t.post.action.view_in_browser,
             onPressed: () =>
                 launchExternalUrlString(postLinkGenerator.getLink(post)),
           ),

@@ -56,14 +56,14 @@ class CommonPostButtonsBuilder extends ConsumerWidget {
         if (config != null && configViewer != null)
           SimpleButtonData(
             icon: Icons.copy,
-            title: 'Copy image',
+            title: context.t.post.action.copy_image,
             onPressed: () => copyImage(ref, post, config, configViewer),
           ),
       if (postLinkGenerator != null && config != null)
         if (!config.hasStrictSFW)
           SimpleButtonData(
             icon: Icons.open_in_browser,
-            title: context.t.post.detail.view_in_browser,
+            title: context.t.post.action.view_in_browser,
             onPressed: () =>
                 launchExternalUrlString(postLinkGenerator.getLink(post)),
           ),
@@ -71,7 +71,7 @@ class CommonPostButtonsBuilder extends ConsumerWidget {
         if (post.tags.isNotEmpty)
           SimpleButtonData(
             icon: Icons.label,
-            title: 'View tags',
+            title: context.t.post.action.view_tags,
             onPressed: () => goToShowTaglistPage(
               ref,
               post,
@@ -81,12 +81,12 @@ class CommonPostButtonsBuilder extends ConsumerWidget {
       if (post.hasFullView)
         SimpleButtonData(
           icon: Icons.fullscreen,
-          title: context.t.post.image_fullview.view_original,
+          title: context.t.post.action.view_original,
           onPressed: () => goToOriginalImagePage(ref, post),
         ),
       SimpleButtonData(
         icon: Icons.slideshow,
-        title: 'Slideshow',
+        title: context.t.post.action.slideshow,
         onPressed: onStartSlideshow,
       ),
       if (ref.watch(showPremiumFeatsProvider))

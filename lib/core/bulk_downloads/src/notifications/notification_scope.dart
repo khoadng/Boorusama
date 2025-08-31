@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../foundation/toast.dart';
@@ -39,7 +40,7 @@ class BulkDownloadNotificationScope extends ConsumerWidget {
               content: Text(cur.message),
               action: isPremiumError
                   ? SnackBarAction(
-                      label: 'Upgrade',
+                      label: context.t.premium.upgrade,
                       textColor: Theme.of(context).colorScheme.surface,
                       onPressed: () => goToPremiumPage(ref),
                     )

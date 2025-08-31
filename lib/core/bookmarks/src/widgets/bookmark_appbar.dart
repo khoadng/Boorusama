@@ -39,7 +39,7 @@ class BookmarkAppBar extends ConsumerWidget {
     };
 
     return AppBar(
-      title: Text('Bookmarks'.hc),
+      title: Text(context.t.bookmark.title),
       automaticallyImplyLeading: !edit,
       leading: edit
           ? IconButton(

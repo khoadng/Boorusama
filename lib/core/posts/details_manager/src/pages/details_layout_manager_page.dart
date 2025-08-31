@@ -10,6 +10,7 @@ import 'package:reorderables/reorderables.dart';
 import '../../../../premiums/providers.dart';
 import '../../../../premiums/widgets.dart';
 import '../../../../theme/app_theme.dart';
+import '../../types.dart';
 import '../providers/details_layout_provider.dart';
 import '../routes/routes.dart';
 
@@ -34,7 +35,7 @@ class DetailsLayoutManagerPage extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Custom'.hc),
+        title: Text(context.t.settings.appearance.customize),
         actions: [
           ElevatedButton(
             onPressed: canApply
@@ -70,7 +71,7 @@ class DetailsLayoutManagerPage extends ConsumerWidget {
                     navigator.pop();
                   }
                 : null,
-            child: Text('Apply'.hc),
+            child: Text(context.t.generic.action.apply),
           ),
         ],
       ),
@@ -93,7 +94,7 @@ class DetailsLayoutManagerPage extends ConsumerWidget {
                             notifier.resetToDefault();
                           },
                           child: Text(
-                            'Reset'.hc,
+                            context.t.generic.action.reset,
                           ),
                         ),
                       ],
@@ -128,7 +129,7 @@ class _List extends ConsumerWidget {
       header: Padding(
         padding: const EdgeInsets.all(8),
         child: Text(
-          'Rearrange items or hide content'.hc,
+          context.t.booru.appearance.image_viewer_layout.rearrange_tip,
           style: TextStyle(
             color: colorScheme.hintColor,
           ),
@@ -175,7 +176,7 @@ class _List extends ConsumerWidget {
                 horizontal: 8,
               ),
               title: Text(
-                part.name,
+                translateDetailsPart(context, part),
                 style: TextStyle(
                   color: isSelected
                       ? null

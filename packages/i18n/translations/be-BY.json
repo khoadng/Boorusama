@@ -12,7 +12,9 @@
       "ok": "OK",
       "cancel": "Адмена",
       "select": "Select"
-    }
+    },
+    "copied": "Скапіравана",
+    "app_restart_request": "Вам неабходна перазапусціць прылажэнне, каб змяненне ўступіла ў сілу"
   },
   "profile": {
     "favorites": "Любімае"
@@ -34,8 +36,6 @@
   },
   "post": {
     "detail": {
-      "view": "Прагляд",
-      "view_in_browser": "Адкрыць у браўзэры",
       "file_details": "Дэталі",
       "size": "Памер",
       "resolution": "Разрашэнне",
@@ -46,14 +46,13 @@
         "booru": "Падзяліцца спасылкай на сайт",
         "image": "Падзяліцца малюнкам"
       },
-      "copied": "Скапіравана",
       "show_original": "Паказаць арыгінал",
       "show_translated": "Паказаць пераклад",
       "login_required_notice": "Вы павінны ўвайсці ў акаўнт для здзяйснення дзеяння",
-      "open_wiki": "Адкрыць wiki",
-      "add_to_blacklist": "Дадаць у чорны спіс"
+      "open_wiki": "Адкрыць wiki"
     },
-    "image_fullview": {
+    "action": {
+      "view_in_browser": "Адкрыць у браўзэры",
       "view_original": "Паглядзець арыгінальны малюнак"
     }
   },
@@ -180,7 +179,8 @@
     "backup_and_restore": {
       "import": "Імпарт",
       "export": "Экспарт"
-    }
+    },
+    "open_app_settings": "Адкрыць настройкі"
   },
   "blacklisted_tags": {
     "remove": "Выдаліць",
@@ -195,9 +195,7 @@
     "bulk_download_save_to_folder": "Сахраніць у",
     "bulk_download_invalid_folder_name_error": "Назва папкі не можа ўтрымліваць наступныя сімвалы: ",
     "bulk_download_folder_select_warning": "Прылажэнне можа захоўваць файлы толькі ў публічныя папкі <b>({0})</b> у Android 11+. <div>SD карты не падтрымліваюцца.</div> <div>Калі ласка, выберыце іншае размяшчэнне.</div> <div>Версія гэтага ўстройства - {1}.</div>",
-    "open_app_settings": "Адкрыць настройкі",
-    "storage_permission_explanation": "Дазвол на доступ да сховішча неабходна для захавання загружаных файлаў.",
-    "app_restart_request": "Вам неабходна перазапусціць прылажэнне, каб змяненне ўступіла ў сілу"
+    "storage_permission_explanation": "Дазвол на доступ да сховішча неабходна для захавання загружаных файлаў."
   },
   "saved_search": {
     "saved_search": "Запыты",
@@ -237,5 +235,10 @@
   },
   "forum": {
     "forum": "Форум"
+  },
+  "tags": {
+    "actions": {
+      "add_to_blacklist": "Дадаць у чорны спіс"
+    }
   }
 }

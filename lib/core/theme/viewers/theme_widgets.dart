@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../widgets/widgets.dart';
@@ -101,10 +102,10 @@ class ThemeCategoryToggleSwitch extends ConsumerWidget {
     return Center(
       child: BooruSegmentedButton(
         initialValue: initialCategory,
-        segments: const {
-          ThemeCategory.basic: 'Basic',
-          ThemeCategory.builtIn: 'Built-in',
-          ThemeCategory.accent: 'Accent',
+        segments: {
+          ThemeCategory.basic: context.t.settings.theme.viewer.groups.basic,
+          ThemeCategory.builtIn: context.t.settings.theme.viewer.groups.builtin,
+          ThemeCategory.accent: context.t.settings.theme.viewer.groups.accent,
         },
         onChanged: (value) => notifier.updateCategory(value),
         selectedColor: colorScheme.primaryContainer,

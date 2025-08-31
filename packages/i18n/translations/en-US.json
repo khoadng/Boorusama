@@ -3,13 +3,7 @@
     "done": "Done",
     "errors": {
       "no_data": "No data available",
-      "unknown": "Something went wrong",
-      "failed_to_load_image": "Failed to load image",
-      "config_not_found": "Config not found",
-      "error_loading_tags": "Error loading tags",
-      "fail_to_load_profile": "Fail to load profile",
-      "page_not_implemented": "Page not implemented yet",
-      "no_home_view_builder": "No home view builder found"
+      "unknown": "Something went wrong"
     },
     "action": {
       "add": "Add",
@@ -24,21 +18,24 @@
       "retry": "Retry",
       "clear": "Clear",
       "create": "Create",
-      "more": "More"
+      "reset": "Reset",
+      "more": "More",
+      "view": "View",
+      "apply": "Apply",
+      "show_all": "Show all",
+      "show_less": "Show less"
     },
-    "empty_states": {
-      "no_tags": "No tags",
-      "no_content": "No content",
-      "no_options_available": "No options available"
-    },
-    "view": "View",
-    "default": "Default"
+    "default": "Default",
+    "copied": "Copied",
+    "no_content": "No content",
+    "app_restart_request": "You need to restart the app for this change to take effect"
   },
   "profile": {
     "favorites": "Favorites",
     "profile": "Profile",
     "copy_user_id": "Copy User ID",
-    "messages": "Messages"
+    "messages": "Messages",
+    "fail_to_load_profile": "Fail to load profile"
   },
   "network": {
     "unavailable": "Network unavailable"
@@ -57,8 +54,6 @@
   },
   "post": {
     "detail": {
-      "view": "View",
-      "view_in_browser": "View in browser",
       "file_details": "File details",
       "size": "Size",
       "resolution": "Resolution",
@@ -69,12 +64,10 @@
         "booru": "Share booru link",
         "image": "Share image"
       },
-      "copied": "Copied",
       "show_original": "Show original",
       "show_translated": "Show translated",
       "login_required_notice": "You have to log in to perform this action",
       "open_wiki": "Open wiki",
-      "add_to_blacklist": "Add to blacklist",
       "add_to_favorites": "Add to favorites",
       "copy_and_open_saved_search": "Copy and open saved search",
       "score": {
@@ -84,7 +77,21 @@
       "source_label": "Source",
       "related_posts": "Related posts",
       "add_to_bookmark": "Add to bookmark",
-      "remove_from_bookmark": "Remove from bookmark"
+      "remove_from_bookmark": "Remove from bookmark",
+      "widgets": {
+        "toolbar": "Toolbar",
+        "tags": "Tags",
+        "info_panel": "Info panel",
+        "file_details": "File details",
+        "pool": "Pool",
+        "artist_info": "Artist info",
+        "stats": "Statistics",
+        "comments": "Comments",
+        "artist_posts": "Artist posts",
+        "related_posts": "Related posts",
+        "character_list": "Character list",
+        "source": "Source"
+      }
     },
     "statistics": {
       "stats_for_nerds": "Stats for nerds"
@@ -97,9 +104,18 @@
       "upvote": "Upvote",
       "downvote": "Downvote",
       "view_comments": "View comments",
-      "add_to_favorite_group": "Add to favorite group"
-    },
-    "image_fullview": {
+      "add_to_favorite_group": "Add to favorite group",
+      "view_artist": "View artist",
+      "view_tags": "View tags",
+      "view_tag_history": "View tag history",
+      "copy_image": "Copy image",
+      "slideshow": "Slideshow",
+      "none": "None",
+      "edit": "Edit",
+      "use_default": "Use Default",
+      "toggle_bookmark": "Bật/tắt đánh dấu",
+      "toggle_favorite": "Bật/tắt yêu thích",
+      "view_in_browser": "View in browser",
       "view_original": "View original"
     }
   },
@@ -133,8 +149,7 @@
     "explore": "Explore",
     "top": "Top",
     "daily": "Daily",
-    "weekly": "Weekly",
-    "stats": "Stats"
+    "weekly": "Weekly"
   },
   "search": {
     "errors": {
@@ -199,6 +214,8 @@
       "customize": "Customize",
       "show_scores": "Show scores",
       "show_post_list_config_header": "Show posts configuration header",
+      "auto_play_gif": "Auto-play GIF",
+      "blur_explicit_media": "Blur explicit content",
       "booru_config": "Booru profile",
       "booru_config_placement": "Booru profile placement",
       "booru_config_placement_options": {
@@ -254,6 +271,7 @@
       },
       "image_quality": {
         "image_quality": "Image quality",
+        "auto": "Auto",
         "high_quality_notice": "High quality image will take longer to load.",
         "high": "High",
         "low": "Low",
@@ -287,7 +305,15 @@
         "vertical_description": "TikTok-style up/down swiping. Popular on short video platforms. Portrait mode only."
       },
       "mute_video": "Mute video by default",
-      "video_section_title": "Video"
+      "video_section_title": "Video",
+      "video": {
+        "video_player_engine": "Video player engine",
+        "engine": {
+          "default": "Default",
+          "default_description": "Works well with most devices, may have issues with some video formats or older devices.",
+          "mdk_description": "Experimental, better performance for certain video formats, may cause crashes. Use at your own risk."
+        }
+      }
     },
     "language": {
       "language": "Language",
@@ -302,7 +328,19 @@
       "dynamic_color": "Dynamic theme color",
       "dynamic_color_mobile_description": "Sync theme color with wallpaper",
       "dynamic_color_desktop_description": "Sync theme color with OS's accent color",
-      "dynamic_color_unsupported_description": "This device does not support dynamic color."
+      "dynamic_color_unsupported_description": "This device does not support dynamic color.",
+      "viewer": {
+        "colors": "Colors",
+        "color_variants": "Color Variants",
+        "dark_mode": "Dark mode",
+        "harmonize_colors": "Harmonize colors",
+        "harmonize_colors_description": "Adjusts tag colors to match the accent color",
+        "groups": {
+          "basic": "Basic",
+          "builtin": "Built-in",
+          "accent": "Accent"
+        }
+      }
     },
     "privacy": {
       "privacy": "Privacy",
@@ -335,6 +373,7 @@
       "title": "Download"
     },
     "help_us_translate": "Help us translate",
+    "need_more_questions": "Need more?",
     "other_settings": "Other settings",
     "data_and_storage": {
       "data_and_storage": "Data and Storage",
@@ -453,15 +492,13 @@
     "contact_developer": "Contact developer",
     "contact_developer_description": "If you have any issues or suggestions, feel free to send me an email through this option",
     "feature_request_and_bug_report": "Feature request and bug report",
-    "feature_request_and_bug_report_description": "Suggest features or report bugs through the GitHub repository"
+    "feature_request_and_bug_report_description": "Suggest features or report bugs through the GitHub repository",
+    "open_app_settings": "Open settings"
   },
   "blacklisted_tags": {
     "remove": "Remove",
     "edit": "Edit",
     "blacklisted_tags": "Blacklisted tags",
-    "edit_global_blacklist": "Edit Global Blacklist",
-    "edit_booru_specific_blacklist": "Edit Booru's Specific Blacklist",
-    "edit_profile_blacklist": "Edit Profile Blacklist",
     "load_error": "Failed to load blacklisted tags",
     "updated": "Blacklisted tags updated",
     "limitation_notice": "Only support <b>NOT</b> operator, <b>OR</b> operator, <b>score</b> metatag and <b>rating</b> metatag\n\nBlacklisting using other metatags won't work for current version.",
@@ -476,8 +513,6 @@
     "downloads": "Downloads",
     "retry_all": "Retry all",
     "nothing_to_clear": "Nothing to clear",
-    "download_manager_disabled": "Download manager is disabled",
-    "open_settings": "Open settings",
     "new_download": "New download",
     "no_active_sessions": "No active download sessions",
     "nothing_to_show": "Nothing to show, download updates are empty",
@@ -502,9 +537,7 @@
     "bulk_download_save_to_folder": "Save to folder",
     "bulk_download_invalid_folder_name_error": "A folder cannot contain any of the following characters: ",
     "bulk_download_folder_select_warning": "The app can only download files inside public directories <b>({0})</b> for Android 11+. <br><br> Valid location examples:<br><b>[Internal]</b> /storage/emulated/0/Download <br><b>[SD card]</b> /storage/A1B2-C3D4/Download<br><br>Please choose another directory or create a new one if it doesn't exist. <br>This device's version is <b>{1}</b>.",
-    "open_app_settings": "Open settings",
     "storage_permission_explanation": "Storage permission is needed to store download files.",
-    "app_restart_request": "You need to restart the app for this change to take effect",
     "image_counter": {
       "one": "Download $n image",
       "other": "Download $n images"
@@ -600,22 +633,36 @@
       "variants_4": "*Log in to your account on the browser, visit <b>Account > Login tokens</b>. Copy your <b>Web Login Token</b> or create a new one if needed and paste it here. If you use the <b>Web Login Token</b>, logout from the browser will make the token invalid.",
       "variants_5": "*Log in to your account on the browser, visit <b><a href=\"api-credentials\">My Account > Options > API Access Credentials</a></b> to get your API key. Copy the key and paste it into the field above. You can also copy the whole string from the <b>API Access Credentials</b> section and tap the button below."
     },
+    "using_status": "using ${booru}",
+    "paste_from_clipboard": "Paste from clipboard",
     "booru_engine_input_label": "Booru engine (*)",
     "config_name_label": "Profile name (*)",
     "no_profiles_available": "No profiles available",
     "add_profile_to_continue": "Add a profile to continue",
     "add_profile": "Add Profile",
     "unsaved_changes": "You have unsaved changes",
-    "listing": "Listing",
-    "search": "Search",
-    "network": "Network",
+    "unsaved_changes_discard": "Don't save",
+    "unsaved_changes_reconfirm_question": "Do you want to save your changes? Your changes will be lost if you don't save them.",
     "site_url_label": "Site URL",
     "login_name_label": "Login",
     "password_api_key_label": "API key",
     "password_hashed_label": "Password Hashed (readonly)",
     "password_label": "Password",
     "content_filtering_label": "Content filtering",
+    "content_filtering": {
+      "none": "None",
+      "moderate": "Moderate",
+      "aggressive": "Aggressive",
+      "custom": "Custom"
+    },
+    "choose_a_custom_filtering": {
+      "one": "Choose a rating that you want to exclude from the search.",
+      "other": "Choose ratings that you want to exclude from the search."
+    },
     "hide_deleted_label": "Hide deleted posts",
+    "hide_deleted_description": "Hide low-quality images, some decent ones might also be hidden.",
+    "hide_banned_label": "Hide banned posts",
+    "hide_banned_description": "Completely hide images that have been banned by the site.",
     "config_booru_confirm": "OK",
     "add_a_booru_site": "Create a new profile",
     "next_step": "Next",
@@ -627,10 +674,119 @@
     "validation_redundant_www": "\"{0}\" contains redundant \"www\"",
     "validation_contains_spaces": "\"{0}\" contains in-between spaces",
     "validation_missing_scheme": "\"{0}\" is missing a scheme (e.g. https://)",
-    "authentication": "Authentication",
-    "download": "Download",
-    "gestures": "Gestures",
-    "misc": "Misc"
+    "misc": "Misc",
+    "authentication": {
+      "title": "Authentication",
+      "gelbooru": {
+        "basic_auth": "Basic Auth (required)",
+        "basic_auth_description": "Providing this information gives the app read access to your account. This is required by Gelbooru as of 06/2025.",
+        "advanced_auth": "Advanced Auth (optional)",
+        "advanced_auth_description": "Providing this information allows you to edit your favorites and provides write access to your account. Note that if you change your password, you will need to log in again.",
+        "fav_button_tooltip_title": "About the favorite button",
+        "fav_button_tooltip_description": "There is no way to check if an image has already been favorited. Although you can see the visual indicator after favoriting an image, it will reset when you restart the app. Don't worry, your favorites are still saved on the website.",
+        "logged_in": "Logged in",
+        "relogin": "Re-login",
+        "clear_credentials": "Clear"
+      }
+    },
+    "listing": {
+      "title": "Listing",
+      "thumbnail_button": "Thumbnail's button",
+      "thumbnail_button_description": "Change the default button at the right bottom of the thumbnail.",
+      "enable_profile_specific_settings": "Enable profile's specific settings",
+      "enable_profile_specific_settings_description": "Override the global settings for this the profile. If enabled, global settings will be ignored until this is disabled.",
+      "overridden_notice": "These settings are overridden by custom listing. Go to <b><a href=\"booru-profiles\">Profile's Listing</a></b> page instead."
+    },
+    "search": {
+      "title": "Search",
+      "include_in_search": "Include these tags in every search",
+      "exclude_from_search": "Exclude these tags from every search",
+      "include_exclude_tooltip": "These tags will be appended to every search that the app makes, not just the ones you make manually.",
+      "preview_tags": "Preview",
+      "any_search_query": "<any search query>",
+      "enable_profile_specific_settings": "Enable profile-specific blacklist",
+      "blacklist": "Blacklist",
+      "empty_blacklist": "No tags",
+      "empty_blacklist_with_replace_notice": "Empty blacklist with replace mode will effectively disable blacklist entirely.",
+      "blacklist_combine_mode": {
+        "title": "Combination mode",
+        "merge": "Merge",
+        "merge_description": "Merge this blacklist together with the other blacklists.",
+        "replace": "Replace",
+        "replace_description": "Override global blacklist with this blacklist. Useful when you want to have a blacklist that is only used for this profile without affecting the global blacklist."
+      }
+    },
+    "network": {
+      "title": "Network",
+      "proxy": {
+        "title": "Proxy",
+        "select_type": "<Select>",
+        "type": "Proxy Type",
+        "host_or_ip": "Host or IP (*)",
+        "host_or_ip_hint": "e.g. proxy.host.com or 123.456.789.0",
+        "port": "Port (*)",
+        "port_hint": "e.g. 8080",
+        "username": "Username",
+        "username_hint": "username (optional)",
+        "password": "Password",
+        "password_hint": "password (optional)",
+        "test": {
+          "state": {
+            "idle": "Test proxy",
+            "testing": "Checking...",
+            "slow": "Slow response?"
+          },
+          "success": "Valid proxy settings",
+          "failure": "Failed to connect to proxy, please check your settings and try again"
+        }
+      }
+    },
+    "viewer": {
+      "auto_fetch_notes": "Auto-fetch notes",
+      "auto_fetch_notes_description": "Automatically fetch and display notes whenever possible."
+    },
+    "gestures": {
+      "title": "Gestures",
+      "override_notice": "Override the default gestures for this profile, select \"None\" to keep the original behavior."
+    },
+    "downloads": {
+      "title": "Download",
+      "leave_empty_to_use_global": "Leave empty to use the download location in settings.",
+      "custom_filename_format": "Custom filename format",
+      "custom_filename_format_invidual": "Individual download",
+      "custom_filename_format_bulk": "Bulk download",
+      "filename": {
+        "available_tokens": "Available tokens: ",
+        "no_token_error": "Token $token is not available",
+        "available_token_options": "Available options",
+        "no_options_available": "No options available"
+      }
+    },
+    "appearance": {
+      "title": "Appearance",
+      "image_viewer_layout": {
+        "title": "Image viewer layout",
+        "preview_widgets": "Preview widgets",
+        "full_info_widgets": "Full information widgets",
+        "widget_title": "Widgets",
+        "storage_tooltip": "All changes are saved to your current profile.",
+        "rearrange_tip": "Rearrange items or hide content",
+        "preview": {
+          "title": "Layout Preview",
+          "description": "Preview your custom layout for $previewMinutes minutes. After that, you can either upgrade to $brand to keep using it or retry as many times as you want.",
+          "start_limited_preview": "Start $previewMinutes-minute Preview",
+          "continue_preview_and_apply": "Continue Preview & Apply",
+          "currently_in_preview": "You are currently previewing a custom layout.",
+          "time_left": "Time left:",
+          "preview_expired": "Your layout preview has ended. Upgrade to continue using premium layouts or start a new preview."
+        }
+      },
+      "home_screen": "Home screen",
+      "home_screen_description": "Change the default home screen when opening this profile.",
+      "turn_on": "Turn on",
+      "turn_on_description": "Override the global theme using this profile's theme",
+      "overridden_notice": "These settings are overridden by custom theme. Go to <b><a href=\"booru-profiles\">Profile's Appearance</a></b> page instead."
+    }
   },
   "blacklist": {
     "manage": {
@@ -639,6 +795,7 @@
     }
   },
   "bookmark": {
+    "title": "Bookmarks",
     "added": "Bookmark added",
     "failed_to_add": "Failed to add bookmark",
     "many_added": "{0} bookmarks added",
@@ -690,6 +847,49 @@
     "items_selected": {
       "one": "$n item selected",
       "other": "$n items selected"
+    }
+  },
+  "tags": {
+    "title": "Tags",
+    "filter_hint": "Filter...",
+    "loading_tags_error": "Error loading tags: $error",
+    "no_tags_found": "No tags found",
+    "added": "Added",
+    "actions": {
+      "search": "Search Tags",
+      "search_single": "Search",
+      "copy": "Copy Tags",
+      "copy_single": "Copy",
+      "blacklist": "Blacklist",
+      "blacklist_global": "Blacklist (Global)",
+      "add_to_blacklist": "Add to blacklist",
+      "add_to_blacklist_global": "Add to global blacklist"
+    }
+  },
+  "posts": {
+    "actions": {
+      "view_options": "View Options",
+      "edit_blacklist": "Edit Blacklist",
+      "edit_global_blacklist": "Edit Global Blacklist",
+      "edit_booru_specific_blacklist": "Edit Booru's Specific Blacklist",
+      "edit_profile_blacklist": "Edit Profile Blacklist",
+      "stats": "Stats"
+    }
+  },
+  "premium": {
+    "get_premium": "Get $brand",
+    "upgrade": "Upgrade",
+    "unlock_more_theme_with_premium": "Unlock more themes with $brand",
+    "restore_subscription": "Restore subscription",
+    "benefits": {
+      "exclusive_themes": "Exclusive Themes",
+      "exclusive_themes_description": "Pick from a variety of themes to personalize each profile’s look",
+      "layout_customization": "Layout & Home Screen",
+      "layout_customization_description": "Customize how much info you see, and set your preferred home screen (Bookmarks, Search, etc.)",
+      "enhanced_bulk_download": "Enhanced Bulk Downloader",
+      "enhanced_bulk_download_description": "Unlimited templates, multiple sessions and seamless resume after restart.",
+      "support_development": "Support Development",
+      "support_development_description": "Help a solo developer keep the project going with regular updates and improvements."
     }
   }
 }

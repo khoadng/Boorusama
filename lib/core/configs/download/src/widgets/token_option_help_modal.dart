@@ -28,7 +28,7 @@ class TokenOptionHelpModal extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Available options'.hc),
+        title: Text(context.t.booru.downloads.filename.available_token_options),
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
@@ -100,8 +100,10 @@ class TokenOptionHelpModal extends StatelessWidget {
                 ),
               ],
             )
-          : const Center(
-              child: Text('No options available'),
+          : Center(
+              child: Text(
+                context.t.booru.downloads.filename.no_options_available,
+              ),
             ),
     );
   }

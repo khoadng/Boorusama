@@ -253,7 +253,7 @@ class _ModalOptions extends ConsumerWidget {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
-              title: Text(context.t.post.detail.view_in_browser),
+              title: Text(context.t.post.action.view_in_browser),
               onTap: () {
                 launchExternalUrlString(task.task.url);
                 navigator.pop();

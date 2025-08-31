@@ -130,7 +130,9 @@ class _DownloadFormatCardState extends ConsumerState<DownloadFormatCard> {
                           widget.onChanged?.call(widget.defaultFileNameFormat);
                         });
                       },
-                      child: Text('Reset'.hc),
+                      child: Text(
+                        context.t.generic.action.reset,
+                      ),
                     ),
                   ),
                 ],

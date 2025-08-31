@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 
 class RedirectAction {
   const RedirectAction({
@@ -44,7 +45,7 @@ class MoreSettingsRedirectCard extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Need more?',
+            context.t.settings.need_more_questions,
             style: textTheme.titleMedium,
           ),
           const SizedBox(height: 8),

@@ -46,7 +46,7 @@ class CreateGelbooruConfigPage extends ConsumerWidget {
         },
         describePostDetailsAction: (action) => switch (action) {
           kToggleFavoriteAction => 'Toggle favorite',
-          _ => describeDefaultGestureAction(action),
+          _ => describeDefaultGestureAction(action, context),
         },
       ),
       searchTab: const DefaultBooruConfigSearchView(
@@ -109,7 +109,7 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Basic Auth (required)',
+                context.t.booru.authentication.gelbooru.basic_auth,
                 style: Theme.of(context).textTheme.titleSmall?.copyWith(
                   color: Theme.of(context).colorScheme.hintColor,
                   fontSize: 14,
@@ -124,7 +124,7 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
             ],
           ),
           Text(
-            'Providing this information gives the app read access to your account. This is required by Gelbooru as of 06/2025.',
+            context.t.booru.authentication.gelbooru.basic_auth_description,
             style: Theme.of(context).textTheme.titleSmall?.copyWith(
               color: Theme.of(context).colorScheme.hintColor,
               fontSize: 12,
@@ -160,7 +160,7 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
           const Divider(),
           const SizedBox(height: 8),
           Text(
-            'Advanced Auth (optional)',
+            context.t.booru.authentication.gelbooru.advanced_auth,
             style: Theme.of(context).textTheme.titleSmall?.copyWith(
               color: Theme.of(context).colorScheme.hintColor,
               fontSize: 14,
@@ -169,7 +169,7 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
           ),
           const SizedBox(height: 4),
           Text(
-            'Providing this information allows you to edit your favorites and provides write access to your account. Note that if you change your password, you will need to log in again.',
+            context.t.booru.authentication.gelbooru.advanced_auth_description,
             style: Theme.of(context).textTheme.titleSmall?.copyWith(
               color: Theme.of(context).colorScheme.hintColor,
               fontSize: 12,
@@ -186,10 +186,19 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
                 const SizedBox(height: 8),
                 WarningContainer(
                   margin: EdgeInsets.zero,
-                  title: 'About the heart button state'.hc,
+                  title: context
+                      .t
+                      .booru
+                      .authentication
+                      .gelbooru
+                      .fav_button_tooltip_title,
                   contentBuilder: (context) => Text(
-                    "There is no way to check if an image has already been favorited. Although you can see the visual indicator after favoriting an image, it will reset when you restart the app. Don't worry, your favorites are still saved on the website."
-                        .hc,
+                    context
+                        .t
+                        .booru
+                        .authentication
+                        .gelbooru
+                        .fav_button_tooltip_description,
                   ),
                 ),
               ],
@@ -218,7 +227,7 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            'Logged in'.hc,
+            context.t.booru.authentication.gelbooru.logged_in,
             style: const TextStyle(
               fontWeight: FontWeight.bold,
             ),
@@ -232,7 +241,9 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
                 onPressed: () {
                   _openBrowser(config);
                 },
-                label: Text('Update'.hc),
+                label: Text(
+                  context.t.booru.authentication.gelbooru.relogin,
+                ),
               ),
               const SizedBox(width: 8),
               RawChip(
@@ -242,7 +253,9 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
                 onPressed: () {
                   ref.editNotifier.updatePassHash(null);
                 },
-                label: Text('Clear'.hc),
+                label: Text(
+                  context.t.booru.authentication.gelbooru.clear_credentials,
+                ),
               ),
             ],
           ),
@@ -371,7 +384,7 @@ class _VerifyApiKeyButton extends StatelessWidget {
                   : colorScheme.surfaceContainerLow,
             ),
             child: Text(
-              'Verify',
+              context.t.generic.action.verify,
               style: TextStyle(
                 fontWeight: isEnabled ? FontWeight.w600 : FontWeight.w500,
                 color: isEnabled

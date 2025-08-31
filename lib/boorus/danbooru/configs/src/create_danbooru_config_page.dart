@@ -54,11 +54,11 @@ class CreateDanbooruConfigPage extends ConsumerWidget {
           kEditAction,
         },
         describePostDetailsAction: (action) => switch (action) {
-          kToggleFavoriteAction => 'Toggle favorite',
-          kUpvoteAction => 'Upvote',
-          kDownvoteAction => 'Downvote',
-          kEditAction => 'Edit',
-          _ => describeDefaultGestureAction(action),
+          kToggleFavoriteAction => context.t.post.action.toggle_favorite,
+          kUpvoteAction => context.t.post.action.upvote,
+          kDownvoteAction => context.t.post.action.downvote,
+          kEditAction => context.t.post.action.edit,
+          _ => describeDefaultGestureAction(action, context),
         },
       ),
       imageViewerTab: const BooruConfigViewerView(

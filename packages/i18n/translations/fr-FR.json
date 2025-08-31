@@ -12,9 +12,11 @@
       "ok": "OK",
       "cancel": "Annuler",
       "duplicate": "Dupliquer",
-      "select": "Sélectionner"
+      "select": "Sélectionner",
+      "view": "Voir"
     },
-    "view": "Voir"
+    "copied": "Copié",
+    "app_restart_request": "Redémarrez l'application pour que le changement soit effectif"
   },
   "profile": {
     "favorites": "Favoris",
@@ -39,8 +41,6 @@
   },
   "post": {
     "detail": {
-      "view": "Voir",
-      "view_in_browser": "Afficher dans le navigateur",
       "file_details": "Détails du fichier",
       "size": "Taille",
       "resolution": "Résolution",
@@ -51,12 +51,10 @@
         "booru": "Partager le lien booru",
         "image": "Partager l'image"
       },
-      "copied": "Copié",
       "show_original": "Afficher l'original",
       "show_translated": "Voir la traduction",
       "login_required_notice": "Vous devez vous connecter pour effectuer cette action",
       "open_wiki": "Ouvrir le wiki",
-      "add_to_blacklist": "Ajouter à la liste noire",
       "add_to_favorites": "Ajouter aux favoris",
       "copy_and_open_saved_search": "Copier et ouvrir les recherches enregistrées",
       "score": {
@@ -72,9 +70,8 @@
     "action": {
       "preview": "Aperçu",
       "view_comments": "Afficher les commentaires",
-      "add_to_favorite_group": "Ajouter à un groupe de favoris"
-    },
-    "image_fullview": {
+      "add_to_favorite_group": "Ajouter à un groupe de favoris",
+      "view_in_browser": "Afficher dans le navigateur",
       "view_original": "Voir l'original"
     }
   },
@@ -311,7 +308,8 @@
     "contact_developer": "Contacter le développeur",
     "contact_developer_description": "Si vous avez des questions ou des suggestions, n'hésitez pas à m'envoyer un email via cette option",
     "feature_request_and_bug_report": "Demande de fonctionnalité et signalement de bug",
-    "feature_request_and_bug_report_description": "Suggérer des fonctionnalités ou signaler des bugs via le dépôt GitHub"
+    "feature_request_and_bug_report_description": "Suggérer des fonctionnalités ou signaler des bugs via le dépôt GitHub",
+    "open_app_settings": "Ouvrir les paramètres"
   },
   "blacklisted_tags": {
     "remove": "Retirer",
@@ -331,9 +329,7 @@
     "bulk_download_save_to_folder": "Enregistrer dans un dossier",
     "bulk_download_invalid_folder_name_error": "Un dossier ne peut contenir aucun des caractères suivants : ",
     "bulk_download_folder_select_warning": "L'application peut télécharger des fichiers seulement dans des répertoires publics <b>({0})</b> sur Android 11+. <br><br>Exemples d'emplacements valides :<br><b>[Interne]</b> /storage/emulated/0/Download <br><b>[Carte SD]</b> /storage/A1B2-C3D4/Download<br><br>Merci de choisir un autre répertoire ou d'en créer un nouveau si cela n'existe pas. <br>Cet appareil a la version <b>{1}</b>.",
-    "open_app_settings": "Ouvrir les paramètres",
     "storage_permission_explanation": "L'autorisation de stockage est nécessaire pour stocker les fichiers téléchargés.",
-    "app_restart_request": "Redémarrez l'application pour que le changement soit effectif",
     "image_counter": {
       "one": "Téléchargement de $n image",
       "other": "Téléchargement de $n images",
@@ -341,12 +337,6 @@
     },
     "bulk": {
       "all_done_notification_message": "Tous les téléchargements sont terminés"
-    },
-    "bulk_download_downloaded_counter": {
-      "many": "$n images téléchargées"
-    },
-    "bulk_download_skipped_counter": {
-      "many": "$n images passées"
     }
   },
   "saved_search": {
@@ -451,10 +441,16 @@
     "validation_redundant_www": "«{0}» contient un «www» superflu",
     "validation_contains_spaces": "«{0}» contient des espaces intermédiaires",
     "validation_missing_scheme": "Il manque un shéma à «{0}» (ex. https://)",
-    "authentication": "Authentification",
-    "download": "Téléchargements",
-    "gestures": "Gestes",
-    "misc": "Divers"
+    "misc": "Divers",
+    "authentication": {
+      "title": "Authentification"
+    },
+    "gestures": {
+      "title": "Gestes"
+    },
+    "downloads": {
+      "title": "Téléchargements"
+    }
   },
   "blacklist": {
     "manage": {
@@ -494,6 +490,11 @@
         "one": "Seconde",
         "other": "Secondes"
       }
+    }
+  },
+  "tags": {
+    "actions": {
+      "add_to_blacklist": "Ajouter à la liste noire"
     }
   }
 }

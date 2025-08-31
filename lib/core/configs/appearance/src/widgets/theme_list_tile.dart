@@ -30,7 +30,7 @@ class ThemeListTile extends ConsumerWidget {
     return ListTile(
       contentPadding: EdgeInsets.zero,
       visualDensity: VisualDensity.compact,
-      title: Text('Colors'.hc),
+      title: Text(context.t.settings.theme.viewer.colors),
       subtitle: Text(
         colorSettings?.nickname ?? 'Default'.hc,
       ),

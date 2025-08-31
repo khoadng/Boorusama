@@ -25,7 +25,7 @@ class EnableAdditionalBlacklistSwitch extends ConsumerWidget {
     return BooruSwitchListTile(
       contentPadding: const EdgeInsets.only(left: 4),
       title: Text(
-        'Enable profile-specific blacklist'.hc,
+        context.t.booru.search.enable_profile_specific_settings,
       ),
       value: blacklistConfigs.enable,
       onChanged: (value) => notifier.changeEnable(value),

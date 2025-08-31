@@ -12,9 +12,11 @@
       "ok": "확인",
       "cancel": "취소",
       "duplicate": "복제",
-      "select": "선택"
+      "select": "선택",
+      "view": "보기"
     },
-    "view": "보기"
+    "copied": "복사됨",
+    "app_restart_request": "이 변경 사항이 적용되려면 앱을 다시 시작해야 합니다"
   },
   "profile": {
     "favorites": "즐겨찾기",
@@ -39,8 +41,6 @@
   },
   "post": {
     "detail": {
-      "view": "보기",
-      "view_in_browser": "브라우저에서 보기",
       "file_details": "파일 세부정보",
       "size": "크기",
       "resolution": "해상도",
@@ -51,12 +51,10 @@
         "booru": "booru 링크 공유",
         "image": "이미지 공유"
       },
-      "copied": "복사됨",
       "show_original": "원본 보기",
       "show_translated": "번역문 보기",
       "login_required_notice": "이 작업을 수행하려면 로그인해야 합니다",
       "open_wiki": "위키 열기",
-      "add_to_blacklist": "블랙리스트에 추가",
       "add_to_favorites": "즐겨찾기에 추가",
       "copy_and_open_saved_search": "저장된 검색어 복사 및 열기",
       "score": {
@@ -71,9 +69,8 @@
     "action": {
       "preview": "미리보기",
       "view_comments": "댓글 보기",
-      "add_to_favorite_group": "즐겨찾기 그룹에 추가"
-    },
-    "image_fullview": {
+      "add_to_favorite_group": "즐겨찾기 그룹에 추가",
+      "view_in_browser": "브라우저에서 보기",
       "view_original": "원본 보기"
     }
   },
@@ -308,7 +305,8 @@
     "contact_developer": "개발자에게 연락",
     "contact_developer_description": "문제 또는 제안이 있으시면 이 기능을 통해 이메일을 보내주세요",
     "feature_request_and_bug_report": "기능 요청 및 버그 리포트",
-    "feature_request_and_bug_report_description": "GitHub 저장소를 통해 기능을 제안하거나 버그를 신고할 수 있습니다"
+    "feature_request_and_bug_report_description": "GitHub 저장소를 통해 기능을 제안하거나 버그를 신고할 수 있습니다",
+    "open_app_settings": "설정 열기"
   },
   "blacklisted_tags": {
     "remove": "삭제",
@@ -328,9 +326,7 @@
     "bulk_download_save_to_folder": "폴더에 저장",
     "bulk_download_invalid_folder_name_error": "폴더 이름에 다음 문자들을 포함할 수 없습니다: ",
     "bulk_download_folder_select_warning": "Android 11 이상 기기에서는 앱이 다음 공개 디렉터리(<b>{0}</b>) 안의 파일만 다운로드할 수 있습니다. <br><br> 올바른 저장 위치 예시: <br><b>[내장 메모리]</b> /storage/emulated/0/Download <br><b>[SD 카드]</b> /storage/A1B2-C3D4/Download<br><br> 다른 디렉터리를 선택하거나, 없다면 새로 만들어 주세요. <br> 현재 기기의 Android 버전은 <b>{1}</b>입니다.",
-    "open_app_settings": "설정 열기",
     "storage_permission_explanation": "다운로드한 파일을 저장하려면 저장 권한이 필요합니다.",
-    "app_restart_request": "이 변경 사항이 적용되려면 앱을 다시 시작해야 합니다",
     "image_counter": {
       "one": "다운로드 $n개 이미지",
       "other": "다운로드 $n개 이미지"
@@ -438,10 +434,16 @@
     "validation_redundant_www": "\"{0}\"에는 \"www\"가 중복으로 사용되었습니다",
     "validation_contains_spaces": "\"{0}\"에는 단어 사이에 불필요한 공백이 있습니다",
     "validation_missing_scheme": "\"{0}\"에는 주소 체계(예: https://)가 없습니다",
-    "authentication": "인증",
-    "download": "다운로드",
-    "gestures": "제스처",
-    "misc": "기타"
+    "misc": "기타",
+    "authentication": {
+      "title": "인증"
+    },
+    "gestures": {
+      "title": "제스처"
+    },
+    "downloads": {
+      "title": "다운로드"
+    }
   },
   "blacklist": {
     "manage": {
@@ -481,6 +483,11 @@
         "one": "초",
         "other": "초"
       }
+    }
+  },
+  "tags": {
+    "actions": {
+      "add_to_blacklist": "블랙리스트에 추가"
     }
   }
 }

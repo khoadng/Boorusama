@@ -44,12 +44,12 @@ class BooruConfigDownloadView extends ConsumerWidget {
             onPathChanged: (path) =>
                 ref.editNotifier.updateCustomDownloadLocation(path),
             title: Text(
-              'Download location'.hc,
+              context.t.settings.download.path,
             ),
           ),
           const SizedBox(height: 4),
           Text(
-            'Leave empty to use the download location in settings.'.hc,
+            context.t.booru.downloads.leave_empty_to_use_global,
             style: Theme.of(context).textTheme.titleSmall?.copyWith(
               color: Theme.of(context).colorScheme.hintColor,
               fontSize: 11,
