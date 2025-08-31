@@ -7,19 +7,11 @@ import 'package:path/path.dart' as path;
 import '../../../core/posts/post/post.dart';
 import '../../../core/posts/rating/rating.dart';
 import '../../../core/posts/sources/source.dart';
+import '../common/parser.dart';
 import 'types.dart';
 
 GelbooruPost gelbooruPostDtoToGelbooruPostNoMetadata(PostDto dto) =>
     gelbooruPostDtoToGelbooruPost(dto, null);
-
-String decodeHtmlEntities(String input) {
-  return input
-      .replaceAll('&#039;', "'")
-      .replaceAll('&quot;', '"')
-      .replaceAll('&amp;', '&')
-      .replaceAll('&lt;', '<')
-      .replaceAll('&gt;', '>');
-}
 
 GelbooruPost gelbooruPostDtoToGelbooruPost(
   PostDto dto,
