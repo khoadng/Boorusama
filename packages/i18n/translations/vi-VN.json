@@ -375,7 +375,14 @@
     "other_settings": "Cài đặt khác",
     "data_and_storage": {
       "data_and_storage": "Dữ liệu and Bộ nhớ",
-      "clear_cache_on_start_up": "Xoá bộ nhớ đệm ảnh khi khởi động app"
+      "clear_cache_on_start_up": "Xoá bộ nhớ đệm khi mở ứng dụng",
+      "cache": "Bộ nhớ đệm",
+      "data": "Dữ liệu",
+      "all_cache": "Tất cả bộ nhớ đệm",
+      "tag_cache": "Bộ nhớ đệm thẻ",
+      "image_only_cache": "Bộ nhớ đệm chỉ hình ảnh",
+      "bookmark_images": "Ảnh được đánh dấu",
+      "loading": "Đang tải..."
     },
     "backup_and_restore": {
       "backup_and_restore": "Sao lưu và phục hồi dữ liệu",
