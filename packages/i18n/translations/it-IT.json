@@ -14,9 +14,15 @@
       "cancel": "Elimina",
       "duplicate": "Duplica",
       "select": "Seleziona",
-      "view": "Visualizza"
+      "view": "Visualizza",
+      "save": "Salva",
+      "verify": "Verifica",
+      "retry": "Riprova",
+      "create": "Crea",
+      "apply": "Applica"
     },
-    "copied": "Copiato"
+    "copied": "Copiato",
+    "app_restart_request": "È necessario riavviare l'applicazione per applicare questo cambiamento"
   },
   "profile": {
     "favorites": "Preferiti",
@@ -60,13 +66,23 @@
       "source_label": "Fonte",
       "related_posts": "Post correlati",
       "add_to_bookmark": "Aggiungi ai Bookmak",
-      "remove_from_bookmark": "Rimuovi dai Bookmark"
+      "remove_from_bookmark": "Rimuovi dai Bookmark",
+      "widgets": {
+        "stats": "Statistiche",
+        "comments": "Commenti"
+      }
     },
     "action": {
       "view_comments": "Visualizza commenti",
       "add_to_favorite_group": "Aggiungi al gruppo dei preferiti",
       "view_in_browser": "Visualizza nel browser",
-      "view_original": "Visualizza l'originale"
+      "view_original": "Visualizza l'originale",
+      "share": "Condividi",
+      "copy_image": "Copia immagine",
+      "edit": "Modifica"
+    },
+    "statistics": {
+      "stats_for_nerds": "Statistiche per nerd"
     }
   },
   "comment": {
@@ -107,7 +123,8 @@
       "down": "Il server è inattivo. Riprova più tardi.",
       "access_denied": "Accesso non consentito",
       "forbidden": "Autenticazione fallita (come te)",
-      "unknown": "Errore server sconosciuto, si prega di segnalare l'errore al developer"
+      "unknown": "Errore server sconosciuto, si prega di segnalare l'errore al developer",
+      "cannot_reach_server": "Impossibile raggiungere il server, per favore controlla la tua connessione a internet"
     },
     "hint": "Su chi mi sego oggi?",
     "no_result": "Abbiamo cercato in lungo e in largo, ma non abbiamo trovato nulla.",
@@ -153,7 +170,11 @@
       "show_scores": "Mostra punteggi",
       "show_post_list_config_header": "Mostra l'intestazione della configurazione dei post",
       "booru_config": "Profilo Booru",
-      "booru_config_placement": "Posizionamento del profilo Booru"
+      "booru_config_placement": "Posizionamento del profilo Booru",
+      "booru_config_label_options": {
+        "always": "Sempre",
+        "never": "Mai"
+      }
     },
     "general": "Generale",
     "search": {
@@ -223,7 +244,12 @@
       "dynamic_color": "Colore tema dinamico",
       "dynamic_color_mobile_description": "Sincronizza il tema con lo sfondo del telefono",
       "dynamic_color_desktop_description": "Sincronizza il colore del tema con il colore del sistema operativo",
-      "dynamic_color_unsupported_description": "Questo dispositivo non supporta il tema dinamico"
+      "dynamic_color_unsupported_description": "Questo dispositivo non supporta il tema dinamico",
+      "system": "Sistema",
+      "viewer": {
+        "colors": "Colori",
+        "dark_mode": "Modalità scura"
+      }
     },
     "privacy": {
       "privacy": "Privacy",
@@ -259,12 +285,23 @@
     "other_settings": "Altre impostazioni",
     "data_and_storage": {
       "data_and_storage": "Dati e archiviazione",
-      "clear_cache_on_start_up": "Elimina la cache delle immagini all'avvio"
+      "clear_cache_on_start_up": "Elimina la cache delle immagini all'avvio",
+      "cache": "Cache",
+      "data": "Dati",
+      "loading": "Caricamento..."
     },
     "backup_and_restore": {
       "backup_and_restore": "Backup e recupero dati",
       "import": "Importa",
-      "export": "Esporta"
+      "export": "Esporta",
+      "transfer_data": "Trasferisci dati",
+      "send": "Invia",
+      "receive": "Ricevi",
+      "never": "Mai",
+      "days_ago": "{days} giorni fa",
+      "hours_ago": "{hours} ore fa",
+      "minutes_ago": "{minutes} minuti fa",
+      "just_now": "Ora"
     },
     "image_details": {
       "ui_overlay": {
@@ -292,7 +329,13 @@
     "contribute": "Contribuisci",
     "source_code": "Codice sorgente",
     "support": "Sopporta",
-    "contact_developer": "Contatta lo sviluppatore"
+    "contact_developer": "Contatta lo sviluppatore",
+    "auto_backup": {
+      "frequency": {
+        "daily": "Ogni giorno",
+        "weekly": "Ogni settimana"
+      }
+    }
   },
   "favorite_tags": {
     "import_hint": "Inserisci qui la tua stringa di tag. Delimitata da spazi.",
