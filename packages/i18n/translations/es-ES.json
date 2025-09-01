@@ -3,7 +3,8 @@
     "done": "Hecho",
     "errors": {
       "no_data": "Datos no encontrados",
-      "unknown": "Error desconocido"
+      "unknown": "Error desconocido",
+      "error": "Error"
     },
     "action": {
       "add": "Añadir",
@@ -33,10 +34,6 @@
       "related": "Relacionado",
       "add_to_current_search": "Añadir a la busqueda",
       "open_wiki": "Abrir wiki"
-    },
-    "explore": {
-      "new": "Nuevo",
-      "popular": "Tendencias"
     }
   },
   "post": {
@@ -67,7 +64,6 @@
       "remove_from_bookmark": "Eliminar de favoritos"
     },
     "action": {
-      "preview": "Vista previa",
       "view_comments": "Ver comentarios",
       "add_to_favorite_group": "Añadir al grupo de Favoritos",
       "view_in_browser": "Ver en el navegador",
@@ -77,9 +73,7 @@
   "comment": {
     "comments": "Comentarios",
     "create": {
-      "hint": "Comenta",
-      "loading": "Porfavor Espera...",
-      "error": "Error"
+      "hint": "Comenta"
     },
     "list": {
       "edit": "Editar",
@@ -97,15 +91,15 @@
   },
   "explore": {
     "latest": "Ultimo",
-    "popular": "Populares",
+    "popular": "Tendencias",
     "hot": "Caliente",
     "most_viewed": "Los más vistos",
     "see_more": "Mostrar mas",
-    "explore": "Explorar"
+    "explore": "Explorar",
+    "new": "Nuevo"
   },
   "search": {
     "errors": {
-      "generic": "Algo debe estar fallando",
       "tag_limit": "Has llegado al límite máximo de etiquetas. Actualiza tu cuenta para buscar más etiquetas simultáneamente.",
       "database_timeout": "Tu búsqueda tardó demasiado en procesarse y fue cancelada.",
       "rate_limited": "Estás realizando demasiadas búsquedas. Inténtalo más tarde",
@@ -118,12 +112,10 @@
     },
     "hint": "Buscar...",
     "no_result": "Hemos buscado, pero no se encontraron resultados.",
-    "search_options": "Buscar opciones",
     "metatags_notice": "Los metatags gratuitos no afectan el límite de búsqueda de etiquetas",
     "history": {
       "history": "Historial",
-      "clear": "Limpiar",
-      "recent": "Reciente"
+      "clear": "Limpiar"
     },
     "trending": "Tendencia",
     "remove_all_selected": "Remover todas las Etiquetas",
@@ -276,7 +268,6 @@
       "export": "Exportar"
     },
     "image_details": {
-      "image_details": "Detalles de la imagen",
       "ui_overlay": {
         "show": "Mostrar",
         "hide": "Esconder",
@@ -323,17 +314,9 @@
   },
   "download": {
     "download": "Descargar",
-    "bulk_download_save_to_folder": "Guardar a carpeta",
-    "bulk_download_invalid_folder_name_error": "La carpeta no puede contener los siguientes caracteres: ",
-    "bulk_download_folder_select_warning": "La app solo puede descargar archivos dentro de directorios públicos <b>({0})</b> para Android 11+. <br><br>Ejemplos de ubicaciones válidas:<br><b>[Interno]</b> /storage/emulated/0/Download <br><b>[Tarjeta SD]</b> /storage/A1B2-C3D4/Download<br><br>Por favor, elige otro directorio o crea uno nuevo si no existe. <br>La versión de este dispositivo es <b>{1}</b>.",
-    "storage_permission_explanation": "Permisos de almacenamiento necesarios para descargar imagenes.",
-    "image_counter": {
-      "one": "Descargar $n imagen",
-      "other": "Descargar $n imagenes"
-    },
-    "bulk": {
-      "all_done_notification_message": "Todas las descargas estan listas"
-    }
+    "invalid_folder_name_error": "La carpeta no puede contener los siguientes caracteres: ",
+    "folder_select_warning": "La app solo puede descargar archivos dentro de directorios públicos <b>({0})</b> para Android 11+. <br><br>Ejemplos de ubicaciones válidas:<br><b>[Interno]</b> /storage/emulated/0/Download <br><b>[Tarjeta SD]</b> /storage/A1B2-C3D4/Download<br><br>Por favor, elige otro directorio o crea uno nuevo si no existe. <br>La versión de este dispositivo es <b>{1}</b>.",
+    "storage_permission_explanation": "Permisos de almacenamiento necesarios para descargar imagenes."
   },
   "saved_search": {
     "saved_search": "Busqueda guardada",
@@ -358,9 +341,7 @@
     "counter": {
       "one": "Favorito",
       "other": "Favoritos"
-    },
-    "favorited": "Marcado como favorito",
-    "favorite": "Favorito"
+    }
   },
   "favorite_groups": {
     "favorite_groups": "Grupos Favoritos",
@@ -371,7 +352,6 @@
     "add_to": "Añadir a",
     "create": "Crear",
     "private": "Privado",
-    "view_more_popup": "Ver",
     "items_added_notification_popup": "{0} posts añadidos a {1}",
     "group_name": "Nombre del grupo",
     "group_name_hint": "Nuevo grupo",
@@ -419,7 +399,6 @@
     "site_url_label": "URL del Booru",
     "login_name_label": "Iniciar sesión",
     "password_api_key_label": "Llave API",
-    "password_hashed_label": "Contraseña segura (solo visible)",
     "password_label": "Contraseña",
     "content_filtering_label": "Filtracion de Contenidos",
     "hide_deleted_label": "Esconder posts borrados",
@@ -457,10 +436,7 @@
     "many_added": "Se han añadido {0} marcadores",
     "failed_to_add_many": "Error al añadir marcadores",
     "removed": "Marcador eliminado",
-    "updated": "Marcador actualizado",
-    "failed_to_remove": "No se ha podido eliminar el marcador",
-    "failed_to_update": "Error al actualizar el marcador",
-    "failed_to_load": "Error al cargar marcadores: {0}"
+    "failed_to_remove": "No se ha podido eliminar el marcador"
   },
   "app_update": {
     "update": "Actualización",
@@ -480,14 +456,19 @@
   "time": {
     "counters": {
       "second": {
-        "one": "Segundo",
-        "other": "Segundos"
+        "one": "$n segundo",
+        "other": "$n segundos"
       }
     }
   },
   "tags": {
     "actions": {
       "add_to_blacklist": "Añadir a la Lista de Bloqueados"
+    }
+  },
+  "bulk_downloads": {
+    "options": {
+      "save_to_folder": "Guardar a carpeta"
     }
   }
 }

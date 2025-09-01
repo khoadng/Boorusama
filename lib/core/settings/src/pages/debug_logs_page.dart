@@ -177,8 +177,8 @@ class _DebugLogsPageState extends ConsumerState<DebugLogsPage> {
                   ),
                   ReadMoreText(
                     _formatLog(log.message),
-                    trimExpandedText: ' less',
-                    trimCollapsedText: ' more',
+                    trimCollapsedText: context.t.misc.trailing_more,
+                    trimExpandedText: context.t.misc.trailing_less,
                     trimMode: TrimMode.Line,
                     trimLines: 3,
                     style: TextStyle(

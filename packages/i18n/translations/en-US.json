@@ -3,7 +3,8 @@
     "done": "Done",
     "errors": {
       "no_data": "No data available",
-      "unknown": "Something went wrong"
+      "unknown": "Something went wrong",
+      "error": "Error"
     },
     "action": {
       "add": "Add",
@@ -30,6 +31,13 @@
     "no_content": "No content",
     "app_restart_request": "You need to restart the app for this change to take effect"
   },
+  "sort": {
+    "sort_by": "Sort by",
+    "name_asc": "Name (A-Z)",
+    "name_desc": "Name (Z-A)",
+    "recently_added": "Recently added",
+    "recently_updated": "Recently updated"
+  },
   "profile": {
     "favorites": "Favorites",
     "profile": "Profile",
@@ -45,11 +53,8 @@
       "more": "More",
       "related": "Related",
       "add_to_current_search": "Add to current search",
+      "negate_from_current_search": "Negate from current search",
       "open_wiki": "Open wiki"
-    },
-    "explore": {
-      "new": "New",
-      "popular": "Popular"
     }
   },
   "post": {
@@ -94,10 +99,16 @@
       }
     },
     "statistics": {
-      "stats_for_nerds": "Stats for nerds"
+      "stats_for_nerds": "Stats for nerds",
+      "average": "Average",
+      "highest": "Highest",
+      "lowest": "Lowest",
+      "median": "Median",
+      "25th_percentile": "25th percentile",
+      "75th_percentile": "75th percentile",
+      "90th_percentile": "90th percentile"
     },
     "action": {
-      "preview": "Preview",
       "share": "Share",
       "bookmark": "Bookmark",
       "favorite": "Favorite",
@@ -122,9 +133,7 @@
   "comment": {
     "comments": "Comments",
     "create": {
-      "hint": "Comment",
-      "loading": "Please wait...",
-      "error": "Error"
+      "hint": "Comment"
     },
     "list": {
       "edit": "Edit",
@@ -149,13 +158,16 @@
     "explore": "Explore",
     "top": "Top",
     "daily": "Daily",
-    "weekly": "Weekly"
+    "weekly": "Weekly",
+    "new": "New",
+    "newest": "Newest",
+    "oldest": "Oldest",
+    "ordered": "Ordered"
   },
   "search": {
     "errors": {
       "cannot_reach_server": "Cannot reach server, please check your connection",
       "failed_to_load_data": "Failed to load data from server, please try again later",
-      "generic": "Something went wrong",
       "tag_limit": "Maximum tag limit reached. Upgrade your account to search for more tags at once.",
       "database_timeout": "Your search took too long to execute and was cancelled.",
       "rate_limited": "You're being rate limited. Please try again later",
@@ -168,12 +180,10 @@
     },
     "hint": "Search...",
     "no_result": "We searched far and wide, but no results were found.",
-    "search_options": "Search options",
     "metatags_notice": "Free metatags won't count against the tag search limits",
     "history": {
       "history": "History",
-      "clear": "Clear",
-      "recent": "Recent"
+      "clear": "Clear"
     },
     "trending": "Trending",
     "remove_all_selected": "Remove all selected tags",
@@ -365,6 +375,8 @@
       "path": "Download path",
       "select_a_folder": "Select a folder",
       "quality": "Download image quality",
+      "skip_existing_files": "Skip existing files",
+      "skip_existing_files_explanation": "This will prevent downloading files that already exist in the folder. This is useful when you don't want to download the same file multiple times.",
       "qualities": {
         "original": "Original",
         "sample": "Sample",
@@ -450,7 +462,6 @@
       "backup_now": "Backup Now"
     },
     "image_details": {
-      "image_details": "Image details",
       "ui_overlay": {
         "show": "Show",
         "hide": "Hide",
@@ -513,9 +524,11 @@
     "downloads": "Downloads",
     "retry_all": "Retry all",
     "nothing_to_clear": "Nothing to clear",
-    "new_download": "New download",
     "no_active_sessions": "No active download sessions",
     "nothing_to_show": "Nothing to show, download updates are empty",
+    "notification": {
+      "started": "Download started"
+    },
     "status": {
       "in_progress": "In Progress",
       "pending": "Pending",
@@ -534,17 +547,9 @@
       "no_failed_downloads": "No failed downloads",
       "no_downloads": "No downloads"
     },
-    "bulk_download_save_to_folder": "Save to folder",
-    "bulk_download_invalid_folder_name_error": "A folder cannot contain any of the following characters: ",
-    "bulk_download_folder_select_warning": "The app can only download files inside public directories <b>({0})</b> for Android 11+. <br><br> Valid location examples:<br><b>[Internal]</b> /storage/emulated/0/Download <br><b>[SD card]</b> /storage/A1B2-C3D4/Download<br><br>Please choose another directory or create a new one if it doesn't exist. <br>This device's version is <b>{1}</b>.",
-    "storage_permission_explanation": "Storage permission is needed to store download files.",
-    "image_counter": {
-      "one": "Download $n image",
-      "other": "Download $n images"
-    },
-    "bulk": {
-      "all_done_notification_message": "All downloads are done"
-    }
+    "invalid_folder_name_error": "A folder cannot contain any of the following characters: ",
+    "folder_select_warning": "The app can only download files inside public directories <b>({0})</b> for Android 11+. <br><br> Valid location examples:<br><b>[Internal]</b> /storage/emulated/0/Download <br><b>[SD card]</b> /storage/A1B2-C3D4/Download<br><br>Please choose another directory or create a new one if it doesn't exist. <br>This device's version is <b>{1}</b>.",
+    "storage_permission_explanation": "Storage permission is needed to store download files."
   },
   "saved_search": {
     "saved_search": "Saved search",
@@ -569,9 +574,7 @@
     "counter": {
       "one": "Favorite",
       "other": "Favorites"
-    },
-    "favorited": "Favorited",
-    "favorite": "Favorite"
+    }
   },
   "favorite_groups": {
     "favorite_groups": "Favorite Groups",
@@ -582,7 +585,6 @@
     "add_to": "Add to",
     "create": "Create",
     "private": "Private",
-    "view_more_popup": "View",
     "items_added_notification_popup": "{0} posts added to {1}",
     "group_name": "Group name",
     "group_name_hint": "New group",
@@ -633,6 +635,7 @@
       "variants_4": "*Log in to your account on the browser, visit <b>Account > Login tokens</b>. Copy your <b>Web Login Token</b> or create a new one if needed and paste it here. If you use the <b>Web Login Token</b>, logout from the browser will make the token invalid.",
       "variants_5": "*Log in to your account on the browser, visit <b><a href=\"api-credentials\">My Account > Options > API Access Credentials</a></b> to get your API key. Copy the key and paste it into the field above. You can also copy the whole string from the <b>API Access Credentials</b> section and tap the button below."
     },
+    "invalid_booru_warning": "It seems like the site is not running on the selected engine. Please try with another one.",
     "using_status": "using ${booru}",
     "paste_from_clipboard": "Paste from clipboard",
     "booru_engine_input_label": "Booru engine (*)",
@@ -646,7 +649,6 @@
     "site_url_label": "Site URL",
     "login_name_label": "Login",
     "password_api_key_label": "API key",
-    "password_hashed_label": "Password Hashed (readonly)",
     "password_label": "Password",
     "content_filtering_label": "Content filtering",
     "content_filtering": {
@@ -683,10 +685,7 @@
         "advanced_auth": "Advanced Auth (optional)",
         "advanced_auth_description": "Providing this information allows you to edit your favorites and provides write access to your account. Note that if you change your password, you will need to log in again.",
         "fav_button_tooltip_title": "About the favorite button",
-        "fav_button_tooltip_description": "There is no way to check if an image has already been favorited. Although you can see the visual indicator after favoriting an image, it will reset when you restart the app. Don't worry, your favorites are still saved on the website.",
-        "logged_in": "Logged in",
-        "relogin": "Re-login",
-        "clear_credentials": "Clear"
+        "fav_button_tooltip_description": "There is no way to check if an image has already been favorited. Although you can see the visual indicator after favoriting an image, it will reset when you restart the app. Don't worry, your favorites are still saved on the website."
       }
     },
     "listing": {
@@ -801,10 +800,11 @@
     "many_added": "{0} bookmarks added",
     "failed_to_add_many": "Failed to add bookmarks",
     "removed": "Bookmark removed",
-    "updated": "Bookmark updated",
     "failed_to_remove": "Failed to remove bookmark",
-    "failed_to_update": "Failed to update bookmark",
-    "failed_to_load": "Failed to load bookmarks: {0}"
+    "counter": {
+      "one": "$n bookmark",
+      "other": "$n bookmarks"
+    }
   },
   "app_update": {
     "update": "Update",
@@ -824,8 +824,8 @@
   "time": {
     "counters": {
       "second": {
-        "one": "Second",
-        "other": "Seconds"
+        "one": "$n second",
+        "other": "$n seconds"
       }
     }
   },
@@ -833,14 +833,76 @@
     "donate": "Donate"
   },
   "bulk_downloads": {
-    "new_download": "New download",
-    "create": "Create",
-    "delete": "Delete",
     "created": "Created",
-    "completed_with_no_new_files": "Completed with no new files"
+    "completed_with_no_new_files": "Completed with no new files",
+    "scanning_page": {
+      "with_page": "Scanning page $page...",
+      "null_page": "Scanning..."
+    },
+    "file_counter": {
+      "one": "$n file",
+      "other": "$n files"
+    },
+    "status": {
+      "suspended": "Saved"
+    },
+    "actions": {
+      "create": "Create",
+      "delete": "Delete",
+      "copy_path": "Copy path",
+      "new_download": "New download",
+      "add_to_queue": "Add to List"
+    },
+    "templates": {
+      "title": "Templates",
+      "empty": "No templates",
+      "create": "Create a template",
+      "created": "Template created",
+      "run": "Run template"
+    },
+    "completed": {
+      "title": "Completed",
+      "empty": "'No completed download sessions",
+      "clear_all": "Clear all"
+    },
+    "auth_changed": {
+      "profile_mismatch": "Profile mismatch",
+      "current_site": "Current site: ",
+      "download_site": "Download site: ",
+      "has_mismatch_warning": "The download site does not match the current site profile. Please change your profile to match the download site.",
+      "no_mismatch_warning": "This download session was initiated using a profile from the same site but with different credentials. This may lead to issues. \n\nDo you want to continue?",
+      "continue": "Continue anyway"
+    },
+    "options": {
+      "other_options": "Other options",
+      "save_to_folder": "Save to folder",
+      "show_advanced_options": "Show advanced options",
+      "enable_notification": "Notifications",
+      "excluded_tags": "Excluded tags",
+      "excluded_tags_description": "Select additional tags to exclude from this batch",
+      "default_excluded_tags_from_source_list": "Default blacklisted tags from the following sources:",
+      "source_list": {
+        "one": "• $count tag from $source",
+        "other": "• $count tags from $source"
+      }
+    },
+    "errors": {
+      "non_premium_template_limit": "Only one template is allowed. Upgrade to $brand to create more templates.",
+      "non_premium_session_limit": "Only one active download session is allowed. Upgrade to $brand for additional sessions.",
+      "non_premium_resume": "Resuming saved download sessions is only available on $brand.",
+      "non_premium_suspend": "Saving download sessions is only available on $brand.",
+      "running_session_deletion": "Cannot delete a running session"
+    }
   },
   "auth": {
-    "login_required": "You need to provide login details to use this feature."
+    "login_required": "You need to provide login details to use this feature.",
+    "logged_in": "Logged in",
+    "relogin": "Re-login",
+    "clear_credentials": "Clear"
+  },
+  "captcha": {
+    "title": "Solve the captcha",
+    "i_have_solved_it": "I have solved it"
   },
   "select": {
     "selected_items": "Select items",
@@ -879,8 +941,13 @@
   "premium": {
     "get_premium": "Get $brand",
     "upgrade": "Upgrade",
+    "subscribe": "Subscribe",
     "unlock_more_theme_with_premium": "Unlock more themes with $brand",
     "restore_subscription": "Restore subscription",
+    "subscription_restored": "Subscription restored!",
+    "restore_failed": "There was a problem restoring your subscription. Please try again later.",
+    "select_your_plan": "Select your plan",
+    "legal_disclaimer": "By subscribing, you agree to our <a href=\"terms-of-service\">Terms of Service</a> and <a href=\"privacy-policy\">Privacy Policy</a>. Subscription automatically renews until canceled. You can cancel anytime up to 24 hours before your current period ends.",
     "benefits": {
       "exclusive_themes": "Exclusive Themes",
       "exclusive_themes_description": "Pick from a variety of themes to personalize each profile’s look",
@@ -890,6 +957,23 @@
       "enhanced_bulk_download_description": "Unlimited templates, multiple sessions and seamless resume after restart.",
       "support_development": "Support Development",
       "support_development_description": "Help a solo developer keep the project going with regular updates and improvements."
+    },
+    "thanks": {
+      "title": "Thank you!",
+      "description": "You now can access premium features. Enjoy!",
+      "confirm": "Got it!"
+    },
+    "per": {
+      "year": "/ year",
+      "month": "/ month"
+    },
+    "packages": {
+      "monthly": "Monthly",
+      "annual": "Annual"
     }
+  },
+  "misc": {
+    "trailing_more": " more",
+    "trailing_less": " less"
   }
 }

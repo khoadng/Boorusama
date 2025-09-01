@@ -57,10 +57,10 @@ class _ProtectionOverlayState extends State<ProtectionOverlay> {
       children: [
         const Icon(Icons.security, color: Colors.white),
         const SizedBox(width: 8),
-        const Expanded(
+        Expanded(
           child: Text(
-            'Solving protection challenge',
-            style: TextStyle(
+            context.t.captcha.title,
+            style: const TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.bold,
               fontSize: 16,
@@ -89,7 +89,7 @@ class _ProtectionOverlayState extends State<ProtectionOverlay> {
         ),
         FilledButton(
           onPressed: widget.onSolved,
-          child: Text("I've Solved the Challenge".hc),
+          child: Text(context.t.captcha.i_have_solved_it),
         ),
       ],
     );

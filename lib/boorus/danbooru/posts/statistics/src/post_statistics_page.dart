@@ -67,13 +67,13 @@ class DanbooruPostStatisticsPage extends ConsumerWidget {
                   );
                 },
                 child: Text(
-                  'More'.hc,
+                  context.t.generic.action.more,
                 ),
               ),
             ],
           ),
           PostStatsTile(
-            title: 'Average'.hc,
+            title: context.t.post.statistics.average,
             value:
                 '${Filesize.parse(stats.fileSizes.mean.round())} ± ${Filesize.parse(stats.fileSizes.standardDeviation.round())}',
           ),

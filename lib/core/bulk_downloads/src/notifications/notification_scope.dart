@@ -7,6 +7,7 @@ import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../foundation/toast.dart';
+import '../../../premiums/premiums.dart';
 import '../../../premiums/src/routes/routes.dart';
 import '../../providers.dart';
 import '../../routes.dart';
@@ -37,7 +38,27 @@ class BulkDownloadNotificationScope extends ConsumerWidget {
 
             showSimpleSnackBar(
               context: context,
-              content: Text(cur.message),
+              content: Text(switch (cur.code) {
+                BulkDownloadErrorCode.nonPremiumSavedTaskLimit =>
+                  context.t.bulk_downloads.errors.non_premium_template_limit(
+                    brand: kPremiumBrandName,
+                  ),
+                BulkDownloadErrorCode.nonPremiumSessionLimit =>
+                  context.t.bulk_downloads.errors.non_premium_session_limit(
+                    brand: kPremiumBrandName,
+                  ),
+                BulkDownloadErrorCode.nonPremiumResume =>
+                  context.t.bulk_downloads.errors.non_premium_resume(
+                    brand: kPremiumBrandName,
+                  ),
+                BulkDownloadErrorCode.runningSessionDeletion =>
+                  context.t.bulk_downloads.errors.running_session_deletion,
+                BulkDownloadErrorCode.nonPremiumSuspend =>
+                  context.t.bulk_downloads.errors.non_premium_suspend(
+                    brand: kPremiumBrandName,
+                  ),
+                _ => cur.message,
+              }),
               action: isPremiumError
                   ? SnackBarAction(
                       label: context.t.premium.upgrade,

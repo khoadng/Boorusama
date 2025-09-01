@@ -3,7 +3,8 @@
     "done": "Fertig",
     "errors": {
       "no_data": "Keine Daten verfügbar",
-      "unknown": "Etwas ist schief gegangen"
+      "unknown": "Etwas ist schief gegangen",
+      "error": "Fehler"
     },
     "action": {
       "add": "Hinzufügen",
@@ -33,10 +34,6 @@
       "related": "Ähnliche",
       "add_to_current_search": "Zu aktueller Suche hinzufügen",
       "open_wiki": "Wiki öffnen"
-    },
-    "explore": {
-      "new": "Neu",
-      "popular": "Beliebt"
     }
   },
   "post": {
@@ -67,7 +64,6 @@
       "remove_from_bookmark": "Lesezeichen entfernen"
     },
     "action": {
-      "preview": "Vorschau",
       "view_comments": "Kommentare anzeigen",
       "add_to_favorite_group": "Zur Gruppe hinzufügen",
       "view_in_browser": "In Browser anzeigen",
@@ -77,9 +73,7 @@
   "comment": {
     "comments": "Kommentare",
     "create": {
-      "hint": "Kommentar",
-      "loading": "Bitte warten...",
-      "error": "Fehler"
+      "hint": "Kommentar"
     },
     "list": {
       "edit": "Bearbeiten",
@@ -101,11 +95,11 @@
     "hot": "Aktuell",
     "most_viewed": "Meist gesehen",
     "see_more": "Mehr anzeigen",
-    "explore": "Durchsuchen"
+    "explore": "Durchsuchen",
+    "new": "Neu"
   },
   "search": {
     "errors": {
-      "generic": "Etwas ist schief gegangen",
       "tag_limit": "Maximales Tag-Limit erreicht. Upgrade dein Konto, um nach mehr Tags auf einmal zu suchen.",
       "database_timeout": "Die Ausführung deiner Suche hat zu lange gedauert und wurde abgebrochen.",
       "rate_limited": "Du hast ein Rate Limit. Bitte versuche es später noch einmal",
@@ -118,12 +112,10 @@
     },
     "hint": "Suche...",
     "no_result": "Wir haben weit und breit gesucht, aber keine Ergebnisse gefunden.",
-    "search_options": "Suchoptionen",
     "metatags_notice": "Freie Metatags werden nicht auf die Tag-Suchgrenzen angerechnet",
     "history": {
       "history": "Verlauf",
-      "clear": "Löschen",
-      "recent": "Neueste"
+      "clear": "Löschen"
     },
     "trending": "Aktuell",
     "remove_all_selected": "Ausgewählte Tags entfernen",
@@ -208,7 +200,6 @@
       "image_viewer": "Bildbetrachter"
     },
     "image_details": {
-      "image_details": "Bild-Details",
       "ui_overlay": {
         "show": "Anzeigen",
         "hide": "Ausblenden",
@@ -306,17 +297,9 @@
   },
   "download": {
     "download": "Download",
-    "bulk_download_save_to_folder": "In Ordner speichern",
-    "bulk_download_invalid_folder_name_error": "Ein Ordner darf keines der folgenden Zeichen enthalten: ",
-    "bulk_download_folder_select_warning": "Die App kann Dateien nur in öffentlichen Verzeichnissen <b>({0})</b> in Android 11+ speichern. <div>SD-Karten werden ebenfalls nicht unterstützt.</div> <div>Bitte wähle einen anderen Standort.</div> <div>Die Version dieses Geräts ist {1}.</div>",
-    "storage_permission_explanation": "Zum Speichern von Dateien ist eine Speichererlaubnis erforderlich.",
-    "image_counter": {
-      "one": "$n Bild herunterladen",
-      "other": "$n Bilder herunterladen"
-    },
-    "bulk": {
-      "all_done_notification_message": "Alle Downloads abgeschlossen"
-    }
+    "invalid_folder_name_error": "Ein Ordner darf keines der folgenden Zeichen enthalten: ",
+    "folder_select_warning": "Die App kann Dateien nur in öffentlichen Verzeichnissen <b>({0})</b> in Android 11+ speichern. <div>SD-Karten werden ebenfalls nicht unterstützt.</div> <div>Bitte wähle einen anderen Standort.</div> <div>Die Version dieses Geräts ist {1}.</div>",
+    "storage_permission_explanation": "Zum Speichern von Dateien ist eine Speichererlaubnis erforderlich."
   },
   "saved_search": {
     "saved_search": "Gespeicherte Suchen",
@@ -341,9 +324,7 @@
     "counter": {
       "one": "Favorit",
       "other": "Favoriten"
-    },
-    "favorited": "Favorisiert",
-    "favorite": "Favorit"
+    }
   },
   "favorite_groups": {
     "favorite_groups": "Gruppen",
@@ -354,7 +335,6 @@
     "add_to": "Hinzufügen zu",
     "create": "Erstellen",
     "private": "Privat",
-    "view_more_popup": "Anzeigen",
     "items_added_notification_popup": "{0} Posts zu {1} hinzugefügt",
     "group_name": "Gruppenname",
     "group_name_hint": "Neue Gruppe",
@@ -402,7 +382,6 @@
     "site_url_label": "Seiten-URL",
     "login_name_label": "Login",
     "password_api_key_label": "API Schlüssel",
-    "password_hashed_label": "Gehashtes Passwort(schreibgeschützt)",
     "password_label": "Passwort",
     "content_filtering_label": "Inhaltsfilterung",
     "hide_deleted_label": "Gelöschte Beiträge ausblenden",
@@ -440,10 +419,7 @@
     "many_added": "{0} Lesezeichen hinzugefügt",
     "failed_to_add_many": "Lesezeichen konnten nicht hinzugefügt werden",
     "removed": "Lesezeichen entfernt",
-    "updated": "Lesezeichen aktualisiert",
-    "failed_to_remove": "Lesezeichen konnte nicht entfernt werden",
-    "failed_to_update": "Lesezeichen konnte nicht aktualisiert werden",
-    "failed_to_load": "Lesezeichen konnten nicht geladen werden: {0}"
+    "failed_to_remove": "Lesezeichen konnte nicht entfernt werden"
   },
   "app_update": {
     "update": "Update",
@@ -463,6 +439,45 @@
   "tags": {
     "actions": {
       "add_to_blacklist": "Zu Ausgeblendeten Tags hinzufügen"
+    }
+  },
+  "bulk_downloads": {
+    "options": {
+      "save_to_folder": "In Ordner speichern"
+    }
+  },
+  "premium": {
+    "get_premium": "$brand erhalten",
+    "upgrade": "Upgrade",
+    "subscribe": "Abonnieren",
+    "unlock_more_theme_with_premium": "Mehr Themes mit $brand freischalten",
+    "restore_subscription": "Käufe wiederherstellen",
+    "subscription_restored": "Kauf wurde wiederhergestellt!",
+    "restore_failed": "Beim Wiederherstellen Ihres Kaufs ist ein Problem aufgetreten. Bitte versuchen Sie es später erneut.",
+    "select_your_plan": "Wählen Sie Ihren Plan",
+    "legal_disclaimer": "Mit dem Abonnieren stimmen Sie unseren <a href=\"terms-of-service\">Nutzungsbedingungen</a> und unserer <a href=\"privacy-policy\">Datenschutzerklärung</a> zu. Das Abonnement verlängert sich automatisch, bis es gekündigt wird. Sie können es jederzeit bis zu 24 Stunden vor Ende des aktuellen Zeitraums kündigen.",
+    "benefits": {
+      "exclusive_themes": "Exklusive Themes",
+      "exclusive_themes_description": "Wählen Sie aus verschiedenen Themes, um das Erscheinungsbild Ihres Profils zu personalisieren",
+      "layout_customization": "Layout & Startbildschirm",
+      "layout_customization_description": "Passen Sie die Menge der angezeigten Informationen an und legen Sie Ihren bevorzugten Startbildschirm fest (Lesezeichen, Suche usw.)",
+      "enhanced_bulk_download": "Erweiterter Massendownloader",
+      "enhanced_bulk_download_description": "Unbegrenzte Vorlagen, mehrere Sitzungen und nahtlose Fortsetzung nach dem Neustart",
+      "support_development": "Entwicklung unterstützen",
+      "support_development_description": "Helfen Sie einem unabhängigen Entwickler, das Projekt mit regelmäßigen Updates und Verbesserungen fortzuführen"
+    },
+    "thanks": {
+      "title": "Vielen Dank!",
+      "description": "Sie haben jetzt Zugriff auf Premium-Funktionen. Viel Spaß!",
+      "confirm": "OK"
+    },
+    "per": {
+      "year": "/ Jahr",
+      "month": "/ Monat"
+    },
+    "packages": {
+      "monthly": "Monatlich",
+      "annual": "Jährlich"
     }
   }
 }

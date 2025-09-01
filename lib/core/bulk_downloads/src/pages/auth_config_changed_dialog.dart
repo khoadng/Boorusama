@@ -34,7 +34,7 @@ class AuthConfigChangedDialog extends ConsumerWidget {
           children: [
             const SizedBox(height: 20),
             Text(
-              'Profile mismatch'.hc,
+              context.t.bulk_downloads.auth_changed.profile_mismatch,
               style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w700,
@@ -50,7 +50,9 @@ class AuthConfigChangedDialog extends ConsumerWidget {
                     color: Theme.of(context).colorScheme.hintColor,
                   ),
                   children: [
-                    TextSpan(text: 'Current site: '.hc),
+                    TextSpan(
+                      text: context.t.bulk_downloads.auth_changed.current_site,
+                    ),
                     TextSpan(
                       text: currentUrl.url,
                       style: const TextStyle(
@@ -68,7 +70,9 @@ class AuthConfigChangedDialog extends ConsumerWidget {
                     color: Theme.of(context).colorScheme.hintColor,
                   ),
                   children: [
-                    TextSpan(text: 'Download site: '.hc),
+                    TextSpan(
+                      text: context.t.bulk_downloads.auth_changed.download_site,
+                    ),
                     TextSpan(
                       text: sessionUrl,
                       style: const TextStyle(
@@ -82,8 +86,7 @@ class AuthConfigChangedDialog extends ConsumerWidget {
             ],
             if (hasMismatch)
               Text(
-                'The download site does not match the current site profile. Please change your profile to match the download site.'
-                    .hc,
+                context.t.bulk_downloads.auth_changed.has_mismatch_warning,
                 style: const TextStyle(
                   fontWeight: FontWeight.w400,
                   fontSize: 14,
@@ -91,8 +94,7 @@ class AuthConfigChangedDialog extends ConsumerWidget {
               )
             else
               Text(
-                'This download session was initiated using a profile from the same site but with different credentials. This may lead to issues. \n\nDo you want to continue?'
-                    .hc,
+                context.t.bulk_downloads.auth_changed.no_mismatch_warning,
                 style: const TextStyle(
                   fontWeight: FontWeight.w400,
                   fontSize: 14,
@@ -133,7 +135,7 @@ class AuthConfigChangedDialog extends ConsumerWidget {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 14),
                   child: Text(
-                    'Continue anyway'.hc,
+                    context.t.bulk_downloads.auth_changed.kContinue,
                     style: TextStyle(
                       color: Theme.of(context).colorScheme.onErrorContainer,
                       fontWeight: FontWeight.w600,

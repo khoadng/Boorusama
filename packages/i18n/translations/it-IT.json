@@ -3,7 +3,8 @@
     "done": "Finito",
     "errors": {
       "no_data": "Nessun dato disponibile",
-      "unknown": "Qualcosa è andato storto"
+      "unknown": "Qualcosa è andato storto",
+      "error": "Errore"
     },
     "action": {
       "add": "Aggiungi",
@@ -32,10 +33,6 @@
       "related": "Correlato",
       "add_to_current_search": "Aggiungi alla ricerca corrente",
       "open_wiki": "Apri la Wiki"
-    },
-    "explore": {
-      "new": "Nuovo",
-      "popular": "Popolari"
     }
   },
   "post": {
@@ -66,7 +63,6 @@
       "remove_from_bookmark": "Rimuovi dai Bookmark"
     },
     "action": {
-      "preview": "Anteprima",
       "view_comments": "Visualizza commenti",
       "add_to_favorite_group": "Aggiungi al gruppo dei preferiti",
       "view_in_browser": "Visualizza nel browser",
@@ -76,9 +72,7 @@
   "comment": {
     "comments": "Commenti",
     "create": {
-      "hint": "Commento",
-      "loading": "Si prega di attendere",
-      "error": "Errore"
+      "hint": "Commento"
     },
     "list": {
       "edit": "Modifica",
@@ -100,11 +94,11 @@
     "hot": "Hot",
     "most_viewed": "Più visti",
     "see_more": "Di più",
-    "explore": "Esplora"
+    "explore": "Esplora",
+    "new": "Nuovo"
   },
   "search": {
     "errors": {
-      "generic": "Qualcosa è andato storto",
       "tag_limit": "Numero massimo di tag raggiunto. Fai l'upgrade del tuo account per cercare più tag insieme",
       "database_timeout": "La tua ricerca ha richiesto troppo tempo ed è stata eliminata.",
       "rate_limited": "Il tuo traffico sta venendo limitato. Prova più tardi!",
@@ -117,12 +111,10 @@
     },
     "hint": "Su chi mi sego oggi?",
     "no_result": "Abbiamo cercato in lungo e in largo, ma non abbiamo trovato nulla.",
-    "search_options": "Opzioni di ricerca",
     "metatags_notice": "I metatag gratuiti non verranno conteggiati nei limiti di ricerca dei tag",
     "history": {
       "history": "Storia",
-      "clear": "Elimina tutto",
-      "recent": "Recenti"
+      "clear": "Elimina tutto"
     },
     "trending": "Di tendenza",
     "remove_all_selected": "Rimuovi tutti i tag selezionati",
@@ -275,7 +267,6 @@
       "export": "Esporta"
     },
     "image_details": {
-      "image_details": "Dettagli immagine",
       "ui_overlay": {
         "show": "Mostra",
         "hide": "Nascondi",
@@ -333,7 +324,6 @@
     "site_url_label": "URL del sito",
     "login_name_label": "Accedi",
     "password_api_key_label": "Chiave API",
-    "password_hashed_label": "Password con hash (sola lettura)",
     "password_label": "Password",
     "content_filtering_label": "Filtraggio contenuti",
     "hide_deleted_label": "Nascondi i post eliminati",

@@ -166,7 +166,7 @@ class _CreateSavedTaskButton extends ConsumerWidget {
           if (context.mounted) {
             showSimpleSnackBar(
               context: context,
-              content: Text(DownloadTranslations.templateCreated),
+              content: Text(context.t.bulk_downloads.templates.created),
               action: SnackBarAction(
                 label: context.t.generic.action.view,
                 textColor: colorScheme.surface,
@@ -271,7 +271,7 @@ class _ContextMenu extends ConsumerWidget {
       contextMenu: GenericContextMenu(
         buttonConfigs: [
           ContextMenuButtonConfig(
-            DownloadTranslations.delete(context),
+            context.t.bulk_downloads.actions.delete,
             onPressed: () async {
               await ref
                   .read(bulkDownloadProvider.notifier)
@@ -280,11 +280,11 @@ class _ContextMenu extends ConsumerWidget {
             },
           ),
           ContextMenuButtonConfig(
-            DownloadTranslations.copyPath,
+            context.t.bulk_downloads.actions.copy_path,
             onPressed: () => AppClipboard.copyWithDefaultToast(context, path),
           ),
           ContextMenuButtonConfig(
-            DownloadTranslations.createTemplate,
+            context.t.bulk_downloads.templates.create,
             onPressed: () async {
               final navigator = Navigator.of(context);
               final success = await ref
@@ -338,8 +338,9 @@ class _InfoText extends ConsumerWidget {
         : null;
 
     final totalItemText = DownloadTranslations.titleInfoCounter(
-      !(totalItems == 1),
-    ).replaceAll('{}', totalItems.toString());
+      totalItems,
+      context,
+    );
 
     final infoText = [
       fileSizeText,
@@ -381,8 +382,8 @@ class _Subtitle extends ConsumerWidget {
       path,
       trimLines: 1,
       trimMode: TrimMode.Line,
-      trimCollapsedText: ' more',
-      trimExpandedText: ' less',
+      trimCollapsedText: context.t.misc.trailing_more,
+      trimExpandedText: context.t.misc.trailing_less,
       lessStyle: TextStyle(
         fontSize: 13,
         fontWeight: FontWeight.bold,

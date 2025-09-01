@@ -31,7 +31,9 @@ class _ExportDataPageState extends ConsumerState<ExportDataPage> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Transfer data'.hc),
+          title: Text(
+            context.t.settings.backup_and_restore.transfer_data,
+          ),
         ),
         body: Padding(
           padding: const EdgeInsets.symmetric(

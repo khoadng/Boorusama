@@ -14,7 +14,6 @@ import '../../../configs/manage/providers.dart';
 import '../../../configs/ref.dart';
 import '../../../downloads/configs/widgets.dart';
 import '../../../downloads/downloader/types.dart';
-import '../../../downloads/l10n.dart';
 import '../../widgets.dart';
 import '../providers/settings_notifier.dart';
 import '../providers/settings_provider.dart';
@@ -68,9 +67,9 @@ class _DownloadPageState extends ConsumerState<DownloadPage> {
         ),
         const SizedBox(height: 4),
         ListTile(
-          title: Text(DownloadTranslations.skipDownloadIfExists),
+          title: Text(context.t.settings.download.skip_existing_files),
           subtitle: Text(
-            DownloadTranslations.skipDownloadIfExistsExplanation,
+            context.t.settings.download.skip_existing_files_explanation,
           ),
           trailing: Switch(
             value: settings.skipDownloadIfExists,

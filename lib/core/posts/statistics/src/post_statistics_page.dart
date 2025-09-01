@@ -64,13 +64,13 @@ class PostStatisticsPage extends StatelessWidget {
                 },
               ),
               PostStatsTile(
-                title: 'Average'.hc,
+                title: context.t.post.statistics.average,
                 value:
                     '${stats.scores.mean.toStringAsFixed(1)} ± ${stats.scores.standardDeviation.toStringAsFixed(1)}',
               ),
               const Divider(),
               Text(
-                'Rating'.hc,
+                context.t.post.detail.rating,
                 style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w700,
@@ -98,13 +98,13 @@ class PostStatisticsPage extends StatelessWidget {
                 ),
               const Divider(),
               PostStatsSectionTitle(
-                title: 'Source'.hc,
+                title: context.t.post.detail.source_label,
                 onMore: () {
                   showAppModalBarBottomSheet(
                     context: context,
                     settings: const RouteSettings(name: 'posts_source_stats'),
                     builder: (context) => StatisticsFromMapPage(
-                      title: 'Source'.hc,
+                      title: context.t.post.detail.source_label,
                       total: totalPosts(),
                       data: stats.domains.topN(),
                     ),
@@ -151,7 +151,7 @@ class PostStatisticsPage extends StatelessWidget {
                 },
               ),
               PostStatsTile(
-                title: 'Average'.hc,
+                title: context.t.post.statistics.average,
                 value:
                     '${stats.tags.mean.toStringAsFixed(1)} ± ${stats.tags.standardDeviation.toStringAsFixed(1)}',
               ),
@@ -269,7 +269,7 @@ class PostStatsSectionTitle extends StatelessWidget {
         TextButton(
           onPressed: onMore,
           child: Text(
-            'More'.hc,
+            context.t.generic.action.more,
           ),
         ),
       ],
@@ -304,43 +304,43 @@ class StatisticalSummaryDetailsPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               PostStatsTile(
-                title: 'Average',
+                title: context.t.post.statistics.average,
                 value:
                     '${formatter?.call(stats.mean) ?? stats.mean.toStringAsFixed(1)} ± ${formatter?.call(stats.standardDeviation) ?? stats.standardDeviation.toStringAsFixed(1)}',
               ),
               PostStatsTile(
-                title: 'Highest',
+                title: context.t.post.statistics.highest,
                 value:
                     formatter?.call(stats.highest) ??
                     stats.highest.toStringAsFixed(0),
               ),
               PostStatsTile(
-                title: 'Lowest',
+                title: context.t.post.statistics.lowest,
                 value:
                     formatter?.call(stats.lowest) ??
                     stats.lowest.toStringAsFixed(0),
               ),
               const Divider(),
               PostStatsTile(
-                title: 'Median',
+                title: context.t.post.statistics.median,
                 value:
                     formatter?.call(stats.median) ??
                     stats.median.toStringAsFixed(0),
               ),
               PostStatsTile(
-                title: '25th percentile',
+                title: context.t.post.statistics.k25thPercentile,
                 value:
                     formatter?.call(stats.percentile25) ??
                     stats.percentile25.toStringAsFixed(0),
               ),
               PostStatsTile(
-                title: '75th percentile',
+                title: context.t.post.statistics.k75thPercentile,
                 value:
                     formatter?.call(stats.percentile75) ??
                     stats.percentile75.toStringAsFixed(0),
               ),
               PostStatsTile(
-                title: '90th percentile',
+                title: context.t.post.statistics.k90thPercentile,
                 value:
                     formatter?.call(stats.percentile90) ??
                     stats.percentile90.toStringAsFixed(0),

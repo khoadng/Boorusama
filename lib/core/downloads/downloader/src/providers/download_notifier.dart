@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 import 'package:oktoast/oktoast.dart';
 
 // Project imports:
@@ -20,7 +21,6 @@ import '../../../../router.dart';
 import '../../../../settings/providers.dart';
 import '../../../../settings/settings.dart';
 import '../../../filename/types.dart';
-import '../../../l10n.dart';
 import '../../../urls/providers.dart';
 import '../../../urls/types.dart';
 import '../types/download.dart';
@@ -281,7 +281,7 @@ Future<DownloadTaskInfo?> _download(
 
 void showDownloadStartToast(BuildContext context, {String? message}) {
   showToast(
-    message ?? DownloadTranslations.downloadStartedNotification,
+    message ?? context.t.download.notification.started,
     context: context,
     position: const ToastPosition(
       align: Alignment.bottomCenter,

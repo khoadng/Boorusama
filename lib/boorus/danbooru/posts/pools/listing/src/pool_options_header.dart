@@ -32,7 +32,7 @@ class PoolOptionsHeader extends ConsumerWidget {
         hasNullOption: false,
         optionLabelBuilder: (value) =>
             value != null ? poolOrderToString(context, value) : 'All'.hc,
-        sheetTitle: 'Sort by'.hc,
+        sheetTitle: context.t.sort.sort_by,
         onSelected: (value) {
           ref.read(danbooruSelectedPoolOrderProvider.notifier).state =
               value ?? DanbooruPoolOrder.newest;

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:animated_list_plus/animated_list_plus.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:i18n/i18n.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
@@ -69,7 +70,7 @@ class _OptionSearchableSheetState<T extends Object>
                 items = widget.onFilter(value);
               }),
               decoration: InputDecoration(
-                hintText: 'Search',
+                hintText: context.t.search.hint,
                 suffixIcon: const Icon(Icons.search),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),

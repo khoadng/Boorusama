@@ -116,7 +116,7 @@ class _DownloadManagerPageState extends ConsumerState<DownloadManagerPage> {
           itemsCount: tasks.length,
           appBar: AppBar(
             title: Text(
-              DownloadTranslations.downloadManagerTitle(context),
+              context.t.download.downloads,
             ),
             actions: [
               if (isDefaultGroup)
@@ -141,9 +141,7 @@ class _DownloadManagerPageState extends ConsumerState<DownloadManagerPage> {
                               showSimpleSnackBar(
                                 context: context,
                                 content: Text(
-                                  DownloadTranslations.downloadNothingToClear(
-                                    context,
-                                  ),
+                                  context.t.download.nothing_to_clear,
                                 ),
                                 duration: const Duration(seconds: 1),
                               );

@@ -3,7 +3,8 @@
     "done": "完成",
     "errors": {
       "no_data": "沒有資訊",
-      "unknown": "發生錯誤"
+      "unknown": "發生錯誤",
+      "error": "錯誤"
     },
     "action": {
       "add": "新增",
@@ -33,10 +34,6 @@
       "related": "相關的",
       "add_to_current_search": "新增至目前搜尋",
       "open_wiki": "開啟 Wiki"
-    },
-    "explore": {
-      "new": "最新",
-      "popular": "最受歡迎"
     }
   },
   "post": {
@@ -67,7 +64,6 @@
       "remove_from_bookmark": "從書籤中移除"
     },
     "action": {
-      "preview": "預覽",
       "view_comments": "查看評論",
       "add_to_favorite_group": "新增至最愛群組",
       "view_in_browser": "在瀏覽器中查看",
@@ -77,9 +73,7 @@
   "comment": {
     "comments": "評論",
     "create": {
-      "hint": "評論",
-      "loading": "請稍後...",
-      "error": "錯誤"
+      "hint": "評論"
     },
     "list": {
       "edit": "編輯",
@@ -101,11 +95,11 @@
     "hot": "熱門",
     "most_viewed": "最多觀看",
     "see_more": "查看更多",
-    "explore": "探索"
+    "explore": "探索",
+    "new": "最新"
   },
   "search": {
     "errors": {
-      "generic": "發生錯誤",
       "tag_limit": "已達到最大標籤限制。升級您的帳戶以同時使用更多標籤進行搜尋",
       "database_timeout": "搜尋處理時間過長，已取消執行",
       "rate_limited": "您的搜尋速度過快，請稍後再試",
@@ -118,12 +112,10 @@
     },
     "hint": "搜尋...",
     "no_result": "我們搜尋了很久，但沒有找到任何結果",
-    "search_options": "搜尋選項",
     "metatags_notice": "免費的 metatags 不計入標籤搜索限制",
     "history": {
       "history": "歷史紀錄",
-      "clear": "清除",
-      "recent": "最近"
+      "clear": "清除"
     },
     "trending": "趨勢",
     "remove_all_selected": "移除所有選取標籤",
@@ -263,7 +255,6 @@
       "export": "匯出"
     },
     "image_details": {
-      "image_details": "圖像詳細資料",
       "ui_overlay": {
         "show": "顯示",
         "hide": "隱藏",
@@ -293,16 +284,9 @@
   },
   "download": {
     "download": "下載",
-    "bulk_download_save_to_folder": "儲存至資料夾",
-    "bulk_download_invalid_folder_name_error": "資料夾不可包含以下字符： ",
-    "bulk_download_folder_select_warning": "在 Android 11+ 上，此應用程式僅能儲存在 內部公共資料夾 <b>({0})</b> 中. <div>不支援SD卡。</div> <div>請選擇其他路徑。</div> <div>此裝置的版本是 {1}.</div>",
-    "storage_permission_explanation": "需要儲存權限以儲存下載文件",
-    "image_counter": {
-      "other": "下載 $n 圖片"
-    },
-    "bulk": {
-      "all_done_notification_message": "所有下載已完成"
-    }
+    "invalid_folder_name_error": "資料夾不可包含以下字符： ",
+    "folder_select_warning": "在 Android 11+ 上，此應用程式僅能儲存在 內部公共資料夾 <b>({0})</b> 中. <div>不支援SD卡。</div> <div>請選擇其他路徑。</div> <div>此裝置的版本是 {1}.</div>",
+    "storage_permission_explanation": "需要儲存權限以儲存下載文件"
   },
   "saved_search": {
     "saved_search": "儲存搜尋",
@@ -325,9 +309,7 @@
   "favorites": {
     "counter": {
       "other": "最愛"
-    },
-    "favorited": "已新增至最愛",
-    "favorite": "新增至最愛"
+    }
   },
   "favorite_groups": {
     "favorite_groups": "最愛群組",
@@ -338,7 +320,6 @@
     "add_to": "新增至",
     "create": "建立",
     "private": "私人",
-    "view_more_popup": "View",
     "items_added_notification_popup": "{0} 個結果已新增至 {1}",
     "group_name": "群組名稱",
     "group_name_hint": "新增群組",
@@ -383,7 +364,6 @@
     "site_url_label": "網址",
     "login_name_label": "登入",
     "password_api_key_label": "API key",
-    "password_hashed_label": "密碼 Hashed (唯讀)",
     "password_label": "密碼",
     "content_filtering_label": "內容過濾",
     "hide_deleted_label": "隱藏已刪除的貼圖",
@@ -401,10 +381,7 @@
     "many_added": "已新增 {0} 個書籤",
     "failed_to_add_many": "新增書籤失敗",
     "removed": "已從書籤中移除",
-    "updated": "書籤已更新",
-    "failed_to_remove": "書籤移除失敗",
-    "failed_to_update": "書籤更新失敗",
-    "failed_to_load": "載入書籤失敗: {0}"
+    "failed_to_remove": "書籤移除失敗"
   },
   "app_update": {
     "update": "更新",
@@ -418,6 +395,11 @@
   "tags": {
     "actions": {
       "add_to_blacklist": "新增至黑名單"
+    }
+  },
+  "bulk_downloads": {
+    "options": {
+      "save_to_folder": "儲存至資料夾"
     }
   }
 }

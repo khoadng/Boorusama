@@ -3,7 +3,8 @@
     "done": "Xong",
     "errors": {
       "no_data": "Không có dữ liệu",
-      "unknown": "Xảy ra lỗi ngoài dự kiến"
+      "unknown": "Xảy ra lỗi ngoài dự kiến",
+      "error": "Lỗi"
     },
     "action": {
       "add": "Thêm",
@@ -14,7 +15,7 @@
       "duplicate": "Tạo bản sao",
       "select": "Chọn",
       "save": "Lưu",
-      "verify": "Xác nhận",
+      "verify": "Xác thực",
       "retry": "Thử lại",
       "clear": "Xoá",
       "create": "Tạo",
@@ -30,6 +31,13 @@
     "no_content": "Không có nội dung",
     "app_restart_request": "Cần khởi động lại ứng dụng để áp dụng thay đổi"
   },
+  "sort": {
+    "sort_by": "Sắp xếp theo",
+    "name_asc": "Tên (A-Z)",
+    "name_desc": "Tên (Z-A)",
+    "recently_added": "Mới thêm",
+    "recently_updated": "Mới cập nhật"
+  },
   "profile": {
     "favorites": "Yêu thích",
     "profile": "Hồ sơ",
@@ -44,12 +52,9 @@
     "related": {
       "more": "Thêm",
       "related": "Liên quan",
-      "add_to_current_search": "Thêm vào thanh tìm kiếm",
+      "add_to_current_search": "Thêm vào tìm kiếm",
+      "negate_from_current_search": "Đảo ngược và thêm vào tìm kiếm",
       "open_wiki": "Mở wiki"
-    },
-    "explore": {
-      "new": "Mới",
-      "popular": "Phổ biến"
     }
   },
   "post": {
@@ -94,7 +99,6 @@
       }
     },
     "action": {
-      "preview": "Xem nhanh",
       "view_comments": "Xem bình luận",
       "add_to_favorite_group": "Thêm vào nhóm yêu thích",
       "share": "Chia sẻ",
@@ -116,15 +120,20 @@
       "view_original": "Xem ảnh gốc"
     },
     "statistics": {
-      "stats_for_nerds": "Thống kê dành cho người mọt sách"
+      "stats_for_nerds": "Thống kê chi tiết",
+      "average": "Trung bình",
+      "highest": "Cao nhất",
+      "lowest": "Thấp nhất",
+      "median": "Trung vị",
+      "25th_percentile": "Phân vị 25",
+      "75th_percentile": "Phân vị 75",
+      "90th_percentile": "Phân vị 90"
     }
   },
   "comment": {
     "comments": "Bình luận",
     "create": {
-      "hint": "Bình luận",
-      "loading": "Đợi tí...",
-      "error": "Lỗi"
+      "hint": "Bình luận"
     },
     "list": {
       "edit": "Sửa",
@@ -149,11 +158,14 @@
     "explore": "Khám phá",
     "top": "Hàng đầu",
     "daily": "Hằng ngày",
-    "weekly": "Hằng tuần"
+    "weekly": "Hằng tuần",
+    "new": "Mới",
+    "newest": "Mới nhất",
+    "oldest": "Cũ nhất",
+    "ordered": "Theo thứ tự"
   },
   "search": {
     "errors": {
-      "generic": "Có lỗi xảy ra",
       "tag_limit": "Số tag sử dụng vượt mức cho phép. Nâng cấp tài khoản để có thể dùng nhiều tag hơn.",
       "database_timeout": "Search bị hủy do tốn quá nhiều thời gian.",
       "rate_limited": "Bạn đã vượt giới hạn. Vui lòng thử lại sau",
@@ -168,12 +180,10 @@
     },
     "hint": "Tìm...",
     "no_result": "Không tìm được kết quả phù hợp.",
-    "search_options": "Tùy chọn",
     "metatags_notice": "Free metatags không tính vào giới hạn tag search",
     "history": {
       "history": "Lịch sử",
-      "clear": "Xóa",
-      "recent": "Gần đây"
+      "clear": "Xóa"
     },
     "trending": "Xu hướng",
     "remove_all_selected": "Xoá tất cả các tag đang chọn",
@@ -265,7 +275,9 @@
         "grid_size": "Cỡ ảnh",
         "small": "Nhỏ",
         "medium": "Vừa",
-        "large": "Lớn"
+        "large": "Lớn",
+        "tiny": "Rất nhỏ",
+        "micro": "Siêu nhỏ"
       },
       "image_quality": {
         "image_quality": "Chất lượng ảnh",
@@ -285,7 +297,7 @@
     "image_viewer": {
       "image_viewer": "Trình xem ảnh",
       "slideshow": "Trình chiếu",
-      "slideshow_interval": "Khoảng thời gian chuyển ảnh",
+      "slideshow_interval": "Thời gian chuyển ảnh",
       "slideshow_mode": "Chế độ trình chiếu",
       "slideshow_modes": {
         "random": "Ngẫu nhiên",
@@ -293,7 +305,7 @@
         "backward": "Lùi lại"
       },
       "slideshow_skip": "Bỏ qua hiệu ứng chuyển tiếp",
-      "slideshow_interval_explanation": "Nếu đặt dưới 1 giây sẽ tự động bỏ qua hiệu ứng chuyển tiếp",
+      "slideshow_interval_explanation": "Dưới 1 giây sẽ tự động bỏ qua hiệu ứng chuyển tiếp",
       "swipe_mode": "Chế độ vuốt",
       "swipe_mode_disclaimer": "Một số thao tác vuốt tùy chỉnh có thể không hoạt động trong mọi chế độ",
       "swipe_modes": {
@@ -363,6 +375,8 @@
       "path": "Đường dẫn tới nơi lưu ảnh",
       "select_a_folder": "Chọn thư mục",
       "quality": "Chất lượng ảnh tải xuống",
+      "skip_existing_files": "Bỏ qua file đã tồn tại",
+      "skip_existing_files_explanation": "Ngăn không tải lại các file đã có trong thư mục. Hữu ích khi bạn không muốn tải trùng ảnh.",
       "qualities": {
         "original": "Gốc",
         "sample": "Mẫu",
@@ -382,7 +396,8 @@
       "tag_cache": "Bộ nhớ đệm thẻ",
       "image_only_cache": "Bộ nhớ đệm chỉ hình ảnh",
       "bookmark_images": "Ảnh được đánh dấu",
-      "loading": "Đang tải..."
+      "loading": "Đang tải...",
+      "error_loading_cache_info": "Lỗi khi tải thông tin bộ nhớ đệm"
     },
     "backup_and_restore": {
       "backup_and_restore": "Sao lưu và phục hồi dữ liệu",
@@ -447,7 +462,6 @@
       "backup_now": "Sao lưu ngay"
     },
     "image_details": {
-      "image_details": "Chi tiết hình ảnh",
       "ui_overlay": {
         "show": "Hiện",
         "hide": "Ẩn",
@@ -464,7 +478,20 @@
       "accessibility": "Trợ năng",
       "reverseBooruConfigSelectorScrollDirection": "Đảo hướng cuộn thanh chọn hồ sơ booru",
       "swipeAreaToOpenSidebar": "Khu vực vuốt thanh bên",
-      "swipeAreaToOpenSidebarDescription": "Tinh chỉnh khu vực trống bên trái màn hình để thực hiện thao tác vuốt. Lưu ý nếu giá trị thiết lập quá lớn thì sẽ không thể thực hiện các cử chỉ theo chiều ngang được"
+      "swipeAreaToOpenSidebarDescription": "Tinh chỉnh khu vực trống bên trái màn hình để thực hiện thao tác vuốt. Lưu ý nếu giá trị thiết lập quá lớn thì sẽ không thể thực hiện các cử chỉ theo chiều ngang được",
+      "reduce_animations": "Giảm hiệu ứng động",
+      "reduce_animations_description": "Một số tính năng có thể không hoạt động như mong đợi khi bật tùy chọn này.",
+      "volume_navigation": "Dùng phím âm lượng để điều hướng",
+      "volume_navigation_description": "Chuyển bài viết bằng phím âm lượng khi xem ảnh.",
+      "haptic_feedback": {
+        "haptic_feedback": "Phản hồi rung",
+        "haptic_feedback_level": {
+          "none": "Tắt",
+          "subtle": "Nhẹ",
+          "standard": "Chuẩn",
+          "playful": "Sinh động"
+        }
+      }
     },
     "booru_settings": {
       "edit_current_profile": "Chỉnh sửa hồ sơ hiện tại",
@@ -497,9 +524,11 @@
     "downloads": "Tải xuống",
     "retry_all": "Thử lại tất cả",
     "nothing_to_clear": "Không có gì để xóa",
-    "new_download": "Tải mới",
     "no_active_sessions": "Không có phiên tải xuống nào đang chạy",
     "nothing_to_show": "Không có gì để hiển thị, danh sách tải trống",
+    "notification": {
+      "started": "Bắt đầu tải"
+    },
     "status": {
       "in_progress": "Đang tải",
       "pending": "Đang chờ",
@@ -518,17 +547,9 @@
       "no_failed_downloads": "Không có tải xuống thất bại",
       "no_downloads": "Chưa có tải xuống"
     },
-    "bulk_download_save_to_folder": "Lưu vào thư mục",
-    "bulk_download_invalid_folder_name_error": "Tên thư mục không được chứa các ký tự sau: ",
-    "bulk_download_folder_select_warning": "Đối với Android 11+, ứng dụng chỉ có thể lưu file vào thư mục chung <b>({0})</b>.<br><br>Ví dụ vị trí hợp lệ:<br><b>[Bộ nhớ trong]</b> /storage/emulated/0/Download<br><b>[Thẻ SD]</b> /storage/A1B2-C3D4/Download<br><br>Vui lòng chọn thư mục khác hoặc tạo mới nếu chưa có.<br>Phiên bản Android của thiết bị này là <b>{1}</b>.",
-    "storage_permission_explanation": "Ứng dụng cần quyền lưu trữ để tải file xuống.",
-    "image_counter": {
-      "one": "Tải $n ảnh",
-      "other": "Tải $n ảnh"
-    },
-    "bulk": {
-      "all_done_notification_message": "Đã tải xong tất cả"
-    }
+    "invalid_folder_name_error": "Tên thư mục không được chứa các ký tự sau: ",
+    "folder_select_warning": "Đối với Android 11+, ứng dụng chỉ có thể lưu file vào thư mục chung <b>({0})</b>.<br><br>Ví dụ vị trí hợp lệ:<br><b>[Bộ nhớ trong]</b> /storage/emulated/0/Download<br><b>[Thẻ SD]</b> /storage/A1B2-C3D4/Download<br><br>Vui lòng chọn thư mục khác hoặc tạo mới nếu chưa có.<br>Phiên bản Android của thiết bị này là <b>{1}</b>.",
+    "storage_permission_explanation": "Ứng dụng cần quyền lưu trữ để tải file xuống."
   },
   "saved_search": {
     "saved_search": "Saved search",
@@ -553,20 +574,17 @@
     "counter": {
       "one": "Lượt thích",
       "other": "Lượt thích"
-    },
-    "favorited": "Đã yêu thích",
-    "favorite": "Yêu thích"
+    }
   },
   "favorite_groups": {
     "favorite_groups": "Nhóm yêu thích",
-    "empty_group_notice": "Chưa thêm nhóm nào",
+    "empty_group_notice": "Chưa tạo nhóm yêu thích nào",
     "create_group": "Tạo nhóm",
     "edit_group": "Sửa nhóm",
     "add_to_group_dialog_title": "Thêm vào nhóm yêu thích",
     "add_to": "Thêm vào",
     "create": "Tạo",
     "private": "Private",
-    "view_more_popup": "Xem",
     "items_added_notification_popup": "Đã thêm {0} ảnh vào {1}",
     "group_name": "Tên nhóm",
     "group_name_hint": "Nhóm mới",
@@ -601,6 +619,7 @@
     "your_bookmarks": "Đánh dấu",
     "your_blacklist": "Tag đã chặn",
     "bulk_download": "Tải hàng loạt",
+    "download_manager": "Quản lý tải xuống",
     "get_support": "Nhận hỗ trợ"
   },
   "dateRange": {
@@ -616,6 +635,7 @@
       "variants_4": "*Đăng nhập tài khoản trên trình duyệt, vào <b>Account > Login tokens</b>. Copy <b>Web Login Token</b> hoặc tạo mới nếu cần rồi dán vào đây. Lưu ý: nếu bạn logout khỏi trình duyệt thì token này sẽ bị vô hiệu.",
       "variants_5": "*Đăng nhập tài khoản trên trình duyệt, vào <b><a href=\"api-credentials\">My Account > Options > API Access Credentials</a></b> để lấy API key. Copy key rồi dán vào ô bên trên. Bạn cũng có thể copy toàn bộ chuỗi trong phần <b>API Access Credentials</b> rồi bấm nút bên dưới."
     },
+    "invalid_booru_warning": "Có vẻ như trang web không chạy trên engine đã chọn. Vui lòng thử với engine khác.",
     "using_status": "dùng ${booru}",
     "paste_from_clipboard": "Dán từ clipboard",
     "booru_engine_input_label": "Booru engine (*)",
@@ -629,7 +649,6 @@
     "site_url_label": "URL của web",
     "login_name_label": "Tên đăng nhập",
     "password_api_key_label": "API key",
-    "password_hashed_label": "Mật khẩu đã được mã hóa (chỉ đọc)",
     "password_label": "Mật khẩu",
     "content_filtering_label": "Lọc nội dung",
     "content_filtering": {
@@ -666,10 +685,7 @@
         "advanced_auth": "Đăng nhập nâng cao (tùy chọn)",
         "advanced_auth_description": "Nếu nhập thêm thông tin này, bạn có thể chỉnh sửa danh sách yêu thích và có quyền thay đổi dữ liệu trong tài khoản. Lưu ý: nếu đổi mật khẩu, bạn sẽ phải đăng nhập lại.",
         "fav_button_tooltip_title": "Về nút Yêu thích",
-        "fav_button_tooltip_description": "Ứng dụng không thể kiểm tra xem ảnh đã được thêm vào yêu thích hay chưa. Sau khi bấm yêu thích bạn sẽ thấy báo hiệu, nhưng nó sẽ biến mất khi bạn mở lại ứng dụng. Đừng lo, danh sách yêu thích của bạn vẫn lưu trên trang web.",
-        "logged_in": "Đã đăng nhập",
-        "relogin": "Đăng nhập lại",
-        "clear_credentials": "Xóa thông tin"
+        "fav_button_tooltip_description": "Ứng dụng không thể kiểm tra xem ảnh đã được thêm vào yêu thích hay chưa. Sau khi bấm yêu thích bạn sẽ thấy báo hiệu, nhưng nó sẽ biến mất khi bạn mở lại ứng dụng. Đừng lo, danh sách yêu thích của bạn vẫn lưu trên trang web."
       }
     },
     "listing": {
@@ -733,7 +749,7 @@
       "override_notice": "Thay đổi cử chỉ mặc định cho profile này. Chọn \"Trống\" để giữ như ban đầu."
     },
     "downloads": {
-      "title": "Tuỳ chỉnh tải",
+      "title": "Tải xuống",
       "leave_empty_to_use_global": "Để trống để dùng đường dẫn tải mặc định trong cài đặt.",
       "custom_filename_format": "Định dạng tên file tùy chỉnh",
       "custom_filename_format_invidual": "Tải riêng lẻ",
@@ -784,10 +800,11 @@
     "many_added": "Đã thêm {0} đánh dấu",
     "failed_to_add_many": "Thêm đánh dấu không thành công",
     "removed": "Đã xoá đánh dấu",
-    "updated": "Đã cập nhật",
     "failed_to_remove": "Xoá đánh dấu không thành công",
-    "failed_to_update": "Cập nhật đánh dấu không thành công",
-    "failed_to_load": "Tải đánh dấu thất bại: {0}"
+    "counter": {
+      "one": "$n đánh dấu",
+      "other": "$n đánh dấu"
+    }
   },
   "app_update": {
     "update": "Cập nhật",
@@ -807,17 +824,85 @@
   "time": {
     "counters": {
       "second": {
-        "one": "Giây",
-        "other": "Giây"
+        "one": "$n giây",
+        "other": "$n giây"
       }
     }
   },
+  "donation": {
+    "donate": "Ủng hộ"
+  },
   "bulk_downloads": {
-    "new_download": "Bắt đầu tải xuống",
-    "create": "Tạo",
-    "delete": "Xoá",
     "created": "Đã tạo",
-    "completed_with_no_new_files": "Đã hoàn thành mà không có tệp mới nào"
+    "completed_with_no_new_files": "Đã hoàn thành mà không có tệp mới nào",
+    "scanning_page": {
+      "with_page": "Đang quét trang $page...",
+      "null_page": "Đang quét..."
+    },
+    "file_counter": {
+      "one": "$n tệp",
+      "other": "$n tệp"
+    },
+    "status": {
+      "suspended": "Đã lưu"
+    },
+    "actions": {
+      "create": "Tạo",
+      "delete": "Xoá",
+      "copy_path": "Sao chép đường dẫn",
+      "new_download": "Bắt đầu tải xuống",
+      "add_to_queue": "Thêm vào danh sách chờ"
+    },
+    "templates": {
+      "title": "Mẫu",
+      "empty": "Chưa có mẫu nào",
+      "create": "Tạo mẫu",
+      "created": "Đã tạo mẫu",
+      "run": "Chạy mẫu"
+    },
+    "completed": {
+      "title": "Hoàn tất",
+      "empty": "Chưa có tải xuống nào hoàn tất",
+      "clear_all": "Xoá tất cả"
+    },
+    "auth_changed": {
+      "profile_mismatch": "Hồ sơ không khớp",
+      "current_site": "Trang hiện tại: ",
+      "download_site": "Trang tải xuống: ",
+      "has_mismatch_warning": "Trang tải xuống không khớp với hồ sơ của bạn. Hãy đổi hồ sơ cho đúng rồi thử lại.",
+      "no_mismatch_warning": "Phiên tải xuống này dùng hồ sơ của cùng trang nhưng với tài khoản khác. Có thể gây lỗi.\n\nBạn có muốn tiếp tục?",
+      "continue": "Tiếp tục"
+    },
+    "options": {
+      "other_options": "Tuỳ chọn khác",
+      "save_to_folder": "Lưu vào thư mục",
+      "show_advanced_options": "Hiện tuỳ chọn nâng cao",
+      "enable_notification": "Bật thông báo",
+      "excluded_tags": "Tag bị loại",
+      "excluded_tags_description": "Chọn thêm tag để loại khỏi phiên tải này",
+      "default_excluded_tags_from_source_list": "Tag đã chặn mặc định từ các nguồn sau:",
+      "source_list": {
+        "one": "• $count tag từ $source",
+        "other": "• $count tag từ $source"
+      }
+    },
+    "errors": {
+      "non_premium_template_limit": "Chỉ cho phép tạo một mẫu. Nâng cấp lên $brand để tạo thêm mẫu.",
+      "non_premium_session_limit": "Chỉ cho phép 1 phiên tải xuống cùng lúc. Nâng cấp lên $brand để dùng nhiều phiên.",
+      "non_premium_resume": "Lưu và phục hồi phiên tải chỉ khả dụng cho người dùng nâng cấp $brand.",
+      "non_premium_suspend": "Lưu phiên tải chỉ khả dụng cho người dùng nâng cấp $brand.",
+      "running_session_deletion": "Không thể xoá phiên tải đang chạy"
+    }
+  },
+  "auth": {
+    "login_required": "Bạn cần đăng nhập để sử dụng tính năng này.",
+    "logged_in": "Đã đăng nhập",
+    "relogin": "Đăng nhập lại",
+    "clear_credentials": "Xóa thông tin"
+  },
+  "captcha": {
+    "title": "Vui lòng giải captcha",
+    "i_have_solved_it": "Tôi đã giải xong"
   },
   "select": {
     "selected_items": "Chọn mục",
@@ -857,7 +942,12 @@
     "get_premium": "Nâng cấp $brand",
     "unlock_more_theme_with_premium": "Mở khoá thêm nhiều chủ đề với $brand",
     "upgrade": "Nâng cấp",
+    "subscribe": "Đăng ký",
     "restore_subscription": "Khôi phục gói",
+    "subscription_restored": "Gói đã được khôi phục!",
+    "restore_failed": "Có lỗi khi khôi phục gói đăng ký của bạn. Vui lòng thử lại sau.",
+    "select_your_plan": "Chọn gói",
+    "legal_disclaimer": "Khi đăng ký, bạn chấp nhận <a href=\"terms-of-service\">Điều khoản dịch vụ</a> và <a href=\"privacy-policy\">Chính sách bảo mật</a>. Gói sẽ tự động gia hạn cho đến khi bạn hủy, muộn nhất 24 giờ trước khi kỳ hạn kết thúc.",
     "benefits": {
       "exclusive_themes": "Chủ đề độc quyền",
       "exclusive_themes_description": "Nhiều chủ đề riêng để bạn đổi diện mạo từng hồ sơ",
@@ -867,6 +957,23 @@
       "enhanced_bulk_download_description": "Không giới hạn mẫu, hỗ trợ nhiều phiên tải và tự tiếp tục sau khi khởi động lại.",
       "support_development": "Ủng hộ nhà phát triển",
       "support_development_description": "Giúp dev solo duy trì dự án với các bản cập nhật và cải tiến liên tục."
+    },
+    "thanks": {
+      "title": "Cảm ơn bạn!",
+      "description": "Bạn đã mở khóa các tính năng cao cấp. Thoải mái trải nghiệm nhé!",
+      "confirm": "OK"
+    },
+    "per": {
+      "year": "/ năm",
+      "month": "/ tháng"
+    },
+    "packages": {
+      "monthly": "Hàng tháng",
+      "annual": "Hàng năm"
     }
+  },
+  "misc": {
+    "trailing_more": " thêm",
+    "trailing_less": " bớt"
   }
 }

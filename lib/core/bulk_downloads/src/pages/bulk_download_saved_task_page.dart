@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
@@ -11,7 +12,6 @@ import '../providers/bulk_download_notifier.dart';
 import '../providers/saved_download_task_provider.dart';
 import '../providers/saved_task_lock_notifier.dart';
 import '../types/bulk_download_error.dart';
-import '../types/l10n.dart';
 import '../types/saved_download_task.dart';
 import '../widgets/saved_task_list_tile.dart';
 import 'bulk_download_edit_saved_task_page.dart';
@@ -27,7 +27,7 @@ class BulkDownloadSavedTaskPage extends ConsumerWidget {
     return CustomContextMenuOverlay(
       child: Scaffold(
         appBar: AppBar(
-          title: Text(DownloadTranslations.templates),
+          title: Text(context.t.bulk_downloads.templates.title),
           actions: const [
             _AddButton(),
           ],
@@ -40,7 +40,7 @@ class BulkDownloadSavedTaskPage extends ConsumerWidget {
             data: (tasks) => tasks.isEmpty
                 ? Center(
                     child: Text(
-                      DownloadTranslations.emptyTemplates,
+                      context.t.bulk_downloads.templates.empty,
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                   )

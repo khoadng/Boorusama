@@ -1,6 +1,9 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Package imports:
+import 'package:i18n/i18n.dart';
+
 // Project imports:
 import '../../../../foundation/iap/iap.dart';
 
@@ -56,8 +59,8 @@ class SubscriptionPlanTile extends StatelessWidget {
                   Text(
                     switch (package.type) {
                       null => '???',
-                      PackageType.monthly => 'Monthly',
-                      PackageType.annual => 'Annual',
+                      PackageType.monthly => context.t.premium.packages.monthly,
+                      PackageType.annual => context.t.premium.packages.annual,
                     },
                     style: const TextStyle(
                       fontWeight: FontWeight.w500,
@@ -82,7 +85,11 @@ class SubscriptionPlanTile extends StatelessWidget {
                       ),
                       children: [
                         TextSpan(
-                          text: ' / ${package.typeDurationString}',
+                          text: switch (package.type) {
+                            null => '',
+                            PackageType.monthly => context.t.premium.per.month,
+                            PackageType.annual => context.t.premium.per.year,
+                          },
                           style: TextStyle(
                             fontSize: 14,
                             color: colorScheme.onSurface.withValues(alpha: 0.6),

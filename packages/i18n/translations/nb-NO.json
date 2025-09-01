@@ -3,7 +3,8 @@
     "done": "Ferdig",
     "errors": {
       "no_data": "Ingen data tilgjengelig",
-      "unknown": "Noe gikk galt"
+      "unknown": "Noe gikk galt",
+      "error": "Feil"
     },
     "action": {
       "add": "Legg til",
@@ -28,10 +29,6 @@
       "related": "Relatert",
       "add_to_current_search": "Legg til i nåværende søk",
       "open_wiki": "Åpne wiki"
-    },
-    "explore": {
-      "new": "Ny",
-      "popular": "Populært"
     }
   },
   "post": {
@@ -62,7 +59,6 @@
       "remove_from_bookmark": "Fjern bokmerke"
     },
     "action": {
-      "preview": "Forhåndsvis",
       "view_comments": "Vis kommentarer",
       "add_to_favorite_group": "Legg til i favorittgruppe",
       "view_in_browser": "Vis i nettleser",
@@ -72,9 +68,7 @@
   "comment": {
     "comments": "Kommentarer",
     "create": {
-      "hint": "Kommentar",
-      "loading": "Vent …",
-      "error": "Feil"
+      "hint": "Kommentar"
     },
     "list": {
       "edit": "Rediger",
@@ -95,12 +89,11 @@
     "popular": "Populært",
     "hot": "På vei opp",
     "most_viewed": "Mest sett",
-    "see_more": "Vis mer"
+    "see_more": "Vis mer",
+    "new": "Ny"
   },
   "search": {
-    "errors": {
-      "generic": "Noe gikk galt"
-    }
+    "errors": {}
   },
   "pool": {
     "category": {
@@ -192,8 +185,7 @@
     "updated": "Svartelistede etiketter oppdatert"
   },
   "download": {
-    "download": "Last ned",
-    "bulk_download_save_to_folder": "Lagre i mappe"
+    "download": "Last ned"
   },
   "saved_search": {
     "saved_search_examples": "Eksempler",
@@ -205,14 +197,11 @@
     "counter": {
       "one": "Favoritt",
       "other": "Favoritter"
-    },
-    "favorited": "Favorittmerket",
-    "favorite": "Favoritt"
+    }
   },
   "favorite_groups": {
     "create": "Opprett",
     "private": "Privat",
-    "view_more_popup": "Vis",
     "group_name": "Gruppenavn",
     "group_name_hint": "Ny gruppe",
     "all_posts": "Innlegg",
@@ -267,6 +256,11 @@
   "tags": {
     "actions": {
       "add_to_blacklist": "Svartelist"
+    }
+  },
+  "bulk_downloads": {
+    "options": {
+      "save_to_folder": "Lagre i mappe"
     }
   }
 }

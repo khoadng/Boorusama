@@ -23,8 +23,8 @@ class CategoryToggleSwitch extends StatelessWidget {
         initialValue: TagFilterCategory.newest,
         fixedWidth: 120,
         segments: {
-          TagFilterCategory.newest: context.t.tag.explore.kNew,
-          TagFilterCategory.popular: context.t.tag.explore.popular,
+          TagFilterCategory.newest: context.t.explore.kNew,
+          TagFilterCategory.popular: context.t.explore.popular,
         },
         onChanged: (value) => onToggle(value),
       ),

@@ -259,7 +259,9 @@ class _RestorePremiumButton extends ConsumerWidget {
                 if (navigatorContext != null) {
                   showSimpleSnackBar(
                     context: navigatorContext,
-                    content: Text('Subscription restored!'.hc),
+                    content: Text(
+                      context.t.premium.subscription_restored,
+                    ),
                     duration: const Duration(seconds: 2),
                   );
                 }
@@ -282,8 +284,7 @@ class _RestorePremiumButton extends ConsumerWidget {
     showSimpleSnackBar(
       context: context,
       content: Text(
-        'There was a problem restoring your subscription. Please try again later.'
-            .hc,
+        context.t.premium.restore_failed,
       ),
       duration: const Duration(seconds: 2),
     );

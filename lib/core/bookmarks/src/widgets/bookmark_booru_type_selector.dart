@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../core/widgets/widgets.dart';
@@ -23,7 +24,7 @@ class BookmarkBooruSourceUrlSelector extends ConsumerWidget {
           .when(
             data: (data) => ChoiceOptionSelectorList(
               options: data,
-              sheetTitle: 'Source',
+              sheetTitle: context.t.post.detail.source_label,
               onSelected: (value) {
                 ref.read(selectedBooruUrlProvider.notifier).state = value;
               },

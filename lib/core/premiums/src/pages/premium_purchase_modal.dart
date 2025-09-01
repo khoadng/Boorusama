@@ -1,13 +1,14 @@
 // Flutter imports:
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
+import '../../../../foundation/html.dart';
 import '../../../../foundation/iap/iap.dart';
 import '../../../../foundation/info/app_info.dart';
 import '../../../../foundation/url_launcher.dart';
@@ -72,11 +73,11 @@ class _SubscriptionPlans extends ConsumerWidget {
               ),
               child: Column(
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 12),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 12),
                     child: Text(
-                      'Something went wrong',
-                      style: TextStyle(
+                      context.t.generic.errors.unknown,
+                      style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
                       ),
@@ -102,12 +103,12 @@ class _SubscriptionPlans extends ConsumerWidget {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const Row(
+        Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'Select your plan',
-              style: TextStyle(
+              context.t.premium.select_your_plan,
+              style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),
@@ -220,7 +221,7 @@ class _PurchaseButton extends ConsumerWidget {
         child: ref
             .watch(packagePurchaseProvider)
             .maybeWhen(
-              orElse: () => Text('Subscribe'.hc),
+              orElse: () => Text(context.t.premium.subscribe),
               loading: () => SizedBox(
                 width: 16,
                 height: 16,
@@ -264,49 +265,27 @@ class _LegalDisclaimerText extends ConsumerWidget {
         vertical: 4,
         horizontal: 16,
       ),
-      child: RichText(
-        text: TextSpan(
-          text: 'By subscribing, you agree to our ',
-          style: Theme.of(context).textTheme.titleSmall?.copyWith(
-            fontSize: 11,
-            fontWeight: FontWeight.w400,
-            color: colorScheme.onSurface.withValues(alpha: 0.6),
+      child: AppHtml(
+        style: {
+          'a': Style(
+            textDecoration: TextDecoration.none,
+            color: colorScheme.primary,
+            fontSize: FontSize(11),
           ),
-          children: [
-            TextSpan(
-              text: 'Terms of Service',
-              recognizer: TapGestureRecognizer()
-                ..onTap = () {
-                  launchExternalUrlString(appInfo.termsOfServiceUrl);
-                },
-              style: TextStyle(
-                color: colorScheme.primary,
-              ),
-            ),
-            TextSpan(
-              text: ' and ',
-              style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                fontSize: 11,
-                fontWeight: FontWeight.w400,
-                color: colorScheme.onSurface.withValues(alpha: 0.6),
-              ),
-            ),
-            TextSpan(
-              text: 'Privacy Policy',
-              recognizer: TapGestureRecognizer()
-                ..onTap = () {
-                  launchExternalUrlString(appInfo.privacyPolicyUrl);
-                },
-              style: TextStyle(
-                color: colorScheme.primary,
-              ),
-            ),
-            const TextSpan(
-              text:
-                  '. Subscription automatically renews until canceled. You can cancel anytime up to 24 hours before your current period ends.',
-            ),
-          ],
-        ),
+          'body': Style(
+            margin: Margins.zero,
+            color: colorScheme.onSurface.withValues(alpha: 0.6),
+            fontSize: FontSize(11),
+          ),
+        },
+        data: context.t.premium.legal_disclaimer,
+        onLinkTap: (url, attributes, element) {
+          if (url == 'terms-of-service') {
+            launchExternalUrlString(appInfo.termsOfServiceUrl);
+          } else if (url == 'privacy-policy') {
+            launchExternalUrlString(appInfo.privacyPolicyUrl);
+          }
+        },
       ),
     );
   }

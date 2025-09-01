@@ -165,7 +165,7 @@ class _BookmarkScrollViewState extends ConsumerState<BookmarkScrollView> {
                     child: ValueListenableBuilder(
                       valueListenable: controller.itemsNotifier,
                       builder: (_, posts, _) => Text(
-                        '${posts.length} bookmarks',
+                        context.t.bookmark.counter(n: posts.length),
                         style: Theme.of(context).textTheme.titleLarge,
                       ),
                     ),

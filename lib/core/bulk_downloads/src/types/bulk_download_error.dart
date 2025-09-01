@@ -1,5 +1,4 @@
 // Project imports:
-import '../../../premiums/premiums.dart';
 import 'bulk_download_error_code.dart';
 
 sealed class BulkDownloadError implements Exception {
@@ -70,7 +69,7 @@ class RunningSessionDeletionError extends BulkDownloadError {
   const RunningSessionDeletionError()
     : super(
         BulkDownloadErrorCode.runningSessionDeletion,
-        'Cannot delete a running session',
+        'runningSessionDeletionError',
       );
 }
 
@@ -78,7 +77,7 @@ class FreeUserMultipleDownloadSessionsError extends BulkDownloadError {
   const FreeUserMultipleDownloadSessionsError()
     : super(
         BulkDownloadErrorCode.nonPremiumSessionLimit,
-        'Only one active download session is allowed. Upgrade to $kPremiumBrandName for additional sessions.',
+        'nonPremiumSessionLimitError',
       );
 }
 
@@ -114,7 +113,7 @@ class NonPremiumSuspendError extends BulkDownloadError {
   const NonPremiumSuspendError()
     : super(
         BulkDownloadErrorCode.nonPremiumSuspend,
-        'Saving download sessions is only available on $kPremiumBrandName.',
+        'nonPremiumSuspendError',
       );
 }
 
@@ -122,7 +121,7 @@ class NonPremiumResumeError extends BulkDownloadError {
   const NonPremiumResumeError()
     : super(
         BulkDownloadErrorCode.nonPremiumResume,
-        'Resuming saved download sessions is only available on $kPremiumBrandName.',
+        'nonPremiumResumeError',
       );
 }
 
@@ -130,7 +129,7 @@ class NonPremiumSavedTaskLimitError extends BulkDownloadError {
   const NonPremiumSavedTaskLimitError()
     : super(
         BulkDownloadErrorCode.nonPremiumSavedTaskLimit,
-        'Only one template is allowed. Upgrade to $kPremiumBrandName to create more templates.',
+        'nonPremiumSavedTaskLimitError',
       );
 }
 
