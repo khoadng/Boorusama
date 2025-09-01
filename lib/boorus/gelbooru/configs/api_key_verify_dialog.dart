@@ -65,7 +65,7 @@ class ApiKeyVerifyDialog extends ConsumerWidget {
               );
             }
           },
-          child: Text('Verify'.hc),
+          child: Text(context.t.generic.action.verify),
         ),
       ],
     );

@@ -3,7 +3,8 @@
     "done": "Terminé",
     "errors": {
       "no_data": "Aucune donnée disponible",
-      "unknown": "Une erreur s'est produite"
+      "unknown": "Une erreur s'est produite",
+      "error": "Erreur"
     },
     "action": {
       "add": "Ajouter",
@@ -33,10 +34,6 @@
       "related": "En lien",
       "add_to_current_search": "Ajouter à la recherche actuelle",
       "open_wiki": "Ouvrir le wiki"
-    },
-    "explore": {
-      "new": "Nouveau",
-      "popular": "Populaire"
     }
   },
   "post": {
@@ -68,7 +65,6 @@
       "remove_from_bookmark": "Supprimé du marque-page"
     },
     "action": {
-      "preview": "Aperçu",
       "view_comments": "Afficher les commentaires",
       "add_to_favorite_group": "Ajouter à un groupe de favoris",
       "view_in_browser": "Afficher dans le navigateur",
@@ -78,9 +74,7 @@
   "comment": {
     "comments": "Commentaires",
     "create": {
-      "hint": "Commenter",
-      "loading": "Veuillez patienter...",
-      "error": "Erreur"
+      "hint": "Commenter"
     },
     "list": {
       "edit": "Éditer",
@@ -103,11 +97,11 @@
     "hot": "Tendance",
     "most_viewed": "Les plus vus",
     "see_more": "Voir plus",
-    "explore": "Explorer"
+    "explore": "Explorer",
+    "new": "Nouveau"
   },
   "search": {
     "errors": {
-      "generic": "Une erreur s'est produite",
       "tag_limit": "Limite de tags atteinte. Améliorez votre compte pour rechercher plus de tags à la fois.",
       "database_timeout": "Votre recherche a mis trop de temps à s'exécuter et a été annulée.",
       "rate_limited": "Votre réseau est limité. Veuillez réessayer plus tard",
@@ -120,12 +114,10 @@
     },
     "hint": "Recherche...",
     "no_result": "Partout nous avons cherché, mais aucun résultat n'a été trouvé.",
-    "search_options": "Options de recherche",
     "metatags_notice": "Les tags meta ne comptent pas dans la limite de recherche",
     "history": {
       "history": "Historique",
-      "clear": "Vider",
-      "recent": "Récent"
+      "clear": "Vider"
     },
     "trending": "Tendance",
     "remove_all_selected": "Supprimer les tags sélectionnés",
@@ -279,7 +271,6 @@
       "export": "Exporter"
     },
     "image_details": {
-      "image_details": "Détails de l'image",
       "ui_overlay": {
         "show": "Afficher",
         "hide": "Masquer",
@@ -326,18 +317,9 @@
   },
   "download": {
     "download": "Télécharger",
-    "bulk_download_save_to_folder": "Enregistrer dans un dossier",
-    "bulk_download_invalid_folder_name_error": "Un dossier ne peut contenir aucun des caractères suivants : ",
-    "bulk_download_folder_select_warning": "L'application peut télécharger des fichiers seulement dans des répertoires publics <b>({0})</b> sur Android 11+. <br><br>Exemples d'emplacements valides :<br><b>[Interne]</b> /storage/emulated/0/Download <br><b>[Carte SD]</b> /storage/A1B2-C3D4/Download<br><br>Merci de choisir un autre répertoire ou d'en créer un nouveau si cela n'existe pas. <br>Cet appareil a la version <b>{1}</b>.",
-    "storage_permission_explanation": "L'autorisation de stockage est nécessaire pour stocker les fichiers téléchargés.",
-    "image_counter": {
-      "one": "Téléchargement de $n image",
-      "other": "Téléchargement de $n images",
-      "many": "Téléchargement de $n images"
-    },
-    "bulk": {
-      "all_done_notification_message": "Tous les téléchargements sont terminés"
-    }
+    "invalid_folder_name_error": "Un dossier ne peut contenir aucun des caractères suivants : ",
+    "folder_select_warning": "L'application peut télécharger des fichiers seulement dans des répertoires publics <b>({0})</b> sur Android 11+. <br><br>Exemples d'emplacements valides :<br><b>[Interne]</b> /storage/emulated/0/Download <br><b>[Carte SD]</b> /storage/A1B2-C3D4/Download<br><br>Merci de choisir un autre répertoire ou d'en créer un nouveau si cela n'existe pas. <br>Cet appareil a la version <b>{1}</b>.",
+    "storage_permission_explanation": "L'autorisation de stockage est nécessaire pour stocker les fichiers téléchargés."
   },
   "saved_search": {
     "saved_search": "Recherche enregistrée",
@@ -364,9 +346,7 @@
       "one": "Favori",
       "other": "Favoris",
       "many": "Favoris"
-    },
-    "favorited": "Mis en favoris",
-    "favorite": "Mettre en favoris"
+    }
   },
   "favorite_groups": {
     "favorite_groups": "Groupes de favoris",
@@ -377,7 +357,6 @@
     "add_to": "Ajouter à",
     "create": "Créer",
     "private": "Privé",
-    "view_more_popup": "Voir",
     "items_added_notification_popup": "{0} posts ajoutés à {1}",
     "group_name": "Nom de groupe",
     "group_name_hint": "Nouveau groupe",
@@ -426,7 +405,6 @@
     "site_url_label": "URL du site",
     "login_name_label": "Nom d'utilisateur",
     "password_api_key_label": "Clé API",
-    "password_hashed_label": "Mot de passe (lecture seule)",
     "password_label": "Mot de passe",
     "content_filtering_label": "Filtre du contenu",
     "hide_deleted_label": "Cacher les posts supprimés",
@@ -464,10 +442,7 @@
     "many_added": "{0} marque-pages ajoutés",
     "failed_to_add_many": "Échec de l'ajout des marque-pages",
     "removed": "Marque-page supprimé",
-    "updated": "Marque-page mis à jour",
-    "failed_to_remove": "Échec de la suppression du marque-page",
-    "failed_to_update": "Échec de la mise à jour du marque-page",
-    "failed_to_load": "Échec du chargement de marque-pages : {0}"
+    "failed_to_remove": "Échec de la suppression du marque-page"
   },
   "app_update": {
     "update": "Mise à jour",
@@ -487,14 +462,19 @@
   "time": {
     "counters": {
       "second": {
-        "one": "Seconde",
-        "other": "Secondes"
+        "one": "$n seconde",
+        "other": "$n secondes"
       }
     }
   },
   "tags": {
     "actions": {
       "add_to_blacklist": "Ajouter à la liste noire"
+    }
+  },
+  "bulk_downloads": {
+    "options": {
+      "save_to_folder": "Enregistrer dans un dossier"
     }
   }
 }

@@ -133,7 +133,7 @@ class _DanbooruArtistSearchPageState
         SizedBox(
           width: 62,
           child: Text(
-            'Sort by',
+            context.t.sort.sort_by,
             style: Theme.of(context).textTheme.titleMedium,
           ),
         ),

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:background_downloader/background_downloader.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../configs/config.dart';
@@ -12,7 +13,6 @@ import '../../../configs/config/providers.dart';
 import '../../../downloads/downloader/providers.dart';
 import '../../../http/providers.dart';
 import '../../types.dart';
-import '../l10n.dart';
 import '../providers/download_task_updates_notifier.dart';
 import '../providers/internal_providers.dart';
 
@@ -59,7 +59,7 @@ class RetryAllFailedButton extends ConsumerWidget {
                   );
                 }
               },
-              child: Text(DownloadTranslations.retryAllFailed(context)),
+              child: Text(context.t.download.retry_all),
             ),
           )
         : const SizedBox.shrink();

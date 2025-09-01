@@ -87,7 +87,7 @@ class DefaultCookieAuthConfigSection extends ConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            'Logged in'.hc,
+            context.t.auth.logged_in,
             style: const TextStyle(
               fontWeight: FontWeight.bold,
             ),
@@ -101,7 +101,7 @@ class DefaultCookieAuthConfigSection extends ConsumerWidget {
                 onPressed: () {
                   _openBrowser(ref, context, config);
                 },
-                label: Text('Update'.hc),
+                label: Text(context.t.auth.relogin),
               ),
               const SizedBox(width: 8),
               RawChip(
@@ -111,7 +111,7 @@ class DefaultCookieAuthConfigSection extends ConsumerWidget {
                 onPressed: () {
                   ref.editNotifier.updatePassHash(null);
                 },
-                label: Text('Clear'.hc),
+                label: Text(context.t.auth.clear_credentials),
               ),
             ],
           ),

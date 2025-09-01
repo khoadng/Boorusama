@@ -19,7 +19,7 @@ class PremiumThanksDialog extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            'Thank you!'.hc,
+            context.t.premium.thanks.title,
             style: const TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w700,
@@ -27,7 +27,7 @@ class PremiumThanksDialog extends StatelessWidget {
           ),
           const SizedBox(height: 20),
           Text(
-            'You now can access premium features. Enjoy!'.hc,
+            context.t.premium.thanks.description,
             style: TextStyle(
               fontWeight: FontWeight.w400,
               color: Theme.of(context).colorScheme.hintColor,
@@ -45,7 +45,7 @@ class PremiumThanksDialog extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 14),
               child: Text(
-                'Got it!'.hc,
+                context.t.premium.thanks.confirm,
                 style: const TextStyle(
                   fontWeight: FontWeight.w600,
                 ),

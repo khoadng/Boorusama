@@ -227,7 +227,7 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            context.t.booru.authentication.gelbooru.logged_in,
+            context.t.auth.logged_in,
             style: const TextStyle(
               fontWeight: FontWeight.bold,
             ),
@@ -242,7 +242,7 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
                   _openBrowser(config);
                 },
                 label: Text(
-                  context.t.booru.authentication.gelbooru.relogin,
+                  context.t.auth.relogin,
                 ),
               ),
               const SizedBox(width: 8),
@@ -254,7 +254,7 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruAuthView> {
                   ref.editNotifier.updatePassHash(null);
                 },
                 label: Text(
-                  context.t.booru.authentication.gelbooru.clear_credentials,
+                  context.t.auth.clear_credentials,
                 ),
               ),
             ],

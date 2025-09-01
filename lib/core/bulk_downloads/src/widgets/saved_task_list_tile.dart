@@ -15,7 +15,6 @@ import '../providers/saved_download_task_provider.dart';
 import '../providers/saved_task_lock_notifier.dart';
 import '../routes/routes.dart';
 import '../types/download_configs.dart';
-import '../types/l10n.dart';
 import '../types/saved_download_task.dart';
 
 class SavedTaskListTile extends ConsumerWidget {
@@ -178,7 +177,7 @@ class _ModalOptions extends StatelessWidget {
           const DragLine(),
           const SizedBox(height: 8),
           ListTile(
-            title: Text(DownloadTranslations.runTemplate),
+            title: Text(context.t.bulk_downloads.templates.run),
             onTap: () {
               onRun();
               navigator.pop();

@@ -3,7 +3,8 @@
     "done": "完成",
     "errors": {
       "no_data": "无可用数据",
-      "unknown": "某些错误"
+      "unknown": "某些错误",
+      "error": "错误"
     },
     "action": {
       "add": "添加",
@@ -33,10 +34,6 @@
       "related": "相关的",
       "add_to_current_search": "添加到当前搜索",
       "open_wiki": "打开维基"
-    },
-    "explore": {
-      "new": "新的",
-      "popular": "流行"
     }
   },
   "post": {
@@ -67,7 +64,6 @@
       "remove_from_bookmark": "从书签移除"
     },
     "action": {
-      "preview": "预览",
       "view_comments": "查看评论",
       "add_to_favorite_group": "添加到喜爱组",
       "view_in_browser": "在浏览器中打开",
@@ -77,9 +73,7 @@
   "comment": {
     "comments": "评论",
     "create": {
-      "hint": "评论",
-      "loading": "请稍后……",
-      "error": "错误"
+      "hint": "评论"
     },
     "list": {
       "edit": "编辑",
@@ -97,15 +91,15 @@
   },
   "explore": {
     "latest": "最新的",
-    "popular": "最受欢迎的",
+    "popular": "流行",
     "hot": "热度",
     "most_viewed": "最多观看",
     "see_more": "查看更多",
-    "explore": "探索"
+    "explore": "探索",
+    "new": "新的"
   },
   "search": {
     "errors": {
-      "generic": "发生错误",
       "tag_limit": "达到最大tag数限制。升级你的账户，以便能同时使用更多tag进行搜索。",
       "database_timeout": "你的搜索消耗了过长的时间，已取消。",
       "rate_limited": "你的搜索速度太快，请稍后再试",
@@ -118,12 +112,10 @@
     },
     "hint": "搜索...",
     "no_result": "我们搜遍了，但是没找到任何结果。",
-    "search_options": "搜索选项",
     "metatags_notice": "免费的元标签不计入搜索标签限制",
     "history": {
       "history": "历史",
-      "clear": "清除",
-      "recent": "最近"
+      "clear": "清除"
     },
     "trending": "趋势",
     "remove_all_selected": "移除所有已选标签",
@@ -300,7 +292,6 @@
       "export": "导出"
     },
     "image_details": {
-      "image_details": "图片详情",
       "ui_overlay": {
         "show": "显示",
         "hide": "隐藏",
@@ -356,17 +347,9 @@
   },
   "download": {
     "download": "下载",
-    "bulk_download_save_to_folder": "保存到文件夹",
-    "bulk_download_invalid_folder_name_error": "文件夹不能包含以下字符： ",
-    "bulk_download_folder_select_warning": "在Android 11+系统中，此应用只能将文件保存在内部公共路径<b>({0})</b>中。<br><br>有效保存位置示例：<br><b>[内部]</b> /storage/emulated/0/Download <br><b>[SD卡]</b> /storage/A1B2-C3D4/Download<br><br>请选择其他路径，若不存在请新建。<br>此设备版本为<b>{1}</b>。",
-    "storage_permission_explanation": "需要存储权限来保存文件。",
-    "image_counter": {
-      "one": "下载 $n 张图片",
-      "other": "下载 $n 张图片"
-    },
-    "bulk": {
-      "all_done_notification_message": "所有下载已完成"
-    }
+    "invalid_folder_name_error": "文件夹不能包含以下字符： ",
+    "folder_select_warning": "在Android 11+系统中，此应用只能将文件保存在内部公共路径<b>({0})</b>中。<br><br>有效保存位置示例：<br><b>[内部]</b> /storage/emulated/0/Download <br><b>[SD卡]</b> /storage/A1B2-C3D4/Download<br><br>请选择其他路径，若不存在请新建。<br>此设备版本为<b>{1}</b>。",
+    "storage_permission_explanation": "需要存储权限来保存文件。"
   },
   "saved_search": {
     "saved_search": "预设搜索",
@@ -391,9 +374,7 @@
     "counter": {
       "one": "喜爱",
       "other": "喜爱"
-    },
-    "favorited": "已加进喜爱中",
-    "favorite": "喜爱"
+    }
   },
   "favorite_groups": {
     "favorite_groups": "喜爱组",
@@ -404,7 +385,6 @@
     "add_to": "添加到",
     "create": "创建",
     "private": "私有",
-    "view_more_popup": "显示",
     "items_added_notification_popup": "{0} 个结果已添加进 {1}",
     "group_name": "组名",
     "group_name_hint": "新建组",
@@ -452,7 +432,6 @@
     "site_url_label": "网站地址",
     "login_name_label": "登陆",
     "password_api_key_label": "API 密钥",
-    "password_hashed_label": "密码Hash（只读）",
     "password_label": "密码",
     "content_filtering_label": "内容过滤",
     "hide_deleted_label": "隐藏已删除帖子",
@@ -490,10 +469,7 @@
     "many_added": "已添加 {0} 个书签",
     "failed_to_add_many": "添加书签失败",
     "removed": "书签已移除",
-    "updated": "书签已更新",
-    "failed_to_remove": "移除书签失败",
-    "failed_to_update": "更新书签失败",
-    "failed_to_load": "加载书签失败： {0}"
+    "failed_to_remove": "移除书签失败"
   },
   "app_update": {
     "update": "更新",
@@ -513,14 +489,19 @@
   "time": {
     "counters": {
       "second": {
-        "one": "秒",
-        "other": "秒"
+        "one": "$n 秒",
+        "other": "$n 秒"
       }
     }
   },
   "tags": {
     "actions": {
       "add_to_blacklist": "添加到黑名单"
+    }
+  },
+  "bulk_downloads": {
+    "options": {
+      "save_to_folder": "保存到文件夹"
     }
   }
 }

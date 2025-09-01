@@ -40,6 +40,6 @@ class DefaultAppErrorTranslator implements AppErrorTranslator {
         500 => context.t.search.errors.database_timeout,
         502 => context.t.search.errors.max_capacity,
         503 => context.t.search.errors.down,
-        _ => context.t.generic.errors.unknown,
+        _ => context.t.search.errors.unknown,
       };
 }

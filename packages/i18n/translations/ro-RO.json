@@ -3,7 +3,8 @@
     "done": "Terminat",
     "errors": {
       "no_data": "Nu există date disponibile",
-      "unknown": "Ceva nu a funcționat"
+      "unknown": "Ceva nu a funcționat",
+      "error": "Eroare"
     },
     "action": {
       "add": "Adăugați",
@@ -33,10 +34,6 @@
       "related": "Similare",
       "add_to_current_search": "Adăugați la căutarea curentă",
       "open_wiki": "Deschideți Wiki"
-    },
-    "explore": {
-      "new": "Nou",
-      "popular": "Popular"
     }
   },
   "post": {
@@ -67,7 +64,6 @@
       "remove_from_bookmark": "Scoateți din marcaje"
     },
     "action": {
-      "preview": "Previzualizați",
       "view_comments": "Vizualizați comentariile",
       "add_to_favorite_group": "Adăugați la grupul de favorite",
       "view_in_browser": "Vizualizați în browser",
@@ -77,9 +73,7 @@
   "comment": {
     "comments": "Comentarii",
     "create": {
-      "hint": "Comentați",
-      "loading": "Vă rugăm așteptați...",
-      "error": "Eroare"
+      "hint": "Comentați"
     },
     "list": {
       "edit": "Editați",
@@ -97,15 +91,15 @@
   },
   "explore": {
     "latest": "Recente",
-    "popular": "Populare",
+    "popular": "Popular",
     "hot": "Actuale",
     "most_viewed": "Cele mai vizionate",
     "see_more": "Vedeți mai multe",
-    "explore": "Explorați"
+    "explore": "Explorați",
+    "new": "Nou"
   },
   "search": {
     "errors": {
-      "generic": "Ceva nu a funcționat",
       "tag_limit": "Limita maximă de etichete a fost atinsă. Actualizați-vă contul pentru a căuta folosind mai multe etichete în același timp.",
       "database_timeout": "Căutarea dumneavoastră a durat prea mult pentru a fi executată și a fost anulată.",
       "rate_limited": "Ați atins limita. Încercați mai târziu",
@@ -118,12 +112,10 @@
     },
     "hint": "Căutați...",
     "no_result": "Am căutat în lung și în lat, dar nu au fost găsite rezultate.",
-    "search_options": "Opțiuni de căutare",
     "metatags_notice": "Meta-etichetele gratuite nu vor fi luate în considerare pentru limitele de căutare",
     "history": {
       "history": "Istoric",
-      "clear": "Goliți",
-      "recent": "Recente"
+      "clear": "Goliți"
     },
     "trending": "În trend",
     "remove_all_selected": "Eliminați toate etichetele selectate",
@@ -263,7 +255,6 @@
       "export": "Exportați"
     },
     "image_details": {
-      "image_details": "Detaliile imaginii",
       "ui_overlay": {
         "show": "Afișați",
         "hide": "Ascundeți",
@@ -310,17 +301,9 @@
   },
   "download": {
     "download": "Descărcați",
-    "bulk_download_save_to_folder": "Salvați într-un dosar",
-    "bulk_download_invalid_folder_name_error": "Un dosar nu poate conține următoarele caractere: ",
-    "bulk_download_folder_select_warning": "Aplicația poate să salveze fișiere doar în dosare publice <b>({0})</b> începând cu Android 11. <div> Cardurile SD nu sunt de asemenea suportate. </div> <div>Selectați altă locație.</div> <div>Versiunea dispozitivului este {1}.</div>",
-    "storage_permission_explanation": "Permisiunea de stocare este necesară pentru a stoca fișierele descărcate.",
-    "image_counter": {
-      "one": "Descărcați $n imagine",
-      "other": "Descărcați $n imagini"
-    },
-    "bulk": {
-      "all_done_notification_message": "Toate descărcările s-au terminat"
-    }
+    "invalid_folder_name_error": "Un dosar nu poate conține următoarele caractere: ",
+    "folder_select_warning": "Aplicația poate să salveze fișiere doar în dosare publice <b>({0})</b> începând cu Android 11. <div> Cardurile SD nu sunt de asemenea suportate. </div> <div>Selectați altă locație.</div> <div>Versiunea dispozitivului este {1}.</div>",
+    "storage_permission_explanation": "Permisiunea de stocare este necesară pentru a stoca fișierele descărcate."
   },
   "saved_search": {
     "saved_search": "Căutare salvată",
@@ -345,9 +328,7 @@
     "counter": {
       "one": "Favorit",
       "other": "Favorite"
-    },
-    "favorited": "Favorite",
-    "favorite": "Favorit"
+    }
   },
   "favorite_groups": {
     "favorite_groups": "Grupuri favorite",
@@ -358,7 +339,6 @@
     "add_to": "Adăugați la",
     "create": "Creați",
     "private": "Privat",
-    "view_more_popup": "Vizualizați",
     "items_added_notification_popup": "{0} postări adăugate în {1}",
     "group_name": "Numele grupului",
     "group_name_hint": "Grup nou",
@@ -406,7 +386,6 @@
     "site_url_label": "URL Site",
     "login_name_label": "Nume de utilizator",
     "password_api_key_label": "Cheie API",
-    "password_hashed_label": "Parolă hașurată (doar citire)",
     "password_label": "Parolă",
     "content_filtering_label": "Filtru de conținut",
     "hide_deleted_label": "Ascundeți postările șterse",
@@ -444,10 +423,7 @@
     "many_added": "{0} marcaje adăugate",
     "failed_to_add_many": "Nu s-au putut adăuga marcajele",
     "removed": "Marcaj șters",
-    "updated": "Marcaj actualizat",
-    "failed_to_remove": "Nu s-a putut șterge marcajul",
-    "failed_to_update": "Nu s-a putut actualiza marcajul",
-    "failed_to_load": "Nu s-au putut încărca marcajele: {0}"
+    "failed_to_remove": "Nu s-a putut șterge marcajul"
   },
   "app_update": {
     "update": "Actualizați",
@@ -467,6 +443,11 @@
   "tags": {
     "actions": {
       "add_to_blacklist": "Adăugați la lista neagră"
+    }
+  },
+  "bulk_downloads": {
+    "options": {
+      "save_to_folder": "Salvați într-un dosar"
     }
   }
 }

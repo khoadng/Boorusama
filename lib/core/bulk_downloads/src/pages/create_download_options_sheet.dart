@@ -14,7 +14,6 @@ import '../../../blacklists/providers.dart';
 import '../../../configs/ref.dart';
 import '../../../configs/search/search.dart';
 import '../../../downloads/configs/widgets/download_folder_selector_section.dart';
-import '../../../downloads/l10n.dart' as d;
 import '../../../router.dart';
 import '../../../search/search/routes.dart';
 import '../../../settings/providers.dart';
@@ -27,7 +26,6 @@ import '../providers/create_download_options_notifier.dart';
 import '../routes/route_utils.dart';
 import '../types/download_configs.dart';
 import '../types/download_options.dart';
-import '../types/l10n.dart';
 import '../widgets/bulk_download_tag_list.dart';
 
 class CreateDownloadOptionsSheet extends ConsumerWidget {
@@ -113,7 +111,7 @@ class CreateDownloadOptionsSheet extends ConsumerWidget {
                     }
                   : null,
               child: Text(
-                DownloadTranslations.addToQueue,
+                context.t.bulk_downloads.actions.add_to_queue,
               ),
             ),
           ),
@@ -135,7 +133,7 @@ class CreateDownloadOptionsSheet extends ConsumerWidget {
                             if (navigatorContext != null) {
                               showSnackBar(
                                 navigatorContext,
-                                'Download started',
+                                context.t.download.notification.started,
                               );
                             }
                           },
@@ -149,7 +147,7 @@ class CreateDownloadOptionsSheet extends ConsumerWidget {
                     }
                   : null,
               child: Text(
-                DownloadTranslations.download(context),
+                context.t.download.download,
               ),
             ),
           ),
@@ -215,7 +213,7 @@ class _CreateDownloadOptionsRawSheetState
           ),
           child: DownloadFolderSelectorSection(
             title: Text(
-              context.t.download.bulk_download_save_to_folder.toUpperCase(),
+              context.t.bulk_downloads.options.save_to_folder.toUpperCase(),
               style: textTheme.titleSmall?.copyWith(
                 color: colorScheme.hintColor,
                 fontWeight: FontWeight.w800,
@@ -235,7 +233,7 @@ class _CreateDownloadOptionsRawSheetState
             children: [
               BooruSwitchListTile(
                 title: Text(
-                  DownloadTranslations.showAdvancedOptions,
+                  context.t.bulk_downloads.options.show_advanced_options,
                 ),
                 value: advancedOptions,
                 onChanged: (value) {
@@ -253,7 +251,7 @@ class _CreateDownloadOptionsRawSheetState
             notifier: notifier,
           ),
           SettingsCard(
-            title: 'Other options',
+            title: context.t.bulk_downloads.options.other_options,
             child: Column(
               children: [
                 BooruSwitchListTile(
@@ -261,7 +259,7 @@ class _CreateDownloadOptionsRawSheetState
                     horizontal: 4,
                   ),
                   title: Text(
-                    DownloadTranslations.enableNotifications,
+                    context.t.bulk_downloads.options.enable_notification,
                   ),
                   value: options.notifications,
                   onChanged: (value) {
@@ -272,7 +270,9 @@ class _CreateDownloadOptionsRawSheetState
                   contentPadding: const EdgeInsets.symmetric(
                     horizontal: 4,
                   ),
-                  title: Text(d.DownloadTranslations.skipDownloadIfExists),
+                  title: Text(
+                    context.t.settings.download.skip_existing_files,
+                  ),
                   value: options.skipIfExists,
                   onChanged: (value) {
                     notifier.setSkipIfExists(value);
@@ -336,7 +336,7 @@ class _ExcludedTagsSection extends ConsumerWidget {
         .watch(blacklistTagEntriesProvider(ref.watchConfigFilter))
         .when(
           data: (tags) => SettingsCard(
-            title: 'Excluded tags',
+            title: context.t.bulk_downloads.options.excluded_tags,
             trailing: Tooltip(
               message: _buildTitle(context, tags),
               triggerMode: TooltipTriggerMode.tap,
@@ -368,7 +368,11 @@ class _ExcludedTagsSection extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Select additional tags to exclude from this batch',
+                        context
+                            .t
+                            .bulk_downloads
+                            .options
+                            .excluded_tags_description,
                         style: textTheme.titleSmall?.copyWith(
                           color: colorScheme.hintColor,
                           fontSize: 13,
@@ -438,12 +442,16 @@ class _ExcludedTagsSection extends ConsumerWidget {
     final grouped = tags.groupBy((e) => e.source);
     final sb = StringBuffer()
       ..write(
-        'Default blacklisted tags from the following sources:\n',
+        '${context.t.bulk_downloads.options.default_excluded_tags_from_source_list}\n',
       );
 
     for (final entry in grouped.entries) {
       sb.write(
-        '• ${entry.value.length} tags from ${entry.key.displayString}\n',
+        '${context.t.bulk_downloads.options.source_list(
+          n: entry.value.length,
+          count: entry.value.length,
+          source: entry.key.displayString,
+        )}\n',
       );
     }
 

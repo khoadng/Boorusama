@@ -7,19 +7,6 @@ import 'package:i18n/i18n.dart';
 // Project imports:
 import 'types/download_filter.dart';
 
-class DownloadTranslations {
-  const DownloadTranslations._();
-
-  static String downloadManagerTitle(BuildContext context) =>
-      context.t.download.downloads;
-
-  static String retryAllFailed(BuildContext context) =>
-      context.t.download.retry_all;
-
-  static String downloadNothingToClear(BuildContext context) =>
-      context.t.download.nothing_to_clear;
-}
-
 extension DownloadFilterLocalize on DownloadFilter? {
   String localize(BuildContext context) => switch (this) {
     DownloadFilter.pending => context.t.download.status.pending,

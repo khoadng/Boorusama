@@ -41,7 +41,7 @@ class _DataAndStoragePageState extends ConsumerState<DataAndStoragePage> {
     return SettingsPageScaffold(
       title: Text(context.t.settings.data_and_storage.data_and_storage),
       children: [
-        const SettingsHeader(label: 'Cache'),
+        SettingsHeader(label: context.t.settings.data_and_storage.cache),
         _buildImageCache(cacheSizeAsync),
         _buildTagCache(cacheSizeAsync),
         _buildAllCache(cacheSizeAsync),
@@ -55,7 +55,7 @@ class _DataAndStoragePageState extends ConsumerState<DataAndStoragePage> {
           ),
         ),
         const Divider(),
-        SettingsHeader(label: 'Data'.hc),
+        SettingsHeader(label: context.t.settings.data_and_storage.data),
         _buildBookmarkImageData(cacheSizeAsync.isLoading),
       ],
     );
@@ -65,13 +65,14 @@ class _DataAndStoragePageState extends ConsumerState<DataAndStoragePage> {
     final cacheInfo = ref.watch(bookmarkCacheInfoProvider);
 
     return ListTile(
-      title: Text('Bookmark images'.hc),
+      title: Text(context.t.settings.data_and_storage.bookmark_images),
       subtitle: cacheInfo.when(
         data: (data) => Text(
           Filesize.parse(data.$1),
         ),
-        loading: () => Text('Loading...'.hc),
-        error: (_, _) => Text('Error loading cache info'.hc),
+        loading: () => Text(context.t.settings.data_and_storage.loading),
+        error: (_, _) =>
+            Text(context.t.settings.data_and_storage.error_loading_cache_info),
       ),
       trailing: FilledButton(
         onPressed: cacheInfo.isLoading
@@ -87,11 +88,12 @@ class _DataAndStoragePageState extends ConsumerState<DataAndStoragePage> {
 
   Widget _buildAllCache(AsyncValue<CacheSizeInfo> cacheSizeAsync) {
     return ListTile(
-      title: Text('All cache'.hc),
+      title: Text(context.t.settings.data_and_storage.all_cache),
       subtitle: cacheSizeAsync.when(
         data: (sizeInfo) => Text(Filesize.parse(sizeInfo.totalSize)),
-        loading: () => Text('Loading...'.hc),
-        error: (_, _) => Text('Error loading cache info'.hc),
+        loading: () => Text(context.t.settings.data_and_storage.loading),
+        error: (_, _) =>
+            Text(context.t.settings.data_and_storage.error_loading_cache_info),
       ),
       trailing: FilledButton(
         onPressed: cacheSizeAsync.isLoading
@@ -104,11 +106,12 @@ class _DataAndStoragePageState extends ConsumerState<DataAndStoragePage> {
 
   Widget _buildTagCache(AsyncValue<CacheSizeInfo> cacheSizeAsync) {
     return ListTile(
-      title: Text('Tag cache'.hc),
+      title: Text(context.t.settings.data_and_storage.tag_cache),
       subtitle: cacheSizeAsync.when(
         data: (sizeInfo) => Text(Filesize.parse(sizeInfo.tagCacheSize)),
-        loading: () => Text('Loading...'.hc),
-        error: (_, _) => Text('Error loading cache info'.hc),
+        loading: () => Text(context.t.settings.data_and_storage.loading),
+        error: (_, _) =>
+            Text(context.t.settings.data_and_storage.error_loading_cache_info),
       ),
       trailing: FilledButton(
         onPressed: cacheSizeAsync.isLoading
@@ -121,7 +124,7 @@ class _DataAndStoragePageState extends ConsumerState<DataAndStoragePage> {
 
   Widget _buildImageCache(AsyncValue<CacheSizeInfo> cacheSizeAsync) {
     return ListTile(
-      title: Text('Image only cache'.hc),
+      title: Text(context.t.settings.data_and_storage.image_only_cache),
       subtitle: cacheSizeAsync.when(
         data: (sizeInfo) => Text(
           context.t.settings.performance.cache_size_info
@@ -134,8 +137,9 @@ class _DataAndStoragePageState extends ConsumerState<DataAndStoragePage> {
                 sizeInfo.imageCacheSize.fileCount.toString(),
               ),
         ),
-        loading: () => Text('Loading...'.hc),
-        error: (_, _) => Text('Error loading cache info'.hc),
+        loading: () => Text(context.t.settings.data_and_storage.loading),
+        error: (_, _) =>
+            Text(context.t.settings.data_and_storage.error_loading_cache_info),
       ),
       trailing: FilledButton(
         onPressed: cacheSizeAsync.isLoading

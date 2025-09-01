@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
@@ -12,7 +13,6 @@ import '../../../../foundation/picker.dart';
 import '../../../../foundation/platform.dart';
 import '../../../theme.dart';
 import '../../../widgets/widgets.dart';
-import '../../l10n.dart';
 import '../../path/validator.dart';
 
 class DownloadFolderSelectorSection extends StatefulWidget {
@@ -66,7 +66,7 @@ class _DownloadFolderSelectorSectionState
         const SizedBox(height: 16),
         widget.title ??
             Text(
-              DownloadTranslations.downloadPath(context),
+              context.t.settings.download.path,
             ),
         const SizedBox(height: 4),
         Material(
@@ -92,9 +92,7 @@ class _DownloadFolderSelectorSectionState
                           )
                         : Text(
                             widget.hint ??
-                                DownloadTranslations.downloadSelectFolder(
-                                  context,
-                                ),
+                                context.t.settings.download.select_a_folder,
                             overflow: TextOverflow.fade,
                             style: Theme.of(context).textTheme.titleMedium
                                 ?.copyWith(
@@ -167,7 +165,7 @@ class DownloadPathWarning extends StatelessWidget {
     return WarningContainer(
       margin: padding,
       contentBuilder: (context) => AppHtml(
-        data: DownloadTranslations.downloadSelectFolderWarning(context)
+        data: context.t.download.folder_select_warning
             .replaceAll('{0}', allowedFolders.join(', '))
             .replaceAll('{1}', releaseName),
       ),

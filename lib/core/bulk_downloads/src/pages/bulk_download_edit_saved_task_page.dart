@@ -87,7 +87,7 @@ class BulkDownloadEditSavedTaskPage extends ConsumerWidget {
                         }
                       : null,
                   child: Text(
-                    'Save'.hc,
+                    context.t.generic.action.save,
                   ),
                 ),
               ),

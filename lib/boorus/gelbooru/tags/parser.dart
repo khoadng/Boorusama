@@ -5,6 +5,7 @@ import 'package:booru_clients/gelbooru.dart';
 import '../../../core/tags/autocompletes/types.dart';
 import '../../../core/tags/categories/tag_category.dart';
 import '../../../core/tags/tag/tag.dart';
+import '../common/parser.dart';
 
 Tag gelbooruTagDtoToTag(TagDto e) {
   return Tag(
@@ -12,15 +13,6 @@ Tag gelbooruTagDtoToTag(TagDto e) {
     category: TagCategory.fromLegacyId(e.type),
     postCount: e.count ?? 0,
   );
-}
-
-String decodeHtmlEntities(String input) {
-  return input
-      .replaceAll('&lt;', '<')
-      .replaceAll('&gt;', '>')
-      .replaceAll('&amp;', '&')
-      .replaceAll('&quot;', '"')
-      .replaceAll('&#39;', "'");
 }
 
 AutocompleteData autocompleteDtoToAutocompleteData(AutocompleteDto e) {

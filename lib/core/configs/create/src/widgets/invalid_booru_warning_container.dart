@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../widgets/widgets.dart';
@@ -32,9 +33,9 @@ class InvalidBooruWarningContainer extends ConsumerWidget {
           error: (error, st) => Stack(
             children: [
               WarningContainer(
-                title: 'Error',
+                title: context.t.generic.errors.error,
                 contentBuilder: (context) => Text(
-                  'It seems like the site is not running on the selected engine. Please try with another one.',
+                  context.t.booru.invalid_booru_warning,
                   style: TextStyle(
                     color: colorScheme.onSurface,
                   ),

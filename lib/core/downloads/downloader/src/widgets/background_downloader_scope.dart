@@ -16,7 +16,6 @@ import '../../../../../foundation/platform.dart';
 import '../../../../configs/config/providers.dart';
 import '../../../../download_manager/providers.dart';
 import '../../../../http/providers.dart';
-import '../../../l10n.dart';
 import '../providers/background_downloader.dart';
 import '../types/download.dart';
 
@@ -125,13 +124,13 @@ class _BackgroundDownloaderScopeState
             '{filename}',
             '{progress}',
           ),
-          complete: TaskNotification(
+          complete: const TaskNotification(
             '{filename}',
-            DownloadTranslations.downloadCompletedNotification,
+            'completed',
           ),
-          error: TaskNotification(
+          error: const TaskNotification(
             '{filename}',
-            DownloadTranslations.downloadFailedNotification,
+            'failed',
           ),
           progressBar: true,
         );

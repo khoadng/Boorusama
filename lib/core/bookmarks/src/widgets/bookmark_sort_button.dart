@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../core/widgets/widgets.dart';
@@ -26,7 +26,12 @@ class BookmarkSortButton extends ConsumerWidget {
           .map(
             (value) => DropdownMenuItem(
               value: value,
-              child: Text(value.name.sentenceCase),
+              child: Text(
+                switch (value) {
+                  BookmarkSortType.newest => context.t.explore.newest,
+                  BookmarkSortType.oldest => context.t.explore.oldest,
+                },
+              ),
             ),
           )
           .toList(),

@@ -1,6 +1,9 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Package imports:
+import 'package:i18n/i18n.dart';
+
 // Project imports:
 import '../../../../../../../core/widgets/widgets.dart';
 import '../../../pool/pool.dart';
@@ -20,9 +23,9 @@ class PoolCategoryToggleSwitch extends StatelessWidget {
         initialValue: 'order',
         fixedWidth: 120,
         segments: {
-          'order': 'Ordered',
-          PoolDetailsOrder.latest.name: 'Latest',
-          PoolDetailsOrder.oldest.name: 'Oldest',
+          'order': context.t.explore.ordered,
+          PoolDetailsOrder.latest.name: context.t.explore.latest,
+          PoolDetailsOrder.oldest.name: context.t.explore.oldest,
         },
         onChanged: (value) => onToggle(value),
       ),

@@ -3,7 +3,8 @@
     "done": "完了",
     "errors": {
       "no_data": "データがありません",
-      "unknown": "エラーが発生しました"
+      "unknown": "エラーが発生しました",
+      "error": "エラー"
     },
     "action": {
       "add": "追加",
@@ -33,10 +34,6 @@
       "related": "関連",
       "add_to_current_search": "検索に追加",
       "open_wiki": "Wikiを開く"
-    },
-    "explore": {
-      "new": "最新",
-      "popular": "人気"
     }
   },
   "post": {
@@ -65,7 +62,6 @@
       "remove_from_bookmark": "ブックマークから削除"
     },
     "action": {
-      "preview": "プレビュー",
       "share": "シェア",
       "bookmark": "ブックマークする",
       "favorite": "お気に入りに追加",
@@ -80,9 +76,7 @@
   "comment": {
     "comments": "コメント",
     "create": {
-      "hint": "コメントを入力",
-      "loading": "読み込み中...",
-      "error": "エラー"
+      "hint": "コメントを入力"
     },
     "list": {
       "edit": "編集",
@@ -103,11 +97,11 @@
     "hot": "トレンド",
     "most_viewed": "人気の投稿",
     "see_more": "もっと見る",
-    "explore": "探索"
+    "explore": "探索",
+    "new": "最新"
   },
   "search": {
     "errors": {
-      "generic": "エラーが発生しました",
       "tag_limit": "タグの上限に達しました。",
       "database_timeout": "検索がタイムアウトしました",
       "rate_limited": "レート制限されています。後でもう一度お試しください",
@@ -120,12 +114,10 @@
     },
     "hint": "検索...",
     "no_result": "検索しましたが、結果が見つかりませんでした。",
-    "search_options": "検索オプション",
     "metatags_notice": "メタタグは検索制限に含まれません",
     "history": {
       "history": "履歴",
-      "clear": "消去",
-      "recent": "最近"
+      "clear": "消去"
     },
     "trending": "トレンド",
     "remove_all_selected": "すべて削除",
@@ -309,7 +301,6 @@
       "export": "エクスポート"
     },
     "image_details": {
-      "image_details": "画像詳細",
       "ui_overlay": {
         "show": "表示",
         "hide": "非表示",
@@ -356,17 +347,9 @@
   },
   "download": {
     "download": "ダウンロード",
-    "bulk_download_save_to_folder": "フォルダに保存",
-    "bulk_download_invalid_folder_name_error": "フォルダには次の文字を含めることはできません： ",
-    "bulk_download_folder_select_warning": "Android 11+では、<b>({0})</b>内のフォルダにのみダウンロードできます。例：<b>内部</b> /storage/emulated/0/Download、<b>SDカード</b> /storage/A1B2-C3D4/Download。別のフォルダを選ぶか、新しく作成してください。デバイスバージョン：<b>{1}</b>",
-    "storage_permission_explanation": "ダウンロードファイルを保存するにはストレージ権限が必要です。",
-    "image_counter": {
-      "one": "$n枚の画像をダウンロード",
-      "other": "$n枚の画像をダウンロード"
-    },
-    "bulk": {
-      "all_done_notification_message": "全てのダウンロードが完了"
-    }
+    "invalid_folder_name_error": "フォルダには次の文字を含めることはできません： ",
+    "folder_select_warning": "Android 11+では、<b>({0})</b>内のフォルダにのみダウンロードできます。例：<b>内部</b> /storage/emulated/0/Download、<b>SDカード</b> /storage/A1B2-C3D4/Download。別のフォルダを選ぶか、新しく作成してください。デバイスバージョン：<b>{1}</b>",
+    "storage_permission_explanation": "ダウンロードファイルを保存するにはストレージ権限が必要です。"
   },
   "saved_search": {
     "saved_search": "保存された検索",
@@ -391,9 +374,7 @@
     "counter": {
       "one": "お気に入り",
       "other": "いいね"
-    },
-    "favorited": "お気に入りに追加済み",
-    "favorite": "お気に入り"
+    }
   },
   "favorite_groups": {
     "favorite_groups": "お気に入りグループ",
@@ -404,7 +385,6 @@
     "add_to": "追加先",
     "create": "作成",
     "private": "プライベート",
-    "view_more_popup": "表示",
     "items_added_notification_popup": "{0}件の投稿が{1}に追加されました",
     "group_name": "グループ名",
     "group_name_hint": "グループ名を入力",
@@ -452,7 +432,6 @@
     "site_url_label": "サイトURL",
     "login_name_label": "ログイン",
     "password_api_key_label": "APIキー",
-    "password_hashed_label": "ハッシュ化されたパスワード（読み取り専用）",
     "password_label": "パスワード",
     "content_filtering_label": "コンテンツフィルタリング",
     "hide_deleted_label": "削除された投稿を非表示",
@@ -490,10 +469,7 @@
     "many_added": "{0}ブックマーク追加",
     "failed_to_add_many": "ブックマークの追加に失敗しました",
     "removed": "ブックマークが削除されました",
-    "updated": "ブックマークが更新されました",
-    "failed_to_remove": "ブックマークの削除に失敗しました",
-    "failed_to_update": "ブックマークの更新に失敗しました",
-    "failed_to_load": "ブックマークの読み込みに失敗しました：{0}"
+    "failed_to_remove": "ブックマークの削除に失敗しました"
   },
   "app_update": {
     "update": "アップデート",
@@ -513,14 +489,53 @@
   "time": {
     "counters": {
       "second": {
-        "one": "秒",
-        "other": "秒"
+        "one": "$n 秒",
+        "other": "$n 秒"
       }
     }
   },
   "tags": {
     "actions": {
       "add_to_blacklist": "ブラックリストに追加"
+    }
+  },
+  "bulk_downloads": {
+    "options": {
+      "save_to_folder": "フォルダに保存"
+    }
+  },
+  "premium": {
+    "get_premium": "$brand を入手",
+    "upgrade": "アップグレード",
+    "subscribe": "登録する",
+    "unlock_more_theme_with_premium": "$brand でさらに多くのテーマを利用可能",
+    "restore_subscription": "購入を復元",
+    "subscription_restored": "購入が復元されました！",
+    "restore_failed": "購入の復元中に問題が発生しました。後ほどお試しください。",
+    "select_your_plan": "プランを選択",
+    "legal_disclaimer": "登録することで、<a href=\"terms-of-service\">利用規約</a>および<a href=\"privacy-policy\">プライバシーポリシー</a>に同意したものとみなされます。サブスクリプションは解約されるまで自動的に更新されます。現在の期間が終了する24時間前までにいつでも解約できます。",
+    "benefits": {
+      "exclusive_themes": "限定テーマ",
+      "exclusive_themes_description": "プロフィールの外観をカスタマイズできる多彩なテーマを利用可能",
+      "layout_customization": "レイアウト＆ホーム画面",
+      "layout_customization_description": "表示情報の量を調整し、ブックマークや検索など好みのホーム画面を設定",
+      "enhanced_bulk_download": "強化版一括ダウンローダー",
+      "enhanced_bulk_download_description": "無制限のテンプレート、複数セッション、再起動後もシームレスに再開可能",
+      "support_development": "開発をサポート",
+      "support_development_description": "個人開発者が継続的にアップデートや改善を行えるよう支援"
+    },
+    "thanks": {
+      "title": "ありがとうございます！",
+      "description": "プレミアム機能をご利用いただけます。お楽しみください！",
+      "confirm": "OK"
+    },
+    "per": {
+      "year": "/ 年",
+      "month": "/ 月"
+    },
+    "packages": {
+      "monthly": "月額",
+      "annual": "年額"
     }
   }
 }

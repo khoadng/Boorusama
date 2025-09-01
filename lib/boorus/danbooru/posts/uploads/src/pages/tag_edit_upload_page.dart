@@ -412,7 +412,7 @@ class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
                                     '${ref.readConfigAuth.url}/artists/new?artist[source]=${widget.post.pageUrl}';
                                 launchExternalUrlString(url);
                               },
-                              child: Text('Create'.hc),
+                              child: Text(context.t.generic.action.create),
                             ),
                             const SizedBox(width: 16),
                           ],

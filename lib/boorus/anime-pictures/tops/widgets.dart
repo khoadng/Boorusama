@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../core/configs/ref.dart';
@@ -150,7 +151,7 @@ class _PopularExploreState extends ConsumerState<_DailyPopularExplore> {
     );
 
     return ExploreSection(
-      title: 'Daily',
+      title: context.t.explore.daily,
       builder: (_) => ref
           .watch(animePicturesDailyPopularProvider(params))
           .maybeWhen(
@@ -189,7 +190,7 @@ class _WeeklyPopularExploreState extends ConsumerState<_WeeklyPopularExplore> {
     );
 
     return ExploreSection(
-      title: 'Weekly',
+      title: context.t.explore.weekly,
       builder: (_) => ref
           .watch(animePicturesWeeklyPopularProvider(params))
           .maybeWhen(

@@ -149,7 +149,7 @@ class _SuspendTaskChip extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
 
     return CompactChip(
-      label: 'Saved',
+      label: context.t.bulk_downloads.status.suspended,
       textStyle: TextStyle(
         fontWeight: FontWeight.w600,
         color: colorScheme.onSecondaryContainer,
@@ -331,13 +331,13 @@ class _ContextMenu extends ConsumerWidget {
       contextMenu: GenericContextMenu(
         buttonConfigs: [
           ContextMenuButtonConfig(
-            DownloadTranslations.delete(context),
+            context.t.bulk_downloads.actions.delete,
             onPressed: () {
               ref.read(bulkDownloadProvider.notifier).deleteSession(session.id);
             },
           ),
           ContextMenuButtonConfig(
-            DownloadTranslations.copyPath,
+            context.t.bulk_downloads.actions.copy_path,
             onPressed: () => AppClipboard.copyWithDefaultToast(context, path),
           ),
         ],
@@ -374,7 +374,7 @@ class _DetailsInkWell extends ConsumerWidget {
                   context: context,
                   duration: const Duration(seconds: 3),
                   content: Text(
-                    'Nothing to show, download updates are empty'.hc,
+                    context.t.download.nothing_to_show,
                   ),
                 );
               }
@@ -464,8 +464,9 @@ class _InfoText extends ConsumerWidget {
         : null;
 
     final totalItemText = DownloadTranslations.titleInfoCounter(
-      !(totalItems == 1),
-    ).replaceAll('{}', totalItems.toString());
+      totalItems,
+      context,
+    );
 
     final infoText = [
       if (task.quality == 'original' && fileSizeText != null) fileSizeText,
@@ -474,15 +475,14 @@ class _InfoText extends ConsumerWidget {
 
     return Text(
       switch (status) {
-        DownloadSessionStatus.pending => DownloadTranslations.createdStatus(
-          context,
-        ),
+        DownloadSessionStatus.pending => context.t.bulk_downloads.created,
         DownloadSessionStatus.dryRun => DownloadTranslations.inProgressStatus(
           pageProgress.completed,
+          context,
         ),
-        DownloadSessionStatus.failed => 'Error',
+        DownloadSessionStatus.failed => context.t.generic.errors.error,
         DownloadSessionStatus.allSkipped =>
-          DownloadTranslations.allSkippedStatus(context),
+          context.t.bulk_downloads.completed_with_no_new_files,
         _ => infoText,
       },
       maxLines: 1,
@@ -525,8 +525,8 @@ class _Subtitle extends ConsumerWidget {
                 path,
                 trimLines: 1,
                 trimMode: TrimMode.Line,
-                trimCollapsedText: ' more',
-                trimExpandedText: ' less',
+                trimCollapsedText: context.t.misc.trailing_more,
+                trimExpandedText: context.t.misc.trailing_less,
                 lessStyle: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.bold,

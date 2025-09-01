@@ -1,9 +1,5 @@
 {
-  "tag": {
-    "explore": {
-      "popular": "Popular"
-    }
-  },
+  "tag": {},
   "post": {
     "action": {
       "view_comments": "Ver comentários"
@@ -32,5 +28,39 @@
   },
   "forum": {
     "forum": "Fórum"
+  },
+  "premium": {
+    "get_premium": "Obter $brand",
+    "upgrade": "Fazer upgrade",
+    "subscribe": "Subscrever",
+    "unlock_more_theme_with_premium": "Desbloqueie mais temas com o $brand",
+    "restore_subscription": "Restaurar compra",
+    "subscription_restored": "Compra restaurada!",
+    "restore_failed": "Ocorreu um problema ao restaurar a sua compra. Tente novamente mais tarde.",
+    "select_your_plan": "Escolha o seu plano",
+    "legal_disclaimer": "Ao subscrever, concorda com os nossos <a href=\"terms-of-service\">Termos de Serviço</a> e <a href=\"privacy-policy\">Política de Privacidade</a>. A subscrição é renovada automaticamente até ser cancelada. Pode cancelar a qualquer momento até 24 horas antes do fim do período atual.",
+    "benefits": {
+      "exclusive_themes": "Temas exclusivos",
+      "exclusive_themes_description": "Escolha entre vários temas para personalizar o visual do seu perfil",
+      "layout_customization": "Layout e Ecrã Inicial",
+      "layout_customization_description": "Personalize a quantidade de informação exibida e defina o seu ecrã inicial preferido (Favoritos, Pesquisa, etc.)",
+      "enhanced_bulk_download": "Downloader em massa melhorado",
+      "enhanced_bulk_download_description": "Modelos ilimitados, várias sessões e retoma contínua após reiniciar",
+      "support_development": "Apoiar o desenvolvimento",
+      "support_development_description": "Ajude um programador independente a manter o projeto ativo com atualizações e melhorias regulares"
+    },
+    "thanks": {
+      "title": "Obrigado!",
+      "description": "Agora tem acesso às funcionalidades premium. Aproveite!",
+      "confirm": "OK"
+    },
+    "per": {
+      "year": "/ ano",
+      "month": "/ mês"
+    },
+    "packages": {
+      "monthly": "Mensal",
+      "annual": "Anual"
+    }
   }
 }

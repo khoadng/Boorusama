@@ -3,7 +3,8 @@
     "done": "Pronto",
     "errors": {
       "no_data": "Nenhum dado disponível",
-      "unknown": "Algo de errado ocorreu"
+      "unknown": "Algo de errado ocorreu",
+      "error": "Erro"
     },
     "action": {
       "add": "Adicionar",
@@ -33,10 +34,6 @@
       "related": "Relacionado",
       "add_to_current_search": "Adicionar à pesquisa atual",
       "open_wiki": "Abrir wiki"
-    },
-    "explore": {
-      "new": "Novo",
-      "popular": "Populares"
     }
   },
   "post": {
@@ -67,7 +64,6 @@
       "remove_from_bookmark": "Remover do marcador"
     },
     "action": {
-      "preview": "Pré-visualização",
       "view_comments": "Ver comentários",
       "add_to_favorite_group": "Adicionar ao grupo favorito",
       "view_in_browser": "Visualizar no navegador",
@@ -77,9 +73,7 @@
   "comment": {
     "comments": "Comentários",
     "create": {
-      "hint": "Comentário",
-      "loading": "Por favor, aguarde...",
-      "error": "Erro"
+      "hint": "Comentário"
     },
     "list": {
       "edit": "Editar",
@@ -101,11 +95,11 @@
     "hot": "Quente",
     "most_viewed": "Mais visualizados",
     "see_more": "Ver mais",
-    "explore": "Explorar"
+    "explore": "Explorar",
+    "new": "Novo"
   },
   "search": {
     "errors": {
-      "generic": "Algo deu errado",
       "tag_limit": "O limite máximo de tag foi atingido. Atualize sua conta para buscar mais tags de uma vez só.",
       "database_timeout": "Sua busca demorou muito para ser executada e foi cancelada.",
       "rate_limited": "Você está com limitação. Tente novamente mais tarde",
@@ -118,12 +112,10 @@
     },
     "hint": "Buscar...",
     "no_result": "Nós procuramos do infinito ao além, mas nenhum resultado foi encontrado.",
-    "search_options": "Buscar opções",
     "metatags_notice": "Metatags livres não contam com o limite de tags para pesquisa",
     "history": {
       "history": "Histórico",
-      "clear": "Limpar",
-      "recent": "Recente"
+      "clear": "Limpar"
     },
     "trending": "Em alta",
     "remove_all_selected": "Remover todas as tags selecionadas",
@@ -264,7 +256,6 @@
       "export": "Exportar"
     },
     "image_details": {
-      "image_details": "Detalhes da imagem",
       "ui_overlay": {
         "show": "Mostrar",
         "hide": "Esconder",
@@ -311,17 +302,9 @@
   },
   "download": {
     "download": "Download",
-    "bulk_download_save_to_folder": "Salvar para a pasta",
-    "bulk_download_invalid_folder_name_error": "Uma pasta não pode conter os seguintes caracteres: ",
-    "bulk_download_folder_select_warning": "O aplicativo só pode guardar arquivos dentro de pastas públicas <b>({0})</b> no Android 11+. <div>Cartões SD também não são suportados.</div> <div>Por favor escolha outro local.</div> <div>A versão deste dispositivo é {1}.</div>",
-    "storage_permission_explanation": "Permissão de armazenamento é necessária para guardar arquivos baixados.",
-    "image_counter": {
-      "one": "Baixar imagem $n",
-      "other": "Baixar $n imagens"
-    },
-    "bulk": {
-      "all_done_notification_message": "Todos os downloads foram concluídos"
-    }
+    "invalid_folder_name_error": "Uma pasta não pode conter os seguintes caracteres: ",
+    "folder_select_warning": "O aplicativo só pode guardar arquivos dentro de pastas públicas <b>({0})</b> no Android 11+. <div>Cartões SD também não são suportados.</div> <div>Por favor escolha outro local.</div> <div>A versão deste dispositivo é {1}.</div>",
+    "storage_permission_explanation": "Permissão de armazenamento é necessária para guardar arquivos baixados."
   },
   "saved_search": {
     "saved_search": "Pesquisa salva",
@@ -346,9 +329,7 @@
     "counter": {
       "one": "Favorito",
       "other": "Favoritos"
-    },
-    "favorited": "Favoritado",
-    "favorite": "Favoritar"
+    }
   },
   "favorite_groups": {
     "favorite_groups": "Grupos favoritos",
@@ -359,7 +340,6 @@
     "add_to": "Adicionar a",
     "create": "Criar",
     "private": "Privatizar",
-    "view_more_popup": "Visualizar",
     "items_added_notification_popup": "{0} posts adicionados a {1}",
     "group_name": "Nome do grupo",
     "group_name_hint": "Novo grupo",
@@ -407,7 +387,6 @@
     "site_url_label": "URL do site",
     "login_name_label": "Login",
     "password_api_key_label": "Chave de API",
-    "password_hashed_label": "Senha em Hash (somente leitura)",
     "password_label": "Senha",
     "content_filtering_label": "Filtração de conteúdo",
     "hide_deleted_label": "Esconder posts deletados",
@@ -445,10 +424,7 @@
     "many_added": "{0} marcações adicionadas",
     "failed_to_add_many": "Falha ao adicionar marcações",
     "removed": "Marcação removida",
-    "updated": "Marcação atualizada",
-    "failed_to_remove": "Falha ao remover marcação",
-    "failed_to_update": "Falha ao atualizar marcação",
-    "failed_to_load": "Falha ao carregar marcações: {0}"
+    "failed_to_remove": "Falha ao remover marcação"
   },
   "app_update": {
     "update": "Atualizar",
@@ -468,6 +444,45 @@
   "tags": {
     "actions": {
       "add_to_blacklist": "Adicionar na lista negra"
+    }
+  },
+  "bulk_downloads": {
+    "options": {
+      "save_to_folder": "Salvar para a pasta"
+    }
+  },
+  "premium": {
+    "get_premium": "Obter $brand",
+    "upgrade": "Fazer upgrade",
+    "subscribe": "Assinar",
+    "unlock_more_theme_with_premium": "Desbloqueie mais temas com o $brand",
+    "restore_subscription": "Restaurar compra",
+    "subscription_restored": "Compra restaurada!",
+    "restore_failed": "Ocorreu um problema ao restaurar sua compra. Tente novamente mais tarde.",
+    "select_your_plan": "Escolha seu plano",
+    "legal_disclaimer": "Ao assinar, você concorda com nossos <a href=\"terms-of-service\">Termos de Serviço</a> e <a href=\"privacy-policy\">Política de Privacidade</a>. A assinatura é renovada automaticamente até ser cancelada. Você pode cancelar a qualquer momento até 24 horas antes do fim do período atual.",
+    "benefits": {
+      "exclusive_themes": "Temas exclusivos",
+      "exclusive_themes_description": "Escolha entre vários temas para personalizar o visual do seu perfil",
+      "layout_customization": "Layout e Tela Inicial",
+      "layout_customization_description": "Personalize a quantidade de informações exibidas e defina sua tela inicial preferida (Favoritos, Pesquisa etc.)",
+      "enhanced_bulk_download": "Downloader em massa aprimorado",
+      "enhanced_bulk_download_description": "Modelos ilimitados, várias sessões e retomada contínua após reiniciar",
+      "support_development": "Apoiar o desenvolvimento",
+      "support_development_description": "Ajude um desenvolvedor independente a manter o projeto ativo com atualizações e melhorias regulares"
+    },
+    "thanks": {
+      "title": "Obrigado!",
+      "description": "Agora você tem acesso aos recursos premium. Aproveite!",
+      "confirm": "OK"
+    },
+    "per": {
+      "year": "/ ano",
+      "month": "/ mês"
+    },
+    "packages": {
+      "monthly": "Mensal",
+      "annual": "Anual"
     }
   }
 }

@@ -65,7 +65,7 @@ class DanbooruBlacklistedTagsPage extends ConsumerWidget {
           },
           error: (e, _) => Scaffold(
             body: Center(
-              child: Text('Error: $e'),
+              child: Text('${context.t.blacklisted_tags.load_error}: $e'),
             ),
           ),
           loading: () => const Scaffold(

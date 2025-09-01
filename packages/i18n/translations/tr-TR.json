@@ -3,7 +3,8 @@
     "done": "Tamam",
     "errors": {
       "no_data": "ulaşılabilir veri yok",
-      "unknown": "Birşeyler ters gitti"
+      "unknown": "Birşeyler ters gitti",
+      "error": "Hata"
     },
     "action": {
       "add": "Ekle",
@@ -32,10 +33,6 @@
       "related": "İlişkili",
       "add_to_current_search": "Mevcut aramaya ekle",
       "open_wiki": "Wiki'yi aç"
-    },
-    "explore": {
-      "new": "Yeni",
-      "popular": "Popüler"
     }
   },
   "post": {
@@ -66,7 +63,6 @@
       "remove_from_bookmark": "Yer imlerinden kaldır"
     },
     "action": {
-      "preview": "Önizleme",
       "view_comments": "Yorumları görüntüle",
       "add_to_favorite_group": "Favori gruba ekle",
       "view_in_browser": "Tarayıcıda aç",
@@ -76,9 +72,7 @@
   "comment": {
     "comments": "Yorumlar",
     "create": {
-      "hint": "Yorum",
-      "loading": "Lütfen bekleyin...",
-      "error": "Hata"
+      "hint": "Yorum"
     },
     "list": {
       "edit": "Düzenle",
@@ -100,11 +94,11 @@
     "hot": "Çok yeni",
     "most_viewed": "En çok görüntülenen",
     "see_more": "Daha fazlasını gör",
-    "explore": "Keşfet"
+    "explore": "Keşfet",
+    "new": "Yeni"
   },
   "search": {
     "errors": {
-      "generic": "Bir şeyler ters gitti",
       "tag_limit": "En fazla tag sınırına ulaşıldı. Daha fazla etiket ile arama yapabilmek için üyeliğini geliştir.",
       "database_timeout": "Aramanız olması gerektiğinden fazla uzun sürdü ve iptal edildi.",
       "rate_limited": "İş yapma sıklığınız sınırlandı. Lütfen daha sonra tekrar deneyin",
@@ -117,12 +111,10 @@
     },
     "hint": "Ara...",
     "no_result": "Derinlemesine aradık, fakat hiçbir sonuç bulunamadı.",
-    "search_options": "Arama seçenekleri",
     "metatags_notice": "Ücretsiz üst etiketler etiket arama sınırında sayılmaz",
     "history": {
       "history": "Geçmiş",
-      "clear": "Temizle",
-      "recent": "Son zamanlarda"
+      "clear": "Temizle"
     },
     "trending": "Trendde",
     "remove_all_selected": "Seçilmiş bütün etiketleri kaldır",

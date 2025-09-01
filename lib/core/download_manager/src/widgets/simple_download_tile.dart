@@ -206,8 +206,8 @@ class _TaskSubtitle extends ConsumerWidget {
           : '${exception.getErrorDescription()} ',
       trimLines: 1,
       trimMode: TrimMode.Line,
-      trimCollapsedText: ' more',
-      trimExpandedText: ' less',
+      trimCollapsedText: context.t.misc.trailing_more,
+      trimExpandedText: context.t.misc.trailing_less,
       lessStyle: TextStyle(
         fontSize: 13,
         fontWeight: FontWeight.bold,

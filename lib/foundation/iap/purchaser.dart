@@ -11,12 +11,6 @@ enum PackageType {
 }
 
 extension PackageX on Package {
-  String get typeDurationString => switch (type) {
-    PackageType.monthly => 'month',
-    PackageType.annual => 'year',
-    null => '',
-  };
-
   double get annualPrice => switch (type) {
     PackageType.annual => product.rawPrice,
     PackageType.monthly => product.rawPrice * 12,

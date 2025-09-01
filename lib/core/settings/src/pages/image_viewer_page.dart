@@ -117,7 +117,9 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
                 );
               },
               optionBuilder: (value) => Text(
-                '${value.toStringAsFixed(value < 1 ? 2 : 0)} sec'.hc,
+                context.t.time.counters.second(
+                  n: value < 1 ? value : value.toInt(),
+                ),
               ),
             ),
             BooruSwitchListTile(

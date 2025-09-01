@@ -80,8 +80,8 @@ class _RelatedTagActionSheetState extends ConsumerState<RelatedTagActionSheet> {
               }
             },
             itemBuilder: {
-              'add': Text('Add'.hc),
-              'negate': Text('Negate'.hc),
+              'add': Text(context.t.tag.related.add_to_current_search),
+              'negate': Text(context.t.tag.related.negate_from_current_search),
               'open_wiki': Text(context.t.tag.related.open_wiki),
             },
           ),

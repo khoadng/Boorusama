@@ -44,7 +44,7 @@ class BlacklistedTagConfigSheet extends StatelessWidget {
                   vertical: 12,
                 ),
                 child: Text(
-                  'Sort by'.hc,
+                  context.t.sort.sort_by,
                   style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -54,7 +54,7 @@ class BlacklistedTagConfigSheet extends StatelessWidget {
               const Divider(),
               ListTile(
                 title: Text(
-                  'Recently added'.hc,
+                  context.t.sort.recently_added,
                   style: const TextStyle(
                     fontSize: 16,
                   ),
@@ -66,7 +66,7 @@ class BlacklistedTagConfigSheet extends StatelessWidget {
               ),
               ListTile(
                 title: Text(
-                  'Name (A-Z)'.hc,
+                  context.t.sort.name_asc,
                   style: const TextStyle(
                     fontSize: 16,
                   ),
@@ -76,10 +76,9 @@ class BlacklistedTagConfigSheet extends StatelessWidget {
                   onSorted(BlacklistedTagsSortType.nameAZ);
                 },
               ),
-              // name (z-a)
               ListTile(
                 title: Text(
-                  'Name (Z-A)'.hc,
+                  context.t.sort.name_desc,
                   style: const TextStyle(
                     fontSize: 16,
                   ),

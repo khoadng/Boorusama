@@ -38,14 +38,14 @@ class FavoriteTagConfigSheet extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Padding(
-                padding: EdgeInsets.symmetric(
+              Padding(
+                padding: const EdgeInsets.symmetric(
                   horizontal: 20,
                   vertical: 12,
                 ),
                 child: Text(
-                  'Sort by',
-                  style: TextStyle(
+                  context.t.sort.sort_by,
+                  style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
@@ -54,7 +54,7 @@ class FavoriteTagConfigSheet extends StatelessWidget {
               const Divider(),
               ListTile(
                 title: Text(
-                  'Recently added'.hc,
+                  context.t.sort.recently_added,
                   style: const TextStyle(
                     fontSize: 16,
                   ),
@@ -66,7 +66,7 @@ class FavoriteTagConfigSheet extends StatelessWidget {
               ),
               ListTile(
                 title: Text(
-                  'Recently updated'.hc,
+                  context.t.sort.recently_updated,
                   style: const TextStyle(
                     fontSize: 16,
                   ),
@@ -78,7 +78,7 @@ class FavoriteTagConfigSheet extends StatelessWidget {
               ),
               ListTile(
                 title: Text(
-                  'Name (A-Z)'.hc,
+                  context.t.sort.name_asc,
                   style: const TextStyle(
                     fontSize: 16,
                   ),
@@ -88,10 +88,9 @@ class FavoriteTagConfigSheet extends StatelessWidget {
                   onSorted(FavoriteTagsSortType.nameAZ);
                 },
               ),
-              // name (z-a)
               ListTile(
                 title: Text(
-                  'Name (Z-A)'.hc,
+                  context.t.sort.name_desc,
                   style: const TextStyle(
                     fontSize: 16,
                   ),

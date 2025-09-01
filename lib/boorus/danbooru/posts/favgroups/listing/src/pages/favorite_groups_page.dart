@@ -10,6 +10,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import '../../../../../../../core/configs/auth/widgets.dart';
 import '../../../../../../../core/configs/ref.dart';
 import '../../../../../../../core/images/booru_image.dart';
+import '../../../../../../../core/theme/app_theme.dart';
 import '../../../details/routes.dart';
 import '../../../favgroups/favgroup.dart';
 import '../../../favgroups/providers.dart';
@@ -53,6 +54,8 @@ class FavoriteGroupsPageInternal extends ConsumerWidget {
           slivers: [
             if (favoriteGroups == null)
               _buildLoading()
+            else if (favoriteGroups.isEmpty)
+              _buildEmpty(context)
             else
               SliverList(
                 delegate: SliverChildBuilderDelegate(
@@ -115,6 +118,26 @@ class FavoriteGroupsPageInternal extends ConsumerWidget {
       child: Padding(
         padding: EdgeInsets.only(top: 24),
         child: Center(child: CircularProgressIndicator.adaptive()),
+      ),
+    );
+  }
+
+  Widget _buildEmpty(BuildContext context) {
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+    final colorScheme = theme.colorScheme;
+
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: const EdgeInsets.only(top: 24),
+        child: Center(
+          child: Text(
+            context.t.favorite_groups.empty_group_notice,
+            style: textTheme.titleSmall?.copyWith(
+              color: colorScheme.hintColor,
+            ),
+          ),
+        ),
       ),
     );
   }
