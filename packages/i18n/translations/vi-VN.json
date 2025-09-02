@@ -189,7 +189,8 @@
       "delete": "Xóa",
       "noComments": "Không có bình luận",
       "last_updated": "Cập nhật lần cuối",
-      "send": "Gửi"
+      "send": "Gửi",
+      "no_comments": "Không có bình luận"
     },
     "counter": {
       "one": "Bình luận",
