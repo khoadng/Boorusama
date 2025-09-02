@@ -8,6 +8,7 @@ import 'package:version/version.dart';
 
 // Project imports:
 import '../../../foundation/info/package_info.dart';
+import '../../theme/app_theme.dart';
 
 Future<bool?> showBackwardImportAlertDialog({
   required BuildContext context,
@@ -34,6 +35,7 @@ class BackwardImportAlertDialog extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final colorScheme = Theme.of(context).colorScheme;
     final appVersion = ref.watch(appVersionProvider);
 
     return Dialog(
@@ -46,7 +48,7 @@ class BackwardImportAlertDialog extends ConsumerWidget {
           children: [
             const SizedBox(height: 20),
             Text(
-              'Importing from an older version detected'.hc,
+              context.t.settings.backup_and_restore.backward_import.title,
               style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w700,
@@ -55,13 +57,16 @@ class BackwardImportAlertDialog extends ConsumerWidget {
             const SizedBox(height: 4),
             RichText(
               text: TextSpan(
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w400,
-                  color: Colors.black,
+                  color: colorScheme.hintColor,
                 ),
                 children: [
-                  TextSpan(text: 'Current version: '.hc),
+                  TextSpan(
+                    text:
+                        '${context.t.settings.backup_and_restore.backward_import.current_version}: ',
+                  ),
                   TextSpan(
                     text: appVersion?.toString() ?? 'Unknown',
                     style: const TextStyle(
@@ -73,13 +78,16 @@ class BackwardImportAlertDialog extends ConsumerWidget {
             ),
             RichText(
               text: TextSpan(
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w400,
-                  color: Colors.black,
+                  color: colorScheme.hintColor,
                 ),
                 children: [
-                  const TextSpan(text: 'Exported version: '),
+                  TextSpan(
+                    text:
+                        '${context.t.settings.backup_and_restore.backward_import.exported_version}: ',
+                  ),
                   TextSpan(
                     text: exportVersion.toString(),
                     style: const TextStyle(
@@ -91,7 +99,12 @@ class BackwardImportAlertDialog extends ConsumerWidget {
             ),
             const SizedBox(height: 20),
             Text(
-              'Backward import might not work as expected, are you sure?'.hc,
+              context
+                  .t
+                  .settings
+                  .backup_and_restore
+                  .backward_import
+                  .reconfirm_question,
               style: const TextStyle(
                 fontWeight: FontWeight.w400,
                 fontSize: 14,
@@ -100,7 +113,7 @@ class BackwardImportAlertDialog extends ConsumerWidget {
             const SizedBox(height: 20),
             FilledButton(
               style: FilledButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.errorContainer,
+                backgroundColor: colorScheme.errorContainer,
                 shadowColor: Colors.transparent,
                 elevation: 0,
               ),
@@ -110,9 +123,9 @@ class BackwardImportAlertDialog extends ConsumerWidget {
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 14),
                 child: Text(
-                  'Sure',
+                  context.t.settings.backup_and_restore.import,
                   style: TextStyle(
-                    color: Theme.of(context).colorScheme.onErrorContainer,
+                    color: colorScheme.onErrorContainer,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -126,10 +139,10 @@ class BackwardImportAlertDialog extends ConsumerWidget {
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 14),
                 child: Text(
-                  'Cancel',
+                  context.t.generic.action.cancel,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
-                    color: Theme.of(context).colorScheme.onSurface,
+                    color: colorScheme.onSurface,
                   ),
                 ),
               ),

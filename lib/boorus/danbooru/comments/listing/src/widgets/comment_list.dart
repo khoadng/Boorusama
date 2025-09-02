@@ -78,7 +78,7 @@ class CommentList extends StatelessWidget {
             itemCount: comments.length,
           )
         : Center(
-            child: Text(context.t.comment.list.noComments),
+            child: Text(context.t.comment.list.no_comments),
           );
   }
 }

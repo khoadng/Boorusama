@@ -229,15 +229,17 @@ class DefaultBackupTile extends ConsumerWidget {
       if (context.mounted) {
         showSuccessToast(
           context,
-          context.t.settings.backup_and_restore.clipboard_export_success
-              .replaceAll('{source}', source.displayName),
+          context.t.settings.backup_and_restore.export_success.replaceAll(
+            '{source}',
+            source.displayName,
+          ),
         );
       }
     } catch (error) {
       if (context.mounted) {
         showErrorToast(
           context,
-          context.t.settings.backup_and_restore.clipboard_export_failed
+          context.t.settings.backup_and_restore.export_failed
               .replaceAll('{source}', source.displayName.toLowerCase())
               .replaceAll('{error}', error.toString()),
         );
@@ -255,8 +257,10 @@ class DefaultBackupTile extends ConsumerWidget {
       if (context.mounted) {
         showSuccessToast(
           context,
-          context.t.settings.backup_and_restore.clipboard_import_success
-              .replaceAll('{source}', source.displayName),
+          context.t.settings.backup_and_restore.import_success.replaceAll(
+            '{source}',
+            source.displayName,
+          ),
         );
       }
     } on ImportCancelledException {
@@ -265,7 +269,7 @@ class DefaultBackupTile extends ConsumerWidget {
       if (context.mounted) {
         showErrorToast(
           context,
-          context.t.settings.backup_and_restore.clipboard_import_failed
+          context.t.settings.backup_and_restore.import_failed
               .replaceAll('{source}', source.displayName.toLowerCase())
               .replaceAll('{error}', error.toString()),
         );

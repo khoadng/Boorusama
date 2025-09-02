@@ -35,8 +35,10 @@
     "favorites": "Улюблені",
     "profile": "Профіль",
     "copy_user_id": "Копіювати ID користувача",
-    "messages": "Сповіщення",
-    "fail_to_load_profile": "Не вдалося завантажити профіль"
+    "fail_to_load_profile": "Не вдалося завантажити профіль",
+    "messages": {
+      "title": "Сповіщення"
+    }
   },
   "network": {
     "unavailable": "Мережа недоступна"
@@ -406,10 +408,6 @@
       "export_failed": "Не вдалося експортувати {source}: {error}",
       "import_success": "{source} успішно імпортовано",
       "import_failed": "Не вдалося імпортувати {source}: {error}",
-      "clipboard_export_success": "{source} скопійовано в буфер обміну",
-      "clipboard_export_failed": "Не вдалося скопіювати {source}: {error}",
-      "clipboard_import_success": "{source} імпортовано з буфера обміну",
-      "clipboard_import_failed": "Не вдалося вставити {source}: {error}",
       "transfer_data": "Передача даних",
       "send": "Надіслати",
       "receive": "Отримати",
@@ -429,11 +427,7 @@
       "skipped_count": "{count} пропущено",
       "failed_count": "{count} невдало",
       "default_backup_location": "Розташування резервного копіювання за замовчуванням",
-      "never": "Ніколи",
-      "days_ago": "{days} днів тому",
-      "hours_ago": "{hours} години тому",
-      "minutes_ago": "{minutes} хвилин тому",
-      "just_now": "Щойно"
+      "never": "Ніколи"
     },
     "image_details": {
       "ui_overlay": {
@@ -820,6 +814,12 @@
     "tap": "Натискання"
   },
   "time": {
+    "timeago": {
+      "days": "{days} днів тому",
+      "hours": "{hours} години тому",
+      "minutes": "{minutes} хвилин тому",
+      "just_now": "Щойно"
+    },
     "counters": {
       "second": {
         "one": "$n секунда",
@@ -919,7 +919,6 @@
     },
     "title": "Теги",
     "filter_hint": "Фільтр...",
-    "no_tags_found": "Тегів не знайдено",
     "added": "Додано"
   },
   "posts": {

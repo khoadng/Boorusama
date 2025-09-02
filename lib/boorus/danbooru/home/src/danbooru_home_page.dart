@@ -172,7 +172,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
           icon: const _Icon(
             Symbols.search,
           ),
-          title: Text('Artists'.hc),
+          title: Text(context.t.artists.title),
           onTap: () {
             goToArtistSearchPage(ref);
           },
@@ -245,7 +245,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
           constraints: constraints,
           selectedIcon: Symbols.search,
           icon: Symbols.search,
-          title: 'Artists',
+          title: context.t.artists.title,
         ),
         if (config.hasLoginDetails()) ...[
           if (userId != null)
@@ -261,7 +261,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
             constraints: constraints,
             selectedIcon: Symbols.favorite,
             icon: Symbols.favorite,
-            title: 'Favorites',
+            title: context.t.profile.favorites,
           ),
           HomeNavigationTile(
             value: 7,

@@ -23,7 +23,9 @@
     "favorites": "いいね",
     "profile": "プロフィール",
     "copy_user_id": "ユーザーIDをコピーする",
-    "messages": "メッセージ"
+    "messages": {
+      "title": "メッセージ"
+    }
   },
   "network": {
     "unavailable": "ネットワークに接続できません"

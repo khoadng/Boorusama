@@ -196,9 +196,10 @@ mixin BooruSelectorActionMixin<T extends ConsumerStatefulWidget>
                 context: context,
                 routeSettings: const RouteSettings(name: 'booru/delete'),
                 builder: (context) => RemoveBooruConfigAlertDialog(
-                  title: "Delete '${config.name}'",
-                  description:
-                      'Are you sure you want to delete this profile? This action cannot be undone.',
+                  title: context.t.booru.deletion.title(
+                    profileName: config.name,
+                  ),
+                  description: context.t.booru.deletion.confirmation,
                   onConfirm: () => notifier.delete(
                     config,
                     onFailure: (message) => showErrorToast(context, message),

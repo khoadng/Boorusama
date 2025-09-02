@@ -24,26 +24,70 @@
       "view": "Xem",
       "apply": "Áp dụng",
       "show_all": "Hiện tất cả",
-      "show_less": "Hiện ít hơn"
+      "show_less": "Hiện ít hơn",
+      "search": "Tìm",
+      "view_all": "Xem tất cả"
     },
     "default": "Mặc định",
     "copied": "Đã sao chép",
     "no_content": "Không có nội dung",
+    "version": "Phiên bản $version",
     "app_restart_request": "Cần khởi động lại ứng dụng để áp dụng thay đổi"
   },
   "sort": {
-    "sort_by": "Sắp xếp theo",
+    "sort_by": "Sắp xếp",
+    "name": "Tên",
     "name_asc": "Tên (A-Z)",
     "name_desc": "Tên (Z-A)",
     "recently_added": "Mới thêm",
-    "recently_updated": "Mới cập nhật"
+    "recently_updated": "Mới cập nhật",
+    "recently_created": "Mới tạo",
+    "last_updated": "Cập nhật cuối",
+    "count": "Số lượng"
   },
   "profile": {
     "favorites": "Yêu thích",
     "profile": "Hồ sơ",
-    "copy_user_id": "Copy ID người dùng",
-    "messages": "Tin nhắn",
-    "fail_to_load_profile": "Không thể tải cấu hình"
+    "copy_user_id": "Sao chép ID người dùng",
+    "fail_to_load_profile": "Không thể tải hồ sơ",
+    "tabs": {
+      "info": "Thông tin",
+      "uploads": "Tải lên",
+      "changes": "Thay đổi"
+    },
+    "uploads": {
+      "top_n_copyright": "$n copyright tải lên nhiều nhất"
+    },
+    "activity": {
+      "title": "Hoạt động",
+      "uploads": "Tải lên",
+      "tag_edits": "Chỉnh sửa tag",
+      "note_edits": "Chỉnh sửa ghi chú",
+      "comments": "Bình luận",
+      "forum_posts": "Bài viết",
+      "favgroups": "Nhóm yêu thích"
+    },
+    "feedback": {
+      "title": "Phản hồi",
+      "user_feedbacks": "Phản hồi người dùng",
+      "positive": "Tích cực",
+      "negative": "Tiêu cực",
+      "neutral": "Trung lập"
+    },
+    "messages": {
+      "title": "Tin nhắn",
+      "empty": "Bạn chưa có tin nhắn nào",
+      "categories": {
+        "all": "Tất cả",
+        "received": "Đã nhận",
+        "unread": "Chưa đọc",
+        "sent": "Đã gửi",
+        "deleted": "Đã xóa"
+      },
+      "sender": "Người gửi",
+      "recipient": "Người nhận",
+      "date": "Ngày"
+    }
   },
   "network": {
     "unavailable": "Không có mạng"
@@ -64,6 +108,9 @@
       "resolution": "Độ phân giải",
       "rating": "Xếp loại",
       "file_format": "Định dạng file",
+      "duration": "Thời lượng",
+      "uploader": "Người tải lên",
+      "approver": "Người duyệt",
       "share": {
         "source": "Chia sẻ link nguồn",
         "booru": "Chia sẻ link booru",
@@ -192,7 +239,8 @@
       "other": "$n Kết quả"
     },
     "no_result_notice": "Không có kết quả",
-    "search_in_progress_notice": "Đang tìm..."
+    "search_in_progress_notice": "Đang tìm...",
+    "raw_query": "Truy vấn thô"
   },
   "pool": {
     "pool": "Ảnh bộ",
@@ -403,8 +451,8 @@
       "backup_and_restore": "Sao lưu và phục hồi dữ liệu",
       "advanced_backup": "Sao lưu nâng cao",
       "exporting": "Đang xuất...",
-      "export": "Xuất dữ liệu",
-      "import": "Nhập dữ liệu",
+      "export": "Xuất",
+      "import": "Nhập",
       "export_to_clipboard": "Xuất vào clipboard",
       "import_from_clipboard": "Nhập từ clipboard",
       "no_sources_selected": "Chưa chọn nguồn nào",
@@ -412,10 +460,6 @@
       "export_failed": "Xuất {source} thất bại: {error}",
       "import_success": "Nhập {source} thành công",
       "import_failed": "Nhập {source} thất bại: {error}",
-      "clipboard_export_success": "Đã sao chép {source} vào clipboard",
-      "clipboard_export_failed": "Không thể sao chép {source}: {error}",
-      "clipboard_import_success": "Đã nhập {source} từ clipboard",
-      "clipboard_import_failed": "Không thể dán {source}: {error}",
       "transfer_data": "Truyền dữ liệu",
       "send": "Gửi",
       "receive": "Nhận",
@@ -436,10 +480,43 @@
       "failed_count": "Thất bại {count}",
       "default_backup_location": "Vị trí sao lưu mặc định",
       "never": "Chưa bao giờ",
-      "days_ago": "{days} ngày trước",
-      "hours_ago": "{hours} giờ trước",
-      "minutes_ago": "{minutes} phút trước",
-      "just_now": "Vừa xong"
+      "receive_data": {
+        "title": "Nhận dữ liệu",
+        "nearby_devices": "Thiết bị gần đây",
+        "no_devices_found(rich)": "Không tìm thấy thiết bị. Hãy bắt đầu truyền từ thiết bị kia trước.\n\nChạm ${tapHere(_)} để thêm thủ công bằng địa chỉ IP.",
+        "ip_address": "Địa chỉ IP",
+        "errors": {
+          "not_empty": "Địa chỉ IP không được để trống",
+          "port_required": "Địa chỉ IP phải có cổng",
+          "invalid": "Địa chỉ IP không hợp lệ"
+        },
+        "choose_data_to_import": "Chọn dữ liệu để nhập"
+      },
+      "send_data": {
+        "name": "Tên",
+        "version": "Phiên bản",
+        "status": {
+          "title": "Trạng thái",
+          "broadcasting": "Đang phát",
+          "stopped": "Đã dừng",
+          "running": "Đang chạy"
+        },
+        "how_to_transfer": "Cách chuyển dữ liệu",
+        "how_to_send(rich)": "• Trên thiết bị nhận, vào ${settings(Cài đặt > Sao lưu và phục hồi dữ liệu)}\n• Chọn ${receive(Nhận)} để bắt đầu nhập từ thiết bị này\n• Đừng rời khỏi trang này cho đến khi hoàn tất",
+        "disclaimer": "Chuyển dữ liệu có thể không hoạt động trên WiFi công cộng (quán cà phê, thư viện) do hạn chế bảo mật. Hãy dùng mạng riêng, ví dụ WiFi ở nhà."
+      },
+      "backward_import": {
+        "title": "Phát hiện nhập dữ liệu từ phiên bản cũ",
+        "current_version": "Phiên bản hiện tại",
+        "exported_version": "Phiên bản xuất",
+        "reconfirm_question": "Nhập dữ liệu từ phiên bản cũ có thể không hoạt động như mong đợi, bạn có chắc không?"
+      },
+      "version_mismatch": {
+        "title": "Phát hiện khác phiên bản",
+        "current_version": "Phiên bản hiện tại",
+        "imported_version": "Phiên bản nhập",
+        "confirmation_question": "Phiên bản ứng dụng trên thiết bị khác với phiên bản hiện tại. Có thể gây lỗi và mất dữ liệu.\n\nBạn có chắc muốn tiếp tục?"
+      }
     },
     "auto_backup": {
       "enable_auto_backup": "Bật tự động sao lưu",
@@ -568,7 +645,7 @@
     "saved_search_try": "Thử",
     "saved_search_query": "Từ khoá",
     "saved_search_labels": "Nhãn*",
-    "saved_search_labels_description": "*Một danh sách tag dùng để phân loại search này. Dùng khoảng trắng để cách nhau."
+    "saved_search_labels_description": "*Danh sách tag để phân loại tìm kiếm này. Ngăn cách bằng khoảng trắng."
   },
   "favorites": {
     "counter": {
@@ -596,6 +673,7 @@
     "max_limit_warning": "Member thường chỉ có thể tạo 10 nhóm",
     "duplicate_items_warning_notification": "Có ID bị trùng trong nhóm",
     "detete_confirmation": "Bạn có chắc là muốn xoá nhóm này không",
+    "drag_hint": "Giữ và kéo để sắp xếp",
     "group_item_counter": {
       "one": "$n ảnh",
       "other": "$n ảnh"
@@ -615,6 +693,7 @@
     "rationale": "Nếu bạn cảm thấy app này có ích thì đánh giá hộ mình nhé."
   },
   "sideMenu": {
+    "home": "Trang chủ",
     "settings": "Cài đặt",
     "your_bookmarks": "Đánh dấu",
     "your_blacklist": "Tag đã chặn",
@@ -634,6 +713,10 @@
       "variants_3": "*Đăng nhập tài khoản trên trình duyệt, vào <b><a href=\"api-credentials\">My Account > API Key</a></b>. Copy key của bạn, hoặc tạo key mới nếu cần, nhớ bật đủ permissions để app hoạt động đúng.",
       "variants_4": "*Đăng nhập tài khoản trên trình duyệt, vào <b>Account > Login tokens</b>. Copy <b>Web Login Token</b> hoặc tạo mới nếu cần rồi dán vào đây. Lưu ý: nếu bạn logout khỏi trình duyệt thì token này sẽ bị vô hiệu.",
       "variants_5": "*Đăng nhập tài khoản trên trình duyệt, vào <b><a href=\"api-credentials\">My Account > Options > API Access Credentials</a></b> để lấy API key. Copy key rồi dán vào ô bên trên. Bạn cũng có thể copy toàn bộ chuỗi trong phần <b>API Access Credentials</b> rồi bấm nút bên dưới."
+    },
+    "deletion": {
+      "title": "Xoá '${profileName}'",
+      "confirmation": "Xóa hồ sơ này? Hành động này sẽ không thể khôi phục."
     },
     "invalid_booru_warning": "Có vẻ như trang web không chạy trên engine đã chọn. Vui lòng thử với engine khác.",
     "using_status": "dùng ${booru}",
@@ -822,11 +905,40 @@
     "tap": "Chạm"
   },
   "time": {
+    "timeago": {
+      "days": "{days} ngày trước",
+      "hours": "{hours} giờ trước",
+      "minutes": "{minutes} phút trước",
+      "just_now": "Vừa xong"
+    },
     "counters": {
       "second": {
         "one": "$n giây",
         "other": "$n giây"
       }
+    },
+    "months": {
+      "short": {
+        "jan": "Th1",
+        "feb": "Th2",
+        "mar": "Th3",
+        "apr": "Th4",
+        "may": "Th5",
+        "jun": "Th6",
+        "jul": "Th7",
+        "aug": "Th8",
+        "sep": "Th9",
+        "oct": "Th10",
+        "nov": "Th11",
+        "dec": "Th12"
+      }
+    },
+    "filter": {
+      "last_7_days": "7 ngày qua",
+      "last_30_days": "30 ngày qua",
+      "last_90_days": "90 ngày qua",
+      "last_6_months": "6 tháng qua",
+      "last_year": "Năm qua"
     }
   },
   "donation": {
@@ -909,13 +1021,14 @@
     "items_selected": {
       "one": "Đã chọn $n mục",
       "other": "Đã chọn $n mục"
-    }
+    },
+    "select_all": "Chọn tất cả",
+    "deselect_all": "Bỏ chọn tất cả"
   },
   "tags": {
     "title": "Tag",
     "filter_hint": "Lọc...",
     "loading_tags_error": "Lỗi tải tag: $error",
-    "no_tags_found": "Không tìm thấy tag nào",
     "added": "Đã thêm",
     "actions": {
       "search": "Tìm tag",
@@ -926,6 +1039,14 @@
       "blacklist_global": "Chặn tag (toàn app)",
       "add_to_blacklist": "Thêm vào bộ lọc",
       "add_to_blacklist_global": "Thêm vào bộ lọc (toàn app)"
+    },
+    "counter": {
+      "one": "$n tag",
+      "other": "$n tag"
+    },
+    "other_counter": {
+      "one": "$n tag khác",
+      "other": "$n tag khác"
     }
   },
   "posts": {
@@ -936,6 +1057,11 @@
       "edit_booru_specific_blacklist": "Sửa tag đã chặn của Booru",
       "edit_profile_blacklist": "Sửa tag đã chặn của Hồ sơ",
       "stats": "Thống kê"
+    },
+    "hidden_count": "$hidden trên $total",
+    "counter": {
+      "one": "$n bài",
+      "other": "$n bài"
     }
   },
   "premium": {
@@ -975,5 +1101,26 @@
   "misc": {
     "trailing_more": " thêm",
     "trailing_less": " bớt"
+  },
+  "artists": {
+    "title": "Họa sĩ",
+    "search": {
+      "name": "Tên",
+      "name_hint": "Tên, tên nhóm, hoặc tên khác",
+      "name_tips": "*Hỗ trợ wildcard và regex",
+      "url_hint": "URL hoặc đoạn URL"
+    }
+  },
+  "uploads": {
+    "counter": {
+      "one": "$n tải lên",
+      "other": "$n tải lên"
+    }
+  },
+  "video_player": {
+    "playback_speed": "Tốc độ phát",
+    "speed": {
+      "normal": "Bình thường"
+    }
   }
 }

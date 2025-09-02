@@ -23,7 +23,9 @@
     "favorites": "Избранные",
     "profile": "Профиль",
     "copy_user_id": "Копировать ID пользователя",
-    "messages": "Сообщения"
+    "messages": {
+      "title": "Сообщения"
+    }
   },
   "network": {
     "unavailable": "Нет доступа к интернету"

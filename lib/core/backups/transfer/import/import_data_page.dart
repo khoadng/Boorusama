@@ -71,11 +71,12 @@ class _ImportDataPageState extends ConsumerState<ImportDataPage> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     final currentVersion = ref.watch(appVersionProvider);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Receive data'.hc),
+        title: Text(context.t.settings.backup_and_restore.receive_data.title),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -86,7 +87,12 @@ class _ImportDataPageState extends ConsumerState<ImportDataPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Nearby devices'.hc,
+                  context
+                      .t
+                      .settings
+                      .backup_and_restore
+                      .receive_data
+                      .nearby_devices,
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
                 IconButton(
@@ -132,7 +138,7 @@ class _ImportDataPageState extends ConsumerState<ImportDataPage> {
                       vertical: 4,
                     ),
                     decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.surfaceContainer,
+                      color: colorScheme.surfaceContainer,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: ListTile(
@@ -143,10 +149,14 @@ class _ImportDataPageState extends ConsumerState<ImportDataPage> {
                         ),
                       ),
                       subtitle: Text(
-                        'Version $appVersion',
+                        context.t.generic.version(
+                          version: appVersion ?? 'unknown',
+                        ),
                       ),
                       trailing: TextButton(
-                        child: Text('Import'.hc),
+                        child: Text(
+                          context.t.settings.backup_and_restore.import,
+                        ),
                         onPressed: () async {
                           if (appVersion == null) {
                             showErrorToast(
@@ -206,27 +216,20 @@ class _ImportDataPageState extends ConsumerState<ImportDataPage> {
                     horizontal: 32,
                     vertical: 8,
                   ),
-                  child: RichText(
+                  child: Text.rich(
                     textAlign: TextAlign.center,
-                    text: TextSpan(
-                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                        color: Theme.of(context).colorScheme.hintColor,
-                      ),
-                      children: const [
-                        TextSpan(
-                          text:
-                              'No devices found. Start transfer on the other device first.\n',
-                        ),
-                        TextSpan(text: '\nTap '),
-                        WidgetSpan(
-                          alignment: PlaceholderAlignment.middle,
-                          child: Icon(
-                            Icons.add,
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      color: colorScheme.hintColor,
+                    ),
+                    context.t.settings.backup_and_restore.receive_data
+                        .no_devices_found(
+                          tapHere: (_) => const WidgetSpan(
+                            alignment: PlaceholderAlignment.middle,
+                            child: Icon(
+                              Icons.add,
+                            ),
                           ),
                         ),
-                        TextSpan(text: ' to add manually by IP address.'),
-                      ],
-                    ),
                   ),
                 ),
               ),

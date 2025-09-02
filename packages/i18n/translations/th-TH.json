@@ -31,8 +31,10 @@
     "favorites": "รายการโปรด",
     "profile": "โปรไฟล์",
     "copy_user_id": "คัดลอก User ID",
-    "messages": "ข้อความ",
-    "fail_to_load_profile": "ไม่สามารถโหลดโปรไฟล์ได้"
+    "fail_to_load_profile": "ไม่สามารถโหลดโปรไฟล์ได้",
+    "messages": {
+      "title": "ข้อความ"
+    }
   },
   "network": {
     "unavailable": "ระบบเน็ตไม่พร้อมใช้งาน"
@@ -336,10 +338,6 @@
       "export_failed": "ไม่สามารถส่งออก {source} ได้เพราะ:",
       "import_success": "นำเข้า {source} สำเร็จแล้ว",
       "import_failed": "ไม่สามารถนำเข้า {source} ได้เพราะ: {error}",
-      "clipboard_export_success": "คัดลอก {source} ไปที่คลิปบอร์ดเรียบร้อย",
-      "clipboard_export_failed": "ไม่สามารถคัดลอก {source} ได้เพราะ: {error}",
-      "clipboard_import_success": "นำเข้า {source} จากคลิปบอร์ดสำเร็จแล้ว",
-      "clipboard_import_failed": "ไม่สามารถวาง {source} ได้เพราะ: {error}",
       "transfer_data": "ปริมาณข้อมูลที่โอน",
       "send": "ส่ง",
       "receive": "รับ",
@@ -359,11 +357,7 @@
       "skipped_count": "ข้ามไปแล้ว {count}",
       "failed_count": "ไม่สำเร็จไปแล้ว {count}",
       "default_backup_location": "ค่าเริ่มต้นตำแหน่งที่เก็บสำรองข้อมูล",
-      "never": "ไม่เคยเลย",
-      "days_ago": "{days} วันที่แล้ว",
-      "hours_ago": "{hours} ชั่วโมงที่แล้ว",
-      "minutes_ago": "{minutes} นาทีที่แล้ว",
-      "just_now": "ตอนนี้"
+      "never": "ไม่เคยเลย"
     },
     "image_details": {
       "ui_overlay": {
@@ -593,6 +587,14 @@
   "bulk_downloads": {
     "options": {
       "save_to_folder": "บันทึกไปที่โฟลเดอร์"
+    }
+  },
+  "time": {
+    "timeago": {
+      "days": "{days} วันที่แล้ว",
+      "hours": "{hours} ชั่วโมงที่แล้ว",
+      "minutes": "{minutes} นาทีที่แล้ว",
+      "just_now": "ตอนนี้"
     }
   }
 }

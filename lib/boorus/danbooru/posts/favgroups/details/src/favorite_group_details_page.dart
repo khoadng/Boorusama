@@ -215,10 +215,10 @@ class _FavoriteGroupEditPageState extends State<FavoriteGroupEditPage> {
       ),
       body: SafeArea(
         child: ReorderableListView.builder(
-          header: const Padding(
-            padding: EdgeInsets.all(8),
+          header: Padding(
+            padding: const EdgeInsets.all(8),
             child: Text(
-              'Long press and drag to reorder',
+              context.t.favorite_groups.drag_hint,
             ),
           ),
           itemBuilder: (context, index) {

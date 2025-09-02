@@ -68,7 +68,9 @@ class _UserFeedbackPageState extends ConsumerState<UserFeedbackPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('User Feedbacks'.hc),
+        title: Text(
+          context.t.profile.feedback.user_feedbacks,
+        ),
       ),
       body: RefreshIndicator(
         onRefresh: () async => _pagingController.refresh(),
@@ -93,11 +95,11 @@ class _UserFeedbackPageState extends ConsumerState<UserFeedbackPage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text('Error loading feedbacks'.hc),
+                    Text(context.t.generic.errors.unknown),
                     const SizedBox(height: 16),
                     FilledButton(
                       onPressed: () => _pagingController.refresh(),
-                      child: Text('Retry'.hc),
+                      child: Text(context.t.generic.action.retry),
                     ),
                   ],
                 ),
@@ -171,9 +173,18 @@ class _UserFeedbackItem extends ConsumerWidget {
 
   Widget _buildCategoryLabel(BuildContext context) {
     final (color, label) = switch (feedback.category) {
-      UserFeedbackCategory.positive => (Colors.green, 'Positive'.hc),
-      UserFeedbackCategory.negative => (Colors.red, 'Negative'.hc),
-      UserFeedbackCategory.neutral => (Colors.grey, 'Neutral'.hc),
+      UserFeedbackCategory.positive => (
+        Colors.green,
+        context.t.profile.feedback.positive,
+      ),
+      UserFeedbackCategory.negative => (
+        Colors.red,
+        context.t.profile.feedback.negative,
+      ),
+      UserFeedbackCategory.neutral => (
+        Colors.grey,
+        context.t.profile.feedback.neutral,
+      ),
     };
 
     return Text(

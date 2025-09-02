@@ -28,7 +28,9 @@
     "favorites": "Preferiti",
     "profile": "Profilo",
     "copy_user_id": "Copia ID Utente",
-    "messages": "Messaggi"
+    "messages": {
+      "title": "Messaggi"
+    }
   },
   "network": {
     "unavailable": "Rete non disponibile"
@@ -297,11 +299,7 @@
       "transfer_data": "Trasferisci dati",
       "send": "Invia",
       "receive": "Ricevi",
-      "never": "Mai",
-      "days_ago": "{days} giorni fa",
-      "hours_ago": "{hours} ore fa",
-      "minutes_ago": "{minutes} minuti fa",
-      "just_now": "Ora"
+      "never": "Mai"
     },
     "image_details": {
       "ui_overlay": {
@@ -404,6 +402,14 @@
   "tags": {
     "actions": {
       "add_to_blacklist": "Aggiungi alla Blacklist"
+    }
+  },
+  "time": {
+    "timeago": {
+      "days": "{days} giorni fa",
+      "hours": "{hours} ore fa",
+      "minutes": "{minutes} minuti fa",
+      "just_now": "Ora"
     }
   }
 }

@@ -103,7 +103,7 @@ class _ShowTagListPageState extends ConsumerState<ShowTagListPage> {
             data: (tags) => tags.isEmpty
                 ? Center(
                     child: Text(
-                      context.t.tags.no_tags_found,
+                      context.t.generic.errors.no_data,
                       style: textTheme.bodyLarge,
                     ),
                   )

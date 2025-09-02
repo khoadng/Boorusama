@@ -155,7 +155,7 @@ final ke621AltHomeView = {
     builder: (context, _) => const E621FavoritesPage(),
   ),
   const CustomHomeViewKey('popular'): CustomHomeDataBuilder(
-    displayName: (context) => 'Popular'.hc,
+    displayName: (context) => context.t.explore.popular,
     builder: (context, _) => const E621PopularPage(),
   ),
 };

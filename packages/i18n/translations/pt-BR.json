@@ -23,7 +23,9 @@
     "favorites": "Favoritos",
     "profile": "Perfil",
     "copy_user_id": "Copiar ID do Usuário",
-    "messages": "Mensagens"
+    "messages": {
+      "title": "Mensagens"
+    }
   },
   "network": {
     "unavailable": "Conexão indisponível"

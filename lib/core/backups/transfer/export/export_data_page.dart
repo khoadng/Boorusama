@@ -83,131 +83,127 @@ class _ExportDataPageState extends ConsumerState<ExportDataPage> {
     final colorScheme = theme.colorScheme;
 
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Builder(
-          builder: (context) {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: colorScheme.surfaceContainerLow,
-                    borderRadius: BorderRadius.circular(12),
+        _buildInfo(colorScheme, state),
+        Padding(
+          padding: const EdgeInsets.symmetric(
+            vertical: 8,
+            horizontal: 8,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 8),
+              Text(
+                '${context.t.settings.backup_and_restore.send_data.how_to_transfer}:',
+                style: textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text.rich(
+                context.t.settings.backup_and_restore.send_data.how_to_send(
+                  settings: (text) => TextSpan(
+                    text: text,
+                    style: textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: colorScheme.primary,
+                    ),
                   ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ServerInfoTile(
-                        title: 'IP',
-                        value: state.serverUrl,
-                      ),
-                      ServerInfoTile(
-                        title: 'Name',
-                        value: state.serverName,
-                      ),
-                      ServerInfoTile(
-                        title: 'Version',
-                        value: state.appVersion,
-                      ),
-                      ServerInfoTile(
-                        title: 'Status',
-                        value: state.status.name,
-                      ),
-                    ],
+                  receive: (text) => TextSpan(
+                    text: text,
+                    style: textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: colorScheme.primary,
+                    ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 8,
-                    horizontal: 8,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 8),
-                      Text(
-                        'How to transfer:',
-                        style: textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      RichText(
-                        text: TextSpan(
-                          style: textTheme.bodyMedium,
-                          children: [
-                            const TextSpan(
-                              text: '• On receiving device, go to ',
-                            ),
-                            TextSpan(
-                              text: 'Settings > Backup and restore',
-                              style: textTheme.bodyMedium?.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: colorScheme.primary,
-                              ),
-                            ),
-                            const TextSpan(
-                              text: '\n• Select ',
-                            ),
-                            TextSpan(
-                              text: 'Receive',
-                              style: textTheme.bodyMedium?.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: colorScheme.primary,
-                              ),
-                            ),
-                            const TextSpan(
-                              text: ' to start importing data from this device',
-                            ),
-                            const TextSpan(
-                              text:
-                                  '\n• Stay on this page until transfer completes',
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 12,
-                          horizontal: 8,
-                        ),
-                        decoration: BoxDecoration(
-                          color: colorScheme.errorContainer.withValues(
-                            alpha: 0.2,
-                          ),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.warning_rounded,
-                              color: colorScheme.error,
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Text(
-                                'Transfer might not work on public WiFi networks (coffee shops, libraries) due to security restrictions. Please use a private network like your home WiFi.',
-                                style: textTheme.bodyMedium?.copyWith(
-                                  color: colorScheme.error,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
+              ),
+
+              const SizedBox(height: 16),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 12,
+                  horizontal: 8,
                 ),
-              ],
-            );
-          },
+                decoration: BoxDecoration(
+                  color: colorScheme.errorContainer.withValues(
+                    alpha: 0.2,
+                  ),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.warning_rounded,
+                      color: colorScheme.error,
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        context
+                            .t
+                            .settings
+                            .backup_and_restore
+                            .send_data
+                            .disclaimer,
+                        style: textTheme.bodyMedium?.copyWith(
+                          color: colorScheme.error,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ],
     );
   }
+
+  Widget _buildInfo(ColorScheme colorScheme, ExportDataState state) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: colorScheme.surfaceContainerLow,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ServerInfoTile(
+            title: 'IP',
+            value: state.serverUrl,
+          ),
+          ServerInfoTile(
+            title: context.t.settings.backup_and_restore.send_data.name,
+            value: state.serverName,
+          ),
+          ServerInfoTile(
+            title: context.t.settings.backup_and_restore.send_data.version,
+            value: state.appVersion,
+          ),
+          ServerInfoTile(
+            title: context.t.settings.backup_and_restore.send_data.status.title,
+            value: _buildStatus(state, context),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _buildStatus(ExportDataState state, BuildContext context) =>
+      switch (state.status) {
+        ServerStatus.stopped =>
+          context.t.settings.backup_and_restore.send_data.status.stopped,
+        ServerStatus.running =>
+          context.t.settings.backup_and_restore.send_data.status.running,
+        ServerStatus.broadcasting =>
+          context.t.settings.backup_and_restore.send_data.status.broadcasting,
+      };
 }
 
 class ServerInfoTile extends StatelessWidget {

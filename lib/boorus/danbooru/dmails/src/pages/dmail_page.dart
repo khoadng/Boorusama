@@ -40,7 +40,7 @@ class _DanbooruDmailPageState extends ConsumerState<DanbooruDmailPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Messages'.hc),
+        title: Text(context.t.profile.messages.title),
         actions: [
           IconButton(
             icon: const Icon(Symbols.refresh),
@@ -63,7 +63,18 @@ class _DanbooruDmailPageState extends ConsumerState<DanbooruDmailPage> {
                   .map(
                     (e) => DropdownMenuItem(
                       value: e,
-                      child: Text(e.name.sentenceCase),
+                      child: Text(switch (e) {
+                        DmailFolderType.all =>
+                          context.t.profile.messages.categories.all,
+                        DmailFolderType.received =>
+                          context.t.profile.messages.categories.received,
+                        DmailFolderType.unread =>
+                          context.t.profile.messages.categories.unread,
+                        DmailFolderType.sent =>
+                          context.t.profile.messages.categories.sent,
+                        DmailFolderType.deleted =>
+                          context.t.profile.messages.categories.deleted,
+                      }),
                     ),
                   )
                   .toList(),
@@ -158,7 +169,7 @@ class _DanbooruDmailPageState extends ConsumerState<DanbooruDmailPage> {
                           },
                         ),
                       )
-                    : const GenericNoDataBox(text: 'No messages found'),
+                    : GenericNoDataBox(text: context.t.profile.messages.empty),
                 loading: () => const Center(child: CircularProgressIndicator()),
                 error: (error, stackTrace) => Center(
                   child: Text(error.toString()),

@@ -199,7 +199,7 @@ class HomeSideMenu extends ConsumerWidget {
                                 constraints: constraints,
                                 selectedIcon: Symbols.dashboard,
                                 icon: Symbols.dashboard,
-                                title: 'Home',
+                                title: context.t.sideMenu.home,
                               ),
                               if (desktopMenuBuilder != null)
                                 ...desktopMenuBuilder!(

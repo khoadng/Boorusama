@@ -37,6 +37,8 @@ class VersionMismatchAlertDialog extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Dialog(
       child: Container(
         constraints: const BoxConstraints(maxWidth: 650),
@@ -47,7 +49,7 @@ class VersionMismatchAlertDialog extends ConsumerWidget {
           children: [
             const SizedBox(height: 20),
             Text(
-              'Importing from a different version detected'.hc,
+              context.t.settings.backup_and_restore.version_mismatch.title,
               style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w700,
@@ -59,10 +61,13 @@ class VersionMismatchAlertDialog extends ConsumerWidget {
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w400,
-                  color: Theme.of(context).colorScheme.hintColor,
+                  color: colorScheme.hintColor,
                 ),
                 children: [
-                  TextSpan(text: 'Current version: '.hc),
+                  TextSpan(
+                    text:
+                        '${context.t.settings.backup_and_restore.version_mismatch.current_version}: ',
+                  ),
                   TextSpan(
                     text: currentVersion.toString(),
                     style: const TextStyle(
@@ -77,10 +82,13 @@ class VersionMismatchAlertDialog extends ConsumerWidget {
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w400,
-                  color: Theme.of(context).colorScheme.hintColor,
+                  color: colorScheme.hintColor,
                 ),
                 children: [
-                  TextSpan(text: 'Import version: '.hc),
+                  TextSpan(
+                    text:
+                        '${context.t.settings.backup_and_restore.version_mismatch.imported_version}: ',
+                  ),
                   TextSpan(
                     text: importVersion.toString(),
                     style: const TextStyle(
@@ -92,8 +100,12 @@ class VersionMismatchAlertDialog extends ConsumerWidget {
             ),
             const SizedBox(height: 20),
             Text(
-              'The app version of the device you are trying to import is different from the current version of the app. This may cause compatibility issues and potential data loss. \n\nAre you sure you want to continue?'
-                  .hc,
+              context
+                  .t
+                  .settings
+                  .backup_and_restore
+                  .version_mismatch
+                  .confirmation_question,
               style: const TextStyle(
                 fontWeight: FontWeight.w400,
                 fontSize: 14,
@@ -102,7 +114,7 @@ class VersionMismatchAlertDialog extends ConsumerWidget {
             const SizedBox(height: 20),
             FilledButton(
               style: FilledButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.errorContainer,
+                backgroundColor: colorScheme.errorContainer,
                 shadowColor: Colors.transparent,
                 elevation: 0,
               ),
@@ -112,9 +124,9 @@ class VersionMismatchAlertDialog extends ConsumerWidget {
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 14),
                 child: Text(
-                  'Sure'.hc,
+                  context.t.settings.backup_and_restore.import,
                   style: TextStyle(
-                    color: Theme.of(context).colorScheme.onErrorContainer,
+                    color: colorScheme.onErrorContainer,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -131,7 +143,7 @@ class VersionMismatchAlertDialog extends ConsumerWidget {
                   context.t.generic.action.cancel,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
-                    color: Theme.of(context).colorScheme.onSurface,
+                    color: colorScheme.onSurface,
                   ),
                 ),
               ),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
@@ -251,7 +252,7 @@ class QueryActionsSection extends StatelessWidget {
                           fill: 1,
                         ),
                         Text(
-                          'Raw query',
+                          context.t.search.raw_query,
                           style: TextStyle(
                             color: Theme.of(
                               context,

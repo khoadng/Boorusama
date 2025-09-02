@@ -23,7 +23,9 @@
     "favorites": "즐겨찾기",
     "profile": "프로필",
     "copy_user_id": "유저 ID 복사",
-    "messages": "메시지"
+    "messages": {
+      "title": "메시지"
+    }
   },
   "network": {
     "unavailable": "네트워크 사용할 수 없음"

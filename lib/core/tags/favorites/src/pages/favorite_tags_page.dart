@@ -102,7 +102,7 @@ class FavoriteTagsPage extends ConsumerWidget {
                 children: [
                   Expanded(
                     child: BooruSearchBar(
-                      hintText: 'Filter...',
+                      hintText: context.t.search.hint,
                       onChanged: (value) =>
                           ref
                                   .read(
@@ -151,10 +151,10 @@ class FavoriteTagsPage extends ConsumerWidget {
                 child: _buildTags(tags, ref),
               )
             else
-              const Center(
+              Center(
                 child: Padding(
-                  padding: EdgeInsets.all(16),
-                  child: Text('No tags'),
+                  padding: const EdgeInsets.all(16),
+                  child: Text(context.t.generic.errors.no_data),
                 ),
               ),
           ],

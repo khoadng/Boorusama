@@ -21,9 +21,9 @@ class UserDetailsTabView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tabMap = {
-      if (infoDetails != null) 'Info': infoDetails!,
-      if (uploads != null) 'Uploads': uploads!,
-      if (tagChanges != null) 'Changes': tagChanges!,
+      if (infoDetails != null) context.t.profile.tabs.info: infoDetails!,
+      if (uploads != null) context.t.profile.tabs.uploads: uploads!,
+      if (tagChanges != null) context.t.profile.tabs.changes: tagChanges!,
     };
 
     return UserDetailsViewScaffold(

@@ -39,7 +39,9 @@ class SelectedTagList extends StatelessWidget {
     final tagItems = [
       ...tags,
       if (extraTagsCount != null && extraTagsCount! > 0)
-        '$extraTagsCount other${extraTagsCount! > 1 ? 's' : ''}',
+        context.t.tags.other_counter(
+          n: extraTagsCount!,
+        ),
     ];
 
     return BooruAnimatedCrossFade(

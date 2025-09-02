@@ -287,7 +287,7 @@ class DanbooruBuilder
       builder: (context, _) => const DanbooruFavoritesPage(),
     ),
     const CustomHomeViewKey('artists'): CustomHomeDataBuilder(
-      displayName: (context) => 'Artists'.hc,
+      displayName: (context) => context.t.artists.title,
       builder: (context, _) => const DanbooruArtistSearchPage(),
     ),
     const CustomHomeViewKey('forum'): CustomHomeDataBuilder(

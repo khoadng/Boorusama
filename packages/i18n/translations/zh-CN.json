@@ -23,7 +23,9 @@
     "favorites": "喜爱",
     "profile": "简介",
     "copy_user_id": "复制用户ID",
-    "messages": "信息"
+    "messages": {
+      "title": "信息"
+    }
   },
   "network": {
     "unavailable": "网络不可用"

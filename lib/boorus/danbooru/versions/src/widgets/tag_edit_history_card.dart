@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
-import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../../core/configs/config.dart';
@@ -125,7 +124,7 @@ class TagEditHistoryCard extends StatelessWidget {
                         date: version.updatedAt,
                         child: Text(
                           version.updatedAt.fuzzify(
-                            locale: context.locale,
+                            locale: Localizations.localeOf(context),
                           ),
                           style: TextStyle(
                             color: Theme.of(context).colorScheme.hintColor,

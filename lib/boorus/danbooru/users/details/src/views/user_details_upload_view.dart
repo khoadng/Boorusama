@@ -43,6 +43,8 @@ class UserDetailsUploadView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final textTheme = Theme.of(context).textTheme;
+
     return CustomScrollView(
       slivers: [
         if (user.uploadCount > 0)
@@ -68,13 +70,12 @@ class UserDetailsUploadView extends ConsumerWidget {
                             children: [
                               Expanded(
                                 child: Text(
-                                  '${data.sumBy((e) => e.postCount)} uploads',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .titleMedium!
-                                      .copyWith(
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                                  context.t.uploads.counter(
+                                    n: data.sumBy((e) => e.postCount),
+                                  ),
+                                  style: textTheme.titleMedium!.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
                               const UploadDateRangeSelectorButton(),
@@ -110,11 +111,10 @@ class UserDetailsUploadView extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Text(
-                    'Top {0} copyrights'.replaceFirst(
-                      '{0}',
-                      _kTopCopyrigthTags.toString(),
+                    context.t.profile.uploads.top_n_copyright(
+                      n: _kTopCopyrigthTags,
                     ),
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    style: textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -140,7 +140,7 @@ class UserDetailsUploadView extends ConsumerWidget {
             ),
           ),
         SliverUploadPostList(
-          title: 'Uploads',
+          title: context.t.profile.tabs.uploads,
           user: user,
         ),
       ],
@@ -179,6 +179,7 @@ class UserDetailsUploadView extends ConsumerWidget {
 
   Widget _buildTags(WidgetRef ref, List<DanbooruRelatedTagItem> tags) {
     final context = ref.context;
+    final brightness = Theme.of(context).brightness;
     return Wrap(
       spacing: 8,
       runSpacing: isDesktopPlatform() ? 4 : 0,
@@ -205,7 +206,7 @@ class UserDetailsUploadView extends ConsumerWidget {
                     text: e.tag.replaceAll('_', ' '),
                     style: TextStyle(
                       fontWeight: FontWeight.w500,
-                      color: Theme.of(context).brightness.isDark
+                      color: brightness.isDark
                           ? ref.watch(
                               tagColorProvider(
                                 (
@@ -220,7 +221,7 @@ class UserDetailsUploadView extends ConsumerWidget {
                       TextSpan(
                         text: '  ${(e.frequency * 100).toStringAsFixed(1)}%',
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Theme.of(context).brightness.isLight
+                          color: brightness.isLight
                               ? Colors.white.withValues(alpha: 0.85)
                               : null,
                         ),
@@ -272,7 +273,7 @@ class SliverUploadPostList extends ConsumerWidget {
               visualDensity: const ShrinkVisualDensity(),
               trailing: TextButton(
                 onPressed: () => goToSearchPage(ref, tag: 'user:${user.name}'),
-                child: Text('View all'.hc),
+                child: Text(context.t.generic.action.view_all),
               ),
             ),
           ),

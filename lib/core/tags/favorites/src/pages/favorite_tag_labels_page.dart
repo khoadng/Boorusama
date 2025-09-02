@@ -32,7 +32,7 @@ class FavoriteTagLabelsPage extends ConsumerWidget {
                     .length;
                 return ListTile(
                   title: Text(label),
-                  subtitle: Text('$count tags'.hc),
+                  subtitle: Text(context.t.tags.counter(n: count)),
                   onTap: () {
                     Navigator.of(context).push(
                       CupertinoPageRoute(
@@ -46,7 +46,7 @@ class FavoriteTagLabelsPage extends ConsumerWidget {
               },
             )
           : Center(
-              child: Text('No labels'.hc),
+              child: Text(context.t.generic.errors.no_data),
             ),
     );
   }

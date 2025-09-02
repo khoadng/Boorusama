@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:booru_clients/danbooru.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
 import 'package:foundation/widgets.dart';
 import 'package:i18n/i18n.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
@@ -76,10 +75,10 @@ class _DanbooruArtistSearchPageState
         onTap: () => focusScopeNode.unfocus(),
         child: Scaffold(
           appBar: AppBar(
-            title: Text('Artists'.hc),
+            title: Text(context.t.artists.title),
             actions: [
               TextButton(
-                child: Text('Search'.hc),
+                child: Text(context.t.generic.action.search),
                 onPressed: () {
                   focusScopeNode.unfocus();
                   pagingController.refresh();
@@ -128,37 +127,50 @@ class _DanbooruArtistSearchPageState
   }
 
   Widget _buildSort(BuildContext context) {
-    return Row(
-      children: [
-        SizedBox(
-          width: 62,
-          child: Text(
-            context.t.sort.sort_by,
-            style: Theme.of(context).textTheme.titleMedium,
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 8,
+        vertical: 4,
+      ),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 54,
+            child: Text(
+              context.t.sort.sort_by,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
           ),
-        ),
-        ValueListenableBuilder(
-          valueListenable: order,
-          builder: (context, ord, child) {
-            return OptionDropDownButton(
-              alignment: AlignmentDirectional.centerStart,
-              value: ord,
-              onChanged: (value) {
-                order.value = value;
-                pagingController.refresh();
-              },
-              items: ArtistOrder.values
-                  .map(
-                    (e) => DropdownMenuItem(
-                      value: e,
-                      child: Text(e.name.titleCase),
-                    ),
-                  )
-                  .toList(),
-            );
-          },
-        ),
-      ],
+          ValueListenableBuilder(
+            valueListenable: order,
+            builder: (context, ord, child) {
+              return OptionDropDownButton(
+                alignment: AlignmentDirectional.centerStart,
+                value: ord,
+                onChanged: (value) {
+                  order.value = value;
+                  pagingController.refresh();
+                },
+                items: ArtistOrder.values
+                    .map(
+                      (e) => DropdownMenuItem(
+                        value: e,
+                        child: Text(switch (e) {
+                          ArtistOrder.recentCreated =>
+                            context.t.sort.recently_created,
+                          ArtistOrder.lastUpdated =>
+                            context.t.sort.last_updated,
+                          ArtistOrder.name => context.t.sort.name,
+                          ArtistOrder.count => context.t.sort.count,
+                        }),
+                      ),
+                    )
+                    .toList(),
+              );
+            },
+          ),
+        ],
+      ),
     );
   }
 
@@ -183,8 +195,8 @@ class _DanbooruArtistSearchPageState
               controller: urlController,
               onSubmitted: (_) => pagingController.refresh(),
               textInputAction: TextInputAction.search,
-              decoration: const InputDecoration(
-                hintText: 'URL or a part of it',
+              decoration: InputDecoration(
+                hintText: context.t.artists.search.url_hint,
               ),
             ),
           ),
@@ -204,7 +216,7 @@ class _DanbooruArtistSearchPageState
           SizedBox(
             width: 48,
             child: Text(
-              'Name',
+              context.t.artists.search.name,
               style: Theme.of(context).textTheme.titleMedium,
             ),
           ),
@@ -214,9 +226,9 @@ class _DanbooruArtistSearchPageState
               controller: nameController,
               onSubmitted: (_) => pagingController.refresh(),
               textInputAction: TextInputAction.search,
-              decoration: const InputDecoration(
-                hintText: 'Name, group name, or other name',
-                helperText: '*Supports wildcards and regexes',
+              decoration: InputDecoration(
+                hintText: context.t.artists.search.name_hint,
+                helperText: context.t.artists.search.name_tips,
               ),
             ),
           ),

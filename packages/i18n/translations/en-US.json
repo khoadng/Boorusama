@@ -24,26 +24,70 @@
       "view": "View",
       "apply": "Apply",
       "show_all": "Show all",
-      "show_less": "Show less"
+      "show_less": "Show less",
+      "search": "Search",
+      "view_all": "View all"
     },
     "default": "Default",
     "copied": "Copied",
     "no_content": "No content",
+    "version": "Version $version",
     "app_restart_request": "You need to restart the app for this change to take effect"
   },
   "sort": {
     "sort_by": "Sort by",
+    "name": "Name",
     "name_asc": "Name (A-Z)",
     "name_desc": "Name (Z-A)",
     "recently_added": "Recently added",
-    "recently_updated": "Recently updated"
+    "recently_updated": "Recently updated",
+    "recently_created": "Recently created",
+    "last_updated": "Last updated",
+    "count": "Count"
   },
   "profile": {
     "favorites": "Favorites",
     "profile": "Profile",
     "copy_user_id": "Copy User ID",
-    "messages": "Messages",
-    "fail_to_load_profile": "Fail to load profile"
+    "fail_to_load_profile": "Fail to load profile",
+    "tabs": {
+      "info": "Info",
+      "uploads": "Uploads",
+      "changes": "Changes"
+    },
+    "uploads": {
+      "top_n_copyright": "Top $n copyrights"
+    },
+    "activity": {
+      "title": "Activity",
+      "uploads": "Uploads",
+      "tag_edits": "Tag edits",
+      "note_edits": "Note edits",
+      "comments": "Comments",
+      "forum_posts": "Forum posts",
+      "favgroups": "Favgroups"
+    },
+    "feedback": {
+      "title": "Feedbacks",
+      "user_feedbacks": "User Feedbacks",
+      "positive": "Positive",
+      "negative": "Negative",
+      "neutral": "Neutral"
+    },
+    "messages": {
+      "title": "Messages",
+      "empty": "You have no messages",
+      "categories": {
+        "all": "All",
+        "received": "Received",
+        "unread": "Unread",
+        "sent": "Sent",
+        "deleted": "Deleted"
+      },
+      "sender": "Sender",
+      "recipient": "Recipient",
+      "date": "Date"
+    }
   },
   "network": {
     "unavailable": "Network unavailable"
@@ -64,6 +108,9 @@
       "resolution": "Resolution",
       "rating": "Rating",
       "file_format": "File format",
+      "duration": "Duration",
+      "uploader": "Uploader",
+      "approver": "Approver",
       "share": {
         "source": "Share source link",
         "booru": "Share booru link",
@@ -140,7 +187,7 @@
       "reply": "Reply",
       "reply_to": "Replying to",
       "delete": "Delete",
-      "noComments": "There are no comments",
+      "no_comments": "There are no comments",
       "last_updated": "Last updated",
       "send": "Send"
     },
@@ -192,7 +239,8 @@
       "other": "$n Results"
     },
     "no_result_notice": "No result",
-    "search_in_progress_notice": "Searching..."
+    "search_in_progress_notice": "Searching...",
+    "raw_query": "Raw query"
   },
   "pool": {
     "pool": "Pool",
@@ -412,10 +460,6 @@
       "export_failed": "Failed to export {source}: {error}",
       "import_success": "{source} imported successfully",
       "import_failed": "Failed to import {source}: {error}",
-      "clipboard_export_success": "{source} copied to clipboard",
-      "clipboard_export_failed": "Failed to copy {source}: {error}",
-      "clipboard_import_success": "{source} imported from clipboard",
-      "clipboard_import_failed": "Failed to paste {source}: {error}",
       "transfer_data": "Transfer data",
       "send": "Send",
       "receive": "Receive",
@@ -436,10 +480,43 @@
       "failed_count": "{count} failed",
       "default_backup_location": "Default backup location",
       "never": "Never",
-      "days_ago": "{days} days ago",
-      "hours_ago": "{hours} hours ago",
-      "minutes_ago": "{minutes} minutes ago",
-      "just_now": "Just now"
+      "receive_data": {
+        "title": "Receive data",
+        "nearby_devices": "Nearby devices",
+        "no_devices_found(rich)": "No devices found. Start transfer on the other device first.\n\nTap ${tapHere(_)} to add manually by IP address.",
+        "ip_address": "IP address",
+        "errors": {
+          "not_empty": "IP address cannot be empty",
+          "port_required": "IP address must contain a port",
+          "invalid": "Invalid IP address"
+        },
+        "choose_data_to_import": "Choose data to import"
+      },
+      "send_data": {
+        "name": "Name",
+        "version": "Version",
+        "status": {
+          "title": "Status",
+          "broadcasting": "Broadcasting",
+          "stopped": "Stopped",
+          "running": "Running"
+        },
+        "how_to_transfer": "How to transfer",
+        "how_to_send(rich)": "• On receiving device, go to ${settings(Settings > Backup and restore)}\n• Select ${receive(Receive)} to start importing data from this device\n• Stay on this page until transfer completes",
+        "disclaimer": "Transfer might not work on public WiFi networks (coffee shops, libraries) due to security restrictions. Please use a private network like your home WiFi."
+      },
+      "backward_import": {
+        "title": "Importing from an older version detected",
+        "current_version": "Current version",
+        "exported_version": "Exported version",
+        "reconfirm_question": "Backward import might not work as expected, are you sure?"
+      },
+      "version_mismatch": {
+        "title": "Importing from a different version detected",
+        "current_version": "Current version",
+        "imported_version": "Imported version",
+        "confirmation_question": "The app version of the device you are trying to import is different from the current version of the app. This may cause compatibility issues and potential data loss. \n\nAre you sure you want to continue?"
+      }
     },
     "auto_backup": {
       "enable_auto_backup": "Enable Auto Backup",
@@ -596,6 +673,7 @@
     "max_limit_warning": "Member can only create 10 favorite groups",
     "duplicate_items_warning_notification": "The entered posts already exist in the group",
     "detete_confirmation": "Are you sure you want to delete this favorite group?",
+    "drag_hint": "Long press and drag to reorder",
     "group_item_counter": {
       "one": "$n post",
       "other": "$n posts"
@@ -615,6 +693,7 @@
     "rationale": "If you like the app, please take a little bit of your time to review it. It wouldn't take more than a few seconds and it really helps this project."
   },
   "sideMenu": {
+    "home": "Home",
     "settings": "Settings",
     "your_bookmarks": "Your bookmarks",
     "your_blacklist": "Your blacklist",
@@ -634,6 +713,10 @@
       "variants_3": "*Log in to your account on the browser, visit <b><a href=\"api-credentials\">My Account > API Key</a></b>. Copy your key or create a new one if needed, ensuring all permissions are enabled for proper app functionality.",
       "variants_4": "*Log in to your account on the browser, visit <b>Account > Login tokens</b>. Copy your <b>Web Login Token</b> or create a new one if needed and paste it here. If you use the <b>Web Login Token</b>, logout from the browser will make the token invalid.",
       "variants_5": "*Log in to your account on the browser, visit <b><a href=\"api-credentials\">My Account > Options > API Access Credentials</a></b> to get your API key. Copy the key and paste it into the field above. You can also copy the whole string from the <b>API Access Credentials</b> section and tap the button below."
+    },
+    "deletion": {
+      "title": "Delete '${profileName}'",
+      "confirmation": "Are you sure you want to delete this profile? This action cannot be undone."
     },
     "invalid_booru_warning": "It seems like the site is not running on the selected engine. Please try with another one.",
     "using_status": "using ${booru}",
@@ -827,6 +910,35 @@
         "one": "$n second",
         "other": "$n seconds"
       }
+    },
+    "timeago": {
+      "days": "{days} days ago",
+      "hours": "{hours} hours ago",
+      "minutes": "{minutes} minutes ago",
+      "just_now": "Just now"
+    },
+    "months": {
+      "short": {
+        "jan": "Jan",
+        "feb": "Feb",
+        "mar": "Mar",
+        "apr": "Apr",
+        "may": "May",
+        "jun": "Jun",
+        "jul": "Jul",
+        "aug": "Aug",
+        "sep": "Sep",
+        "oct": "Oct",
+        "nov": "Nov",
+        "dec": "Dec"
+      }
+    },
+    "filter": {
+      "last_7_days": "Last 7 days",
+      "last_30_days": "Last 30 days",
+      "last_90_days": "Last 90 days",
+      "last_6_months": "Last 6 months",
+      "last_year": "Last year"
     }
   },
   "donation": {
@@ -909,13 +1021,14 @@
     "items_selected": {
       "one": "$n item selected",
       "other": "$n items selected"
-    }
+    },
+    "select_all": "Select all",
+    "deselect_all": "Deselect all"
   },
   "tags": {
     "title": "Tags",
     "filter_hint": "Filter...",
     "loading_tags_error": "Error loading tags: $error",
-    "no_tags_found": "No tags found",
     "added": "Added",
     "actions": {
       "search": "Search Tags",
@@ -926,6 +1039,14 @@
       "blacklist_global": "Blacklist (Global)",
       "add_to_blacklist": "Add to blacklist",
       "add_to_blacklist_global": "Add to global blacklist"
+    },
+    "counter": {
+      "one": "$n tag",
+      "other": "$n tags"
+    },
+    "other_counter": {
+      "one": "$n other",
+      "other": "$n others"
     }
   },
   "posts": {
@@ -936,6 +1057,11 @@
       "edit_booru_specific_blacklist": "Edit Booru's Specific Blacklist",
       "edit_profile_blacklist": "Edit Profile Blacklist",
       "stats": "Stats"
+    },
+    "hidden_count": "$hidden of $total",
+    "counter": {
+      "one": "$n post",
+      "other": "$n posts"
     }
   },
   "premium": {
@@ -975,5 +1101,26 @@
   "misc": {
     "trailing_more": " more",
     "trailing_less": " less"
+  },
+  "artists": {
+    "title": "Artists",
+    "search": {
+      "name": "Name",
+      "name_hint": "Name, group name, or other name",
+      "name_tips": "*Supports wildcards and regexes",
+      "url_hint": "URL or a part of it"
+    }
+  },
+  "uploads": {
+    "counter": {
+      "one": "$n upload",
+      "other": "$n uploads"
+    }
+  },
+  "video_player": {
+    "playback_speed": "Playback speed",
+    "speed": {
+      "normal": "Normal"
+    }
   }
 }

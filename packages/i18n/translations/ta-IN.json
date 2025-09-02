@@ -23,7 +23,9 @@
     "favorites": "பிடித்தவை",
     "profile": "சுயவிவரம்",
     "copy_user_id": "பயனர் ஐடியை நகலெடுக்கவும்",
-    "messages": "செய்திகள்"
+    "messages": {
+      "title": "செய்திகள்"
+    }
   },
   "network": {
     "unavailable": "பிணையம் கிடைக்கவில்லை"

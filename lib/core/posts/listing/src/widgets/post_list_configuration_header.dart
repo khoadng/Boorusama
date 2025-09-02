@@ -42,6 +42,7 @@ class _PostListConfigurationHeaderState
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final hiddenCount = widget.hiddenCount;
 
     return Card(
       color: widget.axis == Axis.horizontal && expanded
@@ -87,15 +88,18 @@ class _PostListConfigurationHeaderState
                         ),
                         if (constraints.maxWidth > 250)
                           const SizedBox(width: 8),
-                        if (widget.hiddenCount != null)
-                          if (widget.hiddenCount! > 0)
+                        if (hiddenCount != null)
+                          if (hiddenCount > 0)
                             if (constraints.maxWidth > 250)
                               Chip(
                                 padding: EdgeInsets.zero,
                                 visualDensity: const ShrinkVisualDensity(),
                                 backgroundColor: colorScheme.primary,
                                 label: Text(
-                                  '${widget.hiddenCount} of ${widget.postCount}',
+                                  context.t.posts.hidden_count(
+                                    hidden: hiddenCount,
+                                    total: widget.postCount,
+                                  ),
                                   style: TextStyle(
                                     color: colorScheme.onPrimary,
                                     fontWeight: FontWeight.bold,
@@ -123,7 +127,7 @@ class _PostListConfigurationHeaderState
                   children: [
                     if (widget.axis == Axis.horizontal)
                       Text(
-                        '${widget.postCount} Posts',
+                        context.t.posts.counter(n: widget.postCount),
                         style: Theme.of(context).textTheme.titleLarge,
                       ),
                     const Spacer(),

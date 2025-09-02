@@ -34,7 +34,7 @@ class UserDetailsInfoView extends ConsumerWidget {
         children: [
           const SizedBox(height: 12),
           UserDetailsSectionCard.text(
-            title: 'Activity',
+            title: context.t.profile.activity.title,
             child: UserStatsGroup(user: user),
           ),
           const SizedBox(height: 24),
@@ -46,7 +46,7 @@ class UserDetailsInfoView extends ConsumerWidget {
               child: Row(
                 children: [
                   Text(
-                    'Feedbacks'.hc,
+                    context.t.profile.feedback.title,
                     style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w700,
@@ -88,7 +88,7 @@ class UserFeedbacksGroup extends StatelessWidget {
           children: [
             _StatsButton(
               num: user.positiveFeedbackCount,
-              title: 'Positive',
+              title: context.t.profile.feedback.positive,
             ),
           ],
         ),
@@ -97,7 +97,7 @@ class UserFeedbacksGroup extends StatelessWidget {
           children: [
             _StatsButton(
               num: user.neutralFeedbackCount,
-              title: 'Neutral',
+              title: context.t.profile.feedback.neutral,
             ),
           ],
         ),
@@ -106,7 +106,7 @@ class UserFeedbacksGroup extends StatelessWidget {
           children: [
             _StatsButton(
               num: user.negativeFeedbackCount,
-              title: 'Negative',
+              title: context.t.profile.feedback.negative,
             ),
           ],
         ),
@@ -133,12 +133,12 @@ class UserStatsGroup extends StatelessWidget {
           children: [
             _StatsButton(
               num: user.uploadCount,
-              title: 'Uploads',
+              title: context.t.profile.activity.uploads,
             ),
             const SizedBox(height: 12),
             _StatsButton(
               num: user.favoriteGroupCount,
-              title: 'Favgroups',
+              title: context.t.profile.activity.favgroups,
             ),
           ],
         ),
@@ -147,12 +147,12 @@ class UserStatsGroup extends StatelessWidget {
           children: [
             _StatsButton(
               num: user.tagEditCount,
-              title: 'Tag edits',
+              title: context.t.profile.activity.tag_edits,
             ),
             const SizedBox(height: 12),
             _StatsButton(
               num: user.commentCount,
-              title: 'Comments',
+              title: context.t.profile.activity.comments,
             ),
           ],
         ),
@@ -161,12 +161,12 @@ class UserStatsGroup extends StatelessWidget {
           children: [
             _StatsButton(
               num: user.noteEditCount,
-              title: 'Note edits',
+              title: context.t.profile.activity.note_edits,
             ),
             const SizedBox(height: 12),
             _StatsButton(
               num: user.forumPostCount,
-              title: 'Forum posts',
+              title: context.t.profile.activity.forum_posts,
             ),
           ],
         ),

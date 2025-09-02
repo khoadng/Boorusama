@@ -23,7 +23,9 @@
     "favorites": "Favorite",
     "profile": "Profil",
     "copy_user_id": "Copiați ID utilizator",
-    "messages": "Mesaje"
+    "messages": {
+      "title": "Mesaje"
+    }
   },
   "network": {
     "unavailable": "Rețea indisponibilă"

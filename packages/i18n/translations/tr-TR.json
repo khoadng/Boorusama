@@ -22,7 +22,9 @@
     "favorites": "Favoriler",
     "profile": "Profil",
     "copy_user_id": "Kullanıcı kimliğini kopyala",
-    "messages": "Mesajlar"
+    "messages": {
+      "title": "Mesajlar"
+    }
   },
   "network": {
     "unavailable": "Bağlantı mevcut değil"

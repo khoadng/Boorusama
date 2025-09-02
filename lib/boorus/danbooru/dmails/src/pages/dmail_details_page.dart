@@ -60,7 +60,7 @@ class DanbooruDmailDetailsPage extends ConsumerWidget {
               Row(
                 children: [
                   Text(
-                    'Sender: ',
+                    '${context.t.profile.messages.sender}: ',
                     style: theme.textTheme.titleMedium,
                   ),
                   Text(
@@ -76,7 +76,7 @@ class DanbooruDmailDetailsPage extends ConsumerWidget {
               Row(
                 children: [
                   Text(
-                    'Receiver: ',
+                    '${context.t.profile.messages.recipient}: ',
                     style: theme.textTheme.titleMedium,
                   ),
                   Text(
@@ -90,7 +90,7 @@ class DanbooruDmailDetailsPage extends ConsumerWidget {
                 ],
               ),
               Text(
-                'Date: ${DateFormat('MMM d, yyyy hh:mm a').format(dmail.createdAt.toLocal())}',
+                '${context.t.profile.messages.date}: ${DateFormat('MMM d, yyyy hh:mm a').format(dmail.createdAt.toLocal())}',
                 style: theme.textTheme.titleMedium,
               ),
               const SizedBox(height: 16),
@@ -105,7 +105,9 @@ class DanbooruDmailDetailsPage extends ConsumerWidget {
                   onPressed: () {
                     launchExternalUrlString('${config.url}dmails/${dmail.id}');
                   },
-                  child: Text('View in Browser (LOGGED IN REQUIRED))'.hc),
+                  child: Text(
+                    '${context.t.post.action.view_in_browser} (LOGGED IN REQUIRED)',
+                  ),
                 ),
             ],
           ),

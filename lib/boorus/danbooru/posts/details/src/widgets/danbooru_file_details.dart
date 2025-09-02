@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../../../core/configs/ref.dart';
@@ -74,7 +75,7 @@ class DanbooruFileDetails extends ConsumerWidget {
 
         return approver != null
             ? {
-                'Approver': Material(
+                context.t.post.detail.approver: Material(
                   color: Colors.transparent,
                   child: InkWell(
                     onTap: () => goToUserDetailsPage(

@@ -198,21 +198,21 @@ String _getLastBackupDisplay(
   final diff = now.difference(settings.lastBackupTime!);
 
   if (diff.inDays > 0) {
-    return context.t.settings.backup_and_restore.days_ago.replaceAll(
+    return context.t.time.timeago.days.replaceAll(
       '{days}',
       diff.inDays.toString(),
     );
   } else if (diff.inHours > 0) {
-    return context.t.settings.backup_and_restore.hours_ago.replaceAll(
+    return context.t.time.timeago.hours.replaceAll(
       '{hours}',
       diff.inHours.toString(),
     );
   } else if (diff.inMinutes > 0) {
-    return context.t.settings.backup_and_restore.minutes_ago.replaceAll(
+    return context.t.time.timeago.minutes.replaceAll(
       '{minutes}',
       diff.inMinutes.toString(),
     );
   } else {
-    return context.t.settings.backup_and_restore.just_now;
+    return context.t.time.timeago.just_now;
   }
 }

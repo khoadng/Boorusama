@@ -110,7 +110,7 @@ class _CommentPageScaffoldState extends ConsumerState<CommentPageScaffold> {
                       const SizedBox(height: 16),
                       FilledButton(
                         onPressed: () => _pagingController.refresh(),
-                        child: Text('Retry'.hc),
+                        child: Text(context.t.generic.action.retry),
                       ),
                     ],
                   ),

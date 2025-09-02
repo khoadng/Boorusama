@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
@@ -64,8 +65,8 @@ class BooruVideoOptionSheet extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             MobileConfigTile(
-              value: _buildSpeedText(value),
-              title: 'Play back speed',
+              value: _buildSpeedText(value, context),
+              title: context.t.video_player.playback_speed,
               onTap: () {
                 Navigator.of(context).pop();
                 showModalBottomSheet(
@@ -111,7 +112,7 @@ class PlaybackSpeedActionSheet extends StatelessWidget {
           children: speeds
               .map(
                 (e) => ListTile(
-                  title: Text(_buildSpeedText(e)),
+                  title: Text(_buildSpeedText(e, context)),
                   onTap: () {
                     Navigator.of(context).pop();
                     onChanged(e);
@@ -125,8 +126,8 @@ class PlaybackSpeedActionSheet extends StatelessWidget {
   }
 }
 
-String _buildSpeedText(double speed) {
-  if (speed == 1.0) return 'Normal';
+String _buildSpeedText(double speed, BuildContext context) {
+  if (speed == 1.0) return context.t.video_player.speed.normal;
 
   final speedText = speed.toStringAsFixed(2);
   // if end with zero, remove it

@@ -152,7 +152,7 @@ class UserDetailsActionButtons extends ConsumerWidget {
                 context,
               ).colorScheme.onSecondaryContainer,
             ),
-            child: Text(context.t.profile.messages),
+            child: Text(context.t.profile.messages.title),
             onPressed: () => goToDmailPage(ref),
           ),
         ],

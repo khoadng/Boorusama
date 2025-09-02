@@ -31,7 +31,7 @@ class PostStatsApproverSection extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         PostStatsSectionTitle(
-          title: 'Approver'.hc,
+          title: context.t.post.detail.approver,
           onMore: () {
             showAppModalBarBottomSheet(
               context: context,
@@ -39,7 +39,7 @@ class PostStatsApproverSection extends ConsumerWidget {
               builder: (context) => CreatorStatisticSheet(
                 totalPosts: totalPosts,
                 stats: stats.approvers,
-                title: 'Approver'.hc,
+                title: context.t.post.detail.approver,
               ),
             );
           },

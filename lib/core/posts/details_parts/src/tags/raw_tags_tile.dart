@@ -90,7 +90,7 @@ class RawTagsTileTitle<T extends Post> extends ConsumerWidget {
 
     return Row(
       children: [
-        Text('${count ?? '???'} tags'.hc),
+        Text(context.t.tags.counter(n: count ?? 0)),
         BooruPopupMenuButton(
           iconColor: Theme.of(context).colorScheme.onSurface,
           onSelected: (value) {

@@ -113,12 +113,14 @@ class FileDetailsSection extends StatelessWidget {
           ),
           if (post.isVideo && post.duration > 0)
             FileDetailTile(
-              title: 'Duration'.hc,
-              valueLabel: '${post.duration.toInt()} seconds'.hc,
+              title: context.t.post.detail.duration,
+              valueLabel: context.t.time.counters.second(
+                n: post.duration.toInt(),
+              ),
             ),
           if (uploader != null)
             FileDetailTile(
-              title: 'Uploader'.hc,
+              title: context.t.post.detail.uploader,
               value: uploader,
             ),
           if (customDetails != null) ...[

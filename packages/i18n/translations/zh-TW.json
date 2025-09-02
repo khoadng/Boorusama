@@ -23,7 +23,9 @@
     "favorites": "最愛",
     "profile": "設定檔",
     "copy_user_id": "複製使用者 ID",
-    "messages": "訊息"
+    "messages": {
+      "title": "訊息"
+    }
   },
   "network": {
     "unavailable": "網路無法連接"

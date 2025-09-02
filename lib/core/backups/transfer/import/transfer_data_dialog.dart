@@ -265,11 +265,11 @@ class ImportingStep extends ConsumerWidget {
             onPressed: () {
               Navigator.of(context).pop();
             },
-            child: const Padding(
-              padding: EdgeInsets.symmetric(vertical: 14),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 14),
               child: Text(
-                'Cancel',
-                style: TextStyle(
+                context.t.generic.action.cancel,
+                style: const TextStyle(
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -364,7 +364,12 @@ class SelectDataStep extends ConsumerWidget {
       children: [
         const SizedBox(height: 12),
         Text(
-          'Choose data to import'.hc,
+          context
+              .t
+              .settings
+              .backup_and_restore
+              .receive_data
+              .choose_data_to_import,
           style: const TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.w700,
@@ -375,11 +380,11 @@ class SelectDataStep extends ConsumerWidget {
           children: [
             TextButton(
               onPressed: () => notifier.selectAllTasks(),
-              child: Text('Select All'.hc),
+              child: Text(context.t.select.select_all),
             ),
             TextButton(
               onPressed: () => notifier.deselectAllTasks(),
-              child: Text('Deselect All'.hc),
+              child: Text(context.t.select.deselect_all),
             ),
           ],
         ),
@@ -411,8 +416,10 @@ class SelectDataStep extends ConsumerWidget {
             padding: const EdgeInsets.symmetric(vertical: 14),
             child: Text(
               switch (serverCheckStatus) {
-                ServerCheckStatus.initial => 'Import',
-                ServerCheckStatus.available => 'Import',
+                ServerCheckStatus.initial =>
+                  context.t.settings.backup_and_restore.import,
+                ServerCheckStatus.available =>
+                  context.t.settings.backup_and_restore.import,
                 ServerCheckStatus.checking => 'Verifying...',
                 ServerCheckStatus.unavailable => 'Unavailable',
               },
@@ -428,7 +435,7 @@ class SelectDataStep extends ConsumerWidget {
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 14),
             child: Text(
-              'Cancel',
+              context.t.generic.action.cancel,
               style: TextStyle(
                 fontWeight: FontWeight.w600,
                 color: Theme.of(context).colorScheme.onSurface,

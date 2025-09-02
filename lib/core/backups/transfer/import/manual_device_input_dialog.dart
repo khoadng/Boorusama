@@ -40,7 +40,8 @@ class _ManualDeviceInputDialogState extends State<ManualDeviceInputDialog> {
             keyboardType: TextInputType.url,
             controller: _ipController,
             decoration: InputDecoration(
-              labelText: 'IP address'.hc,
+              labelText:
+                  context.t.settings.backup_and_restore.receive_data.ip_address,
             ),
           ),
           const SizedBox(height: 12),
@@ -49,13 +50,31 @@ class _ManualDeviceInputDialogState extends State<ManualDeviceInputDialog> {
               final ip = _ipController.text;
 
               if (ip.isEmpty) {
-                showErrorToast(context, 'IP address cannot be empty'.hc);
+                showErrorToast(
+                  context,
+                  context
+                      .t
+                      .settings
+                      .backup_and_restore
+                      .receive_data
+                      .errors
+                      .not_empty,
+                );
                 return;
               }
 
               // check for port
               if (!ip.contains(RegExp(r':\d{1,5}'))) {
-                showErrorToast(context, 'IP address must contain a port'.hc);
+                showErrorToast(
+                  context,
+                  context
+                      .t
+                      .settings
+                      .backup_and_restore
+                      .receive_data
+                      .errors
+                      .port_required,
+                );
                 return;
               }
 
@@ -64,13 +83,22 @@ class _ManualDeviceInputDialogState extends State<ManualDeviceInputDialog> {
               final uri = Uri.tryParse(address);
 
               if (uri == null) {
-                showErrorToast(context, 'Invalid IP address'.hc);
+                showErrorToast(
+                  context,
+                  context
+                      .t
+                      .settings
+                      .backup_and_restore
+                      .receive_data
+                      .errors
+                      .invalid,
+                );
                 return;
               }
 
               Navigator.of(context).pop(uri);
             },
-            child: Text('Import'.hc),
+            child: Text(context.t.settings.backup_and_restore.import),
           ),
         ],
       ),

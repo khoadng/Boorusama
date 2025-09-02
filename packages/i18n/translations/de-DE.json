@@ -23,7 +23,9 @@
     "favorites": "Favoriten",
     "profile": "Profil",
     "copy_user_id": "Nutzer ID kopieren",
-    "messages": "Nachrichten"
+    "messages": {
+      "title": "Nachrichten"
+    }
   },
   "network": {
     "unavailable": "Netzwerk nicht verfügbar"

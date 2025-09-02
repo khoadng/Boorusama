@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../../../core/posts/statistics/widgets.dart';
@@ -30,7 +31,7 @@ class PostStatsUploaderSection extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         PostStatsSectionTitle(
-          title: 'Uploader',
+          title: context.t.post.detail.uploader,
           onMore: () => _onMore(ref, context),
         ),
         ...stats.uploaders.topN(5).entries.map(
@@ -59,7 +60,7 @@ class PostStatsUploaderSection extends ConsumerWidget {
       context: context,
       settings: const RouteSettings(name: 'posts_uploader_stats'),
       builder: (context) => CreatorStatisticSheet(
-        title: 'Uploader',
+        title: context.t.post.detail.uploader,
         totalPosts: totalPosts,
         stats: stats.uploaders,
       ),

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../reports/report.dart';
@@ -22,6 +22,9 @@ class UserUploadDailyDeltaChart extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final textTheme = theme.textTheme;
     final titles = <int, String>{};
     final dateRange = ref.watch(selectedUploadDateRangeSelectorTypeProvider);
     final isWeeklyChart = dateRange == UploadDateRange.last7Days;
@@ -34,7 +37,7 @@ class UserUploadDailyDeltaChart extends ConsumerWidget {
         // if it's the first day, show the month e.g. Sep 5
         if (i == 0) {
           titles[i] =
-              '${parseIntToMonthString(data[i].date.month)} ${data[i].date.day}';
+              '${parseIntToMonthString(data[i].date.month, context)} ${data[i].date.day}';
         } else {
           titles[i] = data[i].date.day.toString();
         }
@@ -45,7 +48,7 @@ class UserUploadDailyDeltaChart extends ConsumerWidget {
       for (var i = 0; i < data.length; i++) {
         if (skipCounter == 6 || i == 0) {
           titles[i] =
-              '${parseIntToMonthString(data[i].date.month)} ${data[i].date.day}';
+              '${parseIntToMonthString(data[i].date.month, context)} ${data[i].date.day}';
           skipCounter = 0;
         } else {
           titles[i] = '';
@@ -70,7 +73,7 @@ class UserUploadDailyDeltaChart extends ConsumerWidget {
         for (var i = 0; i < data.length; i++) {
           final month = data[i].date.month;
           if (showMonths.contains(month) && !seen.contains(month)) {
-            titles[i] = parseIntToMonthString(month);
+            titles[i] = parseIntToMonthString(month, context);
             seen.add(month);
           } else {
             titles[i] = '';
@@ -83,7 +86,7 @@ class UserUploadDailyDeltaChart extends ConsumerWidget {
       for (var i = 0; i < data.length; i++) {
         final month = data[i].date.month;
         if (!seen.contains(month)) {
-          titles[i] = parseIntToMonthString(month);
+          titles[i] = parseIntToMonthString(month, context);
           seen.add(data[i].date.month);
         } else {
           titles[i] = '';
@@ -96,22 +99,21 @@ class UserUploadDailyDeltaChart extends ConsumerWidget {
         barTouchData: BarTouchData(
           enabled: true,
           touchTooltipData: BarTouchTooltipData(
-            getTooltipColor: (_) =>
-                Theme.of(context).colorScheme.surfaceContainerHighest,
+            getTooltipColor: (_) => colorScheme.surfaceContainerHighest,
             fitInsideHorizontally: true,
             getTooltipItem: (group, groupIndex, rod, rodIndex) {
               final date = data[groupIndex].date;
               return BarTooltipItem(
                 '${date.day}/${date.month}/${date.year}',
-                Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Theme.of(context).textTheme.bodyLarge?.color,
+                textTheme.bodySmall?.copyWith(
+                      color: textTheme.bodyLarge?.color,
                     ) ??
                     const TextStyle(),
                 children: [
                   TextSpan(
-                    text: '\n${rod.toY.toInt()} posts',
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Theme.of(context).colorScheme.primary,
+                    text: '\n${context.t.uploads.counter(n: rod.toY.toInt())}',
+                    style: textTheme.bodySmall?.copyWith(
+                      color: colorScheme.primary,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -163,3 +165,20 @@ class UserUploadDailyDeltaChart extends ConsumerWidget {
     );
   }
 }
+
+String parseIntToMonthString(int value, BuildContext context) =>
+    switch (value) {
+      1 => context.t.time.months.short.jan,
+      2 => context.t.time.months.short.feb,
+      3 => context.t.time.months.short.mar,
+      4 => context.t.time.months.short.apr,
+      5 => context.t.time.months.short.may,
+      6 => context.t.time.months.short.jun,
+      7 => context.t.time.months.short.jul,
+      8 => context.t.time.months.short.aug,
+      9 => context.t.time.months.short.sep,
+      10 => context.t.time.months.short.oct,
+      11 => context.t.time.months.short.nov,
+      12 => context.t.time.months.short.dec,
+      _ => '',
+    };

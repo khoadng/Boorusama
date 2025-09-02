@@ -121,7 +121,7 @@ class SliverPostGrid<T extends Post> extends StatelessWidget {
                     if (e.isServerError)
                       FilledButton(
                         onPressed: _onErrorRetry,
-                        child: Text('Retry'.hc),
+                        child: Text(context.t.generic.action.retry),
                       ),
                   ],
                 ),
