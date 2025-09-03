@@ -11,6 +11,7 @@ import '../../../../../foundation/clipboard.dart';
 import '../../../../downloads/filename/types.dart';
 import '../../../../posts/post/post.dart';
 import '../../../../widgets/compact_chip.dart';
+import '../../../../widgets/info_container.dart';
 
 class TokenOptionHelpModal extends StatelessWidget {
   const TokenOptionHelpModal({
@@ -20,12 +21,15 @@ class TokenOptionHelpModal extends StatelessWidget {
     super.key,
   });
 
-  final String token;
+  final TokenInfo token;
   final List<String> tokenOptions;
   final DownloadFilenameGenerator<Post>? downloadFilenameBuilder;
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(context.t.booru.downloads.filename.available_token_options),
@@ -38,24 +42,35 @@ class TokenOptionHelpModal extends StatelessWidget {
         ],
       ),
       body: tokenOptions.isNotEmpty
-          ? Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  child: Text(
-                    token,
-                    style: Theme.of(context).textTheme.titleLarge,
+          ? CustomScrollView(
+              slivers: [
+                if (token.type == TokenType.async)
+                  SliverToBoxAdapter(
+                    child: WarningContainer(
+                      title: context.t.generic.warning,
+                      contentBuilder: (_) => Text(
+                        context.t.booru.downloads.filename.slow_token_warning,
+                      ),
+                    ),
+                  ),
+                SliverAppBar(
+                  pinned: true,
+                  automaticallyImplyLeading: false,
+                  backgroundColor: colorScheme.surface,
+                  surfaceTintColor: Colors.transparent,
+                  centerTitle: false,
+                  toolbarHeight: kToolbarHeight * 0.8,
+                  title: Text(
+                    token.name,
+                    style: textTheme.titleLarge,
                   ),
                 ),
-                const SizedBox(height: 4),
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: tokenOptions.length,
-                    itemBuilder: (context, index) {
+                SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
                       final option = tokenOptions[index];
                       final docs = downloadFilenameBuilder
-                          ?.getDocsForTokenOption(token, option);
+                          ?.getDocsForTokenOption(token.name, option);
 
                       return ListTile(
                         contentPadding: const EdgeInsets.symmetric(
@@ -96,6 +111,7 @@ class TokenOptionHelpModal extends StatelessWidget {
                         ),
                       );
                     },
+                    childCount: tokenOptions.length,
                   ),
                 ),
               ],

@@ -28,6 +28,7 @@
       "search": "Tìm",
       "view_all": "Xem tất cả"
     },
+    "warning": "Cảnh báo",
     "default": "Mặc định",
     "copied": "Đã sao chép",
     "no_content": "Không có nội dung",
@@ -842,7 +843,8 @@
         "available_tokens": "Token có thể dùng: ",
         "no_token_error": "Token $token không khả dụng",
         "available_token_options": "Các tùy chọn token",
-        "no_options_available": "Không có tùy chọn nào khả dụng"
+        "no_options_available": "Không có tùy chọn nào khả dụng",
+        "slow_token_warning": "Token này sẽ làm tải xuống chậm hơn vì mỗi file cần lấy thêm dữ liệu từ web"
       }
     },
     "appearance": {

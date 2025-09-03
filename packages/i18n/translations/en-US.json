@@ -28,6 +28,7 @@
       "search": "Search",
       "view_all": "View all"
     },
+    "warning": "Warning",
     "default": "Default",
     "copied": "Copied",
     "no_content": "No content",
@@ -841,7 +842,8 @@
         "available_tokens": "Available tokens: ",
         "no_token_error": "Token $token is not available",
         "available_token_options": "Available options",
-        "no_options_available": "No options available"
+        "no_options_available": "No options available",
+        "slow_token_warning": "This token will slow down your downloads as it requires additional data fetching for each file."
       }
     },
     "appearance": {

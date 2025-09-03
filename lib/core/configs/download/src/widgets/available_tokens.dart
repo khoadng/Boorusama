@@ -62,7 +62,7 @@ class AvailableTokens extends ConsumerWidget {
                 context,
                 settings: const RouteSettings(name: 'download_token_options'),
                 builder: (context) => TokenOptionHelpModal(
-                  token: token.name,
+                  token: token,
                   tokenOptions: tokenOptions,
                   downloadFilenameBuilder: downloadFilenameBuilder,
                 ),
