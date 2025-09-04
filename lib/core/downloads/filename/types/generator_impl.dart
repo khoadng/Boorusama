@@ -2,11 +2,13 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:dio/dio.dart';
 import 'package:filename_generator/filename_generator.dart';
 import 'package:foundation/foundation.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
+import '../../../../foundation/loggers.dart';
 import '../../../../foundation/path.dart';
 import '../../../../foundation/utils/collection_utils.dart';
 import '../../../configs/config.dart';
@@ -27,6 +29,7 @@ class DownloadFileNameBuilder<T extends Post>
     required this.sampleData,
     required this.defaultFileNameFormat,
     required this.defaultBulkDownloadFileNameFormat,
+    this.logger,
     this.preload,
     this.bulkPreloadChunkSize = kDefaultBulkPreloadChunkSize,
     this.asyncTokenHandlers = const [],
@@ -57,6 +60,7 @@ class DownloadFileNameBuilder<T extends Post>
     }
   }
 
+  final Logger? logger;
   final Future<void> Function(List<T> posts, BooruConfigAuth config)? preload;
   final int? bulkPreloadChunkSize;
   final List<Map<String, String>> sampleData;
@@ -113,7 +117,12 @@ class DownloadFileNameBuilder<T extends Post>
   Future<Map<String, String?>> _resolveAsyncTokens(
     T post,
     DownloadFilenameTokenOptions options,
+    CancelToken? cancelToken,
   ) async {
+    if (cancelToken?.isCancelled ?? false) {
+      return {};
+    }
+
     final postId = post.id.toString();
 
     // Initialize cache for this post if not exists
@@ -125,24 +134,33 @@ class DownloadFileNameBuilder<T extends Post>
     // Process all async groups
     for (final groupKey in _asyncResolverGroups.keys) {
       if (_asyncCache[postId]![groupKey] != null) {
+        logger?.verbose(
+          'FilenameGenerator',
+          'Using cached async token data for post $postId, group $groupKey',
+        );
         // Use cached data
         result.addAll(_asyncCache[postId]![groupKey]!);
       } else {
         // Start async resolution
         final resolver = _asyncResolverGroups[groupKey]!;
-        pendingGroups[groupKey] = resolver.resolve(post, options).catchError((
-          error,
-        ) {
-          // Fallback to empty on error
-          return <String, String?>{
-            for (final token in resolver.tokenKeys) token: '',
-          };
-        });
+        pendingGroups[groupKey] = resolver
+            .resolve(post, options, cancelToken: cancelToken)
+            .catchError((
+              error,
+            ) {
+              // Fallback to empty on error
+              return <String, String?>{
+                for (final token in resolver.tokenKeys) token: '',
+              };
+            });
       }
     }
 
     // Wait for all pending groups and cache results
     for (final entry in pendingGroups.entries) {
+      if (cancelToken?.isCancelled ?? false) {
+        break;
+      }
       final groupKey = entry.key;
       final resolvedData = await entry.value;
 
@@ -161,6 +179,7 @@ class DownloadFileNameBuilder<T extends Post>
     T post, {
     required Map<String, String>? metadata,
     required String downloadUrl,
+    CancelToken? cancelToken,
   }) async {
     final fallbackName = basename(downloadUrl);
 
@@ -178,7 +197,7 @@ class DownloadFileNameBuilder<T extends Post>
     // Resolve async tokens if needed
     final asyncTokenValues =
         formatContainsAsyncToken(format) && asyncTokenHandlers.isNotEmpty
-        ? await _resolveAsyncTokens(post, options)
+        ? await _resolveAsyncTokens(post, options, cancelToken)
         : <String, String?>{};
 
     final allTokenHandlers = <String, DownloadFilenameTokenHandler<T>>{
@@ -210,6 +229,7 @@ class DownloadFileNameBuilder<T extends Post>
     T post, {
     required String downloadUrl,
     Map<String, String>? metadata,
+    CancelToken? cancelToken,
   }) => _generate(
     settings,
     config,
@@ -217,6 +237,7 @@ class DownloadFileNameBuilder<T extends Post>
     post,
     metadata: metadata,
     downloadUrl: downloadUrl,
+    cancelToken: cancelToken,
   );
 
   @override
@@ -226,6 +247,7 @@ class DownloadFileNameBuilder<T extends Post>
     T post, {
     required String downloadUrl,
     Map<String, String>? metadata,
+    CancelToken? cancelToken,
   }) => _generate(
     settings,
     config,
@@ -233,6 +255,7 @@ class DownloadFileNameBuilder<T extends Post>
     post,
     metadata: metadata,
     downloadUrl: downloadUrl,
+    cancelToken: cancelToken,
   );
 
   @override
@@ -255,7 +278,9 @@ class DownloadFileNameBuilder<T extends Post>
 
     if (preload == null || posts.isEmpty) return PreloadResult.asyncNoPreload;
 
-    final chunks = posts.chunk(bulkPreloadChunkSize ?? kDefaultBulkPreloadChunkSize);
+    final chunks = posts.chunk(
+      bulkPreloadChunkSize ?? kDefaultBulkPreloadChunkSize,
+    );
 
     for (final chunk in chunks) {
       await preload!(chunk, config);

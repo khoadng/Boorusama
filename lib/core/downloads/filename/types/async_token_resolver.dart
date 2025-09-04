@@ -1,3 +1,6 @@
+// Package imports:
+import 'package:dio/dio.dart';
+
 // Project imports:
 import '../../../posts/post/post.dart';
 import '../../../tags/categories/tag_category.dart';
@@ -9,8 +12,9 @@ abstract class AsyncTokenResolver<T extends Post> {
   Set<String> get tokenKeys;
   Future<Map<String, String?>> resolve(
     T post,
-    DownloadFilenameTokenOptions options,
-  );
+    DownloadFilenameTokenOptions options, {
+    CancelToken? cancelToken,
+  });
 }
 
 class ClassicTagsTokenResolver<T extends Post>
@@ -36,8 +40,9 @@ class ClassicTagsTokenResolver<T extends Post>
   @override
   Future<Map<String, String?>> resolve(
     T post,
-    DownloadFilenameTokenOptions options,
-  ) async {
+    DownloadFilenameTokenOptions options, {
+    CancelToken? cancelToken,
+  }) async {
     final extractor = tagExtractor;
 
     if (extractor == null) return {};

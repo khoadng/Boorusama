@@ -3,12 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../core/configs/config/types.dart';
-import '../../../foundation/loggers/providers.dart';
 import '../../../core/search/queries/query.dart';
 import '../../../core/tags/autocompletes/types.dart';
 import '../../../core/tags/local/providers.dart';
 import '../../../core/tags/tag/providers.dart';
 import '../../../core/tags/tag/tag.dart';
+import '../../../foundation/loggers/providers.dart';
 import '../client_provider.dart';
 import 'parser.dart';
 import 'query_composer.dart';

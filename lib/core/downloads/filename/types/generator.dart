@@ -1,4 +1,5 @@
 // Package imports:
+import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:filename_generator/filename_generator.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
@@ -38,6 +39,7 @@ abstract class DownloadFilenameGenerator<T extends Post> {
     T post, {
     required String downloadUrl,
     Map<String, String>? metadata,
+    CancelToken? cancelToken,
   });
 
   Future<String> generateForBulkDownload(
@@ -46,6 +48,7 @@ abstract class DownloadFilenameGenerator<T extends Post> {
     T post, {
     required String downloadUrl,
     Map<String, String>? metadata,
+    CancelToken? cancelToken,
   });
 
   Future<PreloadResult> preloadForBulkDownload(
