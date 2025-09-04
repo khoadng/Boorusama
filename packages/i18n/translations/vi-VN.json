@@ -841,6 +841,7 @@
       "custom_filename_format": "Định dạng tên file tùy chỉnh",
       "custom_filename_format_invidual": "Tải riêng lẻ",
       "custom_filename_format_bulk": "Tải hàng loạt",
+      "bulk_slow_token_warning": "Sử dụng token chậm khi tải hàng loạt sẽ mất RẤT nhiều thời gian để khởi động trước khi bắt đầu tải, cân nhắc không sử dụng nếu có thể.",
       "filename": {
         "available_tokens": "Token có thể dùng: ",
         "no_token_error": "Token $token không khả dụng",

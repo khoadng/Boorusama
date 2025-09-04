@@ -25,6 +25,7 @@ class DownloadFormatCard extends ConsumerStatefulWidget {
     required this.title,
     super.key,
     this.previewBuilder,
+    this.textController,
   });
 
   final DownloadFilenameGenerator<Post>? downloadFilenameBuilder;
@@ -38,6 +39,7 @@ class DownloadFormatCard extends ConsumerStatefulWidget {
     String format,
   )?
   previewBuilder;
+  final RichTextController? textController;
 
   @override
   ConsumerState<DownloadFormatCard> createState() => _DownloadFormatCardState();
@@ -50,17 +52,21 @@ class _DownloadFormatCardState extends ConsumerState<DownloadFormatCard> {
   void initState() {
     super.initState();
 
-    textController = RichTextController(
-      text: widget.format,
-      matchers: ref
-          .read(downloadFilenameBuilderProvider(widget.config.auth))
-          ?.textMatchers,
-    );
+    textController =
+        widget.textController ??
+        RichTextController(
+          text: widget.format,
+          matchers: ref
+              .read(downloadFilenameBuilderProvider(widget.config.auth))
+              ?.textMatchers,
+        );
   }
 
   @override
   void dispose() {
-    textController.dispose();
+    if (widget.textController == null) {
+      textController.dispose();
+    }
     super.dispose();
   }
 

@@ -8,6 +8,7 @@ import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
 import '../../../../foundation/path.dart';
+import '../../../../foundation/utils/collection_utils.dart';
 import '../../../configs/config.dart';
 import '../../../posts/post/post.dart';
 import '../../../settings/settings.dart';
@@ -17,6 +18,8 @@ import 'generator.dart';
 import 'token_handler.dart';
 import 'token_options.dart';
 
+const kDefaultBulkPreloadChunkSize = 50;
+
 class DownloadFileNameBuilder<T extends Post>
     implements DownloadFilenameGenerator<T> {
   DownloadFileNameBuilder({
@@ -24,6 +27,8 @@ class DownloadFileNameBuilder<T extends Post>
     required this.sampleData,
     required this.defaultFileNameFormat,
     required this.defaultBulkDownloadFileNameFormat,
+    this.preload,
+    this.bulkPreloadChunkSize = kDefaultBulkPreloadChunkSize,
     this.asyncTokenHandlers = const [],
     bool hasRating = true,
     bool hasMd5 = true,
@@ -52,6 +57,8 @@ class DownloadFileNameBuilder<T extends Post>
     }
   }
 
+  final Future<void> Function(List<T> posts, BooruConfigAuth config)? preload;
+  final int? bulkPreloadChunkSize;
   final List<Map<String, String>> sampleData;
   late final Map<String, DownloadFilenameTokenHandler<T>> baseTokenHandlers;
   late final List<AsyncTokenHandler<T>> asyncTokenHandlers;
@@ -168,15 +175,14 @@ class DownloadFileNameBuilder<T extends Post>
       metadata: metadata,
     );
 
-    // Resolve async tokens if any exist
-    final asyncTokenValues = asyncTokenHandlers.isNotEmpty
+    // Resolve async tokens if needed
+    final asyncTokenValues =
+        formatContainsAsyncToken(format) && asyncTokenHandlers.isNotEmpty
         ? await _resolveAsyncTokens(post, options)
         : <String, String?>{};
 
-    // Create complete token handlers map (sync + resolved async)
     final allTokenHandlers = <String, DownloadFilenameTokenHandler<T>>{
       ...baseTokenHandlers,
-      // Add async tokens as sync handlers with resolved values
       for (final entry in asyncTokenValues.entries)
         entry.key: (_, _) => entry.value,
     };
@@ -228,6 +234,38 @@ class DownloadFileNameBuilder<T extends Post>
     metadata: metadata,
     downloadUrl: downloadUrl,
   );
+
+  @override
+  bool formatContainsAsyncToken(String? format) {
+    if (format == null || format.isEmpty) return false;
+    return _formatContainsAsyncTokens(format, asyncTokenHandlers);
+  }
+
+  @override
+  Future<PreloadResult> preloadForBulkDownload(
+    List<T> posts,
+    BooruConfigAuth config,
+    BooruConfigDownload downloadConfig,
+  ) async {
+    final bulkFormat = downloadConfig.bulkFileNameFormat;
+
+    final hasAsyncTokens = formatContainsAsyncToken(bulkFormat);
+    // skip if no async tokens
+    if (!hasAsyncTokens) return PreloadResult.sync;
+
+    if (preload == null || posts.isEmpty) return PreloadResult.asyncNoPreload;
+
+    final chunks = posts.chunk(bulkPreloadChunkSize ?? kDefaultBulkPreloadChunkSize);
+
+    for (final chunk in chunks) {
+      await preload!(chunk, config);
+
+      // Small delay to avoid spamming
+      await Future.delayed(const Duration(milliseconds: 500));
+    }
+
+    return PreloadResult.asyncPreload;
+  }
 
   @override
   List<String> getTokenOptions(String token) {
@@ -309,6 +347,15 @@ class DownloadFileNameBuilder<T extends Post>
 
   @override
   final String defaultFileNameFormat;
+}
+
+bool _formatContainsAsyncTokens(
+  String format,
+  List<AsyncTokenHandler> asyncTokenHandlers,
+) {
+  return asyncTokenHandlers.any(
+    (handler) => formatContainsAnyToken(format, handler.tokenKeys),
+  );
 }
 
 const fallbackFileNameFormat = '{uuid:version=1}.{extension}';

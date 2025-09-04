@@ -23,6 +23,7 @@ import 'notes/providers.dart';
 import 'posts/providers.dart';
 import 'syntax/providers.dart';
 import 'tags/providers.dart';
+import 'tags/utils.dart';
 
 class GelbooruRepository extends BooruRepositoryDefault {
   const GelbooruRepository({required this.ref});
@@ -93,6 +94,13 @@ class GelbooruRepository extends BooruRepositoryDefault {
       defaultFileNameFormat: kDefaultCustomDownloadFileNameFormat,
       defaultBulkDownloadFileNameFormat: kDefaultCustomDownloadFileNameFormat,
       sampleData: kDanbooruPostSamples,
+      preload: (posts, config) async {
+        final tagResolver = ref.read(gelbooruTagResolverProvider(config));
+
+        final tags = posts.map((e) => e.tags).toSet().expand((e) => e).toSet();
+
+        await resolveGelbooruRawTags(tags, tagResolver);
+      },
       tokenHandlers: [
         WidthTokenHandler(),
         HeightTokenHandler(),

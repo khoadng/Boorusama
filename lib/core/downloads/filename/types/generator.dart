@@ -48,6 +48,14 @@ abstract class DownloadFilenameGenerator<T extends Post> {
     Map<String, String>? metadata,
   });
 
+  Future<PreloadResult> preloadForBulkDownload(
+    List<T> posts,
+    BooruConfigAuth config,
+    BooruConfigDownload downloadConfig,
+  );
+
+  bool formatContainsAsyncToken(String? format);
+
   String generateSample(String format);
 
   List<String> generateSamples(String format);
@@ -61,3 +69,9 @@ typedef DownloadFilenameTokenHandler<T extends Post> =
       T post,
       DownloadFilenameTokenOptions options,
     );
+
+enum PreloadResult {
+  sync,
+  asyncNoPreload,
+  asyncPreload,
+}

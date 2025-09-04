@@ -18,7 +18,7 @@ import '../../../download_manager/providers.dart';
 import '../../../downloads/downloader/providers.dart';
 import '../../../downloads/downloader/types.dart';
 import '../../../downloads/filename/providers.dart';
-import '../../../downloads/filename/types/generator_impl.dart';
+import '../../../downloads/filename/types.dart';
 import '../../../downloads/urls/providers.dart';
 import '../../../http/http.dart';
 import '../../../http/providers.dart';
@@ -49,6 +49,7 @@ import 'package:background_downloader/background_downloader.dart'
     hide DownloadTask, PermissionStatus;
 
 const _serviceName = 'Bulk Download Manager';
+const kBulkDownloadAsyncDelay = Duration(milliseconds: 1000);
 
 final bulkDownloadProvider =
     NotifierProvider<BulkDownloadNotifier, BulkDownloadState>(
@@ -520,6 +521,15 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
 
       rawPosts = result.posts;
 
+      final preloadResult = await fileNameBuilder.preloadForBulkDownload(
+        rawPosts,
+        config.auth,
+        config.download,
+      );
+
+      final asyncFilenameNoPreload =
+          preloadResult == PreloadResult.asyncNoPreload;
+
       var cumulativeIndex = 0;
       while (currentSession?.status == DownloadSessionStatus.dryRun) {
         final records = <DownloadRecord>[];
@@ -542,6 +552,13 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
             },
             downloadUrl: urlData.url,
           );
+
+          if (asyncFilenameNoPreload) {
+            // If file name generation requires async but no preload was done, delay each generation to prevent spamming the server with requests
+            await Future.delayed(
+              kBulkDownloadAsyncDelay,
+            );
+          }
 
           if (task.skipIfExists) {
             final exists = fileExistChecker.exists(fileName, task.path);
