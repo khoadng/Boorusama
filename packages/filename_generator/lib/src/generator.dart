@@ -102,3 +102,15 @@ String fillArrayInString(
     },
   );
 }
+
+bool formatContainsAnyToken(
+  String format,
+  Iterable<String> tokens, {
+  TokenizerConfigs? configs,
+}) {
+  final cfg = configs ?? TokenizerConfigs.defaultConfigs();
+  final parsedTokens = parse(cfg, format);
+  final presentTokens = parsedTokens.map((e) => e.token.name).toSet();
+
+  return tokens.any((token) => presentTokens.contains(token));
+}
