@@ -76,11 +76,4 @@ class ConsoleLogger extends Logger {
     developer.log(_composeMessage(serviceName, message, green));
   }
 
-  @override
-  String dump() => '';
-
-  @override
-  void clearLogsAtOrBelow(LogLevel level) {
-    // ConsoleLogger does not store logs, so this is a no-op.
-  }
 }

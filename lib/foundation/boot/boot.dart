@@ -9,7 +9,9 @@ import 'failsafe.dart';
 Future<void> initializeApp({
   required Future<void> Function(BootData) bootFunc,
 }) async {
-  final appLogger = AppLogger();
+  final appLogger = AppLogger(
+    initialLevel: LogLevel.debug,
+  );
   final logger = await loggerWith(appLogger);
   logger.debugBoot('Initialize logger');
 
@@ -28,7 +30,7 @@ Future<void> initializeApp({
     await failsafe(
       error: e,
       stackTrace: st,
-      logger: logger,
+      appLogger: appLogger,
     );
   }
 }

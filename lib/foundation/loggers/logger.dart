@@ -19,73 +19,8 @@ abstract class Logger {
   void error(String serviceName, String message);
   void verbose(String serviceName, String message);
   void debug(String serviceName, String message);
-
-  String dump();
-  void clearLogsAtOrBelow(LogLevel level);
 }
 
-class ThresholdLogger implements Logger {
-  ThresholdLogger({
-    required this.delegate,
-    LogLevel initialLevel = LogLevel.info,
-  }) : _currentLevel = initialLevel;
-
-  final Logger delegate;
-  LogLevel _currentLevel;
-
-  // ignore: use_setters_to_change_properties
-  void updateLevel(LogLevel newLevel) {
-    _currentLevel = newLevel;
-  }
-
-  LogLevel get currentLevel => _currentLevel;
-
-  @override
-  String getDebugName() => delegate.getDebugName();
-
-  @override
-  void debug(String serviceName, String message) {
-    if (LogLevel.debug.shouldLog(_currentLevel)) {
-      delegate.debug(serviceName, message);
-    }
-  }
-
-  @override
-  void verbose(String serviceName, String message) {
-    if (LogLevel.verbose.shouldLog(_currentLevel)) {
-      delegate.verbose(serviceName, message);
-    }
-  }
-
-  @override
-  void info(String serviceName, String message) {
-    if (LogLevel.info.shouldLog(_currentLevel)) {
-      delegate.info(serviceName, message);
-    }
-  }
-
-  @override
-  void warn(String serviceName, String message) {
-    if (LogLevel.warning.shouldLog(_currentLevel)) {
-      delegate.warn(serviceName, message);
-    }
-  }
-
-  @override
-  void error(String serviceName, String message) {
-    if (LogLevel.error.shouldLog(_currentLevel)) {
-      delegate.error(serviceName, message);
-    }
-  }
-
-  @override
-  String dump() => delegate.dump();
-
-  @override
-  void clearLogsAtOrBelow(LogLevel level) {
-    delegate.clearLogsAtOrBelow(level);
-  }
-}
 
 extension LoggerX on Logger {
   void log(

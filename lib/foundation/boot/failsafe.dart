@@ -21,12 +21,12 @@ import '../picker.dart';
 Future<void> failsafe({
   required Object error,
   required StackTrace stackTrace,
-  required Logger logger,
+  required AppLogger appLogger,
 }) async {
   final deviceInfo = await DeviceInfoService(
     plugin: DeviceInfoPlugin(),
   ).getDeviceInfo();
-  final logs = logger.dump();
+  final logs = appLogger.dump();
 
   runApp(
     ProviderScope(

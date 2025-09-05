@@ -46,25 +46,4 @@ class MultiChannelLogger implements Logger {
     }
   }
 
-  @override
-  String dump() {
-    final buffer = StringBuffer();
-    for (final logger in loggers) {
-      final logDump = logger.dump();
-      if (logDump.isNotEmpty) {
-        buffer
-          ..writeln('--- ${logger.getDebugName()} ---')
-          ..writeln(logDump)
-          ..writeln('--- End of ${logger.getDebugName()} ---\n');
-      }
-    }
-    return buffer.toString();
-  }
-
-  @override
-  void clearLogsAtOrBelow(LogLevel level) {
-    for (final logger in loggers) {
-      logger.clearLogsAtOrBelow(level);
-    }
-  }
 }

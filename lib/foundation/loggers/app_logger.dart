@@ -9,74 +9,94 @@ typedef LogData = ({
 });
 
 class AppLogger implements Logger {
+  AppLogger({LogLevel initialLevel = LogLevel.info})
+    : _currentLevel = initialLevel;
+
   final List<LogData> _logs = [];
+  LogLevel _currentLevel;
+
+  // ignore: use_setters_to_change_properties
+  void updateLevel(LogLevel newLevel) {
+    _currentLevel = newLevel;
+  }
+
+  LogLevel get currentLevel => _currentLevel;
 
   @override
   String getDebugName() => 'App Logger';
 
   @override
   void error(String serviceName, String message) {
-    _logs.add(
-      (
-        dateTime: DateTime.now(),
-        serviceName: serviceName,
-        message: message,
-        level: LogLevel.error,
-      ),
-    );
+    if (LogLevel.error.shouldLog(_currentLevel)) {
+      _logs.add(
+        (
+          dateTime: DateTime.now(),
+          serviceName: serviceName,
+          message: message,
+          level: LogLevel.error,
+        ),
+      );
+    }
   }
 
   @override
   void info(String serviceName, String message) {
-    _logs.add(
-      (
-        dateTime: DateTime.now(),
-        serviceName: serviceName,
-        message: message,
-        level: LogLevel.info,
-      ),
-    );
+    if (LogLevel.info.shouldLog(_currentLevel)) {
+      _logs.add(
+        (
+          dateTime: DateTime.now(),
+          serviceName: serviceName,
+          message: message,
+          level: LogLevel.info,
+        ),
+      );
+    }
   }
 
   @override
   void warn(String serviceName, String message) {
-    _logs.add(
-      (
-        dateTime: DateTime.now(),
-        serviceName: serviceName,
-        message: message,
-        level: LogLevel.warning,
-      ),
-    );
+    if (LogLevel.warning.shouldLog(_currentLevel)) {
+      _logs.add(
+        (
+          dateTime: DateTime.now(),
+          serviceName: serviceName,
+          message: message,
+          level: LogLevel.warning,
+        ),
+      );
+    }
   }
 
   @override
   void verbose(String serviceName, String message) {
-    _logs.add(
-      (
-        dateTime: DateTime.now(),
-        serviceName: serviceName,
-        message: message,
-        level: LogLevel.verbose,
-      ),
-    );
+    if (LogLevel.verbose.shouldLog(_currentLevel)) {
+      _logs.add(
+        (
+          dateTime: DateTime.now(),
+          serviceName: serviceName,
+          message: message,
+          level: LogLevel.verbose,
+        ),
+      );
+    }
   }
 
   @override
   void debug(String serviceName, String message) {
-    _logs.add(
-      (
-        dateTime: DateTime.now(),
-        serviceName: serviceName,
-        message: message,
-        level: LogLevel.debug,
-      ),
-    );
+    if (LogLevel.debug.shouldLog(_currentLevel)) {
+      _logs.add(
+        (
+          dateTime: DateTime.now(),
+          serviceName: serviceName,
+          message: message,
+          level: LogLevel.debug,
+        ),
+      );
+    }
   }
 
   List<LogData> get logs => _logs;
 
-  @override
   String dump() {
     final buffer = StringBuffer();
     for (final log in logs) {
@@ -85,7 +105,6 @@ class AppLogger implements Logger {
     return buffer.toString();
   }
 
-  @override
   void clearLogsAtOrBelow(LogLevel level) {
     _logs.removeWhere((log) => log.level.priority <= level.priority);
   }

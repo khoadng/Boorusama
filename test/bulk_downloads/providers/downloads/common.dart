@@ -62,12 +62,6 @@ class DummyLogger implements Logger {
 
   @override
   void debug(String serviceName, String message) {}
-
-  @override
-  String dump() => '';
-
-  @override
-  void clearLogsAtOrBelow(LogLevel level) {}
 }
 
 class DownloadTestConstants {
