@@ -33,7 +33,6 @@ class PremiumInteractionBlock extends ConsumerWidget {
             children: [
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Container(
                     padding: const EdgeInsets.symmetric(

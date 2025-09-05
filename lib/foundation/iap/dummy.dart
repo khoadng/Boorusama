@@ -69,7 +69,7 @@ class DummySubscriptionManager implements SubscriptionManager {
   }
 
   @override
-  Future<String?> get managementURL => Future.value(null);
+  Future<String?> get managementURL => Future.value();
 
   @override
   Future<List<Package>> getActiveSubscriptions() {

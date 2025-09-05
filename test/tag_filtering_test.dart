@@ -349,7 +349,6 @@ void main() {
               tags: {'a', 'b', 'c'},
               rating: Rating.explicit,
               score: -10,
-              downvotes: null,
             ),
             'a downvotes:<5',
           ),
@@ -575,7 +574,6 @@ void main() {
           AutocompleteData.fromJson(const {'value': 'b', 'label': 'b'}),
         ],
         {'a'},
-        shouldFilter: true,
       );
 
       expect(result.length, 1);
@@ -592,7 +590,6 @@ void main() {
           AutocompleteData.fromJson(const {'value': 'b', 'label': 'b'}),
         ],
         {'a_b'},
-        shouldFilter: true,
       );
 
       expect(result.length, 1);
@@ -608,7 +605,6 @@ void main() {
           AutocompleteData.fromJson(const {'value': 'b', 'label': 'b'}),
         ],
         {'a'},
-        shouldFilter: true,
       );
 
       expect(result.length, 1);
@@ -627,7 +623,6 @@ void main() {
           AutocompleteData.fromJson(const {'value': 'b', 'label': 'b'}),
         ],
         {'a'},
-        shouldFilter: true,
       );
 
       expect(result.length, 1);

@@ -290,7 +290,6 @@ class DefaultInnerSearchButton extends StatelessWidget {
                   scale: allowSearch ? 1.0 : 0.0,
                   duration: const Duration(milliseconds: 250),
                   curve: Curves.easeOutBack,
-                  alignment: Alignment.center,
                   child: searchButton,
                 ),
               );

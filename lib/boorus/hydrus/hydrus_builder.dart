@@ -131,7 +131,6 @@ class HydrusBuilder
   @override
   CreateUnknownBooruWidgetsBuilder get unknownBooruWidgetsBuilder =>
       (context) => const UnknownBooruWidgetsBuilder(
-        loginField: null,
         apiKeyField: DefaultBooruApiKeyField(),
         credentialsNeeded: true,
         submitButton: HydrusUnknownBooruSubmitButton(),

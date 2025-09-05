@@ -44,7 +44,6 @@ class DonationPage extends ConsumerWidget {
 
   Widget _buildTextButtons(AppInfo appInfo) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: appInfo.donationUrls
           .map(

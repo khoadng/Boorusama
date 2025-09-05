@@ -113,7 +113,7 @@ class _ZipPreviewDialogState extends ConsumerState<ZipPreviewDialog> {
       children: [
         Expanded(
           child: ElevatedButton(
-            onPressed: () => Navigator.of(context).pop(null),
+            onPressed: () => Navigator.of(context).pop(),
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 12),
               child: Text(
