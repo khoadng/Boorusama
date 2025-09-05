@@ -162,8 +162,8 @@
       "none": "Trống",
       "edit": "Sửa",
       "use_default": "Dùng mặc định",
-      "toggle_bookmark": "Đảo chiều đánh dấu",
-      "toggle_favorite": "Đảo chiều yêu thích",
+      "toggle_bookmark": "Bật/tắt đánh dấu",
+      "toggle_favorite": "Bật/tắt yêu thích",
       "view_in_browser": "Xem bằng trình duyệt",
       "view_original": "Xem ảnh gốc"
     },
