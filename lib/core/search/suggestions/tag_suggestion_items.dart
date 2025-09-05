@@ -48,7 +48,6 @@ class TagSuggestionItems extends ConsumerWidget {
     return _tags.isNotEmpty
         ? Material(
             color: backgroundColor ?? Theme.of(context).colorScheme.surface,
-            elevation: 0,
             borderRadius:
                 borderRadius ?? const BorderRadius.all(Radius.circular(8)),
             child: ListView.builder(

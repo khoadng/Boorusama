@@ -23,7 +23,7 @@ final animePicturesPostRepoProvider =
           fetchSingle: (id, {options}) {
             final numericId = id as NumericPostId?;
 
-            if (numericId == null) return Future.value(null);
+            if (numericId == null) return Future.value();
 
             return client.getPostDetails(id: numericId.value).then(
               (e) {

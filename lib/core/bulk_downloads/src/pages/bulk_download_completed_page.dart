@@ -38,7 +38,6 @@ class _BulkDownloadCompletedPageState
     final repo = await ref.read(downloadRepositoryProvider.future);
     final newItems = await repo.getCompletedSessions(
       offset: pageKey - 1,
-      limit: _pageSize,
     );
 
     return newItems;

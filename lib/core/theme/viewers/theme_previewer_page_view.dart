@@ -81,7 +81,6 @@ class _ThemePreviewPageViewState extends State<ThemePreviewPageView> {
                   activeDotColor: colorScheme.primary,
                   dotColor: colorScheme.outlineVariant.withValues(alpha: 0.25),
                   dotHeight: 8,
-                  dotWidth: 16,
                 ),
               );
             },

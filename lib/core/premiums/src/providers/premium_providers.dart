@@ -31,8 +31,8 @@ final premiumManagementURLProvider = FutureProvider.autoDispose<String?>((
   final isFoss = ref.watch(isFossBuildProvider);
   if (isFoss) return null;
 
-  if (kPremiumMode == PremiumMode.hidden) return Future.value(null);
-  if (kPremiumMode == PremiumMode.premium) return Future.value(null);
+  if (kPremiumMode == PremiumMode.hidden) return Future.value();
+  if (kPremiumMode == PremiumMode.premium) return Future.value();
 
   return (await ref.watch(subscriptionManagerProvider.future)).managementURL;
 });

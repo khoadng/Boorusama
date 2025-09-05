@@ -89,7 +89,6 @@ class _EditFavoriteGroupDialogState
           BooruTextField(
             autofocus: true,
             controller: nameController,
-            maxLines: 1,
             textInputAction: TextInputAction.done,
             decoration: InputDecoration(
               hintText: context.t.favorite_groups.group_name_hint,

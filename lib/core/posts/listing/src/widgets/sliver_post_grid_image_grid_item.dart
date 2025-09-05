@@ -145,7 +145,6 @@ class SliverPostGridImageGridItem<T extends Post> extends ConsumerWidget {
               )
             else
               Align(
-                alignment: Alignment.center,
                 child: overlay.overlay,
               ),
           ],

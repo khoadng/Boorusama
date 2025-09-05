@@ -52,7 +52,6 @@ final defaultDioProvider = Provider.family<Dio, BooruConfigAuth>((ref, config) {
         config: const SlidingWindowRateLimitConfig(
           requestsPerWindow: 10,
           windowSizeMs: 1000,
-          maxDelayMs: 5000,
         ),
       ),
     ],

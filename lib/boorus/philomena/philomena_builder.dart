@@ -132,7 +132,6 @@ class PhilomenaBuilder
   @override
   CreateUnknownBooruWidgetsBuilder get unknownBooruWidgetsBuilder =>
       (context) => const UnknownBooruWidgetsBuilder(
-        loginField: null,
         apiKeyField: DefaultBooruApiKeyField(),
       );
 }

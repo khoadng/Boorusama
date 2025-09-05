@@ -170,7 +170,6 @@ void main() {
 
           final staleCachedTag = TestHelpers.createCachedTag(
             'duplicate_tag',
-            postCount: 100,
             age: const Duration(days: 1),
           );
 
@@ -262,7 +261,6 @@ void main() {
           tagCacheBuilder: () async => mockTagCache,
           siteHost: TestConstants.siteHost,
           cachedTagMapper: mockCachedTagMapper,
-          tagRepositoryBuilder: null,
         );
       });
 
@@ -640,7 +638,6 @@ void main() {
 
           final foundTag = TestHelpers.createCachedTag(
             'duplicate_across_collections',
-            postCount: 100,
             age: const Duration(days: 1),
           );
 
@@ -740,7 +737,6 @@ void main() {
         final cachedTags = [
           TestHelpers.createCachedTag(
             'fresh_tag',
-            postCount: 100,
             age: const Duration(minutes: 30),
           ),
         ];
@@ -840,7 +836,6 @@ void main() {
         final cachedTags = [
           TestHelpers.createCachedTag(
             'fresh_tag',
-            postCount: 100,
             age: const Duration(minutes: 30),
           ),
         ];
@@ -881,7 +876,6 @@ void main() {
 
         final staleCachedTag = TestHelpers.createCachedTag(
           'stale_tag',
-          postCount: 100,
           age: const Duration(days: 1),
         );
 
