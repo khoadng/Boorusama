@@ -236,15 +236,15 @@ class SelectionIndicatorPainter extends CustomPainter {
   final Color primaryColor;
   final Color onPrimaryColor;
 
-  late final Paint _borderPaint = Paint()
+  late final _borderPaint = Paint()
     ..color = Colors.white
     ..style = PaintingStyle.stroke
     ..strokeWidth = 1.0
     ..strokeCap = StrokeCap.round;
 
-  late final Paint _fillPaint = Paint()..style = PaintingStyle.fill;
+  late final _fillPaint = Paint()..style = PaintingStyle.fill;
 
-  late final Paint _checkPaint = Paint()
+  late final _checkPaint = Paint()
     ..color = onPrimaryColor
     ..style = PaintingStyle.stroke
     ..strokeWidth = 3.0

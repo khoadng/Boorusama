@@ -5,13 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
 
-const double _kFocusedBackgroundAlpha = 0.1;
-const double _kShadowOffset = 0.5;
+const _kFocusedBackgroundAlpha = 0.1;
+const _kShadowOffset = 0.5;
 
-const String _kTagSeparator = '_(';
-const String _kOpenParen = '(';
-const String _kCloseParen = ')';
-const int _kTagSeparatorOffset = 1;
+const _kTagSeparator = '_(';
+const _kOpenParen = '(';
+const _kCloseParen = ')';
+const _kTagSeparatorOffset = 1;
 
 const Color _kDefaultOrColor = Colors.purple;
 

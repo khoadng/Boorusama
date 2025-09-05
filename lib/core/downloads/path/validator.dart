@@ -1,7 +1,7 @@
-const String _basePath = '/storage/emulated';
-const String _sdCardBasePath = '/storage';
+const _basePath = '/storage/emulated';
+const _sdCardBasePath = '/storage';
 
-const List<String> _allowedDownloadFolders = [
+const _allowedDownloadFolders = <String>[
   'Download',
   // 'Downloads',
   'Documents',

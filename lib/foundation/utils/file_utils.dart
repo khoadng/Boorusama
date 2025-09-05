@@ -17,7 +17,7 @@ class DirectorySizeInfo {
   final int fileCount;
   final int directoryCount;
 
-  static DirectorySizeInfo zero = DirectorySizeInfo(
+  static var zero = DirectorySizeInfo(
     directoryCount: 0,
     fileCount: 0,
     size: 0,

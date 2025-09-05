@@ -50,7 +50,7 @@ class PostDetailsPageViewController extends ChangeNotifier
   late final _pageController = PageController(
     initialPage: initialPage,
   );
-  final DraggableScrollableController _sheetController =
+  final _sheetController =
       DraggableScrollableController();
 
   final bool Function() checkIfLargeScreen;

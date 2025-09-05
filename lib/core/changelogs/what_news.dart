@@ -9,7 +9,7 @@ import 'package:version/version.dart';
 const kChangelogKey = 'changelog';
 const kPreviousVersionKey = 'changelog_previous_version';
 
-const String _assetUrl = 'CHANGELOG.md';
+const _assetUrl = 'CHANGELOG.md';
 
 sealed class ReleaseVersion {
   const ReleaseVersion();

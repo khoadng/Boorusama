@@ -122,7 +122,7 @@ class E621Builder
       ke621AltHomeView;
 
   @override
-  final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder(
+  final postDetailsUIBuilder = PostDetailsUIBuilder(
     preview: {
       DetailsPart.info: (context) =>
           const DefaultInheritedInformationSection<E621Post>(

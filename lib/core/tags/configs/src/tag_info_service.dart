@@ -8,7 +8,7 @@ import 'package:flutter/services.dart';
 import '../../metatag/metatag.dart';
 import 'tag_info.dart';
 
-const String _assetUrl = 'assets/tagdef.json';
+const _assetUrl = 'assets/tagdef.json';
 
 class TagInfoService {
   const TagInfoService({

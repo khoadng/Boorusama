@@ -53,7 +53,7 @@ class _BooruVideoState extends State<BooruVideo> {
   late VideoPlayerController _videoPlayerController;
   bool? _initialized;
   String? _error;
-  bool _previouslyReportedInitializing = false;
+  var _previouslyReportedInitializing = false;
   Timer? _timer;
 
   @override

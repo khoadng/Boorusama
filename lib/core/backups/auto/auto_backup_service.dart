@@ -88,8 +88,8 @@ class AutoBackupService {
   final Logger logger;
   final BackupRegistry registry;
 
-  static const String _manifestFileName = 'auto_backup_manifest.json';
-  static const String _backupFolderName = 'boorusama_auto_backups';
+  static const _manifestFileName = 'auto_backup_manifest.json';
+  static const _backupFolderName = 'boorusama_auto_backups';
 
   Future<BulkExportResult> performBackup(
     AutoBackupSettings settings, {

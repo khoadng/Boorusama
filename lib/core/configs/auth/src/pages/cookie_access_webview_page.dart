@@ -23,7 +23,7 @@ class CookieAccessWebViewPage extends StatefulWidget {
 }
 
 class _CookieAccessWebViewPageState extends State<CookieAccessWebViewPage> {
-  final WebViewController controller = WebViewController();
+  final controller = WebViewController();
 
   @override
   void initState() {

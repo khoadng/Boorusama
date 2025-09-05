@@ -7,7 +7,7 @@ bool _defaultTransientHttpStatusCodePredicate(int statusCode) {
   return defaultTransientHttpStatusCodes.contains(statusCode);
 }
 
-const List<int> defaultTransientHttpStatusCodes = [
+const defaultTransientHttpStatusCodes = <int>[
   0,
   408,
   500,

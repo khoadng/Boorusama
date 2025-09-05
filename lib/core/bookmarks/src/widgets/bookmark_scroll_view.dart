@@ -50,7 +50,7 @@ class BookmarkScrollView extends ConsumerStatefulWidget {
 }
 
 class _BookmarkScrollViewState extends ConsumerState<BookmarkScrollView> {
-  final SelectionModeController _selectionModeController =
+  final _selectionModeController =
       SelectionModeController();
 
   @override

@@ -23,7 +23,7 @@ class ProtectionOrchestrator {
   final Map<String, ProtectionSolver> _solvers;
   final UserAgentProvider _userAgentProvider;
 
-  bool _hasSolvedChallenge = false;
+  var _hasSolvedChallenge = false;
 
   // Key to track which URIs are currently being processed
   final Map<String, Completer<bool>> _inProgress = {};

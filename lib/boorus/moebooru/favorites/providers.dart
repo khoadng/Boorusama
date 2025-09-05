@@ -11,7 +11,7 @@ final moebooruFavoritesProvider =
       MoebooruFavoritesNotifier.new,
     );
 
-CancelToken _cancelToken = CancelToken();
+var _cancelToken = CancelToken();
 
 class MoebooruFavoritesNotifier extends FamilyNotifier<Set<String>?, int> {
   @override
