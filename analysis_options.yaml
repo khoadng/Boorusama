@@ -1,11 +1,14 @@
-include: package:flutter_lints/flutter.yaml
-
+include: all_lint_rules.yaml
 analyzer:
   exclude:
     - "**/*.g.dart"
     - "**/generated_plugin_registrant.dart"
     - "**/firebase_options.dart"
   errors:
+    # Otherwise cause the import of all_lint_rules to warn because of some rules conflicts.
+    # We explicitly enabled even conflicting rules and are fixing the conflict
+    # in this file
+    included_file_warning: ignore
     unnecessary_lambdas: ignore
     invalid_annotation_target: ignore
     missing_return: error
@@ -14,87 +17,112 @@ analyzer:
 
 linter:
   rules:
-    - always_declare_return_types
-    - always_put_required_named_parameters_first
-    - avoid_escaping_inner_quotes
-    - avoid_field_initializers_in_const_classes
-    - avoid_multiple_declarations_per_line
-    - avoid_private_typedef_functions
-    - avoid_returning_this
-    - avoid_setters_without_getters
-    - avoid_slow_async_io
-    - avoid_type_to_string
-    - avoid_types_on_closure_parameters
-    - avoid_unused_constructor_parameters
-    - avoid_void_async
-    - cancel_subscriptions
-    - cascade_invocations
-    - cast_nullable_to_non_nullable
-    - close_sinks
-    - combinators_ordering
-    - comment_references
-    - conditional_uri_does_not_exist
-    - deprecated_consistency
-    - deprecated_member_use_from_same_package
-    - eol_at_end_of_file
-    - invalid_case_patterns
-    - join_return_with_assignment
-    - leading_newlines_in_multiline_strings
-    - literal_only_boolean_expressions
-    - matching_super_parameters
-    - missing_whitespace_between_adjacent_strings
-    - no_adjacent_strings_in_list
-    - no_default_cases
-    - no_literal_bool_comparisons
-    - no_runtimeType_toString
-    - no_self_assignments
-    - noop_primitive_operations
-    - omit_local_variable_types
-    - omit_obvious_local_variable_types
-    - only_throw_errors
-    - parameter_assignments
-    - prefer_asserts_in_initializer_lists
-    - prefer_asserts_with_message
-    - prefer_constructors_over_static_methods
-    - prefer_const_constructors
-    - prefer_const_declarations
-    - prefer_const_literals_to_create_immutables
-    - prefer_final_in_for_each
-    - prefer_final_locals
-    - prefer_if_elements_to_conditional_expressions
-    - prefer_int_literals
-    - prefer_mixin
-    - prefer_relative_imports
-    - prefer_single_quotes
-    - prefer_void_to_null
-    - require_trailing_commas
-    - sized_box_shrink_expand
-    - sort_constructors_first
-    - sort_unnamed_constructors_first
-    - test_types_in_equals
-    - throw_in_finally
-    - tighten_type_of_initializing_formals
-    - unawaited_futures
-    - unnecessary_await_in_return
-    - unnecessary_breaks
-    - unnecessary_lambdas
-    - unnecessary_library_directive
-    - unnecessary_null_aware_operator_on_extension_on_nullable
-    - unnecessary_null_checks
-    - unnecessary_parenthesis
-    - unnecessary_raw_strings
-    - unnecessary_statements
-    - unreachable_from_main
-    - use_colored_box
-    - use_decorated_box
-    - use_enums
-    - use_named_constants
-    - use_raw_strings
-    - use_setters_to_change_properties
-    - use_string_buffers
-    - use_test_throws_matchers
-    - use_to_and_as_if_applicable
-    - use_truncating_division
+    # Maybe later, keep using import_sorter for now
+    directives_ordering: false
+
+    # Honestly, I'm not sure how to fix these without making the code looks worse
+    unsafe_variance: false
+
+    # I prefer to keep local packages together and at the top
+    sort_pub_dependencies: false
+
+    # I use this to pass build-time variables to the app
+    do_not_use_environment: false
+
+    # Not sure how to handle json and yaml parsing without dynamic
+    avoid_dynamic_calls: false
+
+    # Having to use named parameters for callbacks is awkward, maybe later
+    avoid_positional_boolean_parameters: false
+
+    # Conflicts with `omit_obvious_property_types`
+    type_annotate_public_apis: false
+
+    # Personal preference. I don't find it more readable
+    avoid_bool_literals_in_conditional_expressions: false
+
+    # Not useful for an app
+    public_member_api_docs: false
+
+    # Not useful for an app
+    document_ignores: false
+
+    # Very verbose for riverpod providers
+    specify_nonobvious_local_variable_types: false
+
+    # Very verbose for riverpod providers
+    specify_nonobvious_property_types: false
+
+    # Not an issue if using dartfmt
+    no_adjacent_strings_in_list: false
+
+    # False positive for custom enum-like classes (such as Flutter's "Colors")
+    avoid_classes_with_only_static_members: false
+
+    # False positive when the future is returned by the function
+    discarded_futures: false
+
+    # Low value and lacks a quick fix
+    combinators_ordering: false
+
+    # Conflicts with unused variables
+    no_leading_underscores_for_local_identifiers: false
+
+    # false positive
+    one_member_abstracts: false
+
+    # too verbose
+    prefer_final_parameters: false
+
+    # Too verbose with little value, and this is taken care of by the Flutter devtool anyway.
+    diagnostic_describe_all_properties: false
+
+    # Personal preference. I prefer "if (bool) return;" over having it in multiple lines
+    always_put_control_body_on_new_line: false
+
+    # Personal preference. I don't find it more readable
+    cascade_invocations: false
+
+    # Conflicts with `prefer_single_quotes`
+    # Single quotes are easier to type and don't compromise on readability.
+    prefer_double_quotes: false
+
+    # Conflicts with `omit_local_variable_types` and other rules.
+    # As per Dart guidelines, we want to avoid unnecessary types to make the code
+    # more readable.
+    # See https://dart.dev/guides/language/effective-dart/design#avoid-type-annotating-initialized-local-variables
+    always_specify_types: false
+
+    # Incompatible with `prefer_final_locals`
+    # Having immutable local variables makes larger functions more predictable
+    # so we will use `prefer_final_locals` instead.
+    unnecessary_final: false
+
+    # Not quite suitable for Flutter, which may have a `build` method with a single
+    # return, but that return is still complex enough that a "body" is worth it.
+    prefer_expression_function_bodies: false
+
+    # Conflicts with the convention used by flutter, which puts `Key key`
+    # and `@required Widget child` last.
+    always_put_required_named_parameters_first: false
+
+    # This project doesn't use Flutter-style todos
+    flutter_style_todos: false
+
+    # There are situations where we voluntarily want to catch everything,
+    # especially as a library.
+    avoid_catches_without_on_clauses: false
+
+    # Boring as it sometimes force a line of 81 characters to be split in two.
+    # As long as we try to respect that 80 characters limit, going slightly
+    # above is fine.
+    lines_longer_than_80_chars: false
+
+    # Conflicts with disabling `implicit-dynamic`
+    avoid_annotating_with_dynamic: false
+
+    # conflicts with `prefer_relative_imports`
+    always_use_package_imports: false
 
 formatter:
   trailing_commas: preserve
