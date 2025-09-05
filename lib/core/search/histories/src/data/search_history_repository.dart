@@ -2,7 +2,7 @@
 import '../../../selected_tags/tag.dart';
 import '../search_history.dart';
 
-const String kSearchHistoryTable = 'search_history';
+const kSearchHistoryTable = 'search_history';
 
 abstract class SearchHistoryRepository {
   Future<List<SearchHistory>> getHistories();

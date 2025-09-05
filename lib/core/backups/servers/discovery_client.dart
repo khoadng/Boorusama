@@ -21,7 +21,7 @@ class DiscoveryClient {
   final void Function(BonsoirService service)? onServiceResolved;
   final void Function(BonsoirService service)? onServiceLost;
 
-  bool _isDiscovering = false;
+  var _isDiscovering = false;
   bool get isDiscovering => _isDiscovering;
 
   Future<void> startDiscovery({

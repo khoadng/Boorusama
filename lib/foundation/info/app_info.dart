@@ -14,7 +14,7 @@ final appInfoProvider = Provider<AppInfo>(
   name: 'appInfoProvider',
 );
 
-const String _assetUrl = 'assets/information.json';
+const _assetUrl = 'assets/information.json';
 
 typedef YearRange = ({int start, int end});
 

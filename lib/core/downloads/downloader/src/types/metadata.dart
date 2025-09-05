@@ -34,7 +34,7 @@ class DownloaderMetadata extends Equatable {
   final String? siteUrl;
   final String? group;
 
-  static const DownloaderMetadata empty = DownloaderMetadata(
+  static const empty = DownloaderMetadata(
     thumbnailUrl: null,
     fileSize: null,
     siteUrl: null,

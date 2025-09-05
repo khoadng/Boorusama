@@ -42,7 +42,7 @@ class TagCacheRepositorySqlite
 
   @override
   final Database db;
-  bool _disposed = false;
+  var _disposed = false;
 
   void initialize() {
     db.execute('PRAGMA foreign_keys = ON');

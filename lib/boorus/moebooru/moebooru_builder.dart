@@ -110,7 +110,7 @@ class MoebooruBuilder
       kMoebooruAltHomeView;
 
   @override
-  final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder(
+  final postDetailsUIBuilder = PostDetailsUIBuilder(
     preview: {
       DetailsPart.info: (context) => const MoebooruInformationSection(),
       DetailsPart.toolbar: (context) =>

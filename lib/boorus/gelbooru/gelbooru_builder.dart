@@ -134,7 +134,7 @@ class GelbooruBuilder
         Rating.general,
       };
 
-  final PostGestureHandler _postGestureHandler = PostGestureHandler(
+  final _postGestureHandler = PostGestureHandler(
     customActions: {
       kToggleFavoriteAction: (ref, action, post) {
         ref.toggleFavorite(post.id);
@@ -153,7 +153,7 @@ class GelbooruBuilder
       kGelbooruAltHomeView;
 
   @override
-  final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder(
+  final postDetailsUIBuilder = PostDetailsUIBuilder(
     preview: {
       DetailsPart.toolbar: (context) =>
           const DefaultInheritedPostActionToolbar<GelbooruPost>(),

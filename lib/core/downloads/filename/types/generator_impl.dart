@@ -71,7 +71,7 @@ class DownloadFileNameBuilder<T extends Post>
   // Cache for resolved async tokens: postId -> groupKey -> resolved data
   final Map<String, Map<String, Map<String, String?>>> _asyncCache = {};
 
-  final TokenizerConfigs tokenizerConfigs = TokenizerConfigs.defaultConfigs();
+  final tokenizerConfigs = TokenizerConfigs.defaultConfigs();
 
   @override
   List<TokenInfo> get availableTokens {

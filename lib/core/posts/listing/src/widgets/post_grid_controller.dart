@@ -71,11 +71,11 @@ class PostGridController<T extends Post> extends ChangeNotifier {
   final PostDuplicateTracker<T> _duplicateTracker;
 
   int _page = _kFirstPage;
-  bool _hasMore = true;
-  bool _loading = false;
-  bool _refreshing = false;
+  var _hasMore = true;
+  var _loading = false;
+  var _refreshing = false;
 
-  int _total = 0;
+  var _total = 0;
 
   Iterable<T> get items => _filteredItems;
   Iterable<T> get allItems => _items;

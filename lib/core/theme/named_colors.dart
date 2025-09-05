@@ -3,7 +3,7 @@
 // Dart imports:
 import 'dart:ui';
 
-const Map<String, Color> namedColors = {
+const namedColors = <String, Color>{
   'aliceblue': Color(0xFFF0F8FF),
   'antiquewhite': Color(0xFFFAEBD7),
   'aqua': Color(0xFF00FFFF),
@@ -154,7 +154,7 @@ const Map<String, Color> namedColors = {
   'yellowgreen': Color(0xFF9ACD32),
 };
 
-const Map<String, Color> themeAccentColors = {
+const themeAccentColors = <String, Color>{
   // Reds
   'crimson': Color(0xFFDC143C), // Deep red
   'firebrick': Color(0xFFB22222), // Brick red

@@ -38,8 +38,8 @@ class _SwipeToState extends State<SwipeTo> with SingleTickerProviderStateMixin {
   Offset _dragStartOffset = Offset.zero;
   Offset _dragUpdateOffset = Offset.zero;
   double _currentVelocity = 0;
-  bool _wasStationary = false;
-  bool _hasTriggeredThresholdHaptic = false;
+  var _wasStationary = false;
+  var _hasTriggeredThresholdHaptic = false;
 
   double get maxSwipeThreshold => 0.35;
   double get swipeExecutionThreshold => 0.3;

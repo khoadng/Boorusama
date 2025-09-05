@@ -34,7 +34,7 @@ class _EditFavoriteGroupDialogState
     extends ConsumerState<EditFavoriteGroupSheet> {
   final textController = TextEditingController();
   final nameController = TextEditingController();
-  bool isPrivate = false;
+  var isPrivate = false;
 
   @override
   void initState() {

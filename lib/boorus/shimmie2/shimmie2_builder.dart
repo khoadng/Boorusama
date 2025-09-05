@@ -79,7 +79,7 @@ class Shimmie2Builder
   };
 
   @override
-  final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder(
+  final postDetailsUIBuilder = PostDetailsUIBuilder(
     preview: {
       DetailsPart.toolbar: (context) =>
           const DefaultInheritedPostActionToolbar<Shimmie2Post>(),

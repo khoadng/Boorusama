@@ -192,7 +192,7 @@ class _RawInteractiveViewerExtendedState
   Size? _containerSize;
 
   // Track if max zoom haptic feedback has been triggered
-  bool _hasTriggeredMaxZoomHaptic = false;
+  var _hasTriggeredMaxZoomHaptic = false;
 
   @override
   void initState() {

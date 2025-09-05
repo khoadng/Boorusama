@@ -1,10 +1,10 @@
-const String red = 'red';
-const String green = 'green';
-const String yellow = 'yellow';
-const String blue = 'blue';
-const String magenta = 'magenta';
-const String cyan = 'cyan';
-const String white = 'white';
+const red = 'red';
+const green = 'green';
+const yellow = 'yellow';
+const blue = 'blue';
+const magenta = 'magenta';
+const cyan = 'cyan';
+const white = 'white';
 
 const end = '\x1B[0m';
 

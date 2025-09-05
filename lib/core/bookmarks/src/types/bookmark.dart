@@ -125,7 +125,7 @@ class Bookmark extends Equatable with ImageInfoMixin, TagListCheckMixin {
     url: originalUrl,
   );
 
-  static Bookmark empty = Bookmark(
+  static var empty = Bookmark(
     id: -1,
     booruId: -10,
     createdAt: DateTime(1),
