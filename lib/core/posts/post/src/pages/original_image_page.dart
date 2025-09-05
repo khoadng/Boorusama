@@ -50,8 +50,8 @@ class OriginalImagePage extends ConsumerStatefulWidget {
 
 class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
   Orientation? currentRotation;
-  bool overlay = true;
-  bool zoom = false;
+  var overlay = true;
+  var zoom = false;
   var turn = ValueNotifier<double>(0);
 
   @override

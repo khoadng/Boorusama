@@ -315,7 +315,7 @@ class DanbooruBuilder
   };
 
   @override
-  final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder(
+  final postDetailsUIBuilder = PostDetailsUIBuilder(
     previewAllowedParts: {
       DetailsPart.tags,
     },

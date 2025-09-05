@@ -17,7 +17,7 @@ import 'home_page_controller.dart';
 import 'side_bar_menu.dart';
 
 const double _kDefaultMenuSize = 220;
-const String kMenuWidthCacheKey = 'menu_width';
+const kMenuWidthCacheKey = 'menu_width';
 
 class BooruScope extends ConsumerStatefulWidget {
   const BooruScope({

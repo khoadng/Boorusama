@@ -134,7 +134,7 @@ mixin DefaultGranularRatingFiltererMixin on BooruBuilder {
 }
 
 mixin DefaultPostGesturesHandlerMixin on BooruBuilder {
-  final PostGestureHandler _postGestureHandler = const PostGestureHandler();
+  final _postGestureHandler = const PostGestureHandler();
 
   @override
   PostGestureHandlerBuilder get postGestureHandlerBuilder =>
@@ -509,7 +509,7 @@ mixin UnknownMetatagsMixin implements BooruBuilder {
   MetatagExtractorBuilder? get metatagExtractorBuilder => null;
 }
 
-final PostDetailsUIBuilder kFallbackPostDetailsUIBuilder = PostDetailsUIBuilder(
+final kFallbackPostDetailsUIBuilder = PostDetailsUIBuilder(
   preview: {
     DetailsPart.toolbar: (context) => const DefaultInheritedPostActionToolbar(),
   },

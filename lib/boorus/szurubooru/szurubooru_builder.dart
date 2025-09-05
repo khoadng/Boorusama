@@ -115,7 +115,7 @@ class SzurubooruBuilder
   };
 
   @override
-  final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder(
+  final postDetailsUIBuilder = PostDetailsUIBuilder(
     preview: {
       DetailsPart.toolbar: (context) => const SzurubooruPostActionToolbar(),
     },

@@ -15,8 +15,8 @@ class PostFetchOptions {
 
   final bool cascadeRequest;
 
-  static const PostFetchOptions defaults = PostFetchOptions();
-  static const PostFetchOptions raw = PostFetchOptions(
+  static const defaults = PostFetchOptions();
+  static const raw = PostFetchOptions(
     cascadeRequest: false,
   );
 }

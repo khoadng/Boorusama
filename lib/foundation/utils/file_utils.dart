@@ -20,7 +20,7 @@ class DirectorySizeInfo {
   final int fileCount;
   final int directoryCount;
 
-  static DirectorySizeInfo zero = DirectorySizeInfo(
+  static var zero = DirectorySizeInfo(
     directoryCount: 0,
     fileCount: 0,
     size: 0,
@@ -152,7 +152,7 @@ class DiskSpaceInfo {
   int get usedSpace => totalSpace - freeSpace;
   double get usagePercentage => totalSpace > 0 ? usedSpace / totalSpace : 0.0;
 
-  static DiskSpaceInfo zero = DiskSpaceInfo(
+  static var zero = DiskSpaceInfo(
     freeSpace: 0,
     totalSpace: 0,
   );

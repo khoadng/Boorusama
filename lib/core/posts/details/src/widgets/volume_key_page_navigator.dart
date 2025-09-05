@@ -15,7 +15,7 @@ class VolumeKeyPageNavigator with KeyboardListenerMixin {
   });
 
   // We only want to bait the keyboard focus once
-  static bool _hasInitialized = false;
+  static var _hasInitialized = false;
 
   final PostDetailsPageViewController pageViewController;
   final int totalPosts;

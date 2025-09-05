@@ -106,7 +106,7 @@ class PhilomenaBuilder
       );
 
   @override
-  final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder(
+  final postDetailsUIBuilder = PostDetailsUIBuilder(
     preview: {
       DetailsPart.info: (context) =>
           const DefaultInheritedInformationSection<PhilomenaPost>(),

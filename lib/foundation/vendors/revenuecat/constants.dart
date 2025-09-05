@@ -1,8 +1,8 @@
-const String kRevenuecatGoogleApiKey = String.fromEnvironment(
+const kRevenuecatGoogleApiKey = String.fromEnvironment(
   'REVENUECAT_GOOGLE_API_KEY',
 );
-const String kRevenuecatAppleApiKey = String.fromEnvironment(
+const kRevenuecatAppleApiKey = String.fromEnvironment(
   'REVENUECAT_APPLE_API_KEY',
 );
 
-const String kPremiumKey = 'plus';
+const kPremiumKey = 'plus';

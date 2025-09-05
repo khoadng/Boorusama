@@ -32,11 +32,11 @@ class TagRepositoryException implements Exception {
 
 // Test constants
 class TestConstants {
-  static const String siteHost = 'test.com';
-  static const Duration shortCacheLifetime = Duration(hours: 6);
-  static const Duration mediumCacheLifetime = Duration(days: 2);
-  static const Duration staleAge = Duration(days: 1);
-  static const Duration freshAge = Duration(minutes: 30);
+  static const siteHost = 'test.com';
+  static const shortCacheLifetime = Duration(hours: 6);
+  static const mediumCacheLifetime = Duration(days: 2);
+  static const staleAge = Duration(days: 1);
+  static const freshAge = Duration(minutes: 30);
 }
 
 // Test helper methods

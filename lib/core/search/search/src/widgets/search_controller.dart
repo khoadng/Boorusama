@@ -23,7 +23,7 @@ class SearchPageController extends ChangeNotifier {
   final allowSearch = ValueNotifier(false);
   final tagString = ValueNotifier('');
   final focus = FocusNode();
-  late final RichTextController textController = RichTextController(
+  late final textController = RichTextController(
     matchers: textMatchers,
   );
 

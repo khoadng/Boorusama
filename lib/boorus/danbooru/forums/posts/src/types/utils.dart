@@ -1,7 +1,7 @@
 class DanbooruForumUtils {
   const DanbooruForumUtils._();
 
-  static const int postPerPage = 20;
+  static const postPerPage = 20;
 
   static int getFirstPageKey({
     required int responseCount,

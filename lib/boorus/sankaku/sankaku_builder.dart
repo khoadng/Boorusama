@@ -95,7 +95,7 @@ class SankakuBuilder
       (context) => const SankakuFavoritesPage();
 
   @override
-  final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder(
+  final postDetailsUIBuilder = PostDetailsUIBuilder(
     preview: {
       DetailsPart.info: (context) =>
           const DefaultInheritedInformationSection<SankakuPost>(

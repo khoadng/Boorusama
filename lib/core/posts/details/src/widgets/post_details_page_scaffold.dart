@@ -33,7 +33,7 @@ import 'post_details_full_info_sheet.dart';
 import 'video_controls.dart';
 import 'volume_key_page_navigator.dart';
 
-const String kShowInfoStateCacheKey = 'showInfoCacheStateKey';
+const kShowInfoStateCacheKey = 'showInfoCacheStateKey';
 
 class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
   const PostDetailsPageScaffold({

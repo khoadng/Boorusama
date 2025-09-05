@@ -41,7 +41,7 @@ class _PostDetailsImagePreloaderState<T extends Post>
 
   // Direction tracking
   int? _lastPage;
-  final DirectionHistory _directionHistory = DirectionHistory();
+  final _directionHistory = DirectionHistory();
 
   PostDetailsPageViewController get _controller {
     return _pageViewController ??= PostDetailsPageViewScope.of(context);

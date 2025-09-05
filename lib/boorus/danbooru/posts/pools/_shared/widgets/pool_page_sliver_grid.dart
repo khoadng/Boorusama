@@ -19,7 +19,7 @@ import '../../pool/providers.dart';
 import '../providers/pool_covers_notifier.dart';
 import 'pool_image.dart';
 
-const double _kLabelOffset = 0.2;
+const _kLabelOffset = 0.2;
 
 class PoolPagedSliverGrid extends ConsumerStatefulWidget {
   const PoolPagedSliverGrid({

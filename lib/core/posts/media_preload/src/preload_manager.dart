@@ -37,7 +37,7 @@ class PreloadManager {
   final Map<String, CancelToken> _activeCancelTokens = {};
   final Set<String> _activeDownloads = {};
   final Set<String> _completedUrls = {}; // URLs that completed successfully
-  final PriorityQueue<PrioritizedUrl> _pendingQueue =
+  final _pendingQueue =
       PriorityQueue<PrioritizedUrl>();
   Set<String> _currentSkipUrls = {};
 

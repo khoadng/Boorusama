@@ -16,7 +16,7 @@ abstract class ProtectionDetector {
 }
 
 class CloudflareDetector implements ProtectionDetector {
-  static const List<String> _signatures = [
+  static const _signatures = <String>[
     'cf_chl',
     'cloudflare',
     'ddos',
@@ -25,7 +25,7 @@ class CloudflareDetector implements ProtectionDetector {
     'ray id',
   ];
 
-  static const Set<int> _typicalStatusCodes = {403, 503};
+  static const _typicalStatusCodes = <int>{403, 503};
 
   @override
   double getProtectionConfidence(HttpResponse? response, HttpError? error) {
@@ -57,7 +57,7 @@ class CloudflareDetector implements ProtectionDetector {
 }
 
 class McChallengeDetector implements ProtectionDetector {
-  static const List<String> _signatures = [
+  static const _signatures = <String>[
     'mccaptcha',
     'mcchallenge',
     '_challenge/mccaptcha',
@@ -93,7 +93,7 @@ class McChallengeDetector implements ProtectionDetector {
 }
 
 class AftV2Detector implements ProtectionDetector {
-  static const List<String> _signatures = [
+  static const _signatures = <String>[
     'click the checkbox',
     'to continue',
     'i am not a robot',
@@ -139,7 +139,7 @@ class AftV2Detector implements ProtectionDetector {
 }
 
 class AftDetector implements ProtectionDetector {
-  static const List<String> _signatures = [
+  static const _signatures = <String>[
     'anti-ddos flood protection and firewall',
     'checking your browser',
     'please wait a moment while we verify your request',

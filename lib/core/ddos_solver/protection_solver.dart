@@ -47,8 +47,8 @@ class RawSolver implements ProtectionSolver {
   final ContextProvider contextProvider;
   final CookieJar cookieJar;
 
-  final WebviewCookieManager _cookieManager = WebviewCookieManager();
-  bool _solving = false;
+  final _cookieManager = WebviewCookieManager();
+  var _solving = false;
 
   @override
   bool get isSolving => _solving;
@@ -168,7 +168,7 @@ class CloudflareSolver implements ProtectionSolver {
   final ContextProvider contextProvider;
   final CookieJar cookieJar;
 
-  late final RawSolver _solver = RawSolver(
+  late final _solver = RawSolver(
     contextProvider: contextProvider,
     cookieJar: cookieJar,
     protectionType: 'cloudflare',
@@ -207,7 +207,7 @@ class McChallengeSolver implements ProtectionSolver {
   final ContextProvider contextProvider;
   final CookieJar cookieJar;
 
-  late final RawSolver _solver = RawSolver(
+  late final _solver = RawSolver(
     contextProvider: contextProvider,
     cookieJar: cookieJar,
     protectionType: 'mcchallenge',
@@ -243,7 +243,7 @@ class AftV2Solver implements ProtectionSolver {
   final ContextProvider contextProvider;
   final CookieJar cookieJar;
 
-  late final RawSolver _solver = RawSolver(
+  late final _solver = RawSolver(
     contextProvider: contextProvider,
     cookieJar: cookieJar,
     protectionType: 'aft_v2',
@@ -282,7 +282,7 @@ class AftSolver implements ProtectionSolver {
   final ContextProvider contextProvider;
   final CookieJar cookieJar;
 
-  late final RawSolver _solver = RawSolver(
+  late final _solver = RawSolver(
     contextProvider: contextProvider,
     cookieJar: cookieJar,
     protectionType: 'aft',

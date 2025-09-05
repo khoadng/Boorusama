@@ -5,9 +5,9 @@ class MediaKitManager {
   factory MediaKitManager() => _instance;
   MediaKitManager._internal();
 
-  static final MediaKitManager _instance = MediaKitManager._internal();
+  static final _instance = MediaKitManager._internal();
 
-  bool _isInitialized = false;
+  var _isInitialized = false;
 
   void ensureInitialized() {
     if (_isInitialized) {

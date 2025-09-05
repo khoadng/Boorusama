@@ -8,10 +8,10 @@ class FvpManager {
   factory FvpManager() => _instance;
   FvpManager._internal();
 
-  static final FvpManager _instance = FvpManager._internal();
+  static final _instance = FvpManager._internal();
 
   VideoPlayerEngine? _currentEngine;
-  bool _isInitialized = false;
+  var _isInitialized = false;
 
   void ensureInitialized(VideoPlayerEngine engine) {
     if (_isInitialized && _currentEngine == engine) {

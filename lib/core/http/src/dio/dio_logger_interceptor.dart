@@ -21,7 +21,7 @@ class LoggingInterceptor extends Interceptor {
   });
 
   final Logger logger;
-  final Map<String, DateTime> requestTimeLogs = <String, DateTime>{};
+  final requestTimeLogs = <String, DateTime>{};
 
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {

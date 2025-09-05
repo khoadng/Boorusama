@@ -24,10 +24,10 @@ class UserDetailsTagChanges extends ConsumerStatefulWidget {
 }
 
 class _UserDetailsTagChangesState extends ConsumerState<UserDetailsTagChanges> {
-  static const int itemsPerPage = 20;
-  int currentPage = 1;
+  static const itemsPerPage = 20;
+  var currentPage = 1;
   List<DanbooruPostVersion> versions = [];
-  bool isLoading = false;
+  var isLoading = false;
 
   @override
   void initState() {

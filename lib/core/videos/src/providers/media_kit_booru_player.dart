@@ -26,13 +26,13 @@ class MediaKitBooruPlayer implements BooruPlayer {
   late final Player _player;
   late final VideoController _videoController;
 
-  final StreamController<Duration> _positionController =
+  final _positionController =
       StreamController<Duration>.broadcast();
-  final StreamController<bool> _playingController =
+  final _playingController =
       StreamController<bool>.broadcast();
-  final StreamController<bool> _bufferingController =
+  final _bufferingController =
       StreamController<bool>.broadcast();
-  final StreamController<Duration> _durationController =
+  final _durationController =
       StreamController<Duration>.broadcast();
 
   StreamSubscription<Duration>? _positionSubscription;
@@ -42,9 +42,9 @@ class MediaKitBooruPlayer implements BooruPlayer {
 
   Timer? _bufferingDelayTimer;
 
-  bool _isDisposed = false;
-  bool _isInitialized = false;
-  bool _hasPlayedOnce = false;
+  var _isDisposed = false;
+  var _isInitialized = false;
+  var _hasPlayedOnce = false;
 
   @override
   bool isPlatformSupported() => true;

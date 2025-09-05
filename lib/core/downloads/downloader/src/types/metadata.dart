@@ -37,7 +37,7 @@ class DownloaderMetadata extends Equatable {
   final String? group;
   final bool isVideo;
 
-  static const DownloaderMetadata empty = DownloaderMetadata(
+  static const empty = DownloaderMetadata(
     thumbnailUrl: null,
     fileSize: null,
     siteUrl: null,

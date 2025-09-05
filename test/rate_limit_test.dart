@@ -168,7 +168,7 @@ void main() {
 }
 
 class MockRequestInterceptorHandler extends RequestInterceptorHandler {
-  bool nextCalled = false;
+  var nextCalled = false;
 
   @override
   void next(RequestOptions requestOptions) {

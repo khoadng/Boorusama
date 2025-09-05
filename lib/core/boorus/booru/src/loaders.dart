@@ -9,7 +9,7 @@ import '../../engine/engine.dart';
 import 'booru.dart';
 import 'booru_db.dart';
 
-const String _assetUrl = 'boorus.yaml';
+const _assetUrl = 'boorus.yaml';
 
 Future<BooruDb> loadBoorus(
   dynamic yaml,

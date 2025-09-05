@@ -18,7 +18,7 @@ class LruCacher<K, V> implements Cacher<K, V> {
 
   final int capacity;
   final _cache = <K, CacheObject<K, V>>{};
-  late final ListQueue<K> _list = ListQueue<K>(capacity);
+  late final _list = ListQueue<K>(capacity);
 
   bool get _atMax => _cache.length >= capacity;
 

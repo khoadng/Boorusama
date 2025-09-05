@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:foundation/src/filesize.dart';
 
 abstract class S {
-  static const int kb = 1024;
+  static const kb = 1024;
   static const int mb = kb * 1024;
   static const int gb = mb * 1024;
   static const int tb = gb * 1024;

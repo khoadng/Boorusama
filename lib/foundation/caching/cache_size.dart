@@ -38,14 +38,14 @@ class CacheSize extends Equatable {
     };
   }
 
-  static const CacheSize zero = CacheSize._(0);
-  static const CacheSize unlimited = CacheSize._(-1);
-  static const CacheSize oneHundredMegabytes = CacheSize._(100 * 1024 * 1024);
-  static const CacheSize fiveHundredMegabytes = CacheSize._(500 * 1024 * 1024);
-  static const CacheSize oneGigabyte = CacheSize._(1024 * 1024 * 1024);
-  static const CacheSize twoGigabytes = CacheSize._(2 * 1024 * 1024 * 1024);
-  static const CacheSize fiveGigabytes = CacheSize._(5 * 1024 * 1024 * 1024);
-  static const CacheSize tenGigabytes = CacheSize._(10 * 1024 * 1024 * 1024);
+  static const zero = CacheSize._(0);
+  static const unlimited = CacheSize._(-1);
+  static const oneHundredMegabytes = CacheSize._(100 * 1024 * 1024);
+  static const fiveHundredMegabytes = CacheSize._(500 * 1024 * 1024);
+  static const oneGigabyte = CacheSize._(1024 * 1024 * 1024);
+  static const twoGigabytes = CacheSize._(2 * 1024 * 1024 * 1024);
+  static const fiveGigabytes = CacheSize._(5 * 1024 * 1024 * 1024);
+  static const tenGigabytes = CacheSize._(10 * 1024 * 1024 * 1024);
 
   final int bytes;
 

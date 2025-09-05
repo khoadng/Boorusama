@@ -77,11 +77,11 @@ class _RotatingIcon extends StatefulWidget {
 
 class _RotatingIconState extends State<_RotatingIcon>
     with SingleTickerProviderStateMixin {
-  late final AnimationController _controller = AnimationController(
+  late final _controller = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 500),
   );
-  late bool _isWaiting = false;
+  late var _isWaiting = false;
 
   @override
   void dispose() {

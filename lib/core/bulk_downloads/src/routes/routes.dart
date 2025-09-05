@@ -6,7 +6,7 @@ import '../pages/bulk_download_saved_task_page.dart';
 
 const kBulkdownload = '/bulk_downloads';
 
-final GoRoute bulkDownloadsRoutes = GoRoute(
+final bulkDownloadsRoutes = GoRoute(
   path: 'bulk_downloads',
   pageBuilder: genericMobilePageBuilder(
     builder: (context, state) => const BulkDownloadPage(),

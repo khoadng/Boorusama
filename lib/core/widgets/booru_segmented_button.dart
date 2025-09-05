@@ -138,7 +138,7 @@ class _CustomSlidingSegmentedControlState<T>
   double? height;
   double offset = 0;
   Map<T?, double> sizes = {};
-  bool hasTouch = false;
+  var hasTouch = false;
   double? maxSize;
   List<Cache<T>> cacheItems = [];
 

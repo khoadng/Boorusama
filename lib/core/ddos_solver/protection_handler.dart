@@ -23,7 +23,7 @@ class HttpProtectionHandler {
   // Track retry attempts
   final Map<String, int> _retryAttempts = {};
   final int maxRetries;
-  bool _disabled = false;
+  var _disabled = false;
 
   bool get isDisabled => _disabled;
   void disable() => _disabled = true;

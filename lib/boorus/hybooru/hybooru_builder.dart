@@ -77,7 +77,7 @@ class HybooruBuilder
   };
 
   @override
-  final PostDetailsUIBuilder postDetailsUIBuilder = PostDetailsUIBuilder(
+  final postDetailsUIBuilder = PostDetailsUIBuilder(
     preview: {
       DetailsPart.toolbar: (context) =>
           const DefaultInheritedPostActionToolbar<HybooruPost>(),

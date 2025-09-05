@@ -74,8 +74,8 @@ class _BooruVideoState extends ConsumerState<BooruVideo> {
   String? _error;
   StreamSubscription<Duration>? _positionSubscription;
   StreamSubscription<bool>? _bufferingSubscription;
-  bool _isBuffering = false;
-  bool _isDisposing = false;
+  var _isBuffering = false;
+  var _isDisposing = false;
   Timer? _cacheDelayTimer;
   String? _cachingUrl;
 

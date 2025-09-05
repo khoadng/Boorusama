@@ -30,8 +30,8 @@ class SlideshowOptions extends Equatable {
 mixin AutomaticSlideMixin on ChangeNotifier {
   PageController get pageController;
   Timer? timer;
-  int _currentPage = 0;
-  bool _isSliding = false;
+  var _currentPage = 0;
+  var _isSliding = false;
 
   bool _shouldSkipAnimation(bool value, Duration duration) {
     // less than 1 second, skip animation

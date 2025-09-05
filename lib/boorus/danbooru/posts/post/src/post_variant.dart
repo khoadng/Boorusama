@@ -92,7 +92,7 @@ class PostVariants {
     );
   }
 
-  static final List<PostVariant> _dummyVariants = [
+  static final _dummyVariants = <PostVariant>[
     PostVariant.original(''),
     PostVariant.sample(''),
     PostVariant.thumbnail(''),

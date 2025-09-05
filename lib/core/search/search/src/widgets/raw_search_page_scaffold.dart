@@ -111,7 +111,7 @@ class _SearchPageScaffoldState<T extends Post>
   SelectedTagController get _tagsController => widget.tagsController;
   final _scrollController = AutoScrollController();
 
-  final CompositeSubscription _subscriptions = CompositeSubscription();
+  final _subscriptions = CompositeSubscription();
   SearchPageController get _controller => widget.controller;
 
   late final _searchBarAnimController = AnimationController(
@@ -487,7 +487,7 @@ class _ScrollToTopButtonPadding extends ConsumerStatefulWidget {
 
 class __ScrollToTopButtonPaddingState
     extends ConsumerState<_ScrollToTopButtonPadding> {
-  late final CurvedAnimation _animation = CurvedAnimation(
+  late final _animation = CurvedAnimation(
     parent: widget.searchBarAnimController,
     curve: Curves.easeInOut,
   );
