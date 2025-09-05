@@ -26,17 +26,19 @@ GoRoute addBooruConfigRoutes(Ref ref) => GoRoute(
           state.uri.queryParameters['setAsCurrent']?.toBool() ?? false;
 
       final landscape = context.orientation.isLandscape;
+      final colorScheme = Theme.of(context).colorScheme;
 
       final page = AddBooruPage(
         backgroundColor: landscape
-            ? Theme.of(context).colorScheme.surfaceContainerLow
-            : Theme.of(context).colorScheme.surface,
+            ? colorScheme.surfaceContainerLow
+            : colorScheme.surface,
         setCurrentBooruOnSubmit: setAsCurrent,
+        initialConfigId: EditBooruConfigId.fromUri(state.uri),
       );
 
       return landscape
           ? BooruDialog(
-              color: Theme.of(context).colorScheme.surfaceContainerLow,
+              color: colorScheme.surfaceContainerLow,
               child: page,
             )
           : page;
@@ -50,14 +52,14 @@ GoRoute updateBooruConfigRoutes(Ref ref) => GoRoute(
   pageBuilder: largeScreenAwarePageBuilder(
     useDialog: true,
     builder: (context, state) {
-      final idParam = state.pathParameters['id'];
-      final id = idParam?.toInt();
+      final id = state.pathParameters['id']?.toInt();
       final q = state.uri.queryParameters['q'];
       final config = ref
           .read(booruConfigProvider)
           .firstWhereOrNull((element) => element.id == id);
 
       final landscape = context.orientation.isLandscape;
+      final colorScheme = Theme.of(context).colorScheme;
 
       if (config == null) {
         return const LargeScreenAwareInvalidPage(
@@ -72,8 +74,8 @@ GoRoute updateBooruConfigRoutes(Ref ref) => GoRoute(
             context,
             EditBooruConfigId.fromConfig(config),
             backgroundColor: landscape
-                ? Theme.of(context).colorScheme.surfaceContainerLow
-                : Theme.of(context).colorScheme.surface,
+                ? colorScheme.surfaceContainerLow
+                : colorScheme.surface,
             initialTab: q,
           ) ??
           Scaffold(
@@ -87,7 +89,7 @@ GoRoute updateBooruConfigRoutes(Ref ref) => GoRoute(
 
       return landscape
           ? BooruDialog(
-              color: Theme.of(context).colorScheme.surfaceContainerLow,
+              color: colorScheme.surfaceContainerLow,
               child: page,
             )
           : page;
