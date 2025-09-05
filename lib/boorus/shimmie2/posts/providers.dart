@@ -19,7 +19,7 @@ final shimmie2PostRepoProvider =
         return PostRepositoryBuilder(
           tagComposer: tagComposer,
           fetchSingle: (id, {options}) {
-            return Future.value(null);
+            return Future.value();
           },
           fetch: (tags, page, {limit, options}) async {
             final posts = await client.getPosts(

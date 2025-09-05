@@ -63,7 +63,6 @@ class DryRunState extends Equatable {
   factory DryRunState.initial() => const DryRunState(
     status: DryRunStatusIdle(),
     currentPage: null,
-    currentItemIndex: null,
     totalPages: 0,
   );
 

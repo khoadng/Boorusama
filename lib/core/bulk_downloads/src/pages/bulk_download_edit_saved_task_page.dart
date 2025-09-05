@@ -50,7 +50,6 @@ class BulkDownloadEditSavedTaskPage extends ConsumerWidget {
                   style: FilledButton.styleFrom(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
-                      side: BorderSide.none,
                     ),
                   ),
                   onPressed: () {

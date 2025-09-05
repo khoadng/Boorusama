@@ -42,7 +42,6 @@ class DownloaderMetadata extends Equatable {
     fileSize: null,
     siteUrl: null,
     group: null,
-    isVideo: false,
   );
 
   Map<String, dynamic> toJson() {

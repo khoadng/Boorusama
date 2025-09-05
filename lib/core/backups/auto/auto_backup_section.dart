@@ -187,7 +187,6 @@ class _SelectLocationRequestBanner extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: colorScheme.primary.withValues(alpha: 0.2),
-          width: 1,
         ),
       ),
       child: Row(

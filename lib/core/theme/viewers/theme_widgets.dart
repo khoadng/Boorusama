@@ -151,7 +151,6 @@ class PreviewColorContainer extends StatelessWidget {
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
             color: followSystem ? colorScheme.onSurface : primary,
-            width: 1,
           ),
         ),
         child: selected

@@ -68,8 +68,6 @@ class BulkDownloadNotifications {
       android: AndroidNotificationDetails(
         'download',
         'Download',
-        playSound: true,
-        enableVibration: true,
         category: AndroidNotificationCategory.status,
       ),
       iOS: DarwinNotificationDetails(

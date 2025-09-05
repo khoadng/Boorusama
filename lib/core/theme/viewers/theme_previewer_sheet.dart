@@ -93,7 +93,6 @@ class ThemePreviewerSheet extends ConsumerWidget {
                         SliverList.list(
                           children: [
                             Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Consumer(

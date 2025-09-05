@@ -57,8 +57,6 @@ class DownloadNotifications {
         'downloads',
         'Downloads',
         channelDescription: 'Download notifications',
-        playSound: true,
-        enableVibration: true,
         category: AndroidNotificationCategory.status,
       ),
       iOS: DarwinNotificationDetails(
@@ -88,8 +86,6 @@ class DownloadNotifications {
         'downloads',
         'Downloads',
         channelDescription: 'Download notifications',
-        playSound: true,
-        enableVibration: true,
         category: AndroidNotificationCategory.error,
         importance: Importance.high,
       ),

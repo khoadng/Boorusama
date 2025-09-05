@@ -79,7 +79,6 @@ Future<Response<T>?> tryGetResponse<T>(
 }
 
 const _defaultFetchStrategy = FetchStrategyBuilder(
-  exponentialBackoffMultiplier: 2,
   initialPauseBetweenRetries: Duration(milliseconds: 500),
 );
 

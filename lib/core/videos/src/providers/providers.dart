@@ -1,8 +1,5 @@
 // ignore_for_file: use_setters_to_change_properties
 
-// Flutter imports:
-import 'package:flutter/material.dart';
-
 // Package imports:
 import 'package:background_downloader/background_downloader.dart';
 import 'package:cache_manager/cache_manager.dart';
@@ -91,7 +88,6 @@ BooruPlayer createBooruPlayer({
     wakelock: Wakelock(),
     //FIXME: pass user agent for other impl as well?
     userAgent: userAgent,
-    backgroundColor: Colors.black,
   ),
   VideoPlayerEngine.mpv => MediaKitBooruPlayer(
     wakelock: Wakelock(),

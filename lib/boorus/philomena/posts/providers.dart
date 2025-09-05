@@ -21,7 +21,7 @@ final philomenaPostRepoProvider =
         fetchSingle: (id, {options}) async {
           final numericId = id as NumericPostId?;
 
-          if (numericId == null) return Future.value(null);
+          if (numericId == null) return Future.value();
 
           final post = await client.getImage(numericId.value);
 

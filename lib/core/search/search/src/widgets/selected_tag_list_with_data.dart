@@ -34,7 +34,6 @@ class SelectedTagListWithData extends ConsumerWidget {
 
     final borderSide = BorderSide(
       color: colorScheme.outlineVariant,
-      width: 1,
     );
 
     return DecoratedBox(

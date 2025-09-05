@@ -311,7 +311,7 @@ class PostDetailsPageViewController extends ChangeNotifier
         previouslyForcedShowUIByDrag = true;
       }
       showOverlay(
-        includeSystemStatus: true,
+        
       );
     }
 

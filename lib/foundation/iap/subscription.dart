@@ -29,7 +29,7 @@ final packagePurchaseProvider =
 class PackagePurchaseNotifier extends AutoDisposeAsyncNotifier<bool?> {
   @override
   Future<bool?> build() {
-    return Future.value(null);
+    return Future.value();
   }
 
   static const _kServiceName = 'Purchaser';

@@ -32,7 +32,6 @@ void main() {
         final result = VideoPlayerState.resolveVideoEngine(
           engine: VideoPlayerEngine.auto,
           url: kTestWebmUrl,
-          isAndroid: false,
         );
 
         expect(result, VideoPlayerEngine.videoPlayerPlugin);
@@ -64,7 +63,6 @@ void main() {
       final result = VideoPlayerState.resolveVideoEngine(
         engine: null,
         url: kTestMp4Url,
-        isAndroid: false,
       );
 
       expect(result, VideoPlayerEngine.videoPlayerPlugin);

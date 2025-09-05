@@ -26,7 +26,7 @@ final preloadManagerProvider =
             cancelToken: cancelToken,
           ),
           downloadConfiguration: const DownloadConfiguration(
-            maxConcurrentDownloads: 2,
+            
           ),
         );
 

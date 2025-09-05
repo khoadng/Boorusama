@@ -15,7 +15,6 @@ class DefaultUnknownBooruWidgets extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const UnknownBooruWidgetsBuilder(
-      urlField: null,
       loginField: DefaultBooruLoginField(),
       apiKeyField: DefaultBooruApiKeyField(),
     );
@@ -30,9 +29,7 @@ class AnonUnknownBooruWidgets extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const UnknownBooruWidgetsBuilder(
-      urlField: null,
-      loginField: null,
-      apiKeyField: null,
+      
     );
   }
 }

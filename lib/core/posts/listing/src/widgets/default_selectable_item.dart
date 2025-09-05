@@ -186,7 +186,6 @@ class _DefaultSelectableItemState<T extends Post>
       onPressed: () {
         goToImagePreviewPage(context, widget.post);
       },
-      onLongPress: null,
     );
   }
 

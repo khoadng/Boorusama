@@ -100,7 +100,6 @@ class _ImportDataPageState extends ConsumerState<ImportDataPage> {
                   onPressed: () async {
                     final uri = await showGeneralDialog<Uri>(
                       context: context,
-                      transitionDuration: const Duration(milliseconds: 200),
                       pageBuilder: (context, animation, secondaryAnimation) =>
                           const ManualDeviceInputDialog(),
                     );

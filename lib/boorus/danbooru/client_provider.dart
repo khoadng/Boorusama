@@ -52,7 +52,6 @@ final danbooruDioProvider = Provider.family<Dio, BooruConfigAuth>((
         config: const SlidingWindowRateLimitConfig(
           requestsPerWindow: 10,
           windowSizeMs: 1000,
-          maxDelayMs: 5000,
         ),
       ),
     ],

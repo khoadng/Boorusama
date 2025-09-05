@@ -28,7 +28,7 @@ final sankakuPostRepoProvider =
           fetchSingle: (id, {options}) async {
             final stringId = id as StringPostId?;
 
-            if (stringId == null) return Future.value(null);
+            if (stringId == null) return Future.value();
 
             final post = await client.getPost(id: stringId.value);
 

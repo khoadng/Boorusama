@@ -121,7 +121,6 @@ class HomeContent extends ConsumerWidget {
           if (!context.isLargeScreen && value > 0)
             SafeArea(
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   BackButton(
                     onPressed: () => controller.goToTab(0),

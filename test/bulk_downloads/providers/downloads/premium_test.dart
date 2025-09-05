@@ -88,7 +88,6 @@ void main() {
         await notifier.queueDownloadLater(
           DownloadTestConstants.defaultOptions,
           downloadConfigs: _defaultConfigs.copyWith(
-            delayBetweenDownloads: null,
             androidSdkVersion: AndroidVersions.android15,
           ),
         );
@@ -101,7 +100,6 @@ void main() {
         await notifier.startPendingSession(
           pendingSession.first.id,
           downloadConfigs: _defaultConfigs.copyWith(
-            delayBetweenDownloads: null,
             androidSdkVersion: AndroidVersions.android15,
           ),
         );
@@ -273,7 +271,6 @@ void main() {
       final container = createBulkDownloadContainer(
         downloadRepository: repository,
         booruBuilder: MockBooruBuilder(),
-        hasPremium: true,
       );
 
       final notifier = container.read(bulkDownloadProvider.notifier);
@@ -325,7 +322,6 @@ void main() {
         final initContainer = createBulkDownloadContainer(
           downloadRepository: repository,
           booruBuilder: MockBooruBuilder(),
-          hasPremium: true,
         );
 
         final initNotifier = initContainer.read(bulkDownloadProvider.notifier);
@@ -373,7 +369,6 @@ void main() {
         final premiumContainer = createBulkDownloadContainer(
           downloadRepository: repository,
           booruBuilder: MockBooruBuilder(),
-          hasPremium: true,
         );
 
         // Assert - All tasks should be unlocked

@@ -19,7 +19,7 @@ void main() {
         final failedUrls = <String>[];
         final stateSnapshots = <PreloadManagerState>[];
         final activeDownloadsSnapshots = <int>[];
-        final testClock = Clock.fixed(DateTime(2024, 1, 1));
+        final testClock = Clock.fixed(DateTime(2024));
 
         // Mock preloader with error simulation
         Future<void> mockPreloader(String url, CancelToken cancelToken) async {
@@ -100,10 +100,6 @@ void main() {
 
         final directionHistory = DirectionHistory(
           clock: testClock,
-          options: const DirectionHistoryOptions(
-            mediumConfidenceThreshold: 4,
-            highConfidenceThreshold: 8,
-          ),
         );
 
         final strategy = DirectionBasedPreloadStrategy(
