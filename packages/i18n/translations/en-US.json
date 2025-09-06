@@ -479,6 +479,8 @@
       "imported_count": "{count} imported",
       "skipped_count": "{count} skipped",
       "failed_count": "{count} failed",
+      "invalid_location_error": "Cannot export to this location, try using \"Download\" or \"Documents\" folder. Create one if it does not exist.",
+      "invalid_backup_format_error": "Invalid backup format",
       "default_backup_location": "Default backup location",
       "never": "Never",
       "receive_data": {

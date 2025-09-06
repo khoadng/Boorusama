@@ -13,6 +13,7 @@ import '../../theme.dart';
 import '../../widgets/widgets.dart';
 import '../preparation/preparation_pipeline.dart';
 import '../types/backup_data_source.dart';
+import '../types/types.dart';
 import '../utils/backup_file_picker.dart';
 
 class DefaultBackupTile extends ConsumerWidget {
@@ -212,7 +213,7 @@ class DefaultBackupTile extends ConsumerWidget {
               context,
               context.t.settings.backup_and_restore.import_failed
                   .replaceAll('{source}', source.displayName.toLowerCase())
-                  .replaceAll('{error}', error.toString()),
+                  .replaceAll('{error}', _formatImportError(error, context)),
             );
           }
         }
@@ -271,9 +272,16 @@ class DefaultBackupTile extends ConsumerWidget {
           context,
           context.t.settings.backup_and_restore.import_failed
               .replaceAll('{source}', source.displayName.toLowerCase())
-              .replaceAll('{error}', error.toString()),
+              .replaceAll('{error}', _formatImportError(error, context)),
         );
       }
     }
   }
 }
+
+String _formatImportError(Object error, BuildContext context) =>
+    switch (error) {
+      InvalidBackupFormatException() =>
+        context.t.settings.backup_and_restore.invalid_backup_format_error,
+      _ => error.toString(),
+    };

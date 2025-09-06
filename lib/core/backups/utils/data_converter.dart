@@ -1,7 +1,11 @@
 // Dart imports:
 import 'dart:convert';
 
+// Flutter imports:
+import 'package:flutter/widgets.dart';
+
 // Package imports:
+import 'package:foundation/foundation.dart';
 import 'package:version/version.dart';
 
 // Project imports:
@@ -25,7 +29,7 @@ class DataBackupConverter {
     );
   }
 
-  ExportDataPayload decode({required String data}) {
+  ExportDataPayload decode({required String data, BuildContext? uiContext}) {
     return decodeData(data: data);
   }
 
@@ -54,22 +58,32 @@ String encodeData({
   return jsonEncode(data);
 }
 
-ExportDataPayload decodeData({required String data}) {
-  late final Map<String, dynamic> json;
-
-  json = jsonDecode(data) as Map<String, dynamic>;
-
-  final version = json['version'] as int;
-  final date = DateTime.parse(json['date'] as String);
-  final exportVersion = json['exportVersion'] != null
-      ? Version.parse(json['exportVersion'] as String)
-      : null;
-  final payload = json['data'] as List<dynamic>;
-
-  return ExportDataPayload(
-    version: version,
-    exportDate: date,
-    exportVersion: exportVersion,
-    data: payload,
-  );
-}
+ExportDataPayload decodeData({required String data, BuildContext? uiContext}) =>
+    tryDecodeJson(data).fold(
+      (_) => throw const InvalidBackupFormatException(),
+      (json) => switch (json) {
+        {
+          'version': final int version,
+          'data': final List<dynamic> payload,
+        } =>
+          ExportDataPayload(
+            version: version,
+            exportDate: switch (json['date']) {
+              final String dateStr => DateTime.tryParse(dateStr),
+              _ => null,
+            },
+            exportVersion: switch (json['exportVersion']) {
+              final String verStr => Version.parse(verStr),
+              _ => null,
+            },
+            data: payload,
+          ),
+        final List<dynamic> legacyList => ExportDataPayload.legacy(
+          data: legacyList,
+        ),
+        final Map<String, dynamic> legacyMap => ExportDataPayload.legacy(
+          data: [legacyMap],
+        ),
+        _ => throw const InvalidBackupFormatException(),
+      },
+    );

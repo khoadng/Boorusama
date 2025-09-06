@@ -27,7 +27,7 @@ class BooruConfigExportData {
   });
 
   int get version => exportData.version;
-  DateTime get exportDate => exportData.exportDate;
+  DateTime? get exportDate => exportData.exportDate;
   Version? get exportVersion => exportData.exportVersion;
   final List<BooruConfig> data;
   final ExportDataPayload exportData;

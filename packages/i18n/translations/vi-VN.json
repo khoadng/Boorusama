@@ -480,6 +480,8 @@
       "imported_count": "Đã nhập {count}",
       "skipped_count": "Bỏ qua {count}",
       "failed_count": "Thất bại {count}",
+      "invalid_location_error": "Không thể xuất đến vị trí này, hãy thử dùng thư mục \"Download\" hoặc \"Documents\". Tạo thư mục nếu nó không tồn tại.",
+      "invalid_backup_format_error": "Định dạng sao lưu không hợp lệ",
       "default_backup_location": "Vị trí sao lưu mặc định",
       "never": "Chưa bao giờ",
       "receive_data": {

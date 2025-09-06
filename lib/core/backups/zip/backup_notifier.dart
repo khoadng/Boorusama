@@ -18,7 +18,6 @@ import '../../settings/providers.dart';
 import '../auto/auto_backup_service.dart';
 import '../auto/auto_backup_settings.dart';
 import '../sources/providers.dart';
-import '../types/types.dart';
 import '../utils/backup_file_picker.dart';
 import 'bulk_backup_service.dart';
 import 'types.dart';
@@ -96,6 +95,7 @@ class BackupNotifier extends AutoDisposeNotifier<BackupState> {
 
   Future<void> exportToZip(BuildContext context, List<String> sourceIds) async {
     final logger = ref.read(loggerProvider);
+    final platform = Theme.of(context).platform;
 
     if (state.isActive) {
       logger.warn(
@@ -154,9 +154,20 @@ class BackupNotifier extends AutoDisposeNotifier<BackupState> {
         _showExportResult(context, result);
       }
     } on Exception catch (e) {
-      final errorMessage = _isPathAccessException(e)
-          ? kInvalidLocationMessage
-          : e.toString();
+      final errorMessage = switch ((
+        isPathException: _isPathAccessException(e),
+        mounted: context.mounted,
+        platform: platform,
+      )) {
+        (
+          isPathException: true,
+          mounted: true,
+          platform: TargetPlatform.android,
+        ) =>
+          // ignore: use_build_context_synchronously
+          context.t.settings.backup_and_restore.invalid_location_error,
+        _ => e.toString(),
+      };
 
       logger.error('Backup.UI', 'Export failed: $errorMessage');
 
