@@ -10,13 +10,6 @@ final bulkDownloadProgressProvider =
       BulkDownloadProgressNotifier.new,
     );
 
-final bulkDownloadProgressForSessionProvider = FutureProvider.autoDispose
-    .family<double?, String>((ref, sessionId) async {
-      final progressMap = await ref.watch(bulkDownloadProgressProvider.future);
-
-      return progressMap[sessionId];
-    });
-
 class BulkDownloadProgressNotifier extends AsyncNotifier<Map<String, double>> {
   @override
   Future<Map<String, double>> build() {

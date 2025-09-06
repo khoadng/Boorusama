@@ -5,7 +5,6 @@ import 'dart:async';
 import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:path/path.dart';
 
 // Project imports:
 import '../../../../foundation/loggers.dart';
@@ -13,21 +12,12 @@ import '../../../../foundation/permissions.dart';
 import '../../../../foundation/platform.dart';
 import '../../../../foundation/utils/duration_utils.dart';
 import '../../../analytics/providers.dart';
-import '../../../configs/config.dart';
 import '../../../configs/ref.dart';
 import '../../../download_manager/providers.dart';
 import '../../../downloads/downloader/providers.dart';
 import '../../../downloads/downloader/types.dart';
-import '../../../downloads/filename/providers.dart';
-import '../../../downloads/filename/types.dart';
-import '../../../downloads/urls/providers.dart';
-import '../../../http/http.dart';
-import '../../../http/providers.dart';
-import '../../../posts/post/post.dart';
 import '../../../posts/sources/source.dart';
 import '../../../premiums/providers.dart';
-import '../../../search/selected_tags/tag.dart';
-import '../../../settings/providers.dart';
 import '../notifications/providers.dart';
 import '../types/bulk_download_error.dart';
 import '../types/bulk_download_session.dart';
@@ -41,6 +31,7 @@ import '../types/download_session_stats.dart';
 import '../types/download_task.dart';
 import '../types/saved_download_task.dart';
 import 'bulk_progress.dart';
+import 'dry_run.dart';
 import 'file_system_exist_checker.dart';
 import 'providers.dart';
 import 'saved_task_lock_notifier.dart';
@@ -386,8 +377,6 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
     DownloadSession session, {
     DownloadConfigs? downloadConfigs,
   }) async {
-    final config = ref.readConfig;
-
     final path = task.path;
     final directoryChecker =
         downloadConfigs?.directoryExistChecker ??
@@ -404,42 +393,12 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
       return;
     }
 
-    final fallbackSettings = ref.read(settingsProvider);
-    final settings = downloadConfigs?.settings ?? fallbackSettings;
-
-    final fallbackDownloadFileUrlExtractor = ref.read(
-      downloadFileUrlExtractorProvider(config.auth),
-    );
-    final downloadFileUrlExtractor =
-        downloadConfigs?.urlExtractor ?? fallbackDownloadFileUrlExtractor;
-
-    final fallbackHeaders = ref.read(
-      cachedBypassDdosHeadersProvider(config.url),
-    );
-    final headers = downloadConfigs?.headers ?? fallbackHeaders;
-
-    final fileNameBuilder =
-        downloadConfigs?.fileNameBuilder ??
-        ref.read(downloadFilenameBuilderProvider(config.auth)) ??
-        fallbackFileNameBuilder;
-
-    final fetcher = ref.read(
-      postFetcherProvider((
-        filter: config.filter,
-        config: config.search,
-        downloadConfigs: downloadConfigs,
-      )).notifier,
-    );
-
     final mediaPermManager = ref.read(mediaPermissionManagerProvider);
 
     final notificationPermManager =
         downloadConfigs?.notificationPermissionManager != null
         ? downloadConfigs!.notificationPermissionManager!
         : ref.read(notificationPermissionManagerProvider);
-
-    final fileExistChecker =
-        downloadConfigs?.existChecker ?? const FileSystemDownloadExistChecker();
 
     final logger = ref.read(loggerProvider);
 
@@ -499,20 +458,6 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
     try {
       final cancelToken = _createSessionToken(sessionId);
 
-      var page = 1;
-      final tags = SearchTagSet.fromString(task.tags);
-
-      if (tags.isEmpty) {
-        await _updateSession(
-          sessionId,
-          status: DownloadSessionStatus.failed,
-          error: const EmptyTagsError().toString(),
-        );
-        return;
-      }
-
-      var rawPosts = <Post>[];
-
       if (downloadConfigs?.onDownloadStart != null) {
         downloadConfigs!.onDownloadStart!();
       }
@@ -520,198 +465,79 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
       currentSession = await _updateSession(
         sessionId,
         status: DownloadSessionStatus.dryRun,
-        currentPage: page,
+        currentPage: 1,
       );
 
-      final result = await fetcher.getPosts(
-        tags: tags,
-        page: page,
-        task: task,
-      );
-
-      if (result.isEmpty) {
+      if (currentSession == null) {
         await _updateSession(
           sessionId,
           status: DownloadSessionStatus.failed,
-          error: const NoPostsFoundError().toString(),
+          error: 'Session not found after initial update',
         );
         return;
       }
 
-      rawPosts = result.posts;
-
-      final preloadResult = await fileNameBuilder.preloadForBulkDownload(
-        rawPosts,
-        config.auth,
-        config.download,
+      // Start dry run using the notifier family
+      final dryRunNotifier = ref.read(
+        dryRunNotifierProvider(sessionId).notifier,
       );
 
-      final asyncFilenameNoPreload =
-          preloadResult == PreloadResult.asyncNoPreload;
-
-      var cumulativeIndex = 0;
-      while (currentSession?.status == DownloadSessionStatus.dryRun) {
-        final records = <DownloadRecord>[];
-        logger.verbose(
-          'BulkDownload',
-          'Dry run page $page started for session $sessionId',
-        );
-
-        for (var i = 0; i < rawPosts.length; i++) {
-          logger.verbose(
-            'BulkDownload',
-            'Processing post ${i + 1}/${rawPosts.length} for session $sessionId',
+      await dryRunNotifier.start(
+        currentSession,
+        task,
+        cancelToken,
+        downloadConfigs,
+        onPageProgress: (page) async {
+          currentSession = await _updateSession(
+            sessionId,
+            currentPage: page,
           );
-          if (cancelToken.isCancelled) {
-            logger.verbose(
-              'BulkDownload',
-              'Session $sessionId cancelled during dry run, cancelToken: ${cancelToken.isCancelled}',
-            );
-            currentSession = await _withRepo(
-              (repo) => repo.getSession(sessionId),
-            );
-
-            if (currentSession?.status != DownloadSessionStatus.dryRun) {
-              // Session status changed, exit dry run
-              break;
-            }
-          }
-
-          final item = rawPosts[i];
-
-          final urlData = await downloadFileUrlExtractor.getDownloadFileUrl(
-            post: item,
-            quality: task.quality ?? settings.downloadQuality.name,
+        },
+        shouldContinue: () async {
+          final session = await _withRepoNull(
+            (repo) => repo.getSession(sessionId),
           );
-          if (urlData == null || urlData.url.isEmpty) continue;
+          return session?.status == DownloadSessionStatus.dryRun;
+        },
+      );
 
-          final fileName = await fileNameBuilder.generateForBulkDownload(
-            settings,
-            config.download,
-            item,
-            metadata: {
-              'index': cumulativeIndex.toString(),
-            },
-            downloadUrl: urlData.url,
-            cancelToken: cancelToken,
-          );
+      // Get final dry run state
+      final dryRunState = await ref.read(
+        dryRunNotifierProvider(sessionId).future,
+      );
 
-          if (asyncFilenameNoPreload) {
-            logger.verbose(
-              'BulkDownload',
-              'Waiting for async token delay for post ${item.id}',
-            );
-
-            await Future.delayed(kBulkDownloadAsyncDelay);
-          }
-
-          logger.verbose(
-            'BulkDownload',
-            'Resolved filename for post ${item.id}: $fileName',
-          );
-
-          if (task.skipIfExists) {
-            final exists = fileExistChecker.exists(fileName, task.path);
-            // Skip if file exists.
-            if (exists) {
-              cumulativeIndex++;
-              logger.verbose(
-                'BulkDownload',
-                'Skipping post ${item.id} because file already exists: $fileName',
-              );
-              continue;
-            }
-          }
-
-          records.add(
-            DownloadRecord(
-              url: urlData.url,
-              fileName: fileName,
-              fileSize: item.fileSize,
-              sessionId: sessionId,
-              status: DownloadRecordStatus.pending,
-              extension: extension(fileName),
-              page: page,
-              pageIndex: i,
-              createdAt: DateTime.now(),
-              headers: {
-                ...headers,
-                if (urlData.cookie != null)
-                  AppHttpHeaders.cookieHeader: urlData.cookie!,
-              },
-              thumbnailImageUrl: item.thumbnailImageUrl,
-              sourceUrl: config.url,
-            ),
-          );
-
-          logger.verbose(
-            'BulkDownload',
-            'Post ${item.id} processed, fileName: $fileName, downloadUrl: ${urlData.url}',
-          );
-
-          cumulativeIndex++;
-        }
-
-        logger.verbose(
-          'BulkDownload',
-          'Dry run page $page processed, found ${records.length} valid records',
-        );
-
-        if (records.isNotEmpty) {
-          // Batch create records
-          await _withRepo((repo) => repo.createRecords(records));
-        }
-
-        currentSession = await _updateSession(
+      // Handle dry run result
+      if (dryRunState.status == DryRunStatus.failed) {
+        await _updateSession(
           sessionId,
-          currentPage: page,
+          status: DownloadSessionStatus.failed,
+          error: dryRunState.error,
         );
+        return;
+      }
 
-        page++;
-
-        // Early exit if session is not in dry run so user doesn't have to wait
+      if (dryRunState.status == DryRunStatus.cancelled) {
+        // Session was cancelled or status changed during dry run
+        currentSession = await _withRepoNull(
+          (repo) => repo.getSession(sessionId),
+        );
         if (currentSession?.status != DownloadSessionStatus.dryRun) {
           logger.verbose(
             'BulkDownload',
-            'Session $sessionId is no longer in dry run state, exiting dry run',
+            'Session $sessionId is no longer in dry run state, exiting',
           );
-          break;
+          return;
         }
+      }
 
-        final delay = downloadConfigs?.delayBetweenRequests;
-        if (delay != null) {
-          await delay.future;
-        } else {
-          await Future.delayed(const Duration(milliseconds: 200));
-        }
-
-        logger.verbose(
-          'BulkDownload',
-          'Fetching page $page for session $sessionId',
-        );
-
-        final result = await fetcher.getPosts(
-          tags: tags,
-          page: page,
-          task: task,
-        );
-
-        // No more items, stop dry run
-        if (result.isEmpty) {
-          page--;
-          logger.verbose(
-            'BulkDownload',
-            'No more items found, ending dry run for session $sessionId',
-          );
-          break;
-        }
-
-        rawPosts = result.posts;
+      // Batch create all records
+      if (dryRunState.allRecords.isNotEmpty) {
+        await _withRepo((repo) => repo.createRecords(dryRunState.allRecords));
       }
 
       logger.verbose('BulkDownload', 'Dry run ended for session $sessionId');
 
-      // Only resolve filename in dry run mode, cancel token right after dry run is done
+      // Cancel token right after dry run is done
       _cancelSessionToken(sessionId);
 
       final pendingCount = await _withRepo(
@@ -738,14 +564,14 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
       currentSession = await _updateSession(
         sessionId,
         status: DownloadSessionStatus.running,
-        totalPages: page,
+        totalPages: dryRunState.totalPages,
       );
 
       await _downloadSessionPages(
         sessionId: sessionId,
         task: task,
         startPage: 1,
-        endPage: page,
+        endPage: dryRunState.totalPages,
         downloadConfigs: downloadConfigs,
       );
     } catch (e) {

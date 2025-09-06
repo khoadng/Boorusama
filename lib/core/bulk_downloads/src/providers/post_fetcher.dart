@@ -1,6 +1,3 @@
-// Dart imports:
-import 'dart:isolate';
-
 // Package imports:
 import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -99,15 +96,14 @@ class PostFetcher
         if (posts.isEmpty) return const PostResult.empty();
 
         final taskPatterns = _parsePatterns(queryAsList(task.blacklistedTags));
+        final effectivePatterns = [
+          ...taskPatterns,
+          ...currentState.blacklistedPatterns,
+        ];
 
-        return Isolate.run(
-          () => _filterInIsolate(
-            posts,
-            [
-              ...taskPatterns,
-              ...currentState.blacklistedPatterns,
-            ],
-          ),
+        return _filter(
+          posts,
+          effectivePatterns,
         );
       },
     );
@@ -122,7 +118,7 @@ List<List<TagExpression>> _parsePatterns(Iterable<String>? patterns) {
       .toList();
 }
 
-PostResult _filterInIsolate(
+PostResult _filter(
   List<Post> posts,
   Iterable<List<TagExpression>>? patterns,
 ) {
