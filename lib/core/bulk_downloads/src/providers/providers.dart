@@ -7,6 +7,7 @@ import '../../../download_manager/types.dart';
 import '../data/download_repository_provider.dart';
 import '../types/download_record.dart';
 import '../types/download_repository.dart';
+import 'post_fetcher.dart';
 
 final downloadGroupFailedProvider = Provider.autoDispose.family<int, String>((
   ref,
@@ -51,3 +52,10 @@ final totalDownloadCountProvider = FutureProvider.autoDispose
 
       return total.length;
     });
+
+final postFetcherProvider =
+    AsyncNotifierProvider.family<
+      PostFetcher,
+      PostFetcherState,
+      PostFetcherParams
+    >(PostFetcher.new);

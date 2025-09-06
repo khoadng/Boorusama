@@ -14,8 +14,8 @@ import '../../../widgets/widgets.dart';
 import '../providers/bulk_download_notifier.dart';
 import '../providers/saved_download_task_provider.dart';
 import '../routes/internal_routes.dart';
-import '../widgets/bulk_download_task_tile.dart';
 import '../widgets/saved_task_list_tile.dart';
+import '../widgets/tasks/task_tile.dart';
 
 class BulkDownloadPage extends ConsumerWidget {
   const BulkDownloadPage({super.key});
