@@ -93,244 +93,238 @@ class DryRunNotifier extends FamilyAsyncNotifier<DryRunState, String> {
       final allRecords = <DownloadRecord>[];
 
       if (tags.isEmpty) {
-        final currentState = await future;
+        await _setFailedState(const EmptyTagsError().toString());
+        return;
+      }
+
+      final firstResult = await fetcher.getPosts(
+        tags: tags,
+        page: page,
+        task: task,
+      );
+
+      if (firstResult.isEmpty) {
+        await _setFailedState(const NoPostsFoundError().toString());
+        return;
+      }
+
+      var rawPosts = firstResult.posts;
+      final preloadResult = await fileNameBuilder.preloadForBulkDownload(
+        rawPosts,
+        config.auth,
+        config.download,
+      );
+
+      final asyncFilenameNoPreload =
+          preloadResult == PreloadResult.asyncNoPreload;
+      if (asyncFilenameNoPreload) {
         state = AsyncData(
-          currentState.copyWith(
-            status: const DryRunStatusFailed(),
-            error: const EmptyTagsError().toString(),
+          (await future).copyWith(
+            status: const DryRunStatusRunning(isSlowRun: true),
           ),
         );
-        return;
-      } else {
-        final firstResult = await fetcher.getPosts(
+      }
+
+      var cumulativeIndex = 0;
+
+      while (await shouldContinue()) {
+        if (cancelToken.isCancelled) {
+          await _setCancelledState(page);
+          return;
+        }
+
+        final records = <DownloadRecord>[];
+        logger.debug(
+          'BulkDownload',
+          'Dry run page $page started for session $sessionId',
+        );
+
+        await onPageProgress(page);
+        state = AsyncData((await future).copyWith(currentPage: () => page));
+
+        for (var i = 0; i < rawPosts.length; i++) {
+          if (cancelToken.isCancelled) {
+            logger.debug(
+              'BulkDownload',
+              'Session $sessionId cancelled during dry run',
+            );
+            await _setCancelledState(page);
+            return;
+          }
+
+          if (!await shouldContinue()) {
+            break;
+          }
+
+          logger.debug(
+            'BulkDownload',
+            'Processing post ${i + 1}/${rawPosts.length} for session $sessionId',
+          );
+
+          if (asyncFilenameNoPreload) {
+            state = AsyncData(
+              (await future).copyWith(currentItemIndex: () => i),
+            );
+          }
+
+          final item = rawPosts[i];
+          final urlData = await downloadFileUrlExtractor?.getDownloadFileUrl(
+            post: item,
+            quality: task.quality ?? settings.downloadQuality.name,
+          );
+
+          if (urlData == null || urlData.url.isEmpty) continue;
+
+          final fileName = await fileNameBuilder.generateForBulkDownload(
+            settings,
+            config.download,
+            item,
+            metadata: {
+              'index': cumulativeIndex.toString(),
+            },
+            downloadUrl: urlData.url,
+            cancelToken: cancelToken,
+          );
+
+          if (asyncFilenameNoPreload) {
+            logger.debug(
+              'BulkDownload',
+              'Waiting for async token delay for post ${item.id}',
+            );
+            await Future.delayed(kBulkDownloadAsyncDelay);
+          }
+
+          logger.debug(
+            'BulkDownload',
+            'Resolved filename for post ${item.id}: $fileName',
+          );
+
+          if (task.skipIfExists) {
+            final exists = fileExistChecker.exists(fileName, task.path);
+            if (exists) {
+              cumulativeIndex++;
+              logger.debug(
+                'BulkDownload',
+                'Skipping post ${item.id} because file already exists: $fileName',
+              );
+              continue;
+            }
+          }
+
+          records.add(
+            DownloadRecord(
+              url: urlData.url,
+              fileName: fileName,
+              fileSize: item.fileSize,
+              sessionId: sessionId,
+              status: DownloadRecordStatus.pending,
+              extension: extension(fileName),
+              page: page,
+              pageIndex: i,
+              createdAt: DateTime.now(),
+              headers: {
+                ...?headers,
+                AppHttpHeaders.cookieHeader: ?urlData.cookie,
+              },
+              thumbnailImageUrl: item.thumbnailImageUrl,
+              sourceUrl: config.url,
+            ),
+          );
+
+          logger.debug(
+            'BulkDownload',
+            'Post ${item.id} processed, fileName: $fileName, downloadUrl: ${urlData.url}',
+          );
+          cumulativeIndex++;
+        }
+
+        allRecords.addAll(records);
+
+        state = AsyncData(
+          (await future).copyWith(
+            allRecords: allRecords,
+            totalPages: page,
+          ),
+        );
+
+        logger.debug(
+          'BulkDownload',
+          'Dry run page $page processed, found ${records.length} valid records',
+        );
+
+        page++;
+
+        if (!await shouldContinue()) {
+          logger.debug(
+            'BulkDownload',
+            'Session $sessionId is no longer in dry run state, exiting dry run',
+          );
+          break;
+        }
+
+        final delay = downloadConfigs?.delayBetweenRequests;
+        if (delay != null) {
+          await delay.future;
+        } else {
+          await Future.delayed(const Duration(milliseconds: 200));
+        }
+
+        logger.debug(
+          'BulkDownload',
+          'Fetching page $page for session $sessionId',
+        );
+
+        final nextResult = await fetcher.getPosts(
           tags: tags,
           page: page,
           task: task,
         );
 
-        if (firstResult.isEmpty) {
-          final currentState = await future;
-          state = AsyncData(
-            currentState.copyWith(
-              status: const DryRunStatusFailed(),
-              error: const NoPostsFoundError().toString(),
-            ),
-          );
-          return;
-        } else {
-          var rawPosts = firstResult.posts;
-
-          final preloadResult = await fileNameBuilder.preloadForBulkDownload(
-            rawPosts,
-            config.auth,
-            config.download,
-          );
-
-          final asyncFilenameNoPreload =
-              preloadResult == PreloadResult.asyncNoPreload;
-
-          if (asyncFilenameNoPreload) {
-            state = AsyncData(
-              (await future).copyWith(
-                status: const DryRunStatusRunning(isSlowRun: true),
-              ),
-            );
-          }
-          var cumulativeIndex = 0;
-
-          while (await shouldContinue()) {
-            final records = <DownloadRecord>[];
-            logger.debug(
-              'BulkDownload',
-              'Dry run page $page started for session $sessionId',
-            );
-
-            await onPageProgress(page);
-
-            state = AsyncData(
-              (await future).copyWith(currentPage: () => page),
-            );
-
-            for (var i = 0; i < rawPosts.length; i++) {
-              logger.debug(
-                'BulkDownload',
-                'Processing post ${i + 1}/${rawPosts.length} for session $sessionId',
-              );
-
-              if (asyncFilenameNoPreload) {
-                state = AsyncData(
-                  (await future).copyWith(
-                    currentItemIndex: () => i,
-                  ),
-                );
-              }
-
-              if (cancelToken.isCancelled) {
-                logger.debug(
-                  'BulkDownload',
-                  'Session $sessionId cancelled during dry run',
-                );
-                state = AsyncData(
-                  (await future).copyWith(
-                    status: const DryRunStatusCancelled(),
-                    totalPages: page,
-                  ),
-                );
-                break;
-              }
-
-              if (!await shouldContinue()) {
-                break;
-              }
-
-              final item = rawPosts[i];
-
-              final urlData = await downloadFileUrlExtractor
-                  ?.getDownloadFileUrl(
-                    post: item,
-                    quality: task.quality ?? settings.downloadQuality.name,
-                  );
-              if (urlData == null || urlData.url.isEmpty) continue;
-
-              final fileName = await fileNameBuilder.generateForBulkDownload(
-                settings,
-                config.download,
-                item,
-                metadata: {
-                  'index': cumulativeIndex.toString(),
-                },
-                downloadUrl: urlData.url,
-                cancelToken: cancelToken,
-              );
-
-              if (asyncFilenameNoPreload) {
-                logger.debug(
-                  'BulkDownload',
-                  'Waiting for async token delay for post ${item.id}',
-                );
-                await Future.delayed(kBulkDownloadAsyncDelay);
-              }
-
-              logger.debug(
-                'BulkDownload',
-                'Resolved filename for post ${item.id}: $fileName',
-              );
-
-              if (task.skipIfExists) {
-                final exists = fileExistChecker.exists(fileName, task.path);
-                if (exists) {
-                  cumulativeIndex++;
-                  logger.debug(
-                    'BulkDownload',
-                    'Skipping post ${item.id} because file already exists: $fileName',
-                  );
-                  continue;
-                }
-              }
-
-              records.add(
-                DownloadRecord(
-                  url: urlData.url,
-                  fileName: fileName,
-                  fileSize: item.fileSize,
-                  sessionId: sessionId,
-                  status: DownloadRecordStatus.pending,
-                  extension: extension(fileName),
-                  page: page,
-                  pageIndex: i,
-                  createdAt: DateTime.now(),
-                  headers: {
-                    ...?headers,
-                    AppHttpHeaders.cookieHeader: ?urlData.cookie,
-                  },
-                  thumbnailImageUrl: item.thumbnailImageUrl,
-                  sourceUrl: config.url,
-                ),
-              );
-
-              logger.debug(
-                'BulkDownload',
-                'Post ${item.id} processed, fileName: $fileName, downloadUrl: ${urlData.url}',
-              );
-
-              cumulativeIndex++;
-            }
-
-            allRecords.addAll(records);
-
-            state = AsyncData(
-              (await future).copyWith(
-                allRecords: allRecords,
-                totalPages: page,
-              ),
-            );
-
-            logger.debug(
-              'BulkDownload',
-              'Dry run page $page processed, found ${records.length} valid records',
-            );
-
-            page++;
-
-            if (!await shouldContinue()) {
-              logger.debug(
-                'BulkDownload',
-                'Session $sessionId is no longer in dry run state, exiting dry run',
-              );
-              break;
-            }
-
-            final delay = downloadConfigs?.delayBetweenRequests;
-            if (delay != null) {
-              await delay.future;
-            } else {
-              await Future.delayed(const Duration(milliseconds: 200));
-            }
-
-            logger.debug(
-              'BulkDownload',
-              'Fetching page $page for session $sessionId',
-            );
-
-            final nextResult = await fetcher.getPosts(
-              tags: tags,
-              page: page,
-              task: task,
-            );
-
-            if (nextResult.isEmpty) {
-              page--;
-              logger.debug(
-                'BulkDownload',
-                'No more items found, ending dry run for session $sessionId',
-              );
-              break;
-            }
-
-            rawPosts = nextResult.posts;
-          }
-
+        if (nextResult.isEmpty) {
+          page--;
           logger.debug(
             'BulkDownload',
-            'Dry run ended for session $sessionId',
+            'No more items found, ending dry run for session $sessionId',
           );
-
-          state = AsyncData(
-            (await future).copyWith(
-              status: const DryRunStatusCompleted(),
-              allRecords: allRecords,
-              totalPages: page,
-            ),
-          );
+          break;
         }
+
+        rawPosts = nextResult.posts;
       }
-    } catch (e) {
+
+      logger.debug(
+        'BulkDownload',
+        'Dry run ended for session $sessionId',
+      );
+
       state = AsyncData(
-        currentState.copyWith(
-          status: const DryRunStatusFailed(),
-          error: e.toString(),
+        (await future).copyWith(
+          status: const DryRunStatusCompleted(),
+          allRecords: allRecords,
+          totalPages: page,
         ),
       );
+    } catch (e) {
+      await _setFailedState(e.toString());
     }
+  }
+
+  Future<void> _setFailedState(String error) async {
+    final currentState = await future;
+    state = AsyncData(
+      currentState.copyWith(
+        status: const DryRunStatusFailed(),
+        error: error,
+      ),
+    );
+  }
+
+  Future<void> _setCancelledState(int totalPages) async {
+    state = AsyncData(
+      (await future).copyWith(
+        status: const DryRunStatusCancelled(),
+        totalPages: totalPages,
+      ),
+    );
   }
 }
