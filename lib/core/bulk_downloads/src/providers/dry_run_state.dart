@@ -18,10 +18,12 @@ class DryRunStatusIdle extends DryRunStatus {
 
 class DryRunStatusRunning extends DryRunStatus {
   const DryRunStatusRunning({
-    required this.isSlowRun,
+    this.isSlowRun = false,
+    this.isWarmingUp = false,
   });
 
   final bool isSlowRun;
+  final bool isWarmingUp;
 }
 
 class DryRunStatusCompleted extends DryRunStatus {

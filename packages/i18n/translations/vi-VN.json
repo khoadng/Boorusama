@@ -954,8 +954,9 @@
     "created": "Đã tạo",
     "completed_with_no_new_files": "Đã hoàn thành mà không có tệp mới nào",
     "scanning_page": {
+      "warm_up": "Làm nóng...",
       "with_page": "Đang quét trang $page...",
-      "null_page": "Đang khởi tạo...",
+      "null_page": "Khởi tạo...",
       "with_page_and_index": "Đang quét trang $page, mục $index..."
     },
     "file_counter": {

@@ -57,7 +57,7 @@ class DryRunNotifier extends FamilyAsyncNotifier<DryRunState, String> {
 
     state = AsyncData(
       currentState.copyWith(
-        status: const DryRunStatusRunning(isSlowRun: false),
+        status: const DryRunStatusRunning(),
       ),
     );
 
@@ -117,12 +117,19 @@ class DryRunNotifier extends FamilyAsyncNotifier<DryRunState, String> {
 
       final asyncFilenameNoPreload =
           preloadResult == PreloadResult.asyncNoPreload;
-      if (asyncFilenameNoPreload) {
-        state = AsyncData(
-          (await future).copyWith(
-            status: const DryRunStatusRunning(isSlowRun: true),
-          ),
-        );
+
+      final status = switch (preloadResult) {
+        PreloadResult.asyncNoPreload => const DryRunStatusRunning(
+          isSlowRun: true,
+        ),
+        PreloadResult.asyncPreload => const DryRunStatusRunning(
+          isWarmingUp: true,
+        ),
+        PreloadResult.sync => null,
+      };
+
+      if (status != null) {
+        state = AsyncData((await future).copyWith(status: status));
       }
 
       var cumulativeIndex = 0;

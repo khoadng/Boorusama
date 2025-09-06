@@ -359,6 +359,10 @@ class _InfoText extends ConsumerWidget {
               .maybeWhen(
                 data: (data) => switch (data) {
                   DryRunState(
+                    status: DryRunStatusRunning(isWarmingUp: true),
+                  ) =>
+                    context.t.bulk_downloads.scanning_page.warm_up,
+                  DryRunState(
                     status: DryRunStatusRunning(),
                     :final currentPage?,
                     :final currentItemIndex?,

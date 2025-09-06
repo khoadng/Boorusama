@@ -953,6 +953,7 @@
     "created": "Created",
     "completed_with_no_new_files": "Completed with no new files",
     "scanning_page": {
+      "warm_up": "Warming up...",
       "with_page": "Scanning page $page...",
       "null_page": "Initializing...",
       "with_page_and_index": "Scanning page $page, item $index..."
