@@ -1,6 +1,8 @@
 // Package imports:
 import 'package:background_downloader/background_downloader.dart'
     hide Database, PermissionStatus;
+import 'package:dio/dio.dart';
+import 'package:filename_generator/filename_generator.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -39,6 +41,7 @@ import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/foundation/info/device_info.dart';
 import 'package:boorusama/foundation/loggers.dart';
 import 'package:boorusama/foundation/permissions.dart';
+import 'package:rich_text_controller/rich_text_controller.dart';
 import '../../common.dart';
 
 class MockMediaPermissionManager extends Mock
@@ -411,4 +414,91 @@ List<Override> getTestOverrides({
     if (notifications != null)
       bulkDownloadNotificationProvider.overrideWith((_) => notifications),
   ];
+}
+
+class MockAsyncFilenameBuilder implements DownloadFilenameGenerator<DummyPost> {
+  MockAsyncFilenameBuilder({
+    this.hasAsyncTokens = false,
+    this.preloadResult = PreloadResult.sync,
+    this.shouldFailGenerate = false,
+    this.shouldFailPreload = false,
+  });
+
+  final bool hasAsyncTokens;
+  final PreloadResult preloadResult;
+  final bool shouldFailGenerate;
+  final bool shouldFailPreload;
+
+  final List<DummyPost> generatedPosts = [];
+  final List<List<DummyPost>> preloadedChunks = [];
+  int preloadCallCount = 0;
+
+  @override
+  Future<String> generateForBulkDownload(
+    Settings settings,
+    BooruConfigDownload config,
+    DummyPost post, {
+    required String downloadUrl,
+    Map<String, String>? metadata,
+    CancelToken? cancelToken,
+  }) async {
+    generatedPosts.add(post);
+
+    if (cancelToken?.isCancelled ?? false) {
+      throw DioException(requestOptions: RequestOptions());
+    }
+
+    if (shouldFailGenerate) {
+      throw Exception('Generate failed');
+    }
+
+    final index = metadata?['index'] ?? '0';
+    return 'file_${post.id}_$index.jpg';
+  }
+
+  @override
+  Future<PreloadResult> preloadForBulkDownload(
+    List<DummyPost> posts,
+    BooruConfigAuth config,
+    BooruConfigDownload downloadConfig,
+  ) async {
+    preloadCallCount++;
+    preloadedChunks.add(List.from(posts));
+
+    if (shouldFailPreload) {
+      throw Exception('Preload failed');
+    }
+
+    return preloadResult;
+  }
+
+  @override
+  bool formatContainsAsyncToken(String? format) => hasAsyncTokens;
+
+  @override
+  List<TokenInfo> get availableTokens => [];
+  @override
+  List<TextMatcher> get textMatchers => [];
+  @override
+  List<String> getTokenOptions(String token) => [];
+  @override
+  TokenOptionDocs? getDocsForTokenOption(String token, String tokenOption) =>
+      null;
+  @override
+  Future<String> generate(
+    Settings settings,
+    BooruConfigDownload config,
+    DummyPost post, {
+    required String downloadUrl,
+    Map<String, String>? metadata,
+    CancelToken? cancelToken,
+  }) async => 'test.jpg';
+  @override
+  String generateSample(String format) => 'sample.jpg';
+  @override
+  List<String> generateSamples(String format) => ['sample.jpg'];
+  @override
+  String get defaultFileNameFormat => '{id}.{extension}';
+  @override
+  String get defaultBulkDownloadFileNameFormat => '{index}_{id}.{extension}';
 }

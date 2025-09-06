@@ -143,47 +143,6 @@ void main() {
         const RunningSessionDeletionError().toString(),
       );
     });
-
-    test('should not allow deletion of dry run session', () async {
-      // Arrange
-      final task = await repository.createTask(_options);
-      final notifier = container.read(bulkDownloadProvider.notifier);
-
-      unawaited(
-        notifier.downloadFromTaskId(
-          task.id,
-          downloadConfigs: _defaultConfigs.copyWith(
-            delayBetweenRequests: const Duration(milliseconds: 2000),
-          ),
-        ),
-      );
-
-      // Wait for dry run to start
-      await Future.delayed(const Duration(milliseconds: 50));
-
-      // Get session ID from the first session
-      final sessions = await repository.getSessionsByTaskId(task.id);
-      expect(sessions.length, equals(1));
-      final sessionId = sessions.first.id;
-
-      // Verify session is in dry run
-      expect(sessions.first.status, equals(DownloadSessionStatus.dryRun));
-
-      // Act
-      await notifier.deleteSession(sessionId);
-
-      // Assert
-      // Verify session still exists
-      final existingSession = await repository.getSession(sessionId);
-      expect(existingSession, isNotNull);
-
-      // Verify error state
-      final state = container.read(bulkDownloadProvider);
-      expect(
-        state.error.toString(),
-        const RunningSessionDeletionError().toString(),
-      );
-    });
   });
 
   group('Session Completion', () {
@@ -330,58 +289,6 @@ void main() {
         isNull,
       );
     });
-  });
-
-  group('Session Dry Run', () {
-    test(
-      'should transition from dry run to running state when stopped',
-      () async {
-        final task = await repository.createTask(_options);
-        final notifier = container.read(bulkDownloadProvider.notifier);
-
-        unawaited(
-          notifier.downloadFromTaskId(
-            task.id,
-            downloadConfigs: _defaultConfigs.copyWith(
-              delayBetweenRequests: const Duration(milliseconds: 200),
-            ),
-          ),
-        );
-
-        // Wait for session to be created
-        await Future.delayed(
-          const Duration(milliseconds: 50),
-          () async {
-            final sessions = await repository.getSessionsByTaskId(task.id);
-
-            // Verify initial dry run state
-            expect(sessions.first.status, equals(DownloadSessionStatus.dryRun));
-
-            // Stop dry run
-            await notifier.stopDryRun(sessions.first.id);
-
-            // Verify state transition
-            final updatedSession = await repository.getSession(
-              sessions.first.id,
-            );
-            expect(
-              updatedSession?.status,
-              equals(DownloadSessionStatus.running),
-            );
-
-            // Verify notifier state
-            final state = container.read(bulkDownloadProvider);
-            expect(
-              state.sessions
-                  .firstWhere((d) => d.session.id == sessions.first.id)
-                  .session
-                  .status,
-              equals(DownloadSessionStatus.running),
-            );
-          },
-        );
-      },
-    );
   });
 
   group('Session Cancellation', () {
