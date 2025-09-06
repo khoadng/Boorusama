@@ -10,7 +10,6 @@ import 'package:rich_text_controller/rich_text_controller.dart';
 // Project imports:
 import '../../../../foundation/loggers.dart';
 import '../../../../foundation/path.dart';
-import '../../../../foundation/utils/collection_utils.dart';
 import '../../../configs/config.dart';
 import '../../../posts/post/post.dart';
 import '../../../settings/settings.dart';
@@ -19,8 +18,6 @@ import 'async_token_resolver.dart';
 import 'generator.dart';
 import 'token_handler.dart';
 import 'token_options.dart';
-
-const kDefaultBulkPreloadChunkSize = 50;
 
 class DownloadFileNameBuilder<T extends Post>
     implements DownloadFilenameGenerator<T> {
@@ -31,7 +28,6 @@ class DownloadFileNameBuilder<T extends Post>
     required this.defaultBulkDownloadFileNameFormat,
     this.logger,
     this.preload,
-    this.bulkPreloadChunkSize = kDefaultBulkPreloadChunkSize,
     this.asyncTokenHandlers = const [],
     bool hasRating = true,
     bool hasMd5 = true,
@@ -62,7 +58,6 @@ class DownloadFileNameBuilder<T extends Post>
 
   final Logger? logger;
   final Future<void> Function(List<T> posts, BooruConfigAuth config)? preload;
-  final int? bulkPreloadChunkSize;
   final List<Map<String, String>> sampleData;
   late final Map<String, DownloadFilenameTokenHandler<T>> baseTokenHandlers;
   late final List<AsyncTokenHandler<T>> asyncTokenHandlers;
@@ -278,16 +273,7 @@ class DownloadFileNameBuilder<T extends Post>
 
     if (preload == null || posts.isEmpty) return PreloadResult.asyncNoPreload;
 
-    final chunks = posts.chunk(
-      bulkPreloadChunkSize ?? kDefaultBulkPreloadChunkSize,
-    );
-
-    for (final chunk in chunks) {
-      await preload!(chunk, config);
-
-      // Small delay to avoid spamming
-      await Future.delayed(const Duration(milliseconds: 500));
-    }
+    await preload!(posts, config);
 
     return PreloadResult.asyncPreload;
   }
