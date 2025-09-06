@@ -13,7 +13,6 @@ import '../../../../boorus/engine/providers.dart';
 import '../../../../configs/config/types.dart';
 import '../../../../configs/gesture/gesture.dart';
 import '../../../../settings/providers.dart';
-import '../../../../settings/settings.dart';
 import '../../../../videos/play_pause_button.dart';
 import '../../../../videos/providers.dart';
 import '../../../../videos/sound_control_button.dart';
@@ -53,8 +52,8 @@ class PostDetailsItem<T extends Post> extends ConsumerWidget {
     final pageViewController = PostDetailsPageViewScope.of(context);
     final post = posts[index];
 
-    final videoPlayerEngine = ref.watch(
-      settingsProvider.select((value) => value.videoPlayerEngine),
+    final useDefaultEngine = ref.watch(
+      settingsProvider.select((value) => value.mediaKitHardwareDecoding),
     );
 
     final booruBuilder = ref.watch(booruBuilderProvider(authConfig));
@@ -68,11 +67,11 @@ class PostDetailsItem<T extends Post> extends ConsumerWidget {
         if (controller.currentPost.value.isVideo) {
           if (controller.isVideoPlaying.value) {
             controller.pauseCurrentVideo(
-              useDefaultEngine: videoPlayerEngine.isDefault,
+              useDefaultEngine: useDefaultEngine,
             );
           } else {
             controller.playCurrentVideo(
-              useDefaultEngine: videoPlayerEngine.isDefault,
+              useDefaultEngine: useDefaultEngine,
             );
           }
         } else {
@@ -155,13 +154,13 @@ class PostDetailsItem<T extends Post> extends ConsumerWidget {
                                     detailsController.pauseVideo(
                                       post.id,
                                       post.isWebm,
-                                      videoPlayerEngine.isDefault,
+                                      useDefaultEngine,
                                     );
                                   } else if (!value) {
                                     detailsController.playVideo(
                                       post.id,
                                       post.isWebm,
-                                      videoPlayerEngine.isDefault,
+                                      useDefaultEngine,
                                     );
                                   } else {
                                     // do nothing

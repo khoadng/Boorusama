@@ -43,7 +43,7 @@ class Settings extends Equatable {
     required this.downloadFileExistedBehavior,
     required this.videoAudioDefaultState,
     required this.colors,
-    required this.videoPlayerEngine,
+    required this.mediaKitHardwareDecoding,
     required this.volumeKeyViewerNavigation,
     required this.searchBarScrollBehavior,
     required this.searchBarPosition,
@@ -120,9 +120,10 @@ class Settings extends Equatable {
       colors = json['colors'] != null
           ? ColorSettings.fromJson(json['colors'])
           : null,
-      videoPlayerEngine = json['videoPlayerEngine'] != null
-          ? VideoPlayerEngine.values[json['videoPlayerEngine']]
-          : VideoPlayerEngine.auto,
+      mediaKitHardwareDecoding = json['mediaKitHardwareDecoding'] ?? 
+          (json['videoPlayerEngine'] != null 
+              ? (json['videoPlayerEngine'] == 0) // VideoPlayerEngine.auto was 0
+              : true), // デフォルトはtrue（有効）
       searchBarScrollBehavior = json['searchBarScrollBehavior'] != null
           ? SearchBarScrollBehavior.values[json['searchBarScrollBehavior']]
           : SearchBarScrollBehavior.autoHide,
@@ -188,7 +189,7 @@ class Settings extends Equatable {
     reduceAnimations: false,
     downloadFileExistedBehavior: DownloadFileExistedBehavior.appDecide,
     videoAudioDefaultState: VideoAudioDefaultState.unspecified,
-    videoPlayerEngine: VideoPlayerEngine.auto,
+    mediaKitHardwareDecoding: true,
     volumeKeyViewerNavigation: false,
     searchBarScrollBehavior: SearchBarScrollBehavior.autoHide,
     searchBarPosition: SearchBarPosition.top,
@@ -250,7 +251,7 @@ class Settings extends Equatable {
   final VideoAudioDefaultState videoAudioDefaultState;
 
   final ColorSettings? colors;
-  final VideoPlayerEngine videoPlayerEngine;
+  final bool mediaKitHardwareDecoding;
 
   final bool volumeKeyViewerNavigation;
 
@@ -295,7 +296,7 @@ class Settings extends Equatable {
     VideoAudioDefaultState? videoAudioDefaultState,
     ImageListingSettings? listing,
     ColorSettings? colors,
-    VideoPlayerEngine? videoPlayerEngine,
+    bool? mediaKitHardwareDecoding,
     bool? volumeKeyViewerNavigation,
     SearchBarScrollBehavior? searchBarScrollBehavior,
     SearchBarPosition? searchBarPosition,
@@ -345,7 +346,7 @@ class Settings extends Equatable {
     videoAudioDefaultState:
         videoAudioDefaultState ?? this.videoAudioDefaultState,
     colors: colors ?? this.colors,
-    videoPlayerEngine: videoPlayerEngine ?? this.videoPlayerEngine,
+    mediaKitHardwareDecoding: mediaKitHardwareDecoding ?? this.mediaKitHardwareDecoding,
     volumeKeyViewerNavigation:
         volumeKeyViewerNavigation ?? this.volumeKeyViewerNavigation,
     searchBarScrollBehavior:
@@ -390,7 +391,7 @@ class Settings extends Equatable {
       'downloadFileExistedBehavior': downloadFileExistedBehavior.index,
       'videoAudioDefaultState': videoAudioDefaultState.index,
       'colors': colors?.toJson(),
-      'videoPlayerEngine': videoPlayerEngine.index,
+      'mediaKitHardwareDecoding': mediaKitHardwareDecoding,
       'volumeKeyViewerNavigation': volumeKeyViewerNavigation,
       'searchBarScrollBehavior': searchBarScrollBehavior.index,
       'searchBarPosition': searchBarPosition.index,
@@ -431,7 +432,7 @@ class Settings extends Equatable {
     downloadFileExistedBehavior,
     videoAudioDefaultState,
     colors,
-    videoPlayerEngine,
+    mediaKitHardwareDecoding,
     volumeKeyViewerNavigation,
     searchBarScrollBehavior,
     searchBarPosition,

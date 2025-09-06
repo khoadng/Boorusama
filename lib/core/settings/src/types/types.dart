@@ -130,15 +130,6 @@ const kSortedGridSizes = [
   GridSize.large,
 ];
 
-enum VideoPlayerEngine {
-  auto,
-  videoPlayerPlugin,
-  mdk,
-}
-
-extension VideoPlayerEngineX on VideoPlayerEngine {
-  bool get isDefault => this != VideoPlayerEngine.mdk;
-}
 
 enum SearchBarScrollBehavior {
   autoHide,
