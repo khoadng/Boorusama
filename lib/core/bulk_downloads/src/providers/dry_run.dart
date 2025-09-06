@@ -63,7 +63,7 @@ class DryRunNotifier extends FamilyAsyncNotifier<DryRunState, String> {
 
     try {
       final config = ref.readConfig;
-      final logger = ref.read(loggerProvider);
+      final l = ref.read(loggerProvider);
       final downloadFileUrlExtractor =
           downloadConfigs?.urlExtractor ??
           ref.read(downloadFileUrlExtractorProvider(config.auth));
@@ -134,20 +134,14 @@ class DryRunNotifier extends FamilyAsyncNotifier<DryRunState, String> {
         }
 
         final records = <DownloadRecord>[];
-        logger.debug(
-          'BulkDownload',
-          'Dry run page $page started for session $sessionId',
-        );
+        l._log('Dry run page $page started for session $sessionId');
 
         await onPageProgress(page);
         state = AsyncData((await future).copyWith(currentPage: () => page));
 
         for (var i = 0; i < rawPosts.length; i++) {
           if (cancelToken.isCancelled) {
-            logger.debug(
-              'BulkDownload',
-              'Session $sessionId cancelled during dry run',
-            );
+            l._log('Session $sessionId cancelled during dry run');
             await _setCancelledState(page);
             return;
           }
@@ -156,8 +150,7 @@ class DryRunNotifier extends FamilyAsyncNotifier<DryRunState, String> {
             break;
           }
 
-          logger.debug(
-            'BulkDownload',
+          l._log(
             'Processing post ${i + 1}/${rawPosts.length} for session $sessionId',
           );
 
@@ -187,24 +180,17 @@ class DryRunNotifier extends FamilyAsyncNotifier<DryRunState, String> {
           );
 
           if (asyncFilenameNoPreload) {
-            logger.debug(
-              'BulkDownload',
-              'Waiting for async token delay for post ${item.id}',
-            );
+            l._log('Waiting for async token delay for post ${item.id}');
             await Future.delayed(kBulkDownloadAsyncDelay);
           }
 
-          logger.debug(
-            'BulkDownload',
-            'Resolved filename for post ${item.id}: $fileName',
-          );
+          l._log('Resolved filename for post ${item.id}: $fileName');
 
           if (task.skipIfExists) {
             final exists = fileExistChecker.exists(fileName, task.path);
             if (exists) {
               cumulativeIndex++;
-              logger.debug(
-                'BulkDownload',
+              l._log(
                 'Skipping post ${item.id} because file already exists: $fileName',
               );
               continue;
@@ -231,8 +217,7 @@ class DryRunNotifier extends FamilyAsyncNotifier<DryRunState, String> {
             ),
           );
 
-          logger.debug(
-            'BulkDownload',
+          l._log(
             'Post ${item.id} processed, fileName: $fileName, downloadUrl: ${urlData.url}',
           );
           cumulativeIndex++;
@@ -247,16 +232,14 @@ class DryRunNotifier extends FamilyAsyncNotifier<DryRunState, String> {
           ),
         );
 
-        logger.debug(
-          'BulkDownload',
+        l._log(
           'Dry run page $page processed, found ${records.length} valid records',
         );
 
         page++;
 
         if (!await shouldContinue()) {
-          logger.debug(
-            'BulkDownload',
+          l._log(
             'Session $sessionId is no longer in dry run state, exiting dry run',
           );
           break;
@@ -269,10 +252,7 @@ class DryRunNotifier extends FamilyAsyncNotifier<DryRunState, String> {
           await Future.delayed(const Duration(milliseconds: 200));
         }
 
-        logger.debug(
-          'BulkDownload',
-          'Fetching page $page for session $sessionId',
-        );
+        l._log('Fetching page $page for session $sessionId');
 
         final nextResult = await fetcher.getPosts(
           tags: tags,
@@ -282,20 +262,14 @@ class DryRunNotifier extends FamilyAsyncNotifier<DryRunState, String> {
 
         if (nextResult.isEmpty) {
           page--;
-          logger.debug(
-            'BulkDownload',
-            'No more items found, ending dry run for session $sessionId',
-          );
+          l._log('No more items found, ending dry run for session $sessionId');
           break;
         }
 
         rawPosts = nextResult.posts;
       }
 
-      logger.debug(
-        'BulkDownload',
-        'Dry run ended for session $sessionId',
-      );
+      l._log('Dry run ended for session $sessionId');
 
       state = AsyncData(
         (await future).copyWith(
@@ -326,5 +300,11 @@ class DryRunNotifier extends FamilyAsyncNotifier<DryRunState, String> {
         totalPages: totalPages,
       ),
     );
+  }
+}
+
+extension _BulkDownloadLogger on Logger {
+  void _log(String message) {
+    debug('BulkDownload', message);
   }
 }
