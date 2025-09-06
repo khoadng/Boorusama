@@ -31,6 +31,6 @@ final gridThumbnailUrlGeneratorProvider =
     Provider.family<GridThumbnailUrlGenerator, BooruConfigAuth>((ref, config) {
       final booruRepo = ref.watch(booruRepoProvider(config));
 
-      return booruRepo?.gridThumbnailUrlGenerator() ??
+      return booruRepo?.gridThumbnailUrlGenerator(config) ??
           const DefaultGridThumbnailUrlGenerator();
     });

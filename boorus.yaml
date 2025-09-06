@@ -51,6 +51,8 @@
         user-params: {tags: "tags", page: "pid", limit: "limit"}
         capabilities:
           thumbnailOnly: false
+          pagination-type: "page" # page or offset
+          fixed-limit: null
       
       post:
         type: html
@@ -104,6 +106,8 @@
             parser: "parseRbPostsHtml"
             capabilities:
               thumbnailOnly: true
+              pagination-type: "offset" 
+              fixed-limit: 42
           post:
             parser: "parseRbPostHtml"
           tags:

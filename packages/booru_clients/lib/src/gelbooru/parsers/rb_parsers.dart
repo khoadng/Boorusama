@@ -203,5 +203,35 @@ GelbooruV2Posts parseRbPostsHtml(
     );
   }).toList();
 
-  return (posts: posts, count: null);
+  final lastPagePidStr = _parseLastPagePid(document);
+  final lastPageOffset = lastPagePidStr != null
+      ? int.tryParse(lastPagePidStr)
+      : null;
+
+  final estimatedCount = lastPageOffset != null
+      ? estimateTotalPagesFromOffset(
+          lastPageOffset: lastPageOffset,
+          fixedLimit: 42,
+        )
+      : null;
+
+  return (
+    posts: posts,
+    count: estimatedCount ?? posts.length,
+  );
+}
+
+String? _parseLastPagePid(Document document) {
+  final lastPageLink = document.querySelector('a[alt="last page"]');
+
+  if (lastPageLink != null) {
+    final href = lastPageLink.attributes['href'];
+    if (href != null) {
+      final pidRegex = RegExp(r'pid=(\d+)');
+      final match = pidRegex.firstMatch(href);
+      return match?.group(1);
+    }
+  }
+
+  return null;
 }

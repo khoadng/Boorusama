@@ -57,6 +57,8 @@ class GelbooruV2Client with GelbooruClientFavorites {
     this.passHash,
     EndpointConfig? config,
     Dio? dio,
+    this.paginationType = PaginationType.page,
+    this.fixedLimit,
   }) : _dio = dio ?? Dio(BaseOptions(baseUrl: '', headers: headers ?? {})),
        _baseUrl = baseUrl ?? '',
        _config = config ?? defaultEndpoints() {
@@ -85,6 +87,9 @@ class GelbooruV2Client with GelbooruClientFavorites {
   @override
   Dio get dio => _dio;
 
+  final PaginationType paginationType;
+  final int? fixedLimit;
+
   Future<GelbooruV2Posts> getPosts({
     int? page,
     int? limit,
@@ -93,8 +98,12 @@ class GelbooruV2Client with GelbooruClientFavorites {
     featureId: BooruFeatureId.posts,
     params: {
       if (tags?.isNotEmpty == true) P.tags: tags!.join(' '),
-      if (page != null) P.page: page - 1,
-      if (limit != null) P.limit: limit,
+      if (page != null)
+        P.page: paginationType.calculatePage(
+          page: page,
+          limit: fixedLimit ?? limit,
+        ),
+      if (fixedLimit == null) P.limit: ?limit,
     },
   );
 

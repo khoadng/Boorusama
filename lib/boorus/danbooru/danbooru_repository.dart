@@ -104,7 +104,7 @@ class DanbooruRepository extends BooruRepositoryDefault {
   }
 
   @override
-  GridThumbnailUrlGenerator gridThumbnailUrlGenerator() {
+  GridThumbnailUrlGenerator gridThumbnailUrlGenerator(BooruConfigAuth config) {
     return const DanbooruGridThumbnailUrlGenerator();
   }
 

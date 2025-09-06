@@ -45,14 +45,20 @@ abstract class BooruFeature extends Equatable {
 class PostsFeature extends BooruFeature {
   const PostsFeature({
     required this.thumbnailOnly,
+    required this.paginationType,
+    required this.fixedLimit,
   }) : super(BooruFeatureId.posts);
 
   final bool thumbnailOnly;
+  final String paginationType;
+  final dynamic fixedLimit;
 
   @override
   List<Object?> get props => [
     ...super.props,
     thumbnailOnly,
+    paginationType,
+    fixedLimit,
   ];
 }
 
@@ -314,6 +320,8 @@ class GelbooruV2Config {
 static const _defaults = <BooruFeatureId, BooruFeature>{
     BooruFeatureId.posts: PostsFeature(
       thumbnailOnly: false,
+      paginationType: 'page',
+      fixedLimit: 'null',
     ),
     BooruFeatureId.post: PostFeature(
       cacheSeconds: 600,
@@ -351,6 +359,8 @@ static const _defaults = <BooruFeatureId, BooruFeature>{
           parserStrategy: 'parseRbPostsHtml',
           feature: PostsFeature(
             thumbnailOnly: true,
+            paginationType: 'offset',
+            fixedLimit: 42,
           ),
         ),
         BooruFeatureId.post: PostEndpointOverride(
