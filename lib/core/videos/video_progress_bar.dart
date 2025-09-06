@@ -1,11 +1,28 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
-// Package imports:
-import 'package:video_player/video_player.dart';
-
 // Project imports:
 import '../../foundation/platform.dart';
+
+class DurationRange {
+  const DurationRange({
+    required this.start,
+    required this.end,
+  });
+
+  final Duration start;
+  final Duration end;
+
+  double startFraction(Duration duration) {
+    if (duration.inMilliseconds == 0) return 0.0;
+    return start.inMilliseconds / duration.inMilliseconds;
+  }
+
+  double endFraction(Duration duration) {
+    if (duration.inMilliseconds == 0) return 0.0;
+    return end.inMilliseconds / duration.inMilliseconds;
+  }
+}
 
 class VideoProgressBar extends StatefulWidget {
   const VideoProgressBar({

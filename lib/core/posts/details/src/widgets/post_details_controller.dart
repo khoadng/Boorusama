@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:foundation/foundation.dart';
+import 'package:media_kit/media_kit.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
-import 'package:video_player/video_player.dart';
 
 // Project imports:
 import '../../../../../../core/widgets/widgets.dart';
@@ -89,7 +89,7 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
   final _isVideoInitializing = ValueNotifier<bool>(false);
 
   //TODO: should have an abstraction for this crap, but I'm too lazy to do it since there are only 2 types of video anyway
-  final Map<int, VideoPlayerController> _videoControllers = {};
+  final Map<int, Player> _videoControllers = {};
   final Map<int, WebmVideoController> _webmVideoControllers = {};
 
   ValueNotifier<VideoProgress> get videoProgress => _videoProgress;
@@ -116,7 +116,7 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
     if (isWebm && isAndroid() && useDefaultEngine) {
       _webmVideoControllers[id]?.seek(position.inSeconds.toDouble());
     } else {
-      _videoControllers[id]?.seekTo(position);
+      _videoControllers[id]?.seek(position);
     }
 
     _seekStreamController.add(
@@ -131,7 +131,7 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
     if (isWebm && isAndroid() && useDefaultEngine) {
       return _webmVideoControllers[id]?.isPlaying ?? false;
     } else {
-      return _videoControllers[id]?.value.isPlaying ?? false;
+      return _videoControllers[id]?.state.playing ?? false;
     }
   }
 
@@ -179,7 +179,7 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
     _webmVideoControllers[id] = controller;
   }
 
-  void onVideoPlayerCreated(VideoPlayerController controller, int id) {
+  void onVideoPlayerCreated(Player controller, int id) {
     _videoControllers[id] = controller;
   }
 
