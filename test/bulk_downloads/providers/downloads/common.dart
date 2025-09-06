@@ -1,14 +1,15 @@
 // Package imports:
 import 'package:background_downloader/background_downloader.dart'
     hide Database, PermissionStatus;
-import 'package:dio/dio.dart';
-import 'package:filename_generator/filename_generator.dart';
 
 // Package imports:
+import 'package:dio/dio.dart';
+import 'package:filename_generator/filename_generator.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:foundation/foundation.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
 import 'package:boorusama/core/analytics/providers.dart';
@@ -41,7 +42,6 @@ import 'package:boorusama/core/settings/settings.dart';
 import 'package:boorusama/foundation/info/device_info.dart';
 import 'package:boorusama/foundation/loggers.dart';
 import 'package:boorusama/foundation/permissions.dart';
-import 'package:rich_text_controller/rich_text_controller.dart';
 import '../../common.dart';
 
 class MockMediaPermissionManager extends Mock
@@ -419,7 +419,7 @@ List<Override> getTestOverrides({
 class MockAsyncFilenameBuilder implements DownloadFilenameGenerator<DummyPost> {
   MockAsyncFilenameBuilder({
     this.hasAsyncTokens = false,
-    this.preloadResult = PreloadResult.sync,
+    this.preloadResult = const Sync(),
     this.shouldFailGenerate = false,
     this.shouldFailPreload = false,
   });

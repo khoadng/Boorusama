@@ -115,21 +115,27 @@ class DryRunNotifier extends FamilyAsyncNotifier<DryRunState, String> {
         config.download,
       );
 
-      final asyncFilenameNoPreload =
-          preloadResult == PreloadResult.asyncNoPreload;
-
-      final status = switch (preloadResult) {
-        PreloadResult.asyncNoPreload => const DryRunStatusRunning(
-          isSlowRun: true,
-        ),
-        PreloadResult.asyncPreload => const DryRunStatusRunning(
-          isWarmingUp: true,
-        ),
-        PreloadResult.sync => null,
-      };
-
-      if (status != null) {
-        state = AsyncData((await future).copyWith(status: status));
+      switch (preloadResult) {
+        case AsyncNoPreload():
+          state = AsyncData(
+            (await future).copyWith(
+              status: const DryRunStatusRunning.slowRun(),
+            ),
+          );
+        case AsyncPreload(preload: final preloadFn):
+          state = AsyncData(
+            (await future).copyWith(
+              status: const DryRunStatusRunning.warmingUp(),
+            ),
+          );
+          await preloadFn();
+          state = AsyncData(
+            (await future).copyWith(
+              status: const DryRunStatusRunning(),
+            ),
+          );
+        case Sync():
+          break;
       }
 
       var cumulativeIndex = 0;
@@ -161,7 +167,7 @@ class DryRunNotifier extends FamilyAsyncNotifier<DryRunState, String> {
             'Processing post ${i + 1}/${rawPosts.length} for session $sessionId',
           );
 
-          if (asyncFilenameNoPreload) {
+          if (preloadResult.isAsyncNoPreload) {
             state = AsyncData(
               (await future).copyWith(currentItemIndex: () => i),
             );
@@ -186,7 +192,7 @@ class DryRunNotifier extends FamilyAsyncNotifier<DryRunState, String> {
             cancelToken: cancelToken,
           );
 
-          if (asyncFilenameNoPreload) {
+          if (preloadResult.isAsyncNoPreload) {
             l._log('Waiting for async token delay for post ${item.id}');
             await Future.delayed(kBulkDownloadAsyncDelay);
           }

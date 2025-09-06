@@ -269,13 +269,14 @@ class DownloadFileNameBuilder<T extends Post>
 
     final hasAsyncTokens = formatContainsAsyncToken(bulkFormat);
     // skip if no async tokens
-    if (!hasAsyncTokens) return PreloadResult.sync;
+    if (!hasAsyncTokens) return const Sync();
 
-    if (preload == null || posts.isEmpty) return PreloadResult.asyncNoPreload;
+    final preload = this.preload;
+    if (preload == null || posts.isEmpty) return const AsyncNoPreload();
 
-    await preload!(posts, config);
-
-    return PreloadResult.asyncPreload;
+    return AsyncPreload(
+      preload: () => preload(posts, config),
+    );
   }
 
   @override

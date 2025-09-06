@@ -2,7 +2,6 @@
 import 'dart:async';
 
 // Package imports:
-import 'package:boorusama/core/search/selected_tags/tag.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -16,6 +15,7 @@ import 'package:boorusama/core/bulk_downloads/src/providers/dry_run.dart';
 import 'package:boorusama/core/bulk_downloads/src/providers/dry_run_state.dart';
 import 'package:boorusama/core/bulk_downloads/src/types/download_session.dart';
 import 'package:boorusama/core/downloads/filename/types.dart';
+import 'package:boorusama/core/search/selected_tags/tag.dart';
 import 'common.dart';
 
 void main() {
@@ -349,7 +349,7 @@ void main() {
       // Arrange
       final mockBuilder = MockAsyncFilenameBuilder(
         hasAsyncTokens: true,
-        preloadResult: PreloadResult.asyncPreload,
+        preloadResult: AsyncPreload.noop(),
         shouldFailGenerate: true,
       );
 
@@ -391,7 +391,7 @@ void main() {
       // Arrange
       final mockBuilder = MockAsyncFilenameBuilder(
         hasAsyncTokens: true,
-        preloadResult: PreloadResult.asyncPreload,
+        preloadResult: AsyncPreload.noop(),
       );
 
       final task = await repository.createTask(
@@ -436,7 +436,7 @@ void main() {
       // Arrange
       final mockBuilder = MockAsyncFilenameBuilder(
         hasAsyncTokens: true,
-        preloadResult: PreloadResult.asyncNoPreload,
+        preloadResult: const AsyncNoPreload(),
       );
 
       final task = await repository.createTask(
@@ -482,7 +482,7 @@ void main() {
       // Arrange
       final mockBuilder = MockAsyncFilenameBuilder(
         hasAsyncTokens: true,
-        preloadResult: PreloadResult.asyncPreload,
+        preloadResult: AsyncPreload.noop(),
         shouldFailPreload: true,
       );
 

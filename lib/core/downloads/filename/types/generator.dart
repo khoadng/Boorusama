@@ -73,8 +73,28 @@ typedef DownloadFilenameTokenHandler<T extends Post> =
       DownloadFilenameTokenOptions options,
     );
 
-enum PreloadResult {
-  sync,
-  asyncNoPreload,
-  asyncPreload,
+typedef PreloadFunction = Future<void> Function();
+
+sealed class PreloadResult {
+  const PreloadResult();
+}
+
+class Sync extends PreloadResult {
+  const Sync();
+}
+
+class AsyncNoPreload extends PreloadResult {
+  const AsyncNoPreload();
+}
+
+class AsyncPreload extends PreloadResult {
+  const AsyncPreload({required this.preload});
+
+  factory AsyncPreload.noop() => AsyncPreload(preload: () async {});
+
+  final PreloadFunction preload;
+}
+
+extension PreloadResultX on PreloadResult {
+  bool get isAsyncNoPreload => this is AsyncNoPreload;
 }

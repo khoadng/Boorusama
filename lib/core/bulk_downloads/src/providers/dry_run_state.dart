@@ -22,6 +22,9 @@ class DryRunStatusRunning extends DryRunStatus {
     this.isWarmingUp = false,
   });
 
+  const DryRunStatusRunning.slowRun() : isSlowRun = true, isWarmingUp = false;
+  const DryRunStatusRunning.warmingUp() : isSlowRun = false, isWarmingUp = true;
+
   final bool isSlowRun;
   final bool isWarmingUp;
 }
