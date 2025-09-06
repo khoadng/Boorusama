@@ -122,9 +122,9 @@ extension AnalyticsInterfaceX on AnalyticsInterface {
 
     unawaited(
       _logChangedEvent(
-        oldValue: oldValue.videoPlayerEngine.name,
-        newValue: newValue.videoPlayerEngine.name,
-        eventName: 'video_player_engine_changed',
+        oldValue: oldValue.mediaKitHardwareDecoding.toString(),
+        newValue: newValue.mediaKitHardwareDecoding.toString(),
+        eventName: 'media_kit_hardware_decoding_changed',
         source: SettingsChangedSource.settings,
       ),
     );

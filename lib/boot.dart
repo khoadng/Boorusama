@@ -116,7 +116,7 @@ Future<void> boot(BootData bootData) async {
         'ios',
         'windows',
         'macos',
-        if (settings.videoPlayerEngine == VideoPlayerEngine.mdk) 'android',
+        if (!settings.mediaKitHardwareDecoding) 'android',
       ],
     },
   );

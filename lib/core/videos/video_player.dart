@@ -14,10 +14,11 @@ import 'package:media_kit_video/media_kit_video.dart';
 import '../../foundation/utils/duration_utils.dart';
 import '../configs/config/providers.dart';
 import '../images/booru_image.dart';
+import '../settings/src/providers/settings_provider.dart';
 import '../widgets/widgets.dart';
 
 //TODO: implement caching video
-class BooruVideo extends StatefulWidget {
+class BooruVideo extends ConsumerStatefulWidget {
   const BooruVideo({
     required this.url,
     required this.aspectRatio,
@@ -31,6 +32,7 @@ class BooruVideo extends StatefulWidget {
     this.headers,
     this.heroTag,
     this.onInitializing,
+    this.onTap,
   });
 
   final String url;
@@ -45,12 +47,13 @@ class BooruVideo extends StatefulWidget {
   final Map<String, String>? headers;
   final String? heroTag;
   final void Function(bool value)? onInitializing;
+  final VoidCallback? onTap;
 
   @override
-  State<BooruVideo> createState() => _BooruVideoState();
+  ConsumerState<BooruVideo> createState() => _BooruVideoState();
 }
 
-class _BooruVideoState extends State<BooruVideo> {
+class _BooruVideoState extends ConsumerState<BooruVideo> {
   late final Player _player;
   late final VideoController _videoController;
   bool? _initialized;
@@ -58,6 +61,9 @@ class _BooruVideoState extends State<BooruVideo> {
   bool _previouslyReportedInitializing = false;
   Timer? _timer;
   StreamSubscription<Duration>? _positionSubscription;
+  StreamSubscription<bool>? _bufferingSubscription;
+  bool _isBuffering = false;
+  bool _hasPlayedOnce = false;
 
   @override
   void initState() {
@@ -70,8 +76,16 @@ class _BooruVideoState extends State<BooruVideo> {
       };
 
   void _initVideoPlayer() {
+    final settings = ref.read(settingsProvider);
+    final enableHardwareDecoding = settings.mediaKitHardwareDecoding;
+    
     _player = Player();
-    _videoController = VideoController(_player);
+    _videoController = VideoController(
+      _player,
+      configuration: VideoControllerConfiguration(
+        enableHardwareAcceleration: enableHardwareDecoding,
+      ),
+    );
 
     widget.onVideoPlayerCreated?.call(_player);
 
@@ -104,7 +118,7 @@ class _BooruVideoState extends State<BooruVideo> {
         setState(() {});
         _initialized = true;
         _clearInitializing();
-        // Set looping
+        // Set looping back to single for individual media files
         _player.setPlaylistMode(PlaylistMode.single);
       }
     }).catchError((error) {
@@ -116,6 +130,47 @@ class _BooruVideoState extends State<BooruVideo> {
     });
 
     _listenToVideoPosition();
+    _listenToBufferingState();
+  }
+
+  void _listenToBufferingState() {
+    // Listen to buffering state
+    _bufferingSubscription = _player.stream.buffering.listen((buffering) {
+      if (mounted) {
+        // Show buffering during initial load and genuine network buffering
+        // But suppress it briefly during loop transitions
+        if (buffering) {
+          // If we haven't played once yet, always show buffering (initial load)
+          if (!_hasPlayedOnce) {
+            setState(() {
+              _isBuffering = true;
+            });
+          } else {
+            // For subsequent buffering, check if it's a genuine network issue
+            // by adding a small delay to filter out loop-related buffering
+            Timer(const Duration(milliseconds: 200), () {
+              if (mounted && _player.state.buffering) {
+                setState(() {
+                  _isBuffering = true;
+                });
+              }
+            });
+          }
+        } else {
+          // Not buffering, hide indicator
+          setState(() {
+            _isBuffering = false;
+          });
+        }
+      }
+    });
+
+    // Listen to playing state to detect when video has started playing
+    _player.stream.playing.listen((playing) {
+      if (mounted && playing && !_hasPlayedOnce) {
+        _hasPlayedOnce = true;
+      }
+    });
   }
 
   void _clearInitializing() {
@@ -131,6 +186,7 @@ class _BooruVideoState extends State<BooruVideo> {
   void _disposeVideoPlayer() {
     _clearInitializing();
     _positionSubscription?.cancel();
+    _bufferingSubscription?.cancel();
     _initialized = null;
     _error = null;
     _player.dispose();
@@ -203,15 +259,38 @@ class _BooruVideoState extends State<BooruVideo> {
                       ),
                     Positioned.fill(
                       child: GestureDetector(
-                        onTap: () {
-                          // タップイベントを無効化（何もしない）
-                        },
+                        onTap: widget.onTap,
                         child: Video(
                           controller: _videoController,
                           controls: NoVideoControls,
                         ),
                       ),
                     ),
+                    // Show buffering indicator when buffering
+                    if (_isBuffering)
+                      Positioned.fill(
+                        child: Container(
+                          color: Colors.black.withValues(alpha: 0.3),
+                          child: const Center(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                CircularProgressIndicator(
+                                  color: Colors.white,
+                                ),
+                                SizedBox(height: 8),
+                                Text(
+                                  'Buffering...',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
                   ],
                 ),
               ),

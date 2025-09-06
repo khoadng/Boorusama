@@ -150,44 +150,15 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
             ),
           ],
         ),
-        SettingsCard(
-          title: context.t.settings.image_viewer.video.video_player_engine,
-          subtitle: context.t.generic.app_restart_request,
-          entries: [
-            SettingsCardEntry(
-              title: context.t.settings.image_viewer.video.engine.kDefault,
-              value: VideoPlayerEngine.auto.name,
-              groupValue: settings.videoPlayerEngine.name,
-              subtitle: context
-                  .t
-                  .settings
-                  .image_viewer
-                  .video
-                  .engine
-                  .default_description,
-              onSelected: (value) {
-                notifer.updateSettings(
-                  settings.copyWith(
-                    videoPlayerEngine: VideoPlayerEngine.auto,
-                  ),
-                );
-              },
+        BooruSwitchListTile(
+          title: const Text('Hardware Decoding'),
+          subtitle: Text(context.t.generic.app_restart_request),
+          value: settings.mediaKitHardwareDecoding,
+          onChanged: (value) => notifer.updateSettings(
+            settings.copyWith(
+              mediaKitHardwareDecoding: value,
             ),
-            SettingsCardEntry(
-              title: 'MDK',
-              value: VideoPlayerEngine.mdk.name,
-              groupValue: settings.videoPlayerEngine.name,
-              subtitle:
-                  context.t.settings.image_viewer.video.engine.mdk_description,
-              onSelected: (value) {
-                notifer.updateSettings(
-                  settings.copyWith(
-                    videoPlayerEngine: VideoPlayerEngine.mdk,
-                  ),
-                );
-              },
-            ),
-          ],
+          ),
         ),
         BooruConfigMoreSettingsRedirectCard.imageViewer(
           extraActions: [

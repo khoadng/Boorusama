@@ -14,12 +14,12 @@ class DurationRange {
   final Duration end;
 
   double startFraction(Duration duration) {
-    if (duration.inMilliseconds == 0) return 0.0;
+    if (duration.inMilliseconds == 0) return 0;
     return start.inMilliseconds / duration.inMilliseconds;
   }
 
   double endFraction(Duration duration) {
-    if (duration.inMilliseconds == 0) return 0.0;
+    if (duration.inMilliseconds == 0) return 0;
     return end.inMilliseconds / duration.inMilliseconds;
   }
 }
