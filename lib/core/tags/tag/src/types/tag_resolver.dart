@@ -1,6 +1,9 @@
 // Dart imports:
 import 'dart:async';
 
+// Package imports:
+import 'package:dio/dio.dart';
+
 // Project imports:
 import '../../../local/cached_tag.dart';
 import '../../../local/tag_cache_repository.dart';
@@ -32,7 +35,10 @@ class TagResolver {
   final String siteHost;
   final CachedTagMapper cachedTagMapper;
 
-  Future<List<Tag>> resolvePartialTags(List<Tag> tags) async {
+  Future<List<Tag>> resolvePartialTags(
+    List<Tag> tags, {
+    CancelToken? cancelToken,
+  }) async {
     if (tags.isEmpty) return [];
 
     // Find tags with 0 post count that need resolution
@@ -46,7 +52,10 @@ class TagResolver {
     final tagNames = tagsNeedingResolution.map((tag) => tag.name).toList();
     final result = await tagCache.resolveTags(siteHost, tagNames);
 
-    final refreshedResult = await _refreshStaleTagsInResult(result);
+    final refreshedResult = await _refreshStaleTagsInResult(
+      result,
+      cancelToken: cancelToken,
+    );
 
     final nullCountCachedTags = refreshedResult.found
         .where((cachedTag) => cachedTag.postCount == null)
@@ -56,7 +65,10 @@ class TagResolver {
     final allMissingTags = [...refreshedResult.missing, ...nullCountCachedTags];
 
     // Try to resolve unknown tags if tag repository is available
-    final resolvedTags = await _resolveUnknownTags(allMissingTags);
+    final resolvedTags = await _resolveUnknownTags(
+      allMissingTags,
+      cancelToken: cancelToken,
+    );
 
     // Create a map of tag names to their cached post counts
     final cachedPostCounts = <String, int>{};
@@ -75,14 +87,20 @@ class TagResolver {
     }).toList();
   }
 
-  Future<List<Tag>> resolveRawTags(Iterable<String> tagNames) async {
+  Future<List<Tag>> resolveRawTags(
+    Iterable<String> tagNames, {
+    CancelToken? cancelToken,
+  }) async {
     if (tagNames.isEmpty) return [];
 
     final tagCache = await tagCacheBuilder();
     final result = await tagCache.resolveTags(siteHost, tagNames.toList());
 
     // Check for stale tags and refresh them
-    final refreshedResult = await _refreshStaleTagsInResult(result);
+    final refreshedResult = await _refreshStaleTagsInResult(
+      result,
+      cancelToken: cancelToken,
+    );
 
     final unknownCachedTags = refreshedResult.found
         .where((cachedTag) => cachedTag.category == 'unknown')
@@ -92,7 +110,10 @@ class TagResolver {
     final allMissingTags = [...refreshedResult.missing, ...unknownCachedTags];
 
     // Try to resolve unknown tags if tag repository is available
-    final resolvedTags = await _resolveUnknownTags(allMissingTags);
+    final resolvedTags = await _resolveUnknownTags(
+      allMissingTags,
+      cancelToken: cancelToken,
+    );
 
     final resolvedTagNames = resolvedTags.map((tag) => tag.tagName).toSet();
 
@@ -120,8 +141,9 @@ class TagResolver {
   }
 
   Future<TagResolutionResult> _refreshStaleTagsInResult(
-    TagResolutionResult result,
-  ) async {
+    TagResolutionResult result, {
+    CancelToken? cancelToken,
+  }) async {
     final staleTags = <CachedTag>[];
     final freshTags = <CachedTag>[];
 
@@ -133,7 +155,10 @@ class TagResolver {
       }
     }
 
-    final refreshedTags = await _refreshStaleTags(staleTags);
+    final refreshedTags = await _refreshStaleTags(
+      staleTags,
+      cancelToken: cancelToken,
+    );
 
     return TagResolutionResult(
       found: [...freshTags, ...refreshedTags],
@@ -162,14 +187,21 @@ class TagResolver {
     return lifetime.duration;
   }
 
-  Future<List<CachedTag>> _refreshStaleTags(List<CachedTag> staleTags) async {
+  Future<List<CachedTag>> _refreshStaleTags(
+    List<CachedTag> staleTags, {
+    CancelToken? cancelToken,
+  }) async {
     if (tagRepositoryBuilder == null || staleTags.isEmpty) return staleTags;
 
     try {
       final tagRepository = tagRepositoryBuilder!();
       final staleTagNames = staleTags.map((t) => t.tagName).toSet();
 
-      final freshTags = await tagRepository.getTagsByName(staleTagNames, 1);
+      final freshTags = await tagRepository.getTagsByName(
+        staleTagNames,
+        1,
+        cancelToken: cancelToken,
+      );
 
       final refreshedCachedTags = <CachedTag>[];
       final refreshedNames = <String>{};
@@ -202,8 +234,9 @@ class TagResolver {
   }
 
   Future<List<CachedTag>> _resolveUnknownTags(
-    List<String> missingTagNames,
-  ) async {
+    List<String> missingTagNames, {
+    CancelToken? cancelToken,
+  }) async {
     if (tagRepositoryBuilder == null || missingTagNames.isEmpty) {
       return [];
     }
@@ -213,6 +246,7 @@ class TagResolver {
       final unknownTags = await tagRepository.getTagsByName(
         missingTagNames.toSet(),
         1,
+        cancelToken: cancelToken,
       );
 
       final resolvedTags = <CachedTag>[];

@@ -26,7 +26,6 @@ import '../routes/internal_routes.dart';
 import '../types/bulk_download_session.dart';
 import '../types/download_session_stats.dart';
 import '../types/download_task.dart';
-import '../types/l10n.dart';
 
 class BulkDownloadCompletedSessionTile extends ConsumerWidget {
   const BulkDownloadCompletedSessionTile({
@@ -337,10 +336,7 @@ class _InfoText extends ConsumerWidget {
         ? Filesize.parse(fileSize, round: 1)
         : null;
 
-    final totalItemText = DownloadTranslations.titleInfoCounter(
-      totalItems,
-      context,
-    );
+    final totalItemText = context.t.bulk_downloads.file_counter(n: totalItems);
 
     final infoText = [
       fileSizeText,

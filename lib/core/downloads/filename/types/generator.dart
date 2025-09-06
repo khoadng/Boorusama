@@ -1,4 +1,5 @@
 // Package imports:
+import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:filename_generator/filename_generator.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
@@ -38,6 +39,7 @@ abstract class DownloadFilenameGenerator<T extends Post> {
     T post, {
     required String downloadUrl,
     Map<String, String>? metadata,
+    CancelToken? cancelToken,
   });
 
   Future<String> generateForBulkDownload(
@@ -46,7 +48,20 @@ abstract class DownloadFilenameGenerator<T extends Post> {
     T post, {
     required String downloadUrl,
     Map<String, String>? metadata,
+    CancelToken? cancelToken,
+    Duration? asyncTokenDelay,
   });
+
+  Future<PreloadResult> preloadForBulkDownload(
+    List<T> posts,
+    BooruConfigAuth config,
+    BooruConfigDownload downloadConfig,
+    CancelToken? cancelToken,
+  );
+
+  bool formatContainsAsyncToken(String? format);
+
+  bool hasSlowBulkGeneration(String format);
 
   String generateSample(String format);
 
@@ -61,3 +76,29 @@ typedef DownloadFilenameTokenHandler<T extends Post> =
       T post,
       DownloadFilenameTokenOptions options,
     );
+
+typedef PreloadFunction = Future<void> Function();
+
+sealed class PreloadResult {
+  const PreloadResult();
+}
+
+class Sync extends PreloadResult {
+  const Sync();
+}
+
+class AsyncNoPreload extends PreloadResult {
+  const AsyncNoPreload();
+}
+
+class AsyncPreload extends PreloadResult {
+  const AsyncPreload({required this.preload});
+
+  factory AsyncPreload.noop() => AsyncPreload(preload: () async {});
+
+  final PreloadFunction preload;
+}
+
+extension PreloadResultX on PreloadResult {
+  bool get isAsyncNoPreload => this is AsyncNoPreload;
+}

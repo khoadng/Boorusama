@@ -8,13 +8,16 @@ import '../../../core/tags/autocompletes/types.dart';
 import '../../../core/tags/local/providers.dart';
 import '../../../core/tags/tag/providers.dart';
 import '../../../core/tags/tag/tag.dart';
+import '../../../foundation/loggers/providers.dart';
 import '../client_provider.dart';
 import 'parser.dart';
 import 'query_composer.dart';
+import 'utils.dart';
 
 final gelbooruTagRepoProvider = Provider.family<TagRepository, BooruConfigAuth>(
   (ref, config) {
     final client = ref.watch(gelbooruClientProvider(config));
+    final logger = ref.watch(loggerProvider);
 
     return TagRepositoryBuilder(
       getTags: (tags, page, {cancelToken}) async {
@@ -25,6 +28,7 @@ final gelbooruTagRepoProvider = Provider.family<TagRepository, BooruConfigAuth>(
 
         return data.map(gelbooruTagDtoToTag).toList();
       },
+      logger: logger,
     );
   },
 );
@@ -39,14 +43,13 @@ final gelbooruTagResolverProvider =
       return TagResolver(
         tagCacheBuilder: () => ref.watch(tagCacheRepositoryProvider.future),
         siteHost: config.url,
-        cachedTagMapper: const CachedTagMapper(),
+        cachedTagMapper: CachedTagMapper(
+          categoryMapper: (cachedTag) =>
+              stringToGelbooruTagCategory(cachedTag.category),
+        ),
         tagRepositoryBuilder: () => ref.read(gelbooruTagRepoProvider(config)),
       );
     });
-
-final invalidTags = [
-  ':&lt;',
-];
 
 final gelbooruTagExtractorProvider =
     Provider.family<TagExtractor, BooruConfigAuth>(
@@ -55,21 +58,26 @@ final gelbooruTagExtractorProvider =
           siteHost: config.url,
           tagCache: ref.watch(tagCacheRepositoryProvider.future),
           sorter: TagSorter.defaults(),
+          fetcherBatch: (posts, options) {
+            final tags = posts.expand((post) => post.tags).toSet();
+            final tagResolver = ref.read(gelbooruTagResolverProvider(config));
+
+            return resolveGelbooruRawTags(
+              tags,
+              tagResolver,
+              cancelToken: options.cancelToken,
+            );
+          },
           fetcher: (post, options) async {
             final tagResolver = ref.read(gelbooruTagResolverProvider(config));
 
             final tagList = post.tags;
 
-            // filter tagList to remove invalid tags
-            final filtered = tagList
-                .where((e) => !invalidTags.contains(e))
-                .toSet();
-
-            if (filtered.isEmpty) return const [];
-
-            final tags = await tagResolver.resolveRawTags(filtered);
-
-            return tags;
+            return resolveGelbooruRawTags(
+              tagList,
+              tagResolver,
+              cancelToken: options.cancelToken,
+            );
           },
         );
       },

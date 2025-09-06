@@ -35,15 +35,6 @@ class BulkDownloadSession extends Equatable {
   List<Object?> get props => [task, session, stats];
 }
 
-extension BulkDownloadSessionX on BulkDownloadSession {
-  PageProgress get pageProgress {
-    return PageProgress(
-      completed: session.currentPage,
-      perPage: task.perPage,
-    );
-  }
-}
-
 class PageProgress extends Equatable {
   const PageProgress({
     required this.completed,

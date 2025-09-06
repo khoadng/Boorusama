@@ -1,3 +1,6 @@
+// Package imports:
+import 'package:dio/dio.dart';
+
 // Project imports:
 import '../../../posts/post/post.dart';
 import '../../../tags/categories/tag_category.dart';
@@ -9,8 +12,9 @@ abstract class AsyncTokenResolver<T extends Post> {
   Set<String> get tokenKeys;
   Future<Map<String, String?>> resolve(
     T post,
-    DownloadFilenameTokenOptions options,
-  );
+    DownloadFilenameTokenOptions options, {
+    CancelToken? cancelToken,
+  });
 }
 
 class ClassicTagsTokenResolver<T extends Post>
@@ -36,19 +40,29 @@ class ClassicTagsTokenResolver<T extends Post>
   @override
   Future<Map<String, String?>> resolve(
     T post,
-    DownloadFilenameTokenOptions options,
-  ) async {
+    DownloadFilenameTokenOptions options, {
+    CancelToken? cancelToken,
+  }) async {
     final extractor = tagExtractor;
 
     if (extractor == null) return {};
 
-    final tags = await extractor.extractTags(post);
+    final tags = await extractor.extractTags(
+      post,
+      options: ExtractOptions(
+        cancelToken: cancelToken,
+      ),
+    );
 
+    return _groupTagsByCategory(tags);
+  }
+
+  Map<String, String?> _groupTagsByCategory(List<Tag> tags) {
     final groupedTags = <String, String>{};
 
     for (final tag in tags) {
       final category = tag.category.name;
-      final name = tag.rawName;
+      final name = tag.name;
 
       if (name.isEmpty) continue;
 
@@ -66,11 +80,11 @@ class ClassicTagsTokenResolver<T extends Post>
     final meta = groupedTags[TagCategory.meta().name];
 
     return {
-      if (artists != null) 'artist': artists,
-      if (characters != null) 'character': characters,
-      if (copyrights != null) 'copyright': copyrights,
-      if (general != null) 'general': general,
-      if (meta != null) 'meta': meta,
+      'artist': ?artists,
+      'character': ?characters,
+      'copyright': ?copyrights,
+      'general': ?general,
+      'meta': ?meta,
     };
   }
 }

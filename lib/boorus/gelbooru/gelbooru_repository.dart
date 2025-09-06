@@ -93,6 +93,16 @@ class GelbooruRepository extends BooruRepositoryDefault {
       defaultFileNameFormat: kDefaultCustomDownloadFileNameFormat,
       defaultBulkDownloadFileNameFormat: kDefaultCustomDownloadFileNameFormat,
       sampleData: kDanbooruPostSamples,
+      preload: (posts, config, cancelToken) async {
+        final tagExtractor = ref.read(gelbooruTagExtractorProvider(config));
+
+        await tagExtractor.extractTagsBatch(
+          posts,
+          options: ExtractOptions(
+            cancelToken: cancelToken,
+          ),
+        );
+      },
       tokenHandlers: [
         WidthTokenHandler(),
         HeightTokenHandler(),

@@ -18,6 +18,7 @@ import 'autocompletes/providers.dart';
 import 'comments/providers.dart';
 import 'posts/providers.dart';
 import 'posts/types.dart';
+import 'tag_summary/providers.dart';
 import 'tags/providers.dart';
 
 class MoebooruRepository extends BooruRepositoryDefault {
@@ -69,6 +70,11 @@ class MoebooruRepository extends BooruRepositoryDefault {
       defaultFileNameFormat: kDefaultCustomDownloadFileNameFormat,
       defaultBulkDownloadFileNameFormat: kDefaultCustomDownloadFileNameFormat,
       sampleData: kDanbooruPostSamples,
+      preload: (posts, config, cancelToken) async {
+        await ref
+            .read(moebooruTagSummaryRepoProvider(config))
+            .getTagSummaries();
+      },
       tokenHandlers: [
         WidthTokenHandler(),
         HeightTokenHandler(),

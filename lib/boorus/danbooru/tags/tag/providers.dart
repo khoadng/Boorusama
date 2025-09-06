@@ -61,6 +61,48 @@ final danbooruTagExtractorProvider =
           siteHost: config.url,
           tagCache: ref.watch(tagCacheRepositoryProvider.future),
           sorter: TagSorter.defaults(),
+          fetcherBatch: (posts, options) async {
+            final partial = <Tag>{};
+            final raw = <Tag>{};
+
+            for (final post in posts) {
+              if (post case final DanbooruPost danbooruPost) {
+                final tags = _extractTagsFromPost(danbooruPost);
+
+                if (options.fetchTagCount) {
+                  partial.addAll(tags);
+                } else {
+                  raw.addAll(tags);
+                }
+              } else {
+                final tags = TagExtractor.extractTagsFromGenericPost(post);
+
+                raw.addAll(tags);
+              }
+            }
+
+            final tagResolver = ref.read(danbooruTagResolverProvider(config));
+            final resolved = <Tag>{};
+            if (partial.isNotEmpty) {
+              resolved.addAll(
+                await tagResolver.resolvePartialTags(
+                  partial.toList(),
+                  cancelToken: options.cancelToken,
+                ),
+              );
+            }
+
+            if (raw.isNotEmpty) {
+              resolved.addAll(
+                await tagResolver.resolveRawTags(
+                  raw.map((e) => e.name).toSet(),
+                  cancelToken: options.cancelToken,
+                ),
+              );
+            }
+
+            return resolved.toList();
+          },
           fetcher: (post, options) {
             final tagResolver = ref.read(danbooruTagResolverProvider(config));
 

@@ -840,6 +840,7 @@
       "custom_filename_format": "Custom filename format",
       "custom_filename_format_invidual": "Individual download",
       "custom_filename_format_bulk": "Bulk download",
+      "bulk_slow_token_warning": "Using slow tokens in bulk download will take a VERY long time to warm up before starting the actual download, consider not using them if possible.",
       "filename": {
         "available_tokens": "Available tokens: ",
         "no_token_error": "Token $token is not available",
@@ -952,8 +953,11 @@
     "created": "Created",
     "completed_with_no_new_files": "Completed with no new files",
     "scanning_page": {
+      "preparing": "Preparing...",
+      "preparing_with_page": "Preparing, page $page...",
       "with_page": "Scanning page $page...",
-      "null_page": "Scanning..."
+      "null_page": "Initializing...",
+      "with_page_and_index": "Scanning page $page, item $index..."
     },
     "file_counter": {
       "one": "$n file",

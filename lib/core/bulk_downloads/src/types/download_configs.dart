@@ -23,6 +23,7 @@ class DownloadConfigs {
     this.quality,
     this.delayBetweenDownloads = const Duration(milliseconds: 200),
     this.delayBetweenRequests,
+    this.asyncTokenDelay = const Duration(milliseconds: 1000),
     this.onDownloadStart,
     this.androidSdkVersion,
     this.authChangedConfirmation,
@@ -42,6 +43,7 @@ class DownloadConfigs {
     String? quality,
     Duration? delayBetweenDownloads,
     Duration? delayBetweenRequests,
+    Duration? asyncTokenDelay,
     VoidCallback? onDownloadStart,
     int? androidSdkVersion,
     Future<bool> Function()? authChangedConfirmation,
@@ -63,6 +65,7 @@ class DownloadConfigs {
       delayBetweenDownloads:
           delayBetweenDownloads ?? this.delayBetweenDownloads,
       delayBetweenRequests: delayBetweenRequests ?? this.delayBetweenRequests,
+      asyncTokenDelay: asyncTokenDelay ?? this.asyncTokenDelay,
       onDownloadStart: onDownloadStart ?? this.onDownloadStart,
       androidSdkVersion: androidSdkVersion ?? this.androidSdkVersion,
       authChangedConfirmation:
@@ -83,6 +86,7 @@ class DownloadConfigs {
   final String? quality;
   final Duration? delayBetweenDownloads;
   final Duration? delayBetweenRequests;
+  final Duration asyncTokenDelay;
   final VoidCallback? onDownloadStart;
   final int? androidSdkVersion;
   final Future<bool> Function()? authChangedConfirmation;

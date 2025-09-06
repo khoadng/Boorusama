@@ -3,14 +3,14 @@ import 'package:booru_clients/gelbooru.dart';
 
 // Project imports:
 import '../../../core/tags/autocompletes/types.dart';
-import '../../../core/tags/categories/tag_category.dart';
 import '../../../core/tags/tag/tag.dart';
 import '../common/parser.dart';
+import 'utils.dart';
 
 Tag gelbooruTagDtoToTag(TagDto e) {
   return Tag(
     name: e.name != null ? decodeHtmlEntities(e.name!) : '',
-    category: TagCategory.fromLegacyId(e.type),
+    category: stringToGelbooruTagCategory(e.type?.toString()),
     postCount: e.count ?? 0,
   );
 }

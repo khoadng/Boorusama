@@ -841,6 +841,7 @@
       "custom_filename_format": "Định dạng tên file tùy chỉnh",
       "custom_filename_format_invidual": "Tải riêng lẻ",
       "custom_filename_format_bulk": "Tải hàng loạt",
+      "bulk_slow_token_warning": "Sử dụng token chậm khi tải hàng loạt sẽ mất RẤT nhiều thời gian để khởi động trước khi bắt đầu tải, cân nhắc không sử dụng nếu có thể.",
       "filename": {
         "available_tokens": "Token có thể dùng: ",
         "no_token_error": "Token $token không khả dụng",
@@ -953,8 +954,11 @@
     "created": "Đã tạo",
     "completed_with_no_new_files": "Đã hoàn thành mà không có tệp mới nào",
     "scanning_page": {
+      "preparing": "Chuẩn bị...",
+      "preparing_with_page": "Đang chuẩn bị, trang $page...",
       "with_page": "Đang quét trang $page...",
-      "null_page": "Đang quét..."
+      "null_page": "Khởi tạo...",
+      "with_page_and_index": "Đang quét trang $page, mục $index..."
     },
     "file_counter": {
       "one": "$n tệp",

@@ -2,6 +2,7 @@
 import 'dart:async';
 
 // Package imports:
+import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 
 // Project imports:
@@ -67,10 +68,18 @@ typedef TagFetcher =
       ExtractOptions options,
     );
 
+typedef TagFetcherBatch =
+    FutureOr<List<Tag>> Function(
+      List<Post> posts,
+      ExtractOptions options,
+    );
+
 class ExtractOptions {
   const ExtractOptions({
     this.fetchTagCount = false,
+    this.cancelToken,
   });
 
   final bool fetchTagCount;
+  final CancelToken? cancelToken;
 }

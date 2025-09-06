@@ -89,6 +89,7 @@ class _CustomDownloadFileNameSectionState
         ),
         const SizedBox(height: 8),
         DownloadFormatCard(
+          textController: individualTextController,
           title: context.t.booru.downloads.custom_filename_format_invidual,
           downloadFilenameBuilder: downloadFilenameBuilder,
           defaultFileNameFormat: defaultFileNameFormat,
@@ -98,6 +99,7 @@ class _CustomDownloadFileNameSectionState
         ),
         const SizedBox(height: 8),
         DownloadFormatCard(
+          textController: bulkTextController,
           title: context.t.booru.downloads.custom_filename_format_bulk,
           downloadFilenameBuilder: downloadFilenameBuilder,
           defaultFileNameFormat: defaultBulkDownloadFileNameFormat,
@@ -122,6 +124,30 @@ class _CustomDownloadFileNameSectionState
             ),
           ),
         ),
+        if (downloadFilenameBuilder != null)
+          ValueListenableBuilder(
+            valueListenable: bulkTextController,
+            builder: (context, value, child) {
+              final isSlow = downloadFilenameBuilder.hasSlowBulkGeneration(
+                value.text,
+              );
+
+              return isSlow
+                  ? Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 4,
+                        vertical: 8,
+                      ),
+                      child: Text(
+                        context.t.booru.downloads.bulk_slow_token_warning,
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.error,
+                        ),
+                      ),
+                    )
+                  : const SizedBox.shrink();
+            },
+          ),
         const SizedBox(height: 8),
         AvailableTokens(
           downloadFilenameBuilder: downloadFilenameBuilder,

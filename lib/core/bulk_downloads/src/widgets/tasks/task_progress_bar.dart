@@ -26,11 +26,15 @@ class BulkDownloadTaskProgressBar extends ConsumerWidget {
       DownloadSessionStatus.dryRun => const _LineProgressBar(),
       _ =>
         ref
-            .watch(bulkDownloadProgressForSessionProvider(session.id))
+            .watch(bulkDownloadProgressProvider)
             .maybeWhen(
-              data: (progress) => progress != null
-                  ? _PercentProgressBar(progress: progress)
-                  : const _LineProgressBar(),
+              data: (progressMap) {
+                final progress = progressMap[session.id];
+
+                return progress != null
+                    ? _PercentProgressBar(progress: progress)
+                    : const _LineProgressBar();
+              },
               orElse: () => const _LineProgressBar(),
             ),
     };
