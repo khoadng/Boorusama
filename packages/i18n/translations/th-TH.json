@@ -32,7 +32,8 @@
     "copied": "คัดลอกเรียบร้อย",
     "no_content": "ไม่มีเนื้อหา",
     "app_restart_request": "คุณจำเป็นต้องรีสตาร์ทแอปเพื่อให้การเปลี่ยนแปลงนี้มีผล",
-    "version": "เวอร์ชั่น $version"
+    "version": "เวอร์ชั่น $version",
+    "warning": "แจ้งเตือน"
   },
   "profile": {
     "favorites": "รายการโปรด",
@@ -70,7 +71,12 @@
     "feedback": {
       "positive": "แง่บวก",
       "negative": "แง่ลบ",
-      "neutral": "เฉยๆ"
+      "neutral": "เฉยๆ",
+      "title": "ผลตอบรับ",
+      "user_feedbacks": "ผลตอบรับของผู้ใช้งาน"
+    },
+    "uploads": {
+      "top_n_copyright": "ลิขสิทธิ์ยอดนิยม $n อันดับ"
     }
   },
   "network": {
@@ -81,7 +87,8 @@
       "more": "เพื่มเติม",
       "related": "ที่เกี่ยวข้อง",
       "add_to_current_search": "เพิ่มเข้าในการค้นหาปัจจุบัน",
-      "open_wiki": "เปิดดูในคลังวิกิ"
+      "open_wiki": "เปิดดูในคลังวิกิ",
+      "negate_from_current_search": "ลบออกจากในการค้นหาปัจจุบัน"
     }
   },
   "post": {
@@ -124,7 +131,8 @@
         "artist_posts": "โพสต์ของนักวาด",
         "related_posts": "โพสต์ที่เกี่ยวข้อง",
         "character_list": "รายชื่อตัวละคร",
-        "source": "ต้นฉบับ"
+        "source": "ต้นฉบับ",
+        "pool": "ชุดภาพ"
       }
     },
     "action": {
@@ -144,7 +152,9 @@
       "slideshow": "สไลดโชว์",
       "none": "ไม่ระบุ",
       "edit": "แก้ไข",
-      "use_default": "ใช้ค่าเริ่มต้น"
+      "use_default": "ใช้ค่าเริ่มต้น",
+      "toggle_bookmark": "เพิ่ม/ลบบุ๊กมาร์ก",
+      "toggle_favorite": "เพิ่ม/ลบรายการโปรด"
     },
     "statistics": {
       "stats_for_nerds": "สถิติสำหรับเด็กเนิร์ด",
@@ -189,7 +199,8 @@
     "new": "ใหม่ๆ",
     "top": "ยอดนิยม",
     "newest": "ใหม่ล่าสุด",
-    "oldest": "เก่าที่สุด"
+    "oldest": "เก่าที่สุด",
+    "ordered": "ตามลำดับ"
   },
   "search": {
     "errors": {
@@ -219,7 +230,8 @@
       "other": "พบ $n รายการ"
     },
     "no_result_notice": "ไม่พบรายการ",
-    "search_in_progress_notice": "กำลังค้นหา..."
+    "search_in_progress_notice": "กำลังค้นหา...",
+    "raw_query": "คำค้นดิบ"
   },
   "pool": {
     "pool": "อัลบั้ม",
@@ -240,7 +252,8 @@
     "detail": {
       "last_updated": "อัปเดตล่าสุด"
     },
-    "no_cover_image": "ไม่มีภาพปก"
+    "no_cover_image": "ไม่มีภาพปก",
+    "pools": "ชุดภาพ"
   },
   "settings": {
     "settings": "การตั้งค่า",
@@ -321,7 +334,7 @@
       "aspect_ratio": "อัตราส่วนภาพ"
     },
     "image_viewer": {
-      "image_viewer": "โปรแกรมในการดูภาพ",
+      "image_viewer": "เครื่องมือดูภาพ",
       "slideshow": "สไลดโชว์",
       "slideshow_modes": {
         "backward": "ย้อนกลับ",
@@ -493,7 +506,9 @@
         "imported_version": "เวอร์ชั่นที่จะนำเข้า",
         "confirmation_question": "เวอร์ชั่นแอพของอุปกรณ์ที่จะพยายามจะนำเข้าแตกต่างจากเวอร์ชั่นปัจจุบันของแอพ อาจจะพบปัญหาความเข้ากันได้และข้อมูลบางส่วนอาจหายได้\n\nคุณยืนยันจะดำเนินการต่อหรือไม่?"
       },
-      "no_sources_selected": "ไม่พบต้นทางที่เลือก"
+      "no_sources_selected": "ไม่พบต้นทางที่เลือก",
+      "invalid_location_error": "ไม่สามารถส่งออกไปตำแหน่งที่ระบุนี้ได้ ลองเลือกโฟลเดอร์ \"Download\" หรือ \"Documents\" ก่อน หากไม่มีสร้างโฟลเดอร์ขึ้นมาใหม่",
+      "invalid_backup_format_error": "รูปแบบการสำรองข้อมูลไม่ถูกต้อง"
     },
     "image_details": {
       "ui_overlay": {
@@ -697,7 +712,7 @@
     "add_a_booru_site": "สร้างโปรไฟล์เว็บใหม่",
     "next_step": "ถัดไป",
     "site_url": "ลิงค์เว็บไซต์",
-    "validation_empty_url": "ช่องลิงค์เว็บไซค์ว่างเปล่า",
+    "validation_empty_url": "กรุณากรอกที่อยู่เว็บ",
     "validation_invalid_url": "ลิงค์ \"{0}\" ไม่ใช่ลิงค์ที่ถูกต้อง",
     "validation_invalid_http_url": "ลิงค์ \"{0}\" ไม่ใช่ลิงค์รูปแบบของ HTTP หรือ HTTPS",
     "validation_redundant_www": "พบคำว่า \"www\" อยู่ในลิงค์ \"{0}\"",
@@ -729,7 +744,8 @@
         "available_tokens": "คีย์ที่รองรับ: ",
         "no_token_error": "คีย์ $token ยังไม่รองรับ",
         "available_token_options": "ตัวเลือกที่ใช้งานได้",
-        "no_options_available": "ไม่มีตัวเลือกที่ใช้งานได้"
+        "no_options_available": "ไม่มีตัวเลือกที่ใช้งานได้",
+        "slow_token_warning": "คีย์นี้จะทำให้การดาวน์โหลดของคุณช้าลง เพราะจำเป็นต้องใช้ข้อมูลส่วนนึงในการดึงข้อมูลของแต่ละไฟล์"
       }
     },
     "api_key_instructions": {
@@ -836,7 +852,7 @@
           "start_limited_preview": "เริ่มแสดงตัวอย่าง $previewMinutes-minute",
           "continue_preview_and_apply": "แสดงตัวอย่างต่อ & นำไปใช้งาน",
           "currently_in_preview": "คุณกำลังใช้งานตัวอย่างการจัดวางที่กำหนดเอง",
-          "time_left": "เหลือเวลา:",
+          "time_left": "เวลาคงเหลือ:",
           "preview_expired": "ตัวอย่างการจัดวางของคุณได้สิ้นสุดแล้ว อัปเดตเป็นพรีเมี่ยมเพื่อใช้การจัดวางแบบพรีเมี่ยม หรือใช้งานตัวอย่างอันใหม่"
         }
       },
@@ -878,7 +894,7 @@
   "gestures": {
     "swipe_down": "ปัดลง",
     "double_tap": "แตะสองครั้ง",
-    "long_press": "แตะค้าง",
+    "long_press": "แตะค้างไว้",
     "tap": "แตะ"
   },
   "tags": {
@@ -1054,6 +1070,61 @@
   },
   "premium": {
     "get_premium": "รับ $brand",
-    "upgrade": "อัปเกรด"
+    "upgrade": "อัปเกรด",
+    "subscribe": "สมัครสมาชิก",
+    "unlock_more_theme_with_premium": "ปลดล็อกธีมอันหลากหลายด้วย $brand",
+    "restore_subscription": "กู้คืนการสมัครสมาชิก",
+    "subscription_restored": "กู้คืนสมาชิกเรียบร้อย!",
+    "restore_failed": "พบปัญหาการกู้คืนสมาชิกของคุณ โปรดลองใหม่อีกครั้ง",
+    "select_your_plan": "เลือกแผนของคุณ",
+    "legal_disclaimer": "การสมัครสมาชิก คุณยอมรับ <a href=\"terms-of-service\">ข้อตกลงและเงื่อนไข</a> และ <a href=\"privacy-policy\">นโยบายความเป็นส่วนตัว</a>. สมาชิกจะถูกต่ออายุอัตโนมัติจนกว่าจะยกเลิกการเป็นสมาชิก คุณสามารถยกเลิกการสมัครได้ตลอดเวลา 24 ชั่วโมงก่อนจะครบรอบสมาชิก",
+    "benefits": {
+      "exclusive_themes": "ธีมสุดพิเศษ",
+      "exclusive_themes_description": "เลือกธีมที่มีความหลากหลายและปรับให้เป็นในสไตล์หน้าตาให้กับแต่ละโปรไฟล์",
+      "layout_customization": "การจัดวาง & หน้าจอหลัก",
+      "layout_customization_description": "ปรับแต่งว่าจะให้เห็นข้อมูลได้ขนาดไหน และตั้งค่าหน้าจอหลักของคุณ (เช่นบุ๊กมาร์ก, ค้นหา และอื่นๆ)",
+      "enhanced_bulk_download": "เพิ่มประสิทธิภาพดาวน์โหลดแบบชุด",
+      "enhanced_bulk_download_description": "แม่แบบที่ไม่มีขีดจำกัด, โหลดได้หลายรายการ และกลับมาโหลดต่อได้อย่างลื่นไหลหลังจากรีสตาร์ท",
+      "support_development": "สนับสนนนักพัฒนาแอป",
+      "support_development_description": "สนับสนุนนักพัฒนาตัวเล็กๆ เพื่อให้แอปและโปรเจ็คนี้สามารถดำเนินงานได้ต่อทั้งการอัปเดตอย่างสม่ำเสมอ และการพัฒนาฟังก์ชั่นต่างๆ"
+    },
+    "thanks": {
+      "title": "ขอบใจมาก!",
+      "description": "ตอนนี้คุณสามารถเข้าถึงฟังก์ชั่นพรีเมี่ยมแล้ว ขอให้สนุก!",
+      "confirm": "เยี่ยม!"
+    },
+    "per": {
+      "year": "/ ปี",
+      "month": "/ เดือน"
+    },
+    "packages": {
+      "monthly": "รายเดือน",
+      "annual": "รายปี"
+    }
+  },
+  "misc": {
+    "trailing_more": " แสดงมากขึ้น",
+    "trailing_less": " แสดงน้อยลง"
+  },
+  "artists": {
+    "title": "นักวาด",
+    "search": {
+      "name": "ชื่อ",
+      "name_hint": "ชื่อ, ชื่อกลุ่มนักวาด, นามปากกา หรือชื่ออื่นๆ ของนักวาด",
+      "name_tips": "*รอบรับการค้นหาแบบ Regex และ wildcards",
+      "url_hint": "ลิงค์ URL เต็มหรือแค่บางส่วน"
+    }
+  },
+  "uploads": {
+    "counter": {
+      "one": "$n อัปโหลด",
+      "other": "$n อัปโหลด"
+    }
+  },
+  "video_player": {
+    "playback_speed": "ความเร็วในการเล่นวีดีโอ",
+    "speed": {
+      "normal": "ปกติ"
+    }
   }
 }
