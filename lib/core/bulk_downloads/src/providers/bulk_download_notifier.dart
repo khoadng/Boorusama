@@ -32,6 +32,7 @@ import '../types/download_task.dart';
 import '../types/saved_download_task.dart';
 import 'bulk_progress.dart';
 import 'dry_run.dart';
+import 'dry_run_state.dart';
 import 'file_system_exist_checker.dart';
 import 'providers.dart';
 import 'saved_task_lock_notifier.dart';
@@ -507,7 +508,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
       );
 
       // Handle dry run result
-      if (dryRunState.status == DryRunStatus.failed) {
+      if (dryRunState.status is DryRunStatusFailed) {
         await _updateSession(
           sessionId,
           status: DownloadSessionStatus.failed,
@@ -516,26 +517,10 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
         return;
       }
 
-      if (dryRunState.status == DryRunStatus.cancelled) {
-        // Session was cancelled or status changed during dry run
-        currentSession = await _withRepoNull(
-          (repo) => repo.getSession(sessionId),
-        );
-        if (currentSession?.status != DownloadSessionStatus.dryRun) {
-          logger.verbose(
-            'BulkDownload',
-            'Session $sessionId is no longer in dry run state, exiting',
-          );
-          return;
-        }
-      }
-
       // Batch create all records
       if (dryRunState.allRecords.isNotEmpty) {
         await _withRepo((repo) => repo.createRecords(dryRunState.allRecords));
       }
-
-      logger.verbose('BulkDownload', 'Dry run ended for session $sessionId');
 
       // Cancel token right after dry run is done
       _cancelSessionToken(sessionId);

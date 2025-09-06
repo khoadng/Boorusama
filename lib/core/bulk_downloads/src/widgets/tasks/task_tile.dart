@@ -22,12 +22,13 @@ import '../../../../router.dart';
 import '../../../../theme.dart';
 import '../../../../widgets/widgets.dart';
 import '../../providers/bulk_download_notifier.dart';
+import '../../providers/dry_run.dart';
+import '../../providers/dry_run_state.dart';
 import '../../providers/providers.dart';
 import '../../types/bulk_download_error_interpreter.dart';
 import '../../types/bulk_download_session.dart';
 import '../../types/download_session.dart';
 import '../../types/download_session_stats.dart';
-import '../../types/l10n.dart';
 import 'buttons.dart';
 import 'task_progress_bar.dart';
 
@@ -342,10 +343,7 @@ class _InfoText extends ConsumerWidget {
         ? Filesize.parse(fileSize, round: 1)
         : null;
 
-    final totalItemText = DownloadTranslations.titleInfoCounter(
-      totalItems,
-      context,
-    );
+    final totalItemText = context.t.bulk_downloads.file_counter(n: totalItems);
 
     final infoText = [
       if (task.quality == 'original' && fileSizeText != null) fileSizeText,
@@ -355,10 +353,34 @@ class _InfoText extends ConsumerWidget {
     return Text(
       switch (status) {
         DownloadSessionStatus.pending => context.t.bulk_downloads.created,
-        DownloadSessionStatus.dryRun => DownloadTranslations.inProgressStatus(
-          pageProgress.completed,
-          context,
-        ),
+        DownloadSessionStatus.dryRun =>
+          ref
+              .watch(dryRunNotifierProvider(session.id))
+              .maybeWhen(
+                data: (data) => switch (data) {
+                  DryRunState(
+                    status: DryRunStatusRunning(),
+                    :final currentPage?,
+                    :final currentItemIndex?,
+                  ) =>
+                    context.t.bulk_downloads.scanning_page.with_page_and_index(
+                      page: currentPage,
+                      index: currentItemIndex + 1,
+                    ),
+                  DryRunState(
+                    status: DryRunStatusRunning(),
+                    :final currentPage?,
+                    currentItemIndex: _,
+                  ) =>
+                    context.t.bulk_downloads.scanning_page.with_page(
+                      page: currentPage,
+                    ),
+                  _ => context.t.bulk_downloads.scanning_page.null_page,
+                },
+                orElse: () => context.t.bulk_downloads.scanning_page.with_page(
+                  page: pageProgress.completed,
+                ),
+              ),
         DownloadSessionStatus.failed => context.t.generic.errors.error,
         DownloadSessionStatus.allSkipped =>
           context.t.bulk_downloads.completed_with_no_new_files,

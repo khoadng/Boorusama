@@ -3,7 +3,6 @@ import 'dart:async';
 
 // Package imports:
 import 'package:dio/dio.dart';
-import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart';
 
@@ -24,6 +23,7 @@ import '../types/download_configs.dart';
 import '../types/download_record.dart';
 import '../types/download_session.dart';
 import '../types/download_task.dart';
+import 'dry_run_state.dart';
 import 'file_system_exist_checker.dart';
 import 'providers.dart';
 
@@ -57,7 +57,7 @@ class DryRunNotifier extends FamilyAsyncNotifier<DryRunState, String> {
 
     state = AsyncData(
       currentState.copyWith(
-        status: DryRunStatus.running,
+        status: const DryRunStatusRunning(isSlowRun: false),
       ),
     );
 
@@ -96,7 +96,7 @@ class DryRunNotifier extends FamilyAsyncNotifier<DryRunState, String> {
         final currentState = await future;
         state = AsyncData(
           currentState.copyWith(
-            status: DryRunStatus.failed,
+            status: const DryRunStatusFailed(),
             error: const EmptyTagsError().toString(),
           ),
         );
@@ -112,7 +112,7 @@ class DryRunNotifier extends FamilyAsyncNotifier<DryRunState, String> {
           final currentState = await future;
           state = AsyncData(
             currentState.copyWith(
-              status: DryRunStatus.failed,
+              status: const DryRunStatusFailed(),
               error: const NoPostsFoundError().toString(),
             ),
           );
@@ -128,43 +128,55 @@ class DryRunNotifier extends FamilyAsyncNotifier<DryRunState, String> {
 
           final asyncFilenameNoPreload =
               preloadResult == PreloadResult.asyncNoPreload;
+
+          if (asyncFilenameNoPreload) {
+            state = AsyncData(
+              (await future).copyWith(
+                status: const DryRunStatusRunning(isSlowRun: true),
+              ),
+            );
+          }
           var cumulativeIndex = 0;
 
           while (await shouldContinue()) {
             final records = <DownloadRecord>[];
-            logger.verbose(
+            logger.debug(
               'BulkDownload',
               'Dry run page $page started for session $sessionId',
             );
 
             await onPageProgress(page);
 
-            final currentState = await future;
-
-            // Update current page state
             state = AsyncData(
-              currentState.copyWith(currentPage: page),
+              (await future).copyWith(currentPage: () => page),
             );
 
             for (var i = 0; i < rawPosts.length; i++) {
-              logger.verbose(
+              logger.debug(
                 'BulkDownload',
                 'Processing post ${i + 1}/${rawPosts.length} for session $sessionId',
               );
 
+              if (asyncFilenameNoPreload) {
+                state = AsyncData(
+                  (await future).copyWith(
+                    currentItemIndex: () => i,
+                  ),
+                );
+              }
+
               if (cancelToken.isCancelled) {
-                logger.verbose(
+                logger.debug(
                   'BulkDownload',
                   'Session $sessionId cancelled during dry run',
                 );
-                final currentState = await future;
                 state = AsyncData(
-                  currentState.copyWith(
-                    status: DryRunStatus.cancelled,
+                  (await future).copyWith(
+                    status: const DryRunStatusCancelled(),
                     totalPages: page,
                   ),
                 );
-                return;
+                break;
               }
 
               if (!await shouldContinue()) {
@@ -192,14 +204,14 @@ class DryRunNotifier extends FamilyAsyncNotifier<DryRunState, String> {
               );
 
               if (asyncFilenameNoPreload) {
-                logger.verbose(
+                logger.debug(
                   'BulkDownload',
                   'Waiting for async token delay for post ${item.id}',
                 );
                 await Future.delayed(kBulkDownloadAsyncDelay);
               }
 
-              logger.verbose(
+              logger.debug(
                 'BulkDownload',
                 'Resolved filename for post ${item.id}: $fileName',
               );
@@ -208,7 +220,7 @@ class DryRunNotifier extends FamilyAsyncNotifier<DryRunState, String> {
                 final exists = fileExistChecker.exists(fileName, task.path);
                 if (exists) {
                   cumulativeIndex++;
-                  logger.verbose(
+                  logger.debug(
                     'BulkDownload',
                     'Skipping post ${item.id} because file already exists: $fileName',
                   );
@@ -236,7 +248,7 @@ class DryRunNotifier extends FamilyAsyncNotifier<DryRunState, String> {
                 ),
               );
 
-              logger.verbose(
+              logger.debug(
                 'BulkDownload',
                 'Post ${item.id} processed, fileName: $fileName, downloadUrl: ${urlData.url}',
               );
@@ -244,33 +256,24 @@ class DryRunNotifier extends FamilyAsyncNotifier<DryRunState, String> {
               cumulativeIndex++;
             }
 
-            if (cancelToken.isCancelled) {
-              final currentState = await future;
-              state = AsyncData(
-                currentState.copyWith(
-                  status: DryRunStatus.cancelled,
-                  totalPages: page,
-                ),
-              );
-              return;
-            }
-
-            logger.verbose(
-              'BulkDownload',
-              'Dry run page $page processed, found ${records.length} valid records',
-            );
-
             allRecords.addAll(records);
 
-            // Update records found count
             state = AsyncData(
-              (await future).copyWith(recordsFound: allRecords.length),
+              (await future).copyWith(
+                allRecords: allRecords,
+                totalPages: page,
+              ),
+            );
+
+            logger.debug(
+              'BulkDownload',
+              'Dry run page $page processed, found ${records.length} valid records',
             );
 
             page++;
 
             if (!await shouldContinue()) {
-              logger.verbose(
+              logger.debug(
                 'BulkDownload',
                 'Session $sessionId is no longer in dry run state, exiting dry run',
               );
@@ -284,7 +287,7 @@ class DryRunNotifier extends FamilyAsyncNotifier<DryRunState, String> {
               await Future.delayed(const Duration(milliseconds: 200));
             }
 
-            logger.verbose(
+            logger.debug(
               'BulkDownload',
               'Fetching page $page for session $sessionId',
             );
@@ -297,7 +300,7 @@ class DryRunNotifier extends FamilyAsyncNotifier<DryRunState, String> {
 
             if (nextResult.isEmpty) {
               page--;
-              logger.verbose(
+              logger.debug(
                 'BulkDownload',
                 'No more items found, ending dry run for session $sessionId',
               );
@@ -307,18 +310,16 @@ class DryRunNotifier extends FamilyAsyncNotifier<DryRunState, String> {
             rawPosts = nextResult.posts;
           }
 
-          logger.verbose(
+          logger.debug(
             'BulkDownload',
             'Dry run ended for session $sessionId',
           );
 
-          final currentState = await future;
           state = AsyncData(
-            currentState.copyWith(
-              status: DryRunStatus.completed,
+            (await future).copyWith(
+              status: const DryRunStatusCompleted(),
               allRecords: allRecords,
               totalPages: page,
-              recordsFound: allRecords.length,
             ),
           );
         }
@@ -326,80 +327,10 @@ class DryRunNotifier extends FamilyAsyncNotifier<DryRunState, String> {
     } catch (e) {
       state = AsyncData(
         currentState.copyWith(
-          status: DryRunStatus.failed,
+          status: const DryRunStatusFailed(),
           error: e.toString(),
         ),
       );
     }
   }
-}
-
-enum DryRunStatus {
-  notFound,
-  idle,
-  running,
-  completed,
-  cancelled,
-  failed,
-}
-
-class DryRunState extends Equatable {
-  const DryRunState({
-    required this.status,
-    required this.currentPage,
-    required this.recordsFound,
-    required this.totalPages,
-    this.error,
-    this.allRecords = const [],
-  });
-
-  const DryRunState.notFound()
-    : status = DryRunStatus.notFound,
-      currentPage = 0,
-      recordsFound = 0,
-      totalPages = 0,
-      error = null,
-      allRecords = const [];
-
-  factory DryRunState.initial() => const DryRunState(
-    status: DryRunStatus.idle,
-    currentPage: 0,
-    recordsFound: 0,
-    totalPages: 0,
-  );
-
-  final DryRunStatus status;
-  final int currentPage;
-  final int recordsFound;
-  final int totalPages;
-  final String? error;
-  final List<DownloadRecord> allRecords;
-
-  DryRunState copyWith({
-    DryRunStatus? status,
-    int? currentPage,
-    int? recordsFound,
-    int? totalPages,
-    String? error,
-    List<DownloadRecord>? allRecords,
-  }) {
-    return DryRunState(
-      status: status ?? this.status,
-      currentPage: currentPage ?? this.currentPage,
-      recordsFound: recordsFound ?? this.recordsFound,
-      totalPages: totalPages ?? this.totalPages,
-      error: error ?? this.error,
-      allRecords: allRecords ?? this.allRecords,
-    );
-  }
-
-  @override
-  List<Object?> get props => [
-    status,
-    currentPage,
-    recordsFound,
-    totalPages,
-    error,
-    allRecords,
-  ];
 }

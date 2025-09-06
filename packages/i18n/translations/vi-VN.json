@@ -955,7 +955,8 @@
     "completed_with_no_new_files": "Đã hoàn thành mà không có tệp mới nào",
     "scanning_page": {
       "with_page": "Đang quét trang $page...",
-      "null_page": "Đang quét..."
+      "null_page": "Đang khởi tạo...",
+      "with_page_and_index": "Đang quét trang $page, mục $index..."
     },
     "file_counter": {
       "one": "$n tệp",
