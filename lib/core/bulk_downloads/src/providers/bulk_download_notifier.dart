@@ -93,10 +93,6 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
     ref.read(sessionCancellationProvider.notifier).cancelToken(sessionId);
   }
 
-  void _cancelAllSessionTokens() {
-    ref.read(sessionCancellationProvider.notifier).cancelAll();
-  }
-
   Future<T> _withRepo<T>(Future<T> Function(DownloadRepository repo) fn) async {
     final repo = await ref.read(downloadRepositoryProvider.future);
     return fn(repo);
@@ -115,6 +111,9 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
     final progressUpdateTimers = <String, Timer>{};
 
     final progressNotifier = ref.watch(bulkDownloadProgressProvider.notifier);
+    final sessionCancellationNotifier = ref.watch(
+      sessionCancellationProvider.notifier,
+    );
 
     void scheduleProgressUpdate(String sessionId) {
       if (progressUpdateTimers.containsKey(sessionId)) {
@@ -232,7 +231,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
           timer.cancel();
         }
 
-        _cancelAllSessionTokens();
+        sessionCancellationNotifier.cancelAll();
       });
 
     _loadTasks(init: true);
