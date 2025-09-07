@@ -57,12 +57,8 @@ class ExpireAfter {
       fixedDuration(const Duration(days: 30));
 }
 
-class _CacheResult {
-  const _CacheResult.miss(
-    this.missing,
-  ) : isHit = false,
-      tags = null;
-  const _CacheResult.hit(this.tags) : isHit = true, missing = null;
+sealed class _CacheResult {
+  const _CacheResult();
 
   factory _CacheResult.from({
     required TagResolutionResult? result,
@@ -73,17 +69,13 @@ class _CacheResult {
     TagResolutionResult(:final found, :final missing) =>
       _isCompleteHit(found, missing, requestedTags)
           ? _isStale(found, expire)
-                ? _CacheResult.miss(found.map((e) => e.tagName).toList())
-                : _CacheResult.hit(
+                ? _Miss(found.map((e) => e.tagName).toList())
+                : _Hit(
                     cachedTagMapper.mapCachedTagsToTags(found),
                   )
-          : _CacheResult.miss(missing),
-    _ => const _CacheResult.miss(null),
+          : _Miss(missing),
+    _ => const _Miss([]),
   };
-
-  final bool isHit;
-  final List<Tag>? tags;
-  final List<String>? missing;
 
   static bool _isCompleteHit(
     List<CachedTag> found,
@@ -115,6 +107,16 @@ class _CacheResult {
 
     return found.any(stale);
   }
+}
+
+class _Hit extends _CacheResult {
+  const _Hit(this.tags);
+  final List<Tag> tags;
+}
+
+class _Miss extends _CacheResult {
+  const _Miss(this.missing);
+  final List<String> missing;
 }
 
 typedef TagFetcherExtended =
@@ -155,8 +157,8 @@ TagFetcher createCachedTagFetcher({
     cachedTagMapper: cachedTagMapper,
     expire: expire,
   )) {
-    _CacheResult(isHit: true, :final tags?) => tags,
-    final r => fetcher(post, options, r.missing ?? []).then(
+    _Hit(:final tags) => tags,
+    _Miss(:final missing) => fetcher(post, options, missing).then(
       (tags) => tags,
     ),
   };
