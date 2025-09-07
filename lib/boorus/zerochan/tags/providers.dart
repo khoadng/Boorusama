@@ -30,12 +30,13 @@ final zerochanAutoCompleteRepoProvider =
                 (e) => e.type != 'Meta',
               )
               .map(autocompleteDtoToAutocompleteData)
+              .nonNulls
               .toList();
 
           if (data.isNotEmpty) {
             final tagCache = await ref.read(tagCacheRepositoryProvider.future);
             await tagCache.saveTagsBatchIfNeeded(
-              tags: data.map(autocompleteDataToTag).toList(),
+              tags: data.map(autocompleteDataToTag).nonNulls.toList(),
               siteHost: config.url,
             );
           }
@@ -55,7 +56,11 @@ final zerochanTagsFromIdProvider = FutureProvider.autoDispose
 
         final data = await client.getTagsFromPostId(postId: id);
 
-        return data.where((e) => e.value != null).map(tagDtoToTag).toList();
+        return data
+            .where((e) => e.value != null)
+            .map(tagDtoToTag)
+            .nonNulls
+            .toList();
       },
     );
 
@@ -71,8 +76,7 @@ final zerochanTagExtractorProvider =
           fetcher: createCachedTagFetcher(
             siteHost: config.url,
             tagCache: tagCache,
-            normalizer: (tags) =>
-                tags.map((e) => normalizeZerochanTag(e) ?? e).toSet(),
+            normalizer: (tags) => tags.map(normalizeZerochanTag).toSet(),
             cachedTagMapper: const CachedTagMapper(),
             fetcher: (post, options, missing) async {
               final apiTags = await ref.read(
@@ -82,7 +86,7 @@ final zerochanTagExtractorProvider =
               final postTags = post.tags
                   .map(
                     (tagName) => Tag.noCount(
-                      name: normalizeZerochanTag(tagName) ?? tagName,
+                      name: normalizeZerochanTag(tagName),
                       category: TagCategory.unknown,
                     ),
                   )
@@ -97,10 +101,12 @@ final zerochanTagExtractorProvider =
                       .read(zerochanAutoCompleteRepoProvider(config))
                       .getAutocomplete(AutocompleteQuery(text: tagName));
 
-                  if (results.isNotEmpty) {
-                    final tag = autocompleteDataToTag(results.first);
-                    autocompleteTagMap[tag.name] = tag;
-                  }
+                  final result = results.firstOrNull;
+                  if (result == null) return;
+
+                  final tag = autocompleteDataToTag(result);
+                  if (tag == null) return;
+                  autocompleteTagMap[tag.name] = tag;
                 },
               );
 

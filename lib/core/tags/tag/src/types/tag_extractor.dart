@@ -284,9 +284,9 @@ extension ConditionalSaveX on TagCacheRepository {
 Future<void> processTagsInChunks({
   required List<String> missing,
   required Future<void> Function(String tagName) fetcher,
-  String? Function(String?)? normalizer,
-  Duration timeout = const Duration(seconds: 3),
-  int chunkSize = 3,
+  String Function(String)? normalizer,
+  Duration timeout = const Duration(seconds: 15),
+  int chunkSize = 5,
 }) async {
   if (missing.isEmpty) return;
 
@@ -312,7 +312,7 @@ Future<void> processTagsInChunks({
     }
 
     if (chunk != chunks.last) {
-      await Future.delayed(const Duration(milliseconds: 100));
+      await Future.delayed(const Duration(milliseconds: 200));
     }
   }
 }
