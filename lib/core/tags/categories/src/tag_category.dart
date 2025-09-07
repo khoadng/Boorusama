@@ -36,6 +36,7 @@ const _metaTag = TagCategory(
   name: 'meta',
 );
 
+// ignore: use_named_constants
 const _unknownTag = TagCategory(
   id: -1,
   name: 'unknown',
@@ -52,7 +53,6 @@ class TagCategory extends Equatable {
     this.lightColor,
   });
 
-  factory TagCategory.unknown() => _unknownTag;
   factory TagCategory.artist() => _artistTag;
   factory TagCategory.copyright() => _copyrightTag;
   factory TagCategory.general() => _generalTag;
@@ -70,6 +70,8 @@ class TagCategory extends Equatable {
 
   factory TagCategory.fromLegacyId(int? id) =>
       TagCategory.fromLegacyIdString(id?.toString());
+
+  static const unknown = _unknownTag;
 
   final int id;
   final String name;

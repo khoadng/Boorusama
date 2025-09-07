@@ -11,6 +11,12 @@ Tag tagDtoToTag(TagDto e) => Tag.noCount(
   category: zerochanStringToTagCategory(e.type),
 );
 
+Tag autocompleteDataToTag(AutocompleteData e) => Tag(
+  name: e.value,
+  category: zerochanStringToTagCategory(e.category),
+  postCount: e.postCount ?? 0,
+);
+
 AutocompleteData autocompleteDtoToAutocompleteData(AutocompleteDto e) =>
     AutocompleteData(
       label: e.value?.toLowerCase() ?? '',

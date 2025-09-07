@@ -41,7 +41,7 @@ final moebooruTagExtractorProvider =
                 tags.add(
                   Tag.noCount(
                     name: t,
-                    category: TagCategory.unknown(),
+                    category: TagCategory.unknown,
                   ),
                 );
               }
