@@ -13,73 +13,6 @@ import 'package:boorusama/core/tags/tag/src/types/cached_tag_mapper.dart';
 import 'package:boorusama/core/tags/tag/src/types/tag.dart';
 import 'package:boorusama/core/tags/tag/src/types/tag_extractor.dart';
 
-CachedTag _cachedTag1({String category = 'character', int? postCount = 100}) =>
-    CachedTag(
-      siteHost: 'example.com',
-      tagName: 'tag1',
-      category: category,
-      postCount: postCount,
-      updatedAt: DateTime.now(),
-    );
-
-Tag _tag1({int postCount = 100}) => Tag(
-  name: 'tag1',
-  category: TagCategory.character(),
-  postCount: postCount,
-);
-
-CachedTag _createCachedTag({
-  required String tagName,
-  required String category,
-  int? postCount,
-}) => CachedTag(
-  siteHost: 'example.com',
-  tagName: tagName,
-  category: category,
-  postCount: postCount,
-);
-
-TagResolutionResult _createResult({
-  List<CachedTag> found = const [],
-  List<String> missing = const [],
-}) => TagResolutionResult(
-  found: found,
-  missing: missing,
-);
-
-class MockPost extends Mock implements Post {}
-
-class MockTagCacheRepository extends Mock implements TagCacheRepository {}
-
-class MockTagFetcher extends Mock {
-  Future<List<Tag>> call(
-    Post post,
-    ExtractOptions options,
-    List<String> missing,
-  );
-}
-
-void _stubMockFetcher(
-  MockTagFetcher mockFetcher,
-  MockPost mockPost, [
-  List<Tag>? tags,
-  List<String>? missing,
-]) {
-  when(
-    () => mockFetcher(mockPost, const ExtractOptions(), missing ?? []),
-  ).thenAnswer((_) async => tags ?? [_tag1()]);
-}
-
-void _verifyMockFetcherCalled(
-  MockTagFetcher mockFetcher,
-  MockPost mockPost, [
-  int times = 1,
-]) {
-  verify(
-    () => mockFetcher(mockPost, const ExtractOptions(), any()),
-  ).called(times);
-}
-
 void main() {
   group('CacheWhen', () {
     test('should cache tags with unknown category', () {
@@ -451,4 +384,71 @@ void main() {
       },
     );
   });
+}
+
+CachedTag _cachedTag1({String category = 'character', int? postCount = 100}) =>
+    CachedTag(
+      siteHost: 'example.com',
+      tagName: 'tag1',
+      category: category,
+      postCount: postCount,
+      updatedAt: DateTime.now(),
+    );
+
+Tag _tag1({int postCount = 100}) => Tag(
+  name: 'tag1',
+  category: TagCategory.character(),
+  postCount: postCount,
+);
+
+CachedTag _createCachedTag({
+  required String tagName,
+  required String category,
+  int? postCount,
+}) => CachedTag(
+  siteHost: 'example.com',
+  tagName: tagName,
+  category: category,
+  postCount: postCount,
+);
+
+TagResolutionResult _createResult({
+  List<CachedTag> found = const [],
+  List<String> missing = const [],
+}) => TagResolutionResult(
+  found: found,
+  missing: missing,
+);
+
+class MockPost extends Mock implements Post {}
+
+class MockTagCacheRepository extends Mock implements TagCacheRepository {}
+
+class MockTagFetcher extends Mock {
+  Future<List<Tag>> call(
+    Post post,
+    ExtractOptions options,
+    List<String> missing,
+  );
+}
+
+void _stubMockFetcher(
+  MockTagFetcher mockFetcher,
+  MockPost mockPost, [
+  List<Tag>? tags,
+  List<String>? missing,
+]) {
+  when(
+    () => mockFetcher(mockPost, const ExtractOptions(), missing ?? []),
+  ).thenAnswer((_) async => tags ?? [_tag1()]);
+}
+
+void _verifyMockFetcherCalled(
+  MockTagFetcher mockFetcher,
+  MockPost mockPost, [
+  int times = 1,
+]) {
+  verify(
+    () => mockFetcher(mockPost, const ExtractOptions(), any()),
+  ).called(times);
 }
