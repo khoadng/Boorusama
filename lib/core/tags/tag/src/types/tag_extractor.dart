@@ -124,18 +124,25 @@ typedef TagFetcherExtended =
       List<String> missingTags,
     );
 
+typedef TagNormalizer = Set<String> Function(Set<String> tags);
+
 TagFetcher createCachedTagFetcher({
   required String siteHost,
   required Future<TagCacheRepository>? tagCache,
   required CachedTagMapper cachedTagMapper,
   required TagFetcherExtended fetcher,
   ExpireAfterResolver? expire,
+  TagNormalizer? normalizer,
 }) => (post, options) async {
+  final tags = normalizer != null
+      ? normalizer(post.tags).toList()
+      : post.tags.toList();
+
   Future<TagResolutionResult?> safeResolve() async {
     try {
       return (await tagCache)?.resolveTags(
         siteHost,
-        post.tags.toList(),
+        tags,
       );
     } catch (_) {
       return null;
@@ -144,7 +151,7 @@ TagFetcher createCachedTagFetcher({
 
   return switch (_CacheResult.from(
     result: await safeResolve(),
-    requestedTags: post.tags,
+    requestedTags: tags.toSet(),
     cachedTagMapper: cachedTagMapper,
     expire: expire,
   )) {
@@ -285,13 +292,13 @@ Future<void> processTagsInChunks({
 
   final chunks = missing.chunk(chunkSize);
   final startTime = DateTime.now();
-  
+
   for (final chunk in chunks) {
     final elapsed = DateTime.now().difference(startTime);
     if (elapsed >= timeout) break;
-    
+
     final remainingTime = timeout - elapsed;
-    
+
     try {
       await Future.wait(
         chunk.map(

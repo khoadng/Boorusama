@@ -63,6 +63,7 @@ final zerochanTagExtractorProvider =
     Provider.family<TagExtractor, BooruConfigAuth>(
       (ref, config) {
         final tagCache = ref.watch(tagCacheRepositoryProvider.future);
+
         return TagExtractorBuilder(
           siteHost: config.url,
           tagCache: tagCache,
@@ -70,30 +71,32 @@ final zerochanTagExtractorProvider =
           fetcher: createCachedTagFetcher(
             siteHost: config.url,
             tagCache: tagCache,
+            normalizer: (tags) =>
+                tags.map((e) => normalizeZerochanTag(e) ?? e).toSet(),
             cachedTagMapper: const CachedTagMapper(),
             fetcher: (post, options, missing) async {
-              // Get API tags
               final apiTags = await ref.read(
                 zerochanTagsFromIdProvider((config, post.id)).future,
               );
 
-              // Create normalized post tags
               final postTags = post.tags
-                  .map((tagName) => Tag.noCount(
-                        name: normalizeZerochanTag(tagName) ?? tagName,
-                        category: TagCategory.unknown,
-                      ))
+                  .map(
+                    (tagName) => Tag.noCount(
+                      name: normalizeZerochanTag(tagName) ?? tagName,
+                      category: TagCategory.unknown,
+                    ),
+                  )
                   .toList();
 
-              // Get autocomplete data for missing tags
               final autocompleteTagMap = <String, Tag>{};
               await processTagsInChunks(
                 missing: missing,
                 normalizer: normalizeZerochanTag,
                 fetcher: (tagName) async {
-                  final results = await ref.read(zerochanAutoCompleteRepoProvider(config))
+                  final results = await ref
+                      .read(zerochanAutoCompleteRepoProvider(config))
                       .getAutocomplete(AutocompleteQuery(text: tagName));
-                  
+
                   if (results.isNotEmpty) {
                     final tag = autocompleteDataToTag(results.first);
                     autocompleteTagMap[tag.name] = tag;
@@ -101,12 +104,10 @@ final zerochanTagExtractorProvider =
                 },
               );
 
-              // Enhance post tags with autocomplete data
               final enhancedPostTags = postTags.map((tag) {
                 return autocompleteTagMap[tag.name] ?? tag;
               }).toList();
 
-              // Merge API tags with enhanced post tags (API takes priority)
               final allTagNames = <String>{};
               final combinedTags = <Tag>[];
 
