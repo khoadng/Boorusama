@@ -1,5 +1,3 @@
-// ignore_for_file: cascade_invocations
-
 // Dart imports:
 import 'dart:collection';
 
