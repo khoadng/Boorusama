@@ -8,7 +8,6 @@ import 'package:i18n/i18n.dart';
 // Project imports:
 import '../../../../boorus/engine/engine.dart';
 import '../../../../configs/config.dart';
-import '../../../../theme/app_theme.dart';
 import '../../../../widgets/widgets.dart';
 import '../providers/details_layout_provider.dart';
 import '../routes/route_utils.dart';
@@ -104,16 +103,6 @@ class DetailsConfigPage extends ConsumerWidget {
                     _WidgetList(parts: details),
                   ],
                 ),
-              ),
-            ),
-          ),
-          SafeArea(
-            child: Text(
-              context.t.booru.appearance.image_viewer_layout.storage_tooltip,
-              style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                color: Theme.of(context).colorScheme.hintColor,
-                fontSize: 14,
-                fontWeight: FontWeight.w400,
               ),
             ),
           ),
