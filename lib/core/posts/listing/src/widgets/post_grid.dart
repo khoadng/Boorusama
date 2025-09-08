@@ -2,7 +2,6 @@
 import 'dart:math';
 
 // Flutter imports:
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -13,6 +12,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:selection_mode/selection_mode.dart';
 
 // Project imports:
+import '../../../../../foundation/html.dart';
 import '../../../../boorus/engine/providers.dart';
 import '../../../../configs/create/routes.dart';
 import '../../../../configs/ref.dart';
@@ -20,7 +20,6 @@ import '../../../../configs/search/search.dart';
 import '../../../../errors/providers.dart';
 import '../../../../settings/providers.dart';
 import '../../../../settings/settings.dart';
-import '../../../../theme/theme.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../post/post.dart';
 import '../_internal/default_image_grid_item.dart';
@@ -454,42 +453,23 @@ class _BlacklistedTagsInterceptedNotice extends ConsumerWidget {
         right: 12,
         bottom: 12,
       ),
-      child: RichText(
-        text: TextSpan(
-          style: Theme.of(context).textTheme.titleSmall?.copyWith(
-            color: colorScheme.hintColor,
-            fontSize: 12,
-            fontWeight: FontWeight.w400,
-          ),
-          children: [
-            if (blacklistConfigsMode == BlacklistCombinationMode.replace)
-              const TextSpan(
-                text: 'Replaced by ',
-              )
-            else
-              const TextSpan(
-                text: 'Merged with ',
-              ),
-            TextSpan(
-              text: "Profile's blacklist",
-              recognizer: TapGestureRecognizer()
-                ..onTap = () {
-                  goToUpdateBooruConfigPage(
-                    ref,
-                    config: config,
-                    initialTab: 'search',
-                  );
-                },
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-            ),
-            const TextSpan(
-              text: ' settings.',
-            ),
-          ],
-        ),
+      child: AppHtml(
+        data: switch (blacklistConfigsMode) {
+          BlacklistCombinationMode.replace =>
+            context.t.booru.search.blacklist_overridden.replace_notice,
+          BlacklistCombinationMode.merge =>
+            context.t.booru.search.blacklist_overridden.merge_notice,
+        },
+        style: AppHtml.hintStyle(colorScheme),
+        onLinkTap: (url, _, _) {
+          if (url == 'booru-profiles') {
+            goToUpdateBooruConfigPage(
+              ref,
+              config: config,
+              initialTab: 'search',
+            );
+          }
+        },
       ),
     );
   }
@@ -577,8 +557,8 @@ class _Error401ActionButton extends ConsumerWidget {
           ),
           child: Text(
             isEmptyApiKey
-                ? 'This site may require you to enter your API key or credentials to access its content.'
-                : 'Check your API key or credentials, as they may be invalid or expired.',
+                ? context.t.booru.api_key.auth_error.empy_key_warning
+                : context.t.booru.api_key.auth_error.invalid_key_warning,
             textAlign: TextAlign.center,
             style: theme.textTheme.bodyMedium?.copyWith(
               color: theme.colorScheme.error,
@@ -591,7 +571,7 @@ class _Error401ActionButton extends ConsumerWidget {
             config: config,
             initialTab: 'auth',
           ),
-          child: Text('Edit credentials'.hc),
+          child: Text(context.t.booru.api_key.auth_error.edit_api_key),
         ),
       ],
     );
