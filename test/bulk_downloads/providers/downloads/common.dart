@@ -431,7 +431,7 @@ class MockAsyncFilenameBuilder implements DownloadFilenameGenerator<DummyPost> {
 
   final List<DummyPost> generatedPosts = [];
   final List<List<DummyPost>> preloadedChunks = [];
-  int preloadCallCount = 0;
+  var preloadCallCount = 0;
 
   @override
   Future<String> generateForBulkDownload(

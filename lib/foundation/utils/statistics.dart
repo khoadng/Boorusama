@@ -53,7 +53,7 @@ StatisticalSummary calculateStats(List<double>? numbers) {
   // Calculate median
   double median;
   final middle = numbers.length ~/ 2;
-  if (numbers.length % 2 == 0) {
+  if (numbers.length.isEven) {
     median = (numbers[middle - 1] + numbers[middle]) / 2;
   } else {
     median = numbers[middle];

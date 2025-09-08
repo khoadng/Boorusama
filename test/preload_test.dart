@@ -298,7 +298,7 @@ void main() {
 
         // Navigate around boundaries
         for (var i = 0; i < 6; i++) {
-          final direction = i % 2 == 0 ? -200.0 : 200.0;
+          final direction = i.isEven ? -200.0 : 200.0;
           await tester.fling(
             find.byType(PageView),
             Offset(direction, 0),
@@ -327,7 +327,7 @@ void main() {
 
         // Navigate around end boundaries
         for (var i = 0; i < 6; i++) {
-          final direction = i % 2 == 0 ? -200.0 : 200.0;
+          final direction = i.isEven ? -200.0 : 200.0;
           await tester.fling(
             find.byType(PageView),
             Offset(direction, 0),

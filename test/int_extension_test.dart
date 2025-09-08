@@ -20,6 +20,7 @@ void testDigitCount() {
     expect(987654321.digitCount(), equals(9));
     expect(1000000000.digitCount(), equals(10));
     expect(10000000000.digitCount(), equals(11));
+    // ignore: avoid_js_rounded_ints
     expect(1234567890123456789.digitCount(), equals(19));
   });
 

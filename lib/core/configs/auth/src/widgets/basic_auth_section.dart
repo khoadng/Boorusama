@@ -56,7 +56,7 @@ class BasicAuthSection extends StatelessWidget {
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-                if (verifyButton case final button?) button,
+                ?verifyButton,
               ],
             ),
           ),
