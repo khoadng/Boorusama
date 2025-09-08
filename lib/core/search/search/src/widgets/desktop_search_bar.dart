@@ -200,7 +200,6 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
                         ? DanbooruMetatagsSection(
                             onOptionTap: (value) {
                               textEditingController.text = '$value:';
-                              // ignore: cascade_invocations
                               textEditingController.setTextAndCollapseSelection(
                                 '$value:',
                               );

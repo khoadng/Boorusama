@@ -31,7 +31,6 @@ String parseLink(String text) => parse(
   (match) => linkify(title: match.group(1), address: match.group(2)),
 );
 
-// ignore: unused_element
 String parseUrl(String text) => parse(
   text,
   RegExp(urlPattern),
