@@ -47,17 +47,33 @@ git clone https://github.com/khoadng/Boorusama.git
 cd Boorusama
 ```
 2. Install dependencies and generate boilerplate code:
+
+**Linux/macOS:**
 ```bash
 flutter pub get
 ./gen.sh
 ```
+
+**Windows:**
+```powershell
+flutter pub get
+.\gen.ps1
+```
+
 3. Connect to an Android device or emulator and run the app:
 ```bash
 flutter run --release
 ```
 Or build an APK and install it manually:
+
+**Linux/macOS:**
 ```bash
 ./build.sh apk --flavor prod
+```
+
+**Windows:**
+```powershell
+.\build.ps1 apk -Flavor prod
 ```
 
 ## Translation
