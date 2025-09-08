@@ -143,34 +143,31 @@ class BooruRawImage extends StatelessWidget {
     );
 
     return NullableAspectRatio(
-      aspectRatio: forceCover || fit == BoxFit.contain || fitWidthForTallImages ? null : aspectRatio,
+      aspectRatio: forceCover || fit == BoxFit.contain || fitWidthForTallImages
+          ? null
+          : aspectRatio,
       child: LayoutBuilder(
         builder: (context, constraints) {
           final width = constraints.maxWidth.roundToDouble();
           final height = constraints.maxHeight.roundToDouble();
-          
-          // Determine if we should use fit width for tall images
-          final imgHeight = imageHeight;
-          final imgWidth = imageWidth;
-          final shouldFitWidthForTallImage = fitWidthForTallImages;
-          
+
           final fit =
               this.fit ??
               // Always use fit width when flag is enabled
-              (shouldFitWidthForTallImage
+              (fitWidthForTallImages
                   ? BoxFit.fitWidth
                   // If the image is larger than the layout, just fill it to prevent distortion
                   : forceFill &&
-                          _shouldForceFill(
-                            constraints.biggest,
-                            imageWidth,
-                            imageHeight,
-                          )
-                      ? BoxFit.fill
-                      // Cover is for the standard grid that crops the image to fit the aspect ratio
-                      : forceCover
-                          ? BoxFit.cover
-                          : BoxFit.contain);
+                        _shouldForceFill(
+                          constraints.biggest,
+                          imageWidth,
+                          imageHeight,
+                        )
+                  ? BoxFit.fill
+                  // Cover is for the standard grid that crops the image to fit the aspect ratio
+                  : forceCover
+                  ? BoxFit.cover
+                  : BoxFit.contain);
           final borderRadius = this.borderRadius ?? _defaultRadius;
 
           return imageUrl.isNotEmpty

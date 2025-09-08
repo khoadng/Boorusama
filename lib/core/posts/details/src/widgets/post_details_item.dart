@@ -137,7 +137,7 @@ class PostDetailsItem<T extends Post> extends ConsumerWidget {
     );
   }
 
-  Widget _buildPostContent<T extends Post>(
+  Widget _buildPostContent(
     BuildContext context,
     WidgetRef ref,
     T post,
@@ -152,11 +152,7 @@ class PostDetailsItem<T extends Post> extends ConsumerWidget {
     VoidCallback onItemTap,
   ) {
     // Check if this is a very tall image that should use webtoon viewer
-    final isVeryTallImage = !post.isVideo &&
-        post.height != null &&
-        post.width != null &&
-        post.width! > 0 &&
-        (post.height! / post.width!) > 2.0; // Lower threshold for more aggressive webtoon mode
+    final isVeryTallImage = !post.isVideo && (post.height / post.width) > 2.0;
 
     if (isVeryTallImage) {
       // For very tall images, use scrollable view instead of InteractiveViewer
@@ -175,9 +171,8 @@ class PostDetailsItem<T extends Post> extends ConsumerWidget {
                   config: authConfig,
                   imageUrlBuilder: imageUrlBuilder,
                   imageCacheManager: imageCacheManager,
-                  thumbnailUrlBuilder:
-                      isInitPage && initialThumbnailUrl != null
-                      ? (Post _) => initialThumbnailUrl
+                  thumbnailUrlBuilder: isInitPage && initialThumbnailUrl != null
+                      ? (_) => initialThumbnailUrl
                       : null,
                   controller: pageViewController,
                 );
@@ -201,11 +196,8 @@ class PostDetailsItem<T extends Post> extends ConsumerWidget {
               imageUrlBuilder: imageUrlBuilder,
               imageCacheManager: imageCacheManager,
               // This is used to make sure we have a thumbnail to show instead of a black placeholder
-              thumbnailUrlBuilder:
-                  isInitPage && initialThumbnailUrl != null
-                  // Need to specify the type here to avoid type inference error
-                  // ignore: avoid_types_on_closure_parameters
-                  ? (Post _) => initialThumbnailUrl
+              thumbnailUrlBuilder: isInitPage && initialThumbnailUrl != null
+                  ? (_) => initialThumbnailUrl
                   : null,
               controller: pageViewController,
             );
@@ -216,7 +208,8 @@ class PostDetailsItem<T extends Post> extends ConsumerWidget {
             alignment: Alignment.bottomRight,
             child: ValueListenableBuilder(
               valueListenable: pageViewController.sheetState,
-              builder: (_, state, _) => state.isExpanded && !context.isLargeScreen
+              builder: (_, state, _) =>
+                  state.isExpanded && !context.isLargeScreen
                   ? Padding(
                       padding: const EdgeInsets.all(8),
                       child: Row(
@@ -243,13 +236,12 @@ class PostDetailsItem<T extends Post> extends ConsumerWidget {
                             },
                           ),
                           VideoSoundScope(
-                            builder: (context, soundOn) =>
-                                SoundControlButton(
-                                  padding: const EdgeInsets.all(8),
-                                  soundOn: soundOn,
-                                  onSoundChanged: (value) =>
-                                      ref.setGlobalVideoSound(value),
-                                ),
+                            builder: (context, soundOn) => SoundControlButton(
+                              padding: const EdgeInsets.all(8),
+                              soundOn: soundOn,
+                              onSoundChanged: (value) =>
+                                  ref.setGlobalVideoSound(value),
+                            ),
                           ),
                         ],
                       ),
