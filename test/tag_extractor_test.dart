@@ -338,7 +338,7 @@ void main() {
           tagCache: Future.value(mockTagCache),
           cachedTagMapper: cachedTagMapper,
           fetcher: mockFetcher.call,
-          expire: (tag) => const Duration(minutes: 30),
+          cachePolicy: (tag) => const Duration(minutes: 30),
         )(mockPost, const ExtractOptions());
 
         _verifyMockFetcherCalled(mockFetcher, mockPost);

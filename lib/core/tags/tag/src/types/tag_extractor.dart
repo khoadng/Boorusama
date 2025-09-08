@@ -133,7 +133,7 @@ TagFetcher createCachedTagFetcher({
   required Future<TagCacheRepository>? tagCache,
   required CachedTagMapper cachedTagMapper,
   required TagFetcherExtended fetcher,
-  CachePolicyResolver? expire,
+  CachePolicyResolver? cachePolicy,
   TagNormalizer? normalizer,
 }) => (post, options) async {
   final tags = normalizer != null
@@ -155,7 +155,7 @@ TagFetcher createCachedTagFetcher({
     result: await safeResolve(),
     requestedTags: tags.toSet(),
     cachedTagMapper: cachedTagMapper,
-    expire: expire,
+    expire: cachePolicy,
   )) {
     _Hit(:final tags) => tags,
     _Miss(:final missing) => fetcher(post, options, missing).then(

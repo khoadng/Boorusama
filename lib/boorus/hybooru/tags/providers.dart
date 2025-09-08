@@ -35,7 +35,7 @@ final hybooruTagExtractorProvider =
           fetcher: createCachedTagFetcher(
             siteHost: config.url,
             tagCache: tagCache,
-            expire: CachePolicy.aMonth(),
+            cachePolicy: CachePolicy.aMonth(),
             cachedTagMapper: const CachedTagMapper(),
             fetcher: (post, options, missing) async {
               final tags = await ref.read(
