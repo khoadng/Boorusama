@@ -36,7 +36,7 @@ Dio newGenericDio({
           BaseOptions(
             baseUrl: baseUrl,
             headers: {
-              if (userAgent != null) AppHttpHeaders.userAgentHeader: userAgent,
+              AppHttpHeaders.userAgentHeader: ?userAgent,
               ...?headers,
             },
           ),

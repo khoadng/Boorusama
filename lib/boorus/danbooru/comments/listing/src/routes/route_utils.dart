@@ -21,7 +21,7 @@ void goToCommentCreatePage(
         'editor',
       ],
       queryParameters: {
-        if (initialContent != null) 'text': initialContent,
+        'text': ?initialContent,
       },
     ).toString(),
   );

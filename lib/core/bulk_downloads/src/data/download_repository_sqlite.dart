@@ -687,8 +687,8 @@ class DownloadRepositorySqlite
 
     final params = [
       sessionId,
-      if (status != null) status.name,
-      if (recordPage != null) recordPage,
+      ?status?.name,
+      ?recordPage,
     ];
 
     final results = db.select(

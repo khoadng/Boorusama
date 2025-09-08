@@ -14,7 +14,7 @@ void goToUpdateBooruConfigPage(
     Uri(
       path: '/boorus/${config.id}/update',
       queryParameters: {
-        if (initialTab != null) 'q': initialTab,
+        'q': ?initialTab,
       },
     ).toString(),
   );
