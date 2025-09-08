@@ -12,7 +12,7 @@ void goToSettingsPage(
     Uri(
       path: '/settings',
       queryParameters: {
-        if (scrollTo != null) 'scrollTo': scrollTo,
+        'scrollTo': ?scrollTo,
       },
     ).toString(),
   );

@@ -19,8 +19,8 @@ List<Widget> defaultActions({
   required Widget? fallbackMoreButton,
 }) {
   return [
-    if (note != null) note,
-    if (fallbackMoreButton != null) fallbackMoreButton,
+    ?note,
+    ?fallbackMoreButton,
   ];
 }
 
