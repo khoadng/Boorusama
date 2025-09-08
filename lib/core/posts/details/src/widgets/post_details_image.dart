@@ -117,10 +117,11 @@ class _PostDetailsImageState extends ConsumerState<PostDetailsImage> {
       imageUrl: imageUrl,
       placeholderUrl: placeholderImageUrl,
       aspectRatio: post.aspectRatio,
-      forceCover: post.aspectRatio != null,
+      forceCover: false, // Never force cover when we want fit width
       imageHeight: post.height,
       imageWidth: post.width,
-      forceFill: true,
+      forceFill: false,
+      fitWidthForTallImages: true,
       borderRadius: BorderRadius.zero,
       forceLoadPlaceholder: true,
       imageCacheManager: widget.imageCacheManager,

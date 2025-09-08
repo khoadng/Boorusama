@@ -254,7 +254,9 @@ class __ImageViewerState extends ConsumerState<_ImageViewer> {
       aspectRatio: widget.aspectRatio,
       imageHeight: widget.contentSize?.height,
       imageWidth: widget.contentSize?.width,
-      forceFill: true,
+      forceFill: false,
+      forceCover: false, // Never force cover when we want fit width
+      fitWidthForTallImages: true,
       placeholderWidget: ValueListenableBuilder(
         valueListenable: _controller.progress,
         builder: (context, progress, child) {
