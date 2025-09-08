@@ -13,7 +13,7 @@ Future<Response<T>?> tryGetResponse<T>(
   void Function(int count, int total)? onReceiveProgress,
   Options? options,
 }) async {
-  if (cancelToken?.isCancelled == true) {
+  if (cancelToken?.isCancelled ?? false) {
     throw DioException(
       requestOptions: RequestOptions(path: uri.toString()),
       type: DioExceptionType.cancel,
@@ -31,7 +31,7 @@ Future<Response<T>?> tryGetResponse<T>(
 
   while (!instructions.shouldGiveUp) {
     attemptCount++;
-    if (cancelToken?.isCancelled == true) {
+    if (cancelToken?.isCancelled ?? false) {
       throw DioException(
         requestOptions: RequestOptions(path: uri.toString()),
         type: DioExceptionType.cancel,

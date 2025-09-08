@@ -165,7 +165,7 @@ class BackgroundDownloader implements DownloadService {
     final targetFile = File(targetPath);
 
     // Check if target file already exists
-    if (skipIfExists == true && targetFile.existsSync()) {
+    if ((skipIfExists ?? false) && targetFile.existsSync()) {
       // Show completion notification for existing file
       if (downloadNotificationsFuture case final future?) {
         unawaited(

@@ -45,7 +45,7 @@ class CreateBooruImageDetailsResolutionOptionTile<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // set to Auto when value is null or empty
-    final item = value?.isNotEmpty == true ? value : 'Auto';
+    final item = (value?.isNotEmpty ?? false) ? value : 'Auto';
 
     return ListTile(
       contentPadding: EdgeInsets.zero,

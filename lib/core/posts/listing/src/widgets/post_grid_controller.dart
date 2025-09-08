@@ -467,7 +467,7 @@ List<T> _filterPosts<T extends Post>(
 ) {
   return items.where((e) {
     for (final entry in tagCounts.entries) {
-      if (activeFilters[entry.key] == true && entry.value.contains(e.id)) {
+      if ((activeFilters[entry.key] ?? false) && entry.value.contains(e.id)) {
         return false;
       }
     }

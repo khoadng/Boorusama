@@ -67,7 +67,7 @@ class FavoritesNotifier
   }
 
   Future<AddFavoriteStatus> add(int postId) async {
-    if (state[postId] == true) return AddFavoriteStatus.alreadyExists;
+    if (state[postId] ?? false) return AddFavoriteStatus.alreadyExists;
 
     final status = await repo.addToFavorites(postId);
     if (status == AddFavoriteStatus.success ||

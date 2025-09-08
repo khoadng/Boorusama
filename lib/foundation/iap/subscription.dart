@@ -122,7 +122,7 @@ class SubscriptionNotifier extends AsyncNotifier<Package?> {
       state = AsyncData(activePackage);
     }
 
-    final success = res == true && activePackage != null;
+    final success = (res ?? false) && activePackage != null;
 
     logger.info('Subscription', 'Restore success: $success');
 

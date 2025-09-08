@@ -236,7 +236,7 @@ class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
             valueListenable: controller.itemsNotifier,
             builder: (_, posts, _) {
               final post = posts[index];
-              final isHidden = hideMap[post.id] == true;
+              final isHidden = hideMap[post.id] ?? false;
 
               return Stack(
                 children: [

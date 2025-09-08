@@ -372,7 +372,7 @@ class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
                                         DanbooruArtistUrlChips(
                                           alignment: WrapAlignment.start,
                                           artistUrls: artist.sortedUrls!
-                                              .where((e) => e.isActive == true)
+                                              .where((e) => e.isActive ?? false)
                                               .map((e) => e.url)
                                               .nonNulls
                                               .toList(),

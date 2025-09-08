@@ -78,7 +78,7 @@ ColorScheme getSchemeFromBasic(
   required bool enableDynamicColoring,
   required bool? followSystemDarkMode,
 }) {
-  final mode = followSystemDarkMode == true
+  final mode = (followSystemDarkMode ?? false)
       ? AppThemeMode.system
       : switch (name) {
           'boorusama_light' => AppThemeMode.light,

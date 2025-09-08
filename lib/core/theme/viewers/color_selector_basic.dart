@@ -48,7 +48,7 @@ class BasicColorSelector extends ConsumerWidget {
                     horizontal: 4,
                   ),
                   child: PreviewColorContainer(
-                    followSystem: colors.followSystemDarkMode == true,
+                    followSystem: colors.followSystemDarkMode ?? false,
                     primary: colorScheme?.primary ?? Colors.transparent,
                     onSurface: colorScheme?.onSurface ?? Colors.transparent,
                     onTap: () {

@@ -409,7 +409,7 @@ class _GridHeader<T extends Post> extends ConsumerWidget {
                 ),
                 axis: axis,
                 postCount: controller.total,
-                initiallyExpanded: axis == Axis.vertical || expand == true,
+                initiallyExpanded: axis == Axis.vertical || (expand ?? false),
                 onExpansionChanged: (value) => expandNotifier.state = value,
                 hasBlacklist: hasBlacklist,
                 trailing: axis == Axis.horizontal

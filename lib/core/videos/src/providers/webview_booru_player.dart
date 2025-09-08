@@ -36,19 +36,15 @@ class WebViewBooruPlayer implements BooruPlayer {
   Timer? _positionTimer;
   Timer? _positionCheckTimer;
 
-  final StreamController<Duration> _positionController =
-      StreamController<Duration>.broadcast();
-  final StreamController<bool> _playingController =
-      StreamController<bool>.broadcast();
-  final StreamController<bool> _bufferingController =
-      StreamController<bool>.broadcast();
-  final StreamController<Duration> _durationController =
-      StreamController<Duration>.broadcast();
+  final _positionController = StreamController<Duration>.broadcast();
+  final _playingController = StreamController<bool>.broadcast();
+  final _bufferingController = StreamController<bool>.broadcast();
+  final _durationController = StreamController<Duration>.broadcast();
 
-  bool _isDisposed = false;
-  bool _isPlaying = false;
-  bool _hasPlayedOnce = false;
-  bool _isPageLoaded = false;
+  var _isDisposed = false;
+  var _isPlaying = false;
+  var _hasPlayedOnce = false;
+  var _isPageLoaded = false;
   Duration _currentPosition = Duration.zero;
   Duration _currentDuration = Duration.zero;
   String? _currentUrl;
@@ -264,7 +260,7 @@ class WebViewBooruPlayer implements BooruPlayer {
     bool autoplay = false,
   }) {
     final colorText = backgroundColor.hexWithoutAlpha;
-    final mutedText = muted == true ? 'muted' : '';
+    final mutedText = (muted ?? false) ? 'muted' : '';
     // Can't really autoplay in WebView, user gesture needed (except on Android maybe)
     final autoplayValue =
         (_webViewController?.platform is AndroidWebViewController)

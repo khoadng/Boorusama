@@ -127,7 +127,7 @@ class BulkDownloadNotifications {
       payload: payload,
     );
 
-    if (indeterminate == true) {
+    if (indeterminate ?? false) {
       _activeNotifications[id.toString()] = true;
     }
   }

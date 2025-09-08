@@ -189,7 +189,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     if (isLargeScreen && !currentExpanded && !isVerticalMode) {
       final expanded = widget.sheetStateStorage?.loadExpandedState();
 
-      if (expanded == true) {
+      if (expanded ?? false) {
         _controller.sheetState.value = SheetState.expanded;
         // Set the controller value immediately to skip the opening animation
         _sheetAnimController.value = 1;

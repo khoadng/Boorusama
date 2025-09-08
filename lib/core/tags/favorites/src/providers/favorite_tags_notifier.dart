@@ -66,7 +66,7 @@ class FavoriteTagsNotifier extends Notifier<List<FavoriteTag>> {
       labels: labels != null && labels.isNotEmpty
           ? labels.where((e) => e.isNotEmpty).toList()
           : null,
-      queryType: isRaw == true ? QueryType.simple : null,
+      queryType: (isRaw ?? false) ? QueryType.simple : null,
     );
 
     final tags = await repo.getAll();

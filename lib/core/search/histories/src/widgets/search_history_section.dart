@@ -114,7 +114,7 @@ class SearchHistoryQueryWidget extends StatelessWidget {
                     vertical: 2,
                     horizontal: 8,
                   ),
-                  backgroundColor: reverseScheme == true
+                  backgroundColor: (reverseScheme ?? false)
                       ? Theme.of(context).colorScheme.surface
                       : Theme.of(context).colorScheme.surfaceContainerHighest,
                 ),
