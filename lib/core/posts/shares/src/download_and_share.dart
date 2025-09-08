@@ -44,7 +44,7 @@ final _downloadProvider =
     >((
       ref,
       params,
-    ) async {
+    ) {
       final (auth, download, filenameBuilder, post) = params;
       return ref
           .watch(

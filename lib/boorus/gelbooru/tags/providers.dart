@@ -68,7 +68,7 @@ final gelbooruTagExtractorProvider =
               cancelToken: options.cancelToken,
             );
           },
-          fetcher: (post, options) async {
+          fetcher: (post, options) {
             final tagResolver = ref.read(gelbooruTagResolverProvider(config));
 
             final tagList = post.tags;

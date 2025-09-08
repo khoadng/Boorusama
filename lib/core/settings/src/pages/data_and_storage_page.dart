@@ -24,7 +24,7 @@ import '../widgets/storage_segment_bar.dart';
 
 final bookmarkCacheInfoProvider = FutureProvider.autoDispose<(int, int)>((
   ref,
-) async {
+) {
   final cacheManager = ref.watch(bookmarkImageCacheManagerProvider);
   return cacheManager.getCacheStats();
 });

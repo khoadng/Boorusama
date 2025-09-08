@@ -323,7 +323,7 @@ class TagEditFilterHeader extends ConsumerWidget {
     );
   }
 
-  Future<void> _fetch(WidgetRef ref) async {
+  Future<void> _fetch(WidgetRef ref) {
     final tags = ref.read(_tagsProvider);
     return ref
         .read(danbooruTagEditColorsProvider(ref.watchConfigAuth).notifier)

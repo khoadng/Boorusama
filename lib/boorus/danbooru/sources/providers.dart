@@ -20,7 +20,7 @@ class DanbooruSourceNotifier extends FamilyAsyncNotifier<SourceDto, String> {
     return _fetch(arg);
   }
 
-  Future<SourceDto> _fetch(String arg) async {
+  Future<SourceDto> _fetch(String arg) {
     final config = ref.watchConfigAuth;
 
     final client = ref.watch(danbooruClientProvider(config));

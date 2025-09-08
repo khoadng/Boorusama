@@ -12,7 +12,7 @@ class SettingsRepositoryLoggerInterceptor implements SettingsRepository {
   final Logger _logger;
 
   @override
-  Future<bool> save(Settings setting) async => repository.save(setting);
+  Future<bool> save(Settings setting) => repository.save(setting);
 
   @override
   SettingsOrError load() =>

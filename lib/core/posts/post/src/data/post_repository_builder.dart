@@ -86,7 +86,7 @@ class PostRepositoryBuilder<T extends Post> implements PostRepository<T> {
   PostOrError<T> getPost(
     PostId id, {
     PostFetchOptions? options,
-  }) => TaskEither.Do(($) async {
+  }) => TaskEither.Do(($) {
     return $(
       tryFetchRemoteData(
         fetcher: () => fetchSingle(

@@ -12,7 +12,7 @@ Future<T?> showSideSheetFromLeft<T>({
   Color barrierColor = const Color(0xFF66000000),
   Duration transitionDuration = const Duration(milliseconds: 200),
   RouteSettings? settings,
-}) async => _showSheetSide<T>(
+}) => _showSheetSide<T>(
   body: body,
   width: width,
   rightSide: false,

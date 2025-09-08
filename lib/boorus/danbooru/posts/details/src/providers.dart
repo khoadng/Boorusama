@@ -16,7 +16,7 @@ final danbooruPostDetailsChildrenProvider = FutureProvider.family
     .autoDispose<
       List<DanbooruPost>,
       (BooruConfigFilter, BooruConfigSearch, DanbooruPost)
-    >((ref, params) async {
+    >((ref, params) {
       ref.cacheFor(const Duration(seconds: 60));
 
       final (filter, search, post) = params;
@@ -36,7 +36,7 @@ final danbooruPostDetailsPoolsProvider = FutureProvider.family
     .autoDispose<List<DanbooruPool>, (BooruConfigAuth, int)>((
       ref,
       params,
-    ) async {
+    ) {
       final (config, postId) = params;
       final repo = ref.watch(danbooruPoolRepoProvider(config));
 

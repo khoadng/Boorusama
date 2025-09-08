@@ -6,7 +6,7 @@ import 'foundation/loggers.dart';
 
 void main() async {
   await initializeApp(
-    bootFunc: (data) async {
+    bootFunc: (data) {
       data.logger.debugBoot('Booting FOSS version');
       return boot(
         data.copyWith(

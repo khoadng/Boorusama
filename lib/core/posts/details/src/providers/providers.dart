@@ -23,7 +23,7 @@ final detailsArtistPostsProvider = FutureProvider.autoDispose
     .family<List<Post>, (BooruConfigFilter, BooruConfigSearch, String?)>((
       ref,
       params,
-    ) async {
+    ) {
       ref.cacheFor(const Duration(seconds: 30));
 
       final (filter, search, artistName) = params;

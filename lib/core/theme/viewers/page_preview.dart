@@ -293,10 +293,10 @@ class PreviewPostActionToolbar extends StatelessWidget {
         ButtonData(
           widget: UpvotePostButton(
             voteState: VoteState.upvoted,
-            onUpvote: () async {
+            onUpvote: () {
               return;
             },
-            onRemoveUpvote: () async {
+            onRemoveUpvote: () {
               return;
             },
           ),

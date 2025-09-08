@@ -117,7 +117,7 @@ class AccentColorSelector extends StatelessWidget {
         return ColorVariantSelector(
           padding: padding,
           variant: variant,
-          onChanged: (value) async {
+          onChanged: (value) {
             if (value == null) return;
             notifier.updateVariant(value);
           },

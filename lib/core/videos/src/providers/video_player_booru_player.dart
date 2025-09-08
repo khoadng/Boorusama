@@ -27,17 +27,13 @@ class VideoPlayerBooruPlayer implements BooruPlayer {
   Timer? _positionTimer;
   Timer? _bufferingDelayTimer;
 
-  final StreamController<Duration> _positionController =
-      StreamController<Duration>.broadcast();
-  final StreamController<bool> _playingController =
-      StreamController<bool>.broadcast();
-  final StreamController<bool> _bufferingController =
-      StreamController<bool>.broadcast();
-  final StreamController<Duration> _durationController =
-      StreamController<Duration>.broadcast();
+  final _positionController = StreamController<Duration>.broadcast();
+  final _playingController = StreamController<bool>.broadcast();
+  final _bufferingController = StreamController<bool>.broadcast();
+  final _durationController = StreamController<Duration>.broadcast();
 
-  bool _isDisposed = false;
-  bool _hasPlayedOnce = false;
+  var _isDisposed = false;
+  var _hasPlayedOnce = false;
 
   bool get _isInvalid => _isDisposed || _controller == null;
 
@@ -115,7 +111,7 @@ class VideoPlayerBooruPlayer implements BooruPlayer {
     // Dispose old controller in background
     if (oldController != null) {
       oldController.removeListener(_onVideoPlayerChanged);
-      unawaited((() async => oldController.dispose())());
+      unawaited((() => oldController.dispose())());
     }
   }
 

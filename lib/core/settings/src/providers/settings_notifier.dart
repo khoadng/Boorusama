@@ -33,7 +33,7 @@ class SettingsNotifier extends Notifier<Settings> {
 
   Future<void> updateWith(
     Settings Function(Settings) selector,
-  ) async {
+  ) {
     final currentSettings = state;
     final newSettings = selector(currentSettings);
 

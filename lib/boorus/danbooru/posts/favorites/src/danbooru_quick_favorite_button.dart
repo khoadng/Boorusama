@@ -31,7 +31,7 @@ class DanbooruQuickFavoriteButton extends ConsumerWidget {
 
     return QuickFavoriteButton(
       isFaved: isFaved,
-      onFavToggle: (isFaved) async {
+      onFavToggle: (isFaved) {
         if (!isFaved) {
           unawaited(notifier.remove(post.id));
         } else {

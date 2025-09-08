@@ -367,7 +367,7 @@ void main() {
 
               test(
                 'should works',
-                () async {
+                () {
                   final newConfigs = container.read(booruConfigProvider);
 
                   expect(
@@ -385,7 +385,7 @@ void main() {
 
               test(
                 'should update order',
-                () async {
+                () {
                   final settings = container.read(settingsProvider);
 
                   expect(
@@ -418,7 +418,7 @@ void main() {
 
               test(
                 'should works',
-                () async {
+                () {
                   final newConfigs = container.read(booruConfigProvider);
 
                   expect(
@@ -436,7 +436,7 @@ void main() {
 
               test(
                 'should update order',
-                () async {
+                () {
                   final settings = container.read(settingsProvider);
 
                   expect(
@@ -448,7 +448,7 @@ void main() {
 
               test(
                 'should update current config to the first config',
-                () async {
+                () {
                   final currentConfig = container.read(
                     currentBooruConfigProvider,
                   );

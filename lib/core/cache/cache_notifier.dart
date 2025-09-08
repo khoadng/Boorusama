@@ -10,32 +10,30 @@ import '../images/providers.dart';
 import '../tags/local/providers.dart';
 import '../videos/providers.dart';
 
-final appCacheSizeProvider = FutureProvider.autoDispose<DirectorySizeInfo>((
-  ref,
-) async {
-  return getCacheSize().catchError((_) => DirectorySizeInfo.zero);
-});
+final appCacheSizeProvider = FutureProvider.autoDispose<DirectorySizeInfo>(
+  (
+    ref,
+  ) => getCacheSize().catchError((_) => DirectorySizeInfo.zero),
+);
 
-final imageCacheSizeProvider = FutureProvider.autoDispose<DirectorySizeInfo>((
-  ref,
-) async {
-  return getImageCacheSize().catchError((_) => DirectorySizeInfo.zero);
-});
+final imageCacheSizeProvider = FutureProvider.autoDispose<DirectorySizeInfo>(
+  (
+    ref,
+  ) => getImageCacheSize().catchError((_) => DirectorySizeInfo.zero),
+);
 
-final tagCacheSizeProvider = FutureProvider.autoDispose<int>((ref) async {
-  return _getTagCacheSize().catchError((_) => 0);
-});
+final tagCacheSizeProvider = FutureProvider.autoDispose<int>(
+  (ref) => _getTagCacheSize().catchError((_) => 0),
+);
 
-final diskSpaceInfoProvider = FutureProvider.autoDispose<DiskSpaceInfo>((
-  ref,
-) async {
-  return DiskSpaceInfo.fromTempDir().catchError((_) => DiskSpaceInfo.zero);
-});
+final diskSpaceInfoProvider = FutureProvider.autoDispose<DiskSpaceInfo>(
+  (
+    ref,
+  ) => DiskSpaceInfo.fromTempDir().catchError((_) => DiskSpaceInfo.zero),
+);
 
 final videoCacheSizeProvider = FutureProvider.autoDispose<DirectorySizeInfo>(
-  (ref) async {
-    return getVideoCacheSize().catchError((_) => DirectorySizeInfo.zero);
-  },
+  (ref) => getVideoCacheSize().catchError((_) => DirectorySizeInfo.zero),
 );
 
 final cacheSizeProvider =

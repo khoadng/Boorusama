@@ -11,7 +11,7 @@ import '../posts/types.dart';
 typedef TopParams = ({BooruConfigAuth config, bool erotic});
 
 final animePicturesDailyPopularProvider = FutureProvider.autoDispose
-    .family<List<AnimePicturesPost>, TopParams>((ref, params) async {
+    .family<List<AnimePicturesPost>, TopParams>((ref, params) {
       final config = params.config;
       final erotic = params.erotic;
 
@@ -23,7 +23,7 @@ final animePicturesDailyPopularProvider = FutureProvider.autoDispose
     });
 
 final animePicturesWeeklyPopularProvider = FutureProvider.autoDispose
-    .family<List<AnimePicturesPost>, TopParams>((ref, params) async {
+    .family<List<AnimePicturesPost>, TopParams>((ref, params) {
       final config = params.config;
       final erotic = params.erotic;
       final client = ref.watch(animePicturesClientProvider(config));

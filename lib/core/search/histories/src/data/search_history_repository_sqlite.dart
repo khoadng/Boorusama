@@ -77,7 +77,7 @@ class SearchHistoryRepositorySqlite
     required QueryType queryType,
     required String booruTypeName,
     required String siteUrl,
-  }) async {
+  }) {
     if (query.isEmpty) return getHistories();
 
     final now = DateTime.now().toUtc().millisecondsSinceEpoch;
@@ -99,7 +99,7 @@ class SearchHistoryRepositorySqlite
   }
 
   @override
-  Future<List<SearchHistory>> removeHistory(SearchHistory history) async {
+  Future<List<SearchHistory>> removeHistory(SearchHistory history) {
     transaction(() {
       db.execute(
         'DELETE FROM $kSearchHistoryTable WHERE query = ? AND type = ?',

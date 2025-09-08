@@ -67,7 +67,7 @@ final gelbooruV2ChildPostsProvider = FutureProvider.autoDispose
     .family<
       List<GelbooruV2Post>,
       (BooruConfigFilter, BooruConfigSearch, GelbooruV2Post)
-    >((ref, params) async {
+    >((ref, params) {
       final (filter, search, post) = params;
 
       return ref

@@ -82,7 +82,7 @@ class BookmarkHiveRepository implements BookmarkRepository {
     Iterable<Post> posts, {
     required ImageUrlResolver Function(int? booruId) imageUrlResolver,
     required PostLinkGenerator Function(int? booruId) postLinkGenerator,
-  }) async {
+  }) {
     final futures = posts.map(
       (post) => addBookmark(
         booruId,

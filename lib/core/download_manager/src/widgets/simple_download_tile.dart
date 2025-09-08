@@ -25,7 +25,7 @@ import '../providers/task_update_ex.dart';
 final _checkResumableProvider = FutureProvider.autoDispose.family<bool, Task>((
   ref,
   task,
-) async {
+) {
   return FileDownloader().taskCanResume(task);
 });
 

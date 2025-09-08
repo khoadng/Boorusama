@@ -117,7 +117,7 @@ void main() {
       expect(attempts, equals(1));
     });
 
-    test('should respect cancellation token', () async {
+    test('should respect cancellation token', () {
       final cancelToken = CancelToken()..cancel();
 
       expect(

@@ -87,7 +87,7 @@ class BackupNotifier extends AutoDisposeNotifier<BackupState> {
   }
 
   // Manual export operations
-  Future<void> exportAll(BuildContext context) async {
+  Future<void> exportAll(BuildContext context) {
     final registry = ref.read(backupRegistryProvider);
     final allSourceIds = registry.getAllSources().map((s) => s.id).toList();
     return exportToZip(context, allSourceIds);

@@ -38,7 +38,7 @@ typedef TagColorParams = ({String categories, BooruConfigAuth auth});
 
 final _tagCategoryColorsProvider = FutureProvider.autoDispose
     .family<Map<String, Color?>, TagColorParams>(
-      (ref, params) async {
+      (ref, params) {
         final colors = <String, Color?>{};
 
         final categories = params.categories.split('|');

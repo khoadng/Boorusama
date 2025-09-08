@@ -9,12 +9,12 @@ import 'danbooru_comment_vote.dart';
 extension CommentVotesNotifierX on CommentVotesNotifier {
   Future<void> guardUpvote(WidgetRef ref, int commentId) async => guardLogin(
     ref,
-    () async => upvote(commentId),
+    () => upvote(commentId),
   );
 
   Future<void> guardDownvote(WidgetRef ref, int commentId) async => guardLogin(
     ref,
-    () async => downvote(commentId),
+    () => downvote(commentId),
   );
 
   Future<void> guardUnvote(
@@ -22,6 +22,6 @@ extension CommentVotesNotifierX on CommentVotesNotifier {
     DanbooruCommentVote? commentVote,
   ) async => guardLogin(
     ref,
-    () async => unvote(commentVote),
+    () => unvote(commentVote),
   );
 }

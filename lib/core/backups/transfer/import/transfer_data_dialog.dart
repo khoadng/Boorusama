@@ -449,7 +449,7 @@ class SelectDataStep extends ConsumerWidget {
 Future<void> showTransferOptionsDialog(
   BuildContext context, {
   required String url,
-}) async {
+}) {
   return showDialog(
     context: context,
     barrierDismissible: false,

@@ -98,7 +98,7 @@ final userCopyrightDataProvider =
     FutureProvider.family<DanbooruRelatedTag, DanbooruCopyrightDataParams>((
       ref,
       params,
-    ) async {
+    ) {
       ref.cacheFor(const Duration(minutes: 10));
 
       final username = params.username;
