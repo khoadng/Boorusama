@@ -21,7 +21,7 @@ final danbooruPoolSearchModeProvider =
     );
 
 final poolSuggestionsProvider = FutureProvider.autoDispose
-    .family<List<DanbooruPool>, String>((ref, query) async {
+    .family<List<DanbooruPool>, String>((ref, query) {
       if (query.isEmpty) return [];
 
       final config = ref.watchConfigAuth;

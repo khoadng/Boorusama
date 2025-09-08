@@ -7,7 +7,7 @@ import '../data/providers.dart';
 import '../types/danbooru_post_version.dart';
 
 final danbooruPostVersionsProvider = FutureProvider.autoDispose
-    .family<List<DanbooruPostVersion>, int>((ref, id) async {
+    .family<List<DanbooruPostVersion>, int>((ref, id) {
       final config = ref.watchConfigAuth;
       final repo = ref.watch(danbooruPostVersionsRepoProvider(config));
 

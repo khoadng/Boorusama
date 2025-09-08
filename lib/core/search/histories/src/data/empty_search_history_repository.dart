@@ -10,7 +10,7 @@ class EmptySearchHistoryRepository implements SearchHistoryRepository {
     required QueryType queryType,
     required String booruTypeName,
     required String siteUrl,
-  }) async {
+  }) {
     return getHistories();
   }
 
@@ -25,7 +25,7 @@ class EmptySearchHistoryRepository implements SearchHistoryRepository {
   }
 
   @override
-  Future<List<SearchHistory>> removeHistory(SearchHistory history) async {
+  Future<List<SearchHistory>> removeHistory(SearchHistory history) {
     return getHistories();
   }
 }

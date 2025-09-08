@@ -115,7 +115,7 @@ class _DebugLogsPageState extends ConsumerState<DebugLogsPage> {
   Future<void> writeLogsToFile(
     BuildContext context,
     List<LogData> logs,
-  ) async => tryGetDownloadDirectory().run().then(
+  ) => tryGetDownloadDirectory().run().then(
     (value) => value.fold(
       (error) => showErrorToast(context, error.name),
       (directory) async {

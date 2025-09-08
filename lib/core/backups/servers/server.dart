@@ -156,7 +156,7 @@ class AppServer {
 
   Middleware _validateRequestMiddleware() {
     return (Handler innerHandler) {
-      return (Request request) async {
+      return (Request request) {
         if (!['GET', 'POST'].contains(request.method)) {
           return Response.forbidden('Method not allowed');
         }

@@ -64,7 +64,7 @@ class DefaultMultiSelectionActions<T extends Post> extends ConsumerWidget {
               MultiSelectButton(
                 name: context.t.post.action.bookmark,
                 onPressed: selectedPosts.isNotEmpty
-                    ? () async {
+                    ? () {
                         unawaited(
                           ref.bookmarks.addBookmarksWithToast(
                             booruConfig,

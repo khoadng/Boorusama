@@ -25,7 +25,7 @@ class BooruTagTypeStore extends TagTypeStore {
   }
 
   @override
-  Future<String?> getTagCategory(String siteHost, String tagName) async {
+  Future<String?> getTagCategory(String siteHost, String tagName) {
     return cacheRepository.getTagCategory(siteHost, tagName);
   }
 

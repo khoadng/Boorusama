@@ -35,7 +35,7 @@ class _AppLockState extends ConsumerState<AppLock> {
   void initState() {
     super.initState();
     if (widget.enable) {
-      WidgetsBinding.instance.addPostFrameCallback((_) async {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
         unawaited(_authenticate(ref.read(biometricsProvider)));
       });
     }

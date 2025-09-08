@@ -53,7 +53,7 @@ final danbooruExploreRepoProvider =
     );
 
 final danbooruMostViewedTodayProvider =
-    FutureProvider<PostResult<DanbooruPost>>((ref) async {
+    FutureProvider<PostResult<DanbooruPost>>((ref) {
       final repo = ref
           .watch(danbooruExploreRepoProvider(ref.watchConfigSearch))
           .getMostViewedPosts(DateTime.now());
@@ -68,7 +68,7 @@ final danbooruMostViewedTodayProvider =
 
 final danbooruPopularTodayProvider = FutureProvider<PostResult<DanbooruPost>>((
   ref,
-) async {
+) {
   final repo = ref
       .watch(danbooruExploreRepoProvider(ref.watchConfigSearch))
       .getPopularPosts(DateTime.now(), 1, TimeScale.day);
@@ -83,7 +83,7 @@ final danbooruPopularTodayProvider = FutureProvider<PostResult<DanbooruPost>>((
 
 final danbooruHotTodayProvider = FutureProvider<PostResult<DanbooruPost>>((
   ref,
-) async {
+) {
   final repo = ref
       .watch(danbooruExploreRepoProvider(ref.watchConfigSearch))
       .getHotPosts(1);

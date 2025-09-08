@@ -30,7 +30,7 @@ final danbooruUploadHideBoxProvider =
 
 final danbooruIqdbResultProvider = FutureProvider.autoDispose
     .family<List<IqdbResultDto>, int>(
-      (ref, mediaAssetId) async {
+      (ref, mediaAssetId) {
         final client = ref.watch(danbooruClientProvider(ref.watchConfigAuth));
 
         return client.iqdb(mediaAssetId: mediaAssetId);

@@ -24,7 +24,7 @@ final postCountProvider = FutureProvider.autoDispose
 
 final cachedPostCountProvider =
     FutureProvider.family<int?, (BooruConfigSearch, String)>(
-      (ref, params) async => ref.watch(postCountProvider(params).future),
+      (ref, params) => ref.watch(postCountProvider(params).future),
     );
 
 final emptyPostCountRepoProvider = Provider<PostCountRepository>(

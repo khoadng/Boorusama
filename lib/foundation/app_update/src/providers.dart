@@ -14,7 +14,7 @@ final appUpdateCheckerProvider = Provider<AppUpdateChecker>(
   (ref) => throw UnimplementedError(),
 );
 
-final appUpdateStatusProvider = FutureProvider<UpdateStatus>((ref) async {
+final appUpdateStatusProvider = FutureProvider<UpdateStatus>((ref) {
   if (!ref.watch(shouldCheckForUpdateProvider)) {
     return const UpdateNotAvailable();
   }

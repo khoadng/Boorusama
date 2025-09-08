@@ -57,7 +57,7 @@ final dataSyncServerProvider = Provider<AppServer>((ref) {
       ref.read(loggerProvider).error('DataSyncServer', message);
     },
     routes: {
-      'health': (request) async => Response(204),
+      'health': (request) => Response(204),
       for (final source in registry.getAllSources())
         source.id: source.capabilities.server.export,
     },

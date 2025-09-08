@@ -11,7 +11,7 @@ import '../types/saved_download_task.dart';
 
 class DownloadRepositoryEmpty implements DownloadRepository {
   @override
-  Future<DownloadTask> createTask(DownloadOptions options) async {
+  Future<DownloadTask> createTask(DownloadOptions options) {
     throw Exception('Empty repository, cannot create task');
   }
 
@@ -31,7 +31,7 @@ class DownloadRepositoryEmpty implements DownloadRepository {
   Future<DownloadSession> createSession(
     DownloadTask task,
     BooruConfigAuth auth,
-  ) async {
+  ) {
     throw Exception('Empty repository, cannot create session');
   }
 

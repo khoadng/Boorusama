@@ -213,7 +213,7 @@ final bookmarkTagExtractorProvider =
           siteHost: config.url,
           tagCache: ref.watch(tagCacheRepositoryProvider.future),
           sorter: TagSorter.defaults(),
-          fetcher: (post, options) async {
+          fetcher: (post, options) {
             final tagResolver = ref.read(bookmarkTagResolverProvider(config));
 
             if (post case final BookmarkPost bookmarkPost) {

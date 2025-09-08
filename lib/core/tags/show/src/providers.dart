@@ -12,7 +12,7 @@ final selectedViewTagQueryProvider = StateProvider.autoDispose<String>(
 );
 
 final showTagsProvider = FutureProvider.autoDispose
-    .family<List<Tag>, (BooruConfigAuth, Post)>((ref, params) async {
+    .family<List<Tag>, (BooruConfigAuth, Post)>((ref, params) {
       final (config, post) = params;
 
       final tagExtractor = ref.watch(tagExtractorProvider(config));

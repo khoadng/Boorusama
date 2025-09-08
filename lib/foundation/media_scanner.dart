@@ -7,6 +7,6 @@ import 'package:flutter/services.dart';
 class MediaScanner {
   static const _channel = MethodChannel('media_scanner');
 
-  static Future<String?> loadMedia({String? path}) async =>
+  static Future<String?> loadMedia({String? path}) =>
       _channel.invokeMethod('refreshGallery', {'path': path});
 }

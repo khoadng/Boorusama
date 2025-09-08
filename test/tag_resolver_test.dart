@@ -231,7 +231,7 @@ void main() {
         TestHelpers.expectTagWithPostCount(result[0], 'error_tag', 0);
       });
 
-      test('handles cache builder exceptions', () async {
+      test('handles cache builder exceptions', () {
         final inputTags = [TestHelpers.createTag('test_tag', 0)];
 
         final failingTagResolver = TagResolver(
@@ -785,7 +785,7 @@ void main() {
     });
 
     group('Cache builder failures', () {
-      test('handles cache builder throwing exception', () async {
+      test('handles cache builder throwing exception', () {
         final inputTags = [TestHelpers.createTag('test_tag', 0)];
 
         final failingTagResolver = TagResolver(
@@ -802,7 +802,7 @@ void main() {
         );
       });
 
-      test('handles cache builder with different error types', () async {
+      test('handles cache builder with different error types', () {
         const tagNames = ['test_tag'];
 
         final nullCacheTagResolver = TagResolver(

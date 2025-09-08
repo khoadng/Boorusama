@@ -118,7 +118,7 @@ void main() {
       expect(attempts, equals(1));
     });
 
-    test('should respect cancellation token', () async {
+    test('should respect cancellation token', () {
       final cancelToken = CancellationToken();
       // ignore: cascade_invocations
       cancelToken.cancel();

@@ -12,7 +12,7 @@ import '../../providers.dart';
 import '../types/download.dart';
 
 extension PostDownloadX on WidgetRef {
-  Future<DownloadTaskInfo?> download(Post post) async {
+  Future<DownloadTaskInfo?> download(Post post) {
     return read(
       downloadNotifierProvider((
         auth: readConfigAuth,
@@ -28,7 +28,7 @@ extension PostDownloadX on WidgetRef {
     List<Post> posts, {
     String? group,
     String? downloadPath,
-  }) async {
+  }) {
     return read(
       downloadNotifierProvider((
         auth: readConfigAuth,

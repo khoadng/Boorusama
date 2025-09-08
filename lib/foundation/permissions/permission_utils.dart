@@ -22,7 +22,7 @@ Future<PermissionStatus> requestMediaPermissions(
 
 Future<PermissionStatus> checkMediaPermissions(
   DeviceInfo deviceInfo,
-) async {
+) {
   if (isAndroid()) {
     return _checkMediaPermissionsAndroid(
       deviceInfo.androidDeviceInfo?.version.sdkInt,

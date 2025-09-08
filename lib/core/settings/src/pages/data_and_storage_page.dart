@@ -17,7 +17,7 @@ import '../widgets/settings_page_scaffold.dart';
 
 final bookmarkCacheInfoProvider = FutureProvider.autoDispose<(int, int)>((
   ref,
-) async {
+) {
   final cacheManager = ref.watch(bookmarkImageCacheManagerProvider);
   return cacheManager.getCacheStats();
 });

@@ -57,7 +57,7 @@ class BackgroundDownloader implements DownloadService {
     bool? skipIfExists,
     Map<String, String>? headers,
   }) => TaskEither.Do(
-    ($) async {
+    ($) {
       final task = DownloadTask(
         url: url,
         filename: filename,
