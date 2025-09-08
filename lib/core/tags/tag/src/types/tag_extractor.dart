@@ -38,10 +38,10 @@ abstract class TagExtractor {
   }
 }
 
-typedef ExpireAfterResolver = Duration Function(CachedTag tag);
+typedef CachePolicyResolver = Duration Function(CachedTag tag);
 
-class ExpireAfter {
-  static ExpireAfterResolver configureWithPostCount() =>
+class CachePolicy {
+  static CachePolicyResolver byPostCount() =>
       (tag) => switch (tag.postCount) {
         null || <= 0 => const Duration(days: 1),
         < 100 => const Duration(days: 3),
@@ -50,10 +50,10 @@ class ExpireAfter {
         _ => const Duration(days: 30),
       };
 
-  static ExpireAfterResolver fixedDuration(Duration duration) =>
+  static CachePolicyResolver fixedDuration(Duration duration) =>
       (tag) => duration;
 
-  static ExpireAfterResolver aMonth() =>
+  static CachePolicyResolver aMonth() =>
       fixedDuration(const Duration(days: 30));
 }
 
@@ -64,7 +64,7 @@ sealed class _CacheResult {
     required TagResolutionResult? result,
     required Set<String> requestedTags,
     required CachedTagMapper cachedTagMapper,
-    ExpireAfterResolver? expire,
+    CachePolicyResolver? expire,
   }) => switch (result) {
     TagResolutionResult(:final found, :final missing) =>
       _isCompleteHit(found, missing, requestedTags)
@@ -95,9 +95,9 @@ sealed class _CacheResult {
     return requestedTags.every(resolvedTagNames.contains);
   }
 
-  static bool _isStale(List<CachedTag> found, ExpireAfterResolver? expire) {
+  static bool _isStale(List<CachedTag> found, CachePolicyResolver? expire) {
     final now = DateTime.now();
-    final resolver = expire ?? ExpireAfter.configureWithPostCount();
+    final resolver = expire ?? CachePolicy.byPostCount();
 
     bool stale(CachedTag tag) {
       final cacheDuration = resolver(tag);
@@ -133,7 +133,7 @@ TagFetcher createCachedTagFetcher({
   required Future<TagCacheRepository>? tagCache,
   required CachedTagMapper cachedTagMapper,
   required TagFetcherExtended fetcher,
-  ExpireAfterResolver? expire,
+  CachePolicyResolver? expire,
   TagNormalizer? normalizer,
 }) => (post, options) async {
   final tags = normalizer != null
