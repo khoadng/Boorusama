@@ -14,7 +14,7 @@ extension FileDownloaderX on FileDownloader {
   }) async {
     final file = await task.filePath();
 
-    if (skipIfExists == true) {
+    if (skipIfExists ?? false) {
       if (File(file).existsSync()) {
         return DownloadTaskInfo(
           path: file,

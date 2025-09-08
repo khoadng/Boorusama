@@ -173,7 +173,7 @@ class _BooruVideoState extends State<BooruVideo> {
     final thumb = widget.thumbnailUrl;
 
     return Center(
-      child: _initialized == true
+      child: (_initialized ?? false)
           ? AspectRatio(
               aspectRatio:
                   widget.aspectRatio ??

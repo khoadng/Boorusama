@@ -126,7 +126,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
 
           // Only show progress if session is running AND notifications are enabled
           if (session?.status == DownloadSessionStatus.running &&
-              session?.task?.notifications == true &&
+              (session?.task?.notifications ?? false) &&
               !isIOS()) {
             final notification = await ref.read(
               bulkDownloadNotificationProvider.future,

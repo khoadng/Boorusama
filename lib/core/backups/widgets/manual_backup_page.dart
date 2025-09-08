@@ -43,7 +43,7 @@ class _ManualBackupPageState extends ConsumerState<ManualBackupPage> {
       (previous, next) {
         if (previous?.status != BackupStatus.completed &&
             next.status == BackupStatus.completed &&
-            next.exportResult?.success == true) {
+            (next.exportResult?.success ?? false)) {
           _selectionController.disable();
         }
       },

@@ -188,7 +188,7 @@ HttpClientAdapter _createHttpClientAdapter({
 
   if ((isAndroid() || isIOS() || isMacOS()) && proxySettings == null) {
     return isAndroid()
-        ? cronetAvailable == true
+        ? (cronetAvailable ?? false)
               ? createNativeAdapter()
               : createDefaultAdapter()
         : createNativeAdapter();

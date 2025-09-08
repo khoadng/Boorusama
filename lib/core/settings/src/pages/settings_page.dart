@@ -611,7 +611,7 @@ class SettingTile extends StatelessWidget {
         vertical: 2,
       ),
       child: Material(
-        color: selected == true
+        color: (selected ?? false)
             ? Theme.of(context).colorScheme.primaryContainer
             : Colors.transparent,
         borderRadius: BorderRadius.circular(8),
@@ -652,7 +652,7 @@ class SettingTile extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w400,
-                          color: selected == true
+                          color: (selected ?? false)
                               ? Theme.of(context).colorScheme.onPrimaryContainer
                               : null,
                         ),

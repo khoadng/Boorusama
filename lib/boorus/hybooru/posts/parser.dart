@@ -54,7 +54,7 @@ HybooruPost postDtoToPost(
     rating: _mapRating(e.rating),
     hasComment: false,
     isTranslated: false,
-    hasParentOrChildren: e.relations?.isNotEmpty == true,
+    hasParentOrChildren: e.relations?.isNotEmpty ?? false,
     source: PostSource.from(e.sources?.firstOrNull),
     score: 0,
     duration: e.duration?.toDouble() ?? 0,

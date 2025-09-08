@@ -51,7 +51,7 @@ class FavoritePostButton extends StatelessWidget {
               }
             }
           : null,
-      icon: isFaved == true
+      icon: (isFaved ?? false)
           ? Icon(
               Symbols.favorite,
               fill: 1,

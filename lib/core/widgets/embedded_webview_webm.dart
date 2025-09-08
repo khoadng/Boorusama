@@ -142,7 +142,7 @@ String urlToHtml(
   bool? muted,
 }) {
   final colorText = backgroundColor.hexWithoutAlpha;
-  final mutedText = muted == true ? 'muted' : '';
+  final mutedText = (muted ?? false) ? 'muted' : '';
   late final videoHtml =
       '''
 <!DOCTYPE html>

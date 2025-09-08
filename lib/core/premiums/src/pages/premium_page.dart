@@ -40,7 +40,7 @@ class PremiumPage extends ConsumerWidget {
 
               if (context == null) return;
 
-              if (success == true) {
+              if (success ?? false) {
                 navigator.pop();
 
                 showDialog(
