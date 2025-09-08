@@ -42,8 +42,6 @@ class PostDuplicateTracker<T extends Post> {
 
   void rebuildFrom(Iterable<T> items) {
     clear();
-    for (final item in items) {
-      trackItem(item);
-    }
+    items.forEach(trackItem);
   }
 }

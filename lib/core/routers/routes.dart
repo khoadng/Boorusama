@@ -34,7 +34,7 @@ import '../widgets/widgets.dart';
 /// When navigate to a page, must query the booru builders first to get the correct builder.
 /// There is case when you want navigate to a different boorus than the current one.
 ///
-///```
+///```dart
 /// final config = ref.read(currentBooruConfigProvider);
 /// final booruBuilderFunc =
 ///     ref.read(booruBuildersProvider)[config.booruType];

@@ -118,106 +118,45 @@ mixin NoTagDetailsMixin implements Post {
   Set<String>? get copyrightTags => null;
 }
 
-class DemoPost extends Equatable
-    with
-        MediaInfoMixin,
-        TranslatedMixin,
-        ImageInfoMixin,
-        VideoInfoMixin,
-        NoTagDetailsMixin,
-        TagListCheckMixin
-    implements SimplePost {
-  const DemoPost();
-
-  @override
-  int get id => 123;
-
-  @override
-  DateTime? get createdAt => DateTime.now();
-
-  @override
-  String get thumbnailImageUrl => '';
-
-  @override
-  String get sampleImageUrl => '';
-
-  @override
-  String get originalImageUrl => '';
-
-  @override
-  Set<String> get tags => {
-    'artist1',
-    'artist2',
-    'character1',
-    'character2',
-    'copy1',
-    'copy2',
-    'general1',
-    'general2',
-    'meta1',
-    'meta2',
-  };
-
-  @override
-  Rating get rating => Rating.general;
-
-  @override
-  bool get hasComment => false;
-
-  @override
-  bool get isTranslated => false;
-
-  @override
-  bool get hasParentOrChildren => false;
-
-  @override
-  int? get parentId => null;
-
-  @override
-  PostSource get source => PostSource.none();
-
-  @override
-  int get score => 56;
-
-  @override
-  int? get downvotes => null;
-
-  @override
-  double get duration => 0;
-
-  @override
-  int get fileSize => 1024 * 1024 * 5;
-
-  @override
-  String get format => '.jpg';
-
-  @override
-  bool? get hasSound => null;
-
-  @override
-  double get height => 1080;
-
-  @override
-  String get md5 => '';
-
-  @override
-  String get videoThumbnailUrl => '';
-
-  @override
-  String get videoUrl => '';
-
-  @override
-  double get width => 1920;
-
-  @override
-  int? get uploaderId => null;
-
-  @override
-  String? get uploaderName => null;
-
-  @override
-  PostMetadata? get metadata => null;
-
-  @override
-  List<Object?> get props => [id];
+class DemoPost extends SimplePost {
+  DemoPost()
+    : super(
+        id: 123,
+        thumbnailImageUrl: '',
+        sampleImageUrl: '',
+        originalImageUrl: '',
+        tags: {
+          'artist1',
+          'artist2',
+          'character1',
+          'character2',
+          'copy1',
+          'copy2',
+          'general1',
+          'general2',
+          'meta1',
+          'meta2',
+        },
+        rating: Rating.general,
+        hasComment: false,
+        isTranslated: false,
+        hasParentOrChildren: false,
+        source: PostSource.none(),
+        score: 56,
+        duration: 0,
+        fileSize: 1024 * 1024 * 5,
+        format: '.jpg',
+        hasSound: null,
+        height: 1080,
+        md5: '',
+        videoThumbnailUrl: '',
+        videoUrl: '',
+        width: 1920,
+        uploaderId: null,
+        metadata: null,
+        createdAt: null,
+        parentId: null,
+        downvotes: null,
+        uploaderName: null,
+      );
 }

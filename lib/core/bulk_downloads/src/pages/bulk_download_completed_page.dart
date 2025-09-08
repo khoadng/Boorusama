@@ -26,8 +26,6 @@ class BulkDownloadCompletedPage extends ConsumerStatefulWidget {
 
 class _BulkDownloadCompletedPageState
     extends ConsumerState<BulkDownloadCompletedPage> {
-  static const _pageSize = 20;
-
   late final _pagingController = PagingController(
     getNextPageKey: (state) =>
         state.lastPageIsEmpty ? null : state.nextIntPageKey,

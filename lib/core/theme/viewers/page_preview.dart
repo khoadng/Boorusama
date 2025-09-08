@@ -184,7 +184,7 @@ class PreviewHome extends StatelessWidget {
   }
 }
 
-const _previewPost = DemoPost();
+final _previewPost = DemoPost();
 
 class PreviewDetails extends StatelessWidget {
   const PreviewDetails({
@@ -247,7 +247,7 @@ class PreviewDetails extends StatelessWidget {
                 },
               ),
             ),
-            const SliverToBoxAdapter(
+            SliverToBoxAdapter(
               child: DefaultFileDetailsSection(
                 post: _previewPost,
                 initialExpanded: true,
@@ -311,7 +311,7 @@ class PreviewPostActionToolbar extends StatelessWidget {
           title: context.t.post.action.downvote,
         ),
         ButtonData(
-          widget: const IgnorePointer(
+          widget: IgnorePointer(
             child: DownloadPostButton(post: _previewPost),
           ),
           title: context.t.download.download,

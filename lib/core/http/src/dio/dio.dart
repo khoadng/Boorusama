@@ -60,9 +60,7 @@ Dio newGenericDio({
     );
   }
 
-  for (final interceptor in additionalInterceptors ?? []) {
-    dio.interceptors.add(interceptor);
-  }
+  additionalInterceptors?.forEach(dio.interceptors.add);
 
   return dio;
 }

@@ -131,7 +131,7 @@ class TagsTile extends StatelessWidget {
                 tag: tag,
                 auth: auth,
                 onTap: () => goToSearchPage(ref, tag: tag.rawName),
-                color: tagColorBuilder != null ? tagColorBuilder!(tag) : null,
+                color: tagColorBuilder?.call(tag),
               ),
             ),
           ),
