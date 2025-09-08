@@ -8,7 +8,6 @@ import 'package:foundation/foundation.dart';
 // Project imports:
 import '../../../../../foundation/display.dart';
 import '../../../../settings/providers.dart';
-import '../../../../settings/settings.dart';
 import '../../../../theme.dart';
 import '../../../../videos/more_options_control_button.dart';
 import '../../../../videos/play_pause_button.dart';
@@ -102,7 +101,7 @@ class PostDetailsVideoControls<T extends Post> extends ConsumerWidget {
           builder: (context, ref, child) {
             final useDefaultEngine = ref.watch(
               settingsProvider.select(
-                (value) => value.videoPlayerEngine != VideoPlayerEngine.mdk,
+                (value) => value.mediaKitHardwareDecoding,
               ),
             );
 
