@@ -3,8 +3,8 @@ import 'tag_expression.dart';
 import 'tag_filter_data.dart';
 
 bool checkIfTagsContainsRawTagExpression(
-  final TagFilterData filterData,
-  final String tagExpression,
+  TagFilterData filterData,
+  String tagExpression,
 ) {
   // Split the tagExpression by spaces to handle multiple tags
   final expressions = tagExpression
@@ -19,8 +19,8 @@ bool checkIfTagsContainsRawTagExpression(
 }
 
 bool checkIfTagsContainsTagExpression(
-  final TagFilterData filterData,
-  final List<TagExpression> expressions,
+  TagFilterData filterData,
+  List<TagExpression> expressions,
 ) {
   // Separate AND and OR expressions.
   final andExpressions = expressions.where((e) => !e.isOr).toList();

@@ -54,7 +54,7 @@ class ColorUtils {
   }
 
   static String colorToHex(
-    final Color color, {
+    Color color, {
     bool includeAlpha = false,
   }) {
     final legacyColor = LegacyColor(color);
@@ -64,7 +64,7 @@ class ColorUtils {
     return includeAlpha ? '#$hexValue' : '#${hexValue.substring(2)}';
   }
 
-  static Color? hexToColor(final String? hexString) {
+  static Color? hexToColor(String? hexString) {
     var hex = hexString?.trim();
 
     if (hex == null || hex.isEmpty) return null;
