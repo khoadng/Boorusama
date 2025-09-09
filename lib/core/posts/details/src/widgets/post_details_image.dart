@@ -33,10 +33,10 @@ class PostDetailsImage<T extends Post> extends ConsumerStatefulWidget {
   final T post;
 
   @override
-  ConsumerState<PostDetailsImage> createState() => _PostDetailsImageState();
+  ConsumerState<PostDetailsImage<T>> createState() => _PostDetailsImageState<T>();
 }
 
-class _PostDetailsImageState extends ConsumerState<PostDetailsImage> {
+class _PostDetailsImageState<T extends Post> extends ConsumerState<PostDetailsImage<T>> {
   @override
   Widget build(BuildContext context) {
     final imageUrl = widget.imageUrlBuilder != null

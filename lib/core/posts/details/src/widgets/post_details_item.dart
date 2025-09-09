@@ -118,138 +118,110 @@ class PostDetailsItem<T extends Post> extends ConsumerWidget {
                   post,
                 )
               : null,
-          child: _buildPostContent(
-            context,
-            ref,
-            post,
-            authConfig,
-            imageUrlBuilder,
-            imageCacheManager,
-            isInitPageListenable,
-            initialThumbnailUrl,
-            pageViewController,
-            detailsController,
-            videoPlayerEngine,
-            onItemTap,
-          ),
+          child: () {
+            // Check if this is a very tall image that should use webtoon viewer
+            final isVeryTallImage = !post.isVideo && (post.height / post.width) > 2.0;
+
+            if (isVeryTallImage) {
+              // For very tall images, use scrollable view instead of InteractiveViewer
+              return GestureDetector(
+                onTap: onItemTap, // Still allow tap to show/hide overlay
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                      top: MediaQuery.of(context).padding.top, // Status bar height
+                    ),
+                    child: ValueListenableBuilder(
+                      valueListenable: isInitPageListenable,
+                      builder: (_, isInitPage, _) {
+                        return PostMedia<T>(
+                          post: post,
+                          config: authConfig,
+                          imageUrlBuilder: imageUrlBuilder,
+                          imageCacheManager: imageCacheManager,
+                          thumbnailUrlBuilder: isInitPage && initialThumbnailUrl != null
+                              ? (_) => initialThumbnailUrl
+                              : null,
+                          controller: pageViewController,
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              );
+            }
+
+            // Normal (non-tall) image layout
+            return Stack(
+              alignment: Alignment.center,
+              children: [
+                ValueListenableBuilder(
+                  valueListenable: isInitPageListenable,
+                  builder: (_, isInitPage, _) {
+                    return PostMedia<T>(
+                      post: post,
+                      config: authConfig,
+                      imageUrlBuilder: imageUrlBuilder,
+                      imageCacheManager: imageCacheManager,
+                      // This is used to make sure we have a thumbnail to show instead of a black placeholder
+                      thumbnailUrlBuilder: isInitPage && initialThumbnailUrl != null
+                          ? (_) => initialThumbnailUrl
+                          : null,
+                      controller: pageViewController,
+                    );
+                  },
+                ),
+                if (post.isVideo)
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: ValueListenableBuilder(
+                      valueListenable: pageViewController.sheetState,
+                      builder: (_, state, _) =>
+                          state.isExpanded && !context.isLargeScreen
+                          ? Padding(
+                              padding: const EdgeInsets.all(8),
+                              child: Row(
+                                children: [
+                                  // duplicate codes, maybe refactor later
+                                  PlayPauseButton(
+                                    isPlaying: detailsController.isVideoPlaying,
+                                    onPlayingChanged: (value) {
+                                      if (value) {
+                                        detailsController.pauseVideo(
+                                          post.id,
+                                          post.isWebm,
+                                          videoPlayerEngine.isDefault,
+                                        );
+                                      } else if (!value) {
+                                        detailsController.playVideo(
+                                          post.id,
+                                          post.isWebm,
+                                          videoPlayerEngine.isDefault,
+                                        );
+                                      } else {
+                                        // do nothing
+                                      }
+                                    },
+                                  ),
+                                  VideoSoundScope(
+                                    builder: (context, soundOn) => SoundControlButton(
+                                      padding: const EdgeInsets.all(8),
+                                      soundOn: soundOn,
+                                      onSoundChanged: (value) =>
+                                          ref.setGlobalVideoSound(value),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
+                          : const SizedBox.shrink(),
+                    ),
+                  ),
+              ],
+            );
+          }(),
         ),
       ),
-    );
-  }
-
-  Widget _buildPostContent(
-    BuildContext context,
-    WidgetRef ref,
-    T post,
-    BooruConfigAuth authConfig,
-    String Function(T post)? imageUrlBuilder,
-    ImageCacheManager? imageCacheManager,
-    ValueListenable<bool> isInitPageListenable,
-    String? initialThumbnailUrl,
-    PostDetailsPageViewController pageViewController,
-    PostDetailsController<T> detailsController,
-    VideoPlayerEngine videoPlayerEngine,
-    VoidCallback onItemTap,
-  ) {
-    // Check if this is a very tall image that should use webtoon viewer
-    final isVeryTallImage = !post.isVideo && (post.height / post.width) > 2.0;
-
-    if (isVeryTallImage) {
-      // For very tall images, use scrollable view instead of InteractiveViewer
-      return GestureDetector(
-        onTap: onItemTap, // Still allow tap to show/hide overlay
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.only(
-              top: MediaQuery.of(context).padding.top, // Status bar height
-            ),
-            child: ValueListenableBuilder(
-              valueListenable: isInitPageListenable,
-              builder: (_, isInitPage, _) {
-                return PostMedia<T>(
-                  post: post,
-                  config: authConfig,
-                  imageUrlBuilder: imageUrlBuilder,
-                  imageCacheManager: imageCacheManager,
-                  thumbnailUrlBuilder: isInitPage && initialThumbnailUrl != null
-                      ? (_) => initialThumbnailUrl
-                      : null,
-                  controller: pageViewController,
-                );
-              },
-            ),
-          ),
-        ),
-      );
-    }
-
-    // Normal (non-tall) image layout
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        ValueListenableBuilder(
-          valueListenable: isInitPageListenable,
-          builder: (_, isInitPage, _) {
-            return PostMedia<T>(
-              post: post,
-              config: authConfig,
-              imageUrlBuilder: imageUrlBuilder,
-              imageCacheManager: imageCacheManager,
-              // This is used to make sure we have a thumbnail to show instead of a black placeholder
-              thumbnailUrlBuilder: isInitPage && initialThumbnailUrl != null
-                  ? (_) => initialThumbnailUrl
-                  : null,
-              controller: pageViewController,
-            );
-          },
-        ),
-        if (post.isVideo)
-          Align(
-            alignment: Alignment.bottomRight,
-            child: ValueListenableBuilder(
-              valueListenable: pageViewController.sheetState,
-              builder: (_, state, _) =>
-                  state.isExpanded && !context.isLargeScreen
-                  ? Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: Row(
-                        children: [
-                          // duplicate codes, maybe refactor later
-                          PlayPauseButton(
-                            isPlaying: detailsController.isVideoPlaying,
-                            onPlayingChanged: (value) {
-                              if (value) {
-                                detailsController.pauseVideo(
-                                  post.id,
-                                  post.isWebm,
-                                  videoPlayerEngine.isDefault,
-                                );
-                              } else if (!value) {
-                                detailsController.playVideo(
-                                  post.id,
-                                  post.isWebm,
-                                  videoPlayerEngine.isDefault,
-                                );
-                              } else {
-                                // do nothing
-                              }
-                            },
-                          ),
-                          VideoSoundScope(
-                            builder: (context, soundOn) => SoundControlButton(
-                              padding: const EdgeInsets.all(8),
-                              soundOn: soundOn,
-                              onSoundChanged: (value) =>
-                                  ref.setGlobalVideoSound(value),
-                            ),
-                          ),
-                        ],
-                      ),
-                    )
-                  : const SizedBox.shrink(),
-            ),
-          ),
-      ],
     );
   }
 }
