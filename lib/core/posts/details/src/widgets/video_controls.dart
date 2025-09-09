@@ -102,7 +102,7 @@ class PostDetailsVideoControls<T extends Post> extends ConsumerWidget {
           builder: (context, ref, child) {
             final useDefaultEngine = ref.watch(
               settingsProvider.select(
-                (value) => value.videoPlayerEngine != VideoPlayerEngine.mdk,
+                (value) => value.viewer.videoPlayerEngine != VideoPlayerEngine.mdk,
               ),
             );
 

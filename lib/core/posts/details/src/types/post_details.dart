@@ -45,8 +45,8 @@ class PostDetails<T extends Post> extends InheritedWidget {
 
 SlideshowOptions toSlideShowOptions(Settings settings) {
   return SlideshowOptions(
-    duration: settings.slideshowDuration,
-    direction: settings.slideshowDirection,
-    skipTransition: settings.skipSlideshowTransition,
+    duration: settings.viewer.slideshowDuration,
+    direction: settings.viewer.slideshowDirection,
+    skipTransition: settings.viewer.skipSlideshowTransition,
   );
 }

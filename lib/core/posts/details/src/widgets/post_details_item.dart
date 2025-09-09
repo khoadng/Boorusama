@@ -13,7 +13,7 @@ import '../../../../boorus/engine/providers.dart';
 import '../../../../configs/config/types.dart';
 import '../../../../configs/gesture/gesture.dart';
 import '../../../../settings/providers.dart';
-import '../../../../settings/settings.dart';
+import '../../../../settings/src/types/types.dart';
 import '../../../../videos/play_pause_button.dart';
 import '../../../../videos/providers.dart';
 import '../../../../videos/sound_control_button.dart';
@@ -54,7 +54,7 @@ class PostDetailsItem<T extends Post> extends ConsumerWidget {
     final post = posts[index];
 
     final videoPlayerEngine = ref.watch(
-      settingsProvider.select((value) => value.videoPlayerEngine),
+      settingsProvider.select((value) => value.viewer.videoPlayerEngine),
     );
 
     final booruBuilder = ref.watch(booruBuilderProvider(authConfig));
