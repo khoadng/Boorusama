@@ -124,30 +124,44 @@ class PostDetailsItem<T extends Post> extends ConsumerWidget {
 
             if (isVeryTallImage) {
               // For very tall images, use scrollable view instead of InteractiveViewer
-              return GestureDetector(
-                onTap: onItemTap, // Still allow tap to show/hide overlay
-                child: SingleChildScrollView(
-                  child: Padding(
-                    padding: EdgeInsets.only(
-                      top: MediaQuery.of(context).padding.top, // Status bar height
+              return ValueListenableBuilder(
+                valueListenable: pageViewController.overlay,
+                builder: (context, overlayVisible, child) {
+                  return GestureDetector(
+                    onTap: onItemTap, // Still allow tap to show/hide overlay
+                    onVerticalDragUpdate: overlayVisible ? (details) {
+                      // When UI is visible and user drags up, expand the sheet
+                      if (details.primaryDelta! < -10) {
+                        pageViewController.expandToSnapPoint();
+                      }
+                    } : null,
+                    child: SingleChildScrollView(
+                      physics: overlayVisible 
+                          ? const NeverScrollableScrollPhysics() // Disable scroll when UI is visible to allow swipe-up
+                          : const ClampingScrollPhysics(), // Enable scroll when UI is hidden
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                          top: MediaQuery.of(context).padding.top, // Status bar height
+                        ),
+                        child: ValueListenableBuilder(
+                          valueListenable: isInitPageListenable,
+                          builder: (_, isInitPage, _) {
+                            return PostMedia<T>(
+                              post: post,
+                              config: authConfig,
+                              imageUrlBuilder: imageUrlBuilder,
+                              imageCacheManager: imageCacheManager,
+                              thumbnailUrlBuilder: isInitPage && initialThumbnailUrl != null
+                                  ? (_) => initialThumbnailUrl
+                                  : null,
+                              controller: pageViewController,
+                            );
+                          },
+                        ),
+                      ),
                     ),
-                    child: ValueListenableBuilder(
-                      valueListenable: isInitPageListenable,
-                      builder: (_, isInitPage, _) {
-                        return PostMedia<T>(
-                          post: post,
-                          config: authConfig,
-                          imageUrlBuilder: imageUrlBuilder,
-                          imageCacheManager: imageCacheManager,
-                          thumbnailUrlBuilder: isInitPage && initialThumbnailUrl != null
-                              ? (_) => initialThumbnailUrl
-                              : null,
-                          controller: pageViewController,
-                        );
-                      },
-                    ),
-                  ),
-                ),
+                  );
+                },
               );
             }
 
