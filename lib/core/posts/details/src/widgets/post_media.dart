@@ -50,7 +50,7 @@ class PostMedia<T extends Post> extends ConsumerWidget {
     final details = PostDetails.of<T>(context);
     final useDefault = ref.watch(
       settingsProvider.select(
-        (value) => value.videoPlayerEngine != VideoPlayerEngine.mdk,
+        (value) => value.viewer.videoPlayerEngine != VideoPlayerEngine.mdk,
       ),
     );
     final headers = ref.watch(httpHeadersProvider(config));

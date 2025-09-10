@@ -507,7 +507,8 @@
         },
         "how_to_transfer": "Cách chuyển dữ liệu",
         "how_to_send(rich)": "• Trên thiết bị nhận, vào ${settings(Cài đặt > Sao lưu và phục hồi dữ liệu)}\n• Chọn ${receive(Nhận)} để bắt đầu nhập từ thiết bị này\n• Đừng rời khỏi trang này cho đến khi hoàn tất",
-        "disclaimer": "Chuyển dữ liệu có thể không hoạt động trên WiFi công cộng (quán cà phê, thư viện) do hạn chế bảo mật. Hãy dùng mạng riêng, ví dụ WiFi ở nhà."
+        "disclaimer": "Chuyển dữ liệu có thể không hoạt động trên WiFi công cộng (quán cà phê, thư viện) do hạn chế bảo mật. Hãy dùng mạng riêng, ví dụ WiFi ở nhà.",
+        "no_networks_error": "Cần kết nối WiFi để truyền dữ liệu. Vui lòng kết nối với mạng WiFi và thử lại."
       },
       "backward_import": {
         "title": "Phát hiện nhập dữ liệu từ phiên bản cũ",
@@ -763,6 +764,13 @@
     "validation_redundant_www": "\"{0}\" chứa \"www\" thừa không cần thiết",
     "validation_contains_spaces": "\"{0}\" chứa khoảng trắng không cần thiết ở giữa.",
     "validation_missing_scheme": "\"{0}\" thiếu giao thức (ví dụ: https://)",
+    "api_key": {
+      "auth_error": {
+        "edit_api_key": "Sửa API key",
+        "empty_key_warning": "Trang web này có thể yêu cầu bạn nhập API key hoặc mật khẩu để truy cập nội dung.",
+        "invalid_key_warning": "Kiểm tra API key hoặc thông tin đăng nhập của bạn, vì chúng có thể không hợp lệ hoặc đã hết hạn."
+      }
+    },
     "misc": "Linh tinh",
     "authentication": {
       "title": "Đăng nhập",
@@ -793,6 +801,10 @@
       "enable_profile_specific_settings": "Dùng danh sách chặn riêng cho profile",
       "blacklist": "Danh sách chặn",
       "empty_blacklist": "Chưa có tag",
+      "blacklist_overridden": {
+        "replace_notice": "Đã bị thay thế bởi <b><a href=\"booru-profiles\">Danh sách chặn của Hồ sơ</a></b>.",
+        "merge_notice": "Đã gộp với <b><a href=\"booru-profiles\">Danh sách chặn của Hồ sơ</a></b>."
+      },
       "empty_blacklist_with_replace_notice": "Nếu danh sách chặn trống và chọn chế độ thay thế, chức năng chặn sẽ bị tắt hoàn toàn.",
       "blacklist_combine_mode": {
         "title": "Cách kết hợp danh sách chặn",

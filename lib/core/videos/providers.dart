@@ -9,7 +9,7 @@ import '../settings/providers.dart';
 
 final globalSoundStateProvider = StateProvider<bool>((ref) {
   final isMuteByDefault = ref.watch(
-    settingsProvider.select((s) => s.muteAudioByDefault),
+    settingsProvider.select((s) => s.viewer.muteAudioByDefault),
   );
 
   return !isMuteByDefault;

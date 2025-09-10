@@ -505,8 +505,9 @@
           "running": "Running"
         },
         "how_to_transfer": "How to transfer",
-        "how_to_send(rich)": "• On receiving device, go to ${settings(Settings > Backup and restore)}\n• Select ${receive(Receive)} to start importing data from this device\n• Stay on this page until transfer completes",
-        "disclaimer": "Transfer might not work on public WiFi networks (coffee shops, libraries) due to security restrictions. Please use a private network like your home WiFi."
+        "how_to_send(rich)": "• On receiving device, go to ${settings(_)}\n• Select ${receive(_)} to start importing data from this device\n• Stay on this page until transfer completes",
+        "disclaimer": "Transfer might not work on public WiFi networks (coffee shops, libraries) due to security restrictions. Please use a private network like your home WiFi.",
+        "no_networks_error": "WiFi connection required to transfer data. Please connect to a WiFi network and try again."
       },
       "backward_import": {
         "title": "Importing from an older version detected",
@@ -762,6 +763,13 @@
     "validation_redundant_www": "\"{0}\" contains redundant \"www\"",
     "validation_contains_spaces": "\"{0}\" contains in-between spaces",
     "validation_missing_scheme": "\"{0}\" is missing a scheme (e.g. https://)",
+    "api_key": {
+      "auth_error": {
+        "edit_api_key": "Edit API key",
+        "empy_key_warning": "This site may require you to enter your API key or password to access its content.",
+        "invalid_key_warning": "Check your API key or credentials, as they may be invalid or expired."
+      }
+    },
     "misc": "Misc",
     "authentication": {
       "title": "Authentication",
@@ -793,6 +801,10 @@
       "blacklist": "Blacklist",
       "empty_blacklist": "No tags",
       "empty_blacklist_with_replace_notice": "Empty blacklist with replace mode will effectively disable blacklist entirely.",
+      "blacklist_overridden": {
+        "replace_notice": "Replaced by <b><a href=\"booru-profiles\">Profile's Blacklist</a></b> settings.",
+        "merge_notice": "Merged with <b><a href=\"booru-profiles\">Profile's Blacklist</a></b> settings."
+      },
       "blacklist_combine_mode": {
         "title": "Combination mode",
         "merge": "Merge",

@@ -51,7 +51,7 @@ class _PostDetailsLayoutSwitcherState<T extends Post>
     final settings = ref.read(settingsProvider);
 
     final reduceAnimations = settings.reduceAnimations;
-    final hideOverlay = settings.hidePostDetailsOverlay;
+    final hideOverlay = settings.viewer.hidePostDetailsOverlay;
     final slideshowOptions = toSlideShowOptions(settings);
     final hoverToControlOverlay = widget.posts[initialPage].isVideo;
 

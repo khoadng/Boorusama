@@ -44,10 +44,14 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
               title: Text(
                 context.t.settings.image_details.ui_overlay.ui_overlay,
               ),
-              selectedOption: settings.postDetailsOverlayInitialState,
+              selectedOption: settings.viewer.postDetailsOverlayInitialState,
               items: PostDetailsOverlayInitialState.values,
               onChanged: (value) => notifer.updateSettings(
-                settings.copyWith(postDetailsOverlayInitialState: value),
+                settings.copyWith(
+                  viewer: settings.viewer.copyWith(
+                    postDetailsOverlayInitialState: value,
+                  ),
+                ),
               ),
               optionBuilder: (value) => Text(value.localize(context)),
             ),
@@ -58,7 +62,7 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
                 SettingsCardEntry(
                   title: context.t.settings.image_viewer.swipe_modes.horizontal,
                   value: PostDetailsSwipeMode.horizontal.name,
-                  groupValue: settings.swipeMode.name,
+                  groupValue: settings.viewer.swipeMode.name,
                   subtitle: context
                       .t
                       .settings
@@ -68,7 +72,9 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
                   onSelected: (value) {
                     notifer.updateSettings(
                       settings.copyWith(
-                        swipeMode: PostDetailsSwipeMode.horizontal,
+                        viewer: settings.viewer.copyWith(
+                          swipeMode: PostDetailsSwipeMode.horizontal,
+                        ),
                       ),
                     );
                   },
@@ -76,7 +82,7 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
                 SettingsCardEntry(
                   title: context.t.settings.image_viewer.swipe_modes.vertical,
                   value: PostDetailsSwipeMode.vertical.name,
-                  groupValue: settings.swipeMode.name,
+                  groupValue: settings.viewer.swipeMode.name,
                   subtitle: context
                       .t
                       .settings
@@ -86,7 +92,9 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
                   onSelected: (value) {
                     notifer.updateSettings(
                       settings.copyWith(
-                        swipeMode: PostDetailsSwipeMode.vertical,
+                        viewer: settings.viewer.copyWith(
+                          swipeMode: PostDetailsSwipeMode.vertical,
+                        ),
                       ),
                     );
                   },
@@ -97,10 +105,14 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
             SettingsHeader(label: context.t.settings.image_viewer.slideshow),
             SettingsTile(
               title: Text(context.t.settings.image_viewer.slideshow_mode),
-              selectedOption: settings.slideshowDirection,
+              selectedOption: settings.viewer.slideshowDirection,
               items: SlideshowDirection.values,
               onChanged: (value) => notifer.updateSettings(
-                settings.copyWith(slideshowDirection: value),
+                settings.copyWith(
+                  viewer: settings.viewer.copyWith(
+                    slideshowDirection: value,
+                  ),
+                ),
               ),
               optionBuilder: (value) => Text(value.localize(context)),
             ),
@@ -109,11 +121,15 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
               subtitle: Text(
                 context.t.settings.image_viewer.slideshow_interval_explanation,
               ),
-              selectedOption: settings.slideshowInterval,
+              selectedOption: settings.viewer.slideshowInterval,
               items: getSlideShowIntervalPossibleValue(),
               onChanged: (newValue) {
                 notifer.updateSettings(
-                  settings.copyWith(slideshowInterval: newValue),
+                  settings.copyWith(
+                    viewer: settings.viewer.copyWith(
+                      slideshowInterval: newValue,
+                    ),
+                  ),
                 );
               },
               optionBuilder: (value) => Text(
@@ -124,12 +140,14 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
             ),
             BooruSwitchListTile(
               title: Text(context.t.settings.image_viewer.slideshow_skip),
-              value: settings.skipSlideshowTransition,
+              value: settings.viewer.skipSlideshowTransition,
               onChanged: (value) => notifer.updateSettings(
                 settings.copyWith(
-                  slideshowTransitionType: value
-                      ? SlideshowTransitionType.none
-                      : SlideshowTransitionType.natural,
+                  viewer: settings.viewer.copyWith(
+                    slideshowTransitionType: value
+                        ? SlideshowTransitionType.none
+                        : SlideshowTransitionType.natural,
+                  ),
                 ),
               ),
             ),
@@ -139,12 +157,14 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
             ),
             BooruSwitchListTile(
               title: Text(context.t.settings.image_viewer.mute_video),
-              value: settings.muteAudioByDefault,
+              value: settings.viewer.muteAudioByDefault,
               onChanged: (value) => notifer.updateSettings(
                 settings.copyWith(
-                  videoAudioDefaultState: value
-                      ? VideoAudioDefaultState.mute
-                      : VideoAudioDefaultState.unmute,
+                  viewer: settings.viewer.copyWith(
+                    videoAudioDefaultState: value
+                        ? VideoAudioDefaultState.mute
+                        : VideoAudioDefaultState.unmute,
+                  ),
                 ),
               ),
             ),
@@ -157,7 +177,7 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
             SettingsCardEntry(
               title: context.t.settings.image_viewer.video.engine.kDefault,
               value: VideoPlayerEngine.auto.name,
-              groupValue: settings.videoPlayerEngine.name,
+              groupValue: settings.viewer.videoPlayerEngine.name,
               subtitle: context
                   .t
                   .settings
@@ -168,7 +188,9 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
               onSelected: (value) {
                 notifer.updateSettings(
                   settings.copyWith(
-                    videoPlayerEngine: VideoPlayerEngine.auto,
+                    viewer: settings.viewer.copyWith(
+                      videoPlayerEngine: VideoPlayerEngine.auto,
+                    ),
                   ),
                 );
               },
@@ -176,13 +198,15 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
             SettingsCardEntry(
               title: 'MDK',
               value: VideoPlayerEngine.mdk.name,
-              groupValue: settings.videoPlayerEngine.name,
+              groupValue: settings.viewer.videoPlayerEngine.name,
               subtitle:
                   context.t.settings.image_viewer.video.engine.mdk_description,
               onSelected: (value) {
                 notifer.updateSettings(
                   settings.copyWith(
-                    videoPlayerEngine: VideoPlayerEngine.mdk,
+                    viewer: settings.viewer.copyWith(
+                      videoPlayerEngine: VideoPlayerEngine.mdk,
+                    ),
                   ),
                 );
               },

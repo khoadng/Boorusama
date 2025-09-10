@@ -15,6 +15,7 @@ import 'types.dart';
 class Settings extends Equatable {
   const Settings({
     required this.listing,
+    required this.viewer,
     required this.safeMode,
     required this.blacklistedTags,
     required this.themeMode,
@@ -31,30 +32,24 @@ class Settings extends Equatable {
     required this.clearImageCacheOnStartup,
     required this.appLockType,
     required this.bookmarkFilterType,
-    required this.postDetailsOverlayInitialState,
     required this.booruConfigSelectorPosition,
     required this.booruConfigSelectorScrollDirection,
     required this.swipeAreaToOpenSidebarPercentage,
     required this.booruConfigLabelVisibility,
-    required this.slideshowInterval,
-    required this.slideshowTransitionType,
-    required this.slideshowDirection,
     required this.reduceAnimations,
     required this.downloadFileExistedBehavior,
-    required this.videoAudioDefaultState,
     required this.colors,
-    required this.videoPlayerEngine,
     required this.volumeKeyViewerNavigation,
     required this.searchBarScrollBehavior,
     required this.searchBarPosition,
     required this.hapticFeedbackLevel,
-    required this.swipeMode,
     required this.autoBackup,
   });
 
   Settings.fromJson(Map<String, dynamic> json)
     : safeMode = json['safeMode'] ?? true,
       listing = ImageListingSettings.fromJson(json),
+      viewer = ImageViewerSettings.fromJson(json),
       blacklistedTags = json['hideBlacklist'] ?? '',
       themeMode = json['themeMode'] != null
           ? AppThemeMode.values[json['themeMode']]
@@ -85,11 +80,6 @@ class Settings extends Equatable {
       bookmarkFilterType = json['bookmarkFilterType'] != null
           ? BookmarkFilterType.values[json['bookmarkFilterType']]
           : BookmarkFilterType.none,
-      postDetailsOverlayInitialState =
-          json['postDetailsOverlayInitialState'] != null
-          ? PostDetailsOverlayInitialState
-                .values[json['postDetailsOverlayInitialState']]
-          : PostDetailsOverlayInitialState.show,
       booruConfigSelectorPosition = json['booruConfigSelectorPosition'] != null
           ? BooruConfigSelectorPosition
                 .values[json['booruConfigSelectorPosition']]
@@ -103,26 +93,13 @@ class Settings extends Equatable {
           ? BooruConfigLabelVisibility
                 .values[json['booruConfigLabelVisibility']]
           : BooruConfigLabelVisibility.always,
-      slideshowInterval = json['slideshowInterval'] ?? 6,
-      slideshowTransitionType = json['slideshowTransitionType'] != null
-          ? SlideshowTransitionType.values[json['slideshowTransitionType']]
-          : SlideshowTransitionType.natural,
-      slideshowDirection = json['slideshowDirection'] != null
-          ? SlideshowDirection.values[json['slideshowDirection']]
-          : SlideshowDirection.forward,
       downloadFileExistedBehavior = json['downloadFileExistedBehavior'] != null
           ? DownloadFileExistedBehavior
                 .values[json['downloadFileExistedBehavior']]
           : DownloadFileExistedBehavior.appDecide,
-      videoAudioDefaultState = json['videoAudioDefaultState'] != null
-          ? VideoAudioDefaultState.values[json['videoAudioDefaultState']]
-          : VideoAudioDefaultState.unspecified,
       colors = json['colors'] != null
           ? ColorSettings.fromJson(json['colors'])
           : null,
-      videoPlayerEngine = json['videoPlayerEngine'] != null
-          ? VideoPlayerEngine.values[json['videoPlayerEngine']]
-          : VideoPlayerEngine.auto,
       searchBarScrollBehavior = json['searchBarScrollBehavior'] != null
           ? SearchBarScrollBehavior.values[json['searchBarScrollBehavior']]
           : SearchBarScrollBehavior.autoHide,
@@ -132,9 +109,6 @@ class Settings extends Equatable {
       hapticFeedbackLevel = json['hapticFeedbackLevel'] != null
           ? HapticFeedbackLevel.values[json['hapticFeedbackLevel']]
           : HapticFeedbackLevel.balanced,
-      swipeMode = json['swipeMode'] != null
-          ? PostDetailsSwipeMode.values[json['swipeMode']]
-          : PostDetailsSwipeMode.horizontal,
       volumeKeyViewerNavigation = json['volumeKeyViewerNavigation'] ?? false,
       reduceAnimations = json['reduceAnimations'] ?? false,
       swipeAreaToOpenSidebarPercentage =
@@ -160,6 +134,15 @@ class Settings extends Equatable {
       postsPerPage: 60,
       animatedPostsDefaultState: AnimatedPostsDefaultState.autoplay,
     ),
+    viewer: ImageViewerSettings(
+      swipeMode: PostDetailsSwipeMode.horizontal,
+      postDetailsOverlayInitialState: PostDetailsOverlayInitialState.show,
+      slideshowDirection: SlideshowDirection.forward,
+      slideshowInterval: 6,
+      slideshowTransitionType: SlideshowTransitionType.natural,
+      videoAudioDefaultState: VideoAudioDefaultState.unspecified,
+      videoPlayerEngine: VideoPlayerEngine.auto,
+    ),
     colors: null,
     safeMode: true,
     blacklistedTags: '',
@@ -177,27 +160,22 @@ class Settings extends Equatable {
     clearImageCacheOnStartup: false,
     appLockType: AppLockType.none,
     bookmarkFilterType: BookmarkFilterType.none,
-    postDetailsOverlayInitialState: PostDetailsOverlayInitialState.show,
     booruConfigSelectorPosition: BooruConfigSelectorPosition.side,
     booruConfigSelectorScrollDirection: BooruConfigScrollDirection.normal,
     swipeAreaToOpenSidebarPercentage: 5,
     booruConfigLabelVisibility: BooruConfigLabelVisibility.always,
-    slideshowInterval: 6,
-    slideshowTransitionType: SlideshowTransitionType.natural,
-    slideshowDirection: SlideshowDirection.forward,
     reduceAnimations: false,
     downloadFileExistedBehavior: DownloadFileExistedBehavior.appDecide,
-    videoAudioDefaultState: VideoAudioDefaultState.unspecified,
-    videoPlayerEngine: VideoPlayerEngine.auto,
     volumeKeyViewerNavigation: false,
     searchBarScrollBehavior: SearchBarScrollBehavior.autoHide,
     searchBarPosition: SearchBarPosition.top,
     hapticFeedbackLevel: HapticFeedbackLevel.balanced,
-    swipeMode: PostDetailsSwipeMode.horizontal,
     autoBackup: AutoBackupSettings.disabled,
   );
 
   final ImageListingSettings listing;
+
+  final ImageViewerSettings viewer;
 
   final String blacklistedTags;
   final String language;
@@ -227,8 +205,6 @@ class Settings extends Equatable {
 
   final BookmarkFilterType bookmarkFilterType;
 
-  final PostDetailsOverlayInitialState postDetailsOverlayInitialState;
-
   final BooruConfigSelectorPosition booruConfigSelectorPosition;
 
   final BooruConfigScrollDirection booruConfigSelectorScrollDirection;
@@ -237,20 +213,11 @@ class Settings extends Equatable {
 
   final BooruConfigLabelVisibility booruConfigLabelVisibility;
 
-  final double slideshowInterval;
-
-  final SlideshowTransitionType slideshowTransitionType;
-
-  final SlideshowDirection slideshowDirection;
-
   final bool reduceAnimations;
 
   final DownloadFileExistedBehavior downloadFileExistedBehavior;
 
-  final VideoAudioDefaultState videoAudioDefaultState;
-
   final ColorSettings? colors;
-  final VideoPlayerEngine videoPlayerEngine;
 
   final bool volumeKeyViewerNavigation;
 
@@ -259,8 +226,6 @@ class Settings extends Equatable {
   final SearchBarPosition searchBarPosition;
 
   final HapticFeedbackLevel hapticFeedbackLevel;
-
-  final PostDetailsSwipeMode swipeMode;
 
   final AutoBackupSettings autoBackup;
 
@@ -281,29 +246,24 @@ class Settings extends Equatable {
     bool? clearImageCacheOnStartup,
     AppLockType? appLockType,
     BookmarkFilterType? bookmarkFilterType,
-    PostDetailsOverlayInitialState? postDetailsOverlayInitialState,
     PostGestureConfig? postGestures,
     BooruConfigSelectorPosition? booruConfigSelectorPosition,
     BooruConfigScrollDirection? booruConfigSelectorScrollDirection,
     int? swipeAreaToOpenSidebarPercentage,
     BooruConfigLabelVisibility? booruConfigLabelVisibility,
-    double? slideshowInterval,
-    SlideshowTransitionType? slideshowTransitionType,
-    SlideshowDirection? slideshowDirection,
     bool? reduceAnimations,
     DownloadFileExistedBehavior? downloadFileExistedBehavior,
-    VideoAudioDefaultState? videoAudioDefaultState,
     ImageListingSettings? listing,
+    ImageViewerSettings? viewer,
     ColorSettings? colors,
-    VideoPlayerEngine? videoPlayerEngine,
     bool? volumeKeyViewerNavigation,
     SearchBarScrollBehavior? searchBarScrollBehavior,
     SearchBarPosition? searchBarPosition,
     HapticFeedbackLevel? hapticFeedbackLevel,
-    PostDetailsSwipeMode? swipeMode,
     AutoBackupSettings? autoBackup,
   }) => Settings(
     listing: listing ?? this.listing,
+    viewer: viewer ?? this.viewer,
     safeMode: safeMode ?? this.safeMode,
     blacklistedTags: blacklistedTags ?? this.blacklistedTags,
     themeMode: themeMode ?? this.themeMode,
@@ -323,8 +283,6 @@ class Settings extends Equatable {
         clearImageCacheOnStartup ?? this.clearImageCacheOnStartup,
     appLockType: appLockType ?? this.appLockType,
     bookmarkFilterType: bookmarkFilterType ?? this.bookmarkFilterType,
-    postDetailsOverlayInitialState:
-        postDetailsOverlayInitialState ?? this.postDetailsOverlayInitialState,
     booruConfigSelectorPosition:
         booruConfigSelectorPosition ?? this.booruConfigSelectorPosition,
     booruConfigSelectorScrollDirection:
@@ -335,32 +293,26 @@ class Settings extends Equatable {
         this.swipeAreaToOpenSidebarPercentage,
     booruConfigLabelVisibility:
         booruConfigLabelVisibility ?? this.booruConfigLabelVisibility,
-    slideshowInterval: slideshowInterval ?? this.slideshowInterval,
-    slideshowTransitionType:
-        slideshowTransitionType ?? this.slideshowTransitionType,
-    slideshowDirection: slideshowDirection ?? this.slideshowDirection,
     reduceAnimations: reduceAnimations ?? this.reduceAnimations,
     downloadFileExistedBehavior:
         downloadFileExistedBehavior ?? this.downloadFileExistedBehavior,
-    videoAudioDefaultState:
-        videoAudioDefaultState ?? this.videoAudioDefaultState,
     colors: colors ?? this.colors,
-    videoPlayerEngine: videoPlayerEngine ?? this.videoPlayerEngine,
     volumeKeyViewerNavigation:
         volumeKeyViewerNavigation ?? this.volumeKeyViewerNavigation,
     searchBarScrollBehavior:
         searchBarScrollBehavior ?? this.searchBarScrollBehavior,
     searchBarPosition: searchBarPosition ?? this.searchBarPosition,
     hapticFeedbackLevel: hapticFeedbackLevel ?? this.hapticFeedbackLevel,
-    swipeMode: swipeMode ?? this.swipeMode,
     autoBackup: autoBackup ?? this.autoBackup,
   );
 
   Map<String, dynamic> toJson() {
     final listing = this.listing.toJson();
+    final viewer = this.viewer.toJson();
 
     return {
       ...listing,
+      ...viewer,
       'safeMode': safeMode,
       'hideBlacklist': blacklistedTags,
       'themeMode': themeMode.index,
@@ -377,25 +329,18 @@ class Settings extends Equatable {
       'clearImageCacheOnStartup': clearImageCacheOnStartup,
       'appLockType': appLockType.index,
       'bookmarkFilterType': bookmarkFilterType.index,
-      'postDetailsOverlayInitialState': postDetailsOverlayInitialState.index,
       'booruConfigSelectorPosition': booruConfigSelectorPosition.index,
       'booruConfigSelectorScrollDirection':
           booruConfigSelectorScrollDirection.index,
       'swipeAreaToOpenSidebarPercentage': swipeAreaToOpenSidebarPercentage,
       'booruConfigLabelVisibility': booruConfigLabelVisibility.index,
-      'slideshowInterval': slideshowInterval,
-      'slideshowTransitionType': slideshowTransitionType.index,
-      'slideshowDirection': slideshowDirection.index,
       'reduceAnimations': reduceAnimations,
       'downloadFileExistedBehavior': downloadFileExistedBehavior.index,
-      'videoAudioDefaultState': videoAudioDefaultState.index,
       'colors': colors?.toJson(),
-      'videoPlayerEngine': videoPlayerEngine.index,
       'volumeKeyViewerNavigation': volumeKeyViewerNavigation,
       'searchBarScrollBehavior': searchBarScrollBehavior.index,
       'searchBarPosition': searchBarPosition.index,
       'hapticFeedbackLevel': hapticFeedbackLevel.index,
-      'swipeMode': swipeMode.index,
       'autoBackup': autoBackup.toJson(),
     };
   }
@@ -403,6 +348,7 @@ class Settings extends Equatable {
   @override
   List<Object?> get props => [
     listing,
+    viewer,
     safeMode,
     blacklistedTags,
     themeMode,
@@ -419,24 +365,17 @@ class Settings extends Equatable {
     clearImageCacheOnStartup,
     appLockType,
     bookmarkFilterType,
-    postDetailsOverlayInitialState,
     booruConfigSelectorPosition,
     booruConfigSelectorScrollDirection,
     swipeAreaToOpenSidebarPercentage,
     booruConfigLabelVisibility,
-    slideshowInterval,
-    slideshowTransitionType,
-    slideshowDirection,
     reduceAnimations,
     downloadFileExistedBehavior,
-    videoAudioDefaultState,
     colors,
-    videoPlayerEngine,
     volumeKeyViewerNavigation,
     searchBarScrollBehavior,
     searchBarPosition,
     hapticFeedbackLevel,
-    swipeMode,
     autoBackup,
   ];
 
@@ -444,33 +383,17 @@ class Settings extends Equatable {
   bool get shouldFilterBookmarks =>
       bookmarkFilterType != BookmarkFilterType.none;
 
-  bool get hidePostDetailsOverlay =>
-      postDetailsOverlayInitialState == PostDetailsOverlayInitialState.hide;
-
   bool get hideBooruConfigLabel =>
       booruConfigLabelVisibility == BooruConfigLabelVisibility.never;
 
   bool get reverseBooruConfigSelectorScrollDirection =>
       booruConfigSelectorScrollDirection == BooruConfigScrollDirection.reversed;
 
-  bool get skipSlideshowTransition =>
-      slideshowTransitionType == SlideshowTransitionType.none;
-
   bool get skipDownloadIfExists =>
       downloadFileExistedBehavior == DownloadFileExistedBehavior.skip;
 
-  bool get muteAudioByDefault =>
-      videoAudioDefaultState == VideoAudioDefaultState.mute;
-
   bool get persistSearchBar =>
       searchBarScrollBehavior == SearchBarScrollBehavior.persistent;
-
-  Duration get slideshowDuration {
-    // if less than 1 second, should use milliseconds instead
-    return slideshowInterval < 1
-        ? Duration(milliseconds: (slideshowInterval * 1000).toInt())
-        : Duration(seconds: slideshowInterval.toInt());
-  }
 
   List<int> get booruConfigIdOrderList {
     try {
@@ -530,6 +453,105 @@ class ListingConfigs extends Equatable {
   };
 
   String toJsonString() => jsonEncode(toJson());
+}
+
+class ImageViewerSettings extends Equatable {
+  const ImageViewerSettings({
+    required this.swipeMode,
+    required this.postDetailsOverlayInitialState,
+    required this.slideshowDirection,
+    required this.slideshowInterval,
+    required this.slideshowTransitionType,
+    required this.videoAudioDefaultState,
+    required this.videoPlayerEngine,
+  });
+
+  ImageViewerSettings.fromJson(Map<String, dynamic> json)
+    : swipeMode = json['swipeMode'] != null
+          ? PostDetailsSwipeMode.values[json['swipeMode']]
+          : PostDetailsSwipeMode.horizontal,
+      postDetailsOverlayInitialState =
+          json['postDetailsOverlayInitialState'] != null
+          ? PostDetailsOverlayInitialState
+                .values[json['postDetailsOverlayInitialState']]
+          : PostDetailsOverlayInitialState.show,
+      slideshowDirection = json['slideshowDirection'] != null
+          ? SlideshowDirection.values[json['slideshowDirection']]
+          : SlideshowDirection.forward,
+      slideshowInterval = json['slideshowInterval'] ?? 6,
+      slideshowTransitionType = json['slideshowTransitionType'] != null
+          ? SlideshowTransitionType.values[json['slideshowTransitionType']]
+          : SlideshowTransitionType.natural,
+      videoAudioDefaultState = json['videoAudioDefaultState'] != null
+          ? VideoAudioDefaultState.values[json['videoAudioDefaultState']]
+          : VideoAudioDefaultState.unspecified,
+      videoPlayerEngine = json['videoPlayerEngine'] != null
+          ? VideoPlayerEngine.values[json['videoPlayerEngine']]
+          : VideoPlayerEngine.auto;
+
+  final PostDetailsSwipeMode swipeMode;
+  final PostDetailsOverlayInitialState postDetailsOverlayInitialState;
+  final SlideshowDirection slideshowDirection;
+  final double slideshowInterval;
+  final SlideshowTransitionType slideshowTransitionType;
+  final VideoAudioDefaultState videoAudioDefaultState;
+  final VideoPlayerEngine videoPlayerEngine;
+
+  ImageViewerSettings copyWith({
+    PostDetailsSwipeMode? swipeMode,
+    PostDetailsOverlayInitialState? postDetailsOverlayInitialState,
+    SlideshowDirection? slideshowDirection,
+    double? slideshowInterval,
+    SlideshowTransitionType? slideshowTransitionType,
+    VideoAudioDefaultState? videoAudioDefaultState,
+    VideoPlayerEngine? videoPlayerEngine,
+  }) {
+    return ImageViewerSettings(
+      swipeMode: swipeMode ?? this.swipeMode,
+      postDetailsOverlayInitialState: postDetailsOverlayInitialState ?? this.postDetailsOverlayInitialState,
+      slideshowDirection: slideshowDirection ?? this.slideshowDirection,
+      slideshowInterval: slideshowInterval ?? this.slideshowInterval,
+      slideshowTransitionType: slideshowTransitionType ?? this.slideshowTransitionType,
+      videoAudioDefaultState: videoAudioDefaultState ?? this.videoAudioDefaultState,
+      videoPlayerEngine: videoPlayerEngine ?? this.videoPlayerEngine,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    'swipeMode': swipeMode.index,
+    'postDetailsOverlayInitialState': postDetailsOverlayInitialState.index,
+    'slideshowDirection': slideshowDirection.index,
+    'slideshowInterval': slideshowInterval,
+    'slideshowTransitionType': slideshowTransitionType.index,
+    'videoAudioDefaultState': videoAudioDefaultState.index,
+    'videoPlayerEngine': videoPlayerEngine.index,
+  };
+
+  @override
+  List<Object> get props => [
+    swipeMode,
+    postDetailsOverlayInitialState,
+    slideshowDirection,
+    slideshowInterval,
+    slideshowTransitionType,
+    videoAudioDefaultState,
+    videoPlayerEngine,
+  ];
+
+  bool get hidePostDetailsOverlay =>
+      postDetailsOverlayInitialState == PostDetailsOverlayInitialState.hide;
+
+  bool get skipSlideshowTransition =>
+      slideshowTransitionType == SlideshowTransitionType.none;
+
+  bool get muteAudioByDefault =>
+      videoAudioDefaultState == VideoAudioDefaultState.mute;
+
+  Duration get slideshowDuration {
+    return slideshowInterval < 1
+        ? Duration(milliseconds: (slideshowInterval * 1000).toInt())
+        : Duration(seconds: slideshowInterval.toInt());
+  }
 }
 
 class ImageListingSettings extends Equatable {

@@ -122,8 +122,8 @@ extension AnalyticsInterfaceX on AnalyticsInterface {
 
     unawaited(
       _logChangedEvent(
-        oldValue: oldValue.videoPlayerEngine.name,
-        newValue: newValue.videoPlayerEngine.name,
+        oldValue: oldValue.viewer.videoPlayerEngine.name,
+        newValue: newValue.viewer.videoPlayerEngine.name,
         eventName: 'video_player_engine_changed',
         source: SettingsChangedSource.settings,
       ),

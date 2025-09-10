@@ -49,29 +49,36 @@ class _ExportDataPageState extends ConsumerState<ExportDataPage> {
                         child: CircularProgressIndicator(),
                       ),
                     )
-              : Center(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 32,
-                      vertical: 8,
-                    ),
-                    child: RichText(
-                      textAlign: TextAlign.center,
-                      text: TextSpan(
-                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                          color: Theme.of(context).colorScheme.hintColor,
-                        ),
-                        children: [
-                          TextSpan(
-                            text:
-                                'WiFi connection required to transfer data. Please connect to a WiFi network and try again.'
-                                    .hc,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
+              : _buildNoWifi(context),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNoWifi(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 32,
+          vertical: 8,
+        ),
+        child: RichText(
+          textAlign: TextAlign.center,
+          text: TextSpan(
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(
+              color: Theme.of(context).colorScheme.hintColor,
+            ),
+            children: [
+              TextSpan(
+                text: context
+                    .t
+                    .settings
+                    .backup_and_restore
+                    .send_data
+                    .no_networks_error,
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -104,15 +111,16 @@ class _ExportDataPageState extends ConsumerState<ExportDataPage> {
               const SizedBox(height: 8),
               Text.rich(
                 context.t.settings.backup_and_restore.send_data.how_to_send(
-                  settings: (text) => TextSpan(
-                    text: text,
+                  settings: (_) => TextSpan(
+                    text:
+                        '${context.t.settings.settings} > ${context.t.settings.backup_and_restore.backup_and_restore}',
                     style: textTheme.bodyMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                       color: colorScheme.primary,
                     ),
                   ),
-                  receive: (text) => TextSpan(
-                    text: text,
+                  receive: (_) => TextSpan(
+                    text: context.t.settings.backup_and_restore.receive,
                     style: textTheme.bodyMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                       color: colorScheme.primary,
