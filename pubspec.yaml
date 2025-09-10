@@ -20,6 +20,7 @@ workspace:
   - packages/i18n
   - packages/codegen
   - packages/cache_manager
+  - packages/lint
 
 dependencies:
   # local packages
@@ -155,6 +156,9 @@ dependencies:
   yaml: ^3.1.2
 
 dev_dependencies:
+  custom_lint: 
+  lint:
+    path: packages/lint
   build_runner: ^2.4.13
   flutter_launcher_icons:
     git: https://github.com/fluttercommunity/flutter_launcher_icons.git
