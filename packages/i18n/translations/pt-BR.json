@@ -399,7 +399,6 @@
     "validation_empty_url": "A URL esta vazia",
     "validation_invalid_url": "\"{0}\" não é uma URL válida",
     "validation_invalid_http_url": "\"{0}\" não é uma URL HTTP ou HTTPS",
-    "validation_missing_trailing_slash": "\"{0}\" está faltando uma barra final",
     "validation_redundant_www": "\"{0}\" contém um \"www\" redundante",
     "validation_contains_spaces": "\"{0}\" contém espaços entre linhas",
     "validation_missing_scheme": "\"{0}\" está faltando um esquema (e.g. https://)",

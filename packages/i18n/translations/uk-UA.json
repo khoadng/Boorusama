@@ -713,7 +713,6 @@
     "validation_empty_url": "Посилання пусте",
     "validation_invalid_url": "\"{0}\" не є дійсним URL",
     "validation_invalid_http_url": "\"{0}\" не є HTTP чи HTTPS URL",
-    "validation_missing_trailing_slash": "В \"{0}\" відсутній слеш в кінці",
     "validation_redundant_www": "\"{0}\" має лишній \"www\"",
     "validation_contains_spaces": "\"{0}\" містить проміжні пробіли",
     "validation_missing_scheme": "В \"{0}\" відсутня схема (наприклад, https://)",

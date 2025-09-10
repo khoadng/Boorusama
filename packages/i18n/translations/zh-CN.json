@@ -444,7 +444,6 @@
     "validation_empty_url": "地址为空",
     "validation_invalid_url": "\"{0}\" 不是有效的地址",
     "validation_invalid_http_url": "\"{0}\" 不是HTTP或HTTPS地址",
-    "validation_missing_trailing_slash": "\"{0}\" 缺少尾斜杠",
     "validation_redundant_www": "\"{0}\" 包含了多余的 \"WWW\"",
     "validation_contains_spaces": "\"{0}\" 中包含了空格",
     "validation_missing_scheme": "\"{0}\" 未指明协议（比如https://）",

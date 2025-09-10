@@ -417,7 +417,6 @@
     "validation_empty_url": "URL vide",
     "validation_invalid_url": "«{0}» n'est pas une URL valide",
     "validation_invalid_http_url": "«{0}» n'est pas une URL HTTP ou HTTPS",
-    "validation_missing_trailing_slash": "Il manque une barre oblique à la fin de «{0}»",
     "validation_redundant_www": "«{0}» contient un «www» superflu",
     "validation_contains_spaces": "«{0}» contient des espaces intermédiaires",
     "validation_missing_scheme": "Il manque un shéma à «{0}» (ex. https://)",

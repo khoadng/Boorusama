@@ -759,7 +759,6 @@
     "validation_empty_url": "URL rỗng",
     "validation_invalid_url": "\"{0}\" không phải là một đường dẫn URL hợp lệ.",
     "validation_invalid_http_url": "\"{0}\" không phải là một đường dẫn URL HTTP hoặc HTTPS.",
-    "validation_missing_trailing_slash": "\"{0}\" thiếu dấu gạch chéo phía sau",
     "validation_redundant_www": "\"{0}\" chứa \"www\" thừa không cần thiết",
     "validation_contains_spaces": "\"{0}\" chứa khoảng trắng không cần thiết ở giữa.",
     "validation_missing_scheme": "\"{0}\" thiếu giao thức (ví dụ: https://)",

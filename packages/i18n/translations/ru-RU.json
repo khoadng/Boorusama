@@ -411,7 +411,6 @@
     "validation_empty_url": "Ссылка пуста",
     "validation_invalid_url": "\"{0}\" не является действительной URL",
     "validation_invalid_http_url": "\"{0}\" не является HTTP или HTTPS URL",
-    "validation_missing_trailing_slash": "В «{0}» отсутствует слеш в конце",
     "validation_redundant_www": "\"{0}\" содержит лишний \"www\"",
     "validation_contains_spaces": "\"{0}\" содержит промежуточные пробелы",
     "validation_missing_scheme": "В \"{0}\" отсутствует схема (например, https://)",

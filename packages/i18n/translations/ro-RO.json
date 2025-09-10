@@ -398,7 +398,6 @@
     "validation_empty_url": "URL este gol",
     "validation_invalid_url": "\"{0}\" nu este un URL valid",
     "validation_invalid_http_url": "\"{0}\" nu este un URL HTTP sau HTTPS",
-    "validation_missing_trailing_slash": "\"{0}\" lipsește un slash la final",
     "validation_redundant_www": "\"{0}\" conține \"www\" redundant",
     "validation_contains_spaces": "\"{0}\" conține spatii intermediare",
     "validation_missing_scheme": "\"{0}\" lipsește o schemă (ex https://)",

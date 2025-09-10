@@ -528,7 +528,6 @@
     "validation_empty_url": "ช่องลิงค์เว็บไซค์ว่างเปล่า",
     "validation_invalid_url": "ลิงค์ \"{0}\" ไม่ใช่ลิงค์ที่ถูกต้อง",
     "validation_invalid_http_url": "ลิงค์ \"{0}\" ไม่ใช่ลิงค์รูปแบบของ HTTP หรือ HTTPS",
-    "validation_missing_trailing_slash": "ไม่พบเครื่องหมายสแลช (/) ต่อท้ายในลิงค์ \"{0}\"",
     "validation_redundant_www": "พบคำว่า \"www\" อยู่ในลิงค์ \"{0}\"",
     "validation_contains_spaces": "ลิงค์ \"{0}\" มีการเว้นวรรคอยู่",
     "validation_missing_scheme": "ไม่พบการระบุโปรโตคอลของเว็บ (เช่น https://) ในลิงค์ \"{0}\"",

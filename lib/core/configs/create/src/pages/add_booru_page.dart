@@ -267,7 +267,7 @@ class _AddBooruPageInternalState extends ConsumerState<AddBooruPageInternal> {
                 autofocus: true,
                 onChanged: (value) {
                   inputText.value = value;
-                  booruUrlError.value = mapBooruUrlToUri(value);
+                  booruUrlError.value = createBooruUri(value);
                 },
                 onFieldSubmitted: error.fold(
                   (l) => null,
@@ -287,7 +287,7 @@ class _AddBooruPageInternalState extends ConsumerState<AddBooruPageInternal> {
                         if (value != null) {
                           urlController.text = value;
                           inputText.value = value;
-                          booruUrlError.value = mapBooruUrlToUri(value);
+                          booruUrlError.value = createBooruUri(value);
                         }
                       });
                     },
@@ -352,8 +352,6 @@ extension BooruUrlErrorX on BooruUrlError {
       context.t.booru.validation_invalid_url.replaceAll('{0}', url),
     BooruUrlError.notAnHttpOrHttpsUrl =>
       context.t.booru.validation_invalid_http_url.replaceAll('{0}', url),
-    BooruUrlError.missingLastSlash =>
-      context.t.booru.validation_missing_trailing_slash.replaceAll('{0}', url),
     BooruUrlError.redundantWww =>
       context.t.booru.validation_redundant_www.replaceAll('{0}', url),
     BooruUrlError.stringHasInbetweenSpaces =>

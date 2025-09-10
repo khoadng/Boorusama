@@ -759,7 +759,6 @@
     "validation_empty_url": "URL is empty",
     "validation_invalid_url": "\"{0}\" is not a valid URL",
     "validation_invalid_http_url": "\"{0}\" is not an HTTP or HTTPS URL",
-    "validation_missing_trailing_slash": "\"{0}\" is missing a trailing slash",
     "validation_redundant_www": "\"{0}\" contains redundant \"www\"",
     "validation_contains_spaces": "\"{0}\" contains in-between spaces",
     "validation_missing_scheme": "\"{0}\" is missing a scheme (e.g. https://)",
