@@ -11,6 +11,7 @@ import '../../settings/providers.dart';
 import '../../settings/widgets.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/widgets.dart';
+import '../auto/auto_backup_service.dart';
 import '../zip/providers.dart';
 import 'auto_backup_settings.dart';
 
@@ -19,6 +20,8 @@ class AutoBackupSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
     final settings = ref.watch(settingsProvider.select((s) => s.autoBackup));
     final settingsNotifier = ref.watch(settingsNotifierProvider.notifier);
     final isLoading = ref.watch(
@@ -28,7 +31,7 @@ class AutoBackupSection extends ConsumerWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12),
       child: Material(
-        color: Theme.of(context).colorScheme.surfaceContainer,
+        color: colorScheme.surfaceContainer,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
         ),
@@ -55,29 +58,47 @@ class AutoBackupSection extends ConsumerWidget {
                   settingsNotifier,
                   settings.copyWith(frequency: frequency),
                 ),
-                optionBuilder: (frequency) =>
-                    Text(_getFrequencyLabel(context, frequency)),
+                optionBuilder: (frequency) => Text(
+                  switch (frequency) {
+                    AutoBackupFrequency.daily =>
+                      context.t.settings.auto_backup.frequency.daily,
+                    AutoBackupFrequency.weekly =>
+                      context.t.settings.auto_backup.frequency.weekly,
+                  },
+                ),
               ),
               ListTile(
                 contentPadding: const EdgeInsets.symmetric(horizontal: 16),
                 title: Text(context.t.settings.auto_backup.backup_location),
                 subtitle: Text(
-                  _getLocationDisplay(context, settings),
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.hintColor,
+                  ref
+                      .watch(autoBackupDefaultDirectoryPathProvider)
+                      .when(
+                        data: (path) => settings.userSelectedPath ?? path,
+                        loading: () =>
+                            context.t.settings.data_and_storage.loading,
+                        error: (_, _) => context.t.generic.errors.unknown,
+                      ),
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: colorScheme.hintColor,
                   ),
                 ),
                 trailing: TextButton(
-                  onPressed: () async {
-                    await pickDirectoryPathToastOnError(
-                      context: context,
-                      onPick: (path) => _updateSettings(
-                        settingsNotifier,
-                        settings.copyWith(userSelectedPath: () => path),
+                  onPressed: ref
+                      .watch(autoBackupDefaultDirectoryPathProvider)
+                      .maybeWhen(
+                        data: (path) =>
+                            () => pickDirectoryPathToastOnError(
+                              context: context,
+                              onPick: (path) => _updateSettings(
+                                settingsNotifier,
+                                settings.copyWith(userSelectedPath: () => path),
+                              ),
+                              initialDirectory:
+                                  settings.userSelectedPath ?? path,
+                            ),
+                        orElse: () => null,
                       ),
-                    );
-                  },
-
                   child: Text(context.t.settings.auto_backup.change),
                 ),
               ),
@@ -94,7 +115,7 @@ class AutoBackupSection extends ConsumerWidget {
                     Text(context.t.settings.auto_backup.backup_count(n: count)),
               ),
               const Divider(height: 1),
-              _buildStatusTile(context, ref, settings, isLoading),
+              const _StatusTile(),
             ],
           ],
         ),
@@ -110,13 +131,20 @@ class AutoBackupSection extends ConsumerWidget {
       (s) => s.copyWith(autoBackup: newAutoBackup),
     );
   }
+}
 
-  Widget _buildStatusTile(
-    BuildContext context,
-    WidgetRef ref,
-    AutoBackupSettings settings,
-    bool isLoading,
-  ) {
+class _StatusTile extends ConsumerWidget {
+  const _StatusTile();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final isLoading = ref.watch(
+      backupProvider.select((s) => s.isActive),
+    );
+    final settings = ref.watch(settingsProvider.select((s) => s.autoBackup));
+
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 16),
       title: Text(
@@ -128,10 +156,10 @@ class AutoBackupSection extends ConsumerWidget {
         settings.shouldBackup
             ? context.t.settings.auto_backup.backup_needed
             : context.t.settings.auto_backup.up_to_date,
-        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+        style: theme.textTheme.bodySmall?.copyWith(
           color: settings.shouldBackup
-              ? Theme.of(context).colorScheme.error
-              : Theme.of(context).colorScheme.primary,
+              ? colorScheme.error
+              : colorScheme.primary,
           fontWeight: FontWeight.w500,
         ),
       ),
@@ -167,52 +195,27 @@ class AutoBackupSection extends ConsumerWidget {
             ),
     );
   }
-
-  String _getFrequencyLabel(
-    BuildContext context,
-    AutoBackupFrequency frequency,
-  ) {
-    switch (frequency) {
-      case AutoBackupFrequency.daily:
-        return context.t.settings.auto_backup.frequency.daily;
-      case AutoBackupFrequency.weekly:
-        return context.t.settings.auto_backup.frequency.weekly;
-    }
-  }
-}
-
-String _getLocationDisplay(BuildContext context, AutoBackupSettings settings) {
-  return settings.userSelectedPath ??
-      context.t.settings.backup_and_restore.default_backup_location;
 }
 
 String _getLastBackupDisplay(
   BuildContext context,
   AutoBackupSettings settings,
-) {
-  if (settings.lastBackupTime == null) {
-    return context.t.settings.backup_and_restore.never;
-  }
-
-  final now = DateTime.now();
-  final diff = now.difference(settings.lastBackupTime!);
-
-  if (diff.inDays > 0) {
-    return context.t.time.timeago.days.replaceAll(
+) => switch (settings.lastBackupTime) {
+  null => context.t.settings.backup_and_restore.never,
+  final time => switch (DateTime.now().difference(time)) {
+    final diff when diff.inDays > 0 => context.t.time.timeago.days.replaceAll(
       '{days}',
       diff.inDays.toString(),
-    );
-  } else if (diff.inHours > 0) {
-    return context.t.time.timeago.hours.replaceAll(
+    ),
+    final diff when diff.inHours > 0 => context.t.time.timeago.hours.replaceAll(
       '{hours}',
       diff.inHours.toString(),
-    );
-  } else if (diff.inMinutes > 0) {
-    return context.t.time.timeago.minutes.replaceAll(
-      '{minutes}',
-      diff.inMinutes.toString(),
-    );
-  } else {
-    return context.t.time.timeago.just_now;
-  }
-}
+    ),
+    final diff when diff.inMinutes > 0 =>
+      context.t.time.timeago.minutes.replaceAll(
+        '{minutes}',
+        diff.inMinutes.toString(),
+      ),
+    _ => context.t.time.timeago.just_now,
+  },
+};

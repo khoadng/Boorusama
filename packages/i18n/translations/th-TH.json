@@ -356,7 +356,6 @@
       "imported_count": "นำเข้าแล้ว {count}",
       "skipped_count": "ข้ามไปแล้ว {count}",
       "failed_count": "ไม่สำเร็จไปแล้ว {count}",
-      "default_backup_location": "ค่าเริ่มต้นตำแหน่งที่เก็บสำรองข้อมูล",
       "never": "ไม่เคยเลย"
     },
     "image_details": {
