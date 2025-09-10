@@ -215,8 +215,9 @@ class DryRunNotifier extends FamilyAsyncNotifier<DryRunState, String> {
               pageIndex: i,
               createdAt: DateTime.now(),
               headers: {
-                ...?headers,
-                AppHttpHeaders.cookieHeader: ?urlData.cookie,
+                if (headers != null) ...headers,
+                if (urlData.cookie != null)
+                  AppHttpHeaders.cookieHeader: urlData.cookie!,
               },
               thumbnailImageUrl: item.thumbnailImageUrl,
               sourceUrl: config.url,

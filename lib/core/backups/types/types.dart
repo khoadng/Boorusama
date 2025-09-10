@@ -22,8 +22,8 @@ class ExportDataPayload {
 
   Map<String, dynamic> toJson() => {
     'version': version,
-    'exportVersion': ?exportVersion?.toString(),
-    'date': ?exportDate?.toIso8601String(),
+    if (exportVersion != null) 'exportVersion': exportVersion.toString(),
+    if (exportDate != null) 'date': exportDate?.toIso8601String(),
     'data': data,
   };
 }

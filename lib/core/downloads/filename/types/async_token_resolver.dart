@@ -80,11 +80,11 @@ class ClassicTagsTokenResolver<T extends Post>
     final meta = groupedTags[TagCategory.meta().name];
 
     return {
-      'artist': ?artists,
-      'character': ?characters,
-      'copyright': ?copyrights,
-      'general': ?general,
-      'meta': ?meta,
+      if (artists != null) 'artist': artists,
+      if (characters != null) 'character': characters,
+      if (copyrights != null) 'copyright': copyrights,
+      if (general != null) 'general': general,
+      if (meta != null) 'meta': meta,
     };
   }
 }
