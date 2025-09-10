@@ -1,0 +1,5 @@
+# targets:
+#   $default:
+#     builders:
+#       hive_ce_generator|hive_schema_migrator:
+#         enabled: true

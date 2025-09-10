@@ -1,5 +1,5 @@
 // Package imports:
-import 'package:hive/hive.dart';
+import 'package:hive_ce/hive.dart';
 
 // Project imports:
 import '../../../../search/selected_tags/tag.dart';

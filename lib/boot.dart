@@ -10,7 +10,7 @@ import 'package:flutter/services.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fvp/fvp.dart' as fvp;
-import 'package:hive/hive.dart';
+import 'package:hive_ce/hive.dart';
 import 'package:i18n/i18n.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:stack_trace/stack_trace.dart';
@@ -112,7 +112,8 @@ Future<void> boot(BootData bootData) async {
         'ios',
         'windows',
         'macos',
-        if (settings.viewer.videoPlayerEngine == VideoPlayerEngine.mdk) 'android',
+        if (settings.viewer.videoPlayerEngine == VideoPlayerEngine.mdk)
+          'android',
       ],
     },
   );

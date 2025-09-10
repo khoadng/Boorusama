@@ -1,6 +1,6 @@
 // Package imports:
 import 'package:collection/collection.dart';
-import 'package:hive/hive.dart';
+import 'package:hive_ce/hive.dart';
 
 // Project imports:
 import '../../types/blacklisted_tag.dart';

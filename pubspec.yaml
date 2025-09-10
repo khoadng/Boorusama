@@ -81,7 +81,7 @@ dependencies:
   gal: ^2.3.0
   go_router: ^16.0.0
   google_api_availability: ^5.0.0
-  hive: ^2.2.3
+  hive_ce: ^2.12.0
   html: ^0.15.4
   http: ^1.1.0
   infinite_scroll_pagination: ^5.1.0
@@ -153,7 +153,7 @@ dev_dependencies:
     sdk: flutter
   flutter_test:
     sdk: flutter
-  hive_generator: ^2.0.1
+  hive_ce_generator: ^1.9.3
   import_sorter: ^4.6.0
   mocktail: ^1.0.4
   test: ^1.25.2
