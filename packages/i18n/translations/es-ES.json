@@ -82,7 +82,7 @@
       "reply": "Responder",
       "reply_to": "Respondiendo a",
       "delete": "Borrar",
-      "noComments": "Aqui no hay comentarios",
+      "no_comments": "Aqui no hay comentarios",
       "last_updated": "Ultima Acutualizacion",
       "send": "Enviar"
     },

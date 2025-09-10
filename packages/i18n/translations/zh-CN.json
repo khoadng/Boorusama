@@ -82,7 +82,7 @@
       "reply": "回复",
       "reply_to": "回复给",
       "delete": "删除",
-      "noComments": "没有评论",
+      "no_comments": "没有评论",
       "last_updated": "最近更新",
       "send": "发送"
     },

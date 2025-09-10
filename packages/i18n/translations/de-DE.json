@@ -82,7 +82,7 @@
       "reply": "Antworten",
       "reply_to": "Antwort auf",
       "delete": "Löschen",
-      "noComments": "Es sind keine Kommentare vorhanden",
+      "no_comments": "Es sind keine Kommentare vorhanden",
       "last_updated": "Zuletzt aktualisiert",
       "send": "Senden"
     },

@@ -81,7 +81,7 @@
       "reply": "Yanıt ver",
       "reply_to": "Şuna cevap olarak",
       "delete": "Sil",
-      "noComments": "Hiçbir yorum yok",
+      "no_comments": "Hiçbir yorum yok",
       "last_updated": "Son güncelleme tarihi",
       "send": "Gönder"
     },

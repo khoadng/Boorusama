@@ -188,10 +188,9 @@
       "reply": "Trả lời",
       "reply_to": "Gửi tới",
       "delete": "Xóa",
-      "noComments": "Không có bình luận",
+      "no_comments": "Không có bình luận",
       "last_updated": "Cập nhật lần cuối",
-      "send": "Gửi",
-      "no_comments": "Không có bình luận"
+      "send": "Gửi"
     },
     "counter": {
       "one": "Bình luận",

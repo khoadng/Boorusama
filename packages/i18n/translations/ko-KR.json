@@ -82,7 +82,7 @@
       "reply": "답글",
       "reply_to": "에 답글 달기",
       "delete": "삭제",
-      "noComments": "댓글이 없습니다",
+      "no_comments": "댓글이 없습니다",
       "last_updated": "마지막 업데이트",
       "send": "전송"
     },

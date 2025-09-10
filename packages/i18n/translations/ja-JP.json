@@ -85,7 +85,7 @@
       "reply": "返信",
       "reply_to": "返信先",
       "delete": "削除",
-      "noComments": "コメントがありません",
+      "no_comments": "コメントがありません",
       "last_updated": "最終更新",
       "send": "送信"
     },
