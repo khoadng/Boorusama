@@ -15,8 +15,6 @@ final sankakuAutocompleteRepoProvider =
       final client = ref.watch(sankakuClientProvider(config));
 
       return AutocompleteRepositoryBuilder(
-        persistentStorageKey:
-            '${Uri.encodeComponent(config.url)}_autocomplete_cache_v1',
         autocomplete: (query) => client
             .getAutocomplete(query: query.text)
             .then(

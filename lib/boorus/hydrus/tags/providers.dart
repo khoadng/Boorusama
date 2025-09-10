@@ -12,9 +12,6 @@ final hydrusAutocompleteRepoProvider =
       final client = ref.watch(hydrusClientProvider(config));
 
       return AutocompleteRepositoryBuilder(
-        persistentStorageKey:
-            '${Uri.encodeComponent(config.url)}_autocomplete_cache_v1',
-        persistentStaleDuration: const Duration(minutes: 5),
         autocomplete: (query) async {
           final dtos = await client.getAutocomplete(query: query.text);
 

@@ -12,8 +12,6 @@ final shimmie2AutocompleteRepoProvider =
         final client = ref.watch(shimmie2ClientProvider(config));
 
         return AutocompleteRepositoryBuilder(
-          persistentStorageKey:
-              '${Uri.encodeComponent(config.url)}_autocomplete_cache_v1',
           autocomplete: (query) async {
             final tags = await client.getAutocomplete(query: query.text);
 

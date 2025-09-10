@@ -22,3 +22,7 @@ final autocompleteRepoProvider =
         return ref.watch(emptyAutocompleteRepoProvider);
       },
     );
+
+final emptyAutocompleteRepoProvider = Provider<AutocompleteRepository>(
+  (_) => EmptyAutocompleteRepository(),
+);
