@@ -8,7 +8,7 @@ import '../../../../posts/sources/source.dart';
 import '../../types/bookmark.dart';
 import '../../types/bookmark_repository.dart';
 import '../bookmark_convert.dart';
-import 'object.dart';
+import 'bookmark_hive_object.dart';
 
 class BookmarkHiveRepository implements BookmarkRepository {
   const BookmarkHiveRepository(this._box);

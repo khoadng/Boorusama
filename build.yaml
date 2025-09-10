@@ -1,5 +1,8 @@
-# targets:
-#   $default:
-#     builders:
-#       hive_ce_generator|hive_schema_migrator:
-#         enabled: true
+targets:
+  $default:
+    builders:
+      hive_ce_generator:hive_ce_generator:
+        enabled: true
+        generate_for:
+          include:
+            - "lib/**/*hive_object.dart"

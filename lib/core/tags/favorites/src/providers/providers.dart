@@ -10,12 +10,6 @@ import '../types/favorite_tag.dart';
 final favoriteTagRepoProvider = FutureProvider<FavoriteTagRepository>((
   ref,
 ) async {
-  final adapter = FavoriteTagHiveObjectAdapter();
-
-  if (!Hive.isAdapterRegistered(adapter.typeId)) {
-    Hive.registerAdapter(adapter);
-  }
-
   final favoriteTagsBox = await Hive.openBox<FavoriteTagHiveObject>(
     'favorite_tags',
   );

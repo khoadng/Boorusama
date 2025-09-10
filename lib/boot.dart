@@ -45,6 +45,7 @@ import 'foundation/platform.dart';
 import 'foundation/utils/file_utils.dart';
 import 'foundation/vendors/google/providers.dart';
 import 'foundation/windows.dart' as window;
+import 'hive/hive_registrar.g.dart';
 
 Future<void> boot(BootData bootData) async {
   final logger = bootData.logger;
@@ -61,7 +62,9 @@ Future<void> boot(BootData bootData) async {
   final dbDirectory = await _initDbDirectory();
 
   logger.debugBoot('Initialize Hive');
-  Hive.init(dbDirectory.path);
+  Hive
+    ..init(dbDirectory.path)
+    ..registerAdapters();
 
   logger.debugBoot('Load app info');
   final appInfo = await getAppInfo();

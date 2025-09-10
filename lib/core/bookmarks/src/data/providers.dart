@@ -4,17 +4,11 @@ import 'package:hive_ce/hive.dart';
 
 // Project imports:
 import '../types/bookmark_repository.dart';
-import 'hive/object.dart';
+import 'hive/bookmark_hive_object.dart';
 import 'hive/repository.dart';
 
 final bookmarkRepoProvider = FutureProvider<BookmarkRepository>(
   (ref) async {
-    final adapter = BookmarkHiveObjectAdapter();
-
-    if (!Hive.isAdapterRegistered(adapter.typeId)) {
-      Hive.registerAdapter(adapter);
-    }
-
     final bookmarkBox = await Hive.openBox<BookmarkHiveObject>('favorites');
     final bookmarkRepo = BookmarkHiveRepository(bookmarkBox);
 
