@@ -17,6 +17,16 @@ class TagEditState extends Equatable {
     required this.selectedTag,
   });
 
+  const TagEditState.initial(Set<String> tags)
+    : this(
+        tags: tags,
+        toBeAdded: const {},
+        toBeRemoved: const {},
+        expandMode: null,
+        viewExpanded: false,
+        selectedTag: null,
+      );
+
   final Set<String> tags;
   final Set<String> toBeAdded;
   final Set<String> toBeRemoved;
@@ -40,6 +50,55 @@ class TagEditState extends Equatable {
       viewExpanded: viewExpanded ?? this.viewExpanded,
       selectedTag: selectedTag != null ? selectedTag() : this.selectedTag,
     );
+  }
+
+  TagEditState addTag(String tag) {
+    if (tags.contains(tag) || toBeAdded.contains(tag)) return this;
+
+    final newTags = {...tags, tag};
+    return copyWith(
+      tags: newTags,
+      toBeAdded: {...toBeAdded, tag},
+    );
+  }
+
+  TagEditState addTags(Iterable<String> tagsToAdd) {
+    final newTags = tagsToAdd.toSet().difference(tags);
+    if (newTags.isEmpty) return this;
+
+    final newTagSet = {...tags, ...newTags};
+    return copyWith(
+      tags: newTagSet,
+      toBeAdded: {...toBeAdded, ...newTags},
+    );
+  }
+
+  TagEditState removeTag(String tag) {
+    final newTags = tags.toSet()..remove(tag);
+
+    if (toBeAdded.contains(tag)) {
+      return copyWith(
+        tags: newTags,
+        toBeAdded: {...toBeAdded}..remove(tag),
+      );
+    } else {
+      return copyWith(
+        tags: newTags,
+        toBeRemoved: {...toBeRemoved, tag},
+      );
+    }
+  }
+
+  TagEditState withExpandMode(TagEditExpandMode? mode) {
+    return copyWith(expandMode: () => mode);
+  }
+
+  TagEditState withSelectedTag(String? tag) {
+    return copyWith(selectedTag: () => tag);
+  }
+
+  TagEditState toggleViewExpanded() {
+    return copyWith(viewExpanded: !viewExpanded);
   }
 
   @override

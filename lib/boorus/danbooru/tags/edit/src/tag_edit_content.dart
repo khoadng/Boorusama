@@ -63,13 +63,14 @@ class TagEditExpandContent extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final params = TagEditParamsProvider.of(context);
     final config = ref.watchConfigAuth;
     final booru = ref.watch(danbooruProvider);
     final aiTagSupport = booru.hasAiTagSupported(config.url);
 
-    final notifier = ref.watch(tagEditProvider.notifier);
+    final notifier = ref.watch(tagEditProvider(params).notifier);
     final expandMode = ref.watch(
-      tagEditProvider.select((value) => value.expandMode),
+      tagEditProvider(params).select((value) => value.expandMode),
     );
 
     return switch (expandMode) {
@@ -151,7 +152,8 @@ class TagEditModeSelectButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final notifier = ref.watch(tagEditProvider.notifier);
+    final params = TagEditParamsProvider.of(context);
+    final notifier = ref.watch(tagEditProvider(params).notifier);
 
     return RawTagEditSelectButton(
       title: title,
@@ -167,10 +169,13 @@ class TagEditWikiViewWithStates extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final notifier = ref.watch(tagEditProvider.notifier);
-    final tags = ref.watch(tagEditProvider.select((value) => value.tags));
+    final params = TagEditParamsProvider.of(context);
+    final notifier = ref.watch(tagEditProvider(params).notifier);
+    final tags = ref.watch(
+      tagEditProvider(params).select((value) => value.tags),
+    );
     final selectedTag = ref.watch(
-      tagEditProvider.select((value) => value.selectedTag),
+      tagEditProvider(params).select((value) => value.selectedTag),
     );
 
     return TagEditWikiView(
@@ -191,11 +196,14 @@ class TagEditAITagViewWithStates extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final notifier = ref.watch(tagEditProvider.notifier);
-    final tags = ref.watch(tagEditProvider.select((value) => value.tags));
+    final params = TagEditParamsProvider.of(context);
+    final notifier = ref.watch(tagEditProvider(params).notifier);
+    final tags = ref.watch(
+      tagEditProvider(params).select((value) => value.tags),
+    );
 
     return TagEditAITagView(
-      postId: notifier.postId,
+      postId: params.postId,
       onRemoved: (tag) {
         notifier.removeTag(tag);
       },
@@ -212,8 +220,11 @@ class TagEditFavoriteViewWithStates extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final notifier = ref.watch(tagEditProvider.notifier);
-    final tags = ref.watch(tagEditProvider.select((value) => value.tags));
+    final params = TagEditParamsProvider.of(context);
+    final notifier = ref.watch(tagEditProvider(params).notifier);
+    final tags = ref.watch(
+      tagEditProvider(params).select((value) => value.tags),
+    );
 
     return TagEditFavoriteView(
       onRemoved: (tag) {

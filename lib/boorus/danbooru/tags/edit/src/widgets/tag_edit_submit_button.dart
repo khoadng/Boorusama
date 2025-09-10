@@ -16,14 +16,14 @@ class TagEditSubmitButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final notifier = ref.watch(tagEditProvider.notifier);
-    final initialRating = notifier.initialRating;
-    final postId = notifier.postId;
+    final params = TagEditParamsProvider.of(context);
+    final initialRating = params.initialRating;
+    final postId = params.postId;
     final addedTags = ref.watch(
-      tagEditProvider.select((value) => value.toBeAdded),
+      tagEditProvider(params).select((value) => value.toBeAdded),
     );
     final removedTags = ref.watch(
-      tagEditProvider.select((value) => value.toBeRemoved),
+      tagEditProvider(params).select((value) => value.toBeRemoved),
     );
     final rating = ref.watch(selectedTagEditRatingProvider(initialRating));
 
