@@ -22,6 +22,7 @@ import '../../../../router.dart';
 import '../../../../settings/providers.dart';
 import '../../../../settings/settings.dart';
 import '../../../../theme.dart';
+import '../../../../wake_lock/wake_lock.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../details_manager/types.dart';
 import '../../../details_pageview/widgets.dart';
@@ -131,12 +132,21 @@ class _PostDetailPageScaffoldState<T extends Post>
   var _previouslyPlaying = false;
 
   void _isVideoPlayingChanged() {
+    final currentPost = widget.controller.currentPost.value;
+    final isPlaying = widget.controller.isVideoPlaying.value;
+
+    if (isPlaying && currentPost.isVideo) {
+      WakeLock.enable();
+    } else {
+      WakeLock.disable();
+    }
+
     if (context.isLargeScreen && isDesktopPlatform()) {
       // force overlay to be on when video is not playing
-      if (!widget.controller.isVideoPlaying.value) {
+      if (!isPlaying) {
         _controller.disableHoverToControlOverlay();
       } else {
-        if (widget.controller.currentPost.value.isVideo) {
+        if (currentPost.isVideo) {
           _controller.enableHoverToControlOverlay();
         }
       }
@@ -187,6 +197,7 @@ class _PostDetailPageScaffoldState<T extends Post>
                 widget.controller.pauseCurrentVideo(
                   useDefaultEngine: useDefaultEngine,
                 );
+                WakeLock.disable();
               }
             } else if (info.visibleFraction == 1) {
               visibilityNotifier.value = true;
@@ -242,6 +253,9 @@ class _PostDetailPageScaffoldState<T extends Post>
             } else {
               _controller.disableHoverToControlOverlay();
             }
+          }
+          if (!post.isVideo) {
+            WakeLock.disable();
           }
         },
         sheetStateStorage: SheetStateStorageBuilder(
