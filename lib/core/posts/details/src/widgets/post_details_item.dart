@@ -117,73 +117,122 @@ class PostDetailsItem<T extends Post> extends ConsumerWidget {
                   post,
                 )
               : null,
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              ValueListenableBuilder(
-                valueListenable: isInitPageListenable,
-                builder: (_, isInitPage, _) {
-                  return PostMedia<T>(
-                    post: post,
-                    config: authConfig,
-                    imageUrlBuilder: imageUrlBuilder,
-                    imageCacheManager: imageCacheManager,
-                    // This is used to make sure we have a thumbnail to show instead of a black placeholder
-                    thumbnailUrlBuilder:
-                        isInitPage && initialThumbnailUrl != null
-                        // Need to specify the type here to avoid type inference error
-                        // ignore: avoid_types_on_closure_parameters
-                        ? (Post _) => initialThumbnailUrl
-                        : null,
-                    controller: pageViewController,
+          child: () {
+            // Check if this is a very tall image that should use webtoon viewer
+            final isVeryTallImage = !post.isVideo && (post.height / post.width) > 2.0;
+
+            if (isVeryTallImage) {
+              // For very tall images, use scrollable view instead of InteractiveViewer
+              return ValueListenableBuilder(
+                valueListenable: pageViewController.overlay,
+                builder: (context, overlayVisible, child) {
+                  return GestureDetector(
+                    onTap: onItemTap, // Still allow tap to show/hide overlay
+                    onVerticalDragUpdate: overlayVisible ? (details) {
+                      // When UI is visible and user drags up, expand the sheet
+                      if (details.primaryDelta! < -10) {
+                        pageViewController.expandToSnapPoint();
+                      }
+                    } : null,
+                    child: SingleChildScrollView(
+                      physics: overlayVisible 
+                          ? const NeverScrollableScrollPhysics() // Disable scroll when UI is visible to allow swipe-up
+                          : const ClampingScrollPhysics(), // Enable scroll when UI is hidden
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                          top: MediaQuery.of(context).padding.top, // Status bar height
+                        ),
+                        child: ValueListenableBuilder(
+                          valueListenable: isInitPageListenable,
+                          builder: (_, isInitPage, _) {
+                            return PostMedia<T>(
+                              post: post,
+                              config: authConfig,
+                              imageUrlBuilder: imageUrlBuilder,
+                              imageCacheManager: imageCacheManager,
+                              thumbnailUrlBuilder: isInitPage && initialThumbnailUrl != null
+                                  ? (_) => initialThumbnailUrl
+                                  : null,
+                              controller: pageViewController,
+                            );
+                          },
+                        ),
+                      ),
+                    ),
                   );
                 },
-              ),
-              if (post.isVideo)
-                Align(
-                  alignment: Alignment.bottomRight,
-                  child: state.isExpanded && !context.isLargeScreen
-                      ? Padding(
-                          padding: const EdgeInsets.all(8),
-                          child: Row(
-                            children: [
-                              // duplicate codes, maybe refactor later
-                              PlayPauseButton(
-                                isPlaying: detailsController.isVideoPlaying,
-                                onPlayingChanged: (value) {
-                                  if (value) {
-                                    detailsController.pauseVideo(
-                                      post.id,
-                                      post.isWebm,
-                                      videoPlayerEngine.isDefault,
-                                    );
-                                  } else if (!value) {
-                                    detailsController.playVideo(
-                                      post.id,
-                                      post.isWebm,
-                                      videoPlayerEngine.isDefault,
-                                    );
-                                  } else {
-                                    // do nothing
-                                  }
-                                },
-                              ),
-                              VideoSoundScope(
-                                builder: (context, soundOn) =>
-                                    SoundControlButton(
+              );
+            }
+
+            // Normal (non-tall) image layout
+            return Stack(
+              alignment: Alignment.center,
+              children: [
+                ValueListenableBuilder(
+                  valueListenable: isInitPageListenable,
+                  builder: (_, isInitPage, _) {
+                    return PostMedia<T>(
+                      post: post,
+                      config: authConfig,
+                      imageUrlBuilder: imageUrlBuilder,
+                      imageCacheManager: imageCacheManager,
+                      // This is used to make sure we have a thumbnail to show instead of a black placeholder
+                      thumbnailUrlBuilder: isInitPage && initialThumbnailUrl != null
+                          ? (_) => initialThumbnailUrl
+                          : null,
+                      controller: pageViewController,
+                    );
+                  },
+                ),
+                if (post.isVideo)
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: ValueListenableBuilder(
+                      valueListenable: pageViewController.sheetState,
+                      builder: (_, state, _) =>
+                          state.isExpanded && !context.isLargeScreen
+                          ? Padding(
+                              padding: const EdgeInsets.all(8),
+                              child: Row(
+                                children: [
+                                  // duplicate codes, maybe refactor later
+                                  PlayPauseButton(
+                                    isPlaying: detailsController.isVideoPlaying,
+                                    onPlayingChanged: (value) {
+                                      if (value) {
+                                        detailsController.pauseVideo(
+                                          post.id,
+                                          post.isWebm,
+                                          videoPlayerEngine.isDefault,
+                                        );
+                                      } else if (!value) {
+                                        detailsController.playVideo(
+                                          post.id,
+                                          post.isWebm,
+                                          videoPlayerEngine.isDefault,
+                                        );
+                                      } else {
+                                        // do nothing
+                                      }
+                                    },
+                                  ),
+                                  VideoSoundScope(
+                                    builder: (context, soundOn) => SoundControlButton(
                                       padding: const EdgeInsets.all(8),
                                       soundOn: soundOn,
                                       onSoundChanged: (value) =>
                                           ref.setGlobalVideoSound(value),
                                     ),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
-                        )
-                      : const SizedBox.shrink(),
-                ),
-            ],
-          ),
+                            )
+                          : const SizedBox.shrink(),
+                    ),
+                  ),
+              ],
+            );
+          }(),
         ),
       ),
     );

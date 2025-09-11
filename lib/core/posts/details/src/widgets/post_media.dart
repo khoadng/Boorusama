@@ -108,7 +108,7 @@ class PostMedia<T extends Post> extends ConsumerWidget {
                 ),
             ],
           )
-        : PostDetailsImage(
+        : PostDetailsImage<T>(
             heroTag: heroTag,
             imageUrlBuilder: imageUrlBuilder,
             thumbnailUrlBuilder: thumbnailUrlBuilder,
