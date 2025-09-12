@@ -122,4 +122,34 @@ class GelbooruV2Repository extends BooruRepositoryDefault {
           )
         : const DefaultGridThumbnailUrlGenerator();
   }
+
+  @override
+  ImageUrlResolver imageUrlResolver() {
+    return ref.watch(gelbooruV2PostImageUrlResolverProvider);
+  }
+}
+
+class GelbooruV2ImageUrlResolver implements ImageUrlResolver {
+  const GelbooruV2ImageUrlResolver();
+
+  @override
+  String resolveImageUrl(String url) => url;
+
+  @override
+  String resolvePreviewUrl(String url) {
+    if (url.isEmpty) return url;
+
+    final uri = Uri.tryParse(url);
+
+    return switch (uri) {
+      null => url,
+      Uri(host: 'api-cdn.rule34.xxx', path: final p)
+          when p.contains('/samples/') =>
+        uri.replace(host: 'wimg.rule34.xxx').toString(),
+      _ => url,
+    };
+  }
+
+  @override
+  String resolveThumbnailUrl(String url) => url;
 }
