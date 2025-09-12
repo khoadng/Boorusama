@@ -172,8 +172,8 @@
       "none": "None",
       "edit": "Edit",
       "use_default": "Use Default",
-      "toggle_bookmark": "Bật/tắt đánh dấu",
-      "toggle_favorite": "Bật/tắt yêu thích",
+      "toggle_bookmark": "Toggle bookmark",
+      "toggle_favorite": "Toggle favorite",
       "view_in_browser": "View in browser",
       "view_original": "View original"
     }

@@ -162,8 +162,8 @@
       "none": "Trống",
       "edit": "Sửa",
       "use_default": "Dùng mặc định",
-      "toggle_bookmark": "Đảo chiều đánh dấu",
-      "toggle_favorite": "Đảo chiều yêu thích",
+      "toggle_bookmark": "Bật/tắt đánh dấu",
+      "toggle_favorite": "Bật/tắt yêu thích",
       "view_in_browser": "Xem bằng trình duyệt",
       "view_original": "Xem ảnh gốc"
     },
@@ -504,7 +504,7 @@
           "running": "Đang chạy"
         },
         "how_to_transfer": "Cách chuyển dữ liệu",
-        "how_to_send(rich)": "• Trên thiết bị nhận, vào ${settings(Cài đặt > Sao lưu và phục hồi dữ liệu)}\n• Chọn ${receive(Nhận)} để bắt đầu nhập từ thiết bị này\n• Đừng rời khỏi trang này cho đến khi hoàn tất",
+        "how_to_send(rich)": "• Trên thiết bị nhận, vào ${settings(_)}\n• Chọn ${receive(_)} để bắt đầu nhập từ thiết bị này\n• Đừng rời khỏi trang này cho đến khi hoàn tất",
         "disclaimer": "Chuyển dữ liệu có thể không hoạt động trên WiFi công cộng (quán cà phê, thư viện) do hạn chế bảo mật. Hãy dùng mạng riêng, ví dụ WiFi ở nhà.",
         "no_networks_error": "Cần kết nối WiFi để truyền dữ liệu. Vui lòng kết nối với mạng WiFi và thử lại."
       },
