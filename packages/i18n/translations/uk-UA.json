@@ -469,7 +469,6 @@
       "imported_count": "{count} імпортовані",
       "skipped_count": "{count} пропущено",
       "failed_count": "{count} невдало",
-      "default_backup_location": "Розташування резервного копіювання за замовчуванням",
       "never": "Ніколи",
       "receive_data": {
         "title": "Отримання даних",
