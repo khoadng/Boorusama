@@ -14,17 +14,61 @@
       "cancel": "Abbrechen",
       "duplicate": "Duplikat",
       "select": "Auswählen",
-      "view": "Anzeigen"
+      "view": "Anzeigen",
+      "save": "Speichern",
+      "verify": "Überprüfen",
+      "retry": "Wiederholen",
+      "create": "Erstellen",
+      "reset": "Zurücksetzen",
+      "more": "Mehr",
+      "apply": "Anwenden",
+      "show_all": "Alle anzeigen",
+      "show_less": "Weniger anzeigen",
+      "view_all": "Alle anzeigen"
     },
     "copied": "Kopiert",
-    "app_restart_request": "Damit diese Änderung wirksam wird, muss die App neu gestartet werden"
+    "app_restart_request": "Damit diese Änderung wirksam wird, muss die App neu gestartet werden",
+    "warning": "Warnung",
+    "default": "Standard",
+    "version": "Version $version"
   },
   "profile": {
     "favorites": "Favoriten",
     "profile": "Profil",
     "copy_user_id": "Nutzer ID kopieren",
     "messages": {
-      "title": "Nachrichten"
+      "title": "Nachrichten",
+      "empty": "Du hast keine Nachrichten",
+      "categories": {
+        "all": "Alle",
+        "received": "Erhalten",
+        "unread": "Ungelesen",
+        "sent": "Gesendet",
+        "deleted": "Gelöscht"
+      },
+      "sender": "Absender",
+      "recipient": "Empfänger",
+      "date": "Datum"
+    },
+    "fail_to_load_profile": "Profil konnte nicht geladen werden",
+    "tabs": {
+      "info": "Info",
+      "uploads": "Uploads",
+      "changes": "Änderungen"
+    },
+    "activity": {
+      "title": "Aktivität",
+      "uploads": "Uploads",
+      "comments": "Kommentare",
+      "forum_posts": "Forenbeiträge",
+      "favgroups": "Favoritengruppen"
+    },
+    "feedback": {
+      "title": "Feedback",
+      "user_feedbacks": "Nutzerfeedback",
+      "positive": "Positiv",
+      "negative": "Negativ",
+      "neutral": "Neutral"
     }
   },
   "network": {
@@ -35,7 +79,8 @@
       "more": "Mehr",
       "related": "Ähnliche",
       "add_to_current_search": "Zu aktueller Suche hinzufügen",
-      "open_wiki": "Wiki öffnen"
+      "open_wiki": "Wiki öffnen",
+      "negate_from_current_search": "Aus aktueller Suche ausschließen"
     }
   },
   "post": {
@@ -63,13 +108,49 @@
       "source_label": "Quelle",
       "related_posts": "Ähnliche Beiträge",
       "add_to_bookmark": "Lesezeichen hinzufügen",
-      "remove_from_bookmark": "Lesezeichen entfernen"
+      "remove_from_bookmark": "Lesezeichen entfernen",
+      "duration": "Dauer",
+      "uploader": "Uploader",
+      "widgets": {
+        "toolbar": "Symbolleiste",
+        "tags": "Tags",
+        "info_panel": "Infobereich",
+        "artist_info": "Künstlerinfo",
+        "stats": "Statistiken",
+        "comments": "Kommentare",
+        "artist_posts": "Künstlerbeiträge",
+        "related_posts": "Ähnliche Beiträge",
+        "character_list": "Charakterliste",
+        "source": "Quelle"
+      }
     },
     "action": {
       "view_comments": "Kommentare anzeigen",
       "add_to_favorite_group": "Zur Gruppe hinzufügen",
       "view_in_browser": "In Browser anzeigen",
-      "view_original": "Original anzeigen"
+      "view_original": "Original anzeigen",
+      "share": "Teilen",
+      "bookmark": "Lesezeichen hinzufügen",
+      "favorite": "Favorit hinzufügen",
+      "view_artist": "Künstler anzeigen",
+      "view_tags": "Tags anzeigen",
+      "view_tag_history": "Tag-Verlauf anzeigen",
+      "copy_image": "Bild kopieren",
+      "slideshow": "Diashow",
+      "edit": "Bearbeiten",
+      "use_default": "Standard verwenden",
+      "toggle_bookmark": "Lesezeichen ein-/ausblenden",
+      "toggle_favorite": "Favoriten ein-/ausblenden"
+    },
+    "statistics": {
+      "stats_for_nerds": "Statistiken für Nerds",
+      "average": "Durchschnitt",
+      "highest": "Höchste",
+      "lowest": "Niedrigste",
+      "median": "Median",
+      "25th_percentile": "25. Perzentil",
+      "75th_percentile": "75. Perzentil",
+      "90th_percentile": "90. Perzentil"
     }
   },
   "comment": {
@@ -98,7 +179,13 @@
     "most_viewed": "Meist gesehen",
     "see_more": "Mehr anzeigen",
     "explore": "Durchsuchen",
-    "new": "Neu"
+    "new": "Neu",
+    "top": "Top",
+    "daily": "Täglich",
+    "weekly": "Wöchentlich",
+    "newest": "Neueste",
+    "oldest": "Älteste",
+    "ordered": "Sortiert"
   },
   "search": {
     "errors": {
@@ -110,7 +197,9 @@
       "down": "Der Server ist ausgefallen. Bitte versuche es später noch einmal",
       "access_denied": "Zugriff abgelehnt",
       "forbidden": "Authentifizierung fehlgeschlagen",
-      "unknown": "Unbekannter Serverfehler, bitte melde dieses Problem an den Entwickler"
+      "unknown": "Unbekannter Serverfehler, bitte melde dieses Problem an den Entwickler",
+      "cannot_reach_server": "Server kann nicht erreicht werden, bitte überprüfe deine Verbindung",
+      "failed_to_load_data": "Fehler beim Laden der Daten vom Server, bitte versuche es später erneut"
     },
     "hint": "Suche...",
     "no_result": "Wir haben weit und breit gesucht, aber keine Ergebnisse gefunden.",
@@ -146,7 +235,8 @@
     },
     "detail": {
       "last_updated": "Zuletzt aktualisiert"
-    }
+    },
+    "no_cover_image": "Kein Vorschaubild"
   },
   "settings": {
     "settings": "Einstellungen",
@@ -156,7 +246,10 @@
       "show_scores": "Scores anzeigen",
       "show_post_list_config_header": "Konfigurationsheader für Beiträge anzeigen",
       "booru_config": "Booru Profil",
-      "booru_config_placement": "Booru Profil Platzierung"
+      "booru_config_placement": "Booru Profil Platzierung",
+      "customize": "Anpassen",
+      "auto_play_gif": "GIF automatisch abspielen",
+      "blur_explicit_media": "Anstößige Inhalte unkenntlich machen"
     },
     "general": "Allgemein",
     "search": {
@@ -484,5 +577,15 @@
       "monthly": "Monatlich",
       "annual": "Jährlich"
     }
+  },
+  "sort": {
+    "sort_by": "Sortieren nach",
+    "name": "Name",
+    "name_asc": "Name (A-Z)",
+    "name_desc": "Name (Z-A)",
+    "recently_added": "Kürzlich hinzugefügt",
+    "recently_updated": "Kürzlich aktualisiert",
+    "recently_created": "Kürzlich erstellt",
+    "last_updated": "Zuletzt aktualisiert"
   }
 }
