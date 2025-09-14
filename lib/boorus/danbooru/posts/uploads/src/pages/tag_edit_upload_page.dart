@@ -28,6 +28,7 @@ import '../../../../../../foundation/toast.dart';
 import '../../../../../../foundation/url_launcher.dart';
 import '../../../../../../foundation/utils/flutter_utils.dart';
 import '../../../../artists/urls/widgets.dart';
+import '../../../../configs/providers.dart';
 import '../../../../sources/providers.dart';
 import '../../../../tags/edit/providers.dart';
 import '../../../../tags/edit/widgets.dart';
@@ -780,6 +781,8 @@ class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
 
   Widget _buildRatingSelector() {
     final config = ref.watchConfigAuth;
+    final loginDetails = ref.watch(danbooruLoginDetailsProvider(config));
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -791,7 +794,7 @@ class _TagEditUploadPageState extends ConsumerState<TagEditUploadPage> {
                 'Rating',
                 style: Theme.of(context).textTheme.titleMedium,
               ),
-              if (!config.hasStrictSFW) const TagHowToRateButton(),
+              if (!loginDetails.hasStrictSFW) const TagHowToRateButton(),
               const Spacer(),
               OptionDropDownButton(
                 alignment: AlignmentDirectional.centerStart,

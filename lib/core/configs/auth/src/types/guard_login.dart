@@ -8,10 +8,13 @@ import 'package:i18n/i18n.dart';
 // Project imports:
 import '../../../../../foundation/animations/constants.dart';
 import '../../../../../foundation/toast.dart';
-import '../../../ref.dart';
+import '../../../config/providers.dart';
 
 void guardLogin(WidgetRef ref, void Function() action) {
-  if (!ref.readConfigAuth.hasLoginDetails()) {
+  final auth = ref.readConfigAuth;
+  final loginDetails = ref.read(booruLoginDetailsProvider(auth));
+
+  if (!loginDetails.hasLogin()) {
     showSimpleSnackBar(
       context: ref.context,
       content: Text(

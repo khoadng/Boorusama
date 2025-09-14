@@ -18,6 +18,7 @@ import '../../../../core/configs/viewer/widgets.dart';
 import '../../../../foundation/url_launcher.dart';
 import '../../users/user/user.dart';
 import 'hide_deleted_switch.dart';
+import 'providers.dart';
 
 class CreateDanbooruConfigPage extends ConsumerWidget {
   const CreateDanbooruConfigPage({
@@ -32,12 +33,13 @@ class CreateDanbooruConfigPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watch(initialBooruConfigProvider);
+    final loginDetails = ref.watch(danbooruLoginDetailsProvider(config.auth));
 
     return CreateBooruConfigScaffold(
       initialTab: initialTab,
       backgroundColor: backgroundColor,
       authTab: DefaultBooruAuthConfigView(
-        showInstructionWhen: !config.auth.hasStrictSFW,
+        showInstructionWhen: !loginDetails.hasStrictSFW,
         customInstruction: DefaultBooruInstructionHtmlText(
           context.t.booru.api_key_instructions.variants_3,
           onApiLinkTap: () {

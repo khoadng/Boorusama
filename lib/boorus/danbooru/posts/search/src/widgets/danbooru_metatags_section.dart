@@ -10,6 +10,7 @@ import '../../../../../../core/configs/ref.dart';
 import '../../../../../../core/search/search/widgets.dart';
 import '../../../../../../core/tags/metatag/providers.dart';
 import '../../../../../../foundation/url_launcher.dart';
+import '../../../../configs/providers.dart';
 import '../../../../danbooru.dart';
 import '../../../../tags/user_metatags/providers.dart';
 
@@ -24,6 +25,7 @@ class DanbooruMetatagsSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final booruConfig = ref.watchConfigAuth;
+    final loginDetails = ref.watch(danbooruLoginDetailsProvider(booruConfig));
     final booru = ref.watch(danbooruProvider);
     final metatags = ref.watch(metatagsProvider);
     final cheatSheet = booru.cheetsheet(booruConfig.url);
@@ -38,7 +40,7 @@ class DanbooruMetatagsSection extends ConsumerWidget {
             data: (tags) => tags,
             orElse: () => null,
           ),
-      onHelpRequest: !booruConfig.hasStrictSFW
+      onHelpRequest: !loginDetails.hasStrictSFW
           ? () {
               launchExternalUrl(
                 Uri.parse(cheatSheet),

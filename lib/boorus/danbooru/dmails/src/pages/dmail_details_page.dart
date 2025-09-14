@@ -8,9 +8,10 @@ import 'package:intl/intl.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../../../core/configs/ref.dart';
+import '../../../../../core/configs/config/providers.dart';
 import '../../../../../core/dtext/dtext.dart';
 import '../../../../../foundation/url_launcher.dart';
+import '../../../configs/providers.dart';
 import '../../../dtext/dtext.dart';
 import '../../../users/creator/providers.dart';
 import '../../../users/user/providers.dart';
@@ -29,6 +30,7 @@ class DanbooruDmailDetailsPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfigAuth;
+    final loginDetails = ref.watch(danbooruLoginDetailsProvider(config));
     final fromUser = ref.watch(danbooruCreatorProvider(dmail.fromId));
     final toUser = ref.watch(danbooruCreatorProvider(dmail.toId));
     final theme = Theme.of(context);
@@ -100,7 +102,7 @@ class DanbooruDmailDetailsPage extends ConsumerWidget {
                 '[/quote]',
               ),
               const SizedBox(height: 16),
-              if (!config.hasStrictSFW)
+              if (!loginDetails.hasStrictSFW)
                 FilledButton(
                   onPressed: () {
                     launchExternalUrlString('${config.url}dmails/${dmail.id}');

@@ -18,6 +18,7 @@ import '../../../../../../core/widgets/widgets.dart';
 import '../../../../../../foundation/html.dart';
 import '../../../../../../foundation/url_launcher.dart';
 import '../../../../../../foundation/utils/html_utils.dart';
+import '../../../../configs/providers.dart';
 import '../../../post/post.dart';
 import '../../pool/pool.dart';
 import 'providers/providers.dart';
@@ -37,6 +38,7 @@ class PoolDetailPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final poolDesc = ref.watch(poolDescriptionProvider(pool.id));
     final config = ref.watchConfigAuth;
+    final loginDetails = ref.watch(danbooruLoginDetailsProvider(config));
 
     return CustomContextMenuOverlay(
       child: DanbooruInfinitePostIdList(
@@ -90,7 +92,7 @@ class PoolDetailPage extends ConsumerWidget {
                       hasTextBetweenDiv(data.description)
                   ? SliverToBoxAdapter(
                       child: AppHtml(
-                        onLinkTap: !config.hasStrictSFW
+                        onLinkTap: !loginDetails.hasStrictSFW
                             ? (url, attributes, element) => _onHtmlLinkTapped(
                                 attributes,
                                 url,

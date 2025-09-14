@@ -6,6 +6,7 @@ import '../../../core/configs/config/types.dart';
 import '../../../core/posts/favorites/providers.dart';
 import '../../../core/posts/favorites/types.dart';
 import '../client_provider.dart';
+import '../configs/providers.dart';
 import '../post_votes/providers.dart';
 import '../posts/types.dart';
 
@@ -13,6 +14,7 @@ final szurubooruFavoriteRepoProvider =
     Provider.family<FavoriteRepository<SzurubooruPost>, BooruConfigAuth>(
       (ref, config) {
         final client = ref.watch(szurubooruClientProvider(config));
+        final loginDetails = ref.watch(szurubooruLoginDetailsProvider(config));
 
         return FavoriteRepositoryBuilder(
           add: (postId) async {
@@ -31,7 +33,7 @@ final szurubooruFavoriteRepoProvider =
           remove: (postId) =>
               client.removeFromFavorites(postId: postId).then((value) => true),
           isFavorited: (post) => post.ownFavorite,
-          canFavorite: () => config.hasLoginDetails(),
+          canFavorite: () => loginDetails.hasLogin(),
         );
       },
     );

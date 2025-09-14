@@ -18,6 +18,7 @@ import '../../core/search/queries/query.dart';
 import '../../core/tags/autocompletes/types.dart';
 import '../../core/tags/tag/tag.dart';
 import 'comments/providers.dart';
+import 'configs/providers.dart';
 import 'favorites/providers.dart';
 import 'notes/providers.dart';
 import 'posts/providers.dart';
@@ -127,6 +128,11 @@ class GelbooruRepository extends BooruRepositoryDefault {
   @override
   CommentRepository comment(BooruConfigAuth config) {
     return ref.watch(gelbooruCommentRepoProvider(config));
+  }
+
+  @override
+  BooruLoginDetails loginDetails(BooruConfigAuth config) {
+    return ref.watch(gelbooruLoginDetailsProvider(config));
   }
 }
 

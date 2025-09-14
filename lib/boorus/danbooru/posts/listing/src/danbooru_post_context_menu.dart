@@ -16,6 +16,7 @@ import '../../../../../core/posts/post/providers.dart';
 import '../../../../../core/router.dart';
 import '../../../../../core/tags/show/routes.dart';
 import '../../../../../foundation/url_launcher.dart';
+import '../../../configs/providers.dart';
 import '../../../versions/routes.dart';
 import '../../favgroups/favgroups/routes.dart';
 import '../../post/post.dart';
@@ -34,6 +35,7 @@ class DanbooruPostContextMenu extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final booruConfig = ref.watchConfigAuth;
+    final loginDetails = ref.watch(danbooruLoginDetailsProvider(booruConfig));
     final bookmarkStateAsync = ref.watch(bookmarkProvider);
     final isBookmarked =
         bookmarkStateAsync.valueOrNull?.isBookmarked(
@@ -42,7 +44,7 @@ class DanbooruPostContextMenu extends ConsumerWidget {
         ) ??
         false;
     final isBookmarkLoading = bookmarkStateAsync.isLoading;
-    final hasAccount = booruConfig.hasLoginDetails();
+    final hasAccount = loginDetails.hasLogin();
     final postLinkGenerator = ref.watch(postLinkGeneratorProvider(booruConfig));
 
     return GenericContextMenu(
@@ -89,7 +91,7 @@ class DanbooruPostContextMenu extends ConsumerWidget {
               );
             },
           ),
-        if (!booruConfig.hasStrictSFW)
+        if (!loginDetails.hasStrictSFW)
           ContextMenuButtonConfig(
             context.t.post.action.view_in_browser,
             onPressed: () =>
@@ -143,6 +145,7 @@ class FavoriteGroupsPostContextMenu extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfigAuth;
+    final loginDetails = ref.watch(danbooruLoginDetailsProvider(config));
 
     return GenericContextMenu(
       buttonConfigs: [
@@ -152,7 +155,7 @@ class FavoriteGroupsPostContextMenu extends ConsumerWidget {
             ref.download(post);
           },
         ),
-        if (config.hasLoginDetails())
+        if (loginDetails.hasLogin())
           ContextMenuButtonConfig(
             'Remove from favorite group',
             onPressed: () {

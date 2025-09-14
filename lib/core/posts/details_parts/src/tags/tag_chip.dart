@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 
 // Project imports:
 import '../../../../configs/config.dart';
+import '../../../../configs/config/providers.dart';
 import '../../../../tags/categories/providers.dart';
 import '../../../../theme/providers.dart';
 import '../../../../theme/utils.dart';
@@ -44,7 +45,9 @@ class TagChip extends ConsumerWidget {
     final displayText = transformText
         ? text.toLowerCase().replaceAll('_', ' ')
         : text;
-    final subtitle = _buildSubtitle();
+    final loginDetails = ref.watch(booruLoginDetailsProvider(auth));
+
+    final subtitle = _buildSubtitle(loginDetails);
 
     return RawTagChip(
       text: displayText,
@@ -72,9 +75,9 @@ class TagChip extends ConsumerWidget {
     return ref.watch(booruChipColorsProvider).fromColor(fallbackColor);
   }
 
-  String? _buildSubtitle() {
+  String? _buildSubtitle(BooruLoginDetails loginDetails) {
     if (!showPostCount ||
-        auth.hasStrictSFW ||
+        loginDetails.hasStrictSFW ||
         postCount == null ||
         postCount! <= 0) {
       return null;

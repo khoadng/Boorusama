@@ -11,6 +11,7 @@ import '../../../../proxy/proxy.dart';
 import '../../../../settings/settings.dart';
 import '../../../../theme/theme_configs.dart';
 import '../../../config/data.dart';
+import '../../../config/src/providers/providers.dart';
 import '../../../config/types.dart';
 import '../../../gesture/gesture.dart';
 import '../../../manage/providers.dart';
@@ -30,6 +31,8 @@ final validateConfigProvider = FutureProvider.autoDispose<bool?>((ref) async {
   final config = ref.watch(targetConfigToValidateProvider);
   if (config == null) return null;
 
+  final loginDetails = ref.watch(booruLoginDetailsProvider(config));
+
   ref
       .watch(analyticsProvider)
       .whenData(
@@ -38,7 +41,7 @@ final validateConfigProvider = FutureProvider.autoDispose<bool?>((ref) async {
           parameters: {
             'url': Uri.tryParse(config.url)?.host,
             'hint_site': config.booruType.name,
-            'has_login': config.hasLoginDetails(),
+            'has_login': loginDetails.hasLogin(),
           },
         ),
       );

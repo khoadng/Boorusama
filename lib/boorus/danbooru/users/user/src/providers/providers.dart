@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../../../../core/cache/providers.dart';
 import '../../../../../../core/configs/config.dart';
+import '../../../../configs/providers.dart';
 import '../data/providers.dart';
 import '../types/user.dart';
 
@@ -11,7 +12,8 @@ const _kCurrentUserIdKey = '_current_uid';
 
 final danbooruCurrentUserProvider =
     FutureProvider.family<UserSelf?, BooruConfigAuth>((ref, config) async {
-      if (!config.hasLoginDetails()) return null;
+      final loginDetails = ref.watch(danbooruLoginDetailsProvider(config));
+      if (!loginDetails.hasLogin()) return null;
 
       // First, we try to get the user id from the cache
       final miscData = ref.watch(miscDataBoxProvider);

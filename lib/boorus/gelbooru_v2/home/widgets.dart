@@ -13,6 +13,7 @@ import '../../../core/home/home_navigation_tile.dart';
 import '../../../core/home/home_page_scaffold.dart';
 import '../../../core/home/side_menu_tile.dart';
 import '../../../core/posts/favorites/routes.dart';
+import '../configs/providers.dart';
 import '../favorites/widgets.dart';
 
 class GelbooruV2HomePage extends ConsumerStatefulWidget {
@@ -28,13 +29,15 @@ class _GelbooruV2HomePageState extends ConsumerState<GelbooruV2HomePage> {
   @override
   Widget build(BuildContext context) {
     final config = ref.watchConfigAuth;
+    final loginDetails = ref.watch(gelbooruV2LoginDetailsProvider(config));
+
     final favoritePageBuilder = ref
         .watch(booruBuilderProvider(config))
         ?.favoritesPageBuilder;
 
     return HomePageScaffold(
       mobileMenu: [
-        if (favoritePageBuilder != null && config.hasLoginDetails())
+        if (favoritePageBuilder != null && loginDetails.hasLogin())
           SideMenuTile(
             icon: const Icon(
               Symbols.favorite,
@@ -47,7 +50,7 @@ class _GelbooruV2HomePageState extends ConsumerState<GelbooruV2HomePage> {
           ),
       ],
       desktopMenuBuilder: (context, constraints) => [
-        if (favoritePageBuilder != null && config.hasLoginDetails())
+        if (favoritePageBuilder != null && loginDetails.hasLogin())
           HomeNavigationTile(
             value: 1,
             constraints: constraints,

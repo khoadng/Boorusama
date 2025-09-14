@@ -14,6 +14,7 @@ import '../../../core/home/home_page_scaffold.dart';
 import '../../../core/home/side_menu_tile.dart';
 import '../../../core/posts/favorites/routes.dart';
 import '../../../core/widgets/widgets.dart';
+import '../configs/providers.dart';
 import '../favorites/widgets.dart';
 import '../popular/widgets.dart';
 
@@ -30,6 +31,7 @@ class _E621HomePageState extends ConsumerState<E621HomePage> {
   @override
   Widget build(BuildContext context) {
     final config = ref.watchConfigAuth;
+    final loginDetails = ref.watch(e621LoginDetailsProvider(config));
 
     return HomePageScaffold(
       mobileMenu: [
@@ -50,7 +52,7 @@ class _E621HomePageState extends ConsumerState<E621HomePage> {
             ),
           ),
         ),
-        if (config.hasLoginDetails()) ...[
+        if (loginDetails.hasLogin()) ...[
           SideMenuTile(
             icon: const Icon(Symbols.favorite),
             title: Text(context.t.profile.favorites),
@@ -66,7 +68,7 @@ class _E621HomePageState extends ConsumerState<E621HomePage> {
           icon: Symbols.explore,
           title: context.t.explore.popular,
         ),
-        if (config.hasLoginDetails()) ...[
+        if (loginDetails.hasLogin()) ...[
           HomeNavigationTile(
             value: 2,
             constraints: constraints,
@@ -78,7 +80,7 @@ class _E621HomePageState extends ConsumerState<E621HomePage> {
       ],
       desktopViews: [
         const E621PopularPage(),
-        if (config.hasLoginDetails()) ...[
+        if (loginDetails.hasLogin()) ...[
           const E621FavoritesPage(),
         ],
       ],

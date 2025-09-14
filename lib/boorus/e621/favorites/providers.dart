@@ -6,12 +6,14 @@ import '../../../core/configs/config.dart';
 import '../../../core/posts/favorites/providers.dart';
 import '../../../core/posts/favorites/types.dart';
 import '../client_provider.dart';
+import '../configs/providers.dart';
 import '../posts/types.dart';
 
 final e621FavoriteRepoProvider =
     Provider.family<FavoriteRepository<E621Post>, BooruConfigAuth>(
       (ref, config) {
         final client = ref.watch(e621ClientProvider(config));
+        final loginDetails = ref.watch(e621LoginDetailsProvider(config));
 
         return FavoriteRepositoryBuilder(
           add: (postId) => client
@@ -23,7 +25,7 @@ final e621FavoriteRepoProvider =
               ),
           remove: (postId) => client.removeFromFavorites(postId: postId),
           isFavorited: (post) => post.isFavorited,
-          canFavorite: () => config.hasLoginDetails(),
+          canFavorite: () => loginDetails.hasLogin(),
         );
       },
     );

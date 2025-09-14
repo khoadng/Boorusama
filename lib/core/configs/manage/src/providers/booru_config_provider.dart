@@ -13,9 +13,9 @@ import '../../../../analytics/analytics_interface.dart';
 import '../../../../analytics/providers.dart';
 import '../../../../settings/providers.dart';
 import '../../../config/data.dart';
+import '../../../config/providers.dart';
 import '../../../config/types.dart';
 import '../../../create/create.dart';
-import '../../../ref.dart';
 import 'current_booru_providers.dart';
 
 final booruConfigRepoProvider = Provider<BooruConfigRepository>(
@@ -78,11 +78,13 @@ class BooruConfigNotifier extends Notifier<List<BooruConfig>> {
     void Function(BooruConfig booruConfig)? onSuccess,
   }) async {
     final analyticsAsync = ref.read(analyticsProvider);
+    final loginDetails = ref.read(booruLoginDetailsProvider(config.auth));
+
     const eventName = 'config_delete';
     final baseParams = {
       'url': config.url,
       'hint_site': config.auth.booruType.name,
-      'has_login': config.auth.hasLoginDetails(),
+      'has_login': loginDetails.hasLogin(),
     };
 
     try {

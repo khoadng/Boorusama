@@ -6,13 +6,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
-import '../../../../../../core/configs/ref.dart';
+import '../../../../../../core/configs/config/providers.dart';
 import '../../../../../../core/posts/details_parts/widgets.dart';
 import '../../../../../../core/search/search/routes.dart';
 import '../../../../../../core/tags/show/routes.dart';
 import '../../../../../../core/tags/tag/providers.dart';
 import '../../../../../../core/tags/tag/tag.dart';
 import '../../../../../../core/tags/tag/widgets.dart';
+import '../../../../configs/providers.dart';
 import '../../../../tags/_shared/tag_list_notifier.dart';
 import '../../../../tags/tag/widgets.dart';
 import '../../../listing/providers.dart';
@@ -38,6 +39,7 @@ class DanbooruTagsTile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfigAuth;
+    final loginDetails = ref.watch(danbooruLoginDetailsProvider(config));
     final tagDetails = allowFetch
         ? ref.watch(danbooruTagListProvider(config))[post.id]
         : null;
@@ -52,7 +54,7 @@ class DanbooruTagsTile extends ConsumerWidget {
         post: post,
         count: count,
         itemBuilder: {
-          if (config.hasLoginDetails())
+          if (loginDetails.hasLogin())
             'edit': Text(context.t.generic.action.edit),
         },
         onMultiSelect: () {

@@ -12,7 +12,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:share_handler/share_handler.dart';
 
 // Project imports:
-import '../../../../core/configs/ref.dart';
+import '../../../../core/configs/config/providers.dart';
 import '../../../../core/home/home_navigation_tile.dart';
 import '../../../../core/home/home_page_scaffold.dart';
 import '../../../../core/home/side_menu_tile.dart';
@@ -24,6 +24,7 @@ import '../../artists/search/routes.dart';
 import '../../artists/search/widgets.dart';
 import '../../blacklist/routes.dart';
 import '../../blacklist/widgets.dart';
+import '../../configs/providers.dart';
 import '../../forums/topics/routes.dart';
 import '../../forums/topics/widgets.dart';
 import '../../posts/explores/routes.dart';
@@ -70,9 +71,10 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
   void _onSharedTextsReceived(SharedMedia media) {
     final text = media.content;
     final config = ref.readConfigAuth;
+    final loginDetails = ref.watch(danbooruLoginDetailsProvider(config));
     final booruUrl = config.url;
 
-    if (config.hasStrictSFW) return;
+    if (loginDetails.hasStrictSFW) return;
 
     final uri = text != null ? Uri.tryParse(text) : null;
     final isHttp = uri?.scheme == 'http' || uri?.scheme == 'https';
@@ -123,6 +125,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
   Widget build(BuildContext context) {
     final configFilter = ref.watchConfigFilter;
     final config = configFilter.auth;
+    final loginDetails = ref.watch(booruLoginDetailsProvider(config));
 
     final userId = ref
         .watch(danbooruCurrentUserProvider(config))
@@ -133,7 +136,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
 
     return HomePageScaffold(
       mobileMenu: [
-        if (config.hasLoginDetails() && userId != null)
+        if (loginDetails.hasLogin() && userId != null)
           SideMenuTile(
             icon: const _Icon(
               Symbols.account_box,
@@ -177,7 +180,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
             goToArtistSearchPage(ref);
           },
         ),
-        if (config.hasLoginDetails()) ...[
+        if (loginDetails.hasLogin()) ...[
           SideMenuTile(
             icon: const _Icon(
               Symbols.favorite,
@@ -247,7 +250,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
           icon: Symbols.search,
           title: context.t.artists.title,
         ),
-        if (config.hasLoginDetails()) ...[
+        if (loginDetails.hasLogin()) ...[
           if (userId != null)
             HomeNavigationTile(
               value: 5,
@@ -295,7 +298,7 @@ class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
         const DanbooruForumPage(),
         // 4
         const DanbooruArtistSearchPage(),
-        if (config.hasLoginDetails()) ...[
+        if (loginDetails.hasLogin()) ...[
           if (userId != null)
             // 5
             const DanbooruProfilePage(

@@ -10,6 +10,7 @@ import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../../../../core/configs/config.dart';
+import '../../../../../configs/providers.dart';
 import '../../../../../users/user/providers.dart';
 import '../../../../../users/user/user.dart';
 import '../../../listing/providers.dart';
@@ -42,7 +43,9 @@ class FavoriteGroupsNotifier
       ref.read(danbooruFavoriteGroupRepoProvider(arg.auth));
 
   Future<void> refresh() async {
-    if (!arg.auth.hasLoginDetails()) return;
+    final loginDetails = ref.watch(danbooruLoginDetailsProvider(arg.auth));
+
+    if (!loginDetails.hasLogin()) return;
     final groups = await repo.getFavoriteGroupsByCreatorName(
       name: arg.auth.login!,
     );

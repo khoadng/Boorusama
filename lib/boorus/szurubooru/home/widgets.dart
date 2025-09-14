@@ -12,6 +12,7 @@ import '../../../core/home/home_navigation_tile.dart';
 import '../../../core/home/home_page_scaffold.dart';
 import '../../../core/home/side_menu_tile.dart';
 import '../../../core/posts/favorites/routes.dart';
+import '../configs/providers.dart';
 import '../favorites/widgets.dart';
 
 class SzurubooruHomePage extends ConsumerWidget {
@@ -22,10 +23,11 @@ class SzurubooruHomePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfigAuth;
+    final loginDetails = ref.watch(szurubooruLoginDetailsProvider(config));
 
     return HomePageScaffold(
       mobileMenu: [
-        if (config.hasLoginDetails()) ...[
+        if (loginDetails.hasLogin()) ...[
           SideMenuTile(
             icon: const Icon(Symbols.favorite),
             title: Text(context.t.profile.favorites),
@@ -34,7 +36,7 @@ class SzurubooruHomePage extends ConsumerWidget {
         ],
       ],
       desktopMenuBuilder: (context, constraints) => [
-        if (config.hasLoginDetails()) ...[
+        if (loginDetails.hasLogin()) ...[
           HomeNavigationTile(
             value: 1,
             constraints: constraints,
@@ -45,7 +47,7 @@ class SzurubooruHomePage extends ConsumerWidget {
         ],
       ],
       desktopViews: [
-        if (config.hasLoginDetails()) ...[
+        if (loginDetails.hasLogin()) ...[
           const SzurubooruFavoritesPage(),
         ],
       ],

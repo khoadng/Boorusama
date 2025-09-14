@@ -15,7 +15,7 @@ import 'package:sliver_tools/sliver_tools.dart';
 // Project imports:
 import '../../../../foundation/url_launcher.dart';
 import '../../../config_widgets/website_logo.dart';
-import '../../../configs/ref.dart';
+import '../../../configs/config/providers.dart';
 import '../../../posts/listing/providers.dart';
 import '../../../posts/listing/src/_internal/default_image_grid_item.dart';
 import '../../../posts/listing/src/_internal/post_grid_config_icon_button.dart';
@@ -240,6 +240,7 @@ class _BookmarkScrollViewState extends ConsumerState<BookmarkScrollView> {
 
     final auth = ref.watchConfigAuth;
     final download = ref.watchConfigDownload;
+    final loginDetails = ref.watch(booruLoginDetailsProvider(auth));
 
     return ValueListenableBuilder(
       valueListenable: controller.itemsNotifier,
@@ -283,7 +284,7 @@ class _BookmarkScrollViewState extends ConsumerState<BookmarkScrollView> {
                       },
                     ),
                   ),
-                  if (!auth.hasStrictSFW)
+                  if (!loginDetails.hasStrictSFW)
                     ContextMenuButtonConfig(
                       'Open source in browser',
                       onPressed: () =>

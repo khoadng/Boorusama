@@ -17,6 +17,7 @@ import '../../core/posts/details_parts/widgets.dart';
 import '../../core/search/search/widgets.dart';
 import '../../core/widgets/widgets.dart';
 import '../../foundation/html.dart';
+import 'configs/providers.dart';
 import 'configs/widgets.dart';
 import 'favorites/widgets.dart';
 import 'home/widgets.dart';
@@ -140,10 +141,11 @@ class SzurubooruSearchPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfigSearch;
+    final loginDetails = ref.watch(szurubooruLoginDetailsProvider(config.auth));
     final postRepo = ref.watch(szurubooruPostRepoProvider(config));
 
     return SearchPageScaffold(
-      noticeBuilder: (context) => !config.auth.hasLoginDetails()
+      noticeBuilder: (context) => !loginDetails.hasLogin()
           ? InfoContainer(
               contentBuilder: (context) => const AppHtml(
                 data:

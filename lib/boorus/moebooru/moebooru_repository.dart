@@ -16,6 +16,7 @@ import '../../core/tags/autocompletes/types.dart';
 import '../../core/tags/tag/tag.dart';
 import 'autocompletes/providers.dart';
 import 'comments/providers.dart';
+import 'configs/providers.dart';
 import 'posts/providers.dart';
 import 'posts/types.dart';
 import 'tag_summary/providers.dart';
@@ -99,5 +100,10 @@ class MoebooruRepository extends BooruRepositoryDefault {
   @override
   CommentRepository comment(BooruConfigAuth config) {
     return ref.watch(moebooruCommentRepoProvider(config));
+  }
+
+  @override
+  BooruLoginDetails loginDetails(BooruConfigAuth config) {
+    return ref.watch(moebooruLoginDetailsProvider(config));
   }
 }

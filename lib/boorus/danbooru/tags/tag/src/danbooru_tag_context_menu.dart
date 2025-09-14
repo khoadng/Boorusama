@@ -11,6 +11,7 @@ import '../../../../../core/tags/tag/widgets.dart';
 import '../../../../../core/wikis/launcher.dart';
 import '../../../../../foundation/clipboard.dart';
 import '../../../blacklist/providers.dart';
+import '../../../configs/providers.dart';
 import '../../../saved_searches/saved_search/routes.dart';
 
 class DanbooruTagContextMenu extends ConsumerWidget {
@@ -26,6 +27,7 @@ class DanbooruTagContextMenu extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfigAuth;
+    final loginDetails = ref.watch(danbooruLoginDetailsProvider(config));
 
     return GeneralTagContextMenu(
       tag: tag,
@@ -34,11 +36,11 @@ class DanbooruTagContextMenu extends ConsumerWidget {
           config.url,
           tag,
         ),
-        if (config.hasLoginDetails())
+        if (loginDetails.hasLogin())
           context.t.tags.actions.add_to_blacklist: () => ref
               .read(danbooruBlacklistedTagsProvider(config).notifier)
               .addWithToast(context: context, tag: tag),
-        if (config.hasLoginDetails())
+        if (loginDetails.hasLogin())
           context.t.post.detail.copy_and_open_saved_search: () async {
             await AppClipboard.copy(tag);
 

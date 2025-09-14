@@ -19,6 +19,7 @@ import '../../core/search/queries/query.dart';
 import '../../core/tags/autocompletes/types.dart';
 import '../../core/tags/tag/tag.dart';
 import 'comments/providers.dart';
+import 'configs/providers.dart';
 import 'gelbooru_v2_provider.dart';
 import 'notes/providers.dart';
 import 'posts/providers.dart';
@@ -126,6 +127,11 @@ class GelbooruV2Repository extends BooruRepositoryDefault {
   @override
   ImageUrlResolver imageUrlResolver() {
     return ref.watch(gelbooruV2PostImageUrlResolverProvider);
+  }
+
+  @override
+  BooruLoginDetails loginDetails(BooruConfigAuth config) {
+    return ref.watch(gelbooruV2LoginDetailsProvider(config));
   }
 }
 

@@ -17,6 +17,7 @@ import '../../../core/posts/votes/widgets.dart';
 import '../../../core/router.dart';
 import '../../../core/widgets/adaptive_button_row.dart';
 import '../../../core/widgets/booru_menu_button_row.dart';
+import '../configs/providers.dart';
 import '../posts/types.dart';
 import 'providers.dart';
 
@@ -41,6 +42,7 @@ class SzurubooruPostActionToolbar extends ConsumerWidget {
     final voteNotifier = ref.watch(
       szurubooruPostVotesProvider(config).notifier,
     );
+    final loginDetails = ref.watch(szurubooruLoginDetailsProvider(config));
 
     return SliverToBoxAdapter(
       child: CommonPostButtonsBuilder(
@@ -52,18 +54,18 @@ class SzurubooruPostActionToolbar extends ConsumerWidget {
           return BooruMenuButtonRow(
             maxVisibleButtons: 5,
             buttons: [
-              if (config.hasLoginDetails())
+              if (loginDetails.hasLogin())
                 ButtonData(
                   required: true,
                   widget: FavoritePostButton(
                     isFaved: isFaved,
-                    isAuthorized: config.hasLoginDetails(),
+                    isAuthorized: loginDetails.hasLogin(),
                     addFavorite: () => favNotifier.add(post.id),
                     removeFavorite: () => favNotifier.remove(post.id),
                   ),
                   title: context.t.post.action.favorite,
                 ),
-              if (config.hasLoginDetails())
+              if (loginDetails.hasLogin())
                 ButtonData(
                   required: true,
                   widget: UpvotePostButton(
@@ -73,7 +75,7 @@ class SzurubooruPostActionToolbar extends ConsumerWidget {
                   ),
                   title: context.t.post.action.upvote,
                 ),
-              if (config.hasLoginDetails())
+              if (loginDetails.hasLogin())
                 ButtonData(
                   required: true,
                   widget: DownvotePostButton(

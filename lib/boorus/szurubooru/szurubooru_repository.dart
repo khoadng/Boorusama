@@ -14,6 +14,7 @@ import '../../core/posts/post/providers.dart';
 import '../../core/search/queries/query.dart';
 import '../../core/tags/autocompletes/types.dart';
 import '../../core/tags/tag/tag.dart';
+import 'configs/providers.dart';
 import 'favorites/providers.dart';
 import 'posts/providers.dart';
 import 'tags/providers.dart';
@@ -80,5 +81,10 @@ class SzurubooruRepository extends BooruRepositoryDefault {
   @override
   TagExtractor tagExtractor(BooruConfigAuth config) {
     return ref.watch(szurubooruTagExtractorProvider(config));
+  }
+
+  @override
+  BooruLoginDetails loginDetails(BooruConfigAuth config) {
+    return ref.watch(szurubooruLoginDetailsProvider(config));
   }
 }
