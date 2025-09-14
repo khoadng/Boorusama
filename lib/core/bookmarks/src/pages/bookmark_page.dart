@@ -7,7 +7,6 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import '../../../widgets/widgets.dart';
-import '../providers/local_providers.dart';
 import '../widgets/bookmark_scroll_view.dart';
 
 class BookmarkPage extends ConsumerStatefulWidget {
@@ -26,23 +25,11 @@ class _BookmarkPageState extends ConsumerState<BookmarkPage> {
 
   @override
   void dispose() {
-    _searchController.removeListener(_onSearchTextChanged);
-
     _scrollController.dispose();
     _searchController.dispose();
     _focusNode.dispose();
 
     super.dispose();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _searchController.addListener(_onSearchTextChanged);
-  }
-
-  void _onSearchTextChanged() {
-    ref.read(tagInputProvider.notifier).state = _searchController.text;
   }
 
   @override
