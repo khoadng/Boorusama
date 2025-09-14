@@ -8,8 +8,10 @@ import 'package:intl/intl.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import '../../../../../../core/configs/config/providers.dart';
 import '../../../../../../core/theme.dart';
 import '../../../feedbacks/routes.dart';
+import '../../../user/providers.dart';
 import '../../../user/user.dart';
 import '../widgets/user_details_section_card.dart';
 
@@ -28,6 +30,7 @@ class UserDetailsInfoView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final hasFeedback = user.hasFeedbacks;
+    final config = ref.watchConfigAuth;
 
     return SingleChildScrollView(
       child: Column(
@@ -64,6 +67,35 @@ class UserDetailsInfoView extends ConsumerWidget {
             ),
             child: UserFeedbacksGroup(user: user),
           ),
+          ref
+              .watch(danbooruUserPreviousNamesProvider((config, user.id)))
+              .maybeWhen(
+                data: (previousNames) => previousNames.isNotEmpty
+                    ? Padding(
+                        padding: const EdgeInsets.only(top: 24),
+                        child: UserDetailsSectionCard.text(
+                          title: context.t.profile.previous_names,
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Wrap(
+                                  children: previousNames
+                                      .map(
+                                        (e) => Chip(
+                                          label: Text(e.replaceAll('_', ' ')),
+                                          visualDensity: VisualDensity.compact,
+                                        ),
+                                      )
+                                      .toList(),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
+                    : const SizedBox.shrink(),
+                orElse: () => const SizedBox.shrink(),
+              ),
         ],
       ),
     );

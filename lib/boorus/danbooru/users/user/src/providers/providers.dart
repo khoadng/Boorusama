@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../../../../core/cache/providers.dart';
 import '../../../../../../core/configs/config.dart';
+import '../../../../../../foundation/riverpod/riverpod.dart';
+import '../../../../client_provider.dart';
 import '../../../../configs/providers.dart';
 import '../data/providers.dart';
 import '../types/user.dart';
@@ -40,4 +42,15 @@ final danbooruCurrentUserProvider =
       if (id == null) return null;
 
       return ref.watch(danbooruUserRepoProvider(config)).getUserSelfById(id);
+    });
+
+final danbooruUserPreviousNamesProvider = FutureProvider.autoDispose
+    .family<List<String>, (BooruConfigAuth, int)>((ref, params) async {
+      ref.cacheFor(const Duration(minutes: 10));
+
+      final (config, userId) = params;
+      final client = ref.watch(danbooruClientProvider(config));
+      final requests = await client.getUserNameChangeRequests(userId: userId);
+
+      return requests.map((e) => e.desiredName).nonNulls.toList();
     });

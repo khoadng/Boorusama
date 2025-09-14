@@ -86,4 +86,25 @@ mixin DanbooruClientUsers {
         .map((item) => UserFeedbackDto.fromJson(item))
         .toList();
   }
+
+  Future<List<UserNameChangeRequestDto>> getUserNameChangeRequests({
+    int? userId,
+    int? page,
+    int? limit,
+    CancelToken? cancelToken,
+  }) async {
+    final response = await dio.get(
+      '/user_name_change_requests.json',
+      queryParameters: {
+        'search[user_id]': ?userId,
+        'page': ?page,
+        'limit': ?limit,
+      },
+      cancelToken: cancelToken,
+    );
+
+    return (response.data as List)
+        .map((item) => UserNameChangeRequestDto.fromJson(item))
+        .toList();
+  }
 }
