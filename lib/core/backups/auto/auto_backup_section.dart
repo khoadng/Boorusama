@@ -3,14 +3,19 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
+import '../../../foundation/html.dart';
+import '../../../foundation/info/device_info.dart';
 import '../../../foundation/picker.dart';
+import '../../../foundation/platform.dart';
 import '../../settings/providers.dart';
 import '../../settings/widgets.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/widgets.dart';
+import '../../downloads/path/validator.dart';
 import '../auto/auto_backup_service.dart';
 import '../zip/providers.dart';
 import 'auto_backup_settings.dart';
@@ -27,6 +32,12 @@ class AutoBackupSection extends ConsumerWidget {
     final isLoading = ref.watch(
       backupProvider.select((s) => s.isActive),
     );
+    final storagePath = ref
+        .watch(autoBackupDefaultDirectoryPathProvider)
+        .maybeWhen(
+          data: (defaultPath) => settings.userSelectedPath ?? defaultPath,
+          orElse: () => null,
+        );
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -101,6 +112,11 @@ class AutoBackupSection extends ConsumerWidget {
                       ),
                   child: Text(context.t.settings.auto_backup.change),
                 ),
+              ),
+              //FIXME: Migrate folder selection warning to a common widget
+              _DownloadPathWarning(
+                padding: const EdgeInsets.all(12),
+                storagePath: storagePath,
               ),
               SettingsTile(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -219,3 +235,45 @@ String _getLastBackupDisplay(
     _ => context.t.time.timeago.just_now,
   },
 };
+
+class _DownloadPathWarning extends ConsumerWidget
+    with DownloadPathValidatorMixin {
+  const _DownloadPathWarning({
+    required this.storagePath,
+    this.padding,
+  });
+
+  @override
+  final String? storagePath;
+  final EdgeInsetsGeometry? padding;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    if (!isAndroid()) {
+      return const SizedBox.shrink();
+    }
+
+    final deviceInfo = ref.watch(deviceInfoProvider);
+    final hasScopeStorage =
+        hasScopedStorage(
+          deviceInfo.androidDeviceInfo?.version.sdkInt,
+        ) ??
+        true;
+
+    if (!shouldDisplayWarning(hasScopeStorage: hasScopeStorage)) {
+      return const SizedBox.shrink();
+    }
+
+    final releaseName =
+        deviceInfo.androidDeviceInfo?.version.release ?? 'Unknown';
+
+    return WarningContainer(
+      margin: padding,
+      contentBuilder: (context) => AppHtml(
+        data: context.t.download.folder_select_warning
+            .replaceAll('{0}', allowedFolders.join(', '))
+            .replaceAll('{1}', releaseName),
+      ),
+    );
+  }
+}
