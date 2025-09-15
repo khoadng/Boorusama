@@ -4,10 +4,13 @@ import 'dart:io';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 import 'package:path/path.dart' as p;
 
 // Project imports:
+import '../../../foundation/info/device_info.dart';
 import '../../../foundation/loggers.dart';
+import '../../../foundation/platform.dart';
 import '../../downloads/path/directory.dart';
 import '../sources/providers.dart';
 import '../types/backup_registry.dart';
@@ -23,9 +26,21 @@ final autoBackupServiceProvider = Provider<AutoBackupService>((ref) {
   );
 });
 
-final autoBackupDefaultDirectoryPathProvider = FutureProvider<String>((
+final autoBackupDefaultDirectoryPathProvider = FutureProvider<String?>((
   ref,
 ) async {
+  if (isAndroid()) {
+    final deviceInfo = ref.watch(deviceInfoProvider);
+    final hasScopeStorage =
+        hasScopedStorage(
+          deviceInfo.androidDeviceInfo?.version.sdkInt,
+        ) ??
+        true;
+
+    // On scoped storage, force user to pick a location
+    if (hasScopeStorage) return null;
+  }
+
   final downloadsDir = await _getDownloadDirectory();
   final baseDir = downloadsDir.path;
   return p.join(baseDir, AutoBackupService.backupFolderName);

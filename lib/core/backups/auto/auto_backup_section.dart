@@ -39,6 +39,9 @@ class AutoBackupSection extends ConsumerWidget {
           orElse: () => null,
         );
 
+    final hasValidPath = storagePath != null;
+    final canEnableAutoBackup = !isLoading && hasValidPath;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12),
       child: Material(
@@ -51,15 +54,67 @@ class AutoBackupSection extends ConsumerWidget {
             BooruSwitchListTile(
               contentPadding: const EdgeInsets.symmetric(horizontal: 16),
               title: Text(context.t.settings.auto_backup.enable_auto_backup),
-              value: settings.enabled,
-              onChanged: isLoading
-                  ? null
-                  : (enabled) => _updateSettings(
+              value: settings.enabled && hasValidPath,
+              onChanged: canEnableAutoBackup
+                  ? (enabled) => _updateSettings(
                       settingsNotifier,
                       settings.copyWith(enabled: enabled),
-                    ),
+                    )
+                  : null,
             ),
-            if (settings.enabled) ...[
+
+            ListTile(
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+              title: Text(context.t.settings.auto_backup.backup_location),
+              subtitle: Text(
+                ref
+                    .watch(autoBackupDefaultDirectoryPathProvider)
+                    .when(
+                      data: (defaultPath) =>
+                          settings.userSelectedPath ??
+                          defaultPath ??
+                          'No location selected'.hc,
+                      loading: () =>
+                          context.t.settings.data_and_storage.loading,
+                      error: (_, _) => context.t.generic.errors.unknown,
+                    ),
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: colorScheme.hintColor,
+                ),
+              ),
+              trailing: TextButton(
+                onPressed: () => pickDirectoryPathToastOnError(
+                  context: context,
+                  onPick: (path) => _updateSettings(
+                    settingsNotifier,
+                    settings.copyWith(userSelectedPath: () => path),
+                  ),
+                  initialDirectory:
+                      settings.userSelectedPath ??
+                      ref.read(autoBackupDefaultDirectoryPathProvider).value,
+                ),
+                child: Text(
+                  ref
+                      .watch(autoBackupDefaultDirectoryPathProvider)
+                      .maybeWhen(
+                        data: (defaultPath) =>
+                            settings.userSelectedPath != null ||
+                                defaultPath != null
+                            ? context.t.settings.auto_backup.change
+                            : context.t.generic.action.select,
+                        orElse: () => context.t.settings.auto_backup.change,
+                      ),
+                ),
+              ),
+            ),
+            if (!hasValidPath && isAndroid())
+              const _SelectLocationRequestBanner(),
+            //FIXME: Migrate folder selection warning to a common widget
+            _DownloadPathWarning(
+              padding: const EdgeInsets.all(12),
+              storagePath: storagePath,
+            ),
+            if (settings.enabled && hasValidPath) ...[
               SettingsTile(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 title: Text(context.t.settings.auto_backup.backup_frequency),
@@ -77,46 +132,6 @@ class AutoBackupSection extends ConsumerWidget {
                       context.t.settings.auto_backup.frequency.weekly,
                   },
                 ),
-              ),
-              ListTile(
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-                title: Text(context.t.settings.auto_backup.backup_location),
-                subtitle: Text(
-                  ref
-                      .watch(autoBackupDefaultDirectoryPathProvider)
-                      .when(
-                        data: (path) => settings.userSelectedPath ?? path,
-                        loading: () =>
-                            context.t.settings.data_and_storage.loading,
-                        error: (_, _) => context.t.generic.errors.unknown,
-                      ),
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: colorScheme.hintColor,
-                  ),
-                ),
-                trailing: TextButton(
-                  onPressed: ref
-                      .watch(autoBackupDefaultDirectoryPathProvider)
-                      .maybeWhen(
-                        data: (path) =>
-                            () => pickDirectoryPathToastOnError(
-                              context: context,
-                              onPick: (path) => _updateSettings(
-                                settingsNotifier,
-                                settings.copyWith(userSelectedPath: () => path),
-                              ),
-                              initialDirectory:
-                                  settings.userSelectedPath ?? path,
-                            ),
-                        orElse: () => null,
-                      ),
-                  child: Text(context.t.settings.auto_backup.change),
-                ),
-              ),
-              //FIXME: Migrate folder selection warning to a common widget
-              _DownloadPathWarning(
-                padding: const EdgeInsets.all(12),
-                storagePath: storagePath,
               ),
               SettingsTile(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -145,6 +160,54 @@ class AutoBackupSection extends ConsumerWidget {
   ) {
     settingsNotifier.updateWith(
       (s) => s.copyWith(autoBackup: newAutoBackup),
+    );
+  }
+}
+
+class _SelectLocationRequestBanner extends StatelessWidget {
+  const _SelectLocationRequestBanner();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 12,
+        vertical: 12,
+      ),
+      margin: const EdgeInsets.only(
+        left: 12,
+        right: 12,
+        bottom: 12,
+      ),
+      decoration: BoxDecoration(
+        color: colorScheme.primaryContainer.withValues(alpha: 0.2),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: colorScheme.primary.withValues(alpha: 0.2),
+          width: 1,
+        ),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            Icons.info_outline,
+            color: colorScheme.primary,
+            size: 20,
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              'Please select a backup location to enable auto backup'.hc,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: colorScheme.primary,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
