@@ -1,4 +1,4 @@
-# Prereleased-2025.8.8
+# 4.2.0
 - TikTok swiping support in image viewer
 - Improved backup system with batch export/import and automatic backup support
 - Improved haptic feedback throughout the app

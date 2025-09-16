@@ -3,14 +3,19 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
+import '../../../foundation/html.dart';
+import '../../../foundation/info/device_info.dart';
 import '../../../foundation/picker.dart';
+import '../../../foundation/platform.dart';
 import '../../settings/providers.dart';
 import '../../settings/widgets.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/widgets.dart';
+import '../../downloads/path/validator.dart';
 import '../auto/auto_backup_service.dart';
 import '../zip/providers.dart';
 import 'auto_backup_settings.dart';
@@ -27,6 +32,15 @@ class AutoBackupSection extends ConsumerWidget {
     final isLoading = ref.watch(
       backupProvider.select((s) => s.isActive),
     );
+    final storagePath = ref
+        .watch(autoBackupDefaultDirectoryPathProvider)
+        .maybeWhen(
+          data: (defaultPath) => settings.userSelectedPath ?? defaultPath,
+          orElse: () => null,
+        );
+
+    final hasValidPath = storagePath != null;
+    final canEnableAutoBackup = !isLoading && hasValidPath;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -40,15 +54,67 @@ class AutoBackupSection extends ConsumerWidget {
             BooruSwitchListTile(
               contentPadding: const EdgeInsets.symmetric(horizontal: 16),
               title: Text(context.t.settings.auto_backup.enable_auto_backup),
-              value: settings.enabled,
-              onChanged: isLoading
-                  ? null
-                  : (enabled) => _updateSettings(
+              value: settings.enabled && hasValidPath,
+              onChanged: canEnableAutoBackup
+                  ? (enabled) => _updateSettings(
                       settingsNotifier,
                       settings.copyWith(enabled: enabled),
-                    ),
+                    )
+                  : null,
             ),
-            if (settings.enabled) ...[
+
+            ListTile(
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+              title: Text(context.t.settings.auto_backup.backup_location),
+              subtitle: Text(
+                ref
+                    .watch(autoBackupDefaultDirectoryPathProvider)
+                    .when(
+                      data: (defaultPath) =>
+                          settings.userSelectedPath ??
+                          defaultPath ??
+                          'No location selected'.hc,
+                      loading: () =>
+                          context.t.settings.data_and_storage.loading,
+                      error: (_, _) => context.t.generic.errors.unknown,
+                    ),
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: colorScheme.hintColor,
+                ),
+              ),
+              trailing: TextButton(
+                onPressed: () => pickDirectoryPathToastOnError(
+                  context: context,
+                  onPick: (path) => _updateSettings(
+                    settingsNotifier,
+                    settings.copyWith(userSelectedPath: () => path),
+                  ),
+                  initialDirectory:
+                      settings.userSelectedPath ??
+                      ref.read(autoBackupDefaultDirectoryPathProvider).value,
+                ),
+                child: Text(
+                  ref
+                      .watch(autoBackupDefaultDirectoryPathProvider)
+                      .maybeWhen(
+                        data: (defaultPath) =>
+                            settings.userSelectedPath != null ||
+                                defaultPath != null
+                            ? context.t.settings.auto_backup.change
+                            : context.t.generic.action.select,
+                        orElse: () => context.t.settings.auto_backup.change,
+                      ),
+                ),
+              ),
+            ),
+            if (!hasValidPath && isAndroid())
+              const _SelectLocationRequestBanner(),
+            //FIXME: Migrate folder selection warning to a common widget
+            _DownloadPathWarning(
+              padding: const EdgeInsets.all(12),
+              storagePath: storagePath,
+            ),
+            if (settings.enabled && hasValidPath) ...[
               SettingsTile(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 title: Text(context.t.settings.auto_backup.backup_frequency),
@@ -65,41 +131,6 @@ class AutoBackupSection extends ConsumerWidget {
                     AutoBackupFrequency.weekly =>
                       context.t.settings.auto_backup.frequency.weekly,
                   },
-                ),
-              ),
-              ListTile(
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-                title: Text(context.t.settings.auto_backup.backup_location),
-                subtitle: Text(
-                  ref
-                      .watch(autoBackupDefaultDirectoryPathProvider)
-                      .when(
-                        data: (path) => settings.userSelectedPath ?? path,
-                        loading: () =>
-                            context.t.settings.data_and_storage.loading,
-                        error: (_, _) => context.t.generic.errors.unknown,
-                      ),
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: colorScheme.hintColor,
-                  ),
-                ),
-                trailing: TextButton(
-                  onPressed: ref
-                      .watch(autoBackupDefaultDirectoryPathProvider)
-                      .maybeWhen(
-                        data: (path) =>
-                            () => pickDirectoryPathToastOnError(
-                              context: context,
-                              onPick: (path) => _updateSettings(
-                                settingsNotifier,
-                                settings.copyWith(userSelectedPath: () => path),
-                              ),
-                              initialDirectory:
-                                  settings.userSelectedPath ?? path,
-                            ),
-                        orElse: () => null,
-                      ),
-                  child: Text(context.t.settings.auto_backup.change),
                 ),
               ),
               SettingsTile(
@@ -129,6 +160,54 @@ class AutoBackupSection extends ConsumerWidget {
   ) {
     settingsNotifier.updateWith(
       (s) => s.copyWith(autoBackup: newAutoBackup),
+    );
+  }
+}
+
+class _SelectLocationRequestBanner extends StatelessWidget {
+  const _SelectLocationRequestBanner();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 12,
+        vertical: 12,
+      ),
+      margin: const EdgeInsets.only(
+        left: 12,
+        right: 12,
+        bottom: 12,
+      ),
+      decoration: BoxDecoration(
+        color: colorScheme.primaryContainer.withValues(alpha: 0.2),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: colorScheme.primary.withValues(alpha: 0.2),
+          width: 1,
+        ),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            Icons.info_outline,
+            color: colorScheme.primary,
+            size: 20,
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              'Please select a backup location to enable auto backup'.hc,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: colorScheme.primary,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -219,3 +298,45 @@ String _getLastBackupDisplay(
     _ => context.t.time.timeago.just_now,
   },
 };
+
+class _DownloadPathWarning extends ConsumerWidget
+    with DownloadPathValidatorMixin {
+  const _DownloadPathWarning({
+    required this.storagePath,
+    this.padding,
+  });
+
+  @override
+  final String? storagePath;
+  final EdgeInsetsGeometry? padding;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    if (!isAndroid()) {
+      return const SizedBox.shrink();
+    }
+
+    final deviceInfo = ref.watch(deviceInfoProvider);
+    final hasScopeStorage =
+        hasScopedStorage(
+          deviceInfo.androidDeviceInfo?.version.sdkInt,
+        ) ??
+        true;
+
+    if (!shouldDisplayWarning(hasScopeStorage: hasScopeStorage)) {
+      return const SizedBox.shrink();
+    }
+
+    final releaseName =
+        deviceInfo.androidDeviceInfo?.version.release ?? 'Unknown';
+
+    return WarningContainer(
+      margin: padding,
+      contentBuilder: (context) => AppHtml(
+        data: context.t.download.folder_select_warning
+            .replaceAll('{0}', allowedFolders.join(', '))
+            .replaceAll('{1}', releaseName),
+      ),
+    );
+  }
+}

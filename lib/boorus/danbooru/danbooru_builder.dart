@@ -1,5 +1,9 @@
+// Dart imports:
+import 'dart:async';
+
 // Flutter imports:
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:foundation/foundation.dart';
@@ -30,6 +34,7 @@ import '../../core/posts/shares/providers.dart';
 import '../../core/posts/sources/source.dart';
 import '../../core/posts/statistics/stats.dart';
 import '../../core/posts/statistics/widgets.dart';
+import '../../core/settings/providers.dart';
 import '../../core/settings/settings.dart';
 import '../../core/tags/metatag/providers.dart';
 import '../../core/tags/show/routes.dart';
@@ -142,6 +147,7 @@ class DanbooruBuilder
   PostGestureHandlerBuilder get postGestureHandlerBuilder =>
       (ref, action, post) => handleDanbooruGestureAction(
         action,
+        hapticLevel: ref.read(hapticFeedbackLevelProvider),
         onDownload: () => ref.download(post),
         onShare: () => ref
             .read(shareProvider)
@@ -360,6 +366,7 @@ class DanbooruBuilder
 
 bool handleDanbooruGestureAction(
   String? action, {
+  required HapticFeedbackLevel hapticLevel,
   void Function()? onDownload,
   void Function()? onShare,
   void Function()? onToggleBookmark,
@@ -389,7 +396,12 @@ bool handleDanbooruGestureAction(
         onViewTags: onViewTags,
         onViewOriginal: onViewOriginal,
         onOpenSource: onOpenSource,
+        hapticLevel: hapticLevel,
       );
+  }
+
+  if (hapticLevel.isFull) {
+    unawaited(HapticFeedback.selectionClick());
   }
 
   return true;

@@ -75,7 +75,15 @@ class EndpointConfig {
   EndpointConfig({
     this.globalUserParams,
     required this.endpoints,
-  }) : _endpointMap = {for (final e in endpoints) e.featureId: e};
+  }) : _endpointMap = {
+         for (final e in endpoints)
+           e.featureId: e.copyWith(
+             userParams: {
+               ...?globalUserParams,
+               ...e.userParams,
+             },
+           ),
+       };
 
   final Map<BooruFeatureId, Endpoint> _endpointMap;
   final List<Endpoint> endpoints;
@@ -83,42 +91,6 @@ class EndpointConfig {
 
   Endpoint? getEndpoint(BooruFeatureId featureId) {
     return _endpointMap[featureId];
-  }
-
-  String buildUrl({
-    required BooruFeatureId featureId,
-    required String baseUrl,
-    required Map<String, String> userParams,
-  }) {
-    final endpoint = getEndpoint(featureId);
-    if (endpoint == null) {
-      throw ArgumentError('Feature not supported: ${featureId.name}');
-    }
-
-    return endpoint.buildUrl(baseUrl, userParams);
-  }
-
-  T parseResponse<T>({
-    required BooruFeatureId featureId,
-    required Response response,
-    required Map<String, dynamic> context,
-  }) {
-    final endpoint = getEndpoint(featureId);
-    if (endpoint == null) {
-      throw ArgumentError('Feature not supported: ${featureId.name}');
-    }
-
-    return endpoint.parseResponse(response, context);
-  }
-
-  EndpointConfig copyWith({
-    Map<String, String>? globalUserParams,
-    List<Endpoint>? endpoints,
-  }) {
-    return EndpointConfig(
-      globalUserParams: globalUserParams ?? this.globalUserParams,
-      endpoints: endpoints ?? this.endpoints,
-    );
   }
 
   EndpointConfig withOverrides(Map<BooruFeatureId, Endpoint> overrides) {
@@ -129,11 +101,7 @@ class EndpointConfig {
       if (override != null) {
         updatedEndpoints.add(override);
       } else {
-        updatedEndpoints.add(
-          endpoint.copyWith(
-            userParams: {...?globalUserParams, ...endpoint.userParams},
-          ),
-        );
+        updatedEndpoints.add(endpoint);
       }
     }
 

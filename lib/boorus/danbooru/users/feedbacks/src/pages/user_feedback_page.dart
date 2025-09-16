@@ -72,7 +72,7 @@ class _UserFeedbackPageState extends ConsumerState<UserFeedbackPage> {
           context.t.profile.feedback.user_feedbacks,
         ),
       ),
-      body: RefreshIndicator(
+      body: BooruRefreshIndicator(
         onRefresh: () async => _pagingController.refresh(),
         child: PagingListener(
           controller: _pagingController,

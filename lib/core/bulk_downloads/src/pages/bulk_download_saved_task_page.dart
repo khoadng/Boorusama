@@ -32,7 +32,7 @@ class BulkDownloadSavedTaskPage extends ConsumerWidget {
             _AddButton(),
           ],
         ),
-        body: RefreshIndicator(
+        body: BooruRefreshIndicator(
           onRefresh: () => notifier.refresh(),
           child: tasksAsync.when(
             loading: () => const Center(child: CircularProgressIndicator()),
