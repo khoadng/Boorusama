@@ -142,6 +142,7 @@ class Settings extends Equatable {
       slideshowTransitionType: SlideshowTransitionType.natural,
       videoAudioDefaultState: VideoAudioDefaultState.unspecified,
       videoPlayerEngine: VideoPlayerEngine.auto,
+      tallMedia: TallMediaSettings.defaults(),
     ),
     colors: null,
     safeMode: true,
@@ -464,6 +465,7 @@ class ImageViewerSettings extends Equatable {
     required this.slideshowTransitionType,
     required this.videoAudioDefaultState,
     required this.videoPlayerEngine,
+    required this.tallMedia,
   });
 
   ImageViewerSettings.fromJson(Map<String, dynamic> json)
@@ -487,7 +489,10 @@ class ImageViewerSettings extends Equatable {
           : VideoAudioDefaultState.unspecified,
       videoPlayerEngine = json['videoPlayerEngine'] != null
           ? VideoPlayerEngine.values[json['videoPlayerEngine']]
-          : VideoPlayerEngine.auto;
+          : VideoPlayerEngine.auto,
+      tallMedia = json['tallMedia'] != null
+          ? TallMediaSettings.fromJson(json['tallMedia'])
+          : const TallMediaSettings.defaults();
 
   final PostDetailsSwipeMode swipeMode;
   final PostDetailsOverlayInitialState postDetailsOverlayInitialState;
@@ -496,6 +501,7 @@ class ImageViewerSettings extends Equatable {
   final SlideshowTransitionType slideshowTransitionType;
   final VideoAudioDefaultState videoAudioDefaultState;
   final VideoPlayerEngine videoPlayerEngine;
+  final TallMediaSettings tallMedia;
 
   ImageViewerSettings copyWith({
     PostDetailsSwipeMode? swipeMode,
@@ -505,15 +511,20 @@ class ImageViewerSettings extends Equatable {
     SlideshowTransitionType? slideshowTransitionType,
     VideoAudioDefaultState? videoAudioDefaultState,
     VideoPlayerEngine? videoPlayerEngine,
+    TallMediaSettings? tallMedia,
   }) {
     return ImageViewerSettings(
       swipeMode: swipeMode ?? this.swipeMode,
-      postDetailsOverlayInitialState: postDetailsOverlayInitialState ?? this.postDetailsOverlayInitialState,
+      postDetailsOverlayInitialState:
+          postDetailsOverlayInitialState ?? this.postDetailsOverlayInitialState,
       slideshowDirection: slideshowDirection ?? this.slideshowDirection,
       slideshowInterval: slideshowInterval ?? this.slideshowInterval,
-      slideshowTransitionType: slideshowTransitionType ?? this.slideshowTransitionType,
-      videoAudioDefaultState: videoAudioDefaultState ?? this.videoAudioDefaultState,
+      slideshowTransitionType:
+          slideshowTransitionType ?? this.slideshowTransitionType,
+      videoAudioDefaultState:
+          videoAudioDefaultState ?? this.videoAudioDefaultState,
       videoPlayerEngine: videoPlayerEngine ?? this.videoPlayerEngine,
+      tallMedia: tallMedia ?? this.tallMedia,
     );
   }
 
@@ -525,6 +536,7 @@ class ImageViewerSettings extends Equatable {
     'slideshowTransitionType': slideshowTransitionType.index,
     'videoAudioDefaultState': videoAudioDefaultState.index,
     'videoPlayerEngine': videoPlayerEngine.index,
+    'tallMedia': tallMedia.toJson(),
   };
 
   @override
@@ -536,6 +548,7 @@ class ImageViewerSettings extends Equatable {
     slideshowTransitionType,
     videoAudioDefaultState,
     videoPlayerEngine,
+    tallMedia,
   ];
 
   bool get hidePostDetailsOverlay =>
@@ -552,6 +565,121 @@ class ImageViewerSettings extends Equatable {
         ? Duration(milliseconds: (slideshowInterval * 1000).toInt())
         : Duration(seconds: slideshowInterval.toInt());
   }
+}
+
+class TallMediaSettings extends Equatable {
+  const TallMediaSettings({
+    required this.aspectRatioThreshold,
+    required this.minHeightPx,
+    required this.minViewportHeightRatio,
+    required this.minPixelCount,
+    required this.navigationVelocityThreshold,
+    required this.navigationDistanceThreshold,
+    required this.edgeActivationRatio,
+    required this.scrollLockVelocityThreshold,
+    required this.scrollLockDistanceThreshold,
+    required this.minScrollExtentPx,
+  });
+
+  const TallMediaSettings.defaults()
+    : aspectRatioThreshold = 2.15,
+      minHeightPx = 1800,
+      minViewportHeightRatio = 1.35,
+      minPixelCount = 2000000,
+      navigationVelocityThreshold = 2200,
+      navigationDistanceThreshold = 240,
+      edgeActivationRatio = 0.12,
+      scrollLockVelocityThreshold = 180,
+      scrollLockDistanceThreshold = 28,
+      minScrollExtentPx = 48;
+
+  TallMediaSettings.fromJson(Map<String, dynamic> json)
+    : aspectRatioThreshold =
+          (json['aspectRatioThreshold'] as num?)?.toDouble() ?? 2.15,
+      minHeightPx = (json['minHeightPx'] as num?)?.toDouble() ?? 1800,
+      minViewportHeightRatio =
+          (json['minViewportHeightRatio'] as num?)?.toDouble() ?? 1.35,
+      minPixelCount = (json['minPixelCount'] as num?)?.toDouble() ?? 2000000,
+      navigationVelocityThreshold =
+          (json['navigationVelocityThreshold'] as num?)?.toDouble() ?? 2200,
+      navigationDistanceThreshold =
+          (json['navigationDistanceThreshold'] as num?)?.toDouble() ?? 240,
+      edgeActivationRatio =
+          (json['edgeActivationRatio'] as num?)?.toDouble() ?? 0.12,
+      scrollLockVelocityThreshold =
+          (json['scrollLockVelocityThreshold'] as num?)?.toDouble() ?? 180,
+      scrollLockDistanceThreshold =
+          (json['scrollLockDistanceThreshold'] as num?)?.toDouble() ?? 28,
+      minScrollExtentPx = (json['minScrollExtentPx'] as num?)?.toDouble() ?? 48;
+
+  final double aspectRatioThreshold;
+  final double minHeightPx;
+  final double minViewportHeightRatio;
+  final double minPixelCount;
+  final double navigationVelocityThreshold;
+  final double navigationDistanceThreshold;
+  final double edgeActivationRatio;
+  final double scrollLockVelocityThreshold;
+  final double scrollLockDistanceThreshold;
+  final double minScrollExtentPx;
+
+  TallMediaSettings copyWith({
+    double? aspectRatioThreshold,
+    double? minHeightPx,
+    double? minViewportHeightRatio,
+    double? minPixelCount,
+    double? navigationVelocityThreshold,
+    double? navigationDistanceThreshold,
+    double? edgeActivationRatio,
+    double? scrollLockVelocityThreshold,
+    double? scrollLockDistanceThreshold,
+    double? minScrollExtentPx,
+  }) {
+    return TallMediaSettings(
+      aspectRatioThreshold: aspectRatioThreshold ?? this.aspectRatioThreshold,
+      minHeightPx: minHeightPx ?? this.minHeightPx,
+      minViewportHeightRatio:
+          minViewportHeightRatio ?? this.minViewportHeightRatio,
+      minPixelCount: minPixelCount ?? this.minPixelCount,
+      navigationVelocityThreshold:
+          navigationVelocityThreshold ?? this.navigationVelocityThreshold,
+      navigationDistanceThreshold:
+          navigationDistanceThreshold ?? this.navigationDistanceThreshold,
+      edgeActivationRatio: edgeActivationRatio ?? this.edgeActivationRatio,
+      scrollLockVelocityThreshold:
+          scrollLockVelocityThreshold ?? this.scrollLockVelocityThreshold,
+      scrollLockDistanceThreshold:
+          scrollLockDistanceThreshold ?? this.scrollLockDistanceThreshold,
+      minScrollExtentPx: minScrollExtentPx ?? this.minScrollExtentPx,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    'aspectRatioThreshold': aspectRatioThreshold,
+    'minHeightPx': minHeightPx,
+    'minViewportHeightRatio': minViewportHeightRatio,
+    'minPixelCount': minPixelCount,
+    'navigationVelocityThreshold': navigationVelocityThreshold,
+    'navigationDistanceThreshold': navigationDistanceThreshold,
+    'edgeActivationRatio': edgeActivationRatio,
+    'scrollLockVelocityThreshold': scrollLockVelocityThreshold,
+    'scrollLockDistanceThreshold': scrollLockDistanceThreshold,
+    'minScrollExtentPx': minScrollExtentPx,
+  };
+
+  @override
+  List<Object> get props => [
+    aspectRatioThreshold,
+    minHeightPx,
+    minViewportHeightRatio,
+    minPixelCount,
+    navigationVelocityThreshold,
+    navigationDistanceThreshold,
+    edgeActivationRatio,
+    scrollLockVelocityThreshold,
+    scrollLockDistanceThreshold,
+    minScrollExtentPx,
+  ];
 }
 
 class ImageListingSettings extends Equatable {

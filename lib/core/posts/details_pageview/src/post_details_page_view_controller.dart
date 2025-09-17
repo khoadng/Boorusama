@@ -14,6 +14,12 @@ import 'auto_slide_mixin.dart';
 import 'constants.dart';
 import 'post_details_page_view.dart';
 
+enum SwipeLockReason {
+  legacy,
+  zoom,
+  tallContent,
+}
+
 class PostDetailsPageViewController extends ChangeNotifier
     with AutomaticSlideMixin {
   PostDetailsPageViewController({
@@ -54,6 +60,7 @@ class PostDetailsPageViewController extends ChangeNotifier
       DraggableScrollableController();
 
   final bool Function() checkIfLargeScreen;
+  final Set<SwipeLockReason> _swipeLocks = <SwipeLockReason>{};
 
   int get page => currentPage.value;
   bool get isExpanded => sheetState.value.isExpanded;
@@ -458,13 +465,30 @@ class PostDetailsPageViewController extends ChangeNotifier
   }
 
   void disableAllSwiping() {
-    swipe.value = false;
-    canPull.value = false;
+    setSwipeLock(SwipeLockReason.legacy, true);
   }
 
   void enableAllSwiping() {
-    swipe.value = true;
-    canPull.value = true;
+    setSwipeLock(SwipeLockReason.legacy, false);
+  }
+
+  bool get isSwipeLocked => _swipeLocks.isNotEmpty;
+
+  void setSwipeLock(SwipeLockReason reason, bool locked) {
+    final changed = locked
+        ? _swipeLocks.add(reason)
+        : _swipeLocks.remove(reason);
+
+    if (!changed) return;
+
+    final shouldDisable = _swipeLocks.isNotEmpty;
+
+    if (swipe.value == !shouldDisable && canPull.value == !shouldDisable) {
+      return;
+    }
+
+    swipe.value = !shouldDisable;
+    canPull.value = !shouldDisable;
   }
 
   void setDisplacement(double value) {
@@ -512,12 +536,12 @@ class PostDetailsPageViewController extends ChangeNotifier
       if (!initialHideOverlay) {
         hideAllUI();
       }
-      disableAllSwiping();
+      setSwipeLock(SwipeLockReason.zoom, true);
     } else {
       if (!initialHideOverlay) {
         showAllUI();
       }
-      enableAllSwiping();
+      setSwipeLock(SwipeLockReason.zoom, false);
     }
   }
 
