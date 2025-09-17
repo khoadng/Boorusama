@@ -82,7 +82,7 @@
       "reply": "Responder",
       "reply_to": "Respondiendo a",
       "delete": "Borrar",
-      "noComments": "Aqui no hay comentarios",
+      "no_comments": "Aqui no hay comentarios",
       "last_updated": "Ultima Acutualizacion",
       "send": "Enviar"
     },
@@ -411,7 +411,6 @@
     "validation_empty_url": "La URL está vacía",
     "validation_invalid_url": "\"{0}\" no es una URL válida",
     "validation_invalid_http_url": "\"{0}\" no es una URL HTTP o HTTPS",
-    "validation_missing_trailing_slash": "A \"{0}\" le falta una barra al final",
     "validation_redundant_www": "\"{0}\" contiene \"www\" redundante",
     "validation_contains_spaces": "\"{0}\" contiene espacios intermedios",
     "validation_missing_scheme": "A \"{0}\" le falta un esquema (por ejemplo, https://)",

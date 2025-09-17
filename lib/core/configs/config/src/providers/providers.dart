@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
+import '../../../../boorus/engine/providers.dart';
 import '../../../../settings/providers.dart';
 import '../../../manage/providers.dart';
 import '../types/booru_config.dart';
@@ -58,5 +59,37 @@ final firstMatchingConfigProvider =
         });
 
         return config ?? idResult.firstOrNull;
+      },
+    );
+
+final booruLoginDetailsProvider =
+    Provider.family<BooruLoginDetails, BooruConfigAuth>(
+      (ref, config) {
+        final repo = ref
+            .watch(booruEngineRegistryProvider)
+            .getRepository(config.booruType);
+
+        final loginDetails = repo?.loginDetails(config);
+
+        if (loginDetails != null) {
+          return loginDetails;
+        }
+
+        return DefaultBooruLoginDetails(
+          login: config.login,
+          apiKey: config.apiKey,
+          url: config.url,
+        );
+      },
+    );
+
+final defaultLoginDetailsProvider =
+    Provider.family<BooruLoginDetails, BooruConfigAuth>(
+      (ref, config) {
+        return DefaultBooruLoginDetails(
+          login: config.login,
+          apiKey: config.apiKey,
+          url: config.url,
+        );
       },
     );

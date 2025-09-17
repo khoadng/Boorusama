@@ -37,6 +37,7 @@ class FeatureGenerator extends TemplateGenerator<BooruConfig> {
       return {
         'className': '${featureId.capitalize()}Feature',
         'featureId': featureId,
+        'endpointType': feature.type,
         'hasCapabilities': capabilities.isNotEmpty,
         'capabilities': capabilities
             .map(

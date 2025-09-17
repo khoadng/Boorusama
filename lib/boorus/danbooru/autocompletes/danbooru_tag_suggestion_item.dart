@@ -7,11 +7,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../core/boorus/engine/providers.dart';
 import '../../../core/configs/config.dart';
-import '../../../core/configs/ref.dart';
 import '../../../core/search/suggestions/widgets.dart';
 import '../../../core/tags/autocompletes/types.dart';
 import '../../../core/tags/configs/providers.dart';
 import '../../../core/tags/tag/providers.dart';
+import '../configs/providers.dart';
 import '../users/user/providers.dart';
 
 class DanbooruTagSuggestionItem extends ConsumerWidget {
@@ -35,10 +35,11 @@ class DanbooruTagSuggestionItem extends ConsumerWidget {
     final tagInfo = ref.watch(tagInfoProvider);
     final booruBuilder = ref.watch(booruBuilderProvider(config));
     final metatagExtractorBuilder = booruBuilder?.metatagExtractorBuilder;
+    final loginDetails = ref.watch(danbooruLoginDetailsProvider(config));
 
     return TagSuggestionItem(
       key: ValueKey(tag.value),
-      showCount: tag.hasCount && !ref.watchConfigAuth.hasStrictSFW,
+      showCount: tag.hasCount && !loginDetails.hasStrictSFW,
       onItemTap: onItemTap,
       tag: tag,
       dense: dense,

@@ -15,6 +15,7 @@ import '../../../../../core/posts/listing/widgets.dart';
 import '../../../../../core/posts/rating/rating.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../../../../foundation/info/package_info.dart';
+import '../../../configs/providers.dart';
 import '../../../tags/_shared/tag_list_notifier.dart';
 import '../../../tags/edit/widgets.dart';
 import '../../../users/user/providers.dart';
@@ -33,12 +34,13 @@ class DanbooruMultiSelectionActions extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfigAuth;
+    final loginDetails = ref.watch(danbooruLoginDetailsProvider(config));
     final controller = SelectionMode.of(context);
 
     return DefaultMultiSelectionActions(
       postController: postController,
       extraActions: (selectedPosts) => [
-        if (config.hasLoginDetails())
+        if (loginDetails.hasLogin())
           MultiSelectButton(
             onPressed: selectedPosts.isNotEmpty
                 ? () async {
@@ -55,7 +57,7 @@ class DanbooruMultiSelectionActions extends ConsumerWidget {
             name: 'Add to Group'.hc,
           ),
         if (ref.watch(isDevEnvironmentProvider))
-          if (config.hasLoginDetails())
+          if (loginDetails.hasLogin())
             ref
                 .watch(danbooruCurrentUserProvider(config))
                 .when(

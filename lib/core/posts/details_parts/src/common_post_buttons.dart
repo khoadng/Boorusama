@@ -12,6 +12,7 @@ import '../../../../foundation/clipboard.dart';
 import '../../../../foundation/toast.dart';
 import '../../../../foundation/url_launcher.dart';
 import '../../../boorus/engine/engine.dart';
+import '../../../configs/config/providers.dart';
 import '../../../configs/config/types.dart';
 import '../../../images/providers.dart';
 import '../../../premiums/providers.dart';
@@ -51,6 +52,11 @@ class CommonPostButtonsBuilder extends ConsumerWidget {
         ? ref.watch(postLinkGeneratorProvider(config))
         : null;
 
+    final loginDetails = config != null
+        ? ref.watch(booruLoginDetailsProvider(config))
+        : null;
+    final hasStrictSFW = loginDetails?.hasStrictSFW ?? true;
+
     final commonButtons = [
       if (copy)
         if (config != null && configViewer != null)
@@ -60,7 +66,7 @@ class CommonPostButtonsBuilder extends ConsumerWidget {
             onPressed: () => copyImage(ref, post, config, configViewer),
           ),
       if (postLinkGenerator != null && config != null)
-        if (!config.hasStrictSFW)
+        if (!hasStrictSFW)
           SimpleButtonData(
             icon: Icons.open_in_browser,
             title: context.t.post.action.view_in_browser,

@@ -7,7 +7,7 @@ import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../boorus/engine/providers.dart';
-import '../../../../configs/ref.dart';
+import '../../../../configs/config/providers.dart';
 import '../../../../router.dart';
 import '../../../../widgets/adaptive_button_row.dart';
 import '../../../../widgets/booru_menu_button_row.dart';
@@ -142,6 +142,7 @@ class DefaultPostActionToolbar<T extends Post> extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfigAuth;
+    final loginDetails = ref.watch(booruLoginDetailsProvider(config));
     final isFaved = ref.watch(favoriteProvider((config, post.id)));
     final notifier = ref.watch(favoritesProvider(config).notifier);
     final canFavorite = ref.watch(canFavoriteProvider(config));
@@ -149,7 +150,7 @@ class DefaultPostActionToolbar<T extends Post> extends ConsumerWidget {
     return SimplePostActionToolbar(
       post: post,
       isFaved: isFaved,
-      isAuthorized: config.hasLoginDetails(),
+      isAuthorized: loginDetails.hasLogin(),
       maxVisibleButtons: 5,
       addFavorite: canFavorite ? () => notifier.add(post.id) : null,
       removeFavorite: canFavorite ? () => notifier.remove(post.id) : null,

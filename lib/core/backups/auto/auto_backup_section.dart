@@ -3,14 +3,20 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
+import '../../../foundation/html.dart';
+import '../../../foundation/info/device_info.dart';
 import '../../../foundation/picker.dart';
+import '../../../foundation/platform.dart';
 import '../../settings/providers.dart';
 import '../../settings/widgets.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/widgets.dart';
+import '../../downloads/path/validator.dart';
+import '../auto/auto_backup_service.dart';
 import '../zip/providers.dart';
 import 'auto_backup_settings.dart';
 
@@ -19,16 +25,27 @@ class AutoBackupSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
     final settings = ref.watch(settingsProvider.select((s) => s.autoBackup));
     final settingsNotifier = ref.watch(settingsNotifierProvider.notifier);
     final isLoading = ref.watch(
       backupProvider.select((s) => s.isActive),
     );
+    final storagePath = ref
+        .watch(autoBackupDefaultDirectoryPathProvider)
+        .maybeWhen(
+          data: (defaultPath) => settings.userSelectedPath ?? defaultPath,
+          orElse: () => null,
+        );
+
+    final hasValidPath = storagePath != null;
+    final canEnableAutoBackup = !isLoading && hasValidPath;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12),
       child: Material(
-        color: Theme.of(context).colorScheme.surfaceContainer,
+        color: colorScheme.surfaceContainer,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
         ),
@@ -37,15 +54,67 @@ class AutoBackupSection extends ConsumerWidget {
             BooruSwitchListTile(
               contentPadding: const EdgeInsets.symmetric(horizontal: 16),
               title: Text(context.t.settings.auto_backup.enable_auto_backup),
-              value: settings.enabled,
-              onChanged: isLoading
-                  ? null
-                  : (enabled) => _updateSettings(
+              value: settings.enabled && hasValidPath,
+              onChanged: canEnableAutoBackup
+                  ? (enabled) => _updateSettings(
                       settingsNotifier,
                       settings.copyWith(enabled: enabled),
-                    ),
+                    )
+                  : null,
             ),
-            if (settings.enabled) ...[
+
+            ListTile(
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+              title: Text(context.t.settings.auto_backup.backup_location),
+              subtitle: Text(
+                ref
+                    .watch(autoBackupDefaultDirectoryPathProvider)
+                    .when(
+                      data: (defaultPath) =>
+                          settings.userSelectedPath ??
+                          defaultPath ??
+                          'No location selected'.hc,
+                      loading: () =>
+                          context.t.settings.data_and_storage.loading,
+                      error: (_, _) => context.t.generic.errors.unknown,
+                    ),
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: colorScheme.hintColor,
+                ),
+              ),
+              trailing: TextButton(
+                onPressed: () => pickDirectoryPathToastOnError(
+                  context: context,
+                  onPick: (path) => _updateSettings(
+                    settingsNotifier,
+                    settings.copyWith(userSelectedPath: () => path),
+                  ),
+                  initialDirectory:
+                      settings.userSelectedPath ??
+                      ref.read(autoBackupDefaultDirectoryPathProvider).value,
+                ),
+                child: Text(
+                  ref
+                      .watch(autoBackupDefaultDirectoryPathProvider)
+                      .maybeWhen(
+                        data: (defaultPath) =>
+                            settings.userSelectedPath != null ||
+                                defaultPath != null
+                            ? context.t.settings.auto_backup.change
+                            : context.t.generic.action.select,
+                        orElse: () => context.t.settings.auto_backup.change,
+                      ),
+                ),
+              ),
+            ),
+            if (!hasValidPath && isAndroid())
+              const _SelectLocationRequestBanner(),
+            //FIXME: Migrate folder selection warning to a common widget
+            _DownloadPathWarning(
+              padding: const EdgeInsets.all(12),
+              storagePath: storagePath,
+            ),
+            if (settings.enabled && hasValidPath) ...[
               SettingsTile(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 title: Text(context.t.settings.auto_backup.backup_frequency),
@@ -55,30 +124,13 @@ class AutoBackupSection extends ConsumerWidget {
                   settingsNotifier,
                   settings.copyWith(frequency: frequency),
                 ),
-                optionBuilder: (frequency) =>
-                    Text(_getFrequencyLabel(context, frequency)),
-              ),
-              ListTile(
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-                title: Text(context.t.settings.auto_backup.backup_location),
-                subtitle: Text(
-                  _getLocationDisplay(context, settings),
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.hintColor,
-                  ),
-                ),
-                trailing: TextButton(
-                  onPressed: () async {
-                    await pickDirectoryPathToastOnError(
-                      context: context,
-                      onPick: (path) => _updateSettings(
-                        settingsNotifier,
-                        settings.copyWith(userSelectedPath: () => path),
-                      ),
-                    );
+                optionBuilder: (frequency) => Text(
+                  switch (frequency) {
+                    AutoBackupFrequency.daily =>
+                      context.t.settings.auto_backup.frequency.daily,
+                    AutoBackupFrequency.weekly =>
+                      context.t.settings.auto_backup.frequency.weekly,
                   },
-
-                  child: Text(context.t.settings.auto_backup.change),
                 ),
               ),
               SettingsTile(
@@ -94,7 +146,7 @@ class AutoBackupSection extends ConsumerWidget {
                     Text(context.t.settings.auto_backup.backup_count(n: count)),
               ),
               const Divider(height: 1),
-              _buildStatusTile(context, ref, settings, isLoading),
+              const _StatusTile(),
             ],
           ],
         ),
@@ -110,13 +162,68 @@ class AutoBackupSection extends ConsumerWidget {
       (s) => s.copyWith(autoBackup: newAutoBackup),
     );
   }
+}
 
-  Widget _buildStatusTile(
-    BuildContext context,
-    WidgetRef ref,
-    AutoBackupSettings settings,
-    bool isLoading,
-  ) {
+class _SelectLocationRequestBanner extends StatelessWidget {
+  const _SelectLocationRequestBanner();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 12,
+        vertical: 12,
+      ),
+      margin: const EdgeInsets.only(
+        left: 12,
+        right: 12,
+        bottom: 12,
+      ),
+      decoration: BoxDecoration(
+        color: colorScheme.primaryContainer.withValues(alpha: 0.2),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: colorScheme.primary.withValues(alpha: 0.2),
+          width: 1,
+        ),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            Icons.info_outline,
+            color: colorScheme.primary,
+            size: 20,
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              'Please select a backup location to enable auto backup'.hc,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: colorScheme.primary,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _StatusTile extends ConsumerWidget {
+  const _StatusTile();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final isLoading = ref.watch(
+      backupProvider.select((s) => s.isActive),
+    );
+    final settings = ref.watch(settingsProvider.select((s) => s.autoBackup));
+
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 16),
       title: Text(
@@ -128,10 +235,10 @@ class AutoBackupSection extends ConsumerWidget {
         settings.shouldBackup
             ? context.t.settings.auto_backup.backup_needed
             : context.t.settings.auto_backup.up_to_date,
-        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+        style: theme.textTheme.bodySmall?.copyWith(
           color: settings.shouldBackup
-              ? Theme.of(context).colorScheme.error
-              : Theme.of(context).colorScheme.primary,
+              ? colorScheme.error
+              : colorScheme.primary,
           fontWeight: FontWeight.w500,
         ),
       ),
@@ -167,52 +274,69 @@ class AutoBackupSection extends ConsumerWidget {
             ),
     );
   }
-
-  String _getFrequencyLabel(
-    BuildContext context,
-    AutoBackupFrequency frequency,
-  ) {
-    switch (frequency) {
-      case AutoBackupFrequency.daily:
-        return context.t.settings.auto_backup.frequency.daily;
-      case AutoBackupFrequency.weekly:
-        return context.t.settings.auto_backup.frequency.weekly;
-    }
-  }
-}
-
-String _getLocationDisplay(BuildContext context, AutoBackupSettings settings) {
-  return settings.userSelectedPath ??
-      context.t.settings.backup_and_restore.default_backup_location;
 }
 
 String _getLastBackupDisplay(
   BuildContext context,
   AutoBackupSettings settings,
-) {
-  if (settings.lastBackupTime == null) {
-    return context.t.settings.backup_and_restore.never;
-  }
-
-  final now = DateTime.now();
-  final diff = now.difference(settings.lastBackupTime!);
-
-  if (diff.inDays > 0) {
-    return context.t.time.timeago.days.replaceAll(
+) => switch (settings.lastBackupTime) {
+  null => context.t.settings.backup_and_restore.never,
+  final time => switch (DateTime.now().difference(time)) {
+    final diff when diff.inDays > 0 => context.t.time.timeago.days.replaceAll(
       '{days}',
       diff.inDays.toString(),
-    );
-  } else if (diff.inHours > 0) {
-    return context.t.time.timeago.hours.replaceAll(
+    ),
+    final diff when diff.inHours > 0 => context.t.time.timeago.hours.replaceAll(
       '{hours}',
       diff.inHours.toString(),
+    ),
+    final diff when diff.inMinutes > 0 =>
+      context.t.time.timeago.minutes.replaceAll(
+        '{minutes}',
+        diff.inMinutes.toString(),
+      ),
+    _ => context.t.time.timeago.just_now,
+  },
+};
+
+class _DownloadPathWarning extends ConsumerWidget
+    with DownloadPathValidatorMixin {
+  const _DownloadPathWarning({
+    required this.storagePath,
+    this.padding,
+  });
+
+  @override
+  final String? storagePath;
+  final EdgeInsetsGeometry? padding;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    if (!isAndroid()) {
+      return const SizedBox.shrink();
+    }
+
+    final deviceInfo = ref.watch(deviceInfoProvider);
+    final hasScopeStorage =
+        hasScopedStorage(
+          deviceInfo.androidDeviceInfo?.version.sdkInt,
+        ) ??
+        true;
+
+    if (!shouldDisplayWarning(hasScopeStorage: hasScopeStorage)) {
+      return const SizedBox.shrink();
+    }
+
+    final releaseName =
+        deviceInfo.androidDeviceInfo?.version.release ?? 'Unknown';
+
+    return WarningContainer(
+      margin: padding,
+      contentBuilder: (context) => AppHtml(
+        data: context.t.download.folder_select_warning
+            .replaceAll('{0}', allowedFolders.join(', '))
+            .replaceAll('{1}', releaseName),
+      ),
     );
-  } else if (diff.inMinutes > 0) {
-    return context.t.time.timeago.minutes.replaceAll(
-      '{minutes}',
-      diff.inMinutes.toString(),
-    );
-  } else {
-    return context.t.time.timeago.just_now;
   }
 }

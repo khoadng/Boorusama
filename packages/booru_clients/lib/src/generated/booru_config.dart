@@ -35,11 +35,12 @@ enum BooruFeatureId {
 }
 
 abstract class BooruFeature extends Equatable {
-  const BooruFeature(this.id);
+  const BooruFeature(this.id, this.endpointType);
   final BooruFeatureId id;
+  final EndpointType endpointType;
 
   @override
-  List<Object?> get props => [id];
+  List<Object?> get props => [id, endpointType];
 }
 
 class PostsFeature extends BooruFeature {
@@ -47,7 +48,7 @@ class PostsFeature extends BooruFeature {
     required this.thumbnailOnly,
     required this.paginationType,
     required this.fixedLimit,
-  }) : super(BooruFeatureId.posts);
+  }) : super(BooruFeatureId.posts, EndpointType.api);
 
   final bool thumbnailOnly;
   final String paginationType;
@@ -65,7 +66,7 @@ class PostsFeature extends BooruFeature {
 class PostFeature extends BooruFeature {
   const PostFeature({
     required this.cacheSeconds,
-  }) : super(BooruFeatureId.post);
+  }) : super(BooruFeatureId.post, EndpointType.html);
 
   final int cacheSeconds;
 
@@ -77,23 +78,23 @@ class PostFeature extends BooruFeature {
 }
 
 class AutocompleteFeature extends BooruFeature {
-  const AutocompleteFeature() : super(BooruFeatureId.autocomplete);
+  const AutocompleteFeature() : super(BooruFeatureId.autocomplete, EndpointType.api);
 }
 
 class CommentsFeature extends BooruFeature {
-  const CommentsFeature() : super(BooruFeatureId.comments);
+  const CommentsFeature() : super(BooruFeatureId.comments, EndpointType.api);
 }
 
 class NotesFeature extends BooruFeature {
-  const NotesFeature() : super(BooruFeatureId.notes);
+  const NotesFeature() : super(BooruFeatureId.notes, EndpointType.html);
 }
 
 class TagsFeature extends BooruFeature {
-  const TagsFeature() : super(BooruFeatureId.tags);
+  const TagsFeature() : super(BooruFeatureId.tags, EndpointType.html);
 }
 
 class FavoritesFeature extends BooruFeature {
-  const FavoritesFeature() : super(BooruFeatureId.favorites);
+  const FavoritesFeature() : super(BooruFeatureId.favorites, EndpointType.api);
 }
 
 enum EndpointType {

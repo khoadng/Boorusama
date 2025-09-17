@@ -75,7 +75,7 @@
       "reply": "Svar",
       "reply_to": "Besvarer",
       "delete": "Slett",
-      "noComments": "Ingen kommentarer",
+      "no_comments": "Ingen kommentarer",
       "last_updated": "Sist oppdatert",
       "send": "Send"
     },

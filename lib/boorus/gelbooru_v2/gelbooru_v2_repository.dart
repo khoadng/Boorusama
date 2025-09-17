@@ -19,6 +19,7 @@ import '../../core/search/queries/query.dart';
 import '../../core/tags/autocompletes/types.dart';
 import '../../core/tags/tag/tag.dart';
 import 'comments/providers.dart';
+import 'configs/providers.dart';
 import 'gelbooru_v2_provider.dart';
 import 'notes/providers.dart';
 import 'posts/providers.dart';
@@ -122,4 +123,39 @@ class GelbooruV2Repository extends BooruRepositoryDefault {
           )
         : const DefaultGridThumbnailUrlGenerator();
   }
+
+  @override
+  ImageUrlResolver imageUrlResolver() {
+    return ref.watch(gelbooruV2PostImageUrlResolverProvider);
+  }
+
+  @override
+  BooruLoginDetails loginDetails(BooruConfigAuth config) {
+    return ref.watch(gelbooruV2LoginDetailsProvider(config));
+  }
+}
+
+class GelbooruV2ImageUrlResolver implements ImageUrlResolver {
+  const GelbooruV2ImageUrlResolver();
+
+  @override
+  String resolveImageUrl(String url) => url;
+
+  @override
+  String resolvePreviewUrl(String url) {
+    if (url.isEmpty) return url;
+
+    final uri = Uri.tryParse(url);
+
+    return switch (uri) {
+      null => url,
+      Uri(host: 'api-cdn.rule34.xxx', path: final p)
+          when p.contains('/samples/') =>
+        uri.replace(host: 'wimg.rule34.xxx').toString(),
+      _ => url,
+    };
+  }
+
+  @override
+  String resolveThumbnailUrl(String url) => url;
 }

@@ -4,10 +4,13 @@ import 'dart:io';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 import 'package:path/path.dart' as p;
 
 // Project imports:
+import '../../../foundation/info/device_info.dart';
 import '../../../foundation/loggers.dart';
+import '../../../foundation/platform.dart';
 import '../../downloads/path/directory.dart';
 import '../sources/providers.dart';
 import '../types/backup_registry.dart';
@@ -21,6 +24,26 @@ final autoBackupServiceProvider = Provider<AutoBackupService>((ref) {
     logger: ref.watch(loggerProvider),
     registry: ref.watch(backupRegistryProvider),
   );
+});
+
+final autoBackupDefaultDirectoryPathProvider = FutureProvider<String?>((
+  ref,
+) async {
+  if (isAndroid()) {
+    final deviceInfo = ref.watch(deviceInfoProvider);
+    final hasScopeStorage =
+        hasScopedStorage(
+          deviceInfo.androidDeviceInfo?.version.sdkInt,
+        ) ??
+        true;
+
+    // On scoped storage, force user to pick a location
+    if (hasScopeStorage) return null;
+  }
+
+  final downloadsDir = await _getDownloadDirectory();
+  final baseDir = downloadsDir.path;
+  return p.join(baseDir, AutoBackupService.backupFolderName);
 });
 
 class AutoBackupManifest {
@@ -89,7 +112,7 @@ class AutoBackupService {
   final BackupRegistry registry;
 
   static const String _manifestFileName = 'auto_backup_manifest.json';
-  static const String _backupFolderName = 'boorusama_auto_backups';
+  static const String backupFolderName = 'boorusama_auto_backups';
 
   Future<BulkExportResult> performBackup(
     AutoBackupSettings settings, {
@@ -134,21 +157,14 @@ class AutoBackupService {
   }
 
   Future<Directory> _getBackupDirectory(AutoBackupSettings settings) async {
-    final downloadsDirResult = await tryGetDownloadDirectory().run();
-    final downloadsDir = downloadsDirResult.fold(
-      (error) => null,
-      (dir) => dir,
-    );
+    final downloadsDir = await _getDownloadDirectory();
+    final userSelectedPath = settings.userSelectedPath;
 
-    if (downloadsDir == null) {
-      throw Exception('Could not find downloads directory');
-    }
-
-    final baseDir = settings.userSelectedPath != null
-        ? Directory(settings.userSelectedPath!)
+    final baseDir = userSelectedPath != null
+        ? Directory(userSelectedPath)
         : downloadsDir;
 
-    final backupDir = Directory(p.join(baseDir.path, _backupFolderName));
+    final backupDir = Directory(p.join(baseDir.path, backupFolderName));
     await backupDir.create(recursive: true);
     return backupDir;
   }
@@ -261,4 +277,18 @@ class AutoBackupService {
       logger.warn('AutoBackup', 'Failed to cleanup old backups: $e');
     }
   }
+}
+
+Future<Directory> _getDownloadDirectory() async {
+  final downloadsDirResult = await tryGetDownloadDirectory().run();
+  final downloadsDir = downloadsDirResult.fold(
+    (error) => null,
+    (dir) => dir,
+  );
+
+  if (downloadsDir == null) {
+    throw Exception('Could not find downloads directory');
+  }
+
+  return downloadsDir;
 }

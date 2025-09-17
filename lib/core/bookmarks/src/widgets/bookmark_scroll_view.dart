@@ -15,7 +15,7 @@ import 'package:sliver_tools/sliver_tools.dart';
 // Project imports:
 import '../../../../foundation/url_launcher.dart';
 import '../../../config_widgets/website_logo.dart';
-import '../../../configs/ref.dart';
+import '../../../configs/config/providers.dart';
 import '../../../posts/listing/providers.dart';
 import '../../../posts/listing/src/_internal/default_image_grid_item.dart';
 import '../../../posts/listing/src/_internal/post_grid_config_icon_button.dart';
@@ -53,6 +53,17 @@ class _BookmarkScrollViewState extends ConsumerState<BookmarkScrollView> {
   final SelectionModeController _selectionModeController =
       SelectionModeController();
 
+  List<String> _parseTagsFromText(String text) {
+    return text.isEmpty
+        ? <String>[]
+        : text
+              .trim()
+              .replaceAll(RegExp(r'\s+'), ' ')
+              .split(' ')
+              .where((e) => e.isNotEmpty)
+              .toList();
+  }
+
   @override
   void dispose() {
     _selectionModeController.dispose();
@@ -65,11 +76,11 @@ class _BookmarkScrollViewState extends ConsumerState<BookmarkScrollView> {
     return RawPostScope<BookmarkPost>(
       fetcher: (page) => TaskEither.Do(
         ($) async {
-          final selectedTags = ref.read(selectedTagsProvider);
+          final searchTags = _parseTagsFromText(widget.searchController.text);
           final sortType = ref.read(selectedBookmarkSortTypeProvider);
           final selectedBooruUrl = ref.read(selectedBooruUrlProvider);
           final bookmarks = filterBookmarks(
-            tags: selectedTags,
+            selectedTags: searchTags,
             bookmarks: await (await ref.read(bookmarkRepoProvider.future))
                 .getAllBookmarksOrEmpty(
                   imageUrlResolver: (booruId) =>
@@ -91,11 +102,6 @@ class _BookmarkScrollViewState extends ConsumerState<BookmarkScrollView> {
       builder: (context, controller) => Consumer(
         builder: (context, ref, child) {
           ref
-            ..listen(selectedTagsProvider, (_, _) {
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                controller.refresh();
-              });
-            })
             ..listen(selectedBooruUrlProvider, (_, _) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 controller.refresh();
@@ -201,13 +207,8 @@ class _BookmarkScrollViewState extends ConsumerState<BookmarkScrollView> {
                   postController: controller,
                 ),
               ),
-              ValueListenableBuilder(
-                valueListenable: controller.itemsNotifier,
-                builder: (_, posts, _) => posts.isNotEmpty
-                    ? const SliverPinnedHeader(
-                        child: BookmarkBooruSourceUrlSelector(),
-                      )
-                    : const SliverSizedBox.shrink(),
+              const SliverPinnedHeader(
+                child: BookmarkBooruSourceUrlSelector(),
               ),
               const SliverSizedBox(height: 8),
               ValueListenableBuilder(
@@ -240,6 +241,7 @@ class _BookmarkScrollViewState extends ConsumerState<BookmarkScrollView> {
 
     final auth = ref.watchConfigAuth;
     final download = ref.watchConfigDownload;
+    final loginDetails = ref.watch(booruLoginDetailsProvider(auth));
 
     return ValueListenableBuilder(
       valueListenable: controller.itemsNotifier,
@@ -283,7 +285,7 @@ class _BookmarkScrollViewState extends ConsumerState<BookmarkScrollView> {
                       },
                     ),
                   ),
-                  if (!auth.hasStrictSFW)
+                  if (!loginDetails.hasStrictSFW)
                     ContextMenuButtonConfig(
                       'Open source in browser',
                       onPressed: () =>

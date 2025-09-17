@@ -32,4 +32,5 @@ export 'time_scale.dart';
 export 'upload_dto.dart';
 export 'user_dto.dart';
 export 'user_feed_back_dto.dart';
+export 'user_name_change_request_dto.dart';
 export 'wiki_dto.dart';

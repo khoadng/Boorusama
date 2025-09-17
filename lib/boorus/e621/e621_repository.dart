@@ -22,6 +22,7 @@ import '../../core/tags/autocompletes/types.dart';
 import '../../core/tags/tag/colors.dart';
 import '../../core/tags/tag/tag.dart';
 import 'comments/providers.dart';
+import 'configs/providers.dart';
 import 'favorites/providers.dart';
 import 'notes/providers.dart';
 import 'posts/providers.dart';
@@ -168,6 +169,11 @@ class E621Repository extends BooruRepositoryDefault {
   @override
   CommentRepository comment(BooruConfigAuth config) {
     return ref.watch(e621CommentRepoProvider(config));
+  }
+
+  @override
+  BooruLoginDetails loginDetails(BooruConfigAuth config) {
+    return ref.watch(e621LoginDetailsProvider(config));
   }
 }
 

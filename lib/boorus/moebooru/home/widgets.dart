@@ -15,6 +15,7 @@ import '../../../core/home/home_page_scaffold.dart';
 import '../../../core/home/side_menu_tile.dart';
 import '../../../core/posts/favorites/routes.dart';
 import '../../../core/widgets/widgets.dart';
+import '../configs/providers.dart';
 import '../popular/widgets.dart';
 
 class MoebooruHomePage extends ConsumerStatefulWidget {
@@ -30,6 +31,7 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
   @override
   Widget build(BuildContext context) {
     final config = ref.watchConfigAuth;
+    final loginDetails = ref.watch(moebooruLoginDetailsProvider(config));
     final favoritesPageBuilder = ref
         .watch(booruBuilderProvider(config))
         ?.favoritesPageBuilder;
@@ -76,7 +78,7 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
             ),
           ),
         ),
-        if (config.hasLoginDetails()) ...[
+        if (loginDetails.hasLogin()) ...[
           SideMenuTile(
             icon: const Icon(
               Symbols.favorite,
@@ -104,7 +106,7 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
           icon: Symbols.local_fire_department,
           title: 'Hot',
         ),
-        if (favoritesPageBuilder != null && config.hasLoginDetails())
+        if (favoritesPageBuilder != null && loginDetails.hasLogin())
           HomeNavigationTile(
             value: 3,
             constraints: constraints,
@@ -116,7 +118,7 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
       desktopViews: [
         const MoebooruPopularPage(),
         const MoebooruPopularRecentPage(),
-        if (favoritesPageBuilder != null && config.hasLoginDetails())
+        if (favoritesPageBuilder != null && loginDetails.hasLogin())
           favoritesPageBuilder(context),
       ],
     );

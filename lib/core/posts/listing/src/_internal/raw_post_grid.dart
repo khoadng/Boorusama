@@ -210,7 +210,7 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
           child: _Scaffold(
             body: ConditionalParentWidget(
               condition: kPreferredLayout.isMobile,
-              conditionalBuilder: (child) => RefreshIndicator(
+              conditionalBuilder: (child) => BooruRefreshIndicator(
                 edgeOffset: 60,
                 displacement: 50,
                 notificationPredicate: widget.enablePullToRefresh

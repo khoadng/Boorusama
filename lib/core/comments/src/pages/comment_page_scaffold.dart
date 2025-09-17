@@ -82,7 +82,7 @@ class _CommentPageScaffoldState extends ConsumerState<CommentPageScaffold> {
           : null,
       body: Padding(
         padding: const EdgeInsetsDirectional.symmetric(horizontal: 12),
-        child: RefreshIndicator(
+        child: BooruRefreshIndicator(
           onRefresh: () async {
             _pagingController.refresh();
           },

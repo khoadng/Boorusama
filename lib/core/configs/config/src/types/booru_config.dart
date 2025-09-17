@@ -8,7 +8,6 @@ import 'package:equatable/equatable.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../../../foundation/platform.dart';
 import '../../../../boorus/booru/booru.dart';
 import '../../../../home/custom_home.dart';
 import '../../../../posts/details_manager/types.dart';
@@ -16,13 +15,13 @@ import '../../../../posts/rating/rating.dart';
 import '../../../../proxy/proxy.dart';
 import '../../../../settings/settings.dart';
 import '../../../../theme/theme_configs.dart';
-import '../../../constants.dart';
 import '../../../gesture/gesture.dart';
 import '../../../search/search.dart';
 import 'booru_config_repository.dart';
 import 'rating_parser.dart';
 import 'types.dart';
 
+export 'booru_login_details.dart';
 export 'types.dart';
 
 class BooruConfig extends Equatable {
@@ -273,7 +272,7 @@ class BooruConfig extends Equatable {
 
   @override
   String toString() {
-    return 'Config(id=$id, booruId=$booruIdHint, name=$name, url=$url, login=${auth.hasLoginDetails()})';
+    return 'Config(id=$id, booruId=$booruIdHint, name=$name, url=$url)';
   }
 
   Map<String, dynamic> toJson() {
@@ -590,16 +589,6 @@ mixin BooruConfigAuthMixin {
   BooruType get booruType => intToBooruType(booruIdHint);
 
   bool isUnverified() => booruId != booruIdHint;
-
-  bool hasLoginDetails() {
-    if (login == null || apiKey == null) return false;
-    if (login!.isEmpty && apiKey!.isEmpty) return false;
-
-    return true;
-  }
-
-  bool get hasStrictSFW => url == kDanbooruSafeUrl && isIOS();
-  bool get hasSoftSFW => url == kDanbooruSafeUrl;
 }
 
 mixin BooruConfigSearchFilterMixin {

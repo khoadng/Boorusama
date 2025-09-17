@@ -804,6 +804,17 @@ main() {
     print_debug "FOSS build: $FOSS_BUILD"
     print_debug "CI mode: $IS_CI"
 
+    # Always run gen.sh script before building
+    if [ -x "./gen.sh" ]; then
+        print_status "Generating code..."
+        if ! ./gen.sh; then
+            exit_with_error "Code generation failed"
+        fi
+        print_status "Code generation completed."
+    else
+        print_warning "gen.sh script not found or not executable, skipping code generation"
+    fi
+
     mkdir -p "$OUTPUT_DIR"
     create_pubspec_backup
 

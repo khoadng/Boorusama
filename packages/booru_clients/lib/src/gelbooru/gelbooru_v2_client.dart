@@ -14,7 +14,12 @@ class GelbooruV2Client with GelbooruClientFavorites {
     Map<String, String>? globalUserParams,
   }) {
     return EndpointConfig(
-      globalUserParams: globalUserParams,
+      globalUserParams:
+          globalUserParams ??
+          {
+            P.userId: 'user_id',
+            P.apiKey: 'api_key',
+          },
       endpoints: [
         Endpoint<GelbooruV2Posts>.fromFeature(
           feature: GelbooruV2Config.defaultFeatures[BooruFeatureId.posts]!,

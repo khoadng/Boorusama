@@ -7,8 +7,9 @@ import 'package:foundation/foundation.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
-import '../../../../../../core/configs/ref.dart';
+import '../../../../../../core/configs/config/providers.dart';
 import '../../../../../../foundation/utils/duration_utils.dart';
+import '../../../../configs/providers.dart';
 import '../../../comment/comment.dart';
 import '../../../comment/providers.dart';
 import '../../../votes/providers.dart';
@@ -76,6 +77,7 @@ class _CommentPageState extends ConsumerState<CommentPage> {
   @override
   Widget build(BuildContext context) {
     final config = ref.watchConfigAuth;
+    final loginDetails = ref.watch(danbooruLoginDetailsProvider(config));
     final comments = ref.watch(danbooruCommentsProvider(config))[widget.postId];
 
     return ValueListenableBuilder(
@@ -108,7 +110,7 @@ class _CommentPageState extends ConsumerState<CommentPage> {
                   Expanded(
                     child: CommentList(
                       comments: comments,
-                      authenticated: config.hasLoginDetails(),
+                      authenticated: loginDetails.hasLogin(),
                       onEdit: (comment) {
                         goToCommentUpdatePage(
                           ref,
@@ -142,7 +144,7 @@ class _CommentPageState extends ConsumerState<CommentPage> {
                           .guardUnvote(ref, commentVote),
                     ),
                   ),
-                  if (config.hasLoginDetails())
+                  if (loginDetails.hasLogin())
                     CommentBox(
                       focus: _focus,
                       commentReply: _commentReply,

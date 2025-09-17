@@ -11,7 +11,6 @@ enum BooruUrlError {
   invalidUrlFormat, // e.g. danbooru
   missingScheme, // e.g. danbooru.donmai.us
   notAnHttpOrHttpsUrl, // e.g. ftp://danbooru.donmai.us
-  missingLastSlash, // e.g. https://danbooru.donmai.us
   redundantWww, // e.g. https://www.danbooru.donmai.us/
 }
 
@@ -32,7 +31,6 @@ final List<UriValidation> booruUriValidationConditions = [
       ? left(BooruUrlError.invalidUrlFormat)
       : right(u),
   (u) => !isHttpOrHttps(u) ? left(BooruUrlError.notAnHttpOrHttpsUrl) : right(u),
-  (u) => !endsWithSlash(u) ? left(BooruUrlError.missingLastSlash) : right(u),
   (u) => containsWww(u) ? left(BooruUrlError.redundantWww) : right(u),
 ];
 

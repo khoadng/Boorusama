@@ -9,6 +9,7 @@ import '../../../../core/configs/config/providers.dart';
 import '../../../../core/posts/details/details.dart';
 import '../../../../core/posts/details/providers.dart';
 import '../../../../core/posts/details_pageview/widgets.dart';
+import '../../configs/providers.dart';
 import '../../favorites/providers.dart';
 import '../../moebooru.dart';
 import '../../posts/types.dart';
@@ -87,9 +88,10 @@ class _MoebooruFavoritesLoaderState
 
   Future<void> _loadFavoriteUsers(int postId) async {
     final config = ref.readConfigAuth;
+    final loginDetails = ref.watch(moebooruLoginDetailsProvider(config));
     final booru = ref.read(moebooruProvider);
 
-    if (booru.supportsFavorite(config.url) && config.hasLoginDetails()) {
+    if (booru.supportsFavorite(config.url) && loginDetails.hasLogin()) {
       // Prevent loading favorites if the slideshow is active
       if (_pageViewController.slideshow.value) {
         _fetchFavSlideShowSkipped = true;

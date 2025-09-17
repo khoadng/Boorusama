@@ -82,7 +82,7 @@
       "reply": "回覆",
       "reply_to": "回覆至",
       "delete": "刪除",
-      "noComments": "沒有評論",
+      "no_comments": "沒有評論",
       "last_updated": "最近更新",
       "send": "傳送"
     },

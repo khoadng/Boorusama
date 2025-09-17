@@ -85,7 +85,7 @@
       "reply": "返信",
       "reply_to": "返信先",
       "delete": "削除",
-      "noComments": "コメントがありません",
+      "no_comments": "コメントがありません",
       "last_updated": "最終更新",
       "send": "送信"
     },
@@ -444,7 +444,6 @@
     "validation_empty_url": "URLが空です",
     "validation_invalid_url": "\"{0}\"は有効なURLではありません",
     "validation_invalid_http_url": "\"{0}\"はHTTPまたはHTTPS URLではありません",
-    "validation_missing_trailing_slash": "\"{0}\"は末尾のスラッシュがありません",
     "validation_redundant_www": "\"{0}\"には冗長な\"www\"が含まれています",
     "validation_contains_spaces": "\"{0}\"にスペースが含まれています",
     "validation_missing_scheme": "\"{0}\"にはスキーマがありません（例：https://）",

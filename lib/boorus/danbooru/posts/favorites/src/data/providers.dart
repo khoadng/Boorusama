@@ -6,6 +6,7 @@ import '../../../../../../core/configs/config/types.dart';
 import '../../../../../../core/posts/favorites/providers.dart';
 import '../../../../../../core/posts/favorites/types.dart';
 import '../../../../client_provider.dart';
+import '../../../../configs/providers.dart';
 import '../../../../users/user/providers.dart';
 import '../../../post/post.dart';
 import '../../../votes/providers.dart';
@@ -16,6 +17,7 @@ final danbooruFavoriteRepoProvider =
     Provider.family<FavoriteRepository<DanbooruPost>, BooruConfigAuth>(
       (ref, config) {
         final client = ref.watch(danbooruClientProvider(config));
+        final loginDetails = ref.watch(danbooruLoginDetailsProvider(config));
 
         return FavoriteRepositoryBuilder(
           add: (postId) async {
@@ -47,7 +49,7 @@ final danbooruFavoriteRepoProvider =
             return success;
           },
           isFavorited: (post) => false,
-          canFavorite: () => config.hasLoginDetails(),
+          canFavorite: () => loginDetails.hasLogin(),
           filter: (postIds) async {
             final user = await ref.read(
               danbooruCurrentUserProvider(config).future,

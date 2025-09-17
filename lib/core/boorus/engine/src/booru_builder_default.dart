@@ -156,6 +156,7 @@ class PostGestureHandler {
   bool handle(WidgetRef ref, String? action, Post post) {
     final handled = handleDefaultGestureAction(
       action,
+      hapticLevel: ref.read(hapticFeedbackLevelProvider),
       onDownload: () => handleDownload(ref, post),
       onShare: () => handleShare(ref, post),
       onToggleBookmark: () => handleBookmark(ref, post),

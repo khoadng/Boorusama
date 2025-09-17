@@ -11,7 +11,7 @@ import '../../../../../foundation/url_launcher.dart';
 import '../../../../bookmarks/bookmark.dart';
 import '../../../../bookmarks/providers.dart';
 import '../../../../boorus/engine/providers.dart';
-import '../../../../configs/ref.dart';
+import '../../../../configs/config/providers.dart';
 import '../../../../downloads/downloader/providers.dart';
 import '../../../../router.dart';
 import '../../../../tags/show/routes.dart';
@@ -33,6 +33,7 @@ class GeneralPostContextMenu extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final booruConfig = ref.watchConfigAuth;
+    final loginDetails = ref.watch(booruLoginDetailsProvider(booruConfig));
     final bookmarkStateAsync = ref.watch(bookmarkProvider);
     final commentPageBuilder = ref
         .watch(booruBuilderProvider(booruConfig))
@@ -91,7 +92,7 @@ class GeneralPostContextMenu extends ConsumerWidget {
             );
           },
         ),
-        if (!booruConfig.hasStrictSFW)
+        if (!loginDetails.hasStrictSFW)
           ContextMenuButtonConfig(
             context.t.post.action.view_in_browser,
             onPressed: () =>

@@ -62,7 +62,5 @@ final gelbooruV2AutocompleteRepoProvider =
               .where((e) => e != AutocompleteData.empty)
               .toList();
         },
-        persistentStorageKey:
-            '${Uri.encodeComponent(config.url)}_autocomplete_cache_v1',
       );
     });

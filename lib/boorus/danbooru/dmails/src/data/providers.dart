@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../../../core/configs/config.dart';
 import '../../../client_provider.dart';
+import '../../../configs/providers.dart';
 import '../../../users/creator/providers.dart';
 import '../types/dmail.dart';
 import 'converter.dart';
@@ -41,7 +42,9 @@ final danbooruDmailsProvider = FutureProvider.autoDispose
 
 final danbooruUnreadDmailsProvider = FutureProvider.autoDispose
     .family<List<Dmail>, BooruConfigAuth>((ref, config) async {
-      if (!config.hasLoginDetails()) return [];
+      final loginDetails = ref.watch(danbooruLoginDetailsProvider(config));
+
+      if (!loginDetails.hasLogin()) return [];
       final client = ref.watch(danbooruClientProvider(config));
 
       final dmails = await client.getDmails(

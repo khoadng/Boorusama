@@ -7,12 +7,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/widgets.dart';
 
 // Project imports:
-import '../../../../../core/configs/ref.dart';
+import '../../../../../core/configs/config/providers.dart';
 import '../../../../../core/dtext/dtext.dart';
 import '../../../../../core/forums/forum_post.dart';
 import '../../../../../core/theme.dart';
 import '../../../../../foundation/html.dart';
 import '../../../../../foundation/url_launcher.dart';
+import '../../../configs/providers.dart';
 import '../../../users/creator/providers.dart';
 import '../../../users/details/routes.dart';
 import '../../../users/details/types.dart';
@@ -125,6 +126,7 @@ class _DanbooruForumPostsPageState
 
   Widget _buildPost(DanbooruForumPost post) {
     final config = ref.watchConfigAuth;
+    final loginDetails = ref.watch(danbooruLoginDetailsProvider(config));
 
     return Padding(
       padding: const EdgeInsets.all(8),
@@ -154,7 +156,7 @@ class _DanbooruForumPostsPageState
             },
           ),
           AppHtml(
-            onLinkTap: !config.hasStrictSFW
+            onLinkTap: !loginDetails.hasStrictSFW
                 ? (url, attributes, element) =>
                       url != null ? launchExternalUrlString(url) : null
                 : null,

@@ -59,6 +59,7 @@ class _Tile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfigAuth;
+    final loginDetails = ref.watch(booruLoginDetailsProvider(config));
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -76,7 +77,7 @@ class _Tile extends ConsumerWidget {
             fontSize: 16,
           ),
         ),
-        if (config.hasLoginDetails())
+        if (loginDetails.hasLogin())
           Text(
             config.login ?? 'Unknown',
             maxLines: 1,

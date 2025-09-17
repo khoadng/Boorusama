@@ -51,6 +51,7 @@
     "profile": "Hồ sơ",
     "copy_user_id": "Sao chép ID người dùng",
     "fail_to_load_profile": "Không thể tải hồ sơ",
+    "previous_names": "Tên trước đây",
     "tabs": {
       "info": "Thông tin",
       "uploads": "Tải lên",
@@ -162,8 +163,8 @@
       "none": "Trống",
       "edit": "Sửa",
       "use_default": "Dùng mặc định",
-      "toggle_bookmark": "Đảo chiều đánh dấu",
-      "toggle_favorite": "Đảo chiều yêu thích",
+      "toggle_bookmark": "Bật/tắt đánh dấu",
+      "toggle_favorite": "Bật/tắt yêu thích",
       "view_in_browser": "Xem bằng trình duyệt",
       "view_original": "Xem ảnh gốc"
     },
@@ -188,10 +189,9 @@
       "reply": "Trả lời",
       "reply_to": "Gửi tới",
       "delete": "Xóa",
-      "noComments": "Không có bình luận",
+      "no_comments": "Không có bình luận",
       "last_updated": "Cập nhật lần cuối",
-      "send": "Gửi",
-      "no_comments": "Không có bình luận"
+      "send": "Gửi"
     },
     "counter": {
       "one": "Bình luận",
@@ -482,7 +482,6 @@
       "failed_count": "Thất bại {count}",
       "invalid_location_error": "Không thể xuất đến vị trí này, hãy thử dùng thư mục \"Download\" hoặc \"Documents\". Tạo thư mục nếu nó không tồn tại.",
       "invalid_backup_format_error": "Định dạng sao lưu không hợp lệ",
-      "default_backup_location": "Vị trí sao lưu mặc định",
       "never": "Chưa bao giờ",
       "receive_data": {
         "title": "Nhận dữ liệu",
@@ -506,7 +505,7 @@
           "running": "Đang chạy"
         },
         "how_to_transfer": "Cách chuyển dữ liệu",
-        "how_to_send(rich)": "• Trên thiết bị nhận, vào ${settings(Cài đặt > Sao lưu và phục hồi dữ liệu)}\n• Chọn ${receive(Nhận)} để bắt đầu nhập từ thiết bị này\n• Đừng rời khỏi trang này cho đến khi hoàn tất",
+        "how_to_send(rich)": "• Trên thiết bị nhận, vào ${settings(_)}\n• Chọn ${receive(_)} để bắt đầu nhập từ thiết bị này\n• Đừng rời khỏi trang này cho đến khi hoàn tất",
         "disclaimer": "Chuyển dữ liệu có thể không hoạt động trên WiFi công cộng (quán cà phê, thư viện) do hạn chế bảo mật. Hãy dùng mạng riêng, ví dụ WiFi ở nhà.",
         "no_networks_error": "Cần kết nối WiFi để truyền dữ liệu. Vui lòng kết nối với mạng WiFi và thử lại."
       },
@@ -760,7 +759,6 @@
     "validation_empty_url": "URL rỗng",
     "validation_invalid_url": "\"{0}\" không phải là một đường dẫn URL hợp lệ.",
     "validation_invalid_http_url": "\"{0}\" không phải là một đường dẫn URL HTTP hoặc HTTPS.",
-    "validation_missing_trailing_slash": "\"{0}\" thiếu dấu gạch chéo phía sau",
     "validation_redundant_www": "\"{0}\" chứa \"www\" thừa không cần thiết",
     "validation_contains_spaces": "\"{0}\" chứa khoảng trắng không cần thiết ở giữa.",
     "validation_missing_scheme": "\"{0}\" thiếu giao thức (ví dụ: https://)",

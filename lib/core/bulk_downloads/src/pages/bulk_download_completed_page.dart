@@ -77,7 +77,7 @@ class _BulkDownloadCompletedPageState
             ),
           ],
         ),
-        body: RefreshIndicator(
+        body: BooruRefreshIndicator(
           onRefresh: _refreshList,
           child: PagingListener(
             controller: _pagingController,

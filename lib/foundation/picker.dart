@@ -13,6 +13,7 @@ Future<void> pickDirectoryPathToastOnError({
   required BuildContext context,
   required void Function(String path) onPick,
   void Function()? onCanceled,
+  String? initialDirectory,
 }) => pickDirectoryPath(
   onPick: onPick,
   onCanceled: onCanceled,
@@ -22,6 +23,7 @@ Future<void> pickDirectoryPathToastOnError({
       e.toString(),
     );
   },
+  initialDirectory: initialDirectory,
 );
 
 Future<void> pickSingleFilePathToastOnError({
@@ -82,9 +84,12 @@ Future<void> pickDirectoryPath({
   required void Function(String path) onPick,
   void Function()? onCanceled,
   void Function(Object error)? onError,
+  String? initialDirectory,
 }) async {
   try {
-    final path = await FilePicker.platform.getDirectoryPath();
+    final path = await FilePicker.platform.getDirectoryPath(
+      initialDirectory: initialDirectory,
+    );
 
     if (path != null) {
       onPick(path);

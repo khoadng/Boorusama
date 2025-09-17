@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../../../core/configs/config/types.dart';
 import '../../../../../../core/tags/configs/providers.dart';
 import '../../../../client_provider.dart';
+import '../../../../configs/providers.dart';
 import '../types/user.dart';
 import '../types/user_repository.dart';
 import 'converter.dart';
@@ -21,7 +22,8 @@ final danbooruUserRepoProvider =
 final danbooruUserProfileProvider =
     FutureProvider.family<DanbooruUser?, BooruConfigAuth>(
       (ref, config) async {
-        if (!config.hasLoginDetails()) return null;
+        final loginDetails = ref.watch(danbooruLoginDetailsProvider(config));
+        if (!loginDetails.hasLogin()) return null;
 
         final client = ref.watch(danbooruClientProvider(config));
         final user = await client.getProfile();

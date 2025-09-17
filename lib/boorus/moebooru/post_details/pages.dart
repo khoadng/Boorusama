@@ -15,6 +15,7 @@ import '../../../core/posts/details/widgets.dart';
 import '../../../core/posts/details_parts/widgets.dart';
 import '../../../core/posts/post/post.dart';
 import '../client_provider.dart';
+import '../configs/providers.dart';
 import '../favorites/providers.dart';
 import '../moebooru.dart';
 import '../posts/types.dart';
@@ -181,6 +182,7 @@ class _Toolbar<T extends Post> extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfigAuth;
+    final loginDetails = ref.watch(moebooruLoginDetailsProvider(config));
     final notifier = ref.watch(moebooruFavoritesProvider(post.id).notifier);
 
     return SimplePostActionToolbar(
@@ -202,8 +204,8 @@ class _Toolbar<T extends Post> extends ConsumerWidget {
           .then((value) {
             notifier.clear();
           }),
-      isAuthorized: config.hasLoginDetails(),
-      forceHideFav: !config.hasLoginDetails(),
+      isAuthorized: loginDetails.hasLogin(),
+      forceHideFav: !loginDetails.hasLogin(),
     );
   }
 }

@@ -45,4 +45,5 @@ abstract class BooruRepository {
   Dio dio(BooruConfigAuth config);
   Map<String, String> extraHttpHeaders(BooruConfigAuth config);
   AppErrorTranslator appErrorTranslator(BooruConfigAuth config);
+  BooruLoginDetails loginDetails(BooruConfigAuth config);
 }

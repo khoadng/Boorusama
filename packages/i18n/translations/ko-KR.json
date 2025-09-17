@@ -82,7 +82,7 @@
       "reply": "답글",
       "reply_to": "에 답글 달기",
       "delete": "삭제",
-      "noComments": "댓글이 없습니다",
+      "no_comments": "댓글이 없습니다",
       "last_updated": "마지막 업데이트",
       "send": "전송"
     },
@@ -411,7 +411,6 @@
     "validation_empty_url": "URL이 비었습니다",
     "validation_invalid_url": "\"{0}\"은(는) 올바른 URL 형식이 아닙니다",
     "validation_invalid_http_url": "\"{0}\"은(는) HTTP나 HTTPS URL이 아닙니다",
-    "validation_missing_trailing_slash": "\"{0}\"의 끝에는 슬래시(/)가 없습니다",
     "validation_redundant_www": "\"{0}\"에는 \"www\"가 중복으로 사용되었습니다",
     "validation_contains_spaces": "\"{0}\"에는 단어 사이에 불필요한 공백이 있습니다",
     "validation_missing_scheme": "\"{0}\"에는 주소 체계(예: https://)가 없습니다",

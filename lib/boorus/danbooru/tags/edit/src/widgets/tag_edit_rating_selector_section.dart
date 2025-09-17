@@ -9,6 +9,7 @@ import 'package:foundation/foundation.dart';
 import '../../../../../../core/configs/ref.dart';
 import '../../../../../../core/posts/rating/rating.dart';
 import '../../../../../../core/widgets/widgets.dart';
+import '../../../../configs/providers.dart';
 import 'tag_how_to_rate_button.dart';
 
 class TagEditRatingSelectorSection extends ConsumerWidget {
@@ -24,6 +25,7 @@ class TagEditRatingSelectorSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfigAuth;
+    final loginDetails = ref.watch(danbooruLoginDetailsProvider(config));
 
     return LayoutBuilder(
       builder: (context, constraints) => Column(
@@ -37,7 +39,7 @@ class TagEditRatingSelectorSection extends ConsumerWidget {
                   'Rating',
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
-                if (!config.hasStrictSFW) const TagHowToRateButton(),
+                if (!loginDetails.hasStrictSFW) const TagHowToRateButton(),
               ],
             ),
           ),

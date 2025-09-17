@@ -11,6 +11,7 @@ import '../../../../../core/tags/show/widgets.dart';
 import '../../../../../core/tags/tag/tag.dart';
 import '../../../../../core/wikis/launcher.dart';
 import '../../../blacklist/providers.dart';
+import '../../../configs/providers.dart';
 import 'danbooru_tag_context_menu.dart';
 
 class DanbooruShowTagListPage extends ConsumerWidget {
@@ -30,6 +31,7 @@ class DanbooruShowTagListPage extends ConsumerWidget {
     final blacklistNotifier = ref.watch(
       danbooruBlacklistedTagsProvider(auth).notifier,
     );
+    final loginDetails = ref.watch(danbooruLoginDetailsProvider(auth));
 
     return ShowTagListPage(
       post: post,
@@ -45,7 +47,7 @@ class DanbooruShowTagListPage extends ConsumerWidget {
           tag.rawName,
         );
       },
-      onAddToBlacklist: auth.hasLoginDetails()
+      onAddToBlacklist: loginDetails.hasLogin()
           ? (tag) {
               blacklistNotifier.addWithToast(
                 context: ref.context,

@@ -5,6 +5,7 @@ import 'package:foundation/foundation.dart';
 // Project imports:
 import '../../../foundation/debounce_mixin.dart';
 import '../../configs/config.dart';
+import '../../configs/config/providers.dart';
 import '../../tags/autocompletes/providers.dart';
 import '../../tags/autocompletes/types.dart';
 import '../../tags/configs/providers.dart';
@@ -66,6 +67,7 @@ class SuggestionsNotifier
     final fallback = ref.read(fallbackSuggestionsProvider.notifier);
     final autocompleteRepo = ref.read(autocompleteRepoProvider(arg));
     final tagInfo = ref.read(tagInfoProvider);
+    final loginDetails = ref.read(booruLoginDetailsProvider(arg));
 
     // if we already have the suggestions, don't fetch again
     if (state.containsKey(sanitized)) {
@@ -82,7 +84,7 @@ class SuggestionsNotifier
         var filter = filterNsfw(
           data,
           tagInfo.r18Tags,
-          shouldFilter: arg.hasSoftSFW,
+          shouldFilter: loginDetails.hasSoftSFW,
         );
 
         if (filter.isNotEmpty) {

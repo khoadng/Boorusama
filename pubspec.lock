@@ -1696,18 +1696,20 @@ packages:
   slang:
     dependency: transitive
     description:
-      name: slang
-      sha256: b02c531f453c328a1343818c64d730357ac140860147c9a29030fdfc82039266
-      url: "https://pub.dev"
-    source: hosted
+      path: slang
+      ref: fork
+      resolved-ref: "76c198928e423de4302a73e313aab953e9e51e3d"
+      url: "https://github.com/khoadng/slang.git"
+    source: git
     version: "4.8.1"
   slang_flutter:
     dependency: transitive
     description:
-      name: slang_flutter
-      sha256: "7a5e55f2b1ec99e06354a5213b992d34017efacccba8ffc6066cfc5517cc0282"
-      url: "https://pub.dev"
-    source: hosted
+      path: slang_flutter
+      ref: fork
+      resolved-ref: "76c198928e423de4302a73e313aab953e9e51e3d"
+      url: "https://github.com/khoadng/slang.git"
+    source: git
     version: "4.8.0"
   sliver_tools:
     dependency: "direct main"

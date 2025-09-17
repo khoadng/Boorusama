@@ -15,9 +15,10 @@ import '../../../../foundation/display.dart';
 import '../../../../foundation/html.dart';
 import '../../../configs/ref.dart';
 import '../../../posts/listing/providers.dart';
+import '../../../search/queries/query.dart';
 import '../../../search/search/widgets.dart';
 import '../../../theme.dart';
-import '../providers/local_providers.dart';
+import '../providers/suggestion_provider.dart';
 
 class BookmarkSearchBar extends ConsumerStatefulWidget {
   const BookmarkSearchBar({
@@ -65,9 +66,6 @@ class _BookmarkSearchBarState extends ConsumerState<BookmarkSearchBar> {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final suggestions = ref.watch(tagSuggestionsProvider).valueOrNull ?? [];
-        final selectedTag = ref.watch(selectedTagsProvider);
-
         return Container(
           margin: const EdgeInsets.symmetric(
             vertical: 8,
@@ -77,57 +75,30 @@ class _BookmarkSearchBarState extends ConsumerState<BookmarkSearchBar> {
           child: ValueListenableBuilder(
             valueListenable: _overlay,
             builder: (_, overlay, _) {
-              return PortalTarget(
-                anchor: const Aligned(
-                  follower: Alignment.topCenter,
-                  target: Alignment.bottomCenter,
-                ),
-                portalFollower: _buildOverlay(
-                  constraints,
-                  suggestions,
-                  Colors.black.withValues(alpha: 0.7),
-                ),
-                visible:
-                    overlay &&
-                    suggestions.isNotEmpty &&
-                    widget.controller.text != selectedTag,
-                child: BooruSearchBar(
-                  focus: widget.focusNode,
-                  controller: widget.controller,
-                  leading: const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 8),
-                    child: Icon(Symbols.search),
-                  ),
-                  trailing: ValueListenableBuilder(
-                    valueListenable: widget.controller,
-                    builder: (_, value, _) => value.text.isNotEmpty
-                        ? Padding(
-                            padding: const EdgeInsets.only(right: 8),
-                            child: InkWell(
-                              customBorder: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: const Icon(Symbols.clear),
-                              onTap: () {
-                                widget.controller.clear();
-                                ref
-                                        .read(
-                                          selectedTagsProvider.notifier,
-                                        )
-                                        .state =
-                                    '';
-                                widget.focusNode.unfocus();
-                              },
-                            ),
-                          )
-                        : const SizedBox.shrink(),
-                  ),
-                  onSubmitted: (value) {
-                    ref.read(selectedTagsProvider.notifier).state = value
-                        .trim()
-                        .replaceAll(RegExp(r'\s+'), ' ');
-                  },
-                ),
+              return ValueListenableBuilder(
+                valueListenable: widget.controller,
+                builder: (_, controller, _) {
+                  return PortalTarget(
+                    anchor: const Aligned(
+                      follower: Alignment.topCenter,
+                      target: Alignment.bottomCenter,
+                    ),
+                    portalFollower: _Overlay(
+                      controller: widget.controller,
+                      maxWidth: constraints.maxWidth,
+                      onTapOutside: _disableOverlay,
+                      onTap: (tag) {
+                        widget.controller.text = replaceOrAppendTag(
+                          widget.controller.text,
+                          tag.tag,
+                        );
+                        _search();
+                      },
+                    ),
+                    visible: overlay,
+                    child: _buildSearchBar(controller),
+                  );
+                },
               );
             },
           ),
@@ -136,46 +107,125 @@ class _BookmarkSearchBarState extends ConsumerState<BookmarkSearchBar> {
     );
   }
 
-  Widget _buildOverlay(
-    BoxConstraints constraints,
-    List<String> suggestions,
-    Color scrimColor,
-  ) {
+  void _disableOverlay() {
+    _overlay.value = false;
+    widget.focusNode.unfocus();
+  }
+
+  void _search() {
+    widget.postController.refresh();
+    _disableOverlay();
+  }
+
+  Widget _buildSearchBar(TextEditingValue controller) {
+    return BooruSearchBar(
+      focus: widget.focusNode,
+      controller: widget.controller,
+      leading: const Padding(
+        padding: EdgeInsets.symmetric(horizontal: 8),
+        child: Icon(Symbols.search),
+      ),
+      trailing: controller.text.isNotEmpty
+          ? Padding(
+              padding: const EdgeInsets.only(right: 8),
+              child: InkWell(
+                customBorder: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Icon(Symbols.clear),
+                onTap: () {
+                  widget.controller.clear();
+                  _search();
+                },
+              ),
+            )
+          : const SizedBox.shrink(),
+      onSubmitted: (value) {
+        _search();
+      },
+    );
+  }
+}
+
+class _Overlay extends ConsumerStatefulWidget {
+  const _Overlay({
+    required this.controller,
+    required this.maxWidth,
+    required this.onTap,
+    required this.onTapOutside,
+  });
+
+  final TextEditingController controller;
+  final double maxWidth;
+  final ValueChanged<TagWithColor> onTap;
+  final VoidCallback onTapOutside;
+
+  @override
+  ConsumerState<_Overlay> createState() => _OverlayState();
+}
+
+class _OverlayState extends ConsumerState<_Overlay> {
+  @override
+  void initState() {
+    super.initState();
+    widget.controller.addListener(_onTextChanged);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadSuggestions();
+    });
+  }
+
+  @override
+  void dispose() {
+    widget.controller.removeListener(_onTextChanged);
+    super.dispose();
+  }
+
+  void _onTextChanged() {
+    _loadSuggestions();
+  }
+
+  void _loadSuggestions() {
+    final config = ref.readConfigAuth;
+    ref
+        .read(tagSuggestionsProvider.notifier)
+        .loadSuggestions(config, widget.controller.text);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final scrimColor = Colors.black.withValues(alpha: 0.7);
+
     return Column(
       children: [
-        ColoredBox(
-          color: scrimColor,
-          child: Container(
-            margin: const EdgeInsets.only(
-              top: 4,
-              left: 12,
-              right: 12,
-            ),
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surfaceContainer,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            height: suggestions.length * 44,
-            constraints: BoxConstraints(
-              maxWidth: constraints.maxWidth,
-              maxHeight: min(MediaQuery.sizeOf(context).height * 0.8, 300),
-            ),
-            child: ListView.builder(
-              itemCount: suggestions.length,
-              itemBuilder: (context, index) {
-                final tag = suggestions[index];
+        ref
+            .watch(tagSuggestionsProvider)
+            .maybeWhen(
+              data: (state) => state.suggestions.isNotEmpty
+                  ? _SuggestionContainer(
+                      scrimColor: scrimColor,
+                      height: state.suggestions.length * 44,
+                      maxWidth: widget.maxWidth,
+                      child: ListView.builder(
+                        itemCount: state.suggestions.length,
+                        itemBuilder: (context, index) {
+                          final tag = state.suggestions[index];
 
-                return _buildItem(ref, tag, context);
-              },
+                          return _SuggestionItem(
+                            tagWithColor: tag,
+                            controller: widget.controller,
+                            onTap: () {
+                              widget.onTap(tag);
+                            },
+                          );
+                        },
+                      ),
+                    )
+                  : const SizedBox.shrink(),
+              orElse: () => const SizedBox.shrink(),
             ),
-          ),
-        ),
         Expanded(
           child: GestureDetector(
-            onTap: () {
-              _overlay.value = false;
-              widget.focusNode.unfocus();
-            },
+            onTap: widget.onTapOutside,
             child: Container(
               color: scrimColor,
             ),
@@ -184,12 +234,62 @@ class _BookmarkSearchBarState extends ConsumerState<BookmarkSearchBar> {
       ],
     );
   }
+}
 
-  Widget _buildItem(WidgetRef ref, String tag, BuildContext context) {
-    final config = ref.watchConfigAuth;
-    final color = ref
-        .watch(bookmarkTagColorProvider((config, tag)))
-        .valueOrNull;
+class _SuggestionContainer extends StatelessWidget {
+  const _SuggestionContainer({
+    required this.scrimColor,
+    required this.height,
+    required this.maxWidth,
+    required this.child,
+  });
+
+  final double maxWidth;
+  final Color scrimColor;
+  final double height;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return ColoredBox(
+      color: scrimColor,
+      child: Container(
+        margin: const EdgeInsets.only(
+          top: 4,
+          left: 12,
+          right: 12,
+        ),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surfaceContainer,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        height: height,
+        constraints: BoxConstraints(
+          maxWidth: maxWidth,
+          maxHeight: min(MediaQuery.sizeOf(context).height * 0.8, 300),
+        ),
+        child: child,
+      ),
+    );
+  }
+}
+
+class _SuggestionItem extends ConsumerWidget {
+  const _SuggestionItem({
+    required this.tagWithColor,
+    required this.controller,
+    required this.onTap,
+  });
+
+  final TagWithColor tagWithColor;
+  final VoidCallback onTap;
+  final TextEditingController controller;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final tag = tagWithColor.tag;
+    final color = tagWithColor.color;
+    final count = tagWithColor.count;
 
     return Material(
       shape: RoundedRectangleBorder(
@@ -200,19 +300,7 @@ class _BookmarkSearchBarState extends ConsumerState<BookmarkSearchBar> {
         customBorder: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
         ),
-        onTap: () {
-          // trim excess spaces, keep only the final space
-          final currentTag = ref
-              .read(selectedTagsProvider)
-              .trim()
-              .replaceAll(RegExp(r'\s+'), ' ');
-
-          final newTagString = currentTag.isEmpty
-              ? '$tag '
-              : '$currentTag $tag ';
-          ref.read(selectedTagsProvider.notifier).state = newTagString;
-          widget.controller.text = newTagString;
-        },
+        onTap: onTap,
         child: IgnorePointer(
           child: Container(
             constraints: const BoxConstraints(
@@ -229,34 +317,34 @@ class _BookmarkSearchBarState extends ConsumerState<BookmarkSearchBar> {
               children: [
                 Expanded(
                   child: ValueListenableBuilder(
-                    valueListenable: widget.controller,
-                    builder: (_, value, _) => AppHtml(
-                      style: {
-                        'p': Style(
-                          fontSize: FontSize.medium,
-                          color: color,
-                          margin: Margins.zero,
-                        ),
-                        'b': Style(
-                          fontWeight: FontWeight.w900,
-                        ),
-                      },
-                      data:
-                          '<p>${tag.replaceAll(value.text, '<b>${value.text}</b>')}</p>',
-                    ),
+                    valueListenable: controller,
+                    builder: (_, value, _) {
+                      final lastTag =
+                          value.text.split(' ').lastOrNull ?? value.text;
+
+                      return AppHtml(
+                        style: {
+                          'p': Style(
+                            fontSize: FontSize.medium,
+                            color: color,
+                            margin: Margins.zero,
+                          ),
+                          'b': Style(
+                            fontWeight: FontWeight.w900,
+                          ),
+                        },
+                        data:
+                            '<p>${tag.replaceAll(lastTag, '<b>$lastTag</b>')}</p>',
+                      );
+                    },
                   ),
                 ),
-                ref
-                    .watch(tagCountProvider(tag))
-                    .maybeWhen(
-                      data: (count) => Text(
-                        count.toString(),
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.hintColor,
-                        ),
-                      ),
-                      orElse: () => const SizedBox.shrink(),
-                    ),
+                Text(
+                  count.toString(),
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.hintColor,
+                  ),
+                ),
               ],
             ),
           ),

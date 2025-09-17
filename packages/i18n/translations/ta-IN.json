@@ -82,7 +82,7 @@
       "reply": "பதில்",
       "reply_to": "பதிலளித்தல்",
       "delete": "நீக்கு",
-      "noComments": "எந்தக் கருத்தும் இல்லை",
+      "no_comments": "எந்தக் கருத்தும் இல்லை",
       "last_updated": "கடைசியாக புதுப்பிக்கப்பட்டது",
       "send": "அனுப்பு"
     },
@@ -411,7 +411,6 @@
     "validation_empty_url": "முகவரி காலியாக உள்ளது",
     "validation_invalid_url": "\"{0}\" என்பது சரியான முகவரி அல்ல",
     "validation_invalid_http_url": "\"{0}\" என்பது ஒரு http அல்லது https முகவரி அல்ல",
-    "validation_missing_trailing_slash": "\"{0}\" ஒரு பின்னடைவு குறைப்பைக் காணவில்லை",
     "validation_redundant_www": "\"{0}\" தேவையற்ற \"www\"",
     "validation_contains_spaces": "\"{0}\" இடையே இடைவெளிகளைக் கொண்டுள்ளது",
     "validation_missing_scheme": "\"{0}\" ஒரு திட்டத்தைக் காணவில்லை (எ.கா. https: //)",

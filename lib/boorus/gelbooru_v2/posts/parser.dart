@@ -7,20 +7,34 @@ import '../../../core/posts/post/post.dart';
 import '../../../core/posts/post/tags.dart';
 import '../../../core/posts/rating/rating.dart';
 import '../../../core/posts/sources/source.dart';
+import '../gelbooru_v2_repository.dart';
 import 'types.dart';
 
-GelbooruV2Post gelbooruV2PostDtoToGelbooruPostNoMetadata(PostV2Dto dto) =>
-    gelbooruV2PostDtoToGelbooruPost(dto, null);
+GelbooruV2Post gelbooruV2PostDtoToGelbooruPostNoMetadata(
+  PostV2Dto dto,
+  GelbooruV2ImageUrlResolver imageUrlResolver,
+) => gelbooruV2PostDtoToGelbooruPost(dto, null, imageUrlResolver);
 
 GelbooruV2Post gelbooruV2PostDtoToGelbooruPost(
   PostV2Dto dto,
   PostMetadata? metadata,
+  GelbooruV2ImageUrlResolver imageUrlResolver,
 ) {
+  final previewUrl = imageUrlResolver.resolveThumbnailUrl(
+    dto.previewUrl ?? '',
+  );
+  final sampleUrl = imageUrlResolver.resolvePreviewUrl(
+    dto.sampleUrl ?? dto.fileUrl ?? '',
+  );
+  final fileUrl = imageUrlResolver.resolveImageUrl(
+    dto.fileUrl ?? '',
+  );
+
   return GelbooruV2Post(
     id: dto.id!,
-    thumbnailImageUrl: dto.previewUrl ?? '',
-    sampleImageUrl: dto.sampleUrl ?? dto.fileUrl ?? '',
-    originalImageUrl: dto.fileUrl ?? '',
+    thumbnailImageUrl: previewUrl,
+    sampleImageUrl: sampleUrl,
+    originalImageUrl: fileUrl,
     tags: dto.tags.splitTagString(),
     width: dto.width?.toDouble() ?? 0,
     height: dto.height?.toDouble() ?? 0,

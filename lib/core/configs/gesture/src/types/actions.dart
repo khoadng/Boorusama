@@ -1,8 +1,15 @@
+// Dart imports:
+import 'dart:async';
+
 // Flutter imports:
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 // Package imports:
 import 'package:i18n/i18n.dart';
+
+// Project imports:
+import '../../../../settings/settings.dart';
 
 const kDownloadAction = 'download';
 const kShareAction = 'share';
@@ -52,6 +59,7 @@ String describeImagePreviewQuickAction(String? action, BuildContext context) =>
 
 bool handleDefaultGestureAction(
   String? action, {
+  required HapticFeedbackLevel hapticLevel,
   void Function()? onDownload,
   void Function()? onShare,
   void Function()? onToggleBookmark,
@@ -74,6 +82,10 @@ bool handleDefaultGestureAction(
       onOpenSource?.call();
     default:
       return false;
+  }
+
+  if (hapticLevel.isFull) {
+    unawaited(HapticFeedback.selectionClick());
   }
 
   return true;
