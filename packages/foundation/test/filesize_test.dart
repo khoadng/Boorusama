@@ -1,6 +1,6 @@
 // Package imports:
 import 'package:flutter_test/flutter_test.dart';
-import 'package:foundation/foundation.dart';
+import 'package:foundation/src/filesize.dart';
 
 abstract class S {
   static const int kb = 1024;

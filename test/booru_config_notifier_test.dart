@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/core/configs/config/providers.dart';
 import 'package:flutter/foundation.dart';
 
 // Package imports:
@@ -127,6 +128,13 @@ ProviderContainer createBooruConfigContainer({
       booruConfigProvider.overrideWith(
         () => BooruConfigNotifier(
           initialConfigs: [],
+        ),
+      ),
+      booruLoginDetailsProvider.overrideWith(
+        (_, _) => const DefaultBooruLoginDetails(
+          login: '',
+          apiKey: '',
+          url: '',
         ),
       ),
     ],
