@@ -3,7 +3,6 @@ import 'package:flutter/foundation.dart';
 
 // Package imports:
 import 'package:dio/dio.dart';
-import 'package:extended_image_library/extended_image_library.dart';
 import 'package:retriable/retriable.dart';
 
 class ImageFetcher {
@@ -12,7 +11,7 @@ class ImageFetcher {
     required Dio dio,
     Map<String, String>? headers,
     FetchStrategyBuilder? fetchStrategy,
-    CancellationToken? cancelToken,
+    CancelToken? cancelToken,
     void Function(int count, int total)? onReceiveProgress,
     bool printError = true,
   }) async {
@@ -41,9 +40,14 @@ class ImageFetcher {
       }
 
       return bytes;
-    } on OperationCanceledError catch (_) {
-      _print('User cancel request $url.', printError);
-      throw StateError('User cancel request $url.');
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.cancel) {
+        _print('User canceled request $url.', printError);
+        throw StateError('User canceled request $url.');
+      } else {
+        _print('Failed to load $url: $e', printError);
+        rethrow;
+      }
     } catch (e) {
       _print('Failed to fetch $url: $e', printError);
       rethrow;

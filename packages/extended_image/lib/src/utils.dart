@@ -7,4 +7,7 @@ enum LoadState {
 
   /// failed
   failed,
+
+  /// cancelled
+  cancelled,
 }

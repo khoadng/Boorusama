@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:http_client_helper/http_client_helper.dart' hide Response;
 import 'package:retriable/retriable.dart';
 import 'package:test/test.dart';
 
@@ -119,9 +118,7 @@ void main() {
     });
 
     test('should respect cancellation token', () async {
-      final cancelToken = CancellationToken();
-      // ignore: cascade_invocations
-      cancelToken.cancel();
+      final cancelToken = CancelToken()..cancel();
 
       expect(
         () => tryGetResponse<Map<String, dynamic>>(
@@ -129,7 +126,7 @@ void main() {
           dio: dio,
           cancelToken: cancelToken,
         ),
-        throwsA(isA<OperationCanceledError>()),
+        throwsA(isA<DioException>()),
       );
     });
   });

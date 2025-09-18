@@ -67,7 +67,7 @@ class DioExtendedNetworkImageProvider
 
   /// The token to cancel network request
   @override
-  final CancellationToken? cancelToken;
+  final CancelToken? cancelToken;
 
   /// Custom cache key
   @override
