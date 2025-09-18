@@ -141,15 +141,13 @@ class PostDetailsItem<T extends Post> extends ConsumerWidget {
               ),
             );
 
-            final disposition =
-                TallMediaClassifier(
-                  settings: tallSettings,
-                  viewportSize: viewportSize,
-                ).classify(
-                  width: post.width,
-                  height: post.height,
-                  isVideo: post.isVideo,
-                );
+            final disposition = classifyTallMedia(
+              settings: tallSettings,
+              viewportSize: viewportSize,
+              width: post.width,
+              height: post.height,
+              isVideo: post.isVideo,
+            );
             final useTallScroller =
                 disposition.isTall && disposition.hasScrollableExtent;
 

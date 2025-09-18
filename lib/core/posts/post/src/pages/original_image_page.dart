@@ -260,15 +260,13 @@ class __ImageViewerState extends ConsumerState<_ImageViewer> {
     final viewportSize = Size(mediaSize.width, viewportHeight);
     final contentSize = widget.contentSize ?? Size.zero;
 
-    final disposition =
-        TallMediaClassifier(
-          settings: tallSettings,
-          viewportSize: viewportSize,
-        ).classify(
-          width: contentSize.width,
-          height: contentSize.height,
-          isVideo: false,
-        );
+    final disposition = classifyTallMedia(
+      settings: tallSettings,
+      viewportSize: viewportSize,
+      width: contentSize.width,
+      height: contentSize.height,
+      isVideo: false,
+    );
 
     return BooruImage(
       config: ref.watchConfigAuth,

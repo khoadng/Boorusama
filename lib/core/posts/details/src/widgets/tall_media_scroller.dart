@@ -139,7 +139,7 @@ class _TallMediaScrollerState extends State<TallMediaScroller> {
     // Lock swipe if user drags beyond threshold even when detection is late
     final dragDistance = (event.position.dy - _gestureStartPosition!.dy).abs();
     if (!_hasTriggeredLock &&
-        dragDistance > _settings.scrollLockDistanceThreshold) {
+        dragDistance > TallMediaSettings.scrollLockDistanceThreshold) {
       _ensureSwipeLock();
     }
 
@@ -147,7 +147,7 @@ class _TallMediaScrollerState extends State<TallMediaScroller> {
       final elapsed = event.timeStamp - _gestureStartTimestamp!;
       final elapsedMs = max(elapsed.inMilliseconds, 1);
       final velocity = (dragDistance / elapsedMs) * 1000;
-      if (velocity > _settings.scrollLockVelocityThreshold) {
+      if (velocity > TallMediaSettings.scrollLockVelocityThreshold) {
         _ensureSwipeLock();
       }
     }
@@ -236,9 +236,9 @@ class _TallMediaScrollerState extends State<TallMediaScroller> {
     final velocity = (deltaY / timeMs) * 1000;
     final distance = deltaY.abs();
 
-    final meetsDistance = distance >= _settings.navigationDistanceThreshold;
+    final meetsDistance = distance >= TallMediaSettings.navigationDistanceThreshold;
     final meetsVelocity =
-        velocity.abs() >= _settings.navigationVelocityThreshold;
+        velocity.abs() >= TallMediaSettings.navigationVelocityThreshold;
 
     final isSwipeDown = deltaY > 0;
 
@@ -281,7 +281,7 @@ class _TallMediaScrollerState extends State<TallMediaScroller> {
   double _edgeActivationExtent(ScrollPosition position) {
     return max(
       _kEdgeSlack,
-      position.viewportDimension * _settings.edgeActivationRatio,
+      position.viewportDimension * TallMediaSettings.edgeActivationRatio,
     );
   }
 

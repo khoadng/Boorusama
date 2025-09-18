@@ -569,117 +569,41 @@ class ImageViewerSettings extends Equatable {
 
 class TallMediaSettings extends Equatable {
   const TallMediaSettings({
-    required this.aspectRatioThreshold,
-    required this.minHeightPx,
-    required this.minViewportHeightRatio,
-    required this.minPixelCount,
-    required this.navigationVelocityThreshold,
-    required this.navigationDistanceThreshold,
-    required this.edgeActivationRatio,
-    required this.scrollLockVelocityThreshold,
-    required this.scrollLockDistanceThreshold,
-    required this.minScrollExtentPx,
+    required this.enabled,
   });
 
-  const TallMediaSettings.defaults()
-    : aspectRatioThreshold = 2.15,
-      minHeightPx = 1800,
-      minViewportHeightRatio = 1.35,
-      minPixelCount = 2000000,
-      navigationVelocityThreshold = 2200,
-      navigationDistanceThreshold = 240,
-      edgeActivationRatio = 0.12,
-      scrollLockVelocityThreshold = 180,
-      scrollLockDistanceThreshold = 28,
-      minScrollExtentPx = 48;
+  const TallMediaSettings.defaults() : enabled = true;
 
   TallMediaSettings.fromJson(Map<String, dynamic> json)
-    : aspectRatioThreshold =
-          (json['aspectRatioThreshold'] as num?)?.toDouble() ?? 2.15,
-      minHeightPx = (json['minHeightPx'] as num?)?.toDouble() ?? 1800,
-      minViewportHeightRatio =
-          (json['minViewportHeightRatio'] as num?)?.toDouble() ?? 1.35,
-      minPixelCount = (json['minPixelCount'] as num?)?.toDouble() ?? 2000000,
-      navigationVelocityThreshold =
-          (json['navigationVelocityThreshold'] as num?)?.toDouble() ?? 2200,
-      navigationDistanceThreshold =
-          (json['navigationDistanceThreshold'] as num?)?.toDouble() ?? 240,
-      edgeActivationRatio =
-          (json['edgeActivationRatio'] as num?)?.toDouble() ?? 0.12,
-      scrollLockVelocityThreshold =
-          (json['scrollLockVelocityThreshold'] as num?)?.toDouble() ?? 180,
-      scrollLockDistanceThreshold =
-          (json['scrollLockDistanceThreshold'] as num?)?.toDouble() ?? 28,
-      minScrollExtentPx = (json['minScrollExtentPx'] as num?)?.toDouble() ?? 48;
+    : enabled = json['enabled'] ?? true;
 
-  final double aspectRatioThreshold;
-  final double minHeightPx;
-  final double minViewportHeightRatio;
-  final double minPixelCount;
-  final double navigationVelocityThreshold;
-  final double navigationDistanceThreshold;
-  final double edgeActivationRatio;
-  final double scrollLockVelocityThreshold;
-  final double scrollLockDistanceThreshold;
-  final double minScrollExtentPx;
+  final bool enabled;
 
   TallMediaSettings copyWith({
-    double? aspectRatioThreshold,
-    double? minHeightPx,
-    double? minViewportHeightRatio,
-    double? minPixelCount,
-    double? navigationVelocityThreshold,
-    double? navigationDistanceThreshold,
-    double? edgeActivationRatio,
-    double? scrollLockVelocityThreshold,
-    double? scrollLockDistanceThreshold,
-    double? minScrollExtentPx,
+    bool? enabled,
   }) {
     return TallMediaSettings(
-      aspectRatioThreshold: aspectRatioThreshold ?? this.aspectRatioThreshold,
-      minHeightPx: minHeightPx ?? this.minHeightPx,
-      minViewportHeightRatio:
-          minViewportHeightRatio ?? this.minViewportHeightRatio,
-      minPixelCount: minPixelCount ?? this.minPixelCount,
-      navigationVelocityThreshold:
-          navigationVelocityThreshold ?? this.navigationVelocityThreshold,
-      navigationDistanceThreshold:
-          navigationDistanceThreshold ?? this.navigationDistanceThreshold,
-      edgeActivationRatio: edgeActivationRatio ?? this.edgeActivationRatio,
-      scrollLockVelocityThreshold:
-          scrollLockVelocityThreshold ?? this.scrollLockVelocityThreshold,
-      scrollLockDistanceThreshold:
-          scrollLockDistanceThreshold ?? this.scrollLockDistanceThreshold,
-      minScrollExtentPx: minScrollExtentPx ?? this.minScrollExtentPx,
+      enabled: enabled ?? this.enabled,
     );
   }
 
   Map<String, dynamic> toJson() => {
-    'aspectRatioThreshold': aspectRatioThreshold,
-    'minHeightPx': minHeightPx,
-    'minViewportHeightRatio': minViewportHeightRatio,
-    'minPixelCount': minPixelCount,
-    'navigationVelocityThreshold': navigationVelocityThreshold,
-    'navigationDistanceThreshold': navigationDistanceThreshold,
-    'edgeActivationRatio': edgeActivationRatio,
-    'scrollLockVelocityThreshold': scrollLockVelocityThreshold,
-    'scrollLockDistanceThreshold': scrollLockDistanceThreshold,
-    'minScrollExtentPx': minScrollExtentPx,
+    'enabled': enabled,
   };
 
   @override
-  List<Object> get props => [
-    aspectRatioThreshold,
-    minHeightPx,
-    minViewportHeightRatio,
-    minPixelCount,
-    navigationVelocityThreshold,
-    navigationDistanceThreshold,
-    edgeActivationRatio,
-    scrollLockVelocityThreshold,
-    scrollLockDistanceThreshold,
-    minScrollExtentPx,
-  ];
+  List<Object> get props => [enabled];
+
+  static const double aspectRatioThreshold = 2.15;
+  static const double minHeightPx = 1800;
+  static const double minViewportHeightRatio = 1.35;
+  static const double minPixelCount = 2000000;
+  static const double navigationVelocityThreshold = 2200;
+  static const double navigationDistanceThreshold = 240;
+  static const double edgeActivationRatio = 0.12;
+  static const double scrollLockVelocityThreshold = 180;
+  static const double scrollLockDistanceThreshold = 28;
+  static const double minScrollExtentPx = 48;
 }
 
 class ImageListingSettings extends Equatable {

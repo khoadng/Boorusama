@@ -11,11 +11,10 @@ import 'package:boorusama/core/settings/src/types/settings.dart';
 void main() {
   const settings = TallMediaSettings.defaults();
 
-  TallMediaClassifier classifier(Size viewport) =>
-      TallMediaClassifier(settings: settings, viewportSize: viewport);
-
   test('marks extremely tall images as tall', () {
-    final disposition = classifier(const Size(1080, 1920)).classify(
+    final disposition = classifyTallMedia(
+      settings: settings,
+      viewportSize: const Size(1080, 1920),
       width: 1200,
       height: 4200,
       isVideo: false,
@@ -27,7 +26,9 @@ void main() {
   });
 
   test('does not mark marginal aspect ratios as tall', () {
-    final disposition = classifier(const Size(1080, 1920)).classify(
+    final disposition = classifyTallMedia(
+      settings: settings,
+      viewportSize: const Size(1080, 1920),
       width: 900,
       height: 1500,
       isVideo: false,
@@ -38,7 +39,9 @@ void main() {
   });
 
   test('requires sufficient pixel density to be considered tall', () {
-    final disposition = classifier(const Size(720, 1280)).classify(
+    final disposition = classifyTallMedia(
+      settings: settings,
+      viewportSize: const Size(720, 1280),
       width: 420,
       height: 1600,
       isVideo: false,
@@ -48,7 +51,9 @@ void main() {
   });
 
   test('ignores tall originals when scaled height fits viewport', () {
-    final disposition = classifier(const Size(1080, 1920)).classify(
+    final disposition = classifyTallMedia(
+      settings: settings,
+      viewportSize: const Size(1080, 1920),
       width: 4200,
       height: 2800,
       isVideo: false,
@@ -58,12 +63,29 @@ void main() {
   });
 
   test('videos are never classified as tall still images', () {
-    final disposition = classifier(const Size(1080, 1920)).classify(
+    final disposition = classifyTallMedia(
+      settings: settings,
+      viewportSize: const Size(1080, 1920),
       width: 1080,
       height: 3600,
       isVideo: true,
     );
 
     expect(disposition.isTall, isFalse);
+  });
+
+  test('disabled setting prevents tall classification', () {
+    const disabledSettings = TallMediaSettings(enabled: false);
+
+    final disposition = classifyTallMedia(
+      settings: disabledSettings,
+      viewportSize: const Size(1080, 1920),
+      width: 1200,
+      height: 4200,
+      isVideo: false,
+    );
+
+    expect(disposition.isTall, isFalse);
+    expect(disposition.shouldFitToWidth, isFalse);
   });
 }

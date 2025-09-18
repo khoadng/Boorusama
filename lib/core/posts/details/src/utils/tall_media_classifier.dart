@@ -52,86 +52,78 @@ class TallMediaDisposition {
   bool get hasScrollableExtent => scrollExtent > 0;
 }
 
-class TallMediaClassifier {
-  const TallMediaClassifier({
-    required this.settings,
-    required this.viewportSize,
-  });
-
-  final TallMediaSettings settings;
-  final Size viewportSize;
-
-  TallMediaDisposition classify({
-    required double width,
-    required double height,
-    required bool isVideo,
-  }) {
-    if (width <= 0 || height <= 0 || isVideo) {
-      final aspectRatio = width <= 0 || height <= 0 ? 0.0 : height / width;
-      final viewportRatio = viewportSize.height == 0
-          ? 0.0
-          : height / viewportSize.height;
-      return TallMediaDisposition.standard(
-        aspectRatio: aspectRatio,
-        viewportRatio: viewportRatio,
-        pixelCount: width * height,
-      );
-    }
-
-    final aspectRatio = height / width;
+TallMediaDisposition classifyTallMedia({
+  required TallMediaSettings settings,
+  required Size viewportSize,
+  required double width,
+  required double height,
+  required bool isVideo,
+}) {
+  if (!settings.enabled || width <= 0 || height <= 0 || isVideo) {
+    final aspectRatio = width <= 0 || height <= 0 ? 0.0 : height / width;
     final viewportRatio = viewportSize.height == 0
         ? 0.0
         : height / viewportSize.height;
-    final pixelCount = width * height;
-    final projectedHeight = _projectedHeight(width, height);
-    final rawScrollExtent = projectedHeight - viewportSize.height;
-    final hasScroll = rawScrollExtent > settings.minScrollExtentPx;
-
-    final meetsAspect = aspectRatio >= settings.aspectRatioThreshold;
-    final meetsHeight = height >= settings.minHeightPx;
-    final meetsViewport = viewportRatio >= settings.minViewportHeightRatio;
-    final meetsPixels = pixelCount >= settings.minPixelCount;
-
-    final isTall =
-        hasScroll &&
-        ((meetsAspect && meetsViewport) ||
-            (meetsAspect && meetsHeight && meetsPixels) ||
-            (meetsHeight && meetsViewport && meetsPixels));
-
-    if (kDebugMode) {
-      debugPrint(
-        'TallMediaClassifier: aspect=$aspectRatio viewportRatio=$viewportRatio '
-        'pixels=$pixelCount projectedHeight=$projectedHeight scroll=$rawScrollExtent '
-        '-> isTall=$isTall',
-      );
-    }
-
-    if (!isTall) {
-      return TallMediaDisposition.standard(
-        aspectRatio: aspectRatio,
-        viewportRatio: viewportRatio,
-        pixelCount: pixelCount,
-      );
-    }
-
-    final scrollExtent = rawScrollExtent > 0 ? rawScrollExtent : 0.0;
-
-    return TallMediaDisposition.tall(
+    return TallMediaDisposition.standard(
       aspectRatio: aspectRatio,
       viewportRatio: viewportRatio,
-      pixelCount: pixelCount,
-      scrollExtent: scrollExtent > 0 ? scrollExtent : 0,
+      pixelCount: width * height,
     );
   }
 
-  double _projectedHeight(double width, double height) {
-    final viewportWidth = viewportSize.width;
-    if (width <= 0 || height <= 0 || viewportWidth <= 0) {
-      return height;
-    }
+  final aspectRatio = height / width;
+  final viewportRatio = viewportSize.height == 0
+      ? 0.0
+      : height / viewportSize.height;
+  final pixelCount = width * height;
+  final projectedHeight = _projectedHeight(width, height, viewportSize);
+  final rawScrollExtent = projectedHeight - viewportSize.height;
+  final hasScroll = rawScrollExtent > TallMediaSettings.minScrollExtentPx;
 
-    final scale = viewportWidth / width;
-    final clampedScale = scale < 1 ? scale : 1.0;
-    return height * clampedScale;
+  final meetsAspect = aspectRatio >= TallMediaSettings.aspectRatioThreshold;
+  final meetsHeight = height >= TallMediaSettings.minHeightPx;
+  final meetsViewport = viewportRatio >= TallMediaSettings.minViewportHeightRatio;
+  final meetsPixels = pixelCount >= TallMediaSettings.minPixelCount;
+
+  final isTall =
+      hasScroll &&
+      ((meetsAspect && meetsViewport) ||
+          (meetsAspect && meetsHeight && meetsPixels) ||
+          (meetsHeight && meetsViewport && meetsPixels));
+
+  if (kDebugMode) {
+    debugPrint(
+      'TallMediaClassifier: aspect=$aspectRatio viewportRatio=$viewportRatio '
+      'pixels=$pixelCount projectedHeight=$projectedHeight scroll=$rawScrollExtent '
+      '-> isTall=$isTall',
+    );
   }
+
+  if (!isTall) {
+    return TallMediaDisposition.standard(
+      aspectRatio: aspectRatio,
+      viewportRatio: viewportRatio,
+      pixelCount: pixelCount,
+    );
+  }
+
+  final scrollExtent = rawScrollExtent > 0 ? rawScrollExtent : 0.0;
+
+  return TallMediaDisposition.tall(
+    aspectRatio: aspectRatio,
+    viewportRatio: viewportRatio,
+    pixelCount: pixelCount,
+    scrollExtent: scrollExtent > 0 ? scrollExtent : 0,
+  );
+}
+
+double _projectedHeight(double width, double height, Size viewportSize) {
+  final viewportWidth = viewportSize.width;
+  if (width <= 0 || height <= 0 || viewportWidth <= 0) {
+    return height;
+  }
+
+  final scale = viewportWidth / width;
+  final clampedScale = scale < 1 ? scale : 1.0;
+  return height * clampedScale;
 }
