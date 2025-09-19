@@ -211,6 +211,7 @@
     "new": "New",
     "newest": "Newest",
     "oldest": "Oldest",
+    "random": "Random",
     "ordered": "Ordered"
   },
   "search": {
@@ -900,6 +901,7 @@
     "failed_to_add_many": "Failed to add bookmarks",
     "removed": "Bookmark removed",
     "failed_to_remove": "Failed to remove bookmark",
+    "shuffle_tooltip": "Shuffle bookmarks",
     "counter": {
       "one": "$n bookmark",
       "other": "$n bookmarks"

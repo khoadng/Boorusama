@@ -17,10 +17,12 @@ import '../../providers.dart';
 import '../data/bookmark_convert.dart';
 import '../types/bookmark.dart';
 import '../types/bookmark_repository.dart';
+import 'bookmark_shuffle_provider.dart';
 
 enum BookmarkSortType {
   newest,
   oldest,
+  random,
 }
 
 List<Bookmark> filterBookmarks({
@@ -28,6 +30,7 @@ List<Bookmark> filterBookmarks({
   required List<String> selectedTags,
   required BookmarkSortType sortType,
   String? selectedBooruUrl,
+  BookmarkShuffleState? shuffleState,
 }) {
   final tagsList = selectedTags;
 
@@ -42,15 +45,24 @@ List<Bookmark> filterBookmarks({
                   tagsList.every((tag) => bookmark.tags.contains(tag))),
         );
 
-  // Sort filtered results.
-  return filtered
+  final sorted = filtered
       .sorted(
         (a, b) => switch (sortType) {
           BookmarkSortType.newest => b.createdAt.compareTo(a.createdAt),
           BookmarkSortType.oldest => a.createdAt.compareTo(b.createdAt),
+          BookmarkSortType.random => 0, // No initial sorting for random
         },
       )
       .toList();
+
+  if (sortType == BookmarkSortType.random) {
+    final activeShuffleState = shuffleState?.seed != null
+        ? shuffleState!
+        : const BookmarkShuffleState().withNewShuffle();
+    return activeShuffleState.applyShuffleToList(sorted);
+  }
+
+  return sorted;
 }
 
 final bookmarkEditProvider = StateProvider.autoDispose<bool>((ref) => false);

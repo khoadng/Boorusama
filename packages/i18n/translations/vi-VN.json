@@ -211,6 +211,7 @@
     "new": "Mới",
     "newest": "Mới nhất",
     "oldest": "Cũ nhất",
+    "random": "Ngẫu nhiên",
     "ordered": "Theo thứ tự"
   },
   "search": {
@@ -900,6 +901,7 @@
     "failed_to_add_many": "Thêm đánh dấu không thành công",
     "removed": "Đã xoá đánh dấu",
     "failed_to_remove": "Xoá đánh dấu không thành công",
+    "shuffle_tooltip": "Xáo trộn đánh dấu",
     "counter": {
       "one": "$n đánh dấu",
       "other": "$n đánh dấu"

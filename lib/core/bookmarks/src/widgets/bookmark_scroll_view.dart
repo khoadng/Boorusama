@@ -26,11 +26,13 @@ import '../../bookmark.dart';
 import '../data/bookmark_convert.dart';
 import '../data/providers.dart';
 import '../providers/bookmark_provider.dart';
+import '../providers/bookmark_shuffle_provider.dart';
 import '../providers/local_providers.dart';
 import '../routes/route_utils.dart';
 import 'bookmark_appbar.dart';
 import 'bookmark_booru_type_selector.dart';
 import 'bookmark_search_bar.dart';
+import 'bookmark_shuffle_button.dart';
 import 'bookmark_sort_button.dart';
 
 class BookmarkScrollView extends ConsumerStatefulWidget {
@@ -79,6 +81,7 @@ class _BookmarkScrollViewState extends ConsumerState<BookmarkScrollView> {
           final searchTags = _parseTagsFromText(widget.searchController.text);
           final sortType = ref.read(selectedBookmarkSortTypeProvider);
           final selectedBooruUrl = ref.read(selectedBooruUrlProvider);
+          final shuffleState = ref.read(bookmarkShuffleProvider);
           final bookmarks = filterBookmarks(
             selectedTags: searchTags,
             bookmarks: await (await ref.read(bookmarkRepoProvider.future))
@@ -88,6 +91,7 @@ class _BookmarkScrollViewState extends ConsumerState<BookmarkScrollView> {
                 ),
             sortType: sortType,
             selectedBooruUrl: selectedBooruUrl,
+            shuffleState: shuffleState,
           );
           final posts = bookmarks.map((bookmark) => bookmark.toPost()).toList();
 
@@ -108,6 +112,11 @@ class _BookmarkScrollViewState extends ConsumerState<BookmarkScrollView> {
               });
             })
             ..listen(selectedBookmarkSortTypeProvider, (_, _) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                controller.refresh();
+              });
+            })
+            ..listen(bookmarkShuffleProvider, (_, _) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 controller.refresh();
               });
@@ -220,6 +229,7 @@ class _BookmarkScrollViewState extends ConsumerState<BookmarkScrollView> {
                           child: Row(
                             children: [
                               BookmarkSortButton(),
+                              BookmarkShuffleButton(),
                             ],
                           ),
                         ),
