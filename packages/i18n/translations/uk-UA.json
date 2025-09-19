@@ -77,7 +77,8 @@
       "positive": "Позитивний",
       "negative": "Негативний",
       "neutral": "Нейтральний"
-    }
+    },
+    "previous_names": "Попередні назви"
   },
   "network": {
     "unavailable": "Мережа недоступна"
@@ -201,7 +202,8 @@
     "new": "Нове",
     "newest": "Найновіші",
     "oldest": "Найстаріший",
-    "ordered": "Замовлено"
+    "ordered": "Замовлено",
+    "random": "Випадкове"
   },
   "search": {
     "errors": {
@@ -893,7 +895,8 @@
     "counter": {
       "one": "$n закладка",
       "other": "$n закладок"
-    }
+    },
+    "shuffle_tooltip": "Перемішати закладки"
   },
   "app_update": {
     "update": "Оновити",
