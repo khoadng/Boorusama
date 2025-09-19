@@ -7,8 +7,7 @@ import 'package:flutter_portal/flutter_portal.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 
 // Project imports:
-import '../../../foundation/display.dart';
-import '../../../foundation/html.dart';
+import '../../../foundation/platform.dart';
 import '../notes.dart';
 
 class NoteStyle extends Equatable {
@@ -44,7 +43,7 @@ class PostNote extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return kPreferredLayout.isMobile
+    return isMobilePlatform()
         ? PostNoteMobile(
             coordinate: coordinate,
             content: content,
@@ -114,31 +113,50 @@ class _NoteContainerDesktopState extends State<_NoteContainerDesktop> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.sizeOf(context).width;
+    final screenHeight = MediaQuery.sizeOf(context).height;
+
     return Container(
       margin: EdgeInsets.only(
         left: widget.coordinate.x,
         top: widget.coordinate.y,
       ),
       child: PortalTarget(
-        anchor: widget.coordinate.x > MediaQuery.sizeOf(context).width / 2
-            ? const Aligned(
-                follower: Alignment.topRight,
-                target: Alignment.bottomRight,
-              )
-            : const Aligned(
-                follower: Alignment.topLeft,
-                target: Alignment.bottomLeft,
-              ),
-        visible: _visible,
-        portalFollower: ConstrainedBox(
-          constraints: BoxConstraints(
-            maxWidth: MediaQuery.sizeOf(context).width * 0.5,
+        anchor: switch (widget.coordinate.calculateQuadrant(
+          screenWidth,
+          screenHeight,
+        )) {
+          NoteQuadrant.topLeft => const Aligned(
+            follower: Alignment.topLeft,
+            target: Alignment.bottomLeft,
           ),
-          child: Material(
-            child: SingleChildScrollView(
-              child: AppHtml(
-                data: widget.content,
-              ),
+          NoteQuadrant.topRight => const Aligned(
+            follower: Alignment.topRight,
+            target: Alignment.bottomRight,
+          ),
+          NoteQuadrant.bottomLeft => const Aligned(
+            follower: Alignment.bottomLeft,
+            target: Alignment.topLeft,
+          ),
+          NoteQuadrant.bottomRight => const Aligned(
+            follower: Alignment.bottomRight,
+            target: Alignment.topRight,
+          ),
+        },
+        visible: _visible,
+        portalFollower: Container(
+          padding: const EdgeInsets.all(4),
+          constraints: const BoxConstraints(
+            maxWidth: 200,
+            maxHeight: 300,
+          ),
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.surface,
+            borderRadius: BorderRadius.circular(2),
+          ),
+          child: SingleChildScrollView(
+            child: HtmlWidget(
+              widget.content,
             ),
           ),
         ),
