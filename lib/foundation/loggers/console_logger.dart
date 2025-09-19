@@ -75,5 +75,4 @@ class ConsoleLogger extends Logger {
   void debug(String serviceName, String message) {
     developer.log(_composeMessage(serviceName, message, green));
   }
-
 }

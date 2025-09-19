@@ -18,8 +18,9 @@ E621Post? postDtoToPost(PostDto dto, PostMetadata? metadata) {
   if (file == null || file.url == null) return null;
 
   final videoUrl = extractSampleVideoUrl(dto);
-  final videoFormat =
-      videoUrl.isNotEmpty ? extension(videoUrl).substring(1) : '';
+  final videoFormat = videoUrl.isNotEmpty
+      ? extension(videoUrl).substring(1)
+      : '';
 
   final format = videoFormat.isNotEmpty ? videoFormat : file.ext ?? '';
   final isGif = format.toLowerCase() == 'gif' || format.toLowerCase() == '.gif';
@@ -36,7 +37,8 @@ E621Post? postDtoToPost(PostDto dto, PostMetadata? metadata) {
     rating: mapStringToRating(dto.rating),
     hasComment: dto.commentCount != null && dto.commentCount! > 0,
     isTranslated: dto.hasNotes ?? false,
-    hasParentOrChildren: dto.relationships?.hasChildren ??
+    hasParentOrChildren:
+        dto.relationships?.hasChildren ??
         false || dto.relationships?.parentId != null,
     format: format,
     videoUrl: videoUrl,

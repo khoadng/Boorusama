@@ -508,11 +508,14 @@ class ImageViewerSettings extends Equatable {
   }) {
     return ImageViewerSettings(
       swipeMode: swipeMode ?? this.swipeMode,
-      postDetailsOverlayInitialState: postDetailsOverlayInitialState ?? this.postDetailsOverlayInitialState,
+      postDetailsOverlayInitialState:
+          postDetailsOverlayInitialState ?? this.postDetailsOverlayInitialState,
       slideshowDirection: slideshowDirection ?? this.slideshowDirection,
       slideshowInterval: slideshowInterval ?? this.slideshowInterval,
-      slideshowTransitionType: slideshowTransitionType ?? this.slideshowTransitionType,
-      videoAudioDefaultState: videoAudioDefaultState ?? this.videoAudioDefaultState,
+      slideshowTransitionType:
+          slideshowTransitionType ?? this.slideshowTransitionType,
+      videoAudioDefaultState:
+          videoAudioDefaultState ?? this.videoAudioDefaultState,
       videoPlayerEngine: videoPlayerEngine ?? this.videoPlayerEngine,
     );
   }

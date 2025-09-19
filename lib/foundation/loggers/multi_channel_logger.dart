@@ -45,5 +45,4 @@ class MultiChannelLogger implements Logger {
       logger.debug(serviceName, message);
     }
   }
-
 }

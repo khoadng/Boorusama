@@ -21,7 +21,6 @@ abstract class Logger {
   void debug(String serviceName, String message);
 }
 
-
 extension LoggerX on Logger {
   void log(
     String serviceName,

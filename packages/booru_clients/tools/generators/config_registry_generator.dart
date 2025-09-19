@@ -13,15 +13,13 @@ class ConfigRegistryGenerator extends TemplateGenerator<BooruConfig> {
       featuresWithOverrides.addAll(site.overrides.keys);
     }
 
-    final switchCases = featuresWithOverrides
-        .map((featureId) {
-          final className = '${featureId.capitalize()}Feature';
-          return {
-            'featureClass': className,
-            'featureName': featureId,
-          };
-        })
-        .toList();
+    final switchCases = featuresWithOverrides.map((featureId) {
+      final className = '${featureId.capitalize()}Feature';
+      return {
+        'featureClass': className,
+        'featureName': featureId,
+      };
+    }).toList();
 
     return {
       'switchCases': switchCases,
