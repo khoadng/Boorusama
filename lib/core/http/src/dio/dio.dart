@@ -14,7 +14,6 @@ import '../../../proxy/proxy.dart';
 import '../../../router.dart';
 import '../http_utils.dart';
 import '../network_protocol.dart';
-import 'auth_error_response_interceptor.dart';
 import 'dio_ext.dart';
 import 'dio_image_deduplicate_interceptor.dart';
 import 'dio_logger_interceptor.dart';
@@ -50,7 +49,6 @@ Dio newGenericDio({
         );
 
   dio.interceptors.add(ImageRequestDeduplicateInterceptor());
-  dio.interceptors.add(AuthErrorResponseInterceptor());
 
   if (logger != null) {
     dio.interceptors.add(

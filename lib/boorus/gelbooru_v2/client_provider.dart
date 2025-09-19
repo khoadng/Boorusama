@@ -1,25 +1,32 @@
 // Package imports:
 import 'package:booru_clients/core.dart';
 import 'package:booru_clients/gelbooru.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import '../../core/boorus/booru/providers.dart';
 import '../../core/configs/config/types.dart';
+import '../../core/http/http.dart';
 import '../../core/http/providers.dart';
+import '../../foundation/info/app_info.dart';
+import '../../foundation/info/package_info.dart';
+import '../../foundation/loggers.dart';
+import '../../foundation/vendors/google/providers.dart';
 import 'gelbooru_v2.dart';
 
 final gelbooruV2ClientProvider =
     Provider.family<GelbooruV2Client, BooruConfigAuth>((ref, config) {
-      final dio = ref.watch(defaultDioProvider(config));
+      final dio = ref.watch(gelbooruV2DioProvider(config));
       final gelbooruV2 = ref.watch(gelbooruV2Provider);
-      final postsCapabilities = gelbooruV2
-          .getCapabilitiesForSite(config.url)
-          ?.posts;
+      final capabilities = gelbooruV2.getCapabilitiesForSite(config.url);
+      final postsCapabilities = capabilities?.posts;
 
       return GelbooruV2Client(
         baseUrl: config.url,
         userId: config.login,
         apiKey: config.apiKey,
+        passHash: config.passHash,
         dio: dio,
         paginationType: PaginationType.parse(postsCapabilities?.paginationType),
         fixedLimit: switch (postsCapabilities?.fixedLimit) {
@@ -35,3 +42,36 @@ final gelbooruV2ClientProvider =
         ),
       );
     });
+
+final gelbooruV2DioProvider = Provider.family<Dio, BooruConfigAuth>((
+  ref,
+  config,
+) {
+  final ddosProtectionHandler = ref.watch(httpDdosProtectionBypassHandler);
+  final packageInfo = ref.watch(packageInfoProvider);
+  final appInfo = ref.watch(appInfoProvider);
+  final loggerService = ref.watch(loggerProvider);
+  final booruDb = ref.watch(booruDbProvider);
+  final cronetAvailable = ref.watch(isGooglePlayServiceAvailableProvider);
+
+  return newDio(
+    options: DioOptions(
+      ddosProtectionHandler: ddosProtectionHandler,
+      userAgent: getDefaultUserAgent(appInfo, packageInfo),
+      authConfig: config,
+      loggerService: loggerService,
+      booruDb: booruDb,
+      cronetAvailable: cronetAvailable,
+    ),
+    additionalInterceptors: [
+      AuthErrorResponseInterceptor(),
+      SlidingWindowRateLimitInterceptor(
+        config: const SlidingWindowRateLimitConfig(
+          requestsPerWindow: 10,
+          windowSizeMs: 1000,
+          maxDelayMs: 5000,
+        ),
+      ),
+    ],
+  );
+});

@@ -6,3 +6,5 @@ export 'src/dio/dio_options.dart';
 export 'src/dio/dio.dart';
 export 'src/user_agent.dart';
 export 'src/sliding_window_rate_limit_interceptor.dart';
+export 'src/dio/auth_error_response_interceptor.dart';
+export 'src/dio/cookie_injection_interceptor.dart';
