@@ -63,13 +63,15 @@ class DataExtractor {
   static BooruConfig _parseGelbooruV2Config(YamlMap configMap) {
     final globalParams = _parseGlobalParams(configMap['global-user-params']);
     final features = _parseFeatures(configMap['features']);
-    final sites = _parseSites(configMap['sites']);
+    final defaultAuth = _parseAuthConfig(configMap['auth']);
+    final sites = _parseSites(configMap['sites'], defaultAuth);
 
     return BooruConfig(
       name: 'gelbooru_v2',
       globalUserParams: globalParams,
       features: features,
       sites: sites,
+      defaultAuth: defaultAuth,
     );
   }
 
@@ -130,7 +132,7 @@ class DataExtractor {
     };
   }
 
-  static List<SiteConfig> _parseSites(dynamic sites) {
+  static List<SiteConfig> _parseSites(dynamic sites, AuthConfig? defaultAuth) {
     if (sites == null) return [];
 
     final sitesList = sites as YamlList;
@@ -140,13 +142,14 @@ class DataExtractor {
       if (site is YamlMap) {
         final url = site['url'] as String;
         final overrides = _parseOverrides(site['overrides']);
-        final auth = _parseAuthConfig(site['auth']);
+        final siteAuth = _parseAuthConfig(site['auth']);
+        final mergedAuth = _mergeAuthConfig(defaultAuth, siteAuth, url);
 
         result.add(
           SiteConfig(
             url: url,
             overrides: overrides,
-            auth: auth,
+            auth: mergedAuth,
           ),
         );
       }
@@ -162,7 +165,56 @@ class DataExtractor {
     return AuthConfig(
       apiKeyUrl: authMap['api-key-url'] as String?,
       instructionsKey: authMap['instructions-key'] as String?,
+      loginUrl: authMap['login-url'] as String?,
+      required: authMap['required'] as bool?,
+      cookie: authMap['cookie'] as String?,
     );
+  }
+
+  static AuthConfig? _mergeAuthConfig(
+    AuthConfig? defaultAuth,
+    AuthConfig? siteAuth,
+    String siteUrl,
+  ) {
+    if (defaultAuth == null && siteAuth == null) return null;
+
+    // If no default auth, just return site auth
+    if (defaultAuth == null) return siteAuth;
+
+    // If no site auth, merge default auth with site URL
+    if (siteAuth == null) {
+      return AuthConfig(
+        apiKeyUrl: _resolveUrl(defaultAuth.apiKeyUrl, siteUrl),
+        instructionsKey: defaultAuth.instructionsKey,
+        loginUrl: _resolveUrl(defaultAuth.loginUrl, siteUrl),
+        required: defaultAuth.required,
+        cookie: defaultAuth.cookie,
+      );
+    }
+
+    // Merge both, with site auth taking precedence
+    return AuthConfig(
+      apiKeyUrl:
+          siteAuth.apiKeyUrl ?? _resolveUrl(defaultAuth.apiKeyUrl, siteUrl),
+      instructionsKey: siteAuth.instructionsKey ?? defaultAuth.instructionsKey,
+      loginUrl: siteAuth.loginUrl ?? _resolveUrl(defaultAuth.loginUrl, siteUrl),
+      required: siteAuth.required ?? defaultAuth.required,
+      cookie: siteAuth.cookie ?? defaultAuth.cookie,
+    );
+  }
+
+  static String? _resolveUrl(String? urlOrPath, String siteUrl) {
+    if (urlOrPath == null) return null;
+
+    // If it's already a full URL, return as is
+    if (urlOrPath.startsWith('http://') || urlOrPath.startsWith('https://')) {
+      return urlOrPath;
+    }
+
+    // If it's a relative path, join with site URL
+    final baseUrl = Uri.parse(siteUrl);
+    final resolvedUri = baseUrl.resolve(urlOrPath);
+    return resolvedUri.toString();
   }
 
   static Map<String, OverrideConfig> _parseOverrides(dynamic overrides) {

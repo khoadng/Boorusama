@@ -6,7 +6,7 @@ import '../common/endpoint.dart';
 import '../common/feature.dart';
 import '../common/request_handler.dart';
 import 'gelbooru_client_favorites.dart';
-import 'parsers/gel_parsers.dart';
+import 'parsers/parsers.dart';
 import 'types/types.dart';
 
 class GelbooruV2Client with GelbooruClientFavorites {
@@ -27,7 +27,7 @@ class GelbooruV2Client with GelbooruClientFavorites {
         ),
         Endpoint<PostV2Dto?>.fromFeature(
           feature: GelbooruV2Config.defaultFeatures[BooruFeatureId.post]!,
-          parser: parseGelPost,
+          parser: parseDefaultPostHtml,
         ),
         Endpoint<List<AutocompleteDto>>.fromFeature(
           feature:
@@ -46,9 +46,9 @@ class GelbooruV2Client with GelbooruClientFavorites {
           feature: GelbooruV2Config.defaultFeatures[BooruFeatureId.tags]!,
           parser: parseGelTagsHtml,
         ),
-        Endpoint<List<PostFavoriteDto>>.fromFeature(
+        Endpoint<GelbooruV2Posts>.fromFeature(
           feature: GelbooruV2Config.defaultFeatures[BooruFeatureId.favorites]!,
-          parser: (response, context) => <PostFavoriteDto>[],
+          parser: parseDefaultFavoritePostsHtml,
         ),
       ],
     );
@@ -71,11 +71,18 @@ class GelbooruV2Client with GelbooruClientFavorites {
       dio: _dio,
       baseUrl: _baseUrl,
       config: _config,
-      buildAuthParams: () => {
-        if (userId != null) P.userId: userId!,
-        if (apiKey != null) P.apiKey: apiKey!,
+      buildAuthParams: () => switch ((userId, apiKey)) {
+        (final u?, final a?) => {
+          P.userId: u,
+          P.apiKey: a,
+        },
+        _ => const {},
       },
-      buildContext: (extra) => {'baseUrl': _baseUrl, ...?extra},
+
+      buildContext: (extra) => {
+        'baseUrl': _baseUrl,
+        ...?extra,
+      },
     );
   }
 
@@ -115,6 +122,7 @@ class GelbooruV2Client with GelbooruClientFavorites {
   Future<PostV2Dto?> getPost(int id) => _requestHandler.makeRequest(
     featureId: BooruFeatureId.post,
     params: {P.postId: id},
+    context: {P.postId: id},
   );
 
   Future<List<AutocompleteDto>> autocomplete({
@@ -154,4 +162,27 @@ class GelbooruV2Client with GelbooruClientFavorites {
         params: {P.postId: postId},
         context: {P.postId: postId},
       );
+
+  Future<GelbooruV2Posts> getFavorites({
+    required String uid,
+    required PaginationType? paginationType,
+    required int? fixedLimit,
+    int? page,
+  }) {
+    final p = paginationType ?? this.paginationType;
+    final l = fixedLimit ?? this.fixedLimit;
+
+    return _requestHandler.makeRequest(
+      featureId: BooruFeatureId.favorites,
+      params: {
+        P.userId: uid,
+        if (page != null)
+          P.page: p.calculatePage(
+            page: page,
+            limit: l,
+          ),
+      },
+      context: {P.userId: uid},
+    );
+  }
 }

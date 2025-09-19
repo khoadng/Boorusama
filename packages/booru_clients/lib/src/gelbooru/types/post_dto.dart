@@ -1,5 +1,4 @@
 // Package imports:
-import 'package:equatable/equatable.dart';
 import 'package:path/path.dart' as path;
 
 class PostDto {
@@ -178,19 +177,4 @@ bool _parseHasComment(Map<String, dynamic> data) {
   } else {
     return false;
   }
-}
-
-class PostFavoriteDto extends Equatable {
-  const PostFavoriteDto({
-    required this.id,
-    required this.tags,
-    required this.previewUrl,
-  });
-
-  final int? id;
-  final String? tags;
-  final String? previewUrl;
-
-  @override
-  List<Object?> get props => [id, tags, previewUrl];
 }

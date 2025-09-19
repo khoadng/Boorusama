@@ -1,4 +1,5 @@
 // Package imports:
+import 'package:equatable/equatable.dart';
 import 'package:path/path.dart' as path;
 
 class PostV2Dto {
@@ -130,3 +131,39 @@ bool? _parseBool(dynamic value) => switch (value) {
   final String s => bool.tryParse(s),
   _ => null,
 };
+
+class PostFavoriteDto extends Equatable {
+  const PostFavoriteDto({
+    this.id,
+    this.previewUrl,
+    this.tags,
+    this.rating,
+    this.score,
+    this.user,
+  });
+
+  final int? id;
+  final String? previewUrl;
+  final String? tags;
+  final String? rating;
+  final int? score;
+  final String? user;
+
+  @override
+  List<Object?> get props => [id, previewUrl, tags, rating, score, user];
+}
+
+class GelbooruV2Posts extends Equatable {
+  GelbooruV2Posts({
+    required this.posts,
+    this.count,
+  });
+
+  const GelbooruV2Posts.empty() : posts = const [], count = 0;
+
+  final List<PostV2Dto> posts;
+  final int? count;
+
+  @override
+  List<Object?> get props => [posts, count];
+}

@@ -4,6 +4,29 @@ static const _defaults = <BooruFeatureId, BooruFeature>{
 {{/defaults}}
   };
 
+  static AuthConfig _createDefaultAuth(String siteUrl) {
+    return AuthConfig(
+{{#defaultAuth}}      apiKeyUrl: {{#hasApiKeyUrl}}'$siteUrl{{{apiKeyUrl}}}'{{/hasApiKeyUrl}}{{^hasApiKeyUrl}}null{{/hasApiKeyUrl}},
+      instructionsKey: {{#hasInstructionsKey}}'{{{instructionsKey}}}'{{/hasInstructionsKey}}{{^hasInstructionsKey}}null{{/hasInstructionsKey}},
+      loginUrl: {{#hasLoginUrl}}'$siteUrl{{{loginUrl}}}'{{/hasLoginUrl}}{{^hasLoginUrl}}null{{/hasLoginUrl}},
+      required: {{#hasRequired}}{{required}}{{/hasRequired}}{{^hasRequired}}false{{/hasRequired}},
+      cookie: {{#hasCookie}}'{{{cookie}}}'{{/hasCookie}}{{^hasCookie}}null{{/hasCookie}},
+{{/defaultAuth}}{{^defaultAuth}}      apiKeyUrl: null,
+      instructionsKey: null,
+      loginUrl: null,
+      required: false,
+      cookie: null,
+{{/defaultAuth}}    );
+  }
+
+  static SiteCapabilities _createDefaultSiteCapabilities(String siteUrl) {
+    return SiteCapabilities(
+      siteUrl: siteUrl,
+      overrides: {},
+      auth: _createDefaultAuth(siteUrl),
+    );
+  }
+
   static const _siteCapabilities = <String, SiteCapabilities>{
 {{#sites}}
     '{{{url}}}': SiteCapabilities(
@@ -22,11 +45,14 @@ static const _defaults = <BooruFeatureId, BooruFeature>{
       auth: AuthConfig(
 {{#apiKeyUrl}}        apiKeyUrl: '{{{apiKeyUrl}}}',
 {{/apiKeyUrl}}{{#instructionsKey}}        instructionsKey: '{{{instructionsKey}}}',
-{{/instructionsKey}}      ),{{/hasAuth}}
+{{/instructionsKey}}{{#loginUrl}}        loginUrl: '{{{loginUrl}}}',
+{{/loginUrl}}{{#hasRequired}}        required: {{required}},
+{{/hasRequired}}{{#hasCookie}}        cookie: '{{{cookie}}}',
+{{/hasCookie}}      ),{{/hasAuth}}
     ),
 {{/sites}}
   };
 
-  static SiteCapabilities? siteCapabilities(String siteUrl) {
-    return _siteCapabilities[siteUrl];
+  static SiteCapabilities siteCapabilities(String siteUrl) {
+    return _siteCapabilities[siteUrl] ?? _createDefaultSiteCapabilities(siteUrl);
   }

@@ -4,12 +4,14 @@ class BooruConfig {
     required this.globalUserParams,
     required this.features,
     required this.sites,
+    this.defaultAuth,
   });
 
   final String name;
   final Map<String, String> globalUserParams;
   final Map<String, FeatureConfig> features;
   final List<SiteConfig> sites;
+  final AuthConfig? defaultAuth;
 }
 
 class FeatureConfig {
@@ -44,10 +46,16 @@ class AuthConfig {
   const AuthConfig({
     this.apiKeyUrl,
     this.instructionsKey,
+    this.loginUrl,
+    this.required,
+    this.cookie,
   });
 
   final String? apiKeyUrl;
   final String? instructionsKey;
+  final String? loginUrl;
+  final bool? required;
+  final String? cookie;
 }
 
 class OverrideConfig {

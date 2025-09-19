@@ -10,9 +10,10 @@ import 'package:i18n/i18n.dart';
 import '../../../core/configs/auth/widgets.dart';
 import '../../../core/configs/create/providers.dart';
 import '../../../core/configs/create/widgets.dart';
+import '../../../core/configs/gesture/gesture.dart';
+import '../../../core/configs/gesture/widgets.dart';
 import '../../../core/configs/search/widgets.dart';
 import '../../../core/configs/viewer/widgets.dart';
-import '../../../foundation/url_launcher.dart';
 import '../../gelbooru/configs/_internal_widgets.dart';
 import 'internal_widgets.dart';
 
@@ -34,7 +35,17 @@ class CreateGelbooruV2ConfigPage extends StatelessWidget {
       initialTab: initialTab,
       backgroundColor: backgroundColor,
       authTab: GelbooruV2AuthView(
-        authConfig: c.GelbooruV2Config.siteCapabilities(url)?.auth,
+        authConfig: c.GelbooruV2Config.siteCapabilities(url).auth,
+      ),
+      gestureTab: BooruConfigGesturesView(
+        postDetailsGestureActions: const {
+          ...kDefaultGestureActions,
+          kToggleFavoriteAction,
+        },
+        describePostDetailsAction: (action) => switch (action) {
+          kToggleFavoriteAction => context.t.post.action.toggle_favorite,
+          _ => describeDefaultGestureAction(action, context),
+        },
       ),
       searchTab: const DefaultBooruConfigSearchView(
         hasRatingFilter: true,
@@ -55,10 +66,10 @@ class GelbooruV2AuthView extends ConsumerStatefulWidget {
   final c.AuthConfig? authConfig;
 
   @override
-  ConsumerState<GelbooruV2AuthView> createState() => _GelbooruAuthViewState();
+  ConsumerState<GelbooruV2AuthView> createState() => _GelbooruV2AuthViewState();
 }
 
-class _GelbooruAuthViewState extends ConsumerState<GelbooruV2AuthView> {
+class _GelbooruV2AuthViewState extends ConsumerState<GelbooruV2AuthView> {
   late final loginController = TextEditingController(
     text: ref.read(
       editBooruConfigProvider(
@@ -88,7 +99,12 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruV2AuthView> {
       final String key when key.isNotEmpty => context.t[key],
       _ => context.t.booru.api_key_instructions.variants_2,
     };
-    final hasAuthConfig = authConfig != null;
+    final passHash = ref.watch(
+      editBooruConfigProvider(
+        ref.watch(editBooruConfigIdProvider),
+      ).select((value) => value.passHash),
+    );
+    final authRequired = authConfig?.required ?? false;
 
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -96,37 +112,49 @@ class _GelbooruAuthViewState extends ConsumerState<GelbooruV2AuthView> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const SizedBox(height: 24),
-          GelbooruV2LoginField(
-            controller: loginController,
-          ),
-          const SizedBox(height: 16),
-          GelbooruV2ApiKeyField(
-            controller: apiKeyController,
-          ),
-          const SizedBox(height: 8),
-          DefaultBooruInstructionHtmlText(
-            instructionsText,
-            onApiLinkTap: switch (authConfig?.apiKeyUrl) {
-              final String apiKeyUrl when apiKeyUrl.isNotEmpty => () {
-                launchExternalUrlString(apiKeyUrl);
-              },
+          BasicAuthSection(
+            titleText: authRequired
+                ? context.t.booru.authentication.gelbooru.basic_auth
+                : null,
+            descriptionText: null,
+            loginController: loginController,
+            apiKeyController: apiKeyController,
+            loginField: GelbooruV2LoginField(
+              controller: loginController,
+            ),
+            apiKeyField: GelbooruV2ApiKeyField(
+              controller: apiKeyController,
+            ),
+            instructionsText: instructionsText,
+            apiKeyUrl: switch (authConfig?.apiKeyUrl) {
+              final String apiKeyUrl when apiKeyUrl.isNotEmpty => apiKeyUrl,
               _ => null,
             },
+            pasteButton: authRequired
+                ? GelbooruConfigPasteFromClipboardButton(
+                    login: loginController,
+                    apiKey: apiKeyController,
+                  )
+                : null,
           ),
-
-          if (hasAuthConfig) ...[
-            const SizedBox(height: 12),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                GelbooruConfigPasteFromClipboardButton(
-                  login: loginController,
-                  apiKey: apiKeyController,
-                ),
-              ],
+          if (authConfig?.loginUrl case final loginUrl?)
+            AdvancedAuthSection(
+              loginController: loginController,
+              getLoginUrl: () => loginUrl,
+              showWarningContainer: passHash != null,
+              warningTitle: context
+                  .t
+                  .booru
+                  .authentication
+                  .gelbooru
+                  .fav_button_tooltip_title,
+              warningDescription: context
+                  .t
+                  .booru
+                  .authentication
+                  .gelbooru
+                  .fav_button_tooltip_description,
             ),
-          ],
         ],
       ),
     );

@@ -3,7 +3,6 @@ import 'package:html/dom.dart';
 import 'package:html/parser.dart' show parse;
 
 import '../types/types.dart';
-import 'gel_parsers.dart';
 
 List<TagDto> parseRbTagsHtml(Response response, Map<String, dynamic> context) {
   final html = response.data as String;
@@ -91,12 +90,22 @@ PostV2Dto? parseRbPostHtml(
       ? '${directoryMatch.group(1)}/${directoryMatch.group(2)}'
       : null;
 
+  // Extract filename for image field
+  final filenameMatch = RegExp(r'/([^/]+)$').firstMatch(fileUrl);
+  final image = filenameMatch?.group(1);
+
   // Extract other data
   final scoreElement = document.querySelector('#psc$postId');
   final score = int.tryParse(scoreElement?.text ?? '');
 
   final sourceInput = document.querySelector('input[name="source"]');
   final source = sourceInput?.attributes['value'] ?? '';
+
+  // Extract owner/uploader information
+  final owner = _extractOwner(document);
+
+  // Extract change/upload timestamp
+  final change = _extractChangeTimestamp(document);
 
   final tags = _extractTags(document);
 
@@ -112,9 +121,12 @@ PostV2Dto? parseRbPostHtml(
     previewUrl: previewUrl,
     directory: directory,
     hash: hash,
+    image: image,
     tags: tags,
     score: score,
     source: source,
+    owner: owner,
+    change: change,
   );
 }
 
@@ -132,14 +144,79 @@ int? _extractPostId(Document document) {
 }
 
 String _extractTags(Document document) {
-  final tagElements = document.querySelectorAll('a[class*="tag-"], a.metadata');
+  // Get tags from textarea if available (more complete)
+  final tagsTextarea = document.querySelector('textarea[name="tags"]');
+  if (tagsTextarea != null && tagsTextarea.text.isNotEmpty) {
+    return tagsTextarea.text.trim();
+  }
+
+  // Fallback to extracting from links
+  final tagElements = document.querySelectorAll(
+    'a[class*="tag-"], a.metadata, a.copyright, a.model',
+  );
   final tags = tagElements
-      .map((e) => e.text.trim())
+      .map((e) => e.text.trim().replaceAll(' ', '_'))
       .where((tag) => tag.isNotEmpty)
       .toSet() // Remove duplicates
       .join(' ');
 
   return tags;
+}
+
+String? _extractOwner(Document document) {
+  // Look for uploader in the post info section
+  final uploaderLink = document.querySelector('a[href*="profile&id="]');
+  return uploaderLink?.text.trim();
+}
+
+int? _extractChangeTimestamp(Document document) {
+  // Look for posted date text
+  final postInfo = document.querySelector('#tagLink')?.text ?? '';
+  final dateMatch = RegExp(r'Posted at ([^by]+) by').firstMatch(postInfo);
+
+  if (dateMatch != null) {
+    final dateString = dateMatch.group(1)?.trim();
+    if (dateString != null) {
+      // Try to parse date - this is a simple implementation
+      // Format appears to be "Sep, 13 2025"
+      try {
+        final parts = dateString.split(' ');
+        if (parts.length >= 3) {
+          final month = _monthNameToNumber(parts[0].replaceAll(',', ''));
+          final day = int.tryParse(parts[1]);
+          final year = int.tryParse(parts[2]);
+
+          if (month != null && day != null && year != null) {
+            final dateTime = DateTime(year, month, day);
+            return dateTime.millisecondsSinceEpoch ~/ 1000; // Unix timestamp
+          }
+        }
+      } catch (e) {
+        // Ignore parsing errors
+      }
+    }
+  }
+
+  return null;
+}
+
+const _months = {
+  'Jan': 1,
+  'Feb': 2,
+  'Mar': 3,
+  'Apr': 4,
+  'May': 5,
+  'Jun': 6,
+  'Jul': 7,
+  'Aug': 8,
+  'Sep': 9,
+  'Oct': 10,
+  'Nov': 11,
+  'Dec': 12,
+};
+
+int? _monthNameToNumber(String monthName) {
+  return _months[monthName];
 }
 
 GelbooruV2Posts parseRbPostsHtml(
@@ -215,7 +292,7 @@ GelbooruV2Posts parseRbPostsHtml(
         )
       : null;
 
-  return (
+  return GelbooruV2Posts(
     posts: posts,
     count: estimatedCount ?? posts.length,
   );

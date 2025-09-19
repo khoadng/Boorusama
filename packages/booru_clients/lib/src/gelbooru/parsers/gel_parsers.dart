@@ -6,8 +6,6 @@ import 'package:xml/xml.dart';
 
 import '../types/types.dart';
 
-typedef GelbooruV2Posts = ({List<PostV2Dto> posts, int? count});
-
 GelbooruV2Posts parseGelPosts(
   Response response,
   Map<String, dynamic> context,
@@ -46,24 +44,10 @@ GelbooruV2Posts parseGelPosts(
 
   final filterNulls = result.posts.where((e) => e.hash != null).toList();
 
-  return (
+  return GelbooruV2Posts(
     posts: filterNulls,
     count: result.count,
   );
-}
-
-PostV2Dto? parseGelPost(Response response, Map<String, dynamic> context) {
-  final baseUrl = context['baseUrl'] as String? ?? '';
-  final data = response.data;
-  if (data == null) return null;
-
-  return switch (data) {
-    final List l =>
-      l.map((item) => PostV2Dto.fromJson(item, baseUrl)).toList().firstOrNull,
-    final Map m =>
-      m is Map<String, dynamic> ? PostV2Dto.fromJson(m, baseUrl) : null,
-    _ => null,
-  };
 }
 
 List<AutocompleteDto> parseGelAutocomplete(

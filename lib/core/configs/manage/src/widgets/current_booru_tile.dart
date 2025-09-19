@@ -59,7 +59,6 @@ class _Tile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfigAuth;
-    final loginDetails = ref.watch(booruLoginDetailsProvider(config));
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -77,16 +76,17 @@ class _Tile extends ConsumerWidget {
             fontSize: 16,
           ),
         ),
-        if (loginDetails.hasLogin())
-          Text(
-            config.login ?? 'Unknown',
-            maxLines: 1,
-            softWrap: false,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              color: Theme.of(context).colorScheme.outline,
+        if (config.login case final login?)
+          if (login.isNotEmpty)
+            Text(
+              login,
+              maxLines: 1,
+              softWrap: false,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.outline,
+              ),
             ),
-          ),
       ],
     );
   }

@@ -94,7 +94,20 @@ class TagsFeature extends BooruFeature {
 }
 
 class FavoritesFeature extends BooruFeature {
-  const FavoritesFeature() : super(BooruFeatureId.favorites, EndpointType.api);
+  const FavoritesFeature({
+    required this.paginationType,
+    required this.fixedLimit,
+  }) : super(BooruFeatureId.favorites, EndpointType.html);
+
+  final String paginationType;
+  final int fixedLimit;
+
+  @override
+  List<Object?> get props => [
+    ...super.props,
+    paginationType,
+    fixedLimit,
+  ];
 }
 
 enum EndpointType {
@@ -150,10 +163,16 @@ class AuthConfig {
   const AuthConfig({
     this.apiKeyUrl,
     this.instructionsKey,
+    this.loginUrl,
+    this.required,
+    this.cookie,
   });
 
   final String? apiKeyUrl;
   final String? instructionsKey;
+  final String? loginUrl;
+  final bool? required;
+  final String? cookie;
 }
 
 class AutocompleteEndpointOverride extends EndpointOverride {
@@ -169,8 +188,8 @@ class AutocompleteEndpointOverride extends EndpointOverride {
   final AutocompleteFeature? feature;
 }
 
-class PostsEndpointOverride extends EndpointOverride {
-  const PostsEndpointOverride({
+class FavoritesEndpointOverride extends EndpointOverride {
+  const FavoritesEndpointOverride({
     super.parserStrategy,
     super.path,
     super.baseUrl,
@@ -179,7 +198,7 @@ class PostsEndpointOverride extends EndpointOverride {
     this.feature,
   });
 
-  final PostsFeature? feature;
+  final FavoritesFeature? feature;
 }
 
 class PostEndpointOverride extends EndpointOverride {
@@ -193,6 +212,19 @@ class PostEndpointOverride extends EndpointOverride {
   });
 
   final PostFeature? feature;
+}
+
+class PostsEndpointOverride extends EndpointOverride {
+  const PostsEndpointOverride({
+    super.parserStrategy,
+    super.path,
+    super.baseUrl,
+    super.paramMapping,
+    super.type,
+    this.feature,
+  });
+
+  final PostsFeature? feature;
 }
 
 class TagsEndpointOverride extends EndpointOverride {
@@ -225,16 +257,22 @@ class SiteCapabilities {
     return GelbooruV2Config._defaults[BooruFeatureId.autocomplete] as AutocompleteFeature?;
   }
 
-  PostsFeature? get posts {
-    final override = overrides[BooruFeatureId.posts] as PostsEndpointOverride?;
+  FavoritesFeature? get favorites {
+    final override = overrides[BooruFeatureId.favorites] as FavoritesEndpointOverride?;
     if (override?.feature != null) return override!.feature;
-    return GelbooruV2Config._defaults[BooruFeatureId.posts] as PostsFeature?;
+    return GelbooruV2Config._defaults[BooruFeatureId.favorites] as FavoritesFeature?;
   }
 
   PostFeature? get post {
     final override = overrides[BooruFeatureId.post] as PostEndpointOverride?;
     if (override?.feature != null) return override!.feature;
     return GelbooruV2Config._defaults[BooruFeatureId.post] as PostFeature?;
+  }
+
+  PostsFeature? get posts {
+    final override = overrides[BooruFeatureId.posts] as PostsEndpointOverride?;
+    if (override?.feature != null) return override!.feature;
+    return GelbooruV2Config._defaults[BooruFeatureId.posts] as PostsFeature?;
   }
 
   TagsFeature? get tags {
@@ -248,8 +286,11 @@ typedef ResponseParser<T> = T Function(Response response, Map<String, dynamic> c
 
 class ParserRegistry {
   static const _parsers = <String, ResponseParser>{
+    'parseDefaultFavoritePostsHtml': parseDefaultFavoritePostsHtml,
+    'parseDefaultPostHtml': parseDefaultPostHtml,
     'parseGelNotesHtml': parseGelNotesHtml,
     'parseGelTagsHtml': parseGelTagsHtml,
+    'parseR34PostHtml': parseR34PostHtml,
     'parseRbPostHtml': parseRbPostHtml,
     'parseRbPostsHtml': parseRbPostsHtml,
     'parseRbTagsHtml': parseRbTagsHtml,
@@ -299,14 +340,15 @@ class GelbooruV2Config {
   );
   static const _favoritesEndpoint = FeatureEndpoint(
     featureId: BooruFeatureId.favorites,
-    type: EndpointType.api,
-    path: '/index.php?page=favorites&s=list',
-    paramMapping: {},
+    type: EndpointType.html,
+    path: '/index.php?page=favorites&s=view',
+    parserStrategy: 'parseDefaultFavoritePostsHtml',
+    paramMapping: {'user-id': 'id', 'page': 'pid'},
   );
 
   static const globalUserParams = <String, String>{'user-id': 'user_id', 'api-key': 'api_key'};
   
-  static const sites = <String>['https://rule34.xxx/', 'https://hypnohub.net/', 'https://realbooru.com/', 'https://xbooru.com/', 'https://tbib.org/', 'https://safebooru.org/'];
+  static const sites = <String>['https://rule34.xxx/', 'https://hypnohub.net/', 'https://realbooru.com/', 'https://bbooru.com/', 'https://xbooru.com/', 'https://tbib.org/', 'https://safebooru.org/'];
   
   static const defaultFeatures = <BooruFeatureId, FeatureEndpoint>{
     BooruFeatureId.posts: _postsEndpoint,
@@ -331,8 +373,29 @@ static const _defaults = <BooruFeatureId, BooruFeature>{
     BooruFeatureId.comments: CommentsFeature(),
     BooruFeatureId.notes: NotesFeature(),
     BooruFeatureId.tags: TagsFeature(),
-    BooruFeatureId.favorites: FavoritesFeature(),
+    BooruFeatureId.favorites: FavoritesFeature(
+      paginationType: 'offset',
+      fixedLimit: 50,
+    ),
   };
+
+  static AuthConfig _createDefaultAuth(String siteUrl) {
+    return AuthConfig(
+      apiKeyUrl: '$siteUrl/index.php?page=account&s=options',
+      instructionsKey: 'booru.api_key_instructions.variants_2',
+      loginUrl: '$siteUrl/index.php?page=account&s=login&code=00',
+      required: false,
+      cookie: null,
+    );
+  }
+
+  static SiteCapabilities _createDefaultSiteCapabilities(String siteUrl) {
+    return SiteCapabilities(
+      siteUrl: siteUrl,
+      overrides: {},
+      auth: _createDefaultAuth(siteUrl),
+    );
+  }
 
   static const _siteCapabilities = <String, SiteCapabilities>{
     'https://rule34.xxx/': SiteCapabilities(
@@ -341,15 +404,33 @@ static const _defaults = <BooruFeatureId, BooruFeature>{
         BooruFeatureId.autocomplete: AutocompleteEndpointOverride(
           path: 'https://api.rule34.xxx/autocomplete.php',
         ),
+        BooruFeatureId.favorites: FavoritesEndpointOverride(
+          parserStrategy: 'parseDefaultFavoritePostsHtml',
+        ),
+        BooruFeatureId.post: PostEndpointOverride(
+          parserStrategy: 'parseR34PostHtml',
+        ),
       },
       auth: AuthConfig(
         apiKeyUrl: 'https://rule34.xxx/index.php?page=account&s=options',
         instructionsKey: 'booru.api_key_instructions.variants_1',
+        loginUrl: 'https://rule34.xxx/index.php?page=account&s=login&code=00',
+        required: true,
       ),
     ),
     'https://hypnohub.net/': SiteCapabilities(
       siteUrl: 'https://hypnohub.net/',
-      overrides: {},
+      overrides: {
+        BooruFeatureId.post: PostEndpointOverride(
+          parserStrategy: 'parseDefaultPostHtml',
+        ),
+      },
+      auth: AuthConfig(
+        apiKeyUrl: 'https://hypnohub.net/index.php?page=account&s=options',
+        instructionsKey: 'booru.api_key_instructions.variants_2',
+        loginUrl: 'https://hypnohub.net/index.php?page=account&s=login&code=00',
+        required: false,
+      ),
     ),
     'https://realbooru.com/': SiteCapabilities(
       siteUrl: 'https://realbooru.com/',
@@ -371,23 +452,58 @@ static const _defaults = <BooruFeatureId, BooruFeature>{
           parserStrategy: 'parseRbTagsHtml',
         ),
       },
+      auth: AuthConfig(
+        apiKeyUrl: 'https://realbooru.com/index.php?page=account&s=options',
+        instructionsKey: 'booru.api_key_instructions.variants_2',
+        loginUrl: 'https://realbooru.com/index.php?page=account&s=login&code=00',
+        required: false,
+      ),
+    ),
+    'https://bbooru.com/': SiteCapabilities(
+      siteUrl: 'https://bbooru.com/',
+      overrides: {},
+      auth: AuthConfig(
+        apiKeyUrl: 'https://bbooru.com/index.php?page=account&s=options',
+        instructionsKey: 'booru.api_key_instructions.variants_2',
+        loginUrl: 'https://bbooru.com/index.php?page=account&s=login&code=00',
+        required: false,
+        cookie: 'adult_mode=1',
+      ),
     ),
     'https://xbooru.com/': SiteCapabilities(
       siteUrl: 'https://xbooru.com/',
       overrides: {},
+      auth: AuthConfig(
+        apiKeyUrl: 'https://xbooru.com/index.php?page=account&s=options',
+        instructionsKey: 'booru.api_key_instructions.variants_2',
+        loginUrl: 'https://xbooru.com/index.php?page=account&s=login&code=00',
+        required: false,
+      ),
     ),
     'https://tbib.org/': SiteCapabilities(
       siteUrl: 'https://tbib.org/',
       overrides: {},
+      auth: AuthConfig(
+        apiKeyUrl: 'https://tbib.org/index.php?page=account&s=options',
+        instructionsKey: 'booru.api_key_instructions.variants_2',
+        loginUrl: 'https://tbib.org/index.php?page=account&s=login&code=00',
+        required: false,
+      ),
     ),
     'https://safebooru.org/': SiteCapabilities(
       siteUrl: 'https://safebooru.org/',
       overrides: {},
+      auth: AuthConfig(
+        apiKeyUrl: 'https://safebooru.org/index.php?page=account&s=options',
+        instructionsKey: 'booru.api_key_instructions.variants_2',
+        loginUrl: 'https://safebooru.org/index.php?page=account&s=login&code=00',
+        required: false,
+      ),
     ),
   };
 
-  static SiteCapabilities? siteCapabilities(String siteUrl) {
-    return _siteCapabilities[siteUrl];
+  static SiteCapabilities siteCapabilities(String siteUrl) {
+    return _siteCapabilities[siteUrl] ?? _createDefaultSiteCapabilities(siteUrl);
   }
 
 }
@@ -396,16 +512,17 @@ class BooruConfigRegistry {
   static T? getFeature<T extends BooruFeature>(String booruType, String siteUrl) {
     final capabilities = getSiteCapabilities(booruType, siteUrl);
     if (capabilities == null) return null;
-    
+
     return switch (T) {
       AutocompleteFeature _ => capabilities.autocomplete,
-      PostsFeature _ => capabilities.posts,
+      FavoritesFeature _ => capabilities.favorites,
       PostFeature _ => capabilities.post,
+      PostsFeature _ => capabilities.posts,
       TagsFeature _ => capabilities.tags,
       _ => null,
     } as T?;
   }
-  
+
   static SiteCapabilities? getSiteCapabilities(String booruType, String url) {
     return switch (booruType) {
       'gelbooru_v2' => GelbooruV2Config.siteCapabilities(url),

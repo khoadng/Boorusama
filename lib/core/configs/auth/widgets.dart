@@ -7,3 +7,6 @@ export 'src/widgets/default_booru_api_key_field.dart';
 export 'src/widgets/default_booru_login_field.dart';
 export 'src/widgets/default_booru_instruction_text.dart';
 export 'src/widgets/booru_config_auth_failsafe.dart';
+export 'src/widgets/verify_api_key_button.dart';
+export 'src/widgets/basic_auth_section.dart';
+export 'src/widgets/advanced_auth_section.dart';

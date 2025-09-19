@@ -11,6 +11,7 @@ import '../../core/configs/create/create.dart';
 import '../../core/downloads/filename/types.dart';
 import '../../core/http/providers.dart';
 import '../../core/notes/notes.dart';
+import '../../core/posts/favorites/types.dart';
 import '../../core/posts/listing/list.dart';
 import '../../core/posts/listing/providers.dart';
 import '../../core/posts/post/post.dart';
@@ -20,6 +21,7 @@ import '../../core/tags/autocompletes/types.dart';
 import '../../core/tags/tag/tag.dart';
 import 'comments/providers.dart';
 import 'configs/providers.dart';
+import 'favorites/providers.dart';
 import 'gelbooru_v2_provider.dart';
 import 'notes/providers.dart';
 import 'posts/providers.dart';
@@ -105,6 +107,11 @@ class GelbooruV2Repository extends BooruRepositoryDefault {
   @override
   CommentRepository comment(BooruConfigAuth config) {
     return ref.watch(gelbooruV2CommentRepoProvider(config));
+  }
+
+  @override
+  FavoriteRepository favorite(BooruConfigAuth config) {
+    return ref.watch(gelbooruV2FavoriteRepoProvider(config));
   }
 
   @override

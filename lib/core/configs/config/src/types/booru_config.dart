@@ -22,6 +22,7 @@ import 'rating_parser.dart';
 import 'types.dart';
 
 export 'booru_login_details.dart';
+export 'booru_login_details_impl.dart';
 export 'types.dart';
 
 class BooruConfig extends Equatable {

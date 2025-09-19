@@ -87,10 +87,16 @@ class AuthConfig {
   const AuthConfig({
     this.apiKeyUrl,
     this.instructionsKey,
+    this.loginUrl,
+    this.required,
+    this.cookie,
   });
 
   final String? apiKeyUrl;
   final String? instructionsKey;
+  final String? loginUrl;
+  final bool? required;
+  final String? cookie;
 }
 
 {{{overrideClasses}}}

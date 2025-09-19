@@ -57,38 +57,4 @@ class FeatureGenerator extends TemplateGenerator<BooruConfig> {
       'featureGetters': featureGetters,
     };
   }
-
-  String generateRegistry(BooruConfig config) {
-    // Only generate switch cases for features that have overrides
-    final featuresWithOverrides = <String>{};
-    for (final site in config.sites) {
-      featuresWithOverrides.addAll(site.overrides.keys);
-    }
-
-    final switchCases = featuresWithOverrides
-        .map((featureId) {
-          final className = '${featureId.capitalize()}Feature';
-          return "      $className _ => capabilities.$featureId,";
-        })
-        .join('\n');
-
-    return '''class BooruConfigRegistry {
-  static T? getFeature<T extends BooruFeature>(String booruType, String siteUrl) {
-    final capabilities = getSiteCapabilities(booruType, siteUrl);
-    if (capabilities == null) return null;
-    
-    return switch (T) {
-$switchCases
-      _ => null,
-    } as T?;
-  }
-  
-  static SiteCapabilities? getSiteCapabilities(String booruType, String url) {
-    return switch (booruType) {
-      'gelbooru_v2' => GelbooruV2Config.siteCapabilities(url),
-      _ => null,
-    };
-  }
-}''';
-  }
 }

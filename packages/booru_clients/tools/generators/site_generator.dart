@@ -57,6 +57,11 @@ class SiteGenerator extends TemplateGenerator<BooruConfig> {
         'hasAuth': site.auth != null,
         'apiKeyUrl': site.auth?.apiKeyUrl ?? '',
         'instructionsKey': site.auth?.instructionsKey ?? '',
+        'loginUrl': site.auth?.loginUrl ?? '',
+        'required': site.auth?.required,
+        'hasRequired': site.auth?.required != null,
+        'cookie': site.auth?.cookie ?? '',
+        'hasCookie': site.auth?.cookie != null,
         'isLast': index == config.sites.length - 1,
       };
     }).toList();
@@ -65,6 +70,20 @@ class SiteGenerator extends TemplateGenerator<BooruConfig> {
       'defaults': defaults,
       'sites': sites,
       'featureGetters': _generateFeatureGetters(config),
+      'defaultAuth': config.defaultAuth != null
+          ? {
+              'apiKeyUrl': config.defaultAuth!.apiKeyUrl,
+              'hasApiKeyUrl': config.defaultAuth!.apiKeyUrl != null,
+              'instructionsKey': config.defaultAuth!.instructionsKey,
+              'hasInstructionsKey': config.defaultAuth!.instructionsKey != null,
+              'loginUrl': config.defaultAuth!.loginUrl,
+              'hasLoginUrl': config.defaultAuth!.loginUrl != null,
+              'required': config.defaultAuth!.required,
+              'hasRequired': config.defaultAuth!.required != null,
+              'cookie': config.defaultAuth!.cookie,
+              'hasCookie': config.defaultAuth!.cookie != null,
+            }
+          : null,
     };
   }
 

@@ -53,6 +53,8 @@ final gelbooruV2DioProvider = Provider.family<Dio, BooruConfigAuth>((
   final loggerService = ref.watch(loggerProvider);
   final booruDb = ref.watch(booruDbProvider);
   final cronetAvailable = ref.watch(isGooglePlayServiceAvailableProvider);
+  final gelbooruV2 = ref.watch(gelbooruV2Provider);
+  final capabilities = gelbooruV2.getCapabilitiesForSite(config.url);
 
   return newDio(
     options: DioOptions(
@@ -64,7 +66,10 @@ final gelbooruV2DioProvider = Provider.family<Dio, BooruConfigAuth>((
       cronetAvailable: cronetAvailable,
     ),
     additionalInterceptors: [
-      AuthErrorResponseInterceptor(),
+      if (capabilities?.auth?.cookie case final c?)
+        if (c.isNotEmpty) CookieInjectionInterceptor(cookie: c),
+      if (capabilities?.auth?.required case true)
+        AuthErrorResponseInterceptor(),
       SlidingWindowRateLimitInterceptor(
         config: const SlidingWindowRateLimitConfig(
           requestsPerWindow: 10,
