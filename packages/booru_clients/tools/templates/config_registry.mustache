@@ -1,0 +1,20 @@
+class BooruConfigRegistry {
+  static T? getFeature<T extends BooruFeature>(String booruType, String siteUrl) {
+    final capabilities = getSiteCapabilities(booruType, siteUrl);
+    if (capabilities == null) return null;
+
+    return switch (T) {
+{{#switchCases}}
+      {{featureClass}} _ => capabilities.{{featureName}},
+{{/switchCases}}
+      _ => null,
+    } as T?;
+  }
+
+  static SiteCapabilities? getSiteCapabilities(String booruType, String url) {
+    return switch (booruType) {
+      'gelbooru_v2' => GelbooruV2Config.siteCapabilities(url),
+      _ => null,
+    };
+  }
+}

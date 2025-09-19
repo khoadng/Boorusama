@@ -6,6 +6,7 @@ import 'feature_generator.dart';
 import 'endpoint_generator.dart';
 import 'site_generator.dart';
 import 'parser_registry_generator.dart';
+import 'config_registry_generator.dart';
 import '../parsers/data_extractor.dart';
 import 'package:yaml/yaml.dart';
 
@@ -25,6 +26,7 @@ class ConfigGenerator {
     final endpointGen = EndpointGenerator();
     final siteGen = SiteGenerator();
     final parserGen = ParserRegistryGenerator();
+    final registryGen = ConfigRegistryGenerator();
 
     final overrideClasses = siteGen.generateOverrideClasses(config);
     final siteContext = siteGen.buildContext(config);
@@ -46,7 +48,7 @@ class ConfigGenerator {
       'hasImport': parserNames.isNotEmpty,
       'endpointsSection': endpointGen.generate(config),
       'siteCapabilities': siteGen.generate(config),
-      'registrySection': featureGen.generateRegistry(config),
+      'registrySection': registryGen.generate(config),
     };
 
     final template = TemplateManager().loadTemplate('config.mustache');
