@@ -1,3 +1,4 @@
+// Project imports:
 import 'booru_config.dart';
 
 class DefaultBooruLoginDetails

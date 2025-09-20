@@ -2,7 +2,10 @@
 // Do not modify
 // Check in to version control
 
+// Package imports:
 import 'package:hive_ce/hive.dart';
+
+// Project imports:
 import 'package:boorusama/core/hive/hive_adapters.dart';
 
 extension HiveRegistrar on HiveInterface {
