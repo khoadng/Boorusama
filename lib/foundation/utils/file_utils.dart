@@ -6,6 +6,7 @@ import 'package:extended_image/extended_image.dart';
 
 // Project imports:
 import '../path.dart';
+import '../platform.dart';
 
 class DirectorySizeInfo {
   DirectorySizeInfo({
@@ -68,7 +69,23 @@ Future<void> clearCache() async {
   final cacheDir = await getAppTemporaryDirectory();
 
   if (cacheDir.existsSync()) {
-    cacheDir.deleteSync(recursive: true);
+    if (isWindows()) {
+      // On Windows, delete contents but keep the directory to avoid file lock issues
+      try {
+        await for (final entity in cacheDir.list()) {
+          try {
+            await entity.delete(recursive: true);
+          } catch (e) {
+            // Silently ignore deletion errors for individual files/folders
+          }
+        }
+      } catch (e) {
+        // Silently ignore if we can't list directory contents
+      }
+    } else {
+      // On other platforms, delete the entire directory
+      cacheDir.deleteSync(recursive: true);
+    }
   }
 }
 
