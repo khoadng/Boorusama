@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:foundation/foundation.dart';
-import 'package:hive/hive.dart';
+import 'package:hive_ce/hive.dart';
 import 'package:version/version.dart';
 
 const kChangelogKey = 'changelog';

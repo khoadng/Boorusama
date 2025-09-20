@@ -3,7 +3,7 @@ import 'dart:convert';
 
 // Package imports:
 import 'package:foundation/foundation.dart';
-import 'package:hive/hive.dart';
+import 'package:hive_ce/hive.dart';
 
 // Project imports:
 import '../../../../boorus/booru/booru.dart';

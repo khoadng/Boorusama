@@ -1,6 +1,6 @@
 // Package imports:
 import 'package:dio/dio.dart';
-import 'package:hive/hive.dart';
+import 'package:hive_ce/hive.dart';
 
 // Project imports:
 import '../../../user/user.dart';

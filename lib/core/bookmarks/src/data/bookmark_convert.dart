@@ -7,7 +7,7 @@ import '../../../posts/post/post.dart';
 import '../../../posts/rating/rating.dart';
 import '../../../posts/sources/source.dart';
 import '../types/bookmark.dart';
-import 'hive/object.dart';
+import 'hive/bookmark_hive_object.dart';
 
 BookmarkGetError mapBoxErrorToBookmarkGetError(BoxError error) =>
     switch (error) {

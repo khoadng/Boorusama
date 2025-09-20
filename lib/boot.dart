@@ -10,7 +10,7 @@ import 'package:flutter/services.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fvp/fvp.dart' as fvp;
-import 'package:hive/hive.dart';
+import 'package:hive_ce/hive.dart';
 import 'package:i18n/i18n.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:stack_trace/stack_trace.dart';
@@ -45,6 +45,7 @@ import 'foundation/platform.dart';
 import 'foundation/utils/file_utils.dart';
 import 'foundation/vendors/google/providers.dart';
 import 'foundation/windows.dart' as window;
+import 'core/hive/hive_registrar.g.dart';
 
 Future<void> boot(BootData bootData) async {
   final logger = bootData.logger;
@@ -61,7 +62,9 @@ Future<void> boot(BootData bootData) async {
   final dbDirectory = await _initDbDirectory();
 
   logger.debugBoot('Initialize Hive');
-  Hive.init(dbDirectory.path);
+  Hive
+    ..init(dbDirectory.path)
+    ..registerAdapters();
 
   logger.debugBoot('Load app info');
   final appInfo = await getAppInfo();

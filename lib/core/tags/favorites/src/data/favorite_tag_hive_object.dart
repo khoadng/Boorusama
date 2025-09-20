@@ -1,14 +1,11 @@
 // Package imports:
-import 'package:hive/hive.dart';
+import 'package:hive_ce/hive.dart';
 
 // Project imports:
 import '../../../../search/selected_tags/tag.dart';
 import '../types/favorite_tag.dart';
 
-part 'favorite_tag_hive_object.g.dart';
-
-@HiveType(typeId: 2)
-class FavoriteTagHiveObject {
+class FavoriteTagHiveObject extends HiveObject {
   FavoriteTagHiveObject({
     required this.name,
     required this.createdAt,
@@ -17,19 +14,10 @@ class FavoriteTagHiveObject {
     this.queryType,
   });
 
-  @HiveField(0)
   String name;
-
-  @HiveField(1)
   DateTime createdAt;
-
-  @HiveField(2)
   DateTime? updatedAt;
-
-  @HiveField(3)
   List<String>? labels;
-
-  @HiveField(4)
   String? queryType;
 }
 
