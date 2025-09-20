@@ -36,7 +36,6 @@ class MediaKitBooruPlayer implements BooruPlayer {
   StreamSubscription<bool>? _bufferingSubscription;
   StreamSubscription<Duration>? _durationSubscription;
 
-  Timer? _positionTimer;
   Timer? _bufferingDelayTimer;
 
   bool _isDisposed = false;
@@ -65,13 +64,17 @@ class MediaKitBooruPlayer implements BooruPlayer {
     );
 
     _positionSubscription = _player.stream.position.listen((position) {
-      _positionController.add(position);
+      if (!_isDisposed) {
+        _positionController.add(position);
+      }
     });
 
     _playingSubscription = _player.stream.playing.listen((playing) {
-      _playingController.add(playing);
-      if (playing && !_hasPlayedOnce) {
-        _hasPlayedOnce = true;
+      if (!_isDisposed) {
+        _playingController.add(playing);
+        if (playing && !_hasPlayedOnce) {
+          _hasPlayedOnce = true;
+        }
       }
     });
 
@@ -80,7 +83,9 @@ class MediaKitBooruPlayer implements BooruPlayer {
     });
 
     _durationSubscription = _player.stream.duration.listen((duration) {
-      _durationController.add(duration);
+      if (!_isDisposed) {
+        _durationController.add(duration);
+      }
     });
 
     final media = Media(
@@ -97,23 +102,8 @@ class MediaKitBooruPlayer implements BooruPlayer {
     }
 
     _isInitialized = true;
-
-    _startPositionTimer();
   }
 
-  void _startPositionTimer() {
-    _positionTimer?.cancel();
-    _positionTimer = Timer.periodic(const Duration(milliseconds: 250), (timer) {
-      if (_isDisposed || !_isInitialized) {
-        timer.cancel();
-        return;
-      }
-
-      if (_player.state.playing) {
-        _positionController.add(_player.state.position);
-      }
-    });
-  }
 
   void _handleSmartBuffering(bool buffering) {
     if (_isDisposed) return;
@@ -239,6 +229,8 @@ class MediaKitBooruPlayer implements BooruPlayer {
     return Video(
       controller: _videoController,
       controls: NoVideoControls,
+      fill: Colors.transparent,
+      wakelock: false, // We handle wakelock in the main player logic
     );
   }
 
@@ -247,7 +239,6 @@ class MediaKitBooruPlayer implements BooruPlayer {
     if (_isDisposed) return;
     _isDisposed = true;
 
-    _positionTimer?.cancel();
     _bufferingDelayTimer?.cancel();
     _positionSubscription?.cancel();
     _playingSubscription?.cancel();

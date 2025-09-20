@@ -374,9 +374,9 @@
           "auto_description": "Tự động chọn trình phát tốt nhất dựa trên khả năng thiết bị của bạn.",
           "default": "Mặc định",
           "default_description": "Hoạt động tốt với hầu hết thiết bị, có thể gặp sự cố với một số định dạng video hoặc thiết bị cũ.",
-          "mdk_description": "Thử nghiệm, hiệu suất tốt hơn với một số định dạng video nhất định, có thể gây sập ứng dụng. Tự chịu rủi ro khi dùng.",
-          "mpv_description": "Thử nghiệm, hỗ trợ định dạng và hiệu suất tốt, nhưng có thể gặp sự cố tương thích. Tự chịu rủi ro khi dùng.",
-          "webview_description": "Tương thích tốt nhưng sử dụng nhiều tài nguyên và hiệu suất kém, chỉ dùng khi không còn lựa chọn nào khác."
+          "mdk_description": "Tải nhanh, hiệu suất tốt hơn với một số định dạng video, nhưng không ổn định và có thể gây crash app.",
+          "mpv_description": "Hỗ trợ định dạng và hiệu suất tốt, tôc độ tải chậm hơn.",
+          "webview_description": "Tương thích tốt nhưng sử dụng nhiều tài nguyên và hiệu suất kém, chỉ nên dùng khi không còn lựa chọn nào khác."
         }
       }
     },

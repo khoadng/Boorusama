@@ -34,7 +34,30 @@ class VideoPlayerBooruPlayer implements BooruPlayer {
 
   bool _isDisposed = false;
   bool _hasPlayedOnce = false;
-  Duration _lastPosition = Duration.zero;
+
+  bool get _isInvalid => _isDisposed || _controller == null;
+
+  void _withValidController(
+    void Function(VideoPlayerController controller) operation,
+  ) {
+    if (_isInvalid) return;
+    operation(_controller!);
+  }
+
+  Future<void> _withValidControllerAsync(
+    Future<void> Function(VideoPlayerController controller) operation,
+  ) async {
+    if (_isInvalid) return;
+    await operation(_controller!);
+  }
+
+  T _withValidControllerOr<T>(
+    T Function(VideoPlayerController controller) operation,
+    T defaultValue,
+  ) {
+    if (_isInvalid) return defaultValue;
+    return operation(_controller!);
+  }
 
   @override
   bool isPlatformSupported() => true;
@@ -68,10 +91,8 @@ class VideoPlayerBooruPlayer implements BooruPlayer {
     }
   }
 
-  void _onVideoPlayerChanged() {
-    if (_isDisposed || _controller == null) return;
-
-    final value = _controller!.value;
+  void _onVideoPlayerChanged() => _withValidController((controller) {
+    final value = controller.value;
 
     _playingController.add(value.isPlaying);
     if (value.isPlaying && !_hasPlayedOnce) {
@@ -80,33 +101,28 @@ class VideoPlayerBooruPlayer implements BooruPlayer {
 
     _handleSmartBuffering(value.isBuffering);
 
-    if ((value.position - _lastPosition).abs() >
-        const Duration(milliseconds: 100)) {
-      _lastPosition = value.position;
-      _positionController.add(value.position);
-    }
+    _positionController.add(value.position);
 
     if (value.duration != Duration.zero) {
       _durationController.add(value.duration);
     }
-  }
+  });
 
   void _startPositionTimer() {
     _positionTimer?.cancel();
-    _positionTimer = Timer.periodic(const Duration(milliseconds: 250), (timer) {
-      if (_isDisposed || _controller == null) {
+    _positionTimer = Timer.periodic(const Duration(milliseconds: 100), (timer) {
+      if (_isInvalid) {
         timer.cancel();
         return;
       }
 
-      if (_controller!.value.isPlaying) {
-        final position = _controller!.value.position;
-        if ((position - _lastPosition).abs() >
-            const Duration(milliseconds: 100)) {
-          _lastPosition = position;
-          _positionController.add(position);
-        }
-      }
+      _withValidController(
+        (controller) {
+          if (controller.value.isPlaying) {
+            _positionController.add(controller.value.position);
+          }
+        },
+      );
     });
   }
 
@@ -122,11 +138,11 @@ class VideoPlayerBooruPlayer implements BooruPlayer {
         // by adding a small delay to filter out loop-related buffering
         _bufferingDelayTimer?.cancel();
         _bufferingDelayTimer = Timer(const Duration(milliseconds: 200), () {
-          if (!_isDisposed &&
-              _controller != null &&
-              _controller!.value.isBuffering) {
-            _bufferingController.add(true);
-          }
+          _withValidController((controller) {
+            if (controller.value.isBuffering) {
+              _bufferingController.add(true);
+            }
+          });
         });
       }
     } else {
@@ -137,75 +153,72 @@ class VideoPlayerBooruPlayer implements BooruPlayer {
   }
 
   @override
-  Future<void> play() async {
-    if (_isDisposed || _controller == null) return;
-    await _controller!.play();
-  }
+  Future<void> play() =>
+      _withValidControllerAsync((controller) => controller.play());
 
   @override
-  Future<void> pause() async {
-    if (_isDisposed || _controller == null) return;
-    await _controller!.pause();
-  }
+  Future<void> pause() =>
+      _withValidControllerAsync((controller) => controller.pause());
 
   @override
-  Future<void> seek(Duration position) async {
-    if (_isDisposed || _controller == null) return;
-    await _controller!.seekTo(position);
-  }
+  Future<void> seek(Duration position) => _withValidControllerAsync(
+    (controller) => controller.seekTo(position),
+  );
 
   @override
-  Future<void> setVolume(double volume) async {
-    if (_isDisposed || _controller == null) return;
-    // video_player uses 0.0 to 1.0 range
-    await _controller!.setVolume(volume.clamp(0.0, 1.0));
-  }
+  Future<void> setVolume(double volume) => _withValidControllerAsync(
+    (controller) => controller.setVolume(volume.clamp(0.0, 1.0)),
+  );
 
   @override
-  Future<void> setPlaybackSpeed(double speed) async {
-    if (_isDisposed || _controller == null) return;
-    await _controller!.setPlaybackSpeed(speed);
-  }
+  Future<void> setPlaybackSpeed(double speed) => _withValidControllerAsync(
+    (controller) => controller.setPlaybackSpeed(speed),
+  );
 
   @override
-  Future<void> setLooping(bool loop) async {
-    if (_isDisposed || _controller == null) return;
-    await _controller!.setLooping(loop);
-  }
+  Future<void> setLooping(bool loop) => _withValidControllerAsync(
+    (controller) => controller.setLooping(loop),
+  );
 
   @override
   bool get isPlaying =>
-      _isDisposed || _controller == null ? false : _controller!.value.isPlaying;
+      _withValidControllerOr((controller) => controller.value.isPlaying, false);
 
   @override
-  Duration get position => _isDisposed || _controller == null
-      ? Duration.zero
-      : _controller!.value.position;
+  Duration get position => _withValidControllerOr(
+    (controller) => controller.value.position,
+    Duration.zero,
+  );
 
   @override
-  Duration get duration => _isDisposed || _controller == null
-      ? Duration.zero
-      : _controller!.value.duration;
+  Duration get duration => _withValidControllerOr(
+    (controller) => controller.value.duration,
+    Duration.zero,
+  );
 
   @override
-  double get aspectRatio => _isDisposed || _controller == null
-      ? 16.0 / 9.0
-      : _controller!.value.aspectRatio;
+  double get aspectRatio => _withValidControllerOr(
+    (controller) => controller.value.aspectRatio,
+    16.0 / 9.0,
+  );
 
   @override
-  int? get width => _isDisposed || _controller == null
-      ? null
-      : _controller!.value.size.width.toInt();
+  int? get width => _withValidControllerOr(
+    (controller) => controller.value.size.width.toInt(),
+    null,
+  );
 
   @override
-  int? get height => _isDisposed || _controller == null
-      ? null
-      : _controller!.value.size.height.toInt();
+  int? get height => _withValidControllerOr(
+    (controller) => controller.value.size.height.toInt(),
+    null,
+  );
 
   @override
-  bool get isBuffering => _isDisposed || _controller == null
-      ? false
-      : _controller!.value.isBuffering;
+  bool get isBuffering => _withValidControllerOr(
+    (controller) => controller.value.isBuffering,
+    false,
+  );
 
   @override
   bool get hasPlayedOnce => _hasPlayedOnce;
@@ -224,13 +237,12 @@ class VideoPlayerBooruPlayer implements BooruPlayer {
 
   @override
   Widget buildPlayerWidget(BuildContext context) {
-    if (_isDisposed ||
-        _controller == null ||
-        !_controller!.value.isInitialized) {
-      return const SizedBox.shrink();
-    }
-
-    return VideoPlayer(_controller!);
+    return _withValidControllerOr((controller) {
+      if (!controller.value.isInitialized) {
+        return const SizedBox.shrink();
+      }
+      return VideoPlayer(controller);
+    }, const SizedBox.shrink());
   }
 
   @override
