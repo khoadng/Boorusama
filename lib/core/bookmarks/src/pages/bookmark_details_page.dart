@@ -18,7 +18,6 @@ import '../../../posts/details/widgets.dart';
 import '../../../posts/details_manager/types.dart';
 import '../../../posts/details_parts/widgets.dart';
 import '../../../posts/listing/providers.dart';
-import '../../../posts/post/post.dart';
 import '../../../posts/shares/widgets.dart';
 import '../../../posts/sources/source.dart';
 import '../../../widgets/adaptive_button_row.dart';
@@ -154,9 +153,7 @@ class _BookmarkDetailsPageState
           gestureConfig: gestures,
           imageCacheManager: imageCacheManager,
           detailsController: controller,
-          // Needed to prevent type inference error
-          // ignore: avoid_types_on_closure_parameters
-          imageUrlBuilder: (Post post) => post.originalImageUrl,
+          imageUrlBuilder: (post) => post.originalImageUrl,
         );
       },
     );

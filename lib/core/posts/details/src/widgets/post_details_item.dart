@@ -131,9 +131,7 @@ class PostDetailsItem<T extends Post> extends ConsumerWidget {
                     // This is used to make sure we have a thumbnail to show instead of a black placeholder
                     thumbnailUrlBuilder:
                         isInitPage && initialThumbnailUrl != null
-                        // Need to specify the type here to avoid type inference error
-                        // ignore: avoid_types_on_closure_parameters
-                        ? (Post _) => initialThumbnailUrl
+                        ? (_) => initialThumbnailUrl
                         : null,
                     controller: pageViewController,
                   );
