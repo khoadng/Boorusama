@@ -12,7 +12,7 @@ import '../../../boorus/engine/engine.dart';
 import '../../../configs/ref.dart';
 import '../../../images/booru_image.dart';
 import '../../../images/utils.dart';
-import '../../../videos/video_play_duration_icon.dart';
+import '../../../videos/widgets.dart';
 import '../../../widgets/widgets.dart';
 import '../../details/routes.dart';
 import '../../post/post.dart';

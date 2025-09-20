@@ -145,12 +145,6 @@ class _PostDetailPageScaffoldState<T extends Post>
 
   @override
   Widget build(BuildContext context) {
-    final useDefaultEngine = ref.watch(
-      settingsProvider.select(
-        (value) => value.viewer.videoPlayerEngine.isDefault,
-      ),
-    );
-
     // Sync slideshow options with settings
     ref.listen(
       settingsProvider.select(
@@ -184,16 +178,12 @@ class _PostDetailPageScaffoldState<T extends Post>
               visibilityNotifier.value = false;
               _previouslyPlaying = widget.controller.isVideoPlaying.value;
               if (_previouslyPlaying) {
-                widget.controller.pauseCurrentVideo(
-                  useDefaultEngine: useDefaultEngine,
-                );
+                widget.controller.pauseCurrentVideo();
               }
             } else if (info.visibleFraction == 1) {
               visibilityNotifier.value = true;
               if (_previouslyPlaying) {
-                widget.controller.playCurrentVideo(
-                  useDefaultEngine: useDefaultEngine,
-                );
+                widget.controller.playCurrentVideo();
               }
             }
           },

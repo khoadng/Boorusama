@@ -370,9 +370,12 @@
       "video": {
         "video_player_engine": "Trình phát video",
         "engine": {
+          "auto": "Tự động",
+          "auto_description": "Tự động chọn trình phát tốt nhất dựa trên khả năng thiết bị của bạn.",
           "default": "Mặc định",
           "default_description": "Hoạt động tốt với hầu hết thiết bị, có thể gặp sự cố với một số định dạng video hoặc thiết bị cũ.",
-          "mdk_description": "Thử nghiệm, hiệu suất tốt hơn với một số định dạng video nhất định, có thể gây sập ứng dụng. Tự chịu rủi ro khi dùng."
+          "mdk_description": "Thử nghiệm, hiệu suất tốt hơn với một số định dạng video nhất định, có thể gây sập ứng dụng. Tự chịu rủi ro khi dùng.",
+          "webview_description": "Tương thích tốt nhưng sử dụng nhiều tài nguyên và hiệu suất kém."
         }
       }
     },

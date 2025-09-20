@@ -9,7 +9,6 @@ import 'package:flutter/services.dart';
 // Package imports:
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:fvp/fvp.dart' as fvp;
 import 'package:hive_ce/hive.dart';
 import 'package:i18n/i18n.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -24,6 +23,7 @@ import 'core/cache/providers.dart';
 import 'core/configs/config.dart';
 import 'core/configs/config/data.dart';
 import 'core/configs/manage/providers.dart';
+import 'core/hive/hive_registrar.g.dart';
 import 'core/http/http.dart';
 import 'core/http/providers.dart';
 import 'core/settings/providers.dart';
@@ -45,7 +45,6 @@ import 'foundation/platform.dart';
 import 'foundation/utils/file_utils.dart';
 import 'foundation/vendors/google/providers.dart';
 import 'foundation/windows.dart' as window;
-import 'core/hive/hive_registrar.g.dart';
 
 Future<void> boot(BootData bootData) async {
   final logger = bootData.logger;
@@ -106,19 +105,6 @@ Future<void> boot(BootData bootData) async {
       (l) => Settings.defaultSettings,
       (r) => r,
     ),
-  );
-
-  fvp.registerWith(
-    options: {
-      'platforms': [
-        'linux',
-        'ios',
-        'windows',
-        'macos',
-        if (settings.viewer.videoPlayerEngine == VideoPlayerEngine.mdk)
-          'android',
-      ],
-    },
   );
 
   logger

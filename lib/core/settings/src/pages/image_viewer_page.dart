@@ -8,6 +8,7 @@ import 'package:i18n/i18n.dart';
 // Project imports:
 import '../../../configs/config/widgets.dart';
 import '../../../router.dart';
+import '../../../videos/providers.dart';
 import '../../../widgets/widgets.dart';
 import '../providers/settings_notifier.dart';
 import '../providers/settings_provider.dart';
@@ -170,48 +171,20 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
             ),
           ],
         ),
-        SettingsCard(
+        SettingsNavigationTile(
           title: context.t.settings.image_viewer.video.video_player_engine,
-          subtitle: context.t.generic.app_restart_request,
-          entries: [
-            SettingsCardEntry(
-              title: context.t.settings.image_viewer.video.engine.kDefault,
-              value: VideoPlayerEngine.auto.name,
-              groupValue: settings.viewer.videoPlayerEngine.name,
-              subtitle: context
-                  .t
-                  .settings
-                  .image_viewer
-                  .video
-                  .engine
-                  .default_description,
-              onSelected: (value) {
-                notifer.updateSettings(
-                  settings.copyWith(
-                    viewer: settings.viewer.copyWith(
-                      videoPlayerEngine: VideoPlayerEngine.auto,
-                    ),
-                  ),
-                );
-              },
-            ),
-            SettingsCardEntry(
-              title: 'MDK',
-              value: VideoPlayerEngine.mdk.name,
-              groupValue: settings.viewer.videoPlayerEngine.name,
-              subtitle:
-                  context.t.settings.image_viewer.video.engine.mdk_description,
-              onSelected: (value) {
-                notifer.updateSettings(
-                  settings.copyWith(
-                    viewer: settings.viewer.copyWith(
-                      videoPlayerEngine: VideoPlayerEngine.mdk,
-                    ),
-                  ),
-                );
-              },
-            ),
-          ],
+          value: settings.viewer.videoPlayerEngine,
+          valueBuilder: (engine) => VideoEngineUtils.getUnderlyingEngineName(
+            engine,
+            platform: Theme.of(context).platform,
+            context: context,
+          ),
+          onTap: () {
+            showBooruModalBottomSheet(
+              context: context,
+              builder: (context) => const _VideoEngineSelectorSheet(),
+            );
+          },
         ),
         BooruConfigMoreSettingsRedirectCard.imageViewer(
           extraActions: [
@@ -231,6 +204,44 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
           ],
         ),
       ],
+    );
+  }
+}
+
+class _VideoEngineSelectorSheet extends ConsumerWidget {
+  const _VideoEngineSelectorSheet();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final settings = ref.watch(settingsProvider);
+    final notifer = ref.watch(settingsNotifierProvider.notifier);
+
+    return SettingsSelectionSheet(
+      title: context.t.settings.image_viewer.video.video_player_engine,
+      value: settings.viewer.videoPlayerEngine,
+      items: VideoPlayerEngine.values,
+      itemBuilder: (engine) => VideoEngineUtils.getUnderlyingEngineName(
+        engine,
+        platform: Theme.of(context).platform,
+        context: context,
+      ),
+      subtitleBuilder: (engine) => switch (engine) {
+        VideoPlayerEngine.auto =>
+          context.t.settings.image_viewer.video.engine.auto_description,
+        VideoPlayerEngine.videoPlayerPlugin =>
+          context.t.settings.image_viewer.video.engine.default_description,
+        VideoPlayerEngine.mdk =>
+          context.t.settings.image_viewer.video.engine.mdk_description,
+        VideoPlayerEngine.webview =>
+          context.t.settings.image_viewer.video.engine.webview_description,
+      },
+      onChanged: (value) => notifer.updateSettings(
+        settings.copyWith(
+          viewer: settings.viewer.copyWith(
+            videoPlayerEngine: value,
+          ),
+        ),
+      ),
     );
   }
 }

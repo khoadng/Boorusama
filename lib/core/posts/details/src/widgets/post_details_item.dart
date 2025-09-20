@@ -12,11 +12,8 @@ import '../../../../../foundation/platform.dart';
 import '../../../../boorus/engine/providers.dart';
 import '../../../../configs/config/types.dart';
 import '../../../../configs/gesture/gesture.dart';
-import '../../../../settings/providers.dart';
-import '../../../../settings/src/types/types.dart';
-import '../../../../videos/play_pause_button.dart';
 import '../../../../videos/providers.dart';
-import '../../../../videos/sound_control_button.dart';
+import '../../../../videos/widgets.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../details_pageview/widgets.dart';
 import '../../../post/post.dart';
@@ -53,10 +50,6 @@ class PostDetailsItem<T extends Post> extends ConsumerWidget {
     final pageViewController = PostDetailsPageViewScope.of(context);
     final post = posts[index];
 
-    final videoPlayerEngine = ref.watch(
-      settingsProvider.select((value) => value.viewer.videoPlayerEngine),
-    );
-
     final booruBuilder = ref.watch(booruBuilderProvider(authConfig));
     final postGesturesHandler = booruBuilder?.postGestureHandlerBuilder;
     final gestures = gestureConfig?.fullview;
@@ -67,13 +60,9 @@ class PostDetailsItem<T extends Post> extends ConsumerWidget {
       if (isDesktopPlatform()) {
         if (controller.currentPost.value.isVideo) {
           if (controller.isVideoPlaying.value) {
-            controller.pauseCurrentVideo(
-              useDefaultEngine: videoPlayerEngine.isDefault,
-            );
+            controller.pauseCurrentVideo();
           } else {
-            controller.playCurrentVideo(
-              useDefaultEngine: videoPlayerEngine.isDefault,
-            );
+            controller.playCurrentVideo();
           }
         } else {
           if (pageViewController.isExpanded) return;
@@ -150,17 +139,9 @@ class PostDetailsItem<T extends Post> extends ConsumerWidget {
                                 isPlaying: detailsController.isVideoPlaying,
                                 onPlayingChanged: (value) {
                                   if (value) {
-                                    detailsController.pauseVideo(
-                                      post.id,
-                                      post.isWebm,
-                                      videoPlayerEngine.isDefault,
-                                    );
+                                    detailsController.pauseVideo(post.id);
                                   } else if (!value) {
-                                    detailsController.playVideo(
-                                      post.id,
-                                      post.isWebm,
-                                      videoPlayerEngine.isDefault,
-                                    );
+                                    detailsController.playVideo(post.id);
                                   } else {
                                     // do nothing
                                   }

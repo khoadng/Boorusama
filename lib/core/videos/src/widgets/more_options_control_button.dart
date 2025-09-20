@@ -6,8 +6,8 @@ import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../foundation/display.dart';
-import '../widgets/mobile_config_tile.dart';
+import '../../../../foundation/display.dart';
+import '../../../widgets/widgets.dart';
 
 class MoreOptionsControlButton extends StatelessWidget {
   const MoreOptionsControlButton({

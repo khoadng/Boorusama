@@ -10,11 +10,8 @@ import '../../../../../foundation/display.dart';
 import '../../../../settings/providers.dart';
 import '../../../../settings/settings.dart';
 import '../../../../theme.dart';
-import '../../../../videos/more_options_control_button.dart';
-import '../../../../videos/play_pause_button.dart';
 import '../../../../videos/providers.dart';
-import '../../../../videos/sound_control_button.dart';
-import '../../../../videos/video_progress_bar.dart';
+import '../../../../videos/widgets.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../post/post.dart';
 import 'post_details_controller.dart';
@@ -155,17 +152,9 @@ class PostDetailsVideoControls<T extends Post> extends ConsumerWidget {
         isPlaying: controller.isVideoPlaying,
         onPlayingChanged: (value) {
           if (value) {
-            controller.pauseVideo(
-              post.id,
-              post.isWebm,
-              useDefaultEngine,
-            );
+            controller.pauseVideo(post.id);
           } else if (!value) {
-            controller.playVideo(
-              post.id,
-              post.isWebm,
-              useDefaultEngine,
-            );
+            controller.playVideo(post.id);
           } else {
             // do nothing
           }
@@ -191,27 +180,12 @@ class PostDetailsVideoControls<T extends Post> extends ConsumerWidget {
             position: progress.position,
             buffered: const [],
             onDragStart: () {
-              // pause the video when dragging
-              controller.pauseVideo(
-                post.id,
-                post.isWebm,
-                useDefaultEngine,
-              );
+              controller.pauseVideo(post.id);
             },
             onDragEnd: () {
-              // resume the video when dragging ends
-              controller.playVideo(
-                post.id,
-                post.isWebm,
-                useDefaultEngine,
-              );
+              controller.playVideo(post.id);
             },
-            seekTo: (position) => controller.onVideoSeekTo(
-              position,
-              post.id,
-              post.isWebm,
-              useDefaultEngine,
-            ),
+            seekTo: (position) => controller.onVideoSeekTo(position, post.id),
             barHeight: 3,
             handleHeight: 6,
             drawShadow: true,

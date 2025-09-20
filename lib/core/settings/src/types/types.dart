@@ -134,6 +134,7 @@ enum VideoPlayerEngine {
   auto,
   videoPlayerPlugin,
   mdk,
+  webview,
 }
 
 extension VideoPlayerEngineX on VideoPlayerEngine {

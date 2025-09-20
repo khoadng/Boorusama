@@ -7,12 +7,9 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:foundation/foundation.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
-import 'package:video_player/video_player.dart';
 
 // Project imports:
-import '../../../../../../core/widgets/widgets.dart';
-import '../../../../../foundation/platform.dart';
-import '../../../../videos/video_progress.dart';
+import '../../../../videos/types.dart';
 import '../../../post/post.dart';
 
 class PostDetailsController<T extends Post> extends ChangeNotifier {
@@ -65,8 +62,6 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           playVideo(
             post.id,
-            post.isWebm,
-            useDefaultEngine,
           );
         });
         return;
@@ -88,9 +83,7 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
   final _isVideoPlaying = ValueNotifier<bool>(false);
   final _isVideoInitializing = ValueNotifier<bool>(false);
 
-  //TODO: should have an abstraction for this crap, but I'm too lazy to do it since there are only 2 types of video anyway
-  final Map<int, VideoPlayerController> _videoControllers = {};
-  final Map<int, WebmVideoController> _webmVideoControllers = {};
+  final Map<int, BooruPlayer> _booruPlayers = {};
 
   ValueNotifier<VideoProgress> get videoProgress => _videoProgress;
   ValueNotifier<bool> get isVideoPlaying => _isVideoPlaying;
@@ -109,15 +102,8 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
   void onVideoSeekTo(
     Duration position,
     int id,
-    bool isWebm,
-    bool useDefaultEngine,
   ) {
-    // Only Android is using Webview for webm
-    if (isWebm && isAndroid() && useDefaultEngine) {
-      _webmVideoControllers[id]?.seek(position.inSeconds.toDouble());
-    } else {
-      _videoControllers[id]?.seekTo(position);
-    }
+    _booruPlayers[id]?.seek(position);
 
     _seekStreamController.add(
       VideoProgress(
@@ -127,60 +113,36 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
     );
   }
 
-  bool isPlaying(int id, bool isWebm, bool useDefaultEngine) {
-    if (isWebm && isAndroid() && useDefaultEngine) {
-      return _webmVideoControllers[id]?.isPlaying ?? false;
-    } else {
-      return _videoControllers[id]?.value.isPlaying ?? false;
-    }
+  bool isPlaying(int id) {
+    return _booruPlayers[id]?.isPlaying ?? false;
   }
 
-  Future<void> playVideo(int id, bool isWebm, bool useDefaultEngine) async {
-    if (isWebm && isAndroid() && useDefaultEngine) {
-      unawaited(_webmVideoControllers[id]?.play());
-    } else {
-      unawaited(_videoControllers[id]?.play());
-    }
-
+  Future<void> playVideo(int id) async {
+    unawaited(_booruPlayers[id]?.play());
     _isVideoPlaying.value = true;
   }
 
-  Future<void> playCurrentVideo({
-    required bool useDefaultEngine,
-  }) {
+  Future<void> playCurrentVideo() {
     final post = currentPost.value;
 
-    return playVideo(post.id, post.isWebm, useDefaultEngine);
+    return playVideo(post.id);
   }
 
-  Future<void> pauseCurrentVideo({
-    required bool useDefaultEngine,
-  }) {
+  Future<void> pauseCurrentVideo() {
     final post = currentPost.value;
 
     return pauseVideo(
       post.id,
-      post.isWebm,
-      useDefaultEngine,
     );
   }
 
-  Future<void> pauseVideo(int id, bool isWebm, bool useDefaultEngine) async {
-    if (isWebm && isAndroid() && useDefaultEngine) {
-      unawaited(_webmVideoControllers[id]?.pause());
-    } else {
-      unawaited(_videoControllers[id]?.pause());
-    }
-
+  Future<void> pauseVideo(int id) async {
+    unawaited(_booruPlayers[id]?.pause());
     _isVideoPlaying.value = false;
   }
 
-  void onWebmVideoPlayerCreated(WebmVideoController controller, int id) {
-    _webmVideoControllers[id] = controller;
-  }
-
-  void onVideoPlayerCreated(VideoPlayerController controller, int id) {
-    _videoControllers[id] = controller;
+  void onBooruVideoPlayerCreated(BooruPlayer player, int id) {
+    _booruPlayers[id] = player;
   }
 
   // ignore: use_setters_to_change_properties
@@ -190,16 +152,11 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
 
   @override
   void dispose() {
-    for (final controller in _videoControllers.values) {
-      controller.dispose();
+    for (final player in _booruPlayers.values) {
+      player.dispose();
     }
 
-    for (final controller in _webmVideoControllers.values) {
-      controller.dispose();
-    }
-
-    _videoControllers.clear();
-    _webmVideoControllers.clear();
+    _booruPlayers.clear();
 
     _videoProgress.dispose();
     _isVideoPlaying.dispose();

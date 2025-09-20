@@ -6,17 +6,14 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../../core/widgets/widgets.dart';
 import '../../../../../foundation/display.dart';
-import '../../../../../foundation/path.dart';
-import '../../../../../foundation/platform.dart';
+import '../../../../../foundation/loggers.dart';
 import '../../../../configs/config/types.dart';
 import '../../../../http/providers.dart';
 import '../../../../settings/providers.dart';
 import '../../../../settings/routes.dart';
-import '../../../../settings/settings.dart';
 import '../../../../videos/providers.dart';
-import '../../../../videos/video_player.dart';
+import '../../../../videos/widgets.dart';
 import '../../../details_pageview/widgets.dart';
 import '../../../post/post.dart';
 import '../types/post_details.dart';
@@ -48,11 +45,6 @@ class PostMedia<T extends Post> extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final details = PostDetails.of<T>(context);
-    final useDefault = ref.watch(
-      settingsProvider.select(
-        (value) => value.viewer.videoPlayerEngine != VideoPlayerEngine.mdk,
-      ),
-    );
     final headers = ref.watch(httpHeadersProvider(config));
     final heroTag = '${post.id}_hero';
 
@@ -60,39 +52,30 @@ class PostMedia<T extends Post> extends ConsumerWidget {
         ? Stack(
             children: [
               Positioned.fill(
-                child:
-                    extension(post.videoUrl) == '.webm' &&
-                        isAndroid() &&
-                        useDefault
-                    ? EmbeddedWebViewWebm(
-                        heroTag: heroTag,
-                        url: post.videoUrl,
-                        onCurrentPositionChanged:
-                            details.controller.onCurrentPositionChanged,
-                        backgroundColor: Theme.of(context).colorScheme.surface,
-                        onWebmVideoPlayerCreated: (wvpc) => details.controller
-                            .onWebmVideoPlayerCreated(wvpc, post.id),
-                        sound: ref.isGlobalVideoSoundOn,
-                        playbackSpeed: ref.watchPlaybackSpeed(post.videoUrl),
-                        userAgent: ref.watch(
-                          userAgentProvider(config),
-                        ),
-                      )
-                    : BooruVideo(
-                        heroTag: heroTag,
-                        url: post.videoUrl,
-                        aspectRatio: post.aspectRatio,
-                        onCurrentPositionChanged:
-                            details.controller.onCurrentPositionChanged,
-                        onVideoPlayerCreated: (vpc) => details.controller
-                            .onVideoPlayerCreated(vpc, post.id),
-                        sound: ref.isGlobalVideoSoundOn,
-                        speed: ref.watchPlaybackSpeed(post.videoUrl),
-                        thumbnailUrl: post.videoThumbnailUrl,
-                        onOpenSettings: () => _openSettings(ref),
-                        headers: headers,
-                        onInitializing: details.controller.onInitializing,
-                      ),
+                child: BooruVideo(
+                  heroTag: heroTag,
+                  url: post.videoUrl,
+                  aspectRatio: post.aspectRatio,
+                  onCurrentPositionChanged:
+                      details.controller.onCurrentPositionChanged,
+                  onVideoPlayerCreated: (player) => details.controller
+                      .onBooruVideoPlayerCreated(player, post.id),
+                  sound: ref.isGlobalVideoSoundOn,
+                  speed: ref.watchPlaybackSpeed(post.videoUrl),
+                  thumbnailUrl: post.videoThumbnailUrl,
+                  onOpenSettings: () => _openSettings(ref),
+                  headers: headers,
+                  onInitializing: details.controller.onInitializing,
+                  videoPlayerEngine: ref.watch(
+                    settingsProvider.select(
+                      (value) => value.viewer.videoPlayerEngine,
+                    ),
+                  ),
+                  userAgent: ref.watch(
+                    userAgentProvider(config),
+                  ),
+                  logger: ref.watch(loggerProvider),
+                ),
               ),
               if (context.isLargeScreen)
                 Align(

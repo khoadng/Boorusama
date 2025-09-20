@@ -7,6 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../settings/providers.dart';
 
+export 'src/providers/utils.dart';
+
 final globalSoundStateProvider = StateProvider<bool>((ref) {
   final isMuteByDefault = ref.watch(
     settingsProvider.select((s) => s.viewer.muteAudioByDefault),
