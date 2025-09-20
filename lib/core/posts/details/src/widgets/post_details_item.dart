@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:async';
+
 // Flutter imports:
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +26,8 @@ import '../../../post/post.dart';
 import '../../details.dart';
 import 'post_details_controller.dart';
 import 'post_media.dart';
+import '../utils/tall_media_classifier.dart';
+import 'tall_media_scroller.dart';
 
 class PostDetailsItem<T extends Post> extends ConsumerWidget {
   const PostDetailsItem({
@@ -117,73 +122,123 @@ class PostDetailsItem<T extends Post> extends ConsumerWidget {
                   post,
                 )
               : null,
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              ValueListenableBuilder(
+          child: () {
+            final mediaSize = MediaQuery.sizeOf(context);
+            final mediaPadding = MediaQuery.paddingOf(context);
+            final rawViewportHeight = mediaSize.height - mediaPadding.vertical;
+            final viewportHeight = rawViewportHeight > 0
+                ? rawViewportHeight
+                : 0.0;
+            final viewportSize = Size(mediaSize.width, viewportHeight);
+
+            final viewerSettings = ref.watch(
+              settingsProvider.select((value) => value.viewer),
+            );
+            final tallSettings = viewerSettings.tallMedia;
+            final hapticsEnabled = ref.watch(
+              hapticFeedbackLevelProvider.select(
+                (value) => value.isReducedOrAbove,
+              ),
+            );
+
+            final disposition = classifyTallMedia(
+              settings: tallSettings,
+              viewportSize: viewportSize,
+              width: post.width,
+              height: post.height,
+              isVideo: post.isVideo,
+            );
+            final useTallScroller =
+                disposition.isTall && disposition.hasScrollableExtent;
+
+            Widget buildPostMedia() {
+              return ValueListenableBuilder(
                 valueListenable: isInitPageListenable,
-                builder: (_, isInitPage, _) {
+                builder: (context, isInitPage, _) {
                   return PostMedia<T>(
                     post: post,
                     config: authConfig,
                     imageUrlBuilder: imageUrlBuilder,
                     imageCacheManager: imageCacheManager,
-                    // This is used to make sure we have a thumbnail to show instead of a black placeholder
                     thumbnailUrlBuilder:
                         isInitPage && initialThumbnailUrl != null
-                        // Need to specify the type here to avoid type inference error
-                        // ignore: avoid_types_on_closure_parameters
-                        ? (Post _) => initialThumbnailUrl
+                        ? (_) => initialThumbnailUrl
                         : null,
                     controller: pageViewController,
+                    fitWidthForTallImages: disposition.shouldFitToWidth,
                   );
                 },
-              ),
-              if (post.isVideo)
-                Align(
-                  alignment: Alignment.bottomRight,
-                  child: state.isExpanded && !context.isLargeScreen
-                      ? Padding(
-                          padding: const EdgeInsets.all(8),
-                          child: Row(
-                            children: [
-                              // duplicate codes, maybe refactor later
-                              PlayPauseButton(
-                                isPlaying: detailsController.isVideoPlaying,
-                                onPlayingChanged: (value) {
-                                  if (value) {
-                                    detailsController.pauseVideo(
-                                      post.id,
-                                      post.isWebm,
-                                      videoPlayerEngine.isDefault,
-                                    );
-                                  } else if (!value) {
-                                    detailsController.playVideo(
-                                      post.id,
-                                      post.isWebm,
-                                      videoPlayerEngine.isDefault,
-                                    );
-                                  } else {
-                                    // do nothing
-                                  }
-                                },
-                              ),
-                              VideoSoundScope(
-                                builder: (context, soundOn) =>
-                                    SoundControlButton(
-                                      padding: const EdgeInsets.all(8),
-                                      soundOn: soundOn,
-                                      onSoundChanged: (value) =>
-                                          ref.setGlobalVideoSound(value),
-                                    ),
-                              ),
-                            ],
-                          ),
-                        )
-                      : const SizedBox.shrink(),
+              );
+            }
+
+            if (useTallScroller) {
+              return TallMediaScroller(
+                pageViewController: pageViewController,
+                settings: tallSettings,
+                overlayListenable: pageViewController.overlay,
+                enableHaptics: hapticsEnabled,
+                isVerticalSwipeMode: pageViewController.useVerticalLayout,
+                onRequestExpandSheet: () {
+                  unawaited(pageViewController.expandToSnapPoint());
+                },
+                child: Padding(
+                  padding: EdgeInsets.only(top: mediaPadding.top),
+                  child: buildPostMedia(),
                 ),
-            ],
-          ),
+              );
+            }
+
+            return Stack(
+              alignment: Alignment.center,
+              children: [
+                buildPostMedia(),
+                if (post.isVideo)
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: ValueListenableBuilder(
+                      valueListenable: pageViewController.sheetState,
+                      builder: (context, state, _) =>
+                          state.isExpanded && !context.isLargeScreen
+                          ? Padding(
+                              padding: const EdgeInsets.all(8),
+                              child: Row(
+                                children: [
+                                  PlayPauseButton(
+                                    isPlaying: detailsController.isVideoPlaying,
+                                    onPlayingChanged: (value) {
+                                      if (value) {
+                                        detailsController.pauseVideo(
+                                          post.id,
+                                          post.isWebm,
+                                          videoPlayerEngine.isDefault,
+                                        );
+                                      } else if (!value) {
+                                        detailsController.playVideo(
+                                          post.id,
+                                          post.isWebm,
+                                          videoPlayerEngine.isDefault,
+                                        );
+                                      }
+                                    },
+                                  ),
+                                  VideoSoundScope(
+                                    builder: (context, soundOn) =>
+                                        SoundControlButton(
+                                          padding: const EdgeInsets.all(8),
+                                          soundOn: soundOn,
+                                          onSoundChanged: (value) =>
+                                              ref.setGlobalVideoSound(value),
+                                        ),
+                                  ),
+                                ],
+                              ),
+                            )
+                          : const SizedBox.shrink(),
+                    ),
+                  ),
+              ],
+            );
+          }(),
         ),
       ),
     );

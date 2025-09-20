@@ -142,6 +142,7 @@ class Settings extends Equatable {
       slideshowTransitionType: SlideshowTransitionType.natural,
       videoAudioDefaultState: VideoAudioDefaultState.unspecified,
       videoPlayerEngine: VideoPlayerEngine.auto,
+      tallMedia: TallMediaSettings.defaults(),
     ),
     colors: null,
     safeMode: true,
@@ -464,6 +465,7 @@ class ImageViewerSettings extends Equatable {
     required this.slideshowTransitionType,
     required this.videoAudioDefaultState,
     required this.videoPlayerEngine,
+    required this.tallMedia,
   });
 
   ImageViewerSettings.fromJson(Map<String, dynamic> json)
@@ -487,7 +489,10 @@ class ImageViewerSettings extends Equatable {
           : VideoAudioDefaultState.unspecified,
       videoPlayerEngine = json['videoPlayerEngine'] != null
           ? VideoPlayerEngine.values[json['videoPlayerEngine']]
-          : VideoPlayerEngine.auto;
+          : VideoPlayerEngine.auto,
+      tallMedia = json['tallMedia'] != null
+          ? TallMediaSettings.fromJson(json['tallMedia'])
+          : const TallMediaSettings.defaults();
 
   final PostDetailsSwipeMode swipeMode;
   final PostDetailsOverlayInitialState postDetailsOverlayInitialState;
@@ -496,6 +501,7 @@ class ImageViewerSettings extends Equatable {
   final SlideshowTransitionType slideshowTransitionType;
   final VideoAudioDefaultState videoAudioDefaultState;
   final VideoPlayerEngine videoPlayerEngine;
+  final TallMediaSettings tallMedia;
 
   ImageViewerSettings copyWith({
     PostDetailsSwipeMode? swipeMode,
@@ -505,6 +511,7 @@ class ImageViewerSettings extends Equatable {
     SlideshowTransitionType? slideshowTransitionType,
     VideoAudioDefaultState? videoAudioDefaultState,
     VideoPlayerEngine? videoPlayerEngine,
+    TallMediaSettings? tallMedia,
   }) {
     return ImageViewerSettings(
       swipeMode: swipeMode ?? this.swipeMode,
@@ -517,6 +524,7 @@ class ImageViewerSettings extends Equatable {
       videoAudioDefaultState:
           videoAudioDefaultState ?? this.videoAudioDefaultState,
       videoPlayerEngine: videoPlayerEngine ?? this.videoPlayerEngine,
+      tallMedia: tallMedia ?? this.tallMedia,
     );
   }
 
@@ -528,6 +536,7 @@ class ImageViewerSettings extends Equatable {
     'slideshowTransitionType': slideshowTransitionType.index,
     'videoAudioDefaultState': videoAudioDefaultState.index,
     'videoPlayerEngine': videoPlayerEngine.index,
+    'tallMedia': tallMedia.toJson(),
   };
 
   @override
@@ -539,6 +548,7 @@ class ImageViewerSettings extends Equatable {
     slideshowTransitionType,
     videoAudioDefaultState,
     videoPlayerEngine,
+    tallMedia,
   ];
 
   bool get hidePostDetailsOverlay =>
@@ -555,6 +565,45 @@ class ImageViewerSettings extends Equatable {
         ? Duration(milliseconds: (slideshowInterval * 1000).toInt())
         : Duration(seconds: slideshowInterval.toInt());
   }
+}
+
+class TallMediaSettings extends Equatable {
+  const TallMediaSettings({
+    required this.enabled,
+  });
+
+  const TallMediaSettings.defaults() : enabled = true;
+
+  TallMediaSettings.fromJson(Map<String, dynamic> json)
+    : enabled = json['enabled'] ?? true;
+
+  final bool enabled;
+
+  TallMediaSettings copyWith({
+    bool? enabled,
+  }) {
+    return TallMediaSettings(
+      enabled: enabled ?? this.enabled,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    'enabled': enabled,
+  };
+
+  @override
+  List<Object> get props => [enabled];
+
+  static const double aspectRatioThreshold = 2.15;
+  static const double minHeightPx = 1800;
+  static const double minViewportHeightRatio = 1.35;
+  static const double minPixelCount = 2000000;
+  static const double navigationVelocityThreshold = 2200;
+  static const double navigationDistanceThreshold = 240;
+  static const double edgeActivationRatio = 0.12;
+  static const double scrollLockVelocityThreshold = 180;
+  static const double scrollLockDistanceThreshold = 28;
+  static const double minScrollExtentPx = 48;
 }
 
 class ImageListingSettings extends Equatable {

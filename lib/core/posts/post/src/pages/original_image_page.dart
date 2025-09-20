@@ -16,6 +16,8 @@ import '../../../../../foundation/mobile.dart';
 import '../../../../../foundation/platform.dart';
 import '../../../../configs/config/providers.dart';
 import '../../../../images/booru_image.dart';
+import '../../../../settings/providers.dart';
+import '../../../details/src/utils/tall_media_classifier.dart';
 import '../../../../widgets/widgets.dart';
 import '../types/post.dart';
 
@@ -246,6 +248,26 @@ class __ImageViewerState extends ConsumerState<_ImageViewer> {
 
   @override
   Widget build(BuildContext context) {
+    final viewerSettings = ref.watch(
+      settingsProvider.select((value) => value.viewer),
+    );
+    final tallSettings = viewerSettings.tallMedia;
+
+    final mediaSize = MediaQuery.sizeOf(context);
+    final mediaPadding = MediaQuery.paddingOf(context);
+    final rawViewportHeight = mediaSize.height - mediaPadding.vertical;
+    final viewportHeight = rawViewportHeight > 0 ? rawViewportHeight : 0.0;
+    final viewportSize = Size(mediaSize.width, viewportHeight);
+    final contentSize = widget.contentSize ?? Size.zero;
+
+    final disposition = classifyTallMedia(
+      settings: tallSettings,
+      viewportSize: viewportSize,
+      width: contentSize.width,
+      height: contentSize.height,
+      isVideo: false,
+    );
+
     return BooruImage(
       config: ref.watchConfigAuth,
       imageUrl: widget.imageUrl,
@@ -254,7 +276,9 @@ class __ImageViewerState extends ConsumerState<_ImageViewer> {
       aspectRatio: widget.aspectRatio,
       imageHeight: widget.contentSize?.height,
       imageWidth: widget.contentSize?.width,
-      forceFill: true,
+      forceFill: false,
+      forceCover: false, // Never force cover when we want fit width
+      fitWidthForTallImages: disposition.shouldFitToWidth,
       placeholderWidget: ValueListenableBuilder(
         valueListenable: _controller.progress,
         builder: (context, progress, child) {

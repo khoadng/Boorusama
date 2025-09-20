@@ -23,6 +23,7 @@ class PostDetailsImage<T extends Post> extends ConsumerStatefulWidget {
     super.key,
     this.heroTag,
     this.imageCacheManager,
+    this.fitWidthForTallImages = false,
   });
 
   final BooruConfigAuth config;
@@ -31,12 +32,15 @@ class PostDetailsImage<T extends Post> extends ConsumerStatefulWidget {
   final String Function(T post)? thumbnailUrlBuilder;
   final ImageCacheManager? imageCacheManager;
   final T post;
+  final bool fitWidthForTallImages;
 
   @override
-  ConsumerState<PostDetailsImage> createState() => _PostDetailsImageState();
+  ConsumerState<PostDetailsImage<T>> createState() =>
+      _PostDetailsImageState<T>();
 }
 
-class _PostDetailsImageState extends ConsumerState<PostDetailsImage> {
+class _PostDetailsImageState<T extends Post>
+    extends ConsumerState<PostDetailsImage<T>> {
   @override
   Widget build(BuildContext context) {
     final imageUrl = widget.imageUrlBuilder != null
@@ -117,10 +121,11 @@ class _PostDetailsImageState extends ConsumerState<PostDetailsImage> {
       imageUrl: imageUrl,
       placeholderUrl: placeholderImageUrl,
       aspectRatio: post.aspectRatio,
-      forceCover: post.aspectRatio != null,
+      forceCover: false, // Never force cover when we want fit width
       imageHeight: post.height,
       imageWidth: post.width,
-      forceFill: true,
+      forceFill: false,
+      fitWidthForTallImages: widget.fitWidthForTallImages,
       borderRadius: BorderRadius.zero,
       forceLoadPlaceholder: true,
       imageCacheManager: widget.imageCacheManager,
