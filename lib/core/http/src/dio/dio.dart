@@ -190,7 +190,7 @@ HttpClientAdapter _createHttpClientAdapter({
               ? createNativeAdapter()
               : createDefaultAdapter()
         : createNativeAdapter();
-  } else if (hasHttp2Support && proxySettings == null) {
+  } else if (hasHttp2Support && proxySettings == null && !isWindows()) {
     logger?.info(
       'Network',
       'Using HTTP2 adapter',
