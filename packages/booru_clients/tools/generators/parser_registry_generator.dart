@@ -1,5 +1,8 @@
 import 'dart:io';
 import 'package:codegen/codegen.dart';
+import 'package:path/path.dart' show join;
+
+const _kParsersPath = 'lib/src/gelbooru_v2/parsers';
 
 class ParserRegistryGenerator extends TemplateGenerator<Set<String>> {
   @override
@@ -33,7 +36,7 @@ class ParserRegistryGenerator extends TemplateGenerator<Set<String>> {
   }
 
   Set<String> _scanBarrelFile() {
-    final barrelFile = File('lib/src/gelbooru/parsers/parsers.dart');
+    final barrelFile = File(join(_kParsersPath, 'parsers.dart'));
 
     if (!barrelFile.existsSync()) {
       throw Exception('Parser barrel file not found: ${barrelFile.path}');
@@ -47,7 +50,7 @@ class ParserRegistryGenerator extends TemplateGenerator<Set<String>> {
 
     for (final match in exportRegex.allMatches(content)) {
       final filePath = match.group(1)!;
-      final file = File('lib/src/gelbooru/parsers/$filePath');
+      final file = File(join(_kParsersPath, filePath));
 
       if (file.existsSync()) {
         functions.addAll(_extractFunctions(file.readAsStringSync()));
