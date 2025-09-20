@@ -2,7 +2,7 @@
 
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
-import '../gelbooru/parsers/parsers.dart';
+import '../gelbooru_v2/parsers/parsers.dart';
 
 class P {
   static const apiKey = 'api-key';

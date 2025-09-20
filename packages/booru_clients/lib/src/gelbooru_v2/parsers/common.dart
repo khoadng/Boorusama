@@ -5,7 +5,7 @@ import 'package:html/dom.dart';
 import 'package:html/parser.dart';
 
 import '../../common/feature.dart';
-import '../types/post_v2_dto.dart';
+import '../post_v2_dto.dart';
 
 class FavoriteHtmlPostDetailsData {
   const FavoriteHtmlPostDetailsData({

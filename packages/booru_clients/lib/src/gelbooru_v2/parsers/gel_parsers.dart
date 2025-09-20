@@ -4,7 +4,8 @@ import 'package:dio/dio.dart';
 import 'package:html/parser.dart' show parse;
 import 'package:xml/xml.dart';
 
-import '../types/types.dart';
+import '../../gelbooru/types/types.dart';
+import '../types.dart';
 
 GelbooruV2Posts parseGelPosts(
   Response response,

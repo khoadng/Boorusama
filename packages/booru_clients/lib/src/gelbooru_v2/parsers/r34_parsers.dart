@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 
-import '../types/post_v2_dto.dart';
+import '../post_v2_dto.dart';
 import 'common.dart';
 
 PostV2Dto? parseR34PostHtml(

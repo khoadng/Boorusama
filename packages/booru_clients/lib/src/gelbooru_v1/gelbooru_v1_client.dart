@@ -6,8 +6,8 @@ import 'package:dio/dio.dart';
 import 'package:html/parser.dart';
 
 // Project imports:
-import 'gelbooru_client_favorites.dart';
-import 'types/post_v1_dto.dart';
+import '../gelbooru/gelbooru_client_favorites.dart';
+import 'post_v1_dto.dart';
 
 class GelbooruV1Client with GelbooruClientFavorites {
   GelbooruV1Client({

@@ -5,9 +5,10 @@ import 'package:dio/dio.dart';
 import '../common/endpoint.dart';
 import '../common/feature.dart';
 import '../common/request_handler.dart';
-import 'gelbooru_client_favorites.dart';
+import '../gelbooru/gelbooru_client_favorites.dart';
+import '../gelbooru/types/types.dart';
 import 'parsers/parsers.dart';
-import 'types/types.dart';
+import 'types.dart';
 
 class GelbooruV2Client with GelbooruClientFavorites {
   static EndpointConfig defaultEndpoints({

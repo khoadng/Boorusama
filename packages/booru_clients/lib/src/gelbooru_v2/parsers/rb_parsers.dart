@@ -2,7 +2,8 @@ import 'package:dio/dio.dart';
 import 'package:html/dom.dart';
 import 'package:html/parser.dart' show parse;
 
-import '../types/types.dart';
+import '../../gelbooru/types/types.dart';
+import '../types.dart';
 
 List<TagDto> parseRbTagsHtml(Response response, Map<String, dynamic> context) {
   final html = response.data as String;
