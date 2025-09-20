@@ -20,6 +20,7 @@ import '../providers/media_kit_booru_player.dart';
 import '../providers/video_player_booru_player.dart';
 import '../providers/webview_booru_player.dart';
 import '../types/booru_player.dart';
+import 'video_player_error_container.dart';
 
 class BooruVideo extends ConsumerStatefulWidget {
   const BooruVideo({
@@ -134,6 +135,8 @@ class _BooruVideoState extends ConsumerState<BooruVideo> {
   }
 
   Future<void> _initializePlayer() async {
+    if (!mounted) return;
+
     try {
       if (_shouldUseWebView) {
         widget.logger?.verbose(
@@ -160,6 +163,10 @@ class _BooruVideoState extends ConsumerState<BooruVideo> {
         _player = VideoPlayerBooruPlayer(
           videoPlayerEngine: widget.videoPlayerEngine ?? VideoPlayerEngine.auto,
         );
+      }
+
+      if (!(_player?.isPlatformSupported() ?? true)) {
+        return;
       }
 
       widget.onVideoPlayerCreated?.call(_player!);
@@ -339,49 +346,19 @@ class _BooruVideoState extends ConsumerState<BooruVideo> {
                 ),
               ),
             )
+          : (!(_player?.isPlatformSupported() ?? true))
+          ? VideoPlayerErrorContainer(
+              title: context.t.video_player.engine_not_supported,
+              subtitle:
+                  context.t.video_player.change_video_player_engine_request,
+              onOpenSettings: widget.onOpenSettings,
+            )
           : _error != null
-          ? Container(
-              color: Colors.black,
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                    child: Text(
-                      _error!,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  Text(
-                    'If this happens on a regular basis, consider using a different video player engine in the settings.'
-                        .hc,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 12,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 12),
-                  if (widget.onOpenSettings != null)
-                    FilledButton(
-                      onPressed: widget.onOpenSettings,
-                      child: Text(
-                        context.t.settings.open_app_settings,
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.onPrimary,
-                        ),
-                      ),
-                    ),
-                ],
-              ),
+          ? VideoPlayerErrorContainer(
+              title: _error,
+              subtitle:
+                  context.t.video_player.change_video_player_engine_suggest,
+              onOpenSettings: widget.onOpenSettings,
             )
           : BooruHero(
               tag: widget.heroTag,

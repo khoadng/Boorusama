@@ -1145,6 +1145,9 @@
   "video_player": {
     "playback_speed": "Playback speed",
     "buffering": "Buffering...",
+    "engine_not_supported": "This engine is not supported on the current platform.",
+    "change_video_player_engine_suggest": "If this happens on a regular basis, consider using a different video player engine in the settings.",
+    "change_video_player_engine_request": "Please change to a different video player engine in the settings.",
     "speed": {
       "normal": "Normal"
     }

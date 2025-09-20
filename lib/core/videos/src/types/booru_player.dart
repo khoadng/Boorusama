@@ -29,6 +29,7 @@ abstract class BooruPlayer {
   Stream<bool> get bufferingStream;
   Stream<Duration> get durationStream;
   void dispose();
+  bool isPlatformSupported();
   Widget buildPlayerWidget(BuildContext context);
 }
 

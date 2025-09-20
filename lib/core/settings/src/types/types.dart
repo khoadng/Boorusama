@@ -1,3 +1,6 @@
+// Flutter imports:
+import 'package:flutter/foundation.dart';
+
 enum ImageQuality {
   automatic,
   low,
@@ -135,7 +138,21 @@ enum VideoPlayerEngine {
   videoPlayerPlugin,
   mdk,
   mpv,
-  webview,
+  webview;
+
+  static List<VideoPlayerEngine> getSupportedEnginesForPlatform(
+    TargetPlatform platform,
+  ) => switch (platform) {
+    TargetPlatform.android ||
+    TargetPlatform.iOS ||
+    TargetPlatform.macOS => VideoPlayerEngine.values,
+    TargetPlatform.linux || TargetPlatform.windows => [
+      VideoPlayerEngine.auto,
+      VideoPlayerEngine.mdk,
+      VideoPlayerEngine.mpv,
+    ],
+    TargetPlatform.fuchsia => [],
+  };
 }
 
 enum SearchBarScrollBehavior {

@@ -215,14 +215,15 @@ class _VideoEngineSelectorSheet extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final settings = ref.watch(settingsProvider);
     final notifer = ref.watch(settingsNotifierProvider.notifier);
+    final platform = Theme.of(context).platform;
 
     return SettingsSelectionSheet(
       title: context.t.settings.image_viewer.video.video_player_engine,
       value: settings.viewer.videoPlayerEngine,
-      items: VideoPlayerEngine.values,
+      items: VideoPlayerEngine.getSupportedEnginesForPlatform(platform),
       itemBuilder: (engine) => VideoEngineUtils.getUnderlyingEngineName(
         engine,
-        platform: Theme.of(context).platform,
+        platform: platform,
         context: context,
       ),
       subtitleBuilder: (engine) => switch (engine) {

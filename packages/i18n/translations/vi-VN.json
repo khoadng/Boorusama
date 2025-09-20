@@ -1145,6 +1145,9 @@
   "video_player": {
     "playback_speed": "Tốc độ phát",
     "buffering": "Đang tải...",
+    "engine_not_supported": "Trình phát này không được hỗ trợ trên nền tảng hiện tại.",
+    "change_video_player_engine_suggest": "Nếu lỗi này xảy ra thường xuyên, cân nhắc sử dụng một trình phát video khác trong cài đặt.",
+    "change_video_player_engine_request": "Vui lòng đổi sang trình phát video khác trong cài đặt.",
     "speed": {
       "normal": "Bình thường"
     }

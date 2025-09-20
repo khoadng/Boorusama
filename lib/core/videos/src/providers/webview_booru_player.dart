@@ -24,7 +24,6 @@ class WebViewBooruPlayer implements BooruPlayer {
     Color backgroundColor = Colors.black,
   }) : _userAgent = userAgent,
        _backgroundColor = backgroundColor;
-
   final String? _userAgent;
   final Color _backgroundColor;
 
@@ -48,6 +47,9 @@ class WebViewBooruPlayer implements BooruPlayer {
   Duration _currentPosition = Duration.zero;
   Duration _currentDuration = Duration.zero;
   String? _currentUrl;
+
+  @override
+  bool isPlatformSupported() => !isWindows() && !isLinux();
 
   @override
   Future<void> initialize(

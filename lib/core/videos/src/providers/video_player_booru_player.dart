@@ -37,6 +37,9 @@ class VideoPlayerBooruPlayer implements BooruPlayer {
   Duration _lastPosition = Duration.zero;
 
   @override
+  bool isPlatformSupported() => true;
+
+  @override
   Future<void> initialize(
     String url, {
     Map<String, String>? headers,
