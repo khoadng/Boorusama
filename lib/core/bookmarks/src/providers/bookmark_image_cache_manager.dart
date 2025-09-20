@@ -6,6 +6,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 
 // Package imports:
+import 'package:cache_manager/cache_manager.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';

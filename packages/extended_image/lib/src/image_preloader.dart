@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:cache_manager/cache_manager.dart';
 import 'package:extended_image_library/extended_image_library.dart';
 import 'package:flutter/foundation.dart';
 
@@ -7,7 +8,6 @@ import 'package:dio/dio.dart';
 import 'package:retriable/retriable.dart';
 
 // Project imports:
-import 'image_cache_manager.dart';
 import 'image_fetcher.dart';
 
 class ImagePreloader {

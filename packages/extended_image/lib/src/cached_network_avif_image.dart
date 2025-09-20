@@ -1,13 +1,12 @@
 import 'dart:async';
 import 'dart:typed_data';
 
+import 'package:cache_manager/cache_manager.dart';
 import 'package:dio/dio.dart';
 import 'package:extended_image_library/extended_image_library.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_avif/flutter_avif.dart';
 import 'package:retriable/retriable.dart';
-
-import 'image_cache_manager.dart';
 
 class CustomCachedNetworkAvifImage extends AvifImage {
   CustomCachedNetworkAvifImage(

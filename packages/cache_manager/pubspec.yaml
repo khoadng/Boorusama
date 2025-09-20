@@ -1,0 +1,16 @@
+name: cache_manager
+description: A generic cache manager for Boorusama
+publish_to: none
+
+environment:
+  sdk: ^3.8.1
+
+resolution: workspace
+
+dependencies:
+  path: ^1.8.3
+  path_provider: ^2.1.2
+  extended_image_library: ^4.0.1
+
+dev_dependencies:
+  lints: ^6.0.0

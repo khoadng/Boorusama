@@ -18,6 +18,7 @@ workspace:
   - packages/rich_text_controller
   - packages/i18n
   - packages/codegen
+  - packages/cache_manager
 
 dependencies:
   # local packages
@@ -39,6 +40,8 @@ dependencies:
     path: packages/retriable
   rich_text_controller:
     path: packages/rich_text_controller
+  cache_manager:
+    path: packages/cache_manager
 
   android_intent_plus: ^5.1.0
   archive: ^4.0.7

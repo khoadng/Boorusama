@@ -1,5 +1,4 @@
 import 'dart:typed_data';
-import 'package:flutter/foundation.dart';
 
 abstract class MemoryCache {
   Uint8List? get(String key);
