@@ -16,6 +16,7 @@ import '../../../configs/config/providers.dart';
 import '../../../images/booru_image.dart';
 import '../../../settings/settings.dart';
 import '../../../widgets/widgets.dart';
+import '../providers/media_kit_booru_player.dart';
 import '../providers/video_player_booru_player.dart';
 import '../providers/webview_booru_player.dart';
 import '../types/booru_player.dart';
@@ -37,6 +38,7 @@ class BooruVideo extends ConsumerStatefulWidget {
     this.userAgent,
     this.videoPlayerEngine,
     this.logger,
+    this.autoplay = false,
   });
 
   final String url;
@@ -53,6 +55,7 @@ class BooruVideo extends ConsumerStatefulWidget {
   final String? userAgent;
   final VideoPlayerEngine? videoPlayerEngine;
   final Logger? logger;
+  final bool autoplay;
 
   @override
   ConsumerState<BooruVideo> createState() => _BooruVideoState();
@@ -65,13 +68,21 @@ class _BooruVideoState extends ConsumerState<BooruVideo> {
   bool _previouslyReportedInitializing = false;
   Timer? _timer;
   StreamSubscription<Duration>? _positionSubscription;
+  StreamSubscription<bool>? _bufferingSubscription;
+  bool _isBuffering = false;
 
   bool get _shouldUseWebView => switch (widget.videoPlayerEngine ??
       VideoPlayerEngine.auto) {
-    VideoPlayerEngine.videoPlayerPlugin || VideoPlayerEngine.mdk => false,
+    VideoPlayerEngine.videoPlayerPlugin ||
+    VideoPlayerEngine.mdk ||
+    VideoPlayerEngine.mpv => false,
     VideoPlayerEngine.webview => true,
     VideoPlayerEngine.auto => extension(widget.url) == '.webm' && isAndroid(),
   };
+
+  bool get _shouldUseMediaKit =>
+      (widget.videoPlayerEngine ?? VideoPlayerEngine.auto) ==
+      VideoPlayerEngine.mpv;
 
   @override
   void initState() {
@@ -133,6 +144,14 @@ class _BooruVideoState extends ConsumerState<BooruVideo> {
           userAgent: widget.userAgent,
           backgroundColor: Colors.black,
         );
+      } else if (_shouldUseMediaKit) {
+        widget.logger?.verbose(
+          'UnifiedBooruVideo',
+          'Creating MediaKitBooruPlayer for URL: ${widget.url}',
+        );
+        _player = MediaKitBooruPlayer(
+          enableHardwareAcceleration: true,
+        );
       } else {
         widget.logger?.verbose(
           'UnifiedBooruVideo',
@@ -161,9 +180,13 @@ class _BooruVideoState extends ConsumerState<BooruVideo> {
 
       widget.logger?.debug(
         'UnifiedBooruVideo',
-        'Initializing player with URL: ${widget.url}',
+        'Initializing player with URL: ${widget.url}, autoplay: ${widget.autoplay}',
       );
-      await _player!.initialize(widget.url, headers: widget.headers);
+      await _player!.initialize(
+        widget.url,
+        headers: widget.headers,
+        autoplay: widget.autoplay,
+      );
 
       // Set initial player settings
       widget.logger?.debug(
@@ -184,6 +207,18 @@ class _BooruVideoState extends ConsumerState<BooruVideo> {
           final current = position.inMilliseconds / 1000.0;
           final total = _player!.duration.inMilliseconds / 1000.0;
           widget.onCurrentPositionChanged!(current, total, widget.url);
+        }
+      });
+
+      widget.logger?.debug(
+        'UnifiedBooruVideo',
+        'Setting up buffering stream listener',
+      );
+      _bufferingSubscription = _player!.bufferingStream.listen((buffering) {
+        if (mounted) {
+          setState(() {
+            _isBuffering = buffering;
+          });
         }
       });
 
@@ -230,10 +265,13 @@ class _BooruVideoState extends ConsumerState<BooruVideo> {
     _clearInitializing();
     _positionSubscription?.cancel();
     _positionSubscription = null;
+    _bufferingSubscription?.cancel();
+    _bufferingSubscription = null;
     _player?.dispose();
     _player = null;
     _initialized = false;
     _error = null;
+    _isBuffering = false;
   }
 
   @override
@@ -273,6 +311,30 @@ class _BooruVideoState extends ConsumerState<BooruVideo> {
                     Positioned.fill(
                       child: _player!.buildPlayerWidget(context),
                     ),
+                    if (_isBuffering)
+                      Positioned.fill(
+                        child: ColoredBox(
+                          color: Colors.black.withValues(alpha: 0.3),
+                          child: Center(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const CircularProgressIndicator(
+                                  color: Colors.white,
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  context.t.video_player.buffering,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
                   ],
                 ),
               ),

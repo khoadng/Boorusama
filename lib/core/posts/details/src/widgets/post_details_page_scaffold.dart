@@ -93,13 +93,8 @@ class _PostDetailPageScaffoldState<T extends Post>
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      final videoPlayerEngine = ref.read(
-        settingsProvider.select((value) => value.viewer.videoPlayerEngine),
-      );
-
       widget.controller.setPage(
         widget.controller.initialPage,
-        useDefaultEngine: videoPlayerEngine.isDefault,
       );
     });
 
@@ -199,9 +194,6 @@ class _PostDetailPageScaffoldState<T extends Post>
 
     final uiBuilder = widget.uiBuilder;
 
-    final videoPlayerEngine = ref.watch(
-      settingsProvider.select((value) => value.viewer.videoPlayerEngine),
-    );
     final reduceAnimations = ref.watch(
       settingsProvider.select((value) => value.reduceAnimations),
     );
@@ -219,10 +211,7 @@ class _PostDetailPageScaffoldState<T extends Post>
         onPageChanged: (page) {
           final post = posts[page];
 
-          widget.controller.setPage(
-            page,
-            useDefaultEngine: videoPlayerEngine.isDefault,
-          );
+          widget.controller.setPage(page);
 
           _isInitPage.value = false;
 

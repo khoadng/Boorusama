@@ -21,6 +21,7 @@ class VideoEngineUtils {
     },
     VideoPlayerEngine.auto => context.t.settings.image_viewer.video.engine.auto,
     VideoPlayerEngine.mdk => 'MDK',
+    VideoPlayerEngine.mpv => 'MPV',
     VideoPlayerEngine.webview => 'WebView',
   };
 }

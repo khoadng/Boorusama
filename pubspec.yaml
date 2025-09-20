@@ -90,6 +90,9 @@ dependencies:
   local_auth: ^2.3.0
   lottie: ^3.1.2
   material_symbols_icons: ^4.2785.1
+  media_kit: ^1.2.0
+  media_kit_video: ^1.3.0
+  media_kit_libs_video: ^1.0.6
   modal_bottom_sheet: ^3.0.0-pre
   multi_split_view: ^3.5.0
   native_dio_adapter: ^1.4.0
@@ -141,6 +144,7 @@ dependencies:
        ref: 8572dd54c437c919aedc8dca6c5bffd25fe74b3c
   webview_flutter: ^4.10.0
   webview_flutter_android: ^4.0.0
+  webview_flutter_wkwebview: ^3.23.0
   window_manager: ^0.5.1 
   yaml: ^3.1.2
 

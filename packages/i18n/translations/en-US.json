@@ -375,7 +375,8 @@
           "default": "Default",
           "default_description": "Works well with most devices, may have issues with some video formats or older devices.",
           "mdk_description": "Experimental, better performance for certain video formats, may cause crashes. Use at your own risk.",
-          "webview_description": "Good compatibility but higher resource usage and bad performance."
+          "mpv_description": "Experimental, good format support and performance, but might have compatibility issues. Use at your own risk.",
+          "webview_description": "Good compatibility but higher resource usage and bad performance, use it as a last resort."
         }
       }
     },
@@ -1143,6 +1144,7 @@
   },
   "video_player": {
     "playback_speed": "Playback speed",
+    "buffering": "Buffering...",
     "speed": {
       "normal": "Normal"
     }

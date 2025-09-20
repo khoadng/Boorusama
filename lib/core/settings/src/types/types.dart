@@ -134,11 +134,8 @@ enum VideoPlayerEngine {
   auto,
   videoPlayerPlugin,
   mdk,
+  mpv,
   webview,
-}
-
-extension VideoPlayerEngineX on VideoPlayerEngine {
-  bool get isDefault => this != VideoPlayerEngine.mdk;
 }
 
 enum SearchBarScrollBehavior {

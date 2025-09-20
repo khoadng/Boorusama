@@ -232,6 +232,8 @@ class _VideoEngineSelectorSheet extends ConsumerWidget {
           context.t.settings.image_viewer.video.engine.default_description,
         VideoPlayerEngine.mdk =>
           context.t.settings.image_viewer.video.engine.mdk_description,
+        VideoPlayerEngine.mpv =>
+          context.t.settings.image_viewer.video.engine.mpv_description,
         VideoPlayerEngine.webview =>
           context.t.settings.image_viewer.video.engine.webview_description,
       },

@@ -41,10 +41,7 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
   int get initialPage =>
       currentPage.value != _initialPage ? currentPage.value : _initialPage;
 
-  void setPage(
-    int page, {
-    required bool useDefaultEngine,
-  }) {
+  void setPage(int page) {
     currentPage.value = page;
     _videoProgress.value = VideoProgress.zero;
 

@@ -21,6 +21,7 @@ class VideoPlayerBooruPlayer implements BooruPlayer {
 
   VideoPlayerController? _controller;
   Timer? _positionTimer;
+  Timer? _bufferingDelayTimer;
 
   final StreamController<Duration> _positionController =
       StreamController<Duration>.broadcast();
@@ -32,26 +33,36 @@ class VideoPlayerBooruPlayer implements BooruPlayer {
       StreamController<Duration>.broadcast();
 
   bool _isDisposed = false;
+  bool _hasPlayedOnce = false;
   Duration _lastPosition = Duration.zero;
 
   @override
-  Future<void> initialize(String url, {Map<String, String>? headers}) async {
+  Future<void> initialize(
+    String url, {
+    Map<String, String>? headers,
+    bool autoplay = false,
+  }) async {
     if (_isDisposed) throw StateError('Player has been disposed');
 
     // Initialize FVP with current engine settings
     FvpManager().ensureInitialized(videoPlayerEngine);
 
-    _controller = VideoPlayerController.networkUrl(
+    final controller = VideoPlayerController.networkUrl(
       Uri.parse(url),
       httpHeaders: headers ?? {},
     );
+    _controller = controller;
 
-    _controller!.addListener(_onVideoPlayerChanged);
+    controller.addListener(_onVideoPlayerChanged);
 
-    await _controller!.initialize();
+    await controller.initialize();
 
     _startPositionTimer();
-    _durationController.add(_controller!.value.duration);
+    _durationController.add(controller.value.duration);
+
+    if (autoplay) {
+      await controller.play();
+    }
   }
 
   void _onVideoPlayerChanged() {
@@ -59,20 +70,19 @@ class VideoPlayerBooruPlayer implements BooruPlayer {
 
     final value = _controller!.value;
 
-    // Update playing state
     _playingController.add(value.isPlaying);
+    if (value.isPlaying && !_hasPlayedOnce) {
+      _hasPlayedOnce = true;
+    }
 
-    // Update buffering state
-    _bufferingController.add(value.isBuffering);
+    _handleSmartBuffering(value.isBuffering);
 
-    // Update position if it changed significantly
     if ((value.position - _lastPosition).abs() >
         const Duration(milliseconds: 100)) {
       _lastPosition = value.position;
       _positionController.add(value.position);
     }
 
-    // Update duration if it changed
     if (value.duration != Duration.zero) {
       _durationController.add(value.duration);
     }
@@ -95,6 +105,32 @@ class VideoPlayerBooruPlayer implements BooruPlayer {
         }
       }
     });
+  }
+
+  void _handleSmartBuffering(bool buffering) {
+    if (_isDisposed) return;
+
+    if (buffering) {
+      // If we haven't played once yet, always show buffering (initial load)
+      if (!_hasPlayedOnce) {
+        _bufferingController.add(true);
+      } else {
+        // For subsequent buffering, check if it's a genuine network issue
+        // by adding a small delay to filter out loop-related buffering
+        _bufferingDelayTimer?.cancel();
+        _bufferingDelayTimer = Timer(const Duration(milliseconds: 200), () {
+          if (!_isDisposed &&
+              _controller != null &&
+              _controller!.value.isBuffering) {
+            _bufferingController.add(true);
+          }
+        });
+      }
+    } else {
+      // Not buffering, cancel delay timer and hide indicator
+      _bufferingDelayTimer?.cancel();
+      _bufferingController.add(false);
+    }
   }
 
   @override
@@ -169,6 +205,9 @@ class VideoPlayerBooruPlayer implements BooruPlayer {
       : _controller!.value.isBuffering;
 
   @override
+  bool get hasPlayedOnce => _hasPlayedOnce;
+
+  @override
   Stream<Duration> get positionStream => _positionController.stream;
 
   @override
@@ -197,6 +236,7 @@ class VideoPlayerBooruPlayer implements BooruPlayer {
     _isDisposed = true;
 
     _positionTimer?.cancel();
+    _bufferingDelayTimer?.cancel();
     _controller?.removeListener(_onVideoPlayerChanged);
     _controller?.dispose();
 

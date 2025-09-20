@@ -7,10 +7,11 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
+import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 
 // Project imports:
+import '../../../../foundation/platform.dart';
 import '../../../../foundation/utils/color_utils.dart';
-import '../../../../foundation/utils/object_utils.dart';
 import '../../../widgets/widgets.dart';
 import '../types/booru_player.dart';
 
@@ -42,39 +43,124 @@ class WebViewBooruPlayer implements BooruPlayer {
 
   bool _isDisposed = false;
   bool _isPlaying = false;
+  bool _hasPlayedOnce = false;
+  bool _isPageLoaded = false;
   Duration _currentPosition = Duration.zero;
   Duration _currentDuration = Duration.zero;
   String? _currentUrl;
 
   @override
-  Future<void> initialize(String url, {Map<String, String>? headers}) async {
+  Future<void> initialize(
+    String url, {
+    Map<String, String>? headers,
+    bool autoplay = false,
+  }) async {
     if (_isDisposed) throw StateError('Player has been disposed');
 
     _currentUrl = url;
 
-    _webViewController = WebViewController.fromPlatformCreationParams(
-      const PlatformWebViewControllerCreationParams(),
-    );
-    await _webViewController!.setUserAgent(_userAgent);
-    await _webViewController!.setJavaScriptMode(JavaScriptMode.unrestricted);
-    await _webViewController!.setBackgroundColor(_backgroundColor);
+    final params = switch (isApple()) {
+      true => WebKitWebViewControllerCreationParams(
+        allowsInlineMediaPlayback: true,
+        mediaTypesRequiringUserAction: const <PlaybackMediaTypes>{},
+      ),
+      false => const PlatformWebViewControllerCreationParams(),
+    };
 
-    if (_webViewController!.platform is AndroidWebViewController) {
+    final controller = WebViewController.fromPlatformCreationParams(params);
+    _webViewController = controller;
+
+    await controller.setUserAgent(_userAgent);
+    await controller.setJavaScriptMode(JavaScriptMode.unrestricted);
+
+    // Skip setBackgroundColor on macOS due to unimplemented opaque property
+    if (!isMacOS()) {
+      await controller.setBackgroundColor(_backgroundColor);
+    }
+
+    if (controller.platform is AndroidWebViewController) {
       await AndroidWebViewController.enableDebugging(false);
-      await (_webViewController!.platform as AndroidWebViewController)
+      await (controller.platform as AndroidWebViewController)
           .setMediaPlaybackRequiresUserGesture(false);
     }
+
+    await controller.setNavigationDelegate(
+      NavigationDelegate(
+        onPageFinished: (url) {
+          _onPageLoadComplete(autoplay);
+        },
+        onWebResourceError: (error) {
+          // Fallback: mark as loaded even on error to prevent hanging
+          if (!_isPageLoaded) {
+            _onPageLoadComplete(autoplay);
+          }
+        },
+      ),
+    );
 
     final html = _urlToHtml(
       url,
       backgroundColor: _backgroundColor,
       muted: false, // Will be set via setVolume
+      autoplay: autoplay,
     );
 
-    await _webViewController!.loadHtmlString(html);
+    await controller.loadHtmlString(html);
 
-    // Start position monitoring timer
+    // Fallback: if page doesn't trigger onPageFinished within 2 seconds,
+    // assume it's loaded (common issue with loadHtmlString on some platforms)
+    Timer(const Duration(seconds: 2), () {
+      if (!_isPageLoaded) {
+        _onPageLoadComplete(autoplay);
+      }
+    });
+  }
+
+  Future<dynamic> _runJavaScriptSafely(
+    String script, {
+    bool returningResult = false,
+    String? errorContext,
+  }) async {
+    if (_webViewController == null || !_isPageLoaded) return null;
+
+    try {
+      if (returningResult) {
+        return await _webViewController!.runJavaScriptReturningResult(script);
+      } else {
+        return await _webViewController!.runJavaScript(script);
+      }
+    } catch (e) {
+      final context = errorContext ?? 'JavaScript execution';
+      debugPrint('WebViewBooruPlayer: $context failed - $e');
+      return null;
+    }
+  }
+
+  double _parseToDouble(dynamic value) => switch (value) {
+    null => 0.0,
+    final double d when d.isNaN || d.isInfinite => 0.0,
+    final double d => d,
+    final int i => i.toDouble(),
+    final String s => double.tryParse(s) ?? 0.0,
+    _ => 0.0,
+  };
+
+  void _onPageLoadComplete(bool autoplay) {
+    if (_isDisposed || _isPageLoaded) return;
+
+    _isPageLoaded = true;
+    // Start position monitoring only after page is loaded
     _startPositionTimer();
+
+    // Handle autoplay by explicitly playing the video
+    if (autoplay) {
+      // Use a small delay to ensure the video element is fully ready
+      Timer(const Duration(milliseconds: 100), () {
+        if (!_isDisposed) {
+          play(); // This will properly set the state and call JavaScript
+        }
+      });
+    }
   }
 
   void _onPositionChanged(double current, double total) {
@@ -83,8 +169,13 @@ class WebViewBooruPlayer implements BooruPlayer {
     _currentPosition = Duration(milliseconds: (current * 1000).toInt());
     _currentDuration = Duration(milliseconds: (total * 1000).toInt());
 
-    _positionController.add(_currentPosition);
-    _durationController.add(_currentDuration);
+    _addToStream(_positionController, _currentPosition);
+    _addToStream(_durationController, _currentDuration);
+  }
+
+  void _addToStream<T>(StreamController<T> controller, T value) {
+    if (controller.isClosed) return;
+    controller.add(value);
   }
 
   void _startPositionTimer() {
@@ -104,31 +195,48 @@ class WebViewBooruPlayer implements BooruPlayer {
   }
 
   Future<void> _updatePosition() async {
-    try {
-      final currentTime = await _webViewController!
-          .runJavaScriptReturningResult(
-            'document.getElementById("video").currentTime;',
-          );
-      final duration = await _webViewController!.runJavaScriptReturningResult(
-        'document.getElementById("video").duration;',
-      );
+    if (!_isPageLoaded) return;
 
-      final current = currentTime.toDoubleOrNull() ?? 0;
-      final total = duration.toDoubleOrNull() ?? 0;
+    final currentTime = await _runJavaScriptSafely(
+      'document.getElementById("video").currentTime;',
+      returningResult: true,
+      errorContext: 'Getting current time',
+    );
+    final duration = await _runJavaScriptSafely(
+      'document.getElementById("video").duration;',
+      returningResult: true,
+      errorContext: 'Getting duration',
+    );
 
-      _onPositionChanged(current, total);
-    } catch (e) {
-      // Ignore errors during position updates
-    }
+    final current = _parseToDouble(currentTime);
+    final total = _parseToDouble(duration);
+
+    _onPositionChanged(current, total);
   }
 
   String _urlToHtml(
     String url, {
     Color backgroundColor = Colors.black,
     bool? muted,
+    bool autoplay = false,
   }) {
     final colorText = backgroundColor.hexWithoutAlpha;
     final mutedText = muted == true ? 'muted' : '';
+    // Can't really autoplay in WebView, user gesture needed (except on Android maybe)
+    final autoplayValue =
+        (_webViewController?.platform is AndroidWebViewController)
+        ? autoplay
+        : false;
+    final autoplayText = autoplayValue ? 'autoplay' : '';
+
+    final videoType = switch (url.toLowerCase()) {
+      final u when u.contains('.webm') => 'video/webm',
+      final u when u.contains('.mp4') => 'video/mp4',
+      final u when u.contains('.mov') => 'video/quicktime',
+      final u when u.contains('.avi') => 'video/x-msvideo',
+      _ => 'video/mp4', // Default to mp4
+    };
+
     return '''
 <!DOCTYPE html>
 <html>
@@ -150,8 +258,8 @@ class WebViewBooruPlayer implements BooruPlayer {
 </style>
 </head>
 <body>
-  <video id="video" allowfullscreen width="100%" height="100%" style="background-color:$colorText;" $mutedText loop poster="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
-    <source src="$url#t=0.01" type="video/webm" />
+  <video id="video" allowfullscreen playsinline width="100%" height="100%" style="background-color:$colorText;" $mutedText $autoplayText loop poster="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
+    <source src="$url#t=0.01" type="$videoType" />
   </video>
 </body>
 </html>''';
@@ -159,64 +267,75 @@ class WebViewBooruPlayer implements BooruPlayer {
 
   @override
   Future<void> play() async {
-    if (_isDisposed || _webViewController == null) return;
+    if (_isDisposed || _webViewController == null || !_isPageLoaded) return;
 
-    await _webViewController!.runJavaScript(
+    await _runJavaScriptSafely(
       'document.getElementById("video").play();',
+      errorContext: 'Playing video',
     );
     _isPlaying = true;
-    _playingController.add(true);
+    if (!_hasPlayedOnce) {
+      _hasPlayedOnce = true;
+    }
+
+    _addToStream(_playingController, true);
   }
 
   @override
   Future<void> pause() async {
-    if (_isDisposed || _webViewController == null) return;
+    if (_isDisposed || _webViewController == null || !_isPageLoaded) return;
 
-    await _webViewController!.runJavaScript(
+    await _runJavaScriptSafely(
       'document.getElementById("video").pause();',
+      errorContext: 'Pausing video',
     );
     _isPlaying = false;
-    _playingController.add(false);
+    _addToStream(_playingController, false);
   }
 
   @override
   Future<void> seek(Duration position) async {
-    if (_isDisposed || _webViewController == null) return;
+    if (_isDisposed || _webViewController == null || !_isPageLoaded) return;
 
     final seconds = position.inSeconds.toDouble();
-    await _webViewController!.runJavaScript(
+    await _runJavaScriptSafely(
       'document.getElementById("video").currentTime = $seconds;',
+      errorContext: 'Seeking to position ${position.inSeconds}s',
     );
     _currentPosition = position;
-    _positionController.add(position);
+
+    _addToStream(_positionController, position);
   }
 
   @override
   Future<void> setVolume(double volume) async {
-    if (_isDisposed || _webViewController == null) return;
+    if (_isDisposed || _webViewController == null || !_isPageLoaded) return;
 
     // Convert 0.0-1.0 range to boolean muted state for WebView
     final muted = volume == 0.0;
-    await _webViewController!.runJavaScript(
+    await _runJavaScriptSafely(
       'document.getElementById("video").muted = $muted;',
+      errorContext: 'Setting volume (muted: $muted)',
     );
   }
 
   @override
   Future<void> setPlaybackSpeed(double speed) async {
-    if (_isDisposed || _webViewController == null) return;
+    if (_isDisposed || _webViewController == null || !_isPageLoaded) return;
 
-    await _webViewController!.runJavaScript(
+    await _runJavaScriptSafely(
       'document.getElementById("video").playbackRate = $speed;',
+      errorContext: 'Setting playback speed to $speed',
     );
   }
 
   @override
   Future<void> setLooping(bool loop) async {
-    if (_isDisposed || _webViewController == null) return;
+    if (_isDisposed || _webViewController == null || !_isPageLoaded) return;
 
-    await _webViewController!.runJavaScript(
+    await _runJavaScriptSafely(
       'document.getElementById("video").loop = $loop;',
+      errorContext: 'Setting loop to $loop',
     );
   }
 
@@ -244,6 +363,9 @@ class WebViewBooruPlayer implements BooruPlayer {
 
   @override
   bool get isBuffering => false; // WebView doesn't expose buffering state easily
+
+  @override
+  bool get hasPlayedOnce => _hasPlayedOnce;
 
   @override
   Stream<Duration> get positionStream => _positionController.stream;
@@ -283,7 +405,11 @@ class WebViewBooruPlayer implements BooruPlayer {
 
     _positionCheckTimer?.cancel();
     _positionTimer?.cancel();
-    // WebViewController doesn't need explicit disposal
+    // https://github.com/flutter/flutter/issues/119616
+    // Workaround to stop video from continuing to play in background on Apple devices
+    if (isApple()) {
+      _webViewController?.loadRequest(Uri.parse('about:blank'));
+    }
 
     _positionController.close();
     _playingController.close();

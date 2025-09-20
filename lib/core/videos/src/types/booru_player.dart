@@ -5,7 +5,11 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 abstract class BooruPlayer {
-  Future<void> initialize(String url, {Map<String, String>? headers});
+  Future<void> initialize(
+    String url, {
+    Map<String, String>? headers,
+    bool autoplay = false,
+  });
   Future<void> play();
   Future<void> pause();
   Future<void> seek(Duration position);
@@ -19,6 +23,7 @@ abstract class BooruPlayer {
   int? get width;
   int? get height;
   bool get isBuffering;
+  bool get hasPlayedOnce;
   Stream<Duration> get positionStream;
   Stream<bool> get playingStream;
   Stream<bool> get bufferingStream;

@@ -75,6 +75,7 @@ class PostMedia<T extends Post> extends ConsumerWidget {
                     userAgentProvider(config),
                   ),
                   logger: ref.watch(loggerProvider),
+                  autoplay: true,
                 ),
               ),
               if (context.isLargeScreen)
