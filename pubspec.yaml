@@ -20,6 +20,7 @@ workspace:
   - packages/i18n
   - packages/codegen
   - packages/cache_manager
+  - packages/boorusama_lint
 
 dependencies:
   # local packages
@@ -155,7 +156,10 @@ dependencies:
   yaml: ^3.1.2
 
 dev_dependencies:
+  boorusama_lint:
+    path: packages/boorusama_lint
   build_runner: ^2.4.13
+  custom_lint: ^0.8.0
   flutter_launcher_icons:
     git: https://github.com/fluttercommunity/flutter_launcher_icons.git
   flutter_lints: ^6.0.0

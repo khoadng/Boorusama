@@ -1,0 +1,16 @@
+name: boorusama_lint
+description: Custom lint for Boorusama
+version: 1.0.0
+publish_to: "none" 
+
+environment:
+  sdk: ^3.9.0
+
+resolution: workspace
+
+dependencies:
+  analyzer: 
+  analyzer_plugin: 
+  custom_lint_builder:
+  lints: ^6.0.0
+  path: ^1.9.1

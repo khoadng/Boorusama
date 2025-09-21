@@ -1,6 +1,8 @@
 include: package:flutter_lints/flutter.yaml
 
 analyzer:
+  plugins:
+    - custom_lint
   exclude:
     - "**/*.g.dart"
     - "**/generated_plugin_registrant.dart"
@@ -11,6 +13,12 @@ analyzer:
     missing_return: error
     todo: ignore
     parameter_assignments: error
+
+custom_lint:
+  rules:
+    - no_relative_src_imports:
+        # excluded_paths:
+        #   - "/test/"
 
 linter:
   rules:
