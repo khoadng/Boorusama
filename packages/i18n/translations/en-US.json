@@ -770,7 +770,7 @@
     "api_key": {
       "auth_error": {
         "edit_api_key": "Edit API key",
-        "empy_key_warning": "This site may require you to enter your API key or password to access its content.",
+        "empty_key_warning": "This site may require you to enter your API key or password to access its content.",
         "invalid_key_warning": "Check your API key or credentials, as they may be invalid or expired."
       }
     },

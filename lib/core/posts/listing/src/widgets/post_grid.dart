@@ -557,7 +557,7 @@ class _Error401ActionButton extends ConsumerWidget {
           ),
           child: Text(
             isEmptyApiKey
-                ? context.t.booru.api_key.auth_error.empy_key_warning
+                ? context.t.booru.api_key.auth_error.empty_key_warning
                 : context.t.booru.api_key.auth_error.invalid_key_warning,
             textAlign: TextAlign.center,
             style: theme.textTheme.bodyMedium?.copyWith(

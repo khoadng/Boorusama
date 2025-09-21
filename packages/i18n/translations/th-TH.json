@@ -466,7 +466,6 @@
       "imported_count": "นำเข้าแล้ว {count}",
       "skipped_count": "ข้ามไปแล้ว {count}",
       "failed_count": "ไม่สำเร็จไปแล้ว {count}",
-      "default_backup_location": "ค่าเริ่มต้นตำแหน่งที่เก็บสำรองข้อมูล",
       "never": "ไม่เคยเลย",
       "receive_data": {
         "errors": {
@@ -870,7 +869,7 @@
     "api_key": {
       "auth_error": {
         "edit_api_key": "แก้ไข API Key",
-        "empy_key_warning": "เว็บไซต์นี้ต้องกรอก API Key หรือรหัสผ่านเพื่อเข้าใช้งานและแสดงเนื้อหา",
+        "empty_key_warning": "เว็บไซต์นี้ต้องกรอก API Key หรือรหัสผ่านเพื่อเข้าใช้งานและแสดงเนื้อหา",
         "invalid_key_warning": "ตรวจสอบ API Key หรือข้อมูลใบรับรองของคุณ เพราะอาจจะหมดอายุแล้วหรือข้อมูลไม่ถูกต้อง"
       }
     }
