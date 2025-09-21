@@ -226,7 +226,7 @@ packages:
     source: hosted
     version: "0.4.2"
   clock:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: clock
       sha256: fddb70d9b5277016c77a80201021d40a2247104d9f4aa7bab7157b7e3f05b84b
@@ -445,10 +445,11 @@ packages:
   extended_image_library:
     dependency: transitive
     description:
-      name: extended_image_library
-      sha256: e61dafd94400fff6ef7ed1523d445ff3af137f198f3228e4a3107bc5b4bec5d1
-      url: "https://pub.dev"
-    source: hosted
+      path: "."
+      ref: fork
+      resolved-ref: b6df11de5858a86aab554f93fc2d1b500affad44
+      url: "https://github.com/khoadng/extended_image_library.git"
+    source: git
     version: "4.0.6"
   fake_async:
     dependency: transitive

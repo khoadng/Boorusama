@@ -49,6 +49,7 @@ dependencies:
   animated_list_plus: ^0.5.2
   background_downloader: ^9.1.1
   bonsoir: ^6.0.1
+  clock: ^1.1.1
   collection: ^1.17.0
   connectivity_plus: ^7.0.0
   context_menus:

@@ -7,8 +7,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../../configs/config/types.dart';
 import '../../../../http/providers.dart';
-import '../../../../images/providers.dart';
 import '../../../details_pageview/widgets.dart';
+import '../../../listing/providers.dart';
+import '../../../media_preload/providers.dart';
+import '../../../media_preload/types.dart';
 import '../../../post/post.dart';
 import '../../details.dart';
 
@@ -33,9 +35,13 @@ class PostDetailsImagePreloader<T extends Post> extends ConsumerStatefulWidget {
 
 class _PostDetailsImagePreloaderState<T extends Post>
     extends ConsumerState<PostDetailsImagePreloader<T>> {
-  final _preloadedUrls = <String>{};
+  PreloadManager? _preloadManager;
 
   PostDetailsPageViewController? _pageViewController;
+
+  // Direction tracking
+  int? _lastPage;
+  final DirectionHistory _directionHistory = DirectionHistory();
 
   PostDetailsPageViewController get _controller {
     return _pageViewController ??= PostDetailsPageViewScope.of(context);
@@ -47,8 +53,17 @@ class _PostDetailsImagePreloaderState<T extends Post>
 
     if (_pageViewController == null) {
       final controller = _controller;
+      final dio = ref.read(dioForWidgetProvider(widget.authConfig));
+
+      _preloadManager = ref.read(
+        preloadManagerProvider((
+          dio: dio,
+          authConfig: widget.authConfig,
+        )),
+      );
 
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        _lastPage = controller.initialPage;
         _preloadAdjacentPages(controller.initialPage);
       });
 
@@ -58,59 +73,56 @@ class _PostDetailsImagePreloaderState<T extends Post>
 
   void _onPageChanged() {
     if (!mounted) return;
-    _preloadAdjacentPages(_controller.page);
+    final currentPage = _controller.page;
+    _updateDirectionHistory(currentPage);
+    _preloadAdjacentPages(currentPage);
+  }
+
+  void _updateDirectionHistory(int currentPage) {
+    _directionHistory.addDirection(currentPage, _lastPage);
+    _lastPage = currentPage;
   }
 
   Future<void> _preloadAdjacentPages(int currentPage) async {
-    // Delay to prevent the image from loading too early
-    await Future.delayed(const Duration(milliseconds: 500));
-
     if (!mounted) return;
 
-    // Preload next page
-    if (currentPage + 1 < widget.posts.length) {
-      final nextPost = widget.posts[currentPage + 1];
-      if (!nextPost.isVideo) {
-        _preloadPost(nextPost);
-      }
-    }
+    final gridThumbnailUrlBuilder = ref.read(
+      gridThumbnailUrlGeneratorProvider(widget.authConfig),
+    );
 
-    // Preload previous page
-    if (currentPage - 1 >= 0) {
-      final prevPost = widget.posts[currentPage - 1];
-      if (!prevPost.isVideo) {
-        _preloadPost(prevPost);
-      }
-    }
-  }
+    final settings = ref.read(
+      gridThumbnailSettingsProvider(widget.authConfig),
+    );
 
-  void _preloadPost(T post) {
-    final urlToPreload = widget.imageUrlBuilder(post);
-
-    if (post.originalImageUrl == urlToPreload) return;
-
-    // Avoid duplicate preloads
-    if (_preloadedUrls.contains(urlToPreload)) return;
-
-    _preloadedUrls.add(urlToPreload);
-
-    final dio = ref.read(dioForWidgetProvider(widget.authConfig));
-    final imagePreloader = ref.read(imagePreloaderProvider(dio));
-    final headers = ref.read(httpHeadersProvider(widget.authConfig));
-
-    imagePreloader
-        .preloadImage(
-          urlToPreload,
-          headers: headers,
-        )
-        .catchError((error) {
-          _preloadedUrls.remove(urlToPreload);
-        });
+    _preloadManager?.preloadWithStrategy(
+      strategy: DirectionBasedPreloadStrategy(
+        directionHistory: _directionHistory,
+      ),
+      currentPage: currentPage,
+      itemCount: widget.posts.length,
+      mediaBuilder: (index) => switch (widget.posts[index]) {
+        // Treat video as image for now, it will be changed when video preload is implemented
+        final post when post.isVideo => ImageMedia.fromUrl(
+          post.videoThumbnailUrl,
+          estimatedSizeBytes: post.fileSize,
+        ),
+        final post when post.originalImageUrl == widget.imageUrlBuilder(post) =>
+          ImageMedia.fromUrl(
+            gridThumbnailUrlBuilder.generateUrl(post, settings: settings),
+            estimatedSizeBytes: post.fileSize,
+          ),
+        final post => ImageMedia.fromUrl(
+          widget.imageUrlBuilder(post),
+          estimatedSizeBytes: post.fileSize,
+        ),
+      },
+    );
   }
 
   @override
   void dispose() {
     _controller.currentPage.removeListener(_onPageChanged);
+    _preloadManager?.cancelAll();
 
     super.dispose();
   }

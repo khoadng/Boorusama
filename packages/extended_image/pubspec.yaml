@@ -13,7 +13,10 @@ dependencies:
     path: ../cache_manager
   dio: ^5.7.0
   equatable: ^2.0.7
-  extended_image_library: ^4.0.1
+  extended_image_library:
+    git:
+      url: https://github.com/khoadng/extended_image_library.git
+      ref: fork
   flutter:
     sdk: flutter
   flutter_avif:

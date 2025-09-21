@@ -2,19 +2,23 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:http_client_helper/http_client_helper.dart' hide Response;
 
 import 'fetch_strategy.dart';
 
 Future<Response<T>?> tryGetResponse<T>(
   Uri uri, {
   required Dio dio,
-  CancellationToken? cancelToken,
+  CancelToken? cancelToken,
   FetchStrategyBuilder? fetchStrategy,
   void Function(int count, int total)? onReceiveProgress,
   Options? options,
 }) async {
-  cancelToken?.throwIfCancellationRequested();
+  if (cancelToken?.isCancelled == true) {
+    throw DioException(
+      requestOptions: RequestOptions(path: uri.toString()),
+      type: DioExceptionType.cancel,
+    );
+  }
   final stopwatch = Stopwatch()..start();
   final builder = fetchStrategy ?? _defaultFetchStrategy;
   final strategy = builder.build();
@@ -27,10 +31,16 @@ Future<Response<T>?> tryGetResponse<T>(
 
   while (!instructions.shouldGiveUp) {
     attemptCount++;
-    cancelToken?.throwIfCancellationRequested();
+    if (cancelToken?.isCancelled == true) {
+      throw DioException(
+        requestOptions: RequestOptions(path: uri.toString()),
+        type: DioExceptionType.cancel,
+      );
+    }
     try {
       final response = await dio.getUri<T>(
         instructions.uri,
+        cancelToken: cancelToken,
         options: effectiveOptions.copyWith(
           receiveTimeout: instructions.timeout,
           validateStatus: (status) => status == HttpStatus.ok,
