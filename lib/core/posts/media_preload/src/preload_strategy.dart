@@ -73,7 +73,14 @@ class DirectionBasedPreloadStrategy extends PreloadStrategy {
       final index = context.currentPage + pageOffset;
       if (context.isValidIndex(index)) {
         final media = context.getMediaItemAt(index);
-        final urls = media?.allUrls ?? <String>[];
+        // When user directly jumps to a post, we're unsure if they're actively
+        // browsing or just want to view that specific post, so we conservatively
+        // preload only thumbnails to minimize bandwidth usage
+        final urls = switch ((directionHistory.entryPattern, media)) {
+          (EntryPattern.direct, final media?) => {media.thumbnailUrl},
+          (_, final media?) => media.allUrls,
+          _ => <String>{},
+        };
         if (urls.isNotEmpty) {
           desiredUrls.addAll(urls);
 

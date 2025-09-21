@@ -1,26 +1,28 @@
 sealed class PreloadMedia {
   const PreloadMedia({
     required this.thumbnailUrl,
-    required this.sampleUrl,
     required this.originalUrl,
+    this.sampleUrl,
     this.estimatedSizeBytes,
   });
 
   final String thumbnailUrl;
-  final String sampleUrl;
+  final String? sampleUrl;
   final String originalUrl;
   final int? estimatedSizeBytes;
 
-  Set<String> get allUrls {
-    return {thumbnailUrl, sampleUrl, originalUrl};
-  }
+  Set<String> get allUrls => {
+    thumbnailUrl,
+    ?sampleUrl,
+    originalUrl,
+  };
 }
 
 class ImageMedia extends PreloadMedia {
   const ImageMedia({
     required super.thumbnailUrl,
-    required super.sampleUrl,
     required super.originalUrl,
+    super.sampleUrl,
     super.estimatedSizeBytes,
   });
 
@@ -29,11 +31,8 @@ class ImageMedia extends PreloadMedia {
     super.estimatedSizeBytes,
   }) : super(
          thumbnailUrl: url,
-         sampleUrl: url,
          originalUrl: url,
        );
-
-  bool get allUrlsSame => thumbnailUrl == sampleUrl && sampleUrl == originalUrl;
 }
 
 class VideoMedia extends PreloadMedia {
@@ -44,7 +43,6 @@ class VideoMedia extends PreloadMedia {
     super.estimatedSizeBytes,
   }) : super(
          thumbnailUrl: videoThumbnailUrl,
-         sampleUrl: videoThumbnailUrl,
          originalUrl: videoUrl,
        );
 

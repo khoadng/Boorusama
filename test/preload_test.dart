@@ -517,4 +517,49 @@ void main() {
       },
     );
   });
+
+  group('DirectionBasedPreloadStrategy', () {
+    test('should preload only thumbnail URL when entry pattern is direct', () {
+      // Create a DirectionHistory with no directions (direct pattern)
+      final directionHistory = DirectionHistory();
+
+      // Verify the entry pattern is direct
+      expect(directionHistory.entryPattern, equals(EntryPattern.direct));
+
+      final strategy = DirectionBasedPreloadStrategy(
+        directionHistory: directionHistory,
+      );
+
+      // Create test media with different URLs
+      PreloadMedia? mediaBuilder(int index) {
+        return ImageMedia(
+          thumbnailUrl: 'https://test.com/$index/thumb.jpg',
+          sampleUrl: 'https://test.com/$index/sample.jpg',
+          originalUrl: 'https://test.com/$index/original.jpg',
+        );
+      }
+
+      final context = PreloadContext(
+        currentPage: 5,
+        itemCount: 10,
+        mediaBuilder: mediaBuilder,
+        activeDownloads: {},
+        completedUrls: {},
+      );
+
+      // Calculate preload result
+      final result = strategy.calculatePreload(context);
+
+      // Verify only thumbnail URLs are included
+      final allUrls = result.allUrls;
+      expect(allUrls.length, greaterThan(0));
+
+      // All URLs should be thumbnail URLs only
+      for (final url in allUrls) {
+        expect(url, contains('thumb.jpg'));
+        expect(url, isNot(contains('sample.jpg')));
+        expect(url, isNot(contains('original.jpg')));
+      }
+    });
+  });
 }
