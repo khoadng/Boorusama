@@ -76,7 +76,7 @@ dependencies:
   flutter_local_notifications: ^19.2.1
   flutter_markdown: ^0.7.3+2
   flutter_portal: ^1.1.4
-  flutter_riverpod: ^2.5.1
+  flutter_riverpod: 2.6.1
   flutter_scatter: ^0.2.0
   flutter_spinkit: ^5.2.0
   flutter_svg: ^2.0.10+1

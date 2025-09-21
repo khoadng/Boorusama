@@ -16,7 +16,7 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  flutter_riverpod: ^2.5.1
+  flutter_riverpod: 2.6.1
   timeago: ^3.7.0
   slang:
     git:
