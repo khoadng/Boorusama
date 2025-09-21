@@ -56,8 +56,9 @@ class ChangelogDialog extends ConsumerWidget {
           vertical: 4,
         ),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Expanded(
+            Flexible(
               child: SingleChildScrollView(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -68,9 +69,7 @@ class ChangelogDialog extends ConsumerWidget {
                       thickness: 1,
                       height: 0,
                     ),
-                    Flexible(
-                      child: _Content(data: data),
-                    ),
+                    _Content(data: data),
                   ],
                 ),
               ),
