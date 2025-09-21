@@ -1,3 +1,8 @@
+# Prereleased-2025.9.21
+- [Gelbooru 0.2] Add login support for favorites, you will need to provide additional information in the profile for it to work
+- Add random sort option for bookmark
+- Add WebView and MPV as options for video player engine, each has its own quirks
+
 # 4.2.0
 - TikTok swiping support in image viewer
 - Improved backup system with batch export/import and automatic backup support
