@@ -4,7 +4,7 @@ description: A controller for rich text editing in Flutter, allowing for complex
 resolution: workspace
 
 environment:
-  sdk: ^3.8.1
+  sdk: ^3.9.0
   flutter: ">=1.17.0"
 
 dependencies:

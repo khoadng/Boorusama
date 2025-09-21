@@ -3,7 +3,7 @@ description: A package for managing internationalization in Boorusama.
 publish_to: none
 
 environment:
-  sdk: ^3.8.1
+  sdk: ^3.9.0
   flutter: ">=1.17.0"
 
 resolution: workspace
@@ -22,12 +22,12 @@ dependencies:
     git:
       url: https://github.com/khoadng/slang.git
       path: slang
-      ref: fork
+      ref: 76c198928e423de4302a73e313aab953e9e51e3d
   slang_flutter:
     git:
       url: https://github.com/khoadng/slang.git
       path: slang_flutter
-      ref: fork
+      ref: 76c198928e423de4302a73e313aab953e9e51e3d
 
 dev_dependencies:
   codegen:

@@ -274,16 +274,18 @@ class SettingsCardEntry extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RadioListTile(
-      controlAffinity: ListTileControlAffinity.trailing,
-      contentPadding: EdgeInsets.zero,
-      value: value,
+    return RadioGroup(
       groupValue: groupValue,
       onChanged: (value) {
         if (value != null) onSelected(value);
       },
-      subtitle: Text(subtitle),
-      title: Text(title),
+      child: RadioListTile(
+        controlAffinity: ListTileControlAffinity.trailing,
+        contentPadding: EdgeInsets.zero,
+        value: value,
+        subtitle: Text(subtitle),
+        title: Text(title),
+      ),
     );
   }
 }

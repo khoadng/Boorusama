@@ -422,9 +422,9 @@ Matrix4 _calcZoomMatrixFromZoomValue({
   required double zoomValue,
 }) {
   return Matrix4.identity()
-    ..translate(focalPoint.dx, focalPoint.dy)
-    ..scale(zoomValue)
-    ..translate(-focalPoint.dx, -focalPoint.dy);
+    ..translateByDouble(focalPoint.dx, focalPoint.dy, 0, 1)
+    ..scaleByDouble(zoomValue, zoomValue, zoomValue, 1)
+    ..translateByDouble(-focalPoint.dx, -focalPoint.dy, 0, 1);
 }
 
 double _calcMaxScale(Size? contentSize, Size? containerSize) {

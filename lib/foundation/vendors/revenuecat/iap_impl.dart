@@ -100,7 +100,9 @@ class RevenuecatPurchase implements i.Purchaser {
     }
 
     try {
-      final purchaseResult = await Purchases.purchasePackage(revenuecatPackage);
+      final purchaseResult = await Purchases.purchase(
+        PurchaseParams.package(revenuecatPackage),
+      );
 
       final entitlement =
           purchaseResult.customerInfo.entitlements.all[kPremiumKey];

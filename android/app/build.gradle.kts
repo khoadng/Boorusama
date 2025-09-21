@@ -24,7 +24,7 @@ val hasValidKeystore = keystorePropertiesFile.exists() &&
 
 android {
     namespace = "com.degenk.boorusama"
-    compileSdk = 35
+    compileSdk = 36
     ndkVersion = "27.0.12077973"
 
     compileOptions {
@@ -39,8 +39,8 @@ android {
 
     defaultConfig {
         applicationId = "com.degenk.boorusama"
-        minSdk = 21
-        targetSdk = 35
+        minSdk = 24
+        targetSdk = 36
         versionCode = flutter.versionCode
         versionName = flutter.versionName
         multiDexEnabled = true

@@ -3,7 +3,7 @@ description: A generic cache manager for Boorusama
 publish_to: none
 
 environment:
-  sdk: ^3.8.1
+  sdk: ^3.9.0
 
 resolution: workspace
 

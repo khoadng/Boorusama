@@ -661,11 +661,18 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
                     builder: (context, childAb) => Transform(
                       alignment: Alignment.center,
                       transform: Matrix4.identity()
-                        ..translate(
+                        ..translateByDouble(
                           _controller.freestyleMoveOffset.value.dx,
                           _controller.freestyleMoveOffset.value.dy,
+                          0,
+                          1,
                         )
-                        ..scale(_freestyleMoveScale),
+                        ..scaledByDouble(
+                          _freestyleMoveScale,
+                          _freestyleMoveScale,
+                          _freestyleMoveScale,
+                          1,
+                        ),
                       child: childAb,
                     ),
                     child: widget.itemBuilder(context, index),
