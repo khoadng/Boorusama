@@ -32,7 +32,7 @@ class WebsiteLogo extends StatelessWidget {
   final String? url;
   final double size;
   final Dio dio;
-  final ImageCacheManager? cacheManager;
+  final CacheManager? cacheManager;
 
   @override
   Widget build(BuildContext context) {

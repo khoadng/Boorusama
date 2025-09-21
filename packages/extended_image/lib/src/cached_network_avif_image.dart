@@ -34,7 +34,7 @@ class CustomCachedNetworkAvifImage extends AvifImage {
     super.frameBuilder,
     super.loadingBuilder,
     Map<String, String>? headers,
-    ImageCacheManager? cacheManager,
+    required CacheManager cacheManager,
     required Dio dio,
     CancelToken? cancelToken,
     FetchStrategyBuilder? fetchStrategy,
@@ -67,10 +67,10 @@ class CustomCachedNetworkAvifImageProvider extends NetworkAvifImage {
     this.fetchStrategy,
     this.cacheKey,
     this.cacheMaxAge,
-    ImageCacheManager? cacheManager,
-  }) : cacheManager = cacheManager ?? DefaultImageCacheManager();
+    required this.cacheManager,
+  });
 
-  late final ImageCacheManager cacheManager;
+  final CacheManager cacheManager;
   final Dio dio;
   final CancelToken? cancelToken;
   final FetchStrategyBuilder? fetchStrategy;

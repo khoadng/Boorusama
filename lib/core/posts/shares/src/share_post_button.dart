@@ -30,7 +30,7 @@ class SharePostButton extends ConsumerWidget {
   final BooruConfigViewer configViewer;
   final BooruConfigDownload download;
   final DownloadFilenameGenerator? filenameBuilder;
-  final ImageCacheManager? imageCacheManager;
+  final CacheManager? imageCacheManager;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

@@ -32,7 +32,7 @@ class DioExtendedNetworkImageProvider
     this.imageCacheName,
     this.cacheMaxAge,
     this.fetchStrategy,
-    this.cacheManager,
+    required this.cacheManager,
   });
 
   /// The [Dio] client that'll be used to make image fetch requests.
@@ -85,7 +85,7 @@ class DioExtendedNetworkImageProvider
   final FetchStrategyBuilder? fetchStrategy;
 
   /// Custom cache manager for caching images
-  final ImageCacheManager? cacheManager;
+  final CacheManager cacheManager;
 
   @override
   int get retries => fetchStrategy?.maxAttempts ?? 3;
@@ -151,15 +151,6 @@ class DioExtendedNetworkImageProvider
     return instantiateImageCodec(bytes, decode);
   }
 
-  /// Get an effective cache manager, creating a default one if none is provided
-  ImageCacheManager _getEffectiveCacheManager() {
-    return cacheManager ??
-        DefaultImageCacheManager(
-          cacheDirName: cacheImageFolderName,
-          enableLogging: printError && kDebugMode,
-        );
-  }
-
   /// Gets the image bytes, either from cache or network
   Future<Uint8List?> _fetchImageBytes(
     StreamController<ImageChunkEvent>? chunkEvents,
@@ -169,7 +160,7 @@ class DioExtendedNetworkImageProvider
       return _loadNetwork(chunkEvents);
     }
 
-    final manager = _getEffectiveCacheManager();
+    final manager = cacheManager;
     final effectiveCacheKey = manager.generateCacheKey(
       url,
       customKey: cacheKey,

@@ -90,7 +90,7 @@ Future<void> clearCache() async {
   }
 }
 
-Future<bool> clearImageCache(ImageCacheManager? cacheManager) async {
+Future<bool> clearImageCache(CacheManager? cacheManager) async {
   final success = await clearDiskCachedImages();
 
   if (cacheManager != null) {

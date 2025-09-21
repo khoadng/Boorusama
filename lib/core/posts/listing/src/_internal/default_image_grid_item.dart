@@ -46,7 +46,7 @@ class DefaultImageGridItem<T extends Post> extends StatelessWidget {
   final Widget? contextMenu;
   final List<Widget>? leadingIcons;
   final String? imageUrl;
-  final ImageCacheManager? imageCacheManager;
+  final CacheManager? imageCacheManager;
 
   @override
   Widget build(BuildContext context) {
@@ -170,7 +170,7 @@ class _Image<T extends Post> extends ConsumerWidget {
 
   final T post;
   final String imageUrl;
-  final ImageCacheManager? imageCacheManager;
+  final CacheManager? imageCacheManager;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

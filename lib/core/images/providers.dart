@@ -16,13 +16,10 @@ final defaultCachedImageFileProvider = FutureProvider.autoDispose
       },
     );
 
-final defaultImageCacheManagerProvider = Provider<ImageCacheManager>(
+final defaultImageCacheManagerProvider = Provider<CacheManager>(
   (ref) {
-    final manager = DefaultImageCacheManager(
-      enableLogging: kDebugMode,
-      memoryCache: LRUMemoryCache(
-        maxEntries: 500,
-      ),
+    final manager = ImageCacheManager.defaults(
+      memoryCacheMaxEntries: 500,
     );
 
     ref.onDispose(() {

@@ -26,7 +26,7 @@ class ShareService {
     required BooruConfigViewer configViewer,
     required BooruConfigDownload download,
     required DownloadFilenameGenerator? filenameBuilder,
-    required ImageCacheManager imageCacheManager,
+    required CacheManager imageCacheManager,
   }) {
     final modal = PostModalShare(
       post: post,

@@ -16,7 +16,7 @@ class ImagePreloader {
     this.enableLogging = false,
   });
 
-  final ImageCacheManager cacheManager;
+  final CacheManager cacheManager;
   final Dio dio;
   final bool enableLogging;
 
