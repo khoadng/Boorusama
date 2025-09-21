@@ -11,7 +11,7 @@ import 'memory_cache.dart';
 
 class DefaultImageCacheManager implements ImageCacheManager {
   DefaultImageCacheManager({
-    this.cacheDirName = 'cache',
+    this.cacheDirName = 'cacheimage',
     this.enableLogging = false,
     MemoryCache? memoryCache,
   }) : _memoryCache = memoryCache;
@@ -216,6 +216,14 @@ class DefaultImageCacheManager implements ImageCacheManager {
       // Fallback to basic hashing if URL parsing fails
       return keyToMd5(url);
     }
+  }
+
+  /// Invalidates the cached directory reference
+  /// This should be called when the cache directory might be deleted externally
+  @override
+  void invalidateCacheDirectory() {
+    _cacheDir = null;
+    _cacheDirFuture = null;
   }
 
   @override

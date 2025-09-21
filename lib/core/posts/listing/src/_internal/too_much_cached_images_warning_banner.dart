@@ -10,6 +10,7 @@ import 'package:i18n/i18n.dart';
 import '../../../../../foundation/toast.dart';
 import '../../../../../foundation/utils/file_utils.dart';
 import '../../../../cache/providers.dart';
+import '../../../../images/providers.dart';
 import '../../../../router.dart';
 import '../../../../widgets/widgets.dart';
 
@@ -40,6 +41,7 @@ class TooMuchCachedImagesWarningBanner extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final performed = ref.watch(_cacheImageActionsPerformedProvider);
+    final cacheManager = ref.watch(defaultImageCacheManagerProvider);
 
     if (performed) return const SizedBox.shrink();
 
@@ -63,7 +65,7 @@ class TooMuchCachedImagesWarningBanner extends ConsumerWidget {
                               )
                               .state =
                           true;
-                      final success = await clearImageCache();
+                      final success = await clearImageCache(cacheManager);
 
                       final c = navigatorKey.currentState?.context;
 

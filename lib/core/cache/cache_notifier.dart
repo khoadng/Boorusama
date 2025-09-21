@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../foundation/utils/file_utils.dart';
+import '../images/providers.dart';
 import '../tags/local/providers.dart';
 
 final cacheSizeProvider =
@@ -46,7 +47,8 @@ class CacheSizeNotifier extends AutoDisposeAsyncNotifier<CacheSizeInfo> {
   Future<void> clearAllCache() async {
     state = const AsyncValue.loading();
     await _withMinimumDelay(() async {
-      await clearImageCache();
+      final cacheManager = ref.read(defaultImageCacheManagerProvider);
+      await clearImageCache(cacheManager);
       await clearCache();
       await clearTagCacheDatabase(ref);
     });
@@ -56,7 +58,8 @@ class CacheSizeNotifier extends AutoDisposeAsyncNotifier<CacheSizeInfo> {
   Future<void> clearAppImageCache() async {
     state = const AsyncValue.loading();
     await _withMinimumDelay(() async {
-      await clearImageCache();
+      final cacheManager = ref.read(defaultImageCacheManagerProvider);
+      await clearImageCache(cacheManager);
     });
     refreshCacheSize();
   }

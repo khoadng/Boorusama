@@ -22,6 +22,10 @@ abstract class ImageCacheManager {
   /// Generates a cache key for a URL, optionally using a custom key
   String generateCacheKey(String url, {String? customKey});
 
+  /// Invalidates the cached directory reference
+  /// This should be called when the cache directory might be deleted externally
+  void invalidateCacheDirectory();
+
   /// Disposes the cache manager resources
   Future<void> dispose();
 }

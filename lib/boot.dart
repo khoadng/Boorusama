@@ -148,7 +148,7 @@ Future<void> boot(BootData bootData) async {
     logger
       ..info('Start up', 'Clearing image cache on startup')
       ..debugBoot('Clear image cache');
-    await clearImageCache();
+    await clearImageCache(null);
   }
 
   HttpOverrides.global = AppHttpOverrides();

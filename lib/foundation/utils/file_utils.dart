@@ -2,6 +2,7 @@
 import 'dart:io';
 
 // Package imports:
+import 'package:cache_manager/cache_manager.dart';
 import 'package:extended_image/extended_image.dart';
 
 // Project imports:
@@ -89,8 +90,16 @@ Future<void> clearCache() async {
   }
 }
 
-Future<bool> clearImageCache() async {
+Future<bool> clearImageCache(ImageCacheManager? cacheManager) async {
   final success = await clearDiskCachedImages();
+
+  if (cacheManager != null) {
+    try {
+      cacheManager.invalidateCacheDirectory();
+    } catch (e) {
+      // ignore errors
+    }
+  }
 
   return success;
 }

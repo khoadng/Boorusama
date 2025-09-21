@@ -124,6 +124,11 @@ class BookmarkImageCacheManager implements ImageCacheManager {
   }
 
   @override
+  void invalidateCacheDirectory() {
+    _cacheDir = null;
+  }
+
+  @override
   Future<void> dispose() async {
     _cacheDir = null;
   }
