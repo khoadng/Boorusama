@@ -20,13 +20,34 @@ class BookmarkImageCacheManager implements ImageCacheManager {
   final bool enableLogging;
 
   Directory? _cacheDir;
+  Future<Directory>? _cacheDirFuture;
 
   /// Get the cache directory, creating it if needed
-  Future<Directory> getCacheDirectory() async {
+  FutureOr<Directory> getCacheDirectory() {
     if (_cacheDir != null) {
       return _cacheDir!;
     }
 
+    // If initialization is already in progress, await that same future
+    if (_cacheDirFuture != null) {
+      return _cacheDirFuture!;
+    }
+
+    // Start initialization and cache the future
+    _cacheDirFuture = _initializeCacheDirectory();
+
+    return _cacheDirFuture!
+        .then((dir) {
+          _cacheDir = dir;
+          return dir;
+        })
+        .catchError((e) {
+          _cacheDirFuture = null;
+          throw e;
+        });
+  }
+
+  Future<Directory> _initializeCacheDirectory() async {
     final appDir = await getApplicationDocumentsDirectory();
     final dirPath = join(appDir.path, 'bookmarks', 'images');
     final dir = Directory(dirPath);
@@ -35,14 +56,23 @@ class BookmarkImageCacheManager implements ImageCacheManager {
       await dir.create(recursive: true);
     }
 
-    _cacheDir = dir;
     return dir;
   }
 
   @override
-  FutureOr<File?> getCachedFile(String key) async {
+  FutureOr<File?> getCachedFile(String key, {Duration? maxAge}) {
+    final dirResult = getCacheDirectory();
+
+    if (dirResult is Future<Directory>) {
+      return dirResult.then((cacheDir) => _getValidFile(cacheDir, key, maxAge));
+    }
+
+    final cacheDir = dirResult;
+    return _getValidFile(cacheDir, key, maxAge);
+  }
+
+  File? _getValidFile(Directory cacheDir, String key, Duration? maxAge) {
     try {
-      final cacheDir = await getCacheDirectory();
       final cacheFile = File(join(cacheDir.path, key));
 
       if (cacheFile.existsSync()) {
@@ -52,22 +82,31 @@ class BookmarkImageCacheManager implements ImageCacheManager {
       return null;
     } catch (e) {
       _log('Error getting cached file: $e');
+      return null;
     }
-    return null;
   }
 
   @override
-  FutureOr<Uint8List?> getCachedFileBytes(String key) async {
+  FutureOr<Uint8List?> getCachedFileBytes(String key, {Duration? maxAge}) {
+    final fileResult = getCachedFile(key, maxAge: maxAge);
+
+    if (fileResult is Future<File?>) {
+      return fileResult.then((file) => _readFileBytes(file));
+    }
+
+    final file = fileResult;
+    return _readFileBytes(file);
+  }
+
+  FutureOr<Uint8List?> _readFileBytes(File? file) {
+    if (file == null) return null;
+
     try {
-      final cacheFile = await getCachedFile(key);
-      if (cacheFile != null) {
-        return await cacheFile.readAsBytes();
-      }
-      return null;
+      return file.readAsBytes();
     } catch (e) {
       _log('Error reading cache: $e');
+      return null;
     }
-    return null;
   }
 
   @override
@@ -82,18 +121,14 @@ class BookmarkImageCacheManager implements ImageCacheManager {
   }
 
   @override
-  FutureOr<bool> hasValidCache(String key, {Duration? maxAge}) async {
-    try {
-      final cacheDir = await getCacheDirectory();
-      final cacheFile = File(join(cacheDir.path, key));
+  FutureOr<bool> hasValidCache(String key, {Duration? maxAge}) {
+    final fileResult = getCachedFile(key, maxAge: maxAge);
 
-      if (cacheFile.existsSync()) {
-        return true;
-      }
-    } catch (e) {
-      _log('Error checking cache: $e');
+    if (fileResult is Future<File?>) {
+      return fileResult.then((file) => file != null);
     }
-    return false;
+
+    return fileResult != null;
   }
 
   @override
@@ -125,6 +160,7 @@ class BookmarkImageCacheManager implements ImageCacheManager {
   @override
   Future<void> dispose() async {
     _cacheDir = null;
+    _cacheDirFuture = null;
   }
 
   /// Clear all files in this cache directory
