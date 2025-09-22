@@ -14,24 +14,86 @@ final cacheSizeProvider =
       CacheSizeNotifier.new,
     );
 
+enum StorageType {
+  systemData,
+  imageCache,
+  bookmarkImages,
+  tagCache,
+  appCache,
+  freeSpace,
+}
+
+class StorageInfo {
+  const StorageInfo({
+    required this.type,
+    required this.size,
+  });
+
+  final StorageType type;
+  final int size;
+}
+
 class CacheSizeInfo {
   const CacheSizeInfo({
     required this.appCacheSize,
     required this.imageCacheSize,
     required this.tagCacheSize,
+    required this.diskSpaceInfo,
   });
 
   final DirectorySizeInfo appCacheSize;
   final DirectorySizeInfo imageCacheSize;
   final int tagCacheSize;
+  final DiskSpaceInfo diskSpaceInfo;
 
   static final zero = CacheSizeInfo(
     appCacheSize: DirectorySizeInfo.zero,
     imageCacheSize: DirectorySizeInfo.zero,
     tagCacheSize: 0,
+    diskSpaceInfo: DiskSpaceInfo.zero,
   );
 
   int get totalSize => appCacheSize.size + imageCacheSize.size + tagCacheSize;
+
+  List<StorageInfo> getStorageBreakdown({
+    int bookmarkCacheSize = 0,
+  }) {
+    final totalCacheSize = totalSize + bookmarkCacheSize;
+    final systemUsedSpace = diskSpaceInfo.usedSpace - totalCacheSize;
+
+    return [
+      if (systemUsedSpace > 0)
+        StorageInfo(
+          type: StorageType.systemData,
+          size: systemUsedSpace,
+        ),
+      if (imageCacheSize.size > 0)
+        StorageInfo(
+          type: StorageType.imageCache,
+          size: imageCacheSize.size,
+        ),
+      if (bookmarkCacheSize > 0)
+        StorageInfo(
+          type: StorageType.bookmarkImages,
+          size: bookmarkCacheSize,
+        ),
+      if (tagCacheSize > 0)
+        StorageInfo(
+          type: StorageType.tagCache,
+          size: tagCacheSize,
+        ),
+      if (appCacheSize.size > 0)
+        StorageInfo(
+          type: StorageType.appCache,
+          size: appCacheSize.size,
+        ),
+      if (diskSpaceInfo.freeSpace > 0)
+        StorageInfo(
+          type: StorageType.freeSpace,
+          size: diskSpaceInfo.freeSpace,
+        ),
+    ];
+  }
 }
 
 class CacheSizeNotifier extends AutoDisposeAsyncNotifier<CacheSizeInfo> {
@@ -90,12 +152,14 @@ Future<CacheSizeInfo> calculateCacheSize() async {
     getCacheSize().catchError((_) => DirectorySizeInfo.zero),
     getImageCacheSize().catchError((_) => DirectorySizeInfo.zero),
     _getTagCacheSize().catchError((_) => 0),
+    DiskSpaceInfo.fromTempDir().catchError((_) => DiskSpaceInfo.zero),
   ]);
 
   return CacheSizeInfo(
     appCacheSize: results[0] as DirectorySizeInfo,
     imageCacheSize: results[1] as DirectorySizeInfo,
     tagCacheSize: results[2] as int,
+    diskSpaceInfo: results[3] as DiskSpaceInfo,
   );
 }
 

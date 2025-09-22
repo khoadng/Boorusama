@@ -452,6 +452,16 @@
       "image_only_cache": "Image only cache",
       "bookmark_images": "Bookmark images",
       "loading": "Loading...",
+      "storage": "Storage",
+      "disk_space": {
+        "status_title": "$freeSpace free of $totalSpace",
+        "groups": {
+          "system": "System",
+          "images": "Images",
+          "others": "Others",
+          "free": "Free"
+        }
+      },
       "error_loading_cache_info": "Error loading cache info"
     },
     "backup_and_restore": {

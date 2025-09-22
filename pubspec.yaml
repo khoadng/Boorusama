@@ -61,6 +61,7 @@ dependencies:
   crypto: ^3.0.5
   device_info_plus: ^12.1.0
   dio: ^5.7.0
+  disk_space_2: ^1.0.10
   dio_http2_adapter: ^2.5.3
   dropdown_button2: ^2.3.9
   dynamic_color: ^1.7.0

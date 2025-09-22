@@ -452,6 +452,16 @@
       "image_only_cache": "Bộ nhớ đệm chỉ hình ảnh",
       "bookmark_images": "Ảnh được đánh dấu",
       "loading": "Đang tải...",
+      "storage": "Bộ nhớ",
+      "disk_space": {
+        "status_title": "$freeSpace trong tổng số $totalSpace",
+        "groups": {
+          "system": "Hệ thống",
+          "images": "Ảnh",
+          "others": "Khác",
+          "free": "Trống"
+        }
+      },
       "error_loading_cache_info": "Lỗi khi tải thông tin bộ nhớ đệm"
     },
     "backup_and_restore": {

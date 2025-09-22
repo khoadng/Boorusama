@@ -402,6 +402,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.1"
+  disk_space_2:
+    dependency: "direct main"
+    description:
+      name: disk_space_2
+      sha256: "4ea655ac46854f454d902afba61c4df137421513fd015c17bafb2153382369d3"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.11"
   dropdown_button2:
     dependency: "direct main"
     description:

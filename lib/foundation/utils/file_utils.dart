@@ -3,6 +3,7 @@ import 'dart:io';
 
 // Package imports:
 import 'package:cache_manager/cache_manager.dart';
+import 'package:disk_space_2/disk_space_2.dart';
 import 'package:extended_image/extended_image.dart';
 
 // Project imports:
@@ -102,4 +103,36 @@ Future<bool> clearImageCache(ImageCacheManager? cacheManager) async {
   }
 
   return success;
+}
+
+class DiskSpaceInfo {
+  DiskSpaceInfo({
+    required this.freeSpace,
+    required this.totalSpace,
+  });
+
+  static Future<DiskSpaceInfo> fromTempDir() async {
+    final tempDir = await getAppTemporaryDirectory();
+    final freeSpace = await DiskSpace.getFreeDiskSpaceForPath(tempDir.path);
+    final totalSpace = await DiskSpace.getTotalDiskSpace;
+
+    // Convert from mebibytes (2^20 bytes) to bytes
+    const mebibytesToBytes = 1024 * 1024;
+
+    return DiskSpaceInfo(
+      freeSpace: ((freeSpace ?? 0) * mebibytesToBytes).toInt(),
+      totalSpace: ((totalSpace ?? 0) * mebibytesToBytes).toInt(),
+    );
+  }
+
+  final int freeSpace;
+  final int totalSpace;
+
+  int get usedSpace => totalSpace - freeSpace;
+  double get usagePercentage => totalSpace > 0 ? usedSpace / totalSpace : 0.0;
+
+  static DiskSpaceInfo zero = DiskSpaceInfo(
+    freeSpace: 0,
+    totalSpace: 0,
+  );
 }
