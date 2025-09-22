@@ -442,7 +442,17 @@
       "image_only_cache": "Кеш лише зображень",
       "bookmark_images": "Додати зображення до закладок",
       "loading": "Завантаження...",
-      "error_loading_cache_info": "Помилка завантаження інформації кешу"
+      "error_loading_cache_info": "Помилка завантаження інформації кешу",
+      "storage": "Зберігання",
+      "disk_space": {
+        "status_title": "$freeSpace вільний від $totalSpace",
+        "groups": {
+          "system": "Система",
+          "images": "Зображення",
+          "others": "Інші",
+          "free": "Вільний"
+        }
+      }
     },
     "backup_and_restore": {
       "backup_and_restore": "Резервне копіювання та відновлення",
