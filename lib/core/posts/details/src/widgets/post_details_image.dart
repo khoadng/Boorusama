@@ -29,7 +29,7 @@ class PostDetailsImage<T extends Post> extends ConsumerStatefulWidget {
   final String? heroTag;
   final String Function(T post)? imageUrlBuilder;
   final String Function(T post)? thumbnailUrlBuilder;
-  final CacheManager? imageCacheManager;
+  final ImageCacheManager? imageCacheManager;
   final T post;
 
   @override

@@ -36,7 +36,7 @@ class PostMedia<T extends Post> extends ConsumerWidget {
   final PostDetailsPageViewController controller;
   final String Function(T post)? imageUrlBuilder;
   final String Function(T post)? thumbnailUrlBuilder;
-  final CacheManager? imageCacheManager;
+  final ImageCacheManager? imageCacheManager;
 
   void _openSettings(WidgetRef ref) {
     openImageViewerSettingsPage(ref);

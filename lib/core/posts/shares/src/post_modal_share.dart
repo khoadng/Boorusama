@@ -48,7 +48,7 @@ final _cachedImageFileProvider = FutureProvider.autoDispose
 typedef ModalShareImageData = ({
   String? imageUrl,
   String? imageExt,
-  CacheManager imageCacheManager,
+  ImageCacheManager imageCacheManager,
 });
 
 class PostModalShare extends ConsumerWidget {
@@ -67,7 +67,7 @@ class PostModalShare extends ConsumerWidget {
   final BooruConfigViewer viewer;
   final BooruConfigDownload download;
   final DownloadFilenameGenerator? filenameBuilder;
-  final CacheManager imageCacheManager;
+  final ImageCacheManager imageCacheManager;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

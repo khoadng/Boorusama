@@ -9,10 +9,110 @@ import 'package:flutter/foundation.dart';
 import 'package:cache_manager/cache_manager.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
 
-class BookmarkCacheKeyGenerator implements CacheKeyGenerator {
+/// Specialized cache manager for bookmarked images that stores files
+/// in permanent storage and organizes them by image type
+class BookmarkImageCacheManager implements ImageCacheManager {
+  BookmarkImageCacheManager({
+    this.enableLogging = false,
+  });
+
+  final bool enableLogging;
+
+  Directory? _cacheDir;
+
+  /// Get the cache directory, creating it if needed
+  Future<Directory> getCacheDirectory() async {
+    if (_cacheDir != null) {
+      return _cacheDir!;
+    }
+
+    final appDir = await getApplicationDocumentsDirectory();
+    final dirPath = join(appDir.path, 'bookmarks', 'images');
+    final dir = Directory(dirPath);
+
+    if (!dir.existsSync()) {
+      await dir.create(recursive: true);
+    }
+
+    _cacheDir = dir;
+    return dir;
+  }
+
   @override
-  String generateKey(String url, {String? customKey}) {
+  FutureOr<File?> getCachedFile(String key) async {
+    try {
+      final cacheDir = await getCacheDirectory();
+      final cacheFile = File(join(cacheDir.path, key));
+
+      if (cacheFile.existsSync()) {
+        return cacheFile;
+      }
+
+      return null;
+    } catch (e) {
+      _log('Error getting cached file: $e');
+    }
+    return null;
+  }
+
+  @override
+  FutureOr<Uint8List?> getCachedFileBytes(String key) async {
+    try {
+      final cacheFile = await getCachedFile(key);
+      if (cacheFile != null) {
+        return await cacheFile.readAsBytes();
+      }
+      return null;
+    } catch (e) {
+      _log('Error reading cache: $e');
+    }
+    return null;
+  }
+
+  @override
+  Future<void> saveFile(String key, Uint8List bytes) async {
+    try {
+      final cacheDir = await getCacheDirectory();
+      final cacheFile = File(join(cacheDir.path, key));
+      await cacheFile.writeAsBytes(bytes);
+    } catch (e) {
+      _log('Failed to write cache: $e');
+    }
+  }
+
+  @override
+  FutureOr<bool> hasValidCache(String key, {Duration? maxAge}) async {
+    try {
+      final cacheDir = await getCacheDirectory();
+      final cacheFile = File(join(cacheDir.path, key));
+
+      if (cacheFile.existsSync()) {
+        return true;
+      }
+    } catch (e) {
+      _log('Error checking cache: $e');
+    }
+    return false;
+  }
+
+  @override
+  Future<void> clearCache(String key) async {
+    try {
+      final cacheDir = await getCacheDirectory();
+      final cacheFile = File(join(cacheDir.path, key));
+
+      if (cacheFile.existsSync()) {
+        await cacheFile.delete();
+      }
+    } catch (e) {
+      _log('Error clearing cache: $e');
+    }
+  }
+
+  @override
+  String generateCacheKey(String url, {String? customKey}) {
     if (customKey != null) {
       return customKey;
     }
@@ -23,127 +123,50 @@ class BookmarkCacheKeyGenerator implements CacheKeyGenerator {
     return '$md5Hash$extension';
   }
 
-  String _extractExtension(String url) {
-    final uri = Uri.parse(url);
-    final pathOnly = uri.path;
-
-    return extension(pathOnly).toLowerCase();
-  }
-}
-
-/// Specialized cache manager for bookmarked images that stores files
-/// in permanent storage and organizes them by image type
-class BookmarkImageCacheManager implements CacheManager {
-  BookmarkImageCacheManager({
-    required this.fileManager,
-    required this.cacheDir,
-    required this.keyGenerator,
-    required this.logger,
-  });
-
-  final FileManager fileManager;
-  final CacheDirectory cacheDir;
-  final CacheKeyGenerator keyGenerator;
-  final CacheLogger logger;
-
   @override
-  FutureOr<File?> getCachedFile(String key) async {
-    try {
-      final cacheDir = await this.cacheDir.get();
-      final filePath = join(cacheDir.path, key);
-      return fileManager.getFileIfExists(filePath);
-    } catch (e) {
-      logger.log('Error getting cached file: $e');
-      return null;
-    }
+  void invalidateCacheDirectory() {
+    _cacheDir = null;
   }
 
   @override
-  FutureOr<Uint8List?> getCachedFileBytes(String key) async {
-    try {
-      final cacheDir = await this.cacheDir.get();
-      final filePath = join(cacheDir.path, key);
-      return await fileManager.readFileBytes(filePath);
-    } catch (e) {
-      logger.log('Error reading cache: $e');
-      return null;
-    }
+  Future<void> dispose() async {
+    _cacheDir = null;
   }
-
-  @override
-  Future<void> saveFile(String key, Uint8List bytes) async {
-    try {
-      final cacheDir = await this.cacheDir.get();
-      final filePath = join(cacheDir.path, key);
-      await fileManager.writeFileBytes(filePath, bytes);
-    } catch (e) {
-      logger.log('Failed to write cache: $e');
-    }
-  }
-
-  @override
-  FutureOr<bool> hasValidCache(String key, {Duration? maxAge}) async {
-    try {
-      final cacheDir = await this.cacheDir.get();
-      final filePath = join(cacheDir.path, key);
-      return fileManager.fileExists(filePath);
-    } catch (e) {
-      logger.log('Error checking cache: $e');
-      return false;
-    }
-  }
-
-  @override
-  Future<void> clearCache(String key) async {
-    try {
-      final cacheDir = await this.cacheDir.get();
-      final filePath = join(cacheDir.path, key);
-      await fileManager.deleteFile(filePath);
-    } catch (e) {
-      logger.log('Error clearing cache: $e');
-    }
-  }
-
-  @override
-  String generateCacheKey(String url, {String? customKey}) =>
-      keyGenerator.generateKey(url, customKey: customKey);
-
-  @override
-  void invalidateCacheDirectory() => cacheDir.invalidate();
-
-  @override
-  Future<void> dispose() async => cacheDir.dispose();
 
   /// Clear all files in this cache directory
   Future<void> clearAllCache() async {
     try {
-      final cacheDir = await this.cacheDir.get();
-      final files = await fileManager.listFiles(cacheDir.path);
+      final cacheDir = await getCacheDirectory();
+      final files = cacheDir.listSync();
 
       for (final file in files) {
-        await fileManager.deleteFile(file.path);
+        if (file is File) {
+          await file.delete();
+        }
       }
 
-      logger.log('Cleared all cached files in ${cacheDir.path}');
+      _log('Cleared all cached files in ${cacheDir.path}');
     } catch (e) {
-      logger.log('Error clearing all cache: $e');
+      _log('Error clearing all cache: $e');
     }
   }
 
   /// Get total size of cached files
   Future<int> getCacheSize() async {
     try {
-      final cacheDir = await this.cacheDir.get();
-      final files = await fileManager.listFiles(cacheDir.path);
+      final cacheDir = await getCacheDirectory();
+      final files = cacheDir.listSync();
 
       var totalSize = 0;
       for (final file in files) {
-        totalSize += fileManager.getFileSize(file.path);
+        if (file is File) {
+          totalSize += file.lengthSync();
+        }
       }
 
       return totalSize;
     } catch (e) {
-      logger.log('Error calculating cache size: $e');
+      _log('Error calculating cache size: $e');
       return 0;
     }
   }
@@ -151,10 +174,12 @@ class BookmarkImageCacheManager implements CacheManager {
   /// Get list of cached files
   Future<List<File>> getCachedFiles() async {
     try {
-      final cacheDir = await this.cacheDir.get();
-      return fileManager.listFiles(cacheDir.path);
+      final cacheDir = await getCacheDirectory();
+      final files = cacheDir.listSync();
+
+      return files.whereType<File>().toList();
     } catch (e) {
-      logger.log('Error listing cached files: $e');
+      _log('Error listing cached files: $e');
       return [];
     }
   }
@@ -166,13 +191,27 @@ class BookmarkImageCacheManager implements CacheManager {
       var totalSize = 0;
 
       for (final file in files) {
-        totalSize += fileManager.getFileSize(file.path);
+        totalSize += file.lengthSync();
       }
 
       return (totalSize, files.length);
     } catch (e) {
-      logger.log('Error getting cache stats: $e');
+      _log('Error getting cache stats: $e');
       return (0, 0);
     }
   }
+
+  void _log(String message) {
+    if (enableLogging && kDebugMode) {
+      debugPrint('[BookmarkImageCacheManager] $message');
+    }
+  }
+}
+
+String _extractExtension(String url) {
+  // Extract just the path part, without query parameters
+  final uri = Uri.parse(url);
+  final pathOnly = uri.path;
+
+  return extension(pathOnly).toLowerCase();
 }

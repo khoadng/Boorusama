@@ -39,7 +39,7 @@ class PostDetailsItem<T extends Post> extends ConsumerWidget {
   final List<T> posts;
   final TransformationController transformController;
   final ValueListenable<bool> isInitPageListenable;
-  final CacheManager? imageCacheManager;
+  final ImageCacheManager? imageCacheManager;
   final PostDetailsController<T> detailsController;
   final BooruConfigAuth authConfig;
   final PostGestureConfig? gestureConfig;

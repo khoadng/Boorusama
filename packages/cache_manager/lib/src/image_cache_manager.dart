@@ -2,64 +2,85 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:extended_image_library/extended_image_library.dart';
 import 'package:path/path.dart' show join;
 import 'package:path_provider/path_provider.dart';
 
-import 'cache_directory.dart';
-import 'cache_key_generator.dart';
-import 'cache_logger.dart';
 import 'cache_manager.dart';
-import 'file_manager.dart';
 import 'memory_cache.dart';
 
-class ImageCacheManager implements CacheManager {
-  ImageCacheManager({
-    required this.fileManager,
-    required this.cacheDir,
-    required this.keyGenerator,
-    required this.logger,
+class DefaultImageCacheManager implements ImageCacheManager {
+  DefaultImageCacheManager({
+    this.cacheDirName = 'cacheimage',
+    this.enableLogging = false,
     MemoryCache? memoryCache,
   }) : _memoryCache = memoryCache;
 
-  final FileManager fileManager;
-  final CacheDirectory cacheDir;
-  final CacheKeyGenerator keyGenerator;
-  final CacheLogger logger;
+  final String cacheDirName;
+  final bool enableLogging;
   final MemoryCache? _memoryCache;
 
-  static const String defaultSubPath = 'cacheimage';
+  Directory? _cacheDir;
+  Future<Directory>? _cacheDirFuture;
 
-  factory ImageCacheManager.defaults({
-    int memoryCacheMaxEntries = 1000,
-    bool enableLogging = false,
-  }) => ImageCacheManager(
-    fileManager: FileManager(),
-    cacheDir: CacheDirectory(
-      getBaseDirectory: getTemporaryDirectory,
-      subPath: defaultSubPath,
-    ),
-    keyGenerator: DefaultCacheKeyGenerator(),
-    logger: CacheLogger(
-      tag: 'CacheManager',
-      enableLogging: enableLogging,
-    ),
-    memoryCache: LRUMemoryCache(maxEntries: memoryCacheMaxEntries),
-  );
+  /// Get the cache directory, creating it if needed
+  FutureOr<Directory> getCacheDirectory() {
+    // Return cached directory immediately if available (synchronous)
+    if (_cacheDir != null) {
+      return _cacheDir!;
+    }
+
+    // If initialization is already in progress, await that same future
+    if (_cacheDirFuture != null) {
+      return _cacheDirFuture!;
+    }
+
+    // Start initialization and cache the future
+    _cacheDirFuture = _initializeCacheDirectory();
+
+    return _cacheDirFuture!
+        .then((dir) {
+          _cacheDir = dir;
+          return dir;
+        })
+        .catchError((e) {
+          _cacheDirFuture = null;
+          throw e;
+        });
+  }
+
+  Future<Directory> _initializeCacheDirectory() async {
+    final tempDir = await getTemporaryDirectory();
+    final dirPath = join(tempDir.path, cacheDirName);
+    final dir = Directory(dirPath);
+
+    if (!dir.existsSync()) {
+      await dir.create(recursive: true);
+    }
+
+    return dir;
+  }
 
   @override
   FutureOr<File?> getCachedFile(String key) {
-    final dirResult = this.cacheDir.get();
+    final dirResult = getCacheDirectory();
 
     if (dirResult is Future<Directory>) {
-      return dirResult.then((cacheDir) {
-        final filePath = join(cacheDir.path, key);
-        return fileManager.getFileIfExists(filePath);
-      });
+      return dirResult.then((cacheDir) => _getFileIfExists(cacheDir, key));
     }
 
     final cacheDir = dirResult;
-    final filePath = join(cacheDir.path, key);
-    return fileManager.getFileIfExists(filePath);
+    return _getFileIfExists(cacheDir, key);
+  }
+
+  File? _getFileIfExists(Directory cacheDir, String key) {
+    try {
+      final cacheFile = File(join(cacheDir.path, key));
+      return cacheFile.existsSync() ? cacheFile : null;
+    } catch (e) {
+      _log('Error getting cached file: $e');
+      return null;
+    }
   }
 
   @override
@@ -83,14 +104,12 @@ class ImageCacheManager implements CacheManager {
     if (file == null) return null;
 
     try {
-      return fileManager.readFileBytes(file.path).then((data) {
-        if (data != null) {
-          _cacheInMemoryIfEligible(key, data);
-        }
+      return file.readAsBytes().then((data) {
+        _cacheInMemoryIfEligible(key, data);
         return data;
       });
     } catch (e) {
-      logger.log('Error reading cache: $e');
+      _log('Error reading cache: $e');
       return null;
     }
   }
@@ -102,38 +121,39 @@ class ImageCacheManager implements CacheManager {
   @override
   Future<void> saveFile(String key, Uint8List bytes) async {
     try {
-      final cacheDir = await this.cacheDir.get();
-      final filePath = join(cacheDir.path, key);
-      await fileManager.writeFileBytes(filePath, bytes);
+      final cacheDir = await getCacheDirectory();
+      final cacheFile = File(join(cacheDir.path, key));
+      await cacheFile.writeAsBytes(bytes);
 
       // Save to memory cache if eligible
       _cacheInMemoryIfEligible(key, bytes);
     } catch (e) {
-      logger.log('Failed to write cache: $e');
+      _log('Failed to write cache: $e');
     }
   }
 
-  FutureOr<bool> _deleteExpired(String filePath, Duration? maxAge) {
+  FutureOr<bool> _deleteExpired(File cacheFile, Duration? maxAge) {
     if (maxAge == null) {
       return true; // No expiration check needed
     }
 
-    final fileStats = fileManager.getFileStats(filePath);
-    if (fileStats == null) return false;
-
     final now = DateTime.now();
+    final fileStats = cacheFile.statSync();
+
     final isExpired = now.subtract(maxAge).isAfter(fileStats.modified);
     if (!isExpired) return true;
 
-    return fileManager.deleteFile(filePath).then((_) => false).catchError((e) {
-      logger.log('Error deleting expired cache file: $e');
+    return cacheFile.delete().then((_) => false).catchError((e) {
+      _log('Error deleting expired cache file: $e');
       return false;
     });
   }
 
-  bool _fileExists(Directory cacheDir, String key) {
-    final filePath = join(cacheDir.path, key);
-    return fileManager.fileExists(filePath);
+  File? _getFile(Directory cacheDir, String key) {
+    final cacheFile = File(join(cacheDir.path, key));
+    final exists = cacheFile.existsSync();
+    if (!exists) return null;
+    return cacheFile;
   }
 
   @override
@@ -142,22 +162,22 @@ class ImageCacheManager implements CacheManager {
       return true;
     }
 
-    final dirResult = this.cacheDir.get();
+    final dirResult = getCacheDirectory();
 
     if (dirResult is Future<Directory>) {
       return dirResult.then((cacheDir) {
-        if (!_fileExists(cacheDir, key)) return false;
+        final cacheFile = _getFile(cacheDir, key);
+        if (cacheFile == null) return false;
 
-        final filePath = join(cacheDir.path, key);
-        return _deleteExpired(filePath, maxAge);
+        return _deleteExpired(cacheFile, maxAge);
       });
     }
 
     final cacheDir = dirResult;
-    if (!_fileExists(cacheDir, key)) return false;
+    final cacheFile = _getFile(cacheDir, key);
+    if (cacheFile == null) return false;
 
-    final filePath = join(cacheDir.path, key);
-    return _deleteExpired(filePath, maxAge);
+    return _deleteExpired(cacheFile, maxAge);
   }
 
   @override
@@ -165,26 +185,57 @@ class ImageCacheManager implements CacheManager {
     try {
       _memoryCache?.remove(key);
 
-      final cacheDir = await this.cacheDir.get();
-      final filePath = join(cacheDir.path, key);
-      await fileManager.deleteFile(filePath);
+      final cacheDir = await getCacheDirectory();
+      final cacheFile = File(join(cacheDir.path, key));
+
+      if (cacheFile.existsSync()) {
+        await cacheFile.delete();
+      }
     } catch (e) {
-      logger.log('Error clearing cache: $e');
+      _log('Error clearing cache: $e');
     }
   }
 
   @override
-  String generateCacheKey(String url, {String? customKey}) =>
-      keyGenerator.generateKey(url, customKey: customKey);
+  String generateCacheKey(String url, {String? customKey}) {
+    if (customKey != null) {
+      return customKey;
+    }
+
+    try {
+      // More flexible matching for Google favicons
+      if (url.toLowerCase().contains('google.com') &&
+          url.toLowerCase().contains('favicons')) {
+        return keyToMd5(url); // Use full URL since domain parameter matters
+      }
+
+      // Parse the URL and use only the path component for other URLs
+      final uri = Uri.parse(url);
+      return keyToMd5(uri.path);
+    } catch (e) {
+      // Fallback to basic hashing if URL parsing fails
+      return keyToMd5(url);
+    }
+  }
 
   /// Invalidates the cached directory reference
   /// This should be called when the cache directory might be deleted externally
   @override
-  void invalidateCacheDirectory() => cacheDir.invalidate();
+  void invalidateCacheDirectory() {
+    _cacheDir = null;
+    _cacheDirFuture = null;
+  }
 
   @override
   Future<void> dispose() async {
     _memoryCache?.clear();
-    cacheDir.dispose();
+    _cacheDir = null;
+    _cacheDirFuture = null;
+  }
+
+  void _log(String message) {
+    if (enableLogging) {
+      print('[CacheManager] $message');
+    }
   }
 }

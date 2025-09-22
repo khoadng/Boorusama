@@ -3,7 +3,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 /// Abstract interface for cache operations
-abstract class CacheManager {
+abstract class ImageCacheManager {
   /// Retrieves the cached file for the given key
   FutureOr<File?> getCachedFile(String key);
 

@@ -50,7 +50,7 @@ class BooruImage extends ConsumerWidget {
   final bool forceLoadPlaceholder;
   final Widget? placeholderWidget;
   final ExtendedImageController? controller;
-  final CacheManager? imageCacheManager;
+  final ImageCacheManager? imageCacheManager;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -130,7 +130,7 @@ class BooruRawImage extends StatelessWidget {
   final Widget? placeholderWidget;
   final ExtendedImageController? controller;
   final int? androidVersion;
-  final CacheManager? imageCacheManager;
+  final ImageCacheManager? imageCacheManager;
 
   @override
   Widget build(BuildContext context) {
