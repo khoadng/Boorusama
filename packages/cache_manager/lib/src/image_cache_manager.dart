@@ -22,6 +22,7 @@ class DefaultImageCacheManager implements ImageCacheManager {
 
   Directory? _cacheDir;
   Future<Directory>? _cacheDirFuture;
+  final _keyCache = <String, String>{};
 
   /// Get the cache directory, creating it if needed
   FutureOr<Directory> getCacheDirectory() {
@@ -62,21 +63,41 @@ class DefaultImageCacheManager implements ImageCacheManager {
   }
 
   @override
-  FutureOr<File?> getCachedFile(String key) {
+  FutureOr<File?> getCachedFile(String key, {Duration? maxAge}) {
     final dirResult = getCacheDirectory();
 
     if (dirResult is Future<Directory>) {
-      return dirResult.then((cacheDir) => _getFileIfExists(cacheDir, key));
+      return dirResult.then((cacheDir) => _getValidFile(cacheDir, key, maxAge));
     }
 
     final cacheDir = dirResult;
-    return _getFileIfExists(cacheDir, key);
+    return _getValidFile(cacheDir, key, maxAge);
   }
 
-  File? _getFileIfExists(Directory cacheDir, String key) {
+  File? _getValidFile(Directory cacheDir, String key, Duration? maxAge) {
     try {
       final cacheFile = File(join(cacheDir.path, key));
-      return cacheFile.existsSync() ? cacheFile : null;
+      final stats = cacheFile.statSync();
+
+      if (stats.type == FileSystemEntityType.notFound) {
+        return null;
+      }
+
+      if (maxAge != null) {
+        final now = DateTime.now();
+        final isExpired = now.subtract(maxAge).isAfter(stats.modified);
+        if (isExpired) {
+          _log('Cache expired for file: ${cacheFile.path}');
+          try {
+            unawaited(cacheFile.delete());
+          } catch (e) {
+            _log('Error deleting expired cache file: $e');
+          }
+          return null;
+        }
+      }
+
+      return cacheFile;
     } catch (e) {
       _log('Error getting cached file: $e');
       return null;
@@ -84,13 +105,13 @@ class DefaultImageCacheManager implements ImageCacheManager {
   }
 
   @override
-  FutureOr<Uint8List?> getCachedFileBytes(String key) {
+  FutureOr<Uint8List?> getCachedFileBytes(String key, {Duration? maxAge}) {
     final memoryData = _memoryCache?.get(key);
     if (memoryData != null) {
       return memoryData;
     }
 
-    final fileResult = getCachedFile(key);
+    final fileResult = getCachedFile(key, maxAge: maxAge);
 
     if (fileResult is Future<File?>) {
       return fileResult.then((file) => _readFileBytes(file, key));
@@ -132,52 +153,19 @@ class DefaultImageCacheManager implements ImageCacheManager {
     }
   }
 
-  FutureOr<bool> _deleteExpired(File cacheFile, Duration? maxAge) {
-    if (maxAge == null) {
-      return true; // No expiration check needed
-    }
-
-    final now = DateTime.now();
-    final fileStats = cacheFile.statSync();
-
-    final isExpired = now.subtract(maxAge).isAfter(fileStats.modified);
-    if (!isExpired) return true;
-
-    return cacheFile.delete().then((_) => false).catchError((e) {
-      _log('Error deleting expired cache file: $e');
-      return false;
-    });
-  }
-
-  File? _getFile(Directory cacheDir, String key) {
-    final cacheFile = File(join(cacheDir.path, key));
-    final exists = cacheFile.existsSync();
-    if (!exists) return null;
-    return cacheFile;
-  }
-
   @override
   FutureOr<bool> hasValidCache(String key, {Duration? maxAge}) {
     if (_memoryCache?.contains(key) == true) {
       return true;
     }
 
-    final dirResult = getCacheDirectory();
+    final fileResult = getCachedFile(key, maxAge: maxAge);
 
-    if (dirResult is Future<Directory>) {
-      return dirResult.then((cacheDir) {
-        final cacheFile = _getFile(cacheDir, key);
-        if (cacheFile == null) return false;
-
-        return _deleteExpired(cacheFile, maxAge);
-      });
+    if (fileResult is Future<File?>) {
+      return fileResult.then((file) => file != null);
     }
 
-    final cacheDir = dirResult;
-    final cacheFile = _getFile(cacheDir, key);
-    if (cacheFile == null) return false;
-
-    return _deleteExpired(cacheFile, maxAge);
+    return fileResult != null;
   }
 
   @override
@@ -202,20 +190,25 @@ class DefaultImageCacheManager implements ImageCacheManager {
       return customKey;
     }
 
-    try {
-      // More flexible matching for Google favicons
-      if (url.toLowerCase().contains('google.com') &&
-          url.toLowerCase().contains('favicons')) {
-        return keyToMd5(url); // Use full URL since domain parameter matters
-      }
+    final lowerUrl = url.toLowerCase();
 
-      // Parse the URL and use only the path component for other URLs
-      final uri = Uri.parse(url);
-      return keyToMd5(uri.path);
-    } catch (e) {
-      // Fallback to basic hashing if URL parsing fails
-      return keyToMd5(url);
+    // More flexible matching for Google favicons
+    if (lowerUrl.contains('google.com') && lowerUrl.contains('favicons')) {
+      return _keyToMd5(url); // Use full URL since domain parameter matters
     }
+
+    // Parse the URL and use only the path component for other URLs
+    final uri = Uri.tryParse(url);
+    return uri == null ? _keyToMd5(url) : _keyToMd5(uri.path);
+  }
+
+  String _keyToMd5(String key) {
+    if (_keyCache.containsKey(key)) {
+      return _keyCache[key]!;
+    }
+    final md5Key = keyToMd5(key);
+    _keyCache[key] = md5Key;
+    return md5Key;
   }
 
   /// Invalidates the cached directory reference
@@ -231,6 +224,7 @@ class DefaultImageCacheManager implements ImageCacheManager {
     _memoryCache?.clear();
     _cacheDir = null;
     _cacheDirFuture = null;
+    _keyCache.clear();
   }
 
   void _log(String message) {

@@ -2,13 +2,13 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 
-/// Abstract interface for cache operations
+/// Abstract interface for image caching operations
 abstract class ImageCacheManager {
   /// Retrieves the cached file for the given key
-  FutureOr<File?> getCachedFile(String key);
+  FutureOr<File?> getCachedFile(String key, {Duration? maxAge});
 
   /// Retrieves cached file data for the given key
-  FutureOr<Uint8List?> getCachedFileBytes(String key);
+  FutureOr<Uint8List?> getCachedFileBytes(String key, {Duration? maxAge});
 
   /// Saves file data to cache with the specified key
   Future<void> saveFile(String key, Uint8List bytes);
