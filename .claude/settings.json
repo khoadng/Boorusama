@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(flutter analyze)",
+      "Bash(dart analyze)",
+      "Bash(dart format)",
+      "Bash(git tag:*)",
+      "Bash(grep:*)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:docs.flutter.dev)",
+      "mcp__ide__getDiagnostics",
+      "Bash(gh issue view:*)"
+    ],
+    "deny": []
+  },
+  "hooks": {}
+}
