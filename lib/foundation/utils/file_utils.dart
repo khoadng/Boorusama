@@ -27,7 +27,10 @@ class DirectorySizeInfo {
   );
 }
 
-Future<DirectorySizeInfo> getDirectorySize(Directory dir) async {
+Future<DirectorySizeInfo> getDirectorySize(
+  Directory dir, {
+  List<String> excludedDirNames = const [],
+}) async {
   var size = 0;
   var fileCount = 0;
   var directoryCount = 0;
@@ -35,6 +38,11 @@ Future<DirectorySizeInfo> getDirectorySize(Directory dir) async {
   try {
     await for (final entity in dir.list(followLinks: false)) {
       if (entity is Directory) {
+        final dirName = basename(entity.path);
+        if (excludedDirNames.contains(dirName)) {
+          continue;
+        }
+
         final subDirSizeInfo = await getDirectorySize(entity);
         size += subDirSizeInfo.size;
         fileCount += subDirSizeInfo.fileCount;
@@ -57,7 +65,12 @@ Future<DirectorySizeInfo> getDirectorySize(Directory dir) async {
 
 Future<DirectorySizeInfo> getCacheSize() async {
   final cacheDir = await getAppTemporaryDirectory();
-  return getDirectorySize(cacheDir);
+  return getDirectorySize(
+    cacheDir,
+    excludedDirNames: [
+      cacheImageFolderName,
+    ],
+  );
 }
 
 Future<DirectorySizeInfo> getImageCacheSize() async {

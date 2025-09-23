@@ -7,6 +7,7 @@ import 'package:foundation/foundation.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
+import '../../../../foundation/utils/file_utils.dart';
 import '../../../bookmarks/providers.dart';
 import '../../../cache/cache_notifier.dart';
 import '../../../cache/providers.dart';
@@ -25,15 +26,25 @@ final bookmarkCacheInfoProvider = FutureProvider.autoDispose<(int, int)>((
   return cacheManager.getCacheStats();
 });
 
-final diskSpaceProvider = FutureProvider.autoDispose<(CacheSizeInfo, int)>((
+final diskSpaceProvider = Provider.autoDispose<(CacheSizeInfo, int)>((
   ref,
-) async {
-  final results = await Future.wait([
-    ref.watch(cacheSizeProvider.future),
-    ref.watch(bookmarkCacheInfoProvider.future).then((data) => data.$1),
-  ]);
+) {
+  final appCache = ref.watch(appCacheSizeProvider);
+  final imageCache = ref.watch(imageCacheSizeProvider);
+  final tagCache = ref.watch(tagCacheSizeProvider);
+  final diskSpace = ref.watch(diskSpaceInfoProvider);
+  final bookmarkCache = ref.watch(bookmarkCacheInfoProvider);
 
-  return (results[0] as CacheSizeInfo, results[1] as int);
+  final cacheInfo = CacheSizeInfo(
+    appCacheSize: appCache.valueOrNull ?? DirectorySizeInfo.zero,
+    imageCacheSize: imageCache.valueOrNull ?? DirectorySizeInfo.zero,
+    tagCacheSize: tagCache.valueOrNull ?? 0,
+    diskSpaceInfo: diskSpace.valueOrNull ?? DiskSpaceInfo.zero,
+  );
+
+  final bookmarkCacheSize = bookmarkCache.valueOrNull?.$1 ?? 0;
+
+  return (cacheInfo, bookmarkCacheSize);
 });
 
 class DataAndStoragePage extends ConsumerStatefulWidget {
@@ -50,7 +61,6 @@ class _DataAndStoragePageState extends ConsumerState<DataAndStoragePage> {
   Widget build(BuildContext context) {
     final settings = ref.watch(settingsProvider);
     final notifier = ref.read(settingsNotifierProvider.notifier);
-    final cacheSizeAsync = ref.watch(cacheSizeProvider);
 
     return SettingsPageScaffold(
       title: Text(context.t.settings.data_and_storage.data_and_storage),
@@ -58,45 +68,26 @@ class _DataAndStoragePageState extends ConsumerState<DataAndStoragePage> {
         horizontal: 4,
       ),
       children: [
-        _buildDiskSpace(cacheSizeAsync),
-        _buildCacheSection(cacheSizeAsync, settings, notifier),
-        _buildDataSection(cacheSizeAsync.isLoading),
+        _buildDiskSpace(),
+        _buildCacheSection(settings, notifier),
+        _buildDataSection(),
       ],
     );
   }
 
-  Widget _buildDiskSpace(AsyncValue<CacheSizeInfo> cacheSizeAsync) {
+  Widget _buildDiskSpace() {
     final colorScheme = Theme.of(context).colorScheme;
-    final unifiedData = ref.watch(diskSpaceProvider);
+    final (sizeInfo, bookmarkCacheSize) = ref.watch(diskSpaceProvider);
+    final diskInfo = sizeInfo.diskSpaceInfo;
 
-    return SettingsCard(
-      title: context.t.settings.data_and_storage.storage,
-      child: Padding(
-        padding: const EdgeInsets.all(8),
-        child: unifiedData.when(
-          data: (data) {
-            final (sizeInfo, bookmarkCacheSize) = data;
-            final diskInfo = sizeInfo.diskSpaceInfo;
-            final storageBreakdown = sizeInfo.getStorageBreakdown(
-              bookmarkCacheSize: bookmarkCacheSize,
-            );
-            final segments = _mapToStorageSegments(
-              storageBreakdown,
-              sizeInfo,
-              colorScheme,
-            );
+    final hasDiskData = diskInfo.totalSpace > 0;
 
-            return StorageSegmentBar(
-              subtitle: context.t.settings.data_and_storage.disk_space
-                  .status_title(
-                    freeSpace: Filesize.parse(diskInfo.freeSpace),
-                    totalSpace: Filesize.parse(diskInfo.totalSpace),
-                  ),
-              segments: segments,
-              totalSpace: diskInfo.totalSpace,
-            );
-          },
-          loading: () => StorageSegmentBar(
+    if (!hasDiskData) {
+      return SettingsCard(
+        title: context.t.settings.data_and_storage.storage,
+        child: Padding(
+          padding: const EdgeInsets.all(8),
+          child: StorageSegmentBar(
             subtitle: context.t.settings.data_and_storage.loading,
             segments: _createStorageSegments(
               colorScheme: colorScheme,
@@ -105,18 +96,30 @@ class _DataAndStoragePageState extends ConsumerState<DataAndStoragePage> {
             ),
             totalSpace: 100,
           ),
-          error: (_, _) => StorageSegmentBar(
-            subtitle:
-                context.t.settings.data_and_storage.error_loading_cache_info,
-            segments: [
-              StorageSegment(
-                name: context.t.generic.errors.unknown,
-                size: 100,
-                color: colorScheme.errorContainer,
-              ),
-            ],
-            totalSpace: 100,
+        ),
+      );
+    }
+
+    final storageBreakdown = sizeInfo.getStorageBreakdown(
+      bookmarkCacheSize: bookmarkCacheSize,
+    );
+    final segments = _mapToStorageSegments(
+      storageBreakdown,
+      sizeInfo,
+      colorScheme,
+    );
+
+    return SettingsCard(
+      title: context.t.settings.data_and_storage.storage,
+      child: Padding(
+        padding: const EdgeInsets.all(8),
+        child: StorageSegmentBar(
+          subtitle: context.t.settings.data_and_storage.disk_space.status_title(
+            freeSpace: Filesize.parse(diskInfo.freeSpace),
+            totalSpace: Filesize.parse(diskInfo.totalSpace),
           ),
+          segments: segments,
+          totalSpace: diskInfo.totalSpace,
         ),
       ),
     );
@@ -200,7 +203,6 @@ class _DataAndStoragePageState extends ConsumerState<DataAndStoragePage> {
   }
 
   Widget _buildCacheSection(
-    AsyncValue<CacheSizeInfo> cacheSizeAsync,
     Settings settings,
     SettingsNotifier notifier,
   ) {
@@ -208,11 +210,11 @@ class _DataAndStoragePageState extends ConsumerState<DataAndStoragePage> {
       title: context.t.settings.data_and_storage.cache,
       child: Column(
         children: [
-          _buildImageCacheItem(cacheSizeAsync),
+          _buildImageCacheItem(),
           const Divider(height: 1),
-          _buildTagCacheItem(cacheSizeAsync),
+          _buildTagCacheItem(),
           const Divider(height: 1),
-          _buildAllCacheItem(cacheSizeAsync),
+          _buildAllCacheItem(),
           const Divider(height: 1),
           BooruSwitchListTile(
             contentPadding: const EdgeInsets.symmetric(horizontal: 4),
@@ -229,27 +231,29 @@ class _DataAndStoragePageState extends ConsumerState<DataAndStoragePage> {
     );
   }
 
-  Widget _buildDataSection(bool isLoadingCache) {
+  Widget _buildDataSection() {
     return SettingsCard(
       title: context.t.settings.data_and_storage.data,
-      child: _buildBookmarkImageDataItem(isLoadingCache),
+      child: _buildBookmarkImageDataItem(),
     );
   }
 
-  Widget _buildImageCacheItem(AsyncValue<CacheSizeInfo> cacheSizeAsync) {
+  Widget _buildImageCacheItem() {
+    final imageCacheAsync = ref.watch(imageCacheSizeProvider);
+
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 4),
       title: Text(context.t.settings.data_and_storage.image_only_cache),
-      subtitle: cacheSizeAsync.when(
-        data: (sizeInfo) => Text(
+      subtitle: imageCacheAsync.when(
+        data: (imageCacheSize) => Text(
           context.t.settings.performance.cache_size_info
               .replaceAll(
                 '{0}',
-                Filesize.parse(sizeInfo.imageCacheSize.size),
+                Filesize.parse(imageCacheSize.size),
               )
               .replaceAll(
                 '{1}',
-                sizeInfo.imageCacheSize.fileCount.toString(),
+                imageCacheSize.fileCount.toString(),
               ),
         ),
         loading: () => Text(context.t.settings.data_and_storage.loading),
@@ -257,7 +261,7 @@ class _DataAndStoragePageState extends ConsumerState<DataAndStoragePage> {
             Text(context.t.settings.data_and_storage.error_loading_cache_info),
       ),
       trailing: FilledButton(
-        onPressed: cacheSizeAsync.isLoading
+        onPressed: imageCacheAsync.isLoading
             ? null
             : () => ref.read(cacheSizeProvider.notifier).clearAppImageCache(),
         child: Text(context.t.settings.performance.clear_cache),
@@ -265,18 +269,20 @@ class _DataAndStoragePageState extends ConsumerState<DataAndStoragePage> {
     );
   }
 
-  Widget _buildTagCacheItem(AsyncValue<CacheSizeInfo> cacheSizeAsync) {
+  Widget _buildTagCacheItem() {
+    final tagCacheAsync = ref.watch(tagCacheSizeProvider);
+
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 4),
       title: Text(context.t.settings.data_and_storage.tag_cache),
-      subtitle: cacheSizeAsync.when(
-        data: (sizeInfo) => Text(Filesize.parse(sizeInfo.tagCacheSize)),
+      subtitle: tagCacheAsync.when(
+        data: (tagCacheSize) => Text(Filesize.parse(tagCacheSize)),
         loading: () => Text(context.t.settings.data_and_storage.loading),
         error: (_, _) =>
             Text(context.t.settings.data_and_storage.error_loading_cache_info),
       ),
       trailing: FilledButton(
-        onPressed: cacheSizeAsync.isLoading
+        onPressed: tagCacheAsync.isLoading
             ? null
             : () => ref.read(cacheSizeProvider.notifier).clearAppTagCache(),
         child: Text(context.t.settings.performance.clear_cache),
@@ -284,7 +290,9 @@ class _DataAndStoragePageState extends ConsumerState<DataAndStoragePage> {
     );
   }
 
-  Widget _buildAllCacheItem(AsyncValue<CacheSizeInfo> cacheSizeAsync) {
+  Widget _buildAllCacheItem() {
+    final cacheSizeAsync = ref.watch(cacheSizeProvider);
+
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 4),
       title: Text(context.t.settings.data_and_storage.all_cache),
@@ -303,7 +311,7 @@ class _DataAndStoragePageState extends ConsumerState<DataAndStoragePage> {
     );
   }
 
-  Widget _buildBookmarkImageDataItem(bool isLoadingCache) {
+  Widget _buildBookmarkImageDataItem() {
     final cacheInfo = ref.watch(bookmarkCacheInfoProvider);
 
     return ListTile(

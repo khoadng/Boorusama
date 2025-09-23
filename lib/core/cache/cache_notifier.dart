@@ -9,6 +9,28 @@ import '../../foundation/utils/file_utils.dart';
 import '../images/providers.dart';
 import '../tags/local/providers.dart';
 
+final appCacheSizeProvider = FutureProvider.autoDispose<DirectorySizeInfo>((
+  ref,
+) async {
+  return getCacheSize().catchError((_) => DirectorySizeInfo.zero);
+});
+
+final imageCacheSizeProvider = FutureProvider.autoDispose<DirectorySizeInfo>((
+  ref,
+) async {
+  return getImageCacheSize().catchError((_) => DirectorySizeInfo.zero);
+});
+
+final tagCacheSizeProvider = FutureProvider.autoDispose<int>((ref) async {
+  return _getTagCacheSize().catchError((_) => 0);
+});
+
+final diskSpaceInfoProvider = FutureProvider.autoDispose<DiskSpaceInfo>((
+  ref,
+) async {
+  return DiskSpaceInfo.fromTempDir().catchError((_) => DiskSpaceInfo.zero);
+});
+
 final cacheSizeProvider =
     AsyncNotifierProvider.autoDispose<CacheSizeNotifier, CacheSizeInfo>(
       CacheSizeNotifier.new,
@@ -98,12 +120,27 @@ class CacheSizeInfo {
 
 class CacheSizeNotifier extends AutoDisposeAsyncNotifier<CacheSizeInfo> {
   @override
-  Future<CacheSizeInfo> build() {
-    return calculateCacheSize();
+  Future<CacheSizeInfo> build() async {
+    final appCache = ref.watch(appCacheSizeProvider);
+    final imageCache = ref.watch(imageCacheSizeProvider);
+    final tagCache = ref.watch(tagCacheSizeProvider);
+    final diskSpace = ref.watch(diskSpaceInfoProvider);
+
+    return CacheSizeInfo(
+      appCacheSize: appCache.valueOrNull ?? DirectorySizeInfo.zero,
+      imageCacheSize: imageCache.valueOrNull ?? DirectorySizeInfo.zero,
+      tagCacheSize: tagCache.valueOrNull ?? 0,
+      diskSpaceInfo: diskSpace.valueOrNull ?? DiskSpaceInfo.zero,
+    );
   }
 
   void refreshCacheSize() {
-    ref.invalidateSelf();
+    ref
+      ..invalidate(appCacheSizeProvider)
+      ..invalidate(imageCacheSizeProvider)
+      ..invalidate(tagCacheSizeProvider)
+      ..invalidate(diskSpaceInfoProvider)
+      ..invalidateSelf();
   }
 
   Future<void> clearAllCache() async {
@@ -145,22 +182,6 @@ class CacheSizeNotifier extends AutoDisposeAsyncNotifier<CacheSizeInfo> {
       await Future.delayed(Duration(milliseconds: remainingTime));
     }
   }
-}
-
-Future<CacheSizeInfo> calculateCacheSize() async {
-  final results = await Future.wait([
-    getCacheSize().catchError((_) => DirectorySizeInfo.zero),
-    getImageCacheSize().catchError((_) => DirectorySizeInfo.zero),
-    _getTagCacheSize().catchError((_) => 0),
-    DiskSpaceInfo.fromTempDir().catchError((_) => DiskSpaceInfo.zero),
-  ]);
-
-  return CacheSizeInfo(
-    appCacheSize: results[0] as DirectorySizeInfo,
-    imageCacheSize: results[1] as DirectorySizeInfo,
-    tagCacheSize: results[2] as int,
-    diskSpaceInfo: results[3] as DiskSpaceInfo,
-  );
 }
 
 Future<int> _getTagCacheSize() async {
