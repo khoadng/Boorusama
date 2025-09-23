@@ -12,7 +12,6 @@ import '../../../../../foundation/platform.dart';
 import '../../../../boorus/engine/providers.dart';
 import '../../../../configs/config/types.dart';
 import '../../../../configs/gesture/gesture.dart';
-import '../../../../videos/providers.dart';
 import '../../../../videos/widgets.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../details_pageview/widgets.dart';
@@ -147,14 +146,8 @@ class PostDetailsItem<T extends Post> extends ConsumerWidget {
                                   }
                                 },
                               ),
-                              VideoSoundScope(
-                                builder: (context, soundOn) =>
-                                    SoundControlButton(
-                                      padding: const EdgeInsets.all(8),
-                                      soundOn: soundOn,
-                                      onSoundChanged: (value) =>
-                                          ref.setGlobalVideoSound(value),
-                                    ),
+                              const SoundControlButton(
+                                padding: EdgeInsets.all(8),
                               ),
                             ],
                           ),

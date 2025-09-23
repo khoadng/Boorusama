@@ -1,0 +1,70 @@
+// ignore_for_file: use_setters_to_change_properties
+
+// Flutter imports:
+import 'package:flutter/material.dart';
+
+// Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+// Project imports:
+import '../../../settings/providers.dart';
+import '../../../settings/settings.dart';
+import '../types/booru_player.dart';
+import 'media_kit_booru_player.dart';
+import 'video_player_booru_player.dart';
+import 'webview_booru_player.dart';
+
+class GlobalSoundNotifier extends Notifier<bool> {
+  @override
+  bool build() {
+    final isMuteByDefault = ref.watch(
+      settingsProvider.select((s) => s.viewer.muteAudioByDefault),
+    );
+
+    return !isMuteByDefault;
+  }
+
+  void toggle() {
+    state = !state;
+  }
+
+  void setState(bool value) {
+    state = value;
+  }
+}
+
+final globalSoundStateProvider = NotifierProvider<GlobalSoundNotifier, bool>(
+  GlobalSoundNotifier.new,
+);
+
+class PlaybackSpeedNotifier extends AutoDisposeFamilyNotifier<double, String> {
+  @override
+  double build(String url) => 1;
+
+  void setSpeed(double value) {
+    state = value;
+  }
+}
+
+final playbackSpeedProvider =
+    AutoDisposeNotifierProviderFamily<PlaybackSpeedNotifier, double, String>(
+      PlaybackSpeedNotifier.new,
+    );
+
+
+BooruPlayer createBooruPlayer({
+  required VideoPlayerEngine engine,
+  String? userAgent,
+}) => switch (engine) {
+  VideoPlayerEngine.webview => WebViewBooruPlayer(
+    //FIXME: pass user agent for other impl as well?
+    userAgent: userAgent,
+    backgroundColor: Colors.black,
+  ),
+  VideoPlayerEngine.mpv => MediaKitBooruPlayer(),
+  VideoPlayerEngine.auto ||
+  VideoPlayerEngine.videoPlayerPlugin ||
+  VideoPlayerEngine.mdk => VideoPlayerBooruPlayer(
+    videoPlayerEngine: engine,
+  ),
+};

@@ -2,27 +2,30 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
-class SoundControlButton extends StatelessWidget {
+// Project imports:
+import '../providers/providers.dart';
+
+class SoundControlButton extends ConsumerWidget {
   const SoundControlButton({
-    required this.soundOn,
     super.key,
-    this.onSoundChanged,
     this.padding,
   });
 
-  final bool soundOn;
-  final void Function(bool hasSound)? onSoundChanged;
   final EdgeInsetsGeometry? padding;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final soundOn = ref.watch(globalSoundStateProvider);
+    final notifier = ref.watch(globalSoundStateProvider.notifier);
+
     return Material(
       color: Colors.transparent,
       child: InkWell(
         customBorder: const CircleBorder(),
-        onTap: () => onSoundChanged?.call(!soundOn),
+        onTap: () => notifier.toggle(),
         child: Padding(
           padding: padding ?? EdgeInsets.zero,
           child: Icon(

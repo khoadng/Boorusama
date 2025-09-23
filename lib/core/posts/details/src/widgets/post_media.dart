@@ -60,8 +60,8 @@ class PostMedia<T extends Post> extends ConsumerWidget {
                       details.controller.onCurrentPositionChanged,
                   onVideoPlayerCreated: (player) => details.controller
                       .onBooruVideoPlayerCreated(player, post.id),
-                  sound: ref.isGlobalVideoSoundOn,
-                  speed: ref.watchPlaybackSpeed(post.videoUrl),
+                  sound: ref.watch(globalSoundStateProvider),
+                  speed: ref.watch(playbackSpeedProvider(post.videoUrl)),
                   thumbnailUrl: post.videoThumbnailUrl,
                   onOpenSettings: () => _openSettings(ref),
                   headers: headers,

@@ -26,25 +26,6 @@ class PostDetailsVideoControls<T extends Post> extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final rightControls = [
-      VideoSoundScope(
-        builder: (context, soundOn) => SoundControlButton(
-          soundOn: soundOn,
-          onSoundChanged: (value) => ref.setGlobalVideoSound(value),
-        ),
-      ),
-      const SizedBox(width: 8),
-      MoreOptionsControlButton(
-        speed: ref.watchPlaybackSpeed(
-          controller.currentPost.value.videoUrl,
-        ),
-        onSpeedChanged: (speed) => ref.setPlaybackSpeed(
-          controller.currentPost.value.videoUrl,
-          speed,
-        ),
-      ),
-      const SizedBox(width: 8),
-    ];
 
     final isLarge = context.isLargeScreen;
     final surfaceColor = Theme.of(context).colorScheme.surface;
@@ -71,7 +52,26 @@ class PostDetailsVideoControls<T extends Post> extends ConsumerWidget {
               child: _buildControls(
                 isLarge,
                 constraints,
-                rightControls,
+                [
+                  const SoundControlButton(),
+                  const SizedBox(width: 8),
+                  ValueListenableBuilder(
+                    valueListenable: controller.currentPost,
+                    builder: (context, post, child) => MoreOptionsControlButton(
+                      speed: ref.watch(
+                        playbackSpeedProvider(
+                          post.videoUrl,
+                        ),
+                      ),
+                      onSpeedChanged: (speed) => ref
+                          .read(
+                            playbackSpeedProvider(post.videoUrl).notifier,
+                          )
+                          .setSpeed(speed),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                ],
               ),
             ),
           ),
