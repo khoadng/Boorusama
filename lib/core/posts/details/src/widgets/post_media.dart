@@ -7,10 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../../foundation/display.dart';
-import '../../../../../foundation/loggers.dart';
 import '../../../../configs/config/types.dart';
-import '../../../../http/providers.dart';
-import '../../../../settings/providers.dart';
 import '../../../../settings/routes.dart';
 import '../../../../videos/providers.dart';
 import '../../../../videos/widgets.dart';
@@ -45,8 +42,22 @@ class PostMedia<T extends Post> extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final details = PostDetails.of<T>(context);
-    final headers = ref.watch(httpHeadersProvider(config));
     final heroTag = '${post.id}_hero';
+
+    ref
+      ..listen(globalSoundStateProvider, (previous, next) {
+        if (previous != next) {
+          details.controller.updatePlayerSound(next);
+        }
+      })
+      ..listen(playbackSpeedProvider(post.videoUrl), (
+        previous,
+        next,
+      ) {
+        if (previous != next) {
+          details.controller.updatePlayerSpeed(next);
+        }
+      });
 
     return post.isVideo
         ? Stack(
@@ -54,28 +65,14 @@ class PostMedia<T extends Post> extends ConsumerWidget {
               Positioned.fill(
                 child: BooruVideo(
                   heroTag: heroTag,
-                  url: post.videoUrl,
-                  aspectRatio: post.aspectRatio,
-                  onCurrentPositionChanged:
-                      details.controller.onCurrentPositionChanged,
-                  onVideoPlayerCreated: (player) => details.controller
-                      .onBooruVideoPlayerCreated(player, post.id),
-                  sound: ref.watch(globalSoundStateProvider),
-                  speed: ref.watch(playbackSpeedProvider(post.videoUrl)),
+                  player: details.controller.getPlayerForPost(post.id),
+                  aspectRatio: post.aspectRatio ?? 16.0 / 9.0,
                   thumbnailUrl: post.videoThumbnailUrl,
                   onOpenSettings: () => _openSettings(ref),
-                  headers: headers,
-                  onInitializing: details.controller.onInitializing,
-                  videoPlayerEngine: ref.watch(
-                    settingsProvider.select(
-                      (value) => value.viewer.videoPlayerEngine,
-                    ),
+                  error: details.controller.getPlayerError(post.id),
+                  isBuffering: details.controller.isPlayerBuffering(
+                    post.id,
                   ),
-                  userAgent: ref.watch(
-                    userAgentProvider(config),
-                  ),
-                  logger: ref.watch(loggerProvider),
-                  autoplay: true,
                 ),
               ),
               if (context.isLargeScreen)

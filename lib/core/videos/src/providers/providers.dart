@@ -27,10 +27,6 @@ class GlobalSoundNotifier extends Notifier<bool> {
   void toggle() {
     state = !state;
   }
-
-  void setState(bool value) {
-    state = value;
-  }
 }
 
 final globalSoundStateProvider = NotifierProvider<GlobalSoundNotifier, bool>(
@@ -50,7 +46,6 @@ final playbackSpeedProvider =
     AutoDisposeNotifierProviderFamily<PlaybackSpeedNotifier, double, String>(
       PlaybackSpeedNotifier.new,
     );
-
 
 BooruPlayer createBooruPlayer({
   required VideoPlayerEngine engine,

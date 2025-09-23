@@ -7,6 +7,9 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import '../../../../../foundation/display.dart';
+import '../../../../../foundation/loggers.dart';
+import '../../../../configs/config/providers.dart';
+import '../../../../http/providers.dart';
 import '../../../../settings/providers.dart';
 import '../../../details_pageview/widgets.dart';
 import '../../../post/post.dart';
@@ -55,6 +58,11 @@ class _PostDetailsLayoutSwitcherState<T extends Post>
     final slideshowOptions = toSlideShowOptions(settings);
     final hoverToControlOverlay = widget.posts[initialPage].isVideo;
 
+    final config = ref.readConfigAuth;
+    final headers = ref.read(httpHeadersProvider(config));
+    final userAgent = ref.read(userAgentProvider(config));
+    final logger = ref.read(loggerProvider);
+
     _controller = PostDetailsController<T>(
       scrollController: widget.scrollController,
       initialPage: initialPage,
@@ -62,6 +70,10 @@ class _PostDetailsLayoutSwitcherState<T extends Post>
       posts: widget.posts,
       reduceAnimations: reduceAnimations,
       dislclaimer: widget.dislclaimer,
+      headers: headers,
+      videoPlayerEngine: settings.viewer.videoPlayerEngine,
+      userAgent: userAgent,
+      logger: logger,
     );
 
     _pageViewController = PostDetailsPageViewController(
