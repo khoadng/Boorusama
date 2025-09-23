@@ -65,7 +65,6 @@ class PostMedia<T extends Post> extends ConsumerWidget {
                   thumbnailUrl: post.videoThumbnailUrl,
                   onOpenSettings: () => _openSettings(ref),
                   headers: headers,
-                  onInitializing: details.controller.onInitializing,
                   videoPlayerEngine: ref.watch(
                     settingsProvider.select(
                       (value) => value.viewer.videoPlayerEngine,

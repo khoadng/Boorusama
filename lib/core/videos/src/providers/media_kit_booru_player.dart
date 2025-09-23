@@ -45,24 +45,7 @@ class MediaKitBooruPlayer implements BooruPlayer {
   @override
   bool isPlatformSupported() => true;
 
-  @override
-  Future<void> initialize(
-    String url, {
-    Map<String, String>? headers,
-    bool autoplay = false,
-  }) async {
-    if (_isDisposed) throw StateError('Player has been disposed');
-
-    MediaKitManager().ensureInitialized();
-
-    _player = Player();
-    _videoController = VideoController(
-      _player,
-      configuration: VideoControllerConfiguration(
-        enableHardwareAcceleration: enableHardwareAcceleration,
-      ),
-    );
-
+  void _setupStreamListeners() {
     _positionSubscription = _player.stream.position.listen((position) {
       if (!_isDisposed) {
         _positionController.add(position);
@@ -87,23 +70,58 @@ class MediaKitBooruPlayer implements BooruPlayer {
         _durationController.add(duration);
       }
     });
+  }
 
+  Future<void> _openMedia(String url, VideoConfig? config) async {
     final media = Media(
       url,
-      httpHeaders: headers ?? {},
+      httpHeaders: config?.headers ?? {},
     );
 
-    await _player.open(media, play: autoplay);
-
+    await _player.open(media, play: false);
     await _player.setPlaylistMode(PlaylistMode.single);
 
     if (_player.state.duration != Duration.zero) {
       _durationController.add(_player.state.duration);
     }
+  }
+
+  @override
+  Future<void> initialize(
+    String url, {
+    VideoConfig? config,
+  }) async {
+    if (_isDisposed) throw StateError('Player has been disposed');
+
+    MediaKitManager().ensureInitialized();
+
+    _player = Player();
+    _videoController = VideoController(
+      _player,
+      configuration: VideoControllerConfiguration(
+        enableHardwareAcceleration: enableHardwareAcceleration,
+      ),
+    );
+
+    _setupStreamListeners();
+    await _openMedia(url, config);
 
     _isInitialized = true;
   }
 
+  @override
+  Future<void> switchUrl(
+    String url, {
+    VideoConfig? config,
+  }) async {
+    if (_isDisposed) throw StateError('Player has been disposed');
+    if (!_isInitialized) {
+      return initialize(url, config: config);
+    }
+
+    _hasPlayedOnce = false;
+    await _openMedia(url, config);
+  }
 
   void _handleSmartBuffering(bool buffering) {
     if (_isDisposed) return;

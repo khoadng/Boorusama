@@ -26,7 +26,6 @@ class PostDetailsVideoControls<T extends Post> extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-
     final isLarge = context.isLargeScreen;
     final surfaceColor = Theme.of(context).colorScheme.surface;
 
@@ -167,15 +166,13 @@ class PostDetailsVideoControls<T extends Post> extends ConsumerWidget {
     return Container(
       color: Colors.transparent,
       height: 28,
-      child: MultiValueListenableBuilder3(
+      child: MultiValueListenableBuilder2(
         first: controller.currentPost,
         second: controller.videoProgress,
-        third: controller.isVideoInitializing,
-        builder: (context, post, progress, initializing) {
+        builder: (context, post, progress) {
           final colorScheme = Theme.of(context).colorScheme;
 
           return VideoProgressBar(
-            indeterminate: initializing,
             duration: progress.duration,
             position: progress.position,
             buffered: const [],

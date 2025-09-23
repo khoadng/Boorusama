@@ -7,9 +7,15 @@ import 'package:flutter/material.dart';
 abstract class BooruPlayer {
   Future<void> initialize(
     String url, {
-    Map<String, String>? headers,
-    bool autoplay = false,
+    VideoConfig? config,
   });
+
+  /// Fast URL switching without full player recreation when possible
+  Future<void> switchUrl(
+    String url, {
+    VideoConfig? config,
+  });
+
   Future<void> play();
   Future<void> pause();
   Future<void> seek(Duration position);
@@ -31,6 +37,16 @@ abstract class BooruPlayer {
   void dispose();
   bool isPlatformSupported();
   Widget buildPlayerWidget(BuildContext context);
+}
+
+class VideoConfig {
+  const VideoConfig({
+    this.headers,
+    this.autoplay = false,
+  });
+
+  final Map<String, String>? headers;
+  final bool autoplay;
 }
 
 typedef PositionCallback =

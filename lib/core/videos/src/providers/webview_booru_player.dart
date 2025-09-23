@@ -51,16 +51,7 @@ class WebViewBooruPlayer implements BooruPlayer {
   @override
   bool isPlatformSupported() => !isWindows() && !isLinux();
 
-  @override
-  Future<void> initialize(
-    String url, {
-    Map<String, String>? headers,
-    bool autoplay = false,
-  }) async {
-    if (_isDisposed) throw StateError('Player has been disposed');
-
-    _currentUrl = url;
-
+  Future<void> _setupWebViewController() async {
     final params = switch (isApple()) {
       true => WebKitWebViewControllerCreationParams(
         allowsInlineMediaPlayback: true,
@@ -72,21 +63,26 @@ class WebViewBooruPlayer implements BooruPlayer {
     final controller = WebViewController.fromPlatformCreationParams(params);
     _webViewController = controller;
 
-    await controller.setUserAgent(_userAgent);
-    await controller.setJavaScriptMode(JavaScriptMode.unrestricted);
+    await Future.wait([
+      controller.setUserAgent(_userAgent),
+      controller.setVerticalScrollBarEnabled(false),
+      controller.setHorizontalScrollBarEnabled(false),
+      controller.setOverScrollMode(WebViewOverScrollMode.never),
+      controller.setJavaScriptMode(JavaScriptMode.unrestricted),
+      // Skip setBackgroundColor on macOS due to unimplemented opaque property
+      if (!isMacOS()) controller.setBackgroundColor(_backgroundColor),
+      if (controller.platform
+          case final AndroidWebViewController androidController) ...[
+        AndroidWebViewController.enableDebugging(false),
+        androidController.setMediaPlaybackRequiresUserGesture(false),
+      ],
+    ]);
+  }
 
-    // Skip setBackgroundColor on macOS due to unimplemented opaque property
-    if (!isMacOS()) {
-      await controller.setBackgroundColor(_backgroundColor);
-    }
+  Future<void> _loadVideoUrl(String url, bool autoplay) async {
+    if (_webViewController == null) return;
 
-    if (controller.platform is AndroidWebViewController) {
-      await AndroidWebViewController.enableDebugging(false);
-      await (controller.platform as AndroidWebViewController)
-          .setMediaPlaybackRequiresUserGesture(false);
-    }
-
-    await controller.setNavigationDelegate(
+    await _webViewController!.setNavigationDelegate(
       NavigationDelegate(
         onPageFinished: (url) {
           _onPageLoadComplete(autoplay);
@@ -107,7 +103,7 @@ class WebViewBooruPlayer implements BooruPlayer {
       autoplay: autoplay,
     );
 
-    await controller.loadHtmlString(html);
+    await _webViewController!.loadHtmlString(html);
 
     // Fallback: if page doesn't trigger onPageFinished within 2 seconds,
     // assume it's loaded (common issue with loadHtmlString on some platforms)
@@ -116,6 +112,41 @@ class WebViewBooruPlayer implements BooruPlayer {
         _onPageLoadComplete(autoplay);
       }
     });
+  }
+
+  void _resetState() {
+    _hasPlayedOnce = false;
+    _isPageLoaded = false;
+    _currentPosition = Duration.zero;
+    _currentDuration = Duration.zero;
+  }
+
+  @override
+  Future<void> initialize(
+    String url, {
+    VideoConfig? config,
+  }) async {
+    if (_isDisposed) throw StateError('Player has been disposed');
+
+    _currentUrl = url;
+    await _setupWebViewController();
+    await _loadVideoUrl(url, config?.autoplay ?? false);
+  }
+
+  @override
+  Future<void> switchUrl(
+    String url, {
+    VideoConfig? config,
+  }) async {
+    if (_isDisposed || _webViewController == null) return;
+    if (_currentUrl == url) return;
+
+    await pause();
+    await setVolume(0);
+
+    _currentUrl = url;
+    _resetState();
+    await _loadVideoUrl(url, config?.autoplay ?? false);
   }
 
   Future<dynamic> _runJavaScriptSafely(

@@ -51,7 +51,6 @@ final playbackSpeedProvider =
       PlaybackSpeedNotifier.new,
     );
 
-
 BooruPlayer createBooruPlayer({
   required VideoPlayerEngine engine,
   String? userAgent,

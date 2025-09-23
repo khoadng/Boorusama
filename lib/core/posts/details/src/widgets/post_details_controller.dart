@@ -78,13 +78,11 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
 
   final _videoProgress = ValueNotifier(VideoProgress.zero);
   final _isVideoPlaying = ValueNotifier<bool>(false);
-  final _isVideoInitializing = ValueNotifier<bool>(false);
 
   final Map<int, BooruPlayer> _booruPlayers = {};
 
   ValueNotifier<VideoProgress> get videoProgress => _videoProgress;
   ValueNotifier<bool> get isVideoPlaying => _isVideoPlaying;
-  ValueNotifier<bool> get isVideoInitializing => _isVideoInitializing;
 
   void onCurrentPositionChanged(double current, double total, String url) {
     // // check if the current video is the same as the one being played
@@ -142,11 +140,6 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
     _booruPlayers[id] = player;
   }
 
-  // ignore: use_setters_to_change_properties
-  void onInitializing(bool value) {
-    _isVideoInitializing.value = value;
-  }
-
   @override
   void dispose() {
     for (final player in _booruPlayers.values) {
@@ -157,7 +150,6 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
 
     _videoProgress.dispose();
     _isVideoPlaying.dispose();
-    _isVideoInitializing.dispose();
     _seekStreamController.close();
 
     currentPage.dispose();

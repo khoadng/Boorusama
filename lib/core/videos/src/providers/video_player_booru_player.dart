@@ -62,32 +62,56 @@ class VideoPlayerBooruPlayer implements BooruPlayer {
   @override
   bool isPlatformSupported() => true;
 
+  VideoPlayerController _createController(
+    String url,
+    VideoConfig? config,
+  ) {
+    return VideoPlayerController.networkUrl(
+      Uri.parse(url),
+      httpHeaders: config?.headers ?? {},
+    )..addListener(_onVideoPlayerChanged);
+  }
+
+  Future<void> _setupController(VideoPlayerController controller) async {
+    await controller.initialize();
+    _startPositionTimer();
+    _durationController.add(controller.value.duration);
+  }
+
   @override
   Future<void> initialize(
     String url, {
-    Map<String, String>? headers,
-    bool autoplay = false,
+    VideoConfig? config,
   }) async {
     if (_isDisposed) throw StateError('Player has been disposed');
 
-    // Initialize FVP with current engine settings
     FvpManager().ensureInitialized(videoPlayerEngine);
 
-    final controller = VideoPlayerController.networkUrl(
-      Uri.parse(url),
-      httpHeaders: headers ?? {},
-    );
+    final controller = _createController(url, config);
     _controller = controller;
 
-    controller.addListener(_onVideoPlayerChanged);
+    await _setupController(controller);
+  }
 
-    await controller.initialize();
+  @override
+  Future<void> switchUrl(
+    String url, {
+    VideoConfig? config,
+  }) async {
+    if (_isDisposed) throw StateError('Player has been disposed');
 
-    _startPositionTimer();
-    _durationController.add(controller.value.duration);
+    final oldController = _controller;
+    _hasPlayedOnce = false;
 
-    if (autoplay) {
-      await controller.play();
+    final controller = _createController(url, config);
+    await _setupController(controller);
+
+    _controller = controller;
+
+    // Dispose old controller in background
+    if (oldController != null) {
+      oldController.removeListener(_onVideoPlayerChanged);
+      unawaited((() async => oldController.dispose())());
     }
   }
 

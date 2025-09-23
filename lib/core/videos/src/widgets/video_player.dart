@@ -35,7 +35,6 @@ class BooruVideo extends ConsumerStatefulWidget {
     this.onOpenSettings,
     this.headers,
     this.heroTag,
-    this.onInitializing,
     this.userAgent,
     this.videoPlayerEngine,
     this.logger,
@@ -52,7 +51,6 @@ class BooruVideo extends ConsumerStatefulWidget {
   final VoidCallback? onOpenSettings;
   final Map<String, String>? headers;
   final String? heroTag;
-  final ValueChanged<bool>? onInitializing;
   final String? userAgent;
   final VideoPlayerEngine? videoPlayerEngine;
   final Logger? logger;
@@ -65,11 +63,10 @@ class BooruVideo extends ConsumerStatefulWidget {
 class _BooruVideoState extends ConsumerState<BooruVideo> {
   BooruPlayer? _player;
   String? _error;
-  bool _previouslyReportedInitializing = false;
-  Timer? _timer;
   StreamSubscription<Duration>? _positionSubscription;
   StreamSubscription<bool>? _bufferingSubscription;
   bool _isBuffering = false;
+  bool _isDisposing = false;
 
   VideoPlayerEngine get _resolvedEngine => VideoPlayerState.resolveVideoEngine(
     engine: widget.videoPlayerEngine,
@@ -89,6 +86,10 @@ class _BooruVideoState extends ConsumerState<BooruVideo> {
     void Function(String tag, String message)? logMethod,
     String message,
   ) => logMethod?.call('VideoPlayer', message);
+
+  bool _shouldAutoplay() {
+    return mounted && !_isDisposing;
+  }
 
   @override
   void initState() {
@@ -111,7 +112,11 @@ class _BooruVideoState extends ConsumerState<BooruVideo> {
         widget.logger?.verbose,
         'Widget updated, reinitializing player. URL: ${widget.url}',
       );
-      _disposePlayer();
+
+      // Reset disposing flag for new initialization
+      _isDisposing = false;
+      _error = null;
+
       _initializePlayer();
     } else {
       _log(
@@ -135,12 +140,15 @@ class _BooruVideoState extends ConsumerState<BooruVideo> {
       widget.logger?.debug,
       'Updating player settings - Volume: ${widget.sound ? 1.0 : 0.0}, Speed: ${widget.speed}',
     );
-    _player!.setVolume(widget.sound ? 1.0 : 0.0);
-    _player!.setPlaybackSpeed(widget.speed);
+    if (_player case final player?) {
+      player
+        ..setVolume(widget.sound ? 1.0 : 0.0)
+        ..setPlaybackSpeed(widget.speed);
+    }
   }
 
   Future<void> _initializePlayer() async {
-    if (!mounted) return;
+    if (!mounted || _isDisposing) return;
 
     try {
       _log(
@@ -148,6 +156,51 @@ class _BooruVideoState extends ConsumerState<BooruVideo> {
         'Initializing $_resolvedEngine player for ${widget.url}',
       );
 
+      // If we already have a player, try fast URL switching first
+      if (_player != null && !_isDisposing) {
+        _log(
+          widget.logger?.debug,
+          'Using fast URL switching',
+        );
+
+        try {
+          if (_player case final player?) {
+            await player.switchUrl(
+              widget.url,
+              config: VideoConfig(
+                headers: widget.headers,
+                autoplay: widget.autoplay && _shouldAutoplay(),
+              ),
+            );
+          } else {
+            return;
+          }
+
+          _updatePlayerSettings();
+
+          if (mounted && !_isDisposing) {
+            setState(() {});
+            if (_player case final player?) {
+              widget.onVideoPlayerCreated?.call(player);
+            }
+          }
+
+          _log(
+            widget.logger?.verbose,
+            'Fast URL switching successful for: ${widget.url}',
+          );
+          return;
+        } catch (error) {
+          _log(
+            widget.logger?.warn,
+            'Fast URL switching failed for ${widget.url}, falling back to full initialization. Error: $error',
+          );
+          // Fall through to full initialization
+        }
+      }
+
+      // First initialization or no existing player, create new one
+      final oldPlayer = _player;
       final player = switch (_resolvedEngine) {
         VideoPlayerEngine.webview => WebViewBooruPlayer(
           userAgent: widget.userAgent,
@@ -165,35 +218,19 @@ class _BooruVideoState extends ConsumerState<BooruVideo> {
         return;
       }
 
-      // Start timer to show loading indicator if initialization takes too long
-      var initializationCompleted = false;
-      _timer = Timer(
-        const Duration(milliseconds: 1000),
-        () {
-          if (!initializationCompleted) {
-            _log(
-              widget.logger?.debug,
-              'Player initialization taking longer than 1 second, showing loading indicator',
-            );
-            widget.onInitializing?.call(true);
-            _previouslyReportedInitializing = true;
-          }
-        },
-      );
-
       _log(
         widget.logger?.debug,
-        'Initializing player with URL: ${widget.url}, autoplay: ${widget.autoplay}',
+        'Initializing new player with URL: ${widget.url}',
       );
+
       await player.initialize(
         widget.url,
-        headers: widget.headers,
-        autoplay: widget.autoplay,
+        config: VideoConfig(
+          headers: widget.headers,
+          autoplay: widget.autoplay && _shouldAutoplay(),
+        ),
       );
 
-      initializationCompleted = true;
-
-      // Set initial player settings
       _log(
         widget.logger?.debug,
         'Setting initial player configuration - Volume: ${widget.sound ? 1.0 : 0.0}, Speed: ${widget.speed}, Looping: true',
@@ -202,11 +239,19 @@ class _BooruVideoState extends ConsumerState<BooruVideo> {
       await player.setPlaybackSpeed(widget.speed);
       await player.setLooping(true);
 
-      // Listen to position changes
+      if (widget.autoplay && _shouldAutoplay()) {
+        _log(
+          widget.logger?.debug,
+          'Starting autoplay for URL: ${widget.url}',
+        );
+        await player.play();
+      }
+
       _log(
         widget.logger?.debug,
         'Setting up position stream listener',
       );
+      _positionSubscription?.cancel().ignore();
       _positionSubscription = player.positionStream.listen((position) {
         if (widget.onCurrentPositionChanged != null) {
           final current = position.inMilliseconds / 1000.0;
@@ -219,6 +264,7 @@ class _BooruVideoState extends ConsumerState<BooruVideo> {
         widget.logger?.debug,
         'Setting up buffering stream listener',
       );
+      _bufferingSubscription?.cancel().ignore();
       _bufferingSubscription = player.bufferingStream.listen((buffering) {
         if (mounted) {
           setState(() {
@@ -227,16 +273,26 @@ class _BooruVideoState extends ConsumerState<BooruVideo> {
         }
       });
 
-      if (mounted) {
+      if (mounted && !_isDisposing) {
         _log(
           widget.logger?.verbose,
           'Player successfully initialized for URL: ${widget.url}',
         );
-        setState(() {
-          _player = player;
-        });
+
+        _player = player;
+        setState(() {});
         widget.onVideoPlayerCreated?.call(player);
-        _clearInitializing();
+
+        if (oldPlayer != null) {
+          _disposePlayerSafely(oldPlayer);
+        }
+      } else {
+        // Widget is disposing, clean up the newly created player
+        _log(
+          widget.logger?.debug,
+          'Player initialized but widget is disposing, cleaning up',
+        );
+        player.dispose();
       }
     } catch (error) {
       _log(
@@ -247,46 +303,67 @@ class _BooruVideoState extends ConsumerState<BooruVideo> {
         setState(() {
           _error = error.toString();
         });
-        _clearInitializing();
       }
     }
   }
 
-  void _clearInitializing() {
-    if (_previouslyReportedInitializing) {
-      _log(
-        widget.logger?.debug,
-        'Clearing initializing state',
-      );
-      widget.onInitializing?.call(false);
-      _previouslyReportedInitializing = false;
-    }
+  Future<void> _disposePlayer() async {
+    if (_isDisposing) return;
+    _isDisposing = true;
 
-    _timer?.cancel();
-    _timer = null;
-  }
-
-  void _disposePlayer() {
     _log(
       widget.logger?.debug,
       'Disposing player for URL: ${widget.url}',
     );
-    _clearInitializing();
-    _positionSubscription?.cancel();
+
+    // Cancel subscriptions first to stop audio callbacks
+    await _positionSubscription?.cancel();
     _positionSubscription = null;
-    _bufferingSubscription?.cancel();
+    await _bufferingSubscription?.cancel();
     _bufferingSubscription = null;
-    _player?.dispose();
+
+    // Immediately mute and stop the player before disposal
+    if (_player case final player?) {
+      try {
+        await player.setVolume(0);
+        await player.pause();
+      } catch (e) {
+        _log(widget.logger?.warn, 'Error stopping player before disposal: $e');
+      }
+
+      player.dispose();
+    }
+
     _player = null;
     _error = null;
     _isBuffering = false;
+  }
+
+  void _disposePlayerSafely(BooruPlayer player) {
+    _log(
+      widget.logger?.debug,
+      'Safely disposing background player',
+    );
+
+    (() async {
+      try {
+        await player.setVolume(0);
+        await player.pause();
+        player.dispose();
+      } catch (e) {
+        _log(
+          widget.logger?.warn,
+          'Error during background player disposal: $e',
+        );
+      }
+    })();
   }
 
   @override
   void dispose() {
     _log(
       widget.logger?.debug,
-      'Disposing UnifiedBooruVideo widget',
+      'Disposing BooruVideo widget',
     );
     _disposePlayer();
     super.dispose();
