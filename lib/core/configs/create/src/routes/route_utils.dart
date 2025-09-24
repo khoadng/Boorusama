@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../../router.dart';
 import '../../../config/types.dart';
+import '../types/edit_booru_config_id.dart';
 
 void goToUpdateBooruConfigPage(
   WidgetRef ref, {
@@ -14,18 +15,22 @@ void goToUpdateBooruConfigPage(
     Uri(
       path: '/boorus/${config.id}/update',
       queryParameters: {
-        if (initialTab != null) 'q': initialTab,
+        'q': ?initialTab,
       },
     ).toString(),
   );
 }
 
 void goToAddBooruConfigPage(
-  WidgetRef ref,
-) {
+  WidgetRef ref, {
+  EditBooruConfigId? initialConfigId,
+}) {
   ref.router.push(
     Uri(
       path: '/boorus/add',
+      queryParameters: {
+        ...?initialConfigId?.toQueryParameters(),
+      },
     ).toString(),
   );
 }

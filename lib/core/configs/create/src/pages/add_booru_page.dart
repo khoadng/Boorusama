@@ -21,76 +21,69 @@ import '../types/validator/booru_url_validator.dart';
 import 'add_unknown_booru_page.dart';
 import 'create_booru_config_scaffold.dart';
 
-enum AddBooruPhase {
-  url,
-  newUnknownBooru,
-  newKnownBooru,
-}
-
 class AddBooruPage extends ConsumerStatefulWidget {
   const AddBooruPage({
     required this.setCurrentBooruOnSubmit,
     super.key,
     this.backgroundColor,
+    this.initialConfigId,
   });
 
   final bool setCurrentBooruOnSubmit;
   final Color? backgroundColor;
+  final EditBooruConfigId? initialConfigId;
 
   @override
   ConsumerState<AddBooruPage> createState() => _AddBooruPageState();
 }
 
 class _AddBooruPageState extends ConsumerState<AddBooruPage> {
-  var phase = AddBooruPhase.url;
-  var url = '';
-  BooruType? booru;
+  late EditBooruConfigId? configId = widget.initialConfigId;
 
   @override
   Widget build(BuildContext context) {
     final booruDb = ref.watch(booruDbProvider);
 
-    return switch (phase) {
-      AddBooruPhase.url => AnalyticsInitStateHook(
+    return switch (configId) {
+      null => AnalyticsInitStateHook(
         screenName: 'config/url_input',
         child: AddBooruPageInternal(
           backgroundColor: widget.backgroundColor,
           setCurrentBooruOnSubmit: widget.setCurrentBooruOnSubmit,
           onBooruSubmit: (url) => setState(() {
-            booru = intToBooruType(booruDb.getBooruFromUrl(url)?.id);
-            phase = booru == BooruType.unknown
-                ? AddBooruPhase.newUnknownBooru
-                : AddBooruPhase.newKnownBooru;
-            this.url = url;
+            configId = EditBooruConfigId.newId(
+              booruType: BooruType.fromLegacyId(
+                booruDb.getBooruFromUrl(url)?.id,
+              ),
+              url: url,
+            );
           }),
         ),
       ),
-      AddBooruPhase.newUnknownBooru => CreateBooruConfigScope(
-        id: EditBooruConfigId.newId(
-          booruType: BooruType.unknown,
-          url: url,
-        ),
-        config: BooruConfig.defaultConfig(
-          booruType: BooruType.unknown,
-          url: url,
-          customDownloadFileNameFormat: null,
-        ),
-        child: AnalyticsInitStateHook(
-          screenName: 'config/create_unknown_booru',
-          child: AddUnknownBooruPage(
-            setCurrentBooruOnSubmit: widget.setCurrentBooruOnSubmit,
-            backgroundColor: widget.backgroundColor,
+      EditBooruConfigId(booruType: BooruType.unknown) && final id =>
+        CreateBooruConfigScope(
+          id: id,
+          config: BooruConfig.defaultConfig(
+            booruType: id.booruType,
+            url: id.url,
+            customDownloadFileNameFormat: null,
+          ),
+          child: AnalyticsInitStateHook(
+            screenName: 'config/create_unknown_booru',
+            child: AddUnknownBooruPage(
+              setCurrentBooruOnSubmit: widget.setCurrentBooruOnSubmit,
+              backgroundColor: widget.backgroundColor,
+            ),
           ),
         ),
-      ),
-      AddBooruPhase.newKnownBooru => _buildNewKnownBooru(booru!, url),
+      final id => _buildNewKnownBooru(id),
     };
   }
 
-  Widget _buildNewKnownBooru(BooruType booruType, String booruUrl) {
+  Widget _buildNewKnownBooru(EditBooruConfigId configId) {
     final defaultConfig = BooruConfig.defaultConfig(
-      booruType: booruType,
-      url: booruUrl,
+      booruType: configId.booruType,
+      url: configId.url,
       customDownloadFileNameFormat: null,
     );
     final booruBuilder = ref
@@ -101,10 +94,7 @@ class _AddBooruPageState extends ConsumerState<AddBooruPage> {
         ? AddKnownBooru(
             child: booruBuilder(
               context,
-              EditBooruConfigId.newId(
-                booruType: booruType,
-                url: booruUrl,
-              ),
+              configId,
               backgroundColor: widget.backgroundColor,
             ),
           )

@@ -23,11 +23,37 @@ class EditBooruConfigId extends Equatable {
       booruType = config.auth.booruType,
       url = config.url;
 
+  static EditBooruConfigId? fromUri(Uri uri) => switch (uri.queryParameters) {
+    {
+      'type': final typeStr,
+      'url': final url,
+      'id': final idStr,
+    } =>
+      switch ((
+        int.tryParse(typeStr),
+        int.tryParse(idStr),
+      )) {
+        (final type?, final id?) => EditBooruConfigId(
+          id: id,
+          booruType: BooruType.fromLegacyId(type),
+          url: url,
+        ),
+        _ => null,
+      },
+    _ => null,
+  };
+
   final int id;
   final BooruType booruType;
   final String url;
 
   bool get isNew => id == -1;
+
+  Map<String, String> toQueryParameters() => {
+    'type': booruType.id.toString(),
+    'url': url,
+    'id': id.toString(),
+  };
 
   @override
   List<Object> get props => [id, booruType, url];
