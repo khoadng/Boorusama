@@ -50,3 +50,14 @@ Future<void> openAppearancePage(WidgetRef ref) {
     ).toString(),
   );
 }
+
+Future<void> openDataAndStoragePage(WidgetRef ref) {
+  return ref.router.push(
+    Uri(
+      path: '/settings',
+      queryParameters: {
+        'initial': 'data_and_storage',
+      },
+    ).toString(),
+  );
+}

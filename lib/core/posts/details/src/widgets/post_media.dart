@@ -13,6 +13,7 @@ import '../../../../http/providers.dart';
 import '../../../../settings/providers.dart';
 import '../../../../settings/routes.dart';
 import '../../../../videos/providers.dart';
+import '../../../../videos/types.dart';
 import '../../../../videos/widgets.dart';
 import '../../../details_pageview/widgets.dart';
 import '../../../post/post.dart';
@@ -75,6 +76,9 @@ class PostMedia<T extends Post> extends ConsumerWidget {
                   ),
                   logger: ref.watch(loggerProvider),
                   autoplay: true,
+                  cacheManager: ref.watch(videoCacheManagerProvider),
+                  cacheDelay: createVideoCacheDelayCallback(post),
+                  fileSize: post.fileSize > 0 ? post.fileSize : null,
                 ),
               ),
               if (context.isLargeScreen)

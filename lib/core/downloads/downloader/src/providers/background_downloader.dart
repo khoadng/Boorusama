@@ -1,18 +1,30 @@
 // Dart imports:
 import 'dart:async';
+import 'dart:io';
 
 // Package imports:
 import 'package:background_downloader/background_downloader.dart';
+import 'package:cache_manager/cache_manager.dart';
 import 'package:foundation/foundation.dart';
+import 'package:path/path.dart';
 
 // Project imports:
 import '../../../../ddos_solver/types.dart';
+import '../../../notifications/notification.dart';
 import '../../../path/directory.dart';
 import '../types/download.dart';
 import '../types/metadata.dart';
 import 'file_downloader_ex.dart';
 
 class BackgroundDownloader implements DownloadService {
+  const BackgroundDownloader({
+    this.videoCacheManager,
+    this.downloadNotificationsFuture,
+  });
+
+  final VideoCacheManager? videoCacheManager;
+  final Future<DownloadNotifications>? downloadNotificationsFuture;
+
   @override
   DownloadTaskInfoOrError download({
     required String url,
@@ -25,6 +37,25 @@ class BackgroundDownloader implements DownloadService {
     ($) async {
       final downloadDirTask = await tryGetDownloadDirectory().run();
       final downloadDir = downloadDirTask.fold((l) => null, (r) => r);
+      final isVideo = metadata?.isVideo ?? false;
+
+      // Check if this is a video and if we have it in cache
+      if (videoCacheManager case final vcm?
+          when isVideo && downloadDir != null) {
+        final cachedPath = await vcm.getCachedVideoPath(url);
+        if (cachedPath case final cp?) {
+          try {
+            return _copyCachedContentToTarget(
+              cp,
+              downloadDir.path,
+              filename,
+              skipIfExists,
+            );
+          } catch (e) {
+            // Fall back to normal download if cache copy fails
+          }
+        }
+      }
 
       final task = DownloadTask(
         url: url,
@@ -58,6 +89,26 @@ class BackgroundDownloader implements DownloadService {
     Map<String, String>? headers,
   }) => TaskEither.Do(
     ($) async {
+      final isVideo = metadata?.isVideo ?? false;
+
+      // Check if this is a video and if we have it in cache
+      if (videoCacheManager case final vcm? when isVideo) {
+        final cachedPath = await vcm.getCachedVideoPath(url);
+        if (cachedPath case final cp?) {
+          try {
+            return _copyCachedContentToTarget(
+              cp,
+              path,
+              filename,
+              skipIfExists,
+            );
+          } catch (e) {
+            // Fall back to normal download if cache copy fails
+          }
+        }
+      }
+
+      // Proceed with normal download
       final task = DownloadTask(
         url: url,
         filename: filename,
@@ -91,6 +142,74 @@ class BackgroundDownloader implements DownloadService {
   @override
   Future<void> resumeAll(String group) {
     return FileDownloader().resumeAll(group: group);
+  }
+
+  Future<DownloadTaskInfo> _copyCachedContentToTarget(
+    String cachedPath,
+    String targetDir,
+    String filename,
+    bool? skipIfExists,
+  ) async {
+    final sourceFile = File(cachedPath);
+    if (!sourceFile.existsSync()) {
+      throw Exception('Cached file not found: $cachedPath');
+    }
+
+    // Ensure target directory exists
+    final targetDirectory = Directory(targetDir);
+    if (!targetDirectory.existsSync()) {
+      await targetDirectory.create(recursive: true);
+    }
+
+    final targetPath = join(targetDir, filename);
+    final targetFile = File(targetPath);
+
+    // Check if target file already exists
+    if (skipIfExists == true && targetFile.existsSync()) {
+      // Show completion notification for existing file
+      if (downloadNotificationsFuture case final future?) {
+        unawaited(
+          future.then(
+            (notifications) {
+              try {
+                notifications.showDownloadCompleteNotification(
+                  filename,
+                  fromCache: true,
+                  customMessage: '$filename was already saved from cache',
+                );
+              } catch (e) {
+                // Ignore notification errors
+              }
+            },
+          ),
+        );
+      }
+
+      return DownloadTaskInfo(
+        path: targetPath,
+        id: 'cached_${DateTime.now().millisecondsSinceEpoch}',
+      );
+    }
+
+    // Copy cached file to target location
+    await sourceFile.copy(targetPath);
+
+    // Show completion notification for successful copy
+    if (downloadNotificationsFuture case final future?) {
+      unawaited(
+        future.then(
+          (notifications) => notifications.showDownloadCompleteNotification(
+            filename,
+            fromCache: true,
+          ),
+        ),
+      );
+    }
+
+    return DownloadTaskInfo(
+      path: targetPath,
+      id: 'cached_${DateTime.now().millisecondsSinceEpoch}',
+    );
   }
 }
 

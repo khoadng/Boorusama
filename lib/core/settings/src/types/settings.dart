@@ -6,6 +6,7 @@ import 'package:equatable/equatable.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
+import '../../../../foundation/caching/types.dart';
 import '../../../backups/auto/auto_backup_settings.dart';
 import '../../../configs/gesture/gesture.dart';
 import '../../../theme/theme_configs.dart';
@@ -44,6 +45,8 @@ class Settings extends Equatable {
     required this.searchBarPosition,
     required this.hapticFeedbackLevel,
     required this.autoBackup,
+    required this.videoCacheMaxSize,
+    required this.enableVideoCache,
   });
 
   Settings.fromJson(Map<String, dynamic> json)
@@ -115,7 +118,12 @@ class Settings extends Equatable {
           json['swipeAreaToOpenSidebarPercentage'] ?? 5,
       autoBackup = json['autoBackup'] != null
           ? AutoBackupSettings.fromJson(json['autoBackup'])
-          : AutoBackupSettings.disabled;
+          : AutoBackupSettings.disabled,
+      videoCacheMaxSize = switch (json['videoCacheMaxSize']) {
+        final v? => CacheSize.tryParse(v) ?? CacheSize.oneGigabyte,
+        _ => CacheSize.oneGigabyte,
+      },
+      enableVideoCache = json['enableVideoCache'] ?? true;
 
   static const defaultSettings = Settings(
     listing: ImageListingSettings(
@@ -171,6 +179,8 @@ class Settings extends Equatable {
     searchBarPosition: SearchBarPosition.top,
     hapticFeedbackLevel: HapticFeedbackLevel.balanced,
     autoBackup: AutoBackupSettings.disabled,
+    videoCacheMaxSize: CacheSize.oneGigabyte,
+    enableVideoCache: true,
   );
 
   final ImageListingSettings listing;
@@ -229,6 +239,10 @@ class Settings extends Equatable {
 
   final AutoBackupSettings autoBackup;
 
+  final CacheSize videoCacheMaxSize;
+
+  final bool enableVideoCache;
+
   Settings copyWith({
     String? blacklistedTags,
     String? language,
@@ -261,6 +275,8 @@ class Settings extends Equatable {
     SearchBarPosition? searchBarPosition,
     HapticFeedbackLevel? hapticFeedbackLevel,
     AutoBackupSettings? autoBackup,
+    CacheSize? videoCacheMaxSize,
+    bool? enableVideoCache,
   }) => Settings(
     listing: listing ?? this.listing,
     viewer: viewer ?? this.viewer,
@@ -304,6 +320,8 @@ class Settings extends Equatable {
     searchBarPosition: searchBarPosition ?? this.searchBarPosition,
     hapticFeedbackLevel: hapticFeedbackLevel ?? this.hapticFeedbackLevel,
     autoBackup: autoBackup ?? this.autoBackup,
+    videoCacheMaxSize: videoCacheMaxSize ?? this.videoCacheMaxSize,
+    enableVideoCache: enableVideoCache ?? this.enableVideoCache,
   );
 
   Map<String, dynamic> toJson() {
@@ -342,6 +360,8 @@ class Settings extends Equatable {
       'searchBarPosition': searchBarPosition.index,
       'hapticFeedbackLevel': hapticFeedbackLevel.index,
       'autoBackup': autoBackup.toJson(),
+      'videoCacheMaxSize': videoCacheMaxSize.displayString(),
+      'enableVideoCache': enableVideoCache,
     };
   }
 
@@ -377,6 +397,8 @@ class Settings extends Equatable {
     searchBarPosition,
     hapticFeedbackLevel,
     autoBackup,
+    videoCacheMaxSize,
+    enableVideoCache,
   ];
 
   bool get appLockEnabled => appLockType == AppLockType.biometrics;

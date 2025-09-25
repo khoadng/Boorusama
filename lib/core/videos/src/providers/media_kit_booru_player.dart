@@ -10,6 +10,7 @@ import 'package:media_kit_video/media_kit_video.dart';
 
 // Project imports:
 import '../types/booru_player.dart';
+import '../types/video_source.dart';
 import 'media_kit_manager.dart';
 
 class MediaKitBooruPlayer implements BooruPlayer {
@@ -72,9 +73,9 @@ class MediaKitBooruPlayer implements BooruPlayer {
     });
   }
 
-  Future<void> _openMedia(String url, VideoConfig? config) async {
+  Future<void> _openMedia(VideoSource source, VideoConfig? config) async {
     final media = Media(
-      url,
+      source.url,
       httpHeaders: config?.headers ?? {},
     );
 
@@ -88,7 +89,7 @@ class MediaKitBooruPlayer implements BooruPlayer {
 
   @override
   Future<void> initialize(
-    String url, {
+    VideoSource source, {
     VideoConfig? config,
   }) async {
     if (_isDisposed) throw StateError('Player has been disposed');
@@ -104,23 +105,23 @@ class MediaKitBooruPlayer implements BooruPlayer {
     );
 
     _setupStreamListeners();
-    await _openMedia(url, config);
+    await _openMedia(source, config);
 
     _isInitialized = true;
   }
 
   @override
   Future<void> switchUrl(
-    String url, {
+    VideoSource source, {
     VideoConfig? config,
   }) async {
     if (_isDisposed) throw StateError('Player has been disposed');
     if (!_isInitialized) {
-      return initialize(url, config: config);
+      return initialize(source, config: config);
     }
 
     _hasPlayedOnce = false;
-    await _openMedia(url, config);
+    await _openMedia(source, config);
   }
 
   void _handleSmartBuffering(bool buffering) {

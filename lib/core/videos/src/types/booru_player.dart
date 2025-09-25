@@ -4,15 +4,18 @@ import 'dart:async';
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Project imports:
+import 'video_source.dart';
+
 abstract class BooruPlayer {
   Future<void> initialize(
-    String url, {
+    VideoSource source, {
     VideoConfig? config,
   });
 
   /// Fast URL switching without full player recreation when possible
   Future<void> switchUrl(
-    String url, {
+    VideoSource source, {
     VideoConfig? config,
   });
 

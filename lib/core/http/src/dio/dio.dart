@@ -21,7 +21,7 @@ import 'dio_options.dart';
 import 'dio_protection_interceptor.dart';
 
 Dio newGenericDio({
-  required String baseUrl,
+  required String? baseUrl,
   String? userAgent,
   Logger? logger,
   bool? supportsHttp2,
@@ -33,7 +33,7 @@ Dio newGenericDio({
   final dio =
       Dio(
           BaseOptions(
-            baseUrl: baseUrl,
+            baseUrl: baseUrl ?? '',
             headers: {
               if (userAgent != null) AppHttpHeaders.userAgentHeader: userAgent,
               ...?headers,

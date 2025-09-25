@@ -5,6 +5,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:cache_manager/cache_manager.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
 
@@ -20,13 +21,18 @@ import '../providers/video_player_booru_player.dart';
 import '../providers/webview_booru_player.dart';
 import '../types/booru_player.dart';
 import '../types/video_player_state.dart';
+import '../types/video_source.dart';
 import 'video_player_error_container.dart';
+
+typedef CacheDelayCallback =
+    Duration Function(String url, VideoPlayerState state);
 
 class BooruVideo extends ConsumerStatefulWidget {
   const BooruVideo({
     required this.url,
     required this.aspectRatio,
     super.key,
+    this.cacheManager,
     this.onCurrentPositionChanged,
     this.onVideoPlayerCreated,
     this.sound = true,
@@ -39,15 +45,19 @@ class BooruVideo extends ConsumerStatefulWidget {
     this.videoPlayerEngine,
     this.logger,
     this.autoplay = false,
+    this.cacheDelay,
+    this.fileSize,
   });
 
   final String url;
   final double? aspectRatio;
+  final VideoCacheManager? cacheManager;
   final PositionCallback? onCurrentPositionChanged;
   final VideoPlayerCreatedCallback? onVideoPlayerCreated;
   final bool sound;
   final double speed;
   final String? thumbnailUrl;
+  final int? fileSize;
   final VoidCallback? onOpenSettings;
   final Map<String, String>? headers;
   final String? heroTag;
@@ -55,6 +65,7 @@ class BooruVideo extends ConsumerStatefulWidget {
   final VideoPlayerEngine? videoPlayerEngine;
   final Logger? logger;
   final bool autoplay;
+  final CacheDelayCallback? cacheDelay;
 
   @override
   ConsumerState<BooruVideo> createState() => _BooruVideoState();
@@ -67,6 +78,8 @@ class _BooruVideoState extends ConsumerState<BooruVideo> {
   StreamSubscription<bool>? _bufferingSubscription;
   bool _isBuffering = false;
   bool _isDisposing = false;
+  Timer? _cacheDelayTimer;
+  String? _cachingUrl;
 
   VideoPlayerEngine get _resolvedEngine => VideoPlayerState.resolveVideoEngine(
     engine: widget.videoPlayerEngine,
@@ -113,6 +126,10 @@ class _BooruVideoState extends ConsumerState<BooruVideo> {
         'Widget updated, reinitializing player. URL: ${widget.url}',
       );
 
+      _cacheDelayTimer?.cancel();
+      _cacheDelayTimer = null;
+      _cachingUrl = null;
+
       // Reset disposing flag for new initialization
       _isDisposing = false;
       _error = null;
@@ -156,6 +173,8 @@ class _BooruVideoState extends ConsumerState<BooruVideo> {
         'Initializing $_resolvedEngine player for ${widget.url}',
       );
 
+      final source = await _createVideoSource();
+
       // If we already have a player, try fast URL switching first
       if (_player != null && !_isDisposing) {
         _log(
@@ -166,7 +185,7 @@ class _BooruVideoState extends ConsumerState<BooruVideo> {
         try {
           if (_player case final player?) {
             await player.switchUrl(
-              widget.url,
+              source,
               config: VideoConfig(
                 headers: widget.headers,
                 autoplay: widget.autoplay && _shouldAutoplay(),
@@ -224,7 +243,7 @@ class _BooruVideoState extends ConsumerState<BooruVideo> {
       );
 
       await player.initialize(
-        widget.url,
+        source,
         config: VideoConfig(
           headers: widget.headers,
           autoplay: widget.autoplay && _shouldAutoplay(),
@@ -286,6 +305,8 @@ class _BooruVideoState extends ConsumerState<BooruVideo> {
         if (oldPlayer != null) {
           _disposePlayerSafely(oldPlayer);
         }
+
+        _scheduleDelayedCaching();
       } else {
         // Widget is disposing, clean up the newly created player
         _log(
@@ -315,6 +336,9 @@ class _BooruVideoState extends ConsumerState<BooruVideo> {
       widget.logger?.debug,
       'Disposing player for URL: ${widget.url}',
     );
+
+    _cacheDelayTimer?.cancel();
+    _cacheDelayTimer = null;
 
     // Cancel subscriptions first to stop audio callbacks
     await _positionSubscription?.cancel();
@@ -367,6 +391,92 @@ class _BooruVideoState extends ConsumerState<BooruVideo> {
     );
     _disposePlayer();
     super.dispose();
+  }
+
+  /// Creates a VideoSource with caching information
+  Future<VideoSource> _createVideoSource() async {
+    final cacheManager = widget.cacheManager;
+    if (cacheManager == null) {
+      return StreamingVideoSource(widget.url);
+    }
+
+    final cachedUrl = await _getOptimalVideoUrl(
+      cacheManager,
+      widget.url,
+      headers: widget.headers,
+    );
+
+    return switch (cachedUrl == widget.url) {
+      true => StreamingVideoSource(widget.url),
+      false => CachedVideoSource.fromUrl(
+        cachedUrl: cachedUrl,
+        originalUrl: widget.url,
+      ),
+    };
+  }
+
+  /// Returns cached URL if available, otherwise returns streaming URL
+  Future<String> _getOptimalVideoUrl(
+    VideoCacheManager cacheManager,
+    String originalUrl, {
+    Map<String, String>? headers,
+    Duration? maxAge = const Duration(days: 7),
+  }) async {
+    final isCached = await cacheManager.isVideoCached(
+      originalUrl,
+      maxAge: maxAge,
+    );
+    if (isCached) {
+      final cachedPath = await cacheManager.getCachedVideoPath(originalUrl);
+      if (cachedPath != null) {
+        return 'file://$cachedPath';
+      }
+    }
+
+    return originalUrl;
+  }
+
+  void _scheduleDelayedCaching() {
+    final cacheManager = widget.cacheManager;
+    if (cacheManager == null || _cachingUrl == widget.url) return;
+
+    _cacheDelayTimer?.cancel();
+    _cachingUrl = widget.url;
+
+    final cacheDelay =
+        widget.cacheDelay?.call(widget.url, _currentState) ??
+        const Duration(seconds: 3);
+    _log(
+      widget.logger?.debug,
+      'Scheduling delayed caching for ${widget.url} after ${cacheDelay.inSeconds}s of playback',
+    );
+
+    _cacheDelayTimer = Timer(cacheDelay, () {
+      if (!mounted || _isDisposing || _cachingUrl != widget.url) return;
+
+      _log(
+        widget.logger?.debug,
+        'Starting background cache for ${widget.url}',
+      );
+
+      unawaited(
+        cacheManager
+            .cacheVideo(
+              widget.url,
+              headers: widget.headers,
+              fileSize: widget.fileSize,
+            )
+            .catchError(
+              (e) {
+                _log(
+                  widget.logger?.warn,
+                  'Background caching failed for ${widget.url}: $e',
+                );
+                return null;
+              },
+            ),
+      );
+    });
   }
 
   @override

@@ -367,6 +367,9 @@
       },
       "mute_video": "Mute video by default",
       "video_section_title": "Video",
+      "manage_cache": "Manage cache",
+      "enable_video_cache": "Enable video cache",
+      "enable_video_cache_description": "Download videos while streaming and cache them to reduce data usage and faster playback on subsequent views.",
       "video": {
         "video_player_engine": "Video player engine",
         "engine": {
@@ -450,6 +453,10 @@
       "all_cache": "All cache",
       "tag_cache": "Tag cache",
       "image_only_cache": "Image only cache",
+      "video_cache": "Video cache",
+      "video_cache_limit": "Video cache limit",
+      "video_cache_limit_description": "Maximum size for video cache storage",
+      "no_limit": "No Limit",
       "bookmark_images": "Bookmark images",
       "loading": "Loading...",
       "storage": "Storage",
@@ -458,6 +465,7 @@
         "groups": {
           "system": "System",
           "images": "Images",
+          "videos": "Videos",
           "others": "Others",
           "free": "Free"
         }

@@ -69,6 +69,7 @@ Future<DirectorySizeInfo> getCacheSize() async {
     cacheDir,
     excludedDirNames: [
       cacheImageFolderName,
+      VideoCacheManager.defaultSubPath,
     ],
   );
 }
@@ -78,6 +79,13 @@ Future<DirectorySizeInfo> getImageCacheSize() async {
   final path = join(cacheDir.path, cacheImageFolderName);
   final imageCacheDir = Directory(path);
   return getDirectorySize(imageCacheDir);
+}
+
+Future<DirectorySizeInfo> getVideoCacheSize() async {
+  final cacheDir = await getTemporaryDirectory();
+  final path = join(cacheDir.path, VideoCacheManager.defaultSubPath);
+  final videoCacheDir = Directory(path);
+  return getDirectorySize(videoCacheDir);
 }
 
 Future<void> clearCache() async {

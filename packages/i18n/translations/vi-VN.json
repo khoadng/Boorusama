@@ -367,6 +367,9 @@
       },
       "mute_video": "Mặc định tắt tiếng video",
       "video_section_title": "Video",
+      "manage_cache": "Quản lý bộ nhớ đệm",
+      "enable_video_cache": "Bật bộ nhớ đệm video",
+      "enable_video_cache_description": "Tải video trong lúc xem và lưu vào bộ nhớ đệm để giảm sử dụng dữ liệu và phát nhanh hơn khi xem lại.",
       "video": {
         "video_player_engine": "Trình phát video",
         "engine": {
@@ -450,6 +453,10 @@
       "all_cache": "Tất cả bộ nhớ đệm",
       "tag_cache": "Bộ nhớ đệm thẻ",
       "image_only_cache": "Bộ nhớ đệm chỉ hình ảnh",
+      "video_cache": "Bộ nhớ đệm video",
+      "video_cache_limit": "Giới hạn bộ nhớ đệm video",
+      "video_cache_limit_description": "Kích thước tối đa cho bộ nhớ đệm video",
+      "no_limit": "Không giới hạn",
       "bookmark_images": "Ảnh được đánh dấu",
       "loading": "Đang tải...",
       "storage": "Bộ nhớ",
@@ -458,6 +465,7 @@
         "groups": {
           "system": "Hệ thống",
           "images": "Ảnh",
+          "videos": "Video",
           "others": "Khác",
           "free": "Trống"
         }

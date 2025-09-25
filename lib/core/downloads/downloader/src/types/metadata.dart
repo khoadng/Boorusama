@@ -11,6 +11,7 @@ class DownloaderMetadata extends Equatable {
     required this.fileSize,
     required this.siteUrl,
     required this.group,
+    this.isVideo = false,
   });
 
   factory DownloaderMetadata.fromJson(Map<String, dynamic> json) {
@@ -19,6 +20,7 @@ class DownloaderMetadata extends Equatable {
       fileSize: json['fileSize'],
       siteUrl: json['siteUrl'],
       group: json['group'],
+      isVideo: json['isVideo'] ?? false,
     );
   }
 
@@ -33,12 +35,14 @@ class DownloaderMetadata extends Equatable {
   final int? fileSize;
   final String? siteUrl;
   final String? group;
+  final bool isVideo;
 
   static const DownloaderMetadata empty = DownloaderMetadata(
     thumbnailUrl: null,
     fileSize: null,
     siteUrl: null,
     group: null,
+    isVideo: false,
   );
 
   Map<String, dynamic> toJson() {
@@ -47,6 +51,7 @@ class DownloaderMetadata extends Equatable {
       'fileSize': fileSize,
       'siteUrl': siteUrl,
       'group': group,
+      'isVideo': isVideo,
     };
   }
 
@@ -55,5 +60,11 @@ class DownloaderMetadata extends Equatable {
   }
 
   @override
-  List<Object?> get props => [thumbnailUrl, fileSize, siteUrl, group];
+  List<Object?> get props => [
+    thumbnailUrl,
+    fileSize,
+    siteUrl,
+    group,
+    isVideo,
+  ];
 }

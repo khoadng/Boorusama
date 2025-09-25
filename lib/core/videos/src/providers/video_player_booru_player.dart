@@ -10,6 +10,7 @@ import 'package:video_player/video_player.dart';
 // Project imports:
 import '../../../settings/settings.dart';
 import '../types/booru_player.dart';
+import '../types/video_source.dart';
 import 'fvp_manager.dart';
 
 class VideoPlayerBooruPlayer implements BooruPlayer {
@@ -63,11 +64,11 @@ class VideoPlayerBooruPlayer implements BooruPlayer {
   bool isPlatformSupported() => true;
 
   VideoPlayerController _createController(
-    String url,
+    VideoSource source,
     VideoConfig? config,
   ) {
     return VideoPlayerController.networkUrl(
-      Uri.parse(url),
+      Uri.parse(source.url),
       httpHeaders: config?.headers ?? {},
     )..addListener(_onVideoPlayerChanged);
   }
@@ -80,14 +81,14 @@ class VideoPlayerBooruPlayer implements BooruPlayer {
 
   @override
   Future<void> initialize(
-    String url, {
+    VideoSource source, {
     VideoConfig? config,
   }) async {
     if (_isDisposed) throw StateError('Player has been disposed');
 
     FvpManager().ensureInitialized(videoPlayerEngine);
 
-    final controller = _createController(url, config);
+    final controller = _createController(source, config);
     _controller = controller;
 
     await _setupController(controller);
@@ -95,7 +96,7 @@ class VideoPlayerBooruPlayer implements BooruPlayer {
 
   @override
   Future<void> switchUrl(
-    String url, {
+    VideoSource source, {
     VideoConfig? config,
   }) async {
     if (_isDisposed) throw StateError('Player has been disposed');
@@ -103,7 +104,7 @@ class VideoPlayerBooruPlayer implements BooruPlayer {
     final oldController = _controller;
     _hasPlayedOnce = false;
 
-    final controller = _createController(url, config);
+    final controller = _createController(source, config);
     await _setupController(controller);
 
     _controller = controller;

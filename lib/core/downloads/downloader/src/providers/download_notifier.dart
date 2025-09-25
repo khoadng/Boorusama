@@ -231,6 +231,7 @@ Future<DownloadTaskInfo?> _download(
             fileSize: downloadable.fileSize,
             siteUrl: PostSource.from(downloadable.thumbnailImageUrl).url,
             group: group,
+            isVideo: downloadable.isVideo,
           ),
           url: urlData.url,
           filename: fileName,

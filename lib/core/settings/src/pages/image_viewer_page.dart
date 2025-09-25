@@ -10,6 +10,7 @@ import '../../../configs/config/widgets.dart';
 import '../../../router.dart';
 import '../../../videos/providers.dart';
 import '../../../widgets/widgets.dart';
+import '../../routes.dart';
 import '../providers/settings_notifier.dart';
 import '../providers/settings_provider.dart';
 import '../types/types.dart';
@@ -156,6 +157,43 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
             SettingsHeader(
               label: context.t.settings.image_viewer.video_section_title,
             ),
+            SettingsNavigationTile(
+              title: context.t.settings.image_viewer.video.video_player_engine,
+              value: settings.viewer.videoPlayerEngine,
+              valueBuilder: (engine) =>
+                  VideoEngineUtils.getUnderlyingEngineName(
+                    engine,
+                    platform: Theme.of(context).platform,
+                    context: context,
+                  ),
+              onTap: () {
+                showBooruModalBottomSheet(
+                  context: context,
+                  builder: (context) => const _VideoEngineSelectorSheet(),
+                );
+              },
+            ),
+            BooruSwitchListTile(
+              title: Text(context.t.settings.image_viewer.enable_video_cache),
+              subtitle: Text(
+                context.t.settings.image_viewer.enable_video_cache_description,
+              ),
+              value: settings.enableVideoCache,
+              onChanged: (value) => notifer.updateSettings(
+                settings.copyWith(enableVideoCache: value),
+              ),
+            ),
+            TextButton(
+              style: TextButton.styleFrom(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 8,
+                ),
+              ),
+              onPressed: () {
+                openDataAndStoragePage(ref);
+              },
+              child: Text(context.t.settings.image_viewer.manage_cache),
+            ),
             BooruSwitchListTile(
               title: Text(context.t.settings.image_viewer.mute_video),
               value: settings.viewer.muteAudioByDefault,
@@ -171,21 +209,7 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
             ),
           ],
         ),
-        SettingsNavigationTile(
-          title: context.t.settings.image_viewer.video.video_player_engine,
-          value: settings.viewer.videoPlayerEngine,
-          valueBuilder: (engine) => VideoEngineUtils.getUnderlyingEngineName(
-            engine,
-            platform: Theme.of(context).platform,
-            context: context,
-          ),
-          onTap: () {
-            showBooruModalBottomSheet(
-              context: context,
-              builder: (context) => const _VideoEngineSelectorSheet(),
-            );
-          },
-        ),
+
         BooruConfigMoreSettingsRedirectCard.imageViewer(
           extraActions: [
             RedirectAction(

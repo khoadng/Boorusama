@@ -115,45 +115,54 @@ class StorageSegmentBar extends StatelessWidget {
 
     if (visibleSegments.isEmpty) return const SizedBox.shrink();
 
-    return Wrap(
-      spacing: 16,
-      runSpacing: 8,
-      children: visibleSegments.map((segment) {
-        return Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 8,
-              height: 8,
-              decoration: BoxDecoration(
-                color: segment.color,
-                shape: BoxShape.circle,
-              ),
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: visibleSegments.asMap().entries.map((entry) {
+          final index = entry.key;
+          final segment = entry.value;
+
+          return Padding(
+            padding: EdgeInsets.only(
+              right: index < visibleSegments.length - 1 ? 16 : 0,
             ),
-            const SizedBox(width: 6),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
-                  segment.name,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    fontWeight: FontWeight.w500,
+                Container(
+                  width: 8,
+                  height: 8,
+                  decoration: BoxDecoration(
+                    color: segment.color,
+                    shape: BoxShape.circle,
                   ),
                 ),
-                if (segment.subtitle != null)
-                  Text(
-                    segment.subtitle!,
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
-                      fontSize: 11,
+                const SizedBox(width: 6),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      segment.name,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
-                  ),
+                    if (segment.subtitle != null)
+                      Text(
+                        segment.subtitle!,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                          fontSize: 11,
+                        ),
+                      ),
+                  ],
+                ),
               ],
             ),
-          ],
-        );
-      }).toList(),
+          );
+        }).toList(),
+      ),
     );
   }
 }

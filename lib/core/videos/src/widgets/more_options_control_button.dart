@@ -2,11 +2,13 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../../../../foundation/display.dart';
+import '../../../settings/routes.dart';
 import '../../../widgets/widgets.dart';
 
 class MoreOptionsControlButton extends StatelessWidget {
@@ -41,7 +43,7 @@ class MoreOptionsControlButton extends StatelessWidget {
   }
 }
 
-class BooruVideoOptionSheet extends StatelessWidget {
+class BooruVideoOptionSheet extends ConsumerWidget {
   const BooruVideoOptionSheet({
     required this.value,
     required this.onChanged,
@@ -52,7 +54,7 @@ class BooruVideoOptionSheet extends StatelessWidget {
   final void Function(double value) onChanged;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Material(
@@ -77,6 +79,24 @@ class BooruVideoOptionSheet extends StatelessWidget {
                   ),
                 );
               },
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 12,
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: FilledButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        openImageViewerSettingsPage(ref);
+                      },
+                      child: Text(context.t.generic.action.more),
+                    ),
+                  ),
+                ],
+              ),
             ),
             SizedBox(
               height: MediaQuery.viewPaddingOf(context).bottom,

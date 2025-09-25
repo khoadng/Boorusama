@@ -14,6 +14,7 @@ import '../../../../foundation/platform.dart';
 import '../../../../foundation/utils/color_utils.dart';
 import '../../../widgets/widgets.dart';
 import '../types/booru_player.dart';
+import '../types/video_source.dart';
 
 /// WebView-based implementation of BooruPlayer for WEBM files
 ///
@@ -123,22 +124,27 @@ class WebViewBooruPlayer implements BooruPlayer {
 
   @override
   Future<void> initialize(
-    String url, {
+    VideoSource source, {
     VideoConfig? config,
   }) async {
     if (_isDisposed) throw StateError('Player has been disposed');
 
-    _currentUrl = url;
+    final finalUrl = _getOptimalUrlForWebView(source);
+
+    _currentUrl = finalUrl;
     await _setupWebViewController();
-    await _loadVideoUrl(url, config?.autoplay ?? false);
+    await _loadVideoUrl(finalUrl, config?.autoplay ?? false);
   }
 
   @override
   Future<void> switchUrl(
-    String url, {
+    VideoSource source, {
     VideoConfig? config,
   }) async {
     if (_isDisposed || _webViewController == null) return;
+
+    final url = _getOptimalUrlForWebView(source);
+
     if (_currentUrl == url) return;
 
     await pause();
@@ -448,5 +454,45 @@ class WebViewBooruPlayer implements BooruPlayer {
     _playingController.close();
     _bufferingController.close();
     _durationController.close();
+  }
+
+  /// Gets the optimal URL for WebView based on VideoSource data
+  String _getOptimalUrlForWebView(VideoSource source) {
+    return switch (source) {
+      StreamingVideoSource() => source.url,
+      CachedVideoSource() when !source.isSmallEnoughFor(10 * 1024 * 1024) =>
+        source.originalUrl, // Too large, fall back to streaming
+      CachedVideoSource() => _getCachedVideoUrl(source),
+    };
+  }
+
+  /// Gets URL for cached video with WebView-specific logging
+  String _getCachedVideoUrl(CachedVideoSource source) {
+    debugPrint('WebView: Converting cached file to data URL: ${source.url}');
+
+    final result = source.getOptimalUrl(preferDataUrl: true);
+
+    return switch (result) {
+      CachedUrlResult(:final url, :final isDataUrl) => switch (isDataUrl) {
+        true => _logDataUrlSuccess(source, url),
+        false => url, // Using cached file path directly
+      },
+      StreamingFallbackResult(:final url, :final reason) =>
+        _logFallbackToStreaming(url, reason),
+    };
+  }
+
+  String _logDataUrlSuccess(CachedVideoSource source, String url) {
+    debugPrint(
+      'WebView: Successfully converted cached file (${source.fileSizeMB?.toStringAsFixed(1)}MB) to data URL',
+    );
+    return url;
+  }
+
+  String _logFallbackToStreaming(String url, String? reason) {
+    debugPrint(
+      'WebView: Falling back to streaming: $url${reason != null ? ' ($reason)' : ''}',
+    );
+    return url;
   }
 }

@@ -59,6 +59,23 @@ final defaultDioProvider = Provider.family<Dio, BooruConfigAuth>((ref, config) {
   );
 });
 
+final genericDioProvider = Provider<Dio>(
+  (ref) {
+    final packageInfo = ref.watch(packageInfoProvider);
+    final appInfo = ref.watch(appInfoProvider);
+    final loggerService = ref.watch(loggerProvider);
+    final cronetAvailable = ref.watch(isGooglePlayServiceAvailableProvider);
+
+    return newGenericDio(
+      baseUrl: null,
+      userAgent: getDefaultUserAgent(appInfo, packageInfo),
+      logger: loggerService,
+      supportsHttp2: false,
+      cronetAvailable: cronetAvailable,
+    );
+  },
+);
+
 // Don't use this provider inside any of other providers that used inside any of the booru repositories.
 // It is only used for widget only to prevent circular dependencies.
 final dioForWidgetProvider = Provider.family<Dio, BooruConfigAuth>(

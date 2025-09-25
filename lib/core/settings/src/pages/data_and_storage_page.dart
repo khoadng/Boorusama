@@ -2,11 +2,13 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
+import '../../../../foundation/caching/types.dart';
 import '../../../../foundation/utils/file_utils.dart';
 import '../../../bookmarks/providers.dart';
 import '../../../cache/cache_notifier.dart';
@@ -17,6 +19,7 @@ import '../providers/settings_provider.dart';
 import '../types/settings.dart';
 import '../widgets/settings_card.dart';
 import '../widgets/settings_page_scaffold.dart';
+import '../widgets/settings_tile.dart';
 import '../widgets/storage_segment_bar.dart';
 
 final bookmarkCacheInfoProvider = FutureProvider.autoDispose<(int, int)>((
@@ -33,6 +36,7 @@ final diskSpaceProvider = Provider.autoDispose<(CacheSizeInfo, int)>((
   final imageCache = ref.watch(imageCacheSizeProvider);
   final tagCache = ref.watch(tagCacheSizeProvider);
   final diskSpace = ref.watch(diskSpaceInfoProvider);
+  final videoCache = ref.watch(videoCacheSizeProvider);
   final bookmarkCache = ref.watch(bookmarkCacheInfoProvider);
 
   final cacheInfo = CacheSizeInfo(
@@ -40,6 +44,7 @@ final diskSpaceProvider = Provider.autoDispose<(CacheSizeInfo, int)>((
     imageCacheSize: imageCache.valueOrNull ?? DirectorySizeInfo.zero,
     tagCacheSize: tagCache.valueOrNull ?? 0,
     diskSpaceInfo: diskSpace.valueOrNull ?? DiskSpaceInfo.zero,
+    videoCacheSize: videoCache.valueOrNull ?? DirectorySizeInfo.zero,
   );
 
   final bookmarkCacheSize = bookmarkCache.valueOrNull?.$1 ?? 0;
@@ -129,6 +134,7 @@ class _DataAndStoragePageState extends ConsumerState<DataAndStoragePage> {
     required ColorScheme colorScheme,
     int systemSize = 0,
     int imagesSize = 0,
+    int videosSize = 0,
     int othersSize = 0,
     int freeSize = 0,
     bool isPlaceholder = false,
@@ -149,6 +155,13 @@ class _DataAndStoragePageState extends ConsumerState<DataAndStoragePage> {
           size: imagesSize,
           color: const Color(0xFFFF6B35),
           subtitle: isPlaceholder ? '---' : Filesize.parse(imagesSize),
+        ),
+      if (videosSize > 0 || isPlaceholder)
+        StorageSegment(
+          name: context.t.settings.data_and_storage.disk_space.groups.videos,
+          size: videosSize,
+          color: const Color(0xFF007AFF),
+          subtitle: isPlaceholder ? '---' : Filesize.parse(videosSize),
         ),
       if (othersSize > 0 || isPlaceholder)
         StorageSegment(
@@ -174,6 +187,7 @@ class _DataAndStoragePageState extends ConsumerState<DataAndStoragePage> {
   ) {
     var systemDataSize = 0;
     var imagesSize = 0;
+    var videosSize = 0;
     var othersSize = 0;
     var freeSpaceSize = 0;
 
@@ -185,6 +199,8 @@ class _DataAndStoragePageState extends ConsumerState<DataAndStoragePage> {
         case StorageType.imageCache:
         case StorageType.bookmarkImages:
           imagesSize += info.size;
+        case StorageType.videoCache:
+          videosSize += info.size;
         case StorageType.tagCache:
         case StorageType.appCache:
           othersSize += info.size;
@@ -197,6 +213,7 @@ class _DataAndStoragePageState extends ConsumerState<DataAndStoragePage> {
       colorScheme: colorScheme,
       systemSize: systemDataSize,
       imagesSize: imagesSize,
+      videosSize: videosSize,
       othersSize: othersSize,
       freeSize: freeSpaceSize,
     );
@@ -212,6 +229,8 @@ class _DataAndStoragePageState extends ConsumerState<DataAndStoragePage> {
         children: [
           _buildImageCacheItem(),
           const Divider(height: 1),
+          _buildVideoCacheItem(),
+          const Divider(height: 1),
           _buildTagCacheItem(),
           const Divider(height: 1),
           _buildAllCacheItem(),
@@ -226,6 +245,8 @@ class _DataAndStoragePageState extends ConsumerState<DataAndStoragePage> {
               settings.copyWith(clearImageCacheOnStartup: value),
             ),
           ),
+          const Divider(height: 1),
+          _buildVideoCacheMaxSizeItem(settings, notifier),
         ],
       ),
     );
@@ -264,6 +285,36 @@ class _DataAndStoragePageState extends ConsumerState<DataAndStoragePage> {
         onPressed: imageCacheAsync.isLoading
             ? null
             : () => ref.read(cacheSizeProvider.notifier).clearAppImageCache(),
+        child: Text(context.t.settings.performance.clear_cache),
+      ),
+    );
+  }
+
+  Widget _buildVideoCacheItem() {
+    final cacheSizeAsync = ref.watch(videoCacheSizeProvider);
+    return ListTile(
+      contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+      title: Text(context.t.settings.data_and_storage.video_cache),
+      subtitle: cacheSizeAsync.when(
+        data: (sizeInfo) => Text(
+          context.t.settings.performance.cache_size_info
+              .replaceAll(
+                '{0}',
+                Filesize.parse(sizeInfo.size),
+              )
+              .replaceAll(
+                '{1}',
+                sizeInfo.fileCount.toString(),
+              ),
+        ),
+        loading: () => Text(context.t.settings.data_and_storage.loading),
+        error: (_, _) =>
+            Text(context.t.settings.data_and_storage.error_loading_cache_info),
+      ),
+      trailing: FilledButton(
+        onPressed: cacheSizeAsync.isLoading
+            ? null
+            : () => ref.read(cacheSizeProvider.notifier).clearAppVideoCache(),
         child: Text(context.t.settings.performance.clear_cache),
       ),
     );
@@ -336,4 +387,46 @@ class _DataAndStoragePageState extends ConsumerState<DataAndStoragePage> {
       ),
     );
   }
+
+  Widget _buildVideoCacheMaxSizeItem(
+    Settings settings,
+    SettingsNotifier notifier,
+  ) {
+    final options = _getVideoCacheMaxSizeOptions();
+    final currentValue = settings.videoCacheMaxSize;
+    final selectedOption =
+        options.firstWhereOrNull(
+          (option) => option == currentValue,
+        ) ??
+        CacheSize.oneGigabyte;
+
+    return SettingsTile(
+      title: Text(context.t.settings.data_and_storage.video_cache_limit),
+      subtitle: Text(
+        context.t.settings.data_and_storage.video_cache_limit_description,
+      ),
+      selectedOption: selectedOption,
+      items: options,
+      onChanged: (option) => notifier.updateSettings(
+        settings.copyWith(videoCacheMaxSize: option),
+      ),
+      optionBuilder: (option) => Text(_getCacheSizeLabel(context, option)),
+    );
+  }
+
+  List<CacheSize> _getVideoCacheMaxSizeOptions() => [
+    CacheSize.oneHundredMegabytes,
+    CacheSize.fiveHundredMegabytes,
+    CacheSize.oneGigabyte,
+    CacheSize.twoGigabytes,
+    CacheSize.fiveGigabytes,
+    CacheSize.tenGigabytes,
+    CacheSize.zero,
+  ];
+
+  String _getCacheSizeLabel(BuildContext context, CacheSize cacheSize) =>
+      switch (cacheSize) {
+        CacheSize.zero => context.t.settings.data_and_storage.no_limit,
+        _ => cacheSize.displayString(withSpace: true),
+      };
 }
