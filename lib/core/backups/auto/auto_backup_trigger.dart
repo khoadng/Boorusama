@@ -16,22 +16,18 @@ final backupTriggerProvider =
 
 class BackupTriggerState {
   const BackupTriggerState({
-    required this.isInProgress,
     required this.lastTriggerTime,
     required this.hasTriggeredOnce,
   });
 
-  final bool isInProgress;
   final DateTime? lastTriggerTime;
   final bool hasTriggeredOnce;
 
   BackupTriggerState copyWith({
-    bool? isInProgress,
     DateTime? Function()? lastTriggerTime,
     bool? hasTriggeredOnce,
   }) {
     return BackupTriggerState(
-      isInProgress: isInProgress ?? this.isInProgress,
       lastTriggerTime: lastTriggerTime != null
           ? lastTriggerTime()
           : this.lastTriggerTime,
@@ -44,7 +40,6 @@ class BackupTriggerNotifier extends Notifier<BackupTriggerState> {
   @override
   BackupTriggerState build() {
     return const BackupTriggerState(
-      isInProgress: false,
       lastTriggerTime: null,
       hasTriggeredOnce: false,
     );
@@ -57,23 +52,11 @@ class BackupTriggerNotifier extends Notifier<BackupTriggerState> {
   Future<void> _performTrigger({required bool isInitialTrigger}) async {
     final logger = ref.read(loggerProvider);
 
-    // Guard against concurrent backups
-    if (state.isInProgress) {
-      logger.verbose(
-        'AutoBackupTrigger',
-        'Backup already in progress, skipping',
-      );
-      return;
-    }
-
     try {
       state = state.copyWith(
-        isInProgress: true,
         lastTriggerTime: () => DateTime.now(),
         hasTriggeredOnce: isInitialTrigger ? true : null,
       );
-
-      logger.verbose('AutoBackupTrigger', 'Checking auto backup on app launch');
 
       final autoBackupSettings = ref.read(settingsProvider).autoBackup;
       await ref
@@ -81,8 +64,6 @@ class BackupTriggerNotifier extends Notifier<BackupTriggerState> {
           .performAutoBackupIfNeeded(autoBackupSettings);
     } catch (e) {
       logger.error('AutoBackupTrigger', 'Auto backup trigger failed: $e');
-    } finally {
-      state = state.copyWith(isInProgress: false);
     }
   }
 }
