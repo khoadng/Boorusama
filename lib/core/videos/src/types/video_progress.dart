@@ -12,6 +12,17 @@ class VideoProgress extends Equatable {
 
   static const zero = VideoProgress(Duration.zero, Duration.zero);
 
+  Duration seekForward(Duration amount) => _clamp(position + amount);
+
+  Duration seekBackward(Duration amount) => _clamp(position - amount);
+
+  Duration _clamp(Duration pos) => Duration(
+    milliseconds: pos.inMilliseconds.clamp(
+      0,
+      duration.inMilliseconds,
+    ),
+  );
+
   @override
   List<Object?> get props => [duration, position];
 }

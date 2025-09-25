@@ -12,6 +12,11 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import '../../../../videos/types.dart';
 import '../../../post/post.dart';
 
+const _kSeekAmount = Duration(seconds: 10);
+const kSeekAnimationDuration = Duration(milliseconds: 400);
+
+enum SeekDirection { forward, backward }
+
 class PostDetailsController<T extends Post> extends ChangeNotifier {
   PostDetailsController({
     required this.scrollController,
@@ -78,11 +83,13 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
 
   final _videoProgress = ValueNotifier(VideoProgress.zero);
   final _isVideoPlaying = ValueNotifier<bool>(false);
+  final _seekDirection = ValueNotifier<SeekDirection?>(null);
 
   final Map<int, BooruPlayer> _booruPlayers = {};
 
   ValueNotifier<VideoProgress> get videoProgress => _videoProgress;
   ValueNotifier<bool> get isVideoPlaying => _isVideoPlaying;
+  ValueNotifier<SeekDirection?> get seekDirection => _seekDirection;
 
   void onCurrentPositionChanged(double current, double total, String url) {
     // // check if the current video is the same as the one being played
@@ -136,6 +143,50 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
     _isVideoPlaying.value = false;
   }
 
+  Future<void> seekFromDoubleTap(Offset tapPosition, Size viewport) async {
+    final post = currentPost.value;
+    if (!post.isVideo) return;
+
+    final width = viewport.width;
+    final leftBoundary = width * 0.5;
+    final rightBoundary = width - leftBoundary;
+    final progress = _videoProgress.value;
+    final currentPlayer = _booruPlayers[post.id];
+    final durationSeconds = currentPlayer?.duration.inSeconds ?? post.duration;
+    final effectiveSeekAmount = switch (durationSeconds) {
+      < 10 => const Duration(seconds: 3),
+      _ => _kSeekAmount,
+    };
+
+    final (seekPosition, direction) = switch (tapPosition.dx) {
+      final x when x < leftBoundary => (
+        progress.seekBackward(effectiveSeekAmount),
+        SeekDirection.backward,
+      ),
+      final x when x >= rightBoundary => (
+        progress.seekForward(effectiveSeekAmount),
+        SeekDirection.forward,
+      ),
+      _ => (null, null),
+    };
+
+    if (seekPosition != null && direction != null) {
+      onVideoSeekTo(seekPosition, post.id);
+      _showSeekAnimation(direction);
+    }
+  }
+
+  void _showSeekAnimation(SeekDirection direction) {
+    _seekDirection.value = direction;
+
+    // Hide the animation after a short delay
+    Timer(kSeekAnimationDuration, () {
+      if (_seekDirection.value == direction) {
+        _seekDirection.value = null;
+      }
+    });
+  }
+
   void onBooruVideoPlayerCreated(BooruPlayer player, int id) {
     _booruPlayers[id] = player;
   }
@@ -150,6 +201,7 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
 
     _videoProgress.dispose();
     _isVideoPlaying.dispose();
+    _seekDirection.dispose();
     _seekStreamController.close();
 
     currentPage.dispose();

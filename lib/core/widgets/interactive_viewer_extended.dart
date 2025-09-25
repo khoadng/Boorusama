@@ -114,7 +114,7 @@ class InteractiveViewerExtended extends ConsumerWidget {
 
   final Widget child;
   final VoidCallback? onTap;
-  final VoidCallback? onDoubleTap;
+  final void Function(TapDownDetails?)? onDoubleTap;
   final VoidCallback? onLongPress;
   final void Function(TransformationDetails details)? onTransformationChanged;
   final TransformationController? controller;
@@ -156,7 +156,7 @@ class RawInteractiveViewerExtended extends StatefulWidget {
 
   final Widget child;
   final VoidCallback? onTap;
-  final VoidCallback? onDoubleTap;
+  final void Function(TapDownDetails?)? onDoubleTap;
   final VoidCallback? onLongPress;
   final void Function(TransformationDetails details)? onTransformationChanged;
   final TransformationController? controller;
@@ -307,8 +307,8 @@ class _RawInteractiveViewerExtendedState
                 : null,
             onDoubleTap: enable
                 ? () {
-                    if (widget.onDoubleTap != null) {
-                      widget.onDoubleTap!();
+                    if (widget.onDoubleTap case final cb?) {
+                      cb(_doubleTapDetails);
                     } else {
                       _handleDoubleTap();
                     }

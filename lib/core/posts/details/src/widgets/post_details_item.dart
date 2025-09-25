@@ -19,8 +19,9 @@ import '../../../post/post.dart';
 import '../../details.dart';
 import 'post_details_controller.dart';
 import 'post_media.dart';
+import 'seek_animation_overlay.dart';
 
-class PostDetailsItem<T extends Post> extends ConsumerWidget {
+class PostDetailsItem<T extends Post> extends ConsumerStatefulWidget {
   const PostDetailsItem({
     required this.index,
     required this.posts,
@@ -45,16 +46,24 @@ class PostDetailsItem<T extends Post> extends ConsumerWidget {
   final String Function(T post) imageUrlBuilder;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final pageViewController = PostDetailsPageViewScope.of(context);
-    final post = posts[index];
+  ConsumerState<PostDetailsItem<T>> createState() => _PostDetailsItemState<T>();
+}
 
-    final booruBuilder = ref.watch(booruBuilderProvider(authConfig));
+class _PostDetailsItemState<T extends Post>
+    extends ConsumerState<PostDetailsItem<T>> {
+  final _videoKey = GlobalKey();
+
+  @override
+  Widget build(BuildContext context) {
+    final pageViewController = PostDetailsPageViewScope.of(context);
+    final post = widget.posts[widget.index];
+
+    final booruBuilder = ref.watch(booruBuilderProvider(widget.authConfig));
     final postGesturesHandler = booruBuilder?.postGestureHandlerBuilder;
-    final gestures = gestureConfig?.fullview;
+    final gestures = widget.gestureConfig?.fullview;
 
     void onItemTap() {
-      final controller = detailsController;
+      final controller = widget.detailsController;
 
       if (isDesktopPlatform()) {
         if (controller.currentPost.value.isVideo) {
@@ -75,7 +84,18 @@ class PostDetailsItem<T extends Post> extends ConsumerWidget {
       }
     }
 
-    final initialThumbnailUrl = detailsController.initialThumbnailUrl;
+    void onVideoDoubleTap(Offset? tapPosition) {
+      final renderBox =
+          _videoKey.currentContext?.findRenderObject() as RenderBox?;
+      if (renderBox == null || tapPosition == null) return;
+
+      widget.detailsController.seekFromDoubleTap(
+        tapPosition,
+        renderBox.size,
+      );
+    }
+
+    final initialThumbnailUrl = widget.detailsController.initialThumbnailUrl;
 
     return ValueListenableBuilder(
       valueListenable: pageViewController.sheetState,
@@ -83,21 +103,28 @@ class PostDetailsItem<T extends Post> extends ConsumerWidget {
         // let the user tap the image to toggle overlay
         onTap: onItemTap,
         child: InteractiveViewerExtended(
+          key: _videoKey,
           contentSize: Size(post.width, post.height),
-          controller: transformController,
+          controller: widget.transformController,
           enable: switch (state.isExpanded) {
             true => context.isLargeScreen,
             false => true,
           },
           onTransformationChanged: pageViewController.onTransformationChanged,
           onTap: onItemTap,
-          onDoubleTap: gestures.canDoubleTap && postGesturesHandler != null
-              ? () => postGesturesHandler(
-                  ref,
-                  gestures?.doubleTap,
-                  post,
-                )
-              : null,
+          onDoubleTap: switch ((
+            doubleTap: gestures.canDoubleTap,
+            handler: postGesturesHandler,
+          )) {
+            (doubleTap: true, handler: final h?) => (_) => h(
+              ref,
+              gestures?.doubleTap,
+              post,
+            ),
+            (doubleTap: false, handler: _) when post.isVideo =>
+              (details) => onVideoDoubleTap(details?.localPosition),
+            _ => null,
+          },
           onLongPress: gestures.canLongPress && postGesturesHandler != null
               ? () => postGesturesHandler(
                   ref,
@@ -109,13 +136,13 @@ class PostDetailsItem<T extends Post> extends ConsumerWidget {
             alignment: Alignment.center,
             children: [
               ValueListenableBuilder(
-                valueListenable: isInitPageListenable,
+                valueListenable: widget.isInitPageListenable,
                 builder: (_, isInitPage, _) {
                   return PostMedia<T>(
                     post: post,
-                    config: authConfig,
-                    imageUrlBuilder: imageUrlBuilder,
-                    imageCacheManager: imageCacheManager,
+                    config: widget.authConfig,
+                    imageUrlBuilder: widget.imageUrlBuilder,
+                    imageCacheManager: widget.imageCacheManager,
                     // This is used to make sure we have a thumbnail to show instead of a black placeholder
                     thumbnailUrlBuilder:
                         isInitPage && initialThumbnailUrl != null
@@ -135,12 +162,15 @@ class PostDetailsItem<T extends Post> extends ConsumerWidget {
                             children: [
                               // duplicate codes, maybe refactor later
                               PlayPauseButton(
-                                isPlaying: detailsController.isVideoPlaying,
+                                isPlaying:
+                                    widget.detailsController.isVideoPlaying,
                                 onPlayingChanged: (value) {
                                   if (value) {
-                                    detailsController.pauseVideo(post.id);
+                                    widget.detailsController.pauseVideo(
+                                      post.id,
+                                    );
                                   } else if (!value) {
-                                    detailsController.playVideo(post.id);
+                                    widget.detailsController.playVideo(post.id);
                                   } else {
                                     // do nothing
                                   }
@@ -153,6 +183,10 @@ class PostDetailsItem<T extends Post> extends ConsumerWidget {
                           ),
                         )
                       : const SizedBox.shrink(),
+                ),
+              if (post.isVideo)
+                SeekAnimationOverlay(
+                  controller: widget.detailsController,
                 ),
             ],
           ),
