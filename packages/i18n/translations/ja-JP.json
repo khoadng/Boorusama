@@ -14,17 +14,47 @@
       "cancel": "キャンセル",
       "duplicate": "複製",
       "select": "選択",
-      "view": "表示"
+      "view": "表示",
+      "save": "保存",
+      "verify": "確認",
+      "create": "作成",
+      "reset": "リセット",
+      "show_all": "全部表示する",
+      "search": "検索",
+      "retry": "やり直し",
+      "clear": "クリア",
+      "view_all": "全部見る"
     },
     "copied": "クリップボードにコピーしました",
-    "app_restart_request": "この変更を有効にするにはアプリを再起動する必要があります"
+    "app_restart_request": "この変更を有効にするにはアプリを再起動する必要があります",
+    "warning": "警告",
+    "default": "定番",
+    "version": "バージョン $version"
   },
   "profile": {
     "favorites": "いいね",
     "profile": "プロフィール",
     "copy_user_id": "ユーザーIDをコピーする",
     "messages": {
-      "title": "メッセージ"
+      "title": "メッセージ",
+      "date": "日付"
+    },
+    "previous_names": "以前の名前",
+    "tabs": {
+      "info": "情報",
+      "uploads": "アップロードされた",
+      "changes": "変化"
+    },
+    "uploads": {
+      "top_n_copyright": "トップ $n 著作権"
+    },
+    "activity": {
+      "tag_edits": "タグ編集数",
+      "note_edits": "ノート編集数",
+      "uploads": "アップロード数",
+      "comments": "コメント数",
+      "forum_posts": "フォーラム登校数",
+      "favgroups": "お気に入りグループ数"
     }
   },
   "network": {
@@ -35,7 +65,8 @@
       "more": "もっと見る",
       "related": "関連",
       "add_to_current_search": "検索に追加",
-      "open_wiki": "Wikiを開く"
+      "open_wiki": "Wikiを開く",
+      "negate_from_current_search": "検索に除く"
     }
   },
   "post": {
@@ -61,7 +92,12 @@
       "source_label": "ソース",
       "related_posts": "関連投稿",
       "add_to_bookmark": "ブックマークに追加",
-      "remove_from_bookmark": "ブックマークから削除"
+      "remove_from_bookmark": "ブックマークから削除",
+      "copy_and_open_saved_search": "コッピーして開く",
+      "widgets": {
+        "toolbar": "ツールバー",
+        "tags": "タッグ"
+      }
     },
     "action": {
       "share": "シェア",
@@ -72,7 +108,16 @@
       "view_comments": "コメントを見る",
       "add_to_favorite_group": "お気に入りグループに追加",
       "view_in_browser": "ブラウザで開く",
-      "view_original": "オリジナルを表示"
+      "view_original": "オリジナルを表示",
+      "copy_image": "画像をコピー",
+      "edit": "編集",
+      "use_default": "デフォルトを使う"
+    },
+    "statistics": {
+      "average": "平均",
+      "highest": "最大",
+      "lowest": "最低",
+      "median": "中央"
     }
   },
   "comment": {
@@ -100,7 +145,9 @@
     "most_viewed": "人気の投稿",
     "see_more": "もっと見る",
     "explore": "探索",
-    "new": "最新"
+    "new": "最新",
+    "newest": "最も最新",
+    "oldest": "最古"
   },
   "search": {
     "errors": {
@@ -542,5 +589,10 @@
       "monthly": "月額",
       "annual": "年額"
     }
+  },
+  "sort": {
+    "sort_by": "整理基準",
+    "name": "名前順",
+    "recently_added": "新しい順"
   }
 }
