@@ -8,8 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../foundation/display.dart';
-import '../configs/gesture/src/actions/generic_actions.dart';
-import '../configs/gesture/src/actions/generic_intents.dart';
+import '../configs/gesture/src/actions/post_actions_scope.dart';
 import '../settings/providers.dart';
 import '../settings/settings.dart';
 
@@ -42,10 +41,7 @@ class CustomContextMenuOverlay extends ConsumerWidget {
       ),
       buttonBuilder: (context, config, [_]) => ContextMenuTile(config: config),
       hapticFeedbackOnStart: hapticFeedbackLevel != HapticFeedbackLevel.none,
-      child: Actions(
-        actions: {
-          PrintDebugInfoIntent: PrintDebugInfoAction(),
-        },
+      child: PostActionsScope(
         child: child,
       ),
     );

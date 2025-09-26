@@ -1,19 +1,20 @@
+import '../../../../posts/post/post.dart';
 import 'generic_intents.dart';
 
-class UpvotePostIntent<DanbooruPost> extends WidgetRefIntent {
+class UpvotePostIntent extends WidgetRefIntent {
   const UpvotePostIntent({required super.ref, required this.post});
 
-  final DanbooruPost post;
+  final Post post;
 }
 
-class DownvotePostIntent<DanbooruPost> extends WidgetRefIntent {
+class DownvotePostIntent extends WidgetRefIntent {
   const DownvotePostIntent({required super.ref, required this.post});
 
-  final DanbooruPost post;
+  final Post post;
 }
 
-class EditPostIntent<DanbooruPost> extends WidgetRefIntent {
+class EditPostIntent extends WidgetRefIntent {
   const EditPostIntent({required super.ref, required this.post});
 
-  final DanbooruPost post;
+  final Post post;
 }

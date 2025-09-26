@@ -102,13 +102,3 @@ class ViewPostArtistAction extends Action<ViewPostArtistIntent> {
     return null;
   }
 }
-
-class PrintDebugInfoAction extends Action<PrintDebugInfoIntent> {
-  @override
-  Object? invoke(PrintDebugInfoIntent intent) {
-    debugPrint('--- Debug Info ---');
-
-    debugPrint('------------------');
-    return null;
-  }
-}

@@ -34,7 +34,6 @@ class PostActionsScope extends ConsumerWidget {
       OpenPostSourceIntent: OpenPostSourceAction(),
       FavoritePostIntent: FavoritePostAction(),
       ViewPostArtistIntent: ViewPostArtistAction(),
-      PrintDebugInfoIntent: PrintDebugInfoAction(),
     };
 
     // Add booru-specific actions if available

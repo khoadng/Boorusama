@@ -60,7 +60,3 @@ class ViewPostArtistIntent extends WidgetRefIntent {
 
   final Post post;
 }
-
-class PrintDebugInfoIntent extends Intent {
-  const PrintDebugInfoIntent();
-}

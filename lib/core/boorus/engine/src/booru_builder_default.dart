@@ -11,6 +11,7 @@ import '../../../../foundation/url_launcher.dart';
 import '../../../configs/config.dart';
 import '../../../configs/create/widgets.dart';
 import '../../../configs/gesture/gesture.dart';
+import '../../../configs/gesture/src/actions/intent_based_post_gesture_handler.dart';
 import '../../../configs/ref.dart';
 import '../../../downloads/downloader/providers.dart';
 import '../../../downloads/filename/providers.dart';
@@ -139,6 +140,19 @@ mixin DefaultPostGesturesHandlerMixin on BooruBuilder {
   @override
   PostGestureHandlerBuilder get postGestureHandlerBuilder =>
       (ref, action, post) => _postGestureHandler.handle(ref, action, post);
+
+  @override
+  Map<Type, Action<Intent>> actionMapping() => const {};
+}
+
+mixin IntentBasedPostGesturesHandlerMixin on BooruBuilder {
+  final IntentBasedPostGestureHandler _intentBasedPostGestureHandler =
+      const IntentBasedPostGestureHandler();
+
+  @override
+  PostGestureHandlerBuilder get postGestureHandlerBuilder =>
+      (ref, action, post) =>
+          _intentBasedPostGestureHandler.handle(ref, action, post);
 
   @override
   Map<Type, Action<Intent>> actionMapping() => const {};
