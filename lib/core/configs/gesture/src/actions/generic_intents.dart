@@ -13,52 +13,52 @@ abstract class WidgetRefIntent extends Intent {
   final WidgetRef ref;
 }
 
-class DownloadPostIntent<T extends Post> extends WidgetRefIntent {
+class DownloadPostIntent extends WidgetRefIntent {
   const DownloadPostIntent({required super.ref, required this.post});
 
-  final T post;
+  final Post post;
 }
 
-class SharePostIntent<T extends Post> extends WidgetRefIntent {
+class SharePostIntent extends WidgetRefIntent {
   const SharePostIntent({required super.ref, required this.post});
 
-  final T post;
+  final Post post;
 }
 
-class BookmarkPostIntent<T extends Post> extends WidgetRefIntent {
+class BookmarkPostIntent extends WidgetRefIntent {
   const BookmarkPostIntent({required super.ref, required this.post});
 
-  final T post;
+  final Post post;
 }
 
-class ViewPostTagsIntent<T extends Post> extends WidgetRefIntent {
+class ViewPostTagsIntent extends WidgetRefIntent {
   const ViewPostTagsIntent({required super.ref, required this.post});
 
-  final T post;
+  final Post post;
 }
 
-class ViewPostOriginalIntent<T extends Post> extends WidgetRefIntent {
+class ViewPostOriginalIntent extends WidgetRefIntent {
   const ViewPostOriginalIntent({required super.ref, required this.post});
 
-  final T post;
+  final Post post;
 }
 
-class OpenPostSourceIntent<T extends Post> extends Intent {
+class OpenPostSourceIntent extends Intent {
   const OpenPostSourceIntent({required this.post});
 
-  final T post;
+  final Post post;
 }
 
-class FavoritePostIntent<T extends Post> extends WidgetRefIntent {
+class FavoritePostIntent extends WidgetRefIntent {
   const FavoritePostIntent({required super.ref, required this.post});
 
-  final T post;
+  final Post post;
 }
 
-class ViewPostArtistIntent<T extends Post> extends WidgetRefIntent {
+class ViewPostArtistIntent extends WidgetRefIntent {
   const ViewPostArtistIntent({required super.ref, required this.post});
 
-  final T post;
+  final Post post;
 }
 
 class PrintDebugInfoIntent extends Intent {

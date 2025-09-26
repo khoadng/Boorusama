@@ -1,3 +1,6 @@
+// Flutter imports:
+import 'package:flutter/widgets.dart';
+
 // Project imports:
 import '../../../home/custom_home.dart';
 import 'booru_builder_types.dart';
@@ -26,6 +29,9 @@ abstract class BooruBuilder {
   GranularRatingOptionsBuilder? get granularRatingOptionsBuilder;
 
   PostGestureHandlerBuilder get postGestureHandlerBuilder;
+
+  // New Intent/Action system
+  Map<Type, Action<Intent>> actionMapping() => const {};
 
   MetatagExtractorBuilder? get metatagExtractorBuilder;
 

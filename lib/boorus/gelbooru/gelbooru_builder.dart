@@ -12,6 +12,8 @@ import '../../core/configs/config.dart';
 import '../../core/configs/config/providers.dart';
 import '../../core/configs/create/widgets.dart';
 import '../../core/configs/gesture/gesture.dart';
+import '../../core/configs/gesture/src/actions/booru_actions.dart';
+import '../../core/configs/gesture/src/actions/generic_intents.dart';
 import '../../core/configs/manage/widgets.dart';
 import '../../core/downloads/filename/types.dart';
 import '../../core/home/custom_home.dart';
@@ -147,6 +149,11 @@ class GelbooruBuilder
   @override
   PostGestureHandlerBuilder get postGestureHandlerBuilder =>
       (ref, action, post) => _postGestureHandler.handle(ref, action, post);
+
+  @override
+  Map<Type, Action<Intent>> actionMapping() => {
+    FavoritePostIntent: FavoritePostAction(),
+  };
 
   @override
   Map<CustomHomeViewKey, CustomHomeDataBuilder> get customHomeViewBuilders =>

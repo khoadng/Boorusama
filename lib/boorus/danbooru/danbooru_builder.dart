@@ -14,6 +14,8 @@ import '../../core/boorus/engine/engine.dart';
 import '../../core/configs/config.dart';
 import '../../core/configs/create/widgets.dart';
 import '../../core/configs/gesture/gesture.dart';
+import '../../core/configs/gesture/src/actions/booru_actions.dart';
+import '../../core/configs/gesture/src/actions/booru_intents.dart';
 import '../../core/configs/manage/widgets.dart';
 import '../../core/configs/ref.dart';
 import '../../core/downloads/downloader/providers.dart';
@@ -181,6 +183,13 @@ class DanbooruBuilder
           (post) => ref.danbooruEdit(post),
         ),
       );
+
+  @override
+  Map<Type, Action<Intent>> actionMapping() => {
+    UpvotePostIntent: UpvotePostAction(),
+    DownvotePostIntent: DownvotePostAction(),
+    EditPostIntent: EditPostAction(),
+  };
 
   @override
   PostImageDetailsUrlBuilder get postImageDetailsUrlBuilder =>

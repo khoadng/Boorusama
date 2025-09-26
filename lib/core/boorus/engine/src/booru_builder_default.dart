@@ -139,6 +139,9 @@ mixin DefaultPostGesturesHandlerMixin on BooruBuilder {
   @override
   PostGestureHandlerBuilder get postGestureHandlerBuilder =>
       (ref, action, post) => _postGestureHandler.handle(ref, action, post);
+
+  @override
+  Map<Type, Action<Intent>> actionMapping() => const {};
 }
 
 mixin DefaultUnknownBooruWidgetsBuilderMixin implements BooruBuilder {

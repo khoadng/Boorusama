@@ -6,7 +6,6 @@ import '../../../../downloads/downloader/providers.dart';
 import '../../../../downloads/filename/providers.dart';
 import '../../../../images/providers.dart';
 import '../../../../posts/details_parts/widgets.dart';
-import '../../../../posts/post/post.dart';
 import '../../../../posts/post/routes.dart';
 import '../../../../posts/shares/providers.dart';
 import '../../../../posts/sources/source.dart';
@@ -16,17 +15,17 @@ import '../../../../../foundation/url_launcher.dart';
 import '../../../config/providers.dart';
 import 'generic_intents.dart';
 
-class DownloadPostAction<T extends Post> extends Action<DownloadPostIntent<T>> {
+class DownloadPostAction extends Action<DownloadPostIntent> {
   @override
-  Object? invoke(DownloadPostIntent<T> intent) {
+  Object? invoke(DownloadPostIntent intent) {
     intent.ref.download(intent.post);
     return null;
   }
 }
 
-class SharePostAction<T extends Post> extends Action<SharePostIntent<T>> {
+class SharePostAction extends Action<SharePostIntent> {
   @override
-  Object? invoke(SharePostIntent<T> intent) {
+  Object? invoke(SharePostIntent intent) {
     final ref = intent.ref;
     ref
         .read(shareProvider)
