@@ -10,6 +10,7 @@ import 'package:selection_mode/selection_mode.dart';
 // Project imports:
 import '../../../../boorus/engine/providers.dart';
 import '../../../../configs/gesture/gesture.dart';
+import '../../../../configs/gesture/src/actions/generic_intents.dart';
 import '../../../../configs/ref.dart';
 import '../../../../settings/providers.dart';
 import '../../../../settings/settings.dart';
@@ -86,13 +87,10 @@ class SliverPostGridImageGridItem<T extends Post> extends ConsumerWidget {
     );
 
     return GestureDetector(
-      onLongPress: gestures.canLongPress && postGesturesHandler != null
-          ? () => postGesturesHandler(
-              ref,
-              gestures?.longPress,
-              post,
-            )
-          : null,
+      onLongPress: () {
+        Actions.invoke(context, const PrintDebugInfoIntent());
+      },
+
       child: Stack(
         children: [
           ImageGridItem(
