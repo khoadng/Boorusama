@@ -69,8 +69,7 @@ class DownloadManagerPage extends ConsumerStatefulWidget {
 
 class _DownloadManagerPageState extends ConsumerState<DownloadManagerPage> {
   final scrollController = AutoScrollController();
-  final _selectionModeController =
-      SelectionModeController();
+  final _selectionModeController = SelectionModeController();
 
   @override
   void initState() {

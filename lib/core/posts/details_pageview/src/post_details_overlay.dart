@@ -195,9 +195,7 @@ class _SheetControlButton extends StatelessWidget {
           );
         }
       },
-      icon: const InfoCircleIcon(
-        
-      ),
+      icon: const InfoCircleIcon(),
     );
   }
 }

@@ -22,8 +22,7 @@ class ManualBackupPage extends ConsumerStatefulWidget {
 }
 
 class _ManualBackupPageState extends ConsumerState<ManualBackupPage> {
-  final _selectionController =
-      SelectionModeController();
+  final _selectionController = SelectionModeController();
   final _scrollController = ScrollController();
 
   @override

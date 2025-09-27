@@ -50,8 +50,7 @@ class PostDetailsPageViewController extends ChangeNotifier
   late final _pageController = PageController(
     initialPage: initialPage,
   );
-  final _sheetController =
-      DraggableScrollableController();
+  final _sheetController = DraggableScrollableController();
 
   final bool Function() checkIfLargeScreen;
 
@@ -310,9 +309,7 @@ class PostDetailsPageViewController extends ChangeNotifier
       if (!bottomSheet.value && !overlay.value) {
         previouslyForcedShowUIByDrag = true;
       }
-      showOverlay(
-        
-      );
+      showOverlay();
     }
 
     if (verticalPosition.value < 0) {

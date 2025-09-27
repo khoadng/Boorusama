@@ -172,8 +172,7 @@ class DanbooruUploadGrid extends ConsumerStatefulWidget {
 }
 
 class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
-  late final _autoScrollController =
-      AutoScrollController();
+  late final _autoScrollController = AutoScrollController();
 
   @override
   void dispose() {

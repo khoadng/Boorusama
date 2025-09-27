@@ -11,8 +11,8 @@ import 'package:video_player/video_player.dart';
 import '../../../settings/settings.dart';
 import '../types/booru_player.dart';
 import '../types/video_source.dart';
-import 'wakelock.dart';
 import 'fvp_manager.dart';
+import 'wakelock.dart';
 
 class VideoPlayerBooruPlayer implements BooruPlayer {
   VideoPlayerBooruPlayer({

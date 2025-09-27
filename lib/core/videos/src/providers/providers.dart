@@ -10,9 +10,9 @@ import '../../../http/providers.dart';
 import '../../../settings/providers.dart';
 import '../../../settings/settings.dart';
 import '../types/booru_player.dart';
-import 'wakelock.dart';
 import 'media_kit_booru_player.dart';
 import 'video_player_booru_player.dart';
+import 'wakelock.dart';
 import 'webview_booru_player.dart';
 
 class GlobalSoundNotifier extends Notifier<bool> {

@@ -38,8 +38,7 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
   late ValueNotifier<int> currentPage;
   late ValueNotifier<T> currentPost;
 
-  final _seekStreamController =
-      StreamController<VideoProgress>.broadcast();
+  final _seekStreamController = StreamController<VideoProgress>.broadcast();
 
   Stream<VideoProgress> get seekStream => _seekStreamController.stream;
 

@@ -33,9 +33,7 @@ class AutoBackupSettings extends Equatable {
     );
   }
 
-  static const disabled = AutoBackupSettings(
-    
-  );
+  static const disabled = AutoBackupSettings();
 
   final bool enabled;
   final AutoBackupFrequency frequency;

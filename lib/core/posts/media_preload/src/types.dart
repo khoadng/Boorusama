@@ -1,10 +1,12 @@
 // Dart imports:
 import 'dart:math' as math;
 
+// Flutter imports:
+import 'package:flutter/foundation.dart';
+
 // Package imports:
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/foundation.dart';
 
 // Project imports:
 import 'preload_media.dart';

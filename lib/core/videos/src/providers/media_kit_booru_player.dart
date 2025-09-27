@@ -11,8 +11,8 @@ import 'package:media_kit_video/media_kit_video.dart';
 // Project imports:
 import '../types/booru_player.dart';
 import '../types/video_source.dart';
-import 'wakelock.dart';
 import 'media_kit_manager.dart';
+import 'wakelock.dart';
 
 class MediaKitBooruPlayer implements BooruPlayer {
   MediaKitBooruPlayer({
@@ -26,14 +26,10 @@ class MediaKitBooruPlayer implements BooruPlayer {
   late final Player _player;
   late final VideoController _videoController;
 
-  final _positionController =
-      StreamController<Duration>.broadcast();
-  final _playingController =
-      StreamController<bool>.broadcast();
-  final _bufferingController =
-      StreamController<bool>.broadcast();
-  final _durationController =
-      StreamController<Duration>.broadcast();
+  final _positionController = StreamController<Duration>.broadcast();
+  final _playingController = StreamController<bool>.broadcast();
+  final _bufferingController = StreamController<bool>.broadcast();
+  final _durationController = StreamController<Duration>.broadcast();
 
   StreamSubscription<Duration>? _positionSubscription;
   StreamSubscription<bool>? _playingSubscription;
