@@ -17,6 +17,9 @@ analyzer:
 
 linter:
   rules:
+    # This seems to always warn on dynamic which I use a lot to handle data parsing
+    switch_on_type: false
+
     # Maybe later, keep using import_sorter for now
     directives_ordering: false
 
