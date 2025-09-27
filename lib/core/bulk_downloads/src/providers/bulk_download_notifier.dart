@@ -128,9 +128,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
           if (session?.status == DownloadSessionStatus.running &&
               (session?.task?.notifications ?? false) &&
               !isIOS()) {
-            final notification = await ref.read(
-              bulkDownloadNotificationProvider.future,
-            );
+            final notification = ref.read(bulkDownloadNotificationProvider);
             await notification.showProgressNotification(
               sessionId,
               session?.task?.prettyTags ?? 'Downloading...',
@@ -896,9 +894,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
       final downloader = ref.read(downloadServiceProvider);
       final session = await _withRepo((repo) => repo.getSession(sessionId));
       final progressNotifier = ref.read(bulkDownloadProgressProvider.notifier);
-      final notification = await ref.read(
-        bulkDownloadNotificationProvider.future,
-      );
+      final notification = ref.read(bulkDownloadNotificationProvider);
 
       // Cancel notification immediately
       await notification.cancelNotification(sessionId);
@@ -1057,14 +1053,13 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
     );
 
     if (currentSessionState?.task.notifications ?? true) {
-      ref.read(bulkDownloadNotificationProvider).whenData(
-        (notification) {
-          notification.showCompleteNotification(
-            currentSessionState?.task.prettyTags ?? 'Download completed',
-            'Downloaded ${stats.totalItems} files',
-            notificationId: sessionId.hashCode,
-          );
-        },
+      final notification = ref.read(bulkDownloadNotificationProvider);
+      unawaited(
+        notification.showCompleteNotification(
+          currentSessionState?.task.prettyTags ?? 'Download completed',
+          'Downloaded ${stats.totalItems} files',
+          notificationId: sessionId.hashCode,
+        ),
       );
     }
 
@@ -1207,9 +1202,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
     );
 
     // Handle notifications based on status and notification settings
-    final notification = await ref.read(
-      bulkDownloadNotificationProvider.future,
-    );
+    final notification = ref.read(bulkDownloadNotificationProvider);
 
     // Only show notifications if task.notifications is true
     if (session?.task?.notifications ?? false) {

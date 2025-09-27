@@ -7,15 +7,13 @@ import '../../../notifications/notification.dart';
 import '../types/download.dart';
 import 'background_downloader.dart';
 
-final downloadNotificationsProvider = FutureProvider<DownloadNotifications>(
-  (ref) => DownloadNotifications.create(),
+final downloadNotificationsProvider = Provider<DownloadNotifications>(
+  (ref) => DownloadNotifications.uninitialized(),
 );
 
 final downloadServiceProvider = Provider<DownloadService>(
   (ref) => BackgroundDownloader(
     videoCacheManager: ref.watch(videoCacheManagerProvider),
-    downloadNotificationsFuture: ref.watch(
-      downloadNotificationsProvider.future,
-    ),
+    downloadNotifications: ref.watch(downloadNotificationsProvider),
   ),
 );

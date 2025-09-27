@@ -13,7 +13,11 @@ class BulkDownloadNotifications {
     this._streamController,
   );
 
-  final StreamController<String>? _streamController;
+  BulkDownloadNotifications.uninitialized()
+    : _flutterLocalNotificationsPlugin = null,
+      _streamController = null;
+
+  StreamController<String>? _streamController;
 
   Stream<String> get tapStream =>
       _streamController?.stream ?? const Stream.empty();
@@ -52,7 +56,19 @@ class BulkDownloadNotifications {
     return notif;
   }
 
-  final FlutterLocalNotificationsPlugin? _flutterLocalNotificationsPlugin;
+  FlutterLocalNotificationsPlugin? _flutterLocalNotificationsPlugin;
+  var _isInitialized = false;
+
+  Future<void> _ensureInitialized() async {
+    if (_isInitialized || isWindows()) return;
+
+    final initialized = await create();
+    _flutterLocalNotificationsPlugin =
+        initialized._flutterLocalNotificationsPlugin;
+    _streamController = initialized._streamController;
+    _isInitialized = true;
+  }
+
   final _activeNotifications = <String, bool>{};
 
   Future<void> showCompleteNotification(
@@ -63,6 +79,8 @@ class BulkDownloadNotifications {
   }) async {
     //TODO: implement custom notification for windows
     if (isWindows()) return;
+
+    await _ensureInitialized();
 
     const platformChannelSpecifics = NotificationDetails(
       android: AndroidNotificationDetails(
@@ -95,6 +113,8 @@ class BulkDownloadNotifications {
   }) async {
     //TODO: implement custom notification for windows
     if (isWindows()) return;
+
+    await _ensureInitialized();
 
     final id = notificationId ?? title.hashCode;
 
@@ -141,6 +161,8 @@ class BulkDownloadNotifications {
   }) async {
     if (isWindows()) return;
 
+    await _ensureInitialized();
+
     _activeNotifications[sessionId] = true;
 
     final androidPlatformChannelSpecifics = AndroidNotificationDetails(
@@ -174,6 +196,8 @@ class BulkDownloadNotifications {
 
   Future<void> cancelNotification(String sessionId) async {
     if (isWindows()) return;
+
+    await _ensureInitialized();
 
     final id = sessionId.hashCode;
     // Check both the sessionId and the hash version

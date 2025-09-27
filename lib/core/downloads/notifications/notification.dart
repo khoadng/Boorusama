@@ -12,6 +12,9 @@ class DownloadNotifications {
     this._flutterLocalNotificationsPlugin,
   );
 
+  DownloadNotifications.uninitialized()
+    : _flutterLocalNotificationsPlugin = null;
+
   static Future<DownloadNotifications> create() async {
     if (isWindows()) {
       return DownloadNotifications._(null);
@@ -34,7 +37,17 @@ class DownloadNotifications {
     return notif;
   }
 
-  final FlutterLocalNotificationsPlugin? _flutterLocalNotificationsPlugin;
+  FlutterLocalNotificationsPlugin? _flutterLocalNotificationsPlugin;
+  var _isInitialized = false;
+
+  Future<void> _ensureInitialized() async {
+    if (_isInitialized || isWindows()) return;
+
+    final initialized = await create();
+    _flutterLocalNotificationsPlugin =
+        initialized._flutterLocalNotificationsPlugin;
+    _isInitialized = true;
+  }
 
   Future<void> showDownloadCompleteNotification(
     String filename, {
@@ -42,6 +55,8 @@ class DownloadNotifications {
     bool fromCache = false,
   }) async {
     if (isWindows()) return;
+
+    await _ensureInitialized();
 
     final title = fromCache
         ? 'Download complete (disk cached)'
@@ -77,6 +92,8 @@ class DownloadNotifications {
     String? error,
   }) async {
     if (isWindows()) return;
+
+    await _ensureInitialized();
 
     const title = 'Download failed';
     final body = error ?? "Couldn't save $filename";

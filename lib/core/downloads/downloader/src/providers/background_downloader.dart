@@ -19,11 +19,11 @@ import 'file_downloader_ex.dart';
 class BackgroundDownloader implements DownloadService {
   const BackgroundDownloader({
     this.videoCacheManager,
-    this.downloadNotificationsFuture,
+    this.downloadNotifications,
   });
 
   final VideoCacheManager? videoCacheManager;
-  final Future<DownloadNotifications>? downloadNotificationsFuture;
+  final DownloadNotifications? downloadNotifications;
 
   @override
   DownloadTaskInfoOrError download({
@@ -167,21 +167,17 @@ class BackgroundDownloader implements DownloadService {
     // Check if target file already exists
     if ((skipIfExists ?? false) && targetFile.existsSync()) {
       // Show completion notification for existing file
-      if (downloadNotificationsFuture case final future?) {
+      if (downloadNotifications case final notifications?) {
         unawaited(
-          future.then(
-            (notifications) {
-              try {
-                notifications.showDownloadCompleteNotification(
-                  filename,
-                  fromCache: true,
-                  customMessage: '$filename was already saved from cache',
-                );
-              } catch (e) {
+          notifications
+              .showDownloadCompleteNotification(
+                filename,
+                fromCache: true,
+                customMessage: '$filename was already saved from cache',
+              )
+              .catchError((e) {
                 // Ignore notification errors
-              }
-            },
-          ),
+              }),
         );
       }
 
@@ -195,14 +191,16 @@ class BackgroundDownloader implements DownloadService {
     await sourceFile.copy(targetPath);
 
     // Show completion notification for successful copy
-    if (downloadNotificationsFuture case final future?) {
+    if (downloadNotifications case final notifications?) {
       unawaited(
-        future.then(
-          (notifications) => notifications.showDownloadCompleteNotification(
-            filename,
-            fromCache: true,
-          ),
-        ),
+        notifications
+            .showDownloadCompleteNotification(
+              filename,
+              fromCache: true,
+            )
+            .catchError((e) {
+              // Ignore notification errors
+            }),
       );
     }
 
