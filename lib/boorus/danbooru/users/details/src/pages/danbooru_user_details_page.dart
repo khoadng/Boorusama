@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
+import '../../../../../../core/configs/config/providers.dart';
 import '../../../../../../core/users/widgets.dart';
 import '../../../../../../core/widgets/widgets.dart';
 import '../../../../../../foundation/clipboard.dart';
@@ -34,6 +35,7 @@ class DanbooruUserDetailsPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final uid = details.id;
+    final config = ref.watchConfigAuth;
 
     return UserDetailsPage(
       actions: [
@@ -51,35 +53,41 @@ class DanbooruUserDetailsPage extends ConsumerWidget {
       body: SafeArea(
         bottom: false,
         child: ref
-            .watch(danbooruUserProvider(uid))
+            .watch(danbooruUserDetailsProvider((config, uid)))
             .when(
-              data: (user) => UserDetailsTabView(
-                sliverInfoOverview: UserOverviewScaffold(
-                  userInfo: DanbooruUserInfoBox(
-                    user: UserDetails.fromUser(user),
+              data: (userDetails) {
+                final user = userDetails.user;
+                final previousNames = userDetails.previousNames;
+
+                return UserDetailsTabView(
+                  sliverInfoOverview: UserOverviewScaffold(
+                    userInfo: DanbooruUserInfoBox(
+                      user: UserDetails.fromUser(user),
+                    ),
+                    action: UserDetailsActionButtons(uid: uid),
+                    isSelf: isSelf,
                   ),
-                  action: UserDetailsActionButtons(uid: uid),
-                  isSelf: isSelf,
-                ),
-                infoDetails: UserDetailsInfoView(
-                  uid: uid,
-                  isSelf: isSelf,
-                  user: user,
-                ),
-                uploads: user.hasUploads
-                    ? UserDetailsUploadView(
-                        uid: uid,
-                        username: user.name,
-                        isSelf: isSelf,
-                        user: user,
-                      )
-                    : null,
-                tagChanges: user.hasEdits
-                    ? UserDetailsTagChanges(
-                        uid: uid,
-                      )
-                    : null,
-              ),
+                  infoDetails: UserDetailsInfoView(
+                    uid: uid,
+                    isSelf: isSelf,
+                    user: user,
+                    previousNames: previousNames,
+                  ),
+                  uploads: user.hasUploads
+                      ? UserDetailsUploadView(
+                          uid: uid,
+                          username: user.name,
+                          isSelf: isSelf,
+                          user: user,
+                        )
+                      : null,
+                  tagChanges: user.hasEdits
+                      ? UserDetailsTagChanges(
+                          uid: uid,
+                        )
+                      : null,
+                );
+              },
               error: (error, stackTrace) => Center(
                 child: Text(context.t.profile.fail_to_load_profile),
               ),

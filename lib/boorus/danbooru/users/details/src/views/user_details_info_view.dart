@@ -8,10 +8,8 @@ import 'package:intl/intl.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../../../../core/configs/config/providers.dart';
 import '../../../../../../core/theme.dart';
 import '../../../feedbacks/routes.dart';
-import '../../../user/providers.dart';
 import '../../../user/user.dart';
 import '../widgets/user_details_section_card.dart';
 
@@ -20,17 +18,18 @@ class UserDetailsInfoView extends ConsumerWidget {
     required this.uid,
     required this.isSelf,
     required this.user,
+    required this.previousNames,
     super.key,
   });
 
   final bool isSelf;
   final DanbooruUser user;
   final int uid;
+  final List<String> previousNames;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final hasFeedback = user.hasFeedbacks;
-    final config = ref.watchConfigAuth;
 
     return SingleChildScrollView(
       child: Column(
@@ -41,61 +40,66 @@ class UserDetailsInfoView extends ConsumerWidget {
             child: UserStatsGroup(user: user),
           ),
           const SizedBox(height: 24),
-          UserDetailsSectionCard(
-            title: InkWell(
-              onTap: hasFeedback
-                  ? () => goToUserFeedbackPage(ref, user.id)
-                  : null,
-              child: Row(
-                children: [
-                  Text(
-                    context.t.profile.feedback.title,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  if (hasFeedback) ...[
-                    const SizedBox(width: 4),
-                    const Icon(
-                      Symbols.arrow_forward_ios,
-                      size: 14,
-                    ),
-                  ],
-                ],
+          _buildFeedbacks(hasFeedback, ref),
+          if (previousNames.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(top: 24),
+              child: _buildPrevNames(context),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFeedbacks(
+    bool hasFeedback,
+    WidgetRef ref,
+  ) {
+    final context = ref.context;
+
+    return UserDetailsSectionCard(
+      title: InkWell(
+        onTap: hasFeedback ? () => goToUserFeedbackPage(ref, user.id) : null,
+        child: Row(
+          children: [
+            Text(
+              context.t.profile.feedback.title,
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w700,
               ),
             ),
-            child: UserFeedbacksGroup(user: user),
-          ),
-          ref
-              .watch(danbooruUserPreviousNamesProvider((config, user.id)))
-              .maybeWhen(
-                data: (previousNames) => previousNames.isNotEmpty
-                    ? Padding(
-                        padding: const EdgeInsets.only(top: 24),
-                        child: UserDetailsSectionCard.text(
-                          title: context.t.profile.previous_names,
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Wrap(
-                                  children: previousNames
-                                      .map(
-                                        (e) => Chip(
-                                          label: Text(e.replaceAll('_', ' ')),
-                                          visualDensity: VisualDensity.compact,
-                                        ),
-                                      )
-                                      .toList(),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      )
-                    : const SizedBox.shrink(),
-                orElse: () => const SizedBox.shrink(),
+            if (hasFeedback) ...[
+              const SizedBox(width: 4),
+              const Icon(
+                Symbols.arrow_forward_ios,
+                size: 14,
               ),
+            ],
+          ],
+        ),
+      ),
+      child: UserFeedbacksGroup(user: user),
+    );
+  }
+
+  Widget _buildPrevNames(BuildContext context) {
+    return UserDetailsSectionCard.text(
+      title: context.t.profile.previous_names,
+      child: Row(
+        children: [
+          Expanded(
+            child: Wrap(
+              children: previousNames
+                  .map(
+                    (e) => Chip(
+                      label: Text(e.replaceAll('_', ' ')),
+                      visualDensity: VisualDensity.compact,
+                    ),
+                  )
+                  .toList(),
+            ),
+          ),
         ],
       ),
     );
