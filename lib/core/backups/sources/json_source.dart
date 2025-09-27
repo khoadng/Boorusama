@@ -43,6 +43,7 @@ abstract class JsonBackupSource<T> implements BackupDataSource {
       currentVersion: appVersion,
       extraSteps: extraSteps,
       validator: validator,
+      dataTypeName: displayName,
     );
   }
 
