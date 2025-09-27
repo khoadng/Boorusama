@@ -16,9 +16,7 @@ import '../../../configs/config/providers.dart';
 import '../../../images/booru_image.dart';
 import '../../../settings/settings.dart';
 import '../../../widgets/widgets.dart';
-import '../providers/media_kit_booru_player.dart';
-import '../providers/video_player_booru_player.dart';
-import '../providers/webview_booru_player.dart';
+import '../providers/providers.dart';
 import '../types/booru_player.dart';
 import '../types/video_player_state.dart';
 import '../types/video_source.dart';
@@ -220,18 +218,10 @@ class _BooruVideoState extends ConsumerState<BooruVideo> {
 
       // First initialization or no existing player, create new one
       final oldPlayer = _player;
-      final player = switch (_resolvedEngine) {
-        VideoPlayerEngine.webview => WebViewBooruPlayer(
-          userAgent: widget.userAgent,
-          backgroundColor: Colors.black,
-        ),
-        VideoPlayerEngine.mpv => MediaKitBooruPlayer(),
-        VideoPlayerEngine.auto ||
-        VideoPlayerEngine.videoPlayerPlugin ||
-        VideoPlayerEngine.mdk => VideoPlayerBooruPlayer(
-          videoPlayerEngine: _resolvedEngine,
-        ),
-      };
+      final player = createBooruPlayer(
+        engine: _resolvedEngine,
+        userAgent: widget.userAgent,
+      );
 
       if (!player.isPlatformSupported()) {
         return;

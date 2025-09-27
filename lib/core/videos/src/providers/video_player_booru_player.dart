@@ -11,14 +11,17 @@ import 'package:video_player/video_player.dart';
 import '../../../settings/settings.dart';
 import '../types/booru_player.dart';
 import '../types/video_source.dart';
+import 'wakelock.dart';
 import 'fvp_manager.dart';
 
 class VideoPlayerBooruPlayer implements BooruPlayer {
   VideoPlayerBooruPlayer({
+    required this.wakelock,
     this.videoPlayerEngine = VideoPlayerEngine.auto,
   });
 
   final VideoPlayerEngine videoPlayerEngine;
+  final Wakelock wakelock;
 
   VideoPlayerController? _controller;
   Timer? _positionTimer;
@@ -120,8 +123,13 @@ class VideoPlayerBooruPlayer implements BooruPlayer {
     final value = controller.value;
 
     _playingController.add(value.isPlaying);
-    if (value.isPlaying && !_hasPlayedOnce) {
-      _hasPlayedOnce = true;
+    if (value.isPlaying) {
+      wakelock.enable();
+      if (!_hasPlayedOnce) {
+        _hasPlayedOnce = true;
+      }
+    } else {
+      wakelock.disable();
     }
 
     _handleSmartBuffering(value.isBuffering);
@@ -274,6 +282,8 @@ class VideoPlayerBooruPlayer implements BooruPlayer {
   void dispose() {
     if (_isDisposed) return;
     _isDisposed = true;
+
+    wakelock.disable();
 
     _positionTimer?.cancel();
     _bufferingDelayTimer?.cancel();

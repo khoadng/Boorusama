@@ -11,14 +11,17 @@ import 'package:media_kit_video/media_kit_video.dart';
 // Project imports:
 import '../types/booru_player.dart';
 import '../types/video_source.dart';
+import 'wakelock.dart';
 import 'media_kit_manager.dart';
 
 class MediaKitBooruPlayer implements BooruPlayer {
   MediaKitBooruPlayer({
+    required this.wakelock,
     this.enableHardwareAcceleration = true,
   });
 
   final bool enableHardwareAcceleration;
+  final Wakelock wakelock;
 
   late final Player _player;
   late final VideoController _videoController;
@@ -56,8 +59,13 @@ class MediaKitBooruPlayer implements BooruPlayer {
     _playingSubscription = _player.stream.playing.listen((playing) {
       if (!_isDisposed) {
         _playingController.add(playing);
-        if (playing && !_hasPlayedOnce) {
-          _hasPlayedOnce = true;
+        if (playing) {
+          wakelock.enable();
+          if (!_hasPlayedOnce) {
+            _hasPlayedOnce = true;
+          }
+        } else {
+          wakelock.disable();
         }
       }
     });
@@ -249,7 +257,7 @@ class MediaKitBooruPlayer implements BooruPlayer {
       controller: _videoController,
       controls: NoVideoControls,
       fill: Colors.transparent,
-      wakelock: false, // We handle wakelock in the main player logic
+      wakelock: false, // We handle wakelock ourselves
     );
   }
 
@@ -257,6 +265,8 @@ class MediaKitBooruPlayer implements BooruPlayer {
   void dispose() {
     if (_isDisposed) return;
     _isDisposed = true;
+
+    wakelock.disable();
 
     _bufferingDelayTimer?.cancel();
     _positionSubscription?.cancel();

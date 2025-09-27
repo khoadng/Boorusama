@@ -144,6 +144,7 @@ dependencies:
   version: ^3.0.2
   video_player: ^2.9.2
   visibility_detector: ^0.4.0+2
+  wakelock_plus: ^1.4.0
   webview_cookie_manager:
     git:
        url: https://github.com/khoadng/webview_cookie_manager

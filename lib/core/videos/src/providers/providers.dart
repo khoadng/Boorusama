@@ -13,6 +13,7 @@ import '../../../http/providers.dart';
 import '../../../settings/providers.dart';
 import '../../../settings/settings.dart';
 import '../types/booru_player.dart';
+import 'wakelock.dart';
 import 'media_kit_booru_player.dart';
 import 'video_player_booru_player.dart';
 import 'webview_booru_player.dart';
@@ -87,14 +88,18 @@ BooruPlayer createBooruPlayer({
   String? userAgent,
 }) => switch (engine) {
   VideoPlayerEngine.webview => WebViewBooruPlayer(
+    wakelock: Wakelock(),
     //FIXME: pass user agent for other impl as well?
     userAgent: userAgent,
     backgroundColor: Colors.black,
   ),
-  VideoPlayerEngine.mpv => MediaKitBooruPlayer(),
+  VideoPlayerEngine.mpv => MediaKitBooruPlayer(
+    wakelock: Wakelock(),
+  ),
   VideoPlayerEngine.auto ||
   VideoPlayerEngine.videoPlayerPlugin ||
   VideoPlayerEngine.mdk => VideoPlayerBooruPlayer(
+    wakelock: Wakelock(),
     videoPlayerEngine: engine,
   ),
 };

@@ -15,16 +15,20 @@ import '../../../../foundation/utils/color_utils.dart';
 import '../../../widgets/widgets.dart';
 import '../types/booru_player.dart';
 import '../types/video_source.dart';
+import 'wakelock.dart';
 
 /// WebView-based implementation of BooruPlayer for WEBM files
 ///
 /// This implementation uses WebView with JavaScript to control WEBM video playback.
 class WebViewBooruPlayer implements BooruPlayer {
   WebViewBooruPlayer({
+    required this.wakelock,
     String? userAgent,
     Color backgroundColor = Colors.black,
   }) : _userAgent = userAgent,
        _backgroundColor = backgroundColor;
+
+  final Wakelock wakelock;
   final String? _userAgent;
   final Color _backgroundColor;
 
@@ -313,6 +317,7 @@ class WebViewBooruPlayer implements BooruPlayer {
       errorContext: 'Playing video',
     );
     _isPlaying = true;
+    wakelock.enable();
     if (!_hasPlayedOnce) {
       _hasPlayedOnce = true;
     }
@@ -329,6 +334,7 @@ class WebViewBooruPlayer implements BooruPlayer {
       errorContext: 'Pausing video',
     );
     _isPlaying = false;
+    wakelock.disable();
     _addToStream(_playingController, false);
   }
 
@@ -441,6 +447,8 @@ class WebViewBooruPlayer implements BooruPlayer {
   void dispose() {
     if (_isDisposed) return;
     _isDisposed = true;
+
+    wakelock.disable();
 
     _positionCheckTimer?.cancel();
     _positionTimer?.cancel();
