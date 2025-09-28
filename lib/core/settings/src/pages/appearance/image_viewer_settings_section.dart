@@ -155,6 +155,17 @@ class ImageViewerSettingsSection extends ConsumerWidget {
             ),
           ),
         ),
+        SettingsTile(
+          title: Text(context.t.settings.image_viewer.double_tap_seek),
+          selectedOption: viewer.doubleTapSeekDuration,
+          items: getDoubleTapSeekDurationPossibleValues(),
+          onChanged: (value) => onUpdate(
+            viewer.copyWith(doubleTapSeekDuration: value),
+          ),
+          optionBuilder: (value) => Text(
+            context.t.time.counters.second(n: value),
+          ),
+        ),
         BooruSwitchListTile(
           title: Text(context.t.settings.image_viewer.enable_video_cache),
           subtitle: Text(
@@ -225,4 +236,14 @@ List<double> getSlideShowIntervalPossibleValue() => [
   0.25,
   0.5,
   ...[for (var i = 1; i <= 30; i += 1) i.toDouble()],
+];
+
+List<int> getDoubleTapSeekDurationPossibleValues() => [
+  3,
+  5,
+  10,
+  15,
+  20,
+  30,
+  60,
 ];

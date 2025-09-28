@@ -25,6 +25,7 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
     required this.initialThumbnailUrl,
     required this.reduceAnimations,
     required this.dislclaimer,
+    required this.doubleTapSeekDuration,
   }) : currentPage = ValueNotifier(initialPage),
        _initialPage = initialPage,
        currentPost = ValueNotifier(posts[initialPage]),
@@ -35,6 +36,7 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
   final int _initialPage;
   final String? initialThumbnailUrl;
   final String? dislclaimer;
+  final int doubleTapSeekDuration;
 
   late ValueNotifier<int> currentPage;
   late ValueNotifier<T> currentPost;
@@ -142,6 +144,7 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
         post.id,
         isForward,
         Duration(seconds: post.duration.round()),
+        doubleTapSeekDuration,
       );
 
       if (seekPosition != null) {

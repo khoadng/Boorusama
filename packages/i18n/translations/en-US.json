@@ -366,6 +366,7 @@
         "vertical_description": "TikTok-style up/down swiping. Popular on short video platforms. Portrait mode only."
       },
       "mute_video": "Mute video by default",
+      "double_tap_seek": "Double-tap to seek",
       "video_section_title": "Video",
       "manage_cache": "Manage cache",
       "enable_video_cache": "Enable video cache",

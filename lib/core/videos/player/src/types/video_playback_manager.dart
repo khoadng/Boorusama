@@ -82,30 +82,18 @@ class VideoPlaybackManager extends ChangeNotifier {
     return _players[id];
   }
 
-  Duration calculateEffectiveSeekAmount(int playerId, Duration? postDuration) {
-    final player = getPlayer(playerId);
-    final durationSeconds =
-        player?.duration.inSeconds ?? postDuration?.inSeconds ?? 0;
-    return switch (durationSeconds) {
-      < 10 => const Duration(seconds: 3),
-      _ => const Duration(seconds: 10),
-    };
-  }
-
   Duration? seekVideoByDirection(
     int playerId,
     bool isForward,
     Duration? postDuration,
+    int doubleTapSeekDurationSeconds,
   ) {
-    final effectiveSeekAmount = calculateEffectiveSeekAmount(
-      playerId,
-      postDuration,
-    );
+    final seekAmount = Duration(seconds: doubleTapSeekDurationSeconds);
     final progress = videoProgress.value;
 
     final seekPosition = isForward
-        ? progress.seekForward(effectiveSeekAmount)
-        : progress.seekBackward(effectiveSeekAmount);
+        ? progress.seekForward(seekAmount)
+        : progress.seekBackward(seekAmount);
 
     seekVideo(seekPosition, playerId);
     return seekPosition;

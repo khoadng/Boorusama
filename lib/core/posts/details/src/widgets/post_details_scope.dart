@@ -63,6 +63,7 @@ class _PostDetailsLayoutSwitcherState<T extends Post>
       posts: widget.posts,
       reduceAnimations: reduceAnimations,
       dislclaimer: widget.dislclaimer,
+      doubleTapSeekDuration: viewerSettings.doubleTapSeekDuration,
     );
 
     _pageViewController = PostDetailsPageViewController(

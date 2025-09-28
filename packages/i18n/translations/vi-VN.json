@@ -366,6 +366,7 @@
         "vertical_description": "Vuốt lên/xuống kiểu TikTok. Phổ biến trên các nền tảng video ngắn. Chỉ dùng chế độ dọc."
       },
       "mute_video": "Mặc định tắt tiếng video",
+      "double_tap_seek": "Chạm hai lần để tua",
       "video_section_title": "Video",
       "manage_cache": "Quản lý bộ nhớ đệm",
       "enable_video_cache": "Bật bộ nhớ đệm video",

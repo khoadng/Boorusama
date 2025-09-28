@@ -150,6 +150,7 @@ class Settings extends Equatable {
       videoAudioDefaultState: VideoAudioDefaultState.unspecified,
       videoPlayerEngine: VideoPlayerEngine.auto,
       enableVideoCache: true,
+      doubleTapSeekDuration: 5,
     ),
     colors: null,
     safeMode: true,
@@ -529,6 +530,7 @@ class ImageViewerSettings extends Equatable {
     required this.videoAudioDefaultState,
     required this.videoPlayerEngine,
     required this.enableVideoCache,
+    required this.doubleTapSeekDuration,
   });
 
   ImageViewerSettings.fromJson(Map<String, dynamic> json)
@@ -553,7 +555,8 @@ class ImageViewerSettings extends Equatable {
       videoPlayerEngine = json['videoPlayerEngine'] != null
           ? VideoPlayerEngine.values[json['videoPlayerEngine']]
           : VideoPlayerEngine.auto,
-      enableVideoCache = json['enableVideoCache'] ?? true;
+      enableVideoCache = json['enableVideoCache'] ?? true,
+      doubleTapSeekDuration = json['doubleTapSeekDuration'] ?? 10;
 
   final PostDetailsSwipeMode swipeMode;
   final PostDetailsOverlayInitialState postDetailsOverlayInitialState;
@@ -563,6 +566,7 @@ class ImageViewerSettings extends Equatable {
   final VideoAudioDefaultState videoAudioDefaultState;
   final VideoPlayerEngine videoPlayerEngine;
   final bool enableVideoCache;
+  final int doubleTapSeekDuration;
 
   ImageViewerSettings copyWith({
     PostDetailsSwipeMode? swipeMode,
@@ -573,6 +577,7 @@ class ImageViewerSettings extends Equatable {
     VideoAudioDefaultState? videoAudioDefaultState,
     VideoPlayerEngine? videoPlayerEngine,
     bool? enableVideoCache,
+    int? doubleTapSeekDuration,
   }) {
     return ImageViewerSettings(
       swipeMode: swipeMode ?? this.swipeMode,
@@ -586,6 +591,8 @@ class ImageViewerSettings extends Equatable {
           videoAudioDefaultState ?? this.videoAudioDefaultState,
       videoPlayerEngine: videoPlayerEngine ?? this.videoPlayerEngine,
       enableVideoCache: enableVideoCache ?? this.enableVideoCache,
+      doubleTapSeekDuration:
+          doubleTapSeekDuration ?? this.doubleTapSeekDuration,
     );
   }
 
@@ -598,6 +605,7 @@ class ImageViewerSettings extends Equatable {
     'videoAudioDefaultState': videoAudioDefaultState.index,
     'videoPlayerEngine': videoPlayerEngine.index,
     'enableVideoCache': enableVideoCache,
+    'doubleTapSeekDuration': doubleTapSeekDuration,
   };
 
   @override
@@ -610,6 +618,7 @@ class ImageViewerSettings extends Equatable {
     videoAudioDefaultState,
     videoPlayerEngine,
     enableVideoCache,
+    doubleTapSeekDuration,
   ];
 
   bool get hidePostDetailsOverlay =>
