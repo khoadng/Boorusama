@@ -22,6 +22,7 @@ import '../../../../router.dart';
 import '../../../../settings/providers.dart';
 import '../../../../settings/settings.dart';
 import '../../../../theme.dart';
+import '../../../../videos/widgets.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../details_manager/types.dart';
 import '../../../details_pageview/widgets.dart';
@@ -182,7 +183,18 @@ class _PostDetailPageScaffoldState<T extends Post>
               }
             }
           },
-          child: _build(),
+          child: VideoScreenLocker(
+            onLockChanged: (isLocked) {
+              if (isLocked) {
+                _controller.hideAllUI();
+                _controller.disableKeyboardShortcuts();
+              } else {
+                _controller.showAllUI();
+                _controller.enableKeyboardShortcuts();
+              }
+            },
+            child: _build(),
+          ),
         ),
       ),
     );

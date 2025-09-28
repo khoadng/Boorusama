@@ -21,34 +21,39 @@ class PostDetailsShortcuts extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CallbackShortcuts(
-      bindings: {
-        SingleActivator(
-          useVerticalLayout
-              ? LogicalKeyboardKey.arrowDown
-              : LogicalKeyboardKey.arrowRight,
-        ): () {
-          controller.nextPage(
-            duration: isLargeScreen ? Duration.zero : null,
-          );
-        },
-        SingleActivator(
-          useVerticalLayout
-              ? LogicalKeyboardKey.arrowUp
-              : LogicalKeyboardKey.arrowLeft,
-        ): () {
-          controller.previousPage(
-            duration: isLargeScreen ? Duration.zero : null,
-          );
-        },
-        const SingleActivator(LogicalKeyboardKey.keyO): () =>
-            controller.toggleOverlay(),
-        const SingleActivator(LogicalKeyboardKey.escape): () =>
-            Navigator.of(context).maybePop(),
-      },
-      child: Focus(
-        autofocus: true,
-        child: child,
+    return ValueListenableBuilder(
+      valueListenable: controller.keyboardShortcutsEnabled,
+      builder: (context, shortcutsEnabled, _) => CallbackShortcuts(
+        bindings: shortcutsEnabled
+            ? {
+                SingleActivator(
+                  useVerticalLayout
+                      ? LogicalKeyboardKey.arrowDown
+                      : LogicalKeyboardKey.arrowRight,
+                ): () {
+                  controller.nextPage(
+                    duration: isLargeScreen ? Duration.zero : null,
+                  );
+                },
+                SingleActivator(
+                  useVerticalLayout
+                      ? LogicalKeyboardKey.arrowUp
+                      : LogicalKeyboardKey.arrowLeft,
+                ): () {
+                  controller.previousPage(
+                    duration: isLargeScreen ? Duration.zero : null,
+                  );
+                },
+                const SingleActivator(LogicalKeyboardKey.keyO): () =>
+                    controller.toggleOverlay(),
+                const SingleActivator(LogicalKeyboardKey.escape): () =>
+                    Navigator.of(context).maybePop(),
+              }
+            : {},
+        child: Focus(
+          autofocus: true,
+          child: child,
+        ),
       ),
     );
   }

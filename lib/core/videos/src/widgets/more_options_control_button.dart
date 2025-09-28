@@ -10,6 +10,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import '../../../../foundation/display.dart';
 import '../../../settings/routes.dart';
 import '../../../widgets/widgets.dart';
+import '../providers/providers.dart';
 
 class MoreOptionsControlButton extends StatelessWidget {
   const MoreOptionsControlButton({
@@ -56,6 +57,7 @@ class BooruVideoOptionSheet extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
+    final screenLockNotifier = ref.watch(screenLockProvider.notifier);
 
     return Material(
       color: kPreferredLayout.isDesktop
@@ -78,6 +80,13 @@ class BooruVideoOptionSheet extends ConsumerWidget {
                     speeds: const [0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 2.0],
                   ),
                 );
+              },
+            ),
+            ListTile(
+              title: Text(context.t.video_player.lock_screen),
+              onTap: () {
+                Navigator.of(context).pop();
+                screenLockNotifier.lock();
               },
             ),
             Padding(
