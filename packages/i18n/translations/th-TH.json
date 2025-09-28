@@ -456,7 +456,8 @@
           "videos": "วิดีโอ",
           "others": "อื่นๆ",
           "free": "พื้นที่คงเหลือ"
-        }
+        },
+        "status_title": "พื้นที่เหลือ $freeSpace จาก $totalSpace"
       }
     },
     "backup_and_restore": {
