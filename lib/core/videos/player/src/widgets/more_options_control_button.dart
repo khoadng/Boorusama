@@ -7,10 +7,10 @@ import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../../foundation/display.dart';
-import '../../../settings/routes.dart';
-import '../../../widgets/widgets.dart';
-import '../providers/providers.dart';
+import '../../../../../foundation/display.dart';
+import '../../../../settings/routes.dart';
+import '../../../../widgets/widgets.dart';
+import '../../../lock/providers.dart';
 
 class MoreOptionsControlButton extends StatelessWidget {
   const MoreOptionsControlButton({

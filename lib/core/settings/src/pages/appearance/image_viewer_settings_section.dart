@@ -6,7 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
-import '../../../../videos/providers.dart';
+import '../../../../videos/engines/providers.dart';
+import '../../../../videos/engines/types.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../routes.dart';
 import '../../types/settings.dart';

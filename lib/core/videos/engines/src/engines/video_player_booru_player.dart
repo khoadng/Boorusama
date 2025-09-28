@@ -8,11 +8,11 @@ import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
 // Project imports:
-import '../../../settings/settings.dart';
+import '../../../lock/types.dart';
 import '../types/booru_player.dart';
+import '../types/video_engine.dart';
 import '../types/video_source.dart';
 import 'fvp_manager.dart';
-import 'wakelock.dart';
 
 class VideoPlayerBooruPlayer implements BooruPlayer {
   VideoPlayerBooruPlayer({

@@ -12,12 +12,13 @@ import '../../../../configs/config/types.dart';
 import '../../../../http/providers.dart';
 import '../../../../settings/providers.dart';
 import '../../../../settings/routes.dart';
-import '../../../../videos/providers.dart';
-import '../../../../videos/types.dart';
-import '../../../../videos/widgets.dart';
+import '../../../../videos/cache/providers.dart';
+import '../../../../videos/player/providers.dart';
+import '../../../../videos/player/widgets.dart';
 import '../../../details_pageview/widgets.dart';
 import '../../../post/post.dart';
 import '../types/post_details.dart';
+import '../types/utils.dart';
 import 'post_details_image.dart';
 import 'video_controls.dart';
 

@@ -1,19 +1,9 @@
-// Project imports:
-import '../../../posts/post/post.dart';
-import '../widgets/video_player.dart';
-
 const _kDefaultDelaySeconds = 3;
 const _kMinDelaySeconds = 2;
 const _kMaxDelaySeconds = 8;
 const _kWatchPercentThreshold = 0.25;
 
-CacheDelayCallback createVideoCacheDelayCallback<T extends Post>(T post) =>
-    (url, state) => _calculateDelay(post);
-
-Duration _calculateDelay(Post post) {
-  final durationSeconds = post.duration;
-  final fileSizeBytes = post.fileSize;
-
+Duration calculateCacheDelay(double durationSeconds, int fileSizeBytes) {
   return switch ((durationSeconds, fileSizeBytes)) {
     (final d, _) when d > 0 => _delayFromDuration(d),
     (_, final s) when s > 0 => _delayFromFileSize(s),

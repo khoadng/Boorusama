@@ -101,16 +101,6 @@ extension SlideshowDirectionTranslated on SlideshowDirection {
   };
 }
 
-extension VideoPlayerEngineTranslated on VideoPlayerEngine {
-  String localize(BuildContext context) => switch (this) {
-    VideoPlayerEngine.auto => 'Default',
-    VideoPlayerEngine.videoPlayerPlugin => 'video_player',
-    VideoPlayerEngine.mdk => 'mdk',
-    VideoPlayerEngine.mpv => 'mpv',
-    VideoPlayerEngine.webview => 'webview',
-  };
-}
-
 extension SearchBarPositionTranslated on SearchBarPosition {
   String localize(BuildContext context) => switch (this) {
     SearchBarPosition.top => context.t.settings.search.search_bar.position.top,

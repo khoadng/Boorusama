@@ -12,7 +12,7 @@ import '../../../../../foundation/platform.dart';
 import '../../../../boorus/engine/providers.dart';
 import '../../../../configs/config/types.dart';
 import '../../../../configs/gesture/gesture.dart';
-import '../../../../videos/widgets.dart';
+import '../../../../videos/player/widgets.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../details_pageview/widgets.dart';
 import '../../../post/post.dart';

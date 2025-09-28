@@ -8,7 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../foundation/utils/file_utils.dart';
 import '../images/providers.dart';
 import '../tags/local/providers.dart';
-import '../videos/providers.dart';
+import '../videos/cache/providers.dart';
 
 final appCacheSizeProvider = FutureProvider.autoDispose<DirectorySizeInfo>(
   (

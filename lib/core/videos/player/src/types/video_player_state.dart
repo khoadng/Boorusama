@@ -2,8 +2,10 @@
 import 'package:path/path.dart' show extension;
 
 // Project imports:
-import '../../../settings/settings.dart';
-import 'booru_player.dart';
+import '../../../engines/types.dart';
+
+typedef CacheDelayCallback =
+    Duration Function(String url, VideoPlayerState state);
 
 sealed class VideoPlayerState {
   const VideoPlayerState();

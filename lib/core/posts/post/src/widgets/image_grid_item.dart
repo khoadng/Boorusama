@@ -10,7 +10,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import '../../../../theme.dart';
-import '../../../../videos/widgets.dart';
+import '../../../../videos/player/widgets.dart';
 import '../../../../widgets/widgets.dart';
 import 'image_overlay_icon.dart';
 

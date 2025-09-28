@@ -5,7 +5,32 @@ import 'package:flutter/widgets.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
-import '../../../settings/settings.dart';
+import '../../../lock/types.dart';
+import '../engines/media_kit_booru_player.dart';
+import '../engines/video_player_booru_player.dart';
+import '../engines/webview_booru_player.dart';
+import '../types/booru_player.dart';
+import '../types/video_engine.dart';
+
+BooruPlayer createBooruPlayer({
+  required VideoPlayerEngine engine,
+  String? userAgent,
+}) => switch (engine) {
+  VideoPlayerEngine.webview => WebViewBooruPlayer(
+    wakelock: Wakelock(),
+    //FIXME: pass user agent for other impl as well?
+    userAgent: userAgent,
+  ),
+  VideoPlayerEngine.mpv => MediaKitBooruPlayer(
+    wakelock: Wakelock(),
+  ),
+  VideoPlayerEngine.auto ||
+  VideoPlayerEngine.videoPlayerPlugin ||
+  VideoPlayerEngine.mdk => VideoPlayerBooruPlayer(
+    wakelock: Wakelock(),
+    videoPlayerEngine: engine,
+  ),
+};
 
 class VideoEngineUtils {
   static String getUnderlyingEngineName(

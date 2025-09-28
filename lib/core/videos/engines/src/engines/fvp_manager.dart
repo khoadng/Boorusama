@@ -2,7 +2,7 @@
 import 'package:fvp/fvp.dart' as fvp;
 
 // Project imports:
-import '../../../settings/settings.dart';
+import '../types/video_engine.dart';
 
 class FvpManager {
   factory FvpManager() => _instance;

@@ -10,12 +10,12 @@ import 'package:webview_flutter_android/webview_flutter_android.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 
 // Project imports:
-import '../../../../foundation/platform.dart';
-import '../../../../foundation/utils/color_utils.dart';
-import '../../../widgets/widgets.dart';
+import '../../../../../foundation/platform.dart';
+import '../../../../../foundation/utils/color_utils.dart';
+import '../../../../widgets/widgets.dart';
+import '../../../lock/types.dart';
 import '../types/booru_player.dart';
 import '../types/video_source.dart';
-import 'wakelock.dart';
 
 /// WebView-based implementation of BooruPlayer for WEBM files
 ///

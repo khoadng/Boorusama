@@ -11,6 +11,7 @@ import '../../../backups/auto/auto_backup_settings.dart';
 import '../../../configs/gesture/gesture.dart';
 import '../../../theme/theme_configs.dart';
 import '../../../theme/theme_mode.dart';
+import '../../../videos/engines/types.dart';
 import 'types.dart';
 
 class Settings extends Equatable {

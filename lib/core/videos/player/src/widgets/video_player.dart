@@ -10,20 +10,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
-import '../../../../foundation/loggers.dart';
-import '../../../../foundation/platform.dart';
-import '../../../configs/config/providers.dart';
-import '../../../images/booru_image.dart';
-import '../../../settings/settings.dart';
-import '../../../widgets/widgets.dart';
-import '../providers/providers.dart';
-import '../types/booru_player.dart';
+import '../../../../../foundation/loggers.dart';
+import '../../../../../foundation/platform.dart';
+import '../../../../configs/config/providers.dart';
+import '../../../../images/booru_image.dart';
+import '../../../../widgets/widgets.dart';
+import '../../../engines/providers.dart';
+import '../../../engines/types.dart';
 import '../types/video_player_state.dart';
-import '../types/video_source.dart';
 import 'video_player_error_container.dart';
-
-typedef CacheDelayCallback =
-    Duration Function(String url, VideoPlayerState state);
 
 class BooruVideo extends ConsumerStatefulWidget {
   const BooruVideo({

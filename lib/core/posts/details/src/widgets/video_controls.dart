@@ -8,8 +8,8 @@ import 'package:foundation/foundation.dart';
 // Project imports:
 import '../../../../../foundation/display.dart';
 import '../../../../theme.dart';
-import '../../../../videos/providers.dart';
-import '../../../../videos/widgets.dart';
+import '../../../../videos/player/providers.dart';
+import '../../../../videos/player/widgets.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../post/post.dart';
 import 'post_details_controller.dart';

@@ -2,7 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../videos/providers.dart';
+import '../../../../videos/cache/providers.dart';
 import '../../../notifications/notification.dart';
 import '../types/download.dart';
 import 'background_downloader.dart';

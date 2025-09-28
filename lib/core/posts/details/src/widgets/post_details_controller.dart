@@ -9,7 +9,8 @@ import 'package:foundation/foundation.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import '../../../../videos/types.dart';
+import '../../../../videos/engines/types.dart';
+import '../../../../videos/player/types.dart';
 import '../../../post/post.dart';
 
 const _kSeekAmount = Duration(seconds: 10);

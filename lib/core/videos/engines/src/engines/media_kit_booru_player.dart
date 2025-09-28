@@ -9,10 +9,10 @@ import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 
 // Project imports:
+import '../../../lock/types.dart';
 import '../types/booru_player.dart';
 import '../types/video_source.dart';
 import 'media_kit_manager.dart';
-import 'wakelock.dart';
 
 class MediaKitBooruPlayer implements BooruPlayer {
   MediaKitBooruPlayer({

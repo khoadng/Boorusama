@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../providers/providers.dart';
+import '../providers/sound_provider.dart';
 
 class SoundControlButton extends ConsumerWidget {
   const SoundControlButton({
