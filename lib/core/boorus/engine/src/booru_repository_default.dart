@@ -35,6 +35,7 @@ import '../../../posts/post/routes.dart';
 import '../../../posts/rating/rating.dart';
 import '../../../posts/shares/providers.dart';
 import '../../../posts/sources/source.dart';
+import '../../../posts/post/providers.dart';
 import '../../../search/queries/providers.dart';
 import '../../../search/queries/tag_query_composer.dart';
 import '../../../settings/providers.dart';
@@ -78,6 +79,11 @@ abstract class BooruRepositoryDefault implements BooruRepository {
   @override
   ImageUrlResolver imageUrlResolver() {
     return const DefaultImageUrlResolver();
+  }
+
+  @override
+  VideoInfoExtractor videoInfoExtractor(BooruConfigAuth config) {
+    return ref.watch(defaultVideoInfoExtractorProvider);
   }
 
   @override

@@ -41,6 +41,7 @@ abstract class BooruRepository {
   TagQueryComposer tagComposer(BooruConfigSearch config);
   PostLinkGenerator postLinkGenerator(BooruConfigAuth config);
   ImageUrlResolver imageUrlResolver();
+  VideoInfoExtractor videoInfoExtractor(BooruConfigAuth config);
   GridThumbnailUrlGenerator gridThumbnailUrlGenerator(BooruConfigAuth config);
   TagColorGenerator tagColorGenerator();
   DownloadFilenameGenerator downloadFilenameBuilder(BooruConfigAuth config);
