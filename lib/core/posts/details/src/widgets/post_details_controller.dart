@@ -13,7 +13,6 @@ import '../../../../videos/engines/types.dart';
 import '../../../../videos/player/types.dart';
 import '../../../post/post.dart';
 
-const _kSeekAmount = Duration(seconds: 10);
 const kSeekAnimationDuration = Duration(milliseconds: 400);
 
 enum SeekDirection { forward, backward }
@@ -28,7 +27,8 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
     required this.dislclaimer,
   }) : currentPage = ValueNotifier(initialPage),
        _initialPage = initialPage,
-       currentPost = ValueNotifier(posts[initialPage]);
+       currentPost = ValueNotifier(posts[initialPage]),
+       _playback = VideoPlaybackManager();
   final AutoScrollController? scrollController;
   final bool reduceAnimations;
   final List<T> posts;
@@ -38,23 +38,20 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
 
   late ValueNotifier<int> currentPage;
   late ValueNotifier<T> currentPost;
-
-  final _seekStreamController = StreamController<VideoProgress>.broadcast();
-
-  Stream<VideoProgress> get seekStream => _seekStreamController.stream;
+  final VideoPlaybackManager _playback;
 
   int get initialPage =>
       currentPage.value != _initialPage ? currentPage.value : _initialPage;
 
   void setPage(int page) {
     currentPage.value = page;
-    _videoProgress.value = VideoProgress.zero;
+    _playback.resetProgress();
 
     final post = posts.getOrNull(page);
 
     if (post?.isMp4 ?? false) {
-      if (_isVideoPlaying.value) {
-        _isVideoPlaying.value = false;
+      if (_playback.isVideoPlaying.value) {
+        _playback.isVideoPlaying.value = false;
       }
     }
 
@@ -81,47 +78,31 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
     scrollController?.scrollToIndex(page);
   }
 
-  final _videoProgress = ValueNotifier(VideoProgress.zero);
-  final _isVideoPlaying = ValueNotifier<bool>(false);
   final _seekDirection = ValueNotifier<SeekDirection?>(null);
 
-  final Map<int, BooruPlayer> _booruPlayers = {};
-
-  ValueNotifier<VideoProgress> get videoProgress => _videoProgress;
-  ValueNotifier<bool> get isVideoPlaying => _isVideoPlaying;
+  ValueNotifier<VideoProgress> get videoProgress => _playback.videoProgress;
+  ValueNotifier<bool> get isVideoPlaying => _playback.isVideoPlaying;
   ValueNotifier<SeekDirection?> get seekDirection => _seekDirection;
+  Stream<VideoProgress> get seekStream => _playback.seekStream;
 
   void onCurrentPositionChanged(double current, double total, String url) {
-    // // check if the current video is the same as the one being played
+    // check if the current video is the same as the one being played
     if (posts[currentPage.value].videoUrl != url) return;
 
-    _videoProgress.value = VideoProgress(
-      Duration(milliseconds: (total * 1000).toInt()),
-      Duration(milliseconds: (current * 1000).toInt()),
+    _playback.updateProgress(
+      current,
+      total,
+      url,
+      currentPost.value.id,
     );
   }
 
-  void onVideoSeekTo(
-    Duration position,
-    int id,
-  ) {
-    _booruPlayers[id]?.seek(position);
-
-    _seekStreamController.add(
-      VideoProgress(
-        position,
-        _videoProgress.value.duration,
-      ),
-    );
-  }
-
-  bool isPlaying(int id) {
-    return _booruPlayers[id]?.isPlaying ?? false;
+  void onVideoSeekTo(Duration position, int id) {
+    _playback.seekVideo(position, id);
   }
 
   Future<void> playVideo(int id) async {
-    unawaited(_booruPlayers[id]?.play());
-    _isVideoPlaying.value = true;
+    await _playback.playVideo(id);
   }
 
   Future<void> playCurrentVideo() {
@@ -139,8 +120,7 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
   }
 
   Future<void> pauseVideo(int id) async {
-    unawaited(_booruPlayers[id]?.pause());
-    _isVideoPlaying.value = false;
+    await _playback.pauseVideo(id);
   }
 
   Future<void> seekFromDoubleTap(Offset tapPosition, Size viewport) async {
@@ -149,30 +129,24 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
 
     final width = viewport.width;
     final leftBoundary = width * 0.5;
-    final rightBoundary = width - leftBoundary;
-    final progress = _videoProgress.value;
-    final currentPlayer = _booruPlayers[post.id];
-    final durationSeconds = currentPlayer?.duration.inSeconds ?? post.duration;
-    final effectiveSeekAmount = switch (durationSeconds) {
-      < 10 => const Duration(seconds: 3),
-      _ => _kSeekAmount,
+
+    final direction = switch (tapPosition.dx) {
+      final x when x < leftBoundary => SeekDirection.backward,
+      final x when x >= leftBoundary => SeekDirection.forward,
+      _ => null,
     };
 
-    final (seekPosition, direction) = switch (tapPosition.dx) {
-      final x when x < leftBoundary => (
-        progress.seekBackward(effectiveSeekAmount),
-        SeekDirection.backward,
-      ),
-      final x when x >= rightBoundary => (
-        progress.seekForward(effectiveSeekAmount),
-        SeekDirection.forward,
-      ),
-      _ => (null, null),
-    };
+    if (direction != null) {
+      final isForward = direction == SeekDirection.forward;
+      final seekPosition = _playback.seekVideoByDirection(
+        post.id,
+        isForward,
+        Duration(seconds: post.duration.round()),
+      );
 
-    if (seekPosition != null && direction != null) {
-      onVideoSeekTo(seekPosition, post.id);
-      _showSeekAnimation(direction);
+      if (seekPosition != null) {
+        _showSeekAnimation(direction);
+      }
     }
   }
 
@@ -188,21 +162,13 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
   }
 
   void onBooruVideoPlayerCreated(BooruPlayer player, int id) {
-    _booruPlayers[id] = player;
+    _playback.registerPlayer(player, id);
   }
 
   @override
   void dispose() {
-    for (final player in _booruPlayers.values) {
-      player.dispose();
-    }
-
-    _booruPlayers.clear();
-
-    _videoProgress.dispose();
-    _isVideoPlaying.dispose();
+    _playback.dispose();
     _seekDirection.dispose();
-    _seekStreamController.close();
 
     currentPage.dispose();
     currentPost.dispose();
