@@ -19,7 +19,7 @@ class GlobalSoundNotifier extends Notifier<bool> {
   @override
   bool build() {
     final isMuteByDefault = ref.watch(
-      settingsProvider.select((s) => s.viewer.muteAudioByDefault),
+      imageViewerSettingsProvider.select((s) => s.muteAudioByDefault),
     );
 
     return !isMuteByDefault;
@@ -55,7 +55,7 @@ final playbackSpeedProvider =
 final videoCacheManagerProvider = Provider<VideoCacheManager?>(
   (ref) {
     final enable = ref.watch(
-      settingsProvider.select((s) => s.enableVideoCache),
+      imageViewerSettingsProvider.select((s) => s.enableVideoCache),
     );
 
     if (!enable) return null;

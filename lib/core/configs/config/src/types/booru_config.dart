@@ -46,6 +46,7 @@ class BooruConfig extends Equatable {
     required this.postGestures,
     required this.defaultPreviewImageButtonAction,
     required this.listing,
+    required this.viewerConfigs,
     required this.theme,
     required this.alwaysIncludeTags,
     required this.blacklistConfigs,
@@ -98,6 +99,9 @@ class BooruConfig extends Equatable {
       listing: json['listing'] == null
           ? null
           : ListingConfigs.fromJson(json['listing'] as Map<String, dynamic>),
+      viewerConfigs: json['viewer'] == null
+          ? null
+          : ViewerConfigs.fromJson(json['viewer'] as Map<String, dynamic>),
       theme: json['theme'] == null
           ? null
           : ThemeConfigs.fromJson(json['theme'] as Map<String, dynamic>),
@@ -138,6 +142,7 @@ class BooruConfig extends Equatable {
     postGestures: null,
     defaultPreviewImageButtonAction: null,
     listing: null,
+    viewerConfigs: null,
     theme: null,
     alwaysIncludeTags: null,
     blacklistConfigs: null,
@@ -171,6 +176,7 @@ class BooruConfig extends Equatable {
     postGestures: null,
     defaultPreviewImageButtonAction: null,
     listing: null,
+    viewerConfigs: null,
     theme: null,
     alwaysIncludeTags: null,
     blacklistConfigs: null,
@@ -198,6 +204,7 @@ class BooruConfig extends Equatable {
   final PostGestureConfig? postGestures;
   final String? defaultPreviewImageButtonAction;
   final ListingConfigs? listing;
+  final ViewerConfigs? viewerConfigs;
   final ThemeConfigs? theme;
   final String? alwaysIncludeTags;
   final BlacklistConfigs? blacklistConfigs;
@@ -211,6 +218,7 @@ class BooruConfig extends Equatable {
     String? login,
     String? name,
     int? booruIdHint,
+    ViewerConfigs? Function()? viewerConfigs,
     LayoutConfigs? Function()? layout,
   }) {
     return BooruConfig(
@@ -233,6 +241,9 @@ class BooruConfig extends Equatable {
       postGestures: postGestures,
       defaultPreviewImageButtonAction: defaultPreviewImageButtonAction,
       listing: listing,
+      viewerConfigs: viewerConfigs != null
+          ? viewerConfigs()
+          : this.viewerConfigs,
       theme: theme,
       alwaysIncludeTags: alwaysIncludeTags,
       blacklistConfigs: blacklistConfigs,
@@ -263,6 +274,7 @@ class BooruConfig extends Equatable {
     postGestures,
     defaultPreviewImageButtonAction,
     listing,
+    viewerConfigs,
     theme,
     alwaysIncludeTags,
     blacklistConfigs,
@@ -299,6 +311,7 @@ class BooruConfig extends Equatable {
       'postGestures': postGestures?.toJson(),
       'defaultPreviewImageButtonAction': defaultPreviewImageButtonAction,
       'listing': listing?.toJson(),
+      'viewer': viewerConfigs?.toJson(),
       'theme': theme?.toJson(),
       'alwaysIncludeTags': alwaysIncludeTags,
       'blacklistedTags': blacklistConfigs?.toJson(),

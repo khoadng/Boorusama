@@ -49,10 +49,11 @@ class _PostDetailsLayoutSwitcherState<T extends Post>
 
     final initialPage = widget.initialIndex;
     final settings = ref.read(settingsProvider);
+    final viewerSettings = ref.read(imageViewerSettingsProvider);
 
     final reduceAnimations = settings.reduceAnimations;
-    final hideOverlay = settings.viewer.hidePostDetailsOverlay;
-    final slideshowOptions = toSlideShowOptions(settings);
+    final hideOverlay = viewerSettings.hidePostDetailsOverlay;
+    final slideshowOptions = toSlideShowOptions(viewerSettings);
     final hoverToControlOverlay = widget.posts[initialPage].isVideo;
 
     _controller = PostDetailsController<T>(

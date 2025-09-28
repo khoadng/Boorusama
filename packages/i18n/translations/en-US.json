@@ -862,7 +862,8 @@
     },
     "viewer": {
       "auto_fetch_notes": "Auto-fetch notes",
-      "auto_fetch_notes_description": "Automatically fetch and display notes whenever possible."
+      "auto_fetch_notes_description": "Automatically fetch and display notes whenever possible.",
+      "overridden_notice": "These settings are overridden by custom viewer. Go to <b><a href=\"booru-profiles\">Profile's Viewer</a></b> page instead."
     },
     "gestures": {
       "title": "Gestures",

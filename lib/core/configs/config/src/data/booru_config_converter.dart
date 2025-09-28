@@ -46,6 +46,9 @@ extension BooruConfigDataConverter on BooruConfigData? {
       listing: booruConfigData.listing == null
           ? null
           : ListingConfigs.fromJsonString(booruConfigData.listing),
+      viewerConfigs: booruConfigData.viewerConfigs == null
+          ? null
+          : ViewerConfigs.fromJsonString(booruConfigData.viewerConfigs),
       theme: booruConfigData.theme == null
           ? null
           : ThemeConfigs.fromJsonString(booruConfigData.theme),
@@ -90,6 +93,7 @@ extension BooruConfigConverter on BooruConfig {
       postGestures: postGestures?.toJsonString(),
       defaultPreviewImageButtonAction: defaultPreviewImageButtonAction,
       listing: listing?.toJsonString(),
+      viewerConfigs: viewerConfigs?.toJsonString(),
       theme: theme?.toJsonString(),
       alwaysIncludeTags: alwaysIncludeTags,
       blacklistConfigs: blacklistConfigs?.toJsonString(),

@@ -46,7 +46,6 @@ class Settings extends Equatable {
     required this.hapticFeedbackLevel,
     required this.autoBackup,
     required this.videoCacheMaxSize,
-    required this.enableVideoCache,
   });
 
   Settings.fromJson(Map<String, dynamic> json)
@@ -122,8 +121,7 @@ class Settings extends Equatable {
       videoCacheMaxSize = switch (json['videoCacheMaxSize']) {
         final v? => CacheSize.tryParse(v) ?? CacheSize.oneGigabyte,
         _ => CacheSize.oneGigabyte,
-      },
-      enableVideoCache = json['enableVideoCache'] ?? true;
+      };
 
   static const defaultSettings = Settings(
     listing: ImageListingSettings(
@@ -150,6 +148,7 @@ class Settings extends Equatable {
       slideshowTransitionType: SlideshowTransitionType.natural,
       videoAudioDefaultState: VideoAudioDefaultState.unspecified,
       videoPlayerEngine: VideoPlayerEngine.auto,
+      enableVideoCache: true,
     ),
     colors: null,
     safeMode: true,
@@ -180,7 +179,6 @@ class Settings extends Equatable {
     hapticFeedbackLevel: HapticFeedbackLevel.balanced,
     autoBackup: AutoBackupSettings.disabled,
     videoCacheMaxSize: CacheSize.oneGigabyte,
-    enableVideoCache: true,
   );
 
   final ImageListingSettings listing;
@@ -241,8 +239,6 @@ class Settings extends Equatable {
 
   final CacheSize videoCacheMaxSize;
 
-  final bool enableVideoCache;
-
   Settings copyWith({
     String? blacklistedTags,
     String? language,
@@ -276,7 +272,6 @@ class Settings extends Equatable {
     HapticFeedbackLevel? hapticFeedbackLevel,
     AutoBackupSettings? autoBackup,
     CacheSize? videoCacheMaxSize,
-    bool? enableVideoCache,
   }) => Settings(
     listing: listing ?? this.listing,
     viewer: viewer ?? this.viewer,
@@ -321,7 +316,6 @@ class Settings extends Equatable {
     hapticFeedbackLevel: hapticFeedbackLevel ?? this.hapticFeedbackLevel,
     autoBackup: autoBackup ?? this.autoBackup,
     videoCacheMaxSize: videoCacheMaxSize ?? this.videoCacheMaxSize,
-    enableVideoCache: enableVideoCache ?? this.enableVideoCache,
   );
 
   Map<String, dynamic> toJson() {
@@ -361,7 +355,6 @@ class Settings extends Equatable {
       'hapticFeedbackLevel': hapticFeedbackLevel.index,
       'autoBackup': autoBackup.toJson(),
       'videoCacheMaxSize': videoCacheMaxSize.displayString(),
-      'enableVideoCache': enableVideoCache,
     };
   }
 
@@ -398,7 +391,6 @@ class Settings extends Equatable {
     hapticFeedbackLevel,
     autoBackup,
     videoCacheMaxSize,
-    enableVideoCache,
   ];
 
   bool get appLockEnabled => appLockType == AppLockType.biometrics;
@@ -477,6 +469,55 @@ class ListingConfigs extends Equatable {
   String toJsonString() => jsonEncode(toJson());
 }
 
+class ViewerConfigs extends Equatable {
+  const ViewerConfigs({
+    required this.settings,
+    required this.enable,
+  });
+
+  ViewerConfigs.undefined()
+    : settings = Settings.defaultSettings.viewer,
+      enable = false;
+
+  factory ViewerConfigs.fromJsonString(String? jsonString) =>
+      switch (jsonString) {
+        null => ViewerConfigs.undefined(),
+        final String s => tryDecodeJson(s).fold(
+          (_) => ViewerConfigs.undefined(),
+          (json) => ViewerConfigs.fromJson(json),
+        ),
+      };
+
+  factory ViewerConfigs.fromJson(Map<String, dynamic> json) {
+    return ViewerConfigs(
+      settings: ImageViewerSettings.fromJson(json['settings']),
+      enable: json['enable'],
+    );
+  }
+  final ImageViewerSettings settings;
+  final bool enable;
+
+  ViewerConfigs copyWith({
+    ImageViewerSettings? settings,
+    bool? enable,
+  }) {
+    return ViewerConfigs(
+      settings: settings ?? this.settings,
+      enable: enable ?? this.enable,
+    );
+  }
+
+  @override
+  List<Object> get props => [settings, enable];
+
+  Map<String, dynamic> toJson() => {
+    'settings': settings.toJson(),
+    'enable': enable,
+  };
+
+  String toJsonString() => jsonEncode(toJson());
+}
+
 class ImageViewerSettings extends Equatable {
   const ImageViewerSettings({
     required this.swipeMode,
@@ -486,6 +527,7 @@ class ImageViewerSettings extends Equatable {
     required this.slideshowTransitionType,
     required this.videoAudioDefaultState,
     required this.videoPlayerEngine,
+    required this.enableVideoCache,
   });
 
   ImageViewerSettings.fromJson(Map<String, dynamic> json)
@@ -509,7 +551,8 @@ class ImageViewerSettings extends Equatable {
           : VideoAudioDefaultState.unspecified,
       videoPlayerEngine = json['videoPlayerEngine'] != null
           ? VideoPlayerEngine.values[json['videoPlayerEngine']]
-          : VideoPlayerEngine.auto;
+          : VideoPlayerEngine.auto,
+      enableVideoCache = json['enableVideoCache'] ?? true;
 
   final PostDetailsSwipeMode swipeMode;
   final PostDetailsOverlayInitialState postDetailsOverlayInitialState;
@@ -518,6 +561,7 @@ class ImageViewerSettings extends Equatable {
   final SlideshowTransitionType slideshowTransitionType;
   final VideoAudioDefaultState videoAudioDefaultState;
   final VideoPlayerEngine videoPlayerEngine;
+  final bool enableVideoCache;
 
   ImageViewerSettings copyWith({
     PostDetailsSwipeMode? swipeMode,
@@ -527,6 +571,7 @@ class ImageViewerSettings extends Equatable {
     SlideshowTransitionType? slideshowTransitionType,
     VideoAudioDefaultState? videoAudioDefaultState,
     VideoPlayerEngine? videoPlayerEngine,
+    bool? enableVideoCache,
   }) {
     return ImageViewerSettings(
       swipeMode: swipeMode ?? this.swipeMode,
@@ -539,6 +584,7 @@ class ImageViewerSettings extends Equatable {
       videoAudioDefaultState:
           videoAudioDefaultState ?? this.videoAudioDefaultState,
       videoPlayerEngine: videoPlayerEngine ?? this.videoPlayerEngine,
+      enableVideoCache: enableVideoCache ?? this.enableVideoCache,
     );
   }
 
@@ -550,6 +596,7 @@ class ImageViewerSettings extends Equatable {
     'slideshowTransitionType': slideshowTransitionType.index,
     'videoAudioDefaultState': videoAudioDefaultState.index,
     'videoPlayerEngine': videoPlayerEngine.index,
+    'enableVideoCache': enableVideoCache,
   };
 
   @override
@@ -561,6 +608,7 @@ class ImageViewerSettings extends Equatable {
     slideshowTransitionType,
     videoAudioDefaultState,
     videoPlayerEngine,
+    enableVideoCache,
   ];
 
   bool get hidePostDetailsOverlay =>

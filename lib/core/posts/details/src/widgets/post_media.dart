@@ -67,8 +67,8 @@ class PostMedia<T extends Post> extends ConsumerWidget {
                   onOpenSettings: () => _openSettings(ref),
                   headers: headers,
                   videoPlayerEngine: ref.watch(
-                    settingsProvider.select(
-                      (value) => value.viewer.videoPlayerEngine,
+                    imageViewerSettingsProvider.select(
+                      (value) => value.videoPlayerEngine,
                     ),
                   ),
                   userAgent: ref.watch(

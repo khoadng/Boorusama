@@ -43,10 +43,10 @@ class PostDetails<T extends Post> extends InheritedWidget {
   }
 }
 
-SlideshowOptions toSlideShowOptions(Settings settings) {
+SlideshowOptions toSlideShowOptions(ImageViewerSettings viewerSettings) {
   return SlideshowOptions(
-    duration: settings.viewer.slideshowDuration,
-    direction: settings.viewer.slideshowDirection,
-    skipTransition: settings.viewer.skipSlideshowTransition,
+    duration: viewerSettings.slideshowDuration,
+    direction: viewerSettings.slideshowDirection,
+    skipTransition: viewerSettings.skipSlideshowTransition,
   );
 }

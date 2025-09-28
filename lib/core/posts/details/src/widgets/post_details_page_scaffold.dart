@@ -142,7 +142,7 @@ class _PostDetailPageScaffoldState<T extends Post>
   Widget build(BuildContext context) {
     // Sync slideshow options with settings
     ref.listen(
-      settingsProvider.select(
+      imageViewerSettingsProvider.select(
         toSlideShowOptions,
       ),
       (prev, next) {
@@ -198,7 +198,7 @@ class _PostDetailPageScaffoldState<T extends Post>
       settingsProvider.select((value) => value.reduceAnimations),
     );
     final swipeMode = ref.watch(
-      settingsProvider.select((value) => value.viewer.swipeMode),
+      imageViewerSettingsProvider.select((value) => value.swipeMode),
     );
 
     return Scaffold(

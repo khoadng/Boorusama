@@ -122,6 +122,10 @@ class EditBooruConfigNotifier
     ListingConfigs? listing,
   ) => state = state.copyWith(listing: () => listing);
 
+  void updateViewerConfigs(
+    ViewerConfigs? viewerConfigs,
+  ) => state = state.copyWith(viewerConfigs: () => viewerConfigs);
+
   void updateCustomDownloadLocation(
     String? customDownloadLocation,
   ) => state = state.copyWith(

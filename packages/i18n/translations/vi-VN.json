@@ -862,7 +862,8 @@
     },
     "viewer": {
       "auto_fetch_notes": "Tự động lấy ghi chú",
-      "auto_fetch_notes_description": "Tự động tải và hiển thị ghi chú khi có thể."
+      "auto_fetch_notes_description": "Tự động tải và hiển thị ghi chú khi có thể.",
+      "overridden_notice": "Cài đặt này bị ghi đè bởi trình xem tùy chỉnh. Vui lòng chỉnh trong phần <b><a href=\"booru-profiles\">Trình xem của Hồ sơ</a></b>."
     },
     "gestures": {
       "title": "Cử chỉ",

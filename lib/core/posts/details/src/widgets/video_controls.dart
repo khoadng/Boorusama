@@ -7,8 +7,6 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../../../../foundation/display.dart';
-import '../../../../settings/providers.dart';
-import '../../../../settings/settings.dart';
 import '../../../../theme.dart';
 import '../../../../videos/providers.dart';
 import '../../../../videos/widgets.dart';
@@ -96,21 +94,14 @@ class PostDetailsVideoControls<T extends Post> extends ConsumerWidget {
         const SizedBox(height: 4),
         Consumer(
           builder: (context, ref, child) {
-            final useDefaultEngine = ref.watch(
-              settingsProvider.select(
-                (value) =>
-                    value.viewer.videoPlayerEngine != VideoPlayerEngine.mdk,
-              ),
-            );
-
             return Row(
               children: [
                 const SizedBox(width: 4),
-                _buildPlayPauseButton(isLarge, useDefaultEngine),
+                _buildPlayPauseButton(isLarge),
                 _buildLeftTime(),
                 const SizedBox(width: 4),
                 Expanded(
-                  child: _buildBar(useDefaultEngine),
+                  child: _buildBar(),
                 ),
                 const SizedBox(width: 4),
                 _buildRightTime(),
@@ -143,7 +134,7 @@ class PostDetailsVideoControls<T extends Post> extends ConsumerWidget {
     );
   }
 
-  Widget _buildPlayPauseButton(bool isLarge, bool useDefaultEngine) {
+  Widget _buildPlayPauseButton(bool isLarge) {
     return ValueListenableBuilder(
       valueListenable: controller.currentPost,
       builder: (_, post, _) => PlayPauseButton(
@@ -162,7 +153,7 @@ class PostDetailsVideoControls<T extends Post> extends ConsumerWidget {
     );
   }
 
-  Widget _buildBar(bool useDefaultEngine) {
+  Widget _buildBar() {
     return Container(
       color: Colors.transparent,
       height: 28,
