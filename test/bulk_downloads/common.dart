@@ -24,7 +24,6 @@ class DummyPost implements Post {
     this.isMp4 = false,
     this.isTranslated = false,
     this.isVideo = false,
-    this.isWebm = false,
     this.md5 = '',
     this.metadata,
     this.mpixels = 0,
@@ -81,8 +80,6 @@ class DummyPost implements Post {
   final bool isTranslated;
   @override
   final bool isVideo;
-  @override
-  final bool isWebm;
   @override
   final String md5;
   @override

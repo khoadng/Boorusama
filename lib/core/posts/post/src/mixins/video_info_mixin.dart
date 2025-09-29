@@ -3,7 +3,6 @@ import '../../../../downloads/urls/sanitizer.dart';
 
 mixin VideoInfoMixin {
   String get format;
-  bool get isWebm => _format() == 'webm' || _format() == '.webm';
   bool get isGif => _format() == 'gif' || _format() == '.gif';
   double get duration;
   bool? get hasSound;
