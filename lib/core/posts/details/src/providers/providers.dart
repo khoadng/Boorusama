@@ -30,12 +30,17 @@ final detailsArtistPostsProvider = FutureProvider.autoDispose
       ref.cacheFor(const Duration(seconds: 30));
 
       final (filter, search, artistName) = params;
+      final videoInfoExtractor = ref.watch(
+        videoInfoExtractorProvider(search.auth),
+      );
+
       return ref
           .watch(postRepoProvider(search))
           .getPostsFromTagWithBlacklist(
             tag: artistName,
             blacklist: ref.watch(blacklistTagsProvider(filter).future),
             options: PostFetchOptions.raw,
+            videoInfoExtractor: videoInfoExtractor,
           );
     });
 

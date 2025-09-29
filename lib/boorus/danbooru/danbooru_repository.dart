@@ -255,6 +255,11 @@ class DanbooruRepository extends BooruRepositoryDefault {
           (post) => ref.danbooruEdit(post),
         ),
       );
+
+  @override
+  VideoInfoExtractor videoInfoExtractor(BooruConfigAuth config) {
+    return ref.watch(danbooruVideoInfoExtractorProvider);
+  }
 }
 
 class DanbooruGridThumbnailUrlGenerator implements GridThumbnailUrlGenerator {

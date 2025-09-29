@@ -67,6 +67,10 @@ final danbooruPostRepoProvider =
       );
     });
 
+final danbooruVideoInfoExtractorProvider = Provider<VideoInfoExtractor>((ref) {
+  return const DefaultVideoInfoExtractor();
+});
+
 typedef PostFetchTransformer =
     Future<PostResult<DanbooruPost>> Function(
       PostResult<DanbooruPost> posts,

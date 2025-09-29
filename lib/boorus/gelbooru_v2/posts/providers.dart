@@ -75,6 +75,7 @@ final gelbooruV2ChildPostsProvider = FutureProvider.autoDispose
           .getPostsFromTagWithBlacklist(
             tag: post.relationshipQuery,
             blacklist: ref.watch(blacklistTagsProvider(filter).future),
+            videoInfoExtractor: ref.watch(gelbooruV2VideoInfoExtractorProvider),
           );
     });
 
@@ -82,3 +83,9 @@ final gelbooruV2PostImageUrlResolverProvider =
     Provider<GelbooruV2ImageUrlResolver>(
       (ref) => const GelbooruV2ImageUrlResolver(),
     );
+
+final gelbooruV2VideoInfoExtractorProvider = Provider<VideoInfoExtractor>((
+  ref,
+) {
+  return const DefaultVideoInfoExtractor();
+});

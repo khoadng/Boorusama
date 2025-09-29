@@ -154,6 +154,11 @@ class GelbooruV2Repository extends BooruRepositoryDefault {
           },
         },
       ).handle(ref, action, post);
+
+  @override
+  VideoInfoExtractor videoInfoExtractor(BooruConfigAuth config) {
+    return ref.watch(gelbooruV2VideoInfoExtractorProvider);
+  }
 }
 
 class GelbooruV2ImageUrlResolver implements ImageUrlResolver {

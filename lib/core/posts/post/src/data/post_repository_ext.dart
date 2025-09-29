@@ -1,7 +1,6 @@
 // Project imports:
 import '../../../filter/filter.dart';
-import '../types/post.dart';
-import '../types/post_repository.dart';
+import '../../post.dart';
 
 extension PostRepositoryX<T extends Post> on PostRepository<T> {
   Future<PostResult<T>> getPostsFromTagsOrEmpty(
@@ -25,6 +24,7 @@ extension PostRepositoryX<T extends Post> on PostRepository<T> {
   Future<List<T>> getPostsFromTagsWithBlacklist({
     required String tags,
     required Future<Set<String>> blacklist,
+    required VideoInfoExtractor videoInfoExtractor,
     int page = 1,
     int? hardLimit,
     int? softLimit,
@@ -44,7 +44,11 @@ extension PostRepositoryX<T extends Post> on PostRepository<T> {
         : posts.posts.take(softLimit).toList();
 
     return filterTags(
-      postsWithLimit.where((e) => !e.isFlash).toList(),
+      postsWithLimit
+          .where(
+            (e) => !videoInfoExtractor.extractVideoInfo(e).isFlash,
+          )
+          .toList(),
       bl,
     );
   }
@@ -52,6 +56,7 @@ extension PostRepositoryX<T extends Post> on PostRepository<T> {
   Future<List<T>> getPostsFromTagWithBlacklist({
     required String? tag,
     required Future<Set<String>> blacklist,
+    required VideoInfoExtractor videoInfoExtractor,
     int page = 1,
     int? hardLimit,
     int? softLimit = 30,
@@ -66,6 +71,7 @@ extension PostRepositoryX<T extends Post> on PostRepository<T> {
       hardLimit: hardLimit,
       softLimit: softLimit,
       options: options,
+      videoInfoExtractor: videoInfoExtractor,
     );
   }
 }
