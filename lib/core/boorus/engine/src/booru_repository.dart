@@ -16,10 +16,14 @@ import '../../../posts/count/count.dart';
 import '../../../posts/favorites/types.dart';
 import '../../../posts/listing/list.dart';
 import '../../../posts/post/post.dart';
+import '../../../posts/rating/rating.dart';
 import '../../../search/queries/query.dart';
 import '../../../tags/autocompletes/types.dart';
+import '../../../tags/configs/configs.dart';
+import '../../../tags/metatag/metatag.dart';
 import '../../../tags/tag/colors.dart';
 import '../../../tags/tag/tag.dart';
+import 'booru_builder_types.dart';
 
 abstract class BooruRepository {
   Ref get ref;
@@ -41,9 +45,16 @@ abstract class BooruRepository {
   DownloadFilenameGenerator downloadFilenameBuilder(BooruConfigAuth config);
   TextMatcher? queryMatcher(BooruConfigAuth config);
   TagExtractor tagExtractor(BooruConfigAuth config);
+  MetatagExtractor? getMetatagExtractor(TagInfo tagInfo);
   CommentRepository comment(BooruConfigAuth config);
   Dio dio(BooruConfigAuth config);
   Map<String, String> extraHttpHeaders(BooruConfigAuth config);
   AppErrorTranslator appErrorTranslator(BooruConfigAuth config);
   BooruLoginDetails loginDetails(BooruConfigAuth config);
+  PostImageDetailsUrlBuilder postImageDetailsUrlBuilder(
+    BooruConfigViewer config,
+  );
+  GranularRatingFilterer? granularRatingFilterer(BooruConfigSearch config);
+  Set<Rating> getGranularRatingOptions(BooruConfigAuth config);
+  bool handlePostGesture(WidgetRef ref, String? action, Post post);
 }

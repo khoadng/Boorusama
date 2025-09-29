@@ -53,7 +53,7 @@ class _DanbooruPostDetailsPageState extends State<DanbooruPostDetailsPage> {
           final gestures = ref.watchPostGestures;
           final layout = ref.watchLayoutConfigs;
           final booruBuilder = ref.watch(booruBuilderProvider(auth));
-          final postGesturesHandler = booruBuilder?.postGestureHandlerBuilder;
+          final booruRepo = ref.watch(booruRepoProvider(auth));
           final uiBuilder = booruBuilder?.postDetailsUIBuilder;
           final imageUrlBuilder = defaultPostImageUrlBuilder(ref, auth, viewer);
 
@@ -71,7 +71,7 @@ class _DanbooruPostDetailsPageState extends State<DanbooruPostDetailsPage> {
                 controller: detailsController,
                 layoutConfig: layout,
                 posts: posts,
-                postGestureHandlerBuilder: postGesturesHandler,
+                postGestureHandlerBuilder: booruRepo?.handlePostGesture,
                 uiBuilder: uiBuilder,
                 gestureConfig: gestures,
                 itemBuilder: (context, index) {

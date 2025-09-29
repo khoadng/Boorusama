@@ -17,17 +17,12 @@ class SankakuBuilder
     with
         CommentNotSupportedMixin,
         CharacterNotSupportedMixin,
-        LegacyGranularRatingOptionsBuilderMixin,
-        UnknownMetatagsMixin,
         DefaultUnknownBooruWidgetsBuilderMixin,
         DefaultViewTagListBuilderMixin,
         DefaultTagSuggestionsItemBuilderMixin,
         DefaultMultiSelectionActionsBuilderMixin,
         DefaultQuickFavoriteButtonBuilderMixin,
         DefaultHomeMixin,
-        DefaultPostImageDetailsUrlMixin,
-        DefaultPostGesturesHandlerMixin,
-        DefaultGranularRatingFiltererMixin,
         DefaultPostStatisticsPageBuilderMixin,
         DefaultBooruUIMixin
     implements BooruBuilder {

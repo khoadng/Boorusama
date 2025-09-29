@@ -58,8 +58,7 @@ class _PostDetailsItemState<T extends Post>
     final pageViewController = PostDetailsPageViewScope.of(context);
     final post = widget.posts[widget.index];
 
-    final booruBuilder = ref.watch(booruBuilderProvider(widget.authConfig));
-    final postGesturesHandler = booruBuilder?.postGestureHandlerBuilder;
+    final booruRepo = ref.watch(booruRepoProvider(widget.authConfig));
     final gestures = widget.gestureConfig?.fullview;
 
     void onItemTap() {
@@ -114,7 +113,7 @@ class _PostDetailsItemState<T extends Post>
           onTap: onItemTap,
           onDoubleTap: switch ((
             doubleTap: gestures.canDoubleTap,
-            handler: postGesturesHandler,
+            handler: booruRepo?.handlePostGesture,
           )) {
             (doubleTap: true, handler: final h?) => (_) => h(
               ref,
@@ -125,8 +124,8 @@ class _PostDetailsItemState<T extends Post>
               (details) => onVideoDoubleTap(details?.localPosition),
             _ => null,
           },
-          onLongPress: gestures.canLongPress && postGesturesHandler != null
-              ? () => postGesturesHandler(
+          onLongPress: gestures.canLongPress && booruRepo != null
+              ? () => booruRepo.handlePostGesture(
                   ref,
                   gestures?.longPress,
                   post,

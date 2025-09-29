@@ -119,9 +119,9 @@ class _CreateBooruConfigGranularRatingOptionsState
     final options =
         widget.options ??
         ref
-            .watch(booruBuilderProvider(widget.config.auth))
-            ?.granularRatingOptionsBuilder
-            ?.call();
+            .watch(booruRepoProvider(widget.config.auth))
+            ?.getGranularRatingOptions
+            .call(widget.config.auth);
 
     if (options == null) {
       return const SizedBox.shrink();

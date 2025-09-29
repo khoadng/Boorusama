@@ -13,12 +13,9 @@ import '../../../posts/details/routes.dart';
 import '../../../posts/details_manager/types.dart';
 import '../../../posts/listing/providers.dart';
 import '../../../posts/post/post.dart';
-import '../../../posts/rating/rating.dart';
 import '../../../search/search/src/pages/search_page.dart';
 import '../../../settings/settings.dart';
 import '../../../tags/autocompletes/types.dart';
-import '../../../tags/configs/configs.dart';
-import '../../../tags/metatag/metatag.dart';
 import '../../../tags/tag/colors.dart';
 
 typedef CreateConfigPageBuilder =
@@ -101,8 +98,6 @@ typedef GranularRatingQueryBuilder =
       BooruConfigSearch config,
     );
 
-typedef GranularRatingOptionsBuilder = Set<Rating> Function();
-
 typedef TagColorBuilder =
     Color? Function(
       TagColorOptions options,
@@ -140,11 +135,6 @@ typedef TagSuggestionItemBuilder =
       bool dense,
       String currentQuery,
       ValueChanged<AutocompleteData> onItemTap,
-    );
-
-typedef MetatagExtractorBuilder =
-    MetatagExtractor Function(
-      TagInfo tagInfo,
     );
 
 typedef HomeViewBuilder =

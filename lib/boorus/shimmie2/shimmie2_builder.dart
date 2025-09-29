@@ -16,16 +16,11 @@ class Shimmie2Builder
         CommentNotSupportedMixin,
         ArtistNotSupportedMixin,
         CharacterNotSupportedMixin,
-        LegacyGranularRatingOptionsBuilderMixin,
-        UnknownMetatagsMixin,
         DefaultViewTagListBuilderMixin,
         DefaultViewTagListBuilderMixin,
         DefaultTagSuggestionsItemBuilderMixin,
         DefaultMultiSelectionActionsBuilderMixin,
         DefaultHomeMixin,
-        DefaultPostGesturesHandlerMixin,
-        DefaultPostImageDetailsUrlMixin,
-        DefaultGranularRatingFiltererMixin,
         DefaultPostStatisticsPageBuilderMixin,
         DefaultBooruUIMixin
     implements BooruBuilder {

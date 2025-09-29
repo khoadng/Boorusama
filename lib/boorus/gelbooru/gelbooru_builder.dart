@@ -11,15 +11,12 @@ import '../../core/comments/widgets.dart';
 import '../../core/configs/config.dart';
 import '../../core/configs/config/providers.dart';
 import '../../core/configs/create/widgets.dart';
-import '../../core/configs/gesture/gesture.dart';
 import '../../core/configs/manage/widgets.dart';
 import '../../core/downloads/filename/types.dart';
 import '../../core/home/custom_home.dart';
 import '../../core/posts/details/widgets.dart';
 import '../../core/posts/details_manager/types.dart';
 import '../../core/posts/details_parts/widgets.dart';
-import '../../core/posts/favorites/widgets.dart';
-import '../../core/posts/rating/rating.dart';
 import '../../core/search/search/widgets.dart';
 import 'artists/widgets.dart';
 import 'configs/widgets.dart';
@@ -31,15 +28,12 @@ import 'posts/widgets.dart';
 
 class GelbooruBuilder
     with
-        UnknownMetatagsMixin,
         DefaultUnknownBooruWidgetsBuilderMixin,
         DefaultViewTagListBuilderMixin,
         DefaultTagSuggestionsItemBuilderMixin,
         DefaultMultiSelectionActionsBuilderMixin,
         DefaultHomeMixin,
         DefaultQuickFavoriteButtonBuilderMixin,
-        DefaultPostImageDetailsUrlMixin,
-        DefaultGranularRatingFiltererMixin,
         DefaultPostStatisticsPageBuilderMixin
     implements BooruBuilder {
   GelbooruBuilder();
@@ -124,29 +118,6 @@ class GelbooruBuilder
         useAppBar: useAppBar,
         singlePage: false,
       );
-
-  @override
-  GranularRatingOptionsBuilder? get granularRatingOptionsBuilder =>
-      () => {
-        Rating.explicit,
-        Rating.questionable,
-        Rating.sensitive,
-        Rating.general,
-      };
-
-  final _postGestureHandler = PostGestureHandler(
-    customActions: {
-      kToggleFavoriteAction: (ref, action, post) {
-        ref.toggleFavorite(post.id);
-
-        return true;
-      },
-    },
-  );
-
-  @override
-  PostGestureHandlerBuilder get postGestureHandlerBuilder =>
-      (ref, action, post) => _postGestureHandler.handle(ref, action, post);
 
   @override
   Map<CustomHomeViewKey, CustomHomeDataBuilder> get customHomeViewBuilders =>

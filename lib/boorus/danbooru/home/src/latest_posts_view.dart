@@ -40,9 +40,10 @@ class _LatestViewState extends ConsumerState<LatestView> {
   @override
   void initState() {
     super.initState();
+    final auth = ref.readConfigAuth;
 
-    selectedTagController = SelectedTagController.fromBooruBuilder(
-      builder: ref.read(booruBuilderProvider(ref.readConfigAuth)),
+    selectedTagController = SelectedTagController.fromBooruRepository(
+      repository: ref.read(booruRepoProvider(auth)),
       tagInfo: ref.read(tagInfoProvider),
     );
   }

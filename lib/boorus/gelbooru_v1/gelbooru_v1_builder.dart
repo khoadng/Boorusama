@@ -23,15 +23,10 @@ class GelbooruV1Builder
         ArtistNotSupportedMixin,
         CharacterNotSupportedMixin,
         CommentNotSupportedMixin,
-        UnknownMetatagsMixin,
         DefaultViewTagListBuilderMixin,
         DefaultTagSuggestionsItemBuilderMixin,
         DefaultMultiSelectionActionsBuilderMixin,
         DefaultHomeMixin,
-        DefaultPostImageDetailsUrlMixin,
-        DefaultPostGesturesHandlerMixin,
-        DefaultGranularRatingFiltererMixin,
-        LegacyGranularRatingOptionsBuilderMixin,
         DefaultPostStatisticsPageBuilderMixin,
         DefaultBooruUIMixin
     implements BooruBuilder {

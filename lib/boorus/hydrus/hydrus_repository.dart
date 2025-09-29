@@ -76,4 +76,10 @@ class HydrusRepository extends BooruRepositoryDefault {
       ...ref.watch(hydrusClientProvider(config)).apiKeyHeader,
     };
   }
+
+  @override
+  PostImageDetailsUrlBuilder postImageDetailsUrlBuilder(
+    BooruConfigViewer config,
+  ) =>
+      (imageQuality, rawPost, config) => rawPost.sampleImageUrl;
 }

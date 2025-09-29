@@ -14,8 +14,8 @@ import '../../foundation/app_update/providers.dart';
 import '../../foundation/app_update/types.dart';
 import '../../foundation/display.dart';
 import '../../foundation/url_launcher.dart';
-import '../boorus/engine/engine.dart';
 import '../boorus/engine/providers.dart';
+import '../configs/config/types.dart';
 import '../configs/ref.dart';
 import '../search/histories/providers.dart';
 import '../search/search/routes.dart';
@@ -217,13 +217,13 @@ class SliverHomeSearchBar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final booruBuilder = ref.watch(booruBuilderProvider(ref.watchConfigAuth));
+    final config = ref.watchConfigAuth;
 
     return SliverHomeSearchBarInternal(
       selectedTagString: selectedTagString,
       onSearch: onSearch,
       selectedTagController: selectedTagController,
-      booruBuilder: booruBuilder,
+      config: config,
       primary: primary,
     );
   }
@@ -232,7 +232,7 @@ class SliverHomeSearchBar extends ConsumerWidget {
 class SliverHomeSearchBarInternal extends ConsumerStatefulWidget {
   const SliverHomeSearchBarInternal({
     required this.onSearch,
-    required this.booruBuilder,
+    required this.config,
     super.key,
     this.selectedTagString,
     this.selectedTagController,
@@ -242,7 +242,7 @@ class SliverHomeSearchBarInternal extends ConsumerStatefulWidget {
   final ValueNotifier<String>? selectedTagString;
   final void Function() onSearch;
   final SelectedTagController? selectedTagController;
-  final BooruBuilder? booruBuilder;
+  final BooruConfigAuth config;
   final bool? primary;
 
   @override
@@ -263,8 +263,8 @@ class _SliverHomeSearchBarState
 
     selectedTagController =
         widget.selectedTagController ??
-        SelectedTagController.fromBooruBuilder(
-          builder: widget.booruBuilder,
+        SelectedTagController.fromBooruRepository(
+          repository: ref.read(booruRepoProvider(widget.config)),
           tagInfo: tagInfo,
         );
   }

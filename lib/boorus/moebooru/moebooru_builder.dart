@@ -23,17 +23,12 @@ class MoebooruBuilder
     with
         FavoriteNotSupportedMixin,
         CommentNotSupportedMixin,
-        LegacyGranularRatingOptionsBuilderMixin,
-        UnknownMetatagsMixin,
         DefaultUnknownBooruWidgetsBuilderMixin,
         DefaultViewTagListBuilderMixin,
         DefaultTagSuggestionsItemBuilderMixin,
         DefaultMultiSelectionActionsBuilderMixin,
         DefaultHomeMixin,
         DefaultBooruUIMixin,
-        DefaultPostGesturesHandlerMixin,
-        DefaultPostImageDetailsUrlMixin,
-        DefaultGranularRatingFiltererMixin,
         DefaultPostStatisticsPageBuilderMixin
     implements BooruBuilder {
   MoebooruBuilder();

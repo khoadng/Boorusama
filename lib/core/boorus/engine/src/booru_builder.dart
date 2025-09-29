@@ -18,16 +18,7 @@ abstract class BooruBuilder {
 
   HomeViewBuilder get homeViewBuilder;
 
-  PostImageDetailsUrlBuilder get postImageDetailsUrlBuilder;
-
   PostStatisticsPageBuilder get postStatisticsPageBuilder;
-
-  GranularRatingFilterer? get granularRatingFilterer;
-  GranularRatingOptionsBuilder? get granularRatingOptionsBuilder;
-
-  PostGestureHandlerBuilder get postGestureHandlerBuilder;
-
-  MetatagExtractorBuilder? get metatagExtractorBuilder;
 
   TagSuggestionItemBuilder get tagSuggestionItemBuilder;
 

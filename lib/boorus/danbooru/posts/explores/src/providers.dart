@@ -33,8 +33,8 @@ final danbooruExploreRepoProvider =
               }
 
               final filterer = ref
-                  .read(booruBuilderProvider(config.auth))
-                  ?.granularRatingFilterer;
+                  .read(booruRepoProvider(config.auth))
+                  ?.granularRatingFilterer(config);
 
               if (filterer == null) return false;
 

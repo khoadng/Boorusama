@@ -27,14 +27,10 @@ class HydrusBuilder
         ArtistNotSupportedMixin,
         CharacterNotSupportedMixin,
         CommentNotSupportedMixin,
-        LegacyGranularRatingOptionsBuilderMixin,
-        UnknownMetatagsMixin,
         DefaultViewTagListBuilderMixin,
         DefaultTagSuggestionsItemBuilderMixin,
         DefaultMultiSelectionActionsBuilderMixin,
         DefaultHomeMixin,
-        DefaultPostGesturesHandlerMixin,
-        DefaultGranularRatingFiltererMixin,
         DefaultPostStatisticsPageBuilderMixin,
         DefaultBooruUIMixin
     implements BooruBuilder {
@@ -72,10 +68,6 @@ class HydrusBuilder
           initialTab: initialTab,
         ),
       );
-
-  @override
-  PostImageDetailsUrlBuilder get postImageDetailsUrlBuilder =>
-      (imageQuality, rawPost, config) => rawPost.sampleImageUrl;
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder => (context, payload) {

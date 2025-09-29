@@ -17,11 +17,11 @@ class SelectedTagController extends ValueNotifier<List<TagSearchItem>> {
   }) : _tagSet = SearchTagSet(metatagExtractor: metatagExtractor),
        super([]);
 
-  SelectedTagController.fromBooruBuilder({
-    required BooruBuilder? builder,
+  SelectedTagController.fromBooruRepository({
+    required BooruRepository? repository,
     required TagInfo tagInfo,
   }) : this(
-         metatagExtractor: builder?.metatagExtractorBuilder?.call(tagInfo),
+         metatagExtractor: repository?.getMetatagExtractor(tagInfo),
        );
 
   final SearchTagSet _tagSet;

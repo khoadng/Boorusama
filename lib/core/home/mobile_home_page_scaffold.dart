@@ -37,8 +37,8 @@ class _MobileHomePageScaffoldState
   void initState() {
     super.initState();
 
-    selectedTagController = SelectedTagController.fromBooruBuilder(
-      builder: ref.read(booruBuilderProvider(ref.readConfigAuth)),
+    selectedTagController = SelectedTagController.fromBooruRepository(
+      repository: ref.read(booruRepoProvider(ref.readConfigAuth)),
       tagInfo: ref.read(tagInfoProvider),
     );
   }

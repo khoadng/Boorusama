@@ -30,18 +30,13 @@ import 'posts/widgets.dart';
 class E621Builder
     with
         CharacterNotSupportedMixin,
-        LegacyGranularRatingOptionsBuilderMixin,
-        UnknownMetatagsMixin,
         DefaultUnknownBooruWidgetsBuilderMixin,
         DefaultViewTagListBuilderMixin,
         DefaultTagSuggestionsItemBuilderMixin,
         DefaultMultiSelectionActionsBuilderMixin,
         DefaultHomeMixin,
         DefaultQuickFavoriteButtonBuilderMixin,
-        DefaultPostGesturesHandlerMixin,
-        DefaultPostStatisticsPageBuilderMixin,
-        DefaultGranularRatingFiltererMixin,
-        DefaultPostImageDetailsUrlMixin
+        DefaultPostStatisticsPageBuilderMixin
     implements BooruBuilder {
   E621Builder();
 

@@ -100,15 +100,14 @@ class _BookmarkDetailsPageState
     final viewer = ref.watchConfigViewer;
     final layout = ref.watchLayoutConfigs;
     final gestures = ref.watchPostGestures;
-    final booruBuilder = ref.watch(booruBuilderProvider(auth));
-    final postGesturesHandler = booruBuilder?.postGestureHandlerBuilder;
+    final booruRepo = ref.watch(booruRepoProvider(auth));
 
     return PostDetailsPageScaffold(
       isInitPage: _isInitPage,
       transformController: _transformController,
       controller: controller,
       posts: posts,
-      postGestureHandlerBuilder: postGesturesHandler,
+      postGestureHandlerBuilder: booruRepo?.handlePostGesture,
       gestureConfig: gestures,
       layoutConfig: layout,
       uiBuilder: bookmarkUiBuilder,

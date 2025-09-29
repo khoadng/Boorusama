@@ -1,9 +1,7 @@
 // Dart imports:
-import 'dart:async';
 
 // Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:foundation/foundation.dart';
@@ -13,32 +11,17 @@ import 'package:i18n/i18n.dart';
 import '../../core/boorus/engine/engine.dart';
 import '../../core/configs/config.dart';
 import '../../core/configs/create/widgets.dart';
-import '../../core/configs/gesture/gesture.dart';
 import '../../core/configs/manage/widgets.dart';
-import '../../core/configs/ref.dart';
-import '../../core/downloads/downloader/providers.dart';
-import '../../core/downloads/filename/providers.dart';
 import '../../core/downloads/filename/types.dart';
 import '../../core/home/custom_home.dart';
 import '../../core/home/user_custom_home_builder.dart';
-import '../../core/images/providers.dart';
 import '../../core/posts/details/widgets.dart';
 import '../../core/posts/details_manager/types.dart';
 import '../../core/posts/details_parts/widgets.dart';
-import '../../core/posts/favorites/widgets.dart';
 import '../../core/posts/listing/providers.dart';
 import '../../core/posts/listing/widgets.dart';
-import '../../core/posts/post/routes.dart';
-import '../../core/posts/rating/rating.dart';
-import '../../core/posts/shares/providers.dart';
-import '../../core/posts/sources/source.dart';
 import '../../core/posts/statistics/stats.dart';
 import '../../core/posts/statistics/widgets.dart';
-import '../../core/settings/providers.dart';
-import '../../core/settings/settings.dart';
-import '../../core/tags/metatag/providers.dart';
-import '../../core/tags/show/routes.dart';
-import '../../foundation/url_launcher.dart';
 import 'artists/artist/widgets.dart';
 import 'artists/search/widgets.dart';
 import 'autocompletes/widgets.dart';
@@ -50,13 +33,11 @@ import 'posts/details/widgets.dart';
 import 'posts/explores/widgets.dart';
 import 'posts/favgroups/listing/widgets.dart';
 import 'posts/favorites/widgets.dart';
-import 'posts/listing/providers.dart';
 import 'posts/listing/widgets.dart';
 import 'posts/pools/listing/widgets.dart';
 import 'posts/post/post.dart';
 import 'posts/search/widgets.dart';
 import 'posts/statistics/widgets.dart';
-import 'posts/votes/providers.dart';
 import 'saved_searches/feed/widgets.dart';
 import 'tags/details/widgets.dart';
 import 'tags/tag/widgets.dart';
@@ -144,71 +125,6 @@ class DanbooruBuilder
       );
 
   @override
-  PostGestureHandlerBuilder get postGestureHandlerBuilder =>
-      (ref, action, post) => handleDanbooruGestureAction(
-        action,
-        hapticLevel: ref.read(hapticFeedbackLevelProvider),
-        onDownload: () => ref.download(post),
-        onShare: () => ref
-            .read(shareProvider)
-            .sharePost(
-              post,
-              ref.readConfigAuth,
-              context: ref.context,
-              configViewer: ref.readConfigViewer,
-              download: ref.readConfigDownload,
-              filenameBuilder: ref.read(
-                downloadFilenameBuilderProvider(ref.readConfigAuth),
-              ),
-              imageCacheManager: ref.read(defaultImageCacheManagerProvider),
-            ),
-        onToggleBookmark: () => ref.toggleBookmark(post),
-        onViewTags: () => goToShowTaglistPage(
-          ref,
-          post,
-          auth: ref.readConfigAuth,
-        ),
-        onViewOriginal: () => goToOriginalImagePage(ref, post),
-        onOpenSource: () => post.source.whenWeb(
-          (source) => launchExternalUrlString(source.url),
-          () => false,
-        ),
-        onToggleFavorite: () => ref.toggleFavorite(post.id),
-        onUpvote: () => ref.danbooruUpvote(post.id),
-        onDownvote: () => ref.danbooruDownvote(post.id),
-        onEdit: () => castOrNull<DanbooruPost>(post).toOption().fold(
-          () => false,
-          (post) => ref.danbooruEdit(post),
-        ),
-      );
-
-  @override
-  PostImageDetailsUrlBuilder get postImageDetailsUrlBuilder =>
-      (imageQuality, rawPost, config) =>
-          castOrNull<DanbooruPost>(rawPost).toOption().fold(
-            () => rawPost.sampleImageUrl,
-            (post) => post.isGif
-                ? post.sampleImageUrl
-                : config.imageDetaisQuality.toOption().fold(
-                    () => switch (imageQuality) {
-                      ImageQuality.highest ||
-                      ImageQuality.original => post.sampleImageUrl,
-                      _ => post.url720x720,
-                    },
-                    (quality) => switch (PostQualityType.parse(quality)) {
-                      PostQualityType.v180x180 => post.url180x180,
-                      PostQualityType.v360x360 => post.url360x360,
-                      PostQualityType.v720x720 => post.url720x720,
-                      PostQualityType.sample =>
-                        post.isVideo ? post.url720x720 : post.sampleImageUrl,
-                      PostQualityType.original =>
-                        post.isVideo ? post.url720x720 : post.originalImageUrl,
-                      null => post.url720x720,
-                    },
-                  ),
-          );
-
-  @override
   PostStatisticsPageBuilder get postStatisticsPageBuilder => (context, posts) {
     try {
       return DanbooruPostStatisticsPage(
@@ -223,39 +139,11 @@ class DanbooruBuilder
   };
 
   @override
-  GranularRatingFilterer? get granularRatingFilterer =>
-      (post, config) => switch (config.filter.ratingFilter) {
-        BooruConfigRatingFilter.none => false,
-        BooruConfigRatingFilter.hideNSFW => post.rating != Rating.general,
-        BooruConfigRatingFilter.hideExplicit => post.rating.isNSFW(),
-        BooruConfigRatingFilter.custom =>
-          config.filter.granularRatingFiltersWithoutUnknown.toOption().fold(
-            () => false,
-            (ratings) => ratings.contains(post.rating),
-          ),
-      };
-
-  @override
-  GranularRatingOptionsBuilder? get granularRatingOptionsBuilder =>
-      () => {
-        Rating.explicit,
-        Rating.questionable,
-        Rating.sensitive,
-        Rating.general,
-      };
-
-  @override
   HomeViewBuilder get homeViewBuilder => (context) {
     return const UserCustomHomeBuilder(
       defaultView: LatestView(),
     );
   };
-
-  @override
-  MetatagExtractorBuilder get metatagExtractorBuilder =>
-      (tagInfo) => DefaultMetatagExtractor(
-        metatags: tagInfo.metatags,
-      );
 
   @override
   QuickFavoriteButtonBuilder get quickFavoriteButtonBuilder =>
@@ -362,47 +250,4 @@ class DanbooruBuilder
           auth: auth,
         );
       };
-}
-
-bool handleDanbooruGestureAction(
-  String? action, {
-  required HapticFeedbackLevel hapticLevel,
-  void Function()? onDownload,
-  void Function()? onShare,
-  void Function()? onToggleBookmark,
-  void Function()? onViewTags,
-  void Function()? onViewOriginal,
-  void Function()? onOpenSource,
-  void Function()? onToggleFavorite,
-  void Function()? onUpvote,
-  void Function()? onDownvote,
-  void Function()? onEdit,
-}) {
-  switch (action) {
-    case kToggleFavoriteAction:
-      onToggleFavorite?.call();
-    case kUpvoteAction:
-      onUpvote?.call();
-    case kDownvoteAction:
-      onDownvote?.call();
-    case kEditAction:
-      onEdit?.call();
-    default:
-      return handleDefaultGestureAction(
-        action,
-        onDownload: onDownload,
-        onShare: onShare,
-        onToggleBookmark: onToggleBookmark,
-        onViewTags: onViewTags,
-        onViewOriginal: onViewOriginal,
-        onOpenSource: onOpenSource,
-        hapticLevel: hapticLevel,
-      );
-  }
-
-  if (hapticLevel.isFull) {
-    unawaited(HapticFeedback.selectionClick());
-  }
-
-  return true;
 }

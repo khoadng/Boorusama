@@ -1,6 +1,3 @@
-// Package imports:
-import 'package:foundation/foundation.dart';
-
 // Project imports:
 import '../../core/boorus/engine/engine.dart';
 import '../../core/configs/auth/widgets.dart';
@@ -20,14 +17,10 @@ class PhilomenaBuilder
         CommentNotSupportedMixin,
         ArtistNotSupportedMixin,
         CharacterNotSupportedMixin,
-        LegacyGranularRatingOptionsBuilderMixin,
-        UnknownMetatagsMixin,
         DefaultViewTagListBuilderMixin,
         DefaultTagSuggestionsItemBuilderMixin,
         DefaultMultiSelectionActionsBuilderMixin,
         DefaultHomeMixin,
-        DefaultGranularRatingFiltererMixin,
-        DefaultPostGesturesHandlerMixin,
         DefaultPostStatisticsPageBuilderMixin,
         DefaultBooruUIMixin
     implements BooruBuilder {
@@ -79,31 +72,6 @@ class PhilomenaBuilder
       child: const DefaultPostDetailsPage<PhilomenaPost>(),
     );
   };
-
-  @override
-  PostImageDetailsUrlBuilder get postImageDetailsUrlBuilder =>
-      (
-        imageQuality,
-        rawPost,
-        config,
-      ) => castOrNull<PhilomenaPost>(rawPost).toOption().fold(
-        () => rawPost.sampleImageUrl,
-        (post) => config.imageDetaisQuality.toOption().fold(
-          () => post.sampleImageUrl,
-          (quality) => switch (stringToPhilomenaPostQualityType(quality)) {
-            PhilomenaPostQualityType.full => post.representation.full,
-            PhilomenaPostQualityType.large => post.representation.large,
-            PhilomenaPostQualityType.medium => post.representation.medium,
-            PhilomenaPostQualityType.tall => post.representation.tall,
-            PhilomenaPostQualityType.small => post.representation.small,
-            PhilomenaPostQualityType.thumb => post.representation.thumb,
-            PhilomenaPostQualityType.thumbSmall =>
-              post.representation.thumbSmall,
-            PhilomenaPostQualityType.thumbTiny => post.representation.thumbTiny,
-            null => post.representation.small,
-          },
-        ),
-      );
 
   @override
   final postDetailsUIBuilder = PostDetailsUIBuilder(

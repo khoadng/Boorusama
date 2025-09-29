@@ -8,12 +8,15 @@ import '../../core/boorus/engine/engine.dart';
 import '../../core/comments/types.dart';
 import '../../core/configs/config.dart';
 import '../../core/configs/create/create.dart';
+import '../../core/configs/gesture/gesture.dart';
 import '../../core/downloads/filename/types.dart';
 import '../../core/http/providers.dart';
 import '../../core/notes/notes.dart';
 import '../../core/posts/favorites/types.dart';
+import '../../core/posts/favorites/widgets.dart';
 import '../../core/posts/post/post.dart';
 import '../../core/posts/post/providers.dart';
+import '../../core/posts/rating/rating.dart';
 import '../../core/search/queries/query.dart';
 import '../../core/tags/autocompletes/types.dart';
 import '../../core/tags/tag/tag.dart';
@@ -134,6 +137,28 @@ class GelbooruRepository extends BooruRepositoryDefault {
   BooruLoginDetails loginDetails(BooruConfigAuth config) {
     return ref.watch(gelbooruLoginDetailsProvider(config));
   }
+
+  @override
+  Set<Rating> getGranularRatingOptions(
+    BooruConfigAuth config,
+  ) => {
+    Rating.explicit,
+    Rating.questionable,
+    Rating.sensitive,
+    Rating.general,
+  };
+
+  @override
+  bool handlePostGesture(WidgetRef ref, String? action, Post post) =>
+      PostGestureHandler(
+        customActions: {
+          kToggleFavoriteAction: (ref, action, post) {
+            ref.toggleFavorite(post.id);
+
+            return true;
+          },
+        },
+      ).handle(ref, action, post);
 }
 
 class GelbooruImageUrlResolver implements ImageUrlResolver {

@@ -86,7 +86,7 @@ class _MoebooruPostDetailsPageState
     final layout = ref.watchLayoutConfigs;
     final gestures = ref.watchPostGestures;
     final booruBuilder = ref.watch(booruBuilderProvider(auth));
-    final postGesturesHandler = booruBuilder?.postGestureHandlerBuilder;
+    final booruRepo = ref.watch(booruRepoProvider(auth));
     final uiBuilder = booruBuilder?.postDetailsUIBuilder;
     final imageUrlBuilder = defaultPostImageUrlBuilder(ref, auth, viewer);
 
@@ -103,7 +103,7 @@ class _MoebooruPostDetailsPageState
           transformController: _transformController,
           controller: controller,
           posts: posts,
-          postGestureHandlerBuilder: postGesturesHandler,
+          postGestureHandlerBuilder: booruRepo?.handlePostGesture,
           uiBuilder: uiBuilder,
           gestureConfig: gestures,
           layoutConfig: layout,

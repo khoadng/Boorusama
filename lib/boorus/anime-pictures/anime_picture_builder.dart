@@ -19,15 +19,10 @@ class AnimePicturesBuilder
         CommentNotSupportedMixin,
         ArtistNotSupportedMixin,
         CharacterNotSupportedMixin,
-        LegacyGranularRatingOptionsBuilderMixin,
-        UnknownMetatagsMixin,
         DefaultViewTagListBuilderMixin,
         DefaultTagSuggestionsItemBuilderMixin,
         DefaultMultiSelectionActionsBuilderMixin,
         DefaultHomeMixin,
-        DefaultPostGesturesHandlerMixin,
-        DefaultPostImageDetailsUrlMixin,
-        DefaultGranularRatingFiltererMixin,
         DefaultPostStatisticsPageBuilderMixin,
         DefaultBooruUIMixin
     implements BooruBuilder {
