@@ -23,7 +23,7 @@ class DanbooruMediaUrlResolver implements MediaUrlResolver {
     BooruConfigViewer config,
   ) => castOrNull<DanbooruPost>(rawPost).toOption().fold(
     () => rawPost.sampleImageUrl,
-    (post) => videoInfoExtractor.extractVideoInfo(post).isGif
+    (post) => videoInfoExtractor.extract(post).isGif
         ? post.sampleImageUrl
         : config.imageDetaisQuality.toOption().fold(
             () => switch (imageQuality) {

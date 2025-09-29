@@ -18,7 +18,7 @@ void goToOriginalImagePage(
   Post post, {
   required VideoInfoExtractor videoInfoExtractor,
 }) {
-  final isMp4 = videoInfoExtractor.extractVideoInfo(post).isMp4;
+  final isMp4 = videoInfoExtractor.extract(post).isMp4;
   if (isMp4) {
     showSimpleSnackBar(
       context: ref.context,

@@ -163,7 +163,7 @@ class SliverPreviewPostGrid<T extends Post> extends ConsumerWidget {
         final post = posts[index];
 
         return ImageGridItem(
-          isGif: videoInfoExtractor.extractVideoInfo(post).isGif,
+          isGif: videoInfoExtractor.extract(post).isGif,
           isAI: post.isAI,
           onTap: () => goToPostDetailsPageFromPosts(
             ref: ref,

@@ -58,7 +58,7 @@ class DefaultGridThumbnailUrlGenerator implements GridThumbnailUrlGenerator {
     Post post, {
     required GridThumbnailSettings settings,
   }) {
-    if (videoInfoExtractor.extractVideoInfo(post).isGif) {
+    if (videoInfoExtractor.extract(post).isGif) {
       if (settings.animatedPostsDefaultState ==
           AnimatedPostsDefaultState.static) {
         return post.thumbnailImageUrl;

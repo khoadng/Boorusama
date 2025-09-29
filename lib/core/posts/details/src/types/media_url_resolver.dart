@@ -26,7 +26,7 @@ class DefaultMediaUrlResolver implements MediaUrlResolver {
   String resolveMediaUrl(
     Post post,
     BooruConfigViewer config,
-  ) => videoInfoExtractor.extractVideoInfo(post).isGif
+  ) => videoInfoExtractor.extract(post).isGif
       ? post.sampleImageUrl
       : config.imageDetaisQuality.toOption().fold(
               () => switch (imageQuality) {

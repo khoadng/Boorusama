@@ -53,9 +53,7 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
     _playback.resetProgress();
 
     final post = posts.getOrNull(page);
-    final isMp4 = post != null
-        ? videoInfoExtractor.extractVideoInfo(post).isMp4
-        : false;
+    final isMp4 = post != null ? videoInfoExtractor.extract(post).isMp4 : false;
 
     if (isMp4) {
       if (_playback.isVideoPlaying.value) {

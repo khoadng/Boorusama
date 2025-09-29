@@ -52,7 +52,7 @@ class PreviewPostList<T extends Post> extends ConsumerWidget {
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 2),
               child: ImageGridItem(
-                isGif: videoInfoExtractor.extractVideoInfo(post).isGif,
+                isGif: videoInfoExtractor.extract(post).isGif,
                 isAI: post.isAI,
                 isAnimated: post.isAnimated,
                 isTranslated: post.isTranslated,

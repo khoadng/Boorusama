@@ -261,7 +261,13 @@ class PostGestureHandler {
   }
 
   void handleViewOriginal(WidgetRef ref, Post post) {
-    goToOriginalImagePage(ref, post);
+    goToOriginalImagePage(
+      ref,
+      post,
+      videoInfoExtractor: ref.read(
+        videoInfoExtractorProvider(ref.readConfigAuth),
+      ),
+    );
   }
 
   void handleOpenSource(WidgetRef ref, Post post) {

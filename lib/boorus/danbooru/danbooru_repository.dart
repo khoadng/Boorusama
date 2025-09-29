@@ -244,7 +244,13 @@ class DanbooruRepository extends BooruRepositoryDefault {
           post,
           auth: ref.readConfigAuth,
         ),
-        onViewOriginal: () => goToOriginalImagePage(ref, post),
+        onViewOriginal: () => goToOriginalImagePage(
+          ref,
+          post,
+          videoInfoExtractor: ref.read(
+            videoInfoExtractorProvider(ref.readConfigAuth),
+          ),
+        ),
         onOpenSource: () => post.source.whenWeb(
           (source) => launchExternalUrlString(source.url),
           () => false,

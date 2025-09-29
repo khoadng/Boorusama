@@ -46,7 +46,7 @@ extension PostRepositoryX<T extends Post> on PostRepository<T> {
     return filterTags(
       postsWithLimit
           .where(
-            (e) => !videoInfoExtractor.extractVideoInfo(e).isFlash,
+            (e) => !videoInfoExtractor.extract(e).isFlash,
           )
           .toList(),
       bl,
