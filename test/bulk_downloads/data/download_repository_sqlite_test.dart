@@ -373,5 +373,28 @@ void main() {
         );
       });
     });
+
+    group('edge cases', () {
+      test('should handle duplicate record creation', () async {
+        final task = await repository.createTask(_options);
+        final session = await repository.createSession(task, _auth);
+
+        final record = DownloadRecord(
+          url: 'https://example.com/duplicate.jpg',
+          sessionId: session.id,
+          status: DownloadRecordStatus.pending,
+          page: 1,
+          pageIndex: 0,
+          createdAt: DateTime.now(),
+          fileName: 'duplicate.jpg',
+        );
+
+        await repository.createRecord(record);
+        await repository.createRecord(record);
+
+        final records = await repository.getRecordsBySessionId(session.id);
+        expect(records, hasLength(1));
+      });
+    });
   });
 }
