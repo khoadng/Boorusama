@@ -15,8 +15,6 @@ mixin VideoInfoMixin {
 
     return ext.substring(1);
   }
-
-  bool get isMp4 => _format() == 'mp4' || _format() == '.mp4';
 }
 
 bool isFormatVideo(String? format) {

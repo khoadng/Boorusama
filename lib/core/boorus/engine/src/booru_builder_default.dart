@@ -165,6 +165,9 @@ class _DefaultPostDetailsPageState<T extends Post>
     final booruRepo = ref.watch(booruRepoProvider(auth));
     final uiBuilder = booruBuilder?.postDetailsUIBuilder;
     final mediaUrlResolver = ref.watch(mediaUrlResolverProvider(auth));
+    final videoInfoExtractor = ref.watch(
+      videoInfoExtractorProvider(auth),
+    );
 
     return PostDetailsImagePreloader(
       authConfig: auth,
@@ -183,6 +186,7 @@ class _DefaultPostDetailsPageState<T extends Post>
           uiBuilder: uiBuilder,
           gestureConfig: gestures,
           layoutConfig: layout,
+          videoInfoExtractor: videoInfoExtractor,
           actions: defaultActions(
             note: NoteActionButtonWithProvider(
               currentPost: controller.currentPost,

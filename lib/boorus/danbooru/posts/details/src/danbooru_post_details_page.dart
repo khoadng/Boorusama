@@ -11,6 +11,7 @@ import '../../../../../core/notes/notes.dart';
 import '../../../../../core/posts/details/details.dart';
 import '../../../../../core/posts/details/widgets.dart';
 import '../../../../../core/posts/details_parts/widgets.dart';
+import '../../../../../core/posts/post/providers.dart';
 import '../../../../../core/router.dart';
 import '../../../users/user/routes.dart';
 import '../../_shared/danbooru_creator_preloader.dart';
@@ -58,6 +59,9 @@ class _DanbooruPostDetailsPageState extends State<DanbooruPostDetailsPage> {
           final mediaUrlResolver = ref.watch(
             danbooruMediaUrlResolverProvider(auth),
           );
+          final videoInfoExtractor = ref.watch(
+            videoInfoExtractorProvider(auth),
+          );
 
           return PostDetailsImagePreloader(
             authConfig: auth,
@@ -77,6 +81,7 @@ class _DanbooruPostDetailsPageState extends State<DanbooruPostDetailsPage> {
                 postGestureHandlerBuilder: booruRepo?.handlePostGesture,
                 uiBuilder: uiBuilder,
                 gestureConfig: gestures,
+                videoInfoExtractor: videoInfoExtractor,
                 itemBuilder: (context, index) {
                   return PostDetailsItem(
                     index: index,

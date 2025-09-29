@@ -45,13 +45,19 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
   int get initialPage =>
       currentPage.value != _initialPage ? currentPage.value : _initialPage;
 
-  void setPage(int page) {
+  void setPage(
+    int page, {
+    required VideoInfoExtractor videoInfoExtractor,
+  }) {
     currentPage.value = page;
     _playback.resetProgress();
 
     final post = posts.getOrNull(page);
+    final isMp4 = post != null
+        ? videoInfoExtractor.extractVideoInfo(post).isMp4
+        : false;
 
-    if (post?.isMp4 ?? false) {
+    if (isMp4) {
       if (_playback.isVideoPlaying.value) {
         _playback.isVideoPlaying.value = false;
       }

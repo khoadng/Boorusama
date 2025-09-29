@@ -18,6 +18,7 @@ import '../../../posts/details/widgets.dart';
 import '../../../posts/details_manager/types.dart';
 import '../../../posts/details_parts/widgets.dart';
 import '../../../posts/listing/providers.dart';
+import '../../../posts/post/providers.dart';
 import '../../../posts/shares/widgets.dart';
 import '../../../posts/sources/source.dart';
 import '../../../widgets/adaptive_button_row.dart';
@@ -101,6 +102,10 @@ class _BookmarkDetailsPageState
     final layout = ref.watchLayoutConfigs;
     final gestures = ref.watchPostGestures;
     final booruRepo = ref.watch(booruRepoProvider(auth));
+    //FIXME: need to check bookmark implementation
+    final videoInfoExtractor = ref.watch(
+      videoInfoExtractorProvider(auth),
+    );
 
     return PostDetailsPageScaffold(
       isInitPage: _isInitPage,
@@ -113,6 +118,7 @@ class _BookmarkDetailsPageState
       uiBuilder: bookmarkUiBuilder,
       preferredParts: bookmarkUiBuilder.full.keys.toSet(),
       preferredPreviewParts: bookmarkUiBuilder.preview.keys.toSet(),
+      videoInfoExtractor: videoInfoExtractor,
       actions: defaultActions(
         note: null,
         fallbackMoreButton: ValueListenableBuilder(

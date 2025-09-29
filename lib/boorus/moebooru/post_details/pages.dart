@@ -13,6 +13,7 @@ import '../../../core/posts/details/providers.dart';
 import '../../../core/posts/details/widgets.dart';
 import '../../../core/posts/details_parts/widgets.dart';
 import '../../../core/posts/post/post.dart';
+import '../../../core/posts/post/providers.dart';
 import '../client_provider.dart';
 import '../configs/providers.dart';
 import '../favorites/providers.dart';
@@ -89,6 +90,9 @@ class _MoebooruPostDetailsPageState
     final booruRepo = ref.watch(booruRepoProvider(auth));
     final uiBuilder = booruBuilder?.postDetailsUIBuilder;
     final mediaUrlResolver = ref.watch(moebooruMediaUrlResolverProvider(auth));
+    final videoInfoExtractor = ref.watch(
+      videoInfoExtractorProvider(auth),
+    );
 
     return PostDetailsImagePreloader(
       authConfig: auth,
@@ -107,6 +111,7 @@ class _MoebooruPostDetailsPageState
           uiBuilder: uiBuilder,
           gestureConfig: gestures,
           layoutConfig: layout,
+          videoInfoExtractor: videoInfoExtractor,
           actions: defaultActions(
             note: NoteActionButtonWithProvider(
               currentPost: controller.currentPost,

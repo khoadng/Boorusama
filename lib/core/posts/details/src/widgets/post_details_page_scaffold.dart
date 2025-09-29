@@ -48,6 +48,7 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
     required this.actions,
     required this.postGestureHandlerBuilder,
     required this.uiBuilder,
+    required this.videoInfoExtractor,
     super.key,
     this.onExpanded,
     this.preferredParts,
@@ -67,6 +68,7 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
   final ValueNotifier<bool> isInitPage;
   final List<Widget> actions;
   final PostGestureHandlerBuilder? postGestureHandlerBuilder;
+  final VideoInfoExtractor videoInfoExtractor;
 
   @override
   ConsumerState<PostDetailsPageScaffold<T>> createState() =>
@@ -96,6 +98,7 @@ class _PostDetailPageScaffoldState<T extends Post>
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       widget.controller.setPage(
         widget.controller.initialPage,
+        videoInfoExtractor: widget.videoInfoExtractor,
       );
     });
 
@@ -161,6 +164,7 @@ class _PostDetailPageScaffoldState<T extends Post>
         ): () => goToOriginalImagePage(
           ref,
           widget.posts[_controller.page],
+          videoInfoExtractor: widget.videoInfoExtractor,
         ),
       },
       child: CustomContextMenuOverlay(
@@ -223,7 +227,10 @@ class _PostDetailPageScaffoldState<T extends Post>
         onPageChanged: (page) {
           final post = posts[page];
 
-          widget.controller.setPage(page);
+          widget.controller.setPage(
+            page,
+            videoInfoExtractor: widget.videoInfoExtractor,
+          );
 
           _isInitPage.value = false;
 

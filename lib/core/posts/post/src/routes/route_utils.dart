@@ -10,11 +10,16 @@ import '../../../../../foundation/toast.dart';
 import '../../../../configs/config/providers.dart';
 import '../../../../images/booru_image.dart';
 import '../../../../router.dart';
+import '../../post.dart';
 import '../pages/quick_preview_image_dialog.dart';
-import '../types/post.dart';
 
-void goToOriginalImagePage(WidgetRef ref, Post post) {
-  if (post.isMp4) {
+void goToOriginalImagePage(
+  WidgetRef ref,
+  Post post, {
+  required VideoInfoExtractor videoInfoExtractor,
+}) {
+  final isMp4 = videoInfoExtractor.extractVideoInfo(post).isMp4;
+  if (isMp4) {
     showSimpleSnackBar(
       context: ref.context,
       content: Text('This is a video post, cannot view original image'.hc),

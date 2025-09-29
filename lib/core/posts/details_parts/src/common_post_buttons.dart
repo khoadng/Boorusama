@@ -20,7 +20,7 @@ import '../../../tags/show/routes.dart';
 import '../../../widgets/adaptive_button_row.dart';
 import '../../details/providers.dart';
 import '../../details_manager/routes.dart';
-import '../../post/src/data/providers.dart';
+import '../../post/providers.dart';
 import '../../post/src/routes/route_utils.dart';
 import '../../post/src/types/post.dart';
 
@@ -84,11 +84,17 @@ class CommonPostButtonsBuilder extends ConsumerWidget {
               auth: config,
             ),
           ),
-      if (post.hasFullView)
+      if (post.hasFullView && config != null)
         SimpleButtonData(
           icon: Icons.fullscreen,
           title: context.t.post.action.view_original,
-          onPressed: () => goToOriginalImagePage(ref, post),
+          onPressed: () => goToOriginalImagePage(
+            ref,
+            post,
+            videoInfoExtractor: ref.read(
+              videoInfoExtractorProvider(config),
+            ),
+          ),
         ),
       SimpleButtonData(
         icon: Icons.slideshow,
