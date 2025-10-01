@@ -73,7 +73,9 @@ abstract class BooruRepositoryDefault implements BooruRepository {
 
   @override
   GridThumbnailUrlGenerator gridThumbnailUrlGenerator(BooruConfigAuth config) {
-    return const DefaultGridThumbnailUrlGenerator();
+    return DefaultGridThumbnailUrlGenerator(
+      videoInfoExtractor: ref.watch(defaultVideoInfoExtractorProvider),
+    );
   }
 
   @override

@@ -1,20 +1,9 @@
-// Project imports:
-import '../../../../downloads/urls/sanitizer.dart';
-
 mixin VideoInfoMixin {
   String get format;
-  bool get isGif => _format() == 'gif' || _format() == '.gif';
   double get duration;
   bool? get hasSound;
   String get videoUrl;
   String get videoThumbnailUrl;
-
-  String _format() {
-    final ext = sanitizedExtension(videoUrl);
-    if (ext.isEmpty) return format;
-
-    return ext.substring(1);
-  }
 }
 
 bool isFormatVideo(String? format) {

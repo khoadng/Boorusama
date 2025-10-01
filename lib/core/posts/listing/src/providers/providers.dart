@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../boorus/engine/providers.dart';
 import '../../../../configs/config.dart';
 import '../../../../settings/providers.dart';
+import '../../../post/providers.dart';
 import '../types/grid_thumbnail_url_generator.dart';
 import '../types/grid_thumbnail_url_generator_default.dart';
 
@@ -30,7 +31,12 @@ final gridThumbnailSettingsProvider =
 final gridThumbnailUrlGeneratorProvider =
     Provider.family<GridThumbnailUrlGenerator, BooruConfigAuth>((ref, config) {
       final booruRepo = ref.watch(booruRepoProvider(config));
+      final videoInfoExtractor = ref.watch(
+        videoInfoExtractorProvider(config),
+      );
 
       return booruRepo?.gridThumbnailUrlGenerator(config) ??
-          const DefaultGridThumbnailUrlGenerator();
+          DefaultGridThumbnailUrlGenerator(
+            videoInfoExtractor: videoInfoExtractor,
+          );
     });

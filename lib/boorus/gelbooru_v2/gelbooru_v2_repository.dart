@@ -122,6 +122,7 @@ class GelbooruV2Repository extends BooruRepositoryDefault {
     final thumbnailOnly =
         gelbooruV2.getCapabilitiesForSite(config.url)?.posts?.thumbnailOnly ??
         false;
+    final videoInfoExtractor = ref.watch(videoInfoExtractorProvider(config));
 
     return thumbnailOnly
         ? DefaultGridThumbnailUrlGenerator(
@@ -129,8 +130,11 @@ class GelbooruV2Repository extends BooruRepositoryDefault {
                 post.thumbnailImageUrl,
             gifImageQualityMapper: (post, imageQuality) =>
                 post.thumbnailImageUrl,
+            videoInfoExtractor: videoInfoExtractor,
           )
-        : const DefaultGridThumbnailUrlGenerator();
+        : DefaultGridThumbnailUrlGenerator(
+            videoInfoExtractor: videoInfoExtractor,
+          );
   }
 
   @override

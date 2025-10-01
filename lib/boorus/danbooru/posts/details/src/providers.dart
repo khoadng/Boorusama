@@ -53,5 +53,6 @@ final danbooruMediaUrlResolverProvider =
         imageQuality: ref.watch(
           settingsProvider.select((value) => value.listing.imageQuality),
         ),
+        videoInfoExtractor: ref.watch(danbooruVideoInfoExtractorProvider),
       ),
     );

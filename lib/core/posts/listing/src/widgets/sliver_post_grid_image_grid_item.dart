@@ -14,6 +14,7 @@ import '../../../../configs/ref.dart';
 import '../../../../settings/providers.dart';
 import '../../../../settings/settings.dart';
 import '../../../post/post.dart';
+import '../../../post/providers.dart';
 import '../../../post/tags.dart';
 import '../../../post/widgets.dart';
 
@@ -85,6 +86,10 @@ class SliverPostGridImageGridItem<T extends Post> extends ConsumerWidget {
       imageListingSettingsProvider.select((v) => v.imageListType),
     );
 
+    final videoInfoExtractor = ref.watch(
+      videoInfoExtractorProvider(auth),
+    );
+
     return GestureDetector(
       onLongPress: gestures.canLongPress && booruRepo != null
           ? () => booruRepo.handlePostGesture(
@@ -98,7 +103,7 @@ class SliverPostGridImageGridItem<T extends Post> extends ConsumerWidget {
           ImageGridItem(
             leadingIcons: leadingIcons,
             borderRadius: BorderRadius.circular(imageBorderRadius),
-            isGif: post.isGif,
+            isGif: videoInfoExtractor.extractVideoInfo(post).isGif,
             isAI: post.isAI,
             hideOverlay: hideOverlay,
             quickActionButton: quickActionButton,

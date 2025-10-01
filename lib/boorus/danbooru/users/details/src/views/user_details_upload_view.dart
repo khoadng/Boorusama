@@ -284,6 +284,7 @@ class SliverUploadPostList extends ConsumerWidget {
               .watch(danbooruUserUploadsProvider(params))
               .maybeWhen(
                 data: (data) => SliverPreviewPostGrid(
+                  auth: ref.watchConfigAuth,
                   posts: data,
                   imageUrl: (item) => item.url360x360,
                 ),

@@ -132,7 +132,9 @@ class DanbooruRepository extends BooruRepositoryDefault {
 
   @override
   GridThumbnailUrlGenerator gridThumbnailUrlGenerator(BooruConfigAuth config) {
-    return const DanbooruGridThumbnailUrlGenerator();
+    return DanbooruGridThumbnailUrlGenerator(
+      videoInfoExtractor: ref.watch(danbooruVideoInfoExtractorProvider),
+    );
   }
 
   @override
@@ -263,7 +265,11 @@ class DanbooruRepository extends BooruRepositoryDefault {
 }
 
 class DanbooruGridThumbnailUrlGenerator implements GridThumbnailUrlGenerator {
-  const DanbooruGridThumbnailUrlGenerator();
+  const DanbooruGridThumbnailUrlGenerator({
+    required this.videoInfoExtractor,
+  });
+
+  final VideoInfoExtractor videoInfoExtractor;
 
   @override
   String generateUrl(
@@ -271,12 +277,16 @@ class DanbooruGridThumbnailUrlGenerator implements GridThumbnailUrlGenerator {
     required GridThumbnailSettings settings,
   }) {
     return castOrNull<DanbooruPost>(post).toOption().fold(
-      () => const DefaultGridThumbnailUrlGenerator().generateUrl(
-        post,
-        settings: settings,
-      ),
+      () =>
+          DefaultGridThumbnailUrlGenerator(
+            videoInfoExtractor: videoInfoExtractor,
+          ).generateUrl(
+            post,
+            settings: settings,
+          ),
       (post) =>
           DefaultGridThumbnailUrlGenerator(
+            videoInfoExtractor: videoInfoExtractor,
             gifImageQualityMapper: (_, _) => post.sampleImageUrl,
             imageQualityMapper: (_, imageQuality, gridSize) =>
                 switch (imageQuality) {

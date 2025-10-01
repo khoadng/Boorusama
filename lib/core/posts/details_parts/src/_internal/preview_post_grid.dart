@@ -6,16 +6,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../configs/config/providers.dart';
+import '../../../../configs/config/src/types/booru_config.dart';
 import '../../../../images/booru_image.dart';
 import '../../../post/post.dart';
+import '../../../post/providers.dart';
 import '../../../post/tags.dart';
 import '../../../post/widgets.dart';
 
-class PreviewPostList<T extends Post> extends StatelessWidget {
+class PreviewPostList<T extends Post> extends ConsumerWidget {
   const PreviewPostList({
     required this.posts,
     required this.onTap,
     required this.imageUrl,
+    required this.auth,
     super.key,
     this.physics,
     this.imageBuilder,
@@ -23,6 +26,7 @@ class PreviewPostList<T extends Post> extends StatelessWidget {
     this.height,
   });
 
+  final BooruConfigAuth auth;
   final List<T> posts;
   final ScrollPhysics? physics;
   final void Function(int index) onTap;
@@ -32,7 +36,9 @@ class PreviewPostList<T extends Post> extends StatelessWidget {
   final double? height;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final videoInfoExtractor = ref.watch(videoInfoExtractorProvider(auth));
+
     return LayoutBuilder(
       builder: (context, constraints) => SizedBox(
         height: height ?? 200,
@@ -46,7 +52,7 @@ class PreviewPostList<T extends Post> extends StatelessWidget {
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 2),
               child: ImageGridItem(
-                isGif: post.isGif,
+                isGif: videoInfoExtractor.extractVideoInfo(post).isGif,
                 isAI: post.isAI,
                 isAnimated: post.isAnimated,
                 isTranslated: post.isTranslated,

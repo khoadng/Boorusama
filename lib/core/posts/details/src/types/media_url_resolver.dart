@@ -16,15 +16,17 @@ abstract class MediaUrlResolver {
 class DefaultMediaUrlResolver implements MediaUrlResolver {
   const DefaultMediaUrlResolver({
     required this.imageQuality,
+    required this.videoInfoExtractor,
   });
 
   final ImageQuality imageQuality;
+  final VideoInfoExtractor videoInfoExtractor;
 
   @override
   String resolveMediaUrl(
     Post post,
     BooruConfigViewer config,
-  ) => post.isGif
+  ) => videoInfoExtractor.extractVideoInfo(post).isGif
       ? post.sampleImageUrl
       : config.imageDetaisQuality.toOption().fold(
               () => switch (imageQuality) {

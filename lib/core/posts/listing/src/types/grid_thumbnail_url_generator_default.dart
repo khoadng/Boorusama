@@ -45,19 +45,20 @@ String defaultGifImageQualityMapper(
 
 class DefaultGridThumbnailUrlGenerator implements GridThumbnailUrlGenerator {
   const DefaultGridThumbnailUrlGenerator({
+    required this.videoInfoExtractor,
     this.imageQualityMapper,
     this.gifImageQualityMapper,
   });
 
   final ImageQualityMapper? imageQualityMapper;
   final GifImageQualityMapper? gifImageQualityMapper;
-
+  final VideoInfoExtractor videoInfoExtractor;
   @override
   String generateUrl(
     Post post, {
     required GridThumbnailSettings settings,
   }) {
-    if (post.isGif) {
+    if (videoInfoExtractor.extractVideoInfo(post).isGif) {
       if (settings.animatedPostsDefaultState ==
           AnimatedPostsDefaultState.static) {
         return post.thumbnailImageUrl;

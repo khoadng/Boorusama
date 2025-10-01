@@ -9,6 +9,7 @@ import 'package:sliver_tools/sliver_tools.dart';
 // Project imports:
 import '../../../../foundation/display/media_query_utils.dart';
 import '../../../configs/config/providers.dart';
+import '../../../configs/config/types.dart';
 import '../../../images/booru_image.dart';
 import '../../../router.dart';
 import '../../../settings/settings.dart';
@@ -20,6 +21,7 @@ import '../../details/widgets.dart';
 import '../../listing/list.dart';
 import '../../listing/providers.dart';
 import '../../post/post.dart';
+import '../../post/providers.dart';
 import '../../post/tags.dart';
 import '../../post/widgets.dart';
 
@@ -55,6 +57,7 @@ class DefaultInheritedArtistPostsSection<T extends Post>
                               )
                               .maybeWhen(
                                 data: (data) => SliverPreviewPostGrid(
+                                  auth: auth,
                                   posts: data,
                                   imageUrl: (p) => thumbUrlBuilder.generateUrl(
                                     p,
@@ -140,15 +143,18 @@ class SliverPreviewPostGrid<T extends Post> extends ConsumerWidget {
   const SliverPreviewPostGrid({
     required this.posts,
     required this.imageUrl,
+    required this.auth,
     super.key,
   });
 
+  final BooruConfigAuth auth;
   final List<T> posts;
   final String Function(T item) imageUrl;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final constraints = PostDetailsSheetConstraints.of(context);
+    final videoInfoExtractor = ref.watch(videoInfoExtractorProvider(auth));
 
     return SliverGrid.builder(
       itemCount: posts.length,
@@ -157,7 +163,7 @@ class SliverPreviewPostGrid<T extends Post> extends ConsumerWidget {
         final post = posts[index];
 
         return ImageGridItem(
-          isGif: post.isGif,
+          isGif: videoInfoExtractor.extractVideoInfo(post).isGif,
           isAI: post.isAI,
           onTap: () => goToPostDetailsPageFromPosts(
             ref: ref,
@@ -168,7 +174,7 @@ class SliverPreviewPostGrid<T extends Post> extends ConsumerWidget {
           isAnimated: post.isAnimated,
           isTranslated: post.isTranslated,
           image: BooruImage(
-            config: ref.watchConfigAuth,
+            config: auth,
             forceCover: true,
             imageUrl: imageUrl(post),
             placeholderUrl: post.thumbnailImageUrl,

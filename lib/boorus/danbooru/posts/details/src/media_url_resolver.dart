@@ -11,9 +11,11 @@ import '../../post/post.dart';
 class DanbooruMediaUrlResolver implements MediaUrlResolver {
   DanbooruMediaUrlResolver({
     required this.imageQuality,
+    required this.videoInfoExtractor,
   });
 
   final ImageQuality imageQuality;
+  final VideoInfoExtractor videoInfoExtractor;
 
   @override
   String resolveMediaUrl(
@@ -21,7 +23,7 @@ class DanbooruMediaUrlResolver implements MediaUrlResolver {
     BooruConfigViewer config,
   ) => castOrNull<DanbooruPost>(rawPost).toOption().fold(
     () => rawPost.sampleImageUrl,
-    (post) => post.isGif
+    (post) => videoInfoExtractor.extractVideoInfo(post).isGif
         ? post.sampleImageUrl
         : config.imageDetaisQuality.toOption().fold(
             () => switch (imageQuality) {

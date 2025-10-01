@@ -56,6 +56,8 @@ class SliverRelatedPostsSection<T extends Post> extends ConsumerWidget {
       ),
     );
 
+    final auth = ref.watchConfigAuth;
+
     return SliverPadding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       sliver: SliverList(
@@ -81,12 +83,13 @@ class SliverRelatedPostsSection<T extends Post> extends ConsumerWidget {
                 ),
               ),
               PreviewPostList(
+                auth: auth,
                 posts: posts,
                 imageUrl: imageUrl,
                 imageBuilder: (post) => Stack(
                   children: [
                     BooruImage(
-                      config: ref.watchConfigAuth,
+                      config: auth,
                       aspectRatio: 0.6,
                       imageUrl: imageUrl(post),
                       placeholderUrl: post.thumbnailImageUrl,

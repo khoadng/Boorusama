@@ -20,7 +20,6 @@ class DummyPost implements Post {
     this.height = 0,
     this.id = 0,
     this.isAnimated = false,
-    this.isGif = false,
     this.isTranslated = false,
     this.isVideo = false,
     this.md5 = '',
@@ -71,8 +70,6 @@ class DummyPost implements Post {
   final int id;
   @override
   final bool isAnimated;
-  @override
-  final bool isGif;
   @override
   final bool isTranslated;
   @override
