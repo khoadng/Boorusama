@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../boorus/engine/providers.dart';
 import '../../configs/config/types.dart';
-import 'src/types/image_url_resolver.dart';
+import 'src/types/video_info.dart';
 
 export 'src/data/providers.dart';
 export 'src/data/post_repository_builder.dart';
