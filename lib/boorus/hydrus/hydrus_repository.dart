@@ -8,6 +8,8 @@ import '../../core/configs/config.dart';
 import '../../core/configs/create/create.dart';
 import '../../core/downloads/filename/types.dart';
 import '../../core/http/providers.dart';
+import '../../core/posts/details/details.dart';
+import '../../core/posts/details/providers.dart';
 import '../../core/posts/favorites/types.dart';
 import '../../core/posts/post/post.dart';
 import '../../core/posts/post/providers.dart';
@@ -78,8 +80,7 @@ class HydrusRepository extends BooruRepositoryDefault {
   }
 
   @override
-  PostImageDetailsUrlBuilder postImageDetailsUrlBuilder(
-    BooruConfigViewer config,
-  ) =>
-      (imageQuality, rawPost, config) => rawPost.sampleImageUrl;
+  MediaUrlResolver mediaUrlResolver(BooruConfigAuth config) {
+    return ref.watch(sampleMediaUrlResolverProvider(config));
+  }
 }

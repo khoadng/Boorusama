@@ -11,7 +11,6 @@ import '../../../../foundation/animations/constants.dart';
 import '../../../../foundation/clipboard.dart';
 import '../../../../foundation/toast.dart';
 import '../../../../foundation/url_launcher.dart';
-import '../../../boorus/engine/engine.dart';
 import '../../../configs/config/providers.dart';
 import '../../../configs/config/types.dart';
 import '../../../images/providers.dart';
@@ -19,6 +18,7 @@ import '../../../premiums/providers.dart';
 import '../../../settings/routes.dart';
 import '../../../tags/show/routes.dart';
 import '../../../widgets/adaptive_button_row.dart';
+import '../../details/providers.dart';
 import '../../details_manager/routes.dart';
 import '../../post/src/data/providers.dart';
 import '../../post/src/routes/route_utils.dart';
@@ -129,13 +129,14 @@ class CommonPostButtonsBuilder extends ConsumerWidget {
       );
     }
 
+    final mediaUrlResolver = ref.read(mediaUrlResolverProvider(config));
+
     final bytes = await ref.read(
       defaultCachedImageFileProvider(
-        defaultPostImageUrlBuilder(
-          ref,
-          config,
+        mediaUrlResolver.resolveMediaUrl(
+          post,
           configViewer,
-        )(post),
+        ),
       ).future,
     );
 

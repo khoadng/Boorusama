@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/widgets.dart';
 
 // Project imports:
-import '../../../core/boorus/engine/engine.dart';
 import '../../../core/configs/config/providers.dart';
 import '../../../core/posts/details/details.dart';
 import '../../../core/posts/details/routes.dart';
@@ -27,6 +26,9 @@ class AnimePicturesRelatedPostsSection extends ConsumerWidget {
     final configAuth = ref.watchConfigAuth;
     final configViewer = ref.watchConfigViewer;
     final params = (configAuth, post.id);
+    final mediaUrlResolver = ref.watch(
+      animePicturesMediaUrlResolverProvider(configAuth),
+    );
 
     return ref
         .watch(postDetailsProvider(params))
@@ -34,20 +36,16 @@ class AnimePicturesRelatedPostsSection extends ConsumerWidget {
           data: (details) => details.tied != null && details.tied!.isNotEmpty
               ? SliverRelatedPostsSection(
                   posts: details.tied!.map(dtoToAnimePicturesPost).toList(),
-                  imageUrl: defaultPostImageUrlBuilder(
-                    ref,
-                    configAuth,
-                    configViewer,
-                  ),
+                  imageUrl: (post) =>
+                      mediaUrlResolver.resolveMediaUrl(post, configViewer),
                   onTap: (index) => goToPostDetailsPageFromPosts(
                     ref: ref,
                     posts: posts,
                     initialIndex: index,
-                    initialThumbnailUrl: defaultPostImageUrlBuilder(
-                      ref,
-                      configAuth,
+                    initialThumbnailUrl: mediaUrlResolver.resolveMediaUrl(
+                      posts[index],
                       configViewer,
-                    )(posts[index]),
+                    ),
                   ),
                 )
               : const SliverSizedBox.shrink(),

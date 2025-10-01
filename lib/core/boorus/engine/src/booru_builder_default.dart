@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../foundation/display.dart';
 import '../../../configs/config.dart';
 import '../../../configs/create/widgets.dart';
 import '../../../configs/ref.dart';
@@ -15,6 +14,7 @@ import '../../../home/mobile_home_page_scaffold.dart';
 import '../../../home/user_custom_home_builder.dart';
 import '../../../notes/notes.dart';
 import '../../../posts/details/details.dart';
+import '../../../posts/details/providers.dart';
 import '../../../posts/details/widgets.dart';
 import '../../../posts/details_manager/types.dart';
 import '../../../posts/details_parts/widgets.dart';
@@ -27,7 +27,6 @@ import '../../../posts/statistics/widgets.dart';
 import '../../../router.dart';
 import '../../../search/search/widgets.dart';
 import '../../../search/suggestions/widgets.dart';
-import '../../../settings/providers.dart';
 import '../../../tags/categories/tag_category.dart';
 import '../../../tags/show/widgets.dart';
 import '../../../tags/tag/tag.dart';
@@ -165,12 +164,12 @@ class _DefaultPostDetailsPageState<T extends Post>
     final booruBuilder = ref.watch(booruBuilderProvider(auth));
     final booruRepo = ref.watch(booruRepoProvider(auth));
     final uiBuilder = booruBuilder?.postDetailsUIBuilder;
-    final imageUrlBuilder = defaultPostImageUrlBuilder(ref, auth, viewer);
+    final mediaUrlResolver = ref.watch(mediaUrlResolverProvider(auth));
 
     return PostDetailsImagePreloader(
       authConfig: auth,
       posts: posts,
-      imageUrlBuilder: imageUrlBuilder,
+      imageUrlBuilder: (post) => mediaUrlResolver.resolveMediaUrl(post, viewer),
       child: PostDetailsNotes(
         posts: posts,
         viewerConfig: viewer,
@@ -206,7 +205,8 @@ class _DefaultPostDetailsPageState<T extends Post>
               gestureConfig: gestures,
               imageCacheManager: null,
               detailsController: controller,
-              imageUrlBuilder: imageUrlBuilder,
+              imageUrlBuilder: (post) =>
+                  mediaUrlResolver.resolveMediaUrl(post, viewer),
             );
           },
         ),
@@ -280,25 +280,6 @@ class _DefaultShowTagListPage extends StatelessWidget {
     );
   }
 }
-
-String Function(
-  Post post,
-)
-defaultPostImageUrlBuilder(
-  WidgetRef ref,
-  BooruConfigAuth authConfig,
-  BooruConfigViewer viewerConfig,
-) =>
-    (post) => kPreferredLayout.isDesktop
-    ? post.sampleImageUrl
-    : ref
-              .watch(booruRepoProvider(authConfig))
-              ?.postImageDetailsUrlBuilder(viewerConfig)(
-            ref.watch(imageListingQualityProvider),
-            post,
-            viewerConfig,
-          ) ??
-          post.sampleImageUrl;
 
 class DefaultImagePreviewQuickActionButton extends ConsumerWidget {
   const DefaultImagePreviewQuickActionButton({

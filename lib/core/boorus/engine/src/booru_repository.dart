@@ -13,6 +13,7 @@ import '../../../downloads/urls/types.dart';
 import '../../../errors/types.dart';
 import '../../../notes/notes.dart';
 import '../../../posts/count/count.dart';
+import '../../../posts/details/details.dart';
 import '../../../posts/favorites/types.dart';
 import '../../../posts/listing/list.dart';
 import '../../../posts/post/post.dart';
@@ -51,9 +52,7 @@ abstract class BooruRepository {
   Map<String, String> extraHttpHeaders(BooruConfigAuth config);
   AppErrorTranslator appErrorTranslator(BooruConfigAuth config);
   BooruLoginDetails loginDetails(BooruConfigAuth config);
-  PostImageDetailsUrlBuilder postImageDetailsUrlBuilder(
-    BooruConfigViewer config,
-  );
+  MediaUrlResolver mediaUrlResolver(BooruConfigAuth config);
   GranularRatingFilterer? granularRatingFilterer(BooruConfigSearch config);
   Set<Rating> getGranularRatingOptions(BooruConfigAuth config);
   bool handlePostGesture(WidgetRef ref, String? action, Post post);

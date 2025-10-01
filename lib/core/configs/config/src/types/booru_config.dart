@@ -541,17 +541,22 @@ class BooruConfigViewer extends Equatable {
   const BooruConfigViewer({
     required this.imageDetaisQuality,
     required this.viewerNotesFetchBehavior,
+    required this.settings,
   });
 
   factory BooruConfigViewer.fromConfig(BooruConfig config) {
     return BooruConfigViewer(
       imageDetaisQuality: config.imageDetaisQuality,
       viewerNotesFetchBehavior: config.viewerNotesFetchBehavior,
+      settings: (config.viewerConfigs?.enable ?? false)
+          ? config.viewerConfigs?.settings
+          : null,
     );
   }
 
   final String? imageDetaisQuality;
   final BooruConfigViewerNotesFetchBehavior? viewerNotesFetchBehavior;
+  final ImageViewerSettings? settings;
 
   bool get autoFetchNotes =>
       viewerNotesFetchBehavior == BooruConfigViewerNotesFetchBehavior.auto;
@@ -560,6 +565,7 @@ class BooruConfigViewer extends Equatable {
   List<Object?> get props => [
     imageDetaisQuality,
     viewerNotesFetchBehavior,
+    settings,
   ];
 }
 

@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../../core/boorus/engine/engine.dart';
 import '../../../../../core/boorus/engine/providers.dart';
 import '../../../../../core/configs/ref.dart';
 import '../../../../../core/notes/notes.dart';
@@ -17,6 +16,7 @@ import '../../../users/user/routes.dart';
 import '../../_shared/danbooru_creator_preloader.dart';
 import '../../_shared/post_creator_preloadable.dart';
 import '../../post/post.dart';
+import 'providers.dart';
 
 class DanbooruPostDetailsPage extends StatefulWidget {
   const DanbooruPostDetailsPage({
@@ -55,12 +55,15 @@ class _DanbooruPostDetailsPageState extends State<DanbooruPostDetailsPage> {
           final booruBuilder = ref.watch(booruBuilderProvider(auth));
           final booruRepo = ref.watch(booruRepoProvider(auth));
           final uiBuilder = booruBuilder?.postDetailsUIBuilder;
-          final imageUrlBuilder = defaultPostImageUrlBuilder(ref, auth, viewer);
+          final mediaUrlResolver = ref.watch(
+            danbooruMediaUrlResolverProvider(auth),
+          );
 
           return PostDetailsImagePreloader(
             authConfig: auth,
             posts: posts,
-            imageUrlBuilder: imageUrlBuilder,
+            imageUrlBuilder: (post) =>
+                mediaUrlResolver.resolveMediaUrl(post, viewer),
             child: PostDetailsNotes(
               posts: posts,
               viewerConfig: viewer,
@@ -84,7 +87,8 @@ class _DanbooruPostDetailsPageState extends State<DanbooruPostDetailsPage> {
                     gestureConfig: gestures,
                     imageCacheManager: null,
                     detailsController: detailsController,
-                    imageUrlBuilder: imageUrlBuilder,
+                    imageUrlBuilder: (post) =>
+                        mediaUrlResolver.resolveMediaUrl(post, viewer),
                   );
                 },
                 actions: defaultActions(

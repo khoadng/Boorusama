@@ -9,11 +9,11 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:share_plus/share_plus.dart';
 
 // Project imports:
-import '../../../boorus/engine/engine.dart';
 import '../../../config_widgets/website_logo.dart';
 import '../../../configs/config/src/types/booru_config.dart';
 import '../../../downloads/filename/types.dart';
 import '../../../downloads/urls/sanitizer.dart';
+import '../../details/providers.dart';
 import '../../post/post.dart';
 import '../../post/providers.dart';
 import '../../sources/source.dart';
@@ -71,12 +71,11 @@ class PostModalShare extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final mediaUrlResolver = ref.watch(
+      mediaUrlResolverProvider(auth),
+    );
     final imageData = (
-      imageUrl: defaultPostImageUrlBuilder(
-        ref,
-        auth,
-        viewer,
-      )(post),
+      imageUrl: mediaUrlResolver.resolveMediaUrl(post, viewer),
       imageExt: post.format,
       imageCacheManager: imageCacheManager,
     );

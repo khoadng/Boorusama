@@ -1,7 +1,6 @@
 // Package imports:
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
@@ -24,6 +23,8 @@ import '../../../http/providers.dart';
 import '../../../images/providers.dart';
 import '../../../notes/notes.dart';
 import '../../../posts/count/count.dart';
+import '../../../posts/details/details.dart';
+import '../../../posts/details/providers.dart';
 import '../../../posts/details_parts/widgets.dart';
 import '../../../posts/favorites/providers.dart';
 import '../../../posts/favorites/types.dart';
@@ -37,7 +38,6 @@ import '../../../posts/sources/source.dart';
 import '../../../search/queries/providers.dart';
 import '../../../search/queries/tag_query_composer.dart';
 import '../../../settings/providers.dart';
-import '../../../settings/settings.dart';
 import '../../../tags/autocompletes/autocomplete_repository.dart';
 import '../../../tags/configs/configs.dart';
 import '../../../tags/local/providers.dart';
@@ -163,33 +163,8 @@ abstract class BooruRepositoryDefault implements BooruRepository {
   }
 
   @override
-  PostImageDetailsUrlBuilder postImageDetailsUrlBuilder(
-    BooruConfigViewer config,
-  ) =>
-      (imageQuality, post, config) => post.isGif
-      ? post.sampleImageUrl
-      : config.imageDetaisQuality.toOption().fold(
-              () => switch (imageQuality) {
-                ImageQuality.low => post.thumbnailImageUrl,
-                ImageQuality.original =>
-                  post.isVideo ? post.videoThumbnailUrl : post.originalImageUrl,
-                _ =>
-                  post.isVideo ? post.videoThumbnailUrl : post.sampleImageUrl,
-              },
-              (quality) => switch (stringToGeneralPostQualityType(quality)) {
-                GeneralPostQualityType.preview => post.thumbnailImageUrl,
-                GeneralPostQualityType.sample =>
-                  post.isVideo ? post.videoThumbnailUrl : post.sampleImageUrl,
-                GeneralPostQualityType.original =>
-                  post.isVideo ? post.videoThumbnailUrl : post.originalImageUrl,
-              },
-            ) ??
-            switch (imageQuality) {
-              ImageQuality.low => post.thumbnailImageUrl,
-              ImageQuality.original =>
-                post.isVideo ? post.videoThumbnailUrl : post.originalImageUrl,
-              _ => post.isVideo ? post.videoThumbnailUrl : post.sampleImageUrl,
-            };
+  MediaUrlResolver mediaUrlResolver(BooruConfigAuth config) =>
+      ref.watch(defaultMediaUrlResolverProvider(config));
 
   @override
   GranularRatingFilterer? granularRatingFilterer(BooruConfigSearch config) {

@@ -8,12 +8,12 @@ import 'package:foundation/widgets.dart';
 // Project imports:
 import '../../../../foundation/display.dart';
 import '../../../blacklists/providers.dart';
-import '../../../boorus/engine/engine.dart';
 import '../../../configs/ref.dart';
 import '../../../images/booru_image.dart';
 import '../../../images/utils.dart';
 import '../../../videos/player/widgets.dart';
 import '../../../widgets/widgets.dart';
+import '../../details/providers.dart';
 import '../../details/routes.dart';
 import '../../post/post.dart';
 import '../../post/widgets.dart';
@@ -172,6 +172,7 @@ class ExploreList extends ConsumerWidget {
   ) {
     final configAuth = ref.watchConfigAuth;
     final configViewer = ref.watchConfigViewer;
+    final mediaUrlResolver = ref.watch(mediaUrlResolverProvider(configAuth));
 
     return SizedBox(
       height: height,
@@ -189,11 +190,10 @@ class ExploreList extends ConsumerWidget {
                   ref: ref,
                   posts: filteredPosts,
                   initialIndex: index,
-                  initialThumbnailUrl: defaultPostImageUrlBuilder(
-                    ref,
-                    configAuth,
+                  initialThumbnailUrl: mediaUrlResolver.resolveMediaUrl(
+                    post,
                     configViewer,
-                  )(post),
+                  ),
                 ),
                 child: Stack(
                   alignment: Alignment.center,
@@ -201,11 +201,10 @@ class ExploreList extends ConsumerWidget {
                     BooruImage(
                       config: configAuth,
                       aspectRatio: post.aspectRatio,
-                      imageUrl: defaultPostImageUrlBuilder(
-                        ref,
-                        configAuth,
+                      imageUrl: mediaUrlResolver.resolveMediaUrl(
+                        post,
                         configViewer,
-                      )(post),
+                      ),
                       placeholderUrl: post.thumbnailImageUrl,
                     ),
                     if (post.isAnimated)

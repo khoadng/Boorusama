@@ -25,6 +25,7 @@ import '../../core/downloads/filename/types.dart';
 import '../../core/images/providers.dart';
 import '../../core/notes/notes.dart';
 import '../../core/posts/count/count.dart';
+import '../../core/posts/details/details.dart';
 import '../../core/posts/details_parts/widgets.dart';
 import '../../core/posts/favorites/types.dart';
 import '../../core/posts/favorites/widgets.dart';
@@ -52,6 +53,7 @@ import 'client_provider.dart';
 import 'comments/comment/data.dart';
 import 'notes/providers.dart';
 import 'posts/count/providers.dart';
+import 'posts/details/providers.dart';
 import 'posts/favorites/providers.dart';
 import 'posts/listing/providers.dart';
 import 'posts/post/post.dart';
@@ -181,32 +183,9 @@ class DanbooruRepository extends BooruRepositoryDefault {
   }
 
   @override
-  PostImageDetailsUrlBuilder postImageDetailsUrlBuilder(
-    BooruConfigViewer config,
-  ) =>
-      (imageQuality, rawPost, config) =>
-          castOrNull<DanbooruPost>(rawPost).toOption().fold(
-            () => rawPost.sampleImageUrl,
-            (post) => post.isGif
-                ? post.sampleImageUrl
-                : config.imageDetaisQuality.toOption().fold(
-                    () => switch (imageQuality) {
-                      ImageQuality.highest ||
-                      ImageQuality.original => post.sampleImageUrl,
-                      _ => post.url720x720,
-                    },
-                    (quality) => switch (PostQualityType.parse(quality)) {
-                      PostQualityType.v180x180 => post.url180x180,
-                      PostQualityType.v360x360 => post.url360x360,
-                      PostQualityType.v720x720 => post.url720x720,
-                      PostQualityType.sample =>
-                        post.isVideo ? post.url720x720 : post.sampleImageUrl,
-                      PostQualityType.original =>
-                        post.isVideo ? post.url720x720 : post.originalImageUrl,
-                      null => post.url720x720,
-                    },
-                  ),
-          );
+  MediaUrlResolver mediaUrlResolver(BooruConfigAuth config) {
+    return ref.watch(danbooruMediaUrlResolverProvider(config));
+  }
 
   @override
   MetatagExtractor? getMetatagExtractor(TagInfo tagInfo) {

@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../core/configs/config/types.dart';
+import '../../../core/posts/details/details.dart';
+import '../../../core/posts/details/providers.dart';
 import '../../../core/posts/post/post.dart';
 import '../../../core/posts/post/providers.dart';
 import '../../../core/search/queries/providers.dart';
@@ -70,3 +72,8 @@ final postDetailsProvider = FutureProvider.autoDispose
 
       return post;
     });
+
+final animePicturesMediaUrlResolverProvider =
+    Provider.family<MediaUrlResolver, BooruConfigAuth>(
+      (ref, config) => ref.watch(defaultMediaUrlResolverProvider(config)),
+    );

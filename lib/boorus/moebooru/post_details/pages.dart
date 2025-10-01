@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../core/boorus/engine/engine.dart';
 import '../../../core/boorus/engine/providers.dart';
 import '../../../core/configs/ref.dart';
 import '../../../core/notes/notes.dart';
@@ -19,6 +18,7 @@ import '../configs/providers.dart';
 import '../favorites/providers.dart';
 import '../moebooru.dart';
 import '../posts/types.dart';
+import 'providers.dart';
 import 'src/favorite_loader.dart';
 
 class MoebooruPostDetailsPage extends StatelessWidget {
@@ -88,12 +88,12 @@ class _MoebooruPostDetailsPageState
     final booruBuilder = ref.watch(booruBuilderProvider(auth));
     final booruRepo = ref.watch(booruRepoProvider(auth));
     final uiBuilder = booruBuilder?.postDetailsUIBuilder;
-    final imageUrlBuilder = defaultPostImageUrlBuilder(ref, auth, viewer);
+    final mediaUrlResolver = ref.watch(moebooruMediaUrlResolverProvider(auth));
 
     return PostDetailsImagePreloader(
       authConfig: auth,
       posts: posts,
-      imageUrlBuilder: imageUrlBuilder,
+      imageUrlBuilder: (post) => mediaUrlResolver.resolveMediaUrl(post, viewer),
       child: PostDetailsNotes(
         posts: posts,
         viewerConfig: viewer,
@@ -129,7 +129,8 @@ class _MoebooruPostDetailsPageState
               gestureConfig: gestures,
               imageCacheManager: null,
               detailsController: controller,
-              imageUrlBuilder: imageUrlBuilder,
+              imageUrlBuilder: (post) =>
+                  mediaUrlResolver.resolveMediaUrl(post, viewer),
             );
           },
         ),

@@ -5,13 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:booru_clients/philomena.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../core/boorus/engine/engine.dart';
 import '../../core/configs/config.dart';
 import '../../core/configs/create/create.dart';
 import '../../core/downloads/filename/types.dart';
+import '../../core/posts/details/details.dart';
 import '../../core/posts/post/post.dart';
 import '../../core/posts/post/providers.dart';
 import '../../core/tags/autocompletes/types.dart';
@@ -19,7 +19,6 @@ import '../../core/tags/tag/colors.dart';
 import '../../core/theme.dart';
 import 'client_provider.dart';
 import 'posts/providers.dart';
-import 'posts/types.dart';
 import 'tags/providers.dart';
 
 class PhilomenaRepository extends BooruRepositoryDefault {
@@ -82,31 +81,9 @@ class PhilomenaRepository extends BooruRepositoryDefault {
   }
 
   @override
-  PostImageDetailsUrlBuilder postImageDetailsUrlBuilder(
-    BooruConfigViewer config,
-  ) =>
-      (
-        imageQuality,
-        rawPost,
-        config,
-      ) => castOrNull<PhilomenaPost>(rawPost).toOption().fold(
-        () => rawPost.sampleImageUrl,
-        (post) => config.imageDetaisQuality.toOption().fold(
-          () => post.sampleImageUrl,
-          (quality) => switch (stringToPhilomenaPostQualityType(quality)) {
-            PhilomenaPostQualityType.full => post.representation.full,
-            PhilomenaPostQualityType.large => post.representation.large,
-            PhilomenaPostQualityType.medium => post.representation.medium,
-            PhilomenaPostQualityType.tall => post.representation.tall,
-            PhilomenaPostQualityType.small => post.representation.small,
-            PhilomenaPostQualityType.thumb => post.representation.thumb,
-            PhilomenaPostQualityType.thumbSmall =>
-              post.representation.thumbSmall,
-            PhilomenaPostQualityType.thumbTiny => post.representation.thumbTiny,
-            null => post.representation.small,
-          },
-        ),
-      );
+  MediaUrlResolver mediaUrlResolver(BooruConfigAuth config) {
+    return ref.watch(philomenaMediaUrlResolverProvider(config));
+  }
 }
 
 class PhilomenaTagColorGenerator implements TagColorGenerator {

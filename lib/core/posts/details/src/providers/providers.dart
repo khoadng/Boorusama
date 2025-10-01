@@ -4,9 +4,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../../../foundation/riverpod/riverpod.dart';
 import '../../../../blacklists/providers.dart';
+import '../../../../boorus/engine/providers.dart';
 import '../../../../configs/config.dart';
+import '../../../../settings/providers.dart';
 import '../../../post/post.dart';
 import '../../../post/providers.dart';
+import '../../details.dart';
 
 final singlePostDetailsProvider = FutureProvider.autoDispose
     .family<Post?, (PostId, BooruConfigSearch)>((ref, params) async {
@@ -35,3 +38,32 @@ final detailsArtistPostsProvider = FutureProvider.autoDispose
             options: PostFetchOptions.raw,
           );
     });
+
+final mediaUrlResolverProvider =
+    Provider.family<MediaUrlResolver, BooruConfigAuth>(
+      (ref, config) {
+        final fallbackMediaUrlResolver = ref.watch(
+          defaultMediaUrlResolverProvider(config),
+        );
+
+        final mediaUrlResolver =
+            ref.watch(booruRepoProvider(config))?.mediaUrlResolver(config) ??
+            fallbackMediaUrlResolver;
+
+        return mediaUrlResolver;
+      },
+    );
+
+final defaultMediaUrlResolverProvider =
+    Provider.family<MediaUrlResolver, BooruConfigAuth>(
+      (ref, config) => DefaultMediaUrlResolver(
+        imageQuality: ref.watch(
+          settingsProvider.select((value) => value.listing.imageQuality),
+        ),
+      ),
+    );
+
+final sampleMediaUrlResolverProvider =
+    Provider.family<MediaUrlResolver, BooruConfigAuth>(
+      (ref, config) => const SampleMediaUrlResolver(),
+    );

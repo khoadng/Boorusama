@@ -4,13 +4,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../../../core/blacklists/providers.dart';
 import '../../../../../core/configs/config.dart';
+import '../../../../../core/posts/details/details.dart';
 import '../../../../../core/posts/post/post.dart';
 import '../../../../../core/posts/post/providers.dart';
+import '../../../../../core/settings/providers.dart';
 import '../../../../../foundation/riverpod/riverpod.dart';
 import '../../pools/pool/pool.dart';
 import '../../pools/pool/providers.dart';
 import '../../post/post.dart';
 import '../../post/providers.dart';
+import 'media_url_resolver.dart';
 
 final danbooruPostDetailsChildrenProvider = FutureProvider.family
     .autoDispose<
@@ -42,3 +45,12 @@ final danbooruPostDetailsPoolsProvider = FutureProvider.family
 
       return repo.getPoolsByPostId(postId);
     });
+
+final danbooruMediaUrlResolverProvider =
+    Provider.family<MediaUrlResolver, BooruConfigAuth>(
+      (ref, config) => DanbooruMediaUrlResolver(
+        imageQuality: ref.watch(
+          settingsProvider.select((value) => value.listing.imageQuality),
+        ),
+      ),
+    );
