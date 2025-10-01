@@ -1,5 +1,4 @@
 mixin VideoInfoMixin {
-  String get format;
   double get duration;
   String get videoUrl;
   String get videoThumbnailUrl;
