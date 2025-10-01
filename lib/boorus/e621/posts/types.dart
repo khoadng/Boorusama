@@ -45,6 +45,7 @@ class E621Post extends Equatable
     required this.parentId,
     required this.uploaderId,
     required this.metadata,
+    required this.videoVariants,
   });
 
   @override
@@ -137,4 +138,63 @@ class E621Post extends Equatable
 
   @override
   final PostMetadata? metadata;
+
+  final Map<E621VideoVariantType, E621VideoVariant> videoVariants;
+}
+
+class E621VideoVariant extends Equatable {
+  const E621VideoVariant({
+    required this.type,
+    required this.url,
+    required this.size,
+    required this.width,
+    required this.height,
+    required this.codec,
+    required this.fps,
+  });
+
+  final E621VideoVariantType type;
+  final String url;
+  final int size;
+  final int width;
+  final int height;
+  final String codec;
+  final double fps;
+
+  E621VideoVariant copyWith({
+    E621VideoVariantType? type,
+  }) => E621VideoVariant(
+    type: type ?? this.type,
+    url: url,
+    size: size,
+    width: width,
+    height: height,
+    codec: codec,
+    fps: fps,
+  );
+
+  @override
+  List<Object?> get props => [type, url, size, width, height, codec, fps];
+}
+
+enum E621VideoVariantType {
+  original,
+  sample,
+  v720p,
+  v480p;
+
+  static E621VideoVariantType? tryParse(String? value) => switch (value) {
+    'original' => original,
+    'sample' => sample,
+    '720p' => v720p,
+    '480p' => v480p,
+    _ => null,
+  };
+
+  String get value => switch (this) {
+    original => 'original',
+    sample => 'sample',
+    v720p => '720p',
+    v480p => '480p',
+  };
 }

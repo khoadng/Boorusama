@@ -113,6 +113,7 @@ class E621PreviewDto {
     this.width,
     this.height,
     this.url,
+    this.alt,
   });
 
   factory E621PreviewDto.fromJson(Map<String, dynamic> json) {
@@ -120,11 +121,13 @@ class E621PreviewDto {
       width: json['width'],
       height: json['height'],
       url: json['url'],
+      alt: json['alt'],
     );
   }
   final int? width;
   final int? height;
   final String? url;
+  final String? alt;
 }
 
 class E621SampleDto {
@@ -133,6 +136,7 @@ class E621SampleDto {
     this.height,
     this.width,
     this.url,
+    this.alt,
     this.alternates,
   });
 
@@ -142,22 +146,24 @@ class E621SampleDto {
       height: json['height'],
       width: json['width'],
       url: json['url'],
-      alternates:
-          json['alternates'] != null &&
-              json['alternates'] is Map<String, dynamic>
-          ? E621AlternatesDto.fromJson(json['alternates'])
-          : null,
+      alt: json['alt'],
+      alternates: switch (json['alternates']) {
+        Map<String, dynamic> m => E621AlternatesDto.fromJson(m),
+        _ => null,
+      },
     );
   }
   final bool? has;
   final int? height;
   final int? width;
   final String? url;
+  final String? alt;
   final E621AlternatesDto? alternates;
 }
 
 class E621AlternatesDto {
   E621AlternatesDto({
+    this.has,
     this.manifest,
     this.original,
     this.variants,
@@ -166,24 +172,27 @@ class E621AlternatesDto {
 
   factory E621AlternatesDto.fromJson(Map<String, dynamic> json) {
     return E621AlternatesDto(
+      has: json['has'],
       manifest: json['manifest'],
-      original: json['original'] != null
-          ? E621VideoInfoDto.fromJson(json['original'])
-          : null,
-      variants:
-          json['variants'] != null && json['variants'] is Map<String, dynamic>
-          ? (json['variants'] as Map<String, dynamic>).map(
-              (key, value) => MapEntry(key, E621VideoInfoDto.fromJson(value)),
-            )
-          : {},
-      samples:
-          json['samples'] != null && json['samples'] is Map<String, dynamic>
-          ? (json['samples'] as Map<String, dynamic>).map(
-              (key, value) => MapEntry(key, E621VideoInfoDto.fromJson(value)),
-            )
-          : {},
+      original: switch (json['original']) {
+        Map<String, dynamic> m => E621VideoInfoDto.fromJson(m),
+        _ => null,
+      },
+      variants: switch (json['variants']) {
+        Map<String, dynamic> m => m.map(
+          (key, value) => MapEntry(key, E621VideoInfoDto.fromJson(value)),
+        ),
+        _ => {},
+      },
+      samples: switch (json['samples']) {
+        Map<String, dynamic> m => m.map(
+          (key, value) => MapEntry(key, E621VideoInfoDto.fromJson(value)),
+        ),
+        _ => {},
+      },
     );
   }
+  final bool? has;
   final int? manifest;
   final E621VideoInfoDto? original;
   final Map<String, E621VideoInfoDto>? variants;
@@ -202,7 +211,10 @@ class E621VideoInfoDto {
 
   factory E621VideoInfoDto.fromJson(Map<String, dynamic> json) {
     return E621VideoInfoDto(
-      fps: json['fps'] is num ? json['fps'].toDouble() : 0.0,
+      fps: switch (json['fps']) {
+        num n => n.toDouble(),
+        _ => null,
+      },
       codec: json['codec'],
       size: json['size'],
       width: json['width'],
