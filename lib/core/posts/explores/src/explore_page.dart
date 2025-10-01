@@ -16,6 +16,7 @@ import '../../../widgets/widgets.dart';
 import '../../details/providers.dart';
 import '../../details/routes.dart';
 import '../../post/post.dart';
+import '../../post/providers.dart';
 import '../../post/widgets.dart';
 
 class ExplorePage extends ConsumerWidget {
@@ -173,6 +174,9 @@ class ExploreList extends ConsumerWidget {
     final configAuth = ref.watchConfigAuth;
     final configViewer = ref.watchConfigViewer;
     final mediaUrlResolver = ref.watch(mediaUrlResolverProvider(configAuth));
+    final videoInfoExtractor = ref.watch(
+      videoInfoExtractorProvider(configAuth),
+    );
 
     return SizedBox(
       height: height,
@@ -213,7 +217,7 @@ class ExploreList extends ConsumerWidget {
                         left: 5,
                         child: VideoPlayDurationIcon(
                           duration: post.duration,
-                          hasSound: post.hasSound,
+                          hasSound: videoInfoExtractor.extract(post).hasSound,
                         ),
                       ),
                     Positioned.fill(

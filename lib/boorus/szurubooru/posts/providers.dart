@@ -14,6 +14,7 @@ import '../client_provider.dart';
 import '../post_votes/providers.dart';
 import '../tags/providers.dart';
 import 'parser.dart';
+import 'types.dart';
 
 final szurubooruPostRepoProvider =
     Provider.family<PostRepository, BooruConfigSearch>(
@@ -81,4 +82,14 @@ final szurubooruPostRepoProvider =
           getSettings: () async => ref.read(imageListingSettingsProvider),
         );
       },
+    );
+
+final szurubooruVideoInfoExtractorProvider =
+    Provider.family<VideoInfoExtractor, BooruConfigAuth>(
+      (ref, config) => DefaultVideoInfoExtractor(
+        hasSound: (post) => switch (post) {
+          final SzurubooruPost p => p.hasSound,
+          _ => null,
+        },
+      ),
     );

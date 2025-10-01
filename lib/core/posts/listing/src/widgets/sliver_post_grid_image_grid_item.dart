@@ -129,7 +129,7 @@ class SliverPostGridImageGridItem<T extends Post> extends ConsumerWidget {
             isTranslated: post.isTranslated,
             hasComments: post.hasComment,
             hasParentOrChildren: post.hasParentOrChildren,
-            hasSound: post.hasSound,
+            hasSound: videoInfoExtractor.extract(post).hasSound,
             duration: post.duration,
             scoreWidget: scoreWidget ?? const SizedBox.shrink(),
           ),

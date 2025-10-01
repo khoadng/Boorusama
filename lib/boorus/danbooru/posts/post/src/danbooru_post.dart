@@ -153,8 +153,6 @@ class DanbooruPost extends Equatable
   int? get downvotes => -downScore;
 
   @override
-  bool? get hasSound => metaTags.contains('sound') ? true : null;
-  @override
   String get videoUrl => sampleImageUrl;
   @override
   String get videoThumbnailUrl => url720x720;

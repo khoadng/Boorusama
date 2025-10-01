@@ -17,7 +17,6 @@ class ZerochanPost extends SimplePost {
     required super.duration,
     required super.fileSize,
     required super.format,
-    required super.hasSound,
     required super.height,
     required super.md5,
     required super.videoThumbnailUrl,

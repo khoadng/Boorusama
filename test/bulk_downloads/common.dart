@@ -16,7 +16,6 @@ class DummyPost implements Post {
     this.format = '',
     this.hasComment = false,
     this.hasParentOrChildren = false,
-    this.hasSound,
     this.height = 0,
     this.id = 0,
     this.isAnimated = false,
@@ -62,8 +61,6 @@ class DummyPost implements Post {
   final bool hasComment;
   @override
   final bool hasParentOrChildren;
-  @override
-  final bool? hasSound;
   @override
   final double height;
   @override

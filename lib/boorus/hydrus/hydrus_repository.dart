@@ -83,4 +83,9 @@ class HydrusRepository extends BooruRepositoryDefault {
   MediaUrlResolver mediaUrlResolver(BooruConfigAuth config) {
     return ref.watch(sampleMediaUrlResolverProvider(config));
   }
+
+  @override
+  VideoInfoExtractor videoInfoExtractor(BooruConfigAuth config) {
+    return ref.watch(hydrusVideoInfoExtractorProvider(config));
+  }
 }

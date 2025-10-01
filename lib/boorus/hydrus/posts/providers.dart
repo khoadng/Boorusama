@@ -80,3 +80,13 @@ final hydrusPostRepoProvider =
         );
       },
     );
+
+final hydrusVideoInfoExtractorProvider =
+    Provider.family<VideoInfoExtractor, BooruConfigAuth>(
+      (ref, config) => DefaultVideoInfoExtractor(
+        hasSound: (post) => switch (post) {
+          final HydrusPost p => p.hasSound,
+          _ => null,
+        },
+      ),
+    );

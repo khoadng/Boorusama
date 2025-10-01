@@ -67,9 +67,15 @@ final danbooruPostRepoProvider =
       );
     });
 
-final danbooruVideoInfoExtractorProvider = Provider<VideoInfoExtractor>((ref) {
-  return const DefaultVideoInfoExtractor();
-});
+final danbooruVideoInfoExtractorProvider =
+    Provider.family<VideoInfoExtractor, BooruConfigAuth>(
+      (ref, config) => DefaultVideoInfoExtractor(
+        hasSound: (post) => switch (post) {
+          final DanbooruPost p => p.metaTags.contains('sound'),
+          _ => null,
+        },
+      ),
+    );
 
 typedef PostFetchTransformer =
     Future<PostResult<DanbooruPost>> Function(

@@ -32,7 +32,9 @@ final danbooruPostDetailsChildrenProvider = FutureProvider.family
             tag: post.relationshipQuery,
             blacklist: ref.watch(blacklistTagsProvider(filter).future),
             softLimit: null,
-            videoInfoExtractor: ref.watch(danbooruVideoInfoExtractorProvider),
+            videoInfoExtractor: ref.watch(
+              danbooruVideoInfoExtractorProvider(search.auth),
+            ),
           );
     });
 
@@ -53,6 +55,8 @@ final danbooruMediaUrlResolverProvider =
         imageQuality: ref.watch(
           settingsProvider.select((value) => value.listing.imageQuality),
         ),
-        videoInfoExtractor: ref.watch(danbooruVideoInfoExtractorProvider),
+        videoInfoExtractor: ref.watch(
+          danbooruVideoInfoExtractorProvider(config),
+        ),
       ),
     );

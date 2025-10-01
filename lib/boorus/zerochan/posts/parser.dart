@@ -27,7 +27,6 @@ ZerochanPost postDtoToPost(
     duration: 0,
     fileSize: 0,
     format: path.extension(e.thumbnail ?? ''),
-    hasSound: null,
     height: e.height?.toDouble() ?? 0,
     md5: e.md5 ?? '',
     videoThumbnailUrl: '',

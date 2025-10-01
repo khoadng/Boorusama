@@ -87,4 +87,9 @@ class SzurubooruRepository extends BooruRepositoryDefault {
   BooruLoginDetails loginDetails(BooruConfigAuth config) {
     return ref.watch(szurubooruLoginDetailsProvider(config));
   }
+
+  @override
+  VideoInfoExtractor videoInfoExtractor(BooruConfigAuth config) {
+    return ref.watch(szurubooruVideoInfoExtractorProvider(config));
+  }
 }

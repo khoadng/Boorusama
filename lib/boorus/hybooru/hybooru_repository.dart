@@ -69,4 +69,9 @@ class HybooruRepository extends BooruRepositoryDefault {
   TagExtractor tagExtractor(BooruConfigAuth config) {
     return ref.watch(hybooruTagExtractorProvider(config));
   }
+
+  @override
+  VideoInfoExtractor videoInfoExtractor(BooruConfigAuth config) {
+    return ref.watch(hybooruVideoInfoExtractorProvider(config));
+  }
 }

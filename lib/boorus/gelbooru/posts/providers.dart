@@ -71,3 +71,12 @@ extension GelbooruClientX on GelbooruClient {
             .toResult(total: value.count),
       );
 }
+
+final gelbooruVideoInfoExtractorProvider = Provider<VideoInfoExtractor>(
+  (ref) => DefaultVideoInfoExtractor(
+    hasSound: (post) => switch (post) {
+      final GelbooruPost p => p.tags.contains('sound'),
+      _ => null,
+    },
+  ),
+);

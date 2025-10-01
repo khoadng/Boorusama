@@ -17,7 +17,6 @@ class HybooruPost extends SimplePost {
     required super.duration,
     required super.fileSize,
     required super.format,
-    required super.hasSound,
     required super.height,
     required super.md5,
     required super.videoThumbnailUrl,
@@ -27,5 +26,8 @@ class HybooruPost extends SimplePost {
     required super.createdAt,
     required super.uploaderName,
     required super.metadata,
+    required this.hasSound,
   });
+
+  final bool? hasSound;
 }

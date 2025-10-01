@@ -63,3 +63,13 @@ final philomenaMediaUrlResolverProvider =
         ),
       ),
     );
+
+final philomenaVideoInfoExtractorProvider =
+    Provider.family<VideoInfoExtractor, BooruConfigAuth>(
+      (ref, config) => DefaultVideoInfoExtractor(
+        hasSound: (post) => switch (post) {
+          final PhilomenaPost p => p.hasSound,
+          _ => null,
+        },
+      ),
+    );

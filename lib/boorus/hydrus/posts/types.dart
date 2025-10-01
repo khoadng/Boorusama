@@ -17,7 +17,6 @@ class HydrusPost extends SimplePost {
     required super.duration,
     required super.fileSize,
     required super.format,
-    required super.hasSound,
     required super.height,
     required super.md5,
     required super.videoThumbnailUrl,
@@ -28,7 +27,9 @@ class HydrusPost extends SimplePost {
     required super.uploaderName,
     required super.metadata,
     required this.ownFavorite,
+    required this.hasSound,
   });
 
   final bool? ownFavorite;
+  final bool? hasSound;
 }

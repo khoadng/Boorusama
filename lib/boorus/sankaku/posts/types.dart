@@ -26,7 +26,6 @@ class SankakuPost extends Equatable
     required this.duration,
     required this.fileSize,
     required this.format,
-    required this.hasSound,
     required this.height,
     required this.md5,
     required this.videoThumbnailUrl,
@@ -83,8 +82,6 @@ class SankakuPost extends Equatable
   final int fileSize;
   @override
   final String format;
-  @override
-  final bool? hasSound;
   @override
   final double height;
   @override

@@ -84,8 +84,11 @@ final gelbooruV2PostImageUrlResolverProvider =
       (ref) => const GelbooruV2ImageUrlResolver(),
     );
 
-final gelbooruV2VideoInfoExtractorProvider = Provider<VideoInfoExtractor>((
-  ref,
-) {
-  return const DefaultVideoInfoExtractor();
-});
+final gelbooruV2VideoInfoExtractorProvider = Provider<VideoInfoExtractor>(
+  (ref) => DefaultVideoInfoExtractor(
+    hasSound: (post) => switch (post) {
+      final GelbooruV2Post p => p.tags.contains('sound'),
+      _ => null,
+    },
+  ),
+);

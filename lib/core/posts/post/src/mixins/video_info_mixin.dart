@@ -1,7 +1,6 @@
 mixin VideoInfoMixin {
   String get format;
   double get duration;
-  bool? get hasSound;
   String get videoUrl;
   String get videoThumbnailUrl;
 }

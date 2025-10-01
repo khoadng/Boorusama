@@ -81,7 +81,6 @@ class SzurubooruPost extends Equatable
   final int fileSize;
   @override
   final String format;
-  @override
   final bool? hasSound;
   @override
   final double height;

@@ -32,7 +32,6 @@ AnimePicturesPost dtoToAnimePicturesPost(
     duration: 0,
     fileSize: e.size ?? 0,
     format: e.ext ?? '',
-    hasSound: null,
     height: e.height?.toDouble() ?? 0,
     md5: e.md5 ?? '',
     videoThumbnailUrl: e.smallPreview ?? '',

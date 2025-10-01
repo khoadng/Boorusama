@@ -133,7 +133,7 @@ class DanbooruRepository extends BooruRepositoryDefault {
   @override
   GridThumbnailUrlGenerator gridThumbnailUrlGenerator(BooruConfigAuth config) {
     return DanbooruGridThumbnailUrlGenerator(
-      videoInfoExtractor: ref.watch(danbooruVideoInfoExtractorProvider),
+      videoInfoExtractor: ref.watch(danbooruVideoInfoExtractorProvider(config)),
     );
   }
 
@@ -266,7 +266,7 @@ class DanbooruRepository extends BooruRepositoryDefault {
 
   @override
   VideoInfoExtractor videoInfoExtractor(BooruConfigAuth config) {
-    return ref.watch(danbooruVideoInfoExtractorProvider);
+    return ref.watch(danbooruVideoInfoExtractorProvider(config));
   }
 }
 

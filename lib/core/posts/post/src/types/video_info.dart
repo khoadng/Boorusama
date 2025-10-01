@@ -38,7 +38,11 @@ abstract class VideoInfoExtractor {
 }
 
 class DefaultVideoInfoExtractor implements VideoInfoExtractor {
-  const DefaultVideoInfoExtractor();
+  const DefaultVideoInfoExtractor({
+    this.hasSound,
+  });
+
+  final bool? Function(Post post)? hasSound;
 
   @override
   VideoInfo extract(Post post) {
@@ -48,7 +52,7 @@ class DefaultVideoInfoExtractor implements VideoInfoExtractor {
       videoUrl: post.videoUrl,
       videoThumbnailUrl: post.videoThumbnailUrl,
       duration: post.duration,
-      hasSound: post.hasSound,
+      hasSound: hasSound?.call(post),
       format: format,
     );
   }

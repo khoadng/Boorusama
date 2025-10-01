@@ -111,8 +111,6 @@ class E621Post extends Equatable
   int? get downvotes => -downScore;
 
   @override
-  bool? get hasSound => metaTags.contains('sound') ? true : null;
-  @override
   final String videoUrl;
   @override
   String get videoThumbnailUrl => sampleImageUrl;

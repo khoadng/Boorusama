@@ -35,7 +35,6 @@ abstract class SimplePost extends Equatable
     required this.duration,
     required this.fileSize,
     required this.format,
-    required this.hasSound,
     required this.height,
     required this.md5,
     required this.videoThumbnailUrl,
@@ -83,8 +82,6 @@ abstract class SimplePost extends Equatable
   final int fileSize;
   @override
   final String format;
-  @override
-  final bool? hasSound;
   @override
   final double height;
   @override
@@ -146,7 +143,6 @@ class DemoPost extends SimplePost {
         duration: 0,
         fileSize: 1024 * 1024 * 5,
         format: '.jpg',
-        hasSound: null,
         height: 1080,
         md5: '',
         videoThumbnailUrl: '',

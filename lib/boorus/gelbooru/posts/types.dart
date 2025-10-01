@@ -121,8 +121,6 @@ class GelbooruPost extends Equatable
   int? get downvotes => null;
 
   @override
-  bool? get hasSound => tags.contains('sound') ? true : null;
-  @override
   String get videoUrl => originalImageUrl;
   @override
   String get videoThumbnailUrl => thumbnailImageUrl;

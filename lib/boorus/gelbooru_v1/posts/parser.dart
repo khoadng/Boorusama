@@ -29,7 +29,6 @@ GelbooruV1Post postDtoToPost(
     duration: 0,
     fileSize: 0,
     format: extension(post.fileUrl ?? ''),
-    hasSound: null,
     height: 0,
     md5: post.md5 ?? '',
     videoThumbnailUrl: post.previewUrl ?? '',

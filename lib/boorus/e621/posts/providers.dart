@@ -60,3 +60,12 @@ final e621PostRepoProvider =
         getSettings: () async => ref.read(imageListingSettingsProvider),
       );
     });
+
+final e621VideoInfoExtractorProvider = Provider<VideoInfoExtractor>(
+  (ref) => DefaultVideoInfoExtractor(
+    hasSound: (post) => switch (post) {
+      final E621Post p => p.metaTags.contains('sound'),
+      _ => null,
+    },
+  ),
+);

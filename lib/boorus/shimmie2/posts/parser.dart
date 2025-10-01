@@ -27,7 +27,6 @@ Shimmie2Post postDtoToPost(
     duration: 0,
     fileSize: 0,
     format: extension(e.fileName ?? ''),
-    hasSound: null,
     height: e.height?.toDouble() ?? 0,
     md5: e.md5 ?? '',
     videoThumbnailUrl: e.previewUrl ?? '',

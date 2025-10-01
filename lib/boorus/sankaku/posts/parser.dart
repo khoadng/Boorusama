@@ -128,7 +128,6 @@ SankakuPost postDtoToPost(
           fileUrl: e.fileUrl,
         ) ??
         '',
-    hasSound: null,
     height: e.height?.toDouble() ?? 0,
     md5: e.md5 ?? '',
     videoThumbnailUrl: e.previewUrl ?? '',

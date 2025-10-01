@@ -175,6 +175,11 @@ class E621Repository extends BooruRepositoryDefault {
   BooruLoginDetails loginDetails(BooruConfigAuth config) {
     return ref.watch(e621LoginDetailsProvider(config));
   }
+
+  @override
+  VideoInfoExtractor videoInfoExtractor(BooruConfigAuth config) {
+    return ref.watch(e621VideoInfoExtractorProvider);
+  }
 }
 
 class E621TagColorGenerator implements TagColorGenerator {

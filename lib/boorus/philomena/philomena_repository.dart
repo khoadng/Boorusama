@@ -84,6 +84,11 @@ class PhilomenaRepository extends BooruRepositoryDefault {
   MediaUrlResolver mediaUrlResolver(BooruConfigAuth config) {
     return ref.watch(philomenaMediaUrlResolverProvider(config));
   }
+
+  @override
+  VideoInfoExtractor videoInfoExtractor(BooruConfigAuth config) {
+    return ref.watch(philomenaVideoInfoExtractorProvider(config));
+  }
 }
 
 class PhilomenaTagColorGenerator implements TagColorGenerator {

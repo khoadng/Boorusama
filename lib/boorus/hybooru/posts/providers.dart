@@ -9,6 +9,7 @@ import '../../../core/search/queries/providers.dart';
 import '../../../core/settings/providers.dart';
 import '../client_provider.dart';
 import 'parser.dart';
+import 'types.dart';
 
 final hybooruPostRepoProvider =
     Provider.family<PostRepository, BooruConfigSearch>(
@@ -53,4 +54,14 @@ final hybooruPostRepoProvider =
           getSettings: () async => ref.read(imageListingSettingsProvider),
         );
       },
+    );
+
+final hybooruVideoInfoExtractorProvider =
+    Provider.family<VideoInfoExtractor, BooruConfigAuth>(
+      (ref, config) => DefaultVideoInfoExtractor(
+        hasSound: (post) => switch (post) {
+          final HybooruPost p => p.hasSound,
+          _ => null,
+        },
+      ),
     );
