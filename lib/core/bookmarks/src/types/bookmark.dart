@@ -3,7 +3,6 @@ import 'package:equatable/equatable.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../../foundation/path.dart';
 import '../../../posts/post/post.dart';
 
 class Bookmark extends Equatable with ImageInfoMixin, TagListCheckMixin {
@@ -110,15 +109,6 @@ class Bookmark extends Equatable with ImageInfoMixin, TagListCheckMixin {
   String get originalUrl => _resolver.resolveImageUrl(_originalUrl);
   String get sampleUrl => _resolver.resolvePreviewUrl(_sampleUrl);
   String get thumbnailUrl => _resolver.resolveThumbnailUrl(_thumbnailUrl);
-
-  bool get isVideo {
-    final ext = extension(originalUrl);
-    final effectiveFormat = ext.isEmpty ? format : ext;
-
-    if (effectiveFormat == null) return false;
-
-    return isFormatVideo(effectiveFormat);
-  }
 
   BookmarkUniqueId get uniqueId => BookmarkUniqueId(
     booruId: booruId,
