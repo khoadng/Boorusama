@@ -49,18 +49,14 @@ class _DanbooruTagEditPageState extends ConsumerState<DanbooruTagEditPage> {
         ? tags[widget.post.id]!.allTags
         : widget.post.tags.toSet();
 
-    return ProviderScope(
-      overrides: [
-        tagEditProvider.overrideWith(
-          () => TagEditNotifier(
-            initialTags: effectiveTags,
-            postId: widget.post.id,
-            imageAspectRatio: widget.post.aspectRatio ?? 1,
-            imageUrl: widget.post.url720x720,
-            initialRating: initialRating,
-          ),
-        ),
-      ],
+    return TagEditParamsProvider(
+      params: TagEditParams(
+        initialTags: effectiveTags,
+        postId: widget.post.id,
+        imageAspectRatio: widget.post.aspectRatio ?? 1,
+        imageUrl: widget.post.url720x720,
+        initialRating: initialRating,
+      ),
       child: TagEditPageScaffold(
         scrollController: scrollController,
         content: TagEditContent(

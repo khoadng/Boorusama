@@ -62,15 +62,15 @@ class _TagEditPageScaffoldState extends ConsumerState<TagEditPageScaffold> {
       ..dispose();
   }
 
-  void _pop() {
+  void _pop(TagEditParams params) {
     if (!mounted) return;
 
     final expandMode = ref.read(
-      tagEditProvider.select((value) => value.expandMode),
+      tagEditProvider(params).select((value) => value.expandMode),
     );
 
     if (expandMode != null) {
-      ref.read(tagEditProvider.notifier).setExpandMode(null);
+      ref.read(tagEditProvider(params).notifier).setExpandMode(null);
       viewController.setDefaultSplit();
     } else {
       Navigator.of(context).pop();
@@ -79,13 +79,14 @@ class _TagEditPageScaffoldState extends ConsumerState<TagEditPageScaffold> {
 
   @override
   Widget build(BuildContext context) {
+    final params = TagEditParamsProvider.of(context);
     final expandMode = ref.watch(
-      tagEditProvider.select((value) => value.expandMode),
+      tagEditProvider(params).select((value) => value.expandMode),
     );
 
     ref
       ..listen(
-        tagEditProvider.select((value) => value.tags),
+        tagEditProvider(params).select((value) => value.tags),
         (prev, current) {
           if ((prev?.length ?? 0) < (current.length)) {
             // Hacky way to scroll to the end of the list, somehow if it is currently on top, it won't scroll to last item
@@ -116,7 +117,7 @@ class _TagEditPageScaffoldState extends ConsumerState<TagEditPageScaffold> {
         },
       )
       ..listen(
-        tagEditProvider.select((value) => value.expandMode),
+        tagEditProvider(params).select((value) => value.expandMode),
         (prev, current) {
           if (prev != current) {
             viewController.setMaxSplit(context);
@@ -129,14 +130,14 @@ class _TagEditPageScaffoldState extends ConsumerState<TagEditPageScaffold> {
       onPopInvokedWithResult: (didPop, _) {
         if (didPop) return;
 
-        _pop();
+        _pop(params);
       },
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         extendBodyBehindAppBar: kPreferredLayout.isMobile && expandMode != null,
         appBar: AppBar(
           leading: IconButton(
-            onPressed: _pop,
+            onPressed: () => _pop(params),
             icon: const Icon(Symbols.arrow_back),
           ),
           actions: [
@@ -254,12 +255,12 @@ class _Image extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final notifer = ref.watch(tagEditProvider.notifier);
+    final params = TagEditParamsProvider.of(context);
 
     return InteractiveViewerExtended(
       child: BooruImage(
         config: ref.watchConfigAuth,
-        imageUrl: notifer.imageUrl,
+        imageUrl: params.imageUrl,
         fit: BoxFit.contain,
         borderRadius: BorderRadius.zero,
       ),
