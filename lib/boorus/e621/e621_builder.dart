@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
+import '../../core/boorus/defaults/widgets.dart';
 import '../../core/boorus/engine/engine.dart';
 import '../../core/configs/config.dart';
 import '../../core/configs/config/providers.dart';
@@ -27,17 +28,7 @@ import 'posts/providers.dart';
 import 'posts/types.dart';
 import 'posts/widgets.dart';
 
-class E621Builder
-    with
-        CharacterNotSupportedMixin,
-        DefaultUnknownBooruWidgetsBuilderMixin,
-        DefaultViewTagListBuilderMixin,
-        DefaultTagSuggestionsItemBuilderMixin,
-        DefaultMultiSelectionActionsBuilderMixin,
-        DefaultHomeMixin,
-        DefaultQuickFavoriteButtonBuilderMixin,
-        DefaultPostStatisticsPageBuilderMixin
-    implements BooruBuilder {
+class E621Builder extends BaseBooruBuilder {
   E621Builder();
 
   @override

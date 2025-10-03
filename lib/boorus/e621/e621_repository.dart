@@ -6,6 +6,7 @@ import 'package:booru_clients/e621.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import '../../core/boorus/defaults/types.dart';
 import '../../core/boorus/engine/engine.dart';
 import '../../core/comments/types.dart';
 import '../../core/configs/config.dart';

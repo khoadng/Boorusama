@@ -3,7 +3,7 @@ import 'package:booru_clients/anime_pictures.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../core/boorus/engine/engine.dart';
+import '../../core/boorus/defaults/types.dart';
 import '../../core/configs/config/types.dart';
 import '../../core/configs/create/create.dart';
 import '../../core/downloads/filename/types.dart';

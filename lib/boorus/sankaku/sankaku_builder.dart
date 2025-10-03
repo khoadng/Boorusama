@@ -1,4 +1,5 @@
 // Project imports:
+import '../../core/boorus/defaults/widgets.dart';
 import '../../core/boorus/engine/engine.dart';
 import '../../core/configs/config.dart';
 import '../../core/configs/create/widgets.dart';
@@ -13,19 +14,7 @@ import 'favorites/widgets.dart';
 import 'home/widgets.dart';
 import 'posts/types.dart';
 
-class SankakuBuilder
-    with
-        CommentNotSupportedMixin,
-        CharacterNotSupportedMixin,
-        DefaultUnknownBooruWidgetsBuilderMixin,
-        DefaultViewTagListBuilderMixin,
-        DefaultTagSuggestionsItemBuilderMixin,
-        DefaultMultiSelectionActionsBuilderMixin,
-        DefaultQuickFavoriteButtonBuilderMixin,
-        DefaultHomeMixin,
-        DefaultPostStatisticsPageBuilderMixin,
-        DefaultBooruUIMixin
-    implements BooruBuilder {
+class SankakuBuilder extends BaseBooruBuilder {
   SankakuBuilder();
 
   @override

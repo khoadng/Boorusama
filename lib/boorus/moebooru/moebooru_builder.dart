@@ -2,6 +2,7 @@
 import 'package:i18n/i18n.dart';
 
 // Project imports:
+import '../../core/boorus/defaults/widgets.dart';
 import '../../core/boorus/engine/engine.dart';
 import '../../core/configs/config.dart';
 import '../../core/configs/create/widgets.dart';
@@ -19,18 +20,7 @@ import 'popular/widgets.dart';
 import 'post_details/widgets.dart';
 import 'posts/types.dart';
 
-class MoebooruBuilder
-    with
-        FavoriteNotSupportedMixin,
-        CommentNotSupportedMixin,
-        DefaultUnknownBooruWidgetsBuilderMixin,
-        DefaultViewTagListBuilderMixin,
-        DefaultTagSuggestionsItemBuilderMixin,
-        DefaultMultiSelectionActionsBuilderMixin,
-        DefaultHomeMixin,
-        DefaultBooruUIMixin,
-        DefaultPostStatisticsPageBuilderMixin
-    implements BooruBuilder {
+class MoebooruBuilder extends BaseBooruBuilder {
   MoebooruBuilder();
 
   @override

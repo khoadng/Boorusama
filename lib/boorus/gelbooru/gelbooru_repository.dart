@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
-import '../../core/boorus/engine/engine.dart';
+import '../../core/boorus/defaults/types.dart';
 import '../../core/comments/types.dart';
 import '../../core/configs/config.dart';
 import '../../core/configs/create/create.dart';

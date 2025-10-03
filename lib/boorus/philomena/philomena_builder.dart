@@ -1,4 +1,5 @@
 // Project imports:
+import '../../core/boorus/defaults/widgets.dart';
 import '../../core/boorus/engine/engine.dart';
 import '../../core/configs/auth/widgets.dart';
 import '../../core/configs/config.dart';
@@ -11,19 +12,7 @@ import 'configs/widgets.dart';
 import 'posts/types.dart';
 import 'posts/widgets.dart';
 
-class PhilomenaBuilder
-    with
-        FavoriteNotSupportedMixin,
-        CommentNotSupportedMixin,
-        ArtistNotSupportedMixin,
-        CharacterNotSupportedMixin,
-        DefaultViewTagListBuilderMixin,
-        DefaultTagSuggestionsItemBuilderMixin,
-        DefaultMultiSelectionActionsBuilderMixin,
-        DefaultHomeMixin,
-        DefaultPostStatisticsPageBuilderMixin,
-        DefaultBooruUIMixin
-    implements BooruBuilder {
+class PhilomenaBuilder extends BaseBooruBuilder {
   PhilomenaBuilder();
 
   @override

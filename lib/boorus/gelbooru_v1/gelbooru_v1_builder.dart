@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import '../../core/boorus/defaults/widgets.dart';
 import '../../core/boorus/engine/engine.dart';
 import '../../core/configs/config.dart';
 import '../../core/configs/config/providers.dart';
@@ -17,19 +18,7 @@ import '../../core/widgets/widgets.dart';
 import '../../foundation/html.dart';
 import 'configs/widgets.dart';
 
-class GelbooruV1Builder
-    with
-        FavoriteNotSupportedMixin,
-        ArtistNotSupportedMixin,
-        CharacterNotSupportedMixin,
-        CommentNotSupportedMixin,
-        DefaultViewTagListBuilderMixin,
-        DefaultTagSuggestionsItemBuilderMixin,
-        DefaultMultiSelectionActionsBuilderMixin,
-        DefaultHomeMixin,
-        DefaultPostStatisticsPageBuilderMixin,
-        DefaultBooruUIMixin
-    implements BooruBuilder {
+class GelbooruV1Builder extends BaseBooruBuilder {
   GelbooruV1Builder();
 
   @override

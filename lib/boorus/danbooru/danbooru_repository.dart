@@ -13,6 +13,7 @@ import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
 import '../../core/blacklists/blacklist.dart';
+import '../../core/boorus/defaults/types.dart';
 import '../../core/boorus/engine/engine.dart';
 import '../../core/comments/types.dart';
 import '../../core/configs/config.dart';

@@ -1,4 +1,5 @@
 // Project imports:
+import '../../core/boorus/defaults/widgets.dart';
 import '../../core/boorus/engine/engine.dart';
 import '../../core/configs/config/types.dart';
 import '../../core/configs/create/widgets.dart';
@@ -13,19 +14,7 @@ import 'posts/types.dart';
 import 'posts/widgets.dart';
 import 'users/widgets.dart';
 
-class AnimePicturesBuilder
-    with
-        FavoriteNotSupportedMixin,
-        CommentNotSupportedMixin,
-        ArtistNotSupportedMixin,
-        CharacterNotSupportedMixin,
-        DefaultViewTagListBuilderMixin,
-        DefaultTagSuggestionsItemBuilderMixin,
-        DefaultMultiSelectionActionsBuilderMixin,
-        DefaultHomeMixin,
-        DefaultPostStatisticsPageBuilderMixin,
-        DefaultBooruUIMixin
-    implements BooruBuilder {
+class AnimePicturesBuilder extends BaseBooruBuilder {
   AnimePicturesBuilder();
 
   @override
@@ -102,8 +91,4 @@ class AnimePicturesBuilder
           const AnimePicturesRelatedPostsSection(),
     },
   );
-
-  @override
-  CreateUnknownBooruWidgetsBuilder get unknownBooruWidgetsBuilder =>
-      (context) => const AnonUnknownBooruWidgets();
 }

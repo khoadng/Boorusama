@@ -46,8 +46,7 @@ import '../../../tags/show/routes.dart';
 import '../../../tags/tag/colors.dart';
 import '../../../tags/tag/providers.dart';
 import '../../../tags/tag/tag.dart';
-import 'booru_builder_types.dart';
-import 'booru_repository.dart';
+import '../../engine/engine.dart';
 
 abstract class BooruRepositoryDefault implements BooruRepository {
   const BooruRepositoryDefault();

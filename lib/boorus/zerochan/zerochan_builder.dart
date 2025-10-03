@@ -1,26 +1,14 @@
 // Project imports:
+import '../../core/boorus/defaults/widgets.dart';
 import '../../core/boorus/engine/engine.dart';
 import '../../core/configs/config.dart';
 import '../../core/configs/create/widgets.dart';
-import '../../core/configs/manage/widgets.dart';
 import '../../core/posts/details/widgets.dart';
 import '../../core/posts/details_manager/types.dart';
 import '../../core/posts/details_parts/widgets.dart';
 import 'posts/types.dart';
 
-class ZerochanBuilder
-    with
-        FavoriteNotSupportedMixin,
-        ArtistNotSupportedMixin,
-        CharacterNotSupportedMixin,
-        CommentNotSupportedMixin,
-        DefaultMultiSelectionActionsBuilderMixin,
-        DefaultHomeMixin,
-        DefaultViewTagListBuilderMixin,
-        DefaultTagSuggestionsItemBuilderMixin,
-        DefaultPostStatisticsPageBuilderMixin,
-        DefaultBooruUIMixin
-    implements BooruBuilder {
+class ZerochanBuilder extends BaseBooruBuilder {
   ZerochanBuilder();
 
   @override
@@ -38,21 +26,6 @@ class ZerochanBuilder
         ),
         child: CreateAnonConfigPage(
           backgroundColor: backgroundColor,
-        ),
-      );
-
-  @override
-  UpdateConfigPageBuilder get updateConfigPageBuilder =>
-      (
-        context,
-        id, {
-        backgroundColor,
-        initialTab,
-      }) => UpdateBooruConfigScope(
-        id: id,
-        child: CreateAnonConfigPage(
-          backgroundColor: backgroundColor,
-          initialTab: initialTab,
         ),
       );
 
@@ -87,8 +60,4 @@ class ZerochanBuilder
           const DefaultInheritedFileDetailsSection<ZerochanPost>(),
     },
   );
-
-  @override
-  CreateUnknownBooruWidgetsBuilder get unknownBooruWidgetsBuilder =>
-      (context) => const AnonUnknownBooruWidgets();
 }

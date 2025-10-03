@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../core/configs/create/widgets.dart';
+import '../../core/boorus/defaults/widgets.dart';
 import '../../core/boorus/engine/engine.dart';
 import '../../core/configs/auth/widgets.dart';
 import '../../core/configs/config.dart';
@@ -22,18 +23,7 @@ import 'posts/providers.dart';
 import 'posts/types.dart';
 import 'posts/widgets.dart';
 
-class HydrusBuilder
-    with
-        ArtistNotSupportedMixin,
-        CharacterNotSupportedMixin,
-        CommentNotSupportedMixin,
-        DefaultViewTagListBuilderMixin,
-        DefaultTagSuggestionsItemBuilderMixin,
-        DefaultMultiSelectionActionsBuilderMixin,
-        DefaultHomeMixin,
-        DefaultPostStatisticsPageBuilderMixin,
-        DefaultBooruUIMixin
-    implements BooruBuilder {
+class HydrusBuilder extends BaseBooruBuilder {
   HydrusBuilder();
 
   @override
@@ -99,7 +89,7 @@ class HydrusBuilder
       );
 
   @override
-  QuickFavoriteButtonBuilder? get quickFavoriteButtonBuilder =>
+  QuickFavoriteButtonBuilder get quickFavoriteButtonBuilder =>
       (context, post) => HydrusQuickFavoriteButton(
         post: post,
       );

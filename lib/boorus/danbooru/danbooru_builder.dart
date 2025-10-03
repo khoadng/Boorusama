@@ -8,6 +8,7 @@ import 'package:foundation/foundation.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
+import '../../core/boorus/defaults/widgets.dart';
 import '../../core/boorus/engine/engine.dart';
 import '../../core/configs/config.dart';
 import '../../core/configs/create/widgets.dart';
@@ -42,9 +43,7 @@ import 'saved_searches/feed/widgets.dart';
 import 'tags/details/widgets.dart';
 import 'tags/tag/widgets.dart';
 
-class DanbooruBuilder
-    with DefaultUnknownBooruWidgetsBuilderMixin
-    implements BooruBuilder {
+class DanbooruBuilder extends BaseBooruBuilder {
   DanbooruBuilder();
 
   @override
@@ -170,7 +169,7 @@ class DanbooruBuilder
       };
 
   @override
-  final Map<CustomHomeViewKey, CustomHomeDataBuilder> customHomeViewBuilders = {
+  Map<CustomHomeViewKey, CustomHomeDataBuilder> get customHomeViewBuilders => {
     ...kDefaultAltHomeView,
     const CustomHomeViewKey('explore'): CustomHomeDataBuilder(
       displayName: (context) => context.t.explore.explore,

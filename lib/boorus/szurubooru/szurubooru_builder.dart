@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import '../../core/boorus/defaults/widgets.dart';
 import '../../core/boorus/engine/engine.dart';
 import '../../core/comments/widgets.dart';
 import '../../core/configs/config.dart';
@@ -26,19 +27,7 @@ import 'posts/providers.dart';
 import 'posts/types.dart';
 import 'posts/widgets.dart';
 
-class SzurubooruBuilder
-    with
-        ArtistNotSupportedMixin,
-        CharacterNotSupportedMixin,
-        DefaultUnknownBooruWidgetsBuilderMixin,
-        DefaultViewTagListBuilderMixin,
-        DefaultTagSuggestionsItemBuilderMixin,
-        DefaultMultiSelectionActionsBuilderMixin,
-        DefaultQuickFavoriteButtonBuilderMixin,
-        DefaultHomeMixin,
-        DefaultPostStatisticsPageBuilderMixin,
-        DefaultBooruUIMixin
-    implements BooruBuilder {
+class SzurubooruBuilder extends BaseBooruBuilder {
   SzurubooruBuilder();
 
   @override
