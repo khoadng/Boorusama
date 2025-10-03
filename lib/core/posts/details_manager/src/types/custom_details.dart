@@ -2,7 +2,7 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'details_part.dart';
+import '../../../details_parts/types.dart';
 
 const _kDefaultView = 'default';
 

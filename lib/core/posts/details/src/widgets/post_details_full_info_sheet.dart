@@ -6,10 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/widgets.dart';
 
 // Project imports:
-import '../../../../boorus/engine/engine.dart';
-import '../../../details_manager/types.dart';
 import '../../../details_manager/widgets.dart';
 import '../../../details_pageview/widgets.dart';
+import '../../../details_parts/types.dart';
 
 class PostDetailsFullInfoSheet extends ConsumerWidget {
   const PostDetailsFullInfoSheet({

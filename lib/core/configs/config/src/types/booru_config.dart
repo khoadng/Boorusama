@@ -11,6 +11,7 @@ import 'package:foundation/foundation.dart';
 import '../../../../boorus/booru/booru.dart';
 import '../../../../home/custom_home.dart';
 import '../../../../posts/details_manager/types.dart';
+import '../../../../posts/details_parts/types.dart';
 import '../../../../posts/rating/rating.dart';
 import '../../../../proxy/proxy.dart';
 import '../../../../settings/settings.dart';

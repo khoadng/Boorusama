@@ -6,13 +6,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
-import '../../../../boorus/engine/engine.dart';
 import '../../../../configs/config.dart';
 import '../../../../widgets/widgets.dart';
+import '../../../details_parts/types.dart';
 import '../providers/details_layout_provider.dart';
 import '../routes/route_utils.dart';
 import '../types/custom_details.dart';
-import '../types/details_part.dart';
 
 class DetailsConfigPage extends ConsumerWidget {
   const DetailsConfigPage({

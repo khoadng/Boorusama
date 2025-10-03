@@ -12,6 +12,7 @@ import '../../core/configs/config/providers.dart';
 import '../../core/configs/create/widgets.dart';
 import '../../core/configs/manage/widgets.dart';
 import '../../core/downloads/filename/types.dart';
+import '../../core/posts/details_parts/types.dart';
 import '../../core/posts/post/providers.dart';
 import '../../core/search/search/widgets.dart';
 import '../../core/widgets/widgets.dart';

@@ -133,3 +133,36 @@ class SankakuPost extends Equatable
   @override
   final PostMetadata? metadata;
 }
+
+class SankakuPostLinkGenerator implements PostLinkGenerator<SankakuPost> {
+  SankakuPostLinkGenerator({
+    required this.baseUrl,
+  });
+
+  final String baseUrl;
+
+  @override
+  String getLink(Post post) => switch (post) {
+    final SankakuPost post => _getLink(post),
+    _ => '',
+  };
+
+  String _getLink(SankakuPost post) {
+    final id = _getId(post);
+
+    if (id == null) return '';
+
+    final url = baseUrl.endsWith('/')
+        ? baseUrl.substring(0, baseUrl.length - 1)
+        : baseUrl;
+
+    return '$url/post/$id';
+  }
+
+  String? _getId(SankakuPost post) {
+    if (post.sankakuId.isNotEmpty) return post.sankakuId;
+    if (post.id != 0) return post.id.toString();
+
+    return null;
+  }
+}

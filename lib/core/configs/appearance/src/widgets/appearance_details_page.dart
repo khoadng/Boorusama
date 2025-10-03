@@ -5,8 +5,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../boorus/engine/engine.dart';
 import '../../../../posts/details_manager/widgets.dart';
+import '../../../../posts/details_parts/types.dart';
 import '../../../config/types.dart';
 import '../../../create/providers.dart';
 

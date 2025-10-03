@@ -17,9 +17,8 @@ import '../../core/tags/tag/tag.dart';
 import 'autocompletes/providers.dart';
 import 'comments/providers.dart';
 import 'configs/providers.dart';
+import 'downloads/providers.dart';
 import 'posts/providers.dart';
-import 'posts/types.dart';
-import 'tag_summary/providers.dart';
 import 'tags/providers.dart';
 
 class MoebooruRepository extends BooruRepositoryDefault {
@@ -67,29 +66,7 @@ class MoebooruRepository extends BooruRepositoryDefault {
 
   @override
   DownloadFilenameGenerator downloadFilenameBuilder(BooruConfigAuth config) {
-    return DownloadFileNameBuilder<MoebooruPost>(
-      defaultFileNameFormat: kDefaultCustomDownloadFileNameFormat,
-      defaultBulkDownloadFileNameFormat: kDefaultCustomDownloadFileNameFormat,
-      sampleData: kDanbooruPostSamples,
-      preload: (posts, config, cancelToken) async {
-        await ref
-            .read(moebooruTagSummaryRepoProvider(config))
-            .getTagSummaries();
-      },
-      tokenHandlers: [
-        WidthTokenHandler(),
-        HeightTokenHandler(),
-        AspectRatioTokenHandler(),
-        MPixelsTokenHandler(),
-      ],
-      asyncTokenHandlers: [
-        AsyncTokenHandler(
-          ClassicTagsTokenResolver(
-            tagExtractor: tagExtractor(config),
-          ),
-        ),
-      ],
-    );
+    return ref.read(moebooruDownloadFilenameGeneratorProvider(config));
   }
 
   @override

@@ -5,7 +5,7 @@ import '../../core/configs/config/types.dart';
 import '../../core/configs/create/widgets.dart';
 import '../../core/configs/manage/widgets.dart';
 import '../../core/posts/details/widgets.dart';
-import '../../core/posts/details_manager/types.dart';
+import '../../core/posts/details_parts/types.dart';
 import '../../core/posts/details_parts/widgets.dart';
 import 'configs/widgets.dart';
 import 'favorites/widgets.dart';

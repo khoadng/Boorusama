@@ -26,6 +26,7 @@ import '../../../../videos/lock/widgets.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../details_manager/types.dart';
 import '../../../details_pageview/widgets.dart';
+import '../../../details_parts/types.dart';
 import '../../../post/post.dart';
 import '../../../post/routes.dart';
 import '../../details.dart';

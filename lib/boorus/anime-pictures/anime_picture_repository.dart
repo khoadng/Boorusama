@@ -13,8 +13,9 @@ import '../../core/posts/post/post.dart';
 import '../../core/posts/post/providers.dart';
 import '../../core/tags/autocompletes/types.dart';
 import '../../core/tags/tag/tag.dart';
-import '../../foundation/caching.dart';
 import 'client_provider.dart';
+import 'downloads/file_url_extractor.dart';
+import 'downloads/providers.dart';
 import 'posts/providers.dart';
 import 'tags/providers.dart';
 
@@ -48,26 +49,7 @@ class AnimePicturesRepository extends BooruRepositoryDefault {
 
   @override
   DownloadFilenameGenerator downloadFilenameBuilder(BooruConfigAuth config) {
-    return DownloadFileNameBuilder<Post>(
-      defaultFileNameFormat: kDefaultCustomDownloadFileNameFormat,
-      defaultBulkDownloadFileNameFormat: kDefaultCustomDownloadFileNameFormat,
-      sampleData: kDanbooruPostSamples,
-      hasRating: false,
-      extensionHandler: (post, config) =>
-          post.format.startsWith('.') ? post.format.substring(1) : post.format,
-      tokenHandlers: [
-        WidthTokenHandler(),
-        HeightTokenHandler(),
-        AspectRatioTokenHandler(),
-      ],
-      asyncTokenHandlers: [
-        AsyncTokenHandler(
-          ClassicTagsTokenResolver(
-            tagExtractor: tagExtractor(config),
-          ),
-        ),
-      ],
-    );
+    return ref.read(animePicturesDownloadFilenameGeneratorProvider(config));
   }
 
   @override
@@ -89,40 +71,4 @@ class AnimePicturesRepository extends BooruRepositoryDefault {
   TagExtractor tagExtractor(BooruConfigAuth config) {
     return ref.watch(animePicturesTagExtractorProvider(config));
   }
-}
-
-class AnimePicturesDownloadFileUrlExtractor
-    with SimpleCacheMixin<DownloadUrlData>
-    implements DownloadFileUrlExtractor {
-  AnimePicturesDownloadFileUrlExtractor({
-    required this.client,
-  });
-
-  final AnimePicturesClient client;
-
-  @override
-  Future<DownloadUrlData?> getDownloadFileUrl({
-    required Post post,
-    required String quality,
-  }) => tryGet(
-    post.id.toString(),
-    orElse: () async {
-      final data = await client.getDownloadUrl(post.id);
-
-      if (data == null) {
-        return null;
-      }
-
-      return DownloadUrlData(
-        url: data.url,
-        cookie: data.cookie,
-      );
-    },
-  );
-
-  @override
-  final Cache<DownloadUrlData> cache = Cache(
-    maxCapacity: 10,
-    staleDuration: const Duration(minutes: 5),
-  );
 }

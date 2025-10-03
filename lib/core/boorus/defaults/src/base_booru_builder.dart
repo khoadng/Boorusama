@@ -8,7 +8,7 @@ import '../../../home/home_page_scaffold.dart';
 import '../../../home/mobile_home_page_scaffold.dart';
 import '../../../home/user_custom_home_builder.dart';
 import '../../../posts/details/widgets.dart';
-import '../../../posts/details_manager/types.dart';
+import '../../../posts/details_parts/types.dart';
 import '../../../posts/details_parts/widgets.dart';
 import '../../../posts/favorites/widgets.dart';
 import '../../../posts/listing/widgets.dart';

@@ -3,8 +3,8 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import '../../../details_parts/types.dart';
 import '../types/custom_details.dart';
-import '../types/details_part.dart';
 
 class DetailsLayoutNotifier
     extends

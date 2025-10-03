@@ -6,12 +6,12 @@ import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../boorus/engine/engine.dart';
 import '../../../../boorus/engine/providers.dart';
 import '../../../../configs/config/types.dart';
 import '../../../../theme/colors.dart';
 import '../../../../theme/providers.dart';
 import '../../../../theme/theme_configs.dart';
+import '../types/tag_color_options.dart';
 import '../types/tag_colors.dart';
 import '../types/tag_extractor.dart';
 import '../types/tag_repository.dart';

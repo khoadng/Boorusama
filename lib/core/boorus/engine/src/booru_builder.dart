@@ -1,5 +1,6 @@
 // Project imports:
 import '../../../home/custom_home.dart';
+import '../../../posts/details_parts/types.dart';
 import 'booru_builder_types.dart';
 
 abstract class BooruBuilder {
