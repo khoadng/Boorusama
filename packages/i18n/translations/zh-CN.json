@@ -14,7 +14,8 @@
       "cancel": "取消",
       "duplicate": "复制",
       "select": "选择",
-      "view": "显示"
+      "view": "显示",
+      "save": "保存"
     },
     "copied": "已复制",
     "app_restart_request": "该修改需要重启应用生效"
