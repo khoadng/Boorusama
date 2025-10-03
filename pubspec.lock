@@ -2272,8 +2272,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "8572dd54c437c919aedc8dca6c5bffd25fe74b3c"
-      resolved-ref: "8572dd54c437c919aedc8dca6c5bffd25fe74b3c"
+      ref: ffb49899077d68af449262784bc4e837aa767392
+      resolved-ref: ffb49899077d68af449262784bc4e837aa767392
       url: "https://github.com/khoadng/webview_cookie_manager"
     source: git
     version: "2.0.7"

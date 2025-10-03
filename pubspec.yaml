@@ -149,7 +149,7 @@ dependencies:
   webview_cookie_manager:
     git:
        url: https://github.com/khoadng/webview_cookie_manager
-       ref: 8572dd54c437c919aedc8dca6c5bffd25fe74b3c
+       ref: ffb49899077d68af449262784bc4e837aa767392
   webview_flutter: ^4.10.0
   webview_flutter_android: ^4.0.0
   webview_flutter_wkwebview: ^3.23.0
