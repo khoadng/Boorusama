@@ -10,9 +10,6 @@ import '../../../../../core/configs/ref.dart';
 import '../../../../../core/notes/notes.dart';
 import '../../../../../core/posts/details/details.dart';
 import '../../../../../core/posts/details/widgets.dart';
-import '../../../../../core/posts/details_parts/widgets.dart';
-import '../../../../../core/router.dart';
-import '../../../users/user/routes.dart';
 import '../../_shared/danbooru_creator_preloader.dart';
 import '../../_shared/post_creator_preloadable.dart';
 import '../../post/post.dart';
@@ -110,35 +107,5 @@ class _DanbooruPostDetailsPageState extends State<DanbooruPostDetailsPage> {
         },
       ),
     );
-  }
-}
-
-class DanbooruPostStatsTile extends ConsumerWidget {
-  const DanbooruPostStatsTile({
-    required this.post,
-    required this.commentCount,
-    super.key,
-  });
-
-  final DanbooruPost post;
-  final int? commentCount;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return SimplePostStatsTile(
-      score: post.score,
-      favCount: post.favCount,
-      totalComments: commentCount ?? 0,
-      votePercentText: _generatePercentText(post),
-      onScoreTap: () => goToPostVotesDetails(ref, post),
-      onFavCountTap: () => goToPostFavoritesDetails(ref, post),
-      onTotalCommentsTap: () => goToCommentPage(context, ref, post.id),
-    );
-  }
-
-  String _generatePercentText(DanbooruPost post) {
-    return post.totalVote > 0
-        ? '(${(post.upvotePercent * 100).toInt()}% upvoted)'
-        : '';
   }
 }

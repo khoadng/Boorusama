@@ -14,9 +14,9 @@ import '../../../../artists/commentaries/providers.dart';
 import '../../../../comments/comment/providers.dart';
 import '../../../pools/pool/widgets.dart';
 import '../../../post/post.dart';
-import '../danbooru_post_details_page.dart';
 import '../providers.dart';
 import 'danbooru_file_details.dart';
+import 'danbooru_post_stats_tile.dart';
 import 'danbooru_related_posts_section.dart';
 import 'danbooru_tags_tile.dart';
 

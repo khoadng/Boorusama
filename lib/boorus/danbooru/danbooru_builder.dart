@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:foundation/foundation.dart';
-import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../core/boorus/defaults/widgets.dart';
@@ -17,29 +16,22 @@ import '../../core/downloads/filename/types.dart';
 import '../../core/home/custom_home.dart';
 import '../../core/home/user_custom_home_builder.dart';
 import '../../core/posts/details/widgets.dart';
-import '../../core/posts/details_parts/types.dart';
-import '../../core/posts/details_parts/widgets.dart';
 import '../../core/posts/listing/providers.dart';
 import '../../core/posts/listing/widgets.dart';
 import '../../core/posts/statistics/stats.dart';
 import '../../core/posts/statistics/widgets.dart';
 import 'artists/artist/widgets.dart';
-import 'artists/search/widgets.dart';
 import 'autocompletes/widgets.dart';
 import 'comments/listing/widgets.dart';
 import 'configs/widgets.dart';
-import 'forums/topics/widgets.dart';
+import 'home/src/custom_home.dart';
 import 'home/widgets.dart';
 import 'posts/details/widgets.dart';
-import 'posts/explores/widgets.dart';
-import 'posts/favgroups/listing/widgets.dart';
 import 'posts/favorites/widgets.dart';
 import 'posts/listing/widgets.dart';
-import 'posts/pools/listing/widgets.dart';
 import 'posts/post/post.dart';
 import 'posts/search/widgets.dart';
 import 'posts/statistics/widgets.dart';
-import 'saved_searches/feed/widgets.dart';
 import 'tags/details/widgets.dart';
 import 'tags/tag/widgets.dart';
 
@@ -169,65 +161,11 @@ class DanbooruBuilder extends BaseBooruBuilder {
       };
 
   @override
-  Map<CustomHomeViewKey, CustomHomeDataBuilder> get customHomeViewBuilders => {
-    ...kDefaultAltHomeView,
-    const CustomHomeViewKey('explore'): CustomHomeDataBuilder(
-      displayName: (context) => context.t.explore.explore,
-      builder: (context, _) => const DanbooruExplorePage(),
-    ),
-    const CustomHomeViewKey('favorites'): CustomHomeDataBuilder(
-      displayName: (context) => context.t.profile.favorites,
-      builder: (context, _) => const DanbooruFavoritesPage(),
-    ),
-    const CustomHomeViewKey('artists'): CustomHomeDataBuilder(
-      displayName: (context) => context.t.artists.title,
-      builder: (context, _) => const DanbooruArtistSearchPage(),
-    ),
-    const CustomHomeViewKey('forum'): CustomHomeDataBuilder(
-      displayName: (context) => context.t.forum.forum,
-      builder: (context, _) => const DanbooruForumPage(),
-    ),
-    const CustomHomeViewKey('favgroup'): CustomHomeDataBuilder(
-      displayName: (context) => context.t.favorite_groups.favorite_groups,
-      builder: (context, _) => const FavoriteGroupsPage(),
-    ),
-    const CustomHomeViewKey('saved_searches'): CustomHomeDataBuilder(
-      displayName: (context) => context.t.saved_search.saved_search,
-      builder: (context, _) => const SavedSearchFeedPage(),
-    ),
-    const CustomHomeViewKey('pools'): CustomHomeDataBuilder(
-      displayName: (context) => context.t.pool.pools,
-      builder: (context, _) => const DanbooruPoolPage(),
-    ),
-  };
+  Map<CustomHomeViewKey, CustomHomeDataBuilder> get customHomeViewBuilders =>
+      danbooruCustomHome;
 
   @override
-  final postDetailsUIBuilder = PostDetailsUIBuilder(
-    previewAllowedParts: {
-      DetailsPart.tags,
-    },
-    preview: {
-      DetailsPart.info: (context) => const DanbooruInformationSection(),
-      DetailsPart.toolbar: (context) =>
-          const DanbooruInheritedPostActionToolbar(),
-    },
-    full: {
-      DetailsPart.info: (context) => const DanbooruInformationSection(),
-      DetailsPart.toolbar: (context) =>
-          const DanbooruInheritedPostActionToolbar(),
-      DetailsPart.artistInfo: (context) => const DanbooruArtistInfoSection(),
-      DetailsPart.stats: (context) => const DanbooruStatsSection(),
-      DetailsPart.tags: (context) => const DanbooruTagsSection(),
-      DetailsPart.fileDetails: (context) => const DanbooruFileDetailsSection(),
-      DetailsPart.artistPosts: (context) =>
-          const DefaultInheritedArtistPostsSection<DanbooruPost>(),
-      DetailsPart.pool: (context) => const DanbooruPoolTiles(),
-      DetailsPart.relatedPosts: (context) =>
-          const DanbooruRelatedPostsSection2(),
-      DetailsPart.characterList: (context) =>
-          const DanbooruCharacterListSection(),
-    },
-  );
+  final postDetailsUIBuilder = danbooruPostDetailsUiBuilder;
 
   @override
   TagSuggestionItemBuilder get tagSuggestionItemBuilder =>

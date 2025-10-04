@@ -1,15 +1,10 @@
-// Dart imports:
-import 'dart:async';
-
 // Flutter imports:
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
-import 'package:share_handler/share_handler.dart';
 
 // Project imports:
 import '../../../../core/configs/config/providers.dart';
@@ -18,13 +13,10 @@ import '../../../../core/home/home_page_scaffold.dart';
 import '../../../../core/home/side_menu_tile.dart';
 import '../../../../core/posts/favorites/routes.dart';
 import '../../../../core/theme.dart';
-import '../../../../foundation/platform.dart';
-import '../../../../foundation/url_launcher.dart';
 import '../../artists/search/routes.dart';
 import '../../artists/search/widgets.dart';
 import '../../blacklist/routes.dart';
 import '../../blacklist/widgets.dart';
-import '../../configs/providers.dart';
 import '../../forums/topics/routes.dart';
 import '../../forums/topics/widgets.dart';
 import '../../posts/explores/routes.dart';
@@ -34,95 +26,31 @@ import '../../posts/favgroups/listing/widgets.dart';
 import '../../posts/favorites/widgets.dart';
 import '../../posts/pools/listing/routes.dart';
 import '../../posts/pools/listing/widgets.dart';
+import '../../posts/uploads/widgets.dart';
 import '../../saved_searches/feed/routes.dart';
 import '../../saved_searches/feed/widgets.dart';
 import '../../users/details/routes.dart';
 import '../../users/details/widgets.dart';
 import '../../users/user/providers.dart';
 
-class DanbooruHomePage extends ConsumerStatefulWidget {
+class DanbooruHomePage extends ConsumerWidget {
   const DanbooruHomePage({
     super.key,
   });
 
   @override
-  ConsumerState<DanbooruHomePage> createState() => _DanbooruHomePageState();
-}
-
-class _DanbooruHomePageState extends ConsumerState<DanbooruHomePage> {
-  StreamSubscription? _sharedMediaSubscription;
-
-  @override
-  void initState() {
-    super.initState();
-    initPlatformState();
-  }
-
-  // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initPlatformState() async {
-    // Only support Android for now
-    if (!isAndroid()) return;
-
-    _sharedMediaSubscription = ShareHandler.instance.sharedMediaStream.listen(
-      _onSharedTextsReceived,
+  Widget build(BuildContext context, WidgetRef ref) {
+    return const UploadToDanbooru(
+      child: _DanbooruHomePageContent(),
     );
   }
+}
 
-  void _onSharedTextsReceived(SharedMedia media) {
-    final text = media.content;
-    final config = ref.readConfigAuth;
-    final loginDetails = ref.watch(danbooruLoginDetailsProvider(config));
-    final booruUrl = config.url;
-
-    if (loginDetails.hasStrictSFW) return;
-
-    final uri = text != null ? Uri.tryParse(text) : null;
-    final isHttp = uri?.scheme == 'http' || uri?.scheme == 'https';
-
-    if (uri != null && isHttp) {
-      Navigator.of(context).push(
-        CupertinoPageRoute(
-          settings: const RouteSettings(name: 'upload_to_booru_confirmation'),
-          builder: (context) {
-            return AlertDialog(
-              title: Text('Upload to Danbooru'.hc),
-              content: Text(
-                'Are you sure you want to upload to Danbooru?\n\n$text \n\nYou need to be logged in the browser to upload.'
-                    .hc,
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text(context.t.generic.action.cancel),
-                ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-
-                    final encodedUri = Uri.encodeFull(uri.toString());
-                    final url = '${booruUrl}uploads/new?url=$encodedUri';
-                    launchExternalUrlString(url);
-                  },
-                  child: Text(context.t.generic.action.ok),
-                ),
-              ],
-            );
-          },
-        ),
-      );
-    }
-  }
+class _DanbooruHomePageContent extends ConsumerWidget {
+  const _DanbooruHomePageContent();
 
   @override
-  void dispose() {
-    _sharedMediaSubscription?.cancel();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final configFilter = ref.watchConfigFilter;
     final config = configFilter.auth;
     final loginDetails = ref.watch(booruLoginDetailsProvider(config));
