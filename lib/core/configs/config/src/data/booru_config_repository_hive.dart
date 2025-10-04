@@ -30,6 +30,7 @@ class HiveBooruConfigRepository implements BooruConfigRepository {
       customBulkDownloadFileNameFormat:
           kBoorusamaBulkDownloadCustomFileNameFormat,
       imageDetaisQuality: null,
+      videoQuality: null,
     ),
   );
 

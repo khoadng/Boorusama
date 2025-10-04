@@ -8,6 +8,9 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../../../../../foundation/display.dart';
+import '../../../../boorus/engine/providers.dart';
+import '../../../../configs/config/providers.dart';
+import '../../../../posts/post/post.dart';
 import '../../../../settings/routes.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../lock/providers.dart';
@@ -16,11 +19,13 @@ class MoreOptionsControlButton extends StatelessWidget {
   const MoreOptionsControlButton({
     required this.speed,
     required this.onSpeedChanged,
+    required this.post,
     super.key,
   });
 
   final double speed;
   final void Function(double speed) onSpeedChanged;
+  final Post post;
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +38,7 @@ class MoreOptionsControlButton extends StatelessWidget {
           builder: (_) => BooruVideoOptionSheet(
             value: speed,
             onChanged: onSpeedChanged,
+            post: post,
           ),
         ),
         child: const Icon(
@@ -48,16 +54,19 @@ class BooruVideoOptionSheet extends ConsumerWidget {
   const BooruVideoOptionSheet({
     required this.value,
     required this.onChanged,
+    required this.post,
     super.key,
   });
 
   final double value;
   final void Function(double value) onChanged;
+  final Post post;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
     final screenLockNotifier = ref.watch(screenLockProvider.notifier);
+    final booruBuilder = ref.watch(booruBuilderProvider(ref.watchConfigAuth));
 
     return Material(
       color: kPreferredLayout.isDesktop
@@ -68,6 +77,8 @@ class BooruVideoOptionSheet extends ConsumerWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            if (booruBuilder?.videoQualitySelectionBuilder case final builder?)
+              ?builder(context, post),
             MobileConfigTile(
               value: _buildSpeedText(value, context),
               title: context.t.video_player.playback_speed,

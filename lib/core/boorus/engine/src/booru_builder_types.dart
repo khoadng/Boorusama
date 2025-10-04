@@ -152,3 +152,9 @@ typedef CreateUnknownBooruWidgetsBuilder =
     Widget Function(
       BuildContext context,
     );
+
+typedef VideoQualitySelectionBuilder =
+    Widget? Function(
+      BuildContext context,
+      Post post,
+    );

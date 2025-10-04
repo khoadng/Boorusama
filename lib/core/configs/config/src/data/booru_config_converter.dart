@@ -35,6 +35,7 @@ extension BooruConfigDataConverter on BooruConfigData? {
           booruConfigData.customBulkDownloadFileNameFormat,
       customDownloadLocation: booruConfigData.customDownloadLocation,
       imageDetaisQuality: booruConfigData.imageDetaisQuality,
+      videoQuality: booruConfigData.videoQuality,
       granularRatingFilters: parseGranularRatingFilters(
         booruConfigData.granularRatingFilterString,
       ),
@@ -87,6 +88,7 @@ extension BooruConfigConverter on BooruConfig {
       customBulkDownloadFileNameFormat: customBulkDownloadFileNameFormat,
       customDownloadLocation: customDownloadLocation,
       imageDetaisQuality: imageDetaisQuality,
+      videoQuality: videoQuality,
       granularRatingFilterString: granularRatingFilterToString(
         granularRatingFilters,
       ),

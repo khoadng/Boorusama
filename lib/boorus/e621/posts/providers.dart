@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../core/configs/config.dart';
+import '../../../core/posts/details/details.dart';
 import '../../../core/posts/favorites/providers.dart';
 import '../../../core/posts/post/post.dart';
 import '../../../core/posts/post/providers.dart';
@@ -60,3 +61,11 @@ final e621PostRepoProvider =
         getSettings: () async => ref.read(imageListingSettingsProvider),
       );
     });
+
+final e621MediaUrlResolverProvider = Provider<MediaUrlResolver>((ref) {
+  return E621MediaUrlResolver(
+    imageQuality: ref.watch(
+      settingsProvider.select((s) => s.listing.imageQuality),
+    ),
+  );
+});

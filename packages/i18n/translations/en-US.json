@@ -1169,6 +1169,13 @@
     "engine_not_supported": "This engine is not supported on the current platform.",
     "change_video_player_engine_suggest": "If this happens on a regular basis, consider using a different video player engine in the settings.",
     "change_video_player_engine_request": "Please change to a different video player engine in the settings.",
+    "video_quality": "Video quality",
+    "video_qualities": {
+      "auto": "Auto",
+      "sample": "Sample",
+      "original": "Original"
+    },
+    "current_video_quality_disclaimer": "This section only applies to the current video. For all videos, go to <a href=\"booru-profiles\">$video_profile_path</a>.",
     "speed": {
       "normal": "Normal"
     }

@@ -148,6 +148,10 @@ class EditBooruConfigNotifier
     String? imageDetailsQuality,
   ) => state = state.copyWith(imageDetaisQuality: () => imageDetailsQuality);
 
+  void updateVideoQuality(
+    String? videoQuality,
+  ) => state = state.copyWith(videoQuality: () => videoQuality);
+
   void updateDefaultPreviewImageButtonAction(
     String? defaultPreviewImageButtonAction,
   ) => state = state.copyWith(

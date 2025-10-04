@@ -84,6 +84,7 @@ class _DanbooruPostDetailsPageState extends State<DanbooruPostDetailsPage> {
                     transformController: _transformController,
                     isInitPageListenable: _isInitPage,
                     authConfig: auth,
+                    viewerConfig: viewer,
                     gestureConfig: gestures,
                     imageCacheManager: null,
                     detailsController: detailsController,

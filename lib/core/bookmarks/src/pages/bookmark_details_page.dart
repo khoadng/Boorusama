@@ -148,6 +148,7 @@ class _BookmarkDetailsPageState
           transformController: _transformController,
           isInitPageListenable: _isInitPage,
           authConfig: config?.auth ?? auth,
+          viewerConfig: config?.viewer ?? viewer,
           gestureConfig: gestures,
           imageCacheManager: imageCacheManager,
           detailsController: controller,
