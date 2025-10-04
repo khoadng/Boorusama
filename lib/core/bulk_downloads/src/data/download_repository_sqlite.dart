@@ -610,7 +610,7 @@ class DownloadRepositorySqlite
   Future<void> createRecord(DownloadRecord record) async {
     db.execute(
       '''
-      INSERT INTO download_records (
+      INSERT OR IGNORE INTO download_records (
         url, session_id, status, page, page_index, created_at,
         file_size, file_name, extension, error, download_id,
         headers, thumbnail_url, source_url
@@ -640,7 +640,7 @@ class DownloadRepositorySqlite
     if (records.isEmpty) return;
 
     final batch = db.prepare('''
-      INSERT INTO download_records (
+      INSERT OR IGNORE INTO download_records (
         url, session_id, status, page, page_index, created_at,
         file_size, file_name, extension, error, download_id,
         headers, thumbnail_url, source_url

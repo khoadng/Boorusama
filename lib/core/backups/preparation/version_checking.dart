@@ -45,12 +45,14 @@ class ImportPreparationBuilder<T> {
     required this.currentVersion,
     this.extraSteps = const [],
     this.validator,
+    this.dataTypeName,
   });
 
   final DataBackupConverter converter;
   final Version? currentVersion;
   final List<PreparationStep<T>> extraSteps;
   final bool Function(T data)? validator;
+  final String? dataTypeName;
 
   Future<ImportPreparation> prepare(
     String data,
@@ -68,7 +70,10 @@ class ImportPreparationBuilder<T> {
 
     final pipeline = PreparationPipeline<T>(
       steps: [
-        VersionCheckStep<T>(currentVersion: currentVersion),
+        VersionCheckStep<T>(
+          currentVersion: currentVersion,
+          dataTypeName: dataTypeName,
+        ),
         ValidationStep<T>(validator: validator),
         ...extraSteps,
       ],

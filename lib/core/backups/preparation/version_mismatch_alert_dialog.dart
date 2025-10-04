@@ -13,6 +13,7 @@ Future<bool?> showVersionMismatchAlertDialog({
   required BuildContext context,
   required Version importVersion,
   required Version currentVersion,
+  String? dataTypeName,
 }) {
   return showDialog<bool>(
     context: context,
@@ -20,6 +21,7 @@ Future<bool?> showVersionMismatchAlertDialog({
       return VersionMismatchAlertDialog(
         importVersion: importVersion,
         currentVersion: currentVersion,
+        dataTypeName: dataTypeName,
       );
     },
   );
@@ -29,11 +31,13 @@ class VersionMismatchAlertDialog extends ConsumerWidget {
   const VersionMismatchAlertDialog({
     required this.importVersion,
     required this.currentVersion,
+    this.dataTypeName,
     super.key,
   });
 
   final Version importVersion;
   final Version currentVersion;
+  final String? dataTypeName;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -49,7 +53,14 @@ class VersionMismatchAlertDialog extends ConsumerWidget {
           children: [
             const SizedBox(height: 20),
             Text(
-              context.t.settings.backup_and_restore.version_mismatch.title,
+              dataTypeName != null
+                  ? '${context.t.settings.backup_and_restore.version_mismatch.title}: $dataTypeName'
+                  : context
+                        .t
+                        .settings
+                        .backup_and_restore
+                        .version_mismatch
+                        .title,
               style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w700,
