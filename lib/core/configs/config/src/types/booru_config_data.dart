@@ -29,6 +29,7 @@ class BooruConfigData extends Equatable {
     required this.customBulkDownloadFileNameFormat,
     required this.customDownloadLocation,
     required this.imageDetaisQuality,
+    required this.videoQuality,
     required this.granularRatingFilterString,
     required this.postGestures,
     required this.defaultPreviewImageButtonAction,
@@ -51,6 +52,7 @@ class BooruConfigData extends Equatable {
     required String? customDownloadFileNameFormat,
     required String? customBulkDownloadFileNameFormat,
     required String? imageDetaisQuality,
+    required String? videoQuality,
   }) => BooruConfigData(
     booruId: booru.id,
     booruIdHint: booruHint.id,
@@ -66,6 +68,7 @@ class BooruConfigData extends Equatable {
     customBulkDownloadFileNameFormat: customBulkDownloadFileNameFormat,
     customDownloadLocation: null,
     imageDetaisQuality: imageDetaisQuality,
+    videoQuality: videoQuality,
     granularRatingFilterString: null,
     postGestures: null,
     defaultPreviewImageButtonAction: null,
@@ -98,6 +101,7 @@ class BooruConfigData extends Equatable {
             json['customBulkDownloadFileNameFormat'] as String?,
         customDownloadLocation: json['customDownloadLocation'] as String?,
         imageDetaisQuality: json['imageDetaisQuality'] as String?,
+        videoQuality: json['videoQuality'] as String?,
         granularRatingFilterString:
             json['granularRatingFilterString'] as String?,
         postGestures: json['postGestures'] as String?,
@@ -135,6 +139,7 @@ class BooruConfigData extends Equatable {
       'customBulkDownloadFileNameFormat': customBulkDownloadFileNameFormat,
       'customDownloadLocation': customDownloadLocation,
       'imageDetaisQuality': imageDetaisQuality,
+      'videoQuality': videoQuality,
       'granularRatingFilterString': granularRatingFilterString,
       'postGestures': postGestures,
       'defaultPreviewImageButtonAction': defaultPreviewImageButtonAction,
@@ -163,6 +168,7 @@ class BooruConfigData extends Equatable {
   final String? customBulkDownloadFileNameFormat;
   final String? customDownloadLocation;
   final String? imageDetaisQuality;
+  final String? videoQuality;
   final String? granularRatingFilterString;
   final String? postGestures;
   final String? defaultPreviewImageButtonAction;
@@ -191,6 +197,7 @@ class BooruConfigData extends Equatable {
     customBulkDownloadFileNameFormat,
     customDownloadLocation,
     imageDetaisQuality,
+    videoQuality,
     granularRatingFilterString,
     postGestures,
     defaultPreviewImageButtonAction,
@@ -294,6 +301,7 @@ extension BooruConfigDataCopyWith on BooruConfigData {
     String? Function()? customBulkDownloadFileNameFormat,
     String? Function()? customDownloadLocation,
     String? Function()? imageDetaisQuality,
+    String? Function()? videoQuality,
     Set<Rating>? Function()? granularRatingFilter,
     PostGestureConfig? Function()? postGestures,
     String? Function()? defaultPreviewImageButtonAction,
@@ -335,6 +343,7 @@ extension BooruConfigDataCopyWith on BooruConfigData {
       imageDetaisQuality: imageDetaisQuality != null
           ? imageDetaisQuality()
           : this.imageDetaisQuality,
+      videoQuality: videoQuality != null ? videoQuality() : this.videoQuality,
       granularRatingFilterString: granularRatingFilter != null
           ? granularRatingFilterToString(granularRatingFilter())
           : granularRatingFilterString,

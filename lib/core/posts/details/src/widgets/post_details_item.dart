@@ -30,6 +30,7 @@ class PostDetailsItem<T extends Post> extends ConsumerStatefulWidget {
     required this.imageCacheManager,
     required this.detailsController,
     required this.authConfig,
+    required this.viewerConfig,
     required this.gestureConfig,
     required this.imageUrlBuilder,
     super.key,
@@ -42,6 +43,7 @@ class PostDetailsItem<T extends Post> extends ConsumerStatefulWidget {
   final ImageCacheManager? imageCacheManager;
   final PostDetailsController<T> detailsController;
   final BooruConfigAuth authConfig;
+  final BooruConfigViewer viewerConfig;
   final PostGestureConfig? gestureConfig;
   final String Function(T post) imageUrlBuilder;
 
@@ -140,6 +142,7 @@ class _PostDetailsItemState<T extends Post>
                   return PostMedia<T>(
                     post: post,
                     config: widget.authConfig,
+                    viewer: widget.viewerConfig,
                     imageUrlBuilder: widget.imageUrlBuilder,
                     imageCacheManager: widget.imageCacheManager,
                     // This is used to make sure we have a thumbnail to show instead of a black placeholder

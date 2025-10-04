@@ -41,4 +41,10 @@ class DanbooruMediaUrlResolver implements MediaUrlResolver {
             },
           ),
   );
+
+  @override
+  String resolveVideoUrl(
+    Post post,
+    BooruConfigViewer config,
+  ) => post.videoUrl;
 }

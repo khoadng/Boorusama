@@ -38,7 +38,6 @@ class BooruVideo extends ConsumerStatefulWidget {
     this.userAgent,
     this.videoPlayerEngine,
     this.logger,
-    this.autoplay = false,
     this.cacheDelay,
     this.fileSize,
   });
@@ -59,7 +58,6 @@ class BooruVideo extends ConsumerStatefulWidget {
   final String? userAgent;
   final VideoPlayerEngine? videoPlayerEngine;
   final Logger? logger;
-  final bool autoplay;
   final CacheDelayCallback? cacheDelay;
 
   @override
@@ -94,10 +92,6 @@ class _BooruVideoState extends ConsumerState<BooruVideo> {
     void Function(String tag, String message)? logMethod,
     String message,
   ) => logMethod?.call('VideoPlayer', message);
-
-  bool _shouldAutoplay() {
-    return mounted && !_isDisposing;
-  }
 
   @override
   void initState() {
@@ -179,13 +173,18 @@ class _BooruVideoState extends ConsumerState<BooruVideo> {
 
         try {
           if (_player case final player?) {
+            final previouslyPlaying = player.isPlaying;
+
             await player.switchUrl(
               source,
               config: VideoConfig(
                 headers: widget.headers,
-                autoplay: widget.autoplay && _shouldAutoplay(),
               ),
             );
+
+            if (previouslyPlaying && mounted && !_isDisposing) {
+              await player.play();
+            }
           } else {
             return;
           }
@@ -233,7 +232,6 @@ class _BooruVideoState extends ConsumerState<BooruVideo> {
         source,
         config: VideoConfig(
           headers: widget.headers,
-          autoplay: widget.autoplay && _shouldAutoplay(),
         ),
       );
 
@@ -244,14 +242,6 @@ class _BooruVideoState extends ConsumerState<BooruVideo> {
       await player.setVolume(widget.sound ? 1.0 : 0.0);
       await player.setPlaybackSpeed(widget.speed);
       await player.setLooping(true);
-
-      if (widget.autoplay && _shouldAutoplay()) {
-        _log(
-          widget.logger?.debug,
-          'Starting autoplay for URL: ${widget.url}',
-        );
-        await player.play();
-      }
 
       _log(
         widget.logger?.debug,

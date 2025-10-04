@@ -118,6 +118,9 @@ class BaseBooruBuilder implements BooruBuilder {
       );
 
   @override
+  VideoQualitySelectionBuilder? get videoQualitySelectionBuilder => null;
+
+  @override
   HomePageBuilder get homePageBuilder =>
       (context) => const HomePageScaffold();
 

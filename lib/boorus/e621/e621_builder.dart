@@ -27,6 +27,7 @@ import 'popular/widgets.dart';
 import 'posts/providers.dart';
 import 'posts/types.dart';
 import 'posts/widgets.dart';
+import 'videos/widgets.dart';
 
 class E621Builder extends BaseBooruBuilder {
   E621Builder();
@@ -106,6 +107,12 @@ class E621Builder extends BaseBooruBuilder {
   @override
   Map<CustomHomeViewKey, CustomHomeDataBuilder> get customHomeViewBuilders =>
       ke621AltHomeView;
+
+  @override
+  VideoQualitySelectionBuilder get videoQualitySelectionBuilder =>
+      (context, post) => E621VideoQualitySelector(
+        post: post,
+      );
 
   @override
   final postDetailsUIBuilder = PostDetailsUIBuilder(

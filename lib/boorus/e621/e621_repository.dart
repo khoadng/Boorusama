@@ -10,6 +10,7 @@ import '../../core/configs/create/create.dart';
 import '../../core/downloads/filename/types.dart';
 import '../../core/http/providers.dart';
 import '../../core/notes/notes.dart';
+import '../../core/posts/details/details.dart';
 import '../../core/posts/favorites/types.dart';
 import '../../core/posts/post/post.dart';
 import '../../core/posts/post/providers.dart';
@@ -171,5 +172,10 @@ class E621Repository extends BooruRepositoryDefault {
   @override
   BooruLoginDetails loginDetails(BooruConfigAuth config) {
     return ref.watch(e621LoginDetailsProvider(config));
+  }
+
+  @override
+  MediaUrlResolver mediaUrlResolver(BooruConfigAuth config) {
+    return ref.watch(e621MediaUrlResolverProvider);
   }
 }

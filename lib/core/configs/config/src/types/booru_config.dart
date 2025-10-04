@@ -43,6 +43,7 @@ class BooruConfig extends Equatable {
     required this.customBulkDownloadFileNameFormat,
     required this.customDownloadLocation,
     required this.imageDetaisQuality,
+    required this.videoQuality,
     required this.granularRatingFilters,
     required this.postGestures,
     required this.defaultPreviewImageButtonAction,
@@ -87,6 +88,7 @@ class BooruConfig extends Equatable {
           json['customBulkDownloadFileNameFormat'] as String?,
       customDownloadLocation: json['customDownloadLocation'] as String?,
       imageDetaisQuality: json['imageDetaisQuality'] as String?,
+      videoQuality: json['videoQuality'] as String?,
       granularRatingFilters: parseGranularRatingFilters(
         json['granularRatingFilterString'] as String?,
       ),
@@ -139,6 +141,7 @@ class BooruConfig extends Equatable {
     customBulkDownloadFileNameFormat: null,
     customDownloadLocation: null,
     imageDetaisQuality: null,
+    videoQuality: null,
     granularRatingFilters: null,
     postGestures: null,
     defaultPreviewImageButtonAction: null,
@@ -173,6 +176,7 @@ class BooruConfig extends Equatable {
     customBulkDownloadFileNameFormat: customDownloadFileNameFormat,
     customDownloadLocation: null,
     imageDetaisQuality: null,
+    videoQuality: null,
     granularRatingFilters: null,
     postGestures: null,
     defaultPreviewImageButtonAction: null,
@@ -201,6 +205,7 @@ class BooruConfig extends Equatable {
   final String? customBulkDownloadFileNameFormat;
   final String? customDownloadLocation;
   final String? imageDetaisQuality;
+  final String? videoQuality;
   final Set<Rating>? granularRatingFilters;
   final PostGestureConfig? postGestures;
   final String? defaultPreviewImageButtonAction;
@@ -238,6 +243,7 @@ class BooruConfig extends Equatable {
       customBulkDownloadFileNameFormat: customBulkDownloadFileNameFormat,
       customDownloadLocation: customDownloadLocation,
       imageDetaisQuality: imageDetaisQuality,
+      videoQuality: videoQuality,
       granularRatingFilters: granularRatingFilters,
       postGestures: postGestures,
       defaultPreviewImageButtonAction: defaultPreviewImageButtonAction,
@@ -271,6 +277,7 @@ class BooruConfig extends Equatable {
     customBulkDownloadFileNameFormat,
     customDownloadLocation,
     imageDetaisQuality,
+    videoQuality,
     granularRatingFilters,
     postGestures,
     defaultPreviewImageButtonAction,
@@ -306,6 +313,7 @@ class BooruConfig extends Equatable {
       'customBulkDownloadFileNameFormat': customBulkDownloadFileNameFormat,
       'customDownloadLocation': customDownloadLocation,
       'imageDetaisQuality': imageDetaisQuality,
+      'videoQuality': videoQuality,
       'granularRatingFilterString': granularRatingFilterToString(
         granularRatingFilters,
       ),
@@ -541,6 +549,7 @@ class BooruConfigFilter extends Equatable {
 class BooruConfigViewer extends Equatable {
   const BooruConfigViewer({
     required this.imageDetaisQuality,
+    required this.videoQuality,
     required this.viewerNotesFetchBehavior,
     required this.settings,
   });
@@ -548,6 +557,7 @@ class BooruConfigViewer extends Equatable {
   factory BooruConfigViewer.fromConfig(BooruConfig config) {
     return BooruConfigViewer(
       imageDetaisQuality: config.imageDetaisQuality,
+      videoQuality: config.videoQuality,
       viewerNotesFetchBehavior: config.viewerNotesFetchBehavior,
       settings: (config.viewerConfigs?.enable ?? false)
           ? config.viewerConfigs?.settings
@@ -556,6 +566,7 @@ class BooruConfigViewer extends Equatable {
   }
 
   final String? imageDetaisQuality;
+  final String? videoQuality;
   final BooruConfigViewerNotesFetchBehavior? viewerNotesFetchBehavior;
   final ImageViewerSettings? settings;
 
@@ -565,6 +576,7 @@ class BooruConfigViewer extends Equatable {
   @override
   List<Object?> get props => [
     imageDetaisQuality,
+    videoQuality,
     viewerNotesFetchBehavior,
     settings,
   ];

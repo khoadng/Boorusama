@@ -1,7 +1,13 @@
+// Flutter imports:
+import 'package:flutter/widgets.dart';
+
 // Package imports:
 import 'package:equatable/equatable.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
+import '../../../core/configs/config/types.dart';
+import '../../../core/posts/details/details.dart';
 import '../../../core/posts/post/post.dart';
 import '../../../core/posts/rating/rating.dart';
 import '../../../core/posts/sources/source.dart';
@@ -161,6 +167,8 @@ class E621VideoVariant extends Equatable {
   final String codec;
   final double fps;
 
+  String? get format => url.split('.').lastOrNull;
+
   E621VideoVariant copyWith({
     E621VideoVariantType? type,
   }) => E621VideoVariant(
@@ -196,5 +204,39 @@ enum E621VideoVariantType {
     sample => 'sample',
     v720p => '720p',
     v480p => '480p',
+  };
+
+  String getLabel(BuildContext context) => switch (this) {
+    original => context.t.video_player.video_qualities.original,
+    sample => context.t.video_player.video_qualities.sample,
+    v720p => '720p',
+    v480p => '480p',
+  };
+}
+
+class E621MediaUrlResolver extends DefaultMediaUrlResolver {
+  E621MediaUrlResolver({
+    required super.imageQuality,
+  });
+
+  @override
+  String resolveVideoUrl(
+    Post post,
+    BooruConfigViewer config,
+  ) => switch (post) {
+    final E621Post p =>
+      switch (E621VideoVariantType.tryParse(config.videoQuality)) {
+            E621VideoVariantType.original =>
+              p.videoVariants[E621VideoVariantType.original]?.url,
+            E621VideoVariantType.sample =>
+              p.videoVariants[E621VideoVariantType.sample]?.url,
+            E621VideoVariantType.v720p =>
+              p.videoVariants[E621VideoVariantType.v720p]?.url,
+            E621VideoVariantType.v480p =>
+              p.videoVariants[E621VideoVariantType.v480p]?.url,
+            null => p.videoVariants[E621VideoVariantType.v720p]?.url,
+          } ??
+          post.videoUrl,
+    _ => post.videoUrl,
   };
 }

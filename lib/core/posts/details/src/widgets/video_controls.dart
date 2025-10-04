@@ -55,6 +55,7 @@ class PostDetailsVideoControls<T extends Post> extends ConsumerWidget {
                   ValueListenableBuilder(
                     valueListenable: controller.currentPost,
                     builder: (context, post, child) => MoreOptionsControlButton(
+                      post: post,
                       speed: ref.watch(
                         playbackSpeedProvider(
                           post.videoUrl,

@@ -11,6 +11,11 @@ abstract class MediaUrlResolver {
     Post post,
     BooruConfigViewer config,
   );
+
+  String resolveVideoUrl(
+    Post post,
+    BooruConfigViewer config,
+  );
 }
 
 class DefaultMediaUrlResolver implements MediaUrlResolver {
@@ -48,6 +53,12 @@ class DefaultMediaUrlResolver implements MediaUrlResolver {
                 post.isVideo ? post.videoThumbnailUrl : post.originalImageUrl,
               _ => post.isVideo ? post.videoThumbnailUrl : post.sampleImageUrl,
             };
+
+  @override
+  String resolveVideoUrl(
+    Post post,
+    BooruConfigViewer config,
+  ) => post.videoUrl;
 }
 
 class SampleMediaUrlResolver implements MediaUrlResolver {
@@ -58,4 +69,10 @@ class SampleMediaUrlResolver implements MediaUrlResolver {
     Post post,
     BooruConfigViewer config,
   ) => post.sampleImageUrl;
+
+  @override
+  String resolveVideoUrl(
+    Post post,
+    BooruConfigViewer config,
+  ) => post.videoUrl;
 }

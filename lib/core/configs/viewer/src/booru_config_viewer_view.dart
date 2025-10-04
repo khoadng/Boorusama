@@ -18,10 +18,12 @@ class BooruConfigViewerView extends ConsumerWidget {
     super.key,
     this.postDetailsResolution,
     this.autoLoadNotes,
+    this.videoQuality,
   });
 
   final Widget? postDetailsResolution;
   final Widget? autoLoadNotes;
+  final Widget? videoQuality;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -43,11 +45,9 @@ class BooruConfigViewerView extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            if (postDetailsResolution != null)
-              postDetailsResolution!
-            else
-              const DefaultImageDetailsQualityTile(),
-            if (autoLoadNotes != null) autoLoadNotes!,
+            postDetailsResolution ?? const DefaultImageDetailsQualityTile(),
+            ?videoQuality,
+            ?autoLoadNotes,
             const SizedBox(height: 16),
             const Divider(),
             BooruSwitchListTile(

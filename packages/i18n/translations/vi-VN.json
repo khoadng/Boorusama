@@ -1169,6 +1169,13 @@
     "engine_not_supported": "Trình phát này không được hỗ trợ trên nền tảng hiện tại.",
     "change_video_player_engine_suggest": "Nếu lỗi này xảy ra thường xuyên, cân nhắc sử dụng một trình phát video khác trong cài đặt.",
     "change_video_player_engine_request": "Vui lòng đổi sang trình phát video khác trong cài đặt.",
+    "video_quality": "Chất lượng video",
+    "video_qualities": {
+      "auto": "Tự động",
+      "sample": "Mẫu",
+      "original": "Gốc"
+    },
+    "current_video_quality_disclaimer": "Phần này chỉ áp dụng cho video hiện tại. Để áp dụng cho tất cả video, hãy vào <a href=\"booru-profiles\">$video_profile_path</a>.",
     "speed": {
       "normal": "Bình thường"
     }
