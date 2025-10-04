@@ -52,7 +52,7 @@ class VideoConfig {
   final bool autoplay;
 }
 
-typedef PositionCallback =
-    void Function(double current, double total, String url);
+typedef PositionCallback = void Function(double current, double total);
 
 typedef VideoPlayerCreatedCallback = void Function(BooruPlayer player);
+typedef VideoPlayerDisposedCallback = void Function();

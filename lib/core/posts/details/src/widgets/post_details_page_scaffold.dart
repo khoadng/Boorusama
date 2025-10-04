@@ -98,6 +98,9 @@ class _PostDetailPageScaffoldState<T extends Post>
       widget.controller.setPage(
         widget.controller.initialPage,
       );
+      widget.controller.onPageSettled(
+        widget.controller.initialPage,
+      );
     });
 
     widget.controller.isVideoPlaying.addListener(_isVideoPlayingChanged);
@@ -115,12 +118,15 @@ class _PostDetailPageScaffoldState<T extends Post>
         settingsProvider.select((value) => value.volumeKeyViewerNavigation),
       ),
     )..initialize();
+
+    _controller.precisePage.addListener(_onPrecisePageChanged);
   }
 
   @override
   void dispose() {
     _volumeKeyPageNavigator?.dispose();
     widget.controller.isVideoPlaying.removeListener(_isVideoPlayingChanged);
+    _controller.precisePage.removeListener(_onPrecisePageChanged);
 
     super.dispose();
   }
@@ -136,6 +142,17 @@ class _PostDetailPageScaffoldState<T extends Post>
         if (widget.controller.currentPost.value.isVideo) {
           _controller.enableHoverToControlOverlay();
         }
+      }
+    }
+  }
+
+  void _onPrecisePageChanged() {
+    final precisePage = _controller.precisePage.value;
+
+    if (precisePage != null) {
+      final page = precisePage.floor();
+      if ((page - precisePage).abs() == 0) {
+        widget.controller.onPageSettled(page);
       }
     }
   }

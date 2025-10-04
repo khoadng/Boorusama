@@ -28,6 +28,7 @@ class BooruVideo extends ConsumerStatefulWidget {
     this.cacheManager,
     this.onCurrentPositionChanged,
     this.onVideoPlayerCreated,
+    this.onVideoPlayerDisposed,
     this.sound = true,
     this.speed = 1.0,
     this.thumbnailUrl,
@@ -47,6 +48,7 @@ class BooruVideo extends ConsumerStatefulWidget {
   final VideoCacheManager? cacheManager;
   final PositionCallback? onCurrentPositionChanged;
   final VideoPlayerCreatedCallback? onVideoPlayerCreated;
+  final VideoPlayerDisposedCallback? onVideoPlayerDisposed;
   final bool sound;
   final double speed;
   final String? thumbnailUrl;
@@ -260,7 +262,7 @@ class _BooruVideoState extends ConsumerState<BooruVideo> {
         if (widget.onCurrentPositionChanged != null) {
           final current = position.inMilliseconds / 1000.0;
           final total = player.duration.inMilliseconds / 1000.0;
-          widget.onCurrentPositionChanged!(current, total, widget.url);
+          widget.onCurrentPositionChanged!(current, total);
         }
       });
 
@@ -374,6 +376,7 @@ class _BooruVideoState extends ConsumerState<BooruVideo> {
       widget.logger?.debug,
       'Disposing BooruVideo widget',
     );
+    widget.onVideoPlayerDisposed?.call();
     _disposePlayer();
     super.dispose();
   }

@@ -12,6 +12,7 @@ class VideoPlaybackManager extends ChangeNotifier {
   VideoPlaybackManager();
 
   final Map<int, BooruPlayer> _players = {};
+  final Set<int> _pendingPlayback = {};
   final _videoProgress = ValueNotifier(VideoProgress.zero);
   final _isVideoPlaying = ValueNotifier<bool>(false);
   final _seekStreamController = StreamController<VideoProgress>.broadcast();
@@ -22,11 +23,17 @@ class VideoPlaybackManager extends ChangeNotifier {
 
   void registerPlayer(BooruPlayer player, int id) {
     _players[id] = player;
+
+    // If playback was requested before registration, play now
+    if (_pendingPlayback.contains(id)) {
+      _pendingPlayback.remove(id);
+      unawaited(player.play());
+    }
   }
 
   void unregisterPlayer(int id) {
-    _players[id]?.dispose();
     _players.remove(id);
+    _pendingPlayback.remove(id);
   }
 
   Future<void> playVideo(int id) async {
@@ -34,6 +41,9 @@ class VideoPlaybackManager extends ChangeNotifier {
     final player = _players[id];
     if (player != null) {
       unawaited(player.play());
+    } else {
+      // Player not registered yet, mark for pending playback
+      _pendingPlayback.add(id);
     }
   }
 
@@ -62,15 +72,18 @@ class VideoPlaybackManager extends ChangeNotifier {
   void updateProgress(
     double current,
     double total,
-    String url,
     int currentVideoId,
   ) {
     final currentPlayer = _players[currentVideoId];
     if (currentPlayer != null) {
-      _videoProgress.value = VideoProgress(
+      final progress = VideoProgress(
         Duration(milliseconds: (total * 1000).toInt()),
         Duration(milliseconds: (current * 1000).toInt()),
       );
+
+      if (progress != _videoProgress.value) {
+        _videoProgress.value = progress;
+      }
     }
   }
 
@@ -105,6 +118,7 @@ class VideoPlaybackManager extends ChangeNotifier {
       player.dispose();
     }
     _players.clear();
+    _pendingPlayback.clear();
 
     _videoProgress.dispose();
     _isVideoPlaying.dispose();

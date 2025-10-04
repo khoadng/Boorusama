@@ -58,10 +58,16 @@ class PostMedia<T extends Post> extends ConsumerWidget {
                   heroTag: heroTag,
                   url: post.videoUrl,
                   aspectRatio: post.aspectRatio,
-                  onCurrentPositionChanged:
-                      details.controller.onCurrentPositionChanged,
+                  onCurrentPositionChanged: (current, total) =>
+                      details.controller.onCurrentPositionChanged(
+                        current,
+                        total,
+                        post.id.toString(),
+                      ),
                   onVideoPlayerCreated: (player) => details.controller
                       .onBooruVideoPlayerCreated(player, post.id),
+                  onVideoPlayerDisposed: () =>
+                      details.controller.onBooruVideoPlayerDisposed(post.id),
                   sound: ref.watch(globalSoundStateProvider),
                   speed: ref.watch(playbackSpeedProvider(post.videoUrl)),
                   thumbnailUrl: post.videoThumbnailUrl,
@@ -76,7 +82,8 @@ class PostMedia<T extends Post> extends ConsumerWidget {
                     userAgentProvider(config),
                   ),
                   logger: ref.watch(loggerProvider),
-                  autoplay: true,
+                  // ignore: avoid_redundant_argument_values
+                  autoplay: false, // Let controller manage playback
                   cacheManager: ref.watch(videoCacheManagerProvider),
                   cacheDelay: createVideoCacheDelayCallback(post),
                   fileSize: post.fileSize > 0 ? post.fileSize : null,

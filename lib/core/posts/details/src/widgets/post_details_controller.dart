@@ -38,6 +38,7 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
   final String? dislclaimer;
   final int doubleTapSeekDuration;
 
+  int? currentSettledPage;
   late ValueNotifier<int> currentPage;
   late ValueNotifier<T> currentPost;
   final VideoPlaybackManager _playback;
@@ -45,28 +46,25 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
   int get initialPage =>
       currentPage.value != _initialPage ? currentPage.value : _initialPage;
 
+  // ignore: use_setters_to_change_properties
   void setPage(int page) {
     currentPage.value = page;
-    _playback.resetProgress();
+  }
+
+  void onPageSettled(int page) {
+    if (page == currentSettledPage) return;
+
+    currentSettledPage = page;
 
     final post = posts.getOrNull(page);
 
-    if (post?.isMp4 ?? false) {
-      if (_playback.isVideoPlaying.value) {
-        _playback.isVideoPlaying.value = false;
-      }
-    }
-
     if (post != null) {
       currentPost.value = post;
-      if (page == initialPage.toDouble()) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          playVideo(
-            post.id,
-          );
-        });
-        return;
-      }
+      _playback.resetProgress();
+
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        playVideo(post.id);
+      });
     }
   }
 
@@ -87,16 +85,11 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
   ValueNotifier<SeekDirection?> get seekDirection => _seekDirection;
   Stream<VideoProgress> get seekStream => _playback.seekStream;
 
-  void onCurrentPositionChanged(double current, double total, String url) {
-    // check if the current video is the same as the one being played
-    if (posts[currentPage.value].videoUrl != url) return;
-
-    _playback.updateProgress(
-      current,
-      total,
-      url,
-      currentPost.value.id,
-    );
+  void onCurrentPositionChanged(double current, double total, String id) {
+    if (posts.getOrNull(currentSettledPage ?? -1)?.id case final currentId?
+        when currentId.toString() == id) {
+      _playback.updateProgress(current, total, currentId);
+    }
   }
 
   void onVideoSeekTo(Duration position, int id) {
@@ -166,6 +159,10 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
 
   void onBooruVideoPlayerCreated(BooruPlayer player, int id) {
     _playback.registerPlayer(player, id);
+  }
+
+  void onBooruVideoPlayerDisposed(int id) {
+    _playback.unregisterPlayer(id);
   }
 
   @override
