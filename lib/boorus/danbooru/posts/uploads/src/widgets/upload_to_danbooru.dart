@@ -2,7 +2,6 @@
 import 'dart:async';
 
 // Flutter imports:
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -45,6 +44,12 @@ class _UploadToDanbooruState extends ConsumerState<UploadToDanbooru> {
     _sharedMediaSubscription = ShareHandler.instance.sharedMediaStream.listen(
       _onSharedTextsReceived,
     );
+
+    // Get initial shared media when app is launched via share
+    final initialMedia = await ShareHandler.instance.getInitialSharedMedia();
+    if (initialMedia != null) {
+      _onSharedTextsReceived(initialMedia);
+    }
   }
 
   void _onSharedTextsReceived(SharedMedia media) {
@@ -59,9 +64,11 @@ class _UploadToDanbooruState extends ConsumerState<UploadToDanbooru> {
     final isHttp = uri?.scheme == 'http' || uri?.scheme == 'https';
 
     if (uri != null && isHttp) {
-      Navigator.of(context).push(
-        CupertinoPageRoute(
-          settings: const RouteSettings(name: 'upload_to_booru_confirmation'),
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+
+        showDialog(
+          context: context,
           builder: (context) {
             return AlertDialog(
               title: Text('Upload to Danbooru'.hc),
@@ -89,8 +96,8 @@ class _UploadToDanbooruState extends ConsumerState<UploadToDanbooru> {
               ],
             );
           },
-        ),
-      );
+        );
+      });
     }
   }
 
