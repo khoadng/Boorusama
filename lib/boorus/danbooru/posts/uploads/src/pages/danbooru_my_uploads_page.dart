@@ -244,6 +244,7 @@ class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
                     autoScrollController: scrollController,
                     controller: controller,
                     useHero: useHero,
+                    quickActionButton: const SizedBox.shrink(),
                     contextMenu: GenericContextMenu(
                       buttonConfigs: [
                         ContextMenuButtonConfig(

@@ -1,13 +1,9 @@
-// Dart imports:
-import 'dart:math';
-
 // Flutter imports:
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
-import 'package:multi_split_view/multi_split_view.dart';
 
 // Project imports:
 import '../../../../../core/configs/ref.dart';
@@ -18,6 +14,7 @@ import '../../../../../foundation/display.dart';
 import '../../../../../foundation/scrolling.dart';
 import 'providers/tag_edit_notifier.dart';
 import 'tag_edit_content.dart';
+import 'tag_edit_split_layout.dart';
 import 'tag_edit_view_controller.dart';
 
 class TagEditPageScaffold extends ConsumerStatefulWidget {
@@ -144,89 +141,39 @@ class _TagEditPageScaffoldState extends ConsumerState<TagEditPageScaffold> {
             widget.submitButton,
           ],
         ),
-        body: LayoutBuilder(
-          builder: (context, constraints) => Container(
-            margin: EdgeInsets.only(
-              bottom: MediaQuery.paddingOf(context).bottom,
-            ),
-            child: Screen.of(context).size == ScreenSize.small
-                ? Column(
-                    children: [
-                      Expanded(
-                        child: _buildSplit(),
-                      ),
-                      TagEditExpandContent(
-                        viewController: viewController,
-                        maxHeight: constraints.maxHeight,
-                      ),
-                    ],
-                  )
-                : Row(
-                    children: [
-                      const Expanded(
-                        child: TagEditImageSection(),
-                      ),
-                      const VerticalDivider(
-                        width: 4,
-                      ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        width: min(
-                          MediaQuery.of(context).size.width * 0.4,
-                          400,
-                        ),
-                        child: Column(
-                          children: [
-                            Expanded(
-                              child: widget.content,
-                            ),
-                            TagEditExpandContent(
-                              viewController: viewController,
-                              maxHeight: constraints.maxHeight,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-          ),
-        ),
-      ),
-    );
-  }
+        body: SafeArea(
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final expandContent = TagEditExpandContent(
+                viewController: viewController,
+                maxHeight: constraints.maxHeight,
+              );
 
-  Widget _buildSplit() {
-    return Theme(
-      data: Theme.of(context).copyWith(
-        focusColor: Theme.of(context).colorScheme.primary,
-      ),
-      child: MultiSplitViewTheme(
-        data: MultiSplitViewThemeData(
-          dividerPainter: DividerPainters.grooved1(
-            color: Theme.of(context).colorScheme.onSurface,
-            thickness: 4,
-            size: 75,
-            highlightedColor: Theme.of(context).colorScheme.primary,
+              return Screen.of(context).size == ScreenSize.small
+                  ? Column(
+                      children: [
+                        Expanded(
+                          child: TagEditSplitLayout(
+                            viewController: viewController,
+                            imageBuilder: () => const TagEditImageSection(),
+                            contentBuilder: (_) => widget.content,
+                          ),
+                        ),
+                        expandContent,
+                      ],
+                    )
+                  : TagEditSplitLayout(
+                      viewController: viewController,
+                      imageBuilder: () => const TagEditImageSection(),
+                      contentBuilder: (_) => Column(
+                        children: [
+                          Expanded(child: widget.content),
+                          expandContent,
+                        ],
+                      ),
+                    );
+            },
           ),
-        ),
-        child: MultiSplitView(
-          axis: Axis.vertical,
-          controller: viewController.splitController,
-          builder: (context, area) => switch (area.data) {
-            'image' => const Column(
-              children: [
-                Expanded(
-                  child: TagEditImageSection(),
-                ),
-                Divider(
-                  thickness: 1,
-                  height: 4,
-                ),
-              ],
-            ),
-            'content' => widget.content,
-            _ => const SizedBox.shrink(),
-          },
         ),
       ),
     );

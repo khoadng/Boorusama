@@ -1,64 +1,131 @@
-import 'artist_dto.dart';
-
 class SourceDto {
   const SourceDto({
     required this.artist,
-    required this.artists,
     required this.imageUrls,
     required this.pageUrl,
     required this.tags,
-    required this.normalizedTags,
-    required this.translatedTags,
     required this.artistCommentary,
   });
 
   factory SourceDto.fromJson(Map<String, dynamic> json) {
     return SourceDto(
-      artist: json['artist'] != null
-          ? ArtistDto.fromJson(json['artist'])
-          : null,
-      artists: (json['artists'] as List<dynamic>?)
-          ?.map((artist) => ArtistDto.fromJson(artist))
-          .toList(),
-      imageUrls: (json['image_urls'] as List<dynamic>?)
-          ?.map((imageUrl) => ImageUrlsDto.fromJson(imageUrl))
-          .toList(),
-      pageUrl: json['page_url'] as String?,
-      tags: (json['tags'] as List<dynamic>?)
-          ?.map((tag) => TagsDto.fromJson(tag))
-          .toList(),
-      normalizedTags: (json['normalized_tags'] as List<dynamic>?)
-          ?.map((tag) => tag as String)
-          .toList(),
-      translatedTags: (json['translated_tags'] as List<dynamic>?)
-          ?.map((translatedTag) => TranslatedTagsDto.fromJson(translatedTag))
-          .toList(),
-      artistCommentary: json['artist_commentary'] != null
-          ? ArtistSourceCommentaryDto.fromJson(json['artist_commentary'])
-          : null,
+      artist: switch (json['artist']) {
+        final Map<String, dynamic> map => SourceArtistDto.fromJson(map),
+        _ => null,
+      },
+      imageUrls: switch (json['image_urls']) {
+        final List<dynamic> urls => urls.whereType<String>().toList(),
+        _ => null,
+      },
+      pageUrl: switch (json['page_url']) {
+        final String url => url,
+        _ => null,
+      },
+      tags: switch (json['tags']) {
+        final List<dynamic> tagList =>
+          tagList
+              .whereType<List<dynamic>>()
+              .map((tag) => SourceTagDto.fromJson(tag))
+              .toList(),
+        _ => null,
+      },
+      artistCommentary: switch (json['artist_commentary']) {
+        final Map<String, dynamic> map => ArtistSourceCommentaryDto.fromJson(
+          map,
+        ),
+        _ => null,
+      },
     );
   }
-  final ArtistDto? artist;
-  final List<ArtistDto>? artists;
-  final List<ImageUrlsDto>? imageUrls;
+  final SourceArtistDto? artist;
+  final List<String>? imageUrls;
   final String? pageUrl;
-  final List<TagsDto>? tags;
-  final List<String>? normalizedTags;
-  final List<TranslatedTagsDto>? translatedTags;
+  final List<SourceTagDto>? tags;
   final ArtistSourceCommentaryDto? artistCommentary;
 }
 
-class ImageUrlsDto {
-  const ImageUrlsDto({
-    required this.imageUrl,
+class SourceArtistDto {
+  const SourceArtistDto({
+    required this.displayName,
+    required this.username,
+    required this.profileUrls,
+    required this.artists,
   });
 
-  factory ImageUrlsDto.fromJson(String json) {
-    return ImageUrlsDto(
-      imageUrl: json,
+  factory SourceArtistDto.fromJson(Map<String, dynamic> json) {
+    return SourceArtistDto(
+      displayName: switch (json['display_name']) {
+        final String name => name,
+        _ => null,
+      },
+      username: switch (json['username']) {
+        final String name => name,
+        _ => null,
+      },
+      profileUrls: switch (json['profile_urls']) {
+        final List<dynamic> urls => urls.whereType<String>().toList(),
+        _ => null,
+      },
+      artists: switch (json['artists']) {
+        final List<dynamic> artistList =>
+          artistList
+              .whereType<Map<String, dynamic>>()
+              .map((artist) => SourceArtistInfoDto.fromJson(artist))
+              .toList(),
+        _ => null,
+      },
     );
   }
-  final String? imageUrl;
+  final String? displayName;
+  final String? username;
+  final List<String>? profileUrls;
+  final List<SourceArtistInfoDto>? artists;
+}
+
+class SourceArtistInfoDto {
+  const SourceArtistInfoDto({
+    required this.id,
+    required this.name,
+  });
+
+  factory SourceArtistInfoDto.fromJson(Map<String, dynamic> json) {
+    return SourceArtistInfoDto(
+      id: switch (json['id']) {
+        final int id => id,
+        _ => null,
+      },
+      name: switch (json['name']) {
+        final String name => name,
+        _ => null,
+      },
+    );
+  }
+  final int? id;
+  final String? name;
+}
+
+class SourceTagDto {
+  const SourceTagDto({
+    required this.tagName,
+    required this.tagUrl,
+  });
+
+  factory SourceTagDto.fromJson(List<dynamic> json) {
+    return SourceTagDto(
+      tagName: switch (json) {
+        [final String name, ...] => name,
+        [final dynamic first, ...] when first is String => first,
+        _ => null,
+      },
+      tagUrl: switch (json) {
+        [_, final String url, ...] => url,
+        [_, final dynamic second, ...] when second is String => second,
+        _ => null,
+      },
+    );
+  }
+  final String? tagName;
+  final String? tagUrl;
 }
 
 class TagsDto {
@@ -69,8 +136,16 @@ class TagsDto {
 
   factory TagsDto.fromJson(List<dynamic> json) {
     return TagsDto(
-      tagName: json.isNotEmpty ? json[0] as String? : null,
-      tagUrl: json.length > 1 ? json[1] as String? : null,
+      tagName: switch (json) {
+        [final String name, ...] => name,
+        [final dynamic first, ...] when first is String => first,
+        _ => null,
+      },
+      tagUrl: switch (json) {
+        [_, final String url, ...] => url,
+        [_, final dynamic second, ...] when second is String => second,
+        _ => null,
+      },
     );
   }
   final String? tagName;
@@ -86,9 +161,18 @@ class TranslatedTagsDto {
 
   factory TranslatedTagsDto.fromJson(Map<String, dynamic> json) {
     return TranslatedTagsDto(
-      name: json['name'] as String?,
-      postCount: json['post_count'] as int?,
-      category: json['category'] as int?,
+      name: switch (json['name']) {
+        final String name => name,
+        _ => null,
+      },
+      postCount: switch (json['post_count']) {
+        final int count => count,
+        _ => null,
+      },
+      category: switch (json['category']) {
+        final int category => category,
+        _ => null,
+      },
     );
   }
   final String? name;
@@ -106,10 +190,22 @@ class ArtistSourceCommentaryDto {
 
   factory ArtistSourceCommentaryDto.fromJson(Map<String, dynamic> json) {
     return ArtistSourceCommentaryDto(
-      title: json['title'] as String?,
-      dtextTitle: json['dtext_title'] as String?,
-      description: json['description'] as String?,
-      dtextDescription: json['dtext_description'] as String?,
+      title: switch (json['title']) {
+        final String title => title,
+        _ => null,
+      },
+      dtextTitle: switch (json['dtext_title']) {
+        final String title => title,
+        _ => null,
+      },
+      description: switch (json['description']) {
+        final String desc => desc,
+        _ => null,
+      },
+      dtextDescription: switch (json['dtext_description']) {
+        final String desc => desc,
+        _ => null,
+      },
     );
   }
   final String? title;

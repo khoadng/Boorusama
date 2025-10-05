@@ -55,13 +55,15 @@ mixin DanbooruClientPosts {
         if (tags != null && tags.isNotEmpty) 'post[tag_string]': tags.join(' '),
         'post[source]': source,
         if (artistCommentaryTitle != null)
-          'post[artist_commentary_title]': artistCommentaryTitle,
+          'post[artist_commentary][original_title]': artistCommentaryTitle,
         if (artistCommentaryDesc != null)
-          'post[artist_commentary_desc]': artistCommentaryDesc,
+          'post[artist_commentary][original_description]': artistCommentaryDesc,
         if (translatedCommentaryTitle != null)
-          'post[translated_commentary_title]': translatedCommentaryTitle,
+          'post[artist_commentary][translated_title]':
+              translatedCommentaryTitle,
         if (translatedCommentaryDesc != null)
-          'post[translated_commentary_desc]': translatedCommentaryDesc,
+          'post[artist_commentary][translated_description]':
+              translatedCommentaryDesc,
         if (parentId != null) 'post[parent_id]': parentId,
       },
       options: Options(

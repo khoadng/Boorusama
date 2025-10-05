@@ -1,180 +1,90 @@
-// Dart imports:
-import 'dart:math';
-
 // Flutter imports:
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
-import 'package:multi_split_view/multi_split_view.dart';
 
 // Project imports:
 import '../../../../../../core/configs/ref.dart';
 import '../../../../../../core/images/booru_image.dart';
 import '../../../../../../core/widgets/widgets.dart';
-import '../../../../../../foundation/display.dart';
+import '../../../../tags/edit/widgets.dart';
 
-//FIXME: Split view is broken, need to fix it later, check tag_edit_page.dart for the correct implementation
 class TagEditUploadScaffold extends ConsumerStatefulWidget {
   const TagEditUploadScaffold({
-    required this.modeBuilder,
     required this.contentBuilder,
     required this.aspectRatio,
     required this.imageUrl,
     required this.imageFooterBuilder,
+    required this.viewController,
     super.key,
-    this.maxSplit = false,
-    this.splitWeights = const [0.5, 0.5],
   });
 
-  final Widget Function() contentBuilder;
-  final Widget Function(double maxHeight) modeBuilder;
+  final Widget Function(double maxHeight) contentBuilder;
   final double aspectRatio;
   final String imageUrl;
-  final bool maxSplit;
-  final List<double> splitWeights;
   final Widget Function() imageFooterBuilder;
+  final TagEditViewController viewController;
 
   @override
-  ConsumerState<TagEditUploadScaffold> createState() => _TagEditScaffoldState();
+  ConsumerState<TagEditUploadScaffold> createState() =>
+      _TagEditUploadScaffoldState();
 }
 
-class _TagEditScaffoldState extends ConsumerState<TagEditUploadScaffold> {
-  final scrollController = ScrollController();
-  late final splitController = MultiSplitViewController(
-    areas: [
-      Area(
-        data: 'image',
-        min: 4,
-        flex: widget.splitWeights[0],
-      ),
-      Area(
-        data: 'content',
-        min: 100,
-        flex: widget.splitWeights[1],
-      ),
-    ],
-  );
+class _TagEditUploadScaffoldState extends ConsumerState<TagEditUploadScaffold> {
+  @override
+  void initState() {
+    super.initState();
+    widget.viewController.addListener(_onViewChanged);
+  }
 
-  String? selectedTag;
+  void _onViewChanged() {
+    if (!mounted) return;
 
-  var viewExpanded = false;
+    setState(() {});
+  }
 
   @override
   void dispose() {
     super.dispose();
-    scrollController.dispose();
-    splitController.dispose();
-  }
 
-  @override
-  void didUpdateWidget(covariant TagEditUploadScaffold oldWidget) {
-    super.didUpdateWidget(oldWidget);
-
-    if (widget.maxSplit != oldWidget.maxSplit) {
-      if (widget.maxSplit) {
-        _setMaxSplit();
-      } else {
-        _setDefaultSplit();
-      }
-    }
-  }
-
-  void _setDefaultSplit() {
-    splitController.areas = [
-      Area(
-        data: 'image',
-        min: 4,
-        flex: 0.5,
-      ),
-      Area(
-        data: 'content',
-        min: 100,
-        flex: 0.5,
-      ),
-    ];
-  }
-
-  void _setMaxSplit() {
-    splitController.areas = [
-      Area(
-        data: 'image',
-        min: 4,
-        flex: 0.9,
-      ),
-      Area(
-        data: 'content',
-        min: 100,
-        flex: 0.1,
-      ),
-    ];
+    widget.viewController.removeListener(_onViewChanged);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar: true,
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         leading: IconButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
+          onPressed: () => Navigator.of(context).pop(),
           icon: const Icon(Symbols.arrow_back),
         ),
       ),
-      body: LayoutBuilder(
-        builder: (context, constraints) => Container(
-          margin: EdgeInsets.only(
-            bottom: MediaQuery.paddingOf(context).bottom,
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: Screen.of(context).size == ScreenSize.small
-              ? Column(
-                  children: [
-                    Expanded(
-                      child: _buildSplit(context),
-                    ),
-                    _buildMode(
-                      context,
-                      constraints.maxHeight,
-                    ),
-                  ],
-                )
-              : Row(
-                  children: [
-                    Expanded(
-                      child: _buildImage(),
-                    ),
-                    const VerticalDivider(
-                      width: 4,
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      width: min(
-                        MediaQuery.of(context).size.width * 0.4,
-                        400,
-                      ),
-                      child: Column(
-                        children: [
-                          Expanded(
-                            child: widget.contentBuilder(),
-                          ),
-                          _buildMode(
-                            context,
-                            constraints.maxHeight,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+      body: TagEditSplitLayout(
+        viewController: widget.viewController,
+        imageBuilder: () => _ImageSection(
+          imageUrl: widget.imageUrl,
+          imageFooterBuilder: widget.imageFooterBuilder,
         ),
+        contentBuilder: widget.contentBuilder,
       ),
     );
   }
+}
 
-  Widget _buildImage() {
+class _ImageSection extends ConsumerWidget {
+  const _ImageSection({
+    required this.imageUrl,
+    required this.imageFooterBuilder,
+  });
+
+  final String imageUrl;
+  final Widget Function() imageFooterBuilder;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
     return LayoutBuilder(
       builder: (context, constraints) => constraints.maxHeight > 80
           ? Column(
@@ -183,80 +93,18 @@ class _TagEditScaffoldState extends ConsumerState<TagEditUploadScaffold> {
                   child: InteractiveViewerExtended(
                     child: BooruImage(
                       config: ref.watchConfigAuth,
-                      imageUrl: widget.imageUrl,
+                      imageUrl: imageUrl,
                       fit: BoxFit.contain,
                       borderRadius: BorderRadius.zero,
                     ),
                   ),
                 ),
-                widget.imageFooterBuilder(),
+                imageFooterBuilder(),
               ],
             )
           : SizedBox(
-              height: constraints.maxHeight,
+              height: constraints.maxHeight - 4,
             ),
     );
-  }
-
-  Widget _buildSplit(BuildContext context) {
-    return Theme(
-      data: Theme.of(context).copyWith(
-        focusColor: Theme.of(context).colorScheme.primary,
-      ),
-      child: MultiSplitViewTheme(
-        data: MultiSplitViewThemeData(
-          dividerPainter: DividerPainters.grooved1(
-            color: Theme.of(context).colorScheme.onSurface,
-            thickness: 4,
-            size: 75,
-            highlightedColor: Theme.of(context).colorScheme.primary,
-          ),
-        ),
-        child: MultiSplitView(
-          axis: Axis.vertical,
-          controller: splitController,
-          builder: (context, area) => switch (area.data) {
-            'image' => Column(
-              children: [
-                Expanded(
-                  child: _buildImage(),
-                ),
-                const Divider(
-                  thickness: 1,
-                  height: 4,
-                ),
-              ],
-            ),
-            'content' => widget.contentBuilder(),
-            _ => const SizedBox(),
-          },
-          // builder: (context, area) => [
-          //   Column(
-          //     children: [
-          //       Expanded(
-          //         child: _buildImage(),
-          //       ),
-          //       const Divider(
-          //         thickness: 1,
-          //         height: 4,
-          //       ),
-          //     ],
-          //   ),
-          //   widget.contentBuilder(),
-          // ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildMode(
-    BuildContext context,
-    double maxHeight,
-  ) {
-    final height = viewExpanded
-        ? max(maxHeight - kToolbarHeight - 120.0, 280)
-        : 280.0;
-
-    return widget.modeBuilder(height.toDouble());
   }
 }
