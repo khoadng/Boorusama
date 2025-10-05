@@ -1173,6 +1173,13 @@
     "engine_not_supported": "Цей двигун не підтримується на поточній платформі.",
     "change_video_player_engine_suggest": "Якщо це трапляється регулярно, спробуйте використовувати інший движок відеоплеєра в налаштуваннях.",
     "change_video_player_engine_request": "Будь ласка, змініть движок відеоплеєра в налаштуваннях.",
-    "lock_screen": "Екран блокування"
+    "lock_screen": "Екран блокування",
+    "video_quality": "Якість відео",
+    "video_qualities": {
+      "auto": "Авто",
+      "sample": "Простий",
+      "original": "Оригінал"
+    },
+    "current_video_quality_disclaimer": "Цей розділ стосується лише поточного відео. Щоб переглянути всі відео, перейдіть за посиланням <a href=\"booru-profiles\">$video_profile_path</a>."
   }
 }
