@@ -45,6 +45,7 @@ class WebViewBooruPlayer implements BooruPlayer {
   var _isPlaying = false;
   var _hasPlayedOnce = false;
   var _isPageLoaded = false;
+  var _hasPendingPlay = false;
   Duration _currentPosition = Duration.zero;
   Duration _currentDuration = Duration.zero;
   String? _currentUrl;
@@ -118,6 +119,7 @@ class WebViewBooruPlayer implements BooruPlayer {
   void _resetState() {
     _hasPlayedOnce = false;
     _isPageLoaded = false;
+    _hasPendingPlay = false;
     _currentPosition = Duration.zero;
     _currentDuration = Duration.zero;
   }
@@ -191,8 +193,9 @@ class WebViewBooruPlayer implements BooruPlayer {
     // Start position monitoring only after page is loaded
     _startPositionTimer();
 
-    // Handle autoplay by explicitly playing the video
-    if (autoplay) {
+    // Handle autoplay or pending play request
+    if (autoplay || _hasPendingPlay) {
+      _hasPendingPlay = false;
       // Use a small delay to ensure the video element is fully ready
       Timer(const Duration(milliseconds: 100), () {
         if (!_isDisposed) {
@@ -306,7 +309,13 @@ class WebViewBooruPlayer implements BooruPlayer {
 
   @override
   Future<void> play() async {
-    if (_isDisposed || _webViewController == null || !_isPageLoaded) return;
+    if (_isDisposed || _webViewController == null) return;
+
+    // If page not loaded yet, queue the play request
+    if (!_isPageLoaded) {
+      _hasPendingPlay = true;
+      return;
+    }
 
     await _runJavaScriptSafely(
       'document.getElementById("video").play();',
