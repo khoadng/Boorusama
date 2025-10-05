@@ -4,3 +4,6 @@ bool isHttpOrHttps(Uri uri) =>
 
 // check if the uri contains www.
 bool containsWww(Uri uri) => uri.host.startsWith('www.');
+
+// check if the uri is localhost
+bool isLocalhost(Uri uri) => uri.host == 'localhost' || uri.host == '127.0.0.1';

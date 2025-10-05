@@ -24,10 +24,10 @@ typedef StringValidation = Validation<String>;
 final List<UriValidation> booruUriValidationConditions = [
   (u) => u.scheme.isEmpty ? left(BooruUrlError.missingScheme) : right(u),
   (u) => !u.hasAuthority ? left(BooruUrlError.invalidUrlFormat) : right(u),
-  (u) => u.host.split('.').length < 2
+  (u) => !isLocalhost(u) && u.host.split('.').length < 2
       ? left(BooruUrlError.invalidUrlFormat)
       : right(u),
-  (u) => u.host.split('.').any((part) => part.isEmpty)
+  (u) => !isLocalhost(u) && u.host.split('.').any((part) => part.isEmpty)
       ? left(BooruUrlError.invalidUrlFormat)
       : right(u),
   (u) => !isHttpOrHttps(u) ? left(BooruUrlError.notAnHttpOrHttpsUrl) : right(u),
