@@ -20,6 +20,7 @@ workspace:
   - packages/i18n
   - packages/codegen
   - packages/cache_manager
+  - packages/boorusama_lint
 
 dependencies:
   # local packages
@@ -181,3 +182,6 @@ flutter:
     - assets/ca/isrgrootx1.pem
     - boorus.yaml
     - CHANGELOG.md
+
+dependency_overrides:
+  analyzer: ^8.2.0

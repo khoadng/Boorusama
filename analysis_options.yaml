@@ -1,4 +1,11 @@
 include: all_lint_rules.yaml
+
+plugins:
+  boorusama_lint:
+    path: packages/boorusama_lint
+    diagnostics:
+      noop_rule: true
+
 analyzer:
   exclude:
     - "**/*.g.dart"
