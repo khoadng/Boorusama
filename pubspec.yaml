@@ -21,6 +21,7 @@ workspace:
   - packages/codegen
   - packages/cache_manager
   - packages/coreutils
+  - packages/boorusama_lint
 
 dependencies:
   # local packages
@@ -174,3 +175,6 @@ flutter:
     - assets/tagdef.json
     - assets/ca/isrgrootx1.pem
     - CHANGELOG.md
+
+dependency_overrides:
+  analyzer: ^8.2.0
