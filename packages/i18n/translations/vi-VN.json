@@ -79,6 +79,10 @@
     "messages": {
       "title": "Tin nhắn",
       "empty": "Bạn chưa có tin nhắn nào",
+      "unread_message_notice": {
+        "one": "Bạn có $n tin nhắn chưa đọc",
+        "other": "Bạn có $n tin nhắn chưa đọc"
+      },
       "categories": {
         "all": "Tất cả",
         "received": "Đã nhận",

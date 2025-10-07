@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:booru_clients/danbooru.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/widgets.dart';
 import 'package:i18n/i18n.dart';
@@ -9,7 +10,7 @@ import 'package:i18n/i18n.dart';
 // Project imports:
 import '../../../../../core/configs/ref.dart';
 import '../../../../../core/widgets/widgets.dart';
-import '../data/providers.dart';
+import '../providers/unread_provider.dart';
 import '../routes/route_utils.dart';
 
 class SliverUnreadMailsBanner extends ConsumerWidget {
@@ -20,10 +21,12 @@ class SliverUnreadMailsBanner extends ConsumerWidget {
     return ref
         .watch(danbooruUnreadDmailsProvider(ref.watchConfigAuth))
         .maybeWhen(
-          data: (mails) => mails.isNotEmpty
+          data: (ids) => ids.isNotEmpty
               ? SliverToBoxAdapter(
                   child: DismissableInfoContainer(
-                    content: 'You have ${mails.length} unread mails',
+                    content: context.t.profile.messages.unread_message_notice(
+                      n: ids.length,
+                    ),
                     mainColor: Colors.blue,
                     actions: [
                       TextButton(
@@ -31,7 +34,8 @@ class SliverUnreadMailsBanner extends ConsumerWidget {
                           foregroundColor: Colors.white,
                           visualDensity: VisualDensity.compact,
                         ),
-                        onPressed: () => goToDmailPage(ref),
+                        onPressed: () =>
+                            goToDmailPage(ref, folder: DmailFolderType.unread),
                         child: Text(
                           context.t.generic.action.view,
                           style: const TextStyle(

@@ -1,6 +1,9 @@
 // Package imports:
 import 'package:equatable/equatable.dart';
 
+// Project imports:
+import 'dmail_id.dart';
+
 class Dmail extends Equatable {
   const Dmail({
     required this.id,
@@ -15,7 +18,7 @@ class Dmail extends Equatable {
     required this.updatedAt,
   });
 
-  final int id;
+  final DmailId id;
   final int ownerId;
   final int fromId;
   final int toId;
@@ -25,6 +28,36 @@ class Dmail extends Equatable {
   final bool isDeleted;
   final DateTime createdAt;
   final DateTime updatedAt;
+
+  Dmail copyWith({
+    DmailId? id,
+    int? ownerId,
+    int? fromId,
+    int? toId,
+    String? title,
+    String? body,
+    bool? isRead,
+    bool? isDeleted,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) {
+    return Dmail(
+      id: id ?? this.id,
+      ownerId: ownerId ?? this.ownerId,
+      fromId: fromId ?? this.fromId,
+      toId: toId ?? this.toId,
+      title: title ?? this.title,
+      body: body ?? this.body,
+      isRead: isRead ?? this.isRead,
+      isDeleted: isDeleted ?? this.isDeleted,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+
+  Dmail markAsRead() => copyWith(isRead: true);
+
+  Dmail markAsUnread() => copyWith(isRead: false);
 
   @override
   List<Object?> get props => [

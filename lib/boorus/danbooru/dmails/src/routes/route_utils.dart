@@ -1,25 +1,14 @@
 // Package imports:
+import 'package:booru_clients/danbooru.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../../core/router.dart';
-import '../types/dmail.dart';
+import '../types/dmail_id.dart';
 
-void goToDmailPage(WidgetRef ref) {
-  ref.router.push(
-    Uri(
-      pathSegments: [
-        '',
-        'danbooru',
-        'dmails',
-      ],
-    ).toString(),
-  );
-}
-
-void goToDmailDetailsPage(
+void goToDmailPage(
   WidgetRef ref, {
-  required Dmail dmail,
+  DmailFolderType? folder,
 }) {
   ref.router.push(
     Uri(
@@ -27,9 +16,24 @@ void goToDmailDetailsPage(
         '',
         'danbooru',
         'dmails',
-        '${dmail.id}',
+      ],
+      queryParameters: folder != null ? {'folder': folder.name} : null,
+    ).toString(),
+  );
+}
+
+void goToDmailDetailsPage(
+  WidgetRef ref, {
+  required DmailId dmailId,
+}) {
+  ref.router.push(
+    Uri(
+      pathSegments: [
+        '',
+        'danbooru',
+        'dmails',
+        dmailId.toPathSegment(),
       ],
     ).toString(),
-    extra: dmail,
   );
 }

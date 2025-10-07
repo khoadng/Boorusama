@@ -79,6 +79,10 @@
     "messages": {
       "title": "Messages",
       "empty": "You have no messages",
+      "unread_message_notice": {
+        "one": "You have $n unread message",
+        "other": "You have $n unread messages"
+      },
       "categories": {
         "all": "All",
         "received": "Received",
