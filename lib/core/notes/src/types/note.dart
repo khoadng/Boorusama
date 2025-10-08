@@ -32,7 +32,6 @@ extension NoteX on Note {
 
 abstract interface class NoteRepository {
   Future<List<Note>> getNotes(int postId);
-  Future<Note?> createNote(int postId, Note note);
 }
 
 extension NoteCoordX on Note {
