@@ -11,7 +11,7 @@ import '../../../configs/create/create.dart';
 import '../../../downloads/filename/types.dart';
 import '../../../downloads/urls/types.dart';
 import '../../../errors/types.dart';
-import '../../../notes/notes.dart';
+import '../../../notes/note/types.dart';
 import '../../../posts/count/count.dart';
 import '../../../posts/details/details.dart';
 import '../../../posts/favorites/types.dart';

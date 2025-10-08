@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../../core/boorus/engine/providers.dart';
 import '../../../../core/configs/config/providers.dart';
-import '../../../../core/notes/notes.dart';
+import '../../../../core/notes/note/widgets.dart';
 import '../../../../core/posts/details/details.dart';
 import '../../../../core/posts/details/providers.dart';
 import '../../../../core/posts/details/routes.dart';

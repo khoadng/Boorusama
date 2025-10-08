@@ -2,7 +2,7 @@
 import 'package:booru_clients/gelbooru.dart';
 
 // Project imports:
-import '../../../core/notes/notes.dart';
+import '../../../core/notes/note/types.dart';
 
 Note gelbooruV2NoteToNote(NoteDto note) {
   return Note(

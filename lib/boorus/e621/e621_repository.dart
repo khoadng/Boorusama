@@ -9,7 +9,7 @@ import '../../core/configs/config.dart';
 import '../../core/configs/create/create.dart';
 import '../../core/downloads/filename/types.dart';
 import '../../core/http/providers.dart';
-import '../../core/notes/notes.dart';
+import '../../core/notes/note/types.dart';
 import '../../core/posts/details/details.dart';
 import '../../core/posts/favorites/types.dart';
 import '../../core/posts/post/post.dart';

@@ -2,7 +2,7 @@
 import 'package:booru_clients/e621.dart';
 
 // Project imports:
-import '../../../core/notes/notes.dart';
+import '../../../core/notes/note/types.dart';
 import 'types.dart';
 
 E621Note e621NoteDtoToE621Note(NoteDto dto) {

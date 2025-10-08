@@ -3,7 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../core/configs/config/types.dart';
-import '../../../core/notes/notes.dart';
+import '../../../core/notes/note/providers.dart';
+import '../../../core/notes/note/types.dart';
 import '../client_provider.dart';
 import 'parser.dart';
 

@@ -9,7 +9,9 @@ import 'package:foundation/foundation.dart';
 // Project imports:
 import '../../../../configs/config/types.dart';
 import '../../../../images/booru_image.dart';
-import '../../../../notes/notes.dart';
+import '../../../../notes/note/providers.dart';
+import '../../../../notes/note/types.dart';
+import '../../../../notes/note/widgets.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../listing/providers.dart';
 import '../../../post/post.dart';

@@ -24,7 +24,7 @@ import '../../core/downloads/downloader/providers.dart';
 import '../../core/downloads/filename/providers.dart';
 import '../../core/downloads/filename/types.dart';
 import '../../core/images/providers.dart';
-import '../../core/notes/notes.dart';
+import '../../core/notes/note/types.dart';
 import '../../core/posts/count/count.dart';
 import '../../core/posts/details/details.dart';
 import '../../core/posts/details_parts/widgets.dart';

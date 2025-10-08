@@ -7,8 +7,8 @@ import 'package:flutter_portal/flutter_portal.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 
 // Project imports:
-import '../../../foundation/platform.dart';
-import '../notes.dart';
+import '../../../../../foundation/platform.dart';
+import '../types/note_coordinate.dart';
 
 class NoteStyle extends Equatable {
   const NoteStyle({
