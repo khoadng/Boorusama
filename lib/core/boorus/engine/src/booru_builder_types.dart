@@ -158,3 +158,9 @@ typedef VideoQualitySelectionBuilder =
       BuildContext context,
       Post post,
     );
+
+typedef NoteEditorPageBuilder =
+    Widget Function(
+      BuildContext context,
+      Post post,
+    );

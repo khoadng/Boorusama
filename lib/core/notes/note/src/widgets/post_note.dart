@@ -2,32 +2,15 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:equatable/equatable.dart';
 import 'package:flutter_portal/flutter_portal.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 
 // Project imports:
 import '../../../../../foundation/platform.dart';
 import '../types/note_coordinate.dart';
-
-class NoteStyle extends Equatable {
-  const NoteStyle({
-    this.borderColor,
-    this.backgroundColor,
-    this.foregroundColor,
-  });
-
-  final Color? borderColor;
-  final Color? backgroundColor;
-  final Color? foregroundColor;
-
-  @override
-  List<Object?> get props => [
-    borderColor,
-    backgroundColor,
-    foregroundColor,
-  ];
-}
+import '../types/note_origin.dart';
+import '../types/note_style.dart';
+import 'note_box.dart';
 
 class PostNote extends StatelessWidget {
   const PostNote({
@@ -35,11 +18,15 @@ class PostNote extends StatelessWidget {
     required this.content,
     super.key,
     this.style,
+    this.origin = NoteOrigin.server,
+    this.inlineText = false,
   });
 
   final NoteCoordinate coordinate;
   final String content;
   final NoteStyle? style;
+  final NoteOrigin origin;
+  final bool inlineText;
 
   @override
   Widget build(BuildContext context) {
@@ -48,11 +35,15 @@ class PostNote extends StatelessWidget {
             coordinate: coordinate,
             content: content,
             style: style,
+            origin: origin,
+            inlineText: inlineText,
           )
         : PostNoteDesktop(
             coordinate: coordinate,
             content: content,
             style: style,
+            origin: origin,
+            inlineText: inlineText,
           );
   }
 }
@@ -61,13 +52,17 @@ class PostNoteDesktop extends StatefulWidget {
   const PostNoteDesktop({
     required this.coordinate,
     required this.content,
+    required this.inlineText,
     super.key,
     this.style,
+    this.origin = NoteOrigin.server,
   });
 
   final NoteCoordinate coordinate;
   final String content;
   final NoteStyle? style;
+  final NoteOrigin origin;
+  final bool inlineText;
 
   @override
   State<PostNoteDesktop> createState() => _PostNoteDesktopState();
@@ -88,6 +83,8 @@ class _PostNoteDesktopState extends State<PostNoteDesktop> {
         coordinate: widget.coordinate,
         content: widget.content,
         style: widget.style,
+        origin: widget.origin,
+        inlineText: widget.inlineText,
       ),
     );
   }
@@ -97,12 +94,16 @@ class _NoteContainerDesktop extends StatefulWidget {
   const _NoteContainerDesktop({
     required this.coordinate,
     required this.content,
+    required this.inlineText,
     this.style,
+    this.origin = NoteOrigin.server,
   });
 
   final NoteCoordinate coordinate;
   final String content;
   final NoteStyle? style;
+  final NoteOrigin origin;
+  final bool inlineText;
 
   @override
   State<_NoteContainerDesktop> createState() => _NoteContainerDesktopState();
@@ -163,17 +164,12 @@ class _NoteContainerDesktopState extends State<_NoteContainerDesktop> {
         child: MouseRegion(
           onEnter: (_) => setState(() => _visible = true),
           onExit: (_) => setState(() => _visible = false),
-          child: Container(
-            width: widget.coordinate.width,
-            height: widget.coordinate.height,
-            decoration: BoxDecoration(
-              color: widget.style?.backgroundColor ?? Colors.white54,
-              border: Border.fromBorderSide(
-                BorderSide(
-                  color: widget.style?.borderColor ?? Colors.red,
-                ),
-              ),
-            ),
+          child: NoteBox(
+            coordinate: widget.coordinate,
+            content: widget.content,
+            inlineText: widget.inlineText,
+            style: widget.style,
+            origin: widget.origin,
           ),
         ),
       ),
@@ -185,13 +181,17 @@ class PostNoteMobile extends StatefulWidget {
   const PostNoteMobile({
     required this.coordinate,
     required this.content,
+    required this.inlineText,
     super.key,
     this.style,
+    this.origin = NoteOrigin.server,
   });
 
   final NoteCoordinate coordinate;
   final String content;
   final NoteStyle? style;
+  final NoteOrigin origin;
+  final bool inlineText;
 
   @override
   State<PostNoteMobile> createState() => _PostNoteMobileState();
@@ -216,6 +216,8 @@ class _PostNoteMobileState extends State<PostNoteMobile> {
           onTap: () => _visible.value = true,
           content: widget.content,
           style: widget.style,
+          origin: widget.origin,
+          inlineText: widget.inlineText,
         ),
       ),
     );
@@ -228,7 +230,9 @@ class _NoteContainerMobile extends StatelessWidget {
     required this.visible,
     required this.onTap,
     required this.content,
+    required this.inlineText,
     this.style,
+    this.origin = NoteOrigin.server,
   });
 
   final NoteCoordinate coordinate;
@@ -236,6 +240,8 @@ class _NoteContainerMobile extends StatelessWidget {
   final String content;
   final VoidCallback onTap;
   final NoteStyle? style;
+  final NoteOrigin origin;
+  final bool inlineText;
 
   @override
   Widget build(BuildContext context) {
@@ -288,17 +294,12 @@ class _NoteContainerMobile extends StatelessWidget {
         ),
         child: GestureDetector(
           onTap: onTap,
-          child: Container(
-            width: coordinate.width,
-            height: coordinate.height,
-            decoration: BoxDecoration(
-              color: style?.backgroundColor ?? Colors.white54,
-              border: Border.fromBorderSide(
-                BorderSide(
-                  color: style?.borderColor ?? Colors.red,
-                ),
-              ),
-            ),
+          child: NoteBox(
+            coordinate: coordinate,
+            content: content,
+            inlineText: inlineText,
+            style: style,
+            origin: origin,
           ),
         ),
       ),
