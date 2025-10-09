@@ -52,4 +52,38 @@ mixin DanbooruClientNotes {
 
     return NoteDto.fromJson(response.data);
   }
+
+  Future<NoteDto> updateNote({
+    required int noteId,
+    required int x,
+    required int y,
+    required int width,
+    required int height,
+    required String body,
+  }) async {
+    final response = await dio.put(
+      '/notes/$noteId.json',
+      data: {
+        'note[x]': x,
+        'note[y]': y,
+        'note[width]': width,
+        'note[height]': height,
+        'note[body]': body,
+      },
+      options: Options(
+        headers: dio.options.headers,
+        contentType: Headers.formUrlEncodedContentType,
+      ),
+    );
+
+    return NoteDto.fromJson(response.data);
+  }
+
+  Future<void> deleteNote({
+    required int noteId,
+  }) {
+    return dio.delete(
+      '/notes/$noteId.json',
+    );
+  }
 }

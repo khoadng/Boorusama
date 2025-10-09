@@ -1233,6 +1233,14 @@
       "unpin_toast": "Đã bỏ ghim cửa sổ"
     }
   },
+  "notes": {
+    "unsaved_changes": {
+      "title": "Bạn có thay đổi chưa được lưu",
+      "message": "Rời khỏi trang này sẽ làm mất các thay đổi chưa được lưu. Bạn có chắc muốn rời đi không?",
+      "discard_unsaved": "Hủy thay đổi chưa lưu",
+      "continue_editing": "Tiếp tục chỉnh sửa"
+    }
+  },
   "video_player": {
     "playback_speed": "Tốc độ phát",
     "lock_screen": "Khoá màn hình",

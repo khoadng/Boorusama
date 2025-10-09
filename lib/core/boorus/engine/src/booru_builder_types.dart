@@ -160,3 +160,9 @@ typedef VideoQualitySelectionBuilder =
       void Function(Widget page)? onPushPage,
       void Function()? onPopPage,
     });
+
+typedef NoteEditorPageBuilder =
+    Widget Function(
+      BuildContext context,
+      Post post,
+    );

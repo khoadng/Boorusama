@@ -1232,6 +1232,14 @@
       "unpin_toast": "Window unpinned from top"
     }
   },
+  "notes": {
+    "unsaved_changes": {
+      "title": "You have unsaved changes",
+      "message": "Leaving this page will discard your unsaved changes. Are you sure you want to leave?",
+      "discard_unsaved": "Discard unsaved changes",
+      "continue_editing": "Continue editing"
+    }
+  },
   "video_player": {
     "playback_speed": "Playback speed",
     "lock_screen": "Lock screen",
