@@ -5,32 +5,38 @@ import 'package:equatable/equatable.dart';
 import 'note_coordinate.dart';
 import 'note_display_mode.dart';
 import 'note_font_size.dart';
+import 'note_origin.dart';
 
 class Note extends Equatable {
   Note({
     required this.coordinate,
     required this.content,
     this.fontSize,
+    this.origin,
   }) : strippedContent = content.replaceAll(RegExp('<[^>]*>'), '').trim();
 
   const Note.empty()
     : coordinate = const RectangleNoteCoordinate.shrink(),
       content = '',
       strippedContent = '',
+      origin = null,
       fontSize = null;
 
   final NoteCoordinate coordinate;
   final String content;
   final NoteFontSize? fontSize;
   final String strippedContent;
+  final NoteOrigin? origin;
 
   Note copyWith({
     NoteCoordinate? coordinate,
     NoteFontSize? fontSize,
+    NoteOrigin? origin,
   }) => Note(
     coordinate: coordinate ?? this.coordinate,
     content: content,
     fontSize: fontSize ?? this.fontSize,
+    origin: origin ?? this.origin,
   );
 
   Note adjust({
@@ -60,7 +66,7 @@ class Note extends Equatable {
   }
 
   @override
-  List<Object?> get props => [coordinate, content, fontSize];
+  List<Object?> get props => [coordinate, content, fontSize, origin];
 }
 
 abstract interface class NoteRepository {

@@ -2,10 +2,12 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
+import '../rendering/dash_border_painter.dart';
 import '../rendering/polygon_note_painter.dart';
 import '../types/note.dart';
 import '../types/note_coordinate.dart';
 import '../types/note_display_mode.dart';
+import '../types/note_origin.dart';
 import '../types/note_style.dart';
 
 class NoteBox extends StatelessWidget {
@@ -14,11 +16,13 @@ class NoteBox extends StatelessWidget {
     required this.note,
     required this.style,
     this.displayMode,
+    this.origin,
   });
 
   final Note note;
   final NoteStyle? style;
   final NoteDisplayMode? displayMode;
+  final NoteOrigin? origin;
 
   @override
   Widget build(BuildContext context) {
@@ -27,28 +31,39 @@ class NoteBox extends StatelessWidget {
         :final width,
         :final height,
       ) =>
-        Container(
-          width: width,
-          height: height,
-          decoration: BoxDecoration(
-            color: _buildBackgroundColor(),
-            border: Border.fromBorderSide(
-              BorderSide(
-                color: style?.borderColor ?? Colors.red,
-              ),
+        CustomPaint(
+          painter: switch (note.origin) {
+            NoteOrigin.local => DashedBorderPainter(
+              color: style?.borderColor ?? Colors.green,
             ),
-          ),
-          child: switch (displayMode) {
-            NoteDisplayMode.box || null => null,
-            NoteDisplayMode.inlineHorizontal ||
-            NoteDisplayMode.inlineVertical => ClipRect(
-              child: _InlineText(
-                note: note,
-                style: style,
-                displayMode: displayMode,
-              ),
-            ),
+            _ => null,
           },
+          child: Container(
+            width: width,
+            height: height,
+            decoration: BoxDecoration(
+              color: _buildBackgroundColor(),
+              border: switch (note.origin) {
+                NoteOrigin.server => Border.fromBorderSide(
+                  BorderSide(
+                    color: style?.borderColor ?? Colors.red,
+                  ),
+                ),
+                NoteOrigin.local || null => null,
+              },
+            ),
+            child: switch (displayMode) {
+              NoteDisplayMode.box || null => null,
+              NoteDisplayMode.inlineHorizontal ||
+              NoteDisplayMode.inlineVertical => ClipRect(
+                child: _InlineText(
+                  note: note,
+                  style: style,
+                  displayMode: displayMode,
+                ),
+              ),
+            },
+          ),
         ),
       final PolygonNoteCoordinate polyCoord => Builder(
         builder: (context) {
@@ -85,7 +100,13 @@ class NoteBox extends StatelessWidget {
 
   Color _buildBackgroundColor() {
     return switch (displayMode) {
-      NoteDisplayMode.box || null => style?.backgroundColor ?? Colors.white54,
+      NoteDisplayMode.box || null => switch (note.origin) {
+        NoteOrigin.local =>
+          (style?.backgroundColor ?? Colors.white54).withValues(
+            alpha: 0.7,
+          ),
+        NoteOrigin.server || null => style?.backgroundColor ?? Colors.white54,
+      },
       NoteDisplayMode.inlineHorizontal ||
       NoteDisplayMode.inlineVertical => Colors.white,
     };
