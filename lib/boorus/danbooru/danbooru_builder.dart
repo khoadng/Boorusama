@@ -24,6 +24,7 @@ import 'comments/listing/widgets.dart';
 import 'configs/widgets.dart';
 import 'home/types.dart';
 import 'home/widgets.dart';
+import 'notes/danbooru_note_editor_page.dart';
 import 'posts/details/widgets.dart';
 import 'posts/favorites/widgets.dart';
 import 'posts/listing/widgets.dart';
@@ -185,4 +186,16 @@ class DanbooruBuilder extends BaseBooruBuilder {
           auth: auth,
         );
       };
+
+  @override
+  NoteEditorPageBuilder? get noteEditorPageBuilder =>
+      (context, post) => castOrNull<DanbooruPost>(post).toOption().fold(
+        () => Scaffold(
+          appBar: AppBar(),
+          body: Center(
+            child: Text('Invalid post type: ${post.runtimeType}'),
+          ),
+        ),
+        (danbooruPost) => DanbooruNoteEditorPage(post: danbooruPost),
+      );
 }

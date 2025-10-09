@@ -1,5 +1,5 @@
 // Flutter imports:
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,6 +9,7 @@ import 'package:selection_mode/selection_mode.dart';
 // Project imports:
 import '../../../../../core/bookmarks/providers.dart';
 import '../../../../../core/bookmarks/types.dart';
+import '../../../../../core/boorus/engine/providers.dart';
 import '../../../../../core/configs/config/providers.dart';
 import '../../../../../core/downloads/downloader/providers.dart';
 import '../../../../../core/posts/post/providers.dart';
@@ -16,6 +17,7 @@ import '../../../../../core/router.dart';
 import '../../../../../core/tags/show/routes.dart';
 import '../../../../../core/widgets/booru_context_menu.dart';
 import '../../../../../core/widgets/context_menu_tile.dart';
+import '../../../../../foundation/info/package_info.dart';
 import '../../../../../foundation/url_launcher.dart';
 import '../../../configs/providers.dart';
 import '../../../favgroups/favgroups/routes.dart';
@@ -50,6 +52,9 @@ class DanbooruPostContextMenu extends ConsumerWidget {
     final hasAccount = loginDetails.hasLogin();
     final postLinkGenerator = ref.watch(postLinkGeneratorProvider(booruConfig));
     final selectionModeController = SelectionMode.maybeOf(context);
+    final noteEditorBuilder = ref
+        .watch(booruBuilderProvider(booruConfig))
+        ?.noteEditorPageBuilder;
 
     return BooruContextMenu(
       menuItemsBuilder: (context) => [
@@ -159,6 +164,18 @@ class DanbooruPostContextMenu extends ConsumerWidget {
               );
             },
           ),
+        if (noteEditorBuilder case final builder?)
+          if (ref.watch(isDevEnvironmentProvider))
+            ContextMenuTile(
+              title: 'Add note',
+              onTap: () {
+                Navigator.of(context).push(
+                  CupertinoPageRoute(
+                    builder: (context) => builder(context, post),
+                  ),
+                );
+              },
+            ),
       ],
       child: child,
     );
