@@ -9,12 +9,14 @@ import 'package:i18n/i18n.dart';
 // Project imports:
 import '../../../../../core/bookmarks/providers.dart';
 import '../../../../../core/bookmarks/types.dart';
+import '../../../../../core/boorus/engine/providers.dart';
 import '../../../../../core/configs/config/providers.dart';
 import '../../../../../core/downloads/downloader/providers.dart';
 import '../../../../../core/posts/post/providers.dart';
 import '../../../../../core/posts/post/types.dart';
 import '../../../../../core/router.dart';
 import '../../../../../core/tags/show/routes.dart';
+import '../../../../../foundation/info/package_info.dart';
 import '../../../../../foundation/url_launcher.dart';
 import '../../../configs/providers.dart';
 import '../../../versions/routes.dart';
@@ -46,6 +48,9 @@ class DanbooruPostContextMenu extends ConsumerWidget {
     final isBookmarkLoading = bookmarkStateAsync.isLoading;
     final hasAccount = loginDetails.hasLogin();
     final postLinkGenerator = ref.watch(postLinkGeneratorProvider(booruConfig));
+    final noteEditorBuilder = ref
+        .watch(booruBuilderProvider(booruConfig))
+        ?.noteEditorPageBuilder;
 
     return GenericContextMenu(
       buttonConfigs: [
@@ -124,6 +129,18 @@ class DanbooruPostContextMenu extends ConsumerWidget {
               onMultiSelect?.call();
             },
           ),
+        if (noteEditorBuilder case final builder?)
+          if (ref.watch(isDevEnvironmentProvider))
+            ContextMenuButtonConfig(
+              'Add note',
+              onPressed: () {
+                Navigator.of(context).push(
+                  CupertinoPageRoute(
+                    builder: (context) => builder(context, post),
+                  ),
+                );
+              },
+            ),
       ],
     );
   }
