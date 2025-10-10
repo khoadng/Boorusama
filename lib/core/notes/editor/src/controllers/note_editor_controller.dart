@@ -70,6 +70,10 @@ class NoteEditorController extends ChangeNotifier {
     return _notes.where((note) => !note.isDeleted).toList();
   }
 
+  bool get hasNoChanges {
+    return _notes.every((note) => note.isUnchanged);
+  }
+
   void addNote(NoteRect rect, String body) {
     final newNote = TrackedNote.newNote(rect: rect.copyWith(body: body));
     _notes.add(newNote);

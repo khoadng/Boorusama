@@ -17,6 +17,7 @@ import '../types/note_image.dart';
 import '../types/note_rect_data.dart';
 import '../widgets/note_tool_palette.dart';
 import 'add_note_dialog.dart';
+import 'unsaved_alert_dialog.dart';
 
 class RawNoteEditorPage extends ConsumerStatefulWidget {
   const RawNoteEditorPage({
@@ -150,41 +151,66 @@ class _RawNoteEditorPageState extends ConsumerState<RawNoteEditorPage> {
     return ListenableBuilder(
       listenable: controller,
       builder: (context, _) {
-        return Scaffold(
-          extendBodyBehindAppBar: true,
-          extendBody: true,
-          appBar: overlayVisible
-              ? AppBar(
-                  title: const Text('Note Editor'),
-                  actions: [
-                    IconButton(
-                      key: kUndoButtonKey,
-                      icon: const Icon(Icons.undo),
-                      onPressed: controller.canUndo ? controller.undo : null,
+        return PopScope(
+          canPop: false,
+          onPopInvokedWithResult: (didPop, result) async {
+            if (didPop) return;
+            final navigator = Navigator.of(context);
+
+            if (controller.hasNoChanges) {
+              navigator.pop(true);
+            } else {
+              final continueEdit = await showDialog(
+                context: context,
+                builder: (context) => const UnsavedAlertDialog(),
+              );
+
+              if (continueEdit == true) {
+                return;
+              } else {
+                navigator.pop(false);
+              }
+            }
+          },
+          child: Scaffold(
+            extendBodyBehindAppBar: true,
+            extendBody: true,
+            appBar: overlayVisible
+                ? AppBar(
+                    actions: [
+                      IconButton(
+                        key: kUndoButtonKey,
+                        icon: const Icon(Icons.undo),
+                        onPressed: controller.canUndo ? controller.undo : null,
+                      ),
+                      IconButton(
+                        key: kRedoButtonKey,
+                        icon: const Icon(Icons.redo),
+                        onPressed: controller.canRedo ? controller.redo : null,
+                      ),
+                      IconButton(
+                        key: kSubmitButtonKey,
+                        icon: const Icon(Icons.save),
+                        onPressed: controller.hasNoChanges
+                            ? null
+                            : () {
+                                widget.onSubmit?.call(
+                                  controller.getChangeset(),
+                                );
+                              },
+                      ),
+                    ],
+                  )
+                : null,
+            body: _buildBody(),
+            bottomNavigationBar: overlayVisible
+                ? SafeArea(
+                    child: NoteToolPalette(
+                      controller: controller,
                     ),
-                    IconButton(
-                      key: kRedoButtonKey,
-                      icon: const Icon(Icons.redo),
-                      onPressed: controller.canRedo ? controller.redo : null,
-                    ),
-                    IconButton(
-                      key: kSubmitButtonKey,
-                      icon: const Icon(Icons.save),
-                      onPressed: () {
-                        widget.onSubmit?.call(controller.getChangeset());
-                      },
-                    ),
-                  ],
-                )
-              : null,
-          body: _buildBody(),
-          bottomNavigationBar: overlayVisible
-              ? SafeArea(
-                  child: NoteToolPalette(
-                    controller: controller,
-                  ),
-                )
-              : null,
+                  )
+                : null,
+          ),
         );
       },
     );
