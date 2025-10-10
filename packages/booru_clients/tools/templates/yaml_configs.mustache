@@ -1,0 +1,160 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
+
+// Package imports:
+import 'package:equatable/equatable.dart';
+
+enum NetworkProtocol {
+{{#protocols}}
+  {{enumName}},
+{{/protocols}}
+}
+
+NetworkProtocol? stringToNetworkProtocol(String value) => switch (value) {
+{{#protocols}}
+      '{{enumName}}' || '{{yamlValue}}' => NetworkProtocol.{{enumName}},
+{{/protocols}}
+      _ => null,
+    };
+
+NetworkProtocol parseProtocol(dynamic value) => switch (value) {
+      final String s => stringToNetworkProtocol(s) ?? NetworkProtocol.https_1_1,
+      _ => NetworkProtocol.https_1_1,
+    };
+
+class SiteConfig {
+  const SiteConfig({
+    required this.url,
+    this.metadata = const {},
+  });
+
+  final String url;
+  final Map<String, dynamic> metadata;
+}
+
+class BooruType extends Equatable {
+  const BooruType._({
+    required this.name,
+    required this.yamlName,
+    required this.id,
+    required this.displayName,
+    this.canDownloadMultipleFiles = true,
+    this.hasUnknownFullImageUrl = false,
+    this.postCountMethod = PostCountMethod.notSupported,
+    this.isSingleSite = false,
+  });
+
+  final String name;
+  final String yamlName;
+  final int id;
+  final String displayName;
+  final bool canDownloadMultipleFiles;
+  final bool hasUnknownFullImageUrl;
+  final PostCountMethod postCountMethod;
+  final bool isSingleSite;
+
+  static const unknown = BooruType._(
+    name: 'unknown',
+    yamlName: '',
+    id: 0,
+    displayName: 'UNKNOWN',
+    isSingleSite: true,
+  );
+
+{{#booruTypes}}
+  static const {{{name}}} = BooruType._(
+    {{{params}}}
+  );
+
+{{/booruTypes}}
+  /// Maps legacy IDs to the corresponding BooruType
+  static BooruType fromLegacyId(int? value) => switch (value) {
+{{{legacyIdMap}}}
+    _ => unknown,
+  };
+
+  @override
+  List<Object?> get props => [id, yamlName, name, isSingleSite];
+}
+
+// Backwards compatibility function - replaced by BooruType.fromLegacyId
+BooruType intToBooruType(int? value) => BooruType.fromLegacyId(value);
+
+enum PostCountMethod {
+  notSupported,
+  endpoint,
+  search,
+}
+
+class BooruYamlConfig {
+  const BooruYamlConfig({
+    required this.name,
+    required this.type,
+    required this.protocol,
+    required this.sites,
+    this.loginUrl,
+    this.headers,
+    this.globalUserParams,
+    this.auth,
+    this.features,
+  });
+
+  final String name;
+  final BooruType type;
+  final NetworkProtocol protocol;
+  final List<SiteConfig> sites;
+  final String? loginUrl;
+  final Map<String, String>? headers;
+  final Map<String, String>? globalUserParams;
+  final Map<String, dynamic>? auth;
+  final Map<String, dynamic>? features;
+}
+
+class BooruYamlConfigs {
+{{#configs}}
+  static const {{dartName}} = BooruYamlConfig(
+    name: '{{yamlName}}',
+    type: BooruType.{{dartName}},
+    protocol: NetworkProtocol.{{protocolEnum}},
+    sites: [
+{{#sites}}
+      SiteConfig(
+        url: '{{{url}}}',
+{{#hasMetadata}}
+        metadata: {{{metadataJson}}},
+{{/hasMetadata}}
+      ),
+{{/sites}}
+    ],
+{{#hasLoginUrl}}
+    loginUrl: '{{{loginUrl}}}',
+{{/hasLoginUrl}}
+{{#hasHeaders}}
+    headers: {{{headersJson}}},
+{{/hasHeaders}}
+{{#hasGlobalUserParams}}
+    globalUserParams: {{{globalUserParamsJson}}},
+{{/hasGlobalUserParams}}
+{{#hasAuth}}
+    auth: {{{authJson}}},
+{{/hasAuth}}
+{{#hasFeatures}}
+    features: {{{featuresJson}}},
+{{/hasFeatures}}
+  );
+
+{{/configs}}
+
+  /// List of all available booru configurations
+  static const values = [
+{{#configNames}}
+    {{.}},
+{{/configNames}}
+  ];
+
+  /// Map of all available booru configurations by ID
+  static const byId = {
+{{#configMapEntries}}
+    {{id}}: {{dartName}},
+{{/configMapEntries}}
+  };
+}

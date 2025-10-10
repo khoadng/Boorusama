@@ -8,10 +8,6 @@
   );
 {{/endpoints}}
 
-  static const globalUserParams = {{{globalParamsMap}}};
-  
-  static const sites = {{{sitesList}}};
-  
   static const defaultFeatures = <BooruFeatureId, FeatureEndpoint>{
 {{#defaultFeatures}}
     BooruFeatureId.{{featureId}}: _{{featureId}}Endpoint,

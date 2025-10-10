@@ -85,7 +85,7 @@ class _AnimePicturesAuthViewState extends ConsumerState<AnimePicturesAuthView> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           DefaultCookieAuthConfigSection(
-            loginUrl: animePictures.loginUrl,
+            loginUrl: animePictures.getLoginUrl(),
             onGetCookies: (cookies) {
               if (cookies.isNotEmpty) {
                 final filtered = cookies

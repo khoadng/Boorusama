@@ -10,7 +10,7 @@ void main() async {
     await CodegenRunner().runWithInput(
       config: CodegenConfig(
         templateDirectory: 'tools/templates',
-        inputPath: '../../boorus.yaml',
+        inputPath: 'boorus.yaml',
         outputPath: 'lib/src/generated/booru_config.dart',
       ),
       inputLoader: _loadYamlData,

@@ -1,43 +1,33 @@
 // Package imports:
 import 'package:booru_clients/core.dart';
+import 'package:booru_clients/generated.dart';
 import 'package:equatable/equatable.dart';
-
-// Project imports:
-import '../../../http/http.dart';
-import 'booru_type.dart';
 
 abstract class Booru extends Equatable {
   const Booru({
-    required this.name,
-    required this.protocol,
+    required this.config,
   });
 
-  final String name;
-  final NetworkProtocol protocol;
+  final BooruYamlConfig config;
 
-  Iterable<String> get sites;
-
-  BooruType get type;
+  BooruType get type => config.type;
 
   int get id => type.id;
 
-  NetworkProtocol? getSiteProtocol(String url) => protocol;
+  Map<String, dynamic>? get headers => config.headers;
 
-  String? getLoginUrl() => null;
+  NetworkProtocol? getSiteProtocol(String url) => config.protocol;
 
-  bool hasSite(String url) => sites.any((site) => url == site);
+  String? getLoginUrl() => config.loginUrl;
+
+  bool hasSite(String url) => config.sites.any((site) => url == site.url);
   @override
-  List<Object?> get props => [name];
-}
-
-mixin PassHashAuthMixin {
-  String? get loginUrl;
+  List<Object?> get props => [config.type.id];
 }
 
 abstract class FeatureAwareBooru extends Booru {
   const FeatureAwareBooru({
-    required super.name,
-    required super.protocol,
+    required super.config,
     required this.globalUserParams,
   });
 
@@ -81,4 +71,10 @@ abstract class FeatureAwareBooru extends Booru {
 
     return baseConfig.withOverrides(endpointOverrides);
   }
+}
+
+class BooruScaffold extends Booru {
+  const BooruScaffold({
+    required super.config,
+  });
 }

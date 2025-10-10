@@ -179,5 +179,4 @@ flutter:
     - assets/information.json
     - assets/tagdef.json
     - assets/ca/isrgrootx1.pem
-    - boorus.yaml
     - CHANGELOG.md

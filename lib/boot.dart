@@ -70,8 +70,8 @@ Future<void> boot(BootData bootData) async {
 
   final booruRegistry = createBooruRegistry();
 
-  logger.debugBoot('Load boorus from assets');
-  final boorus = await loadBoorusFromAssets(booruRegistry);
+  logger.debugBoot('Load boorus');
+  final boorus = loadBoorus(booruRegistry);
 
   logger.debugBoot('Initialize settings repository');
   final settingRepository = await createSettingsRepo(logger: logger);

@@ -17,7 +17,7 @@ import '../../../core/posts/details_parts/widgets.dart';
 import '../../../core/posts/post/post.dart';
 import '../../../core/router.dart';
 import '../../../core/search/search/routes.dart';
-import '../gelbooru_v2.dart';
+import '../gelbooru_v2_provider.dart';
 import 'providers.dart';
 import 'types.dart';
 

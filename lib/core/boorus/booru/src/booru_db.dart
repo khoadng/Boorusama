@@ -1,5 +1,5 @@
 // Package imports:
-import 'package:collection/collection.dart';
+import 'package:booru_clients/generated.dart';
 
 // Project imports:
 import 'booru.dart';
@@ -9,20 +9,25 @@ class BooruDb {
     required this.boorus,
   });
 
-  final List<Booru> boorus;
-
-  T? getBooru<T extends Booru>() {
-    final booru = boorus.firstWhereOrNull((booru) => booru is T);
-
-    return booru as T?;
+  factory BooruDb.fromConfigs(
+    List<BooruYamlConfig> configs,
+    Booru Function(BooruYamlConfig) configToBooru,
+  ) {
+    final booruMap = <BooruType, Booru>{};
+    for (final config in configs) {
+      booruMap[config.type] = configToBooru(config);
+    }
+    return BooruDb(boorus: booruMap);
   }
 
-  List<Booru> getAllBoorus() {
-    return boorus.toList();
-  }
+  final Map<BooruType, Booru> boorus;
+
+  Booru? getBooru(BooruType type) => boorus[type];
+
+  List<Booru> getAllBoorus() => boorus.values.toList();
 
   Booru? getBooruFromUrl(String url) {
-    for (final booru in boorus) {
+    for (final booru in boorus.values) {
       if (booru.hasSite(url)) {
         return booru;
       }
@@ -31,6 +36,7 @@ class BooruDb {
   }
 
   Booru? getBooruFromId(int id) {
-    return boorus.firstWhereOrNull((booru) => booru.id == id);
+    final config = BooruYamlConfigs.byId[id];
+    return config != null ? boorus[config.type] : null;
   }
 }

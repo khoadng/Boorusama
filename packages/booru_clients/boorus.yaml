@@ -1,4 +1,8 @@
 - danbooru:
+    metadata:
+      id: 20
+      legacy-ids: [1, 2, 3, 5]
+      post-count-method: endpoint
     protocol: https_2
     sites:
       - url: https://danbooru.donmai.us/
@@ -14,32 +18,34 @@
         ai-tag: true
       - url: https://testbooru.donmai.us/
 
-- moebooru:
-    sites:
-      - url: https://konachan.com/
-        salt: So-I-Heard-You-Like-Mupkids-?--{0}--
-        favorite-support: true
-        protocol: https_2
-      - url: https://konachan.net/
-        salt: So-I-Heard-You-Like-Mupkids-?--{0}--
-        favorite-support: true
-        protocol: https_2
-      - url: https://yande.re/
-        salt: choujin-steiner--{0}--
-        favorite-support: true
-        protocol: https_2
-      - url: https://sakugabooru.com/
-        salt: er@!$rjiajd0$!dkaopc350!Y%)--{0}--
-        favorite-support: true
-        protocol: https_2
-
 - gelbooru:
+    metadata:
+      id: 21
+      display-name: Gelbooru 0.2.5
+      legacy-ids: [4]
+      post-count-method: search
+      single-site: true
     protocol: https_2
     login-url: https://gelbooru.com/index.php?page=account&s=login&code=00
     sites:
       - https://gelbooru.com/
 
+- gelbooru_v1:
+    metadata:
+      id: 22
+      name: gelbooruV1
+      display-name: Gelbooru 0.1.x
+      legacy-ids: [14]
+      has-unknown-full-image-url: true
+    sites:
+      - https://illusioncards.booru.org/
+
 - gelbooru_v2:
+    metadata:
+      id: 23
+      name: gelbooruV2
+      display-name: Gelbooru 0.2
+      legacy-ids: [9]
     global-user-params:
       user-id: "user_id"
       api-key: "api_key"
@@ -140,23 +146,50 @@
       - url: https://tbib.org/
       - url: https://safebooru.org/
 
-- gelbooru_v1: 
+- moebooru:
+    metadata:
+      id: 24
+      legacy-ids: [6, 7, 8, 10]
     sites:
-      - https://illusioncards.booru.org/
+      - url: https://konachan.com/
+        salt: So-I-Heard-You-Like-Mupkids-?--{0}--
+        favorite-support: true
+        protocol: https_2
+      - url: https://konachan.net/
+        salt: So-I-Heard-You-Like-Mupkids-?--{0}--
+        favorite-support: true
+        protocol: https_2
+      - url: https://yande.re/
+        salt: choujin-steiner--{0}--
+        favorite-support: true
+        protocol: https_2
+      - url: https://sakugabooru.com/
+        salt: er@!$rjiajd0$!dkaopc350!Y%)--{0}--
+        favorite-support: true
+        protocol: https_2
 
 - e621:
+    metadata:
+      id: 25
+      legacy-ids: [11, 12]
     protocol: https_2
     sites:
       - https://e621.net/
       - https://e926.net/
 
 - zerochan:
+    metadata:
+      id: 26
+      legacy-ids: [13]
+      has-unknown-full-image-url: true
     protocol: https_2
     sites:
       - https://zerochan.net/
       - https://kpop.asiachan.com/
 
 - sankaku:
+    metadata:
+      id: 27
     protocol: https_2
     headers:
       - User-Agent: Mozilla/5.0 (Linux; Android 13; Pixel 6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Mobile Safari/537.36
@@ -172,29 +205,46 @@
       - https://idolcomplex.com/ 
 
 - philomena:
+    metadata:
+      id: 28
     protocol: https_2
     sites:
       - https://derpibooru.org/
       - https://ponybooru.org/
 
 - shimmie2:
+    metadata:
+      id: 29
     protocol: https_1
     sites:
       - https://rule34.paheal.net/
 
+- szurubooru:
+    metadata:
+      id: 30
+    protocol: https_1
+
+- hydrus:
+    metadata:
+      id: 31
+    protocol: https_1
+
 - anime-pictures:
+    metadata:
+      id: 32
+      name: animePictures
+      display-name: Anime Pictures
+      can-download-multiple-files: false
+      single-site: true
     protocol: https_1
     login-url: https://anime-pictures.net/login?lang=en
     sites:
       - https://anime-pictures.net/
 
 - hybooru:
+    metadata:
+      id: 33
+      post-count-method: endpoint
     protocol: https_2
     sites:
       - https://booru.funmaker.moe/
-
-- hydrus:
-    protocol: https_1
-
-- szurubooru:
-    protocol: https_1

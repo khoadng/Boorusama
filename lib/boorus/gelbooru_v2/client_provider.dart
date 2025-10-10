@@ -13,7 +13,7 @@ import '../../foundation/info/app_info.dart';
 import '../../foundation/info/package_info.dart';
 import '../../foundation/loggers.dart';
 import '../../foundation/vendors/google/providers.dart';
-import 'gelbooru_v2.dart';
+import 'gelbooru_v2_provider.dart';
 
 final gelbooruV2ClientProvider =
     Provider.family<GelbooruV2Client, BooruConfigAuth>((ref, config) {

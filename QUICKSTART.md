@@ -3,10 +3,11 @@
 ### Writing New Code
 
 #### Adding New Booru Type
-1. Create `lib/boorus/{type}/` directory
-2. Implement `{type}.dart` with `create{Type}()` factory function
-3. Add to registry map in `lib/boorus/registry.dart`
-4. Create matching client in `packages/booru_clients/lib/`
+1. Add configuration to `packages/booru_clients/boorus.yaml`
+2. Run `./gen.sh` to generate booru configs
+3. Create `lib/boorus/{type}/` directory
+4. Implement `{type}.dart` with `create{Type}()` factory function
+5. Create matching client in `packages/booru_clients/lib/`
 
 #### Adding Cross-Booru Features
 - Use `lib/core/{feature}/` for shared functionality
@@ -43,16 +44,14 @@ lib/core/{feature}/
 ### Booru Directory Patterns
 ```
 lib/boorus/{type}/
-├── {type}.dart                 # Main booru class
+├── {type}.dart                 # Factory function & main booru class
 ├── {type}_builder.dart         # UI customizations
 ├── {type}_repository.dart      # Data layer
-├── posts/                      # Core post features
-│   ├── post/
-│   ├── details/               # Post detail pages
-│   ├── favorites/             # Favorites management
-│   └── [type-specific features]
+├── client_provider.dart        # Client providers
+├── posts/                      # Post features (providers, widgets, types, parsers)
 ├── tags/                       # Tag management
-├── configs/                    # Configuration
+├── configs/                    # Configuration UI
 ├── home/                       # Home page customization
-└── [advanced features]/       # comments, artists, notes, etc.
+├── favorites/                  # Favorites (if supported)
+└── [other features]/           # comments, artists, notes, autocompletes, etc.
 ```

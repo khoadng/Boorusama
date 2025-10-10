@@ -2,6 +2,7 @@
 import 'dart:io';
 
 // Package imports:
+import 'package:booru_clients/generated.dart';
 import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
 import 'package:dio_http2_adapter/dio_http2_adapter.dart';
@@ -13,7 +14,6 @@ import '../../../../foundation/platform.dart';
 import '../../../proxy/proxy.dart';
 import '../../../router.dart';
 import '../http_utils.dart';
-import '../network_protocol.dart';
 import 'dio_ext.dart';
 import 'dio_image_deduplicate_interceptor.dart';
 import 'dio_logger_interceptor.dart';

@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/boorus/booru/booru.dart';
 import '../../core/boorus/booru/providers.dart';
 import '../../core/boorus/engine/engine.dart';
-import '../../core/http/http.dart';
 import 'danbooru_builder.dart';
 import 'danbooru_repository.dart';
 
@@ -19,7 +18,7 @@ BooruComponents createDanbooru() => BooruComponents(
 final danbooruProvider = Provider<Danbooru>(
   (ref) {
     final booruDb = ref.watch(booruDbProvider);
-    final booru = booruDb.getBooru<Danbooru>();
+    final booru = booruDb.getBooru(BooruType.danbooru) as Danbooru?;
 
     if (booru == null) {
       throw Exception('Booru not found for type: ${BooruType.danbooru}');
@@ -37,18 +36,11 @@ typedef DanbooruSite = ({
 
 final class Danbooru extends Booru {
   const Danbooru({
-    required super.name,
-    required super.protocol,
+    required super.config,
     required List<DanbooruSite> sites,
   }) : _sites = sites;
 
   final List<DanbooruSite> _sites;
-
-  @override
-  Iterable<String> get sites => _sites.map((e) => e.url);
-
-  @override
-  BooruType get type => BooruType.danbooru;
 
   bool hasAiTagSupported(String url) =>
       _sites.firstWhereOrNull((e) => url.contains(e.url))?.aiTagSupport ??
@@ -65,16 +57,15 @@ final class Danbooru extends Booru {
 
 class DanbooruParser extends BooruParser {
   @override
-  BooruType get booruType => BooruType.danbooru;
-
-  @override
-  Booru parse(String name, dynamic data) {
+  Booru parse() {
+    const config = BooruYamlConfigs.danbooru;
     final sites = <DanbooruSite>[];
 
-    for (final item in data['sites']) {
-      final url = item['url'] as String;
-      final aiTagSupport = item['ai-tag'];
-      final censoredTagsBanned = item['censored-tags-banned'];
+    for (final siteConfig in config.sites) {
+      final url = siteConfig.url;
+      final aiTagSupport = siteConfig.metadata['ai-tag'] as bool?;
+      final censoredTagsBanned =
+          siteConfig.metadata['censored-tags-banned'] as bool?;
 
       sites.add(
         (
@@ -86,8 +77,7 @@ class DanbooruParser extends BooruParser {
     }
 
     return Danbooru(
-      name: name,
-      protocol: parseProtocol(data['protocol']),
+      config: config,
       sites: sites,
     );
   }

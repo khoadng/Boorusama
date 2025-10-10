@@ -1,0 +1,26 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
+
+// Project imports:
+import '../../core/boorus/booru/booru.dart';
+import '../../core/boorus/engine/engine.dart';
+{{#imports}}
+import '{{yamlName}}/{{fileName}}.dart';
+{{/imports}}
+
+typedef BooruFactory = BooruComponents Function();
+
+final Map<BooruType, BooruFactory> _booruFactories = {
+{{#mapEntries}}
+  BooruType.{{dartName}}: {{functionName}},
+{{/mapEntries}}
+};
+
+BooruRegistry createBooruRegistry() {
+  final registry = BooruRegistry();
+
+  for (final entry in _booruFactories.entries) {
+    registry.register(entry.key, entry.value());
+  }
+
+  return registry;
+}
