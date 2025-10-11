@@ -48,32 +48,39 @@ class _MetatagsSectionState extends ConsumerState<MetatagsSection> {
   Widget build(BuildContext context) {
     final userMetatags = widget.userMetatags;
 
-    return OptionTagsArena(
-      controller: controller,
-      title: 'Metatags',
-      titleTrailing: widget.onHelpRequest != null
-          ? IconButton(
-              onPressed: widget.onHelpRequest,
-              icon: const FaIcon(
-                FontAwesomeIcons.circleQuestion,
-                size: 18,
+    return Padding(
+      padding: const EdgeInsets.only(
+        left: 8,
+        right: 8,
+        bottom: 10,
+      ),
+      child: OptionTagsArena(
+        controller: controller,
+        title: 'Metatags',
+        titleTrailing: widget.onHelpRequest != null
+            ? IconButton(
+                onPressed: widget.onHelpRequest,
+                icon: const FaIcon(
+                  FontAwesomeIcons.circleQuestion,
+                  size: 18,
+                ),
+              )
+            : const SizedBox.shrink(),
+        children: [
+          if (userMetatags != null)
+            ...userMetatags.map(
+              (tag) => ValueListenableBuilder(
+                valueListenable: controller.editMode,
+                builder: (context, editMode, _) => _buildChip(tag, editMode),
               ),
-            )
-          : const SizedBox.shrink(),
-      children: [
-        if (userMetatags != null)
-          ...userMetatags.map(
-            (tag) => ValueListenableBuilder(
-              valueListenable: controller.editMode,
-              builder: (context, editMode, _) => _buildChip(tag, editMode),
             ),
+          ValueListenableBuilder(
+            valueListenable: controller.editMode,
+            builder: (context, editMode, _) =>
+                _buildAddButton(context, widget.metatags),
           ),
-        ValueListenableBuilder(
-          valueListenable: controller.editMode,
-          builder: (context, editMode, _) =>
-              _buildAddButton(context, widget.metatags),
-        ),
-      ],
+        ],
+      ),
     );
   }
 

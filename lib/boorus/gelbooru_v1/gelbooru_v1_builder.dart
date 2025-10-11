@@ -84,10 +84,13 @@ class GelbooruV1SearchPage extends ConsumerWidget {
     final postRepo = ref.watch(postRepoProvider(ref.watchConfigSearch));
 
     return SearchPageScaffold(
-      noticeBuilder: (context) => InfoContainer(
-        contentBuilder: (context) => const AppHtml(
-          data: 'The app will use <b>Gelbooru</b> for tag completion.',
+      landingViewBuilder: (controller) => DefaultMobileSearchLandingView(
+        notice: InfoContainer(
+          contentBuilder: (context) => const AppHtml(
+            data: 'The app will use <b>Gelbooru</b> for tag completion.',
+          ),
         ),
+        controller: controller,
       ),
       params: params,
       fetcher: (page, controller) => postRepo.getPostsFromController(

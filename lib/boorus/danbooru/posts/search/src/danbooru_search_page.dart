@@ -55,8 +55,6 @@ class _DanbooruSearchPageState extends ConsumerState<DanbooruSearchPage> {
           ),
         ),
       ],
-      trending: (context, controller) => _Trending(controller),
-      metatags: (context, controller) => _Metatags(controller),
       itemBuilder:
           (context, index, scrollController, postController, useHero) =>
               DefaultDanbooruImageGridItem(
@@ -65,6 +63,8 @@ class _DanbooruSearchPageState extends ConsumerState<DanbooruSearchPage> {
                 controller: postController,
                 useHero: useHero,
               ),
+      landingViewBuilder: (controller) =>
+          DanbooruSearchLandingView(controller: controller),
       extraHeaders:
           (
             context,
@@ -110,6 +110,30 @@ class _DanbooruSearchPageState extends ConsumerState<DanbooruSearchPage> {
               ),
             ];
           },
+    );
+  }
+}
+
+class DanbooruSearchLandingView extends StatelessWidget {
+  const DanbooruSearchLandingView({
+    super.key,
+    required this.controller,
+  });
+
+  final SearchPageController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return SearchLandingView(
+      child: DefaultSearchLandingChildren(
+        children: [
+          DefaultMobileQueryActionSection(controller: controller),
+          _Metatags(controller),
+          DefaultMobileFavoriteTagsSection(controller: controller),
+          _Trending(controller),
+          DefaultMobileSearchHistorySection(controller: controller),
+        ],
+      ),
     );
   }
 }

@@ -130,14 +130,17 @@ class SzurubooruSearchPage extends ConsumerWidget {
     final postRepo = ref.watch(szurubooruPostRepoProvider(config));
 
     return SearchPageScaffold(
-      noticeBuilder: (context) => !loginDetails.hasLogin()
-          ? InfoContainer(
-              contentBuilder: (context) => const AppHtml(
-                data:
-                    'You need to log in to use <b>Szurubooru</b> tag completion.',
-              ),
-            )
-          : const SizedBox.shrink(),
+      landingViewBuilder: (controller) => DefaultMobileSearchLandingView(
+        notice: !loginDetails.hasLogin()
+            ? InfoContainer(
+                contentBuilder: (context) => const AppHtml(
+                  data:
+                      'You need to log in to use <b>Szurubooru</b> tag completion.',
+                ),
+              )
+            : null,
+        controller: controller,
+      ),
       params: params,
       fetcher: (page, controller) =>
           postRepo.getPostsFromController(controller.tagSet, page),

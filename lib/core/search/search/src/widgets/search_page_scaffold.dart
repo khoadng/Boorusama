@@ -37,13 +37,11 @@ class SearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
     required this.fetcher,
     required this.params,
     super.key,
-    this.noticeBuilder,
     this.textMatchers,
-    this.metatags,
-    this.trending,
     this.extraHeaders,
     this.itemBuilder,
-    this.innerSearchButtonBuilder,
+    this.searchRegionBuilder,
+    this.landingViewBuilder,
   });
 
   final SearchParams params;
@@ -51,8 +49,6 @@ class SearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
   String? get initialQuery => params.query;
   int? get initialPage => params.page;
   int? get initialScrollPosition => params.scrollPosition;
-
-  final Widget Function(BuildContext context)? noticeBuilder;
 
   final List<Widget> Function(
     BuildContext context,
@@ -70,13 +66,16 @@ class SearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
 
   final IndexedSelectableSearchWidgetBuilder<T>? itemBuilder;
 
-  final Widget? Function(BuildContext context, SearchPageController controller)?
-  metatags;
-  final Widget? Function(BuildContext context, SearchPageController controller)?
-  trending;
+  final Widget Function(
+    ValueNotifier<PostGridController<T>?> postController,
+    SearchPageController controller,
+  )?
+  searchRegionBuilder;
 
-  final Widget Function(SearchPageController controller)?
-  innerSearchButtonBuilder;
+  final Widget Function(
+    SearchPageController controller,
+  )?
+  landingViewBuilder;
 
   @override
   ConsumerState<SearchPageScaffold<T>> createState() =>
@@ -137,29 +136,12 @@ class _SearchPageScaffoldState<T extends Post>
             .read(suggestionsNotifierProvider(ref.readConfigAuth).notifier)
             .getSuggestions(query);
       },
-      noticeBuilder: widget.noticeBuilder,
       extraHeaders: widget.extraHeaders,
-      landingView: Consumer(
-        builder: (context, ref, _) {
-          final searchBarPosition = ref.watch(searchBarPositionProvider);
-
-          return SearchLandingView(
-            reverse: searchBarPosition == SearchBarPosition.bottom,
-            onHistoryTap: (value) {
-              _controller.tapHistoryTag(value);
-            },
-            onFavTagTap: (value) {
-              _controller.tapFavTag(value);
-            },
-            onRawTagTap: (value) => _controller.tagsController.addTag(
-              value,
-              isRaw: true,
-            ),
-            metatags: widget.metatags?.call(context, _controller),
-            trending: widget.trending?.call(context, _controller),
-          );
-        },
-      ),
+      landingView:
+          widget.landingViewBuilder?.call(_controller) ??
+          DefaultMobileSearchLandingView(
+            controller: _controller,
+          ),
       itemBuilder: widget.itemBuilder,
       searchSuggestions: DefaultSearchSuggestions(
         multiSelectController: _searchModeController,
@@ -180,17 +162,101 @@ class _SearchPageScaffoldState<T extends Post>
               : const SizedBox.shrink(),
         ),
       ),
-      searchRegion: DefaultSearchRegion(
-        controller: _controller,
-        initialQuery: widget.initialQuery,
-        postController: _postController,
-        innerSearchButton: widget.innerSearchButtonBuilder?.call(_controller),
-      ),
+      searchRegion:
+          widget.searchRegionBuilder?.call(
+            _postController,
+            _controller,
+          ) ??
+          DefaultSearchRegion(
+            controller: _controller,
+            initialQuery: widget.initialQuery,
+            postController: _postController,
+          ),
       onPostControllerCreated: (controller) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           _postController.value = controller;
         });
       },
+    );
+  }
+}
+
+class DefaultMobileSearchLandingView extends StatelessWidget {
+  const DefaultMobileSearchLandingView({
+    super.key,
+    this.notice,
+    required this.controller,
+  });
+
+  final SearchPageController controller;
+  final Widget? notice;
+
+  @override
+  Widget build(BuildContext context) {
+    return SearchLandingView(
+      child: DefaultSearchLandingChildren(
+        notice: notice,
+        children: [
+          DefaultMobileQueryActionSection(controller: controller),
+          DefaultMobileFavoriteTagsSection(controller: controller),
+          DefaultMobileSearchHistorySection(controller: controller),
+        ],
+      ),
+    );
+  }
+}
+
+class DefaultMobileSearchHistorySection extends StatelessWidget {
+  const DefaultMobileSearchHistorySection({
+    super.key,
+    required this.controller,
+  });
+
+  final SearchPageController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return DefaultSearchHistorySection(
+      onHistoryTap: (value) {
+        controller.tapHistoryTag(value);
+      },
+    );
+  }
+}
+
+class DefaultMobileFavoriteTagsSection extends StatelessWidget {
+  const DefaultMobileFavoriteTagsSection({
+    super.key,
+    required this.controller,
+  });
+
+  final SearchPageController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return DefaultFavoriteTagsSection(
+      onTagTap: (value) {
+        controller.tapFavTag(value);
+      },
+    );
+  }
+}
+
+class DefaultMobileQueryActionSection extends StatelessWidget {
+  const DefaultMobileQueryActionSection({
+    super.key,
+    required this.controller,
+  });
+
+  final SearchPageController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return DefaultQueryActionsSection(
+      onTagAdded: (value) => controller.tagsController.addTag(
+        value,
+        isRaw: true,
+      ),
     );
   }
 }

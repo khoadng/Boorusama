@@ -181,23 +181,16 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
                   ),
                   child: SearchLandingView(
                     disableAnimation: true,
-                    reverseScheme: true,
+                    reverse: false,
                     backgroundColor: colorScheme.surfaceContainer,
-                    onFavTagTap: (value) {
-                      selectedTagController.addTagFromFavTag(value);
-                      focusNode.unfocus();
-                    },
-                    onRawTagTap: (value) => selectedTagController.addTag(
-                      value,
-                      isRaw: true,
-                    ),
-                    onHistoryTap: (value) {
-                      selectedTagController.addTagFromSearchHistory(value);
-                      focusNode.unfocus();
-                    },
-                    metatags:
-                        ref.watchConfigAuth.booruType == BooruType.danbooru
-                        ? DanbooruMetatagsSection(
+                    child: DefaultSearchLandingChildren(
+                      reverse: false,
+                      children: [
+                        DefaultDesktopQueryActionsSection(
+                          selectedTagController: selectedTagController,
+                        ),
+                        if (ref.watchConfigAuth.booruType == BooruType.danbooru)
+                          DanbooruMetatagsSection(
                             onOptionTap: (value) {
                               textEditingController.text = '$value:';
                               textEditingController.setTextAndCollapseSelection(
@@ -205,8 +198,17 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
                               );
                               setState(() {});
                             },
-                          )
-                        : null,
+                          ),
+                        DefaultDesktopFavoriteTagsSection(
+                          selectedTagController: selectedTagController,
+                          focusNode: focusNode,
+                        ),
+                        DefaultDesktopSearchHistorySection(
+                          selectedTagController: selectedTagController,
+                          focusNode: focusNode,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               if (kPreferredLayout.isMobile)
@@ -234,6 +236,68 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
             ],
           );
         },
+      ),
+    );
+  }
+}
+
+class DefaultDesktopSearchHistorySection extends StatelessWidget {
+  const DefaultDesktopSearchHistorySection({
+    super.key,
+    required this.selectedTagController,
+    required this.focusNode,
+  });
+
+  final SelectedTagController selectedTagController;
+  final FocusScopeNode focusNode;
+
+  @override
+  Widget build(BuildContext context) {
+    return DefaultSearchHistorySection(
+      reverseScheme: true,
+      onHistoryTap: (value) {
+        selectedTagController.addTagFromSearchHistory(value);
+        focusNode.unfocus();
+      },
+    );
+  }
+}
+
+class DefaultDesktopFavoriteTagsSection extends StatelessWidget {
+  const DefaultDesktopFavoriteTagsSection({
+    super.key,
+    required this.selectedTagController,
+    required this.focusNode,
+  });
+
+  final SelectedTagController selectedTagController;
+  final FocusScopeNode focusNode;
+
+  @override
+  Widget build(BuildContext context) {
+    return DefaultFavoriteTagsSection(
+      onTagTap: (value) {
+        selectedTagController.addTagFromFavTag(value);
+        focusNode.unfocus();
+      },
+    );
+  }
+}
+
+class DefaultDesktopQueryActionsSection extends StatelessWidget {
+  const DefaultDesktopQueryActionsSection({
+    super.key,
+    required this.selectedTagController,
+  });
+
+  final SelectedTagController selectedTagController;
+
+  @override
+  Widget build(BuildContext context) {
+    return DefaultQueryActionsSection(
+      onTagAdded: (value) => selectedTagController.addTag(
+        value,
+        isRaw: true,
       ),
     );
   }

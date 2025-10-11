@@ -62,7 +62,6 @@ class RawSearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
     required this.onPostControllerCreated,
     required this.landingView,
     super.key,
-    this.noticeBuilder,
     this.extraHeaders,
     this.itemBuilder,
   });
@@ -72,8 +71,6 @@ class RawSearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
   String? get initialQuery => params.query;
   int? get initialPage => params.page;
   int? get initialScrollPosition => params.scrollPosition;
-
-  final Widget Function(BuildContext context)? noticeBuilder;
 
   final List<Widget> Function(
     BuildContext context,
