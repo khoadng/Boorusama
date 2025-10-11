@@ -27,29 +27,26 @@ class CreateDownloadOptionsNotifier
   }
 
   void addFromSearchHistory(SearchHistory history) {
-    if (history.queryType == QueryType.list) {
-      final tags = history.queryAsList();
-      addTags(tags);
-    } else {
-      addTag(history.query);
-    }
+    state = state.copyWith(
+      tags: state.tags.clone()..addTagFromSearchHistory(history),
+    );
   }
 
-  void addTag(String tag) {
+  void addTag(TagSearchItem tag) {
     state = state.copyWith(
       tags: state.tags.clone()..addTag(tag),
     );
   }
 
-  void addTags(List<String> tags) {
+  void addTags(List<TagSearchItem> tags) {
     state = state.copyWith(
       tags: state.tags.clone()..addTags(tags),
     );
   }
 
-  void removeTag(String tag) {
+  void removeTag(TagSearchItem tag) {
     state = state.copyWith(
-      tags: state.tags.clone()..removeTagString(tag),
+      tags: state.tags.clone()..removeTag(tag),
     );
   }
 

@@ -4,15 +4,15 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../tags/metatag/types.dart';
-import '../queries/filter_operator.dart';
+import '../queries/query.dart';
 
 class TagSearchItem extends Equatable {
-  const TagSearchItem({
+  const TagSearchItem._({
     required this.tag,
     required this.operator,
     required this.originalTag,
+    required this.isRaw,
     this.metatag,
-    this.isRaw = false,
   });
 
   const TagSearchItem.raw({
@@ -23,26 +23,28 @@ class TagSearchItem extends Equatable {
        metatag = null;
 
   factory TagSearchItem.fromString(
-    String query,
+    String query, {
     MetatagExtractor? extractor,
-  ) {
+  }) {
     final metatag = extractor?.fromString(query);
     final operator = stringToFilterOperator(query.getFirstCharacter());
     final tag = stripFilterOperator(query, operator);
 
     if (metatag == null) {
-      return TagSearchItem(
+      return TagSearchItem._(
         tag: tag.replaceAll('_', ' '),
         operator: operator,
         originalTag: query,
+        isRaw: false,
       );
     }
 
-    return TagSearchItem(
+    return TagSearchItem._(
       tag: tag.replaceAll('$metatag:', '').replaceAll('_', ' '),
       operator: operator,
       metatag: metatag,
       originalTag: query,
+      isRaw: false,
     );
   }
 

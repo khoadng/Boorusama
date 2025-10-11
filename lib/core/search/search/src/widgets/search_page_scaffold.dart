@@ -21,6 +21,7 @@ import '../../../../tags/metatag/providers.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../histories/providers.dart';
 import '../../../selected_tags/providers.dart';
+import '../../../selected_tags/tag.dart';
 import '../../../suggestions/providers.dart';
 import '../../../suggestions/widgets.dart';
 import '../routes/params.dart';
@@ -94,9 +95,12 @@ class _SearchPageScaffoldState<T extends Post>
     super.initState();
 
     _searchModeController = SelectionModeController();
+    final extractor = ref.read(
+      metatagExtractorProvider(ref.readConfigAuth),
+    );
 
     _tagsController = SelectedTagController(
-      metatagExtractor: ref.read(metatagExtractorProvider(ref.readConfigAuth)),
+      metatagExtractor: extractor,
     );
 
     _controller = SearchPageController(
@@ -105,6 +109,7 @@ class _SearchPageScaffoldState<T extends Post>
             .read(searchHistoryProvider.notifier)
             .addHistoryFromController(_tagsController);
       },
+      metatagExtractor: extractor,
       textMatchers: widget.textMatchers,
       tagsController: _tagsController,
     );
@@ -252,8 +257,7 @@ class DefaultMobileQueryActionSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return DefaultQueryActionsSection(
       onTagAdded: (value) => controller.tagsController.addTag(
-        value,
-        isRaw: true,
+        TagSearchItem.raw(tag: value),
       ),
     );
   }

@@ -11,9 +11,9 @@ mixin QueryTypeMixin {
   List<String> queryAsList() {
     if (queryType != QueryType.list) return [];
 
-    final decoded = jsonDecode(query);
-    if (decoded is! List) return [];
     try {
+      final decoded = jsonDecode(query);
+      if (decoded is! List) return [];
       return [for (final tag in decoded) tag as String];
     } catch (_) {
       return [];

@@ -10,6 +10,7 @@ import '../../../../../core/configs/ref.dart';
 import '../../../../../core/posts/count/widgets.dart';
 import '../../../../../core/search/search/routes.dart';
 import '../../../../../core/search/search/widgets.dart';
+import '../../../../../core/search/selected_tags/tag.dart';
 import '../../../../../foundation/utils/flutter_utils.dart';
 import '../../../tags/user_metatags/providers.dart';
 import '../../listing/widgets.dart';
@@ -36,6 +37,9 @@ class _DanbooruSearchPageState extends ConsumerState<DanbooruSearchPage> {
     final config = ref.watchConfigSearch;
     final postRepo = ref.watch(danbooruPostRepoProvider(config));
     final metatags = ref.watch(metatagsProvider).map((e) => e.name).join('|');
+    final metatagExtractor = ref.watch(
+      danbooruMetatagExtractorProvider(config.auth),
+    );
 
     return SearchPageScaffold(
       fetcher: (page, controller) =>
@@ -81,12 +85,22 @@ class _DanbooruSearchPageState extends ConsumerState<DanbooruSearchPage> {
                   builder: (context, selectedTags, _) => RelatedTagSection(
                     query: selectedTags,
                     onAdded: (tag) {
-                      selectedTagController.addTag(tag.tag);
+                      selectedTagController.addTag(
+                        TagSearchItem.fromString(
+                          tag.tag,
+                          extractor: metatagExtractor,
+                        ),
+                      );
                       postController.refresh();
                       searchController.search();
                     },
                     onNegated: (tag) {
-                      selectedTagController.negateTag(tag.tag);
+                      selectedTagController.addTag(
+                        TagSearchItem.fromString(
+                          '-${tag.tag}',
+                          extractor: metatagExtractor,
+                        ),
+                      );
                       postController.refresh();
                       searchController.search();
                     },

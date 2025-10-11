@@ -5,17 +5,18 @@ import 'package:flutter/material.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
-import '../../../../tags/favorites/src/types/favorite_tag.dart';
+import '../../../../tags/favorites/favorited.dart';
+import '../../../../tags/metatag/types.dart';
 import '../../../histories/history.dart';
 import '../../../queries/query.dart';
-import '../../../queries/query_utils.dart';
-import '../../../selected_tags/selected_tag_controller.dart';
+import '../../../selected_tags/providers.dart';
 import '../../../selected_tags/tag.dart';
 
 class SearchPageController extends ChangeNotifier {
   SearchPageController({
     required this.tagsController,
     required this.textMatchers,
+    required this.metatagExtractor,
     this.onSearch,
   });
 
@@ -29,6 +30,7 @@ class SearchPageController extends ChangeNotifier {
 
   final SelectedTagController tagsController;
   final List<TextMatcher>? textMatchers;
+  final MetatagExtractor? metatagExtractor;
 
   final void Function()? onSearch;
 
@@ -37,9 +39,12 @@ class SearchPageController extends ChangeNotifier {
   SearchState? _previousState;
 
   void tapTag(String tag) {
+    final operatorPrefix = filterOperatorToString(filterOperator);
     tagsController.addTag(
-      tag,
-      operator: filterOperator,
+      TagSearchItem.fromString(
+        '$operatorPrefix$tag',
+        extractor: metatagExtractor,
+      ),
     );
 
     textController.clear();
@@ -67,7 +72,14 @@ class SearchPageController extends ChangeNotifier {
 
     tagsController
       ..clear()
-      ..addTag(tag, isRaw: isRaw);
+      ..addTag(
+        isRaw
+            ? TagSearchItem.raw(tag: tag)
+            : TagSearchItem.fromString(
+                tag,
+                extractor: metatagExtractor,
+              ),
+      );
   }
 
   void skipToResultWithTags(
@@ -113,7 +125,12 @@ class SearchPageController extends ChangeNotifier {
   }
 
   void submit(String value) {
-    tagsController.addTag(value);
+    tagsController.addTag(
+      TagSearchItem.fromString(
+        value,
+        extractor: metatagExtractor,
+      ),
+    );
     textController.clear();
     changeState(SearchState.initial);
   }

@@ -16,6 +16,7 @@ import '../../../configs/search/search.dart';
 import '../../../downloads/configs/widgets/download_folder_selector_section.dart';
 import '../../../router.dart';
 import '../../../search/search/routes.dart';
+import '../../../search/selected_tags/tag.dart' hide queryAsList;
 import '../../../settings/providers.dart';
 import '../../../settings/settings.dart';
 import '../../../settings/widgets.dart';
@@ -199,8 +200,12 @@ class _CreateDownloadOptionsRawSheetState
       children: [
         BulkDownloadTagList(
           tags: options.tags,
-          onSubmit: notifier.addTag,
-          onRemove: notifier.removeTag,
+          onSubmit: (value) {
+            notifier.addTag(TagSearchItem.fromString(value));
+          },
+          onRemove: (tag) {
+            notifier.removeTag(TagSearchItem.fromString(tag));
+          },
           onHistoryTap: notifier.addFromSearchHistory,
         ),
         if (!widget.advancedToggle)

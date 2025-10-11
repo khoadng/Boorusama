@@ -11,8 +11,7 @@ import '../../tags/autocompletes/providers.dart';
 import '../../tags/autocompletes/types.dart';
 import '../../tags/configs/providers.dart';
 import '../../tags/local/providers.dart';
-import '../queries/filter_operator.dart';
-import '../queries/query_utils.dart';
+import '../queries/query.dart';
 
 class SuggestionsNotifier
     extends FamilyNotifier<SuggestionsState, BooruConfigAuth>

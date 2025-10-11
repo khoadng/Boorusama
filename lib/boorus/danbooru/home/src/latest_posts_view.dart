@@ -12,6 +12,7 @@ import '../../../../core/home/home_search_bar.dart';
 import '../../../../core/posts/count/widgets.dart';
 import '../../../../core/posts/listing/widgets.dart';
 import '../../../../core/search/selected_tags/providers.dart';
+import '../../../../core/search/selected_tags/tag.dart';
 import '../../../../core/settings/providers.dart';
 import '../../../../core/settings/settings.dart';
 import '../../../../core/tags/metatag/providers.dart';
@@ -20,6 +21,7 @@ import '../../../../foundation/display.dart';
 import '../../dmails/widgets.dart';
 import '../../posts/listing/widgets.dart';
 import '../../posts/post/providers.dart';
+import '../../tags/user_metatags/providers.dart';
 import 'most_search_tag_list.dart';
 
 class LatestView extends ConsumerStatefulWidget {
@@ -59,6 +61,9 @@ class _LatestViewState extends ConsumerState<LatestView> {
     final config = ref.watchConfigSearch;
     final postRepo = ref.watch(danbooruPostRepoProvider(config));
     final searchBarPosition = ref.watch(searchBarPositionProvider);
+    final metatagExtractor = ref.watch(
+      danbooruMetatagExtractorProvider(config.auth),
+    );
 
     return PostScope(
       fetcher: (page) {
@@ -115,7 +120,12 @@ class _LatestViewState extends ConsumerState<LatestView> {
                           if (sel) {
                             selectedTagController
                               ..clear()
-                              ..addTag(search.rawName);
+                              ..addTag(
+                                TagSearchItem.fromString(
+                                  search.rawName,
+                                  extractor: metatagExtractor,
+                                ),
+                              );
                           } else {
                             selectedTagController.clear();
                           }

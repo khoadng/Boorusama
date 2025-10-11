@@ -29,7 +29,7 @@ void main() {
   test('tag operations should work correctly', () {
     final notifier = container.read(
       createDownloadOptionsProvider(initial).notifier,
-    )..addTag('tag1');
+    )..addTag(TagSearchItem.fromString('tag1'));
 
     expect(
       listEquals(
@@ -61,7 +61,7 @@ void main() {
     );
 
     // Remove tag
-    notifier.removeTag('tag2');
+    notifier.removeTag(const TagSearchItem.raw(tag: 'tag2'));
     expect(
       listEquals(
         container.read(createDownloadOptionsProvider(initial)).tags.list,
@@ -80,7 +80,7 @@ void main() {
 
     notifier
       ..setPath('/test/path')
-      ..addTag('test_tag');
+      ..addTag(TagSearchItem.fromString('test_tag'));
 
     expect(notifier.state.valid(android: false), isTrue); // Valid
   });

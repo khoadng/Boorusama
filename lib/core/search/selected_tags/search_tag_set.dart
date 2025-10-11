@@ -9,7 +9,6 @@ import 'package:foundation/foundation.dart';
 import '../../tags/favorites/favorited.dart';
 import '../../tags/metatag/types.dart';
 import '../histories/history.dart';
-import '../queries/filter_operator.dart';
 import 'query.dart';
 import 'tag_search_item.dart';
 
@@ -20,25 +19,17 @@ class SearchTagSet extends Equatable {
 
   factory SearchTagSet.empty() => SearchTagSet();
 
-  factory SearchTagSet.only(
-    String tag, {
-    MetatagExtractor? metatagExtractor,
-    bool isRaw = false,
-  }) {
-    final tagSet = SearchTagSet(
-      metatagExtractor: metatagExtractor,
-    )..addTag(tag, isRaw: isRaw);
-
-    return tagSet;
-  }
-
   factory SearchTagSet.fromString(
     String? tags, {
     MetatagExtractor? metatagExtractor,
   }) {
     final tagSet = SearchTagSet(
       metatagExtractor: metatagExtractor,
-    )..addTags(queryAsList(tags));
+    );
+
+    for (final tag in queryAsList(tags)) {
+      tagSet.addTag(TagSearchItem.fromString(tag, extractor: metatagExtractor));
+    }
 
     return tagSet;
   }
@@ -47,9 +38,14 @@ class SearchTagSet extends Equatable {
     List<String>? tags, {
     MetatagExtractor? metatagExtractor,
   }) {
+    final tagItems = (tags ?? [])
+        .map(
+          (tag) => TagSearchItem.fromString(tag, extractor: metatagExtractor),
+        )
+        .toList();
     final tagSet = SearchTagSet(
       metatagExtractor: metatagExtractor,
-    )..addTags(tags ?? []);
+    )..addTags(tagItems);
 
     return tagSet;
   }
@@ -64,28 +60,22 @@ class SearchTagSet extends Equatable {
   List<String> get list => _tags.map((e) => e.originalTag).toList();
   String get spaceDelimitedOriginalTags => list.join(' ');
 
-  TagSearchItem _toItem(String tag) =>
-      TagSearchItem.fromString(tag, metatagExtractor);
-
-  String _applyOperator(String tag, FilterOperator operator) =>
-      '${filterOperatorToString(operator)}$tag';
-
   void addTagFromSearchHistory(SearchHistory history) {
     if (history.queryType == QueryType.list) {
       final tags = history.queryAsList();
-      addTags(tags);
+      for (final tag in tags) {
+        addTag(TagSearchItem.fromString(tag, extractor: metatagExtractor));
+      }
     } else {
-      addTag(
-        history.query,
-        isRaw: true,
-      );
+      addTag(TagSearchItem.raw(tag: history.query));
     }
   }
 
   void addTagFromFavTag(FavoriteTag tag) {
     addTag(
-      tag.name,
-      isRaw: tag.queryType == QueryType.simple,
+      tag.queryType == QueryType.simple
+          ? TagSearchItem.raw(tag: tag.name)
+          : TagSearchItem.fromString(tag.name, extractor: metatagExtractor),
     );
   }
 
@@ -97,60 +87,28 @@ class SearchTagSet extends Equatable {
 
     for (final tag in other._tags) {
       addTag(
-        tag.originalTag,
-        isRaw: isRaw
-            ? true
-            : tag.isRaw, // force all tags to be raw if isRaw is true
-        operator: tag.operator,
+        isRaw || tag.isRaw ? TagSearchItem.raw(tag: tag.originalTag) : tag,
       );
     }
   }
 
-  TagSearchItem? addTag(
-    String tag, {
-    bool isRaw = false,
-    FilterOperator operator = FilterOperator.none,
-  }) {
-    if (tag.trim().isEmpty) return null;
-
-    final cleanedTag = tag.trim();
-    final tg = isRaw
-        ? TagSearchItem.raw(tag: cleanedTag)
-        : _toItem(_applyOperator(cleanedTag, operator));
-
-    _tags.add(tg);
-
-    return tg;
+  void addTag(TagSearchItem tag) {
+    _tags.add(tag);
   }
 
-  void negateTag(String tag) => addTag(tag, operator: FilterOperator.not);
-
-  void addTags(
-    List<String> tags, {
-    FilterOperator operator = FilterOperator.none,
-  }) {
-    if (tags.isEmpty) return;
-
-    _tags.addAll(tags.map((e) => _toItem(_applyOperator(e, operator))));
+  void addTags(List<TagSearchItem> tags) {
+    _tags.addAll(tags);
   }
 
   void removeTag(TagSearchItem tag) {
     _tags.remove(tag);
   }
 
-  void removeTagString(
-    String tag, {
-    bool isRaw = false,
-  }) {
-    final tg = isRaw ? TagSearchItem.raw(tag: tag) : _toItem(tag);
-    removeTag(tg);
-  }
-
-  void updateTag(TagSearchItem oldTag, String newTag) {
+  void updateTag(TagSearchItem oldTag, TagSearchItem newTag) {
     final tags = _tags.toList();
     final index = tags.indexOf(oldTag);
     if (index != -1) {
-      tags[index] = TagSearchItem.raw(tag: newTag);
+      tags[index] = newTag;
     }
     _tags
       ..clear()

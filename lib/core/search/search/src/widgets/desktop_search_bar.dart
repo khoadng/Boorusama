@@ -16,8 +16,10 @@ import '../../../../../foundation/platform.dart';
 import '../../../../../foundation/utils/flutter_utils.dart';
 import '../../../../boorus/booru/booru.dart';
 import '../../../../configs/ref.dart';
-import '../../../queries/query_utils.dart';
+import '../../../../tags/metatag/providers.dart';
+import '../../../queries/query.dart';
 import '../../../selected_tags/selected_tag_controller.dart';
+import '../../../selected_tags/tag.dart';
 import '../../../suggestions/suggestions_notifier.dart';
 import '../../../suggestions/tag_suggestion_items.dart';
 import '../views/search_landing_view.dart';
@@ -106,7 +108,12 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
           .read(suggestionsNotifierProvider(config).notifier)
           .getSuggestions(value),
       onSubmitted: (value) {
-        selectedTagController.addTag(value);
+        selectedTagController.addTag(
+          TagSearchItem.fromString(
+            value,
+            extractor: ref.read(metatagExtractorProvider(config)),
+          ),
+        );
         textEditingController.clear();
         showSuggestions.value = false;
 
@@ -160,9 +167,19 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
                     horizontal: 4,
                   ).copyWith(bottom: 4, top: 4),
                   onItemTap: (tag) {
+                    final operator = getFilterOperator(
+                      textEditingController.text,
+                    );
+                    final operatorPrefix = filterOperatorToString(operator);
                     selectedTagController.addTag(
-                      tag.value,
-                      operator: getFilterOperator(textEditingController.text),
+                      TagSearchItem.fromString(
+                        '$operatorPrefix${tag.value}',
+                        extractor: ref.watch(
+                          metatagExtractorProvider(
+                            ref.watchConfigAuth,
+                          ),
+                        ),
+                      ),
                     );
                     textEditingController.clear();
                     showSuggestions.value = false;
@@ -296,8 +313,7 @@ class DefaultDesktopQueryActionsSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return DefaultQueryActionsSection(
       onTagAdded: (value) => selectedTagController.addTag(
-        value,
-        isRaw: true,
+        TagSearchItem.raw(tag: value),
       ),
     );
   }
