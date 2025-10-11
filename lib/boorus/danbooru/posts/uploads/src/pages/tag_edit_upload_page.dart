@@ -21,7 +21,7 @@ import '../internal_widgets/similar_tab.dart';
 import '../internal_widgets/source_tab.dart';
 import '../internal_widgets/tag_tab.dart';
 import '../providers/providers.dart';
-import '../providers/upload_notifier.dart';
+import '../providers/upload_provider.dart';
 import '../types/danbooru_upload_post.dart';
 import '../types/utils.dart';
 import 'tag_edit_scaffold.dart';

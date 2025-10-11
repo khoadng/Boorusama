@@ -21,6 +21,7 @@ import '../../../../../../core/widgets/widgets.dart';
 import '../../../../users/user/providers.dart';
 import '../../../listing/widgets.dart';
 import '../providers/providers.dart';
+import '../providers/upload_hide_provider.dart';
 import '../routes/route_utils.dart';
 import '../types/danbooru_upload.dart';
 import '../types/danbooru_upload_post.dart';
@@ -75,10 +76,6 @@ class DanbooruMyUploadsPageInternal extends ConsumerStatefulWidget {
       _DanbooruMyUploadsPageState();
 }
 
-final _danbooruShowUploadHiddenProvider = StateProvider.autoDispose<bool>(
-  (ref) => false,
-);
-
 class _DanbooruMyUploadsPageState
     extends ConsumerState<DanbooruMyUploadsPageInternal>
     with SingleTickerProviderStateMixin {
@@ -92,29 +89,36 @@ class _DanbooruMyUploadsPageState
 
   @override
   Widget build(BuildContext context) {
+    final config = ref.watchConfigAuth;
+    final hideNofifier = ref.watch(
+      danbooruUploadHideProvider(config).notifier,
+    );
+
     return CustomContextMenuOverlay(
       child: Scaffold(
         appBar: AppBar(
           title: Text('My Uploads'.hc),
           actions: [
-            BooruPopupMenuButton(
-              onSelected: (value) {
-                switch (value) {
-                  case 'show_hidden':
-                    ref.read(_danbooruShowUploadHiddenProvider.notifier).state =
-                        true;
-                  case 'hide_hidden':
-                    ref.read(_danbooruShowUploadHiddenProvider.notifier).state =
-                        false;
-                }
-              },
-              itemBuilder: {
-                if (!ref.watch(_danbooruShowUploadHiddenProvider))
-                  'show_hidden': Text('Show hidden'.hc)
-                else
-                  'hide_hidden': Text('Hide hidden'.hc),
-              },
-            ),
+            ref
+                .watch(danbooruUploadHideProvider(config))
+                .maybeWhen(
+                  data: (state) => BooruPopupMenuButton(
+                    onSelected: (value) {
+                      switch (value) {
+                        case 'toggle_hidden':
+                          hideNofifier.toggleShowHidden();
+                      }
+                    },
+                    itemBuilder: {
+                      'toggle_hidden': Text(
+                        state.showHiddenUploads
+                            ? 'Hide hidden'.hc
+                            : 'Show hidden'.hc,
+                      ),
+                    },
+                  ),
+                  orElse: () => const SizedBox.shrink(),
+                ),
           ],
         ),
         body: SafeArea(
@@ -204,12 +208,12 @@ class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
       ),
       builder: (context, controller) => LayoutBuilder(
         builder: (context, constraints) => ref
-            .watch(danbooruUploadHideMapProvider)
+            .watch(danbooruUploadHideProvider(config))
             .maybeWhen(
-              data: (data) => _buildGrid(
+              data: (state) => _buildGrid(
                 controller,
                 constraints,
-                data,
+                state,
               ),
               orElse: () => const SizedBox.shrink(),
             ),
@@ -219,14 +223,14 @@ class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
 
   void _changeVisibility(int id, bool visible) {
     ref
-        .read(danbooruUploadHideMapProvider.notifier)
+        .read(danbooruUploadHideProvider(ref.watchConfigAuth).notifier)
         .changeVisibility(id, visible);
   }
 
   Widget _buildGrid(
     PostGridController<DanbooruUploadPost> controller,
     BoxConstraints constraints,
-    Map<int, bool> hideMap,
+    DanbooruUploadHideState hideState,
   ) {
     return PostGrid(
       controller: controller,
@@ -235,7 +239,13 @@ class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
             valueListenable: controller.itemsNotifier,
             builder: (_, posts, _) {
               final post = posts[index];
-              final isHidden = hideMap[post.id] ?? false;
+
+              // Filter out hidden posts when showHiddenUploads is false
+              if (!hideState.shouldShowInList(post.id)) {
+                return const SizedBox.shrink();
+              }
+
+              final shouldShowOverlay = hideState.shouldShowOverlay(post.id);
 
               return Stack(
                 children: [
@@ -266,7 +276,7 @@ class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
                         );
                       }
                     },
-                    blockOverlay: isHidden
+                    blockOverlay: shouldShowOverlay
                         ? BlockOverlayItem(
                             overlay: Stack(
                               children: [
@@ -275,17 +285,16 @@ class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
                                     color: Colors.black.withValues(alpha: 0.8),
                                   ),
                                 ),
-                                if (isHidden)
-                                  Positioned(
-                                    top: 0,
-                                    right: 0,
-                                    child: IconButton(
-                                      onPressed: () {
-                                        _changeVisibility(post.id, true);
-                                      },
-                                      icon: const Icon(Icons.visibility),
-                                    ),
+                                Positioned(
+                                  top: 0,
+                                  right: 0,
+                                  child: IconButton(
+                                    onPressed: () {
+                                      _changeVisibility(post.id, true);
+                                    },
+                                    icon: const Icon(Icons.visibility),
                                   ),
+                                ),
                               ],
                             ),
                           )

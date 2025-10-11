@@ -13,7 +13,7 @@ import '../../../../../../core/widgets/widgets.dart';
 import '../../../post/post.dart';
 import '../../../post/providers.dart';
 import '../providers/providers.dart';
-import '../providers/upload_notifier.dart';
+import '../providers/upload_provider.dart';
 import '../types/danbooru_upload_post.dart';
 import '../types/utils.dart';
 
