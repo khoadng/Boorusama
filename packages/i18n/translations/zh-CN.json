@@ -40,7 +40,18 @@
     "profile": "简介",
     "copy_user_id": "复制用户ID",
     "messages": {
-      "title": "信息"
+      "title": "信息",
+      "empty": "你没有消息",
+      "categories": {
+        "all": "全部",
+        "received": "已接受",
+        "unread": "未读",
+        "sent": "发送",
+        "deleted": "删除"
+      },
+      "sender": "发送者",
+      "recipient": "接受者",
+      "date": "时间"
     },
     "fail_to_load_profile": "加载配置失败",
     "previous_names": "曾用名",
@@ -48,6 +59,25 @@
       "info": "信息",
       "uploads": "上传",
       "changes": "更改"
+    },
+    "uploads": {
+      "top_n_copyright": "前 $n 个热门版权"
+    },
+    "activity": {
+      "title": "活动",
+      "uploads": "上传",
+      "tag_edits": "编辑标签",
+      "note_edits": "编辑注释",
+      "comments": "评论",
+      "forum_posts": "论坛帖子",
+      "favgroups": "最喜爱的组"
+    },
+    "feedback": {
+      "title": "反馈",
+      "user_feedbacks": "用户反馈",
+      "positive": "积极的",
+      "negative": "负面的",
+      "neutral": "中立的"
     }
   },
   "network": {
