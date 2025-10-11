@@ -262,3 +262,9 @@
     protocol: https_1
     sites:
       - https://e-shuushuu.net/
+
+- bookmarks:
+    metadata:
+      id: 35
+      single-site: true
+    protocol: https_2
