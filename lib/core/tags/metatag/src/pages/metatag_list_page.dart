@@ -7,7 +7,7 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../../../../../core/widgets/widgets.dart';
-import '../metatag.dart';
+import '../types/metatag.dart';
 
 class MetatagListPage extends StatelessWidget {
   const MetatagListPage({

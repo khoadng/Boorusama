@@ -10,7 +10,6 @@ import 'package:selection_mode/selection_mode.dart';
 // Project imports:
 import '../../../../analytics/providers.dart';
 import '../../../../boorus/booru/booru.dart';
-import '../../../../boorus/engine/providers.dart';
 import '../../../../configs/config.dart';
 import '../../../../configs/ref.dart';
 import '../../../../posts/count/widgets.dart';
@@ -18,7 +17,7 @@ import '../../../../posts/listing/providers.dart';
 import '../../../../posts/post/post.dart';
 import '../../../../settings/providers.dart';
 import '../../../../settings/settings.dart';
-import '../../../../tags/configs/providers.dart';
+import '../../../../tags/metatag/providers.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../histories/providers.dart';
 import '../../../selected_tags/providers.dart';
@@ -96,9 +95,8 @@ class _SearchPageScaffoldState<T extends Post>
 
     _searchModeController = SelectionModeController();
 
-    _tagsController = SelectedTagController.fromBooruRepository(
-      repository: ref.read(booruRepoProvider(ref.readConfigAuth)),
-      tagInfo: ref.read(tagInfoProvider),
+    _tagsController = SelectedTagController(
+      metatagExtractor: ref.read(metatagExtractorProvider(ref.readConfigAuth)),
     );
 
     _controller = SearchPageController(

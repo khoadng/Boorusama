@@ -41,9 +41,7 @@ import '../../core/search/queries/query.dart';
 import '../../core/settings/providers.dart';
 import '../../core/settings/settings.dart';
 import '../../core/tags/autocompletes/types.dart';
-import '../../core/tags/configs/configs.dart';
-import '../../core/tags/metatag/metatag.dart';
-import '../../core/tags/metatag/providers.dart';
+import '../../core/tags/metatag/types.dart';
 import '../../core/tags/show/routes.dart';
 import '../../core/tags/tag/tag.dart';
 import '../../foundation/url_launcher.dart';
@@ -62,6 +60,7 @@ import 'posts/post/providers.dart';
 import 'posts/votes/providers.dart';
 import 'syntax/providers.dart';
 import 'tags/tag/providers.dart';
+import 'tags/user_metatags/providers.dart';
 
 class DanbooruRepository extends BooruRepositoryDefault {
   const DanbooruRepository({
@@ -189,10 +188,8 @@ class DanbooruRepository extends BooruRepositoryDefault {
   }
 
   @override
-  MetatagExtractor? getMetatagExtractor(TagInfo tagInfo) {
-    return DefaultMetatagExtractor(
-      metatags: tagInfo.metatags,
-    );
+  MetatagExtractor? getMetatagExtractor(BooruConfigAuth config) {
+    return ref.watch(danbooruMetatagExtractorProvider(config));
   }
 
   @override

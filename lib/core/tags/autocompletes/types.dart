@@ -4,7 +4,7 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../local/cached_tag.dart';
-import '../metatag/metatag.dart';
+import '../metatag/types.dart';
 import '../tag/tag.dart';
 
 export 'autocomplete_repository.dart';

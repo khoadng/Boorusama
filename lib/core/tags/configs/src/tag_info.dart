@@ -1,5 +1,5 @@
 // Project imports:
-import '../../metatag/metatag.dart';
+import '../../metatag/types.dart';
 
 class TagInfo {
   const TagInfo({

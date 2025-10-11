@@ -5,11 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../core/boorus/engine/providers.dart';
 import '../../../core/configs/config.dart';
 import '../../../core/search/suggestions/widgets.dart';
 import '../../../core/tags/autocompletes/types.dart';
-import '../../../core/tags/configs/providers.dart';
+import '../../../core/tags/metatag/providers.dart';
 import '../../../core/tags/tag/providers.dart';
 import '../configs/providers.dart';
 import '../users/user/providers.dart';
@@ -32,9 +31,7 @@ class DanbooruTagSuggestionItem extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tagInfo = ref.watch(tagInfoProvider);
-    final booruRepo = ref.watch(booruRepoProvider(config));
-    final metatagExtractor = booruRepo?.getMetatagExtractor(tagInfo);
+    final metatagExtractor = ref.watch(metatagExtractorProvider(config));
     final loginDetails = ref.watch(danbooruLoginDetailsProvider(config));
 
     return TagSuggestionItem(

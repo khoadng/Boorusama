@@ -8,7 +8,6 @@ import 'package:url_launcher/url_launcher.dart';
 // Project imports:
 import '../../../../../../core/configs/ref.dart';
 import '../../../../../../core/search/search/widgets.dart';
-import '../../../../../../core/tags/metatag/providers.dart';
 import '../../../../../../foundation/url_launcher.dart';
 import '../../../../configs/providers.dart';
 import '../../../../danbooru.dart';

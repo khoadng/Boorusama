@@ -5,7 +5,7 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 
 // Project imports:
-import '../../metatag/metatag.dart';
+import '../../metatag/types.dart';
 import 'tag_info.dart';
 
 const _assetUrl = 'assets/tagdef.json';

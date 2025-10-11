@@ -20,8 +20,7 @@ import '../../../posts/post/post.dart';
 import '../../../posts/rating/rating.dart';
 import '../../../search/queries/query.dart';
 import '../../../tags/autocompletes/types.dart';
-import '../../../tags/configs/configs.dart';
-import '../../../tags/metatag/metatag.dart';
+import '../../../tags/metatag/types.dart';
 import '../../../tags/tag/colors.dart';
 import '../../../tags/tag/tag.dart';
 import 'booru_builder_types.dart';
@@ -46,7 +45,7 @@ abstract class BooruRepository {
   DownloadFilenameGenerator downloadFilenameBuilder(BooruConfigAuth config);
   TextMatcher? queryMatcher(BooruConfigAuth config);
   TagExtractor tagExtractor(BooruConfigAuth config);
-  MetatagExtractor? getMetatagExtractor(TagInfo tagInfo);
+  MetatagExtractor? getMetatagExtractor(BooruConfigAuth config);
   CommentRepository comment(BooruConfigAuth config);
   Dio dio(BooruConfigAuth config);
   Map<String, String> extraHttpHeaders(BooruConfigAuth config);

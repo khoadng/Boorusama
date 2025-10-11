@@ -40,9 +40,8 @@ import '../../../search/queries/providers.dart';
 import '../../../search/queries/tag_query_composer.dart';
 import '../../../settings/providers.dart';
 import '../../../tags/autocompletes/autocomplete_repository.dart';
-import '../../../tags/configs/configs.dart';
 import '../../../tags/local/providers.dart';
-import '../../../tags/metatag/metatag.dart';
+import '../../../tags/metatag/types.dart';
 import '../../../tags/show/routes.dart';
 import '../../../tags/tag/colors.dart';
 import '../../../tags/tag/providers.dart';
@@ -133,7 +132,7 @@ abstract class BooruRepositoryDefault implements BooruRepository {
   }
 
   @override
-  MetatagExtractor? getMetatagExtractor(TagInfo tagInfo) {
+  MetatagExtractor? getMetatagExtractor(BooruConfigAuth config) {
     return null;
   }
 

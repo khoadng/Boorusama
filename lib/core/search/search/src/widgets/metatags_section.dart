@@ -7,8 +7,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../../tags/metatag/metatag.dart';
 import '../../../../tags/metatag/routes.dart';
+import '../../../../tags/metatag/types.dart';
 import '../../../../theme/providers.dart';
 import 'add_tag_button.dart';
 import 'option_tags_arena.dart';

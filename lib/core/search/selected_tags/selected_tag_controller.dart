@@ -2,10 +2,8 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import '../../boorus/engine/engine.dart';
-import '../../tags/configs/configs.dart';
 import '../../tags/favorites/favorited.dart';
-import '../../tags/metatag/metatag.dart';
+import '../../tags/metatag/types.dart';
 import '../histories/history.dart';
 import '../queries/filter_operator.dart';
 import 'search_tag_set.dart';
@@ -16,13 +14,6 @@ class SelectedTagController extends ValueNotifier<List<TagSearchItem>> {
     required MetatagExtractor? metatagExtractor,
   }) : _tagSet = SearchTagSet(metatagExtractor: metatagExtractor),
        super([]);
-
-  SelectedTagController.fromBooruRepository({
-    required BooruRepository? repository,
-    required TagInfo tagInfo,
-  }) : this(
-         metatagExtractor: repository?.getMetatagExtractor(tagInfo),
-       );
 
   final SearchTagSet _tagSet;
 

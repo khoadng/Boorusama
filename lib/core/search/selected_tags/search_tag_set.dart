@@ -7,7 +7,7 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../tags/favorites/favorited.dart';
-import '../../tags/metatag/metatag.dart';
+import '../../tags/metatag/types.dart';
 import '../histories/history.dart';
 import '../queries/filter_operator.dart';
 import 'query.dart';

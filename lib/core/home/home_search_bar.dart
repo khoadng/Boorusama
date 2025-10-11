@@ -14,7 +14,6 @@ import '../../foundation/app_update/providers.dart';
 import '../../foundation/app_update/types.dart';
 import '../../foundation/display.dart';
 import '../../foundation/url_launcher.dart';
-import '../boorus/engine/providers.dart';
 import '../configs/config/types.dart';
 import '../configs/ref.dart';
 import '../search/histories/providers.dart';
@@ -23,7 +22,7 @@ import '../search/search/src/widgets/search_app_bar.dart';
 import '../search/search/widgets.dart';
 import '../search/selected_tags/providers.dart';
 import '../settings/providers.dart';
-import '../tags/configs/providers.dart';
+import '../tags/metatag/providers.dart';
 import '../theme.dart';
 import 'home_page_controller.dart';
 
@@ -259,13 +258,11 @@ class _SliverHomeSearchBarState
   @override
   void initState() {
     super.initState();
-    final tagInfo = ref.read(tagInfoProvider);
 
     selectedTagController =
         widget.selectedTagController ??
-        SelectedTagController.fromBooruRepository(
-          repository: ref.read(booruRepoProvider(widget.config)),
-          tagInfo: tagInfo,
+        SelectedTagController(
+          metatagExtractor: ref.read(metatagExtractorProvider(widget.config)),
         );
   }
 

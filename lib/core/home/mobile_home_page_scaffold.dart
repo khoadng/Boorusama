@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../foundation/display.dart';
-import '../boorus/engine/providers.dart';
 import '../configs/ref.dart';
 import '../posts/count/widgets.dart';
 import '../posts/listing/widgets.dart';
@@ -14,7 +13,7 @@ import '../posts/post/providers.dart';
 import '../search/selected_tags/providers.dart';
 import '../settings/providers.dart';
 import '../settings/settings.dart';
-import '../tags/configs/providers.dart';
+import '../tags/metatag/providers.dart';
 import '../widgets/widgets.dart';
 import 'home_search_bar.dart';
 
@@ -37,9 +36,8 @@ class _MobileHomePageScaffoldState
   void initState() {
     super.initState();
 
-    selectedTagController = SelectedTagController.fromBooruRepository(
-      repository: ref.read(booruRepoProvider(ref.readConfigAuth)),
-      tagInfo: ref.read(tagInfoProvider),
+    selectedTagController = SelectedTagController(
+      metatagExtractor: ref.read(metatagExtractorProvider(ref.readConfigAuth)),
     );
   }
 
