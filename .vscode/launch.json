@@ -10,7 +10,9 @@
                 "--flavor",
                 "dev",
                 "--dart-define-from-file",
-                "env/dev.json"
+                "env/dev.json",
+                "-t",
+                "lib/main_foss.dart"
             ]
         },
         {
