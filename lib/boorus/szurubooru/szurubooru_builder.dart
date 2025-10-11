@@ -15,6 +15,7 @@ import '../../core/configs/ref.dart';
 import '../../core/posts/details/widgets.dart';
 import '../../core/posts/details_parts/types.dart';
 import '../../core/posts/details_parts/widgets.dart';
+import '../../core/search/search/routes.dart';
 import '../../core/search/search/widgets.dart';
 import '../../core/widgets/widgets.dart';
 import '../../foundation/html.dart';

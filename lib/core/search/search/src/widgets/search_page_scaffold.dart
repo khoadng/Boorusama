@@ -24,7 +24,7 @@ import '../../../histories/providers.dart';
 import '../../../selected_tags/providers.dart';
 import '../../../suggestions/providers.dart';
 import '../../../suggestions/widgets.dart';
-import '../pages/search_page.dart';
+import '../routes/params.dart';
 import '../views/search_landing_view.dart';
 import 'raw_search_page_scaffold.dart';
 import 'raw_search_region.dart';
@@ -48,9 +48,9 @@ class SearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
 
   final SearchParams params;
 
-  String? get initialQuery => params.initialQuery;
-  int? get initialPage => params.initialPage;
-  int? get initialScrollPosition => params.initialScrollPosition;
+  String? get initialQuery => params.query;
+  int? get initialPage => params.page;
+  int? get initialScrollPosition => params.scrollPosition;
 
   final Widget Function(BuildContext context)? noticeBuilder;
 

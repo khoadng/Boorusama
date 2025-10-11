@@ -7,8 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../../configs/config/providers.dart';
 import '../../../../posts/post/providers.dart';
+import '../routes/params.dart';
 import '../widgets/search_page_scaffold.dart';
-import 'search_page.dart';
 
 class DefaultSearchPage extends ConsumerWidget {
   const DefaultSearchPage({

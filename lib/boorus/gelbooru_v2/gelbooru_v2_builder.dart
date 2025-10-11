@@ -17,6 +17,7 @@ import '../../core/downloads/filename/types.dart';
 import '../../core/home/custom_home.dart';
 import '../../core/posts/details_parts/types.dart';
 import '../../core/posts/details_parts/widgets.dart';
+import '../../core/search/search/routes.dart';
 import '../../core/search/search/widgets.dart';
 import 'artists/widgets.dart';
 import 'configs/widgets.dart';

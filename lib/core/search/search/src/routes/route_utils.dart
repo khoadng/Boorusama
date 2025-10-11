@@ -10,6 +10,7 @@ import '../../../../configs/config.dart';
 import '../../../../router.dart';
 import '../../../selected_tags/tag.dart';
 import '../views/simple_tag_search_view.dart';
+import 'params.dart';
 
 void goToSearchPage(
   WidgetRef ref, {
@@ -21,20 +22,20 @@ void goToSearchPage(
   QueryType? queryType,
   bool? fromSearchBar,
 }) {
-  final params = <String, String>{};
-  if (tag != null) params[kInitialQueryKey] = tag;
-  if (tags != null) params['tags'] = tags.toString();
-  if (page != null) params['page'] = page.toString();
-  if (position != null) params['position'] = position.toString();
-  if (queryType != null) params['query_type'] = queryType.name;
-  if (fromSearchBar != null) {
-    params['from_search_bar'] = fromSearchBar.toString();
-  }
-
   ref.router.push(
     Uri(
       path: '/search',
-      queryParameters: params.isEmpty ? null : params,
+      queryParameters: switch (SearchParams(
+        query: tag,
+        tags: tags,
+        page: page,
+        scrollPosition: position,
+        queryType: queryType,
+        fromSearchBar: fromSearchBar,
+      ).toQueryParams()) {
+        final params when params.isNotEmpty => params,
+        _ => null,
+      },
     ).toString(),
   );
 }

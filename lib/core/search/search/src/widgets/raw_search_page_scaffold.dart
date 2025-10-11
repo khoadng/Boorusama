@@ -24,7 +24,7 @@ import '../../../../widgets/widgets.dart';
 import '../../../histories/providers.dart';
 import '../../../selected_tags/selected_tag_controller.dart';
 import '../../../selected_tags/tag.dart';
-import '../pages/search_page.dart';
+import '../routes/params.dart';
 import 'search_controller.dart';
 
 typedef IndexedSelectableSearchWidgetBuilder<T extends Post> =
@@ -69,9 +69,9 @@ class RawSearchPageScaffold<T extends Post> extends ConsumerStatefulWidget {
 
   final SearchParams params;
 
-  String? get initialQuery => params.initialQuery;
-  int? get initialPage => params.initialPage;
-  int? get initialScrollPosition => params.initialScrollPosition;
+  String? get initialQuery => params.query;
+  int? get initialPage => params.page;
+  int? get initialScrollPosition => params.scrollPosition;
 
   final Widget Function(BuildContext context)? noticeBuilder;
 
@@ -133,15 +133,15 @@ class _SearchPageScaffoldState<T extends Post>
     } else if (widget.initialQuery case final String query) {
       _controller.skipToResultWithTag(
         query,
-        queryType: widget.params.initialQueryType,
+        queryType: widget.params.queryType,
       );
       ref
           .read(searchHistoryProvider.notifier)
           .addHistoryFromController(_tagsController);
-    } else if (widget.params.initialTags case final SearchTagSet tags) {
+    } else if (widget.params.tags case final SearchTagSet tags) {
       _controller.skipToResultWithTags(
         tags,
-        queryType: widget.params.initialQueryType,
+        queryType: widget.params.queryType,
       );
       ref
           .read(searchHistoryProvider.notifier)

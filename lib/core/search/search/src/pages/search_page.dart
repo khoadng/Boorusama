@@ -2,14 +2,13 @@
 import 'package:flutter/widgets.dart';
 
 // Package imports:
-import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../boorus/engine/providers.dart';
 import '../../../../configs/ref.dart';
 import '../../../../router.dart';
-import '../../../selected_tags/tag.dart';
+import '../routes/params.dart';
 
 class SearchPage extends ConsumerWidget {
   const SearchPage({super.key});
@@ -52,32 +51,4 @@ class InheritedInitialSearchQuery extends InheritedWidget {
   bool updateShouldNotify(InheritedInitialSearchQuery oldWidget) {
     return params != oldWidget.params;
   }
-}
-
-class SearchParams extends Equatable {
-  const SearchParams({
-    this.initialQuery,
-    this.initialTags,
-    this.initialPage,
-    this.initialScrollPosition,
-    this.initialQueryType,
-    this.fromSearchBar,
-  });
-
-  final String? initialQuery;
-  final SearchTagSet? initialTags;
-  final int? initialPage;
-  final int? initialScrollPosition;
-  final QueryType? initialQueryType;
-  final bool? fromSearchBar;
-
-  @override
-  List<Object?> get props => [
-    initialQuery,
-    initialTags,
-    initialPage,
-    initialScrollPosition,
-    initialQueryType,
-    fromSearchBar,
-  ];
 }

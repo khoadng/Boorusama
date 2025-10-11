@@ -8,6 +8,7 @@ import 'package:rich_text_controller/rich_text_controller.dart';
 // Project imports:
 import '../../../../../core/configs/ref.dart';
 import '../../../../../core/posts/count/widgets.dart';
+import '../../../../../core/search/search/routes.dart';
 import '../../../../../core/search/search/widgets.dart';
 import '../../../../../core/tags/metatag/providers.dart';
 import '../../../../../foundation/utils/flutter_utils.dart';

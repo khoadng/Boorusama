@@ -12,7 +12,7 @@ import '../boorus/engine/engine.dart';
 import '../bulk_downloads/widgets.dart';
 import '../configs/manage/providers.dart';
 import '../premiums/providers.dart';
-import '../search/search/src/pages/search_page.dart';
+import '../search/search/routes.dart';
 
 const _kDefaultView = 'default';
 

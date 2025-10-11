@@ -14,6 +14,7 @@ import '../../core/configs/manage/widgets.dart';
 import '../../core/downloads/filename/types.dart';
 import '../../core/posts/details_parts/types.dart';
 import '../../core/posts/post/providers.dart';
+import '../../core/search/search/routes.dart';
 import '../../core/search/search/widgets.dart';
 import '../../core/widgets/widgets.dart';
 import '../../foundation/html.dart';
