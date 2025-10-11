@@ -248,3 +248,9 @@
     protocol: https_2
     sites:
       - https://booru.funmaker.moe/
+
+- bookmarks:
+    metadata:
+      id: 34
+      single-site: true
+    protocol: https_2
