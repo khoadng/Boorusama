@@ -13,6 +13,7 @@ class TagSearchItem extends Equatable {
     required this.originalTag,
     required this.isRaw,
     this.metatag,
+    this.category,
   });
 
   const TagSearchItem.raw({
@@ -20,11 +21,13 @@ class TagSearchItem extends Equatable {
   }) : operator = FilterOperator.none,
        isRaw = true,
        originalTag = tag,
+       category = null,
        metatag = null;
 
   factory TagSearchItem.fromString(
     String query, {
     MetatagExtractor? extractor,
+    String? category,
   }) {
     final metatag = extractor?.fromString(query);
     final operator = stringToFilterOperator(query.getFirstCharacter());
@@ -36,6 +39,7 @@ class TagSearchItem extends Equatable {
         operator: operator,
         originalTag: query,
         isRaw: false,
+        category: category,
       );
     }
 
@@ -45,6 +49,7 @@ class TagSearchItem extends Equatable {
       metatag: metatag,
       originalTag: query,
       isRaw: false,
+      category: category,
     );
   }
 
@@ -53,12 +58,20 @@ class TagSearchItem extends Equatable {
   final FilterOperator operator;
   final String? metatag;
   final bool isRaw;
+  final String? category;
 
   // This assume no whitespace in the tag, which is true for most boorus
   String get rawTag => tag.replaceAll(' ', '_');
 
   @override
-  List<Object?> get props => [tag, operator, metatag, isRaw, originalTag];
+  List<Object?> get props => [
+    tag,
+    operator,
+    metatag,
+    isRaw,
+    originalTag,
+    category,
+  ];
 
   @override
   String toString() => isRaw

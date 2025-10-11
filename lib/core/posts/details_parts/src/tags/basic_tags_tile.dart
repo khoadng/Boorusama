@@ -48,6 +48,7 @@ class BasicTagsTile extends ConsumerWidget {
     super.key,
     this.unknownCategoryColor,
     this.initialExpanded = true,
+    this.onTagTap,
   });
 
   final Post post;
@@ -55,6 +56,7 @@ class BasicTagsTile extends ConsumerWidget {
   final Color? unknownCategoryColor;
   final BooruConfigAuth auth;
   final bool initialExpanded;
+  final void Function(String tag)? onTagTap;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -81,10 +83,12 @@ class BasicTagsTile extends ConsumerWidget {
                   (tag) => AutoCategoryTagChip(
                     text: tag,
                     auth: auth,
-                    onTap: () => goToSearchPage(
-                      ref,
-                      tag: tag,
-                    ),
+                    onTap: onTagTap != null
+                        ? () => onTagTap?.call(tag)
+                        : () => goToSearchPage(
+                            ref,
+                            tag: tag,
+                          ),
                     fallbackColor: unknownCategoryColor,
                   ),
                 )
