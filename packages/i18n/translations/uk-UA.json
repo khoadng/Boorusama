@@ -52,7 +52,11 @@
       },
       "sender": "Відправник",
       "recipient": "Одержувач",
-      "date": "Дата"
+      "date": "Дата",
+      "unread_message_notice": {
+        "one": "У вас є $n непрочитаних повідомлень",
+        "other": "У вас є $n непрочитаних повідомленням"
+      }
     },
     "tabs": {
       "info": "Інфо",
@@ -1181,5 +1185,9 @@
       "original": "Оригінал"
     },
     "current_video_quality_disclaimer": "Цей розділ стосується лише поточного відео. Щоб переглянути всі відео, перейдіть за посиланням <a href=\"booru-profiles\">$video_profile_path</a>."
+  },
+  "infinite_scroll": {
+    "load_more": "Завантажити більше",
+    "bottom_reached": "Це все наразі"
   }
 }
