@@ -28,6 +28,7 @@ import '../_internal/raw_post_grid.dart';
 import '../_internal/sliver_post_grid.dart';
 import '../providers/internal_providers.dart';
 import 'blacklist_controls.dart';
+import 'infinite_scroll_listener.dart';
 import 'post_grid_controller.dart';
 import 'post_list_configuration_header.dart';
 import 'post_scope.dart';
@@ -242,7 +243,7 @@ class PostGridScrollToTopButton extends StatelessWidget {
             padding: multiSelect
                 ? EdgeInsets.only(bottom: 60 + effectiveBottomPadding)
                 : EdgeInsets.only(bottom: effectiveBottomPadding),
-            child: ScrollToTop(
+            child: InfiniteScrollListener(
               scrollController: autoScrollController,
               onBottomReached: () {
                 if (controller.pageMode == PageMode.infinite &&
@@ -250,10 +251,13 @@ class PostGridScrollToTopButton extends StatelessWidget {
                   controller.fetchMore();
                 }
               },
-              child: BooruScrollToTopButton(
-                onPressed: () {
-                  autoScrollController.jumpTo(0);
-                },
+              child: ScrollToTop(
+                scrollController: autoScrollController,
+                child: BooruScrollToTopButton(
+                  onPressed: () {
+                    autoScrollController.jumpTo(0);
+                  },
+                ),
               ),
             ),
           );

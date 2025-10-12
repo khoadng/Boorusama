@@ -10,11 +10,9 @@ class ScrollToTop extends StatefulWidget {
     required this.child,
     super.key,
     this.scrollController,
-    this.onBottomReached,
   });
 
   final ScrollController? scrollController;
-  final VoidCallback? onBottomReached;
   final Widget child;
 
   @override
@@ -82,10 +80,6 @@ class _ScrollToTopState extends State<ScrollToTop>
       }
       _isOnTop.value = _scrollController.isTop;
     }
-
-    if (_scrollController.isBottom) {
-      widget.onBottomReached?.call();
-    }
   }
 
   @override
@@ -105,11 +99,9 @@ class ScrollToBottom extends StatefulWidget {
     required this.child,
     super.key,
     this.scrollController,
-    this.onTopReached,
   });
 
   final ScrollController? scrollController;
-  final VoidCallback? onTopReached;
   final Widget child;
 
   @override
@@ -177,10 +169,6 @@ class _ScrollToBottomState extends State<ScrollToBottom>
           break;
       }
       _isOnBottom.value = _scrollController.isBottom;
-    }
-
-    if (_scrollController.isTop) {
-      widget.onTopReached?.call();
     }
   }
 

@@ -43,8 +43,6 @@ class RawPostGrid<T extends Post> extends StatefulWidget {
     required this.selectionModeController,
     required this.selectionOptions,
     super.key,
-    this.onLoadMore,
-    this.onRefresh,
     this.sliverHeaders,
     this.scrollController,
     this.footer,
@@ -55,8 +53,6 @@ class RawPostGrid<T extends Post> extends StatefulWidget {
     this.options = const PostGridOptions(),
   });
 
-  final VoidCallback? onLoadMore;
-  final void Function()? onRefresh;
   final void Function() onNextPage;
   final void Function() onPreviousPage;
   final List<Widget>? sliverHeaders;
@@ -136,7 +132,6 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
 
   bool _handleKeyEvent(KeyEvent event) {
     if (isKeyPressed(LogicalKeyboardKey.f5, event: event)) {
-      widget.onRefresh?.call();
       controller.refresh();
     }
 
@@ -218,7 +213,6 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
                     ? (_) => true
                     : (_) => false,
                 onRefresh: () async {
-                  widget.onRefresh?.call();
                   _selectionModeController.deselectAll();
                   await controller.refresh(
                     maintainPage: true,
