@@ -85,18 +85,15 @@ class _PostDetailsImageState<T extends Post>
     return [
       if (noteState.enableNotes)
         ...notes.map(
-          (e) => LayoutBuilder(
-            builder: (context, constraints) {
-              final effectiveNote = e.adjustNoteCoordFor(
-                post,
+          (note) => LayoutBuilder(
+            builder: (context, constraints) => PostNote(
+              note: note.adjust(
+                width: post.width,
+                height: post.height,
                 widthConstraint: constraints.maxWidth,
                 heightConstraint: constraints.maxHeight,
-              );
-              return PostNote(
-                coordinate: effectiveNote.coordinate,
-                content: effectiveNote.content,
-              );
-            },
+              ),
+            ),
           ),
         ),
     ];

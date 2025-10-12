@@ -2,51 +2,67 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import '../../../../posts/post/post.dart';
 import 'note_coordinate.dart';
+import 'note_display_mode.dart';
+import 'note_font_size.dart';
 
 class Note extends Equatable {
-  const Note({
+  Note({
     required this.coordinate,
     required this.content,
-  });
+    this.fontSize,
+  }) : strippedContent = content.replaceAll(RegExp('<[^>]*>'), '').trim();
 
-  const Note.empty() : coordinate = const NoteCoordinate.shrink(), content = '';
+  const Note.empty()
+    : coordinate = const NoteCoordinate.shrink(),
+      content = '',
+      strippedContent = '',
+      fontSize = null;
 
   final NoteCoordinate coordinate;
   final String content;
+  final NoteFontSize? fontSize;
+  final String strippedContent;
 
   Note copyWith({
     NoteCoordinate? coordinate,
-    String? content,
+    NoteFontSize? fontSize,
   }) => Note(
     coordinate: coordinate ?? this.coordinate,
-    content: content ?? this.content,
+    content: content,
+    fontSize: fontSize ?? this.fontSize,
   );
 
+  Note adjust({
+    required double width,
+    required double height,
+    required double widthConstraint,
+    required double heightConstraint,
+    NoteDisplayMode? displayMode,
+  }) {
+    if (width == 0 || height == 0) return this;
+
+    final widthPercent = widthConstraint / width;
+    final heightPercent = heightConstraint / height;
+    final newCoordinate = coordinate.withPercent(widthPercent, heightPercent);
+
+    return copyWith(
+      coordinate: newCoordinate,
+      fontSize: switch (displayMode) {
+        NoteDisplayMode.box || null => fontSize,
+        NoteDisplayMode.inlineHorizontal ||
+        NoteDisplayMode.inlineVertical => NoteFontSize.calculate(
+          text: strippedContent,
+          coordinate: newCoordinate,
+        ),
+      },
+    );
+  }
+
   @override
-  List<Object?> get props => [coordinate, content];
+  List<Object?> get props => [coordinate, content, fontSize];
 }
 
 abstract interface class NoteRepository {
   Future<List<Note>> getNotes(int postId);
-}
-
-extension NoteCoordX on Note {
-  Note adjustNoteCoordFor(
-    Post post, {
-    required double widthConstraint,
-    required double heightConstraint,
-  }) {
-    if (post.width == 0 || post.height == 0) {
-      return this;
-    }
-
-    final widthPercent = widthConstraint / post.width;
-    final heightPercent = heightConstraint / post.height;
-
-    return copyWith(
-      coordinate: coordinate.withPercent(widthPercent, heightPercent),
-    );
-  }
 }

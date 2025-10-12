@@ -7,49 +7,51 @@ import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart
 
 // Project imports:
 import '../../../../../foundation/platform.dart';
+import '../types/note.dart';
 import '../types/note_coordinate.dart';
+import '../types/note_display_mode.dart';
 import '../types/note_style.dart';
 import 'note_box.dart';
 
 class PostNote extends StatelessWidget {
   const PostNote({
-    required this.coordinate,
-    required this.content,
+    required this.note,
     super.key,
     this.style,
+    this.displayMode,
   });
 
-  final NoteCoordinate coordinate;
-  final String content;
   final NoteStyle? style;
+  final NoteDisplayMode? displayMode;
+  final Note note;
 
   @override
   Widget build(BuildContext context) {
     return isMobilePlatform()
         ? PostNoteMobile(
-            coordinate: coordinate,
-            content: content,
+            note: note,
             style: style,
+            displayMode: displayMode,
           )
         : PostNoteDesktop(
-            coordinate: coordinate,
-            content: content,
+            note: note,
             style: style,
+            displayMode: displayMode,
           );
   }
 }
 
 class PostNoteDesktop extends StatefulWidget {
   const PostNoteDesktop({
-    required this.coordinate,
-    required this.content,
+    required this.note,
     super.key,
     this.style,
+    this.displayMode,
   });
 
-  final NoteCoordinate coordinate;
-  final String content;
+  final Note note;
   final NoteStyle? style;
+  final NoteDisplayMode? displayMode;
 
   @override
   State<PostNoteDesktop> createState() => _PostNoteDesktopState();
@@ -67,9 +69,9 @@ class _PostNoteDesktopState extends State<PostNoteDesktop> {
         onTap: () => setState(() => _visible = false),
       ),
       child: _NoteContainerDesktop(
-        coordinate: widget.coordinate,
-        content: widget.content,
+        note: widget.note,
         style: widget.style,
+        displayMode: widget.displayMode,
       ),
     );
   }
@@ -77,14 +79,14 @@ class _PostNoteDesktopState extends State<PostNoteDesktop> {
 
 class _NoteContainerDesktop extends StatefulWidget {
   const _NoteContainerDesktop({
-    required this.coordinate,
-    required this.content,
+    required this.note,
     this.style,
+    this.displayMode,
   });
 
-  final NoteCoordinate coordinate;
-  final String content;
+  final Note note;
   final NoteStyle? style;
+  final NoteDisplayMode? displayMode;
 
   @override
   State<_NoteContainerDesktop> createState() => _NoteContainerDesktopState();
@@ -97,14 +99,15 @@ class _NoteContainerDesktopState extends State<_NoteContainerDesktop> {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.sizeOf(context).width;
     final screenHeight = MediaQuery.sizeOf(context).height;
+    final (coordinate, content) = (widget.note.coordinate, widget.note.content);
 
     return Container(
       margin: EdgeInsets.only(
-        left: widget.coordinate.x,
-        top: widget.coordinate.y,
+        left: coordinate.x,
+        top: coordinate.y,
       ),
       child: PortalTarget(
-        anchor: switch (widget.coordinate.calculateQuadrant(
+        anchor: switch (coordinate.calculateQuadrant(
           screenWidth,
           screenHeight,
         )) {
@@ -138,7 +141,7 @@ class _NoteContainerDesktopState extends State<_NoteContainerDesktop> {
           ),
           child: SingleChildScrollView(
             child: HtmlWidget(
-              widget.content,
+              content,
             ),
           ),
         ),
@@ -146,8 +149,9 @@ class _NoteContainerDesktopState extends State<_NoteContainerDesktop> {
           onEnter: (_) => setState(() => _visible = true),
           onExit: (_) => setState(() => _visible = false),
           child: NoteBox(
-            coordinate: widget.coordinate,
+            note: widget.note,
             style: widget.style,
+            displayMode: widget.displayMode,
           ),
         ),
       ),
@@ -157,15 +161,15 @@ class _NoteContainerDesktopState extends State<_NoteContainerDesktop> {
 
 class PostNoteMobile extends StatefulWidget {
   const PostNoteMobile({
-    required this.coordinate,
-    required this.content,
+    required this.note,
     super.key,
     this.style,
+    this.displayMode,
   });
 
-  final NoteCoordinate coordinate;
-  final String content;
+  final Note note;
   final NoteStyle? style;
+  final NoteDisplayMode? displayMode;
 
   @override
   State<PostNoteMobile> createState() => _PostNoteMobileState();
@@ -185,11 +189,11 @@ class _PostNoteMobileState extends State<PostNoteMobile> {
           onTap: () => _visible.value = false,
         ),
         child: _NoteContainerMobile(
-          coordinate: widget.coordinate,
+          note: widget.note,
           visible: visible,
           onTap: () => _visible.value = true,
-          content: widget.content,
           style: widget.style,
+          displayMode: widget.displayMode,
         ),
       ),
     );
@@ -198,23 +202,24 @@ class _PostNoteMobileState extends State<PostNoteMobile> {
 
 class _NoteContainerMobile extends StatelessWidget {
   const _NoteContainerMobile({
-    required this.coordinate,
+    required this.note,
     required this.visible,
     required this.onTap,
-    required this.content,
     this.style,
+    this.displayMode,
   });
 
-  final NoteCoordinate coordinate;
+  final Note note;
   final bool visible;
-  final String content;
   final VoidCallback onTap;
   final NoteStyle? style;
+  final NoteDisplayMode? displayMode;
 
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.sizeOf(context).width;
     final screenHeight = MediaQuery.sizeOf(context).height;
+    final (coordinate, content) = (note.coordinate, note.content);
 
     return Container(
       margin: EdgeInsets.only(
@@ -263,8 +268,9 @@ class _NoteContainerMobile extends StatelessWidget {
         child: GestureDetector(
           onTap: onTap,
           child: NoteBox(
-            coordinate: coordinate,
+            note: note,
             style: style,
+            displayMode: displayMode,
           ),
         ),
       ),
