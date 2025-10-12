@@ -2,32 +2,14 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:equatable/equatable.dart';
 import 'package:flutter_portal/flutter_portal.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 
 // Project imports:
 import '../../../../../foundation/platform.dart';
 import '../types/note_coordinate.dart';
-
-class NoteStyle extends Equatable {
-  const NoteStyle({
-    this.borderColor,
-    this.backgroundColor,
-    this.foregroundColor,
-  });
-
-  final Color? borderColor;
-  final Color? backgroundColor;
-  final Color? foregroundColor;
-
-  @override
-  List<Object?> get props => [
-    borderColor,
-    backgroundColor,
-    foregroundColor,
-  ];
-}
+import '../types/note_style.dart';
+import 'note_box.dart';
 
 class PostNote extends StatelessWidget {
   const PostNote({
@@ -163,17 +145,9 @@ class _NoteContainerDesktopState extends State<_NoteContainerDesktop> {
         child: MouseRegion(
           onEnter: (_) => setState(() => _visible = true),
           onExit: (_) => setState(() => _visible = false),
-          child: Container(
-            width: widget.coordinate.width,
-            height: widget.coordinate.height,
-            decoration: BoxDecoration(
-              color: widget.style?.backgroundColor ?? Colors.white54,
-              border: Border.fromBorderSide(
-                BorderSide(
-                  color: widget.style?.borderColor ?? Colors.red,
-                ),
-              ),
-            ),
+          child: NoteBox(
+            coordinate: widget.coordinate,
+            style: widget.style,
           ),
         ),
       ),
@@ -288,17 +262,9 @@ class _NoteContainerMobile extends StatelessWidget {
         ),
         child: GestureDetector(
           onTap: onTap,
-          child: Container(
-            width: coordinate.width,
-            height: coordinate.height,
-            decoration: BoxDecoration(
-              color: style?.backgroundColor ?? Colors.white54,
-              border: Border.fromBorderSide(
-                BorderSide(
-                  color: style?.borderColor ?? Colors.red,
-                ),
-              ),
-            ),
+          child: NoteBox(
+            coordinate: coordinate,
+            style: style,
           ),
         ),
       ),
