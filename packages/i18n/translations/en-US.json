@@ -1166,6 +1166,10 @@
       "other": "$n uploads"
     }
   },
+  "infinite_scroll": {
+    "load_more": "Load more",
+    "bottom_reached": "That's all for now"
+  },
   "video_player": {
     "playback_speed": "Playback speed",
     "lock_screen": "Lock screen",

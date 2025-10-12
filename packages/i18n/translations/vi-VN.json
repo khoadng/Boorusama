@@ -1166,6 +1166,10 @@
       "other": "$n tải lên"
     }
   },
+  "infinite_scroll": {
+    "load_more": "Tải thêm",
+    "bottom_reached": "Chạm đáy rồi"
+  },
   "video_player": {
     "playback_speed": "Tốc độ phát",
     "lock_screen": "Khoá màn hình",

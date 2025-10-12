@@ -8,6 +8,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_improved_scrolling/flutter_improved_scrolling.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:foundation/widgets.dart';
+import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:selection_mode/selection_mode.dart';
@@ -310,20 +311,7 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
                           ),
                         widget.body,
                         if (pageMode == PageMode.infinite)
-                          ConditionalValueListenableBuilder(
-                            valueListenable: loading,
-                            falseChild: const SliverSizedBox.shrink(),
-                            trueChild: SliverPadding(
-                              padding: const EdgeInsets.symmetric(vertical: 20),
-                              sliver: SliverToBoxAdapter(
-                                child: Center(
-                                  child: SpinKitPulse(
-                                    color: colorScheme.onSurface,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
+                          _buildLoadMore(colorScheme),
                         if (pageMode == PageMode.paginated)
                           ConditionalValueListenableBuilder(
                             valueListenable: refreshing,
@@ -350,6 +338,71 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
               ),
             ),
             floatingActionButton: widget.scrollToTopButton,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLoadMore(ColorScheme colorScheme) {
+    return ValueListenableBuilder(
+      valueListenable: refreshing,
+      builder: (context, refresh, child) => ConditionalValueListenableBuilder(
+        valueListenable: loading,
+        falseChild: switch ((refreshing: refresh, hasMore: hasMore)) {
+          (refreshing: true, hasMore: _) => const SliverSizedBox.shrink(),
+          (refreshing: false, hasMore: false) => SliverToBoxAdapter(
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 28),
+              child: Center(
+                child: Text(
+                  context.t.infinite_scroll.bottom_reached,
+                  style: TextStyle(
+                    color: colorScheme.hintColor,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          (refreshing: false, hasMore: true) => SliverLayoutBuilder(
+            builder: (context, constraints) {
+              final canScroll =
+                  constraints.precedingScrollExtent >
+                  constraints.viewportMainAxisExtent;
+
+              return switch (canScroll) {
+                true => const SliverSizedBox.shrink(),
+                false => SliverPadding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 24,
+                    horizontal: 16,
+                  ),
+                  sliver: SliverToBoxAdapter(
+                    child: Center(
+                      child: FilledButton(
+                        style: FilledButton.styleFrom(
+                          minimumSize: const Size(240, 48),
+                        ),
+                        onPressed: () => controller.fetchMore(),
+                        child: Text(
+                          context.t.infinite_scroll.load_more,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              };
+            },
+          ),
+        },
+        trueChild: SliverPadding(
+          padding: const EdgeInsets.symmetric(vertical: 20),
+          sliver: SliverToBoxAdapter(
+            child: Center(
+              child: SpinKitPulse(
+                color: colorScheme.onSurface,
+              ),
+            ),
           ),
         ),
       ),
