@@ -8,6 +8,7 @@ import '../../core/configs/config.dart';
 import '../../core/configs/create/create.dart';
 import '../../core/downloads/filename/types.dart';
 import '../../core/http/providers.dart';
+import '../../core/notes/note/types.dart';
 import '../../core/posts/favorites/types.dart';
 import '../../core/posts/post/post.dart';
 import '../../core/posts/post/providers.dart';
@@ -16,6 +17,7 @@ import '../../core/tags/autocompletes/types.dart';
 import '../../core/tags/tag/tag.dart';
 import 'configs/providers.dart';
 import 'favorites/providers.dart';
+import 'notes/providers.dart';
 import 'posts/providers.dart';
 import 'tags/providers.dart';
 
@@ -86,5 +88,10 @@ class SzurubooruRepository extends BooruRepositoryDefault {
   @override
   BooruLoginDetails loginDetails(BooruConfigAuth config) {
     return ref.watch(szurubooruLoginDetailsProvider(config));
+  }
+
+  @override
+  NoteRepository note(BooruConfigAuth config) {
+    return ref.watch(szurubooruNoteRepoProvider(config));
   }
 }

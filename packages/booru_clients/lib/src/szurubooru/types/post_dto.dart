@@ -81,7 +81,14 @@ class PostDto {
       lastFeatureTime: json['lastFeatureTime'] as String?,
       favoritedBy: json['favoritedBy'] as List<dynamic>?,
       hasCustomThumbnail: json['hasCustomThumbnail'] as bool?,
-      notes: json['notes'] as List<dynamic>?,
+      notes: switch (json['notes']) {
+        List<dynamic> list =>
+          list
+              .whereType<Map<String, dynamic>>()
+              .map((e) => NoteDto.fromJson(e))
+              .toList(),
+        _ => null,
+      },
       comments: (json['comments'] as List<dynamic>?)
           ?.map((e) => CommentDto.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -118,7 +125,7 @@ class PostDto {
   final String? lastFeatureTime;
   final List<dynamic>? favoritedBy;
   final bool? hasCustomThumbnail;
-  final List<dynamic>? notes;
+  final List<NoteDto>? notes;
   final List<CommentDto>? comments;
   final List<dynamic>? pools;
 }
