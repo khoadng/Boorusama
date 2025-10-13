@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../configs/config/providers.dart';
 import '../../../../configs/config/types.dart';
 import '../../../../search/search/routes.dart';
+import '../../../../tags/categories/tag_category.dart';
 import '../../../../tags/tag/providers.dart';
 import '../../../../tags/tag/tag.dart';
 import '../../../../tags/tag/widgets.dart';
@@ -19,7 +20,10 @@ import 'raw_tags_tile.dart';
 class DefaultInheritedTagsTile<T extends Post> extends ConsumerStatefulWidget {
   const DefaultInheritedTagsTile({
     super.key,
+    this.onTagTap,
   });
+
+  final void Function(Tag tag)? onTagTap;
 
   @override
   ConsumerState<DefaultInheritedTagsTile<T>> createState() =>
@@ -73,11 +77,18 @@ class _DefaultInheritedTagsTileState<T extends Post>
                 // Don't set expanded to false to prevent rebuilding the tags list
                 setState(() => error = null);
               },
+              onTagTap: widget.onTagTap,
             )
           : BasicTagsTile(
               post: post,
               tags: post.tags,
               auth: auth,
+              onTagTap: (tag) => widget.onTagTap?.call(
+                Tag.noCount(
+                  name: tag,
+                  category: TagCategory.unknown(),
+                ),
+              ),
             ),
     );
   }
@@ -94,6 +105,7 @@ class TagsTile extends StatelessWidget {
     this.initialExpanded = false,
     this.tagColorBuilder,
     this.padding,
+    this.onTagTap,
   });
 
   final Post post;
@@ -104,6 +116,7 @@ class TagsTile extends StatelessWidget {
   final Color? Function(Tag tag)? tagColorBuilder;
   final EdgeInsetsGeometry? padding;
   final BooruConfigAuth auth;
+  final void Function(Tag tag)? onTagTap;
 
   @override
   Widget build(BuildContext context) {
@@ -130,7 +143,9 @@ class TagsTile extends StatelessWidget {
               builder: (_, ref, _) => PostTagListChip(
                 tag: tag,
                 auth: auth,
-                onTap: () => goToSearchPage(ref, tag: tag.rawName),
+                onTap: onTagTap != null
+                    ? () => onTagTap?.call(tag)
+                    : () => goToSearchPage(ref, tag: tag.rawName),
                 color: tagColorBuilder?.call(tag),
               ),
             ),

@@ -248,3 +248,13 @@
     protocol: https_2
     sites:
       - https://booru.funmaker.moe/
+
+- eshuushuu:
+    metadata:
+      id: 34
+      name: eshuushuu
+      display-name: e-shuushuu
+      single-site: true
+    protocol: https_1
+    sites:
+      - https://e-shuushuu.net/

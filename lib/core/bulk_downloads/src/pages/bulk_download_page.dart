@@ -24,7 +24,8 @@ class BulkDownloadPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfigAuth;
 
-    return config.booruType == BooruType.zerochan
+    return config.booruType == BooruType.zerochan ||
+            config.booruType == BooruType.eshuushuu
         ? Scaffold(
             appBar: AppBar(
               title: Text(context.t.sideMenu.bulk_download),
