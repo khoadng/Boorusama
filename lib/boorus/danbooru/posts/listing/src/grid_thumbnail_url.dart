@@ -2,10 +2,10 @@
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../../../core/posts/listing/list.dart';
+import '../../../../../core/images/types.dart';
 import '../../../../../core/posts/listing/providers.dart';
+import '../../../../../core/posts/listing/types.dart';
 import '../../../../../core/posts/post/post.dart';
-import '../../../../../core/settings/settings.dart';
 import '../../post/post.dart';
 
 class DanbooruGridThumbnailUrlGenerator implements GridThumbnailUrlGenerator {

@@ -6,14 +6,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
+import '../../../../home/types.dart';
+import '../../../../images/types.dart';
+import '../../../../posts/listing/types.dart';
+import '../../../../posts/post/post.dart';
 import '../../../../theme/theme.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../widgets.dart';
 import '../../providers/settings_notifier.dart';
 import '../../providers/settings_provider.dart';
 import '../../types/settings.dart';
-import '../../types/types.dart';
-import '../../types/types_l10n.dart';
 import '../../types/utils.dart';
 import '../../widgets/settings_header.dart';
 import '../../widgets/settings_slider_tile.dart';
@@ -78,7 +80,7 @@ class _ImageListingSettingsSectionState
         SettingsTile(
           title: Text(context.t.settings.image_grid.grid_size.grid_size),
           selectedOption: settings.gridSize,
-          items: kSortedGridSizes,
+          items: GridSize.sortedValues,
           onChanged: (value) => _onUpdate(settings.copyWith(gridSize: value)),
           optionBuilder: (value) => Text(value.localize(context)),
         ),
@@ -108,7 +110,7 @@ class _ImageListingSettingsSectionState
                 )
               : null,
           selectedOption: settings.imageQuality,
-          items: [...ImageQuality.values]..remove(ImageQuality.original),
+          items: ImageQuality.nonOriginalValues,
           onChanged: (value) =>
               _onUpdate(settings.copyWith(imageQuality: value)),
           optionBuilder: (value) => Text(value.localize(context)),
@@ -174,7 +176,7 @@ class _ImageListingSettingsSectionState
           title: Text(
             context.t.settings.appearance.blur_explicit_media,
           ),
-          value: settings.blurExplicitMedia,
+          value: settings.mediaBlurCondition.blurExplicitMedia,
           onChanged: (value) => _onUpdate(
             settings.copyWith(
               mediaBlurCondition: value

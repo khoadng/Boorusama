@@ -21,7 +21,6 @@ import '../configs/manage/widgets.dart';
 import '../configs/ref.dart';
 import '../premiums/widgets.dart';
 import '../settings/providers.dart';
-import '../settings/settings.dart';
 import '../theme.dart';
 import 'empty_booru_config_home_page.dart';
 
@@ -153,14 +152,16 @@ class _SidebarSettingsListener extends ConsumerWidget {
       settingsProvider.select((value) => value.booruConfigSelectorPosition),
     );
     final hideLabel = ref.watch(
-      settingsProvider.select((value) => value.hideBooruConfigLabel),
+      settingsProvider.select(
+        (value) => value.booruConfigLabelVisibility.hideBooruConfigLabel,
+      ),
     );
 
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 300),
       child: builder(
         context,
-        pos == BooruConfigSelectorPosition.bottom,
+        pos.isBottom,
         hideLabel,
       ),
     );

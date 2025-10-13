@@ -7,7 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../settings/providers.dart';
-import '../settings/settings.dart';
 
 class BooruSwitchListTile extends ConsumerWidget {
   const BooruSwitchListTile({

@@ -6,13 +6,24 @@ import 'package:equatable/equatable.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
+import '../../../../foundation/applock/types.dart';
 import '../../../../foundation/caching/types.dart';
+import '../../../analytics/types.dart';
 import '../../../backups/auto/auto_backup_settings.dart';
 import '../../../configs/gesture/gesture.dart';
+import '../../../downloads/downloader/types.dart';
+import '../../../haptics/types.dart';
+import '../../../home/types.dart';
+import '../../../images/types.dart';
+import '../../../posts/details/types.dart';
+import '../../../posts/details_pageview/types.dart';
+import '../../../posts/listing/types.dart';
+import '../../../posts/post/post.dart';
+import '../../../search/search/types.dart';
 import '../../../theme/theme_configs.dart';
 import '../../../theme/theme_mode.dart';
 import '../../../videos/engines/types.dart';
-import 'types.dart';
+import '../../../videos/player/types.dart';
 
 class Settings extends Equatable {
   const Settings({
@@ -54,20 +65,18 @@ class Settings extends Equatable {
       listing = ImageListingSettings.fromJson(json),
       viewer = ImageViewerSettings.fromJson(json),
       blacklistedTags = json['hideBlacklist'] ?? '',
-      themeMode = json['themeMode'] != null
-          ? AppThemeMode.values[json['themeMode']]
-          : AppThemeMode.amoledDark,
-      dataCollectingStatus = json['dataCollectingStatus'] != null
-          ? DataCollectingStatus.values[json['dataCollectingStatus']]
-          : DataCollectingStatus.allow,
+      themeMode = AppThemeMode.parse(
+        json['themeMode'],
+      ),
+      dataCollectingStatus = DataCollectingStatus.parse(
+        json['dataCollectingStatus'],
+      ),
       language = json['language'] ?? 'en-US',
       downloadPath = json['downloadPath'],
-      imageQualityInFullView = json['imageQualityInFullView'] != null
-          ? ImageQuality.values[json['imageQualityInFullView']]
-          : ImageQuality.automatic,
-      downloadQuality = json['downloadQuality'] != null
-          ? DownloadQuality.values[json['downloadQuality']]
-          : DownloadQuality.original,
+      imageQualityInFullView = ImageQuality.parse(
+        json['imageQualityInFullView'],
+      ),
+      downloadQuality = DownloadQuality.parse(json['downloadQuality']),
       autoFocusSearchBar = json['autoFocusSearchBar'] ?? true,
       currentBooruConfigId = json['currentBooruConfigId'],
       booruConfigIdOrders = json['booruConfigIdOrders'] != null
@@ -77,48 +86,37 @@ class Settings extends Equatable {
           json['enableIncognitoModeForKeyboard'] ?? false,
       enableDynamicColoring = json['enableDynamicColoring'] ?? false,
       clearImageCacheOnStartup = json['clearImageCacheOnStartup'] ?? false,
-      appLockType = json['appLockType'] != null
-          ? AppLockType.values[json['appLockType']]
-          : AppLockType.none,
-      bookmarkFilterType = json['bookmarkFilterType'] != null
-          ? BookmarkFilterType.values[json['bookmarkFilterType']]
-          : BookmarkFilterType.none,
-      booruConfigSelectorPosition = json['booruConfigSelectorPosition'] != null
-          ? BooruConfigSelectorPosition
-                .values[json['booruConfigSelectorPosition']]
-          : BooruConfigSelectorPosition.side,
-      booruConfigSelectorScrollDirection =
-          json['booruConfigSelectorScrollDirection'] != null
-          ? BooruConfigScrollDirection
-                .values[json['booruConfigSelectorScrollDirection']]
-          : BooruConfigScrollDirection.normal,
-      booruConfigLabelVisibility = json['booruConfigLabelVisibility'] != null
-          ? BooruConfigLabelVisibility
-                .values[json['booruConfigLabelVisibility']]
-          : BooruConfigLabelVisibility.always,
-      downloadFileExistedBehavior = json['downloadFileExistedBehavior'] != null
-          ? DownloadFileExistedBehavior
-                .values[json['downloadFileExistedBehavior']]
-          : DownloadFileExistedBehavior.appDecide,
+      appLockType = AppLockType.parse(json['appLockType']),
+      bookmarkFilterType = BookmarkFilterType.parse(json['bookmarkFilterType']),
+      booruConfigSelectorPosition = BooruConfigSelectorPosition.parse(
+        json['booruConfigSelectorPosition'],
+      ),
+      booruConfigSelectorScrollDirection = BooruConfigScrollDirection.parse(
+        json['booruConfigSelectorScrollDirection'],
+      ),
+      booruConfigLabelVisibility = BooruConfigLabelVisibility.parse(
+        json['booruConfigLabelVisibility'],
+      ),
+      downloadFileExistedBehavior = DownloadFileExistedBehavior.parse(
+        json['downloadFileExistedBehavior'],
+      ),
       colors = json['colors'] != null
           ? ColorSettings.fromJson(json['colors'])
           : null,
-      searchBarScrollBehavior = json['searchBarScrollBehavior'] != null
-          ? SearchBarScrollBehavior.values[json['searchBarScrollBehavior']]
-          : SearchBarScrollBehavior.autoHide,
-      searchBarPosition = json['searchBarPosition'] != null
-          ? SearchBarPosition.values[json['searchBarPosition']]
-          : SearchBarPosition.top,
-      hapticFeedbackLevel = json['hapticFeedbackLevel'] != null
-          ? HapticFeedbackLevel.values[json['hapticFeedbackLevel']]
-          : HapticFeedbackLevel.balanced,
+      searchBarScrollBehavior = SearchBarScrollBehavior.parse(
+        json['searchBarScrollBehavior'],
+      ),
+      searchBarPosition = SearchBarPosition.parse(
+        json['searchBarPosition'],
+      ),
+      hapticFeedbackLevel = HapticFeedbackLevel.parse(
+        json['hapticFeedbackLevel'],
+      ),
       volumeKeyViewerNavigation = json['volumeKeyViewerNavigation'] ?? false,
       reduceAnimations = json['reduceAnimations'] ?? false,
       swipeAreaToOpenSidebarPercentage =
           json['swipeAreaToOpenSidebarPercentage'] ?? 5,
-      autoBackup = json['autoBackup'] != null
-          ? AutoBackupSettings.fromJson(json['autoBackup'])
-          : AutoBackupSettings.disabled,
+      autoBackup = AutoBackupSettings.parse(json['autoBackup']),
       videoCacheMaxSize = switch (json['videoCacheMaxSize']) {
         final v? => CacheSize.tryParse(v) ?? CacheSize.oneGigabyte,
         _ => CacheSize.oneGigabyte,
@@ -126,61 +124,62 @@ class Settings extends Equatable {
 
   static const defaultSettings = Settings(
     listing: ImageListingSettings(
-      gridSize: GridSize.normal,
-      imageListType: ImageListType.masonry,
-      imageQuality: ImageQuality.automatic,
-      pageMode: PageMode.infinite,
-      pageIndicatorPosition: PageIndicatorPosition.bottom,
+      gridSize: GridSize.defaultValue,
+      imageListType: ImageListType.defaultValue,
+      imageQuality: ImageQuality.defaultValue,
+      pageMode: PageMode.defaultValue,
+      pageIndicatorPosition: PageIndicatorPosition.defaultValue,
       showScoresInGrid: false,
       showPostListConfigHeader: true,
-      mediaBlurCondition: MediaBlurCondition.none,
+      mediaBlurCondition: MediaBlurCondition.defaultValue,
       imageGridSpacing: 4,
       imageBorderRadius: 4,
       imageGridPadding: 16,
       imageGridAspectRatio: 0.7,
       postsPerPage: 60,
-      animatedPostsDefaultState: AnimatedPostsDefaultState.autoplay,
+      animatedPostsDefaultState: AnimatedPostsDefaultState.defaultValue,
     ),
     viewer: ImageViewerSettings(
-      swipeMode: PostDetailsSwipeMode.horizontal,
-      postDetailsOverlayInitialState: PostDetailsOverlayInitialState.show,
-      slideshowDirection: SlideshowDirection.forward,
+      swipeMode: PostDetailsSwipeMode.defaultValue,
+      postDetailsOverlayInitialState:
+          PostDetailsOverlayInitialState.defaultValue,
+      slideshowDirection: SlideshowDirection.defaultValue,
       slideshowInterval: 6,
-      slideshowTransitionType: SlideshowTransitionType.natural,
-      videoAudioDefaultState: VideoAudioDefaultState.unspecified,
-      videoPlayerEngine: VideoPlayerEngine.auto,
+      slideshowTransitionType: SlideshowTransitionType.defaultValue,
+      videoAudioDefaultState: VideoAudioDefaultState.defaultValue,
+      videoPlayerEngine: VideoPlayerEngine.defaultValue,
       enableVideoCache: true,
       doubleTapSeekDuration: 5,
     ),
     colors: null,
     safeMode: true,
     blacklistedTags: '',
-    themeMode: AppThemeMode.amoledDark,
+    themeMode: AppThemeMode.defaultValue,
     language: 'en-US',
-    dataCollectingStatus: DataCollectingStatus.allow,
+    dataCollectingStatus: DataCollectingStatus.defaultValue,
     downloadPath: null,
-    imageQualityInFullView: ImageQuality.automatic,
+    imageQualityInFullView: ImageQuality.defaultValue,
     autoFocusSearchBar: true,
     currentBooruConfigId: -1,
     booruConfigIdOrders: '',
-    downloadQuality: DownloadQuality.original,
+    downloadQuality: DownloadQuality.defaultValue,
     enableIncognitoModeForKeyboard: false,
     enableDynamicColoring: false,
     clearImageCacheOnStartup: false,
-    appLockType: AppLockType.none,
-    bookmarkFilterType: BookmarkFilterType.none,
-    booruConfigSelectorPosition: BooruConfigSelectorPosition.side,
-    booruConfigSelectorScrollDirection: BooruConfigScrollDirection.normal,
+    appLockType: AppLockType.defaultValue,
+    bookmarkFilterType: BookmarkFilterType.defaultValue,
+    booruConfigSelectorPosition: BooruConfigSelectorPosition.defaultValue,
+    booruConfigSelectorScrollDirection: BooruConfigScrollDirection.defaultValue,
     swipeAreaToOpenSidebarPercentage: 5,
-    booruConfigLabelVisibility: BooruConfigLabelVisibility.always,
+    booruConfigLabelVisibility: BooruConfigLabelVisibility.defaultValue,
     reduceAnimations: false,
-    downloadFileExistedBehavior: DownloadFileExistedBehavior.appDecide,
+    downloadFileExistedBehavior: DownloadFileExistedBehavior.defaultValue,
     volumeKeyViewerNavigation: false,
-    searchBarScrollBehavior: SearchBarScrollBehavior.autoHide,
-    searchBarPosition: SearchBarPosition.top,
-    hapticFeedbackLevel: HapticFeedbackLevel.balanced,
-    autoBackup: AutoBackupSettings.disabled,
-    videoCacheMaxSize: CacheSize.oneGigabyte,
+    searchBarScrollBehavior: SearchBarScrollBehavior.defaultValue,
+    searchBarPosition: SearchBarPosition.defaultValue,
+    hapticFeedbackLevel: HapticFeedbackLevel.defaultValue,
+    autoBackup: AutoBackupSettings.defaultValue,
+    videoCacheMaxSize: CacheSize.defaultValue,
   );
 
   final ImageListingSettings listing;
@@ -329,32 +328,32 @@ class Settings extends Equatable {
       ...viewer,
       'safeMode': safeMode,
       'hideBlacklist': blacklistedTags,
-      'themeMode': themeMode.index,
-      'dataCollectingStatus': dataCollectingStatus.index,
+      'themeMode': themeMode.toData(),
+      'dataCollectingStatus': dataCollectingStatus.toData(),
       'language': language,
       'downloadPath': downloadPath,
-      'imageQualityInFullView': imageQualityInFullView.index,
+      'imageQualityInFullView': imageQualityInFullView.toData(),
       'autoFocusSearchBar': autoFocusSearchBar,
       'currentBooruConfigId': currentBooruConfigId,
       'booruConfigIdOrders': booruConfigIdOrders,
-      'downloadQuality': downloadQuality.index,
+      'downloadQuality': downloadQuality.toData(),
       'enableIncognitoModeForKeyboard': enableIncognitoModeForKeyboard,
       'enableDynamicColoring': enableDynamicColoring,
       'clearImageCacheOnStartup': clearImageCacheOnStartup,
-      'appLockType': appLockType.index,
-      'bookmarkFilterType': bookmarkFilterType.index,
-      'booruConfigSelectorPosition': booruConfigSelectorPosition.index,
-      'booruConfigSelectorScrollDirection':
-          booruConfigSelectorScrollDirection.index,
+      'appLockType': appLockType.toData(),
+      'bookmarkFilterType': bookmarkFilterType.toData(),
+      'booruConfigSelectorPosition': booruConfigSelectorPosition.toData(),
+      'booruConfigSelectorScrollDirection': booruConfigSelectorScrollDirection
+          .toData(),
       'swipeAreaToOpenSidebarPercentage': swipeAreaToOpenSidebarPercentage,
-      'booruConfigLabelVisibility': booruConfigLabelVisibility.index,
+      'booruConfigLabelVisibility': booruConfigLabelVisibility.toData(),
       'reduceAnimations': reduceAnimations,
-      'downloadFileExistedBehavior': downloadFileExistedBehavior.index,
+      'downloadFileExistedBehavior': downloadFileExistedBehavior.toData(),
       'colors': colors?.toJson(),
       'volumeKeyViewerNavigation': volumeKeyViewerNavigation,
-      'searchBarScrollBehavior': searchBarScrollBehavior.index,
-      'searchBarPosition': searchBarPosition.index,
-      'hapticFeedbackLevel': hapticFeedbackLevel.index,
+      'searchBarScrollBehavior': searchBarScrollBehavior.toData(),
+      'searchBarPosition': searchBarPosition.toData(),
+      'hapticFeedbackLevel': hapticFeedbackLevel.toData(),
       'autoBackup': autoBackup.toJson(),
       'videoCacheMaxSize': videoCacheMaxSize.displayString(),
     };
@@ -394,22 +393,6 @@ class Settings extends Equatable {
     autoBackup,
     videoCacheMaxSize,
   ];
-
-  bool get appLockEnabled => appLockType == AppLockType.biometrics;
-  bool get shouldFilterBookmarks =>
-      bookmarkFilterType != BookmarkFilterType.none;
-
-  bool get hideBooruConfigLabel =>
-      booruConfigLabelVisibility == BooruConfigLabelVisibility.never;
-
-  bool get reverseBooruConfigSelectorScrollDirection =>
-      booruConfigSelectorScrollDirection == BooruConfigScrollDirection.reversed;
-
-  bool get skipDownloadIfExists =>
-      downloadFileExistedBehavior == DownloadFileExistedBehavior.skip;
-
-  bool get persistSearchBar =>
-      searchBarScrollBehavior == SearchBarScrollBehavior.persistent;
 
   List<int> get booruConfigIdOrderList {
     try {
@@ -534,27 +517,21 @@ class ImageViewerSettings extends Equatable {
   });
 
   ImageViewerSettings.fromJson(Map<String, dynamic> json)
-    : swipeMode = json['swipeMode'] != null
-          ? PostDetailsSwipeMode.values[json['swipeMode']]
-          : PostDetailsSwipeMode.horizontal,
-      postDetailsOverlayInitialState =
-          json['postDetailsOverlayInitialState'] != null
-          ? PostDetailsOverlayInitialState
-                .values[json['postDetailsOverlayInitialState']]
-          : PostDetailsOverlayInitialState.show,
-      slideshowDirection = json['slideshowDirection'] != null
-          ? SlideshowDirection.values[json['slideshowDirection']]
-          : SlideshowDirection.forward,
+    : swipeMode = PostDetailsSwipeMode.parse(json['swipeMode']),
+      postDetailsOverlayInitialState = PostDetailsOverlayInitialState.parse(
+        json['postDetailsOverlayInitialState'],
+      ),
+      slideshowDirection = SlideshowDirection.parse(json['slideshowDirection']),
       slideshowInterval = json['slideshowInterval'] ?? 6,
-      slideshowTransitionType = json['slideshowTransitionType'] != null
-          ? SlideshowTransitionType.values[json['slideshowTransitionType']]
-          : SlideshowTransitionType.natural,
-      videoAudioDefaultState = json['videoAudioDefaultState'] != null
-          ? VideoAudioDefaultState.values[json['videoAudioDefaultState']]
-          : VideoAudioDefaultState.unspecified,
-      videoPlayerEngine = json['videoPlayerEngine'] != null
-          ? VideoPlayerEngine.values[json['videoPlayerEngine']]
-          : VideoPlayerEngine.auto,
+      slideshowTransitionType = SlideshowTransitionType.parse(
+        json['slideshowTransitionType'],
+      ),
+      videoAudioDefaultState = VideoAudioDefaultState.parse(
+        json['videoAudioDefaultState'],
+      ),
+      videoPlayerEngine = VideoPlayerEngine.parse(
+        json['videoPlayerEngine'],
+      ),
       enableVideoCache = json['enableVideoCache'] ?? true,
       doubleTapSeekDuration = json['doubleTapSeekDuration'] ?? 10;
 
@@ -597,13 +574,13 @@ class ImageViewerSettings extends Equatable {
   }
 
   Map<String, dynamic> toJson() => {
-    'swipeMode': swipeMode.index,
-    'postDetailsOverlayInitialState': postDetailsOverlayInitialState.index,
-    'slideshowDirection': slideshowDirection.index,
+    'swipeMode': swipeMode.toData(),
+    'postDetailsOverlayInitialState': postDetailsOverlayInitialState.toData(),
+    'slideshowDirection': slideshowDirection.toData(),
     'slideshowInterval': slideshowInterval,
-    'slideshowTransitionType': slideshowTransitionType.index,
-    'videoAudioDefaultState': videoAudioDefaultState.index,
-    'videoPlayerEngine': videoPlayerEngine.index,
+    'slideshowTransitionType': slideshowTransitionType.toData(),
+    'videoAudioDefaultState': videoAudioDefaultState.toData(),
+    'videoPlayerEngine': videoPlayerEngine.toData(),
     'enableVideoCache': enableVideoCache,
     'doubleTapSeekDuration': doubleTapSeekDuration,
   };
@@ -620,21 +597,6 @@ class ImageViewerSettings extends Equatable {
     enableVideoCache,
     doubleTapSeekDuration,
   ];
-
-  bool get hidePostDetailsOverlay =>
-      postDetailsOverlayInitialState == PostDetailsOverlayInitialState.hide;
-
-  bool get skipSlideshowTransition =>
-      slideshowTransitionType == SlideshowTransitionType.none;
-
-  bool get muteAudioByDefault =>
-      videoAudioDefaultState == VideoAudioDefaultState.mute;
-
-  Duration get slideshowDuration {
-    return slideshowInterval < 1
-        ? Duration(milliseconds: (slideshowInterval * 1000).toInt())
-        : Duration(seconds: slideshowInterval.toInt());
-  }
 }
 
 class ImageListingSettings extends Equatable {
@@ -656,34 +618,28 @@ class ImageListingSettings extends Equatable {
   });
 
   ImageListingSettings.fromJson(Map<String, dynamic> json)
-    : gridSize = json['gridSize'] != null
-          ? GridSize.values[json['gridSize']]
-          : GridSize.normal,
-      imageQuality = json['imageQuality'] != null
-          ? ImageQuality.values[json['imageQuality']]
-          : ImageQuality.automatic,
-      imageListType = json['imageListType'] != null
-          ? ImageListType.values[json['imageListType']]
-          : ImageListType.masonry,
-      pageMode = json['contentOrganizationCategory'] != null
-          ? PageMode.values[json['contentOrganizationCategory']]
-          : PageMode.infinite,
+    : gridSize = GridSize.parse(json['gridSize']),
+      imageQuality = ImageQuality.parse(json['imageQuality']),
+      imageListType = ImageListType.parse(json['imageListType']),
+      pageMode = PageMode.parse(
+        json['contentOrganizationCategory'],
+      ),
       showScoresInGrid = json['showScoresInGrid'] ?? false,
       showPostListConfigHeader = json['showPostListConfigHeader'] ?? true,
       imageBorderRadius = json['imageBorderRadius'],
-      pageIndicatorPosition = json['pageIndicatorPosition'] != null
-          ? PageIndicatorPosition.values[json['pageIndicatorPosition']]
-          : PageIndicatorPosition.bottom,
-      mediaBlurCondition = json['mediaBlurCondition'] != null
-          ? MediaBlurCondition.values[json['mediaBlurCondition']]
-          : MediaBlurCondition.none,
+      pageIndicatorPosition = PageIndicatorPosition.parse(
+        json['pageIndicatorPosition'],
+      ),
+      mediaBlurCondition = MediaBlurCondition.parse(
+        json['mediaBlurCondition'],
+      ),
       postsPerPage = json['postsPerPage'] ?? 60,
       imageGridAspectRatio = json['imageGridAspectRatio'] ?? 0.7,
       imageGridPadding = json['imageGridPadding'] ?? 16,
       imageGridSpacing = json['imageGridSpacing'] ?? 4,
-      animatedPostsDefaultState = json['animatedPostsDefaultState'] != null
-          ? AnimatedPostsDefaultState.values[json['animatedPostsDefaultState']]
-          : AnimatedPostsDefaultState.autoplay;
+      animatedPostsDefaultState = AnimatedPostsDefaultState.parse(
+        json['animatedPostsDefaultState'],
+      );
 
   final GridSize gridSize;
   final ImageListType imageListType;
@@ -699,9 +655,6 @@ class ImageListingSettings extends Equatable {
   final double imageGridAspectRatio;
   final int postsPerPage;
   final AnimatedPostsDefaultState animatedPostsDefaultState;
-
-  bool get blurExplicitMedia =>
-      mediaBlurCondition == MediaBlurCondition.explicitOnly;
 
   ImageListingSettings copyWith({
     GridSize? gridSize,
@@ -743,20 +696,20 @@ class ImageListingSettings extends Equatable {
   }
 
   Map<String, dynamic> toJson() => {
-    'gridSize': gridSize.index,
-    'imageListType': imageListType.index,
-    'imageQuality': imageQuality.index,
-    'contentOrganizationCategory': pageMode.index,
-    'pageIndicatorPosition': pageIndicatorPosition.index,
+    'gridSize': gridSize.toData(),
+    'imageListType': imageListType.toData(),
+    'imageQuality': imageQuality.toData(),
+    'contentOrganizationCategory': pageMode.toData(),
+    'pageIndicatorPosition': pageIndicatorPosition.toData(),
     'showScoresInGrid': showScoresInGrid,
     'showPostListConfigHeader': showPostListConfigHeader,
-    'mediaBlurCondition': mediaBlurCondition.index,
+    'mediaBlurCondition': mediaBlurCondition.toData(),
     'imageGridSpacing': imageGridSpacing,
     'imageBorderRadius': imageBorderRadius,
     'imageGridPadding': imageGridPadding,
     'imageGridAspectRatio': imageGridAspectRatio,
     'postsPerPage': postsPerPage,
-    'animatedPostsDefaultState': animatedPostsDefaultState.index,
+    'animatedPostsDefaultState': animatedPostsDefaultState.toData(),
   };
 
   @override

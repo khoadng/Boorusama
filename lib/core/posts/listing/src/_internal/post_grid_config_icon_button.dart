@@ -17,13 +17,16 @@ import '../../../../boorus/engine/providers.dart';
 import '../../../../config_widgets/website_logo.dart';
 import '../../../../configs/create/routes.dart';
 import '../../../../configs/ref.dart';
+import '../../../../images/types.dart';
 import '../../../../settings/providers.dart';
 import '../../../../settings/routes.dart';
-import '../../../../settings/settings.dart';
 import '../../../../settings/widgets.dart';
 import '../../../../theme/theme.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../post/post.dart';
+import '../types/grid_size.dart';
+import '../types/image_list_type.dart';
+import '../types/page_mode.dart';
 import '../widgets/post_grid_controller.dart';
 
 class PostGridConfigIconButton<T> extends ConsumerWidget {
@@ -395,12 +398,12 @@ class PostGridActionSheet extends ConsumerWidget {
                     optionBuilder: (value) => Text(value.localize(context)),
                     visualDensity: VisualDensity.compact,
                   ),
-                  SettingsTile<GridSize>(
+                  SettingsTile(
                     title: Text(
                       context.t.settings.image_grid.grid_size.grid_size,
                     ),
                     selectedOption: gridSize,
-                    items: kSortedGridSizes,
+                    items: GridSize.sortedValues,
                     onChanged: (value) => onGridChanged(value),
                     optionBuilder: (value) => Text(value.localize(context)),
                     visualDensity: VisualDensity.compact,
@@ -418,8 +421,7 @@ class PostGridActionSheet extends ConsumerWidget {
                       context.t.settings.image_grid.image_quality.image_quality,
                     ),
                     selectedOption: imageQuality,
-                    items: [...ImageQuality.values]
-                      ..remove(ImageQuality.original),
+                    items: ImageQuality.nonOriginalValues,
                     onChanged: (value) => onImageQualityChanged(value),
                     optionBuilder: (value) => Text(value.localize(context)),
                     visualDensity: VisualDensity.compact,

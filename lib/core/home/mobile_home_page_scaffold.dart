@@ -10,9 +10,9 @@ import '../configs/ref.dart';
 import '../posts/count/widgets.dart';
 import '../posts/listing/widgets.dart';
 import '../posts/post/providers.dart';
+import '../search/search/types.dart';
 import '../search/selected_tags/providers.dart';
 import '../settings/providers.dart';
-import '../settings/settings.dart';
 import '../tags/metatag/providers.dart';
 import '../widgets/widgets.dart';
 import 'home_search_bar.dart';
@@ -96,7 +96,7 @@ class _MobileHomePageScaffoldState
 
                 return SafeArea(
                   top: false,
-                  bottom: position != BooruConfigSelectorPosition.bottom,
+                  bottom: !position.isBottom,
                   child: SizedBox(
                     height: kToolbarHeight,
                     child: CustomScrollView(

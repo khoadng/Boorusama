@@ -14,7 +14,6 @@ import 'colors.dart';
 import 'dynamic_color.dart';
 import 'providers.dart';
 import 'theme_configs.dart';
-import 'theme_mode.dart';
 
 final hasCustomThemeSettingsProvider = Provider<bool>((ref) {
   final themeConfigs = ref.watch(
@@ -91,7 +90,7 @@ class ThemeBuilder extends ConsumerWidget {
                 colorScheme: scheme,
                 systemDarkMode: systemDarkMode,
               ),
-              mapAppThemeModeToSystemThemeMode(theme),
+              theme.toSystem(),
             ),
           ),
         );

@@ -7,7 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../settings/providers.dart';
-import '../settings/settings.dart';
 import 'adaptive_button_row.dart';
 
 class BooruMenuButtonRow extends ConsumerWidget {

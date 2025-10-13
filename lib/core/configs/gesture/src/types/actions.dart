@@ -9,7 +9,7 @@ import 'package:flutter/widgets.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
-import '../../../../settings/settings.dart';
+import '../../../../haptics/types.dart';
 
 const kDownloadAction = 'download';
 const kShareAction = 'share';

@@ -221,12 +221,15 @@ mixin BooruSelectorActionMixin<T extends ConsumerStatefulWidget>
 
   bool get reverseScroll => ref.watch(
     settingsProvider.select(
-      (value) => value.reverseBooruConfigSelectorScrollDirection,
+      (value) => value.booruConfigSelectorScrollDirection.isReversed,
     ),
   );
 
-  bool get hideLabel =>
-      ref.watch(settingsProvider.select((value) => value.hideBooruConfigLabel));
+  bool get hideLabel => ref.watch(
+    settingsProvider.select(
+      (value) => value.booruConfigLabelVisibility.hideBooruConfigLabel,
+    ),
+  );
 
   Widget get addButton => IconButton(
     splashRadius: 20,

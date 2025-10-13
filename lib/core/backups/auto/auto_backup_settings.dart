@@ -21,8 +21,8 @@ class AutoBackupSettings extends Equatable {
     this.lastBackupTime,
   });
 
-  factory AutoBackupSettings.fromJson(Map<String, dynamic> json) {
-    return AutoBackupSettings(
+  factory AutoBackupSettings.parse(dynamic value) => switch (value) {
+    final Map<String, dynamic> json => AutoBackupSettings(
       enabled: json['enabled'] as bool? ?? false,
       frequency: AutoBackupFrequency.values.firstWhere(
         (f) => f.name == json['frequency'],
@@ -33,10 +33,12 @@ class AutoBackupSettings extends Equatable {
       lastBackupTime: json['lastBackupTime'] != null
           ? DateTime.parse(json['lastBackupTime'] as String)
           : null,
-    );
-  }
+    ),
+    _ => disabled,
+  };
 
   static const disabled = AutoBackupSettings();
+  static const defaultValue = disabled;
 
   final bool enabled;
   final AutoBackupFrequency frequency;

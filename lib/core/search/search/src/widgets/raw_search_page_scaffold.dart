@@ -16,15 +16,16 @@ import '../../../../../foundation/utils/stream/text_editing_controller_utils.dar
 import '../../../../analytics/analytics_interface.dart';
 import '../../../../analytics/providers.dart';
 import '../../../../posts/listing/providers.dart';
+import '../../../../posts/listing/types.dart';
 import '../../../../posts/listing/widgets.dart';
 import '../../../../posts/post/post.dart';
 import '../../../../settings/providers.dart';
-import '../../../../settings/settings.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../histories/providers.dart';
 import '../../../selected_tags/selected_tag_controller.dart';
 import '../../../selected_tags/tag.dart';
 import '../routes/params.dart';
+import '../types/search_bar_position.dart';
 import 'search_controller.dart';
 
 typedef IndexedSelectableSearchWidgetBuilder<T extends Post> =
@@ -288,7 +289,9 @@ class _SearchPageScaffoldState<T extends Post>
 
   Widget _buildResult() {
     final persistentSearchBar = ref.watch(
-      settingsProvider.select((value) => value.persistSearchBar),
+      settingsProvider.select(
+        (value) => value.searchBarScrollBehavior.persistSearchBar,
+      ),
     );
     final searchBarPosition = ref.watch(searchBarPositionProvider);
 

@@ -9,7 +9,6 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import '../../foundation/display.dart';
 import '../settings/providers.dart';
-import '../settings/settings.dart';
 import 'conditional_parent_widget.dart';
 
 class BooruPopupMenuButton<T> extends ConsumerWidget {

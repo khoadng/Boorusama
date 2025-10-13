@@ -15,7 +15,7 @@ import '../../../notes/note/types.dart';
 import '../../../posts/count/count.dart';
 import '../../../posts/details/details.dart';
 import '../../../posts/favorites/types.dart';
-import '../../../posts/listing/list.dart';
+import '../../../posts/listing/types.dart';
 import '../../../posts/post/post.dart';
 import '../../../posts/rating/rating.dart';
 import '../../../search/queries/query.dart';

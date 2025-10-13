@@ -10,3 +10,4 @@ export 'src/mixins/post_mixin.dart';
 export 'src/types/post_id_generator.dart';
 export 'src/types/post_link_generator.dart';
 export 'src/types/image_url_resolver.dart';
+export 'src/types/media_blur_condition.dart';

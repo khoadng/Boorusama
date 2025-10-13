@@ -7,11 +7,11 @@ import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../configs/config/widgets.dart';
+import '../../../posts/listing/types.dart';
+import '../../../search/search/types.dart';
 import '../../../widgets/widgets.dart';
 import '../providers/settings_notifier.dart';
 import '../providers/settings_provider.dart';
-import '../types/types.dart';
-import '../types/types_l10n.dart';
 import '../widgets/settings_page_scaffold.dart';
 import '../widgets/settings_tile.dart';
 
@@ -57,7 +57,7 @@ class _SearchSettingsPageState extends ConsumerState<SearchSettingsPage> {
                 .scroll_behavior
                 .persistent_description,
           ),
-          value: settings.persistSearchBar,
+          value: settings.searchBarScrollBehavior.persistSearchBar,
           onChanged: (value) {
             notifer.updateSettings(
               settings.copyWith(
@@ -86,7 +86,7 @@ class _SearchSettingsPageState extends ConsumerState<SearchSettingsPage> {
           title: Text(
             context.t.settings.search.hide_bookmarked_posts_from_search_results,
           ),
-          value: settings.shouldFilterBookmarks,
+          value: settings.bookmarkFilterType.shouldFilterBookmarks,
           onChanged: (value) {
             notifer.updateSettings(
               settings.copyWith(

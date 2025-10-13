@@ -47,6 +47,8 @@ class CacheSize extends Equatable {
   static const fiveGigabytes = CacheSize._(5 * 1024 * 1024 * 1024);
   static const tenGigabytes = CacheSize._(10 * 1024 * 1024 * 1024);
 
+  static const defaultValue = oneGigabyte;
+
   final int bytes;
 
   bool get isZero => bytes == 0;

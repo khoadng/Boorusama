@@ -11,7 +11,6 @@ import '../../foundation/platform.dart';
 import '../cache/providers.dart';
 import '../configs/manage/widgets.dart';
 import '../settings/providers.dart';
-import '../settings/settings.dart';
 import 'constants.dart';
 import 'home_page_controller.dart';
 import 'side_bar_menu.dart';
@@ -120,8 +119,7 @@ class _BooruScopeState extends ConsumerState<BooruScope> {
 
     return Scaffold(
       key: widget.controller.scaffoldKey,
-      bottomNavigationBar:
-          !isDesktop && position == BooruConfigSelectorPosition.bottom
+      bottomNavigationBar: !isDesktop && position.isBottom
           ? const BooruSelectorWithBottomPadding()
           : null,
       drawer: !isDesktop
@@ -233,7 +231,9 @@ class BooruSelectorWithBottomPadding extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final hideLabel = ref.watch(
-      settingsProvider.select((value) => value.hideBooruConfigLabel),
+      settingsProvider.select(
+        (value) => value.booruConfigLabelVisibility.hideBooruConfigLabel,
+      ),
     );
 
     return Container(

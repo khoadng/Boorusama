@@ -8,9 +8,10 @@ import 'package:sliver_masonry_grid/sliver_masonry_grid.dart';
 // Project imports:
 import '../../../../images/booru_image.dart';
 import '../../../../images/utils.dart';
-import '../../../../settings/settings.dart';
 import '../_internal/raw_post_grid.dart';
-import '../utils/grid_utils.dart';
+import '../types/grid_size.dart';
+import '../types/grid_utils.dart';
+import '../types/image_list_type.dart';
 
 class SliverPostGridPlaceHolder extends ConsumerWidget {
   const SliverPostGridPlaceHolder({

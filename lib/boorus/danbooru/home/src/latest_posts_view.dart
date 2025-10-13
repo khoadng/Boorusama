@@ -11,10 +11,10 @@ import '../../../../core/configs/ref.dart';
 import '../../../../core/home/home_search_bar.dart';
 import '../../../../core/posts/count/widgets.dart';
 import '../../../../core/posts/listing/widgets.dart';
+import '../../../../core/search/search/types.dart';
 import '../../../../core/search/selected_tags/providers.dart';
 import '../../../../core/search/selected_tags/tag.dart';
 import '../../../../core/settings/providers.dart';
-import '../../../../core/settings/settings.dart';
 import '../../../../core/tags/metatag/providers.dart';
 import '../../../../core/tags/tag/tag.dart';
 import '../../../../foundation/display.dart';
@@ -150,7 +150,7 @@ class _LatestViewState extends ConsumerState<LatestView> {
 
                 return SafeArea(
                   top: false,
-                  bottom: position != BooruConfigSelectorPosition.bottom,
+                  bottom: !position.isBottom,
                   child: SizedBox(
                     height: kToolbarHeight,
                     child: CustomScrollView(

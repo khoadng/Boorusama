@@ -6,12 +6,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
+import '../../../haptics/types.dart';
+import '../../../home/types.dart';
 import '../../../theme.dart';
 import '../../../widgets/widgets.dart';
 import '../providers/settings_notifier.dart';
 import '../providers/settings_provider.dart';
-import '../types/types.dart';
-import '../types/types_l10n.dart';
 import '../widgets/settings_page_scaffold.dart';
 import '../widgets/settings_tile.dart';
 
@@ -41,7 +41,7 @@ class _AccessibilityPageState extends ConsumerState<AccessibilityPage> {
                 .accessibility
                 .reverseBooruConfigSelectorScrollDirection,
           ),
-          value: settings.reverseBooruConfigSelectorScrollDirection,
+          value: settings.booruConfigSelectorScrollDirection.isReversed,
           onChanged: (value) => notifer.updateSettings(
             settings.copyWith(
               booruConfigSelectorScrollDirection: value

@@ -13,7 +13,7 @@ import '../../foundation/info/device_info.dart';
 import '../configs/config/types.dart';
 import '../http/providers.dart';
 import '../settings/providers.dart';
-import '../settings/settings.dart';
+import 'image_quality.dart';
 import 'providers.dart';
 
 const _defaultRadius = BorderRadius.all(Radius.circular(8));

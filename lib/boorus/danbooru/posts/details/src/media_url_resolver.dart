@@ -3,9 +3,9 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../../../../core/configs/config/types.dart';
+import '../../../../../core/images/types.dart';
 import '../../../../../core/posts/details/details.dart';
 import '../../../../../core/posts/post/post.dart';
-import '../../../../../core/settings/settings.dart';
 import '../../post/post.dart';
 
 class DanbooruMediaUrlResolver implements MediaUrlResolver {

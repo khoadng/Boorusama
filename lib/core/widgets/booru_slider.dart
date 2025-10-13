@@ -6,8 +6,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import '../haptics/types.dart';
 import '../settings/providers.dart';
-import '../settings/settings.dart';
 
 class BooruSlider extends ConsumerWidget {
   const BooruSlider({

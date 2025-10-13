@@ -201,7 +201,9 @@ class AppLockWithSettings extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return AppLock(
-      enable: ref.watch(settingsProvider.select((s) => s.appLockEnabled)),
+      enable: ref.watch(
+        settingsProvider.select((s) => s.appLockType.appLockEnabled),
+      ),
       child: child,
     );
   }

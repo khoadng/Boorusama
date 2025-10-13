@@ -9,11 +9,11 @@ import '../../../../bulk_downloads/routes.dart';
 import '../../../../configs/config.dart';
 import '../../../../configs/create/routes.dart';
 import '../../../../settings/providers.dart';
-import '../../../../settings/settings.dart';
 import '../../../../tags/metatag/src/providers.dart';
 import '../../../queries/providers.dart';
 import '../../../selected_tags/selected_tag_controller.dart';
 import '../../../selected_tags/tag.dart';
+import '../types/search_bar_position.dart';
 import 'selected_tag_list.dart';
 
 class SelectedTagListWithData extends ConsumerWidget {

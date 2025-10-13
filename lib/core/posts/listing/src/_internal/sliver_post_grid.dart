@@ -9,11 +9,12 @@ import 'package:sliver_masonry_grid/sliver_masonry_grid.dart';
 // Project imports:
 import '../../../../../foundation/error_monitor.dart';
 import '../../../../errors/types.dart';
-import '../../../../settings/settings.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../post/post.dart';
 import '../../widgets.dart';
-import '../utils/grid_utils.dart';
+import '../types/grid_size.dart';
+import '../types/grid_utils.dart';
+import '../types/image_list_type.dart';
 import '../widgets/post_grid_controller.dart';
 import 'raw_post_grid.dart';
 

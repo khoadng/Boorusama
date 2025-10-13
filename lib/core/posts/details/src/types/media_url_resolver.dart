@@ -3,7 +3,7 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../../../configs/config.dart';
-import '../../../../settings/settings.dart';
+import '../../../../images/types.dart';
 import '../../../post/post.dart';
 
 abstract class MediaUrlResolver {

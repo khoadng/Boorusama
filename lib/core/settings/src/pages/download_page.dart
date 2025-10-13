@@ -17,7 +17,6 @@ import '../../../downloads/downloader/types.dart';
 import '../../widgets.dart';
 import '../providers/settings_notifier.dart';
 import '../providers/settings_provider.dart';
-import '../types/types.dart';
 import '../widgets/settings_page_scaffold.dart';
 
 class DownloadPage extends ConsumerStatefulWidget {
@@ -72,7 +71,7 @@ class _DownloadPageState extends ConsumerState<DownloadPage> {
             context.t.settings.download.skip_existing_files_explanation,
           ),
           trailing: Switch(
-            value: settings.skipDownloadIfExists,
+            value: settings.downloadFileExistedBehavior.skipDownloadIfExists,
             onChanged: (value) async {
               await notifer.updateSettings(
                 settings.copyWith(

@@ -9,7 +9,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../foundation/display.dart';
 import '../settings/providers.dart';
-import '../settings/settings.dart';
 
 class CustomContextMenuOverlay extends ConsumerWidget {
   const CustomContextMenuOverlay({
@@ -39,7 +38,7 @@ class CustomContextMenuOverlay extends ConsumerWidget {
         ),
       ),
       buttonBuilder: (context, config, [_]) => ContextMenuTile(config: config),
-      hapticFeedbackOnStart: hapticFeedbackLevel != HapticFeedbackLevel.none,
+      hapticFeedbackOnStart: hapticFeedbackLevel.hasHapticFeedback,
       child: child,
     );
   }

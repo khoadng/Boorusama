@@ -8,9 +8,9 @@ import 'package:flutter/foundation.dart';
 // Project imports:
 import '../../../../../foundation/utils/collection_utils.dart';
 import '../../../../errors/types.dart';
-import '../../../../settings/settings.dart';
 import '../../../filter/filter.dart';
 import '../../../post/post.dart';
+import '../types/page_mode.dart';
 import 'post_duplicate_checker.dart';
 
 const _kFirstPage = 1;

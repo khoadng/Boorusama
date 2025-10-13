@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../settings/src/providers/listing_provider.dart';
-import '../utils/grid_utils.dart';
+import '../types/grid_utils.dart';
 
 final gridCacheExtentProvider = Provider<double>(
   (ref) {

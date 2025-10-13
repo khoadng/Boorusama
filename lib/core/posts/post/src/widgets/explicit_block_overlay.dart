@@ -52,7 +52,7 @@ class _ExplicitContentBlockOverlayState
       builder: (_, ref, _) {
         final enable = ref.watch(
           imageListingSettingsProvider.select(
-            (value) => value.blurExplicitMedia,
+            (value) => value.mediaBlurCondition.blurExplicitMedia,
           ),
         );
 
@@ -91,7 +91,7 @@ class _ExplicitContentBlockOverlayState
       builder: (_, ref, _) {
         final enable = ref.watch(
           imageListingSettingsProvider.select(
-            (value) => value.blurExplicitMedia,
+            (value) => value.mediaBlurCondition.blurExplicitMedia,
           ),
         );
 

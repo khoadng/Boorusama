@@ -8,11 +8,11 @@ import 'package:selection_mode/selection_mode.dart';
 // Project imports:
 import '../../../configs/config.dart';
 import '../../../configs/create/create.dart';
+import '../../../images/types.dart';
 import '../../../posts/details/routes.dart';
 import '../../../posts/listing/providers.dart';
 import '../../../posts/post/post.dart';
 import '../../../search/search/routes.dart';
-import '../../../settings/settings.dart';
 import '../../../tags/autocompletes/types.dart';
 import '../../../tags/tag/colors.dart';
 

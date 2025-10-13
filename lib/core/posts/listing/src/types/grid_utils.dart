@@ -1,5 +1,5 @@
 // Project imports:
-import '../../../../settings/settings.dart';
+import 'grid_size.dart';
 
 // the smaller the grid size, the larger the cache extent so that more items can be preloaded
 double calculateCacheExtentFactor(GridSize size) => switch (size) {

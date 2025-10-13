@@ -6,11 +6,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
+import '../../../../foundation/applock/types.dart';
 import '../../../tracking/providers.dart';
 import '../../../widgets/widgets.dart';
 import '../providers/settings_notifier.dart';
 import '../providers/settings_provider.dart';
-import '../types/types.dart';
 import '../widgets/settings_page_scaffold.dart';
 
 class PrivacyPage extends ConsumerWidget {
@@ -49,7 +49,7 @@ class PrivacyPage extends ConsumerWidget {
           subtitle: Text(
             context.t.settings.privacy.enable_biometric_lock_notice,
           ),
-          value: settings.appLockType == AppLockType.biometrics,
+          value: settings.appLockType.isBiometric,
           onChanged: (value) {
             notifer.updateSettings(
               settings.copyWith(

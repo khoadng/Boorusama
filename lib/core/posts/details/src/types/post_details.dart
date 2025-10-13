@@ -44,9 +44,16 @@ class PostDetails<T extends Post> extends InheritedWidget {
 }
 
 SlideshowOptions toSlideShowOptions(ImageViewerSettings viewerSettings) {
+  final interval = viewerSettings.slideshowInterval;
+  final duration = interval < 1
+      ? Duration(
+          milliseconds: (interval * 1000).toInt(),
+        )
+      : Duration(seconds: interval.toInt());
+
   return SlideshowOptions(
-    duration: viewerSettings.slideshowDuration,
+    duration: duration,
     direction: viewerSettings.slideshowDirection,
-    skipTransition: viewerSettings.skipSlideshowTransition,
+    skipTransition: viewerSettings.slideshowTransitionType.isSkip,
   );
 }

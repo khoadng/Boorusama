@@ -3,8 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:selection_mode/selection_mode.dart';
 
 // Project imports:
+import '../../../haptics/types.dart';
+import '../../../search/search/types.dart';
 import '../types/settings.dart';
-import '../types/types.dart';
 import 'settings_notifier.dart';
 
 final settingsProvider = Provider<Settings>(

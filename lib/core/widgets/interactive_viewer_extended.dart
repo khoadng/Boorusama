@@ -10,7 +10,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../settings/providers.dart';
-import '../settings/settings.dart';
 
 /// Fallback max zoom scale when content size is unknown. Limits zoom-in.
 const _kFallbackMaxScale = 10.0;

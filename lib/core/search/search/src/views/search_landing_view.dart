@@ -10,11 +10,11 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import '../../../../cache/providers.dart';
 import '../../../../settings/providers.dart';
-import '../../../../settings/settings.dart';
 import '../../../../tags/favorites/favorited.dart';
 import '../../../histories/all.dart';
 import '../../../selected_tags/tag_search_item.dart';
 import '../pages/selected_tag_edit_dialog.dart';
+import '../types/search_bar_position.dart';
 import '../widgets/constants.dart';
 import '../widgets/favorite_tags_section.dart';
 

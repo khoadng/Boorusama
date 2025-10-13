@@ -9,8 +9,8 @@ import '../../../../blacklists/providers.dart';
 import '../../../../bookmarks/providers.dart';
 import '../../../../configs/ref.dart';
 import '../../../../settings/providers.dart';
-import '../../../../settings/settings.dart';
 import '../../../post/post.dart';
+import '../types/page_mode.dart';
 import 'post_duplicate_checker.dart';
 import 'post_grid_controller.dart';
 
@@ -82,7 +82,9 @@ class _PostScopeState<T extends Post> extends ConsumerState<PostScope<T>> {
         try {
           final settings = ref.read(settingsProvider);
 
-          if (!settings.shouldFilterBookmarks) return const {};
+          if (!settings.bookmarkFilterType.shouldFilterBookmarks) {
+            return const {};
+          }
 
           final bookmarkState = await ref.read(bookmarkProvider.future);
 

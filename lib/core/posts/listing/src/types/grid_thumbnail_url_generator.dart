@@ -2,8 +2,10 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import '../../../../settings/settings.dart';
+import '../../../../images/types.dart';
 import '../../../post/post.dart';
+import 'animated_posts_default_state.dart';
+import 'grid_size.dart';
 
 abstract class GridThumbnailUrlGenerator {
   String generateUrl(

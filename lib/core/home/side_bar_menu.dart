@@ -24,7 +24,6 @@ import '../premiums/routes.dart';
 import '../search/search/routes.dart';
 import '../settings/providers.dart';
 import '../settings/routes.dart';
-import '../settings/settings.dart';
 import '../tags/favorites/routes.dart';
 import 'constants.dart';
 import 'custom_home.dart';
@@ -65,7 +64,7 @@ class SideBarMenu extends ConsumerWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (position == BooruConfigSelectorPosition.side)
+          if (position.isSide)
             ColoredBox(
               color: colorScheme.surface,
               child: const SafeArea(

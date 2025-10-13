@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../configs/manage/providers.dart';
+import '../../../images/types.dart';
 import '../types/settings.dart';
-import '../types/types.dart';
 import 'settings_provider.dart';
 
 final imageListingSettingsProvider = Provider<ImageListingSettings>((ref) {
@@ -37,19 +37,3 @@ final imageListingQualityProvider = Provider<ImageQuality>((ref) {
     imageListingSettingsProvider.select((value) => value.imageQuality),
   );
 });
-
-final selectionIndicatorSizeProvider = Provider<double>((ref) {
-  final gridSize = ref.watch(
-    imageListingSettingsProvider.select((value) => value.gridSize),
-  );
-
-  return 32 * _getGridSizeFactor(gridSize);
-});
-
-double _getGridSizeFactor(GridSize gridSize) => switch (gridSize) {
-  GridSize.small => 0.95,
-  GridSize.normal => 1.0,
-  GridSize.large => 1.05,
-  GridSize.tiny => 0.85,
-  GridSize.micro => 0.75,
-};

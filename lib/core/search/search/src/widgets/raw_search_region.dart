@@ -5,8 +5,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 // Project imports:
-import '../../../../settings/settings.dart';
 import '../../../../widgets/widgets.dart';
+import '../types/search_bar_position.dart';
 import 'raw_search_page_scaffold.dart';
 import 'search_app_bar.dart';
 import 'search_controller.dart';

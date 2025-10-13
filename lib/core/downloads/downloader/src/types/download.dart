@@ -72,14 +72,16 @@ extension DownloadWithSettingsX on DownloadService {
             metadata: metadata,
             path: join(downloadPath, folderName),
             filename: filename,
-            skipIfExists: settings.skipDownloadIfExists,
+            skipIfExists:
+                settings.downloadFileExistedBehavior.skipDownloadIfExists,
             headers: headers,
           )
         : download(
             url: url,
             metadata: metadata,
             filename: filename,
-            skipIfExists: settings.skipDownloadIfExists,
+            skipIfExists:
+                settings.downloadFileExistedBehavior.skipDownloadIfExists,
             headers: headers,
           );
   }

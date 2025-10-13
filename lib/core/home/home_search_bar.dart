@@ -279,7 +279,9 @@ class _SliverHomeSearchBarState
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final persistentSearchBar = ref.watch(
-      settingsProvider.select((value) => value.persistSearchBar),
+      settingsProvider.select(
+        (value) => value.searchBarScrollBehavior.persistSearchBar,
+      ),
     );
 
     if (context.isLargeScreen) {

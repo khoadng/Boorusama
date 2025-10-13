@@ -6,5 +6,4 @@ export 'grayscale_shades.dart';
 export 'named_colors.dart';
 export 'slider.dart';
 export 'theme_buider.dart';
-export 'theme_mode.dart';
 export 'theme_utils.dart';

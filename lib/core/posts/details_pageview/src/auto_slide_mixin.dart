@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import '../../../settings/settings.dart';
+import 'types/slideshow_direction.dart';
 
 const kDefaultAutoSlideDuration = Duration(seconds: 5);
 

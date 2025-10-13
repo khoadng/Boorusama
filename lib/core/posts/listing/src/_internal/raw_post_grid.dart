@@ -17,13 +17,14 @@ import 'package:sliver_tools/sliver_tools.dart';
 // Project imports:
 import '../../../../../foundation/display.dart';
 import '../../../../../foundation/keyboard.dart';
-import '../../../../settings/settings.dart';
+import '../../../../haptics/types.dart';
 import '../../../../theme/app_theme.dart';
 import '../../../../widgets/animated_footer.dart';
 import '../../../../widgets/default_selection_bar.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../post/post.dart';
-import '../utils/conditional_value_listenable_builder.dart';
+import '../types/page_mode.dart';
+import '../widgets/conditional_value_listenable_builder.dart';
 import '../widgets/post_controller_event_listener.dart';
 import '../widgets/post_grid_controller.dart';
 import 'highres_preview_on_mobile_data_warning_banner.dart';

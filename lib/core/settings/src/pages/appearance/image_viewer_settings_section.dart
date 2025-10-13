@@ -6,13 +6,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
+import '../../../../posts/details/types.dart';
+import '../../../../posts/details_pageview/types.dart';
 import '../../../../videos/engines/providers.dart';
 import '../../../../videos/engines/types.dart';
+import '../../../../videos/player/types.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../routes.dart';
 import '../../types/settings.dart';
-import '../../types/types.dart';
-import '../../types/types_l10n.dart';
 import '../../widgets/settings_header.dart';
 import '../../widgets/settings_radio_card.dart';
 import '../../widgets/settings_tile.dart';
@@ -111,7 +112,7 @@ class ImageViewerSettingsSection extends ConsumerWidget {
         ),
         BooruSwitchListTile(
           title: Text(context.t.settings.image_viewer.slideshow_skip),
-          value: viewer.skipSlideshowTransition,
+          value: viewer.slideshowTransitionType.isSkip,
           onChanged: (value) => onUpdate(
             viewer.copyWith(
               slideshowTransitionType: value
@@ -146,7 +147,7 @@ class ImageViewerSettingsSection extends ConsumerWidget {
         ),
         BooruSwitchListTile(
           title: Text(context.t.settings.image_viewer.mute_video),
-          value: viewer.muteAudioByDefault,
+          value: viewer.videoAudioDefaultState.muteByDefault,
           onChanged: (value) => onUpdate(
             viewer.copyWith(
               videoAudioDefaultState: value
