@@ -2,7 +2,9 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
+import '../rendering/polygon_note_painter.dart';
 import '../types/note.dart';
+import '../types/note_coordinate.dart';
 import '../types/note_display_mode.dart';
 import '../types/note_style.dart';
 
@@ -20,38 +22,89 @@ class NoteBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final (coordinate, content) = (note.coordinate, note.content);
+    return switch (note.coordinate) {
+      RectangleNoteCoordinate(
+        :final width,
+        :final height,
+      ) =>
+        Container(
+          width: width,
+          height: height,
+          decoration: BoxDecoration(
+            color: _buildBackgroundColor(),
+            border: Border.fromBorderSide(
+              BorderSide(
+                color: style?.borderColor ?? Colors.red,
+              ),
+            ),
+          ),
+          child: switch (displayMode) {
+            NoteDisplayMode.box || null => null,
+            NoteDisplayMode.inlineHorizontal ||
+            NoteDisplayMode.inlineVertical => ClipRect(
+              child: _InlineText(
+                note: note,
+                style: style,
+                displayMode: displayMode,
+              ),
+            ),
+          },
+        ),
+      final PolygonNoteCoordinate polyCoord => Builder(
+        builder: (context) {
+          final relativePoints = polyCoord.getRelativePoints();
+          final size = note.coordinate.getSize();
 
-    return Container(
-      width: coordinate.width,
-      height: coordinate.height,
-      decoration: BoxDecoration(
-        color: switch (displayMode) {
-          NoteDisplayMode.box ||
-          null => style?.backgroundColor ?? Colors.white54,
-          NoteDisplayMode.inlineHorizontal ||
-          NoteDisplayMode.inlineVertical => Colors.white,
+          return SizedBox(
+            width: size.width,
+            height: size.height,
+            child: CustomPaint(
+              painter: PolygonNotePainter(
+                points: relativePoints,
+                borderColor: style?.borderColor ?? Colors.red,
+                backgroundColor: _buildBackgroundColor(),
+              ),
+              child: switch (displayMode) {
+                NoteDisplayMode.box || null => const SizedBox.shrink(),
+                NoteDisplayMode.inlineHorizontal ||
+                NoteDisplayMode.inlineVertical => ClipPath(
+                  clipper: _PolygonClipper(points: relativePoints),
+                  child: _InlineText(
+                    note: note,
+                    style: style,
+                    displayMode: displayMode,
+                  ),
+                ),
+              },
+            ),
+          );
         },
-        border: Border.fromBorderSide(
-          BorderSide(
-            color: style?.borderColor ?? Colors.red,
-          ),
-        ),
       ),
-      child: switch (displayMode) {
-        NoteDisplayMode.box || null => null,
-        NoteDisplayMode.inlineHorizontal ||
-        NoteDisplayMode.inlineVertical => ClipRect(
-          child: Padding(
-            padding: const EdgeInsets.all(1),
-            child: _buildInlineText(),
-          ),
-        ),
-      },
-    );
+    };
   }
 
-  Widget _buildInlineText() {
+  Color _buildBackgroundColor() {
+    return switch (displayMode) {
+      NoteDisplayMode.box || null => style?.backgroundColor ?? Colors.white54,
+      NoteDisplayMode.inlineHorizontal ||
+      NoteDisplayMode.inlineVertical => Colors.white,
+    };
+  }
+}
+
+class _InlineText extends StatelessWidget {
+  const _InlineText({
+    required this.note,
+    required this.style,
+    required this.displayMode,
+  });
+
+  final Note note;
+  final NoteStyle? style;
+  final NoteDisplayMode? displayMode;
+
+  @override
+  Widget build(BuildContext context) {
     final textWidget = Text(
       note.strippedContent,
       style: TextStyle(
@@ -61,12 +114,30 @@ class NoteBox extends StatelessWidget {
       ),
     );
 
-    return switch (displayMode) {
-      NoteDisplayMode.inlineVertical => RotatedBox(
-        quarterTurns: 1,
-        child: textWidget,
-      ),
-      _ => textWidget,
-    };
+    return Padding(
+      padding: const EdgeInsets.all(1),
+      child: switch (displayMode) {
+        NoteDisplayMode.inlineVertical => RotatedBox(
+          quarterTurns: 1,
+          child: textWidget,
+        ),
+        _ => textWidget,
+      },
+    );
   }
+}
+
+class _PolygonClipper extends CustomClipper<Path> {
+  _PolygonClipper({required this.points});
+
+  final List<Offset> points;
+
+  @override
+  Path getClip(Size size) {
+    if (points.isEmpty) return Path();
+    return Path()..addPolygon(points, true);
+  }
+
+  @override
+  bool shouldReclip(_PolygonClipper oldClipper) => points != oldClipper.points;
 }

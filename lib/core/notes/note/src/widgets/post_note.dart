@@ -102,10 +102,7 @@ class _NoteContainerDesktopState extends State<_NoteContainerDesktop> {
     final (coordinate, content) = (widget.note.coordinate, widget.note.content);
 
     return Container(
-      margin: EdgeInsets.only(
-        left: coordinate.x,
-        top: coordinate.y,
-      ),
+      margin: coordinate.getMargin(),
       child: PortalTarget(
         anchor: switch (coordinate.calculateQuadrant(
           screenWidth,
@@ -222,10 +219,7 @@ class _NoteContainerMobile extends StatelessWidget {
     final (coordinate, content) = (note.coordinate, note.content);
 
     return Container(
-      margin: EdgeInsets.only(
-        left: coordinate.x,
-        top: coordinate.y,
-      ),
+      margin: coordinate.getMargin(),
       child: PortalTarget(
         anchor: switch (coordinate.calculateQuadrant(
           screenWidth,

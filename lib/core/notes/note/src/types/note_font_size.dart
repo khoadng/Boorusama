@@ -15,10 +15,9 @@ class NoteFontSize extends Equatable {
     required String text,
     required NoteCoordinate coordinate,
   }) {
-    final maxWidth = coordinate.width;
-    final maxHeight = coordinate.height;
-    final availableWidth = maxWidth - padding * 2;
-    final availableHeight = maxHeight - padding * 2;
+    final size = coordinate.getSize();
+    final availableWidth = size.width - padding * 2;
+    final availableHeight = size.height - padding * 2;
 
     if (availableWidth <= 0 || availableHeight <= 0 || text.isEmpty) {
       return const NoteFontSize._(minValue);

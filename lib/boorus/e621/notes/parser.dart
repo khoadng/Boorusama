@@ -17,7 +17,7 @@ E621Note e621NoteDtoToE621Note(NoteDto dto) {
 
 Note e621NoteToNote(E621Note e621Note) {
   return Note(
-    coordinate: NoteCoordinate(
+    coordinate: RectangleNoteCoordinate(
       x: e621Note.x.toDouble(),
       y: e621Note.y.toDouble(),
       height: e621Note.height.toDouble(),

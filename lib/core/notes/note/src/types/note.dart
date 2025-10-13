@@ -14,7 +14,7 @@ class Note extends Equatable {
   }) : strippedContent = content.replaceAll(RegExp('<[^>]*>'), '').trim();
 
   const Note.empty()
-    : coordinate = const NoteCoordinate.shrink(),
+    : coordinate = const RectangleNoteCoordinate.shrink(),
       content = '',
       strippedContent = '',
       fontSize = null;

@@ -6,7 +6,7 @@ import '../../../core/notes/note/types.dart';
 
 Note gelbooruV2NoteToNote(NoteDto note) {
   return Note(
-    coordinate: NoteCoordinate(
+    coordinate: RectangleNoteCoordinate(
       x: note.x?.toDouble() ?? 0,
       y: note.y?.toDouble() ?? 0,
       height: note.height?.toDouble() ?? 0,

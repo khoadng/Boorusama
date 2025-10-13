@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:ui';
+
 // Package imports:
 import 'package:booru_clients/szurubooru.dart';
 
@@ -9,47 +12,19 @@ Note szurubooruNoteToNote(
   required double imageWidth,
   required double imageHeight,
 }) {
-  final bounds = _calculateBoundingBox(note.polygon);
+  // Convert normalized coordinates (0-1) to pixel coordinates
+  final points = note.polygon
+      .where((point) => point.length >= 2)
+      .map(
+        (point) => Offset(
+          point[0] * imageWidth,
+          point[1] * imageHeight,
+        ),
+      )
+      .toList();
 
   return Note(
-    coordinate: NoteCoordinate(
-      x: bounds.x * imageWidth,
-      y: bounds.y * imageHeight,
-      width: bounds.width * imageWidth,
-      height: bounds.height * imageHeight,
-    ),
+    coordinate: PolygonNoteCoordinate(points: points),
     content: note.text ?? '',
-  );
-}
-
-({double x, double y, double width, double height}) _calculateBoundingBox(
-  List<List<double>> polygon,
-) {
-  if (polygon.isEmpty) {
-    return (x: 0.0, y: 0.0, width: 0.0, height: 0.0);
-  }
-
-  var minX = double.infinity;
-  var minY = double.infinity;
-  var maxX = double.negativeInfinity;
-  var maxY = double.negativeInfinity;
-
-  for (final point in polygon) {
-    if (point.length < 2) continue;
-
-    final x = point[0];
-    final y = point[1];
-
-    if (x < minX) minX = x;
-    if (x > maxX) maxX = x;
-    if (y < minY) minY = y;
-    if (y > maxY) maxY = y;
-  }
-
-  return (
-    x: minX,
-    y: minY,
-    width: maxX - minX,
-    height: maxY - minY,
   );
 }

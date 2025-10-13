@@ -23,7 +23,7 @@ final danbooruNoteRepoProvider =
 
 extension NoteDtoX on NoteDto {
   Note toEntity() {
-    final coord = NoteCoordinate(
+    final coord = RectangleNoteCoordinate(
       x: x?.toDouble() ?? 0,
       y: y?.toDouble() ?? 0,
       width: width?.toDouble() ?? 0,
