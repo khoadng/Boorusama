@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../core/boorus/defaults/widgets.dart';
@@ -13,18 +12,16 @@ import '../../core/configs/config/providers.dart';
 import '../../core/configs/create/widgets.dart';
 import '../../core/configs/manage/widgets.dart';
 import '../../core/downloads/filename/types.dart';
-import '../../core/home/custom_home.dart';
+import '../../core/home/types.dart';
 import '../../core/posts/details/widgets.dart';
-import '../../core/posts/details_parts/types.dart';
-import '../../core/posts/details_parts/widgets.dart';
 import '../../core/search/search/routes.dart';
 import '../../core/search/search/widgets.dart';
 import 'artists/widgets.dart';
 import 'comments/widgets.dart';
 import 'configs/widgets.dart';
 import 'favorites/widgets.dart';
+import 'home/types.dart';
 import 'home/widgets.dart';
-import 'popular/widgets.dart';
 import 'posts/providers.dart';
 import 'posts/types.dart';
 import 'posts/widgets.dart';
@@ -116,43 +113,8 @@ class E621Builder extends BaseBooruBuilder {
       );
 
   @override
-  final postDetailsUIBuilder = PostDetailsUIBuilder(
-    preview: {
-      DetailsPart.info: (context) =>
-          const DefaultInheritedInformationSection<E621Post>(
-            showSource: true,
-          ),
-      DetailsPart.toolbar: (context) =>
-          const DefaultInheritedPostActionToolbar<E621Post>(),
-    },
-    full: {
-      DetailsPart.info: (context) =>
-          const DefaultInheritedInformationSection<E621Post>(
-            showSource: true,
-          ),
-      DetailsPart.toolbar: (context) =>
-          const DefaultInheritedPostActionToolbar<E621Post>(),
-      DetailsPart.artistInfo: (context) => const E621ArtistSection(),
-      DetailsPart.tags: (context) => const DefaultInheritedTagsTile<E621Post>(),
-      DetailsPart.fileDetails: (context) =>
-          const DefaultInheritedFileDetailsSection<E621Post>(),
-      DetailsPart.artistPosts: (context) =>
-          const DefaultInheritedArtistPostsSection<E621Post>(),
-    },
-  );
+  final postDetailsUIBuilder = kE621PostDetailsUIBuilder;
 }
-
-final ke621AltHomeView = {
-  ...kDefaultAltHomeView,
-  const CustomHomeViewKey('favorites'): CustomHomeDataBuilder(
-    displayName: (context) => context.t.profile.favorites,
-    builder: (context, _) => const E621FavoritesPage(),
-  ),
-  const CustomHomeViewKey('popular'): CustomHomeDataBuilder(
-    displayName: (context) => context.t.explore.popular,
-    builder: (context, _) => const E621PopularPage(),
-  ),
-};
 
 class E621SearchPage extends ConsumerWidget {
   const E621SearchPage({

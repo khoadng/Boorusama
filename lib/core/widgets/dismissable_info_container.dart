@@ -8,7 +8,7 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../../foundation/html.dart';
-import '../theme/providers.dart';
+import '../themes/colors/providers.dart';
 
 class DismissableInfoContainer extends StatefulWidget {
   const DismissableInfoContainer({

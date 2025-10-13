@@ -8,7 +8,7 @@ import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../../foundation/toast.dart';
-import '../../../../theme.dart';
+import '../../../../themes/theme/types.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../config.dart';
 import '../../../create/providers.dart';

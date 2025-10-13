@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import '../../../theme/theme.dart';
+import '../../../themes/theme/types.dart';
 
 class SettingsCard extends StatelessWidget {
   const SettingsCard({

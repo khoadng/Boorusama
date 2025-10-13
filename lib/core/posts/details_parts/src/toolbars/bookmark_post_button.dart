@@ -11,7 +11,7 @@ import '../../../../bookmarks/bookmark.dart';
 import '../../../../bookmarks/providers.dart';
 import '../../../../configs/config/types.dart';
 import '../../../../configs/ref.dart';
-import '../../../../theme.dart';
+import '../../../../themes/theme/types.dart';
 import '../../../post/post.dart';
 
 class BookmarkPostButton extends ConsumerWidget {

@@ -21,7 +21,7 @@ import '../../../../images/types.dart';
 import '../../../../settings/providers.dart';
 import '../../../../settings/routes.dart';
 import '../../../../settings/widgets.dart';
-import '../../../../theme/theme.dart';
+import '../../../../themes/theme/types.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../post/post.dart';
 import '../types/grid_size.dart';

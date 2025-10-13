@@ -20,7 +20,7 @@ import '../../../search/search/routes.dart';
 import '../../../search/selected_tags/tag.dart' hide queryAsList;
 import '../../../settings/providers.dart';
 import '../../../settings/widgets.dart';
-import '../../../theme.dart';
+import '../../../themes/theme/types.dart';
 import '../../../widgets/widgets.dart';
 import '../providers/bulk_download_notifier.dart';
 import '../providers/create_download_options_notifier.dart';

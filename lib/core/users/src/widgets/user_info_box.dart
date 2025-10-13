@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 // Project imports:
-import '../../../../../../core/theme.dart';
+import '../../../themes/theme/types.dart';
 
 class UserInfoBox extends ConsumerWidget {
   const UserInfoBox({

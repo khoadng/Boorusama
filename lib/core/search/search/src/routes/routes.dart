@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../../foundation/platform.dart';
-import '../../../../home/custom_home.dart';
+import '../../../../home/types.dart';
 import '../../../../router.dart';
 import '../../../../widgets/widgets.dart';
 import '../pages/search_page.dart';

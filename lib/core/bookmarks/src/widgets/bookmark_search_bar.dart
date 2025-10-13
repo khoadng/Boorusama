@@ -17,7 +17,7 @@ import '../../../configs/ref.dart';
 import '../../../posts/listing/providers.dart';
 import '../../../search/queries/query.dart';
 import '../../../search/search/widgets.dart';
-import '../../../theme.dart';
+import '../../../themes/theme/types.dart';
 import '../providers/suggestion_provider.dart';
 
 class BookmarkSearchBar extends ConsumerStatefulWidget {

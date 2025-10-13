@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../theme/providers.dart';
+import '../../../themes/colors/providers.dart';
 
 class RelatedTagButton extends ConsumerWidget {
   const RelatedTagButton({

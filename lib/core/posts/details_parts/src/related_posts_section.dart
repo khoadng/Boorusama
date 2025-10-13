@@ -12,7 +12,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import '../../../config_widgets/website_logo.dart';
 import '../../../configs/config/providers.dart';
 import '../../../images/booru_image.dart';
-import '../../../theme.dart';
+import '../../../themes/theme/types.dart';
 import '../../post/post.dart';
 import '../../sources/source.dart';
 import '_internal/preview_post_grid.dart';

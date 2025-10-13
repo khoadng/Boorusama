@@ -7,7 +7,7 @@ import '../../../../boorus/booru/booru.dart';
 import '../../../../posts/rating/rating.dart';
 import '../../../../proxy/proxy.dart';
 import '../../../../settings/settings.dart';
-import '../../../../theme/theme_configs.dart';
+import '../../../../themes/configs/types.dart';
 import '../../../gesture/gesture.dart';
 import '../../../search/search.dart';
 import 'booru_config.dart';

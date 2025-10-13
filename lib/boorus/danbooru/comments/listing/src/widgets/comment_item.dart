@@ -10,7 +10,7 @@ import 'package:i18n/i18n.dart';
 import '../../../../../../core/comments/types.dart';
 import '../../../../../../core/comments/widgets.dart';
 import '../../../../../../core/dtext/dtext.dart';
-import '../../../../../../core/theme.dart';
+import '../../../../../../core/themes/theme/types.dart';
 import '../../../../dtext/dtext.dart';
 import '../../../comment/comment.dart';
 import '../../../votes/providers.dart';

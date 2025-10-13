@@ -13,7 +13,7 @@ import '../../../../cache/providers.dart';
 import '../../../../router.dart';
 import '../../../../tags/favorites/favorited.dart';
 import '../../../../tags/favorites/widgets.dart';
-import '../../../../theme/providers.dart';
+import '../../../../themes/colors/providers.dart';
 import 'constants.dart';
 
 class FavoriteTagsSection extends ConsumerWidget {

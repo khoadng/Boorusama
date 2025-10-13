@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 // Project imports:
 import '../../../../../foundation/html.dart';
-import '../../../../theme.dart';
+import '../../../../themes/theme/types.dart';
 
 class DefaultBooruInstructionText extends StatelessWidget {
   const DefaultBooruInstructionText(

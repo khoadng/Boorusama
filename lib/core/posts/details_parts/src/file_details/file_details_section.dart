@@ -9,7 +9,7 @@ import 'package:i18n/i18n.dart';
 // Project imports:
 import '../../../../../foundation/clipboard.dart';
 import '../../../../../foundation/display/media_query_utils.dart';
-import '../../../../theme.dart';
+import '../../../../themes/theme/types.dart';
 import '../../../post/post.dart';
 import '../../../rating/rating.dart';
 import '../_internal/details_widget_frame.dart';

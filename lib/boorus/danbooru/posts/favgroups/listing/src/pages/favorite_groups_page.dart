@@ -10,7 +10,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import '../../../../../../../core/configs/auth/widgets.dart';
 import '../../../../../../../core/configs/ref.dart';
 import '../../../../../../../core/images/booru_image.dart';
-import '../../../../../../../core/theme/app_theme.dart';
+import '../../../../../../../core/themes/theme/types.dart';
 import '../../../details/routes.dart';
 import '../../../favgroups/favgroup.dart';
 import '../../../favgroups/providers.dart';

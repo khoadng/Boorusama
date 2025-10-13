@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Project imports:
 import '../../../core/posts/details/details.dart';
+import '../../../core/posts/details_parts/types.dart';
 import '../../../core/posts/details_parts/widgets.dart';
 import 'types.dart';
 
@@ -27,3 +28,23 @@ class GelbooruFileDetailsSection extends StatelessWidget {
     );
   }
 }
+
+final kGelbooruPostDetailsUIBuilder = PostDetailsUIBuilder(
+  preview: {
+    DetailsPart.toolbar: (context) =>
+        const DefaultInheritedPostActionToolbar<GelbooruPost>(),
+  },
+  full: {
+    DetailsPart.toolbar: (context) =>
+        const DefaultInheritedPostActionToolbar<GelbooruPost>(),
+    DetailsPart.source: (context) =>
+        const DefaultInheritedSourceSection<GelbooruPost>(),
+    DetailsPart.tags: (context) =>
+        const DefaultInheritedTagsTile<GelbooruPost>(),
+    DetailsPart.fileDetails: (context) => const GelbooruFileDetailsSection(),
+    DetailsPart.artistPosts: (context) =>
+        const DefaultInheritedArtistPostsSection<GelbooruPost>(),
+    DetailsPart.characterList: (context) =>
+        const DefaultInheritedCharacterPostsSection<GelbooruPost>(),
+  },
+);

@@ -10,7 +10,7 @@ import 'package:foundation/widgets.dart';
 import '../../../../../core/configs/config/providers.dart';
 import '../../../../../core/dtext/dtext.dart';
 import '../../../../../core/forums/forum_post.dart';
-import '../../../../../core/theme.dart';
+import '../../../../../core/themes/theme/types.dart';
 import '../../../../../foundation/html.dart';
 import '../../../../../foundation/url_launcher.dart';
 import '../../../configs/providers.dart';

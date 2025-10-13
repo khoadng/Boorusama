@@ -8,11 +8,9 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../../../../core/configs/config/providers.dart';
-import '../../../../core/home/home_navigation_tile.dart';
-import '../../../../core/home/home_page_scaffold.dart';
-import '../../../../core/home/side_menu_tile.dart';
+import '../../../../core/home/widgets.dart';
 import '../../../../core/posts/favorites/routes.dart';
-import '../../../../core/theme.dart';
+import '../../../../core/themes/theme/types.dart';
 import '../../artists/search/routes.dart';
 import '../../artists/search/widgets.dart';
 import '../../blacklist/routes.dart';

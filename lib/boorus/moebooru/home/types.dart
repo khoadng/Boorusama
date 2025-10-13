@@ -2,7 +2,7 @@
 import 'package:i18n/i18n.dart';
 
 // Project imports:
-import '../../../core/home/custom_home.dart';
+import '../../../core/home/types.dart';
 import '../favorites/widgets.dart';
 import '../popular/widgets.dart';
 

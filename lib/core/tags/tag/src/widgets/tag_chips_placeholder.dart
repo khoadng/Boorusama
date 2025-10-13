@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../theme.dart';
+import '../../../../themes/colors/providers.dart';
 
 class TagChipsPlaceholder extends ConsumerWidget {
   const TagChipsPlaceholder({

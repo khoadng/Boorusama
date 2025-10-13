@@ -8,7 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../../../../core/theme.dart';
+import '../../../../../../core/themes/theme/types.dart';
 import '../../../feedbacks/routes.dart';
 import '../../../user/user.dart';
 import '../widgets/user_details_section_card.dart';

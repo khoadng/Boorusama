@@ -10,7 +10,7 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import '../../../../../../core/configs/ref.dart';
 import '../../../../../../core/posts/listing/widgets.dart';
-import '../../../../../../core/theme.dart';
+import '../../../../../../core/themes/theme/types.dart';
 import '../../../../posts/listing/widgets.dart';
 import '../../../../posts/post/providers.dart';
 import '../../../saved_search/routes.dart';

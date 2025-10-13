@@ -13,7 +13,7 @@ import '../../tags/autocompletes/types.dart';
 import '../../tags/metatag/providers.dart';
 import '../../tags/metatag/types.dart';
 import '../../tags/tag/providers.dart';
-import '../../theme.dart';
+import '../../themes/theme/types.dart';
 
 class TagSuggestionItem extends StatelessWidget {
   const TagSuggestionItem({

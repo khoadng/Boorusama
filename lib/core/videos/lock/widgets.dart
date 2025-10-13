@@ -9,7 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../theme.dart';
+import '../../themes/theme/types.dart';
 import 'providers.dart';
 
 const kLockIconFadeDuration = Duration(milliseconds: 300);

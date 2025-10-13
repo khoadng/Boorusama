@@ -9,7 +9,7 @@ import 'package:reorderables/reorderables.dart';
 // Project imports:
 import '../../../../premiums/providers.dart';
 import '../../../../premiums/widgets.dart';
-import '../../../../theme/app_theme.dart';
+import '../../../../themes/theme/types.dart';
 import '../../../details_parts/types.dart';
 import '../providers/details_layout_provider.dart';
 import '../routes/routes.dart';

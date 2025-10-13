@@ -10,7 +10,7 @@ import 'package:i18n/i18n.dart';
 import '../../../../../foundation/display.dart';
 import '../../../../../foundation/utils/flutter_utils.dart';
 import '../../../../../foundation/utils/int_utils.dart';
-import '../../../../theme/app_theme.dart';
+import '../../../../themes/theme/types.dart';
 import 'post_grid_controller.dart';
 
 final _currentPageProvider = StateProvider<int>((ref) => 1);

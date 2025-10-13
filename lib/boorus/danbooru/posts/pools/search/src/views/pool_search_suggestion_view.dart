@@ -7,7 +7,7 @@ import 'package:intl/intl.dart';
 
 // Project imports:
 import '../../../../../../../core/tags/tag/colors.dart';
-import '../../../../../../../core/theme.dart';
+import '../../../../../../../core/themes/theme/types.dart';
 import '../../../../../../../foundation/debounce_mixin.dart';
 import '../../../pool/pool.dart';
 import '../providers.dart';

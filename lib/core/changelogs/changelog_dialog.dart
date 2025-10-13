@@ -16,7 +16,7 @@ import '../../core/widgets/widgets.dart';
 import '../premiums/premiums.dart';
 import '../premiums/providers.dart';
 import '../premiums/routes.dart';
-import '../theme.dart';
+import '../themes/theme/types.dart';
 import 'utils.dart';
 import 'what_news.dart';
 

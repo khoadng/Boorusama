@@ -10,9 +10,9 @@ import 'package:i18n/i18n.dart';
 import '../../../../foundation/html.dart';
 import '../../../configs/create/routes.dart';
 import '../../../configs/ref.dart';
-import '../../../theme/theme.dart';
 import '../../../widgets/widgets.dart';
 import '../providers/listing_provider.dart';
+import '../providers/settings_provider.dart';
 import '../providers/viewer_providers.dart';
 
 class SettingsInteractionBlocker extends StatelessWidget {

@@ -6,8 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../../../core/tags/tag/tag.dart';
-import '../../../../../../core/theme.dart';
-import '../../../../../../core/theme/utils.dart';
+import '../../../../../../core/themes/colors/types.dart';
+import '../../../../../../core/themes/theme/types.dart';
 import '../../../../../../core/widgets/booru_chip.dart';
 import '../../../../../../foundation/platform.dart';
 import '../../../../tags/tag/widgets.dart';

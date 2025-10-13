@@ -9,7 +9,7 @@ import '../../../../boorus/engine/providers.dart';
 import '../../../../posts/rating/rating.dart';
 import '../../../../proxy/proxy.dart';
 import '../../../../settings/settings.dart';
-import '../../../../theme/theme_configs.dart';
+import '../../../../themes/configs/types.dart';
 import '../../../config/data.dart';
 import '../../../config/src/providers/providers.dart';
 import '../../../config/types.dart';

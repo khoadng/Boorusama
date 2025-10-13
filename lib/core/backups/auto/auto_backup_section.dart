@@ -14,7 +14,7 @@ import '../../../foundation/platform.dart';
 import '../../downloads/path/validator.dart';
 import '../../settings/providers.dart';
 import '../../settings/widgets.dart';
-import '../../theme/app_theme.dart';
+import '../../themes/theme/types.dart';
 import '../../widgets/widgets.dart';
 import '../auto/auto_backup_service.dart';
 import '../zip/providers.dart';

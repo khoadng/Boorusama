@@ -22,6 +22,7 @@ import '../../../selected_tags/selected_tag_controller.dart';
 import '../../../selected_tags/tag.dart';
 import '../../../suggestions/suggestions_notifier.dart';
 import '../../../suggestions/tag_suggestion_items.dart';
+import '../types/constants.dart';
 import '../views/search_landing_view.dart';
 import 'search_app_bar.dart';
 import 'selected_tag_list_with_data.dart';

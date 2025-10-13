@@ -12,7 +12,7 @@ import '../../../../foundation/utils/flutter_utils.dart';
 import '../../../config_widgets/website_logo.dart';
 import '../../../configs/config/providers.dart';
 import '../../../images/booru_image.dart';
-import '../../../theme.dart';
+import '../../../themes/theme/types.dart';
 import '../../urls/sanitizer.dart';
 
 class DownloadTileBuilder extends StatelessWidget {

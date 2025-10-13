@@ -20,8 +20,8 @@ import '../../../posts/details_pageview/types.dart';
 import '../../../posts/listing/types.dart';
 import '../../../posts/post/post.dart';
 import '../../../search/search/types.dart';
-import '../../../theme/theme_configs.dart';
-import '../../../theme/theme_mode.dart';
+import '../../../themes/configs/types.dart';
+import '../../../themes/theme/types.dart';
 import '../../../videos/engines/types.dart';
 import '../../../videos/player/types.dart';
 

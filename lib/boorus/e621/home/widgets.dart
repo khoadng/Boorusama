@@ -9,9 +9,7 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../../../core/configs/ref.dart';
-import '../../../core/home/home_navigation_tile.dart';
-import '../../../core/home/home_page_scaffold.dart';
-import '../../../core/home/side_menu_tile.dart';
+import '../../../core/home/widgets.dart';
 import '../../../core/posts/favorites/routes.dart';
 import '../../../core/widgets/widgets.dart';
 import '../configs/providers.dart';

@@ -17,7 +17,7 @@ import '../../../../foundation/toast.dart';
 import '../../../config_widgets/website_logo.dart';
 import '../../../configs/ref.dart';
 import '../../../images/booru_image.dart';
-import '../../../theme/app_theme.dart';
+import '../../../themes/theme/types.dart';
 import '../../../widgets/widgets.dart';
 import '../pages/bulk_download_saved_task_page.dart';
 import '../providers/bulk_download_notifier.dart';

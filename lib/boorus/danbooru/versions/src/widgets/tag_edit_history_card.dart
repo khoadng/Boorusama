@@ -12,7 +12,7 @@ import '../../../../../core/images/booru_image.dart';
 import '../../../../../core/posts/details/routes.dart';
 import '../../../../../core/posts/post/post.dart';
 import '../../../../../core/search/search/routes.dart';
-import '../../../../../core/theme.dart';
+import '../../../../../core/themes/theme/types.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../../users/user/providers.dart';
 import '../types/danbooru_post_version.dart';

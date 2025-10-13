@@ -11,7 +11,7 @@ import '../../../../foundation/html.dart';
 import '../../../../foundation/info/device_info.dart';
 import '../../../../foundation/picker.dart';
 import '../../../../foundation/platform.dart';
-import '../../../theme.dart';
+import '../../../themes/theme/types.dart';
 import '../../../widgets/widgets.dart';
 import '../../path/validator.dart';
 

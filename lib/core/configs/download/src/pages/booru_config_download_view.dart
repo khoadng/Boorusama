@@ -8,7 +8,7 @@ import 'package:i18n/i18n.dart';
 // Project imports:
 import '../../../../../foundation/info/device_info.dart';
 import '../../../../downloads/configs/widgets.dart';
-import '../../../../theme.dart';
+import '../../../../themes/theme/types.dart';
 import '../../../create/providers.dart';
 import '../widgets/custom_download_file_name_section.dart';
 

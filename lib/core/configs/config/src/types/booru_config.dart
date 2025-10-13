@@ -9,13 +9,13 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../../../boorus/booru/booru.dart';
-import '../../../../home/custom_home.dart';
+import '../../../../home/types.dart';
 import '../../../../posts/details_manager/types.dart';
 import '../../../../posts/details_parts/types.dart';
 import '../../../../posts/rating/rating.dart';
 import '../../../../proxy/proxy.dart';
 import '../../../../settings/settings.dart';
-import '../../../../theme/theme_configs.dart';
+import '../../../../themes/configs/types.dart';
 import '../../../gesture/gesture.dart';
 import '../../../search/search.dart';
 import 'booru_config_repository.dart';

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 // Project imports:
 import '../../../../../foundation/clipboard.dart';
 import '../../../../../foundation/display.dart';
-import '../../../../theme.dart';
+import '../../../../themes/theme/types.dart';
 import '../../../tag/widgets.dart';
 
 class TagOtherNames extends StatelessWidget {

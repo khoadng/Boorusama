@@ -6,7 +6,7 @@ import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../theme.dart';
+import '../../../themes/theme/types.dart';
 import '../types/comment_vote.dart';
 import '../types/vote_event.dart';
 

@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../core/artists/types.dart';
 import '../../../core/posts/details/details.dart';
+import '../../../core/posts/details_parts/types.dart';
 import '../../../core/posts/details_parts/widgets.dart';
 import 'types.dart';
 
@@ -48,3 +49,26 @@ class PhilomenaArtistInfoSection extends ConsumerWidget {
     );
   }
 }
+
+final kPhilomenaPostDetailsUIBuilder = PostDetailsUIBuilder(
+  preview: {
+    DetailsPart.info: (context) =>
+        const DefaultInheritedInformationSection<PhilomenaPost>(),
+    DetailsPart.toolbar: (context) =>
+        const DefaultInheritedPostActionToolbar<PhilomenaPost>(),
+  },
+  full: {
+    DetailsPart.info: (context) =>
+        const DefaultInheritedInformationSection<PhilomenaPost>(),
+    DetailsPart.toolbar: (context) =>
+        const DefaultInheritedPostActionToolbar<PhilomenaPost>(),
+    DetailsPart.artistInfo: (context) => const PhilomenaArtistInfoSection(),
+    DetailsPart.stats: (context) => const PhilomenaStatsTileSection(),
+    DetailsPart.source: (context) =>
+        const DefaultInheritedSourceSection<PhilomenaPost>(),
+    DetailsPart.tags: (context) =>
+        const DefaultInheritedBasicTagsTile<PhilomenaPost>(),
+    DetailsPart.fileDetails: (context) =>
+        const DefaultInheritedFileDetailsSection<PhilomenaPost>(),
+  },
+);

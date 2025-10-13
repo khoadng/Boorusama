@@ -9,9 +9,9 @@ import '../../../../../core/configs/config/types.dart';
 import '../../../../../core/posts/post/post.dart';
 import '../../../../../core/tags/show/widgets.dart';
 import '../../../../../core/tags/tag/tag.dart';
-import '../../../../../core/wikis/launcher.dart';
 import '../../../blacklist/providers.dart';
 import '../../../configs/providers.dart';
+import '../../../wikis/types.dart';
 import 'danbooru_tag_context_menu.dart';
 
 class DanbooruShowTagListPage extends ConsumerWidget {

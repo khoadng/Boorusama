@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import '../../../../../../core/theme.dart';
+import '../../../../../../core/themes/theme/types.dart';
 import '../../../../../../core/users/user.dart';
 import '../types/user.dart';
 import '../types/user_level.dart';

@@ -8,7 +8,7 @@ import 'package:i18n/i18n.dart';
 // Project imports:
 import '../../../haptics/types.dart';
 import '../../../home/types.dart';
-import '../../../theme.dart';
+import '../../../themes/theme/types.dart';
 import '../../../widgets/widgets.dart';
 import '../providers/settings_notifier.dart';
 import '../providers/settings_provider.dart';

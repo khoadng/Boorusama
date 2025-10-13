@@ -2,7 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../theme/theme_configs.dart';
+import '../../../../themes/configs/types.dart';
 import '../../../gesture/gesture.dart';
 import '../../../manage/providers.dart';
 import '../types/booru_config.dart';

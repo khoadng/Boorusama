@@ -9,7 +9,7 @@ import '../../../core/tags/autocompletes/types.dart';
 import '../../../core/tags/categories/tag_category.dart';
 import '../../../core/tags/local/providers.dart';
 import '../../../core/tags/tag/tag.dart';
-import '../../../foundation/utils/color_utils.dart';
+import '../../../core/themes/colors/types.dart';
 import '../client_provider.dart';
 import '../posts/types.dart';
 import 'query_composer.dart';

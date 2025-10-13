@@ -10,7 +10,7 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import '../../../../configs/ref.dart';
 import '../../../../settings/providers.dart';
-import '../../../../theme.dart';
+import '../../../../themes/theme/types.dart';
 import '../../../post/post.dart';
 import '../providers/favorites_notifier.dart';
 

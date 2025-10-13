@@ -6,8 +6,6 @@ import '../../core/configs/config.dart';
 import '../../core/configs/create/widgets.dart';
 import '../../core/configs/manage/widgets.dart';
 import '../../core/posts/details/widgets.dart';
-import '../../core/posts/details_parts/types.dart';
-import '../../core/posts/details_parts/widgets.dart';
 import 'configs/widgets.dart';
 import 'posts/types.dart';
 import 'posts/widgets.dart';
@@ -63,28 +61,7 @@ class PhilomenaBuilder extends BaseBooruBuilder {
   };
 
   @override
-  final postDetailsUIBuilder = PostDetailsUIBuilder(
-    preview: {
-      DetailsPart.info: (context) =>
-          const DefaultInheritedInformationSection<PhilomenaPost>(),
-      DetailsPart.toolbar: (context) =>
-          const DefaultInheritedPostActionToolbar<PhilomenaPost>(),
-    },
-    full: {
-      DetailsPart.info: (context) =>
-          const DefaultInheritedInformationSection<PhilomenaPost>(),
-      DetailsPart.toolbar: (context) =>
-          const DefaultInheritedPostActionToolbar<PhilomenaPost>(),
-      DetailsPart.artistInfo: (context) => const PhilomenaArtistInfoSection(),
-      DetailsPart.stats: (context) => const PhilomenaStatsTileSection(),
-      DetailsPart.source: (context) =>
-          const DefaultInheritedSourceSection<PhilomenaPost>(),
-      DetailsPart.tags: (context) =>
-          const DefaultInheritedBasicTagsTile<PhilomenaPost>(),
-      DetailsPart.fileDetails: (context) =>
-          const DefaultInheritedFileDetailsSection<PhilomenaPost>(),
-    },
-  );
+  final postDetailsUIBuilder = kPhilomenaPostDetailsUIBuilder;
 
   @override
   CreateUnknownBooruWidgetsBuilder get unknownBooruWidgetsBuilder =>

@@ -1,5 +1,5 @@
 // Project imports:
-import '../../../home/custom_home.dart';
+import '../../../home/types.dart';
 import '../../../posts/details_parts/types.dart';
 import 'booru_builder_types.dart';
 

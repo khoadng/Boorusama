@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import '../../../../theme/app_theme.dart';
+import '../../../../themes/theme/types.dart';
 
 class DataTransferCard extends StatelessWidget {
   const DataTransferCard({

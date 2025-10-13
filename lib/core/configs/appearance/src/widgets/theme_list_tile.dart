@@ -9,8 +9,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
-import '../../../../theme/theme_configs.dart';
-import '../../../../theme/viewers/widgets.dart';
+import '../../../../themes/configs/types.dart';
+import '../../../../themes/viewers/widgets.dart';
 import '../types/enums.dart';
 
 class ThemeListTile extends ConsumerWidget {

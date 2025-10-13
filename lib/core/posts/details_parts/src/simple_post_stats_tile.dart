@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
-import '../../../theme.dart';
+import '../../../themes/theme/types.dart';
 import '../../../widgets/widgets.dart';
 import '_internal/details_widget_frame.dart';
 

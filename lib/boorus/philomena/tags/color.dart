@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 // Project imports:
 import '../../../core/tags/tag/colors.dart';
-import '../../../core/theme.dart';
+import '../../../core/themes/theme/types.dart';
 
 class PhilomenaTagColorGenerator implements TagColorGenerator {
   const PhilomenaTagColorGenerator();

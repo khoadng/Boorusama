@@ -8,6 +8,7 @@ import 'package:i18n/i18n.dart';
 // Project imports:
 import '../../../core/configs/config/providers.dart';
 import '../../../core/posts/details/details.dart';
+import '../../../core/posts/details_parts/types.dart';
 import '../../../core/posts/details_parts/widgets.dart';
 import '../../../core/widgets/adaptive_button_row.dart';
 import '../../../core/widgets/booru_menu_button_row.dart';
@@ -69,3 +70,18 @@ class HydrusPostActionToolbar extends ConsumerWidget {
     );
   }
 }
+
+final kHydrusPostDetailsUIBuilder = PostDetailsUIBuilder(
+  preview: {
+    DetailsPart.toolbar: (context) => const HydrusPostActionToolbar(),
+  },
+  full: {
+    DetailsPart.toolbar: (context) => const HydrusPostActionToolbar(),
+    DetailsPart.tags: (context) =>
+        const DefaultInheritedBasicTagsTile<HydrusPost>(),
+    DetailsPart.fileDetails: (context) =>
+        const DefaultInheritedFileDetailsSection<HydrusPost>(
+          initialExpanded: true,
+        ),
+  },
+);

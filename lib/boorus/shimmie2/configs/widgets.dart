@@ -9,7 +9,7 @@ import 'package:url_launcher/url_launcher_string.dart';
 // Project imports:
 import '../../../core/configs/create/providers.dart';
 import '../../../core/configs/create/widgets.dart';
-import '../../../core/theme.dart';
+import '../../../core/themes/theme/types.dart';
 import '../../../foundation/path.dart';
 
 class Shimmie2BooruUrlField extends ConsumerWidget {

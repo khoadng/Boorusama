@@ -7,7 +7,7 @@ import 'package:i18n/i18n.dart';
 import 'package:intl/intl.dart';
 
 // Project imports:
-import '../../theme/theme.dart';
+import '../../themes/theme/types.dart';
 import '../../widgets/widgets.dart';
 import '../types/backup_data_source.dart';
 import 'types.dart';

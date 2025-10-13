@@ -12,7 +12,7 @@ import '../../../../routers/routers.dart';
 import '../../../../tags/categories/tag_category.dart';
 import '../../../../tags/tag/tag.dart';
 import '../../../../tags/tag/widgets.dart';
-import '../../../../theme.dart';
+import '../../../../themes/theme/types.dart';
 import '../../../details_parts/widgets.dart';
 import '../../../post/post.dart';
 

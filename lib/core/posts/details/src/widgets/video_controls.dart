@@ -7,7 +7,7 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../../../../foundation/display.dart';
-import '../../../../theme.dart';
+import '../../../../themes/theme/types.dart';
 import '../../../../videos/player/providers.dart';
 import '../../../../videos/player/widgets.dart';
 import '../../../../widgets/widgets.dart';

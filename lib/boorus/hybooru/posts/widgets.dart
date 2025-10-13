@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../core/posts/details/details.dart';
+import '../../../core/posts/details_parts/types.dart';
 import '../../../core/posts/details_parts/widgets.dart';
 import 'types.dart';
 
@@ -24,3 +25,17 @@ class HybooruFileDetailsSection extends ConsumerWidget {
     );
   }
 }
+
+final kHybooruPostDetailsUIBuilder = PostDetailsUIBuilder(
+  preview: {
+    DetailsPart.toolbar: (context) =>
+        const DefaultInheritedPostActionToolbar<HybooruPost>(),
+  },
+  full: {
+    DetailsPart.toolbar: (context) =>
+        const DefaultInheritedPostActionToolbar<HybooruPost>(),
+    DetailsPart.tags: (context) =>
+        const DefaultInheritedTagsTile<HybooruPost>(),
+    DetailsPart.fileDetails: (context) => const HybooruFileDetailsSection(),
+  },
+);

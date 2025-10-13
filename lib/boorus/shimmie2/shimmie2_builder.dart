@@ -4,8 +4,6 @@ import '../../core/boorus/engine/engine.dart';
 import '../../core/configs/config.dart';
 import '../../core/configs/create/widgets.dart';
 import '../../core/posts/details/widgets.dart';
-import '../../core/posts/details_parts/types.dart';
-import '../../core/posts/details_parts/widgets.dart';
 import 'configs/widgets.dart';
 import 'posts/types.dart';
 import 'posts/widgets.dart';
@@ -46,19 +44,7 @@ class Shimmie2Builder extends BaseBooruBuilder {
   };
 
   @override
-  final postDetailsUIBuilder = PostDetailsUIBuilder(
-    preview: {
-      DetailsPart.toolbar: (context) =>
-          const DefaultInheritedPostActionToolbar<Shimmie2Post>(),
-    },
-    full: {
-      DetailsPart.toolbar: (context) =>
-          const DefaultInheritedPostActionToolbar<Shimmie2Post>(),
-      DetailsPart.tags: (context) =>
-          const DefaultInheritedBasicTagsTile<Shimmie2Post>(),
-      DetailsPart.fileDetails: (context) => const Shimmie2FileDetailsSection(),
-    },
-  );
+  final postDetailsUIBuilder = kShimmie2PostDetailsUIBuilder;
 
   @override
   CreateUnknownBooruWidgetsBuilder get unknownBooruWidgetsBuilder =>

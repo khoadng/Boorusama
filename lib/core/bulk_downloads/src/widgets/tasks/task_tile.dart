@@ -19,7 +19,7 @@ import '../../../../download_manager/types.dart';
 import '../../../../images/booru_image.dart';
 import '../../../../premiums/providers.dart';
 import '../../../../router.dart';
-import '../../../../theme.dart';
+import '../../../../themes/theme/types.dart';
 import '../../../../widgets/widgets.dart';
 import '../../providers/bulk_download_notifier.dart';
 import '../../providers/dry_run.dart';

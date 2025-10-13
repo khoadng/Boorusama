@@ -18,7 +18,8 @@ import 'analytics/widgets.dart';
 import 'backups/auto/auto_backup_trigger.dart';
 import 'router.dart';
 import 'settings/providers.dart';
-import 'theme/theme.dart';
+import 'themes/theme/types.dart';
+import 'themes/theme/widgets.dart';
 import 'widgets/widgets.dart';
 
 class App extends StatelessWidget {

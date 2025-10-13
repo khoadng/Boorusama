@@ -13,7 +13,7 @@ import '../../../../boorus/booru/booru.dart';
 import '../../../../config_widgets/website_logo.dart';
 import '../../../../posts/sources/source.dart';
 import '../../../../premiums/providers.dart';
-import '../../../../theme.dart';
+import '../../../../themes/theme/types.dart';
 import '../../../appearance/widgets.dart';
 import '../../../config/data.dart';
 import '../../../config/types.dart';

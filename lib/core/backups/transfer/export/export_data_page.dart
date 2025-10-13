@@ -7,7 +7,7 @@ import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../foundation/networking.dart';
-import '../../../theme/app_theme.dart';
+import '../../../themes/theme/types.dart';
 import 'export_data_notifier.dart';
 
 class ExportDataPage extends ConsumerStatefulWidget {

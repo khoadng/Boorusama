@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../core/boorus/defaults/widgets.dart';
@@ -14,17 +13,15 @@ import '../../core/configs/create/widgets.dart';
 import '../../core/configs/manage/widgets.dart';
 import '../../core/configs/ref.dart';
 import '../../core/downloads/filename/types.dart';
-import '../../core/home/custom_home.dart';
-import '../../core/posts/details_parts/types.dart';
-import '../../core/posts/details_parts/widgets.dart';
+import '../../core/home/types.dart';
 import '../../core/search/search/routes.dart';
 import '../../core/search/search/widgets.dart';
 import 'artists/widgets.dart';
 import 'configs/widgets.dart';
 import 'favorites/widgets.dart';
+import 'home/types.dart';
 import 'home/widgets.dart';
 import 'posts/providers.dart';
-import 'posts/types.dart';
 import 'posts/widgets.dart';
 
 class GelbooruV2Builder extends BaseBooruBuilder {
@@ -110,37 +107,8 @@ class GelbooruV2Builder extends BaseBooruBuilder {
       kGelbooruV2AltHomeView;
 
   @override
-  final postDetailsUIBuilder = PostDetailsUIBuilder(
-    preview: {
-      DetailsPart.toolbar: (context) =>
-          const DefaultInheritedPostActionToolbar<GelbooruV2Post>(),
-    },
-    full: {
-      DetailsPart.toolbar: (context) =>
-          const DefaultInheritedPostActionToolbar<GelbooruV2Post>(),
-      DetailsPart.source: (context) =>
-          const DefaultInheritedSourceSection<GelbooruV2Post>(),
-      DetailsPart.tags: (context) =>
-          const DefaultInheritedTagsTile<GelbooruV2Post>(),
-      DetailsPart.fileDetails: (context) =>
-          const GelbooruV2FileDetailsSection(),
-      DetailsPart.artistPosts: (context) =>
-          const DefaultInheritedArtistPostsSection<GelbooruV2Post>(),
-      DetailsPart.relatedPosts: (context) =>
-          const GelbooruV2RelatedPostsSection(),
-      DetailsPart.characterList: (context) =>
-          const DefaultInheritedCharacterPostsSection<GelbooruV2Post>(),
-    },
-  );
+  final postDetailsUIBuilder = kGelbooruV2PostDetailsUIBuilder;
 }
-
-final kGelbooruV2AltHomeView = {
-  ...kDefaultAltHomeView,
-  const CustomHomeViewKey('favorites'): CustomHomeDataBuilder(
-    displayName: (context) => context.t.profile.favorites,
-    builder: (context, _) => const GelbooruV2FavoritesPage(),
-  ),
-};
 
 class GelbooruV2SearchPage extends ConsumerWidget {
   const GelbooruV2SearchPage({

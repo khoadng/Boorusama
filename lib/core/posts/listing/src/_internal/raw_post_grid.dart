@@ -18,7 +18,7 @@ import 'package:sliver_tools/sliver_tools.dart';
 import '../../../../../foundation/display.dart';
 import '../../../../../foundation/keyboard.dart';
 import '../../../../haptics/types.dart';
-import '../../../../theme/app_theme.dart';
+import '../../../../themes/theme/types.dart';
 import '../../../../widgets/animated_footer.dart';
 import '../../../../widgets/default_selection_bar.dart';
 import '../../../../widgets/widgets.dart';

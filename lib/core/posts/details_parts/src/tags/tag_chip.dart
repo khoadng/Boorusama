@@ -9,8 +9,8 @@ import 'package:intl/intl.dart';
 import '../../../../configs/config.dart';
 import '../../../../configs/config/providers.dart';
 import '../../../../tags/categories/providers.dart';
-import '../../../../theme/providers.dart';
-import '../../../../theme/utils.dart';
+import '../../../../themes/colors/providers.dart';
+import '../../../../themes/colors/types.dart';
 import 'raw_tag_chip.dart';
 
 class TagChip extends ConsumerWidget {

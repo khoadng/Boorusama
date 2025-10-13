@@ -18,7 +18,7 @@ import '../../../../foundation/platform.dart';
 import '../../../../foundation/url_launcher.dart';
 import '../../../downloads/configs/widgets.dart';
 import '../../../downloads/downloader/types.dart';
-import '../../../theme.dart';
+import '../../../themes/theme/types.dart';
 import '../../../widgets/drag_line.dart';
 import '../providers/task_update_ex.dart';
 

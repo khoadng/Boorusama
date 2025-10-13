@@ -10,7 +10,7 @@ import '../../../../home/types.dart';
 import '../../../../images/types.dart';
 import '../../../../posts/listing/types.dart';
 import '../../../../posts/post/post.dart';
-import '../../../../theme/theme.dart';
+import '../../../../themes/theme/types.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../widgets.dart';
 import '../../providers/settings_notifier.dart';

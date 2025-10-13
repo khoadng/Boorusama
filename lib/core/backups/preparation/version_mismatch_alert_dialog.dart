@@ -7,7 +7,7 @@ import 'package:i18n/i18n.dart';
 import 'package:version/version.dart';
 
 // Project imports:
-import '../../theme/app_theme.dart';
+import '../../themes/theme/types.dart';
 
 Future<bool?> showVersionMismatchAlertDialog({
   required BuildContext context,

@@ -9,7 +9,7 @@ import 'package:i18n/i18n.dart';
 import '../../../../../core/configs/ref.dart';
 import '../../../../../core/tags/related/widgets.dart';
 import '../../../../../core/tags/tag/providers.dart';
-import '../../../../../core/theme.dart';
+import '../../../../../core/themes/theme/types.dart';
 import 'danbooru_related_tag.dart';
 import 'route_utils.dart';
 

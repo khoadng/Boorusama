@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import '../../../../theme.dart';
+import '../../../../themes/theme/types.dart';
 
 class ImageOverlayIcon extends StatelessWidget {
   const ImageOverlayIcon({

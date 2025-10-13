@@ -6,9 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import '../types/constants.dart';
 import 'booru_search_bar.dart';
-
-const kSearchAppBarWidth = 450.0;
 
 class SearchAppBar extends ConsumerWidget {
   const SearchAppBar({

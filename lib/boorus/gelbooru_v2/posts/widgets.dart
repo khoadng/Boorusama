@@ -13,6 +13,7 @@ import '../../../core/configs/ref.dart';
 import '../../../core/posts/details/details.dart';
 import '../../../core/posts/details/routes.dart';
 import '../../../core/posts/details/widgets.dart';
+import '../../../core/posts/details_parts/types.dart';
 import '../../../core/posts/details_parts/widgets.dart';
 import '../../../core/posts/post/post.dart';
 import '../../../core/router.dart';
@@ -198,3 +199,25 @@ class GelbooruV2RelatedPostsSection extends ConsumerWidget {
         : const SliverSizedBox.shrink();
   }
 }
+
+final kGelbooruV2PostDetailsUIBuilder = PostDetailsUIBuilder(
+  preview: {
+    DetailsPart.toolbar: (context) =>
+        const DefaultInheritedPostActionToolbar<GelbooruV2Post>(),
+  },
+  full: {
+    DetailsPart.toolbar: (context) =>
+        const DefaultInheritedPostActionToolbar<GelbooruV2Post>(),
+    DetailsPart.source: (context) =>
+        const DefaultInheritedSourceSection<GelbooruV2Post>(),
+    DetailsPart.tags: (context) =>
+        const DefaultInheritedTagsTile<GelbooruV2Post>(),
+    DetailsPart.fileDetails: (context) => const GelbooruV2FileDetailsSection(),
+    DetailsPart.artistPosts: (context) =>
+        const DefaultInheritedArtistPostsSection<GelbooruV2Post>(),
+    DetailsPart.relatedPosts: (context) =>
+        const GelbooruV2RelatedPostsSection(),
+    DetailsPart.characterList: (context) =>
+        const DefaultInheritedCharacterPostsSection<GelbooruV2Post>(),
+  },
+);

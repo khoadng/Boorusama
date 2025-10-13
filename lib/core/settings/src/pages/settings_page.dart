@@ -22,7 +22,7 @@ import '../../../configs/ref.dart';
 import '../../../premiums/premiums.dart';
 import '../../../premiums/providers.dart';
 import '../../../premiums/routes.dart';
-import '../../../theme.dart';
+import '../../../themes/theme/types.dart';
 import '../providers/settings_provider.dart';
 import '../widgets/settings_page_scaffold.dart';
 import 'about_page.dart';

@@ -7,7 +7,7 @@ import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../core/configs/config.dart';
-import '../../../core/theme.dart';
+import '../../../core/themes/theme/types.dart';
 import '../../../foundation/toast.dart';
 import '../../../foundation/url_launcher.dart';
 import '../client_provider.dart';

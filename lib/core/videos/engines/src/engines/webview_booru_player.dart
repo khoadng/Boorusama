@@ -11,7 +11,7 @@ import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 
 // Project imports:
 import '../../../../../foundation/platform.dart';
-import '../../../../../foundation/utils/color_utils.dart';
+import '../../../../themes/colors/types.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../lock/types.dart';
 import '../types/booru_player.dart';

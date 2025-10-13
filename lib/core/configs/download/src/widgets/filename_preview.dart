@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
-import '../../../../theme.dart';
+import '../../../../themes/theme/types.dart';
 
 class FilenamePreview extends StatelessWidget {
   const FilenamePreview({

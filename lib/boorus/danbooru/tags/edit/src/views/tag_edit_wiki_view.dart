@@ -9,8 +9,8 @@ import 'package:intl/intl.dart';
 // Project imports:
 import '../../../../../../core/configs/ref.dart';
 import '../../../../../../core/tags/tag/tag.dart';
-import '../../../../../../core/theme.dart';
-import '../../../../../../core/theme/providers.dart';
+import '../../../../../../core/themes/colors/providers.dart';
+import '../../../../../../core/themes/theme/types.dart';
 import '../../../../../../core/widgets/widgets.dart';
 import '../../../../../../foundation/platform.dart';
 import '../../../related/providers.dart';

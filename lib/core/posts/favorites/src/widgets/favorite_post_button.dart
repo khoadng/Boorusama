@@ -11,7 +11,7 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import '../../../../../foundation/animations/constants.dart';
 import '../../../../../foundation/toast.dart';
-import '../../../../theme.dart';
+import '../../../../themes/theme/types.dart';
 
 class FavoritePostButton extends StatelessWidget {
   const FavoritePostButton({

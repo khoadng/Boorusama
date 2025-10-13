@@ -6,8 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 // Project imports:
-import '../theme.dart';
-import '../theme/app_theme.dart';
+import '../themes/theme/types.dart';
 
 class BooruDialog extends StatelessWidget {
   const BooruDialog({

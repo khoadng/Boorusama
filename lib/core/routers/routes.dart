@@ -17,7 +17,7 @@ import '../configs/ref.dart';
 import '../donate/routes.dart';
 import '../download_manager/routes.dart';
 import '../downloads/downloader/widgets.dart';
-import '../home/entry_page.dart';
+import '../home/widgets.dart';
 import '../posts/details/routes.dart';
 import '../posts/details_manager/routes.dart';
 import '../posts/favorites/routes.dart';

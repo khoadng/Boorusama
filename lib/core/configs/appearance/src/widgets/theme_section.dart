@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
-import '../../../../theme/theme_configs.dart';
+import '../../../../themes/configs/types.dart';
 import '../../../../widgets/widgets.dart';
 import '../types/enums.dart';
 import 'theme_list_tile.dart';

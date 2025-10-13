@@ -7,7 +7,7 @@ import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../boorus/booru/booru.dart';
-import '../../../../theme.dart';
+import '../../../../themes/theme/types.dart';
 import '../../../config/types.dart';
 import '../../../manage/providers.dart';
 import '../providers/internal_providers.dart';

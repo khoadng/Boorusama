@@ -7,7 +7,7 @@ import 'package:flutter_html/flutter_html.dart';
 // Project imports:
 import '../../foundation/html.dart';
 import '../../foundation/url_launcher.dart';
-import '../theme.dart';
+import '../themes/theme/types.dart';
 
 class Quote extends StatelessWidget {
   const Quote({required this.text, super.key});

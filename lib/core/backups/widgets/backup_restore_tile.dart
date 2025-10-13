@@ -9,7 +9,7 @@ import 'package:i18n/i18n.dart';
 import '../../../foundation/info/device_info.dart';
 import '../../../foundation/picker.dart';
 import '../../../foundation/toast.dart';
-import '../../theme.dart';
+import '../../themes/theme/types.dart';
 import '../../widgets/widgets.dart';
 import '../preparation/preparation_pipeline.dart';
 import '../types/backup_data_source.dart';

@@ -9,7 +9,7 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import '../../../../tags/metatag/routes.dart';
 import '../../../../tags/metatag/types.dart';
-import '../../../../theme/providers.dart';
+import '../../../../themes/colors/providers.dart';
 import 'add_tag_button.dart';
 import 'option_tags_arena.dart';
 

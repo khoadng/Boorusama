@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 
 // Project imports:
-import '../core/theme/app_theme.dart';
+import '../core/themes/theme/types.dart';
 
 class AppHtml extends StatefulWidget {
   const AppHtml({

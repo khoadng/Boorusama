@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../core/boorus/defaults/widgets.dart';
@@ -14,15 +13,14 @@ import '../../core/configs/config/providers.dart';
 import '../../core/configs/create/widgets.dart';
 import '../../core/configs/manage/widgets.dart';
 import '../../core/downloads/filename/types.dart';
-import '../../core/home/custom_home.dart';
+import '../../core/home/types.dart';
 import '../../core/posts/details/widgets.dart';
-import '../../core/posts/details_parts/types.dart';
-import '../../core/posts/details_parts/widgets.dart';
 import '../../core/search/search/routes.dart';
 import '../../core/search/search/widgets.dart';
 import 'artists/widgets.dart';
 import 'configs/widgets.dart';
 import 'favorites/widgets.dart';
+import 'home/types.dart';
 import 'home/widgets.dart';
 import 'posts/providers.dart';
 import 'posts/types.dart';
@@ -117,34 +115,8 @@ class GelbooruBuilder extends BaseBooruBuilder {
       kGelbooruAltHomeView;
 
   @override
-  final postDetailsUIBuilder = PostDetailsUIBuilder(
-    preview: {
-      DetailsPart.toolbar: (context) =>
-          const DefaultInheritedPostActionToolbar<GelbooruPost>(),
-    },
-    full: {
-      DetailsPart.toolbar: (context) =>
-          const DefaultInheritedPostActionToolbar<GelbooruPost>(),
-      DetailsPart.source: (context) =>
-          const DefaultInheritedSourceSection<GelbooruPost>(),
-      DetailsPart.tags: (context) =>
-          const DefaultInheritedTagsTile<GelbooruPost>(),
-      DetailsPart.fileDetails: (context) => const GelbooruFileDetailsSection(),
-      DetailsPart.artistPosts: (context) =>
-          const DefaultInheritedArtistPostsSection<GelbooruPost>(),
-      DetailsPart.characterList: (context) =>
-          const DefaultInheritedCharacterPostsSection<GelbooruPost>(),
-    },
-  );
+  final postDetailsUIBuilder = kGelbooruPostDetailsUIBuilder;
 }
-
-final kGelbooruAltHomeView = {
-  ...kDefaultAltHomeView,
-  const CustomHomeViewKey('favorites'): CustomHomeDataBuilder(
-    displayName: (context) => context.t.profile.favorites,
-    builder: (context, _) => const GelbooruFavoritesPage(),
-  ),
-};
 
 class GelbooruSearchPage extends ConsumerWidget {
   const GelbooruSearchPage({

@@ -11,7 +11,7 @@ import 'package:version/version.dart';
 import '../../../../foundation/info/package_info.dart';
 import '../../../../foundation/toast.dart';
 import '../../../../foundation/version.dart';
-import '../../../theme/app_theme.dart';
+import '../../../themes/theme/types.dart';
 import '../../preparation/version_mismatch_alert_dialog.dart';
 import '../../servers/discovery_client.dart';
 import 'manual_device_input_dialog.dart';

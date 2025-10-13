@@ -8,7 +8,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 // Project imports:
 import '../../../../../core/widgets/widgets.dart';
 import '../../../../core/configs/ref.dart';
-import '../../../../core/home/home_search_bar.dart';
+import '../../../../core/home/widgets.dart';
 import '../../../../core/posts/count/widgets.dart';
 import '../../../../core/posts/listing/widgets.dart';
 import '../../../../core/search/search/types.dart';

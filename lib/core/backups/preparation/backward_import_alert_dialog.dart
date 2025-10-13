@@ -8,7 +8,7 @@ import 'package:version/version.dart';
 
 // Project imports:
 import '../../../foundation/info/package_info.dart';
-import '../../theme/app_theme.dart';
+import '../../themes/theme/types.dart';
 
 Future<bool?> showBackwardImportAlertDialog({
   required BuildContext context,

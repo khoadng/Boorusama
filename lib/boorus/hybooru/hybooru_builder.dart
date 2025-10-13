@@ -4,8 +4,6 @@ import '../../core/boorus/engine/engine.dart';
 import '../../core/configs/config.dart';
 import '../../core/configs/create/widgets.dart';
 import '../../core/posts/details/widgets.dart';
-import '../../core/posts/details_parts/types.dart';
-import '../../core/posts/details_parts/widgets.dart';
 import 'posts/types.dart';
 import 'posts/widgets.dart';
 
@@ -45,17 +43,5 @@ class HybooruBuilder extends BaseBooruBuilder {
   };
 
   @override
-  final postDetailsUIBuilder = PostDetailsUIBuilder(
-    preview: {
-      DetailsPart.toolbar: (context) =>
-          const DefaultInheritedPostActionToolbar<HybooruPost>(),
-    },
-    full: {
-      DetailsPart.toolbar: (context) =>
-          const DefaultInheritedPostActionToolbar<HybooruPost>(),
-      DetailsPart.tags: (context) =>
-          const DefaultInheritedTagsTile<HybooruPost>(),
-      DetailsPart.fileDetails: (context) => const HybooruFileDetailsSection(),
-    },
-  );
+  final postDetailsUIBuilder = kHybooruPostDetailsUIBuilder;
 }

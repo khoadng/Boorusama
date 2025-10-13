@@ -13,8 +13,6 @@ import '../../core/configs/config.dart';
 import '../../core/configs/manage/widgets.dart';
 import '../../core/configs/ref.dart';
 import '../../core/posts/details/widgets.dart';
-import '../../core/posts/details_parts/types.dart';
-import '../../core/posts/details_parts/widgets.dart';
 import '../../core/search/search/routes.dart';
 import '../../core/search/search/widgets.dart';
 import 'configs/widgets.dart';
@@ -96,20 +94,7 @@ class HydrusBuilder extends BaseBooruBuilder {
       );
 
   @override
-  final postDetailsUIBuilder = PostDetailsUIBuilder(
-    preview: {
-      DetailsPart.toolbar: (context) => const HydrusPostActionToolbar(),
-    },
-    full: {
-      DetailsPart.toolbar: (context) => const HydrusPostActionToolbar(),
-      DetailsPart.tags: (context) =>
-          const DefaultInheritedBasicTagsTile<HydrusPost>(),
-      DetailsPart.fileDetails: (context) =>
-          const DefaultInheritedFileDetailsSection<HydrusPost>(
-            initialExpanded: true,
-          ),
-    },
-  );
+  final postDetailsUIBuilder = kHydrusPostDetailsUIBuilder;
 
   @override
   CreateUnknownBooruWidgetsBuilder get unknownBooruWidgetsBuilder =>

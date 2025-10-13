@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:selection_mode/selection_mode.dart';
 
 // Project imports:
+import '../../../configs/manage/providers.dart';
 import '../../../haptics/types.dart';
 import '../../../search/search/types.dart';
 import '../types/settings.dart';
@@ -36,4 +37,12 @@ final selectionOptionsProvider = Provider<SelectionOptions>((ref) {
       _ => HapticFeedbackResolver.all,
     },
   );
+});
+
+final hasCustomThemeSettingsProvider = Provider<bool>((ref) {
+  final themeConfigs = ref.watch(
+    currentBooruConfigProvider.select((value) => value.theme),
+  );
+
+  return themeConfigs != null && themeConfigs.enable;
 });
