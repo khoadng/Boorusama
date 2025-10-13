@@ -467,6 +467,44 @@
       "add_to_blacklist": "Añadir a la Lista de Bloqueados"
     }
   },
+  "premium": {
+    "get_premium": "Obtener $brand",
+    "upgrade": "Actualizar",
+    "subscribe": "Suscribirse",
+    "unlock_more_theme_with_premium": "Desbloquea más temas con $brand",
+    "restore_subscription": "Restaurar suscripción",
+    "subscription_restored": "¡Suscripción restaurada!",
+    "restore_failed": "Hubo un problema al restaurar tu suscripción. Por favor, inténtalo de nuevo más tarde.",
+    "select_your_plan": "Elige tu plan",
+    "legal_disclaimer": "Al suscribirte, aceptas nuestros <a href=\"terms-of-service\">Términos de servicio</a> y <a href=\"privacy-policy\">Política de privacidad</a>. La suscripción se renueva automáticamente hasta que la canceles. Puedes cancelarla en cualquier momento hasta 24 horas antes de que finalice tu periodo actual.",
+    "benefits": {
+      "exclusive_themes": "Temas exclusivos",
+      "exclusive_themes_description": "Elige entre una variedad de temas para personalizar el aspecto de cada perfil",
+      "layout_customization": "Diseño y pantalla de inicio",
+      "layout_customization_description": "Personaliza cuánta información ves y establece tu pantalla de inicio preferida (Marcadores, Búsqueda, etc.)",
+      "enhanced_bulk_download": "Descarga masiva mejorada",
+      "enhanced_bulk_download_description": "Plantillas ilimitadas, múltiples sesiones y reanudación automática tras reiniciar.",
+      "support_development": "Apoyar el desarrollo",
+      "support_development_description": "Ayuda a un desarrollador independiente a mantener el proyecto en marcha con actualizaciones y mejoras periódicas."
+    },
+    "thanks": {
+      "title": "¡Gracias!",
+      "description": "Ahora tienes acceso a las funciones premium. ¡Disfrútalo!",
+      "confirm": "¡Entendido!"
+    },
+    "changelog": {
+      "thanks_for_supporting": "¡Gracias por apoyar el desarrollo de esta app suscribiéndote a $brand!",
+      "support_reminder": "Si disfrutas de estas actualizaciones, considera apoyar mi trabajo para que las mejoras sigan llegando."
+    },
+    "per": {
+      "year": "/ año",
+      "month": "/ mes"
+    },
+    "packages": {
+      "monthly": "Mensual",
+      "annual": "Anual"
+    }
+  },
   "bulk_downloads": {
     "options": {
       "save_to_folder": "Guardar a carpeta"

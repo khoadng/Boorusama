@@ -472,6 +472,10 @@
       "description": "Sie haben jetzt Zugriff auf Premium-Funktionen. Viel Spaß!",
       "confirm": "OK"
     },
+    "changelog": {
+      "thanks_for_supporting": "Danke, dass du die Entwicklung dieser App mit deinem $brand-Abo unterstützt!",
+      "support_reminder": "Wenn dir die Updates gefallen, unterstütze meine Arbeit, damit noch mehr Verbesserungen kommen können!"
+    },
     "per": {
       "year": "/ Jahr",
       "month": "/ Monat"

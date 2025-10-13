@@ -751,6 +751,11 @@
       "confirmation": "Xóa hồ sơ này? Hành động này sẽ không thể khôi phục."
     },
     "invalid_booru_warning": "Có vẻ như trang web không chạy trên engine đã chọn. Vui lòng thử với engine khác.",
+    "invalid_selected_profile": "Hồ sơ hiện tại không hợp lệ",
+    "invalid_selected_profile_selection_request": "Chọn một hồ sơ từ danh sách bên dưới để tiếp tục",
+    "unknown_engine_selection_request": "Chọn một booru engine để tiếp tục",
+    "new_profile_leave_as_empty_tips": "Không biết sửa gì? Cứ để nguyên, bạn có thể thay đổi sau.",
+    "select_a_profile": "Chọn hồ sơ",
     "using_status": "dùng ${booru}",
     "paste_from_clipboard": "Dán từ clipboard",
     "booru_engine_input_label": "Booru engine (*)",
@@ -1137,6 +1142,10 @@
       "title": "Cảm ơn bạn!",
       "description": "Bạn đã mở khóa các tính năng cao cấp. Thoải mái trải nghiệm nhé!",
       "confirm": "OK"
+    },
+    "changelog": {
+      "thanks_for_supporting": "Cảm ơn bạn đã ủng hộ ứng dụng này bằng cách đăng ký $brand!",
+      "support_reminder": "Nếu bạn thích những bản cập nhật này, hãy ủng hộ mình để có thêm động lực phát triển nhé."
     },
     "per": {
       "year": "/ năm",

@@ -150,7 +150,7 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
                         child: Column(
                           children: [
                             Text(
-                              'Not sure? Leave it as it is, you can change it later.',
+                              context.t.booru.new_profile_leave_as_empty_tips,
                               style: Theme.of(context).textTheme.titleSmall
                                   ?.copyWith(
                                     color: Theme.of(

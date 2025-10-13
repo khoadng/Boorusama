@@ -530,6 +530,10 @@
       "description": "プレミアム機能をご利用いただけます。お楽しみください！",
       "confirm": "OK"
     },
+    "changelog": {
+      "thanks_for_supporting": "このアプリの開発をサポートするために $brand に登録してくれてありがとう！",
+      "support_reminder": "アップデートを気に入ってくれたなら、これからも改善を続けられるよう応援してね。"
+    },
     "per": {
       "year": "/ 年",
       "month": "/ 月"

@@ -218,11 +218,12 @@ class _ThanksBanner extends ConsumerWidget {
             ),
             Expanded(
               child: RichText(
-                text: const TextSpan(
+                text: TextSpan(
                   children: [
                     TextSpan(
-                      text:
-                          'Thank you for supporting the development of this app by subscribing to $kPremiumBrandNameFull!',
+                      text: context.t.premium.changelog.thanks_for_supporting(
+                        brand: kPremiumBrandNameFull,
+                      ),
                     ),
                   ],
                 ),
@@ -272,11 +273,10 @@ class _SupportBanner extends ConsumerWidget {
                 ),
                 Expanded(
                   child: RichText(
-                    text: const TextSpan(
+                    text: TextSpan(
                       children: [
                         TextSpan(
-                          text:
-                              "If you're enjoying these updates, consider supporting my work to keep the improvements coming.",
+                          text: context.t.premium.changelog.support_reminder,
                         ),
                       ],
                     ),

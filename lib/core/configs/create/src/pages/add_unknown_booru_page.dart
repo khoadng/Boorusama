@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
@@ -66,7 +67,7 @@ class AddUnknownBooruPage extends ConsumerWidget {
                     vertical: 8,
                   ),
                   child: Text(
-                    'Select a booru engine to continue',
+                    context.t.booru.unknown_engine_selection_request,
                     style: theme.textTheme.headlineSmall!.copyWith(
                       fontWeight: FontWeight.w900,
                     ),

@@ -198,12 +198,12 @@ class _Boorus extends ConsumerWidget {
         child: Column(
           children: [
             Text(
-              'Current selected profile is invalid',
+              context.t.booru.invalid_selected_profile,
               style: Theme.of(context).textTheme.titleLarge,
             ),
             if (availableConfigs.isNotEmpty)
               Text(
-                'Select a profile from the list below to continue',
+                context.t.booru.invalid_selected_profile_selection_request,
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   color: Theme.of(context).colorScheme.hintColor,
                 ),

@@ -477,6 +477,10 @@
       "description": "Agora você tem acesso aos recursos premium. Aproveite!",
       "confirm": "OK"
     },
+    "changelog": {
+      "thanks_for_supporting": "Obrigado por apoiar o desenvolvimento deste app assinando o $brand!",
+      "support_reminder": "Se você está curtindo as atualizações, apoie meu trabalho para que as melhorias continuem vindo!"
+    },
     "per": {
       "year": "/ ano",
       "month": "/ mês"
