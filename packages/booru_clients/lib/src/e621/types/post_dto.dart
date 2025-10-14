@@ -18,6 +18,7 @@ class PostDto {
     this.relationships,
     this.approverId,
     this.uploaderId,
+    this.uploaderName,
     this.description,
     this.commentCount,
     this.isFavorited,
@@ -45,6 +46,7 @@ class PostDto {
       relationships: E621RelationshipsDto.fromJson(json['relationships']),
       approverId: json['approver_id'],
       uploaderId: json['uploader_id'],
+      uploaderName: json['uploader_name'],
       description: json['description'],
       commentCount: json['comment_count'],
       isFavorited: json['is_favorited'],
@@ -70,6 +72,7 @@ class PostDto {
   final E621RelationshipsDto? relationships;
   final int? approverId;
   final int? uploaderId;
+  final String? uploaderName;
   final String? description;
   final int? commentCount;
   final bool? isFavorited;

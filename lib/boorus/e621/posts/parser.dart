@@ -69,6 +69,7 @@ E621Post? postDtoToPost(PostDto dto, PostMetadata? metadata) {
     description: dto.description ?? '',
     parentId: dto.relationships?.parentId,
     uploaderId: dto.uploaderId,
+    uploaderName: dto.uploaderName,
     metadata: metadata,
     videoVariants: videoVariants,
   );

@@ -50,6 +50,7 @@ class E621Post extends Equatable
     required this.videoUrl,
     required this.parentId,
     required this.uploaderId,
+    required this.uploaderName,
     required this.metadata,
     required this.videoVariants,
   });
@@ -140,7 +141,7 @@ class E621Post extends Equatable
   final int? uploaderId;
 
   @override
-  String? get uploaderName => null;
+  final String? uploaderName;
 
   @override
   final PostMetadata? metadata;
