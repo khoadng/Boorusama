@@ -3,7 +3,7 @@ import 'package:booru_clients/anime_pictures.dart';
 
 // Project imports:
 import '../../../core/downloads/urls/types.dart';
-import '../../../core/posts/post/post.dart';
+import '../../../core/posts/post/types.dart';
 import '../../../foundation/caching.dart';
 
 class AnimePicturesDownloadFileUrlExtractor

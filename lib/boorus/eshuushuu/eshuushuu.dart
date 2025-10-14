@@ -1,6 +1,6 @@
 // Project imports:
-import '../../core/boorus/booru/booru.dart';
-import '../../core/boorus/engine/engine.dart';
+import '../../core/boorus/booru/types.dart';
+import '../../core/boorus/engine/types.dart';
 import 'eshuushuu_builder.dart';
 import 'eshuushuu_repository.dart';
 

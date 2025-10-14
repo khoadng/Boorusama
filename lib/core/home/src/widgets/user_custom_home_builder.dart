@@ -9,8 +9,8 @@ import 'package:material_symbols_icons/symbols.dart';
 import '../../../../foundation/info/app_info.dart';
 import '../../../../foundation/networking.dart';
 import '../../../boorus/engine/providers.dart';
+import '../../../configs/config/providers.dart';
 import '../../../configs/create/routes.dart';
-import '../../../configs/ref.dart';
 import '../controllers/home_page_controller.dart';
 import '../types/custom_home.dart';
 

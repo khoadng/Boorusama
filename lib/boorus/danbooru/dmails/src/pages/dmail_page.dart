@@ -9,8 +9,8 @@ import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import '../../../../../core/configs/config/providers.dart';
 import '../../../../../core/configs/config/types.dart';
-import '../../../../../core/configs/ref.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../../users/creator/providers.dart';
 import '../../../users/user/providers.dart';

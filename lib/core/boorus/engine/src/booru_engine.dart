@@ -1,5 +1,5 @@
 // Project imports:
-import '../../booru/booru.dart';
+import '../../booru/types.dart';
 import 'booru_builder.dart';
 import 'booru_repository.dart';
 

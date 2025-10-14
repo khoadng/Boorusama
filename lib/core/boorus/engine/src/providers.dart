@@ -2,7 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../configs/config.dart';
+import '../../../configs/config/types.dart';
 import 'booru_builder.dart';
 import 'booru_engine.dart';
 import 'booru_repository.dart';

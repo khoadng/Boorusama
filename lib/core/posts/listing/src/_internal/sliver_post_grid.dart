@@ -10,7 +10,7 @@ import 'package:sliver_masonry_grid/sliver_masonry_grid.dart';
 import '../../../../../foundation/error_monitor.dart';
 import '../../../../errors/types.dart';
 import '../../../../widgets/widgets.dart';
-import '../../../post/post.dart';
+import '../../../post/types.dart';
 import '../../widgets.dart';
 import '../types/grid_size.dart';
 import '../types/grid_utils.dart';

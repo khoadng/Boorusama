@@ -8,12 +8,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../configs/config/providers.dart';
 import '../../../../configs/config/types.dart';
 import '../../../../search/search/routes.dart';
-import '../../../../tags/categories/tag_category.dart';
+import '../../../../tags/categories/types.dart';
 import '../../../../tags/tag/providers.dart';
-import '../../../../tags/tag/tag.dart';
+import '../../../../tags/tag/types.dart';
 import '../../../../tags/tag/widgets.dart';
-import '../../../details/details.dart';
-import '../../../post/post.dart';
+import '../../../details/types.dart';
+import '../../../post/types.dart';
 import 'basic_tags_tile.dart';
 import 'raw_tags_tile.dart';
 

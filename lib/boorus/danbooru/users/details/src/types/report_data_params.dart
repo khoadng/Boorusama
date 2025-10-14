@@ -2,7 +2,7 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import '../../../user/user.dart';
+import '../../../user/types.dart';
 
 class DanbooruReportDataParams extends Equatable {
   const DanbooruReportDataParams({

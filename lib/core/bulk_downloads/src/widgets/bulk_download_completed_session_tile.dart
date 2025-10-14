@@ -15,7 +15,7 @@ import 'package:readmore/readmore.dart';
 import '../../../../foundation/clipboard.dart';
 import '../../../../foundation/toast.dart';
 import '../../../config_widgets/website_logo.dart';
-import '../../../configs/ref.dart';
+import '../../../configs/config/providers.dart';
 import '../../../images/booru_image.dart';
 import '../../../themes/theme/types.dart';
 import '../../../widgets/widgets.dart';

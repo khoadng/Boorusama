@@ -11,7 +11,7 @@ import '../../../foundation/display.dart';
 import '../../../foundation/info/package_info.dart';
 import '../../../foundation/toast.dart';
 import '../../blacklists/providers.dart';
-import '../../blacklists/src/types/blacklisted_tag.dart';
+import '../../blacklists/types.dart';
 import '../../widgets/widgets.dart';
 import '../utils/json_handler.dart';
 import '../widgets/backup_restore_tile.dart';

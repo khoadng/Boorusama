@@ -5,7 +5,7 @@ import 'dart:convert';
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import '../../../user/user.dart';
+import '../../../user/types.dart';
 
 class Creator extends Equatable {
   const Creator({

@@ -11,13 +11,13 @@ import '../../../../../../core/posts/details_parts/widgets.dart';
 import '../../../../../../core/search/search/routes.dart';
 import '../../../../../../core/tags/show/routes.dart';
 import '../../../../../../core/tags/tag/providers.dart';
-import '../../../../../../core/tags/tag/tag.dart';
+import '../../../../../../core/tags/tag/types.dart';
 import '../../../../../../core/tags/tag/widgets.dart';
 import '../../../../configs/providers.dart';
 import '../../../../tags/_shared/tag_list_notifier.dart';
 import '../../../../tags/tag/widgets.dart';
 import '../../../listing/providers.dart';
-import '../../../post/post.dart';
+import '../../../post/types.dart';
 
 final danbooruTagTileExpansionStateProvider = StateProvider.autoDispose
     .family<bool, bool>((ref, value) {

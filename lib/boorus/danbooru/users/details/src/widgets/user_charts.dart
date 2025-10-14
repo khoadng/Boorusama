@@ -8,7 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
-import '../../../../reports/report.dart';
+import '../../../../reports/types.dart';
 import '../providers/local_providers.dart';
 import '../types/upload_date_range.dart';
 

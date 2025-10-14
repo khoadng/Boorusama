@@ -1,5 +1,5 @@
 // Project imports:
-import '../../../../../core/posts/post/post.dart';
+import '../../../../../core/posts/post/types.dart';
 import 'danbooru_post.dart';
 
 extension DanbooruRepoX on PostRepository<DanbooruPost> {

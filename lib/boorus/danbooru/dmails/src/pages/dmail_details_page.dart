@@ -12,7 +12,7 @@ import '../../../../../core/configs/config/providers.dart';
 import '../../../../../core/dtext/dtext.dart';
 import '../../../../../foundation/url_launcher.dart';
 import '../../../configs/providers.dart';
-import '../../../dtext/dtext.dart';
+import '../../../dtext/types.dart';
 import '../../../users/creator/providers.dart';
 import '../../../users/user/providers.dart';
 import '../providers/dmail_provider.dart';

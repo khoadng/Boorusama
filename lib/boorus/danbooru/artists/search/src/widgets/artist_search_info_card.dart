@@ -6,11 +6,11 @@ import 'package:expandable/expandable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../../../core/configs/ref.dart';
+import '../../../../../../core/configs/config/providers.dart';
 import '../../../../../../core/router.dart';
 import '../../../../../../core/tags/tag/providers.dart';
 import '../../../../../../foundation/utils/flutter_utils.dart';
-import '../../../artist/artist.dart';
+import '../../../artist/types.dart';
 import '../../../urls/widgets.dart';
 
 class ArtistSearchInfoCard extends ConsumerStatefulWidget {

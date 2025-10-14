@@ -12,11 +12,11 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 // Project imports:
 import '../../../../../../core/config_widgets/website_logo.dart';
 import '../../../../../../core/configs/auth/widgets.dart';
-import '../../../../../../core/configs/ref.dart';
+import '../../../../../../core/configs/config/providers.dart';
 import '../../../../../../core/posts/listing/providers.dart';
 import '../../../../../../core/posts/listing/widgets.dart';
-import '../../../../../../core/posts/post/post.dart';
-import '../../../../../../core/posts/sources/source.dart';
+import '../../../../../../core/posts/post/types.dart';
+import '../../../../../../core/posts/sources/types.dart';
 import '../../../../../../core/widgets/widgets.dart';
 import '../../../../users/user/providers.dart';
 import '../../../listing/widgets.dart';

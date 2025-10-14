@@ -8,7 +8,7 @@ import 'package:foundation/foundation.dart';
 // Project imports:
 import '../../../core/configs/config/providers.dart';
 import '../../../core/posts/favorites/widgets.dart';
-import '../../../core/posts/post/post.dart';
+import '../../../core/posts/post/types.dart';
 import '../client_provider.dart';
 import '../posts/parser.dart';
 import '../users/providers.dart';

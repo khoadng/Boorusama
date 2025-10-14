@@ -4,10 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:html/parser.dart';
 
 // Project imports:
-import '../../../../../../../core/configs/config.dart';
-import '../../../../../../../core/configs/ref.dart';
+import '../../../../../../../core/configs/config/providers.dart';
+import '../../../../../../../core/configs/config/types.dart';
 import '../../../../../client_provider.dart';
-import '../../../pool/pool.dart';
+import '../../../pool/types.dart';
 import '../types/pool_description_repository.dart';
 import 'pool_description_repository_builder.dart';
 

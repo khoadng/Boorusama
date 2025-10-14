@@ -1,7 +1,7 @@
 // Project imports:
 import 'boot.dart';
 import 'foundation/app_rating/providers.dart';
-import 'foundation/app_update/src/play_store_update_checker.dart';
+import 'foundation/app_update/providers.dart';
 import 'foundation/app_update/types.dart';
 import 'foundation/boot.dart';
 import 'foundation/iap/iap.dart';

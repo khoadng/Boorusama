@@ -12,7 +12,7 @@ import '../../../../foundation/url_launcher.dart';
 import '../../../artists/types.dart';
 import '../../../comments/types.dart';
 import '../../../widgets/widgets.dart';
-import '../../sources/source.dart';
+import '../../sources/types.dart';
 import 'source_link.dart';
 
 enum TranlationState {

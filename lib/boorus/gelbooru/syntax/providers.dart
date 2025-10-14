@@ -4,7 +4,7 @@ import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
 import '../../../core/search/syntax/providers.dart';
-import '../../../core/search/syntax/syntax.dart';
+import '../../../core/search/syntax/types.dart';
 import 'parser.dart';
 import 'styler.dart';
 import 'tokens.dart';

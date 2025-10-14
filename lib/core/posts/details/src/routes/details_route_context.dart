@@ -3,8 +3,8 @@ import 'package:equatable/equatable.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import '../../../../configs/config.dart';
-import '../../../post/post.dart';
+import '../../../../configs/config/types.dart';
+import '../../../post/types.dart';
 
 class DetailsRouteContext<T extends Post> extends Equatable {
   const DetailsRouteContext({

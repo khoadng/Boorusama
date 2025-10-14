@@ -2,7 +2,7 @@
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../post/post.dart';
+import '../../../post/types.dart';
 
 String buildDetailsText(DanbooruPost post) {
   final fileSizeText = post.fileSize > 0

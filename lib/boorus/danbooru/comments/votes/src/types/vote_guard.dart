@@ -2,7 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../../../core/configs/auth/auth.dart';
+import '../../../../../../core/configs/auth/types.dart';
 import '../comment_votes_notifier.dart';
 import 'danbooru_comment_vote.dart';
 

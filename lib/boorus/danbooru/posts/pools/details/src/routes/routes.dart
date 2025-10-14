@@ -1,6 +1,6 @@
 // Project imports:
 import '../../../../../../../core/router.dart';
-import '../../../pool/pool.dart';
+import '../../../pool/types.dart';
 import '../pool_detail_page.dart';
 
 final danbooruPoolDetailsRoutes = GoRoute(

@@ -2,7 +2,7 @@
 import 'package:hive_ce/hive.dart';
 
 // Project imports:
-import '../../../../search/selected_tags/tag.dart';
+import '../../../../search/selected_tags/types.dart';
 import '../types/favorite_tag.dart';
 import 'favorite_tag_hive_object.dart';
 

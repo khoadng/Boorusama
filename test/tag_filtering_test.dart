@@ -4,7 +4,7 @@ import 'package:test/test.dart';
 // Project imports:
 import 'package:boorusama/core/posts/filter/src/check_tag.dart';
 import 'package:boorusama/core/posts/filter/src/tag_filter_data.dart';
-import 'package:boorusama/core/posts/rating/rating.dart';
+import 'package:boorusama/core/posts/rating/types.dart';
 import 'package:boorusama/core/tags/autocompletes/types.dart';
 
 void main() {

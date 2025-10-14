@@ -2,7 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../pool/pool.dart';
+import '../../pool/types.dart';
 
 final danbooruSelectedPoolCategoryProvider =
     StateProvider<DanbooruPoolCategory>((ref) => DanbooruPoolCategory.series);

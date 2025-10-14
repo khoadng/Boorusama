@@ -7,7 +7,7 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../boorus/engine/providers.dart';
-import '../../configs/config.dart';
+import '../../configs/config/types.dart';
 import '../../tags/autocompletes/types.dart';
 import 'tag_suggestion_item.dart';
 

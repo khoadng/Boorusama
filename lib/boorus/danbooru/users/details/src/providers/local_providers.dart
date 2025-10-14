@@ -2,17 +2,17 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../../../core/configs/ref.dart';
-import '../../../../../../core/posts/post/post.dart';
+import '../../../../../../core/configs/config/providers.dart';
 import '../../../../../../core/posts/post/providers.dart';
-import '../../../../../../core/tags/categories/tag_category.dart';
+import '../../../../../../core/posts/post/types.dart';
+import '../../../../../../core/tags/categories/types.dart';
 import '../../../../../../foundation/riverpod/riverpod.dart';
-import '../../../../posts/post/post.dart';
 import '../../../../posts/post/providers.dart';
+import '../../../../posts/post/types.dart';
 import '../../../../reports/providers.dart';
-import '../../../../reports/report.dart';
+import '../../../../reports/types.dart';
 import '../../../../tags/related/providers.dart';
-import '../../../../tags/related/related.dart';
+import '../../../../tags/related/types.dart';
 import '../types/report_data_params.dart';
 import '../types/upload_date_range.dart';
 

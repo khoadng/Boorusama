@@ -2,7 +2,7 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import '../../posts/post/post.dart';
+import '../../posts/post/types.dart';
 
 class DownloadUrlData extends Equatable {
   const DownloadUrlData({

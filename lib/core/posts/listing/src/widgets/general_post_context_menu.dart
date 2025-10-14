@@ -8,15 +8,15 @@ import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../../foundation/url_launcher.dart';
-import '../../../../bookmarks/bookmark.dart';
 import '../../../../bookmarks/providers.dart';
+import '../../../../bookmarks/types.dart';
 import '../../../../boorus/engine/providers.dart';
 import '../../../../configs/config/providers.dart';
 import '../../../../downloads/downloader/providers.dart';
 import '../../../../router.dart';
 import '../../../../tags/show/routes.dart';
-import '../../../post/post.dart';
 import '../../../post/providers.dart';
+import '../../../post/types.dart';
 
 class GeneralPostContextMenu extends ConsumerWidget {
   const GeneralPostContextMenu({

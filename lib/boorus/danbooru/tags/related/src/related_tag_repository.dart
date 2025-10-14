@@ -2,7 +2,7 @@
 import 'dart:convert';
 
 // Project imports:
-import '../../../../../core/tags/categories/tag_category.dart';
+import '../../../../../core/tags/categories/types.dart';
 import '../../../../../foundation/caching.dart';
 import 'danbooru_related_tag.dart';
 

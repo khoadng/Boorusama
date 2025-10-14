@@ -2,8 +2,8 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import '../../../../../core/posts/votes/vote.dart';
-import '../../../users/user/user.dart';
+import '../../../../../core/posts/votes/types.dart';
+import '../../../users/user/types.dart';
 
 typedef PostVoteId = int;
 

@@ -1,2 +1,2 @@
 export 'src/providers/version_providers.dart';
-export '';
+export 'src/data/providers.dart';

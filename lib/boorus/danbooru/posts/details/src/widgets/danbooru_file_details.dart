@@ -6,14 +6,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
-import '../../../../../../core/configs/ref.dart';
+import '../../../../../../core/configs/config/providers.dart';
 import '../../../../../../core/posts/details_parts/widgets.dart';
 import '../../../../tags/_shared/tag_list_notifier.dart';
 import '../../../../users/creator/providers.dart';
 import '../../../../users/details/routes.dart';
 import '../../../../users/details/types.dart';
 import '../../../../users/user/providers.dart';
-import '../../../post/post.dart';
+import '../../../post/types.dart';
 
 class DanbooruFileDetails extends ConsumerWidget {
   const DanbooruFileDetails({

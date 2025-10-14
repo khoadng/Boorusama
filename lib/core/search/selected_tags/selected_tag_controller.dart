@@ -2,9 +2,9 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import '../../tags/favorites/favorited.dart';
+import '../../tags/favorites/types.dart';
 import '../../tags/metatag/types.dart';
-import '../histories/history.dart';
+import '../histories/types.dart';
 import 'search_tag_set.dart';
 import 'tag_search_item.dart';
 

@@ -2,8 +2,8 @@
 import 'package:booru_clients/e621.dart';
 
 // Project imports:
-import '../../../core/tags/categories/tag_category.dart';
-import '../../../core/tags/tag/tag.dart';
+import '../../../core/tags/categories/types.dart';
+import '../../../core/tags/tag/types.dart';
 
 Tag e621TagDtoToTag(TagDto dto) {
   return Tag(

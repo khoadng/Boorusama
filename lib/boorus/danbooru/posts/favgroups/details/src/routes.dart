@@ -1,6 +1,6 @@
 // Project imports:
 import '../../../../../../core/router.dart';
-import '../../favgroups/favgroup.dart';
+import '../../favgroups/types.dart';
 import 'favorite_group_details_page.dart';
 
 final danbooruFavgroupDetailsRoutes = GoRoute(

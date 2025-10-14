@@ -4,7 +4,7 @@ import 'package:equatable/equatable.dart';
 // Project imports:
 import '../../../../../foundation/utils/collection_utils.dart';
 import '../../../../../foundation/utils/statistics.dart';
-import '../../post/post.dart';
+import '../../post/types.dart';
 
 class DanbooruPostStats extends Equatable {
   const DanbooruPostStats({

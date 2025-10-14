@@ -11,13 +11,13 @@ import '../../../../../foundation/display.dart';
 import '../../../../../foundation/platform.dart';
 import '../../../../boorus/engine/providers.dart';
 import '../../../../configs/config/types.dart';
-import '../../../../configs/gesture/gesture.dart';
+import '../../../../configs/gesture/types.dart';
 import '../../../../videos/player/widgets.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../details_pageview/widgets.dart';
-import '../../../post/post.dart';
-import '../../details.dart';
+import '../../../post/types.dart';
 import 'post_details_controller.dart';
+import 'post_details_page_view_scope.dart';
 import 'post_media.dart';
 import 'seek_animation_overlay.dart';
 

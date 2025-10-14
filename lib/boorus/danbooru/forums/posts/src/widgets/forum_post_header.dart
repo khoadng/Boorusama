@@ -7,7 +7,7 @@ import 'package:intl/intl.dart';
 // Project imports:
 import '../../../../../../core/themes/theme/types.dart';
 import '../../../../users/user/providers.dart';
-import '../../../../users/user/user.dart';
+import '../../../../users/user/types.dart';
 
 class ForumPostHeader extends StatelessWidget {
   const ForumPostHeader({

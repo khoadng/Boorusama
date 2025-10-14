@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../boorus/engine/providers.dart';
-import '../../../../configs/config.dart';
+import '../../../../configs/config/types.dart';
 import '../types/post_link_generator.dart';
 import '../types/post_repository.dart';
 import 'post_link_generator_impl.dart';

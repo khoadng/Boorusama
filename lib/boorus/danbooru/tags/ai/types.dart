@@ -2,7 +2,7 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import '../../../../core/tags/tag/tag.dart';
+import '../../../../core/tags/tag/types.dart';
 
 class AITag extends Equatable {
   const AITag({

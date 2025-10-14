@@ -1,7 +1,8 @@
 // ignore_for_file: avoid_print
 
 import 'dart:io';
-import 'package:codegen/src/runner.dart';
+import 'package:codegen/codegen.dart';
+
 import 'src/language_extractor.dart';
 import 'src/language_generator.dart';
 

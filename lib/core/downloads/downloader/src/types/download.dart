@@ -4,8 +4,8 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../../../../foundation/path.dart';
-import '../../../../configs/config.dart';
-import '../../../../settings/settings.dart';
+import '../../../../configs/config/types.dart';
+import '../../../../settings/types.dart';
 import 'error.dart';
 import 'metadata.dart';
 

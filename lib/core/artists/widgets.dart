@@ -6,9 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../posts/listing/widgets.dart';
-import '../posts/post/post.dart';
+import '../posts/post/types.dart';
 import '../tags/details/widgets.dart';
-import '../tags/tag/tag.dart';
+import '../tags/tag/types.dart';
 
 class ArtistPageScaffold<T extends Post> extends ConsumerStatefulWidget {
   const ArtistPageScaffold({

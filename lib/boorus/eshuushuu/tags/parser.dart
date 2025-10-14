@@ -3,7 +3,7 @@ import 'package:booru_clients/eshuushuu.dart';
 
 // Project imports:
 import '../../../core/tags/autocompletes/types.dart';
-import '../../../core/tags/categories/tag_category.dart';
+import '../../../core/tags/categories/types.dart';
 
 AutocompleteData autocompleteDtoToAutocompleteData(
   AutocompleteDto dto,

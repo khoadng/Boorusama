@@ -7,11 +7,11 @@ import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../../../../core/configs/ref.dart';
+import '../../../../../../core/configs/config/providers.dart';
 import '../../../../../../core/themes/theme/types.dart';
 import '../../../../../../core/widgets/widgets.dart';
-import '../../../comment/comment.dart';
 import '../../../comment/providers.dart';
+import '../../../comment/types.dart';
 import '../routes/route_utils.dart';
 import 'reply_header.dart';
 

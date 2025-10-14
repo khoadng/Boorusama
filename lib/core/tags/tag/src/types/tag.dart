@@ -6,8 +6,8 @@ import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import '../../../../posts/post/post.dart';
-import '../../../categories/tag_category.dart';
+import '../../../../posts/post/types.dart';
+import '../../../categories/types.dart';
 
 typedef PostCount = int;
 

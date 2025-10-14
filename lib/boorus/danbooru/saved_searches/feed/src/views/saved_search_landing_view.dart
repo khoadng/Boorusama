@@ -6,12 +6,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
-import '../../../../../../core/configs/ref.dart';
+import '../../../../../../core/configs/config/providers.dart';
 import '../../../../../../core/widgets/generic_no_data_box.dart';
 import '../../../../../../foundation/url_launcher.dart';
 import '../../../../configs/providers.dart';
 import '../../../saved_search/routes.dart';
-import '../../../saved_search/saved_search.dart';
+import '../../../saved_search/types.dart';
 
 class SavedSearchLandingView extends ConsumerWidget {
   const SavedSearchLandingView({super.key});

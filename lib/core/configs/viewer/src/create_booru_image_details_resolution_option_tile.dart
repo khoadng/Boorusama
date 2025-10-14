@@ -6,7 +6,7 @@ import 'package:foundation/foundation.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
-import '../../../posts/post/post.dart';
+import '../../../posts/post/types.dart';
 import '../../../widgets/widgets.dart';
 
 class CreateBooruGeneralPostDetailsResolutionOptionTile

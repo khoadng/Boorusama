@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 // Project imports:
-import '../../../../configs/config.dart';
+import '../../../../configs/config/types.dart';
 import '../../../../posts/details_parts/widgets.dart';
 import '../types/tag.dart';
 import '../types/tag_display.dart';

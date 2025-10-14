@@ -10,8 +10,8 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import '../../../../../foundation/clipboard.dart';
 import '../../../../analytics/providers.dart';
-import '../../../../boorus/booru/booru.dart';
 import '../../../../boorus/booru/providers.dart';
+import '../../../../boorus/booru/types.dart';
 import '../../../../boorus/engine/providers.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../config/types.dart';

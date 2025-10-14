@@ -7,8 +7,8 @@ import 'package:foundation/widgets.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
-import '../../../../../../core/configs/ref.dart';
-import '../../../../../../core/tags/categories/tag_category.dart';
+import '../../../../../../core/configs/config/providers.dart';
+import '../../../../../../core/tags/categories/types.dart';
 import '../../../../../../core/tags/tag/providers.dart';
 import '../../../../../../core/widgets/widgets.dart';
 import '../../../../../../foundation/utils/flutter_utils.dart';

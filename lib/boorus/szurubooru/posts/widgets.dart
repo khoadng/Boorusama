@@ -6,8 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
-import '../../../core/configs/ref.dart';
-import '../../../core/posts/details/details.dart';
+import '../../../core/configs/config/providers.dart';
+import '../../../core/posts/details/types.dart';
 import '../../../core/posts/details_parts/types.dart';
 import '../../../core/posts/details_parts/widgets.dart';
 import '../../../core/posts/favorites/providers.dart';

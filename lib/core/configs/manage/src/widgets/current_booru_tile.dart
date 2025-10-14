@@ -7,7 +7,7 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../../../../config_widgets/website_logo.dart';
-import '../../../../posts/sources/source.dart';
+import '../../../../posts/sources/types.dart';
 import '../../../config/providers.dart';
 import '../../../create/routes.dart';
 

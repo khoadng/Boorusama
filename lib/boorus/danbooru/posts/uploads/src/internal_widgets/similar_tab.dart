@@ -6,12 +6,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/widgets.dart';
 
 // Project imports:
-import '../../../../../../core/configs/ref.dart';
+import '../../../../../../core/configs/config/providers.dart';
 import '../../../../../../core/images/booru_image.dart';
 import '../../../../../../core/themes/theme/types.dart';
 import '../../../../../../core/widgets/widgets.dart';
-import '../../../post/post.dart';
 import '../../../post/providers.dart';
+import '../../../post/types.dart';
 import '../providers/providers.dart';
 import '../providers/upload_provider.dart';
 import '../types/danbooru_upload_post.dart';

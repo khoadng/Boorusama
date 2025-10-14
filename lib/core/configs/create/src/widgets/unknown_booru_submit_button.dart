@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
-import '../../../../boorus/booru/booru.dart';
+import '../../../../boorus/booru/types.dart';
 import '../../../../themes/theme/types.dart';
 import '../../../config/types.dart';
 import '../../../manage/providers.dart';

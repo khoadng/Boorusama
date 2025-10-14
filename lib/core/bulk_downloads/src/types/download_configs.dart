@@ -6,7 +6,7 @@ import '../../../../foundation/permissions/permission_utils.dart';
 import '../../../downloads/downloader/types.dart';
 import '../../../downloads/filename/types.dart';
 import '../../../downloads/urls/types.dart';
-import '../../../settings/settings.dart';
+import '../../../settings/types.dart';
 
 class DownloadConfigs {
   const DownloadConfigs({

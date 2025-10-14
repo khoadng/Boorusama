@@ -4,10 +4,10 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import '../../../../../foundation/display.dart';
-import '../../../../configs/config.dart';
+import '../../../../configs/config/types.dart';
 import '../../../../router.dart';
 import '../../../listing/providers.dart';
-import '../../../post/post.dart';
+import '../../../post/types.dart';
 import 'details_route_context.dart';
 
 void goToPostDetailsPageFromPosts<T extends Post>({

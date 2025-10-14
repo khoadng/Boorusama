@@ -4,17 +4,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../core/boorus/defaults/types.dart';
-import '../../core/configs/config.dart';
+import '../../core/configs/config/types.dart';
 import '../../core/configs/create/create.dart';
 import '../../core/downloads/filename/types.dart';
 import '../../core/http/providers.dart';
 import '../../core/notes/note/types.dart';
 import '../../core/posts/favorites/types.dart';
-import '../../core/posts/post/post.dart';
 import '../../core/posts/post/providers.dart';
-import '../../core/search/queries/query.dart';
+import '../../core/posts/post/types.dart';
+import '../../core/search/queries/types.dart';
 import '../../core/tags/autocompletes/types.dart';
-import '../../core/tags/tag/tag.dart';
+import '../../core/tags/tag/types.dart';
 import 'configs/providers.dart';
 import 'favorites/providers.dart';
 import 'notes/providers.dart';

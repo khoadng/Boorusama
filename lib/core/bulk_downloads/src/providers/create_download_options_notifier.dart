@@ -6,8 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../foundation/info/device_info.dart';
-import '../../../search/histories/history.dart';
-import '../../../search/selected_tags/tag.dart';
+import '../../../search/histories/types.dart';
+import '../../../search/selected_tags/types.dart';
 import '../types/download_options.dart';
 
 class CreateDownloadOptionsNotifier

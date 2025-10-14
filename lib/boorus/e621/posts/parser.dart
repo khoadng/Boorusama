@@ -3,9 +3,9 @@ import 'package:booru_clients/e621.dart';
 import 'package:path/path.dart' show extension;
 
 // Project imports:
-import '../../../core/posts/post/post.dart';
-import '../../../core/posts/rating/rating.dart';
-import '../../../core/posts/sources/src/source.dart';
+import '../../../core/posts/post/types.dart';
+import '../../../core/posts/rating/types.dart';
+import '../../../core/posts/sources/types.dart';
 import 'types.dart';
 
 E621Post? postDtoToPostNoMetadata(PostDto dto) {

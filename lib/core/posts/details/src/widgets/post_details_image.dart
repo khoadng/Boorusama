@@ -14,7 +14,7 @@ import '../../../../notes/note/types.dart';
 import '../../../../notes/note/widgets.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../listing/providers.dart';
-import '../../../post/post.dart';
+import '../../../post/types.dart';
 
 class PostDetailsImage<T extends Post> extends ConsumerStatefulWidget {
   const PostDetailsImage({

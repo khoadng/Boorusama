@@ -11,7 +11,7 @@ import 'package:i18n/i18n.dart';
 import '../../../core/configs/config/providers.dart';
 import '../../../core/configs/create/routes.dart';
 import '../../../core/posts/details/providers.dart';
-import '../../../core/posts/post/post.dart';
+import '../../../core/posts/post/types.dart';
 import '../../../core/widgets/widgets.dart';
 import '../../../foundation/html.dart';
 import '../posts/types.dart';

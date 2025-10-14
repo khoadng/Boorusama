@@ -4,12 +4,12 @@ import 'package:collection/collection.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../../../../core/http/http.dart';
-import '../../../../../../core/posts/explores/explore.dart';
-import '../../../../../../core/posts/post/post.dart';
-import '../../../../../../core/settings/settings.dart';
-import '../../../post/post.dart';
+import '../../../../../../core/http/types.dart';
+import '../../../../../../core/posts/explores/types.dart';
+import '../../../../../../core/posts/post/types.dart';
+import '../../../../../../core/settings/types.dart';
 import '../../../post/providers.dart';
+import '../../../post/types.dart';
 import '../types/explore_repository.dart';
 
 class ExploreRepositoryApi implements ExploreRepository {

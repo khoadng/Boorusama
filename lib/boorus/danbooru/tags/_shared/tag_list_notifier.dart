@@ -3,12 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../../core/configs/config.dart';
-import '../../../../core/posts/rating/rating.dart';
+import '../../../../core/configs/config/types.dart';
+import '../../../../core/posts/rating/types.dart';
 import '../../../../foundation/loggers.dart';
 import '../../client_provider.dart';
-import '../../posts/post/post.dart';
 import '../../posts/post/providers.dart';
+import '../../posts/post/types.dart';
 
 final danbooruTagListProvider =
     NotifierProviderFamily<

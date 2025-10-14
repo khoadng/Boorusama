@@ -9,7 +9,7 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import '../../../../../foundation/clipboard.dart';
 import '../../../../downloads/filename/types.dart';
-import '../../../../posts/post/post.dart';
+import '../../../../posts/post/types.dart';
 import '../../../../widgets/compact_chip.dart';
 import '../../../../widgets/info_container.dart';
 

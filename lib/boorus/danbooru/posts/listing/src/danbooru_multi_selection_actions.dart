@@ -8,11 +8,11 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:selection_mode/selection_mode.dart';
 
 // Project imports:
-import '../../../../../core/configs/ref.dart';
+import '../../../../../core/configs/config/providers.dart';
 import '../../../../../core/images/booru_image.dart';
 import '../../../../../core/posts/listing/providers.dart';
 import '../../../../../core/posts/listing/widgets.dart';
-import '../../../../../core/posts/rating/rating.dart';
+import '../../../../../core/posts/rating/types.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../../../../foundation/info/package_info.dart';
 import '../../../configs/providers.dart';
@@ -20,7 +20,7 @@ import '../../../tags/_shared/tag_list_notifier.dart';
 import '../../../tags/edit/widgets.dart';
 import '../../../users/user/providers.dart';
 import '../../favgroups/favgroups/routes.dart';
-import '../../post/post.dart';
+import '../../post/types.dart';
 
 class DanbooruMultiSelectionActions extends ConsumerWidget {
   const DanbooruMultiSelectionActions({

@@ -7,8 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../../configs/config/providers.dart';
 import '../../../../images/booru_image.dart';
-import '../../../post/post.dart';
 import '../../../post/tags.dart';
+import '../../../post/types.dart';
 import '../../../post/widgets.dart';
 
 class PreviewPostList<T extends Post> extends StatelessWidget {

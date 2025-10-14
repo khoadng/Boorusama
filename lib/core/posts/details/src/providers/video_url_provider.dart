@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../configs/config/types.dart';
-import '../../../post/post.dart';
+import '../../../post/types.dart';
 import '../../providers.dart';
 
 class VideoUrlParam extends Equatable {

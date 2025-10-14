@@ -13,17 +13,17 @@ import 'package:selection_mode/selection_mode.dart';
 
 // Project imports:
 import '../../../../../foundation/utils/stream/text_editing_controller_utils.dart';
-import '../../../../analytics/analytics_interface.dart';
 import '../../../../analytics/providers.dart';
+import '../../../../analytics/types.dart';
 import '../../../../posts/listing/providers.dart';
 import '../../../../posts/listing/types.dart';
 import '../../../../posts/listing/widgets.dart';
-import '../../../../posts/post/post.dart';
+import '../../../../posts/post/types.dart';
 import '../../../../settings/providers.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../histories/providers.dart';
-import '../../../selected_tags/selected_tag_controller.dart';
-import '../../../selected_tags/tag.dart';
+import '../../../selected_tags/providers.dart';
+import '../../../selected_tags/types.dart';
 import '../routes/params.dart';
 import '../types/search_bar_position.dart';
 import 'search_controller.dart';

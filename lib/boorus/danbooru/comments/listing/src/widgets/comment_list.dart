@@ -7,8 +7,8 @@ import 'package:i18n/i18n.dart';
 // Project imports:
 import '../../../../../../core/comments/types.dart';
 import '../../../../../../core/widgets/widgets.dart';
-import '../../../comment/comment.dart';
-import '../../../votes/vote.dart';
+import '../../../comment/types.dart';
+import '../../../votes/types.dart';
 import 'comment_item.dart';
 
 class CommentList extends StatelessWidget {

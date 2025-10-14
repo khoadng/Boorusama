@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../../../../core/configs/config.dart';
-import '../../../../../../core/configs/ref.dart';
+import '../../../../../../core/configs/config/providers.dart';
+import '../../../../../../core/configs/config/types.dart';
 import '../types/creator.dart';
 import '../types/creator_repository.dart';
 import 'local_providers.dart';

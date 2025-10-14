@@ -22,7 +22,7 @@ import '../../../../themes/theme/types.dart';
 import '../../../../widgets/animated_footer.dart';
 import '../../../../widgets/default_selection_bar.dart';
 import '../../../../widgets/widgets.dart';
-import '../../../post/post.dart';
+import '../../../post/types.dart';
 import '../types/page_mode.dart';
 import '../widgets/conditional_value_listenable_builder.dart';
 import '../widgets/post_controller_event_listener.dart';

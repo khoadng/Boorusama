@@ -6,9 +6,9 @@ import 'package:equatable/equatable.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../tags/favorites/favorited.dart';
+import '../../tags/favorites/types.dart';
 import '../../tags/metatag/types.dart';
-import '../histories/history.dart';
+import '../histories/types.dart';
 import 'query.dart';
 import 'tag_search_item.dart';
 

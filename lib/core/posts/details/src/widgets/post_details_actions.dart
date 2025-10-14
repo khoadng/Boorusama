@@ -11,9 +11,9 @@ import '../../../../themes/theme/types.dart';
 import '../../../details_manager/types.dart';
 import '../../../details_parts/types.dart';
 import '../../../details_parts/widgets.dart';
-import '../../../post/post.dart';
-import '../../details.dart';
+import '../../../post/types.dart';
 import 'post_details_controller.dart';
+import 'post_details_page_view_scope.dart';
 
 List<Widget> defaultActions({
   required Widget? note,

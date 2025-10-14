@@ -7,10 +7,10 @@ import 'package:foundation/widgets.dart';
 
 // Project imports:
 import '../../../../../core/configs/config/providers.dart';
-import '../../../../../core/posts/details/details.dart';
 import '../../../../../core/posts/details/routes.dart';
+import '../../../../../core/posts/details/types.dart';
 import '../../../../../core/posts/details_parts/widgets.dart';
-import '../../../../../core/posts/post/post.dart';
+import '../../../../../core/posts/post/types.dart';
 import '../../../../../core/search/search/routes.dart';
 import '../../../posts/types.dart';
 import '../../providers.dart';

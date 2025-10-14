@@ -1,8 +1,8 @@
 // Project imports:
-import 'cached_tag.dart';
-import 'tag_alias.dart';
-import 'tag_cache_repository.dart';
-import 'tag_info.dart';
+import '../types/cached_tag.dart';
+import '../types/tag_alias.dart';
+import '../types/tag_cache_repository.dart';
+import '../types/tag_info.dart';
 
 class EmptyTagCacheRepository implements TagCacheRepository {
   @override

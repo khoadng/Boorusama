@@ -6,7 +6,7 @@ import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../../../../core/widgets/widgets.dart';
-import '../../../pool/pool.dart';
+import '../../../pool/types.dart';
 
 class PoolCategoryToggleSwitch extends StatelessWidget {
   const PoolCategoryToggleSwitch({

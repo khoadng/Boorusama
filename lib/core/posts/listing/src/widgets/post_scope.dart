@@ -7,9 +7,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../../blacklists/providers.dart';
 import '../../../../bookmarks/providers.dart';
-import '../../../../configs/ref.dart';
+import '../../../../configs/config/providers.dart';
 import '../../../../settings/providers.dart';
-import '../../../post/post.dart';
+import '../../../post/types.dart';
 import '../types/page_mode.dart';
 import 'post_duplicate_checker.dart';
 import 'post_grid_controller.dart';

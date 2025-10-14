@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../boorus/engine/providers.dart';
-import '../../configs/config.dart';
+import '../../configs/config/types.dart';
 import 'autocomplete_repository.dart';
 
 final autocompleteRepoProvider =

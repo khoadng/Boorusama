@@ -10,13 +10,13 @@ import 'package:share_plus/share_plus.dart';
 
 // Project imports:
 import '../../../config_widgets/website_logo.dart';
-import '../../../configs/config/src/types/booru_config.dart';
+import '../../../configs/config/types.dart';
 import '../../../downloads/filename/types.dart';
 import '../../../downloads/urls/sanitizer.dart';
 import '../../details/providers.dart';
-import '../../post/post.dart';
 import '../../post/providers.dart';
-import '../../sources/source.dart';
+import '../../post/types.dart';
+import '../../sources/types.dart';
 import 'download_and_share.dart';
 
 final _cachedImageFileProvider = FutureProvider.autoDispose

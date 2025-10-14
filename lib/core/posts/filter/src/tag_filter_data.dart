@@ -1,5 +1,5 @@
 // Project imports:
-import '../../rating/rating.dart';
+import '../../rating/types.dart';
 
 class TagFilterData {
   TagFilterData({

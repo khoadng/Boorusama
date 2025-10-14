@@ -2,7 +2,7 @@
 import 'package:flutter/widgets.dart';
 
 // Project imports:
-import '../configs/config.dart';
+import '../configs/config/types.dart';
 import 'analytics_interface.dart';
 import 'analytics_network_info.dart';
 import 'analytics_view_info.dart';

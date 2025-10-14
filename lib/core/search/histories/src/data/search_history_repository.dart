@@ -1,5 +1,5 @@
 // Project imports:
-import '../../../selected_tags/tag.dart';
+import '../../../selected_tags/types.dart';
 import '../search_history.dart';
 
 const kSearchHistoryTable = 'search_history';

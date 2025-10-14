@@ -5,9 +5,7 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 
 // Project imports:
-import '../../../local/cached_tag.dart';
-import '../../../local/tag_cache_repository.dart';
-import '../../../local/tag_info.dart';
+import '../../../local/types.dart';
 import 'cached_tag_mapper.dart';
 import 'tag.dart';
 import 'tag_repository.dart';

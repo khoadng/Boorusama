@@ -2,12 +2,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../../../core/configs/config.dart';
-import '../../../../../../core/configs/ref.dart';
-import '../../../../../../core/posts/post/post.dart';
-import '../../../post/post.dart';
+import '../../../../../../core/configs/config/providers.dart';
+import '../../../../../../core/configs/config/types.dart';
+import '../../../../../../core/posts/post/types.dart';
 import '../../../post/providers.dart';
-import '../../pool/pool.dart';
+import '../../../post/types.dart';
+import '../../pool/types.dart';
 
 final danbooruPoolCoversProvider =
     NotifierProvider.family<

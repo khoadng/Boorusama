@@ -9,7 +9,7 @@ import 'package:version/version.dart';
 // Project imports:
 import '../../../foundation/info/package_info.dart';
 import '../../config_widgets/website_logo.dart';
-import '../../configs/config.dart';
+import '../../configs/config/types.dart';
 import '../../configs/manage/providers.dart';
 import '../../settings/providers.dart';
 import '../../widgets/reboot.dart';

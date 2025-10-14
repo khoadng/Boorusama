@@ -7,12 +7,12 @@ import 'package:like_button/like_button.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../../bookmarks/bookmark.dart';
 import '../../../../bookmarks/providers.dart';
+import '../../../../bookmarks/types.dart';
+import '../../../../configs/config/providers.dart';
 import '../../../../configs/config/types.dart';
-import '../../../../configs/ref.dart';
 import '../../../../themes/theme/types.dart';
-import '../../../post/post.dart';
+import '../../../post/types.dart';
 
 class BookmarkPostButton extends ConsumerWidget {
   const BookmarkPostButton({

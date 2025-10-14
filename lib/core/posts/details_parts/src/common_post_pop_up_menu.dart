@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../configs/config/types.dart';
 import '../../../widgets/booru_popup_menu_button.dart';
-import '../../post/src/types/post.dart';
+import '../../post/types.dart';
 import 'common_post_buttons.dart';
 
 class CommonPostPopupMenu extends ConsumerWidget {

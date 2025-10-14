@@ -2,8 +2,8 @@
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../../search/queries/query.dart';
-import '../../../../search/selected_tags/tag.dart';
+import '../../../../search/queries/types.dart';
+import '../../../../search/selected_tags/types.dart';
 import '../types/post.dart';
 import '../types/post_repository.dart';
 

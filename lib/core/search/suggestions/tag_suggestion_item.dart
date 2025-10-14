@@ -8,7 +8,7 @@ import 'package:intl/intl.dart';
 
 // Project imports:
 import '../../../foundation/html.dart';
-import '../../configs/config.dart';
+import '../../configs/config/types.dart';
 import '../../tags/autocompletes/types.dart';
 import '../../tags/metatag/providers.dart';
 import '../../tags/metatag/types.dart';

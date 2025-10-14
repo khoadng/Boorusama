@@ -8,7 +8,7 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import '../../../foundation/info/package_info.dart';
 import '../../settings/providers.dart';
-import '../../settings/settings.dart';
+import '../../settings/types.dart';
 import '../utils/json_handler.dart';
 import '../widgets/backup_restore_tile.dart';
 import 'json_source.dart';

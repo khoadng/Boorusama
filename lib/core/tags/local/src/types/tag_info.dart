@@ -2,7 +2,7 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import '../tag/tag.dart';
+import '../../../tag/types.dart';
 import 'cached_tag.dart';
 
 class TagInfo extends Equatable {

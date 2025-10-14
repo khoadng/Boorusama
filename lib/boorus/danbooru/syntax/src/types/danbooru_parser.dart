@@ -2,7 +2,7 @@
 import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
-import '../../../../../core/search/syntax/syntax.dart';
+import '../../../../../core/search/syntax/types.dart';
 import 'danbooru_tokens.dart';
 
 class DanbooruParser extends QueryParser<DanbooruTokenData> {

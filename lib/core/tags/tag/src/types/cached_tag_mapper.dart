@@ -1,6 +1,6 @@
 // Project imports:
-import '../../../categories/tag_category.dart';
-import '../../../local/cached_tag.dart';
+import '../../../categories/types.dart';
+import '../../../local/types.dart';
 import 'tag.dart';
 
 typedef TagCategoryMapper = TagCategory Function(CachedTag cachedTag);

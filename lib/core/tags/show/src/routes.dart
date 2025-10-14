@@ -8,7 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../../foundation/display.dart';
 import '../../../boorus/engine/providers.dart';
 import '../../../configs/config/types.dart';
-import '../../../posts/post/post.dart';
+import '../../../posts/post/types.dart';
 import '../../../router.dart';
 import 'pages/show_tag_list_page.dart';
 

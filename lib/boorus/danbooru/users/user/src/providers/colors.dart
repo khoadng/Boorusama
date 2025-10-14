@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 // Project imports:
 import '../../../../../../core/themes/theme/types.dart';
-import '../../../../../../core/users/user.dart';
+import '../../../../../../core/users/types.dart';
 import '../types/user.dart';
 import '../types/user_level.dart';
 

@@ -9,7 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../foundation/display.dart';
 import '../../../configs/config/types.dart';
 import '../../../downloads/filename/types.dart';
-import '../../post/post.dart';
+import '../../post/types.dart';
 import 'post_modal_share.dart';
 
 final shareProvider = Provider.autoDispose((ref) => ShareService(ref));

@@ -9,8 +9,8 @@ import 'package:selection_mode/selection_mode.dart';
 
 // Project imports:
 import '../../../../widgets/shadow_gradient_overlay.dart';
-import '../../../post/post.dart';
 import '../../../post/routes.dart';
+import '../../../post/types.dart';
 
 const _kDefaultAnimationDuration = Duration(milliseconds: 200);
 

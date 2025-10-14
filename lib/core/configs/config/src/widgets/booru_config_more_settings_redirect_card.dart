@@ -8,7 +8,7 @@ import 'package:i18n/i18n.dart';
 // Project imports:
 import '../../../../settings/widgets.dart';
 import '../../../create/routes.dart';
-import '../../../ref.dart';
+import '../providers/booru_config_ref.dart';
 import '../providers/providers.dart';
 
 class BooruConfigMoreSettingsRedirectCard extends ConsumerWidget {

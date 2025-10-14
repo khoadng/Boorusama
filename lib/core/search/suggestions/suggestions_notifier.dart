@@ -5,13 +5,13 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../../foundation/debounce_mixin.dart';
-import '../../configs/config.dart';
 import '../../configs/config/providers.dart';
+import '../../configs/config/types.dart';
 import '../../tags/autocompletes/providers.dart';
 import '../../tags/autocompletes/types.dart';
 import '../../tags/configs/providers.dart';
 import '../../tags/local/providers.dart';
-import '../queries/query.dart';
+import '../queries/types.dart';
 
 class SuggestionsNotifier
     extends FamilyNotifier<SuggestionsState, BooruConfigAuth>

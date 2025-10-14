@@ -3,8 +3,8 @@ import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
 // Project imports:
-import 'package:boorusama/core/tags/local/cached_tag.dart';
-import 'package:boorusama/core/tags/local/tag_cache_repository.dart';
+import 'package:boorusama/core/tags/local/src/types/cached_tag.dart';
+import 'package:boorusama/core/tags/local/src/types/tag_cache_repository.dart';
 import 'package:boorusama/core/tags/tag/src/types/cached_tag_mapper.dart';
 import 'package:boorusama/core/tags/tag/src/types/tag.dart';
 import 'package:boorusama/core/tags/tag/src/types/tag_repository.dart';

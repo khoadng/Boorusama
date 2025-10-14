@@ -8,7 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../../../core/posts/details_parts/widgets.dart';
 import '../../../../../../core/router.dart';
 import '../../../../users/user/routes.dart';
-import '../../../post/post.dart';
+import '../../../post/types.dart';
 
 class DanbooruPostStatsTile extends ConsumerWidget {
   const DanbooruPostStatsTile({

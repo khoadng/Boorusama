@@ -2,8 +2,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../core/boorus/booru/booru.dart';
 import '../../core/boorus/booru/providers.dart';
+import '../../core/boorus/booru/types.dart';
 
 final sankakuProvider = Provider<Booru>(
   (ref) {

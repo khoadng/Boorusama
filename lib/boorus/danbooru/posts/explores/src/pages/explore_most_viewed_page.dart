@@ -7,13 +7,13 @@ import 'package:foundation/foundation.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
-import '../../../../../../core/configs/ref.dart';
+import '../../../../../../core/configs/config/providers.dart';
 import '../../../../../../core/posts/explores/widgets.dart';
 import '../../../../../../core/posts/listing/widgets.dart';
-import '../../../../../../core/posts/post/post.dart';
+import '../../../../../../core/posts/post/types.dart';
 import '../../../../../../core/widgets/widgets.dart';
 import '../../../listing/widgets.dart';
-import '../../../post/post.dart';
+import '../../../post/types.dart';
 import '../providers.dart';
 import '../widgets/explore_sliver_app_bar.dart';
 

@@ -3,9 +3,9 @@ import 'package:booru_clients/shimmie2.dart';
 import 'package:path/path.dart' show extension;
 
 // Project imports:
-import '../../../core/posts/post/post.dart';
-import '../../../core/posts/rating/rating.dart';
-import '../../../core/posts/sources/source.dart';
+import '../../../core/posts/post/types.dart';
+import '../../../core/posts/rating/types.dart';
+import '../../../core/posts/sources/types.dart';
 import 'types.dart';
 
 Shimmie2Post postDtoToPost(

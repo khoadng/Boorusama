@@ -7,8 +7,8 @@ import 'package:foundation/widgets.dart';
 
 // Project imports:
 import '../../../core/configs/config/providers.dart';
-import '../../../core/posts/details/details.dart';
 import '../../../core/posts/details/routes.dart';
+import '../../../core/posts/details/types.dart';
 import '../../../core/posts/details_parts/widgets.dart';
 import 'parser.dart';
 import 'providers.dart';

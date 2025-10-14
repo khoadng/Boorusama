@@ -1,7 +1,7 @@
 // Project imports:
 import '../../../../../core/posts/details_parts/types.dart';
 import '../../../../../core/posts/details_parts/widgets.dart';
-import '../../post/post.dart';
+import '../../post/types.dart';
 import 'widgets/danbooru_post_action_toolbar.dart';
 import 'widgets/details_widgets.dart';
 

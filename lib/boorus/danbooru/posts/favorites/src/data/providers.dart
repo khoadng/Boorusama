@@ -8,7 +8,7 @@ import '../../../../../../core/posts/favorites/types.dart';
 import '../../../../client_provider.dart';
 import '../../../../configs/providers.dart';
 import '../../../../users/user/providers.dart';
-import '../../../post/post.dart';
+import '../../../post/types.dart';
 import '../../../votes/providers.dart';
 import '../types/favorite.dart';
 import 'parser.dart';

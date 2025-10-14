@@ -2,9 +2,9 @@
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../../../../core/posts/explores/explore.dart';
-import '../../../../../../core/posts/post/post.dart';
-import '../../../post/post.dart';
+import '../../../../../../core/posts/explores/types.dart';
+import '../../../../../../core/posts/post/types.dart';
+import '../../../post/types.dart';
 import '../types/explore_repository.dart';
 
 class ExploreRepositoryCacher implements ExploreRepository {

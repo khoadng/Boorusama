@@ -2,7 +2,7 @@
 import 'package:booru_clients/generated.dart';
 
 // Project imports:
-import '../../engine/engine.dart';
+import '../../engine/types.dart';
 import 'booru_db.dart';
 
 BooruDb loadBoorus(BooruRegistry registry) {

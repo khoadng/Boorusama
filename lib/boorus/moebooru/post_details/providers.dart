@@ -3,10 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../core/configs/config/types.dart';
-import '../../../core/posts/details/details.dart';
 import '../../../core/posts/details/providers.dart';
-import '../../../core/posts/post/post.dart';
+import '../../../core/posts/details/types.dart';
 import '../../../core/posts/post/providers.dart';
+import '../../../core/posts/post/types.dart';
 import '../../../foundation/riverpod/riverpod.dart';
 import '../posts/providers.dart';
 

@@ -1,5 +1,5 @@
 // Project imports:
-import '../../../pool/pool.dart';
+import '../../../pool/types.dart';
 
 extension DanbooruPoolX on DanbooruPool {
   bool get isEmpty => id == -1;

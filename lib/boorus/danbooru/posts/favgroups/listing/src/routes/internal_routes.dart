@@ -2,9 +2,9 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import '../../../../../../../core/configs/config.dart';
-import '../../../favgroups/favgroup.dart';
+import '../../../../../../../core/configs/config/types.dart';
 import '../../../favgroups/routes.dart';
+import '../../../favgroups/types.dart';
 import '../pages/favorite_group_delete_confirmation_dialog.dart';
 import '../widgets/modal_favorite_group_action.dart';
 

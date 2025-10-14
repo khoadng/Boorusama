@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../boorus/engine/providers.dart';
 import '../../configs/config/types.dart';
-import '../../posts/post/post.dart';
+import '../../posts/post/types.dart';
 import 'types.dart';
 
 final downloadFileUrlExtractorProvider =

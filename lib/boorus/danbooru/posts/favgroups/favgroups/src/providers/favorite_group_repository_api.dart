@@ -3,8 +3,8 @@ import 'package:booru_clients/danbooru.dart';
 import 'package:dio/dio.dart';
 
 // Project imports:
-import '../../../../../users/creator/creator.dart';
 import '../../../../../users/creator/providers.dart';
+import '../../../../../users/creator/types.dart';
 import '../types/danbooru_favorite_group.dart';
 import '../types/favorite_group_repository.dart';
 

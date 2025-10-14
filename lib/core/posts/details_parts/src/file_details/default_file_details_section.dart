@@ -2,8 +2,8 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import '../../../details/details.dart';
-import '../../../post/post.dart';
+import '../../../details/types.dart';
+import '../../../post/types.dart';
 import 'file_details_section.dart';
 
 class DefaultInheritedFileDetailsSection<T extends Post>

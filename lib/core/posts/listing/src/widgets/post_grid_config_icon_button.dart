@@ -12,22 +12,22 @@ import 'package:selection_mode/selection_mode.dart';
 import '../../../../../boorus/danbooru/blacklist/routes.dart';
 import '../../../../blacklists/providers.dart';
 import '../../../../blacklists/routes.dart';
-import '../../../../boorus/booru/booru.dart';
+import '../../../../boorus/booru/types.dart';
 import '../../../../boorus/engine/providers.dart';
 import '../../../../config_widgets/website_logo.dart';
+import '../../../../configs/config/providers.dart';
 import '../../../../configs/create/routes.dart';
-import '../../../../configs/ref.dart';
 import '../../../../images/types.dart';
 import '../../../../settings/providers.dart';
 import '../../../../settings/routes.dart';
 import '../../../../settings/widgets.dart';
 import '../../../../themes/theme/types.dart';
 import '../../../../widgets/widgets.dart';
-import '../../../post/post.dart';
+import '../../../post/types.dart';
 import '../types/grid_size.dart';
 import '../types/image_list_type.dart';
 import '../types/page_mode.dart';
-import '../widgets/post_grid_controller.dart';
+import 'post_grid_controller.dart';
 
 class PostGridConfigIconButton<T> extends ConsumerWidget {
   const PostGridConfigIconButton({

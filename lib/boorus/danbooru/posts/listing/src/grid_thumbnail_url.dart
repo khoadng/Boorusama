@@ -5,8 +5,8 @@ import 'package:foundation/foundation.dart';
 import '../../../../../core/images/types.dart';
 import '../../../../../core/posts/listing/providers.dart';
 import '../../../../../core/posts/listing/types.dart';
-import '../../../../../core/posts/post/post.dart';
-import '../../post/post.dart';
+import '../../../../../core/posts/post/types.dart';
+import '../../post/types.dart';
 
 class DanbooruGridThumbnailUrlGenerator implements GridThumbnailUrlGenerator {
   const DanbooruGridThumbnailUrlGenerator();

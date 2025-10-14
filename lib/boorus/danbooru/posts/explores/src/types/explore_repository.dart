@@ -1,6 +1,6 @@
 // Project imports:
-import '../../../../../../core/posts/explores/explore.dart';
-import '../../../post/post.dart';
+import '../../../../../../core/posts/explores/types.dart';
+import '../../../post/types.dart';
 
 abstract class ExploreRepository {
   DanbooruPostsOrError getPopularPosts(

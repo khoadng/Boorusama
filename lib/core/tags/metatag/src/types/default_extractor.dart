@@ -2,7 +2,7 @@
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../../search/queries/query.dart';
+import '../../../../search/queries/types.dart';
 import 'metatag.dart';
 
 class DefaultMetatagExtractor implements MetatagExtractor {

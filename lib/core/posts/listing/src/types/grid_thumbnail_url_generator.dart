@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 
 // Project imports:
 import '../../../../images/types.dart';
-import '../../../post/post.dart';
+import '../../../post/types.dart';
 import 'animated_posts_default_state.dart';
 import 'grid_size.dart';
 

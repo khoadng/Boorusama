@@ -2,7 +2,7 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import '../../../../search/selected_tags/tag.dart';
+import '../../../../search/selected_tags/types.dart';
 
 class FavoriteTag extends Equatable with QueryTypeMixin {
   const FavoriteTag({

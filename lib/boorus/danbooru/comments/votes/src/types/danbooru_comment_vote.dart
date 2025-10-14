@@ -3,8 +3,8 @@ import 'package:equatable/equatable.dart';
 
 // Project imports:
 import '../../../../../../core/comments/types.dart';
-import '../../../../users/user/user.dart';
-import '../../../comment/comment.dart';
+import '../../../../users/user/types.dart';
+import '../../../comment/types.dart';
 
 typedef CommentVoteId = int;
 

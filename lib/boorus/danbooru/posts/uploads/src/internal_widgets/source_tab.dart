@@ -7,7 +7,7 @@ import 'package:foundation/widgets.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
-import '../../../../../../core/configs/ref.dart';
+import '../../../../../../core/configs/config/providers.dart';
 import '../../../../../../core/tags/tag/providers.dart';
 import '../../../../../../core/widgets/widgets.dart';
 import '../../../../../../foundation/url_launcher.dart';

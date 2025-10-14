@@ -2,7 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../configs/config.dart';
+import '../../../configs/config/types.dart';
 import 'blacklisted_tag.dart';
 
 abstract class GlobalBlacklistedTagRepository {

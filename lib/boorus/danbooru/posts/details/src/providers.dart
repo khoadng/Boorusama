@@ -3,16 +3,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../../core/blacklists/providers.dart';
-import '../../../../../core/configs/config.dart';
-import '../../../../../core/posts/details/details.dart';
-import '../../../../../core/posts/post/post.dart';
+import '../../../../../core/configs/config/types.dart';
+import '../../../../../core/posts/details/types.dart';
 import '../../../../../core/posts/post/providers.dart';
+import '../../../../../core/posts/post/types.dart';
 import '../../../../../core/settings/providers.dart';
 import '../../../../../foundation/riverpod/riverpod.dart';
-import '../../pools/pool/pool.dart';
 import '../../pools/pool/providers.dart';
-import '../../post/post.dart';
+import '../../pools/pool/types.dart';
 import '../../post/providers.dart';
+import '../../post/types.dart';
 import 'media_url_resolver.dart';
 
 final danbooruPostDetailsChildrenProvider = FutureProvider.family

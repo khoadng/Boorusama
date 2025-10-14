@@ -8,13 +8,13 @@ import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../../../../core/configs/ref.dart';
+import '../../../../../../core/configs/config/providers.dart';
 import '../../../../../../core/posts/listing/widgets.dart';
 import '../../../../../../core/themes/theme/types.dart';
 import '../../../../posts/listing/widgets.dart';
 import '../../../../posts/post/providers.dart';
 import '../../../saved_search/routes.dart';
-import '../../../saved_search/saved_search.dart';
+import '../../../saved_search/types.dart';
 import '../widgets/saved_search_context_menu.dart';
 
 class SavedSearchFeedContentView extends ConsumerStatefulWidget {

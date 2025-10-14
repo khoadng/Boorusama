@@ -3,16 +3,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../../core/boorus/engine/providers.dart';
-import '../../../../../core/configs/config.dart';
-import '../../../../../core/configs/ref.dart';
-import '../../../../../core/posts/explores/explore.dart';
-import '../../../../../core/posts/post/post.dart';
-import '../../../../../core/posts/rating/rating.dart';
+import '../../../../../core/configs/config/providers.dart';
+import '../../../../../core/configs/config/types.dart';
+import '../../../../../core/posts/explores/types.dart';
+import '../../../../../core/posts/post/types.dart';
+import '../../../../../core/posts/rating/types.dart';
 import '../../../../../core/settings/providers.dart';
 import '../../../client_provider.dart';
 import '../../../constants.dart';
-import '../../post/post.dart';
 import '../../post/providers.dart';
+import '../../post/types.dart';
 import 'data/explore_repository_cacher.dart';
 import 'data/explore_repository_impl.dart';
 import 'types/explore_repository.dart';

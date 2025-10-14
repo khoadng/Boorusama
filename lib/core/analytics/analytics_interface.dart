@@ -5,8 +5,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 // Project imports:
-import '../configs/config.dart';
-import '../settings/settings.dart';
+import '../configs/config/types.dart';
+import '../settings/types.dart';
 import 'analytics_network_info.dart';
 import 'analytics_view_info.dart';
 

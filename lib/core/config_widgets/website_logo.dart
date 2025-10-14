@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../boorus/booru/booru.dart';
-import '../configs/config.dart';
+import '../boorus/booru/types.dart';
+import '../configs/config/types.dart';
 import '../http/providers.dart';
 import '../images/providers.dart';
-import '../posts/sources/source.dart';
+import '../posts/sources/types.dart';
 import '../widgets/website_logo.dart';
 
 class ConfigAwareWebsiteLogo extends ConsumerWidget {

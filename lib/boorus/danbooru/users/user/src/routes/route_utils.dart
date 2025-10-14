@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../../../core/router.dart';
-import '../../../../posts/post/post.dart';
+import '../../../../posts/post/types.dart';
 
 void goToPostFavoritesDetails(WidgetRef ref, DanbooruPost post) {
   ref.router.push(

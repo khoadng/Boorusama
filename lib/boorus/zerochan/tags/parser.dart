@@ -3,8 +3,8 @@ import 'package:booru_clients/zerochan.dart';
 
 // Project imports:
 import '../../../core/tags/autocompletes/types.dart';
-import '../../../core/tags/categories/tag_category.dart';
-import '../../../core/tags/tag/tag.dart';
+import '../../../core/tags/categories/types.dart';
+import '../../../core/tags/tag/types.dart';
 
 Tag tagDtoToTag(TagDto e) => Tag.noCount(
   name: normalizeZerochanTag(e.value)!,

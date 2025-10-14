@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../../../../core/users/user.dart';
+import '../../../../../../core/users/types.dart';
 import 'user_level.dart';
 
 String getDanbooruProfileUrl(String url) =>

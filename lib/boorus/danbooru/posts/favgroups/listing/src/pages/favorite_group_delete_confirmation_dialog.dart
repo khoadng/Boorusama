@@ -6,9 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
-import '../../../../../../../core/configs/ref.dart';
-import '../../../favgroups/favgroup.dart';
+import '../../../../../../../core/configs/config/providers.dart';
 import '../../../favgroups/providers.dart';
+import '../../../favgroups/types.dart';
 
 class FavoriteGroupDeleteConfirmationDialog extends ConsumerWidget {
   const FavoriteGroupDeleteConfirmationDialog({

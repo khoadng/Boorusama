@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../posts/rating/rating.dart';
+import '../../../../posts/rating/types.dart';
 import '../../../config/types.dart';
 import '../../../create/providers.dart';
 import 'create_booru_rating_options_tile.dart';

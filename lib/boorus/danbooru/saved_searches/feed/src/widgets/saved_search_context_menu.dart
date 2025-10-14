@@ -9,7 +9,7 @@ import 'package:i18n/i18n.dart';
 // Project imports:
 import '../../../../../../core/bulk_downloads/routes.dart';
 import '../../../../../../core/tags/tag/widgets.dart';
-import '../../../saved_search/saved_search.dart';
+import '../../../saved_search/types.dart';
 
 class SavedSearchContextMenu extends ConsumerWidget
     with TagContextMenuButtonConfigMixin {

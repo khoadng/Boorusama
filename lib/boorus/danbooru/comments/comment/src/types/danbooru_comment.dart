@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 
 // Project imports:
 import '../../../../../../core/comments/types.dart';
-import '../../../../users/user/user.dart';
+import '../../../../users/user/types.dart';
 
 typedef CommentId = int;
 typedef CommentScore = int;

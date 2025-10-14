@@ -13,9 +13,9 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import '../../../../foundation/display.dart';
 import '../../../../foundation/html.dart';
-import '../../../configs/ref.dart';
+import '../../../configs/config/providers.dart';
 import '../../../posts/listing/providers.dart';
-import '../../../search/queries/query.dart';
+import '../../../search/queries/types.dart';
 import '../../../search/search/widgets.dart';
 import '../../../themes/theme/types.dart';
 import '../providers/suggestion_provider.dart';

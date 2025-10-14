@@ -9,7 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../../foundation/loggers.dart';
 import '../../../manage/providers.dart';
 import '../../../manage/types.dart';
-import '../../../ref.dart';
+import '../providers/booru_config_ref.dart';
 import '../types/booru_config.dart';
 
 class BooruConfigDeepLinkResolver extends ConsumerStatefulWidget {

@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/widgets.dart';
 
 // Project imports:
-import '../../../../../core/configs/ref.dart';
+import '../../../../../core/configs/config/providers.dart';
 import '../../../../../core/search/search/routes.dart';
 import '../../../danbooru.dart';
 import 'providers/tag_edit_notifier.dart';

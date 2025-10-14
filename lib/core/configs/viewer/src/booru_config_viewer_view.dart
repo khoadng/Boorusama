@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
-import '../../../settings/settings.dart';
+import '../../../settings/types.dart';
 import '../../../settings/widgets.dart';
 import '../../../widgets/widgets.dart';
 import '../../config/types.dart';

@@ -2,9 +2,9 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import '../../../../settings/settings.dart';
+import '../../../../settings/types.dart';
 import '../../../details_pageview/widgets.dart';
-import '../../../post/post.dart';
+import '../../../post/types.dart';
 import '../widgets/post_details_controller.dart';
 
 class PostDetailsData<T extends Post> {

@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/configs/config/types.dart';
 import '../../../core/posts/favorites/providers.dart';
 import '../../../core/posts/favorites/types.dart';
-import '../../../core/posts/post/post.dart';
+import '../../../core/posts/post/types.dart';
 import '../../../core/settings/providers.dart';
 import '../client_provider.dart';
 import '../gelbooru_v2_provider.dart';

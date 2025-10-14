@@ -8,7 +8,7 @@ import 'package:i18n/i18n.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 // Project imports:
-import '../../../../../../core/configs/ref.dart';
+import '../../../../../../core/configs/config/providers.dart';
 import '../../../../../../core/themes/colors/providers.dart';
 import '../../../../../../core/themes/theme/types.dart';
 import '../../../../../../core/widgets/widgets.dart';

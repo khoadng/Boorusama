@@ -10,7 +10,7 @@ import 'package:i18n/i18n.dart';
 import '../../../../../foundation/toast.dart';
 import '../../../../themes/theme/types.dart';
 import '../../../../widgets/widgets.dart';
-import '../../../config.dart';
+import '../../../config/types.dart';
 import '../../../create/providers.dart';
 import '../pages/cookie_access_webview_page.dart';
 

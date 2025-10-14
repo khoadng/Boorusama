@@ -3,8 +3,8 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../../../../core/configs/config/types.dart';
-import '../../../../../core/posts/rating/rating.dart';
-import '../../../../../core/search/queries/query.dart';
+import '../../../../../core/posts/rating/types.dart';
+import '../../../../../core/search/queries/types.dart';
 
 class DanbooruTagQueryComposer implements TagQueryComposer {
   DanbooruTagQueryComposer({

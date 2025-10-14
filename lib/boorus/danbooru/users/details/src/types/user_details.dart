@@ -2,8 +2,8 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import '../../../creator/creator.dart';
-import '../../../user/user.dart';
+import '../../../creator/types.dart';
+import '../../../user/types.dart';
 
 class UserDetails extends Equatable {
   const UserDetails({

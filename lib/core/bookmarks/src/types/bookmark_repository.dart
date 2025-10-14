@@ -1,5 +1,5 @@
 // Project imports:
-import '../../../posts/post/post.dart';
+import '../../../posts/post/types.dart';
 import 'bookmark.dart';
 
 abstract class BookmarkRepository<T extends Post> {

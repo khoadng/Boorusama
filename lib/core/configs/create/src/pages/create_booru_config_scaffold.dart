@@ -9,9 +9,9 @@ import 'package:i18n/i18n.dart';
 // Project imports:
 import '../../../../../foundation/display.dart';
 import '../../../../analytics/providers.dart';
-import '../../../../boorus/booru/booru.dart';
+import '../../../../boorus/booru/types.dart';
 import '../../../../config_widgets/website_logo.dart';
-import '../../../../posts/sources/source.dart';
+import '../../../../posts/sources/types.dart';
 import '../../../../premiums/providers.dart';
 import '../../../../themes/theme/types.dart';
 import '../../../appearance/widgets.dart';

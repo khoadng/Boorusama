@@ -10,7 +10,7 @@ import 'package:rich_text_controller/rich_text_controller.dart';
 // Project imports:
 import '../../../../downloads/filename/providers.dart';
 import '../../../../downloads/filename/types.dart';
-import '../../../../posts/post/post.dart';
+import '../../../../posts/post/types.dart';
 import '../../../config/types.dart';
 import 'filename_preview.dart';
 import 'format_editing_field.dart';

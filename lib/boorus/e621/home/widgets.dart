@@ -8,7 +8,7 @@ import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../core/configs/ref.dart';
+import '../../../core/configs/config/providers.dart';
 import '../../../core/home/widgets.dart';
 import '../../../core/posts/favorites/routes.dart';
 import '../../../core/widgets/widgets.dart';

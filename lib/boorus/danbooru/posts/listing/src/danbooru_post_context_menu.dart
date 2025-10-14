@@ -7,19 +7,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
-import '../../../../../core/bookmarks/bookmark.dart';
 import '../../../../../core/bookmarks/providers.dart';
-import '../../../../../core/configs/ref.dart';
+import '../../../../../core/bookmarks/types.dart';
+import '../../../../../core/configs/config/providers.dart';
 import '../../../../../core/downloads/downloader/providers.dart';
-import '../../../../../core/posts/post/post.dart';
 import '../../../../../core/posts/post/providers.dart';
+import '../../../../../core/posts/post/types.dart';
 import '../../../../../core/router.dart';
 import '../../../../../core/tags/show/routes.dart';
 import '../../../../../foundation/url_launcher.dart';
 import '../../../configs/providers.dart';
 import '../../../versions/routes.dart';
 import '../../favgroups/favgroups/routes.dart';
-import '../../post/post.dart';
+import '../../post/types.dart';
 import 'providers.dart';
 
 class DanbooruPostContextMenu extends ConsumerWidget {

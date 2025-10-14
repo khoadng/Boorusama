@@ -2,7 +2,7 @@
 import 'package:dio/dio.dart';
 
 // Project imports:
-import '../../../core/tags/tag/tag.dart';
+import '../../../core/tags/tag/types.dart';
 import '../tag_summary/types.dart';
 import 'parser.dart';
 

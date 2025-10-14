@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../configs/ref.dart';
+import '../../../configs/config/providers.dart';
 import '../../../downloads/downloader/providers.dart';
 import '../../../router.dart';
 import '../../../widgets/widgets.dart';

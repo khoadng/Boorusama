@@ -9,7 +9,7 @@ import 'package:uuid/uuid.dart';
 
 // Project imports:
 import '../../../../foundation/database/utils.dart';
-import '../../../configs/config.dart';
+import '../../../configs/config/types.dart';
 import '../types/bulk_download_session.dart';
 import '../types/download_options.dart';
 import '../types/download_record.dart';

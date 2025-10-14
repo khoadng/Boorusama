@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../../../core/configs/ref.dart';
+import '../../../../../../core/configs/config/providers.dart';
 import '../../../saved_search/providers.dart';
 import '../../../saved_search/routes.dart';
-import '../../../saved_search/saved_search.dart';
+import '../../../saved_search/types.dart';
 import '../widgets/modal_saved_search_action.dart';
 
 class SavedSearchQuickEditSheet extends ConsumerWidget {

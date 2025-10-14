@@ -7,8 +7,8 @@ import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../foundation/toast.dart';
-import '../../../premiums/premiums.dart';
-import '../../../premiums/src/routes/routes.dart';
+import '../../../premiums/routes.dart';
+import '../../../premiums/types.dart';
 import '../../providers.dart';
 import '../../routes.dart';
 import '../types/bulk_download_error.dart';

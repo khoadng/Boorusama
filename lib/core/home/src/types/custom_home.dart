@@ -8,7 +8,7 @@ import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../bookmarks/widgets.dart';
-import '../../../boorus/engine/engine.dart';
+import '../../../boorus/engine/types.dart';
 import '../../../bulk_downloads/widgets.dart';
 import '../../../configs/manage/providers.dart';
 import '../../../premiums/providers.dart';

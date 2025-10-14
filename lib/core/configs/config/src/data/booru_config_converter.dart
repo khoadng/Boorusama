@@ -1,9 +1,9 @@
 // Project imports:
-import '../../../../proxy/proxy.dart';
-import '../../../../settings/settings.dart';
+import '../../../../proxy/types.dart';
+import '../../../../settings/types.dart';
 import '../../../../themes/configs/types.dart';
-import '../../../gesture/gesture.dart';
-import '../../../search/search.dart';
+import '../../../gesture/types.dart';
+import '../../../search/types.dart';
 import '../types/booru_config.dart';
 import '../types/booru_config_data.dart';
 import '../types/rating_parser.dart';

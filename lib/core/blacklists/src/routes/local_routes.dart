@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 // Project imports:
 import '../../../router.dart';
 import '../../../search/search/widgets.dart';
-import '../../../search/selected_tags/tag.dart';
+import '../../../search/selected_tags/types.dart';
 
 void goToBlacklistedTagsSearchPage(
   BuildContext context, {

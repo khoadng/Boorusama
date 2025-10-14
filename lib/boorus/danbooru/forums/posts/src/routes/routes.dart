@@ -1,6 +1,6 @@
 // Project imports:
 import '../../../../../../core/router.dart';
-import '../../../topics/topic.dart';
+import '../../../topics/types.dart';
 import '../forum_posts_page.dart';
 
 final danbooruForumPostRoutes = GoRoute(

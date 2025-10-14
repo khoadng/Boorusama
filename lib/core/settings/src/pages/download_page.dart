@@ -8,10 +8,10 @@ import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../foundation/info/device_info.dart';
+import '../../../configs/config/providers.dart';
 import '../../../configs/config/widgets.dart';
 import '../../../configs/create/routes.dart';
 import '../../../configs/manage/providers.dart';
-import '../../../configs/ref.dart';
 import '../../../downloads/configs/widgets.dart';
 import '../../../downloads/downloader/types.dart';
 import '../../widgets.dart';

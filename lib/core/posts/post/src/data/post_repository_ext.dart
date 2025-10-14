@@ -1,5 +1,5 @@
 // Project imports:
-import '../../../filter/filter.dart';
+import '../../../filter/types.dart';
 import '../types/post.dart';
 import '../types/post_repository.dart';
 

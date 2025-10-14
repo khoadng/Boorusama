@@ -4,7 +4,7 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../tags/metatag/types.dart';
-import '../queries/query.dart';
+import '../queries/types.dart';
 
 class TagSearchItem extends Equatable {
   const TagSearchItem._({

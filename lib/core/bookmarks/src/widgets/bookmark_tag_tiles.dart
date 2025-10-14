@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../configs/config/providers.dart';
 import '../../../configs/config/types.dart';
-import '../../../posts/details/details.dart';
+import '../../../posts/details/types.dart';
 import '../../../posts/details_parts/widgets.dart';
 import '../data/bookmark_convert.dart';
 import '../providers/local_providers.dart';

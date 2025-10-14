@@ -3,11 +3,11 @@ import 'package:booru_clients/danbooru.dart' as danbooru;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../../core/configs/config.dart';
-import '../../../../../core/configs/ref.dart';
+import '../../../../../core/configs/config/providers.dart';
+import '../../../../../core/configs/config/types.dart';
 import '../../../../../core/tags/categories/providers.dart';
-import '../../../../../core/tags/categories/tag_category.dart';
-import '../../../../../core/tags/tag/tag.dart';
+import '../../../../../core/tags/categories/types.dart';
+import '../../../../../core/tags/tag/types.dart';
 import '../../../client_provider.dart';
 import 'danbooru_related_tag.dart';
 import 'related_tag_repository.dart';

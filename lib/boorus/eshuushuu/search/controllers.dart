@@ -2,11 +2,11 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import '../../../core/search/histories/history.dart';
-import '../../../core/search/queries/query.dart';
+import '../../../core/search/histories/types.dart';
+import '../../../core/search/queries/types.dart';
 import '../../../core/search/search/widgets.dart';
-import '../../../core/search/selected_tags/tag.dart';
-import '../../../core/tags/favorites/favorited.dart';
+import '../../../core/search/selected_tags/types.dart';
+import '../../../core/tags/favorites/types.dart';
 import 'routes.dart';
 
 class EshuushuuSearchController extends SearchPageController {

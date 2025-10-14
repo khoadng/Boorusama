@@ -6,8 +6,8 @@ import 'package:context_menus/context_menus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../configs/gesture/gesture.dart';
-import '../../../../configs/ref.dart';
+import '../../../../configs/config/providers.dart';
+import '../../../../configs/gesture/types.dart';
 
 class DefaultPostListContextMenuRegion extends ConsumerWidget {
   const DefaultPostListContextMenuRegion({

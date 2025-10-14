@@ -8,7 +8,7 @@ import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../../foundation/toast.dart';
-import '../../../../proxy/proxy.dart';
+import '../../../../proxy/types.dart';
 import '../../../config/types.dart';
 import '../../../create/providers.dart';
 import 'test_proxy_notifier.dart';

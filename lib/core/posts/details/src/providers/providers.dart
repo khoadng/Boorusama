@@ -5,11 +5,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../../foundation/riverpod/riverpod.dart';
 import '../../../../blacklists/providers.dart';
 import '../../../../boorus/engine/providers.dart';
-import '../../../../configs/config.dart';
+import '../../../../configs/config/types.dart';
 import '../../../../settings/providers.dart';
-import '../../../post/post.dart';
 import '../../../post/providers.dart';
-import '../../details.dart';
+import '../../../post/types.dart';
+import '../types/media_url_resolver.dart';
 
 final singlePostDetailsProvider = FutureProvider.autoDispose
     .family<Post?, (PostId, BooruConfigSearch)>((ref, params) async {

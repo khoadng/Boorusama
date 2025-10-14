@@ -5,7 +5,7 @@ import 'dart:math';
 import 'package:collection/collection.dart';
 
 // Project imports:
-import '../../../configs/config.dart';
+import '../../../configs/config/types.dart';
 import 'bulk_download_session.dart';
 import 'download_options.dart';
 import 'download_record.dart';

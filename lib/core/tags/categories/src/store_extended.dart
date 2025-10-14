@@ -1,6 +1,6 @@
 // Project imports:
-import '../../local/tag_info.dart';
-import '../../tag/tag.dart';
+import '../../local/types.dart';
+import '../../tag/types.dart';
 import 'tag_type_store.dart';
 
 extension TagTypeStoreX on TagTypeStore {

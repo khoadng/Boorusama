@@ -10,16 +10,16 @@ import 'package:foundation/foundation.dart';
 import '../../../../foundation/url_launcher.dart';
 import '../../../boorus/engine/providers.dart';
 import '../../../config_widgets/website_logo.dart';
-import '../../../configs/ref.dart';
+import '../../../configs/config/providers.dart';
 import '../../../router.dart';
-import '../../../tags/categories/tag_category.dart';
+import '../../../tags/categories/types.dart';
 import '../../../tags/tag/widgets.dart';
 import '../../../themes/colors/providers.dart';
 import '../../../themes/theme/types.dart';
 import '../../../widgets/widgets.dart';
-import '../../details/details.dart';
-import '../../post/post.dart';
-import '../../sources/source.dart';
+import '../../details/types.dart';
+import '../../post/types.dart';
+import '../../sources/types.dart';
 
 class DefaultInheritedInformationSection<T extends Post>
     extends StatelessWidget {

@@ -3,12 +3,12 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:i18n/src/gen/languages.g.dart';
 
 // Package imports:
 import 'package:timeago/timeago.dart';
 
 // Project imports:
+import 'gen/languages.g.dart';
 import 'gen/strings.g.dart';
 import 'language.dart';
 import 'locales.dart';

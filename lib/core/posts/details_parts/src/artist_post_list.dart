@@ -12,14 +12,14 @@ import '../../../configs/config/providers.dart';
 import '../../../images/booru_image.dart';
 import '../../../router.dart';
 import '../../../tags/tag/providers.dart';
-import '../../details/details.dart';
 import '../../details/providers.dart';
 import '../../details/routes.dart';
+import '../../details/types.dart';
 import '../../details/widgets.dart';
 import '../../listing/providers.dart';
 import '../../listing/types.dart';
-import '../../post/post.dart';
 import '../../post/tags.dart';
+import '../../post/types.dart';
 import '../../post/widgets.dart';
 
 class DefaultInheritedArtistPostsSection<T extends Post>

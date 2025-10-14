@@ -9,11 +9,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
-import '../../../../../../../core/configs/config.dart';
+import '../../../../../../../core/configs/config/types.dart';
 import '../../../../../configs/providers.dart';
 import '../../../../../users/user/providers.dart';
 import '../../../listing/providers.dart';
-import '../../favgroup.dart';
+import '../../types.dart';
 import '../types/update_order.dart';
 import 'local_providers.dart';
 

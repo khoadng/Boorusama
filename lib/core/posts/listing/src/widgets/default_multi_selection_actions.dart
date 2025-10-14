@@ -13,9 +13,9 @@ import 'package:selection_mode/selection_mode.dart';
 // Project imports:
 import '../../../../../../core/widgets/widgets.dart';
 import '../../../../bookmarks/providers.dart';
-import '../../../../configs/ref.dart';
+import '../../../../configs/config/providers.dart';
 import '../../../../downloads/downloader/providers.dart';
-import '../../../post/post.dart';
+import '../../../post/types.dart';
 import 'post_grid_controller.dart';
 
 class DefaultMultiSelectionActions<T extends Post> extends ConsumerWidget {

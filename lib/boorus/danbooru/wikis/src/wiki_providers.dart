@@ -2,8 +2,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../core/configs/config.dart';
-import '../../../../core/configs/ref.dart';
+import '../../../../core/configs/config/providers.dart';
+import '../../../../core/configs/config/types.dart';
 import 'data/providers.dart';
 import 'types/wiki.dart';
 

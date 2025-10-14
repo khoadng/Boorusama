@@ -9,7 +9,7 @@ import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../boorus/engine/providers.dart';
-import '../../../../posts/rating/rating.dart';
+import '../../../../posts/rating/types.dart';
 import '../../../../widgets/option_dropdown_button.dart';
 import '../../../config/types.dart';
 

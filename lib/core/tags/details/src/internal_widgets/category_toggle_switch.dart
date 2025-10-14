@@ -6,7 +6,7 @@ import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../../core/widgets/widgets.dart';
-import '../../../tag/tag.dart';
+import '../../../tag/types.dart';
 
 class CategoryToggleSwitch extends StatelessWidget {
   const CategoryToggleSwitch({

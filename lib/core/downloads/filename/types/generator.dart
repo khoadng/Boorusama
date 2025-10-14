@@ -5,9 +5,9 @@ import 'package:filename_generator/filename_generator.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
-import '../../../configs/config.dart';
-import '../../../posts/post/post.dart';
-import '../../../settings/settings.dart';
+import '../../../configs/config/types.dart';
+import '../../../posts/post/types.dart';
+import '../../../settings/types.dart';
 import 'token_options.dart';
 
 enum TokenType { sync, async }

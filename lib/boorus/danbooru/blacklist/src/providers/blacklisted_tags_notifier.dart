@@ -2,11 +2,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../../core/blacklists/blacklist.dart';
-import '../../../../../core/configs/config.dart';
+import '../../../../../core/blacklists/types.dart';
+import '../../../../../core/configs/config/types.dart';
 import '../../../client_provider.dart';
 import '../../../danbooru.dart';
-import '../../../posts/post/post.dart';
+import '../../../posts/post/types.dart';
 import '../../../users/user/providers.dart';
 
 final danbooruBlacklistedTagsProvider =

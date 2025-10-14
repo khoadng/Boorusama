@@ -7,7 +7,7 @@ import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../../core/configs/config/providers.dart';
-import '../../../../../core/posts/details/details.dart';
+import '../../../../../core/posts/details/types.dart';
 import '../../../../../core/themes/theme/types.dart';
 import '../../../comments/providers.dart';
 import '../../../posts/types.dart';

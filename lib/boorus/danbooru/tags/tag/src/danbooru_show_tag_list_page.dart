@@ -6,9 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../../core/configs/config/types.dart';
-import '../../../../../core/posts/post/post.dart';
+import '../../../../../core/posts/post/types.dart';
 import '../../../../../core/tags/show/widgets.dart';
-import '../../../../../core/tags/tag/tag.dart';
+import '../../../../../core/tags/tag/types.dart';
 import '../../../blacklist/providers.dart';
 import '../../../configs/providers.dart';
 import '../../../wikis/types.dart';

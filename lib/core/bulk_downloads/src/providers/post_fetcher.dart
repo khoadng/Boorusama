@@ -4,11 +4,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../blacklists/providers.dart';
-import '../../../configs/config.dart';
-import '../../../posts/filter/filter.dart';
-import '../../../posts/post/post.dart';
+import '../../../configs/config/types.dart';
+import '../../../posts/filter/types.dart';
 import '../../../posts/post/providers.dart';
-import '../../../search/selected_tags/tag.dart';
+import '../../../posts/post/types.dart';
+import '../../../search/selected_tags/types.dart';
 import '../types/download_configs.dart';
 import '../types/download_task.dart';
 

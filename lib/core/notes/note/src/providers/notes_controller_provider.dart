@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../posts/post/post.dart';
+import '../../../../posts/post/types.dart';
 
 class NotesControllerState extends Equatable {
   const NotesControllerState({

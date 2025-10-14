@@ -5,7 +5,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 // Project imports:
-import '../../../post/post.dart';
+import '../../../post/types.dart';
 import 'post_grid_controller.dart';
 
 class PostControllerEventListener<T extends Post> extends StatefulWidget {

@@ -2,9 +2,9 @@
 import 'package:booru_clients/zerochan.dart';
 
 // Project imports:
-import '../../../core/posts/post/post.dart';
-import '../../../core/posts/rating/rating.dart';
-import '../../../core/posts/sources/source.dart';
+import '../../../core/posts/post/types.dart';
+import '../../../core/posts/rating/types.dart';
+import '../../../core/posts/sources/types.dart';
 import '../../../foundation/path.dart' as path;
 import 'types.dart';
 

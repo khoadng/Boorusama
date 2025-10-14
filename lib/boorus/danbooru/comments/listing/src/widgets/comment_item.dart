@@ -11,10 +11,10 @@ import '../../../../../../core/comments/types.dart';
 import '../../../../../../core/comments/widgets.dart';
 import '../../../../../../core/dtext/dtext.dart';
 import '../../../../../../core/themes/theme/types.dart';
-import '../../../../dtext/dtext.dart';
-import '../../../comment/comment.dart';
+import '../../../../dtext/types.dart';
+import '../../../comment/types.dart';
 import '../../../votes/providers.dart';
-import '../../../votes/vote.dart';
+import '../../../votes/types.dart';
 import 'danbooru_comment_header.dart';
 
 class CommentItem extends ConsumerWidget {

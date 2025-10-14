@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../../../../core/configs/ref.dart';
+import '../../../../../../core/configs/config/providers.dart';
 import '../../../../../../core/search/suggestions/providers.dart';
 import '../../../../../../core/search/suggestions/widgets.dart';
 import '../../../../../../core/tags/autocompletes/types.dart';

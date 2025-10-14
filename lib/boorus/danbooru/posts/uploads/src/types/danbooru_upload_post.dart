@@ -1,6 +1,6 @@
 // Project imports:
-import '../../../../users/user/user.dart';
-import '../../../post/post.dart';
+import '../../../../users/user/types.dart';
+import '../../../post/types.dart';
 
 class DanbooruUploadPost extends DanbooruPost {
   DanbooruUploadPost({

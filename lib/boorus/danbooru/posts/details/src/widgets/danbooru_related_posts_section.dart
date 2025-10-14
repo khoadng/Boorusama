@@ -7,9 +7,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../../../../core/posts/details/routes.dart';
 import '../../../../../../core/posts/details_parts/widgets.dart';
-import '../../../../../../core/posts/post/post.dart';
+import '../../../../../../core/posts/post/types.dart';
 import '../../../../../../core/search/search/routes.dart';
-import '../../../post/post.dart';
+import '../../../post/types.dart';
 
 class DanbooruRelatedPostsSection extends ConsumerWidget {
   const DanbooruRelatedPostsSection({

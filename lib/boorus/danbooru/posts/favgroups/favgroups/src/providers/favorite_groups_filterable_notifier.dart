@@ -2,8 +2,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../../../../core/configs/config.dart';
-import '../../favgroup.dart';
+import '../../../../../../../core/configs/config/types.dart';
+import '../../types.dart';
 import 'favorite_groups_notifier.dart';
 
 final danbooruFavoriteGroupFilterableProvider = NotifierProvider.autoDispose

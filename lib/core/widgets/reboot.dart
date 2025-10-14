@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import '../configs/config.dart';
-import '../settings/settings.dart';
+import '../configs/config/types.dart';
+import '../settings/types.dart';
 
 class RebootData extends Equatable {
   const RebootData({

@@ -2,7 +2,7 @@
 import 'package:booru_clients/danbooru.dart';
 
 // Project imports:
-import '../../../../../../core/users/user.dart';
+import '../../../../../../core/users/types.dart';
 import '../types/user.dart';
 import 'converter.dart';
 

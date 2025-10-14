@@ -12,7 +12,7 @@ import 'package:share_plus/share_plus.dart';
 
 // Project imports:
 import '../../../../foundation/path.dart';
-import '../../../configs/config.dart';
+import '../../../configs/config/types.dart';
 import '../../../download_manager/providers.dart';
 import '../../../download_manager/types.dart';
 import '../../../downloads/configs/widgets.dart';
@@ -20,7 +20,7 @@ import '../../../downloads/downloader/providers.dart';
 import '../../../downloads/downloader/types.dart';
 import '../../../downloads/filename/types.dart';
 import '../../../widgets/booru_dialog.dart';
-import '../../post/post.dart';
+import '../../post/types.dart';
 
 final _downloadTaskDetailsProvider = Provider.autoDispose
     .family<TaskUpdate?, String>((ref, downloadId) {

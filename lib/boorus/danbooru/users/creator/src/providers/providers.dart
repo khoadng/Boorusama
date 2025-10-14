@@ -4,7 +4,7 @@ import 'package:hive_ce/hive.dart';
 import 'package:path_provider/path_provider.dart';
 
 // Project imports:
-import '../../../../../../core/configs/config.dart';
+import '../../../../../../core/configs/config/types.dart';
 
 final danbooruCreatorHiveBoxProvider =
     FutureProvider.family<Box, BooruConfigAuth>((ref, config) async {

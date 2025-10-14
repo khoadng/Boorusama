@@ -3,11 +3,11 @@ import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../core/boorus/booru/booru.dart';
+import '../../../core/boorus/booru/types.dart';
 import '../../../core/configs/config/types.dart';
-import '../../../core/tags/categories/tag_category.dart';
+import '../../../core/tags/categories/types.dart';
 import '../../../core/tags/local/providers.dart';
-import '../../../core/tags/tag/tag.dart';
+import '../../../core/tags/tag/types.dart';
 import '../tag_summary/providers.dart';
 import 'parser.dart';
 import 'repository.dart';

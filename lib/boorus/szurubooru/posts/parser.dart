@@ -3,11 +3,11 @@ import 'package:booru_clients/szurubooru.dart';
 import 'package:collection/collection.dart';
 
 // Project imports:
-import '../../../core/posts/post/post.dart';
-import '../../../core/posts/rating/rating.dart';
-import '../../../core/posts/sources/source.dart';
-import '../../../core/tags/categories/tag_category.dart';
-import '../../../core/tags/tag/tag.dart';
+import '../../../core/posts/post/types.dart';
+import '../../../core/posts/rating/types.dart';
+import '../../../core/posts/sources/types.dart';
+import '../../../core/tags/categories/types.dart';
+import '../../../core/tags/tag/types.dart';
 import '../../../foundation/path.dart';
 import 'types.dart';
 

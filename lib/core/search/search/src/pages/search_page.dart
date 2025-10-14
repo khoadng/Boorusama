@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../boorus/engine/providers.dart';
-import '../../../../configs/ref.dart';
+import '../../../../configs/config/providers.dart';
 import '../../../../router.dart';
 import '../routes/params.dart';
 

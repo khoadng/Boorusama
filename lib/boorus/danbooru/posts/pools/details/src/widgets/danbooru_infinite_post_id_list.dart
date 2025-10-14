@@ -7,14 +7,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../../../../../core/configs/ref.dart';
+import '../../../../../../../core/configs/config/providers.dart';
 import '../../../../../../../core/posts/listing/widgets.dart';
-import '../../../../../../../core/posts/post/post.dart';
+import '../../../../../../../core/posts/post/types.dart';
 import '../../../../../../../core/settings/providers.dart';
 import '../../../../../../../core/widgets/widgets.dart';
 import '../../../../listing/widgets.dart';
-import '../../../../post/post.dart';
 import '../../../../post/providers.dart';
+import '../../../../post/types.dart';
 
 class DanbooruInfinitePostIdList extends ConsumerStatefulWidget {
   const DanbooruInfinitePostIdList({

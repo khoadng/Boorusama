@@ -7,8 +7,8 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import '../../../../../foundation/utils/flutter_utils.dart';
 import '../../../../tags/tag/colors.dart';
-import '../../../queries/query.dart';
-import '../../../selected_tags/tag.dart';
+import '../../../queries/types.dart';
+import '../../../selected_tags/types.dart';
 import '../pages/selected_tag_edit_dialog.dart';
 
 class SelectedTagChip extends StatelessWidget {

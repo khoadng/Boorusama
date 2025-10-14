@@ -9,7 +9,7 @@ import 'package:intl/intl.dart';
 import '../../../../../../../core/tags/tag/colors.dart';
 import '../../../../../../../core/themes/theme/types.dart';
 import '../../../../../../../foundation/debounce_mixin.dart';
-import '../../../pool/pool.dart';
+import '../../../pool/types.dart';
 import '../providers.dart';
 
 class PoolSearchSuggestionView extends ConsumerWidget {

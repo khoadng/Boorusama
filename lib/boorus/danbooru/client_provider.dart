@@ -5,9 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../core/boorus/booru/providers.dart';
-import '../../core/configs/config.dart';
-import '../../core/http/http.dart';
+import '../../core/configs/config/types.dart';
 import '../../core/http/providers.dart';
+import '../../core/http/types.dart';
 import '../../foundation/info/app_info.dart';
 import '../../foundation/info/package_info.dart';
 import '../../foundation/loggers/providers.dart';

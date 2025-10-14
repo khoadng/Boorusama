@@ -7,7 +7,7 @@ import 'package:i18n/i18n.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
-import '../../../../configs/ref.dart';
+import '../../../../configs/config/providers.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../queries/query_utils.dart';
 import '../../../selected_tags/tag_search_item.dart';

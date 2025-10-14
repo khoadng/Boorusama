@@ -3,9 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../../core/comments/types.dart';
-import '../../../../../core/configs/config.dart';
-import '../../../../../core/configs/ref.dart';
-import '../../comment/comment.dart';
+import '../../../../../core/configs/config/providers.dart';
+import '../../../../../core/configs/config/types.dart';
+import '../../comment/types.dart';
 import 'data/providers.dart';
 import 'types/danbooru_comment_vote.dart';
 

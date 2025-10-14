@@ -1,5 +1,5 @@
 // Project imports:
-import '../post/post.dart';
+import '../post/types.dart';
 
 class PostCreatorsPreloadable {
   factory PostCreatorsPreloadable.fromPosts(List<DanbooruPost> posts) {

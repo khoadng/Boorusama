@@ -7,12 +7,12 @@ import 'package:foundation/foundation.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
-import '../../../../../core/posts/statistics/stats.dart';
+import '../../../../../core/posts/statistics/types.dart';
 import '../../../../../core/posts/statistics/widgets.dart';
 import '../../../../../foundation/display.dart';
 import '../../_shared/danbooru_creator_preloader.dart';
 import '../../_shared/post_creator_preloadable.dart';
-import '../../post/post.dart';
+import '../../post/types.dart';
 import 'post_stats.dart';
 import 'widgets/post_stats_approver_section.dart';
 import 'widgets/post_stats_character_section.dart';

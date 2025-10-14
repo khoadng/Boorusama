@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../../core/configs/ref.dart';
-import '../../../../../core/posts/details/details.dart';
+import '../../../../../core/configs/config/providers.dart';
+import '../../../../../core/posts/details/types.dart';
 import '../../../../../core/posts/details_parts/widgets.dart';
 import '../../../../../core/router.dart';
-import '../../../../../core/tags/tag/tag.dart';
+import '../../../../../core/tags/tag/types.dart';
 import '../../../posts/types.dart';
 import '../../../tags/providers.dart';
 

@@ -10,9 +10,9 @@ import 'package:rich_text_controller/rich_text_controller.dart';
 // Project imports:
 import '../../../../foundation/loggers.dart';
 import '../../../../foundation/path.dart';
-import '../../../configs/config.dart';
-import '../../../posts/post/post.dart';
-import '../../../settings/settings.dart';
+import '../../../configs/config/types.dart';
+import '../../../posts/post/types.dart';
+import '../../../settings/types.dart';
 import '../../urls/sanitizer.dart';
 import 'async_token_resolver.dart';
 import 'generator.dart';

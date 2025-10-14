@@ -6,10 +6,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
-import '../../../../../../core/configs/ref.dart';
+import '../../../../../../core/configs/config/providers.dart';
 import '../../../../../../core/images/booru_image.dart';
 import '../../../../../../core/settings/providers.dart';
-import '../../pool/pool.dart';
+import '../../pool/types.dart';
 import '../providers/pool_covers_notifier.dart';
 
 class PoolImage extends ConsumerWidget {

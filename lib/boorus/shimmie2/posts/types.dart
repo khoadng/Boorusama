@@ -1,5 +1,5 @@
 // Project imports:
-import '../../../core/posts/post/post.dart';
+import '../../../core/posts/post/types.dart';
 
 class Shimmie2Post extends SimplePost {
   Shimmie2Post({

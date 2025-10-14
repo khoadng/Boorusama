@@ -2,7 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../core/configs/config.dart';
+import '../../../core/configs/config/types.dart';
 import '../../../core/tags/autocompletes/types.dart';
 import '../client_provider.dart';
 import 'converter.dart';

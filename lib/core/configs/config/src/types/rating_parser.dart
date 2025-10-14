@@ -2,7 +2,7 @@
 import 'package:collection/collection.dart';
 
 // Project imports:
-import '../../../../posts/rating/rating.dart';
+import '../../../../posts/rating/types.dart';
 
 Set<Rating>? parseGranularRatingFilters(String? granularRatingFilterString) {
   if (granularRatingFilterString == null) return null;

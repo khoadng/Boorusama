@@ -3,9 +3,9 @@ import 'package:equatable/equatable.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../local/cached_tag.dart';
+import '../local/types.dart';
 import '../metatag/types.dart';
-import '../tag/tag.dart';
+import '../tag/types.dart';
 
 export 'autocomplete_repository.dart';
 export 'autocomplete_query.dart';

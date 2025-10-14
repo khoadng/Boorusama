@@ -3,9 +3,9 @@ import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../core/boorus/booru/booru.dart';
 import '../../core/boorus/booru/providers.dart';
-import '../../core/boorus/engine/engine.dart';
+import '../../core/boorus/booru/types.dart';
+import '../../core/boorus/engine/types.dart';
 import 'moebooru_builder.dart';
 import 'moebooru_repository.dart';
 

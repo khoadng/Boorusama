@@ -3,9 +3,9 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../../../foundation/path.dart';
-import '../../../posts/post/post.dart';
-import '../../../posts/rating/rating.dart';
-import '../../../posts/sources/source.dart';
+import '../../../posts/post/types.dart';
+import '../../../posts/rating/types.dart';
+import '../../../posts/sources/types.dart';
 import '../types/bookmark.dart';
 import 'hive/bookmark_hive_object.dart';
 

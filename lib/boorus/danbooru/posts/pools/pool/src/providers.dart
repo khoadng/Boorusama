@@ -3,7 +3,7 @@ import 'package:booru_clients/danbooru.dart' as danbooru;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../../../core/configs/config.dart';
+import '../../../../../../core/configs/config/types.dart';
 import '../../../../client_provider.dart';
 import 'danbooru_pool.dart';
 import 'pool_repository.dart';

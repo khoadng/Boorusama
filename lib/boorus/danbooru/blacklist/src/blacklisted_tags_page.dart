@@ -7,7 +7,7 @@ import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../core/blacklists/widgets.dart';
-import '../../../../core/configs/ref.dart';
+import '../../../../core/configs/config/providers.dart';
 import '../../../../core/widgets/import_export_tag_button.dart';
 import 'providers/blacklisted_tags_notifier.dart';
 import 'providers/blacklisted_tags_notifier_toast.dart';

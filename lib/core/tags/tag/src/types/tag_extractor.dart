@@ -2,10 +2,9 @@
 import 'dart:async';
 
 // Project imports:
-import '../../../../posts/post/post.dart';
-import '../../../categories/tag_category.dart';
-import '../../../local/tag_cache_repository.dart';
-import '../../../local/tag_info.dart';
+import '../../../../posts/post/types.dart';
+import '../../../categories/types.dart';
+import '../../../local/types.dart';
 import 'tag.dart';
 import 'tag_sorter.dart';
 

@@ -1,6 +1,6 @@
 // Project imports:
-import '../../../core/tags/categories/tag_category.dart';
-import '../../../core/tags/tag/tag.dart';
+import '../../../core/tags/categories/types.dart';
+import '../../../core/tags/tag/types.dart';
 import '../tag_summary/types.dart';
 
 Tag tagSummaryToTag(TagSummary tagSummary) => Tag.noCount(

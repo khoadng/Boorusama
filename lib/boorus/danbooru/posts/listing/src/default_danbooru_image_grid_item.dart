@@ -9,20 +9,20 @@ import 'package:selection_mode/selection_mode.dart';
 
 // Project imports:
 import '../../../../../core/config_widgets/website_logo.dart';
-import '../../../../../core/configs/ref.dart';
+import '../../../../../core/configs/config/providers.dart';
 import '../../../../../core/images/booru_image.dart';
 import '../../../../../core/posts/details/routes.dart';
 import '../../../../../core/posts/listing/providers.dart';
 import '../../../../../core/posts/listing/types.dart';
 import '../../../../../core/posts/listing/widgets.dart';
 import '../../../../../core/posts/post/widgets.dart';
-import '../../../../../core/posts/sources/source.dart';
+import '../../../../../core/posts/sources/types.dart';
 import '../../../../../core/settings/providers.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../../../../foundation/clipboard.dart';
 import '../../../../../foundation/url_launcher.dart';
 import '../../../configs/providers.dart';
-import '../../post/post.dart';
+import '../../post/types.dart';
 import 'danbooru_post_context_menu.dart';
 
 const _kBannedTextThreshold = 200.0;

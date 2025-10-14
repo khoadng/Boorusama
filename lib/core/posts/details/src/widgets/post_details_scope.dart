@@ -9,7 +9,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import '../../../../../foundation/display.dart';
 import '../../../../settings/providers.dart';
 import '../../../details_pageview/widgets.dart';
-import '../../../post/post.dart';
+import '../../../post/types.dart';
 import '../types/inherited_post.dart';
 import '../types/post_details.dart';
 import 'post_details_controller.dart';

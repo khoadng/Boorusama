@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../boorus/engine/providers.dart';
-import '../../../../configs/config.dart';
+import '../../../../configs/config/types.dart';
 import '../../../../settings/providers.dart';
 import '../types/grid_size.dart';
 import '../types/grid_thumbnail_url_generator.dart';

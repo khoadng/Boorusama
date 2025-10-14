@@ -10,7 +10,7 @@ import 'package:sliver_tools/sliver_tools.dart';
 // Project imports:
 import '../../_shared/providers/providers.dart';
 import '../../_shared/widgets/pool_page_sliver_grid.dart';
-import '../../pool/pool.dart';
+import '../../pool/types.dart';
 import '../../search/routes.dart';
 import 'pool_options_header.dart';
 

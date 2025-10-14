@@ -7,8 +7,8 @@ import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../boorus/booru/booru.dart';
-import '../../../configs/ref.dart';
+import '../../../boorus/booru/types.dart';
+import '../../../configs/config/providers.dart';
 import '../../../themes/theme/types.dart';
 import '../../../widgets/widgets.dart';
 import '../providers/bulk_download_notifier.dart';

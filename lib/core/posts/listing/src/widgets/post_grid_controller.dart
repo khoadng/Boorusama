@@ -8,8 +8,8 @@ import 'package:flutter/foundation.dart';
 // Project imports:
 import '../../../../../foundation/utils/collection_utils.dart';
 import '../../../../errors/types.dart';
-import '../../../filter/filter.dart';
-import '../../../post/post.dart';
+import '../../../filter/types.dart';
+import '../../../post/types.dart';
 import '../types/page_mode.dart';
 import 'post_duplicate_checker.dart';
 

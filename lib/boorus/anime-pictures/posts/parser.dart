@@ -2,9 +2,9 @@
 import 'package:booru_clients/anime_pictures.dart';
 
 // Project imports:
-import '../../../core/posts/post/post.dart';
-import '../../../core/posts/rating/rating.dart';
-import '../../../core/posts/sources/source.dart';
+import '../../../core/posts/post/types.dart';
+import '../../../core/posts/rating/types.dart';
+import '../../../core/posts/sources/types.dart';
 import 'types.dart';
 
 AnimePicturesPost dtoToAnimePicturesPost(

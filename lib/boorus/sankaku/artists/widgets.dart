@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../core/artists/widgets.dart';
 import '../../../core/configs/config/providers.dart';
-import '../../../core/tags/tag/tag.dart';
+import '../../../core/tags/tag/types.dart';
 import '../posts/providers.dart';
 
 class SankakuArtistPage extends ConsumerWidget {

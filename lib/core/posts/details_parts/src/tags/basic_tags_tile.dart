@@ -6,12 +6,12 @@ import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../configs/config.dart';
-import '../../../../configs/ref.dart';
+import '../../../../configs/config/providers.dart';
+import '../../../../configs/config/types.dart';
 import '../../../../search/search/routes.dart';
 import '../../../../tags/tag/providers.dart';
-import '../../../details/details.dart';
-import '../../../post/post.dart';
+import '../../../details/types.dart';
+import '../../../post/types.dart';
 import 'raw_tags_tile.dart';
 import 'tag_chip.dart';
 

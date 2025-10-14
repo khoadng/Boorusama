@@ -3,13 +3,13 @@ import 'package:equatable/equatable.dart';
 
 // Project imports:
 import '../../../../../foundation/utils/int_utils.dart';
-import '../../../../boorus/booru/booru.dart';
-import '../../../../posts/rating/rating.dart';
-import '../../../../proxy/proxy.dart';
-import '../../../../settings/settings.dart';
+import '../../../../boorus/booru/types.dart';
+import '../../../../posts/rating/types.dart';
+import '../../../../proxy/types.dart';
+import '../../../../settings/types.dart';
 import '../../../../themes/configs/types.dart';
-import '../../../gesture/gesture.dart';
-import '../../../search/search.dart';
+import '../../../gesture/types.dart';
+import '../../../search/types.dart';
 import 'booru_config.dart';
 import 'rating_parser.dart';
 

@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../core/configs/config/types.dart';
 import '../../../core/downloads/filename/types.dart';
-import '../../../core/posts/post/post.dart';
+import '../../../core/posts/post/types.dart';
 import '../tags/providers.dart';
 
 final animePicturesDownloadFilenameGeneratorProvider =

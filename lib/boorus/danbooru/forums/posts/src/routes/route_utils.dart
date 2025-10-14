@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../../../core/router.dart';
-import '../../../topics/topic.dart';
+import '../../../topics/types.dart';
 
 void goToForumPostsPage(
   WidgetRef ref, {

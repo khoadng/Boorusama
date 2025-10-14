@@ -2,7 +2,7 @@
 import 'package:booru_clients/danbooru.dart';
 
 // Project imports:
-import '../../../urls/url.dart';
+import '../../../urls/types.dart';
 import '../types/artist.dart';
 
 DanbooruArtist artistDtoToArtist(ArtistDto dto) {

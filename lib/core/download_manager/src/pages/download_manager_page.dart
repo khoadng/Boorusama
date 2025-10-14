@@ -13,8 +13,8 @@ import 'package:share_plus/share_plus.dart';
 
 // Project imports:
 import '../../../../foundation/toast.dart';
-import '../../../configs/config.dart';
-import '../../../configs/ref.dart';
+import '../../../configs/config/providers.dart';
+import '../../../configs/config/types.dart';
 import '../../../downloads/downloader/providers.dart';
 import '../../../http/providers.dart';
 import '../../../settings/routes.dart';

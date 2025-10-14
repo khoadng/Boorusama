@@ -4,11 +4,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../core/configs/config/types.dart';
-import '../../../core/search/queries/query.dart';
+import '../../../core/search/queries/types.dart';
 import '../../../core/tags/autocompletes/types.dart';
-import '../../../core/tags/categories/tag_category.dart';
+import '../../../core/tags/categories/types.dart';
 import '../../../core/tags/local/providers.dart';
-import '../../../core/tags/tag/tag.dart';
+import '../../../core/tags/tag/types.dart';
 import '../../../core/themes/colors/types.dart';
 import '../client_provider.dart';
 import '../posts/types.dart';

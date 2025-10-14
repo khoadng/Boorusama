@@ -4,7 +4,7 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../../../../foundation/utils/collection_utils.dart';
-import '../../../categories/tag_category.dart';
+import '../../../categories/types.dart';
 import 'tag.dart';
 import 'tag_display.dart';
 

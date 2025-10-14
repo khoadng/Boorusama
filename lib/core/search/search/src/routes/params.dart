@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 
 // Project imports:
 import '../../../../router.dart';
-import '../../../selected_tags/tag.dart';
+import '../../../selected_tags/types.dart';
 import 'tag_category_param.dart';
 
 class SearchParams extends Equatable {

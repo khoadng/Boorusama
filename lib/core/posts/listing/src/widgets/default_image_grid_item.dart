@@ -13,16 +13,16 @@ import '../../../../images/booru_image.dart';
 import '../../../../settings/providers.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../details/routes.dart';
-import '../../../post/post.dart';
+import '../../../post/types.dart';
 import '../../../post/widgets.dart';
 import '../providers/providers.dart';
 import '../types/image_list_type.dart';
-import '../widgets/default_image_quick_action_button.dart';
-import '../widgets/default_post_list_context_menu_region.dart';
-import '../widgets/default_selectable_item.dart';
-import '../widgets/general_post_context_menu.dart';
-import '../widgets/post_grid_controller.dart';
-import '../widgets/sliver_post_grid_image_grid_item.dart';
+import 'default_image_quick_action_button.dart';
+import 'default_post_list_context_menu_region.dart';
+import 'default_selectable_item.dart';
+import 'general_post_context_menu.dart';
+import 'post_grid_controller.dart';
+import 'sliver_post_grid_image_grid_item.dart';
 
 class DefaultImageGridItem<T extends Post> extends StatelessWidget {
   const DefaultImageGridItem({

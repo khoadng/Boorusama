@@ -8,8 +8,8 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../../../foundation/info/package_info.dart';
-import '../../bookmarks/bookmark.dart';
 import '../../bookmarks/providers.dart';
+import '../../bookmarks/types.dart';
 import '../utils/json_handler.dart';
 import '../widgets/backup_restore_tile.dart';
 import 'json_source.dart';

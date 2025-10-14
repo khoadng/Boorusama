@@ -3,8 +3,8 @@ import 'package:booru_clients/gelbooru.dart';
 
 // Project imports:
 import '../../../core/tags/autocompletes/types.dart';
-import '../../../core/tags/categories/tag_category.dart';
-import '../../../core/tags/tag/tag.dart';
+import '../../../core/tags/categories/types.dart';
+import '../../../core/tags/tag/types.dart';
 
 Tag mapGelbooruV2TagDtoToTag(TagDto e) {
   return Tag(

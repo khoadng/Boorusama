@@ -7,11 +7,11 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../../../core/configs/config.dart';
-import '../../../../../../core/posts/rating/rating.dart';
+import '../../../../../../core/configs/config/types.dart';
+import '../../../../../../core/posts/rating/types.dart';
 import '../../../../client_provider.dart';
-import '../../../post/post.dart';
 import '../../../post/providers.dart';
+import '../../../post/types.dart';
 import '../types/danbooru_upload_post.dart';
 
 final danbooruUploadNotifierProvider =

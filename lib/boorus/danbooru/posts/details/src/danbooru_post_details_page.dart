@@ -6,13 +6,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../../core/boorus/engine/providers.dart';
-import '../../../../../core/configs/ref.dart';
+import '../../../../../core/configs/config/providers.dart';
 import '../../../../../core/notes/note/widgets.dart';
-import '../../../../../core/posts/details/details.dart';
+import '../../../../../core/posts/details/types.dart';
 import '../../../../../core/posts/details/widgets.dart';
 import '../../_shared/danbooru_creator_preloader.dart';
 import '../../_shared/post_creator_preloadable.dart';
-import '../../post/post.dart';
+import '../../post/types.dart';
 import 'providers.dart';
 
 class DanbooruPostDetailsPage extends StatefulWidget {

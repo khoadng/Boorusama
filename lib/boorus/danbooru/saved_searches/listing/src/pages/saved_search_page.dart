@@ -8,13 +8,13 @@ import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../../../../core/configs/ref.dart';
+import '../../../../../../core/configs/config/providers.dart';
 import '../../../../../../core/search/search/routes.dart';
 import '../../../../../../core/themes/theme/types.dart';
 import '../../../../../../core/widgets/generic_no_data_box.dart';
 import '../../../saved_search/providers.dart';
 import '../../../saved_search/routes.dart';
-import '../../../saved_search/saved_search.dart';
+import '../../../saved_search/types.dart';
 import 'saved_search_quick_edit_sheet.dart';
 
 class SavedSearchPage extends ConsumerWidget {

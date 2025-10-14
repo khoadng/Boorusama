@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../../foundation/boot/providers.dart';
 import '../../../../foundation/iap/iap.dart';
-import '../../premiums.dart';
+import '../../types.dart';
 
 const _premiumMode = String.fromEnvironment('PREMIUM_MODE');
 final kPremiumMode = parsePremiumMode(_premiumMode);

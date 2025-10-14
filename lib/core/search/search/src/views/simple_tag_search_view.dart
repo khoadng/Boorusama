@@ -9,8 +9,8 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import '../../../../../../../core/widgets/widgets.dart';
 import '../../../../../foundation/display.dart';
-import '../../../../configs/config.dart';
-import '../../../../configs/ref.dart';
+import '../../../../configs/config/providers.dart';
+import '../../../../configs/config/types.dart';
 import '../../../../tags/autocompletes/types.dart';
 import '../../../queries/query_utils.dart';
 import '../../../suggestions/suggestions_notifier.dart';

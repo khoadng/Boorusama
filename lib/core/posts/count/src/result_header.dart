@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../configs/ref.dart';
+import '../../../configs/config/providers.dart';
 import '../../listing/providers.dart';
-import '../../post/post.dart';
+import '../../post/types.dart';
 import 'post_count_provider.dart';
 import 'result_counter.dart';
 

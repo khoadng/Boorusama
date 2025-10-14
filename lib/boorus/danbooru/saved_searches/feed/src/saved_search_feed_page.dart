@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../../core/configs/auth/widgets.dart';
-import '../../../../../core/configs/ref.dart';
+import '../../../../../core/configs/config/providers.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../saved_search/providers.dart';
 import 'views/saved_search_feed_content_view.dart';

@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 
 // Project imports:
 import '../../../core/comments/types.dart';
-import '../../../core/configs/config.dart';
+import '../../../core/configs/config/types.dart';
 import '../client_provider.dart';
 
 final gelbooruCommentRepoProvider =

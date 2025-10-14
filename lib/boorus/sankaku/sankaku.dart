@@ -1,6 +1,6 @@
 // Project imports:
-import '../../core/boorus/booru/booru.dart';
-import '../../core/boorus/engine/engine.dart';
+import '../../core/boorus/booru/types.dart';
+import '../../core/boorus/engine/types.dart';
 import 'sankaku_builder.dart';
 import 'sankaku_repository.dart';
 

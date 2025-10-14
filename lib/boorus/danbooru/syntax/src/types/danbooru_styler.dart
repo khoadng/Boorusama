@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import '../../../../../core/search/syntax/syntax.dart';
+import '../../../../../core/search/syntax/types.dart';
 import 'danbooru_tokens.dart';
 
 class DanbooruStyler extends TokenStyler<DanbooruTokenData> {

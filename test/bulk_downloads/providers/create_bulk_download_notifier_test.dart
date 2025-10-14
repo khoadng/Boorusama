@@ -8,8 +8,8 @@ import 'package:flutter_test/flutter_test.dart';
 // Project imports:
 import 'package:boorusama/core/bulk_downloads/src/providers/create_download_options_notifier.dart';
 import 'package:boorusama/core/bulk_downloads/src/types/download_options.dart';
-import 'package:boorusama/core/search/histories/history.dart';
-import 'package:boorusama/core/search/selected_tags/tag.dart';
+import 'package:boorusama/core/search/histories/types.dart';
+import 'package:boorusama/core/search/selected_tags/types.dart';
 
 void main() {
   late ProviderContainer container;

@@ -7,13 +7,13 @@ import 'package:foundation/widgets.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
-import '../../../configs/ref.dart';
+import '../../../configs/config/providers.dart';
 import '../../../router.dart';
 import '../../../tags/tag/providers.dart';
 import '../../../widgets/widgets.dart';
-import '../../details/details.dart';
+import '../../details/types.dart';
 import '../../details/widgets.dart';
-import '../../post/post.dart';
+import '../../post/types.dart';
 
 class DefaultInheritedCharacterPostsSection<T extends Post>
     extends ConsumerWidget {

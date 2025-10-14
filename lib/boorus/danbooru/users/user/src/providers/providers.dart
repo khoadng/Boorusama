@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../../../core/cache/providers.dart';
-import '../../../../../../core/configs/config.dart';
+import '../../../../../../core/configs/config/types.dart';
 import '../../../../../../foundation/riverpod/riverpod.dart';
 import '../../../../client_provider.dart';
 import '../../../../configs/providers.dart';

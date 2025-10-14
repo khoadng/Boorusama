@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/configs/config/types.dart';
 import '../../../core/tags/autocompletes/types.dart';
 import '../../../core/tags/local/providers.dart';
-import '../../../core/tags/tag/tag.dart';
+import '../../../core/tags/tag/types.dart';
 import '../client_provider.dart';
 import '../posts/types.dart';
 import 'parser.dart';

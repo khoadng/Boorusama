@@ -1,6 +1,6 @@
 // Project imports:
 import '../../../../core/router.dart';
-import '../../posts/post/post.dart';
+import '../../posts/post/types.dart';
 import 'danbooru_post_versions_page.dart';
 
 final danbooruPostVersionRoutes = GoRoute(

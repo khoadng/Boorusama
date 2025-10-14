@@ -1,5 +1,5 @@
 // Project imports:
-import '../../../posts/post/post.dart';
+import '../../../posts/post/types.dart';
 import 'async_token_resolver.dart';
 import 'generator.dart';
 import 'token_options.dart';

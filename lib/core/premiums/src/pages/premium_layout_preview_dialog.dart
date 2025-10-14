@@ -9,7 +9,7 @@ import 'package:i18n/i18n.dart';
 // Project imports:
 import '../../../themes/theme/types.dart';
 import '../../../widgets/widgets.dart';
-import '../../premiums.dart';
+import '../../types.dart';
 import '../providers/preview_providers.dart';
 import '../routes/route_utils.dart';
 

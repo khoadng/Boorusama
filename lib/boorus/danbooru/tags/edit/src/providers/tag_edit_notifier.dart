@@ -6,7 +6,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../../../core/posts/rating/rating.dart';
+import '../../../../../../core/posts/rating/types.dart';
 import '../tag_edit_state.dart';
 
 final tagEditProvider = NotifierProvider.autoDispose

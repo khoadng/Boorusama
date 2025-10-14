@@ -2,9 +2,9 @@
 import 'package:dio/dio.dart';
 
 // Project imports:
-import '../../../posts/post/post.dart';
-import '../../../tags/categories/tag_category.dart';
-import '../../../tags/tag/tag.dart';
+import '../../../posts/post/types.dart';
+import '../../../tags/categories/types.dart';
+import '../../../tags/tag/types.dart';
 import 'token_options.dart';
 
 abstract class AsyncTokenResolver<T extends Post> {

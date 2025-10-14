@@ -7,12 +7,12 @@ import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../../../core/configs/config/providers.dart';
-import '../../../../../../core/posts/details/details.dart';
+import '../../../../../../core/posts/details/types.dart';
 import '../../../../../../core/posts/details_parts/widgets.dart';
 import '../../../../../../core/posts/favorites/providers.dart';
 import '../../../../../../core/posts/favorites/widgets.dart';
 import '../../../../../../core/posts/shares/widgets.dart';
-import '../../../../../../core/posts/votes/vote.dart';
+import '../../../../../../core/posts/votes/types.dart';
 import '../../../../../../core/posts/votes/widgets.dart';
 import '../../../../../../core/router.dart';
 import '../../../../../../core/widgets/adaptive_button_row.dart';
@@ -20,7 +20,7 @@ import '../../../../../../core/widgets/booru_menu_button_row.dart';
 import '../../../../configs/providers.dart';
 import '../../../../versions/routes.dart';
 import '../../../favgroups/favgroups/routes.dart';
-import '../../../post/post.dart';
+import '../../../post/types.dart';
 import '../../../votes/providers.dart';
 
 class DanbooruInheritedPostActionToolbar extends ConsumerWidget {

@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import '../../../core/search/syntax/syntax.dart';
+import '../../../core/search/syntax/types.dart';
 import 'tokens.dart';
 
 class GelbooruStyler extends TokenStyler<GelbooruTokenData> {

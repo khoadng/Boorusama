@@ -7,7 +7,7 @@ import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../core/configs/config/providers.dart';
-import '../../../core/posts/details/details.dart';
+import '../../../core/posts/details/types.dart';
 import '../../../core/posts/details_parts/types.dart';
 import '../../../core/posts/details_parts/widgets.dart';
 import '../../../core/widgets/adaptive_button_row.dart';

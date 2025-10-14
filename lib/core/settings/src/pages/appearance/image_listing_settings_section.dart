@@ -9,7 +9,7 @@ import 'package:i18n/i18n.dart';
 import '../../../../home/types.dart';
 import '../../../../images/types.dart';
 import '../../../../posts/listing/types.dart';
-import '../../../../posts/post/post.dart';
+import '../../../../posts/post/types.dart';
 import '../../../../themes/theme/types.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../widgets.dart';

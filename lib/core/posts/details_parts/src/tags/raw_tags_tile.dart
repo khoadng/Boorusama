@@ -10,7 +10,7 @@ import '../../../../../foundation/display/media_query_utils.dart';
 import '../../../../configs/config/types.dart';
 import '../../../../tags/show/routes.dart';
 import '../../../../widgets/booru_popup_menu_button.dart';
-import '../../../post/post.dart';
+import '../../../post/types.dart';
 import '../_internal/details_widget_frame.dart';
 
 class RawTagsTile extends StatelessWidget {

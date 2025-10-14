@@ -16,7 +16,7 @@ import '../../../../videos/cache/providers.dart';
 import '../../../../videos/player/providers.dart';
 import '../../../../videos/player/widgets.dart';
 import '../../../details_pageview/widgets.dart';
-import '../../../post/post.dart';
+import '../../../post/types.dart';
 import '../providers/video_url_provider.dart';
 import '../types/post_details.dart';
 import '../types/utils.dart';

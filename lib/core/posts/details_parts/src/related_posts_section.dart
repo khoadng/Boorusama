@@ -13,8 +13,8 @@ import '../../../config_widgets/website_logo.dart';
 import '../../../configs/config/providers.dart';
 import '../../../images/booru_image.dart';
 import '../../../themes/theme/types.dart';
-import '../../post/post.dart';
-import '../../sources/source.dart';
+import '../../post/types.dart';
+import '../../sources/types.dart';
 import '_internal/preview_post_grid.dart';
 
 class SliverRelatedPostsSection<T extends Post> extends ConsumerWidget {

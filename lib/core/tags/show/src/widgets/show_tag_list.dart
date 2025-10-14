@@ -11,7 +11,7 @@ import '../../../../../foundation/platform.dart';
 import '../../../../configs/config/types.dart';
 import '../../../../search/search/routes.dart';
 import '../../../tag/providers.dart';
-import '../../../tag/tag.dart';
+import '../../../tag/types.dart';
 import '../../../tag/widgets.dart';
 import '../providers.dart';
 import 'filterable_scope.dart';

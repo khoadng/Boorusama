@@ -9,7 +9,7 @@ import 'package:i18n/i18n.dart';
 import '../../../core/configs/auth/widgets.dart';
 import '../../../core/configs/create/providers.dart';
 import '../../../core/configs/create/widgets.dart';
-import '../../../core/configs/gesture/gesture.dart';
+import '../../../core/configs/gesture/types.dart';
 import '../../../core/configs/gesture/widgets.dart';
 import '../../../core/configs/search/widgets.dart';
 import '../../../core/configs/viewer/widgets.dart';

@@ -1,5 +1,5 @@
 // Project imports:
-import '../../../post/post.dart';
+import '../../../post/types.dart';
 import '../types/types.dart';
 
 class EmptyFavoriteRepository extends FavoriteRepository<Post> {

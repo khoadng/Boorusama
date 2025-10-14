@@ -3,8 +3,8 @@ import 'package:booru_clients/anime_pictures.dart';
 
 // Project imports:
 import '../../../core/tags/autocompletes/types.dart';
-import '../../../core/tags/categories/tag_category.dart';
-import '../../../core/tags/tag/tag.dart';
+import '../../../core/tags/categories/types.dart';
+import '../../../core/tags/tag/types.dart';
 
 AutocompleteData autocompleteDtoToAutocompleteData(AutocompleteDto e) =>
     AutocompleteData(

@@ -8,10 +8,10 @@ import 'package:like_button/like_button.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../../configs/ref.dart';
+import '../../../../configs/config/providers.dart';
 import '../../../../settings/providers.dart';
 import '../../../../themes/theme/types.dart';
-import '../../../post/post.dart';
+import '../../../post/types.dart';
 import '../providers/favorites_notifier.dart';
 
 class QuickFavoriteButton extends ConsumerWidget {

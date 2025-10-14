@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../core/configs/config/providers.dart';
-import '../../../core/posts/votes/vote.dart';
+import '../../../core/posts/votes/types.dart';
 import '../../../core/posts/votes/widgets.dart';
 import '../posts/types.dart';
 import 'providers.dart';

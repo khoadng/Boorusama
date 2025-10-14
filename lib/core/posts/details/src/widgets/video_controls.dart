@@ -11,7 +11,7 @@ import '../../../../themes/theme/types.dart';
 import '../../../../videos/player/providers.dart';
 import '../../../../videos/player/widgets.dart';
 import '../../../../widgets/widgets.dart';
-import '../../../post/post.dart';
+import '../../../post/types.dart';
 import 'post_details_controller.dart';
 
 class PostDetailsVideoControls<T extends Post> extends ConsumerWidget {

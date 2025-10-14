@@ -10,15 +10,15 @@ import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../foundation/toast.dart';
-import '../../../boorus/booru/booru.dart';
+import '../../../boorus/booru/types.dart';
 import '../../../boorus/engine/providers.dart';
-import '../../../configs/config.dart';
+import '../../../configs/config/types.dart';
 import '../../../downloads/downloader/providers.dart';
 import '../../../downloads/downloader/types.dart';
 import '../../../downloads/filename/types.dart';
 import '../../../http/providers.dart';
-import '../../../posts/post/post.dart';
 import '../../../posts/post/providers.dart';
+import '../../../posts/post/types.dart';
 import '../../../router.dart';
 import '../../../settings/providers.dart';
 import '../data/bookmark_convert.dart';

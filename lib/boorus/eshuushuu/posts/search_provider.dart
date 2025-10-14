@@ -5,8 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../core/configs/config/types.dart';
-import '../../../core/posts/post/post.dart';
-import '../../../core/search/selected_tags/tag.dart';
+import '../../../core/posts/post/types.dart';
+import '../../../core/search/selected_tags/types.dart';
 import '../client_provider.dart';
 import 'parser.dart';
 import 'types.dart';

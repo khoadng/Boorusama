@@ -11,7 +11,7 @@ import 'package:socks5_proxy/socks.dart' as socks;
 // Project imports:
 import '../../../../foundation/loggers.dart';
 import '../../../../foundation/platform.dart';
-import '../../../proxy/proxy.dart';
+import '../../../proxy/types.dart';
 import '../../../router.dart';
 import '../http_utils.dart';
 import 'dio_ext.dart';

@@ -13,20 +13,20 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../../../../../../core/bulk_downloads/routes.dart';
-import '../../../../../../core/configs/config.dart';
-import '../../../../../../core/configs/ref.dart';
+import '../../../../../../core/configs/config/providers.dart';
+import '../../../../../../core/configs/config/types.dart';
 import '../../../../../../core/images/booru_image.dart';
 import '../../../../../../core/posts/listing/providers.dart';
 import '../../../../../../core/posts/listing/widgets.dart';
-import '../../../../../../core/posts/post/post.dart';
 import '../../../../../../core/posts/post/routes.dart';
+import '../../../../../../core/posts/post/types.dart';
 import '../../../../../../core/search/search/routes.dart';
 import '../../../../../../core/widgets/widgets.dart';
 import '../../../listing/widgets.dart';
-import '../../../post/post.dart';
 import '../../../post/providers.dart';
-import '../../favgroups/favgroup.dart';
+import '../../../post/types.dart';
 import '../../favgroups/providers.dart';
+import '../../favgroups/types.dart';
 import 'danbooru_favorite_group_post_mixin.dart';
 
 class FavoriteGroupDetailsPage extends ConsumerStatefulWidget {

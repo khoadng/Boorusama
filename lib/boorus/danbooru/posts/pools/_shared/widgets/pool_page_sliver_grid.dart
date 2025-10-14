@@ -9,13 +9,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 // Project imports:
-import '../../../../../../core/configs/ref.dart';
+import '../../../../../../core/configs/config/providers.dart';
 import '../../../../../../core/posts/listing/types.dart';
 import '../../../../../../core/posts/pools/widgets.dart';
 import '../../../../../../core/settings/providers.dart';
 import '../../details/providers.dart';
-import '../../pool/pool.dart';
 import '../../pool/providers.dart';
+import '../../pool/types.dart';
 import '../providers/pool_covers_notifier.dart';
 import 'pool_image.dart';
 

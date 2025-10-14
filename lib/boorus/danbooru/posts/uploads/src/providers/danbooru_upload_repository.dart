@@ -2,7 +2,7 @@
 import 'package:booru_clients/danbooru.dart';
 
 // Project imports:
-import '../../../../users/user/user.dart';
+import '../../../../users/user/types.dart';
 import '../types/danbooru_upload.dart';
 
 class DanbooruUploadRepository {

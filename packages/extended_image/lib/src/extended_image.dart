@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:cache_manager/cache_manager.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
-import 'package:extended_image/src/image/raw_image.dart';
 import 'package:extended_image_library/extended_image_library.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -20,6 +19,7 @@ import 'package:flutter_avif_platform_interface/flutter_avif_platform_interface.
 
 import 'cached_network_avif_image.dart';
 import 'dio_extended_image_provider.dart';
+import 'image/raw_image.dart';
 import 'utils.dart';
 
 const kDefaultImageCacheDuration = Duration(hours: 1);

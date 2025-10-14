@@ -1,5 +1,5 @@
 // Project imports:
-import '../../../categories/tag_category.dart';
+import '../../../categories/types.dart';
 import 'tag.dart';
 
 class TagSorter {

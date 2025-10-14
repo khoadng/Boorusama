@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 // Project imports:
 import '../../../../../../core/config_widgets/website_logo.dart';
-import '../../../../../../core/posts/sources/source.dart';
+import '../../../../../../core/posts/sources/types.dart';
 import '../../../../../../foundation/url_launcher.dart';
 
 class DanbooruArtistUrlChips extends StatelessWidget {

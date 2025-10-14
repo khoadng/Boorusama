@@ -3,7 +3,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../search/selected_tags/tag.dart';
+import '../../../../search/selected_tags/types.dart';
 import '../types/favorite_tag.dart';
 import 'providers.dart';
 

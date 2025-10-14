@@ -8,18 +8,18 @@ import 'package:i18n/i18n.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
-import '../../../../../../core/configs/ref.dart';
+import '../../../../../../core/configs/config/providers.dart';
 import '../../../../../../core/posts/details_parts/widgets.dart';
 import '../../../../../../core/search/search/routes.dart';
-import '../../../../../../core/tags/categories/tag_category.dart';
+import '../../../../../../core/tags/categories/types.dart';
 import '../../../../../../core/tags/tag/providers.dart';
 import '../../../../../../core/themes/theme/types.dart';
 import '../../../../../../core/widgets/widgets.dart';
 import '../../../../../../foundation/platform.dart';
 import '../../../../../../foundation/utils/flutter_utils.dart';
-import '../../../../posts/post/post.dart';
-import '../../../../tags/related/related.dart';
-import '../../../user/user.dart';
+import '../../../../posts/post/types.dart';
+import '../../../../tags/related/types.dart';
+import '../../../user/types.dart';
 import '../providers/local_providers.dart';
 import '../types/report_data_params.dart';
 import '../widgets/upload_date_range_selector_button.dart';

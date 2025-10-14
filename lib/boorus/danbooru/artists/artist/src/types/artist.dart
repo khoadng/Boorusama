@@ -2,7 +2,7 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import '../../../urls/url.dart';
+import '../../../urls/types.dart';
 
 class DanbooruArtist extends Equatable {
   const DanbooruArtist({

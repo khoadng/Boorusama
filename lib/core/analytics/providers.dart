@@ -5,7 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../configs/config.dart';
+import '../configs/config/types.dart';
 import '../tracking/providers.dart';
 import 'analytics_interface.dart';
 import 'analytics_network_info.dart';

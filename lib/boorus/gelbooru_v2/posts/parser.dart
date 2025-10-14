@@ -3,10 +3,10 @@ import 'package:booru_clients/gelbooru.dart';
 import 'package:path/path.dart' as path;
 
 // Project imports:
-import '../../../core/posts/post/post.dart';
 import '../../../core/posts/post/tags.dart';
-import '../../../core/posts/rating/rating.dart';
-import '../../../core/posts/sources/source.dart';
+import '../../../core/posts/post/types.dart';
+import '../../../core/posts/rating/types.dart';
+import '../../../core/posts/sources/types.dart';
 import 'types.dart';
 
 GelbooruV2Post gelbooruV2PostDtoToGelbooruPostNoMetadata(

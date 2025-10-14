@@ -8,14 +8,14 @@ import 'package:foundation/widgets.dart';
 // Project imports:
 import '../../../../foundation/display.dart';
 import '../../../blacklists/providers.dart';
-import '../../../configs/ref.dart';
+import '../../../configs/config/providers.dart';
 import '../../../images/booru_image.dart';
 import '../../../images/utils.dart';
 import '../../../videos/player/widgets.dart';
 import '../../../widgets/widgets.dart';
 import '../../details/providers.dart';
 import '../../details/routes.dart';
-import '../../post/post.dart';
+import '../../post/types.dart';
 import '../../post/widgets.dart';
 
 class ExplorePage extends ConsumerWidget {

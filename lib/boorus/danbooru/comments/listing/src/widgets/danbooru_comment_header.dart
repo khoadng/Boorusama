@@ -9,7 +9,7 @@ import '../../../../../../core/comments/widgets.dart';
 import '../../../../users/details/routes.dart';
 import '../../../../users/details/types.dart';
 import '../../../../users/user/providers.dart';
-import '../../../comment/comment.dart';
+import '../../../comment/types.dart';
 
 class DanbooruCommentHeader extends ConsumerWidget {
   const DanbooruCommentHeader({

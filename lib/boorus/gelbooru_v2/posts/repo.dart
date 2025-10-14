@@ -2,8 +2,8 @@
 import 'package:booru_clients/gelbooru.dart';
 
 // Project imports:
-import '../../../core/posts/post/post.dart';
 import '../../../core/posts/post/providers.dart';
+import '../../../core/posts/post/types.dart';
 import 'parser.dart';
 import 'types.dart';
 

@@ -3,8 +3,8 @@ import 'package:foundation/foundation.dart';
 import 'package:hive_ce/hive.dart';
 
 // Project imports:
-import '../../../../posts/post/post.dart';
-import '../../../../posts/sources/source.dart';
+import '../../../../posts/post/types.dart';
+import '../../../../posts/sources/types.dart';
 import '../../types/bookmark.dart';
 import '../../types/bookmark_repository.dart';
 import '../bookmark_convert.dart';

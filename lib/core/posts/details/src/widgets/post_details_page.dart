@@ -6,9 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../boorus/engine/providers.dart';
-import '../../../../configs/ref.dart';
+import '../../../../configs/config/providers.dart';
 import '../../../../router.dart';
-import '../../../post/post.dart';
+import '../../../post/types.dart';
 import '../../routes.dart';
 
 class CurrentPostDetailsPage<T extends Post> extends ConsumerWidget {

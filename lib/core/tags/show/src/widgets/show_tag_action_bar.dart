@@ -11,11 +11,11 @@ import 'package:selection_mode/selection_mode.dart';
 import '../../../../../foundation/clipboard.dart';
 import '../../../../configs/config/types.dart';
 import '../../../../search/search/routes.dart';
-import '../../../../search/selected_tags/tag.dart';
+import '../../../../search/selected_tags/types.dart';
 import '../../../../widgets/animated_footer.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../tag/providers.dart';
-import '../../../tag/tag.dart';
+import '../../../tag/types.dart';
 
 class ShowTagActionBar extends ConsumerWidget {
   const ShowTagActionBar({

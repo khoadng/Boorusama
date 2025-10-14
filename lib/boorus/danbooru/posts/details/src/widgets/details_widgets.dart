@@ -7,13 +7,13 @@ import 'package:foundation/widgets.dart';
 
 // Project imports:
 import '../../../../../../core/artists/types.dart';
-import '../../../../../../core/configs/ref.dart';
-import '../../../../../../core/posts/details/details.dart';
+import '../../../../../../core/configs/config/providers.dart';
+import '../../../../../../core/posts/details/types.dart';
 import '../../../../../../core/posts/details_parts/widgets.dart';
 import '../../../../artists/commentaries/providers.dart';
 import '../../../../comments/comment/providers.dart';
 import '../../../pools/pool/widgets.dart';
-import '../../../post/post.dart';
+import '../../../post/types.dart';
 import '../providers.dart';
 import 'danbooru_file_details.dart';
 import 'danbooru_post_stats_tile.dart';

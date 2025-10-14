@@ -6,7 +6,7 @@ import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../../../../core/widgets/widgets.dart';
-import '../../../../post/post.dart';
+import '../../../../post/types.dart';
 import '../pages/add_to_favorite_group_page.dart';
 import '../pages/create_favorite_group_sheet.dart';
 import '../types/danbooru_favorite_group.dart';

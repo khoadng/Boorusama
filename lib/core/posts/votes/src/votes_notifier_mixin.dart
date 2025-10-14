@@ -2,7 +2,7 @@
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../post/post.dart';
+import '../../post/types.dart';
 import 'post_vote.dart';
 
 mixin VotesNotifierMixin<T extends PostVote, P extends Post> {

@@ -2,7 +2,7 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import '../../../../users/user/user.dart';
+import '../../../../users/user/types.dart';
 
 class CommentData extends Equatable {
   const CommentData({

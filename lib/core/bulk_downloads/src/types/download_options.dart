@@ -5,7 +5,7 @@ import 'package:foundation/foundation.dart';
 // Project imports:
 import '../../../../foundation/platform.dart';
 import '../../../downloads/path/validator.dart';
-import '../../../search/selected_tags/tag.dart';
+import '../../../search/selected_tags/types.dart';
 import 'download_task.dart';
 
 class DownloadOptions extends Equatable with DownloadPathValidatorMixin {

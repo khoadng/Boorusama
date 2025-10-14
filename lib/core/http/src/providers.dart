@@ -15,7 +15,7 @@ import '../../../foundation/loggers.dart';
 import '../../../foundation/vendors/google/providers.dart';
 import '../../boorus/booru/providers.dart';
 import '../../boorus/engine/providers.dart';
-import '../../configs/config.dart';
+import '../../configs/config/types.dart';
 import '../../ddos_solver/protection_detector.dart';
 import '../../ddos_solver/protection_handler.dart';
 import '../../ddos_solver/protection_orchestrator.dart';

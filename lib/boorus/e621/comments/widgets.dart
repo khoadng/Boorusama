@@ -7,8 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../core/comments/types.dart';
 import '../../../core/comments/widgets.dart';
-import '../../../core/configs/config.dart';
-import '../../../core/configs/ref.dart';
+import '../../../core/configs/config/providers.dart';
+import '../../../core/configs/config/types.dart';
 import '../../../core/dtext/dtext.dart';
 
 class E621CommentPage extends ConsumerWidget {

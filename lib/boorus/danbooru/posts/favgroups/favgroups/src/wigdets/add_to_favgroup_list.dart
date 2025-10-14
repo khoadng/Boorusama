@@ -10,12 +10,12 @@ import 'package:i18n/i18n.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
-import '../../../../../../../core/configs/config.dart';
-import '../../../../../../../core/configs/ref.dart';
+import '../../../../../../../core/configs/config/providers.dart';
+import '../../../../../../../core/configs/config/types.dart';
 import '../../../../../../../foundation/animations/constants.dart';
 import '../../../../../../../foundation/toast.dart';
-import '../../../../post/post.dart';
-import '../../favgroup.dart';
+import '../../../../post/types.dart';
+import '../../types.dart';
 import '../providers/favorite_groups_filterable_notifier.dart';
 import '../providers/favorite_groups_notifier.dart';
 

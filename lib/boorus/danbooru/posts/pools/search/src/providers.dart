@@ -2,9 +2,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../../../core/configs/ref.dart';
-import '../../pool/pool.dart';
+import '../../../../../../core/configs/config/providers.dart';
 import '../../pool/providers.dart';
+import '../../pool/types.dart';
 
 final danbooruPoolQueryProvider = StateProvider.autoDispose<String?>(
   (ref) => null,

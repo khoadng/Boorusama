@@ -1,5 +1,5 @@
 // Project imports:
-import '../../local/tag_info.dart';
+import '../../local/types.dart';
 
 abstract class TagTypeStore {
   Future<void> saveTag(TagInfo tagInfo);

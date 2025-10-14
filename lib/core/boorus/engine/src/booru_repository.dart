@@ -4,25 +4,25 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
-import '../../../blacklists/blacklist.dart';
+import '../../../blacklists/types.dart';
 import '../../../comments/types.dart';
-import '../../../configs/config.dart';
+import '../../../configs/config/types.dart';
 import '../../../configs/create/create.dart';
 import '../../../downloads/filename/types.dart';
 import '../../../downloads/urls/types.dart';
 import '../../../errors/types.dart';
 import '../../../notes/note/types.dart';
-import '../../../posts/count/count.dart';
-import '../../../posts/details/details.dart';
+import '../../../posts/count/types.dart';
+import '../../../posts/details/types.dart';
 import '../../../posts/favorites/types.dart';
 import '../../../posts/listing/types.dart';
-import '../../../posts/post/post.dart';
-import '../../../posts/rating/rating.dart';
-import '../../../search/queries/query.dart';
+import '../../../posts/post/types.dart';
+import '../../../posts/rating/types.dart';
+import '../../../search/queries/types.dart';
 import '../../../tags/autocompletes/types.dart';
 import '../../../tags/metatag/types.dart';
 import '../../../tags/tag/colors.dart';
-import '../../../tags/tag/tag.dart';
+import '../../../tags/tag/types.dart';
 import 'booru_builder_types.dart';
 
 abstract class BooruRepository {

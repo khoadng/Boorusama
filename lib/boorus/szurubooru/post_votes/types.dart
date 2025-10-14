@@ -3,7 +3,7 @@ import 'package:booru_clients/szurubooru.dart';
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import '../../../core/posts/votes/vote.dart';
+import '../../../core/posts/votes/types.dart';
 import '../posts/types.dart';
 
 class SzurubooruPostVote extends Equatable implements PostVote {

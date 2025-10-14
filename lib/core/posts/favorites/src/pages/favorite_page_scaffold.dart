@@ -13,7 +13,7 @@ import '../../../../search/search/routes.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../listing/providers.dart';
 import '../../../listing/widgets.dart';
-import '../../../post/post.dart';
+import '../../../post/types.dart';
 
 typedef IndexedSelectableFavoritesWidgetBuilder<T extends Post> =
     Widget Function(

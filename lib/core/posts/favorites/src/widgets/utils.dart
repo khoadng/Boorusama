@@ -2,7 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../configs/auth/auth.dart';
+import '../../../../configs/auth/types.dart';
 import '../../../../configs/config/providers.dart';
 import '../providers/favorites_notifier.dart';
 

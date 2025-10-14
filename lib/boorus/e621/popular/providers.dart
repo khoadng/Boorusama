@@ -4,10 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../core/configs/config.dart';
-import '../../../core/http/http.dart';
-import '../../../core/posts/explores/explore.dart';
-import '../../../core/posts/post/post.dart';
+import '../../../core/configs/config/types.dart';
+import '../../../core/http/types.dart';
+import '../../../core/posts/explores/types.dart';
+import '../../../core/posts/post/types.dart';
 import '../../../foundation/caching.dart';
 import '../client_provider.dart';
 import '../posts/parser.dart';

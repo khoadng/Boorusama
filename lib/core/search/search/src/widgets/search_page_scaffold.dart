@@ -9,18 +9,18 @@ import 'package:selection_mode/selection_mode.dart';
 
 // Project imports:
 import '../../../../analytics/providers.dart';
-import '../../../../boorus/booru/booru.dart';
-import '../../../../configs/config.dart';
-import '../../../../configs/ref.dart';
+import '../../../../boorus/booru/types.dart';
+import '../../../../configs/config/providers.dart';
+import '../../../../configs/config/types.dart';
 import '../../../../posts/count/widgets.dart';
 import '../../../../posts/listing/providers.dart';
-import '../../../../posts/post/post.dart';
+import '../../../../posts/post/types.dart';
 import '../../../../settings/providers.dart';
 import '../../../../tags/metatag/providers.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../histories/providers.dart';
 import '../../../selected_tags/providers.dart';
-import '../../../selected_tags/tag.dart';
+import '../../../selected_tags/types.dart';
 import '../../../suggestions/providers.dart';
 import '../../../suggestions/widgets.dart';
 import '../routes/params.dart';

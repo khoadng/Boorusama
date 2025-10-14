@@ -6,12 +6,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../../configs/config.dart';
+import '../../../../configs/config/types.dart';
 import '../../../../router.dart';
 import '../../../../settings/providers.dart';
-import '../../../../settings/settings.dart';
+import '../../../../settings/types.dart';
 import '../../../../widgets/widgets.dart';
-import '../../../post/post.dart';
+import '../../../post/types.dart';
 import '../providers/providers.dart';
 import '../widgets/post_details_page.dart';
 import 'details_route_context.dart';

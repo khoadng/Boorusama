@@ -6,9 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../../configs/config.dart';
+import '../../../../configs/config/types.dart';
 import '../../../../router.dart';
-import '../../../selected_tags/tag.dart';
+import '../../../selected_tags/types.dart';
 import '../views/simple_tag_search_view.dart';
 import 'params.dart';
 

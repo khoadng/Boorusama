@@ -9,7 +9,7 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import '../../../../../../core/widgets/widgets.dart';
 import '../../_shared/providers/providers.dart';
-import '../../pool/pool.dart';
+import '../../pool/types.dart';
 import 'pool_order_l10n.dart';
 
 class PoolOptionsHeader extends ConsumerWidget {

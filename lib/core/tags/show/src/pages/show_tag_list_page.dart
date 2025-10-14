@@ -8,10 +8,10 @@ import 'package:i18n/i18n.dart';
 // Project imports:
 import '../../../../../foundation/toast.dart';
 import '../../../../blacklists/providers.dart';
-import '../../../../configs/config.dart';
-import '../../../../posts/post/post.dart';
+import '../../../../configs/config/types.dart';
+import '../../../../posts/post/types.dart';
 import '../../../favorites/providers.dart';
-import '../../../tag/tag.dart';
+import '../../../tag/types.dart';
 import '../providers.dart';
 import '../widgets/show_tag_action_bar.dart';
 import '../widgets/show_tag_list.dart';

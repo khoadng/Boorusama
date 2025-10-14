@@ -5,12 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
-import '../../../../tags/favorites/favorited.dart';
+import '../../../../tags/favorites/types.dart';
 import '../../../../tags/metatag/types.dart';
-import '../../../histories/history.dart';
-import '../../../queries/query.dart';
+import '../../../histories/types.dart';
+import '../../../queries/types.dart';
 import '../../../selected_tags/providers.dart';
-import '../../../selected_tags/tag.dart';
+import '../../../selected_tags/types.dart';
 
 class SearchPageController extends ChangeNotifier {
   SearchPageController({

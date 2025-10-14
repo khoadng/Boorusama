@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../../../core/tags/tag/tag.dart';
+import '../../../../../../core/tags/tag/types.dart';
 import '../../../../../../core/themes/colors/types.dart';
 import '../../../../../../core/themes/theme/types.dart';
 import '../../../../../../core/widgets/booru_chip.dart';

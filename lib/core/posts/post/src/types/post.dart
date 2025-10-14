@@ -2,8 +2,8 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import '../../../rating/rating.dart';
-import '../../../sources/source.dart';
+import '../../../rating/types.dart';
+import '../../../sources/types.dart';
 import '../mixins/image_info_mixin.dart';
 import '../mixins/media_info_mixin.dart';
 import '../mixins/video_info_mixin.dart';

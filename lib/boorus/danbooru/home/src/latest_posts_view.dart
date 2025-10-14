@@ -7,16 +7,16 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import '../../../../../core/widgets/widgets.dart';
-import '../../../../core/configs/ref.dart';
+import '../../../../core/configs/config/providers.dart';
 import '../../../../core/home/widgets.dart';
 import '../../../../core/posts/count/widgets.dart';
 import '../../../../core/posts/listing/widgets.dart';
 import '../../../../core/search/search/types.dart';
 import '../../../../core/search/selected_tags/providers.dart';
-import '../../../../core/search/selected_tags/tag.dart';
+import '../../../../core/search/selected_tags/types.dart';
 import '../../../../core/settings/providers.dart';
 import '../../../../core/tags/metatag/providers.dart';
-import '../../../../core/tags/tag/tag.dart';
+import '../../../../core/tags/tag/types.dart';
 import '../../../../foundation/display.dart';
 import '../../dmails/widgets.dart';
 import '../../posts/listing/widgets.dart';

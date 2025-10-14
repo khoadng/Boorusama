@@ -4,7 +4,7 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../../../foundation/path.dart';
-import '../../../posts/post/post.dart';
+import '../../../posts/post/types.dart';
 
 class Bookmark extends Equatable with ImageInfoMixin, TagListCheckMixin {
   Bookmark({

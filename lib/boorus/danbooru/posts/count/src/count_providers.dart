@@ -2,8 +2,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../../core/configs/config.dart';
-import '../../../../../core/posts/count/count.dart';
+import '../../../../../core/configs/config/types.dart';
+import '../../../../../core/posts/count/types.dart';
 import '../../../client_provider.dart';
 import '../../../constants.dart';
 

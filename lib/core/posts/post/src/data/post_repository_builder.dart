@@ -2,10 +2,10 @@
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../../http/http.dart';
-import '../../../../search/queries/query.dart';
-import '../../../../search/selected_tags/tag.dart';
-import '../../../../settings/settings.dart';
+import '../../../../http/types.dart';
+import '../../../../search/queries/types.dart';
+import '../../../../search/selected_tags/types.dart';
+import '../../../../settings/types.dart';
 import '../types/post.dart';
 import '../types/post_repository.dart';
 

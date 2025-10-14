@@ -8,8 +8,8 @@ import 'package:foundation/foundation.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
-import '../../../configs/config.dart';
 import '../../../configs/config/providers.dart';
+import '../../../configs/config/types.dart';
 import '../../../downloads/downloader/providers.dart';
 import '../../../http/providers.dart';
 import '../../types.dart';

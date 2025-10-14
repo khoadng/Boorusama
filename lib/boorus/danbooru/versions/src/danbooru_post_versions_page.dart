@@ -10,7 +10,7 @@ import 'package:multi_split_view/multi_split_view.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../../../core/configs/config/providers.dart';
 import '../../../../core/images/booru_image.dart';
-import '../../posts/post/post.dart';
+import '../../posts/post/types.dart';
 import '../../users/details/routes.dart';
 import '../../users/details/types.dart';
 import 'providers/version_providers.dart';

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
-import '../../pool/pool.dart';
+import '../../pool/types.dart';
 
 String poolOrderToString(BuildContext context, DanbooruPoolOrder order) =>
     switch (order) {

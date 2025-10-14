@@ -2,13 +2,13 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../core/configs/ref.dart';
+import '../../../../core/configs/config/providers.dart';
 import '../../../../core/tags/categories/providers.dart';
-import '../../../../core/tags/categories/tag_category.dart';
-import '../../../../core/tags/tag/tag.dart';
+import '../../../../core/tags/categories/types.dart';
+import '../../../../core/tags/tag/types.dart';
 import '../../client_provider.dart';
 import '../../danbooru.dart';
-import 'ai.dart';
+import 'types.dart';
 
 final danbooruAITagsProvider = FutureProvider.family<List<AITag>, int>(
   (ref, postId) async {

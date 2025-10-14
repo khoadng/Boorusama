@@ -5,10 +5,10 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../core/configs/config.dart';
+import '../../../core/configs/config/types.dart';
 import '../../../core/posts/favorites/providers.dart';
-import '../../../core/posts/post/post.dart';
 import '../../../core/posts/post/providers.dart';
+import '../../../core/posts/post/types.dart';
 import '../../../core/settings/providers.dart';
 import '../client_provider.dart';
 import '../post_votes/providers.dart';

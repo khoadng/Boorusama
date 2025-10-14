@@ -7,8 +7,8 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
-import '../../../../../../core/configs/config.dart';
-import '../../../../../../core/configs/ref.dart';
+import '../../../../../../core/configs/config/providers.dart';
+import '../../../../../../core/configs/config/types.dart';
 import '../../../../../../core/search/search/widgets.dart';
 import '../../../../../../core/settings/providers.dart';
 import '../../../../../../core/tags/categories/providers.dart';

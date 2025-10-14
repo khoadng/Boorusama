@@ -8,13 +8,13 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../../../../../../../core/configs/auth/widgets.dart';
-import '../../../../../../../core/configs/ref.dart';
+import '../../../../../../../core/configs/config/providers.dart';
 import '../../../../../../../core/images/booru_image.dart';
 import '../../../../../../../core/themes/theme/types.dart';
 import '../../../details/routes.dart';
-import '../../../favgroups/favgroup.dart';
 import '../../../favgroups/providers.dart';
 import '../../../favgroups/routes.dart';
+import '../../../favgroups/types.dart';
 import '../providers/post_previews_notifier.dart';
 import '../routes/internal_routes.dart';
 

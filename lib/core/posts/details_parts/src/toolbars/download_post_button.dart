@@ -7,7 +7,7 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../../../../downloads/downloader/providers.dart';
-import '../../../post/post.dart';
+import '../../../post/types.dart';
 
 class DownloadPostButton extends ConsumerWidget {
   const DownloadPostButton({

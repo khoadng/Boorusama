@@ -20,9 +20,9 @@ import '../../../tags/show/routes.dart';
 import '../../../widgets/adaptive_button_row.dart';
 import '../../details/providers.dart';
 import '../../details_manager/routes.dart';
-import '../../post/src/data/providers.dart';
-import '../../post/src/routes/route_utils.dart';
-import '../../post/src/types/post.dart';
+import '../../post/providers.dart';
+import '../../post/routes.dart';
+import '../../post/types.dart';
 
 class CommonPostButtonsBuilder extends ConsumerWidget {
   const CommonPostButtonsBuilder({

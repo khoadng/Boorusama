@@ -5,9 +5,9 @@ import 'dart:math';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../../core/configs/config.dart';
-import '../../../../../core/tags/categories/tag_category.dart';
-import '../../../../../core/tags/tag/tag.dart';
+import '../../../../../core/configs/config/types.dart';
+import '../../../../../core/tags/categories/types.dart';
+import '../../../../../core/tags/tag/types.dart';
 import '../../../tags/trending/providers.dart';
 
 const _kTrendingTagCount = 15;

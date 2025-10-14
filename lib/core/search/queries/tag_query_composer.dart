@@ -5,8 +5,8 @@ import 'dart:convert';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../configs/config.dart';
-import '../../posts/rating/rating.dart';
+import '../../configs/config/types.dart';
+import '../../posts/rating/types.dart';
 
 abstract class TagQueryComposer {
   List<String> compose(List<String> tags);

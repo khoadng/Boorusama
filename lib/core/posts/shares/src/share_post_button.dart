@@ -11,7 +11,7 @@ import '../../../configs/config/types.dart';
 import '../../../downloads/filename/providers.dart';
 import '../../../downloads/filename/types.dart';
 import '../../../images/providers.dart';
-import '../../post/post.dart';
+import '../../post/types.dart';
 import 'share.dart';
 
 class SharePostButton extends ConsumerWidget {

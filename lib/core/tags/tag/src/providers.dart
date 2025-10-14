@@ -8,8 +8,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../foundation/riverpod/riverpod.dart';
-import '../../../configs/config.dart';
-import '../../../posts/post/post.dart';
+import '../../../configs/config/types.dart';
+import '../../../posts/post/types.dart';
 import 'data/providers.dart';
 import 'types/tag.dart';
 import 'types/tag_group_item.dart';

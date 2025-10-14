@@ -6,8 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/widgets.dart';
 
 // Project imports:
-import '../../../../../../core/configs/ref.dart';
-import '../../../../versions/version.dart';
+import '../../../../../../core/configs/config/providers.dart';
+import '../../../../versions/providers.dart';
+import '../../../../versions/types.dart';
 import '../../../../versions/widgets.dart';
 
 class UserDetailsTagChanges extends ConsumerStatefulWidget {

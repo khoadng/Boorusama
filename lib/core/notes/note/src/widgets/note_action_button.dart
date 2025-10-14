@@ -9,7 +9,7 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../../../../configs/config/types.dart';
-import '../../../../posts/post/post.dart';
+import '../../../../posts/post/types.dart';
 import '../../../../widgets/widgets.dart';
 import '../providers/notes_controller_provider.dart';
 import '../providers/notes_providers.dart';

@@ -8,14 +8,14 @@ import 'package:foundation/widgets.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
+import '../../../core/configs/config/providers.dart';
 import '../../../core/configs/config/types.dart';
-import '../../../core/configs/ref.dart';
-import '../../../core/posts/details/details.dart';
 import '../../../core/posts/details/routes.dart';
+import '../../../core/posts/details/types.dart';
 import '../../../core/posts/details/widgets.dart';
 import '../../../core/posts/details_parts/types.dart';
 import '../../../core/posts/details_parts/widgets.dart';
-import '../../../core/posts/post/post.dart';
+import '../../../core/posts/post/types.dart';
 import '../../../core/router.dart';
 import '../../../core/search/search/routes.dart';
 import '../gelbooru_v2_provider.dart';

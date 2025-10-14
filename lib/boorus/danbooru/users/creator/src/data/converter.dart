@@ -2,7 +2,7 @@
 import 'package:booru_clients/danbooru.dart';
 
 // Project imports:
-import '../../../user/user.dart';
+import '../../../user/types.dart';
 import '../types/creator.dart';
 
 Creator creatorDtoToCreator(CreatorDto? d) => d != null

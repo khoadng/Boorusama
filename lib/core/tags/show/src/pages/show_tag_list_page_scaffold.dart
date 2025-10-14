@@ -8,7 +8,7 @@ import 'package:selection_mode/selection_mode.dart';
 
 // Project imports:
 import '../../../../configs/config/types.dart';
-import '../../../../posts/post/post.dart';
+import '../../../../posts/post/types.dart';
 import '../../../../search/search/widgets.dart';
 import '../../../../settings/providers.dart';
 import '../../../../widgets/default_selection_bar.dart';

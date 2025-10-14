@@ -1,7 +1,7 @@
 // Package imports:
 import 'package:collection/collection.dart';
 
-import 'package:booru_clients/src/hydrus/types/service_dto.dart';
+import 'service_dto.dart';
 
 class FileDto {
   const FileDto({

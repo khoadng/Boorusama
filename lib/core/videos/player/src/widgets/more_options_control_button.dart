@@ -10,7 +10,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import '../../../../../foundation/display.dart';
 import '../../../../boorus/engine/providers.dart';
 import '../../../../configs/config/providers.dart';
-import '../../../../posts/post/post.dart';
+import '../../../../posts/post/types.dart';
 import '../../../../settings/routes.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../lock/providers.dart';

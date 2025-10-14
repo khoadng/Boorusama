@@ -2,11 +2,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../../../core/configs/ref.dart';
+import '../../../../../../core/configs/config/providers.dart';
 import '../../../../../../core/posts/post/providers.dart';
-import '../../../../posts/favorites/favorite.dart';
-import '../../../../posts/post/post.dart';
+import '../../../../posts/favorites/types.dart';
 import '../../../../posts/post/providers.dart';
+import '../../../../posts/post/types.dart';
 import '../data/providers.dart';
 import '../types/user.dart';
 

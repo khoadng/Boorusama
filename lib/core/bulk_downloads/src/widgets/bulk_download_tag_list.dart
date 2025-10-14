@@ -7,11 +7,11 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../../../../foundation/platform.dart';
-import '../../../search/histories/history.dart';
 import '../../../search/histories/providers.dart';
+import '../../../search/histories/types.dart';
 import '../../../search/histories/widgets.dart';
 import '../../../search/search/routes.dart';
-import '../../../search/selected_tags/tag.dart';
+import '../../../search/selected_tags/types.dart';
 
 class BulkDownloadTagList extends ConsumerWidget {
   const BulkDownloadTagList({

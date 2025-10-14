@@ -7,8 +7,8 @@ import 'package:foundation/foundation.dart';
 import 'package:intl/intl.dart';
 
 // Project imports:
-import '../../../../../../core/configs/ref.dart';
-import '../../../../../../core/tags/tag/tag.dart';
+import '../../../../../../core/configs/config/providers.dart';
+import '../../../../../../core/tags/tag/types.dart';
 import '../../../../../../core/themes/colors/providers.dart';
 import '../../../../../../core/themes/theme/types.dart';
 import '../../../../../../core/widgets/widgets.dart';
