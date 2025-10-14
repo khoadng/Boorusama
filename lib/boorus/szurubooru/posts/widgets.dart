@@ -14,6 +14,7 @@ import '../../../core/posts/favorites/providers.dart';
 import '../../../core/posts/favorites/widgets.dart';
 import '../../../core/posts/shares/widgets.dart';
 import '../../../core/router.dart';
+import '../../../core/search/search/routes.dart';
 import '../../../core/widgets/adaptive_button_row.dart';
 import '../../../core/widgets/booru_menu_button_row.dart';
 import '../configs/providers.dart';
@@ -109,18 +110,21 @@ class SzurubooruPostActionToolbar extends ConsumerWidget {
   }
 }
 
-class SzurubooruFileDetailsSection extends ConsumerWidget {
-  const SzurubooruFileDetailsSection({super.key});
+class SzurubooruUploaderFileDetailTile extends ConsumerWidget {
+  const SzurubooruUploaderFileDetailTile({super.key});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final post = InheritedPost.of<SzurubooruPost>(context);
+    final uploaderName = post.uploaderName;
 
-    return SliverToBoxAdapter(
-      child: DefaultFileDetailsSection(
-        post: post,
-        uploaderName: post.uploaderName,
+    return switch (uploaderName) {
+      null => const SizedBox.shrink(),
+      final name => UploaderFileDetailTile(
+        uploaderName: name,
+        onSearch: () => goToSearchPage(ref, tag: 'uploader:$name'),
       ),
-    );
+    };
   }
 }
 
@@ -153,6 +157,9 @@ final kSzurubooruPostDetailsUIBuilder = PostDetailsUIBuilder(
     DetailsPart.stats: (context) => const SzurubooruStatsTileSection(),
     DetailsPart.tags: (context) =>
         const DefaultInheritedTagsTile<SzurubooruPost>(),
-    DetailsPart.fileDetails: (context) => const SzurubooruFileDetailsSection(),
+    DetailsPart.fileDetails: (context) =>
+        const DefaultInheritedFileDetailsSection<SzurubooruPost>(
+          uploader: SzurubooruUploaderFileDetailTile(),
+        ),
   },
 );

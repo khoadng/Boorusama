@@ -34,6 +34,9 @@ extension PostIdolDtoConverter on PostIdolDto {
     isStatusLocked: isStatusLocked,
     tags: tags?.map((e) => e.toSankakuTag()).toList(),
     videoDuration: duration,
+    author: AuthorDto(
+      name: author,
+    ),
   );
 }
 

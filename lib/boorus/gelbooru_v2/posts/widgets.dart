@@ -150,18 +150,21 @@ class _PostDetailsDataLoadingTransitionPage extends ConsumerWidget {
   }
 }
 
-class GelbooruV2FileDetailsSection extends ConsumerWidget {
-  const GelbooruV2FileDetailsSection({super.key});
+class GelbooruV2UploaderFileDetailTile extends ConsumerWidget {
+  const GelbooruV2UploaderFileDetailTile({super.key});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final post = InheritedPost.of<GelbooruV2Post>(context);
+    final uploaderName = post.uploaderName;
 
-    return SliverToBoxAdapter(
-      child: DefaultFileDetailsSection(
-        post: post,
-        uploaderName: post.uploaderName,
+    return switch (uploaderName) {
+      null => const SizedBox.shrink(),
+      final name => UploaderFileDetailTile(
+        uploaderName: name,
+        onSearch: () => goToSearchPage(ref, tag: 'user:$name'),
       ),
-    );
+    };
   }
 }
 
@@ -212,7 +215,10 @@ final kGelbooruV2PostDetailsUIBuilder = PostDetailsUIBuilder(
         const DefaultInheritedSourceSection<GelbooruV2Post>(),
     DetailsPart.tags: (context) =>
         const DefaultInheritedTagsTile<GelbooruV2Post>(),
-    DetailsPart.fileDetails: (context) => const GelbooruV2FileDetailsSection(),
+    DetailsPart.fileDetails: (context) =>
+        const DefaultInheritedFileDetailsSection<GelbooruV2Post>(
+          uploader: GelbooruV2UploaderFileDetailTile(),
+        ),
     DetailsPart.artistPosts: (context) =>
         const DefaultInheritedArtistPostsSection<GelbooruV2Post>(),
     DetailsPart.relatedPosts: (context) =>

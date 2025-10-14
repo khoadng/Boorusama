@@ -18,7 +18,10 @@ final moebooruPostDetailsUIBuilder = PostDetailsUIBuilder(
     DetailsPart.toolbar: (context) => const MoebooruPostDetailsActionToolbar(),
     DetailsPart.tags: (context) =>
         const DefaultInheritedTagsTile<MoebooruPost>(),
-    DetailsPart.fileDetails: (context) => const MoebooruFileDetailsSection(),
+    DetailsPart.fileDetails: (context) =>
+        const DefaultInheritedFileDetailsSection<MoebooruPost>(
+          uploader: MoebooruUploaderFileDetailTile(),
+        ),
     DetailsPart.artistPosts: (context) =>
         const DefaultInheritedArtistPostsSection<MoebooruPost>(),
     DetailsPart.relatedPosts: (context) => const MoebooruRelatedPostsSection(),

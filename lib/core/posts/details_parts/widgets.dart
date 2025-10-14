@@ -4,6 +4,7 @@ export 'src/related_posts_section.dart';
 export 'src/character_post_list.dart';
 export 'src/file_details/default_file_details_section.dart';
 export 'src/file_details/file_details_section.dart';
+export 'src/file_details/file_detail_tile.dart';
 export 'src/information_section.dart';
 export 'src/simple_post_stats_tile.dart';
 export 'src/artist_section.dart';
