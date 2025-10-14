@@ -8,16 +8,13 @@ import '../../../client_provider.dart';
 import '../../../danbooru.dart';
 import '../../../posts/post/post.dart';
 import '../../../users/user/providers.dart';
-import '../../../users/user/user.dart';
 
 final danbooruBlacklistedTagsProvider =
     AsyncNotifierProvider.family<
       BlacklistedTagsNotifier,
       List<String>?,
       BooruConfigAuth
-    >(
-      BlacklistedTagsNotifier.new,
-    );
+    >(BlacklistedTagsNotifier.new);
 
 class BlacklistedTagsNotifier
     extends FamilyAsyncNotifier<List<String>?, BooruConfigAuth> {
@@ -157,9 +154,7 @@ class DanbooruBlacklistTagRepository implements BlacklistTagRefRepository {
 
     return {
       if (danbooruBlacklistedTags != null) ...danbooruBlacklistedTags,
-      if (!isUnverified &&
-          censoredTagsBanned &&
-          !isBooruGoldPlusAccount(currentUser.level))
+      if (!isUnverified && censoredTagsBanned && !currentUser.level.isGoldPlus)
         ...kCensoredTags,
     };
   }

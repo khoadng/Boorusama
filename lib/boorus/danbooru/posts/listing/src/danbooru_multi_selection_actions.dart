@@ -19,7 +19,6 @@ import '../../../configs/providers.dart';
 import '../../../tags/_shared/tag_list_notifier.dart';
 import '../../../tags/edit/widgets.dart';
 import '../../../users/user/providers.dart';
-import '../../../users/user/user.dart';
 import '../../favgroups/favgroups/routes.dart';
 import '../../post/post.dart';
 
@@ -61,7 +60,7 @@ class DanbooruMultiSelectionActions extends ConsumerWidget {
             ref
                 .watch(danbooruCurrentUserProvider(config))
                 .when(
-                  data: (user) => DanbooruUserLevel.of(user?.level).isUnres
+                  data: (user) => user?.level.isUnres ?? false
                       ? MultiSelectButton(
                           onPressed: selectedPosts.isNotEmpty
                               ? () async {

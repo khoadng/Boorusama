@@ -30,7 +30,7 @@ DanbooruPostVersion convertDtoToPostVersion(PostVersionDto e) =>
       updater: Creator(
         id: e.updater?.id ?? 0,
         name: e.updater?.name ?? '',
-        level: stringToUserLevel(e.updater?.levelString),
+        level: UserLevel.parse(e.updater?.levelString),
       ),
       thumbnailUrl: e.previewFileUrl,
     );

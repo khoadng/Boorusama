@@ -3,7 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:hive_ce/hive.dart';
 
 // Project imports:
-import '../../../user/user.dart';
+import '../../../user/providers.dart';
 import '../types/creator.dart';
 import '../types/creator_repository.dart';
 
@@ -13,7 +13,7 @@ class CreatorRepositoryFromUserRepo implements CreatorRepository {
     this.box,
   );
 
-  final UserRepository repo;
+  final DanbooruUserRepository repo;
   final Box box;
 
   @override

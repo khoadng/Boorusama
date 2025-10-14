@@ -10,7 +10,7 @@ DanbooruUser userDtoToUser(
 ) {
   return DanbooruUser(
     id: d.id ?? 0,
-    level: intToUserLevel(d.level ?? 0),
+    level: UserLevel.parse(d.level),
     name: d.name ?? 'User',
     joinedDate: d.createdAt ?? DateTime.now(),
     uploadCount: d.uploadCount ?? 0,
@@ -31,7 +31,7 @@ UserSelf userDtoToUserSelf(
 ) {
   return UserSelf(
     id: d.id ?? 0,
-    level: intToUserLevel(d.level ?? 0),
+    level: UserLevel.parse(d.level),
     name: d.name ?? 'User',
     blacklistedTags: d.blacklistedTags == null
         ? defaultBlacklistedTags

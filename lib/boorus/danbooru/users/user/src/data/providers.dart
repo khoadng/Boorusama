@@ -7,13 +7,12 @@ import '../../../../../../core/tags/configs/providers.dart';
 import '../../../../client_provider.dart';
 import '../../../../configs/providers.dart';
 import '../types/user.dart';
-import '../types/user_repository.dart';
 import 'converter.dart';
-import 'user_repository_api.dart';
+import 'user_repository.dart';
 
 final danbooruUserRepoProvider =
-    Provider.family<UserRepository, BooruConfigAuth>((ref, config) {
-      return UserRepositoryApi(
+    Provider.family<DanbooruUserRepository, BooruConfigAuth>((ref, config) {
+      return DanbooruUserRepository(
         ref.watch(danbooruClientProvider(config)),
         ref.watch(tagInfoProvider).defaultBlacklistedTags,
       );

@@ -43,10 +43,7 @@ class UserDetails extends Equatable {
     return UserDetails(
       id: id,
       name: queryParameters['name'],
-      level: switch (queryParameters['level']) {
-        null => null,
-        final String level => stringToUserLevel(level),
-      },
+      level: UserLevel.parse(queryParameters['level']),
     );
   }
 

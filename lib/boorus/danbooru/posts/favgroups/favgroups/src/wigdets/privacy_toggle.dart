@@ -9,7 +9,6 @@ import 'package:i18n/i18n.dart';
 import '../../../../../../../core/configs/ref.dart';
 import '../../../../../../../core/widgets/widgets.dart';
 import '../../../../../users/user/providers.dart';
-import '../../../../../users/user/user.dart';
 
 class PrivacyToggle extends ConsumerWidget {
   const PrivacyToggle({
@@ -35,7 +34,7 @@ class PrivacyToggle extends ConsumerWidget {
         onChanged: onChanged,
       ),
       crossFadeState: currentUser.maybeWhen(
-        data: (user) => user != null && isBooruGoldPlusAccount(user.level)
+        data: (user) => user != null && user.level.isGoldPlus
             ? CrossFadeState.showSecond
             : CrossFadeState.showFirst,
         orElse: () => CrossFadeState.showFirst,

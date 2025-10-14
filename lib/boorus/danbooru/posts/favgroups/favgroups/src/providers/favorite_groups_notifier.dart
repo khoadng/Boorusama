@@ -12,7 +12,6 @@ import 'package:i18n/i18n.dart';
 import '../../../../../../../core/configs/config.dart';
 import '../../../../../configs/providers.dart';
 import '../../../../../users/user/providers.dart';
-import '../../../../../users/user/user.dart';
 import '../../../listing/providers.dart';
 import '../../favgroup.dart';
 import '../types/update_order.dart';
@@ -80,9 +79,7 @@ class FavoriteGroupsNotifier
 
     if (currentUser == null) return;
 
-    if (state != null &&
-        !isBooruGoldPlusAccount(currentUser.level) &&
-        state!.length >= 10) {
+    if (state != null && !currentUser.level.isGoldPlus && state!.length >= 10) {
       onFailure?.call(t.favorite_groups.max_limit_warning);
 
       return;

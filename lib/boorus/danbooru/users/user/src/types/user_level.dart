@@ -1,39 +1,3 @@
-UserLevel intToUserLevel(int value) => switch (value) {
-  10 => UserLevel.restricted,
-  20 => UserLevel.member,
-  30 => UserLevel.gold,
-  31 => UserLevel.platinum,
-  32 => UserLevel.builder,
-  35 => UserLevel.contributor,
-  37 => UserLevel.approver,
-  40 => UserLevel.moderator,
-  50 => UserLevel.admin,
-  60 => UserLevel.owner,
-  _ => UserLevel.member,
-};
-
-UserLevel stringToUserLevel(String? value) => switch (value?.toLowerCase()) {
-  'restricted' => UserLevel.restricted,
-  'member' => UserLevel.member,
-  'gold' => UserLevel.gold,
-  'platinum' => UserLevel.platinum,
-  'builder' => UserLevel.builder,
-  'contributor' => UserLevel.contributor,
-  'approver' => UserLevel.approver,
-  'moderator' => UserLevel.moderator,
-  'admin' => UserLevel.admin,
-  'owner' => UserLevel.owner,
-  _ => UserLevel.member,
-};
-
-bool isBooruGoldPlusAccount(UserLevel level) => switch (level) {
-  UserLevel.restricted || UserLevel.member => false,
-  _ => true,
-};
-
-bool isBooruGoldPlusAccountInt(int level) =>
-    isBooruGoldPlusAccount(intToUserLevel(level));
-
 enum UserLevel {
   restricted,
   member,
@@ -44,27 +8,45 @@ enum UserLevel {
   approver,
   moderator,
   admin,
-  owner,
-}
+  owner;
 
-class DanbooruUserLevel {
-  const DanbooruUserLevel._(this.level);
+  factory UserLevel.parse(dynamic value) => switch (value) {
+    final int num => switch (num) {
+      10 => restricted,
+      20 => member,
+      30 => gold,
+      31 => platinum,
+      32 => builder,
+      35 => contributor,
+      37 => approver,
+      40 => moderator,
+      50 => admin,
+      60 => owner,
+      _ => member,
+    },
+    final String str => switch (str.toLowerCase().trim()) {
+      'restricted' => restricted,
+      'member' => member,
+      'gold' => gold,
+      'platinum' => platinum,
+      'builder' => builder,
+      'contributor' => contributor,
+      'approver' => approver,
+      'moderator' => moderator,
+      'admin' => admin,
+      'owner' => owner,
+      _ => member,
+    },
+    _ => member,
+  };
 
-  factory DanbooruUserLevel.of(UserLevel? level) => DanbooruUserLevel._(level);
+  bool get isGoldPlus => switch (this) {
+    restricted || member => false,
+    _ => true,
+  };
 
-  final UserLevel? level;
-
-  bool get isUnres => switch (level) {
-    null => false,
-    UserLevel.restricted ||
-    UserLevel.member ||
-    UserLevel.gold ||
-    UserLevel.platinum ||
-    UserLevel.builder => false,
-    UserLevel.contributor ||
-    UserLevel.approver ||
-    UserLevel.moderator ||
-    UserLevel.admin ||
-    UserLevel.owner => true,
+  bool get isUnres => switch (this) {
+    restricted || member || gold || platinum || builder => false,
+    contributor || approver || moderator || admin || owner => true,
   };
 }
