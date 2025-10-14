@@ -1,11 +1,12 @@
-# Prereleased-2025.9.28
-- [Gelbooru 0.2] Add login support for favorites, you will need to provide additional information in the profile for it to work
+# Prereleased-2025.10.14
+- [Gelbooru 0.2] Add favorites and login support, you will need to provide additional information in the profile for it to work
 - Add random sort option for bookmark
-- Add a button to lock screen when viewing video
-- Keep screen awake when viewing video
+- Add a button to lock screen when viewing video, also keep screen awake during video playback
 - Double tap on the left/right side of the screen to seek backward/forward in video player
 - Cache video by default for smoother playback, can be turned off in global/profile settings
 - Add WebView and MPV as alternative video player engines
+- Add a button to browse uploads from a specific uploader in post details
+- Add support for Eshuushuu  
 - Support override image viewer settings with profile-specific settings
 
 # 4.2.0
