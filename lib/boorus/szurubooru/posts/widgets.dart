@@ -109,18 +109,20 @@ class SzurubooruPostActionToolbar extends ConsumerWidget {
   }
 }
 
-class SzurubooruFileDetailsSection extends ConsumerWidget {
-  const SzurubooruFileDetailsSection({super.key});
+class SzurubooruUploaderFileDetailTile extends ConsumerWidget {
+  const SzurubooruUploaderFileDetailTile({super.key});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final post = InheritedPost.of<SzurubooruPost>(context);
+    final uploaderName = post.uploaderName;
 
-    return SliverToBoxAdapter(
-      child: DefaultFileDetailsSection(
-        post: post,
-        uploaderName: post.uploaderName,
+    return switch (uploaderName) {
+      null => const SizedBox.shrink(),
+      final name => UploaderFileDetailTile(
+        uploaderName: name,
       ),
-    );
+    };
   }
 }
 
@@ -153,6 +155,9 @@ final kSzurubooruPostDetailsUIBuilder = PostDetailsUIBuilder(
     DetailsPart.stats: (context) => const SzurubooruStatsTileSection(),
     DetailsPart.tags: (context) =>
         const DefaultInheritedTagsTile<SzurubooruPost>(),
-    DetailsPart.fileDetails: (context) => const SzurubooruFileDetailsSection(),
+    DetailsPart.fileDetails: (context) =>
+        const DefaultInheritedFileDetailsSection<SzurubooruPost>(
+          uploader: SzurubooruUploaderFileDetailTile(),
+        ),
   },
 );

@@ -1,28 +1,26 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
-// Package imports:
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 // Project imports:
 import '../../../core/posts/details/details.dart';
 import '../../../core/posts/details_parts/types.dart';
 import '../../../core/posts/details_parts/widgets.dart';
 import 'types.dart';
 
-class HybooruFileDetailsSection extends ConsumerWidget {
-  const HybooruFileDetailsSection({super.key});
+class HybooruUploaderFileDetailTile extends StatelessWidget {
+  const HybooruUploaderFileDetailTile({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final post = InheritedPost.of<HybooruPost>(context);
+    final uploaderName = post.uploaderName;
 
-    return SliverToBoxAdapter(
-      child: DefaultFileDetailsSection(
-        post: post,
-        uploaderName: post.uploaderName,
+    return switch (uploaderName) {
+      null => const SizedBox.shrink(),
+      final name => UploaderFileDetailTile(
+        uploaderName: name,
       ),
-    );
+    };
   }
 }
 
@@ -36,6 +34,9 @@ final kHybooruPostDetailsUIBuilder = PostDetailsUIBuilder(
         const DefaultInheritedPostActionToolbar<HybooruPost>(),
     DetailsPart.tags: (context) =>
         const DefaultInheritedTagsTile<HybooruPost>(),
-    DetailsPart.fileDetails: (context) => const HybooruFileDetailsSection(),
+    DetailsPart.fileDetails: (context) =>
+        const DefaultInheritedFileDetailsSection<HybooruPost>(
+          uploader: HybooruUploaderFileDetailTile(),
+        ),
   },
 );

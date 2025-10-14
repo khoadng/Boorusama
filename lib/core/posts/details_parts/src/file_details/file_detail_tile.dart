@@ -20,6 +20,8 @@ class FileDetailTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return ListTile(
       visualDensity: VisualDensity.compact,
       leading: Text(
@@ -33,35 +35,30 @@ class FileDetailTile extends StatelessWidget {
         builder: (context, constrainst) => Container(
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surfaceContainer,
+            color: colorScheme.surfaceContainer,
             borderRadius: const BorderRadius.all(Radius.circular(4)),
           ),
           width: constrainst.maxWidth * 0.55,
-          child:
-              value ??
-              (valueLabel != null
-                  ? valueTrailing != null
-                        ? Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              _buildValue(context),
-                              const Spacer(),
-                              valueTrailing!,
-                            ],
-                          )
-                        : _buildValue(context)
-                  : null),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (value case final v?) ...[
+                Expanded(child: v),
+              ] else if (valueLabel case final vl?) ...[
+                Expanded(
+                  child: Text(
+                    vl,
+                    style: TextStyle(
+                      color: colorScheme.onSecondaryContainer,
+                      fontSize: 14,
+                    ),
+                  ),
+                ),
+              ],
+              ?valueTrailing,
+            ],
+          ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildValue(BuildContext context) {
-    return Text(
-      valueLabel!,
-      style: TextStyle(
-        color: Theme.of(context).colorScheme.onSecondaryContainer,
-        fontSize: 14,
       ),
     );
   }
