@@ -172,6 +172,18 @@
       "view_in_browser": "Xem bằng trình duyệt",
       "view_original": "Xem ảnh gốc"
     },
+    "votes": {
+      "user_list": {
+        "title": "Những ai đã bình chọn",
+        "disclaimer": "Bình chọn ẩn hoặc không thích sẽ không được hiển thị."
+      }
+    },
+    "favorites": {
+      "user_list": {
+        "title": "Những ai đã yêu thích",
+        "disclaimer": "Chỉ hiển thị các lượt yêu thích công khai."
+      }
+    },
     "statistics": {
       "stats_for_nerds": "Thống kê chi tiết",
       "average": "Trung bình",

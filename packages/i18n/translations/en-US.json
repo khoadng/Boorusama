@@ -161,6 +161,18 @@
       "75th_percentile": "75th percentile",
       "90th_percentile": "90th percentile"
     },
+    "votes": {
+      "user_list": {
+        "title": "Voters",
+        "disclaimer": "Downvotes and private votes are not shown."
+      }
+    },
+    "favorites": {
+      "user_list": {
+        "title": "Favorited by",
+        "disclaimer": "Only public favorites are shown."
+      }
+    },
     "action": {
       "share": "Share",
       "bookmark": "Bookmark",

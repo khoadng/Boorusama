@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../../../core/configs/ref.dart';
@@ -30,12 +31,12 @@ class DanbooruFavoriterListPage extends ConsumerWidget {
         title: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Flexible(
-              child: Text('Users who favorited'),
+            Flexible(
+              child: Text(context.t.post.favorites.user_list.title),
             ),
             const SizedBox(width: 4),
             Tooltip(
-              message: 'Only public favorites are shown.',
+              message: context.t.post.favorites.user_list.disclaimer,
               triggerMode: TooltipTriggerMode.tap,
               showDuration: const Duration(seconds: 3),
               child: Icon(
