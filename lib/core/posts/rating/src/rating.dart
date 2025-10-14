@@ -3,38 +3,39 @@ enum Rating {
   explicit,
   questionable,
   sensitive,
-  general,
-}
+  general;
 
-Rating mapStringToRating(String? str) => switch (str?.toLowerCase()) {
-  's' || 'sensitive' => Rating.sensitive,
-  'e' || 'explicit' => Rating.explicit,
-  'g' || 'general' => Rating.general,
-  'q' || 'questionable' => Rating.questionable,
-  _ => Rating.unknown,
-};
+  factory Rating.parse(dynamic value) => switch (value) {
+    final String str => switch (str.toLowerCase()) {
+      's' || 'sensitive' => sensitive,
+      'e' || 'explicit' => explicit,
+      'g' || 'general' => general,
+      'q' || 'questionable' => questionable,
+      _ => unknown,
+    },
+    _ => unknown,
+  };
 
-extension RatingX on Rating {
-  bool isNSFW() => this == Rating.explicit || this == Rating.questionable;
+  bool isNSFW() => this == explicit || this == questionable;
   bool isSFW() => !isNSFW();
 
   String toFullString({
     bool legacy = false,
   }) => switch (this) {
-    Rating.sensitive => legacy ? 'safe' : 'sensitive',
-    Rating.explicit => 'explicit',
-    Rating.general => 'general',
-    Rating.questionable => 'questionable',
-    Rating.unknown => '',
+    sensitive => legacy ? 'safe' : 'sensitive',
+    explicit => 'explicit',
+    general => 'general',
+    questionable => 'questionable',
+    unknown => '',
   };
 
   String toShortString() => switch (this) {
-    Rating.sensitive => 's',
-    Rating.explicit => 'e',
-    Rating.general => 'g',
-    Rating.questionable => 'q',
-    Rating.unknown => '',
+    sensitive => 's',
+    explicit => 'e',
+    general => 'g',
+    questionable => 'q',
+    unknown => '',
   };
 
-  bool get isExplicit => this == Rating.explicit;
+  bool get isExplicit => this == explicit;
 }

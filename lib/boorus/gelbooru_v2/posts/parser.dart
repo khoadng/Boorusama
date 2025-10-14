@@ -39,7 +39,7 @@ GelbooruV2Post gelbooruV2PostDtoToGelbooruPost(
     height: dto.height?.toDouble() ?? 0,
     format: path.extension(dto.fileUrl ?? 'foo.png').substring(1),
     source: PostSource.from(dto.source),
-    rating: mapStringToRating(dto.rating ?? 'safe'),
+    rating: Rating.parse(dto.rating ?? 'safe'),
     md5: dto.hash ?? '',
     hasComment: dto.commentCount != null && dto.commentCount! > 0,
     hasParentOrChildren: dto.parentId != null && dto.parentId != 0,

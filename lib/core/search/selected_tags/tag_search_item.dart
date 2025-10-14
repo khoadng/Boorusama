@@ -30,7 +30,7 @@ class TagSearchItem extends Equatable {
     String? category,
   }) {
     final metatag = extractor?.fromString(query);
-    final operator = stringToFilterOperator(query.getFirstCharacter());
+    final operator = FilterOperator.fromString(query.getFirstCharacter());
     final tag = stripFilterOperator(query, operator);
 
     if (metatag == null) {
@@ -76,6 +76,8 @@ class TagSearchItem extends Equatable {
   @override
   String toString() => isRaw
       ? tag
-      : '${filterOperatorToString(operator)}${metatag ?? ''}${metatag != null ? ':' : ''}$tag'
-            .replaceAll(' ', '_');
+      : '$operator${metatag ?? ''}${metatag != null ? ':' : ''}$tag'.replaceAll(
+          ' ',
+          '_',
+        );
 }

@@ -25,7 +25,7 @@ MoebooruPost postDtoToPost(PostDto postDto, PostMetadata? metadata) {
     originalImageUrl: postDto.fileUrl ?? '',
     tags: postDto.tags.splitTagString(),
     source: PostSource.from(postDto.source),
-    rating: mapStringToRating(postDto.rating ?? ''),
+    rating: Rating.parse(postDto.rating ?? ''),
     hasComment: false,
     isTranslated: false,
     hasParentOrChildren: hasParentOrChildren,

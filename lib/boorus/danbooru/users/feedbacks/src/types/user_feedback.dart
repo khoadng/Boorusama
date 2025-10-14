@@ -6,13 +6,15 @@ enum UserFeedbackCategory {
   negative,
   neutral;
 
-  factory UserFeedbackCategory.fromString(String? value) =>
-      switch (value?.toLowerCase()) {
-        'positive' => UserFeedbackCategory.positive,
-        'negative' => UserFeedbackCategory.negative,
-        'neutral' => UserFeedbackCategory.neutral,
-        _ => UserFeedbackCategory.neutral,
-      };
+  factory UserFeedbackCategory.parse(dynamic value) => switch (value) {
+    final String str => switch (str.toLowerCase()) {
+      'positive' => UserFeedbackCategory.positive,
+      'negative' => UserFeedbackCategory.negative,
+      'neutral' => UserFeedbackCategory.neutral,
+      _ => UserFeedbackCategory.neutral,
+    },
+    _ => UserFeedbackCategory.neutral,
+  };
 }
 
 class DanbooruUserFeedback extends Equatable {

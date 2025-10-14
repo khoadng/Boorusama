@@ -11,7 +11,7 @@ class RatingTypeParser implements TagExpressionTypeParser {
 
   @override
   TagExpressionType parse(String exp, String value) =>
-      RatingType(exp, mapStringToRating(value));
+      RatingType(exp, Rating.parse(value));
 }
 
 class RatingType extends TagExpressionType {

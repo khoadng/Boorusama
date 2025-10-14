@@ -3,7 +3,6 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../../core/configs/config/types.dart';
-import '../../../core/posts/rating/types.dart';
 import '../../../core/search/queries/types.dart';
 
 class GelbooruTagQueryComposer implements TagQueryComposer {

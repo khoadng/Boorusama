@@ -171,7 +171,7 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
                     final operator = getFilterOperator(
                       textEditingController.text,
                     );
-                    final operatorPrefix = filterOperatorToString(operator);
+                    final operatorPrefix = operator.toString();
                     selectedTagController.addTag(
                       TagSearchItem.fromString(
                         '$operatorPrefix${tag.value}',

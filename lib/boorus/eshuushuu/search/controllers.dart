@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 // Project imports:
 import '../../../core/search/histories/types.dart';
-import '../../../core/search/queries/types.dart';
 import '../../../core/search/search/widgets.dart';
 import '../../../core/search/selected_tags/types.dart';
 import '../../../core/tags/favorites/types.dart';
@@ -22,7 +21,7 @@ class EshuushuuSearchController extends SearchPageController {
 
   @override
   void tapTag(String tag) {
-    final operatorPrefix = filterOperatorToString(filterOperator);
+    final operatorPrefix = filterOperator.toString();
     tagsController.addTag(
       TagSearchItem.fromString(
         '$operatorPrefix$tag',
@@ -47,7 +46,7 @@ class EshuushuuSearchController extends SearchPageController {
         );
 
         if (selectedType != null) {
-          final operatorPrefix = filterOperatorToString(filterOperator);
+          final operatorPrefix = filterOperator.toString();
           tagsController.addTag(
             TagSearchItem.fromString(
               '$operatorPrefix$tagName',
@@ -70,7 +69,7 @@ class EshuushuuSearchController extends SearchPageController {
     );
 
     if (selectedType != null) {
-      final operatorPrefix = filterOperatorToString(filterOperator);
+      final operatorPrefix = filterOperator.toString();
       tagsController.addTag(
         TagSearchItem.fromString(
           '$operatorPrefix${tag.query}',
@@ -96,7 +95,7 @@ class EshuushuuSearchController extends SearchPageController {
         );
 
         if (selectedType != null) {
-          final operatorPrefix = filterOperatorToString(filterOperator);
+          final operatorPrefix = filterOperator.toString();
           tagsController.addTag(
             TagSearchItem.fromString(
               '$operatorPrefix$tagName',
@@ -119,7 +118,7 @@ class EshuushuuSearchController extends SearchPageController {
     );
 
     if (selectedType != null) {
-      final operatorPrefix = filterOperatorToString(filterOperator);
+      final operatorPrefix = filterOperator.toString();
       tagsController.addTag(
         TagSearchItem.fromString(
           '$operatorPrefix${history.query}',

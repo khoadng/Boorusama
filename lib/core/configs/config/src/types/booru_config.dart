@@ -467,7 +467,7 @@ class BooruConfigSearchFilter extends Equatable
   };
 
   bool canView(String rating) {
-    final parsedRating = mapStringToRating(rating);
+    final parsedRating = Rating.parse(rating);
 
     if (ratingFilter == BooruConfigRatingFilter.none) return true;
 

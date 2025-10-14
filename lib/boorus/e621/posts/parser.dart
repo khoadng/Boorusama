@@ -38,7 +38,7 @@ E621Post? postDtoToPost(PostDto dto, PostMetadata? metadata) {
     thumbnailImageUrl: previewUrl,
     sampleImageUrl: isGif ? originalUrl : sampleUrl ?? originalUrl,
     originalImageUrl: originalUrl,
-    rating: mapStringToRating(dto.rating),
+    rating: Rating.parse(dto.rating),
     hasComment: dto.commentCount != null && dto.commentCount! > 0,
     isTranslated: dto.hasNotes ?? false,
     hasParentOrChildren:

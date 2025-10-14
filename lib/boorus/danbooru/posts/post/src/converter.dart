@@ -55,7 +55,7 @@ DanbooruPost postDtoToPost(
       favCount: dto.favCount ?? 0,
       uploaderId: dto.uploaderId ?? 0,
       approverId: dto.approverId,
-      rating: mapStringToRating(dto.rating ?? 's'),
+      rating: Rating.parse(dto.rating ?? 's'),
       fileSize: dto.fileSize ?? 0,
       isBanned: dto.isBanned ?? false,
       hasChildren: dto.hasChildren ?? false,

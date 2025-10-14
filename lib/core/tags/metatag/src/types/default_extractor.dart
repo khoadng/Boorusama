@@ -18,7 +18,7 @@ class DefaultMetatagExtractor implements MetatagExtractor {
   ) {
     if (!hasMetatag(str)) return null;
 
-    final operator = stringToFilterOperator(str.getFirstCharacter());
+    final operator = FilterOperator.fromString(str.getFirstCharacter());
 
     final query = str.split(':');
     if (query.length <= 1) return null;

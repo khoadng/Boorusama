@@ -10,7 +10,7 @@ DanbooruUserFeedback userFeedbackDtoToUserFeedback(UserFeedbackDto dto) =>
       userId: dto.userId ?? 0,
       creatorId: dto.creatorId ?? 0,
       body: dto.body ?? '',
-      category: UserFeedbackCategory.fromString(dto.category),
+      category: UserFeedbackCategory.parse(dto.category),
       createdAt: DateTime.tryParse(dto.createdAt ?? ''),
       updatedAt: DateTime.tryParse(dto.updatedAt ?? ''),
       isDeleted: dto.isDeleted ?? false,

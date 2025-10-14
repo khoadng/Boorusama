@@ -20,7 +20,7 @@ GelbooruV1Post postDtoToPost(
     sampleImageUrl: sanitizedUrl(post.sampleUrl ?? ''),
     originalImageUrl: sanitizedUrl(post.fileUrl ?? ''),
     tags: post.tags.splitTagString(),
-    rating: mapStringToRating(post.rating),
+    rating: Rating.parse(post.rating),
     hasComment: false,
     isTranslated: false,
     hasParentOrChildren: false,

@@ -6,13 +6,13 @@ import 'filter_operator.dart';
 
 String sanitizeQuery(String query) {
   final trimmed = query.trim().replaceAll(' ', '_');
-  final operator = stringToFilterOperator(trimmed.getFirstCharacter());
+  final operator = FilterOperator.fromString(trimmed.getFirstCharacter());
 
   return stripFilterOperator(trimmed, operator);
 }
 
 FilterOperator getFilterOperator(String query) {
-  return stringToFilterOperator(query.trim().getFirstCharacter());
+  return FilterOperator.fromString(query.trim().getFirstCharacter());
 }
 
 extension QueryX on String {

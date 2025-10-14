@@ -30,7 +30,7 @@ GelbooruPost gelbooruPostDtoToGelbooruPost(
     height: dto.height?.toDouble() ?? 0,
     format: path.extension(dto.fileUrl ?? 'foo.png').substring(1),
     source: PostSource.from(dto.source),
-    rating: mapStringToRating(dto.rating ?? 'general'),
+    rating: Rating.parse(dto.rating ?? 'general'),
     md5: dto.md5 ?? '',
     hasComment: dto.hasComments ?? false,
     hasParentOrChildren:

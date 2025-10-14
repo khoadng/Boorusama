@@ -114,7 +114,7 @@ SankakuPost postDtoToPost(
     sampleImageUrl: e.sampleUrl ?? '',
     originalImageUrl: e.fileUrl ?? '',
     tags: e.tags?.map((e) => e.tagName).nonNulls.toSet() ?? {},
-    rating: mapStringToRating(e.rating),
+    rating: Rating.parse(e.rating),
     hasComment: e.hasComments ?? false,
     isTranslated: false,
     hasParentOrChildren: hasParentOrChildren,

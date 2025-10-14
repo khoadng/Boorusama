@@ -21,8 +21,6 @@ DanbooruForumTopic dtoToTopic(ForumTopicDto dto) {
         ? DateTime.parse(dto.updatedAt!)
         : DateTime.now(),
     isDeleted: dto.isDeleted ?? false,
-    category: dto.categoryId != null
-        ? intToDanbooruTopicCategory(dto.categoryId!)
-        : DanbooruTopicCategory.general,
+    category: DanbooruTopicCategory.parse(dto.categoryId),
   );
 }

@@ -9,7 +9,7 @@ Set<Rating>? parseGranularRatingFilters(String? granularRatingFilterString) {
 
   return granularRatingFilterString
       .split('|')
-      .map((e) => mapStringToRating(e))
+      .map((e) => Rating.parse(e))
       .toSet();
 }
 

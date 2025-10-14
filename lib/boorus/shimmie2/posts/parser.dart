@@ -18,7 +18,7 @@ Shimmie2Post postDtoToPost(
     sampleImageUrl: e.fileUrl ?? '',
     originalImageUrl: e.fileUrl ?? '',
     tags: e.tags?.toSet() ?? {},
-    rating: mapStringToRating(e.rating),
+    rating: Rating.parse(e.rating),
     hasComment: false,
     isTranslated: false,
     hasParentOrChildren: false,
