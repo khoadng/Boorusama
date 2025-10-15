@@ -23,7 +23,6 @@ import '../../../../settings/providers.dart';
 import '../../../../themes/theme/types.dart';
 import '../../../../videos/lock/widgets.dart';
 import '../../../../widgets/widgets.dart';
-import '../../../details_manager/types.dart';
 import '../../../details_pageview/widgets.dart';
 import '../../../details_parts/types.dart';
 import '../../../post/routes.dart';
@@ -134,6 +133,30 @@ class _PostDetailPageScaffoldState<T extends Post>
 
   var _previouslyPlaying = false;
 
+  Set<DetailsPart> _resolveFullDetailsParts({
+    required bool hasPremium,
+  }) {
+    return widget.preferredParts ??
+        getLayoutParsedParts(
+          details: widget.layoutConfig?.details,
+          hasPremium: hasPremium,
+        ) ??
+        widget.uiBuilder?.full.keys.toSet() ??
+        <DetailsPart>{};
+  }
+
+  Set<DetailsPart> _resolvePreviewDetailsParts({
+    required bool hasPremium,
+  }) {
+    return widget.preferredPreviewParts ??
+        getLayoutPreviewParsedParts(
+          previewDetails: widget.layoutConfig?.previewDetails,
+          hasPremium: hasPremium,
+        ) ??
+        widget.uiBuilder?.preview.keys.toSet() ??
+        <DetailsPart>{};
+  }
+
   void _isVideoPlayingChanged() {
     if (context.isLargeScreen && isDesktopPlatform()) {
       // force overlay to be on when video is not playing
@@ -223,8 +246,6 @@ class _PostDetailPageScaffoldState<T extends Post>
     final postGesturesHandler = widget.postGestureHandlerBuilder;
     final gestures = widget.gestureConfig?.fullview;
 
-    final uiBuilder = widget.uiBuilder;
-
     final reduceAnimations = ref.watch(
       settingsProvider.select((value) => value.reduceAnimations),
     );
@@ -305,23 +326,15 @@ class _PostDetailPageScaffoldState<T extends Post>
         sheetBuilder: (context, scrollController) {
           return Consumer(
             builder: (_, ref, _) {
-              final layoutDetails = widget.layoutConfig?.details;
-
-              final preferredParts =
-                  widget.preferredParts ??
-                  getLayoutParsedParts(
-                    details: layoutDetails,
-                    hasPremium: ref.watch(hasPremiumLayoutProvider),
-                  ) ??
-                  uiBuilder?.full.keys.toSet();
-
               return ValueListenableBuilder(
                 valueListenable: _controller.sheetState,
                 builder: (context, state, _) => PostDetailsFullInfoSheet(
                   scrollController: scrollController,
                   sheetState: state,
-                  uiBuilder: uiBuilder,
-                  preferredParts: preferredParts,
+                  uiBuilder: widget.uiBuilder,
+                  preferredParts: _resolveFullDetailsParts(
+                    hasPremium: ref.watch(hasPremiumLayoutProvider),
+                  ),
                   canCustomize: ref.watch(showPremiumFeatsProvider),
                 ),
               );
@@ -331,13 +344,15 @@ class _PostDetailPageScaffoldState<T extends Post>
         itemBuilder: widget.itemBuilder,
         bottomSheet: Consumer(
           builder: (_, ref, _) {
-            final layoutPreviewDetails = widget.layoutConfig?.previewDetails;
-
-            return widget.uiBuilder != null
-                ? _buildCustomPreview(widget.uiBuilder!, layoutPreviewDetails)
-                : uiBuilder != null && uiBuilder.preview.isNotEmpty
-                ? _buildCustomPreview(uiBuilder, layoutPreviewDetails)
-                : _buildFallbackPreview();
+            return switch (widget.uiBuilder) {
+              null => _buildFallbackPreview(),
+              final uiBuilder when uiBuilder.preview.isNotEmpty =>
+                _buildCustomPreview(
+                  uiBuilder: uiBuilder,
+                  hasPremium: ref.watch(hasPremiumLayoutProvider),
+                ),
+              _ => const SizedBox.shrink(),
+            };
           },
         ),
         actions: widget.actions,
@@ -365,17 +380,13 @@ class _PostDetailPageScaffoldState<T extends Post>
     );
   }
 
-  Widget _buildCustomPreview(
-    PostDetailsUIBuilder uiBuilder,
-    List<CustomDetailsPartKey>? layoutPreviewDetails,
-  ) {
-    final preferredPreviewParts =
-        widget.preferredPreviewParts ??
-        getLayoutPreviewParsedParts(
-          previewDetails: layoutPreviewDetails,
-          hasPremium: ref.watch(hasPremiumLayoutProvider),
-        ) ??
-        uiBuilder.preview.keys.toSet();
+  Widget _buildCustomPreview({
+    required bool hasPremium,
+    required PostDetailsUIBuilder uiBuilder,
+  }) {
+    final preferredPreviewParts = _resolvePreviewDetailsParts(
+      hasPremium: hasPremium,
+    );
 
     final colorScheme = Theme.of(context).colorScheme;
     final decoration = BoxDecoration(
