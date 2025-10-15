@@ -4,25 +4,11 @@ import '../../../core/posts/details_parts/widgets.dart';
 import 'types.dart';
 
 final kHybooruPostDetailsUIBuilder = PostDetailsUIBuilder(
-  previewSelectableParts: {
-    DetailsPart.toolbar,
-    DetailsPart.tags,
-    DetailsPart.fileDetails,
+  preview: {
+    DetailsPart.toolbar: (context) =>
+        const DefaultInheritedPostActionToolbar<HybooruPost>(),
   },
-  previewDefaultEnabledParts: {
-    DetailsPart.toolbar,
-  },
-  fullDefaultEnabledParts: {
-    DetailsPart.toolbar,
-    DetailsPart.tags,
-    DetailsPart.fileDetails,
-  },
-  fullSelectableParts: {
-    DetailsPart.toolbar,
-    DetailsPart.tags,
-    DetailsPart.fileDetails,
-  },
-  builders: {
+  full: {
     DetailsPart.toolbar: (context) =>
         const DefaultInheritedPostActionToolbar<HybooruPost>(),
     DetailsPart.tags: (context) =>

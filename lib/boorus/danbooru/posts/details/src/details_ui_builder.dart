@@ -20,41 +20,15 @@ import 'widgets/danbooru_post_action_toolbar.dart';
 import 'widgets/details_widgets.dart';
 
 final danbooruPostDetailsUiBuilder = PostDetailsUIBuilder(
-  previewSelectableParts: {
-    DetailsPart.info,
-    DetailsPart.toolbar,
+  previewAllowedParts: {
     DetailsPart.tags,
-    DetailsPart.fileDetails,
   },
-  previewDefaultEnabledParts: {
-    DetailsPart.info,
-    DetailsPart.toolbar,
+  preview: {
+    DetailsPart.info: (context) => const DanbooruInformationSection(),
+    DetailsPart.toolbar: (context) =>
+        const DanbooruInheritedPostActionToolbar(),
   },
-  fullDefaultEnabledParts: {
-    DetailsPart.info,
-    DetailsPart.toolbar,
-    DetailsPart.artistInfo,
-    DetailsPart.stats,
-    DetailsPart.tags,
-    DetailsPart.fileDetails,
-    DetailsPart.artistPosts,
-    DetailsPart.pool,
-    DetailsPart.relatedPosts,
-    DetailsPart.characterList,
-  },
-  fullSelectableParts: {
-    DetailsPart.info,
-    DetailsPart.toolbar,
-    DetailsPart.artistInfo,
-    DetailsPart.stats,
-    DetailsPart.tags,
-    DetailsPart.fileDetails,
-    DetailsPart.artistPosts,
-    DetailsPart.pool,
-    DetailsPart.relatedPosts,
-    DetailsPart.characterList,
-  },
-  builders: {
+  full: {
     DetailsPart.info: (context) => const DanbooruInformationSection(),
     DetailsPart.toolbar: (context) =>
         const DanbooruInheritedPostActionToolbar(),
@@ -64,6 +38,8 @@ final danbooruPostDetailsUiBuilder = PostDetailsUIBuilder(
     DetailsPart.fileDetails: (context) => const DanbooruFileDetailsSection(),
     DetailsPart.artistPosts: (context) =>
         const DefaultInheritedArtistPostsSection<DanbooruPost>(),
+    DetailsPart.uploaderPosts: (context) =>
+        const DanbooruUploaderPostsSection(),
     DetailsPart.pool: (context) => const DanbooruPoolTiles(),
     DetailsPart.relatedPosts: (context) => const DanbooruRelatedPostsSection2(),
     DetailsPart.characterList: (context) =>

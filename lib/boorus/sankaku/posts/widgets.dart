@@ -30,31 +30,15 @@ class SankakuUploaderFileDetailTile extends ConsumerWidget {
 }
 
 final kSankakuPostDetailsUIBuilder = PostDetailsUIBuilder(
-  previewSelectableParts: {
-    DetailsPart.info,
-    DetailsPart.toolbar,
-    DetailsPart.tags,
-    DetailsPart.fileDetails,
+  preview: {
+    DetailsPart.info: (context) =>
+        const DefaultInheritedInformationSection<SankakuPost>(
+          showSource: true,
+        ),
+    DetailsPart.toolbar: (context) =>
+        const DefaultInheritedPostActionToolbar<SankakuPost>(),
   },
-  previewDefaultEnabledParts: {
-    DetailsPart.info,
-    DetailsPart.toolbar,
-  },
-  fullDefaultEnabledParts: {
-    DetailsPart.info,
-    DetailsPart.toolbar,
-    DetailsPart.tags,
-    DetailsPart.fileDetails,
-    DetailsPart.artistPosts,
-  },
-  fullSelectableParts: {
-    DetailsPart.info,
-    DetailsPart.toolbar,
-    DetailsPart.tags,
-    DetailsPart.fileDetails,
-    DetailsPart.artistPosts,
-  },
-  builders: {
+  full: {
     DetailsPart.info: (context) =>
         const DefaultInheritedInformationSection<SankakuPost>(
           showSource: true,

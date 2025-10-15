@@ -149,27 +149,10 @@ class SzurubooruStatsTileSection extends ConsumerWidget {
 }
 
 final kSzurubooruPostDetailsUIBuilder = PostDetailsUIBuilder(
-  previewSelectableParts: {
-    DetailsPart.toolbar,
-    DetailsPart.tags,
-    DetailsPart.fileDetails,
+  preview: {
+    DetailsPart.toolbar: (context) => const SzurubooruPostActionToolbar(),
   },
-  previewDefaultEnabledParts: {
-    DetailsPart.toolbar,
-  },
-  fullDefaultEnabledParts: {
-    DetailsPart.toolbar,
-    DetailsPart.stats,
-    DetailsPart.tags,
-    DetailsPart.fileDetails,
-  },
-  fullSelectableParts: {
-    DetailsPart.toolbar,
-    DetailsPart.stats,
-    DetailsPart.tags,
-    DetailsPart.fileDetails,
-  },
-  builders: {
+  full: {
     DetailsPart.toolbar: (context) => const SzurubooruPostActionToolbar(),
     DetailsPart.stats: (context) => const SzurubooruStatsTileSection(),
     DetailsPart.tags: (context) =>

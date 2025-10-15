@@ -30,32 +30,11 @@ class GelbooruUploaderFileDetailTile extends ConsumerWidget {
 }
 
 final kGelbooruPostDetailsUIBuilder = PostDetailsUIBuilder(
-  previewSelectableParts: {
-    DetailsPart.toolbar,
-    DetailsPart.source,
-    DetailsPart.tags,
-    DetailsPart.fileDetails,
+  preview: {
+    DetailsPart.toolbar: (context) =>
+        const DefaultInheritedPostActionToolbar<GelbooruPost>(),
   },
-  previewDefaultEnabledParts: {
-    DetailsPart.toolbar,
-  },
-  fullDefaultEnabledParts: {
-    DetailsPart.toolbar,
-    DetailsPart.source,
-    DetailsPart.tags,
-    DetailsPart.fileDetails,
-    DetailsPart.artistPosts,
-    DetailsPart.characterList,
-  },
-  fullSelectableParts: {
-    DetailsPart.toolbar,
-    DetailsPart.source,
-    DetailsPart.tags,
-    DetailsPart.fileDetails,
-    DetailsPart.artistPosts,
-    DetailsPart.characterList,
-  },
-  builders: {
+  full: {
     DetailsPart.toolbar: (context) =>
         const DefaultInheritedPostActionToolbar<GelbooruPost>(),
     DetailsPart.source: (context) =>

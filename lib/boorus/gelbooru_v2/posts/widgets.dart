@@ -204,34 +204,11 @@ class GelbooruV2RelatedPostsSection extends ConsumerWidget {
 }
 
 final kGelbooruV2PostDetailsUIBuilder = PostDetailsUIBuilder(
-  previewSelectableParts: {
-    DetailsPart.toolbar,
-    DetailsPart.source,
-    DetailsPart.tags,
-    DetailsPart.fileDetails,
+  preview: {
+    DetailsPart.toolbar: (context) =>
+        const DefaultInheritedPostActionToolbar<GelbooruV2Post>(),
   },
-  previewDefaultEnabledParts: {
-    DetailsPart.toolbar,
-  },
-  fullDefaultEnabledParts: {
-    DetailsPart.toolbar,
-    DetailsPart.source,
-    DetailsPart.tags,
-    DetailsPart.fileDetails,
-    DetailsPart.artistPosts,
-    DetailsPart.relatedPosts,
-    DetailsPart.characterList,
-  },
-  fullSelectableParts: {
-    DetailsPart.toolbar,
-    DetailsPart.source,
-    DetailsPart.tags,
-    DetailsPart.fileDetails,
-    DetailsPart.artistPosts,
-    DetailsPart.relatedPosts,
-    DetailsPart.characterList,
-  },
-  builders: {
+  full: {
     DetailsPart.toolbar: (context) =>
         const DefaultInheritedPostActionToolbar<GelbooruV2Post>(),
     DetailsPart.source: (context) =>

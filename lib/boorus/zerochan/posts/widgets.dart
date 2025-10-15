@@ -4,27 +4,11 @@ import '../../../core/posts/details_parts/widgets.dart';
 import 'types.dart';
 
 final kZerochanPostDetailsUIBuilder = PostDetailsUIBuilder(
-  previewSelectableParts: {
-    DetailsPart.toolbar,
-    DetailsPart.tags,
-    DetailsPart.fileDetails,
+  preview: {
+    DetailsPart.toolbar: (context) =>
+        const DefaultInheritedPostActionToolbar<ZerochanPost>(),
   },
-  previewDefaultEnabledParts: {
-    DetailsPart.toolbar,
-  },
-  fullDefaultEnabledParts: {
-    DetailsPart.toolbar,
-    DetailsPart.source,
-    DetailsPart.tags,
-    DetailsPart.fileDetails,
-  },
-  fullSelectableParts: {
-    DetailsPart.toolbar,
-    DetailsPart.source,
-    DetailsPart.tags,
-    DetailsPart.fileDetails,
-  },
-  builders: {
+  full: {
     DetailsPart.toolbar: (context) =>
         const DefaultInheritedPostActionToolbar<ZerochanPost>(),
     DetailsPart.source: (context) =>

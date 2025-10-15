@@ -4,53 +4,47 @@ import 'package:flutter/widgets.dart';
 // Project imports:
 import 'details_part.dart';
 
+const kDefaultPostDetailsPreviewPart = {
+  DetailsPart.info,
+  DetailsPart.toolbar,
+};
+
+const kDefaultPostDetailsBuildablePreviewPart = {
+  DetailsPart.info,
+  DetailsPart.toolbar,
+  DetailsPart.fileDetails,
+};
+
 class PostDetailsUIBuilder {
   const PostDetailsUIBuilder({
-    required this.builders,
-    required this.previewSelectableParts,
-    required this.previewDefaultEnabledParts,
-    required this.fullSelectableParts,
-    required this.fullDefaultEnabledParts,
+    this.preview = const {},
+    this.full = const {},
+    this.previewAllowedParts = const {
+      DetailsPart.fileDetails,
+      DetailsPart.source,
+    },
   });
 
-  final Map<DetailsPart, Widget Function(BuildContext context)> builders;
+  final Set<DetailsPart> previewAllowedParts;
 
-  final Set<DetailsPart> previewSelectableParts;
-  final Set<DetailsPart> previewDefaultEnabledParts;
+  final Map<DetailsPart, Widget Function(BuildContext context)> preview;
+  final Map<DetailsPart, Widget Function(BuildContext context)> full;
 
-  final Set<DetailsPart> fullSelectableParts;
-  final Set<DetailsPart> fullDefaultEnabledParts;
-
-  Set<DetailsPart> get availableParts {
-    return builders.keys.toSet();
-  }
-
-  Set<DetailsPart> get selectablePreviewParts {
-    return previewSelectableParts.intersection(availableParts);
-  }
-
-  Set<DetailsPart> get selectableFullParts {
-    return fullSelectableParts.intersection(availableParts);
-  }
-
-  Set<DetailsPart> get defaultEnabledPreviewParts {
-    return previewDefaultEnabledParts.intersection(availableParts);
-  }
-
-  Set<DetailsPart> get defaultEnabledFullParts {
-    return fullDefaultEnabledParts.intersection(availableParts);
+  Set<DetailsPart> get buildablePreviewParts {
+    // use full widgets, except for the ones that are not allowed
+    return {
+      ...previewAllowedParts.intersection(full.keys.toSet()),
+      ...kDefaultPostDetailsBuildablePreviewPart,
+      ...preview.keys.toSet(),
+    };
   }
 
   Widget? buildPart(BuildContext context, DetailsPart part) {
-    final builder = builders[part];
-    return builder?.call(context);
-  }
+    final builder = full[part];
+    if (builder != null) {
+      return builder(context);
+    }
 
-  bool canUseInPreview(DetailsPart part) {
-    return selectablePreviewParts.contains(part);
-  }
-
-  bool canUseInFull(DetailsPart part) {
-    return selectableFullParts.contains(part);
+    return null;
   }
 }

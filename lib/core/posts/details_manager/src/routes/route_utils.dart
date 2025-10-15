@@ -31,7 +31,7 @@ void goToDetailsLayoutManagerForPreviewWidgets(WidgetRef ref) {
 
   final previewDetails =
       layout.previewDetails ??
-      convertDetailsParts(uiBuilder.selectablePreviewParts.toList());
+      convertDetailsParts(uiBuilder.preview.keys.toList());
 
   final notifier = ref.watch(booruConfigProvider.notifier);
   final currentConfigNotifier = ref.watch(
@@ -43,8 +43,8 @@ void goToDetailsLayoutManagerForPreviewWidgets(WidgetRef ref) {
     ref,
     params: DetailsLayoutManagerParams(
       details: previewDetails,
-      availableParts: uiBuilder.selectablePreviewParts,
-      defaultParts: uiBuilder.selectablePreviewParts,
+      availableParts: uiBuilder.buildablePreviewParts.toSet(),
+      defaultParts: uiBuilder.preview.keys.toSet(),
       onUpdate: (parts) {
         notifier.update(
           booruConfigData: config
@@ -73,7 +73,7 @@ void goToDetailsLayoutManagerForFullWidgets(WidgetRef ref) {
   if (uiBuilder == null) return;
 
   final details =
-      layout.details ?? convertDetailsParts(uiBuilder.availableParts.toList());
+      layout.details ?? convertDetailsParts(uiBuilder.full.keys.toList());
 
   final notifier = ref.watch(booruConfigProvider.notifier);
   final currentConfigNotifier = ref.watch(
@@ -85,8 +85,8 @@ void goToDetailsLayoutManagerForFullWidgets(WidgetRef ref) {
     ref,
     params: DetailsLayoutManagerParams(
       details: details,
-      availableParts: uiBuilder.selectableFullParts,
-      defaultParts: uiBuilder.selectableFullParts,
+      availableParts: uiBuilder.full.keys.toSet(),
+      defaultParts: uiBuilder.full.keys.toSet(),
       onUpdate: (parts) {
         notifier.update(
           booruConfigData: config
