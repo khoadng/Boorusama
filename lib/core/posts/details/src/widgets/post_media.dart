@@ -33,6 +33,7 @@ class PostMedia<T extends Post> extends ConsumerWidget {
     required this.controller,
     required this.imageCacheManager,
     super.key,
+    this.isPageSettled = false,
   });
 
   final T post;
@@ -42,6 +43,7 @@ class PostMedia<T extends Post> extends ConsumerWidget {
   final String Function(T post)? imageUrlBuilder;
   final String Function(T post)? thumbnailUrlBuilder;
   final ImageCacheManager? imageCacheManager;
+  final bool isPageSettled;
 
   void _openSettings(WidgetRef ref) {
     openImageViewerSettingsPage(ref);
@@ -100,6 +102,7 @@ class PostMedia<T extends Post> extends ConsumerWidget {
                       cacheManager: ref.watch(videoCacheManagerProvider),
                       cacheDelay: createVideoCacheDelayCallback(post),
                       fileSize: post.fileSize > 0 ? post.fileSize : null,
+                      shouldInitialize: isPageSettled,
                     );
                   },
                 ),

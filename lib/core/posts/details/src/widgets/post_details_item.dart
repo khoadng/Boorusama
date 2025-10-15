@@ -139,18 +139,27 @@ class _PostDetailsItemState<T extends Post>
               ValueListenableBuilder(
                 valueListenable: widget.isInitPageListenable,
                 builder: (_, isInitPage, _) {
-                  return PostMedia<T>(
-                    post: post,
-                    config: widget.authConfig,
-                    viewer: widget.viewerConfig,
-                    imageUrlBuilder: widget.imageUrlBuilder,
-                    imageCacheManager: widget.imageCacheManager,
-                    // This is used to make sure we have a thumbnail to show instead of a black placeholder
-                    thumbnailUrlBuilder:
-                        isInitPage && initialThumbnailUrl != null
-                        ? (_) => initialThumbnailUrl
-                        : null,
-                    controller: pageViewController,
+                  return ValueListenableBuilder(
+                    valueListenable:
+                        widget.detailsController.currentSettledPage,
+                    builder: (_, currentSettledPage, _) {
+                      final isPageSettled = currentSettledPage == widget.index;
+
+                      return PostMedia<T>(
+                        post: post,
+                        config: widget.authConfig,
+                        viewer: widget.viewerConfig,
+                        imageUrlBuilder: widget.imageUrlBuilder,
+                        imageCacheManager: widget.imageCacheManager,
+                        // This is used to make sure we have a thumbnail to show instead of a black placeholder
+                        thumbnailUrlBuilder:
+                            isInitPage && initialThumbnailUrl != null
+                            ? (_) => initialThumbnailUrl
+                            : null,
+                        controller: pageViewController,
+                        isPageSettled: isPageSettled,
+                      );
+                    },
                   );
                 },
               ),

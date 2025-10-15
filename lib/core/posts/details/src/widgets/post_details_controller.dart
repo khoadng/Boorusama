@@ -29,7 +29,8 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
   }) : currentPage = ValueNotifier(initialPage),
        _initialPage = initialPage,
        currentPost = ValueNotifier(posts[initialPage]),
-       _playback = VideoPlaybackManager();
+       _playback = VideoPlaybackManager(),
+       currentSettledPage = ValueNotifier(null);
   final AutoScrollController? scrollController;
   final bool reduceAnimations;
   final List<T> posts;
@@ -38,7 +39,7 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
   final String? dislclaimer;
   final int doubleTapSeekDuration;
 
-  int? currentSettledPage;
+  late ValueNotifier<int?> currentSettledPage;
   late ValueNotifier<int> currentPage;
   late ValueNotifier<T> currentPost;
   final VideoPlaybackManager _playback;
@@ -52,9 +53,9 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
   }
 
   void onPageSettled(int page) {
-    if (page == currentSettledPage) return;
+    if (page == currentSettledPage.value) return;
 
-    currentSettledPage = page;
+    currentSettledPage.value = page;
 
     final post = posts.getOrNull(page);
 
@@ -86,8 +87,8 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
   Stream<VideoProgress> get seekStream => _playback.seekStream;
 
   void onCurrentPositionChanged(double current, double total, String id) {
-    if (posts.getOrNull(currentSettledPage ?? -1)?.id case final currentId?
-        when currentId.toString() == id) {
+    if (posts.getOrNull(currentSettledPage.value ?? -1)?.id
+        case final currentId? when currentId.toString() == id) {
       _playback.updateProgress(current, total, currentId);
     }
   }
@@ -172,6 +173,7 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
 
     currentPage.dispose();
     currentPost.dispose();
+    currentSettledPage.dispose();
 
     super.dispose();
   }

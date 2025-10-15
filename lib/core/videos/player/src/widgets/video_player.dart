@@ -40,6 +40,7 @@ class BooruVideo extends ConsumerStatefulWidget {
     this.logger,
     this.cacheDelay,
     this.fileSize,
+    this.shouldInitialize = true,
   });
 
   final String url;
@@ -59,6 +60,7 @@ class BooruVideo extends ConsumerStatefulWidget {
   final VideoPlayerEngine? videoPlayerEngine;
   final Logger? logger;
   final CacheDelayCallback? cacheDelay;
+  final bool shouldInitialize;
 
   @override
   ConsumerState<BooruVideo> createState() => _BooruVideoState();
@@ -96,11 +98,9 @@ class _BooruVideoState extends ConsumerState<BooruVideo> {
   @override
   void initState() {
     super.initState();
-    _log(
-      widget.logger?.debug,
-      'Initializing video player for URL: ${widget.url}',
-    );
-    _initializePlayer();
+    if (widget.shouldInitialize) {
+      _initializePlayer();
+    }
   }
 
   @override
@@ -123,6 +123,11 @@ class _BooruVideoState extends ConsumerState<BooruVideo> {
       _isDisposing = false;
       _error = null;
 
+      if (widget.shouldInitialize) {
+        _initializePlayer();
+      }
+    } else if (widget.shouldInitialize != oldWidget.shouldInitialize &&
+        widget.shouldInitialize) {
       _initializePlayer();
     } else {
       _log(
