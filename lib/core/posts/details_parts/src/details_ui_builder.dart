@@ -23,9 +23,11 @@ class PostDetailsUIBuilder {
       DetailsPart.fileDetails,
       DetailsPart.source,
     },
+    this.fullDisallowedParts = const {},
   });
 
   final Set<DetailsPart> previewAllowedParts;
+  final Set<DetailsPart> fullDisallowedParts;
 
   final Map<DetailsPart, Widget Function(BuildContext context)> preview;
   final Map<DetailsPart, Widget Function(BuildContext context)> full;
@@ -36,6 +38,12 @@ class PostDetailsUIBuilder {
       ...previewAllowedParts.intersection(full.keys.toSet()),
       ...kDefaultPostDetailsBuildablePreviewPart,
       ...preview.keys.toSet(),
+    };
+  }
+
+  Set<DetailsPart> get buildableFullParts {
+    return {
+      ...full.keys.toSet().difference(fullDisallowedParts),
     };
   }
 

@@ -40,7 +40,8 @@ class DefaultInheritedArtistPostsSection<T extends Post>
             data: (data) => data.artistTags.isNotEmpty
                 ? data.artistTags
                       .map(
-                        (tag) => SliverArtistPostList(
+                        (tag) => SliverDetailsPostList(
+                          onTap: () => goToArtistPage(ref, tag),
                           tag: tag,
                           child: ref
                               .watch(
@@ -75,15 +76,17 @@ class DefaultInheritedArtistPostsSection<T extends Post>
   }
 }
 
-class SliverArtistPostList extends ConsumerWidget {
-  const SliverArtistPostList({
+class SliverDetailsPostList extends ConsumerWidget {
+  const SliverDetailsPostList({
     required this.tag,
+    required this.onTap,
     required this.child,
     super.key,
   });
 
   final String tag;
   final Widget child;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -100,7 +103,7 @@ class SliverArtistPostList extends ConsumerWidget {
                   vertical: 8,
                 ),
                 child: InkWell(
-                  onTap: () => goToArtistPage(ref, tag),
+                  onTap: onTap,
                   customBorder: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
