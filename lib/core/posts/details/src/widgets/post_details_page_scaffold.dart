@@ -136,25 +136,39 @@ class _PostDetailPageScaffoldState<T extends Post>
   Set<DetailsPart> _resolveFullDetailsParts({
     required bool hasPremium,
   }) {
-    return widget.preferredParts ??
+    final userSelection =
+        widget.preferredParts ??
         getLayoutParsedParts(
           details: widget.layoutConfig?.details,
           hasPremium: hasPremium,
-        ) ??
-        widget.uiBuilder?.full.keys.toSet() ??
-        <DetailsPart>{};
+        );
+
+    if (userSelection != null) {
+      return userSelection.intersection(
+        widget.uiBuilder?.selectableFullParts ?? <DetailsPart>{},
+      );
+    }
+
+    return widget.uiBuilder?.defaultEnabledFullParts ?? <DetailsPart>{};
   }
 
   Set<DetailsPart> _resolvePreviewDetailsParts({
     required bool hasPremium,
   }) {
-    return widget.preferredPreviewParts ??
+    final userSelection =
+        widget.preferredPreviewParts ??
         getLayoutPreviewParsedParts(
           previewDetails: widget.layoutConfig?.previewDetails,
           hasPremium: hasPremium,
-        ) ??
-        widget.uiBuilder?.preview.keys.toSet() ??
-        <DetailsPart>{};
+        );
+
+    if (userSelection != null) {
+      return userSelection.intersection(
+        widget.uiBuilder?.selectablePreviewParts ?? <DetailsPart>{},
+      );
+    }
+
+    return widget.uiBuilder?.defaultEnabledPreviewParts ?? <DetailsPart>{};
   }
 
   void _isVideoPlayingChanged() {
@@ -346,7 +360,7 @@ class _PostDetailPageScaffoldState<T extends Post>
           builder: (_, ref, _) {
             return switch (widget.uiBuilder) {
               null => _buildFallbackPreview(),
-              final uiBuilder when uiBuilder.preview.isNotEmpty =>
+              final uiBuilder when uiBuilder.builders.isNotEmpty =>
                 _buildCustomPreview(
                   uiBuilder: uiBuilder,
                   hasPremium: ref.watch(hasPremiumLayoutProvider),

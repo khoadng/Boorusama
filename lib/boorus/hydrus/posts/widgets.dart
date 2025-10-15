@@ -72,10 +72,25 @@ class HydrusPostActionToolbar extends ConsumerWidget {
 }
 
 final kHydrusPostDetailsUIBuilder = PostDetailsUIBuilder(
-  preview: {
-    DetailsPart.toolbar: (context) => const HydrusPostActionToolbar(),
+  previewSelectableParts: {
+    DetailsPart.toolbar,
+    DetailsPart.tags,
+    DetailsPart.fileDetails,
   },
-  full: {
+  previewDefaultEnabledParts: {
+    DetailsPart.toolbar,
+  },
+  fullDefaultEnabledParts: {
+    DetailsPart.toolbar,
+    DetailsPart.tags,
+    DetailsPart.fileDetails,
+  },
+  fullSelectableParts: {
+    DetailsPart.toolbar,
+    DetailsPart.tags,
+    DetailsPart.fileDetails,
+  },
+  builders: {
     DetailsPart.toolbar: (context) => const HydrusPostActionToolbar(),
     DetailsPart.tags: (context) =>
         const DefaultInheritedBasicTagsTile<HydrusPost>(),

@@ -142,10 +142,25 @@ class BaseBooruBuilder implements BooruBuilder {
 }
 
 final kFallbackPostDetailsUIBuilder = PostDetailsUIBuilder(
-  preview: {
-    DetailsPart.toolbar: (context) => const DefaultInheritedPostActionToolbar(),
+  previewSelectableParts: {
+    DetailsPart.toolbar,
+    DetailsPart.tags,
+    DetailsPart.fileDetails,
   },
-  full: {
+  previewDefaultEnabledParts: {
+    DetailsPart.toolbar,
+  },
+  fullDefaultEnabledParts: {
+    DetailsPart.toolbar,
+    DetailsPart.tags,
+    DetailsPart.fileDetails,
+  },
+  fullSelectableParts: {
+    DetailsPart.toolbar,
+    DetailsPart.tags,
+    DetailsPart.fileDetails,
+  },
+  builders: {
     DetailsPart.toolbar: (context) => const DefaultInheritedPostActionToolbar(),
     DetailsPart.tags: (context) => const DefaultInheritedBasicTagsTile(),
     DetailsPart.fileDetails: (context) =>

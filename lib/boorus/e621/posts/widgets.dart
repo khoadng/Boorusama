@@ -52,15 +52,33 @@ class E621UploaderFileDetailTile extends ConsumerWidget {
 }
 
 final kE621PostDetailsUIBuilder = PostDetailsUIBuilder(
-  preview: {
-    DetailsPart.info: (context) =>
-        const DefaultInheritedInformationSection<E621Post>(
-          showSource: true,
-        ),
-    DetailsPart.toolbar: (context) =>
-        const DefaultInheritedPostActionToolbar<E621Post>(),
+  previewSelectableParts: {
+    DetailsPart.info,
+    DetailsPart.toolbar,
+    DetailsPart.tags,
+    DetailsPart.fileDetails,
   },
-  full: {
+  previewDefaultEnabledParts: {
+    DetailsPart.info,
+    DetailsPart.toolbar,
+  },
+  fullDefaultEnabledParts: {
+    DetailsPart.info,
+    DetailsPart.toolbar,
+    DetailsPart.artistInfo,
+    DetailsPart.tags,
+    DetailsPart.fileDetails,
+    DetailsPart.artistPosts,
+  },
+  fullSelectableParts: {
+    DetailsPart.info,
+    DetailsPart.toolbar,
+    DetailsPart.artistInfo,
+    DetailsPart.tags,
+    DetailsPart.fileDetails,
+    DetailsPart.artistPosts,
+  },
+  builders: {
     DetailsPart.info: (context) =>
         const DefaultInheritedInformationSection<E621Post>(
           showSource: true,

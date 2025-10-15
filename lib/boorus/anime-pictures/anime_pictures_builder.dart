@@ -76,11 +76,29 @@ class AnimePicturesBuilder extends BaseBooruBuilder {
 
   @override
   final postDetailsUIBuilder = PostDetailsUIBuilder(
-    preview: {
-      DetailsPart.toolbar: (context) =>
-          const DefaultInheritedPostActionToolbar<AnimePicturesPost>(),
+    previewSelectableParts: {
+    DetailsPart.toolbar,
+    DetailsPart.tags,
+    DetailsPart.fileDetails,
     },
-    full: {
+    previewDefaultEnabledParts: {
+      DetailsPart.toolbar,
+    },
+    fullDefaultEnabledParts: {
+      DetailsPart.toolbar,
+      DetailsPart.source,
+      DetailsPart.tags,
+      DetailsPart.fileDetails,
+      DetailsPart.relatedPosts,
+    },
+    fullSelectableParts: {
+      DetailsPart.toolbar,
+      DetailsPart.source,
+      DetailsPart.tags,
+      DetailsPart.fileDetails,
+      DetailsPart.relatedPosts,
+    },
+    builders: {
       DetailsPart.toolbar: (context) =>
           const DefaultInheritedPostActionToolbar<AnimePicturesPost>(),
       DetailsPart.tags: (context) =>

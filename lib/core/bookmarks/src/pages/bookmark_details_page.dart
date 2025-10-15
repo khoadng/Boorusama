@@ -56,10 +56,27 @@ class BookmarkDetailsPage extends ConsumerWidget {
 }
 
 final bookmarkUiBuilder = PostDetailsUIBuilder(
-  preview: {
-    DetailsPart.toolbar: (context) => const BookmarkPostActionToolbar(),
+  previewSelectableParts: {
+    DetailsPart.toolbar,
+    DetailsPart.tags,
+    DetailsPart.fileDetails,
   },
-  full: {
+  previewDefaultEnabledParts: {
+    DetailsPart.toolbar,
+  },
+  fullDefaultEnabledParts: {
+    DetailsPart.toolbar,
+    DetailsPart.source,
+    DetailsPart.tags,
+    DetailsPart.fileDetails,
+  },
+  fullSelectableParts: {
+    DetailsPart.toolbar,
+    DetailsPart.source,
+    DetailsPart.tags,
+    DetailsPart.fileDetails,
+  },
+  builders: {
     DetailsPart.toolbar: (context) => const BookmarkPostActionToolbar(),
     DetailsPart.source: (context) => const BookmarkSourceSection(),
     DetailsPart.tags: (context) => const BookmarkTagTiles(),
@@ -110,8 +127,8 @@ class _BookmarkDetailsPageState
       gestureConfig: gestures,
       layoutConfig: layout,
       uiBuilder: bookmarkUiBuilder,
-      preferredParts: bookmarkUiBuilder.full.keys.toSet(),
-      preferredPreviewParts: bookmarkUiBuilder.preview.keys.toSet(),
+      preferredParts: bookmarkUiBuilder.selectableFullParts,
+      preferredPreviewParts: bookmarkUiBuilder.selectablePreviewParts,
       actions: defaultActions(
         note: null,
         fallbackMoreButton: ValueListenableBuilder(

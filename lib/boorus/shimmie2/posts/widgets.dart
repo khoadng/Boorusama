@@ -30,11 +30,25 @@ class Shimmie2UploaderFileDetailTile extends ConsumerWidget {
 }
 
 final kShimmie2PostDetailsUIBuilder = PostDetailsUIBuilder(
-  preview: {
-    DetailsPart.toolbar: (context) =>
-        const DefaultInheritedPostActionToolbar<Shimmie2Post>(),
+  previewSelectableParts: {
+    DetailsPart.toolbar,
+    DetailsPart.tags,
+    DetailsPart.fileDetails,
   },
-  full: {
+  previewDefaultEnabledParts: {
+    DetailsPart.toolbar,
+  },
+  fullDefaultEnabledParts: {
+    DetailsPart.toolbar,
+    DetailsPart.tags,
+    DetailsPart.fileDetails,
+  },
+  fullSelectableParts: {
+    DetailsPart.toolbar,
+    DetailsPart.tags,
+    DetailsPart.fileDetails,
+  },
+  builders: {
     DetailsPart.toolbar: (context) =>
         const DefaultInheritedPostActionToolbar<Shimmie2Post>(),
     DetailsPart.tags: (context) =>

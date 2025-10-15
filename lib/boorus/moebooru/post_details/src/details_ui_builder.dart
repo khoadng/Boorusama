@@ -9,11 +9,39 @@ import 'widgets/related_post_section.dart';
 import 'widgets/toolbar.dart';
 
 final moebooruPostDetailsUIBuilder = PostDetailsUIBuilder(
-  preview: {
-    DetailsPart.info: (context) => const MoebooruInformationSection(),
-    DetailsPart.toolbar: (context) => const MoebooruPostDetailsActionToolbar(),
+  previewSelectableParts: {
+    DetailsPart.info,
+    DetailsPart.toolbar,
+    DetailsPart.tags,
+    DetailsPart.fileDetails,
   },
-  full: {
+  previewDefaultEnabledParts: {
+    DetailsPart.info,
+    DetailsPart.toolbar,
+  },
+  fullDefaultEnabledParts: {
+    DetailsPart.info,
+    DetailsPart.toolbar,
+    DetailsPart.tags,
+    DetailsPart.fileDetails,
+    DetailsPart.artistInfo,
+    DetailsPart.artistPosts,
+    DetailsPart.relatedPosts,
+    DetailsPart.comments,
+    DetailsPart.characterList,
+  },
+  fullSelectableParts: {
+    DetailsPart.info,
+    DetailsPart.toolbar,
+    DetailsPart.tags,
+    DetailsPart.fileDetails,
+    DetailsPart.artistInfo,
+    DetailsPart.artistPosts,
+    DetailsPart.relatedPosts,
+    DetailsPart.comments,
+    DetailsPart.characterList,
+  },
+  builders: {
     DetailsPart.info: (context) => const MoebooruInformationSection(),
     DetailsPart.toolbar: (context) => const MoebooruPostDetailsActionToolbar(),
     DetailsPart.tags: (context) =>

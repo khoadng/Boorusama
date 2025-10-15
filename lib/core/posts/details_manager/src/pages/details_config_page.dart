@@ -28,10 +28,10 @@ class DetailsConfigPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final details =
-        layout.details ?? convertDetailsParts(uiBuilder.full.keys.toList());
+        layout.details ?? convertDetailsParts(uiBuilder.availableParts.toList());
     final previewDetails =
         layout.previewDetails ??
-        convertDetailsParts(uiBuilder.preview.keys.toList());
+        convertDetailsParts(uiBuilder.selectablePreviewParts.toList());
 
     return Scaffold(
       appBar: AppBar(
@@ -61,9 +61,9 @@ class DetailsConfigPage extends ConsumerWidget {
                         ref,
                         params: DetailsLayoutManagerParams(
                           details: previewDetails,
-                          availableParts: uiBuilder.buildablePreviewParts
+                          availableParts: uiBuilder.selectablePreviewParts
                               .toSet(),
-                          defaultParts: uiBuilder.preview.keys.toSet(),
+                          defaultParts: uiBuilder.selectablePreviewParts,
                           onUpdate: (parts) {
                             onLayoutUpdated(
                               layout.copyWith(
@@ -87,8 +87,8 @@ class DetailsConfigPage extends ConsumerWidget {
                         ref,
                         params: DetailsLayoutManagerParams(
                           details: details,
-                          availableParts: uiBuilder.full.keys.toSet(),
-                          defaultParts: uiBuilder.full.keys.toSet(),
+                          availableParts: uiBuilder.selectableFullParts,
+                          defaultParts: uiBuilder.selectableFullParts,
                           onUpdate: (parts) {
                             onLayoutUpdated(
                               layout.copyWith(

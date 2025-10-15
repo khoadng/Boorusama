@@ -70,13 +70,35 @@ class PhilomenaUploaderFileDetailTile extends ConsumerWidget {
 }
 
 final kPhilomenaPostDetailsUIBuilder = PostDetailsUIBuilder(
-  preview: {
-    DetailsPart.info: (context) =>
-        const DefaultInheritedInformationSection<PhilomenaPost>(),
-    DetailsPart.toolbar: (context) =>
-        const DefaultInheritedPostActionToolbar<PhilomenaPost>(),
+  previewSelectableParts: {
+    DetailsPart.info,
+    DetailsPart.toolbar,
+    DetailsPart.fileDetails,
+    DetailsPart.tags,
   },
-  full: {
+  previewDefaultEnabledParts: {
+    DetailsPart.info,
+    DetailsPart.toolbar,
+  },
+  fullDefaultEnabledParts: {
+    DetailsPart.info,
+    DetailsPart.toolbar,
+    DetailsPart.artistInfo,
+    DetailsPart.stats,
+    DetailsPart.source,
+    DetailsPart.tags,
+    DetailsPart.fileDetails,
+  },
+  fullSelectableParts: {
+    DetailsPart.info,
+    DetailsPart.toolbar,
+    DetailsPart.artistInfo,
+    DetailsPart.stats,
+    DetailsPart.source,
+    DetailsPart.tags,
+    DetailsPart.fileDetails,
+  },
+  builders: {
     DetailsPart.info: (context) =>
         const DefaultInheritedInformationSection<PhilomenaPost>(),
     DetailsPart.toolbar: (context) =>

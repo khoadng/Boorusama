@@ -53,11 +53,28 @@ class EshuushuuBuilder extends BaseBooruBuilder {
 
   @override
   final postDetailsUIBuilder = PostDetailsUIBuilder(
-    preview: {
-      DetailsPart.toolbar: (context) =>
-          const DefaultInheritedPostActionToolbar<EshuushuuPost>(),
+    previewSelectableParts: {
+      DetailsPart.toolbar,
+      DetailsPart.tags,
+      DetailsPart.fileDetails,
+      DetailsPart.source,
     },
-    full: {
+    previewDefaultEnabledParts: {
+      DetailsPart.toolbar,
+    },
+    fullDefaultEnabledParts: {
+      DetailsPart.toolbar,
+      DetailsPart.source,
+      DetailsPart.tags,
+      DetailsPart.fileDetails,
+    },
+    fullSelectableParts: {
+      DetailsPart.toolbar,
+      DetailsPart.source,
+      DetailsPart.tags,
+      DetailsPart.fileDetails,
+    },
+    builders: {
       DetailsPart.toolbar: (context) =>
           const DefaultInheritedPostActionToolbar<EshuushuuPost>(),
       DetailsPart.source: (context) =>
