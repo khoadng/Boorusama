@@ -141,7 +141,7 @@ class _PostDetailPageScaffoldState<T extends Post>
           details: widget.layoutConfig?.details,
           hasPremium: hasPremium,
         ) ??
-        widget.uiBuilder?.full.keys.toSet() ??
+        widget.uiBuilder?.buildableFullParts ??
         <DetailsPart>{};
   }
 

@@ -1,6 +1,7 @@
 // Project imports:
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/widgets.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 import '../../../../../core/blacklists/providers.dart';
@@ -27,6 +28,9 @@ final danbooruPostDetailsUiBuilder = PostDetailsUIBuilder(
     DetailsPart.info: (context) => const DanbooruInformationSection(),
     DetailsPart.toolbar: (context) =>
         const DanbooruInheritedPostActionToolbar(),
+  },
+  fullDisallowedParts: {
+    DetailsPart.uploaderPosts,
   },
   full: {
     DetailsPart.info: (context) => const DanbooruInformationSection(),
@@ -89,18 +93,20 @@ class DanbooruUploaderPostsSection extends ConsumerWidget {
                     (
                       ref.watchConfigFilter,
                       ref.watchConfigSearch,
-                      name,
+                      'user:$name',
                     ),
                   ),
                 )
                 .maybeWhen(
-                  data: (data) => SliverPreviewPostGrid(
-                    posts: data,
-                    imageUrl: (p) => thumbUrlBuilder.generateUrl(
-                      p,
-                      settings: thumbSettings,
-                    ),
-                  ),
+                  data: (data) => data.isNotEmpty
+                      ? SliverPreviewPostGrid(
+                          posts: data,
+                          imageUrl: (p) => thumbUrlBuilder.generateUrl(
+                            p,
+                            settings: thumbSettings,
+                          ),
+                        )
+                      : const SliverSizedBox(),
                   orElse: () => const SliverPreviewPostGridPlaceholder(),
                 ),
           ),
