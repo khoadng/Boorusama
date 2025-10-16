@@ -331,7 +331,7 @@ set_target_file_and_env() {
     fi
 
     # Inject RevenueCat keys from secret env if needed
-    if [ "$FLAVOR" = "prod" ]; then
+    if [ "$FOSS_BUILD" = false ] && [ "$FLAVOR" = "prod" ]; then
         if [ "$FORMAT" = "aab" ] || [ "$FORMAT" = "apk" ]; then
             if [ -z "$REVENUECAT_GOOGLE_API_KEY" ]; then
                 exit_with_error "REVENUECAT_GOOGLE_API_KEY is required for prod Android builds. Set it in $SECRET_ENV_FILE"
@@ -358,7 +358,7 @@ validate_env_api_key() {
 }
 
 validate_prod_environment() {
-    if [ "$FLAVOR" = "prod" ]; then
+    if [ "$FOSS_BUILD" = false ] && [ "$FLAVOR" = "prod" ]; then
         if [ "$FORMAT" = "aab" ] || [ "$FORMAT" = "apk" ]; then
             validate_env_api_key "REVENUECAT_GOOGLE_API_KEY" "REVENUECAT_GOOGLE_API_KEY"
         fi

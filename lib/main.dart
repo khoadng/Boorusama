@@ -9,6 +9,7 @@ import 'foundation/loggers.dart';
 import 'foundation/platform.dart';
 import 'foundation/vendors/google/google_play_services_impl.dart';
 import 'foundation/vendors/revenuecat/revenuecat.dart';
+import 'foundation/app_rating/src/rate_my_app_service.dart';
 
 void main() async {
   await initializeApp(
