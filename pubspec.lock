@@ -1493,10 +1493,10 @@ packages:
     dependency: "direct main"
     description:
       name: purchases_flutter
-      sha256: "5c472741d1e073ac8603b1b7d7e1707870a869c927dc31d6f38a4a8658c8d335"
+      sha256: "4b845cd93b411f954969b03360d1eaa24a07dfd0379dead514d35211e16b084b"
       url: "https://pub.dev"
     source: hosted
-    version: "9.8.0"
+    version: "9.6.2"
   quiver:
     dependency: transitive
     description:
@@ -1704,10 +1704,10 @@ packages:
     dependency: transitive
     description:
       name: shared_preferences_android
-      sha256: "34266009473bf71d748912da4bf62d439185226c03e01e2d9687bc65bbfcb713"
+      sha256: a2608114b1ffdcbc9c120eb71a0e207c71da56202852d4aab8a5e30a82269e74
       url: "https://pub.dev"
     source: hosted
-    version: "2.4.15"
+    version: "2.4.12"
   shared_preferences_foundation:
     dependency: transitive
     description:
