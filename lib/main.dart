@@ -1,6 +1,6 @@
 // Project imports:
 import 'boot.dart';
-import 'foundation/app_rating/providers.dart';
+import 'foundation/app_rating/src/rate_my_app_service.dart';
 import 'foundation/app_update/providers.dart';
 import 'foundation/app_update/types.dart';
 import 'foundation/boot.dart';
