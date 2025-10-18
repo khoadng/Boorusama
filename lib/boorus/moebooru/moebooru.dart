@@ -28,7 +28,9 @@ final moebooruProvider = Provider<Moebooru>((ref) {
 
 typedef MoebooruSite = ({
   String url,
+  String? postRequestUrl,
   String salt,
+  String? version,
   bool? favoriteSupport,
   NetworkProtocol? overrideProtocol,
 });
@@ -43,6 +45,12 @@ final class Moebooru extends Booru {
 
   String? getSalt(String url) =>
       _sites.firstWhereOrNull((e) => url.contains(e.url))?.salt;
+
+  String? getVersion(String url) =>
+      _sites.firstWhereOrNull((e) => url.contains(e.url))?.version;
+
+  String? getPostRequestUrl(String url) =>
+      _sites.firstWhereOrNull((e) => url.contains(e.url))?.postRequestUrl;
 
   bool supportsFavorite(String url) =>
       _sites.firstWhereOrNull((e) => url.contains(e.url))?.favoriteSupport ??
@@ -63,6 +71,8 @@ class MoebooruParser extends BooruParser {
     for (final siteConfig in config.sites) {
       final url = siteConfig.url;
       final salt = siteConfig.metadata['salt'] as String;
+      final version = siteConfig.metadata['version'] as String?;
+      final postRequestUrl = siteConfig.metadata['post-request-url'] as String?;
       final favoriteSupport = siteConfig.metadata['favorite-support'] as bool?;
       final overrideProtocol = siteConfig.metadata['protocol'];
 
@@ -70,6 +80,8 @@ class MoebooruParser extends BooruParser {
         (
           url: url,
           salt: salt,
+          postRequestUrl: postRequestUrl,
+          version: version,
           favoriteSupport: favoriteSupport,
           overrideProtocol: overrideProtocol != null
               ? parseProtocol(overrideProtocol)

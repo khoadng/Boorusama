@@ -152,10 +152,12 @@
       legacy-ids: [6, 7, 8, 10]
     sites:
       - url: https://konachan.com/
+        version: 4.0.0
         salt: So-I-Heard-You-Like-Mupkids-?--{0}--
         favorite-support: true
         protocol: https_2
       - url: https://konachan.net/
+        version: 4.0.0
         salt: So-I-Heard-You-Like-Mupkids-?--{0}--
         favorite-support: true
         protocol: https_2
@@ -164,6 +166,8 @@
         favorite-support: true
         protocol: https_2
       - url: https://sakugabooru.com/
+        post-request-url: https://www.sakugabooru.com/
+        version: 6.0.0
         salt: er@!$rjiajd0$!dkaopc350!Y%)--{0}--
         favorite-support: true
         protocol: https_2

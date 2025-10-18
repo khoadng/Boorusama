@@ -29,4 +29,14 @@ extension VersionX on Version? {
 
     return false;
   }
+
+  bool isAtLeast(Version? other) {
+    final v = this;
+    final o = other;
+
+    if (v == null) return false;
+    if (o == null) return false;
+
+    return v >= o;
+  }
 }

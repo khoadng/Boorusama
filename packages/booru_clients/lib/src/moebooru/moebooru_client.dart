@@ -1,12 +1,12 @@
 // Package imports:
 import 'dart:convert';
 import 'package:dio/dio.dart';
+import 'package:version/version.dart';
 
 // Project imports:
 import 'types/types.dart';
 
-const _kYandereUrl = 'https://yande.re';
-const _kKonachanUrl = 'https://konachan.com';
+final _v6 = Version(6, 0, 0);
 
 class MoebooruClient {
   MoebooruClient({
@@ -14,7 +14,9 @@ class MoebooruClient {
     Map<String, String>? headers,
     this.login,
     this.passwordHashed,
+    this.version,
     Dio? dio,
+    Dio? postRequestDio,
   }) : _dio =
            dio ??
            Dio(
@@ -22,45 +24,30 @@ class MoebooruClient {
                baseUrl: baseUrl ?? '',
                headers: headers ?? {},
              ),
-           );
-
-  factory MoebooruClient.yandere({
-    Dio? dio,
-    String? login,
-    String? passwordHashed,
-  }) => MoebooruClient(
-    baseUrl: _kYandereUrl,
-    dio: dio,
-    login: login,
-    passwordHashed: passwordHashed,
-  );
-
-  factory MoebooruClient.konachan({
-    Dio? dio,
-    String? login,
-    String? passwordHashed,
-  }) => MoebooruClient(
-    baseUrl: _kKonachanUrl,
-    dio: dio,
-    login: login,
-    passwordHashed: passwordHashed,
-  );
+           ),
+       _postRequestDio = postRequestDio;
 
   factory MoebooruClient.custom({
     required String baseUrl,
     Dio? dio,
+    Dio? postRequestDio,
     String? login,
     String? apiKey,
+    Version? version,
   }) => MoebooruClient(
     baseUrl: baseUrl,
     dio: dio,
+    postRequestDio: postRequestDio,
     login: login,
     passwordHashed: apiKey,
+    version: version,
   );
 
   final Dio _dio;
+  final Dio? _postRequestDio;
   final String? login;
   final String? passwordHashed;
+  final Version? version;
 
   Future<List<PostDto>> getPosts({
     int? page,
@@ -214,17 +201,37 @@ class MoebooruClient {
     required int postId,
     required int score,
   }) async {
-    await _dio.post(
-      '/post/vote.json',
-      queryParameters: {
-        'id': postId,
-        'score': score,
-        if (login != null && passwordHashed != null) ...{
-          'login': login,
-          'password_hash': passwordHashed,
-        },
-      },
-    );
+    final payload = {
+      'id': postId,
+      'score': score,
+    };
+    final auth = {
+      'login': ?login,
+      'password_hash': ?passwordHashed,
+    };
+    final endpoint = '/post/vote.json';
+
+    switch (version) {
+      case final v? when v >= _v6:
+        final dio = _postRequestDio ?? _dio;
+        await dio.post(
+          endpoint,
+          queryParameters: auth,
+          data: payload,
+          options: Options(
+            contentType: Headers.formUrlEncodedContentType,
+            followRedirects: true,
+          ),
+        );
+      case _:
+        await _dio.post(
+          endpoint,
+          queryParameters: {
+            ...payload,
+            ...auth,
+          },
+        );
+    }
   }
 
   Future<void> unfavoritePost({

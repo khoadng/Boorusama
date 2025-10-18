@@ -13,7 +13,8 @@ class DioOptions {
     required this.loggerService,
     required this.booruDb,
     required this.cronetAvailable,
-  }) : baseUrl = authConfig.url,
+    String? baseUrl,
+  }) : baseUrl = baseUrl ?? authConfig.url,
        proxySettings = authConfig.proxySettings;
 
   final HttpProtectionHandler ddosProtectionHandler;
