@@ -49,6 +49,13 @@ class MoebooruClient {
   final String? passwordHashed;
   final Version? version;
 
+  Map<String, String> get _authParams => {
+    if ((login, passwordHashed) case (final l?, final p?)) ...{
+      'login': l,
+      'password_hash': p,
+    },
+  };
+
   Future<List<PostDto>> getPosts({
     int? page,
     int? limit,
@@ -57,13 +64,10 @@ class MoebooruClient {
     final response = await _dio.get(
       '/post.json',
       queryParameters: {
-        if (tags != null && tags.isNotEmpty) 'tags': tags.join(' '),
-        if (page != null) 'page': page,
-        if (limit != null) 'limit': limit,
-        if (login != null && passwordHashed != null) ...{
-          'login': login,
-          'password_hash': passwordHashed,
-        },
+        if (tags case final t? when t.isNotEmpty) 'tags': t.join(' '),
+        'page': ?page,
+        'limit': ?limit,
+        ..._authParams,
       },
     );
 
@@ -76,10 +80,7 @@ class MoebooruClient {
     final response = await _dio.get(
       '/tag/summary.json',
       queryParameters: {
-        if (login != null && passwordHashed != null) ...{
-          'login': login,
-          'password_hash': passwordHashed,
-        },
+        ..._authParams,
       },
     );
 
@@ -98,10 +99,7 @@ class MoebooruClient {
           TimePeriod.month => '1m',
           TimePeriod.year => '1y',
         },
-        if (login != null && passwordHashed != null) ...{
-          'login': login,
-          'password_hash': passwordHashed,
-        },
+        ..._authParams,
       },
     );
 
@@ -121,10 +119,7 @@ class MoebooruClient {
         'day': date.day,
         'month': date.month,
         'year': date.year,
-        if (login != null && passwordHashed != null) ...{
-          'login': login,
-          'password_hash': passwordHashed,
-        },
+        ..._authParams,
       },
     );
 
@@ -144,10 +139,7 @@ class MoebooruClient {
         'day': date.day,
         'month': date.month,
         'year': date.year,
-        if (login != null && passwordHashed != null) ...{
-          'login': login,
-          'password_hash': passwordHashed,
-        },
+        ..._authParams,
       },
     );
 
@@ -166,10 +158,7 @@ class MoebooruClient {
       queryParameters: {
         'month': date.month,
         'year': date.year,
-        if (login != null && passwordHashed != null) ...{
-          'login': login,
-          'password_hash': passwordHashed,
-        },
+        ..._authParams,
       },
     );
 
@@ -185,10 +174,7 @@ class MoebooruClient {
       '/comment.json',
       queryParameters: {
         'post_id': postId,
-        if (login != null && passwordHashed != null) ...{
-          'login': login,
-          'password_hash': passwordHashed,
-        },
+        ..._authParams,
       },
     );
 
@@ -205,10 +191,6 @@ class MoebooruClient {
       'id': postId,
       'score': score,
     };
-    final auth = {
-      'login': ?login,
-      'password_hash': ?passwordHashed,
-    };
     final endpoint = '/post/vote.json';
 
     switch (version) {
@@ -216,7 +198,7 @@ class MoebooruClient {
         final dio = _postRequestDio ?? _dio;
         await dio.post(
           endpoint,
-          queryParameters: auth,
+          queryParameters: _authParams,
           data: payload,
           options: Options(
             contentType: Headers.formUrlEncodedContentType,
@@ -228,7 +210,7 @@ class MoebooruClient {
           endpoint,
           queryParameters: {
             ...payload,
-            ...auth,
+            ..._authParams,
           },
         );
     }
