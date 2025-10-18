@@ -1634,24 +1634,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.1"
-  searchfield:
-    dependency: "direct main"
-    description:
-      path: "."
-      ref: fix-highlight-null-2
-      resolved-ref: "37028f26b23952a3df844098586117c7675fd633"
-      url: "https://github.com/khoadng/searchfield.git"
-    source: git
-    version: "1.2.4"
   selection_mode:
     dependency: "direct main"
     description:
-      path: "."
-      ref: "0e8d14a63642a49b1700465db7f15ce38dd8b187"
-      resolved-ref: "0e8d14a63642a49b1700465db7f15ce38dd8b187"
-      url: "https://github.com/khoadng/selection_mode.git"
-    source: git
-    version: "0.0.5"
+      name: selection_mode
+      sha256: eb8554b69f04a5886c6c3026946b44823e8c374b45aa69063af37dd808da55c8
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.6"
   share_handler:
     dependency: "direct main"
     description:

@@ -123,17 +123,10 @@ dependencies:
       ref: 69d1b8b272f3b77dc6a6b7399fa8931cdd660d77
   rxdart: ^0.28.0
   scroll_to_index: ^3.0.1
-  searchfield:
-    git:
-      url: https://github.com/khoadng/searchfield.git
-      ref: fix-highlight-null-2
   share_handler: ^0.0.20
   share_plus: ^12.0.0
   shelf: ^1.4.1
-  selection_mode:
-    git:
-      url: https://github.com/khoadng/selection_mode.git
-      ref: 0e8d14a63642a49b1700465db7f15ce38dd8b187
+  selection_mode: ^0.0.6
   sliver_tools: ^0.2.12
   smooth_page_indicator: ^1.1.0
   socks5_proxy: ^2.0.0
