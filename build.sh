@@ -211,6 +211,7 @@ init_variables() {
     BUILD_MODE="$DEFAULT_BUILD_MODE"
     NO_CODESIGN=false
     BACKUP_FILE=""
+    BACKUP_LOCK_FILE=""
     FAIL_FAST=false
     FORCE_CI=false
 }
@@ -378,10 +379,18 @@ validate_output_dir() {
 }
 
 warn_pubspec_backup() {
-    local backup_file
+    local backup_file backup_lock_file
     backup_file=$(ls pubspec.yaml.backup.* 2>/dev/null | head -n1)
-    if [ -n "$backup_file" ]; then
-        print_warning "Found leftover pubspec backup ($backup_file). Previous run may not have cleaned up. Consider restoring it if needed."
+    backup_lock_file=$(ls pubspec.lock.backup.* 2>/dev/null | head -n1)
+
+    if [ -n "$backup_file" ] || [ -n "$backup_lock_file" ]; then
+        if [ -n "$backup_file" ] && [ -n "$backup_lock_file" ]; then
+            print_warning "Found leftover pubspec backups ($backup_file, $backup_lock_file). Previous run may not have cleaned up. Consider restoring them if needed."
+        elif [ -n "$backup_file" ]; then
+            print_warning "Found leftover pubspec backup ($backup_file). Previous run may not have cleaned up. Consider restoring it if needed."
+        else
+            print_warning "Found leftover pubspec.lock backup ($backup_lock_file). Previous run may not have cleaned up. Consider restoring it if needed."
+        fi
     fi
 }
 
@@ -466,17 +475,31 @@ parse_arguments() {
 
 create_pubspec_backup() {
     if [ "$FOSS_BUILD" = true ]; then
-        BACKUP_FILE="pubspec.yaml.backup.$(date +%s).$$"
+        local timestamp="$(date +%s).$$"
+        BACKUP_FILE="pubspec.yaml.backup.$timestamp"
+        BACKUP_LOCK_FILE="pubspec.lock.backup.$timestamp"
+
         cp pubspec.yaml "$BACKUP_FILE"
-        print_status "Created backup of pubspec.yaml for FOSS build"
+        if [ -f "pubspec.lock" ]; then
+            cp pubspec.lock "$BACKUP_LOCK_FILE"
+            print_status "Created backup of pubspec.yaml and pubspec.lock for FOSS build"
+        else
+            print_status "Created backup of pubspec.yaml for FOSS build (no pubspec.lock found)"
+        fi
     fi
 }
 
 restore_pubspec() {
     if [ -n "$BACKUP_FILE" ] && [ -f "$BACKUP_FILE" ]; then
         mv "$BACKUP_FILE" pubspec.yaml
-        print_status "Restored original pubspec.yaml"
-        flutter pub get > /dev/null 2>&1
+
+        if [ -n "$BACKUP_LOCK_FILE" ] && [ -f "$BACKUP_LOCK_FILE" ]; then
+            mv "$BACKUP_LOCK_FILE" pubspec.lock
+            print_status "Restored original pubspec.yaml and pubspec.lock"
+        else
+            print_status "Restored original pubspec.yaml"
+            flutter pub get > /dev/null 2>&1
+        fi
     fi
 }
 
