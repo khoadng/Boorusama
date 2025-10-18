@@ -663,6 +663,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.30"
+  flutter_popover:
+    dependency: "direct main"
+    description:
+      name: flutter_popover
+      sha256: fffbccb2259facee86081f34b904adf288fbdb777cf23de148ff3c536ee87d34
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.4"
   flutter_portal:
     dependency: "direct main"
     description:
