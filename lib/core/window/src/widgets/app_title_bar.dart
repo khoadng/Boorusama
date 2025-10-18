@@ -9,6 +9,7 @@ import 'package:window_manager/window_manager.dart';
 import '../../../../foundation/info/app_info.dart';
 import '../../../../foundation/platform.dart';
 import 'macos_caption.dart';
+import 'pin_window_button.dart';
 
 class AppTitleBar extends ConsumerWidget {
   const AppTitleBar({
@@ -62,6 +63,13 @@ class AppTitleBar extends ConsumerWidget {
                             fontWeight: FontWeight.w600,
                             color: colorScheme.onSurface,
                           ),
+                        ),
+                      ),
+                      const Spacer(),
+                      const Padding(
+                        padding: EdgeInsets.only(right: 8),
+                        child: PinWindowButton(
+                          iconSize: 14,
                         ),
                       ),
                     ],

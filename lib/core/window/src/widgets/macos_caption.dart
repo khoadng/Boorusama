@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:window_manager/window_manager.dart';
 
+// Project imports:
+import 'pin_window_button.dart';
+
 class MacosCaption extends StatefulWidget {
   const MacosCaption({
     super.key,
@@ -59,6 +62,13 @@ class _MacosCaptionState extends State<MacosCaption> with WindowListener {
                           fontSize: 14,
                         ),
                         child: Container(),
+                      ),
+                    ),
+                    const Spacer(),
+                    const Padding(
+                      padding: EdgeInsets.only(right: 8),
+                      child: PinWindowButton(
+                        iconSize: 14,
                       ),
                     ),
                   ],
