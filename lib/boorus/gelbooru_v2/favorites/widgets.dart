@@ -84,6 +84,7 @@ class GelbooruV2FavoritesPageHtml extends ConsumerWidget {
                 autoScrollController: autoScrollController,
                 controller: controller,
                 useHero: useHero,
+                config: config.auth,
                 onTap: () {
                   final post = controller.items.elementAtOrNull(index);
                   if (post == null) {

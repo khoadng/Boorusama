@@ -24,6 +24,7 @@ import '../../../../../foundation/url_launcher.dart';
 import '../../../configs/providers.dart';
 import '../../post/types.dart';
 import 'danbooru_post_context_menu.dart';
+import 'danbooru_post_preview.dart';
 
 const _kBannedTextThreshold = 200.0;
 
@@ -149,16 +150,17 @@ class DefaultDanbooruImageGridItem extends StatelessWidget {
                       );
 
                       return Consumer(
-                        builder: (_, ref, _) {
-                          return DefaultSelectableItem(
+                        builder: (_, ref, _) => DanbooruTagListPrevewTooltip(
+                          post: post,
+                          child: DefaultSelectableItem(
                             index: index,
                             post: post,
                             item: item,
                             indicatorSize: ref.watch(
                               selectionIndicatorSizeProvider,
                             ),
-                          );
-                        },
+                          ),
+                        ),
                       );
                     },
                   ),

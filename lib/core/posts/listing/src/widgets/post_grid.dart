@@ -208,6 +208,7 @@ class _PostGridState<T extends Post> extends ConsumerState<PostGrid<T>> {
                       autoScrollController: _autoScrollController,
                       controller: widget.controller,
                       useHero: !disableHero,
+                      config: ref.watchConfigAuth,
                     ),
               ),
             ),

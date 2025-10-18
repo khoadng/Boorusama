@@ -9,20 +9,17 @@ import 'package:selection_mode/selection_mode.dart';
 
 // Project imports:
 import '../../../../configs/config/providers.dart';
+import '../../../../configs/config/types.dart';
 import '../../../../images/booru_image.dart';
 import '../../../../settings/providers.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../details/routes.dart';
 import '../../../post/types.dart';
 import '../../../post/widgets.dart';
+import '../../widgets.dart';
 import '../providers/providers.dart';
 import '../types/image_list_type.dart';
-import 'default_image_quick_action_button.dart';
-import 'default_post_list_context_menu_region.dart';
-import 'default_selectable_item.dart';
-import 'general_post_context_menu.dart';
 import 'post_grid_controller.dart';
-import 'sliver_post_grid_image_grid_item.dart';
 
 class DefaultImageGridItem<T extends Post> extends StatelessWidget {
   const DefaultImageGridItem({
@@ -30,6 +27,7 @@ class DefaultImageGridItem<T extends Post> extends StatelessWidget {
     required this.autoScrollController,
     required this.controller,
     required this.useHero,
+    required this.config,
     this.onTap,
     super.key,
     this.contextMenu,
@@ -47,6 +45,7 @@ class DefaultImageGridItem<T extends Post> extends StatelessWidget {
   final List<Widget>? leadingIcons;
   final String? imageUrl;
   final ImageCacheManager? imageCacheManager;
+  final BooruConfigAuth config;
 
   @override
   Widget build(BuildContext context) {
@@ -137,16 +136,18 @@ class DefaultImageGridItem<T extends Post> extends StatelessWidget {
                       );
 
                       return Consumer(
-                        builder: (_, ref, _) {
-                          return DefaultSelectableItem(
+                        builder: (_, ref, _) => DefaultTagListPrevewTooltip(
+                          post: post,
+                          config: config,
+                          child: DefaultSelectableItem(
                             index: index,
                             post: post,
                             item: item,
                             indicatorSize: ref.watch(
                               selectionIndicatorSizeProvider,
                             ),
-                          );
-                        },
+                          ),
+                        ),
                       );
                     },
                   ),

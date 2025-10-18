@@ -266,6 +266,7 @@ class _BookmarkScrollViewState extends ConsumerState<BookmarkScrollView> {
                   : post.sampleImageUrl,
               imageCacheManager: ref.watch(bookmarkImageCacheManagerProvider),
               useHero: false,
+              config: auth,
               leadingIcons: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(8),

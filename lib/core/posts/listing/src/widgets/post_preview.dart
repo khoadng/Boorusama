@@ -1,0 +1,341 @@
+// Dart imports:
+import 'dart:math';
+
+// Flutter imports:
+import 'package:flutter/material.dart';
+
+// Package imports:
+import 'package:flutter_popover/flutter_popover.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
+import 'package:i18n/i18n.dart';
+
+// Project imports:
+import '../../../../configs/config/types.dart';
+import '../../../../http/providers.dart';
+import '../../../../search/search/routes.dart';
+import '../../../../tags/show/providers.dart';
+import '../../../../tags/tag/providers.dart';
+import '../../../../tags/tag/types.dart';
+import '../../../../widgets/hover_aware_container.dart';
+import '../../../../widgets/widgets.dart';
+import '../../../post/types.dart';
+import '../../../rating/types.dart';
+import '../../../sources/types.dart';
+
+const _maxSize = Size(400, 200);
+
+class DefaultTagListPrevewTooltip extends ConsumerWidget {
+  const DefaultTagListPrevewTooltip({
+    super.key,
+    required this.config,
+    required this.post,
+    required this.child,
+  });
+
+  final BooruConfigAuth config;
+  final Post post;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return PostListPrevewTooltip(
+      overlayChildBuilder: (context, adjustedMaxWidth, adjustedMaxHeight) =>
+          PostTagPreviewContainer(
+            post: post,
+            auth: config,
+            maxWidth: adjustedMaxWidth,
+            maxHeight: adjustedMaxHeight,
+            builder: (context, tags) => PostPreviewPopover(
+              tags: tags,
+              auth: config,
+              header: DefaultPostPreviewHeader(
+                post: post,
+                auth: config,
+              ),
+            ),
+          ),
+
+      child: child,
+    );
+  }
+}
+
+class DefaultPostPreviewHeader extends ConsumerWidget {
+  const DefaultPostPreviewHeader({
+    super.key,
+    required this.post,
+    required this.auth,
+    this.extraWidgets,
+    this.style,
+  });
+
+  final Post post;
+  final BooruConfigAuth auth;
+  final TextStyle? style;
+  final List<Widget>? extraWidgets;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final dio = ref.watch(faviconDioProvider);
+    final style =
+        this.style ??
+        theme.textTheme.bodySmall?.copyWith(
+          color: theme.listTileTheme.subtitleTextStyle?.color,
+          fontSize: 11,
+        );
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 4,
+        vertical: 4,
+      ),
+      child: Row(
+        spacing: 4,
+        children: [
+          if (post.createdAt case final createdAt?)
+            Padding(
+              padding: const EdgeInsets.only(left: 4),
+              child: DateTooltip(
+                date: createdAt,
+                child: TimePulse(
+                  initial: createdAt,
+                  updateInterval: const Duration(minutes: 1),
+                  builder: (context, _) => Text(
+                    createdAt.fuzzify(
+                      locale: Localizations.localeOf(context),
+                    ),
+                    style: style,
+                  ),
+                ),
+              ),
+            ),
+
+          ...?extraWidgets,
+          const Spacer(),
+          if (post.rating case final rating when rating != Rating.unknown)
+            Text(
+              rating.toShortString().toUpperCase(),
+              style: style,
+            ),
+
+          if (Filesize.tryParse(post.fileSize) case final size?)
+            Text(
+              size,
+              style: style,
+            ),
+
+          if (post.format case final format when format.isNotEmpty)
+            Text(
+              '.$format',
+              style: style,
+            ),
+
+          if (post.width > 0 && post.height > 0)
+            Text(
+              '${post.width.toInt()}x${post.height.toInt()}',
+              style: style,
+            ),
+
+          if (post.source case final WebSource source
+              when source.faviconUrl.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(right: 4),
+              child: WebsiteLogo(
+                url: source.faviconUrl,
+                size: 14,
+                dio: dio,
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class PostListPrevewTooltip extends ConsumerWidget {
+  const PostListPrevewTooltip({
+    super.key,
+    required this.overlayChildBuilder,
+    required this.child,
+  });
+
+  final Widget child;
+  final Widget Function(
+    BuildContext context,
+    double adjustedMaxWidth,
+    double adjustedMaxHeight,
+  )
+  overlayChildBuilder;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final screenSize = MediaQuery.sizeOf(context);
+    final adjustedMaxWidth = min(
+      _maxSize.width,
+      screenSize.width - 32,
+    );
+    final adjustedMaxHeight = _maxSize.height;
+
+    return Popover.arrow(
+      overlayChildHeight: adjustedMaxHeight,
+      overlayChildWidth: adjustedMaxWidth,
+      triggerMode: PopoverTriggerMode.hover,
+      showDelay: const Duration(seconds: 1),
+      preferredDirection: AxisDirection.up,
+      constrainAxis: Axis.vertical,
+      offset: const Offset(0, -4),
+      borderRadius: BorderRadius.circular(8),
+      backgroundColor: colorScheme.surfaceContainerHigh,
+      crossAxisAlignment: PopoverCrossAxisAlignment.center,
+      border: BorderSide(
+        color: colorScheme.outlineVariant,
+        width: 1.5,
+      ),
+      overlayChildBuilder: (context) => overlayChildBuilder(
+        context,
+        adjustedMaxWidth,
+        adjustedMaxHeight,
+      ),
+      child: child,
+    );
+  }
+}
+
+class PostTagPreviewContainer extends ConsumerWidget {
+  const PostTagPreviewContainer({
+    super.key,
+    required this.post,
+    required this.auth,
+    required this.maxWidth,
+    required this.maxHeight,
+    required this.builder,
+  });
+
+  final BooruConfigAuth auth;
+  final Post post;
+  final double maxWidth;
+  final double maxHeight;
+  final Widget Function(BuildContext context, List<Tag> tags) builder;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final params = (auth, post);
+
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        vertical: 4,
+      ),
+      constraints: BoxConstraints(
+        maxHeight: maxHeight,
+        maxWidth: maxWidth,
+      ),
+      child: switch (ref.watch(showTagsProvider(params))) {
+        AsyncData(:final value) when value.isNotEmpty => builder(
+          context,
+          value,
+        ),
+        AsyncLoading() => Container(
+          margin: const EdgeInsets.all(16),
+          height: 16,
+          width: 16,
+          child: const CircularProgressIndicator(
+            strokeWidth: 3,
+          ),
+        ),
+        AsyncError(:final error) => Padding(
+          padding: const EdgeInsets.all(8),
+          child: Text(
+            error.toString(),
+          ),
+        ),
+        _ => Padding(
+          padding: const EdgeInsets.all(8),
+          child: Text(
+            'No tags available'.hc,
+          ),
+        ),
+      },
+    );
+  }
+}
+
+class PostPreviewPopover extends StatelessWidget {
+  const PostPreviewPopover({
+    super.key,
+    required this.tags,
+    required this.auth,
+    this.header,
+  });
+
+  final List<Tag> tags;
+  final BooruConfigAuth auth;
+  final Widget? header;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        ?header,
+        Flexible(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(
+              vertical: 4,
+            ),
+            child: Wrap(
+              spacing: 2,
+              children: [
+                for (final tag in tags)
+                  TagPreviewChip(
+                    tag: tag,
+                    auth: auth,
+                  ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class TagPreviewChip extends ConsumerWidget {
+  const TagPreviewChip({
+    super.key,
+    required this.tag,
+    required this.auth,
+  });
+
+  final Tag tag;
+  final BooruConfigAuth auth;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final color = ref.watch(
+      tagColorProvider(
+        (auth, tag.category.name),
+      ),
+    );
+
+    return GestureDetector(
+      onTap: () => goToSearchPage(ref, tag: tag.name),
+      child: HoverAwareContainer(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 4,
+          ),
+          child: Text(
+            tag.name,
+            style: TextStyle(
+              color: color,
+              fontSize: 12,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
