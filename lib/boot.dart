@@ -30,6 +30,7 @@ import 'core/settings/providers.dart';
 import 'core/settings/types.dart';
 import 'core/tags/configs/providers.dart';
 import 'core/widgets/widgets.dart';
+import 'core/window/providers.dart' as window;
 import 'foundation/app_rating/providers.dart';
 import 'foundation/app_update/providers.dart';
 import 'foundation/boot.dart';
@@ -44,7 +45,6 @@ import 'foundation/path.dart';
 import 'foundation/platform.dart';
 import 'foundation/utils/file_utils.dart';
 import 'foundation/vendors/google/providers.dart';
-import 'foundation/windows.dart' as window;
 
 Future<void> boot(BootData bootData) async {
   final logger = bootData.logger;
