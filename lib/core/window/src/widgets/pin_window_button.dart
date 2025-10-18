@@ -9,9 +9,10 @@ import 'package:oktoast/oktoast.dart';
 // Project imports:
 import '../../../../foundation/animations/constants.dart';
 import '../../../themes/theme/types.dart';
+import '../../../widgets/hover_aware_container.dart';
 import '../providers/always_on_top_provider.dart';
 
-class PinWindowButton extends ConsumerStatefulWidget {
+class PinWindowButton extends ConsumerWidget {
   const PinWindowButton({
     super.key,
     this.iconSize = 16,
@@ -20,14 +21,7 @@ class PinWindowButton extends ConsumerStatefulWidget {
   final double iconSize;
 
   @override
-  ConsumerState<PinWindowButton> createState() => _PinWindowButtonState();
-}
-
-class _PinWindowButtonState extends ConsumerState<PinWindowButton> {
-  var _isHovered = false;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final alwaysOnTop = ref.watch(alwaysOnTopProvider);
 
     ref.listen(
@@ -47,66 +41,23 @@ class _PinWindowButtonState extends ConsumerState<PinWindowButton> {
       },
     );
 
-    return alwaysOnTop.when(
+    return alwaysOnTop.maybeWhen(
       data: (isPinned) => GestureDetector(
         onTap: () {
           ref.read(alwaysOnTopProvider.notifier).toggle();
         },
-        child: MouseRegion(
-          cursor: SystemMouseCursors.click,
-          onEnter: (_) => setState(() => _isHovered = true),
-          onExit: (_) => setState(() => _isHovered = false),
-          child: _PinContainer(
-            iconSize: widget.iconSize,
-            isHovered: _isHovered,
+        child: HoverAwareContainer(
+          child: Padding(
+            padding: const EdgeInsets.all(4),
             child: Icon(
               isPinned ? Icons.push_pin : Icons.push_pin_outlined,
-              size: widget.iconSize,
+              size: iconSize,
               color: Theme.of(context).colorScheme.hintColor,
             ),
           ),
         ),
       ),
-      loading: () => const _PinContainer(
-        child: CircularProgressIndicator(
-          strokeWidth: 2,
-        ),
-      ),
-      error: (error, _) => const SizedBox.shrink(),
-    );
-  }
-}
-
-class _PinContainer extends StatelessWidget {
-  const _PinContainer({
-    this.iconSize = 16,
-    this.isHovered = false,
-    required this.child,
-  });
-
-  final Widget child;
-  final double iconSize;
-  final bool isHovered;
-
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 150),
-      width: 24,
-      height: 24,
-      decoration: BoxDecoration(
-        color: isHovered
-            ? Theme.of(context).colorScheme.surfaceContainer
-            : Colors.transparent,
-        borderRadius: BorderRadius.circular(6),
-      ),
-      child: Center(
-        child: SizedBox(
-          width: iconSize,
-          height: iconSize,
-          child: child,
-        ),
-      ),
+      orElse: () => const SizedBox.shrink(),
     );
   }
 }
