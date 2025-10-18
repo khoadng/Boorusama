@@ -1541,8 +1541,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "69d1b8b272f3b77dc6a6b7399fa8931cdd660d77"
-      resolved-ref: "69d1b8b272f3b77dc6a6b7399fa8931cdd660d77"
+      ref: a4b5fb32b79ac61c98979d7f95ebef49af37297a
+      resolved-ref: a4b5fb32b79ac61c98979d7f95ebef49af37297a
       url: "https://github.com/khoadng/reorderables.git"
     source: git
     version: "0.6.0"
