@@ -28,6 +28,9 @@ class PinWindowButton extends ConsumerWidget {
       alwaysOnTopProvider,
       (prev, next) {
         next.whenData((isPinned) {
+          // Avoid showing toast on initial load
+          if (prev?.valueOrNull == null) return;
+
           final message = isPinned
               ? context.t.window.pin.pin_toast
               : context.t.window.pin.unpin_toast;
