@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../../core/configs/config/providers.dart';
 import '../../../../../core/posts/details/types.dart';
 import '../../../../../core/posts/details_parts/widgets.dart';
+import '../../../../../core/posts/favorites/widgets.dart';
 import '../../../../../core/posts/post/types.dart';
 import '../../../client_provider.dart';
 import '../../../configs/providers.dart';
@@ -46,28 +47,33 @@ class _Toolbar<T extends Post> extends ConsumerWidget {
     final config = ref.watchConfigAuth;
     final loginDetails = ref.watch(moebooruLoginDetailsProvider(config));
     final notifier = ref.watch(moebooruFavoritesProvider(post.id).notifier);
+    final isFaved = ref
+        .watch(moebooruFavoritesProvider(post.id))
+        ?.contains(config.login);
+    final forceHideFav = !loginDetails.hasLogin();
+    final isAuthorized = loginDetails.hasLogin();
+    final client = ref.watch(moebooruClientProvider(config));
+    Future<void> addFavorite() =>
+        client.favoritePost(postId: post.id).then((value) {
+          notifier.clear();
+        });
+    Future<void> removeFavorite() =>
+        client.unfavoritePost(postId: post.id).then((value) {
+          notifier.clear();
+        });
 
     return SimplePostActionToolbar(
       post: post,
       maxVisibleButtons: 4,
       onStartSlideshow: PostDetailsPageViewScope.of(context).startSlideshow,
-      isFaved: ref
-          .watch(moebooruFavoritesProvider(post.id))
-          ?.contains(config.login),
-      addFavorite: () => ref
-          .read(moebooruClientProvider(config))
-          .favoritePost(postId: post.id)
-          .then((value) {
-            notifier.clear();
-          }),
-      removeFavorite: () => ref
-          .read(moebooruClientProvider(config))
-          .unfavoritePost(postId: post.id)
-          .then((value) {
-            notifier.clear();
-          }),
-      isAuthorized: loginDetails.hasLogin(),
-      forceHideFav: !loginDetails.hasLogin(),
+      favoriteButton: (!forceHideFav && isAuthorized)
+          ? FavoritePostButton(
+              isFaved: isFaved,
+              isAuthorized: isAuthorized,
+              addFavorite: addFavorite,
+              removeFavorite: removeFavorite,
+            )
+          : null,
     );
   }
 }

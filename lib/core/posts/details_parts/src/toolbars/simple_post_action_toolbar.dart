@@ -25,25 +25,17 @@ class SimplePostActionToolbar extends ConsumerWidget {
   const SimplePostActionToolbar({
     required this.post,
     required this.onStartSlideshow,
+    required this.favoriteButton,
     super.key,
-    this.isFaved,
-    this.isAuthorized,
-    this.addFavorite,
-    this.removeFavorite,
-    this.forceHideFav = false,
     this.onDownload,
     this.maxVisibleButtons,
   });
 
   final Post post;
   final int? maxVisibleButtons;
-  final bool? isFaved;
-  final bool? isAuthorized;
-  final bool forceHideFav;
-  final Future<void> Function()? addFavorite;
-  final Future<void> Function()? removeFavorite;
   final void Function(Post post)? onDownload;
   final void Function() onStartSlideshow;
+  final Widget? favoriteButton;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -62,19 +54,10 @@ class SimplePostActionToolbar extends ConsumerWidget {
         return BooruMenuButtonRow(
           maxVisibleButtons: maxVisibleButtons,
           buttons: [
-            if (!forceHideFav &&
-                isAuthorized != null &&
-                addFavorite != null &&
-                removeFavorite != null &&
-                booruBuilder != null)
+            if (favoriteButton case final btn?)
               ButtonData(
                 required: true,
-                widget: FavoritePostButton(
-                  isFaved: isFaved,
-                  isAuthorized: isAuthorized!,
-                  addFavorite: addFavorite!,
-                  removeFavorite: removeFavorite!,
-                ),
+                widget: btn,
                 title: context.t.post.action.favorite,
               ),
             ButtonData(
@@ -146,16 +129,26 @@ class DefaultPostActionToolbar<T extends Post> extends ConsumerWidget {
     final isFaved = ref.watch(favoriteProvider((config, post.id)));
     final notifier = ref.watch(favoritesProvider(config).notifier);
     final canFavorite = ref.watch(canFavoriteProvider(config));
+    final isAuthorized = loginDetails.hasLogin();
+    final addFavorite = canFavorite ? () => notifier.add(post.id) : null;
+    final removeFavorite = canFavorite ? () => notifier.remove(post.id) : null;
 
     return SimplePostActionToolbar(
       post: post,
-      isFaved: isFaved,
-      isAuthorized: loginDetails.hasLogin(),
       maxVisibleButtons: 5,
-      addFavorite: canFavorite ? () => notifier.add(post.id) : null,
-      removeFavorite: canFavorite ? () => notifier.remove(post.id) : null,
-      forceHideFav: forceHideFav,
       onStartSlideshow: PostDetailsPageViewScope.of(context).startSlideshow,
+      favoriteButton:
+          (!forceHideFav &&
+              isAuthorized &&
+              addFavorite != null &&
+              removeFavorite != null)
+          ? FavoritePostButton(
+              isFaved: isFaved,
+              isAuthorized: isAuthorized,
+              addFavorite: addFavorite,
+              removeFavorite: removeFavorite,
+            )
+          : null,
     );
   }
 }
