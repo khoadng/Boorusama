@@ -19,6 +19,7 @@ import '../../../create/routes.dart';
 import '../pages/remove_booru_alert_dialog.dart';
 import '../providers/booru_config_provider.dart';
 import 'booru_selector_item.dart';
+import 'drag_state_controller.dart';
 
 class BooruSelector extends ConsumerWidget {
   const BooruSelector({
@@ -69,7 +70,9 @@ class _BooruSelectorVerticalState extends ConsumerState<BooruSelectorVertical>
                 slivers: [
                   ReorderableSliverList(
                     onReorderStarted: (index) => show(configs[index], notifier),
+                    onDragStart: onDragStarted,
                     onDragUpdate: _onDragUpdate,
+                    onDragEnd: onDragEnded,
                     delegate: ReorderableSliverChildBuilderDelegate(
                       (context, index) {
                         final config = configs[index];
@@ -80,6 +83,7 @@ class _BooruSelectorVerticalState extends ConsumerState<BooruSelectorVertical>
                           show: () => show(config, notifier),
                           onTap: () => ref.router.go('/?cid=${config.id}'),
                           selected: currentConfig == config,
+                          dragController: dragController,
                         );
                       },
                       childCount: configs.length,
@@ -145,7 +149,9 @@ class _BooruSelectorHorizontalState
                   ReorderableSliverList(
                     axis: Axis.horizontal,
                     onReorderStarted: (index) => show(configs[index], notifier),
+                    onDragStart: onDragStarted,
                     onDragUpdate: _onDragUpdate,
+                    onDragEnd: onDragEnded,
                     delegate: ReorderableSliverChildBuilderDelegate(
                       (context, index) {
                         final config = configs[index];
@@ -157,6 +163,7 @@ class _BooruSelectorHorizontalState
                           onTap: () => ref.router.go('/?cid=${config.id}'),
                           selected: currentConfig == config,
                           direction: Axis.horizontal,
+                          dragController: dragController,
                         );
                       },
                       childCount: configs.length,
@@ -178,9 +185,33 @@ class _BooruSelectorHorizontalState
 
 mixin BooruSelectorActionMixin<T extends ConsumerStatefulWidget>
     on ConsumerState<T> {
+  late final DragStateController _dragController;
   Offset? _startDragOffset;
 
+  @override
+  void initState() {
+    super.initState();
+    _dragController = DragStateController();
+  }
+
+  @override
+  void dispose() {
+    _dragController.dispose();
+    super.dispose();
+  }
+
   Axis get dragAxis;
+
+  DragStateController get dragController => _dragController;
+
+  void onDragStarted() {
+    _dragController.startDrag();
+  }
+
+  void onDragEnded() {
+    _startDragOffset = null;
+    _dragController.endDrag();
+  }
 
   void _onDragUpdate(DragUpdateDetails details) {
     _startDragOffset ??= details.globalPosition;

@@ -8,6 +8,7 @@ import 'package:flutter_popover/flutter_popover.dart';
 import '../../../../../foundation/display.dart';
 import '../../../../config_widgets/website_logo.dart';
 import '../../../config/types.dart';
+import 'drag_state_controller.dart';
 
 class BooruSelectorItem extends StatelessWidget {
   const BooruSelectorItem({
@@ -15,6 +16,7 @@ class BooruSelectorItem extends StatelessWidget {
     required this.onTap,
     required this.show,
     required this.selected,
+    required this.dragController,
     super.key,
     this.direction = Axis.vertical,
     this.hideLabel = false,
@@ -26,6 +28,7 @@ class BooruSelectorItem extends StatelessWidget {
   final void Function() onTap;
   final Axis direction;
   final bool hideLabel;
+  final DragStateController dragController;
 
   @override
   Widget build(BuildContext context) {
@@ -59,11 +62,14 @@ class BooruSelectorItem extends StatelessWidget {
           ),
           onSecondaryTap: () => show(),
           onTap: onTap,
-          child: _PopoverTooltip(
-            hideLabel: hideLabel,
-            direction: direction,
-            config: config,
-            child: _build(context, logoSize),
+          child: ListenableBuilder(
+            listenable: dragController,
+            builder: (context, _) => _PopoverTooltip(
+              hideLabel: hideLabel && !dragController.isDragging,
+              direction: direction,
+              config: config,
+              child: _build(context, logoSize),
+            ),
           ),
         ),
       ),
