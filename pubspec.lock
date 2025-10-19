@@ -667,10 +667,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_popover
-      sha256: fffbccb2259facee86081f34b904adf288fbdb777cf23de148ff3c536ee87d34
+      sha256: "7d1a885f59c86ec01122b369dd9d6354a678a8ee39ad46cd7361dfdd6ea60498"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.4"
+    version: "0.0.5"
   flutter_portal:
     dependency: "direct main"
     description:

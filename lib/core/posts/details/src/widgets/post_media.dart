@@ -110,13 +110,9 @@ class PostMedia<T extends Post> extends ConsumerWidget {
               if (context.isLargeScreen)
                 Align(
                   alignment: Alignment.bottomCenter,
-                  child: ValueListenableBuilder(
-                    valueListenable: controller.overlay,
-                    builder: (context, overlay, child) =>
-                        overlay ? child! : const SizedBox.shrink(),
-                    child: PostDetailsVideoControlsDesktop(
-                      controller: details.controller,
-                    ),
+                  child: PostDetailsVideoControlsDesktop(
+                    controller: details.controller,
+                    pageViewController: controller,
                   ),
                 ),
             ],

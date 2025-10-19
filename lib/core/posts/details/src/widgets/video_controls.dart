@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:flutter_popover/flutter_popover.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
@@ -10,6 +11,7 @@ import '../../../../themes/theme/types.dart';
 import '../../../../videos/player/providers.dart';
 import '../../../../videos/player/widgets.dart';
 import '../../../../widgets/widgets.dart';
+import '../../../details_pageview/widgets.dart';
 import '../../../post/types.dart';
 import 'post_details_controller.dart';
 
@@ -29,35 +31,67 @@ class PostDetailsVideoControlsMobile<T extends Post> extends ConsumerWidget {
           controller: controller,
           constraints: constraints,
           playPausePadding: const EdgeInsets.all(8),
+          popoverController: null,
         ),
       ),
     );
   }
 }
 
-class PostDetailsVideoControlsDesktop<T extends Post> extends ConsumerWidget {
+class PostDetailsVideoControlsDesktop<T extends Post> extends StatefulWidget {
   const PostDetailsVideoControlsDesktop({
     required this.controller,
+    required this.pageViewController,
     super.key,
   });
 
   final PostDetailsController<T> controller;
+  final PostDetailsPageViewController pageViewController;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return _VideoControls(
-      child: LayoutBuilder(
-        builder: (context, constraints) => SafeArea(
-          top: false,
-          child: Container(
-            padding: const EdgeInsets.all(8),
-            child: _VideoControlsContent(
-              controller: controller,
-              constraints: constraints,
-              playPausePadding: null,
+  State<PostDetailsVideoControlsDesktop<T>> createState() =>
+      _PostDetailsVideoControlsDesktopState<T>();
+}
+
+class _PostDetailsVideoControlsDesktopState<T extends Post>
+    extends State<PostDetailsVideoControlsDesktop<T>> {
+  final _popoverController = PopoverController();
+
+  @override
+  void dispose() {
+    _popoverController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder(
+      valueListenable: widget.pageViewController.overlay,
+      builder: (context, overlay, child) => ListenableBuilder(
+        listenable: _popoverController,
+        builder: (context, _) => switch ((
+          overlay: overlay,
+          optionShowing: _popoverController.isShowing,
+        )) {
+          (overlay: true, optionShowing: _) ||
+          (overlay: false, optionShowing: true) => _VideoControls(
+            child: LayoutBuilder(
+              builder: (context, constraints) => SafeArea(
+                top: false,
+                child: Container(
+                  padding: const EdgeInsets.all(8),
+                  child: _VideoControlsContent(
+                    popoverController: _popoverController,
+                    controller: widget.controller,
+                    constraints: constraints,
+                    playPausePadding: null,
+                  ),
+                ),
+              ),
             ),
           ),
-        ),
+          _ => const SizedBox.shrink(),
+        },
       ),
     );
   }
@@ -96,11 +130,13 @@ class _VideoControlsContent<T extends Post> extends ConsumerWidget {
     required this.controller,
     required this.constraints,
     required this.playPausePadding,
+    required this.popoverController,
   });
 
   final PostDetailsController<T> controller;
   final BoxConstraints constraints;
   final EdgeInsets? playPausePadding;
+  final PopoverController? popoverController;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -111,6 +147,7 @@ class _VideoControlsContent<T extends Post> extends ConsumerWidget {
         valueListenable: controller.currentPost,
         builder: (context, post, child) => MoreOptionsControlButton(
           post: post,
+          popoverController: popoverController,
           speed: ref.watch(
             playbackSpeedProvider(
               post.videoUrl,

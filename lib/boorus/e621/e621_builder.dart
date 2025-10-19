@@ -108,8 +108,10 @@ class E621Builder extends BaseBooruBuilder {
 
   @override
   VideoQualitySelectionBuilder get videoQualitySelectionBuilder =>
-      (context, post) => E621VideoQualitySelector(
+      (context, post, {onPushPage, onPopPage}) => E621VideoQualitySelector(
         post: post,
+        onPushPage: onPushPage,
+        onPopPage: onPopPage,
       );
 
   @override

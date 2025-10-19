@@ -30,7 +30,6 @@ export 'import_tag_dialog.dart';
 export 'info_container.dart';
 export 'interactive_viewer_extended.dart';
 export 'layout_builder_extra.dart';
-export 'mobile_config_tile.dart';
 export 'multi_selection_action_bar.dart';
 export 'multi_value_listenable_builder.dart';
 export 'network_indicator_with_state.dart';

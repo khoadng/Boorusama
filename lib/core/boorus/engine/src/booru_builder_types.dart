@@ -156,5 +156,7 @@ typedef CreateUnknownBooruWidgetsBuilder =
 typedef VideoQualitySelectionBuilder =
     Widget? Function(
       BuildContext context,
-      Post post,
-    );
+      Post post, {
+      void Function(Widget page)? onPushPage,
+      void Function()? onPopPage,
+    });

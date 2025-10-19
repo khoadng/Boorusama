@@ -1,46 +1,128 @@
+// Dart imports:
+import 'dart:math';
+
 // Flutter imports:
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:flutter_popover/flutter_popover.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../../../foundation/display.dart';
-import '../../../../boorus/engine/providers.dart';
-import '../../../../configs/config/providers.dart';
+import '../../../../../foundation/platform.dart';
 import '../../../../posts/post/types.dart';
 import '../../../../settings/routes.dart';
-import '../../../../widgets/widgets.dart';
+import '../../../../widgets/hover_aware_container.dart';
 import '../../../lock/providers.dart';
+import 'desktop_video_option_sheet.dart';
+import 'mobile_video_option_sheet.dart';
 
 class MoreOptionsControlButton extends StatelessWidget {
   const MoreOptionsControlButton({
     required this.speed,
     required this.onSpeedChanged,
     required this.post,
+    required this.popoverController,
     super.key,
   });
 
   final double speed;
   final void Function(double speed) onSpeedChanged;
   final Post post;
+  final PopoverController? popoverController;
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        customBorder: const CircleBorder(),
-        onTap: () => showModalBottomSheet(
-          context: context,
-          builder: (_) => BooruVideoOptionSheet(
-            value: speed,
-            onChanged: onSpeedChanged,
+    return isDesktopPlatform() && popoverController != null
+        ? DesktopVideoOptionButton(
+            speed: speed,
+            onSpeedChanged: onSpeedChanged,
             post: post,
+            popoverController: popoverController!,
+          )
+        : MobileVideoOptionsButton(
+            speed: speed,
+            onSpeedChanged: onSpeedChanged,
+            post: post,
+          );
+  }
+}
+
+class DesktopVideoOptionButton extends StatelessWidget {
+  const DesktopVideoOptionButton({
+    super.key,
+    required this.speed,
+    required this.onSpeedChanged,
+    required this.post,
+    required this.popoverController,
+  });
+
+  final double speed;
+  final void Function(double speed) onSpeedChanged;
+  final Post post;
+  final PopoverController popoverController;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Popover(
+      controller: popoverController,
+      triggerMode: PopoverTriggerMode.tap,
+      preferredDirection: AxisDirection.up,
+      constrainAxis: Axis.vertical,
+      offset: const Offset(0, -16),
+      consumeOutsideTap: true,
+      overlayChildBuilder: (context) => LayoutBuilder(
+        builder: (context, constraints) => VideoOptionContainer(
+          backgroundColor: colorScheme.surfaceContainer.withValues(alpha: 0.95),
+          constraints: BoxConstraints(
+            maxWidth: min(constraints.maxWidth, 300),
+          ),
+          borderRadius: BorderRadius.circular(12),
+          padding: const EdgeInsets.symmetric(
+            vertical: 4,
+          ),
+          child: Consumer(
+            builder: (_, ref, _) {
+              final screenLockNotifier = ref.watch(screenLockProvider.notifier);
+
+              return DesktopVideoOptionSheet(
+                speed: speed,
+                onSpeedChanged: onSpeedChanged,
+                onLock: () {
+                  popoverController.hide();
+                  screenLockNotifier.lock();
+                },
+                onOpenSettings: () {
+                  popoverController.hide();
+                  openImageViewerSettingsPage(ref);
+                },
+                post: post,
+              );
+            },
           ),
         ),
+      ),
+      child: ListenableBuilder(
+        listenable: popoverController,
+        builder: (context, child) {
+          final isOpen = popoverController.isShowing;
+          return AnimatedContainer(
+            duration: const Duration(milliseconds: 150),
+            decoration: BoxDecoration(
+              color: isOpen ? colorScheme.surfaceContainer : Colors.transparent,
+              borderRadius: BorderRadius.circular(6),
+            ),
+            child: AnimatedRotation(
+              duration: const Duration(milliseconds: 150),
+              turns: isOpen ? 0.125 : 0,
+              child: child,
+            ),
+          );
+        },
         child: const Icon(
           Symbols.settings,
           fill: 1,
@@ -50,130 +132,98 @@ class MoreOptionsControlButton extends StatelessWidget {
   }
 }
 
-class BooruVideoOptionSheet extends ConsumerWidget {
-  const BooruVideoOptionSheet({
-    required this.value,
-    required this.onChanged,
-    required this.post,
+class MobileVideoOptionsButton extends ConsumerWidget {
+  const MobileVideoOptionsButton({
     super.key,
+    required this.speed,
+    required this.onSpeedChanged,
+    required this.post,
   });
 
-  final double value;
-  final void Function(double value) onChanged;
+  final double speed;
+  final void Function(double speed) onSpeedChanged;
   final Post post;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final colorScheme = Theme.of(context).colorScheme;
     final screenLockNotifier = ref.watch(screenLockProvider.notifier);
-    final booruBuilder = ref.watch(booruBuilderProvider(ref.watchConfigAuth));
 
-    return Material(
-      color: kPreferredLayout.isDesktop
-          ? colorScheme.surface
-          : colorScheme.surfaceContainer,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 4),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (booruBuilder?.videoQualitySelectionBuilder case final builder?)
-              ?builder(context, post),
-            MobileConfigTile(
-              value: _buildSpeedText(value, context),
-              title: context.t.video_player.playback_speed,
-              onTap: () {
-                Navigator.of(context).pop();
-                showModalBottomSheet(
-                  context: context,
-                  builder: (_) => PlaybackSpeedActionSheet(
-                    onChanged: onChanged,
-                    speeds: const [0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 2.0],
-                  ),
-                );
-              },
-            ),
-            ListTile(
-              title: Text(context.t.video_player.lock_screen),
-              onTap: () {
-                Navigator.of(context).pop();
-                screenLockNotifier.lock();
-              },
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 12,
+    return Tooltip(
+      message: context.t.settings.settings,
+      preferBelow: false,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          customBorder: const CircleBorder(),
+          onTap: () => showModalBottomSheet(
+            context: context,
+            builder: (_) => VideoOptionContainer(
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(12),
               ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: FilledButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        openImageViewerSettingsPage(ref);
-                      },
-                      child: Text(context.t.generic.action.more),
+              child: MobileVideoOptionSheet(
+                value: speed,
+                onSpeedChanged: () {
+                  Navigator.of(context).pop();
+                  showModalBottomSheet(
+                    context: context,
+                    builder: (_) => PlaybackSpeedActionSheet(
+                      onChanged: onSpeedChanged,
                     ),
-                  ),
-                ],
+                  );
+                },
+                onOpenSettings: () {
+                  Navigator.of(context).pop();
+                  openImageViewerSettingsPage(ref);
+                },
+                onLock: () {
+                  Navigator.of(context).pop();
+                  screenLockNotifier.lock();
+                },
+                post: post,
               ),
             ),
-            SizedBox(
-              height: MediaQuery.viewPaddingOf(context).bottom,
+          ),
+          child: const HoverAwareContainer(
+            child: Icon(
+              Symbols.settings,
+              fill: 1,
             ),
-          ],
+          ),
         ),
       ),
     );
   }
 }
 
-class PlaybackSpeedActionSheet extends StatelessWidget {
-  const PlaybackSpeedActionSheet({
-    required this.onChanged,
-    required this.speeds,
+class VideoOptionContainer extends StatelessWidget {
+  const VideoOptionContainer({
     super.key,
+    this.borderRadius,
+    this.constraints,
+    this.padding,
+    this.backgroundColor,
+    required this.child,
   });
 
-  final void Function(double value) onChanged;
-  final List<double> speeds;
+  final Widget child;
+  final EdgeInsetsGeometry? padding;
+  final BorderRadiusGeometry? borderRadius;
+  final BoxConstraints? constraints;
+  final Color? backgroundColor;
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Theme.of(context).colorScheme.surfaceContainer,
-      child: Container(
-        padding: const EdgeInsets.symmetric(
-          vertical: 8,
-          horizontal: 4,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: speeds
-              .map(
-                (e) => ListTile(
-                  title: Text(_buildSpeedText(e, context)),
-                  onTap: () {
-                    Navigator.of(context).pop();
-                    onChanged(e);
-                  },
-                ),
-              )
-              .toList(),
-        ),
+    final colorScheme = Theme.of(context).colorScheme;
+    return Container(
+      padding: padding,
+      constraints: constraints,
+      decoration: BoxDecoration(
+        color: backgroundColor ?? colorScheme.surfaceContainer,
+        borderRadius: borderRadius,
       ),
+      child: child,
     );
   }
-}
-
-String _buildSpeedText(double speed, BuildContext context) {
-  if (speed == 1.0) return context.t.video_player.speed.normal;
-
-  final speedText = speed.toStringAsFixed(2);
-  // if end with zero, remove it
-  final cleanned = speedText.endsWith('0')
-      ? speedText.substring(0, speedText.length - 1)
-      : speedText;
-
-  return '${cleanned}x';
 }
