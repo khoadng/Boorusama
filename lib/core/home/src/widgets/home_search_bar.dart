@@ -18,7 +18,6 @@ import '../../../configs/config/providers.dart';
 import '../../../configs/config/types.dart';
 import '../../../search/histories/providers.dart';
 import '../../../search/search/routes.dart';
-import '../../../search/search/types.dart';
 import '../../../search/search/widgets.dart';
 import '../../../search/selected_tags/providers.dart';
 import '../../../settings/providers.dart';
@@ -284,48 +283,30 @@ class _SliverHomeSearchBarState
       ),
     );
 
+    // Desktop variant
     if (context.isLargeScreen) {
-      return MediaQuery.sizeOf(context).height >= 550
-          ? SliverPinnedHeader(
-              child: ColoredBox(
-                color: colorScheme.surface,
-                child: _buildDesktop(),
-              ),
-            )
-          : SliverToBoxAdapter(
-              child: _buildDesktop(),
-            );
-    } else {
-      return SliverAppBar(
-        primary: widget.primary ?? true,
-        backgroundColor: colorScheme.surface,
-        title: LayoutBuilder(
-          builder: (context, constraints) => Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Flexible(
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(
-                    maxWidth: kSearchAppBarWidth,
-                  ),
-                  child: const HomeSearchBar(),
-                ),
-              ),
-            ],
-          ),
+      final child = ColoredBox(
+        color: colorScheme.surface,
+        child: DesktopSearchbar(
+          onSearch: _onSearch,
+          selectedTagController: selectedTagController,
         ),
-        floating: true,
-        snap: true,
-        pinned: persistentSearchBar,
-        automaticallyImplyLeading: false,
       );
-    }
-  }
 
-  Widget _buildDesktop() {
-    return DesktopSearchbar(
-      onSearch: () => _onSearch(),
-      selectedTagController: selectedTagController,
+      return MediaQuery.sizeOf(context).height >= 550
+          ? SliverPinnedHeader(child: child)
+          : SliverToBoxAdapter(child: child);
+    }
+
+    // Mobile variant
+    return SliverAppBar(
+      primary: widget.primary ?? true,
+      backgroundColor: colorScheme.surface,
+      title: const HomeSearchBar(),
+      floating: true,
+      snap: true,
+      pinned: persistentSearchBar,
+      automaticallyImplyLeading: false,
     );
   }
 
