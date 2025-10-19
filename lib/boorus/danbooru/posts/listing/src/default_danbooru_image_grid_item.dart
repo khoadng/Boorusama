@@ -202,7 +202,7 @@ class DefaultDanbooruImageGridItem extends StatelessWidget {
                   ),
                   child: LayoutBuilder(
                     builder: (context, constraints) =>
-                        constraints.maxWidth >= _kBannedTextThreshold
+                        constraints.maxWidth > _kBannedTextThreshold
                         ? Text(
                             maxLines: 1,
                             'Banned post'.hc,
