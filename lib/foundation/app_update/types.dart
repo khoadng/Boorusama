@@ -1,1 +1,1 @@
-export 'src/app_update_checker.dart';
+export 'src/types/app_update_checker.dart';

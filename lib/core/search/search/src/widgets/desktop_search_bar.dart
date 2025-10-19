@@ -11,6 +11,7 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../../../../../boorus/danbooru/posts/search/src/widgets/danbooru_metatags_section.dart';
+import '../../../../../foundation/app_update/widgets.dart';
 import '../../../../../foundation/display.dart';
 import '../../../../../foundation/platform.dart';
 import '../../../../../foundation/utils/flutter_utils.dart';
@@ -121,6 +122,7 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
         widget.onSearch();
       },
       leading: null,
+      innerSearchButton: const AppUpdateButton(),
       trailingSearchButton: MaterialButton(
         minWidth: 0,
         elevation: 0,

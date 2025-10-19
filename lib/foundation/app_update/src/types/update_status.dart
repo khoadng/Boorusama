@@ -1,7 +1,3 @@
-abstract class AppUpdateChecker {
-  Future<UpdateStatus> checkForUpdate();
-}
-
 sealed class UpdateStatus {
   const UpdateStatus();
 }
@@ -28,12 +24,4 @@ final class UpdateError extends UpdateStatus {
   const UpdateError(this.error);
 
   final Object error;
-}
-
-// Unsupport platform checker
-class UnsupportedPlatformChecker implements AppUpdateChecker {
-  @override
-  Future<UpdateStatus> checkForUpdate() async {
-    return const UpdateNotAvailable();
-  }
 }

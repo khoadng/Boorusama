@@ -6,7 +6,8 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:version/version.dart';
 
 // Project imports:
-import 'app_update_checker.dart';
+import 'types/app_update_checker.dart';
+import 'types/update_status.dart';
 
 class PlayStoreUpdateChecker implements AppUpdateChecker {
   PlayStoreUpdateChecker({
