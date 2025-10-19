@@ -114,7 +114,7 @@ class PostMedia<T extends Post> extends ConsumerWidget {
                     valueListenable: controller.overlay,
                     builder: (context, overlay, child) =>
                         overlay ? child! : const SizedBox.shrink(),
-                    child: PostDetailsVideoControls(
+                    child: PostDetailsVideoControlsDesktop(
                       controller: details.controller,
                     ),
                   ),

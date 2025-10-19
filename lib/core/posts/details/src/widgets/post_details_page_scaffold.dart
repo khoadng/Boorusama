@@ -408,7 +408,7 @@ class _PostDetailPageScaffoldState<T extends Post>
               ? SliverToBoxAdapter(
                   child: DecoratedBox(
                     decoration: decoration,
-                    child: PostDetailsVideoControls(
+                    child: PostDetailsVideoControlsMobile(
                       controller: widget.controller,
                     ),
                   ),
@@ -457,7 +457,7 @@ class _PostDetailPageScaffoldState<T extends Post>
     return ValueListenableBuilder(
       valueListenable: widget.controller.currentPost,
       builder: (context, post, _) => post.isVideo
-          ? PostDetailsVideoControls(
+          ? PostDetailsVideoControlsMobile(
               controller: widget.controller,
             )
           : const SizedBox.shrink(),
