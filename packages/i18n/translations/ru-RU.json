@@ -25,7 +25,8 @@
       "show_all": "Показать всё",
       "show_less": "Свернуть",
       "search": "Поиск",
-      "view_all": "Посмотреть все"
+      "view_all": "Посмотреть все",
+      "verify": "Потвердить"
     },
     "copied": "Скопировано",
     "app_restart_request": "Перезагрузите приложение для того, чтобы изменения вступили в силу",
@@ -55,7 +56,8 @@
     },
     "fail_to_load_profile": "Не удается загрузить профиль",
     "tabs": {
-      "changes": "Изменения"
+      "changes": "Изменения",
+      "info": "Инфо"
     },
     "activity": {
       "title": "Активность",
@@ -69,6 +71,9 @@
       "neutral": "Нейтральный",
       "positive": "Положительный",
       "negative": "Отрицательный"
+    },
+    "uploads": {
+      "top_n_copyright": "Топ $n copyrights"
     }
   },
   "network": {
@@ -683,6 +688,9 @@
     "recently_added": "Недавно добавленно",
     "recently_updated": "Недавно обновлено",
     "recently_created": "Недавно созданные",
-    "last_updated": "Последние обновленныё"
+    "last_updated": "Последние обновленныё",
+    "name": "Имя",
+    "name_asc": "Имя (A-Z)",
+    "name_desc": "Имя (Z-A)"
   }
 }
