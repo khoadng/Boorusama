@@ -67,7 +67,7 @@ final danbooruUserPreviousNamesProvider = FutureProvider.autoDispose
       final client = ref.watch(danbooruClientProvider(config));
       final requests = await client.getUserNameChangeRequests(userId: userId);
 
-      return requests.map((e) => e.desiredName).nonNulls.toList();
+      return requests.map((e) => e.originalName).nonNulls.toList();
     });
 
 final danbooruUserDetailsProvider = FutureProvider.autoDispose
