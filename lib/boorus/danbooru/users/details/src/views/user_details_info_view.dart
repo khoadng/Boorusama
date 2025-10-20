@@ -32,21 +32,28 @@ class UserDetailsInfoView extends ConsumerWidget {
     final hasFeedback = user.hasFeedbacks;
 
     return SingleChildScrollView(
-      child: Column(
-        children: [
-          const SizedBox(height: 12),
-          UserDetailsSectionCard.text(
-            title: context.t.profile.activity.title,
-            child: UserStatsGroup(user: user),
-          ),
-          const SizedBox(height: 24),
-          _buildFeedbacks(hasFeedback, ref),
-          if (previousNames.isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.only(top: 24),
-              child: _buildPrevNames(context),
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 600),
+          child: LayoutBuilder(
+            builder: (context, constraints) => Column(
+              children: [
+                const SizedBox(height: 12),
+                UserDetailsSectionCard.text(
+                  title: context.t.profile.activity.title,
+                  child: UserStatsGroup(user: user),
+                ),
+                const SizedBox(height: 24),
+                _buildFeedbacks(hasFeedback, ref),
+                if (previousNames.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 24),
+                    child: _buildPrevNames(context),
+                  ),
+              ],
             ),
-        ],
+          ),
+        ),
       ),
     );
   }

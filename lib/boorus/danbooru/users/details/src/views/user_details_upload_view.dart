@@ -9,6 +9,7 @@ import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
 import '../../../../../../core/configs/config/providers.dart';
+import '../../../../../../core/posts/details/widgets.dart';
 import '../../../../../../core/posts/details_parts/widgets.dart';
 import '../../../../../../core/search/search/routes.dart';
 import '../../../../../../core/tags/categories/types.dart';
@@ -45,105 +46,110 @@ class UserDetailsUploadView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final textTheme = Theme.of(context).textTheme;
 
-    return CustomScrollView(
-      slivers: [
-        if (user.uploadCount > 0)
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.only(
-                top: 16,
-                left: 12,
-              ),
-              child: SizedBox(
-                height: 220,
-                child: ref
-                    .watch(
-                      userDataProvider(
-                        DanbooruReportDataParams.forUser(user),
-                      ),
-                    )
-                    .maybeWhen(
-                      data: (data) => Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Row(
+    return LayoutBuilder(
+      builder: (context, constraints) => PostDetailsSheetConstraints(
+        maxWidth: constraints.maxWidth,
+        child: CustomScrollView(
+          slivers: [
+            if (user.uploadCount > 0)
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                    top: 16,
+                    left: 12,
+                  ),
+                  child: SizedBox(
+                    height: 220,
+                    child: ref
+                        .watch(
+                          userDataProvider(
+                            DanbooruReportDataParams.forUser(user),
+                          ),
+                        )
+                        .maybeWhen(
+                          data: (data) => Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      context.t.uploads.counter(
+                                        n: data.sumBy((e) => e.postCount),
+                                      ),
+                                      style: textTheme.titleMedium!.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  const UploadDateRangeSelectorButton(),
+                                ],
+                              ),
+                              const SizedBox(height: 16),
                               Expanded(
-                                child: Text(
-                                  context.t.uploads.counter(
-                                    n: data.sumBy((e) => e.postCount),
-                                  ),
-                                  style: textTheme.titleMedium!.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                child: UserUploadDailyDeltaChart(
+                                  data: data,
                                 ),
                               ),
-                              const UploadDateRangeSelectorButton(),
                             ],
                           ),
-                          const SizedBox(height: 16),
-                          Expanded(
-                            child: UserUploadDailyDeltaChart(
-                              data: data,
+                          orElse: () => const SizedBox(
+                            height: 160,
+                            child: Center(
+                              child: SizedBox(
+                                width: 15,
+                                height: 15,
+                                child: CircularProgressIndicator(),
+                              ),
                             ),
                           ),
-                        ],
-                      ),
-                      orElse: () => const SizedBox(
-                        height: 160,
-                        child: Center(
-                          child: SizedBox(
-                            width: 15,
-                            height: 15,
-                            child: CircularProgressIndicator(),
-                          ),
                         ),
-                      ),
-                    ),
-              ),
-            ),
-          ),
-        if (user.uploadCount > 0)
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.only(top: 24, left: 12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Text(
-                    context.t.profile.uploads.top_n_copyright(
-                      n: _kTopCopyrigthTags,
-                    ),
-                    style: textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
                   ),
-                  const SizedBox(height: 4),
-                  ref
-                      .watch(
-                        userCopyrightDataProvider(
-                          (
-                            username: username,
-                            uploadCount: user.uploadCount,
-                          ),
-                        ),
-                      )
-                      .maybeWhen(
-                        data: (data) => _buildTags(
-                          ref,
-                          data.tags.take(_kTopCopyrigthTags).toList(),
-                        ),
-                        orElse: () => _buildPlaceHolderTags(context),
-                      ),
-                ],
+                ),
               ),
+            if (user.uploadCount > 0)
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 24, left: 12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Text(
+                        context.t.profile.uploads.top_n_copyright(
+                          n: _kTopCopyrigthTags,
+                        ),
+                        style: textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      ref
+                          .watch(
+                            userCopyrightDataProvider(
+                              (
+                                username: username,
+                                uploadCount: user.uploadCount,
+                              ),
+                            ),
+                          )
+                          .maybeWhen(
+                            data: (data) => _buildTags(
+                              ref,
+                              data.tags.take(_kTopCopyrigthTags).toList(),
+                            ),
+                            orElse: () => _buildPlaceHolderTags(context),
+                          ),
+                    ],
+                  ),
+                ),
+              ),
+            SliverUploadPostList(
+              title: context.t.profile.tabs.uploads,
+              user: user,
             ),
-          ),
-        SliverUploadPostList(
-          title: context.t.profile.tabs.uploads,
-          user: user,
+          ],
         ),
-      ],
+      ),
     );
   }
 
@@ -241,6 +247,7 @@ class SliverUploadPostList extends ConsumerWidget {
   const SliverUploadPostList({
     required this.title,
     required this.user,
+
     super.key,
   });
 

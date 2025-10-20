@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
+import '../../../../../../core/posts/details/widgets.dart';
 import '../../../../reports/types.dart';
 import '../providers/local_providers.dart';
 import '../types/upload_date_range.dart';
@@ -30,6 +31,8 @@ class UserUploadDailyDeltaChart extends ConsumerWidget {
     final isWeeklyChart = dateRange == UploadDateRange.last7Days;
     final isMonthlyChart = dateRange == UploadDateRange.last30Days;
     final isYearlyChart = dateRange == UploadDateRange.lastYear;
+    final constraints = PostDetailsSheetConstraints.of(context);
+    final maxWidth = constraints?.maxWidth ?? 600.0;
 
     if (isWeeklyChart) {
       // Sep 5 7 9 11 13
@@ -144,13 +147,11 @@ class UserUploadDailyDeltaChart extends ConsumerWidget {
                 x: idx,
                 barRods: [
                   BarChartRodData(
-                    width: switch (dateRange) {
-                      UploadDateRange.last7Days => 28,
-                      UploadDateRange.last30Days => 8,
-                      UploadDateRange.last3Months => 2.5,
-                      UploadDateRange.last6Months => 1.25,
-                      UploadDateRange.lastYear => 0.75,
-                    },
+                    width: _calculateBarWidth(
+                      dateRange,
+                      data.length,
+                      maxWidth,
+                    ),
                     borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(1),
                       topRight: Radius.circular(1),
@@ -164,6 +165,34 @@ class UserUploadDailyDeltaChart extends ConsumerWidget {
       ),
     );
   }
+}
+
+double _calculateBarWidth(
+  UploadDateRange dateRange,
+  int dataLength,
+  double maxWidth,
+) {
+  if (dataLength == 0) return 0;
+
+  final availableWidthPerBar = (maxWidth * 0.8) / dataLength;
+
+  final baseWidth = switch (dateRange) {
+    UploadDateRange.last7Days => 28.0,
+    UploadDateRange.last30Days => 8.0,
+    UploadDateRange.last3Months => 2.5,
+    UploadDateRange.last6Months => 1.25,
+    UploadDateRange.lastYear => 0.75,
+  };
+
+  final maxAllowedWidth = switch (dateRange) {
+    UploadDateRange.last7Days => 48.0,
+    UploadDateRange.last30Days => 16.0,
+    UploadDateRange.last3Months => 8.0,
+    UploadDateRange.last6Months => 4.0,
+    UploadDateRange.lastYear => 2.0,
+  };
+
+  return (availableWidthPerBar * 0.7).clamp(baseWidth, maxAllowedWidth);
 }
 
 String parseIntToMonthString(int value, BuildContext context) =>
