@@ -1209,5 +1209,11 @@
   "infinite_scroll": {
     "load_more": "Завантажити більше",
     "bottom_reached": "Це все наразі"
+  },
+  "window": {
+    "pin": {
+      "pin_toast": "Вікно закріплено зверху",
+      "unpin_toast": "Вікно відкріплено зверху"
+    }
   }
 }
