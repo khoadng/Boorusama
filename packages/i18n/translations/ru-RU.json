@@ -14,17 +14,66 @@
       "cancel": "Отмена",
       "duplicate": "Дубликат",
       "select": "Выбрать",
-      "view": "Посмотреть"
+      "view": "Посмотреть",
+      "save": "Сохранить",
+      "retry": "Попробовать снова",
+      "clear": "Очистить",
+      "create": "Создать",
+      "reset": "Сбросить",
+      "more": "Другое",
+      "apply": "Применить",
+      "show_all": "Показать всё",
+      "show_less": "Свернуть",
+      "search": "Поиск",
+      "view_all": "Посмотреть все",
+      "verify": "Потвердить"
     },
     "copied": "Скопировано",
-    "app_restart_request": "Перезагрузите приложение для того, чтобы изменения вступили в силу"
+    "app_restart_request": "Перезагрузите приложение для того, чтобы изменения вступили в силу",
+    "warning": "Предупреждение",
+    "default": "По умолчанию",
+    "no_content": "Нет контента",
+    "version": "Версия $version"
   },
   "profile": {
     "favorites": "Избранные",
     "profile": "Профиль",
     "copy_user_id": "Копировать ID пользователя",
     "messages": {
-      "title": "Сообщения"
+      "title": "Сообщения",
+      "empty": "У вас нет сообщений",
+      "unread_message_notice": {
+        "one": "У вас $n непрочитанных сообщений",
+        "other": "У вас $n непрочитанных сообщений"
+      },
+      "categories": {
+        "all": "Все",
+        "unread": "Непрочитанные",
+        "sent": "Отправить",
+        "deleted": "Удаленно"
+      },
+      "date": "Дата"
+    },
+    "fail_to_load_profile": "Не удается загрузить профиль",
+    "tabs": {
+      "changes": "Изменения",
+      "info": "Инфо"
+    },
+    "activity": {
+      "title": "Активность",
+      "tag_edits": "Редактирование тегов",
+      "comments": "Комментарии",
+      "forum_posts": "Посты на форуме"
+    },
+    "feedback": {
+      "title": "Отзывы",
+      "user_feedbacks": "Отзывы пользователей",
+      "neutral": "Нейтральный",
+      "positive": "Положительный",
+      "negative": "Отрицательный"
+    },
+    "uploads": {
+      "top_n_copyright": "Топ $n copyrights"
     }
   },
   "network": {
@@ -35,7 +84,8 @@
       "more": "Больше",
       "related": "Связанные",
       "add_to_current_search": "Добавить к запросу",
-      "open_wiki": "Открыть wiki"
+      "open_wiki": "Открыть wiki",
+      "negate_from_current_search": "Исключить из текущего поиска"
     }
   },
   "post": {
@@ -63,13 +113,42 @@
       "source_label": "Источник",
       "related_posts": "Похожие посты",
       "add_to_bookmark": "Добавить в закладки",
-      "remove_from_bookmark": "Убрать из закладок"
+      "remove_from_bookmark": "Убрать из закладок",
+      "duration": "Длительность",
+      "widgets": {
+        "toolbar": "Панель инструментов",
+        "tags": "Теги",
+        "file_details": "Сведения о файле",
+        "pool": "Пул",
+        "artist_info": "Информация о художнике",
+        "stats": "Статистика",
+        "comments": "Комментарии",
+        "artist_posts": "Посты художника",
+        "character_list": "Список персонажей",
+        "source": "Источник"
+      }
     },
     "action": {
       "view_comments": "Просмотреть комментарии",
       "add_to_favorite_group": "Добавить в любимое",
       "view_in_browser": "Открыть в браузере",
-      "view_original": "Просмотреть оригинальное изображение"
+      "view_original": "Просмотреть оригинальное изображение",
+      "share": "Поделиться",
+      "bookmark": "Закладки",
+      "view_tags": "Просмотр тегов",
+      "view_tag_history": "Открыть историю тегов",
+      "copy_image": "Скопировать изображение",
+      "slideshow": "Слайд-шоу",
+      "edit": "Редактировать",
+      "use_default": "Использовать по умолчанию"
+    },
+    "statistics": {
+      "stats_for_nerds": "Статистика для ботаников"
+    },
+    "favorites": {
+      "user_list": {
+        "title": "Избранное"
+      }
     }
   },
   "comment": {
@@ -98,7 +177,10 @@
     "most_viewed": "Самое просматриваемое",
     "see_more": "Просмотреть больше",
     "explore": "Изучать",
-    "new": "Новое"
+    "new": "Новое",
+    "newest": "Новейший",
+    "random": "Случайный",
+    "ordered": "Упорядоченный"
   },
   "search": {
     "errors": {
@@ -110,7 +192,9 @@
       "down": "Сервер недоступен, пожалуйста, попробуйте позже",
       "access_denied": "Доступ запрещён",
       "forbidden": "Неудачная попытка аунтефикации",
-      "unknown": "Неизвестная ошибка сервера, пожалуйста, сообщите об ней разработчикам"
+      "unknown": "Неизвестная ошибка сервера, пожалуйста, сообщите об ней разработчикам",
+      "cannot_reach_server": "Не удается связаться с сервером, проверьте подключение",
+      "failed_to_load_data": "Не удалось загрузить данные с сервера, повторите попытку позже"
     },
     "hint": "Поиск...",
     "no_result": "Мы искали и там, и тут, но ничего не нашли.",
@@ -146,7 +230,8 @@
     },
     "detail": {
       "last_updated": "Последнее обновление"
-    }
+    },
+    "pools": "Пулы"
   },
   "settings": {
     "settings": "Настройки",
@@ -156,13 +241,28 @@
       "show_scores": "Показать баллы",
       "show_post_list_config_header": "Показать заголовок конфигурации сообщений",
       "booru_config": "Профиль Боору",
-      "booru_config_placement": "Размещение профиля Booru"
+      "booru_config_placement": "Размещение профиля Booru",
+      "auto_play_gif": "Автовоспроизведение GIF",
+      "blur_explicit_media": "Размытие откровенного контента",
+      "booru_config_label_options": {
+        "always": "Всегда",
+        "never": "Никогда"
+      }
     },
     "general": "Генеральные",
     "search": {
       "search": "Поиск",
       "auto_focus_search_bar": "Панель поиска с автофокусом при первом открытии режима поиска",
-      "hide_bookmarked_posts_from_search_results": "Скрыть посты с закладками из результатов поиска"
+      "hide_bookmarked_posts_from_search_results": "Скрыть посты с закладками из результатов поиска",
+      "search_bar": {
+        "position": {
+          "search_bar_position": "Расположение строки поиска",
+          "bottom": "Снизу"
+        },
+        "scroll_behavior": {
+          "persistent_description": "Сохранять видимость строки поиска во время прокрутки."
+        }
+      }
     },
     "information": "Информация",
     "changelog": "История изменений",
@@ -175,7 +275,8 @@
     "image_list": {
       "image_list": "Отображение ленты",
       "standard": "Стандартное",
-      "masonry": "Кирпичное"
+      "masonry": "Кирпичное",
+      "classic": "Классический"
     },
     "image_grid": {
       "image_grid": "Сетка изображений",
@@ -183,7 +284,8 @@
         "grid_size": "Размер сетки",
         "small": "Маленькая",
         "medium": "Средняя",
-        "large": "Большая"
+        "large": "Большая",
+        "micro": "Микро"
       },
       "image_quality": {
         "image_quality": "Качество изображения",
@@ -192,7 +294,8 @@
         "low": "Низкое",
         "original": "Оригинальное",
         "automatic": "Автоматическое",
-        "highest": "Крутейшее"
+        "highest": "Крутейшее",
+        "auto": "Авто"
       },
       "spacing": "Промежуток",
       "corner_radius": "Количество углов",
@@ -212,7 +315,31 @@
       "slideshow_skip": "Отключить анимацию перехода между слайдами",
       "slideshow_interval_explanation": "Значение меньше 1 секунды автоматически отключает анимацию перехода",
       "mute_video": "Воспроизводить без звука",
-      "video_section_title": "Видео"
+      "video_section_title": "Видео",
+      "swipe_mode": "Режим свайпа",
+      "swipe_mode_disclaimer": "Некоторые пользовательские жесты могут работать не во всех режимах",
+      "swipe_modes": {
+        "horizontal": "Горизонтальный",
+        "horizontal_description": "Свайп влево/вправо в стиле галереи. Например, фотогалереи и мультимедийные приложения.",
+        "vertical": "Вертикальный",
+        "vertical_description": "Свайп вверх/вниз в стиле TikTok. Популярен на платформах коротких видео. Только портретный режим."
+      },
+      "double_tap_seek": "Двойной тап для поиска",
+      "manage_cache": "Управление кэшем",
+      "enable_video_cache": "Включить видео кэш",
+      "enable_video_cache_description": "Загружайте видео во время потоковой передачи и кэшируйте их, чтобы сократить потребление данных и ускорить воспроизведение при последующих просмотрах.",
+      "video": {
+        "video_player_engine": "Движок видеоплеера",
+        "engine": {
+          "auto": "Авто",
+          "auto_description": "Автоматически выбирайте лучший движок в зависимости от возможностей вашего устройства.",
+          "default": "По умолчанию",
+          "default_description": "Хорошо работает с большинством устройств, может иметь проблемы с некоторыми форматами видео или более старыми устройствами.",
+          "mdk_description": "Быстрая загрузка, лучшая производительность для определенных форматов видео, но нестабильная и может привести к сбоям.",
+          "mpv_description": "Хорошая поддержка форматов и производительность, более медленное время загрузки",
+          "webview_description": "Хорошая совместимость, но более высокое потребление ресурсов и плохая производительность, используйте его в крайнем случае."
+        }
+      }
     },
     "language": {
       "language": "Язык",
@@ -226,7 +353,19 @@
       "dynamic_color": "Динамический цвет темы",
       "dynamic_color_mobile_description": "Синхронизировать цвет темы с обоями",
       "dynamic_color_desktop_description": "Синхронизировать цвет темы с акцентным цветом ОС",
-      "dynamic_color_unsupported_description": "Это устройство не поддерживает динамический цвет."
+      "dynamic_color_unsupported_description": "Это устройство не поддерживает динамический цвет.",
+      "system": "Система",
+      "viewer": {
+        "colors": "Цвета",
+        "color_variants": "Варианты цветов",
+        "dark_mode": "Тёмный режим",
+        "harmonize_colors_description": "Настраивает цвета тегов в соответствии с цветом элементов",
+        "groups": {
+          "basic": "Основной",
+          "builtin": "Встроенный",
+          "accent": "Акцент"
+        }
+      }
     },
     "privacy": {
       "privacy": "Приватность",
@@ -256,18 +395,89 @@
         "sample": "Пример",
         "preview": "Миниатюра"
       },
-      "title": "Скачать"
+      "title": "Скачать",
+      "skip_existing_files": "Пропускать существующие файлы",
+      "skip_existing_files_explanation": "Это предотвратит загрузку файлов, которые уже существуют в папке. Это полезно, когда вы не хотите загружать один и тот же файл несколько раз."
     },
     "help_us_translate": "Помогите нам перевести",
     "other_settings": "Другие настройки",
     "data_and_storage": {
       "data_and_storage": "Данные и хранилище",
-      "clear_cache_on_start_up": "Очистить кеш изображений при запуске"
+      "clear_cache_on_start_up": "Очистить кеш изображений при запуске",
+      "cache": "Кэш",
+      "data": "Данные",
+      "all_cache": "Весь кэш",
+      "tag_cache": "Кэш тегов",
+      "image_only_cache": "Кэш только изображений",
+      "video_cache": "Видео кэш",
+      "video_cache_limit": "Лимит кэша видео",
+      "video_cache_limit_description": "Максимальный размер хранилища видеокэша",
+      "no_limit": "Без ограничений",
+      "loading": "Загрузка...",
+      "storage": "Хранилище",
+      "disk_space": {
+        "status_title": "$freeSpace свободно из $totalSpace",
+        "groups": {
+          "system": "Система",
+          "images": "Изображения",
+          "videos": "Видео",
+          "others": "Другие"
+        }
+      },
+      "error_loading_cache_info": "Ошибка при загрузке информации о кэше"
     },
     "backup_and_restore": {
       "backup_and_restore": "Резервное копирование и восстановление",
       "import": "Импорт",
-      "export": "Экспорт"
+      "export": "Экспорт",
+      "advanced_backup": "Расширенное резервное копирование",
+      "exporting": "Экспорт...",
+      "export_to_clipboard": "Экспорт в буфер обмена",
+      "import_from_clipboard": "Импорт из буфера обмена",
+      "no_sources_selected": "Источники не выбраны",
+      "export_success": "{source} успешно экспортирован",
+      "export_failed": "Ошибка при экспорте {source}: {error}",
+      "import_success": "{source} успешно импортирован",
+      "import_failed": "Ошибка при импорте {source}: {error}",
+      "backup_data": "Резервное копирование данных",
+      "advanced_export_import": "Расширенный экспорт/импорт",
+      "auto_backup": "Автоматическое резервное копирование",
+      "auto_backup_tooltip": "Резервные копии создаются, когда вы открываете приложение. При закрытии приложения резервное копирование не создается.",
+      "backup_in_progress": "Резервное копирование уже выполняется",
+      "export_operation_failed": "Экспорт не удался: {error}",
+      "import_operation_failed": "Импорт не удался: {error}",
+      "export_no_items": "Ошибка экспорта: не удалось экспортировать элементы",
+      "import_no_items": "Ошибка импорта: не удалось импортировать элементы",
+      "invalid_location_error": "Не удается экспортировать в это место, попробуйте использовать папки \"Download\" или \"Documents\". Создайте их, если они не существуют.",
+      "invalid_backup_format_error": "Неверный формат резервной копии",
+      "never": "Никогда",
+      "receive_data": {
+        "nearby_devices": "Ближайшие устройства",
+        "ip_address": "IP адрес",
+        "errors": {
+          "not_empty": "IP-адрес не может быть пустым",
+          "port_required": "IP-адрес должен содержать порт",
+          "invalid": "Неверный IP-адрес"
+        },
+        "choose_data_to_import": "Выбрать данные для импорта"
+      },
+      "send_data": {
+        "version": "Версия",
+        "status": {
+          "title": "Статус"
+        }
+      },
+      "backward_import": {
+        "title": "Обнаружен импорт из более старой версии",
+        "current_version": "Текущая версия",
+        "exported_version": "Экспортированная версия",
+        "reconfirm_question": "Обратный импорт может работать не так, как ожидалось, вы уверены?"
+      },
+      "version_mismatch": {
+        "title": "Обнаружен импорт из другой версии",
+        "current_version": "Текущая версия",
+        "confirmation_question": "Версия приложения устройства, которое вы пытаетесь импортировать, отличается от текущей версии приложения. Это может привести к проблемам совместимости и потенциальной потере данных.\n\nВы уверены, что хотите продолжить?"
+      }
     },
     "image_details": {
       "ui_overlay": {
@@ -299,7 +509,8 @@
     "contact_developer_description": "Если у вас есть какие-либо вопросы или предложения, напишите мне по электронной почте с помощью этой опции",
     "feature_request_and_bug_report": "Предложения и отчет об ошибках",
     "feature_request_and_bug_report_description": "Предлагайте функции или сообщайте об ошибках через репозиторий GitHub",
-    "open_app_settings": "Открыть настройки"
+    "open_app_settings": "Открыть настройки",
+    "need_more_questions": "Нужно другое?"
   },
   "blacklisted_tags": {
     "remove": "Удалить",
@@ -471,5 +682,15 @@
     "options": {
       "save_to_folder": "Сохранить в"
     }
+  },
+  "sort": {
+    "sort_by": "Сортировать по",
+    "recently_added": "Недавно добавленно",
+    "recently_updated": "Недавно обновлено",
+    "recently_created": "Недавно созданные",
+    "last_updated": "Последние обновленныё",
+    "name": "Имя",
+    "name_asc": "Имя (A-Z)",
+    "name_desc": "Имя (Z-A)"
   }
 }
