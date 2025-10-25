@@ -61,11 +61,15 @@ class _DanbooruSearchPageState extends ConsumerState<DanbooruSearchPage> {
       ],
       itemBuilder:
           (context, index, scrollController, postController, useHero) =>
-              DefaultDanbooruImageGridItem(
+              DanbooruPostListingContextMenu(
                 index: index,
-                autoScrollController: scrollController,
                 controller: postController,
-                useHero: useHero,
+                child: DefaultDanbooruImageGridItem(
+                  index: index,
+                  autoScrollController: scrollController,
+                  controller: postController,
+                  useHero: useHero,
+                ),
               ),
       landingViewBuilder: (controller) =>
           DanbooruSearchLandingView(controller: controller),
