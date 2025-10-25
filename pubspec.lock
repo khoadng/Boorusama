@@ -17,6 +17,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "7.7.1"
+  anchor:
+    dependency: transitive
+    description:
+      name: anchor
+      sha256: "7475e90bc606f2dbbb00f460c9651ebf82cd5db116fcbe89055aff0d1be38b97"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.1"
   android_intent_plus:
     dependency: "direct main"
     description:
@@ -520,6 +528,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_anchor:
+    dependency: "direct main"
+    description:
+      name: flutter_anchor
+      sha256: c191374c04b6e73ee3c28afc29ae81decc2daee035260597f0ca751f07c9a3fe
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.1"
   flutter_avif:
     dependency: transitive
     description:
@@ -663,14 +679,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.30"
-  flutter_popover:
-    dependency: "direct main"
-    description:
-      name: flutter_popover
-      sha256: "7d1a885f59c86ec01122b369dd9d6354a678a8ee39ad46cd7361dfdd6ea60498"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.0.5"
   flutter_portal:
     dependency: "direct main"
     description:

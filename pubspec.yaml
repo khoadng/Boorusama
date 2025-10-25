@@ -72,11 +72,11 @@ dependencies:
   fl_chart: ^1.0.0
   flutter:
     sdk: flutter
+  flutter_anchor: ^0.0.1
   flutter_html: ^3.0.0-beta.2
   flutter_improved_scrolling: ^0.0.3
   flutter_local_notifications: ^19.2.1
   flutter_markdown: ^0.7.3+2
-  flutter_popover: ^0.0.4
   flutter_portal: ^1.1.4
   flutter_riverpod: 2.6.1
   flutter_scatter: ^0.2.0

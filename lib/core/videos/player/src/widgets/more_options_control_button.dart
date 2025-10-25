@@ -5,7 +5,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:flutter_popover/flutter_popover.dart';
+import 'package:flutter_anchor/flutter_anchor.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -31,7 +31,7 @@ class MoreOptionsControlButton extends StatelessWidget {
   final double speed;
   final void Function(double speed) onSpeedChanged;
   final Post post;
-  final PopoverController? popoverController;
+  final AnchorController? popoverController;
 
   @override
   Widget build(BuildContext context) {
@@ -62,20 +62,20 @@ class DesktopVideoOptionButton extends StatelessWidget {
   final double speed;
   final void Function(double speed) onSpeedChanged;
   final Post post;
-  final PopoverController popoverController;
+  final AnchorController popoverController;
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
-    return Popover(
+    return AnchorPopover(
       controller: popoverController,
-      triggerMode: PopoverTriggerMode.tap,
-      preferredDirection: AxisDirection.up,
-      constrainAxis: Axis.vertical,
+      triggerMode: const AnchorTriggerMode.tap(
+        consumeOutsideTap: true,
+      ),
+      placement: Placement.top,
       offset: const Offset(0, -16),
-      consumeOutsideTap: true,
-      overlayChildBuilder: (context) => LayoutBuilder(
+      overlayBuilder: (context) => LayoutBuilder(
         builder: (context, constraints) => VideoOptionContainer(
           backgroundColor: colorScheme.surfaceContainer.withValues(alpha: 0.95),
           constraints: BoxConstraints(

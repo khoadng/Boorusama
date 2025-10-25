@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:flutter_popover/flutter_popover.dart';
+import 'package:flutter_anchor/flutter_anchor.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 
 // Project imports:
@@ -43,25 +43,29 @@ class _PostNoteState extends State<PostNote> {
   @override
   Widget build(BuildContext context) {
     final (coordinate, content) = (widget.note.coordinate, widget.note.content);
-    final isMobile = isMobilePlatform();
+    final isMobile = !isMobilePlatform();
 
     return Container(
       margin: coordinate.getMargin(),
-      child: Popover(
+      child: Anchor(
         triggerMode: isMobile
-            ? PopoverTriggerMode.tap
-            : PopoverTriggerMode.hover,
-        showDelay: isMobile ? null : Duration.zero,
-        overlayChildHeight: _maxOverlayHeight,
-        overlayChildWidth: _maxOverlayWidth,
-        barrierColor: isMobile ? Colors.black38 : null,
-        consumeOutsideTap: isMobile ? false : null,
-        preferredDirection: AxisDirection.down,
-        constrainAxis: Axis.vertical,
-        crossAxisAlignment: PopoverCrossAxisAlignment.start,
+            ? const AnchorTriggerMode.tap(
+                consumeOutsideTap: false,
+              )
+            : const AnchorTriggerMode.hover(
+                waitDuration: Duration.zero,
+              ),
+        overlayHeight: _maxOverlayHeight,
+        overlayWidth: _maxOverlayWidth,
+        placement: isMobile ? Placement.bottomStart : Placement.bottom,
         transitionDuration: Duration.zero,
         transitionBuilder: (context, animation, child) => child!,
-        overlayChildBuilder: (context) => Container(
+        backdropBuilder: (context) => isMobile
+            ? Container(
+                color: Colors.black38,
+              )
+            : const SizedBox.shrink(),
+        overlayBuilder: (context) => Container(
           padding: const EdgeInsets.all(4),
           constraints: const BoxConstraints(
             maxWidth: _maxOverlayWidth,

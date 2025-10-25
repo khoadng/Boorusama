@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:flutter_popover/flutter_popover.dart';
+import 'package:flutter_anchor/flutter_anchor.dart';
 
 // Project imports:
 import '../../../../../foundation/display.dart';
@@ -212,16 +212,12 @@ class _PopoverTooltip extends StatelessWidget {
 
     final colorScheme = Theme.of(context).colorScheme;
 
-    return Popover.arrow(
-      preferredDirection: switch (direction) {
-        Axis.horizontal => AxisDirection.up,
-        Axis.vertical => AxisDirection.right,
+    return AnchorPopover(
+      placement: switch (direction) {
+        Axis.horizontal => Placement.top,
+        Axis.vertical => Placement.right,
       },
-      constrainAxis: switch (direction) {
-        Axis.horizontal => Axis.vertical,
-        Axis.vertical => Axis.horizontal,
-      },
-      triggerMode: PopoverTriggerMode.hover,
+      triggerMode: const AnchorTriggerMode.hover(),
       arrowSize: const Size(12, 4),
       arrowShape: const RoundedArrow(),
       offset: switch (direction) {
@@ -233,7 +229,6 @@ class _PopoverTooltip extends StatelessWidget {
         width: 1.5,
       ),
       backgroundColor: colorScheme.surfaceContainerHigh,
-      crossAxisAlignment: PopoverCrossAxisAlignment.center,
       transitionBuilder: (context, animation, child) => AnimatedBuilder(
         animation: animation,
         builder: (context, child) {
@@ -262,7 +257,7 @@ class _PopoverTooltip extends StatelessWidget {
         },
         child: child,
       ),
-      overlayChildBuilder: (context) => Container(
+      overlayBuilder: (context) => Container(
         padding: const EdgeInsets.all(12),
         child: SelectableRegion(
           selectionControls: materialTextSelectionControls,

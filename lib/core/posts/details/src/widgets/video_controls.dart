@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:flutter_popover/flutter_popover.dart';
+import 'package:flutter_anchor/flutter_anchor.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
@@ -55,7 +55,7 @@ class PostDetailsVideoControlsDesktop<T extends Post> extends StatefulWidget {
 
 class _PostDetailsVideoControlsDesktopState<T extends Post>
     extends State<PostDetailsVideoControlsDesktop<T>> {
-  final _popoverController = PopoverController();
+  final _popoverController = AnchorController();
 
   @override
   void dispose() {
@@ -136,7 +136,7 @@ class _VideoControlsContent<T extends Post> extends ConsumerWidget {
   final PostDetailsController<T> controller;
   final BoxConstraints constraints;
   final EdgeInsets? playPausePadding;
-  final PopoverController? popoverController;
+  final AnchorController? popoverController;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

@@ -5,7 +5,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:flutter_popover/flutter_popover.dart';
+import 'package:flutter_anchor/flutter_anchor.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 import 'package:i18n/i18n.dart';
@@ -179,22 +179,21 @@ class PostListPrevewTooltip extends ConsumerWidget {
     );
     final adjustedMaxHeight = _maxSize.height;
 
-    return Popover.arrow(
-      overlayChildHeight: adjustedMaxHeight,
-      overlayChildWidth: adjustedMaxWidth,
-      triggerMode: PopoverTriggerMode.hover,
-      showDelay: const Duration(seconds: 1),
-      preferredDirection: AxisDirection.up,
-      constrainAxis: Axis.vertical,
+    return AnchorPopover(
+      overlayHeight: adjustedMaxHeight,
+      overlayWidth: adjustedMaxWidth,
+      triggerMode: const AnchorTriggerMode.hover(
+        waitDuration: Duration(seconds: 1),
+      ),
+      placement: Placement.top,
       offset: const Offset(0, -4),
       borderRadius: BorderRadius.circular(8),
       backgroundColor: colorScheme.surfaceContainerHigh,
-      crossAxisAlignment: PopoverCrossAxisAlignment.center,
       border: BorderSide(
         color: colorScheme.outlineVariant,
         width: 1.5,
       ),
-      overlayChildBuilder: (context) => overlayChildBuilder(
+      overlayBuilder: (context) => overlayChildBuilder(
         context,
         adjustedMaxWidth,
         adjustedMaxHeight,
