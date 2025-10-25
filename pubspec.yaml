@@ -72,7 +72,7 @@ dependencies:
   fl_chart: ^1.0.0
   flutter:
     sdk: flutter
-  flutter_anchor: ^0.0.1
+  flutter_anchor: ^0.0.2
   flutter_html: ^3.0.0-beta.2
   flutter_improved_scrolling: ^0.0.3
   flutter_local_notifications: ^19.2.1

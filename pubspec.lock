@@ -532,10 +532,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_anchor
-      sha256: c191374c04b6e73ee3c28afc29ae81decc2daee035260597f0ca751f07c9a3fe
+      sha256: "5f6310f4597c27d1c427a134062fe62ab883b3441384e67baaa99254c737b1b3"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.1"
+    version: "0.0.2"
   flutter_avif:
     dependency: transitive
     description:

@@ -9,7 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../../../core/widgets/context_menu_tile.dart';
 import '../types/danbooru_upload_post.dart';
 
-class DanbooruUploadPostContextMenu extends ConsumerStatefulWidget {
+class DanbooruUploadPostContextMenu extends ConsumerWidget {
   const DanbooruUploadPostContextMenu({
     super.key,
     required this.child,
@@ -22,24 +22,8 @@ class DanbooruUploadPostContextMenu extends ConsumerStatefulWidget {
   final void Function(bool visible) onVisibilityChanged;
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() =>
-      _DanbooruUploadPostContextMenuState();
-}
-
-class _DanbooruUploadPostContextMenuState
-    extends ConsumerState<DanbooruUploadPostContextMenu> {
-  final _controller = AnchorContextMenuController();
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return AnchorContextMenu(
-      controller: _controller,
       menuBuilder: (context) {
         return Container(
           decoration: BoxDecoration(
@@ -60,19 +44,19 @@ class _DanbooruUploadPostContextMenuState
               ContextMenuTile(
                 title: 'Hide upload',
                 onTap: () {
-                  _controller.hide();
-                  widget.onVisibilityChanged(false);
+                  context.hideMenu();
+                  onVisibilityChanged(false);
                 },
               ),
             ],
           ),
         );
       },
-      child: GestureDetector(
+      childBuilder: (context) => GestureDetector(
         onLongPressStart: (details) {
-          _controller.show(details.globalPosition);
+          context.showMenu(details.globalPosition);
         },
-        child: widget.child,
+        child: child,
       ),
     );
   }

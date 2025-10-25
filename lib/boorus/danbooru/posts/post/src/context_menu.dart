@@ -23,7 +23,7 @@ import '../../favgroups/favgroups/routes.dart';
 import '../../listing/providers.dart';
 import 'danbooru_post.dart';
 
-class DanbooruPostContextMenu extends ConsumerStatefulWidget {
+class DanbooruPostContextMenu extends ConsumerWidget {
   const DanbooruPostContextMenu({
     super.key,
     required this.child,
@@ -36,27 +36,13 @@ class DanbooruPostContextMenu extends ConsumerStatefulWidget {
   final int index;
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() =>
-      _DanbooruContextMenuState();
-}
-
-class _DanbooruContextMenuState extends ConsumerState<DanbooruPostContextMenu> {
-  final _controller = AnchorContextMenuController();
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final booruConfig = ref.watchConfigAuth;
     final loginDetails = ref.watch(danbooruLoginDetailsProvider(booruConfig));
     final bookmarkStateAsync = ref.watch(bookmarkProvider);
     final isBookmarked =
         bookmarkStateAsync.valueOrNull?.isBookmarked(
-          widget.post,
+          post,
           booruConfig.booruIdHint,
         ) ??
         false;
@@ -66,7 +52,6 @@ class _DanbooruContextMenuState extends ConsumerState<DanbooruPostContextMenu> {
     final selectionModeController = SelectionMode.maybeOf(context);
 
     return AnchorContextMenu(
-      controller: _controller,
       menuBuilder: (context) {
         return Container(
           decoration: BoxDecoration(
@@ -84,19 +69,19 @@ class _DanbooruContextMenuState extends ConsumerState<DanbooruPostContextMenu> {
             ),
             shrinkWrap: true,
             children: [
-              if (widget.post.hasComment)
+              if (post.hasComment)
                 ContextMenuTile(
                   title: context.t.post.action.view_comments,
                   onTap: () {
-                    _controller.hide();
-                    goToCommentPage(context, ref, widget.post.id);
+                    context.hideMenu();
+                    goToCommentPage(context, ref, post.id);
                   },
                 ),
               ContextMenuTile(
                 title: context.t.download.download,
                 onTap: () {
-                  _controller.hide();
-                  ref.download(widget.post);
+                  context.hideMenu();
+                  ref.download(post);
                 },
               ),
               if (!isBookmarked)
@@ -106,10 +91,10 @@ class _DanbooruContextMenuState extends ConsumerState<DanbooruPostContextMenu> {
                   onTap: isBookmarkLoading
                       ? null
                       : () {
-                          _controller.hide();
+                          context.hideMenu();
                           ref.bookmarks.addBookmarkWithToast(
                             booruConfig,
-                            widget.post,
+                            post,
                           );
                         },
                 )
@@ -120,10 +105,10 @@ class _DanbooruContextMenuState extends ConsumerState<DanbooruPostContextMenu> {
                   onTap: isBookmarkLoading
                       ? null
                       : () {
-                          _controller.hide();
+                          context.hideMenu();
                           ref.bookmarks.removeBookmarkWithToast(
                             BookmarkUniqueId.fromPost(
-                              widget.post,
+                              post,
                               booruConfig.booruIdHint,
                             ),
                           );
@@ -133,10 +118,10 @@ class _DanbooruContextMenuState extends ConsumerState<DanbooruPostContextMenu> {
                 ContextMenuTile(
                   title: context.t.post.action.add_to_favorite_group,
                   onTap: () {
-                    _controller.hide();
+                    context.hideMenu();
                     goToAddToFavoriteGroupSelectionPage(
                       context,
-                      [widget.post],
+                      [post],
                     );
                   },
                 ),
@@ -144,20 +129,20 @@ class _DanbooruContextMenuState extends ConsumerState<DanbooruPostContextMenu> {
                 ContextMenuTile(
                   title: context.t.post.action.view_in_browser,
                   onTap: () {
-                    _controller.hide();
+                    context.hideMenu();
                     launchExternalUrlString(
-                      postLinkGenerator.getLink(widget.post),
+                      postLinkGenerator.getLink(post),
                     );
                   },
                 ),
-              if (widget.post.tags.isNotEmpty)
+              if (post.tags.isNotEmpty)
                 ContextMenuTile(
                   title: context.t.post.action.view_tags,
                   onTap: () {
-                    _controller.hide();
+                    context.hideMenu();
                     goToShowTaglistPage(
                       ref,
-                      widget.post,
+                      post,
                       auth: booruConfig,
                     );
                   },
@@ -165,25 +150,25 @@ class _DanbooruContextMenuState extends ConsumerState<DanbooruPostContextMenu> {
               ContextMenuTile(
                 title: context.t.post.action.view_tag_history,
                 onTap: () {
-                  _controller.hide();
-                  goToPostVersionPage(ref, widget.post);
+                  context.hideMenu();
+                  goToPostVersionPage(ref, post);
                 },
               ),
               if (hasAccount)
                 ContextMenuTile(
                   title: context.t.generic.action.edit,
                   onTap: () {
-                    _controller.hide();
-                    ref.danbooruEdit(widget.post);
+                    context.hideMenu();
+                    ref.danbooruEdit(post);
                   },
                 ),
               if (selectionModeController case final controller?)
                 ContextMenuTile(
                   title: context.t.generic.action.select,
                   onTap: () {
-                    _controller.hide();
+                    context.hideMenu();
                     controller.enable(
-                      initialSelected: [widget.index],
+                      initialSelected: [index],
                     );
                   },
                 ),
@@ -191,11 +176,11 @@ class _DanbooruContextMenuState extends ConsumerState<DanbooruPostContextMenu> {
           ),
         );
       },
-      child: GestureDetector(
+      childBuilder: (context) => GestureDetector(
         onLongPressStart: (details) {
-          _controller.show(details.globalPosition);
+          context.showMenu(details.globalPosition);
         },
-        child: widget.child,
+        child: child,
       ),
     );
   }
