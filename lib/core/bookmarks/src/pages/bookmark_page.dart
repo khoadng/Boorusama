@@ -21,13 +21,11 @@ class BookmarkPage extends ConsumerStatefulWidget {
 class _BookmarkPageState extends ConsumerState<BookmarkPage> {
   final _searchController = TextEditingController();
   final _scrollController = AutoScrollController();
-  final _focusNode = FocusNode();
 
   @override
   void dispose() {
     _scrollController.dispose();
     _searchController.dispose();
-    _focusNode.dispose();
 
     super.dispose();
   }
@@ -38,7 +36,6 @@ class _BookmarkPageState extends ConsumerState<BookmarkPage> {
       child: Scaffold(
         body: BookmarkScrollView(
           scrollController: _scrollController,
-          focusNode: _focusNode,
           searchController: _searchController,
         ),
       ),

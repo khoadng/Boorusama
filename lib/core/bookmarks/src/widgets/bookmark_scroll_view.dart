@@ -36,14 +36,12 @@ import 'bookmark_sort_button.dart';
 class BookmarkScrollView extends ConsumerStatefulWidget {
   const BookmarkScrollView({
     required this.scrollController,
-    required this.focusNode,
     required this.searchController,
     super.key,
   });
 
   final AutoScrollController scrollController;
   final TextEditingController searchController;
-  final FocusNode focusNode;
 
   @override
   ConsumerState<BookmarkScrollView> createState() => _BookmarkScrollViewState();
@@ -208,7 +206,6 @@ class _BookmarkScrollViewState extends ConsumerState<BookmarkScrollView> {
               ),
               SliverToBoxAdapter(
                 child: BookmarkSearchBar(
-                  focusNode: widget.focusNode,
                   controller: widget.searchController,
                   postController: controller,
                 ),

@@ -5,14 +5,16 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:flutter_anchor/flutter_anchor.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:flutter_portal/flutter_portal.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../../../../foundation/display.dart';
 import '../../../../foundation/html.dart';
+import '../../../../foundation/platform.dart';
 import '../../../configs/config/providers.dart';
 import '../../../posts/listing/providers.dart';
 import '../../../search/queries/types.dart';
@@ -22,13 +24,11 @@ import '../providers/suggestion_provider.dart';
 
 class BookmarkSearchBar extends ConsumerStatefulWidget {
   const BookmarkSearchBar({
-    required this.focusNode,
     required this.controller,
     required this.postController,
     super.key,
   });
 
-  final FocusNode focusNode;
   final TextEditingController controller;
   final PostGridController postController;
 
@@ -37,89 +37,81 @@ class BookmarkSearchBar extends ConsumerStatefulWidget {
 }
 
 class _BookmarkSearchBarState extends ConsumerState<BookmarkSearchBar> {
-  final _overlay = ValueNotifier(false);
-
-  @override
-  void initState() {
-    super.initState();
-
-    widget.focusNode.addListener(_onFocusChanged);
-  }
+  final _focusNode = FocusNode();
 
   @override
   void dispose() {
-    widget.focusNode.removeListener(_onFocusChanged);
-    _overlay.dispose();
-
+    _focusNode.dispose();
     super.dispose();
-  }
-
-  void _onFocusChanged() {
-    final focus = widget.focusNode.hasFocus;
-
-    if (focus) {
-      _overlay.value = true;
-    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return Container(
-          margin: const EdgeInsets.symmetric(
-            vertical: 8,
-            horizontal: 12,
-          ),
-          height: kPreferredLayout.isDesktop ? 34 : null,
-          child: ValueListenableBuilder(
-            valueListenable: _overlay,
-            builder: (_, overlay, _) {
-              return ValueListenableBuilder(
-                valueListenable: widget.controller,
-                builder: (_, controller, _) {
-                  return PortalTarget(
-                    anchor: const Aligned(
-                      follower: Alignment.topCenter,
-                      target: Alignment.bottomCenter,
-                    ),
-                    portalFollower: _Overlay(
-                      controller: widget.controller,
-                      maxWidth: constraints.maxWidth,
-                      onTapOutside: _disableOverlay,
-                      onTap: (tag) {
-                        widget.controller.text = replaceOrAppendTag(
-                          widget.controller.text,
-                          tag.tag,
-                        );
-                        _search();
-                      },
-                    ),
-                    visible: overlay,
-                    child: _buildSearchBar(controller),
-                  );
-                },
-              );
-            },
-          ),
-        );
-      },
-    );
-  }
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Flexible(
+          child: Container(
+            margin: const EdgeInsets.symmetric(
+              vertical: 8,
+              horizontal: 12,
+            ),
+            constraints: const BoxConstraints(
+              maxWidth: 600,
+            ),
+            child: AnchorPopover(
+              triggerMode: AnchorTriggerMode.focus(
+                focusNode: _focusNode,
+              ),
+              spacing: 4,
+              arrowShape: const NoArrow(),
+              backdropBuilder: (context) => isMobilePlatform()
+                  ? Container(
+                      color: Colors.black54,
+                    )
+                  : const SizedBox.shrink(),
+              placement: Placement.bottom,
+              overlayBuilder: (context) => Container(
+                constraints: BoxConstraints(
+                  maxWidth:
+                      AnchorData.of(context).geometry.childBounds?.width ??
+                      double.infinity,
+                  maxHeight: min(
+                    300,
+                    MediaQuery.sizeOf(context).height * 0.4,
+                  ),
+                ),
+                child: _Overlay(
+                  controller: widget.controller,
+                  onTap: (tag) {
+                    widget.controller.text = replaceOrAppendTag(
+                      widget.controller.text,
+                      tag.tag,
+                    );
+                    _search();
+                  },
+                ),
+              ),
 
-  void _disableOverlay() {
-    _overlay.value = false;
-    widget.focusNode.unfocus();
+              child: ValueListenableBuilder(
+                valueListenable: widget.controller,
+                builder: (context, controller, child) =>
+                    _buildSearchBar(controller),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
   void _search() {
     widget.postController.refresh();
-    _disableOverlay();
   }
 
   Widget _buildSearchBar(TextEditingValue controller) {
     return BooruSearchBar(
-      focus: widget.focusNode,
+      focus: _focusNode,
       controller: widget.controller,
       leading: const Padding(
         padding: EdgeInsets.symmetric(horizontal: 8),
@@ -150,15 +142,11 @@ class _BookmarkSearchBarState extends ConsumerState<BookmarkSearchBar> {
 class _Overlay extends ConsumerStatefulWidget {
   const _Overlay({
     required this.controller,
-    required this.maxWidth,
     required this.onTap,
-    required this.onTapOutside,
   });
 
   final TextEditingController controller;
-  final double maxWidth;
   final ValueChanged<TagWithColor> onTap;
-  final VoidCallback onTapOutside;
 
   @override
   ConsumerState<_Overlay> createState() => _OverlayState();
@@ -193,83 +181,41 @@ class _OverlayState extends ConsumerState<_Overlay> {
 
   @override
   Widget build(BuildContext context) {
-    final scrimColor = Colors.black.withValues(alpha: 0.7);
+    final colorScheme = Theme.of(context).colorScheme;
 
-    return Column(
-      children: [
-        ref
-            .watch(tagSuggestionsProvider)
-            .maybeWhen(
-              data: (state) => state.suggestions.isNotEmpty
-                  ? _SuggestionContainer(
-                      scrimColor: scrimColor,
-                      height: state.suggestions.length * 44,
-                      maxWidth: widget.maxWidth,
-                      child: ListView.builder(
-                        itemCount: state.suggestions.length,
-                        itemBuilder: (context, index) {
-                          final tag = state.suggestions[index];
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: colorScheme.surfaceContainer,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: switch (ref.watch(tagSuggestionsProvider)) {
+        AsyncData(:final value) when value.suggestions.isNotEmpty =>
+          ListView.builder(
+            shrinkWrap: true,
+            itemCount: value.suggestions.length,
+            itemBuilder: (context, index) {
+              final tag = value.suggestions[index];
 
-                          return _SuggestionItem(
-                            tagWithColor: tag,
-                            controller: widget.controller,
-                            onTap: () {
-                              widget.onTap(tag);
-                            },
-                          );
-                        },
-                      ),
-                    )
-                  : const SizedBox.shrink(),
-              orElse: () => const SizedBox.shrink(),
-            ),
-        Expanded(
-          child: GestureDetector(
-            onTap: widget.onTapOutside,
-            child: Container(
-              color: scrimColor,
+              return _SuggestionItem(
+                tagWithColor: tag,
+                controller: widget.controller,
+                onTap: () {
+                  widget.onTap(tag);
+                },
+              );
+            },
+          ),
+        _ => Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(16),
+          child: Text(
+            context.t.generic.no_content,
+            style: TextStyle(
+              color: colorScheme.hintColor,
             ),
           ),
         ),
-      ],
-    );
-  }
-}
-
-class _SuggestionContainer extends StatelessWidget {
-  const _SuggestionContainer({
-    required this.scrimColor,
-    required this.height,
-    required this.maxWidth,
-    required this.child,
-  });
-
-  final double maxWidth;
-  final Color scrimColor;
-  final double height;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    return ColoredBox(
-      color: scrimColor,
-      child: Container(
-        margin: const EdgeInsets.only(
-          top: 4,
-          left: 12,
-          right: 12,
-        ),
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surfaceContainer,
-          borderRadius: BorderRadius.circular(8),
-        ),
-        height: height,
-        constraints: BoxConstraints(
-          maxWidth: maxWidth,
-          maxHeight: min(MediaQuery.sizeOf(context).height * 0.8, 300),
-        ),
-        child: child,
-      ),
+      },
     );
   }
 }
