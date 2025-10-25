@@ -8,7 +8,6 @@ sealed class NoteCoordinate extends Equatable {
   const NoteCoordinate();
 
   NoteCoordinate withPercent(double widthPercent, double heightPercent);
-  NoteQuadrant calculateQuadrant(double screenWidth, double screenHeight);
   EdgeInsetsGeometry getMargin();
   Size getSize();
 }
@@ -36,22 +35,6 @@ class RectangleNoteCoordinate extends NoteCoordinate {
         height: height * heightPercent,
         width: width * widthPercent,
       );
-
-  @override
-  NoteQuadrant calculateQuadrant(double screenWidth, double screenHeight) {
-    final halfWidth = screenWidth / 2;
-    final halfHeight = screenHeight / 2;
-
-    if (x < halfWidth && y < halfHeight) {
-      return NoteQuadrant.topLeft;
-    } else if (x > halfWidth && y < halfHeight) {
-      return NoteQuadrant.topRight;
-    } else if (x < halfWidth && y > halfHeight) {
-      return NoteQuadrant.bottomLeft;
-    } else {
-      return NoteQuadrant.bottomRight;
-    }
-  }
 
   @override
   EdgeInsetsGeometry getMargin() => EdgeInsets.only(left: x, top: y);
@@ -91,36 +74,6 @@ class PolygonNoteCoordinate extends NoteCoordinate {
       );
 
   @override
-  NoteQuadrant calculateQuadrant(double screenWidth, double screenHeight) {
-    if (points.isEmpty) return NoteQuadrant.topLeft;
-
-    // Calculate centroid of polygon
-    var centroidX = 0.0;
-    var centroidY = 0.0;
-
-    for (final point in points) {
-      centroidX += point.dx;
-      centroidY += point.dy;
-    }
-
-    centroidX /= points.length;
-    centroidY /= points.length;
-
-    final halfWidth = screenWidth / 2;
-    final halfHeight = screenHeight / 2;
-
-    if (centroidX < halfWidth && centroidY < halfHeight) {
-      return NoteQuadrant.topLeft;
-    } else if (centroidX > halfWidth && centroidY < halfHeight) {
-      return NoteQuadrant.topRight;
-    } else if (centroidX < halfWidth && centroidY > halfHeight) {
-      return NoteQuadrant.bottomLeft;
-    } else {
-      return NoteQuadrant.bottomRight;
-    }
-  }
-
-  @override
   EdgeInsetsGeometry getMargin() {
     if (points.isEmpty) return EdgeInsets.zero;
 
@@ -151,11 +104,4 @@ class PolygonNoteCoordinate extends NoteCoordinate {
 
   @override
   List<Object?> get props => [points];
-}
-
-enum NoteQuadrant {
-  topLeft,
-  topRight,
-  bottomLeft,
-  bottomRight,
 }

@@ -6,7 +6,6 @@ import 'package:cache_manager/cache_manager.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../../foundation/display.dart';
 import '../../../../../foundation/loggers.dart';
 import '../../../../configs/config/types.dart';
 import '../../../../http/providers.dart';
@@ -21,7 +20,6 @@ import '../providers/video_url_provider.dart';
 import '../types/post_details.dart';
 import '../types/utils.dart';
 import 'post_details_image.dart';
-import 'video_controls.dart';
 
 class PostMedia<T extends Post> extends ConsumerWidget {
   const PostMedia({
@@ -107,14 +105,6 @@ class PostMedia<T extends Post> extends ConsumerWidget {
                   },
                 ),
               ),
-              if (context.isLargeScreen)
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: PostDetailsVideoControlsDesktop(
-                    controller: details.controller,
-                    pageViewController: controller,
-                  ),
-                ),
             ],
           )
         : PostDetailsImage(

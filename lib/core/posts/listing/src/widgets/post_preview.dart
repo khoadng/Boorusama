@@ -23,7 +23,7 @@ import '../../../post/types.dart';
 import '../../../rating/types.dart';
 import '../../../sources/types.dart';
 
-const _maxSize = Size(400, 200);
+const _maxSize = Size(400, 120);
 
 class DefaultTagListPrevewTooltip extends ConsumerWidget {
   const DefaultTagListPrevewTooltip({
@@ -225,9 +225,6 @@ class PostTagPreviewContainer extends ConsumerWidget {
     final params = (auth, post);
 
     return Container(
-      padding: const EdgeInsets.symmetric(
-        vertical: 4,
-      ),
       constraints: BoxConstraints(
         maxHeight: maxHeight,
         maxWidth: maxWidth,
@@ -262,7 +259,7 @@ class PostTagPreviewContainer extends ConsumerWidget {
   }
 }
 
-class PostPreviewPopover extends StatelessWidget {
+class PostPreviewPopover extends StatefulWidget {
   const PostPreviewPopover({
     super.key,
     required this.tags,
@@ -275,25 +272,44 @@ class PostPreviewPopover extends StatelessWidget {
   final Widget? header;
 
   @override
+  State<PostPreviewPopover> createState() => _PostPreviewPopoverState();
+}
+
+class _PostPreviewPopoverState extends State<PostPreviewPopover> {
+  final scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        ?header,
+        ?widget.header,
         Flexible(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(
-              vertical: 4,
-            ),
-            child: Wrap(
-              spacing: 2,
-              children: [
-                for (final tag in tags)
-                  TagPreviewChip(
-                    tag: tag,
-                    auth: auth,
-                  ),
-              ],
+          child: Scrollbar(
+            controller: scrollController,
+            thumbVisibility: true,
+            child: SizedBox(
+              width: double.infinity,
+              child: SingleChildScrollView(
+                controller: scrollController,
+                padding: const EdgeInsets.all(4),
+                child: Wrap(
+                  spacing: 2,
+                  children: [
+                    for (final tag in widget.tags)
+                      TagPreviewChip(
+                        tag: tag,
+                        auth: widget.auth,
+                      ),
+                  ],
+                ),
+              ),
             ),
           ),
         ),

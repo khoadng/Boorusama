@@ -181,6 +181,29 @@ class _PostDetailPageScaffoldState<T extends Post>
     }
   }
 
+  void _onHover({
+    required bool value,
+    required bool disableAnimation,
+  }) {
+    if (!_controller.hoverToControlOverlay.value) {
+      return;
+    }
+
+    if (disableAnimation) {
+      return;
+    }
+
+    if (value) {
+      _controller.showOverlay(
+        includeSystemStatus: false,
+      );
+    } else {
+      _controller.hideOverlay(
+        includeSystemStatus: false,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // Sync slideshow options with settings
@@ -341,6 +364,35 @@ class _PostDetailPageScaffoldState<T extends Post>
             },
           );
         },
+        mainContentBuilder: (context, child) => MouseRegion(
+          onEnter: (_) => _onHover(
+            value: true,
+            disableAnimation: reduceAnimations,
+          ),
+          onExit: (_) => _onHover(
+            value: false,
+            disableAnimation: reduceAnimations,
+          ),
+          child: Stack(
+            children: [
+              child,
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: ValueListenableBuilder(
+                  valueListenable: widget.controller.currentPost,
+                  builder: (context, post, child) {
+                    return post.isVideo && context.isLargeScreen
+                        ? PostDetailsVideoControlsDesktop(
+                            controller: widget.controller,
+                            pageViewController: _controller,
+                          )
+                        : const SizedBox.shrink();
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
         itemBuilder: widget.itemBuilder,
         bottomSheet: Consumer(
           builder: (_, ref, _) {

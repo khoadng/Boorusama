@@ -51,6 +51,7 @@ class PostDetailsPageView extends StatefulWidget {
     this.sheetStateStorage,
     this.disableAnimation = false,
     this.viewMode = ViewMode.horizontal,
+    this.mainContentBuilder,
   });
 
   final Widget Function(BuildContext, ScrollController? scrollController)
@@ -76,6 +77,9 @@ class PostDetailsPageView extends StatefulWidget {
   final bool disableAnimation;
   final bool Function() checkIfLargeScreen;
   final ViewMode viewMode;
+
+  // Terrible hack to allow wrapping main content with MouseRegion from outside
+  final Widget Function(BuildContext context, Widget child)? mainContentBuilder;
 
   @override
   State<PostDetailsPageView> createState() => _PostDetailsPageViewState();
@@ -117,8 +121,6 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
           curve: Curves.easeOutCirc,
         )
       : null;
-
-  final _hovering = ValueNotifier(false);
 
   final _isSheetAnimating = ValueNotifier(false);
 
@@ -217,28 +219,6 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
       _controller.restoreSystemStatus();
       widget.onExit?.call();
     });
-  }
-
-  void _onHover(bool value) {
-    _hovering.value = value;
-
-    if (!_controller.hoverToControlOverlay.value) {
-      return;
-    }
-
-    if (widget.disableAnimation) {
-      return;
-    }
-
-    if (value) {
-      _controller.showOverlay(
-        includeSystemStatus: false,
-      );
-    } else {
-      _controller.hideOverlay(
-        includeSystemStatus: false,
-      );
-    }
   }
 
   void _onSheetAnimatingChanged() {
@@ -349,7 +329,6 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
 
     _isSheetAnimating.removeListener(_onSheetAnimatingChanged);
 
-    _hovering.dispose();
     _pointerCount.dispose();
     _interacting.dispose();
     _isSheetAnimating.dispose();
@@ -388,11 +367,13 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
                       child: child,
                     ),
                   ),
-                  child: MouseRegion(
-                    onEnter: (_) => _onHover(true),
-                    onExit: (_) => _onHover(false),
-                    child: _buildMain(),
-                  ),
+                  child: switch (widget.mainContentBuilder) {
+                    null => _buildMain(),
+                    final builder => builder(
+                      context,
+                      _buildMain(),
+                    ),
+                  },
                 ),
               ),
               if (!isLargeScreen)
