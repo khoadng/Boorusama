@@ -83,11 +83,15 @@ class _FavoriteGroupDetailsPageState
               ),
             ],
             itemBuilder: (context, index, autoScrollController, useHero) {
-              return DefaultDanbooruImageGridItem(
+              return DanbooruPostListingContextMenu(
                 index: index,
-                autoScrollController: autoScrollController,
                 controller: controller,
-                useHero: useHero,
+                child: DefaultDanbooruImageGridItem(
+                  index: index,
+                  autoScrollController: autoScrollController,
+                  controller: controller,
+                  useHero: useHero,
+                ),
               );
             },
           ),

@@ -84,10 +84,14 @@ class _LatestViewState extends ConsumerState<LatestView> {
               controller: controller,
               scrollController: _autoScrollController,
               itemBuilder: (context, index, scrollController, hero) =>
-                  DefaultDanbooruImageGridItem(
+                  DanbooruPostListingContextMenu(
                     index: index,
-                    autoScrollController: scrollController,
                     controller: controller,
+                    child: DefaultDanbooruImageGridItem(
+                      index: index,
+                      autoScrollController: scrollController,
+                      controller: controller,
+                    ),
                   ),
               sliverHeaders: [
                 if (context.isLargeScreen ||
