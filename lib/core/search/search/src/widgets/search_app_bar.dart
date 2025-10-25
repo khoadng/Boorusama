@@ -23,8 +23,8 @@ class SearchAppBar extends ConsumerWidget {
     this.dense,
     this.height,
     this.onTapOutside,
-    this.onFocusChanged,
     this.innerSearchButton,
+    this.searchBarBuilder,
   });
 
   final TextEditingController controller;
@@ -39,7 +39,7 @@ class SearchAppBar extends ConsumerWidget {
   final bool? dense;
   final double? height;
   final VoidCallback? onTapOutside;
-  final void Function(bool value)? onFocusChanged;
+  final Widget Function(BuildContext context, Widget child)? searchBarBuilder;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -49,7 +49,6 @@ class SearchAppBar extends ConsumerWidget {
       onTapOutside: onTapOutside,
       focus: focusNode,
       controller: controller,
-      onFocusChanged: onFocusChanged,
       leading: leading,
       trailing: ValueListenableBuilder(
         valueListenable: controller,
@@ -82,7 +81,10 @@ class SearchAppBar extends ConsumerWidget {
                 constraints: const BoxConstraints(
                   maxWidth: kSearchAppBarWidth,
                 ),
-                child: searchBar,
+                child: switch (searchBarBuilder) {
+                  null => searchBar,
+                  final builder => builder(context, searchBar),
+                },
               ),
             ),
             if (trailingSearchButton != null)
