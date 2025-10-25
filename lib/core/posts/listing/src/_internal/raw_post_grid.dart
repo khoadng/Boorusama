@@ -23,6 +23,8 @@ import '../../../../widgets/animated_footer.dart';
 import '../../../../widgets/default_selection_bar.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../post/types.dart';
+import '../types/grid_size.dart';
+import '../types/grid_utils.dart';
 import '../types/page_mode.dart';
 import '../widgets/conditional_value_listenable_builder.dart';
 import '../widgets/post_controller_event_listener.dart';
@@ -509,7 +511,7 @@ class _Scaffold extends StatelessWidget {
 
 class PostGridConstraints extends InheritedWidget {
   const PostGridConstraints({
-    required this.maxWidth,
+    required this.crossAxisCount,
     required super.child,
     super.key,
   });
@@ -518,11 +520,11 @@ class PostGridConstraints extends InheritedWidget {
     return context.dependOnInheritedWidgetOfExactType<PostGridConstraints>();
   }
 
-  final double? maxWidth;
+  final int? crossAxisCount;
 
   @override
   bool updateShouldNotify(covariant PostGridConstraints oldWidget) {
-    return maxWidth != oldWidget.maxWidth;
+    return crossAxisCount != oldWidget.crossAxisCount;
   }
 }
 
@@ -612,8 +614,6 @@ class _CustomScrollView extends StatefulWidget {
 }
 
 class _CustomScrollViewState extends State<_CustomScrollView> {
-  final _gridWidth = ValueNotifier<double?>(null);
-
   @override
   Widget build(BuildContext context) {
     final options = PostGridOptionsProvider.of(context);
@@ -621,38 +621,25 @@ class _CustomScrollViewState extends State<_CustomScrollView> {
     return ScrollConfiguration(
       // Material scroll make it easier to pull to refresh
       behavior: const MaterialScrollBehavior(),
-      child: Column(
-        children: [
-          LayoutBuilder(
-            builder: (context, constraints) {
-              if (constraints.maxWidth != _gridWidth.value) {
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  _gridWidth.value = constraints.maxWidth;
-                });
-              }
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final crossAxisCount = calculateGridCount(
+            constraints.maxWidth,
+            options.gridSize ?? GridSize.normal,
+          );
 
-              return const SizedBox.shrink();
-            },
-          ),
-          Expanded(
-            child: ValueListenableBuilder(
-              valueListenable: _gridWidth,
-              builder: (_, width, _) {
-                return PostGridConstraints(
-                  maxWidth: width,
-                  child: CustomScrollView(
-                    physics: const AlwaysScrollableScrollPhysics(
-                      parent: ClampingScrollPhysics(),
-                    ),
-                    controller: widget.controller,
-                    cacheExtent: options.cacheExtent,
-                    slivers: widget.slivers,
-                  ),
-                );
-              },
+          return PostGridConstraints(
+            crossAxisCount: crossAxisCount,
+            child: CustomScrollView(
+              physics: const AlwaysScrollableScrollPhysics(
+                parent: ClampingScrollPhysics(),
+              ),
+              controller: widget.controller,
+              cacheExtent: options.cacheExtent,
+              slivers: widget.slivers,
             ),
-          ),
-        ],
+          );
+        },
       ),
     );
   }
@@ -694,14 +681,17 @@ class PostGridOptions extends Equatable {
   const PostGridOptions({
     this.cacheExtent,
     this.hapticFeedbackLevel,
+    this.gridSize,
   });
 
   final double? cacheExtent;
   final HapticFeedbackLevel? hapticFeedbackLevel;
+  final GridSize? gridSize;
 
   @override
   List<Object?> get props => [
     cacheExtent,
     hapticFeedbackLevel,
+    gridSize,
   ];
 }

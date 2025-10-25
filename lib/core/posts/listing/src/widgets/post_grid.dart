@@ -112,6 +112,9 @@ class _PostGridState<T extends Post> extends ConsumerState<PostGrid<T>> {
         options: PostGridOptions(
           cacheExtent: ref.watch(gridCacheExtentProvider),
           hapticFeedbackLevel: ref.watch(hapticFeedbackLevelProvider),
+          gridSize: ref.watch(
+            imageListingSettingsProvider.select((v) => v.gridSize),
+          ),
         ),
         sliverHeaders: [
           ...widget.sliverHeaders ?? [],
@@ -498,9 +501,6 @@ class _SliverGrid<T extends Post> extends ConsumerWidget {
     final imageListType = ref.watch(
       imageListingSettingsProvider.select((value) => value.imageListType),
     );
-    final gridSize = ref.watch(
-      imageListingSettingsProvider.select((value) => value.gridSize),
-    );
     final imageGridSpacing = ref.watch(
       imageListingSettingsProvider.select((value) => value.imageGridSpacing),
     );
@@ -529,7 +529,6 @@ class _SliverGrid<T extends Post> extends ConsumerWidget {
         horizontal: imageGridPadding,
       ),
       listType: imageListType,
-      size: gridSize,
       spacing: imageGridSpacing,
       aspectRatio: imageGridAspectRatio,
       postsPerPage: postsPerPage,

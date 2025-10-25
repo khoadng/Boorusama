@@ -9,8 +9,6 @@ import 'package:sliver_masonry_grid/sliver_masonry_grid.dart';
 import '../../../../images/booru_image.dart';
 import '../../../../images/utils.dart';
 import '../_internal/raw_post_grid.dart';
-import '../types/grid_size.dart';
-import '../types/grid_utils.dart';
 import '../types/image_list_type.dart';
 
 class SliverPostGridPlaceHolder extends ConsumerWidget {
@@ -18,7 +16,6 @@ class SliverPostGridPlaceHolder extends ConsumerWidget {
     super.key,
     this.padding,
     this.listType,
-    this.size,
     this.spacing,
     this.aspectRatio,
     this.borderRadius,
@@ -27,7 +24,6 @@ class SliverPostGridPlaceHolder extends ConsumerWidget {
 
   final EdgeInsetsGeometry? padding;
   final ImageListType? listType;
-  final GridSize? size;
   final double? spacing;
   final double? aspectRatio;
   final BorderRadius? borderRadius;
@@ -36,7 +32,6 @@ class SliverPostGridPlaceHolder extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final imageListType = listType ?? ImageListType.standard;
-    final gridSize = size ?? GridSize.normal;
     final imageGridSpacing = spacing ?? 4;
     final imageBorderRadius = borderRadius ?? BorderRadius.zero;
     final imageGridAspectRatio = aspectRatio ?? 1;
@@ -49,10 +44,7 @@ class SliverPostGridPlaceHolder extends ConsumerWidget {
       ),
       sliver: Builder(
         builder: (context) {
-          final crossAxisCount = calculateGridCount(
-            constraints?.maxWidth ?? MediaQuery.sizeOf(context).width,
-            gridSize,
-          );
+          final crossAxisCount = constraints?.crossAxisCount ?? 3;
 
           return switch (imageListType) {
             ImageListType.masonry => SliverMasonryGrid.count(
