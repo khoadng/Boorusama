@@ -14,17 +14,74 @@
       "cancel": "Cancelar",
       "duplicate": "Duplica",
       "select": "Selecionar",
-      "view": "Visualizar"
+      "view": "Visualizar",
+      "save": "Salvar",
+      "verify": "Verificar",
+      "retry": "Tentar Novamente",
+      "clear": "Limpar",
+      "create": "Criar",
+      "reset": "Reiniciar",
+      "more": "Mais",
+      "apply": "Aplicar",
+      "show_all": "Mostrar todos",
+      "show_less": "Mostrar menos",
+      "search": "Buscar",
+      "view_all": "Ver todos"
     },
     "copied": "Copiado",
-    "app_restart_request": "Você precisa reiniciar o aplicativo para esta mudança ter efeito"
+    "app_restart_request": "Você precisa reiniciar o aplicativo para esta mudança ter efeito",
+    "warning": "Aviso",
+    "default": "Padrão",
+    "no_content": "Sem conteúdo",
+    "version": "Versão $version"
   },
   "profile": {
     "favorites": "Favoritos",
     "profile": "Perfil",
     "copy_user_id": "Copiar ID do Usuário",
     "messages": {
-      "title": "Mensagens"
+      "title": "Mensagens",
+      "empty": "Você não tem mensagens",
+      "unread_message_notice": {
+        "one": "Você tem $n mensagem não lida",
+        "other": "Você tem $n mensagens não lidas"
+      },
+      "categories": {
+        "all": "Todas",
+        "received": "Recebidas",
+        "unread": "Não lidas",
+        "sent": "Enviadas",
+        "deleted": "Deletadas"
+      },
+      "sender": "Remetente",
+      "recipient": "Destinatário",
+      "date": "Data"
+    },
+    "fail_to_load_profile": "Falha ao carregar perfil",
+    "previous_names": "Nomes Anteriores",
+    "tabs": {
+      "info": "Informações",
+      "uploads": "Envios",
+      "changes": "Mudanças"
+    },
+    "uploads": {
+      "top_n_copyright": "Top $n copyrights"
+    },
+    "activity": {
+      "title": "Atividade",
+      "uploads": "Envios",
+      "tag_edits": "Edições de tag",
+      "note_edits": "Edições de notas",
+      "comments": "Comentários",
+      "forum_posts": "Postagens do fórum",
+      "favgroups": "Grupos de Favoritos"
+    },
+    "feedback": {
+      "user_feedbacks": "Feedbacks de Usuários",
+      "positive": "Positivo",
+      "negative": "Negativo",
+      "neutral": "Neutro",
+      "title": "Feedbacks"
     }
   },
   "network": {
@@ -35,7 +92,8 @@
       "more": "Mais",
       "related": "Relacionado",
       "add_to_current_search": "Adicionar à pesquisa atual",
-      "open_wiki": "Abrir wiki"
+      "open_wiki": "Abrir wiki",
+      "negate_from_current_search": "Negar da pesquisa atual"
     }
   },
   "post": {
@@ -63,13 +121,67 @@
       "source_label": "Fonte",
       "related_posts": "Posts relacionados",
       "add_to_bookmark": "Adicionar marcador",
-      "remove_from_bookmark": "Remover do marcador"
+      "remove_from_bookmark": "Remover do marcador",
+      "duration": "Duração",
+      "approver": "Aprovador",
+      "widgets": {
+        "toolbar": "Barra de ferramentas",
+        "tags": "Tags",
+        "info_panel": "Painel de informação",
+        "file_details": "Detalhes do arquivo",
+        "pool": "Conjunto",
+        "artist_info": "Informações do artista",
+        "stats": "Estatísticas",
+        "comments": "Comentários",
+        "artist_posts": "Postagens do artista",
+        "related_posts": "Posts relacionados",
+        "character_list": "Lista de Personagens",
+        "source": "Fonte"
+      },
+      "uploader": "Uploader"
     },
     "action": {
       "view_comments": "Ver comentários",
       "add_to_favorite_group": "Adicionar ao grupo favorito",
       "view_in_browser": "Visualizar no navegador",
-      "view_original": "Ver original"
+      "view_original": "Ver original",
+      "share": "Compartilhar",
+      "bookmark": "Salvar",
+      "favorite": "Favoritar",
+      "upvote": "Upvote",
+      "downvote": "Downvote",
+      "view_artist": "Ver artista",
+      "view_tags": "Ver tags",
+      "view_tag_history": "Ver histórico de tags",
+      "copy_image": "Copiar imagem",
+      "slideshow": "Apresentação de Slides",
+      "none": "Nenhuma",
+      "edit": "Editar",
+      "use_default": "Usar Padrão",
+      "toggle_bookmark": "Alternar salvo",
+      "toggle_favorite": "Alternar favorito"
+    },
+    "statistics": {
+      "stats_for_nerds": "Estatísticas para nerds",
+      "average": "Média",
+      "highest": "Maior",
+      "lowest": "Menor",
+      "median": "Mediana",
+      "25th_percentile": "25o percentil",
+      "75th_percentile": "75o percentil",
+      "90th_percentile": "90o percentil"
+    },
+    "votes": {
+      "user_list": {
+        "title": "Votantes",
+        "disclaimer": "Downvotes e votos privados não são mostrados."
+      }
+    },
+    "favorites": {
+      "user_list": {
+        "title": "Favoritado por",
+        "disclaimer": "Apenas favoritos públicos são exibidos."
+      }
     }
   },
   "comment": {
@@ -98,7 +210,13 @@
     "most_viewed": "Mais visualizados",
     "see_more": "Ver mais",
     "explore": "Explorar",
-    "new": "Novo"
+    "new": "Novo",
+    "daily": "Diário",
+    "weekly": "Semanal",
+    "newest": "Mais novo",
+    "oldest": "Mais antigo",
+    "random": "Aleatório",
+    "ordered": "Ordenado"
   },
   "search": {
     "errors": {
@@ -110,7 +228,9 @@
       "down": "O servidor fora do ar. Tente novamente mais tarde",
       "access_denied": "Acesso negado",
       "forbidden": "Falha na autenticação",
-      "unknown": "Erro desconhecido do servidor. Relate este problema ao desenvolvedor"
+      "unknown": "Erro desconhecido do servidor. Relate este problema ao desenvolvedor",
+      "cannot_reach_server": "Não pode alcançar o servidor, verifique sua conexão",
+      "failed_to_load_data": "Falha ao carregar dados do servidor, por favor tente novamente mais tarde"
     },
     "hint": "Buscar...",
     "no_result": "Nós procuramos do infinito ao além, mas nenhum resultado foi encontrado.",
@@ -126,7 +246,8 @@
       "other": "$n Resultados"
     },
     "no_result_notice": "Nenhum resultado",
-    "search_in_progress_notice": "Buscando..."
+    "search_in_progress_notice": "Buscando...",
+    "raw_query": "Consulta bruta"
   },
   "pool": {
     "pool": "Conjunto",
@@ -146,7 +267,9 @@
     },
     "detail": {
       "last_updated": "Última atualização"
-    }
+    },
+    "pools": "Conjuntos",
+    "no_cover_image": "Sem imagem de capa"
   },
   "settings": {
     "settings": "Configurações",
@@ -156,13 +279,36 @@
       "show_scores": "Mostrar resultados",
       "show_post_list_config_header": "Mostrar barra de configuração dos posts",
       "booru_config": "Perfil Booru",
-      "booru_config_placement": "Posição dos perfis Booru"
+      "booru_config_placement": "Posição dos perfis Booru",
+      "customize": "Customizar",
+      "auto_play_gif": "Reproduzir GIFs automaticamente",
+      "blur_explicit_media": "Borrar conteúdo explícito",
+      "booru_config_placement_options": {
+        "side": "Lateral",
+        "bottom": "Inferior"
+      },
+      "booru_config_label": "Mostrar rótulo",
+      "booru_config_label_options": {
+        "always": "Sempre",
+        "never": "Nunca"
+      }
     },
     "general": "Geral",
     "search": {
       "search": "Buscar",
       "auto_focus_search_bar": "Auto focar a barra de pesquisa quando abrir a visualização de pesquisa pela primeira vez",
-      "hide_bookmarked_posts_from_search_results": "Esconder posts marcados dos resultados de pesquisa"
+      "hide_bookmarked_posts_from_search_results": "Esconder posts marcados dos resultados de pesquisa",
+      "search_bar": {
+        "position": {
+          "search_bar_position": "Posição da barra de busca",
+          "top": "Topo",
+          "bottom": "Inferior"
+        },
+        "scroll_behavior": {
+          "persistent": "Barra de busca persistente",
+          "persistent_description": "Deixa a barra de pesquisa visível enquanto rola."
+        }
+      }
     },
     "information": "Informação",
     "changelog": "Registro de alterações",
@@ -175,7 +321,8 @@
     "image_list": {
       "image_list": "Lista de imagens",
       "standard": "Padrão",
-      "masonry": "Alvenaria"
+      "masonry": "Alvenaria",
+      "classic": "Clássico"
     },
     "image_grid": {
       "image_grid": "Grade de imagens",
@@ -183,7 +330,9 @@
         "grid_size": "Tamanho da grade",
         "small": "Pequena",
         "medium": "Média",
-        "large": "Grande"
+        "large": "Grande",
+        "micro": "Micro",
+        "tiny": "Minúsculo"
       },
       "image_quality": {
         "image_quality": "Qualidade da imagem",
@@ -192,7 +341,8 @@
         "low": "Baixa",
         "original": "Original",
         "automatic": "Automático",
-        "highest": "Melhor"
+        "highest": "Melhor",
+        "auto": "Automático"
       },
       "spacing": "Espaçamento",
       "corner_radius": "Raio do canto",
@@ -200,7 +350,43 @@
       "aspect_ratio": "Proporção da imagem"
     },
     "image_viewer": {
-      "image_viewer": "Visualizador de imagem"
+      "image_viewer": "Visualizador de imagem",
+      "slideshow": "Apresentação de Slides",
+      "slideshow_interval": "Intervalo da apresentação de slides",
+      "slideshow_mode": "Modo Apresentação de slides",
+      "slideshow_modes": {
+        "random": "Aleatório",
+        "forward": "Avançar",
+        "backward": "Retroceder"
+      },
+      "slideshow_skip": "Pular transição de slides",
+      "slideshow_interval_explanation": "Valores de menos de 1 segundo irão automaticamente pular a transição",
+      "swipe_mode": "Modo de deslizar",
+      "swipe_mode_disclaimer": "Alguns gestos customizados podem não funcionar em todos os modos",
+      "swipe_modes": {
+        "horizontal": "Horizontal",
+        "horizontal_description": "Deslizamento esquerda/direita no estilo galeria. Semelhante a galerias de fotos e aplicativos de mídia.",
+        "vertical": "Vertical",
+        "vertical_description": "Deslizamento cima/baixo estilo TikTok. Popular em plataformas de vídeos curtos. Apenas para modo retrato."
+      },
+      "mute_video": "Silenciar vídeo por padrão",
+      "double_tap_seek": "Toque duplo para buscar",
+      "video_section_title": "Vídeo",
+      "manage_cache": "Gerenciar cache",
+      "enable_video_cache": "Habilitar cache de vídeo",
+      "enable_video_cache_description": "Baixe vídeos durante a transmissão e armazene-os em cache para reduzir o uso de dados e acelerar a reprodução em visualizações subsequentes.",
+      "video": {
+        "video_player_engine": "Motor do player de vídeo",
+        "engine": {
+          "auto": "Automático",
+          "auto_description": "Selecionar automaticamente o melhor motor baseado nos recursos do seu dispositivo.",
+          "default": "Padrão",
+          "default_description": "Funciona bem com maioria dos dispositivos, mas pode ter problemas com alguns formatos de vídeo ou dispositivos mais antigos.",
+          "mdk_description": "Carregamento rápido, performance melhor para certos formatos de vídeo, mas instável e pode causar falhas.",
+          "mpv_description": "Bom suporte e performance para formatos de vídeo, carregamento mais lento",
+          "webview_description": "Boa compatibilidade mas usa mais recursos e tem performance ruim, use como último recurso."
+        }
+      }
     },
     "language": {
       "language": "Idioma",
@@ -214,7 +400,20 @@
       "dynamic_color": "Tema de cores dinâmico",
       "dynamic_color_mobile_description": "Sincronize a cor do tema com o papel de parede",
       "dynamic_color_desktop_description": "Sincronize a cor do tema com a cor de destaque do OS",
-      "dynamic_color_unsupported_description": "Este dispositivo não é compatível com cores dinâmicas."
+      "dynamic_color_unsupported_description": "Este dispositivo não é compatível com cores dinâmicas.",
+      "system": "Sistema",
+      "viewer": {
+        "colors": "Cores",
+        "color_variants": "Variantes de cor",
+        "dark_mode": "Modo escuro",
+        "harmonize_colors": "Harmonizar cores",
+        "harmonize_colors_description": "Ajusta cores das tags para combinar com a cor de destaque",
+        "groups": {
+          "basic": "Básico",
+          "builtin": "Embutido",
+          "accent": "Destaque"
+        }
+      }
     },
     "privacy": {
       "privacy": "Privacidade",
@@ -244,13 +443,37 @@
         "sample": "Amostra",
         "preview": "Pré-visualizar"
       },
-      "title": "Baixar"
+      "title": "Baixar",
+      "skip_existing_files": "Pular arquivos existentes",
+      "skip_existing_files_explanation": "Isso impedirá o download de arquivos que já existem na pasta. Isso é útil quando você não deseja baixar o mesmo arquivo várias vezes."
     },
     "help_us_translate": "Nos ajude a traduzir",
     "other_settings": "Outras opções",
     "data_and_storage": {
       "data_and_storage": "Dados e armazenamento",
-      "clear_cache_on_start_up": "Limpar cache de imagem ao iniciar"
+      "clear_cache_on_start_up": "Limpar cache de imagem ao iniciar",
+      "cache": "Cache",
+      "data": "Dados",
+      "all_cache": "Todo cache",
+      "tag_cache": "Cache de tags",
+      "image_only_cache": "Apenas cache de imagem",
+      "video_cache": "Cache de vídeo",
+      "video_cache_limit": "Limite do cache de vídeo",
+      "video_cache_limit_description": "Tamanho máximo para armazenamento em cache de vídeo",
+      "no_limit": "Sem limite",
+      "bookmark_images": "Imagens salvas",
+      "loading": "Carregando...",
+      "storage": "Armazenamento",
+      "disk_space": {
+        "status_title": "$freeSpace livre de $totalSpace",
+        "groups": {
+          "system": "Sistema",
+          "images": "Imagens",
+          "videos": "Vídeos",
+          "others": "Outros",
+          "free": "Disponível"
+        }
+      }
     },
     "backup_and_restore": {
       "backup_and_restore": "Backup e Restaurar",
@@ -287,7 +510,8 @@
     "contact_developer_description": "Se tiver problemas ou sugestões, sinta-se livre para me mandar um email por essa opção",
     "feature_request_and_bug_report": "Pedir funções e relatar bugs",
     "feature_request_and_bug_report_description": "Sugira funções ou relate um bug pelo repositório no Github",
-    "open_app_settings": "Abrir configuração"
+    "open_app_settings": "Abrir configuração",
+    "need_more_questions": "Precisa de mais?"
   },
   "blacklisted_tags": {
     "remove": "Remover",
@@ -305,7 +529,7 @@
   "download": {
     "download": "Download",
     "invalid_folder_name_error": "Uma pasta não pode conter os seguintes caracteres: ",
-    "folder_select_warning": "O aplicativo só pode guardar arquivos dentro de pastas públicas <b>({0})</b> no Android 11+. <div>Cartões SD também não são suportados.</div> <div>Por favor escolha outro local.</div> <div>A versão deste dispositivo é {1}.</div>",
+    "folder_select_warning": "O aplicativo só pode guardar arquivos dentro de pastas públicas <b>({0})</b> no Android 11+. <br><br> Exemplos de localização válida:<br><b>[Internal]</b> /storage/emulated/0/Download <br><b>[SD card]</b> /storage/A1B2-C3D4/Download<br><br>Por favor escolha outra pasta ou crie uma nova se outra não existir. <br>A versão desse aparelho <b>{1}</b>.",
     "storage_permission_explanation": "Permissão de armazenamento é necessária para guardar arquivos baixados."
   },
   "saved_search": {
@@ -352,7 +576,7 @@
     "create_group_confirm": "OK",
     "max_limit_warning": "Membros só podem criar 10 grupos favoritos",
     "duplicate_items_warning_notification": "Os posts escolhidos já existem neste grupo",
-    "detete_confirmation": "Tem certeza que quer deletar este grupo favorito",
+    "detete_confirmation": "Tem certeza de que quer deletar este grupo favorito?",
     "group_item_counter": {
       "one": "$n post",
       "other": "$n posts"
@@ -369,7 +593,7 @@
     "rate": "Avaliar",
     "cancel": "Não obrigado",
     "later": "Talvez mais tarde",
-    "rationale": "Se você gosta deste aplicativo, por favor use um pouco do seu tempo para avaliar ele.\nNão levaria mais que alguns segundos e realmente ajuda com o projeto."
+    "rationale": "Se você gosta deste aplicativo, por favor use um pouco do seu tempo para avaliar ele. Não levaria mais que alguns segundos e realmente ajuda com o projeto."
   },
   "sideMenu": {
     "settings": "Configurações",
@@ -468,18 +692,18 @@
       "layout_customization": "Layout e Tela Inicial",
       "layout_customization_description": "Personalize a quantidade de informações exibidas e defina sua tela inicial preferida (Favoritos, Pesquisa etc.)",
       "enhanced_bulk_download": "Downloader em massa aprimorado",
-      "enhanced_bulk_download_description": "Modelos ilimitados, várias sessões e retomada contínua após reiniciar",
+      "enhanced_bulk_download_description": "Modelos ilimitados, várias sessões e retomada contínua após reiniciar.",
       "support_development": "Apoiar o desenvolvimento",
-      "support_development_description": "Ajude um desenvolvedor independente a manter o projeto ativo com atualizações e melhorias regulares"
+      "support_development_description": "Ajude um desenvolvedor independente a manter o projeto ativo com atualizações e melhorias regulares."
     },
     "thanks": {
       "title": "Obrigado!",
       "description": "Agora você tem acesso aos recursos premium. Aproveite!",
-      "confirm": "OK"
+      "confirm": "OK!"
     },
     "changelog": {
       "thanks_for_supporting": "Obrigado por apoiar o desenvolvimento deste app assinando o $brand!",
-      "support_reminder": "Se você está curtindo as atualizações, apoie meu trabalho para que as melhorias continuem vindo!"
+      "support_reminder": "Se você está curtindo as atualizações, apoie meu trabalho para que as melhorias continuem vindo."
     },
     "per": {
       "year": "/ ano",
@@ -489,5 +713,16 @@
       "monthly": "Mensal",
       "annual": "Anual"
     }
+  },
+  "sort": {
+    "sort_by": "Ordenar por",
+    "name": "Nome",
+    "name_asc": "Nome (A-Z)",
+    "name_desc": "Nome (Z-A)",
+    "recently_added": "Adicionado recentemente",
+    "recently_updated": "Atualizado recentemente",
+    "recently_created": "Criado recentemente",
+    "last_updated": "Última atualização",
+    "count": "Contagem"
   }
 }
