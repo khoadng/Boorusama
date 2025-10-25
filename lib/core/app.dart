@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 // Package imports:
-import 'package:flutter_portal/flutter_portal.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
 import 'package:oktoast/oktoast.dart';
@@ -27,13 +26,11 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Portal(
-      child: OKToast(
-        child: AnalyticsScope(
-          child: AutoBackupAppLifecycle(
-            child: NetworkListener(
-              child: _App(),
-            ),
+    return const OKToast(
+      child: AnalyticsScope(
+        child: AutoBackupAppLifecycle(
+          child: NetworkListener(
+            child: _App(),
           ),
         ),
       ),

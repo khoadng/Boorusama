@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:flutter_portal/flutter_portal.dart';
+import 'package:flutter_anchor/flutter_anchor.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
@@ -14,7 +14,7 @@ import '../../../../../../core/tags/autocompletes/types.dart';
 import '../../../../../../core/widgets/widgets.dart';
 import '../pages/tag_edit_upload_text_controller.dart';
 
-class TagEditUploadTextField extends StatelessWidget {
+class TagEditUploadTextField extends ConsumerStatefulWidget {
   const TagEditUploadTextField({
     super.key,
     required this.textEditingController,
@@ -23,78 +23,73 @@ class TagEditUploadTextField extends StatelessWidget {
   final TagEditUploadTextController textEditingController;
 
   @override
+  ConsumerState<TagEditUploadTextField> createState() =>
+      _TagEditUploadTextFieldState();
+}
+
+class _TagEditUploadTextFieldState
+    extends ConsumerState<TagEditUploadTextField> {
+  final _focusNode = FocusNode();
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return PortalTarget(
-      anchor: const Aligned(
-        follower: Alignment.bottomLeft,
-        target: Alignment.topLeft,
+    final config = ref.watchConfigAuth;
+
+    return AnchorPopover(
+      placement: Placement.top,
+      triggerMode: AnchorTriggerMode.focus(
+        focusNode: _focusNode,
       ),
-      portalFollower: TagSuggestionsPortalFollower(
-        controller: textEditingController,
-        onSelected: (tag) {
-          textEditingController.replaceLastWordWith(tag);
-        },
+      arrowShape: const NoArrow(),
+      spacing: 4,
+      backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
+      overlayBuilder: (context) => Container(
+        constraints: BoxConstraints(
+          maxHeight: 200,
+          maxWidth:
+              AnchorData.of(context).geometry.childBounds?.width ??
+              MediaQuery.sizeOf(context).width,
+        ),
+        child: ValueListenableBuilder<String?>(
+          valueListenable: widget.textEditingController.lastWordNotifier,
+          builder: (context, lastQuery, child) {
+            final tags = lastQuery != null
+                ? ref.watch(suggestionProvider((config, lastQuery))).toIList()
+                : <AutocompleteData>[].lock;
+
+            return tags.isEmpty
+                ? const SizedBox.shrink()
+                : TagSuggestionItems(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    backgroundColor: Colors.transparent,
+                    config: config,
+                    dense: true,
+                    tags: tags,
+                    reverse: true,
+                    onItemTap: (tag) {
+                      widget.textEditingController.replaceLastWordWith(
+                        tag.value,
+                      );
+                    },
+                    currentQuery: lastQuery ?? '',
+                  );
+          },
+        ),
       ),
       child: BooruTextFormField(
-        controller: textEditingController,
+        focusNode: _focusNode,
+        controller: widget.textEditingController,
         autocorrect: false,
         maxLines: 4,
         minLines: 4,
         validator: (p0) => null,
       ),
-    );
-  }
-}
-
-class TagSuggestionsPortalFollower extends ConsumerWidget {
-  const TagSuggestionsPortalFollower({
-    required this.onSelected,
-    required this.controller,
-    super.key,
-  });
-
-  final void Function(String tag) onSelected;
-  final TagEditUploadTextController controller;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfigAuth;
-
-    return ValueListenableBuilder<String?>(
-      valueListenable: controller.lastWordNotifier,
-      builder: (context, lastQuery, child) {
-        final tags = lastQuery != null
-            ? ref
-                  .watch(suggestionProvider((config, lastQuery)))
-                  .reversed
-                  .toIList()
-            : <AutocompleteData>[].lock;
-
-        return tags.isEmpty
-            ? const SizedBox.shrink()
-            : Container(
-                margin: const EdgeInsets.only(
-                  bottom: 4,
-                  left: 4,
-                  right: 40,
-                ),
-                constraints: const BoxConstraints(
-                  maxHeight: 200,
-                ),
-                width: MediaQuery.sizeOf(context).width,
-                color: Theme.of(context).colorScheme.secondaryContainer,
-                child: TagSuggestionItems(
-                  config: config,
-                  dense: true,
-                  tags: tags,
-                  reverse: true,
-                  onItemTap: (tag) {
-                    onSelected(tag.value);
-                  },
-                  currentQuery: lastQuery ?? '',
-                ),
-              );
-      },
     );
   }
 }

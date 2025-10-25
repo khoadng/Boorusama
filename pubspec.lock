@@ -679,14 +679,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.30"
-  flutter_portal:
-    dependency: "direct main"
-    description:
-      name: flutter_portal
-      sha256: "4601b3dc24f385b3761721bd852a3f6c09cddd4e943dd184ed58ee1f43006257"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.1.4"
   flutter_rating_bar:
     dependency: transitive
     description:
