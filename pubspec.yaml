@@ -44,7 +44,7 @@ dependencies:
   cache_manager:
     path: packages/cache_manager
 
-  anchor_ui: ^0.0.2
+  anchor_ui: ^0.0.3
   android_intent_plus: ^6.0.0
   archive: ^4.0.7
   animated_list_plus: ^0.5.2

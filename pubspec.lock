@@ -29,10 +29,10 @@ packages:
     dependency: "direct main"
     description:
       name: anchor_ui
-      sha256: "03defe712a63393f8b32db1e31f3820f0d140ba1ebaf81c224ee04a3c5d2fe19"
+      sha256: "69d9b3fa2e1857ac8c35e5d3e32697f4d1f527d29a020fc265b50fa91d0acb32"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.2"
+    version: "0.0.3"
   android_intent_plus:
     dependency: "direct main"
     description:

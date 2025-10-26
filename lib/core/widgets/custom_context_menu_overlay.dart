@@ -37,26 +37,25 @@ class CustomContextMenuOverlay extends ConsumerWidget {
           child: Column(children: children),
         ),
       ),
-      buttonBuilder: (context, config, [_]) => ContextMenuTile(config: config),
+      buttonBuilder: (context, config, [_]) => _ContextMenuTile(config: config),
       hapticFeedbackOnStart: hapticFeedbackLevel.hasHapticFeedback,
       child: child,
     );
   }
 }
 
-class ContextMenuTile extends ConsumerStatefulWidget {
-  const ContextMenuTile({
+class _ContextMenuTile extends ConsumerStatefulWidget {
+  const _ContextMenuTile({
     required this.config,
-    super.key,
   });
 
   final ContextMenuButtonConfig config;
 
   @override
-  ConsumerState<ContextMenuTile> createState() => _ContextMenuTileState();
+  ConsumerState<_ContextMenuTile> createState() => _ContextMenuTileState();
 }
 
-class _ContextMenuTileState extends ConsumerState<ContextMenuTile> {
+class _ContextMenuTileState extends ConsumerState<_ContextMenuTile> {
   var isMouseOver = false;
 
   @override

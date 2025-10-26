@@ -91,11 +91,15 @@ class _DanbooruInfinitePostIdListState
         builder: (context, controller) => PostGrid(
           controller: controller,
           itemBuilder: (context, index, scrollController, useHero) =>
-              DefaultDanbooruImageGridItem(
+              DanbooruPostListingContextMenu(
                 index: index,
-                autoScrollController: scrollController,
                 controller: controller,
-                useHero: useHero,
+                child: DefaultDanbooruImageGridItem(
+                  index: index,
+                  autoScrollController: scrollController,
+                  controller: controller,
+                  useHero: useHero,
+                ),
               ),
           sliverHeaders: [
             if (widget.sliverHeaders != null) ...widget.sliverHeaders!,

@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:context_menus/context_menus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:foundation/foundation.dart';
@@ -25,6 +24,7 @@ import '../providers/upload_hide_provider.dart';
 import '../routes/route_utils.dart';
 import '../types/danbooru_upload.dart';
 import '../types/danbooru_upload_post.dart';
+import '../widgets/danbooru_upload_post_context_menu.dart';
 
 enum UploadTabType {
   posted,
@@ -249,56 +249,54 @@ class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
 
               return Stack(
                 children: [
-                  DefaultDanbooruImageGridItem(
-                    index: index,
-                    autoScrollController: scrollController,
-                    controller: controller,
-                    useHero: useHero,
-                    quickActionButton: const SizedBox.shrink(),
-                    contextMenu: GenericContextMenu(
-                      buttonConfigs: [
-                        ContextMenuButtonConfig(
-                          'Hide',
-                          onPressed: () {
-                            _changeVisibility(posts[index].id, false);
-                          },
-                        ),
-                      ],
-                    ),
-                    onTap: () {
-                      if (widget.type == UploadTabType.unposted) {
-                        goToTagEditUploadPage(
-                          ref,
-                          post: post,
-                          uploadId: post.uploadId,
-                          //TODO: Refresh later
-                          // onSubmitted: () => controller.refresh(),
-                        );
-                      }
+                  DanbooruUploadPostContextMenu(
+                    post: post,
+                    onVisibilityChanged: (visible) {
+                      _changeVisibility(post.id, visible);
                     },
-                    blockOverlay: shouldShowOverlay
-                        ? BlockOverlayItem(
-                            overlay: Stack(
-                              children: [
-                                Positioned.fill(
-                                  child: Container(
-                                    color: Colors.black.withValues(alpha: 0.8),
+                    child: DefaultDanbooruImageGridItem(
+                      index: index,
+                      autoScrollController: scrollController,
+                      controller: controller,
+                      useHero: useHero,
+                      quickActionButton: const SizedBox.shrink(),
+                      onTap: () {
+                        if (widget.type == UploadTabType.unposted) {
+                          goToTagEditUploadPage(
+                            ref,
+                            post: post,
+                            uploadId: post.uploadId,
+                            //TODO: Refresh later
+                            // onSubmitted: () => controller.refresh(),
+                          );
+                        }
+                      },
+                      blockOverlay: shouldShowOverlay
+                          ? BlockOverlayItem(
+                              overlay: Stack(
+                                children: [
+                                  Positioned.fill(
+                                    child: Container(
+                                      color: Colors.black.withValues(
+                                        alpha: 0.8,
+                                      ),
+                                    ),
                                   ),
-                                ),
-                                Positioned(
-                                  top: 0,
-                                  right: 0,
-                                  child: IconButton(
-                                    onPressed: () {
-                                      _changeVisibility(post.id, true);
-                                    },
-                                    icon: const Icon(Icons.visibility),
+                                  Positioned(
+                                    top: 0,
+                                    right: 0,
+                                    child: IconButton(
+                                      onPressed: () {
+                                        _changeVisibility(post.id, true);
+                                      },
+                                      icon: const Icon(Icons.visibility),
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ),
-                          )
-                        : null,
+                                ],
+                              ),
+                            )
+                          : null,
+                    ),
                   ),
                   if (widget.type == UploadTabType.unposted)
                     _buildUnpostedChip(post),

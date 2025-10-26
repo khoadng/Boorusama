@@ -54,11 +54,15 @@ class _ExploreMostViewedPageState extends ConsumerState<ExploreMostViewedPage> {
                     controller: controller,
                     safeArea: false,
                     itemBuilder: (context, index, scrollController, useHero) =>
-                        DefaultDanbooruImageGridItem(
+                        DanbooruPostListingContextMenu(
                           index: index,
-                          autoScrollController: scrollController,
                           controller: controller,
-                          useHero: useHero,
+                          child: DefaultDanbooruImageGridItem(
+                            index: index,
+                            autoScrollController: scrollController,
+                            controller: controller,
+                            useHero: useHero,
+                          ),
                         ),
                     sliverHeaders: [
                       ExploreSliverAppBar(

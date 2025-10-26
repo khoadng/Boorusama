@@ -23,7 +23,6 @@ import '../../../../../foundation/clipboard.dart';
 import '../../../../../foundation/url_launcher.dart';
 import '../../../configs/providers.dart';
 import '../../post/types.dart';
-import 'danbooru_post_context_menu.dart';
 import 'danbooru_post_preview.dart';
 
 const _kBannedTextThreshold = 200.0;
@@ -35,7 +34,6 @@ class DefaultDanbooruImageGridItem extends StatelessWidget {
     required this.controller,
     super.key,
     this.blockOverlay,
-    this.contextMenu,
     this.onTap,
     this.useHero = true,
     this.quickActionButton,
@@ -45,7 +43,6 @@ class DefaultDanbooruImageGridItem extends StatelessWidget {
   final AutoScrollController autoScrollController;
   final PostGridController<DanbooruPost> controller;
   final BlockOverlayItem? blockOverlay;
-  final Widget? contextMenu;
   final VoidCallback? onTap;
   final bool useHero;
   final Widget? quickActionButton;
@@ -64,106 +61,92 @@ class DefaultDanbooruImageGridItem extends StatelessWidget {
 
           final artistTags = [...post.artistTags]..remove('banned_artist');
 
-          return DefaultPostListContextMenuRegion(
-            isEnabled: !multiSelect && !post.isBanned,
-            contextMenu:
-                contextMenu ??
-                DanbooruPostContextMenu(
-                  onMultiSelect: () {
-                    selectionModeController.enable(
-                      initialSelected: [index],
-                    );
-                  },
-                  post: post,
-                ),
-            child: HeroMode(
-              enabled: useHero,
-              child: BooruHero(
-                tag: '${post.id}_hero',
-                child: ExplicitContentBlockOverlay(
-                  rating: post.rating,
-                  child: Builder(
-                    builder: (context) {
-                      final item = Consumer(
-                        builder: (_, ref, _) {
-                          final config = ref.watchConfigAuth;
-                          final loginDetails = ref.watch(
-                            danbooruLoginDetailsProvider(config),
-                          );
+          return HeroMode(
+            enabled: useHero,
+            child: BooruHero(
+              tag: '${post.id}_hero',
+              child: ExplicitContentBlockOverlay(
+                rating: post.rating,
+                child: Builder(
+                  builder: (context) {
+                    final item = Consumer(
+                      builder: (_, ref, _) {
+                        final config = ref.watchConfigAuth;
+                        final loginDetails = ref.watch(
+                          danbooruLoginDetailsProvider(config),
+                        );
 
-                          final gridThumbnailUrlBuilder = ref.watch(
-                            gridThumbnailUrlGeneratorProvider(config),
-                          );
+                        final gridThumbnailUrlBuilder = ref.watch(
+                          gridThumbnailUrlGeneratorProvider(config),
+                        );
 
-                          final gridThumbnailSettings = ref.watch(
-                            gridThumbnailSettingsProvider(config),
-                          );
+                        final gridThumbnailSettings = ref.watch(
+                          gridThumbnailSettingsProvider(config),
+                        );
 
-                          final imgUrl = gridThumbnailUrlBuilder.generateUrl(
-                            post,
-                            settings: gridThumbnailSettings,
-                          );
-                          return SliverPostGridImageGridItem(
-                            post: post,
-                            index: index,
-                            multiSelectEnabled: multiSelect,
-                            quickActionButton:
-                                quickActionButton ??
-                                (!post.isBanned &&
-                                        !multiSelect &&
-                                        loginDetails.hasLogin()
-                                    ? DefaultImagePreviewQuickActionButton(
-                                        post: post,
-                                      )
-                                    : const SizedBox.shrink()),
-                            autoScrollOptions: AutoScrollOptions(
-                              controller: autoScrollController,
-                              index: index,
-                            ),
-                            onTap:
-                                onTap ??
-                                (post.isBanned
-                                    ? null
-                                    : () {
-                                        goToPostDetailsPageFromController(
-                                          ref: ref,
-                                          controller: controller,
-                                          initialIndex: index,
-                                          scrollController:
-                                              autoScrollController,
-                                          initialThumbnailUrl: imgUrl,
-                                        );
-                                      }),
-                            image: _buildImage(post, imgUrl),
-                            score: post.isBanned ? null : post.score,
-                            blockOverlay:
-                                blockOverlay ??
-                                (post.isBanned
-                                    ? _buildBlockOverlayItem(
-                                        post,
-                                        artistTags,
-                                        context,
-                                      )
-                                    : null),
-                          );
-                        },
-                      );
-
-                      return Consumer(
-                        builder: (_, ref, _) => DanbooruTagListPrevewTooltip(
+                        final imgUrl = gridThumbnailUrlBuilder.generateUrl(
+                          post,
+                          settings: gridThumbnailSettings,
+                        );
+                        return SliverPostGridImageGridItem(
                           post: post,
-                          child: DefaultSelectableItem(
+                          index: index,
+                          multiSelectEnabled: multiSelect,
+                          quickActionButton:
+                              quickActionButton ??
+                              (!post.isBanned &&
+                                      !multiSelect &&
+                                      loginDetails.hasLogin()
+                                  ? DefaultImagePreviewQuickActionButton(
+                                      post: post,
+                                    )
+                                  : const SizedBox.shrink()),
+                          autoScrollOptions: AutoScrollOptions(
+                            controller: autoScrollController,
                             index: index,
-                            post: post,
-                            item: item,
-                            indicatorSize: ref.watch(
-                              selectionIndicatorSizeProvider,
-                            ),
+                          ),
+                          onTap:
+                              onTap ??
+                              (post.isBanned
+                                  ? null
+                                  : () {
+                                      goToPostDetailsPageFromController(
+                                        ref: ref,
+                                        controller: controller,
+                                        initialIndex: index,
+                                        scrollController: autoScrollController,
+                                        initialThumbnailUrl: imgUrl,
+                                      );
+                                    }),
+                          image: _buildImage(post, imgUrl),
+                          score: post.isBanned ? null : post.score,
+                          blockOverlay:
+                              blockOverlay ??
+                              (post.isBanned
+                                  ? _buildBlockOverlayItem(
+                                      post,
+                                      artistTags,
+                                      context,
+                                    )
+                                  : null),
+                        );
+                      },
+                    );
+
+                    return Consumer(
+                      builder: (_, ref, _) => DanbooruTagListPrevewTooltip(
+                        post: post,
+                        child: DefaultSelectableItem(
+                          index: index,
+                          post: post,
+                          item: item,
+                          indicatorSize: ref.watch(
+                            selectionIndicatorSizeProvider,
                           ),
                         ),
-                      );
-                    },
-                  ),
+                      ),
+                    );
+                  },
                 ),
               ),
             ),
