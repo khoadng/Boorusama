@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:flutter_anchor/flutter_anchor.dart';
+import 'package:anchor_ui/anchor_ui.dart';
 
 // Project imports:
 import '../../../../../foundation/display.dart';

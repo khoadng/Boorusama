@@ -21,10 +21,18 @@ packages:
     dependency: transitive
     description:
       name: anchor
-      sha256: "7475e90bc606f2dbbb00f460c9651ebf82cd5db116fcbe89055aff0d1be38b97"
+      sha256: f3d27bdcda4be2883c31939f2b61ec11e959a080130f8f6bde4aba38bf9a2469
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.1"
+    version: "0.0.3"
+  anchor_ui:
+    dependency: "direct main"
+    description:
+      name: anchor_ui
+      sha256: "03defe712a63393f8b32db1e31f3820f0d140ba1ebaf81c224ee04a3c5d2fe19"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.2"
   android_intent_plus:
     dependency: "direct main"
     description:
@@ -529,13 +537,13 @@ packages:
     source: sdk
     version: "0.0.0"
   flutter_anchor:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: flutter_anchor
-      sha256: c191374c04b6e73ee3c28afc29ae81decc2daee035260597f0ca751f07c9a3fe
+      sha256: "83ccadbbb6aa7c3afed4adc0c5bf6d75f9803d5c7d852709cae64d197028dd71"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.1"
+    version: "0.0.6"
   flutter_avif:
     dependency: transitive
     description:
