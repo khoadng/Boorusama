@@ -465,7 +465,7 @@
       "error_loading_cache_info": "Помилка завантаження інформації кешу",
       "storage": "Зберігання",
       "disk_space": {
-        "status_title": "$freeSpace вільний від $totalSpace",
+        "status_title": "$freeSpace вільно з $totalSpace",
         "groups": {
           "system": "Система",
           "images": "Зображення",
