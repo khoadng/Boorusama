@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 import 'package:like_button/like_button.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
@@ -12,6 +13,7 @@ import '../../../../bookmarks/types.dart';
 import '../../../../configs/config/providers.dart';
 import '../../../../configs/config/types.dart';
 import '../../../../themes/theme/types.dart';
+import '../../../../widgets/booru_tooltip.dart';
 import '../../../post/types.dart';
 
 class BookmarkPostButton extends ConsumerWidget {
@@ -35,36 +37,42 @@ class BookmarkPostButton extends ConsumerWidget {
         false;
     final isLoading = bookmarkStateAsync.isLoading;
 
-    return isBookmarked
-        ? IconButton(
-            splashRadius: 16,
-            onPressed: isLoading
-                ? null
-                : () {
-                    ref.bookmarks.removeBookmarkWithToast(
-                      BookmarkUniqueId.fromPost(post, config.booruIdHint),
-                    );
-                  },
-            icon: Icon(
-              Symbols.bookmark,
-              fill: 1,
-              color: context.colors.upvoteColor,
+    return BooruTooltip(
+      message: isBookmarked
+          ? context.t.post.detail.remove_from_bookmark
+          : context.t.post.detail.add_to_bookmark,
+      padding: const EdgeInsets.all(8),
+      child: isBookmarked
+          ? IconButton(
+              splashRadius: 16,
+              onPressed: isLoading
+                  ? null
+                  : () {
+                      ref.bookmarks.removeBookmarkWithToast(
+                        BookmarkUniqueId.fromPost(post, config.booruIdHint),
+                      );
+                    },
+              icon: Icon(
+                Symbols.bookmark,
+                fill: 1,
+                color: context.colors.upvoteColor,
+              ),
+            )
+          : IconButton(
+              splashRadius: 16,
+              onPressed: isLoading
+                  ? null
+                  : () {
+                      ref.bookmarks.addBookmarkWithToast(
+                        config,
+                        post,
+                      );
+                    },
+              icon: const Icon(
+                Symbols.bookmark,
+              ),
             ),
-          )
-        : IconButton(
-            splashRadius: 16,
-            onPressed: isLoading
-                ? null
-                : () {
-                    ref.bookmarks.addBookmarkWithToast(
-                      config,
-                      post,
-                    );
-                  },
-            icon: const Icon(
-              Symbols.bookmark,
-            ),
-          );
+    );
   }
 }
 

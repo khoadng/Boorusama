@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:cache_manager/cache_manager.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
@@ -11,6 +12,7 @@ import '../../../configs/config/types.dart';
 import '../../../downloads/filename/providers.dart';
 import '../../../downloads/filename/types.dart';
 import '../../../images/providers.dart';
+import '../../../widgets/booru_tooltip.dart';
 import '../../post/types.dart';
 import 'share.dart';
 
@@ -43,20 +45,23 @@ class SharePostButton extends ConsumerWidget {
           downloadFilenameBuilderProvider(auth),
         );
 
-    return IconButton(
-      splashRadius: 16,
-      onPressed: () => ref
-          .read(shareProvider)
-          .sharePost(
-            post,
-            auth,
-            context: context,
-            configViewer: configViewer,
-            download: download,
-            filenameBuilder: effectiveDownloadFilenameBuilder,
-            imageCacheManager: imageCacheManager ?? defaultImageCacheManager,
-          ),
-      icon: const Icon(Symbols.share),
+    return BooruTooltip(
+      message: context.t.post.action.share,
+      child: IconButton(
+        splashRadius: 16,
+        onPressed: () => ref
+            .read(shareProvider)
+            .sharePost(
+              post,
+              auth,
+              context: context,
+              configViewer: configViewer,
+              download: download,
+              filenameBuilder: effectiveDownloadFilenameBuilder,
+              imageCacheManager: imageCacheManager ?? defaultImageCacheManager,
+            ),
+        icon: const Icon(Symbols.share),
+      ),
     );
   }
 }

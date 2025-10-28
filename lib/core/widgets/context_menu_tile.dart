@@ -6,7 +6,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../foundation/platform.dart';
 import '../settings/providers.dart';
 
 class ContextMenuTile extends ConsumerWidget {
@@ -49,8 +48,8 @@ class ContextMenuTile extends ConsumerWidget {
                     : onTap
               : null,
           child: Container(
-            padding: EdgeInsets.symmetric(
-              vertical: isMobilePlatform() ? 12 : 8,
+            padding: const EdgeInsets.symmetric(
+              vertical: 8,
               horizontal: 8,
             ),
             decoration: BoxDecoration(

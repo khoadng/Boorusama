@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../../../../downloads/downloader/providers.dart';
+import '../../../../widgets/booru_tooltip.dart';
 import '../../../post/types.dart';
 
 class DownloadPostButton extends ConsumerWidget {
@@ -21,29 +23,32 @@ class DownloadPostButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return !small
-        ? IconButton(
-            splashRadius: 16,
-            onPressed: () {
-              ref.download(post);
-            },
-            icon: const Icon(
-              Symbols.download,
-            ),
-          )
-        : Material(
-            color: Colors.transparent,
-            child: InkWell(
-              onTap: () {
+    return BooruTooltip(
+      message: context.t.download.download,
+      child: !small
+          ? IconButton(
+              splashRadius: 16,
+              onPressed: () {
                 ref.download(post);
               },
-              child: const Padding(
-                padding: EdgeInsets.all(4),
-                child: Icon(
-                  Symbols.download,
+              icon: const Icon(
+                Symbols.download,
+              ),
+            )
+          : Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () {
+                  ref.download(post);
+                },
+                child: const Padding(
+                  padding: EdgeInsets.all(4),
+                  child: Icon(
+                    Symbols.download,
+                  ),
                 ),
               ),
             ),
-          );
+    );
   }
 }

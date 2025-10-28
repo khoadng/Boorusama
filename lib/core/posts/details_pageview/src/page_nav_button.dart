@@ -1,9 +1,13 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Package imports:
+import 'package:i18n/i18n.dart';
+
 // Project imports:
 import '../../../../foundation/display.dart';
 import '../../../themes/theme/types.dart';
+import '../../../widgets/booru_tooltip.dart';
 import 'post_details_page_view_controller.dart';
 
 class PageNavButton extends StatelessWidget {
@@ -38,22 +42,28 @@ class PageNavButton extends StatelessWidget {
           builder: (context, page, _) => visibleWhen(page)
               ? Align(
                   alignment: alignment,
-                  child: MaterialButton(
-                    color: context.extendedColorScheme.surfaceContainerOverlay,
-                    shape: const CircleBorder(),
-                    padding: context.isLargeScreen
-                        ? const EdgeInsets.all(8)
-                        : null,
-                    onPressed: onPressed,
-                    child: Theme(
-                      data: theme.copyWith(
-                        iconTheme: theme.iconTheme.copyWith(
-                          color: context
-                              .extendedColorScheme
-                              .onSurfaceContainerOverlay,
+                  child: BooruTooltip(
+                    message: alignment == Alignment.centerLeft
+                        ? context.t.infinite_scroll.previous_page
+                        : context.t.infinite_scroll.next_page,
+                    child: MaterialButton(
+                      color:
+                          context.extendedColorScheme.surfaceContainerOverlay,
+                      shape: const CircleBorder(),
+                      padding: context.isLargeScreen
+                          ? const EdgeInsets.all(8)
+                          : null,
+                      onPressed: onPressed,
+                      child: Theme(
+                        data: theme.copyWith(
+                          iconTheme: theme.iconTheme.copyWith(
+                            color: context
+                                .extendedColorScheme
+                                .onSurfaceContainerOverlay,
+                          ),
                         ),
+                        child: icon,
                       ),
-                      child: icon,
                     ),
                   ),
                 )

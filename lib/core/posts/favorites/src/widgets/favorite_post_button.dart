@@ -12,6 +12,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import '../../../../../foundation/animations/constants.dart';
 import '../../../../../foundation/toast.dart';
 import '../../../../themes/theme/types.dart';
+import '../../../../widgets/booru_tooltip.dart';
 
 class FavoritePostButton extends StatelessWidget {
   const FavoritePostButton({
@@ -29,39 +30,42 @@ class FavoritePostButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-      splashRadius: 16,
-      onPressed: isFaved != null
-          ? () {
-              if (!isAuthorized) {
-                showSimpleSnackBar(
-                  context: context,
-                  content: Text(
-                    context.t.post.detail.login_required_notice,
-                  ),
-                  duration: AppDurations.shortToast,
-                );
+    return BooruTooltip(
+      message: context.t.post.action.favorite,
+      child: IconButton(
+        splashRadius: 16,
+        onPressed: isFaved != null
+            ? () {
+                if (!isAuthorized) {
+                  showSimpleSnackBar(
+                    context: context,
+                    content: Text(
+                      context.t.post.detail.login_required_notice,
+                    ),
+                    duration: AppDurations.shortToast,
+                  );
 
-                return;
+                  return;
+                }
+                if (isFaved!) {
+                  unawaited(removeFavorite());
+                } else {
+                  unawaited(addFavorite());
+                }
               }
-              if (isFaved!) {
-                unawaited(removeFavorite());
-              } else {
-                unawaited(addFavorite());
-              }
-            }
-          : null,
-      icon: (isFaved ?? false)
-          ? Icon(
-              Symbols.favorite,
-              fill: 1,
-              color: context.colors.upvoteColor,
-              size: 20,
-            )
-          : const Icon(
-              Symbols.favorite,
-              size: 20,
-            ),
+            : null,
+        icon: (isFaved ?? false)
+            ? Icon(
+                Symbols.favorite,
+                fill: 1,
+                color: context.colors.upvoteColor,
+                size: 20,
+              )
+            : const Icon(
+                Symbols.favorite,
+                size: 20,
+              ),
+      ),
     );
   }
 }

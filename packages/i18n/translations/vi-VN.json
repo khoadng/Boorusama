@@ -1189,7 +1189,10 @@
   },
   "infinite_scroll": {
     "load_more": "Tải thêm",
-    "bottom_reached": "Chạm đáy rồi"
+    "bottom_reached": "Chạm đáy rồi",
+    "page_label": "Trang $page",
+    "next_page": "Trang tiếp",
+    "previous_page": "Trang trước"
   },
   "window": {
     "pin": {

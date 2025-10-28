@@ -452,7 +452,9 @@ class _SwipeTo extends StatelessWidget {
             const SizedBox(width: 4),
             ValueListenableBuilder(
               valueListenable: controller.pageNotifier,
-              builder: (_, page, _) => Text('Page ${page - 1}'),
+              builder: (_, page, _) => Text(
+                context.t.infinite_scroll.page_label(page: page - 1),
+              ),
             ),
           ],
         ),
@@ -467,7 +469,9 @@ class _SwipeTo extends StatelessWidget {
           children: [
             ValueListenableBuilder(
               valueListenable: controller.pageNotifier,
-              builder: (_, page, _) => Text('Page ${page + 1}'),
+              builder: (_, page, _) => Text(
+                context.t.infinite_scroll.page_label(page: page + 1),
+              ),
             ),
             const SizedBox(width: 4),
             Icon(

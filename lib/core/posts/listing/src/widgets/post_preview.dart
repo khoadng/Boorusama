@@ -183,12 +183,19 @@ class PostListPrevewTooltip extends ConsumerWidget {
       overlayHeight: adjustedMaxHeight,
       overlayWidth: adjustedMaxWidth,
       triggerMode: const AnchorTriggerMode.hover(
-        waitDuration: Duration(seconds: 1),
+        waitDuration: Duration(milliseconds: 1500),
+      ),
+      viewPadding: const EdgeInsets.only(
+        left: 8,
+        right: 8,
+        top: 48, // To avoid app bar
+        bottom: 8,
       ),
       placement: Placement.top,
       offset: const Offset(0, -4),
       borderRadius: BorderRadius.circular(8),
       backgroundColor: colorScheme.surfaceContainerHigh,
+      arrowSize: const Size(16, 8),
       border: BorderSide(
         color: colorScheme.outlineVariant,
         width: 1.5,

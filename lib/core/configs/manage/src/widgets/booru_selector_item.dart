@@ -1,12 +1,10 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
-// Package imports:
-import 'package:anchor_ui/anchor_ui.dart';
-
 // Project imports:
 import '../../../../../foundation/display.dart';
 import '../../../../config_widgets/website_logo.dart';
+import '../../../../widgets/booru_tooltip.dart';
 import '../../../config/types.dart';
 import 'drag_state_controller.dart';
 
@@ -210,65 +208,12 @@ class _PopoverTooltip extends StatelessWidget {
       return child;
     }
 
-    final colorScheme = Theme.of(context).colorScheme;
-
-    return AnchorPopover(
+    return BooruTooltip(
+      message: config.name,
       placement: switch (direction) {
         Axis.horizontal => Placement.top,
         Axis.vertical => Placement.right,
       },
-      triggerMode: const AnchorTriggerMode.hover(),
-      arrowSize: const Size(12, 4),
-      arrowShape: const RoundedArrow(),
-      offset: switch (direction) {
-        Axis.horizontal => const Offset(0, -6),
-        Axis.vertical => const Offset(6, 0),
-      },
-      border: BorderSide(
-        color: colorScheme.outlineVariant,
-        width: 1.5,
-      ),
-      backgroundColor: colorScheme.surfaceContainerHigh,
-      transitionBuilder: (context, animation, child) => AnimatedBuilder(
-        animation: animation,
-        builder: (context, child) {
-          final isAppearing = animation.status == AnimationStatus.forward;
-
-          if (isAppearing || animation.status == AnimationStatus.completed) {
-            final t = animation.value;
-            final scaleValue = Curves.easeOutBack.transform(t);
-            final fadeValue = t < 0.2 ? t / 0.2 : 1.0;
-
-            return Opacity(
-              opacity: 0.3 + (0.7 * fadeValue),
-              child: Transform.scale(
-                scale: 0.5 + (0.5 * scaleValue),
-                child: child,
-              ),
-            );
-          } else {
-            return Opacity(
-              opacity: CurveTween(
-                curve: Curves.easeIn,
-              ).transform(animation.value),
-              child: child,
-            );
-          }
-        },
-        child: child,
-      ),
-      overlayBuilder: (context) => Container(
-        padding: const EdgeInsets.all(12),
-        child: SelectableRegion(
-          selectionControls: materialTextSelectionControls,
-          child: Text(
-            config.name,
-            style: const TextStyle(
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ),
-      ),
       child: child,
     );
   }

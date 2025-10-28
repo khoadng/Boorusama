@@ -1,5 +1,6 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:anchor_ui/anchor_ui.dart';
@@ -14,9 +15,11 @@ import '../../../../../core/configs/config/providers.dart';
 import '../../../../../core/downloads/downloader/providers.dart';
 import '../../../../../core/posts/post/providers.dart';
 import '../../../../../core/router.dart';
+import '../../../../../core/settings/providers.dart';
 import '../../../../../core/tags/show/routes.dart';
 import '../../../../../core/widgets/context_menu_tile.dart';
 import '../../../../../core/widgets/widgets.dart';
+import '../../../../../foundation/platform.dart';
 import '../../../../../foundation/url_launcher.dart';
 import '../../../configs/providers.dart';
 import '../../../versions/routes.dart';
@@ -51,30 +54,40 @@ class DanbooruPostContextMenu extends ConsumerWidget {
     final hasAccount = loginDetails.hasLogin();
     final postLinkGenerator = ref.watch(postLinkGeneratorProvider(booruConfig));
     final selectionModeController = SelectionMode.maybeOf(context);
+    final colorScheme = Theme.of(context).colorScheme;
+    final hapticLevel = ref.watch(hapticFeedbackLevelProvider);
 
     return AnchorContextMenu(
-      backdropBuilder: (context) => Container(
-        color: Colors.transparent,
-      ),
+      viewPadding: const EdgeInsets.all(8),
+      backdropBuilder: isMobilePlatform()
+          ? null
+          : (context) => Container(
+              color: Colors.transparent,
+            ),
+      onShow: () {
+        if (hapticLevel.hasHapticFeedback) {
+          HapticFeedback.selectionClick();
+        }
+      },
       menuBuilder: (context) {
         return Container(
+          padding: const EdgeInsets.symmetric(
+            vertical: 8,
+            horizontal: 4,
+          ),
           decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surfaceContainer,
+            color: colorScheme.surfaceContainerLow,
             borderRadius: BorderRadius.circular(8),
             boxShadow: kElevationToShadow[4],
             border: Border.all(
-              color: Theme.of(context).colorScheme.outlineVariant,
+              color: colorScheme.outlineVariant,
             ),
           ),
           constraints: const BoxConstraints(
-            maxWidth: 220,
+            maxWidth: 200,
           ),
-          child: ListView(
-            padding: const EdgeInsets.symmetric(
-              vertical: 8,
-              horizontal: 4,
-            ),
-            shrinkWrap: true,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
               ContextMenuTile(
                 title: context.t.download.download,

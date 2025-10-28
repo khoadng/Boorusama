@@ -1,6 +1,9 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Project imports:
+import '../../../widgets/booru_tooltip.dart';
+
 class NavigationTile extends StatelessWidget {
   const NavigationTile({
     required this.value,
@@ -47,19 +50,22 @@ class NavigationTile extends StatelessWidget {
               horizontal: 8,
               vertical: showIcon ? 4 : 6,
             ),
-            child: showIcon && showTitle
-                ? Row(
-                    children: [
-                      if (selected) selectedIcon else icon,
-                      const SizedBox(width: 16),
-                      Expanded(child: title),
-                    ],
-                  )
-                : showIcon
-                ? selected
-                      ? selectedIcon
-                      : icon
-                : title,
+            child: switch ((icon: showIcon, title: showTitle)) {
+              (icon: true, title: true) => Row(
+                children: [
+                  if (selected) selectedIcon else icon,
+                  const SizedBox(width: 16),
+                  Expanded(child: title),
+                ],
+              ),
+              (icon: true, title: false) => BooruTooltip(
+                placement: Placement.right,
+                spacing: 16,
+                messageWidget: title,
+                child: selected ? selectedIcon : icon,
+              ),
+              (icon: false, title: _) => title,
+            },
           ),
         ),
       ),
