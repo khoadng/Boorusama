@@ -85,9 +85,7 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
         arrowShape: const NoArrow(),
         placement: Placement.bottomStart,
         spacing: 4,
-        overlayBuilder: (context) => LayoutBuilder(
-          builder: (context, constraints) => _buildOverlay(constraints),
-        ),
+        overlayBuilder: (context) => _buildOverlay(focus),
         child: child,
       ),
       onTapOutside: () {
@@ -112,21 +110,24 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
       trailingSearchButton: MaterialButton(
         minWidth: 0,
         elevation: 0,
-        color: Theme.of(context).cardColor,
+        color: Theme.of(context).colorScheme.surface,
         shape: const CircleBorder(),
-        onPressed: () => widget.onSearch(),
+        onPressed: widget.onSearch,
         child: const Padding(
           padding: EdgeInsets.all(8),
-          child: Icon(Symbols.search, size: 20),
+          child: Icon(
+            Symbols.search,
+            size: 20,
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildOverlay(BoxConstraints constraints) {
+  Widget _buildOverlay(FocusNode focusNode) {
     final colorScheme = Theme.of(context).colorScheme;
-    final focusNode = FocusScope.of(context);
     final size = MediaQuery.sizeOf(context);
+    final auth = ref.watchConfigAuth;
 
     return SingleChildScrollView(
       child: Container(
@@ -141,12 +142,12 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
           valueListenable: textEditingController,
           builder: (context, query, child) {
             final suggestionTags = ref.watch(
-              suggestionProvider((ref.watchConfigAuth, query.text)),
+              suggestionProvider((auth, query.text)),
             );
 
             return query.text.isNotEmpty
                 ? TagSuggestionItems(
-                    config: ref.watchConfigAuth,
+                    config: auth,
                     dense: true,
                     backgroundColor: colorScheme.surfaceContainer,
                     tags: suggestionTags,
@@ -163,9 +164,7 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
                         TagSearchItem.fromString(
                           '$operatorPrefix${tag.value}',
                           extractor: ref.watch(
-                            metatagExtractorProvider(
-                              ref.watchConfigAuth,
-                            ),
+                            metatagExtractorProvider(auth),
                           ),
                         ),
                       );
@@ -189,11 +188,13 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
                       child: DefaultSearchLandingChildren(
                         reverse: false,
                         children: [
-                          DefaultDesktopQueryActionsSection(
-                            selectedTagController: selectedTagController,
+                          DefaultQueryActionsSection(
+                            onTagAdded: (value) => selectedTagController.addTag(
+                              TagSearchItem.raw(tag: value),
+                            ),
                           ),
-                          if (ref.watchConfigAuth.booruType ==
-                              BooruType.danbooru)
+                          //FIXME: move this out of here
+                          if (auth.booruType == BooruType.danbooru)
                             DanbooruMetatagsSection(
                               onOptionTap: (value) {
                                 textEditingController.text = '$value:';
@@ -204,13 +205,20 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
                                 setState(() {});
                               },
                             ),
-                          DefaultDesktopFavoriteTagsSection(
-                            selectedTagController: selectedTagController,
-                            focusNode: focusNode,
+                          DefaultFavoriteTagsSection(
+                            onTagTap: (value) {
+                              selectedTagController.addTagFromFavTag(value);
+                              focusNode.unfocus();
+                            },
                           ),
-                          DefaultDesktopSearchHistorySection(
-                            selectedTagController: selectedTagController,
-                            focusNode: focusNode,
+                          DefaultSearchHistorySection(
+                            reverseScheme: true,
+                            onHistoryTap: (value) {
+                              selectedTagController.addTagFromSearchHistory(
+                                value,
+                              );
+                              focusNode.unfocus();
+                            },
                           ),
                         ],
                       ),
@@ -218,67 +226,6 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
                   );
           },
         ),
-      ),
-    );
-  }
-}
-
-class DefaultDesktopSearchHistorySection extends StatelessWidget {
-  const DefaultDesktopSearchHistorySection({
-    super.key,
-    required this.selectedTagController,
-    required this.focusNode,
-  });
-
-  final SelectedTagController selectedTagController;
-  final FocusScopeNode focusNode;
-
-  @override
-  Widget build(BuildContext context) {
-    return DefaultSearchHistorySection(
-      reverseScheme: true,
-      onHistoryTap: (value) {
-        selectedTagController.addTagFromSearchHistory(value);
-        focusNode.unfocus();
-      },
-    );
-  }
-}
-
-class DefaultDesktopFavoriteTagsSection extends StatelessWidget {
-  const DefaultDesktopFavoriteTagsSection({
-    super.key,
-    required this.selectedTagController,
-    required this.focusNode,
-  });
-
-  final SelectedTagController selectedTagController;
-  final FocusScopeNode focusNode;
-
-  @override
-  Widget build(BuildContext context) {
-    return DefaultFavoriteTagsSection(
-      onTagTap: (value) {
-        selectedTagController.addTagFromFavTag(value);
-        focusNode.unfocus();
-      },
-    );
-  }
-}
-
-class DefaultDesktopQueryActionsSection extends StatelessWidget {
-  const DefaultDesktopQueryActionsSection({
-    super.key,
-    required this.selectedTagController,
-  });
-
-  final SelectedTagController selectedTagController;
-
-  @override
-  Widget build(BuildContext context) {
-    return DefaultQueryActionsSection(
-      onTagAdded: (value) => selectedTagController.addTag(
-        TagSearchItem.raw(tag: value),
       ),
     );
   }
