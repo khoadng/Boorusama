@@ -70,11 +70,12 @@ class BasicTagsTile extends ConsumerWidget {
       ),
       initiallyExpanded: initialExpanded,
       children: [
-        Padding(
+        Container(
           padding: const EdgeInsets.symmetric(
-            vertical: 12,
+            vertical: 4,
             horizontal: 12,
           ),
+          width: double.infinity,
           child: Wrap(
             spacing: 4,
             runSpacing: 4,
