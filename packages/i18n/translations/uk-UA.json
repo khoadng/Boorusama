@@ -1208,7 +1208,10 @@
   },
   "infinite_scroll": {
     "load_more": "Завантажити більше",
-    "bottom_reached": "Це все наразі"
+    "bottom_reached": "Це все наразі",
+    "page_label": "Сторінка $page",
+    "next_page": "Наступна сторінка",
+    "previous_page": "Попередня сторінка"
   },
   "window": {
     "pin": {
