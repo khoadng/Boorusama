@@ -14,10 +14,22 @@
 # Testing
 - Focus on observable behavior, not implementation details.
 - Use mocks/stubs only for external dependencies, avoid mocking internal logic.
-- Keep tests minimal, logically grouped, and use parameterized cases with clear input/output records.
-- Make sure parameterized tests are focused on a single behavior per test.
-- Don’t write tests for obvious language behavior, one-line getters/setters, or redundant validation. Each test should protect meaningful logic or edge cases only.
+- Keep tests minimal and logically grouped. For repeated scenarios, use loops with explicit test case records—one `test()` call per iteration, testing the same behavior with different inputs.
+- Don't write tests for obvious language behavior, one-line getters/setters, or redundant validation. Each test should protect meaningful logic or edge cases only.
 - Test names must be clear sentences describing behavior and outcome. Do not include function or class names
+
+Example of parameterized tests:
+```dart
+final cases = [
+  (input: 'valid@email.com', isValid: true),
+  (input: 'invalid-email', isValid: false),
+];
+for (final c in cases) {
+  test('returns ${c.isValid} for ${c.input}', () {
+    expect(validate(c.input), c.isValid);
+  });
+}
+```
 
 # Workflow
 - Run `dart format` after each file creation, prefer batch formatting.
