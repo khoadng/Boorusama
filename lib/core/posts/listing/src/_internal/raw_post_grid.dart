@@ -349,16 +349,21 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
         falseChild: switch ((refreshing: refresh, hasMore: hasMore)) {
           (refreshing: true, hasMore: _) => const SliverSizedBox.shrink(),
           (refreshing: false, hasMore: false) => SliverToBoxAdapter(
-            child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 28),
-              child: Center(
-                child: Text(
-                  context.t.infinite_scroll.bottom_reached,
-                  style: TextStyle(
-                    color: colorScheme.hintColor,
-                  ),
-                ),
-              ),
+            child: ValueListenableBuilder(
+              valueListenable: controller.errors,
+              builder: (context, errors, child) => errors == null
+                  ? Container(
+                      padding: const EdgeInsets.symmetric(vertical: 28),
+                      child: Center(
+                        child: Text(
+                          context.t.infinite_scroll.bottom_reached,
+                          style: TextStyle(
+                            color: colorScheme.hintColor,
+                          ),
+                        ),
+                      ),
+                    )
+                  : const SizedBox.shrink(),
             ),
           ),
           (refreshing: false, hasMore: true) => SliverLayoutBuilder(
