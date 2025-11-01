@@ -11,6 +11,7 @@ import 'types/types.dart';
 class Shimmie2Client {
   Shimmie2Client({
     Dio? dio,
+    this.apiKey,
     required String baseUrl,
   }) : _dio =
            dio ??
@@ -21,6 +22,13 @@ class Shimmie2Client {
            );
 
   final Dio _dio;
+  final String? apiKey;
+
+  Map<String, String> get _authParams => {
+    if (apiKey case final key? when key.isNotEmpty) ...{
+      'api_key': key,
+    },
+  };
 
   Future<List<PostDto>> getPosts({
     List<String>? tags,
@@ -33,8 +41,9 @@ class Shimmie2Client {
       '/api/danbooru/find_posts',
       queryParameters: {
         if (!isEmpty) 'tags': tags?.join(' '),
-        if (page != null) 'page': page,
-        if (limit != null) 'limit': limit,
+        'page': ?page,
+        'limit': ?limit,
+        ..._authParams,
       },
     );
 
@@ -53,6 +62,7 @@ class Shimmie2Client {
       '/api/internal/autocomplete',
       queryParameters: {
         's': query,
+        ..._authParams,
       },
     );
 

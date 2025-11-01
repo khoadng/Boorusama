@@ -13,6 +13,7 @@ final shimmie2ClientProvider = Provider.family<Shimmie2Client, BooruConfigAuth>(
     return Shimmie2Client(
       dio: dio,
       baseUrl: config.url,
+      apiKey: config.apiKey,
     );
   },
 );

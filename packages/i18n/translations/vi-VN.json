@@ -756,7 +756,12 @@
       "variants_2": "*Đăng nhập tài khoản trên trình duyệt, vào <b>My Account > Options > API Access Credentials</b>. Nếu có key thì dùng, nếu không thì trang này không hỗ trợ và bạn có thể bỏ qua.",
       "variants_3": "*Đăng nhập tài khoản trên trình duyệt, vào <b><a href=\"api-credentials\">My Account > API Key</a></b>. Copy key của bạn, hoặc tạo key mới nếu cần, nhớ bật đủ permissions để app hoạt động đúng.",
       "variants_4": "*Đăng nhập tài khoản trên trình duyệt, vào <b>Account > Login tokens</b>. Copy <b>Web Login Token</b> hoặc tạo mới nếu cần rồi dán vào đây. Lưu ý: nếu bạn logout khỏi trình duyệt thì token này sẽ bị vô hiệu.",
-      "variants_5": "*Đăng nhập tài khoản trên trình duyệt, vào <b><a href=\"api-credentials\">My Account > Options > API Access Credentials</a></b> để lấy API key. Copy key rồi dán vào ô bên trên. Bạn cũng có thể copy toàn bộ chuỗi trong phần <b>API Access Credentials</b> rồi bấm nút bên dưới."
+      "variants_5": "*Đăng nhập tài khoản trên trình duyệt, vào <b><a href=\"api-credentials\">My Account > Options > API Access Credentials</a></b> để lấy API key. Copy key rồi dán vào ô bên trên. Bạn cũng có thể copy toàn bộ chuỗi trong phần <b>API Access Credentials</b> rồi bấm nút bên dưới.",
+      "shimmie2": {
+        "danbooru_api_extension_notice": "Ứng dụng cần extension <b>Danbooru Client API</b> được cài trên trang web để hoạt động.",
+        "user_api_key_notice": "Ứng dụng cần extension <b>User API Key</b> được cài trên trang web để đăng nhập và truy cập nội dung riêng tư.",
+        "view_extension_docs": "Xem tài liệu extension"
+      }
     },
     "deletion": {
       "title": "Xoá '${profileName}'",

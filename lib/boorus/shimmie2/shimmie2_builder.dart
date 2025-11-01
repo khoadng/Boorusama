@@ -1,8 +1,13 @@
+// Flutter imports:
+import 'package:flutter/material.dart';
+
 // Project imports:
 import '../../core/boorus/defaults/widgets.dart';
 import '../../core/boorus/engine/types.dart';
+import '../../core/configs/auth/widgets.dart';
 import '../../core/configs/config/types.dart';
 import '../../core/configs/create/widgets.dart';
+import '../../core/configs/manage/widgets.dart';
 import '../../core/posts/details/widgets.dart';
 import 'configs/widgets.dart';
 import 'posts/types.dart';
@@ -24,8 +29,23 @@ class Shimmie2Builder extends BaseBooruBuilder {
           url: id.url,
           customDownloadFileNameFormat: null,
         ),
-        child: CreateAnonConfigPage(
+        child: CreateShimmie2ConfigPage(
           backgroundColor: backgroundColor,
+        ),
+      );
+
+  @override
+  UpdateConfigPageBuilder get updateConfigPageBuilder =>
+      (
+        context,
+        id, {
+        backgroundColor,
+        initialTab,
+      }) => UpdateBooruConfigScope(
+        id: id,
+        child: CreateShimmie2ConfigPage(
+          backgroundColor: backgroundColor,
+          initialTab: initialTab,
         ),
       );
 
@@ -50,5 +70,11 @@ class Shimmie2Builder extends BaseBooruBuilder {
   CreateUnknownBooruWidgetsBuilder get unknownBooruWidgetsBuilder =>
       (context) => const UnknownBooruWidgetsBuilder(
         urlField: Shimmie2BooruUrlField(),
+        apiKeyField: Column(
+          children: [
+            DefaultBooruApiKeyField(),
+            Shimmie2UserApiKeyExtDisclaimer(),
+          ],
+        ),
       );
 }

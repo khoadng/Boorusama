@@ -756,7 +756,12 @@
       "variants_2": "*Log in to your account on the browser, visit <b>My Account > Options > API Access Credentials</b>. Check if it is there. If not, the site does not support credentials, and you can ignore this.",
       "variants_3": "*Log in to your account on the browser, visit <b><a href=\"api-credentials\">My Account > API Key</a></b>. Copy your key or create a new one if needed, ensuring all permissions are enabled for proper app functionality.",
       "variants_4": "*Log in to your account on the browser, visit <b>Account > Login tokens</b>. Copy your <b>Web Login Token</b> or create a new one if needed and paste it here. If you use the <b>Web Login Token</b>, logout from the browser will make the token invalid.",
-      "variants_5": "*Log in to your account on the browser, visit <b><a href=\"api-credentials\">My Account > Options > API Access Credentials</a></b> to get your API key. Copy the key and paste it into the field above. You can also copy the whole string from the <b>API Access Credentials</b> section and tap the button below."
+      "variants_5": "*Log in to your account on the browser, visit <b><a href=\"api-credentials\">My Account > Options > API Access Credentials</a></b> to get your API key. Copy the key and paste it into the field above. You can also copy the whole string from the <b>API Access Credentials</b> section and tap the button below.",
+      "shimmie2": {
+        "danbooru_api_extension_notice": "The app requires the <b>Danbooru Client API</b> extension to be installed on the site to function.",
+        "user_api_key_notice": "The app requires the <b>User API Key</b> extension to be installed on the site on the site for login and private content access.",
+        "view_extension_docs": "View extension documentation"
+      }
     },
     "deletion": {
       "title": "Delete '${profileName}'",

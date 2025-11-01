@@ -37,6 +37,7 @@ class Shimmie2Repository extends BooruRepositoryDefault {
     return () => Shimmie2Client(
       baseUrl: config.url,
       dio: dio,
+      apiKey: config.apiKey,
     ).getPosts().then((value) => true);
   }
 
