@@ -165,29 +165,35 @@ final bookmarkTagExtractorProvider =
             final tagResolver = ref.read(bookmarkTagResolverProvider(config));
 
             if (post case final BookmarkPost bookmarkPost) {
-              final originalPost = bookmarkPost.toOriginalPost();
+              final originalPostId = bookmarkPost.originalPostId;
+
+              if (originalPostId == null) {
+                final tags = bookmarkPost.tags;
+
+                return tagResolver.resolveRawTags(tags);
+              }
 
               //FIXME: Need a better way to handle different booru types
               if (config.booruType == BooruType.gelbooruV2) {
                 return ref.read(
                   gelbooruV2TagsFromIdProvider((
                     config,
-                    originalPost.id,
+                    bookmarkPost.id,
                   )).future,
                 );
               } else if (config.booruType == BooruType.hybooru) {
                 return ref.read(
-                  hybooruTagsFromIdProvider((config, originalPost.id)).future,
+                  hybooruTagsFromIdProvider((config, originalPostId)).future,
                 );
               } else if (config.booruType == BooruType.zerochan) {
                 return ref.read(
-                  hybooruTagsFromIdProvider((config, originalPost.id)).future,
+                  hybooruTagsFromIdProvider((config, originalPostId)).future,
                 );
               } else if (config.booruType == BooruType.animePictures) {
                 return ref.read(
                   animePicturesTagsFromIdProvider((
                     config,
-                    originalPost.id,
+                    originalPostId,
                   )).future,
                 );
               } else if (config.booruType == BooruType.e621) {
