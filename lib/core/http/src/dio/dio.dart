@@ -10,7 +10,6 @@ import 'package:socks5_proxy/socks.dart' as socks;
 
 // Project imports:
 import '../../../../foundation/loggers.dart';
-import '../../../../foundation/platform.dart';
 import '../../../proxy/types.dart';
 import '../../../router.dart';
 import '../http_utils.dart';
@@ -19,15 +18,15 @@ import 'dio_image_deduplicate_interceptor.dart';
 import 'dio_logger_interceptor.dart';
 import 'dio_options.dart';
 import 'dio_protection_interceptor.dart';
+import 'network_protocol_info.dart';
 
 Dio newGenericDio({
   required String? baseUrl,
   String? userAgent,
   Logger? logger,
-  bool? supportsHttp2,
+  NetworkProtocolInfo? protocolInfo,
   Map<String, dynamic>? headers,
   ProxySettings? proxySettings,
-  bool? cronetAvailable,
   List<Interceptor>? additionalInterceptors,
 }) {
   final dio =
@@ -43,9 +42,8 @@ Dio newGenericDio({
         ..httpClientAdapter = _createHttpClientAdapter(
           logger: logger,
           userAgent: userAgent,
-          supportsHttp2: supportsHttp2,
+          protocolInfo: protocolInfo,
           proxy: proxySettings,
-          cronetAvailable: cronetAvailable,
         );
 
   dio.interceptors.add(ImageRequestDeduplicateInterceptor());
@@ -66,6 +64,7 @@ Dio newGenericDio({
 Dio newDio({
   required DioOptions options,
   List<Interceptor>? additionalInterceptors,
+  NetworkProtocol? customProtocol,
 }) {
   final booruConfig = options.authConfig;
   final booruDb = options.booruDb;
@@ -74,16 +73,23 @@ Dio newDio({
   final booru =
       booruDb.getBooruFromUrl(baseUrl) ??
       booruDb.getBooruFromId(booruConfig.booruIdHint);
-  final supportsHttp2 =
-      booru?.getSiteProtocol(baseUrl) == NetworkProtocol.https_2_0;
+  final detectedProtocol = booru?.getSiteProtocol(baseUrl);
+
+  final info = NetworkProtocolInfo(
+    customProtocol: customProtocol,
+    detectedProtocol: detectedProtocol,
+    hasProxy: options.proxySettings?.enable ?? false,
+    platform: PlatformInfo.fromCurrent(
+      cronetAvailable: options.cronetAvailable,
+    ),
+  );
 
   final dio = newGenericDio(
     baseUrl: _cleanUrl(baseUrl),
     userAgent: options.userAgent,
     logger: options.loggerService,
-    supportsHttp2: supportsHttp2,
+    protocolInfo: info,
     proxySettings: options.proxySettings,
-    cronetAvailable: options.cronetAvailable,
     additionalInterceptors: additionalInterceptors,
   );
 
@@ -103,9 +109,8 @@ Dio newDio({
 HttpClientAdapter _createHttpClientAdapter({
   Logger? logger,
   String? userAgent,
-  bool? supportsHttp2,
+  NetworkProtocolInfo? protocolInfo,
   ProxySettings? proxy,
-  bool? cronetAvailable,
 }) {
   final proxySettings = proxy != null
       ? proxy.enable
@@ -113,7 +118,6 @@ HttpClientAdapter _createHttpClientAdapter({
             : null
       : null;
   final proxyAddress = proxySettings?.getProxyAddress();
-  final hasHttp2Support = supportsHttp2 ?? false;
 
   HttpClientAdapter createDefaultAdapter() {
     logger?.info('Network', 'Using default adapter');
@@ -182,26 +186,23 @@ HttpClientAdapter _createHttpClientAdapter({
     }
   }
 
-  if ((isAndroid() || isIOS() || isMacOS()) && proxySettings == null) {
-    return isAndroid()
-        ? (cronetAvailable ?? false)
-              ? createNativeAdapter()
-              : createDefaultAdapter()
-        : createNativeAdapter();
-  } else if (hasHttp2Support && proxySettings == null && !isWindows()) {
-    logger?.info(
-      'Network',
-      'Using HTTP2 adapter',
-    );
-
+  HttpClientAdapter createHttp2Adapter() {
+    logger?.info('Network', 'Using HTTP2 adapter');
     return Http2Adapter(
       ConnectionManager(
         idleTimeout: const Duration(seconds: 30),
       ),
     );
-  } else {
-    return createDefaultAdapter();
   }
+
+  final adapterType =
+      protocolInfo?.getAdapterType() ?? HttpClientAdapterType.defaultAdapter;
+
+  return switch (adapterType) {
+    HttpClientAdapterType.http2 => createHttp2Adapter(),
+    HttpClientAdapterType.nativeAdapter => createNativeAdapter(),
+    HttpClientAdapterType.defaultAdapter => createDefaultAdapter(),
+  };
 }
 
 // Some user might input the url with /index.php/ or /index.php so we need to clean it

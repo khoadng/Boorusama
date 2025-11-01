@@ -25,6 +25,7 @@ import '../../router.dart';
 import 'cookie_jar_providers.dart';
 import 'dio/dio.dart';
 import 'dio/dio_options.dart';
+import 'dio/network_protocol_info.dart';
 import 'http_utils.dart';
 import 'sliding_window_rate_limit_interceptor.dart';
 import 'user_agent.dart';
@@ -69,8 +70,9 @@ final genericDioProvider = Provider<Dio>(
       baseUrl: null,
       userAgent: getDefaultUserAgent(appInfo, packageInfo),
       logger: loggerService,
-      supportsHttp2: false,
-      cronetAvailable: cronetAvailable,
+      protocolInfo: NetworkProtocolInfo.generic(
+        cronetAvailable: cronetAvailable,
+      ),
     );
   },
 );
