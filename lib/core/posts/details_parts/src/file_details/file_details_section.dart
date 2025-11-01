@@ -9,6 +9,7 @@ import 'package:i18n/i18n.dart';
 // Project imports:
 import '../../../../../foundation/clipboard.dart';
 import '../../../../../foundation/display/media_query_utils.dart';
+import '../../../../downloads/urls/sanitizer.dart';
 import '../../../../themes/theme/types.dart';
 import '../../../post/types.dart';
 import '../../../rating/types.dart';
@@ -62,10 +63,12 @@ class FileDetailsSection extends StatelessWidget {
             ? '${post.width.toInt()}x${post.height.toInt()} • '
             : '';
 
+        final format = sanitizedUrl(post.format);
+
         // if start with a dot, remove it
-        final fileFormatText = post.format.startsWith('.')
-            ? post.format.substring(1).toUpperCase()
-            : post.format.toUpperCase();
+        final fileFormatText = format.startsWith('.')
+            ? format.substring(1).toUpperCase()
+            : format.toUpperCase();
 
         final ratingText = rating.name.getFirstCharacter().toUpperCase();
 
@@ -106,7 +109,7 @@ class FileDetailsSection extends StatelessWidget {
             ),
           FileDetailTile(
             title: context.t.post.detail.file_format,
-            valueLabel: post.format,
+            valueLabel: format,
           ),
           if (post.isVideo && post.duration > 0)
             FileDetailTile(
