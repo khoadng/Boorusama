@@ -310,7 +310,7 @@ set_target_file_and_env() {
     # Inject Git commit and branch as Dart defines
     if command_exists git; then
         local git_commit git_branch
-        git_commit=$(git rev-parse --short HEAD 2>/dev/null || echo "unknown")
+        git_commit=$(git rev-parse HEAD 2>/dev/null || echo "unknown")
         git_branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "unknown")
         inject_dart_define "GIT_COMMIT" "$git_commit"
         inject_dart_define "GIT_BRANCH" "$git_branch"
