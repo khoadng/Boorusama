@@ -18,6 +18,7 @@ import 'dio_image_deduplicate_interceptor.dart';
 import 'dio_logger_interceptor.dart';
 import 'dio_options.dart';
 import 'dio_protection_interceptor.dart';
+import 'http_adapter_config.dart';
 import 'network_protocol_info.dart';
 
 Dio newGenericDio({
@@ -112,97 +113,99 @@ HttpClientAdapter _createHttpClientAdapter({
   NetworkProtocolInfo? protocolInfo,
   ProxySettings? proxy,
 }) {
-  final proxySettings = proxy != null
-      ? proxy.enable
-            ? proxy
-            : null
-      : null;
-  final proxyAddress = proxySettings?.getProxyAddress();
+  final config = HttpAdapterConfig.fromContext(
+    protocolInfo: protocolInfo,
+    proxySettings: proxy,
+    logger: logger,
+    userAgent: userAgent,
+  );
 
-  HttpClientAdapter createDefaultAdapter() {
-    logger?.info('Network', 'Using default adapter');
-    return IOHttpClientAdapter(
-      createHttpClient: proxySettings != null && proxyAddress != null
-          ? () {
-              final client = HttpClient();
-              final username = proxySettings.username;
-              final password = proxySettings.password;
-              final port = proxySettings.port;
-              final host = proxySettings.host;
-
-              logger?.info(
-                'Network',
-                'Using proxy: ${proxySettings.type.name.toUpperCase()} $host:$port',
-              );
-
-              if (proxySettings.type == ProxyType.socks5) {
-                socks.SocksTCPClient.assignToHttpClient(
-                  client,
-                  [
-                    socks.ProxySettings(
-                      InternetAddress(host),
-                      port,
-                      username: username,
-                      password: password,
-                    ),
-                  ],
-                );
-              } else {
-                final credentials = username != null && password != null
-                    ? HttpClientBasicCredentials(username, password)
-                    : null;
-
-                client
-                  ..badCertificateCallback = (cert, host, port) {
-                    return true;
-                  }
-                  ..findProxy = (uri) {
-                    final address = '$host:$port';
-
-                    return 'PROXY $address';
-                  };
-
-                if (credentials != null) {
-                  client.addProxyCredentials(host, port, 'main', credentials);
-                }
-              }
-
-              return client;
-            }
-          : null,
-    );
-  }
-
-  HttpClientAdapter createNativeAdapter() {
-    try {
-      logger?.info('Network', 'Using native adapter');
-      return newNativeAdapter(userAgent: userAgent);
-    } catch (e) {
-      logger?.warn(
-        'Network',
-        'Native adapter failed, falling back to default: $e',
-      );
-      return createDefaultAdapter();
-    }
-  }
-
-  HttpClientAdapter createHttp2Adapter() {
-    logger?.info('Network', 'Using HTTP2 adapter');
-    return Http2Adapter(
-      ConnectionManager(
-        idleTimeout: const Duration(seconds: 30),
-      ),
-    );
-  }
-
-  final adapterType =
-      protocolInfo?.getAdapterType() ?? HttpClientAdapterType.defaultAdapter;
-
-  return switch (adapterType) {
-    HttpClientAdapterType.http2 => createHttp2Adapter(),
-    HttpClientAdapterType.nativeAdapter => createNativeAdapter(),
-    HttpClientAdapterType.defaultAdapter => createDefaultAdapter(),
+  return switch (config) {
+    DefaultAdapterConfig(:final proxyConfig, :final logger) =>
+      _createDefaultAdapter(proxyConfig, logger),
+    NativeAdapterConfig(:final userAgent, :final logger) =>
+      _createNativeAdapter(userAgent, logger),
+    Http2AdapterConfig(:final logger) => _createHttp2Adapter(logger),
   };
+}
+
+HttpClientAdapter _createDefaultAdapter(
+  ProxyConfig? proxyConfig,
+  Logger? logger,
+) {
+  logger?.info('Network', 'Using default adapter');
+  return IOHttpClientAdapter(
+    createHttpClient: proxyConfig != null
+        ? () {
+            final client = HttpClient();
+            final username = proxyConfig.username;
+            final password = proxyConfig.password;
+            final port = proxyConfig.port;
+            final host = proxyConfig.host;
+
+            logger?.info(
+              'Network',
+              'Using proxy: ${proxyConfig.type.name.toUpperCase()} $host:$port',
+            );
+
+            if (proxyConfig.type == ProxyType.socks5) {
+              socks.SocksTCPClient.assignToHttpClient(
+                client,
+                [
+                  socks.ProxySettings(
+                    InternetAddress(host),
+                    port,
+                    username: username,
+                    password: password,
+                  ),
+                ],
+              );
+            } else {
+              final credentials = username != null && password != null
+                  ? HttpClientBasicCredentials(username, password)
+                  : null;
+
+              client
+                ..badCertificateCallback = (cert, host, port) {
+                  return true;
+                }
+                ..findProxy = (uri) {
+                  final address = '$host:$port';
+
+                  return 'PROXY $address';
+                };
+
+              if (credentials != null) {
+                client.addProxyCredentials(host, port, 'main', credentials);
+              }
+            }
+
+            return client;
+          }
+        : null,
+  );
+}
+
+HttpClientAdapter _createNativeAdapter(String? userAgent, Logger? logger) {
+  try {
+    logger?.info('Network', 'Using native adapter');
+    return newNativeAdapter(userAgent: userAgent);
+  } catch (e) {
+    logger?.warn(
+      'Network',
+      'Native adapter failed, falling back to default: $e',
+    );
+    return _createDefaultAdapter(null, logger);
+  }
+}
+
+HttpClientAdapter _createHttp2Adapter(Logger? logger) {
+  logger?.info('Network', 'Using HTTP2 adapter');
+  return Http2Adapter(
+    ConnectionManager(
+      idleTimeout: const Duration(seconds: 30),
+    ),
+  );
 }
 
 // Some user might input the url with /index.php/ or /index.php so we need to clean it
