@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:foundation/foundation.dart';
 import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -12,11 +13,13 @@ import 'package:url_launcher/url_launcher.dart';
 // Project imports:
 import '../../../../core/widgets/widgets.dart';
 import '../../../../foundation/info/app_info.dart';
+import '../../../../foundation/info/package_info.dart';
 import '../../../../foundation/scrolling.dart';
 import '../../../../foundation/toast.dart';
 import '../../../../foundation/url_launcher.dart';
 import '../../../analytics/providers.dart';
 import '../../../boorus/engine/providers.dart';
+import '../../../build_info/providers.dart';
 import '../../../configs/config/providers.dart';
 import '../../../configs/create/routes.dart';
 import '../../../premiums/providers.dart';
@@ -509,16 +512,36 @@ class SettingsPageOtherSection extends ConsumerWidget {
             ),
           ),
         ),
-        SettingTile(
-          title: context.t.settings.information,
-          leading: const FaIcon(
-            Symbols.info,
-            size: 24,
-          ),
-          onTap: () => showDialog(
-            context: context,
-            builder: (context) => const AboutPage(),
-          ),
+        Builder(
+          builder: (context) {
+            final buildInfo = ref.watch(buildInfoProvider);
+            final packageInfo = ref.watch(packageInfoProvider);
+            final versionString = context.t.generic.version(
+              version: packageInfo.version,
+            );
+
+            return SettingTile(
+              title: context.t.settings.information,
+              subtitle: switch (buildInfo) {
+                final info? => info.toInfoString(
+                  versionString,
+                  formatTimestamp: (timestamp) =>
+                      '${context.t.comment.list.last_updated}: ${timestamp.fuzzify(
+                        locale: Localizations.localeOf(context),
+                      )}',
+                ),
+                null => versionString,
+              },
+              leading: const FaIcon(
+                Symbols.info,
+                size: 24,
+              ),
+              onTap: () => showDialog(
+                context: context,
+                builder: (context) => const AboutPage(),
+              ),
+            );
+          },
         ),
         const Divider(),
         _SettingsSection(
