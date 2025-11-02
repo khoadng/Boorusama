@@ -193,6 +193,29 @@ class Shimmie2Client {
       apiKey!.isNotEmpty &&
       username != null &&
       username!.isNotEmpty;
+
+  Future<ExtensionsResult> getExtensions() async {
+    try {
+      final response = await _dio.get(
+        '/ext_doc',
+        queryParameters: _authParams,
+      );
+
+      return ExtensionDto.parseFromHtml(
+        response.data,
+        baseUrl: _dio.options.baseUrl,
+      );
+    } on DioException catch (e) {
+      // If the endpoint doesn't exist (404) or access is denied (403),
+      // the instance doesn't support extension listing
+      if (e.response?.statusCode == 404 || e.response?.statusCode == 403) {
+        return ExtensionsNotSupported();
+      }
+      rethrow;
+    } catch (_) {
+      return ExtensionsNotSupported();
+    }
+  }
 }
 
 FutureOr<List<PostDto>> _parsePosts(

@@ -18,3 +18,14 @@ final shimmie2ClientProvider = Provider.family<Shimmie2Client, BooruConfigAuth>(
     );
   },
 );
+
+final shimmie2AnonymousClientProvider = Provider.family<Shimmie2Client, String>(
+  (ref, baseUrl) {
+    final dio = ref.watch(genericDioProvider);
+
+    return Shimmie2Client(
+      dio: dio,
+      baseUrl: baseUrl,
+    );
+  },
+);
