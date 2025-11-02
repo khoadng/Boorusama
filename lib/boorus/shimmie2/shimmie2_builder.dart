@@ -8,8 +8,12 @@ import '../../core/configs/auth/widgets.dart';
 import '../../core/configs/config/types.dart';
 import '../../core/configs/create/widgets.dart';
 import '../../core/configs/manage/widgets.dart';
+import '../../core/home/types.dart';
 import '../../core/posts/details/widgets.dart';
 import 'configs/widgets.dart';
+import 'favorites/widgets.dart';
+import 'home/types.dart';
+import 'home/widgets.dart';
 import 'posts/types.dart';
 import 'posts/widgets.dart';
 
@@ -67,9 +71,22 @@ class Shimmie2Builder extends BaseBooruBuilder {
   final postDetailsUIBuilder = kShimmie2PostDetailsUIBuilder;
 
   @override
+  HomePageBuilder get homePageBuilder =>
+      (context) => const Shimmie2HomePage();
+
+  @override
+  FavoritesPageBuilder? get favoritesPageBuilder =>
+      (context) => const Shimmie2FavoritesPage();
+
+  @override
+  Map<CustomHomeViewKey, CustomHomeDataBuilder> get customHomeViewBuilders =>
+      kShimmie2AltHomeView;
+
+  @override
   CreateUnknownBooruWidgetsBuilder get unknownBooruWidgetsBuilder =>
       (context) => const UnknownBooruWidgetsBuilder(
         urlField: Shimmie2BooruUrlField(),
+        loginField: DefaultBooruLoginField(),
         apiKeyField: Column(
           children: [
             DefaultBooruApiKeyField(),

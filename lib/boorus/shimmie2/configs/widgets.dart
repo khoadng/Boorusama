@@ -12,6 +12,7 @@ import '../../../core/configs/config/types.dart';
 import '../../../core/configs/create/create.dart';
 import '../../../core/configs/create/providers.dart';
 import '../../../core/configs/create/widgets.dart';
+import '../../../core/widgets/widgets.dart';
 import '../../../foundation/html.dart';
 import '../../../foundation/path.dart';
 
@@ -52,11 +53,30 @@ class Shimmie2AuthConfigView extends ConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const SizedBox(height: 24),
+          const DefaultBooruLoginField(),
+          const SizedBox(height: 16),
           const DefaultBooruApiKeyField(
             hintText: 'e.g: AC8gZrxKsDpWy3unU0jB',
           ),
           const Shimmie2UserApiKeyExtDisclaimer(),
           _ViewDocsButton(config: config),
+          WarningContainer(
+            margin: EdgeInsets.zero,
+            title: context
+                .t
+                .booru
+                .authentication
+                .gelbooru
+                .fav_button_tooltip_title,
+            contentBuilder: (context) => Text(
+              context
+                  .t
+                  .booru
+                  .authentication
+                  .gelbooru
+                  .fav_button_tooltip_description,
+            ),
+          ),
         ],
       ),
     );

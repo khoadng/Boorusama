@@ -8,9 +8,11 @@ import '../../core/configs/config/types.dart';
 import '../../core/configs/create/create.dart';
 import '../../core/downloads/filename/types.dart';
 import '../../core/http/providers.dart';
+import '../../core/posts/favorites/types.dart';
 import '../../core/posts/post/providers.dart';
 import '../../core/posts/post/types.dart';
 import '../../core/tags/autocompletes/types.dart';
+import 'favorites/providers.dart';
 import 'posts/providers.dart';
 import 'tags/providers.dart';
 
@@ -28,6 +30,11 @@ class Shimmie2Repository extends BooruRepositoryDefault {
   @override
   AutocompleteRepository autocomplete(BooruConfigAuth config) {
     return ref.read(shimmie2AutocompleteRepoProvider(config));
+  }
+
+  @override
+  FavoriteRepository favorite(BooruConfigAuth config) {
+    return ref.watch(shimmie2FavoriteRepoProvider(config));
   }
 
   @override
