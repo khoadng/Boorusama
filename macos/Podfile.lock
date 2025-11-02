@@ -18,17 +18,17 @@ PODS:
   - flutter_local_notifications (0.0.1):
     - FlutterMacOS
   - FlutterMacOS (1.0.0)
-  - fvp (0.34.0):
+  - fvp (0.35.0):
     - Flutter
     - FlutterMacOS
-    - mdk (~> 0.34.0)
+    - mdk (~> 0.35.0)
   - gal (1.0.0):
     - Flutter
     - FlutterMacOS
   - local_auth_darwin (0.0.1):
     - Flutter
     - FlutterMacOS
-  - mdk (0.34.0)
+  - mdk (0.35.0)
   - media_kit_libs_macos_video (1.0.4):
     - FlutterMacOS
   - media_kit_video (0.0.1):
@@ -42,15 +42,15 @@ PODS:
   - path_provider_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
-  - purchases_flutter (9.6.2):
+  - purchases_flutter (9.9.1):
     - FlutterMacOS
-    - PurchasesHybridCommon (= 17.7.0)
-  - PurchasesHybridCommon (17.7.0):
-    - RevenueCat (= 5.39.0)
+    - PurchasesHybridCommon (= 17.12.0)
+  - PurchasesHybridCommon (17.12.0):
+    - RevenueCat (= 5.45.0)
   - rate_my_app (2.3.2):
     - Flutter
     - FlutterMacOS
-  - RevenueCat (5.39.0)
+  - RevenueCat (5.45.0)
   - screen_retriever_macos (0.0.1):
     - FlutterMacOS
   - share_plus (0.0.1):
@@ -215,27 +215,27 @@ SPEC CHECKSUMS:
   flutter_avif_macos: 9ed61d67adfbd6964eccb59971020fb55c31fc11
   flutter_local_notifications: 4bf37a31afde695b56091b4ae3e4d9c7a7e6cda0
   FlutterMacOS: d0db08ddef1a9af05a5ec4b724367152bb0500b1
-  fvp: 48709d265d435e8b2989e07aeb253989514d03e3
+  fvp: ecee65308dd86ae46e3c6d5d42cd2aad48095ef5
   gal: baecd024ebfd13c441269ca7404792a7152fde89
   local_auth_darwin: c3ee6cce0a8d56be34c8ccb66ba31f7f180aaebb
-  mdk: c54ab482a3457f754b2bf6b4b615c117379f5885
+  mdk: baa616b93f696c7066df0e5ebe057badfa9c462b
   media_kit_libs_macos_video: 85a23e549b5f480e72cae3e5634b5514bc692f65
   media_kit_video: fa6564e3799a0a28bff39442334817088b7ca758
   objective_c: ec13431e45ba099cb734eb2829a5c1cd37986cba
   package_info_plus: f0052d280d17aa382b932f399edf32507174e870
   pasteboard: 278d8100149f940fb795d6b3a74f0720c890ecb7
-  path_provider_foundation: 080d55be775b7414fd5a5ef3ac137b97b097e564
-  purchases_flutter: 79ad03780b281758eb609eea907a8dec5d11b793
-  PurchasesHybridCommon: 6bc96162fb0c061e1980f474be618c088cfd1428
+  path_provider_foundation: bb55f6dbba17d0dccd6737fe6f7f34fbd0376880
+  purchases_flutter: 7b5c61f47abe43c51443e7b496877872b70838a2
+  PurchasesHybridCommon: c8f805e0f6d3a557a6d63300d0402b8ae5219a48
   rate_my_app: cbb89973f870601f80f7bad63aba107260cabc5b
-  RevenueCat: 4743a5eee0004e1c03eabeb3498818f902a5d622
+  RevenueCat: 9d0328a098bd0e1b425d91d136e643b72cd70326
   screen_retriever_macos: 452e51764a9e1cdb74b3c541238795849f21557f
   share_plus: 510bf0af1a42cd602274b4629920c9649c52f4cc
-  shared_preferences_foundation: 9e1978ff2562383bd5676f64ec4e9aa8fa06a6f7
+  shared_preferences_foundation: 7036424c3d8ec98dfe75ff1667cb0cd531ec82bb
   sqlite3: 73513155ec6979715d3904ef53a8d68892d4032b
   sqlite3_flutter_libs: 83f8e9f5b6554077f1d93119fe20ebaa5f3a9ef1
-  url_launcher_macos: 0fba8ddabfc33ce0a9afe7c5fef5aab3d8d2d673
-  video_player_avfoundation: 2cef49524dd1f16c5300b9cd6efd9611ce03639b
+  url_launcher_macos: f87a979182d112f911de6820aefddaf56ee9fbfd
+  video_player_avfoundation: dd410b52df6d2466a42d28550e33e4146928280a
   volume_controller: 5c068e6d085c80dadd33fc2c918d2114b775b3dd
   wakelock_plus: 917609be14d812ddd9e9528876538b2263aaa03b
   webview_cookie_manager: 7ae5076dafaf10ec5d747e1a1174091ecbaf1116
