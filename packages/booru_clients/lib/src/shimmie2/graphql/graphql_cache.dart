@@ -1,3 +1,5 @@
+import 'package:coreutils/coreutils.dart';
+
 abstract class GraphQLCache {
   Future<T?> get<T>(String key);
   Future<void> set<T>(String key, T value);
@@ -8,48 +10,44 @@ abstract class GraphQLCache {
 }
 
 class LazyGraphQLCache implements GraphQLCache {
-  LazyGraphQLCache(this._cacheFactory);
+  LazyGraphQLCache(Future<GraphQLCache> Function() cacheFactory)
+    : _lazyCache = LazyAsync(cacheFactory);
 
-  final Future<GraphQLCache> Function() _cacheFactory;
-  GraphQLCache? _cache;
-
-  Future<GraphQLCache> _ensureInitialized() async {
-    return _cache ??= await _cacheFactory();
-  }
+  final LazyAsync<GraphQLCache> _lazyCache;
 
   @override
   Future<T?> get<T>(String key) async {
-    final cache = await _ensureInitialized();
+    final cache = await _lazyCache();
     return cache.get<T>(key);
   }
 
   @override
   Future<void> set<T>(String key, T value) async {
-    final cache = await _ensureInitialized();
+    final cache = await _lazyCache();
     return cache.set(key, value);
   }
 
   @override
   Future<void> remove(String key) async {
-    final cache = await _ensureInitialized();
+    final cache = await _lazyCache();
     return cache.remove(key);
   }
 
   @override
   Future<void> clear() async {
-    final cache = await _ensureInitialized();
+    final cache = await _lazyCache();
     return cache.clear();
   }
 
   @override
   Future<DateTime?> getTimestamp(String key) async {
-    final cache = await _ensureInitialized();
+    final cache = await _lazyCache();
     return cache.getTimestamp(key);
   }
 
   @override
   Future<void> setTimestamp(String key, DateTime timestamp) async {
-    final cache = await _ensureInitialized();
+    final cache = await _lazyCache();
     return cache.setTimestamp(key, timestamp);
   }
 }
