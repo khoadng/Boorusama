@@ -5,10 +5,9 @@ import 'package:hive_ce/hive.dart';
 
 // Project imports:
 import '../../../core/configs/config/types.dart';
-import '../../../core/http/providers.dart';
-import '../extensions/known_extensions.dart';
+import '../../../core/http/client/providers.dart';
 import '../extensions/providers.dart';
-import '../extensions/state.dart';
+import '../extensions/types.dart';
 import 'cache.dart';
 
 final _graphQLCacheProvider = Provider<GraphQLCache>((ref) {

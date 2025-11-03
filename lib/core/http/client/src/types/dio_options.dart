@@ -1,28 +1,23 @@
 // Project imports:
 import '../../../../../foundation/loggers.dart';
-import '../../../../boorus/booru/types.dart';
-import '../../../../configs/config/types.dart';
 import '../../../../ddos/handler/types.dart';
 import '../../../../proxy/types.dart';
+import 'network_protocol_info.dart';
 
 class DioOptions {
   DioOptions({
     required this.ddosProtectionHandler,
     required this.userAgent,
-    required this.authConfig,
     required this.loggerService,
-    required this.booruDb,
-    required this.cronetAvailable,
-    String? baseUrl,
-  }) : baseUrl = baseUrl ?? authConfig.url,
-       proxySettings = authConfig.proxySettings;
+    required this.networkProtocolInfo,
+    required this.baseUrl,
+    this.proxySettings,
+  });
 
   final HttpProtectionHandler ddosProtectionHandler;
   final String baseUrl;
   final String userAgent;
-  final BooruConfigAuth authConfig;
   final Logger loggerService;
-  final BooruDb booruDb;
+  final NetworkProtocolInfo networkProtocolInfo;
   final ProxySettings? proxySettings;
-  final bool cronetAvailable;
 }

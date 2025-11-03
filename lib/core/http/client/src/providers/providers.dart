@@ -21,17 +21,17 @@ import 'dio.dart';
 final defaultDioProvider = Provider.family<Dio, BooruConfigAuth>((ref, config) {
   final ddosProtectionHandler = ref.watch(httpDdosProtectionBypassProvider);
   final loggerService = ref.watch(loggerProvider);
-  final booruDb = ref.watch(booruDbProvider);
-  final cronetAvailable = ref.watch(isGooglePlayServiceAvailableProvider);
 
   return newDio(
     options: DioOptions(
       ddosProtectionHandler: ddosProtectionHandler,
       userAgent: ref.watch(defaultUserAgentProvider),
-      authConfig: config,
       loggerService: loggerService,
-      booruDb: booruDb,
-      cronetAvailable: cronetAvailable,
+      networkProtocolInfo: ref.watch(
+        defaultNetworkProtocolInfoProvider(config),
+      ),
+      baseUrl: config.url,
+      proxySettings: config.proxySettings,
     ),
     additionalInterceptors: [
       // 10 requests per second
@@ -129,3 +129,23 @@ final defaultUserAgentProvider = Provider.autoDispose<String>((ref) {
 
   return '${appInfo.appName.sentenceCase}/${packageInfo.version}';
 });
+
+final defaultNetworkProtocolInfoProvider =
+    Provider.family<NetworkProtocolInfo, BooruConfigAuth>((ref, config) {
+      final booruDb = ref.watch(booruDbProvider);
+      final cronetAvailable = ref.watch(isGooglePlayServiceAvailableProvider);
+
+      final booru =
+          booruDb.getBooruFromUrl(config.url) ??
+          booruDb.getBooruFromId(config.booruIdHint);
+      final detectedProtocol = booru?.getSiteProtocol(config.url);
+
+      return NetworkProtocolInfo(
+        customProtocol: null,
+        detectedProtocol: detectedProtocol,
+        hasProxy: config.proxySettings?.enable ?? false,
+        platform: PlatformInfo.fromCurrent(
+          cronetAvailable: cronetAvailable,
+        ),
+      );
+    });

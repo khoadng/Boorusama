@@ -4,13 +4,11 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../core/boorus/booru/providers.dart';
 import '../../core/configs/config/types.dart';
 import '../../core/ddos/handler/providers.dart';
 import '../../core/http/client/providers.dart';
 import '../../core/http/client/types.dart';
 import '../../foundation/loggers/providers.dart';
-import '../../foundation/vendors/google/providers.dart';
 
 final philomenaClientProvider =
     Provider.family<PhilomenaClient, BooruConfigAuth>(
@@ -31,17 +29,17 @@ final philomenaDioProvider = Provider.family<Dio, BooruConfigAuth>((
 ) {
   final ddosProtectionHandler = ref.watch(httpDdosProtectionBypassProvider);
   final loggerService = ref.watch(loggerProvider);
-  final booruDb = ref.watch(booruDbProvider);
-  final cronetAvailable = ref.watch(isGooglePlayServiceAvailableProvider);
 
   return newDio(
     options: DioOptions(
       ddosProtectionHandler: ddosProtectionHandler,
       userAgent: ref.watch(defaultUserAgentProvider),
-      authConfig: config,
       loggerService: loggerService,
-      booruDb: booruDb,
-      cronetAvailable: cronetAvailable,
+      networkProtocolInfo: ref.watch(
+        defaultNetworkProtocolInfoProvider(config),
+      ),
+      baseUrl: config.url,
+      proxySettings: config.proxySettings,
     ),
     additionalInterceptors: [
       PhilomenaRateLimitInterceptor(),

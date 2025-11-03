@@ -5,13 +5,11 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../core/boorus/booru/providers.dart';
 import '../../core/configs/config/types.dart';
 import '../../core/ddos/handler/providers.dart';
 import '../../core/http/client/providers.dart';
 import '../../core/http/client/types.dart';
 import '../../foundation/loggers.dart';
-import '../../foundation/vendors/google/providers.dart';
 import 'gelbooru_v2_provider.dart';
 
 final gelbooruV2ClientProvider =
@@ -48,8 +46,6 @@ final gelbooruV2DioProvider = Provider.family<Dio, BooruConfigAuth>((
 ) {
   final ddosProtectionHandler = ref.watch(httpDdosProtectionBypassProvider);
   final loggerService = ref.watch(loggerProvider);
-  final booruDb = ref.watch(booruDbProvider);
-  final cronetAvailable = ref.watch(isGooglePlayServiceAvailableProvider);
   final gelbooruV2 = ref.watch(gelbooruV2Provider);
   final capabilities = gelbooruV2.getCapabilitiesForSite(config.url);
 
@@ -57,10 +53,12 @@ final gelbooruV2DioProvider = Provider.family<Dio, BooruConfigAuth>((
     options: DioOptions(
       ddosProtectionHandler: ddosProtectionHandler,
       userAgent: ref.watch(defaultUserAgentProvider),
-      authConfig: config,
       loggerService: loggerService,
-      booruDb: booruDb,
-      cronetAvailable: cronetAvailable,
+      networkProtocolInfo: ref.watch(
+        defaultNetworkProtocolInfoProvider(config),
+      ),
+      baseUrl: config.url,
+      proxySettings: config.proxySettings,
     ),
     additionalInterceptors: [
       if (capabilities?.auth?.cookie case final c?)

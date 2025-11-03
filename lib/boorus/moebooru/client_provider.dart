@@ -5,13 +5,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:version/version.dart';
 
 // Project imports:
-import '../../core/boorus/booru/providers.dart';
 import '../../core/configs/config/types.dart';
 import '../../core/ddos/handler/providers.dart';
 import '../../core/http/client/providers.dart';
 import '../../core/http/client/types.dart';
 import '../../foundation/loggers.dart';
-import '../../foundation/vendors/google/providers.dart';
 import 'moebooru.dart';
 
 final moebooruClientProvider = Provider.family<MoebooruClient, BooruConfigAuth>(
@@ -40,8 +38,6 @@ final moebooruPostRequestDioProvider = Provider.family<Dio?, BooruConfigAuth>((
 ) {
   final ddosProtectionHandler = ref.watch(httpDdosProtectionBypassProvider);
   final loggerService = ref.watch(loggerProvider);
-  final booruDb = ref.watch(booruDbProvider);
-  final cronetAvailable = ref.watch(isGooglePlayServiceAvailableProvider);
   final moebooru = ref.watch(moebooruProvider);
 
   return switch (moebooru.getPostRequestUrl(config.url)) {
@@ -50,11 +46,12 @@ final moebooruPostRequestDioProvider = Provider.family<Dio?, BooruConfigAuth>((
       options: DioOptions(
         ddosProtectionHandler: ddosProtectionHandler,
         userAgent: ref.watch(defaultUserAgentProvider),
-        authConfig: config,
         loggerService: loggerService,
-        booruDb: booruDb,
-        cronetAvailable: cronetAvailable,
+        networkProtocolInfo: ref.watch(
+          defaultNetworkProtocolInfoProvider(config),
+        ),
         baseUrl: postRequestUrl,
+        proxySettings: config.proxySettings,
       ),
       additionalInterceptors: [
         // 10 requests per second

@@ -2,7 +2,6 @@
 import 'dart:io';
 
 // Package imports:
-import 'package:booru_clients/generated.dart';
 import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
 import 'package:dio_http2_adapter/dio_http2_adapter.dart';
@@ -65,31 +64,12 @@ Dio newGenericDio({
 Dio newDio({
   required DioOptions options,
   List<Interceptor>? additionalInterceptors,
-  NetworkProtocol? customProtocol,
 }) {
-  final booruConfig = options.authConfig;
-  final booruDb = options.booruDb;
-  final baseUrl = options.baseUrl;
-
-  final booru =
-      booruDb.getBooruFromUrl(baseUrl) ??
-      booruDb.getBooruFromId(booruConfig.booruIdHint);
-  final detectedProtocol = booru?.getSiteProtocol(baseUrl);
-
-  final info = NetworkProtocolInfo(
-    customProtocol: customProtocol,
-    detectedProtocol: detectedProtocol,
-    hasProxy: options.proxySettings?.enable ?? false,
-    platform: PlatformInfo.fromCurrent(
-      cronetAvailable: options.cronetAvailable,
-    ),
-  );
-
   final dio = newGenericDio(
-    baseUrl: _cleanUrl(baseUrl),
+    baseUrl: _cleanUrl(options.baseUrl),
     userAgent: options.userAgent,
     logger: options.loggerService,
-    protocolInfo: info,
+    protocolInfo: options.networkProtocolInfo,
     proxySettings: options.proxySettings,
     additionalInterceptors: additionalInterceptors,
   );
