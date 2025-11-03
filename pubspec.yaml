@@ -20,6 +20,7 @@ workspace:
   - packages/i18n
   - packages/codegen
   - packages/cache_manager
+  - packages/coreutils
 
 dependencies:
   # local packages
