@@ -7,7 +7,7 @@ import '../../../core/posts/post/providers.dart';
 import '../../../core/posts/post/types.dart';
 import '../../../core/search/queries/providers.dart';
 import '../../../core/settings/providers.dart';
-import '../client_provider.dart';
+import '../clients/providers.dart';
 import 'parser.dart';
 
 final shimmie2PostRepoProvider =

@@ -16,15 +16,17 @@ class GraphQLError<T> extends GraphQLResponse<T> {
   final List errors;
 }
 
+typedef AuthParamsBuilder = Map<String, String> Function();
+
 class GraphQLClient {
   GraphQLClient({
     required Dio dio,
-    required Map<String, String> authParams,
+    required AuthParamsBuilder authParams,
   }) : _dio = dio,
        _authParams = authParams;
 
   final Dio _dio;
-  final Map<String, String> _authParams;
+  final AuthParamsBuilder _authParams;
 
   String get baseUrl => _dio.options.baseUrl;
 
@@ -35,7 +37,7 @@ class GraphQLClient {
   }) async {
     final response = await _dio.post(
       '/graphql',
-      queryParameters: _authParams,
+      queryParameters: _authParams(),
       data: {'query': query, 'variables': variables},
     );
 

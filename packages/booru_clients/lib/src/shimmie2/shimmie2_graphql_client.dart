@@ -6,16 +6,31 @@ import 'package:dio/dio.dart';
 
 // Project imports:
 import 'graphql/field_discovery.dart';
+import 'graphql/graphql_cache.dart';
 import 'graphql/graphql_client.dart';
 import 'types/types.dart';
 
 class Shimmie2GraphQLClient {
   Shimmie2GraphQLClient({
+    required GraphQLClient client,
+    GraphQLCache? cache,
+  }) : _base = client,
+       _cache = cache;
+
+  factory Shimmie2GraphQLClient.fromDio({
     required Dio dio,
-    required Map<String, String> authParams,
-  }) : _base = GraphQLClient(dio: dio, authParams: authParams);
+    required AuthParamsBuilder authParams,
+    GraphQLCache? cache,
+  }) {
+    return Shimmie2GraphQLClient(
+      client: GraphQLClient(dio: dio, authParams: authParams),
+      cache: cache,
+    );
+  }
 
   final GraphQLClient _base;
+  final GraphQLCache? _cache;
+
   late final FieldDiscovery _postFieldDiscovery = FieldDiscovery(
     client: _base,
     allFields: [..._coreFields, ..._extendedFields],
@@ -26,6 +41,7 @@ class Shimmie2GraphQLClient {
       'offset': 0,
       'limit': 1,
     },
+    cache: _cache,
   );
 
   static const _coreFields = [
@@ -85,10 +101,9 @@ class Shimmie2GraphQLClient {
     int? offset,
     int? limit,
   }) async {
-    final fields = await _postFieldDiscovery.ensureDiscovered();
-
-    return _base.executeQuery(
-      query: _buildPostsDiscoveryQuery(fields),
+    return _executeWithFieldErrorRecovery(
+      fetchFields: () => _postFieldDiscovery.ensureDiscovered(),
+      buildQuery: _buildPostsDiscoveryQuery,
       variables: {
         if (tags != null) 'tags': tags,
         'offset': offset ?? 0,
@@ -109,6 +124,39 @@ class Shimmie2GraphQLClient {
     );
   }
 
+  Future<T> _executeWithFieldErrorRecovery<T>({
+    required Future<Set<String>> Function() fetchFields,
+    required String Function(Iterable<String>) buildQuery,
+    required Map<String, dynamic> variables,
+    required T Function(dynamic) parseData,
+  }) async {
+    try {
+      final fields = await fetchFields();
+      return await _base.executeQuery(
+        query: buildQuery(fields),
+        variables: variables,
+        parseData: parseData,
+      );
+    } catch (e) {
+      if (_isFieldError(e)) {
+        await _postFieldDiscovery.rediscover();
+        final fields = await fetchFields();
+        return await _base.executeQuery(
+          query: buildQuery(fields),
+          variables: variables,
+          parseData: parseData,
+        );
+      }
+      rethrow;
+    }
+  }
+
+  bool _isFieldError(Object error) {
+    final message = error.toString().toLowerCase();
+    return message.contains('cannot query field') ||
+        message.contains('field') && message.contains('not exist');
+  }
+
   String _buildPostByIdQuery(Iterable<String> fields) {
     final fieldsList = fields.join('\n          ');
     return '''
@@ -125,10 +173,9 @@ class Shimmie2GraphQLClient {
   }
 
   Future<PostDto?> getPostById(int id) async {
-    final fields = await _postFieldDiscovery.ensureDiscovered();
-
-    return _base.executeQuery(
-      query: _buildPostByIdQuery(fields),
+    return _executeWithFieldErrorRecovery(
+      fetchFields: () => _postFieldDiscovery.ensureDiscovered(),
+      buildQuery: _buildPostByIdQuery,
       variables: {'id': id},
       parseData: (data) => switch (data) {
         {'post': final Map<String, dynamic> post} => PostDto.fromGraphQL(
@@ -138,5 +185,13 @@ class Shimmie2GraphQLClient {
         _ => null,
       },
     );
+  }
+
+  Future<void> invalidateFieldDiscoveryCache() async {
+    await _postFieldDiscovery.invalidateCache();
+  }
+
+  Future<void> rediscoverFields() async {
+    await _postFieldDiscovery.rediscover();
   }
 }

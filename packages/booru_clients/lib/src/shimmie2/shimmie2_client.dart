@@ -7,6 +7,7 @@ import 'package:xml/xml.dart';
 
 // Project imports:
 import 'auth_token_manager.dart';
+import 'graphql/graphql_cache.dart';
 import 'shimmie2_graphql_client.dart';
 import 'types/types.dart';
 
@@ -19,6 +20,7 @@ class Shimmie2Client {
     this.apiKey,
     this.username,
     required String baseUrl,
+    GraphQLCache? graphQLCache,
   }) : _dio =
            dio ??
            Dio(
@@ -43,9 +45,10 @@ class Shimmie2Client {
            ),
          _ => null,
        } {
-    _graphql = Shimmie2GraphQLClient(
+    _graphql = Shimmie2GraphQLClient.fromDio(
       dio: _dio,
-      authParams: _authParams,
+      authParams: () => _authParams,
+      cache: graphQLCache,
     );
   }
 
