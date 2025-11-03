@@ -2,11 +2,12 @@
 import 'dart:async';
 
 // Package imports:
-import 'package:booru_clients/src/shimmie2/auth_token_manager.dart';
 import 'package:dio/dio.dart';
 import 'package:xml/xml.dart';
 
 // Project imports:
+import 'auth_token_manager.dart';
+import 'shimmie2_graphql_client.dart';
 import 'types/types.dart';
 
 const _kApiKeyParam = 'api_key';
@@ -41,12 +42,18 @@ class Shimmie2Client {
              },
            ),
          _ => null,
-       };
+       } {
+    _graphql = Shimmie2GraphQLClient(
+      dio: _dio,
+      authParams: _authParams,
+    );
+  }
 
   final Dio _dio;
   final String? apiKey;
   final String? username;
   final AuthTokenManager? _tokenManager;
+  late final Shimmie2GraphQLClient _graphql;
 
   Map<String, String> get _authParams => {
     if (apiKey case final key? when key.isNotEmpty) ...{
@@ -58,7 +65,17 @@ class Shimmie2Client {
     List<String>? tags,
     int? page,
     int? limit,
+    bool useGraphQL = false,
   }) async {
+    if (useGraphQL) {
+      final offset = page != null ? (page - 1) * (limit ?? 100) : null;
+      return _graphql.getPosts(
+        tags: tags,
+        offset: offset,
+        limit: limit,
+      );
+    }
+
     final isEmpty = tags?.join(' ').isEmpty ?? true;
 
     final response = await _dio.get(
@@ -188,12 +205,6 @@ class Shimmie2Client {
     }
   }
 
-  bool get canFavorite =>
-      apiKey != null &&
-      apiKey!.isNotEmpty &&
-      username != null &&
-      username!.isNotEmpty;
-
   Future<ExtensionsResult> getExtensions() async {
     try {
       final response = await _dio.get(
@@ -216,6 +227,11 @@ class Shimmie2Client {
       return ExtensionsNotSupported();
     }
   }
+
+  bool get canFavorite => switch ((apiKey, username)) {
+    (final key?, final name?) => key.isNotEmpty && name.isNotEmpty,
+    _ => false,
+  };
 }
 
 FutureOr<List<PostDto>> _parsePosts(

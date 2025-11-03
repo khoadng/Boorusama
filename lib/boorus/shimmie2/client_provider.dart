@@ -5,6 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../core/configs/config/types.dart';
 import '../../core/http/providers.dart';
+import 'extensions/known_extensions.dart';
+import 'extensions/providers.dart';
+import 'extensions/state.dart';
 
 final shimmie2ClientProvider = Provider.family<Shimmie2Client, BooruConfigAuth>(
   (ref, config) {
@@ -19,13 +22,17 @@ final shimmie2ClientProvider = Provider.family<Shimmie2Client, BooruConfigAuth>(
   },
 );
 
-final shimmie2AnonymousClientProvider = Provider.family<Shimmie2Client, String>(
-  (ref, baseUrl) {
-    final dio = ref.watch(genericDioProvider);
-
-    return Shimmie2Client(
-      dio: dio,
-      baseUrl: baseUrl,
+final useGraphQLClientProvider = FutureProvider.family<bool, BooruConfigAuth>(
+  (ref, auth) async {
+    final extensionsState = await ref.watch(
+      shimmie2ExtensionsProvider(auth.url).future,
     );
+
+    return switch (extensionsState) {
+      final Shimmie2ExtensionsData data => data.hasExtension(
+        KnownExtension.graphql,
+      ),
+      _ => false,
+    };
   },
 );

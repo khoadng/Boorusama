@@ -601,6 +601,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.0"
+  flutter_hooks:
+    dependency: transitive
+    description:
+      name: flutter_hooks
+      sha256: "8ae1f090e5f4ef5cfa6670ce1ab5dddadd33f3533a7f9ba19d9f958aa2a89f42"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.21.3+1"
   flutter_html:
     dependency: "direct main"
     description:
@@ -833,6 +841,79 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.1"
+  gql:
+    dependency: transitive
+    description:
+      name: gql
+      sha256: "67c32325eb55c15f526f0f5e7d8b38a463dbff2ec3c2e046be4a1a95f0dc93d1"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.1"
+  gql_dedupe_link:
+    dependency: transitive
+    description:
+      name: gql_dedupe_link
+      sha256: "10bee0564d67c24e0c8bd08bd56e0682b64a135e58afabbeed30d85d5e9fea96"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.4-alpha+1715521079596"
+  gql_error_link:
+    dependency: transitive
+    description:
+      name: gql_error_link
+      sha256: dd0f3fbfbcec848ea050507470cdb5d3dc47d29544ae11044a1c883cbe159ccc
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.1"
+  gql_exec:
+    dependency: transitive
+    description:
+      name: gql_exec
+      sha256: "394944626fae900f1d34343ecf2d62e44eb984826189c8979d305f0ae5846e38"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.1-alpha+1699813812660"
+  gql_http_link:
+    dependency: transitive
+    description:
+      name: gql_http_link
+      sha256: "07635e85a4f313836904961904417fd27844fe8f68f77b410a4e6b81d8e9202e"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.0"
+  gql_link:
+    dependency: transitive
+    description:
+      name: gql_link
+      sha256: "0730276ce3a6a0ced073194ff923a8d99b3c78e442cbf096eb54fd0c3fa9f974"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.0"
+  gql_transform_link:
+    dependency: transitive
+    description:
+      name: gql_transform_link
+      sha256: b3bb06a6991bc5c9d877e2757455f80e2c14dc684b8327bedae4f4ee67afae8b
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.1"
+  graphql:
+    dependency: transitive
+    description:
+      name: graphql
+      sha256: "297a1680520e7b4d3c5784cfcea11a16d599702911b74a8ab50857c6d58741b9"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.2.3"
+  graphql_flutter:
+    dependency: "direct overridden"
+    description:
+      path: "packages/graphql_flutter"
+      ref: "4998567d4c2380c1f70a0ae922a1b3f7f8698664"
+      resolved-ref: "4998567d4c2380c1f70a0ae922a1b3f7f8698664"
+      url: "https://github.com/zino-hofmann/graphql-flutter.git"
+    source: git
+    version: "5.2.1"
   graphs:
     dependency: transitive
     description:
@@ -1265,6 +1346,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.2"
+  normalize:
+    dependency: transitive
+    description:
+      name: normalize
+      sha256: f78bf0552b9640c76369253f0b8fdabad4f3fbfc06bdae9359e71bee9a5b071b
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.9.1"
   objective_c:
     dependency: transitive
     description:

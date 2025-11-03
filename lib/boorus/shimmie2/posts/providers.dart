@@ -22,10 +22,15 @@ final shimmie2PostRepoProvider =
             return Future.value();
           },
           fetch: (tags, page, {limit, options}) async {
+            final useGraphQL = await ref.read(
+              useGraphQLClientProvider(config.auth).future,
+            );
+
             final posts = await client.getPosts(
               tags: tags,
               page: page,
               limit: limit,
+              useGraphQL: useGraphQL,
             );
 
             return posts

@@ -18,6 +18,26 @@ class PostDto {
     this.source,
     this.score,
     this.author,
+    this.filesize,
+    this.locked,
+    this.ext,
+    this.mime,
+    this.niceName,
+    this.tooltip,
+    this.favorites,
+    this.numericScore,
+    this.notes,
+    this.parentId,
+    this.hasChildren,
+    this.title,
+    this.approved,
+    this.approvedById,
+    this.private,
+    this.trash,
+    this.ownerName,
+    this.ownerJoinDate,
+    this.votes,
+    this.myVote,
   });
 
   factory PostDto.fromXml(
@@ -45,6 +65,149 @@ class PostDto {
       author: xml.getAttribute('author'),
     );
   }
+
+  factory PostDto.fromGraphQL(
+    Map<String, dynamic> json, {
+    String? baseUrl,
+  }) {
+    final owner = switch (json['owner']) {
+      final Map<String, dynamic> o => o,
+      _ => null,
+    };
+    final tags = switch (json['tags']) {
+      final List t => t,
+      _ => null,
+    };
+
+    return PostDto(
+      id: switch (json['post_id']) {
+        final num n => n.toInt(),
+        _ => null,
+      },
+      md5: switch (json['hash']) {
+        final String s => s,
+        _ => null,
+      },
+      fileName: switch (json['filename']) {
+        final String s => s,
+        _ => null,
+      },
+      fileUrl: _resolveUrl(json['image_link'] as String?, baseUrl),
+      height: switch (json['height']) {
+        final num n => n.toInt(),
+        _ => null,
+      },
+      width: switch (json['width']) {
+        final num n => n.toInt(),
+        _ => null,
+      },
+      previewUrl: _resolveUrl(json['thumb_link'] as String?, baseUrl),
+      date: switch (json['posted']) {
+        null => null,
+        final String s => DateTime.tryParse(s),
+        _ => null,
+      },
+      tags: tags?.map((e) => e.toString()).toList(),
+      source: switch (json['source']) {
+        final String s => s,
+        _ => null,
+      },
+      filesize: switch (json['filesize']) {
+        final num n => n.toInt(),
+        _ => null,
+      },
+      locked: switch (json['locked']) {
+        final bool b => b,
+        _ => null,
+      },
+      ext: switch (json['ext']) {
+        final String s => s,
+        _ => null,
+      },
+      mime: switch (json['mime']) {
+        final String s => s,
+        _ => null,
+      },
+      niceName: switch (json['nice_name']) {
+        final String s => s,
+        _ => null,
+      },
+      tooltip: switch (json['tooltip']) {
+        final String s => s,
+        _ => null,
+      },
+      ownerName: switch (owner?['name']) {
+        final String s => s,
+        _ => null,
+      },
+      ownerJoinDate: switch (owner?['join_date']) {
+        final String jd => DateTime.tryParse(jd),
+        _ => null,
+      },
+      // Extension fields
+      score: switch (json['score']) {
+        final num n => n.toInt(),
+        _ => null,
+      },
+      votes: switch (json['votes']) {
+        final num n => n.toInt(),
+        _ => null,
+      },
+      myVote: switch (json['my_vote']) {
+        final num n => n.toInt(),
+        _ => null,
+      },
+      favorites: switch (json['favorites']) {
+        final num n => n.toInt(),
+        _ => null,
+      },
+      numericScore: switch (json['numeric_score']) {
+        final num n => n.toInt(),
+        _ => null,
+      },
+      rating: switch (json['rating']) {
+        final String s => s,
+        _ => null,
+      },
+      notes: switch (json['notes']) {
+        final num n => n.toInt(),
+        _ => null,
+      },
+      parentId: switch (json['parent_id']) {
+        final num n => n.toInt(),
+        _ => null,
+      },
+      hasChildren: switch (json['has_children']) {
+        final bool b => b,
+        _ => null,
+      },
+      author: switch (json['author']) {
+        final String s => s,
+        _ => null,
+      },
+      title: switch (json['title']) {
+        final String s => s,
+        _ => null,
+      },
+      approved: switch (json['approved']) {
+        final bool b => b,
+        _ => null,
+      },
+      approvedById: switch (json['approved_by_id']) {
+        final num n => n.toInt(),
+        _ => null,
+      },
+      private: switch (json['private']) {
+        final bool b => b,
+        _ => null,
+      },
+      trash: switch (json['trash']) {
+        final bool b => b,
+        _ => null,
+      },
+    );
+  }
+
   final int? id;
   final String? md5;
   final String? fileName;
@@ -61,16 +224,34 @@ class PostDto {
   final int? score;
   final String? author;
 
+  // GraphQL-specific fields
+  final int? filesize;
+  final bool? locked;
+  final String? ext;
+  final String? mime;
+  final String? niceName;
+  final String? tooltip;
+  final int? favorites;
+  final int? numericScore;
+  final int? notes;
+  final int? parentId;
+  final bool? hasChildren;
+  final String? title;
+  final bool? approved;
+  final int? approvedById;
+  final bool? private;
+  final bool? trash;
+  final String? ownerName;
+  final DateTime? ownerJoinDate;
+  final int? votes;
+  final int? myVote;
+
   @override
   String toString() => '$id: $fileUrl';
 }
 
-String? _resolveUrl(String? url, String? baseUrl) {
-  if (url == null) return null;
-
-  return url.startsWith('http')
-      ? url
-      : baseUrl != null
-      ? '$baseUrl$url'
-      : null;
-}
+String? _resolveUrl(String? url, String? baseUrl) => switch ((url, baseUrl)) {
+  (final url?, _) when url.startsWith('http') => url,
+  (final url?, final base?) => Uri.tryParse(base)?.resolve(url).toString(),
+  _ => null,
+};
