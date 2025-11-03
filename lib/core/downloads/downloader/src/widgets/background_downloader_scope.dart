@@ -15,7 +15,8 @@ import '../../../../../foundation/path.dart' as path;
 import '../../../../../foundation/platform.dart';
 import '../../../../configs/config/providers.dart';
 import '../../../../download_manager/providers.dart';
-import '../../../../http/providers.dart';
+import '../../../../http/client/providers.dart';
+import '../../../../http/cookies/providers.dart';
 import '../providers/background_downloader.dart';
 import '../types/download.dart';
 

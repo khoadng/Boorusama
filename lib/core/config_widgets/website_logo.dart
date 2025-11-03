@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../boorus/booru/types.dart';
 import '../configs/config/types.dart';
-import '../http/providers.dart';
+import '../http/client/providers.dart';
 import '../images/providers.dart';
 import '../posts/sources/types.dart';
 import '../widgets/website_logo.dart';

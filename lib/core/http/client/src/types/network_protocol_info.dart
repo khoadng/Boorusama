@@ -2,7 +2,7 @@
 import 'package:booru_clients/generated.dart';
 
 // Project imports:
-import '../../../../foundation/platform.dart' as platform_utils;
+import '../../../../../foundation/platform.dart' as platform_utils;
 
 class NetworkProtocolInfo {
   const NetworkProtocolInfo({

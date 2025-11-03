@@ -2,7 +2,7 @@
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../../http/types.dart';
+import '../../../../http/client/types.dart';
 import '../../../../search/queries/types.dart';
 import '../../../../search/selected_tags/types.dart';
 import '../../../../settings/types.dart';

@@ -9,17 +9,17 @@ import 'package:dio_http2_adapter/dio_http2_adapter.dart';
 import 'package:socks5_proxy/socks.dart' as socks;
 
 // Project imports:
-import '../../../../foundation/loggers.dart';
-import '../../../proxy/types.dart';
-import '../../../router.dart';
-import '../http_utils.dart';
-import 'dio_ext.dart';
-import 'dio_image_deduplicate_interceptor.dart';
-import 'dio_logger_interceptor.dart';
-import 'dio_options.dart';
-import 'dio_protection_interceptor.dart';
-import 'http_adapter_config.dart';
-import 'network_protocol_info.dart';
+import '../../../../../foundation/loggers.dart';
+import '../../../../proxy/types.dart';
+import '../../../../router.dart';
+import '../interceptors/dio_image_deduplicate_interceptor.dart';
+import '../interceptors/dio_logger_interceptor.dart';
+import '../interceptors/dio_protection_interceptor.dart';
+import '../types/dio_ext.dart';
+import '../types/dio_options.dart';
+import '../types/http_adapter_config.dart';
+import '../types/http_utils.dart';
+import '../types/network_protocol_info.dart';
 
 Dio newGenericDio({
   required String? baseUrl,

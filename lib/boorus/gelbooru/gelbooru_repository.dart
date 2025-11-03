@@ -10,7 +10,7 @@ import '../../core/configs/config/types.dart';
 import '../../core/configs/create/create.dart';
 import '../../core/configs/gesture/types.dart';
 import '../../core/downloads/filename/types.dart';
-import '../../core/http/providers.dart';
+import '../../core/http/client/providers.dart';
 import '../../core/notes/note/types.dart';
 import '../../core/posts/favorites/types.dart';
 import '../../core/posts/favorites/widgets.dart';

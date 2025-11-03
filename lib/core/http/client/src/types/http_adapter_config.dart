@@ -2,8 +2,8 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import '../../../../foundation/loggers.dart';
-import '../../../proxy/types.dart';
+import '../../../../../foundation/loggers.dart';
+import '../../../../proxy/types.dart';
 import 'network_protocol_info.dart';
 
 sealed class HttpAdapterConfig extends Equatable {

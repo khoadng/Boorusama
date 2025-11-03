@@ -2,7 +2,7 @@
 import 'package:dio/dio.dart';
 
 // Project imports:
-import '../cookie_utils.dart';
+import '../../../cookies/types.dart';
 
 class CookieInjectionInterceptor extends Interceptor {
   const CookieInjectionInterceptor({

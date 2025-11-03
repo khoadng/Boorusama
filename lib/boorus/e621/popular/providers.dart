@@ -5,7 +5,7 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../../core/configs/config/types.dart';
-import '../../../core/http/types.dart';
+import '../../../core/http/client/types.dart';
 import '../../../core/posts/explores/types.dart';
 import '../../../core/posts/post/types.dart';
 import '../../../foundation/caching.dart';

@@ -31,7 +31,7 @@ import 'package:boorusama/core/downloads/downloader/types.dart';
 import 'package:boorusama/core/downloads/filename/providers.dart';
 import 'package:boorusama/core/downloads/filename/types.dart';
 import 'package:boorusama/core/downloads/urls/providers.dart';
-import 'package:boorusama/core/http/providers.dart';
+import 'package:boorusama/core/http/cookies/providers.dart';
 import 'package:boorusama/core/posts/post/providers.dart';
 import 'package:boorusama/core/posts/post/types.dart';
 import 'package:boorusama/core/premiums/providers.dart';

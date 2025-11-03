@@ -7,7 +7,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../http/types.dart';
+import '../../../../http/client/providers.dart';
 import '../../../../proxy/types.dart';
 
 const _kCheckProxyTimeout = Duration(seconds: 10);

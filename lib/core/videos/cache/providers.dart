@@ -4,7 +4,7 @@ import 'package:cache_manager/cache_manager.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../http/providers.dart';
+import '../../http/client/providers.dart';
 import '../../settings/providers.dart';
 
 final videoCacheManagerProvider = Provider<VideoCacheManager?>(

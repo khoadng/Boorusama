@@ -5,7 +5,8 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../core/http/types.dart';
+import '../../../core/http/client/providers.dart';
+import '../../../core/http/client/types.dart';
 import '../../../foundation/loggers.dart';
 import 'parser.dart';
 import 'types.dart';

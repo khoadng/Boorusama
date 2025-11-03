@@ -19,7 +19,7 @@ import '../../../downloads/urls/providers.dart';
 import '../../../downloads/urls/types.dart';
 import '../../../errors/providers.dart';
 import '../../../errors/types.dart';
-import '../../../http/providers.dart';
+import '../../../http/client/providers.dart';
 import '../../../images/providers.dart';
 import '../../../notes/note/providers.dart';
 import '../../../notes/note/types.dart';

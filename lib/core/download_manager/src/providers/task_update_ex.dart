@@ -4,7 +4,7 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../../downloads/downloader/types.dart';
-import '../../../http/types.dart';
+import '../../../http/client/types.dart';
 
 extension TaskUpdateX on TaskUpdate {
   int? get fileSize => switch (this) {

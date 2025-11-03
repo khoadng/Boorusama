@@ -3,8 +3,7 @@ import 'package:booru_clients/generated.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 // Project imports:
-import 'package:boorusama/core/http/src/dio/http_adapter_config.dart';
-import 'package:boorusama/core/http/src/dio/network_protocol_info.dart';
+import 'package:boorusama/core/http/client/types.dart';
 import 'package:boorusama/core/proxy/types.dart';
 
 void main() {

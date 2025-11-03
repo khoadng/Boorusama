@@ -3,7 +3,7 @@ import 'package:booru_clients/moebooru.dart';
 import 'package:dio/dio.dart';
 
 // Project imports:
-import '../../../core/http/types.dart';
+import '../../../core/http/client/types.dart';
 import 'parser.dart';
 import 'repository_file.dart';
 import 'types.dart';

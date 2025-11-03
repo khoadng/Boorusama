@@ -7,8 +7,8 @@ import 'package:version/version.dart';
 // Project imports:
 import '../../core/boorus/booru/providers.dart';
 import '../../core/configs/config/types.dart';
-import '../../core/http/providers.dart';
-import '../../core/http/types.dart';
+import '../../core/http/client/providers.dart';
+import '../../core/http/client/types.dart';
 import '../../foundation/loggers.dart';
 import '../../foundation/vendors/google/providers.dart';
 import 'moebooru.dart';

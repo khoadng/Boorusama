@@ -2,8 +2,8 @@
 import 'package:dio/dio.dart';
 
 // Project imports:
-import '../../../ddos_solver/protection_handler.dart';
-import '../../../ddos_solver/types.dart';
+import '../../../../ddos_solver/protection_handler.dart';
+import '../../../../ddos_solver/types.dart';
 
 class DioProtectionInterceptor extends Interceptor {
   DioProtectionInterceptor({

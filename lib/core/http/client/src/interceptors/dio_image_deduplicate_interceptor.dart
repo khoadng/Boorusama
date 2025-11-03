@@ -5,7 +5,7 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 
 // Project imports:
-import '../http_utils.dart';
+import '../types/http_utils.dart';
 
 class ImageRequestDeduplicateInterceptor extends Interceptor {
   ImageRequestDeduplicateInterceptor({

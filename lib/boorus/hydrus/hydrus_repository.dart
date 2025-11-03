@@ -7,7 +7,7 @@ import '../../core/boorus/defaults/types.dart';
 import '../../core/configs/config/types.dart';
 import '../../core/configs/create/create.dart';
 import '../../core/downloads/filename/types.dart';
-import '../../core/http/providers.dart';
+import '../../core/http/client/providers.dart';
 import '../../core/posts/details/providers.dart';
 import '../../core/posts/details/types.dart';
 import '../../core/posts/favorites/types.dart';

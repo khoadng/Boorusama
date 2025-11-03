@@ -2,7 +2,7 @@
 import 'package:dio/dio.dart';
 
 // Project imports:
-import 'http_utils.dart';
+import '../types/http_utils.dart';
 
 /// A resolver function to determine if a request should be rate-limited.
 typedef RateLimitResolver = bool Function(RequestOptions options);

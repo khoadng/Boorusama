@@ -1,32 +1,33 @@
-// Dart imports:
-import 'dart:io';
-
 // Flutter imports:
 import 'package:flutter/widgets.dart';
 
 // Package imports:
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../foundation/loggers.dart';
-import '../../../foundation/vendors/google/providers.dart';
-import '../../boorus/booru/providers.dart';
-import '../../boorus/engine/providers.dart';
-import '../../configs/config/types.dart';
-import '../../ddos_solver/protection_detector.dart';
-import '../../ddos_solver/protection_handler.dart';
-import '../../ddos_solver/protection_orchestrator.dart';
-import '../../ddos_solver/protection_solver.dart';
-import '../../ddos_solver/user_agent_provider.dart';
-import '../../router.dart';
-import 'cookie_jar_providers.dart';
-import 'dio/dio.dart';
-import 'dio/dio_options.dart';
-import 'dio/network_protocol_info.dart';
-import 'http_utils.dart';
-import 'sliding_window_rate_limit_interceptor.dart';
-import 'user_agent.dart';
+import '../../../../../foundation/info/app_info.dart';
+import '../../../../../foundation/info/package_info.dart';
+import '../../../../../foundation/loggers.dart';
+import '../../../../../foundation/vendors/google/providers.dart';
+import '../../../../boorus/booru/providers.dart';
+import '../../../../boorus/engine/providers.dart';
+import '../../../../configs/config/types.dart';
+import '../../../../ddos_solver/protection_detector.dart';
+import '../../../../ddos_solver/protection_handler.dart';
+import '../../../../ddos_solver/protection_orchestrator.dart';
+import '../../../../ddos_solver/protection_solver.dart';
+import '../../../../ddos_solver/user_agent_provider.dart';
+import '../../../../router.dart';
+import '../../../cookies/providers.dart';
+import '../interceptors/sliding_window_rate_limit_interceptor.dart';
+import '../types/dio_options.dart';
+import '../types/http_utils.dart';
+import '../types/network_protocol_info.dart';
+import 'dio.dart';
+
+// Project imports:
 
 final defaultDioProvider = Provider.family<Dio, BooruConfigAuth>((ref, config) {
   final ddosProtectionHandler = ref.watch(httpDdosProtectionBypassHandler);
@@ -167,11 +168,13 @@ final httpDdosProtectionBypassHandler = Provider<HttpProtectionHandler>(
   },
 );
 
-final httpCacheDirProvider = Provider<Directory>(
-  (ref) => throw UnimplementedError(),
-  name: 'httpCacheDirProvider',
-);
-
 final faviconDioProvider = Provider<Dio>((ref) {
   return Dio();
+});
+
+final defaultUserAgentProvider = Provider.autoDispose<String>((ref) {
+  final appInfo = ref.watch(appInfoProvider);
+  final packageInfo = ref.watch(packageInfoProvider);
+
+  return '${appInfo.appName.sentenceCase}/${packageInfo.version}';
 });

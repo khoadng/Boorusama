@@ -12,7 +12,7 @@ import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../configs/config/types.dart';
-import '../../../../http/providers.dart';
+import '../../../../http/client/providers.dart';
 import '../../../../search/search/routes.dart';
 import '../../../../tags/show/providers.dart';
 import '../../../../tags/tag/providers.dart';

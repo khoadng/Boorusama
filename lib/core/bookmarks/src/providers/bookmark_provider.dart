@@ -16,7 +16,7 @@ import '../../../configs/config/types.dart';
 import '../../../downloads/downloader/providers.dart';
 import '../../../downloads/downloader/types.dart';
 import '../../../downloads/filename/types.dart';
-import '../../../http/providers.dart';
+import '../../../http/client/providers.dart';
 import '../../../posts/post/providers.dart';
 import '../../../posts/post/types.dart';
 import '../../../router.dart';

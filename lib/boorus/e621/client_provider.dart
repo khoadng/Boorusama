@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../core/configs/config/types.dart';
-import '../../core/http/providers.dart';
+import '../../core/http/client/providers.dart';
 
 final e621ClientProvider = Provider.family<E621Client, BooruConfigAuth>((
   ref,

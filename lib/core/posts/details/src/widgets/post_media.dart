@@ -8,7 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../../../foundation/loggers.dart';
 import '../../../../configs/config/types.dart';
-import '../../../../http/providers.dart';
+import '../../../../http/client/providers.dart';
 import '../../../../settings/providers.dart';
 import '../../../../settings/routes.dart';
 import '../../../../videos/cache/providers.dart';
