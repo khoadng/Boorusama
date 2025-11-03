@@ -54,7 +54,7 @@ final bypassDdosHeadersProvider =
     FutureProvider.family<Map<String, String>, String>((ref, url) async {
       final cookieJar = ref.watch(cookieJarProvider);
 
-      final cookies = await cookieJar.loadForRequest(Uri.parse(url));
+      final cookies = await (await cookieJar()).loadForRequest(Uri.parse(url));
 
       if (cookies.isEmpty) return const {};
 

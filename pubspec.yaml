@@ -44,6 +44,8 @@ dependencies:
     path: packages/rich_text_controller
   cache_manager:
     path: packages/cache_manager
+  coreutils:
+    path: packages/coreutils
 
   anchor_ui: ^0.0.6
   android_intent_plus: ^6.0.0

@@ -3,17 +3,23 @@ import 'dart:io';
 
 // Package imports:
 import 'package:cookie_jar/cookie_jar.dart';
+import 'package:coreutils/coreutils.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final cookieCacheDirProvider = Provider<Directory>(
-  (ref) => throw UnimplementedError(),
+// Project imports:
+import '../../../../foundation/path.dart';
+
+final cookieCacheDirProvider = Provider<LazyAsync<Directory>>(
+  (ref) => LazyAsync(getAppTemporaryDirectory),
   name: 'cookieCacheDirProvider',
 );
 
-final cookieJarProvider = Provider<CookieJar>((ref) {
+final cookieJarProvider = Provider<LazyAsync<CookieJar>>((ref) {
   final cacheDir = ref.watch(cookieCacheDirProvider);
-
-  return PersistCookieJar(
-    storage: FileStorage(cacheDir.path),
-  );
+  return LazyAsync(() async {
+    final dir = await cacheDir();
+    return PersistCookieJar(
+      storage: FileStorage(dir.path),
+    );
+  });
 });

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:cookie_jar/cookie_jar.dart';
+import 'package:coreutils/coreutils.dart';
 import 'package:webview_cookie_manager/webview_cookie_manager.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -45,7 +46,7 @@ class RawSolver implements ProtectionSolver {
   final String protectionTitle;
   final bool Function(Cookie) autoCookieValidator;
   final ContextProvider contextProvider;
-  final CookieJar cookieJar;
+  final LazyAsync<CookieJar> cookieJar;
 
   final _cookieManager = WebviewCookieManager();
   var _solving = false;
@@ -99,7 +100,7 @@ class RawSolver implements ProtectionSolver {
               onSolved: () async {
                 final cookies = await _cookieManager.getCookies(uri.toString());
                 if (cookies.isNotEmpty) {
-                  await cookieJar.saveFromResponse(uri, cookies);
+                  await (await cookieJar()).saveFromResponse(uri, cookies);
                   dialogNavigator.pop(true);
                 }
               },
@@ -108,7 +109,7 @@ class RawSolver implements ProtectionSolver {
         },
       );
 
-      _monitorCookies(uri, cookieJar, completer, (success) {
+      _monitorCookies(uri, await cookieJar(), completer, (success) {
         if (navigator.canPop()) navigator.pop();
         if (!completer.isCompleted) completer.complete(success);
       });
@@ -166,7 +167,7 @@ class CloudflareSolver implements ProtectionSolver {
   });
 
   final ContextProvider contextProvider;
-  final CookieJar cookieJar;
+  final LazyAsync<CookieJar> cookieJar;
 
   late final _solver = RawSolver(
     contextProvider: contextProvider,
@@ -205,7 +206,7 @@ class McChallengeSolver implements ProtectionSolver {
   });
 
   final ContextProvider contextProvider;
-  final CookieJar cookieJar;
+  final LazyAsync<CookieJar> cookieJar;
 
   late final _solver = RawSolver(
     contextProvider: contextProvider,
@@ -241,7 +242,7 @@ class AftV2Solver implements ProtectionSolver {
   });
 
   final ContextProvider contextProvider;
-  final CookieJar cookieJar;
+  final LazyAsync<CookieJar> cookieJar;
 
   late final _solver = RawSolver(
     contextProvider: contextProvider,
@@ -280,7 +281,7 @@ class AftSolver implements ProtectionSolver {
   });
 
   final ContextProvider contextProvider;
-  final CookieJar cookieJar;
+  final LazyAsync<CookieJar> cookieJar;
 
   late final _solver = RawSolver(
     contextProvider: contextProvider,
@@ -306,7 +307,7 @@ class AftSolver implements ProtectionSolver {
   }) async {
     // Before solving, clean up expired timestamp cookies
     try {
-      final existingCookies = await cookieJar.loadForRequest(uri);
+      final existingCookies = await (await cookieJar()).loadForRequest(uri);
       if (existingCookies.isNotEmpty) {
         final validCookies = existingCookies.where((cookie) {
           // Keep non-timestamp cookies
@@ -328,7 +329,7 @@ class AftSolver implements ProtectionSolver {
 
         // If we had to remove some cookies, update the jar
         if (validCookies.length < existingCookies.length) {
-          await cookieJar.saveFromResponse(uri, validCookies);
+          await (await cookieJar()).saveFromResponse(uri, validCookies);
         }
       }
     } catch (e) {

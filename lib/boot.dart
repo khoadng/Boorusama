@@ -25,7 +25,6 @@ import 'core/configs/config/types.dart';
 import 'core/configs/manage/providers.dart';
 import 'core/hive/hive_registrar.g.dart';
 import 'core/http/client/types.dart';
-import 'core/http/cookies/providers.dart';
 import 'core/settings/providers.dart';
 import 'core/settings/types.dart';
 import 'core/tags/configs/providers.dart';
@@ -206,7 +205,6 @@ Future<void> boot(BootData bootData) async {
               ),
             ),
             initialSettingsBooruConfigProvider.overrideWithValue(data.config),
-            cookieCacheDirProvider.overrideWithValue(tempPath),
             loggerProvider.overrideWithValue(logger),
             deviceInfoProvider.overrideWithValue(deviceInfo),
             packageInfoProvider.overrideWithValue(packageInfo),

@@ -1,5 +1,6 @@
 // Package imports:
 import 'package:cookie_jar/cookie_jar.dart';
+import 'package:coreutils/coreutils.dart';
 
 // Project imports:
 import '../solver/types.dart';
@@ -8,14 +9,14 @@ class HttpProtectionHandler {
   HttpProtectionHandler({
     required ProtectionOrchestrator orchestrator,
     required ContextProvider contextProvider,
-    required CookieJar cookieJar,
+    required LazyAsync<CookieJar> cookieJar,
     this.maxRetries = 3,
   }) : _orchestrator = orchestrator,
        _cookieJar = cookieJar,
        _contextProvider = contextProvider;
 
   final ProtectionOrchestrator _orchestrator;
-  final CookieJar _cookieJar;
+  final LazyAsync<CookieJar> _cookieJar;
   final ContextProvider _contextProvider;
 
   // Track retry attempts
@@ -35,7 +36,7 @@ class HttpProtectionHandler {
     if (_disabled) return existingHeaders;
 
     try {
-      final cookies = await _cookieJar.loadForRequest(uri);
+      final cookies = await (await _cookieJar()).loadForRequest(uri);
       final headers = Map<String, String>.from(existingHeaders);
 
       if (cookies.isNotEmpty) {
