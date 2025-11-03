@@ -10,9 +10,9 @@ import 'package:i18n/i18n.dart';
 // Project imports:
 import '../../../configs/config/providers.dart';
 import '../../../configs/config/types.dart';
+import '../../../ddos/handler/providers.dart';
 import '../../../downloads/downloader/providers.dart';
 import '../../../http/client/providers.dart';
-import '../../../http/cookies/providers.dart';
 import '../../types.dart';
 import '../providers/download_task_updates_notifier.dart';
 import '../providers/internal_providers.dart';

@@ -2,9 +2,7 @@
 import 'package:cookie_jar/cookie_jar.dart';
 
 // Project imports:
-import 'protection_orchestrator.dart';
-import 'protection_solver.dart';
-import 'types.dart';
+import '../solver/types.dart';
 
 class HttpProtectionHandler {
   HttpProtectionHandler({

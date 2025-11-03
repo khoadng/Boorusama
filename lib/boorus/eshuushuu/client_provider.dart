@@ -7,6 +7,7 @@ import 'package:foundation/foundation.dart';
 // Project imports:
 import '../../core/boorus/booru/providers.dart';
 import '../../core/configs/config/types.dart';
+import '../../core/ddos/handler/providers.dart';
 import '../../core/http/client/providers.dart';
 import '../../core/http/client/types.dart';
 import '../../foundation/info/app_info.dart';
@@ -29,7 +30,7 @@ final eshuushuuDioProvider = Provider.family<Dio, BooruConfigAuth>((
   ref,
   config,
 ) {
-  final ddosProtectionHandler = ref.watch(httpDdosProtectionBypassHandler);
+  final ddosProtectionHandler = ref.watch(httpDdosProtectionBypassProvider);
   final appVersion = ref.watch(packageInfoProvider).version;
   final appName = ref.watch(appInfoProvider).appName;
   final loggerService = ref.watch(loggerProvider);

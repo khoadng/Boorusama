@@ -14,9 +14,8 @@ import '../../../../../foundation/media_scanner.dart';
 import '../../../../../foundation/path.dart' as path;
 import '../../../../../foundation/platform.dart';
 import '../../../../configs/config/providers.dart';
+import '../../../../ddos/handler/providers.dart';
 import '../../../../download_manager/providers.dart';
-import '../../../../http/client/providers.dart';
-import '../../../../http/cookies/providers.dart';
 import '../providers/background_downloader.dart';
 import '../types/download.dart';
 
@@ -94,7 +93,7 @@ class _BackgroundDownloaderScopeState
       } else if (update.status case TaskStatus.failed) {
         WidgetsBinding.instance.addPostFrameCallback((_) async {
           final handled = await ref
-              .read(httpDdosProtectionBypassHandler)
+              .read(httpDdosProtectionBypassProvider)
               .handleError(TaskErrorAdapter(update));
           if (handled) {
             ref.invalidate(bypassDdosHeadersProvider);

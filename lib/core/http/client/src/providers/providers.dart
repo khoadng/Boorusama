@@ -1,6 +1,3 @@
-// Flutter imports:
-import 'package:flutter/widgets.dart';
-
 // Package imports:
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -14,23 +11,15 @@ import '../../../../../foundation/vendors/google/providers.dart';
 import '../../../../boorus/booru/providers.dart';
 import '../../../../boorus/engine/providers.dart';
 import '../../../../configs/config/types.dart';
-import '../../../../ddos_solver/protection_detector.dart';
-import '../../../../ddos_solver/protection_handler.dart';
-import '../../../../ddos_solver/protection_orchestrator.dart';
-import '../../../../ddos_solver/protection_solver.dart';
-import '../../../../ddos_solver/user_agent_provider.dart';
-import '../../../../router.dart';
-import '../../../cookies/providers.dart';
+import '../../../../ddos/handler/providers.dart';
 import '../interceptors/sliding_window_rate_limit_interceptor.dart';
 import '../types/dio_options.dart';
 import '../types/http_utils.dart';
 import '../types/network_protocol_info.dart';
 import 'dio.dart';
 
-// Project imports:
-
 final defaultDioProvider = Provider.family<Dio, BooruConfigAuth>((ref, config) {
-  final ddosProtectionHandler = ref.watch(httpDdosProtectionBypassHandler);
+  final ddosProtectionHandler = ref.watch(httpDdosProtectionBypassProvider);
   final loggerService = ref.watch(loggerProvider);
   final booruDb = ref.watch(booruDbProvider);
   final cronetAvailable = ref.watch(isGooglePlayServiceAvailableProvider);
@@ -129,44 +118,6 @@ final extraHttpHeaderProvider =
         return headers;
       },
     );
-
-final httpDdosProtectionBypassHandler = Provider<HttpProtectionHandler>(
-  (ref) {
-    final cookieJar = ref.watch(cookieJarProvider);
-    BuildContext? contextProvider() {
-      final context = navigatorKey.currentContext;
-
-      return context;
-    }
-
-    return HttpProtectionHandler(
-      orchestrator: ProtectionOrchestrator(
-        userAgentProvider: WebViewUserAgentProvider(),
-        detectors: [
-          CloudflareDetector(),
-          McChallengeDetector(),
-          AftV2Detector(),
-        ],
-        solvers: [
-          CloudflareSolver(
-            contextProvider: contextProvider,
-            cookieJar: cookieJar,
-          ),
-          McChallengeSolver(
-            contextProvider: contextProvider,
-            cookieJar: cookieJar,
-          ),
-          AftV2Solver(
-            contextProvider: contextProvider,
-            cookieJar: cookieJar,
-          ),
-        ],
-      ),
-      contextProvider: contextProvider,
-      cookieJar: cookieJar,
-    );
-  },
-);
 
 final faviconDioProvider = Provider<Dio>((ref) {
   return Dio();

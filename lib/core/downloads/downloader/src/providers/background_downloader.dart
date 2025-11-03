@@ -9,7 +9,7 @@ import 'package:foundation/foundation.dart';
 import 'package:path/path.dart';
 
 // Project imports:
-import '../../../../ddos_solver/types.dart';
+import '../../../../ddos/solver/types.dart';
 import '../../../notifications/notification.dart';
 import '../../../path/directory.dart';
 import '../types/download.dart';

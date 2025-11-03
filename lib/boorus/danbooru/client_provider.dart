@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../core/boorus/booru/providers.dart';
 import '../../core/configs/config/types.dart';
+import '../../core/ddos/handler/providers.dart';
 import '../../core/http/client/providers.dart';
 import '../../core/http/client/types.dart';
 import '../../foundation/loggers/providers.dart';
@@ -28,7 +29,7 @@ final danbooruDioProvider = Provider.family<Dio, BooruConfigAuth>((
   ref,
   config,
 ) {
-  final ddosProtectionHandler = ref.watch(httpDdosProtectionBypassHandler);
+  final ddosProtectionHandler = ref.watch(httpDdosProtectionBypassProvider);
   final loggerService = ref.watch(loggerProvider);
   final booruDb = ref.watch(booruDbProvider);
   final cronetAvailable = ref.watch(isGooglePlayServiceAvailableProvider);
