@@ -1,13 +1,19 @@
+// Dart imports:
+import 'dart:convert';
+
 // Package imports:
 import 'package:booru_clients/shimmie2.dart';
+import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive_ce/hive.dart';
 
 // Project imports:
 import '../../../core/http/client/providers.dart';
 import '../../../core/http/client/types.dart';
 import '../../../foundation/loggers.dart';
+import 'cache.dart';
 import 'parser.dart';
 import 'types.dart';
 
@@ -35,6 +41,12 @@ final shimmie2AnonymousDioProvider = Provider.family<Dio, String>(
   },
 );
 
+final _extensionsCacheProvider = Provider<ExtensionsCache>(
+  (ref) => LazyExtensionsCache(() async {
+    return ExtensionsCacheHive(await Hive.openBox('shimmie2_extensions_cache'));
+  }),
+);
+
 final shimmie2ExtensionsProvider =
     AsyncNotifierProvider.family<
       Shimmie2ExtensionsNotifier,
@@ -44,17 +56,47 @@ final shimmie2ExtensionsProvider =
 
 class Shimmie2ExtensionsNotifier
     extends FamilyAsyncNotifier<Shimmie2ExtensionsState, String> {
+  static const _cacheTtl = Duration(days: 7);
+
   @override
   Future<Shimmie2ExtensionsState> build(String arg) async {
+    final cache = ref.watch(_extensionsCacheProvider);
+    final hash = sha256.convert(utf8.encode(arg)).toString();
+    final cacheKey = 'extensions_$hash';
+
+    try {
+      final cachedExtensions = await cache.get(cacheKey);
+      if (cachedExtensions != null) {
+        final timestamp = await cache.getTimestamp(cacheKey);
+        final isExpired = _isCacheExpired(timestamp);
+
+        if (!isExpired) {
+          return Shimmie2ExtensionsData(extensions: cachedExtensions);
+        }
+      }
+    } catch (_) {
+      // Cache is corrupted, remove it and fetch fresh data
+      await cache.remove(cacheKey);
+    }
+
     final shimmie2Client = ref.watch(shimmie2AnonymousClientProvider(arg));
     final result = await shimmie2Client.getExtensions();
 
     return switch (result) {
-      ExtensionsSuccess(:final extensions) => Shimmie2ExtensionsData(
-        extensions: extensions.map(extensionDtoToExtension).toList(),
-      ),
+      ExtensionsSuccess(:final extensions) => () {
+        final extensionsList = extensions.map(extensionDtoToExtension).toList();
+        cache.set(cacheKey, extensionsList);
+        cache.setTimestamp(cacheKey, DateTime.now());
+        return Shimmie2ExtensionsData(extensions: extensionsList);
+      }(),
       ExtensionsNotSupported() => const Shimmie2ExtensionsNotSupported(),
     };
+  }
+
+  bool _isCacheExpired(DateTime? timestamp) {
+    if (timestamp == null) return true;
+    final age = DateTime.now().difference(timestamp);
+    return age > _cacheTtl;
   }
 }
 

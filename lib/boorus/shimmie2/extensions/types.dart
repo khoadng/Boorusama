@@ -9,6 +9,15 @@ class Extension extends Equatable {
     this.docLink,
   });
 
+  factory Extension.fromJson(Map<String, dynamic> json) {
+    return Extension(
+      name: json['name'] as String? ?? '',
+      description: json['description'] as String? ?? '',
+      category: json['category'] as String? ?? '',
+      docLink: json['docLink'] as String?,
+    );
+  }
+
   final String name;
   final String description;
   final String category;
@@ -16,6 +25,15 @@ class Extension extends Equatable {
 
   bool matches(KnownExtension known) =>
       name.toLowerCase() == known.name.toLowerCase();
+
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'description': description,
+      'category': category,
+      'docLink': docLink,
+    };
+  }
 
   @override
   List<Object?> get props => [

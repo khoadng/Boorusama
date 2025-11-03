@@ -5,14 +5,17 @@ import 'dart:convert';
 import 'package:booru_clients/shimmie2.dart';
 import 'package:hive_ce/hive.dart';
 
-class GraphQLCacheHive implements GraphQLCache {
-  GraphQLCacheHive(this._box);
+// Project imports:
+import '../shared/cache_mixin.dart';
 
-  final Future<Box> _box;
+class GraphQLCacheHive with Shimmie2CacheMixin implements GraphQLCache {
+  GraphQLCacheHive(this.box);
+
+  @override
+  final Box box;
 
   @override
   Future<T?> get<T>(String key) async {
-    final box = await _box;
     final value = box.get(key);
 
     if (value == null) return null;
@@ -38,44 +41,10 @@ class GraphQLCacheHive implements GraphQLCache {
 
   @override
   Future<void> set<T>(String key, T value) async {
-    final box = await _box;
     final encoded = switch (value) {
       final Set<String> set => jsonEncode(set.toList()),
       _ => value,
     };
     await box.put(key, encoded);
-  }
-
-  @override
-  Future<void> remove(String key) async {
-    final box = await _box;
-    await box.delete(key);
-  }
-
-  @override
-  Future<void> clear() async {
-    final box = await _box;
-    await box.clear();
-  }
-
-  @override
-  Future<DateTime?> getTimestamp(String key) async {
-    final box = await _box;
-    final value = box.get('${key}_timestamp');
-    if (value == null) return null;
-
-    return switch (value) {
-      final int milliseconds => DateTime.fromMillisecondsSinceEpoch(
-        milliseconds,
-      ),
-      final String iso => DateTime.tryParse(iso),
-      _ => null,
-    };
-  }
-
-  @override
-  Future<void> setTimestamp(String key, DateTime timestamp) async {
-    final box = await _box;
-    await box.put('${key}_timestamp', timestamp.millisecondsSinceEpoch);
   }
 }

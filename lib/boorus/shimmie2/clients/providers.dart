@@ -12,7 +12,7 @@ import 'cache.dart';
 
 final _graphQLCacheProvider = Provider<GraphQLCache>((ref) {
   return LazyGraphQLCache(() async {
-    return GraphQLCacheHive(Hive.openBox('shimmie2_graphql_cache'));
+    return GraphQLCacheHive(await Hive.openBox('shimmie2_graphql_cache'));
   });
 });
 
