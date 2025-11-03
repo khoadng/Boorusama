@@ -9,8 +9,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../foundation/info/app_info.dart';
-import '../../../foundation/info/package_info.dart';
 import '../../../foundation/loggers.dart';
 import '../../../foundation/vendors/google/providers.dart';
 import '../../boorus/booru/providers.dart';
@@ -32,8 +30,6 @@ import 'user_agent.dart';
 
 final defaultDioProvider = Provider.family<Dio, BooruConfigAuth>((ref, config) {
   final ddosProtectionHandler = ref.watch(httpDdosProtectionBypassHandler);
-  final packageInfo = ref.watch(packageInfoProvider);
-  final appInfo = ref.watch(appInfoProvider);
   final loggerService = ref.watch(loggerProvider);
   final booruDb = ref.watch(booruDbProvider);
   final cronetAvailable = ref.watch(isGooglePlayServiceAvailableProvider);
@@ -41,7 +37,7 @@ final defaultDioProvider = Provider.family<Dio, BooruConfigAuth>((ref, config) {
   return newDio(
     options: DioOptions(
       ddosProtectionHandler: ddosProtectionHandler,
-      userAgent: getDefaultUserAgent(appInfo, packageInfo),
+      userAgent: ref.watch(defaultUserAgentProvider),
       authConfig: config,
       loggerService: loggerService,
       booruDb: booruDb,
@@ -61,14 +57,12 @@ final defaultDioProvider = Provider.family<Dio, BooruConfigAuth>((ref, config) {
 
 final genericDioProvider = Provider<Dio>(
   (ref) {
-    final packageInfo = ref.watch(packageInfoProvider);
-    final appInfo = ref.watch(appInfoProvider);
     final loggerService = ref.watch(loggerProvider);
     final cronetAvailable = ref.watch(isGooglePlayServiceAvailableProvider);
 
     return newGenericDio(
       baseUrl: null,
-      userAgent: getDefaultUserAgent(appInfo, packageInfo),
+      userAgent: ref.watch(defaultUserAgentProvider),
       logger: loggerService,
       protocolInfo: NetworkProtocolInfo.generic(
         cronetAvailable: cronetAvailable,

@@ -6,8 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../core/http/types.dart';
-import '../../../foundation/info/app_info.dart';
-import '../../../foundation/info/package_info.dart';
 import '../../../foundation/loggers.dart';
 import 'parser.dart';
 import 'types.dart';
@@ -25,13 +23,11 @@ final shimmie2AnonymousClientProvider = Provider.family<Shimmie2Client, String>(
 
 final shimmie2AnonymousDioProvider = Provider.family<Dio, String>(
   (ref, baseUrl) {
-    final packageInfo = ref.watch(packageInfoProvider);
-    final appInfo = ref.watch(appInfoProvider);
     final loggerService = ref.watch(loggerProvider);
 
     return newGenericDio(
       baseUrl: baseUrl,
-      userAgent: getDefaultUserAgent(appInfo, packageInfo),
+      userAgent: ref.watch(defaultUserAgentProvider),
       logger: loggerService,
       protocolInfo: NetworkProtocolInfo.generic(),
     );
