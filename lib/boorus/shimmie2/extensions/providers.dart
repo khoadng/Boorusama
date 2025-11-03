@@ -1,6 +1,7 @@
 // Package imports:
 import 'package:booru_clients/shimmie2.dart';
 import 'package:dio/dio.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -8,8 +9,7 @@ import '../../../core/http/types.dart';
 import '../../../foundation/info/app_info.dart';
 import '../../../foundation/info/package_info.dart';
 import '../../../foundation/loggers.dart';
-import '../../../foundation/vendors/google/providers.dart';
-import 'state.dart';
+import 'parser.dart';
 import 'types.dart';
 
 final shimmie2AnonymousClientProvider = Provider.family<Shimmie2Client, String>(
@@ -28,15 +28,12 @@ final shimmie2AnonymousDioProvider = Provider.family<Dio, String>(
     final packageInfo = ref.watch(packageInfoProvider);
     final appInfo = ref.watch(appInfoProvider);
     final loggerService = ref.watch(loggerProvider);
-    final cronetAvailable = ref.watch(isGooglePlayServiceAvailableProvider);
 
     return newGenericDio(
       baseUrl: baseUrl,
       userAgent: getDefaultUserAgent(appInfo, packageInfo),
       logger: loggerService,
-      protocolInfo: NetworkProtocolInfo.generic(
-        cronetAvailable: cronetAvailable,
-      ),
+      protocolInfo: NetworkProtocolInfo.generic(),
     );
   },
 );
@@ -57,9 +54,45 @@ class Shimmie2ExtensionsNotifier
 
     return switch (result) {
       ExtensionsSuccess(:final extensions) => Shimmie2ExtensionsData(
-        extensions: extensions.map(Extension.fromDto).toList(),
+        extensions: extensions.map(extensionDtoToExtension).toList(),
       ),
       ExtensionsNotSupported() => const Shimmie2ExtensionsNotSupported(),
     };
   }
+}
+
+sealed class Shimmie2ExtensionsState extends Equatable {
+  const Shimmie2ExtensionsState();
+}
+
+class Shimmie2ExtensionsNotSupported extends Shimmie2ExtensionsState {
+  const Shimmie2ExtensionsNotSupported();
+
+  @override
+  List<Object?> get props => [];
+}
+
+class Shimmie2ExtensionsData extends Shimmie2ExtensionsState {
+  const Shimmie2ExtensionsData({
+    required this.extensions,
+  });
+
+  factory Shimmie2ExtensionsData.empty() =>
+      const Shimmie2ExtensionsData(extensions: []);
+
+  final List<Extension> extensions;
+
+  bool hasExtension(KnownExtension extension) =>
+      extensions.any((e) => e.matches(extension));
+
+  Map<String, List<Extension>> getAllByCategory() {
+    final grouped = <String, List<Extension>>{};
+    for (final ext in extensions) {
+      grouped.putIfAbsent(ext.category, () => []).add(ext);
+    }
+    return grouped;
+  }
+
+  @override
+  List<Object?> get props => [extensions];
 }

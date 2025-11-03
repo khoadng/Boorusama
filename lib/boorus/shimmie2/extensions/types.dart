@@ -1,9 +1,5 @@
 // Package imports:
-import 'package:booru_clients/shimmie2.dart';
 import 'package:equatable/equatable.dart';
-
-export 'package:booru_clients/shimmie2.dart' show ExtensionDto;
-export 'known_extensions.dart';
 
 class Extension extends Equatable {
   const Extension({
@@ -13,17 +9,13 @@ class Extension extends Equatable {
     this.docLink,
   });
 
-  factory Extension.fromDto(ExtensionDto dto) => Extension(
-    name: dto.name,
-    description: dto.description,
-    category: dto.category,
-    docLink: dto.docLink,
-  );
-
   final String name;
   final String description;
   final String category;
   final String? docLink;
+
+  bool matches(KnownExtension known) =>
+      name.toLowerCase() == known.name.toLowerCase();
 
   @override
   List<Object?> get props => [
@@ -32,4 +24,38 @@ class Extension extends Equatable {
     category,
     docLink,
   ];
+}
+
+sealed class KnownExtension {
+  const KnownExtension(this.name);
+
+  final String name;
+
+  static const danbooruApi = DanbooruApiExtension();
+  static const graphql = GraphqlExtension();
+  static const bulkActions = BulkActionsExtension();
+  static const userApiKey = UserApiKeyExtension();
+
+  static const all = [
+    danbooruApi,
+    graphql,
+    bulkActions,
+    userApiKey,
+  ];
+}
+
+class DanbooruApiExtension extends KnownExtension {
+  const DanbooruApiExtension() : super('Danbooru Client API');
+}
+
+class GraphqlExtension extends KnownExtension {
+  const GraphqlExtension() : super('GraphQL');
+}
+
+class BulkActionsExtension extends KnownExtension {
+  const BulkActionsExtension() : super('Bulk Actions');
+}
+
+class UserApiKeyExtension extends KnownExtension {
+  const UserApiKeyExtension() : super('User API Key');
 }
