@@ -9,7 +9,7 @@ import 'package:boorusama/core/proxy/types.dart';
 void main() {
   group('HttpAdapterConfig', () {
     group('proxy settings', () {
-      test('selects default adapter when proxy is enabled', () {
+      test('selects proxy adapter when proxy is enabled', () {
         const proxySettings = ProxySettings(
           host: 'localhost',
           port: 1080,
@@ -23,8 +23,8 @@ void main() {
           userAgent: null,
         );
 
-        expect(config, isA<DefaultAdapterConfig>());
-        expect((config as DefaultAdapterConfig).proxyConfig, isNotNull);
+        expect(config, isA<ProxyAdapterConfig>());
+        expect((config as ProxyAdapterConfig).proxySettings, proxySettings);
       });
 
       test('passes proxy credentials to adapter config', () {
@@ -43,10 +43,10 @@ void main() {
           userAgent: null,
         );
 
-        final proxyConfig = (config as DefaultAdapterConfig).proxyConfig;
+        final proxyConfig = (config as ProxyAdapterConfig).proxySettings;
         expect(
           proxyConfig,
-          const ProxyConfig(
+          const ProxySettings(
             type: ProxyType.http,
             host: 'proxy.example.com',
             port: 8080,
@@ -77,7 +77,7 @@ void main() {
           userAgent: null,
         );
 
-        expect(config, isA<DefaultAdapterConfig>());
+        expect(config, isA<ProxyAdapterConfig>());
       });
 
       test('ignores disabled proxy', () {
@@ -95,7 +95,7 @@ void main() {
           userAgent: null,
         );
 
-        expect((config as DefaultAdapterConfig).proxyConfig, isNull);
+        expect(config, isA<DefaultAdapterConfig>());
       });
     });
 
@@ -183,7 +183,6 @@ void main() {
           );
 
           expect(config, isA<DefaultAdapterConfig>());
-          expect((config as DefaultAdapterConfig).proxyConfig, isNull);
         });
       }
 
@@ -196,7 +195,6 @@ void main() {
         );
 
         expect(config, isA<DefaultAdapterConfig>());
-        expect((config as DefaultAdapterConfig).proxyConfig, isNull);
       });
     });
   });

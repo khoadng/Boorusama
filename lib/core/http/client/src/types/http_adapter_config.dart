@@ -15,11 +15,11 @@ sealed class HttpAdapterConfig extends Equatable {
     required Logger? logger,
     required String? userAgent,
   }) {
-    final proxyConfig = _extractProxyConfig(proxySettings);
-
-    if (proxyConfig != null) {
-      return DefaultAdapterConfig(
-        proxyConfig: proxyConfig,
+    if (proxySettings != null &&
+        proxySettings.enable &&
+        proxySettings.isValid) {
+      return ProxyAdapterConfig(
+        proxySettings: proxySettings,
         logger: logger,
       );
     }
@@ -34,39 +34,34 @@ sealed class HttpAdapterConfig extends Equatable {
         logger: logger,
       ),
       HttpClientAdapterType.defaultAdapter => DefaultAdapterConfig(
-        proxyConfig: null,
         logger: logger,
       ),
     };
-  }
-
-  static ProxyConfig? _extractProxyConfig(ProxySettings? settings) {
-    if (settings == null || !settings.enable) return null;
-
-    final address = settings.getProxyAddress();
-    if (address == null) return null;
-
-    return ProxyConfig(
-      type: settings.type,
-      host: settings.host,
-      port: settings.port,
-      username: settings.username,
-      password: settings.password,
-    );
   }
 }
 
 class DefaultAdapterConfig extends HttpAdapterConfig {
   const DefaultAdapterConfig({
-    required this.proxyConfig,
     required this.logger,
   });
 
-  final ProxyConfig? proxyConfig;
   final Logger? logger;
 
   @override
-  List<Object?> get props => [proxyConfig, logger];
+  List<Object?> get props => [logger];
+}
+
+class ProxyAdapterConfig extends HttpAdapterConfig {
+  const ProxyAdapterConfig({
+    required this.proxySettings,
+    required this.logger,
+  });
+
+  final ProxySettings proxySettings;
+  final Logger? logger;
+
+  @override
+  List<Object?> get props => [proxySettings, logger];
 }
 
 class NativeAdapterConfig extends HttpAdapterConfig {
@@ -91,23 +86,4 @@ class Http2AdapterConfig extends HttpAdapterConfig {
 
   @override
   List<Object?> get props => [logger];
-}
-
-class ProxyConfig extends Equatable {
-  const ProxyConfig({
-    required this.type,
-    required this.host,
-    required this.port,
-    this.username,
-    this.password,
-  });
-
-  final ProxyType type;
-  final String host;
-  final int port;
-  final String? username;
-  final String? password;
-
-  @override
-  List<Object?> get props => [type, host, port, username, password];
 }

@@ -1,14 +1,11 @@
-// Dart imports:
-import 'dart:io';
-
 // Package imports:
 import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
 import 'package:dio_http2_adapter/dio_http2_adapter.dart';
-import 'package:socks5_proxy/socks.dart' as socks;
 
 // Project imports:
 import '../../../../../foundation/loggers.dart';
+import '../../../../proxy/client.dart';
 import '../../../../proxy/types.dart';
 import '../../../../router.dart';
 import '../interceptors/dio_image_deduplicate_interceptor.dart';
@@ -101,68 +98,28 @@ HttpClientAdapter _createHttpClientAdapter({
   );
 
   return switch (config) {
-    DefaultAdapterConfig(:final proxyConfig, :final logger) =>
-      _createDefaultAdapter(proxyConfig, logger),
+    DefaultAdapterConfig(:final logger) => _createDefaultAdapter(logger),
+    ProxyAdapterConfig(:final proxySettings, :final logger) =>
+      _createProxyAdapter(proxySettings, logger),
     NativeAdapterConfig(:final userAgent, :final logger) =>
       _createNativeAdapter(userAgent, logger),
     Http2AdapterConfig(:final logger) => _createHttp2Adapter(logger),
   };
 }
 
-HttpClientAdapter _createDefaultAdapter(
-  ProxyConfig? proxyConfig,
+HttpClientAdapter _createDefaultAdapter(Logger? logger) {
+  logger?.info('Network', 'Using default adapter');
+  return IOHttpClientAdapter();
+}
+
+HttpClientAdapter _createProxyAdapter(
+  ProxySettings proxySettings,
   Logger? logger,
 ) {
-  logger?.info('Network', 'Using default adapter');
+  logger?.info('Network', 'Using proxy adapter');
   return IOHttpClientAdapter(
-    createHttpClient: proxyConfig != null
-        ? () {
-            final client = HttpClient();
-            final username = proxyConfig.username;
-            final password = proxyConfig.password;
-            final port = proxyConfig.port;
-            final host = proxyConfig.host;
-
-            logger?.info(
-              'Network',
-              'Using proxy: ${proxyConfig.type.name.toUpperCase()} $host:$port',
-            );
-
-            if (proxyConfig.type == ProxyType.socks5) {
-              socks.SocksTCPClient.assignToHttpClient(
-                client,
-                [
-                  socks.ProxySettings(
-                    InternetAddress(host),
-                    port,
-                    username: username,
-                    password: password,
-                  ),
-                ],
-              );
-            } else {
-              final credentials = username != null && password != null
-                  ? HttpClientBasicCredentials(username, password)
-                  : null;
-
-              client
-                ..badCertificateCallback = (cert, host, port) {
-                  return true;
-                }
-                ..findProxy = (uri) {
-                  final address = '$host:$port';
-
-                  return 'PROXY $address';
-                };
-
-              if (credentials != null) {
-                client.addProxyCredentials(host, port, 'main', credentials);
-              }
-            }
-
-            return client;
-          }
-        : null,
+    createHttpClient: () =>
+        createProxyHttpClient(proxySettings, logger: logger),
   );
 }
 
@@ -175,7 +132,7 @@ HttpClientAdapter _createNativeAdapter(String? userAgent, Logger? logger) {
       'Network',
       'Native adapter failed, falling back to default: $e',
     );
-    return _createDefaultAdapter(null, logger);
+    return _createDefaultAdapter(logger);
   }
 }
 
