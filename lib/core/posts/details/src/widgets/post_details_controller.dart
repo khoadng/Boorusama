@@ -14,8 +14,11 @@ import '../../../../videos/player/types.dart';
 import '../../../post/types.dart';
 
 const kSeekAnimationDuration = Duration(milliseconds: 400);
+const kPlayPauseAnimationDuration = Duration(milliseconds: 700);
 
 enum SeekDirection { forward, backward }
+
+enum PlayPauseAction { play, pause }
 
 class PostDetailsController<T extends Post> extends ChangeNotifier {
   PostDetailsController({
@@ -80,10 +83,12 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
   }
 
   final _seekDirection = ValueNotifier<SeekDirection?>(null);
+  final _playPauseAction = ValueNotifier<PlayPauseAction?>(null);
 
   ValueNotifier<VideoProgress> get videoProgress => _playback.videoProgress;
   ValueNotifier<bool> get isVideoPlaying => _playback.isVideoPlaying;
   ValueNotifier<SeekDirection?> get seekDirection => _seekDirection;
+  ValueNotifier<PlayPauseAction?> get playPauseAction => _playPauseAction;
   Stream<VideoProgress> get seekStream => _playback.seekStream;
 
   void onCurrentPositionChanged(double current, double total, String id) {
@@ -97,25 +102,45 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
     _playback.seekVideo(position, id);
   }
 
-  Future<void> playVideo(int id) async {
+  Future<void> playVideo(
+    int id, {
+    bool showAnimation = false,
+  }) async {
+    if (currentPost.value.id == id && showAnimation) {
+      _showPlayPauseAnimation(PlayPauseAction.play);
+    }
     await _playback.playVideo(id);
   }
 
-  Future<void> playCurrentVideo() {
+  Future<void> playCurrentVideo({
+    bool showAnimation = false,
+  }) {
     final post = currentPost.value;
 
-    return playVideo(post.id);
+    return playVideo(
+      post.id,
+      showAnimation: showAnimation,
+    );
   }
 
-  Future<void> pauseCurrentVideo() {
+  Future<void> pauseCurrentVideo({
+    bool showAnimation = false,
+  }) {
     final post = currentPost.value;
 
     return pauseVideo(
       post.id,
+      showAnimation: showAnimation,
     );
   }
 
-  Future<void> pauseVideo(int id) async {
+  Future<void> pauseVideo(
+    int id, {
+    bool showAnimation = false,
+  }) async {
+    if (currentPost.value.id == id && showAnimation) {
+      _showPlayPauseAnimation(PlayPauseAction.pause);
+    }
     await _playback.pauseVideo(id);
   }
 
@@ -150,10 +175,19 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
   void _showSeekAnimation(SeekDirection direction) {
     _seekDirection.value = direction;
 
-    // Hide the animation after a short delay
     Timer(kSeekAnimationDuration, () {
       if (_seekDirection.value == direction) {
         _seekDirection.value = null;
+      }
+    });
+  }
+
+  void _showPlayPauseAnimation(PlayPauseAction action) {
+    _playPauseAction.value = action;
+
+    Timer(kPlayPauseAnimationDuration, () {
+      if (_playPauseAction.value == action) {
+        _playPauseAction.value = null;
       }
     });
   }
@@ -170,6 +204,7 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
   void dispose() {
     _playback.dispose();
     _seekDirection.dispose();
+    _playPauseAction.dispose();
 
     currentPage.dispose();
     currentPost.dispose();

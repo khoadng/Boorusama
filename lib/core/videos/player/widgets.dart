@@ -8,3 +8,4 @@ export 'src/widgets/video_progress_bar.dart';
 export 'src/widgets/desktop_video_option_sheet.dart';
 export 'src/widgets/desktop_video_option_tile.dart';
 export 'src/widgets/mobile_video_option_tile.dart';
+export 'src/widgets/video_action_animation_overlay.dart';

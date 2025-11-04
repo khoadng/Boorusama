@@ -219,9 +219,9 @@ class _VideoControlsContent<T extends Post> extends ConsumerWidget {
         isPlaying: controller.isVideoPlaying,
         onPlayingChanged: (value) {
           if (value) {
-            controller.pauseVideo(post.id);
+            controller.pauseVideo(post.id, showAnimation: true);
           } else if (!value) {
-            controller.playVideo(post.id);
+            controller.playVideo(post.id, showAnimation: true);
           } else {
             // do nothing
           }

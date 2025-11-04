@@ -16,6 +16,7 @@ import '../../../../videos/player/widgets.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../details_pageview/widgets.dart';
 import '../../../post/types.dart';
+import 'play_pause_animation_overlay.dart';
 import 'post_details_controller.dart';
 import 'post_details_page_view_scope.dart';
 import 'post_media.dart';
@@ -69,9 +70,9 @@ class _PostDetailsItemState<T extends Post>
       if (isDesktopPlatform()) {
         if (controller.currentPost.value.isVideo) {
           if (controller.isVideoPlaying.value) {
-            controller.pauseCurrentVideo();
+            controller.pauseCurrentVideo(showAnimation: true);
           } else {
-            controller.playCurrentVideo();
+            controller.playCurrentVideo(showAnimation: true);
           }
         } else {
           if (pageViewController.isExpanded) return;
@@ -179,9 +180,13 @@ class _PostDetailsItemState<T extends Post>
                                   if (value) {
                                     widget.detailsController.pauseVideo(
                                       post.id,
+                                      showAnimation: true,
                                     );
                                   } else if (!value) {
-                                    widget.detailsController.playVideo(post.id);
+                                    widget.detailsController.playVideo(
+                                      post.id,
+                                      showAnimation: true,
+                                    );
                                   } else {
                                     // do nothing
                                   }
@@ -197,6 +202,10 @@ class _PostDetailsItemState<T extends Post>
                 ),
               if (post.isVideo)
                 SeekAnimationOverlay(
+                  controller: widget.detailsController,
+                ),
+              if (post.isVideo)
+                PlayPauseAnimationOverlay(
                   controller: widget.detailsController,
                 ),
             ],
