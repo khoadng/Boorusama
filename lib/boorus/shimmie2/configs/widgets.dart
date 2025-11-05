@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:cookie_jar/cookie_jar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -12,7 +13,7 @@ import '../../../core/configs/config/types.dart';
 import '../../../core/configs/create/create.dart';
 import '../../../core/configs/create/providers.dart';
 import '../../../core/configs/create/widgets.dart';
-import '../../../core/widgets/widgets.dart';
+import '../../../core/http/cookies/types.dart';
 import '../../../foundation/html.dart';
 import '../../../foundation/path.dart';
 import '../extensions/providers.dart';
@@ -52,13 +53,28 @@ class CreateShimmie2ConfigPage extends ConsumerWidget {
   }
 }
 
-class Shimmie2AuthConfigView extends ConsumerWidget {
+class Shimmie2AuthConfigView extends ConsumerStatefulWidget {
   const Shimmie2AuthConfigView({
     super.key,
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<Shimmie2AuthConfigView> createState() =>
+      _Shimmie2AuthConfigViewState();
+}
+
+class _Shimmie2AuthConfigViewState
+    extends ConsumerState<Shimmie2AuthConfigView> {
+  late final loginController = TextEditingController();
+
+  @override
+  void dispose() {
+    super.dispose();
+    loginController.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final config = ref.watch(initialBooruConfigProvider);
 
     return SingleChildScrollView(
@@ -75,22 +91,34 @@ class Shimmie2AuthConfigView extends ConsumerWidget {
           ),
           const Shimmie2UserApiKeyExtDisclaimer(),
           _ViewDocsButton(config: config),
-          WarningContainer(
-            margin: EdgeInsets.zero,
-            title: context
-                .t
-                .booru
-                .authentication
-                .gelbooru
-                .fav_button_tooltip_title,
-            contentBuilder: (context) => Text(
-              context
-                  .t
-                  .booru
-                  .authentication
-                  .gelbooru
-                  .fav_button_tooltip_description,
-            ),
+          AdvancedAuthSection(
+            loginController: loginController,
+            getLoginUrl: () => join(config.url, 'user_admin', 'login'),
+            onGetCookies: (cookies) {
+              if (cookies.isEmpty) return;
+
+              final cookieList = cookies.cast<Cookie>();
+
+              final filtered = cookieList
+                  .where(
+                    (e) => e.name == 'shm_user' || e.name == 'shm_session',
+                  )
+                  .toList();
+
+              if (filtered.isEmpty) return;
+
+              final cookiesString = filtered.cookieMap.entries
+                  .map((e) => '${e.key}=${e.value}')
+                  .join('; ');
+
+              final username = filtered.getCookieValue('shm_user');
+
+              ref.editNotifier.updatePassHash(cookiesString);
+
+              if (username != null && username.isNotEmpty) {
+                ref.editNotifier.updateLogin(username);
+              }
+            },
           ),
         ],
       ),
@@ -188,6 +216,25 @@ class _ViewDocsButton extends StatelessWidget {
       },
       child: Text(
         context.t.booru.api_key_instructions.shimmie2.view_extension_docs,
+      ),
+    );
+  }
+}
+
+class Shimmie2UnknownBooruWidgetsBuilder extends StatelessWidget {
+  const Shimmie2UnknownBooruWidgetsBuilder({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return const UnknownBooruWidgetsBuilder(
+      urlField: Shimmie2BooruUrlField(),
+      loginField: DefaultBooruLoginField(),
+      apiKeyField: Column(
+        children: [
+          DefaultBooruApiKeyField(),
+        ],
       ),
     );
   }

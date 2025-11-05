@@ -1,10 +1,6 @@
-// Flutter imports:
-import 'package:flutter/material.dart';
-
 // Project imports:
 import '../../core/boorus/defaults/widgets.dart';
 import '../../core/boorus/engine/types.dart';
-import '../../core/configs/auth/widgets.dart';
 import '../../core/configs/config/types.dart';
 import '../../core/configs/create/widgets.dart';
 import '../../core/configs/manage/widgets.dart';
@@ -84,14 +80,5 @@ class Shimmie2Builder extends BaseBooruBuilder {
 
   @override
   CreateUnknownBooruWidgetsBuilder get unknownBooruWidgetsBuilder =>
-      (context) => const UnknownBooruWidgetsBuilder(
-        urlField: Shimmie2BooruUrlField(),
-        loginField: DefaultBooruLoginField(),
-        apiKeyField: Column(
-          children: [
-            DefaultBooruApiKeyField(),
-            Shimmie2UserApiKeyExtDisclaimer(),
-          ],
-        ),
-      );
+      (context) => const Shimmie2UnknownBooruWidgetsBuilder();
 }

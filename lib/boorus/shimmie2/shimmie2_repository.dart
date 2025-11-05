@@ -12,6 +12,7 @@ import '../../core/posts/favorites/types.dart';
 import '../../core/posts/post/providers.dart';
 import '../../core/posts/post/types.dart';
 import '../../core/tags/autocompletes/types.dart';
+import 'configs/providers.dart';
 import 'favorites/providers.dart';
 import 'posts/providers.dart';
 import 'tags/providers.dart';
@@ -45,6 +46,8 @@ class Shimmie2Repository extends BooruRepositoryDefault {
       baseUrl: config.url,
       dio: dio,
       apiKey: config.apiKey,
+      username: config.login,
+      cookie: config.passHash,
     ).getPosts().then((value) => true);
   }
 
@@ -70,5 +73,10 @@ class Shimmie2Repository extends BooruRepositoryDefault {
         AspectRatioTokenHandler(),
       ],
     );
+  }
+
+  @override
+  BooruLoginDetails loginDetails(BooruConfigAuth config) {
+    return ref.watch(shimmie2LoginDetailsProvider(config));
   }
 }

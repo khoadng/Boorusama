@@ -7,6 +7,7 @@ final class AuthTokenManager {
   AuthTokenManager._({
     required Dio dio,
     required String username,
+    required this.cookie,
     required Map<String, String> authParams,
   }) : _dio = dio,
        _username = username,
@@ -15,19 +16,24 @@ final class AuthTokenManager {
   factory AuthTokenManager.create({
     required Dio dio,
     required String username,
+    required String? cookie,
     required Map<String, String> authParams,
   }) => AuthTokenManager._(
     dio: dio,
     username: username,
     authParams: authParams,
+    cookie: cookie,
   );
 
   final Dio _dio;
   final String _username;
   final Map<String, String> _authParams;
+  final String? cookie;
   String? _cachedToken;
 
   Future<String?> getToken({bool forceRefresh = false}) async {
+    if (_username.isEmpty) return null;
+
     if (!forceRefresh) {
       if (_cachedToken case final token?) return token;
     }
@@ -36,6 +42,14 @@ final class AuthTokenManager {
       final response = await _dio.get(
         '/user/$_username',
         queryParameters: _authParams,
+        options: switch (cookie) {
+          final c? => Options(
+            headers: {
+              'cookie': c,
+            },
+          ),
+          _ => null,
+        },
       );
 
       final regex = RegExp(r"name='auth_token'\s+value='([^']+)'");

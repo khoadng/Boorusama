@@ -11,6 +11,7 @@ import '../../../core/boorus/engine/providers.dart';
 import '../../../core/configs/config/providers.dart';
 import '../../../core/home/widgets.dart';
 import '../../../core/posts/favorites/routes.dart';
+import '../configs/providers.dart';
 import '../favorites/widgets.dart';
 
 class Shimmie2HomePage extends ConsumerStatefulWidget {
@@ -26,7 +27,7 @@ class _Shimmie2HomePageState extends ConsumerState<Shimmie2HomePage> {
   @override
   Widget build(BuildContext context) {
     final config = ref.watchConfigAuth;
-    final loginDetails = ref.watch(defaultLoginDetailsProvider(config));
+    final loginDetails = ref.watch(shimmie2LoginDetailsProvider(config));
 
     final favoritePageBuilder = ref
         .watch(booruBuilderProvider(config))

@@ -19,6 +19,7 @@ class Shimmie2Client {
     Dio? dio,
     this.apiKey,
     this.username,
+    this.cookie,
     required String baseUrl,
     GraphQLCache? graphQLCache,
   }) : _dio =
@@ -28,23 +29,20 @@ class Shimmie2Client {
                baseUrl: baseUrl,
              ),
            ),
-       _tokenManager = switch ((apiKey, username)) {
-         (final key?, final name?) when key.isNotEmpty && name.isNotEmpty =>
-           AuthTokenManager.create(
-             dio:
-                 dio ??
-                 Dio(
-                   BaseOptions(
-                     baseUrl: baseUrl,
-                   ),
-                 ),
-             username: name,
-             authParams: {
-               _kApiKeyParam: key,
-             },
-           ),
-         _ => null,
-       } {
+       _tokenManager = AuthTokenManager.create(
+         dio:
+             dio ??
+             Dio(
+               BaseOptions(
+                 baseUrl: baseUrl,
+               ),
+             ),
+         username: username ?? '',
+         authParams: {
+           _kApiKeyParam: ?apiKey,
+         },
+         cookie: cookie,
+       ) {
     _graphql = Shimmie2GraphQLClient.fromDio(
       dio: _dio,
       authParams: () => _authParams,
@@ -55,12 +53,19 @@ class Shimmie2Client {
   final Dio _dio;
   final String? apiKey;
   final String? username;
+  final String? cookie;
   final AuthTokenManager? _tokenManager;
   late final Shimmie2GraphQLClient _graphql;
 
   Map<String, String> get _authParams => {
     if (apiKey case final key? when key.isNotEmpty) ...{
       _kApiKeyParam: key,
+    },
+  };
+
+  Map<String, String> get _authHeaders => {
+    if (cookie case final c? when c.isNotEmpty) ...{
+      'cookie': c,
     },
   };
 
@@ -178,10 +183,13 @@ class Shimmie2Client {
         },
         options: Options(
           contentType: Headers.formUrlEncodedContentType,
+          headers: _authHeaders,
         ),
       );
       return true;
     } on DioException catch (e) {
+      // Success redirects (302) are treated as errors by Dio
+      if (e.response?.statusCode == 302) return true;
       if (e.response?.statusCode != 403) return false;
 
       manager.invalidate();
@@ -195,9 +203,14 @@ class Shimmie2Client {
             },
             options: Options(
               contentType: Headers.formUrlEncodedContentType,
+              headers: _authHeaders,
             ),
           );
           return true;
+        } on DioException catch (e2) {
+          // Success redirects (302) are treated as errors by Dio
+          if (e2.response?.statusCode == 302) return true;
+          return false;
         } catch (_) {
           return false;
         }
@@ -230,11 +243,6 @@ class Shimmie2Client {
       return ExtensionsNotSupported();
     }
   }
-
-  bool get canFavorite => switch ((apiKey, username)) {
-    (final key?, final name?) => key.isNotEmpty && name.isNotEmpty,
-    _ => false,
-  };
 }
 
 FutureOr<List<PostDto>> _parsePosts(

@@ -26,6 +26,7 @@ final shimmie2ClientProvider = Provider.family<Shimmie2Client, BooruConfigAuth>(
       baseUrl: config.url,
       apiKey: config.apiKey,
       username: config.login,
+      cookie: config.passHash,
       graphQLCache: cache,
     );
   },
