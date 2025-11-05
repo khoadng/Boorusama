@@ -53,12 +53,14 @@ sealed class KnownExtension {
   static const graphql = GraphqlExtension();
   static const bulkActions = BulkActionsExtension();
   static const userApiKey = UserApiKeyExtension();
+  static const favorites = FavoritesExtension();
 
   static const all = [
     danbooruApi,
     graphql,
     bulkActions,
     userApiKey,
+    favorites,
   ];
 }
 
@@ -76,4 +78,8 @@ class BulkActionsExtension extends KnownExtension {
 
 class UserApiKeyExtension extends KnownExtension {
   const UserApiKeyExtension() : super('User API Key');
+}
+
+class FavoritesExtension extends KnownExtension {
+  const FavoritesExtension() : super('Favorites');
 }

@@ -11,7 +11,7 @@ import '../../../core/boorus/engine/providers.dart';
 import '../../../core/configs/config/providers.dart';
 import '../../../core/home/widgets.dart';
 import '../../../core/posts/favorites/routes.dart';
-import '../configs/providers.dart';
+import '../favorites/providers.dart';
 import '../favorites/widgets.dart';
 
 class Shimmie2HomePage extends ConsumerStatefulWidget {
@@ -27,7 +27,6 @@ class _Shimmie2HomePageState extends ConsumerState<Shimmie2HomePage> {
   @override
   Widget build(BuildContext context) {
     final config = ref.watchConfigAuth;
-    final loginDetails = ref.watch(shimmie2LoginDetailsProvider(config));
 
     final favoritePageBuilder = ref
         .watch(booruBuilderProvider(config))
@@ -35,27 +34,33 @@ class _Shimmie2HomePageState extends ConsumerState<Shimmie2HomePage> {
 
     return HomePageScaffold(
       mobileMenu: [
-        if (favoritePageBuilder != null && loginDetails.hasLogin())
-          SideMenuTile(
-            icon: const Icon(
-              Symbols.favorite,
-              fill: 1,
+        if (favoritePageBuilder != null)
+          if (ref.watch(shimmie2CanFavoriteProvider(config)) case AsyncData(
+            value: final canFavorite,
+          ) when canFavorite)
+            SideMenuTile(
+              icon: const Icon(
+                Symbols.favorite,
+                fill: 1,
+              ),
+              title: Text(context.t.profile.favorites),
+              onTap: () {
+                goToFavoritesPage(ref);
+              },
             ),
-            title: Text(context.t.profile.favorites),
-            onTap: () {
-              goToFavoritesPage(ref);
-            },
-          ),
       ],
       desktopMenuBuilder: (context, constraints) => [
-        if (favoritePageBuilder != null && loginDetails.hasLogin())
-          HomeNavigationTile(
-            value: 1,
-            constraints: constraints,
-            selectedIcon: Symbols.favorite,
-            icon: Symbols.favorite,
-            title: 'Favorites',
-          ),
+        if (favoritePageBuilder != null)
+          if (ref.watch(shimmie2CanFavoriteProvider(config)) case AsyncData(
+            value: final canFavorite,
+          ) when canFavorite)
+            HomeNavigationTile(
+              value: 1,
+              constraints: constraints,
+              selectedIcon: Symbols.favorite,
+              icon: Symbols.favorite,
+              title: 'Favorites',
+            ),
       ],
       desktopViews: [
         if (favoritePageBuilder != null) const Shimmie2FavoritesPage(),
