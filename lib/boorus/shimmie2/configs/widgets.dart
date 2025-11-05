@@ -15,8 +15,9 @@ import '../../../core/configs/create/widgets.dart';
 import '../../../core/widgets/widgets.dart';
 import '../../../foundation/html.dart';
 import '../../../foundation/path.dart';
+import '../extensions/providers.dart';
 
-class CreateShimmie2ConfigPage extends StatelessWidget {
+class CreateShimmie2ConfigPage extends ConsumerWidget {
   const CreateShimmie2ConfigPage({
     super.key,
     this.backgroundColor,
@@ -27,11 +28,25 @@ class CreateShimmie2ConfigPage extends StatelessWidget {
   final String? initialTab;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return CreateBooruConfigScaffold(
       initialTab: initialTab,
       backgroundColor: backgroundColor,
       authTab: const Shimmie2AuthConfigView(),
+      version: ref
+          .watch(
+            shimmie2VersionProvider(
+              ref.watch(initialBooruConfigProvider).url,
+            ),
+          )
+          .maybeWhen(
+            data: (version) => version != null
+                ? BooruVersionChip(
+                    version: version,
+                  )
+                : null,
+            orElse: () => null,
+          ),
       canSubmit: alwaysSubmit,
     );
   }

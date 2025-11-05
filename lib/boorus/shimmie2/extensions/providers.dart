@@ -3,6 +3,7 @@ import 'dart:convert';
 
 // Package imports:
 import 'package:booru_clients/shimmie2.dart';
+import 'package:coreutils/coreutils.dart';
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
@@ -38,6 +39,18 @@ final shimmie2AnonymousDioProvider = Provider.family<Dio, String>(
       logger: loggerService,
       protocolInfo: NetworkProtocolInfo.generic(),
     );
+  },
+);
+
+final shimmie2VersionProvider = FutureProvider.family<Version?, String>(
+  (ref, baseUrl) async {
+    final shimmie2Client = ref.watch(shimmie2AnonymousClientProvider(baseUrl));
+    final extensionsResult = await shimmie2Client.getExtensions();
+
+    return switch (extensionsResult) {
+      ExtensionsSuccess(:final version) => version,
+      ExtensionsNotSupported() => null,
+    };
   },
 );
 
@@ -83,11 +96,14 @@ class Shimmie2ExtensionsNotifier
     final result = await shimmie2Client.getExtensions();
 
     return switch (result) {
-      ExtensionsSuccess(:final extensions) => () {
+      ExtensionsSuccess(:final extensions, :final version) => () {
         final extensionsList = extensions.map(extensionDtoToExtension).toList();
         cache.set(cacheKey, extensionsList);
         cache.setTimestamp(cacheKey, DateTime.now());
-        return Shimmie2ExtensionsData(extensions: extensionsList);
+        return Shimmie2ExtensionsData(
+          extensions: extensionsList,
+          version: version,
+        );
       }(),
       ExtensionsNotSupported() => const Shimmie2ExtensionsNotSupported(),
     };
@@ -114,12 +130,14 @@ class Shimmie2ExtensionsNotSupported extends Shimmie2ExtensionsState {
 class Shimmie2ExtensionsData extends Shimmie2ExtensionsState {
   const Shimmie2ExtensionsData({
     required this.extensions,
+    this.version,
   });
 
   factory Shimmie2ExtensionsData.empty() =>
       const Shimmie2ExtensionsData(extensions: []);
 
   final List<Extension> extensions;
+  final Version? version;
 
   bool hasExtension(KnownExtension extension) =>
       extensions.any((e) => e.matches(extension));
@@ -133,5 +151,5 @@ class Shimmie2ExtensionsData extends Shimmie2ExtensionsState {
   }
 
   @override
-  List<Object?> get props => [extensions];
+  List<Object?> get props => [extensions, version];
 }

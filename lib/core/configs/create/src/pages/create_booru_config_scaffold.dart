@@ -44,6 +44,7 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
     this.networkTab,
     this.canSubmit,
     this.footer,
+    this.version,
   });
 
   final Color? backgroundColor;
@@ -60,6 +61,7 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
   final String? initialTab;
 
   final Widget? footer;
+  final Widget? version;
 
   final bool Function(BooruConfigData config)? canSubmit;
   @override
@@ -92,6 +94,7 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
         title: SelectedBooruChip(
           booruType: editId.booruType,
           url: editId.url,
+          version: version,
         ),
         actions: [
           CreateOrUpdateBooruConfigButton(canSubmit: canSubmit),
@@ -355,10 +358,12 @@ class SelectedBooruChip extends StatelessWidget {
   const SelectedBooruChip({
     required this.booruType,
     required this.url,
+    this.version,
     super.key,
   });
 
   final BooruType booruType;
+  final Widget? version;
   final String url;
 
   @override
@@ -381,8 +386,15 @@ class SelectedBooruChip extends StatelessWidget {
         softWrap: false,
         overflow: TextOverflow.ellipsis,
       ),
-      subtitle: Text(
-        context.t.booru.using_status(booru: booruType.displayName),
+      subtitle: Row(
+        children: [
+          Flexible(
+            child: Text(
+              context.t.booru.using_status(booru: booruType.displayName),
+            ),
+          ),
+          ?version,
+        ],
       ),
     );
   }

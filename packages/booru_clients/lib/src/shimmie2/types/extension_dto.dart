@@ -1,4 +1,6 @@
 // Package imports:
+import 'package:coreutils/coreutils.dart';
+import 'package:html/dom.dart';
 import 'package:html/parser.dart' as html_parser;
 
 class ExtensionDto {
@@ -74,7 +76,10 @@ class ExtensionDto {
         }
       }
 
-      return ExtensionsSuccess(extensions);
+      return ExtensionsSuccess(
+        extensions: extensions,
+        version: _parseShimmieVersion(document),
+      );
     } catch (_) {
       return ExtensionsNotSupported();
     }
@@ -99,12 +104,28 @@ String? _resolveDocLink(String? docLink, String? baseUrl) =>
       (final link?, null) => link,
     };
 
+Version? _parseShimmieVersion(Document document) {
+  return switch (document.querySelector('footer')?.text) {
+    null => null,
+    final footerText => switch (RegExp(
+      r'Shimmie version\s+(\S+)',
+    ).firstMatch(footerText)?.group(1)) {
+      null => null,
+      final versionString => Version.tryParse(versionString),
+    },
+  };
+}
+
 sealed class ExtensionsResult {}
 
 class ExtensionsSuccess extends ExtensionsResult {
-  ExtensionsSuccess(this.extensions);
+  ExtensionsSuccess({
+    required this.extensions,
+    this.version,
+  });
 
   final List<ExtensionDto> extensions;
+  final Version? version;
 }
 
 class ExtensionsNotSupported extends ExtensionsResult {}
