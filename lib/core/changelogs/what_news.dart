@@ -14,14 +14,15 @@ const _assetUrl = 'CHANGELOG.md';
 sealed class ReleaseVersion {
   const ReleaseVersion();
 
-  factory ReleaseVersion.fromText(String? text) =>
-      switch (text?.toLowerCase()) {
-        final String s =>
-          s.startsWith('prereleased')
-              ? Prereleased.fromText(s)
-              : Official(Version.parse(s)),
-        _ => Invalid(),
-      };
+  factory ReleaseVersion.fromText(String? text) => switch (text
+      ?.toLowerCase()) {
+    final String s when s.startsWith('prereleased') => Prereleased.fromText(s),
+    final String s => switch (Version.tryParse(s)) {
+      final v? => Official(v),
+      _ => Invalid(),
+    },
+    _ => Invalid(),
+  };
 
   String? getChangelogKey() => switch (this) {
     final Prereleased u =>
@@ -32,23 +33,16 @@ sealed class ReleaseVersion {
   };
 
   static ReleaseVersion? getVersionFromChangelogKey(String key) {
-    final parts = key.split('_');
-
-    if (parts.length < 3) return null;
-
-    final isPrereleased = parts[1] == 'prereleased';
-
-    return isPrereleased
-        ? Prereleased(
-            switch (parts.getOrNull(2)) {
-              final String s => DateTime.tryParse(s),
-              _ => null,
-            },
-          )
-        : switch (_tryParseVersion(parts.getOrNull(1))) {
-            final Version v => Official(v),
-            _ => null,
-          };
+    return switch (key.split('_')) {
+      [_, 'prereleased', final dateStr, ...] => Prereleased(
+        DateTime.tryParse(dateStr),
+      ),
+      [_, final versionStr, ...] => switch (Version.tryParse(versionStr)) {
+        final v? => Official(v),
+        _ => null,
+      },
+      _ => null,
+    };
   }
 
   @override
@@ -57,16 +51,6 @@ sealed class ReleaseVersion {
     final Official o => o.version.toString(),
     Invalid _ => 'invalid',
   };
-}
-
-Version? _tryParseVersion(String? text) {
-  try {
-    if (text == null) return null;
-
-    return Version.parse(text);
-  } catch (_) {
-    return null;
-  }
 }
 
 class Prereleased extends ReleaseVersion {

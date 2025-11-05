@@ -122,7 +122,9 @@ class _ImportDataPageState extends ConsumerState<ImportDataPage> {
                 children: discoveredServices.map((service) {
                   final address = service.attributes['ip'];
                   final port = service.attributes['port'];
-                  final appVersion = service.attributes['version'];
+                  final appVersion = Version.tryParse(
+                    service.attributes['version'],
+                  );
                   final url = Uri(
                     scheme: 'http',
                     host: address,
@@ -157,7 +159,9 @@ class _ImportDataPageState extends ConsumerState<ImportDataPage> {
                           context.t.settings.backup_and_restore.import,
                         ),
                         onPressed: () async {
-                          if (appVersion == null) {
+                          final version = appVersion;
+
+                          if (version == null) {
                             showErrorToast(
                               context,
                               "Couldn't determine this device's version, aborting."
@@ -175,20 +179,19 @@ class _ImportDataPageState extends ConsumerState<ImportDataPage> {
                             return;
                           }
 
-                          final parsedVersion = Version.parse(appVersion);
                           final shouldShowDialog =
                               currentVersion.significantlyLowerThan(
-                                parsedVersion,
+                                appVersion,
                               ) ||
                               currentVersion.significantlyHigherThan(
-                                parsedVersion,
+                                appVersion,
                               );
 
                           if (shouldShowDialog) {
                             final result = await showDialog(
                               context: context,
                               builder: (context) => VersionMismatchAlertDialog(
-                                importVersion: Version.parse(appVersion),
+                                importVersion: version,
                                 currentVersion: currentVersion,
                               ),
                             );

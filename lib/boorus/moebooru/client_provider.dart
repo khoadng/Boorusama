@@ -26,7 +26,7 @@ final moebooruClientProvider = Provider.family<MoebooruClient, BooruConfigAuth>(
       postRequestDio: postRequestDio,
       version: switch (moebooru.getVersion(config.url)) {
         null => null,
-        final v => _tryParseVersion(v),
+        final v => Version.tryParse(v),
       },
     );
   },
@@ -65,11 +65,3 @@ final moebooruPostRequestDioProvider = Provider.family<Dio?, BooruConfigAuth>((
     ),
   };
 });
-
-Version? _tryParseVersion(String versionString) {
-  try {
-    return Version.parse(versionString);
-  } catch (_) {
-    return null;
-  }
-}
