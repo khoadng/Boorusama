@@ -1,8 +1,8 @@
 // Package imports:
 import 'package:booru_clients/moebooru.dart';
+import 'package:coreutils/coreutils.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:version/version.dart';
 
 // Project imports:
 import '../../core/configs/config/types.dart';

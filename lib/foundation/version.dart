@@ -1,5 +1,5 @@
 // Package imports:
-import 'package:version/version.dart';
+import 'package:coreutils/coreutils.dart';
 
 extension VersionX on Version? {
   bool significantlyLowerThan(Version? other) {

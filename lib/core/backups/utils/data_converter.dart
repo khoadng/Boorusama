@@ -5,8 +5,8 @@ import 'dart:convert';
 import 'package:flutter/widgets.dart';
 
 // Package imports:
+import 'package:coreutils/coreutils.dart';
 import 'package:foundation/foundation.dart';
-import 'package:version/version.dart';
 
 // Project imports:
 import '../types/types.dart';

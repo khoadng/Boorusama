@@ -2,9 +2,9 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:coreutils/coreutils.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
-import 'package:version/version.dart';
 
 // Project imports:
 import '../../../foundation/info/package_info.dart';

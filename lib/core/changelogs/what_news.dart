@@ -2,9 +2,9 @@
 import 'package:flutter/services.dart';
 
 // Package imports:
+import 'package:coreutils/coreutils.dart';
 import 'package:foundation/foundation.dart';
 import 'package:hive_ce/hive.dart';
-import 'package:version/version.dart';
 
 const kChangelogKey = 'changelog';
 const kPreviousVersionKey = 'changelog_previous_version';

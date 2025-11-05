@@ -1,7 +1,7 @@
 // Package imports:
 import 'dart:convert';
 import 'package:dio/dio.dart';
-import 'package:version/version.dart';
+import 'package:coreutils/coreutils.dart';
 
 // Project imports:
 import 'types/types.dart';

@@ -10,11 +10,11 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:archive/archive_io.dart';
 import 'package:collection/collection.dart';
+import 'package:coreutils/coreutils.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart' as p;
-import 'package:version/version.dart';
 
 // Project imports:
 import '../../../foundation/info/package_info.dart';

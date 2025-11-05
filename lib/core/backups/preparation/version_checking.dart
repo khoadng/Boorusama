@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:version/version.dart';
+import 'package:coreutils/coreutils.dart';
 
 // Project imports:
 import '../types/types.dart';

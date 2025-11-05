@@ -5,12 +5,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:coreutils/coreutils.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart' show join;
 import 'package:shelf/shelf.dart' as shelf;
-import 'package:version/version.dart';
 
 // Project imports:
 import '../../../foundation/clipboard.dart';

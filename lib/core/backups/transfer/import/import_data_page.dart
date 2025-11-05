@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:bonsoir/bonsoir.dart';
+import 'package:coreutils/coreutils.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
-import 'package:version/version.dart';
 
 // Project imports:
 import '../../../../foundation/info/package_info.dart';

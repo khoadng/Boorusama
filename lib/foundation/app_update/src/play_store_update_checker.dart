@@ -1,9 +1,9 @@
 // Package imports:
+import 'package:coreutils/coreutils.dart';
 import 'package:html/dom.dart';
 import 'package:html/parser.dart' show parse;
 import 'package:http/http.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:version/version.dart';
 
 // Project imports:
 import 'types/app_update_checker.dart';
