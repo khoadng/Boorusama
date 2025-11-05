@@ -118,16 +118,8 @@ class FieldDiscovery {
   }
 
   String? _extractFieldNameFromError(String message) {
-    final patterns = [
-      RegExp(r'Cannot query field "(\w+)"'),
-      RegExp(r'Field "(\w+)" .* must have a sub selection'),
-    ];
-
-    for (final pattern in patterns) {
-      final match = pattern.firstMatch(message);
-      if (match?.group(1) case final field?) return field;
-    }
-
-    return null;
+    final pattern = RegExp(r'Cannot query field "(\w+)"');
+    final match = pattern.firstMatch(message);
+    return match?.group(1);
   }
 }

@@ -1,6 +1,9 @@
 // Package imports:
 import 'package:xml/xml.dart';
 
+// Project imports:
+import 'comment_dto.dart';
+
 class PostDto {
   PostDto({
     this.id,
@@ -38,6 +41,7 @@ class PostDto {
     this.ownerJoinDate,
     this.votes,
     this.myVote,
+    this.comments,
   });
 
   factory PostDto.fromXml(
@@ -205,6 +209,14 @@ class PostDto {
         final bool b => b,
         _ => null,
       },
+      comments: switch (json['comments']) {
+        final List l =>
+          l
+              .whereType<Map<String, dynamic>>()
+              .map((e) => CommentDto.fromGraphQL(e))
+              .toList(),
+        _ => null,
+      },
     );
   }
 
@@ -245,6 +257,7 @@ class PostDto {
   final DateTime? ownerJoinDate;
   final int? votes;
   final int? myVote;
+  final List<CommentDto>? comments;
 
   @override
   String toString() => '$id: $fileUrl';

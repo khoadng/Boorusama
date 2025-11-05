@@ -19,7 +19,11 @@ Shimmie2Post postDtoToPost(
     originalImageUrl: e.fileUrl ?? '',
     tags: e.tags?.toSet() ?? {},
     rating: Rating.parse(e.rating),
-    hasComment: false,
+    hasComment: switch (e.comments) {
+      final comments? when comments.isNotEmpty => true,
+      _ => false,
+    },
+    comments: e.comments,
     isTranslated: switch (e.notes) {
       final notes? when notes > 0 => true,
       _ => false,

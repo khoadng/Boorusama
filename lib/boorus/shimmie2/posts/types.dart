@@ -1,3 +1,6 @@
+// Package imports:
+import 'package:booru_clients/shimmie2.dart';
+
 // Project imports:
 import '../../../core/posts/post/types.dart';
 
@@ -46,6 +49,7 @@ class Shimmie2Post extends SimplePost {
     this.ownerJoinDate,
     this.votes,
     this.myVote,
+    this.comments,
   });
 
   final bool? locked;
@@ -65,4 +69,6 @@ class Shimmie2Post extends SimplePost {
   final DateTime? ownerJoinDate;
   final int? votes;
   final int? myVote;
+
+  final List<CommentDto>? comments;
 }
