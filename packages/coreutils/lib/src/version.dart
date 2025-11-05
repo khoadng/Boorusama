@@ -84,11 +84,7 @@ class Version implements Comparable<Version> {
   bool operator >=(dynamic o) => o is Version && _compare(this, o) >= 0;
 
   @override
-  int compareTo(Version? other) {
-    if (other == null) {
-      throw ArgumentError.notNull("other");
-    }
-
+  int compareTo(Version other) {
     return _compare(this, other);
   }
 
@@ -110,10 +106,10 @@ class Version implements Comparable<Version> {
   /// Creates a new [Version] with the right-most numeric [preRelease] segment incremented.
   /// If no numeric segment is found, one will be added with the value "1".
   ///
-  /// If this [Version] is not a pre-release version, an Exception will be thrown.
+  /// If this [Version] is not a pre-release version, a [StateError] will be thrown.
   Version incrementPreRelease() {
     if (!isPreRelease) {
-      throw Exception(
+      throw StateError(
         "Cannot increment pre-release on a non-pre-release [Version]",
       );
     }
@@ -201,15 +197,162 @@ class Version implements Comparable<Version> {
     );
   }
 
-  static int _compare(Version? a, Version? b) {
-    if (a == null) {
-      throw ArgumentError.notNull("a");
-    }
+  /// Attempts to create a [Version] instance from a dynamic value.
+  ///
+  /// Returns a [Version] if the value can be parsed as a valid version string.
+  /// Returns null if the value cannot be parsed or is an unsupported type.
+  ///
+  /// Supports:
+  /// - [String]: parsed using the semver specification
+  /// - [Version]: returns the same instance
+  /// - [List]: array with 1-3 elements (major, minor?, patch?) as int or String
+  /// - [Record]: tuple with 1-3 elements (major, minor?, patch?) as int or String
+  /// - [Map]: with keys 'major', 'minor', 'patch', 'preRelease', 'build'
+  /// - null: returns null
+  /// - Other types: returns null
+  static Version? tryParse(dynamic value) {
+    return switch (value) {
+      String s => _tryParseString(s),
+      Version v => v,
+      Map m => _tryParseMap(m),
+      List l => _tryParseList(l),
+      (int, int, int) t => _tryParseRecord3(t.$1, t.$2, t.$3),
+      (int, int) t => _tryParseRecord2(t.$1, t.$2),
+      (int,) t => _tryParseRecord1(t.$1),
+      (String, String, String) t => _tryParseRecord3(t.$1, t.$2, t.$3),
+      (String, String) t => _tryParseRecord2(t.$1, t.$2),
+      (String,) t => _tryParseRecord1(t.$1),
+      null => null,
+      _ => null,
+    };
+  }
 
-    if (b == null) {
-      throw ArgumentError.notNull("b");
+  static Version? _tryParseString(String versionString) {
+    try {
+      return parse(versionString);
+    } catch (_) {
+      return null;
     }
+  }
 
+  static Version? _tryParseMap(Map map) {
+    try {
+      final major = _parseIntOrString(map['major']);
+      if (major == null) return null;
+
+      final minor = _parseIntOrString(map['minor']) ?? 0;
+      final patch = _parseIntOrString(map['patch']) ?? 0;
+
+      final preRelease = _parsePreRelease(map['preRelease']);
+      if (preRelease == null) return null;
+
+      final build = _parseBuild(map['build']);
+
+      return Version(
+        major,
+        minor,
+        patch,
+        preRelease: preRelease,
+        build: build,
+      );
+    } catch (_) {
+      return null;
+    }
+  }
+
+  static List<String>? _parsePreRelease(dynamic value) {
+    return switch (value) {
+      List<String> list => list,
+      List list => _tryConvertList(list),
+      String s when s.isNotEmpty => [s],
+      null => <String>[],
+      _ => null,
+    };
+  }
+
+  static List<String>? _tryConvertList(List list) {
+    if (list.any((e) => e is! String && e is! num)) {
+      return null;
+    }
+    return list.map((e) => e.toString()).toList();
+  }
+
+  static String _parseBuild(dynamic value) {
+    return switch (value) {
+      String s => s,
+      null => "",
+      _ => "",
+    };
+  }
+
+  static Version? _tryParseList(List list) {
+    if (list.isEmpty || list.length > 3) return null;
+
+    try {
+      final major = _parseIntOrString(list[0]);
+      if (major == null) return null;
+
+      final minor = list.length > 1 ? _parseIntOrString(list[1]) : 0;
+      if (minor == null) return null;
+
+      final patch = list.length > 2 ? _parseIntOrString(list[2]) : 0;
+      if (patch == null) return null;
+
+      return Version(major, minor, patch);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  static Version? _tryParseRecord1(dynamic major) {
+    try {
+      final majorInt = _parseIntOrString(major);
+      if (majorInt == null) return null;
+      return Version(majorInt, 0, 0);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  static Version? _tryParseRecord2(dynamic major, dynamic minor) {
+    try {
+      final majorInt = _parseIntOrString(major);
+      if (majorInt == null) return null;
+      final minorInt = _parseIntOrString(minor);
+      if (minorInt == null) return null;
+      return Version(majorInt, minorInt, 0);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  static Version? _tryParseRecord3(
+    dynamic major,
+    dynamic minor,
+    dynamic patch,
+  ) {
+    try {
+      final majorInt = _parseIntOrString(major);
+      if (majorInt == null) return null;
+      final minorInt = _parseIntOrString(minor);
+      if (minorInt == null) return null;
+      final patchInt = _parseIntOrString(patch);
+      if (patchInt == null) return null;
+      return Version(majorInt, minorInt, patchInt);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  static int? _parseIntOrString(dynamic value) {
+    return switch (value) {
+      int i => i,
+      String s => int.tryParse(s),
+      _ => null,
+    };
+  }
+
+  static int _compare(Version a, Version b) {
     if (a.major > b.major) return 1;
     if (a.major < b.major) return -1;
 

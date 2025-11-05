@@ -5,278 +5,224 @@ import 'package:coreutils/src/version.dart';
 import 'package:test/test.dart';
 
 void main() {
-  late Version zeroZeroZero,
-      zeroZeroOne,
-      zeroOneZero,
-      oneZeroZero,
-      fiveZeroFive,
-      oneZeroZeroDuplicate,
-      buildVersion,
-      preReleaseVersion,
-      buildAndPrereleaseVersion;
-
-  setUp(() {
-    zeroZeroZero = Version(0, 0, 0);
-    zeroZeroOne = Version(0, 0, 1);
-    zeroOneZero = Version(0, 1, 0);
-    oneZeroZero = Version(1, 0, 0);
-
-    fiveZeroFive = Version(5, 0, 5);
-    oneZeroZeroDuplicate = Version(1, 0, 0);
-
-    buildVersion = Version(1, 0, 0, build: "buildNumber");
-    preReleaseVersion = Version(1, 0, 0, preRelease: <String>["alpha"]);
-    buildAndPrereleaseVersion = Version(
-      1,
-      0,
-      0,
-      preRelease: <String>["alpha"],
-      build: "anotherBuild",
-    );
-  });
-
-  test('== tests', () {
-    expect(zeroZeroOne == zeroZeroZero, isFalse);
-    expect(oneZeroZero == zeroZeroZero, isFalse);
-    expect(fiveZeroFive == zeroZeroZero, isFalse);
-    expect(zeroZeroZero == zeroZeroZero, isTrue);
-
-    expect(zeroZeroOne == zeroOneZero, isFalse);
-    expect(zeroZeroOne == oneZeroZero, isFalse);
-    expect(zeroOneZero == oneZeroZero, isFalse);
-    expect(fiveZeroFive == zeroOneZero, isFalse);
-
-    expect(zeroZeroOne == zeroZeroOne, isTrue);
-    expect(zeroOneZero == zeroOneZero, isTrue);
-    expect(oneZeroZero == oneZeroZero, isTrue);
-    expect(fiveZeroFive == fiveZeroFive, isTrue);
-    expect(oneZeroZero == oneZeroZeroDuplicate, isTrue);
-
-    expect(buildVersion == oneZeroZero, isTrue);
-    expect(preReleaseVersion == oneZeroZero, isFalse);
-    expect(buildVersion == buildVersion, isTrue);
-    expect(preReleaseVersion == preReleaseVersion, isTrue);
-
-    expect(buildAndPrereleaseVersion == preReleaseVersion, isTrue);
-    expect(buildAndPrereleaseVersion == buildVersion, isFalse);
-    expect(buildAndPrereleaseVersion == oneZeroZero, isFalse);
-    expect(buildAndPrereleaseVersion == buildAndPrereleaseVersion, isTrue);
-  });
-
-  test('> tests', () {
-    expect(zeroZeroZero > zeroOneZero, isFalse);
-    expect(zeroZeroZero > oneZeroZero, isFalse);
-    expect(zeroZeroZero > zeroZeroZero, isFalse);
-
-    expect(zeroZeroOne > zeroOneZero, isFalse);
-    expect(zeroZeroOne > oneZeroZero, isFalse);
-    expect(zeroOneZero > oneZeroZero, isFalse);
-    expect(zeroOneZero > fiveZeroFive, isFalse);
-
-    expect(zeroOneZero > zeroZeroOne, isTrue);
-    expect(oneZeroZero > zeroZeroOne, isTrue);
-    expect(oneZeroZero > zeroOneZero, isTrue);
-    expect(fiveZeroFive > zeroOneZero, isTrue);
-
-    expect(zeroZeroOne > zeroZeroOne, isFalse);
-    expect(zeroOneZero > zeroOneZero, isFalse);
-    expect(oneZeroZero > oneZeroZero, isFalse);
-    expect(fiveZeroFive > fiveZeroFive, isFalse);
-    expect(oneZeroZero > oneZeroZeroDuplicate, isFalse);
-
-    expect(buildVersion > oneZeroZero, isFalse);
-    expect(oneZeroZero > buildVersion, isFalse);
-
-    expect(preReleaseVersion > oneZeroZero, isFalse);
-    expect(oneZeroZero > preReleaseVersion, isTrue);
-
-    expect(buildVersion > buildVersion, isFalse);
-    expect(preReleaseVersion > preReleaseVersion, isFalse);
-
-    expect(buildAndPrereleaseVersion > preReleaseVersion, isFalse);
-    expect(preReleaseVersion > buildAndPrereleaseVersion, isFalse);
-
-    expect(buildAndPrereleaseVersion > buildVersion, isFalse);
-    expect(buildVersion > buildAndPrereleaseVersion, isTrue);
-
-    expect(buildAndPrereleaseVersion > oneZeroZero, isFalse);
-    expect(oneZeroZero > buildAndPrereleaseVersion, isTrue);
-
-    expect(buildAndPrereleaseVersion > buildAndPrereleaseVersion, isFalse);
-  });
-
-  test('< tests', () {
-    expect(zeroZeroZero < zeroOneZero, isTrue);
-    expect(zeroZeroZero < oneZeroZero, isTrue);
-    expect(zeroZeroZero < fiveZeroFive, isTrue);
-    expect(zeroZeroZero < zeroZeroZero, isFalse);
-
-    expect(zeroZeroOne < zeroOneZero, isTrue);
-    expect(zeroZeroOne < oneZeroZero, isTrue);
-    expect(zeroOneZero < oneZeroZero, isTrue);
-    expect(zeroOneZero < fiveZeroFive, isTrue);
-
-    expect(zeroOneZero < zeroZeroOne, isFalse);
-    expect(oneZeroZero < zeroZeroOne, isFalse);
-    expect(oneZeroZero < zeroOneZero, isFalse);
-    expect(fiveZeroFive < zeroOneZero, isFalse);
-
-    expect(zeroZeroOne < zeroZeroOne, isFalse);
-    expect(zeroOneZero < zeroOneZero, isFalse);
-    expect(oneZeroZero < oneZeroZero, isFalse);
-    expect(fiveZeroFive < fiveZeroFive, isFalse);
-    expect(oneZeroZero < oneZeroZeroDuplicate, isFalse);
-
-    expect(buildVersion < oneZeroZero, isFalse);
-    expect(oneZeroZero < buildVersion, isFalse);
-
-    expect(preReleaseVersion < oneZeroZero, isTrue);
-    expect(oneZeroZero < preReleaseVersion, isFalse);
-
-    expect(buildVersion < buildVersion, isFalse);
-    expect(preReleaseVersion < preReleaseVersion, isFalse);
-
-    expect(buildAndPrereleaseVersion < preReleaseVersion, isFalse);
-    expect(preReleaseVersion < buildAndPrereleaseVersion, isFalse);
-    expect(buildAndPrereleaseVersion < buildVersion, isTrue);
-    expect(buildVersion < buildAndPrereleaseVersion, isFalse);
-    expect(buildAndPrereleaseVersion < oneZeroZero, isTrue);
-    expect(oneZeroZero < buildAndPrereleaseVersion, isFalse);
-    expect(buildAndPrereleaseVersion < buildAndPrereleaseVersion, isFalse);
-  });
-
-  test('<= tests', () {
-    expect(zeroZeroZero <= zeroOneZero, isTrue);
-    expect(zeroZeroZero <= oneZeroZero, isTrue);
-    expect(zeroZeroZero <= zeroZeroZero, isTrue);
-
-    expect(zeroZeroOne <= zeroOneZero, isTrue);
-    expect(zeroZeroOne <= oneZeroZero, isTrue);
-    expect(zeroOneZero <= oneZeroZero, isTrue);
-    expect(zeroOneZero <= fiveZeroFive, isTrue);
-
-    expect(zeroOneZero <= zeroZeroOne, isFalse);
-    expect(oneZeroZero <= zeroZeroOne, isFalse);
-    expect(oneZeroZero <= zeroOneZero, isFalse);
-    expect(fiveZeroFive <= zeroOneZero, isFalse);
-
-    expect(zeroZeroOne <= zeroZeroOne, isTrue);
-    expect(zeroOneZero <= zeroOneZero, isTrue);
-    expect(oneZeroZero <= oneZeroZero, isTrue);
-    expect(fiveZeroFive <= fiveZeroFive, isTrue);
-    expect(oneZeroZero <= oneZeroZeroDuplicate, isTrue);
-
-    expect(buildVersion <= oneZeroZero, isTrue);
-    expect(oneZeroZero <= buildVersion, isTrue);
-
-    expect(preReleaseVersion <= oneZeroZero, isTrue);
-    expect(oneZeroZero <= preReleaseVersion, isFalse);
-
-    expect(buildVersion <= buildVersion, isTrue);
-    expect(preReleaseVersion <= preReleaseVersion, isTrue);
-
-    expect(buildAndPrereleaseVersion <= preReleaseVersion, isTrue);
-    expect(preReleaseVersion <= buildAndPrereleaseVersion, isTrue);
-    expect(buildAndPrereleaseVersion <= buildVersion, isTrue);
-    expect(buildVersion <= buildAndPrereleaseVersion, isFalse);
-    expect(buildAndPrereleaseVersion <= oneZeroZero, isTrue);
-    expect(oneZeroZero <= buildAndPrereleaseVersion, isFalse);
-    expect(buildAndPrereleaseVersion <= buildAndPrereleaseVersion, isTrue);
-  });
-
-  test('>= tests', () {
-    expect(zeroZeroZero >= zeroOneZero, isFalse);
-    expect(zeroZeroZero >= oneZeroZero, isFalse);
-    expect(zeroZeroZero >= zeroZeroZero, isTrue);
-
-    expect(zeroZeroOne >= zeroOneZero, isFalse);
-    expect(zeroZeroOne >= oneZeroZero, isFalse);
-    expect(zeroOneZero >= oneZeroZero, isFalse);
-    expect(zeroOneZero >= fiveZeroFive, isFalse);
-
-    expect(zeroOneZero >= zeroZeroOne, isTrue);
-    expect(oneZeroZero >= zeroZeroOne, isTrue);
-    expect(oneZeroZero >= zeroOneZero, isTrue);
-    expect(fiveZeroFive >= zeroOneZero, isTrue);
-
-    expect(zeroZeroOne >= zeroZeroOne, isTrue);
-    expect(zeroOneZero >= zeroOneZero, isTrue);
-    expect(oneZeroZero >= oneZeroZero, isTrue);
-    expect(fiveZeroFive >= fiveZeroFive, isTrue);
-    expect(oneZeroZero >= oneZeroZeroDuplicate, isTrue);
-
-    expect(buildVersion >= oneZeroZero, isTrue);
-    expect(oneZeroZero >= buildVersion, isTrue);
-
-    expect(preReleaseVersion >= oneZeroZero, isFalse);
-    expect(oneZeroZero >= preReleaseVersion, isTrue);
-
-    expect(buildVersion >= buildVersion, isTrue);
-    expect(preReleaseVersion >= preReleaseVersion, isTrue);
-
-    expect(buildAndPrereleaseVersion >= preReleaseVersion, isTrue);
-    expect(preReleaseVersion >= buildAndPrereleaseVersion, isTrue);
-
-    expect(buildAndPrereleaseVersion >= buildVersion, isFalse);
-    expect(buildVersion >= buildAndPrereleaseVersion, isTrue);
-
-    expect(buildAndPrereleaseVersion >= oneZeroZero, isFalse);
-    expect(oneZeroZero >= buildAndPrereleaseVersion, isTrue);
-
-    expect(buildAndPrereleaseVersion >= buildAndPrereleaseVersion, isTrue);
-  });
-
-  test("Validation tests", () {
-    expect(() => Version(-1, 0, 0), throwsArgumentError);
-    expect(() => Version(1, -1, 0), throwsArgumentError);
-    expect(() => Version(1, 1, -1), throwsArgumentError);
-    expect(() => Version(0, -1, 1), throwsArgumentError);
-    expect(() => Version(0, 0, -1), throwsArgumentError);
-    expect(
-      () => Version(1, 0, 0, preRelease: <String>[""]),
-      throwsArgumentError,
-    );
-    expect(
-      () => Version(1, 0, 0, preRelease: <String>["not^safe"]),
-      throwsFormatException,
-    );
-    expect(
-      () => Version(1, 0, 0, build: "not^safe"),
-      throwsFormatException,
-    );
-  });
-
-  test("Parse tests", () {
-    expect(Version.parse("0"), equals(Version(0, 0, 0)));
-    expect(Version.parse("0.0.0"), equals(Version(0, 0, 0)));
-    expect(Version.parse("1"), equals(Version(1, 0, 0)));
-    expect(Version.parse("1.0"), equals(Version(1, 0, 0)));
-    expect(Version.parse("1.2.1"), equals(Version(1, 2, 1)));
-    expect(Version.parse("0.5.3"), equals(Version(0, 5, 3)));
-    expect(Version.parse("0.0.3"), equals(Version(0, 0, 3)));
-    expect(Version.parse("1.2.3.5"), equals(Version(1, 2, 3)));
-    expect(
-      Version.parse("99999.55465.5456"),
-      equals(Version(99999, 55465, 5456)),
-    );
-    expect(
-      Version.parse("1.0.0-alpha"),
-      equals(Version(1, 0, 0, preRelease: <String>["alpha"])),
-    );
-    expect(
-      Version.parse("1.0.0+build"),
-      equals(Version(1, 0, 0, build: "build")),
-    );
-    expect(
-      Version.parse("1.0.0-alpha+build"),
-      equals(
-        Version(1, 0, 0, build: "build", preRelease: <String>["alpha"]),
+  group("equality", () {
+    final cases = [
+      (a: Version(0, 0, 0), b: Version(0, 0, 0), equal: true),
+      (a: Version(1, 0, 0), b: Version(1, 0, 0), equal: true),
+      (a: Version(0, 0, 1), b: Version(0, 0, 0), equal: false),
+      (a: Version(1, 0, 0), b: Version(0, 0, 0), equal: false),
+      (a: Version(5, 0, 5), b: Version(0, 0, 0), equal: false),
+      (
+        a: Version(1, 0, 0, build: "build"),
+        b: Version(1, 0, 0),
+        equal: true,
       ),
-    );
-    expect(
-      Version.parse("1.0.0-alpha.beta+build"),
-      equals(
-        Version(
+      (
+        a: Version(1, 0, 0, preRelease: ["alpha"]),
+        b: Version(1, 0, 0),
+        equal: false,
+      ),
+      (
+        a: Version(1, 0, 0, preRelease: ["alpha"], build: "build"),
+        b: Version(1, 0, 0, preRelease: ["alpha"]),
+        equal: true,
+      ),
+    ];
+
+    for (final c in cases) {
+      test('returns ${c.equal} for ${c.a} == ${c.b}', () {
+        expect(c.a == c.b, c.equal);
+      });
+    }
+  });
+
+  group("comparison", () {
+    final cases = [
+      (a: Version(0, 0, 0), b: Version(0, 1, 0), expected: -1),
+      (a: Version(0, 0, 0), b: Version(1, 0, 0), expected: -1),
+      (a: Version(0, 1, 0), b: Version(0, 0, 1), expected: 1),
+      (a: Version(1, 0, 0), b: Version(0, 0, 1), expected: 1),
+      (a: Version(1, 0, 0), b: Version(1, 0, 0), expected: 0),
+      (
+        a: Version(1, 0, 0, build: "build"),
+        b: Version(1, 0, 0),
+        expected: 0,
+      ),
+      (
+        a: Version(1, 0, 0, preRelease: ["alpha"]),
+        b: Version(1, 0, 0),
+        expected: -1,
+      ),
+      (
+        a: Version(1, 0, 0),
+        b: Version(1, 0, 0, preRelease: ["alpha"]),
+        expected: 1,
+      ),
+      (
+        a: Version(1, 0, 0, preRelease: ["alpha"]),
+        b: Version(1, 0, 0, preRelease: ["alpha", "1"]),
+        expected: -1,
+      ),
+      (
+        a: Version(1, 0, 0, preRelease: ["alpha", "beta"]),
+        b: Version(1, 0, 0, preRelease: ["beta"]),
+        expected: -1,
+      ),
+      (
+        a: Version(1, 0, 0, preRelease: ["beta", "2"]),
+        b: Version(1, 0, 0, preRelease: ["beta", "11"]),
+        expected: -1,
+      ),
+    ];
+
+    for (final c in cases) {
+      test('returns ${c.expected} for ${c.a}.compareTo(${c.b})', () {
+        expect(c.a.compareTo(c.b), c.expected);
+      });
+    }
+  });
+
+  group("less than", () {
+    final cases = [
+      (a: Version(0, 0, 0), b: Version(0, 1, 0), result: true),
+      (a: Version(0, 0, 0), b: Version(1, 0, 0), result: true),
+      (a: Version(0, 1, 0), b: Version(0, 0, 1), result: false),
+      (a: Version(1, 0, 0), b: Version(1, 0, 0), result: false),
+      (
+        a: Version(1, 0, 0, preRelease: ["alpha"]),
+        b: Version(1, 0, 0),
+        result: true,
+      ),
+    ];
+
+    for (final c in cases) {
+      test('returns ${c.result} for ${c.a} < ${c.b}', () {
+        expect(c.a < c.b, c.result);
+      });
+    }
+  });
+
+  group("greater than", () {
+    final cases = [
+      (a: Version(0, 1, 0), b: Version(0, 0, 1), result: true),
+      (a: Version(1, 0, 0), b: Version(0, 0, 1), result: true),
+      (a: Version(0, 0, 0), b: Version(0, 1, 0), result: false),
+      (a: Version(1, 0, 0), b: Version(1, 0, 0), result: false),
+      (
+        a: Version(1, 0, 0),
+        b: Version(1, 0, 0, preRelease: ["alpha"]),
+        result: true,
+      ),
+    ];
+
+    for (final c in cases) {
+      test('returns ${c.result} for ${c.a} > ${c.b}', () {
+        expect(c.a > c.b, c.result);
+      });
+    }
+  });
+
+  group("less than or equal", () {
+    final cases = [
+      (a: Version(0, 0, 0), b: Version(0, 1, 0), result: true),
+      (a: Version(1, 0, 0), b: Version(1, 0, 0), result: true),
+      (a: Version(0, 1, 0), b: Version(0, 0, 1), result: false),
+      (
+        a: Version(1, 0, 0, build: "build"),
+        b: Version(1, 0, 0),
+        result: true,
+      ),
+    ];
+
+    for (final c in cases) {
+      test('returns ${c.result} for ${c.a} <= ${c.b}', () {
+        expect(c.a <= c.b, c.result);
+      });
+    }
+  });
+
+  group("greater than or equal", () {
+    final cases = [
+      (a: Version(0, 1, 0), b: Version(0, 0, 1), result: true),
+      (a: Version(1, 0, 0), b: Version(1, 0, 0), result: true),
+      (a: Version(0, 0, 0), b: Version(0, 1, 0), result: false),
+      (
+        a: Version(1, 0, 0),
+        b: Version(1, 0, 0, build: "build"),
+        result: true,
+      ),
+    ];
+
+    for (final c in cases) {
+      test('returns ${c.result} for ${c.a} >= ${c.b}', () {
+        expect(c.a >= c.b, c.result);
+      });
+    }
+  });
+
+  group("validation", () {
+    test('throws ArgumentError for negative major', () {
+      expect(() => Version(-1, 0, 0), throwsArgumentError);
+    });
+
+    test('throws ArgumentError for negative minor', () {
+      expect(() => Version(1, -1, 0), throwsArgumentError);
+    });
+
+    test('throws ArgumentError for negative patch', () {
+      expect(() => Version(1, 1, -1), throwsArgumentError);
+    });
+
+    test('throws ArgumentError for empty preRelease segment', () {
+      expect(
+        () => Version(1, 0, 0, preRelease: <String>[""]),
+        throwsArgumentError,
+      );
+    });
+
+    test('throws FormatException for invalid preRelease characters', () {
+      expect(
+        () => Version(1, 0, 0, preRelease: <String>["not^safe"]),
+        throwsFormatException,
+      );
+    });
+
+    test('throws FormatException for invalid build characters', () {
+      expect(
+        () => Version(1, 0, 0, build: "not^safe"),
+        throwsFormatException,
+      );
+    });
+  });
+
+  group("parse", () {
+    final cases = [
+      (input: "0", expected: Version(0, 0, 0)),
+      (input: "0.0.0", expected: Version(0, 0, 0)),
+      (input: "1", expected: Version(1, 0, 0)),
+      (input: "1.0", expected: Version(1, 0, 0)),
+      (input: "1.2.1", expected: Version(1, 2, 1)),
+      (input: "0.5.3", expected: Version(0, 5, 3)),
+      (input: "1.2.3.5", expected: Version(1, 2, 3)),
+      (input: "99999.55465.5456", expected: Version(99999, 55465, 5456)),
+      (
+        input: "1.0.0-alpha",
+        expected: Version(1, 0, 0, preRelease: <String>["alpha"]),
+      ),
+      (input: "1.0.0+build", expected: Version(1, 0, 0, build: "build")),
+      (
+        input: "1.0.0-alpha+build",
+        expected: Version(
+          1,
+          0,
+          0,
+          build: "build",
+          preRelease: <String>["alpha"],
+        ),
+      ),
+      (
+        input: "1.0.0-alpha.beta+build",
+        expected: Version(
           1,
           0,
           0,
@@ -284,12 +230,9 @@ void main() {
           preRelease: <String>["alpha", "beta"],
         ),
       ),
-    );
-
-    expect(
-      Version.parse("1.0.0-az.AZ.12-3+az.AZ.12-3"),
-      equals(
-        Version(
+      (
+        input: "1.0.0-az.AZ.12-3+az.AZ.12-3",
+        expected: Version(
           1,
           0,
           0,
@@ -297,79 +240,105 @@ void main() {
           preRelease: <String>["az", "AZ", "12-3"],
         ),
       ),
-    );
+    ];
 
-    expect(() => Version.parse("a"), throwsFormatException);
-    expect(() => Version.parse("123,4322"), throwsFormatException);
-    expect(() => Version.parse("123a"), throwsFormatException);
-    expect(() => Version.parse("1.0.0+not^safe"), throwsFormatException);
-    expect(() => Version.parse("1.0.0-not^safe"), throwsFormatException);
+    for (final c in cases) {
+      test('parses "${c.input}" to ${c.expected}', () {
+        expect(Version.parse(c.input), equals(c.expected));
+      });
+    }
+
+    final invalidCases = [
+      (input: "a", description: "non-numeric"),
+      (input: "123,4322", description: "comma separator"),
+      (input: "123a", description: "trailing letters"),
+      (input: "1.0.0+not^safe", description: "invalid build characters"),
+      (input: "1.0.0-not^safe", description: "invalid preRelease characters"),
+    ];
+
+    for (final c in invalidCases) {
+      test('throws FormatException for ${c.description}: "${c.input}"', () {
+        expect(() => Version.parse(c.input), throwsFormatException);
+      });
+    }
   });
 
-  test("Increment tests", () {
-    expect(Version(1, 0, 0).incrementMajor(), equals(Version(2, 0, 0)));
-    expect(Version(1, 1, 0).incrementMajor(), equals(Version(2, 0, 0)));
-    expect(Version(1, 1, 1).incrementMajor(), equals(Version(2, 0, 0)));
-    expect(Version(1, 0, 0).incrementMinor(), equals(Version(1, 1, 0)));
-    expect(Version(1, 1, 2).incrementMinor(), equals(Version(1, 2, 0)));
-    expect(Version(1, 0, 0).incrementPatch(), equals(Version(1, 0, 1)));
-    expect(Version(1, 1, 2).incrementPatch(), equals(Version(1, 1, 3)));
+  group("increment", () {
+    final majorCases = [
+      (input: Version(1, 0, 0), expected: Version(2, 0, 0)),
+      (input: Version(1, 1, 0), expected: Version(2, 0, 0)),
+      (input: Version(1, 1, 1), expected: Version(2, 0, 0)),
+      (
+        input: Version(1, 1, 1, preRelease: <String>["alpha"], build: "test"),
+        expected: Version(2, 0, 0),
+      ),
+    ];
 
-    expect(
-      Version(
-        1,
-        1,
-        1,
-        preRelease: <String>["alpha"],
-        build: "test",
-      ).incrementMajor(),
-      equals(Version(2, 0, 0)),
-    );
+    for (final c in majorCases) {
+      test('increments major from ${c.input} to ${c.expected}', () {
+        expect(c.input.incrementMajor(), equals(c.expected));
+      });
+    }
+
+    final minorCases = [
+      (input: Version(1, 0, 0), expected: Version(1, 1, 0)),
+      (input: Version(1, 1, 2), expected: Version(1, 2, 0)),
+    ];
+
+    for (final c in minorCases) {
+      test('increments minor from ${c.input} to ${c.expected}', () {
+        expect(c.input.incrementMinor(), equals(c.expected));
+      });
+    }
+
+    final patchCases = [
+      (input: Version(1, 0, 0), expected: Version(1, 0, 1)),
+      (input: Version(1, 1, 2), expected: Version(1, 1, 3)),
+    ];
+
+    for (final c in patchCases) {
+      test('increments patch from ${c.input} to ${c.expected}', () {
+        expect(c.input.incrementPatch(), equals(c.expected));
+      });
+    }
   });
 
-  test("Comparison tests", () {
-    Version a = Version(1, 0, 0);
-    Version b = Version(1, 0, 0);
-    expect(a.compareTo(b), equals(0));
-    b = b.incrementMinor();
-    expect(a.compareTo(b), equals(-1));
-    a = a.incrementMajor();
-    expect(a.compareTo(b), equals(1));
+  group("toString", () {
+    final cases = [
+      (version: Version(0, 0, 0), expected: "0.0.0"),
+      (version: Version(1, 0, 0), expected: "1.0.0"),
+      (version: Version(1, 1, 0), expected: "1.1.0"),
+      (version: Version(1, 1, 1), expected: "1.1.1"),
+      (version: Version(001, 000, 0010), expected: "1.0.10"),
+      (version: Version(1, 1, 1, build: "alpha"), expected: "1.1.1+alpha"),
+      (
+        version: Version(1, 1, 1, preRelease: <String>["alpha", "omega"]),
+        expected: "1.1.1-alpha.omega",
+      ),
+      (
+        version: Version(
+          1,
+          1,
+          1,
+          build: "alpha",
+          preRelease: <String>["beta", "gamma"],
+        ),
+        expected: "1.1.1-beta.gamma+alpha",
+      ),
+    ];
+
+    for (final c in cases) {
+      test('converts ${c.version} to "${c.expected}"', () {
+        expect(c.version.toString(), equals(c.expected));
+      });
+    }
   });
 
-  test("toString tests", () {
-    expect(Version(0, 0, 0).toString(), equals("0.0.0"));
-    expect(Version(1, 0, 0).toString(), equals("1.0.0"));
-    expect(Version(1, 1, 0).toString(), equals("1.1.0"));
-    expect(Version(1, 1, 1).toString(), equals("1.1.1"));
-    expect(Version(1, 0, 1).toString(), equals("1.0.1"));
-    expect(Version(001, 000, 0010).toString(), equals("1.0.10"));
-    expect(
-      Version(1, 1, 1, build: "alpha").toString(),
-      equals("1.1.1+alpha"),
-    );
-    expect(
-      Version(1, 1, 1, preRelease: <String>["alpha", "omega"]).toString(),
-      equals("1.1.1-alpha.omega"),
-    );
-    expect(
-      Version(
-        1,
-        1,
-        1,
-        build: "alpha",
-        preRelease: <String>["beta", "gamma"],
-      ).toString(),
-      equals("1.1.1-beta.gamma+alpha"),
-    );
-  });
-
-  test("Pre-release precedence test", () {
-    // 1.0.0-alpha < 1.0.0-alpha.1 < 1.0.0-alpha.beta < 1.0.0-beta < 1.0.0-beta.2 < 1.0.0-beta.11 < 1.0.0-rc.1 < 1.0.0
-    final List<Version> versions = <Version>[
-      zeroZeroZero,
-      zeroZeroOne,
-      zeroOneZero,
+  test("validates pre-release precedence according to semver spec", () {
+    final versions = <Version>[
+      Version(0, 0, 0),
+      Version(0, 0, 1),
+      Version(0, 1, 0),
       Version.parse("1.0.0-alpha"),
       Version.parse("1.0.0-alpha.1"),
       Version.parse("1.0.0-alpha.beta"),
@@ -378,181 +347,252 @@ void main() {
       Version.parse("1.0.0-beta.11"),
       Version.parse("1.0.0-rc.1"),
       Version.parse("1.0.0"),
-      fiveZeroFive,
+      Version(5, 0, 5),
     ];
-    for (int i = 0; i < versions.length; i++) {
-      final Version version = versions[i];
-      for (int j = 0; j <= i; j++) {
-        final Version otherVersion = versions[j];
-        expect(
-          version >= otherVersion,
-          isTrue,
-          reason: "$version should be greater than or equal to $otherVersion",
-        );
-        if (j == i) {
-          expect(
-            version > otherVersion,
-            isFalse,
-            reason: "$version should be equal to $otherVersion",
-          );
-          expect(
-            version < otherVersion,
-            isFalse,
-            reason: "$version should be equal to $otherVersion",
-          );
-          expect(
-            version == otherVersion,
-            isTrue,
-            reason: "$version should be equal to $otherVersion",
-          );
-          expect(
-            version <= otherVersion,
-            isTrue,
-            reason: "$version should be equal to $otherVersion",
-          );
-        } else {
-          expect(
-            version > otherVersion,
-            isTrue,
-            reason: "$version should be greater than $otherVersion",
-          );
-          expect(
-            version < otherVersion,
-            isFalse,
-            reason: "$version should be greater than $otherVersion",
-          );
-          expect(
-            version == otherVersion,
-            isFalse,
-            reason: "$version should be greater than $otherVersion",
-          );
-          expect(
-            version <= otherVersion,
-            isFalse,
-            reason: "$version should be greater than $otherVersion",
-          );
-        }
-      }
 
-      for (int j = i; j < versions.length; j++) {
-        final Version otherVersion = versions[j];
-        expect(
-          version <= otherVersion,
-          isTrue,
-          reason: "$version should be less than or equal to $otherVersion",
-        );
-        if (j == i) {
-          expect(
-            version > otherVersion,
-            isFalse,
-            reason: "$version should be equal to $otherVersion",
-          );
-          expect(
-            version < otherVersion,
-            isFalse,
-            reason: "$version should be equal to $otherVersion",
-          );
-          expect(
-            version == otherVersion,
-            isTrue,
-            reason: "$version should be equal to $otherVersion",
-          );
-          expect(
-            version >= otherVersion,
-            isTrue,
-            reason: "$version should be equal to $otherVersion",
-          );
+    for (int i = 0; i < versions.length; i++) {
+      for (int j = 0; j < versions.length; j++) {
+        final a = versions[i];
+        final b = versions[j];
+        if (i < j) {
+          expect(a < b, isTrue, reason: "$a should be less than $b");
+        } else if (i > j) {
+          expect(a > b, isTrue, reason: "$a should be greater than $b");
         } else {
-          expect(
-            version > otherVersion,
-            isFalse,
-            reason: "$version should be less than $otherVersion",
-          );
-          expect(
-            version < otherVersion,
-            isTrue,
-            reason: "$version should be less than $otherVersion",
-          );
-          expect(
-            version == otherVersion,
-            isFalse,
-            reason: "$version should be less than $otherVersion",
-          );
-          expect(
-            version >= otherVersion,
-            isFalse,
-            reason: "$version should be less than $otherVersion",
-          );
+          expect(a == b, isTrue, reason: "$a should equal $b");
         }
       }
     }
   });
 
-  test("hashCode test", () {
-    final Version versionOne = Version(
-      1,
-      0,
-      0,
-      preRelease: <String>["alpha"],
-    );
-    final Version versionTwo = Version(
-      1,
-      0,
-      0,
-      preRelease: <String>["al", "pha"],
-    );
-    final Version versionThree = Version(1, 0, 0);
+  group("hashCode", () {
+    test('differs for versions with different preRelease structures', () {
+      final v1 = Version(1, 0, 0, preRelease: <String>["alpha"]);
+      final v2 = Version(1, 0, 0, preRelease: <String>["al", "pha"]);
+      final v3 = Version(1, 0, 0);
 
-    expect(versionOne.hashCode != versionTwo.hashCode, isTrue);
-    expect(versionTwo.hashCode != versionThree.hashCode, isTrue);
-    expect(versionOne.hashCode != versionThree.hashCode, isTrue);
+      expect(v1.hashCode != v2.hashCode, isTrue);
+      expect(v2.hashCode != v3.hashCode, isTrue);
+      expect(v1.hashCode != v3.hashCode, isTrue);
+    });
   });
 
-  test("isPreRelease test", () {
-    final Version versionOne = Version(
-      1,
-      0,
-      0,
-      preRelease: <String>["alpha"],
-    );
-    final Version versionTwo = Version(1, 0, 0);
+  group("isPreRelease", () {
+    final cases = [
+      (version: Version(1, 0, 0, preRelease: <String>["alpha"]), result: true),
+      (version: Version(1, 0, 0), result: false),
+    ];
 
-    expect(versionOne.isPreRelease, isTrue);
-    expect(versionTwo.isPreRelease, isFalse);
+    for (final c in cases) {
+      test('returns ${c.result} for ${c.version}', () {
+        expect(c.version.isPreRelease, c.result);
+      });
+    }
   });
 
-  test("incrementPreRelease test", () {
-    expect(() => Version(1, 0, 0).incrementPreRelease(), throwsException);
+  group("incrementPreRelease", () {
+    test('throws Exception for non-preRelease version', () {
+      expect(() => Version(1, 0, 0).incrementPreRelease(), throwsException);
+    });
 
-    expect(
-      Version(1, 0, 0, preRelease: ["beta"]).incrementPreRelease(),
-      equals(Version(1, 0, 0, preRelease: ["beta", "1"])),
-    );
+    final cases = [
+      (
+        input: Version(1, 0, 0, preRelease: ["beta"]),
+        expected: Version(1, 0, 0, preRelease: ["beta", "1"]),
+      ),
+      (
+        input: Version(1, 0, 0, preRelease: ["alpha", "3"]),
+        expected: Version(1, 0, 0, preRelease: ["alpha", "4"]),
+      ),
+      (
+        input: Version(1, 0, 0, preRelease: ["alpha", "9", "omega"]),
+        expected: Version(1, 0, 0, preRelease: ["alpha", "10", "omega"]),
+      ),
+    ];
 
-    expect(
-      Version(1, 0, 0, preRelease: ["alpha", "3"]).incrementPreRelease(),
-      equals(Version(1, 0, 0, preRelease: ["alpha", "4"])),
-    );
+    for (final c in cases) {
+      test('increments from ${c.input} to ${c.expected}', () {
+        expect(c.input.incrementPreRelease(), equals(c.expected));
+      });
+    }
+  });
 
-    expect(
-      Version(
-        1,
-        0,
-        0,
-        preRelease: ["alpha", "9", "omega"],
-      ).incrementPreRelease(),
-      equals(Version(1, 0, 0, preRelease: ["alpha", "10", "omega"])),
-    );
+  group("tryParse", () {
+    final stringCases = [
+      (input: "1.2.3", expected: Version(1, 2, 3)),
+      (input: "1.0.0", expected: Version(1, 0, 0)),
+      (input: "1.0.0-alpha", expected: Version(1, 0, 0, preRelease: ["alpha"])),
+      (input: "1.0.0+build", expected: Version(1, 0, 0, build: "build")),
+      (
+        input: "1.0.0-alpha+build",
+        expected: Version(1, 0, 0, preRelease: ["alpha"], build: "build"),
+      ),
+      (input: "invalid", expected: null),
+      (input: "", expected: null),
+      (input: "not^safe", expected: null),
+    ];
 
-    expect(
-      Version(
-            1,
-            0,
-            0,
-            preRelease: ["alpha", "9", "omega"],
-          ).incrementPreRelease() >
-          Version(1, 0, 0, preRelease: ["alpha", "9", "omega"]),
-      isTrue,
-    );
+    for (final c in stringCases) {
+      test('returns ${c.expected} for string "${c.input}"', () {
+        expect(Version.tryParse(c.input), equals(c.expected));
+      });
+    }
+
+    test('returns same instance for Version input', () {
+      final version = Version(1, 2, 3);
+      expect(identical(Version.tryParse(version), version), isTrue);
+    });
+
+    test('returns null for null input', () {
+      expect(Version.tryParse(null), isNull);
+    });
+
+    final listCases = [
+      (input: [1, 2, 3], expected: Version(1, 2, 3)),
+      (input: [1, 0, 0], expected: Version(1, 0, 0)),
+      (input: [5], expected: Version(5, 0, 0)),
+      (input: [3, 2], expected: Version(3, 2, 0)),
+      (input: ["1", "2", "3"], expected: Version(1, 2, 3)),
+      (input: ["5"], expected: Version(5, 0, 0)),
+      (input: ["3", "2"], expected: Version(3, 2, 0)),
+      (input: [1, "2", 3], expected: Version(1, 2, 3)),
+      (input: [], expected: null),
+      (input: [1, 2, 3, 4], expected: null),
+      (input: ["invalid"], expected: null),
+      (input: [1, "invalid", 3], expected: null),
+    ];
+
+    for (final c in listCases) {
+      test('returns ${c.expected} for list ${c.input}', () {
+        expect(Version.tryParse(c.input), equals(c.expected));
+      });
+    }
+
+    final recordCases = [
+      (input: (1, 2, 3), expected: Version(1, 2, 3)),
+      (input: (1, 0, 0), expected: Version(1, 0, 0)),
+      (input: (5,), expected: Version(5, 0, 0)),
+      (input: (3, 2), expected: Version(3, 2, 0)),
+      (input: ("1", "2", "3"), expected: Version(1, 2, 3)),
+      (input: ("5",), expected: Version(5, 0, 0)),
+      (input: ("3", "2"), expected: Version(3, 2, 0)),
+      (input: ("invalid", "2", "3"), expected: null),
+      (input: ("1", "invalid", "3"), expected: null),
+    ];
+
+    for (final c in recordCases) {
+      test('returns ${c.expected} for record ${c.input}', () {
+        expect(Version.tryParse(c.input), equals(c.expected));
+      });
+    }
+
+    final unsupportedTypeCases = [
+      (input: 123, description: "int"),
+      (input: 1.23, description: "double"),
+      (input: true, description: "bool"),
+    ];
+
+    for (final c in unsupportedTypeCases) {
+      test('returns null for unsupported type: ${c.description}', () {
+        expect(Version.tryParse(c.input), isNull);
+      });
+    }
+
+    final mapCases = [
+      (
+        input: {'major': 1, 'minor': 2, 'patch': 3},
+        expected: Version(1, 2, 3),
+      ),
+      (
+        input: {'major': 1},
+        expected: Version(1, 0, 0),
+      ),
+      (
+        input: {'major': 1, 'minor': 2},
+        expected: Version(1, 2, 0),
+      ),
+      (
+        input: {'major': '1', 'minor': '2', 'patch': '3'},
+        expected: Version(1, 2, 3),
+      ),
+      (
+        input: {
+          'major': 1,
+          'minor': 0,
+          'patch': 0,
+          'preRelease': ['alpha'],
+        },
+        expected: Version(1, 0, 0, preRelease: ['alpha']),
+      ),
+      (
+        input: {
+          'major': 1,
+          'minor': 0,
+          'patch': 0,
+          'preRelease': ['alpha', 'beta'],
+        },
+        expected: Version(1, 0, 0, preRelease: ['alpha', 'beta']),
+      ),
+      (
+        input: {
+          'major': 1,
+          'minor': 0,
+          'patch': 0,
+          'preRelease': 'alpha',
+        },
+        expected: Version(1, 0, 0, preRelease: ['alpha']),
+      ),
+      (
+        input: {
+          'major': 1,
+          'minor': 0,
+          'patch': 0,
+          'preRelease': [1, 2],
+        },
+        expected: Version(1, 0, 0, preRelease: ['1', '2']),
+      ),
+      (
+        input: {
+          'major': 1,
+          'minor': 0,
+          'patch': 0,
+          'preRelease': [true],
+        },
+        expected: null,
+      ),
+      (
+        input: {
+          'major': 1,
+          'minor': 0,
+          'patch': 0,
+          'build': 'build123',
+        },
+        expected: Version(1, 0, 0, build: 'build123'),
+      ),
+      (
+        input: {
+          'major': 1,
+          'minor': 0,
+          'patch': 0,
+          'preRelease': ['alpha'],
+          'build': 'build123',
+        },
+        expected: Version(1, 0, 0, preRelease: ['alpha'], build: 'build123'),
+      ),
+      (
+        input: {},
+        expected: null,
+      ),
+      (
+        input: {'minor': 2, 'patch': 3},
+        expected: null,
+      ),
+    ];
+
+    for (final c in mapCases) {
+      test('returns ${c.expected} for map ${c.input}', () {
+        expect(Version.tryParse(c.input), equals(c.expected));
+      });
+    }
   });
 }
