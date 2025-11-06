@@ -9,10 +9,10 @@ import 'package:i18n/i18n.dart';
 import '../../../../../../core/configs/config/providers.dart';
 import '../../../../../../core/posts/details_parts/widgets.dart';
 import '../../../../../../core/search/search/routes.dart';
-import '../../../../../../core/tags/show/routes.dart';
 import '../../../../../../core/tags/tag/providers.dart';
 import '../../../../../../core/tags/tag/types.dart';
 import '../../../../../../core/tags/tag/widgets.dart';
+import '../../../../../../core/widgets/booru_popup_menu_button.dart';
 import '../../../../configs/providers.dart';
 import '../../../../tags/_shared/tag_list_notifier.dart';
 import '../../../../tags/tag/widgets.dart';
@@ -53,23 +53,14 @@ class DanbooruTagsTile extends ConsumerWidget {
         auth: config,
         post: post,
         count: count,
-        itemBuilder: {
-          if (loginDetails.hasLogin())
-            'edit': Text(context.t.generic.action.edit),
-        },
-        onMultiSelect: () {
-          goToShowTaglistPage(
-            ref,
-            post,
-            initiallyMultiSelectEnabled: true,
-            auth: config,
-          );
-        },
-        onSelected: (value) {
-          if (value == 'edit') {
-            ref.danbooruEdit(post);
-          }
-        },
+        menuItems: loginDetails.hasLogin()
+            ? [
+                BooruPopupMenuItem(
+                  title: Text(context.t.generic.action.edit),
+                  onTap: () => ref.danbooruEdit(post),
+                ),
+              ]
+            : null,
       ),
       initiallyExpanded: initialExpanded,
       onExpansionChanged: (value) {

@@ -127,11 +127,16 @@ class _DownloadManagerPageState extends ConsumerState<DownloadManagerPage> {
                   },
                 ),
               BooruPopupMenuButton(
-                onSelected: (value) {
-                  switch (value) {
-                    case 'select':
+                items: [
+                  BooruPopupMenuItem(
+                    title: Text(context.t.generic.action.select),
+                    onTap: () {
                       _selectionModeController.enable();
-                    case 'clear':
+                    },
+                  ),
+                  BooruPopupMenuItem(
+                    title: Text(context.t.generic.action.clear),
+                    onTap: () {
                       // clear default group only
                       ref
                           .read(downloadTaskUpdatesProvider.notifier)
@@ -147,12 +152,9 @@ class _DownloadManagerPageState extends ConsumerState<DownloadManagerPage> {
                               );
                             },
                           );
-                  }
-                },
-                itemBuilder: {
-                  'select': Text(context.t.generic.action.select),
-                  'clear': Text(context.t.generic.action.clear),
-                },
+                    },
+                  ),
+                ],
               ),
             ],
           ),

@@ -1,14 +1,20 @@
+// Dart imports:
+import 'dart:math';
+
 // Flutter imports:
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:anchor_ui/anchor_ui.dart';
 import 'package:i18n/i18n.dart';
+
+// Project imports:
+import '../../foundation/platform.dart';
 
 const double _kMinButtonWidth = 40;
 const double _kMaxButtonWidth = 150;
 const double _kDefaultSpacing = 8;
 const double _kWrapSpacing = 4;
-const double _kMenuAlignmentOffsetY = 12;
 
 enum OverflowStrategy {
   /// Dropdown menu
@@ -73,7 +79,6 @@ class AdaptiveButtonRow extends StatefulWidget {
     this.buttonWidth,
     this.spacing = _kDefaultSpacing,
     this.overflowIcon,
-    this.overflowButtonBuilder,
     this.onOverflow,
     this.scrollController,
     this.runSpacing = _kDefaultSpacing,
@@ -91,7 +96,6 @@ class AdaptiveButtonRow extends StatefulWidget {
     double? buttonWidth,
     double spacing = _kDefaultSpacing,
     Widget? overflowIcon,
-    Widget Function(VoidCallback)? overflowButtonBuilder,
     ValueChanged<int>? onOverflow,
     int? maxVisibleButtons,
     MainAxisAlignment? alignment,
@@ -106,7 +110,6 @@ class AdaptiveButtonRow extends StatefulWidget {
     buttonWidth: buttonWidth,
     spacing: spacing,
     overflowIcon: overflowIcon,
-    overflowButtonBuilder: overflowButtonBuilder,
     onOverflow: onOverflow,
     maxVisibleButtons: maxVisibleButtons,
     alignment: alignment,
@@ -169,7 +172,6 @@ class AdaptiveButtonRow extends StatefulWidget {
 
   // Menu-specific
   final Widget? overflowIcon;
-  final Widget Function(VoidCallback onPressed)? overflowButtonBuilder;
   final ValueChanged<int>? onOverflow;
 
   // Menu callbacks
@@ -425,47 +427,89 @@ class _AdaptiveButtonRowState extends State<AdaptiveButtonRow> {
     List<ButtonData> overflowButtons,
     int visibleCount,
   ) {
-    return MenuAnchor(
-      consumeOutsideTap: true,
-      alignmentOffset: const Offset(0, _kMenuAlignmentOffsetY),
-      style: MenuStyle(
-        padding: WidgetStateProperty.all(
-          const EdgeInsets.symmetric(
-            horizontal: 8,
-            vertical: 8,
-          ),
+    final colorScheme = Theme.of(context).colorScheme;
+
+    final isDesktop = isDesktopPlatform();
+
+    return AnchorPopover(
+      arrowShape: const NoArrow(),
+      placement: Placement.bottom,
+      triggerMode: const AnchorTriggerMode.tap(consumeOutsideTap: true),
+      border: BorderSide(
+        color: colorScheme.outlineVariant,
+        width: 0.5,
+      ),
+      backdropBuilder: switch (isDesktop) {
+        true => null,
+        false => (context) => Container(
+          color: Colors.black.withValues(alpha: 0.75),
+        ),
+      },
+      boxShadow: [
+        BoxShadow(
+          color: colorScheme.shadow.withValues(alpha: 0.2),
+          blurRadius: 8,
+          offset: const Offset(0, 4),
+        ),
+      ],
+      backgroundColor: isDesktop ? null : colorScheme.surface,
+      viewPadding: const EdgeInsets.all(8),
+      onShow: widget.onOpened,
+      onHide: widget.onClosed,
+      spacing: 12,
+      overlayBuilder: (context) => Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 8,
+          vertical: 8,
+        ),
+        constraints: BoxConstraints(
+          maxWidth: min(MediaQuery.widthOf(context), 200),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: overflowButtons
+              .asMap()
+              .entries
+              .map(
+                (entry) => Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: () {
+                      final controller = AnchorData.maybeOf(
+                        context,
+                      )?.controller;
+                      controller?.hide();
+                      widget.onMenuTap?.call();
+                      final globalIndex = entry.key + visibleCount;
+                      if (entry.value.onTap != null) {
+                        entry.value.onTap!();
+                      } else {
+                        widget.onOverflow?.call(globalIndex);
+                      }
+                    },
+                    borderRadius: BorderRadius.circular(8),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: isDesktop ? 8 : 10,
+                      ),
+                      child: Row(
+                        children: [
+                          Flexible(
+                            child: Text(
+                              entry.value.title,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              )
+              .toList(),
         ),
       ),
-      onOpen: widget.onOpened,
-      onClose: widget.onClosed,
-      builder: (context, controller, child) =>
-          widget.overflowButtonBuilder?.call(() {
-            controller.isOpen ? controller.close() : controller.open();
-          }) ??
-          IconButton(
-            icon: widget.overflowIcon ?? const Icon(Icons.more_horiz),
-            onPressed: () {
-              controller.isOpen ? controller.close() : controller.open();
-            },
-          ),
-      menuChildren: overflowButtons
-          .asMap()
-          .entries
-          .map(
-            (entry) => MenuItemButton(
-              onPressed: () {
-                widget.onMenuTap?.call();
-                final globalIndex = entry.key + visibleCount;
-                if (entry.value.onTap != null) {
-                  entry.value.onTap!();
-                } else {
-                  widget.onOverflow?.call(globalIndex);
-                }
-              },
-              child: Text(entry.value.title),
-            ),
-          )
-          .toList(),
+      child: widget.overflowIcon ?? const Icon(Icons.more_horiz),
     );
   }
 }

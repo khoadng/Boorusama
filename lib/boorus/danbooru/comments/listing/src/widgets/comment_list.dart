@@ -54,22 +54,22 @@ class CommentList extends StatelessWidget {
                   onReply: authenticated ? () => onReply(comment) : null,
                   moreBuilder: (context) => authenticated
                       ? BooruPopupMenuButton(
-                          onSelected: (value) {
-                            if (value == 'edit') {
-                              onEdit(comment);
-                            } else if (value == 'reply') {
-                              onReply(comment);
-                            } else if (value == 'delete') {
-                              onDelete(comment);
-                            }
-                          },
-                          itemBuilder: {
+                          items: [
                             if (comment.isSelf)
-                              'edit': Text(context.t.comment.list.edit),
-                            'reply': Text(context.t.comment.list.reply),
+                              BooruPopupMenuItem(
+                                title: Text(context.t.comment.list.edit),
+                                onTap: () => onEdit(comment),
+                              ),
+                            BooruPopupMenuItem(
+                              title: Text(context.t.comment.list.reply),
+                              onTap: () => onReply(comment),
+                            ),
                             if (comment.isSelf)
-                              'delete': Text(context.t.comment.list.delete),
-                          },
+                              BooruPopupMenuItem(
+                                title: Text(context.t.comment.list.delete),
+                                onTap: () => onDelete(comment),
+                              ),
+                          ],
                         )
                       : const SizedBox.shrink(),
                 ),

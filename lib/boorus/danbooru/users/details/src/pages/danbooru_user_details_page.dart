@@ -40,14 +40,14 @@ class DanbooruUserDetailsPage extends ConsumerWidget {
     return UserDetailsPage(
       actions: [
         BooruPopupMenuButton(
-          itemBuilder: {
-            0: Text(context.t.profile.copy_user_id),
-          },
-          onSelected: (value) {
-            if (value == 0) {
-              AppClipboard.copy(uid.toString());
-            }
-          },
+          items: [
+            BooruPopupMenuItem(
+              title: Text(context.t.profile.copy_user_id),
+              onTap: () {
+                AppClipboard.copy(uid.toString());
+              },
+            ),
+          ],
         ),
       ],
       body: SafeArea(

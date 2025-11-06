@@ -305,15 +305,12 @@ class TagEditFilterHeader extends ConsumerWidget {
           if (!filterOn) const Spacer(),
           if (!filterOn)
             BooruPopupMenuButton(
-              itemBuilder: const {
-                'fetch_category': Text('Fetch tag category'),
-              },
-              onSelected: (value) async {
-                switch (value) {
-                  case 'fetch_category':
-                    await _fetch(ref);
-                }
-              },
+              items: [
+                BooruPopupMenuItem(
+                  title: const Text('Fetch tag category'),
+                  onTap: () => _fetch(ref),
+                ),
+              ],
             ),
         ],
       ),

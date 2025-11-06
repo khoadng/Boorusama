@@ -1,84 +1,144 @@
+// Dart imports:
+import 'dart:math';
+
 // Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 // Package imports:
+import 'package:anchor_ui/anchor_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../foundation/display.dart';
-import '../settings/providers.dart';
-import 'conditional_parent_widget.dart';
+import '../../foundation/platform.dart';
+import 'hover_aware_container.dart';
 
-class BooruPopupMenuButton<T> extends ConsumerWidget {
+class BooruPopupMenuButton extends ConsumerWidget {
   const BooruPopupMenuButton({
-    required this.itemBuilder,
-    super.key,
-    this.onSelected,
+    required this.items,
     this.iconColor,
-    this.offset,
+    super.key,
+    this.maxWidth,
   });
 
-  final Map<T, Widget> itemBuilder;
-  final PopupMenuItemSelected<T>? onSelected;
-
+  final List<Widget> items;
   final Color? iconColor;
-  final Offset? offset;
+  final double? maxWidth;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final hapticLevel = ref.watch(hapticFeedbackLevelProvider);
+    final colorScheme = Theme.of(context).colorScheme;
 
-    return PopupMenuButton(
-      offset: offset ?? Offset.zero,
-      constraints: kPreferredLayout.isDesktop
-          ? const BoxConstraints(
-              minWidth: 2 * 40.0,
-              maxWidth: 5 * 40.0,
-            )
-          : null,
-      icon: kPreferredLayout.isMobile
-          ? const Icon(
-              Icons.more_vert,
-            )
-          : const Icon(
-              Symbols.more_vert,
-              weight: 400,
-            ),
-      iconColor: iconColor,
-      padding: EdgeInsets.zero,
-      onOpened: () {
-        if (hapticLevel.isFull) {
-          HapticFeedback.selectionClick();
-        }
+    final icon = Padding(
+      padding: const EdgeInsets.all(4),
+      child: Icon(
+        Icons.more_vert,
+        color: iconColor,
+      ),
+    );
+
+    final isDesktop = isDesktopPlatform();
+
+    return AnchorPopover(
+      arrowShape: const NoArrow(),
+      placement: Placement.bottom,
+      backdropBuilder: switch (isDesktop) {
+        true => null,
+        false => (context) => Container(
+          color: Colors.black.withValues(alpha: 0.75),
+        ),
       },
-      itemBuilder: (context) => [
-        for (final item in itemBuilder.entries)
-          PopupMenuItem(
-            height: kPreferredLayout.isMobile ? 40 : 32,
-            value: item.key,
-            child: ConditionalParentWidget(
-              condition: kPreferredLayout.isDesktop,
-              conditionalBuilder: (child) => Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 4,
-                ),
-                child: child,
-              ),
-              child: item.value,
-            ),
-          ),
+      triggerMode: const AnchorTriggerMode.tap(consumeOutsideTap: true),
+      border: BorderSide(
+        color: colorScheme.outlineVariant,
+        width: 0.5,
+      ),
+      boxShadow: [
+        BoxShadow(
+          color: colorScheme.shadow.withValues(alpha: 0.2),
+          blurRadius: 8,
+          offset: const Offset(0, 4),
+        ),
       ],
-      onSelected: (item) {
-        if (hapticLevel.isFull) {
-          HapticFeedback.selectionClick();
-        }
+      viewPadding: const EdgeInsets.all(8),
+      backgroundColor: isDesktop ? null : colorScheme.surface,
+      overlayBuilder: (context) => Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 8,
+          vertical: 8,
+        ),
+        constraints: BoxConstraints(
+          maxWidth: min(MediaQuery.widthOf(context), maxWidth ?? 200),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: items,
+        ),
+      ),
+      child: isDesktop
+          ? HoverAwareContainer(
+              borderRadius: BorderRadius.circular(12),
+              child: icon,
+            )
+          : Material(
+              color: Colors.transparent,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: icon,
+            ),
+    );
+  }
+}
 
-        if (onSelected case final callback?) {
-          callback(item);
-        }
-      },
+class BooruPopupMenuItem extends StatelessWidget {
+  const BooruPopupMenuItem({
+    required this.title,
+    required this.onTap,
+    this.icon,
+    super.key,
+  });
+
+  final Widget title;
+  final Widget? icon;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final controller = AnchorData.maybeOf(context)?.controller;
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () {
+          controller?.hide();
+          onTap();
+        },
+        borderRadius: BorderRadius.circular(8),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 8,
+            vertical: 8,
+          ),
+          child: Row(
+            children: [
+              if (icon case final icon?)
+                Theme(
+                  data: Theme.of(context).copyWith(
+                    iconTheme: IconThemeData(
+                      color: colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 8),
+                    child: icon,
+                  ),
+                ),
+              Flexible(child: title),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

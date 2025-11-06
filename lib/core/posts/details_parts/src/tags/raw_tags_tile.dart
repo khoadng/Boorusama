@@ -68,48 +68,36 @@ class RawTagsTileTitle<T extends Post> extends ConsumerWidget {
     required this.count,
     required this.post,
     required this.auth,
-    this.itemBuilder,
-    this.onSelected,
-    this.onMultiSelect,
+    this.menuItems,
     super.key,
   });
 
   final BooruConfigAuth auth;
   final int? count;
   final T post;
-  final Map<String, Widget>? itemBuilder;
-  final void Function(String value)? onSelected;
-  final VoidCallback? onMultiSelect;
+  final List<BooruPopupMenuItem>? menuItems;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final effectiveItemBuilder = {
-      'select': Text(context.t.generic.action.select),
-      ...?itemBuilder,
-    };
-
     return Row(
       children: [
         Text(context.t.tags.counter(n: count ?? 0)),
         BooruPopupMenuButton(
           iconColor: Theme.of(context).colorScheme.onSurface,
-          onSelected: (value) {
-            if (value == 'select') {
-              if (onMultiSelect != null) {
-                onMultiSelect!();
-              } else {
+          items: [
+            BooruPopupMenuItem(
+              title: Text(context.t.generic.action.select),
+              onTap: () {
                 goToShowTaglistPage(
                   ref,
                   post,
                   initiallyMultiSelectEnabled: true,
                   auth: auth,
                 );
-              }
-            } else {
-              onSelected?.call(value);
-            }
-          },
-          itemBuilder: effectiveItemBuilder,
+              },
+            ),
+            ...?menuItems,
+          ],
         ),
       ],
     );

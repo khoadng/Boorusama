@@ -103,19 +103,18 @@ class _DanbooruMyUploadsPageState
                 .watch(danbooruUploadHideProvider(config))
                 .maybeWhen(
                   data: (state) => BooruPopupMenuButton(
-                    onSelected: (value) {
-                      switch (value) {
-                        case 'toggle_hidden':
+                    items: [
+                      BooruPopupMenuItem(
+                        title: Text(
+                          state.showHiddenUploads
+                              ? 'Hide hidden'.hc
+                              : 'Show hidden'.hc,
+                        ),
+                        onTap: () {
                           hideNofifier.toggleShowHidden();
-                      }
-                    },
-                    itemBuilder: {
-                      'toggle_hidden': Text(
-                        state.showHiddenUploads
-                            ? 'Hide hidden'.hc
-                            : 'Show hidden'.hc,
+                        },
                       ),
-                    },
+                    ],
                   ),
                   orElse: () => const SizedBox.shrink(),
                 ),

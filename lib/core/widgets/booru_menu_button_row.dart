@@ -48,7 +48,6 @@ class BooruMenuButtonRow extends ConsumerWidget {
       buttonWidth: buttonWidth,
       spacing: spacing,
       overflowIcon: overflowIcon,
-      overflowButtonBuilder: overflowButtonBuilder,
       onOverflow: onOverflow,
       maxVisibleButtons: maxVisibleButtons,
       alignment: alignment,

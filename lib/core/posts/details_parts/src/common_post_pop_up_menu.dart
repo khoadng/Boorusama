@@ -35,20 +35,14 @@ class CommonPostPopupMenu extends ConsumerWidget {
       configViewer: configViewer,
       copy: copy,
       builder: (context, buttons) {
-        final menuItems = <int, Widget>{};
-
-        for (var i = 0; i < buttons.length; i++) {
-          final button = buttons[i];
-          menuItems[i] = Text(button.title);
-        }
-
-        return BooruPopupMenuButton<int>(
-          itemBuilder: menuItems,
-          onSelected: (index) {
-            if (index < buttons.length) {
-              buttons[index].onTap?.call();
-            }
-          },
+        return BooruPopupMenuButton(
+          items: [
+            for (final button in buttons)
+              BooruPopupMenuItem(
+                title: Text(button.title),
+                onTap: () => button.onTap?.call(),
+              ),
+          ],
         );
       },
     );

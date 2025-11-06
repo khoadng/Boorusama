@@ -77,16 +77,15 @@ class _ShowTagListPageScaffoldState
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8),
                   child: BooruPopupMenuButton(
-                    onSelected: (value) {
-                      switch (value) {
-                        case 'select':
+                    items: [
+                      BooruPopupMenuItem(
+                        title: Text(context.t.generic.action.select),
+                        icon: const Icon(Icons.select_all),
+                        onTap: () {
                           _selectionModeController.enable();
-                        default:
-                      }
-                    },
-                    itemBuilder: {
-                      'select': Text(context.t.generic.action.select),
-                    },
+                        },
+                      ),
+                    ],
                   ),
                 ),
               ],

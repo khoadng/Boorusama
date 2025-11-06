@@ -27,32 +27,37 @@ class ImportExportTagButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return BooruPopupMenuButton(
-      onSelected: (value) {
-        if (value == 'import') {
-          showGeneralDialog(
-            context: context,
-            pageBuilder: (context, _, _) => ImportTagsDialog(
-              padding: kPreferredLayout.isMobile ? 0 : 8,
-              hint: _kHint,
-              onImport: (tagString, _) {
-                onImport(tagString);
-              },
-            ),
-          );
-        } else if (value == 'export') {
-          AppClipboard.copyAndToast(
-            context,
-            tags.join('\n'),
-            //TODO: should create a new key for this instead of using the same key as favorite_tags.export_notification
-            message: context.t.favorite_tags.export_notification,
-          );
-        }
-      },
-      itemBuilder: {
-        'import': Text(context.t.settings.backup_and_restore.import),
+      items: [
+        BooruPopupMenuItem(
+          title: Text(context.t.settings.backup_and_restore.import),
+          icon: const Icon(Icons.file_upload),
+          onTap: () {
+            showGeneralDialog(
+              context: context,
+              pageBuilder: (context, _, _) => ImportTagsDialog(
+                padding: kPreferredLayout.isMobile ? 0 : 8,
+                hint: _kHint,
+                onImport: (tagString, _) {
+                  onImport(tagString);
+                },
+              ),
+            );
+          },
+        ),
         if (tags.isNotEmpty)
-          'export': Text(context.t.settings.backup_and_restore.export),
-      },
+          BooruPopupMenuItem(
+            title: Text(context.t.settings.backup_and_restore.export),
+            icon: const Icon(Icons.file_download),
+            onTap: () {
+              AppClipboard.copyAndToast(
+                context,
+                tags.join('\n'),
+                //TODO: should create a new key for this instead of using the same key as favorite_tags.export_notification
+                message: context.t.favorite_tags.export_notification,
+              );
+            },
+          ),
+      ],
     );
   }
 }

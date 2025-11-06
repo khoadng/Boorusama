@@ -48,18 +48,19 @@ class SelectedTagList extends StatelessWidget {
       firstChild: Row(
         children: [
           BooruPopupMenuButton(
-            offset: const Offset(0, 40),
-            onSelected: (value) {
-              if (value == 0) {
-                onClear.call();
-              } else if (value == 1) {
-                onBulkDownload(tags);
-              }
-            },
-            itemBuilder: {
-              0: Text(context.t.search.remove_all_selected),
-              1: Text(context.t.sideMenu.bulk_download),
-            },
+            maxWidth: 250,
+            items: [
+              BooruPopupMenuItem(
+                title: Text(context.t.search.remove_all_selected),
+                icon: const Icon(Symbols.clear_all),
+                onTap: onClear,
+              ),
+              BooruPopupMenuItem(
+                title: Text(context.t.sideMenu.bulk_download),
+                icon: const Icon(Symbols.download),
+                onTap: () => onBulkDownload(tags),
+              ),
+            ],
           ),
           Expanded(
             child: SizedBox(

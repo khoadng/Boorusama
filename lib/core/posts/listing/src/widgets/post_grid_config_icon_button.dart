@@ -81,60 +81,32 @@ class PostGridConfigIconButton<T> extends ConsumerWidget {
                           context.extendedColorScheme.surfaceContainerOverlay,
                     ),
                     child: BooruPopupMenuButton(
-                      offset: const Offset(0, 36),
                       iconColor:
                           context.extendedColorScheme.onSurfaceContainerOverlay,
-                      onSelected: (value) {
-                        if (value == 'options') {
-                          _showViewOptions(context, settingsNotifier);
-                        } else if (value == 'select') {
-                          selectionModeController.enable();
-                        } else if (value == 'stats') {
-                          if (postStatsPageBuilder != null) {
-                            Navigator.of(context).push(
-                              CupertinoPageRoute(
-                                settings: const RouteSettings(
-                                  name: 'post_statistics',
-                                ),
-                                builder: (_) => postStatsPageBuilder(
-                                  context,
-                                  postController.items,
-                                ),
-                              ),
-                            );
-                          }
-                        } else if (value == 'edit_blacklist') {
-                          // check if all entries are global then just open the global blacklist page
-                          final isGlobal =
-                              blacklistEntries?.every(
-                                (element) =>
-                                    element.source == BlacklistSource.global,
-                              ) ??
-                              false;
-
-                          if (isGlobal) {
-                            goToGlobalBlacklistedTagsPage(ref);
-                          } else {
-                            showBooruModalBottomSheet(
-                              context: context,
-                              routeSettings: const RouteSettings(
-                                name: 'edit_blacklist_select',
-                              ),
-                              builder: (_) => const EditBlacklistActionSheet(),
-                            );
-                          }
-                        }
-                      },
-                      itemBuilder: {
-                        'select': PostGridConfigOptionTile(
+                      items: [
+                        BooruPopupMenuItem(
                           title: Text(context.t.generic.action.select),
                           icon: const Icon(
                             Symbols.select_all,
                             size: 18,
                           ),
+                          onTap: () => selectionModeController.enable(),
                         ),
                         if (postStatsPageBuilder != null)
-                          'stats': PostGridConfigOptionTile(
+                          BooruPopupMenuItem(
+                            onTap: () {
+                              Navigator.of(context).push(
+                                CupertinoPageRoute(
+                                  settings: const RouteSettings(
+                                    name: 'post_statistics',
+                                  ),
+                                  builder: (_) => postStatsPageBuilder(
+                                    context,
+                                    postController.items,
+                                  ),
+                                ),
+                              );
+                            },
                             title: Text(context.t.posts.actions.stats),
                             icon: const Icon(
                               Symbols.bar_chart,
@@ -144,7 +116,27 @@ class PostGridConfigIconButton<T> extends ConsumerWidget {
                         if (showBlacklist &&
                             blacklistEntries != null &&
                             blacklistEntries.isNotEmpty)
-                          'edit_blacklist': PostGridConfigOptionTile(
+                          BooruPopupMenuItem(
+                            onTap: () {
+                              // check if all entries are global then just open the global blacklist page
+                              final isGlobal = blacklistEntries.every(
+                                (element) =>
+                                    element.source == BlacklistSource.global,
+                              );
+
+                              if (isGlobal) {
+                                goToGlobalBlacklistedTagsPage(ref);
+                              } else {
+                                showBooruModalBottomSheet(
+                                  context: context,
+                                  routeSettings: const RouteSettings(
+                                    name: 'edit_blacklist_select',
+                                  ),
+                                  builder: (_) =>
+                                      const EditBlacklistActionSheet(),
+                                );
+                              }
+                            },
                             title: Text(
                               context.t.posts.actions.edit_blacklist,
                             ),
@@ -153,7 +145,9 @@ class PostGridConfigIconButton<T> extends ConsumerWidget {
                               size: 18,
                             ),
                           ),
-                        'options': PostGridConfigOptionTile(
+                        BooruPopupMenuItem(
+                          onTap: () =>
+                              _showViewOptions(context, settingsNotifier),
                           title: Text(
                             context.t.posts.actions.view_options,
                           ),
@@ -162,7 +156,7 @@ class PostGridConfigIconButton<T> extends ConsumerWidget {
                             size: 18,
                           ),
                         ),
-                      },
+                      ],
                     ),
                   )
                 : const SizedBox.shrink();
@@ -202,36 +196,6 @@ class PostGridConfigIconButton<T> extends ConsumerWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-class PostGridConfigOptionTile extends StatelessWidget {
-  const PostGridConfigOptionTile({
-    required this.title,
-    required this.icon,
-    super.key,
-  });
-
-  final Widget title;
-  final Widget icon;
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    return Row(
-      children: [
-        Theme(
-          data: Theme.of(context).copyWith(
-            iconTheme: IconThemeData(
-              color: colorScheme.onSurfaceVariant,
-            ),
-          ),
-          child: icon,
-        ),
-        const SizedBox(width: 12),
-        title,
-      ],
     );
   }
 }

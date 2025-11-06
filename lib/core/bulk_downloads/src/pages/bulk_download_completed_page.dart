@@ -62,15 +62,15 @@ class _BulkDownloadCompletedPageState
           title: Text(context.t.bulk_downloads.completed.title),
           actions: [
             BooruPopupMenuButton(
-              onSelected: (value) {
-                if (value == 'clear_all') {
-                  notifier.deleteAllCompletedSessions();
-                  _refreshList();
-                }
-              },
-              itemBuilder: {
-                'clear_all': Text(context.t.bulk_downloads.completed.clear_all),
-              },
+              items: [
+                BooruPopupMenuItem(
+                  title: Text(context.t.bulk_downloads.completed.clear_all),
+                  onTap: () {
+                    notifier.deleteAllCompletedSessions();
+                    _refreshList();
+                  },
+                ),
+              ],
             ),
           ],
         ),

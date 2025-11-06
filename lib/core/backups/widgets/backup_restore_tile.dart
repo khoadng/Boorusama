@@ -127,8 +127,13 @@ class DefaultBackupTile extends ConsumerWidget {
             ),
             if (!isSelectionMode)
               BooruPopupMenuButton(
-                onSelected: (value) => _handleAction(context, ref, value),
-                itemBuilder: actions,
+                items: [
+                  for (final action in actions.entries)
+                    BooruPopupMenuItem(
+                      title: action.value,
+                      onTap: () => _handleAction(context, ref, action.key),
+                    ),
+                ],
               ),
           ],
         ),

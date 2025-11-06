@@ -24,18 +24,16 @@ class BlacklistedTagTile extends StatelessWidget {
     return ListTile(
       title: Text(tag),
       trailing: BooruPopupMenuButton(
-        onSelected: (value) {
-          switch (value) {
-            case 'remove':
-              onRemoveTag.call(tag);
-            case 'edit':
-              onEditTap.call();
-          }
-        },
-        itemBuilder: {
-          'remove': Text(context.t.blacklisted_tags.remove),
-          'edit': Text(context.t.blacklisted_tags.edit),
-        },
+        items: [
+          BooruPopupMenuItem(
+            title: Text(context.t.blacklisted_tags.remove),
+            onTap: () => onRemoveTag.call(tag),
+          ),
+          BooruPopupMenuItem(
+            title: Text(context.t.blacklisted_tags.edit),
+            onTap: () => onEditTap.call(),
+          ),
+        ],
       ),
     );
   }

@@ -205,12 +205,11 @@ class FavoriteTagsPage extends ConsumerWidget {
                 )
               : null,
           trailing: BooruPopupMenuButton(
-            onSelected: (value) {
-              switch (value) {
-                case 'delete':
-                  final tag = tags[index];
-                  ref.read(favoriteTagsProvider.notifier).remove(tag.name);
-                case 'edit':
+            items: [
+              BooruPopupMenuItem(
+                title: Text(context.t.generic.action.edit),
+                icon: const Icon(Icons.edit),
+                onTap: () {
                   showBooruModalBottomSheet(
                     context: context,
                     routeSettings: const RouteSettings(
@@ -230,12 +229,16 @@ class FavoriteTagsPage extends ConsumerWidget {
                       },
                     ),
                   );
-              }
-            },
-            itemBuilder: {
-              'edit': Text(context.t.generic.action.edit),
-              'delete': Text(context.t.generic.action.delete),
-            },
+                },
+              ),
+              BooruPopupMenuItem(
+                title: Text(context.t.generic.action.delete),
+                icon: const Icon(Icons.delete),
+                onTap: () {
+                  ref.read(favoriteTagsProvider.notifier).remove(tag.name);
+                },
+              ),
+            ],
           ),
         );
       },

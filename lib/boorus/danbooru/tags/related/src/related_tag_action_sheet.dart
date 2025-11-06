@@ -64,26 +64,32 @@ class _RelatedTagActionSheetState extends ConsumerState<RelatedTagActionSheet> {
             ),
           ),
           trailing: BooruPopupMenuButton(
-            onSelected: (value) {
-              if (value == 'add') {
-                Navigator.of(context).pop();
-                widget.onAdded(tags[index]);
-              } else if (value == 'negate') {
-                Navigator.of(context).pop();
-                widget.onNegated(tags[index]);
-              } else if (value == 'open_wiki') {
-                Navigator.of(context).pop();
-                launchWikiPage(
-                  auth.url,
-                  tags[index].tag,
-                );
-              }
-            },
-            itemBuilder: {
-              'add': Text(context.t.tag.related.add_to_current_search),
-              'negate': Text(context.t.tag.related.negate_from_current_search),
-              'open_wiki': Text(context.t.tag.related.open_wiki),
-            },
+            items: [
+              BooruPopupMenuItem(
+                title: Text(context.t.tag.related.add_to_current_search),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  widget.onAdded(tags[index]);
+                },
+              ),
+              BooruPopupMenuItem(
+                title: Text(context.t.tag.related.negate_from_current_search),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  widget.onNegated(tags[index]);
+                },
+              ),
+              BooruPopupMenuItem(
+                title: Text(context.t.tag.related.open_wiki),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  launchWikiPage(
+                    auth.url,
+                    tags[index].tag,
+                  );
+                },
+              ),
+            ],
           ),
         ),
         itemCount: tags.length,
