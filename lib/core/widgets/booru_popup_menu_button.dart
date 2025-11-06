@@ -3,6 +3,7 @@ import 'dart:math';
 
 // Flutter imports:
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:anchor_ui/anchor_ui.dart';
@@ -10,12 +11,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../foundation/platform.dart';
-import 'hover_aware_container.dart';
+import '../settings/providers.dart';
 
-class BooruPopupMenuButton extends ConsumerWidget {
+class BooruPopupMenuButton extends ConsumerStatefulWidget {
   const BooruPopupMenuButton({
     required this.items,
     this.iconColor,
+    this.iconBackgroundColor,
     super.key,
     this.maxWidth,
   });
@@ -23,31 +25,44 @@ class BooruPopupMenuButton extends ConsumerWidget {
   final List<Widget> items;
   final Color? iconColor;
   final double? maxWidth;
+  final Color? iconBackgroundColor;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final colorScheme = Theme.of(context).colorScheme;
+  ConsumerState<BooruPopupMenuButton> createState() =>
+      _BooruPopupMenuButtonState();
+}
 
-    final icon = Padding(
-      padding: const EdgeInsets.all(4),
-      child: Icon(
-        Icons.more_vert,
-        color: iconColor,
-      ),
-    );
+class _BooruPopupMenuButtonState extends ConsumerState<BooruPopupMenuButton> {
+  final _controller = AnchorController();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final hapticLevel = ref.watch(hapticFeedbackLevelProvider);
 
     final isDesktop = isDesktopPlatform();
 
     return AnchorPopover(
+      controller: _controller,
       arrowShape: const NoArrow(),
       placement: Placement.bottom,
-      backdropBuilder: switch (isDesktop) {
-        true => null,
-        false => (context) => Container(
-          color: Colors.black.withValues(alpha: 0.75),
+      backdropBuilder: (context) => GestureDetector(
+        onTap: () {
+          _controller.hide();
+        },
+        child: Container(
+          color: isDesktop
+              ? Colors.transparent
+              : Colors.black.withValues(alpha: 0.75),
         ),
-      },
-      triggerMode: const AnchorTriggerMode.tap(consumeOutsideTap: true),
+      ),
+      triggerMode: const AnchorTriggerMode.manual(),
       border: BorderSide(
         color: colorScheme.outlineVariant,
         width: 0.5,
@@ -59,7 +74,7 @@ class BooruPopupMenuButton extends ConsumerWidget {
           offset: const Offset(0, 4),
         ),
       ],
-      viewPadding: const EdgeInsets.all(8),
+      viewPadding: const EdgeInsets.all(4),
       backgroundColor: isDesktop ? null : colorScheme.surface,
       overlayBuilder: (context) => Container(
         padding: const EdgeInsets.symmetric(
@@ -67,25 +82,33 @@ class BooruPopupMenuButton extends ConsumerWidget {
           vertical: 8,
         ),
         constraints: BoxConstraints(
-          maxWidth: min(MediaQuery.widthOf(context), maxWidth ?? 200),
+          maxWidth: min(MediaQuery.widthOf(context), widget.maxWidth ?? 200),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          children: items,
+          children: widget.items,
         ),
       ),
-      child: isDesktop
-          ? HoverAwareContainer(
-              borderRadius: BorderRadius.circular(12),
-              child: icon,
-            )
-          : Material(
-              color: Colors.transparent,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: icon,
+      child: Material(
+        color: widget.iconBackgroundColor ?? Colors.transparent,
+        shape: const CircleBorder(),
+        child: InkWell(
+          customBorder: const CircleBorder(),
+          onTap: () {
+            if (hapticLevel.isFull) {
+              HapticFeedback.selectionClick();
+            }
+            _controller.toggle();
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(6),
+            child: Icon(
+              Icons.more_vert,
+              color: widget.iconColor,
             ),
+          ),
+        ),
+      ),
     );
   }
 }

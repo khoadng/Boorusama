@@ -190,6 +190,14 @@ class AdaptiveButtonRow extends StatefulWidget {
 }
 
 class _AdaptiveButtonRowState extends State<AdaptiveButtonRow> {
+  final _controller = AnchorController();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     if (widget.buttons.isEmpty) return const SizedBox.shrink();
@@ -432,19 +440,24 @@ class _AdaptiveButtonRowState extends State<AdaptiveButtonRow> {
     final isDesktop = isDesktopPlatform();
 
     return AnchorPopover(
+      controller: _controller,
       arrowShape: const NoArrow(),
       placement: Placement.bottom,
-      triggerMode: const AnchorTriggerMode.tap(consumeOutsideTap: true),
+      triggerMode: const AnchorTriggerMode.manual(),
       border: BorderSide(
         color: colorScheme.outlineVariant,
         width: 0.5,
       ),
-      backdropBuilder: switch (isDesktop) {
-        true => null,
-        false => (context) => Container(
-          color: Colors.black.withValues(alpha: 0.75),
+      backdropBuilder: (context) => GestureDetector(
+        onTap: () {
+          _controller.hide();
+        },
+        child: Container(
+          color: isDesktop
+              ? Colors.transparent
+              : Colors.black.withValues(alpha: 0.75),
         ),
-      },
+      ),
       boxShadow: [
         BoxShadow(
           color: colorScheme.shadow.withValues(alpha: 0.2),
@@ -453,7 +466,7 @@ class _AdaptiveButtonRowState extends State<AdaptiveButtonRow> {
         ),
       ],
       backgroundColor: isDesktop ? null : colorScheme.surface,
-      viewPadding: const EdgeInsets.all(8),
+      viewPadding: const EdgeInsets.all(4),
       onShow: widget.onOpened,
       onHide: widget.onClosed,
       spacing: 12,
@@ -509,7 +522,20 @@ class _AdaptiveButtonRowState extends State<AdaptiveButtonRow> {
               .toList(),
         ),
       ),
-      child: widget.overflowIcon ?? const Icon(Icons.more_horiz),
+      child: Material(
+        shape: const CircleBorder(),
+        child: InkWell(
+          customBorder: const CircleBorder(),
+          onTap: () {
+            _controller.toggle();
+            widget.onMenuTap?.call();
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(6),
+            child: widget.overflowIcon ?? const Icon(Icons.more_horiz),
+          ),
+        ),
+      ),
     );
   }
 }

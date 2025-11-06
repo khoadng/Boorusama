@@ -72,92 +72,85 @@ class PostGridConfigIconButton<T> extends ConsumerWidget {
           valueListenable: postController.itemsNotifier,
           builder: (_, posts, _) {
             return posts.isNotEmpty
-                ? Container(
-                    width: 32,
-                    height: 32,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color:
-                          context.extendedColorScheme.surfaceContainerOverlay,
-                    ),
-                    child: BooruPopupMenuButton(
-                      iconColor:
-                          context.extendedColorScheme.onSurfaceContainerOverlay,
-                      items: [
-                        BooruPopupMenuItem(
-                          title: Text(context.t.generic.action.select),
-                          icon: const Icon(
-                            Symbols.select_all,
-                            size: 18,
-                          ),
-                          onTap: () => selectionModeController.enable(),
+                ? BooruPopupMenuButton(
+                    iconBackgroundColor:
+                        context.extendedColorScheme.surfaceContainerOverlay,
+                    iconColor:
+                        context.extendedColorScheme.onSurfaceContainerOverlay,
+                    items: [
+                      BooruPopupMenuItem(
+                        title: Text(context.t.generic.action.select),
+                        icon: const Icon(
+                          Symbols.select_all,
+                          size: 18,
                         ),
-                        if (postStatsPageBuilder != null)
-                          BooruPopupMenuItem(
-                            onTap: () {
-                              Navigator.of(context).push(
-                                CupertinoPageRoute(
-                                  settings: const RouteSettings(
-                                    name: 'post_statistics',
-                                  ),
-                                  builder: (_) => postStatsPageBuilder(
-                                    context,
-                                    postController.items,
-                                  ),
+                        onTap: () => selectionModeController.enable(),
+                      ),
+                      if (postStatsPageBuilder != null)
+                        BooruPopupMenuItem(
+                          onTap: () {
+                            Navigator.of(context).push(
+                              CupertinoPageRoute(
+                                settings: const RouteSettings(
+                                  name: 'post_statistics',
                                 ),
-                              );
-                            },
-                            title: Text(context.t.posts.actions.stats),
-                            icon: const Icon(
-                              Symbols.bar_chart,
-                              size: 18,
-                            ),
-                          ),
-                        if (showBlacklist &&
-                            blacklistEntries != null &&
-                            blacklistEntries.isNotEmpty)
-                          BooruPopupMenuItem(
-                            onTap: () {
-                              // check if all entries are global then just open the global blacklist page
-                              final isGlobal = blacklistEntries.every(
-                                (element) =>
-                                    element.source == BlacklistSource.global,
-                              );
-
-                              if (isGlobal) {
-                                goToGlobalBlacklistedTagsPage(ref);
-                              } else {
-                                showBooruModalBottomSheet(
-                                  context: context,
-                                  routeSettings: const RouteSettings(
-                                    name: 'edit_blacklist_select',
-                                  ),
-                                  builder: (_) =>
-                                      const EditBlacklistActionSheet(),
-                                );
-                              }
-                            },
-                            title: Text(
-                              context.t.posts.actions.edit_blacklist,
-                            ),
-                            icon: const Icon(
-                              Symbols.block,
-                              size: 18,
-                            ),
-                          ),
-                        BooruPopupMenuItem(
-                          onTap: () =>
-                              _showViewOptions(context, settingsNotifier),
-                          title: Text(
-                            context.t.posts.actions.view_options,
-                          ),
+                                builder: (_) => postStatsPageBuilder(
+                                  context,
+                                  postController.items,
+                                ),
+                              ),
+                            );
+                          },
+                          title: Text(context.t.posts.actions.stats),
                           icon: const Icon(
-                            Symbols.settings,
+                            Symbols.bar_chart,
                             size: 18,
                           ),
                         ),
-                      ],
-                    ),
+                      if (showBlacklist &&
+                          blacklistEntries != null &&
+                          blacklistEntries.isNotEmpty)
+                        BooruPopupMenuItem(
+                          onTap: () {
+                            // check if all entries are global then just open the global blacklist page
+                            final isGlobal = blacklistEntries.every(
+                              (element) =>
+                                  element.source == BlacklistSource.global,
+                            );
+
+                            if (isGlobal) {
+                              goToGlobalBlacklistedTagsPage(ref);
+                            } else {
+                              showBooruModalBottomSheet(
+                                context: context,
+                                routeSettings: const RouteSettings(
+                                  name: 'edit_blacklist_select',
+                                ),
+                                builder: (_) =>
+                                    const EditBlacklistActionSheet(),
+                              );
+                            }
+                          },
+                          title: Text(
+                            context.t.posts.actions.edit_blacklist,
+                          ),
+                          icon: const Icon(
+                            Symbols.block,
+                            size: 18,
+                          ),
+                        ),
+                      BooruPopupMenuItem(
+                        onTap: () =>
+                            _showViewOptions(context, settingsNotifier),
+                        title: Text(
+                          context.t.posts.actions.view_options,
+                        ),
+                        icon: const Icon(
+                          Symbols.settings,
+                          size: 18,
+                        ),
+                      ),
+                    ],
                   )
                 : const SizedBox.shrink();
           },
