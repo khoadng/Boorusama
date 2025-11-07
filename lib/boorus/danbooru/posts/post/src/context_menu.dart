@@ -22,8 +22,8 @@ import '../../../../../core/widgets/widgets.dart';
 import '../../../../../foundation/platform.dart';
 import '../../../../../foundation/url_launcher.dart';
 import '../../../configs/providers.dart';
+import '../../../favgroups/favgroups/routes.dart';
 import '../../../versions/routes.dart';
-import '../../favgroups/favgroups/routes.dart';
 import '../../listing/providers.dart';
 import 'danbooru_post.dart';
 

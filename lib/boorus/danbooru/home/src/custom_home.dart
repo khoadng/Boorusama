@@ -4,10 +4,10 @@ import 'package:i18n/i18n.dart';
 // Project imports:
 import '../../../../core/home/types.dart';
 import '../../artists/search/widgets.dart';
+import '../../favgroups/listing/widgets.dart';
 import '../../forums/topics/widgets.dart';
 import '../../pools/listing/widgets.dart';
 import '../../posts/explores/widgets.dart';
-import '../../posts/favgroups/listing/widgets.dart';
 import '../../posts/favorites/widgets.dart';
 import '../../saved_searches/feed/widgets.dart';
 

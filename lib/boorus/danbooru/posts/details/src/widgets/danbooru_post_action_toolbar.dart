@@ -18,8 +18,8 @@ import '../../../../../../core/router.dart';
 import '../../../../../../core/widgets/adaptive_button_row.dart';
 import '../../../../../../core/widgets/booru_menu_button_row.dart';
 import '../../../../configs/providers.dart';
+import '../../../../favgroups/favgroups/routes.dart';
 import '../../../../versions/routes.dart';
-import '../../../favgroups/favgroups/routes.dart';
 import '../../../post/types.dart';
 import '../../../votes/providers.dart';
 
