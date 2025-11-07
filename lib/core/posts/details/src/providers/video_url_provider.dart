@@ -37,7 +37,6 @@ class VideoUrlNotifier
     return initialVideoUrl;
   }
 
-  // ignore: use_setters_to_change_properties
   void setUrl(String value) {
     state = value;
   }

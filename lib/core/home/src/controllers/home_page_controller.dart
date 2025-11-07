@@ -16,7 +16,6 @@ class HomePageController extends ValueNotifier<int> {
 
   var _isMenuOpen = false;
 
-  // ignore: use_setters_to_change_properties
   void goToTab(int index) {
     value = index;
   }

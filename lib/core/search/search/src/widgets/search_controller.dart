@@ -141,7 +141,6 @@ class SearchPageController extends ChangeNotifier {
 
   void tapRawMetaTag(String tag) => textController.text = '$tag:';
 
-  // ignore: use_setters_to_change_properties
   void updateQuery(String query) {
     textController.text = query;
   }

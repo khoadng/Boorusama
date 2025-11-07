@@ -14,7 +14,6 @@ class EroticModeNotifier extends Notifier<bool> {
   @override
   bool build() => false;
 
-  // ignore: use_setters_to_change_properties
   void updateValue(bool value) {
     state = value;
   }

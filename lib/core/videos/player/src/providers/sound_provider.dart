@@ -20,7 +20,6 @@ class GlobalSoundNotifier extends Notifier<bool> {
     state = !state;
   }
 
-  // ignore: use_setters_to_change_properties
   void setState(bool value) {
     state = value;
   }
