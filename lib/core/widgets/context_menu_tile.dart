@@ -16,12 +16,14 @@ class ContextMenuTile extends ConsumerWidget {
     this.onTap,
     this.enabled = true,
     this.hideOnTap = true,
+    this.style,
   });
 
   final String title;
   final VoidCallback? onTap;
   final bool enabled;
   final bool hideOnTap;
+  final TextStyle? style;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -64,11 +66,13 @@ class ContextMenuTile extends ConsumerWidget {
             ),
             child: Text(
               title,
-              style: TextStyle(
-                color: enabled
-                    ? colorScheme.onSurface
-                    : colorScheme.onSurface.withValues(alpha: 0.38),
-              ),
+              style:
+                  style ??
+                  TextStyle(
+                    color: enabled
+                        ? colorScheme.onSurface
+                        : colorScheme.onSurface.withValues(alpha: 0.38),
+                  ),
             ),
           ),
         ),
