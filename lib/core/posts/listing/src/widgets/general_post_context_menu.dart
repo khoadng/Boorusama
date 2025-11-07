@@ -2,9 +2,9 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:context_menus/context_menus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
+import 'package:selection_mode/selection_mode.dart';
 
 // Project imports:
 import '../../../../../foundation/url_launcher.dart';
@@ -15,20 +15,24 @@ import '../../../../configs/config/providers.dart';
 import '../../../../downloads/downloader/providers.dart';
 import '../../../../router.dart';
 import '../../../../tags/show/routes.dart';
+import '../../../../widgets/booru_context_menu.dart';
+import '../../../../widgets/context_menu_tile.dart';
 import '../../../post/providers.dart';
 import '../../../post/types.dart';
+import 'post_grid_controller.dart';
 
 class GeneralPostContextMenu extends ConsumerWidget {
   const GeneralPostContextMenu({
-    required this.post,
-    required this.hasAccount,
     super.key,
-    this.onMultiSelect,
+    required this.controller,
+    required this.index,
+    required this.child,
   });
 
-  final Post post;
-  final void Function()? onMultiSelect;
-  final bool hasAccount;
+  final PostGridController<Post> controller;
+  final Widget child;
+
+  final int index;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -39,73 +43,96 @@ class GeneralPostContextMenu extends ConsumerWidget {
         .watch(booruBuilderProvider(booruConfig))
         ?.commentPageBuilder;
     final postLinkGenerator = ref.watch(postLinkGeneratorProvider(booruConfig));
+    final selectionModeController = SelectionMode.maybeOf(context);
 
-    final isBookmarked =
-        bookmarkStateAsync.valueOrNull?.isBookmarked(
-          post,
-          booruConfig.booruIdHint,
-        ) ??
-        false;
     final isBookmarkLoading = bookmarkStateAsync.isLoading;
 
-    return GenericContextMenu(
-      buttonConfigs: [
-        if (commentPageBuilder != null && post.hasComment)
-          ContextMenuButtonConfig(
-            context.t.post.action.view_comments,
-            onPressed: () => goToCommentPage(context, ref, post.id),
-          ),
-        ContextMenuButtonConfig(
-          context.t.download.download,
-          onPressed: () {
-            ref.download(post);
-          },
-        ),
-        if (!isBookmarked)
-          ContextMenuButtonConfig(
-            context.t.post.detail.add_to_bookmark,
-            onPressed: isBookmarkLoading
-                ? null
-                : () => ref.bookmarks
-                    ..addBookmarkWithToast(
-                      booruConfig,
-                      post,
-                    ),
-          )
-        else
-          ContextMenuButtonConfig(
-            context.t.post.detail.remove_from_bookmark,
-            onPressed: isBookmarkLoading
-                ? null
-                : () => ref.bookmarks
-                    ..removeBookmarkWithToast(
-                      BookmarkUniqueId.fromPost(post, booruConfig.booruIdHint),
-                    ),
-          ),
-        ContextMenuButtonConfig(
-          context.t.post.action.view_tags,
-          onPressed: () {
-            goToShowTaglistPage(
-              ref,
+    return ValueListenableBuilder(
+      valueListenable: controller.itemsNotifier,
+      builder: (context, posts, _) {
+        final post = posts[index];
+        final isBookmarked =
+            bookmarkStateAsync.valueOrNull?.isBookmarked(
               post,
-              auth: booruConfig,
-            );
-          },
-        ),
-        if (!loginDetails.hasStrictSFW)
-          ContextMenuButtonConfig(
-            context.t.post.action.view_in_browser,
-            onPressed: () =>
-                launchExternalUrlString(postLinkGenerator.getLink(post)),
-          ),
-        if (onMultiSelect != null)
-          ContextMenuButtonConfig(
-            context.t.generic.action.select,
-            onPressed: () {
-              onMultiSelect?.call();
-            },
-          ),
-      ],
+              booruConfig.booruIdHint,
+            ) ??
+            false;
+
+        return BooruContextMenu(
+          menuItemsBuilder: (context) => [
+            ContextMenuTile(
+              title: context.t.download.download,
+              onTap: () {
+                ref.download(post);
+              },
+            ),
+            if (!isBookmarked)
+              ContextMenuTile(
+                title: context.t.post.detail.add_to_bookmark,
+                enabled: !isBookmarkLoading,
+                onTap: isBookmarkLoading
+                    ? null
+                    : () {
+                        ref.bookmarks.addBookmarkWithToast(
+                          booruConfig,
+                          post,
+                        );
+                      },
+              )
+            else
+              ContextMenuTile(
+                title: context.t.post.detail.remove_from_bookmark,
+                enabled: !isBookmarkLoading,
+                onTap: isBookmarkLoading
+                    ? null
+                    : () {
+                        ref.bookmarks.removeBookmarkWithToast(
+                          BookmarkUniqueId.fromPost(
+                            post,
+                            booruConfig.booruIdHint,
+                          ),
+                        );
+                      },
+              ),
+            const BooruContextMenuDivider(),
+            if (commentPageBuilder != null && post.hasComment)
+              ContextMenuTile(
+                title: context.t.post.action.view_comments,
+                onTap: () {
+                  goToCommentPage(context, ref, post.id);
+                },
+              ),
+            if (!loginDetails.hasStrictSFW)
+              ContextMenuTile(
+                title: context.t.post.action.view_in_browser,
+                onTap: () {
+                  launchExternalUrlString(postLinkGenerator.getLink(post));
+                },
+              ),
+            ContextMenuTile(
+              title: context.t.post.action.view_tags,
+              onTap: () {
+                goToShowTaglistPage(
+                  ref,
+                  post,
+                  auth: booruConfig,
+                );
+              },
+            ),
+            const BooruContextMenuDivider(),
+            if (selectionModeController case final controller?)
+              ContextMenuTile(
+                title: context.t.generic.action.select,
+                onTap: () {
+                  controller.enable(
+                    initialSelected: [index],
+                  );
+                },
+              ),
+          ],
+          child: child,
+        );
+      },
     );
   }
 }

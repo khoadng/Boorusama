@@ -79,25 +79,29 @@ class GelbooruV2FavoritesPageHtml extends ConsumerWidget {
       favQueryBuilder: null,
       itemBuilder:
           (context, index, autoScrollController, controller, useHero) =>
-              DefaultImageGridItem(
+              GeneralPostContextMenu(
                 index: index,
-                autoScrollController: autoScrollController,
                 controller: controller,
-                useHero: useHero,
-                config: config.auth,
-                onTap: () {
-                  final post = controller.items.elementAtOrNull(index);
-                  if (post == null) {
-                    showErrorToast(context, 'Post not found'.hc);
-                    return;
-                  }
+                child: DefaultImageGridItem(
+                  index: index,
+                  autoScrollController: autoScrollController,
+                  controller: controller,
+                  useHero: useHero,
+                  config: config.auth,
+                  onTap: () {
+                    final post = controller.items.elementAtOrNull(index);
+                    if (post == null) {
+                      showErrorToast(context, 'Post not found'.hc);
+                      return;
+                    }
 
-                  goToSinglePostDetailsPage(
-                    ref: ref,
-                    postId: NumericPostId(post.id),
-                    configSearch: config,
-                  );
-                },
+                    goToSinglePostDetailsPage(
+                      ref: ref,
+                      postId: NumericPostId(post.id),
+                      configSearch: config,
+                    );
+                  },
+                ),
               ),
       fetcher: (page) => TaskEither.Do(($) async {
         // Just a placeholder since we can't really search with tags

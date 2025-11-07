@@ -21,17 +21,13 @@ import '../../../../errors/providers.dart';
 import '../../../../settings/providers.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../post/types.dart';
+import '../../widgets.dart';
 import '../_internal/raw_post_grid.dart';
 import '../_internal/sliver_post_grid.dart';
 import '../providers/internal_providers.dart';
 import '../types/page_mode.dart';
-import 'blacklist_controls.dart';
-import 'default_image_grid_item.dart';
 import 'infinite_scroll_listener.dart';
-import 'post_grid_config_icon_button.dart';
 import 'post_grid_controller.dart';
-import 'post_list_configuration_header.dart';
-import 'post_scope.dart';
 
 typedef IndexedSelectableWidgetBuilder<T extends Post> =
     Widget Function(
@@ -199,20 +195,24 @@ class _PostGridState<T extends Post> extends ConsumerState<PostGrid<T>> {
               postController: widget.controller,
               itemBuilder: (context, index) => ValueListenableBuilder(
                 valueListenable: _disableHero,
-                builder: (_, disableHero, _) =>
-                    widget.itemBuilder?.call(
-                      context,
-                      index,
-                      _autoScrollController,
-                      !disableHero,
-                    ) ??
-                    DefaultImageGridItem(
-                      index: index,
-                      autoScrollController: _autoScrollController,
-                      controller: widget.controller,
-                      useHero: !disableHero,
-                      config: ref.watchConfigAuth,
-                    ),
+                builder: (_, disableHero, _) => GeneralPostContextMenu(
+                  index: index,
+                  controller: widget.controller,
+                  child:
+                      widget.itemBuilder?.call(
+                        context,
+                        index,
+                        _autoScrollController,
+                        !disableHero,
+                      ) ??
+                      DefaultImageGridItem(
+                        index: index,
+                        autoScrollController: _autoScrollController,
+                        controller: widget.controller,
+                        useHero: !disableHero,
+                        config: ref.watchConfigAuth,
+                      ),
+                ),
               ),
             ),
       ),
