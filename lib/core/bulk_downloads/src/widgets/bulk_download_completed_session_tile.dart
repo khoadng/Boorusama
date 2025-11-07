@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:context_menus/context_menus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:foundation/foundation.dart';
@@ -18,6 +17,8 @@ import '../../../config_widgets/website_logo.dart';
 import '../../../configs/config/providers.dart';
 import '../../../images/booru_image.dart';
 import '../../../themes/theme/types.dart';
+import '../../../widgets/booru_context_menu.dart';
+import '../../../widgets/context_menu_tile.dart';
 import '../../../widgets/widgets.dart';
 import '../pages/bulk_download_saved_task_page.dart';
 import '../providers/bulk_download_notifier.dart';
@@ -266,43 +267,41 @@ class _ContextMenu extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final path = session.task.path;
 
-    return ContextMenuRegion(
-      contextMenu: GenericContextMenu(
-        buttonConfigs: [
-          ContextMenuButtonConfig(
-            context.t.bulk_downloads.actions.delete,
-            onPressed: () async {
-              await ref
-                  .read(bulkDownloadProvider.notifier)
-                  .deleteSession(session.session.id);
-              onDelete();
-            },
-          ),
-          ContextMenuButtonConfig(
-            context.t.bulk_downloads.actions.copy_path,
-            onPressed: () => AppClipboard.copyWithDefaultToast(context, path),
-          ),
-          ContextMenuButtonConfig(
-            context.t.bulk_downloads.templates.create,
-            onPressed: () async {
-              final navigator = Navigator.of(context);
-              final success = await ref
-                  .read(savedDownloadTasksProvider.notifier)
-                  .create(session.task);
+    return BooruContextMenu(
+      menuItemsBuilder: (context) => [
+        ContextMenuTile(
+          title: context.t.bulk_downloads.actions.delete,
+          onTap: () async {
+            await ref
+                .read(bulkDownloadProvider.notifier)
+                .deleteSession(session.session.id);
+            onDelete();
+          },
+        ),
+        ContextMenuTile(
+          title: context.t.bulk_downloads.actions.copy_path,
+          onTap: () => AppClipboard.copyWithDefaultToast(context, path),
+        ),
+        ContextMenuTile(
+          title: context.t.bulk_downloads.templates.create,
+          onTap: () async {
+            final navigator = Navigator.of(context);
+            final success = await ref
+                .read(savedDownloadTasksProvider.notifier)
+                .create(session.task);
 
-              if (success) {
-                await navigator.push(
-                  CupertinoPageRoute(
-                    builder: (context) => const BulkDownloadSavedTaskPage(),
-                  ),
-                );
-              } else {
-                // Do nothing
-              }
-            },
-          ),
-        ],
-      ),
+            if (success) {
+              await navigator.push(
+                CupertinoPageRoute(
+                  builder: (context) => const BulkDownloadSavedTaskPage(),
+                ),
+              );
+            } else {
+              // Do nothing
+            }
+          },
+        ),
+      ],
       child: child,
     );
   }
