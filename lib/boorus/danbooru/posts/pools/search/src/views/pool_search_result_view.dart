@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../_shared/providers/providers.dart';
+import '../../../_shared/providers/pool_filter_provider.dart';
 import '../../../_shared/widgets/pool_page_sliver_grid.dart';
 import '../providers.dart';
 
@@ -14,14 +14,16 @@ class PoolSearchResultView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final filterState = ref.watch(danbooruPoolFilterProvider);
+
     return LayoutBuilder(
       builder: (context, constraints) => Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8),
         child: CustomScrollView(
           slivers: [
             PoolPagedSliverGrid(
-              order: ref.watch(danbooruSelectedPoolOrderProvider),
-              category: ref.watch(danbooruSelectedPoolCategoryProvider),
+              order: filterState.order,
+              category: filterState.category,
               constraints: constraints,
               name: ref.watch(danbooruPoolQueryProvider),
             ),

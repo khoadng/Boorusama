@@ -8,7 +8,7 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../../../../../../core/widgets/widgets.dart';
-import '../../_shared/providers/providers.dart';
+import '../../_shared/providers/pool_filter_provider.dart';
 import '../../pool/types.dart';
 import 'pool_order_l10n.dart';
 
@@ -19,7 +19,10 @@ class PoolOptionsHeader extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final order = ref.watch(danbooruSelectedPoolOrderProvider);
+    final order = ref.watch(
+      danbooruPoolFilterProvider.select((value) => value.order),
+    );
+    final notifier = ref.watch(danbooruPoolFilterProvider.notifier);
 
     return Container(
       color: Theme.of(context).colorScheme.surface,
@@ -34,8 +37,7 @@ class PoolOptionsHeader extends ConsumerWidget {
             value != null ? poolOrderToString(context, value) : 'All'.hc,
         sheetTitle: context.t.sort.sort_by,
         onSelected: (value) {
-          ref.read(danbooruSelectedPoolOrderProvider.notifier).state =
-              value ?? DanbooruPoolOrder.newest;
+          notifier.setOrder(value ?? DanbooruPoolOrder.newest);
         },
         selectedOption: order,
       ),

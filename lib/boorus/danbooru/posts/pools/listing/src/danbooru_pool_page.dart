@@ -8,7 +8,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
-import '../../_shared/providers/providers.dart';
+import '../../_shared/providers/pool_filter_provider.dart';
 import '../../_shared/widgets/pool_page_sliver_grid.dart';
 import '../../pool/types.dart';
 import '../../search/routes.dart';
@@ -36,6 +36,9 @@ class _PostList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final filterState = ref.watch(danbooruPoolFilterProvider);
+    final filterNotifier = ref.watch(danbooruPoolFilterProvider.notifier);
+
     return LayoutBuilder(
       builder: (context, constraints) {
         return CustomScrollView(
@@ -52,20 +55,19 @@ class _PostList extends ConsumerWidget {
               child: ColoredBox(
                 color: Theme.of(context).colorScheme.surface,
                 child: DefaultTabController(
-                  initialIndex:
-                      ref.watch(danbooruSelectedPoolCategoryProvider) ==
-                          DanbooruPoolCategory.collection
-                      ? 0
-                      : 1,
+                  initialIndex: switch (filterState.category) {
+                    DanbooruPoolCategory.collection => 0,
+                    _ => 1,
+                  },
                   length: 2,
                   child: TabBar(
                     isScrollable: true,
                     onTap: (value) {
-                      ref
-                          .read(danbooruSelectedPoolCategoryProvider.notifier)
-                          .state = value == 0
-                          ? DanbooruPoolCategory.collection
-                          : DanbooruPoolCategory.series;
+                      filterNotifier.setCategory(
+                        value == 0
+                            ? DanbooruPoolCategory.collection
+                            : DanbooruPoolCategory.series,
+                      );
                     },
                     tabs: [
                       for (final e in DanbooruPoolCategory.values.where(
@@ -87,8 +89,8 @@ class _PostList extends ConsumerWidget {
               child: PoolOptionsHeader(),
             ),
             PoolPagedSliverGrid(
-              order: ref.watch(danbooruSelectedPoolOrderProvider),
-              category: ref.watch(danbooruSelectedPoolCategoryProvider),
+              order: filterState.order,
+              category: filterState.category,
               constraints: constraints,
             ),
           ],
