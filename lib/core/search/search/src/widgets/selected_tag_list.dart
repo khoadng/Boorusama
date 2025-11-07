@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:context_menus/context_menus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -10,6 +9,8 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import '../../../../tags/favorites/providers.dart';
 import '../../../../tags/tag/widgets.dart';
+import '../../../../widgets/booru_context_menu.dart';
+import '../../../../widgets/context_menu_tile.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../selected_tags/tag_search_item.dart';
 import 'selected_tag_chip.dart';
@@ -154,8 +155,7 @@ class SelectedTagList extends StatelessWidget {
   }
 }
 
-class SelectedTagContextMenu extends ConsumerWidget
-    with TagContextMenuButtonConfigMixin {
+class SelectedTagContextMenu extends ConsumerWidget {
   const SelectedTagContextMenu({
     required this.tag,
     required this.child,
@@ -167,18 +167,16 @@ class SelectedTagContextMenu extends ConsumerWidget
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return ContextMenuRegion(
-      contextMenu: GenericContextMenu(
-        buttonConfigs: [
-          copyButton(context, tag),
-          ContextMenuButtonConfig(
-            context.t.post.detail.add_to_favorites,
-            onPressed: () {
-              ref.read(favoriteTagsProvider.notifier).add(tag, isRaw: true);
-            },
-          ),
-        ],
-      ),
+    return BooruContextMenu(
+      menuItemsBuilder: (context) => [
+        CopyTagContextMenuTile(tag: tag),
+        ContextMenuTile(
+          title: context.t.post.detail.add_to_favorites,
+          onTap: () {
+            ref.read(favoriteTagsProvider.notifier).add(tag, isRaw: true);
+          },
+        ),
+      ],
       child: child,
     );
   }
