@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 // Package imports:
+import 'package:anchor_ui/anchor_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -14,11 +15,13 @@ class ContextMenuTile extends ConsumerWidget {
     super.key,
     this.onTap,
     this.enabled = true,
+    this.hideOnTap = true,
   });
 
   final String title;
   final VoidCallback? onTap;
   final bool enabled;
+  final bool hideOnTap;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -40,12 +43,16 @@ class ContextMenuTile extends ConsumerWidget {
             borderRadius: BorderRadius.circular(4),
           ),
           onTap: enabled
-              ? hapticLevel.isFull
-                    ? () {
-                        HapticFeedback.selectionClick();
-                        onTap?.call();
-                      }
-                    : onTap
+              ? () {
+                  if (hideOnTap) {
+                    context.hideMenu();
+                  }
+
+                  if (hapticLevel.isFull) {
+                    HapticFeedback.selectionClick();
+                  }
+                  onTap?.call();
+                }
               : null,
           child: Container(
             padding: const EdgeInsets.symmetric(
