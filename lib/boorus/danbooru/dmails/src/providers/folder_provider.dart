@@ -10,7 +10,6 @@ class DmailFolderNotifier
   @override
   DmailFolderType build(BooruConfigAuth arg) => DmailFolderType.received;
 
-  // ignore: use_setters_to_change_properties
   void changeFolder(DmailFolderType folder) {
     state = folder;
   }

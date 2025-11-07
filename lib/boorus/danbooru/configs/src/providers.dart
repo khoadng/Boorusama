@@ -6,12 +6,6 @@ import '../../../../core/configs/config/types.dart';
 import '../../../../foundation/platform.dart';
 import '../../constants.dart';
 
-final hideDeletedProvider = StateProvider.autoDispose.family<bool, BooruConfig>(
-  (ref, config) {
-    return config.deletedItemBehavior == BooruConfigDeletedItemBehavior.hide;
-  },
-);
-
 final danbooruLoginDetailsProvider =
     Provider.family<BooruLoginDetails, BooruConfigAuth>(
       (ref, config) => DanbooruLoginDetails(auth: config),

@@ -15,7 +15,6 @@ class AppLogger implements Logger {
   final List<LogData> _logs = [];
   LogLevel _currentLevel;
 
-  // ignore: use_setters_to_change_properties
   void updateLevel(LogLevel newLevel) {
     _currentLevel = newLevel;
   }

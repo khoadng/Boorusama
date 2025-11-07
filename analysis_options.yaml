@@ -17,6 +17,9 @@ analyzer:
 
 linter:
   rules:
+    # Personal preference. Using a method to change a property is more future-proof
+    use_setters_to_change_properties: false    
+
     # This seems to always warn on dynamic which I use a lot to handle data parsing
     switch_on_type: false
 

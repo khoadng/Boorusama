@@ -50,7 +50,6 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
   int get initialPage =>
       currentPage.value != _initialPage ? currentPage.value : _initialPage;
 
-  // ignore: use_setters_to_change_properties
   void setPage(int page) {
     currentPage.value = page;
   }
