@@ -43,7 +43,7 @@ class PoolSearchSuggestionView extends ConsumerWidget {
                         return ListTile(
                           visualDensity: VisualDensity.compact,
                           title: Text(
-                            pool.name.replaceAll('_', ' '),
+                            pool.name?.replaceAll('_', ' ') ?? '???',
                             style: TextStyle(
                               fontWeight: FontWeight.w600,
                               color: _poolCategoryToColor(pool.category),
@@ -57,12 +57,15 @@ class PoolSearchSuggestionView extends ConsumerWidget {
                           ),
                           onTap: () {
                             FocusManager.instance.primaryFocus?.unfocus();
-                            textEditingController.text = pool.name.replaceAll(
+                            final poolName = pool.name;
+
+                            if (poolName == null) return;
+                            textEditingController.text = poolName.replaceAll(
                               '_',
                               ' ',
                             );
                             ref.read(danbooruPoolQueryProvider.notifier).state =
-                                pool.name;
+                                poolName;
                             ref
                                 .read(danbooruPoolSearchModeProvider.notifier)
                                 .state = PoolSearchMode
@@ -78,7 +81,8 @@ class PoolSearchSuggestionView extends ConsumerWidget {
   }
 }
 
-Color _poolCategoryToColor(DanbooruPoolCategory category) => switch (category) {
-  DanbooruPoolCategory.series => TagColors.dark().copyright,
-  _ => TagColors.dark().general,
-};
+Color _poolCategoryToColor(DanbooruPoolCategory? category) =>
+    switch (category) {
+      DanbooruPoolCategory.series => TagColors.dark().copyright,
+      _ => TagColors.dark().general,
+    };

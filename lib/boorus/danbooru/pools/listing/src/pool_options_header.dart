@@ -10,7 +10,6 @@ import 'package:material_symbols_icons/symbols.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../pool/providers.dart';
 import '../../pool/types.dart';
-import 'pool_order_l10n.dart';
 
 class PoolOptionsHeader extends ConsumerWidget {
   const PoolOptionsHeader({
@@ -34,7 +33,7 @@ class PoolOptionsHeader extends ConsumerWidget {
         options: DanbooruPoolOrder.values,
         hasNullOption: false,
         optionLabelBuilder: (value) =>
-            value != null ? poolOrderToString(context, value) : 'All'.hc,
+            value != null ? value.localize(context) : 'All'.hc,
         sheetTitle: context.t.sort.sort_by,
         onSelected: (value) {
           notifier.setOrder(value ?? DanbooruPoolOrder.newest);

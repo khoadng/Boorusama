@@ -277,6 +277,10 @@
     "search": {
       "hint": "Tìm ảnh"
     },
+    "counter": {
+      "one": "Ảnh",
+      "other": "Ảnh"
+    },
     "detail": {
       "last_updated": "Cập nhật"
     },

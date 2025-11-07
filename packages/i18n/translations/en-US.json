@@ -279,6 +279,10 @@
     "search": {
       "hint": "Search a pool"
     },
+    "counter": {
+      "one": "Pool",
+      "other": "Pools"
+    },
     "detail": {
       "last_updated": "Last updated"
     }

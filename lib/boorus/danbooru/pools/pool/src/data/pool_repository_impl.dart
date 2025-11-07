@@ -1,7 +1,8 @@
 // Project imports:
 import '../../../../../../foundation/caching.dart';
 import '../types/danbooru_pool.dart';
-import '../types/pool_repository.dart';
+import '../types/pool_category.dart';
+import '../types/pool_order.dart';
 
 class PoolRepositoryBuilder
     with SimpleCacheMixin<List<DanbooruPool>>

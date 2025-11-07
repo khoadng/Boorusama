@@ -1,6 +1,10 @@
 // Package imports:
 import 'package:equatable/equatable.dart';
 
+// Project imports:
+import 'pool_category.dart';
+import 'pool_order.dart';
+
 class DanbooruPool extends Equatable {
   const DanbooruPool({
     required this.id,
@@ -39,13 +43,13 @@ class DanbooruPool extends Equatable {
   );
 
   final PoolId id;
-  final List<int> postIds;
-  final DanbooruPoolCategory category;
-  final PoolDescription description;
-  final PoolPostCount postCount;
-  final PoolName name;
-  final DateTime createdAt;
-  final DateTime updatedAt;
+  final List<int>? postIds;
+  final DanbooruPoolCategory? category;
+  final String? description;
+  final PoolPostCount? postCount;
+  final PoolName? name;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
 
   @override
   List<Object?> get props => [
@@ -61,22 +65,16 @@ class DanbooruPool extends Equatable {
 }
 
 typedef PoolName = String;
-typedef PoolDescription = String;
 typedef PoolPostCount = int;
 typedef PoolId = int;
 
-enum DanbooruPoolCategory { unknown, collection, series }
-
-typedef PoolCover = ({PoolId id, String? url, double? aspectRatio});
-
-enum PoolDetailsOrder {
-  latest,
-  oldest,
-}
-
-enum DanbooruPoolOrder {
-  latest,
-  newest,
-  postCount,
-  name,
+abstract class PoolRepository {
+  Future<List<DanbooruPool>> getPools(
+    int page, {
+    DanbooruPoolCategory? category,
+    DanbooruPoolOrder? order,
+    String? name,
+    String? description,
+  });
+  Future<List<DanbooruPool>> getPoolsByPostId(int postId);
 }
