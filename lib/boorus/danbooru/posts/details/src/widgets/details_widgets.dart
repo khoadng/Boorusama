@@ -12,7 +12,7 @@ import '../../../../../../core/posts/details/types.dart';
 import '../../../../../../core/posts/details_parts/widgets.dart';
 import '../../../../artists/commentaries/providers.dart';
 import '../../../../comments/comment/providers.dart';
-import '../../../pools/pool/widgets.dart';
+import '../../../../pools/pool/widgets.dart';
 import '../../../post/types.dart';
 import '../providers.dart';
 import 'danbooru_file_details.dart';
