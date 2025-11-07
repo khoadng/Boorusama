@@ -14,8 +14,6 @@ import '../../../core/posts/post/types.dart';
 import '../../../core/widgets/booru_segmented_button.dart';
 import 'providers.dart';
 
-final _eroticOnProvider = StateProvider<bool>((ref) => false);
-
 class AnimePicturesTopPage extends ConsumerWidget {
   const AnimePicturesTopPage({
     super.key,
@@ -32,14 +30,10 @@ class AnimePicturesTopPage extends ConsumerWidget {
       useAppBarPadding: useAppBarPadding,
       sliverOverviews: [
         if (config.passHash != null)
-          SliverToBoxAdapter(
+          const SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 20),
-              child: EroticsToggleSwitch(
-                onToggle: (erotic) {
-                  ref.read(_eroticOnProvider.notifier).state = erotic;
-                },
-              ),
+              padding: EdgeInsets.symmetric(vertical: 20),
+              child: EroticsToggleSwitch(),
             ),
           ),
         SliverToBoxAdapter(
@@ -107,31 +101,29 @@ class AnimePicturesDetailsTopPage extends ConsumerWidget {
   }
 }
 
-class EroticsToggleSwitch extends StatelessWidget {
+class EroticsToggleSwitch extends ConsumerWidget {
   const EroticsToggleSwitch({
-    required this.onToggle,
     super.key,
   });
 
-  final void Function(bool erotic) onToggle;
-
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Center(
       child: BooruSegmentedButton(
-        initialValue: false,
+        initialValue: ref.watch(eroticOnProvider),
         fixedWidth: 120,
         segments: const {
           false: 'Common',
           true: 'Erotics',
         },
-        onChanged: (value) => onToggle(value),
+        onChanged: (value) =>
+            ref.read(eroticOnProvider.notifier).updateValue(value),
       ),
     );
   }
 }
 
-class _DailyPopularExplore extends ConsumerStatefulWidget {
+class _DailyPopularExplore extends ConsumerWidget {
   const _DailyPopularExplore({
     required this.onPressed,
   });
@@ -139,37 +131,30 @@ class _DailyPopularExplore extends ConsumerStatefulWidget {
   final void Function(List<Post> posts) onPressed;
 
   @override
-  ConsumerState<_DailyPopularExplore> createState() => _PopularExploreState();
-}
-
-class _PopularExploreState extends ConsumerState<_DailyPopularExplore> {
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final params = (
       config: ref.watchConfigAuth,
-      erotic: ref.watch(_eroticOnProvider),
+      erotic: ref.watch(eroticOnProvider),
     );
+
+    final asyncValue = ref.watch(animePicturesDailyPopularProvider(params));
 
     return ExploreSection(
       title: context.t.explore.daily,
-      builder: (_) => ref
-          .watch(animePicturesDailyPopularProvider(params))
-          .maybeWhen(
-            data: (r) => ExploreList(posts: r),
-            orElse: () => const ExploreList(posts: []),
-          ),
-      onPressed: ref
-          .watch(animePicturesDailyPopularProvider(params))
-          .maybeWhen(
-            data: (r) =>
-                () => widget.onPressed(r),
-            orElse: () => null,
-          ),
+      builder: (_) => asyncValue.maybeWhen(
+        data: (r) => ExploreList(posts: r),
+        orElse: () => const ExploreList(posts: []),
+      ),
+      onPressed: asyncValue.maybeWhen(
+        data: (r) =>
+            () => onPressed(r),
+        orElse: () => null,
+      ),
     );
   }
 }
 
-class _WeeklyPopularExplore extends ConsumerStatefulWidget {
+class _WeeklyPopularExplore extends ConsumerWidget {
   const _WeeklyPopularExplore({
     required this.onPressed,
   });
@@ -177,33 +162,25 @@ class _WeeklyPopularExplore extends ConsumerStatefulWidget {
   final void Function(List<Post> posts) onPressed;
 
   @override
-  ConsumerState<_WeeklyPopularExplore> createState() =>
-      _WeeklyPopularExploreState();
-}
-
-class _WeeklyPopularExploreState extends ConsumerState<_WeeklyPopularExplore> {
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final params = (
       config: ref.watchConfigAuth,
-      erotic: ref.watch(_eroticOnProvider),
+      erotic: ref.watch(eroticOnProvider),
     );
+
+    final asyncValue = ref.watch(animePicturesWeeklyPopularProvider(params));
 
     return ExploreSection(
       title: context.t.explore.weekly,
-      builder: (_) => ref
-          .watch(animePicturesWeeklyPopularProvider(params))
-          .maybeWhen(
-            data: (r) => ExploreList(posts: r),
-            orElse: () => const ExploreList(posts: []),
-          ),
-      onPressed: ref
-          .watch(animePicturesWeeklyPopularProvider(params))
-          .maybeWhen(
-            data: (r) =>
-                () => widget.onPressed(r),
-            orElse: () => null,
-          ),
+      builder: (_) => asyncValue.maybeWhen(
+        data: (r) => ExploreList(posts: r),
+        orElse: () => const ExploreList(posts: []),
+      ),
+      onPressed: asyncValue.maybeWhen(
+        data: (r) =>
+            () => onPressed(r),
+        orElse: () => null,
+      ),
     );
   }
 }
