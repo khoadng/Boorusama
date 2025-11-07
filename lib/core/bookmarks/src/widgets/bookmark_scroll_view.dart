@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:context_menus/context_menus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 import 'package:foundation/widgets.dart';
@@ -19,6 +18,8 @@ import '../../../configs/config/providers.dart';
 import '../../../posts/listing/providers.dart';
 import '../../../posts/listing/widgets.dart';
 import '../../../posts/post/types.dart';
+import '../../../widgets/booru_context_menu.dart';
+import '../../../widgets/context_menu_tile.dart';
 import '../../../widgets/widgets.dart';
 import '../../types.dart';
 import '../data/bookmark_convert.dart';
@@ -242,10 +243,7 @@ class _BookmarkScrollViewState extends ConsumerState<BookmarkScrollView> {
     PostGridController<BookmarkPost> controller,
   ) {
     final edit = ref.watch(bookmarkEditProvider);
-
     final auth = ref.watchConfigAuth;
-    final download = ref.watchConfigDownload;
-    final loginDetails = ref.watch(booruLoginDetailsProvider(auth));
 
     return ValueListenableBuilder(
       valueListenable: controller.itemsNotifier,
@@ -254,60 +252,37 @@ class _BookmarkScrollViewState extends ConsumerState<BookmarkScrollView> {
 
         return Stack(
           children: [
-            DefaultImageGridItem(
+            BookmarkContextMenu(
+              post: post,
               index: index,
-              autoScrollController: widget.scrollController,
               controller: controller,
-              imageUrl: post.isVideo
-                  ? post.thumbnailImageUrl
-                  : post.sampleImageUrl,
-              imageCacheManager: ref.watch(bookmarkImageCacheManagerProvider),
-              useHero: false,
-              config: auth,
-              leadingIcons: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: ConfigAwareWebsiteLogo(url: post.bookmark.sourceUrl),
-                ),
-              ],
-              contextMenu: GenericContextMenu(
-                buttonConfigs: [
-                  ContextMenuButtonConfig(
-                    context.t.download.download,
-                    onPressed: () => ref.bookmarks.downloadBookmarks(
-                      auth,
-                      download,
-                      [post.bookmark],
-                    ),
+              child: DefaultImageGridItem(
+                index: index,
+                autoScrollController: widget.scrollController,
+                controller: controller,
+                imageUrl: post.isVideo
+                    ? post.thumbnailImageUrl
+                    : post.sampleImageUrl,
+                imageCacheManager: ref.watch(bookmarkImageCacheManagerProvider),
+                useHero: false,
+                config: auth,
+                leadingIcons: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: ConfigAwareWebsiteLogo(url: post.bookmark.sourceUrl),
                   ),
-                  // remove bookmark
-                  ContextMenuButtonConfig(
-                    context.t.post.detail.remove_from_bookmark,
-                    onPressed: () => ref.bookmarks.removeBookmark(
-                      post.bookmark,
-                      onSuccess: () {
-                        controller.remove([post.id], (e) => e.id);
-                      },
-                    ),
-                  ),
-                  if (!loginDetails.hasStrictSFW)
-                    ContextMenuButtonConfig(
-                      'Open source in browser',
-                      onPressed: () =>
-                          launchExternalUrlString(post.bookmark.sourceUrl),
-                    ),
                 ],
+                onTap: () {
+                  goToBookmarkDetailsPage(
+                    ref,
+                    index,
+                    initialThumbnailUrl: post.isVideo
+                        ? post.bookmark.thumbnailUrl
+                        : post.sampleImageUrl,
+                    controller: controller,
+                  );
+                },
               ),
-              onTap: () {
-                goToBookmarkDetailsPage(
-                  ref,
-                  index,
-                  initialThumbnailUrl: post.isVideo
-                      ? post.bookmark.thumbnailUrl
-                      : post.sampleImageUrl,
-                  controller: controller,
-                );
-              },
             ),
             if (edit)
               Positioned(
@@ -327,6 +302,56 @@ class _BookmarkScrollViewState extends ConsumerState<BookmarkScrollView> {
           ],
         );
       },
+    );
+  }
+}
+
+class BookmarkContextMenu extends ConsumerWidget {
+  const BookmarkContextMenu({
+    super.key,
+    required this.post,
+    required this.index,
+    required this.controller,
+    required this.child,
+  });
+
+  final BookmarkPost post;
+  final int index;
+  final PostGridController<BookmarkPost> controller;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final auth = ref.watchConfigAuth;
+    final loginDetails = ref.watch(booruLoginDetailsProvider(auth));
+    final download = ref.watchConfigDownload;
+
+    return BooruContextMenu(
+      menuItemsBuilder: (context) => [
+        ContextMenuTile(
+          title: context.t.download.download,
+          onTap: () => ref.bookmarks.downloadBookmarks(
+            auth,
+            download,
+            [post.bookmark],
+          ),
+        ),
+        ContextMenuTile(
+          title: context.t.post.detail.remove_from_bookmark,
+          onTap: () => ref.bookmarks.removeBookmark(
+            post.bookmark,
+            onSuccess: () {
+              controller.remove([post.id], (e) => e.id);
+            },
+          ),
+        ),
+        if (!loginDetails.hasStrictSFW)
+          ContextMenuTile(
+            title: 'Open source in browser',
+            onTap: () => launchExternalUrlString(post.bookmark.sourceUrl),
+          ),
+      ],
+      child: child,
     );
   }
 }

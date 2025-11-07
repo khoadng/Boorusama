@@ -30,7 +30,6 @@ class DefaultImageGridItem<T extends Post> extends StatelessWidget {
     required this.config,
     this.onTap,
     super.key,
-    this.contextMenu,
     this.leadingIcons,
     this.imageUrl,
     this.imageCacheManager,
@@ -41,7 +40,6 @@ class DefaultImageGridItem<T extends Post> extends StatelessWidget {
   final PostGridController<T> controller;
   final bool useHero;
   final VoidCallback? onTap;
-  final Widget? contextMenu;
   final List<Widget>? leadingIcons;
   final String? imageUrl;
   final ImageCacheManager? imageCacheManager;
@@ -58,99 +56,81 @@ class DefaultImageGridItem<T extends Post> extends StatelessWidget {
         builder: (_, posts, _) {
           final multiSelect = selectionModeController.isActive;
           final post = posts[index];
-          return DefaultPostListContextMenuRegion(
-            isEnabled: !multiSelect,
-            contextMenu:
-                contextMenu ??
-                Consumer(
-                  builder: (_, ref, _) => GeneralPostContextMenu(
-                    hasAccount: ref
-                        .watch(booruLoginDetailsProvider(ref.watchConfigAuth))
-                        .hasLogin(),
-                    onMultiSelect: () {
-                      selectionModeController.enable(
-                        initialSelected: [index],
-                      );
-                    },
-                    post: post,
-                  ),
-                ),
-            child: HeroMode(
-              enabled: useHero,
-              child: BooruHero(
-                tag: '${post.id}_hero',
-                child: ExplicitContentBlockOverlay(
-                  rating: post.rating,
-                  child: Builder(
-                    builder: (context) {
-                      final item = Consumer(
-                        builder: (_, ref, _) {
-                          final config = ref.watchConfigAuth;
+          return HeroMode(
+            enabled: useHero,
+            child: BooruHero(
+              tag: '${post.id}_hero',
+              child: ExplicitContentBlockOverlay(
+                rating: post.rating,
+                child: Builder(
+                  builder: (context) {
+                    final item = Consumer(
+                      builder: (_, ref, _) {
+                        final config = ref.watchConfigAuth;
 
-                          final gridThumbnailUrlBuilder = ref.watch(
-                            gridThumbnailUrlGeneratorProvider(config),
-                          );
+                        final gridThumbnailUrlBuilder = ref.watch(
+                          gridThumbnailUrlGeneratorProvider(config),
+                        );
 
-                          final imgUrl =
-                              imageUrl ??
-                              gridThumbnailUrlBuilder.generateUrl(
-                                post,
-                                settings: ref.watch(
-                                  gridThumbnailSettingsProvider(config),
-                                ),
-                              );
+                        final imgUrl =
+                            imageUrl ??
+                            gridThumbnailUrlBuilder.generateUrl(
+                              post,
+                              settings: ref.watch(
+                                gridThumbnailSettingsProvider(config),
+                              ),
+                            );
 
-                          return SliverPostGridImageGridItem(
-                            post: post,
-                            index: index,
-                            multiSelectEnabled: multiSelect,
-                            onTap:
-                                onTap ??
-                                () {
-                                  goToPostDetailsPageFromController(
-                                    ref: ref,
-                                    controller: controller,
-                                    initialIndex: index,
-                                    scrollController: autoScrollController,
-                                    initialThumbnailUrl: imgUrl,
-                                  );
-                                },
-                            quickActionButton: !multiSelect
-                                ? DefaultImagePreviewQuickActionButton(
-                                    post: post,
-                                  )
-                                : null,
-                            autoScrollOptions: AutoScrollOptions(
-                              controller: autoScrollController,
-                              index: index,
-                            ),
-                            score: post.score,
-                            image: _Image(
-                              post: post,
-                              imageUrl: imgUrl,
-                              imageCacheManager: imageCacheManager,
-                            ),
-                            leadingIcons: leadingIcons,
-                          );
-                        },
-                      );
-
-                      return Consumer(
-                        builder: (_, ref, _) => DefaultTagListPrevewTooltip(
+                        return SliverPostGridImageGridItem(
                           post: post,
-                          config: config,
-                          child: DefaultSelectableItem(
+                          index: index,
+                          multiSelectEnabled: multiSelect,
+                          onTap:
+                              onTap ??
+                              () {
+                                goToPostDetailsPageFromController(
+                                  ref: ref,
+                                  controller: controller,
+                                  initialIndex: index,
+                                  scrollController: autoScrollController,
+                                  initialThumbnailUrl: imgUrl,
+                                );
+                              },
+                          quickActionButton: !multiSelect
+                              ? DefaultImagePreviewQuickActionButton(
+                                  post: post,
+                                )
+                              : null,
+                          autoScrollOptions: AutoScrollOptions(
+                            controller: autoScrollController,
                             index: index,
+                          ),
+                          score: post.score,
+                          image: _Image(
                             post: post,
-                            item: item,
-                            indicatorSize: ref.watch(
-                              selectionIndicatorSizeProvider,
-                            ),
+                            imageUrl: imgUrl,
+                            imageCacheManager: imageCacheManager,
+                          ),
+                          leadingIcons: leadingIcons,
+                        );
+                      },
+                    );
+
+                    return Consumer(
+                      builder: (_, ref, _) => DefaultTagListPrevewTooltip(
+                        post: post,
+                        config: config,
+                        child: DefaultSelectableItem(
+                          index: index,
+                          post: post,
+                          item: item,
+                          indicatorSize: ref.watch(
+                            selectionIndicatorSizeProvider,
                           ),
                         ),
-                      );
-                    },
-                  ),
+                      ),
+                    );
+                  },
                 ),
               ),
             ),
