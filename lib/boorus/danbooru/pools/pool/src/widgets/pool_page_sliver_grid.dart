@@ -13,7 +13,7 @@ import '../../../../../../core/configs/config/providers.dart';
 import '../../../../../../core/posts/listing/types.dart';
 import '../../../../../../core/posts/pools/widgets.dart';
 import '../../../../../../core/settings/providers.dart';
-import '../../../details/providers.dart';
+import '../../../details/routes.dart';
 import '../../providers.dart';
 import '../../types.dart';
 import 'pool_image.dart';
@@ -128,11 +128,6 @@ class _PoolPagedSliverGridState extends ConsumerState<PoolPagedSliverGrid> {
         ) -
         _kLabelOffset;
 
-    final crossAxisCount = calculateGridCount(
-      widget.constraints.maxWidth,
-      gridSize,
-    );
-
     return SliverPadding(
       padding: EdgeInsets.symmetric(horizontal: imageGridPadding),
       sliver: PagingListener(
@@ -141,39 +136,27 @@ class _PoolPagedSliverGridState extends ConsumerState<PoolPagedSliverGrid> {
           state: state,
           fetchNextPage: fetchNextPage,
           builderDelegate: PagedChildBuilderDelegate<DanbooruPool>(
-            itemBuilder: (context, pool, index) =>
-                DanbooruPoolGridItem(pool: pool),
+            itemBuilder: (context, pool, index) => PoolGridItem(
+              image: PoolImage(pool: pool),
+              onTap: () => goToPoolDetailPage(ref, pool),
+              total: pool.postCount,
+              name: pool.name,
+            ),
             firstPageProgressIndicatorBuilder: (context) => const Center(
               child: CircularProgressIndicator.adaptive(),
             ),
           ),
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: crossAxisCount,
+            crossAxisCount: calculateGridCount(
+              widget.constraints.maxWidth,
+              gridSize,
+            ),
             childAspectRatio: imageGridAspectRatio,
             mainAxisSpacing: imageGridSpacing,
             crossAxisSpacing: imageGridSpacing,
           ),
         ),
       ),
-    );
-  }
-}
-
-class DanbooruPoolGridItem extends ConsumerWidget {
-  const DanbooruPoolGridItem({
-    required this.pool,
-    super.key,
-  });
-
-  final DanbooruPool pool;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return PoolGridItem(
-      image: PoolImage(pool: pool),
-      onTap: () => goToPoolDetailPage(ref, pool),
-      total: pool.postCount,
-      name: pool.name,
     );
   }
 }

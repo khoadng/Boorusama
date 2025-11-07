@@ -2,91 +2,51 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../../../../../core/configs/config/providers.dart';
+import '../../../../../../core/errors/types.dart';
 import '../../../../../../core/posts/listing/widgets.dart';
-import '../../../../../../core/posts/post/types.dart';
 import '../../../../../../core/settings/providers.dart';
 import '../../../../../../core/widgets/widgets.dart';
 import '../../../../posts/listing/widgets.dart';
 import '../../../../posts/post/providers.dart';
 import '../../../../posts/post/types.dart';
+import '../../../pool/types.dart';
+import '../providers/filter_provider.dart';
+import '../types/pool_posts_repo.dart';
 
-class DanbooruInfinitePostIdList extends ConsumerStatefulWidget {
+class DanbooruInfinitePostIdList extends ConsumerWidget {
   const DanbooruInfinitePostIdList({
-    required this.ids,
+    required this.pool,
     super.key,
     this.sliverHeaders,
   });
 
-  final List<int> ids;
+  final DanbooruPool pool;
   final List<Widget>? sliverHeaders;
 
   @override
-  ConsumerState<DanbooruInfinitePostIdList> createState() =>
-      _DanbooruInfinitePostIdListState();
-}
-
-class _DanbooruInfinitePostIdListState
-    extends ConsumerState<DanbooruInfinitePostIdList> {
-  List<int> paginate(List<int> ids, int page, int perPage) {
-    final start = (page - 1) * perPage;
-    var end = start + perPage;
-
-    // if start is greater than the length of the list, return empty list
-    if (start >= ids.length) {
-      return [];
-    }
-
-    // if end is greater than the length of the list, set end to the length of the list
-    if (end > ids.length) {
-      end = ids.length;
-    }
-
-    return ids.sublist(start, end);
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final perPage = ref.watch(
       imageListingSettingsProvider.select((value) => value.postsPerPage),
     );
-    final repo = ref.watch(danbooruPostRepoProvider(ref.watchConfigSearch));
+    final config = ref.watchConfigSearch;
+    final order = ref.watch(poolFilterProvider.select((state) => state.order));
+    final repo = ref.watch(danbooruPostRepoProvider(config));
 
     return CustomContextMenuOverlay(
-      child: PostScope(
-        fetcher: (page) => TaskEither.Do(
-          ($) async {
-            final ids = paginate(widget.ids, page, perPage);
-            if (ids.isEmpty) {
-              return <DanbooruPost>[].toResult(
-                total: widget.ids.length,
-              );
-            }
-
-            final idString = ids.join(',');
-            final posts = await $(repo.getPosts('id:$idString', 1));
-
-            // sort the posts based on the order of the ids
-            final ordered = <DanbooruPost>[];
-
-            for (final id in ids) {
-              final post = posts.posts.firstWhereOrNull(
-                (post) => post.id == id,
-              );
-              if (post != null) {
-                ordered.add(post);
-              }
-            }
-
-            return ordered.toResult(
-              total: widget.ids.length,
-            );
-          },
+      child: PostScope<DanbooruPost>(
+        fetcher: (page) => TaskEither.tryCatch(
+          () => repo.fetchPoolPosts(
+            pool: pool,
+            page: page,
+            perPage: perPage,
+            order: order,
+          ),
+          (error, stackTrace) => UnknownError(error: error),
         ),
         builder: (context, controller) => PostGrid(
           controller: controller,
@@ -102,7 +62,7 @@ class _DanbooruInfinitePostIdListState
                 ),
               ),
           sliverHeaders: [
-            if (widget.sliverHeaders != null) ...widget.sliverHeaders!,
+            ...?sliverHeaders,
           ],
         ),
       ),

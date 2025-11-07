@@ -20,8 +20,8 @@ class PoolGridItem extends ConsumerWidget {
 
   final Widget image;
   final void Function() onTap;
-  final int total;
-  final String name;
+  final int? total;
+  final String? name;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -51,13 +51,16 @@ class PoolGridItem extends ConsumerWidget {
                   ],
                 ),
               ),
-              const SizedBox(height: 8),
-              Text(
-                name.replaceAll('_', ' '),
-                style: const TextStyle(fontWeight: FontWeight.w600),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
+              if (name case final name? when name.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(left: 8),
+                  child: Text(
+                    name.replaceAll('_', ' '),
+                    style: const TextStyle(fontWeight: FontWeight.w600),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
             ],
           ),
           Positioned(
@@ -73,16 +76,19 @@ class PoolGridItem extends ConsumerWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(
-                    total.toString(),
-                    style: TextStyle(
-                      fontWeight: FontWeight.w700,
-                      color: context
-                          .extendedColorScheme
-                          .onSurfaceContainerOverlayDim,
+                  if (total case final total?)
+                    Padding(
+                      padding: const EdgeInsets.only(right: 4),
+                      child: Text(
+                        total.toString(),
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          color: context
+                              .extendedColorScheme
+                              .onSurfaceContainerOverlayDim,
+                        ),
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 4),
                   Icon(
                     Symbols.photo_library,
                     color: context

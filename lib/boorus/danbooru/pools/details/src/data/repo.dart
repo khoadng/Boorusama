@@ -1,6 +1,6 @@
 // Project imports:
 import '../../../../../../foundation/caching.dart';
-import '../types/pool_description_repository.dart';
+import '../types/pool_description.dart';
 
 class PoolDescriptionRepoBuilder
     with SimpleCacheMixin<String>

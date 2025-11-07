@@ -8,6 +8,7 @@ import '../../../../../../core/posts/post/types.dart';
 import '../../../../posts/post/providers.dart';
 import '../../../../posts/post/types.dart';
 import '../../types.dart';
+import '../types/pool_cover.dart';
 
 final danbooruPoolCoversProvider =
     NotifierProvider.family<
@@ -38,7 +39,7 @@ class PoolCoversNotifier
     if (pools == null) return;
 
     final poolsWithPosts = pools
-        .where((element) => element.postIds.isNotEmpty)
+        .where((element) => element.postIds?.isNotEmpty ?? false)
         .toList();
 
     // only load pools that is not in the cache
@@ -52,9 +53,14 @@ class PoolCoversNotifier
       for (final e in poolsToFetch) e.id: null,
     };
 
-    final postPoolMap = <int, int>{
-      for (final pool in poolsToFetch) pool.postIds.last: pool.id,
-    };
+    final postPoolMap = Map<int, int>.fromEntries(
+      poolsToFetch.map(
+        (pool) {
+          final postId = pool.postIds?.lastOrNull;
+          return postId == null ? null : MapEntry(postId, pool.id);
+        },
+      ).nonNulls,
+    );
 
     final r = await postRepo
         .getPostsFromIds(postPoolMap.keys.toList())
@@ -72,17 +78,11 @@ class PoolCoversNotifier
 
     for (final postId in postPoolMap.keys) {
       if (postMap.containsKey(postId)) {
-        poolCoverMap[postPoolMap[postId]!] = (
-          url: postToCoverUrl(postMap[postId]!),
-          aspectRatio: postMap[postId]!.aspectRatio,
-          id: postMap[postId]!.id,
+        poolCoverMap[postPoolMap[postId]!] = PoolCover.fromPost(
+          postMap[postId]!,
         );
       } else {
-        poolCoverMap[postPoolMap[postId]!] = (
-          url: null,
-          aspectRatio: 1,
-          id: postId,
-        );
+        poolCoverMap[postPoolMap[postId]!] = PoolCover.empty(postId);
       }
     }
 
@@ -91,11 +91,4 @@ class PoolCoversNotifier
       ...poolCoverMap,
     };
   }
-}
-
-String? postToCoverUrl(DanbooruPost post) {
-  if (post.id == 0) return null;
-  if (post.isAnimated) return post.url360x360;
-
-  return post.url720x720;
 }

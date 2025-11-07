@@ -14,105 +14,75 @@ import '../../pool/widgets.dart';
 import '../../search/routes.dart';
 import 'pool_options_header.dart';
 
-class DanbooruPoolPage extends StatelessWidget {
+class DanbooruPoolPage extends ConsumerWidget {
   const DanbooruPoolPage({
     super.key,
   });
 
   @override
-  Widget build(BuildContext context) {
-    return const Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: SafeArea(
-        bottom: false,
-        child: _PostList(),
-      ),
-    );
-  }
-}
-
-class _PostList extends ConsumerWidget {
-  const _PostList();
-
-  @override
   Widget build(BuildContext context, WidgetRef ref) {
     final filterState = ref.watch(danbooruPoolFilterProvider);
     final filterNotifier = ref.watch(danbooruPoolFilterProvider.notifier);
+    final colorScheme = Theme.of(context).colorScheme;
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return CustomScrollView(
-          slivers: [
-            SliverAppBar(
-              titleSpacing: 0,
-              backgroundColor: Theme.of(context).colorScheme.surface,
-              title: Text(context.t.pool.pool_gallery),
-              actions: const [
-                PoolSearchButton(),
-              ],
-            ),
-            SliverPinnedHeader(
-              child: ColoredBox(
-                color: Theme.of(context).colorScheme.surface,
-                child: DefaultTabController(
-                  initialIndex: switch (filterState.category) {
-                    DanbooruPoolCategory.collection => 0,
-                    _ => 1,
-                  },
-                  length: 2,
-                  child: TabBar(
-                    isScrollable: true,
-                    onTap: (value) {
-                      filterNotifier.setCategory(
-                        value == 0
-                            ? DanbooruPoolCategory.collection
-                            : DanbooruPoolCategory.series,
-                      );
-                    },
-                    tabs: [
-                      for (final e in DanbooruPoolCategory.values.where(
-                        (e) => e != DanbooruPoolCategory.unknown,
-                      ))
-                        Tab(
-                          text: switch (e) {
-                            DanbooruPoolCategory.collection =>
-                              context.t.pool.category.collection,
-                            _ => context.t.pool.category.series,
-                          },
-                        ),
-                    ],
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      body: SafeArea(
+        bottom: false,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return CustomScrollView(
+              slivers: [
+                SliverAppBar(
+                  titleSpacing: 0,
+                  backgroundColor: colorScheme.surface,
+                  title: Text(context.t.pool.pool_gallery),
+                  actions: [
+                    IconButton(
+                      splashRadius: 24,
+                      onPressed: () {
+                        goToPoolSearchPage(ref);
+                      },
+                      icon: const Icon(Symbols.search),
+                    ),
+                  ],
+                ),
+                SliverPinnedHeader(
+                  child: ColoredBox(
+                    color: colorScheme.surface,
+                    child: DefaultTabController(
+                      initialIndex: filterState.category.toInt(),
+                      length: 2,
+                      child: TabBar(
+                        isScrollable: true,
+                        onTap: (value) {
+                          filterNotifier.setCategory(
+                            DanbooruPoolCategory.parse(value),
+                          );
+                        },
+                        tabs: [
+                          for (final e in DanbooruPoolCategory.allValues)
+                            Tab(
+                              text: e.localize(context),
+                            ),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ),
-            const SliverToBoxAdapter(
-              child: PoolOptionsHeader(),
-            ),
-            PoolPagedSliverGrid(
-              order: filterState.order,
-              category: filterState.category,
-              constraints: constraints,
-            ),
-          ],
-        );
-      },
-    );
-  }
-}
-
-class PoolSearchButton extends ConsumerWidget {
-  const PoolSearchButton({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return IconButton(
-      splashRadius: 24,
-      onPressed: () {
-        goToPoolSearchPage(ref);
-      },
-      icon: const Icon(Symbols.search),
+                const SliverToBoxAdapter(
+                  child: PoolOptionsHeader(),
+                ),
+                PoolPagedSliverGrid(
+                  order: filterState.order,
+                  category: filterState.category,
+                  constraints: constraints,
+                ),
+              ],
+            );
+          },
+        ),
+      ),
     );
   }
 }

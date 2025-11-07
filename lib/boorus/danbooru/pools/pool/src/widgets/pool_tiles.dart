@@ -3,10 +3,11 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../details/providers.dart';
+import '../../../details/routes.dart';
 import '../types/danbooru_pool.dart';
 
 class PoolTiles extends ConsumerWidget {
@@ -47,7 +48,7 @@ class PoolTiles extends ConsumerWidget {
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 4),
                   child: Text(
-                    '${pools.length} Pool${pools.length > 1 ? 's' : ''}',
+                    context.t.pool.counter(n: pools.length),
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
@@ -69,12 +70,17 @@ class PoolTiles extends ConsumerWidget {
                       minVerticalPadding: 0,
                       visualDensity: VisualDensity.compact,
                       title: Text(
-                        e.name.replaceAll('_', ' '),
+                        e.name?.replaceAll('_', ' ') ?? '???',
                         maxLines: 2,
                         softWrap: false,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      subtitle: Text('${e.postCount} posts'),
+                      subtitle: switch (e.postCount) {
+                        final count? => Text(
+                          context.t.posts.counter(n: count),
+                        ),
+                        _ => null,
+                      },
                       trailing: const Icon(Symbols.keyboard_arrow_right),
                       onTap: () => goToPoolDetailPage(ref, e),
                     ),
