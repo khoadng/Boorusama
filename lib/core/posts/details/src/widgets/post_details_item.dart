@@ -16,6 +16,7 @@ import '../../../../videos/player/widgets.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../details_pageview/widgets.dart';
 import '../../../post/types.dart';
+import '../providers/note_overlay_provider.dart';
 import 'play_pause_animation_overlay.dart';
 import 'post_details_controller.dart';
 import 'post_details_page_view_scope.dart';
@@ -108,9 +109,15 @@ class _PostDetailsItemState<T extends Post>
           key: _videoKey,
           contentSize: Size(post.width, post.height),
           controller: widget.transformController,
-          enable: switch (state.isExpanded) {
-            true => context.isLargeScreen,
-            false => true,
+          enable: switch (ref.watch(
+            noteOverlayProvider((widget.authConfig, post)),
+          )) {
+            // If the note overlay is shown, disable all interactions to prevent gesture conflicts
+            true => false,
+            false => switch (state.isExpanded) {
+              true => context.isLargeScreen,
+              false => true,
+            },
           },
           onTransformationChanged: pageViewController.onTransformationChanged,
           onTap: onItemTap,

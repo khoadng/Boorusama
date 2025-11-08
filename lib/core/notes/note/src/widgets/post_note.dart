@@ -21,11 +21,15 @@ class PostNote extends StatefulWidget {
     super.key,
     this.style,
     this.displayMode,
+    this.onShow,
+    this.onHide,
   });
 
   final NoteStyle? style;
   final NoteDisplayMode? displayMode;
   final Note note;
+  final VoidCallback? onShow;
+  final VoidCallback? onHide;
 
   @override
   State<PostNote> createState() => _PostNoteState();
@@ -43,7 +47,8 @@ class _PostNoteState extends State<PostNote> {
   @override
   Widget build(BuildContext context) {
     final (coordinate, content) = (widget.note.coordinate, widget.note.content);
-    final isMobile = !isMobilePlatform();
+    final isMobile = isMobilePlatform();
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Container(
       margin: coordinate.getMargin(),
@@ -55,16 +60,12 @@ class _PostNoteState extends State<PostNote> {
             : const AnchorTriggerMode.hover(
                 waitDuration: Duration.zero,
               ),
-        overlayHeight: _maxOverlayHeight,
-        overlayWidth: _maxOverlayWidth,
+        onShow: widget.onShow,
+        onHide: widget.onHide,
         placement: isMobile ? Placement.bottomStart : Placement.bottom,
         transitionDuration: Duration.zero,
         transitionBuilder: (context, animation, child) => child!,
-        backdropBuilder: (context) => isMobile
-            ? Container(
-                color: Colors.black38,
-              )
-            : const SizedBox.shrink(),
+        viewPadding: const EdgeInsets.all(4),
         overlayBuilder: (context) => Container(
           padding: const EdgeInsets.all(4),
           constraints: const BoxConstraints(
@@ -72,8 +73,11 @@ class _PostNoteState extends State<PostNote> {
             maxHeight: _maxOverlayHeight,
           ),
           decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surface,
-            borderRadius: BorderRadius.circular(2),
+            color: colorScheme.surface,
+            borderRadius: BorderRadius.circular(4),
+            border: Border.all(
+              color: colorScheme.outlineVariant,
+            ),
           ),
           child: Scrollbar(
             controller: scrollController,

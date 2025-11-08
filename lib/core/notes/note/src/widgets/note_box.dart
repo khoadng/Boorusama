@@ -92,7 +92,7 @@ class NoteBox extends StatelessWidget {
   }
 }
 
-class _InlineText extends StatelessWidget {
+class _InlineText extends StatefulWidget {
   const _InlineText({
     required this.note,
     required this.style,
@@ -104,24 +104,51 @@ class _InlineText extends StatelessWidget {
   final NoteDisplayMode? displayMode;
 
   @override
+  State<_InlineText> createState() => _InlineTextState();
+}
+
+class _InlineTextState extends State<_InlineText> {
+  final _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final textWidget = Text(
-      note.strippedContent,
+      widget.note.strippedContent,
       style: TextStyle(
-        fontSize: note.fontSize?.value,
-        color: style?.foregroundColor ?? Colors.black,
-        backgroundColor: style?.backgroundColor ?? Colors.white,
+        fontSize: widget.note.fontSize?.value,
+        color: widget.style?.foregroundColor ?? Colors.black,
+        backgroundColor: widget.style?.backgroundColor ?? Colors.white,
       ),
     );
 
     return Padding(
       padding: const EdgeInsets.all(1),
-      child: switch (displayMode) {
+      child: switch (widget.displayMode) {
         NoteDisplayMode.inlineVertical => RotatedBox(
           quarterTurns: 1,
-          child: textWidget,
+          child: Scrollbar(
+            thumbVisibility: true,
+            controller: _scrollController,
+            child: SingleChildScrollView(
+              controller: _scrollController,
+              child: textWidget,
+            ),
+          ),
         ),
-        _ => textWidget,
+        _ => Scrollbar(
+          thumbVisibility: true,
+          controller: _scrollController,
+          child: SingleChildScrollView(
+            controller: _scrollController,
+            child: textWidget,
+          ),
+        ),
       },
     );
   }

@@ -15,6 +15,7 @@ import '../../../../notes/note/widgets.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../listing/providers.dart';
 import '../../../post/types.dart';
+import '../providers/note_overlay_provider.dart';
 
 class PostDetailsImage<T extends Post> extends ConsumerStatefulWidget {
   const PostDetailsImage({
@@ -81,6 +82,7 @@ class _PostDetailsImageState<T extends Post>
     final params = (widget.config, post);
     final noteState = ref.watch(notesControllerProvider(post));
     final notes = ref.watch(currentNotesProvider(params)) ?? <Note>[].lock;
+    final noteOverlayNotifier = ref.watch(noteOverlayProvider(params).notifier);
 
     return [
       if (noteState.enableNotes)
@@ -93,6 +95,12 @@ class _PostDetailsImageState<T extends Post>
                 widthConstraint: constraints.maxWidth,
                 heightConstraint: constraints.maxHeight,
               ),
+              onShow: () {
+                noteOverlayNotifier.setVisible(true);
+              },
+              onHide: () {
+                noteOverlayNotifier.setVisible(false);
+              },
             ),
           ),
         ),
