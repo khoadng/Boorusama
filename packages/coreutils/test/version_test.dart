@@ -391,8 +391,8 @@ void main() {
   });
 
   group("incrementPreRelease", () {
-    test('throws Exception for non-preRelease version', () {
-      expect(() => Version(1, 0, 0).incrementPreRelease(), throwsException);
+    test('throws StateError for non-preRelease version', () {
+      expect(() => Version(1, 0, 0).incrementPreRelease(), throwsStateError);
     });
 
     final cases = [
