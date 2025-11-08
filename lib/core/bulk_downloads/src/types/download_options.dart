@@ -1,14 +1,12 @@
 // Package imports:
 import 'package:equatable/equatable.dart';
-import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../../foundation/platform.dart';
 import '../../../downloads/path/validator.dart';
 import '../../../search/selected_tags/types.dart';
 import 'download_task.dart';
 
-class DownloadOptions extends Equatable with DownloadPathValidatorMixin {
+class DownloadOptions extends Equatable {
   const DownloadOptions({
     required this.path,
     required this.notifications,
@@ -98,9 +96,6 @@ class DownloadOptions extends Equatable with DownloadPathValidatorMixin {
   }
 
   @override
-  String? get storagePath => path;
-
-  @override
   List<Object?> get props => [
     path,
     notifications,
@@ -114,20 +109,15 @@ class DownloadOptions extends Equatable with DownloadPathValidatorMixin {
 }
 
 extension DownloadOptionsX on DownloadOptions {
-  bool valid({
-    int? androidSdkInt,
-    bool? android,
-  }) {
-    if (tags.isEmpty) return false;
+  bool valid({int? androidSdkInt}) {
+    if (tags.isEmpty || path.isEmpty) return false;
 
-    if (path.isEmpty) return false;
+    final pathInfo = PathInfo.from(path);
 
-    final droid = android ?? isAndroid();
-
-    if (!droid) return true;
-
-    return isValidDownload(
-      hasScopeStorage: hasScopedStorage(androidSdkInt) ?? true,
-    );
+    return switch (pathInfo) {
+      InvalidPath() => false,
+      AndroidPathInfo() => !pathInfo.requiresPublicDirectory(androidSdkInt),
+      _ => true, // iOS/Desktop always valid
+    };
   }
 }

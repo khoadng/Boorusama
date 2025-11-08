@@ -1,105 +1,146 @@
+// Flutter imports:
+import 'package:flutter/foundation.dart';
+
+// Package imports:
+import 'package:foundation/foundation.dart';
+
 const _basePath = '/storage/emulated';
 const _sdCardBasePath = '/storage';
 
-const _allowedDownloadFolders = <String>[
-  'Download',
-  // 'Downloads',
-  'Documents',
-  'Pictures',
-];
+sealed class PathInfo {
+  const PathInfo(this.path);
 
-bool isInternalStorage(String? path) => path?.startsWith(_basePath) ?? false;
+  factory PathInfo.from(
+    String? path, {
+    TargetPlatform? platform,
+  }) {
+    if (path == null || path.isEmpty) return InvalidPath(path ?? '');
 
-bool isUserspaceInternalStorage(String? path) {
-  if (path == null) return false;
-  if (!isInternalStorage(path)) return false;
+    final targetPlatform = platform ?? defaultTargetPlatform;
 
-  final folders = path.split('/');
+    return switch (targetPlatform) {
+      TargetPlatform.android => AndroidPathInfo.parse(path),
+      TargetPlatform.iOS => IOSPath(path),
+      TargetPlatform.macOS ||
+      TargetPlatform.windows ||
+      TargetPlatform.linux => DesktopPath(path),
+      _ => UnsupportedPlatform(path),
+    };
+  }
 
-  if (folders.length < 4) return false;
-
-  // check if this is on the user space
-  return int.tryParse(folders[3]) != null;
+  final String path;
 }
 
-bool isSdCardStorage(String? path) {
-  if (path == null) return false;
+sealed class AndroidPathInfo extends PathInfo {
+  const AndroidPathInfo(super.path);
 
-  final folders = path.split('/');
+  static const allowedDownloadFolders = <String>[
+    'Download',
+    // 'Downloads',
+    'Documents',
+    'Pictures',
+  ];
 
-  if (folders.length < 3) return false;
+  static PathInfo parse(String path) {
+    return switch (path) {
+      final p when p.startsWith(_basePath) => _parseInternalStorage(p),
+      final p when p.startsWith(_sdCardBasePath) => _parseSdCardStorage(p),
+      _ => AndroidOtherStorage(path),
+    };
+  }
 
-  // not emulated storage
-  return folders[2] != 'emulated';
-}
+  String? get publicDirectory;
+  bool get isPublicDirectory => publicDirectory != null;
 
-bool isSdCardPublicDirectories(String? path) {
-  if (path == null) return false;
-  if (!isSdCardStorage(path)) return false;
+  bool requiresPublicDirectory(int? androidSdkInt) {
+    final hasScopeStorage = hasScopedStorage(androidSdkInt) ?? true;
+    return hasScopeStorage && !isPublicDirectory;
+  }
 
-  final nonBasePath = path.replaceAll('$_sdCardBasePath/', '');
-  final paths = nonBasePath.split('/');
+  static PathInfo _parseInternalStorage(String path) {
+    final folders = path.split('/');
 
-  if (paths.length < 2) return false;
+    return switch (folders) {
+      [_, _, _, final userSpace, ...] when int.tryParse(userSpace) != null =>
+        AndroidInternalStorage(
+          path: path,
+          userSpace: int.parse(userSpace),
+          publicDirectory: _extractPublicDirectory(path, _basePath),
+        ),
+      _ => AndroidOtherStorage(path),
+    };
+  }
 
-  final selectedFolder = paths[1];
+  static PathInfo _parseSdCardStorage(String path) {
+    final folders = path.split('/');
 
-  return _allowedDownloadFolders.contains(selectedFolder);
-}
+    return switch (folders) {
+      [_, _, final deviceId, ...] when deviceId != 'emulated' =>
+        AndroidSdCardStorage(
+          path: path,
+          deviceId: deviceId,
+          publicDirectory: _extractPublicDirectory(path, _sdCardBasePath),
+        ),
+      _ => AndroidOtherStorage(path),
+    };
+  }
 
-bool isPublicDirectories(String? path) {
-  try {
-    if (path == null) return false;
-    if (!isUserspaceInternalStorage(path)) return false;
+  static String? _extractPublicDirectory(String path, String basePath) {
+    final paths = path.replaceAll('$basePath/', '').split('/');
 
-    final nonBasePath = path.replaceAll('$_basePath/', '');
-    final paths = nonBasePath.split('/');
-
-    if (paths.length < 2) return false;
-
-    final selectedFolder = paths[1];
-
-    return _allowedDownloadFolders.contains(selectedFolder);
-  } catch (e) {
-    return false;
+    return switch (paths) {
+      [_, final folder, ...] when allowedDownloadFolders.contains(folder) =>
+        folder,
+      _ => null,
+    };
   }
 }
 
-mixin DownloadPathValidatorMixin {
-  String? get storagePath;
+final class AndroidInternalStorage extends AndroidPathInfo {
+  const AndroidInternalStorage({
+    required String path,
+    required this.userSpace,
+    this.publicDirectory,
+  }) : super(path);
 
-  bool shouldDisplayWarning({
-    required bool hasScopeStorage,
-  }) =>
-      storagePath != null &&
-      storagePath!.isNotEmpty &&
-      !hasValidStoragePath(hasScopeStorage: hasScopeStorage);
+  final int userSpace;
 
-  bool isValidDownload({
-    required bool hasScopeStorage,
-  }) =>
-      storagePath != null &&
-      storagePath!.isNotEmpty &&
-      hasValidStoragePath(hasScopeStorage: hasScopeStorage);
+  @override
+  final String? publicDirectory;
+}
 
-  List<String> get allowedFolders => _allowedDownloadFolders;
+final class AndroidSdCardStorage extends AndroidPathInfo {
+  const AndroidSdCardStorage({
+    required String path,
+    required this.deviceId,
+    this.publicDirectory,
+  }) : super(path);
 
-  /// Checks if the [storagePath] is valid for storing downloaded files.
-  ///
-  /// A valid storage path must:
-  /// - not be null or empty
-  /// - be an internal storage path
-  /// - not contain non-public directories if [hasScopeStorage] is true
-  ///
-  /// @param [hasScopeStorage] whether the storage path should have scope storage
-  /// @return true if the storage path is valid, false otherwise
-  bool hasValidStoragePath({
-    required bool hasScopeStorage,
-  }) =>
-      storagePath != null &&
-      storagePath!.isNotEmpty &&
-      (hasScopeStorage
-          ? (isPublicDirectories(storagePath) ||
-                isSdCardPublicDirectories(storagePath))
-          : true);
+  final String deviceId;
+
+  @override
+  final String? publicDirectory;
+}
+
+final class AndroidOtherStorage extends AndroidPathInfo {
+  const AndroidOtherStorage(super.path);
+
+  @override
+  String? get publicDirectory => null;
+}
+
+final class IOSPath extends PathInfo {
+  const IOSPath(super.path);
+}
+
+final class DesktopPath extends PathInfo {
+  const DesktopPath(super.path);
+}
+
+final class InvalidPath extends PathInfo {
+  const InvalidPath(super.path);
+}
+
+final class UnsupportedPlatform extends PathInfo {
+  const UnsupportedPlatform(super.path);
 }

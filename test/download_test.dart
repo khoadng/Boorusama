@@ -1,3 +1,6 @@
+// Flutter imports:
+import 'package:flutter/foundation.dart';
+
 // Package imports:
 import 'package:test/test.dart';
 
@@ -5,114 +8,169 @@ import 'package:test/test.dart';
 import 'package:boorusama/core/downloads/path/validator.dart';
 
 void main() {
-  group('[userspace internal storage test]', () {
-    test('userspace default', () {
-      expect(isUserspaceInternalStorage('/storage/emulated/0/Download'), true);
+  group('PathInfo.from', () {
+    group('internal storage paths', () {
+      final cases = [
+        (
+          path: '/storage/emulated/0/Download',
+          userSpace: 0,
+          publicDirectory: 'Download',
+        ),
+        (
+          path: '/storage/emulated/2/Pictures',
+          userSpace: 2,
+          publicDirectory: 'Pictures',
+        ),
+        (
+          path: '/storage/emulated/10/Pictures',
+          userSpace: 10,
+          publicDirectory: 'Pictures',
+        ),
+        (
+          path: '/storage/emulated/0/Apps',
+          userSpace: 0,
+          publicDirectory: null,
+        ),
+        (
+          path: '/storage/emulated/10/Download/Documents',
+          userSpace: 10,
+          publicDirectory: 'Download',
+        ),
+      ];
+
+      for (final c in cases) {
+        test(
+          'detects user space ${c.userSpace} and public directory for ${c.path}',
+          () {
+            final info = PathInfo.from(
+              c.path,
+              platform: TargetPlatform.android,
+            );
+
+            expect(info, isA<AndroidInternalStorage>());
+            final storage = info as AndroidInternalStorage;
+            expect(storage.userSpace, c.userSpace);
+            expect(storage.publicDirectory, c.publicDirectory);
+          },
+        );
+      }
     });
 
-    test('another userspace', () {
-      expect(isUserspaceInternalStorage('/storage/emulated/2/Pictures'), true);
+    group('SD card paths', () {
+      final cases = [
+        (path: '/storage/ABCD-6789/Download', publicDirectory: 'Download'),
+        (path: '/storage/1234-5678/Pictures', publicDirectory: 'Pictures'),
+        (path: '/storage/ABCD-6789/Custom', publicDirectory: null),
+      ];
+
+      for (final c in cases) {
+        test('extracts device ID and public directory for ${c.path}', () {
+          final info = PathInfo.from(
+            c.path,
+            platform: TargetPlatform.android,
+          );
+
+          expect(info, isA<AndroidSdCardStorage>());
+          final storage = info as AndroidSdCardStorage;
+          expect(storage.deviceId, isNotEmpty);
+          expect(storage.publicDirectory, c.publicDirectory);
+        });
+      }
     });
 
-    test('obb', () {
-      expect(isUserspaceInternalStorage('/storage/emulated/obb/123'), false);
+    group('unrecognized storage paths', () {
+      final cases = [
+        (
+          path: '/storage/emulated/obb/123',
+          description: 'non-numeric userspace',
+        ),
+        (path: 'foobar', description: 'random string'),
+      ];
+
+      for (final c in cases) {
+        test('handles ${c.description} as other storage', () {
+          final info = PathInfo.from(
+            c.path,
+            platform: TargetPlatform.android,
+          );
+          expect(info, isA<AndroidOtherStorage>());
+        });
+      }
+    });
+
+    group('invalid paths', () {
+      final cases = [
+        (path: null, description: 'null'),
+        (path: '', description: 'empty string'),
+      ];
+
+      for (final c in cases) {
+        test('rejects ${c.description}', () {
+          final info = PathInfo.from(c.path);
+          expect(info, isA<InvalidPath>());
+        });
+      }
     });
   });
 
-  // sd card storage test
-  group('[SD card storage test]', () {
-    test('SD card', () {
-      expect(isSdCardStorage('/storage/ABCD-6789/Download'), true);
-    });
+  group('PathInfo isPublicDirectory', () {
+    final cases = [
+      (path: '/storage/emulated/0/Download', isPublic: true),
+      (path: '/storage/emulated/0/Apps', isPublic: false),
+      (path: '/storage/ABCD-6789/Pictures', isPublic: true),
+      (path: '/storage/ABCD-6789/Custom', isPublic: false),
+      (path: null, isPublic: false),
+      (path: '', isPublic: false),
+    ];
 
-    test('internal', () {
-      expect(isSdCardStorage('/storage/emulated/0/Download'), false);
-    });
+    for (final c in cases) {
+      test('returns ${c.isPublic} for ${c.path ?? "null"}', () {
+        final info = PathInfo.from(
+          c.path,
+          platform: TargetPlatform.android,
+        );
 
-    test('null', () {
-      expect(isSdCardStorage(null), false);
-    });
+        final isPublic = switch (info) {
+          AndroidPathInfo() => info.isPublicDirectory,
+          _ => false,
+        };
 
-    test('random string', () {
-      expect(isSdCardStorage('foobar'), false);
-    });
-
-    test('empty string', () {
-      expect(isSdCardStorage(''), false);
-    });
+        expect(isPublic, c.isPublic);
+      });
+    }
   });
 
-  // sd card public directories test
-  group('[SD card public directories test]', () {
-    test('SD card', () {
-      expect(isSdCardPublicDirectories('/storage/ABCD-6789/Download'), true);
-    });
-
-    test('internal', () {
-      expect(isSdCardPublicDirectories('/storage/emulated/0/Download'), false);
-    });
-
-    test('null', () {
-      expect(isSdCardPublicDirectories(null), false);
-    });
-
-    test('random string', () {
-      expect(isSdCardPublicDirectories('foobar'), false);
-    });
-
-    test('empty string', () {
-      expect(isSdCardPublicDirectories(''), false);
-    });
-  });
-
-  group('[internal storage test]', () {
-    test('internal', () {
-      expect(isInternalStorage('/storage/emulated/0/Download'), true);
-    });
-
-    test('internal, different userspace', () {
-      expect(isInternalStorage('/storage/emulated/10/Pictures'), true);
-    });
-
-    test('obb', () {
-      expect(isInternalStorage('/storage/emulated/obb/123'), true);
-    });
-
-    test('SD card', () {
-      expect(isInternalStorage('/storage/ABCD-6789/Download'), false);
-    });
-
-    test('null', () {
-      expect(isInternalStorage(null), false);
-    });
-
-    test('random string', () {
-      expect(isInternalStorage('foobar'), false);
-    });
-
-    test('empty string', () {
-      expect(isInternalStorage(''), false);
-    });
-  });
-
-  group('[public directories test]', () {
-    test('public folders', () {
-      expect(isPublicDirectories('/storage/emulated/0/Download'), true);
-    });
-
-    test('a custom folder', () {
-      expect(isPublicDirectories('/storage/emulated/0/Apps'), false);
-    });
-
-    test('OBB folder', () {
-      expect(isPublicDirectories('/storage/emulated/obb/123'), false);
-    });
-
-    test('subdirectory of public folders', () {
-      expect(
-        isPublicDirectories('/storage/emulated/10/Download/Documents'),
-        true,
+  group('platform-specific path handling', () {
+    test('returns IOSPath for iOS platform', () {
+      final info = PathInfo.from(
+        '/var/mobile/Containers/Data/Application/test',
+        platform: TargetPlatform.iOS,
       );
+      expect(info, isA<IOSPath>());
+    });
+
+    test('returns DesktopPath for macOS platform', () {
+      final info = PathInfo.from(
+        '/Users/test/Downloads',
+        platform: TargetPlatform.macOS,
+      );
+      expect(info, isA<DesktopPath>());
+    });
+
+    test('returns DesktopPath for Windows platform', () {
+      final info = PathInfo.from(
+        r'C:\Users\test\Downloads',
+        platform: TargetPlatform.windows,
+      );
+      expect(info, isA<DesktopPath>());
+    });
+
+    test('returns DesktopPath for Linux platform', () {
+      final info = PathInfo.from(
+        '/home/test/Downloads',
+        platform: TargetPlatform.linux,
+      );
+      expect(info, isA<DesktopPath>());
     });
   });
 }

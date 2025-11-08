@@ -35,8 +35,11 @@ class BackgroundDownloader implements DownloadService {
     Map<String, String>? headers,
   }) => TaskEither.Do(
     ($) async {
-      final downloadDirTask = await tryGetDownloadDirectory().run();
-      final downloadDir = downloadDirTask.fold((l) => null, (r) => r);
+      final downloadDirResult = await tryGetDownloadDirectory();
+      final downloadDir = switch (downloadDirResult) {
+        DownloadDirectorySuccess(:final directory) => directory,
+        DownloadDirectoryFailure() => null,
+      };
       final isVideo = metadata?.isVideo ?? false;
 
       // Check if this is a video and if we have it in cache

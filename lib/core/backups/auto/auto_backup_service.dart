@@ -280,15 +280,12 @@ class AutoBackupService {
 }
 
 Future<Directory> _getDownloadDirectory() async {
-  final downloadsDirResult = await tryGetDownloadDirectory().run();
-  final downloadsDir = downloadsDirResult.fold(
-    (error) => null,
-    (dir) => dir,
-  );
+  final result = await tryGetDownloadDirectory();
 
-  if (downloadsDir == null) {
-    throw Exception('Could not find downloads directory');
-  }
-
-  return downloadsDir;
+  return switch (result) {
+    DownloadDirectorySuccess(:final directory) => directory,
+    DownloadDirectoryFailure(:final message) => throw Exception(
+      message ?? 'Could not find downloads directory',
+    ),
+  };
 }

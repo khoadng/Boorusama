@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:foundation/foundation.dart';
 import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
@@ -10,7 +9,6 @@ import 'package:material_symbols_icons/symbols.dart';
 import '../../../../foundation/html.dart';
 import '../../../../foundation/info/device_info.dart';
 import '../../../../foundation/picker.dart';
-import '../../../../foundation/platform.dart';
 import '../../../themes/theme/types.dart';
 import '../../../widgets/widgets.dart';
 import '../../path/validator.dart';
@@ -40,9 +38,7 @@ class DownloadFolderSelectorSection extends StatefulWidget {
 }
 
 class _DownloadFolderSelectorSectionState
-    extends State<DownloadFolderSelectorSection>
-    with DownloadPathValidatorMixin {
-  @override
+    extends State<DownloadFolderSelectorSection> {
   late String? storagePath = widget.storagePath;
 
   @override
@@ -54,6 +50,16 @@ class _DownloadFolderSelectorSectionState
         storagePath = widget.storagePath;
       });
     }
+  }
+
+  bool _shouldDisplayWarning() {
+    return switch (PathInfo.from(storagePath)) {
+      InvalidPath() => true,
+      final AndroidPathInfo info => info.requiresPublicDirectory(
+        widget.deviceInfo.androidDeviceInfo?.version.sdkInt,
+      ),
+      _ => false,
+    };
   }
 
   @override
@@ -117,25 +123,17 @@ class _DownloadFolderSelectorSectionState
             ),
           ),
         ),
-        if (isAndroid())
-          shouldDisplayWarning(
-                hasScopeStorage:
-                    hasScopedStorage(
-                      widget.deviceInfo.androidDeviceInfo?.version.sdkInt,
-                    ) ??
-                    true,
-              )
-              ? DownloadPathWarning(
-                  padding: const EdgeInsets.only(
-                    top: 12,
-                    bottom: 4,
-                  ),
-                  releaseName:
-                      widget.deviceInfo.androidDeviceInfo?.version.release ??
-                      'Unknown',
-                  allowedFolders: allowedFolders,
-                )
-              : const SizedBox.shrink(),
+        if (_shouldDisplayWarning())
+          DownloadPathWarning(
+            padding: const EdgeInsets.only(
+              top: 12,
+              bottom: 4,
+            ),
+            releaseName:
+                widget.deviceInfo.androidDeviceInfo?.version.release ??
+                'Unknown',
+            allowedFolders: AndroidPathInfo.allowedDownloadFolders,
+          ),
       ],
     );
   }

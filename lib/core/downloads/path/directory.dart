@@ -1,86 +1,96 @@
 // Dart imports:
 import 'dart:io';
 
+// Flutter imports:
+import 'package:flutter/foundation.dart';
+
 // Package imports:
-import 'package:foundation/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 
-// Project imports:
-import '../../../foundation/platform.dart';
-
-enum DownloadDirectoryError {
-  directoryNotFound,
-  webPlatformNotSupported,
-  unImplementedPlatform,
-  permissionDenied,
-  unknownError,
+sealed class DownloadDirectoryResult {
+  const DownloadDirectoryResult();
 }
 
-TaskEither<DownloadDirectoryError, Directory> tryGetDownloadDirectory() =>
-    isWeb()
-    ? TaskEither.left(DownloadDirectoryError.webPlatformNotSupported)
-    : _isSupportedPlatforms()
-    ? _tryGetDownloadDirectoryOnSupportedPlatforms().mapLeft(
-        _mapDirectoryErrorToDownloadDirectoryError,
-      )
-    : TaskEither.left(DownloadDirectoryError.unImplementedPlatform);
+final class DownloadDirectorySuccess extends DownloadDirectoryResult {
+  const DownloadDirectorySuccess(this.directory);
 
-TaskEither<DownloadDirectoryError, Directory> tryGetCustomDownloadDirectory(
+  final Directory directory;
+}
+
+final class DownloadDirectoryFailure extends DownloadDirectoryResult {
+  const DownloadDirectoryFailure([this.message]);
+
+  final String? message;
+}
+
+Future<DownloadDirectoryResult> tryGetDownloadDirectory() async {
+  if (kIsWeb) {
+    return const DownloadDirectoryFailure('Web platform not supported');
+  }
+
+  return switch (defaultTargetPlatform) {
+    TargetPlatform.android => await _tryGetAndroidDownloadDirectory(),
+    TargetPlatform.iOS => await _tryGetIosDownloadDirectory(),
+    TargetPlatform.windows ||
+    TargetPlatform.linux ||
+    TargetPlatform.macOS => await _tryGetDownloadsDirectory(),
+    TargetPlatform.fuchsia => const DownloadDirectoryFailure(
+      'Platform not supported',
+    ),
+  };
+}
+
+Future<DownloadDirectoryResult> tryGetCustomDownloadDirectory(
   String path,
-) => isWeb()
-    ? TaskEither.left(DownloadDirectoryError.webPlatformNotSupported)
-    : tryGetDirectory(path).mapLeft(_mapDirectoryErrorToDownloadDirectoryError);
+) async {
+  if (kIsWeb) {
+    return const DownloadDirectoryFailure('Web platform not supported');
+  }
 
-bool _isSupportedPlatforms() =>
-    isAndroid() || isIOS() || isWindows() || isLinux();
+  try {
+    final directory = Directory(path);
+    if (!directory.existsSync()) {
+      return const DownloadDirectoryFailure('Directory not found');
+    }
+    return DownloadDirectorySuccess(directory);
+  } on FileSystemException catch (_) {
+    return const DownloadDirectoryFailure('Permission denied');
+  } catch (e) {
+    return DownloadDirectoryFailure(e.toString());
+  }
+}
 
-// map DirectoryError to DownloadDirectoryError
-DownloadDirectoryError _mapDirectoryErrorToDownloadDirectoryError(
-  DirectoryError error,
-) => switch (error) {
-  DirectoryError.directoryNotFound => DownloadDirectoryError.directoryNotFound,
-  DirectoryError.permissionDenied => DownloadDirectoryError.permissionDenied,
-  DirectoryError.unknownError => DownloadDirectoryError.unknownError,
-};
+Future<DownloadDirectoryResult> _tryGetAndroidDownloadDirectory() async {
+  try {
+    final directory = Directory('/storage/emulated/0/Download');
+    if (!directory.existsSync()) {
+      return const DownloadDirectoryFailure('Directory not found');
+    }
+    return DownloadDirectorySuccess(directory);
+  } on FileSystemException catch (_) {
+    return const DownloadDirectoryFailure('Permission denied');
+  } catch (e) {
+    return DownloadDirectoryFailure(e.toString());
+  }
+}
 
-TaskEither<DirectoryError, Directory>
-_tryGetDownloadDirectoryOnSupportedPlatforms() => isAndroid()
-    ? _tryGetAndroidDownloadDirectory()
-    : isIOS()
-    ? _tryGetIosDownloadDirectory()
-    : isWindows()
-    ? _tryGetWindowsDirectory('/storage/emulated/0/Download')
-    : isLinux()
-    ? _tryGetLinuxDownloadDirectory()
-    : TaskEither.left(DirectoryError.unknownError);
+Future<DownloadDirectoryResult> _tryGetIosDownloadDirectory() async {
+  try {
+    final directory = await getApplicationDocumentsDirectory();
+    return DownloadDirectorySuccess(directory);
+  } catch (e) {
+    return DownloadDirectoryFailure(e.toString());
+  }
+}
 
-TaskEither<DirectoryError, Directory> _tryGetAndroidDownloadDirectory() =>
-    tryGetDirectory('/storage/emulated/0/Download');
-
-TaskEither<DirectoryError, Directory> _tryGetIosDownloadDirectory() =>
-    TaskEither.tryCatch(
-      () => getApplicationDocumentsDirectory(),
-      (error, stackTrace) => DirectoryError.unknownError,
-    );
-
-TaskEither<DirectoryError, Directory> _tryGetWindowsDirectory(String path) =>
-    TaskEither.tryCatch(
-      () => getDownloadsDirectory(),
-      (error, stackTrace) => DirectoryError.unknownError,
-    ).flatMap(
-      (dir) => dir.toOption().fold(
-        () => TaskEither.left(DirectoryError.directoryNotFound),
-        (dir) => TaskEither.right(dir),
-      ),
-    );
-
-TaskEither<DirectoryError, Directory> _tryGetLinuxDownloadDirectory() =>
-    TaskEither.tryCatch(
-      () => getDownloadsDirectory(),
-      (error, stackTrace) => DirectoryError.unknownError,
-    ).flatMap(
-      (dir) => dir.toOption().fold(
-        () => TaskEither.left(DirectoryError.directoryNotFound),
-        (dir) => TaskEither.right(dir),
-      ),
-    );
+Future<DownloadDirectoryResult> _tryGetDownloadsDirectory() async {
+  try {
+    final directory = await getDownloadsDirectory();
+    return switch (directory) {
+      null => const DownloadDirectoryFailure('Directory not found'),
+      _ => DownloadDirectorySuccess(directory),
+    };
+  } catch (e) {
+    return DownloadDirectoryFailure(e.toString());
+  }
+}

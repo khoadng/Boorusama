@@ -3,14 +3,12 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../foundation/html.dart';
 import '../../../foundation/info/device_info.dart';
 import '../../../foundation/picker.dart';
-import '../../../foundation/platform.dart';
 import '../../downloads/path/validator.dart';
 import '../../settings/providers.dart';
 import '../../settings/widgets.dart';
@@ -107,8 +105,7 @@ class AutoBackupSection extends ConsumerWidget {
                 ),
               ),
             ),
-            if (!hasValidPath && isAndroid())
-              const _SelectLocationRequestBanner(),
+            if (!hasValidPath) const _SelectLocationRequestBanner(),
             //FIXME: Migrate folder selection warning to a common widget
             _DownloadPathWarning(
               padding: const EdgeInsets.all(12),
@@ -298,31 +295,29 @@ String _getLastBackupDisplay(
   },
 };
 
-class _DownloadPathWarning extends ConsumerWidget
-    with DownloadPathValidatorMixin {
+class _DownloadPathWarning extends ConsumerWidget {
   const _DownloadPathWarning({
     required this.storagePath,
     this.padding,
   });
 
-  @override
   final String? storagePath;
   final EdgeInsetsGeometry? padding;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    if (!isAndroid()) {
-      return const SizedBox.shrink();
-    }
-
+    final pathInfo = PathInfo.from(storagePath);
     final deviceInfo = ref.watch(deviceInfoProvider);
-    final hasScopeStorage =
-        hasScopedStorage(
-          deviceInfo.androidDeviceInfo?.version.sdkInt,
-        ) ??
-        true;
 
-    if (!shouldDisplayWarning(hasScopeStorage: hasScopeStorage)) {
+    final shouldShow = switch (pathInfo) {
+      AndroidPathInfo() => pathInfo.requiresPublicDirectory(
+        deviceInfo.androidDeviceInfo?.version.sdkInt,
+      ),
+      InvalidPath() => true,
+      _ => false,
+    };
+
+    if (!shouldShow) {
       return const SizedBox.shrink();
     }
 
@@ -333,7 +328,10 @@ class _DownloadPathWarning extends ConsumerWidget
       margin: padding,
       contentBuilder: (context) => AppHtml(
         data: context.t.download.folder_select_warning
-            .replaceAll('{0}', allowedFolders.join(', '))
+            .replaceAll(
+              '{0}',
+              AndroidPathInfo.allowedDownloadFolders.join(', '),
+            )
             .replaceAll('{1}', releaseName),
       ),
     );

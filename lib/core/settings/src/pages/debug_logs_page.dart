@@ -115,10 +115,18 @@ class _DebugLogsPageState extends ConsumerState<DebugLogsPage> {
   Future<void> writeLogsToFile(
     BuildContext context,
     List<LogData> logs,
-  ) => tryGetDownloadDirectory().run().then(
-    (value) => value.fold(
-      (error) => showErrorToast(context, error.name),
-      (directory) async {
+  ) async {
+    final result = await tryGetDownloadDirectory();
+
+    switch (result) {
+      case DownloadDirectoryFailure(:final message):
+        if (context.mounted) {
+          showErrorToast(
+            context,
+            message ?? 'Failed to get download directory',
+          );
+        }
+      case DownloadDirectorySuccess(:final directory):
         final timestamp = DateFormat('yyyyMMdd_HHmmss').format(DateTime.now());
         final file = File('${directory.path}/boorusama_logs_$timestamp.txt');
         final buffer = StringBuffer();
@@ -136,9 +144,8 @@ class _DebugLogsPageState extends ConsumerState<DebugLogsPage> {
             duration: AppDurations.longToast,
           );
         }
-      },
-    ),
-  );
+    }
+  }
 
   Widget _buildBody(List<LogData> logs) {
     final colorScheme = Theme.of(context).colorScheme;

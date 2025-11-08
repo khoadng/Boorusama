@@ -76,12 +76,12 @@ void main() {
       createDownloadOptionsProvider(initial).notifier,
     );
 
-    expect(notifier.state.valid(android: false), isFalse); // Initially invalid
+    expect(notifier.state.valid(), isFalse); // Initially invalid
 
     notifier
-      ..setPath('/test/path')
+      ..setPath('/storage/emulated/0/Download')
       ..addTag(TagSearchItem.fromString('test_tag'));
 
-    expect(notifier.state.valid(android: false), isTrue); // Valid
+    expect(notifier.state.valid(), isTrue); // Valid
   });
 }
