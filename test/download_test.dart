@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:test/test.dart';
 
 // Project imports:
-import 'package:boorusama/core/downloads/path/validator.dart';
+import 'package:boorusama/core/downloads/path/types.dart';
 
 void main() {
   group('PathInfo.from', () {

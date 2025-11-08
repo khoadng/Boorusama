@@ -11,7 +11,7 @@ import 'package:path/path.dart' as p;
 import '../../../foundation/info/device_info.dart';
 import '../../../foundation/loggers.dart';
 import '../../../foundation/platform.dart';
-import '../../downloads/path/directory.dart';
+import '../../downloads/path/types.dart';
 import '../sources/providers.dart';
 import '../types/backup_registry.dart';
 import '../zip/bulk_backup_service.dart';

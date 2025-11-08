@@ -11,7 +11,7 @@ import '../../../../foundation/info/device_info.dart';
 import '../../../../foundation/picker.dart';
 import '../../../themes/theme/types.dart';
 import '../../../widgets/widgets.dart';
-import '../../path/validator.dart';
+import '../../path/types.dart';
 
 class DownloadFolderSelectorSection extends StatefulWidget {
   const DownloadFolderSelectorSection({

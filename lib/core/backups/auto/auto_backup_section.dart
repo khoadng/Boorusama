@@ -9,7 +9,7 @@ import 'package:i18n/i18n.dart';
 import '../../../foundation/html.dart';
 import '../../../foundation/info/device_info.dart';
 import '../../../foundation/picker.dart';
-import '../../downloads/path/validator.dart';
+import '../../downloads/path/types.dart';
 import '../../settings/providers.dart';
 import '../../settings/widgets.dart';
 import '../../themes/theme/types.dart';

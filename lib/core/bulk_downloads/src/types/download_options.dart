@@ -2,7 +2,7 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import '../../../downloads/path/validator.dart';
+import '../../../downloads/path/types.dart';
 import '../../../search/selected_tags/types.dart';
 import 'download_task.dart';
 

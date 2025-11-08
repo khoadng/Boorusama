@@ -18,7 +18,7 @@ import '../../../../foundation/clipboard.dart';
 import '../../../../foundation/loggers.dart';
 import '../../../../foundation/scrolling.dart';
 import '../../../../foundation/toast.dart';
-import '../../../downloads/path/directory.dart';
+import '../../../downloads/path/types.dart';
 import '../../../themes/theme/types.dart';
 import '../../../widgets/widgets.dart';
 import '../providers/settings_provider.dart';

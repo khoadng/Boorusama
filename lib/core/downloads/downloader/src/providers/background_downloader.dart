@@ -11,7 +11,7 @@ import 'package:path/path.dart';
 // Project imports:
 import '../../../../ddos/solver/types.dart';
 import '../../../notifications/notification.dart';
-import '../../../path/directory.dart';
+import '../../../path/types.dart';
 import '../types/download.dart';
 import '../types/metadata.dart';
 import 'file_downloader_ex.dart';
