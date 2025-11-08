@@ -4,6 +4,7 @@ import 'package:permission_handler/permission_handler.dart';
 
 // Project imports:
 import '../info/device_info.dart';
+import '../loggers.dart';
 import '../platform.dart';
 
 Future<PermissionStatus> requestMediaPermissions(
@@ -85,14 +86,18 @@ Future<PermissionStatus> _checkMediaPermissionsAndroid(
 }
 
 class NotificationPermissionManager {
-  NotificationPermissionManager();
+  NotificationPermissionManager({
+    required this.logger,
+  });
+
+  final Logger logger;
 
   PermissionStatus? status;
 
   Future<void> requestIfNotGranted() async {
     final status = await check();
 
-    if (status == PermissionStatus.permanentlyDenied) {
+    if (status == null || status == PermissionStatus.permanentlyDenied) {
       return;
     }
 
@@ -101,18 +106,35 @@ class NotificationPermissionManager {
     }
   }
 
-  Future<PermissionStatus> request() {
-    return Permission.notification.request();
+  Future<PermissionStatus?> request() async {
+    try {
+      final result = await Permission.notification.request();
+      status = result;
+      return result;
+    } catch (e) {
+      logger.error(
+        'Notification',
+        'Permission request failed: $e',
+      );
+      return null;
+    }
   }
 
-  Future<PermissionStatus> check() async {
+  Future<PermissionStatus?> check() async {
     if (status != null) {
       return status!;
     }
 
-    status = await Permission.notification.status;
-
-    return status!;
+    try {
+      status = await Permission.notification.status;
+      return status!;
+    } catch (e) {
+      logger.error(
+        'Notification',
+        'Permission check failed: $e',
+      );
+      return null;
+    }
   }
 }
 

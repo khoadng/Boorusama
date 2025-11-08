@@ -48,6 +48,8 @@ class MockMediaPermissionManager extends Mock
     implements MediaPermissionManager {}
 
 class DummyLogger implements Logger {
+  const DummyLogger();
+
   @override
   String getDebugName() => 'Dummy Logger';
 
@@ -318,6 +320,9 @@ class AlwaysGrantedPermissionManager implements MediaPermissionManager {
 class AlwaysGrantedNotificationPermissionManager
     implements NotificationPermissionManager {
   @override
+  Logger logger = const DummyLogger();
+
+  @override
   Future<PermissionStatus> check() async => PermissionStatus.granted;
 
   @override
@@ -389,7 +394,7 @@ List<Override> getTestOverrides({
     downloadFilenameBuilderProvider.overrideWith(
       (_, _) => dummyDownloadFileNameBuilder,
     ),
-    loggerProvider.overrideWithValue(DummyLogger()),
+    loggerProvider.overrideWithValue(const DummyLogger()),
     mediaPermissionManagerProvider.overrideWithValue(
       mediaPermissionManager ?? MockMediaPermissionManager(),
     ),

@@ -27,5 +27,7 @@ final mediaPermissionManagerProvider = Provider<MediaPermissionManager>(
 
 final notificationPermissionManagerProvider =
     Provider<NotificationPermissionManager>(
-      (ref) => NotificationPermissionManager(),
+      (ref) => NotificationPermissionManager(
+        logger: ref.watch(loggerProvider),
+      ),
     );
