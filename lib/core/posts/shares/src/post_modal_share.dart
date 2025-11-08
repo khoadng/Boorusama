@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:cache_manager/cache_manager.dart';
+import 'package:coreutils/coreutils.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -12,7 +13,6 @@ import 'package:share_plus/share_plus.dart';
 import '../../../config_widgets/website_logo.dart';
 import '../../../configs/config/types.dart';
 import '../../../downloads/filename/types.dart';
-import '../../../downloads/urls/sanitizer.dart';
 import '../../details/providers.dart';
 import '../../post/providers.dart';
 import '../../post/types.dart';
@@ -27,7 +27,7 @@ final _cachedImageFileProvider = FutureProvider.autoDispose
 
         if (imageUrl == null) return null;
 
-        final ext = sanitizedExtension(imageUrl);
+        final ext = urlExtension(imageUrl);
         final effectiveExt = ext.isNotEmpty ? ext : imageExt;
 
         final cacheManager = data.imageCacheManager;

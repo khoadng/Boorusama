@@ -5,8 +5,8 @@ import 'dart:ui';
 import 'package:flutter/foundation.dart';
 
 // Package imports:
+import 'package:coreutils/coreutils.dart';
 import 'package:dio/dio.dart';
-import 'package:path/path.dart' show extension;
 
 // Project imports:
 import 'reporter.dart';
@@ -67,28 +67,11 @@ ErrorCallback? onAsyncFlutterUncaughtError(
 const _kExtensions = {'.jpg', '.jpeg', '.png', '.gif', '.webp', '.avif'};
 
 bool _isImageUrl(String url) {
-  final ext = sanitizedExtension(url);
+  final ext = urlExtension(url);
 
   if (ext.isEmpty) return false;
 
   final effectiveExt = !ext.startsWith('.') ? '.$ext' : ext;
 
   return _kExtensions.contains(effectiveExt.toLowerCase());
-}
-
-String sanitizedExtension(String url) {
-  return extension(sanitizedUrl(url));
-}
-
-String sanitizedUrl(String url) {
-  final ext = extension(url);
-  final indexOfQuestionMark = ext.indexOf('?');
-
-  if (indexOfQuestionMark != -1) {
-    final trimmedExt = ext.substring(0, indexOfQuestionMark);
-
-    return url.replaceFirst(ext, trimmedExt);
-  } else {
-    return url;
-  }
 }

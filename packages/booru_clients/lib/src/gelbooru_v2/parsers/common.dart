@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:coreutils/coreutils.dart';
 import 'package:dio/dio.dart';
 import 'package:html/dom.dart';
 import 'package:html/parser.dart';
@@ -221,7 +222,7 @@ class FavoritedHtmlPostData {
 }
 
 PostV2Dto toDto(FavoritedHtmlPostData data) {
-  final thumbUrl = cleanUrl(data.thumbUrl) ?? '';
+  final thumbUrl = normalizeUrl(data.thumbUrl);
   return PostV2Dto(
     id: data.id,
     previewUrl: thumbUrl,
@@ -269,16 +270,6 @@ String convertRating(String rating) {
     'safe' => 's',
     _ => rating.toLowerCase().isNotEmpty ? rating.toLowerCase()[0] : '',
   };
-}
-
-String? cleanUrl(String? url) {
-  if (url == null) return null;
-
-  final questionMarkIndex = url.indexOf('?');
-  if (questionMarkIndex != -1) {
-    return url.substring(0, questionMarkIndex);
-  }
-  return url;
 }
 
 String? ensureValidUrl(String? url) {
@@ -337,9 +328,11 @@ class HtmlImageUrls {
     String? sampleUrl,
     String? previewUrl,
   ) {
-    final cleanedFileUrl = cleanUrl(fileUrl);
-    final cleanedSampleUrl = cleanUrl(sampleUrl);
-    final cleanedPreviewUrl = cleanUrl(previewUrl);
+    final cleanedFileUrl = fileUrl != null ? normalizeUrl(fileUrl) : null;
+    final cleanedSampleUrl = sampleUrl != null ? normalizeUrl(sampleUrl) : null;
+    final cleanedPreviewUrl = previewUrl != null
+        ? normalizeUrl(previewUrl)
+        : null;
 
     final finalFileUrl = cleanedFileUrl ?? cleanedSampleUrl;
     final finalSampleUrl = cleanedSampleUrl ?? finalFileUrl;

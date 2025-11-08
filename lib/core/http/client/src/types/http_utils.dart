@@ -1,9 +1,9 @@
 // Package imports:
+import 'package:coreutils/coreutils.dart';
 import 'package:dio/dio.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../../downloads/urls/sanitizer.dart';
 import '../../../../errors/types.dart';
 
 typedef DataFetcher<T> = Future<T> Function();
@@ -40,7 +40,7 @@ const _kImageExtensions = {
 };
 
 bool defaultImageRequestChecker(Uri uri) {
-  final ext = sanitizedExtension(uri.toString());
+  final ext = urlExtension(uri.toString());
 
   return _kImageExtensions.contains(ext);
 }

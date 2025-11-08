@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:coreutils/coreutils.dart';
 import 'package:dio/dio.dart';
 import 'package:filename_generator/filename_generator.dart';
 import 'package:foundation/foundation.dart';
@@ -13,7 +14,6 @@ import '../../../../foundation/path.dart';
 import '../../../configs/config/types.dart';
 import '../../../posts/post/types.dart';
 import '../../../settings/types.dart';
-import '../../urls/sanitizer.dart';
 import 'async_token_resolver.dart';
 import 'generator.dart';
 import 'token_handler.dart';
@@ -40,7 +40,7 @@ class DownloadFileNameBuilder<T extends Post>
       'tags': (post, config) => post.tags.join(' '),
       'extension':
           extensionHandler ??
-          (post, config) => sanitizedExtension(config.downloadUrl).substring(1),
+          (post, config) => urlExtension(config.downloadUrl).substring(1),
       if (hasMd5) 'md5': (post, config) => post.md5,
       if (hasRating) 'rating': (post, config) => post.rating.name,
       'index': (post, config) => config.index?.toString(),
@@ -96,7 +96,7 @@ class DownloadFileNameBuilder<T extends Post>
   }
 
   String _joinFileWithExtension(String rawFileName, String fileExt) {
-    final fileName = sanitizedUrl(rawFileName);
+    final fileName = normalizeUrl(rawFileName);
 
     // check if file already has extension
     final fileNameExt = extension(fileName);

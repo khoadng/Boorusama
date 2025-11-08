@@ -1,8 +1,8 @@
 // Package imports:
 import 'package:booru_clients/sankaku.dart';
+import 'package:coreutils/coreutils.dart';
 
 // Project imports:
-import '../../../core/downloads/urls/sanitizer.dart';
 import '../../../core/posts/post/types.dart';
 import '../../../core/posts/rating/types.dart';
 import '../../../core/posts/sources/types.dart';
@@ -156,7 +156,7 @@ String? extractFileExtension(
   if (mimeType == null) {
     if (fileUrl == null) return null;
 
-    final ext = sanitizedExtension(fileUrl);
+    final ext = urlExtension(fileUrl);
 
     return ext;
   }

@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:coreutils/coreutils.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:foundation/foundation.dart';
 import 'package:i18n/i18n.dart';
@@ -9,7 +10,6 @@ import 'package:i18n/i18n.dart';
 // Project imports:
 import '../../../../../foundation/clipboard.dart';
 import '../../../../../foundation/display/media_query_utils.dart';
-import '../../../../downloads/urls/sanitizer.dart';
 import '../../../../themes/theme/types.dart';
 import '../../../post/types.dart';
 import '../../../rating/types.dart';
@@ -63,7 +63,7 @@ class FileDetailsSection extends StatelessWidget {
             ? '${post.width.toInt()}x${post.height.toInt()} • '
             : '';
 
-        final format = sanitizedUrl(post.format);
+        final format = normalizeUrl(post.format);
 
         // if start with a dot, remove it
         final fileFormatText = format.startsWith('.')

@@ -1,5 +1,5 @@
-// Project imports:
-import '../../../../downloads/urls/sanitizer.dart';
+// Package imports:
+import 'package:coreutils/coreutils.dart';
 
 mixin VideoInfoMixin {
   String get format;
@@ -12,7 +12,7 @@ mixin VideoInfoMixin {
   String get videoThumbnailUrl;
 
   String _format() {
-    final ext = sanitizedExtension(videoUrl);
+    final ext = urlExtension(videoUrl);
     if (ext.isEmpty) return format;
 
     return ext.substring(1);
