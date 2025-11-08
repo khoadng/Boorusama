@@ -153,6 +153,25 @@ class Shimmie2Client {
     endpoint: '/favourite/remove/$postId',
   );
 
+  Future<bool> bulkAction({
+    required BulkAction action,
+    required List<int> postIds,
+    String? query,
+  }) async {
+    if (_tokenManager case final manager?) {
+      if (await manager.getToken() case final token?) {
+        return _postBulkAction(
+          action: action,
+          postIds: postIds,
+          query: query,
+          token: token,
+          manager: manager,
+        );
+      }
+    }
+    return false;
+  }
+
   Future<bool> _performFavoriteAction({
     required int postId,
     required String endpoint,
@@ -200,6 +219,74 @@ class Shimmie2Client {
             queryParameters: _authParams,
             data: {
               _kAuthTokenParam: newToken,
+            },
+            options: Options(
+              contentType: Headers.formUrlEncodedContentType,
+              headers: _authHeaders,
+            ),
+          );
+          return true;
+        } on DioException catch (e2) {
+          // Success redirects (302) are treated as errors by Dio
+          if (e2.response?.statusCode == 302) return true;
+          return false;
+        } catch (_) {
+          return false;
+        }
+      }
+      return false;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  Future<bool> _postBulkAction({
+    required BulkAction action,
+    required List<int> postIds,
+    required String? query,
+    required String token,
+    required AuthTokenManager manager,
+  }) async {
+    try {
+      await _dio.post(
+        '/bulk_action',
+        queryParameters: _authParams,
+        data: {
+          _kAuthTokenParam: token,
+          'bulk_action': action.value,
+          'bulk_selected_ids': '[${postIds.join(',')}]',
+          if (query case final q? when q.isNotEmpty) 'bulk_query': q,
+          'submit_button': switch (action) {
+            BulkAction.favorite => 'Favorite',
+            BulkAction.unfavorite => 'Unfavorite',
+          },
+        },
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+          headers: _authHeaders,
+        ),
+      );
+      return true;
+    } on DioException catch (e) {
+      // Success redirects (302) are treated as errors by Dio
+      if (e.response?.statusCode == 302) return true;
+      if (e.response?.statusCode != 403) return false;
+
+      manager.invalidate();
+      if (await manager.getToken(forceRefresh: true) case final newToken?) {
+        try {
+          await _dio.post(
+            '/bulk_action',
+            queryParameters: _authParams,
+            data: {
+              _kAuthTokenParam: newToken,
+              'bulk_action': action.value,
+              'bulk_selected_ids': '[${postIds.join(',')}]',
+              if (query case final q? when q.isNotEmpty) 'bulk_query': q,
+              'submit_button': switch (action) {
+                BulkAction.favorite => 'Favorite',
+                BulkAction.unfavorite => 'Unfavorite',
+              },
             },
             options: Options(
               contentType: Headers.formUrlEncodedContentType,

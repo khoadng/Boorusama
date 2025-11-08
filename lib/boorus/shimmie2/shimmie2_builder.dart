@@ -89,4 +89,12 @@ class Shimmie2Builder extends BaseBooruBuilder {
         post: post,
         useAppBar: useAppBar,
       );
+
+  @override
+  MultiSelectionActionsBuilder? get multiSelectionActionsBuilder =>
+      (context, controller, postController) {
+        return Shimmie2MultiSelectionActions(
+          postController: postController,
+        );
+      };
 }

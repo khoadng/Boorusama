@@ -157,6 +157,7 @@
       "share": "Chia sẻ",
       "bookmark": "Dấu trang",
       "favorite": "Yêu thích",
+      "unfavorite": "Bỏ yêu thích",
       "upvote": "Bình chọn",
       "downvote": "Hạ điểm",
       "view_artist": "Xem họa sĩ",
@@ -699,6 +700,10 @@
     "counter": {
       "one": "Lượt thích",
       "other": "Lượt thích"
+    },
+    "update": {
+      "success": "Đã cập nhật yêu thích",
+      "failure": "Cập nhật yêu thích thất bại"
     }
   },
   "favorite_groups": {

@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:booru_clients/shimmie2.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
@@ -101,7 +102,9 @@ class _Shimmie2AuthConfigViewState
 
               final filtered = cookieList
                   .where(
-                    (e) => e.name == 'shm_user' || e.name == 'shm_session',
+                    (e) =>
+                        e.name == Shimmie2Cookies.username ||
+                        e.name == Shimmie2Cookies.session,
                   )
                   .toList();
 
@@ -111,7 +114,9 @@ class _Shimmie2AuthConfigViewState
                   .map((e) => '${e.key}=${e.value}')
                   .join('; ');
 
-              final username = filtered.getCookieValue('shm_user');
+              final username = filtered.getCookieValue(
+                Shimmie2Cookies.username,
+              );
 
               ref.editNotifier.updatePassHash(cookiesString);
 

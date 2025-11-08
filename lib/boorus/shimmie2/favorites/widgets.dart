@@ -10,6 +10,7 @@ import '../../../core/configs/auth/widgets.dart';
 import '../../../core/configs/config/providers.dart';
 import '../../../core/posts/favorites/providers.dart';
 import '../../../core/posts/favorites/widgets.dart';
+import '../configs/providers.dart';
 import '../posts/providers.dart';
 
 class Shimmie2FavoritesPage extends ConsumerWidget {
@@ -18,10 +19,13 @@ class Shimmie2FavoritesPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfigAuth;
+    final loginDetails = ref.watch(shimmie2LoginDetailsProvider(config));
+    final usename = loginDetails.username;
 
     return BooruConfigAuthFailsafe(
+      hasLogin: loginDetails.hasLogin() && usename != null,
       builder: (_) => Shimmie2FavoritesPageContent(
-        username: config.login ?? '',
+        username: usename ?? '',
       ),
     );
   }

@@ -30,7 +30,7 @@ class DefaultMultiSelectionActions<T extends Post> extends ConsumerWidget {
   final PostGridController<T> postController;
   final bool bookmark;
   final void Function(List<T> selectedPosts)? onBulkDownload;
-  final List<MultiSelectButton> Function(List<T> selectedPosts)? extraActions;
+  final List<Widget> Function(List<T> selectedPosts)? extraActions;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

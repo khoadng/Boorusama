@@ -12,7 +12,7 @@ class MultiSelectionActionBar extends StatelessWidget {
     super.key,
   });
 
-  final List<MultiSelectButton> children;
+  final List<Widget> children;
   final double? height;
 
   @override
@@ -22,11 +22,18 @@ class MultiSelectionActionBar extends StatelessWidget {
       child: AdaptiveButtonRow.menu(
         buttons: children
             .map(
-              (button) => ButtonData(
-                widget: button,
-                title: button.name,
-                onTap: button.onPressed,
-              ),
+              (button) => switch (button) {
+                MultiSelectButton() => ButtonData(
+                  widget: button,
+                  title: button.name,
+                  onTap: button.onPressed,
+                ),
+                _ => ButtonData(
+                  widget: button,
+                  title: 'Button',
+                  onTap: () {},
+                ),
+              },
             )
             .toList(),
         spacing: 4,

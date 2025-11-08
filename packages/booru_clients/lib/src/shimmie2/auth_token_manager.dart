@@ -1,7 +1,7 @@
-// Dart imports:
-
 import 'dart:async';
 import 'package:dio/dio.dart';
+
+import 'types/types.dart';
 
 final class AuthTokenManager {
   AuthTokenManager._({
@@ -32,7 +32,8 @@ final class AuthTokenManager {
   String? _cachedToken;
 
   Future<String?> getToken({bool forceRefresh = false}) async {
-    if (_username.isEmpty) return null;
+    final usernameToUse = _getUsernameFromCookieOrParam();
+    if (usernameToUse.isEmpty) return null;
 
     if (!forceRefresh) {
       if (_cachedToken case final token?) return token;
@@ -40,7 +41,7 @@ final class AuthTokenManager {
 
     try {
       final response = await _dio.get(
-        '/user/$_username',
+        '/user/$usernameToUse',
         queryParameters: _authParams,
         options: switch (cookie) {
           final c? => Options(
@@ -60,5 +61,32 @@ final class AuthTokenManager {
     }
   }
 
+  String _getUsernameFromCookieOrParam() {
+    if (cookie case final c?) {
+      final cookieMap = _parseCookieHeader(c);
+      if (cookieMap[Shimmie2Cookies.username] case final cookieUsername?) {
+        return cookieUsername;
+      }
+    }
+    return _username;
+  }
+
   void invalidate() => _cachedToken = null;
+}
+
+Map<String, String> _parseCookieHeader(String cookieHeader) {
+  final cookies = <String, String>{};
+
+  for (final cookie in cookieHeader.split(';')) {
+    final parts = cookie.trim().split('=');
+    if (parts.length >= 2) {
+      final key = parts[0].trim();
+      final value = parts.sublist(1).join('=').trim();
+      if (key.isNotEmpty) {
+        cookies[key] = value;
+      }
+    }
+  }
+
+  return cookies;
 }
