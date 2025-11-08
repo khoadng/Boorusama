@@ -97,8 +97,8 @@ class E621Builder extends BaseBooruBuilder {
 
   @override
   CommentPageBuilder? get commentPageBuilder =>
-      (context, useAppBar, postId) => E621CommentPage(
-        postId: postId,
+      (context, useAppBar, post) => E621CommentPage(
+        postId: post.id,
         useAppBar: useAppBar,
       );
 

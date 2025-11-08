@@ -96,10 +96,10 @@ class SzurubooruPostActionToolbar extends ConsumerWidget {
               ),
               ButtonData(
                 widget: CommentPostButton(
-                  onPressed: () => goToCommentPage(context, ref, post.id),
+                  onPressed: () => goToCommentPage(context, ref, post),
                 ),
                 title: context.t.post.action.view_comments,
-                onTap: () => goToCommentPage(context, ref, post.id),
+                onTap: () => goToCommentPage(context, ref, post),
               ),
               ...buttons,
             ],

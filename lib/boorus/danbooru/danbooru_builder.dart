@@ -108,8 +108,8 @@ class DanbooruBuilder extends BaseBooruBuilder {
 
   @override
   CommentPageBuilder? get commentPageBuilder =>
-      (context, useAppBar, postId) => CommentPage(
-        postId: postId,
+      (context, useAppBar, post) => CommentPage(
+        postId: post.id,
         useAppBar: useAppBar,
       );
 

@@ -104,8 +104,8 @@ class GelbooruBuilder extends BaseBooruBuilder {
 
   @override
   CommentPageBuilder? get commentPageBuilder =>
-      (context, useAppBar, postId) => CommentPageScaffold(
-        postId: postId,
+      (context, useAppBar, post) => CommentPageScaffold(
+        postId: post.id,
         useAppBar: useAppBar,
         singlePage: false,
       );

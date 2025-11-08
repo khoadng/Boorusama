@@ -99,7 +99,7 @@ class GeneralPostContextMenu extends ConsumerWidget {
               ContextMenuTile(
                 title: context.t.post.action.view_comments,
                 onTap: () {
-                  goToCommentPage(context, ref, post.id);
+                  goToCommentPage(context, ref, post);
                 },
               ),
             if (!loginDetails.hasStrictSFW)

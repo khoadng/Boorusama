@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../boorus/engine/providers.dart';
 import '../../../configs/config/types.dart';
 import '../types/comment.dart';
+import '../types/comment_extractor.dart';
 
 final emptyCommentRepoProvider = Provider<CommentRepository<Comment>>((ref) {
   return const EmptyCommentRepository();
@@ -23,3 +24,7 @@ final commentRepoProvider =
       },
       name: 'commentRepoProvider',
     );
+
+final unsupportedCommentExtractor = Provider<CommentExtractor>(
+  (ref) => const UnsupportedCommentExtractor(),
+);

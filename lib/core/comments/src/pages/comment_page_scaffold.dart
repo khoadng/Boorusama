@@ -7,14 +7,11 @@ import 'package:i18n/i18n.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 // Project imports:
-import '../../../../foundation/html.dart';
 import '../../../configs/config/providers.dart';
-import '../../../configs/config/types.dart';
-import '../../../dtext/dtext.dart';
 import '../../../widgets/widgets.dart';
 import '../data/providers.dart';
 import '../types/comment.dart';
-import '../widgets/comment_header.dart';
+import '../widgets/comment_item.dart';
 
 class CommentPageScaffold extends ConsumerStatefulWidget {
   const CommentPageScaffold({
@@ -96,7 +93,7 @@ class _CommentPageScaffoldState extends ConsumerState<CommentPageScaffold> {
                   padding: const EdgeInsets.symmetric(vertical: 8),
                   child: widget.commentItemBuilder != null
                       ? widget.commentItemBuilder!(context, comment)
-                      : _CommentItem(comment: comment, config: config),
+                      : CommentItem(comment: comment, config: config),
                 ),
                 firstPageProgressIndicatorBuilder: (context) => const Center(
                   child: CircularProgressIndicator.adaptive(),
@@ -120,39 +117,6 @@ class _CommentPageScaffoldState extends ConsumerState<CommentPageScaffold> {
           ),
         ),
       ),
-    );
-  }
-}
-
-class _CommentItem extends StatelessWidget {
-  const _CommentItem({
-    required this.comment,
-    required this.config,
-  });
-
-  final Comment comment;
-  final BooruConfigAuth config;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CommentHeader(
-          authorName: comment.creatorName == null
-              ? comment.creatorId?.toString() ?? 'Anon'
-              : comment.creatorName!,
-          authorTitleColor: Theme.of(context).colorScheme.primary,
-          createdAt: comment.createdAt,
-        ),
-        const SizedBox(height: 4),
-        AppHtml(
-          data: dtext(
-            comment.body,
-            booruUrl: config.url,
-          ),
-        ),
-      ],
     );
   }
 }

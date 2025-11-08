@@ -9,6 +9,7 @@ import '../../foundation/display.dart';
 import '../boorus/engine/providers.dart';
 import '../comments/routes.dart';
 import '../configs/config/providers.dart';
+import '../posts/post/types.dart';
 import '../router.dart';
 import '../tags/favorites/providers.dart';
 import '../widgets/widgets.dart';
@@ -62,7 +63,7 @@ Future<Object?> goToFavoriteTagImportPage(
   );
 }
 
-void goToCommentPage(BuildContext context, WidgetRef ref, int postId) {
+void goToCommentPage(BuildContext context, WidgetRef ref, Post post) {
   final builder = ref
       .read(booruBuilderProvider(ref.watchConfigAuth))
       ?.commentPageBuilder;
@@ -71,10 +72,9 @@ void goToCommentPage(BuildContext context, WidgetRef ref, int postId) {
 
   showCommentPage(
     context,
-    postId: postId,
     settings: const RouteSettings(
       name: RouterPageConstant.comment,
     ),
-    builder: (_, useAppBar) => builder(context, useAppBar, postId),
+    builder: (_, useAppBar) => builder(context, useAppBar, post),
   );
 }

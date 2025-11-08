@@ -185,6 +185,11 @@ abstract class BooruRepositoryDefault implements BooruRepository {
     String? action,
     Post post,
   ) => const PostGestureHandler().handle(ref, action, post);
+
+  @override
+  CommentExtractor commentExtractor(BooruConfigAuth config) {
+    return ref.watch(unsupportedCommentExtractor);
+  }
 }
 
 class PostGestureHandler {

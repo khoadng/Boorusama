@@ -6,6 +6,7 @@ import '../../core/configs/create/widgets.dart';
 import '../../core/configs/manage/widgets.dart';
 import '../../core/home/types.dart';
 import '../../core/posts/details/widgets.dart';
+import 'comments/widgets.dart';
 import 'configs/widgets.dart';
 import 'favorites/widgets.dart';
 import 'home/types.dart';
@@ -81,4 +82,11 @@ class Shimmie2Builder extends BaseBooruBuilder {
   @override
   CreateUnknownBooruWidgetsBuilder get unknownBooruWidgetsBuilder =>
       (context) => const Shimmie2UnknownBooruWidgetsBuilder();
+
+  @override
+  CommentPageBuilder? get commentPageBuilder =>
+      (context, useAppBar, post) => Shimmie2CommentPage(
+        post: post,
+        useAppBar: useAppBar,
+      );
 }

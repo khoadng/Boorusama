@@ -55,4 +55,5 @@ abstract class BooruRepository {
   GranularRatingFilterer? granularRatingFilterer(BooruConfigSearch config);
   Set<Rating> getGranularRatingOptions(BooruConfigAuth config);
   bool handlePostGesture(WidgetRef ref, String? action, Post post);
+  CommentExtractor commentExtractor(BooruConfigAuth config);
 }

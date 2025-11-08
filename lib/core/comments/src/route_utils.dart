@@ -8,7 +8,6 @@ import 'widgets/comment_side_sheet_container.dart';
 
 Future<T?> showCommentPage<T>(
   BuildContext context, {
-  required int postId,
   required Widget Function(BuildContext context, bool useAppBar) builder,
   RouteSettings? settings,
 }) => Screen.of(context).size == ScreenSize.small

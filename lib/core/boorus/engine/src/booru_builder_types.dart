@@ -82,7 +82,7 @@ typedef CommentPageBuilder =
     Widget Function(
       BuildContext context,
       bool useAppBar,
-      int postId,
+      Post post,
     );
 
 typedef GranularRatingFilterer =
