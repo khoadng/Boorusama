@@ -74,52 +74,64 @@ class Shimmie2MultiSelectionActions extends ConsumerWidget {
 
     return DefaultMultiSelectionActions(
       postController: postController,
-      extraActions: (selectedPosts) => [
-        BulkFavoriteButton(
-          selectedPosts: selectedPosts,
-          builder: (context, postIds, operating) => MultiSelectButton(
-            onPressed: operating
-                ? null
-                : () async {
-                    final success = await bulkOpNotifier.favorite(postIds);
-                    if (context.mounted) {
-                      _showToast(context, success);
-                    }
+      extraActions: (selectedPosts) => switch (ref.watch(
+        shimmie2ExtensionsProvider(config.url),
+      )) {
+        AsyncData(value: Shimmie2ExtensionsData(:final hasExtension))
+            when hasExtension(KnownExtension.bulkActions) &&
+                hasExtension(KnownExtension.favorites) &&
+                config.passHash != null =>
+          [
+            BulkFavoriteButton(
+              selectedPosts: selectedPosts,
+              builder: (context, postIds, operating) => MultiSelectButton(
+                onPressed: operating
+                    ? null
+                    : () async {
+                        final success = await bulkOpNotifier.favorite(postIds);
+                        if (context.mounted) {
+                          _showToast(context, success);
+                        }
 
-                    if (success) {
-                      controller.disable();
-                    }
-                  },
-            icon: const Icon(
-              FontAwesomeIcons.heartCirclePlus,
-              size: 20,
+                        if (success) {
+                          controller.disable();
+                        }
+                      },
+                icon: const Icon(
+                  FontAwesomeIcons.heartCirclePlus,
+                  size: 20,
+                ),
+                name: context.t.post.action.favorite,
+              ),
             ),
-            name: context.t.post.action.favorite,
-          ),
-        ),
-        BulkFavoriteButton(
-          selectedPosts: selectedPosts,
-          builder: (context, postIds, operating) => MultiSelectButton(
-            onPressed: operating
-                ? null
-                : () async {
-                    final success = await bulkOpNotifier.unfavorite(postIds);
-                    if (context.mounted) {
-                      _showToast(context, success);
-                    }
+            BulkFavoriteButton(
+              selectedPosts: selectedPosts,
+              builder: (context, postIds, operating) => MultiSelectButton(
+                onPressed: operating
+                    ? null
+                    : () async {
+                        final success = await bulkOpNotifier.unfavorite(
+                          postIds,
+                        );
+                        if (context.mounted) {
+                          _showToast(context, success);
+                        }
 
-                    if (success) {
-                      controller.disable();
-                    }
-                  },
-            icon: const Icon(
-              FontAwesomeIcons.heartCircleMinus,
-              size: 20,
+                        if (success) {
+                          controller.disable();
+                        }
+                      },
+                icon: const Icon(
+                  FontAwesomeIcons.heartCircleMinus,
+                  size: 20,
+                ),
+                name: context.t.post.action.unfavorite,
+              ),
             ),
-            name: context.t.post.action.unfavorite,
-          ),
-        ),
-      ],
+          ],
+
+        _ => [],
+      },
     );
   }
 
@@ -152,30 +164,23 @@ class BulkFavoriteButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfigAuth;
     final bulkOpState = ref.watch(bulkOperationProvider(config));
-    final extensionsState = ref.watch(shimmie2ExtensionsProvider(config.url));
 
-    return switch (extensionsState) {
-      AsyncData(value: Shimmie2ExtensionsData(:final hasExtension))
-          when hasExtension(KnownExtension.bulkActions) &&
-              hasExtension(KnownExtension.favorites) =>
-        bulkOpState.when(
-          data: (data) => builder(
-            context,
-            selectedPosts.map((e) => e.id).toList(),
-            data.isOperating,
-          ),
-          loading: () => builder(
-            context,
-            selectedPosts.map((e) => e.id).toList(),
-            true,
-          ),
-          error: (_, _) => builder(
-            context,
-            selectedPosts.map((e) => e.id).toList(),
-            false,
-          ),
-        ),
-      _ => const SizedBox.shrink(),
-    };
+    return bulkOpState.when(
+      data: (data) => builder(
+        context,
+        selectedPosts.map((e) => e.id).toList(),
+        data.isOperating,
+      ),
+      loading: () => builder(
+        context,
+        selectedPosts.map((e) => e.id).toList(),
+        true,
+      ),
+      error: (_, _) => builder(
+        context,
+        selectedPosts.map((e) => e.id).toList(),
+        false,
+      ),
+    );
   }
 }

@@ -22,7 +22,7 @@ class NavigationTile extends StatelessWidget {
   final Widget selectedIcon;
   final Widget icon;
   final Widget title;
-  final void Function(int value) onTap;
+  final void Function(int value)? onTap;
   final bool showIcon;
   final bool showTitle;
 
@@ -43,7 +43,10 @@ class NavigationTile extends StatelessWidget {
         child: InkWell(
           hoverColor: Theme.of(context).hoverColor.withAlpha(25),
           borderRadius: BorderRadius.circular(4),
-          onTap: () => onTap(value),
+          onTap: switch (onTap) {
+            final callback? => () => callback(value),
+            null => null,
+          },
           child: Container(
             margin: const EdgeInsets.symmetric(vertical: 4),
             padding: EdgeInsets.symmetric(

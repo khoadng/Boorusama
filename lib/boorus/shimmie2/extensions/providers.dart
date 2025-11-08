@@ -74,8 +74,7 @@ class Shimmie2ExtensionsNotifier
   @override
   Future<Shimmie2ExtensionsState> build(String arg) async {
     final cache = ref.watch(_extensionsCacheProvider);
-    final hash = sha256.convert(utf8.encode(arg)).toString();
-    final cacheKey = 'extensions_$hash';
+    final cacheKey = _cacheKey(arg);
 
     try {
       final cachedExtensions = await cache.get(cacheKey);
@@ -84,7 +83,10 @@ class Shimmie2ExtensionsNotifier
         final isExpired = _isCacheExpired(timestamp);
 
         if (!isExpired) {
-          return Shimmie2ExtensionsData(extensions: cachedExtensions);
+          return Shimmie2ExtensionsData(
+            extensions: cachedExtensions,
+            lastUpdateTimestamp: timestamp,
+          );
         }
       }
     } catch (_) {
@@ -98,11 +100,13 @@ class Shimmie2ExtensionsNotifier
     return switch (result) {
       ExtensionsSuccess(:final extensions, :final version) => () {
         final extensionsList = extensions.map(extensionDtoToExtension).toList();
+        final now = DateTime.now();
         cache.set(cacheKey, extensionsList);
-        cache.setTimestamp(cacheKey, DateTime.now());
+        cache.setTimestamp(cacheKey, now);
         return Shimmie2ExtensionsData(
           extensions: extensionsList,
           version: version,
+          lastUpdateTimestamp: now,
         );
       }(),
       ExtensionsNotSupported() => const Shimmie2ExtensionsNotSupported(),
@@ -113,6 +117,20 @@ class Shimmie2ExtensionsNotifier
     if (timestamp == null) return true;
     final age = DateTime.now().difference(timestamp);
     return age > _cacheTtl;
+  }
+
+  Future<void> refresh() async {
+    final baseUrl = arg;
+    final cache = ref.read(_extensionsCacheProvider);
+    final cacheKey = _cacheKey(baseUrl);
+
+    await cache.remove(cacheKey);
+    ref.invalidateSelf();
+  }
+
+  String _cacheKey(String baseUrl) {
+    final hash = sha256.convert(utf8.encode(baseUrl)).toString();
+    return 'extensions_$hash';
   }
 }
 
@@ -131,6 +149,7 @@ class Shimmie2ExtensionsData extends Shimmie2ExtensionsState {
   const Shimmie2ExtensionsData({
     required this.extensions,
     this.version,
+    this.lastUpdateTimestamp,
   });
 
   factory Shimmie2ExtensionsData.empty() =>
@@ -138,6 +157,7 @@ class Shimmie2ExtensionsData extends Shimmie2ExtensionsState {
 
   final List<Extension> extensions;
   final Version? version;
+  final DateTime? lastUpdateTimestamp;
 
   bool hasExtension(KnownExtension extension) =>
       extensions.any((e) => e.matches(extension));
@@ -150,6 +170,16 @@ class Shimmie2ExtensionsData extends Shimmie2ExtensionsState {
     return grouped;
   }
 
+  List<String> getCategoriesSorted() {
+    final categories = getAllByCategory().keys.toList();
+    categories.sort();
+    return categories;
+  }
+
   @override
-  List<Object?> get props => [extensions, version];
+  List<Object?> get props => [
+    extensions,
+    version,
+    lastUpdateTimestamp,
+  ];
 }

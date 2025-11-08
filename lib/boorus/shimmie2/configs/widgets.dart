@@ -15,6 +15,7 @@ import '../../../core/configs/create/create.dart';
 import '../../../core/configs/create/providers.dart';
 import '../../../core/configs/create/widgets.dart';
 import '../../../core/http/cookies/types.dart';
+import '../../../core/widgets/booru_version_chip.dart';
 import '../../../foundation/html.dart';
 import '../../../foundation/path.dart';
 import '../extensions/providers.dart';

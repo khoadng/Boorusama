@@ -17,6 +17,7 @@ class HomeNavigationTile extends StatelessWidget {
     this.onTap,
     this.forceFillIcon = false,
     this.forceIconColor,
+    this.enabled = true,
   });
 
   // Will override the onTap function
@@ -28,6 +29,7 @@ class HomeNavigationTile extends StatelessWidget {
   final BoxConstraints constraints;
   final bool forceFillIcon;
   final Color? forceIconColor;
+  final bool enabled;
 
   @override
   Widget build(BuildContext context) {
@@ -68,8 +70,9 @@ class HomeNavigationTile extends StatelessWidget {
                   : null,
             ),
           ),
-          onTap: (value) =>
-              onTap != null ? onTap!() : controller.goToTab(value),
+          onTap: enabled
+              ? (value) => onTap != null ? onTap!() : controller.goToTab(value)
+              : null,
         );
       },
     );

@@ -1231,5 +1231,11 @@
     "speed": {
       "normal": "Bình thường"
     }
+  },
+  "shimmie2": {
+    "extension": {
+      "title": "Tiện ích",
+      "failed_to_fetch": "Không thể tải danh sách tiện ích cho trang này"
+    }
   }
 }

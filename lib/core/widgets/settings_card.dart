@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import '../../../themes/theme/types.dart';
+import '../themes/theme/types.dart';
 
 class SettingsCard extends StatelessWidget {
   const SettingsCard({
@@ -61,7 +61,7 @@ class SettingsCard extends StatelessWidget {
               ),
             ),
           Material(
-            color: colorScheme.surfaceContainerHigh,
+            color: colorScheme.surfaceContainer,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),
