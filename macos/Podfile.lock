@@ -42,15 +42,15 @@ PODS:
   - path_provider_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
-  - purchases_flutter (9.9.1):
+  - purchases_flutter (9.9.4):
     - FlutterMacOS
-    - PurchasesHybridCommon (= 17.12.0)
-  - PurchasesHybridCommon (17.12.0):
-    - RevenueCat (= 5.45.0)
+    - PurchasesHybridCommon (= 17.16.0)
+  - PurchasesHybridCommon (17.16.0):
+    - RevenueCat (= 5.46.1)
   - rate_my_app (2.3.2):
     - Flutter
     - FlutterMacOS
-  - RevenueCat (5.45.0)
+  - RevenueCat (5.46.1)
   - screen_retriever_macos (0.0.1):
     - FlutterMacOS
   - share_plus (0.0.1):
@@ -225,10 +225,10 @@ SPEC CHECKSUMS:
   package_info_plus: f0052d280d17aa382b932f399edf32507174e870
   pasteboard: 278d8100149f940fb795d6b3a74f0720c890ecb7
   path_provider_foundation: bb55f6dbba17d0dccd6737fe6f7f34fbd0376880
-  purchases_flutter: 7b5c61f47abe43c51443e7b496877872b70838a2
-  PurchasesHybridCommon: c8f805e0f6d3a557a6d63300d0402b8ae5219a48
+  purchases_flutter: a6bd0e9bd1e4f19d0204d8f1e2e6bbe1ee4c3481
+  PurchasesHybridCommon: 806c4cb4f287dc125d6e885a1bbf5df326e681b0
   rate_my_app: cbb89973f870601f80f7bad63aba107260cabc5b
-  RevenueCat: 9d0328a098bd0e1b425d91d136e643b72cd70326
+  RevenueCat: 5615e87d418134b3087370429b17ce92eafe2354
   screen_retriever_macos: 452e51764a9e1cdb74b3c541238795849f21557f
   share_plus: 510bf0af1a42cd602274b4629920c9649c52f4cc
   shared_preferences_foundation: 7036424c3d8ec98dfe75ff1667cb0cd531ec82bb
@@ -242,6 +242,6 @@ SPEC CHECKSUMS:
   webview_flutter_wkwebview: 8ebf4fded22593026f7dbff1fbff31ea98573c8d
   window_manager: b729e31d38fb04905235df9ea896128991cad99e
 
-PODFILE CHECKSUM: 8d40c19d3cbdb380d870685c3a564c989f1efa52
+PODFILE CHECKSUM: df6c1dfc75be1210c1b1fc401a7c9f8bea484f5c
 
 COCOAPODS: 1.16.2

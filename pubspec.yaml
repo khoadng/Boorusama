@@ -51,7 +51,7 @@ dependencies:
   android_intent_plus: ^6.0.0
   archive: ^4.0.7
   animated_list_plus: ^0.5.2
-  background_downloader: ^9.1.1
+  background_downloader: ^9.3.0
   bonsoir: ^6.0.1
   clock: ^1.1.1
   collection: ^1.17.0
@@ -88,7 +88,7 @@ dependencies:
   font_awesome_flutter: ^10.7.0
   fvp: ^0.35.0
   gal: ^2.3.0
-  go_router: ^16.0.0
+  go_router: ^17.0.0
   google_api_availability: ^5.0.0
   hive_ce: ^2.12.0
   html: ^0.15.4
