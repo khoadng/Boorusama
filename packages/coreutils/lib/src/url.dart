@@ -7,6 +7,8 @@ String normalizeUrl(String? url) {
       null => '',
       // Handle edge case where URL has no scheme/host (e.g., "?token=abc")
       Uri(scheme: '', host: '', path: '') => '',
+      // For relative paths, strip query and fragment
+      Uri(scheme: '', host: '') && final uri => Uri(path: uri.path).toString(),
       final uri => Uri(
         scheme: uri.scheme,
         userInfo: uri.userInfo,

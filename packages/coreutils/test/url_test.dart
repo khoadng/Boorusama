@@ -89,6 +89,16 @@ void main() {
         url: 'https://example.com/path/?token=abc',
         expected: 'https://example.com/path/',
       ),
+      (
+        desc: 'handles url with no path but query',
+        url: '.jpg?token=abc',
+        expected: '.jpg',
+      ),
+      (
+        desc: 'returns plain text as-is',
+        url: 'jpg',
+        expected: 'jpg',
+      ),
     ];
 
     for (final c in cases) {
