@@ -34,13 +34,7 @@ final defaultDioProvider = Provider.family<Dio, BooruConfigAuth>((ref, config) {
       proxySettings: config.proxySettings,
     ),
     additionalInterceptors: [
-      // 10 requests per second
-      SlidingWindowRateLimitInterceptor(
-        config: const SlidingWindowRateLimitConfig(
-          requestsPerWindow: 10,
-          windowSizeMs: 1000,
-        ),
-      ),
+      ref.watch(defaultSlidingWindowRateLimitConfigInterceptorProvider),
     ],
   );
 });
@@ -149,3 +143,14 @@ final defaultNetworkProtocolInfoProvider =
         ),
       );
     });
+
+final defaultSlidingWindowRateLimitConfigInterceptorProvider =
+    Provider<SlidingWindowRateLimitInterceptor>(
+      (ref) => SlidingWindowRateLimitInterceptor(
+        // 10 requests per second
+        config: const SlidingWindowRateLimitConfig(
+          requestsPerWindow: 10,
+          windowSizeMs: 1000,
+        ),
+      ),
+    );

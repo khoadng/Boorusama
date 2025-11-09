@@ -65,12 +65,7 @@ final gelbooruV2DioProvider = Provider.family<Dio, BooruConfigAuth>((
         if (c.isNotEmpty) CookieInjectionInterceptor(cookie: c),
       if (capabilities?.auth?.required case true)
         AuthErrorResponseInterceptor(),
-      SlidingWindowRateLimitInterceptor(
-        config: const SlidingWindowRateLimitConfig(
-          requestsPerWindow: 10,
-          windowSizeMs: 1000,
-        ),
-      ),
+      ref.watch(defaultSlidingWindowRateLimitConfigInterceptorProvider),
     ],
   );
 });

@@ -42,13 +42,7 @@ final danbooruDioProvider = Provider.family<Dio, BooruConfigAuth>((
       proxySettings: config.proxySettings,
     ),
     additionalInterceptors: [
-      // 10 requests per second
-      SlidingWindowRateLimitInterceptor(
-        config: const SlidingWindowRateLimitConfig(
-          requestsPerWindow: 10,
-          windowSizeMs: 1000,
-        ),
-      ),
+      ref.watch(defaultSlidingWindowRateLimitConfigInterceptorProvider),
     ],
   );
 });

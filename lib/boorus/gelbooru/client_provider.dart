@@ -48,13 +48,7 @@ final gelbooruDioProvider = Provider.family<Dio, BooruConfigAuth>((
         detectionStatusCode: 200,
         returnedStatusCode: 410,
       ),
-      // 10 requests per second
-      SlidingWindowRateLimitInterceptor(
-        config: const SlidingWindowRateLimitConfig(
-          requestsPerWindow: 10,
-          windowSizeMs: 1000,
-        ),
-      ),
+      ref.watch(defaultSlidingWindowRateLimitConfigInterceptorProvider),
     ],
   );
 });
