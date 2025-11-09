@@ -7,3 +7,4 @@ export 'src/types/request_deduplicator_mixin.dart';
 export 'src/interceptors/auth_error_response_interceptor.dart';
 export 'src/interceptors/cookie_injection_interceptor.dart';
 export 'src/interceptors/sliding_window_rate_limit_interceptor.dart';
+export 'src/interceptors/pagination_limit_error_interceptor.dart';
