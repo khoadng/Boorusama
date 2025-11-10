@@ -124,12 +124,7 @@ class GelbooruV2Repository extends BooruRepositoryDefault {
         false;
 
     return thumbnailOnly
-        ? DefaultGridThumbnailUrlGenerator(
-            imageQualityMapper: (post, imageQuality, gridSize) =>
-                post.thumbnailImageUrl,
-            gifImageQualityMapper: (post, imageQuality) =>
-                post.thumbnailImageUrl,
-          )
+        ? const DefaultGridThumbnailUrlGenerator.thumbnailOnly()
         : const DefaultGridThumbnailUrlGenerator();
   }
 

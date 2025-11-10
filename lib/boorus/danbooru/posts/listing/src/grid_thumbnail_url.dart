@@ -23,19 +23,18 @@ class DanbooruGridThumbnailUrlGenerator implements GridThumbnailUrlGenerator {
       ),
       (post) =>
           DefaultGridThumbnailUrlGenerator(
-            gifImageQualityMapper: (_, _) => post.sampleImageUrl,
-            imageQualityMapper: (_, imageQuality, gridSize) =>
-                switch (imageQuality) {
-                  ImageQuality.automatic => switch (gridSize) {
+            imageQualityMapper: (_, settings) =>
+                switch (settings.imageQuality) {
+                  ImageQuality.automatic => switch (settings.gridSize) {
                     GridSize.micro => post.url180x180,
                     GridSize.tiny => post.url360x360,
                     _ => post.url720x720,
                   },
-                  ImageQuality.low => switch (gridSize) {
+                  ImageQuality.low => switch (settings.gridSize) {
                     GridSize.micro || GridSize.tiny => post.url180x180,
                     _ => post.url360x360,
                   },
-                  ImageQuality.high => switch (gridSize) {
+                  ImageQuality.high => switch (settings.gridSize) {
                     GridSize.micro => post.url180x180,
                     GridSize.tiny => post.url360x360,
                     _ => post.url720x720,
@@ -43,7 +42,7 @@ class DanbooruGridThumbnailUrlGenerator implements GridThumbnailUrlGenerator {
                   ImageQuality.highest =>
                     post.isVideo
                         ? post.url720x720
-                        : switch (gridSize) {
+                        : switch (settings.gridSize) {
                             GridSize.micro => post.url360x360,
                             GridSize.tiny => post.url720x720,
                             _ => post.urlSample,

@@ -17,14 +17,13 @@ abstract class GridThumbnailUrlGenerator {
 typedef ImageQualityMapper =
     String Function(
       Post post,
-      ImageQuality imageQuality,
-      GridSize gridSize,
+      GridThumbnailSettings settings,
     );
 
 typedef GifImageQualityMapper =
     String Function(
       Post post,
-      ImageQuality imageQuality,
+      GridThumbnailSettings settings,
     );
 
 class GridThumbnailSettings extends Equatable {

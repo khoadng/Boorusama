@@ -7,23 +7,22 @@ import 'grid_thumbnail_url_generator.dart';
 
 String defaultImageQualityMapper(
   Post post,
-  ImageQuality imageQuality,
-  GridSize gridSize,
+  GridThumbnailSettings settings,
 ) {
-  return switch (imageQuality) {
+  return switch (settings.imageQuality) {
     ImageQuality.automatic => post.thumbnailImageUrl,
     ImageQuality.low => post.thumbnailImageUrl,
     ImageQuality.high =>
       post.isVideo
           ? post.thumbnailImageUrl
-          : switch (gridSize) {
+          : switch (settings.gridSize) {
               GridSize.micro || GridSize.tiny => post.thumbnailImageUrl,
               _ => post.sampleImageUrl,
             },
     ImageQuality.highest =>
       post.isVideo
           ? post.thumbnailImageUrl
-          : switch (gridSize) {
+          : switch (settings.gridSize) {
               GridSize.micro || GridSize.tiny => post.thumbnailImageUrl,
               _ => post.originalImageUrl,
             },
@@ -34,10 +33,13 @@ String defaultImageQualityMapper(
 
 String defaultGifImageQualityMapper(
   Post post,
-  ImageQuality imageQuality,
+  GridThumbnailSettings settings,
 ) {
-  return switch (imageQuality) {
-    ImageQuality.automatic => post.thumbnailImageUrl,
+  return switch (settings.imageQuality) {
+    ImageQuality.automatic => switch (settings.animatedPostsDefaultState) {
+      AnimatedPostsDefaultState.autoplay => post.sampleImageUrl,
+      AnimatedPostsDefaultState.static => post.thumbnailImageUrl,
+    },
     ImageQuality.low => post.thumbnailImageUrl,
     ImageQuality.high => post.sampleImageUrl,
     ImageQuality.highest => post.sampleImageUrl,
@@ -45,39 +47,41 @@ String defaultGifImageQualityMapper(
   };
 }
 
+String thumbnailOnlyGifImageQualityMapper(
+  Post post,
+  GridThumbnailSettings settings,
+) => post.thumbnailImageUrl;
+
+String thumbnailOnlyImageQualityMapper(
+  Post post,
+  GridThumbnailSettings settings,
+) => post.thumbnailImageUrl;
+
 class DefaultGridThumbnailUrlGenerator implements GridThumbnailUrlGenerator {
   const DefaultGridThumbnailUrlGenerator({
     this.imageQualityMapper,
     this.gifImageQualityMapper,
   });
 
+  const DefaultGridThumbnailUrlGenerator.thumbnailOnly()
+    : imageQualityMapper = thumbnailOnlyImageQualityMapper,
+      gifImageQualityMapper = thumbnailOnlyGifImageQualityMapper;
+
   final ImageQualityMapper? imageQualityMapper;
   final GifImageQualityMapper? gifImageQualityMapper;
+
+  GifImageQualityMapper get _gifMapper =>
+      gifImageQualityMapper ?? defaultGifImageQualityMapper;
+
+  ImageQualityMapper get _imageMapper =>
+      imageQualityMapper ?? defaultImageQualityMapper;
 
   @override
   String generateUrl(
     Post post, {
     required GridThumbnailSettings settings,
-  }) {
-    if (post.isGif) {
-      if (settings.animatedPostsDefaultState ==
-          AnimatedPostsDefaultState.static) {
-        return post.thumbnailImageUrl;
-      }
-
-      final gifMapper = gifImageQualityMapper ?? defaultGifImageQualityMapper;
-      return gifMapper(
-        post,
-        settings.imageQuality,
-      );
-    }
-
-    final mapper = imageQualityMapper ?? defaultImageQualityMapper;
-
-    return mapper(
-      post,
-      settings.imageQuality,
-      settings.gridSize,
-    );
-  }
+  }) => switch (post.isGif) {
+    true => _gifMapper(post, settings),
+    false => _imageMapper(post, settings),
+  };
 }
