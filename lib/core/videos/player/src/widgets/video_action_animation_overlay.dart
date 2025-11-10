@@ -1,7 +1,13 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
-class VideoActionAnimationOverlay<T> extends StatefulWidget {
+// Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+// Project imports:
+import '../../../../settings/providers.dart';
+
+class VideoActionAnimationOverlay<T> extends ConsumerStatefulWidget {
   const VideoActionAnimationOverlay({
     required this.triggerNotifier,
     required this.iconBuilder,
@@ -18,12 +24,12 @@ class VideoActionAnimationOverlay<T> extends StatefulWidget {
   final double hideStart;
 
   @override
-  State<VideoActionAnimationOverlay<T>> createState() =>
+  ConsumerState<VideoActionAnimationOverlay<T>> createState() =>
       _VideoActionAnimationOverlayState<T>();
 }
 
 class _VideoActionAnimationOverlayState<T>
-    extends State<VideoActionAnimationOverlay<T>>
+    extends ConsumerState<VideoActionAnimationOverlay<T>>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
 
@@ -48,7 +54,11 @@ class _VideoActionAnimationOverlayState<T>
 
   void _onTriggerChanged() {
     final value = widget.triggerNotifier.value;
-    if (value != null) {
+    final reduceAnimations = ref.read(
+      settingsProvider.select((value) => value.reduceAnimations),
+    );
+
+    if (value != null && !reduceAnimations) {
       _controller.forward(from: 0);
     }
   }
