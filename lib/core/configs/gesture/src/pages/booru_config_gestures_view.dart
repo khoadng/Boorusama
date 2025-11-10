@@ -20,19 +20,22 @@ class DefaultBooruConfigGesturesView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return const BooruConfigGesturesView(
-      postDetailsGestureActions: kDefaultGestureActions,
+      previewGestureActions: kDefaultGestureActions,
+      fullviewGestureActions: kDefaultFullviewActions,
     );
   }
 }
 
 class BooruConfigGesturesView extends ConsumerWidget {
   const BooruConfigGesturesView({
-    required this.postDetailsGestureActions,
+    required this.fullviewGestureActions,
+    required this.previewGestureActions,
     super.key,
     this.describePostDetailsAction,
   });
 
-  final Set<String?> postDetailsGestureActions;
+  final Set<String?> fullviewGestureActions;
+  final Set<String?> previewGestureActions;
   final String Function(String? action)? describePostDetailsAction;
 
   @override
@@ -64,7 +67,7 @@ class BooruConfigGesturesView extends ConsumerWidget {
                   postGesturesConfigTyped?.withFulviewSwipeDown(value),
                 );
               },
-              items: postDetailsGestureActions
+              items: fullviewGestureActions
                   .map(
                     (value) => DropdownMenuItem(
                       value: value,
@@ -90,7 +93,7 @@ class BooruConfigGesturesView extends ConsumerWidget {
                   postGesturesConfigTyped?.withFulviewDoubleTap(value),
                 );
               },
-              items: postDetailsGestureActions
+              items: fullviewGestureActions
                   .map(
                     (value) => DropdownMenuItem(
                       value: value,
@@ -117,7 +120,7 @@ class BooruConfigGesturesView extends ConsumerWidget {
                   postGesturesConfigTyped?.withFulviewLongPress(value),
                 );
               },
-              items: postDetailsGestureActions
+              items: fullviewGestureActions
                   .map(
                     (value) => DropdownMenuItem(
                       value: value,
@@ -149,7 +152,7 @@ class BooruConfigGesturesView extends ConsumerWidget {
                   postGesturesConfigTyped?.withPreviewTap(value),
                 );
               },
-              items: postDetailsGestureActions
+              items: previewGestureActions
                   .map(
                     (value) => DropdownMenuItem(
                       value: value,
@@ -175,7 +178,7 @@ class BooruConfigGesturesView extends ConsumerWidget {
                   postGesturesConfigTyped?.withPreviewLongPress(value),
                 );
               },
-              items: postDetailsGestureActions
+              items: previewGestureActions
                   .map(
                     (value) => DropdownMenuItem(
                       value: value,

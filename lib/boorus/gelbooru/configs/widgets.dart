@@ -17,6 +17,20 @@ import '../gelbooru.dart';
 import '_internal_widgets.dart';
 import 'api_key_verify_dialog.dart';
 
+const _kGelbooruSpecificGestureActions = {
+  kToggleFavoriteAction,
+};
+
+const _kGelbooruPreviewGestureActions = {
+  ...kDefaultGestureActions,
+  ..._kGelbooruSpecificGestureActions,
+};
+
+const _kGelbooruFullviewGestureActions = {
+  ...kDefaultFullviewActions,
+  ..._kGelbooruSpecificGestureActions,
+};
+
 class CreateGelbooruConfigPage extends ConsumerWidget {
   const CreateGelbooruConfigPage({
     super.key,
@@ -34,10 +48,8 @@ class CreateGelbooruConfigPage extends ConsumerWidget {
       initialTab: initialTab,
       authTab: const GelbooruAuthView(),
       gestureTab: BooruConfigGesturesView(
-        postDetailsGestureActions: const {
-          ...kDefaultGestureActions,
-          kToggleFavoriteAction,
-        },
+        previewGestureActions: _kGelbooruPreviewGestureActions,
+        fullviewGestureActions: _kGelbooruFullviewGestureActions,
         describePostDetailsAction: (action) => switch (action) {
           kToggleFavoriteAction => 'Toggle favorite',
           _ => describeDefaultGestureAction(action, context),

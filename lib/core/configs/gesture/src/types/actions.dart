@@ -17,6 +17,7 @@ const kToggleBookmarkAction = 'toggleBookmark';
 const kViewTagsAction = 'viewTags';
 const kViewOriginalAction = 'viewOriginal';
 const kOpenSourceAction = 'openSource';
+const kStartSlideshowAction = 'startSlideshow';
 
 const kToggleFavoriteAction = 'toggleFavorite';
 const kUpvoteAction = 'upvote';
@@ -36,6 +37,11 @@ const kDefaultGestureActions = {
   kOpenSourceAction,
 };
 
+const kDefaultFullviewActions = {
+  ...kDefaultGestureActions,
+  kStartSlideshowAction,
+};
+
 String describeDefaultGestureAction(String? action, BuildContext context) =>
     switch (action) {
       kDownloadAction => context.t.download.download,
@@ -44,6 +50,7 @@ String describeDefaultGestureAction(String? action, BuildContext context) =>
       kViewTagsAction => context.t.post.action.view_tags,
       kViewOriginalAction => context.t.post.action.view_original,
       kOpenSourceAction => context.t.post.action.view_in_browser,
+      kStartSlideshowAction => context.t.post.action.slideshow,
       kDefaultAction => context.t.post.action.use_default,
       _ => context.t.post.action.none,
     };
@@ -66,6 +73,7 @@ bool handleDefaultGestureAction(
   void Function()? onViewTags,
   void Function()? onViewOriginal,
   void Function()? onOpenSource,
+  void Function()? onStartSlideshow,
 }) {
   switch (action) {
     case kDownloadAction:
@@ -80,6 +88,8 @@ bool handleDefaultGestureAction(
       onViewOriginal?.call();
     case kOpenSourceAction:
       onOpenSource?.call();
+    case kStartSlideshowAction:
+      onStartSlideshow?.call();
     default:
       return false;
   }

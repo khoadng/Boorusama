@@ -208,6 +208,8 @@ class PostGestureHandler {
       onViewTags: () => handleViewTags(ref, post),
       onViewOriginal: () => handleViewOriginal(ref, post),
       onOpenSource: () => handleOpenSource(ref, post),
+      onStartSlideshow: () =>
+          PostDetailsPageViewScope.maybeOf(ref.context)?.startSlideshow(),
     );
 
     if (handled) return true;

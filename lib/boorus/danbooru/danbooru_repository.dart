@@ -252,6 +252,8 @@ class DanbooruRepository extends BooruRepositoryDefault {
           () => false,
           (post) => ref.danbooruEdit(post),
         ),
+        onStartSlideshow: () =>
+            PostDetailsPageViewScope.maybeOf(ref.context)?.startSlideshow(),
       );
 }
 
@@ -268,6 +270,7 @@ bool handleDanbooruGestureAction(
   void Function()? onUpvote,
   void Function()? onDownvote,
   void Function()? onEdit,
+  void Function()? onStartSlideshow,
 }) {
   switch (action) {
     case kToggleFavoriteAction:
@@ -288,6 +291,7 @@ bool handleDanbooruGestureAction(
         onViewOriginal: onViewOriginal,
         onOpenSource: onOpenSource,
         hapticLevel: hapticLevel,
+        onStartSlideshow: onStartSlideshow,
       );
   }
 

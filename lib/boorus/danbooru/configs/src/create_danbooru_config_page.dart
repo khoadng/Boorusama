@@ -20,6 +20,23 @@ import '../../users/user/types.dart';
 import 'hide_deleted_switch.dart';
 import 'providers.dart';
 
+const _kDanbooruSpecificGestureActions = {
+  kToggleFavoriteAction,
+  kUpvoteAction,
+  kDownvoteAction,
+  kEditAction,
+};
+
+const _kDanbooruPreviewGestureActions = {
+  ...kDefaultGestureActions,
+  ..._kDanbooruSpecificGestureActions,
+};
+
+const _kDanbooruFullviewGestureActions = {
+  ...kDefaultFullviewActions,
+  ..._kDanbooruSpecificGestureActions,
+};
+
 class CreateDanbooruConfigPage extends ConsumerWidget {
   const CreateDanbooruConfigPage({
     super.key,
@@ -48,13 +65,8 @@ class CreateDanbooruConfigPage extends ConsumerWidget {
         ),
       ),
       gestureTab: BooruConfigGesturesView(
-        postDetailsGestureActions: const {
-          ...kDefaultGestureActions,
-          kToggleFavoriteAction,
-          kUpvoteAction,
-          kDownvoteAction,
-          kEditAction,
-        },
+        previewGestureActions: _kDanbooruPreviewGestureActions,
+        fullviewGestureActions: _kDanbooruFullviewGestureActions,
         describePostDetailsAction: (action) => switch (action) {
           kToggleFavoriteAction => context.t.post.action.toggle_favorite,
           kUpvoteAction => context.t.post.action.upvote,
