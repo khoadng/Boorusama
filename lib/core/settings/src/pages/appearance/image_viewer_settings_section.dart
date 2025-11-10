@@ -121,6 +121,64 @@ class ImageViewerSettingsSection extends ConsumerWidget {
             ),
           ),
         ),
+        SettingsRadioCard(
+          title: context.t.settings.image_viewer.slideshow_video_behavior,
+          subtitle: context
+              .t
+              .settings
+              .image_viewer
+              .slideshow_video_behavior_explanation,
+          entries: [
+            SettingsRadioCardEntry(
+              title: context
+                  .t
+                  .settings
+                  .image_viewer
+                  .slideshow_video_behaviors
+                  .wait_for_completion,
+              value: SlideshowVideoBehavior.waitForCompletion,
+              groupValue: viewer.slideshowVideoBehavior,
+              subtitle: context
+                  .t
+                  .settings
+                  .image_viewer
+                  .slideshow_video_behaviors
+                  .wait_for_completion_description,
+              onSelected: (value) {
+                onUpdate(
+                  viewer.copyWith(
+                    slideshowVideoBehavior:
+                        SlideshowVideoBehavior.waitForCompletion,
+                  ),
+                );
+              },
+            ),
+            SettingsRadioCardEntry(
+              title: context
+                  .t
+                  .settings
+                  .image_viewer
+                  .slideshow_video_behaviors
+                  .fixed_interval,
+              value: SlideshowVideoBehavior.fixedInterval,
+              groupValue: viewer.slideshowVideoBehavior,
+              subtitle: context
+                  .t
+                  .settings
+                  .image_viewer
+                  .slideshow_video_behaviors
+                  .fixed_interval_description,
+              onSelected: (value) {
+                onUpdate(
+                  viewer.copyWith(
+                    slideshowVideoBehavior:
+                        SlideshowVideoBehavior.fixedInterval,
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
         const Divider(thickness: 1),
         SettingsHeader(
           label: context.t.settings.image_viewer.video_section_title,

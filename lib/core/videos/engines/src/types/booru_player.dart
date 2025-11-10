@@ -56,3 +56,49 @@ typedef PositionCallback = void Function(double current, double total);
 
 typedef VideoPlayerCreatedCallback = void Function(BooruPlayer player);
 typedef VideoPlayerDisposedCallback = void Function();
+
+extension BooruPlayerExtension on BooruPlayer {
+  Future<void> waitForCompletion({
+    Duration timeout = const Duration(hours: 1),
+  }) async {
+    if (!isPlaying) return;
+
+    final completer = Completer<void>();
+    StreamSubscription<Duration>? positionSub;
+    StreamSubscription<bool>? playingSub;
+
+    void complete() {
+      if (!completer.isCompleted) {
+        positionSub?.cancel();
+        playingSub?.cancel();
+        completer.complete();
+      }
+    }
+
+    positionSub = positionStream.listen((position) {
+      // Consider video complete if within 500ms of end
+      if (duration.inMilliseconds > 0 &&
+          position.inMilliseconds >= duration.inMilliseconds - 500) {
+        complete();
+      }
+    });
+
+    playingSub = playingStream.listen((isPlaying) {
+      if (!isPlaying) {
+        complete();
+      }
+    });
+
+    try {
+      await completer.future.timeout(
+        timeout,
+        onTimeout: () {
+          complete();
+        },
+      );
+    } catch (e) {
+      complete();
+      rethrow;
+    }
+  }
+}

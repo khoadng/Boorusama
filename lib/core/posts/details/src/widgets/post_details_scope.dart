@@ -74,6 +74,15 @@ class _PostDetailsLayoutSwitcherState<T extends Post>
       checkIfLargeScreen: () => context.isLargeScreen,
       totalPage: widget.posts.length,
       disableAnimation: reduceAnimations,
+      onBeforeSlideshowAdvance: (currentPage, nextPage) async {
+        if (viewerSettings.slideshowVideoBehavior.isWaitForCompletion) {
+          final currentPost = widget.posts[currentPage];
+
+          if (currentPost.isVideo) {
+            await _controller.waitForVideoCompletion(currentPost.id);
+          }
+        }
+      },
     );
   }
 

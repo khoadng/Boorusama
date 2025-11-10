@@ -146,6 +146,7 @@ class Settings extends Equatable {
       slideshowDirection: SlideshowDirection.defaultValue,
       slideshowInterval: 6,
       slideshowTransitionType: SlideshowTransitionType.defaultValue,
+      slideshowVideoBehavior: SlideshowVideoBehavior.defaultValue,
       videoAudioDefaultState: VideoAudioDefaultState.defaultValue,
       videoPlayerEngine: VideoPlayerEngine.defaultValue,
       enableVideoCache: true,
@@ -510,6 +511,7 @@ class ImageViewerSettings extends Equatable {
     required this.slideshowDirection,
     required this.slideshowInterval,
     required this.slideshowTransitionType,
+    required this.slideshowVideoBehavior,
     required this.videoAudioDefaultState,
     required this.videoPlayerEngine,
     required this.enableVideoCache,
@@ -526,6 +528,9 @@ class ImageViewerSettings extends Equatable {
       slideshowTransitionType = SlideshowTransitionType.parse(
         json['slideshowTransitionType'],
       ),
+      slideshowVideoBehavior = SlideshowVideoBehavior.parse(
+        json['slideshowVideoBehavior'],
+      ),
       videoAudioDefaultState = VideoAudioDefaultState.parse(
         json['videoAudioDefaultState'],
       ),
@@ -540,6 +545,7 @@ class ImageViewerSettings extends Equatable {
   final SlideshowDirection slideshowDirection;
   final double slideshowInterval;
   final SlideshowTransitionType slideshowTransitionType;
+  final SlideshowVideoBehavior slideshowVideoBehavior;
   final VideoAudioDefaultState videoAudioDefaultState;
   final VideoPlayerEngine videoPlayerEngine;
   final bool enableVideoCache;
@@ -551,6 +557,7 @@ class ImageViewerSettings extends Equatable {
     SlideshowDirection? slideshowDirection,
     double? slideshowInterval,
     SlideshowTransitionType? slideshowTransitionType,
+    SlideshowVideoBehavior? slideshowVideoBehavior,
     VideoAudioDefaultState? videoAudioDefaultState,
     VideoPlayerEngine? videoPlayerEngine,
     bool? enableVideoCache,
@@ -564,6 +571,8 @@ class ImageViewerSettings extends Equatable {
       slideshowInterval: slideshowInterval ?? this.slideshowInterval,
       slideshowTransitionType:
           slideshowTransitionType ?? this.slideshowTransitionType,
+      slideshowVideoBehavior:
+          slideshowVideoBehavior ?? this.slideshowVideoBehavior,
       videoAudioDefaultState:
           videoAudioDefaultState ?? this.videoAudioDefaultState,
       videoPlayerEngine: videoPlayerEngine ?? this.videoPlayerEngine,
@@ -579,6 +588,7 @@ class ImageViewerSettings extends Equatable {
     'slideshowDirection': slideshowDirection.toData(),
     'slideshowInterval': slideshowInterval,
     'slideshowTransitionType': slideshowTransitionType.toData(),
+    'slideshowVideoBehavior': slideshowVideoBehavior.toData(),
     'videoAudioDefaultState': videoAudioDefaultState.toData(),
     'videoPlayerEngine': videoPlayerEngine.toData(),
     'enableVideoCache': enableVideoCache,
@@ -592,6 +602,7 @@ class ImageViewerSettings extends Equatable {
     slideshowDirection,
     slideshowInterval,
     slideshowTransitionType,
+    slideshowVideoBehavior,
     videoAudioDefaultState,
     videoPlayerEngine,
     enableVideoCache,

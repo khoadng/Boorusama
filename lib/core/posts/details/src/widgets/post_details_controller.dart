@@ -199,6 +199,13 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
     _playback.unregisterPlayer(id);
   }
 
+  Future<void> waitForVideoCompletion(int id) async {
+    final player = _playback.getPlayer(id);
+    if (player == null) return;
+
+    return player.waitForCompletion();
+  }
+
   @override
   void dispose() {
     _playback.dispose();

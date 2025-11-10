@@ -26,6 +26,7 @@ class PostDetailsPageViewController extends ChangeNotifier {
     this.thresholdSizeToExpand = 0.02,
     SlideshowOptions slideshowOptions = const SlideshowOptions(),
     this.viewMode = ViewMode.horizontal,
+    this.onBeforeSlideshowAdvance,
   }) : currentPage = ValueNotifier(initialPage),
        overlay = ValueNotifier(!initialHideOverlay),
        bottomSheet = ValueNotifier(!initialHideOverlay),
@@ -41,6 +42,7 @@ class PostDetailsPageViewController extends ChangeNotifier {
   final bool disableAnimation;
   final ViewMode viewMode;
   final SlideshowOptions _initialSlideshowOptions;
+  final SlideshowAdvanceCallback? onBeforeSlideshowAdvance;
 
   // Use for large screen when details is on the side to prevent spamming
   Timer? _debounceTimer;
@@ -50,8 +52,9 @@ class PostDetailsPageViewController extends ChangeNotifier {
   );
   final _sheetController = DraggableScrollableController();
   late final _slideshowController = SlideshowController(
-    pageController: _pageController,
+    onNavigateToPage: createDefaultSlideshowNavigateCallback(_pageController),
     options: _initialSlideshowOptions,
+    onBeforeAdvance: onBeforeSlideshowAdvance,
   );
 
   final bool Function() checkIfLargeScreen;
@@ -63,6 +66,7 @@ class PostDetailsPageViewController extends ChangeNotifier {
 
   PageController get pageController => _pageController;
   DraggableScrollableController get sheetController => _sheetController;
+  SlideshowController get slideshowController => _slideshowController;
 
   AnimationController? _overlayAnimController;
   AnimationController? _bottomSheetAnimController;
@@ -88,7 +92,6 @@ class PostDetailsPageViewController extends ChangeNotifier {
   final canPull = ValueNotifier(true);
   final pulling = ValueNotifier(false);
   final zoom = ValueNotifier(false);
-  final slideshow = ValueNotifier(false);
   final freestyleMoveOffset = ValueNotifier(Offset.zero);
   final freestyleMoving = ValueNotifier(false);
   final isItemPushed = ValueNotifier(false);
@@ -531,7 +534,6 @@ class PostDetailsPageViewController extends ChangeNotifier {
   }
 
   Future<void> startSlideshow() async {
-    slideshow.value = true;
     hideAllUI();
 
     final isLargeScreen = checkIfLargeScreen();
@@ -552,8 +554,6 @@ class PostDetailsPageViewController extends ChangeNotifier {
   }
 
   void stopSlideshow() {
-    slideshow.value = false;
-
     if (!initialHideOverlay) {
       showAllUI();
     }
@@ -602,7 +602,6 @@ class PostDetailsPageViewController extends ChangeNotifier {
     canPull.dispose();
     pulling.dispose();
     zoom.dispose();
-    slideshow.dispose();
     freestyleMoveOffset.dispose();
     freestyleMoving.dispose();
     isItemPushed.dispose();

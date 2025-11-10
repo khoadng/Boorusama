@@ -370,6 +370,14 @@
       "image_viewer": "Trình xem ảnh",
       "slideshow": "Trình chiếu",
       "slideshow_interval": "Thời gian chuyển ảnh",
+      "slideshow_video_behavior": "Cách trình chiếu xử lý video",
+      "slideshow_video_behavior_explanation": "Thiết lập cách trình chiếu xử lý video trong lúc chuyển slide.",
+      "slideshow_video_behaviors": {
+        "wait_for_completion": "Chờ video phát xong",
+        "wait_for_completion_description": "Chờ video phát xong rồi mới chuyển sang slide tiếp theo",
+        "fixed_interval": "Phát theo thời lượng cố định",
+        "fixed_interval_description": "Chuyển sang slide tiếp theo sau thời lượng cố định, dù video có đang phát hay không"
+      },
       "slideshow_mode": "Chế độ trình chiếu",
       "slideshow_modes": {
         "random": "Ngẫu nhiên",

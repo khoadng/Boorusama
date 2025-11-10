@@ -73,7 +73,7 @@ class SettingsRadioCard extends StatelessWidget {
   }
 }
 
-class SettingsRadioCardEntry extends StatelessWidget {
+class SettingsRadioCardEntry<T> extends StatelessWidget {
   const SettingsRadioCardEntry({
     required this.value,
     required this.groupValue,
@@ -83,20 +83,20 @@ class SettingsRadioCardEntry extends StatelessWidget {
     super.key,
   });
 
-  final String value;
-  final String groupValue;
+  final T value;
+  final T groupValue;
   final String title;
   final String subtitle;
-  final void Function(String? value) onSelected;
+  final void Function(T? value) onSelected;
 
   @override
   Widget build(BuildContext context) {
-    return RadioGroup(
+    return RadioGroup<T>(
       groupValue: groupValue,
       onChanged: (value) {
         if (value != null) onSelected(value);
       },
-      child: RadioListTile(
+      child: RadioListTile<T>(
         controlAffinity: ListTileControlAffinity.trailing,
         contentPadding: EdgeInsets.zero,
         value: value,

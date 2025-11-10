@@ -15,6 +15,7 @@ import '../../../../foundation/display.dart';
 import '../../../../foundation/mobile.dart';
 import '../../../../foundation/platform.dart';
 import '../../../widgets/widgets.dart';
+import '../../slideshow/widgets.dart';
 import 'constants.dart';
 import 'drag_sheet.dart';
 import 'page_nav_button.dart';
@@ -357,16 +358,9 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
           Row(
             children: [
               Expanded(
-                child: ValueListenableBuilder(
-                  valueListenable: _controller.slideshow,
-                  builder: (context, slideshow, child) => GestureDetector(
-                    behavior: slideshow ? HitTestBehavior.opaque : null,
-                    onTap: () => _controller.stopSlideshow(),
-                    child: IgnorePointer(
-                      ignoring: slideshow,
-                      child: child,
-                    ),
-                  ),
+                child: SlideshowOverlay(
+                  controller: _controller.slideshowController,
+                  onStop: _controller.stopSlideshow,
                   child: switch (widget.mainContentBuilder) {
                     null => _buildMain(),
                     final builder => builder(

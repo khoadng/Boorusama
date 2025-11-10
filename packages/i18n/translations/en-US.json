@@ -370,6 +370,14 @@
       "image_viewer": "Image viewer",
       "slideshow": "Slideshow",
       "slideshow_interval": "Slideshow interval",
+      "slideshow_video_behavior": "Slideshow video behavior",
+      "slideshow_video_behavior_explanation": "Determines how the slideshow handles videos during transitions.",
+      "slideshow_video_behaviors": {
+        "wait_for_completion": "Wait for completion",
+        "wait_for_completion_description": "Wait for videos to finish before advancing to next slide",
+        "fixed_interval": "Fixed interval",
+        "fixed_interval_description": "Advance after fixed interval, even if video is still playing"
+      },
       "slideshow_mode": "Slideshow mode",
       "slideshow_modes": {
         "random": "Random",

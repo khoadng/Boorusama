@@ -41,6 +41,9 @@ class _MoebooruFavoritesLoaderState
 
   var _fetchFavSlideShowSkipped = false;
 
+  bool get _slideshowActive =>
+      _pageViewController.slideshowController.isRunning;
+
   @override
   void initState() {
     super.initState();
@@ -49,7 +52,9 @@ class _MoebooruFavoritesLoaderState
     });
 
     data.controller.currentPage.addListener(_onPageChanged);
-    _pageViewController.slideshow.addListener(_onSlideShowChanged);
+    _pageViewController.slideshowController.state.addListener(
+      _onSlideShowChanged,
+    );
   }
 
   @override
@@ -67,12 +72,14 @@ class _MoebooruFavoritesLoaderState
     if (oldWidget.controller != widget.controller) {
       _cleanUpPageViewController();
       _pageViewController = widget.controller;
-      _pageViewController.slideshow.addListener(_onSlideShowChanged);
+      _pageViewController.slideshowController.state.addListener(
+        _onSlideShowChanged,
+      );
     }
   }
 
   void _onSlideShowChanged() {
-    if (!_pageViewController.slideshow.value) {
+    if (!_slideshowActive) {
       if (_fetchFavSlideShowSkipped) {
         _fetchFavSlideShowSkipped = false;
         _loadFavoriteUsers(posts[controller.currentPage.value].id);
@@ -93,7 +100,7 @@ class _MoebooruFavoritesLoaderState
 
     if (booru.supportsFavorite(config.url) && loginDetails.hasLogin()) {
       // Prevent loading favorites if the slideshow is active
-      if (_pageViewController.slideshow.value) {
+      if (_slideshowActive) {
         _fetchFavSlideShowSkipped = true;
         return;
       }
@@ -105,7 +112,9 @@ class _MoebooruFavoritesLoaderState
   }
 
   void _cleanUpPageViewController() {
-    _pageViewController.slideshow.removeListener(_onSlideShowChanged);
+    _pageViewController.slideshowController.state.removeListener(
+      _onSlideShowChanged,
+    );
   }
 
   @override
