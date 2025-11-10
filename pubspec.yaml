@@ -60,7 +60,6 @@ dependencies:
     git:
       url: https://github.com/khoadng/flutter-context-menu.git
       ref: 3e46518ea7823aebae8838754c21353bd2d44189
-  cookie_jar: ^4.0.8
   cross_file: ^0.3.4+2
   crypto: ^3.0.5
   device_info_plus: ^12.1.0

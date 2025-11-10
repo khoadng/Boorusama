@@ -8,6 +8,7 @@ environment:
 resolution: workspace
 
 dependencies:
+  cookie_jar: ^4.0.8
   path: ^1.9.0
 
 dev_dependencies:

@@ -1,7 +1,6 @@
 // Package imports:
 import 'package:cookie_jar/cookie_jar.dart';
 
-/// Centralized cookie utilities for parsing, formatting, and manipulating cookies
 class CookieUtils {
   CookieUtils._();
 

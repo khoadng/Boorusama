@@ -1,9 +1,9 @@
 // Package imports:
 import 'package:booru_clients/shimmie2.dart';
+import 'package:coreutils/coreutils.dart';
 
 // Project imports:
 import '../../../core/configs/config/types.dart';
-import '../../../core/http/cookies/types.dart';
 
 class Shimmie2LoginDetails
     with UnrestrictedBooruLoginDetails

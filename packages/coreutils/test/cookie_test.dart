@@ -2,7 +2,7 @@
 import 'package:test/test.dart';
 
 // Project imports:
-import 'package:boorusama/core/http/cookies/types.dart';
+import 'package:coreutils/src/cookie.dart';
 
 void main() {
   group('CookieUtils', () {

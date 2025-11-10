@@ -1,5 +1,4 @@
 // Package imports:
-import 'package:cookie_jar/cookie_jar.dart';
 import 'package:coreutils/coreutils.dart';
 
 // Project imports:
@@ -47,9 +46,7 @@ class HttpProtectionHandler {
           return existingHeaders;
         }
 
-        headers['cookie'] = cookies
-            .map((c) => '${c.name}=${c.value}')
-            .join('; ');
+        headers['cookie'] = cookies.cookieString;
         headers['user-agent'] = userAgent;
       }
 

@@ -299,7 +299,7 @@ packages:
     source: hosted
     version: "3.1.2"
   cookie_jar:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: cookie_jar
       sha256: a6ac027d3ed6ed756bfce8f3ff60cb479e266f3b0fdabd6242b804b6765e52de

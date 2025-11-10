@@ -2,7 +2,6 @@
 import 'dart:io';
 
 // Package imports:
-import 'package:cookie_jar/cookie_jar.dart';
 import 'package:coreutils/coreutils.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

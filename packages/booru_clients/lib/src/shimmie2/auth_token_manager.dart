@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:coreutils/coreutils.dart';
 import 'package:dio/dio.dart';
 
 import 'types/types.dart';
@@ -63,7 +64,7 @@ final class AuthTokenManager {
 
   String _getUsernameFromCookieOrParam() {
     if (cookie case final c?) {
-      final cookieMap = _parseCookieHeader(c);
+      final cookieMap = CookieUtils.parseCookieHeader(c);
       if (cookieMap[Shimmie2Cookies.username] case final cookieUsername?) {
         return cookieUsername;
       }
@@ -72,21 +73,4 @@ final class AuthTokenManager {
   }
 
   void invalidate() => _cachedToken = null;
-}
-
-Map<String, String> _parseCookieHeader(String cookieHeader) {
-  final cookies = <String, String>{};
-
-  for (final cookie in cookieHeader.split(';')) {
-    final parts = cookie.trim().split('=');
-    if (parts.length >= 2) {
-      final key = parts[0].trim();
-      final value = parts.sublist(1).join('=').trim();
-      if (key.isNotEmpty) {
-        cookies[key] = value;
-      }
-    }
-  }
-
-  return cookies;
 }

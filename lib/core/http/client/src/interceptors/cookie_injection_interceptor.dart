@@ -1,8 +1,6 @@
 // Package imports:
+import 'package:coreutils/coreutils.dart';
 import 'package:dio/dio.dart';
-
-// Project imports:
-import '../../../cookies/types.dart';
 
 class CookieInjectionInterceptor extends Interceptor {
   const CookieInjectionInterceptor({

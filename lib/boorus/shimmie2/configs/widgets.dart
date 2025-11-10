@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:booru_clients/shimmie2.dart';
-import 'package:cookie_jar/cookie_jar.dart';
+import 'package:coreutils/coreutils.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -14,7 +14,6 @@ import '../../../core/configs/config/types.dart';
 import '../../../core/configs/create/create.dart';
 import '../../../core/configs/create/providers.dart';
 import '../../../core/configs/create/widgets.dart';
-import '../../../core/http/cookies/types.dart';
 import '../../../core/widgets/booru_version_chip.dart';
 import '../../../foundation/html.dart';
 import '../../../foundation/path.dart';
