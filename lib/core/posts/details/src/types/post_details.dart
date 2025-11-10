@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 
 // Project imports:
 import '../../../../settings/types.dart';
-import '../../../details_pageview/widgets.dart';
 import '../../../post/types.dart';
+import '../../../slideshow/types.dart';
 import '../widgets/post_details_controller.dart';
 
 class PostDetailsData<T extends Post> {

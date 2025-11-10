@@ -4,15 +4,12 @@ import 'dart:async';
 // Flutter imports:
 import 'package:flutter/material.dart';
 
-// Package imports:
-import 'package:equatable/equatable.dart';
-
 // Project imports:
-import 'types/slideshow_direction.dart';
+import 'slideshow_direction.dart';
 
 const kDefaultAutoSlideDuration = Duration(seconds: 5);
 
-class SlideshowOptions extends Equatable {
+class SlideshowOptions {
   const SlideshowOptions({
     this.duration = const Duration(seconds: 5),
     this.direction = SlideshowDirection.forward,
@@ -22,16 +19,23 @@ class SlideshowOptions extends Equatable {
   final Duration duration;
   final SlideshowDirection direction;
   final bool skipTransition;
-
-  @override
-  List<Object?> get props => [duration, direction, skipTransition];
 }
 
-mixin AutomaticSlideMixin on ChangeNotifier {
-  PageController get pageController;
-  Timer? timer;
+class SlideshowController {
+  SlideshowController({
+    required this.pageController,
+    this.options = const SlideshowOptions(),
+  });
+
+  final PageController pageController;
+  SlideshowOptions options;
+
+  Timer? _timer;
   var _currentPage = 0;
   var _isSliding = false;
+  List<int>? _currentRandomPages;
+
+  bool get isSliding => _isSliding;
 
   bool _shouldSkipAnimation(bool value, Duration duration) {
     // less than 1 second, skip animation
@@ -55,18 +59,15 @@ mixin AutomaticSlideMixin on ChangeNotifier {
     }
   }
 
-  List<int>? _currentRandomPages;
-
   List<int> _generateRandomPages(int end) {
     final pages = List.generate(end, (index) => index)..shuffle();
     return pages;
   }
 
-  void startAutoSlide(
-    int start,
-    int end, {
-    SlideshowOptions options = const SlideshowOptions(),
-  }) {
+  void start(
+    int startPage,
+    int totalPages,
+  ) {
     if (_isSliding) return;
 
     final duration = options.duration;
@@ -76,14 +77,14 @@ mixin AutomaticSlideMixin on ChangeNotifier {
     final skip = _shouldSkipAnimation(skipAnimation, duration);
 
     _isSliding = true;
-    timer?.cancel();
+    _timer?.cancel();
     _currentRandomPages = null;
-    _currentPage = start;
+    _currentPage = startPage;
 
-    timer = Timer.periodic(
+    _timer = Timer.periodic(
       duration,
       (timer) {
-        _currentPage = _calculateNextPage(direction, end);
+        _currentPage = _calculateNextPage(direction, totalPages);
 
         if (_isSliding) {
           if (skip) {
@@ -105,19 +106,17 @@ mixin AutomaticSlideMixin on ChangeNotifier {
     );
   }
 
-  void stopAutoSlide() {
+  void stop() {
     _isSliding = false;
     _currentRandomPages = null;
-    timer?.cancel();
+    _timer?.cancel();
   }
 
-  void resumeAutoSlide() {
+  void resume() {
     _isSliding = true;
   }
 
-  @override
   void dispose() {
-    timer?.cancel();
-    super.dispose();
+    _timer?.cancel();
   }
 }

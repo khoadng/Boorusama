@@ -7,7 +7,7 @@ import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../posts/details/types.dart';
-import '../../../../posts/details_pageview/types.dart';
+import '../../../../posts/slideshow/types.dart';
 import '../../../../videos/engines/providers.dart';
 import '../../../../videos/engines/types.dart';
 import '../../../../videos/player/types.dart';

@@ -10,12 +10,11 @@ import 'package:flutter/material.dart';
 // Project imports:
 import '../../../../foundation/mobile.dart';
 import '../../../widgets/widgets.dart';
-import 'auto_slide_mixin.dart';
+import '../../slideshow/types.dart';
 import 'constants.dart';
 import 'post_details_page_view.dart';
 
-class PostDetailsPageViewController extends ChangeNotifier
-    with AutomaticSlideMixin {
+class PostDetailsPageViewController extends ChangeNotifier {
   PostDetailsPageViewController({
     required this.initialPage,
     required this.totalPage,
@@ -28,11 +27,11 @@ class PostDetailsPageViewController extends ChangeNotifier
     SlideshowOptions slideshowOptions = const SlideshowOptions(),
     this.viewMode = ViewMode.horizontal,
   }) : currentPage = ValueNotifier(initialPage),
-       _slideshowOptions = slideshowOptions,
        overlay = ValueNotifier(!initialHideOverlay),
        bottomSheet = ValueNotifier(!initialHideOverlay),
        hoverToControlOverlay = ValueNotifier(hoverToControlOverlay),
-       sheetState = ValueNotifier(SheetState.collapsed);
+       sheetState = ValueNotifier(SheetState.collapsed),
+       _initialSlideshowOptions = slideshowOptions;
 
   final int initialPage;
   final int totalPage;
@@ -41,8 +40,7 @@ class PostDetailsPageViewController extends ChangeNotifier
   final double thresholdSizeToExpand;
   final bool disableAnimation;
   final ViewMode viewMode;
-
-  late SlideshowOptions _slideshowOptions;
+  final SlideshowOptions _initialSlideshowOptions;
 
   // Use for large screen when details is on the side to prevent spamming
   Timer? _debounceTimer;
@@ -51,6 +49,10 @@ class PostDetailsPageViewController extends ChangeNotifier
     initialPage: initialPage,
   );
   final _sheetController = DraggableScrollableController();
+  late final _slideshowController = SlideshowController(
+    pageController: _pageController,
+    options: _initialSlideshowOptions,
+  );
 
   final bool Function() checkIfLargeScreen;
 
@@ -59,18 +61,15 @@ class PostDetailsPageViewController extends ChangeNotifier
   bool get useVerticalLayout =>
       viewMode == ViewMode.vertical && !checkIfLargeScreen();
 
-  @override
   PageController get pageController => _pageController;
-
   DraggableScrollableController get sheetController => _sheetController;
 
   AnimationController? _overlayAnimController;
   AnimationController? _bottomSheetAnimController;
 
-  // ignore: unnecessary_getters_setters
-  SlideshowOptions get slideshowOptions => _slideshowOptions;
+  SlideshowOptions get slideshowOptions => _slideshowController.options;
   set slideshowOptions(SlideshowOptions value) {
-    _slideshowOptions = value;
+    _slideshowController.options = value;
   }
 
   late final ValueNotifier<SheetState> sheetState;
@@ -546,10 +545,9 @@ class PostDetailsPageViewController extends ChangeNotifier
       }
     }
 
-    startAutoSlide(
+    _slideshowController.start(
       page,
       totalPage,
-      options: _slideshowOptions,
     );
   }
 
@@ -560,7 +558,7 @@ class PostDetailsPageViewController extends ChangeNotifier
       showAllUI();
     }
 
-    stopAutoSlide();
+    _slideshowController.stop();
   }
 
   void _cancelCooldown() {
@@ -585,7 +583,7 @@ class PostDetailsPageViewController extends ChangeNotifier
 
   @override
   void dispose() {
-    stopAutoSlide();
+    _slideshowController.dispose();
     _cancelCooldown();
 
     _pageController.dispose();
