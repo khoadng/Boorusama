@@ -6,10 +6,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../router.dart';
-import 'background_downloader_scope.dart';
+import '../data/background_downloader_scope.dart';
 
-class BackgroundDownloaderBuilder extends ConsumerWidget {
-  const BackgroundDownloaderBuilder({
+class DownloaderScope extends ConsumerWidget {
+  const DownloaderScope({
     required this.child,
     super.key,
   });

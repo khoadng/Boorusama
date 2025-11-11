@@ -14,7 +14,7 @@ import '../../../blacklists/providers.dart';
 import '../../../configs/config/providers.dart';
 import '../../../configs/search/types.dart';
 import '../../../downloads/configs/widgets/download_folder_selector_section.dart';
-import '../../../downloads/downloader/types.dart';
+import '../../../downloads/downloader/types.dart' as d;
 import '../../../router.dart';
 import '../../../search/search/routes.dart';
 import '../../../search/selected_tags/types.dart' hide queryAsList;
@@ -287,8 +287,8 @@ class _CreateDownloadOptionsRawSheetState
                   padding: const EdgeInsets.symmetric(horizontal: 4),
                   title: Text(context.t.settings.download.quality),
                   selectedOption:
-                      options.quality ?? DownloadQuality.original.name,
-                  items: DownloadQuality.values.map((e) => e.name).toList(),
+                      options.quality ?? d.DownloadQuality.original.name,
+                  items: d.DownloadQuality.values.map((e) => e.name).toList(),
                   onChanged: (value) {
                     notifier.setQuality(value);
                   },

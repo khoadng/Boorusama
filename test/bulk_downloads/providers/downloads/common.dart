@@ -28,7 +28,7 @@ import 'package:boorusama/core/configs/manage/providers.dart';
 import 'package:boorusama/core/ddos/handler/providers.dart';
 import 'package:boorusama/core/download_manager/providers.dart';
 import 'package:boorusama/core/downloads/downloader/providers.dart';
-import 'package:boorusama/core/downloads/downloader/types.dart';
+import 'package:boorusama/core/downloads/downloader/types.dart' as d;
 import 'package:boorusama/core/downloads/filename/providers.dart';
 import 'package:boorusama/core/downloads/filename/types.dart';
 import 'package:boorusama/core/downloads/urls/providers.dart';
@@ -244,34 +244,14 @@ class DummyBulkNotification implements BulkDownloadNotifications {
   Stream<String> get tapStream => const Stream.empty();
 }
 
-class DummyDownloadService implements DownloadService {
+class DummyDownloadService implements d.DownloadService {
   @override
-  DownloadTaskInfoOrError download({
-    required String url,
-    required String filename,
-    DownloaderMetadata? metadata,
-    bool? skipIfExists,
-    Map<String, String>? headers,
-  }) {
-    return TaskEither.right(
-      DownloadTaskInfo(
+  Future<d.DownloadResult> download(d.DownloadOptions options) async {
+    return d.DownloadSuccess(
+      d.DownloadTaskInfo(
         path: 'path',
-        id: url,
+        id: options.url,
       ),
-    );
-  }
-
-  @override
-  DownloadTaskInfoOrError downloadCustomLocation({
-    required String url,
-    required String path,
-    required String filename,
-    DownloaderMetadata? metadata,
-    bool? skipIfExists,
-    Map<String, String>? headers,
-  }) {
-    return TaskEither.right(
-      DownloadTaskInfo(path: 'path', id: url),
     );
   }
 

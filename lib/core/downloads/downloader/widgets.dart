@@ -1,1 +1,1 @@
-export 'src/widgets/background_downloader_builder.dart';
+export 'src/widgets/downloader_scope.dart';

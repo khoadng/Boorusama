@@ -262,21 +262,21 @@ class BookmarkNotifier extends AsyncNotifier<BookmarkState> {
           downloadUrl: bookmark.originalUrl,
         );
 
-        return downloader
-            .downloadWithSettings(
-              settings,
-              config: download,
-              url: bookmark.originalUrl,
-              metadata: DownloaderMetadata(
-                thumbnailUrl: bookmark.thumbnailUrl,
-                fileSize: null,
-                siteUrl: bookmark.sourceUrl,
-                group: null,
-              ),
-              filename: fileName,
-              headers: headers,
-            )
-            .run();
+        return downloader.download(
+          DownloadOptions.fromSettings(
+            settings,
+            config: download,
+            url: bookmark.originalUrl,
+            metadata: DownloaderMetadata(
+              thumbnailUrl: bookmark.thumbnailUrl,
+              fileSize: null,
+              siteUrl: bookmark.sourceUrl,
+              group: null,
+            ),
+            filename: fileName,
+            headers: headers,
+          ),
+        );
       },
     ).toList();
 

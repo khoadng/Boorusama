@@ -13,8 +13,7 @@ import '../../../../ddos/solver/types.dart';
 import '../../../notifications/notification.dart';
 import '../../../path/types.dart';
 import '../types/download.dart';
-import '../types/metadata.dart';
-import 'file_downloader_ex.dart';
+import '../providers/file_downloader_ex.dart';
 
 class BackgroundDownloader implements DownloadService {
   const BackgroundDownloader({
@@ -26,111 +25,29 @@ class BackgroundDownloader implements DownloadService {
   final DownloadNotifications? downloadNotifications;
 
   @override
-  DownloadTaskInfoOrError download({
-    required String url,
-    required String filename,
-    DownloaderMetadata? metadata,
-    int? fileSize,
-    bool? skipIfExists,
-    Map<String, String>? headers,
-  }) => TaskEither.Do(
-    ($) async {
-      final downloadDirResult = await tryGetDownloadDirectory();
-      final downloadDir = switch (downloadDirResult) {
-        DownloadDirectorySuccess(:final directory) => directory,
-        DownloadDirectoryFailure() => null,
-      };
-      final isVideo = metadata?.isVideo ?? false;
+  Future<DownloadResult> download(DownloadOptions options) async {
+    final (targetDir, baseDirectory) = switch (options.path) {
+      // User specified a custom path, use it directly
+      final String path when path.isNotEmpty => (path, BaseDirectory.root),
+      // No custom path, try to get system download directory
+      _ => switch (await tryGetDownloadDirectory()) {
+        DownloadDirectorySuccess(:final directory) => (
+          directory.path,
+          BaseDirectory.root,
+        ),
+        DownloadDirectoryFailure() => (
+          null,
+          BaseDirectory.applicationDocuments,
+        ),
+      },
+    };
 
-      // Check if this is a video and if we have it in cache
-      if (videoCacheManager case final vcm?
-          when isVideo && downloadDir != null) {
-        final cachedPath = await vcm.getCachedVideoPath(url);
-        if (cachedPath case final cp?) {
-          try {
-            return _copyCachedContentToTarget(
-              cp,
-              downloadDir.path,
-              filename,
-              skipIfExists,
-            );
-          } catch (e) {
-            // Fall back to normal download if cache copy fails
-          }
-        }
-      }
-
-      final task = DownloadTask(
-        url: url,
-        filename: filename,
-        allowPause: true,
-        retries: 1,
-        baseDirectory: downloadDir != null
-            ? BaseDirectory.root
-            : BaseDirectory.applicationDocuments,
-        directory: downloadDir != null ? downloadDir.path : '',
-        updates: Updates.statusAndProgress,
-        metaData: metadata?.toJsonString() ?? '',
-        headers: headers,
-        group: metadata?.group ?? FileDownloader.defaultGroup,
-      );
-
-      return FileDownloader().enqueueIfNeeded(
-        task,
-        skipIfExists: skipIfExists,
-      );
-    },
-  );
-
-  @override
-  DownloadTaskInfoOrError downloadCustomLocation({
-    required String url,
-    required String path,
-    required String filename,
-    DownloaderMetadata? metadata,
-    bool? skipIfExists,
-    Map<String, String>? headers,
-  }) => TaskEither.Do(
-    ($) async {
-      final isVideo = metadata?.isVideo ?? false;
-
-      // Check if this is a video and if we have it in cache
-      if (videoCacheManager case final vcm? when isVideo) {
-        final cachedPath = await vcm.getCachedVideoPath(url);
-        if (cachedPath case final cp?) {
-          try {
-            return _copyCachedContentToTarget(
-              cp,
-              path,
-              filename,
-              skipIfExists,
-            );
-          } catch (e) {
-            // Fall back to normal download if cache copy fails
-          }
-        }
-      }
-
-      // Proceed with normal download
-      final task = DownloadTask(
-        url: url,
-        filename: filename,
-        baseDirectory: BaseDirectory.root,
-        directory: path,
-        allowPause: true,
-        retries: 1,
-        updates: Updates.statusAndProgress,
-        metaData: metadata?.toJsonString() ?? '',
-        headers: headers,
-        group: metadata?.group ?? FileDownloader.defaultGroup,
-      );
-
-      return FileDownloader().enqueueIfNeeded(
-        task,
-        skipIfExists: skipIfExists,
-      );
-    },
-  );
+    return _executeDownload(
+      targetDir: targetDir,
+      baseDirectory: baseDirectory,
+      options: options,
+    );
+  }
 
   @override
   Future<bool> cancelAll(String group) {
@@ -145,6 +62,85 @@ class BackgroundDownloader implements DownloadService {
   @override
   Future<void> resumeAll(String group) {
     return FileDownloader().resumeAll(group: group);
+  }
+
+  Future<DownloadResult> _executeDownload({
+    required String? targetDir,
+    required BaseDirectory baseDirectory,
+    required DownloadOptions options,
+  }) async {
+    try {
+      final cacheResult = await _tryDownloadFromCache(
+        targetDir: targetDir,
+        options: options,
+      );
+
+      if (cacheResult case final result?) {
+        return result;
+      }
+
+      final task = DownloadTask(
+        url: options.url,
+        filename: options.filename,
+        allowPause: true,
+        retries: 1,
+        baseDirectory: baseDirectory,
+        directory: targetDir ?? '',
+        updates: Updates.statusAndProgress,
+        metaData: options.metadata?.toJsonString() ?? '',
+        headers: options.headers,
+        group: options.metadata?.group ?? FileDownloader.defaultGroup,
+      );
+
+      final info = await FileDownloader().enqueueIfNeeded(
+        task,
+        skipIfExists: options.skipIfExists,
+      );
+
+      return DownloadSuccess(info);
+    } on FileSystemException catch (e) {
+      return DownloadFailure(
+        FileSystemDownloadError(
+          savedPath: const None(),
+          fileName: options.filename,
+          error: e,
+        ),
+      );
+    } catch (e) {
+      return DownloadFailure(
+        GenericDownloadError(
+          savedPath: const None(),
+          fileName: options.filename,
+          message: e.toString(),
+        ),
+      );
+    }
+  }
+
+  Future<DownloadResult?> _tryDownloadFromCache({
+    required String? targetDir,
+    required DownloadOptions options,
+  }) async {
+    final isVideo = options.metadata?.isVideo ?? false;
+
+    if (videoCacheManager case final vcm? when isVideo && targetDir != null) {
+      final cachedPath = await vcm.getCachedVideoPath(options.url);
+      if (cachedPath case final cp?) {
+        try {
+          final info = await _copyCachedContentToTarget(
+            cp,
+            targetDir,
+            options.filename,
+            options.skipIfExists,
+          );
+          return DownloadSuccess(info);
+        } catch (e) {
+          // Fall back to normal download if cache copy fails
+        }
+      }
+    }
+
+    return null;
   }
 
   Future<DownloadTaskInfo> _copyCachedContentToTarget(

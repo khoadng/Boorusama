@@ -16,8 +16,7 @@ import '../../../../../foundation/platform.dart';
 import '../../../../configs/config/providers.dart';
 import '../../../../ddos/handler/providers.dart';
 import '../../../../download_manager/providers.dart';
-import '../providers/background_downloader.dart';
-import '../types/download.dart';
+import 'background_downloader.dart';
 
 class BackgroundDownloaderScope extends ConsumerStatefulWidget {
   const BackgroundDownloaderScope({
@@ -161,5 +160,15 @@ class _BackgroundDownloaderScopeState
   @override
   Widget build(BuildContext context) {
     return widget.child;
+  }
+}
+
+String removeFileExtension(String url) {
+  final lastDotIndex = url.lastIndexOf('.');
+  if (lastDotIndex != -1) {
+    return url.substring(0, lastDotIndex);
+  } else {
+    // If there is no '.', return the original URL
+    return url;
   }
 }

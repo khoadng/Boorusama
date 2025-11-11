@@ -8,8 +8,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../configs/config/providers.dart';
 import '../../../../posts/post/types.dart';
 import '../../../filename/providers.dart';
-import '../../providers.dart';
 import '../types/download.dart';
+import 'download_notifier.dart';
 
 extension PostDownloadX on WidgetRef {
   Future<DownloadTaskInfo?> download(Post post) {

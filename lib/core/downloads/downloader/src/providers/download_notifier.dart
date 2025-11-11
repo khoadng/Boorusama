@@ -25,7 +25,7 @@ import '../../../urls/providers.dart';
 import '../../../urls/types.dart';
 import '../types/download.dart';
 import '../types/metadata.dart';
-import 'service_provider.dart';
+import '../data/providers.dart';
 
 final downloadNotifierProvider =
     NotifierProvider.family<DownloadNotifier, void, DownloadNotifierParams>(
@@ -222,32 +222,32 @@ Future<DownloadTaskInfo?> _download(
 
     final fileName = await fileNameFuture;
 
-    final result = await service
-        .downloadWithSettings(
-          settings,
-          config: downloadConfig,
-          metadata: DownloaderMetadata(
-            thumbnailUrl: downloadable.thumbnailImageUrl,
-            fileSize: downloadable.fileSize,
-            siteUrl: PostSource.from(downloadable.thumbnailImageUrl).url,
-            group: group,
-            isVideo: downloadable.isVideo,
-          ),
-          url: urlData.url,
-          filename: fileName,
-          headers: {
-            ...headers,
-            if (urlData.cookie != null)
-              AppHttpHeaders.cookieHeader: urlData.cookie!,
-          },
-          path: downloadPath,
-        )
-        .run();
-
-    return result.fold(
-      (e) => null,
-      (info) => info,
+    final result = await service.download(
+      DownloadOptions.fromSettings(
+        settings,
+        config: downloadConfig,
+        metadata: DownloaderMetadata(
+          thumbnailUrl: downloadable.thumbnailImageUrl,
+          fileSize: downloadable.fileSize,
+          siteUrl: PostSource.from(downloadable.thumbnailImageUrl).url,
+          group: group,
+          isVideo: downloadable.isVideo,
+        ),
+        url: urlData.url,
+        filename: fileName,
+        headers: {
+          ...headers,
+          if (urlData.cookie != null)
+            AppHttpHeaders.cookieHeader: urlData.cookie!,
+        },
+        customPath: downloadPath,
+      ),
     );
+
+    return switch (result) {
+      DownloadSuccess(:final info) => info,
+      DownloadFailure() => null,
+    };
   }
 
   await notificationPermManager.requestIfNotGranted();
