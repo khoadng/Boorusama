@@ -98,16 +98,16 @@ void main() {
       }
     });
 
-    group('invalid paths', () {
+    group('default paths', () {
       final cases = [
         (path: null, description: 'null'),
         (path: '', description: 'empty string'),
       ];
 
       for (final c in cases) {
-        test('rejects ${c.description}', () {
+        test('treats ${c.description} as default path', () {
           final info = PathInfo.from(c.path);
-          expect(info, isA<InvalidPath>());
+          expect(info, isA<DefaultPath>());
         });
       }
     });

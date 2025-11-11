@@ -14,7 +14,7 @@ sealed class PathInfo {
     String? path, {
     TargetPlatform? platform,
   }) {
-    if (path == null || path.isEmpty) return InvalidPath(path ?? '');
+    if (path == null || path.isEmpty) return const DefaultPath();
 
     final targetPlatform = platform ?? defaultTargetPlatform;
 
@@ -135,6 +135,10 @@ final class IOSPath extends PathInfo {
 
 final class DesktopPath extends PathInfo {
   const DesktopPath(super.path);
+}
+
+final class DefaultPath extends PathInfo {
+  const DefaultPath() : super('');
 }
 
 final class InvalidPath extends PathInfo {
