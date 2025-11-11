@@ -23,9 +23,9 @@ import '../../../../settings/types.dart';
 import '../../../filename/types.dart';
 import '../../../urls/providers.dart';
 import '../../../urls/types.dart';
+import '../data/providers.dart';
 import '../types/download.dart';
 import '../types/metadata.dart';
-import '../data/providers.dart';
 
 final downloadNotifierProvider =
     NotifierProvider.family<DownloadNotifier, void, DownloadNotifierParams>(

@@ -4,7 +4,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:background_downloader/background_downloader.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 import 'package:i18n/i18n.dart';
@@ -16,6 +15,7 @@ import 'package:share_plus/share_plus.dart';
 // Project imports:
 import '../../../../foundation/platform.dart';
 import '../../../../foundation/url_launcher.dart';
+import '../../../downloads/background/types.dart';
 import '../../../downloads/configs/widgets.dart';
 import '../../../downloads/downloader/types.dart';
 import '../../../themes/theme/types.dart';

@@ -9,11 +9,11 @@ import 'package:foundation/foundation.dart';
 import 'package:path/path.dart';
 
 // Project imports:
-import '../../../../ddos/solver/types.dart';
-import '../../../notifications/notification.dart';
-import '../../../path/types.dart';
-import '../types/download.dart';
-import '../providers/file_downloader_ex.dart';
+import '../../ddos/solver/types.dart';
+import '../downloader/types.dart';
+import '../path/types.dart';
+import 'file_downloader_ex.dart';
+import 'notification.dart';
 
 class BackgroundDownloader implements DownloadService {
   const BackgroundDownloader({

@@ -10,13 +10,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gal/gal.dart';
 
 // Project imports:
-import '../../../../../foundation/media_scanner.dart';
-import '../../../../../foundation/path.dart' as path;
-import '../../../../../foundation/platform.dart';
-import '../../../../configs/config/providers.dart';
-import '../../../../ddos/handler/providers.dart';
-import '../../../../download_manager/providers.dart';
-import 'background_downloader.dart';
+import '../../../foundation/media_scanner.dart';
+import '../../../foundation/path.dart' as path;
+import '../../../foundation/platform.dart';
+import '../../configs/config/providers.dart';
+import '../../ddos/handler/providers.dart';
+import '../../download_manager/providers.dart';
+import 'downloader.dart';
 
 class BackgroundDownloaderScope extends ConsumerStatefulWidget {
   const BackgroundDownloaderScope({

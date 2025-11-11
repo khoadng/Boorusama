@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../router.dart';
-import '../data/background_downloader_scope.dart';
+import '../../../background/widgets.dart';
 
 class DownloaderScope extends ConsumerWidget {
   const DownloaderScope({
