@@ -9,6 +9,7 @@ import 'package:foundation/foundation.dart';
 import 'package:path/path.dart';
 
 // Project imports:
+import '../../../foundation/loggers.dart';
 import '../../ddos/solver/types.dart';
 import '../downloader/types.dart';
 import '../path/types.dart';
@@ -19,28 +20,66 @@ class BackgroundDownloader implements DownloadService {
   const BackgroundDownloader({
     this.videoCacheManager,
     this.downloadNotifications,
+    this.androidSdkInt,
+    this.logger,
   });
 
   final VideoCacheManager? videoCacheManager;
   final DownloadNotifications? downloadNotifications;
+  final int? androidSdkInt;
+  final Logger? logger;
 
   @override
   Future<DownloadResult> download(DownloadOptions options) async {
-    final (targetDir, baseDirectory) = switch (options.path) {
-      // User specified a custom path, use it directly
-      final String path when path.isNotEmpty => (path, BaseDirectory.root),
-      // No custom path, try to get system download directory
-      _ => switch (await tryGetDownloadDirectory()) {
-        DownloadDirectorySuccess(:final directory) => (
-          directory.path,
-          BaseDirectory.root,
-        ),
-        DownloadDirectoryFailure() => (
+    final pathInfo = PathInfo.from(options.path);
+
+    final (targetDir, baseDirectory, error) = switch (pathInfo) {
+      // Valid Android paths with public directory
+      AndroidInternalStorage(:final publicDirectory?, :final path) ||
+      AndroidSdCardStorage(
+        :final publicDirectory?,
+        :final path,
+      ) => (path, BaseDirectory.root, null),
+
+      // Android paths without public directory - check scoped storage
+      final AndroidPathInfo pathInfo
+          when pathInfo.requiresPublicDirectory(androidSdkInt) =>
+        (
           null,
-          BaseDirectory.applicationDocuments,
+          BaseDirectory.root,
+          _createScopedStorageError(options.filename, pathInfo.path),
         ),
-      },
+
+      // Android paths without public directory - pre-scoped storage
+      AndroidInternalStorage(:final path) ||
+      AndroidSdCardStorage(:final path) ||
+      AndroidOtherStorage(:final path) => (path, BaseDirectory.root, null),
+
+      // iOS/Desktop - allow custom paths
+      IOSPath(:final path) ||
+      DesktopPath(:final path) => (path, BaseDirectory.root, null),
+
+      // Invalid cases - return errors
+      InvalidPath(:final path) => (
+        null,
+        BaseDirectory.root,
+        _createInvalidPathError(options.filename, path),
+      ),
+
+      UnsupportedPlatform(:final path) => (
+        null,
+        BaseDirectory.root,
+        _createUnsupportedPlatformError(options.filename, path),
+      ),
+
+      // Default path - use system default
+      DefaultPath() => await _getDefaultDirectory(),
     };
+
+    // Fail fast if validation error
+    if (error != null) {
+      return DownloadFailure(error);
+    }
 
     return _executeDownload(
       targetDir: targetDir,
@@ -92,6 +131,10 @@ class BackgroundDownloader implements DownloadService {
         group: options.metadata?.group ?? FileDownloader.defaultGroup,
       );
 
+      _log(
+        'Starting download: ${options.url} to $targetDir/${options.filename}',
+      );
+
       final info = await FileDownloader().enqueueIfNeeded(
         task,
         skipIfExists: options.skipIfExists,
@@ -133,6 +176,9 @@ class BackgroundDownloader implements DownloadService {
             options.filename,
             options.skipIfExists,
           );
+          _log(
+            'Downloaded from video cache: ${options.url} to $targetDir/${options.filename}',
+          );
           return DownloadSuccess(info);
         } catch (e) {
           // Fall back to normal download if cache copy fails
@@ -141,6 +187,47 @@ class BackgroundDownloader implements DownloadService {
     }
 
     return null;
+  }
+
+  Future<(String?, BaseDirectory, DownloadError?)>
+  _getDefaultDirectory() async {
+    return switch (await tryGetDownloadDirectory()) {
+      DownloadDirectorySuccess(:final directory) => (
+        directory.path,
+        BaseDirectory.root,
+        null,
+      ),
+      DownloadDirectoryFailure() => (
+        null,
+        BaseDirectory.applicationDocuments,
+        null,
+      ),
+    };
+  }
+
+  DownloadError _createScopedStorageError(String filename, String path) {
+    return GenericDownloadError(
+      savedPath: const None(),
+      fileName: filename,
+      message:
+          'Cannot use path "$path" on Android 11+, please use a public directory like Download or Pictures instead.',
+    );
+  }
+
+  DownloadError _createInvalidPathError(String filename, String path) {
+    return GenericDownloadError(
+      savedPath: const None(),
+      fileName: filename,
+      message: 'Invalid path: $path',
+    );
+  }
+
+  DownloadError _createUnsupportedPlatformError(String filename, String path) {
+    return GenericDownloadError(
+      savedPath: const None(),
+      fileName: filename,
+      message: 'Path "$path" is not supported on this platform',
+    );
   }
 
   Future<DownloadTaskInfo> _copyCachedContentToTarget(
@@ -207,6 +294,10 @@ class BackgroundDownloader implements DownloadService {
       path: targetPath,
       id: 'cached_${DateTime.now().millisecondsSinceEpoch}',
     );
+  }
+
+  void _log(String message) {
+    logger?.debug('BackgroundDownloader', message);
   }
 }
 

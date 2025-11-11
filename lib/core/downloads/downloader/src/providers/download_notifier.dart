@@ -171,8 +171,6 @@ Future<DownloadTaskInfo?> _download(
   }
 
   Future<DownloadTaskInfo?> download() async {
-    onStarted?.call();
-
     final fileNameFuture = bulkMetadata != null
         ? fileNameBuilder.generateForBulkDownload(
             params.settings,
@@ -213,8 +211,24 @@ Future<DownloadTaskInfo?> _download(
     );
 
     return switch (result) {
-      DownloadSuccess(:final info) => info,
-      DownloadFailure() => null,
+      DownloadSuccess(:final info) => () {
+        onStarted?.call();
+
+        return info;
+      }(),
+      final DownloadFailure e => () {
+        final msg = e.error.getErrorMessage();
+
+        logger.error(
+          'Single Download',
+          msg,
+        );
+
+        showDownloadErrorToast(
+          navigatorKey.currentState?.context,
+          msg,
+        );
+      }(),
     };
   }
 
@@ -246,6 +260,20 @@ Future<DownloadTaskInfo?> _download(
 
     return info;
   }
+}
+
+void showDownloadErrorToast(
+  BuildContext? context,
+  String message,
+) {
+  if (context == null) return;
+  if (!context.mounted) return;
+
+  showErrorToast(
+    context,
+    duration: const Duration(seconds: 5),
+    message,
+  );
 }
 
 void showDownloadStartToast(BuildContext context, {String? message}) {
