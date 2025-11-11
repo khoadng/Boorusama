@@ -36,6 +36,17 @@ class DefaultMultiSelectionActions<T extends Post> extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final controller = SelectionMode.of(context);
     final booruConfig = ref.watchConfigAuth;
+    final notifier = ref.watch(
+      downloadNotifierProvider(
+        ref.watch(
+          downloadNotifierParamsProvider((
+            booruConfig,
+            ref.watchConfigDownload,
+          )),
+        ),
+      ).notifier,
+    );
+
     return ListenableBuilder(
       listenable: controller,
       builder: (context, _) {
@@ -51,7 +62,7 @@ class DefaultMultiSelectionActions<T extends Post> extends ConsumerWidget {
                       if (onBulkDownload != null) {
                         onBulkDownload!(selectedPosts);
                       } else {
-                        ref.bulkDownload(selectedPosts);
+                        notifier.bulkDownload(selectedPosts);
                       }
 
                       controller.disable();

@@ -46,6 +46,16 @@ class GeneralPostContextMenu extends ConsumerWidget {
     final selectionModeController = SelectionMode.maybeOf(context);
 
     final isBookmarkLoading = bookmarkStateAsync.isLoading;
+    final downloadNotifier = ref.watch(
+      downloadNotifierProvider(
+        ref.watch(
+          downloadNotifierParamsProvider((
+            booruConfig,
+            ref.watchConfigDownload,
+          )),
+        ),
+      ).notifier,
+    );
 
     return ValueListenableBuilder(
       valueListenable: controller.itemsNotifier,
@@ -63,7 +73,7 @@ class GeneralPostContextMenu extends ConsumerWidget {
             ContextMenuTile(
               title: context.t.download.download,
               onTap: () {
-                ref.download(post);
+                downloadNotifier.download(post);
               },
             ),
             if (!isBookmarked)

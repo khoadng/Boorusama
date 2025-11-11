@@ -56,7 +56,18 @@ class DanbooruPostContextMenu extends ConsumerWidget {
         ContextMenuTile(
           title: context.t.download.download,
           onTap: () {
-            ref.download(post);
+            ref
+                .read(
+                  downloadNotifierProvider(
+                    ref.read(
+                      downloadNotifierParamsProvider((
+                        booruConfig,
+                        ref.readConfigDownload,
+                      )),
+                    ),
+                  ).notifier,
+                )
+                .download(post);
           },
         ),
         if (!isBookmarked)

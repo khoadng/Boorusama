@@ -7,25 +7,21 @@ import 'package:i18n/i18n.dart';
 import 'package:oktoast/oktoast.dart';
 
 // Project imports:
-import '../../../../../foundation/loggers/providers.dart';
+import '../../../../../foundation/loggers.dart';
 import '../../../../../foundation/permissions.dart';
 import '../../../../../foundation/platform.dart';
 import '../../../../../foundation/toast.dart';
-import '../../../../analytics/providers.dart';
 import '../../../../configs/config/types.dart';
-import '../../../../http/client/providers.dart';
 import '../../../../http/client/types.dart';
 import '../../../../posts/post/types.dart';
 import '../../../../posts/sources/types.dart';
 import '../../../../router.dart';
-import '../../../../settings/providers.dart';
 import '../../../../settings/types.dart';
 import '../../../filename/types.dart';
-import '../../../urls/providers.dart';
 import '../../../urls/types.dart';
-import '../data/providers.dart';
 import '../types/download.dart';
 import '../types/metadata.dart';
+import '../types/observer.dart';
 
 final downloadNotifierProvider =
     NotifierProvider.family<DownloadNotifier, void, DownloadNotifierParams>(
@@ -33,10 +29,18 @@ final downloadNotifierProvider =
     );
 
 typedef DownloadNotifierParams = ({
-  BooruConfigAuth auth,
   BooruConfigDownload download,
+  DownloadFileUrlExtractor downloadFileUrlExtractor,
   DownloadFilenameGenerator? filenameBuilder,
+  DownloadObserver? observer,
+  MultipleFileDownloadCheck canDownloadMultipleFiles,
+  Map<String, String> headers,
+  Settings settings,
+  DownloadService downloader,
+  Logger logger,
 });
+
+typedef MultipleFileDownloadCheck = bool Function();
 
 class DownloadNotifier extends FamilyNotifier<void, DownloadNotifierParams> {
   @override
@@ -58,38 +62,21 @@ class DownloadNotifier extends FamilyNotifier<void, DownloadNotifierParams> {
   }
 
   Future<DownloadTaskInfo?> download(Post post) async {
-    final auth = arg.auth;
-    final settings = ref.read(settingsProvider);
-    final urlExtractor = ref.read(
-      downloadFileUrlExtractorProvider(auth),
-    );
     final perm = await _getPermissionStatus();
-    final analyticsAsync = ref.read(analyticsProvider);
+    final observer = arg.observer;
 
     final info = await _download(
       ref,
       post,
       params: arg,
       permission: perm,
-      settings: settings,
-      downloadFileUrlExtractor: urlExtractor,
       onStarted: () {
         final c = navigatorKey.currentState?.context;
         if (c != null) {
           showDownloadStartToast(c);
         }
 
-        analyticsAsync.whenData(
-          (analytics) {
-            analytics?.logEvent(
-              'single_download_start',
-              parameters: {
-                'hint_site': auth.booruType.name,
-                'url': Uri.tryParse(auth.url)?.host,
-              },
-            );
-          },
-        );
+        observer?.onSingleDownloadStart();
       },
     );
 
@@ -101,13 +88,8 @@ class DownloadNotifier extends FamilyNotifier<void, DownloadNotifierParams> {
     String? group,
     String? downloadPath,
   }) async {
-    final settings = ref.read(settingsProvider);
-    final config = arg.auth;
-    final urlExtractor = ref.read(downloadFileUrlExtractorProvider(config));
-    final analyticsAsync = ref.read(analyticsProvider);
-
     // ensure that the booru supports bulk download
-    if (!config.booruType.canDownloadMultipleFiles) {
+    if (!arg.canDownloadMultipleFiles()) {
       final context = navigatorKey.currentState?.context;
 
       showBulkDownloadUnsupportErrorToast(context);
@@ -120,17 +102,8 @@ class DownloadNotifier extends FamilyNotifier<void, DownloadNotifierParams> {
       message: 'Downloading ${posts.length} files...',
     );
 
-    analyticsAsync.whenData(
-      (analytics) {
-        analytics?.logEvent(
-          'multiple_download_start',
-          parameters: {
-            'total': posts.length,
-            'hint_site': config.booruType.name,
-            'url': Uri.tryParse(config.url)?.host,
-          },
-        );
-      },
+    arg.observer?.onBulkDownloadStart(
+      total: posts.length,
     );
 
     for (var i = 0; i < posts.length; i++) {
@@ -140,10 +113,8 @@ class DownloadNotifier extends FamilyNotifier<void, DownloadNotifierParams> {
         post,
         params: arg,
         permission: perm,
-        settings: settings,
         group: group,
         downloadPath: downloadPath,
-        downloadFileUrlExtractor: urlExtractor,
         bulkMetadata: {
           'total': posts.length.toString(),
           'index': i.toString(),
@@ -156,8 +127,6 @@ class DownloadNotifier extends FamilyNotifier<void, DownloadNotifierParams> {
 Future<DownloadTaskInfo?> _download(
   Ref ref,
   Post downloadable, {
-  required Settings settings,
-  required DownloadFileUrlExtractor downloadFileUrlExtractor,
   required DownloadNotifierParams params,
   PermissionStatus? permission,
   String? group,
@@ -165,13 +134,12 @@ Future<DownloadTaskInfo?> _download(
   Map<String, String>? bulkMetadata,
   void Function()? onStarted,
 }) async {
-  final auth = params.auth;
   final downloadConfig = params.download;
-  final service = ref.read(downloadServiceProvider);
+  final service = params.downloader;
   final fileNameBuilder = params.filenameBuilder;
-  final logger = ref.read(loggerProvider);
+  final logger = params.logger;
 
-  final headers = ref.read(httpHeadersProvider(auth));
+  final headers = params.headers;
 
   final deviceStoragePermissionNotifier = ref.read(
     deviceStoragePermissionProvider.notifier,
@@ -181,9 +149,9 @@ Future<DownloadTaskInfo?> _download(
     notificationPermissionManagerProvider,
   );
 
-  final urlData = await downloadFileUrlExtractor.getDownloadFileUrl(
+  final urlData = await params.downloadFileUrlExtractor.getDownloadFileUrl(
     post: downloadable,
-    quality: settings.downloadQuality.name,
+    quality: params.settings.downloadQuality.name,
   );
 
   if (fileNameBuilder == null) {
@@ -207,14 +175,14 @@ Future<DownloadTaskInfo?> _download(
 
     final fileNameFuture = bulkMetadata != null
         ? fileNameBuilder.generateForBulkDownload(
-            settings,
+            params.settings,
             downloadConfig,
             downloadable,
             metadata: bulkMetadata,
             downloadUrl: urlData.url,
           )
         : fileNameBuilder.generate(
-            settings,
+            params.settings,
             downloadConfig,
             downloadable,
             downloadUrl: urlData.url,
@@ -224,7 +192,7 @@ Future<DownloadTaskInfo?> _download(
 
     final result = await service.download(
       DownloadOptions.fromSettings(
-        settings,
+        params.settings,
         config: downloadConfig,
         metadata: DownloaderMetadata(
           thumbnailUrl: downloadable.thumbnailImageUrl,
