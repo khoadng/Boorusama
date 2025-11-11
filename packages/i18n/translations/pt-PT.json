@@ -1,5 +1,4 @@
 {
-  "tag": {},
   "post": {
     "action": {
       "view_comments": "Ver comentários"
@@ -62,5 +61,58 @@
       "monthly": "Mensal",
       "annual": "Anual"
     }
+  },
+  "generic": {
+    "done": "Feito",
+    "errors": {
+      "no_data": "Sem informação disponível",
+      "unknown": "Algo de errado ocorreu",
+      "error": "Erro"
+    },
+    "action": {
+      "add": "Adicionar",
+      "delete": "Apagar",
+      "edit": "Editar",
+      "cancel": "Cancelar",
+      "duplicate": "Duplicado",
+      "select": "Seleccionar",
+      "save": "Guardar",
+      "verify": "Verificar",
+      "retry": "Tentar Novamente",
+      "clear": "Limpar",
+      "create": "Criar",
+      "reset": "Reiniciar",
+      "more": "Mais",
+      "view": "Ver",
+      "apply": "Aplicar",
+      "show_all": "Mostrar tudo",
+      "show_less": "Mostrar menos",
+      "search": "Procurar",
+      "view_all": "Ver todos"
+    },
+    "warning": "Alerta",
+    "default": "Predefinido",
+    "copied": "Copiado",
+    "no_content": "Sem conteúdo",
+    "version": "Versão $version",
+    "app_restart_request": "Necessário reiniciar aplicação para alteração surtir efeito."
+  },
+  "sort": {
+    "sort_by": "Organizar por",
+    "name": "Nome",
+    "name_asc": "Nome (A-Z)",
+    "name_desc": "Nome (Z-A)",
+    "recently_added": "Adicionado recentemente",
+    "recently_updated": "Atualizado recentemente",
+    "recently_created": "Criado recentemente",
+    "last_updated": "Atualizado por ultimo",
+    "count": "Contar"
+  },
+  "profile": {
+    "favorites": "Favoritos",
+    "profile": "Perfil",
+    "copy_user_id": "Copiar ID do utilizador",
+    "fail_to_load_profile": "Falha a carregar o perfil",
+    "previous_names": "Nomes Anteriores"
   }
 }
