@@ -65,9 +65,8 @@ class AppTitleBar extends ConsumerWidget {
                           ),
                         ),
                       ),
-                      const Spacer(),
                       const Padding(
-                        padding: EdgeInsets.only(right: 8),
+                        padding: EdgeInsets.only(left: 8),
                         child: PinWindowButton(
                           iconSize: 14,
                         ),
