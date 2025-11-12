@@ -1208,7 +1208,7 @@
   },
   "infinite_scroll": {
     "load_more": "Завантажити більше",
-    "bottom_reached": "Це все наразі"
+    "nore_more_data": "Це все наразі"
   },
   "window": {
     "pin": {

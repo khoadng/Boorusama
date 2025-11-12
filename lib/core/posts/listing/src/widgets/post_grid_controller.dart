@@ -289,7 +289,9 @@ class PostGridController<T extends Post> extends ChangeNotifier {
   }
 
   // Loads more items
-  Future<void> fetchMore() async {
+  Future<void> fetchMore({
+    VoidCallback? onNoMoreData,
+  }) async {
     if (_loading ||
         !_hasMore ||
         (_debounceTimer != null && _debounceTimer!.isActive)) {
@@ -308,6 +310,8 @@ class PostGridController<T extends Post> extends ChangeNotifier {
       _hasMore = newItems.posts.isNotEmpty;
       if (_hasMore) {
         await _addAll(newItems.posts);
+      } else {
+        onNoMoreData?.call();
       }
       _loading = false;
       count.value = newItems.total;
