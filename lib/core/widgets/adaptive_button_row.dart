@@ -88,6 +88,7 @@ class AdaptiveButtonRow extends StatefulWidget {
     this.onOpened,
     this.onClosed,
     this.onMenuTap,
+    this.reduceAnimation,
     super.key,
   });
 
@@ -103,6 +104,7 @@ class AdaptiveButtonRow extends StatefulWidget {
     VoidCallback? onOpened,
     VoidCallback? onClosed,
     VoidCallback? onMenuTap,
+    bool? reduceAnimation,
     Key? key,
   }) => AdaptiveButtonRow._(
     buttons: buttons,
@@ -117,6 +119,7 @@ class AdaptiveButtonRow extends StatefulWidget {
     onOpened: onOpened,
     onClosed: onClosed,
     onMenuTap: onMenuTap,
+    reduceAnimation: reduceAnimation,
     key: key,
   );
 
@@ -128,6 +131,7 @@ class AdaptiveButtonRow extends StatefulWidget {
     int? maxVisibleButtons,
     MainAxisAlignment? alignment,
     EdgeInsetsGeometry? padding,
+    bool? reduceAnimation,
     Key? key,
   }) => AdaptiveButtonRow._(
     buttons: buttons,
@@ -138,6 +142,7 @@ class AdaptiveButtonRow extends StatefulWidget {
     maxVisibleButtons: maxVisibleButtons,
     alignment: alignment,
     padding: padding,
+    reduceAnimation: reduceAnimation,
     key: key,
   );
 
@@ -149,6 +154,7 @@ class AdaptiveButtonRow extends StatefulWidget {
     MainAxisAlignment? alignment,
     int? maxVisibleButtons,
     EdgeInsetsGeometry? padding,
+    bool? reduceAnimation,
     Key? key,
   }) => AdaptiveButtonRow._(
     buttons: buttons,
@@ -159,6 +165,7 @@ class AdaptiveButtonRow extends StatefulWidget {
     alignment: alignment,
     maxVisibleButtons: maxVisibleButtons,
     padding: padding,
+    reduceAnimation: reduceAnimation,
     key: key,
   );
 
@@ -169,6 +176,7 @@ class AdaptiveButtonRow extends StatefulWidget {
   final int? maxVisibleButtons;
   final MainAxisAlignment? alignment;
   final EdgeInsetsGeometry? padding;
+  final bool? reduceAnimation;
 
   // Menu-specific
   final Widget? overflowIcon;
@@ -444,6 +452,26 @@ class _AdaptiveButtonRowState extends State<AdaptiveButtonRow> {
       arrowShape: const NoArrow(),
       placement: Placement.bottom,
       triggerMode: const AnchorTriggerMode.manual(),
+      transitionBuilder: isDesktop || (widget.reduceAnimation ?? false)
+          ? null
+          : (context, animation, child) => FadeTransition(
+              opacity: animation,
+              child: ScaleTransition(
+                scale: Tween<double>(begin: 0.8, end: 1).animate(
+                  CurvedAnimation(
+                    parent: animation,
+                    curve: Curves.easeOutCubic,
+                  ),
+                ),
+                alignment: switch (AnchorData.of(context).geometry.direction) {
+                  AxisDirection.up => Alignment.bottomCenter,
+                  AxisDirection.down => Alignment.topCenter,
+                  AxisDirection.left => Alignment.centerRight,
+                  AxisDirection.right => Alignment.centerLeft,
+                },
+                child: child,
+              ),
+            ),
       border: BorderSide(
         color: colorScheme.outlineVariant,
         width: 0.5,
@@ -453,9 +481,7 @@ class _AdaptiveButtonRowState extends State<AdaptiveButtonRow> {
           _controller.hide();
         },
         child: Container(
-          color: isDesktop
-              ? Colors.transparent
-              : Colors.black.withValues(alpha: 0.75),
+          color: isDesktop ? Colors.transparent : Colors.black45,
         ),
       ),
       boxShadow: [
@@ -466,7 +492,9 @@ class _AdaptiveButtonRowState extends State<AdaptiveButtonRow> {
         ),
       ],
       backgroundColor: isDesktop ? null : colorScheme.surface,
-      viewPadding: const EdgeInsets.all(4),
+      viewPadding: isDesktop
+          ? const EdgeInsets.all(4)
+          : const EdgeInsets.all(12),
       onShow: widget.onOpened,
       onHide: widget.onClosed,
       spacing: 12,

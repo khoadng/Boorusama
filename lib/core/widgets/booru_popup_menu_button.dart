@@ -45,6 +45,11 @@ class _BooruPopupMenuButtonState extends ConsumerState<BooruPopupMenuButton> {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final hapticLevel = ref.watch(hapticFeedbackLevelProvider);
+    final reduceAnimation = ref.watch(
+      settingsProvider.select(
+        (value) => value.reduceAnimations,
+      ),
+    );
 
     final isDesktop = isDesktopPlatform();
 
@@ -52,14 +57,32 @@ class _BooruPopupMenuButtonState extends ConsumerState<BooruPopupMenuButton> {
       controller: _controller,
       arrowShape: const NoArrow(),
       placement: Placement.bottom,
+      transitionBuilder: isDesktop || reduceAnimation
+          ? null
+          : (context, animation, child) => FadeTransition(
+              opacity: animation,
+              child: ScaleTransition(
+                scale: Tween<double>(begin: 0.8, end: 1).animate(
+                  CurvedAnimation(
+                    parent: animation,
+                    curve: Curves.easeOutCubic,
+                  ),
+                ),
+                alignment: switch (AnchorData.of(context).geometry.direction) {
+                  AxisDirection.up => Alignment.bottomCenter,
+                  AxisDirection.down => Alignment.topCenter,
+                  AxisDirection.left => Alignment.centerRight,
+                  AxisDirection.right => Alignment.centerLeft,
+                },
+                child: child,
+              ),
+            ),
       backdropBuilder: (context) => GestureDetector(
         onTap: () {
           _controller.hide();
         },
         child: Container(
-          color: isDesktop
-              ? Colors.transparent
-              : Colors.black.withValues(alpha: 0.75),
+          color: isDesktop ? Colors.transparent : Colors.black45,
         ),
       ),
       triggerMode: const AnchorTriggerMode.manual(),
@@ -74,7 +97,9 @@ class _BooruPopupMenuButtonState extends ConsumerState<BooruPopupMenuButton> {
           offset: const Offset(0, 4),
         ),
       ],
-      viewPadding: const EdgeInsets.all(4),
+      viewPadding: isDesktop
+          ? const EdgeInsets.all(4)
+          : const EdgeInsets.all(12),
       backgroundColor: isDesktop ? null : colorScheme.surface,
       overlayBuilder: (context) => Container(
         padding: const EdgeInsets.symmetric(

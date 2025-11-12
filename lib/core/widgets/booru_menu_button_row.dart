@@ -42,6 +42,11 @@ class BooruMenuButtonRow extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final hapticLevel = ref.watch(hapticFeedbackLevelProvider);
+    final reduceAnimation = ref.watch(
+      settingsProvider.select(
+        (value) => value.reduceAnimations,
+      ),
+    );
 
     return AdaptiveButtonRow.menu(
       buttons: buttons,
@@ -52,6 +57,7 @@ class BooruMenuButtonRow extends ConsumerWidget {
       maxVisibleButtons: maxVisibleButtons,
       alignment: alignment,
       padding: padding,
+      reduceAnimation: reduceAnimation,
       onOpened: () {
         if (hapticLevel.isFull) {
           HapticFeedback.selectionClick();
