@@ -27,7 +27,7 @@ class ResultHeaderWithProvider extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfigSearch;
     final params = (config, selectedTagsString);
-    final fetcher = ref.watch(postCountRepoProvider(ref.watchConfigSearch));
+    final fetcher = ref.watch(postCountRepoProvider(config));
 
     if (fetcher == null) return const SizedBox.shrink();
 
@@ -35,23 +35,17 @@ class ResultHeaderWithProvider extends ConsumerWidget {
         ? cachedPostCountProvider(params)
         : postCountProvider(params);
 
-    return ref
-        .watch(provider)
-        .when(
-          data: (data) => data != null
-              ? ResultHeader(
-                  count: data,
-                  loading: false,
-                  onRefresh: onRefresh != null
-                      ? () async {
-                          await onRefresh!(true);
-                        }
-                      : null,
-                )
-              : const SizedBox.shrink(),
-          error: (error, stackTrace) => const SizedBox.shrink(),
-          loading: () => const ResultHeader(count: 0, loading: true),
-        );
+    return switch (ref.watch(provider)) {
+      AsyncData(value: final count?) => ResultHeader(
+        count: count,
+        onRefresh: switch (onRefresh) {
+          final f? => () => f(true),
+          _ => null,
+        },
+      ),
+      AsyncLoading() => const ResultHeader.loading(),
+      _ => const SizedBox.shrink(),
+    };
   }
 }
 
@@ -73,17 +67,16 @@ class ResultHeaderFromController extends ConsumerWidget {
 
     return ValueListenableBuilder(
       valueListenable: controller.count,
-      builder: (context, data, _) => data != null
-          ? ResultHeader(
-              count: data,
-              loading: false,
-              onRefresh: onRefresh != null
-                  ? () async {
-                      await onRefresh!(true);
-                    }
-                  : null,
-            )
-          : const ResultHeader(count: 0, loading: true),
+      builder: (context, data, _) => switch (data) {
+        final count? => ResultHeader(
+          count: count,
+          onRefresh: switch (onRefresh) {
+            final f? => () => f(true),
+            _ => null,
+          },
+        ),
+        null => const ResultHeader.loading(),
+      },
     );
   }
 }
@@ -91,10 +84,15 @@ class ResultHeaderFromController extends ConsumerWidget {
 class ResultHeader extends StatelessWidget {
   const ResultHeader({
     required this.count,
-    required this.loading,
     super.key,
     this.onRefresh,
-  });
+  }) : loading = false;
+
+  const ResultHeader.loading({
+    super.key,
+  }) : count = 0,
+       loading = true,
+       onRefresh = null;
 
   final int count;
   final bool loading;
