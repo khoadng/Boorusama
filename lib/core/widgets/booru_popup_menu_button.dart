@@ -10,8 +10,8 @@ import 'package:anchor_ui/anchor_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../foundation/platform.dart';
 import '../settings/providers.dart';
+import 'booru_anchor.dart';
 
 class BooruPopupMenuButton extends ConsumerStatefulWidget {
   const BooruPopupMenuButton({
@@ -43,64 +43,10 @@ class _BooruPopupMenuButtonState extends ConsumerState<BooruPopupMenuButton> {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
     final hapticLevel = ref.watch(hapticFeedbackLevelProvider);
-    final reduceAnimation = ref.watch(
-      settingsProvider.select(
-        (value) => value.reduceAnimations,
-      ),
-    );
 
-    final isDesktop = isDesktopPlatform();
-
-    return AnchorPopover(
+    return BooruAnchor(
       controller: _controller,
-      arrowShape: const NoArrow(),
-      placement: Placement.bottom,
-      transitionBuilder: isDesktop || reduceAnimation
-          ? null
-          : (context, animation, child) => FadeTransition(
-              opacity: animation,
-              child: ScaleTransition(
-                scale: Tween<double>(begin: 0.8, end: 1).animate(
-                  CurvedAnimation(
-                    parent: animation,
-                    curve: Curves.easeOutCubic,
-                  ),
-                ),
-                alignment: switch (AnchorData.of(context).geometry.direction) {
-                  AxisDirection.up => Alignment.bottomCenter,
-                  AxisDirection.down => Alignment.topCenter,
-                  AxisDirection.left => Alignment.centerRight,
-                  AxisDirection.right => Alignment.centerLeft,
-                },
-                child: child,
-              ),
-            ),
-      backdropBuilder: (context) => GestureDetector(
-        onTap: () {
-          _controller.hide();
-        },
-        child: Container(
-          color: isDesktop ? Colors.transparent : Colors.black45,
-        ),
-      ),
-      triggerMode: const AnchorTriggerMode.manual(),
-      border: BorderSide(
-        color: colorScheme.outlineVariant,
-        width: 0.5,
-      ),
-      boxShadow: [
-        BoxShadow(
-          color: colorScheme.shadow.withValues(alpha: 0.2),
-          blurRadius: 8,
-          offset: const Offset(0, 4),
-        ),
-      ],
-      viewPadding: isDesktop
-          ? const EdgeInsets.all(4)
-          : const EdgeInsets.all(12),
-      backgroundColor: isDesktop ? null : colorScheme.surface,
       overlayBuilder: (context) => Container(
         padding: const EdgeInsets.symmetric(
           horizontal: 8,

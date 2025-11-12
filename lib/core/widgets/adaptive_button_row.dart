@@ -10,6 +10,7 @@ import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../foundation/platform.dart';
+import 'booru_anchor.dart';
 
 const double _kMinButtonWidth = 40;
 const double _kMaxButtonWidth = 150;
@@ -443,61 +444,14 @@ class _AdaptiveButtonRowState extends State<AdaptiveButtonRow> {
     List<ButtonData> overflowButtons,
     int visibleCount,
   ) {
-    final colorScheme = Theme.of(context).colorScheme;
-
     final isDesktop = isDesktopPlatform();
 
-    return AnchorPopover(
+    return BooruAnchor(
       controller: _controller,
-      arrowShape: const NoArrow(),
-      placement: Placement.bottom,
-      triggerMode: const AnchorTriggerMode.manual(),
-      transitionBuilder: isDesktop || (widget.reduceAnimation ?? false)
-          ? null
-          : (context, animation, child) => FadeTransition(
-              opacity: animation,
-              child: ScaleTransition(
-                scale: Tween<double>(begin: 0.8, end: 1).animate(
-                  CurvedAnimation(
-                    parent: animation,
-                    curve: Curves.easeOutCubic,
-                  ),
-                ),
-                alignment: switch (AnchorData.of(context).geometry.direction) {
-                  AxisDirection.up => Alignment.bottomCenter,
-                  AxisDirection.down => Alignment.topCenter,
-                  AxisDirection.left => Alignment.centerRight,
-                  AxisDirection.right => Alignment.centerLeft,
-                },
-                child: child,
-              ),
-            ),
-      border: BorderSide(
-        color: colorScheme.outlineVariant,
-        width: 0.5,
-      ),
-      backdropBuilder: (context) => GestureDetector(
-        onTap: () {
-          _controller.hide();
-        },
-        child: Container(
-          color: isDesktop ? Colors.transparent : Colors.black45,
-        ),
-      ),
-      boxShadow: [
-        BoxShadow(
-          color: colorScheme.shadow.withValues(alpha: 0.2),
-          blurRadius: 8,
-          offset: const Offset(0, 4),
-        ),
-      ],
-      backgroundColor: isDesktop ? null : colorScheme.surface,
-      viewPadding: isDesktop
-          ? const EdgeInsets.all(4)
-          : const EdgeInsets.all(12),
       onShow: widget.onOpened,
       onHide: widget.onClosed,
       spacing: 12,
+      reduceAnimation: widget.reduceAnimation,
       overlayBuilder: (context) => Container(
         padding: const EdgeInsets.symmetric(
           horizontal: 8,
