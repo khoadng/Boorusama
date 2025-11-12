@@ -140,7 +140,12 @@ class _PostGridState<T extends Post> extends ConsumerState<PostGrid<T>> {
         controller: widget.controller,
         safeArea: widget.safeArea,
         enablePullToRefresh: widget.enablePullToRefresh ?? true,
-        gridHeader: widget.header ?? _GridHeader<T>(),
+        gridHeader: ValueListenableBuilder(
+          valueListenable: widget.controller.errors,
+          builder: (_, errors, _) => errors == null
+              ? widget.header ?? _GridHeader<T>()
+              : const SizedBox.shrink(),
+        ),
         topPageIndicator: Consumer(
           builder: (_, ref, _) {
             final visibleAtTop = ref.watch(
