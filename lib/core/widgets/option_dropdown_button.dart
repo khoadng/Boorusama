@@ -89,7 +89,7 @@ class _OptionDropDownButtonState<T>
               horizontal: 12,
               vertical: 32,
             ),
-      placement: isDesktop ? Placement.bottomEnd : Placement.topEnd,
+      placement: Placement.bottomEnd,
       overlayBuilder: (context) {
         return Container(
           padding: const EdgeInsets.symmetric(
