@@ -62,6 +62,7 @@ class DanbooruPostActionToolbar extends ConsumerWidget {
     final notifier = ref.watch(favoritesProvider(config).notifier);
     final loginDetails = ref.watch(danbooruLoginDetailsProvider(config));
     final hasLogin = loginDetails.hasLogin();
+    final voteId = postVote?.voteId;
 
     return SliverToBoxAdapter(
       child: CommonPostButtonsBuilder(
@@ -90,7 +91,9 @@ class DanbooruPostActionToolbar extends ConsumerWidget {
                   widget: UpvotePostButton(
                     voteState: voteState,
                     onUpvote: () => ref.danbooruUpvote(post.id),
-                    onRemoveUpvote: () => ref.danbooruRemoveVote(post.id),
+                    onRemoveUpvote: voteId != null
+                        ? () => ref.danbooruRemoveVote(post.id, voteId)
+                        : null,
                   ),
                   title: context.t.post.action.upvote,
                 ),
@@ -100,7 +103,9 @@ class DanbooruPostActionToolbar extends ConsumerWidget {
                   widget: DownvotePostButton(
                     voteState: voteState,
                     onDownvote: () => ref.danbooruDownvote(post.id),
-                    onRemoveDownvote: () => ref.danbooruRemoveVote(post.id),
+                    onRemoveDownvote: voteId != null
+                        ? () => ref.danbooruRemoveVote(post.id, voteId)
+                        : null,
                   ),
                   title: context.t.post.action.downvote,
                 ),

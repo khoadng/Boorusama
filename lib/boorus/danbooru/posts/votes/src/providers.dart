@@ -12,7 +12,6 @@ final danbooruPostVoteRepoProvider =
       (ref, config) {
         return PostVoteApiRepositoryApi(
           client: ref.watch(danbooruClientProvider(config)),
-          authConfig: config,
         );
       },
     );

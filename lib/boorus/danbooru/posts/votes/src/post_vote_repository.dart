@@ -12,5 +12,5 @@ abstract class PostVoteRepository {
     int postId, {
     int? page,
   });
-  Future<bool> removeVote(int postId);
+  Future<bool> removeVote(PostVoteId id);
 }

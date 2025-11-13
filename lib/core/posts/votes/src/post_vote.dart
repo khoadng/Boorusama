@@ -7,7 +7,7 @@ abstract class PostVote {
 }
 
 extension PostVoteX on PostVote {
-  VoteState get voteState => voteStateFromScore(score);
+  VoteState get voteState => VoteState.fromScore(score);
 
   bool get isOptimisticUpdateVote => id == kLocalPostVoteId;
 }
@@ -15,14 +15,14 @@ extension PostVoteX on PostVote {
 enum VoteState {
   unvote,
   upvoted,
-  downvoted,
-}
+  downvoted;
 
-VoteState voteStateFromScore(int score) => switch (score) {
-  < 0 => VoteState.downvoted,
-  > 0 => VoteState.upvoted,
-  _ => VoteState.unvote,
-};
+  factory VoteState.fromScore(int score) => switch (score) {
+    < 0 => VoteState.downvoted,
+    > 0 => VoteState.upvoted,
+    _ => VoteState.unvote,
+  };
+}
 
 extension VoteStateX on VoteState {
   bool get isUpvoted => this == VoteState.upvoted;

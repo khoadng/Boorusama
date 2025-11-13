@@ -110,14 +110,17 @@ class __VotesState extends ConsumerState<_Votes> {
     final voteState = postVote?.voteState ?? VoteState.unvote;
     final colorScheme = Theme.of(context).colorScheme;
     final postId = widget.post.id;
+    final voteId = postVote?.voteId;
 
     return Row(
       children: [
         _VoteButton(
-          onTap: () => switch (voteState) {
-            VoteState.upvoted => ref.danbooruRemoveVote(postId),
-            _ => ref.danbooruUpvote(postId),
-          },
+          onTap: voteId != null
+              ? () => switch (voteState) {
+                  VoteState.upvoted => ref.danbooruRemoveVote(postId, voteId),
+                  _ => ref.danbooruUpvote(postId),
+                }
+              : null,
           child: Icon(
             Icons.arrow_upward,
             size: 13,
@@ -134,10 +137,12 @@ class __VotesState extends ConsumerState<_Votes> {
           ),
         ),
         _VoteButton(
-          onTap: () => switch (voteState) {
-            VoteState.downvoted => ref.danbooruRemoveVote(postId),
-            _ => ref.danbooruDownvote(postId),
-          },
+          onTap: voteId != null
+              ? () => switch (voteState) {
+                  VoteState.downvoted => ref.danbooruRemoveVote(postId, voteId),
+                  _ => ref.danbooruDownvote(postId),
+                }
+              : null,
           child: Icon(
             Icons.arrow_downward,
             size: 13,
@@ -158,7 +163,7 @@ class _VoteButton extends StatelessWidget {
   });
 
   final Widget child;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {

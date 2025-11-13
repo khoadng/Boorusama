@@ -40,7 +40,7 @@ final danbooruFavoriteRepoProvider =
               try {
                 await ref
                     .read(danbooruPostVotesProvider(config).notifier)
-                    .removeVote(postId);
+                    .removeVote(postId, null);
               } catch (e) {
                 return false;
               }

@@ -20,7 +20,7 @@ class UpvotePostButton extends StatelessWidget {
 
   final VoteState voteState;
   final void Function() onUpvote;
-  final void Function() onRemoveUpvote;
+  final void Function()? onRemoveUpvote;
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +51,7 @@ class DownvotePostButton extends StatelessWidget {
 
   final VoteState voteState;
   final void Function() onDownvote;
-  final void Function() onRemoveDownvote;
+  final void Function()? onRemoveDownvote;
 
   @override
   Widget build(BuildContext context) {

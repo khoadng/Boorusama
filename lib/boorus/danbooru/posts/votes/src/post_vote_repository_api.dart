@@ -1,19 +1,17 @@
 // Package imports:
-import 'package:booru_clients/danbooru.dart';
+import 'package:booru_clients/danbooru.dart' as d;
 
 // Project imports:
-import '../../../../../core/configs/config/types.dart';
+import 'parser.dart';
 import 'post_vote.dart';
 import 'post_vote_repository.dart';
 
 class PostVoteApiRepositoryApi implements PostVoteRepository {
   const PostVoteApiRepositoryApi({
     required this.client,
-    required this.authConfig,
   });
 
-  final BooruConfigAuth authConfig;
-  final DanbooruClient client;
+  final d.DanbooruClient client;
 
   @override
   Future<List<DanbooruPostVote>> getPostVotesFromUser(
@@ -55,17 +53,5 @@ class PostVoteApiRepositoryApi implements PostVoteRepository {
   Future<DanbooruPostVote?> upvote(int postId) => _vote(postId, 1);
 
   @override
-  Future<bool> removeVote(int postId) => client.removePostVote(postId);
-}
-
-DanbooruPostVote postVoteDtoToPostVote(PostVoteDto d) {
-  return DanbooruPostVote(
-    id: d.id ?? 0,
-    postId: d.postId ?? 0,
-    userId: d.userId ?? 0,
-    createdAt: d.createdAt ?? DateTime.now(),
-    updatedAt: d.updatedAt ?? DateTime.now(),
-    score: d.score ?? 0,
-    isDeleted: d.isDeleted ?? false,
-  );
+  Future<bool> removeVote(PostVoteId id) => client.removePostVote(id);
 }

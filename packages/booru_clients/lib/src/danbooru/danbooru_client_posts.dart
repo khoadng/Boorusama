@@ -99,11 +99,11 @@ mixin DanbooruClientPosts {
   );
 
   Future<bool> removePostVote(
-    int postId,
+    PostVoteId id,
   ) async {
     try {
       final _ = await dio.delete(
-        '/posts/$postId/votes.json',
+        '/post_votes/$id.json',
       );
 
       return true;
