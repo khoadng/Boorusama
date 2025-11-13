@@ -10,6 +10,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:foundation/widgets.dart';
 import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:selection_mode/selection_mode.dart';
 import 'package:sliver_tools/sliver_tools.dart';
@@ -342,30 +343,33 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
   }
 
   Widget _buildLoadMore(ColorScheme colorScheme) {
+    void showNoMoreDataMessage() {
+      showToast(
+        context.t.infinite_scroll.nore_more_data,
+        position: ToastPosition.bottom,
+        margin: const EdgeInsets.symmetric(
+          horizontal: 20,
+          vertical: 60,
+        ),
+        textPadding: const EdgeInsets.symmetric(
+          horizontal: 8,
+          vertical: 4,
+        ),
+        duration: const Duration(seconds: 2),
+        backgroundColor: colorScheme.surfaceContainerHigh,
+        textStyle: TextStyle(
+          color: colorScheme.onSurfaceVariant,
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+        ),
+      );
+    }
+
     return ValueListenableBuilder(
       valueListenable: refreshing,
       builder: (context, refresh, child) => ConditionalValueListenableBuilder(
         valueListenable: loading,
         falseChild: switch ((refreshing: refresh, hasMore: hasMore)) {
-          (refreshing: true, hasMore: _) => const SliverSizedBox.shrink(),
-          (refreshing: false, hasMore: false) => SliverToBoxAdapter(
-            child: ValueListenableBuilder(
-              valueListenable: controller.errors,
-              builder: (context, errors, child) => errors == null
-                  ? Container(
-                      padding: const EdgeInsets.symmetric(vertical: 28),
-                      child: Center(
-                        child: Text(
-                          context.t.infinite_scroll.bottom_reached,
-                          style: TextStyle(
-                            color: colorScheme.hintColor,
-                          ),
-                        ),
-                      ),
-                    )
-                  : const SizedBox.shrink(),
-            ),
-          ),
           (refreshing: false, hasMore: true) => SliverLayoutBuilder(
             builder: (context, constraints) {
               final canScroll =
@@ -383,9 +387,13 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
                     child: Center(
                       child: FilledButton(
                         style: FilledButton.styleFrom(
-                          minimumSize: const Size(240, 48),
+                          minimumSize: const Size(120, 40),
                         ),
-                        onPressed: () => controller.fetchMore(),
+                        onPressed: () => controller.fetchMore(
+                          onNoMoreData: () {
+                            showNoMoreDataMessage();
+                          },
+                        ),
                         child: Text(
                           context.t.infinite_scroll.load_more,
                         ),
@@ -396,6 +404,7 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
               };
             },
           ),
+          _ => const SliverSizedBox.shrink(),
         },
         trueChild: SliverPadding(
           padding: const EdgeInsets.symmetric(vertical: 20),

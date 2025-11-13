@@ -1211,7 +1211,7 @@
   },
   "infinite_scroll": {
     "load_more": "Tải thêm",
-    "bottom_reached": "Chạm đáy rồi",
+    "nore_more_data": "Hết rồi",
     "page_label": "Trang $page",
     "next_page": "Trang tiếp",
     "previous_page": "Trang trước"

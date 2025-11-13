@@ -2,11 +2,11 @@
 import 'dart:async';
 
 // Package imports:
-import 'package:background_downloader/background_downloader.dart';
 import 'package:cross_file/cross_file.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import '../../../downloads/background/types.dart';
 import '../types/download_task_update.dart';
 
 final downloadTaskUpdatesProvider =

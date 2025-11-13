@@ -77,4 +77,10 @@ extension BooruAutoDisposeProviderRef<T> on Ref<T> {
 
   LayoutConfigs? get readLayoutConfigs =>
       read(currentReadOnlyBooruConfigLayoutProvider);
+
+  BooruConfigDownload get readConfigDownload =>
+      read(currentReadOnlyBooruConfigDownloadProvider);
+
+  BooruConfigDownload get watchConfigDownload =>
+      watch(currentReadOnlyBooruConfigDownloadProvider);
 }

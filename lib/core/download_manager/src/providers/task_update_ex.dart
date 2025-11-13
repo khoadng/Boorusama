@@ -1,8 +1,8 @@
 // Package imports:
-import 'package:background_downloader/background_downloader.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
+import '../../../downloads/background/types.dart';
 import '../../../downloads/downloader/types.dart';
 import '../../../http/client/types.dart';
 

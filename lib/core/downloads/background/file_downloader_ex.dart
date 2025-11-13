@@ -5,7 +5,7 @@ import 'dart:io' hide HttpResponse;
 import 'package:background_downloader/background_downloader.dart';
 
 // Project imports:
-import '../types/download.dart';
+import '../downloader/types.dart';
 
 extension FileDownloaderX on FileDownloader {
   Future<DownloadTaskInfo> enqueueIfNeeded(

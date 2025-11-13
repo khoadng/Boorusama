@@ -1233,7 +1233,8 @@
     "bottom_reached": "Це все наразі",
     "page_label": "Сторінка $page",
     "next_page": "Наступна сторінка",
-    "previous_page": "Попередня сторінка"
+    "previous_page": "Попередня сторінка",
+    "nore_more_data": "Це все наразі"
   },
   "window": {
     "pin": {

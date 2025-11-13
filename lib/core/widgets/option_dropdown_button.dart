@@ -1,18 +1,27 @@
+// Dart imports:
+import 'dart:math';
+
 // Flutter imports:
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 // Package imports:
-import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:anchor_ui/anchor_ui.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
-class OptionDropDownButton<T> extends StatelessWidget {
+// Project imports:
+import '../../foundation/platform.dart';
+import '../settings/providers.dart';
+import 'booru_anchor.dart';
+
+class OptionDropDownButton<T> extends ConsumerStatefulWidget {
   const OptionDropDownButton({
     required this.value,
     required this.onChanged,
     required this.items,
     super.key,
     this.alignment = AlignmentDirectional.centerEnd,
-    this.backgroundColor,
     this.padding,
   });
 
@@ -20,91 +29,196 @@ class OptionDropDownButton<T> extends StatelessWidget {
   final void Function(T? value) onChanged;
   final List<DropdownMenuItem<T>> items;
   final AlignmentDirectional alignment;
-  final Color? backgroundColor;
   final EdgeInsetsGeometry? padding;
 
   @override
+  ConsumerState<OptionDropDownButton<T>> createState() =>
+      _OptionDropDownButtonState<T>();
+}
+
+class _OptionDropDownButtonState<T>
+    extends ConsumerState<OptionDropDownButton<T>> {
+  final _controller = AnchorController();
+  final _scrollController = ScrollController();
+  final _itemKey = GlobalKey();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _scrollToSelectedItem() {
+    final selectedIndex = widget.items.indexWhere(
+      (item) => item.value == widget.value,
+    );
+
+    if (selectedIndex == -1) return;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!_scrollController.hasClients) return;
+
+      final itemContext = _itemKey.currentContext;
+      if (itemContext == null) return;
+
+      final itemHeight = itemContext.size?.height ?? 0;
+      if (itemHeight == 0) return;
+
+      final targetOffset = selectedIndex * itemHeight;
+
+      _scrollController.jumpTo(
+        targetOffset.clamp(
+          0.0,
+          _scrollController.position.maxScrollExtent,
+        ),
+      );
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Card(
-      color:
-          backgroundColor ??
-          Theme.of(context).colorScheme.surfaceContainerHighest,
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton(
-          dropdownColor: Theme.of(context).colorScheme.surfaceContainerHighest,
-          alignment: alignment,
-          isDense: true,
-          value: value,
-          borderRadius: BorderRadius.circular(8),
-          padding:
-              padding ??
-              const EdgeInsets.symmetric(
-                horizontal: 8,
-                vertical: 8,
+    final hapticLevel = ref.watch(hapticFeedbackLevelProvider);
+    final isDesktop = isDesktopPlatform();
+
+    return BooruAnchor(
+      controller: _controller,
+      viewPadding: isDesktop
+          ? const EdgeInsets.all(4)
+          : const EdgeInsets.symmetric(
+              horizontal: 12,
+              vertical: 32,
+            ),
+      placement: Placement.bottomEnd,
+      overlayBuilder: (context) {
+        return Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 4,
+            vertical: 4,
+          ),
+          constraints: BoxConstraints(
+            maxWidth: min(MediaQuery.widthOf(context), 200),
+            maxHeight: min(MediaQuery.heightOf(context) / 3, 400),
+          ),
+          child: Scrollbar(
+            controller: _scrollController,
+            thickness: 4,
+            radius: const Radius.circular(12),
+            child: SingleChildScrollView(
+              controller: _scrollController,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: widget.items
+                    .asMap()
+                    .entries
+                    .map(
+                      (entry) => _OptionDropDownItem<T>(
+                        key: entry.key == 0 ? _itemKey : null,
+                        value: entry.value.value as T,
+                        isSelected: entry.value.value == widget.value,
+                        onTap: () {
+                          _controller.hide();
+                          widget.onChanged(entry.value.value);
+                        },
+                        child: entry.value.child,
+                      ),
+                    )
+                    .toList(),
               ),
-          icon: Padding(
-            padding: const EdgeInsets.only(left: 4),
-            child: Icon(
-              Symbols.keyboard_arrow_down,
-              size: 20,
-              color: Theme.of(context).iconTheme.color,
             ),
           ),
-          onChanged: onChanged,
-          items: items,
+        );
+      },
+      child: Card(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {
+            if (hapticLevel.isFull) {
+              HapticFeedback.selectionClick();
+            }
+            _controller.toggle();
+            if (_controller.isShowing) {
+              _scrollToSelectedItem();
+            }
+          },
+          borderRadius: BorderRadius.circular(8),
+          child: Padding(
+            padding:
+                widget.padding ??
+                const EdgeInsets.symmetric(
+                  horizontal: 8,
+                  vertical: 8,
+                ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Flexible(
+                  child: widget.items
+                      .firstWhere((item) => item.value == widget.value)
+                      .child,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 4),
+                  child: Icon(
+                    Symbols.keyboard_arrow_down,
+                    size: 20,
+                    color: Theme.of(context).iconTheme.color,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
   }
 }
 
-class OptionDropDownButtonDesktop<T> extends StatelessWidget {
-  const OptionDropDownButtonDesktop({
-    required this.value,
-    required this.onChanged,
-    required this.items,
+class _OptionDropDownItem<T> extends StatelessWidget {
+  const _OptionDropDownItem({
     super.key,
-    this.alignment = AlignmentDirectional.centerEnd,
-    this.backgroundColor,
+    required this.value,
+    required this.isSelected,
+    required this.onTap,
+    required this.child,
   });
 
   final T value;
-  final void Function(T? value) onChanged;
-  final List<DropdownMenuItem<T>> items;
-  final AlignmentDirectional alignment;
-  final Color? backgroundColor;
+  final bool isSelected;
+  final VoidCallback onTap;
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color:
-          backgroundColor ??
-          Theme.of(context).colorScheme.surfaceContainerHighest,
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton2(
-          alignment: alignment,
-          isDense: true,
-          value: value,
-          buttonStyleData: const ButtonStyleData(
-            padding: EdgeInsets.only(
-              right: 8,
-              left: 8,
-            ),
-            height: 28,
-            width: 60,
+    final colorScheme = Theme.of(context).colorScheme;
+    final isDesktop = isDesktopPlatform();
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(8),
+        child: Container(
+          margin: const EdgeInsets.symmetric(
+            vertical: 2,
           ),
-          menuItemStyleData: const MenuItemStyleData(
-            height: 28,
+          padding: EdgeInsets.symmetric(
+            horizontal: 12,
+            vertical: isDesktop ? 4 : 12,
           ),
-          iconStyleData: IconStyleData(
-            icon: Icon(
-              Symbols.keyboard_arrow_down,
-              color: Theme.of(context).iconTheme.color,
-            ),
-            iconSize: 14,
+          decoration: isSelected
+              ? BoxDecoration(
+                  color: colorScheme.primaryContainer.withValues(alpha: 0.3),
+                  borderRadius: BorderRadius.circular(8),
+                )
+              : null,
+          child: Row(
+            children: [
+              Flexible(
+                child: child,
+              ),
+            ],
           ),
-          onChanged: onChanged,
-          items: items,
         ),
       ),
     );

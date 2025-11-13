@@ -10,6 +10,7 @@ import '../tracking/providers.dart';
 import 'analytics_interface.dart';
 import 'analytics_network_info.dart';
 import 'analytics_view_info.dart';
+import 'download.dart';
 
 final analyticsProvider = FutureProvider<AnalyticsInterface?>(
   (ref) async {
@@ -18,6 +19,16 @@ final analyticsProvider = FutureProvider<AnalyticsInterface?>(
     return tracker?.analytics;
   },
 );
+
+final analyticsDownloadObserverProvider =
+    Provider.family<AnalyticsDownloadObserver, BooruConfigAuth>((ref, config) {
+      return AnalyticsDownloadObserver(
+        analytics: ref
+            .watch(analyticsProvider)
+            .whenOrNull(data: (data) => data),
+        getConfig: () => config,
+      );
+    });
 
 class NoAnalyticsInterface implements AnalyticsInterface {
   @override

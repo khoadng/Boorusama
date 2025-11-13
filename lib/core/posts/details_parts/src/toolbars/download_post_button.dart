@@ -7,6 +7,7 @@ import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import '../../../../configs/config/providers.dart';
 import '../../../../downloads/downloader/providers.dart';
 import '../../../../widgets/booru_tooltip.dart';
 import '../../../post/types.dart';
@@ -23,13 +24,24 @@ class DownloadPostButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final notifier = ref.watch(
+      downloadNotifierProvider(
+        ref.watch(
+          downloadNotifierParamsProvider((
+            ref.watchConfigAuth,
+            ref.watchConfigDownload,
+          )),
+        ),
+      ).notifier,
+    );
+
     return BooruTooltip(
       message: context.t.download.download,
       child: !small
           ? IconButton(
               splashRadius: 16,
               onPressed: () {
-                ref.download(post);
+                notifier.download(post);
               },
               icon: const Icon(
                 Symbols.download,
@@ -39,7 +51,7 @@ class DownloadPostButton extends ConsumerWidget {
               color: Colors.transparent,
               child: InkWell(
                 onTap: () {
-                  ref.download(post);
+                  notifier.download(post);
                 },
                 child: const Padding(
                   padding: EdgeInsets.all(4),

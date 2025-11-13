@@ -57,7 +57,7 @@ class Routes {
       path: state.uri.toString(),
       child: const AppLockWithSettings(
         child: AppRatingScope(
-          child: BackgroundDownloaderBuilder(
+          child: DownloaderScope(
             child: CustomContextMenuOverlay(
               child: Focus(
                 autofocus: true,

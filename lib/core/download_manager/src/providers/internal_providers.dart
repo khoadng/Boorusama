@@ -1,8 +1,8 @@
 // Package imports:
-import 'package:background_downloader/background_downloader.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import '../../../downloads/background/types.dart';
 import '../types/download_filter.dart';
 import '../types/download_task_update.dart';
 import 'download_task_updates_notifier.dart';

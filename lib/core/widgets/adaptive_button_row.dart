@@ -10,6 +10,7 @@ import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../foundation/platform.dart';
+import 'booru_anchor.dart';
 
 const double _kMinButtonWidth = 40;
 const double _kMaxButtonWidth = 150;
@@ -88,6 +89,7 @@ class AdaptiveButtonRow extends StatefulWidget {
     this.onOpened,
     this.onClosed,
     this.onMenuTap,
+    this.reduceAnimation,
     super.key,
   });
 
@@ -103,6 +105,7 @@ class AdaptiveButtonRow extends StatefulWidget {
     VoidCallback? onOpened,
     VoidCallback? onClosed,
     VoidCallback? onMenuTap,
+    bool? reduceAnimation,
     Key? key,
   }) => AdaptiveButtonRow._(
     buttons: buttons,
@@ -117,6 +120,7 @@ class AdaptiveButtonRow extends StatefulWidget {
     onOpened: onOpened,
     onClosed: onClosed,
     onMenuTap: onMenuTap,
+    reduceAnimation: reduceAnimation,
     key: key,
   );
 
@@ -128,6 +132,7 @@ class AdaptiveButtonRow extends StatefulWidget {
     int? maxVisibleButtons,
     MainAxisAlignment? alignment,
     EdgeInsetsGeometry? padding,
+    bool? reduceAnimation,
     Key? key,
   }) => AdaptiveButtonRow._(
     buttons: buttons,
@@ -138,6 +143,7 @@ class AdaptiveButtonRow extends StatefulWidget {
     maxVisibleButtons: maxVisibleButtons,
     alignment: alignment,
     padding: padding,
+    reduceAnimation: reduceAnimation,
     key: key,
   );
 
@@ -149,6 +155,7 @@ class AdaptiveButtonRow extends StatefulWidget {
     MainAxisAlignment? alignment,
     int? maxVisibleButtons,
     EdgeInsetsGeometry? padding,
+    bool? reduceAnimation,
     Key? key,
   }) => AdaptiveButtonRow._(
     buttons: buttons,
@@ -159,6 +166,7 @@ class AdaptiveButtonRow extends StatefulWidget {
     alignment: alignment,
     maxVisibleButtons: maxVisibleButtons,
     padding: padding,
+    reduceAnimation: reduceAnimation,
     key: key,
   );
 
@@ -169,6 +177,7 @@ class AdaptiveButtonRow extends StatefulWidget {
   final int? maxVisibleButtons;
   final MainAxisAlignment? alignment;
   final EdgeInsetsGeometry? padding;
+  final bool? reduceAnimation;
 
   // Menu-specific
   final Widget? overflowIcon;
@@ -435,41 +444,14 @@ class _AdaptiveButtonRowState extends State<AdaptiveButtonRow> {
     List<ButtonData> overflowButtons,
     int visibleCount,
   ) {
-    final colorScheme = Theme.of(context).colorScheme;
-
     final isDesktop = isDesktopPlatform();
 
-    return AnchorPopover(
+    return BooruAnchor(
       controller: _controller,
-      arrowShape: const NoArrow(),
-      placement: Placement.bottom,
-      triggerMode: const AnchorTriggerMode.manual(),
-      border: BorderSide(
-        color: colorScheme.outlineVariant,
-        width: 0.5,
-      ),
-      backdropBuilder: (context) => GestureDetector(
-        onTap: () {
-          _controller.hide();
-        },
-        child: Container(
-          color: isDesktop
-              ? Colors.transparent
-              : Colors.black.withValues(alpha: 0.75),
-        ),
-      ),
-      boxShadow: [
-        BoxShadow(
-          color: colorScheme.shadow.withValues(alpha: 0.2),
-          blurRadius: 8,
-          offset: const Offset(0, 4),
-        ),
-      ],
-      backgroundColor: isDesktop ? null : colorScheme.surface,
-      viewPadding: const EdgeInsets.all(4),
       onShow: widget.onOpened,
       onHide: widget.onClosed,
       spacing: 12,
+      reduceAnimation: widget.reduceAnimation,
       overlayBuilder: (context) => Container(
         padding: const EdgeInsets.symmetric(
           horizontal: 8,

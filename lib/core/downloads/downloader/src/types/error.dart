@@ -22,6 +22,8 @@ sealed class DownloadError {
 
   final Option<String> savedPath;
   final String fileName;
+
+  String getErrorMessage();
 }
 
 final class HttpDownloadError extends DownloadError {
@@ -32,6 +34,11 @@ final class HttpDownloadError extends DownloadError {
   });
 
   final DioException exception;
+
+  @override
+  String getErrorMessage() {
+    return exception.message ?? 'An unknown HTTP error occurred.';
+  }
 }
 
 final class GenericDownloadError extends DownloadError {
@@ -42,6 +49,11 @@ final class GenericDownloadError extends DownloadError {
   });
 
   final String message;
+
+  @override
+  String getErrorMessage() {
+    return message;
+  }
 }
 
 final class FileSystemDownloadError extends DownloadError {
@@ -65,4 +77,22 @@ final class FileSystemDownloadError extends DownloadError {
 
   late FileSystemDownloadErrorType type;
   final FileSystemException error;
+
+  @override
+  String getErrorMessage() {
+    return switch (type) {
+      FileSystemDownloadErrorType.directoryNotFound =>
+        'The specified directory was not found.',
+      FileSystemDownloadErrorType.restrictedDirectory =>
+        'The specified directory is restricted and cannot be accessed.',
+      FileSystemDownloadErrorType.needElevatedPermission =>
+        'Elevated permissions are required to access the specified directory.',
+      FileSystemDownloadErrorType.readOnlyDirectory =>
+        'The specified directory is read-only and cannot be written to.',
+      FileSystemDownloadErrorType.failedToCreateFile =>
+        'Failed to create the file in the specified directory.',
+      FileSystemDownloadErrorType.fileNameTooLong =>
+        'The specified file name is too long for the file system.',
+    };
+  }
 }

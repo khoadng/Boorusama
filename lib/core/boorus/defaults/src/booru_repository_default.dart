@@ -227,7 +227,18 @@ class PostGestureHandler {
   }
 
   void handleDownload(WidgetRef ref, Post post) {
-    ref.download(post);
+    ref
+        .read(
+          downloadNotifierProvider(
+            ref.read(
+              downloadNotifierParamsProvider((
+                ref.readConfigAuth,
+                ref.readConfigDownload,
+              )),
+            ),
+          ).notifier,
+        )
+        .download(post);
   }
 
   void handleShare(WidgetRef ref, Post post) {

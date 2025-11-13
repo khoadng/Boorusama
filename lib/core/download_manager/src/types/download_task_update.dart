@@ -1,6 +1,8 @@
 // Package imports:
-import 'package:background_downloader/background_downloader.dart';
 import 'package:equatable/equatable.dart';
+
+// Project imports:
+import '../../../downloads/background/types.dart';
 
 class DownloadTaskUpdateState extends Equatable {
   const DownloadTaskUpdateState({

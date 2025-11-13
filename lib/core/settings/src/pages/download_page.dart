@@ -105,7 +105,10 @@ class DownloadSettingsInteractionBlocker extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final hasCustomDownload = ref.watch(
       currentReadOnlyBooruConfigDownloadProvider.select(
-        (value) => value.hasCustomDownloadLocation,
+        (value) => switch (value.location) {
+          final location? when location.isNotEmpty => true,
+          _ => false,
+        },
       ),
     );
     final config = ref.watchConfig;

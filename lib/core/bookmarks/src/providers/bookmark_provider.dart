@@ -262,25 +262,45 @@ class BookmarkNotifier extends AsyncNotifier<BookmarkState> {
           downloadUrl: bookmark.originalUrl,
         );
 
-        return downloader
-            .downloadWithSettings(
-              settings,
-              config: download,
-              url: bookmark.originalUrl,
-              metadata: DownloaderMetadata(
-                thumbnailUrl: bookmark.thumbnailUrl,
-                fileSize: null,
-                siteUrl: bookmark.sourceUrl,
-                group: null,
-              ),
-              filename: fileName,
-              headers: headers,
-            )
-            .run();
+        return downloader.download(
+          DownloadOptions.fromSettings(
+            settings,
+            config: download,
+            url: bookmark.originalUrl,
+            metadata: DownloaderMetadata(
+              thumbnailUrl: bookmark.thumbnailUrl,
+              fileSize: null,
+              siteUrl: bookmark.sourceUrl,
+              group: null,
+            ),
+            filename: fileName,
+            headers: headers,
+          ),
+        );
       },
     ).toList();
 
-    await Future.wait(tasks);
+    final results = await Future.wait(tasks);
+
+    final failures = results.whereType<DownloadFailure>().toList();
+
+    if (failures.isNotEmpty) {
+      final context = navigatorKey.currentContext;
+
+      final uniqueErrors = failures
+          .map((e) => e.error.getErrorMessage())
+          .toSet()
+          .take(3)
+          .join('\n');
+
+      if (context != null && context.mounted) {
+        showErrorToast(
+          context,
+          'Download failed:\n$uniqueErrors',
+          duration: const Duration(seconds: 5),
+        );
+      }
+    }
   }
 }
 

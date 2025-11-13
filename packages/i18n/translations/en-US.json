@@ -1210,7 +1210,7 @@
   },
   "infinite_scroll": {
     "load_more": "Load more",
-    "bottom_reached": "That's all for now",
+    "nore_more_data": "That's all for now",
     "page_label": "Page $page",
     "next_page": "Next page",
     "previous_page": "Previous page"

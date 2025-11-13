@@ -220,7 +220,18 @@ class DanbooruRepository extends BooruRepositoryDefault {
       handleDanbooruGestureAction(
         action,
         hapticLevel: ref.read(hapticFeedbackLevelProvider),
-        onDownload: () => ref.download(post),
+        onDownload: () => ref
+            .read(
+              downloadNotifierProvider(
+                ref.read(
+                  downloadNotifierParamsProvider((
+                    ref.readConfigAuth,
+                    ref.readConfigDownload,
+                  )),
+                ),
+              ).notifier,
+            )
+            .download(post),
         onShare: () => ref
             .read(shareProvider)
             .sharePost(

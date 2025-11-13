@@ -11,7 +11,9 @@ import 'package:percent_indicator/percent_indicator.dart';
 import 'package:share_plus/share_plus.dart';
 
 // Project imports:
+import '../../../../foundation/loggers.dart';
 import '../../../../foundation/path.dart';
+import '../../../analytics/providers.dart';
 import '../../../configs/config/types.dart';
 import '../../../download_manager/providers.dart';
 import '../../../download_manager/types.dart';
@@ -19,6 +21,9 @@ import '../../../downloads/configs/widgets.dart';
 import '../../../downloads/downloader/providers.dart';
 import '../../../downloads/downloader/types.dart';
 import '../../../downloads/filename/types.dart';
+import '../../../downloads/urls/providers.dart';
+import '../../../http/client/providers.dart';
+import '../../../settings/providers.dart';
 import '../../../widgets/booru_dialog.dart';
 import '../../post/types.dart';
 
@@ -49,9 +54,23 @@ final _downloadProvider =
       return ref
           .watch(
             downloadNotifierProvider((
-              auth: auth,
               download: download,
+              downloadFileUrlExtractor: ref.watch(
+                downloadFileUrlExtractorProvider(auth),
+              ),
+              observer: ref.watch(
+                analyticsDownloadObserverProvider(auth),
+              ),
               filenameBuilder: filenameBuilder,
+              canDownloadMultipleFiles: ref.watch(
+                downloadMultipleFileCheckProvider(auth),
+              ),
+              headers: ref.watch(
+                httpHeadersProvider(auth),
+              ),
+              settings: ref.watch(settingsProvider),
+              downloader: ref.watch(downloadServiceProvider),
+              logger: ref.watch(loggerProvider),
             )).notifier,
           )
           .download(post);
