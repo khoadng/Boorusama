@@ -1,1 +1,1 @@
-export 'src/votes_notifier_mixin.dart';
+export 'src/votes_state_helpers.dart';

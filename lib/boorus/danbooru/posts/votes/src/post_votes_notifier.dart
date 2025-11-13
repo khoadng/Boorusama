@@ -34,8 +34,7 @@ final danbooruPostVoteProvider = Provider.autoDispose
     );
 
 class PostVotesNotifier
-    extends FamilyNotifier<IMap<int, DanbooruPostVote?>, BooruConfigAuth>
-    with VotesNotifierMixin<DanbooruPostVote, DanbooruPost> {
+    extends FamilyNotifier<IMap<int, DanbooruPostVote?>, BooruConfigAuth> {
   @override
   IMap<int, DanbooruPostVote?> build(BooruConfigAuth arg) {
     return <int, DanbooruPostVote?>{}.lock;
@@ -43,36 +42,48 @@ class PostVotesNotifier
 
   PostVoteRepository get repo => ref.read(danbooruPostVoteRepoProvider(arg));
 
-  @override
-  Future<DanbooruPostVote?> Function(int postId) get upvoter => repo.upvote;
+  Future<void> upvote(int postId, {bool localOnly = false}) async {
+    final vote = localOnly
+        ? DanbooruPostVote.local(postId: postId, score: 1)
+        : await repo.upvote(postId);
 
-  @override
-  Future<bool> Function(int postId) get voteRemover => repo.removeVote;
+    state = VotesStateHelpers.updateVote(state, vote);
+  }
 
-  @override
-  Future<DanbooruPostVote?> Function(int postId) get downvoter => repo.downvote;
+  Future<void> downvote(int postId, {bool localOnly = false}) async {
+    final vote = localOnly
+        ? DanbooruPostVote.local(postId: postId, score: -1)
+        : await repo.downvote(postId);
 
-  @override
-  DanbooruPostVote Function(int postId, int score) get localVoteBuilder =>
-      (postId, score) => DanbooruPostVote.local(postId: postId, score: score);
+    state = VotesStateHelpers.updateVote(state, vote);
+  }
 
-  @override
-  void Function(IMap<int, DanbooruPostVote?> data) get updateVotes =>
-      (data) => state = data;
+  void removeLocalVote(int postId) {
+    state = VotesStateHelpers.removeVoteFromState(state, postId);
+  }
 
-  @override
-  IMap<int, DanbooruPostVote?> get votes => state;
+  Future<void> removeVote(int postId) async {
+    final success = await repo.removeVote(postId);
+    if (success) {
+      removeLocalVote(postId);
+    }
+  }
 
-  @override
-  Future<List<DanbooruPostVote>> Function(List<DanbooruPost> posts)
-  get votesFetcher => (posts) async {
+  Future<void> getVotes(List<DanbooruPost> posts) async {
     final user = await ref.read(danbooruCurrentUserProvider(arg).future);
-    if (user == null) return [];
+    if (user == null) return;
 
     final postIds = posts.map((e) => e.id).toList();
+    final postIdsToFetch = VotesStateHelpers.filterPostIdsNeedingFetch(
+      state,
+      postIds,
+    );
 
-    return repo.getPostVotesFromUser(postIds, user.id);
-  };
+    if (postIdsToFetch.isEmpty) return;
+
+    final fetchedVotes = await repo.getPostVotesFromUser(postIds, user.id);
+    state = VotesStateHelpers.mergeVotesIntoState(state, postIds, fetchedVotes);
+  }
 }
 
 extension DanbooruVoteX on WidgetRef {

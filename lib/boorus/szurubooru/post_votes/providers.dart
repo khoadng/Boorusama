@@ -13,62 +13,67 @@ import '../posts/types.dart';
 import 'types.dart';
 
 class SzurubooruPostVotesNotifier
-    extends FamilyNotifier<IMap<int, SzurubooruPostVote?>, BooruConfigAuth>
-    with VotesNotifierMixin<SzurubooruPostVote, SzurubooruPost> {
+    extends FamilyNotifier<IMap<int, SzurubooruPostVote?>, BooruConfigAuth> {
   @override
   IMap<int, SzurubooruPostVote?> build(BooruConfigAuth arg) {
     return <int, SzurubooruPostVote?>{}.lock;
   }
 
+  SzurubooruClient get client => ref.read(szurubooruClientProvider(arg));
+
   void _removeLocalFavorite(int postId) {
     ref.read(favoritesProvider(arg).notifier).removeLocalFavorite(postId);
   }
 
-  SzurubooruClient get client => ref.read(szurubooruClientProvider(arg));
+  Future<void> upvote(int postId, {bool localOnly = false}) async {
+    final vote = localOnly
+        ? SzurubooruPostVote.local(postId: postId, score: 1)
+        : await client
+              .upvotePost(postId: postId)
+              .then(SzurubooruPostVote.fromPostDto);
 
-  @override
-  Future<SzurubooruPostVote?> Function(int postId) get upvoter =>
-      (postId) => client
-          .upvotePost(postId: postId)
-          .then(SzurubooruPostVote.fromPostDto);
+    state = VotesStateHelpers.updateVote(state, vote);
+  }
 
-  @override
-  Future<bool> Function(int postId) get voteRemover => (postId) async {
-    await client.unvotePost(postId: postId);
+  Future<void> downvote(int postId, {bool localOnly = false}) async {
+    if (localOnly) {
+      state = VotesStateHelpers.updateVote(
+        state,
+        SzurubooruPostVote.local(postId: postId, score: -1),
+      );
+      return;
+    }
 
+    final post = await client.downvotePost(postId: postId);
     _removeLocalFavorite(postId);
+    state = VotesStateHelpers.updateVote(
+      state,
+      SzurubooruPostVote.fromPostDto(post),
+    );
+  }
 
-    return true;
-  };
+  void removeLocalVote(int postId) {
+    state = VotesStateHelpers.removeVoteFromState(state, postId);
+  }
 
-  @override
-  Future<SzurubooruPostVote?> Function(int postId) get downvoter =>
-      (postId) async {
-        final post = await client.downvotePost(postId: postId);
+  Future<void> removeVote(int postId) async {
+    await client.unvotePost(postId: postId);
+    _removeLocalFavorite(postId);
+    removeLocalVote(postId);
+  }
 
-        _removeLocalFavorite(postId);
+  Future<void> getVotes(List<SzurubooruPost> posts) async {
+    final postIds = posts.map((post) => post.id).toList();
+    final postIdsToFetch = VotesStateHelpers.filterPostIdsNeedingFetch(
+      state,
+      postIds,
+    );
 
-        return SzurubooruPostVote.fromPostDto(post);
-      };
+    if (postIdsToFetch.isEmpty) return;
 
-  @override
-  SzurubooruPostVote Function(int postId, int score) get localVoteBuilder =>
-      (postId, score) => SzurubooruPostVote.local(postId: postId, score: score);
-
-  @override
-  void Function(IMap<int, SzurubooruPostVote?> data) get updateVotes =>
-      (data) => state = data;
-
-  @override
-  IMap<int, SzurubooruPostVote?> get votes => state;
-
-  @override
-  Future<List<SzurubooruPostVote>> Function(List<SzurubooruPost> posts)
-  get votesFetcher => (posts) async {
-    final votes = posts.map(SzurubooruPostVote.fromPost).toList();
-
-    return votes;
-  };
+    final fetchedVotes = posts.map(SzurubooruPostVote.fromPost).toList();
+    state = VotesStateHelpers.mergeVotesIntoState(state, postIds, fetchedVotes);
+  }
 }
 
 final szurubooruPostVotesProvider =
