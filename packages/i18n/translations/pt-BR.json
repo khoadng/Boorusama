@@ -216,7 +216,8 @@
     "newest": "Mais novo",
     "oldest": "Mais antigo",
     "random": "Aleatório",
-    "ordered": "Ordenado"
+    "ordered": "Ordenado",
+    "top": "Top"
   },
   "search": {
     "errors": {
@@ -473,12 +474,32 @@
           "others": "Outros",
           "free": "Disponível"
         }
-      }
+      },
+      "error_loading_cache_info": "Erro ao carregar informação do cache"
     },
     "backup_and_restore": {
       "backup_and_restore": "Backup e Restaurar",
       "import": "Importar",
-      "export": "Exportar"
+      "export": "Exportar",
+      "advanced_backup": "Backup Avançado",
+      "exporting": "Exportando...",
+      "export_to_clipboard": "Exportar para área de transferência",
+      "import_from_clipboard": "Importar da área de transferência",
+      "no_sources_selected": "Nenhuma fonte selecionada",
+      "export_success": "{source} exportada com sucesso",
+      "export_failed": "Falha ao exportar {source}: {error}",
+      "import_success": "{source} importada com sucesso",
+      "import_failed": "Falha ao importar {source}: {error}",
+      "transfer_data": "Transferir dados",
+      "send": "Enviar",
+      "receive": "Receber",
+      "backup_data": "Dados de backup",
+      "advanced_export_import": "Exportação/importação avançada",
+      "auto_backup": "Backup automático",
+      "auto_backup_tooltip": "Backup são criados quando você abre o app. Nenhum backup é feito enquanto o app estiver fechado.",
+      "backup_in_progress": "Backup já em progresso",
+      "export_operation_failed": "Exportação falhou: {error}",
+      "import_operation_failed": "Importação falhou: {error}"
     },
     "image_details": {
       "ui_overlay": {
@@ -724,5 +745,10 @@
     "recently_created": "Criado recentemente",
     "last_updated": "Última atualização",
     "count": "Contagem"
+  },
+  "video_player": {
+    "speed": {
+      "normal": "Normal"
+    }
   }
 }
