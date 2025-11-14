@@ -17,44 +17,50 @@ class TagOtherNames extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return !context.isLargeScreen
-        ? otherNames != null
-              ? otherNames!.length > 3
-                    ? Container(
-                        margin: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 4,
-                        ),
-                        height: 32,
-                        child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: otherNames!.length,
-                          itemBuilder: (context, index) =>
-                              OtherNameChip(otherName: otherNames![index]),
-                        ),
-                      )
-                    : Wrap(
-                        alignment: WrapAlignment.center,
-                        runAlignment: WrapAlignment.center,
-                        children: otherNames!
-                            .map((e) => OtherNameChip(otherName: e))
-                            .toList(),
-                      )
-              : const TagChipsPlaceholder(height: 42, itemCount: 10)
-        : SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 2),
-              child: otherNames != null
-                  ? Wrap(
-                      alignment: WrapAlignment.center,
-                      runAlignment: WrapAlignment.center,
-                      children: otherNames!
-                          .map((e) => OtherNameChip(otherName: e))
-                          .toList(),
-                    )
-                  : const TagChipsPlaceholder(),
+    return switch (context.isLargeScreen) {
+      false => _buildSmallLayout(),
+      true => _buildLargeLayout(),
+    };
+  }
+
+  Widget _buildSmallLayout() {
+    return switch (otherNames) {
+      final names? => LayoutBuilder(
+        builder: (context, constraints) => SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              minWidth: constraints.maxWidth,
             ),
-          );
+            child: IntrinsicWidth(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: names
+                    .map((e) => OtherNameChip(otherName: e))
+                    .toList(),
+              ),
+            ),
+          ),
+        ),
+      ),
+      null => const TagChipsPlaceholder(height: 42, itemCount: 10),
+    };
+  }
+
+  Widget _buildLargeLayout() {
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 2),
+        child: switch (otherNames) {
+          final names? => Wrap(
+            alignment: WrapAlignment.center,
+            runAlignment: WrapAlignment.center,
+            children: names.map((e) => OtherNameChip(otherName: e)).toList(),
+          ),
+          null => const TagChipsPlaceholder(),
+        },
+      ),
+    );
   }
 }
 
