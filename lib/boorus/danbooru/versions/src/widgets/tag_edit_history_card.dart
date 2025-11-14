@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import '../../../../../core/configs/config/providers.dart';
 import '../../../../../core/configs/config/types.dart';
 import '../../../../../core/images/booru_image.dart';
 import '../../../../../core/posts/details/routes.dart';
@@ -16,6 +15,7 @@ import '../../../../../core/themes/theme/types.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../../users/user/providers.dart';
 import '../types/danbooru_post_version.dart';
+import '../types/utils.dart';
 import 'tag_changed_text.dart';
 
 class TagEditHistoryCard extends StatelessWidget {
@@ -33,10 +33,10 @@ class TagEditHistoryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final thumbnail = (configSearch?.filter.canView(version.rating) ?? true)
-        ? version.thumbnailUrl
-        : null;
-    final config = configSearch;
+    final thumbnail = resolveThumbnailWithRatingFilter(
+      version: version,
+      configSearch: configSearch,
+    );
 
     return Container(
       padding: const EdgeInsets.symmetric(
@@ -57,31 +57,28 @@ class TagEditHistoryCard extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (thumbnail != null)
-            Consumer(
-              builder: (context, ref, _) {
-                return SizedBox(
+          if (thumbnail case final thumb?)
+            if (configSearch case final config?)
+              Consumer(
+                builder: (context, ref, _) => SizedBox(
                   width: 100,
                   child: Material(
                     child: InkWell(
-                      onTap: config != null
-                          ? () {
-                              goToSinglePostDetailsPage(
-                                ref: ref,
-                                postId: NumericPostId(version.postId),
-                                configSearch: config,
-                              );
-                            }
-                          : null,
+                      onTap: () {
+                        goToSinglePostDetailsPage(
+                          ref: ref,
+                          postId: NumericPostId(version.postId),
+                          configSearch: config,
+                        );
+                      },
                       child: BooruImage(
-                        config: ref.watchConfigAuth,
-                        imageUrl: thumbnail,
+                        config: config.auth,
+                        imageUrl: thumb,
                       ),
                     ),
                   ),
-                );
-              },
-            ),
+                ),
+              ),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

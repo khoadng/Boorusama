@@ -15,11 +15,12 @@ class TagChangedText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final positiveStyle = Theme.of(context).textTheme.bodySmall?.copyWith(
+    final textTheme = Theme.of(context).textTheme;
+    final positiveStyle = textTheme.bodySmall?.copyWith(
       color: Colors.green,
       fontWeight: FontWeight.w800,
     );
-    final negativeStyle = Theme.of(context).textTheme.bodySmall?.copyWith(
+    final negativeStyle = textTheme.bodySmall?.copyWith(
       color: Colors.red,
       fontWeight: FontWeight.w800,
     );
@@ -27,7 +28,7 @@ class TagChangedText extends StatelessWidget {
     return RichText(
       text: TextSpan(
         text: title,
-        style: Theme.of(context).textTheme.titleLarge,
+        style: textTheme.titleLarge,
         children: [
           if (added.isNotEmpty && removed.isNotEmpty)
             TextSpan(
