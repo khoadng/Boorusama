@@ -6,7 +6,7 @@ import '../../../gesture/types.dart';
 import '../../../search/types.dart';
 import '../types/booru_config.dart';
 import '../types/booru_config_data.dart';
-import '../types/rating_parser.dart';
+import '../types/granular_rating_filter.dart';
 
 extension BooruConfigDataConverter on BooruConfigData? {
   BooruConfig? toBooruConfig({required int? id}) {
@@ -36,7 +36,7 @@ extension BooruConfigDataConverter on BooruConfigData? {
       customDownloadLocation: booruConfigData.customDownloadLocation,
       imageDetaisQuality: booruConfigData.imageDetaisQuality,
       videoQuality: booruConfigData.videoQuality,
-      granularRatingFilters: parseGranularRatingFilters(
+      granularRatingFilters: GranularRatingFilter.parse(
         booruConfigData.granularRatingFilterString,
       ),
       postGestures: booruConfigData.postGestures == null
@@ -89,9 +89,7 @@ extension BooruConfigConverter on BooruConfig {
       customDownloadLocation: customDownloadLocation,
       imageDetaisQuality: imageDetaisQuality,
       videoQuality: videoQuality,
-      granularRatingFilterString: granularRatingFilterToString(
-        granularRatingFilters,
-      ),
+      granularRatingFilterString: granularRatingFilters?.toFilterString(),
       postGestures: postGestures?.toJsonString(),
       defaultPreviewImageButtonAction: defaultPreviewImageButtonAction,
       listing: listing?.toJsonString(),

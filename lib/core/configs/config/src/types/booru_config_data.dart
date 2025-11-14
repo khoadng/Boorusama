@@ -11,7 +11,7 @@ import '../../../../themes/configs/types.dart';
 import '../../../gesture/types.dart';
 import '../../../search/types.dart';
 import 'booru_config.dart';
-import 'rating_parser.dart';
+import 'granular_rating_filter.dart';
 
 class BooruConfigData extends Equatable {
   const BooruConfigData({
@@ -238,7 +238,7 @@ extension BooruConfigDataX on BooruConfigData {
   }
 
   Set<Rating>? get granularRatingFilterTyped {
-    return parseGranularRatingFilters(granularRatingFilterString);
+    return GranularRatingFilter.parse(granularRatingFilterString)?.ratings;
   }
 
   ProxySettings? get proxySettingsTyped {
@@ -306,7 +306,7 @@ extension BooruConfigDataCopyWith on BooruConfigData {
           : this.imageDetaisQuality,
       videoQuality: videoQuality != null ? videoQuality() : this.videoQuality,
       granularRatingFilterString: granularRatingFilter != null
-          ? granularRatingFilterToString(granularRatingFilter())
+          ? GranularRatingFilter.parse(granularRatingFilter())?.toFilterString()
           : granularRatingFilterString,
       postGestures: postGestures != null
           ? postGestures()?.toJsonString() ??
