@@ -1,6 +1,3 @@
-// Package imports:
-import 'package:foundation/foundation.dart';
-
 // Project imports:
 import '../../../core/configs/config/types.dart';
 import '../../../core/posts/rating/types.dart';
@@ -23,13 +20,9 @@ class SzurubooruTagQueryComposer implements TagQueryComposer {
         '-rating:unsafe',
       ],
       BooruConfigRatingFilter.custom =>
-        config.filter.granularRatingFiltersWithoutUnknown.toOption().fold(
-          () => [],
-          (ratings) => [
-            ...ratings.map(
-              (e) => '-rating:${ratingToSzurubooruRatingString(e)}',
-            ),
-          ],
+        TagQueryComposer.extractTagsFromGranularFilter(
+          config.filter.granularRatingFilters,
+          (rating) => '-rating:${ratingToSzurubooruRatingString(rating)}',
         ),
     },
   );

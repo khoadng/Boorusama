@@ -1,14 +1,21 @@
 // Dart imports:
 import 'dart:convert';
 
-// Package imports:
-import 'package:foundation/foundation.dart';
-
 // Project imports:
 import '../../configs/config/types.dart';
+import '../../posts/rating/types.dart';
 
 abstract class TagQueryComposer {
   List<String> compose(List<String> tags);
+
+  static List<String> extractTagsFromGranularFilter(
+    GranularRatingFilter? filter,
+    String Function(Rating rating) formatter,
+  ) => switch (filter?.withoutUnknown()) {
+    null => [],
+    final f when f.ratings.isNotEmpty => f.ratings.map(formatter).toList(),
+    _ => [],
+  };
 }
 
 class DefaultTagQueryComposer implements TagQueryComposer {
@@ -29,7 +36,7 @@ class DefaultTagQueryComposer implements TagQueryComposer {
     final data = {
       ...alwaysIncludeTags,
       ...tags,
-      if (ratingTagsFilter != null) ...ratingTagsFilter!,
+      ...?ratingTagsFilter,
     };
 
     return data.toList();
@@ -79,16 +86,12 @@ class LegacyTagQueryComposer implements TagQueryComposer {
         '-rating:explicit',
       ],
       BooruConfigRatingFilter.custom =>
-        config.filter.granularRatingFiltersWithoutUnknown.toOption().fold(
-          () => [],
-          (ratings) => [
-            ...ratings.map(
-              (e) =>
-                  '-rating:${e.toFullString(
-                    legacy: true,
-                  )}',
-            ),
-          ],
+        TagQueryComposer.extractTagsFromGranularFilter(
+          config.filter.granularRatingFilters,
+          (rating) =>
+              '-rating:${rating.toFullString(
+                legacy: true,
+              )}',
         ),
     },
   );

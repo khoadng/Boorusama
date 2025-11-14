@@ -1,6 +1,3 @@
-// Package imports:
-import 'package:foundation/foundation.dart';
-
 // Project imports:
 import '../../../../../core/configs/config/types.dart';
 import '../../../../../core/search/queries/types.dart';
@@ -23,11 +20,9 @@ class DanbooruTagQueryComposer implements TagQueryComposer {
         '-rating:q',
       ],
       BooruConfigRatingFilter.custom =>
-        config.filter.granularRatingFiltersWithoutUnknown.toOption().fold(
-          () => <String>[],
-          (ratings) => [
-            ...ratings.map((e) => '-rating:${e.toShortString()}'),
-          ],
+        TagQueryComposer.extractTagsFromGranularFilter(
+          config.filter.granularRatingFilters,
+          (rating) => '-rating:${rating.toShortString()}',
         ),
     },
   );
