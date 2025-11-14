@@ -17,10 +17,12 @@ import '../../../../settings/types.dart';
 import '../../../../themes/configs/types.dart';
 import '../../../gesture/types.dart';
 import '../../../search/types.dart';
+import 'always_included_tags.dart';
 import 'booru_config_repository.dart';
 import 'granular_rating_filter.dart';
 import 'types.dart';
 
+export 'always_included_tags.dart';
 export 'booru_login_details.dart';
 export 'booru_login_details_impl.dart';
 export 'types.dart';
@@ -99,7 +101,7 @@ class BooruConfig extends Equatable {
       theme: json['theme'] == null
           ? null
           : ThemeConfigs.fromJson(json['theme'] as Map<String, dynamic>),
-      alwaysIncludeTags: json['alwaysIncludeTags'] as String?,
+      alwaysIncludeTags: AlwaysIncludedTags.parse(json['alwaysIncludeTags']),
       blacklistConfigs: BlacklistConfigs.tryParse(
         json['blacklistedConfigs'] ?? json['blacklistedTags'],
       ),
@@ -204,7 +206,7 @@ class BooruConfig extends Equatable {
   final ListingConfigs? listing;
   final ViewerConfigs? viewerConfigs;
   final ThemeConfigs? theme;
-  final String? alwaysIncludeTags;
+  final AlwaysIncludedTags? alwaysIncludeTags;
   final BlacklistConfigs? blacklistConfigs;
   final LayoutConfigs? layout;
   final ProxySettings? proxySettings;
@@ -313,7 +315,7 @@ class BooruConfig extends Equatable {
       'listing': listing?.toJson(),
       'viewer': viewerConfigs?.toJson(),
       'theme': theme?.toJson(),
-      'alwaysIncludeTags': alwaysIncludeTags,
+      'alwaysIncludeTags': alwaysIncludeTags?.toJsonString(),
       'blacklistedTags': blacklistConfigs?.toJson(),
       'layout': layout?.toJson(),
       'proxySettings': proxySettings?.toJson(),
@@ -419,7 +421,7 @@ class BooruConfigSearchFilter extends Equatable
   final BooruConfigRatingFilter ratingFilter;
   @override
   final GranularRatingFilter? granularRatingFilters;
-  final String? alwaysIncludeTags;
+  final AlwaysIncludedTags? alwaysIncludeTags;
   final BooruConfigDeletedItemBehavior deletedItemBehavior;
   @override
   final BooruConfigBannedPostVisibility bannedPostVisibility;

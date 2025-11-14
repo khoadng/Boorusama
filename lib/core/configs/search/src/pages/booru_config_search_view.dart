@@ -1,6 +1,3 @@
-// Dart imports:
-import 'dart:convert';
-
 // Flutter imports:
 import 'package:flutter/material.dart';
 
@@ -14,7 +11,6 @@ import '../../../../search/search/routes.dart';
 import '../../../config/types.dart';
 import '../../../create/providers.dart';
 import '../../../create/widgets.dart';
-import '../types/utils.dart';
 import '../widgets/additional_blacklisted_tags.dart';
 import '../widgets/default_booru_rating_options_tile.dart';
 import '../widgets/effective_tag_preview.dart';
@@ -57,7 +53,9 @@ class BooruConfigSearchView extends ConsumerWidget {
     final alwaysIncludeTags = ref.watch(
       editBooruConfigProvider(
         ref.watch(editBooruConfigIdProvider),
-      ).select((value) => value.alwaysIncludeTags),
+      ).select(
+        (value) => AlwaysIncludedTags.parse(value.alwaysIncludeTags),
+      ),
     );
 
     return SingleChildScrollView(
@@ -94,9 +92,7 @@ class BooruConfigSearchView extends ConsumerWidget {
           const SizedBox(height: 8),
           Builder(
             builder: (context) {
-              final rawTags = queryAsList(alwaysIncludeTags);
-              // filter out tags negated with a minus sign
-              final tags = rawTags.where((e) => !e.startsWith('-')).toList();
+              final tags = alwaysIncludeTags?.includedTags ?? [];
               return _buildTagList(ref, tags);
             },
           ),
@@ -119,9 +115,7 @@ class BooruConfigSearchView extends ConsumerWidget {
           const SizedBox(height: 8),
           Builder(
             builder: (context) {
-              final rawTags = queryAsList(alwaysIncludeTags);
-              // filter out tags negated with a minus sign
-              final tags = rawTags.where((e) => e.startsWith('-')).toList();
+              final tags = alwaysIncludeTags?.excludedTags ?? [];
               return _buildTagList(ref, tags, exclude: true);
             },
           ),
@@ -185,15 +179,13 @@ class BooruConfigSearchView extends ConsumerWidget {
         ...tags.map(
           (e) => Chip(
             backgroundColor: colorScheme.secondaryContainer,
-            label: exclude
-                ? Text(e.substring(1).replaceAll('_', ' '))
-                : Text(e.replaceAll('_', ' ')),
+            label: Text(e.replaceAll('_', ' ')),
             deleteIcon: Icon(
               Symbols.close,
               size: 16,
               color: colorScheme.error,
             ),
-            onDeleted: () => _removeTag(ref, e),
+            onDeleted: () => _removeTag(ref, e, exclude: exclude),
           ),
         ),
         IconButton(
@@ -219,11 +211,14 @@ class BooruConfigSearchView extends ConsumerWidget {
     );
   }
 
-  String? alwaysIncludeTags(WidgetRef ref) => ref.read(
-    editBooruConfigProvider(
-      ref.read(editBooruConfigIdProvider),
-    ).select((value) => value.alwaysIncludeTags),
-  );
+  AlwaysIncludedTags? _getCurrentTags(WidgetRef ref) =>
+      AlwaysIncludedTags.parse(
+        ref.read(
+          editBooruConfigProvider(
+            ref.read(editBooruConfigIdProvider),
+          ).select((value) => value.alwaysIncludeTags),
+        ),
+      );
 
   void _addTag(
     WidgetRef ref,
@@ -232,24 +227,29 @@ class BooruConfigSearchView extends ConsumerWidget {
   }) {
     if (tag.isEmpty) return;
 
-    final tags = queryAsList(alwaysIncludeTags(ref))
-      ..add(exclude ? '-$tag' : tag);
+    final currentTags =
+        _getCurrentTags(ref) ?? const AlwaysIncludedTags.empty();
+    final updatedTags = exclude
+        ? currentTags.addExcluded(tag)
+        : currentTags.addIncluded(tag);
 
-    final json = jsonEncode(tags);
-
-    ref.editNotifier.updateAlwaysIncludeTags(json);
+    ref.editNotifier.updateAlwaysIncludeTags(updatedTags.toJsonString());
   }
 
   void _removeTag(
     WidgetRef ref,
-    String tag,
-  ) {
+    String tag, {
+    bool exclude = false,
+  }) {
     if (tag.isEmpty) return;
 
-    final tags = queryAsList(alwaysIncludeTags(ref))..remove(tag);
+    final currentTags =
+        _getCurrentTags(ref) ?? const AlwaysIncludedTags.empty();
+    final tagToRemove = exclude ? '-$tag' : tag;
+    final updatedTags = currentTags.remove(tagToRemove);
 
-    final json = jsonEncode(tags);
-
-    ref.editNotifier.updateAlwaysIncludeTags(json);
+    ref.editNotifier.updateAlwaysIncludeTags(
+      updatedTags.toJsonString(),
+    );
   }
 }

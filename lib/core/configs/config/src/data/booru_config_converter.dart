@@ -53,7 +53,9 @@ extension BooruConfigDataConverter on BooruConfigData? {
       theme: booruConfigData.theme == null
           ? null
           : ThemeConfigs.fromJsonString(booruConfigData.theme),
-      alwaysIncludeTags: booruConfigData.alwaysIncludeTags,
+      alwaysIncludeTags: AlwaysIncludedTags.parse(
+        booruConfigData.alwaysIncludeTags,
+      ),
       blacklistConfigs: BlacklistConfigs.tryParse(
         booruConfigData.blacklistConfigs,
       ),
@@ -95,7 +97,7 @@ extension BooruConfigConverter on BooruConfig {
       listing: listing?.toJsonString(),
       viewerConfigs: viewerConfigs?.toJsonString(),
       theme: theme?.toJsonString(),
-      alwaysIncludeTags: alwaysIncludeTags,
+      alwaysIncludeTags: alwaysIncludeTags?.toJsonString(),
       blacklistConfigs: blacklistConfigs?.toJsonString(),
       layout: layout?.toJsonString(),
       proxySettings: proxySettings?.toJsonString(),

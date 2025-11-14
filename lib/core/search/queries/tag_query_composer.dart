@@ -1,6 +1,3 @@
-// Dart imports:
-import 'dart:convert';
-
 // Project imports:
 import '../../configs/config/types.dart';
 import '../../posts/rating/types.dart';
@@ -29,9 +26,7 @@ class DefaultTagQueryComposer implements TagQueryComposer {
 
   @override
   List<String> compose(List<String> tags) {
-    final alwaysIncludeTags = _parseAlwaysIncludeTags(
-      config.filter.alwaysIncludeTags,
-    );
+    final alwaysIncludeTags = config.filter.alwaysIncludeTags?.tags ?? [];
 
     final data = {
       ...alwaysIncludeTags,
@@ -40,25 +35,6 @@ class DefaultTagQueryComposer implements TagQueryComposer {
     };
 
     return data.toList();
-  }
-
-  List<String> _parseAlwaysIncludeTags(String? alwaysIncludeTags) {
-    if (alwaysIncludeTags == null || alwaysIncludeTags.isEmpty) {
-      return [];
-    }
-
-    try {
-      final json = jsonDecode(alwaysIncludeTags);
-
-      if (json is List) {
-        final tags = [for (final tag in json) tag as String];
-        return tags;
-      }
-
-      return [];
-    } catch (e) {
-      return [];
-    }
   }
 }
 
