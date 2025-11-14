@@ -32,7 +32,7 @@ class DefaultBooruRatingOptionsTile extends ConsumerWidget {
       value: ref.watch(
         editBooruConfigProvider(
           ref.watch(editBooruConfigIdProvider),
-        ).select((value) => value.ratingFilterTyped),
+        ).select((value) => BooruConfigRatingFilter.parse(value.ratingFilter)),
       ),
       onChanged: (value) =>
           value != null ? ref.editNotifier.updateRatingFilter(value) : null,

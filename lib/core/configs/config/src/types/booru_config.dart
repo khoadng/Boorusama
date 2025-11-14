@@ -5,7 +5,6 @@ import 'dart:convert';
 import 'package:collection/collection.dart';
 import 'package:crypto/crypto.dart';
 import 'package:equatable/equatable.dart';
-import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../../../boorus/booru/types.dart';
@@ -58,9 +57,6 @@ class BooruConfig extends Equatable {
   });
 
   factory BooruConfig.fromJson(Map<String, dynamic> json) {
-    final ratingFilter = json['ratingFilter'] as int?;
-    final bannedPostVisibility = json['bannedPostVisibility'] as int?;
-
     return BooruConfig(
       id: json['id'] as int,
       booruId: json['booruId'] as int,
@@ -70,18 +66,13 @@ class BooruConfig extends Equatable {
       passHash: json['passHash'] as String?,
       url: json['url'] as String,
       name: json['name'] as String,
-      deletedItemBehavior: BooruConfigDeletedItemBehavior
-          .values[json['deletedItemBehavior'] as int],
-      ratingFilter: ratingFilter != null
-          ? BooruConfigRatingFilter.values.getOrNull(ratingFilter) ??
-                BooruConfigRatingFilter.hideNSFW
-          : BooruConfigRatingFilter.hideNSFW,
-      bannedPostVisibility: bannedPostVisibility != null
-          ? BooruConfigBannedPostVisibility.values.getOrNull(
-                  bannedPostVisibility,
-                ) ??
-                BooruConfigBannedPostVisibility.show
-          : BooruConfigBannedPostVisibility.show,
+      deletedItemBehavior: BooruConfigDeletedItemBehavior.parse(
+        json['deletedItemBehavior'],
+      ),
+      ratingFilter: BooruConfigRatingFilter.parse(json['ratingFilter']),
+      bannedPostVisibility: BooruConfigBannedPostVisibility.parse(
+        json['bannedPostVisibility'],
+      ),
       customDownloadFileNameFormat:
           json['customDownloadFileNameFormat'] as String?,
       customBulkDownloadFileNameFormat:
@@ -120,10 +111,9 @@ class BooruConfig extends Equatable {
           : ProxySettings.fromJson(
               json['proxySettings'] as Map<String, dynamic>,
             ),
-      viewerNotesFetchBehavior: json['viewerNotesFetchBehavior'] == null
-          ? null
-          : BooruConfigViewerNotesFetchBehavior
-                .values[json['viewerNotesFetchBehavior'] as int],
+      viewerNotesFetchBehavior: BooruConfigViewerNotesFetchBehavior.tryParse(
+        json['viewerNotesFetchBehavior'],
+      ),
     );
   }
 
@@ -135,8 +125,8 @@ class BooruConfig extends Equatable {
     login: null,
     passHash: null,
     name: '',
-    deletedItemBehavior: BooruConfigDeletedItemBehavior.show,
-    ratingFilter: BooruConfigRatingFilter.none,
+    deletedItemBehavior: BooruConfigDeletedItemBehavior.defaultValue,
+    ratingFilter: BooruConfigRatingFilter.defaultValue,
     bannedPostVisibility: BooruConfigBannedPostVisibility.show,
     url: '',
     customDownloadFileNameFormat: null,
@@ -170,9 +160,9 @@ class BooruConfig extends Equatable {
     login: null,
     passHash: null,
     name: 'new profile',
-    deletedItemBehavior: BooruConfigDeletedItemBehavior.show,
-    ratingFilter: BooruConfigRatingFilter.none,
-    bannedPostVisibility: BooruConfigBannedPostVisibility.show,
+    deletedItemBehavior: BooruConfigDeletedItemBehavior.defaultValue,
+    ratingFilter: BooruConfigRatingFilter.defaultValue,
+    bannedPostVisibility: BooruConfigBannedPostVisibility.defaultValue,
     url: url,
     customDownloadFileNameFormat: customDownloadFileNameFormat,
     customBulkDownloadFileNameFormat: customDownloadFileNameFormat,
@@ -558,8 +548,7 @@ class BooruConfigViewer extends Equatable {
   final BooruConfigViewerNotesFetchBehavior? viewerNotesFetchBehavior;
   final ImageViewerSettings? settings;
 
-  bool get autoFetchNotes =>
-      viewerNotesFetchBehavior == BooruConfigViewerNotesFetchBehavior.auto;
+  bool get autoFetchNotes => viewerNotesFetchBehavior?.isAuto ?? false;
 
   @override
   List<Object?> get props => [
@@ -621,9 +610,6 @@ mixin BooruConfigSearchFilterMixin {
 
     return granularRatingFilters!.where((e) => e != Rating.unknown).toSet();
   }
-
-  bool get hideBannedPosts =>
-      bannedPostVisibility == BooruConfigBannedPostVisibility.hide;
 }
 
 extension BooruConfigX on BooruConfig {

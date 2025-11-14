@@ -79,7 +79,7 @@ Future<PostResult<DanbooruPost>> transformPosts(
 ) async {
   final posts = _filter(
     r.posts,
-    config.filter.hideBannedPosts,
+    config.filter.bannedPostVisibility.isHidden,
   );
 
   final user = await ref.read(danbooruCurrentUserProvider(config.auth).future);

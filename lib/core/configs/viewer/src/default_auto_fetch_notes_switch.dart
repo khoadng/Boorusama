@@ -17,11 +17,11 @@ class DefaultAutoFetchNotesSwitch extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final autoLoadNotes = ref.watch(
+    final noteBehavior = ref.watch(
       editBooruConfigProvider(ref.watch(editBooruConfigIdProvider)).select(
-        (value) =>
-            value.viewerNotesFetchBehaviorTyped ==
-            BooruConfigViewerNotesFetchBehavior.auto,
+        (value) => BooruConfigViewerNotesFetchBehavior.tryParse(
+          value.viewerNotesFetchBehavior,
+        ),
       ),
     );
 
@@ -30,7 +30,7 @@ class DefaultAutoFetchNotesSwitch extends ConsumerWidget {
       subtitle: Text(
         context.t.booru.viewer.auto_fetch_notes_description,
       ),
-      value: autoLoadNotes,
+      value: noteBehavior?.isAuto ?? false,
       onChanged: (value) =>
           ref.editNotifier.updateViewerNotesFetchBehavior(value),
       contentPadding: EdgeInsets.zero,

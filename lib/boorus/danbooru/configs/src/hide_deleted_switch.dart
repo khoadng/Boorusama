@@ -22,9 +22,9 @@ class DanbooruHideDeletedSwitch extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final hideDeleted = ref.watch(
       editBooruConfigProvider(ref.watch(editBooruConfigIdProvider)).select(
-        (value) =>
-            value.deletedItemBehaviorTyped ==
-            BooruConfigDeletedItemBehavior.hide,
+        (value) => BooruConfigDeletedItemBehavior.parse(
+          value.deletedItemBehavior,
+        ).isHidden,
       ),
     );
 
@@ -48,13 +48,16 @@ class DanbooruHideBannedSwitch extends ConsumerWidget {
     final bannedVis = ref.watch(
       editBooruConfigProvider(
         ref.watch(editBooruConfigIdProvider),
-      ).select((value) => value.bannedPostVisibilityTyped),
+      ).select(
+        (value) =>
+            BooruConfigBannedPostVisibility.parse(value.bannedPostVisibility),
+      ),
     );
 
     return BooruSwitchListTile(
       contentPadding: EdgeInsets.zero,
       title: Text(context.t.booru.hide_banned_label),
-      value: bannedVis == BooruConfigBannedPostVisibility.hide,
+      value: bannedVis.isHidden,
       onChanged: (value) => ref.editNotifier.updateBannedPostVisibility(value),
       subtitle: Text(
         context.t.booru.hide_banned_description,

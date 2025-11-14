@@ -241,47 +241,8 @@ extension BooruConfigDataX on BooruConfigData {
     return parseGranularRatingFilters(granularRatingFilterString);
   }
 
-  BooruConfigRatingFilter? get ratingFilterTyped {
-    if (ratingFilter < 0 ||
-        ratingFilter >= BooruConfigRatingFilter.values.length) {
-      return null;
-    }
-
-    return BooruConfigRatingFilter.values[ratingFilter];
-  }
-
-  BooruConfigBannedPostVisibility? get bannedPostVisibilityTyped {
-    if (bannedPostVisibility < 0 ||
-        bannedPostVisibility >= BooruConfigBannedPostVisibility.values.length) {
-      return null;
-    }
-
-    return BooruConfigBannedPostVisibility.values[bannedPostVisibility];
-  }
-
-  BooruConfigDeletedItemBehavior get deletedItemBehaviorTyped {
-    if (deletedItemBehavior < 0 ||
-        deletedItemBehavior >= BooruConfigDeletedItemBehavior.values.length) {
-      return BooruConfigDeletedItemBehavior.show;
-    }
-
-    return BooruConfigDeletedItemBehavior.values[deletedItemBehavior];
-  }
-
   ProxySettings? get proxySettingsTyped {
     return ProxySettings.fromJsonString(proxySettings);
-  }
-
-  BooruConfigViewerNotesFetchBehavior? get viewerNotesFetchBehaviorTyped {
-    final behavior = viewerNotesFetchBehavior;
-
-    if (behavior == null ||
-        behavior < 0 ||
-        behavior >= BooruConfigViewerNotesFetchBehavior.values.length) {
-      return null;
-    }
-
-    return BooruConfigViewerNotesFetchBehavior.values[behavior];
   }
 }
 
