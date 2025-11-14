@@ -20,7 +20,7 @@ class BlacklistConfigs extends Equatable {
       blacklistedTags = null,
       enable = false;
 
-  factory BlacklistConfigs.fromJson(Map<String, dynamic> json) {
+  factory BlacklistConfigs._fromJson(Map<String, dynamic> json) {
     try {
       return BlacklistConfigs(
         combinationMode: json['combinationMode'] as String,
@@ -32,14 +32,20 @@ class BlacklistConfigs extends Equatable {
     }
   }
 
-  factory BlacklistConfigs.fromJsonString(String? jsonString) =>
+  factory BlacklistConfigs._fromJsonString(String? jsonString) =>
       switch (jsonString) {
         null => BlacklistConfigs.defaults(),
         final String s => tryDecodeJson(s).fold(
           (_) => BlacklistConfigs.defaults(),
-          (json) => BlacklistConfigs.fromJson(json),
+          (json) => BlacklistConfigs._fromJson(json),
         ),
       };
+
+  static BlacklistConfigs? tryParse(dynamic data) => switch (data) {
+    final Map<String, dynamic> json => BlacklistConfigs._fromJson(json),
+    final String jsonString => BlacklistConfigs._fromJsonString(jsonString),
+    _ => null,
+  };
 
   BlacklistConfigs copyWith({
     String? combinationMode,

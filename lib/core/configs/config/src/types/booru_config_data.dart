@@ -234,7 +234,7 @@ extension BooruConfigDataX on BooruConfigData {
   }
 
   BlacklistConfigs? get blacklistConfigsTyped {
-    return BlacklistConfigs.fromJsonString(blacklistConfigs);
+    return BlacklistConfigs.tryParse(blacklistConfigs);
   }
 
   Set<Rating>? get granularRatingFilterTyped {
