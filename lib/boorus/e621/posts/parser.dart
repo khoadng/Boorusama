@@ -42,8 +42,7 @@ E621Post? postDtoToPost(PostDto dto, PostMetadata? metadata) {
     hasComment: dto.commentCount != null && dto.commentCount! > 0,
     isTranslated: dto.hasNotes ?? false,
     hasParentOrChildren:
-        dto.relationships?.hasChildren ??
-        false || dto.relationships?.parentId != null,
+        dto.relationships?.hasChildren ?? (dto.relationships?.parentId != null),
     format: format,
     videoUrl: videoUrl,
     width: file.width?.toDouble() ?? 0,
