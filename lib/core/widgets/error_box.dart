@@ -38,9 +38,28 @@ class ErrorBox extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 16),
-        FilledButton(
-          onPressed: onRetry,
-          child: Text(context.t.generic.action.retry),
+        LayoutBuilder(
+          builder: (context, constraints) => Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
+                width: constraints.maxWidth <= 450
+                    ? constraints.maxWidth
+                    : null,
+                constraints: const BoxConstraints(
+                  maxWidth: 450,
+                ),
+                child: FilledButton(
+                  onPressed: onRetry,
+                  child: Text(context.t.generic.action.retry),
+                ),
+              ),
+            ],
+          ),
         ),
       ],
     );
