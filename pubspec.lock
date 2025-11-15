@@ -695,6 +695,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.1"
+  flutter_richify:
+    dependency: transitive
+    description:
+      name: flutter_richify
+      sha256: f788fa4ecf55bee88db7e19566f68632caae59b0c050e715638b76c892961d9f
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.1"
   flutter_riverpod:
     dependency: "direct main"
     description:
