@@ -1,1 +1,1 @@
-export 'src/routes/route_util.dart';
+export 'src/routes/route_utils.dart';

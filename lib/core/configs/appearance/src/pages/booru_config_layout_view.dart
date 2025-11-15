@@ -12,8 +12,8 @@ import '../../../../boorus/engine/providers.dart';
 import '../../../config/types.dart';
 import '../../../create/providers.dart';
 import '../widgets/appearance_config_card.dart';
-import '../widgets/appearance_details_page.dart';
 import '../widgets/home_screen_section.dart';
+import 'appearance_details_page.dart';
 import 'theme_configs_page.dart';
 
 class DefaultBooruConfigLayoutView extends ConsumerWidget {
