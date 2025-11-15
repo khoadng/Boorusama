@@ -75,6 +75,7 @@ class BooruConfigListingView extends ConsumerWidget {
                 context.t.booru.listing.thumbnail_button_description,
               ),
               trailing: OptionDropDownButton(
+                backgroundColor: Colors.transparent,
                 alignment: AlignmentDirectional.centerStart,
                 value: ref.watch(
                   editBooruConfigProvider(

@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:anchor_ui/anchor_ui.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
@@ -22,6 +23,7 @@ class OptionDropDownButton<T> extends ConsumerStatefulWidget {
     required this.items,
     super.key,
     this.alignment = AlignmentDirectional.centerEnd,
+    this.backgroundColor,
     this.padding,
   });
 
@@ -29,6 +31,7 @@ class OptionDropDownButton<T> extends ConsumerStatefulWidget {
   final void Function(T? value) onChanged;
   final List<DropdownMenuItem<T>> items;
   final AlignmentDirectional alignment;
+  final Color? backgroundColor;
   final EdgeInsetsGeometry? padding;
 
   @override
@@ -78,7 +81,10 @@ class _OptionDropDownButtonState<T>
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     final hapticLevel = ref.watch(hapticFeedbackLevelProvider);
+    final backgroundColor =
+        widget.backgroundColor ?? colorScheme.surfaceContainerHighest;
     final isDesktop = isDesktopPlatform();
 
     return BooruAnchor(
@@ -130,7 +136,7 @@ class _OptionDropDownButtonState<T>
         );
       },
       child: Card(
-        color: Colors.transparent,
+        color: backgroundColor,
         child: InkWell(
           onTap: () {
             if (hapticLevel.isFull) {
@@ -151,12 +157,23 @@ class _OptionDropDownButtonState<T>
                 ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Flexible(
-                  child: widget.items
-                      .firstWhere((item) => item.value == widget.value)
-                      .child,
-                ),
+                if (widget.items.firstWhereOrNull(
+                      (item) => item.value == widget.value,
+                    )
+                    case final item?)
+                  Flexible(
+                    child: item.child,
+                  )
+                else
+                  const SizedBox(
+                    width: 50,
+                    child: Text(
+                      '',
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
                 Padding(
                   padding: const EdgeInsets.only(left: 4),
                   child: Icon(

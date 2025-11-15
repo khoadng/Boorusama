@@ -37,12 +37,13 @@ class SettingsTile<T> extends StatelessWidget {
       title: title,
       visualDensity: visualDensity,
       trailing: OptionDropDownButton<T>(
+        backgroundColor: Colors.transparent,
         value: selectedOption,
         onChanged: (newValue) {
           if (newValue != null) onChanged(newValue);
         },
         items: items
-            .map<DropdownMenuItem<T>>(
+            .map(
               (value) => DropdownMenuItem<T>(
                 value: value,
                 child: optionBuilder(value),
