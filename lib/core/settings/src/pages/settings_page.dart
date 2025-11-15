@@ -20,6 +20,7 @@ import '../../../../foundation/url_launcher.dart';
 import '../../../analytics/providers.dart';
 import '../../../boorus/engine/providers.dart';
 import '../../../build_info/providers.dart';
+import '../../../changelogs/routes.dart';
 import '../../../configs/config/providers.dart';
 import '../../../configs/create/routes.dart';
 import '../../../premiums/providers.dart';
@@ -32,7 +33,6 @@ import 'about_page.dart';
 import 'accessibility_page.dart';
 import 'appearance/appearance_page.dart';
 import 'backup_restore/backup_and_restore_page.dart';
-import 'changelog_page.dart';
 import 'data_and_storage_page.dart';
 import 'debug_logs_page.dart';
 import 'download_page.dart';
@@ -492,11 +492,7 @@ class SettingsPageOtherSection extends ConsumerWidget {
           leading: const FaIcon(
             FontAwesomeIcons.solidNoteSticky,
           ),
-          onTap: () => Navigator.of(context).push(
-            CupertinoPageRoute(
-              builder: (_) => const ChangelogPage(),
-            ),
-          ),
+          onTap: () => goToChangelogPage(ref),
         ),
         SettingTile(
           title: context.t.settings.debug_logs.debug_logs,

@@ -11,6 +11,7 @@ import '../blacklists/routes.dart';
 import '../bookmarks/routes.dart';
 import '../boorus/engine/providers.dart';
 import '../bulk_downloads/routes.dart';
+import '../changelogs/routes.dart';
 import '../configs/config/providers.dart';
 import '../configs/config/routes.dart';
 import '../configs/create/routes.dart';
@@ -88,6 +89,7 @@ class Routes {
       premiumRoutes(ref),
       donationRoutes(ref),
       detailsManagerRoutes,
+      changelogRoutes,
     ],
   );
 

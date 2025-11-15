@@ -17,7 +17,7 @@ class ChangelogRepositoryImpl implements ChangelogRepository {
 
   @override
   Future<ChangelogData> loadLatestChangelog() async {
-    final text = await rootBundle.loadString(_assetUrl);
+    final text = await _loadData();
 
     // parse the md file until encountering the first empty line
     final lines = text.split('\n');
@@ -44,6 +44,9 @@ class ChangelogRepositoryImpl implements ChangelogRepository {
       content: buffer.toString(),
     );
   }
+
+  @override
+  Future<String> loadFullChangelog() => _loadData();
 
   @override
   Future<void> markChangelogAsSeen(ReleaseVersion version) async {
@@ -77,4 +80,6 @@ class ChangelogRepositoryImpl implements ChangelogRepository {
 
     return true;
   }
+
+  Future<String> _loadData() => rootBundle.loadString(_assetUrl);
 }

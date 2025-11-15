@@ -24,6 +24,11 @@ final changelogDataProvider =
       ChangelogDataNotifier.new,
     );
 
+final fullChangelogProvider =
+    AsyncNotifierProvider.autoDispose<FullChangelogNotifier, String>(
+      FullChangelogNotifier.new,
+    );
+
 final changelogVisibilityNotifierProvider =
     AsyncNotifierProvider<ChangelogVisibilityNotifier, bool>(
       ChangelogVisibilityNotifier.new,

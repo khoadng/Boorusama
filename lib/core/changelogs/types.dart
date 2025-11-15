@@ -111,6 +111,7 @@ extension VersionX on Version {
 
 abstract class ChangelogRepository {
   Future<ChangelogData> loadLatestChangelog();
+  Future<String> loadFullChangelog();
   Future<void> markChangelogAsSeen(ReleaseVersion version);
   Future<bool> shouldShowChangelog(ReleaseVersion version);
 }

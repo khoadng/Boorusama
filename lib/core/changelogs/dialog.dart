@@ -31,7 +31,7 @@ class ChangelogDialog extends ConsumerWidget {
         .watch(changelogDataProvider)
         .when(
           data: (data) => _buildContent(ref, data),
-          error: (error, stackTrace) => _ChanglogBox(
+          error: (_, _) => _ChanglogBox(
             child: Text(
               context.t.generic.errors.unknown,
             ),
