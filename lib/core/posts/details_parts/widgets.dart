@@ -24,3 +24,4 @@ export 'src/toolbars/download_post_button.dart';
 export 'src/_internal/details_widget_frame.dart';
 export 'src/common_post_buttons.dart';
 export 'src/common_post_pop_up_menu.dart';
+export 'src/sliver_details_post_list.dart';

@@ -254,7 +254,8 @@ class PreviewDetails extends StatelessWidget {
               ),
             ),
             SliverIgnorePointer(
-              sliver: SliverArtistPostList(
+              sliver: SliverDetailsPostList(
+                onTap: () {},
                 tag: _previewPost.tags.first,
                 child: const SliverPreviewPostGridPlaceholder(
                   itemCount: 9,

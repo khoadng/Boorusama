@@ -36,6 +36,7 @@ final detailsArtistPostsProvider = FutureProvider.autoDispose
             tag: artistName,
             blacklist: ref.watch(blacklistTagsProvider(filter).future),
             options: PostFetchOptions.raw,
+            softLimit: null,
           );
     });
 

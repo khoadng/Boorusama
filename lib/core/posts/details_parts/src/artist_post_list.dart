@@ -3,28 +3,27 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:material_symbols_icons/symbols.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
-import '../../../../foundation/display/media_query_utils.dart';
 import '../../../configs/config/providers.dart';
-import '../../../images/booru_image.dart';
 import '../../../router.dart';
 import '../../../tags/tag/providers.dart';
 import '../../details/providers.dart';
-import '../../details/routes.dart';
 import '../../details/types.dart';
-import '../../details/widgets.dart';
 import '../../listing/providers.dart';
-import '../../listing/types.dart';
-import '../../post/tags.dart';
 import '../../post/types.dart';
-import '../../post/widgets.dart';
+import 'sliver_details_post_list.dart';
 
 class DefaultInheritedArtistPostsSection<T extends Post>
     extends ConsumerWidget {
-  const DefaultInheritedArtistPostsSection({super.key});
+  const DefaultInheritedArtistPostsSection({
+    super.key,
+    this.limit,
+  });
+
+  final PreviewLimit? limit;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final post = InheritedPost.of<T>(context);
@@ -32,6 +31,7 @@ class DefaultInheritedArtistPostsSection<T extends Post>
 
     final thumbUrlBuilder = ref.watch(gridThumbnailUrlGeneratorProvider(auth));
     final thumbSettings = ref.watch(gridThumbnailSettingsProvider(auth));
+    final effectiveLimit = limit ?? const LimitedPreview.defaults();
 
     return MultiSliver(
       children: ref
@@ -40,8 +40,9 @@ class DefaultInheritedArtistPostsSection<T extends Post>
             data: (data) => data.artistTags.isNotEmpty
                 ? data.artistTags
                       .map(
-                        (tag) => SliverArtistPostList(
+                        (tag) => SliverDetailsPostList(
                           tag: tag,
+                          onTap: () => goToArtistPage(ref, tag),
                           child: ref
                               .watch(
                                 detailsArtistPostsProvider(
@@ -54,7 +55,9 @@ class DefaultInheritedArtistPostsSection<T extends Post>
                               )
                               .maybeWhen(
                                 data: (data) => SliverPreviewPostGrid(
+                                  auth: auth,
                                   posts: data,
+                                  limit: effectiveLimit,
                                   imageUrl: (p) => thumbUrlBuilder.generateUrl(
                                     p,
                                     settings: thumbSettings,
@@ -73,149 +76,4 @@ class DefaultInheritedArtistPostsSection<T extends Post>
           ),
     );
   }
-}
-
-class SliverArtistPostList extends ConsumerWidget {
-  const SliverArtistPostList({
-    required this.tag,
-    required this.child,
-    super.key,
-  });
-
-  final String tag;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return SliverPadding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      sliver: MultiSliver(
-        children: [
-          SliverToBoxAdapter(
-            child: Material(
-              color: Colors.transparent,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 4,
-                  vertical: 8,
-                ),
-                child: InkWell(
-                  onTap: () => goToArtistPage(ref, tag),
-                  customBorder: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: RemoveLeftPaddingOnLargeScreen(
-                    child: ListTile(
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 8),
-                      visualDensity: VisualDensity.compact,
-                      minVerticalPadding: 0,
-                      trailing: const Icon(
-                        Symbols.arrow_right_alt,
-                      ),
-                      title: Text(
-                        tag.replaceAll('_', ' '),
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w800,
-                          letterSpacing: -0.5,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-          SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            sliver: child,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class SliverPreviewPostGrid<T extends Post> extends ConsumerWidget {
-  const SliverPreviewPostGrid({
-    required this.posts,
-    required this.imageUrl,
-    super.key,
-  });
-
-  final List<T> posts;
-  final String Function(T item) imageUrl;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final constraints = PostDetailsSheetConstraints.of(context);
-
-    return SliverGrid.builder(
-      itemCount: posts.length,
-      gridDelegate: _getGridDelegate(constraints?.maxWidth),
-      itemBuilder: (context, index) {
-        final post = posts[index];
-
-        return ImageGridItem(
-          isGif: post.isGif,
-          isAI: post.isAI,
-          onTap: () => goToPostDetailsPageFromPosts(
-            ref: ref,
-            posts: posts,
-            initialIndex: index,
-            initialThumbnailUrl: post.thumbnailImageUrl,
-          ),
-          isAnimated: post.isAnimated,
-          isTranslated: post.isTranslated,
-          image: BooruImage(
-            config: ref.watchConfigAuth,
-            forceCover: true,
-            imageUrl: imageUrl(post),
-            placeholderUrl: post.thumbnailImageUrl,
-            fit: BoxFit.cover,
-          ),
-        );
-      },
-    );
-  }
-}
-
-class SliverPreviewPostGridPlaceholder extends StatelessWidget {
-  const SliverPreviewPostGridPlaceholder({
-    super.key,
-    this.itemCount = 30,
-  });
-
-  final int itemCount;
-
-  @override
-  Widget build(BuildContext context) {
-    final constraints = PostDetailsSheetConstraints.of(context);
-
-    return SliverGrid.builder(
-      itemCount: itemCount,
-      addRepaintBoundaries: false,
-      addSemanticIndexes: false,
-      addAutomaticKeepAlives: false,
-      gridDelegate: _getGridDelegate(constraints?.maxWidth),
-      itemBuilder: (context, index) => Container(
-        decoration: BoxDecoration(
-          color: Theme.of(
-            context,
-          ).colorScheme.surfaceContainerHigh.withValues(alpha: 0.5),
-          borderRadius: const BorderRadius.all(Radius.circular(8)),
-        ),
-      ),
-    );
-  }
-}
-
-SliverGridDelegate _getGridDelegate(double? width) {
-  return SliverGridDelegateWithFixedCrossAxisCount(
-    crossAxisCount: calculateGridCount(
-      width,
-      GridSize.small,
-    ),
-    mainAxisSpacing: 4,
-    crossAxisSpacing: 4,
-  );
 }

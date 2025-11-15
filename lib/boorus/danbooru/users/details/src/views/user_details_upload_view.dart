@@ -292,6 +292,7 @@ class SliverUploadPostList extends ConsumerWidget {
               .maybeWhen(
                 data: (data) => SliverPreviewPostGrid(
                   posts: data,
+                  auth: ref.watchConfigAuth,
                   imageUrl: (item) => item.url360x360,
                 ),
                 orElse: () => const SliverPreviewPostGridPlaceholder(),
