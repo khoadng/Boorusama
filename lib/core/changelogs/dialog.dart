@@ -17,27 +17,38 @@ import '../premiums/providers.dart';
 import '../premiums/routes.dart';
 import '../premiums/types.dart';
 import '../themes/theme/types.dart';
-import 'utils.dart';
-import 'what_news.dart';
+import 'providers.dart';
+import 'types.dart';
 
 class ChangelogDialog extends ConsumerWidget {
   const ChangelogDialog({
-    required this.data,
     super.key,
   });
 
-  final ChangelogData data;
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final version = data.version;
-    final significantUpdate = isSignificantUpdate(
-      data.previousVersion,
-      data.version,
-    );
-    final hasPrem =
-        ref.watch(showPremiumFeatsProvider) && ref.watch(hasPremiumProvider);
-    final size = MediaQuery.sizeOf(context);
+    return ref
+        .watch(changelogDataProvider)
+        .when(
+          data: (data) => _buildContent(ref, data),
+          error: (error, stackTrace) => _ChanglogBox(
+            child: Text(
+              context.t.generic.errors.unknown,
+            ),
+          ),
+          loading: () => const _ChanglogBox(
+            child: SizedBox.square(
+              dimension: 24,
+              child: CircularProgressIndicator(
+                strokeWidth: 4,
+              ),
+            ),
+          ),
+        );
+  }
+
+  Widget _buildContent(WidgetRef ref, ChangelogData data) {
+    final size = MediaQuery.sizeOf(ref.context);
     final screenHeight = size.height;
     final screenWidth = size.width;
 
@@ -64,7 +75,7 @@ class ChangelogDialog extends ConsumerWidget {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    _Header(version: version),
+                    _Header(version: data.version),
                     const Divider(
                       thickness: 1,
                       height: 0,
@@ -74,11 +85,46 @@ class ChangelogDialog extends ConsumerWidget {
                 ),
               ),
             ),
-            if (significantUpdate) ...[
-              if (!hasPrem) const _SupportBanner() else const _ThanksBanner(),
+            if (data.isSignificantUpdate()) ...[
+              Builder(
+                builder: (context) {
+                  final hasPrem =
+                      ref.watch(showPremiumFeatsProvider) &&
+                      ref.watch(hasPremiumProvider);
+                  return !hasPrem
+                      ? const _SupportBanner()
+                      : const _ThanksBanner();
+                },
+              ),
             ],
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _ChanglogBox extends StatelessWidget {
+  const _ChanglogBox({
+    required this.child,
+  });
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Container(
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surfaceContainer,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        margin: const EdgeInsets.symmetric(
+          horizontal: 4,
+          vertical: 4,
+        ),
+        padding: const EdgeInsets.all(32),
+        child: child,
       ),
     );
   }

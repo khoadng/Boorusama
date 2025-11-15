@@ -12,8 +12,7 @@ import '../../../../foundation/platform.dart';
 import '../../../../foundation/toast.dart';
 import '../../../boorus/engine/providers.dart';
 import '../../../bulk_downloads/providers.dart';
-import '../../../cache/providers.dart';
-import '../../../changelogs/utils.dart';
+import '../../../changelogs/routes.dart';
 import '../../../config_widgets/website_logo.dart';
 import '../../../configs/config/providers.dart';
 import '../../../configs/config/types.dart';
@@ -38,9 +37,7 @@ class _EntryPageState extends ConsumerState<EntryPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final miscBox = ref.read(miscDataBoxProvider);
-
-      ref.showChangelogDialogIfNeeded(miscBox);
+      showChangelogDialogIfNeeded(context, ref);
     });
   }
 
