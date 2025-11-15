@@ -6,3 +6,4 @@ export 'src/types/post_details_swipe_mode.dart';
 export 'src/types/utils.dart';
 export 'src/widgets/post_details_page_view_scope.dart';
 export 'src/types/preview_limit.dart';
+export 'src/types/uploader_query.dart';

@@ -9,6 +9,7 @@ import '../../../core/posts/post/providers.dart';
 import '../../../core/posts/post/types.dart';
 import '../../../foundation/riverpod/riverpod.dart';
 import '../posts/providers.dart';
+import '../posts/types.dart';
 
 final moebooruPostDetailsChildrenProvider = FutureProvider.family
     .autoDispose<List<Post>?, (BooruConfigSearch, Post)>(
@@ -34,3 +35,11 @@ final moebooruMediaUrlResolverProvider =
     Provider.family<MediaUrlResolver, BooruConfigAuth>(
       (ref, config) => ref.watch(defaultMediaUrlResolverProvider(config)),
     );
+
+final moebooruUploaderQueryProvider =
+    Provider.family<UploaderQuery?, MoebooruPost>((ref, post) {
+      return switch (post.uploaderName) {
+        final uploader? => UserColonUploaderQuery(uploader),
+        _ => null,
+      };
+    });

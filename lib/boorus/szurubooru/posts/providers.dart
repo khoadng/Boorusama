@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../core/configs/config/types.dart';
+import '../../../core/posts/details/types.dart';
 import '../../../core/posts/favorites/providers.dart';
 import '../../../core/posts/post/providers.dart';
 import '../../../core/posts/post/types.dart';
@@ -14,6 +15,7 @@ import '../client_provider.dart';
 import '../post_votes/providers.dart';
 import '../tags/providers.dart';
 import 'parser.dart';
+import 'types.dart';
 
 final szurubooruPostRepoProvider =
     Provider.family<PostRepository, BooruConfigSearch>(
@@ -82,3 +84,11 @@ final szurubooruPostRepoProvider =
         );
       },
     );
+
+final szurubooruUploaderQueryProvider =
+    Provider.family<UploaderQuery?, SzurubooruPost>((ref, post) {
+      return switch (post.uploaderName) {
+        final uploader? => UploaderColonUploaderQuery(uploader),
+        _ => null,
+      };
+    });

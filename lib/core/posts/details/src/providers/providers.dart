@@ -40,6 +40,24 @@ final detailsArtistPostsProvider = FutureProvider.autoDispose
           );
     });
 
+final detailsUploadersPostsProvider = FutureProvider.autoDispose
+    .family<List<Post>, (BooruConfigFilter, BooruConfigSearch, String?)>((
+      ref,
+      params,
+    ) {
+      ref.cacheFor(const Duration(seconds: 30));
+
+      final (filter, search, uploaderName) = params;
+      return ref
+          .watch(postRepoProvider(search))
+          .getPostsFromTagWithBlacklist(
+            tag: uploaderName,
+            blacklist: ref.watch(blacklistTagsProvider(filter).future),
+            options: PostFetchOptions.raw,
+            softLimit: null,
+          );
+    });
+
 final mediaUrlResolverProvider =
     Provider.family<MediaUrlResolver, BooruConfigAuth>(
       (ref, config) {

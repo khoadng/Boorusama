@@ -9,6 +9,7 @@ import '../../../core/posts/details/types.dart';
 import '../../../core/posts/details_parts/types.dart';
 import '../../../core/posts/details_parts/widgets.dart';
 import '../../../core/search/search/routes.dart';
+import 'providers.dart';
 import 'types.dart';
 
 class GelbooruUploaderFileDetailTile extends ConsumerWidget {
@@ -23,9 +24,30 @@ class GelbooruUploaderFileDetailTile extends ConsumerWidget {
       null => const SizedBox.shrink(),
       final name => UploaderFileDetailTile(
         uploaderName: name,
-        onSearch: () => goToSearchPage(ref, tag: 'user:$name'),
+        onSearch: switch (ref.watch(gelbooruUploaderQueryProvider(post))) {
+          final query? => () => goToSearchPage(
+            ref,
+            tag: query.resolveTag(),
+          ),
+          _ => null,
+        },
       ),
     };
+  }
+}
+
+class GelbooruUploaderPostsSection extends ConsumerWidget {
+  const GelbooruUploaderPostsSection({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final post = InheritedPost.of<GelbooruPost>(context);
+
+    return UploaderPostsSection(
+      query: ref.watch(
+        gelbooruUploaderQueryProvider(post),
+      ),
+    );
   }
 }
 
@@ -47,6 +69,8 @@ final kGelbooruPostDetailsUIBuilder = PostDetailsUIBuilder(
         ),
     DetailsPart.artistPosts: (context) =>
         const DefaultInheritedArtistPostsSection<GelbooruPost>(),
+    DetailsPart.uploaderPosts: (context) =>
+        const GelbooruUploaderPostsSection(),
     DetailsPart.characterList: (context) =>
         const DefaultInheritedCharacterPostsSection<GelbooruPost>(),
   },

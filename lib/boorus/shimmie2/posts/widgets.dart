@@ -21,6 +21,7 @@ import '../../../foundation/toast.dart';
 import '../extensions/providers.dart';
 import '../extensions/types.dart';
 import 'bulk_provider.dart';
+import 'providers.dart';
 import 'types.dart';
 
 class Shimmie2UploaderFileDetailTile extends ConsumerWidget {
@@ -35,7 +36,13 @@ class Shimmie2UploaderFileDetailTile extends ConsumerWidget {
       null => const SizedBox.shrink(),
       final name => UploaderFileDetailTile(
         uploaderName: name,
-        onSearch: () => goToSearchPage(ref, tag: 'user=$name'),
+        onSearch: switch (ref.watch(shimmie2UploaderQueryProvider(post))) {
+          final query? => () => goToSearchPage(
+            ref,
+            tag: query.resolveTag(),
+          ),
+          _ => null,
+        },
       ),
     };
   }
@@ -55,8 +62,25 @@ final kShimmie2PostDetailsUIBuilder = PostDetailsUIBuilder(
         const DefaultInheritedFileDetailsSection<Shimmie2Post>(
           uploader: Shimmie2UploaderFileDetailTile(),
         ),
+    DetailsPart.uploaderPosts: (context) =>
+        const Shimmie2UploaderPostsSection(),
   },
 );
+
+class Shimmie2UploaderPostsSection extends ConsumerWidget {
+  const Shimmie2UploaderPostsSection({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final post = InheritedPost.of<Shimmie2Post>(context);
+
+    return UploaderPostsSection(
+      query: ref.watch(
+        shimmie2UploaderQueryProvider(post),
+      ),
+    );
+  }
+}
 
 class Shimmie2MultiSelectionActions extends ConsumerWidget {
   const Shimmie2MultiSelectionActions({

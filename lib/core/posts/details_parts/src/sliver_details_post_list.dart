@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
@@ -21,12 +22,14 @@ import '../../post/widgets.dart';
 class SliverDetailsPostList extends ConsumerWidget {
   const SliverDetailsPostList({
     required this.tag,
-    required this.child,
+    required this.subtitle,
     required this.onTap,
+    required this.child,
     super.key,
   });
 
   final String tag;
+  final String subtitle;
   final Widget child;
   final VoidCallback onTap;
 
@@ -63,6 +66,9 @@ class SliverDetailsPostList extends ConsumerWidget {
                           fontWeight: FontWeight.w800,
                           letterSpacing: -0.5,
                         ),
+                      ),
+                      subtitle: Text(
+                        subtitle,
                       ),
                     ),
                   ),
@@ -151,23 +157,53 @@ class _SliverPreviewPostGridState<T extends Post>
         if (state.hasMore)
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              child: Center(
-                child: TextButton.icon(
-                  onPressed: () => setState(() => _isExpanded = !_isExpanded),
-                  icon: Icon(
-                    _isExpanded ? Symbols.expand_less : Symbols.expand_more,
-                  ),
-                  label: Text(
-                    _isExpanded
-                        ? 'Show less'
-                        : 'Show ${state.hiddenCount} more',
-                  ),
-                ),
+              padding: const EdgeInsets.only(
+                top: 8,
               ),
+              child: _buildExpandButton(context, state),
             ),
           ),
       ],
+    );
+  }
+
+  Widget _buildExpandButton(BuildContext context, PreviewGridState state) {
+    return Material(
+      color: Colors.transparent,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: InkWell(
+        customBorder: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+        onTap: () => setState(() => _isExpanded = !_isExpanded),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 4,
+            vertical: 8,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                _isExpanded ? Symbols.expand_less : Symbols.expand_more,
+              ),
+              const SizedBox(width: 4),
+              Text(
+                _isExpanded
+                    ? context.t.post.detail.show_less
+                    : context.t.post.detail.show_n_more(
+                        n: state.hiddenCount,
+                      ),
+                style: const TextStyle(
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 

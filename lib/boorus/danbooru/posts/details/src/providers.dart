@@ -11,6 +11,7 @@ import '../../../../../core/settings/providers.dart';
 import '../../../../../foundation/riverpod/riverpod.dart';
 import '../../../pools/pool/providers.dart';
 import '../../../pools/pool/types.dart';
+import '../../../users/creator/providers.dart';
 import '../../post/providers.dart';
 import '../../post/types.dart';
 import 'media_url_resolver.dart';
@@ -54,3 +55,13 @@ final danbooruMediaUrlResolverProvider =
         ),
       ),
     );
+
+final danbooruUploaderQueryProvider =
+    Provider.family<UploaderQuery?, DanbooruPost>((ref, post) {
+      final uploader = ref.watch(danbooruCreatorProvider(post.uploaderId));
+
+      return switch (uploader) {
+        final uploader? => UserColonUploaderQuery(uploader.name),
+        _ => null,
+      };
+    });

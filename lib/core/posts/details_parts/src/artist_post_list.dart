@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
@@ -42,6 +43,7 @@ class DefaultInheritedArtistPostsSection<T extends Post>
                       .map(
                         (tag) => SliverDetailsPostList(
                           tag: tag,
+                          subtitle: context.t.post.detail.artist,
                           onTap: () => goToArtistPage(ref, tag),
                           child: ref
                               .watch(

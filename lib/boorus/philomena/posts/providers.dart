@@ -63,3 +63,11 @@ final philomenaMediaUrlResolverProvider =
         ),
       ),
     );
+
+final philomenaUploaderQueryProvider =
+    Provider.family<UploaderQuery?, PhilomenaPost>((ref, post) {
+      return switch (post.uploaderName) {
+        final uploader? => UploaderColonUploaderQuery(uploader),
+        _ => null,
+      };
+    });

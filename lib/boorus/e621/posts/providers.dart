@@ -69,3 +69,13 @@ final e621MediaUrlResolverProvider = Provider<MediaUrlResolver>((ref) {
     ),
   );
 });
+
+final e621UploaderQueryProvider = Provider.family<UploaderQuery?, E621Post>((
+  ref,
+  post,
+) {
+  return switch (post.uploaderName) {
+    final uploader? => UserColonUploaderQuery(uploader),
+    _ => null,
+  };
+});

@@ -39,6 +39,12 @@ class PostDetailsUIBuilder {
     };
   }
 
+  Set<DetailsPart> get buildableFullParts {
+    return {
+      ...full.keys.toSet(),
+    };
+  }
+
   Widget? buildPart(BuildContext context, DetailsPart part) {
     final builder = full[part];
     if (builder != null) {

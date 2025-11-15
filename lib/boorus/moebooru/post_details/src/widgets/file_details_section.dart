@@ -9,6 +9,7 @@ import '../../../../../core/posts/details/types.dart';
 import '../../../../../core/posts/details_parts/widgets.dart';
 import '../../../../../core/search/search/routes.dart';
 import '../../../posts/types.dart';
+import '../../providers.dart';
 
 class MoebooruUploaderFileDetailTile extends ConsumerWidget {
   const MoebooruUploaderFileDetailTile({super.key});
@@ -22,7 +23,13 @@ class MoebooruUploaderFileDetailTile extends ConsumerWidget {
       null => const SizedBox.shrink(),
       final name => UploaderFileDetailTile(
         uploaderName: name,
-        onSearch: () => goToSearchPage(ref, tag: 'user:$name'),
+        onSearch: switch (ref.watch(moebooruUploaderQueryProvider(post))) {
+          final query? => () => goToSearchPage(
+            ref,
+            tag: query.resolveTag(),
+          ),
+          _ => null,
+        },
       ),
     };
   }

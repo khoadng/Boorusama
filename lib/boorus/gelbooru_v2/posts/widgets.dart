@@ -162,7 +162,13 @@ class GelbooruV2UploaderFileDetailTile extends ConsumerWidget {
       null => const SizedBox.shrink(),
       final name => UploaderFileDetailTile(
         uploaderName: name,
-        onSearch: () => goToSearchPage(ref, tag: 'user:$name'),
+        onSearch: switch (ref.watch(gelbooruV2UploaderQueryProvider(post))) {
+          final query? => () => goToSearchPage(
+            ref,
+            tag: query.resolveTag(),
+          ),
+          _ => null,
+        },
       ),
     };
   }
@@ -203,6 +209,21 @@ class GelbooruV2RelatedPostsSection extends ConsumerWidget {
   }
 }
 
+class GelbooruV2UploaderPostsSection extends ConsumerWidget {
+  const GelbooruV2UploaderPostsSection({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final post = InheritedPost.of<GelbooruV2Post>(context);
+
+    return UploaderPostsSection(
+      query: ref.watch(
+        gelbooruV2UploaderQueryProvider(post),
+      ),
+    );
+  }
+}
+
 final kGelbooruV2PostDetailsUIBuilder = PostDetailsUIBuilder(
   preview: {
     DetailsPart.toolbar: (context) =>
@@ -221,6 +242,8 @@ final kGelbooruV2PostDetailsUIBuilder = PostDetailsUIBuilder(
         ),
     DetailsPart.artistPosts: (context) =>
         const DefaultInheritedArtistPostsSection<GelbooruV2Post>(),
+    DetailsPart.uploaderPosts: (context) =>
+        const GelbooruV2UploaderPostsSection(),
     DetailsPart.relatedPosts: (context) =>
         const GelbooruV2RelatedPostsSection(),
     DetailsPart.characterList: (context) =>

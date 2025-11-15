@@ -10,6 +10,7 @@ import '../../../core/posts/details/types.dart';
 import '../../../core/posts/details_parts/types.dart';
 import '../../../core/posts/details_parts/widgets.dart';
 import '../../../core/search/search/routes.dart';
+import 'providers.dart';
 import 'types.dart';
 
 class PhilomenaStatsTileSection extends ConsumerWidget {
@@ -63,9 +64,30 @@ class PhilomenaUploaderFileDetailTile extends ConsumerWidget {
       null => const SizedBox.shrink(),
       final name => UploaderFileDetailTile(
         uploaderName: name,
-        onSearch: () => goToSearchPage(ref, tag: 'uploader:$name'),
+        onSearch: switch (ref.watch(philomenaUploaderQueryProvider(post))) {
+          final query? => () => goToSearchPage(
+            ref,
+            tag: query.resolveTag(),
+          ),
+          _ => null,
+        },
       ),
     };
+  }
+}
+
+class PhilomenaUploaderPostsSection extends ConsumerWidget {
+  const PhilomenaUploaderPostsSection({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final post = InheritedPost.of<PhilomenaPost>(context);
+
+    return UploaderPostsSection(
+      query: ref.watch(
+        philomenaUploaderQueryProvider(post),
+      ),
+    );
   }
 }
 
@@ -91,5 +113,7 @@ final kPhilomenaPostDetailsUIBuilder = PostDetailsUIBuilder(
         const DefaultInheritedFileDetailsSection<PhilomenaPost>(
           uploader: PhilomenaUploaderFileDetailTile(),
         ),
+    DetailsPart.uploaderPosts: (context) =>
+        const PhilomenaUploaderPostsSection(),
   },
 );

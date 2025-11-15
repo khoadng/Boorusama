@@ -9,6 +9,7 @@ import '../../../core/posts/details/types.dart';
 import '../../../core/posts/details_parts/types.dart';
 import '../../../core/posts/details_parts/widgets.dart';
 import '../../../core/search/search/routes.dart';
+import 'providers.dart';
 import 'types.dart';
 
 class SankakuUploaderFileDetailTile extends ConsumerWidget {
@@ -23,9 +24,30 @@ class SankakuUploaderFileDetailTile extends ConsumerWidget {
       null => const SizedBox.shrink(),
       final name => UploaderFileDetailTile(
         uploaderName: name,
-        onSearch: () => goToSearchPage(ref, tag: 'user:$name'),
+        onSearch: switch (ref.watch(sankakuUploaderQueryProvider(post))) {
+          final query? => () => goToSearchPage(
+            ref,
+            tag: query.resolveTag(),
+          ),
+          _ => null,
+        },
       ),
     };
+  }
+}
+
+class SankakuUploaderPostsSection extends ConsumerWidget {
+  const SankakuUploaderPostsSection({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final post = InheritedPost.of<SankakuPost>(context);
+
+    return UploaderPostsSection(
+      query: ref.watch(
+        sankakuUploaderQueryProvider(post),
+      ),
+    );
   }
 }
 
@@ -53,5 +75,6 @@ final kSankakuPostDetailsUIBuilder = PostDetailsUIBuilder(
         ),
     DetailsPart.artistPosts: (context) =>
         const DefaultInheritedArtistPostsSection<SankakuPost>(),
+    DetailsPart.uploaderPosts: (context) => const SankakuUploaderPostsSection(),
   },
 );

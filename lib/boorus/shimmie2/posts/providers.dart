@@ -3,12 +3,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../core/configs/config/types.dart';
+import '../../../core/posts/details/types.dart';
 import '../../../core/posts/post/providers.dart';
 import '../../../core/posts/post/types.dart';
 import '../../../core/search/queries/providers.dart';
 import '../../../core/settings/providers.dart';
 import '../clients/providers.dart';
 import 'parser.dart';
+import 'types.dart';
 
 final shimmie2PostRepoProvider =
     Provider.family<PostRepository, BooruConfigSearch>(
@@ -51,3 +53,11 @@ final shimmie2PostRepoProvider =
         );
       },
     );
+
+final shimmie2UploaderQueryProvider =
+    Provider.family<UploaderQuery?, Shimmie2Post>((ref, post) {
+      return switch (post.uploaderName) {
+        final uploader? => UserEqualsUploaderQuery(uploader),
+        _ => null,
+      };
+    });

@@ -15,6 +15,7 @@ import '../../../../users/details/routes.dart';
 import '../../../../users/details/types.dart';
 import '../../../../users/user/providers.dart';
 import '../../../post/types.dart';
+import '../../providers.dart';
 
 class DanbooruFileDetails extends ConsumerWidget {
   const DanbooruFileDetails({
@@ -46,7 +47,13 @@ class DanbooruFileDetails extends ConsumerWidget {
             color: userColor.fromLevel(uploader.level),
             fontSize: 14,
           ),
-          onSearch: () => goToSearchPage(ref, tag: 'user:${uploader.name}'),
+          onSearch: switch (ref.watch(danbooruUploaderQueryProvider(post))) {
+            final query? => () => goToSearchPage(
+              ref,
+              tag: query.resolveTag(),
+            ),
+            _ => null,
+          },
         ),
       },
       customDetails: [

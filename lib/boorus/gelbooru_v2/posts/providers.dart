@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../core/blacklists/providers.dart';
 import '../../../core/configs/config/types.dart';
+import '../../../core/posts/details/types.dart';
 import '../../../core/posts/post/providers.dart';
 import '../../../core/posts/post/types.dart';
 import '../../../core/settings/providers.dart';
@@ -81,3 +82,11 @@ final gelbooruV2PostImageUrlResolverProvider =
     Provider<GelbooruV2ImageUrlResolver>(
       (ref) => const GelbooruV2ImageUrlResolver(),
     );
+
+final gelbooruV2UploaderQueryProvider =
+    Provider.family<UploaderQuery?, GelbooruV2Post>((ref, post) {
+      return switch (post.uploaderName) {
+        final uploader? => UserColonUploaderQuery(uploader),
+        _ => null,
+      };
+    });

@@ -117,6 +117,7 @@
       "duration": "Duration",
       "uploader": "Uploader",
       "approver": "Approver",
+      "artist": "Artist",
       "share": {
         "source": "Share source link",
         "booru": "Share booru link",
@@ -124,6 +125,8 @@
       },
       "show_original": "Show original",
       "show_translated": "Show translated",
+      "show_n_more": "Show $n more",
+      "show_less": "Show less",
       "login_required_notice": "You have to log in to perform this action",
       "open_wiki": "Open wiki",
       "add_to_favorites": "Add to favorites",
@@ -148,6 +151,7 @@
         "artist_posts": "Artist posts",
         "related_posts": "Related posts",
         "character_list": "Character list",
+        "uploader_posts": "Uploader uploads",
         "source": "Source"
       }
     },

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../core/configs/config/types.dart';
+import '../../../core/posts/details/types.dart';
 import '../../../core/posts/post/providers.dart';
 import '../../../core/posts/post/types.dart';
 import '../../../core/search/queries/providers.dart';
@@ -59,3 +60,11 @@ final sankakuPostRepoProvider =
         );
       },
     );
+
+final sankakuUploaderQueryProvider =
+    Provider.family<UploaderQuery?, SankakuPost>((ref, post) {
+      return switch (post.uploaderName) {
+        final uploader? => UserColonUploaderQuery(uploader),
+        _ => null,
+      };
+    });
