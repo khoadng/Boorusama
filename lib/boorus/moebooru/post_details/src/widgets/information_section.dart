@@ -9,9 +9,10 @@ import '../../../../../core/configs/config/providers.dart';
 import '../../../../../core/posts/details/types.dart';
 import '../../../../../core/posts/details_parts/widgets.dart';
 import '../../../../../core/router.dart';
-import '../../../../../core/tags/tag/types.dart';
+import '../../../../../core/tags/categories/types.dart';
 import '../../../posts/types.dart';
 import '../../../tags/providers.dart';
+import '../../../tags/types.dart';
 
 class MoebooruInformationSection extends ConsumerWidget {
   const MoebooruInformationSection({
@@ -27,22 +28,23 @@ class MoebooruInformationSection extends ConsumerWidget {
       child: ref
           .watch(moebooruAllTagsProvider(config))
           .maybeWhen(
-            data: (tags) {
-              final tagGroups = createMoebooruTagGroupItems(post.tags, tags);
-
+            data: (allTagsMap) {
               return InformationSection(
-                characterTags: tagGroups
-                    .map((e) => e.extractCharacterTags())
-                    .expand((e) => e)
-                    .toSet(),
-                artistTags: tagGroups
-                    .map((e) => e.extractArtistTags())
-                    .expand((e) => e)
-                    .toSet(),
-                copyrightTags: tagGroups
-                    .map((e) => e.extractCopyRightTags())
-                    .expand((e) => e)
-                    .toSet(),
+                characterTags: extractMoebooruTagsByCategory(
+                  post.tags,
+                  allTagsMap,
+                  TagCategory.character(),
+                ),
+                artistTags: extractMoebooruTagsByCategory(
+                  post.tags,
+                  allTagsMap,
+                  TagCategory.artist(),
+                ),
+                copyrightTags: extractMoebooruTagsByCategory(
+                  post.tags,
+                  allTagsMap,
+                  TagCategory.copyright(),
+                ),
                 createdAt: post.createdAt,
                 source: post.source,
                 onArtistTagTap: (context, artist) => goToArtistPage(

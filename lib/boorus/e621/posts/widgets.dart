@@ -75,5 +75,7 @@ final kE621PostDetailsUIBuilder = PostDetailsUIBuilder(
         ),
     DetailsPart.artistPosts: (context) =>
         const DefaultInheritedArtistPostsSection<E621Post>(),
+    DetailsPart.characterList: (context) =>
+        const DefaultInheritedCharacterPostsSection<E621Post>(),
   },
 );

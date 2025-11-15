@@ -61,6 +61,8 @@ final e621TagExtractorProvider = Provider.family<TagExtractor, BooruConfigAuth>(
       siteHost: config.url,
       tagCache: ref.watch(tagCacheRepositoryProvider.future),
       sorter: TagSorter.defaults(),
+      artistCategory: e621ArtistTagCategory,
+      characterCategory: e621CharacterTagCategory,
       fetcher: (post, options) {
         final tagResolver = ref.read(e621TagResolverProvider(config));
 

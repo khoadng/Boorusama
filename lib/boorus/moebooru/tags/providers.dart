@@ -71,20 +71,3 @@ final moebooruAllTagsProvider =
         for (final tag in tags) tag.rawName: tag,
       };
     });
-
-List<TagGroupItem> createMoebooruTagGroupItems(
-  Set<String> tagStrings,
-  Map<String, Tag> allTagsMap,
-) {
-  final tags = <Tag>[];
-
-  for (final tag in tagStrings) {
-    if (allTagsMap.containsKey(tag)) {
-      tags.add(allTagsMap[tag]!);
-    }
-  }
-
-  final tagGroups = createTagGroupItems(tags);
-
-  return tagGroups;
-}
