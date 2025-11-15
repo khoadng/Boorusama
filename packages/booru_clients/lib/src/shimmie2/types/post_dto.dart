@@ -3,6 +3,7 @@ import 'package:xml/xml.dart';
 
 // Project imports:
 import 'comment_dto.dart';
+import 'numeric_score_vote_dto.dart';
 
 class PostDto {
   PostDto({
@@ -154,7 +155,11 @@ class PostDto {
         _ => null,
       },
       votes: switch (json['votes']) {
-        final num n => n.toInt(),
+        final List l =>
+          l
+              .whereType<Map<String, dynamic>>()
+              .map((e) => NumericScoreVoteDto.fromGraphQL(e))
+              .toList(),
         _ => null,
       },
       myVote: switch (json['my_vote']) {
@@ -255,7 +260,7 @@ class PostDto {
   final bool? trash;
   final String? ownerName;
   final DateTime? ownerJoinDate;
-  final int? votes;
+  final List<NumericScoreVoteDto>? votes;
   final int? myVote;
   final List<CommentDto>? comments;
 

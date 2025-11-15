@@ -84,7 +84,7 @@ class Shimmie2GraphQLClient {
 
   static String _buildPostsDiscoveryQuery(Iterable<String> fields) {
     final fieldsList = fields
-        .where((f) => f != 'comments')
+        .where((f) => f != 'comments' && f != 'votes')
         .join('\n          ');
     final commentsField = fields.contains('comments')
         ? '''
@@ -98,10 +98,20 @@ class Shimmie2GraphQLClient {
             }
           }'''
         : '';
+    final votesField = fields.contains('votes')
+        ? '''
+          votes {
+            score
+            user {
+              name
+              id
+            }
+          }'''
+        : '';
     return '''
       query SearchPosts(\$tags: [String!], \$offset: Int!, \$limit: Int) {
         posts(tags: \$tags, offset: \$offset, limit: \$limit) {
-          $fieldsList$commentsField
+          $fieldsList$commentsField$votesField
           owner {
             name
             join_date
@@ -174,7 +184,7 @@ class Shimmie2GraphQLClient {
 
   String _buildPostByIdQuery(Iterable<String> fields) {
     final fieldsList = fields
-        .where((f) => f != 'comments')
+        .where((f) => f != 'comments' && f != 'votes')
         .join('\n          ');
     final commentsField = fields.contains('comments')
         ? '''
@@ -188,10 +198,20 @@ class Shimmie2GraphQLClient {
             }
           }'''
         : '';
+    final votesField = fields.contains('votes')
+        ? '''
+          votes {
+            score
+            user {
+              name
+              id
+            }
+          }'''
+        : '';
     return '''
       query GetPost(\$id: Int!) {
         post(post_id: \$id) {
-          $fieldsList$commentsField
+          $fieldsList$commentsField$votesField
           owner {
             name
             join_date

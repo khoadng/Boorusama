@@ -57,10 +57,6 @@ Shimmie2Post postDtoToPost(
     },
     metadata: metadata,
     parentId: e.parentId,
-    downvotes: switch (e.myVote) {
-      final vote? when vote < 0 => e.votes,
-      _ => null,
-    },
     locked: e.locked,
     ext: e.ext,
     mime: e.mime,

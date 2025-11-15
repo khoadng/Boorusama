@@ -31,7 +31,6 @@ class Shimmie2Post extends SimplePost {
     required super.uploaderName,
     required super.metadata,
     super.parentId,
-    super.downvotes,
     this.locked,
     this.ext,
     this.mime,
@@ -50,7 +49,7 @@ class Shimmie2Post extends SimplePost {
     this.votes,
     this.myVote,
     this.comments,
-  });
+  }) : super(downvotes: votes?.where((v) => (v.score ?? 0) < 0).length);
 
   final bool? locked;
   final String? ext;
@@ -67,7 +66,7 @@ class Shimmie2Post extends SimplePost {
   final bool? private;
   final bool? trash;
   final DateTime? ownerJoinDate;
-  final int? votes;
+  final List<NumericScoreVoteDto>? votes;
   final int? myVote;
 
   final List<CommentDto>? comments;
