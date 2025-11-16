@@ -8,6 +8,8 @@ import '../mixins/image_info_mixin.dart';
 import '../mixins/media_info_mixin.dart';
 import '../mixins/video_info_mixin.dart';
 
+export 'post_id.dart';
+
 class PostMetadata extends Equatable {
   const PostMetadata({
     this.page,
@@ -64,41 +66,4 @@ extension PostImageX on Post {
 
 extension PostX on Post {
   String get relationshipQuery => hasParent ? 'parent:$parentId' : 'parent:$id';
-}
-
-// We should use start using the PostId class instead of int
-sealed class PostId {
-  const PostId();
-
-  static PostId from(String value) {
-    if (int.tryParse(value) != null) {
-      return NumericPostId(int.parse(value));
-    } else {
-      return StringPostId(value);
-    }
-  }
-}
-
-class NumericPostId extends PostId with EquatableMixin {
-  const NumericPostId(this.value);
-
-  final int value;
-
-  @override
-  String toString() => value.toString();
-
-  @override
-  List<Object?> get props => [value];
-}
-
-class StringPostId extends PostId with EquatableMixin {
-  const StringPostId(this.value);
-
-  final String value;
-
-  @override
-  String toString() => value;
-
-  @override
-  List<Object?> get props => [value];
 }
