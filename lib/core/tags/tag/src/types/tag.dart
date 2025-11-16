@@ -29,9 +29,9 @@ class Tag extends Equatable {
     required this.category,
   }) : postCount = 0;
 
-  factory Tag.empty() => Tag(
+  factory Tag.empty() => const Tag(
     name: '',
-    category: TagCategory.unknown(),
+    category: TagCategory.unknown,
     postCount: 0,
   );
 

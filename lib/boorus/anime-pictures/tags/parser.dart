@@ -67,7 +67,7 @@ final _character = TagCategory.character().copyWith(
   order: 3,
 );
 
-final _unknown = TagCategory.unknown().copyWith(
+final _unknown = TagCategory.unknown.copyWith(
   id: 107,
   order: 7,
 );

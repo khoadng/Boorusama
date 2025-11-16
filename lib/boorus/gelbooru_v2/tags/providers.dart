@@ -36,17 +36,23 @@ final gelbooruV2TagQueryComposerProvider =
 final gelbooruV2TagExtractorProvider =
     Provider.family<TagExtractor, BooruConfigAuth>(
       (ref, config) {
+        final tagCache = ref.watch(tagCacheRepositoryProvider.future);
         return TagExtractorBuilder(
           siteHost: config.url,
-          tagCache: ref.watch(tagCacheRepositoryProvider.future),
+          tagCache: tagCache,
           sorter: TagSorter.defaults(),
-          fetcher: (post, options) async {
-            final tags = await ref.read(
-              gelbooruV2TagsFromIdProvider((config, post.id)).future,
-            );
+          fetcher: createCachedTagFetcher(
+            siteHost: config.url,
+            tagCache: tagCache,
+            cachedTagMapper: const CachedTagMapper(),
+            fetcher: (post, options, missing) async {
+              final tags = await ref.read(
+                gelbooruV2TagsFromIdProvider((config, post.id)).future,
+              );
 
-            return tags;
-          },
+              return tags;
+            },
+          ),
         );
       },
     );

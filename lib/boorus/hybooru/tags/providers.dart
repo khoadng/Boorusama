@@ -27,17 +27,24 @@ final hybooruTagsFromIdProvider = FutureProvider.autoDispose
 final hybooruTagExtractorProvider =
     Provider.family<TagExtractor, BooruConfigAuth>(
       (ref, config) {
+        final tagCache = ref.watch(tagCacheRepositoryProvider.future);
         return TagExtractorBuilder(
           siteHost: config.url,
-          tagCache: ref.watch(tagCacheRepositoryProvider.future),
+          tagCache: tagCache,
           sorter: TagSorter.defaults(),
-          fetcher: (post, options) async {
-            final tags = await ref.read(
-              hybooruTagsFromIdProvider((config, post.id)).future,
-            );
+          fetcher: createCachedTagFetcher(
+            siteHost: config.url,
+            tagCache: tagCache,
+            cachePolicy: CachePolicy.aMonth(),
+            cachedTagMapper: const CachedTagMapper(),
+            fetcher: (post, options, missing) async {
+              final tags = await ref.read(
+                hybooruTagsFromIdProvider((config, post.id)).future,
+              );
 
-            return tags;
-          },
+              return tags;
+            },
+          ),
         );
       },
     );

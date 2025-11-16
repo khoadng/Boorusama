@@ -35,7 +35,7 @@ final top15PlaceholderTagsProvider = Provider<List<Tag>>((ref) {
     tags.add(
       Tag(
         name: sb.toString(),
-        category: TagCategory.unknown(),
+        category: TagCategory.unknown,
         postCount: rnd.nextInt(1000),
       ),
     );

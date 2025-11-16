@@ -46,16 +46,6 @@ class TagResolutionResult extends Equatable {
   final List<CachedTag> found;
   final List<String> missing;
 
-  List<CachedTag> get allTags => [
-    ...found,
-    ...missing.map(
-      (tag) => CachedTag.unknown(
-        siteHost: '',
-        tagName: tag,
-      ),
-    ),
-  ];
-
   @override
   List<Object?> get props => [found, missing];
 }
