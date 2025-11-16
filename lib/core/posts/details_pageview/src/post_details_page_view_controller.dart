@@ -534,18 +534,31 @@ class PostDetailsPageViewController extends ChangeNotifier {
   }
 
   Future<void> startSlideshow() async {
-    hideAllUI();
-
     final isLargeScreen = checkIfLargeScreen();
 
     // if in expanded mode, exit expanded mode first
     if (isExpanded) {
       if (!isLargeScreen) {
         await resetSheet();
+
+        const maxWaitTime = Duration(seconds: 2);
+        final startTime = DateTime.now();
+
+        // wait for sheet to be fully collapsed with timeout
+        while (sheetState.value != SheetState.hidden) {
+          if (DateTime.now().difference(startTime) > maxWaitTime) {
+            // Timeout reached, force the state
+            sheetState.value = SheetState.hidden;
+            break;
+          }
+          await Future.delayed(const Duration(milliseconds: 50));
+        }
       } else {
         sheetState.value = SheetState.hidden;
       }
     }
+
+    hideAllUI();
 
     _slideshowController.start(
       page,
