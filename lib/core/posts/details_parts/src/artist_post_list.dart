@@ -23,9 +23,11 @@ class DefaultInheritedArtistPostsSection<T extends Post>
   const DefaultInheritedArtistPostsSection({
     super.key,
     this.limit,
+    this.filterQuery,
   });
 
   final PreviewLimit? limit;
+  final PostFilterQuery<T>? filterQuery;
 
   @override
   ConsumerState<DefaultInheritedArtistPostsSection<T>> createState() =>
@@ -81,11 +83,13 @@ class _DefaultInheritedArtistPostsSectionState<T extends Post>
                             builder: (context, child) => controller.isVisible
                                 ? ref
                                       .watch(
-                                        detailsArtistPostsProvider(
+                                        detailsPostsProvider(
                                           (
                                             ref.watchConfigFilter,
                                             ref.watchConfigSearch,
                                             tag,
+                                            widget.filterQuery ??
+                                                postFilterQueryNone,
                                           ),
                                         ),
                                       )

@@ -21,11 +21,13 @@ class UploaderPostsSection<T extends Post> extends ConsumerStatefulWidget {
   const UploaderPostsSection({
     super.key,
     this.limit,
+    this.filterQuery,
     required this.query,
   });
 
   final PreviewLimit? limit;
   final UploaderQuery? query;
+  final PostFilterQuery<T>? filterQuery;
 
   @override
   ConsumerState<UploaderPostsSection<T>> createState() =>
@@ -77,11 +79,12 @@ class _UploaderPostsSectionState<T extends Post>
               builder: (context, child) => _visController.isVisible
                   ? ref
                         .watch(
-                          detailsUploadersPostsProvider(
+                          detailsPostsProvider(
                             (
                               ref.watchConfigFilter,
                               ref.watchConfigSearch,
                               q.resolveTag(),
+                              widget.filterQuery ?? postFilterQueryNone,
                             ),
                           ),
                         )

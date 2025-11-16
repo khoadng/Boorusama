@@ -30,8 +30,7 @@ final danbooruPostDetailsUiBuilder = PostDetailsUIBuilder(
     DetailsPart.stats: (context) => const DanbooruStatsSection(),
     DetailsPart.tags: (context) => const DanbooruTagsSection(),
     DetailsPart.fileDetails: (context) => const DanbooruFileDetailsSection(),
-    DetailsPart.artistPosts: (context) =>
-        const DefaultInheritedArtistPostsSection<DanbooruPost>(),
+    DetailsPart.artistPosts: (context) => const DanbooruArtistPostsSection(),
     DetailsPart.uploaderPosts: (context) =>
         const DanbooruUploaderPostsSection(),
     DetailsPart.pool: (context) => const DanbooruPoolTiles(),
@@ -40,6 +39,21 @@ final danbooruPostDetailsUiBuilder = PostDetailsUIBuilder(
         const DanbooruCharacterListSection(),
   },
 );
+
+class DanbooruArtistPostsSection extends StatelessWidget {
+  const DanbooruArtistPostsSection({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return DefaultInheritedArtistPostsSection<DanbooruPost>(
+      filterQuery: CustomPostFilterQuery(
+        includeWhen: (post) => !post.isBanned,
+      ),
+    );
+  }
+}
 
 class DanbooruUploaderPostsSection extends ConsumerWidget {
   const DanbooruUploaderPostsSection({super.key});
@@ -51,6 +65,9 @@ class DanbooruUploaderPostsSection extends ConsumerWidget {
     return UploaderPostsSection<DanbooruPost>(
       query: ref.watch(
         danbooruUploaderQueryProvider(post),
+      ),
+      filterQuery: CustomPostFilterQuery(
+        includeWhen: (post) => !post.isBanned,
       ),
     );
   }
