@@ -48,7 +48,7 @@ class MoebooruUploaderPostsSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final post = InheritedPost.of<MoebooruPost>(context);
 
-    return UploaderPostsSection(
+    return UploaderPostsSection<MoebooruPost>(
       query: ref.watch(
         moebooruUploaderQueryProvider(post),
       ),

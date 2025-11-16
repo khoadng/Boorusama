@@ -74,7 +74,7 @@ class Shimmie2UploaderPostsSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final post = InheritedPost.of<Shimmie2Post>(context);
 
-    return UploaderPostsSection(
+    return UploaderPostsSection<Shimmie2Post>(
       query: ref.watch(
         shimmie2UploaderQueryProvider(post),
       ),

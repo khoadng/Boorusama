@@ -83,7 +83,7 @@ class PhilomenaUploaderPostsSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final post = InheritedPost.of<PhilomenaPost>(context);
 
-    return UploaderPostsSection(
+    return UploaderPostsSection<PhilomenaPost>(
       query: ref.watch(
         philomenaUploaderQueryProvider(post),
       ),

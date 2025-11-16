@@ -48,7 +48,7 @@ class DanbooruUploaderPostsSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final post = InheritedPost.of<DanbooruPost>(context);
 
-    return UploaderPostsSection(
+    return UploaderPostsSection<DanbooruPost>(
       query: ref.watch(
         danbooruUploaderQueryProvider(post),
       ),

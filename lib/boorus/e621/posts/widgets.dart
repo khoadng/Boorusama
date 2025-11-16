@@ -65,7 +65,7 @@ class E621UploaderPostsSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final post = InheritedPost.of<E621Post>(context);
 
-    return UploaderPostsSection(
+    return UploaderPostsSection<E621Post>(
       query: ref.watch(
         e621UploaderQueryProvider(post),
       ),

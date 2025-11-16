@@ -43,7 +43,7 @@ class SankakuUploaderPostsSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final post = InheritedPost.of<SankakuPost>(context);
 
-    return UploaderPostsSection(
+    return UploaderPostsSection<SankakuPost>(
       query: ref.watch(
         sankakuUploaderQueryProvider(post),
       ),

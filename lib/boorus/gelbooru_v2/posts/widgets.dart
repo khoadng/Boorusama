@@ -216,7 +216,7 @@ class GelbooruV2UploaderPostsSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final post = InheritedPost.of<GelbooruV2Post>(context);
 
-    return UploaderPostsSection(
+    return UploaderPostsSection<GelbooruV2Post>(
       query: ref.watch(
         gelbooruV2UploaderQueryProvider(post),
       ),

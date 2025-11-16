@@ -14,9 +14,10 @@ import '../../../widgets/booru_visibility_detector.dart';
 import '../../details/providers.dart';
 import '../../details/types.dart';
 import '../../listing/providers.dart';
+import '../../post/types.dart';
 import 'sliver_details_post_list.dart';
 
-class UploaderPostsSection extends ConsumerStatefulWidget {
+class UploaderPostsSection<T extends Post> extends ConsumerStatefulWidget {
   const UploaderPostsSection({
     super.key,
     this.limit,
@@ -27,11 +28,12 @@ class UploaderPostsSection extends ConsumerStatefulWidget {
   final UploaderQuery? query;
 
   @override
-  ConsumerState<UploaderPostsSection> createState() =>
-      _UploaderPostsSectionState();
+  ConsumerState<UploaderPostsSection<T>> createState() =>
+      _UploaderPostsSectionState<T>();
 }
 
-class _UploaderPostsSectionState extends ConsumerState<UploaderPostsSection> {
+class _UploaderPostsSectionState<T extends Post>
+    extends ConsumerState<UploaderPostsSection<T>> {
   late final VisibilityController _visController;
 
   @override
