@@ -125,7 +125,7 @@ class _BookmarkScrollViewState extends ConsumerState<BookmarkScrollView> {
             selectionModeController: _selectionModeController,
             scrollController: widget.scrollController,
             controller: controller,
-            enablePullToRefresh: false,
+            enablePullToRefresh: true,
             multiSelectActions: DefaultMultiSelectionActions(
               postController: controller,
               bookmark: false,
