@@ -21,6 +21,8 @@ class PlayPauseAnimationOverlay extends StatelessWidget {
     return VideoActionAnimationOverlay(
       duration: kPlayPauseAnimationDuration,
       triggerNotifier: controller.playPauseAction,
+      showEnd: 0.1,
+      hideStart: 0.8,
       iconBuilder: (action, progress) {
         return Center(
           child: _PlayPauseIcon(
