@@ -8,9 +8,10 @@ import 'package:flutter/material.dart';
 import 'package:selection_mode/selection_mode.dart';
 
 // Project imports:
+import '../../../../configs/config/types.dart';
 import '../../../../widgets/shadow_gradient_overlay.dart';
-import '../../../post/routes.dart';
 import '../../../post/types.dart';
+import '../routes/route_utils.dart';
 
 const _kDefaultAnimationDuration = Duration(milliseconds: 200);
 
@@ -19,6 +20,7 @@ class DefaultSelectableItem<T extends Post> extends StatefulWidget {
     required this.index,
     required this.post,
     required this.item,
+    required this.config,
     super.key,
     this.indicatorSize,
   });
@@ -27,6 +29,7 @@ class DefaultSelectableItem<T extends Post> extends StatefulWidget {
   final T post;
   final Widget item;
   final double? indicatorSize;
+  final BooruConfigAuth config;
 
   @override
   State<DefaultSelectableItem<T>> createState() =>
@@ -184,7 +187,11 @@ class _DefaultSelectableItemState<T extends Post>
       visualDensity: VisualDensity.compact,
       icon: const Icon(Icons.zoom_in),
       onPressed: () {
-        goToImagePreviewPage(context, widget.post);
+        goToImagePreviewPage(
+          context,
+          widget.post,
+          widget.config,
+        );
       },
     );
   }

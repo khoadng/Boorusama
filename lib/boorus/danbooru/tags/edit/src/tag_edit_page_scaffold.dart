@@ -7,7 +7,8 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../../../../../core/configs/config/providers.dart';
-import '../../../../../core/images/booru_image.dart';
+import '../../../../../core/images/providers.dart';
+import '../../../../../core/posts/details/widgets.dart';
 import '../../../../../core/settings/providers.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../../../../foundation/display.dart';
@@ -205,11 +206,15 @@ class _Image extends ConsumerWidget {
     final params = TagEditParamsProvider.of(context);
 
     return InteractiveViewerExtended(
-      child: BooruImage(
+      child: RawPostDetailsImage(
+        post: params.post,
         config: ref.watchConfigAuth,
-        imageUrl: params.imageUrl,
+        imageUrlBuilder: (_) => params.imageUrl,
+        thumbnailUrlBuilder: (_) => params.placeholderUrl,
+        imageCacheManager: ref.watch(
+          defaultImageCacheManagerProvider,
+        ),
         fit: BoxFit.contain,
-        borderRadius: BorderRadius.zero,
       ),
     );
   }

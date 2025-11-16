@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../../../core/posts/rating/types.dart';
+import '../../../../posts/post/types.dart';
 import '../tag_edit_state.dart';
 
 final tagEditProvider = NotifierProvider.autoDispose
@@ -63,14 +64,18 @@ class TagEditParams extends Equatable {
     required this.postId,
     required this.imageAspectRatio,
     required this.imageUrl,
+    required this.placeholderUrl,
     required this.initialRating,
+    required this.post,
   });
 
   final Set<String> initialTags;
   final int postId;
   final double imageAspectRatio;
   final String imageUrl;
+  final String placeholderUrl;
   final Rating? initialRating;
+  final DanbooruPost post;
 
   @override
   List<Object?> get props => [
@@ -78,7 +83,9 @@ class TagEditParams extends Equatable {
     postId,
     imageAspectRatio,
     imageUrl,
+    placeholderUrl,
     initialRating,
+    post,
   ];
 }
 

@@ -17,8 +17,8 @@ import '../../../../../core/configs/config/providers.dart';
 import '../../../../../core/configs/config/types.dart';
 import '../../../../../core/images/booru_image.dart';
 import '../../../../../core/posts/listing/providers.dart';
+import '../../../../../core/posts/listing/routes.dart';
 import '../../../../../core/posts/listing/widgets.dart';
-import '../../../../../core/posts/post/routes.dart';
 import '../../../../../core/posts/post/types.dart';
 import '../../../../../core/search/search/routes.dart';
 import '../../../../../core/widgets/widgets.dart';
@@ -234,18 +234,26 @@ class _FavoriteGroupEditPageState extends State<FavoriteGroupEditPage> {
                 child: Row(
                   children: [
                     const SizedBox(width: 16),
-                    InkWell(
-                      onTap: () => goToImagePreviewPage(context, post),
-                      child: LimitedBox(
-                        maxWidth: 80,
-                        child: Consumer(
-                          builder: (_, ref, _) => BooruImage(
-                            config: ref.watchConfigAuth,
-                            fit: BoxFit.cover,
-                            imageUrl: post.thumbnailImageUrl,
+                    Consumer(
+                      builder: (_, ref, _) {
+                        final config = ref.watchConfigAuth;
+
+                        return InkWell(
+                          onTap: () => goToImagePreviewPage(
+                            context,
+                            post,
+                            config,
                           ),
-                        ),
-                      ),
+                          child: LimitedBox(
+                            maxWidth: 80,
+                            child: BooruImage(
+                              config: config,
+                              fit: BoxFit.cover,
+                              imageUrl: post.thumbnailImageUrl,
+                            ),
+                          ),
+                        );
+                      },
                     ),
                     const SizedBox(width: 16),
                     Text(post.id.toString()),

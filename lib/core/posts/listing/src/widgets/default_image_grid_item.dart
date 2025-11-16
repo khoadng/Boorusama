@@ -124,6 +124,7 @@ class DefaultImageGridItem<T extends Post> extends StatelessWidget {
                           index: index,
                           post: post,
                           item: item,
+                          config: config,
                           indicatorSize: ref.watch(
                             selectionIndicatorSizeProvider,
                           ),

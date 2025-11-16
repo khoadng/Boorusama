@@ -7,10 +7,7 @@ import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../../foundation/toast.dart';
-import '../../../../configs/config/providers.dart';
-import '../../../../images/booru_image.dart';
 import '../../../../router.dart';
-import '../pages/quick_preview_image_dialog.dart';
 import '../types/post.dart';
 
 void goToOriginalImagePage(WidgetRef ref, Post post) {
@@ -27,24 +24,5 @@ void goToOriginalImagePage(WidgetRef ref, Post post) {
       path: '/original_image_viewer',
     ).toString(),
     extra: post,
-  );
-}
-
-void goToImagePreviewPage(BuildContext context, Post post) {
-  showGeneralDialog(
-    context: context,
-    pageBuilder: (context, animation, secondaryAnimation) =>
-        QuickPreviewImageDialog(
-          child: Consumer(
-            builder: (_, ref, _) => BooruImage(
-              config: ref.watchConfigAuth,
-              fit: BoxFit.contain,
-              imageUrl: post.isVideo
-                  ? post.videoThumbnailUrl
-                  : post.sampleImageUrl,
-              placeholderUrl: post.thumbnailImageUrl,
-            ),
-          ),
-        ),
   );
 }

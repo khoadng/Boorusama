@@ -6,6 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../../core/configs/config/providers.dart';
+import '../../../../../core/posts/listing/providers.dart';
+import '../../../posts/details/providers.dart';
 import '../../../posts/post/types.dart';
 import '../../_shared/tag_list_notifier.dart';
 import 'providers/providers.dart';
@@ -41,6 +43,7 @@ class _DanbooruTagEditPageState extends ConsumerState<DanbooruTagEditPage> {
   @override
   Widget build(BuildContext context) {
     final config = ref.watchConfigAuth;
+    final viewer = ref.watchConfigViewer;
     final tags = ref.watch(danbooruTagListProvider(config));
     final initialRating = tags.containsKey(widget.post.id)
         ? tags[widget.post.id]!.rating
@@ -48,14 +51,27 @@ class _DanbooruTagEditPageState extends ConsumerState<DanbooruTagEditPage> {
     final effectiveTags = tags.containsKey(widget.post.id)
         ? tags[widget.post.id]!.allTags
         : widget.post.tags.toSet();
+    final mediaResolver = ref.watch(danbooruMediaUrlResolverProvider(config));
+    final gridThumbnailSettings = ref.watch(
+      gridThumbnailSettingsProvider(config),
+    );
+    final gridThumbnailUrlGenerator = ref.watch(
+      gridThumbnailUrlGeneratorProvider(config),
+    );
+    final placeholderUrl = gridThumbnailUrlGenerator.generateUrl(
+      widget.post,
+      settings: gridThumbnailSettings,
+    );
 
     return TagEditParamsProvider(
       params: TagEditParams(
         initialTags: effectiveTags,
         postId: widget.post.id,
         imageAspectRatio: widget.post.aspectRatio ?? 1,
-        imageUrl: widget.post.url720x720,
+        imageUrl: mediaResolver.resolveMediaUrl(widget.post, viewer),
+        placeholderUrl: placeholderUrl,
         initialRating: initialRating,
+        post: widget.post,
       ),
       child: TagEditPageScaffold(
         scrollController: scrollController,

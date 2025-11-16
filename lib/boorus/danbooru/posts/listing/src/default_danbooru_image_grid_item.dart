@@ -140,6 +140,7 @@ class DefaultDanbooruImageGridItem extends StatelessWidget {
                           index: index,
                           post: post,
                           item: item,
+                          config: ref.watchConfigAuth,
                           indicatorSize: ref.watch(
                             selectionIndicatorSizeProvider,
                           ),
