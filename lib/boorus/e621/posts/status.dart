@@ -1,7 +1,9 @@
 // Project imports:
 import '../../../../../core/posts/post/types.dart';
 
-sealed class E621PostStatus implements PostStatus {
+sealed class E621PostStatus
+    with LowercaseMatchesStatusMixin
+    implements PostStatus {
   const E621PostStatus({
     required this.value,
   });
@@ -17,6 +19,7 @@ sealed class E621PostStatus implements PostStatus {
     _ => null,
   };
 
+  @override
   final String value;
 }
 

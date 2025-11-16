@@ -7,8 +7,10 @@ import '../../../sources/types.dart';
 import '../mixins/image_info_mixin.dart';
 import '../mixins/media_info_mixin.dart';
 import '../mixins/video_info_mixin.dart';
+import 'status.dart';
 
 export 'post_id.dart';
+export 'status.dart';
 
 class PostMetadata extends Equatable {
   const PostMetadata({
@@ -67,17 +69,4 @@ extension PostImageX on Post {
 
 extension PostX on Post {
   String get relationshipQuery => hasParent ? 'parent:$parentId' : 'parent:$id';
-}
-
-abstract class PostStatus {}
-
-class StringPostStatus implements PostStatus {
-  const StringPostStatus._(this.status);
-
-  static StringPostStatus? tryParse(dynamic value) => switch (value) {
-    final String s => StringPostStatus._(s),
-    _ => null,
-  };
-
-  final String status;
 }

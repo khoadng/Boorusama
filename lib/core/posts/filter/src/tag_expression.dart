@@ -7,6 +7,7 @@ import 'types/downvotes_type.dart';
 import 'types/rating_type.dart';
 import 'types/score_type.dart';
 import 'types/source_type.dart';
+import 'types/status_type.dart';
 import 'types/uploader_id_type.dart';
 import 'types/uploader_type.dart';
 
@@ -18,6 +19,7 @@ const kDefaultTagParser = TagExpressionParser(
     SourceTypeParser(),
     ScoreTypeParser(),
     DownvotesTypeParser(),
+    StatusTypeParser(),
   ],
 );
 

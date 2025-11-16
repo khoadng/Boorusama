@@ -1,7 +1,9 @@
 // Project imports:
 import '../../../../../core/posts/post/types.dart';
 
-sealed class DanbooruPostStatus implements PostStatus {
+sealed class DanbooruPostStatus
+    with LowercaseMatchesStatusMixin
+    implements PostStatus {
   const DanbooruPostStatus({
     required this.value,
   });
@@ -21,6 +23,7 @@ sealed class DanbooruPostStatus implements PostStatus {
 
   bool get isBanned => this is BannedStatus;
 
+  @override
   final String value;
 }
 

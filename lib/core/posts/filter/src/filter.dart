@@ -63,6 +63,7 @@ extension PostFilterX on Post {
       _ => null,
     }?.toLowerCase(),
     id: id,
+    status: status,
   );
 
   bool containsTagPattern(List<TagExpression> pattern) =>

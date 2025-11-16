@@ -1,4 +1,5 @@
 // Project imports:
+import '../../post/types.dart';
 import '../../rating/types.dart';
 
 class TagFilterData {
@@ -11,6 +12,7 @@ class TagFilterData {
     this.uploaderName,
     this.source,
     this.id,
+    this.status,
   });
 
   TagFilterData.tags({
@@ -21,7 +23,8 @@ class TagFilterData {
        uploaderId = null,
        uploaderName = null,
        id = null,
-       downvotes = null;
+       downvotes = null,
+       status = null;
 
   final Set<String> tags;
   final Rating rating;
@@ -31,6 +34,7 @@ class TagFilterData {
   final String? uploaderName;
   final String? source;
   final int? id;
+  final PostStatus? status;
 }
 
 extension TagFilterDataX on Set<String> {

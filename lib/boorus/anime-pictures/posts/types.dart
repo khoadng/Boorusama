@@ -53,4 +53,10 @@ class AnimePicturesPostStatus implements PostStatus {
 
   final int value;
   final int type;
+
+  @override
+  bool matches(String status) {
+    // AnimePictures uses numeric status, try to match by string representation
+    return value.toString() == status;
+  }
 }
