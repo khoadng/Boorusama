@@ -42,6 +42,7 @@ class DummyPost implements Post {
     this.videoThumbnailUrl = '',
     this.videoUrl = '',
     this.width = 0,
+    this.status,
   }) : source = source ?? PostSource.none();
 
   @override
@@ -118,4 +119,6 @@ class DummyPost implements Post {
   final String videoUrl;
   @override
   final double width;
+  @override
+  final PostStatus? status;
 }

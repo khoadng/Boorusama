@@ -47,6 +47,7 @@ abstract class SimplePost extends Equatable
     this.parentId,
     this.downvotes,
     this.uploaderName,
+    this.status,
   });
 
   @override
@@ -104,6 +105,9 @@ abstract class SimplePost extends Equatable
 
   @override
   final PostMetadata? metadata;
+
+  @override
+  final PostStatus? status;
 
   @override
   List<Object?> get props => [id];

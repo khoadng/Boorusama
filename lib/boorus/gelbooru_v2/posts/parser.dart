@@ -51,6 +51,7 @@ GelbooruV2Post gelbooruV2PostDtoToGelbooruPost(
     uploaderName: dto.owner,
     hasNotes: _checkIfHasNotes(dto),
     metadata: metadata,
+    status: StringPostStatus.tryParse(dto.status),
   );
 }
 

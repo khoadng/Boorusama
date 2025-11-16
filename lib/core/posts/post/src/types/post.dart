@@ -43,6 +43,7 @@ abstract class Post
   int? get downvotes;
   int? get uploaderId;
   String? get uploaderName;
+  PostStatus? get status;
 
   PostMetadata? get metadata;
 }
@@ -66,4 +67,17 @@ extension PostImageX on Post {
 
 extension PostX on Post {
   String get relationshipQuery => hasParent ? 'parent:$parentId' : 'parent:$id';
+}
+
+abstract class PostStatus {}
+
+class StringPostStatus implements PostStatus {
+  const StringPostStatus._(this.status);
+
+  static StringPostStatus? tryParse(dynamic value) => switch (value) {
+    final String s => StringPostStatus._(s),
+    _ => null,
+  };
+
+  final String status;
 }

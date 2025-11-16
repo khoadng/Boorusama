@@ -66,5 +66,6 @@ SzurubooruPost postDtoToPost(
     favoriteCount: e.favoriteCount ?? 0,
     commentCount: e.commentCount ?? 0,
     metadata: metadata,
+    status: null,
   );
 }

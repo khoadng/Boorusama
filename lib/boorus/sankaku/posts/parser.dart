@@ -146,6 +146,7 @@ SankakuPost postDtoToPost(
     uploaderId: 0, // The id is now a string
     uploaderName: e.author?.name,
     metadata: metadata,
+    status: StringPostStatus.tryParse(e.status),
   );
 }
 

@@ -72,6 +72,11 @@ E621Post? postDtoToPost(PostDto dto, PostMetadata? metadata) {
     uploaderName: dto.uploaderName,
     metadata: metadata,
     videoVariants: videoVariants,
+    status: E621PostStatus.from(
+      isPending: dto.flags?.pending,
+      isFlagged: dto.flags?.flagged,
+      isDeleted: dto.flags?.deleted,
+    ),
   );
 }
 

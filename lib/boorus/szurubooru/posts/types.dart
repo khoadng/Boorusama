@@ -42,6 +42,7 @@ class SzurubooruPost extends Equatable
     required this.commentCount,
     required this.metadata,
     required this.tagDetails,
+    required this.status,
     this.createdAt,
     this.parentId,
     this.downvotes,
@@ -108,6 +109,9 @@ class SzurubooruPost extends Equatable
   final PostMetadata? metadata;
 
   final List<Tag> tagDetails;
+
+  @override
+  final PostStatus? status;
 
   @override
   List<Object?> get props => [id];

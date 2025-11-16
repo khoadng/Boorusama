@@ -35,6 +35,7 @@ class GelbooruPost extends Equatable
     required this.uploaderId,
     required this.uploaderName,
     required this.metadata,
+    required this.status,
   }) : _sampleImageUrl = sampleImageUrl;
 
   factory GelbooruPost.empty() => GelbooruPost(
@@ -58,6 +59,7 @@ class GelbooruPost extends Equatable
     uploaderId: null,
     uploaderName: null,
     metadata: null,
+    status: null,
   );
 
   final String _sampleImageUrl;
@@ -138,6 +140,9 @@ class GelbooruPost extends Equatable
 
   @override
   final PostMetadata? metadata;
+
+  @override
+  final PostStatus? status;
 }
 
 class GelbooruImageUrlResolver implements ImageUrlResolver {

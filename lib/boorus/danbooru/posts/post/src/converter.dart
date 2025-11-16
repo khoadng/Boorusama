@@ -57,7 +57,6 @@ DanbooruPost postDtoToPost(
       approverId: dto.approverId,
       rating: Rating.parse(dto.rating ?? 's'),
       fileSize: dto.fileSize ?? 0,
-      isBanned: dto.isBanned ?? false,
       hasChildren: dto.hasChildren ?? false,
       parentId: dto.parentId,
       hasLarge: dto.hasLarge ?? false,
@@ -65,6 +64,12 @@ DanbooruPost postDtoToPost(
       variants: variants,
       pixelHash: dto.mediaAsset?.pixelHash ?? '',
       metadata: metadata,
+      status: DanbooruPostStatus.from(
+        isBanned: dto.isBanned,
+        isPending: dto.isPending,
+        isFlagged: dto.isFlagged,
+        isDeleted: dto.isDeleted,
+      ),
     );
   } catch (e) {
     return DanbooruPost.empty();

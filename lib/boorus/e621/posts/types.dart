@@ -11,6 +11,9 @@ import '../../../core/posts/details/types.dart';
 import '../../../core/posts/post/types.dart';
 import '../../../core/posts/rating/types.dart';
 import '../../../core/posts/sources/types.dart';
+import 'status.dart';
+
+export 'status.dart';
 
 class E621Post extends Equatable
     with MediaInfoMixin, TranslatedMixin, ImageInfoMixin, VideoInfoMixin
@@ -53,6 +56,7 @@ class E621Post extends Equatable
     required this.uploaderName,
     required this.metadata,
     required this.videoVariants,
+    required this.status,
   });
 
   @override
@@ -145,6 +149,9 @@ class E621Post extends Equatable
 
   @override
   final PostMetadata? metadata;
+
+  @override
+  final E621PostStatus? status;
 
   final Map<E621VideoVariantType, E621VideoVariant> videoVariants;
 }

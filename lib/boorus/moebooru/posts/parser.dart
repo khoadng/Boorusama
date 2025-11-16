@@ -42,5 +42,6 @@ MoebooruPost postDtoToPost(PostDto postDto, PostMetadata? metadata) {
     uploaderId: postDto.creatorId,
     uploaderName: postDto.author,
     metadata: metadata,
+    status: StringPostStatus.tryParse(postDto.status),
   );
 }

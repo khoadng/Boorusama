@@ -43,5 +43,9 @@ AnimePicturesPost dtoToAnimePicturesPost(
     uploaderName: null,
     metadata: metadata,
     tagsCount: e.tagsCount ?? 0,
+    status: AnimePicturesPostStatus.from(
+      value: e.status,
+      type: e.statusType,
+    ),
   );
 }

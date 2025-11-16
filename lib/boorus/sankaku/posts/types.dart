@@ -40,6 +40,7 @@ class SankakuPost extends Equatable
     required this.uploaderId,
     required this.uploaderName,
     required this.metadata,
+    required this.status,
     this.createdAt,
     this.parentId,
     this.downvotes,
@@ -132,6 +133,9 @@ class SankakuPost extends Equatable
 
   @override
   final PostMetadata? metadata;
+
+  @override
+  final PostStatus? status;
 }
 
 class SankakuPostLinkGenerator implements PostLinkGenerator<SankakuPost> {

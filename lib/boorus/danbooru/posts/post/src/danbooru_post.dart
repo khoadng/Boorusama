@@ -6,6 +6,9 @@ import '../../../../../core/posts/post/types.dart';
 import '../../../../../core/posts/rating/types.dart';
 import '../../../../../core/posts/sources/types.dart';
 import 'post_variant.dart';
+import 'status.dart';
+
+export 'status.dart';
 
 typedef DanbooruPostsOrError = PostsOrErrorCore<DanbooruPost>;
 
@@ -38,7 +41,6 @@ class DanbooruPost extends Equatable
     required this.approverId,
     required this.rating,
     required this.fileSize,
-    required this.isBanned,
     required this.hasChildren,
     required this.parentId,
     required this.hasLarge,
@@ -46,6 +48,7 @@ class DanbooruPost extends Equatable
     required this.variants,
     required this.pixelHash,
     required this.metadata,
+    required this.status,
   });
 
   factory DanbooruPost.empty() => DanbooruPost(
@@ -74,7 +77,6 @@ class DanbooruPost extends Equatable
     approverId: 0,
     rating: Rating.explicit,
     fileSize: 0,
-    isBanned: false,
     hasChildren: false,
     hasLarge: false,
     parentId: null,
@@ -82,6 +84,7 @@ class DanbooruPost extends Equatable
     variants: const PostVariants.none(),
     pixelHash: '',
     metadata: null,
+    status: null,
   );
 
   @override
@@ -127,7 +130,6 @@ class DanbooruPost extends Equatable
   final Rating rating;
   @override
   final int fileSize;
-  final bool isBanned;
   final bool hasChildren;
   @override
   final int? parentId;
@@ -135,6 +137,10 @@ class DanbooruPost extends Equatable
   @override
   final double duration;
   final PostVariants variants;
+  @override
+  final DanbooruPostStatus? status;
+
+  bool get isBanned => status?.isBanned ?? false;
 
   @override
   bool get hasComment => lastCommentAt != null;
@@ -249,7 +255,6 @@ extension PostX on DanbooruPost {
     approverId: approverId,
     rating: rating ?? this.rating,
     fileSize: fileSize ?? this.fileSize,
-    isBanned: isBanned,
     hasChildren: hasChildren ?? this.hasChildren,
     hasLarge: hasLarge,
     parentId: parentId ?? this.parentId,
@@ -257,6 +262,7 @@ extension PostX on DanbooruPost {
     variants: variants,
     pixelHash: pixelHash,
     metadata: metadata,
+    status: status,
   );
 }
 

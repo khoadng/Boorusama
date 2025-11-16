@@ -100,7 +100,7 @@ extension DanbooruUploadX on DanbooruUpload {
       uploaderId: uploaderId,
       rating: Rating.unknown,
       fileSize: mediaAsset.fileSize ?? 0,
-      isBanned: false,
+      status: null,
       hasChildren: false,
       parentId: null,
       hasLarge: false,

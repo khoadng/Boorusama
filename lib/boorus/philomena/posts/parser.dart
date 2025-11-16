@@ -52,6 +52,7 @@ PhilomenaPost postDtoToPost(ImageDto e, PostMetadata? metadata) {
     uploaderId: e.uploaderId,
     uploaderName: e.uploader,
     metadata: metadata,
+    status: null,
   );
 }
 

@@ -42,5 +42,6 @@ GelbooruPost gelbooruPostDtoToGelbooruPost(
     uploaderId: dto.creatorId,
     uploaderName: dto.owner,
     metadata: metadata,
+    status: StringPostStatus.tryParse(dto.status),
   );
 }
