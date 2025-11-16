@@ -37,6 +37,7 @@ class _SlideshowOverlayState extends State<SlideshowOverlay>
   late final ValueNotifier<bool> _showStopIcon;
   late final AnimationController _animationController;
   late final Animation<double> _fadeAnimation;
+  var _wasRunning = false;
 
   @override
   void initState() {
@@ -85,13 +86,19 @@ class _SlideshowOverlayState extends State<SlideshowOverlay>
   }
 
   void _onSlideshowStateChanged() {
-    if (widget.controller.isRunning) {
+    final isRunning = widget.controller.isRunning;
+
+    // Transitioned from not running to running
+    if (isRunning && !_wasRunning) {
       _showStopIcon.value = true;
       _startHideTimer();
-    } else {
+      // Transitioned from running to not running
+    } else if (!isRunning && _wasRunning) {
       _hideTimer?.cancel();
       _showStopIcon.value = false;
     }
+
+    _wasRunning = isRunning;
   }
 
   void _startHideTimer({Duration? duration}) {
