@@ -1,0 +1,91 @@
+Privacy
+Android 16 (API level 36) includes the following privacy changes.
+
+Local Network Permission
+Devices on the LAN can be accessed by any app that has the INTERNET permission. This makes it easy for apps to connect to local devices but it also has privacy implications such as forming a fingerprint of the user, and being a proxy for location.
+
+The Local Network Protections project aims to protect the user's privacy by gating access to the local network behind a new runtime permission.
+
+Release plan
+This change will be deployed between two releases, 25Q2 and 26Q2 respectively. It is imperative that developers follow this guidance for 25Q2 and share feedback because these protections will be enforced at a later Android release. Moreover, they will need to update scenarios which depend on implicit local network access by using the following guidance and prepare for user rejection and revocation of the new permission.
+
+Impact
+At the current stage, LNP is an opt-in feature which means only the apps that opt in will be affected. The goal of the opt-in phase is for app developers to understand which parts of their app depend on implicit local network access such that they can prepare to permission guard them for the next release.
+
+Apps will be affected if they access the user's local network using:
+
+Direct or library use of raw sockets on local network addresses (e.g. mDNS or SSDP service discovery protocol)
+Use of framework level classes that access the local network (e.g. NsdManager)
+Traffic to and from a local network address requires local network access permission. The following table lists some common cases:
+
+App Low Level Network Operation	Local Network Permission Required
+Making an outgoing TCP connection	yes
+Accepting incoming TCP connections	yes
+Sending a UDP unicast, multicast, broadcast	yes
+Receiving an incoming UDP unicast, multicast, broadcast	yes
+These restrictions are implemented deep in the networking stack, and thus they apply to all networking APIs. This includes sockets created in native or managed code, networking libraries like Cronet and OkHttp, and any APIs implemented on top of those. Trying to resolve services on the local network (i.e. those with a .local suffix) will require local network permission.
+
+Note: Traffic originating from Android Webviews that require local network access will inherit permission state from the host app
+Exceptions to the rules above:
+
+If a device's DNS server is on a local network, traffic to or from it (at port 53) doesn't require local network access permission.
+Applications using Output Switcher as their in-app picker won't need local network permissions (more guidance to come in 2025Q4).
+Note: Many media casting scenarios depend on access to the local network and will be impacted by this change. However, not all apps which offer casting will need to request the new permission. Future APIs and guidance for dealing with casting scenarios will be provided in 25Q4.
+Developer Guidance (Opt-in)
+To opt into local network restrictions, do the following:
+
+Flash the device to a build with 25Q2 Beta 3 or later.
+Install the app to be tested.
+Toggle the Appcompat flag in adb:
+
+
+adb shell am compat enable RESTRICT_LOCAL_NETWORK <package_name>
+Reboot The device
+
+Now your app's access to the local network is restricted and any attempt to access the local network will lead to socket errors. If you are using APIs that perform local network operations outside of your app process (ex: NsdManager), they won't be impacted during the opt-in phase.
+
+To restore access, you must grant your app permission to NEARBY_WIFI_DEVICES.
+
+Ensure the app declares the NEARBY_WIFI_DEVICES permission in its manifest.
+Go to Settings > Apps > [Application Name] > Permissions > Nearby devices > Allow.
+Note: In a future Android release, this feature will be guarded by a new permission in the Nearby devices permission group
+Now your app's access to the local network should be restored and all your scenarios should work as they did prior to opting the app in.
+
+Once enforcement for local network protection begins, here is how the app network traffic will be impacted.
+
+Permission	Outbound LAN Request	Outbound/Inbound Internet Request	Inbound LAN Request
+Granted	Works	Works	Works
+Not Granted	Fails	Works	Fails
+Use the following command to toggle-off the App-Compat flag
+
+
+adb shell am compat disable RESTRICT_LOCAL_NETWORK <package_name>
+Errors
+Errors arising from these restrictions will be returned to the calling socket whenever it invokes send or a send variant to a local network address.
+
+Example errors:
+
+
+sendto failed: EPERM (Operation not permitted)
+
+sendto failed: ECONNABORTED (Operation not permitted)
+Local Network Definition
+A local network in this project refers to an IP network that utilizes a broadcast-capable network interface, such as Wi-Fi or Ethernet, but excludes cellular (WWAN) or VPN connections.
+
+The following are considered local networks:
+
+IPv4:
+
+169.254.0.0/16 // Link Local
+100.64.0.0/10 // CGNAT
+10.0.0.0/8 // RFC1918
+172.16.0.0/12 // RFC1918
+192.168.0.0/16 // RFC1918
+IPv6:
+
+Link-local
+Directly-connected routes
+Stub networks like Thread
+Multiple-subnets (TBD)
+Additionally, both multicast addresses (224.0.0.0/4, ff00::/8) and the IPv4 broadcast address (255.255.255.255) are classified as local network addresses.
+

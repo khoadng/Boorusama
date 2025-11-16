@@ -7,7 +7,9 @@ import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../foundation/networking.dart';
+import '../../../../foundation/permissions.dart';
 import '../../../themes/theme/types.dart';
+import '../lan_permission_request_dialog.dart';
 import 'export_data_notifier.dart';
 
 class ExportDataPage extends ConsumerStatefulWidget {
@@ -18,6 +20,24 @@ class ExportDataPage extends ConsumerStatefulWidget {
 }
 
 class _ExportDataPageState extends ConsumerState<ExportDataPage> {
+  @override
+  void initState() {
+    super.initState();
+    _requestPermissionIfNeeded();
+  }
+
+  Future<void> _requestPermissionIfNeeded() async {
+    final handler = ref.read(localNetworkPermissionHandlerProvider);
+    final isGranted = await handler.isGranted();
+
+    if (!isGranted && mounted) {
+      final result = await showLanPermissionRequestDialog(context);
+      if (result ?? false) {
+        await handler.request();
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final notifier = ref.watch(exportDataProvider.notifier);

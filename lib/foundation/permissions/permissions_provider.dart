@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../info/device_info.dart';
 import '../loggers.dart';
 import 'device_storage_permission_notifier.dart';
+import 'local_network.dart';
 import 'permission_utils.dart';
 
 final deviceStoragePermissionProvider =
@@ -30,4 +31,9 @@ final notificationPermissionManagerProvider =
       (ref) => NotificationPermissionManager(
         logger: ref.watch(loggerProvider),
       ),
+    );
+
+final localNetworkPermissionHandlerProvider =
+    Provider<LocalNetworkPermissionHandler>(
+      (ref) => MockLocalNetworkPermissionHandler(),
     );

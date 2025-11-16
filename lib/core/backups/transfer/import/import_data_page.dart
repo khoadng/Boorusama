@@ -9,11 +9,13 @@ import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../foundation/info/package_info.dart';
+import '../../../../foundation/permissions.dart';
 import '../../../../foundation/toast.dart';
 import '../../../../foundation/version.dart';
 import '../../../themes/theme/types.dart';
 import '../../preparation/version_mismatch_alert_dialog.dart';
 import '../../servers/discovery_client.dart';
+import '../lan_permission_request_dialog.dart';
 import 'manual_device_input_dialog.dart';
 import 'transfer_data_dialog.dart';
 
@@ -39,7 +41,23 @@ class _ImportDataPageState extends ConsumerState<ImportDataPage> {
   void initState() {
     super.initState();
 
-    discoverServers();
+    _requestPermissionAndDiscover();
+  }
+
+  Future<void> _requestPermissionAndDiscover() async {
+    final handler = ref.read(localNetworkPermissionHandlerProvider);
+    final isGranted = await handler.isGranted();
+
+    if (!isGranted && mounted) {
+      final result = await showLanPermissionRequestDialog(context);
+      if (result ?? false) {
+        await handler.request();
+      }
+    }
+
+    if (mounted) {
+      await discoverServers();
+    }
   }
 
   void _handleServiceResolved(BonsoirService service) {
