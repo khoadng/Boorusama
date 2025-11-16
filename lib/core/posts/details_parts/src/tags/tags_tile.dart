@@ -86,7 +86,7 @@ class _DefaultInheritedTagsTileState<T extends Post>
               onTagTap: (tag) => widget.onTagTap?.call(
                 Tag.noCount(
                   name: tag,
-                  category: TagCategory.unknown(),
+                  category: TagCategory.unknown,
                 ),
               ),
             ),

@@ -6,18 +6,36 @@ import '../../../core/tags/autocompletes/types.dart';
 import '../../../core/tags/categories/types.dart';
 import '../../../core/tags/tag/types.dart';
 
-Tag tagDtoToTag(TagDto e) => Tag.noCount(
-  name: normalizeZerochanTag(e.value)!,
-  category: zerochanStringToTagCategory(e.type),
-);
+Tag? tagDtoToTag(TagDto e) => switch (e) {
+  TagDto(:final value?, :final type) => Tag.noCount(
+    name: normalizeZerochanTag(value),
+    category: zerochanStringToTagCategory(type),
+  ),
+  _ => null,
+};
+
+Tag? autocompleteDataToTag(AutocompleteData e) => switch (e) {
+  AutocompleteData(:final value, :final category) when value.isNotEmpty => Tag(
+    name: normalizeZerochanTag(value),
+    category: zerochanStringToTagCategory(category),
+    postCount: e.postCount ?? 0,
+  ),
+  _ => null,
+};
 
 AutocompleteData autocompleteDtoToAutocompleteData(AutocompleteDto e) =>
     AutocompleteData(
       label: e.value?.toLowerCase() ?? '',
       value: e.value?.toLowerCase() ?? '',
       postCount: e.total,
-      antecedent: normalizeZerochanTag(e.alias),
-      category: normalizeZerochanTag(e.type) ?? '',
+      antecedent: switch (e.alias) {
+        null || '' => null,
+        final alias => normalizeZerochanTag(alias),
+      },
+      category: switch (e.type) {
+        null || '' => null,
+        final type => normalizeZerochanTag(type),
+      },
     );
 
 TagCategory zerochanStringToTagCategory(String? value) {
@@ -36,6 +54,6 @@ TagCategory zerochanStringToTagCategory(String? value) {
   };
 }
 
-String? normalizeZerochanTag(String? tag) {
-  return tag?.toLowerCase().replaceAll(' ', '_');
+String normalizeZerochanTag(String tag) {
+  return tag.toLowerCase().replaceAll(' ', '_');
 }
