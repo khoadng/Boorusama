@@ -65,15 +65,18 @@ class DefaultInheritedArtistPostsSection<T extends Post>
                                     settings: thumbSettings,
                                   ),
                                 ),
-                                orElse: () =>
-                                    const SliverPreviewPostGridPlaceholder(),
+                                orElse: () => SliverPreviewPostGridPlaceholder(
+                                  limit: effectiveLimit,
+                                ),
                               ),
                         ),
                       )
                       .toList()
                 : [],
             orElse: () => [
-              const SliverPreviewPostGridPlaceholder(),
+              SliverPreviewPostGridPlaceholder(
+                limit: effectiveLimit,
+              ),
             ],
           ),
     );

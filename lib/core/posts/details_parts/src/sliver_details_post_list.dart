@@ -240,21 +240,67 @@ class SliverPreviewPostGridPlaceholder extends StatelessWidget {
   const SliverPreviewPostGridPlaceholder({
     super.key,
     this.itemCount = 30,
+    this.limit,
   });
 
   final int itemCount;
+  final PreviewLimit? limit;
 
   @override
   Widget build(BuildContext context) {
     final constraints = PostDetailsSheetConstraints.of(context);
     final colorScheme = Theme.of(context).colorScheme;
+    final effectiveLimit = limit ?? const UnlimitedPreview();
+
+    return switch (effectiveLimit) {
+      UnlimitedPreview() => SliverGrid.builder(
+        itemCount: itemCount,
+        addRepaintBoundaries: false,
+        addSemanticIndexes: false,
+        addAutomaticKeepAlives: false,
+        gridDelegate: _getGridDelegate(constraints?.maxWidth),
+        itemBuilder: (context, index) => Container(
+          decoration: BoxDecoration(
+            color: colorScheme.surfaceContainerHigh.withValues(alpha: 0.5),
+            borderRadius: const BorderRadius.all(Radius.circular(8)),
+          ),
+        ),
+      ),
+      final LimitedPreview limitConfig => _buildLimitedPlaceholder(
+        context,
+        constraints,
+        limitConfig,
+        colorScheme,
+      ),
+    };
+  }
+
+  Widget _buildLimitedPlaceholder(
+    BuildContext context,
+    PostDetailsSheetConstraints? constraints,
+    LimitedPreview limitConfig,
+    ColorScheme colorScheme,
+  ) {
+    final crossAxisCount = calculateGridCount(
+      constraints?.maxWidth,
+      GridSize.small,
+    );
+    final state = limitConfig.calculateState(
+      totalCount: itemCount,
+      crossAxisCount: crossAxisCount,
+      isExpanded: false,
+    );
 
     return SliverGrid.builder(
-      itemCount: itemCount,
+      itemCount: state.displayCount,
       addRepaintBoundaries: false,
       addSemanticIndexes: false,
       addAutomaticKeepAlives: false,
-      gridDelegate: _getGridDelegate(constraints?.maxWidth),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: crossAxisCount,
+        mainAxisSpacing: 4,
+        crossAxisSpacing: 4,
+      ),
       itemBuilder: (context, index) => Container(
         decoration: BoxDecoration(
           color: colorScheme.surfaceContainerHigh.withValues(alpha: 0.5),

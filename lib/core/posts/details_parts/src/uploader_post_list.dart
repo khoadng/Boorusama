@@ -64,7 +64,9 @@ class UploaderPostsSection extends ConsumerWidget {
                           ),
                         )
                       : const SliverSizedBox(),
-                  orElse: () => const SliverPreviewPostGridPlaceholder(),
+                  orElse: () => SliverPreviewPostGridPlaceholder(
+                    limit: effectiveLimit,
+                  ),
                 ),
           ),
       ],
