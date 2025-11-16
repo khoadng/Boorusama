@@ -10,12 +10,13 @@ import 'package:sliver_tools/sliver_tools.dart';
 // Project imports:
 import '../../../configs/config/providers.dart';
 import '../../../search/search/routes.dart';
+import '../../../widgets/booru_visibility_detector.dart';
 import '../../details/providers.dart';
 import '../../details/types.dart';
 import '../../listing/providers.dart';
 import 'sliver_details_post_list.dart';
 
-class UploaderPostsSection extends ConsumerWidget {
+class UploaderPostsSection extends ConsumerStatefulWidget {
   const UploaderPostsSection({
     super.key,
     this.limit,
@@ -26,48 +27,82 @@ class UploaderPostsSection extends ConsumerWidget {
   final UploaderQuery? query;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<UploaderPostsSection> createState() =>
+      _UploaderPostsSectionState();
+}
+
+class _UploaderPostsSectionState extends ConsumerState<UploaderPostsSection> {
+  late final VisibilityController _visController;
+
+  @override
+  void initState() {
+    super.initState();
+    _visController = VisibilityController();
+  }
+
+  @override
+  void dispose() {
+    _visController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final auth = ref.watchConfigAuth;
 
     final thumbUrlBuilder = ref.watch(gridThumbnailUrlGeneratorProvider(auth));
     final thumbSettings = ref.watch(gridThumbnailSettingsProvider(auth));
-    final effectiveLimit = limit ?? const LimitedPreview.defaults();
+    final effectiveLimit = widget.limit ?? const LimitedPreview.defaults();
 
     return MultiSliver(
       children: [
-        if (query case final q?)
+        if (widget.query case final q?)
+          SliverToBoxAdapter(
+            child: BooruVisibilityDetector(
+              childKey: Key('uploader-posts-${q.resolveTag()}'),
+              controller: _visController,
+            ),
+          ),
+        if (widget.query case final q?)
           SliverDetailsPostList(
             onTap: () {
               goToSearchPage(ref, tag: q.resolveTag());
             },
             tag: q.resolveDisplayName(),
             subtitle: context.t.post.detail.uploader,
-            child: ref
-                .watch(
-                  detailsUploadersPostsProvider(
-                    (
-                      ref.watchConfigFilter,
-                      ref.watchConfigSearch,
-                      q.resolveTag(),
-                    ),
-                  ),
-                )
-                .maybeWhen(
-                  data: (data) => data.isNotEmpty
-                      ? SliverPreviewPostGrid(
-                          posts: data,
-                          auth: auth,
-                          limit: effectiveLimit,
-                          imageUrl: (p) => thumbUrlBuilder.generateUrl(
-                            p,
-                            settings: thumbSettings,
+            child: ListenableBuilder(
+              listenable: _visController,
+              builder: (context, child) => _visController.isVisible
+                  ? ref
+                        .watch(
+                          detailsUploadersPostsProvider(
+                            (
+                              ref.watchConfigFilter,
+                              ref.watchConfigSearch,
+                              q.resolveTag(),
+                            ),
                           ),
                         )
-                      : const SliverSizedBox(),
-                  orElse: () => SliverPreviewPostGridPlaceholder(
-                    limit: effectiveLimit,
-                  ),
-                ),
+                        .maybeWhen(
+                          data: (data) => data.isNotEmpty
+                              ? SliverPreviewPostGrid(
+                                  posts: data,
+                                  auth: auth,
+                                  limit: effectiveLimit,
+                                  imageUrl: (p) => thumbUrlBuilder.generateUrl(
+                                    p,
+                                    settings: thumbSettings,
+                                  ),
+                                )
+                              : const SliverSizedBox(),
+                          orElse: () => SliverPreviewPostGridPlaceholder(
+                            limit: effectiveLimit,
+                          ),
+                        )
+                  : SliverPreviewPostGridPlaceholder(
+                      limit: effectiveLimit,
+                    ),
+            ),
           ),
       ],
     );
