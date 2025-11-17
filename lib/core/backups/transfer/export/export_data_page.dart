@@ -40,8 +40,7 @@ class ExportDataPage extends ConsumerWidget {
                           ? ref
                                 .watch(exportDataProvider)
                                 .when(
-                                  data: (data) =>
-                                      _buildBody(data, context, ref),
+                                  data: (data) => const _Content(),
                                   error: (error, _) => Text('Error: $error'),
                                   loading: () => const Center(
                                     child: CircularProgressIndicator(),
@@ -60,12 +59,13 @@ class ExportDataPage extends ConsumerWidget {
       ),
     );
   }
+}
 
-  Widget _buildBody(
-    ExportDataState state,
-    BuildContext context,
-    WidgetRef ref,
-  ) {
+class _Content extends ConsumerWidget {
+  const _Content();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
     final colorScheme = theme.colorScheme;
@@ -80,90 +80,93 @@ class ExportDataPage extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildInfo(colorScheme, state, context),
+          _buildInfo(colorScheme, context, ref),
           Padding(
             padding: const EdgeInsets.symmetric(
               vertical: 8,
               horizontal: 8,
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 8),
-                Text(
-                  '${context.t.settings.backup_and_restore.send_data.how_to_transfer}:',
-                  style: textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text.rich(
-                  context.t.settings.backup_and_restore.send_data.how_to_send(
-                    settings: (_) => TextSpan(
-                      text:
-                          '${context.t.settings.settings} > ${context.t.settings.backup_and_restore.backup_and_restore}',
-                      style: textTheme.bodyMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: colorScheme.primary,
-                      ),
-                    ),
-                    receive: (_) => TextSpan(
-                      text: context.t.settings.backup_and_restore.receive,
-                      style: textTheme.bodyMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: colorScheme.primary,
-                      ),
-                    ),
-                  ),
-                ),
-
-                const SizedBox(height: 16),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 12,
-                    horizontal: 8,
-                  ),
-                  decoration: BoxDecoration(
-                    color: colorScheme.errorContainer.withValues(
-                      alpha: 0.2,
-                    ),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.warning_rounded,
-                        color: colorScheme.error,
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Text(
-                          context
-                              .t
-                              .settings
-                              .backup_and_restore
-                              .send_data
-                              .disclaimer,
-                          style: textTheme.bodyMedium?.copyWith(
-                            color: colorScheme.error,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
+            child: _buildInstruction(context, textTheme, colorScheme),
           ),
         ],
       ),
     );
   }
 
+  Widget _buildInstruction(
+    BuildContext context,
+    TextTheme textTheme,
+    ColorScheme colorScheme,
+  ) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: 8),
+        Text(
+          '${context.t.settings.backup_and_restore.send_data.how_to_transfer}:',
+          style: textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 8),
+        Text.rich(
+          context.t.settings.backup_and_restore.send_data.how_to_send(
+            settings: (_) => TextSpan(
+              text:
+                  '${context.t.settings.settings} > ${context.t.settings.backup_and_restore.backup_and_restore}',
+              style: textTheme.bodyMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: colorScheme.primary,
+              ),
+            ),
+            receive: (_) => TextSpan(
+              text: context.t.settings.backup_and_restore.receive,
+              style: textTheme.bodyMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: colorScheme.primary,
+              ),
+            ),
+          ),
+        ),
+
+        const SizedBox(height: 16),
+        Container(
+          padding: const EdgeInsets.symmetric(
+            vertical: 12,
+            horizontal: 8,
+          ),
+          decoration: BoxDecoration(
+            color: colorScheme.errorContainer.withValues(
+              alpha: 0.2,
+            ),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Row(
+            children: [
+              Icon(
+                Icons.warning_rounded,
+                color: colorScheme.error,
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  context.t.settings.backup_and_restore.send_data.disclaimer,
+                  style: textTheme.bodyMedium?.copyWith(
+                    color: colorScheme.error,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _buildInfo(
     ColorScheme colorScheme,
-    ExportDataState state,
     BuildContext context,
+    WidgetRef ref,
   ) {
     return Container(
       padding: const EdgeInsets.all(16),
@@ -171,28 +174,43 @@ class ExportDataPage extends ConsumerWidget {
         color: colorScheme.surfaceContainerLow,
         borderRadius: BorderRadius.circular(12),
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ServerInfoTile(
-            title: 'IP',
-            value: state.serverUrl,
+      child: ref
+          .watch(exportDataProvider)
+          .when(
+            data: (state) => Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ServerInfoTile(
+                  title: 'IP',
+                  value: state.serverUrl,
+                ),
+                ServerInfoTile(
+                  title: context.t.settings.backup_and_restore.send_data.name,
+                  value: state.serverName,
+                ),
+                ServerInfoTile(
+                  title:
+                      context.t.settings.backup_and_restore.send_data.version,
+                  value: state.appVersion,
+                ),
+                ServerInfoTile(
+                  title: context
+                      .t
+                      .settings
+                      .backup_and_restore
+                      .send_data
+                      .status
+                      .title,
+                  value: _buildStatus(state, context),
+                ),
+              ],
+            ),
+            error: (error, _) => Text('Error: $error'),
+            loading: () => const Center(
+              child: CircularProgressIndicator(),
+            ),
           ),
-          ServerInfoTile(
-            title: context.t.settings.backup_and_restore.send_data.name,
-            value: state.serverName,
-          ),
-          ServerInfoTile(
-            title: context.t.settings.backup_and_restore.send_data.version,
-            value: state.appVersion,
-          ),
-          ServerInfoTile(
-            title: context.t.settings.backup_and_restore.send_data.status.title,
-            value: _buildStatus(state, context),
-          ),
-        ],
-      ),
     );
   }
 
