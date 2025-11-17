@@ -10,37 +10,23 @@ import 'permissions_provider.dart';
 class LocalNetworkPermissionState extends Equatable {
   const LocalNetworkPermissionState({
     required this.status,
-    required this.isChecked,
   });
 
   final PermissionStatus status;
-  final bool isChecked;
 
   bool get isGranted => switch (status) {
     PermissionStatus.granted => true,
     _ => false,
   };
 
-  bool get isDenied => switch (status) {
-    PermissionStatus.denied => true,
-    _ => false,
-  };
-
-  bool get isPermanentlyDenied => switch (status) {
-    PermissionStatus.permanentlyDenied => true,
-    _ => false,
-  };
-
   LocalNetworkPermissionState copyWith({
     PermissionStatus? status,
-    bool? isChecked,
   }) => LocalNetworkPermissionState(
     status: status ?? this.status,
-    isChecked: isChecked ?? this.isChecked,
   );
 
   @override
-  List<Object> get props => [status, isChecked];
+  List<Object> get props => [status];
 }
 
 class LocalNetworkPermissionNotifier
@@ -54,26 +40,13 @@ class LocalNetworkPermissionNotifier
 
     return LocalNetworkPermissionState(
       status: status,
-      isChecked: true,
     );
   }
 
   Future<void> requestPermission() async {
     state = const AsyncValue.loading();
-    state = await AsyncValue.guard(() async {
-      final currentState = await future;
-      final status = await _handler.request();
-      return currentState.copyWith(status: status);
-    });
-  }
-
-  Future<void> checkPermission() async {
-    state = const AsyncValue.loading();
-    state = await AsyncValue.guard(() async {
-      final currentState = await future;
-      final status = await _handler.check();
-      return currentState.copyWith(status: status);
-    });
+    await _handler.request();
+    ref.invalidateSelf();
   }
 }
 
