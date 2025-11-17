@@ -3,13 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_ce/hive.dart';
 
 // Project imports:
-import '../cache/providers.dart';
+import '../cache/persistent/providers.dart';
 import 'notifier.dart';
 import 'repo.dart';
 import 'types.dart';
 
 final changelogDataBoxProvider = FutureProvider<Box<String>>(
-  (ref) => ref.watch(miscDataBoxProvider),
+  (ref) => ref.watch(persistentCacheBoxProvider.future),
 );
 
 final changelogRepositoryProvider = FutureProvider<ChangelogRepository>(

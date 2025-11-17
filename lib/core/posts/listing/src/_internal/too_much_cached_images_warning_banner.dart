@@ -9,7 +9,7 @@ import 'package:i18n/i18n.dart';
 // Project imports:
 import '../../../../../foundation/toast.dart';
 import '../../../../../foundation/utils/file_utils.dart';
-import '../../../../cache/providers.dart';
+import '../../../../cache/persistent/providers.dart';
 import '../../../../images/providers.dart';
 import '../../../../router.dart';
 import '../../../../widgets/widgets.dart';
@@ -20,7 +20,7 @@ final _cacheImageActionsPerformedProvider = StateProvider<bool>((ref) => false);
 const _kHideImageCacheWarningKey = 'hide_image_cache_warning';
 
 final _imageCachesProvider = FutureProvider<int>((ref) async {
-  final miscData = ref.watch(miscDataBoxProvider);
+  final miscData = await ref.watch(persistentCacheBoxProvider.future);
   final hideWarning = miscData.get(_kHideImageCacheWarningKey) == 'true';
 
   if (hideWarning) return -1;
@@ -50,8 +50,6 @@ class TooMuchCachedImagesWarningBanner extends ConsumerWidget {
         .when(
           data: (cacheSize) {
             if (cacheSize > threshold) {
-              final miscData = ref.watch(miscDataBoxProvider);
-
               return DismissableInfoContainer(
                 mainColor: Theme.of(context).colorScheme.primary,
                 content:
@@ -80,15 +78,21 @@ class TooMuchCachedImagesWarningBanner extends ConsumerWidget {
                     child: Text(context.t.settings.performance.clear_cache),
                   ),
                   TextButton(
-                    onPressed: () {
-                      miscData.put(_kHideImageCacheWarningKey, 'true');
-                      ref
-                              .read(
-                                _cacheImageActionsPerformedProvider.notifier,
-                              )
-                              .state =
-                          true;
-                    },
+                    onPressed: ref
+                        .watch(persistentCacheBoxProvider)
+                        .maybeWhen(
+                          data: (miscData) => () {
+                            miscData.put(_kHideImageCacheWarningKey, 'true');
+                            ref
+                                    .read(
+                                      _cacheImageActionsPerformedProvider
+                                          .notifier,
+                                    )
+                                    .state =
+                                true;
+                          },
+                          orElse: () => null,
+                        ),
                     child: Text("Don't show again".hc),
                   ),
                 ],

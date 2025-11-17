@@ -9,6 +9,7 @@ import '../../foundation/utils/file_utils.dart';
 import '../images/providers.dart';
 import '../tags/local/providers.dart';
 import '../videos/cache/providers.dart';
+import 'persistent/providers.dart';
 
 final appCacheSizeProvider = FutureProvider.autoDispose<DirectorySizeInfo>(
   (
@@ -34,6 +35,10 @@ final diskSpaceInfoProvider = FutureProvider.autoDispose<DiskSpaceInfo>(
 
 final videoCacheSizeProvider = FutureProvider.autoDispose<DirectorySizeInfo>(
   (ref) => getVideoCacheSize().catchError((_) => DirectorySizeInfo.zero),
+);
+
+final persistentCacheSizeProvider = FutureProvider.autoDispose<int>(
+  (ref) => _getPersistentCacheSize(ref).catchError((_) => 0),
 );
 
 final cacheSizeProvider =
@@ -67,6 +72,7 @@ class CacheSizeInfo {
     required this.imageCacheSize,
     required this.videoCacheSize,
     required this.tagCacheSize,
+    required this.persistentCacheSize,
     required this.diskSpaceInfo,
   });
 
@@ -74,6 +80,7 @@ class CacheSizeInfo {
   final DirectorySizeInfo imageCacheSize;
   final DirectorySizeInfo videoCacheSize;
   final int tagCacheSize;
+  final int persistentCacheSize;
   final DiskSpaceInfo diskSpaceInfo;
 
   static final zero = CacheSizeInfo(
@@ -81,6 +88,7 @@ class CacheSizeInfo {
     imageCacheSize: DirectorySizeInfo.zero,
     videoCacheSize: DirectorySizeInfo.zero,
     tagCacheSize: 0,
+    persistentCacheSize: 0,
     diskSpaceInfo: DiskSpaceInfo.zero,
   );
 
@@ -88,7 +96,8 @@ class CacheSizeInfo {
       appCacheSize.size +
       imageCacheSize.size +
       videoCacheSize.size +
-      tagCacheSize;
+      tagCacheSize +
+      persistentCacheSize;
 
   List<StorageInfo> getStorageBreakdown({
     int bookmarkCacheSize = 0,
@@ -122,10 +131,10 @@ class CacheSizeInfo {
           type: StorageType.tagCache,
           size: tagCacheSize,
         ),
-      if (appCacheSize.size > 0)
+      if (appCacheSize.size > 0 || persistentCacheSize > 0)
         StorageInfo(
           type: StorageType.appCache,
-          size: appCacheSize.size,
+          size: appCacheSize.size + persistentCacheSize,
         ),
       if (diskSpaceInfo.freeSpace > 0)
         StorageInfo(
@@ -144,6 +153,7 @@ class CacheSizeNotifier extends AutoDisposeAsyncNotifier<CacheSizeInfo> {
     final tagCache = ref.watch(tagCacheSizeProvider);
     final diskSpace = ref.watch(diskSpaceInfoProvider);
     final videoCache = ref.watch(videoCacheSizeProvider);
+    final persistentCache = ref.watch(persistentCacheSizeProvider);
 
     return CacheSizeInfo(
       appCacheSize: appCache.valueOrNull ?? DirectorySizeInfo.zero,
@@ -151,6 +161,7 @@ class CacheSizeNotifier extends AutoDisposeAsyncNotifier<CacheSizeInfo> {
       tagCacheSize: tagCache.valueOrNull ?? 0,
       diskSpaceInfo: diskSpace.valueOrNull ?? DiskSpaceInfo.zero,
       videoCacheSize: videoCache.valueOrNull ?? DirectorySizeInfo.zero,
+      persistentCacheSize: persistentCache.valueOrNull ?? 0,
     );
   }
 
@@ -161,6 +172,7 @@ class CacheSizeNotifier extends AutoDisposeAsyncNotifier<CacheSizeInfo> {
       ..invalidate(tagCacheSizeProvider)
       ..invalidate(diskSpaceInfoProvider)
       ..invalidate(videoCacheSizeProvider)
+      ..invalidate(persistentCacheSizeProvider)
       ..invalidateSelf();
   }
 
@@ -172,6 +184,7 @@ class CacheSizeNotifier extends AutoDisposeAsyncNotifier<CacheSizeInfo> {
       await clearCache();
       await clearTagCacheDatabase(ref);
       await clearVideoCache(ref);
+      await clearPersistentCache(ref);
     });
     refreshCacheSize();
   }
@@ -251,6 +264,26 @@ Future<bool> clearVideoCache(Ref ref) async {
   try {
     final cacheManager = ref.read(videoCacheManagerProvider);
     await cacheManager?.clearAllVideos();
+    return true;
+  } on Exception catch (_) {
+    return false;
+  }
+}
+
+Future<int> _getPersistentCacheSize(Ref ref) async {
+  try {
+    final box = await ref.watch(persistentCacheBoxProvider.future);
+    // Hive doesn't provide direct size calculation, so we estimate based on entry count
+    return box.length * 1024;
+  } on Exception catch (_) {
+    return 0;
+  }
+}
+
+Future<bool> clearPersistentCache(Ref ref) async {
+  try {
+    final box = await ref.read(persistentCacheBoxProvider.future);
+    await box.clear();
     return true;
   } on Exception catch (_) {
     return false;

@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../../../core/cache/providers.dart';
+import '../../../../../../core/cache/persistent/providers.dart';
 import '../../../../../../core/configs/config/types.dart';
 import '../../../../../../foundation/riverpod/riverpod.dart';
 import '../../../../client_provider.dart';
@@ -33,7 +33,7 @@ final danbooruCurrentUserProvider =
       if (!loginDetails.hasLogin()) return null;
 
       // First, we try to get the user id from the cache
-      final miscData = ref.watch(miscDataBoxProvider);
+      final miscData = await ref.watch(persistentCacheBoxProvider.future);
       final key =
           '${_kCurrentUserIdKey}_${Uri.encodeComponent(config.url)}_${config.login}';
       final cached = miscData.get(key);
