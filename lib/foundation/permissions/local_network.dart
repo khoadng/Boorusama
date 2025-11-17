@@ -7,30 +7,24 @@ abstract interface class LocalNetworkPermissionHandler {
 }
 
 extension LocalNetworkPermissionHandlerX on LocalNetworkPermissionHandler {
-  Future<bool> isGranted() async {
-    final status = await check();
-    return status == PermissionStatus.granted;
-  }
+  Future<bool> isGranted() async => switch (await check()) {
+    PermissionStatus.granted => true,
+    _ => false,
+  };
 
-  Future<bool> isPermanentlyDenied() async {
-    final status = await check();
-    return status == PermissionStatus.permanentlyDenied;
-  }
+  Future<bool> isPermanentlyDenied() async => switch (await check()) {
+    PermissionStatus.permanentlyDenied => true,
+    _ => false,
+  };
 
-  Future<bool> requestIfNotGranted() async {
-    final status = await check();
-
-    if (status == PermissionStatus.granted) {
-      return true;
-    }
-
-    if (status == PermissionStatus.permanentlyDenied) {
-      return false;
-    }
-
-    final result = await request();
-    return result == PermissionStatus.granted;
-  }
+  Future<bool> requestIfNotGranted() async => switch (await check()) {
+    PermissionStatus.granted => true,
+    PermissionStatus.permanentlyDenied => false,
+    _ => switch (await request()) {
+      PermissionStatus.granted => true,
+      _ => false,
+    },
+  };
 }
 
 final class DefaultLocalNetworkPermissionHandler
