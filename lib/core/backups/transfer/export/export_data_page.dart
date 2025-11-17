@@ -9,37 +9,14 @@ import 'package:i18n/i18n.dart';
 import '../../../../foundation/networking.dart';
 import '../../../../foundation/permissions.dart';
 import '../../../themes/theme/types.dart';
-import '../lan_permission_request_dialog.dart';
+import '../widgets/permission_required_view.dart';
 import 'export_data_notifier.dart';
 
-class ExportDataPage extends ConsumerStatefulWidget {
+class ExportDataPage extends ConsumerWidget {
   const ExportDataPage({super.key});
 
   @override
-  ConsumerState<ExportDataPage> createState() => _ExportDataPageState();
-}
-
-class _ExportDataPageState extends ConsumerState<ExportDataPage> {
-  @override
-  void initState() {
-    super.initState();
-    _requestPermissionIfNeeded();
-  }
-
-  Future<void> _requestPermissionIfNeeded() async {
-    final handler = ref.read(localNetworkPermissionHandlerProvider);
-    final isGranted = await handler.isGranted();
-
-    if (!isGranted && mounted) {
-      final result = await showLanPermissionRequestDialog(context);
-      if (result ?? false) {
-        await handler.request();
-      }
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final notifier = ref.watch(exportDataProvider.notifier);
     final connectedToWifi = ref.watch(connectedToWifiProvider);
 
@@ -59,52 +36,35 @@ class _ExportDataPageState extends ConsumerState<ExportDataPage> {
           padding: const EdgeInsets.symmetric(
             horizontal: 12,
           ),
-          child: connectedToWifi
-              ? ref
-                    .watch(exportDataProvider)
-                    .when(
-                      data: (data) => _buildBody(data),
-                      error: (error, _) => Text('Error: $error'),
-                      loading: () => const Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                    )
-              : _buildNoWifi(context),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildNoWifi(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 32,
-          vertical: 8,
-        ),
-        child: RichText(
-          textAlign: TextAlign.center,
-          text: TextSpan(
-            style: Theme.of(context).textTheme.titleSmall?.copyWith(
-              color: Theme.of(context).colorScheme.hintColor,
-            ),
-            children: [
-              TextSpan(
-                text: context
-                    .t
-                    .settings
-                    .backup_and_restore
-                    .send_data
-                    .no_networks_error,
+          child: ref
+              .watch(localNetworkPermissionProvider)
+              .when(
+                data: (permission) => switch (permission.status) {
+                  PermissionStatus.granted =>
+                    connectedToWifi
+                        ? ref
+                              .watch(exportDataProvider)
+                              .when(
+                                data: (data) => _buildBody(data, context),
+                                error: (error, _) => Text('Error: $error'),
+                                loading: () => const Center(
+                                  child: CircularProgressIndicator(),
+                                ),
+                              )
+                        : const _NoWifi(),
+                  _ => const PermissionRequiredView(),
+                },
+                error: (error, _) => Center(child: Text('Error: $error')),
+                loading: () => const Center(
+                  child: CircularProgressIndicator(),
+                ),
               ),
-            ],
-          ),
         ),
       ),
     );
   }
 
-  Widget _buildBody(ExportDataState state) {
+  Widget _buildBody(ExportDataState state, BuildContext context) {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
     final colorScheme = theme.colorScheme;
@@ -112,7 +72,7 @@ class _ExportDataPageState extends ConsumerState<ExportDataPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildInfo(colorScheme, state),
+        _buildInfo(colorScheme, state, context),
         Padding(
           padding: const EdgeInsets.symmetric(
             vertical: 8,
@@ -191,7 +151,11 @@ class _ExportDataPageState extends ConsumerState<ExportDataPage> {
     );
   }
 
-  Widget _buildInfo(ColorScheme colorScheme, ExportDataState state) {
+  Widget _buildInfo(
+    ColorScheme colorScheme,
+    ExportDataState state,
+    BuildContext context,
+  ) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -232,6 +196,40 @@ class _ExportDataPageState extends ConsumerState<ExportDataPage> {
         ServerStatus.broadcasting =>
           context.t.settings.backup_and_restore.send_data.status.broadcasting,
       };
+}
+
+class _NoWifi extends StatelessWidget {
+  const _NoWifi();
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 32,
+          vertical: 8,
+        ),
+        child: RichText(
+          textAlign: TextAlign.center,
+          text: TextSpan(
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(
+              color: Theme.of(context).colorScheme.hintColor,
+            ),
+            children: [
+              TextSpan(
+                text: context
+                    .t
+                    .settings
+                    .backup_and_restore
+                    .send_data
+                    .no_networks_error,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class ServerInfoTile extends StatelessWidget {

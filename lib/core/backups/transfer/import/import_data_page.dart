@@ -15,7 +15,7 @@ import '../../../../foundation/version.dart';
 import '../../../themes/theme/types.dart';
 import '../../preparation/version_mismatch_alert_dialog.dart';
 import '../../servers/discovery_client.dart';
-import '../lan_permission_request_dialog.dart';
+import '../widgets/permission_required_view.dart';
 import 'manual_device_input_dialog.dart';
 import 'transfer_data_dialog.dart';
 
@@ -41,23 +41,12 @@ class _ImportDataPageState extends ConsumerState<ImportDataPage> {
   void initState() {
     super.initState();
 
-    _requestPermissionAndDiscover();
-  }
-
-  Future<void> _requestPermissionAndDiscover() async {
-    final handler = ref.read(localNetworkPermissionHandlerProvider);
-    final isGranted = await handler.isGranted();
-
-    if (!isGranted && mounted) {
-      final result = await showLanPermissionRequestDialog(context);
-      if (result ?? false) {
-        await handler.request();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final permissionState = ref.read(localNetworkPermissionProvider);
+      if (permissionState.value?.isGranted ?? false) {
+        discoverServers();
       }
-    }
-
-    if (mounted) {
-      await discoverServers();
-    }
+    });
   }
 
   void _handleServiceResolved(BonsoirService service) {
@@ -96,164 +85,217 @@ class _ImportDataPageState extends ConsumerState<ImportDataPage> {
       appBar: AppBar(
         title: Text(context.t.settings.backup_and_restore.receive_data.title),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Column(
-          children: [
-            const SizedBox(height: 12),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  context
-                      .t
-                      .settings
-                      .backup_and_restore
-                      .receive_data
-                      .nearby_devices,
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-                IconButton(
-                  icon: const Icon(Icons.add),
-                  onPressed: () async {
-                    final uri = await showGeneralDialog<Uri>(
-                      context: context,
-                      pageBuilder: (context, animation, secondaryAnimation) =>
-                          const ManualDeviceInputDialog(),
-                    );
-
-                    if (uri == null) return;
-
-                    if (context.mounted) {
-                      await showTransferOptionsDialog(
-                        context,
-                        url: uri.toString(),
-                      );
-                    }
-                  },
-                ),
-              ],
+      body: ref
+          .watch(localNetworkPermissionProvider)
+          .when(
+            data: (permission) => switch (permission.status) {
+              PermissionStatus.granted => _buildBody(
+                colorScheme,
+                currentVersion,
+              ),
+              _ => PermissionRequiredView(
+                onPermissionGranted: () {
+                  final permissionState = ref.read(
+                    localNetworkPermissionProvider,
+                  );
+                  if (permissionState.value?.isGranted ?? false) {
+                    discoverServers();
+                  }
+                },
+              ),
+            },
+            error: (error, _) => Center(child: Text('Error: $error')),
+            loading: () => const Center(
+              child: CircularProgressIndicator(),
             ),
-            const SizedBox(height: 12),
-            if (discoveredServices.isNotEmpty)
-              Column(
-                children: discoveredServices.map((service) {
-                  final address = service.attributes['ip'];
-                  final port = service.attributes['port'];
-                  final appVersion = Version.tryParse(
-                    service.attributes['version'],
+          ),
+    );
+  }
+
+  Widget _buildBody(ColorScheme colorScheme, Version? currentVersion) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Column(
+        children: [
+          const SizedBox(height: 12),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                context
+                    .t
+                    .settings
+                    .backup_and_restore
+                    .receive_data
+                    .nearby_devices,
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              IconButton(
+                icon: const Icon(Icons.add),
+                onPressed: () async {
+                  if (!mounted) return;
+                  final uri = await showGeneralDialog<Uri>(
+                    context: context,
+                    pageBuilder: (context, animation, secondaryAnimation) =>
+                        const ManualDeviceInputDialog(),
                   );
-                  final url = Uri(
-                    scheme: 'http',
-                    host: address,
-                    port: int.tryParse(port ?? ''),
-                  );
 
-                  return Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                    ),
-                    margin: const EdgeInsets.symmetric(
-                      vertical: 4,
-                    ),
-                    decoration: BoxDecoration(
-                      color: colorScheme.surfaceContainer,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: ListTile(
-                      title: Text(
-                        service.name,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      subtitle: Text(
-                        context.t.generic.version(
-                          version: appVersion ?? 'unknown',
-                        ),
-                      ),
-                      trailing: TextButton(
-                        child: Text(
-                          context.t.settings.backup_and_restore.import,
-                        ),
-                        onPressed: () async {
-                          final version = appVersion;
+                  if (uri == null) return;
 
-                          if (version == null) {
-                            showErrorToast(
-                              context,
-                              "Couldn't determine this device's version, aborting."
-                                  .hc,
-                            );
-                            return;
-                          }
+                  if (mounted) {
+                    await showTransferOptionsDialog(
+                      context,
+                      url: uri.toString(),
+                    );
+                  }
+                },
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          if (discoveredServices.isNotEmpty)
+            Column(
+              children: discoveredServices.map((service) {
+                final address = service.attributes['ip'];
+                final port = service.attributes['port'];
+                final appVersion = Version.tryParse(
+                  service.attributes['version'],
+                );
+                final url = Uri(
+                  scheme: 'http',
+                  host: address,
+                  port: int.tryParse(port ?? ''),
+                );
 
-                          if (currentVersion == null) {
-                            showErrorToast(
-                              context,
-                              "Couldn't determine the current version, aborting."
-                                  .hc,
-                            );
-                            return;
-                          }
-
-                          final shouldShowDialog =
-                              currentVersion.significantlyLowerThan(
-                                appVersion,
-                              ) ||
-                              currentVersion.significantlyHigherThan(
-                                appVersion,
-                              );
-
-                          if (shouldShowDialog) {
-                            final result = await showDialog(
-                              context: context,
-                              builder: (context) => VersionMismatchAlertDialog(
-                                importVersion: version,
-                                currentVersion: currentVersion,
-                              ),
-                            );
-
-                            if (result == null || !result) return;
-                          }
-
-                          if (context.mounted) {
-                            await showTransferOptionsDialog(
-                              context,
-                              url: url.toString(),
-                            );
-                          }
-                        },
-                      ),
-                    ),
-                  );
-                }).toList(),
-              )
-            else
-              Center(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 32,
-                    vertical: 8,
+                return _ServiceTile(
+                  appVersion: appVersion,
+                  url: url,
+                  currentVersion: currentVersion,
+                  service: service,
+                );
+              }).toList(),
+            )
+          else
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 32,
+                  vertical: 8,
+                ),
+                child: Text.rich(
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                    color: colorScheme.hintColor,
                   ),
-                  child: Text.rich(
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      color: colorScheme.hintColor,
-                    ),
-                    context.t.settings.backup_and_restore.receive_data
-                        .no_devices_found(
-                          tapHere: (_) => const WidgetSpan(
-                            alignment: PlaceholderAlignment.middle,
-                            child: Icon(
-                              Icons.add,
-                            ),
+                  context.t.settings.backup_and_restore.receive_data
+                      .no_devices_found(
+                        tapHere: (_) => const WidgetSpan(
+                          alignment: PlaceholderAlignment.middle,
+                          child: Icon(
+                            Icons.add,
                           ),
                         ),
-                  ),
+                      ),
                 ),
               ),
-          ],
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ServiceTile extends ConsumerWidget {
+  const _ServiceTile({
+    required this.appVersion,
+    required this.currentVersion,
+    required this.url,
+    required this.service,
+  });
+
+  final Version? appVersion;
+  final Version? currentVersion;
+  final BonsoirService service;
+  final Uri url;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 16,
+      ),
+      margin: const EdgeInsets.symmetric(
+        vertical: 4,
+      ),
+      decoration: BoxDecoration(
+        color: colorScheme.surfaceContainer,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: ListTile(
+        title: Text(
+          service.name,
+          style: const TextStyle(
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        subtitle: Text(
+          context.t.generic.version(
+            version: appVersion ?? 'unknown',
+          ),
+        ),
+        trailing: TextButton(
+          child: Text(
+            context.t.settings.backup_and_restore.import,
+          ),
+          onPressed: () async {
+            final version = appVersion;
+
+            if (version == null) {
+              showErrorToast(
+                context,
+                "Couldn't determine this device's version, aborting.".hc,
+              );
+              return;
+            }
+
+            if (currentVersion == null) {
+              showErrorToast(
+                context,
+                "Couldn't determine the current version, aborting.".hc,
+              );
+              return;
+            }
+
+            final shouldShowDialog =
+                currentVersion.significantlyLowerThan(
+                  appVersion,
+                ) ||
+                currentVersion.significantlyHigherThan(
+                  appVersion,
+                );
+
+            if (shouldShowDialog) {
+              if (!context.mounted) return;
+              final result = await showDialog(
+                context: context,
+                builder: (context) => VersionMismatchAlertDialog(
+                  importVersion: version,
+                  currentVersion: currentVersion!,
+                ),
+              );
+
+              if (result == null || !result) return;
+            }
+
+            if (context.mounted) {
+              await showTransferOptionsDialog(
+                context,
+                url: url.toString(),
+              );
+            }
+          },
         ),
       ),
     );
