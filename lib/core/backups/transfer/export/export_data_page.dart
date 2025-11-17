@@ -17,8 +17,59 @@ class ExportDataPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          context.t.settings.backup_and_restore.transfer_data,
+        ),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 12,
+        ),
+        child: ref
+            .watch(localNetworkPermissionProvider)
+            .when(
+              data: (permission) => Builder(
+                builder: (context) {
+                  final connectedToWifi = ref.watch(connectedToWifiProvider);
+
+                  return switch (permission.status) {
+                    PermissionStatus.granted =>
+                      connectedToWifi
+                          ? ref
+                                .watch(exportDataProvider)
+                                .when(
+                                  data: (data) =>
+                                      _buildBody(data, context, ref),
+                                  error: (error, _) => Text('Error: $error'),
+                                  loading: () => const Center(
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                )
+                          : const _NoWifi(),
+                    _ => const PermissionRequiredView(),
+                  };
+                },
+              ),
+              error: (error, _) => Center(child: Text('Error: $error')),
+              loading: () => const Center(
+                child: CircularProgressIndicator(),
+              ),
+            ),
+      ),
+    );
+  }
+
+  Widget _buildBody(
+    ExportDataState state,
+    BuildContext context,
+    WidgetRef ref,
+  ) {
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+    final colorScheme = theme.colorScheme;
     final notifier = ref.watch(exportDataProvider.notifier);
-    final connectedToWifi = ref.watch(connectedToWifiProvider);
 
     return PopScope(
       onPopInvokedWithResult: (didPop, result) {
@@ -26,128 +77,86 @@ class ExportDataPage extends ConsumerWidget {
           notifier.stopServer();
         }
       },
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(
-            context.t.settings.backup_and_restore.transfer_data,
-          ),
-        ),
-        body: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 12,
-          ),
-          child: ref
-              .watch(localNetworkPermissionProvider)
-              .when(
-                data: (permission) => switch (permission.status) {
-                  PermissionStatus.granted =>
-                    connectedToWifi
-                        ? ref
-                              .watch(exportDataProvider)
-                              .when(
-                                data: (data) => _buildBody(data, context),
-                                error: (error, _) => Text('Error: $error'),
-                                loading: () => const Center(
-                                  child: CircularProgressIndicator(),
-                                ),
-                              )
-                        : const _NoWifi(),
-                  _ => const PermissionRequiredView(),
-                },
-                error: (error, _) => Center(child: Text('Error: $error')),
-                loading: () => const Center(
-                  child: CircularProgressIndicator(),
-                ),
-              ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildBody(ExportDataState state, BuildContext context) {
-    final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
-    final colorScheme = theme.colorScheme;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _buildInfo(colorScheme, state, context),
-        Padding(
-          padding: const EdgeInsets.symmetric(
-            vertical: 8,
-            horizontal: 8,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 8),
-              Text(
-                '${context.t.settings.backup_and_restore.send_data.how_to_transfer}:',
-                style: textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text.rich(
-                context.t.settings.backup_and_restore.send_data.how_to_send(
-                  settings: (_) => TextSpan(
-                    text:
-                        '${context.t.settings.settings} > ${context.t.settings.backup_and_restore.backup_and_restore}',
-                    style: textTheme.bodyMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: colorScheme.primary,
-                    ),
-                  ),
-                  receive: (_) => TextSpan(
-                    text: context.t.settings.backup_and_restore.receive,
-                    style: textTheme.bodyMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: colorScheme.primary,
-                    ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildInfo(colorScheme, state, context),
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: 8,
+              horizontal: 8,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 8),
+                Text(
+                  '${context.t.settings.backup_and_restore.send_data.how_to_transfer}:',
+                  style: textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-              ),
-
-              const SizedBox(height: 16),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 12,
-                  horizontal: 8,
-                ),
-                decoration: BoxDecoration(
-                  color: colorScheme.errorContainer.withValues(
-                    alpha: 0.2,
-                  ),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.warning_rounded,
-                      color: colorScheme.error,
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Text(
-                        context
-                            .t
-                            .settings
-                            .backup_and_restore
-                            .send_data
-                            .disclaimer,
-                        style: textTheme.bodyMedium?.copyWith(
-                          color: colorScheme.error,
-                        ),
+                const SizedBox(height: 8),
+                Text.rich(
+                  context.t.settings.backup_and_restore.send_data.how_to_send(
+                    settings: (_) => TextSpan(
+                      text:
+                          '${context.t.settings.settings} > ${context.t.settings.backup_and_restore.backup_and_restore}',
+                      style: textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: colorScheme.primary,
                       ),
                     ),
-                  ],
+                    receive: (_) => TextSpan(
+                      text: context.t.settings.backup_and_restore.receive,
+                      style: textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: colorScheme.primary,
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-            ],
+
+                const SizedBox(height: 16),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 12,
+                    horizontal: 8,
+                  ),
+                  decoration: BoxDecoration(
+                    color: colorScheme.errorContainer.withValues(
+                      alpha: 0.2,
+                    ),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.warning_rounded,
+                        color: colorScheme.error,
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          context
+                              .t
+                              .settings
+                              .backup_and_restore
+                              .send_data
+                              .disclaimer,
+                          style: textTheme.bodyMedium?.copyWith(
+                            color: colorScheme.error,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
