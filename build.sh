@@ -234,9 +234,9 @@ readonly ALLOWED_FLAVORS=("dev" "prod")
 
 validate_build_modes() {
     local mode_count=0
-    [[ " ${FLUTTER_ARGS[*]} " =~ " --release " ]] && ((mode_count++))
-    [[ " ${FLUTTER_ARGS[*]} " =~ " --debug " ]] && ((mode_count++))
-    [[ " ${FLUTTER_ARGS[*]} " =~ " --profile " ]] && ((mode_count++))
+    [[ " ${FLUTTER_ARGS[*]} " =~ " --release " ]] && mode_count=$((mode_count + 1))
+    [[ " ${FLUTTER_ARGS[*]} " =~ " --debug " ]] && mode_count=$((mode_count + 1))
+    [[ " ${FLUTTER_ARGS[*]} " =~ " --profile " ]] && mode_count=$((mode_count + 1))
     if [ $mode_count -gt 1 ]; then
         exit_with_error "Conflicting build modes specified (release/debug/profile). Please specify only one."
     fi
