@@ -259,28 +259,31 @@ void main() {
         expect(await result, 'value');
       });
 
-      test('first call returns Future, subsequent calls return value directly', () async {
-        final lazy = LazyAsync(() async {
-          await Future.delayed(Duration(milliseconds: 10));
-          return 42;
-        });
+      test(
+        'first call returns Future, subsequent calls return value directly',
+        () async {
+          final lazy = LazyAsync(() async {
+            await Future.delayed(Duration(milliseconds: 10));
+            return 42;
+          });
 
-        final firstCall = lazy();
-        expect(firstCall is Future<int>, true);
-        expect(firstCall is! int, true);
+          final firstCall = lazy();
+          expect(firstCall is Future<int>, true);
+          expect(firstCall is! int, true);
 
-        final firstResult = await firstCall;
-        expect(firstResult, 42);
+          final firstResult = await firstCall;
+          expect(firstResult, 42);
 
-        final secondCall = lazy();
-        expect(secondCall is int, true);
-        expect(secondCall is! Future, true);
-        expect(secondCall, 42);
+          final secondCall = lazy();
+          expect(secondCall is int, true);
+          expect(secondCall is! Future, true);
+          expect(secondCall, 42);
 
-        final thirdCall = lazy();
-        expect(thirdCall is int, true);
-        expect(thirdCall, 42);
-      });
+          final thirdCall = lazy();
+          expect(thirdCall is int, true);
+          expect(thirdCall, 42);
+        },
+      );
 
       test('post-initialization calls execute synchronously', () async {
         var microtasksRan = 0;

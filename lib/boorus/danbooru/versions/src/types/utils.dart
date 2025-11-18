@@ -15,8 +15,7 @@ String? resolveThumbnailWithRatingFilter({
 
   return switch (filter.ratingFilter) {
     BooruConfigRatingFilter.none => version.thumbnailUrl,
-    BooruConfigRatingFilter.hideExplicit when rating == Rating.explicit =>
-      null,
+    BooruConfigRatingFilter.hideExplicit when rating == Rating.explicit => null,
     BooruConfigRatingFilter.hideNSFW
         when rating == Rating.explicit || rating == Rating.questionable =>
       null,

@@ -6,9 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
-import '../../../create/providers.dart';
 import '../../../../posts/listing/types.dart';
 import '../../../../widgets/widgets.dart';
+import '../../../create/providers.dart';
 
 class ListingTooltipToggle extends ConsumerWidget {
   const ListingTooltipToggle({super.key});

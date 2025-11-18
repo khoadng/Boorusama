@@ -13,14 +13,16 @@ class LazyAsync<T> {
 
     if (_initializationFuture != null) return _initializationFuture!;
 
-    _initializationFuture = _factory().then((value) {
-      _instance = value;
-      _isInitialized = true;
-      return value;
-    }).catchError((e) {
-      _initializationFuture = null;
-      throw e;
-    });
+    _initializationFuture = _factory()
+        .then((value) {
+          _instance = value;
+          _isInitialized = true;
+          return value;
+        })
+        .catchError((e) {
+          _initializationFuture = null;
+          throw e;
+        });
 
     return _initializationFuture!;
   }
