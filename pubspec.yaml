@@ -51,6 +51,7 @@ dependencies:
   android_intent_plus: ^6.0.0
   archive: ^4.0.7
   animated_list_plus: ^0.5.2
+  auto_scrolling: ^0.4.0
   background_downloader: ^9.3.0
   bonsoir: ^6.0.1
   clock: ^1.1.1
@@ -75,7 +76,6 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_html: ^3.0.0-beta.2
-  flutter_improved_scrolling: ^0.0.3
   flutter_local_notifications: ^19.2.1
   flutter_markdown: ^0.7.3+2
   flutter_riverpod: 2.6.1
