@@ -91,64 +91,99 @@ class DefaultPostPreviewHeader extends ConsumerWidget {
         horizontal: 4,
         vertical: 4,
       ),
-      child: Row(
-        spacing: 4,
-        children: [
-          if (post.createdAt case final createdAt?)
-            Padding(
-              padding: const EdgeInsets.only(left: 4),
-              child: DateTooltip(
-                date: createdAt,
-                child: TimePulse(
-                  initial: createdAt,
-                  updateInterval: const Duration(minutes: 1),
-                  builder: (context, _) => Text(
-                    createdAt.fuzzify(
-                      locale: Localizations.localeOf(context),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final isNarrow = constraints.maxWidth < 350;
+
+          final leftSideWidgets = [
+            if (post.createdAt case final createdAt?)
+              Padding(
+                padding: const EdgeInsets.only(left: 4),
+                child: DateTooltip(
+                  date: createdAt,
+                  child: TimePulse(
+                    initial: createdAt,
+                    updateInterval: const Duration(minutes: 1),
+                    builder: (context, _) => Text(
+                      createdAt.fuzzify(
+                        locale: Localizations.localeOf(context),
+                      ),
+                      style: style,
                     ),
-                    style: style,
                   ),
                 ),
               ),
-            ),
+            ...?extraWidgets,
+          ];
 
-          ...?extraWidgets,
-          const Spacer(),
-          if (post.rating case final rating when rating != Rating.unknown)
-            Text(
-              rating.toShortString().toUpperCase(),
-              style: style,
-            ),
-
-          if (Filesize.tryParse(post.fileSize) case final size?)
-            Text(
-              size,
-              style: style,
-            ),
-
-          if (post.format case final format when format.isNotEmpty)
-            Text(
-              '.$format',
-              style: style,
-            ),
-
-          if (post.width > 0 && post.height > 0)
-            Text(
-              '${post.width.toInt()}x${post.height.toInt()}',
-              style: style,
-            ),
-
-          if (post.source case final WebSource source
-              when source.faviconUrl.isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.only(right: 4),
-              child: WebsiteLogo(
-                url: source.faviconUrl,
-                size: 14,
-                dio: dio,
+          final rightSideWidgets = [
+            if (post.rating case final rating when rating != Rating.unknown)
+              Text(
+                rating.toShortString().toUpperCase(),
+                style: style,
               ),
-            ),
-        ],
+
+            if (Filesize.tryParse(post.fileSize) case final size?)
+              Text(
+                size,
+                style: style,
+              ),
+
+            if (post.format case final format when format.isNotEmpty)
+              Text(
+                '.$format',
+                style: style,
+              ),
+
+            if (post.width > 0 && post.height > 0)
+              Text(
+                '${post.width.toInt()}x${post.height.toInt()}',
+                style: style,
+              ),
+
+            if (post.source case final WebSource source
+                when source.faviconUrl.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.only(right: 4),
+                child: WebsiteLogo(
+                  url: source.faviconUrl,
+                  size: 14,
+                  dio: dio,
+                ),
+              ),
+          ];
+
+          if (isNarrow) {
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (leftSideWidgets.isNotEmpty)
+                  Row(
+                    spacing: 4,
+                    children: leftSideWidgets,
+                  ),
+
+                if (rightSideWidgets.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(left: 4, top: 2),
+                    child: Row(
+                      spacing: 4,
+                      children: rightSideWidgets,
+                    ),
+                  ),
+              ],
+            );
+          } else {
+            return Row(
+              spacing: 4,
+              children: [
+                ...leftSideWidgets,
+                const Spacer(),
+                ...rightSideWidgets,
+              ],
+            );
+          }
+        },
       ),
     );
   }
