@@ -1,4 +1,5 @@
 // Project imports:
+import '../../../../posts/listing/types.dart';
 import '../../../../proxy/types.dart';
 import '../../../../settings/types.dart';
 import '../../../../themes/configs/types.dart';
@@ -69,6 +70,9 @@ extension BooruConfigDataConverter on BooruConfigData? {
           ? BooruConfigViewerNotesFetchBehavior.values[booruConfigData
                 .viewerNotesFetchBehavior!]
           : null,
+      tooltipDisplayMode: TooltipDisplayMode.tryParse(
+        booruConfigData.tooltipDisplayMode,
+      ),
     );
   }
 }
@@ -102,6 +106,7 @@ extension BooruConfigConverter on BooruConfig {
       layout: layout?.toJsonString(),
       proxySettings: proxySettings?.toJsonString(),
       viewerNotesFetchBehavior: viewerNotesFetchBehavior?.index,
+      tooltipDisplayMode: tooltipDisplayMode?.toData(),
     );
   }
 }

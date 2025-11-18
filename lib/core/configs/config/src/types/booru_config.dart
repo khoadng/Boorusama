@@ -11,6 +11,7 @@ import '../../../../boorus/booru/types.dart';
 import '../../../../home/types.dart';
 import '../../../../posts/details_manager/types.dart';
 import '../../../../posts/details_parts/types.dart';
+import '../../../../posts/listing/types.dart';
 import '../../../../posts/rating/types.dart';
 import '../../../../proxy/types.dart';
 import '../../../../settings/types.dart';
@@ -56,6 +57,7 @@ class BooruConfig extends Equatable {
     required this.layout,
     required this.proxySettings,
     required this.viewerNotesFetchBehavior,
+    required this.tooltipDisplayMode,
   });
 
   factory BooruConfig.fromJson(Map<String, dynamic> json) {
@@ -116,6 +118,9 @@ class BooruConfig extends Equatable {
       viewerNotesFetchBehavior: BooruConfigViewerNotesFetchBehavior.tryParse(
         json['viewerNotesFetchBehavior'],
       ),
+      tooltipDisplayMode: TooltipDisplayMode.tryParse(
+        json['tooltipDisplayMode'],
+      ),
     );
   }
 
@@ -147,6 +152,7 @@ class BooruConfig extends Equatable {
     layout: null,
     proxySettings: null,
     viewerNotesFetchBehavior: null,
+    tooltipDisplayMode: null,
   );
 
   // ignore: prefer_constructors_over_static_methods
@@ -182,6 +188,7 @@ class BooruConfig extends Equatable {
     layout: null,
     proxySettings: null,
     viewerNotesFetchBehavior: null,
+    tooltipDisplayMode: null,
   );
 
   final int id;
@@ -211,6 +218,7 @@ class BooruConfig extends Equatable {
   final LayoutConfigs? layout;
   final ProxySettings? proxySettings;
   final BooruConfigViewerNotesFetchBehavior? viewerNotesFetchBehavior;
+  final TooltipDisplayMode? tooltipDisplayMode;
 
   BooruConfig copyWith({
     String? url,
@@ -220,6 +228,7 @@ class BooruConfig extends Equatable {
     int? booruIdHint,
     ViewerConfigs? Function()? viewerConfigs,
     LayoutConfigs? Function()? layout,
+    TooltipDisplayMode? tooltipDisplayMode,
   }) {
     return BooruConfig(
       id: id,
@@ -251,6 +260,7 @@ class BooruConfig extends Equatable {
       layout: layout != null ? layout() : this.layout,
       proxySettings: proxySettings,
       viewerNotesFetchBehavior: viewerNotesFetchBehavior,
+      tooltipDisplayMode: tooltipDisplayMode ?? this.tooltipDisplayMode,
     );
   }
 
@@ -283,6 +293,7 @@ class BooruConfig extends Equatable {
     layout,
     proxySettings,
     viewerNotesFetchBehavior,
+    tooltipDisplayMode,
   ];
 
   @override
@@ -320,6 +331,7 @@ class BooruConfig extends Equatable {
       'layout': layout?.toJson(),
       'proxySettings': proxySettings?.toJson(),
       'viewerNotesFetchBehavior': viewerNotesFetchBehavior?.index,
+      'tooltipDisplayMode': ?tooltipDisplayMode?.toData(),
     };
   }
 }

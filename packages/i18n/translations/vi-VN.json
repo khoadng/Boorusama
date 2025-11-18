@@ -856,6 +856,8 @@
       "title": "Listing",
       "thumbnail_button": "Nút trên ảnh thu nhỏ",
       "thumbnail_button_description": "Chọn nút mặc định hiển thị ở góc dưới bên phải ảnh thu nhỏ.",
+      "tooltip_on_hover_title": "Hiển thị tooltip",
+      "tooltip_on_hover_description": "Hiển thị thông tin xem trước khi di chuột qua ảnh thu nhỏ.",
       "enable_profile_specific_settings": "Dùng cài đặt riêng cho hồ sơ này",
       "enable_profile_specific_settings_description": "Khi bật, hồ sơ này sẽ dùng cài đặt riêng thay vì theo cài đặt chung.",
       "overridden_notice": "Cài đặt này bị ghi đè bởi listing tùy chỉnh. Vui lòng chỉnh trong phần <b><a href=\"booru-profiles\">Listing của Hồ sơ</a></b>."

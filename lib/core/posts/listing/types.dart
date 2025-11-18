@@ -6,3 +6,4 @@ export 'src/types/page_indicator_position.dart';
 export 'src/types/image_list_type.dart';
 export 'src/types/bookmark_filter_type.dart';
 export 'src/types/grid_utils.dart';
+export 'src/types/tooltip_display_mode.dart';

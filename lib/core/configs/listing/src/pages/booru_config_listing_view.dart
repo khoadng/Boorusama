@@ -14,6 +14,7 @@ import '../../../../widgets/widgets.dart';
 import '../../../config/types.dart';
 import '../../../create/providers.dart';
 import '../../../gesture/types.dart';
+import '../widgets/tooltip_toggle.dart';
 
 const kDefaultPreviewImageButtonAction = {
   '',
@@ -24,12 +25,19 @@ const kDefaultPreviewImageButtonAction = {
 };
 
 class DefaultBooruConfigListingView extends ConsumerWidget {
-  const DefaultBooruConfigListingView({super.key});
+  const DefaultBooruConfigListingView({
+    super.key,
+    this.tooltipToggle,
+  });
+
+  final Widget? tooltipToggle;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return const BooruConfigListingView(
+    return BooruConfigListingView(
       postPreviewQuickActionButtonActions: kDefaultPreviewImageButtonAction,
       describePostPreviewQuickAction: null,
+      tooltipToggle: tooltipToggle ?? const ListingTooltipToggle(),
     );
   }
 }
@@ -38,11 +46,13 @@ class BooruConfigListingView extends ConsumerWidget {
   const BooruConfigListingView({
     required this.postPreviewQuickActionButtonActions,
     required this.describePostPreviewQuickAction,
+    this.tooltipToggle,
     super.key,
   });
 
   final Set<String?> postPreviewQuickActionButtonActions;
   final String Function(String? action)? describePostPreviewQuickAction;
+  final Widget? tooltipToggle;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -124,6 +134,10 @@ class BooruConfigListingView extends ConsumerWidget {
                 ),
               ),
             ),
+            if (tooltipToggle case final toggle?) ...[
+              const Divider(),
+              toggle,
+            ],
           ],
         ),
       ),

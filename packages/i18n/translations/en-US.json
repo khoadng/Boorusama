@@ -855,6 +855,8 @@
       "title": "Listing",
       "thumbnail_button": "Thumbnail's button",
       "thumbnail_button_description": "Change the default button at the right bottom of the thumbnail.",
+      "tooltip_on_hover_title": "Show tooltip on hover",
+      "tooltip_on_hover_description": "Show preview information when hovering over the thumbnail.",
       "enable_profile_specific_settings": "Enable profile's specific settings",
       "enable_profile_specific_settings_description": "Override the global settings for this the profile. If enabled, global settings will be ignored until this is disabled.",
       "overridden_notice": "These settings are overridden by custom listing. Go to <b><a href=\"booru-profiles\">Profile's Listing</a></b> page instead."

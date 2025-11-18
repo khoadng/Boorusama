@@ -12,6 +12,7 @@ import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../configs/config/types.dart';
+import '../../../../configs/manage/providers.dart';
 import '../../../../http/client/providers.dart';
 import '../../../../search/search/routes.dart';
 import '../../../../tags/show/providers.dart';
@@ -213,8 +214,14 @@ class PostListPrevewTooltip extends ConsumerWidget {
       screenSize.width - 32,
     );
     final adjustedMaxHeight = _maxSize.height;
+    final enableTooltip = ref.watch(
+      currentReadOnlyBooruConfigProvider.select(
+        (value) => value.tooltipDisplayMode?.isEnabled ?? true,
+      ),
+    );
 
     return AnchorPopover(
+      enabled: enableTooltip,
       overlayHeight: adjustedMaxHeight,
       overlayWidth: adjustedMaxWidth,
       triggerMode: const AnchorTriggerMode.hover(

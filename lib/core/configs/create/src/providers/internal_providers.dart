@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../analytics/providers.dart';
 import '../../../../boorus/booru/types.dart';
 import '../../../../boorus/engine/providers.dart';
+import '../../../../posts/listing/types.dart';
 import '../../../../posts/rating/types.dart';
 import '../../../../proxy/types.dart';
 import '../../../../settings/types.dart';
@@ -157,6 +158,10 @@ class EditBooruConfigNotifier
   ) => state = state.copyWith(
     defaultPreviewImageButtonAction: () => defaultPreviewImageButtonAction,
   );
+
+  void updateTooltipDisplayMode(
+    TooltipDisplayMode? tooltipDisplayMode,
+  ) => state = state.copyWith(tooltipDisplayMode: () => tooltipDisplayMode);
 
   void updateGranularRatingFilter(
     Set<Rating>? granularRatingFilter,
