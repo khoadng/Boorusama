@@ -19,6 +19,7 @@ import '../../core/posts/post/types.dart';
 import '../../core/posts/rating/types.dart';
 import '../../core/search/queries/types.dart';
 import '../../core/tags/autocompletes/types.dart';
+import '../../core/tags/metatag/types.dart';
 import '../../core/tags/tag/types.dart';
 import 'comments/providers.dart';
 import 'configs/providers.dart';
@@ -160,4 +161,9 @@ class GelbooruRepository extends BooruRepositoryDefault {
           },
         },
       ).handle(ref, action, post);
+
+  @override
+  MetatagExtractor getMetatagExtractor(BooruConfigAuth config) {
+    return ref.watch(gelbooruMetatagExtractorProvider(config));
+  }
 }

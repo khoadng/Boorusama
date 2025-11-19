@@ -8,6 +8,8 @@ import '../../../core/tags/autocompletes/types.dart';
 import '../../../core/tags/local/providers.dart';
 import '../../../core/tags/tag/types.dart';
 import '../../../foundation/riverpod/riverpod.dart';
+import '../../gelbooru/tags/providers.dart';
+import '../../gelbooru/tags/types.dart';
 import '../client_provider.dart';
 import 'parser.dart';
 import 'query_composer.dart';
@@ -64,3 +66,23 @@ final gelbooruV2AutocompleteRepoProvider =
         },
       );
     });
+
+final gelbooruV2MetatagRegexProvider = Provider.family<RegExp, BooruConfigAuth>(
+  (ref, config) {
+    final metatags = ref
+        .watch(gelbooruMetatagsProvider(config))
+        .map((e) => e.name)
+        .toList();
+    final sortableTypes = ref
+        .watch(gelbooruSortableTagTypesProvider(config))
+        .map((e) => e.name)
+        .toList();
+
+    final pattern = buildMetatagRegexPattern(
+      metatags: metatags,
+      sortableTypes: sortableTypes,
+    );
+
+    return RegExp(pattern, caseSensitive: false);
+  },
+);

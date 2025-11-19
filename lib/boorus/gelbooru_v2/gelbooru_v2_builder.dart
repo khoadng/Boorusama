@@ -1,28 +1,19 @@
-// Flutter imports:
-import 'package:flutter/material.dart';
-
-// Package imports:
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 // Project imports:
 import '../../core/boorus/defaults/widgets.dart';
 import '../../core/boorus/engine/types.dart';
 import '../../core/comments/widgets.dart';
-import '../../core/configs/config/providers.dart';
 import '../../core/configs/config/types.dart';
 import '../../core/configs/create/widgets.dart';
 import '../../core/configs/manage/widgets.dart';
 import '../../core/downloads/filename/types.dart';
 import '../../core/home/types.dart';
-import '../../core/search/search/routes.dart';
-import '../../core/search/search/widgets.dart';
 import 'artists/widgets.dart';
 import 'configs/widgets.dart';
 import 'favorites/widgets.dart';
 import 'home/types.dart';
 import 'home/widgets.dart';
-import 'posts/providers.dart';
 import 'posts/widgets.dart';
+import 'search/widgets.dart';
 
 class GelbooruV2Builder extends BaseBooruBuilder {
   GelbooruV2Builder();
@@ -108,25 +99,4 @@ class GelbooruV2Builder extends BaseBooruBuilder {
 
   @override
   final postDetailsUIBuilder = kGelbooruV2PostDetailsUIBuilder;
-}
-
-class GelbooruV2SearchPage extends ConsumerWidget {
-  const GelbooruV2SearchPage({
-    required this.params,
-    super.key,
-  });
-
-  final SearchParams params;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfigSearch;
-    final postRepo = ref.watch(gelbooruV2PostRepoProvider(config));
-
-    return SearchPageScaffold(
-      params: params,
-      fetcher: (page, controller) =>
-          postRepo.getPostsFromController(controller.tagSet, page),
-    );
-  }
 }

@@ -11,6 +11,7 @@ import '../../../../../core/posts/count/widgets.dart';
 import '../../../../../core/search/search/routes.dart';
 import '../../../../../core/search/search/widgets.dart';
 import '../../../../../core/search/selected_tags/types.dart';
+import '../../../../../core/tags/metatag/widgets.dart';
 import '../../../../../foundation/utils/flutter_utils.dart';
 import '../../../tags/user_metatags/providers.dart';
 import '../../listing/widgets.dart';
@@ -53,7 +54,7 @@ class _DanbooruSearchPageState extends ConsumerState<DanbooruSearchPage> {
           ),
           spanBuilder: (match) => WidgetSpan(
             alignment: PlaceholderAlignment.middle,
-            child: _MetatagContainer(
+            child: MetatagContainer(
               tag: match.text,
             ),
           ),
@@ -151,30 +152,6 @@ class DanbooruSearchLandingView extends StatelessWidget {
           _Trending(controller),
           DefaultMobileSearchHistorySection(controller: controller),
         ],
-      ),
-    );
-  }
-}
-
-class _MetatagContainer extends StatelessWidget {
-  const _MetatagContainer({
-    required this.tag,
-  });
-
-  final String tag;
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
-    return TextContainer(
-      text: tag,
-      decoration: BoxDecoration(
-        color: colorScheme.surfaceContainerLow,
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(4),
-          bottomLeft: Radius.circular(4),
-        ),
       ),
     );
   }
