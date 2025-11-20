@@ -15,6 +15,7 @@ import '../changelogs/routes.dart';
 import '../configs/config/providers.dart';
 import '../configs/config/routes.dart';
 import '../configs/create/routes.dart';
+import '../debug/routes.dart';
 import '../donate/routes.dart';
 import '../download_manager/routes.dart';
 import '../downloads/downloader/widgets.dart';
@@ -90,6 +91,7 @@ class Routes {
       donationRoutes(ref),
       detailsManagerRoutes,
       changelogRoutes,
+      debuglogRoutes,
     ],
   );
 

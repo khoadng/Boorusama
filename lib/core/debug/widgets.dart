@@ -1,14 +1,9 @@
-// Dart imports:
-import 'dart:io';
-
 // Flutter imports:
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
 import 'package:i18n/i18n.dart';
-import 'package:intl/intl.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:readmore/readmore.dart';
 
@@ -18,14 +13,12 @@ import '../../../../foundation/clipboard.dart';
 import '../../../../foundation/loggers.dart';
 import '../../../../foundation/scrolling.dart';
 import '../../../../foundation/toast.dart';
-import '../../../downloads/path/types.dart';
-import '../../../themes/theme/types.dart';
-import '../../../widgets/widgets.dart';
-import '../providers/settings_provider.dart';
-
-final debugLogsProvider = Provider<List<LogData>>((ref) {
-  return ref.watch(appLoggerProvider).logs;
-});
+import '../downloads/path/types.dart';
+import '../settings/providers.dart';
+import '../themes/theme/types.dart';
+import '../widgets/widgets.dart';
+import 'providers.dart';
+import 'utils.dart';
 
 class DebugLogsPage extends ConsumerStatefulWidget {
   const DebugLogsPage({
@@ -38,7 +31,6 @@ class DebugLogsPage extends ConsumerStatefulWidget {
 
 class _DebugLogsPageState extends ConsumerState<DebugLogsPage> {
   final scrollController = ScrollController();
-  String? selectedOption;
 
   @override
   void dispose() {
@@ -49,9 +41,8 @@ class _DebugLogsPageState extends ConsumerState<DebugLogsPage> {
   @override
   Widget build(BuildContext context) {
     final logs = ref.watch(debugLogsProvider);
-    final services = logs.map((e) => e.serviceName).toSet();
+    final selectedCategory = ref.watch(selectedDebugLogCategoryProvider);
 
-    // Function to copy logs to clipboard
     void copyLogsToClipboard() {
       final data = ref.read(appLoggerProvider).dump();
       AppClipboard.copyAndToast(
@@ -92,20 +83,13 @@ class _DebugLogsPageState extends ConsumerState<DebugLogsPage> {
       ),
       body: Column(
         children: [
-          ChoiceOptionSelectorList(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            options: services.toList(),
-            selectedOption: selectedOption,
-            searchable: false,
-            optionLabelBuilder: (option) => option ?? 'All',
-            onSelected: (value) {
-              setState(() {
-                selectedOption = value;
-              });
-            },
-          ),
+          const _DebugCategorySelector(),
           Expanded(
-            child: _buildBody(logs),
+            child: _LogsList(
+              logs: logs,
+              selectedCategory: selectedCategory,
+              scrollController: scrollController,
+            ),
           ),
         ],
       ),
@@ -127,15 +111,7 @@ class _DebugLogsPageState extends ConsumerState<DebugLogsPage> {
           );
         }
       case DownloadDirectorySuccess(:final directory):
-        final timestamp = DateFormat('yyyyMMdd_HHmmss').format(DateTime.now());
-        final file = File('${directory.path}/boorusama_logs_$timestamp.txt');
-        final buffer = StringBuffer();
-        for (final log in logs) {
-          buffer.write(
-            '[${log.dateTime}][${log.serviceName}]: ${log.message}\n',
-          );
-        }
-        await file.writeAsString(buffer.toString());
+        final file = await writeDebugLogsToFile(directory, logs);
 
         if (context.mounted) {
           showSuccessToast(
@@ -146,8 +122,43 @@ class _DebugLogsPageState extends ConsumerState<DebugLogsPage> {
         }
     }
   }
+}
 
-  Widget _buildBody(List<LogData> logs) {
+class _DebugCategorySelector extends ConsumerWidget {
+  const _DebugCategorySelector();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final logs = ref.watch(debugLogsProvider);
+    final categories = logs.map((e) => e.serviceName).toSet().toList();
+    final selectedCategory = ref.watch(selectedDebugLogCategoryProvider);
+
+    return ChoiceOptionSelectorList(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      options: categories,
+      selectedOption: selectedCategory,
+      searchable: false,
+      optionLabelBuilder: (option) => option ?? 'All',
+      onSelected: (value) {
+        ref.read(selectedDebugLogCategoryProvider.notifier).state = value;
+      },
+    );
+  }
+}
+
+class _LogsList extends StatelessWidget {
+  const _LogsList({
+    required this.logs,
+    required this.selectedCategory,
+    required this.scrollController,
+  });
+
+  final List<LogData> logs;
+  final String? selectedCategory;
+  final ScrollController scrollController;
+
+  @override
+  Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
     return ListView.builder(
@@ -155,12 +166,11 @@ class _DebugLogsPageState extends ConsumerState<DebugLogsPage> {
       controller: scrollController,
       itemCount: logs.length,
       itemBuilder: (context, index) {
-        if (selectedOption != null &&
-            logs[index].serviceName != selectedOption) {
+        final log = logs[index];
+
+        if (selectedCategory != null && log.serviceName != selectedCategory) {
           return const SizedBox.shrink();
         }
-
-        final log = logs[index];
 
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 8),
@@ -183,7 +193,7 @@ class _DebugLogsPageState extends ConsumerState<DebugLogsPage> {
                     ),
                   ),
                   ReadMoreText(
-                    _formatLog(log.message),
+                    log.format(),
                     trimCollapsedText: context.t.misc.trailing_more,
                     trimExpandedText: context.t.misc.trailing_less,
                     trimMode: TrimMode.Line,
@@ -209,10 +219,4 @@ class _DebugLogsPageState extends ConsumerState<DebugLogsPage> {
       },
     );
   }
-}
-
-String _formatLog(String message) {
-  final msg = tryDecodeFullUri(message).getOrElse(() => message);
-
-  return msg;
 }

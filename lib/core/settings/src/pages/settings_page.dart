@@ -23,6 +23,7 @@ import '../../../build_info/providers.dart';
 import '../../../changelogs/routes.dart';
 import '../../../configs/config/providers.dart';
 import '../../../configs/create/routes.dart';
+import '../../../debug/routes.dart';
 import '../../../premiums/providers.dart';
 import '../../../premiums/routes.dart';
 import '../../../premiums/types.dart';
@@ -34,7 +35,6 @@ import 'accessibility_page.dart';
 import 'appearance/appearance_page.dart';
 import 'backup_restore/backup_and_restore_page.dart';
 import 'data_and_storage_page.dart';
-import 'debug_logs_page.dart';
 import 'download_page.dart';
 import 'help_us_translate_page.dart';
 import 'image_viewer_page.dart';
@@ -422,7 +422,6 @@ class SettingsPageOtherSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final appInfo = ref.watch(appInfoProvider);
     final booruBuilder = ref.watch(booruBuilderProvider(ref.watchConfigAuth));
-    final options = SettingsPageScope.of(context).options;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -499,14 +498,7 @@ class SettingsPageOtherSection extends ConsumerWidget {
           leading: const FaIcon(
             FontAwesomeIcons.bug,
           ),
-          onTap: () => Navigator.of(context).push(
-            CupertinoPageRoute(
-              builder: (_) => SettingsPageScope(
-                options: options,
-                child: const DebugLogsPage(),
-              ),
-            ),
-          ),
+          onTap: () => goToDebuglogPage(ref),
         ),
         Builder(
           builder: (context) {
