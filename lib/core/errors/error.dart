@@ -2,12 +2,8 @@
 import 'package:equatable/equatable.dart';
 
 enum AppErrorType {
-  failedToLoadBooruConfig,
-  booruConfigNotFound,
   cannotReachServer,
-  failedToParseJSON,
   loadDataFromServerFailed,
-  unknown,
 }
 
 sealed class BooruError extends Error {}
@@ -54,14 +50,5 @@ class UnknownError extends BooruError {
 }
 
 extension ServerErrorX on ServerError {
-  bool get isNotFound => httpStatusCode == 404;
-  bool get isForbidden => httpStatusCode == 403;
-  bool get isUnauthorized => httpStatusCode == 401;
-  bool get isBadRequest => httpStatusCode == 400;
-  bool get isInternalServerError => httpStatusCode == 500;
-  bool get isServiceUnavailable => httpStatusCode == 503;
-  bool get isGatewayTimeout => httpStatusCode == 504;
-
-  bool get isClientError => httpStatusCode! >= 400 && httpStatusCode! < 500;
   bool get isServerError => httpStatusCode! >= 500 && httpStatusCode! < 600;
 }

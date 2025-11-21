@@ -20,13 +20,8 @@ class DefaultAppErrorTranslator implements AppErrorTranslator {
       switch (error.type) {
         AppErrorType.cannotReachServer =>
           context.t.search.errors.cannot_reach_server,
-        AppErrorType.failedToParseJSON =>
-          'Failed to parse data, please report this issue to the developer',
-        AppErrorType.failedToLoadBooruConfig => 'Failed to load booru config',
         AppErrorType.loadDataFromServerFailed =>
           context.t.search.errors.failed_to_load_data,
-        AppErrorType.booruConfigNotFound => 'Booru config not found',
-        AppErrorType.unknown => context.t.generic.errors.unknown,
       };
 
   @override
