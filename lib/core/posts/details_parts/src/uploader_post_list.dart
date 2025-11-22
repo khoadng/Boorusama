@@ -56,7 +56,7 @@ class _UploaderPostsSectionState<T extends Post>
 
     final thumbUrlBuilder = ref.watch(gridThumbnailUrlGeneratorProvider(auth));
     final thumbSettings = ref.watch(gridThumbnailSettingsProvider(auth));
-    final effectiveLimit = widget.limit ?? const LimitedPreview.defaults();
+    final effectiveLimit = widget.limit ?? const LimitedPreview.progressive();
 
     return MultiSliver(
       children: [
@@ -70,7 +70,7 @@ class _UploaderPostsSectionState<T extends Post>
         if (widget.query case final q?)
           SliverDetailsPostList(
             onTap: () {
-              goToSearchPage(ref, tag: q.resolveTag());
+              _goToUploaderPage(q);
             },
             tag: q.resolveDisplayName(),
             subtitle: context.t.post.detail.uploader,
@@ -98,6 +98,7 @@ class _UploaderPostsSectionState<T extends Post>
                                     p,
                                     settings: thumbSettings,
                                   ),
+                                  onShowAll: () => _goToUploaderPage(q),
                                 )
                               : const SliverSizedBox(),
                           orElse: () => SliverPreviewPostGridPlaceholder(
@@ -111,5 +112,9 @@ class _UploaderPostsSectionState<T extends Post>
           ),
       ],
     );
+  }
+
+  void _goToUploaderPage(UploaderQuery query) {
+    goToSearchPage(ref, tag: query.resolveTag());
   }
 }

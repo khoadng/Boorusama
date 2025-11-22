@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
@@ -18,6 +17,7 @@ import '../../listing/types.dart';
 import '../../post/tags.dart';
 import '../../post/types.dart';
 import '../../post/widgets.dart';
+import 'expandable_sliver_grid.dart';
 
 class SliverDetailsPostList extends ConsumerWidget {
   const SliverDetailsPostList({
@@ -86,12 +86,13 @@ class SliverDetailsPostList extends ConsumerWidget {
   }
 }
 
-class SliverPreviewPostGrid<T extends Post> extends StatefulWidget {
+class SliverPreviewPostGrid<T extends Post> extends ConsumerWidget {
   const SliverPreviewPostGrid({
     required this.posts,
     required this.imageUrl,
     required this.auth,
     this.limit,
+    this.onShowAll,
     super.key,
   });
 
@@ -99,139 +100,58 @@ class SliverPreviewPostGrid<T extends Post> extends StatefulWidget {
   final String Function(T item) imageUrl;
   final BooruConfigAuth auth;
   final PreviewLimit? limit;
+  final VoidCallback? onShowAll;
 
   @override
-  State<SliverPreviewPostGrid<T>> createState() =>
-      _SliverPreviewPostGridState<T>();
-}
-
-class _SliverPreviewPostGridState<T extends Post>
-    extends State<SliverPreviewPostGrid<T>> {
-  var _isExpanded = false;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final constraints = PostDetailsSheetConstraints.of(context);
-    final effectiveLimit = widget.limit ?? const UnlimitedPreview();
+    final effectiveLimit = limit ?? const UnlimitedPreview();
 
     return switch (effectiveLimit) {
       UnlimitedPreview() => SliverGrid.builder(
-        itemCount: widget.posts.length,
+        itemCount: posts.length,
         gridDelegate: _getGridDelegate(constraints?.maxWidth),
-        itemBuilder: (context, index) => _buildGridItem(index),
+        itemBuilder: (context, index) => _buildGridItem(ref, index),
       ),
-      final LimitedPreview limit => _buildLimitedGrid(
-        context,
-        constraints,
-        limit,
+      final LimitedPreview limitConfig => ExpandableSliverGrid(
+        itemCount: posts.length,
+        gridDelegate: _getGridDelegate(constraints?.maxWidth),
+        builder: (context, index) => _buildGridItem(ref, index),
+        shouldLimit: (totalCount, expandCount) =>
+            limitConfig.calculateProgressiveLimit(
+              totalCount: totalCount,
+              expandCount: expandCount,
+              crossAxisCount: calculateGridCount(
+                constraints?.maxWidth,
+                GridSize.small,
+              ),
+            ),
+        onShowAll: onShowAll,
       ),
     };
   }
 
-  Widget _buildLimitedGrid(
-    BuildContext context,
-    PostDetailsSheetConstraints? constraints,
-    LimitedPreview limitConfig,
-  ) {
-    final crossAxisCount = calculateGridCount(
-      constraints?.maxWidth,
-      GridSize.small,
-    );
-    final state = limitConfig.calculateState(
-      totalCount: widget.posts.length,
-      crossAxisCount: crossAxisCount,
-      isExpanded: _isExpanded,
-    );
+  Widget _buildGridItem(WidgetRef ref, int index) {
+    final post = posts[index];
 
-    return MultiSliver(
-      children: [
-        SliverGrid.builder(
-          itemCount: state.displayCount,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: crossAxisCount,
-            mainAxisSpacing: 4,
-            crossAxisSpacing: 4,
-          ),
-          itemBuilder: (context, index) => _buildGridItem(index),
-        ),
-        if (state.hasMore)
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.only(
-                top: 8,
-              ),
-              child: _buildExpandButton(context, state),
-            ),
-          ),
-      ],
-    );
-  }
-
-  Widget _buildExpandButton(BuildContext context, PreviewGridState state) {
-    return Material(
-      color: Colors.transparent,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
+    return ImageGridItem(
+      isGif: post.isGif,
+      isAI: post.isAI,
+      onTap: () => goToPostDetailsPageFromPosts(
+        ref: ref,
+        posts: posts,
+        initialIndex: index,
+        initialThumbnailUrl: post.thumbnailImageUrl,
       ),
-      child: InkWell(
-        customBorder: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
-        onTap: () => setState(() => _isExpanded = !_isExpanded),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 4,
-            vertical: 8,
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                _isExpanded ? Symbols.expand_less : Symbols.expand_more,
-              ),
-              const SizedBox(width: 4),
-              Text(
-                _isExpanded
-                    ? context.t.post.detail.show_less
-                    : context.t.post.detail.show_n_more(
-                        n: state.hiddenCount,
-                      ),
-                style: const TextStyle(
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ],
-          ),
-        ),
+      isAnimated: post.isAnimated,
+      isTranslated: post.isTranslated,
+      image: BooruImage(
+        config: auth,
+        forceCover: true,
+        imageUrl: imageUrl(post),
+        placeholderUrl: post.thumbnailImageUrl,
+        fit: BoxFit.cover,
       ),
-    );
-  }
-
-  Widget _buildGridItem(int index) {
-    final post = widget.posts[index];
-
-    return Consumer(
-      builder: (context, ref, child) {
-        return ImageGridItem(
-          isGif: post.isGif,
-          isAI: post.isAI,
-          onTap: () => goToPostDetailsPageFromPosts(
-            ref: ref,
-            posts: widget.posts,
-            initialIndex: index,
-            initialThumbnailUrl: post.thumbnailImageUrl,
-          ),
-          isAnimated: post.isAnimated,
-          isTranslated: post.isTranslated,
-          image: BooruImage(
-            config: widget.auth,
-            forceCover: true,
-            imageUrl: widget.imageUrl(post),
-            placeholderUrl: post.thumbnailImageUrl,
-            fit: BoxFit.cover,
-          ),
-        );
-      },
     );
   }
 }

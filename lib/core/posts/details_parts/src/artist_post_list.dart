@@ -57,7 +57,7 @@ class _DefaultInheritedArtistPostsSectionState<T extends Post>
 
     final thumbUrlBuilder = ref.watch(gridThumbnailUrlGeneratorProvider(auth));
     final thumbSettings = ref.watch(gridThumbnailSettingsProvider(auth));
-    final effectiveLimit = widget.limit ?? const LimitedPreview.defaults();
+    final effectiveLimit = widget.limit ?? const LimitedPreview.progressive();
 
     return MultiSliver(
       children: ref
@@ -77,7 +77,7 @@ class _DefaultInheritedArtistPostsSectionState<T extends Post>
                         SliverDetailsPostList(
                           tag: tag,
                           subtitle: context.t.post.detail.artist,
-                          onTap: () => goToArtistPage(ref, tag),
+                          onTap: () => _goToArtistPage(tag),
                           child: ListenableBuilder(
                             listenable: controller,
                             builder: (context, child) => controller.isVisible
@@ -104,6 +104,8 @@ class _DefaultInheritedArtistPostsSectionState<T extends Post>
                                                       p,
                                                       settings: thumbSettings,
                                                     ),
+                                                onShowAll: () =>
+                                                    _goToArtistPage(tag),
                                               )
                                             : const SliverSizedBox(),
                                         orElse: () =>
@@ -127,5 +129,9 @@ class _DefaultInheritedArtistPostsSectionState<T extends Post>
             ],
           ),
     );
+  }
+
+  void _goToArtistPage(String tag) {
+    goToArtistPage(ref, tag);
   }
 }

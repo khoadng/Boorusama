@@ -3,11 +3,20 @@ sealed class PreviewLimit {
 }
 
 class LimitedPreview extends PreviewLimit {
-  const LimitedPreview(this.rows);
+  const LimitedPreview(
+    this.rows, {
+    this.baseRowsPerExpansion = 4,
+    this.progressiveMultiplier = 1.0,
+  });
 
-  const LimitedPreview.defaults() : rows = 4;
+  const LimitedPreview.progressive()
+    : rows = 4,
+      baseRowsPerExpansion = 4,
+      progressiveMultiplier = 1.5;
 
   final int rows;
+  final int baseRowsPerExpansion;
+  final double progressiveMultiplier;
 
   PreviewGridState calculateState({
     required int totalCount,
@@ -23,6 +32,24 @@ class LimitedPreview extends PreviewLimit {
       hasMore: hasMore,
       hiddenCount: hasMore ? totalCount - itemLimit : 0,
     );
+  }
+
+  int? calculateProgressiveLimit({
+    required int totalCount,
+    required int expandCount,
+    required int crossAxisCount,
+  }) {
+    final initialLimit = rows * crossAxisCount;
+    var currentLimit = initialLimit;
+
+    var rowsToAdd = baseRowsPerExpansion;
+    for (var i = 0; i < expandCount; i++) {
+      currentLimit += rowsToAdd * crossAxisCount;
+      rowsToAdd = (rowsToAdd * progressiveMultiplier).round();
+    }
+
+    if (currentLimit >= totalCount) return null;
+    return currentLimit;
   }
 }
 
