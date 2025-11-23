@@ -4,17 +4,27 @@ import 'dart:io';
 
 // Package imports:
 import 'package:booru_clients/moebooru.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import '../../../core/configs/config/types.dart';
 import '../../../foundation/path.dart';
+import 'types.dart';
 
-class TagSummaryRepositoryFile {
-  TagSummaryRepositoryFile(this.path);
+final tagSummaryStoreProvider =
+    Provider.family<TagSummaryStore, BooruConfigAuth>((ref, config) {
+      final path = '${Uri.encodeComponent(config.url)}_tag_summary';
+      return FileTagSummaryStore(path);
+    });
+
+class FileTagSummaryStore implements TagSummaryStore {
+  FileTagSummaryStore(this.path);
 
   final String path;
   TagSummaryDto? _cache;
 
-  Future<TagSummaryDto?> getTagSummaries() async {
+  @override
+  Future<TagSummaryDto?> get() async {
     if (_cache != null) return _cache;
 
     try {
@@ -32,7 +42,6 @@ class TagSummaryRepositoryFile {
         }
       }
 
-      // No file, or file is expired
       _cache = null;
       return null;
     } catch (e) {
@@ -41,15 +50,30 @@ class TagSummaryRepositoryFile {
     }
   }
 
-  Future<void> saveTagSummaries(TagSummaryDto tagSummaryDto) async {
+  @override
+  Future<void> save(TagSummaryDto dto) async {
     try {
       final directory = await getAppTemporaryDirectory();
       final file = File('${directory.path}/$path');
-      await file.writeAsString(json.encode(tagSummaryDto.toJson()));
+      await file.writeAsString(json.encode(dto.toJson()));
       _cache = null;
     } catch (e) {
       _cache = null;
       throw Exception('Error writing to file: $e');
+    }
+  }
+
+  @override
+  Future<void> clear() async {
+    _cache = null;
+    try {
+      final directory = await getAppTemporaryDirectory();
+      final file = File('${directory.path}/$path');
+      if (file.existsSync()) {
+        await file.delete();
+      }
+    } catch (e) {
+      // Ignore errors when clearing
     }
   }
 }

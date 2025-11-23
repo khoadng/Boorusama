@@ -1,12 +1,23 @@
 // Package imports:
 import 'package:booru_clients/moebooru.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import '../../../core/configs/config/types.dart';
 import '../../../core/http/client/types.dart';
+import '../client_provider.dart';
 import 'parser.dart';
-import 'repository_file.dart';
+import 'store.dart';
 import 'types.dart';
+
+final moebooruTagSummaryRepoProvider =
+    Provider.family<TagSummaryRepository, BooruConfigAuth>((ref, config) {
+      return MoebooruTagSummaryRepository(
+        ref.watch(moebooruClientProvider(config)),
+        ref.watch(tagSummaryStoreProvider(config)),
+      );
+    });
 
 class MoebooruTagSummaryRepository
     with RequestDeduplicator<TagSummaryDto>
@@ -17,12 +28,12 @@ class MoebooruTagSummaryRepository
   );
 
   final MoebooruClient client;
-  final TagSummaryRepositoryFile store;
+  final TagSummaryStore store;
 
   @override
   Future<List<TagSummary>> getTagSummaries() async {
     try {
-      final cached = await store.getTagSummaries();
+      final cached = await store.get();
 
       if (cached != null) {
         return convertTagSummaryDtoToTagSummaryList(cached);
@@ -33,7 +44,7 @@ class MoebooruTagSummaryRepository
         () => client.getTagSummary(),
       );
 
-      await store.saveTagSummaries(tagSummaryDto);
+      await store.save(tagSummaryDto);
 
       final data = convertTagSummaryDtoToTagSummaryList(tagSummaryDto);
 

@@ -8,7 +8,7 @@ import '../../../core/configs/config/types.dart';
 import '../../../core/tags/categories/types.dart';
 import '../../../core/tags/local/providers.dart';
 import '../../../core/tags/tag/types.dart';
-import '../tag_summary/providers.dart';
+import '../tag_summary/repo.dart';
 import 'parser.dart';
 import 'repository.dart';
 

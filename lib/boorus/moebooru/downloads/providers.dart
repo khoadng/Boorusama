@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/configs/config/types.dart';
 import '../../../core/downloads/filename/types.dart';
 import '../posts/types.dart';
-import '../tag_summary/providers.dart';
+import '../tag_summary/repo.dart';
 import '../tags/providers.dart';
 
 final moebooruDownloadFilenameGeneratorProvider =
