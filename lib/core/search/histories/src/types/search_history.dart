@@ -2,7 +2,7 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import '../../selected_tags/types.dart';
+import '../../../selected_tags/types.dart';
 
 class SearchHistory extends Equatable with QueryTypeMixin {
   const SearchHistory({

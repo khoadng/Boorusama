@@ -9,8 +9,7 @@ import '../../../configs/config/providers.dart';
 import '../../selected_tags/selected_tag_controller.dart';
 import '../../selected_tags/types.dart';
 import 'data/providers.dart';
-import 'search_history.dart';
-import 'search_history_state.dart';
+import 'types/search_history.dart';
 
 final searchHistoryProvider =
     AsyncNotifierProvider<SearchHistoryNotifier, SearchHistoryState>(
@@ -132,5 +131,34 @@ class SearchHistoryNotifier extends AsyncNotifier<SearchHistoryState> {
     state = const AsyncLoading();
 
     filterHistories('');
+  }
+}
+
+class SearchHistoryState {
+  SearchHistoryState({
+    required this.histories,
+    required this.filteredHistories,
+    required this.currentQuery,
+  });
+
+  SearchHistoryState.initial()
+    : histories = [],
+      filteredHistories = [],
+      currentQuery = '';
+
+  final List<SearchHistory> histories;
+  final List<SearchHistory> filteredHistories;
+  final String currentQuery;
+
+  SearchHistoryState copyWith({
+    List<SearchHistory>? histories,
+    List<SearchHistory>? filteredHistories,
+    String? currentQuery,
+  }) {
+    return SearchHistoryState(
+      histories: histories ?? this.histories,
+      filteredHistories: filteredHistories ?? this.filteredHistories,
+      currentQuery: currentQuery ?? this.currentQuery,
+    );
   }
 }

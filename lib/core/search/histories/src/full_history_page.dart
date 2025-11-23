@@ -7,7 +7,7 @@ import 'package:i18n/i18n.dart';
 
 // Project imports:
 import 'providers.dart';
-import 'search_history.dart';
+import 'types/search_history.dart';
 import 'widgets/full_history_view.dart';
 
 class FullHistoryPage extends ConsumerStatefulWidget {

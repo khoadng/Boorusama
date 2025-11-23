@@ -14,7 +14,7 @@ import '../../../../../foundation/display.dart';
 import '../../../../themes/theme/types.dart';
 import '../../../search/widgets.dart';
 import '../providers.dart';
-import '../search_history.dart';
+import '../types/search_history.dart';
 import 'search_history_section.dart';
 
 class FullHistoryView extends ConsumerWidget {

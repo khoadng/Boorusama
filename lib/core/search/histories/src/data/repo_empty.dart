@@ -1,7 +1,7 @@
 // Project imports:
 import '../../../selected_tags/types.dart';
-import '../search_history.dart';
-import 'search_history_repository.dart';
+import '../types/search_history.dart';
+import '../types/search_history_repository.dart';
 
 class EmptySearchHistoryRepository implements SearchHistoryRepository {
   @override

@@ -5,8 +5,8 @@ import 'package:sqlite3/sqlite3.dart';
 // Project imports:
 import '../../../../../foundation/database/utils.dart';
 import '../../../selected_tags/types.dart';
-import '../search_history.dart';
-import 'search_history_repository.dart';
+import '../types/search_history.dart';
+import '../types/search_history_repository.dart';
 
 const _kSearchHistoryVersion = 0;
 

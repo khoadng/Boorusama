@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 // Project imports:
 import '../../../../router.dart';
 import '../full_history_page.dart';
-import '../search_history.dart';
+import '../types/search_history.dart';
 
 void goToSearchHistoryPage(
   BuildContext context, {

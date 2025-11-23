@@ -1,1 +1,1 @@
-export 'src/search_history.dart';
+export 'src/types/search_history.dart';
