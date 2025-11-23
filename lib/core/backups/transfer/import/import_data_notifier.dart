@@ -9,8 +9,30 @@ import '../../../configs/config/types.dart';
 import '../../../configs/manage/providers.dart';
 import '../../../settings/providers.dart';
 import '../../../settings/types.dart';
-import '../../servers/server_providers.dart';
 import '../../sources/providers.dart';
+import '../../types/types.dart';
+
+final exportCategoriesProvider = Provider<List<ExportCategory>>((ref) {
+  // Ensure all backup sources are registered
+  ref.watch(allBackupSourcesProvider);
+
+  final registry = ref.watch(backupRegistryProvider);
+
+  // Get categories from the registry system
+  final registryCategories = registry
+      .getAllSources()
+      .map(
+        (source) => ExportCategory(
+          name: source.id,
+          displayName: source.displayName,
+          route: source.id,
+          handler: source.capabilities.server.export,
+        ),
+      )
+      .toList();
+
+  return registryCategories;
+});
 
 final importDataProvider = NotifierProvider.autoDispose
     .family<ImportDataNotifier, ImportDataState, String>(

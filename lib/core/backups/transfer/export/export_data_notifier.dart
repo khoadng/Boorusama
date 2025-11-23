@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../foundation/networking.dart';
-import '../../servers/server_providers.dart';
+import '../../servers/server.dart';
 
 enum ServerStatus {
   stopped,
@@ -66,9 +66,9 @@ class ExportDataNotifier extends AutoDisposeAsyncNotifier<ExportDataState> {
       return const ExportDataState.invalid();
     }
 
-    final httpServer = await server.startServer(localIpAddress);
+    final serverInfo = await server.startServer(localIpAddress);
 
-    if (httpServer == null) {
+    if (serverInfo == null) {
       return const ExportDataState.invalid();
     }
 
@@ -82,8 +82,8 @@ class ExportDataNotifier extends AutoDisposeAsyncNotifier<ExportDataState> {
                 ? ServerStatus.broadcasting
                 : ServerStatus.running
           : ServerStatus.stopped,
-      ipAddress: localIpAddress,
-      port: httpServer.port.toString(),
+      ipAddress: serverInfo.host,
+      port: serverInfo.port.toString(),
       serverName: server.serverName,
       appVersion: server.appVersion,
     );
