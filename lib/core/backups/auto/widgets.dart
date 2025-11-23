@@ -14,9 +14,9 @@ import '../../settings/providers.dart';
 import '../../settings/widgets.dart';
 import '../../themes/theme/types.dart';
 import '../../widgets/widgets.dart';
-import '../auto/auto_backup_service.dart';
 import '../zip/providers.dart';
-import 'auto_backup_settings.dart';
+import 'providers.dart';
+import 'settings.dart';
 
 class AutoBackupSection extends ConsumerWidget {
   const AutoBackupSection({super.key});

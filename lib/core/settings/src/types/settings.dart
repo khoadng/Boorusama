@@ -9,7 +9,7 @@ import 'package:foundation/foundation.dart';
 import '../../../../foundation/applock/types.dart';
 import '../../../../foundation/caching/types.dart';
 import '../../../analytics/types.dart';
-import '../../../backups/auto/auto_backup_settings.dart';
+import '../../../backups/auto/settings.dart';
 import '../../../configs/gesture/types.dart';
 import '../../../downloads/downloader/types.dart';
 import '../../../haptics/types.dart';

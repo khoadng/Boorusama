@@ -13,7 +13,7 @@ import '../foundation/networking.dart';
 import '../foundation/platform.dart';
 import '../foundation/scrolling.dart';
 import 'analytics/widgets.dart';
-import 'backups/auto/auto_backup_trigger.dart';
+import 'backups/auto/trigger.dart';
 import 'router.dart';
 import 'settings/providers.dart';
 import 'themes/theme/types.dart';

@@ -9,6 +9,13 @@ enum AutoBackupFrequency {
   weekly(Duration(days: 7));
 
   const AutoBackupFrequency(this.duration);
+
+  factory AutoBackupFrequency.parse(dynamic value) => switch (value) {
+    'daily' => AutoBackupFrequency.daily,
+    'weekly' => AutoBackupFrequency.weekly,
+    _ => AutoBackupFrequency.weekly,
+  };
+
   final Duration duration;
 }
 
@@ -24,10 +31,7 @@ class AutoBackupSettings extends Equatable {
   factory AutoBackupSettings.parse(dynamic value) => switch (value) {
     final Map<String, dynamic> json => AutoBackupSettings(
       enabled: json['enabled'] as bool? ?? false,
-      frequency: AutoBackupFrequency.values.firstWhere(
-        (f) => f.name == json['frequency'],
-        orElse: () => AutoBackupFrequency.weekly,
-      ),
+      frequency: AutoBackupFrequency.parse(json['frequency']),
       maxBackups: json['maxBackups'] as int? ?? 5,
       userSelectedPath: json['userSelectedPath'] as String?,
       lastBackupTime: json['lastBackupTime'] != null

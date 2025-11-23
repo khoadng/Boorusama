@@ -7,7 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
-import '../../../../backups/auto/auto_backup_section.dart';
+import '../../../../backups/auto/widgets.dart';
 import '../../../../backups/routes.dart';
 import '../../../../backups/transfer/sync_data_page.dart';
 import '../../../../backups/widgets.dart';
