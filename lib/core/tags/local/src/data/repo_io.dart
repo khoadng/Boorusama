@@ -4,12 +4,12 @@ import 'package:path/path.dart' show join;
 import 'package:path_provider/path_provider.dart';
 
 // Project imports:
-import '../../../../foundation/database/providers.dart';
-import '../../../../foundation/database/utils.dart';
-import '../../../../foundation/loggers.dart';
-import 'data/empty_tag_cache_repository.dart';
-import 'data/tag_cache_repository_sqlite.dart';
-import 'types/tag_cache_repository.dart';
+import '../../../../../foundation/database/providers.dart';
+import '../../../../../foundation/database/utils.dart';
+import '../../../../../foundation/loggers.dart';
+import '../types/tag_cache_repository.dart';
+import 'repo_empty.dart';
+import 'repo_sqlite.dart';
 
 const _kServiceName = 'Tags';
 const kTagCacheDbName = 'tags.db';
