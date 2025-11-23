@@ -14,7 +14,7 @@ import '../../../downloads/filename/types.dart';
 import '../../../images/providers.dart';
 import '../../../widgets/booru_tooltip.dart';
 import '../../post/types.dart';
-import 'share.dart';
+import 'providers.dart';
 
 class SharePostButton extends ConsumerWidget {
   const SharePostButton({

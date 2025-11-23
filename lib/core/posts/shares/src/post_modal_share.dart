@@ -18,6 +18,7 @@ import '../../post/providers.dart';
 import '../../post/types.dart';
 import '../../sources/types.dart';
 import 'download_and_share.dart';
+import 'share.dart';
 
 final _cachedImageFileProvider = FutureProvider.autoDispose
     .family<XFile?, ModalShareImageData>(
@@ -32,14 +33,13 @@ final _cachedImageFileProvider = FutureProvider.autoDispose
 
         final cacheManager = data.imageCacheManager;
         final cacheKey = cacheManager.generateCacheKey(imageUrl);
-        final file = await cacheManager.getCachedFile(cacheKey);
+        final filePath = await cacheManager.getCachedFilePath(cacheKey);
 
-        if (file == null || effectiveExt == null) return null;
+        if (filePath == null || effectiveExt == null) return null;
 
         // attach the extension to the file
-        final newPath = file.path + effectiveExt;
-        final newFile = file.copySync(newPath);
-        final xFile = XFile(newFile.path);
+        final newPath = filePath + effectiveExt;
+        final xFile = fileCopySync(filePath, newPath);
 
         return xFile;
       },

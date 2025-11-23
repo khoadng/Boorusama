@@ -82,7 +82,7 @@ class VideoCacheManager implements ImageCacheManager {
 
   @override
   FutureOr<bool> hasValidCache(String key, {Duration? maxAge}) {
-    final fileResult = getCachedFile(key, maxAge: maxAge);
+    final fileResult = _getCachedFile(key, maxAge: maxAge);
 
     if (fileResult is Future<File?>) {
       return fileResult.then((file) => file != null);
@@ -96,8 +96,7 @@ class VideoCacheManager implements ImageCacheManager {
     return await hasValidCache(cacheKey, maxAge: maxAge);
   }
 
-  @override
-  FutureOr<File?> getCachedFile(String key, {Duration? maxAge}) {
+  FutureOr<File?> _getCachedFile(String key, {Duration? maxAge}) {
     final dirResult = getCacheDirectory();
 
     if (dirResult is Future<Directory>) {
@@ -106,6 +105,13 @@ class VideoCacheManager implements ImageCacheManager {
 
     final cacheDir = dirResult;
     return _getValidFile(cacheDir, key, maxAge);
+  }
+
+  @override
+  FutureOr<String?> getCachedFilePath(String key, {Duration? maxAge}) async {
+    final fileResult = await _getCachedFile(key, maxAge: maxAge);
+
+    return fileResult?.path;
   }
 
   File? _getValidFile(Directory cacheDir, String key, Duration? maxAge) {
@@ -140,7 +146,7 @@ class VideoCacheManager implements ImageCacheManager {
 
   @override
   FutureOr<Uint8List?> getCachedFileBytes(String key, {Duration? maxAge}) {
-    final fileResult = getCachedFile(key, maxAge: maxAge);
+    final fileResult = _getCachedFile(key, maxAge: maxAge);
 
     if (fileResult is Future<File?>) {
       return fileResult.then((file) => _readFileBytes(file, key));
@@ -152,7 +158,7 @@ class VideoCacheManager implements ImageCacheManager {
 
   Future<String?> getCachedVideoPath(String url, {Duration? maxAge}) async {
     final cacheKey = generateCacheKey(url);
-    final file = await getCachedFile(cacheKey, maxAge: maxAge);
+    final file = await _getCachedFile(cacheKey, maxAge: maxAge);
 
     if (file != null && file.existsSync()) {
       await _touchFile(file);

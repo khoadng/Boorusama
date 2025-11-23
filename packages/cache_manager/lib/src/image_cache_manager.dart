@@ -2,11 +2,11 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:extended_image_library/extended_image_library.dart';
 import 'package:path/path.dart' show join;
 import 'package:path_provider/path_provider.dart';
 
 import 'cache_manager.dart';
+import 'cache_utils.dart' as cache_utils;
 import 'memory_cache.dart';
 
 class DefaultImageCacheManager implements ImageCacheManager {
@@ -62,8 +62,7 @@ class DefaultImageCacheManager implements ImageCacheManager {
     return dir;
   }
 
-  @override
-  FutureOr<File?> getCachedFile(String key, {Duration? maxAge}) {
+  FutureOr<File?> _getCachedFile(String key, {Duration? maxAge}) {
     final dirResult = getCacheDirectory();
 
     if (dirResult is Future<Directory>) {
@@ -72,6 +71,13 @@ class DefaultImageCacheManager implements ImageCacheManager {
 
     final cacheDir = dirResult;
     return _getValidFile(cacheDir, key, maxAge);
+  }
+
+  @override
+  FutureOr<String?> getCachedFilePath(String key, {Duration? maxAge}) async {
+    final fileResult = await _getCachedFile(key, maxAge: maxAge);
+
+    return fileResult?.path;
   }
 
   File? _getValidFile(Directory cacheDir, String key, Duration? maxAge) {
@@ -111,7 +117,7 @@ class DefaultImageCacheManager implements ImageCacheManager {
       return memoryData;
     }
 
-    final fileResult = getCachedFile(key, maxAge: maxAge);
+    final fileResult = _getCachedFile(key, maxAge: maxAge);
 
     if (fileResult is Future<File?>) {
       return fileResult.then((file) => _readFileBytes(file, key));
@@ -159,7 +165,7 @@ class DefaultImageCacheManager implements ImageCacheManager {
       return true;
     }
 
-    final fileResult = getCachedFile(key, maxAge: maxAge);
+    final fileResult = _getCachedFile(key, maxAge: maxAge);
 
     if (fileResult is Future<File?>) {
       return fileResult.then((file) => file != null);
@@ -186,27 +192,18 @@ class DefaultImageCacheManager implements ImageCacheManager {
 
   @override
   String generateCacheKey(String url, {String? customKey}) {
-    if (customKey != null) {
-      return customKey;
-    }
-
-    final lowerUrl = url.toLowerCase();
-
-    // More flexible matching for Google favicons
-    if (lowerUrl.contains('google.com') && lowerUrl.contains('favicons')) {
-      return _keyToMd5(url); // Use full URL since domain parameter matters
-    }
-
-    // Parse the URL and use only the path component for other URLs
-    final uri = Uri.tryParse(url);
-    return uri == null ? _keyToMd5(url) : _keyToMd5(uri.path);
+    return cache_utils.generateCacheKey(
+      url,
+      customKey: customKey,
+      keyToMd5: _keyToMd5,
+    );
   }
 
   String _keyToMd5(String key) {
     if (_keyCache.containsKey(key)) {
       return _keyCache[key]!;
     }
-    final md5Key = keyToMd5(key);
+    final md5Key = cache_utils.keyToMd5(key);
     _keyCache[key] = md5Key;
     return md5Key;
   }
