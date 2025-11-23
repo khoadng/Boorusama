@@ -15,6 +15,14 @@ import 'repo_sqlite.dart';
 const _kServiceName = 'Download DB';
 const kDownloadDbName = 'download.db';
 
+final downloadRepositoryProvider = FutureProvider<DownloadRepository>((
+  ref,
+) async {
+  final repo = await ref.watch(internalDownloadRepositoryProvider.future);
+
+  return repo;
+});
+
 final internalDownloadRepositoryProvider = FutureProvider<DownloadRepository>((
   ref,
 ) async {

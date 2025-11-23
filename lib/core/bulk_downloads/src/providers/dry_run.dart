@@ -20,6 +20,7 @@ import '../../../posts/post/types.dart';
 import '../../../search/selected_tags/types.dart';
 import '../../../settings/providers.dart';
 import '../data/filesystem.dart';
+import '../data/providers.dart';
 import '../types/bulk_download_error.dart';
 import '../types/download_configs.dart';
 import '../types/download_record.dart';

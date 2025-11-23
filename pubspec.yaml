@@ -148,6 +148,7 @@ dependencies:
   webview_flutter_wkwebview: ^3.23.0
   window_manager: ^0.5.1 
   yaml: ^3.1.2
+  web: ^1.1.1
 
 dev_dependencies:
   build_runner: ^2.4.13

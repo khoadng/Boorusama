@@ -109,7 +109,7 @@ HttpClientAdapter _createHttpClientAdapter({
 
 HttpClientAdapter _createDefaultAdapter(Logger? logger) {
   logger?.info('Network', 'Using default adapter');
-  return IOHttpClientAdapter();
+  return HttpClientAdapter();
 }
 
 HttpClientAdapter _createProxyAdapter(

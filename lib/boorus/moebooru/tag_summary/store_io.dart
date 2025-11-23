@@ -28,8 +28,14 @@ class FileTagSummaryStore implements TagSummaryStore {
     if (_cache != null) return _cache;
 
     try {
-      final directory = await getAppTemporaryDirectory();
-      final file = File('${directory.path}/$path');
+      final tempPath = await getAppTemporaryPath();
+
+      if (tempPath == null) {
+        _cache = null;
+        return null;
+      }
+
+      final file = File('$tempPath/$path');
 
       if (file.existsSync()) {
         final lastModified = file.lastModifiedSync();
@@ -53,8 +59,14 @@ class FileTagSummaryStore implements TagSummaryStore {
   @override
   Future<void> save(TagSummaryDto dto) async {
     try {
-      final directory = await getAppTemporaryDirectory();
-      final file = File('${directory.path}/$path');
+      final tempPath = await getAppTemporaryPath();
+
+      if (tempPath == null) {
+        _cache = null;
+        return;
+      }
+
+      final file = File('$tempPath/$path');
       await file.writeAsString(json.encode(dto.toJson()));
       _cache = null;
     } catch (e) {
@@ -67,8 +79,13 @@ class FileTagSummaryStore implements TagSummaryStore {
   Future<void> clear() async {
     _cache = null;
     try {
-      final directory = await getAppTemporaryDirectory();
-      final file = File('${directory.path}/$path');
+      final tempPath = await getAppTemporaryPath();
+
+      if (tempPath == null) {
+        return;
+      }
+
+      final file = File('$tempPath/$path');
       if (file.existsSync()) {
         await file.delete();
       }

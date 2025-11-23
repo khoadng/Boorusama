@@ -2,12 +2,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import '../data/providers.dart';
 import '../types/download_configs.dart';
 import '../types/download_options.dart';
 import '../types/download_task.dart';
 import '../types/saved_download_task.dart';
 import 'bulk_download_notifier.dart';
-import 'providers.dart';
 
 class SavedDownloadTasksNotifier
     extends AsyncNotifier<List<SavedDownloadTask>> {

@@ -11,8 +11,8 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 // Project imports:
 import '../../../widgets/widgets.dart';
+import '../data/providers.dart';
 import '../providers/bulk_download_notifier.dart';
-import '../providers/providers.dart';
 import '../types/bulk_download_session.dart';
 import '../widgets/bulk_download_completed_session_tile.dart';
 

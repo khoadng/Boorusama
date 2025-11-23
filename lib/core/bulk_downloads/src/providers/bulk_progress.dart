@@ -2,8 +2,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import '../data/providers.dart';
 import '../types/download_record.dart';
-import 'providers.dart';
 
 final bulkDownloadProgressProvider =
     AsyncNotifierProvider<BulkDownloadProgressNotifier, Map<String, double>>(

@@ -41,8 +41,8 @@ class NetworkProtocolInfo {
     // Proxy always forces default adapter (HTTP/1.1)
     if (hasProxy) return false;
 
-    // Windows doesn't support HTTP/2 adapter
-    if (platform.isWindows) return false;
+    // Windows/Web doesn't support HTTP/2 adapter
+    if (platform.isWindows || platform.isWeb) return false;
 
     // User override takes precedence
     if (customProtocol != null) {
@@ -90,6 +90,7 @@ class PlatformInfo {
     required this.isIOS,
     required this.isMacOS,
     required this.isWindows,
+    required this.isWeb,
     required this.cronetAvailable,
   });
 
@@ -99,6 +100,7 @@ class PlatformInfo {
       isIOS: platform_utils.isIOS(),
       isMacOS: platform_utils.isMacOS(),
       isWindows: platform_utils.isWindows(),
+      isWeb: platform_utils.isWeb(),
       cronetAvailable: cronetAvailable ?? false,
     );
   }
@@ -107,6 +109,7 @@ class PlatformInfo {
     : isAndroid = true,
       isIOS = false,
       isMacOS = false,
+      isWeb = false,
       isWindows = false;
 
   const PlatformInfo.ios()
@@ -114,6 +117,7 @@ class PlatformInfo {
       isIOS = true,
       isMacOS = false,
       isWindows = false,
+      isWeb = false,
       cronetAvailable = false;
 
   const PlatformInfo.macOS()
@@ -121,6 +125,7 @@ class PlatformInfo {
       isIOS = false,
       isMacOS = true,
       isWindows = false,
+      isWeb = false,
       cronetAvailable = false;
 
   const PlatformInfo.windows()
@@ -128,12 +133,14 @@ class PlatformInfo {
       isIOS = false,
       isMacOS = false,
       isWindows = true,
+      isWeb = false,
       cronetAvailable = false;
 
   final bool isAndroid;
   final bool isIOS;
   final bool isMacOS;
   final bool isWindows;
+  final bool isWeb;
   final bool cronetAvailable;
 
   bool get canUseNativeAdapter {

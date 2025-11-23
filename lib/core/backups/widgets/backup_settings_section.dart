@@ -10,9 +10,9 @@ import 'package:i18n/i18n.dart';
 import '../auto/widgets.dart';
 import '../routes.dart';
 import '../transfer/sync_data_page.dart';
-import '../widgets.dart';
 import '../zip/providers.dart';
 import 'data_transfer_card.dart';
+import 'manual_backup_page.dart';
 
 class BackupSettingsSection extends ConsumerWidget {
   const BackupSettingsSection({

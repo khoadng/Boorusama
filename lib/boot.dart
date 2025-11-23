@@ -73,8 +73,8 @@ Future<void> boot(BootData bootData) async {
   logger.debugBoot('Initialize settings repository');
   final settingRepository = await createSettingsRepo(logger: logger);
 
-  logger.debugBoot('Set certificate to trusted certificates');
-  await initCert();
+  logger.debugBoot('Initialize platform-specific stuff');
+  await initPlatform();
 
   final booruUserRepo = await createBooruConfigsRepo(
     logger: logger,
@@ -112,12 +112,12 @@ Future<void> boot(BootData bootData) async {
   logger.debugBoot('Load all configs');
   final allConfigs = await booruUserRepo.getAll();
 
-  final tempPath = await getAppTemporaryDirectory();
+  final tempPath = await getAppTemporaryPath();
 
   logger.debugBoot('Initialize misc data box');
   final miscDataBox = await Hive.openBox<String>(
     'misc_data_v1',
-    path: tempPath.path,
+    path: tempPath,
   );
 
   logger.debugBoot('Initialize package info');

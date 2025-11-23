@@ -4,9 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../download_manager/providers.dart';
 import '../../../download_manager/types.dart';
-import '../data/repo_io.dart';
+import '../data/providers.dart';
 import '../types/download_record.dart';
-import '../types/download_repository.dart';
 import 'post_fetcher.dart';
 
 final downloadGroupFailedProvider = Provider.autoDispose.family<int, String>((
@@ -16,14 +15,6 @@ final downloadGroupFailedProvider = Provider.autoDispose.family<int, String>((
   final failed = ref.watch(downloadTaskUpdatesProvider).failed(group);
 
   return failed.length;
-});
-
-final downloadRepositoryProvider = FutureProvider<DownloadRepository>((
-  ref,
-) async {
-  final repo = await ref.watch(internalDownloadRepositoryProvider.future);
-
-  return repo;
 });
 
 final percentCompletedFromDbProvider = FutureProvider.autoDispose

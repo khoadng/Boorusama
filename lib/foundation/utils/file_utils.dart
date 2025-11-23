@@ -65,6 +65,9 @@ Future<DirectorySizeInfo> getDirectorySize(
 
 Future<DirectorySizeInfo> getCacheSize() async {
   final cacheDir = await getAppTemporaryDirectory();
+
+  if (cacheDir == null) return DirectorySizeInfo.zero;
+
   return getDirectorySize(
     cacheDir,
     excludedDirNames: [
@@ -75,14 +78,20 @@ Future<DirectorySizeInfo> getCacheSize() async {
 }
 
 Future<DirectorySizeInfo> getImageCacheSize() async {
-  final cacheDir = await getTemporaryDirectory();
+  final cacheDir = await getAppTemporaryDirectory();
+
+  if (cacheDir == null) return DirectorySizeInfo.zero;
+
   final path = join(cacheDir.path, cacheImageFolderName);
   final imageCacheDir = Directory(path);
   return getDirectorySize(imageCacheDir);
 }
 
 Future<DirectorySizeInfo> getVideoCacheSize() async {
-  final cacheDir = await getTemporaryDirectory();
+  final cacheDir = await getAppTemporaryDirectory();
+
+  if (cacheDir == null) return DirectorySizeInfo.zero;
+
   final path = join(cacheDir.path, VideoCacheManager.defaultSubPath);
   final videoCacheDir = Directory(path);
   return getDirectorySize(videoCacheDir);
@@ -90,6 +99,8 @@ Future<DirectorySizeInfo> getVideoCacheSize() async {
 
 Future<void> clearCache() async {
   final cacheDir = await getAppTemporaryDirectory();
+
+  if (cacheDir == null) return;
 
   if (cacheDir.existsSync()) {
     if (isWindows()) {
@@ -134,6 +145,9 @@ class DiskSpaceInfo {
 
   static Future<DiskSpaceInfo> fromTempDir() async {
     final tempDir = await getAppTemporaryDirectory();
+
+    if (tempDir == null) return DiskSpaceInfo.zero;
+
     final freeSpace = await DiskSpace.getFreeDiskSpaceForPath(tempDir.path);
     final totalSpace = await DiskSpace.getTotalDiskSpace;
 

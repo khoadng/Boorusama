@@ -87,8 +87,4 @@ extension CookieJarExtensions on List<Cookie> {
     }
     return null;
   }
-
-  bool hasCookie(String name) {
-    return any((cookie) => cookie.name == name);
-  }
 }

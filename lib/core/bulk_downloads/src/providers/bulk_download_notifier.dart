@@ -19,6 +19,7 @@ import '../../../downloads/downloader/types.dart' as d;
 import '../../../posts/sources/types.dart';
 import '../../../premiums/providers.dart';
 import '../data/filesystem.dart';
+import '../data/providers.dart';
 import '../notifications/providers.dart';
 import '../types/bulk_download_error.dart';
 import '../types/bulk_download_session.dart';
@@ -34,7 +35,6 @@ import '../types/saved_download_task.dart';
 import 'bulk_progress.dart';
 import 'dry_run.dart';
 import 'dry_run_state.dart';
-import 'providers.dart';
 import 'saved_task_lock_notifier.dart';
 import 'session_cancellation_provider.dart';
 
