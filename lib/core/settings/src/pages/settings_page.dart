@@ -33,7 +33,7 @@ import '../widgets/settings_page_scaffold.dart';
 import 'about_page.dart';
 import 'accessibility_page.dart';
 import 'appearance/appearance_page.dart';
-import 'backup_restore/backup_and_restore_page.dart';
+import 'backup_and_restore_page.dart';
 import 'data_and_storage_page.dart';
 import 'download_page.dart';
 import 'help_us_translate_page.dart';

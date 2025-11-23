@@ -7,30 +7,21 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
-import '../../../../backups/auto/widgets.dart';
-import '../../../../backups/routes.dart';
-import '../../../../backups/transfer/sync_data_page.dart';
-import '../../../../backups/widgets.dart';
-import '../../../../backups/zip/providers.dart';
-import '../../widgets/settings_page_scaffold.dart';
+import '../auto/widgets.dart';
+import '../routes.dart';
+import '../transfer/sync_data_page.dart';
+import '../widgets.dart';
+import '../zip/providers.dart';
 import 'data_transfer_card.dart';
 
-class BackupAndRestorePage extends ConsumerStatefulWidget {
-  const BackupAndRestorePage({
+class BackupSettingsSection extends ConsumerWidget {
+  const BackupSettingsSection({
     super.key,
   });
 
   @override
-  ConsumerState<BackupAndRestorePage> createState() =>
-      _BackupAndRestorePageState();
-}
-
-class _BackupAndRestorePageState extends ConsumerState<BackupAndRestorePage> {
-  @override
-  Widget build(BuildContext context) {
-    return SettingsPageScaffold(
-      title: Text(context.t.settings.backup_and_restore.backup_and_restore),
-      padding: const EdgeInsets.symmetric(horizontal: 8),
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Column(
       children: [
         _Title(
           title: context.t.settings.backup_and_restore.transfer_data,
@@ -90,7 +81,8 @@ class _BackupAndRestorePageState extends ConsumerState<BackupAndRestorePage> {
                     FontAwesomeIcons.fileExport,
                   ),
                   title: context.t.settings.backup_and_restore.export,
-                  onPressed: () => _handleExportAll(),
+                  onPressed: () =>
+                      ref.read(backupProvider.notifier).exportAll(context),
                 ),
               ),
               Expanded(
@@ -99,7 +91,8 @@ class _BackupAndRestorePageState extends ConsumerState<BackupAndRestorePage> {
                     FontAwesomeIcons.fileImport,
                   ),
                   title: context.t.settings.backup_and_restore.import,
-                  onPressed: () => _handleImport(),
+                  onPressed: () =>
+                      ref.read(backupProvider.notifier).importFromZip(context),
                 ),
               ),
             ],
@@ -107,7 +100,11 @@ class _BackupAndRestorePageState extends ConsumerState<BackupAndRestorePage> {
         ),
         Center(
           child: TextButton.icon(
-            onPressed: () => _navigateToManualBackup(),
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => const ManualBackupPage(),
+              ),
+            ),
             icon: const Icon(Icons.tune, size: 16),
             label: Text(
               context.t.settings.backup_and_restore.advanced_export_import,
@@ -131,22 +128,6 @@ class _BackupAndRestorePageState extends ConsumerState<BackupAndRestorePage> {
         const SizedBox(height: 16),
       ],
     );
-  }
-
-  void _handleExportAll() {
-    ref.read(backupProvider.notifier).exportAll(context);
-  }
-
-  void _navigateToManualBackup() {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => const ManualBackupPage(),
-      ),
-    );
-  }
-
-  void _handleImport() {
-    ref.read(backupProvider.notifier).importFromZip(context);
   }
 }
 

@@ -6,7 +6,6 @@ import '../../../foundation/loggers.dart';
 import '../types/backup_registry.dart';
 import '../zip/bulk_backup_service.dart';
 import '../zip/types.dart';
-import 'settings.dart';
 import 'types.dart';
 
 class AutoBackupService {
