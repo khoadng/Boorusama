@@ -2,6 +2,7 @@
 import 'dart:async';
 
 // Package imports:
+import 'package:cache_manager/cache_manager.dart';
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -25,7 +26,6 @@ import '../data/bookmark_convert.dart';
 import '../data/providers.dart';
 import '../types/bookmark.dart';
 import '../types/bookmark_repository.dart';
-import 'bookmark_image_cache_manager.dart';
 
 final bookmarkProvider = AsyncNotifierProvider<BookmarkNotifier, BookmarkState>(
   BookmarkNotifier.new,
@@ -45,12 +45,8 @@ final bookmarkUrlResolverProvider = Provider.autoDispose
       return repo?.imageUrlResolver() ?? const DefaultImageUrlResolver();
     });
 
-final bookmarkImageCacheManagerProvider = Provider<BookmarkImageCacheManager>(
-  (ref) => BookmarkImageCacheManager(),
-);
-
 class BookmarkNotifier extends AsyncNotifier<BookmarkState> {
-  BookmarkImageCacheManager get _cacheManager =>
+  ImageCacheManager get _cacheManager =>
       ref.read(bookmarkImageCacheManagerProvider);
 
   @override

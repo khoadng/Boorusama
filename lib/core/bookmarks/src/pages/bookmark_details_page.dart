@@ -22,6 +22,7 @@ import '../../../posts/sources/types.dart';
 import '../../../widgets/adaptive_button_row.dart';
 import '../../../widgets/booru_menu_button_row.dart';
 import '../data/bookmark_convert.dart';
+import '../data/providers.dart';
 import '../providers/bookmark_provider.dart';
 import '../widgets/bookmark_tag_tiles.dart';
 

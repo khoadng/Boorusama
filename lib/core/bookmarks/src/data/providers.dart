@@ -7,6 +7,8 @@ import '../types/bookmark_repository.dart';
 import 'hive/bookmark_hive_object.dart';
 import 'hive/repository.dart';
 
+export 'image_cache.dart';
+
 final bookmarkRepoProvider = FutureProvider<BookmarkRepository>(
   (ref) async {
     final bookmarkBox = await Hive.openBox<BookmarkHiveObject>('favorites');

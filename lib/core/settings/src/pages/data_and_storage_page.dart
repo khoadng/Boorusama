@@ -22,13 +22,6 @@ import '../widgets/settings_page_scaffold.dart';
 import '../widgets/settings_tile.dart';
 import '../widgets/storage_segment_bar.dart';
 
-final bookmarkCacheInfoProvider = FutureProvider.autoDispose<(int, int)>((
-  ref,
-) {
-  final cacheManager = ref.watch(bookmarkImageCacheManagerProvider);
-  return cacheManager.getCacheStats();
-});
-
 final diskSpaceProvider = Provider.autoDispose<(CacheSizeInfo, int)>((
   ref,
 ) {

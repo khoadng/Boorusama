@@ -8,8 +8,20 @@ import 'package:flutter/foundation.dart';
 // Package imports:
 import 'package:cache_manager/cache_manager.dart';
 import 'package:extended_image/extended_image.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
+
+final bookmarkImageCacheManagerProvider = Provider<BookmarkImageCacheManager>(
+  (ref) => BookmarkImageCacheManager(),
+);
+
+final bookmarkCacheInfoProvider = FutureProvider.autoDispose<(int, int)>((
+  ref,
+) {
+  final cacheManager = ref.watch(bookmarkImageCacheManagerProvider);
+  return cacheManager.getCacheStats();
+});
 
 /// Specialized cache manager for bookmarked images that stores files
 /// in permanent storage and organizes them by image type
