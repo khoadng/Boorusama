@@ -8,17 +8,16 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:readmore/readmore.dart';
 
 // Project imports:
-import '../../../../foundation/animations/constants.dart';
 import '../../../../foundation/clipboard.dart';
 import '../../../../foundation/loggers.dart';
 import '../../../../foundation/scrolling.dart';
-import '../../../../foundation/toast.dart';
-import '../downloads/path/types.dart';
+import '../../foundation/animations/constants.dart';
+import '../../foundation/toast.dart';
 import '../settings/providers.dart';
 import '../themes/theme/types.dart';
 import '../widgets/widgets.dart';
 import 'providers.dart';
-import 'utils.dart';
+import 'types.dart';
 
 class DebugLogsPage extends ConsumerStatefulWidget {
   const DebugLogsPage({
@@ -95,32 +94,30 @@ class _DebugLogsPageState extends ConsumerState<DebugLogsPage> {
       ),
     );
   }
+}
 
-  Future<void> writeLogsToFile(
-    BuildContext context,
-    List<LogData> logs,
-  ) async {
-    final result = await tryGetDownloadDirectory();
+Future<void> writeLogsToFile(
+  BuildContext context,
+  List<LogData> logs,
+) async {
+  final result = await writeLogs(logs);
 
-    switch (result) {
-      case DownloadDirectoryFailure(:final message):
-        if (context.mounted) {
-          showErrorToast(
-            context,
-            message ?? 'Failed to get download directory',
-          );
-        }
-      case DownloadDirectorySuccess(:final directory):
-        final file = await writeDebugLogsToFile(directory, logs);
-
-        if (context.mounted) {
-          showSuccessToast(
-            context,
-            'Logs written to ${file.path}',
-            duration: AppDurations.longToast,
-          );
-        }
-    }
+  switch (result) {
+    case WriteLogFailure(:final message):
+      if (context.mounted) {
+        showErrorToast(
+          context,
+          message,
+        );
+      }
+    case WriteLogSuccess(:final filePath):
+      if (context.mounted) {
+        showSuccessToast(
+          context,
+          'Logs written to $filePath',
+          duration: AppDurations.longToast,
+        );
+      }
   }
 }
 

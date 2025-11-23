@@ -2,13 +2,25 @@
 import 'dart:io';
 
 // Package imports:
-import 'package:foundation/foundation.dart';
 import 'package:intl/intl.dart';
 
 // Project imports:
 import '../../foundation/loggers.dart';
+import '../downloads/path/types.dart';
+import 'types.dart';
 
-Future<File> writeDebugLogsToFile(
+Future<WriteLogStatus> writeLogs(
+  List<LogData> logs,
+) async => switch (await tryGetDownloadDirectory()) {
+  DownloadDirectoryFailure(:final message) => WriteLogFailure(
+    message ?? 'Failed to get download directory',
+  ),
+  DownloadDirectorySuccess(:final directory) => WriteLogSuccess(
+    await writeDebugLogsToFilePath(directory, logs),
+  ),
+};
+
+Future<String> writeDebugLogsToFilePath(
   Directory directory,
   List<LogData> logs,
 ) async {
@@ -21,13 +33,5 @@ Future<File> writeDebugLogsToFile(
     );
   }
   await file.writeAsString(buffer.toString());
-  return file;
-}
-
-extension FormatX on LogData {
-  String format() {
-    final msg = tryDecodeFullUri(message).getOrElse(() => message);
-
-    return msg;
-  }
+  return file.path;
 }
