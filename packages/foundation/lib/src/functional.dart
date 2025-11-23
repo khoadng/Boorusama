@@ -12,7 +12,6 @@ export 'package:fast_immutable_collections/fast_immutable_collections.dart'
     hide Predicate;
 
 // In project exports:
-export 'functional/file.dart';
 export 'functional/hive.dart';
 export 'functional/url.dart';
 export 'functional/json.dart';

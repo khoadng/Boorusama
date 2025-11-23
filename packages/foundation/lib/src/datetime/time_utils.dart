@@ -1,6 +1,5 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 // Package imports:
 import 'package:timeago/timeago.dart';
@@ -96,8 +95,6 @@ extension DateTimeX on DateTime {
       locale: locale.toLanguageTag(),
     );
   }
-
-  String yyyyMMddWithHyphen() => DateFormat('yyyy-MM-dd').format(this);
 
   DateTime dateOnly() => DateTime(year, month, day);
 }
