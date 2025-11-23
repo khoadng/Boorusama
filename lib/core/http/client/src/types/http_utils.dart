@@ -50,3 +50,7 @@ class HttpUtils {
     return defaultImageRequestChecker(options.uri);
   }
 }
+
+extension DioResponseX<T> on Response<T> {
+  int get statusCodeOrZero => statusCode != null ? statusCode! : 0;
+}

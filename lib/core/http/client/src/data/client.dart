@@ -2,7 +2,6 @@
 import 'dart:io';
 
 // Package imports:
-import 'package:dio/dio.dart';
 import 'package:native_dio_adapter/native_dio_adapter.dart';
 
 NativeAdapter newNativeAdapter({String? userAgent}) {
@@ -34,6 +33,6 @@ class AppHttpOverrides extends HttpOverrides {
   }
 }
 
-extension DioResponseX<T> on Response<T> {
-  int get statusCodeOrZero => statusCode != null ? statusCode! : 0;
+void setupHttpOverrides() {
+  HttpOverrides.global = AppHttpOverrides();
 }

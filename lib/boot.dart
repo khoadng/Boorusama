@@ -1,10 +1,8 @@
 // Dart imports:
 import 'dart:async';
-import 'dart:io';
 
 // Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:device_info_plus/device_info_plus.dart';
@@ -57,11 +55,11 @@ Future<void> boot(BootData bootData) async {
   }
 
   logger.debugBoot("Load database's directory");
-  final dbDirectory = await _initDbDirectory();
+  final dbDirectoryPath = await initDbDirectory();
 
   logger.debugBoot('Initialize Hive');
   Hive
-    ..init(dbDirectory.path)
+    ..init(dbDirectoryPath)
     ..registerAdapters();
 
   logger.debugBoot('Load app info');
@@ -76,7 +74,7 @@ Future<void> boot(BootData bootData) async {
   final settingRepository = await createSettingsRepo(logger: logger);
 
   logger.debugBoot('Set certificate to trusted certificates');
-  await _initCert();
+  await initCert();
 
   final booruUserRepo = await createBooruConfigsRepo(
     logger: logger,
@@ -150,7 +148,7 @@ Future<void> boot(BootData bootData) async {
     await clearImageCache(null);
   }
 
-  HttpOverrides.global = AppHttpOverrides();
+  setupHttpOverrides();
 
   // Prepare for Android 15
   unawaited(showSystemStatus());
@@ -221,29 +219,3 @@ Future<void> boot(BootData bootData) async {
     ),
   );
 }
-
-Future<Directory> _initDbDirectory() async {
-  return isAndroid()
-      ? await getApplicationDocumentsDirectory()
-      : await getApplicationSupportDirectory();
-}
-
-Future<void> _initCert() async {
-  try {
-    // https://stackoverflow.com/questions/69511057/flutter-on-android-7-certificate-verify-failed-with-letsencrypt-ssl-cert-after-s
-    // On Android 7 and below, the Let's Encrypt certificate is not trusted by default and needs to be added manually.
-    final cert = await rootBundle.load('assets/ca/isrgrootx1.pem');
-
-    SecurityContext.defaultContext.setTrustedCertificatesBytes(
-      cert.buffer.asUint8List(),
-    );
-  } catch (e) {
-    // ignore errors here, maybe it's already trusted
-  }
-}
-
-final dbPathProvider = FutureProvider<String>((ref) async {
-  final dbDirectory = await _initDbDirectory();
-
-  return dbDirectory.path;
-});

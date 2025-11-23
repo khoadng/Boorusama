@@ -4,7 +4,7 @@ import 'package:dio/dio.dart';
 
 // Project imports:
 import '../../../../../foundation/loggers.dart';
-import '../types/dio_ext.dart';
+import '../types/http_utils.dart';
 
 const _kImageExtensions = {
   '.jpg',

@@ -1,4 +1,4 @@
-export 'src/types/dio_ext.dart';
+export 'src/data/client.dart';
 export 'src/types/dio_options.dart';
 export 'src/types/http_adapter_config.dart';
 export 'src/types/http_utils.dart';

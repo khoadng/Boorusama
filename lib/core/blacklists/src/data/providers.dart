@@ -2,7 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../boot.dart';
+import '../../../../foundation/boot/providers.dart';
 import '../types/blacklisted_tag_repository.dart';
 import 'hive/tag_repository.dart';
 
