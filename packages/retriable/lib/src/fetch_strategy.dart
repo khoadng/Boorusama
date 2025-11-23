@@ -1,7 +1,8 @@
 // Dart imports:
 import 'dart:async';
-import 'dart:io';
 import 'dart:math' as math;
+
+import 'utils.dart';
 
 bool _defaultTransientHttpStatusCodePredicate(int statusCode) {
   return defaultTransientHttpStatusCodes.contains(statusCode);
@@ -105,7 +106,7 @@ class FetchFailure implements Exception {
   bool get isRetriableFailure =>
       (httpStatusCode != null &&
           _defaultTransientHttpStatusCodePredicate(httpStatusCode!)) ||
-      originalException is SocketException;
+      isSocketException(originalException);
 
   @override
   String toString() {

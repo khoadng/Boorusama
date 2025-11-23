@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:dio/dio.dart';
 
@@ -43,7 +42,7 @@ Future<Response<T>?> tryGetResponse<T>(
         cancelToken: cancelToken,
         options: effectiveOptions.copyWith(
           receiveTimeout: instructions.timeout,
-          validateStatus: (status) => status == HttpStatus.ok,
+          validateStatus: (status) => status == 200,
         ),
         onReceiveProgress: onReceiveProgress,
       );
