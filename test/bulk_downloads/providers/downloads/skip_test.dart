@@ -6,7 +6,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:sqlite3/sqlite3.dart';
 
 // Project imports:
-import 'package:boorusama/core/bulk_downloads/src/data/download_repository_sqlite.dart';
+import 'package:boorusama/core/bulk_downloads/src/data/repo_sqlite.dart';
 import 'package:boorusama/core/bulk_downloads/src/providers/bulk_download_notifier.dart';
 import 'package:boorusama/core/bulk_downloads/src/types/download_record.dart';
 import 'package:boorusama/core/bulk_downloads/src/types/download_session.dart';

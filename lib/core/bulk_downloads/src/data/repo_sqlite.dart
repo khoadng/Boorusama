@@ -18,7 +18,7 @@ import '../types/download_session.dart';
 import '../types/download_session_stats.dart';
 import '../types/download_task.dart';
 import '../types/saved_download_task.dart';
-import 'download_repository_mapper.dart';
+import 'mapper.dart';
 
 const _kDownloadVersion = 0;
 

@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../download_manager/providers.dart';
 import '../../../download_manager/types.dart';
-import '../data/download_repository_provider.dart';
+import '../data/repo_io.dart';
 import '../types/download_record.dart';
 import '../types/download_repository.dart';
 import 'post_fetcher.dart';

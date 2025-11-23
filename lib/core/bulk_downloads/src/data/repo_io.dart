@@ -9,8 +9,8 @@ import '../../../../foundation/database/providers.dart';
 import '../../../../foundation/database/utils.dart';
 import '../../../../foundation/loggers.dart';
 import '../types/download_repository.dart';
-import 'download_repository_empty.dart';
-import 'download_repository_sqlite.dart';
+import 'repo_empty.dart';
+import 'repo_sqlite.dart';
 
 const _kServiceName = 'Download DB';
 const kDownloadDbName = 'download.db';
