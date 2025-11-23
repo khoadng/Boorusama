@@ -1,7 +1,5 @@
-// Dart imports:
-import 'dart:io';
-
 // Package imports:
+import 'package:coreutils/coreutils.dart';
 import 'package:dio/dio.dart';
 
 // Project imports:
@@ -135,7 +133,7 @@ class AnimePicturesClient {
     final location = res.headers['location']?.firstOrNull;
     final cookieValue = res.headers['set-cookie']?.firstOrNull;
     final cookie = cookieValue != null
-        ? Cookie.fromSetCookieValue(cookieValue)
+        ? CookieUtils.fromSetCookieValue(cookieValue)
         : null;
 
     if (location == null || cookie == null) {

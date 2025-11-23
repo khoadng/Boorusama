@@ -1,6 +1,3 @@
-// Dart imports:
-import 'dart:io';
-
 // Package imports:
 import 'package:purchases_flutter/purchases_flutter.dart' as rc;
 
@@ -8,6 +5,7 @@ import 'package:purchases_flutter/purchases_flutter.dart' as rc;
 import '../../iap/iap.dart';
 import '../../iap/iap_impl.dart';
 import '../../loggers.dart';
+import '../../platform.dart';
 import 'constants.dart';
 import 'iap_impl.dart';
 
@@ -16,7 +14,7 @@ export 'iap_impl.dart';
 Future<bool> initRevenuecat({
   Logger? logger,
 }) async {
-  final hasKey = Platform.isAndroid
+  final hasKey = isAndroid()
       ? kRevenuecatGoogleApiKey.isNotEmpty
       : kRevenuecatAppleApiKey.isNotEmpty;
 
@@ -29,7 +27,7 @@ Future<bool> initRevenuecat({
     return false;
   }
 
-  final configuration = Platform.isAndroid
+  final configuration = isAndroid()
       ? rc.PurchasesConfiguration(kRevenuecatGoogleApiKey)
       : rc.PurchasesConfiguration(kRevenuecatAppleApiKey);
 

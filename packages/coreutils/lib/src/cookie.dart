@@ -61,6 +61,10 @@ class CookieUtils {
 
     return formatCookieHeader(mergedCookies);
   }
+
+  static Cookie fromSetCookieValue(String setCookieValue) {
+    return Cookie.fromSetCookieValue(setCookieValue);
+  }
 }
 
 /// Extensions for cookie_jar Cookie objects
