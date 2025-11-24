@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import '../../../../../foundation/loggers.dart';
 import '../../../../blacklists/providers.dart';
 import '../../../../bookmarks/providers.dart';
 import '../../../../configs/config/providers.dart';
@@ -96,6 +97,9 @@ class _PostScopeState<T extends Post> extends ConsumerState<PostScope<T>> {
       mountedChecker: () => mounted,
       forcedPageMode: widget.pageMode != null,
       initialPage: widget.initialPage,
+      onError: (message) {
+        ref.read(loggerProvider).error('Posts', message);
+      },
     );
   }
 
@@ -148,6 +152,7 @@ class RawPostScope<T extends Post> extends ConsumerStatefulWidget {
   const RawPostScope({
     required this.fetcher,
     required this.builder,
+    required this.onError,
     super.key,
     this.duplicateCheckMode = DuplicateCheckMode.id,
   });
@@ -160,6 +165,7 @@ class RawPostScope<T extends Post> extends ConsumerStatefulWidget {
   builder;
 
   final DuplicateCheckMode duplicateCheckMode;
+  final void Function(String message) onError;
 
   @override
   ConsumerState<RawPostScope<T>> createState() => _RawPostScopeState();
@@ -177,6 +183,7 @@ class _RawPostScopeState<T extends Post>
       imageListingSettingsProvider.select((value) => value.pageMode),
     ),
     mountedChecker: () => mounted,
+    onError: widget.onError,
   );
 
   @override

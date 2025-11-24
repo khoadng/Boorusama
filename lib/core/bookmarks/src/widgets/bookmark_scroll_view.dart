@@ -12,6 +12,7 @@ import 'package:selection_mode/selection_mode.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
+import '../../../../foundation/loggers.dart';
 import '../../../../foundation/url_launcher.dart';
 import '../../../config_widgets/website_logo.dart';
 import '../../../configs/config/providers.dart';
@@ -72,6 +73,9 @@ class _BookmarkScrollViewState extends ConsumerState<BookmarkScrollView> {
   @override
   Widget build(BuildContext context) {
     return RawPostScope<BookmarkPost>(
+      onError: (message) {
+        ref.read(loggerProvider).error('Bookmark Listing', message);
+      },
       fetcher: (page) => TaskEither.Do(
         ($) async {
           final searchTags = _parseTagsFromText(widget.searchController.text);

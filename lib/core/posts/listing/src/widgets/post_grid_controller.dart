@@ -36,6 +36,7 @@ class PostGridController<T extends Post> extends ChangeNotifier {
     required this.blacklistedTagsFetcher,
     required this.mountedChecker,
     required PostDuplicateTracker<T> duplicateTracker,
+    required this.onError,
     this.debounceDuration = const Duration(milliseconds: 500),
     PageMode pageMode = PageMode.infinite,
     this.blacklistedUrlsFetcher,
@@ -61,6 +62,7 @@ class PostGridController<T extends Post> extends ChangeNotifier {
   Set<String>? blacklistedTags;
   List<List<TagExpression>> _cachedParsedTags = [];
   final Future<Set<String>> Function() blacklistedTagsFetcher;
+  final void Function(String message) onError;
 
   // Terrible hack to check if the widget is mounted, should have a better way to do this
   final bool Function() mountedChecker;
@@ -196,12 +198,17 @@ class PostGridController<T extends Post> extends ChangeNotifier {
   Future<List<List<TagExpression>>> _getBlacklistedTags() async {
     // lazy load blacklisted tags
     if (blacklistedTags == null) {
-      final tags = await blacklistedTagsFetcher();
-      blacklistedTags = tags;
+      try {
+        final tags = await blacklistedTagsFetcher();
+        blacklistedTags = tags;
 
-      _cachedParsedTags = tags
-          .map((tag) => tag.split(' ').map(TagExpression.parse).toList())
-          .toList();
+        _cachedParsedTags = tags
+            .map((tag) => tag.split(' ').map(TagExpression.parse).toList())
+            .toList();
+      } on Exception catch (e) {
+        onError('Failed to fetch blacklisted tags: $e');
+        return [];
+      }
     }
 
     return _cachedParsedTags;
