@@ -6,6 +6,7 @@ import 'dart:isolate';
 import 'package:flutter/foundation.dart';
 
 // Project imports:
+import '../../../../../foundation/platform.dart';
 import '../../../../../foundation/utils/collection_utils.dart';
 import '../../../../errors/types.dart';
 import '../../../filter/types.dart';
@@ -503,9 +504,15 @@ Future<Map<String, Set<int>>> _count<T extends Post>(
       .map((post) => (filterData: post.extractTagFilterData(), id: post.id))
       .toList();
 
-  return Isolate.run(
-    () => _countInIsolate(payload, parsedTags),
-  );
+  return switch (isWeb()) {
+    true => _countInIsolate(
+      payload,
+      parsedTags,
+    ),
+    false => await Isolate.run(
+      () => _countInIsolate(payload, parsedTags),
+    ),
+  };
 }
 
 Map<String, Set<int>> _countInIsolate(
