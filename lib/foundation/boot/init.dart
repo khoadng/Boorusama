@@ -1,13 +1,11 @@
 // Dart imports:
 import 'dart:io';
-import 'dart:js_interop';
 
 // Flutter imports:
 import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:path_provider/path_provider.dart';
-import 'package:web/web.dart' as web;
 
 // Project imports:
 import '../platform.dart';
@@ -44,13 +42,4 @@ Future<void> initCert() async {
 
 Future<void> initPlatform() async {
   await initCert();
-
-  if (isWeb()) {
-    web.document.addEventListener(
-      'contextmenu',
-      (web.Event event) {
-        event.preventDefault();
-      }.toJS,
-    );
-  }
 }

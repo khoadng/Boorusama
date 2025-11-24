@@ -32,7 +32,7 @@ extension PreferredLayoutX on PreferredLayout {
       (this == PreferredLayout.platform && isMobilePlatform());
   bool get isDesktop =>
       this == PreferredLayout.desktop ||
-      (this == PreferredLayout.platform && isDesktopPlatform());
+      (this == PreferredLayout.platform && !isMobilePlatform());
 }
 
 extension DisplayX on BuildContext {
