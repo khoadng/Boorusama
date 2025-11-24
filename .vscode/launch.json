@@ -14,13 +14,15 @@
             ]
         },
         {
-            "name": "boorusama (windows + linux)",
+            "name": "boorusama (web)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "debug",
             "args": [
                 "--dart-define-from-file",
-                "env/dev.json"
+                "env/dev.json",
+                "-t",
+                "lib/main_web.dart"
             ]
         },
         {
