@@ -9,6 +9,7 @@ import '../../core/ddos/handler/providers.dart';
 import '../../core/http/client/providers.dart';
 import '../../core/http/client/types.dart';
 import '../../foundation/loggers/providers.dart';
+import '../../foundation/platform.dart';
 
 final danbooruClientProvider = Provider.family<DanbooruClient, BooruConfigAuth>(
   (ref, config) {
@@ -17,8 +18,8 @@ final danbooruClientProvider = Provider.family<DanbooruClient, BooruConfigAuth>(
     return DanbooruClient(
       dio: dio,
       baseUrl: config.url,
-      login: config.login,
-      apiKey: config.apiKey,
+      login: isWeb() ? null : config.login,
+      apiKey: isWeb() ? null : config.apiKey,
     );
   },
 );
@@ -43,6 +44,16 @@ final danbooruDioProvider = Provider.family<Dio, BooruConfigAuth>((
     ),
     additionalInterceptors: [
       ref.watch(defaultSlidingWindowRateLimitConfigInterceptorProvider),
+      // Use query parameters for auth on web to avoid CORS preflight
+      if (isWeb())
+        if ((config.login, config.apiKey) case (
+          final login?,
+          final apiKey?,
+        ))
+          DanbooruAuthInterceptor(
+            login: login,
+            apiKey: apiKey,
+          ),
     ],
   );
 });
