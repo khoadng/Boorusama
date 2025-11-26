@@ -409,7 +409,7 @@ class _ExtendedImageState extends State<ExtendedImage>
         avifFfi.disposeDecoder(key: oldWidget.image.hashCode.toString());
       }
 
-      _resolveImage(update: true);
+      _resolveImage();
     }
   }
 
@@ -447,12 +447,12 @@ class _ExtendedImageState extends State<ExtendedImage>
 
   @override
   void reassemble() {
-    _resolveImage(rebuild: true); // in case the image cache was flushed
+    _resolveImage(); // in case the image cache was flushed
     super.reassemble();
   }
 
   void reLoadImage() {
-    _resolveImage(rebuild: true);
+    _resolveImage(true);
   }
 
   Widget _getCompletedWidget() {
@@ -527,10 +527,7 @@ class _ExtendedImageState extends State<ExtendedImage>
     }
   }
 
-  void _resolveImage({
-    bool update = false,
-    bool rebuild = false,
-  }) {
+  void _resolveImage([bool rebuild = false]) {
     if (rebuild) {
       widget.image.evict();
     }
@@ -555,10 +552,7 @@ class _ExtendedImageState extends State<ExtendedImage>
       _controller.changeLoadState(LoadState.completed);
     }
 
-    _updateSourceStream(
-      newStream,
-      rebuild: rebuild,
-    );
+    _updateSourceStream(newStream, rebuild: rebuild);
   }
 
   /// Stops listening to the image stream, if this state object has attached a
@@ -590,11 +584,7 @@ class _ExtendedImageState extends State<ExtendedImage>
     }
   }
 
-  void _updateSourceStream(
-    ImageStream newStream, {
-    bool rebuild = false,
-    bool update = false,
-  }) {
+  void _updateSourceStream(ImageStream newStream, {bool rebuild = false}) {
     if (_imageStream?.key == newStream.key) {
       return;
     }
@@ -603,7 +593,7 @@ class _ExtendedImageState extends State<ExtendedImage>
       _imageStream?.removeListener(_getListener());
     }
 
-    if ((update && !widget.gaplessPlayback) || rebuild) {
+    if (!widget.gaplessPlayback || rebuild) {
       _controller.clearImage();
       _controller.changeLoadState(LoadState.loading);
     }
