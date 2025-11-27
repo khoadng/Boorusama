@@ -8,7 +8,6 @@ class NetworkProtocolInfo {
   const NetworkProtocolInfo({
     required this.customProtocol,
     required this.detectedProtocol,
-    required this.hasProxy,
     required this.platform,
   });
 
@@ -17,7 +16,6 @@ class NetworkProtocolInfo {
     return NetworkProtocolInfo(
       customProtocol: null,
       detectedProtocol: null,
-      hasProxy: false,
       platform: PlatformInfo.fromCurrent(
         cronetAvailable: cronetAvailable,
       ),
@@ -30,50 +28,42 @@ class NetworkProtocolInfo {
   /// Protocol detected from booru configuration
   final NetworkProtocol? detectedProtocol;
 
-  /// Whether proxy is enabled
-  final bool hasProxy;
-
   /// Current platform
   final PlatformInfo platform;
 
-  /// Determines whether HTTP/2 should be used based on all conditions
-  bool shouldUseHttp2() {
-    // Proxy always forces default adapter (HTTP/1.1)
-    if (hasProxy) return false;
-
-    // Windows/Web doesn't support HTTP/2 adapter
-    if (platform.isWindows || platform.isWeb) return false;
-
-    // User override takes precedence
-    if (customProtocol != null) {
-      return customProtocol == NetworkProtocol.https_2_0;
-    }
-
-    // Fall back to detected protocol
-    return detectedProtocol == NetworkProtocol.https_2_0;
-  }
+  /// Gets the effective protocol to use (user preference or detected)
+  NetworkProtocol? get _effectiveProtocol => customProtocol ?? detectedProtocol;
 
   /// Determines which HTTP client adapter type to use
   HttpClientAdapterType getAdapterType() {
-    // Proxy requires default adapter with custom HttpClient
-    if (hasProxy) return HttpClientAdapterType.defaultAdapter;
+    return switch ((_effectiveProtocol, platform)) {
+      // HTTP/2 on supported platforms (not Windows/Web)
+      (NetworkProtocol.https_2_0, PlatformInfo(:final isWindows, :final isWeb))
+          when !isWindows && !isWeb =>
+        HttpClientAdapterType.http2,
 
-    // HTTP/2 support
-    if (shouldUseHttp2()) return HttpClientAdapterType.http2;
+      // Android with Cronet available
+      (_, PlatformInfo(:final isAndroid, :final cronetAvailable))
+          when isAndroid && cronetAvailable =>
+        HttpClientAdapterType.nativeAdapter,
 
-    // Native adapter for mobile/macOS without proxy
-    if (platform.canUseNativeAdapter) {
-      // On Android, check if Cronet is available
-      if (platform.isAndroid) {
-        return platform.shouldUseCronetOnAndroid
-            ? HttpClientAdapterType.nativeAdapter
-            : HttpClientAdapterType.defaultAdapter;
-      }
-      return HttpClientAdapterType.nativeAdapter;
-    }
+      // iOS always uses native adapter
+      (_, PlatformInfo(:final isIOS)) when isIOS =>
+        HttpClientAdapterType.nativeAdapter,
 
-    // Default fallback
-    return HttpClientAdapterType.defaultAdapter;
+      // macOS always uses native adapter
+      (_, PlatformInfo(:final isMacOS)) when isMacOS =>
+        HttpClientAdapterType.nativeAdapter,
+
+      // All other cases: Windows, Web, Android without Cronet, or HTTP/1.1
+      _ => HttpClientAdapterType.defaultAdapter,
+    };
+  }
+
+  /// Determines whether HTTP/2 should be used based on all conditions
+  @Deprecated('Use getAdapterType() instead')
+  bool shouldUseHttp2() {
+    return getAdapterType() == HttpClientAdapterType.http2;
   }
 }
 

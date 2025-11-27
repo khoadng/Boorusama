@@ -137,7 +137,6 @@ final defaultNetworkProtocolInfoProvider =
       return NetworkProtocolInfo(
         customProtocol: null,
         detectedProtocol: detectedProtocol,
-        hasProxy: config.proxySettings?.enable ?? false,
         platform: PlatformInfo.fromCurrent(
           cronetAvailable: cronetAvailable,
         ),

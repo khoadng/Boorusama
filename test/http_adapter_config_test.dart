@@ -66,7 +66,6 @@ void main() {
         const protocolInfo = NetworkProtocolInfo(
           customProtocol: NetworkProtocol.https_2_0,
           detectedProtocol: NetworkProtocol.https_2_0,
-          hasProxy: false,
           platform: PlatformInfo.macOS(),
         );
 
@@ -104,7 +103,6 @@ void main() {
         const protocolInfo = NetworkProtocolInfo(
           customProtocol: NetworkProtocol.https_2_0,
           detectedProtocol: null,
-          hasProxy: false,
           platform: PlatformInfo.macOS(),
         );
 
@@ -140,7 +138,6 @@ void main() {
           final protocolInfo = NetworkProtocolInfo(
             customProtocol: null,
             detectedProtocol: null,
-            hasProxy: false,
             platform: testCase.platform,
           );
 
@@ -171,7 +168,6 @@ void main() {
           final protocolInfo = NetworkProtocolInfo(
             customProtocol: null,
             detectedProtocol: null,
-            hasProxy: false,
             platform: testCase.platform,
           );
 
