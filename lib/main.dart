@@ -13,13 +13,15 @@ import 'foundation/vendors/revenuecat/revenuecat.dart';
 void main() async {
   await initializeApp(
     bootFunc: (data) async {
-      data.logger.debugBoot('Check Google Play Services availability');
-      final gServices = GooglePlayServicesImpl();
-      final googleApiAvailable = await gServices.isAvailable();
+      data.logger.debugBoot('Check Cronet availability');
+      final cronet = CronetImpl(
+        gServices: GooglePlayServicesImpl(),
+      );
+      final cronetAvailable = await cronet.isAvailable();
 
       return boot(
         data.copyWith(
-          googleApiAvailable: googleApiAvailable,
+          cronetAvailable: cronetAvailable,
           appRatingService: const RateMyAppService(),
           iapFunc: () => initIap(data.logger),
           appUpdateChecker: (packageInfo) => isAndroid()

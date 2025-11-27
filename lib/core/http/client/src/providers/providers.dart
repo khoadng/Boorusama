@@ -42,7 +42,7 @@ final defaultDioProvider = Provider.family<Dio, BooruConfigAuth>((ref, config) {
 final genericDioProvider = Provider<Dio>(
   (ref) {
     final loggerService = ref.watch(loggerProvider);
-    final cronetAvailable = ref.watch(isGooglePlayServiceAvailableProvider);
+    final cronetAvailable = ref.watch(isCronetAvailableProvider);
 
     return newGenericDio(
       baseUrl: null,
@@ -127,7 +127,7 @@ final defaultUserAgentProvider = Provider.autoDispose<String>((ref) {
 final defaultNetworkProtocolInfoProvider =
     Provider.family<NetworkProtocolInfo, BooruConfigAuth>((ref, config) {
       final booruDb = ref.watch(booruDbProvider);
-      final cronetAvailable = ref.watch(isGooglePlayServiceAvailableProvider);
+      final cronetAvailable = ref.watch(isCronetAvailableProvider);
 
       final booru =
           booruDb.getBooruFromUrl(config.url) ??

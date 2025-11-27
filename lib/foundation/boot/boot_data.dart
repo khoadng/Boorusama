@@ -14,6 +14,7 @@ class BootData {
     this.iapFunc,
     this.isFossBuild = false,
     this.googleApiAvailable = false,
+    this.cronetAvailable = false,
     this.appRatingService,
     this.appUpdateChecker,
   });
@@ -23,7 +24,7 @@ class BootData {
     AppLogger? appLogger,
     Future<IAP> Function()? iapFunc,
     bool? isFossBuild,
-    bool? googleApiAvailable,
+    bool? cronetAvailable,
     AppRatingService? appRatingService,
     AppUpdateBuilder? appUpdateChecker,
   }) {
@@ -32,7 +33,7 @@ class BootData {
       appLogger: appLogger ?? this.appLogger,
       iapFunc: iapFunc ?? this.iapFunc,
       isFossBuild: isFossBuild ?? this.isFossBuild,
-      googleApiAvailable: googleApiAvailable ?? this.googleApiAvailable,
+      cronetAvailable: cronetAvailable ?? this.cronetAvailable,
       appRatingService: appRatingService ?? this.appRatingService,
       appUpdateChecker: appUpdateChecker ?? this.appUpdateChecker,
     );
@@ -43,6 +44,7 @@ class BootData {
   final Future<IAP> Function()? iapFunc;
   final bool isFossBuild;
   final bool googleApiAvailable;
+  final bool cronetAvailable;
   final AppRatingService? appRatingService;
   final AppUpdateBuilder? appUpdateChecker;
 }

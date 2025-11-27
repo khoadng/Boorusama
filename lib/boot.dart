@@ -209,8 +209,8 @@ Future<void> boot(BootData bootData) async {
             appInfoProvider.overrideWithValue(appInfo),
             appLoggerProvider.overrideWithValue(appLogger),
             miscDataBoxProvider.overrideWithValue(miscDataBox),
-            isGooglePlayServiceAvailableProvider.overrideWithValue(
-              bootData.googleApiAvailable,
+            isCronetAvailableProvider.overrideWithValue(
+              bootData.cronetAvailable,
             ),
           ],
           child: const App(),
