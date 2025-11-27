@@ -1,0 +1,2 @@
+dependency_overrides:
+  cronet_http: ^1.7.0
