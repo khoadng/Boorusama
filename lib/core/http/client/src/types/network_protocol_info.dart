@@ -31,39 +31,33 @@ class NetworkProtocolInfo {
   /// Current platform
   final PlatformInfo platform;
 
-  /// Gets the effective protocol to use (user preference or detected)
-  NetworkProtocol? get _effectiveProtocol => customProtocol ?? detectedProtocol;
-
   /// Determines which HTTP client adapter type to use
   HttpClientAdapterType getAdapterType() {
-    return switch ((_effectiveProtocol, platform)) {
-      // HTTP/2 on supported platforms (not Windows/Web)
-      (NetworkProtocol.https_2_0, PlatformInfo(:final isWindows, :final isWeb))
-          when !isWindows && !isWeb =>
-        HttpClientAdapterType.http2,
-
-      // Android with Cronet available
-      (_, PlatformInfo(:final isAndroid, :final cronetAvailable))
-          when isAndroid && cronetAvailable =>
-        HttpClientAdapterType.nativeAdapter,
-
-      // iOS always uses native adapter
-      (_, PlatformInfo(:final isIOS)) when isIOS =>
-        HttpClientAdapterType.nativeAdapter,
-
-      // macOS always uses native adapter
-      (_, PlatformInfo(:final isMacOS)) when isMacOS =>
-        HttpClientAdapterType.nativeAdapter,
-
-      // All other cases: Windows, Web, Android without Cronet, or HTTP/1.1
-      _ => HttpClientAdapterType.defaultAdapter,
+    return switch (customProtocol) {
+      NetworkProtocol.https_2_0 => HttpClientAdapterType.http2,
+      NetworkProtocol.https_1_1 => HttpClientAdapterType.defaultAdapter,
+      null => switch ((detectedProtocol, platform)) {
+        // HTTP/2 on supported platforms
+        (
+          NetworkProtocol.https_2_0,
+          PlatformInfo(:final isWindows, :final isWeb),
+        )
+            when !isWindows && !isWeb =>
+          HttpClientAdapterType.http2,
+        // Android with Cronet available
+        (_, PlatformInfo(:final isAndroid, :final cronetAvailable))
+            when isAndroid && cronetAvailable =>
+          HttpClientAdapterType.nativeAdapter,
+        // iOS always uses native adapter
+        (_, PlatformInfo(:final isIOS)) when isIOS =>
+          HttpClientAdapterType.nativeAdapter,
+        // macOS always uses native adapter
+        (_, PlatformInfo(:final isMacOS)) when isMacOS =>
+          HttpClientAdapterType.nativeAdapter,
+        // All other cases: Windows, Web, Android without Cronet, or HTTP/1.1
+        _ => HttpClientAdapterType.defaultAdapter,
+      },
     };
-  }
-
-  /// Determines whether HTTP/2 should be used based on all conditions
-  @Deprecated('Use getAdapterType() instead')
-  bool shouldUseHttp2() {
-    return getAdapterType() == HttpClientAdapterType.http2;
   }
 }
 

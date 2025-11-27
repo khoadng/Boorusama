@@ -9,30 +9,32 @@ void main() {
   group('NetworkProtocolInfo', () {
     group('adapter selection', () {
       final cases = [
-        // HTTP/2 cases
+        // Custom protocol overrides everything
         (
           customProtocol: NetworkProtocol.https_2_0,
           detectedProtocol: null,
-          platform: const PlatformInfo.macOS(),
+          platform: const PlatformInfo.windows(),
           expected: HttpClientAdapterType.http2,
         ),
+        (
+          customProtocol: NetworkProtocol.https_1_1,
+          detectedProtocol: NetworkProtocol.https_2_0,
+          platform: const PlatformInfo.ios(),
+          expected: HttpClientAdapterType.defaultAdapter,
+        ),
+
+        // Detected HTTP/2 on supported platforms
         (
           customProtocol: null,
           detectedProtocol: NetworkProtocol.https_2_0,
           platform: const PlatformInfo.macOS(),
           expected: HttpClientAdapterType.http2,
         ),
-        (
-          customProtocol: NetworkProtocol.https_2_0,
-          detectedProtocol: NetworkProtocol.https_1_1,
-          platform: const PlatformInfo.ios(),
-          expected: HttpClientAdapterType.http2,
-        ),
 
-        // Windows/Web always use default adapter even with HTTP/2
+        // Windows/Web use default adapter with detected HTTP/2
         (
-          customProtocol: NetworkProtocol.https_2_0,
-          detectedProtocol: null,
+          customProtocol: null,
+          detectedProtocol: NetworkProtocol.https_2_0,
           platform: const PlatformInfo.windows(),
           expected: HttpClientAdapterType.defaultAdapter,
         ),
@@ -45,7 +47,7 @@ void main() {
           expected: HttpClientAdapterType.nativeAdapter,
         ),
         (
-          customProtocol: NetworkProtocol.https_1_1,
+          customProtocol: null,
           detectedProtocol: null,
           platform: const PlatformInfo.ios(),
           expected: HttpClientAdapterType.nativeAdapter,
