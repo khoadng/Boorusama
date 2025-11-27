@@ -3,45 +3,53 @@ import 'package:equatable/equatable.dart';
 
 enum AppErrorType {
   cannotReachServer,
+  handshakeFailed,
   loadDataFromServerFailed,
 }
 
-sealed class BooruError extends Error {}
+sealed class BooruError extends Error {
+  BooruError({
+    required this.message,
+  });
+
+  final String message;
+}
 
 class AppError extends BooruError with EquatableMixin {
   AppError({
     required this.type,
+    required super.message,
   });
 
   final AppErrorType type;
 
   @override
-  String toString() => 'Error: $type';
+  String toString() => 'Error: $message';
 
   @override
-  List<Object?> get props => [type];
+  List<Object?> get props => [type, message];
 }
 
 class ServerError extends BooruError with EquatableMixin {
   ServerError({
     required this.httpStatusCode,
-    required this.message,
+    required super.message,
   });
 
   final int? httpStatusCode;
-  final dynamic message;
 
   @override
   String toString() => 'HTTP error with status code $httpStatusCode';
 
   @override
-  List<Object?> get props => [httpStatusCode];
+  List<Object?> get props => [httpStatusCode, message];
 }
 
 class UnknownError extends BooruError {
   UnknownError({
     required this.error,
-  }) : super();
+    required super.message,
+  });
 
   final Object error;
 

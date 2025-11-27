@@ -8,19 +8,34 @@ import '../../../../errors/types.dart';
 
 typedef DataFetcher<T> = Future<T> Function();
 
+bool _isHandshakeException(Object? error) {
+  final errorStr = error.toString().toLowerCase();
+  return errorStr.contains('handshake') ||
+      errorStr.contains('tlsv1_alert_no_application_protocol');
+}
+
 TaskEither<BooruError, T> tryFetchRemoteData<T>({
   required DataFetcher<T> fetcher,
 }) => TaskEither.tryCatch(
   () => fetcher(),
-  (error, stackTrace) => error is DioException
-      ? error.response.toOption().fold(
-          () => AppError(type: AppErrorType.cannotReachServer),
-          (response) => ServerError(
-            httpStatusCode: response.statusCode,
-            message: response.data,
-          ),
-        )
-      : AppError(type: AppErrorType.loadDataFromServerFailed),
+  (error, stackTrace) => switch (error) {
+    DioException(:final response?) => ServerError(
+      httpStatusCode: response.statusCode,
+      message: response.data,
+    ),
+    DioException(:final error?) when _isHandshakeException(error) => AppError(
+      type: AppErrorType.handshakeFailed,
+      message: error.toString(),
+    ),
+    DioException() => AppError(
+      type: AppErrorType.cannotReachServer,
+      message: error.toString(),
+    ),
+    _ => AppError(
+      type: AppErrorType.loadDataFromServerFailed,
+      message: error.toString(),
+    ),
+  },
 );
 
 abstract interface class AppHttpHeaders {

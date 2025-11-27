@@ -239,6 +239,7 @@
     "errors": {
       "cannot_reach_server": "Cannot reach server, please check your connection",
       "failed_to_load_data": "Failed to load data from server, please try again later",
+      "handshake_failed": "Connection failed, server compatibility issue",
       "tag_limit": "Maximum tag limit reached. Upgrade your account to search for more tags at once.",
       "database_timeout": "Your search took too long to execute and was cancelled.",
       "rate_limited": "You're being rate limited. Please try again later",

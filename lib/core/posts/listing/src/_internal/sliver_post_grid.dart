@@ -108,7 +108,7 @@ class SliverPostGrid<T extends Post> extends StatelessWidget {
                             );
                           } catch (err) {
                             return Text(
-                              e.message.toString(),
+                              e.message,
                               textAlign: TextAlign.center,
                             );
                           }

@@ -46,7 +46,10 @@ class DanbooruInfinitePostIdList extends ConsumerWidget {
             perPage: perPage,
             order: order,
           ),
-          (error, stackTrace) => UnknownError(error: error),
+          (error, stackTrace) => UnknownError(
+            error: error,
+            message: error.toString(),
+          ),
         ),
         builder: (context, controller) => PostGrid(
           controller: controller,

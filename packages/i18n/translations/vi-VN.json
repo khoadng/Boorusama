@@ -247,6 +247,7 @@
       "forbidden": "Không có quyền truy cập",
       "unknown": "Lỗi server không xác định, vui lòng báo cho dev",
       "cannot_reach_server": "Không thể kết nối tới máy chủ, vui lòng kiểm tra kết nối của bạn",
+      "handshake_failed": "Kết nối thất bại, vấn đề tương thích với máy chủ",
       "failed_to_load_data": "Không tải được dữ liệu từ máy chủ, vui lòng thử lại sau"
     },
     "hint": "Tìm...",
