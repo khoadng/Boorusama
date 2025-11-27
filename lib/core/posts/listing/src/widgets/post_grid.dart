@@ -538,9 +538,29 @@ class _SliverGrid<T extends Post> extends ConsumerWidget {
       aspectRatio: imageGridAspectRatio,
       postsPerPage: postsPerPage,
       borderRadius: BorderRadius.circular(imageGridBorderRadius),
+      httpHandshakeErrorActionBuilder: (context, error) =>
+          const _ErrorHandshakeActionButton(),
       httpErrorActionBuilder: (context, httpStatusCode) => httpStatusCode == 401
           ? const _Error401ActionButton()
           : const SizedBox.shrink(),
+    );
+  }
+}
+
+class _ErrorHandshakeActionButton extends ConsumerWidget {
+  const _ErrorHandshakeActionButton();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return FilledButton(
+      onPressed: () => goToUpdateBooruConfigPage(
+        ref,
+        config: ref.watchConfig,
+        initialTab: 'network',
+      ),
+      child: const Text(
+        'Change HTTP settings',
+      ),
     );
   }
 }

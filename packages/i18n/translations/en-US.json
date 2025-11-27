@@ -908,6 +908,10 @@
           "success": "Valid proxy settings",
           "failure": "Failed to connect to proxy, please check your settings and try again"
         }
+      },
+      "http": {
+        "protocol": "HTTP Protocol",
+        "protocol_description": "Changing the HTTP protocol may help with compatibility or performance on certain sites or platforms."
       }
     },
     "viewer": {

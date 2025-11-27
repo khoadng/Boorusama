@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../http/configs/types.dart';
@@ -30,7 +31,10 @@ class HttpProtocolOptionTile extends ConsumerWidget {
     return ListTile(
       contentPadding: const EdgeInsets.only(left: 4),
       visualDensity: VisualDensity.compact,
-      title: const Text('HTTP Protocol'),
+      title: Text(
+        context.t.booru.network.http.protocol,
+      ),
+      subtitle: Text(context.t.booru.network.http.protocol_description),
       trailing: OptionDropDownButton(
         alignment: AlignmentDirectional.centerStart,
         value: currentProtocol,

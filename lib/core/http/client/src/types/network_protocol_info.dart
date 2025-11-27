@@ -37,6 +37,19 @@ class NetworkProtocolInfo {
       NetworkProtocol.https_2_0 => HttpClientAdapterType.http2,
       NetworkProtocol.https_1_1 => HttpClientAdapterType.defaultAdapter,
       null => switch ((detectedProtocol, platform)) {
+        // Android with Cronet available
+        (_, PlatformInfo(:final isAndroid, :final cronetAvailable))
+            when isAndroid && cronetAvailable =>
+          HttpClientAdapterType.nativeAdapter,
+
+        // iOS always uses native adapter
+        (_, PlatformInfo(:final isIOS)) when isIOS =>
+          HttpClientAdapterType.nativeAdapter,
+
+        // macOS always uses native adapter
+        (_, PlatformInfo(:final isMacOS)) when isMacOS =>
+          HttpClientAdapterType.nativeAdapter,
+
         // HTTP/2 on supported platforms
         (
           NetworkProtocol.https_2_0,
@@ -44,16 +57,7 @@ class NetworkProtocolInfo {
         )
             when !isWindows && !isWeb =>
           HttpClientAdapterType.http2,
-        // Android with Cronet available
-        (_, PlatformInfo(:final isAndroid, :final cronetAvailable))
-            when isAndroid && cronetAvailable =>
-          HttpClientAdapterType.nativeAdapter,
-        // iOS always uses native adapter
-        (_, PlatformInfo(:final isIOS)) when isIOS =>
-          HttpClientAdapterType.nativeAdapter,
-        // macOS always uses native adapter
-        (_, PlatformInfo(:final isMacOS)) when isMacOS =>
-          HttpClientAdapterType.nativeAdapter,
+
         // All other cases: Windows, Web, Android without Cronet, or HTTP/1.1
         _ => HttpClientAdapterType.defaultAdapter,
       },

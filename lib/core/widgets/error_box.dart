@@ -11,11 +11,13 @@ class ErrorBox extends StatelessWidget {
     this.errorMessage,
     this.child,
     this.onRetry,
+    this.altAction,
   });
 
   final Widget? child;
   final String? errorMessage;
   final VoidCallback? onRetry;
+  final Widget? altAction;
 
   @override
   Widget build(BuildContext context) {
@@ -42,22 +44,24 @@ class ErrorBox extends StatelessWidget {
           builder: (context, constraints) => Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 12,
+              ?altAction,
+              if (onRetry case final onRetry?)
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
+                  width: constraints.maxWidth <= 450
+                      ? constraints.maxWidth
+                      : null,
+                  constraints: const BoxConstraints(
+                    maxWidth: 450,
+                  ),
+                  child: FilledButton(
+                    onPressed: onRetry,
+                    child: Text(context.t.generic.action.retry),
+                  ),
                 ),
-                width: constraints.maxWidth <= 450
-                    ? constraints.maxWidth
-                    : null,
-                constraints: const BoxConstraints(
-                  maxWidth: 450,
-                ),
-                child: FilledButton(
-                  onPressed: onRetry,
-                  child: Text(context.t.generic.action.retry),
-                ),
-              ),
             ],
           ),
         ),

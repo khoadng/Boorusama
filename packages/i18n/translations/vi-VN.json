@@ -909,6 +909,10 @@
           "success": "Proxy hợp lệ",
           "failure": "Kết nối proxy thất bại, vui lòng kiểm tra cài đặt và thử lại"
         }
+      },
+      "http": {
+        "protocol": "Giao thức HTTP",
+        "protocol_description": "Thay đổi giao thức HTTP có thể giúp cải thiện tương thích hoặc hiệu suất trên một số trang web hoặc nền tảng."
       }
     },
     "viewer": {
