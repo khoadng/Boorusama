@@ -1243,6 +1243,7 @@ void main() {
             login: 'different-login',
             passHash: 'different-hash',
             proxySettings: null,
+            networkSettings: null,
           ),
         );
 
@@ -1298,6 +1299,7 @@ void main() {
             login: 'different-login',
             passHash: 'different-hash',
             proxySettings: null,
+            networkSettings: null,
           ),
         );
 

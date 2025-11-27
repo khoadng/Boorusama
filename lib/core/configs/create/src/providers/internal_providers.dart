@@ -214,4 +214,8 @@ class EditBooruConfigNotifier
   void updateBlacklistConfigs(
     BlacklistConfigs? blacklistConfigs,
   ) => state = state.copyWith(blacklistConfigs: () => blacklistConfigs);
+
+  void updateNetworkSettings(
+    NetworkSettings? networkSettings,
+  ) => state = state.copyWith(networkSettings: () => networkSettings);
 }

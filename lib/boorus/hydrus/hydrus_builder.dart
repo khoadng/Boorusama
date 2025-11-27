@@ -12,6 +12,7 @@ import '../../core/configs/auth/widgets.dart';
 import '../../core/configs/config/providers.dart';
 import '../../core/configs/config/types.dart';
 import '../../core/configs/manage/widgets.dart';
+import '../../core/configs/network/widgets.dart';
 import '../../core/posts/details/widgets.dart';
 import '../../core/search/search/routes.dart';
 import '../../core/search/search/widgets.dart';
@@ -99,6 +100,7 @@ class HydrusBuilder extends BaseBooruBuilder {
   @override
   CreateUnknownBooruWidgetsBuilder get unknownBooruWidgetsBuilder =>
       (context) => const UnknownBooruWidgetsBuilder(
+        httpProtocolField: HttpProtocolOptionTile(),
         apiKeyField: DefaultBooruApiKeyField(),
         credentialsNeeded: true,
         submitButton: HydrusUnknownBooruSubmitButton(),

@@ -9,6 +9,7 @@ import 'package:equatable/equatable.dart';
 // Project imports:
 import '../../../../boorus/booru/types.dart';
 import '../../../../home/types.dart';
+import '../../../../http/configs/types.dart';
 import '../../../../posts/details_manager/types.dart';
 import '../../../../posts/details_parts/types.dart';
 import '../../../../posts/listing/types.dart';
@@ -58,6 +59,7 @@ class BooruConfig extends Equatable {
     required this.proxySettings,
     required this.viewerNotesFetchBehavior,
     required this.tooltipDisplayMode,
+    this.networkSettings,
   });
 
   factory BooruConfig.fromJson(Map<String, dynamic> json) {
@@ -121,6 +123,7 @@ class BooruConfig extends Equatable {
       tooltipDisplayMode: TooltipDisplayMode.tryParse(
         json['tooltipDisplayMode'],
       ),
+      networkSettings: NetworkSettings.tryParse(json['network']),
     );
   }
 
@@ -219,6 +222,7 @@ class BooruConfig extends Equatable {
   final ProxySettings? proxySettings;
   final BooruConfigViewerNotesFetchBehavior? viewerNotesFetchBehavior;
   final TooltipDisplayMode? tooltipDisplayMode;
+  final NetworkSettings? networkSettings;
 
   BooruConfig copyWith({
     String? url,
@@ -229,6 +233,7 @@ class BooruConfig extends Equatable {
     ViewerConfigs? Function()? viewerConfigs,
     LayoutConfigs? Function()? layout,
     TooltipDisplayMode? tooltipDisplayMode,
+    NetworkSettings? Function()? networkSettings,
   }) {
     return BooruConfig(
       id: id,
@@ -261,6 +266,9 @@ class BooruConfig extends Equatable {
       proxySettings: proxySettings,
       viewerNotesFetchBehavior: viewerNotesFetchBehavior,
       tooltipDisplayMode: tooltipDisplayMode ?? this.tooltipDisplayMode,
+      networkSettings: networkSettings != null
+          ? networkSettings()
+          : this.networkSettings,
     );
   }
 
@@ -294,6 +302,7 @@ class BooruConfig extends Equatable {
     proxySettings,
     viewerNotesFetchBehavior,
     tooltipDisplayMode,
+    networkSettings,
   ];
 
   @override
@@ -332,6 +341,7 @@ class BooruConfig extends Equatable {
       'proxySettings': proxySettings?.toJson(),
       'viewerNotesFetchBehavior': viewerNotesFetchBehavior?.index,
       'tooltipDisplayMode': ?tooltipDisplayMode?.toData(),
+      'network': networkSettings?.toJson(),
     };
   }
 }
@@ -345,6 +355,7 @@ class BooruConfigAuth extends Equatable with BooruConfigAuthMixin {
     required String? login,
     required String? passHash,
     required this.proxySettings,
+    required this.networkSettings,
   }) : _apiKey = apiKey,
        _login = login,
        _passHash = passHash;
@@ -358,6 +369,7 @@ class BooruConfigAuth extends Equatable with BooruConfigAuthMixin {
       login: config.login,
       passHash: config.passHash,
       proxySettings: config.proxySettings,
+      networkSettings: config.networkSettings,
     );
   }
 
@@ -379,6 +391,7 @@ class BooruConfigAuth extends Equatable with BooruConfigAuthMixin {
 
   @override
   final ProxySettings? proxySettings;
+  final NetworkSettings? networkSettings;
 
   String? _emptyAsNull(String? value) {
     if (value == null) return null;
@@ -405,6 +418,7 @@ class BooruConfigAuth extends Equatable with BooruConfigAuthMixin {
     login,
     passHash,
     proxySettings,
+    networkSettings,
   ];
 }
 
@@ -567,6 +581,57 @@ class BooruConfigDownload extends Equatable {
     bulkFileNameFormat,
     location,
   ];
+}
+
+class NetworkSettings extends Equatable {
+  const NetworkSettings({
+    this.httpSettings,
+  });
+
+  static NetworkSettings? tryParse(dynamic data) {
+    final json = switch (data) {
+      null || '' => null,
+      final String str => _tryDecodeJson(str),
+      final Map<String, dynamic> map => map,
+      _ => null,
+    };
+
+    return switch (json) {
+      final Map<String, dynamic> map => NetworkSettings(
+        httpSettings: HttpSettings.tryParse(map['http']),
+      ),
+      _ => null,
+    };
+  }
+
+  static Map<String, dynamic>? _tryDecodeJson(String str) {
+    try {
+      return jsonDecode(str) as Map<String, dynamic>;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  final HttpSettings? httpSettings;
+
+  NetworkSettings copyWith({
+    HttpSettings? Function()? httpSettings,
+  }) {
+    return NetworkSettings(
+      httpSettings: httpSettings != null ? httpSettings() : this.httpSettings,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'http': httpSettings?.toJson(),
+    };
+  }
+
+  String toJsonString() => jsonEncode(toJson());
+
+  @override
+  List<Object?> get props => [httpSettings];
 }
 
 mixin BooruConfigAuthMixin {

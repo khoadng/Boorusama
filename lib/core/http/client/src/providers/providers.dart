@@ -134,8 +134,14 @@ final defaultNetworkProtocolInfoProvider =
           booruDb.getBooruFromId(config.booruIdHint);
       final detectedProtocol = booru?.getSiteProtocol(config.url);
 
+      final customProtocol = config
+          .networkSettings
+          ?.httpSettings
+          ?.protocolOption
+          .toNetworkProtocol();
+
       return NetworkProtocolInfo(
-        customProtocol: null,
+        customProtocol: customProtocol,
         detectedProtocol: detectedProtocol,
         platform: PlatformInfo.fromCurrent(
           cronetAvailable: cronetAvailable,

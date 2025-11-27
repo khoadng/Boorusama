@@ -43,6 +43,7 @@ class BooruConfigData extends Equatable {
     required this.proxySettings,
     required this.viewerNotesFetchBehavior,
     required this.tooltipDisplayMode,
+    required this.networkSettings,
   });
 
   factory BooruConfigData.anonymous({
@@ -83,6 +84,7 @@ class BooruConfigData extends Equatable {
     proxySettings: null,
     viewerNotesFetchBehavior: null,
     tooltipDisplayMode: null,
+    networkSettings: null,
   );
 
   static BooruConfigData? fromJson(Map<String, dynamic> json) {
@@ -121,6 +123,7 @@ class BooruConfigData extends Equatable {
         proxySettings: json['proxySettings'] as String?,
         viewerNotesFetchBehavior: json['viewerNotesFetchBehavior'] as int?,
         tooltipDisplayMode: json['tooltipDisplayMode'] as int?,
+        networkSettings: json['network'] as String?,
       );
     } catch (e) {
       return null;
@@ -156,6 +159,7 @@ class BooruConfigData extends Equatable {
       'proxySettings': proxySettings,
       'viewerNotesFetchBehavior': viewerNotesFetchBehavior,
       'tooltipDisplayMode': tooltipDisplayMode,
+      'network': ?networkSettings,
     };
   }
 
@@ -186,6 +190,7 @@ class BooruConfigData extends Equatable {
   final String? proxySettings;
   final int? viewerNotesFetchBehavior;
   final int? tooltipDisplayMode;
+  final String? networkSettings;
 
   @override
   List<Object?> get props => [
@@ -216,6 +221,7 @@ class BooruConfigData extends Equatable {
     proxySettings,
     viewerNotesFetchBehavior,
     tooltipDisplayMode,
+    networkSettings,
   ];
 }
 
@@ -255,6 +261,10 @@ extension BooruConfigDataX on BooruConfigData {
   TooltipDisplayMode? get tooltipDisplayModeTyped {
     return TooltipDisplayMode.tryParse(tooltipDisplayMode);
   }
+
+  NetworkSettings? get networkSettingsTyped {
+    return NetworkSettings.tryParse(networkSettings);
+  }
 }
 
 extension BooruConfigDataCopyWith on BooruConfigData {
@@ -286,6 +296,7 @@ extension BooruConfigDataCopyWith on BooruConfigData {
     ProxySettings? Function()? proxySettings,
     BooruConfigViewerNotesFetchBehavior? Function()? viewerNotesFetchBehavior,
     TooltipDisplayMode? Function()? tooltipDisplayMode,
+    NetworkSettings? Function()? networkSettings,
   }) {
     return BooruConfigData(
       booruId: booruId ?? this.booruId,
@@ -348,6 +359,9 @@ extension BooruConfigDataCopyWith on BooruConfigData {
       tooltipDisplayMode: tooltipDisplayMode != null
           ? tooltipDisplayMode()?.toData()
           : this.tooltipDisplayMode,
+      networkSettings: networkSettings != null
+          ? networkSettings()?.toJsonString()
+          : this.networkSettings,
     );
   }
 }

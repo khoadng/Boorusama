@@ -14,6 +14,7 @@ import '../../../core/configs/config/types.dart';
 import '../../../core/configs/create/create.dart';
 import '../../../core/configs/create/providers.dart';
 import '../../../core/configs/create/widgets.dart';
+import '../../../core/configs/network/widgets.dart';
 import '../../../core/widgets/booru_version_chip.dart';
 import '../../../foundation/html.dart';
 import '../../../foundation/path.dart';
@@ -235,6 +236,7 @@ class Shimmie2UnknownBooruWidgetsBuilder extends StatelessWidget {
   Widget build(BuildContext context) {
     return const UnknownBooruWidgetsBuilder(
       urlField: Shimmie2BooruUrlField(),
+      httpProtocolField: HttpProtocolOptionTile(),
       loginField: DefaultBooruLoginField(),
       apiKeyField: Column(
         children: [

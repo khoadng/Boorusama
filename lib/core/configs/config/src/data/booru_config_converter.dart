@@ -73,6 +73,9 @@ extension BooruConfigDataConverter on BooruConfigData? {
       tooltipDisplayMode: TooltipDisplayMode.tryParse(
         booruConfigData.tooltipDisplayMode,
       ),
+      networkSettings: NetworkSettings.tryParse(
+        booruConfigData.networkSettings,
+      ),
     );
   }
 }
@@ -107,6 +110,7 @@ extension BooruConfigConverter on BooruConfig {
       proxySettings: proxySettings?.toJsonString(),
       viewerNotesFetchBehavior: viewerNotesFetchBehavior?.index,
       tooltipDisplayMode: tooltipDisplayMode?.toData(),
+      networkSettings: networkSettings?.toJsonString(),
     );
   }
 }

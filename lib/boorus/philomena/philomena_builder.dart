@@ -5,6 +5,7 @@ import '../../core/configs/auth/widgets.dart';
 import '../../core/configs/config/types.dart';
 import '../../core/configs/create/widgets.dart';
 import '../../core/configs/manage/widgets.dart';
+import '../../core/configs/network/widgets.dart';
 import '../../core/posts/details/widgets.dart';
 import 'configs/widgets.dart';
 import 'posts/types.dart';
@@ -66,6 +67,7 @@ class PhilomenaBuilder extends BaseBooruBuilder {
   @override
   CreateUnknownBooruWidgetsBuilder get unknownBooruWidgetsBuilder =>
       (context) => const UnknownBooruWidgetsBuilder(
+        httpProtocolField: HttpProtocolOptionTile(),
         apiKeyField: DefaultBooruApiKeyField(),
       );
 }

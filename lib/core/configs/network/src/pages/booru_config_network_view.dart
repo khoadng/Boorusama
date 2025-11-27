@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../widgets/enable_proxy_switch.dart';
+import '../widgets/http_protocol_option_tile.dart';
 import '../widgets/proxy_host_input.dart';
 import '../widgets/proxy_password_input.dart';
 import '../widgets/proxy_port_input.dart';
@@ -26,6 +27,9 @@ class BooruConfigNetworkView extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          SizedBox(height: 12),
+          HttpProtocolOptionTile(),
+          Divider(),
           EnableProxySwitch(),
           ProxyTypeOptionTile(),
           SizedBox(height: 12),
