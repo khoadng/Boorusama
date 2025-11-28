@@ -3,6 +3,7 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../../../foundation/path.dart';
+import '../../../posts/position/types.dart';
 import '../../../posts/post/types.dart';
 import '../../../posts/rating/types.dart';
 import '../../../posts/sources/types.dart';
@@ -131,6 +132,17 @@ class BookmarkPost extends SimplePost {
       overridePostId: originalPostId,
     );
   }
+
+  PaginationSnapshot? toPaginationSnapshot() => switch (bookmark.postId) {
+    (final postId?) => PaginationSnapshot(
+      targetId: postId,
+      tags: bookmark.metadataSearch ?? '',
+      historicalPage: bookmark.metadataPage,
+      historicalChunkSize: bookmark.metadataLimit,
+      timestamp: bookmark.createdAt,
+    ),
+    _ => null,
+  };
 }
 
 extension BookmarkToPost on Bookmark {

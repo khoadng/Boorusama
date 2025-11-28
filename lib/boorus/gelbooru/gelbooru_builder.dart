@@ -16,6 +16,7 @@ import 'home/widgets.dart';
 import 'posts/types.dart';
 import 'posts/widgets.dart';
 import 'search/widgets.dart';
+import 'restoration/widgets.dart';
 
 class GelbooruBuilder extends BaseBooruBuilder {
   GelbooruBuilder();
@@ -107,4 +108,11 @@ class GelbooruBuilder extends BaseBooruBuilder {
 
   @override
   final postDetailsUIBuilder = kGelbooruPostDetailsUIBuilder;
+
+  @override
+  SessionRestoreBuilder? get sessionRestoreBuilder => (context, snapshot) {
+    return GelbooruSessionRestorePage(
+      snapshot: snapshot,
+    );
+  };
 }

@@ -23,4 +23,5 @@ abstract class BooruBuilder {
   ViewTagListBuilder get viewTagListBuilder;
   CreateUnknownBooruWidgetsBuilder get unknownBooruWidgetsBuilder;
   VideoQualitySelectionBuilder? get videoQualitySelectionBuilder;
+  SessionRestoreBuilder? get sessionRestoreBuilder;
 }

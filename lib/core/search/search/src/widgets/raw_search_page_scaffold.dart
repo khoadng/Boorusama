@@ -127,7 +127,10 @@ class _SearchPageScaffoldState<T extends Post>
     super.initState();
 
     if (widget.initialPage != null) {
-      _controller.skipToResultWithTag('');
+      _controller.skipToResultWithTag(
+        widget.initialQuery ?? '',
+        queryType: widget.params.queryType,
+      );
     } else if (widget.initialQuery case final String query) {
       _controller.skipToResultWithTag(
         query,

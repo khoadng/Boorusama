@@ -13,7 +13,9 @@ import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
 import '../../../../foundation/loggers.dart';
+import '../../../../foundation/info/package_info.dart';
 import '../../../../foundation/url_launcher.dart';
+import '../../../boorus/engine/providers.dart';
 import '../../../config_widgets/website_logo.dart';
 import '../../../configs/config/providers.dart';
 import '../../../posts/listing/providers.dart';
@@ -326,7 +328,8 @@ class BookmarkContextMenu extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final auth = ref.watchConfigAuth;
+    final search = ref.watchConfigSearch;
+    final auth = search.auth;
     final loginDetails = ref.watch(booruLoginDetailsProvider(auth));
     final download = ref.watchConfigDownload;
 
@@ -354,6 +357,23 @@ class BookmarkContextMenu extends ConsumerWidget {
             title: 'Open source in browser',
             onTap: () => launchExternalUrlString(post.bookmark.sourceUrl),
           ),
+        if (ref.watch(isDevEnvironmentProvider))
+          if (post.bookmark.booruId == auth.booruId)
+            if (ref.watch(booruBuilderProvider(auth))?.sessionRestoreBuilder
+                case final builder?)
+              if (post.toPaginationSnapshot() case final snapshot?)
+                ContextMenuTile(
+                  title: "Restore this bookmark's session",
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) => builder(
+                        context,
+                        snapshot,
+                      ),
+                    );
+                  },
+                ),
       ],
       child: child,
     );

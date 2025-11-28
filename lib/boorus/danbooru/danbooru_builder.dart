@@ -28,6 +28,7 @@ import 'posts/details/widgets.dart';
 import 'posts/favorites/widgets.dart';
 import 'posts/listing/widgets.dart';
 import 'posts/post/types.dart';
+import 'posts/restoration/widgets.dart';
 import 'posts/search/widgets.dart';
 import 'posts/statistics/widgets.dart';
 import 'tags/details/widgets.dart';
@@ -185,4 +186,11 @@ class DanbooruBuilder extends BaseBooruBuilder {
           auth: auth,
         );
       };
+
+  @override
+  SessionRestoreBuilder? get sessionRestoreBuilder => (context, snapshot) {
+    return DanbooruSessionRestorePage(
+      snapshot: snapshot,
+    );
+  };
 }

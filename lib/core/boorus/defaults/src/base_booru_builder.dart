@@ -139,6 +139,9 @@ class BaseBooruBuilder implements BooruBuilder {
       child: const DefaultPostDetailsPage(),
     );
   };
+
+  @override
+  SessionRestoreBuilder? get sessionRestoreBuilder => null;
 }
 
 final kFallbackPostDetailsUIBuilder = PostDetailsUIBuilder(

@@ -11,6 +11,7 @@ import '../../../configs/create/create.dart';
 import '../../../images/types.dart';
 import '../../../posts/details/routes.dart';
 import '../../../posts/listing/providers.dart';
+import '../../../posts/position/types.dart';
 import '../../../posts/post/types.dart';
 import '../../../search/search/routes.dart';
 import '../../../tags/autocompletes/types.dart';
@@ -160,3 +161,9 @@ typedef VideoQualitySelectionBuilder =
       void Function(Widget page)? onPushPage,
       void Function()? onPopPage,
     });
+
+typedef SessionRestoreBuilder =
+    Widget Function(
+      BuildContext context,
+      PaginationSnapshot snapshot,
+    );
