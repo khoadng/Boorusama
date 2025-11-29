@@ -9,13 +9,48 @@ import 'package:i18n/i18n.dart';
 import '../cache/persistent/providers.dart';
 import 'dismissable_info_container.dart';
 
-final _dismissedStateProvider = FutureProvider.family<bool, String>((
+final dismissedStateProvider = FutureProvider.family<bool, String>((
   ref,
   key,
 ) async {
   final box = await ref.watch(persistentCacheBoxProvider.future);
   return box.get(key) == 'true';
 });
+
+Future<void> dismissPersistently(WidgetRef ref, String storageKey) async {
+  final box = await ref.read(persistentCacheBoxProvider.future);
+  await box.put(storageKey, 'true');
+  ref.invalidate(dismissedStateProvider(storageKey));
+}
+
+class PersistentDismissalWrapper extends ConsumerWidget {
+  const PersistentDismissalWrapper({
+    required this.storageKey,
+    required this.child,
+    super.key,
+    this.shouldShow,
+  });
+
+  final String storageKey;
+  final Widget child;
+  final bool Function()? shouldShow;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return ref
+        .watch(dismissedStateProvider(storageKey))
+        .when(
+          data: (isDismissed) {
+            if (isDismissed || (shouldShow != null && !shouldShow!())) {
+              return const SizedBox.shrink();
+            }
+            return child;
+          },
+          loading: () => const SizedBox.shrink(),
+          error: (_, _) => const SizedBox.shrink(),
+        );
+  }
+}
 
 class PersistentDismissableInfoContainer extends ConsumerWidget {
   const PersistentDismissableInfoContainer({
@@ -39,43 +74,29 @@ class PersistentDismissableInfoContainer extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return ref
-        .watch(_dismissedStateProvider(storageKey))
-        .when(
-          data: (isDismissed) {
-            if (isDismissed || (shouldShow != null && !shouldShow!())) {
-              return const SizedBox.shrink();
-            }
-
-            return DismissableInfoContainer(
-              content: content,
-              mainColor: mainColor,
-              padding: padding,
-              actions: [
-                ...actions,
-                TextButton(
-                  style: TextButton.styleFrom(
-                    foregroundColor: Theme.of(context).colorScheme.onSurface,
-                  ),
-                  onPressed: ref
-                      .watch(persistentCacheBoxProvider)
-                      .maybeWhen(
-                        data: (box) => () async {
-                          await box.put(storageKey, 'true');
-                          ref.invalidate(_dismissedStateProvider(storageKey));
-                          onDismiss?.call();
-                        },
-                        orElse: () => null,
-                      ),
-                  child: Text(
-                    context.t.reminder.dont_show_again,
-                  ),
-                ),
-              ],
-            );
-          },
-          loading: () => const SizedBox.shrink(),
-          error: (_, _) => const SizedBox.shrink(),
-        );
+    return PersistentDismissalWrapper(
+      storageKey: storageKey,
+      shouldShow: shouldShow,
+      child: DismissableInfoContainer(
+        content: content,
+        mainColor: mainColor,
+        padding: padding,
+        actions: [
+          ...actions,
+          TextButton(
+            style: TextButton.styleFrom(
+              foregroundColor: Theme.of(context).colorScheme.onSurface,
+            ),
+            onPressed: () async {
+              await dismissPersistently(ref, storageKey);
+              onDismiss?.call();
+            },
+            child: Text(
+              context.t.reminder.dont_show_again,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
