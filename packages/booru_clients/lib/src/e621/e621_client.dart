@@ -52,9 +52,13 @@ class E621Client {
       },
     );
 
-    final data = response.data['posts'];
+    final data = switch (response.data) {
+      {'posts': final List posts} => posts,
+      List posts => posts,
+      _ => <dynamic>[],
+    };
 
-    return (data as List).map((item) => PostDto.fromJson(item)).toList();
+    return data.map((item) => PostDto.fromJson(item)).toList();
   }
 
   Future<PostDto?> getPost(int id) async {
@@ -62,7 +66,13 @@ class E621Client {
 
     if (response.data == null) return null;
 
-    return PostDto.fromJson(response.data['post']);
+    final data = switch (response.data) {
+      {'post': final Map<String, dynamic> post} => post,
+      Map<String, dynamic> post => post,
+      _ => null,
+    };
+
+    return data != null ? PostDto.fromJson(data) : null;
   }
 
   Future<bool> addToFavorites({
@@ -156,9 +166,13 @@ class E621Client {
       },
     );
 
-    final data = response.data['posts'];
+    final data = switch (response.data) {
+      {'posts': final List posts} => posts,
+      List posts => posts,
+      _ => <dynamic>[],
+    };
 
-    return (data as List).map((item) => PostDto.fromJson(item)).toList();
+    return data.map((item) => PostDto.fromJson(item)).toList();
   }
 
   Future<List<TagDto>> getTagsByNames({
