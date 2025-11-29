@@ -15,8 +15,8 @@ import 'home/types.dart';
 import 'home/widgets.dart';
 import 'posts/types.dart';
 import 'posts/widgets.dart';
-import 'search/widgets.dart';
 import 'restoration/widgets.dart';
+import 'search/widgets.dart';
 
 class GelbooruBuilder extends BaseBooruBuilder {
   GelbooruBuilder();

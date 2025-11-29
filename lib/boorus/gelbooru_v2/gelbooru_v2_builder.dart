@@ -13,8 +13,8 @@ import 'favorites/widgets.dart';
 import 'home/types.dart';
 import 'home/widgets.dart';
 import 'posts/widgets.dart';
-import 'search/widgets.dart';
 import 'restoration/widgets.dart';
+import 'search/widgets.dart';
 
 class GelbooruV2Builder extends BaseBooruBuilder {
   GelbooruV2Builder();
