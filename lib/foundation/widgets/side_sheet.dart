@@ -71,7 +71,7 @@ Future<T?> _showSheetSide<T>({
         child: Container(
           color: Colors.transparent,
           height: double.infinity,
-          width: width ?? MediaQuery.sizeOf(context).width / 1.4,
+          width: width ?? MediaQuery.widthOf(context) / 1.4,
           child: body,
         ),
       ),

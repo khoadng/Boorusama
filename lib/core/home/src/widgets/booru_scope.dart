@@ -254,7 +254,7 @@ double? _calculateDrawerEdgeDragWidth(
   int areaPercentage,
 ) {
   const minValue = 20.0;
-  final screenWidth = MediaQuery.sizeOf(context).width;
+  final screenWidth = MediaQuery.widthOf(context);
   final value = (areaPercentage / 100).clamp(0.05, 1);
   final width = screenWidth * value;
 

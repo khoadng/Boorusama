@@ -18,7 +18,7 @@ Future<T?> showCommentPage<T>(
       )
     : showSideSheetFromRight(
         settings: settings,
-        width: MediaQuery.sizeOf(context).width * 0.41,
+        width: MediaQuery.widthOf(context) * 0.41,
         body: CommentSideSheetContainer(
           builder: builder,
         ),

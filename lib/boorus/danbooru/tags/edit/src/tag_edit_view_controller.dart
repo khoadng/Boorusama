@@ -44,7 +44,7 @@ class TagEditViewController extends ChangeNotifier {
       Area(
         id: 'image',
         data: 'image',
-        size: MediaQuery.sizeOf(context).height * 0.5,
+        size: MediaQuery.heightOf(context) * 0.5,
         min: 50 + MediaQuery.viewPaddingOf(context).top,
       ),
       Area(

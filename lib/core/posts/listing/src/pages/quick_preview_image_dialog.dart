@@ -32,6 +32,8 @@ class QuickPreviewImageDialog extends ConsumerWidget {
       settings: ref.watch(gridThumbnailSettingsProvider(config)),
     );
 
+    final size = MediaQuery.sizeOf(context);
+
     return GestureDetector(
       onTap: () => Navigator.of(context).pop(),
       child: CallbackShortcuts(
@@ -46,8 +48,8 @@ class QuickPreviewImageDialog extends ConsumerWidget {
             body: Center(
               child: ConstrainedBox(
                 constraints: BoxConstraints(
-                  maxHeight: MediaQuery.sizeOf(context).height * 0.85,
-                  maxWidth: MediaQuery.sizeOf(context).width * 0.85,
+                  maxHeight: size.height * 0.85,
+                  maxWidth: size.width * 0.85,
                 ),
                 child: RawPostDetailsImage(
                   imageUrlBuilder: (post) => post.isVideo

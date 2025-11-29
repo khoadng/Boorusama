@@ -150,7 +150,7 @@ class _TagOtherNames extends StatelessWidget {
               label: ConstrainedBox(
                 constraints: BoxConstraints(
                   minWidth: 32,
-                  maxWidth: MediaQuery.sizeOf(context).width * 0.85,
+                  maxWidth: MediaQuery.widthOf(context) * 0.85,
                 ),
                 child: Text(
                   otherNames[index].replaceAll('_', ' '),

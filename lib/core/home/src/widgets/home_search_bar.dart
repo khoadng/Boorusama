@@ -137,7 +137,7 @@ class _SliverHomeSearchBarState
         ),
       );
 
-      return MediaQuery.sizeOf(context).height >= 550
+      return MediaQuery.heightOf(context) >= 550
           ? SliverPinnedHeader(child: child)
           : SliverToBoxAdapter(child: child);
     }

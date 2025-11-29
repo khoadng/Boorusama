@@ -31,7 +31,7 @@ class RawTagChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.sizeOf(context).width;
+    final screenWidth = MediaQuery.widthOf(context);
 
     return RawCompactChip(
       onTap: onTap,

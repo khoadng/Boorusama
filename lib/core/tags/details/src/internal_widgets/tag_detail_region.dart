@@ -32,7 +32,7 @@ class TagDetailsRegion extends ConsumerWidget {
               children: [
                 const SizedBox(width: 4),
                 SizedBox(
-                  width: max(MediaQuery.sizeOf(context).width * 0.25, 350),
+                  width: max(MediaQuery.widthOf(context) * 0.25, 350),
                   child: SingleChildScrollView(
                     child: SafeArea(
                       left: false,

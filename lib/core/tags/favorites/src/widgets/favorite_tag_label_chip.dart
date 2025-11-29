@@ -57,7 +57,7 @@ class FavoriteTagLabelChip extends ConsumerWidget {
         ),
         label: ConstrainedBox(
           constraints: BoxConstraints(
-            maxWidth: MediaQuery.sizeOf(context).width * 0.7,
+            maxWidth: MediaQuery.widthOf(context) * 0.7,
           ),
           child: RichText(
             overflow: TextOverflow.ellipsis,

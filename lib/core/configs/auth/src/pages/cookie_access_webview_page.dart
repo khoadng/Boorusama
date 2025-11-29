@@ -76,7 +76,7 @@ class _CookieAccessWebViewPageState extends State<CookieAccessWebViewPage> {
           color: Colors.white,
         ),
       ),
-      width: MediaQuery.sizeOf(context).width,
+      width: MediaQuery.widthOf(context),
       child: Padding(
         padding: const EdgeInsets.all(8),
         child: Row(

@@ -61,8 +61,7 @@ class _ThemePreviewPageState extends State<ThemePreviewPage> {
                         padding: EdgeInsets.only(
                           top: viewPadding.top + 20,
                           bottom: !context.isLargeScreen
-                              ? MediaQuery.sizeOf(context).height *
-                                        _kMinSheetSize -
+                              ? MediaQuery.heightOf(context) * _kMinSheetSize -
                                     viewPadding.top -
                                     viewPadding.bottom
                               : 0,

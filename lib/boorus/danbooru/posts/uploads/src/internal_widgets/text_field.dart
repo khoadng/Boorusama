@@ -54,7 +54,7 @@ class _TagEditUploadTextFieldState
           maxHeight: 200,
           maxWidth:
               AnchorData.of(context).geometry.childBounds?.width ??
-              MediaQuery.sizeOf(context).width,
+              MediaQuery.widthOf(context),
         ),
         child: ValueListenableBuilder<String?>(
           valueListenable: widget.textEditingController.lastWordNotifier,

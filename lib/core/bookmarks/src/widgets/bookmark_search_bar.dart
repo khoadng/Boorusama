@@ -78,7 +78,7 @@ class _BookmarkSearchBarState extends ConsumerState<BookmarkSearchBar> {
                       double.infinity,
                   maxHeight: min(
                     300,
-                    MediaQuery.sizeOf(context).height * 0.4,
+                    MediaQuery.heightOf(context) * 0.4,
                   ),
                 ),
                 child: _Overlay(

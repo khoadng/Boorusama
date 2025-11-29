@@ -94,7 +94,7 @@ class OtherNameChip extends StatelessWidget {
           visualDensity: VisualDensity.compact,
           label: ConstrainedBox(
             constraints: BoxConstraints(
-              maxWidth: MediaQuery.sizeOf(context).width * 0.85,
+              maxWidth: MediaQuery.widthOf(context) * 0.85,
             ),
             child: Text(
               otherName.replaceAll('_', ' '),

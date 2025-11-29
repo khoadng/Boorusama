@@ -208,10 +208,10 @@ class PostListPrevewTooltip extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
-    final screenSize = MediaQuery.sizeOf(context);
+    final screenWidth = MediaQuery.widthOf(context);
     final adjustedMaxWidth = min(
       _maxSize.width,
-      screenSize.width - 32,
+      screenWidth - 32,
     );
     final adjustedMaxHeight = _maxSize.height;
     final enableTooltip = ref.watch(

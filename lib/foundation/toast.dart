@@ -68,7 +68,7 @@ double? _calculateSnackBarWidth(
   SnackBarBehavior behavior,
 ) {
   if (behavior == SnackBarBehavior.fixed) return null;
-  final width = MediaQuery.maybeSizeOf(context)?.width ?? 400;
+  final width = MediaQuery.maybeWidthOf(context) ?? 400;
 
   return width > 400 ? 400 : width;
 }

@@ -32,6 +32,8 @@ class BooruDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.sizeOf(context);
+
     return CallbackShortcuts(
       bindings: {
         const SingleActivator(LogicalKeyboardKey.escape): () =>
@@ -44,8 +46,8 @@ class BooruDialog extends StatelessWidget {
             onTap: dismissible ? () => Navigator.pop(context) : null,
             child: Container(
               color: barrierColor ?? Colors.transparent,
-              width: MediaQuery.sizeOf(context).width,
-              height: MediaQuery.sizeOf(context).height,
+              width: size.width,
+              height: size.height,
             ),
           ),
           Material(
@@ -60,11 +62,11 @@ class BooruDialog extends StatelessWidget {
             child: Container(
               constraints: BoxConstraints(
                 maxWidth: min(
-                  MediaQuery.sizeOf(context).width * 0.8,
+                  size.width * 0.8,
                   width ?? 500,
                 ),
                 maxHeight: min(
-                  MediaQuery.sizeOf(context).height * 0.9,
+                  size.height * 0.9,
                   height ?? 800,
                 ),
               ),

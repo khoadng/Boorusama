@@ -170,7 +170,7 @@ class UserDetailsUploadView extends ConsumerWidget {
                   visualDensity: VisualDensity.compact,
                   label: ConstrainedBox(
                     constraints: BoxConstraints(
-                      maxWidth: MediaQuery.sizeOf(context).width * 0.8,
+                      maxWidth: MediaQuery.widthOf(context) * 0.8,
                     ),
                     child: Text(
                       e,
@@ -204,7 +204,7 @@ class UserDetailsUploadView extends ConsumerWidget {
               ),
               label: ConstrainedBox(
                 constraints: BoxConstraints(
-                  maxWidth: MediaQuery.sizeOf(context).width * 0.8,
+                  maxWidth: MediaQuery.widthOf(context) * 0.8,
                 ),
                 child: RichText(
                   overflow: TextOverflow.ellipsis,

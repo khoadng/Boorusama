@@ -95,7 +95,7 @@ class _DismissableInfoContainerState extends State<DismissableInfoContainer> {
                   )
                 : null,
           ),
-          width: MediaQuery.sizeOf(context).width,
+          width: MediaQuery.widthOf(context),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
