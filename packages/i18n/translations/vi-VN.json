@@ -1224,6 +1224,9 @@
     }
   },
   "infinite_scroll": {
+    "reminder": {
+      "highres": "Lưu ý: Ứng dụng đang tải ảnh độ phân giải cao bằng dữ liệu di động."
+    },
     "load_more": "Tải thêm",
     "nore_more_data": "Hết rồi",
     "page_label": "Trang $page",

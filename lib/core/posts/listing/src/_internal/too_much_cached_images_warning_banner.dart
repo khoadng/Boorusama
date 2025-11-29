@@ -44,7 +44,6 @@ class TooMuchCachedImagesWarningBanner extends ConsumerWidget {
               content: context.t.cache.image.reminder.description(
                 size: Filesize.parse(cacheSize),
               ),
-              dontShowAgainText: context.t.reminder.dont_show_again,
               actions: [
                 FilledButton(
                   onPressed: () async {

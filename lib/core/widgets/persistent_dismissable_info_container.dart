@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../cache/persistent/providers.dart';
@@ -26,7 +27,6 @@ class PersistentDismissableInfoContainer extends ConsumerWidget {
     this.padding,
     this.shouldShow,
     this.onDismiss,
-    this.dontShowAgainText,
   });
 
   final String storageKey;
@@ -36,7 +36,6 @@ class PersistentDismissableInfoContainer extends ConsumerWidget {
   final EdgeInsetsGeometry? padding;
   final bool Function()? shouldShow;
   final VoidCallback? onDismiss;
-  final String? dontShowAgainText;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -55,6 +54,9 @@ class PersistentDismissableInfoContainer extends ConsumerWidget {
               actions: [
                 ...actions,
                 TextButton(
+                  style: TextButton.styleFrom(
+                    foregroundColor: Theme.of(context).colorScheme.onSurface,
+                  ),
                   onPressed: ref
                       .watch(persistentCacheBoxProvider)
                       .maybeWhen(
@@ -66,7 +68,7 @@ class PersistentDismissableInfoContainer extends ConsumerWidget {
                         orElse: () => null,
                       ),
                   child: Text(
-                    dontShowAgainText ?? "Don't show this message again",
+                    context.t.reminder.dont_show_again,
                   ),
                 ),
               ],

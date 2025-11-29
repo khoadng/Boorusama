@@ -1223,6 +1223,9 @@
     }
   },
   "infinite_scroll": {
+    "reminder": {
+      "highres": "Caution: The app is displaying high-resolution images using mobile data."
+    },
     "load_more": "Load more",
     "nore_more_data": "That's all for now",
     "page_label": "Page $page",
