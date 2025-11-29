@@ -46,7 +46,7 @@ final bookmarkUrlResolverProvider = Provider.autoDispose
     });
 
 class BookmarkNotifier extends AsyncNotifier<BookmarkState> {
-  ImageCacheManager get _cacheManager =>
+  ImageCacheManager? get _cacheManager =>
       ref.read(bookmarkImageCacheManagerProvider);
 
   @override
@@ -177,18 +177,20 @@ class BookmarkNotifier extends AsyncNotifier<BookmarkState> {
   }) async {
     try {
       await (await bookmarkRepository).removeBookmark(bookmark);
-      // Clear all image variants
-      await Future.wait([
-        _cacheManager.clearCache(
-          _cacheManager.generateCacheKey(bookmark.originalUrl),
-        ),
-        _cacheManager.clearCache(
-          _cacheManager.generateCacheKey(bookmark.sampleUrl),
-        ),
-        _cacheManager.clearCache(
-          _cacheManager.generateCacheKey(bookmark.thumbnailUrl),
-        ),
-      ]);
+      if (_cacheManager case final cache?) {
+        // Clear all image variants
+        await Future.wait([
+          cache.clearCache(
+            cache.generateCacheKey(bookmark.originalUrl),
+          ),
+          cache.clearCache(
+            cache.generateCacheKey(bookmark.sampleUrl),
+          ),
+          cache.clearCache(
+            cache.generateCacheKey(bookmark.thumbnailUrl),
+          ),
+        ]);
+      }
       onSuccess?.call();
       final currentState = await future;
       state = AsyncValue.data(
@@ -209,21 +211,24 @@ class BookmarkNotifier extends AsyncNotifier<BookmarkState> {
     try {
       await (await bookmarkRepository).removeBookmarks(bookmarks);
       // Clear all image variants for each bookmark
-      await Future.wait(
-        bookmarks.expand(
-          (b) => [
-            _cacheManager.clearCache(
-              _cacheManager.generateCacheKey(b.originalUrl),
-            ),
-            _cacheManager.clearCache(
-              _cacheManager.generateCacheKey(b.sampleUrl),
-            ),
-            _cacheManager.clearCache(
-              _cacheManager.generateCacheKey(b.thumbnailUrl),
-            ),
-          ],
-        ),
-      );
+      if (_cacheManager case final cache?) {
+        await Future.wait(
+          bookmarks.expand(
+            (b) => [
+              cache.clearCache(
+                cache.generateCacheKey(b.originalUrl),
+              ),
+              cache.clearCache(
+                cache.generateCacheKey(b.sampleUrl),
+              ),
+              cache.clearCache(
+                cache.generateCacheKey(b.thumbnailUrl),
+              ),
+            ],
+          ),
+        );
+      }
+
       onSuccess?.call();
       final currentState = await future;
       state = AsyncValue.data(

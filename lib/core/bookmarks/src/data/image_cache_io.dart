@@ -9,18 +9,20 @@ import 'package:flutter/foundation.dart';
 import 'package:cache_manager/cache_manager.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:path/path.dart';
-import 'package:path_provider/path_provider.dart';
 
-final bookmarkImageCacheManagerProvider = Provider<BookmarkImageCacheManager>(
-  (ref) => BookmarkImageCacheManager(),
+// Project imports:
+import '../../../../foundation/path.dart';
+import '../../../../foundation/platform.dart';
+
+final bookmarkImageCacheManagerProvider = Provider<BookmarkImageCacheManager?>(
+  (ref) => !isWeb() ? BookmarkImageCacheManager() : null,
 );
 
 final bookmarkCacheInfoProvider = FutureProvider.autoDispose<(int, int)>((
   ref,
 ) {
   final cacheManager = ref.watch(bookmarkImageCacheManagerProvider);
-  return cacheManager.getCacheStats();
+  return cacheManager?.getCacheStats() ?? (0, 0);
 });
 
 /// Specialized cache manager for bookmarked images that stores files
@@ -61,7 +63,12 @@ class BookmarkImageCacheManager implements ImageCacheManager {
   }
 
   Future<Directory> _initializeCacheDirectory() async {
-    final appDir = await getApplicationDocumentsDirectory();
+    final appDir = await getAppDocumentsDirectory();
+
+    if (appDir == null) {
+      throw Exception('Dir not found');
+    }
+
     final dirPath = join(appDir.path, 'bookmarks', 'images');
     final dir = Directory(dirPath);
 

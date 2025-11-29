@@ -375,7 +375,7 @@ class _DataAndStoragePageState extends ConsumerState<DataAndStoragePage> {
         onPressed: cacheInfo.isLoading
             ? null
             : () {
-                ref.read(bookmarkImageCacheManagerProvider).clearAllCache();
+                ref.read(bookmarkImageCacheManagerProvider)?.clearAllCache();
                 ref.invalidate(bookmarkCacheInfoProvider);
               },
         child: Text(context.t.settings.performance.clear_cache),

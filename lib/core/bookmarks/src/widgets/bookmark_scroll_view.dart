@@ -12,8 +12,8 @@ import 'package:selection_mode/selection_mode.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
-import '../../../../foundation/loggers.dart';
 import '../../../../foundation/info/package_info.dart';
+import '../../../../foundation/loggers.dart';
 import '../../../../foundation/url_launcher.dart';
 import '../../../boorus/engine/providers.dart';
 import '../../../config_widgets/website_logo.dart';
