@@ -31,29 +31,120 @@ class PostDto {
       id: json['id'],
       createdAt: json['created_at'],
       updatedAt: json['updated_at'],
-      file: E621FileDto.fromJson(json['file']),
-      preview: E621PreviewDto.fromJson(json['preview']),
-      sample: E621SampleDto.fromJson(json['sample']),
-      score: E621ScoreDto.fromJson(json['score']),
-      tags: Map<String, List<dynamic>>.from(json['tags']),
-      lockedTags: List<String>.from(json['locked_tags']),
+      file: switch (json['file']) {
+        final Map<String, dynamic> m => E621FileDto.fromJson(m),
+        _ => E621FileDto(
+          width: json['image_width'],
+          height: json['image_height'],
+          ext: json['file_ext'],
+          size: json['file_size'],
+          md5: json['md5'],
+          url: json['file_url'],
+        ),
+      },
+      preview: switch (json['preview']) {
+        final Map<String, dynamic> m => E621PreviewDto.fromJson(m),
+        _ => E621PreviewDto(
+          width: json['preview_width'],
+          height: json['preview_height'],
+          url: json['preview_file_url'],
+          alt: null,
+        ),
+      },
+      sample: switch (json['sample']) {
+        final Map<String, dynamic> m => E621SampleDto.fromJson(m),
+        _ => E621SampleDto(
+          has: json['has_sample'],
+          width: json['sample_width'],
+          height: json['sample_height'],
+          url: json['sample_url'],
+          alt: null,
+          alternates: null,
+        ),
+      },
+      score: switch (json['score']) {
+        final Map<String, dynamic> m => E621ScoreDto.fromJson(m),
+        _ => E621ScoreDto(
+          up: json['up_score'],
+          down: json['down_score'],
+          total: json['score'],
+        ),
+      },
+      tags: switch (json['tags']) {
+        final Map<String, dynamic> m => Map<String, List<dynamic>>.from(m),
+        _ => _parseTagString(json['tag_string']),
+      },
+      lockedTags: switch (json['locked_tags']) {
+        final List l => List<String>.from(l),
+        final String s when s.isNotEmpty => s.split(' '),
+        _ => null,
+      },
       changeSeq: json['change_seq'],
-      flags: E621FlagsDto.fromJson(json['flags']),
+      flags: switch (json['flags']) {
+        final Map<String, dynamic> m => E621FlagsDto.fromJson(m),
+        _ => E621FlagsDto(
+          pending: json['is_pending'],
+          flagged: json['is_flagged'],
+          noteLocked: json['is_note_locked'],
+          statusLocked: json['is_status_locked'],
+          ratingLocked: json['is_rating_locked'],
+          deleted: json['is_deleted'],
+        ),
+      },
       rating: json['rating'],
       favCount: json['fav_count'],
-      sources: List<String>.from(json['sources']),
-      pools: List<int>.from(json['pools']),
-      relationships: E621RelationshipsDto.fromJson(json['relationships']),
+      sources: switch (json['sources']) {
+        final List l => List<String>.from(l),
+        final String s when s.isNotEmpty => s.split('\n'),
+        _ => null,
+      },
+      pools: switch (json['pools']) {
+        final List l => List<int>.from(l),
+        _ => switch (json['pool_ids']) {
+          final List p => List<int>.from(p),
+          _ => null,
+        },
+      },
+      relationships: switch (json['relationships']) {
+        final Map<String, dynamic> m => E621RelationshipsDto.fromJson(m),
+        _ => E621RelationshipsDto(
+          parentId: json['parent_id'],
+          hasChildren: json['has_children'],
+          hasActiveChildren: json['has_active_children'],
+          children: switch (json['children_ids']) {
+            final String s when s.isNotEmpty =>
+              s
+                  .split(' ')
+                  .map((e) => int.tryParse(e))
+                  .whereType<int>()
+                  .toList(),
+            final List l => l.cast<int>(),
+            _ => null,
+          },
+        ),
+      },
       approverId: json['approver_id'],
       uploaderId: json['uploader_id'],
-      uploaderName: json['uploader_name'],
+      uploaderName: json['uploader_name'] ?? json['uploader'],
       description: json['description'],
       commentCount: json['comment_count'],
       isFavorited: json['is_favorited'],
       hasNotes: json['has_notes'],
-      duration: json['duration'],
+      duration: switch (json['duration']) {
+        final num n => n.toDouble(),
+        final String s => double.tryParse(s),
+        _ => null,
+      },
     );
   }
+
+  static Map<String, List<dynamic>>? _parseTagString(dynamic tagString) {
+    return switch (tagString) {
+      final String s when s.isNotEmpty => {'general': s.split(' ')},
+      _ => null,
+    };
+  }
+
   final int? id;
   final String? createdAt;
   final String? updatedAt;
