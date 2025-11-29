@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:i18n/i18n.dart';
 
+// Project imports:
+import '../../../../foundation/display.dart';
+
 class UserDetailsTabView extends StatelessWidget {
   const UserDetailsTabView({
     required this.sliverInfoOverview,
@@ -26,12 +29,15 @@ class UserDetailsTabView extends StatelessWidget {
       if (tagChanges != null) context.t.profile.tabs.changes: tagChanges!,
     };
 
+    final disableAnimation = context.isLargeScreen;
+
     return UserDetailsViewScaffold(
       sliverInfoOverview: sliverInfoOverview,
       body: tabMap.isEmpty
           ? Center(child: Text(context.t.generic.no_content))
           : DefaultTabController(
               length: tabMap.length,
+              animationDuration: disableAnimation ? Duration.zero : null,
               child: Column(
                 children: [
                   TabBar(
@@ -44,6 +50,9 @@ class UserDetailsTabView extends StatelessWidget {
                   const Divider(thickness: 1, height: 0),
                   Expanded(
                     child: TabBarView(
+                      physics: disableAnimation
+                          ? const NeverScrollableScrollPhysics()
+                          : null,
                       children: [
                         for (final tab in tabMap.values) tab,
                       ],
