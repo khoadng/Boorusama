@@ -21,6 +21,7 @@ export 'context_menu.dart';
 export 'custom_context_menu_overlay.dart';
 export 'date_tooltip.dart';
 export 'dismissable_info_container.dart';
+export 'persistent_dismissable_info_container.dart';
 export 'drag_line.dart';
 export 'error_box.dart';
 export 'generic_no_data_box.dart';
