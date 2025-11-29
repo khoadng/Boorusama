@@ -52,8 +52,9 @@ class TooMuchCachedImagesWarningBanner extends ConsumerWidget {
             if (cacheSize > threshold) {
               return DismissableInfoContainer(
                 mainColor: Theme.of(context).colorScheme.primary,
-                content:
-                    'The app has stored <b>${Filesize.parse(cacheSize)}</b> worth of images. Would you like to clear it to free up some space?',
+                content: context.t.cache.image.reminder.description(
+                  size: Filesize.parse(cacheSize),
+                ),
                 actions: [
                   FilledButton(
                     onPressed: () async {
@@ -69,9 +70,15 @@ class TooMuchCachedImagesWarningBanner extends ConsumerWidget {
 
                       if (c != null && c.mounted) {
                         if (success) {
-                          showSuccessToast(context, 'Cache cleared');
+                          showSuccessToast(
+                            context,
+                            context.t.cache.image.reminder.cleared,
+                          );
                         } else {
-                          showErrorToast(context, 'Failed to clear cache');
+                          showErrorToast(
+                            context,
+                            context.t.cache.image.reminder.failed,
+                          );
                         }
                       }
                     },
@@ -93,7 +100,7 @@ class TooMuchCachedImagesWarningBanner extends ConsumerWidget {
                           },
                           orElse: () => null,
                         ),
-                    child: Text("Don't show again".hc),
+                    child: Text(context.t.reminder.dont_show_again),
                   ),
                 ],
               );

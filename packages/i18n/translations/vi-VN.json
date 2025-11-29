@@ -35,6 +35,9 @@
     "version": "Phiên bản $version",
     "app_restart_request": "Cần khởi động lại ứng dụng để áp dụng thay đổi"
   },
+  "reminder": {
+    "dont_show_again": "Đừng hiển thị lại"
+  },
   "sort": {
     "sort_by": "Sắp xếp",
     "name": "Tên",
@@ -1249,6 +1252,15 @@
     "current_video_quality_disclaimer": "Phần này chỉ áp dụng cho video hiện tại. Để áp dụng cho tất cả video, hãy vào <a href=\"booru-profiles\">$video_profile_path</a>.",
     "speed": {
       "normal": "Bình thường"
+    }
+  },
+  "cache": {
+    "image": {
+      "reminder": {
+        "description": "Ứng dụng đang chiếm khoảng <b>$size</b> dữ liệu hình ảnh. Bạn có muốn xóa để giải phóng dung lượng không?",
+        "cleared": "Đã xóa bộ nhớ đệm",
+        "failed": "Xóa bộ nhớ đệm thất bại"
+      }
     }
   },
   "shimmie2": {

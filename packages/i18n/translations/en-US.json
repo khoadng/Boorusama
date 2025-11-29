@@ -35,6 +35,9 @@
     "version": "Version $version",
     "app_restart_request": "You need to restart the app for this change to take effect"
   },
+  "reminder": {
+    "dont_show_again": "Don't show again"
+  },
   "sort": {
     "sort_by": "Sort by",
     "name": "Name",
@@ -1248,6 +1251,15 @@
     "current_video_quality_disclaimer": "This section only applies to the current video. For all videos, go to <a href=\"booru-profiles\">$video_profile_path</a>.",
     "speed": {
       "normal": "Normal"
+    }
+  },
+  "cache": {
+    "image": {
+      "reminder": {
+        "description": "The app has stored <b>$size</b> worth of images. Would you like to clear it to free up some space?",
+        "cleared": "Cache cleared",
+        "failed": "Failed to clear cache"
+      }
     }
   },
   "shimmie2": {
