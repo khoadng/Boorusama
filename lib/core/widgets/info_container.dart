@@ -6,10 +6,12 @@ class InfoContainer extends StatelessWidget {
     required this.contentBuilder,
     super.key,
     this.title,
+    this.actions,
   });
 
   final String? title;
   final Widget Function(BuildContext context) contentBuilder;
+  final List<Widget>? actions;
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +25,7 @@ class InfoContainer extends StatelessWidget {
       title: title ?? 'Info',
       titleColor: Theme.of(context).colorScheme.onSurface,
       contentBuilder: contentBuilder,
+      actions: actions,
     );
   }
 }
@@ -33,11 +36,13 @@ class WarningContainer extends StatelessWidget {
     super.key,
     this.title,
     this.margin,
+    this.actions,
   });
 
   final EdgeInsetsGeometry? margin;
   final String? title;
   final Widget Function(BuildContext context) contentBuilder;
+  final List<Widget>? actions;
 
   @override
   Widget build(BuildContext context) {
@@ -54,6 +59,7 @@ class WarningContainer extends StatelessWidget {
       title: title,
       titleColor: Theme.of(context).colorScheme.onSurface,
       contentBuilder: contentBuilder,
+      actions: actions,
     );
   }
 }
@@ -69,6 +75,7 @@ class TemplateContainer extends StatefulWidget {
     this.icon,
     this.margin,
     this.initiallyExpanded = true,
+    this.actions,
   });
 
   final Widget Function(BuildContext context) contentBuilder;
@@ -79,6 +86,7 @@ class TemplateContainer extends StatefulWidget {
   final Widget? icon;
   final EdgeInsetsGeometry? margin;
   final bool initiallyExpanded;
+  final List<Widget>? actions;
 
   @override
   State<TemplateContainer> createState() => _TemplateContainerState();
@@ -153,7 +161,7 @@ class _TemplateContainerState extends State<TemplateContainer> {
               ],
             ),
           ),
-          if (isExpanded)
+          if (isExpanded) ...[
             Padding(
               padding: const EdgeInsets.symmetric(
                 horizontal: 12,
@@ -161,6 +169,18 @@ class _TemplateContainerState extends State<TemplateContainer> {
               ),
               child: widget.contentBuilder(context),
             ),
+            if (widget.actions case final actions?)
+              Padding(
+                padding: const EdgeInsets.only(
+                  left: 8,
+                  right: 8,
+                  bottom: 8,
+                ),
+                child: Row(
+                  children: actions,
+                ),
+              ),
+          ],
         ],
       ),
     );

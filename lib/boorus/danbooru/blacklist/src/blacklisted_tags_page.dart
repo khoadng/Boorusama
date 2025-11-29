@@ -30,6 +30,9 @@ class DanbooruBlacklistedTagsPage extends ConsumerWidget {
           data: (tags) {
             return BlacklistedTagsViewScaffold(
               title: context.t.blacklisted_tags.blacklisted_tags,
+              limitation: const DefaultBlacklistTagsLimitation(
+                storageKey: 'danbooru_blacklisted_tag_limitation_banner',
+              ),
               actions: [
                 if (tags != null)
                   ImportExportTagButton(

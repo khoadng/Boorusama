@@ -3,9 +3,12 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import '../../../../foundation/html.dart';
+import '../../../widgets/widgets.dart';
 import '../routes/local_routes.dart';
 import '../types/utils.dart';
 import 'blacklisted_tag_list.dart';
@@ -19,6 +22,7 @@ class BlacklistedTagsViewScaffold extends ConsumerStatefulWidget {
     required this.onAddTag,
     required this.title,
     required this.actions,
+    required this.limitation,
     super.key,
   });
 
@@ -28,6 +32,7 @@ class BlacklistedTagsViewScaffold extends ConsumerStatefulWidget {
   final void Function(String tag) onRemoveTag;
   final void Function(String oldTag, String newTag) onEditTap;
   final void Function(String tag) onAddTag;
+  final Widget limitation;
 
   @override
   ConsumerState<BlacklistedTagsViewScaffold> createState() =>
@@ -114,12 +119,50 @@ class _BlacklistedTagsViewScaffoldState
                     tags: _filteredTags,
                     onRemoveTag: widget.onRemoveTag,
                     onEditTap: widget.onEditTap,
+                    limitation: widget.limitation,
                   ),
                 ),
               ],
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class DefaultBlacklistTagsLimitation extends ConsumerWidget {
+  const DefaultBlacklistTagsLimitation({
+    super.key,
+    required this.storageKey,
+  });
+
+  final String storageKey;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return PersistentDismissalWrapper(
+      storageKey: storageKey,
+      child: WarningContainer(
+        title: 'Limitation'.hc,
+        contentBuilder: (context) => AppHtml(
+          data: context.t.blacklisted_tags.limitation_notice,
+        ),
+        actions: [
+          TextButton(
+            style: TextButton.styleFrom(
+              foregroundColor: colorScheme.onSurface,
+            ),
+            onPressed: () async {
+              await dismissPersistently(ref, storageKey);
+            },
+            child: Text(
+              context.t.reminder.dont_show_again,
+            ),
+          ),
+        ],
       ),
     );
   }

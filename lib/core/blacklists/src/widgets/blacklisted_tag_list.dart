@@ -6,8 +6,6 @@ import 'package:foundation/foundation.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
-import '../../../../foundation/html.dart';
-import '../../../widgets/widgets.dart';
 import '../routes/local_routes.dart';
 import '../types/utils.dart';
 import 'blacklisted_tag_tile.dart';
@@ -17,9 +15,11 @@ class BlacklistedTagList extends StatelessWidget {
     required this.tags,
     required this.onRemoveTag,
     required this.onEditTap,
+    required this.limitation,
     super.key,
   });
 
+  final Widget limitation;
   final void Function(String tag) onRemoveTag;
   final void Function(String oldTag, String newTag) onEditTap;
   final List<String>? tags;
@@ -32,12 +32,7 @@ class BlacklistedTagList extends StatelessWidget {
           ? CustomScrollView(
               slivers: [
                 SliverToBoxAdapter(
-                  child: WarningContainer(
-                    title: 'Limitation'.hc,
-                    contentBuilder: (context) => AppHtml(
-                      data: context.t.blacklisted_tags.limitation_notice,
-                    ),
-                  ),
+                  child: limitation,
                 ),
                 SliverList(
                   delegate: SliverChildBuilderDelegate(

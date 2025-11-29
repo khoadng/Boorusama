@@ -28,6 +28,9 @@ class BlacklistConfigsEditPage extends ConsumerWidget {
 
     return BlacklistedTagsViewScaffold(
       tags: tags,
+      limitation: const DefaultBlacklistTagsLimitation(
+        storageKey: 'blacklist_config_edit_limitation_banner',
+      ),
       onRemoveTag: (tag) {
         notifier.removeTag(tag);
       },

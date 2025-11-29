@@ -32,6 +32,9 @@ class BlacklistedTagPage extends ConsumerWidget {
 
             return BlacklistedTagsViewScaffold(
               title: context.t.blacklist.manage.title,
+              limitation: const DefaultBlacklistTagsLimitation(
+                storageKey: 'blacklisted_tag_limitation_banner',
+              ),
               actions: [
                 IconButton(
                   onPressed: () {
