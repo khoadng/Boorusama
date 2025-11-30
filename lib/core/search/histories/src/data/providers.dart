@@ -1,1 +1,1 @@
-export 'repo_io.dart' if (dart.library.html) 'repo_web.dart';
+export 'repo_io.dart' if (dart.library.js_interop) 'repo_web.dart';
