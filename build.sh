@@ -67,12 +67,15 @@ get_build_path() {
         linux)
             echo "$BUILD_BASE_DIR/linux/x64/release/bundle"
             ;;
-        *) 
+        web)
+            echo "$BUILD_BASE_DIR/web"
+            ;;
+        *)
             echo "" ;;
     esac
 }
 
-readonly VALID_FORMATS=("apk" "aab" "ipa" "dmg" "windows" "linux")
+readonly VALID_FORMATS=("apk" "aab" "ipa" "dmg" "windows" "linux" "web")
 readonly FLAVOR_REQUIRED_FORMATS=("apk" "aab" "ipa" "dmg")
 
 # Detect platform
@@ -174,6 +177,7 @@ Output Formats:
   ipa         Build iOS IPA
   dmg         Build macOS DMG
   windows     Build Windows executable
+  web         Build Web application
 
 Flutter Build Options (passed through):
   --release, --debug, --profile
@@ -199,6 +203,7 @@ Examples:
   $0 aab --release -f prod --ci
   $0 ipa --release --no-codesign -f dev -s
   $0 dmg --release -f prod --output-dir artifacts/
+  $0 web --release -f dev
 EOF
 }
 
@@ -756,6 +761,37 @@ build_linux() {
     print_status "Linux build is not yet implemented."
 }
 
+build_web() {
+    if ! command_exists zip; then
+        exit_with_error "zip command not found. Please install zip."
+    fi
+
+    start_group "Building Web"
+    execute_flutter_build web
+
+    local web_name
+    if [ "$FOSS_BUILD" = true ]; then
+        web_name="${appname}-${version}-foss-web.zip"
+    else
+        web_name="${appname}-${version}-web.zip"
+    fi
+
+    local web_source
+    web_source=$(get_build_path "web")
+    local web_target="$OUTPUT_DIR/$web_name"
+
+    # Zip the entire web folder for distribution
+    if [ -d "$web_source" ]; then
+        (cd "$web_source" && zip -r "../../$web_target" .)
+        add_build_artifact "$web_target" "Web ZIP"
+        print_status "Web build zipped to: $web_target"
+    else
+        exit_with_error "Web build directory not found: $web_source"
+    fi
+
+    end_group "Building Web"
+}
+
 #==============================================================================
 # BUILD EXECUTION
 #==============================================================================
@@ -779,6 +815,9 @@ execute_build() {
             ;;
         linux)
             build_linux
+            ;;
+        web)
+            build_web
             ;;
     esac
 }
