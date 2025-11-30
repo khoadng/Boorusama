@@ -30,6 +30,49 @@ class SearchHistory extends Equatable with QueryTypeMixin {
     siteUrl: siteUrl,
   );
 
+  factory SearchHistory.fromMap(Map<Object?, Object?> map) => SearchHistory(
+    query: switch (map['query']) {
+      final String value => value,
+      _ => '',
+    },
+    createdAt: switch (map['created_at']) {
+      final int ms => DateTime.fromMillisecondsSinceEpoch(ms),
+      _ => DateTime.now(),
+    },
+    updatedAt: switch (map['updated_at']) {
+      final int ms => DateTime.fromMillisecondsSinceEpoch(ms),
+      _ => DateTime.now(),
+    },
+    searchCount: switch (map['search_count']) {
+      final int count => count,
+      _ => 0,
+    },
+    queryType: parseQueryType(
+      switch (map['type']) {
+        final String value => value,
+        _ => null,
+      },
+    ),
+    booruTypeName: switch (map['booru_type_name']) {
+      final String value => value,
+      _ => '',
+    },
+    siteUrl: switch (map['site_url']) {
+      final String value => value,
+      _ => '',
+    },
+  );
+
+  Map<String, Object> toMap() => {
+    'query': query,
+    'created_at': createdAt.millisecondsSinceEpoch,
+    'updated_at': updatedAt.millisecondsSinceEpoch,
+    'search_count': searchCount,
+    'type': ?queryType?.name,
+    'booru_type_name': booruTypeName,
+    'site_url': siteUrl,
+  };
+
   @override
   final String query;
   final DateTime createdAt;
