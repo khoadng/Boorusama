@@ -178,7 +178,7 @@ final bookmarkTagExtractorProvider =
                 return ref.read(
                   gelbooruV2TagsFromIdProvider((
                     config,
-                    bookmarkPost.id,
+                    originalPostId,
                   )).future,
                 );
               } else if (config.booruType == BooruType.hybooru) {
