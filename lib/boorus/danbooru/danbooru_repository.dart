@@ -23,6 +23,7 @@ import '../../core/configs/gesture/types.dart';
 import '../../core/downloads/downloader/providers.dart';
 import '../../core/downloads/filename/providers.dart';
 import '../../core/downloads/filename/types.dart';
+import '../../core/downloads/urls/types.dart';
 import '../../core/haptics/types.dart';
 import '../../core/images/providers.dart';
 import '../../core/notes/note/types.dart';
@@ -266,6 +267,11 @@ class DanbooruRepository extends BooruRepositoryDefault {
         onStartSlideshow: () =>
             PostDetailsPageViewScope.maybeOf(ref.context)?.startSlideshow(),
       );
+
+  @override
+  DownloadSourceProvider? downloadSource(BooruConfigAuth config) {
+    return const DanbooruDownloadSource();
+  }
 }
 
 bool handleDanbooruGestureAction(

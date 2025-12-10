@@ -1,6 +1,10 @@
+// Flutter imports:
+import 'package:flutter/widgets.dart';
+
 // Package imports:
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../boorus/engine/providers.dart';
@@ -24,6 +28,44 @@ final downloadFileUrlExtractorProvider =
         return const UrlInsidePostExtractor();
       },
     );
+
+final downloadSourceProvider =
+    Provider.family<DownloadSourceProvider?, BooruConfigAuth>(
+      (ref, config) {
+        final repo = ref
+            .watch(booruEngineRegistryProvider)
+            .getRepository(config.booruType);
+
+        final downloadSourceProvider = repo?.downloadSource(config);
+
+        return downloadSourceProvider;
+      },
+    );
+
+final class DefaultDownloadSource implements DownloadSourceProvider {
+  const DefaultDownloadSource();
+
+  @override
+  List<DownloadSource> getDownloadSources(BuildContext context, Post post) {
+    return [
+      if (post.thumbnailImageUrl.isNotEmpty)
+        DownloadSource(
+          url: post.thumbnailImageUrl,
+          name: context.t.settings.download.qualities.preview,
+        ),
+      if (post.sampleImageUrl.isNotEmpty)
+        DownloadSource(
+          url: post.sampleImageUrl,
+          name: context.t.settings.download.qualities.sample,
+        ),
+      if (post.originalImageUrl.isNotEmpty)
+        DownloadSource(
+          url: post.originalImageUrl,
+          name: context.t.settings.download.qualities.original,
+        ),
+    ];
+  }
+}
 
 final class UrlInsidePostExtractor implements DownloadFileUrlExtractor {
   const UrlInsidePostExtractor();

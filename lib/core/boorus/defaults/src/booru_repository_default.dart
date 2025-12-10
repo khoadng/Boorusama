@@ -190,6 +190,11 @@ abstract class BooruRepositoryDefault implements BooruRepository {
   CommentExtractor commentExtractor(BooruConfigAuth config) {
     return ref.watch(unsupportedCommentExtractor);
   }
+
+  @override
+  DownloadSourceProvider? downloadSource(BooruConfigAuth config) {
+    return const DefaultDownloadSource();
+  }
 }
 
 class PostGestureHandler {

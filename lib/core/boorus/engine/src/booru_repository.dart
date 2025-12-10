@@ -56,4 +56,5 @@ abstract class BooruRepository {
   Set<Rating> getGranularRatingOptions(BooruConfigAuth config);
   bool handlePostGesture(WidgetRef ref, String? action, Post post);
   CommentExtractor commentExtractor(BooruConfigAuth config);
+  DownloadSourceProvider? downloadSource(BooruConfigAuth config);
 }

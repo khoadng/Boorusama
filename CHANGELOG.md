@@ -8,6 +8,7 @@
 - Add a button to browse uploads from a specific uploader in post details
 - Add support for Eshuushuu  
 - Support override image viewer settings with profile-specific settings
+- Long press on the download button will show more download options
 
 # 4.2.0
 - TikTok swiping support in image viewer

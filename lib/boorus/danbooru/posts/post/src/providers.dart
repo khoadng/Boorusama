@@ -2,10 +2,13 @@
 import 'dart:async';
 
 // Package imports:
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../../core/configs/config/types.dart';
+import '../../../../../core/downloads/urls/types.dart';
 import '../../../../../core/posts/favorites/providers.dart';
 import '../../../../../core/posts/post/providers.dart';
 import '../../../../../core/posts/post/types.dart';
@@ -110,4 +113,47 @@ List<DanbooruPost> _filter(List<DanbooruPost> posts, bool hideBannedPosts) {
   );
 
   return posts;
+}
+
+final class DanbooruDownloadSource implements DownloadSourceProvider {
+  const DanbooruDownloadSource();
+
+  @override
+  List<DownloadSource> getDownloadSources(BuildContext context, Post post) {
+    return [
+      if (post.thumbnailImageUrl.isNotEmpty)
+        DownloadSource(
+          url: post.thumbnailImageUrl,
+          name: context.t.settings.download.qualities.preview,
+        ),
+      if (post case final DanbooruPost danPost
+          when danPost.url180x180.isNotEmpty)
+        DownloadSource(
+          url: danPost.url180x180,
+          name: '180x180',
+        ),
+      if (post case final DanbooruPost danPost
+          when danPost.url360x360.isNotEmpty)
+        DownloadSource(
+          url: danPost.url360x360,
+          name: '360x360',
+        ),
+      if (post case final DanbooruPost danPost
+          when danPost.url720x720.isNotEmpty)
+        DownloadSource(
+          url: danPost.url720x720,
+          name: '720x720',
+        ),
+      if (post.sampleImageUrl.isNotEmpty)
+        DownloadSource(
+          url: post.sampleImageUrl,
+          name: context.t.settings.download.qualities.sample,
+        ),
+      if (post.originalImageUrl.isNotEmpty)
+        DownloadSource(
+          url: post.originalImageUrl,
+          name: context.t.settings.download.qualities.original,
+        ),
+    ];
+  }
 }

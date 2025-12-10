@@ -8,6 +8,7 @@ import '../../core/comments/types.dart';
 import '../../core/configs/config/types.dart';
 import '../../core/configs/create/create.dart';
 import '../../core/downloads/filename/types.dart';
+import '../../core/downloads/urls/types.dart';
 import '../../core/http/client/providers.dart';
 import '../../core/posts/post/providers.dart';
 import '../../core/posts/post/types.dart';
@@ -82,5 +83,10 @@ class MoebooruRepository extends BooruRepositoryDefault {
   @override
   BooruLoginDetails loginDetails(BooruConfigAuth config) {
     return ref.watch(moebooruLoginDetailsProvider(config));
+  }
+
+  @override
+  DownloadSourceProvider? downloadSource(BooruConfigAuth config) {
+    return const MoebooruDownloadSource();
   }
 }

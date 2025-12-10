@@ -61,7 +61,10 @@ class DownloadNotifier extends FamilyNotifier<void, DownloadNotifierParams> {
     }
   }
 
-  Future<DownloadTaskInfo?> download(Post post) async {
+  Future<DownloadTaskInfo?> download(
+    Post post, {
+    String? overrideUrl,
+  }) async {
     final perm = await _getPermissionStatus();
     final observer = arg.observer;
 
@@ -70,6 +73,7 @@ class DownloadNotifier extends FamilyNotifier<void, DownloadNotifierParams> {
       post,
       params: arg,
       permission: perm,
+      overrideUrl: overrideUrl,
       onStarted: () {
         final c = navigatorKey.currentState?.context;
         if (c != null) {
@@ -133,6 +137,8 @@ Future<DownloadTaskInfo?> _download(
   String? downloadPath,
   Map<String, String>? bulkMetadata,
   void Function()? onStarted,
+  //FIXME: bad solution, need better design
+  String? overrideUrl,
 }) async {
   final downloadConfig = params.download;
   final service = params.downloader;
@@ -149,10 +155,18 @@ Future<DownloadTaskInfo?> _download(
     notificationPermissionManagerProvider,
   );
 
-  final urlData = await params.downloadFileUrlExtractor.getDownloadFileUrl(
-    post: downloadable,
-    quality: params.settings.downloadQuality.name,
-  );
+  final extractedUrlData = await params.downloadFileUrlExtractor
+      .getDownloadFileUrl(
+        post: downloadable,
+        quality: params.settings.downloadQuality.name,
+      );
+
+  final urlData = overrideUrl != null
+      ? DownloadUrlData(
+          url: overrideUrl,
+          cookie: null,
+        )
+      : extractedUrlData;
 
   if (fileNameBuilder == null) {
     logger.error('Single Download', 'No file name builder found, aborting...');

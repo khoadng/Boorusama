@@ -1,3 +1,6 @@
+// Flutter imports:
+import 'package:flutter/widgets.dart';
+
 // Package imports:
 import 'package:equatable/equatable.dart';
 
@@ -26,4 +29,21 @@ abstract interface class DownloadFileUrlExtractor {
     required Post post,
     required String quality,
   });
+}
+
+abstract interface class DownloadSourceProvider {
+  List<DownloadSource> getDownloadSources(BuildContext context, Post post);
+}
+
+class DownloadSource extends Equatable {
+  const DownloadSource({
+    required this.url,
+    required this.name,
+  });
+
+  final String url;
+  final String name;
+
+  @override
+  List<Object?> get props => [url, name];
 }
