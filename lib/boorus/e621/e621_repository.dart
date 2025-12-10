@@ -8,6 +8,7 @@ import '../../core/comments/types.dart';
 import '../../core/configs/config/types.dart';
 import '../../core/configs/create/create.dart';
 import '../../core/downloads/filename/types.dart';
+import '../../core/downloads/urls/types.dart';
 import '../../core/http/client/providers.dart';
 import '../../core/notes/note/types.dart';
 import '../../core/posts/details/types.dart';
@@ -109,5 +110,10 @@ class E621Repository extends BooruRepositoryDefault {
   @override
   MediaUrlResolver mediaUrlResolver(BooruConfigAuth config) {
     return ref.watch(e621MediaUrlResolverProvider);
+  }
+
+  @override
+  DownloadSourceProvider? downloadSource(BooruConfigAuth config) {
+    return const E621DownloadSource();
   }
 }

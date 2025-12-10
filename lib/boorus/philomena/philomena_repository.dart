@@ -8,12 +8,14 @@ import '../../core/boorus/defaults/types.dart';
 import '../../core/configs/config/types.dart';
 import '../../core/configs/create/create.dart';
 import '../../core/downloads/filename/types.dart';
+import '../../core/downloads/urls/types.dart';
 import '../../core/posts/details/types.dart';
 import '../../core/posts/post/providers.dart';
 import '../../core/posts/post/types.dart';
 import '../../core/tags/autocompletes/types.dart';
 import '../../core/tags/tag/colors.dart';
 import 'client_provider.dart';
+import 'downloads/providers.dart';
 import 'posts/providers.dart';
 import 'tags/color.dart';
 import 'tags/providers.dart';
@@ -80,5 +82,10 @@ class PhilomenaRepository extends BooruRepositoryDefault {
   @override
   MediaUrlResolver mediaUrlResolver(BooruConfigAuth config) {
     return ref.watch(philomenaMediaUrlResolverProvider(config));
+  }
+
+  @override
+  DownloadSourceProvider? downloadSource(BooruConfigAuth config) {
+    return const PhilomenaDownloadSource();
   }
 }

@@ -1,9 +1,15 @@
+// Flutter imports:
+import 'package:flutter/widgets.dart';
+
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../core/configs/config/types.dart';
 import '../../../core/downloads/filename/types.dart';
+import '../../../core/downloads/urls/types.dart';
+import '../../../core/posts/post/types.dart';
 import '../posts/types.dart';
 
 final e621DownloadFilenameGeneratorProvider =
@@ -78,3 +84,40 @@ const kE621PostSamples = [
     'index': '1',
   },
 ];
+
+final class E621DownloadSource implements DownloadSourceProvider {
+  const E621DownloadSource();
+
+  @override
+  List<DownloadSource> getDownloadSources(BuildContext context, Post post) {
+    return [
+      if (post.thumbnailImageUrl.isNotEmpty)
+        DownloadSource(
+          url: post.thumbnailImageUrl,
+          name: context.t.settings.download.qualities.preview,
+        ),
+      if (post.sampleImageUrl.isNotEmpty)
+        DownloadSource(
+          url: post.sampleImageUrl,
+          name: context.t.settings.download.qualities.sample,
+        ),
+      if (post case final E621Post e621Post) ...[
+        if (e621Post.videoVariants[E621VideoVariantType.v480p] case final v?)
+          DownloadSource(
+            url: v.url,
+            name: '480p',
+          ),
+        if (e621Post.videoVariants[E621VideoVariantType.v720p] case final v?)
+          DownloadSource(
+            url: v.url,
+            name: '720p',
+          ),
+      ],
+      if (post.originalImageUrl.isNotEmpty)
+        DownloadSource(
+          url: post.originalImageUrl,
+          name: context.t.settings.download.qualities.original,
+        ),
+    ];
+  }
+}
