@@ -1,4 +1,4 @@
-# Prereleased-2025.11.02
+# 4.3.0
 - [Gelbooru 0.2, Shimmie2] Add login and favorite support
 - Add random sort option for bookmark
 - Add a button to lock screen when viewing video, also keep screen awake during video playback
