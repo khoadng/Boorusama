@@ -80,6 +80,7 @@ class ChangelogDialog extends ConsumerWidget {
                       thickness: 1,
                       height: 0,
                     ),
+                    if (_isHolidaySeason()) const _HolidayBanner(),
                     _Content(data: data),
                   ],
                 ),
@@ -177,6 +178,64 @@ class _Content extends StatelessWidget {
                   ),
                 ),
               ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+const _kDebugShowHolidayBanner = false;
+const _kHolidayStart = (month: 12, day: 20);
+const _kHolidayEnd = (month: 1, day: 5);
+
+bool _isHolidaySeason() {
+  if (_kDebugShowHolidayBanner) return true;
+
+  final now = DateTime.now();
+  final month = now.month;
+  final day = now.day;
+
+  final afterStart =
+      month > _kHolidayStart.month ||
+      (month == _kHolidayStart.month && day >= _kHolidayStart.day);
+  final beforeEnd =
+      month < _kHolidayEnd.month ||
+      (month == _kHolidayEnd.month && day <= _kHolidayEnd.day);
+
+  return afterStart || beforeEnd;
+}
+
+class _HolidayBanner extends StatelessWidget {
+  const _HolidayBanner();
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(
+        vertical: 12,
+        horizontal: 16,
+      ),
+      color: colorScheme.primaryContainer,
+      child: Row(
+        children: [
+          Icon(
+            Symbols.celebration,
+            size: 20,
+            color: colorScheme.onPrimaryContainer,
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              'Merry Christmas & Happy New Year!',
+              style: TextStyle(
+                color: colorScheme.onPrimaryContainer,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
         ],
