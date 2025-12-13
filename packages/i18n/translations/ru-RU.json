@@ -50,9 +50,12 @@
         "all": "Все",
         "unread": "Непрочитанные",
         "sent": "Отправить",
-        "deleted": "Удаленно"
+        "deleted": "Удаленно",
+        "received": "Доставленные"
       },
-      "date": "Дата"
+      "date": "Дата",
+      "sender": "Отправитель",
+      "recipient": "Получатель"
     },
     "fail_to_load_profile": "Не удается загрузить профиль",
     "tabs": {
@@ -74,7 +77,8 @@
     },
     "uploads": {
       "top_n_copyright": "Топ $n copyrights"
-    }
+    },
+    "previous_names": "Предыдущие имена"
   },
   "network": {
     "unavailable": "Нет доступа к интернету"
@@ -692,5 +696,8 @@
     "name": "Имя",
     "name_asc": "Имя (A-Z)",
     "name_desc": "Имя (Z-A)"
+  },
+  "reminder": {
+    "dont_show_again": "Больше не показывать"
   }
 }

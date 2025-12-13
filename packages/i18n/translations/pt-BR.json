@@ -136,9 +136,13 @@
         "artist_posts": "Postagens do artista",
         "related_posts": "Posts relacionados",
         "character_list": "Lista de Personagens",
-        "source": "Fonte"
+        "source": "Fonte",
+        "uploader_posts": "Envios do uploader"
       },
-      "uploader": "Uploader"
+      "uploader": "Uploader",
+      "artist": "Artista",
+      "show_n_more": "Mostrar mais $n",
+      "show_less": "Mostrar menos"
     },
     "action": {
       "view_comments": "Ver comentários",
@@ -159,7 +163,8 @@
       "edit": "Editar",
       "use_default": "Usar Padrão",
       "toggle_bookmark": "Alternar salvo",
-      "toggle_favorite": "Alternar favorito"
+      "toggle_favorite": "Alternar favorito",
+      "unfavorite": "Desfavoritar"
     },
     "statistics": {
       "stats_for_nerds": "Estatísticas para nerds",
@@ -231,7 +236,8 @@
       "forbidden": "Falha na autenticação",
       "unknown": "Erro desconhecido do servidor. Relate este problema ao desenvolvedor",
       "cannot_reach_server": "Não pode alcançar o servidor, verifique sua conexão",
-      "failed_to_load_data": "Falha ao carregar dados do servidor, por favor tente novamente mais tarde"
+      "failed_to_load_data": "Falha ao carregar dados do servidor, por favor tente novamente mais tarde",
+      "handshake_failed": "Conexão falhou, problema de compatibilidade do servidor"
     },
     "hint": "Buscar...",
     "no_result": "Nós procuramos do infinito ao além, mas nenhum resultado foi encontrado.",
@@ -270,7 +276,11 @@
       "last_updated": "Última atualização"
     },
     "pools": "Conjuntos",
-    "no_cover_image": "Sem imagem de capa"
+    "no_cover_image": "Sem imagem de capa",
+    "counter": {
+      "one": "Conjunto",
+      "other": "Conjuntos"
+    }
   },
   "settings": {
     "settings": "Configurações",
@@ -387,6 +397,14 @@
           "mpv_description": "Bom suporte e performance para formatos de vídeo, carregamento mais lento",
           "webview_description": "Boa compatibilidade mas usa mais recursos e tem performance ruim, use como último recurso."
         }
+      },
+      "slideshow_video_behavior": "Comportamento do vídeo slideshow",
+      "slideshow_video_behavior_explanation": "Determina como o slideshow lida com vídeos durante transições.",
+      "slideshow_video_behaviors": {
+        "wait_for_completion": "Aguardar conclusão",
+        "wait_for_completion_description": "Aguarda os vídeos terminarem antes de avançar para o próximo slide",
+        "fixed_interval": "Intervalo fixo",
+        "fixed_interval_description": "Avançar após um intervalo fixo, mesmo se o vídeo ainda estiver sendo reproduzido"
       }
     },
     "language": {
@@ -499,7 +517,41 @@
       "auto_backup_tooltip": "Backup são criados quando você abre o app. Nenhum backup é feito enquanto o app estiver fechado.",
       "backup_in_progress": "Backup já em progresso",
       "export_operation_failed": "Exportação falhou: {error}",
-      "import_operation_failed": "Importação falhou: {error}"
+      "import_operation_failed": "Importação falhou: {error}",
+      "export_partial_success": "Exportou {exported}/{total} itens. {failed} falharam.",
+      "export_complete_success": "Exportou {exported} itens com sucesso",
+      "export_no_items": "Exportação falhou: Nenhum item pode ser exportado",
+      "import_results": "Importação completa: {results}",
+      "import_no_items": "Importação falhou: Nenhum item pode ser importado",
+      "imported_count": "{count} importados",
+      "skipped_count": "{count} pulados",
+      "failed_count": "{count} falharam",
+      "invalid_location_error": "Não pode exportar para este local, tente usar as pastas \"Downloads\" ou \"Documentos\". Crie uma caso não existir.",
+      "invalid_backup_format_error": "Formato de backup invalido",
+      "never": "Nunca",
+      "receive_data": {
+        "title": "Receber dados",
+        "nearby_devices": "Dispositivos por perto",
+        "no_devices_found(rich)": "Nenhum dispositivo encontrado. Comece a transferir no outro dispositivo primeiro.\n\nToque em ${tapHere(_)} para adicionar manualmente pelo endereço IP.",
+        "ip_address": "Endereço de IP",
+        "errors": {
+          "not_empty": "Endereço de IP não pode estar vazio",
+          "port_required": "Endereço de IP deve conter uma porta",
+          "invalid": "Endereço de IP invalido"
+        },
+        "choose_data_to_import": "Escolher dados para importar"
+      },
+      "send_data": {
+        "name": "Nome",
+        "version": "Versão",
+        "status": {
+          "title": "Status",
+          "broadcasting": "Transmissão",
+          "stopped": "Parado",
+          "running": "Rodando"
+        },
+        "how_to_transfer": "Como transferir"
+      }
     },
     "image_details": {
       "ui_overlay": {
@@ -551,7 +603,33 @@
     "download": "Download",
     "invalid_folder_name_error": "Uma pasta não pode conter os seguintes caracteres: ",
     "folder_select_warning": "O aplicativo só pode guardar arquivos dentro de pastas públicas <b>({0})</b> no Android 11+. <br><br> Exemplos de localização válida:<br><b>[Internal]</b> /storage/emulated/0/Download <br><b>[SD card]</b> /storage/A1B2-C3D4/Download<br><br>Por favor escolha outra pasta ou crie uma nova se outra não existir. <br>A versão desse aparelho <b>{1}</b>.",
-    "storage_permission_explanation": "Permissão de armazenamento é necessária para guardar arquivos baixados."
+    "storage_permission_explanation": "Permissão de armazenamento é necessária para guardar arquivos baixados.",
+    "downloads": "Downloads",
+    "retry_all": "Repetir todos",
+    "nothing_to_clear": "Nada para limpar",
+    "no_active_sessions": "Nenhuma sessão de download ativa",
+    "nothing_to_show": "Nada para exibir, atualizações de download estão vazias",
+    "notification": {
+      "started": "Download iniciado"
+    },
+    "status": {
+      "in_progress": "Em Progresso",
+      "pending": "Pendente",
+      "paused": "Pausado",
+      "completed": "Completo",
+      "failed": "Falhou",
+      "canceled": "Cancelado",
+      "unknown": "Desconhecido"
+    },
+    "empty_states": {
+      "no_pending_downloads": "Nenhum download pendente",
+      "no_paused_downloads": "Nenhum download pausado",
+      "no_downloads_in_progress": "Nenhum download em progresso",
+      "no_completed_downloads": "Nenhum download completo",
+      "no_canceled_downloads": "Nenhum download cancelado",
+      "no_failed_downloads": "Nenhum download falho",
+      "no_downloads": "Nenhum download"
+    }
   },
   "saved_search": {
     "saved_search": "Pesquisa salva",
@@ -576,6 +654,10 @@
     "counter": {
       "one": "Favorito",
       "other": "Favoritos"
+    },
+    "update": {
+      "success": "Favoritos atualizados",
+      "failure": "Falha ao atualizar favoritos"
     }
   },
   "favorite_groups": {
@@ -601,7 +683,8 @@
     "group_item_counter": {
       "one": "$n post",
       "other": "$n posts"
-    }
+    },
+    "drag_hint": "Aperte, segure e arraste para reordenar"
   },
   "favorite_tags": {
     "favorites": "Favoritos",
@@ -621,7 +704,9 @@
     "your_bookmarks": "Suas marcações",
     "your_blacklist": "Sua lista negra",
     "bulk_download": "Download em massa",
-    "get_support": "Consiga Ajuda"
+    "get_support": "Consiga Ajuda",
+    "home": "Início",
+    "download_manager": "Gerenciador de Downloads"
   },
   "dateRange": {
     "day": "Dia",
@@ -635,8 +720,8 @@
     "login_name_label": "Login",
     "password_api_key_label": "Chave de API",
     "password_label": "Senha",
-    "content_filtering_label": "Filtração de conteúdo",
-    "hide_deleted_label": "Esconder posts deletados",
+    "content_filtering_label": "Filtro de conteúdo",
+    "hide_deleted_label": "Ocultar posts deletados",
     "config_booru_confirm": "OK",
     "add_a_booru_site": "Criar um novo perfil",
     "next_step": "Próximo",
@@ -656,6 +741,52 @@
     },
     "downloads": {
       "title": "Download"
+    },
+    "api_key_instructions": {
+      "variants_1": "*Faça login na sua conta no navegador, visite <b><a href=\"api-credentials\">My Account > Options > API Access Credentials</a></b> para conseguir sua chave API. Se você ver uma chave API vazia como <b>&api_key=&user_id=<your_id></b>, cheque <b>Generate New Key?</b> e clique no botão <b>Save</b> no final para gerar uma nova chave API. Caso contrário, copie a chave e cole-a no campo acima. Você também pode copiar toda a string da seção <b>API Access Credentials</b> e tocar no botão abaixo.",
+      "variants_2": "*Logue na sua conta no navegador, visite <b>My Account > Options > API Access Credentials</b>. Cheque se estiver lá. Caso contrário, o site não suporta credenciais, e você pode ignorar isso.",
+      "shimmie2": {
+        "danbooru_api_extension_notice": "O aplicativo requer a extensão <b>Cliente de API Danbooru</b> esteja instalada no site para funcionar.",
+        "user_api_key_notice": "O aplicativo requer a extensão <b>Chave de API de Usuário</b> esteja instalada no site para login e acesso a conteúdo privado.",
+        "view_extension_docs": "Ver documentação da extensão"
+      }
+    },
+    "deletion": {
+      "title": "Deletar '${profileName}'",
+      "confirmation": "Tem certeza de quer deletar esse perfil? Essa ação não pode ser desfeita."
+    },
+    "invalid_booru_warning": "Parece que este site não está rodando no motor selecionado. Por favor tente com outro.",
+    "invalid_selected_profile": "O perfil selecionado atual é inválido",
+    "invalid_selected_profile_selection_request": "Selecione um perfil da lista abaixo para continuar",
+    "unknown_engine_selection_request": "Selecione um motor booru para continuar",
+    "new_profile_leave_as_empty_tips": "Não tem certeza? Deixe como está, você pode alterar depois.",
+    "using_status": "usando ${booru}",
+    "paste_from_clipboard": "Colar da área de transferência",
+    "no_profiles_available": "Nenhum perfil disponível",
+    "add_profile_to_continue": "Adicione um perfil para continuar",
+    "add_profile": "Adicionar Perfil",
+    "unsaved_changes": "Você tem alterações não salvas",
+    "unsaved_changes_discard": "Não salvar",
+    "unsaved_changes_reconfirm_question": "Você quer salvar suas alterações? Suas alterações serão perdidas caso você não salvá-las.",
+    "content_filtering": {
+      "none": "Nenhum",
+      "moderate": "Moderado",
+      "aggressive": "Agressivo",
+      "custom": "Personalizado"
+    },
+    "choose_a_custom_filtering": {
+      "one": "Escolha uma classificação que você queira excluir da pesquisa.",
+      "other": "Escolha classificações que você queira excluir da pesquisa."
+    },
+    "hide_deleted_description": "Ocultar imagens de baixa qualidade, algumas decentes podem também ser ocultadas.",
+    "hide_banned_label": "Ocultar posts banidos",
+    "hide_banned_description": "Oculta completamente imagens que foram banidas pelo site.",
+    "api_key": {
+      "auth_error": {
+        "edit_api_key": "Editar chave de API",
+        "empty_key_warning": "Este site pode pedir para que você insira sua chave de API ou senha para acessar seu conteúdo.",
+        "invalid_key_warning": "Verifique sua chave de API ou suas credenciais, pois elas podem estar inválidas ou expiradas."
+      }
     }
   },
   "blacklist": {
@@ -750,5 +881,8 @@
     "speed": {
       "normal": "Normal"
     }
+  },
+  "reminder": {
+    "dont_show_again": "Não mostrar novamente"
   }
 }
