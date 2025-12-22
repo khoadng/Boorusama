@@ -5,9 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../../../core/posts/listing/widgets.dart';
 import '../../../../../../core/widgets/widgets.dart';
-import '../../../../posts/post/types.dart';
 import '../providers/filter_provider.dart';
 import '../types/pool_details_order.dart';
 
@@ -16,7 +14,6 @@ class PoolCategoryToggleSwitch extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final controller = PostScope.of<DanbooruPost>(context);
     final notifier = ref.watch(poolFilterProvider.notifier);
 
     return Padding(
@@ -35,9 +32,6 @@ class PoolCategoryToggleSwitch extends ConsumerWidget {
           },
           onChanged: (value) {
             notifier.setOrder(value);
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              controller.refresh();
-            });
           },
         ),
       ),
