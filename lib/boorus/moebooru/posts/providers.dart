@@ -5,9 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/configs/config/types.dart';
 import '../../../core/posts/post/providers.dart';
 import '../../../core/posts/post/types.dart';
-import '../../../core/search/queries/providers.dart';
 import '../../../core/settings/providers.dart';
 import '../client_provider.dart';
+import '../tags/providers.dart';
 import 'parser.dart';
 import 'types.dart';
 
@@ -15,7 +15,7 @@ final moebooruPostRepoProvider =
     Provider.family<PostRepository<MoebooruPost>, BooruConfigSearch>(
       (ref, config) {
         final client = ref.watch(moebooruClientProvider(config.auth));
-        final tagComposer = ref.watch(defaultTagQueryComposerProvider(config));
+        final tagComposer = ref.watch(moebooruTagQueryComposerProvider(config));
 
         return PostRepositoryBuilder(
           tagComposer: tagComposer,

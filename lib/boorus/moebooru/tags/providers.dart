@@ -5,11 +5,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../core/boorus/booru/types.dart';
 import '../../../core/configs/config/types.dart';
+import '../../../core/search/queries/types.dart';
 import '../../../core/tags/categories/types.dart';
 import '../../../core/tags/local/providers.dart';
 import '../../../core/tags/tag/types.dart';
 import '../tag_summary/repo.dart';
 import 'parser.dart';
+import 'query_composer.dart';
 import 'repository.dart';
 
 final moebooruTagRepoProvider =
@@ -71,3 +73,8 @@ final moebooruAllTagsProvider =
         for (final tag in tags) tag.rawName: tag,
       };
     });
+
+final moebooruTagQueryComposerProvider =
+    Provider.family<TagQueryComposer, BooruConfigSearch>(
+      (ref, config) => MoebooruTagQueryComposer(config: config),
+    );
