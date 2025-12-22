@@ -12,5 +12,5 @@ enum BooruConfigRatingFilter {
     _ => defaultValue,
   };
 
-  static const BooruConfigRatingFilter defaultValue = hideNSFW;
+  static const BooruConfigRatingFilter defaultValue = none;
 }
