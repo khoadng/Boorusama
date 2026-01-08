@@ -783,7 +783,15 @@
     "validation_missing_scheme": "\"{0}\" entspricht keinem Schema (z.B. https://)",
     "misc": "Sonstiges",
     "authentication": {
-      "title": "Authentifizierung"
+      "title": "Authentifizierung",
+      "gelbooru": {
+        "basic_auth": "Basisauthentifizierung (erforderlich)",
+        "basic_auth_description": "Durch die Bereitstellung dieser Informationen erhält die App Lesezugriff auf Ihr Konto. Dies ist seit 06/2025 von Gelbooru vorgeschrieben.",
+        "advanced_auth": "Erweiterte Authentifizierung (optional)",
+        "advanced_auth_description": "Durch die Angabe dieser Informationen können Sie Ihre Favoriten bearbeiten und erhalten Schreibzugriff auf Ihr Konto. Beachten Sie, dass Sie sich erneut anmelden müssen, wenn Sie Ihr Passwort ändern.",
+        "fav_button_tooltip_title": "Infos zum Favoriten-Button",
+        "fav_button_tooltip_description": "Es gibt keine Möglichkeit zu überprüfen, ob ein Bild bereits als Favorit gespeichert wurde. Obwohl Sie nach dem Speichern eines Bildes als Favorit eine visuelle Anzeige sehen können, wird diese beim Neustart der App zurückgesetzt. Keine Sorge, Ihre Favoriten bleiben auf der Website gespeichert."
+      }
     },
     "gestures": {
       "title": "Gesten"
@@ -795,7 +803,81 @@
       "variants_1": "*Melden Sie sich in Ihrem Konto im Browser an und rufen Sie <b><a href=\"api-credentials\">My Account > Options > API Access Credentials</a></b> auf, um Ihren API-Schlüssel zu erhalten. Wenn Sie einen leeren API-Schlüssel wie <b>&api_key=&user_id=<your_id></b> sehen, aktivieren Sie <b>Generate New Key?</b> und klicken Sie ganz unten auf die Schaltfläche <b>Save</b>, um einen neuen API-Schlüssel zu generieren. Andernfalls kopieren Sie den Schlüssel und fügen Sie ihn in das Feld oben ein. Sie können auch die gesamte Zeichenfolge aus dem Abschnitt <b>API Access Credentials</b> kopieren und auf die Schaltfläche darunter tippen.",
       "variants_2": "*Melden Sie sich in Ihrem Konto im Browser an und gehen Sie zu <b>My Account > Options > API Access Credentials</b> Überprüfen Sie, ob diese dort vorhanden sind. Ist dies nicht der Fall, unterstützt die Website keine Zugangsdaten und Sie können diesen Schritt ignorieren.",
       "variants_3": "*Melden Sie sich in Ihrem Konto im Browser an und rufen Sie <b><a href=\"api-credentials\">My Account > API Key</a></b> auf. Kopieren Sie Ihren Schlüssel oder erstellen Sie bei Bedarf einen neuen und stellen Sie sicher, dass alle Berechtigungen für die ordnungsgemäße Funktion der App aktiviert sind.",
-      "variants_4": "*Melden Sie sich in Ihrem Konto im Browser an und gehen Sie zu <b>Account > Login tokens</b>. Kopieren Sie Ihr <b>Web Login Token</b>  oder erstellen Sie bei Bedarf ein neues und fügen Sie es hier ein. Wenn Sie das <b>Web Login Token</b>  verwenden, wird das Token durch das Abmelden vom Browser ungültig."
+      "variants_4": "*Melden Sie sich in Ihrem Konto im Browser an und gehen Sie zu <b>Account > Login tokens</b>. Kopieren Sie Ihr <b>Web Login Token</b>  oder erstellen Sie bei Bedarf ein neues und fügen Sie es hier ein. Wenn Sie das <b>Web Login Token</b>  verwenden, wird das Token durch das Abmelden vom Browser ungültig.",
+      "variants_5": "*Melden Sie sich in Ihrem Konto im Browser an, gehen Sie zu <b><a href=\"api-credentials\">My Account > Options >, um Ihren API-Schlüssel zu erhalten. Kopieren Sie den Schlüssel und fügen Sie ihn in das Feld oben ein. Sie können auch die gesamte Zeichenfolge aus dem Abschnitt <b>API Access Credentials</b> kopieren und auf die Schaltfläche unten tippen.",
+      "shimmie2": {
+        "danbooru_api_extension_notice": "Die App erfordert die Installation der Erweiterung <b>Danbooru Client API</b> auf der Website, um zu funktionieren.",
+        "user_api_key_notice": "Die App erfordert die Installation der Erweiterung <b>User API Key</b> auf der Website, um sich anzumelden und auf private Inhalte zugreifen zu können.",
+        "view_extension_docs": "Zeige Dokumentation für Erweiterungen"
+      }
+    },
+    "deletion": {
+      "title": "Lösche '${profileName}'",
+      "confirmation": "Möchten Sie dieses Profil wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden."
+    },
+    "invalid_booru_warning": "Es scheint, als würde die Website nicht mit der ausgewählten Engine laufen. Bitte versuchen Sie es mit einer anderen.",
+    "invalid_selected_profile": "Das aktuell ausgewählte Profil ist ungültig",
+    "invalid_selected_profile_selection_request": "Wählen Sie ein Profil aus der folgenden Liste aus, um fortzufahren",
+    "unknown_engine_selection_request": "Wählen Sie eine Booru-Engine aus, um fortzufahren",
+    "new_profile_leave_as_empty_tips": "Nicht sicher? Belassen Sie es so, wie es ist, Sie können es später ändern.",
+    "using_status": "verwende ${booru}",
+    "paste_from_clipboard": "Einfügen aus Zwischenablage",
+    "no_profiles_available": "Kein Profil verfügbar",
+    "add_profile_to_continue": "Fügen Sie ein Profil hinzu um weiterzumachen",
+    "add_profile": "Profil hinzufügen",
+    "unsaved_changes": "Sie haben ungespeicherte Änderungen",
+    "unsaved_changes_discard": "Nicht speichern",
+    "unsaved_changes_reconfirm_question": "Möchten Sie Ihre Änderungen speichern? Ihre Änderungen gehen verloren, wenn Sie sie nicht speichern.",
+    "content_filtering": {
+      "none": "Keine",
+      "moderate": "Mäßig",
+      "aggressive": "Aggressiv",
+      "custom": "Benutzerdefiniert"
+    },
+    "choose_a_custom_filtering": {
+      "one": "Wählen Sie eine Bewertung aus, die Sie von der Suche ausschließen möchten.",
+      "other": "Wählen Sie Bewertungen aus, die Sie von der Suche ausschließen möchten."
+    },
+    "hide_deleted_description": "Bilder mit geringer Qualität ausblenden, einige anständige Bilder könnten ebenfalls ausgeblendet werden.",
+    "hide_banned_label": "Gesperrte Beiträge ausblenden",
+    "hide_banned_description": "Bilder, die von der Website gesperrt wurden, vollständig ausblenden.",
+    "api_key": {
+      "auth_error": {
+        "edit_api_key": "Bearbeite API Key",
+        "empty_key_warning": "Auf dieser Website müssen Sie möglicherweise Ihren API-Schlüssel oder Ihr Passwort eingeben, um auf deren Inhalte zugreifen zu können.",
+        "invalid_key_warning": "Überprüfen Sie Ihren API-Schlüssel oder Ihre Anmeldedaten, da diese möglicherweise ungültig oder abgelaufen sind."
+      }
+    },
+    "listing": {
+      "title": "Auflistung",
+      "thumbnail_button": "Schaltfläche für Miniaturansicht",
+      "thumbnail_button_description": "Ändern Sie die Standardschaltfläche unten rechts in der Miniaturansicht.",
+      "tooltip_on_hover_title": "Tooltip beim Darüberfahren anzeigen",
+      "tooltip_on_hover_description": "Zeige Vorschau-Informationen an, wenn du über die Miniaturansicht fährst.",
+      "enable_profile_specific_settings": "Profil-spezifische Einstellungen aktivieren",
+      "enable_profile_specific_settings_description": "Überschreiben Sie die globalen Einstellungen für dieses Profil. Wenn diese Option aktiviert ist, werden die globalen Einstellungen ignoriert, bis sie deaktiviert wird.",
+      "overridden_notice": "Diese Einstellungen werden durch benutzerdefinierte Einträge überschrieben. Gehen Sie stattdessen zur Seite <b><a href=\"booru-profiles\">Profile's Listing</a></b>."
+    },
+    "search": {
+      "title": "Suchen",
+      "include_in_search": "Fügen Sie diese Tags in jede Suche ein",
+      "exclude_from_search": "Diese Tags von jeder Suche ausschließen",
+      "include_exclude_tooltip": "Diese Tags werden jeder Suche hinzugefügt, die die App durchführt, nicht nur die du manuell suchst.",
+      "preview_tags": "Vorschau",
+      "any_search_query": "<beliebige Suchanfrage>",
+      "enable_profile_specific_settings": "Profil-spezifische Blacklist aktivieren",
+      "blacklist": "Blacklist",
+      "empty_blacklist": "Keine Tags",
+      "empty_blacklist_with_replace_notice": "Das Leeren der Blacklist im Ersetzungsmodus deaktiviert die Blacklist vollständig.",
+      "blacklist_overridden": {
+        "replace_notice": "Ersetzt durch die Einstellungen unter <b><a href=\"booru-profiles\">Profile's Blacklist</a></b>.",
+        "merge_notice": "Mit den Einstellungen von <b><a href=\"booru-profiles\">Profile's Blacklist</a></b> zusammengeführt."
+      },
+      "blacklist_combine_mode": {
+        "title": "Kombinationsmodus",
+        "merge": "Zusammenführen",
+        "merge_description": "Füge diese Blacklist mit den anderen Blacklists zusammen."
+      }
     }
   },
   "blacklist": {
