@@ -228,6 +228,12 @@
       id: 30
     protocol: https_1
 
+- oxibooru:
+    metadata:
+      id: 35
+      display-name: Oxibooru
+    protocol: https_1
+
 - hydrus:
     metadata:
       id: 31

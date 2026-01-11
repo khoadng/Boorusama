@@ -32,7 +32,7 @@ class TagCategoryDto {
   factory TagCategoryDto.fromJson(Map<String, dynamic> json) {
     return TagCategoryDto(
       name: json['name'] as String?,
-      version: json['version'] as int?,
+      version: json['version']?.toString(),
       color: json['color'] as String?,
       usages: json['usages'] as int?,
       isDefault: json['default'] as bool?,
@@ -40,7 +40,7 @@ class TagCategoryDto {
     );
   }
   final String? name;
-  final int? version;
+  final String? version;
   final String? color;
   final int? usages;
   final bool? isDefault;

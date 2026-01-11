@@ -15,7 +15,7 @@ mixin SzurubooruClientComments {
     required int postId,
   }) async {
     final response = await dio.get(
-      '/api/comments',
+      'api/comments',
       queryParameters: {
         'query': 'post:$postId',
       },
@@ -30,7 +30,7 @@ mixin SzurubooruClientComments {
     required int commentId,
   }) async {
     final response = await dio.put(
-      '/api/comment/$commentId/score',
+      'api/comment/$commentId/score',
       data: {
         'score': _kUpvoteScore,
       },
@@ -43,7 +43,7 @@ mixin SzurubooruClientComments {
     required int commentId,
   }) async {
     final response = await dio.put(
-      '/api/comment/$commentId/score',
+      'api/comment/$commentId/score',
       data: {
         'score': _kDownvoteScore,
       },
@@ -56,7 +56,7 @@ mixin SzurubooruClientComments {
     required int commentId,
   }) async {
     final response = await dio.put(
-      '/api/comment/$commentId/score',
+      'api/comment/$commentId/score',
       data: {
         'score': _kUnvoteScore,
       },

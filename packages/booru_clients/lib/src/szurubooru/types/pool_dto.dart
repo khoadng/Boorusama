@@ -16,7 +16,7 @@ class PoolDto {
 
   factory PoolDto.fromJson(Map<String, dynamic> json, {String? baseUrl}) {
     return PoolDto(
-      version: json['version'] as int?,
+      version: json['version']?.toString(),
       id: json['id'] as int?,
       names: (json['names'] as List?)?.map((e) => e as String).toList(),
       category: json['category'] as String?,
@@ -37,7 +37,7 @@ class PoolDto {
     );
   }
 
-  final int? version;
+  final String? version;
   final int? id;
   final List<String>? names;
   final String? category;

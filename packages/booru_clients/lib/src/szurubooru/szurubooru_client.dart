@@ -15,6 +15,16 @@ import 'types/types.dart';
 String _encodeAuthHeader(String username, String token) =>
     base64Encode(utf8.encode('$username:$token'));
 
+String _normalizeBaseUrl(String baseUrl) {
+  final trimmed = baseUrl.trim();
+  return trimmed.endsWith('/') ? trimmed : '$trimmed/';
+}
+
+String _trimTrailingSlash(String baseUrl) {
+  final trimmed = baseUrl.trim();
+  return trimmed.endsWith('/') ? trimmed.substring(0, trimmed.length - 1) : trimmed;
+}
+
 class SzurubooruClient
     with
         SzurubooruClientComments,
@@ -29,6 +39,7 @@ class SzurubooruClient
     String? token,
   }) {
     _dio = dio ?? Dio();
+    _mediaBaseUrl = _trimTrailingSlash(baseUrl);
 
     final h = headers != null ? {...headers} : <String, dynamic>{};
 
@@ -36,7 +47,7 @@ class SzurubooruClient
     h['Accept'] = 'application/json';
 
     _dio.options = BaseOptions(
-      baseUrl: baseUrl,
+      baseUrl: _normalizeBaseUrl(baseUrl),
       headers: h,
     );
 
@@ -49,9 +60,13 @@ class SzurubooruClient
   }
 
   late Dio _dio;
+  late String _mediaBaseUrl;
 
   @override
   Dio get dio => _dio;
+
+  @override
+  String get baseUrl => _mediaBaseUrl;
 
   // Only a single global autocomplete request per client is allowed for now
   CancelToken? _autocompleteCancelToken;
@@ -67,7 +82,7 @@ class SzurubooruClient
       final q = query.length < 3 ? '$query*' : '*$query*';
 
       final response = await _dio.get(
-        '/api/tags',
+        'api/tags',
         queryParameters: {
           'query': [
             q,
@@ -94,7 +109,7 @@ class SzurubooruClient
 
   Future<List<TagCategoryDto>> getTagCategories() async {
     final response = await _dio.get(
-      '/api/tag-categories',
+      'api/tag-categories',
     );
 
     final results = response.data['results'] as List;

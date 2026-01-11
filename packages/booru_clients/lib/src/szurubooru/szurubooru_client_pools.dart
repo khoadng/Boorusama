@@ -6,6 +6,7 @@ import 'types/types.dart';
 
 mixin SzurubooruClientPools {
   Dio get dio;
+  String get baseUrl;
 
   Future<List<PoolDto>> getPools({
     int? offset,
@@ -13,7 +14,7 @@ mixin SzurubooruClientPools {
     String? query,
   }) async {
     final response = await dio.get(
-      '/api/pools',
+      'api/pools',
       queryParameters: {
         if (offset != null) 'offset': offset,
         'limit': limit,
@@ -27,7 +28,7 @@ mixin SzurubooruClientPools {
         .map(
           (e) => PoolDto.fromJson(
             e as Map<String, dynamic>,
-            baseUrl: dio.options.baseUrl,
+            baseUrl: baseUrl,
           ),
         )
         .toList();

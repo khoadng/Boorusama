@@ -1,0 +1,67 @@
+name: "build apk"
+
+on:
+  workflow_dispatch:
+    inputs:
+      flavor:
+        description: "Build flavor"
+        required: true
+        default: "dev"
+        type: choice
+        options:
+          - dev
+          - prod
+      build_mode:
+        description: "Flutter build mode"
+        required: true
+        default: "debug"
+        type: choice
+        options:
+          - debug
+          - release
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "17"
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: 3.27.0
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Generate sources
+        run: |
+          bash ./gen.sh
+          flutter pub run build_runner build --delete-conflicting-outputs
+
+      - name: Build APK
+        run: |
+          flutter build apk --${{ inputs.build_mode }} \
+            --flavor ${{ inputs.flavor }} \
+            --dart-define-from-file env/${{ inputs.flavor }}.json \
+            -t lib/main.dart \
+            -v
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: boorusama-${{ inputs.flavor }}-${{ inputs.build_mode }}-apk
+          path: build/app/outputs/flutter-apk/app-${{ inputs.flavor }}-${{ inputs.build_mode }}.apk

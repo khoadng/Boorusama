@@ -1,6 +1,21 @@
 // Project imports:
 import 'types.dart';
 
+String? _joinUrl(String? baseUrl, String? path) {
+  if (path == null || path.isEmpty) return null;
+  if (path.startsWith('http://') || path.startsWith('https://')) return path;
+  if (baseUrl == null || baseUrl.isEmpty) return path;
+
+  final normalizedBase =
+      baseUrl.endsWith('/') ? baseUrl.substring(0, baseUrl.length - 1) : baseUrl;
+
+  if (path.startsWith('/')) {
+    return '$normalizedBase$path';
+  }
+
+  return '$normalizedBase/$path';
+}
+
 class PostDto {
   PostDto({
     this.id,
@@ -43,12 +58,12 @@ class PostDto {
     Map<String, dynamic> json, {
     String? baseUrl,
   }) {
-    final contentUrl = json['contentUrl'] as String?;
-    final thumbnailUrl = json['thumbnailUrl'] as String?;
+    final contentUrl = _joinUrl(baseUrl, json['contentUrl'] as String?);
+    final thumbnailUrl = _joinUrl(baseUrl, json['thumbnailUrl'] as String?);
 
     return PostDto(
       id: json['id'] as int?,
-      version: json['version'] as int?,
+      version: json['version']?.toString(),
       creationTime: json['creationTime'] as String?,
       lastEditTime: json['lastEditTime'] as String?,
       safety: json['safety'] as String?,
@@ -60,8 +75,8 @@ class PostDto {
       fileSize: json['fileSize'] as int?,
       canvasWidth: json['canvasWidth'] as int?,
       canvasHeight: json['canvasHeight'] as int?,
-      contentUrl: contentUrl != null ? '$baseUrl$contentUrl' : null,
-      thumbnailUrl: thumbnailUrl != null ? '$baseUrl$thumbnailUrl' : null,
+      contentUrl: contentUrl,
+      thumbnailUrl: thumbnailUrl,
       flags: json['flags'] as List<dynamic>?,
       tags: (json['tags'] as List<dynamic>?)
           ?.map((e) => TagDto.fromJson(e as Map<String, dynamic>))
@@ -96,7 +111,7 @@ class PostDto {
     );
   }
   final int? id;
-  final int? version;
+  final String? version;
   final String? creationTime;
   final String? lastEditTime;
   final String? safety;
@@ -154,10 +169,10 @@ class MicroPostDto {
   });
 
   factory MicroPostDto.fromJson(Map<String, dynamic> json, {String? baseUrl}) {
-    final thumbnailUrl = json['thumbnailUrl'] as String?;
+    final thumbnailUrl = _joinUrl(baseUrl, json['thumbnailUrl'] as String?);
     return MicroPostDto(
       id: json['id'] as int?,
-      thumbnailUrl: thumbnailUrl != null ? '$baseUrl$thumbnailUrl' : null,
+      thumbnailUrl: thumbnailUrl,
     );
   }
 

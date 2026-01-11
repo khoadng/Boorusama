@@ -6,17 +6,18 @@ import 'types/types.dart';
 
 mixin SzurubooruClientFavorites {
   Dio get dio;
+  String get baseUrl;
 
   Future<PostDto> addToFavorites({
     required int postId,
   }) async {
     final response = await dio.post(
-      '/api/post/$postId/favorite',
+      'api/post/$postId/favorite',
     );
 
     return PostDto.fromJson(
       response.data,
-      baseUrl: dio.options.baseUrl,
+      baseUrl: baseUrl,
     );
   }
 
@@ -24,12 +25,12 @@ mixin SzurubooruClientFavorites {
     required int postId,
   }) async {
     final response = await dio.delete(
-      '/api/post/$postId/favorite',
+      'api/post/$postId/favorite',
     );
 
     return PostDto.fromJson(
       response.data,
-      baseUrl: dio.options.baseUrl,
+      baseUrl: baseUrl,
     );
   }
 }

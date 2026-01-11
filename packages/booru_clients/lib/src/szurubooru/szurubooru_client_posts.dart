@@ -12,6 +12,7 @@ typedef SzurubooruPosts = ({List<PostDto> posts, int? total});
 
 mixin SzurubooruClientPosts {
   Dio get dio;
+  String get baseUrl;
 
   Future<SzurubooruPosts> getPosts({
     int? limit,
@@ -19,7 +20,7 @@ mixin SzurubooruClientPosts {
     List<String>? tags,
   }) async {
     final response = await dio.get(
-      '/api/posts',
+      'api/posts',
       queryParameters: {
         if (limit != null) 'limit': limit,
         if (page != null && page > 0) 'offset': (page - 1) * (limit ?? 100),
@@ -34,7 +35,7 @@ mixin SzurubooruClientPosts {
         .map(
           (e) => PostDto.fromJson(
             e,
-            baseUrl: dio.options.baseUrl,
+            baseUrl: baseUrl,
           ),
         )
         .toList();
@@ -46,11 +47,11 @@ mixin SzurubooruClientPosts {
   }
 
   Future<PostDto?> getPost(int id) async {
-    final response = await dio.get('/api/post/$id');
+    final response = await dio.get('api/post/$id');
 
     return PostDto.fromJson(
       response.data,
-      baseUrl: dio.options.baseUrl,
+      baseUrl: baseUrl,
     );
   }
 
@@ -58,7 +59,7 @@ mixin SzurubooruClientPosts {
     required int postId,
   }) async {
     final response = await dio.put(
-      '/api/post/$postId/score',
+      'api/post/$postId/score',
       data: {
         'score': _kUpvoteScore,
       },
@@ -66,7 +67,7 @@ mixin SzurubooruClientPosts {
 
     return PostDto.fromJson(
       response.data,
-      baseUrl: dio.options.baseUrl,
+      baseUrl: baseUrl,
     );
   }
 
@@ -74,7 +75,7 @@ mixin SzurubooruClientPosts {
     required int postId,
   }) async {
     final response = await dio.put(
-      '/api/post/$postId/score',
+      'api/post/$postId/score',
       data: {
         'score': _kDownvoteScore,
       },
@@ -82,7 +83,7 @@ mixin SzurubooruClientPosts {
 
     return PostDto.fromJson(
       response.data,
-      baseUrl: dio.options.baseUrl,
+      baseUrl: baseUrl,
     );
   }
 
@@ -90,7 +91,7 @@ mixin SzurubooruClientPosts {
     required int postId,
   }) async {
     final response = await dio.put(
-      '/api/post/$postId/score',
+      'api/post/$postId/score',
       data: {
         'score': _kUnvoteScore,
       },
@@ -98,7 +99,7 @@ mixin SzurubooruClientPosts {
 
     return PostDto.fromJson(
       response.data,
-      baseUrl: dio.options.baseUrl,
+      baseUrl: baseUrl,
     );
   }
 }
