@@ -139,3 +139,6 @@ firebase_app_id_file.json
 
 # Generated files
 lib/boorus/registry.g.dart
+
+/server/
+/server/target/
