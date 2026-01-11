@@ -55,12 +55,7 @@ class _AppLockState extends ConsumerState<AppLock> {
         });
       }
     } catch (e) {
-      setState(() {
-        logger
-          ..error('Local Auth', 'Failed to authenticate: $e')
-          ..info('Local Auth', 'Auto unlocked');
-        unlocked = true;
-      });
+      logger.error('Local Auth', 'Failed to authenticate: $e');
     }
   }
 
