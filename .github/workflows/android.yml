@@ -42,6 +42,17 @@ jobs:
         with:
           channel: beta
           cache: true
+      
+      - name: Configure Android local.properties
+        run: |
+          {
+            echo "flutter.sdk=$FLUTTER_ROOT"
+            if [ -n "${ANDROID_SDK_ROOT:-}" ]; then
+              echo "sdk.dir=$ANDROID_SDK_ROOT"
+            elif [ -n "${ANDROID_HOME:-}" ]; then
+              echo "sdk.dir=$ANDROID_HOME"
+            fi
+          } > android/local.properties
 
       - name: Install dependencies
         run: flutter pub get
