@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:io';
+
 // Package imports:
 import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
@@ -25,6 +28,7 @@ Dio newGenericDio({
   Map<String, dynamic>? headers,
   ProxySettings? proxySettings,
   List<Interceptor>? additionalInterceptors,
+  bool skipCertificateVerification = false,
 }) {
   final dio =
       Dio(
@@ -41,6 +45,7 @@ Dio newGenericDio({
           userAgent: userAgent,
           protocolInfo: protocolInfo,
           proxy: proxySettings,
+          skipCertificateVerification: skipCertificateVerification,
         );
 
   dio.interceptors.add(ImageRequestDeduplicateInterceptor());
@@ -69,6 +74,7 @@ Dio newDio({
     protocolInfo: options.networkProtocolInfo,
     proxySettings: options.proxySettings,
     additionalInterceptors: additionalInterceptors,
+    skipCertificateVerification: options.skipCertificateVerification,
   );
 
   final context = navigatorKey.currentContext;
@@ -89,16 +95,22 @@ HttpClientAdapter _createHttpClientAdapter({
   String? userAgent,
   NetworkProtocolInfo? protocolInfo,
   ProxySettings? proxy,
+  bool skipCertificateVerification = false,
 }) {
   final config = HttpAdapterConfig.fromContext(
     protocolInfo: protocolInfo,
     proxySettings: proxy,
     logger: logger,
     userAgent: userAgent,
+    skipCertificateVerification: skipCertificateVerification,
   );
 
   return switch (config) {
-    DefaultAdapterConfig(:final logger) => _createDefaultAdapter(logger),
+    DefaultAdapterConfig(
+      :final logger,
+      :final skipCertificateVerification,
+    ) =>
+      _createDefaultAdapter(logger, skipCertificateVerification),
     ProxyAdapterConfig(:final proxySettings, :final logger) =>
       _createProxyAdapter(proxySettings, logger),
     NativeAdapterConfig(:final userAgent, :final logger) =>
@@ -107,7 +119,21 @@ HttpClientAdapter _createHttpClientAdapter({
   };
 }
 
-HttpClientAdapter _createDefaultAdapter(Logger? logger) {
+HttpClientAdapter _createDefaultAdapter(
+  Logger? logger,
+  bool skipCertificateVerification,
+) {
+  if (skipCertificateVerification) {
+    logger?.info('Network', 'Using default adapter (skip cert verification)');
+    return IOHttpClientAdapter(
+      createHttpClient: () {
+        final client = HttpClient();
+        client.badCertificateCallback = (cert, host, port) => true;
+        return client;
+      },
+    );
+  }
+
   logger?.info('Network', 'Using default adapter');
   return HttpClientAdapter();
 }
@@ -132,7 +158,7 @@ HttpClientAdapter _createNativeAdapter(String? userAgent, Logger? logger) {
       'Network',
       'Native adapter failed, falling back to default: $e',
     );
-    return _createDefaultAdapter(logger);
+    return _createDefaultAdapter(logger, false);
   }
 }
 

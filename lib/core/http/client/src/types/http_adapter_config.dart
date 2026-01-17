@@ -14,6 +14,7 @@ sealed class HttpAdapterConfig extends Equatable {
     required ProxySettings? proxySettings,
     required Logger? logger,
     required String? userAgent,
+    bool skipCertificateVerification = false,
   }) {
     if (proxySettings != null &&
         proxySettings.enable &&
@@ -21,6 +22,15 @@ sealed class HttpAdapterConfig extends Equatable {
       return ProxyAdapterConfig(
         proxySettings: proxySettings,
         logger: logger,
+      );
+    }
+
+    // If skipping certificate verification, use the default adapter with
+    // custom certificate handling
+    if (skipCertificateVerification) {
+      return DefaultAdapterConfig(
+        logger: logger,
+        skipCertificateVerification: true,
       );
     }
 
@@ -43,12 +53,14 @@ sealed class HttpAdapterConfig extends Equatable {
 class DefaultAdapterConfig extends HttpAdapterConfig {
   const DefaultAdapterConfig({
     required this.logger,
+    this.skipCertificateVerification = false,
   });
 
   final Logger? logger;
+  final bool skipCertificateVerification;
 
   @override
-  List<Object?> get props => [logger];
+  List<Object?> get props => [logger, skipCertificateVerification];
 }
 
 class ProxyAdapterConfig extends HttpAdapterConfig {

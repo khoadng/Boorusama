@@ -4,6 +4,7 @@ import 'package:equatable/equatable.dart';
 enum AppErrorType {
   cannotReachServer,
   handshakeFailed,
+  certificateError,
   loadDataFromServerFailed,
 }
 

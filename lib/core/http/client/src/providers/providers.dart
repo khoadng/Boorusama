@@ -32,6 +32,9 @@ final defaultDioProvider = Provider.family<Dio, BooruConfigAuth>((ref, config) {
       ),
       baseUrl: config.url,
       proxySettings: config.proxySettings,
+      skipCertificateVerification:
+          config.networkSettings?.httpSettings?.skipCertificateVerification ??
+          false,
     ),
     additionalInterceptors: [
       ref.watch(defaultSlidingWindowRateLimitConfigInterceptorProvider),

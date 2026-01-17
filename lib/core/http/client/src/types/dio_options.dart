@@ -12,6 +12,7 @@ class DioOptions {
     required this.networkProtocolInfo,
     required this.baseUrl,
     this.proxySettings,
+    this.skipCertificateVerification = false,
   });
 
   final HttpProtectionHandler ddosProtectionHandler;
@@ -20,4 +21,5 @@ class DioOptions {
   final Logger loggerService;
   final NetworkProtocolInfo networkProtocolInfo;
   final ProxySettings? proxySettings;
+  final bool skipCertificateVerification;
 }

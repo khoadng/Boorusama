@@ -40,6 +40,7 @@ enum HttpProtocolOption {
 class HttpSettings extends Equatable {
   const HttpSettings({
     this.protocol,
+    this.skipCertificateVerification,
   });
 
   static HttpSettings? tryParse(dynamic data) {
@@ -49,27 +50,37 @@ class HttpSettings extends Equatable {
       final String str => switch (tryDecodeJson(str).getOrElse((_) => null)) {
         final Map<String, dynamic> json => HttpSettings(
           protocol: json['protocol'] as String?,
+          skipCertificateVerification:
+              json['skipCertificateVerification'] as bool?,
         ),
         _ => null,
       },
       final Map<String, dynamic> json => HttpSettings(
         protocol: json['protocol'] as String?,
+        skipCertificateVerification:
+            json['skipCertificateVerification'] as bool?,
       ),
       _ => null,
     };
   }
 
   final String? protocol;
+  final bool? skipCertificateVerification;
 
   HttpProtocolOption get protocolOption => HttpProtocolOption.parse(protocol);
 
   HttpSettings copyWith({
     String? Function()? protocol,
+    bool? Function()? skipCertificateVerification,
   }) {
     return HttpSettings(
       protocol: switch (protocol) {
         final fn? => fn(),
         null => this.protocol,
+      },
+      skipCertificateVerification: switch (skipCertificateVerification) {
+        final fn? => fn(),
+        null => this.skipCertificateVerification,
       },
     );
   }
@@ -77,11 +88,12 @@ class HttpSettings extends Equatable {
   Map<String, dynamic> toJson() {
     return {
       'protocol': ?protocol,
+      'skipCertificateVerification': ?skipCertificateVerification,
     };
   }
 
   String toJsonString() => jsonEncode(toJson());
 
   @override
-  List<Object?> get props => [protocol];
+  List<Object?> get props => [protocol, skipCertificateVerification];
 }
