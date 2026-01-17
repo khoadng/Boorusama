@@ -67,10 +67,12 @@ class SliverPostGrid<T extends Post> extends StatelessWidget {
                   onRetry: switch (e.type) {
                     AppErrorType.cannotReachServer ||
                     AppErrorType.loadDataFromServerFailed => _onErrorRetry,
-                    AppErrorType.handshakeFailed => null,
+                    AppErrorType.handshakeFailed ||
+                    AppErrorType.certificateError => null,
                   },
                   altAction: switch (e.type) {
-                    AppErrorType.handshakeFailed
+                    AppErrorType.handshakeFailed ||
+                    AppErrorType.certificateError
                         when httpHandshakeErrorActionBuilder != null =>
                       httpHandshakeErrorActionBuilder!(context, e),
                     _ => null,

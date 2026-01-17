@@ -14,6 +14,14 @@ bool _isHandshakeException(Object? error) {
       errorStr.contains('tlsv1_alert_no_application_protocol');
 }
 
+bool _isCertificateException(Object? error) {
+  final errorStr = error.toString().toLowerCase();
+  return errorStr.contains('certificate') ||
+      errorStr.contains('cert_') ||
+      errorStr.contains('ssl_error') ||
+      errorStr.contains('tlsv1_alert');
+}
+
 TaskEither<BooruError, T> tryFetchRemoteData<T>({
   required DataFetcher<T> fetcher,
 }) => TaskEither.tryCatch(
@@ -22,6 +30,10 @@ TaskEither<BooruError, T> tryFetchRemoteData<T>({
     DioException(:final response?) => ServerError(
       httpStatusCode: response.statusCode,
       message: response.data,
+    ),
+    DioException(:final error?) when _isCertificateException(error) => AppError(
+      type: AppErrorType.certificateError,
+      message: error.toString(),
     ),
     DioException(:final error?) when _isHandshakeException(error) => AppError(
       type: AppErrorType.handshakeFailed,

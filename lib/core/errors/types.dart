@@ -22,6 +22,8 @@ class DefaultAppErrorTranslator implements AppErrorTranslator {
           '${context.t.search.errors.cannot_reach_server}\n\n${error.message}',
         AppErrorType.handshakeFailed =>
           context.t.search.errors.handshake_failed,
+        AppErrorType.certificateError =>
+          context.t.search.errors.certificate_error,
         AppErrorType.loadDataFromServerFailed =>
           context.t.search.errors.failed_to_load_data,
       };
