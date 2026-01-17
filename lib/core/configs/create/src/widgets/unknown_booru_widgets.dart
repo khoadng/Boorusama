@@ -17,6 +17,7 @@ class DefaultUnknownBooruWidgets extends StatelessWidget {
   Widget build(BuildContext context) {
     return const UnknownBooruWidgetsBuilder(
       httpProtocolField: HttpProtocolOptionTile(),
+      skipCertField: SkipCertificateVerificationTile(),
       loginField: DefaultBooruLoginField(),
       apiKeyField: DefaultBooruApiKeyField(),
     );
@@ -32,6 +33,7 @@ class AnonUnknownBooruWidgets extends StatelessWidget {
   Widget build(BuildContext context) {
     return const UnknownBooruWidgetsBuilder(
       httpProtocolField: HttpProtocolOptionTile(),
+      skipCertField: SkipCertificateVerificationTile(),
     );
   }
 }
@@ -43,6 +45,7 @@ class UnknownBooruWidgetsBuilder extends StatelessWidget {
     this.loginField,
     this.apiKeyField,
     this.httpProtocolField,
+    this.skipCertField,
     this.submitButton,
     this.credentialsNeeded = false,
   });
@@ -51,6 +54,7 @@ class UnknownBooruWidgetsBuilder extends StatelessWidget {
   final Widget? loginField;
   final Widget? apiKeyField;
   final Widget? httpProtocolField;
+  final Widget? skipCertField;
   final Widget? submitButton;
   final bool credentialsNeeded;
 
@@ -58,7 +62,10 @@ class UnknownBooruWidgetsBuilder extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final hasCredentialFields = loginField != null || apiKeyField != null;
-    final hasAdvancedOptions = hasCredentialFields || httpProtocolField != null;
+    final hasAdvancedOptions =
+        hasCredentialFields ||
+        httpProtocolField != null ||
+        skipCertField != null;
 
     return Column(
       children: [
@@ -85,6 +92,10 @@ class UnknownBooruWidgetsBuilder extends StatelessWidget {
                   const SizedBox(height: 16),
                 ],
                 if (httpProtocolField case final Widget field) ...[
+                  field,
+                  const SizedBox(height: 16),
+                ],
+                if (skipCertField case final Widget field) ...[
                   field,
                   const SizedBox(height: 16),
                 ],

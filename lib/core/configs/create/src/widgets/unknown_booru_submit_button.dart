@@ -43,6 +43,11 @@ class UnknownBooruSubmitButton extends ConsumerWidget {
     final url = ref.watch(
       editBooruConfigProvider(editId).select((value) => value.url),
     );
+    final networkSettings = ref.watch(
+      editBooruConfigProvider(editId).select(
+        (value) => value.networkSettingsTyped,
+      ),
+    );
     final engine = ref.watch(booruEngineProvider);
     final effectiveValidate = validate ?? _defaultValidate;
 
@@ -80,7 +85,15 @@ class UnknownBooruSubmitButton extends ConsumerWidget {
                         : Text(context.t.generic.action.verify),
                   ),
                 )
-              : _buildVerifyButton(context, isValid, ref, engine, url, auth),
+              : _buildVerifyButton(
+                  context,
+                  isValid,
+                  ref,
+                  engine,
+                  url,
+                  auth,
+                  networkSettings,
+                ),
           loading: () => CreateBooruSubmitButton(
             fill: true,
             backgroundColor: Theme.of(context).colorScheme.hintColor,
@@ -100,6 +113,7 @@ class UnknownBooruSubmitButton extends ConsumerWidget {
             engine,
             url,
             auth,
+            networkSettings,
             forceRefresh: true,
           ),
         );
@@ -111,7 +125,8 @@ class UnknownBooruSubmitButton extends ConsumerWidget {
     WidgetRef ref,
     BooruType? engine,
     String? url,
-    AuthConfigData auth, {
+    AuthConfigData auth,
+    NetworkSettings? networkSettings, {
     bool forceRefresh = false,
   }) {
     return CreateBooruSubmitButton(
@@ -136,6 +151,7 @@ class UnknownBooruSubmitButton extends ConsumerWidget {
                         .copyWith(
                           login: auth.login,
                           apiKey: auth.apiKey,
+                          networkSettings: () => networkSettings,
                         )
                         .auth;
               });

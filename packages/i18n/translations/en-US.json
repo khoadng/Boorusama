@@ -243,6 +243,7 @@
       "cannot_reach_server": "Cannot reach server, please check your connection",
       "failed_to_load_data": "Failed to load data from server, please try again later",
       "handshake_failed": "Connection failed, server compatibility issue",
+      "certificate_error": "Certificate error. The server may be using a self-signed certificate. Try using HTTP instead of HTTPS, or install the certificate on your device.",
       "tag_limit": "Maximum tag limit reached. Upgrade your account to search for more tags at once.",
       "database_timeout": "Your search took too long to execute and was cancelled.",
       "rate_limited": "You're being rate limited. Please try again later",
@@ -915,7 +916,11 @@
       },
       "http": {
         "protocol": "HTTP Protocol",
-        "protocol_description": "Changing the HTTP protocol may help with compatibility or performance on certain sites or platforms."
+        "protocol_description": "Changing the HTTP protocol may help with compatibility or performance on certain sites or platforms.",
+        "skip_cert_verification": "Skip certificate verification",
+        "skip_cert_verification_description": "Enable for self-signed certificates (e.g., local servers)",
+        "skip_cert_verification_warning_title": "Security Warning",
+        "skip_cert_verification_warning": "Certificate verification is disabled. Your connection may not be secure. Only use this for trusted local servers."
       }
     },
     "viewer": {
