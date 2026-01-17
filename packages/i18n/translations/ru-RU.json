@@ -60,13 +60,15 @@
     "fail_to_load_profile": "Не удается загрузить профиль",
     "tabs": {
       "changes": "Изменения",
-      "info": "Инфо"
+      "info": "Инфо",
+      "uploads": "Загрузки"
     },
     "activity": {
       "title": "Активность",
       "tag_edits": "Редактирование тегов",
       "comments": "Комментарии",
-      "forum_posts": "Посты на форуме"
+      "forum_posts": "Посты на форуме",
+      "note_edits": "Изменить заметки"
     },
     "feedback": {
       "title": "Отзывы",
@@ -130,7 +132,8 @@
         "artist_posts": "Посты художника",
         "character_list": "Список персонажей",
         "source": "Источник"
-      }
+      },
+      "uploader": "Автор"
     },
     "action": {
       "view_comments": "Просмотреть комментарии",
@@ -695,7 +698,8 @@
     "last_updated": "Последние обновленныё",
     "name": "Имя",
     "name_asc": "Имя (A-Z)",
-    "name_desc": "Имя (Z-A)"
+    "name_desc": "Имя (Z-A)",
+    "count": "По числу"
   },
   "reminder": {
     "dont_show_again": "Больше не показывать"
