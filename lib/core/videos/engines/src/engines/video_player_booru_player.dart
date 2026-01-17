@@ -14,14 +14,35 @@ import '../types/video_engine.dart';
 import '../types/video_source.dart';
 import 'fvp_manager.dart';
 
+typedef VideoControllerFactory =
+    VideoPlayerController Function(
+      VideoSource source,
+      VideoConfig? config,
+    );
+
+VideoPlayerController _defaultControllerFactory(
+  VideoSource source,
+  VideoConfig? config,
+) {
+  return VideoPlayerController.networkUrl(
+    Uri.parse(source.url),
+    httpHeaders: config?.headers ?? {},
+  );
+}
+
 class VideoPlayerBooruPlayer implements BooruPlayer {
   VideoPlayerBooruPlayer({
     required this.wakelock,
     this.videoPlayerEngine = VideoPlayerEngine.auto,
-  });
+    @visibleForTesting VideoControllerFactory? controllerFactory,
+    @visibleForTesting bool skipFvpInit = false,
+  }) : _controllerFactory = controllerFactory ?? _defaultControllerFactory,
+       _skipFvpInit = skipFvpInit;
 
   final VideoPlayerEngine videoPlayerEngine;
   final Wakelock wakelock;
+  final VideoControllerFactory _controllerFactory;
+  final bool _skipFvpInit;
 
   VideoPlayerController? _controller;
   Timer? _positionTimer;
@@ -66,10 +87,8 @@ class VideoPlayerBooruPlayer implements BooruPlayer {
     VideoSource source,
     VideoConfig? config,
   ) {
-    return VideoPlayerController.networkUrl(
-      Uri.parse(source.url),
-      httpHeaders: config?.headers ?? {},
-    )..addListener(_onVideoPlayerChanged);
+    return _controllerFactory(source, config)
+      ..addListener(_onVideoPlayerChanged);
   }
 
   Future<void> _setupController(VideoPlayerController controller) async {
@@ -85,7 +104,9 @@ class VideoPlayerBooruPlayer implements BooruPlayer {
   }) async {
     if (_isDisposed) throw StateError('Player has been disposed');
 
-    FvpManager().ensureInitialized(videoPlayerEngine);
+    if (!_skipFvpInit) {
+      FvpManager().ensureInitialized(videoPlayerEngine);
+    }
 
     final controller = _createController(source, config);
     _controller = controller;
@@ -108,10 +129,10 @@ class VideoPlayerBooruPlayer implements BooruPlayer {
 
     _controller = controller;
 
-    // Dispose old controller in background
+    // Await old controller disposal to prevent race conditions with native resources
     if (oldController != null) {
       oldController.removeListener(_onVideoPlayerChanged);
-      unawaited((() => oldController.dispose())());
+      await oldController.dispose();
     }
   }
 
