@@ -551,6 +551,9 @@
           "running": "Rodando"
         },
         "how_to_transfer": "Como transferir"
+      },
+      "version_mismatch": {
+        "confirmation_question": "A versão do aplicativo do dispositivo que você está tentando importar é diferente da versão atual do aplicativo. Isso pode causar problemas de compatibilidade e potencial perda de dados.\n\nTem certeza de que quer continuar?"
       }
     },
     "image_details": {
@@ -570,7 +573,20 @@
       "accessibility": "Acessibilidade",
       "reverseBooruConfigSelectorScrollDirection": "Reverter direção de scroll dos perfis booru",
       "swipeAreaToOpenSidebar": "Área de deslize da barra lateral",
-      "swipeAreaToOpenSidebarDescription": "Tamanho da área na esquerda que pode ser usada para deslizar. Valores altos irão impedir gestos horizontais como o gesto de deslize de paginação."
+      "swipeAreaToOpenSidebarDescription": "Tamanho da área na esquerda que pode ser usada para deslizar. Valores altos irão impedir gestos horizontais como o gesto de deslize de paginação.",
+      "reduce_animations": "Reduzir animações",
+      "reduce_animations_description": "Algumas funcionalidades podem não funcionar como esperado quando isso estiver habilitado.",
+      "volume_navigation": "Usar teclas de volume para navegação",
+      "volume_navigation_description": "Navegar entre posts usando as teclas de volume enquanto estiver no visualizador de imagens.",
+      "haptic_feedback": {
+        "haptic_feedback": "Feedback háptico",
+        "haptic_feedback_level": {
+          "none": "Nenhum",
+          "subtle": "Sutil",
+          "standard": "Padrão",
+          "playful": "Animado"
+        }
+      }
     },
     "booru_settings": {
       "edit_current_profile": "Editar perfil atual",
@@ -584,7 +600,27 @@
     "feature_request_and_bug_report": "Pedir funções e relatar bugs",
     "feature_request_and_bug_report_description": "Sugira funções ou relate um bug pelo repositório no Github",
     "open_app_settings": "Abrir configuração",
-    "need_more_questions": "Precisa de mais?"
+    "need_more_questions": "Precisa de mais?",
+    "auto_backup": {
+      "enable_auto_backup": "Habilitar Backup Automático",
+      "backup_frequency": "Frequência de Backup",
+      "backup_location": "Localização do Backup",
+      "maximum_backups": "Backups máximos",
+      "frequency": {
+        "daily": "Diário",
+        "weekly": "Semanal"
+      },
+      "backup_count": {
+        "one": "$n backup",
+        "other": "$n backups"
+      },
+      "change": "Mudar",
+      "last_backup": "Último backup: $lastBackup",
+      "backup_needed": "Backup necessário",
+      "up_to_date": "Atualizado",
+      "backing_up": "Fazendo backup...",
+      "backup_now": "Fazer Backup Agora"
+    }
   },
   "blacklisted_tags": {
     "remove": "Remover",

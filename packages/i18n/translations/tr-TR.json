@@ -14,9 +14,25 @@
       "cancel": "İptal",
       "duplicate": "Çoğalt",
       "select": "Seç",
-      "view": "Görünüm"
+      "view": "Görünüm",
+      "save": "Kaydet",
+      "verify": "Doğrula",
+      "retry": "Tekrar dene",
+      "clear": "Temizle",
+      "create": "Oluştur",
+      "reset": "Sıfırla",
+      "more": "Daha",
+      "apply": "Uygula",
+      "show_all": "Hepsini göster",
+      "show_less": "Daha az göster",
+      "search": "Ara",
+      "view_all": "Hepsini görüntüle"
     },
-    "copied": "Kopyalandı"
+    "copied": "Kopyalandı",
+    "warning": "Uyarı",
+    "default": "Varsayılan",
+    "version": "Versiyon $version",
+    "app_restart_request": "Değişikliğin uygulanması için yeniden başlatmanız gerek"
   },
   "profile": {
     "favorites": "Favoriler",
@@ -24,6 +40,13 @@
     "copy_user_id": "Kullanıcı kimliğini kopyala",
     "messages": {
       "title": "Mesajlar"
+    },
+    "fail_to_load_profile": "Profil yüklenemedi",
+    "previous_names": "Önceki isimler",
+    "tabs": {
+      "info": "Bilgi",
+      "uploads": "Yüklemeler",
+      "changes": "Değişiklikler"
     }
   },
   "network": {
@@ -167,5 +190,17 @@
     "actions": {
       "add_to_blacklist": "Karalisteye ekle"
     }
+  },
+  "reminder": {
+    "dont_show_again": "Tekrar gösterme"
+  },
+  "sort": {
+    "sort_by": "Sırala",
+    "name": "İsim",
+    "name_asc": "İsim (A-Z)",
+    "name_desc": "İsim (Z-A)",
+    "recently_added": "Yakınlarda eklendi",
+    "recently_updated": "Yakınlarda güncellendi",
+    "recently_created": "Yakınlarda oluşturuldu"
   }
 }

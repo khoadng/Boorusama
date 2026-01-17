@@ -462,7 +462,8 @@
       "qualities": {
         "original": "Оригінальна",
         "sample": "Зразок",
-        "preview": "Стиснуте"
+        "preview": "Стиснуте",
+        "large": "Великий"
       },
       "title": "Завантажити",
       "skip_existing_files": "Пропустити існуючі файли",
