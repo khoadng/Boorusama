@@ -51,7 +51,11 @@
       },
       "sender": "发送者",
       "recipient": "接受者",
-      "date": "时间"
+      "date": "时间",
+      "unread_message_notice": {
+        "one": "您有 $n 条未读消息",
+        "other": "您有 $n 条未读消息"
+      }
     },
     "fail_to_load_profile": "加载配置失败",
     "previous_names": "曾用名",
@@ -88,7 +92,8 @@
       "more": "更多",
       "related": "相关的",
       "add_to_current_search": "添加到当前搜索",
-      "open_wiki": "打开维基"
+      "open_wiki": "打开维基",
+      "negate_from_current_search": "从当前搜索中排除"
     }
   },
   "post": {
@@ -116,13 +121,72 @@
       "source_label": "来源",
       "related_posts": "相关帖子",
       "add_to_bookmark": "添加到书签",
-      "remove_from_bookmark": "从书签移除"
+      "remove_from_bookmark": "从书签移除",
+      "duration": "时长",
+      "uploader": "上传者",
+      "approver": "审核者",
+      "artist": "艺术家",
+      "show_n_more": "显示其余 $n 项",
+      "show_less": "收起",
+      "widgets": {
+        "toolbar": "工具栏",
+        "tags": "标签",
+        "info_panel": "信息面板",
+        "file_details": "文件详情",
+        "pool": "图集",
+        "artist_info": "艺术家信息",
+        "stats": "统计",
+        "comments": "评论",
+        "artist_posts": "艺术家帖子",
+        "related_posts": "相关帖子",
+        "character_list": "角色列表",
+        "uploader_posts": "上传者上传",
+        "source": "来源"
+      }
     },
     "action": {
       "view_comments": "查看评论",
       "add_to_favorite_group": "添加到喜爱组",
       "view_in_browser": "在浏览器中打开",
-      "view_original": "显示原图"
+      "view_original": "显示原图",
+      "share": "分享",
+      "bookmark": "书签",
+      "favorite": "收藏",
+      "unfavorite": "取消收藏",
+      "upvote": "点赞",
+      "downvote": "点踩",
+      "view_artist": "查看艺术家",
+      "view_tags": "查看标签",
+      "view_tag_history": "查看标签历史",
+      "copy_image": "复制图像",
+      "slideshow": "幻灯片",
+      "none": "无",
+      "edit": "编辑",
+      "use_default": "使用默认",
+      "toggle_bookmark": "切换书签",
+      "toggle_favorite": "切换收藏"
+    },
+    "statistics": {
+      "stats_for_nerds": "极客统计",
+      "average": "平均",
+      "highest": "最高",
+      "lowest": "最低",
+      "median": "中位数",
+      "25th_percentile": "25%分位数",
+      "75th_percentile": "75%分位数",
+      "90th_percentile": "90%分位数"
+    },
+    "votes": {
+      "user_list": {
+        "title": "投票者",
+        "disclaimer": "不显示反对票和私人投票。"
+      }
+    },
+    "favorites": {
+      "user_list": {
+        "title": "收藏者",
+        "disclaimer": "仅显示公开收藏。"
+      }
     }
   },
   "comment": {
@@ -151,7 +215,14 @@
     "most_viewed": "最多观看",
     "see_more": "查看更多",
     "explore": "探索",
-    "new": "新的"
+    "new": "新的",
+    "top": "热门",
+    "daily": "每日",
+    "weekly": "每周",
+    "newest": "最新",
+    "oldest": "最旧",
+    "random": "随机",
+    "ordered": "有序"
   },
   "search": {
     "errors": {
@@ -163,7 +234,10 @@
       "down": "服务器宕机，请稍后再试",
       "access_denied": "权限不足",
       "forbidden": "授权失败",
-      "unknown": "未知服务器错误，请将此错误反馈给开发者"
+      "unknown": "未知服务器错误，请将此错误反馈给开发者",
+      "cannot_reach_server": "无法连接服务器，请检查您的连接",
+      "failed_to_load_data": "从服务器加载数据失败，请稍后重试",
+      "handshake_failed": "连接失败，服务器兼容性问题"
     },
     "hint": "搜索...",
     "no_result": "我们搜遍了，但是没找到任何结果。",
@@ -179,7 +253,8 @@
       "other": "$n 个结果"
     },
     "no_result_notice": "啥都木有",
-    "search_in_progress_notice": "搜索…"
+    "search_in_progress_notice": "搜索…",
+    "raw_query": "原始查询"
   },
   "pool": {
     "pool": "图集",
@@ -199,6 +274,12 @@
     },
     "detail": {
       "last_updated": "最近更新"
+    },
+    "pools": "图集",
+    "no_cover_image": "无封面图像",
+    "counter": {
+      "one": "图集",
+      "other": "图集"
     }
   },
   "settings": {
@@ -218,7 +299,10 @@
       "booru_config_label_options": {
         "always": "总是",
         "never": "从不"
-      }
+      },
+      "customize": "自定义",
+      "auto_play_gif": "自动播放GIF",
+      "blur_explicit_media": "模糊敏感内容"
     },
     "general": "通用",
     "search": {
@@ -268,7 +352,8 @@
         "low": "低",
         "original": "原图",
         "automatic": "自动",
-        "highest": "最高的"
+        "highest": "最高的",
+        "auto": "自动"
       },
       "spacing": "间距",
       "corner_radius": "圆角",
@@ -288,7 +373,39 @@
       "slideshow_skip": "跳过放映动画",
       "slideshow_interval_explanation": "选值低于1秒会自动跳过放映动画",
       "mute_video": "视频默认静音",
-      "video_section_title": "视频"
+      "video_section_title": "视频",
+      "slideshow_video_behavior": "幻灯片视频行为",
+      "slideshow_video_behavior_explanation": "决定幻灯片在切换时如何处理视频。",
+      "slideshow_video_behaviors": {
+        "wait_for_completion": "等待完成",
+        "wait_for_completion_description": "等待视频完成后再切换到下一张幻灯片",
+        "fixed_interval": "固定间隔",
+        "fixed_interval_description": "在固定间隔后切换，即使视频仍在播放"
+      },
+      "swipe_mode": "滑动模式",
+      "swipe_mode_disclaimer": "某些自定义手势可能无法在所有模式下工作",
+      "swipe_modes": {
+        "horizontal": "水平",
+        "horizontal_description": "画廊风格的左右滑动。类似于照片画廊和媒体应用。",
+        "vertical": "垂直",
+        "vertical_description": "TikTok风格的上下滑动。在短视频平台上流行。仅限纵向模式。"
+      },
+      "double_tap_seek": "双击跳转",
+      "manage_cache": "管理缓存",
+      "enable_video_cache": "启用视频缓存",
+      "enable_video_cache_description": "在流式传输时下载视频并缓存，以减少数据使用量并在后续查看时加快播放速度。",
+      "video": {
+        "video_player_engine": "视频播放器引擎",
+        "engine": {
+          "auto": "自动",
+          "auto_description": "根据您的设备能力自动选择最佳引擎。",
+          "default": "默认",
+          "default_description": "适用于大多数设备，但可能与某些视频格式或较旧设备有问题。",
+          "mdk_description": "加载速度快，对某些视频格式性能更好，但不稳定且可能导致崩溃。",
+          "mpv_description": "格式支持和性能良好，但加载时间较慢",
+          "webview_description": "兼容性好，但资源使用高且性能差，作为最后手段使用。"
+        }
+      }
     },
     "language": {
       "language": "语言",
@@ -303,7 +420,19 @@
       "dynamic_color_mobile_description": "将主题颜色与壁纸同步",
       "dynamic_color_desktop_description": "将主题颜色与系统强调色同步",
       "dynamic_color_unsupported_description": "该设备不支持动态颜色。",
-      "system": "跟随系统"
+      "system": "跟随系统",
+      "viewer": {
+        "colors": "颜色",
+        "color_variants": "颜色变体",
+        "dark_mode": "暗色模式",
+        "harmonize_colors": "颜色协调",
+        "harmonize_colors_description": "调整标签颜色以匹配强调色",
+        "groups": {
+          "basic": "基本",
+          "builtin": "内置",
+          "accent": "强调色"
+        }
+      }
     },
     "privacy": {
       "privacy": "隐私",
@@ -331,20 +460,114 @@
       "qualities": {
         "original": "原图",
         "sample": "例图",
-        "preview": "缩略图"
+        "preview": "缩略图",
+        "large": "大"
       },
-      "title": "下载"
+      "title": "下载",
+      "skip_existing_files": "跳过现有文件",
+      "skip_existing_files_explanation": "这将防止下载文件夹中已存在的文件。当您不想多次下载同一文件时很有用。"
     },
     "help_us_translate": "帮助我们翻译",
     "other_settings": "其他设置",
     "data_and_storage": {
       "data_and_storage": "数据和存储",
-      "clear_cache_on_start_up": "启动时清理图片缓存"
+      "clear_cache_on_start_up": "启动时清理图片缓存",
+      "cache": "缓存",
+      "data": "数据",
+      "all_cache": "所有缓存",
+      "tag_cache": "标签缓存",
+      "image_only_cache": "仅图像缓存",
+      "video_cache": "视频缓存",
+      "video_cache_limit": "视频缓存限制",
+      "video_cache_limit_description": "视频缓存存储的最大大小",
+      "no_limit": "无限制",
+      "bookmark_images": "书签图像",
+      "loading": "加载中...",
+      "storage": "存储",
+      "disk_space": {
+        "status_title": "剩余 $freeSpace（共 $totalSpace）",
+        "groups": {
+          "system": "系统",
+          "images": "图像",
+          "videos": "视频",
+          "others": "其他",
+          "free": "剩余"
+        }
+      },
+      "error_loading_cache_info": "加载缓存信息出错"
     },
     "backup_and_restore": {
       "backup_and_restore": "备份与恢复",
       "import": "导入",
-      "export": "导出"
+      "export": "导出",
+      "advanced_backup": "高级备份",
+      "exporting": "导出中...",
+      "export_to_clipboard": "导出到剪贴板",
+      "import_from_clipboard": "从剪贴板导入",
+      "no_sources_selected": "未选择来源",
+      "export_success": "{source} 导出成功",
+      "export_failed": "导出 {source} 失败：{error}",
+      "import_success": "{source} 导入成功",
+      "import_failed": "导入 {source} 失败：{error}",
+      "transfer_data": "传输数据",
+      "send": "发送",
+      "receive": "接收",
+      "backup_data": "备份数据",
+      "advanced_export_import": "高级导出/导入",
+      "auto_backup": "自动备份",
+      "auto_backup_tooltip": "备份在您打开应用时创建。应用关闭时不会进行备份。",
+      "backup_in_progress": "备份已在进行中",
+      "export_operation_failed": "导出失败：{error}",
+      "import_operation_failed": "导入失败：{error}",
+      "export_partial_success": "已导出 {exported}/{total} 个项目。{failed} 个失败。",
+      "export_complete_success": "成功导出 {exported} 个项目",
+      "export_no_items": "导出失败：无项目可导出",
+      "import_results": "导入完成：{results}",
+      "import_no_items": "导入失败：无项目可导入",
+      "imported_count": "已导入 {count} 个",
+      "skipped_count": "已跳过 {count} 个",
+      "failed_count": "失败 {count} 个",
+      "invalid_location_error": "无法导出到此位置，请尝试使用“下载”或“文档”文件夹。如果不存在请创建一个。",
+      "invalid_backup_format_error": "无效的备份格式",
+      "never": "从未",
+      "receive_data": {
+        "title": "接收数据",
+        "nearby_devices": "附近设备",
+        "no_devices_found(rich)": "未找到设备。请先在其他设备上开始传输。\n\n点击${tapHere(_)}通过IP地址手动添加。",
+        "ip_address": "IP 地址",
+        "errors": {
+          "not_empty": "IP 地址不能为空",
+          "port_required": "IP 地址必须包含端口",
+          "invalid": "无效的 IP 地址"
+        },
+        "choose_data_to_import": "选择要导入的数据"
+      },
+      "send_data": {
+        "name": "名称",
+        "version": "版本",
+        "status": {
+          "title": "状态",
+          "broadcasting": "广播中",
+          "stopped": "已停止",
+          "running": "运行中"
+        },
+        "how_to_transfer": "如何传输",
+        "how_to_send(rich)": "• 在接收设备上，进入 ${settings(_)}\n• 选择 ${receive(_)} 开始从本设备导入数据\n• 请保持当前页面，直到传输完成",
+        "disclaimer": "由于安全限制，传输可能无法在公共 WiFi 网络（咖啡店、图书馆）上工作。请使用私有网络，如您的家庭 WiFi。",
+        "no_networks_error": "需要 WiFi 连接才能传输数据。请连接到 WiFi 网络后重试。"
+      },
+      "backward_import": {
+        "title": "检测到从旧版本导入",
+        "current_version": "当前版本",
+        "exported_version": "导出版本",
+        "reconfirm_question": "向后导入可能无法按预期工作，您确定吗？"
+      },
+      "version_mismatch": {
+        "title": "检测到从不同版本导入",
+        "current_version": "当前版本",
+        "imported_version": "导入版本",
+        "confirmation_question": "您尝试导入的设备应用版本与当前应用版本不同。这可能会导致兼容性问题和潜在的数据丢失。\n\n您确定要继续吗？"
+      }
     },
     "image_details": {
       "ui_overlay": {
@@ -372,7 +595,11 @@
           "standard": "标准",
           "playful": "明显"
         }
-      }
+      },
+      "reduce_animations": "减少动画",
+      "reduce_animations_description": "启用此功能后，某些特性可能无法按预期工作。",
+      "volume_navigation": "使用音量键导航",
+      "volume_navigation_description": "在图像查看器中使用音量键在帖子间导航。"
     },
     "booru_settings": {
       "edit_current_profile": "编辑当前资料",
@@ -385,7 +612,28 @@
     "contact_developer_description": "如果你有任何问题和建议，请通过该选项给我发送邮件（最好使用英文）",
     "feature_request_and_bug_report": "新功能请求和报告bug",
     "feature_request_and_bug_report_description": "通过Github仓库提交新功能建议或报告bug",
-    "open_app_settings": "打开设置"
+    "open_app_settings": "打开设置",
+    "need_more_questions": "需要更多？",
+    "auto_backup": {
+      "enable_auto_backup": "启用自动备份",
+      "backup_frequency": "备份频率",
+      "backup_location": "备份位置",
+      "maximum_backups": "最大备份数",
+      "frequency": {
+        "daily": "每日",
+        "weekly": "每周"
+      },
+      "backup_count": {
+        "one": "$n 个备份",
+        "other": "$n 个备份"
+      },
+      "change": "更改",
+      "last_backup": "上次备份：$lastBackup",
+      "backup_needed": "需要备份",
+      "up_to_date": "已是最新",
+      "backing_up": "备份中...",
+      "backup_now": "立即备份"
+    }
   },
   "blacklisted_tags": {
     "remove": "移除",
@@ -404,7 +652,33 @@
     "download": "下载",
     "invalid_folder_name_error": "文件夹不能包含以下字符： ",
     "folder_select_warning": "在Android 11+系统中，此应用只能将文件保存在内部公共路径<b>({0})</b>中。<br><br>有效保存位置示例：<br><b>[内部]</b> /storage/emulated/0/Download <br><b>[SD卡]</b> /storage/A1B2-C3D4/Download<br><br>请选择其他路径，若不存在请新建。<br>此设备版本为<b>{1}</b>。",
-    "storage_permission_explanation": "需要存储权限来保存文件。"
+    "storage_permission_explanation": "需要存储权限来保存文件。",
+    "downloads": "下载",
+    "retry_all": "全部重试",
+    "nothing_to_clear": "无内容可清除",
+    "no_active_sessions": "无活跃下载会话",
+    "nothing_to_show": "无内容显示，下载更新为空",
+    "notification": {
+      "started": "下载已开始"
+    },
+    "status": {
+      "in_progress": "进行中",
+      "pending": "待处理",
+      "paused": "已暂停",
+      "completed": "已完成",
+      "failed": "失败",
+      "canceled": "已取消",
+      "unknown": "未知"
+    },
+    "empty_states": {
+      "no_pending_downloads": "没有待下载的文件",
+      "no_paused_downloads": "无暂停下载",
+      "no_downloads_in_progress": "无进行中的下载",
+      "no_completed_downloads": "无已完成下载",
+      "no_canceled_downloads": "无已取消下载",
+      "no_failed_downloads": "无失败下载",
+      "no_downloads": "无下载"
+    }
   },
   "saved_search": {
     "saved_search": "预设搜索",
@@ -429,6 +703,10 @@
     "counter": {
       "one": "喜爱",
       "other": "喜爱"
+    },
+    "update": {
+      "success": "收藏已更新",
+      "failure": "更新收藏失败"
     }
   },
   "favorite_groups": {
@@ -454,7 +732,8 @@
     "group_item_counter": {
       "one": "$n 个提交",
       "other": "$n 个提交"
-    }
+    },
+    "drag_hint": "长按并拖动以重新排序"
   },
   "favorite_tags": {
     "favorites": "喜爱",
@@ -474,7 +753,9 @@
     "your_bookmarks": "书签",
     "your_blacklist": "黑名单",
     "bulk_download": "批量下载",
-    "get_support": "获取支持"
+    "get_support": "获取支持",
+    "download_manager": "下载管理器",
+    "home": "首页"
   },
   "dateRange": {
     "day": "日",
@@ -502,13 +783,175 @@
     "validation_missing_scheme": "\"{0}\" 未指明协议（比如https://）",
     "misc": "混杂",
     "authentication": {
-      "title": "授权"
+      "title": "授权",
+      "gelbooru": {
+        "basic_auth": "基本认证（必需）",
+        "basic_auth_description": "提供此信息使应用具有对您账户的读取访问权限。这是 Gelbooru 自 2025 年 6 月起要求的。",
+        "advanced_auth": "高级认证（可选）",
+        "advanced_auth_description": "提供此信息允许您编辑收藏并提供对您账户的写入访问权限。请注意，如果更改密码，您将需要重新登录。",
+        "fav_button_tooltip_title": "关于收藏按钮",
+        "fav_button_tooltip_description": "无法检查图像是否已被收藏。虽然您可以在收藏图像后看到视觉指示器，但当您重新启动应用时它将重置。别担心，您的收藏仍保存在网站上。"
+      }
     },
     "gestures": {
-      "title": "姿势"
+      "title": "姿势",
+      "override_notice": "覆盖此配置文件的默认手势，选择“无”以保留原始行为。"
     },
     "downloads": {
-      "title": "下载"
+      "title": "下载",
+      "leave_empty_to_use_global": "留空以使用设置中的下载位置。",
+      "custom_filename_format": "自定义文件名格式",
+      "custom_filename_format_invidual": "单个下载",
+      "custom_filename_format_bulk": "批量下载",
+      "bulk_slow_token_warning": "在批量下载中使用慢速令牌将在开始实际下载前需要很长时间预热，如果可能请考虑不使用它们。",
+      "filename": {
+        "available_tokens": "可用令牌： ",
+        "no_token_error": "令牌 $token 不可用",
+        "available_token_options": "可用选项",
+        "no_options_available": "无可用选项",
+        "slow_token_warning": "此令牌会减慢您的下载速度，因为它需要为每个文件获取额外数据。"
+      }
+    },
+    "api_key_instructions": {
+      "variants_1": "*在浏览器中登录您的账户，访问 <b><a href=\"api-credentials\">我的账户 > 选项 > API 访问凭证</a></b> 获取您的 API 密钥。如果看到空 API 密钥如 <b>&api_key=&user_id=<your_id></b>，勾选 <b>生成新密钥？</b> 并点击最底部的 <b>保存</b> 按钮生成新 API 密钥。否则，复制密钥并粘贴到上方字段中。您也可以复制 <b>API 访问凭证</b> 部分的整个字符串并点击下方按钮。",
+      "variants_2": "*在浏览器中登录您的账户，访问 <b>我的账户 > 选项 > API 访问凭证</b>。检查是否在那里。如果不在，该站点不支持凭证，您可以忽略此条。",
+      "variants_3": "*在浏览器中登录您的账户，访问 <b><a href=\"api-credentials\">我的账户 > API 密钥</a></b>。复制您的密钥或在需要时创建新密钥，确保启用所有权限以确保应用正常功能。",
+      "variants_4": "*在浏览器中登录您的账户，访问 <b>账户 > 登录令牌</b>。复制您的 <b>Web 登录令牌</b> 或在需要时创建新令牌并粘贴到此处。如果使用 <b>Web 登录令牌</b>，从浏览器注销将使令牌失效。",
+      "variants_5": "*在浏览器中登录您的账户，访问 <b><a href=\"api-credentials\">我的账户 > 选项 > API 访问凭证</a></b> 获取您的 API 密钥。复制密钥并粘贴到上方字段中。您也可以复制 <b>API 访问凭证</b> 部分的整个字符串并点击下方按钮。",
+      "shimmie2": {
+        "danbooru_api_extension_notice": "应用需要在站点上安装 <b>Danbooru Client API</b> 扩展才能正常运行。",
+        "user_api_key_notice": "应用需要在站点上安装 <b>User API Key</b> 扩展才能登录和访问私有内容。",
+        "view_extension_docs": "查看扩展文档"
+      }
+    },
+    "deletion": {
+      "title": "删除 '${profileName}'",
+      "confirmation": "您确定要删除此配置文件吗？此操作无法撤销。"
+    },
+    "invalid_booru_warning": "该站点似乎未在选定的引擎上运行。请尝试其他引擎。",
+    "invalid_selected_profile": "当前选定的配置文件无效",
+    "invalid_selected_profile_selection_request": "从下方列表中选择一个配置文件以继续",
+    "unknown_engine_selection_request": "选择一个 booru 引擎以继续",
+    "new_profile_leave_as_empty_tips": "不确定？保持原样，您可以稍后更改。",
+    "using_status": "使用 ${booru}",
+    "paste_from_clipboard": "从剪贴板粘贴",
+    "no_profiles_available": "无可用配置文件",
+    "add_profile_to_continue": "添加配置文件以继续",
+    "add_profile": "添加配置文件",
+    "unsaved_changes": "您有未保存的更改",
+    "unsaved_changes_discard": "不保存",
+    "content_filtering": {
+      "none": "无",
+      "moderate": "中等",
+      "aggressive": "严格",
+      "custom": "自定义"
+    },
+    "unsaved_changes_reconfirm_question": "您想保存更改吗？如果不保存，您的更改将丢失。",
+    "choose_a_custom_filtering": {
+      "one": "选择您想从搜索中排除的评级。",
+      "other": "选择您想从搜索中排除的评级。"
+    },
+    "hide_deleted_description": "隐藏低质量图像，一些不错的图像也可能被隐藏。",
+    "hide_banned_label": "隐藏被禁止的帖子",
+    "hide_banned_description": "完全隐藏被站点禁止的图像。",
+    "api_key": {
+      "auth_error": {
+        "edit_api_key": "编辑 API 密钥",
+        "empty_key_warning": "该站点可能要求您输入 API 密钥或密码以访问其内容。",
+        "invalid_key_warning": "检查您的 API 密钥或凭证，因为它们可能无效或已过期。"
+      }
+    },
+    "listing": {
+      "title": "列表",
+      "thumbnail_button": "缩略图按钮",
+      "thumbnail_button_description": "更改缩略图右下角的默认按钮。",
+      "tooltip_on_hover_title": "悬停时显示工具提示",
+      "tooltip_on_hover_description": "悬停在缩略图上时显示预览信息。",
+      "enable_profile_specific_settings": "启用配置文件的特定设置",
+      "enable_profile_specific_settings_description": "覆盖此配置文件的全局设置。如果启用，在禁用之前将忽略全局设置。",
+      "overridden_notice": "这些设置被自定义列表覆盖。请转到 <b><a href=\"booru-profiles\">配置文件的列表</a></b> 页面。"
+    },
+    "search": {
+      "title": "搜索",
+      "include_in_search": "在每次搜索中包含这些标签",
+      "exclude_from_search": "从每次搜索中排除这些标签",
+      "include_exclude_tooltip": "这些标签将附加到应用进行的每次搜索中，而不仅仅是您手动进行的搜索。",
+      "preview_tags": "预览",
+      "any_search_query": "<任何搜索查询>",
+      "enable_profile_specific_settings": "启用配置文件特定的黑名单",
+      "blacklist": "黑名单",
+      "empty_blacklist": "无标签",
+      "empty_blacklist_with_replace_notice": "使用替换模式的空黑名单将完全禁用黑名单。",
+      "blacklist_overridden": {
+        "replace_notice": "被 <b><a href=\"booru-profiles\">配置文件的黑名单</a></b> 设置替换。",
+        "merge_notice": "与 <b><a href=\"booru-profiles\">配置文件的黑名单</a></b> 设置合并。"
+      },
+      "blacklist_combine_mode": {
+        "title": "组合模式",
+        "merge": "合并",
+        "merge_description": "将此黑名单与其他黑名单合并。",
+        "replace": "替换",
+        "replace_description": "用此黑名单覆盖全局黑名单。当您想要一个仅用于此配置文件而不影响全局黑名单的黑名单时很有用。"
+      }
+    },
+    "network": {
+      "title": "网络",
+      "proxy": {
+        "title": "代理",
+        "select_type": "<选择>",
+        "type": "代理类型",
+        "host_or_ip": "主机或 IP (*)",
+        "host_or_ip_hint": "例如 proxy.host.com 或 123.456.789.0",
+        "port": "端口 (*)",
+        "port_hint": "例如 8080",
+        "username": "用户名",
+        "username_hint": "用户名（可选）",
+        "password": "密码",
+        "password_hint": "密码（可选）",
+        "test": {
+          "state": {
+            "idle": "测试代理",
+            "testing": "检查中...",
+            "slow": "响应慢？"
+          },
+          "success": "有效的代理设置",
+          "failure": "无法连接到代理，请检查您的设置并重试"
+        }
+      },
+      "http": {
+        "protocol": "HTTP 协议",
+        "protocol_description": "更改 HTTP 协议可能有助于在某些站点或平台上的兼容性或性能。"
+      }
+    },
+    "viewer": {
+      "auto_fetch_notes": "自动获取注释",
+      "auto_fetch_notes_description": "尽可能自动获取并显示注释。",
+      "overridden_notice": "这些设置被自定义查看器覆盖。请转到 <b><a href=\"booru-profiles\">配置文件的查看器</a></b> 页面。"
+    },
+    "appearance": {
+      "title": "外观",
+      "image_viewer_layout": {
+        "title": "图像查看器布局",
+        "preview_widgets": "预览小部件",
+        "full_info_widgets": "完整信息小部件",
+        "widget_title": "小部件",
+        "storage_tooltip": "所有更改都保存到您当前的配置文件。",
+        "rearrange_tip": "重新排列项目或隐藏内容",
+        "preview": {
+          "title": "布局预览",
+          "description": "预览您的自定义布局 $previewMinutes 分钟。之后，您可以升级到 $brand 以继续使用，或者根据需要多次重试。",
+          "start_limited_preview": "开始 $previewMinutes 分钟预览",
+          "continue_preview_and_apply": "继续预览并应用",
+          "currently_in_preview": "您当前正在预览自定义布局。",
+          "time_left": "剩余时间：",
+          "preview_expired": "您的布局预览已结束。升级以继续使用高级布局或开始新预览。"
+        }
+      },
+      "home_screen": "主屏幕",
+      "home_screen_description": "更改打开此配置文件时的默认主屏幕。",
+      "turn_on": "开启",
+      "turn_on_description": "使用此配置文件的覆盖全局主题",
+      "overridden_notice": "这些设置被自定义主题覆盖。请转到 <b><a href=\"booru-profiles\">配置文件的外观</a></b> 页面。"
     }
   },
   "blacklist": {
@@ -523,7 +966,13 @@
     "many_added": "已添加 {0} 个书签",
     "failed_to_add_many": "添加书签失败",
     "removed": "书签已移除",
-    "failed_to_remove": "移除书签失败"
+    "failed_to_remove": "移除书签失败",
+    "title": "书签",
+    "shuffle_tooltip": "随机打乱书签",
+    "counter": {
+      "one": "$n 个书签",
+      "other": "$n 个书签"
+    }
   },
   "app_update": {
     "update": "更新",
@@ -546,16 +995,124 @@
         "one": "$n 秒",
         "other": "$n 秒"
       }
+    },
+    "timeago": {
+      "days": "{days} 天前",
+      "hours": "{hours} 小时前",
+      "minutes": "{minutes} 分钟前",
+      "just_now": "刚刚"
+    },
+    "months": {
+      "short": {
+        "jan": "1月",
+        "feb": "2月",
+        "mar": "3月",
+        "apr": "4月",
+        "may": "5月",
+        "jun": "6月",
+        "jul": "7月",
+        "aug": "8月",
+        "sep": "9月",
+        "oct": "10月",
+        "nov": "11月",
+        "dec": "12月"
+      }
+    },
+    "filter": {
+      "last_7_days": "过去7天",
+      "last_30_days": "过去30天",
+      "last_90_days": "过去90天",
+      "last_6_months": "过去6个月",
+      "last_year": "去年"
     }
   },
   "tags": {
     "actions": {
-      "add_to_blacklist": "添加到黑名单"
+      "add_to_blacklist": "添加到黑名单",
+      "search": "搜索标签",
+      "search_single": "搜索",
+      "copy": "复制标签",
+      "copy_single": "复制",
+      "blacklist": "黑名单",
+      "blacklist_global": "黑名单（全局）",
+      "add_to_blacklist_global": "添加到全局黑名单"
+    },
+    "title": "标签",
+    "filter_hint": "筛选...",
+    "loading_tags_error": "加载标签出错：$error",
+    "added": "已添加",
+    "counter": {
+      "one": "$n 个标签",
+      "other": "$n 个标签"
+    },
+    "other_counter": {
+      "one": "$n 个其他",
+      "other": "$n 个其他"
     }
   },
   "bulk_downloads": {
     "options": {
-      "save_to_folder": "保存到文件夹"
+      "save_to_folder": "保存到文件夹",
+      "other_options": "其他选项",
+      "show_advanced_options": "显示高级选项",
+      "enable_notification": "通知",
+      "excluded_tags": "排除的标签",
+      "excluded_tags_description": "选择要从此批次中排除的附加标签",
+      "default_excluded_tags_from_source_list": "来自以下来源的默认黑名单标签：",
+      "source_list": {
+        "one": "• $count 个标签来自 $source",
+        "other": "• $count 个标签来自 $source"
+      }
+    },
+    "created": "已创建",
+    "completed_with_no_new_files": "完成但无新文件",
+    "scanning_page": {
+      "preparing": "准备中...",
+      "preparing_with_page": "准备中，第 $page 页...",
+      "with_page": "扫描第 $page 页...",
+      "null_page": "初始化中...",
+      "with_page_and_index": "扫描第 $page 页，第 $index 项..."
+    },
+    "file_counter": {
+      "one": "$n 个文件",
+      "other": "$n 个文件"
+    },
+    "status": {
+      "suspended": "已保存"
+    },
+    "actions": {
+      "create": "创建",
+      "delete": "删除",
+      "copy_path": "复制路径",
+      "new_download": "新建下载",
+      "add_to_queue": "添加到列表"
+    },
+    "templates": {
+      "title": "模板",
+      "empty": "无模板",
+      "create": "创建模板",
+      "created": "模板已创建",
+      "run": "运行模板"
+    },
+    "completed": {
+      "title": "已完成",
+      "empty": "无已完成下载会话",
+      "clear_all": "全部清除"
+    },
+    "auth_changed": {
+      "profile_mismatch": "配置文件不匹配",
+      "current_site": "当前站点： ",
+      "download_site": "下载站点： ",
+      "has_mismatch_warning": "下载站点与当前站点配置文件不匹配。请更改您的配置文件以匹配下载站点。",
+      "no_mismatch_warning": "此下载会话使用来自同一站点但具有不同凭证的配置文件启动。这可能会导致问题。\n\n您想继续吗？",
+      "continue": "仍然继续"
+    },
+    "errors": {
+      "non_premium_template_limit": "只允许一个模板。升级到 $brand 以创建更多模板。",
+      "non_premium_session_limit": "只允许一个活跃下载会话。升级到 $brand 以获得更多会话。",
+      "non_premium_resume": "恢复已保存的下载会话仅在 $brand 上可用。",
+      "non_premium_suspend": "保存下载会话仅在 $brand 上可用。",
+      "running_session_deletion": "无法删除正在运行的会话"
     }
   },
   "sort": {
@@ -568,5 +1125,151 @@
     "recently_created": "最近创建",
     "last_updated": "最近更新",
     "count": "总数"
+  },
+  "reminder": {
+    "dont_show_again": "下次不再显示"
+  },
+  "donation": {
+    "donate": "捐赠"
+  },
+  "auth": {
+    "login_required": "您需要提供登录详细信息才能使用此功能。",
+    "logged_in": "已登录",
+    "relogin": "重新登录",
+    "clear_credentials": "清除"
+  },
+  "captcha": {
+    "title": "解决验证码",
+    "i_have_solved_it": "我已解决"
+  },
+  "select": {
+    "selected_items": "选择项目",
+    "items_selected": {
+      "one": "已选择 $n 个项目",
+      "other": "已选择 $n 个项目"
+    },
+    "select_all": "全选",
+    "deselect_all": "取消全选"
+  },
+  "posts": {
+    "actions": {
+      "view_options": "视图选项",
+      "edit_blacklist": "编辑黑名单",
+      "edit_global_blacklist": "编辑全局黑名单",
+      "edit_booru_specific_blacklist": "编辑 Booru 特定黑名单",
+      "edit_profile_blacklist": "编辑配置文件黑名单",
+      "stats": "统计"
+    },
+    "hidden_count": "已隐藏 $hidden 张，共 $total 张",
+    "counter": {
+      "one": "$n 个帖子",
+      "other": "$n 个帖子"
+    }
+  },
+  "premium": {
+    "get_premium": "获取 $brand",
+    "upgrade": "升级",
+    "subscribe": "订阅",
+    "unlock_more_theme_with_premium": "使用 $brand 解锁更多主题",
+    "restore_subscription": "恢复订阅",
+    "subscription_restored": "订阅已恢复！",
+    "restore_failed": "恢复订阅时出现问题。请稍后重试。",
+    "select_your_plan": "选择您的计划",
+    "legal_disclaimer": "订阅即表示您同意我们的 <a href='terms-of-service'>服务条款</a> 和 <a href='privacy-policy'>隐私政策</a>。订阅会自动续订，直到取消。您可以在当前期限结束前 24 小时随时取消。",
+    "benefits": {
+      "exclusive_themes": "专属主题",
+      "exclusive_themes_description": "从各种主题中选择，个性化每个配置文件的外观",
+      "layout_customization": "布局和主屏幕",
+      "layout_customization_description": "自定义您看到的信息量，并设置您喜欢的主屏幕（书签、搜索等）",
+      "enhanced_bulk_download": "增强的批量下载器",
+      "enhanced_bulk_download_description": "无限模板、多个会话以及重启后无缝恢复。",
+      "support_development": "支持开发",
+      "support_development_description": "帮助独立开发者保持项目持续更新和改进。"
+    },
+    "thanks": {
+      "title": "感谢您！",
+      "description": "您现在可以访问高级功能。享受吧！",
+      "confirm": "明白了！"
+    },
+    "changelog": {
+      "thanks_for_supporting": "感谢您通过订阅 $brand 支持本应用的发展！",
+      "support_reminder": "如果您喜欢这些更新，请考虑支持我的工作，让更多改进持续到来。"
+    },
+    "packages": {
+      "monthly": "月度订阅",
+      "annual": "年度订阅"
+    },
+    "per": {
+      "year": "/年",
+      "month": "/月"
+    }
+  },
+  "misc": {
+    "trailing_less": " 较少",
+    "trailing_more": " 更多"
+  },
+  "artists": {
+    "search": {
+      "name_tips": "*支持通配符和正则表达式",
+      "url_hint": "URL 或其一部分",
+      "name_hint": "名称、团体名称或其他名称",
+      "name": "名称"
+    },
+    "title": "艺术家"
+  },
+  "infinite_scroll": {
+    "load_more": "加载更多",
+    "reminder": {
+      "highres": "注意：当前正在使用移动数据加载高分辨率图像。"
+    },
+    "nore_more_data": "暂时没有更多内容了",
+    "page_label": "第 $page 页",
+    "previous_page": "上一页",
+    "next_page": "下一页"
+  },
+  "uploads": {
+    "counter": {
+      "other": "$n 个上传",
+      "one": "$n 个上传"
+    }
+  },
+  "video_player": {
+    "buffering": "缓冲中…",
+    "engine_not_supported": "当前平台不支持此播放引擎。",
+    "playback_speed": "播放速度",
+    "lock_screen": "锁定屏幕",
+    "change_video_player_engine_suggest": "如果经常出现此类问题，请考虑在设置中切换到其他视频播放引擎。",
+    "change_video_player_engine_request": "请在设置中切换到其他视频播放引擎。",
+    "video_quality": "视频画质",
+    "video_qualities": {
+      "auto": "自动",
+      "sample": "样例",
+      "original": "原画"
+    },
+    "current_video_quality_disclaimer": "本节设置仅对当前视频生效。如需全局设置，请前往 <a href=\"booru-profiles\">$video_profile_path</a>。",
+    "speed": {
+      "normal": "正常"
+    }
+  },
+  "window": {
+    "pin": {
+      "pin_toast": "窗口已固定在顶部",
+      "unpin_toast": "窗口已从顶部取消固定"
+    }
+  },
+  "cache": {
+    "image": {
+      "reminder": {
+        "description": "应用已缓存 <b>$size</b> 的图像。要清除缓存以释放空间吗？",
+        "cleared": "缓存已清除",
+        "failed": "清除缓存失败"
+      }
+    }
+  },
+  "shimmie2": {
+    "extension": {
+      "title": "扩展",
+      "failed_to_fetch": "无法获取此实例的扩展列表"
+    }
   }
 }
