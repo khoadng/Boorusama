@@ -12,6 +12,7 @@ import '../widgets/proxy_password_input.dart';
 import '../widgets/proxy_port_input.dart';
 import '../widgets/proxy_type_option_tile.dart';
 import '../widgets/proxy_username_input.dart';
+import '../widgets/skip_certificate_verification_tile.dart';
 import '../widgets/test_proxy_button.dart';
 
 class BooruConfigNetworkView extends ConsumerWidget {
@@ -29,6 +30,7 @@ class BooruConfigNetworkView extends ConsumerWidget {
         children: [
           SizedBox(height: 12),
           HttpProtocolOptionTile(),
+          SkipCertificateVerificationTile(),
           Divider(),
           EnableProxySwitch(),
           ProxyTypeOptionTile(),

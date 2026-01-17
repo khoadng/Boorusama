@@ -101,6 +101,7 @@ class HydrusBuilder extends BaseBooruBuilder {
   CreateUnknownBooruWidgetsBuilder get unknownBooruWidgetsBuilder =>
       (context) => const UnknownBooruWidgetsBuilder(
         httpProtocolField: HttpProtocolOptionTile(),
+        skipCertField: SkipCertificateVerificationTile(),
         apiKeyField: DefaultBooruApiKeyField(),
         credentialsNeeded: true,
         submitButton: HydrusUnknownBooruSubmitButton(),
