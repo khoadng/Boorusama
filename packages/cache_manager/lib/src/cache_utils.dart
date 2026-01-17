@@ -11,16 +11,17 @@ String generateCacheKey(
     return customKey;
   }
 
-  final lowerUrl = url.toLowerCase();
-
-  // More flexible matching for Google favicons
-  if (lowerUrl.contains('google.com') && lowerUrl.contains('favicons')) {
-    return keyToMd5(url); // Use full URL since domain parameter matters
+  final uri = Uri.tryParse(url);
+  if (uri == null) {
+    return keyToMd5(url);
   }
 
-  // Parse the URL and use only the path component for other URLs
-  final uri = Uri.tryParse(url);
-  return uri == null ? keyToMd5(url) : keyToMd5(uri.path);
+  // Use path + query for cache key since query params can affect content
+  final pathWithQuery = uri.query.isEmpty
+      ? uri.path
+      : '${uri.path}?${uri.query}';
+
+  return keyToMd5(pathWithQuery);
 }
 
 String keyToMd5(String key) {
