@@ -148,26 +148,24 @@ class GelbooruPost extends Equatable
 class GelbooruImageUrlResolver implements ImageUrlResolver {
   const GelbooruImageUrlResolver();
 
+  static const _currentImageHost = 'img2.gelbooru.com';
+  static final _imgHostPattern = RegExp(r'^img\d+\.gelbooru\.com$');
+
   @override
   String resolveImageUrl(String url) {
-    // Handle the img3 to img4 migration
     final uri = Uri.tryParse(url);
 
     if (uri == null) {
-      return url; // Return original if URL is invalid
+      return url;
     }
 
-    // Check if this is a gelbooru URL
-    if (uri.host.contains('gelbooru.com')) {
-      // Handle specific subdomain changes
-      if (uri.host == 'img3.gelbooru.com') {
-        // Create new URL with updated subdomain
-        final newUri = uri.replace(host: 'img4.gelbooru.com');
-        return newUri.toString();
-      }
+    // Normalize any imgN.gelbooru.com to the current host
+    if (_imgHostPattern.hasMatch(uri.host)) {
+      final newUri = uri.replace(host: _currentImageHost);
+      return newUri.toString();
     }
 
-    return url; // Return original if no patterns match
+    return url;
   }
 
   @override

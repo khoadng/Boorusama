@@ -57,7 +57,7 @@ class MoebooruRepository extends BooruRepositoryDefault {
 
   @override
   TagQueryComposer tagComposer(BooruConfigSearch config) {
-    return LegacyTagQueryComposer(config: config);
+    return ref.watch(moebooruTagQueryComposerProvider(config));
   }
 
   @override

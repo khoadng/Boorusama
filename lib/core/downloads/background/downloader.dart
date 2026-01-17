@@ -103,6 +103,10 @@ class BackgroundDownloader implements DownloadService {
     return FileDownloader().resumeAll(group: group);
   }
 
+  String _sanitizeFilename(String filename) {
+    return filename.replaceAll('/', '_');
+  }
+
   Future<DownloadResult> _executeDownload({
     required String? targetDir,
     required BaseDirectory baseDirectory,
@@ -120,7 +124,9 @@ class BackgroundDownloader implements DownloadService {
 
       final task = DownloadTask(
         url: options.url,
-        filename: options.filename,
+        filename: _sanitizeFilename(
+          options.filename,
+        ),
         allowPause: true,
         retries: 1,
         baseDirectory: baseDirectory,
