@@ -20,6 +20,18 @@ import '../../../engines/types.dart';
 import '../types/video_player_state.dart';
 import 'video_player_error_container.dart';
 
+typedef PlayerDisposer = Future<void> Function(BooruPlayer player);
+
+Future<void> defaultPlayerDisposer(BooruPlayer player) async {
+  try {
+    await player.setVolume(0);
+    await player.pause();
+    player.dispose();
+  } catch (e) {
+    // Ignore errors during disposal
+  }
+}
+
 class BooruVideo extends ConsumerStatefulWidget {
   const BooruVideo({
     required this.url,
@@ -41,6 +53,7 @@ class BooruVideo extends ConsumerStatefulWidget {
     this.cacheDelay,
     this.fileSize,
     this.shouldInitialize = true,
+    @visibleForTesting this.playerDisposer,
   });
 
   final String url;
@@ -61,6 +74,7 @@ class BooruVideo extends ConsumerStatefulWidget {
   final Logger? logger;
   final CacheDelayCallback? cacheDelay;
   final bool shouldInitialize;
+  final PlayerDisposer? playerDisposer;
 
   @override
   ConsumerState<BooruVideo> createState() => _BooruVideoState();
@@ -285,7 +299,7 @@ class _BooruVideoState extends ConsumerState<BooruVideo> {
         widget.onVideoPlayerCreated?.call(player);
 
         if (oldPlayer != null) {
-          _disposePlayerSafely(oldPlayer);
+          await _disposePlayerSafely(oldPlayer);
         }
 
         _scheduleDelayedCaching();
@@ -345,24 +359,14 @@ class _BooruVideoState extends ConsumerState<BooruVideo> {
     _isBuffering = false;
   }
 
-  void _disposePlayerSafely(BooruPlayer player) {
+  Future<void> _disposePlayerSafely(BooruPlayer player) async {
     _log(
       widget.logger?.debug,
       'Safely disposing background player',
     );
 
-    (() async {
-      try {
-        await player.setVolume(0);
-        await player.pause();
-        player.dispose();
-      } catch (e) {
-        _log(
-          widget.logger?.warn,
-          'Error during background player disposal: $e',
-        );
-      }
-    })();
+    final disposer = widget.playerDisposer ?? defaultPlayerDisposer;
+    await disposer(player);
   }
 
   @override
