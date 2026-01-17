@@ -9,6 +9,7 @@ import '../../../core/configs/config/providers.dart';
 import '../../../core/posts/favorites/providers.dart';
 import '../../../core/posts/favorites/widgets.dart';
 import '../../../core/posts/post/types.dart';
+import '../../../core/search/selected_tags/types.dart';
 import '../posts/providers.dart';
 import 'providers.dart';
 
@@ -28,13 +29,15 @@ class HydrusFavoritesPage extends ConsumerWidget {
               ? _buildError()
               : Builder(
                   builder: (context) {
-                    final query = 'system:rating for $serviceName = like'
-                        .replaceAll(' ', '_');
+                    final query = 'system:rating for $serviceName = like';
                     return FavoritesPageScaffold(
                       favQueryBuilder: () => query,
                       fetcher: (page) => ref
                           .read(hydrusPostRepoProvider(config))
-                          .getPosts(query, page),
+                          .getPostsFromController(
+                            SearchTagSet.fromList([query]),
+                            page,
+                          ),
                     );
                   },
                 ),
