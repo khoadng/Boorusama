@@ -236,7 +236,8 @@
       "unknown": "알 수 없는 서버 오류가 발생했습니다. 이 문제를 개발자에게 보고해주세요",
       "cannot_reach_server": "서버에 연결 할 수 없습니다, 연결을 확인해주세요",
       "failed_to_load_data": "서버에서 데이터를 가져오는데 실패했습니다, 나중에 다시 시도하세요",
-      "handshake_failed": "연결에 실패했습니다, 서버와 호완성이 맞지 않습니다"
+      "handshake_failed": "연결에 실패했습니다, 서버와 호완성이 맞지 않습니다",
+      "certificate_error": "인증서 오류입니다. 서버가 자체 서명된 인증서를 사용 중일 수 있습니다. HTTPS 대신 HTTP를 사용하거나, 장치에 인증서를 설치하십시오."
     },
     "hint": "검색...",
     "no_result": "온 세상을 뒤졌지만, 결과를 찾을 수 없습니다.",
@@ -551,7 +552,7 @@
           "running": "진행 중"
         },
         "how_to_transfer": "전송 방식",
-        "how_to_send(rich)": "• 수신 기기에서 ${settings(_)}으로 이동합니다\n• ${receive(_)}을 선택하여 이 기기에서 데이터 가져오기를 시작합니다\n• 전송이 완료될 때까지 이 페이지를 유지합니다",        
+        "how_to_send(rich)": "• 수신 기기에서 ${settings(_)}으로 이동합니다\n• ${receive(_)}을 선택하여 이 기기에서 데이터 가져오기를 시작합니다\n• 전송이 완료될 때까지 이 페이지를 유지합니다",
         "disclaimer": "보안상의 이유로 공용 와이파이(카페, 도서관 등)에서는 파일 전송이 제대로 작동하지 않을 수 있습니다. 집 와이파이와 같은 개인 네트워크를 이용해 주세요.",
         "no_networks_error": "데이터 전송을 위해서는 Wi-Fi 연결이 필요합니다. Wi-Fi 네트워크에 연결한 후 다시 시도해 주세요."
       },
@@ -591,7 +592,7 @@
       "volume_navigation": "볼륨 키를 사용하여 탐색",
       "volume_navigation_description": "이미지 뷰어에서 볼륨 키를 사용하여 게시물 간을 이동하세요.",
       "haptic_feedback": {
-        "haptic_feedback": "Haptic 피드백",
+        "haptic_feedback": "햅틱 피드백",
         "haptic_feedback_level": {
           "none": "없음",
           "subtle": "애매함",
@@ -793,10 +794,23 @@
       }
     },
     "gestures": {
-      "title": "제스처"
+      "title": "제스처",
+      "override_notice": "이 프로필에서 기본 제스처를 덮어씁니다. 원래 동작을 유지하려면 ‘없음’을 선택하세요."
     },
     "downloads": {
-      "title": "다운로드"
+      "title": "다운로드",
+      "leave_empty_to_use_global": "비워두면 설정에 지정된 다운로드 위치를 사용합니다.",
+      "custom_filename_format": "사용자 지정 파일 이름 형식",
+      "custom_filename_format_invidual": "개별 다운로드",
+      "custom_filename_format_bulk": "일괄 다운로드",
+      "bulk_slow_token_warning": "일괄 다운로드에서 느린 토큰을 사용하면 실제 다운로드가 시작되기 전에 매우 오랜 시간이 걸립니다. 가능하다면 사용하지 않는 것을 권장합니다.",
+      "filename": {
+        "available_tokens": "사용 가능한 토큰: ",
+        "no_token_error": "토큰 $token 을 사용할 수 없습니다",
+        "available_token_options": "사용 가능한 옵션",
+        "no_options_available": "사용 가능 옵션 없음",
+        "slow_token_warning": "이 토큰은 각 파일마다 추가 데이터를 가져와야 하므로 다운로드 속도를 느리게 합니다."
+      }
     },
     "api_key_instructions": {
       "variants_1": "*브라우저에서 계정에 로그인한 후 <b><a href=\"api-credentials\">내 계정 > 옵션 > API 액세스 자격 증명</a></b>으로 이동하여 API 키를 확인하세요. <b>&api_key=&user_id=<your_id></b>와 같이 빈 API 키가 표시되면 <b>새 키를 생성하시겠습니까?</b>을 선택하고 맨 아래에 있는 <b>저장</b> 버튼을 클릭하여 새 API 키를 생성하세요. 키를 복사하여 위의 입력란에 붙여넣으세요. <b>API 액세스 자격 증명</b> 섹션에서 전체 문자열을 복사한 후 아래 버튼을 탭할 수도 있습니다.",
@@ -860,7 +874,88 @@
     "search": {
       "title": "검색",
       "include_in_search": "모든 검색에 다음 태그 포함",
-      "exclude_from_search": "모든 검색에 다음 태그 제외"
+      "exclude_from_search": "모든 검색에 다음 태그 제외",
+      "include_exclude_tooltip": "이 태그는 수동 검색을 포함하여 앱의 모든 검색어에 자동으로 추가됩니다.",
+      "preview_tags": "미리보기",
+      "any_search_query": "<아무 검색어>",
+      "enable_profile_specific_settings": "프로필별 블랙리스트 활성화",
+      "blacklist": "블랙리스트",
+      "empty_blacklist": "태그 없음",
+      "empty_blacklist_with_replace_notice": "대체 모드에서 블랙리스트가 비어 있으면 블랙리스트 기능이 완전히 비활성화됩니다.",
+      "blacklist_overridden": {
+        "replace_notice": "<b><a href=\"booru-profiles\">프로필 블랙리스트</a></b> 설정으로 대체되었습니다.",
+        "merge_notice": "<b><a href=\"booru-profiles\">프로필 블랙리스트</a></b> 설정과 통합되었습니다."
+      },
+      "blacklist_combine_mode": {
+        "title": "조합 모드",
+        "merge": "병합",
+        "merge_description": "이 블랙리스트를 다른 블랙리스트들과 병합합니다.",
+        "replace": "대체",
+        "replace_description": "이 블랙리스트로 전역 블랙리스트를 덮어씁니다. 전역 블랙리스트에는 영향을 주지 않고, 이 프로필에서만 사용하는 블랙리스트를 두고 싶을 때 유용합니다."
+      }
+    },
+    "network": {
+      "title": "네트워크",
+      "proxy": {
+        "title": "프록시",
+        "select_type": "<선택>",
+        "type": "프록시 타입",
+        "host_or_ip": "호스트 또는 IP (*)",
+        "host_or_ip_hint": "예: proxy.host.com 또는 123.456.789.0",
+        "port": "포트 (*)",
+        "port_hint": "예 : 8080",
+        "username": "유저명",
+        "username_hint": "유저명 (선택 사항)",
+        "password": "비밀번호",
+        "password_hint": "비밀번호 (선택사항)",
+        "test": {
+          "state": {
+            "idle": "프록시 테스트",
+            "testing": "체크 중...",
+            "slow": "응답이 느린가요?"
+          },
+          "success": "유효한 프록시 설정",
+          "failure": "프록시에 연결하지 못했습니다, 설정을 확인한 후 다시 시도해 주세요"
+        }
+      },
+      "http": {
+        "protocol": "HTTP 프로토콜",
+        "protocol_description": "HTTP 프로토콜을 변경하면 특정 사이트나 플랫폼에서 호환성 또는 성능이 향상될 수 있습니다.",
+        "skip_cert_verification": "인증서 검증 건너뛰기",
+        "skip_cert_verification_description": "자체 서명된 인증서(예: 로컬 서버) 사용 시 활성화",
+        "skip_cert_verification_warning_title": "보안 경고",
+        "skip_cert_verification_warning": "인증서 검증이 비활성화되었습니다. 연결이 안전하지 않을 수 있습니다. 신뢰할 수 있는 로컬 서버에서만 사용하세요."
+      }
+    },
+    "viewer": {
+      "auto_fetch_notes": "노트 자동 가져오기",
+      "auto_fetch_notes_description": "가능한 경우 자동으로 노트를 가져와 표시합니다.",
+      "overridden_notice": "이 설정은 사용자 지정 뷰어에 의해 덮어씌워집니다. 대신 <b><a href=\"booru-profiles\">프로필 뷰어</a></b> 페이지로 이동하세요."
+    },
+    "appearance": {
+      "title": "외관",
+      "image_viewer_layout": {
+        "title": "이미지 뷰어 레이아웃",
+        "preview_widgets": "미리보기 위젯",
+        "full_info_widgets": "전체 정보 위젯",
+        "widget_title": "위젯",
+        "storage_tooltip": "모든 변경 사항은 현재 프로필에 저장됩니다.",
+        "rearrange_tip": "항목을 재배열하거나 콘텐츠를 숨기기",
+        "preview": {
+          "title": "레이아웃 미리보기",
+          "description": "$previewMinutes분 동안 사용자 지정 레이아웃을 미리보기로 사용할 수 있습니다. 이후에는 계속 사용하려면 $brand로 업그레이드하거나, 원하실 경우 횟수 제한 없이 다시 시도할 수 있습니다.",
+          "start_limited_preview": "$previewMinutes분 미리보기 시작",
+          "continue_preview_and_apply": "미리보기 계속 및 적용",
+          "currently_in_preview": "현재 사용자 지정 레이아웃을 미리보는 중입니다.",
+          "time_left": "남은 시간:",
+          "preview_expired": "레이아웃 미리보기가 종료되었습니다. 프리미엄 레이아웃을 계속 사용하시려면 업그레이드하시거나 새로운 미리보기를 시작하세요."
+        }
+      },
+      "home_screen": "홈 화면",
+      "home_screen_description": "이 프로필을 열 때 표시되는 기본 홈 화면을 변경하세요.",
+      "turn_on": "켜기",
+      "turn_on_description": "이 프로필의 테마를 사용하여 글로벌 테마 설정을 무시하고 덮어씁니다",
+      "overridden_notice": "이 설정은 사용자 지정 테마에 의해 덮어씌워집니다. 대신 <b><a href=\"booru-profiles\">프로필 외관</a></b> 페이지로 이동하세요."
     }
   },
   "blacklist": {
@@ -875,7 +970,13 @@
     "many_added": "{0}개 북마크 추가됨",
     "failed_to_add_many": "북마크 추가 실패",
     "removed": "북마크 제거됨",
-    "failed_to_remove": "북마크 삭제 실패"
+    "failed_to_remove": "북마크 삭제 실패",
+    "title": "북마크",
+    "shuffle_tooltip": "북마크 셔플",
+    "counter": {
+      "one": "$n개 북마크",
+      "other": "$n개 북마크"
+    }
   },
   "app_update": {
     "update": "업데이트",
@@ -898,6 +999,35 @@
         "one": "$n초",
         "other": "$n초"
       }
+    },
+    "timeago": {
+      "days": "{days}일 전",
+      "hours": "{hours}시간 전",
+      "minutes": "{minutes}분 전",
+      "just_now": "방금 전"
+    },
+    "months": {
+      "short": {
+        "jan": "1월",
+        "feb": "2월",
+        "mar": "3월",
+        "apr": "4월",
+        "may": "5월",
+        "jun": "6월",
+        "jul": "7월",
+        "aug": "8월",
+        "sep": "9월",
+        "oct": "10월",
+        "nov": "11월",
+        "dec": "12월"
+      }
+    },
+    "filter": {
+      "last_7_days": "최근 7일",
+      "last_30_days": "최근 30일",
+      "last_90_days": "최근 90일",
+      "last_6_months": "최근 6개월",
+      "last_year": "최근 1년"
     }
   },
   "tags": {
@@ -908,6 +1038,47 @@
   "bulk_downloads": {
     "options": {
       "save_to_folder": "폴더에 저장"
+    },
+    "created": "생성됨",
+    "completed_with_no_new_files": "새로운 파일 없이 완료되었습니다",
+    "scanning_page": {
+      "preparing": "준비중...",
+      "preparing_with_page": "준비 중, 페이지 $page...",
+      "with_page": "페이지 $page 스캔 중…",
+      "null_page": "초기화 중…",
+      "with_page_and_index": "페이지 $page 스캔 중, 항목 $index…"
+    },
+    "file_counter": {
+      "one": "$n개 파일",
+      "other": "$n개 파일"
+    },
+    "status": {
+      "suspended": "저장됨"
+    },
+    "actions": {
+      "create": "생성",
+      "delete": "삭제",
+      "copy_path": "경로 복사",
+      "new_download": "신규 다운로드",
+      "add_to_queue": "리스트에 추가"
+    },
+    "templates": {
+      "title": "템플릿",
+      "empty": "템플릿 없음",
+      "create": "템플릿 생성",
+      "created": "템플릿 생성됨",
+      "run": "템플릿 실행"
+    },
+    "completed": {
+      "title": "완료됨",
+      "empty": "완료된 다운로드 세션이 없습니다",
+      "clear_all": "전부 삭제"
+    },
+    "auth_changed": {
+      "profile_mismatch": "프로필 불일치",
+      "current_site": "현재 사이트: ",
+      "download_site": "다운로드 사이트: ",
+      "has_mismatch_warning": "다운로드 사이트가 현재 사이트 프로필과 일치하지 않습니다. 다운로드 사이트에 맞게 프로필을 변경해 주세요."
     }
   },
   "premium": {
@@ -961,5 +1132,8 @@
     "recently_created": "최근 생선 순",
     "last_updated": "마지막 업데이트 순",
     "count": "조회 순"
+  },
+  "donation": {
+    "donate": "기부"
   }
 }
