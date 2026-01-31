@@ -180,6 +180,7 @@ Possible improvement:
 TODO
 ----
 [x] Add staging acknowledgment mechanism
+[x] Auto-resolve conflicts using timestamps (newer wins)
 [ ] Add merge preview for non-conflict cases
 [ ] Consider atomic import for pull
 [ ] Add pull status tracking on hub (who has pulled)

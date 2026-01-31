@@ -48,6 +48,11 @@ class PullResult {
   final List<Map<String, dynamic>> data;
 }
 
+class PullAllResult {
+  const PullAllResult({required this.sources});
+  final Map<String, List<Map<String, dynamic>>> sources;
+}
+
 class SyncClient {
   SyncClient({required this.baseUrl})
     : _dio = Dio(
@@ -185,7 +190,9 @@ class SyncClient {
       if (response.statusCode == 200) {
         final data = response.data as Map<String, dynamic>;
         return SyncClientResult.success(
-          StageCompleteResult(sourcesStaged: data['sourcesStaged'] as int? ?? 0),
+          StageCompleteResult(
+            sourcesStaged: data['sourcesStaged'] as int? ?? 0,
+          ),
         );
       }
 
@@ -236,6 +243,23 @@ class SyncClient {
       if (e.response?.statusCode == 404) {
         return const SyncClientResult.success(PullResult(data: []));
       }
+      return SyncClientResult.failure(e.message ?? 'Pull failed');
+    }
+  }
+
+  Future<SyncClientResult<PullAllResult>> pullAll() async {
+    try {
+      final response = await _dio.get('/pull/all');
+
+      if (response.statusCode == 200) {
+        final dto = PullAllResponseDto.fromJson(
+          response.data as Map<String, dynamic>,
+        );
+        return SyncClientResult.success(PullAllResult(sources: dto.sources));
+      }
+
+      return SyncClientResult.failure('Failed to pull: ${response.statusCode}');
+    } on DioException catch (e) {
       return SyncClientResult.failure(e.message ?? 'Pull failed');
     }
   }

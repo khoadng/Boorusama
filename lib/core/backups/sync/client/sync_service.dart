@@ -151,17 +151,29 @@ class SyncService {
   }
 
   Future<String?> _pullAllSources() async {
-    for (final source in registry.getAllSources()) {
-      final syncCapability = source.capabilities.sync;
+    // Atomic pull: fetch all data in one request
+    final pullResult = await client.pullAll();
+    if (pullResult.isFailure) {
+      return pullResult.error;
+    }
+
+    final allSources = pullResult.data!.sources;
+
+    // Import all sources locally
+    for (final entry in allSources.entries) {
+      final sourceId = entry.key;
+      final data = entry.value;
+
+      if (data.isEmpty) continue;
+
+      final source = registry.getSource(sourceId);
+      final syncCapability = source?.capabilities.sync;
       if (syncCapability == null) continue;
 
       try {
-        final result = await client.pullData(source.id);
-        if (result.isFailure || result.data!.data.isEmpty) continue;
-
-        await syncCapability.importResolved(result.data!.data);
+        await syncCapability.importResolved(data);
       } catch (e) {
-        // Continue with other sources
+        // Log error but continue - local import failures are bugs
       }
     }
 

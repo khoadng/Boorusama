@@ -271,6 +271,64 @@ void main() {
       expect(pullRes.data['data'].length, 2);
     });
 
+    test('pull all returns all sources in single response', () async {
+      // Connect and stage
+      final connectRes = await dio.post(
+        '/connect',
+        data: jsonEncode({'deviceName': 'Device A'}),
+        options: Options(contentType: 'application/json'),
+      );
+      final clientId = connectRes.data['clientId'];
+
+      await dio.post(
+        '/stage/begin',
+        data: jsonEncode({
+          'clientId': clientId,
+          'expectedSources': ['bookmarks', 'tags'],
+        }),
+        options: Options(contentType: 'application/json'),
+      );
+      await dio.post(
+        '/stage/bookmarks',
+        data: jsonEncode({
+          'clientId': clientId,
+          'data': [
+            {'id': 'b1', 'name': 'Bookmark 1'},
+          ],
+        }),
+        options: Options(contentType: 'application/json'),
+      );
+      await dio.post(
+        '/stage/tags',
+        data: jsonEncode({
+          'clientId': clientId,
+          'data': [
+            {'id': 't1', 'name': 'Tag 1'},
+            {'id': 't2', 'name': 'Tag 2'},
+          ],
+        }),
+        options: Options(contentType: 'application/json'),
+      );
+      await dio.post(
+        '/stage/complete',
+        data: jsonEncode({'clientId': clientId}),
+        options: Options(contentType: 'application/json'),
+      );
+
+      state = state.copyWith(
+        phase: SyncHubPhase.confirmed,
+        resolvedData: service.mergeData(state),
+      );
+
+      // Pull all sources at once
+      final pullAllRes = await dio.get('/pull/all');
+      expect(pullAllRes.statusCode, 200);
+
+      final sources = pullAllRes.data['sources'] as Map<String, dynamic>;
+      expect(sources['bookmarks'], hasLength(1));
+      expect(sources['tags'], hasLength(2));
+    });
+
     test('two clients with conflict - keepLocal', () async {
       // Setup two clients with conflicting data
       for (final (name, value) in [

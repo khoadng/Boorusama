@@ -261,8 +261,9 @@ class SyncHubService {
 
     for (final version in versions) {
       final timestamp = getTimestamp(version.$2);
-      if (timestamp == null)
+      if (timestamp == null) {
         return null; // Can't auto-resolve without timestamp
+      }
 
       if (newestTimestamp == null || timestamp.isAfter(newestTimestamp)) {
         newest = version;

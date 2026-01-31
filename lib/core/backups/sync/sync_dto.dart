@@ -182,6 +182,27 @@ class PullResponseDto {
   Map<String, dynamic> toJson() => {'data': data};
 }
 
+class PullAllResponseDto {
+  const PullAllResponseDto({required this.sources});
+
+  factory PullAllResponseDto.fromJson(Map<String, dynamic> json) {
+    final sourcesJson = json['sources'] as Map<String, dynamic>? ?? {};
+    final sources = <String, List<Map<String, dynamic>>>{};
+
+    for (final entry in sourcesJson.entries) {
+      final rawList = entry.value as List<dynamic>?;
+      sources[entry.key] =
+          rawList?.map((e) => e as Map<String, dynamic>).toList() ?? [];
+    }
+
+    return PullAllResponseDto(sources: sources);
+  }
+
+  final Map<String, List<Map<String, dynamic>>> sources;
+
+  Map<String, dynamic> toJson() => {'sources': sources};
+}
+
 // Hub Status
 class HubStatusDto {
   const HubStatusDto({

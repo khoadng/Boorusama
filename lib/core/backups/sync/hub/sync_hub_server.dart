@@ -181,6 +181,7 @@ class SyncHubServer {
         request,
         path.substring(6),
       ),
+      ('GET', 'pull/all') => _handlePullAll(),
       (_, _) when method == 'GET' && path.startsWith('pull/') => _handlePull(
         path.substring(5),
       ),
@@ -279,7 +280,9 @@ class SyncHubServer {
 
       if (result.isSuccess) {
         return _jsonResponse(
-          StageCompleteResponseDto(sourcesStaged: result.sourcesStaged).toJson(),
+          StageCompleteResponseDto(
+            sourcesStaged: result.sourcesStaged,
+          ).toJson(),
         );
       } else {
         return Response(400, body: result.error);
@@ -338,6 +341,16 @@ class SyncHubServer {
     }
 
     final dto = PullResponseDto(data: resolvedData);
+    return _jsonResponse(dto.toJson());
+  }
+
+  Response _handlePullAll() {
+    final state = stateGetter();
+    if (state.phase != SyncHubPhase.confirmed) {
+      return Response(400, body: 'Sync not confirmed yet');
+    }
+
+    final dto = PullAllResponseDto(sources: state.resolvedData);
     return _jsonResponse(dto.toJson());
   }
 

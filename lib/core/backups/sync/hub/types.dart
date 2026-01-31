@@ -43,8 +43,7 @@ class ConnectedClient extends Equatable {
 
   bool get hasStaged => stagingComplete;
 
-  bool get isStaging =>
-      expectedSources.isNotEmpty && !stagingComplete;
+  bool get isStaging => expectedSources.isNotEmpty && !stagingComplete;
 
   String get stagingProgress => expectedSources.isEmpty
       ? ''
