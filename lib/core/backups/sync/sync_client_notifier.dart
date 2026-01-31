@@ -23,9 +23,7 @@ final syncClientProvider =
     );
 
 class SyncClientNotifier extends Notifier<SyncClientState> {
-  String? _clientId;
   Timer? _pollTimer;
-  int _consecutiveFailures = 0;
   static const _maxFailuresBeforeUnreachable = 3;
 
   @override
@@ -51,12 +49,12 @@ class SyncClientNotifier extends Notifier<SyncClientState> {
       return;
     }
 
-    _consecutiveFailures = 0;
     final normalizedAddress = _normalizeAddress(hubAddress);
 
     state = state.copyWith(
       status: SyncClientStatus.connecting,
       currentHubAddress: () => normalizedAddress,
+      consecutiveFailures: 0,
       errorMessage: () => null,
     );
 
@@ -164,14 +162,15 @@ class SyncClientNotifier extends Notifier<SyncClientState> {
       final canPull = response.data['canPull'] as bool? ?? false;
 
       // Reset failure count on successful connection
-      _consecutiveFailures = 0;
-
-      // If we were in hubUnreachable state, go back to waiting
       if (state.status == SyncClientStatus.hubUnreachable) {
+        // If we were in hubUnreachable state, go back to waiting
         state = state.copyWith(
           status: SyncClientStatus.waitingForConfirmation,
+          consecutiveFailures: 0,
           errorMessage: () => null,
         );
+      } else if (state.consecutiveFailures > 0) {
+        state = state.copyWith(consecutiveFailures: 0);
       }
 
       if (canPull && state.status == SyncClientStatus.waitingForConfirmation) {
@@ -180,20 +179,23 @@ class SyncClientNotifier extends Notifier<SyncClientState> {
 
       return canPull;
     } catch (e) {
-      _consecutiveFailures++;
+      final failures = state.consecutiveFailures + 1;
 
       _logger.warn(
         _kClientName,
-        'Poll failed ($_consecutiveFailures/$_maxFailuresBeforeUnreachable): $e',
+        'Poll failed ($failures/$_maxFailuresBeforeUnreachable): $e',
       );
 
-      if (_consecutiveFailures >= _maxFailuresBeforeUnreachable &&
+      if (failures >= _maxFailuresBeforeUnreachable &&
           state.status == SyncClientStatus.waitingForConfirmation) {
         state = state.copyWith(
           status: SyncClientStatus.hubUnreachable,
+          consecutiveFailures: failures,
           errorMessage: () =>
               'Hub is not responding. It may have stopped or disconnected.',
         );
+      } else {
+        state = state.copyWith(consecutiveFailures: failures);
       }
 
       return false;
@@ -253,7 +255,7 @@ class SyncClientNotifier extends Notifier<SyncClientState> {
     final response = await dio.post(
       '/connect',
       data: jsonEncode({
-        'clientId': _clientId,
+        'clientId': state.clientId,
         'deviceName': deviceName,
       }),
       options: Options(contentType: 'application/json'),
@@ -265,12 +267,14 @@ class SyncClientNotifier extends Notifier<SyncClientState> {
     );
 
     if (response.statusCode == 200) {
-      _clientId = response.data['clientId'] as String?;
-      _logger.info(_kClientName, 'Connected to hub as $_clientId');
+      final clientId = response.data['clientId'] as String?;
+      _logger.info(_kClientName, 'Connected to hub as $clientId');
 
-      if (_clientId == null) {
+      if (clientId == null) {
         throw Exception('Hub did not return a clientId');
       }
+
+      state = state.copyWith(clientId: () => clientId);
     } else {
       throw Exception('Failed to connect to hub: ${response.statusCode}');
     }
@@ -322,7 +326,7 @@ class SyncClientNotifier extends Notifier<SyncClientState> {
         final response = await dio.post(
           '/stage/${source.id}',
           data: jsonEncode({
-            'clientId': _clientId,
+            'clientId': state.clientId,
             'data': data,
           }),
           options: Options(contentType: 'application/json'),
@@ -381,21 +385,21 @@ class SyncClientNotifier extends Notifier<SyncClientState> {
 
   void reset() {
     stopPolling();
-    _consecutiveFailures = 0;
     state = state.copyWith(
       status: SyncClientStatus.idle,
+      clientId: () => null,
+      consecutiveFailures: 0,
       errorMessage: () => null,
       lastSyncStats: () => null,
     );
   }
 
-  /// Retry connecting to the hub after it was unreachable
   void retryConnection() {
     if (state.status != SyncClientStatus.hubUnreachable) return;
 
-    _consecutiveFailures = 0;
     state = state.copyWith(
       status: SyncClientStatus.waitingForConfirmation,
+      consecutiveFailures: 0,
       errorMessage: () => null,
     );
   }

@@ -253,6 +253,8 @@ class SyncClientState extends Equatable {
     required this.status,
     required this.savedHubAddress,
     this.currentHubAddress,
+    this.clientId,
+    this.consecutiveFailures = 0,
     this.lastSyncStats,
     this.errorMessage,
   });
@@ -261,12 +263,16 @@ class SyncClientState extends Equatable {
     : status = SyncClientStatus.idle,
       savedHubAddress = null,
       currentHubAddress = null,
+      clientId = null,
+      consecutiveFailures = 0,
       lastSyncStats = null,
       errorMessage = null;
 
   final SyncClientStatus status;
   final String? savedHubAddress;
   final String? currentHubAddress;
+  final String? clientId;
+  final int consecutiveFailures;
   final SyncStats? lastSyncStats;
   final String? errorMessage;
 
@@ -274,6 +280,8 @@ class SyncClientState extends Equatable {
     SyncClientStatus? status,
     String? Function()? savedHubAddress,
     String? Function()? currentHubAddress,
+    String? Function()? clientId,
+    int? consecutiveFailures,
     SyncStats? Function()? lastSyncStats,
     String? Function()? errorMessage,
   }) => SyncClientState(
@@ -284,6 +292,8 @@ class SyncClientState extends Equatable {
     currentHubAddress: currentHubAddress != null
         ? currentHubAddress()
         : this.currentHubAddress,
+    clientId: clientId != null ? clientId() : this.clientId,
+    consecutiveFailures: consecutiveFailures ?? this.consecutiveFailures,
     lastSyncStats: lastSyncStats != null ? lastSyncStats() : this.lastSyncStats,
     errorMessage: errorMessage != null ? errorMessage() : this.errorMessage,
   );
@@ -293,6 +303,8 @@ class SyncClientState extends Equatable {
     status,
     savedHubAddress,
     currentHubAddress,
+    clientId,
+    consecutiveFailures,
     lastSyncStats,
     errorMessage,
   ];
