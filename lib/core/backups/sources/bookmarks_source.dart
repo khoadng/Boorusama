@@ -77,6 +77,10 @@ class BookmarksBackupSource extends JsonBackupSource<List<Bookmark>> {
       booruId: json['booruId'] as int? ?? 0,
       url: json['originalUrl'] as String? ?? '',
     ),
+    getTimestampFromJson: (json) {
+      final updatedAt = json['updatedAt'] as String?;
+      return updatedAt != null ? DateTime.tryParse(updatedAt) : null;
+    },
     importResolved: _importResolved,
   );
 

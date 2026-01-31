@@ -11,10 +11,15 @@ class SyncCapability {
   const SyncCapability({
     required this.getUniqueIdFromJson,
     required this.importResolved,
+    this.getTimestampFromJson,
   });
 
   final Object Function(Map<String, dynamic> json) getUniqueIdFromJson;
   final Future<void> Function(List<Map<String, dynamic>> data) importResolved;
+
+  /// Optional timestamp extractor for auto-resolving conflicts.
+  /// If provided and both items have timestamps, the newer one wins automatically.
+  final DateTime? Function(Map<String, dynamic> json)? getTimestampFromJson;
 }
 
 class ServerCapability {

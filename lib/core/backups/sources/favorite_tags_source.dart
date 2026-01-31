@@ -43,6 +43,10 @@ class FavoriteTagsBackupSource extends JsonBackupSource<List<FavoriteTag>> {
   @override
   SyncCapability get syncCapability => SyncCapability(
     getUniqueIdFromJson: (json) => json['name'] as String? ?? '',
+    getTimestampFromJson: (json) {
+      final updatedAt = json['updatedAt'] as String?;
+      return updatedAt != null ? DateTime.tryParse(updatedAt) : null;
+    },
     importResolved: _importResolved,
   );
 

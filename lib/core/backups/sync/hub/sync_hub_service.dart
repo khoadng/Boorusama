@@ -192,6 +192,7 @@ class SyncHubService {
       final syncCapability = source?.capabilities.sync;
       if (syncCapability == null) continue;
 
+      final getTimestamp = syncCapability.getTimestampFromJson;
       final itemsByUniqueId = <Object, List<(String, Map<String, dynamic>)>>{};
 
       for (final staged in stagedList) {
@@ -206,26 +207,72 @@ class SyncHubService {
         final items = mapEntry.value;
         if (items.length <= 1) continue;
 
-        final first = items.first;
-        for (var i = 1; i < items.length; i++) {
-          final other = items[i];
-          if (!_areItemsEqual(first.$2, other.$2)) {
-            conflicts.add(
-              ConflictItem(
-                sourceId: sourceId,
-                uniqueId: mapEntry.key,
-                localData: first.$2,
-                remoteData: other.$2,
-                remoteClientId: other.$1,
-                resolution: ConflictResolution.pending,
-              ),
-            );
+        // Find all unique versions (different data)
+        final uniqueVersions = <(String, Map<String, dynamic>)>[];
+        for (final item in items) {
+          final isDuplicate = uniqueVersions.any(
+            (v) => _areItemsEqual(v.$2, item.$2),
+          );
+          if (!isDuplicate) {
+            uniqueVersions.add(item);
           }
+        }
+
+        // All versions are identical - no conflict
+        if (uniqueVersions.length <= 1) continue;
+
+        // Try timestamp-based auto-resolve
+        if (getTimestamp != null) {
+          final resolved = _tryAutoResolveByTimestamp(
+            uniqueVersions,
+            getTimestamp,
+          );
+          if (resolved != null) continue; // Auto-resolved, skip conflict
+        }
+
+        // Can't auto-resolve - create conflict
+        final first = uniqueVersions.first;
+        for (var i = 1; i < uniqueVersions.length; i++) {
+          final other = uniqueVersions[i];
+          conflicts.add(
+            ConflictItem(
+              sourceId: sourceId,
+              uniqueId: mapEntry.key,
+              localData: first.$2,
+              remoteData: other.$2,
+              remoteClientId: other.$1,
+              resolution: ConflictResolution.pending,
+            ),
+          );
         }
       }
     }
 
     return conflicts;
+  }
+
+  /// Returns the winning item if auto-resolve succeeds, null if manual resolution needed.
+  (String, Map<String, dynamic>)? _tryAutoResolveByTimestamp(
+    List<(String, Map<String, dynamic>)> versions,
+    DateTime? Function(Map<String, dynamic>) getTimestamp,
+  ) {
+    (String, Map<String, dynamic>)? newest;
+    DateTime? newestTimestamp;
+
+    for (final version in versions) {
+      final timestamp = getTimestamp(version.$2);
+      if (timestamp == null)
+        return null; // Can't auto-resolve without timestamp
+
+      if (newestTimestamp == null || timestamp.isAfter(newestTimestamp)) {
+        newest = version;
+        newestTimestamp = timestamp;
+      } else if (timestamp.isAtSameMomentAs(newestTimestamp)) {
+        return null; // Same timestamp - can't determine winner
+      }
+    }
+
+    return newest;
   }
 
   Map<String, List<Map<String, dynamic>>> mergeData(SyncHubState state) {
@@ -239,6 +286,7 @@ class SyncHubService {
       final syncCapability = source?.capabilities.sync;
       if (syncCapability == null) continue;
 
+      final getTimestamp = syncCapability.getTimestampFromJson;
       final mergedItems = <Object, Map<String, dynamic>>{};
 
       for (final staged in stagedList) {
@@ -259,7 +307,22 @@ class SyncHubService {
                 break;
             }
           } else {
-            mergedItems[uniqueId] = item;
+            // No conflict - pick newest by timestamp if available
+            final existing = mergedItems[uniqueId];
+            if (existing == null) {
+              mergedItems[uniqueId] = item;
+            } else if (getTimestamp != null) {
+              final existingTs = getTimestamp(existing);
+              final itemTs = getTimestamp(item);
+              if (existingTs != null && itemTs != null) {
+                if (itemTs.isAfter(existingTs)) {
+                  mergedItems[uniqueId] = item;
+                }
+              } else {
+                // No timestamps - keep existing (first wins)
+                mergedItems[uniqueId] = existing;
+              }
+            }
           }
         }
       }

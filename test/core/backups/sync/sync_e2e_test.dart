@@ -22,20 +22,24 @@ void main() {
 
     setUp(() async {
       registry = BackupRegistry();
-      registry.register(_MockBackupSource(
-        id: 'bookmarks',
-        testData: [
-          {'id': 'bm1', 'name': 'Bookmark 1'},
-          {'id': 'bm2', 'name': 'Bookmark 2'},
-        ],
-      ));
-      registry.register(_MockBackupSource(
-        id: 'tags',
-        testData: [
-          {'id': 't1', 'name': 'tag1'},
-          {'id': 't2', 'name': 'tag2'},
-        ],
-      ));
+      registry.register(
+        _MockBackupSource(
+          id: 'bookmarks',
+          testData: [
+            {'id': 'bm1', 'name': 'Bookmark 1'},
+            {'id': 'bm2', 'name': 'Bookmark 2'},
+          ],
+        ),
+      );
+      registry.register(
+        _MockBackupSource(
+          id: 'tags',
+          testData: [
+            {'id': 't1', 'name': 'tag1'},
+            {'id': 't2', 'name': 'tag2'},
+          ],
+        ),
+      );
 
       service = SyncHubService(registry: registry);
       state = const SyncHubState.initial();
@@ -269,7 +273,10 @@ void main() {
 
     test('two clients with conflict - keepLocal', () async {
       // Setup two clients with conflicting data
-      for (final (name, value) in [('Device A', 'Version A'), ('Device B', 'Version B')]) {
+      for (final (name, value) in [
+        ('Device A', 'Version A'),
+        ('Device B', 'Version B'),
+      ]) {
         final conn = await dio.post(
           '/connect',
           data: jsonEncode({'deviceName': name}),
@@ -279,7 +286,10 @@ void main() {
 
         await dio.post(
           '/stage/begin',
-          data: jsonEncode({'clientId': clientId, 'expectedSources': ['bookmarks']}),
+          data: jsonEncode({
+            'clientId': clientId,
+            'expectedSources': ['bookmarks'],
+          }),
           options: Options(contentType: 'application/json'),
         );
         await dio.post(
@@ -304,7 +314,9 @@ void main() {
 
       state = state.copyWith(
         phase: SyncHubPhase.reviewing,
-        conflicts: [conflicts[0].copyWith(resolution: ConflictResolution.keepLocal)],
+        conflicts: [
+          conflicts[0].copyWith(resolution: ConflictResolution.keepLocal),
+        ],
       );
       state = state.copyWith(
         phase: SyncHubPhase.confirmed,
@@ -313,6 +325,105 @@ void main() {
 
       final pullRes = await dio.get('/pull/bookmarks');
       expect(pullRes.data['data'][0]['name'], 'Version A');
+    });
+
+    test('conflicts auto-resolve when timestamps differ', () async {
+      // Re-register source with timestamp support
+      registry = BackupRegistry();
+      registry.register(
+        _MockBackupSource(
+          id: 'bookmarks',
+          testData: [],
+          hasTimestamps: true,
+        ),
+      );
+      service = SyncHubService(registry: registry);
+      state = const SyncHubState.initial();
+
+      // Device A with older timestamp
+      final connectA = await dio.post(
+        '/connect',
+        data: jsonEncode({'deviceName': 'Device A'}),
+        options: Options(contentType: 'application/json'),
+      );
+      final clientIdA = connectA.data['clientId'];
+
+      await dio.post(
+        '/stage/begin',
+        data: jsonEncode({
+          'clientId': clientIdA,
+          'expectedSources': ['bookmarks'],
+        }),
+        options: Options(contentType: 'application/json'),
+      );
+      await dio.post(
+        '/stage/bookmarks',
+        data: jsonEncode({
+          'clientId': clientIdA,
+          'data': [
+            {
+              'id': 'shared',
+              'name': 'Old Version',
+              'updatedAt': '2024-01-01T00:00:00Z',
+            },
+          ],
+        }),
+        options: Options(contentType: 'application/json'),
+      );
+      await dio.post(
+        '/stage/complete',
+        data: jsonEncode({'clientId': clientIdA}),
+        options: Options(contentType: 'application/json'),
+      );
+
+      // Device B with newer timestamp
+      final connectB = await dio.post(
+        '/connect',
+        data: jsonEncode({'deviceName': 'Device B'}),
+        options: Options(contentType: 'application/json'),
+      );
+      final clientIdB = connectB.data['clientId'];
+
+      await dio.post(
+        '/stage/begin',
+        data: jsonEncode({
+          'clientId': clientIdB,
+          'expectedSources': ['bookmarks'],
+        }),
+        options: Options(contentType: 'application/json'),
+      );
+      await dio.post(
+        '/stage/bookmarks',
+        data: jsonEncode({
+          'clientId': clientIdB,
+          'data': [
+            {
+              'id': 'shared',
+              'name': 'New Version',
+              'updatedAt': '2024-06-01T00:00:00Z',
+            },
+          ],
+        }),
+        options: Options(contentType: 'application/json'),
+      );
+      await dio.post(
+        '/stage/complete',
+        data: jsonEncode({'clientId': clientIdB}),
+        options: Options(contentType: 'application/json'),
+      );
+
+      // No conflicts - auto-resolved by timestamp
+      final conflicts = service.detectConflicts(state);
+      expect(conflicts, isEmpty);
+
+      // Merge picks the newer version
+      state = state.copyWith(
+        phase: SyncHubPhase.confirmed,
+        resolvedData: service.mergeData(state),
+      );
+
+      final pullRes = await dio.get('/pull/bookmarks');
+      expect(pullRes.data['data'][0]['name'], 'New Version');
     });
 
     test('cannot stage after confirmation', () async {
@@ -396,11 +507,16 @@ void main() {
 }
 
 class _MockBackupSource implements BackupDataSource {
-  _MockBackupSource({required this.id, required this.testData});
+  _MockBackupSource({
+    required this.id,
+    required this.testData,
+    this.hasTimestamps = false,
+  });
 
   @override
   final String id;
   final List<Map<String, dynamic>> testData;
+  final bool hasTimestamps;
 
   @override
   int get priority => 1;
@@ -410,15 +526,21 @@ class _MockBackupSource implements BackupDataSource {
 
   @override
   BackupCapabilities get capabilities => BackupCapabilities(
-        server: ServerCapability(
-          export: _export,
-          prepareImport: (_, __) => throw UnimplementedError(),
-        ),
-        sync: SyncCapability(
-          getUniqueIdFromJson: (json) => json['id']?.toString() ?? '',
-          importResolved: (_) async {},
-        ),
-      );
+    server: ServerCapability(
+      export: _export,
+      prepareImport: (_, _) => throw UnimplementedError(),
+    ),
+    sync: SyncCapability(
+      getUniqueIdFromJson: (json) => json['id']?.toString() ?? '',
+      getTimestampFromJson: hasTimestamps
+          ? (json) {
+              final ts = json['updatedAt'] as String?;
+              return ts != null ? DateTime.tryParse(ts) : null;
+            }
+          : null,
+      importResolved: (_) async {},
+    ),
+  );
 
   Future<shelf.Response> _export(shelf.Request request) async {
     return shelf.Response.ok(
