@@ -51,7 +51,7 @@ class SzurubooruRepository extends BooruRepositoryDefault {
       dio: dio,
       username: config.login,
       token: config.apiKey,
-    ).getPosts().then((value) => true);
+    ).getPosts(limit: 1).then((value) => true);
   }
 
   @override

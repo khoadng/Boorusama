@@ -21,7 +21,7 @@ class CommentDto {
           ? UserDto.fromJson(json['user'] as Map<String, dynamic>)
           : null,
       postId: json['postId'] as int?,
-      version: json['version'] as int?,
+      version: SzurubooruVersion.maybeFrom(json['version']),
       text: json['text'] as String?,
       creationTime: json['creationTime'] as String?,
       lastEditTime: json['lastEditTime'] as String?,
@@ -32,7 +32,7 @@ class CommentDto {
   final int? id;
   final UserDto? user;
   final int? postId;
-  final int? version;
+  final SzurubooruVersion? version;
   final String? text;
   final String? creationTime;
   final String? lastEditTime;

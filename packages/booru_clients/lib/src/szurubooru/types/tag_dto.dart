@@ -1,3 +1,6 @@
+// Project imports:
+import 'common.dart';
+
 class TagDto {
   TagDto({
     this.names,
@@ -32,7 +35,7 @@ class TagCategoryDto {
   factory TagCategoryDto.fromJson(Map<String, dynamic> json) {
     return TagCategoryDto(
       name: json['name'] as String?,
-      version: json['version'] as int?,
+      version: SzurubooruVersion.maybeFrom(json['version']),
       color: json['color'] as String?,
       usages: json['usages'] as int?,
       isDefault: json['default'] as bool?,
@@ -40,7 +43,7 @@ class TagCategoryDto {
     );
   }
   final String? name;
-  final int? version;
+  final SzurubooruVersion? version;
   final String? color;
   final int? usages;
   final bool? isDefault;

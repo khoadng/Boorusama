@@ -48,7 +48,7 @@ class PostDto {
 
     return PostDto(
       id: json['id'] as int?,
-      version: json['version'] as int?,
+      version: SzurubooruVersion.maybeFrom(json['version']),
       creationTime: json['creationTime'] as String?,
       lastEditTime: json['lastEditTime'] as String?,
       safety: json['safety'] as String?,
@@ -96,7 +96,7 @@ class PostDto {
     );
   }
   final int? id;
-  final int? version;
+  final SzurubooruVersion? version;
   final String? creationTime;
   final String? lastEditTime;
   final String? safety;
