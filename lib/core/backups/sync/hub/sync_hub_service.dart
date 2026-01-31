@@ -5,10 +5,10 @@ import 'dart:convert';
 import 'package:shelf/shelf.dart';
 
 // Project imports:
-import '../types/backup_data_source.dart';
-import '../types/backup_registry.dart';
+import '../../types/backup_data_source.dart';
+import '../../types/backup_registry.dart';
+import '../types.dart';
 import 'sync_hub_server.dart';
-import 'types.dart';
 
 class SyncHubService {
   SyncHubService({required this.registry});

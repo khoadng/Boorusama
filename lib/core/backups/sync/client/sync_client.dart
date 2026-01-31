@@ -5,7 +5,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 
 // Project imports:
-import 'sync_dto.dart';
+import '../sync_dto.dart';
 
 class SyncClientResult<T> {
   const SyncClientResult.success(this.data) : error = null;

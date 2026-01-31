@@ -2,14 +2,14 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../foundation/info/device_info.dart';
-import '../../../foundation/info/package_info.dart';
-import '../../../foundation/loggers.dart';
-import '../../../foundation/networking.dart';
-import '../sources/providers.dart';
+import '../../../../foundation/info/device_info.dart';
+import '../../../../foundation/info/package_info.dart';
+import '../../../../foundation/loggers.dart';
+import '../../../../foundation/networking.dart';
+import '../../sources/providers.dart';
+import '../types.dart';
 import 'sync_hub_server.dart';
 import 'sync_hub_service.dart';
-import 'types.dart';
 
 const _kHubServerName = 'Sync Hub';
 

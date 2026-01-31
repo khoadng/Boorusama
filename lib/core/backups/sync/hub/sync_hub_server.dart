@@ -9,8 +9,8 @@ import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart';
 
 // Project imports:
-import 'sync_dto.dart';
-import 'types.dart';
+import '../sync_dto.dart';
+import '../types.dart';
 
 class ConnectRequest {
   const ConnectRequest({

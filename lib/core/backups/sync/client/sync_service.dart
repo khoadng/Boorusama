@@ -6,10 +6,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shelf/shelf.dart' as shelf;
 
 // Project imports:
-import '../../../foundation/info/device_info.dart';
-import '../sources/providers.dart';
-import '../types/backup_data_source.dart';
-import '../types/backup_registry.dart';
+import '../../../../foundation/info/device_info.dart';
+import '../../sources/providers.dart';
+import '../../types/backup_data_source.dart';
+import '../../types/backup_registry.dart';
 import 'sync_client.dart';
 
 final syncServiceProvider = Provider.family.autoDispose<SyncService, String>(

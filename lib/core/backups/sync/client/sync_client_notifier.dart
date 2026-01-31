@@ -5,10 +5,10 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../foundation/loggers.dart';
-import '../../settings/providers.dart';
+import '../../../../foundation/loggers.dart';
+import '../../../settings/providers.dart';
+import '../types.dart';
 import 'sync_service.dart';
-import 'types.dart';
 
 const _kLogName = 'Sync Client';
 
