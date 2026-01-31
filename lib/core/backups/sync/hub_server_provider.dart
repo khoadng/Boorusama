@@ -552,19 +552,11 @@ class SyncHubNotifier extends Notifier<SyncHubState> {
         for (final item in staged.data) {
           final uniqueId = syncCapability.getUniqueIdFromJson(item);
 
-          final existingConflict = state.conflicts.firstWhere(
-            (c) => c.sourceId == sourceId && c.uniqueId == uniqueId,
-            orElse: () => ConflictItem(
-              sourceId: '',
-              uniqueId: Object(),
-              localData: {},
-              remoteData: {},
-              remoteClientId: '',
-              resolution: ConflictResolution.pending,
-            ),
-          );
+          final existingConflict = state.conflicts
+              .where((c) => c.sourceId == sourceId && c.uniqueId == uniqueId)
+              .firstOrNull;
 
-          if (existingConflict.sourceId.isNotEmpty) {
+          if (existingConflict != null) {
             switch (existingConflict.resolution) {
               case ConflictResolution.keepLocal:
                 mergedItems[uniqueId] = existingConflict.localData;

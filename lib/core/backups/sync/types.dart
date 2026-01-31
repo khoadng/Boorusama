@@ -96,54 +96,6 @@ class ConnectedClient extends Equatable {
   List<Object?> get props => [id, address, deviceName, connectedAt, stagedAt];
 }
 
-enum SyncItemStatus {
-  unchanged,
-  added,
-  modified,
-  conflict,
-}
-
-class StagedItem<T> extends Equatable {
-  const StagedItem({
-    required this.uniqueId,
-    required this.item,
-    required this.sourceClientId,
-    required this.status,
-    this.localItem,
-  });
-
-  final Object uniqueId;
-  final T item;
-  final String sourceClientId;
-  final SyncItemStatus status;
-  final T? localItem;
-
-  bool get hasConflict => status == SyncItemStatus.conflict;
-
-  StagedItem<T> copyWith({
-    Object? uniqueId,
-    T? item,
-    String? sourceClientId,
-    SyncItemStatus? status,
-    T? Function()? localItem,
-  }) => StagedItem<T>(
-    uniqueId: uniqueId ?? this.uniqueId,
-    item: item ?? this.item,
-    sourceClientId: sourceClientId ?? this.sourceClientId,
-    status: status ?? this.status,
-    localItem: localItem != null ? localItem() : this.localItem,
-  );
-
-  @override
-  List<Object?> get props => [
-    uniqueId,
-    item,
-    sourceClientId,
-    status,
-    localItem,
-  ];
-}
-
 class ConflictItem extends Equatable {
   const ConflictItem({
     required this.sourceId,

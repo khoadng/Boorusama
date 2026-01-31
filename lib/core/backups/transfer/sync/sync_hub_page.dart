@@ -1019,11 +1019,8 @@ class _StagedSourceTileState extends State<_StagedSourceTile> {
                 children: widget.stagedList.map((staged) {
                   // Find device name
                   final client = widget.clients
-                      .cast<ConnectedClient?>()
-                      .firstWhere(
-                        (c) => c?.id == staged.clientId,
-                        orElse: () => null,
-                      );
+                      .where((c) => c.id == staged.clientId)
+                      .firstOrNull;
                   final deviceName = staged.clientId == '_hub_self_'
                       ? 'This Device (Hub)'
                       : client?.deviceName ?? staged.clientId;
