@@ -178,6 +178,7 @@ TODO
 [x] Add staging acknowledgment mechanism
 [x] Auto-resolve conflicts using timestamps (newer wins)
 [x] Atomic pull with /pull/all endpoint
+[x] Pull tracking - hub knows who has pulled, phase becomes 'completed' when all done
 [ ] Add merge preview for non-conflict cases
 [ ] Add pull status tracking on hub (who has pulled)
 [x] Handle hub disconnect - show "Hub unreachable" after failed polls

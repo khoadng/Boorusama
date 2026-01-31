@@ -242,8 +242,8 @@ class SyncHubServer {
 
   Future<Response> _handleStageBegin(Request request) async {
     final state = stateGetter();
-    if (state.phase == SyncHubPhase.confirmed) {
-      return Response(400, body: 'Sync already confirmed, cannot stage');
+    if (state.phase != SyncHubPhase.waiting) {
+      return Response(400, body: 'Sync session in progress, cannot stage');
     }
 
     try {
@@ -305,8 +305,8 @@ class SyncHubServer {
 
   Future<Response> _handleStage(Request request, String sourceId) async {
     final state = stateGetter();
-    if (state.phase == SyncHubPhase.confirmed) {
-      return Response(400, body: 'Sync already confirmed, cannot stage');
+    if (state.phase != SyncHubPhase.waiting) {
+      return Response(400, body: 'Sync session in progress, cannot stage');
     }
 
     try {

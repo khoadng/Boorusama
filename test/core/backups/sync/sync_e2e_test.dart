@@ -487,7 +487,7 @@ void main() {
       expect(pullRes.data['data'][0]['name'], 'New Version');
     });
 
-    test('cannot stage after confirmation', () async {
+    test('cannot stage during review', () async {
       final connectRes = await dio.post(
         '/connect',
         data: jsonEncode({'deviceName': 'Device A'}),
@@ -495,7 +495,8 @@ void main() {
       );
       final clientId = connectRes.data['clientId'];
 
-      state = state.copyWith(phase: SyncHubPhase.confirmed);
+      // Simulate review in progress
+      state = state.copyWith(phase: SyncHubPhase.reviewing);
 
       final response = await dio.post(
         '/stage/begin',
@@ -509,6 +510,7 @@ void main() {
         ),
       );
       expect(response.statusCode, 400);
+      expect(response.data, contains('Sync session in progress'));
     });
 
     test('cannot pull before confirmation', () async {
