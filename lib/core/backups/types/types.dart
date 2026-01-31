@@ -12,6 +12,7 @@ class ServerConfig {
     required this.logger,
     required this.routes,
     required this.onError,
+    this.port,
     this.requestTimeout = const Duration(seconds: 30),
     this.enableRetry = true,
   });
@@ -21,6 +22,7 @@ class ServerConfig {
   final Logger logger;
   final Map<String, Handler> routes;
   final void Function(String message) onError;
+  final int? port;
   final Duration requestTimeout;
   final bool enableRetry;
 }

@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:convert';
+
 // Flutter imports:
 import 'package:flutter/material.dart';
 
@@ -5,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:coreutils/coreutils.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:shelf/shelf.dart' as shelf;
 
 // Project imports:
 import '../../../foundation/info/package_info.dart';
@@ -14,6 +18,9 @@ import '../../configs/manage/providers.dart';
 import '../../settings/providers.dart';
 import '../../widgets/reboot.dart';
 import '../preparation/preparation_pipeline.dart';
+import '../sync/strategies/booru_config_merge.dart';
+import '../sync/types.dart';
+import '../types/backup_data_source.dart';
 import '../types/types.dart';
 import '../utils/json_handler.dart';
 import '../widgets/backup_restore_tile.dart';
@@ -47,15 +54,15 @@ Future<bool?> showImportBooruConfigsAlertDialog(
 const kBooruConfigsExporterImporterVersion = 1;
 
 class BooruConfigsBackupSource extends JsonBackupSource<List<BooruConfig>> {
-  BooruConfigsBackupSource(Ref ref)
+  BooruConfigsBackupSource(this._ref)
     : super(
         id: 'profiles',
         priority: 99999, // Lowest priority - show last
         version: kBooruConfigsExporterImporterVersion,
-        appVersion: ref.read(appVersionProvider),
-        dataGetter: () async => ref.read(booruConfigProvider),
+        appVersion: _ref.read(appVersionProvider),
+        dataGetter: () async => _ref.read(booruConfigProvider),
         executor: (configs, uiContext) async {
-          final configRepo = ref.read(booruConfigRepoProvider);
+          final configRepo = _ref.read(booruConfigRepoProvider);
           await configRepo.clear();
           final newConfigs = await configRepo.addAll(configs);
 
@@ -67,7 +74,7 @@ class BooruConfigsBackupSource extends JsonBackupSource<List<BooruConfig>> {
               RebootData(
                 config: firstConfig,
                 configs: newConfigs,
-                settings: ref.read(settingsProvider),
+                settings: _ref.read(settingsProvider),
               ),
             );
           }
@@ -78,10 +85,80 @@ class BooruConfigsBackupSource extends JsonBackupSource<List<BooruConfig>> {
         ),
         extraSteps: [
           _BooruConfigValidationStep(),
-          _BooruConfigConfirmationStep(ref),
+          _BooruConfigConfirmationStep(_ref),
         ],
-        ref: ref,
+        ref: _ref,
       );
+
+  final Ref _ref;
+  final _mergeStrategy = BooruConfigMergeStrategy();
+
+  @override
+  SyncCapability<BooruConfig> get syncCapability => SyncCapability<BooruConfig>(
+    mergeStrategy: _mergeStrategy,
+    handlePush: _handlePush,
+    getUniqueIdFromJson: _mergeStrategy.getUniqueIdFromJson,
+    importResolved: _importResolved,
+  );
+
+  Future<void> _importResolved(List<Map<String, dynamic>> data) async {
+    if (data.isEmpty) return;
+
+    final configRepo = _ref.read(booruConfigRepoProvider);
+    final localConfigs = await dataGetter();
+
+    final resolvedConfigs = data.map((e) => BooruConfig.fromJson(e)).toList();
+
+    // Build set of resolved unique IDs
+    final resolvedIds = resolvedConfigs
+        .map((c) => BooruConfigUniqueId.fromConfig(c))
+        .toSet();
+
+    // Remove local configs that will be replaced
+    final toRemove = localConfigs.where(
+      (local) => resolvedIds.contains(BooruConfigUniqueId.fromConfig(local)),
+    );
+    for (final config in toRemove) {
+      await configRepo.remove(config);
+    }
+
+    // Add all resolved configs
+    await configRepo.addAll(resolvedConfigs);
+  }
+
+  Future<SyncStats> _handlePush(shelf.Request request) async {
+    final body = await request.readAsString();
+    final json = jsonDecode(body);
+
+    final remoteData = switch (json) {
+      {'data': final List<dynamic> data} => data,
+      final List<dynamic> data => data,
+      _ => <dynamic>[],
+    };
+
+    final remoteItems = remoteData
+        .map((e) => BooruConfig.fromJson(e as Map<String, dynamic>))
+        .toList();
+    final localItems = await dataGetter();
+    final result = _mergeStrategy.merge(localItems, remoteItems);
+
+    final newItems = result.merged
+        .where(
+          (item) => !localItems.any(
+            (l) =>
+                BooruConfigUniqueId.fromConfig(l) ==
+                BooruConfigUniqueId.fromConfig(item),
+          ),
+        )
+        .toList();
+
+    if (newItems.isNotEmpty) {
+      final configRepo = _ref.read(booruConfigRepoProvider);
+      await configRepo.addAll(newItems);
+    }
+
+    return result.stats;
+  }
 
   @override
   String get displayName => 'Booru profiles';

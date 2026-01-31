@@ -104,7 +104,7 @@ class AppServer implements AppServerInterface {
           await serve(
             handler,
             address,
-            0,
+            _config.port ?? 0,
           ).timeout(
             _config.requestTimeout,
             onTimeout: () => throw TimeoutException('Server start timeout'),

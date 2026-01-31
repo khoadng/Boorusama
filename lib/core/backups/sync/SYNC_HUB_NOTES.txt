@@ -1,0 +1,193 @@
+SYNC HUB - FINDINGS & EDGE CASES
+=================================
+
+1. CLIENT DISCONNECTS DURING STAGING
+------------------------------------
+Scenario: Client A starts staging data, but disconnects mid-way (network issue, app closed, etc.)
+
+Current behavior:
+- Hub stores whatever data was received before disconnect
+- Hub has no way to know if staging was complete or partial
+- When hub starts review, it includes potentially incomplete data
+- Client shows as "Staged" even if data is partial
+
+Potential issues:
+- Incomplete bookmarks/tags could be merged
+- User might not realize data is missing
+
+Possible solutions:
+- Add a "staging complete" acknowledgment from client
+- Track expected item counts vs received counts
+- Allow client to mark staging as "in progress" vs "complete"
+- Add timeout for incomplete staging sessions
+
+
+2. CLIENT RECONNECTS AND RE-STAGES
+----------------------------------
+Current behavior:
+- Existing staged data for that client is replaced (line 301 in hub_server_provider.dart)
+- This is correct behavior
+
+Status: OK
+
+
+3. HUB RESTARTS / APP CLOSES
+----------------------------
+Current behavior:
+- All state is lost (in-memory only)
+- Connected clients list cleared
+- Staged data cleared
+- Clients would need to re-stage
+
+Potential issues:
+- No persistence of sync session
+- Long sync sessions at risk
+
+Possible solutions:
+- Persist sync state to disk
+- Auto-resume on restart
+- Low priority since sync is meant to be quick
+
+
+4. CLIENT OFFLINE WHEN HUB CONFIRMS
+-----------------------------------
+Scenario: Client stages data, then goes offline. Hub confirms. Client comes back online.
+
+Current behavior:
+- Client polls for confirmation status
+- When back online, polling resumes and detects confirmation
+- Client pulls resolved data
+
+Status: OK (polling handles this)
+
+
+5. DATA CHANGES AFTER STAGING BUT BEFORE PULL
+---------------------------------------------
+Scenario: Client stages data, then user adds new bookmark on client, then client pulls.
+
+Current behavior:
+- New bookmark is NOT included in sync (wasn't staged)
+- After pull, client has: merged data + new local bookmark
+- This is probably fine since new data wasn't meant to be synced
+
+Status: OK (expected behavior)
+
+
+6. LARGE DATA TRANSFERS
+-----------------------
+Current behavior:
+- 30 second timeout for staging
+- No chunking or progress tracking
+
+Potential issues:
+- Very large bookmark collections might timeout
+- No progress indication for user
+
+Possible solutions:
+- Increase timeout
+- Add chunked uploads
+- Show upload progress
+
+
+7. CONFLICT WITH SAME DATA FROM MULTIPLE CLIENTS
+------------------------------------------------
+Scenario: Client A has bookmark X with value "foo"
+          Client B has bookmark X with value "foo" (same!)
+
+Current behavior:
+- No conflict detected (values are equal)
+- Item is included once in merged data
+
+Status: OK
+
+
+8. HUB'S OWN DATA NOT STAGED YET WHEN CLIENT STAGES
+---------------------------------------------------
+Current behavior:
+- Hub's data is staged when "Start Review" is clicked
+- If clients stage before hub clicks review, hub data is added automatically
+
+Status: OK (hub data staged in startReview())
+
+
+9. WHAT IF NO CONFLICTS BUT USER WANTS TO REVIEW DATA?
+------------------------------------------------------
+Current behavior:
+- If no conflicts, user goes straight to "ready to confirm"
+- No preview of what will be merged
+
+Possible improvement:
+- Add "Preview Merge" button even when no conflicts
+- Show final merged data before confirm
+
+
+10. CLIENT PULLS MULTIPLE TIMES
+-------------------------------
+Scenario: Client pulls, then pulls again.
+
+Current behavior:
+- importResolved replaces matching items each time
+- Should be idempotent
+
+Status: OK (but could be optimized to skip if already pulled)
+
+
+11. TWO CLIENTS WITH EXACT SAME DEVICE NAME
+-------------------------------------------
+Current behavior:
+- Each client gets unique clientId
+- Device name is just for display
+- No issues with duplicate names
+
+Status: OK
+
+
+12. NETWORK ERROR DURING PULL
+-----------------------------
+Scenario: Client starts pulling, network fails mid-way.
+
+Current behavior:
+- Some sources might be imported, others not
+- No rollback mechanism
+- Client state might be inconsistent
+
+Possible solutions:
+- Atomic import (all or nothing)
+- Track which sources were successfully pulled
+- Allow resume/retry
+
+
+13. HUB DISCONNECTS WHILE CLIENTS WAITING
+-----------------------------------------
+Scenario: Clients have staged, waiting for confirmation. Hub app closes or network dies.
+
+FIXED:
+- Track consecutive poll failures (3 failures = unreachable)
+- After 3 failed polls, show "Hub unreachable" status
+- UI shows explanation and options: Retry or Reset
+- Polling continues in background for auto-recovery
+- If hub comes back, automatically returns to waiting state
+
+
+14. CLIENT APP CLOSES WHILE WAITING
+-----------------------------------
+Scenario: Client stages, waiting for confirmation, then closes app.
+
+Current behavior:
+- Polling stops (timer cancelled in dispose)
+- On app restart, client state resets to idle
+- Would need to re-stage
+
+Possible improvement:
+- Persist "waiting for hub X" state
+- On restart, resume polling
+- Low priority
+
+
+TODO
+----
+[ ] Add staging acknowledgment mechanism
+[ ] Add merge preview for non-conflict cases
+[ ] Consider atomic import for pull
+[ ] Add pull status tracking on hub (who has pulled)
+[x] Handle hub disconnect - show "Hub unreachable" after failed polls

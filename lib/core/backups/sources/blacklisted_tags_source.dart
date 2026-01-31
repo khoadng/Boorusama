@@ -1,9 +1,13 @@
+// Dart imports:
+import 'dart:convert';
+
 // Flutter imports:
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:shelf/shelf.dart' as shelf;
 
 // Project imports:
 import '../../../foundation/clipboard.dart';
@@ -13,6 +17,9 @@ import '../../../foundation/toast.dart';
 import '../../blacklists/providers.dart';
 import '../../blacklists/types.dart';
 import '../../widgets/widgets.dart';
+import '../sync/strategies/blacklisted_tag_merge.dart';
+import '../sync/types.dart';
+import '../types/backup_data_source.dart';
 import '../utils/json_handler.dart';
 import '../widgets/backup_restore_tile.dart';
 import 'json_source.dart';
@@ -21,27 +28,90 @@ const kBlacklistedTagsBackupVersion = 1;
 
 class BlacklistedTagsBackupSource
     extends JsonBackupSource<List<BlacklistedTag>> {
-  BlacklistedTagsBackupSource(Ref ref)
+  BlacklistedTagsBackupSource(this._ref)
     : super(
         id: 'blacklisted_tags',
         priority: 2,
         version: kBlacklistedTagsBackupVersion,
-        appVersion: ref.read(appVersionProvider),
+        appVersion: _ref.read(appVersionProvider),
         dataGetter: () async {
-          final tags = await ref.read(globalBlacklistedTagsProvider.future);
+          final tags = await _ref.read(globalBlacklistedTagsProvider.future);
           return tags.unlock;
         },
         executor: (tags, _) async {
-          final repo = await ref.read(globalBlacklistedTagRepoProvider.future);
+          final repo = await _ref.read(globalBlacklistedTagRepoProvider.future);
           await repo.addTags(tags);
-          ref.invalidate(globalBlacklistedTagsProvider);
+          _ref.invalidate(globalBlacklistedTagsProvider);
         },
         handler: ListHandler<BlacklistedTag>(
           parser: BlacklistedTag.fromJson,
           encoder: (tag) => tag.toJson(),
         ),
-        ref: ref,
+        ref: _ref,
       );
+
+  final Ref _ref;
+  final _mergeStrategy = BlacklistedTagMergeStrategy();
+
+  @override
+  SyncCapability<BlacklistedTag> get syncCapability =>
+      SyncCapability<BlacklistedTag>(
+        mergeStrategy: _mergeStrategy,
+        handlePush: _handlePush,
+        getUniqueIdFromJson: _mergeStrategy.getUniqueIdFromJson,
+        importResolved: _importResolved,
+      );
+
+  Future<void> _importResolved(List<Map<String, dynamic>> data) async {
+    if (data.isEmpty) return;
+
+    final repo = await _ref.read(globalBlacklistedTagRepoProvider.future);
+    final localTags = await dataGetter();
+
+    final resolvedTags = data.map((e) => BlacklistedTag.fromJson(e)).toList();
+
+    // Find local tags that will be replaced (same name)
+    final resolvedNames = resolvedTags.map((t) => t.name).toSet();
+    final toRemove = localTags.where((t) => resolvedNames.contains(t.name));
+
+    // Remove existing tags that match resolved names
+    for (final tag in toRemove) {
+      await repo.removeTag(tag.id);
+    }
+
+    // Add all resolved tags
+    await repo.addTags(resolvedTags);
+    _ref.invalidate(globalBlacklistedTagsProvider);
+  }
+
+  Future<SyncStats> _handlePush(shelf.Request request) async {
+    final body = await request.readAsString();
+    final json = jsonDecode(body);
+
+    final remoteData = switch (json) {
+      {'data': final List<dynamic> data} => data,
+      final List<dynamic> data => data,
+      _ => <dynamic>[],
+    };
+
+    final remoteItems = remoteData
+        .map((e) => BlacklistedTag.fromJson(e as Map<String, dynamic>))
+        .toList();
+    final localItems = await dataGetter();
+    final result = _mergeStrategy.merge(localItems, remoteItems);
+
+    final newItems = result.merged
+        .where((item) => !localItems.any((l) => l.name == item.name))
+        .toList();
+
+    if (newItems.isNotEmpty) {
+      final repo = await _ref.read(globalBlacklistedTagRepoProvider.future);
+      await repo.addTags(newItems);
+      _ref.invalidate(globalBlacklistedTagsProvider);
+    }
+
+    return result.stats;
+  }
 
   @override
   String get displayName => 'Blacklisted tags';

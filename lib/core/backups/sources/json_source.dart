@@ -65,23 +65,26 @@ abstract class JsonBackupSource<T> implements BackupDataSource {
   late final DataBackupConverter converter;
   late final ImportPreparationBuilder<T> importBuilder;
 
+  SyncCapability? get syncCapability => null;
+
   @override
   BackupCapabilities get capabilities => BackupCapabilities(
     server: ServerCapability(
-      export: _serveData,
-      prepareImport: _prepareServerImport,
+      export: serveData,
+      prepareImport: prepareServerImport,
     ),
     file: FileCapability(
-      export: _exportToFile,
-      prepareImport: _prepareFileImport,
+      export: exportToFile,
+      prepareImport: prepareFileImport,
     ),
     clipboard: ClipboardCapability(
-      export: _exportToClipboard,
-      prepareImport: _prepareClipboardImport,
+      export: exportToClipboard,
+      prepareImport: prepareClipboardImport,
     ),
+    sync: syncCapability,
   );
 
-  Future<shelf.Response> _serveData(shelf.Request request) async {
+  Future<shelf.Response> serveData(shelf.Request request) async {
     final data = await dataGetter();
     final payload = handler.encode(data);
     final json = converter.encode(payload: payload);
@@ -91,7 +94,7 @@ abstract class JsonBackupSource<T> implements BackupDataSource {
     );
   }
 
-  Future<ImportPreparation> _prepareServerImport(
+  Future<ImportPreparation> prepareServerImport(
     String serverUrl,
     BuildContext? uiContext,
   ) async {
@@ -114,7 +117,7 @@ abstract class JsonBackupSource<T> implements BackupDataSource {
     BuildContext? uiContext,
   ) => _noContextPrepare(data);
 
-  Future<void> _exportToFile(String directoryPath) async {
+  Future<void> exportToFile(String directoryPath) async {
     await BackupUtils.ensureStoragePermissions(ref);
 
     final data = await dataGetter();
@@ -127,7 +130,7 @@ abstract class JsonBackupSource<T> implements BackupDataSource {
     await writeFileToDirectory(directoryPath, fileName, json);
   }
 
-  Future<ImportPreparation> _prepareFileImport(
+  Future<ImportPreparation> prepareFileImport(
     String path,
     BuildContext? uiContext,
   ) async {
@@ -145,14 +148,14 @@ abstract class JsonBackupSource<T> implements BackupDataSource {
     );
   }
 
-  Future<void> _exportToClipboard() async {
+  Future<void> exportToClipboard() async {
     final data = await dataGetter();
     final payload = handler.encode(data);
     final json = converter.encode(payload: payload);
     await AppClipboard.copy(json);
   }
 
-  Future<ImportPreparation> _prepareClipboardImport(
+  Future<ImportPreparation> prepareClipboardImport(
     BuildContext? uiContext,
   ) async {
     final content = await AppClipboard.paste('text/plain');

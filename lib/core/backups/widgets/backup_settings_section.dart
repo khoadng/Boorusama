@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:i18n/i18n.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../auto/widgets.dart';
@@ -55,6 +56,41 @@ class BackupSettingsSection extends ConsumerWidget {
                   title: context.t.settings.backup_and_restore.receive,
                   onPressed: () {
                     goToSyncDataPage(context, mode: TransferMode.import);
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 20),
+        const _Title(
+          title: 'Sync Hub',
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(
+            vertical: 8,
+            horizontal: 12,
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            spacing: 12,
+            children: [
+              Expanded(
+                child: DataTransferCard(
+                  icon: const Icon(Symbols.hub),
+                  title: 'Start Hub',
+                  onPressed: () {
+                    goToSyncDataPage(context, mode: TransferMode.syncHub);
+                  },
+                ),
+              ),
+              Expanded(
+                child: DataTransferCard(
+                  icon: const Icon(Symbols.sync),
+                  title: 'Sync',
+                  onPressed: () {
+                    goToSyncDataPage(context, mode: TransferMode.syncClient);
                   },
                 ),
               ),

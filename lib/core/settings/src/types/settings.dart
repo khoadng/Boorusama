@@ -58,6 +58,7 @@ class Settings extends Equatable {
     required this.hapticFeedbackLevel,
     required this.autoBackup,
     required this.videoCacheMaxSize,
+    this.savedSyncHubAddress,
   });
 
   Settings.fromJson(Map<String, dynamic> json)
@@ -120,7 +121,8 @@ class Settings extends Equatable {
       videoCacheMaxSize = switch (json['videoCacheMaxSize']) {
         final v? => CacheSize.tryParse(v) ?? CacheSize.oneGigabyte,
         _ => CacheSize.oneGigabyte,
-      };
+      },
+      savedSyncHubAddress = json['savedSyncHubAddress'] as String?;
 
   static const defaultSettings = Settings(
     listing: ImageListingSettings(
@@ -181,6 +183,7 @@ class Settings extends Equatable {
     hapticFeedbackLevel: HapticFeedbackLevel.defaultValue,
     autoBackup: AutoBackupSettings.defaultValue,
     videoCacheMaxSize: CacheSize.defaultValue,
+    savedSyncHubAddress: null,
   );
 
   final ImageListingSettings listing;
@@ -241,6 +244,8 @@ class Settings extends Equatable {
 
   final CacheSize videoCacheMaxSize;
 
+  final String? savedSyncHubAddress;
+
   Settings copyWith({
     String? blacklistedTags,
     String? language,
@@ -274,6 +279,7 @@ class Settings extends Equatable {
     HapticFeedbackLevel? hapticFeedbackLevel,
     AutoBackupSettings? autoBackup,
     CacheSize? videoCacheMaxSize,
+    String? savedSyncHubAddress,
   }) => Settings(
     listing: listing ?? this.listing,
     viewer: viewer ?? this.viewer,
@@ -318,6 +324,7 @@ class Settings extends Equatable {
     hapticFeedbackLevel: hapticFeedbackLevel ?? this.hapticFeedbackLevel,
     autoBackup: autoBackup ?? this.autoBackup,
     videoCacheMaxSize: videoCacheMaxSize ?? this.videoCacheMaxSize,
+    savedSyncHubAddress: savedSyncHubAddress ?? this.savedSyncHubAddress,
   );
 
   Map<String, dynamic> toJson() {
@@ -357,6 +364,7 @@ class Settings extends Equatable {
       'hapticFeedbackLevel': hapticFeedbackLevel.toData(),
       'autoBackup': autoBackup.toJson(),
       'videoCacheMaxSize': videoCacheMaxSize.displayString(),
+      'savedSyncHubAddress': savedSyncHubAddress,
     };
   }
 
@@ -393,6 +401,7 @@ class Settings extends Equatable {
     hapticFeedbackLevel,
     autoBackup,
     videoCacheMaxSize,
+    savedSyncHubAddress,
   ];
 
   List<int> get booruConfigIdOrderList {
