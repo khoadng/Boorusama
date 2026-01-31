@@ -45,6 +45,62 @@ class ConnectResponseDto {
   };
 }
 
+// Stage Begin
+class StageBeginRequestDto {
+  const StageBeginRequestDto({
+    required this.clientId,
+    required this.expectedSources,
+  });
+
+  factory StageBeginRequestDto.fromJson(Map<String, dynamic> json) {
+    final sources = (json['expectedSources'] as List<dynamic>?)
+        ?.map((e) => e as String)
+        .toList();
+
+    return StageBeginRequestDto(
+      clientId: json['clientId'] as String?,
+      expectedSources: sources ?? [],
+    );
+  }
+
+  final String? clientId;
+  final List<String> expectedSources;
+
+  Map<String, dynamic> toJson() => {
+    'clientId': clientId,
+    'expectedSources': expectedSources,
+  };
+}
+
+class StageBeginResponseDto {
+  const StageBeginResponseDto();
+
+  Map<String, dynamic> toJson() => {'success': true};
+}
+
+// Stage Complete
+class StageCompleteRequestDto {
+  const StageCompleteRequestDto({required this.clientId});
+
+  factory StageCompleteRequestDto.fromJson(Map<String, dynamic> json) =>
+      StageCompleteRequestDto(clientId: json['clientId'] as String?);
+
+  final String? clientId;
+
+  Map<String, dynamic> toJson() => {'clientId': clientId};
+}
+
+class StageCompleteResponseDto {
+  const StageCompleteResponseDto({required this.sourcesStaged});
+
+  final int sourcesStaged;
+
+  Map<String, dynamic> toJson() => {
+    'success': true,
+    'sourcesStaged': sourcesStaged,
+  };
+}
+
 // Stage
 class StageRequestDto {
   const StageRequestDto({
@@ -179,8 +235,12 @@ class ConnectedClientDto {
     required this.address,
     required this.deviceName,
     required this.connectedAt,
-    this.stagedAt,
+    required this.expectedSources,
+    required this.stagedSources,
+    required this.stagingComplete,
     required this.hasStaged,
+    required this.isStaging,
+    required this.stagingProgress,
   });
 
   factory ConnectedClientDto.fromModel(ConnectedClient client) =>
@@ -189,23 +249,35 @@ class ConnectedClientDto {
         address: client.address,
         deviceName: client.deviceName,
         connectedAt: client.connectedAt.toIso8601String(),
-        stagedAt: client.stagedAt?.toIso8601String(),
+        expectedSources: client.expectedSources,
+        stagedSources: client.stagedSources,
+        stagingComplete: client.stagingComplete,
         hasStaged: client.hasStaged,
+        isStaging: client.isStaging,
+        stagingProgress: client.stagingProgress,
       );
 
   final String id;
   final String address;
   final String deviceName;
   final String connectedAt;
-  final String? stagedAt;
+  final List<String> expectedSources;
+  final List<String> stagedSources;
+  final bool stagingComplete;
   final bool hasStaged;
+  final bool isStaging;
+  final String stagingProgress;
 
   Map<String, dynamic> toJson() => {
     'id': id,
     'address': address,
     'deviceName': deviceName,
     'connectedAt': connectedAt,
-    'stagedAt': stagedAt,
+    'expectedSources': expectedSources,
+    'stagedSources': stagedSources,
+    'stagingComplete': stagingComplete,
     'hasStaged': hasStaged,
+    'isStaging': isStaging,
+    'stagingProgress': stagingProgress,
   };
 }

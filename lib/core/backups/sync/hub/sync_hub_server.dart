@@ -34,6 +34,16 @@ class ConnectResponse {
   final SyncHubPhase phase;
 }
 
+class StageBeginRequest {
+  const StageBeginRequest({
+    required this.clientId,
+    required this.expectedSources,
+  });
+
+  final String? clientId;
+  final List<String> expectedSources;
+}
+
 class StageRequest {
   const StageRequest({
     required this.clientId,
@@ -42,6 +52,22 @@ class StageRequest {
 
   final String? clientId;
   final List<Map<String, dynamic>> data;
+}
+
+class StageCompleteRequest {
+  const StageCompleteRequest({required this.clientId});
+
+  final String? clientId;
+}
+
+class StageCompleteResponse {
+  const StageCompleteResponse.success(this.sourcesStaged) : error = null;
+  const StageCompleteResponse.failure(this.error) : sourcesStaged = 0;
+
+  final int sourcesStaged;
+  final String? error;
+
+  bool get isSuccess => error == null;
 }
 
 class StageResponse {
@@ -70,14 +96,19 @@ class SyncHubServer {
   SyncHubServer({
     required this.stateGetter,
     required this.onConnect,
+    required this.onStageBegin,
     required this.onStage,
+    required this.onStageComplete,
     required this.onExport,
   });
 
   final StateGetter stateGetter;
   final Future<ConnectResponse> Function(ConnectRequest request) onConnect;
+  final Future<void> Function(StageBeginRequest request) onStageBegin;
   final Future<StageResponse> Function(String sourceId, StageRequest request)
   onStage;
+  final Future<StageCompleteResponse> Function(StageCompleteRequest request)
+  onStageComplete;
   final Future<ExportResponse> Function(String sourceId) onExport;
 
   HttpServer? _server;
@@ -144,6 +175,8 @@ class SyncHubServer {
       ('GET', 'health') => Response(204),
       ('POST', 'connect') => _handleConnect(request),
       ('GET', 'sync/status') => _handleSyncStatus(),
+      ('POST', 'stage/begin') => _handleStageBegin(request),
+      ('POST', 'stage/complete') => _handleStageComplete(request),
       (_, _) when method == 'POST' && path.startsWith('stage/') => _handleStage(
         request,
         path.substring(6),
@@ -190,6 +223,67 @@ class SyncHubServer {
         phase: result.phase.name,
       );
       return _jsonResponse(responseDto.toJson());
+    } catch (e) {
+      return Response.internalServerError(
+        body: jsonEncode({'error': e.toString()}),
+      );
+    }
+  }
+
+  Future<Response> _handleStageBegin(Request request) async {
+    final state = stateGetter();
+    if (state.phase == SyncHubPhase.confirmed) {
+      return Response(400, body: 'Sync already confirmed, cannot stage');
+    }
+
+    try {
+      final body = await request.readAsString();
+      final json = jsonDecode(body) as Map<String, dynamic>;
+      final dto = StageBeginRequestDto.fromJson(json);
+
+      if (dto.clientId == null) {
+        return Response(400, body: 'Missing clientId');
+      }
+
+      if (dto.expectedSources.isEmpty) {
+        return Response(400, body: 'expectedSources cannot be empty');
+      }
+
+      final beginRequest = StageBeginRequest(
+        clientId: dto.clientId,
+        expectedSources: dto.expectedSources,
+      );
+
+      await onStageBegin(beginRequest);
+
+      return _jsonResponse(const StageBeginResponseDto().toJson());
+    } catch (e) {
+      return Response.internalServerError(
+        body: jsonEncode({'error': e.toString()}),
+      );
+    }
+  }
+
+  Future<Response> _handleStageComplete(Request request) async {
+    try {
+      final body = await request.readAsString();
+      final json = jsonDecode(body) as Map<String, dynamic>;
+      final dto = StageCompleteRequestDto.fromJson(json);
+
+      if (dto.clientId == null) {
+        return Response(400, body: 'Missing clientId');
+      }
+
+      final completeRequest = StageCompleteRequest(clientId: dto.clientId);
+      final result = await onStageComplete(completeRequest);
+
+      if (result.isSuccess) {
+        return _jsonResponse(
+          StageCompleteResponseDto(sourcesStaged: result.sourcesStaged).toJson(),
+        );
+      } else {
+        return Response(400, body: result.error);
+      }
     } catch (e) {
       return Response.internalServerError(
         body: jsonEncode({'error': e.toString()}),

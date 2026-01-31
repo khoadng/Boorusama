@@ -28,33 +28,76 @@ class ConnectedClient extends Equatable {
     required this.address,
     required this.deviceName,
     required this.connectedAt,
-    this.stagedAt,
+    this.expectedSources = const [],
+    this.stagedSources = const [],
+    this.stagingComplete = false,
   });
 
   final String id;
   final String address;
   final String deviceName;
   final DateTime connectedAt;
-  final DateTime? stagedAt;
+  final List<String> expectedSources;
+  final List<String> stagedSources;
+  final bool stagingComplete;
 
-  bool get hasStaged => stagedAt != null;
+  bool get hasStaged => stagingComplete;
+
+  bool get isStaging =>
+      expectedSources.isNotEmpty && !stagingComplete;
+
+  String get stagingProgress => expectedSources.isEmpty
+      ? ''
+      : '${stagedSources.length}/${expectedSources.length}';
 
   ConnectedClient copyWith({
     String? id,
     String? address,
     String? deviceName,
     DateTime? connectedAt,
-    DateTime? Function()? stagedAt,
+    List<String>? expectedSources,
+    List<String>? stagedSources,
+    bool? stagingComplete,
   }) => ConnectedClient(
     id: id ?? this.id,
     address: address ?? this.address,
     deviceName: deviceName ?? this.deviceName,
     connectedAt: connectedAt ?? this.connectedAt,
-    stagedAt: stagedAt != null ? stagedAt() : this.stagedAt,
+    expectedSources: expectedSources ?? this.expectedSources,
+    stagedSources: stagedSources ?? this.stagedSources,
+    stagingComplete: stagingComplete ?? this.stagingComplete,
+  );
+
+  ConnectedClient onStagingStarted(List<String> sources) => copyWith(
+    expectedSources: sources,
+    stagedSources: [],
+    stagingComplete: false,
+  );
+
+  ConnectedClient onSourceStaged(String sourceId) => copyWith(
+    stagedSources: [...stagedSources, sourceId],
+  );
+
+  ConnectedClient onStagingComplete() => copyWith(
+    stagingComplete: true,
+  );
+
+  ConnectedClient onReset() => copyWith(
+    expectedSources: [],
+    stagedSources: [],
+    stagingComplete: false,
   );
 
   @override
-  List<Object?> get props => [id, address, deviceName, connectedAt, stagedAt];
+  List<Object?> get props => [
+    id,
+    address,
+    deviceName,
+    connectedAt,
+    expectedSources,
+    stagedSources,
+    stagingComplete,
+  ];
 }
 
 class ConflictItem extends Equatable {
@@ -246,9 +289,7 @@ class SyncHubState extends Equatable {
     stagedData: {},
     conflicts: [],
     resolvedData: {},
-    connectedClients: connectedClients
-        .map((c) => c.copyWith(stagedAt: () => null))
-        .toList(),
+    connectedClients: connectedClients.map((c) => c.onReset()).toList(),
   );
 
   @override

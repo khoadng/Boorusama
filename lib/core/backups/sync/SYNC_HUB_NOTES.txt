@@ -5,21 +5,14 @@ SYNC HUB - FINDINGS & EDGE CASES
 ------------------------------------
 Scenario: Client A starts staging data, but disconnects mid-way (network issue, app closed, etc.)
 
-Current behavior:
-- Hub stores whatever data was received before disconnect
-- Hub has no way to know if staging was complete or partial
-- When hub starts review, it includes potentially incomplete data
-- Client shows as "Staged" even if data is partial
-
-Potential issues:
-- Incomplete bookmarks/tags could be merged
-- User might not realize data is missing
-
-Possible solutions:
-- Add a "staging complete" acknowledgment from client
-- Track expected item counts vs received counts
-- Allow client to mark staging as "in progress" vs "complete"
-- Add timeout for incomplete staging sessions
+FIXED:
+- Two-phase staging protocol: begin → stage sources → complete
+- Client calls POST /stage/begin with expected sources list
+- Client stages each source with POST /stage/{sourceId}
+- Client calls POST /stage/complete to finalize
+- Hub validates all expected sources were staged before marking as "Staged"
+- Client shows as "Staging (2/3)" during progress, not "Staged"
+- Incomplete staging is detected and prevented from being merged
 
 
 2. CLIENT RECONNECTS AND RE-STAGES
@@ -186,7 +179,7 @@ Possible improvement:
 
 TODO
 ----
-[ ] Add staging acknowledgment mechanism
+[x] Add staging acknowledgment mechanism
 [ ] Add merge preview for non-conflict cases
 [ ] Consider atomic import for pull
 [ ] Add pull status tracking on hub (who has pulled)

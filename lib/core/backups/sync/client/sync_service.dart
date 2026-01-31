@@ -104,27 +104,50 @@ class SyncService {
       client.checkSyncStatus();
 
   Future<String?> _stageAllSources(String clientId) async {
-    var stagedCount = 0;
+    // Get all syncable sources
+    final syncableSources = registry
+        .getAllSources()
+        .where((s) => s.capabilities.sync != null)
+        .toList();
 
-    for (final source in registry.getAllSources()) {
-      if (source.capabilities.sync == null) continue;
+    if (syncableSources.isEmpty) {
+      return 'No syncable sources available';
+    }
 
+    // Begin staging - declare what we intend to stage
+    final sourceIds = syncableSources.map((s) => s.id).toList();
+    final beginResult = await client.stageBegin(
+      clientId: clientId,
+      expectedSources: sourceIds,
+    );
+
+    if (beginResult.isFailure) {
+      return beginResult.error;
+    }
+
+    // Stage each source
+    for (final source in syncableSources) {
       try {
         final data = await _exportSourceData(source);
 
-        final result = await client.stageData(
+        await client.stageData(
           clientId: clientId,
           sourceId: source.id,
           data: data,
         );
-
-        if (result.isSuccess) stagedCount++;
       } catch (e) {
         // Continue with other sources
       }
     }
 
-    return stagedCount > 0 ? null : 'Failed to stage any data';
+    // Complete staging
+    final completeResult = await client.stageComplete(clientId: clientId);
+
+    if (completeResult.isFailure) {
+      return completeResult.error;
+    }
+
+    return null;
   }
 
   Future<String?> _pullAllSources() async {

@@ -23,9 +23,18 @@ class ConnectResult {
   final String clientId;
 }
 
+class StageBeginResult {
+  const StageBeginResult();
+}
+
 class StageResult {
   const StageResult({required this.stagedCount});
   final int stagedCount;
+}
+
+class StageCompleteResult {
+  const StageCompleteResult({required this.sourcesStaged});
+  final int sourcesStaged;
 }
 
 class SyncStatusResult {
@@ -99,6 +108,34 @@ class SyncClient {
     }
   }
 
+  Future<SyncClientResult<StageBeginResult>> stageBegin({
+    required String clientId,
+    required List<String> expectedSources,
+  }) async {
+    try {
+      final requestDto = StageBeginRequestDto(
+        clientId: clientId,
+        expectedSources: expectedSources,
+      );
+
+      final response = await _dio.post(
+        '/stage/begin',
+        data: jsonEncode(requestDto.toJson()),
+        options: Options(contentType: 'application/json'),
+      );
+
+      if (response.statusCode == 200) {
+        return const SyncClientResult.success(StageBeginResult());
+      }
+
+      return SyncClientResult.failure(
+        'Failed to begin staging: ${response.statusCode}',
+      );
+    } on DioException catch (e) {
+      return SyncClientResult.failure(e.message ?? 'Stage begin failed');
+    }
+  }
+
   Future<SyncClientResult<StageResult>> stageData({
     required String clientId,
     required String sourceId,
@@ -130,6 +167,33 @@ class SyncClient {
       );
     } on DioException catch (e) {
       return SyncClientResult.failure(e.message ?? 'Stage failed');
+    }
+  }
+
+  Future<SyncClientResult<StageCompleteResult>> stageComplete({
+    required String clientId,
+  }) async {
+    try {
+      final requestDto = StageCompleteRequestDto(clientId: clientId);
+
+      final response = await _dio.post(
+        '/stage/complete',
+        data: jsonEncode(requestDto.toJson()),
+        options: Options(contentType: 'application/json'),
+      );
+
+      if (response.statusCode == 200) {
+        final data = response.data as Map<String, dynamic>;
+        return SyncClientResult.success(
+          StageCompleteResult(sourcesStaged: data['sourcesStaged'] as int? ?? 0),
+        );
+      }
+
+      final body = response.data?.toString() ?? '';
+      return SyncClientResult.failure('Staging incomplete: $body');
+    } on DioException catch (e) {
+      final body = e.response?.data?.toString() ?? e.message ?? '';
+      return SyncClientResult.failure('Staging incomplete: $body');
     }
   }
 

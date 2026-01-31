@@ -18,6 +18,61 @@ class SyncHubService {
   String generateClientId() =>
       DateTime.now().millisecondsSinceEpoch.toRadixString(36);
 
+  SyncHubState handleStageBegin(
+    SyncHubState state,
+    StageBeginRequest request,
+  ) {
+    final clientIndex = state.connectedClients.indexWhere(
+      (c) => c.id == request.clientId,
+    );
+
+    if (clientIndex < 0) return state;
+
+    final updated = List<ConnectedClient>.from(state.connectedClients);
+    updated[clientIndex] = updated[clientIndex].onStagingStarted(
+      request.expectedSources,
+    );
+
+    return state.copyWith(connectedClients: updated);
+  }
+
+  (SyncHubState, StageCompleteResponse) handleStageComplete(
+    SyncHubState state,
+    StageCompleteRequest request,
+  ) {
+    final clientIndex = state.connectedClients.indexWhere(
+      (c) => c.id == request.clientId,
+    );
+
+    if (clientIndex < 0) {
+      return (state, const StageCompleteResponse.failure('Client not found'));
+    }
+
+    final client = state.connectedClients[clientIndex];
+
+    // Verify all expected sources were staged
+    final missingSources = client.expectedSources
+        .where((s) => !client.stagedSources.contains(s))
+        .toList();
+
+    if (missingSources.isNotEmpty) {
+      return (
+        state,
+        StageCompleteResponse.failure(
+          'Missing sources: ${missingSources.join(", ")}',
+        ),
+      );
+    }
+
+    final updated = List<ConnectedClient>.from(state.connectedClients);
+    updated[clientIndex] = updated[clientIndex].onStagingComplete();
+
+    return (
+      state.copyWith(connectedClients: updated),
+      StageCompleteResponse.success(client.stagedSources.length),
+    );
+  }
+
   SyncHubState handleConnect(SyncHubState state, ConnectRequest request) {
     final clientId = request.clientId ?? generateClientId();
 
@@ -70,9 +125,10 @@ class SyncHubService {
     sourceStaged.add(stagedSourceData);
     currentStaged[sourceId] = sourceStaged;
 
-    final updatedClients = _updateClientStagedAt(
+    final updatedClients = _updateClientSourceStaged(
       state.connectedClients,
       request.clientId!,
+      sourceId,
     );
 
     return (
@@ -251,19 +307,20 @@ class SyncHubService {
     }
   }
 
-  List<ConnectedClient> _updateClientStagedAt(
+  List<ConnectedClient> _updateClientSourceStaged(
     List<ConnectedClient> clients,
     String clientId,
+    String sourceId,
   ) {
-    final now = DateTime.now();
     final existingIndex = clients.indexWhere((c) => c.id == clientId);
 
     if (existingIndex >= 0) {
-      final updated = List<ConnectedClient>.from(clients);
-      updated[existingIndex] = updated[existingIndex].copyWith(
-        stagedAt: () => now,
-      );
-      return updated;
+      final client = clients[existingIndex];
+      if (!client.stagedSources.contains(sourceId)) {
+        final updated = List<ConnectedClient>.from(clients);
+        updated[existingIndex] = client.onSourceStaged(sourceId);
+        return updated;
+      }
     }
 
     return clients;

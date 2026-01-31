@@ -51,7 +51,9 @@ class SyncHubNotifier extends Notifier<SyncHubState> {
       _server = SyncHubServer(
         stateGetter: () => state,
         onConnect: _handleConnect,
+        onStageBegin: _handleStageBegin,
         onStage: _handleStage,
+        onStageComplete: _handleStageComplete,
         onExport: _handleExport,
       );
 
@@ -112,6 +114,36 @@ class SyncHubNotifier extends Notifier<SyncHubState> {
     );
 
     return ConnectResponse(clientId: clientId, phase: state.phase);
+  }
+
+  Future<void> _handleStageBegin(StageBeginRequest request) async {
+    state = _service.handleStageBegin(state, request);
+
+    _logger.info(
+      _kHubServerName,
+      'Client ${request.clientId} starting staging: ${request.expectedSources.join(", ")}',
+    );
+  }
+
+  Future<StageCompleteResponse> _handleStageComplete(
+    StageCompleteRequest request,
+  ) async {
+    final (newState, response) = _service.handleStageComplete(state, request);
+    state = newState;
+
+    if (response.isSuccess) {
+      _logger.info(
+        _kHubServerName,
+        'Client ${request.clientId} completed staging: ${response.sourcesStaged} sources',
+      );
+    } else {
+      _logger.warn(
+        _kHubServerName,
+        'Client ${request.clientId} staging incomplete: ${response.error}',
+      );
+    }
+
+    return response;
   }
 
   Future<StageResponse> _handleStage(
