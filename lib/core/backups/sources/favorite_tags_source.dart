@@ -1,13 +1,9 @@
-// Dart imports:
-import 'dart:convert';
-
 // Flutter imports:
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
-import 'package:shelf/shelf.dart' as shelf;
 
 // Project imports:
 import '../../../foundation/clipboard.dart';
@@ -15,8 +11,6 @@ import '../../../foundation/info/package_info.dart';
 import '../../routers/routers.dart';
 import '../../tags/favorites/providers.dart';
 import '../../tags/favorites/types.dart';
-import '../sync/strategies/favorite_tag_merge.dart';
-import '../sync/types.dart';
 import '../types/backup_data_source.dart';
 import '../utils/json_handler.dart';
 import '../widgets/backup_restore_tile.dart';
@@ -45,13 +39,10 @@ class FavoriteTagsBackupSource extends JsonBackupSource<List<FavoriteTag>> {
       );
 
   final Ref _ref;
-  final _mergeStrategy = FavoriteTagMergeStrategy();
 
   @override
-  SyncCapability<FavoriteTag> get syncCapability => SyncCapability<FavoriteTag>(
-    mergeStrategy: _mergeStrategy,
-    handlePush: _handlePush,
-    getUniqueIdFromJson: _mergeStrategy.getUniqueIdFromJson,
+  SyncCapability get syncCapability => SyncCapability(
+    getUniqueIdFromJson: (json) => json['name'] as String? ?? '',
     importResolved: _importResolved,
   );
 
@@ -63,29 +54,6 @@ class FavoriteTagsBackupSource extends JsonBackupSource<List<FavoriteTag>> {
     final repo = await _ref.read(favoriteTagRepoProvider.future);
     await repo.createFrom(resolvedTags);
     _ref.invalidate(favoriteTagsProvider);
-  }
-
-  Future<SyncStats> _handlePush(shelf.Request request) async {
-    final body = await request.readAsString();
-    final json = jsonDecode(body);
-
-    final remoteData = switch (json) {
-      {'data': final List<dynamic> data} => data,
-      final List<dynamic> data => data,
-      _ => <dynamic>[],
-    };
-
-    final remoteItems = remoteData
-        .map((e) => FavoriteTag.fromJson(e as Map<String, dynamic>))
-        .toList();
-    final localItems = await dataGetter();
-    final result = _mergeStrategy.merge(localItems, remoteItems);
-
-    final repo = await _ref.read(favoriteTagRepoProvider.future);
-    await repo.createFrom(result.merged);
-    _ref.invalidate(favoriteTagsProvider);
-
-    return result.stats;
   }
 
   @override

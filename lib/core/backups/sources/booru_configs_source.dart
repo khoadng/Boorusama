@@ -1,14 +1,11 @@
-// Dart imports:
-import 'dart:convert';
-
 // Flutter imports:
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:coreutils/coreutils.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
-import 'package:shelf/shelf.dart' as shelf;
 
 // Project imports:
 import '../../../foundation/info/package_info.dart';
@@ -18,14 +15,41 @@ import '../../configs/manage/providers.dart';
 import '../../settings/providers.dart';
 import '../../widgets/reboot.dart';
 import '../preparation/preparation_pipeline.dart';
-import '../sync/strategies/booru_config_merge.dart';
-import '../sync/types.dart';
 import '../types/backup_data_source.dart';
 import '../types/types.dart';
 import '../utils/json_handler.dart';
 import '../widgets/backup_restore_tile.dart';
 import '../widgets/import_booru_configs_alert_dialog.dart';
 import 'json_source.dart';
+
+class BooruConfigUniqueId extends Equatable {
+  const BooruConfigUniqueId({
+    required this.booruId,
+    required this.url,
+    required this.name,
+  });
+
+  factory BooruConfigUniqueId.fromConfig(BooruConfig config) =>
+      BooruConfigUniqueId(
+        booruId: config.booruId,
+        url: config.url,
+        name: config.name,
+      );
+
+  factory BooruConfigUniqueId.fromJson(Map<String, dynamic> json) =>
+      BooruConfigUniqueId(
+        booruId: json['booruId'] as int? ?? 0,
+        url: json['url'] as String? ?? '',
+        name: json['name'] as String? ?? '',
+      );
+
+  final int booruId;
+  final String url;
+  final String name;
+
+  @override
+  List<Object?> get props => [booruId, url, name];
+}
 
 class BooruConfigExportData {
   BooruConfigExportData({
@@ -91,13 +115,10 @@ class BooruConfigsBackupSource extends JsonBackupSource<List<BooruConfig>> {
       );
 
   final Ref _ref;
-  final _mergeStrategy = BooruConfigMergeStrategy();
 
   @override
-  SyncCapability<BooruConfig> get syncCapability => SyncCapability<BooruConfig>(
-    mergeStrategy: _mergeStrategy,
-    handlePush: _handlePush,
-    getUniqueIdFromJson: _mergeStrategy.getUniqueIdFromJson,
+  SyncCapability get syncCapability => SyncCapability(
+    getUniqueIdFromJson: BooruConfigUniqueId.fromJson,
     importResolved: _importResolved,
   );
 
@@ -124,40 +145,6 @@ class BooruConfigsBackupSource extends JsonBackupSource<List<BooruConfig>> {
 
     // Add all resolved configs
     await configRepo.addAll(resolvedConfigs);
-  }
-
-  Future<SyncStats> _handlePush(shelf.Request request) async {
-    final body = await request.readAsString();
-    final json = jsonDecode(body);
-
-    final remoteData = switch (json) {
-      {'data': final List<dynamic> data} => data,
-      final List<dynamic> data => data,
-      _ => <dynamic>[],
-    };
-
-    final remoteItems = remoteData
-        .map((e) => BooruConfig.fromJson(e as Map<String, dynamic>))
-        .toList();
-    final localItems = await dataGetter();
-    final result = _mergeStrategy.merge(localItems, remoteItems);
-
-    final newItems = result.merged
-        .where(
-          (item) => !localItems.any(
-            (l) =>
-                BooruConfigUniqueId.fromConfig(l) ==
-                BooruConfigUniqueId.fromConfig(item),
-          ),
-        )
-        .toList();
-
-    if (newItems.isNotEmpty) {
-      final configRepo = _ref.read(booruConfigRepoProvider);
-      await configRepo.addAll(newItems);
-    }
-
-    return result.stats;
   }
 
   @override

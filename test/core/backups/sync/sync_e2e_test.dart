@@ -10,8 +10,6 @@ import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf/shelf_io.dart' as shelf_io;
 
 import 'package:boorusama/core/backups/sync/hub/types.dart';
-import 'package:boorusama/core/backups/sync/merge_strategy.dart';
-import 'package:boorusama/core/backups/sync/types.dart';
 import 'package:boorusama/core/backups/types/backup_data_source.dart';
 import 'package:boorusama/core/backups/types/backup_registry.dart';
 
@@ -730,8 +728,6 @@ class _MockBackupSource implements BackupDataSource {
       prepareImport: (_, __) => throw UnimplementedError(),
     ),
     sync: SyncCapability(
-      mergeStrategy: _SimpleMergeStrategy(),
-      handlePush: (_) => throw UnimplementedError(),
       getUniqueIdFromJson: (json) => json['id']?.toString() ?? '',
       importResolved: (_) async {},
     ),
@@ -750,16 +746,4 @@ class _MockBackupSource implements BackupDataSource {
 
   @override
   Widget buildTile(BuildContext context) => const SizedBox();
-}
-
-class _SimpleMergeStrategy extends MergeStrategy<Map<String, dynamic>> {
-  @override
-  Object getUniqueId(Map<String, dynamic> item) => item['id']?.toString() ?? '';
-
-  @override
-  Object getUniqueIdFromJson(Map<String, dynamic> json) =>
-      json['id']?.toString() ?? '';
-
-  @override
-  DateTime? getTimestamp(Map<String, dynamic> item) => null;
 }

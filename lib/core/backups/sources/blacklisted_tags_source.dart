@@ -1,13 +1,9 @@
-// Dart imports:
-import 'dart:convert';
-
 // Flutter imports:
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
-import 'package:shelf/shelf.dart' as shelf;
 
 // Project imports:
 import '../../../foundation/clipboard.dart';
@@ -17,8 +13,6 @@ import '../../../foundation/toast.dart';
 import '../../blacklists/providers.dart';
 import '../../blacklists/types.dart';
 import '../../widgets/widgets.dart';
-import '../sync/strategies/blacklisted_tag_merge.dart';
-import '../sync/types.dart';
 import '../types/backup_data_source.dart';
 import '../utils/json_handler.dart';
 import '../widgets/backup_restore_tile.dart';
@@ -51,16 +45,12 @@ class BlacklistedTagsBackupSource
       );
 
   final Ref _ref;
-  final _mergeStrategy = BlacklistedTagMergeStrategy();
 
   @override
-  SyncCapability<BlacklistedTag> get syncCapability =>
-      SyncCapability<BlacklistedTag>(
-        mergeStrategy: _mergeStrategy,
-        handlePush: _handlePush,
-        getUniqueIdFromJson: _mergeStrategy.getUniqueIdFromJson,
-        importResolved: _importResolved,
-      );
+  SyncCapability get syncCapability => SyncCapability(
+    getUniqueIdFromJson: (json) => json['name'] as String? ?? '',
+    importResolved: _importResolved,
+  );
 
   Future<void> _importResolved(List<Map<String, dynamic>> data) async {
     if (data.isEmpty) return;
@@ -82,35 +72,6 @@ class BlacklistedTagsBackupSource
     // Add all resolved tags
     await repo.addTags(resolvedTags);
     _ref.invalidate(globalBlacklistedTagsProvider);
-  }
-
-  Future<SyncStats> _handlePush(shelf.Request request) async {
-    final body = await request.readAsString();
-    final json = jsonDecode(body);
-
-    final remoteData = switch (json) {
-      {'data': final List<dynamic> data} => data,
-      final List<dynamic> data => data,
-      _ => <dynamic>[],
-    };
-
-    final remoteItems = remoteData
-        .map((e) => BlacklistedTag.fromJson(e as Map<String, dynamic>))
-        .toList();
-    final localItems = await dataGetter();
-    final result = _mergeStrategy.merge(localItems, remoteItems);
-
-    final newItems = result.merged
-        .where((item) => !localItems.any((l) => l.name == item.name))
-        .toList();
-
-    if (newItems.isNotEmpty) {
-      final repo = await _ref.read(globalBlacklistedTagRepoProvider.future);
-      await repo.addTags(newItems);
-      _ref.invalidate(globalBlacklistedTagsProvider);
-    }
-
-    return result.stats;
   }
 
   @override

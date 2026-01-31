@@ -6,23 +6,14 @@ import 'package:shelf/shelf.dart' as shelf;
 
 // Project imports:
 import '../preparation/version_checking.dart';
-import '../sync/merge_strategy.dart';
-import '../sync/types.dart';
 
-class SyncCapability<T> {
+class SyncCapability {
   const SyncCapability({
-    required this.mergeStrategy,
-    required this.handlePush,
     required this.getUniqueIdFromJson,
     required this.importResolved,
   });
 
-  final MergeStrategy<T> mergeStrategy;
-  final Future<SyncStats> Function(shelf.Request request) handlePush;
   final Object Function(Map<String, dynamic> json) getUniqueIdFromJson;
-
-  /// Import resolved data directly, replacing existing items and adding new ones.
-  /// Used by the hub to apply resolved sync data to its own storage.
   final Future<void> Function(List<Map<String, dynamic>> data) importResolved;
 }
 
