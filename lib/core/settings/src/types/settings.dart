@@ -183,7 +183,6 @@ class Settings extends Equatable {
     hapticFeedbackLevel: HapticFeedbackLevel.defaultValue,
     autoBackup: AutoBackupSettings.defaultValue,
     videoCacheMaxSize: CacheSize.defaultValue,
-    savedSyncHubAddress: null,
   );
 
   final ImageListingSettings listing;
