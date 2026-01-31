@@ -8,9 +8,10 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import '../../../themes/theme/types.dart';
 import '../../servers/discovery_client.dart';
-import '../../sync/sync_client_notifier.dart';
-import '../../sync/types.dart';
+import '../../sync/client/sync_client_notifier.dart';
+import '../../sync/client/types.dart';
 import '../../types.dart';
+import 'widgets/instruction_step.dart';
 
 class SyncClientPage extends ConsumerStatefulWidget {
   const SyncClientPage({super.key});
@@ -88,25 +89,46 @@ class _SyncClientPageState extends ConsumerState<SyncClientPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 12),
-              _buildAddressInput(context, state, notifier),
+              _AddressInput(
+                controller: _addressController,
+                state: state,
+                notifier: notifier,
+              ),
               const SizedBox(height: 16),
-              _buildDiscoveredHubs(context, state, notifier),
+              _DiscoveredHubs(
+                hubs: _discoveredHubs,
+                state: state,
+                notifier: notifier,
+                onHubSelected: (hub) {
+                  _addressController.text = hub.url;
+                  notifier.stageToHub(hub.url);
+                },
+              ),
               const SizedBox(height: 16),
-              _buildStatus(context, state, notifier),
+              _StatusSection(state: state, notifier: notifier),
               const SizedBox(height: 24),
-              _buildInstructions(context),
+              const _ClientInstructions(),
             ],
           ),
         ),
       ),
     );
   }
+}
 
-  Widget _buildAddressInput(
-    BuildContext context,
-    SyncClientState state,
-    SyncClientNotifier notifier,
-  ) {
+class _AddressInput extends StatelessWidget {
+  const _AddressInput({
+    required this.controller,
+    required this.state,
+    required this.notifier,
+  });
+
+  final TextEditingController controller;
+  final SyncClientState state;
+  final SyncClientNotifier notifier;
+
+  @override
+  Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final isLoading =
         state.status == SyncClientStatus.connecting ||
@@ -130,7 +152,7 @@ class _SyncClientPageState extends ConsumerState<SyncClientPage> {
           ),
           const SizedBox(height: 12),
           TextField(
-            controller: _addressController,
+            controller: controller,
             decoration: InputDecoration(
               hintText: 'e.g., 192.168.1.100:8765',
               border: const OutlineInputBorder(),
@@ -138,7 +160,7 @@ class _SyncClientPageState extends ConsumerState<SyncClientPage> {
                   ? IconButton(
                       icon: const Icon(Symbols.close),
                       onPressed: () {
-                        _addressController.clear();
+                        controller.clear();
                         notifier.clearSavedAddress();
                       },
                     )
@@ -157,7 +179,7 @@ class _SyncClientPageState extends ConsumerState<SyncClientPage> {
                       state.status == SyncClientStatus.waitingForConfirmation
                   ? null
                   : () {
-                      final address = _addressController.text.trim();
+                      final address = controller.text.trim();
                       if (address.isNotEmpty) {
                         notifier.stageToHub(address);
                       }
@@ -180,16 +202,35 @@ class _SyncClientPageState extends ConsumerState<SyncClientPage> {
     );
   }
 
-  Widget _buildDiscoveredHubs(
-    BuildContext context,
-    SyncClientState state,
-    SyncClientNotifier notifier,
-  ) {
-    final colorScheme = Theme.of(context).colorScheme;
+  String _getButtonText(SyncClientStatus status) {
+    return switch (status) {
+      SyncClientStatus.connecting => 'Connecting...',
+      SyncClientStatus.staging => 'Staging...',
+      SyncClientStatus.pulling => 'Pulling...',
+      SyncClientStatus.waitingForConfirmation => 'Waiting...',
+      _ => 'Stage Data',
+    };
+  }
+}
 
-    if (_discoveredHubs.isEmpty) {
-      return const SizedBox.shrink();
-    }
+class _DiscoveredHubs extends StatelessWidget {
+  const _DiscoveredHubs({
+    required this.hubs,
+    required this.state,
+    required this.notifier,
+    required this.onHubSelected,
+  });
+
+  final List<DiscoveredService> hubs;
+  final SyncClientState state;
+  final SyncClientNotifier notifier;
+  final void Function(DiscoveredService hub) onHubSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    if (hubs.isEmpty) return const SizedBox.shrink();
+
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -213,69 +254,81 @@ class _SyncClientPageState extends ConsumerState<SyncClientPage> {
             ],
           ),
           const SizedBox(height: 12),
-          ..._discoveredHubs.map(
-            (hub) => Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4),
-              child: InkWell(
-                onTap: () {
-                  final url = 'http://${hub.host}:${hub.port}';
-                  _addressController.text = url;
-                  notifier.stageToHub(url);
-                },
-                borderRadius: BorderRadius.circular(8),
-                child: Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: colorScheme.outlineVariant),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(
-                        Symbols.computer,
-                        color: colorScheme.primary,
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              hub.name,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            Text(
-                              '${hub.host}:${hub.port}',
-                              style: TextStyle(
-                                color: colorScheme.hintColor,
-                                fontSize: 12,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Icon(
-                        Symbols.chevron_right,
-                        color: colorScheme.hintColor,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
+          ...hubs.map(
+            (hub) => _HubTile(hub: hub, onTap: () => onHubSelected(hub)),
           ),
         ],
       ),
     );
   }
+}
 
-  Widget _buildStatus(
-    BuildContext context,
-    SyncClientState state,
-    SyncClientNotifier notifier,
-  ) {
+class _HubTile extends StatelessWidget {
+  const _HubTile({
+    required this.hub,
+    required this.onTap,
+  });
+
+  final DiscoveredService hub;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(8),
+        child: Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            border: Border.all(color: colorScheme.outlineVariant),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Row(
+            children: [
+              Icon(Symbols.computer, color: colorScheme.primary),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      hub.name,
+                      style: const TextStyle(fontWeight: FontWeight.w600),
+                    ),
+                    Text(
+                      '${hub.host}:${hub.port}',
+                      style: TextStyle(
+                        color: colorScheme.hintColor,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Icon(Symbols.chevron_right, color: colorScheme.hintColor),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _StatusSection extends StatelessWidget {
+  const _StatusSection({
+    required this.state,
+    required this.notifier,
+  });
+
+  final SyncClientState state;
+  final SyncClientNotifier notifier;
+
+  @override
+  Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
     final (icon, color, text, subtitle) = switch (state.status) {
@@ -371,81 +424,117 @@ class _SyncClientPageState extends ConsumerState<SyncClientPage> {
               ),
             ),
           ),
-          if (state.status == SyncClientStatus.waitingForConfirmation) ...[
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton.icon(
-                    onPressed: () {
-                      notifier.startPolling();
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Auto-checking for confirmation...'),
-                          duration: Duration(seconds: 2),
-                        ),
-                      );
-                    },
-                    icon: const Icon(Symbols.autorenew, size: 18),
-                    label: const Text('Auto-check'),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: FilledButton.icon(
-                    onPressed: () => notifier.checkSyncStatus(),
-                    icon: const Icon(Symbols.refresh, size: 18),
-                    label: const Text('Check Now'),
-                  ),
-                ),
-              ],
-            ),
-          ],
-          if (state.status == SyncClientStatus.hubUnreachable) ...[
-            const SizedBox(height: 12),
-            Text(
-              'The hub may have stopped or the network connection was lost. '
-              'You can wait for it to come back online, or reset and try again.',
-              style: TextStyle(
-                fontSize: 12,
-                color: colorScheme.hintColor,
-              ),
-            ),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton.icon(
-                    onPressed: () {
-                      notifier.retryConnection();
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Retrying connection...'),
-                          duration: Duration(seconds: 2),
-                        ),
-                      );
-                    },
-                    icon: const Icon(Symbols.refresh, size: 18),
-                    label: const Text('Retry'),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: FilledButton.icon(
-                    onPressed: () => notifier.reset(),
-                    icon: const Icon(Symbols.restart_alt, size: 18),
-                    label: const Text('Reset'),
-                  ),
-                ),
-              ],
-            ),
-          ],
+          if (state.status == SyncClientStatus.waitingForConfirmation)
+            _WaitingActions(notifier: notifier),
+          if (state.status == SyncClientStatus.hubUnreachable)
+            _UnreachableActions(notifier: notifier),
         ],
       ),
     );
   }
+}
 
-  Widget _buildInstructions(BuildContext context) {
+class _WaitingActions extends StatelessWidget {
+  const _WaitingActions({required this.notifier});
+
+  final SyncClientNotifier notifier;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        const SizedBox(height: 12),
+        Row(
+          children: [
+            Expanded(
+              child: OutlinedButton.icon(
+                onPressed: () {
+                  notifier.startPolling();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Auto-checking for confirmation...'),
+                      duration: Duration(seconds: 2),
+                    ),
+                  );
+                },
+                icon: const Icon(Symbols.autorenew, size: 18),
+                label: const Text('Auto-check'),
+              ),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: FilledButton.icon(
+                onPressed: () => notifier.checkSyncStatus(),
+                icon: const Icon(Symbols.refresh, size: 18),
+                label: const Text('Check Now'),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _UnreachableActions extends StatelessWidget {
+  const _UnreachableActions({required this.notifier});
+
+  final SyncClientNotifier notifier;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: 12),
+        Text(
+          'The hub may have stopped or the network connection was lost. '
+          'You can wait for it to come back online, or reset and try again.',
+          style: TextStyle(
+            fontSize: 12,
+            color: colorScheme.hintColor,
+          ),
+        ),
+        const SizedBox(height: 12),
+        Row(
+          children: [
+            Expanded(
+              child: OutlinedButton.icon(
+                onPressed: () {
+                  notifier.retryConnection();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Retrying connection...'),
+                      duration: Duration(seconds: 2),
+                    ),
+                  );
+                },
+                icon: const Icon(Symbols.refresh, size: 18),
+                label: const Text('Retry'),
+              ),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: FilledButton.icon(
+                onPressed: () => notifier.reset(),
+                icon: const Icon(Symbols.restart_alt, size: 18),
+                label: const Text('Reset'),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _ClientInstructions extends StatelessWidget {
+  const _ClientInstructions();
+
+  @override
+  Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     final colorScheme = Theme.of(context).colorScheme;
 
@@ -461,19 +550,19 @@ class _SyncClientPageState extends ConsumerState<SyncClientPage> {
             ),
           ),
           const SizedBox(height: 8),
-          const _InstructionItem(
+          const InstructionStep(
             number: '1',
             text: 'Start the Sync Hub on another device',
           ),
-          const _InstructionItem(
+          const InstructionStep(
             number: '2',
             text: 'Enter the hub address and tap "Stage Data"',
           ),
-          const _InstructionItem(
+          const InstructionStep(
             number: '3',
             text: 'Wait for the hub to review and confirm',
           ),
-          const _InstructionItem(
+          const InstructionStep(
             number: '4',
             text: 'Merged data will be pulled automatically',
           ),
@@ -496,62 +585,6 @@ class _SyncClientPageState extends ConsumerState<SyncClientPage> {
                 ),
               ],
             ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  String _getButtonText(SyncClientStatus status) {
-    return switch (status) {
-      SyncClientStatus.connecting => 'Connecting...',
-      SyncClientStatus.staging => 'Staging...',
-      SyncClientStatus.pulling => 'Pulling...',
-      SyncClientStatus.waitingForConfirmation => 'Waiting...',
-      _ => 'Stage Data',
-    };
-  }
-}
-
-class _InstructionItem extends StatelessWidget {
-  const _InstructionItem({
-    required this.number,
-    required this.text,
-  });
-
-  final String number;
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: 24,
-            height: 24,
-            decoration: BoxDecoration(
-              color: colorScheme.primary,
-              shape: BoxShape.circle,
-            ),
-            child: Center(
-              child: Text(
-                number,
-                style: TextStyle(
-                  color: colorScheme.onPrimary,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 12,
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(text),
           ),
         ],
       ),

@@ -1,5 +1,5 @@
 // Project imports:
-import 'types.dart';
+import 'hub/types.dart';
 
 // Connect
 class ConnectRequestDto {

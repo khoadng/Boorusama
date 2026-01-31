@@ -7,9 +7,9 @@ import '../../../../foundation/info/package_info.dart';
 import '../../../../foundation/loggers.dart';
 import '../../../../foundation/networking.dart';
 import '../../sources/providers.dart';
-import '../types.dart';
 import 'sync_hub_server.dart';
 import 'sync_hub_service.dart';
+import 'types.dart';
 
 const _kHubServerName = 'Sync Hub';
 

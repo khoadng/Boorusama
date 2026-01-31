@@ -18,11 +18,13 @@ void main() {
       hub = _MockHub();
       server = await shelf_io.serve(hub.handler, 'localhost', 0);
       serverUrl = 'http://localhost:${server.port}';
-      dio = Dio(BaseOptions(
-        baseUrl: serverUrl,
-        connectTimeout: const Duration(seconds: 5),
-        receiveTimeout: const Duration(seconds: 5),
-      ));
+      dio = Dio(
+        BaseOptions(
+          baseUrl: serverUrl,
+          connectTimeout: const Duration(seconds: 5),
+          receiveTimeout: const Duration(seconds: 5),
+        ),
+      );
     });
 
     tearDown(() async {
@@ -147,7 +149,9 @@ void main() {
         '/stage/test',
         data: jsonEncode({
           'clientId': clientId,
-          'data': [{'id': '1'}],
+          'data': [
+            {'id': '1'},
+          ],
         }),
         options: Options(contentType: 'application/json'),
       );
@@ -216,8 +220,7 @@ class _MockHub {
     if (method == 'POST' && path == 'connect') {
       final body = await request.readAsString();
       final json = jsonDecode(body) as Map<String, dynamic>;
-      final clientId =
-          json['clientId'] as String? ?? _generateId();
+      final clientId = json['clientId'] as String? ?? _generateId();
       final deviceName = json['deviceName'] as String? ?? 'Unknown';
 
       clients.add(_Client(id: clientId, name: deviceName));
@@ -249,10 +252,12 @@ class _MockHub {
       final data = rawData.map((e) => e as Map<String, dynamic>).toList();
 
       stagedData.putIfAbsent(sourceId, () => []);
-      stagedData[sourceId]!.add(_StagedData(
-        clientId: clientId,
-        data: data,
-      ));
+      stagedData[sourceId]!.add(
+        _StagedData(
+          clientId: clientId,
+          data: data,
+        ),
+      );
 
       return shelf.Response.ok(
         jsonEncode({
@@ -269,7 +274,8 @@ class _MockHub {
       }
 
       final sourceId = path.substring(5);
-      final data = resolvedData[sourceId] ??
+      final data =
+          resolvedData[sourceId] ??
           stagedData[sourceId]?.expand((s) => s.data).toList() ??
           [];
 
@@ -290,7 +296,8 @@ class _MockHub {
     }
   }
 
-  String _generateId() => DateTime.now().millisecondsSinceEpoch.toRadixString(36);
+  String _generateId() =>
+      DateTime.now().millisecondsSinceEpoch.toRadixString(36);
 }
 
 class _Client {

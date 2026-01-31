@@ -1,0 +1,265 @@
+// Package imports:
+import 'package:equatable/equatable.dart';
+
+class SyncHubConfig extends Equatable {
+  const SyncHubConfig({
+    this.port,
+    this.enableDiscovery = true,
+  });
+
+  final int? port;
+  final bool enableDiscovery;
+
+  SyncHubConfig copyWith({
+    int? Function()? port,
+    bool? enableDiscovery,
+  }) => SyncHubConfig(
+    port: port != null ? port() : this.port,
+    enableDiscovery: enableDiscovery ?? this.enableDiscovery,
+  );
+
+  @override
+  List<Object?> get props => [port, enableDiscovery];
+}
+
+class ConnectedClient extends Equatable {
+  const ConnectedClient({
+    required this.id,
+    required this.address,
+    required this.deviceName,
+    required this.connectedAt,
+    this.stagedAt,
+  });
+
+  final String id;
+  final String address;
+  final String deviceName;
+  final DateTime connectedAt;
+  final DateTime? stagedAt;
+
+  bool get hasStaged => stagedAt != null;
+
+  ConnectedClient copyWith({
+    String? id,
+    String? address,
+    String? deviceName,
+    DateTime? connectedAt,
+    DateTime? Function()? stagedAt,
+  }) => ConnectedClient(
+    id: id ?? this.id,
+    address: address ?? this.address,
+    deviceName: deviceName ?? this.deviceName,
+    connectedAt: connectedAt ?? this.connectedAt,
+    stagedAt: stagedAt != null ? stagedAt() : this.stagedAt,
+  );
+
+  @override
+  List<Object?> get props => [id, address, deviceName, connectedAt, stagedAt];
+}
+
+class ConflictItem extends Equatable {
+  const ConflictItem({
+    required this.sourceId,
+    required this.uniqueId,
+    required this.localData,
+    required this.remoteData,
+    required this.remoteClientId,
+    required this.resolution,
+  });
+
+  final String sourceId;
+  final Object uniqueId;
+  final Map<String, dynamic> localData;
+  final Map<String, dynamic> remoteData;
+  final String remoteClientId;
+  final ConflictResolution resolution;
+
+  ConflictItem copyWith({
+    String? sourceId,
+    Object? uniqueId,
+    Map<String, dynamic>? localData,
+    Map<String, dynamic>? remoteData,
+    String? remoteClientId,
+    ConflictResolution? resolution,
+  }) => ConflictItem(
+    sourceId: sourceId ?? this.sourceId,
+    uniqueId: uniqueId ?? this.uniqueId,
+    localData: localData ?? this.localData,
+    remoteData: remoteData ?? this.remoteData,
+    remoteClientId: remoteClientId ?? this.remoteClientId,
+    resolution: resolution ?? this.resolution,
+  );
+
+  @override
+  List<Object?> get props => [
+    sourceId,
+    uniqueId,
+    localData,
+    remoteData,
+    remoteClientId,
+    resolution,
+  ];
+}
+
+enum ConflictResolution {
+  pending,
+  keepLocal,
+  keepRemote,
+}
+
+class StagedSourceData extends Equatable {
+  const StagedSourceData({
+    required this.sourceId,
+    required this.clientId,
+    required this.data,
+    required this.stagedAt,
+  });
+
+  final String sourceId;
+  final String clientId;
+  final List<Map<String, dynamic>> data;
+  final DateTime stagedAt;
+
+  @override
+  List<Object?> get props => [sourceId, clientId, data, stagedAt];
+}
+
+enum SyncHubPhase {
+  waiting,
+  reviewing,
+  resolved,
+  confirmed,
+}
+
+class SyncHubState extends Equatable {
+  const SyncHubState({
+    required this.isRunning,
+    required this.serverUrl,
+    required this.connectedClients,
+    required this.phase,
+    required this.stagedData,
+    required this.conflicts,
+    required this.resolvedData,
+    this.config = const SyncHubConfig(),
+  });
+
+  const SyncHubState.initial()
+    : isRunning = false,
+      serverUrl = null,
+      connectedClients = const [],
+      phase = SyncHubPhase.waiting,
+      stagedData = const {},
+      conflicts = const [],
+      resolvedData = const {},
+      config = const SyncHubConfig();
+
+  final bool isRunning;
+  final String? serverUrl;
+  final List<ConnectedClient> connectedClients;
+  final SyncHubPhase phase;
+  final Map<String, List<StagedSourceData>> stagedData;
+  final List<ConflictItem> conflicts;
+  final Map<String, List<Map<String, dynamic>>> resolvedData;
+  final SyncHubConfig config;
+
+  int get totalStagedClients =>
+      connectedClients.where((c) => c.hasStaged).length;
+
+  bool get hasUnresolvedConflicts =>
+      conflicts.any((c) => c.resolution == ConflictResolution.pending);
+
+  bool get canConfirm =>
+      phase == SyncHubPhase.reviewing && !hasUnresolvedConflicts;
+
+  SyncHubState copyWith({
+    bool? isRunning,
+    String? Function()? serverUrl,
+    List<ConnectedClient>? connectedClients,
+    SyncHubPhase? phase,
+    Map<String, List<StagedSourceData>>? stagedData,
+    List<ConflictItem>? conflicts,
+    Map<String, List<Map<String, dynamic>>>? resolvedData,
+    SyncHubConfig? config,
+  }) => SyncHubState(
+    isRunning: isRunning ?? this.isRunning,
+    serverUrl: serverUrl != null ? serverUrl() : this.serverUrl,
+    connectedClients: connectedClients ?? this.connectedClients,
+    phase: phase ?? this.phase,
+    stagedData: stagedData ?? this.stagedData,
+    conflicts: conflicts ?? this.conflicts,
+    resolvedData: resolvedData ?? this.resolvedData,
+    config: config ?? this.config,
+  );
+
+  // State transitions
+
+  SyncHubState onStarted(String url) => SyncHubState(
+    isRunning: true,
+    serverUrl: url,
+    connectedClients: const [],
+    phase: SyncHubPhase.waiting,
+    stagedData: const {},
+    conflicts: const [],
+    resolvedData: const {},
+    config: config,
+  );
+
+  SyncHubState onReviewStarted(List<ConflictItem> detectedConflicts) =>
+      copyWith(
+        phase: SyncHubPhase.reviewing,
+        conflicts: detectedConflicts,
+      );
+
+  SyncHubState onConflictResolved(int index, ConflictResolution resolution) {
+    if (index < 0 || index >= conflicts.length) return this;
+
+    final updated = List<ConflictItem>.from(conflicts);
+    updated[index] = updated[index].copyWith(resolution: resolution);
+
+    final allResolved = !updated.any(
+      (c) => c.resolution == ConflictResolution.pending,
+    );
+
+    return copyWith(
+      conflicts: updated,
+      phase: allResolved ? SyncHubPhase.resolved : null,
+    );
+  }
+
+  SyncHubState onAllConflictsResolved(ConflictResolution resolution) =>
+      copyWith(
+        conflicts: conflicts
+            .map((c) => c.copyWith(resolution: resolution))
+            .toList(),
+        phase: SyncHubPhase.resolved,
+      );
+
+  SyncHubState onSyncConfirmed(
+    Map<String, List<Map<String, dynamic>>> merged,
+  ) => copyWith(
+    phase: SyncHubPhase.confirmed,
+    resolvedData: merged,
+  );
+
+  SyncHubState onReset() => copyWith(
+    phase: SyncHubPhase.waiting,
+    stagedData: {},
+    conflicts: [],
+    resolvedData: {},
+    connectedClients: connectedClients
+        .map((c) => c.copyWith(stagedAt: () => null))
+        .toList(),
+  );
+
+  @override
+  List<Object?> get props => [
+    isRunning,
+    serverUrl,
+    connectedClients,
+    phase,
+    stagedData,
+    conflicts,
+    resolvedData,
+    config,
+  ];
+}

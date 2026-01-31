@@ -9,6 +9,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf/shelf_io.dart' as shelf_io;
 
+import 'package:boorusama/core/backups/sync/hub/types.dart';
 import 'package:boorusama/core/backups/sync/merge_strategy.dart';
 import 'package:boorusama/core/backups/sync/types.dart';
 import 'package:boorusama/core/backups/types/backup_data_source.dart';
