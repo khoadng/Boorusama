@@ -178,6 +178,7 @@ class SyncHubState extends Equatable {
     required this.phase,
     required this.stagedData,
     required this.conflicts,
+    required this.resolvedData,
     this.config = const SyncHubConfig(),
   });
 
@@ -188,6 +189,7 @@ class SyncHubState extends Equatable {
       phase = SyncHubPhase.waiting,
       stagedData = const {},
       conflicts = const [],
+      resolvedData = const {},
       config = const SyncHubConfig();
 
   final bool isRunning;
@@ -196,6 +198,7 @@ class SyncHubState extends Equatable {
   final SyncHubPhase phase;
   final Map<String, List<StagedSourceData>> stagedData;
   final List<ConflictItem> conflicts;
+  final Map<String, List<Map<String, dynamic>>> resolvedData;
   final SyncHubConfig config;
 
   int get totalStagedClients =>
@@ -214,6 +217,7 @@ class SyncHubState extends Equatable {
     SyncHubPhase? phase,
     Map<String, List<StagedSourceData>>? stagedData,
     List<ConflictItem>? conflicts,
+    Map<String, List<Map<String, dynamic>>>? resolvedData,
     SyncHubConfig? config,
   }) => SyncHubState(
     isRunning: isRunning ?? this.isRunning,
@@ -222,7 +226,68 @@ class SyncHubState extends Equatable {
     phase: phase ?? this.phase,
     stagedData: stagedData ?? this.stagedData,
     conflicts: conflicts ?? this.conflicts,
+    resolvedData: resolvedData ?? this.resolvedData,
     config: config ?? this.config,
+  );
+
+  // State transitions
+
+  SyncHubState onStarted(String url) => SyncHubState(
+    isRunning: true,
+    serverUrl: url,
+    connectedClients: const [],
+    phase: SyncHubPhase.waiting,
+    stagedData: const {},
+    conflicts: const [],
+    resolvedData: const {},
+    config: config,
+  );
+
+  SyncHubState onReviewStarted(List<ConflictItem> detectedConflicts) =>
+      copyWith(
+        phase: SyncHubPhase.reviewing,
+        conflicts: detectedConflicts,
+      );
+
+  SyncHubState onConflictResolved(int index, ConflictResolution resolution) {
+    if (index < 0 || index >= conflicts.length) return this;
+
+    final updated = List<ConflictItem>.from(conflicts);
+    updated[index] = updated[index].copyWith(resolution: resolution);
+
+    final allResolved = !updated.any(
+      (c) => c.resolution == ConflictResolution.pending,
+    );
+
+    return copyWith(
+      conflicts: updated,
+      phase: allResolved ? SyncHubPhase.resolved : null,
+    );
+  }
+
+  SyncHubState onAllConflictsResolved(ConflictResolution resolution) =>
+      copyWith(
+        conflicts: conflicts
+            .map((c) => c.copyWith(resolution: resolution))
+            .toList(),
+        phase: SyncHubPhase.resolved,
+      );
+
+  SyncHubState onSyncConfirmed(
+    Map<String, List<Map<String, dynamic>>> merged,
+  ) => copyWith(
+    phase: SyncHubPhase.confirmed,
+    resolvedData: merged,
+  );
+
+  SyncHubState onReset() => copyWith(
+    phase: SyncHubPhase.waiting,
+    stagedData: {},
+    conflicts: [],
+    resolvedData: {},
+    connectedClients: connectedClients
+        .map((c) => c.copyWith(stagedAt: () => null))
+        .toList(),
   );
 
   @override
@@ -233,6 +298,7 @@ class SyncHubState extends Equatable {
     phase,
     stagedData,
     conflicts,
+    resolvedData,
     config,
   ];
 }

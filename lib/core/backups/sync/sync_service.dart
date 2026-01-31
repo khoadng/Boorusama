@@ -157,7 +157,6 @@ class SyncService {
       _ => <dynamic>[],
     };
   }
-
 }
 
 String normalizeHubAddress(String address) {

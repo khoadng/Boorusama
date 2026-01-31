@@ -4,6 +4,9 @@ import 'dart:convert';
 // Package imports:
 import 'package:dio/dio.dart';
 
+// Project imports:
+import 'sync_dto.dart';
+
 class SyncClientResult<T> {
   const SyncClientResult.success(this.data) : error = null;
   const SyncClientResult.failure(this.error) : data = null;
@@ -70,23 +73,22 @@ class SyncClient {
     required String deviceName,
   }) async {
     try {
+      final requestDto = ConnectRequestDto(
+        clientId: existingClientId,
+        deviceName: deviceName,
+      );
+
       final response = await _dio.post(
         '/connect',
-        data: jsonEncode({
-          'clientId': existingClientId,
-          'deviceName': deviceName,
-        }),
+        data: jsonEncode(requestDto.toJson()),
         options: Options(contentType: 'application/json'),
       );
 
       if (response.statusCode == 200) {
-        final clientId = response.data['clientId'] as String?;
-        if (clientId == null) {
-          return const SyncClientResult.failure(
-            'Hub did not return a clientId',
-          );
-        }
-        return SyncClientResult.success(ConnectResult(clientId: clientId));
+        final dto = ConnectResponseDto.fromJson(
+          response.data as Map<String, dynamic>,
+        );
+        return SyncClientResult.success(ConnectResult(clientId: dto.clientId));
       }
 
       return SyncClientResult.failure(
@@ -103,18 +105,24 @@ class SyncClient {
     required List<dynamic> data,
   }) async {
     try {
+      final requestDto = StageRequestDto(
+        clientId: clientId,
+        data: data.map((e) => e as Map<String, dynamic>).toList(),
+      );
+
       final response = await _dio.post(
         '/stage/$sourceId',
-        data: jsonEncode({
-          'clientId': clientId,
-          'data': data,
-        }),
+        data: jsonEncode(requestDto.toJson()),
         options: Options(contentType: 'application/json'),
       );
 
       if (response.statusCode == 200) {
-        final stagedCount = response.data['stagedCount'] as int? ?? data.length;
-        return SyncClientResult.success(StageResult(stagedCount: stagedCount));
+        final dto = StageResponseDto.fromJson(
+          response.data as Map<String, dynamic>,
+        );
+        return SyncClientResult.success(
+          StageResult(stagedCount: dto.stagedCount),
+        );
       }
 
       return SyncClientResult.failure(
@@ -129,16 +137,15 @@ class SyncClient {
     try {
       final response = await _dio.get(
         '/sync/status',
-        options: Options(
-          receiveTimeout: const Duration(seconds: 5),
-        ),
+        options: Options(receiveTimeout: const Duration(seconds: 5)),
       );
 
-      final canPull = response.data['canPull'] as bool? ?? false;
-      final phase = response.data['phase'] as String? ?? 'unknown';
+      final dto = SyncStatusDto.fromJson(
+        response.data as Map<String, dynamic>,
+      );
 
       return SyncClientResult.success(
-        SyncStatusResult(canPull: canPull, phase: phase),
+        SyncStatusResult(canPull: dto.canPull, phase: dto.phase),
       );
     } on DioException catch (e) {
       return SyncClientResult.failure(e.message ?? 'Status check failed');
@@ -150,12 +157,10 @@ class SyncClient {
       final response = await _dio.get('/pull/$sourceId');
 
       if (response.statusCode == 200) {
-        final data = response.data['data'] as List<dynamic>?;
-        return SyncClientResult.success(
-          PullResult(
-            data: data?.map((e) => e as Map<String, dynamic>).toList() ?? [],
-          ),
+        final dto = PullResponseDto.fromJson(
+          response.data as Map<String, dynamic>,
         );
+        return SyncClientResult.success(PullResult(data: dto.data));
       }
 
       if (response.statusCode == 404) {
