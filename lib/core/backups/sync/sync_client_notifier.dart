@@ -5,11 +5,8 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../foundation/info/device_info.dart';
 import '../../../foundation/loggers.dart';
 import '../../settings/providers.dart';
-import '../sources/providers.dart';
-import 'sync_client.dart';
 import 'sync_service.dart';
 import 'types.dart';
 
@@ -22,14 +19,10 @@ final syncClientProvider =
 
 class SyncClientNotifier extends Notifier<SyncClientState> {
   Timer? _pollTimer;
-  SyncService? _service;
 
   @override
   SyncClientState build() {
-    ref.onDispose(() {
-      _pollTimer?.cancel();
-      _service?.dispose();
-    });
+    ref.onDispose(() => _pollTimer?.cancel());
 
     final savedAddress = ref.watch(settingsProvider).savedSyncHubAddress;
     return SyncClientState(
@@ -40,16 +33,18 @@ class SyncClientNotifier extends Notifier<SyncClientState> {
 
   Logger get _logger => ref.read(loggerProvider);
 
+  SyncService _getService(String address) =>
+      ref.read(syncServiceProvider(address));
+
   Future<void> stageToHub(String hubAddress) async {
     if (state.isBlocked) return;
 
     final address = normalizeHubAddress(hubAddress);
-    _service?.dispose();
-    _service = _createService(address);
-
     state = state.startConnecting(address);
 
-    final result = await _service!.stageToHub(existingClientId: state.clientId);
+    final result = await _getService(address).stageToHub(
+      existingClientId: state.clientId,
+    );
 
     if (result.isSuccess) {
       await _saveHubAddress(address);
@@ -69,10 +64,9 @@ class SyncClientNotifier extends Notifier<SyncClientState> {
       return;
     }
 
-    _service ??= _createService(address);
     state = state.startPulling();
 
-    final result = await _service!.pullFromHub();
+    final result = await _getService(address).pullFromHub();
 
     if (result.isSuccess) {
       state = state.onPullComplete();
@@ -87,9 +81,7 @@ class SyncClientNotifier extends Notifier<SyncClientState> {
     final address = state.currentHubAddress ?? state.savedHubAddress;
     if (address == null) return false;
 
-    _service ??= _createService(address);
-
-    final result = await _service!.checkStatus();
+    final result = await _getService(address).checkStatus();
 
     if (result.isFailure) {
       _logger.warn(_kLogName, 'Poll failed');
@@ -124,8 +116,6 @@ class SyncClientNotifier extends Notifier<SyncClientState> {
 
   void reset() {
     stopPolling();
-    _service?.dispose();
-    _service = null;
     state = state.toIdle();
   }
 
@@ -139,12 +129,6 @@ class SyncClientNotifier extends Notifier<SyncClientState> {
         .updateSettings(ref.read(settingsProvider).copyWith());
     state = state.withoutSavedAddress();
   }
-
-  SyncService _createService(String address) => SyncService(
-    client: SyncClient(baseUrl: address),
-    registry: ref.read(backupRegistryProvider),
-    deviceName: ref.read(deviceInfoProvider).deviceName ?? 'Unknown',
-  );
 
   Future<void> _saveHubAddress(String address) async {
     final settings = ref.read(settingsProvider);

@@ -2,12 +2,28 @@
 import 'dart:convert';
 
 // Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shelf/shelf.dart' as shelf;
 
 // Project imports:
+import '../../../foundation/info/device_info.dart';
+import '../sources/providers.dart';
 import '../types/backup_data_source.dart';
 import '../types/backup_registry.dart';
 import 'sync_client.dart';
+
+final syncServiceProvider = Provider.family.autoDispose<SyncService, String>(
+  (ref, address) {
+    final client = SyncClient(baseUrl: address);
+    ref.onDispose(client.dispose);
+
+    return SyncService(
+      client: client,
+      registry: ref.watch(backupRegistryProvider),
+      deviceName: ref.watch(deviceInfoProvider).deviceName ?? 'Unknown',
+    );
+  },
+);
 
 class StageToHubResult {
   const StageToHubResult.success({required this.clientId}) : error = null;
@@ -142,9 +158,6 @@ class SyncService {
     };
   }
 
-  void dispose() {
-    client.dispose();
-  }
 }
 
 String normalizeHubAddress(String address) {
