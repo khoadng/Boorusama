@@ -26,8 +26,6 @@ class SyncClientNotifier extends Notifier<SyncClientState> {
   Timer? _pollTimer;
   SyncClient? _client;
 
-  static const _maxFailuresBeforeUnreachable = 3;
-
   @override
   SyncClientState build() {
     ref.onDispose(() {
@@ -46,27 +44,19 @@ class SyncClientNotifier extends Notifier<SyncClientState> {
   BackupRegistry get _registry => ref.read(backupRegistryProvider);
 
   Future<void> stageToHub(String hubAddress) async {
-    if (state.status == SyncClientStatus.staging ||
-        state.status == SyncClientStatus.waitingForConfirmation ||
-        state.status == SyncClientStatus.pulling) {
-      return;
-    }
+    if (state.isBlocked) return;
 
     final normalizedAddress = _normalizeAddress(hubAddress);
     _client?.dispose();
     _client = SyncClient(baseUrl: normalizedAddress);
 
-    state = state.copyWith(
-      status: SyncClientStatus.connecting,
-      currentHubAddress: () => normalizedAddress,
-      consecutiveFailures: 0,
-      errorMessage: () => null,
-    );
+    state = state.startConnecting(normalizedAddress);
 
     // Check hub health
     final healthResult = await _client!.checkHealth();
     if (healthResult.isFailure) {
-      _handleError(healthResult.error!);
+      state = state.onError(healthResult.error!);
+      _logger.error(_kLogName, healthResult.error!);
       return;
     }
 
@@ -78,31 +68,24 @@ class SyncClientNotifier extends Notifier<SyncClientState> {
     );
 
     if (connectResult.isFailure) {
-      _handleError(connectResult.error!);
+      state = state.onError(connectResult.error!);
+      _logger.error(_kLogName, connectResult.error!);
       return;
     }
 
-    state = state.copyWith(
-      status: SyncClientStatus.staging,
-      clientId: () => connectResult.data!.clientId,
-    );
-
+    state = state.onConnected(connectResult.data!.clientId);
     _logger.info(_kLogName, 'Connected as ${connectResult.data!.clientId}');
 
     // Stage data
     final stageSuccess = await _stageAllSources();
     if (!stageSuccess) {
-      _handleError('Failed to stage data');
+      state = state.onError('Failed to stage data');
+      _logger.error(_kLogName, 'Failed to stage data');
       return;
     }
 
-    // Save hub address and update state
     await _saveHubAddress(normalizedAddress);
-
-    state = state.copyWith(
-      status: SyncClientStatus.waitingForConfirmation,
-      savedHubAddress: () => normalizedAddress,
-    );
+    state = state.onStaged(normalizedAddress);
 
     startPolling();
     _logger.info(_kLogName, 'Data staged, waiting for confirmation');
@@ -111,32 +94,26 @@ class SyncClientNotifier extends Notifier<SyncClientState> {
   Future<void> pullFromHub() async {
     final hubAddress = state.currentHubAddress ?? state.savedHubAddress;
     if (hubAddress == null) {
-      _handleError('No hub address configured');
+      state = state.onError('No hub address configured');
       return;
     }
 
     _client ??= SyncClient(baseUrl: hubAddress);
-    state = state.copyWith(status: SyncClientStatus.pulling);
+    state = state.startPulling();
 
-    // Check if we can pull
     final statusResult = await _client!.checkSyncStatus();
     if (statusResult.isFailure) {
-      _handleError(statusResult.error!);
+      state = state.onError(statusResult.error!);
       return;
     }
 
     if (!statusResult.data!.canPull) {
-      state = state.copyWith(
-        status: SyncClientStatus.waitingForConfirmation,
-        errorMessage: () => 'Hub sync not confirmed yet',
-      );
+      state = state.onError('Hub sync not confirmed yet');
       return;
     }
 
-    // Pull data for each source
     await _pullAllSources();
-
-    state = state.copyWith(status: SyncClientStatus.completed);
+    state = state.onPullComplete();
     _logger.info(_kLogName, 'Pull completed');
   }
 
@@ -149,35 +126,15 @@ class SyncClientNotifier extends Notifier<SyncClientState> {
     final result = await _client!.checkSyncStatus();
 
     if (result.isFailure) {
-      final failures = state.consecutiveFailures + 1;
       _logger.warn(
         _kLogName,
-        'Poll failed ($failures/$_maxFailuresBeforeUnreachable)',
+        'Poll failed (${state.consecutiveFailures + 1}/${SyncClientState.maxFailuresBeforeUnreachable})',
       );
-
-      if (failures >= _maxFailuresBeforeUnreachable &&
-          state.status == SyncClientStatus.waitingForConfirmation) {
-        state = state.copyWith(
-          status: SyncClientStatus.hubUnreachable,
-          consecutiveFailures: failures,
-          errorMessage: () => 'Hub is not responding',
-        );
-      } else {
-        state = state.copyWith(consecutiveFailures: failures);
-      }
+      state = state.onPollFailure();
       return false;
     }
 
-    // Success - reset failures
-    if (state.status == SyncClientStatus.hubUnreachable) {
-      state = state.copyWith(
-        status: SyncClientStatus.waitingForConfirmation,
-        consecutiveFailures: 0,
-        errorMessage: () => null,
-      );
-    } else if (state.consecutiveFailures > 0) {
-      state = state.copyWith(consecutiveFailures: 0);
-    }
+    state = state.onPollSuccess();
 
     if (result.data!.canPull &&
         state.status == SyncClientStatus.waitingForConfirmation) {
@@ -206,41 +163,21 @@ class SyncClientNotifier extends Notifier<SyncClientState> {
     stopPolling();
     _client?.dispose();
     _client = null;
-    state = state.copyWith(
-      status: SyncClientStatus.idle,
-      clientId: () => null,
-      consecutiveFailures: 0,
-      errorMessage: () => null,
-      lastSyncStats: () => null,
-    );
+    state = state.toIdle();
   }
 
   void retryConnection() {
-    if (state.status != SyncClientStatus.hubUnreachable) return;
-
-    state = state.copyWith(
-      status: SyncClientStatus.waitingForConfirmation,
-      consecutiveFailures: 0,
-      errorMessage: () => null,
-    );
+    state = state.onRetry();
   }
 
   void clearSavedAddress() {
     ref
         .read(settingsNotifierProvider.notifier)
         .updateSettings(ref.read(settingsProvider).copyWith());
-    state = state.copyWith(savedHubAddress: () => null);
+    state = state.withoutSavedAddress();
   }
 
   // Private helpers
-
-  void _handleError(String message) {
-    _logger.error(_kLogName, message);
-    state = state.copyWith(
-      status: SyncClientStatus.error,
-      errorMessage: () => message,
-    );
-  }
 
   String _normalizeAddress(String address) {
     var normalized = address.trim();

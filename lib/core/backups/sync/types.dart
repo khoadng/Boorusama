@@ -268,6 +268,8 @@ class SyncClientState extends Equatable {
       lastSyncStats = null,
       errorMessage = null;
 
+  static const maxFailuresBeforeUnreachable = 3;
+
   final SyncClientStatus status;
   final String? savedHubAddress;
   final String? currentHubAddress;
@@ -275,6 +277,13 @@ class SyncClientState extends Equatable {
   final int consecutiveFailures;
   final SyncStats? lastSyncStats;
   final String? errorMessage;
+
+  bool get isBlocked => switch (status) {
+    SyncClientStatus.staging ||
+    SyncClientStatus.waitingForConfirmation ||
+    SyncClientStatus.pulling => true,
+    _ => false,
+  };
 
   SyncClientState copyWith({
     SyncClientStatus? status,
@@ -296,6 +305,79 @@ class SyncClientState extends Equatable {
     consecutiveFailures: consecutiveFailures ?? this.consecutiveFailures,
     lastSyncStats: lastSyncStats != null ? lastSyncStats() : this.lastSyncStats,
     errorMessage: errorMessage != null ? errorMessage() : this.errorMessage,
+  );
+
+  // State transitions
+
+  SyncClientState startConnecting(String address) => SyncClientState(
+    status: SyncClientStatus.connecting,
+    savedHubAddress: savedHubAddress,
+    currentHubAddress: address,
+  );
+
+  SyncClientState onConnected(String newClientId) => copyWith(
+    status: SyncClientStatus.staging,
+    clientId: () => newClientId,
+  );
+
+  SyncClientState onStaged(String hubAddress) => copyWith(
+    status: SyncClientStatus.waitingForConfirmation,
+    savedHubAddress: () => hubAddress,
+  );
+
+  SyncClientState startPulling() => copyWith(status: SyncClientStatus.pulling);
+
+  SyncClientState onPullComplete() =>
+      copyWith(status: SyncClientStatus.completed);
+
+  SyncClientState onPollSuccess() => switch (status) {
+    SyncClientStatus.hubUnreachable => SyncClientState(
+      status: SyncClientStatus.waitingForConfirmation,
+      savedHubAddress: savedHubAddress,
+      currentHubAddress: currentHubAddress,
+      clientId: clientId,
+    ),
+    _ when consecutiveFailures > 0 => copyWith(consecutiveFailures: 0),
+    _ => this,
+  };
+
+  SyncClientState onPollFailure() {
+    final failures = consecutiveFailures + 1;
+    final shouldMarkUnreachable =
+        failures >= maxFailuresBeforeUnreachable &&
+        status == SyncClientStatus.waitingForConfirmation;
+
+    return shouldMarkUnreachable
+        ? copyWith(
+            status: SyncClientStatus.hubUnreachable,
+            consecutiveFailures: failures,
+            errorMessage: () => 'Hub is not responding',
+          )
+        : copyWith(consecutiveFailures: failures);
+  }
+
+  SyncClientState onError(String message) => copyWith(
+    status: SyncClientStatus.error,
+    errorMessage: () => message,
+  );
+
+  SyncClientState onRetry() => switch (status) {
+    SyncClientStatus.hubUnreachable => SyncClientState(
+      status: SyncClientStatus.waitingForConfirmation,
+      savedHubAddress: savedHubAddress,
+      currentHubAddress: currentHubAddress,
+      clientId: clientId,
+    ),
+    _ => this,
+  };
+
+  SyncClientState toIdle() => SyncClientState(
+    status: SyncClientStatus.idle,
+    savedHubAddress: savedHubAddress,
+  );
+
+  SyncClientState withoutSavedAddress() => copyWith(
+    savedHubAddress: () => null,
   );
 
   @override
