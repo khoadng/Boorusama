@@ -3,7 +3,6 @@ import 'dart:async';
 import 'dart:convert';
 
 // Package imports:
-import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shelf/shelf.dart' as shelf;
 
@@ -13,9 +12,10 @@ import '../../../foundation/loggers.dart';
 import '../../settings/providers.dart';
 import '../sources/providers.dart';
 import '../types/backup_registry.dart';
+import 'sync_client.dart';
 import 'types.dart';
 
-const _kClientName = 'Sync Client';
+const _kLogName = 'Sync Client';
 
 final syncClientProvider =
     NotifierProvider<SyncClientNotifier, SyncClientState>(
@@ -24,12 +24,15 @@ final syncClientProvider =
 
 class SyncClientNotifier extends Notifier<SyncClientState> {
   Timer? _pollTimer;
+  SyncClient? _client;
+
   static const _maxFailuresBeforeUnreachable = 3;
 
   @override
   SyncClientState build() {
     ref.onDispose(() {
       _pollTimer?.cancel();
+      _client?.dispose();
     });
 
     final savedAddress = ref.watch(settingsProvider).savedSyncHubAddress;
@@ -50,6 +53,8 @@ class SyncClientNotifier extends Notifier<SyncClientState> {
     }
 
     final normalizedAddress = _normalizeAddress(hubAddress);
+    _client?.dispose();
+    _client = SyncClient(baseUrl: normalizedAddress);
 
     state = state.copyWith(
       status: SyncClientStatus.connecting,
@@ -58,132 +63,96 @@ class SyncClientNotifier extends Notifier<SyncClientState> {
       errorMessage: () => null,
     );
 
-    try {
-      final dio = Dio(
-        BaseOptions(
-          baseUrl: normalizedAddress,
-          connectTimeout: const Duration(seconds: 10),
-          receiveTimeout: const Duration(seconds: 30),
-          sendTimeout: const Duration(seconds: 30),
-        ),
-      );
-
-      await _checkHubHealth(dio);
-      await _connectToHub(dio);
-      await _saveHubAddress(normalizedAddress);
-
-      state = state.copyWith(status: SyncClientStatus.staging);
-      await _stageDataToHub(dio);
-
-      state = state.copyWith(
-        status: SyncClientStatus.waitingForConfirmation,
-        savedHubAddress: () => normalizedAddress,
-      );
-
-      // Automatically start polling for confirmation
-      startPolling();
-
-      _logger.info(
-        _kClientName,
-        'Data staged to hub, waiting for confirmation (polling started)',
-      );
-    } catch (e) {
-      _logger.error(_kClientName, 'Staging failed: $e');
-      state = state.copyWith(
-        status: SyncClientStatus.error,
-        errorMessage: () => e.toString(),
-      );
+    // Check hub health
+    final healthResult = await _client!.checkHealth();
+    if (healthResult.isFailure) {
+      _handleError(healthResult.error!);
+      return;
     }
+
+    // Connect to hub
+    final deviceName = ref.read(deviceInfoProvider).deviceName ?? 'Unknown';
+    final connectResult = await _client!.connect(
+      existingClientId: state.clientId,
+      deviceName: deviceName,
+    );
+
+    if (connectResult.isFailure) {
+      _handleError(connectResult.error!);
+      return;
+    }
+
+    state = state.copyWith(
+      status: SyncClientStatus.staging,
+      clientId: () => connectResult.data!.clientId,
+    );
+
+    _logger.info(_kLogName, 'Connected as ${connectResult.data!.clientId}');
+
+    // Stage data
+    final stageSuccess = await _stageAllSources();
+    if (!stageSuccess) {
+      _handleError('Failed to stage data');
+      return;
+    }
+
+    // Save hub address and update state
+    await _saveHubAddress(normalizedAddress);
+
+    state = state.copyWith(
+      status: SyncClientStatus.waitingForConfirmation,
+      savedHubAddress: () => normalizedAddress,
+    );
+
+    startPolling();
+    _logger.info(_kLogName, 'Data staged, waiting for confirmation');
   }
 
   Future<void> pullFromHub() async {
     final hubAddress = state.currentHubAddress ?? state.savedHubAddress;
     if (hubAddress == null) {
+      _handleError('No hub address configured');
+      return;
+    }
+
+    _client ??= SyncClient(baseUrl: hubAddress);
+    state = state.copyWith(status: SyncClientStatus.pulling);
+
+    // Check if we can pull
+    final statusResult = await _client!.checkSyncStatus();
+    if (statusResult.isFailure) {
+      _handleError(statusResult.error!);
+      return;
+    }
+
+    if (!statusResult.data!.canPull) {
       state = state.copyWith(
-        status: SyncClientStatus.error,
-        errorMessage: () => 'No hub address configured',
+        status: SyncClientStatus.waitingForConfirmation,
+        errorMessage: () => 'Hub sync not confirmed yet',
       );
       return;
     }
 
-    state = state.copyWith(status: SyncClientStatus.pulling);
+    // Pull data for each source
+    await _pullAllSources();
 
-    try {
-      final dio = Dio(
-        BaseOptions(
-          baseUrl: hubAddress,
-          connectTimeout: const Duration(seconds: 10),
-          receiveTimeout: const Duration(seconds: 30),
-          sendTimeout: const Duration(seconds: 30),
-        ),
-      );
-
-      final statusResponse = await dio.get('/sync/status');
-      final canPull = statusResponse.data['canPull'] as bool? ?? false;
-
-      if (!canPull) {
-        state = state.copyWith(
-          status: SyncClientStatus.waitingForConfirmation,
-          errorMessage: () => 'Hub sync not confirmed yet',
-        );
-        return;
-      }
-
-      await _pullResolvedData(dio);
-
-      state = state.copyWith(
-        status: SyncClientStatus.completed,
-      );
-
-      _logger.info(_kClientName, 'Pull completed successfully');
-    } catch (e) {
-      _logger.error(_kClientName, 'Pull failed: $e');
-      state = state.copyWith(
-        status: SyncClientStatus.error,
-        errorMessage: () => e.toString(),
-      );
-    }
+    state = state.copyWith(status: SyncClientStatus.completed);
+    _logger.info(_kLogName, 'Pull completed');
   }
 
   Future<bool> checkSyncStatus() async {
     final hubAddress = state.currentHubAddress ?? state.savedHubAddress;
     if (hubAddress == null) return false;
 
-    try {
-      final dio = Dio(
-        BaseOptions(
-          baseUrl: hubAddress,
-          connectTimeout: const Duration(seconds: 5),
-          receiveTimeout: const Duration(seconds: 5),
-        ),
-      );
+    _client ??= SyncClient(baseUrl: hubAddress);
 
-      final response = await dio.get('/sync/status');
-      final canPull = response.data['canPull'] as bool? ?? false;
+    final result = await _client!.checkSyncStatus();
 
-      // Reset failure count on successful connection
-      if (state.status == SyncClientStatus.hubUnreachable) {
-        // If we were in hubUnreachable state, go back to waiting
-        state = state.copyWith(
-          status: SyncClientStatus.waitingForConfirmation,
-          consecutiveFailures: 0,
-          errorMessage: () => null,
-        );
-      } else if (state.consecutiveFailures > 0) {
-        state = state.copyWith(consecutiveFailures: 0);
-      }
-
-      if (canPull && state.status == SyncClientStatus.waitingForConfirmation) {
-        await pullFromHub();
-      }
-
-      return canPull;
-    } catch (e) {
+    if (result.isFailure) {
       final failures = state.consecutiveFailures + 1;
-
       _logger.warn(
-        _kClientName,
-        'Poll failed ($failures/$_maxFailuresBeforeUnreachable): $e',
+        _kLogName,
+        'Poll failed ($failures/$_maxFailuresBeforeUnreachable)',
       );
 
       if (failures >= _maxFailuresBeforeUnreachable &&
@@ -191,21 +160,36 @@ class SyncClientNotifier extends Notifier<SyncClientState> {
         state = state.copyWith(
           status: SyncClientStatus.hubUnreachable,
           consecutiveFailures: failures,
-          errorMessage: () =>
-              'Hub is not responding. It may have stopped or disconnected.',
+          errorMessage: () => 'Hub is not responding',
         );
       } else {
         state = state.copyWith(consecutiveFailures: failures);
       }
-
       return false;
     }
+
+    // Success - reset failures
+    if (state.status == SyncClientStatus.hubUnreachable) {
+      state = state.copyWith(
+        status: SyncClientStatus.waitingForConfirmation,
+        consecutiveFailures: 0,
+        errorMessage: () => null,
+      );
+    } else if (state.consecutiveFailures > 0) {
+      state = state.copyWith(consecutiveFailures: 0);
+    }
+
+    if (result.data!.canPull &&
+        state.status == SyncClientStatus.waitingForConfirmation) {
+      await pullFromHub();
+    }
+
+    return result.data!.canPull;
   }
 
   void startPolling({Duration interval = const Duration(seconds: 3)}) {
     _pollTimer?.cancel();
     _pollTimer = Timer.periodic(interval, (_) async {
-      // Keep polling when waiting or when hub unreachable (for auto-recovery)
       if (state.status == SyncClientStatus.waitingForConfirmation ||
           state.status == SyncClientStatus.hubUnreachable) {
         await checkSyncStatus();
@@ -218,173 +202,10 @@ class SyncClientNotifier extends Notifier<SyncClientState> {
     _pollTimer = null;
   }
 
-  String _normalizeAddress(String address) {
-    var normalized = address.trim();
-    if (!normalized.startsWith('http://') &&
-        !normalized.startsWith('https://')) {
-      normalized = 'http://$normalized';
-    }
-    if (normalized.endsWith('/')) {
-      normalized = normalized.substring(0, normalized.length - 1);
-    }
-    return normalized;
-  }
-
-  Future<void> _checkHubHealth(Dio dio) async {
-    try {
-      await dio.get('/health');
-    } on DioException catch (e) {
-      if (e.type == DioExceptionType.connectionTimeout ||
-          e.type == DioExceptionType.connectionError) {
-        throw Exception(
-          'Cannot connect to hub. Check the address and ensure the hub is running.',
-        );
-      }
-      rethrow;
-    }
-  }
-
-  Future<void> _connectToHub(Dio dio) async {
-    final deviceName = ref.read(deviceInfoProvider).deviceName ?? 'Unknown';
-
-    _logger.info(
-      _kClientName,
-      'Connecting to hub with deviceName: $deviceName',
-    );
-
-    final response = await dio.post(
-      '/connect',
-      data: jsonEncode({
-        'clientId': state.clientId,
-        'deviceName': deviceName,
-      }),
-      options: Options(contentType: 'application/json'),
-    );
-
-    _logger.info(
-      _kClientName,
-      'Connect response: ${response.statusCode} - ${response.data}',
-    );
-
-    if (response.statusCode == 200) {
-      final clientId = response.data['clientId'] as String?;
-      _logger.info(_kClientName, 'Connected to hub as $clientId');
-
-      if (clientId == null) {
-        throw Exception('Hub did not return a clientId');
-      }
-
-      state = state.copyWith(clientId: () => clientId);
-    } else {
-      throw Exception('Failed to connect to hub: ${response.statusCode}');
-    }
-  }
-
-  Future<void> _stageDataToHub(Dio dio) async {
-    var stagedCount = 0;
-
-    for (final source in _registry.getAllSources()) {
-      final syncCapability = source.capabilities.sync;
-      if (syncCapability == null) {
-        _logger.info(
-          _kClientName,
-          'Skipping ${source.id} - no sync capability',
-        );
-        continue;
-      }
-
-      try {
-        _logger.info(_kClientName, 'Getting export data for ${source.id}...');
-
-        // Create a proper shelf.Request for the export function
-        final mockRequest = shelf.Request(
-          'GET',
-          Uri.parse('http://localhost/'),
-        );
-        final exportResponse = await source.capabilities.server.export(
-          mockRequest,
-        );
-        final exportData = await exportResponse.readAsString();
-
-        _logger.info(
-          _kClientName,
-          'Export data length for ${source.id}: ${exportData.length}',
-        );
-
-        final parsedData = jsonDecode(exportData);
-        final data = switch (parsedData) {
-          {'data': final List data} => data,
-          final List data => data,
-          _ => <dynamic>[],
-        };
-
-        _logger.info(
-          _kClientName,
-          'Sending ${data.length} items to hub for ${source.id}...',
-        );
-
-        final response = await dio.post(
-          '/stage/${source.id}',
-          data: jsonEncode({
-            'clientId': state.clientId,
-            'data': data,
-          }),
-          options: Options(contentType: 'application/json'),
-        );
-
-        _logger.info(
-          _kClientName,
-          'Stage response for ${source.id}: ${response.statusCode} - ${response.data}',
-        );
-
-        stagedCount++;
-      } catch (e, st) {
-        _logger.error(_kClientName, 'Stage failed for ${source.id}: $e\n$st');
-      }
-    }
-
-    _logger.info(_kClientName, 'Total sources staged: $stagedCount');
-  }
-
-  Future<void> _pullResolvedData(Dio dio) async {
-    for (final source in _registry.getAllSources()) {
-      final syncCapability = source.capabilities.sync;
-      if (syncCapability == null) continue;
-
-      try {
-        final response = await dio.get('/pull/${source.id}');
-        if (response.statusCode != 200) continue;
-
-        final data = response.data['data'] as List<dynamic>?;
-        if (data == null || data.isEmpty) continue;
-
-        final preparation = await source.capabilities.server.prepareImport(
-          dio.options.baseUrl,
-          null,
-        );
-        await preparation.executeImport();
-
-        _logger.info(
-          _kClientName,
-          'Pulled ${data.length} items for ${source.id}',
-        );
-      } catch (e) {
-        _logger.error(_kClientName, 'Pull failed for ${source.id}: $e');
-      }
-    }
-  }
-
-  Future<void> _saveHubAddress(String address) async {
-    final settings = ref.read(settingsProvider);
-    await ref
-        .read(settingsNotifierProvider.notifier)
-        .updateSettings(
-          settings.copyWith(savedSyncHubAddress: address),
-        );
-  }
-
   void reset() {
     stopPolling();
+    _client?.dispose();
+    _client = null;
     state = state.copyWith(
       status: SyncClientStatus.idle,
       clientId: () => null,
@@ -407,9 +228,103 @@ class SyncClientNotifier extends Notifier<SyncClientState> {
   void clearSavedAddress() {
     ref
         .read(settingsNotifierProvider.notifier)
-        .updateSettings(
-          ref.read(settingsProvider).copyWith(),
-        );
+        .updateSettings(ref.read(settingsProvider).copyWith());
     state = state.copyWith(savedHubAddress: () => null);
+  }
+
+  // Private helpers
+
+  void _handleError(String message) {
+    _logger.error(_kLogName, message);
+    state = state.copyWith(
+      status: SyncClientStatus.error,
+      errorMessage: () => message,
+    );
+  }
+
+  String _normalizeAddress(String address) {
+    var normalized = address.trim();
+    if (!normalized.startsWith('http://') &&
+        !normalized.startsWith('https://')) {
+      normalized = 'http://$normalized';
+    }
+    if (normalized.endsWith('/')) {
+      normalized = normalized.substring(0, normalized.length - 1);
+    }
+    return normalized;
+  }
+
+  Future<void> _saveHubAddress(String address) async {
+    final settings = ref.read(settingsProvider);
+    await ref
+        .read(settingsNotifierProvider.notifier)
+        .updateSettings(settings.copyWith(savedSyncHubAddress: address));
+  }
+
+  Future<bool> _stageAllSources() async {
+    final clientId = state.clientId;
+    if (clientId == null) return false;
+
+    var stagedCount = 0;
+
+    for (final source in _registry.getAllSources()) {
+      if (source.capabilities.sync == null) continue;
+
+      try {
+        final mockRequest = shelf.Request(
+          'GET',
+          Uri.parse('http://localhost/'),
+        );
+        final exportResponse = await source.capabilities.server.export(
+          mockRequest,
+        );
+        final exportData = await exportResponse.readAsString();
+        final parsedData = jsonDecode(exportData);
+
+        final data = switch (parsedData) {
+          {'data': final List data} => data,
+          final List data => data,
+          _ => <dynamic>[],
+        };
+
+        final result = await _client!.stageData(
+          clientId: clientId,
+          sourceId: source.id,
+          data: data,
+        );
+
+        if (result.isSuccess) {
+          stagedCount++;
+          _logger.info(
+            _kLogName,
+            'Staged ${data.length} items for ${source.id}',
+          );
+        }
+      } catch (e) {
+        _logger.error(_kLogName, 'Stage failed for ${source.id}: $e');
+      }
+    }
+
+    return stagedCount > 0;
+  }
+
+  Future<void> _pullAllSources() async {
+    for (final source in _registry.getAllSources()) {
+      final syncCapability = source.capabilities.sync;
+      if (syncCapability == null) continue;
+
+      try {
+        final result = await _client!.pullData(source.id);
+        if (result.isFailure || result.data!.data.isEmpty) continue;
+
+        await syncCapability.importResolved(result.data!.data);
+        _logger.info(
+          _kLogName,
+          'Pulled ${result.data!.data.length} items for ${source.id}',
+        );
+      } catch (e) {
+        _logger.error(_kLogName, 'Pull failed for ${source.id}: $e');
+      }
+    }
   }
 }
