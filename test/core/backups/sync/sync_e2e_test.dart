@@ -71,6 +71,9 @@ void main() {
           state = newState;
           return response;
         },
+        onPullComplete: (req) async {
+          state = service.handlePullComplete(state, req.clientId!);
+        },
         onExport: (sourceId) => service.exportSource(sourceId),
       );
 
@@ -560,6 +563,83 @@ void main() {
       expect(state.connectedClients[0].hasStaged, false);
       expect(state.connectedClients[0].expectedSources, isEmpty);
       expect(state.connectedClients[0].stagedSources, isEmpty);
+    });
+
+    test('pull complete tracks which clients have pulled', () async {
+      // Two clients stage data
+      final clients = <String>[];
+      for (final name in ['Device A', 'Device B']) {
+        final conn = await dio.post(
+          '/connect',
+          data: jsonEncode({'deviceName': name}),
+          options: Options(contentType: 'application/json'),
+        );
+        final clientId = conn.data['clientId'] as String;
+        clients.add(clientId);
+
+        await dio.post(
+          '/stage/begin',
+          data: jsonEncode({
+            'clientId': clientId,
+            'expectedSources': ['bookmarks'],
+          }),
+          options: Options(contentType: 'application/json'),
+        );
+        await dio.post(
+          '/stage/bookmarks',
+          data: jsonEncode({
+            'clientId': clientId,
+            'data': [
+              {'id': name.toLowerCase().replaceAll(' ', '_')},
+            ],
+          }),
+          options: Options(contentType: 'application/json'),
+        );
+        await dio.post(
+          '/stage/complete',
+          data: jsonEncode({'clientId': clientId}),
+          options: Options(contentType: 'application/json'),
+        );
+      }
+
+      expect(state.totalStagedClients, 2);
+
+      // Confirm sync
+      state = state.copyWith(
+        phase: SyncHubPhase.confirmed,
+        resolvedData: service.mergeData(state),
+      );
+
+      // No one has pulled yet
+      expect(state.totalPulledClients, 0);
+      expect(state.phase, SyncHubPhase.confirmed);
+
+      // Client A pulls and notifies
+      await dio.get('/pull/all');
+      await dio.post(
+        '/pull/complete',
+        data: jsonEncode({'clientId': clients[0]}),
+        options: Options(contentType: 'application/json'),
+      );
+
+      expect(state.totalPulledClients, 1);
+      expect(state.pullProgress, '1/2');
+      expect(state.connectedClients[0].hasPulled, true);
+      expect(state.connectedClients[1].hasPulled, false);
+      expect(state.phase, SyncHubPhase.confirmed); // Not complete yet
+
+      // Client B pulls and notifies
+      await dio.get('/pull/all');
+      await dio.post(
+        '/pull/complete',
+        data: jsonEncode({'clientId': clients[1]}),
+        options: Options(contentType: 'application/json'),
+      );
+
+      expect(state.totalPulledClients, 2);
+      expect(state.pullProgress, '2/2');
+      expect(state.allStagedClientsPulled, true);
+      expect(state.phase, SyncHubPhase.completed); // Now complete!
     });
   });
 }

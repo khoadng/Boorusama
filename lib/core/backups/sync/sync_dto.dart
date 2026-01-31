@@ -211,6 +211,8 @@ class HubStatusDto {
     required this.phase,
     required this.connectedClients,
     required this.totalStagedClients,
+    required this.totalPulledClients,
+    required this.pullProgress,
     required this.conflictsCount,
     required this.hasUnresolvedConflicts,
     required this.canConfirm,
@@ -224,6 +226,8 @@ class HubStatusDto {
         .map((c) => ConnectedClientDto.fromModel(c))
         .toList(),
     totalStagedClients: state.totalStagedClients,
+    totalPulledClients: state.totalPulledClients,
+    pullProgress: state.pullProgress,
     conflictsCount: state.conflicts.length,
     hasUnresolvedConflicts: state.hasUnresolvedConflicts,
     canConfirm: state.canConfirm,
@@ -234,6 +238,8 @@ class HubStatusDto {
   final String phase;
   final List<ConnectedClientDto> connectedClients;
   final int totalStagedClients;
+  final int totalPulledClients;
+  final String pullProgress;
   final int conflictsCount;
   final bool hasUnresolvedConflicts;
   final bool canConfirm;
@@ -244,6 +250,8 @@ class HubStatusDto {
     'phase': phase,
     'connectedClients': connectedClients.map((c) => c.toJson()).toList(),
     'totalStagedClients': totalStagedClients,
+    'totalPulledClients': totalPulledClients,
+    'pullProgress': pullProgress,
     'conflictsCount': conflictsCount,
     'hasUnresolvedConflicts': hasUnresolvedConflicts,
     'canConfirm': canConfirm,
@@ -262,6 +270,7 @@ class ConnectedClientDto {
     required this.hasStaged,
     required this.isStaging,
     required this.stagingProgress,
+    required this.hasPulled,
   });
 
   factory ConnectedClientDto.fromModel(ConnectedClient client) =>
@@ -276,6 +285,7 @@ class ConnectedClientDto {
         hasStaged: client.hasStaged,
         isStaging: client.isStaging,
         stagingProgress: client.stagingProgress,
+        hasPulled: client.hasPulled,
       );
 
   final String id;
@@ -288,6 +298,7 @@ class ConnectedClientDto {
   final bool hasStaged;
   final bool isStaging;
   final String stagingProgress;
+  final bool hasPulled;
 
   Map<String, dynamic> toJson() => {
     'id': id,
@@ -300,5 +311,6 @@ class ConnectedClientDto {
     'hasStaged': hasStaged,
     'isStaging': isStaging,
     'stagingProgress': stagingProgress,
+    'hasPulled': hasPulled,
   };
 }

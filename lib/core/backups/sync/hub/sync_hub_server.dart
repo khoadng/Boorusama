@@ -70,6 +70,12 @@ class StageCompleteResponse {
   bool get isSuccess => error == null;
 }
 
+class PullCompleteRequest {
+  const PullCompleteRequest({required this.clientId});
+
+  final String? clientId;
+}
+
 class StageResponse {
   const StageResponse.success(this.stagedCount) : error = null;
   const StageResponse.failure(this.error) : stagedCount = 0;
@@ -99,6 +105,7 @@ class SyncHubServer {
     required this.onStageBegin,
     required this.onStage,
     required this.onStageComplete,
+    required this.onPullComplete,
     required this.onExport,
   });
 
@@ -109,6 +116,7 @@ class SyncHubServer {
   onStage;
   final Future<StageCompleteResponse> Function(StageCompleteRequest request)
   onStageComplete;
+  final Future<void> Function(PullCompleteRequest request) onPullComplete;
   final Future<ExportResponse> Function(String sourceId) onExport;
 
   HttpServer? _server;
@@ -182,6 +190,7 @@ class SyncHubServer {
         path.substring(6),
       ),
       ('GET', 'pull/all') => _handlePullAll(),
+      ('POST', 'pull/complete') => _handlePullComplete(request),
       (_, _) when method == 'GET' && path.startsWith('pull/') => _handlePull(
         path.substring(5),
       ),
@@ -352,6 +361,32 @@ class SyncHubServer {
 
     final dto = PullAllResponseDto(sources: state.resolvedData);
     return _jsonResponse(dto.toJson());
+  }
+
+  Future<Response> _handlePullComplete(Request request) async {
+    final state = stateGetter();
+    if (state.phase != SyncHubPhase.confirmed &&
+        state.phase != SyncHubPhase.completed) {
+      return Response(400, body: 'Sync not confirmed yet');
+    }
+
+    try {
+      final body = await request.readAsString();
+      final json = jsonDecode(body) as Map<String, dynamic>;
+      final clientId = json['clientId'] as String?;
+
+      if (clientId == null) {
+        return Response(400, body: 'Missing clientId');
+      }
+
+      await onPullComplete(PullCompleteRequest(clientId: clientId));
+
+      return _jsonResponse({'success': true});
+    } catch (e) {
+      return Response.internalServerError(
+        body: jsonEncode({'error': e.toString()}),
+      );
+    }
   }
 
   Future<Response> _handleExport(String sourceId) async {

@@ -262,6 +262,11 @@ class _PhaseIndicator extends StatelessWidget {
         Symbols.check_circle,
         'Sync confirmed! Clients can pull data',
       ),
+      SyncHubPhase.completed => (
+        Colors.green,
+        Symbols.done_all,
+        'Sync complete! All clients have pulled',
+      ),
     };
 
     return Container(
@@ -607,6 +612,14 @@ class _HubActions extends StatelessWidget {
               onPressed: () => notifier.resetSync(),
               icon: const Icon(Symbols.refresh),
               label: const Text('Reset for New Sync'),
+            ),
+          ),
+          SyncHubPhase.completed => SizedBox(
+            width: double.infinity,
+            child: FilledButton.icon(
+              onPressed: () => notifier.resetSync(),
+              icon: const Icon(Symbols.restart_alt),
+              label: const Text('Start New Sync'),
             ),
           ),
         },

@@ -73,6 +73,26 @@ class SyncHubService {
     );
   }
 
+  SyncHubState handlePullComplete(SyncHubState state, String clientId) {
+    final clientIndex = state.connectedClients.indexWhere(
+      (c) => c.id == clientId,
+    );
+
+    if (clientIndex < 0) return state;
+
+    final updated = List<ConnectedClient>.from(state.connectedClients);
+    updated[clientIndex] = updated[clientIndex].onPulled();
+
+    var newState = state.copyWith(connectedClients: updated);
+
+    // Check if all staged clients have pulled - transition to completed
+    if (newState.allStagedClientsPulled) {
+      newState = newState.copyWith(phase: SyncHubPhase.completed);
+    }
+
+    return newState;
+  }
+
   SyncHubState handleConnect(SyncHubState state, ConnectRequest request) {
     final clientId = request.clientId ?? generateClientId();
 

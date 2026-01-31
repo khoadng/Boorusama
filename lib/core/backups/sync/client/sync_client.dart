@@ -264,6 +264,28 @@ class SyncClient {
     }
   }
 
+  Future<SyncClientResult<void>> pullComplete({
+    required String clientId,
+  }) async {
+    try {
+      final response = await _dio.post(
+        '/pull/complete',
+        data: jsonEncode({'clientId': clientId}),
+        options: Options(contentType: 'application/json'),
+      );
+
+      if (response.statusCode == 200) {
+        return const SyncClientResult.success(null);
+      }
+
+      return SyncClientResult.failure(
+        'Failed to complete pull: ${response.statusCode}',
+      );
+    } on DioException catch (e) {
+      return SyncClientResult.failure(e.message ?? 'Pull complete failed');
+    }
+  }
+
   void dispose() {
     _dio.close();
   }

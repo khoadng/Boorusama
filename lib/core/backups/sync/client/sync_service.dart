@@ -82,7 +82,7 @@ class SyncService {
     return StageToHubResult.success(clientId: clientId);
   }
 
-  Future<PullFromHubResult> pullFromHub() async {
+  Future<PullFromHubResult> pullFromHub({String? clientId}) async {
     final statusResult = await client.checkSyncStatus();
     if (statusResult.isFailure) {
       return PullFromHubResult.failure(statusResult.error);
@@ -95,6 +95,11 @@ class SyncService {
     final pullError = await _pullAllSources();
     if (pullError != null) {
       return PullFromHubResult.failure(pullError);
+    }
+
+    // Notify hub that pull is complete
+    if (clientId != null) {
+      await client.pullComplete(clientId: clientId);
     }
 
     return const PullFromHubResult.success();

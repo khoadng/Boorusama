@@ -54,6 +54,7 @@ class SyncHubNotifier extends Notifier<SyncHubState> {
         onStageBegin: _handleStageBegin,
         onStage: _handleStage,
         onStageComplete: _handleStageComplete,
+        onPullComplete: _handlePullComplete,
         onExport: _handleExport,
       );
 
@@ -168,6 +169,24 @@ class SyncHubNotifier extends Notifier<SyncHubState> {
     );
 
     return StageResponse.success(stagedCount);
+  }
+
+  Future<void> _handlePullComplete(PullCompleteRequest request) async {
+    state = _service.handlePullComplete(state, request.clientId!);
+
+    final client = state.connectedClients.firstWhere(
+      (c) => c.id == request.clientId,
+      orElse: () => throw Exception('Client not found'),
+    );
+
+    _logger.info(
+      _kHubServerName,
+      'Client ${request.clientId} (${client.deviceName}) completed pull',
+    );
+
+    if (state.phase == SyncHubPhase.completed) {
+      _logger.info(_kHubServerName, 'All clients have pulled - sync complete');
+    }
   }
 
   Future<ExportResponse> _handleExport(String sourceId) =>

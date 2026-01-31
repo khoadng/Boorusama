@@ -31,6 +31,7 @@ class ConnectedClient extends Equatable {
     this.expectedSources = const [],
     this.stagedSources = const [],
     this.stagingComplete = false,
+    this.hasPulled = false,
   });
 
   final String id;
@@ -40,6 +41,7 @@ class ConnectedClient extends Equatable {
   final List<String> expectedSources;
   final List<String> stagedSources;
   final bool stagingComplete;
+  final bool hasPulled;
 
   bool get hasStaged => stagingComplete;
 
@@ -57,6 +59,7 @@ class ConnectedClient extends Equatable {
     List<String>? expectedSources,
     List<String>? stagedSources,
     bool? stagingComplete,
+    bool? hasPulled,
   }) => ConnectedClient(
     id: id ?? this.id,
     address: address ?? this.address,
@@ -65,7 +68,10 @@ class ConnectedClient extends Equatable {
     expectedSources: expectedSources ?? this.expectedSources,
     stagedSources: stagedSources ?? this.stagedSources,
     stagingComplete: stagingComplete ?? this.stagingComplete,
+    hasPulled: hasPulled ?? this.hasPulled,
   );
+
+  ConnectedClient onPulled() => copyWith(hasPulled: true);
 
   ConnectedClient onStagingStarted(List<String> sources) => copyWith(
     expectedSources: sources,
@@ -85,6 +91,7 @@ class ConnectedClient extends Equatable {
     expectedSources: [],
     stagedSources: [],
     stagingComplete: false,
+    hasPulled: false,
   );
 
   @override
@@ -96,6 +103,7 @@ class ConnectedClient extends Equatable {
     expectedSources,
     stagedSources,
     stagingComplete,
+    hasPulled,
   ];
 }
 
@@ -171,6 +179,7 @@ enum SyncHubPhase {
   reviewing,
   resolved,
   confirmed,
+  completed,
 }
 
 class SyncHubState extends Equatable {
@@ -206,6 +215,16 @@ class SyncHubState extends Equatable {
 
   int get totalStagedClients =>
       connectedClients.where((c) => c.hasStaged).length;
+
+  int get totalPulledClients =>
+      connectedClients.where((c) => c.hasPulled).length;
+
+  bool get allStagedClientsPulled =>
+      totalStagedClients > 0 &&
+      connectedClients.where((c) => c.hasStaged).every((c) => c.hasPulled);
+
+  String get pullProgress =>
+      totalStagedClients == 0 ? '' : '$totalPulledClients/$totalStagedClients';
 
   bool get hasUnresolvedConflicts =>
       conflicts.any((c) => c.resolution == ConflictResolution.pending);
