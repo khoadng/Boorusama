@@ -33,12 +33,6 @@ class _SyncPageState extends ConsumerState<SyncPage> {
   }
 
   @override
-  void dispose() {
-    ref.read(syncDiscoveryProvider.notifier).stopDiscovery();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final connectedToWifi = ref.watch(connectedToWifiProvider);
 
@@ -311,16 +305,10 @@ class _SyncPageState extends ConsumerState<SyncPage> {
   }
 
   void _startSession() {
-    ref.read(syncDiscoveryProvider.notifier).stopDiscovery();
-    setState(() {
-      _isHub = true;
-    });
+    setState(() => _isHub = true);
   }
 
   void _joinHub(DiscoveredService hub) {
-    ref.read(syncDiscoveryProvider.notifier).stopDiscovery();
-    setState(() {
-      _selectedHub = hub;
-    });
+    setState(() => _selectedHub = hub);
   }
 }

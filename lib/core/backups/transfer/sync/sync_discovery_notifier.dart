@@ -46,14 +46,24 @@ class SyncDiscoveryState extends Equatable {
   List<Object?> get props => [status, discoveredHubs, error];
 }
 
-class SyncDiscoveryNotifier extends Notifier<SyncDiscoveryState> {
+class SyncDiscoveryNotifier extends AutoDisposeNotifier<SyncDiscoveryState> {
   DiscoveryClient? _discoveryClient;
   Timer? _discoveryTimer;
 
   static const _discoveryTimeout = Duration(seconds: 3);
 
   @override
-  SyncDiscoveryState build() => const SyncDiscoveryState.initial();
+  SyncDiscoveryState build() {
+    ref.onDispose(_cleanup);
+    return const SyncDiscoveryState.initial();
+  }
+
+  void _cleanup() {
+    _discoveryTimer?.cancel();
+    _discoveryTimer = null;
+    _discoveryClient?.stopDiscovery();
+    _discoveryClient = null;
+  }
 
   Future<void> startDiscovery() async {
     if (state.status == SyncDiscoveryStatus.discovering) return;
@@ -129,6 +139,6 @@ class SyncDiscoveryNotifier extends Notifier<SyncDiscoveryState> {
 }
 
 final syncDiscoveryProvider =
-    NotifierProvider<SyncDiscoveryNotifier, SyncDiscoveryState>(
+    AutoDisposeNotifierProvider<SyncDiscoveryNotifier, SyncDiscoveryState>(
       SyncDiscoveryNotifier.new,
     );
