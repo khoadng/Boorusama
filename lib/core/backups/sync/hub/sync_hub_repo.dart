@@ -30,12 +30,14 @@ class SyncHubRepoImpl implements SyncHubRepo {
     required SyncHubState Function() getState,
     required void Function(SyncHubState) setState,
     this.onAllClientsPulled,
+    this.onSyncReset,
   }) : _getState = getState,
        _setState = setState;
 
   final SyncHubState Function() _getState;
   final void Function(SyncHubState) _setState;
   final void Function()? onAllClientsPulled;
+  final void Function()? onSyncReset;
 
   SyncHubState get _state => _getState();
 
@@ -99,7 +101,33 @@ class SyncHubRepoImpl implements SyncHubRepo {
 
   @override
   void removeClient(String clientId) {
-    // Remove client's staged data
+    // Check if client had staged data
+    final hadStagedData = _state.stagedData.values.any(
+      (list) => list.any((s) => s.clientId == clientId),
+    );
+
+    // If past waiting phase and client had staged data, reset the sync
+    if (_state.phase != SyncHubPhase.waiting && hadStagedData) {
+      final updatedClients = _state.connectedClients
+          .where((c) => c.id != clientId)
+          .map((c) => c.onReset())
+          .toList();
+
+      _setState(
+        _state.copyWith(
+          phase: SyncHubPhase.waiting,
+          stagedData: {},
+          conflicts: [],
+          resolvedData: {},
+          connectedClients: updatedClients,
+        ),
+      );
+
+      onSyncReset?.call();
+      return;
+    }
+
+    // Otherwise just remove client and their staged data
     final cleanedStagedData = <String, List<StagedSourceData>>{};
     for (final entry in _state.stagedData.entries) {
       final filtered = entry.value

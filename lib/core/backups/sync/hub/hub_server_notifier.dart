@@ -47,6 +47,10 @@ class SyncHubNotifier extends Notifier<SyncHubState> {
     onAllClientsPulled: () {
       _logger.info(_kHubServerName, 'All clients have pulled - sync complete');
     },
+    onSyncReset: () {
+      _logger.info(_kHubServerName, 'Sync reset - staged client disconnected');
+      _server?.notifySyncReset();
+    },
   );
 
   Future<void> startHub({SyncHubConfig? config}) async {

@@ -704,9 +704,26 @@ class _TestSyncHubRepo implements SyncHubRepo {
 
   @override
   void removeClient(String clientId) {
-    _connectedClients.removeWhere((c) => c.id == clientId);
+    // Check if client had staged data
+    final hadStagedData = _stagedData.values.any(
+      (list) => list.any((s) => s.clientId == clientId),
+    );
 
-    // Also remove client's staged data
+    // If past waiting phase and client had staged data, reset the sync
+    if (_phase != SyncHubPhase.waiting && hadStagedData) {
+      _connectedClients.removeWhere((c) => c.id == clientId);
+      for (var i = 0; i < _connectedClients.length; i++) {
+        _connectedClients[i] = _connectedClients[i].onReset();
+      }
+      _phase = SyncHubPhase.waiting;
+      _stagedData.clear();
+      _conflicts.clear();
+      _resolvedData.clear();
+      return;
+    }
+
+    // Otherwise just remove client and their staged data
+    _connectedClients.removeWhere((c) => c.id == clientId);
     for (final sourceId in _stagedData.keys.toList()) {
       _stagedData[sourceId]?.removeWhere((s) => s.clientId == clientId);
       if (_stagedData[sourceId]?.isEmpty ?? false) {
