@@ -209,7 +209,7 @@ class SyncHubServer {
 
     final message = jsonEncode({
       'type': type.name,
-      if (data != null) 'data': data,
+      'data': ?data,
     });
     channel.sink.add(message);
   }
@@ -218,7 +218,7 @@ class SyncHubServer {
   void broadcast(HubMessageType type, [Object? data]) {
     final message = jsonEncode({
       'type': type.name,
-      if (data != null) 'data': data,
+      'data': ?data,
     });
     for (final channel in _clients.values) {
       channel.sink.add(message);
