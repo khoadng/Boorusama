@@ -8,7 +8,7 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import '../../../../foundation/networking.dart';
 import '../../../themes/theme/types.dart';
-import '../../sync/hub/hub_server_provider.dart';
+import '../../sync/hub/hub_server_notifier.dart';
 import '../../sync/hub/types.dart';
 import '../export/export_data_page.dart';
 import 'widgets/conflict_item_tile.dart';

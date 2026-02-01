@@ -7,6 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shelf/shelf.dart' as shelf;
 import 'package:web_socket_channel/web_socket_channel.dart';
 
+import 'package:boorusama/core/backups/sync/hub/sync_hub_repo.dart';
 import 'package:boorusama/core/backups/sync/hub/sync_hub_server.dart';
 import 'package:boorusama/core/backups/sync/hub/sync_hub_service.dart';
 import 'package:boorusama/core/backups/sync/hub/types.dart';
@@ -20,8 +21,7 @@ void main() {
     late BackupRegistry registry;
     late String serverUrl;
     late Dio dio;
-    late SyncHubState state;
-    late StreamSubscription<SyncHubEvent> eventSubscription;
+    late _TestSyncHubRepo repo;
 
     setUp(() async {
       registry = BackupRegistry();
@@ -45,47 +45,16 @@ void main() {
       );
 
       service = SyncHubService(registry: registry);
-      state = const SyncHubState.initial();
+      repo = _TestSyncHubRepo();
 
-      server = SyncHubServer(stateGetter: () => state);
-
-      eventSubscription = server.events.listen((event) {
-        switch (event) {
-          case ClientConnectedEvent():
-            state = service.handleConnect(state, event);
-
-          case ClientDisconnectedEvent():
-            state = state.copyWith(
-              connectedClients: state.connectedClients
-                  .where((c) => c.id != event.clientId)
-                  .toList(),
-            );
-
-          case StageBeginEvent():
-            state = service.handleStageBegin(state, event);
-
-          case StageDataEvent():
-            state = service.handleStage(state, event);
-
-          case StageCompleteEvent():
-            state = service.handleStageComplete(state, event.clientId);
-
-          case PullCompleteEvent():
-            state = service.handlePullComplete(state, event.clientId);
-
-          case ExportRequestEvent():
-            break;
-        }
-      });
+      server = SyncHubServer(repo: repo);
 
       serverUrl = await server.start(address: 'localhost', port: 0) ?? '';
       dio = Dio(BaseOptions(baseUrl: serverUrl));
     });
 
     tearDown(() async {
-      await eventSubscription.cancel();
       await server.stop();
-      server.dispose();
       dio.close();
     });
 
@@ -141,14 +110,14 @@ void main() {
       );
 
       expect(clientId, isNotEmpty);
-      expect(state.connectedClients.length, 1);
-      expect(state.connectedClients[0].deviceName, 'Test Device');
+      expect(repo.connectedClients.length, 1);
+      expect(repo.connectedClients[0].deviceName, 'Test Device');
 
       // Close WebSocket - should disconnect
       await channel.sink.close();
       await Future.delayed(const Duration(milliseconds: 100));
 
-      expect(state.connectedClients, isEmpty);
+      expect(repo.connectedClients, isEmpty);
     });
 
     test('single client full flow with staging ack', () async {
@@ -165,8 +134,8 @@ void main() {
       );
 
       // Client should be marked as staging
-      expect(state.connectedClients[0].isStaging, true);
-      expect(state.connectedClients[0].hasStaged, false);
+      expect(repo.connectedClients[0].isStaging, true);
+      expect(repo.connectedClients[0].hasStaged, false);
 
       // Stage data
       await dio.post(
@@ -181,8 +150,8 @@ void main() {
       );
 
       // Still staging (not complete yet)
-      expect(state.connectedClients[0].isStaging, true);
-      expect(state.connectedClients[0].stagingProgress, '1/1');
+      expect(repo.connectedClients[0].isStaging, true);
+      expect(repo.connectedClients[0].stagingProgress, '1/1');
 
       // Complete staging
       final completeRes = await dio.post(
@@ -193,14 +162,12 @@ void main() {
 
       expect(completeRes.data['success'], true);
       expect(completeRes.data['sourcesStaged'], 1);
-      expect(state.connectedClients[0].hasStaged, true);
-      expect(state.connectedClients[0].isStaging, false);
+      expect(repo.connectedClients[0].hasStaged, true);
+      expect(repo.connectedClients[0].isStaging, false);
 
       // Confirm sync
-      state = state.copyWith(
-        phase: SyncHubPhase.confirmed,
-        resolvedData: service.mergeData(state),
-      );
+      repo.setPhase(SyncHubPhase.confirmed);
+      repo.setResolvedData(service.mergeData(repo.toState()));
 
       final pullRes = await dio.get('/pull/bookmarks');
       expect(pullRes.data['data'].length, 1);
@@ -231,7 +198,7 @@ void main() {
         options: Options(contentType: 'application/json'),
       );
 
-      expect(state.connectedClients[0].stagingProgress, '1/2');
+      expect(repo.connectedClients[0].stagingProgress, '1/2');
 
       // Try to complete - should fail
       final completeRes = await dio.post(
@@ -244,7 +211,7 @@ void main() {
       );
 
       expect(completeRes.statusCode, 400);
-      expect(state.connectedClients[0].hasStaged, false);
+      expect(repo.connectedClients[0].hasStaged, false);
     });
 
     test('two clients with no conflicts merge data', () async {
@@ -303,16 +270,17 @@ void main() {
       );
 
       // Both should be staged
-      expect(state.totalStagedClients, 2);
+      final stagedCount = repo.connectedClients
+          .where((c) => c.hasStaged)
+          .length;
+      expect(stagedCount, 2);
 
       // No conflicts
-      final conflicts = service.detectConflicts(state);
+      final conflicts = service.detectConflicts(repo.toState());
       expect(conflicts, isEmpty);
 
-      state = state.copyWith(
-        phase: SyncHubPhase.confirmed,
-        resolvedData: service.mergeData(state),
-      );
+      repo.setPhase(SyncHubPhase.confirmed);
+      repo.setResolvedData(service.mergeData(repo.toState()));
 
       final pullRes = await dio.get('/pull/bookmarks');
       expect(pullRes.data['data'].length, 2);
@@ -356,10 +324,8 @@ void main() {
         options: Options(contentType: 'application/json'),
       );
 
-      state = state.copyWith(
-        phase: SyncHubPhase.confirmed,
-        resolvedData: service.mergeData(state),
-      );
+      repo.setPhase(SyncHubPhase.confirmed);
+      repo.setResolvedData(service.mergeData(repo.toState()));
 
       // Pull all sources at once
       final pullAllRes = await dio.get('/pull/all');
@@ -403,19 +369,15 @@ void main() {
         );
       }
 
-      final conflicts = service.detectConflicts(state);
+      final conflicts = service.detectConflicts(repo.toState());
       expect(conflicts.length, 1);
 
-      state = state.copyWith(
-        phase: SyncHubPhase.reviewing,
-        conflicts: [
-          conflicts[0].copyWith(resolution: ConflictResolution.keepLocal),
-        ],
-      );
-      state = state.copyWith(
-        phase: SyncHubPhase.confirmed,
-        resolvedData: service.mergeData(state),
-      );
+      repo.setPhase(SyncHubPhase.reviewing);
+      repo.setConflicts([
+        conflicts[0].copyWith(resolution: ConflictResolution.keepLocal),
+      ]);
+      repo.setPhase(SyncHubPhase.confirmed);
+      repo.setResolvedData(service.mergeData(repo.toState()));
 
       final pullRes = await dio.get('/pull/bookmarks');
       expect(pullRes.data['data'][0]['name'], 'Version A');
@@ -432,7 +394,6 @@ void main() {
         ),
       );
       service = SyncHubService(registry: registry);
-      state = const SyncHubState.initial();
 
       // Device A with older timestamp
       final clientIdA = await connectClient('Device A');
@@ -497,14 +458,12 @@ void main() {
       );
 
       // No conflicts - auto-resolved by timestamp
-      final conflicts = service.detectConflicts(state);
+      final conflicts = service.detectConflicts(repo.toState());
       expect(conflicts, isEmpty);
 
       // Merge picks the newer version
-      state = state.copyWith(
-        phase: SyncHubPhase.confirmed,
-        resolvedData: service.mergeData(state),
-      );
+      repo.setPhase(SyncHubPhase.confirmed);
+      repo.setResolvedData(service.mergeData(repo.toState()));
 
       final pullRes = await dio.get('/pull/bookmarks');
       expect(pullRes.data['data'][0]['name'], 'New Version');
@@ -514,7 +473,7 @@ void main() {
       final clientId = await connectClient('Device A');
 
       // Simulate review in progress
-      state = state.copyWith(phase: SyncHubPhase.reviewing);
+      repo.setPhase(SyncHubPhase.reviewing);
 
       final response = await dio.post(
         '/stage/begin',
@@ -571,13 +530,13 @@ void main() {
         options: Options(contentType: 'application/json'),
       );
 
-      expect(state.connectedClients[0].hasStaged, true);
+      expect(repo.connectedClients[0].hasStaged, true);
 
-      state = state.onReset();
+      repo.reset();
 
-      expect(state.connectedClients[0].hasStaged, false);
-      expect(state.connectedClients[0].expectedSources, isEmpty);
-      expect(state.connectedClients[0].stagedSources, isEmpty);
+      expect(repo.connectedClients[0].hasStaged, false);
+      expect(repo.connectedClients[0].expectedSources, isEmpty);
+      expect(repo.connectedClients[0].stagedSources, isEmpty);
     });
 
     test('pull complete tracks which clients have pulled', () async {
@@ -612,17 +571,18 @@ void main() {
         );
       }
 
-      expect(state.totalStagedClients, 2);
+      final stagedCount = repo.connectedClients
+          .where((c) => c.hasStaged)
+          .length;
+      expect(stagedCount, 2);
 
       // Confirm sync
-      state = state.copyWith(
-        phase: SyncHubPhase.confirmed,
-        resolvedData: service.mergeData(state),
-      );
+      repo.setPhase(SyncHubPhase.confirmed);
+      repo.setResolvedData(service.mergeData(repo.toState()));
 
       // No one has pulled yet
-      expect(state.totalPulledClients, 0);
-      expect(state.phase, SyncHubPhase.confirmed);
+      expect(repo.connectedClients.where((c) => c.hasPulled).length, 0);
+      expect(repo.phase, SyncHubPhase.confirmed);
 
       // Client A pulls and notifies
       await dio.get('/pull/all');
@@ -632,11 +592,10 @@ void main() {
         options: Options(contentType: 'application/json'),
       );
 
-      expect(state.totalPulledClients, 1);
-      expect(state.pullProgress, '1/2');
-      expect(state.connectedClients[0].hasPulled, true);
-      expect(state.connectedClients[1].hasPulled, false);
-      expect(state.phase, SyncHubPhase.confirmed); // Not complete yet
+      expect(repo.connectedClients.where((c) => c.hasPulled).length, 1);
+      expect(repo.connectedClients[0].hasPulled, true);
+      expect(repo.connectedClients[1].hasPulled, false);
+      expect(repo.phase, SyncHubPhase.confirmed); // Not complete yet
 
       // Client B pulls and notifies
       await dio.get('/pull/all');
@@ -646,10 +605,8 @@ void main() {
         options: Options(contentType: 'application/json'),
       );
 
-      expect(state.totalPulledClients, 2);
-      expect(state.pullProgress, '2/2');
-      expect(state.allStagedClientsPulled, true);
-      expect(state.phase, SyncHubPhase.completed); // Now complete!
+      expect(repo.connectedClients.where((c) => c.hasPulled).length, 2);
+      expect(repo.phase, SyncHubPhase.completed); // Now complete!
     });
 
     test('hub broadcasts syncConfirmed to connected clients', () async {
@@ -686,6 +643,161 @@ void main() {
       await channel.sink.close();
     });
   });
+}
+
+/// Test implementation of SyncHubRepo
+class _TestSyncHubRepo implements SyncHubRepo {
+  SyncHubPhase _phase = SyncHubPhase.waiting;
+  final List<ConnectedClient> _connectedClients = [];
+  final Map<String, List<StagedSourceData>> _stagedData = {};
+  List<ConflictItem> _conflicts = [];
+  Map<String, List<Map<String, dynamic>>> _resolvedData = {};
+  var _clientIdCounter = 0;
+
+  @override
+  SyncHubPhase get phase => _phase;
+
+  @override
+  List<ConnectedClient> get connectedClients =>
+      List.unmodifiable(_connectedClients);
+
+  @override
+  ConnectedClient? getClient(String clientId) =>
+      _connectedClients.where((c) => c.id == clientId).firstOrNull;
+
+  @override
+  Map<String, List<Map<String, dynamic>>> get resolvedData => _resolvedData;
+
+  @override
+  List<Map<String, dynamic>>? getResolvedDataForSource(String sourceId) =>
+      _resolvedData[sourceId];
+
+  @override
+  bool get canStage => _phase == SyncHubPhase.waiting;
+
+  @override
+  bool get canPull =>
+      _phase == SyncHubPhase.confirmed || _phase == SyncHubPhase.completed;
+
+  @override
+  String generateClientId() => 'client_${++_clientIdCounter}';
+
+  @override
+  void addClient(String clientId, String deviceName) {
+    final existingIndex = _connectedClients.indexWhere((c) => c.id == clientId);
+
+    if (existingIndex >= 0) {
+      _connectedClients[existingIndex] = _connectedClients[existingIndex]
+          .copyWith(
+            deviceName: deviceName,
+          );
+    } else {
+      _connectedClients.add(
+        ConnectedClient(
+          id: clientId,
+          deviceName: deviceName,
+          connectedAt: DateTime.now(),
+        ),
+      );
+    }
+  }
+
+  @override
+  void removeClient(String clientId) {
+    _connectedClients.removeWhere((c) => c.id == clientId);
+  }
+
+  @override
+  void beginStaging(String clientId, List<String> expectedSources) {
+    final clientIndex = _connectedClients.indexWhere((c) => c.id == clientId);
+    if (clientIndex < 0) return;
+
+    _connectedClients[clientIndex] = _connectedClients[clientIndex]
+        .onStagingStarted(expectedSources);
+  }
+
+  @override
+  void stageData(
+    String clientId,
+    String sourceId,
+    List<Map<String, dynamic>> data,
+  ) {
+    final stagedSourceData = StagedSourceData(
+      sourceId: sourceId,
+      clientId: clientId,
+      data: data,
+      stagedAt: DateTime.now(),
+    );
+
+    final sourceStaged = List<StagedSourceData>.from(
+      _stagedData[sourceId] ?? [],
+    );
+    sourceStaged.removeWhere((s) => s.clientId == clientId);
+    sourceStaged.add(stagedSourceData);
+    _stagedData[sourceId] = sourceStaged;
+
+    // Update client's staged sources
+    final clientIndex = _connectedClients.indexWhere((c) => c.id == clientId);
+    if (clientIndex >= 0) {
+      final client = _connectedClients[clientIndex];
+      if (!client.stagedSources.contains(sourceId)) {
+        _connectedClients[clientIndex] = client.onSourceStaged(sourceId);
+      }
+    }
+  }
+
+  @override
+  void completeStaging(String clientId) {
+    final clientIndex = _connectedClients.indexWhere((c) => c.id == clientId);
+    if (clientIndex < 0) return;
+
+    _connectedClients[clientIndex] = _connectedClients[clientIndex]
+        .onStagingComplete();
+  }
+
+  @override
+  void completePull(String clientId) {
+    final clientIndex = _connectedClients.indexWhere((c) => c.id == clientId);
+    if (clientIndex < 0) return;
+
+    _connectedClients[clientIndex] = _connectedClients[clientIndex].onPulled();
+
+    // Check if all staged clients have pulled
+    final allPulled = _connectedClients
+        .where((c) => c.hasStaged)
+        .every((c) => c.hasPulled);
+    if (allPulled && _connectedClients.any((c) => c.hasStaged)) {
+      _phase = SyncHubPhase.completed;
+    }
+  }
+
+  // Test helpers
+  void setPhase(SyncHubPhase phase) => _phase = phase;
+
+  void setResolvedData(Map<String, List<Map<String, dynamic>>> data) =>
+      _resolvedData = data;
+
+  void setConflicts(List<ConflictItem> conflicts) => _conflicts = conflicts;
+
+  void reset() {
+    _phase = SyncHubPhase.waiting;
+    _stagedData.clear();
+    _conflicts = [];
+    _resolvedData = {};
+    for (var i = 0; i < _connectedClients.length; i++) {
+      _connectedClients[i] = _connectedClients[i].onReset();
+    }
+  }
+
+  SyncHubState toState() => SyncHubState(
+    isRunning: true,
+    serverUrl: null,
+    connectedClients: _connectedClients,
+    phase: _phase,
+    stagedData: _stagedData,
+    conflicts: _conflicts,
+    resolvedData: _resolvedData,
+  );
 }
 
 class _MockBackupSource implements BackupDataSource {

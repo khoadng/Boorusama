@@ -7,6 +7,7 @@ import '../../../../foundation/info/package_info.dart';
 import '../../../../foundation/loggers.dart';
 import '../../../../foundation/networking.dart';
 import '../../sources/providers.dart';
+import 'sync_hub_repo.dart';
 import 'sync_hub_server.dart';
 import 'sync_hub_service.dart';
 import 'types.dart';
@@ -19,26 +20,17 @@ final syncHubServiceProvider = Provider<SyncHubService>((ref) {
 
 final syncHubServerProvider = StateProvider<SyncHubServer?>((ref) => null);
 
-final syncHubEventsProvider = StreamProvider<SyncHubEvent>((ref) {
-  final server = ref.watch(syncHubServerProvider);
-  if (server == null) return const Stream.empty();
-  return server.events;
-});
-
 final syncHubProvider = NotifierProvider<SyncHubNotifier, SyncHubState>(
   SyncHubNotifier.new,
 );
 
 class SyncHubNotifier extends Notifier<SyncHubState> {
+  SyncHubRepo? _repo;
+
   @override
   SyncHubState build() {
-    ref.listen(syncHubEventsProvider, (_, next) {
-      next.whenData(_handleEvent);
-    });
-
     ref.onDispose(() async {
       final server = ref.read(syncHubServerProvider);
-      server?.dispose();
       await server?.stop();
     });
 
@@ -48,6 +40,14 @@ class SyncHubNotifier extends Notifier<SyncHubState> {
   Logger get _logger => ref.read(loggerProvider);
   SyncHubService get _service => ref.read(syncHubServiceProvider);
   SyncHubServer? get _server => ref.read(syncHubServerProvider);
+
+  SyncHubRepo _getOrCreateRepo() => _repo ??= SyncHubRepoImpl(
+    getState: () => state,
+    setState: (s) => state = s,
+    onAllClientsPulled: () {
+      _logger.info(_kHubServerName, 'All clients have pulled - sync complete');
+    },
+  );
 
   Future<void> startHub({SyncHubConfig? config}) async {
     if (state.isRunning) return;
@@ -62,7 +62,7 @@ class SyncHubNotifier extends Notifier<SyncHubState> {
         return;
       }
 
-      final server = SyncHubServer(stateGetter: () => state);
+      final server = SyncHubServer(repo: _getOrCreateRepo());
       ref.read(syncHubServerProvider.notifier).state = server;
 
       final serverUrl = await server.start(
@@ -96,85 +96,13 @@ class SyncHubNotifier extends Notifier<SyncHubState> {
   Future<void> stopHub() async {
     try {
       final server = ref.read(syncHubServerProvider);
-      server?.dispose();
       await server?.stop();
       ref.read(syncHubServerProvider.notifier).state = null;
+      _repo = null;
       state = const SyncHubState.initial();
       _logger.info(_kHubServerName, 'Hub stopped');
     } catch (e) {
       _logger.error(_kHubServerName, 'Failed to stop hub: $e');
-    }
-  }
-
-  void _handleEvent(SyncHubEvent event) {
-    switch (event) {
-      case ClientConnectedEvent():
-        state = _service.handleConnect(state, event);
-        _logger.info(
-          _kHubServerName,
-          'Client connected: ${event.clientId} (${event.deviceName})',
-        );
-
-      case ClientDisconnectedEvent():
-        final client = state.connectedClients
-            .where((c) => c.id == event.clientId)
-            .firstOrNull;
-        if (client == null) return;
-
-        state = state.copyWith(
-          connectedClients: state.connectedClients
-              .where((c) => c.id != event.clientId)
-              .toList(),
-        );
-        _logger.info(
-          _kHubServerName,
-          'Client disconnected: ${event.clientId} (${client.deviceName})',
-        );
-
-      case StageBeginEvent():
-        state = _service.handleStageBegin(state, event);
-        _logger.info(
-          _kHubServerName,
-          'Client ${event.clientId} starting staging: ${event.expectedSources.join(", ")}',
-        );
-
-      case StageDataEvent():
-        state = _service.handleStage(state, event);
-        _logger.info(
-          _kHubServerName,
-          'Staged ${event.data.length} items for ${event.sourceId} from ${event.clientId}',
-        );
-
-      case StageCompleteEvent():
-        state = _service.handleStageComplete(state, event.clientId);
-        _logger.info(
-          _kHubServerName,
-          'Client ${event.clientId} completed staging',
-        );
-
-      case PullCompleteEvent():
-        state = _service.handlePullComplete(state, event.clientId);
-
-        final client = state.connectedClients
-            .where((c) => c.id == event.clientId)
-            .firstOrNull;
-        if (client != null) {
-          _logger.info(
-            _kHubServerName,
-            'Client ${event.clientId} (${client.deviceName}) completed pull',
-          );
-        }
-
-        if (state.phase == SyncHubPhase.completed) {
-          _logger.info(
-            _kHubServerName,
-            'All clients have pulled - sync complete',
-          );
-        }
-
-      case ExportRequestEvent():
-        // Export is handled directly by server via HTTP
-        break;
     }
   }
 
