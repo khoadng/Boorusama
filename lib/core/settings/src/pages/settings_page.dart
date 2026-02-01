@@ -41,6 +41,7 @@ import 'image_viewer_page.dart';
 import 'language_page.dart';
 import 'privacy_page.dart';
 import 'search_settings_page.dart';
+import 'sync_page_settings.dart';
 
 List<SettingEntry> _entries(BuildContext context) => [
   SettingEntry(
@@ -77,6 +78,13 @@ List<SettingEntry> _entries(BuildContext context) => [
     title: context.t.settings.backup_and_restore.backup_and_restore,
     icon: FontAwesomeIcons.cloudArrowDown,
     content: const BackupAndRestorePage(),
+  ),
+  const SettingEntry(
+    id: 'sync',
+    name: '/settings/sync',
+    title: 'Sync',
+    icon: Symbols.sync,
+    content: SyncPageSettings(),
   ),
   SettingEntry(
     id: 'search',

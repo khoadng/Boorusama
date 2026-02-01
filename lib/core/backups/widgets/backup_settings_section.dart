@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:i18n/i18n.dart';
-import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../auto/widgets.dart';
@@ -60,26 +59,6 @@ class BackupSettingsSection extends ConsumerWidget {
                 ),
               ),
             ],
-          ),
-        ),
-        const SizedBox(height: 20),
-        const _Title(
-          title: 'Sync',
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(
-            vertical: 8,
-            horizontal: 12,
-          ),
-          child: SizedBox(
-            width: double.infinity,
-            child: DataTransferCard(
-              icon: const Icon(Symbols.sync),
-              title: 'Sync Devices',
-              onPressed: () {
-                goToSyncDataPage(context, mode: TransferMode.sync);
-              },
-            ),
           ),
         ),
         const SizedBox(height: 20),
