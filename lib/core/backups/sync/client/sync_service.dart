@@ -12,7 +12,7 @@ import '../../types/backup_data_source.dart';
 import '../../types/backup_registry.dart';
 import 'sync_client.dart';
 
-final syncServiceProvider = Provider.family.autoDispose<SyncService, String>(
+final syncServiceProvider = Provider.family<SyncService, String>(
   (ref, address) {
     final client = SyncClient(baseUrl: address);
     ref.onDispose(client.dispose);

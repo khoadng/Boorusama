@@ -13,7 +13,7 @@ import 'types.dart';
 
 const _kHubServerName = 'Sync Hub';
 
-final syncHubServiceProvider = Provider.autoDispose<SyncHubService>((ref) {
+final syncHubServiceProvider = Provider<SyncHubService>((ref) {
   return SyncHubService(registry: ref.watch(backupRegistryProvider));
 });
 
