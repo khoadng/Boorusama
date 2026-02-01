@@ -7,7 +7,6 @@ import 'package:shelf/shelf.dart';
 // Project imports:
 import '../../types/backup_data_source.dart';
 import '../../types/backup_registry.dart';
-import 'sync_hub_server.dart';
 import 'types.dart';
 
 class SyncHubService {
@@ -18,59 +17,32 @@ class SyncHubService {
   String generateClientId() =>
       DateTime.now().millisecondsSinceEpoch.toRadixString(36);
 
-  SyncHubState handleStageBegin(
-    SyncHubState state,
-    StageBeginRequest request,
-  ) {
+  SyncHubState handleStageBegin(SyncHubState state, StageBeginEvent event) {
     final clientIndex = state.connectedClients.indexWhere(
-      (c) => c.id == request.clientId,
+      (c) => c.id == event.clientId,
     );
 
     if (clientIndex < 0) return state;
 
     final updated = List<ConnectedClient>.from(state.connectedClients);
     updated[clientIndex] = updated[clientIndex].onStagingStarted(
-      request.expectedSources,
+      event.expectedSources,
     );
 
     return state.copyWith(connectedClients: updated);
   }
 
-  (SyncHubState, StageCompleteResponse) handleStageComplete(
-    SyncHubState state,
-    StageCompleteRequest request,
-  ) {
+  SyncHubState handleStageComplete(SyncHubState state, String clientId) {
     final clientIndex = state.connectedClients.indexWhere(
-      (c) => c.id == request.clientId,
+      (c) => c.id == clientId,
     );
 
-    if (clientIndex < 0) {
-      return (state, const StageCompleteResponse.failure('Client not found'));
-    }
-
-    final client = state.connectedClients[clientIndex];
-
-    // Verify all expected sources were staged
-    final missingSources = client.expectedSources
-        .where((s) => !client.stagedSources.contains(s))
-        .toList();
-
-    if (missingSources.isNotEmpty) {
-      return (
-        state,
-        StageCompleteResponse.failure(
-          'Missing sources: ${missingSources.join(", ")}',
-        ),
-      );
-    }
+    if (clientIndex < 0) return state;
 
     final updated = List<ConnectedClient>.from(state.connectedClients);
     updated[clientIndex] = updated[clientIndex].onStagingComplete();
 
-    return (
-      state.copyWith(connectedClients: updated),
-      StageCompleteResponse.success(client.stagedSources.length),
-    );
+    return state.copyWith(connectedClients: updated);
   }
 
   SyncHubState handlePullComplete(SyncHubState state, String clientId) {
@@ -93,17 +65,18 @@ class SyncHubService {
     return newState;
   }
 
-  SyncHubState handleConnect(SyncHubState state, ConnectRequest request) {
-    final clientId = request.clientId ?? generateClientId();
-
+  SyncHubState handleConnect(
+    SyncHubState state,
+    ClientConnectedEvent event,
+  ) {
     final existingIndex = state.connectedClients.indexWhere(
-      (c) => c.id == clientId,
+      (c) => c.id == event.clientId,
     );
 
     if (existingIndex >= 0) {
       final updated = List<ConnectedClient>.from(state.connectedClients);
       updated[existingIndex] = updated[existingIndex].copyWith(
-        deviceName: request.deviceName,
+        deviceName: event.deviceName,
       );
       return state.copyWith(connectedClients: updated);
     }
@@ -112,23 +85,19 @@ class SyncHubService {
       connectedClients: [
         ...state.connectedClients,
         ConnectedClient(
-          id: clientId,
-          deviceName: request.deviceName,
+          id: event.clientId,
+          deviceName: event.deviceName,
           connectedAt: DateTime.now(),
         ),
       ],
     );
   }
 
-  (SyncHubState, int) handleStage(
-    SyncHubState state,
-    String sourceId,
-    StageRequest request,
-  ) {
+  SyncHubState handleStage(SyncHubState state, StageDataEvent event) {
     final stagedSourceData = StagedSourceData(
-      sourceId: sourceId,
-      clientId: request.clientId!,
-      data: request.data,
+      sourceId: event.sourceId,
+      clientId: event.clientId,
+      data: event.data,
       stagedAt: DateTime.now(),
     );
 
@@ -136,25 +105,22 @@ class SyncHubService {
       state.stagedData,
     );
     final sourceStaged = List<StagedSourceData>.from(
-      currentStaged[sourceId] ?? [],
+      currentStaged[event.sourceId] ?? [],
     );
 
-    sourceStaged.removeWhere((s) => s.clientId == request.clientId);
+    sourceStaged.removeWhere((s) => s.clientId == event.clientId);
     sourceStaged.add(stagedSourceData);
-    currentStaged[sourceId] = sourceStaged;
+    currentStaged[event.sourceId] = sourceStaged;
 
     final updatedClients = _updateClientSourceStaged(
       state.connectedClients,
-      request.clientId!,
-      sourceId,
+      event.clientId,
+      event.sourceId,
     );
 
-    return (
-      state.copyWith(
-        stagedData: currentStaged,
-        connectedClients: updatedClients,
-      ),
-      request.data.length,
+    return state.copyWith(
+      stagedData: currentStaged,
+      connectedClients: updatedClients,
     );
   }
 
@@ -370,22 +336,6 @@ class SyncHubService {
       } catch (_) {
         // Continue with other sources
       }
-    }
-  }
-
-  Future<ExportResponse> exportSource(String sourceId) async {
-    final source = registry.getSource(sourceId);
-    if (source == null) {
-      return ExportResponse.notFound('Source not found: $sourceId');
-    }
-
-    try {
-      final request = Request('GET', Uri.parse('http://localhost/'));
-      final response = await source.capabilities.server.export(request);
-      final data = await response.readAsString();
-      return ExportResponse.success(data);
-    } catch (e) {
-      return ExportResponse.notFound('Export failed: $e');
     }
   }
 

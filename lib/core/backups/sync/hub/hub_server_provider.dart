@@ -17,23 +17,37 @@ final syncHubServiceProvider = Provider<SyncHubService>((ref) {
   return SyncHubService(registry: ref.watch(backupRegistryProvider));
 });
 
+final syncHubServerProvider = StateProvider<SyncHubServer?>((ref) => null);
+
+final syncHubEventsProvider = StreamProvider<SyncHubEvent>((ref) {
+  final server = ref.watch(syncHubServerProvider);
+  if (server == null) return const Stream.empty();
+  return server.events;
+});
+
 final syncHubProvider = NotifierProvider<SyncHubNotifier, SyncHubState>(
   SyncHubNotifier.new,
 );
 
 class SyncHubNotifier extends Notifier<SyncHubState> {
-  SyncHubServer? _server;
-
   @override
   SyncHubState build() {
-    ref.onDispose(() async {
-      await _server?.stop();
+    ref.listen(syncHubEventsProvider, (_, next) {
+      next.whenData(_handleEvent);
     });
+
+    ref.onDispose(() async {
+      final server = ref.read(syncHubServerProvider);
+      server?.dispose();
+      await server?.stop();
+    });
+
     return const SyncHubState.initial();
   }
 
   Logger get _logger => ref.read(loggerProvider);
   SyncHubService get _service => ref.read(syncHubServiceProvider);
+  SyncHubServer? get _server => ref.read(syncHubServerProvider);
 
   Future<void> startHub({SyncHubConfig? config}) async {
     if (state.isRunning) return;
@@ -48,18 +62,10 @@ class SyncHubNotifier extends Notifier<SyncHubState> {
         return;
       }
 
-      _server = SyncHubServer(
-        stateGetter: () => state,
-        onConnect: _handleConnect,
-        onDisconnect: _handleDisconnect,
-        onStageBegin: _handleStageBegin,
-        onStage: _handleStage,
-        onStageComplete: _handleStageComplete,
-        onPullComplete: _handlePullComplete,
-        onExport: _handleExport,
-      );
+      final server = SyncHubServer(stateGetter: () => state);
+      ref.read(syncHubServerProvider.notifier).state = server;
 
-      final serverUrl = await _server!.start(
+      final serverUrl = await server.start(
         address: address,
         port: hubConfig.port ?? 0,
       );
@@ -76,7 +82,7 @@ class SyncHubNotifier extends Notifier<SyncHubState> {
         final deviceName =
             ref.read(deviceInfoProvider).deviceName ?? 'Sync Hub';
         final appVersion = ref.read(packageInfoProvider).version;
-        await _server!.startBroadcast(
+        await server.startBroadcast(
           deviceName: deviceName,
           appVersion: appVersion,
         );
@@ -89,8 +95,10 @@ class SyncHubNotifier extends Notifier<SyncHubState> {
 
   Future<void> stopHub() async {
     try {
-      await _server?.stop();
-      _server = null;
+      final server = ref.read(syncHubServerProvider);
+      server?.dispose();
+      await server?.stop();
+      ref.read(syncHubServerProvider.notifier).state = null;
       state = const SyncHubState.initial();
       _logger.info(_kHubServerName, 'Hub stopped');
     } catch (e) {
@@ -98,117 +106,77 @@ class SyncHubNotifier extends Notifier<SyncHubState> {
     }
   }
 
-  Future<ConnectResponse> _handleConnect(ConnectRequest request) async {
-    final clientId = request.clientId ?? _service.generateClientId();
+  void _handleEvent(SyncHubEvent event) {
+    switch (event) {
+      case ClientConnectedEvent():
+        state = _service.handleConnect(state, event);
+        _logger.info(
+          _kHubServerName,
+          'Client connected: ${event.clientId} (${event.deviceName})',
+        );
 
-    state = _service.handleConnect(
-      state,
-      ConnectRequest(
-        clientId: clientId,
-        deviceName: request.deviceName,
-      ),
-    );
+      case ClientDisconnectedEvent():
+        final client = state.connectedClients
+            .where((c) => c.id == event.clientId)
+            .firstOrNull;
+        if (client == null) return;
 
-    _logger.info(
-      _kHubServerName,
-      'Client connected: $clientId (${request.deviceName})',
-    );
+        state = state.copyWith(
+          connectedClients: state.connectedClients
+              .where((c) => c.id != event.clientId)
+              .toList(),
+        );
+        _logger.info(
+          _kHubServerName,
+          'Client disconnected: ${event.clientId} (${client.deviceName})',
+        );
 
-    return ConnectResponse(clientId: clientId, phase: state.phase);
-  }
+      case StageBeginEvent():
+        state = _service.handleStageBegin(state, event);
+        _logger.info(
+          _kHubServerName,
+          'Client ${event.clientId} starting staging: ${event.expectedSources.join(", ")}',
+        );
 
-  Future<void> _handleDisconnect(String clientId) async {
-    final client = state.connectedClients
-        .where((c) => c.id == clientId)
-        .firstOrNull;
-    if (client == null) return;
+      case StageDataEvent():
+        state = _service.handleStage(state, event);
+        _logger.info(
+          _kHubServerName,
+          'Staged ${event.data.length} items for ${event.sourceId} from ${event.clientId}',
+        );
 
-    state = state.copyWith(
-      connectedClients: state.connectedClients
-          .where((c) => c.id != clientId)
-          .toList(),
-    );
+      case StageCompleteEvent():
+        state = _service.handleStageComplete(state, event.clientId);
+        _logger.info(
+          _kHubServerName,
+          'Client ${event.clientId} completed staging',
+        );
 
-    _logger.info(
-      _kHubServerName,
-      'Client disconnected: $clientId (${client.deviceName})',
-    );
-  }
+      case PullCompleteEvent():
+        state = _service.handlePullComplete(state, event.clientId);
 
-  Future<void> _handleStageBegin(StageBeginRequest request) async {
-    state = _service.handleStageBegin(state, request);
+        final client = state.connectedClients
+            .where((c) => c.id == event.clientId)
+            .firstOrNull;
+        if (client != null) {
+          _logger.info(
+            _kHubServerName,
+            'Client ${event.clientId} (${client.deviceName}) completed pull',
+          );
+        }
 
-    _logger.info(
-      _kHubServerName,
-      'Client ${request.clientId} starting staging: ${request.expectedSources.join(", ")}',
-    );
-  }
+        if (state.phase == SyncHubPhase.completed) {
+          _logger.info(
+            _kHubServerName,
+            'All clients have pulled - sync complete',
+          );
+        }
 
-  Future<StageCompleteResponse> _handleStageComplete(
-    StageCompleteRequest request,
-  ) async {
-    final (newState, response) = _service.handleStageComplete(state, request);
-    state = newState;
-
-    if (response.isSuccess) {
-      _logger.info(
-        _kHubServerName,
-        'Client ${request.clientId} completed staging: ${response.sourcesStaged} sources',
-      );
-    } else {
-      _logger.warn(
-        _kHubServerName,
-        'Client ${request.clientId} staging incomplete: ${response.error}',
-      );
-    }
-
-    return response;
-  }
-
-  Future<StageResponse> _handleStage(
-    String sourceId,
-    StageRequest request,
-  ) async {
-    final source = ref.read(backupRegistryProvider).getSource(sourceId);
-    if (source == null) {
-      return StageResponse.failure('Source not found: $sourceId');
-    }
-
-    final (newState, stagedCount) = _service.handleStage(
-      state,
-      sourceId,
-      request,
-    );
-    state = newState;
-
-    _logger.info(
-      _kHubServerName,
-      'Staged $stagedCount items for $sourceId from ${request.clientId}',
-    );
-
-    return StageResponse.success(stagedCount);
-  }
-
-  Future<void> _handlePullComplete(PullCompleteRequest request) async {
-    state = _service.handlePullComplete(state, request.clientId!);
-
-    final client = state.connectedClients.firstWhere(
-      (c) => c.id == request.clientId,
-      orElse: () => throw Exception('Client not found'),
-    );
-
-    _logger.info(
-      _kHubServerName,
-      'Client ${request.clientId} (${client.deviceName}) completed pull',
-    );
-
-    if (state.phase == SyncHubPhase.completed) {
-      _logger.info(_kHubServerName, 'All clients have pulled - sync complete');
+      case ExportRequestEvent():
+        // Export is handled directly by server via HTTP
+        break;
     }
   }
-
-  Future<ExportResponse> _handleExport(String sourceId) =>
-      _service.exportSource(sourceId);
 
   Future<void> startReview() async {
     state = await _service.stageHubOwnData(state);

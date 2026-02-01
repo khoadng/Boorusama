@@ -1,6 +1,65 @@
 // Package imports:
 import 'package:equatable/equatable.dart';
 
+/// Events emitted by the sync hub server.
+sealed class SyncHubEvent {}
+
+class ClientConnectedEvent extends SyncHubEvent {
+  ClientConnectedEvent({
+    required this.clientId,
+    required this.deviceName,
+  });
+
+  final String clientId;
+  final String deviceName;
+}
+
+class ClientDisconnectedEvent extends SyncHubEvent {
+  ClientDisconnectedEvent({required this.clientId});
+
+  final String clientId;
+}
+
+class StageBeginEvent extends SyncHubEvent {
+  StageBeginEvent({
+    required this.clientId,
+    required this.expectedSources,
+  });
+
+  final String clientId;
+  final List<String> expectedSources;
+}
+
+class StageDataEvent extends SyncHubEvent {
+  StageDataEvent({
+    required this.clientId,
+    required this.sourceId,
+    required this.data,
+  });
+
+  final String clientId;
+  final String sourceId;
+  final List<Map<String, dynamic>> data;
+}
+
+class StageCompleteEvent extends SyncHubEvent {
+  StageCompleteEvent({required this.clientId});
+
+  final String clientId;
+}
+
+class PullCompleteEvent extends SyncHubEvent {
+  PullCompleteEvent({required this.clientId});
+
+  final String clientId;
+}
+
+class ExportRequestEvent extends SyncHubEvent {
+  ExportRequestEvent({required this.sourceId});
+
+  final String sourceId;
+}
+
 class SyncHubConfig extends Equatable {
   const SyncHubConfig({
     this.port,

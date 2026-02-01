@@ -21,6 +21,7 @@ void main() {
     late String serverUrl;
     late Dio dio;
     late SyncHubState state;
+    late StreamSubscription<SyncHubEvent> eventSubscription;
 
     setUp(() async {
       registry = BackupRegistry();
@@ -46,51 +47,45 @@ void main() {
       service = SyncHubService(registry: registry);
       state = const SyncHubState.initial();
 
-      server = SyncHubServer(
-        stateGetter: () => state,
-        onConnect: (req) async {
-          final clientId = req.clientId ?? service.generateClientId();
-          state = service.handleConnect(
-            state,
-            ConnectRequest(
-              clientId: clientId,
-              deviceName: req.deviceName,
-            ),
-          );
-          return ConnectResponse(clientId: clientId, phase: state.phase);
-        },
-        onDisconnect: (clientId) async {
-          state = state.copyWith(
-            connectedClients: state.connectedClients
-                .where((c) => c.id != clientId)
-                .toList(),
-          );
-        },
-        onStageBegin: (req) async {
-          state = service.handleStageBegin(state, req);
-        },
-        onStage: (sourceId, req) async {
-          final (newState, count) = service.handleStage(state, sourceId, req);
-          state = newState;
-          return StageResponse.success(count);
-        },
-        onStageComplete: (req) async {
-          final (newState, response) = service.handleStageComplete(state, req);
-          state = newState;
-          return response;
-        },
-        onPullComplete: (req) async {
-          state = service.handlePullComplete(state, req.clientId!);
-        },
-        onExport: (sourceId) => service.exportSource(sourceId),
-      );
+      server = SyncHubServer(stateGetter: () => state);
+
+      eventSubscription = server.events.listen((event) {
+        switch (event) {
+          case ClientConnectedEvent():
+            state = service.handleConnect(state, event);
+
+          case ClientDisconnectedEvent():
+            state = state.copyWith(
+              connectedClients: state.connectedClients
+                  .where((c) => c.id != event.clientId)
+                  .toList(),
+            );
+
+          case StageBeginEvent():
+            state = service.handleStageBegin(state, event);
+
+          case StageDataEvent():
+            state = service.handleStage(state, event);
+
+          case StageCompleteEvent():
+            state = service.handleStageComplete(state, event.clientId);
+
+          case PullCompleteEvent():
+            state = service.handlePullComplete(state, event.clientId);
+
+          case ExportRequestEvent():
+            break;
+        }
+      });
 
       serverUrl = await server.start(address: 'localhost', port: 0) ?? '';
       dio = Dio(BaseOptions(baseUrl: serverUrl));
     });
 
     tearDown(() async {
+      await eventSubscription.cancel();
       await server.stop();
+      server.dispose();
       dio.close();
     });
 

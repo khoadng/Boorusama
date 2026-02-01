@@ -14,88 +14,6 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 import '../sync_dto.dart';
 import 'types.dart';
 
-class ConnectRequest {
-  const ConnectRequest({
-    required this.clientId,
-    required this.deviceName,
-  });
-
-  final String? clientId;
-  final String deviceName;
-}
-
-class ConnectResponse {
-  const ConnectResponse({
-    required this.clientId,
-    required this.phase,
-  });
-
-  final String clientId;
-  final SyncHubPhase phase;
-}
-
-class StageBeginRequest {
-  const StageBeginRequest({
-    required this.clientId,
-    required this.expectedSources,
-  });
-
-  final String? clientId;
-  final List<String> expectedSources;
-}
-
-class StageRequest {
-  const StageRequest({
-    required this.clientId,
-    required this.data,
-  });
-
-  final String? clientId;
-  final List<Map<String, dynamic>> data;
-}
-
-class StageCompleteRequest {
-  const StageCompleteRequest({required this.clientId});
-
-  final String? clientId;
-}
-
-class StageCompleteResponse {
-  const StageCompleteResponse.success(this.sourcesStaged) : error = null;
-  const StageCompleteResponse.failure(this.error) : sourcesStaged = 0;
-
-  final int sourcesStaged;
-  final String? error;
-
-  bool get isSuccess => error == null;
-}
-
-class PullCompleteRequest {
-  const PullCompleteRequest({required this.clientId});
-
-  final String? clientId;
-}
-
-class StageResponse {
-  const StageResponse.success(this.stagedCount) : error = null;
-  const StageResponse.failure(this.error) : stagedCount = 0;
-
-  final int stagedCount;
-  final String? error;
-
-  bool get isSuccess => error == null;
-}
-
-class ExportResponse {
-  const ExportResponse.success(this.data) : error = null;
-  const ExportResponse.notFound(this.error) : data = null;
-
-  final String? data;
-  final String? error;
-
-  bool get isSuccess => error == null;
-}
-
 /// Message types sent from hub to client via WebSocket
 enum HubMessageType {
   connected,
@@ -107,30 +25,21 @@ enum HubMessageType {
 typedef StateGetter = SyncHubState Function();
 
 class SyncHubServer {
-  SyncHubServer({
-    required this.stateGetter,
-    required this.onConnect,
-    required this.onDisconnect,
-    required this.onStageBegin,
-    required this.onStage,
-    required this.onStageComplete,
-    required this.onPullComplete,
-    required this.onExport,
-  });
+  SyncHubServer({required this.stateGetter});
 
   final StateGetter stateGetter;
-  final Future<ConnectResponse> Function(ConnectRequest request) onConnect;
-  final Future<void> Function(String clientId) onDisconnect;
-  final Future<void> Function(StageBeginRequest request) onStageBegin;
-  final Future<StageResponse> Function(String sourceId, StageRequest request)
-  onStage;
-  final Future<StageCompleteResponse> Function(StageCompleteRequest request)
-  onStageComplete;
-  final Future<void> Function(PullCompleteRequest request) onPullComplete;
-  final Future<ExportResponse> Function(String sourceId) onExport;
 
   HttpServer? _server;
   BonsoirBroadcast? _broadcast;
+  var _isDisposed = false;
+
+  final _eventController = StreamController<SyncHubEvent>.broadcast();
+  Stream<SyncHubEvent> get events => _eventController.stream;
+
+  void _emitEvent(SyncHubEvent event) {
+    if (_isDisposed) return;
+    _eventController.add(event);
+  }
 
   // Track active WebSocket connections: clientId -> channel
   final Map<String, WebSocketChannel> _clients = {};
@@ -138,6 +47,9 @@ class SyncHubServer {
   String? get serverUrl => _server != null
       ? 'http://${_server!.address.host}:${_server!.port}'
       : null;
+
+  String generateClientId() =>
+      DateTime.now().millisecondsSinceEpoch.toRadixString(36);
 
   Future<String?> start({
     required String address,
@@ -149,7 +61,6 @@ class SyncHubServer {
         .addMiddleware(logRequests())
         .addMiddleware(_corsMiddleware())
         .addHandler((request) {
-          // Route WebSocket upgrade requests to wsHandler
           if (request.url.path == 'ws') {
             return wsHandler(request);
           }
@@ -165,7 +76,6 @@ class SyncHubServer {
   }
 
   Future<void> stop() async {
-    // Close all WebSocket connections - copy list to avoid concurrent modification
     final channels = _clients.values.toList();
     _clients.clear();
     for (final channel in channels) {
@@ -176,6 +86,11 @@ class SyncHubServer {
     await _server?.close(force: true);
     _broadcast = null;
     _server = null;
+  }
+
+  void dispose() {
+    _isDisposed = true;
+    _eventController.close();
   }
 
   Future<void> startBroadcast({
@@ -202,7 +117,6 @@ class SyncHubServer {
     await _broadcast?.start();
   }
 
-  /// Send a message to a specific client
   void sendToClient(String clientId, HubMessageType type, [Object? data]) {
     final channel = _clients[clientId];
     if (channel == null) return;
@@ -214,7 +128,6 @@ class SyncHubServer {
     channel.sink.add(message);
   }
 
-  /// Broadcast a message to all connected clients
   void broadcast(HubMessageType type, [Object? data]) {
     final message = jsonEncode({
       'type': type.name,
@@ -225,12 +138,10 @@ class SyncHubServer {
     }
   }
 
-  /// Notify all clients that sync has been confirmed and they can pull
   void notifySyncConfirmed() {
     broadcast(HubMessageType.syncConfirmed);
   }
 
-  /// Notify all clients that sync has been reset
   void notifySyncReset() {
     broadcast(HubMessageType.syncReset);
   }
@@ -239,7 +150,7 @@ class SyncHubServer {
     String? clientId;
 
     channel.stream.listen(
-      (message) async {
+      (message) {
         try {
           final json = jsonDecode(message as String) as Map<String, dynamic>;
           final action = json['action'] as String?;
@@ -249,24 +160,23 @@ class SyncHubServer {
               final deviceName = json['deviceName'] as String? ?? 'Unknown';
               final existingId = json['clientId'] as String?;
 
-              final request = ConnectRequest(
-                clientId: existingId,
-                deviceName: deviceName,
-              );
-
-              final response = await onConnect(request);
-              clientId = response.clientId;
-
-              // Track this connection
+              clientId = existingId ?? generateClientId();
               _clients[clientId!] = channel;
 
-              // Send connected confirmation
+              _emitEvent(
+                ClientConnectedEvent(
+                  clientId: clientId!,
+                  deviceName: deviceName,
+                ),
+              );
+
+              final state = stateGetter();
               channel.sink.add(
                 jsonEncode({
                   'type': HubMessageType.connected.name,
                   'data': {
                     'clientId': clientId,
-                    'phase': response.phase.name,
+                    'phase': state.phase.name,
                   },
                 }),
               );
@@ -288,18 +198,16 @@ class SyncHubServer {
           );
         }
       },
-      onDone: () async {
-        // Client disconnected
+      onDone: () {
         if (clientId != null) {
           _clients.remove(clientId);
-          await onDisconnect(clientId!);
+          _emitEvent(ClientDisconnectedEvent(clientId: clientId!));
         }
       },
-      onError: (error) async {
-        // Connection error - treat as disconnect
+      onError: (error) {
         if (clientId != null) {
           _clients.remove(clientId);
-          await onDisconnect(clientId!);
+          _emitEvent(ClientDisconnectedEvent(clientId: clientId!));
         }
       },
     );
@@ -324,7 +232,6 @@ class SyncHubServer {
       (_, _) when method == 'GET' && path.startsWith('pull/') => _handlePull(
         path.substring(5),
       ),
-      ('GET', _) => _handleExport(path),
       _ => Response.notFound('Not found: $path'),
     };
   }
@@ -362,12 +269,12 @@ class SyncHubServer {
         return Response(400, body: 'expectedSources cannot be empty');
       }
 
-      final beginRequest = StageBeginRequest(
-        clientId: dto.clientId,
-        expectedSources: dto.expectedSources,
+      _emitEvent(
+        StageBeginEvent(
+          clientId: dto.clientId!,
+          expectedSources: dto.expectedSources,
+        ),
       );
-
-      await onStageBegin(beginRequest);
 
       return _jsonResponse(const StageBeginResponseDto().toJson());
     } catch (e) {
@@ -387,18 +294,33 @@ class SyncHubServer {
         return Response(400, body: 'Missing clientId');
       }
 
-      final completeRequest = StageCompleteRequest(clientId: dto.clientId);
-      final result = await onStageComplete(completeRequest);
+      final state = stateGetter();
+      final client = state.connectedClients
+          .where((c) => c.id == dto.clientId)
+          .firstOrNull;
 
-      if (result.isSuccess) {
-        return _jsonResponse(
-          StageCompleteResponseDto(
-            sourcesStaged: result.sourcesStaged,
-          ).toJson(),
-        );
-      } else {
-        return Response(400, body: result.error);
+      if (client == null) {
+        return Response(400, body: 'Client not found');
       }
+
+      final missingSources = client.expectedSources
+          .where((s) => !client.stagedSources.contains(s))
+          .toList();
+
+      if (missingSources.isNotEmpty) {
+        return Response(
+          400,
+          body: 'Missing sources: ${missingSources.join(", ")}',
+        );
+      }
+
+      _emitEvent(StageCompleteEvent(clientId: dto.clientId!));
+
+      return _jsonResponse(
+        StageCompleteResponseDto(
+          sourcesStaged: client.stagedSources.length,
+        ).toJson(),
+      );
     } catch (e) {
       return Response.internalServerError(
         body: jsonEncode({'error': e.toString()}),
@@ -421,19 +343,16 @@ class SyncHubServer {
         return Response(400, body: 'Missing clientId');
       }
 
-      final stageRequest = StageRequest(
-        clientId: dto.clientId,
-        data: dto.data,
+      _emitEvent(
+        StageDataEvent(
+          clientId: dto.clientId!,
+          sourceId: sourceId,
+          data: dto.data,
+        ),
       );
 
-      final result = await onStage(sourceId, stageRequest);
-
-      if (result.isSuccess) {
-        final responseDto = StageResponseDto(stagedCount: result.stagedCount);
-        return _jsonResponse(responseDto.toJson());
-      } else {
-        return Response(400, body: result.error);
-      }
+      final responseDto = StageResponseDto(stagedCount: dto.data.length);
+      return _jsonResponse(responseDto.toJson());
     } catch (e) {
       return Response.internalServerError(
         body: jsonEncode({'error': e.toString()}),
@@ -482,26 +401,13 @@ class SyncHubServer {
         return Response(400, body: 'Missing clientId');
       }
 
-      await onPullComplete(PullCompleteRequest(clientId: clientId));
+      _emitEvent(PullCompleteEvent(clientId: clientId));
 
       return _jsonResponse({'success': true});
     } catch (e) {
       return Response.internalServerError(
         body: jsonEncode({'error': e.toString()}),
       );
-    }
-  }
-
-  Future<Response> _handleExport(String sourceId) async {
-    final result = await onExport(sourceId);
-
-    if (result.isSuccess) {
-      return Response.ok(
-        result.data,
-        headers: {'Content-Type': 'application/json'},
-      );
-    } else {
-      return Response.notFound(result.error);
     }
   }
 
