@@ -7,102 +7,94 @@ import '../../../../foundation/loggers.dart';
 import '../../../settings/providers.dart';
 import '../../sources/providers.dart';
 import 'sync_client.dart';
+import 'sync_client_repo.dart';
 import 'sync_service.dart';
 import 'types.dart';
 
 const _kLogName = 'Sync Client';
 
-final syncClientProvider =
-    AutoDisposeNotifierProvider<SyncClientNotifier, SyncClientState>(
-      SyncClientNotifier.new,
-    );
+final syncClientRepoProvider = Provider.family<SyncClientRepo, String>((
+  ref,
+  address,
+) {
+  final client = SyncClient(baseUrl: address);
+  final service = SyncService(
+    client: client,
+    registry: ref.watch(backupRegistryProvider),
+    deviceName: ref.watch(deviceInfoProvider).deviceName ?? 'Unknown',
+  );
 
-class SyncClientNotifier extends AutoDisposeNotifier<SyncClientState> {
-  SyncClient? _client;
-  SyncService? _service;
+  ref.onDispose(service.dispose);
 
-  @override
-  SyncClientState build() {
-    ref.onDispose(() {
-      _client?.dispose();
-      _client = null;
-      _service = null;
+  return service;
+});
+
+final syncClientEventsProvider = StreamProvider.autoDispose
+    .family<SyncEvent, String>((ref, address) {
+      final repo = ref.watch(syncClientRepoProvider(address));
+      return repo.events;
     });
 
-    final savedAddress = ref.watch(settingsProvider).savedSyncHubAddress;
-    return SyncClientState(
+final syncClientProvider =
+    AutoDisposeNotifierProvider.family<
+      SyncClientNotifier,
+      SyncClientState,
+      String
+    >(SyncClientNotifier.new);
+
+class SyncClientNotifier
+    extends AutoDisposeFamilyNotifier<SyncClientState, String> {
+  @override
+  SyncClientState build(String arg) {
+    ref.listen(syncClientEventsProvider(arg), (_, next) {
+      next.whenData(_handleEvent);
+    });
+
+    return const SyncClientState(
       status: SyncClientStatus.idle,
-      savedHubAddress: savedAddress,
     );
   }
+
+  String get _address => arg;
 
   Logger get _logger => ref.read(loggerProvider);
 
-  SyncService _createService(String address) {
-    // Dispose existing client if address changed
-    if (_client != null && _client!.baseUrl != address) {
-      _client!.dispose();
-      _client = null;
-      _service = null;
-    }
+  SyncClientRepo get _repo => ref.read(syncClientRepoProvider(_address));
 
-    if (_service != null) return _service!;
+  void _handleEvent(SyncEvent event) {
+    switch (event) {
+      case SyncConfirmedEvent():
+        _logger.info(_kLogName, 'Hub confirmed sync, starting pull');
+        pullFromHub();
 
-    _client = SyncClient(
-      baseUrl: address,
-      onSyncConfirmed: _handleSyncConfirmed,
-      onSyncReset: _handleSyncReset,
-      onDisconnected: _handleDisconnected,
-      onError: _handleError,
-    );
+      case SyncResetEvent():
+        _logger.info(_kLogName, 'Hub reset sync');
+        state = state.toIdle();
 
-    _service = SyncService(
-      client: _client!,
-      registry: ref.read(backupRegistryProvider),
-      deviceName: ref.read(deviceInfoProvider).deviceName ?? 'Unknown',
-    );
+      case SyncDisconnectedEvent():
+        _logger.warn(_kLogName, 'Disconnected from hub');
+        if (state.status == SyncClientStatus.waitingForConfirmation) {
+          state = state.copyWith(
+            status: SyncClientStatus.hubUnreachable,
+            errorMessage: () => 'Connection to hub lost',
+          );
+        }
 
-    return _service!;
-  }
-
-  void _handleSyncConfirmed() {
-    _logger.info(_kLogName, 'Hub confirmed sync, starting pull');
-    pullFromHub();
-  }
-
-  void _handleSyncReset() {
-    _logger.info(_kLogName, 'Hub reset sync');
-    state = state.toIdle();
-  }
-
-  void _handleDisconnected() {
-    _logger.warn(_kLogName, 'Disconnected from hub');
-    if (state.status == SyncClientStatus.waitingForConfirmation) {
-      state = state.copyWith(
-        status: SyncClientStatus.hubUnreachable,
-        errorMessage: () => 'Connection to hub lost',
-      );
+      case SyncErrorEvent(:final message):
+        _logger.error(_kLogName, message);
     }
   }
 
-  void _handleError(String message) {
-    _logger.error(_kLogName, message);
-  }
-
-  Future<void> stageToHub(String hubAddress) async {
+  Future<void> stageToHub() async {
     if (state.isBlocked) return;
 
-    final address = normalizeHubAddress(hubAddress);
-    state = state.startConnecting(address);
+    state = state.startConnecting();
 
-    final service = _createService(address);
-    final result = await service.stageToHub(
-      existingClientId: state.clientId,
-    );
+    final result = await _repo.stageToHub(existingClientId: state.clientId);
 
     if (result.isSuccess) {
-      await _saveHubAddress(address);
-      state = state.onConnected(result.clientId!).onStaged(address);
+      await _saveHubAddress();
+      state = state.onConnected(result.clientId!).onStaged();
       _logger.info(_kLogName, 'Staged to hub, waiting for confirmation');
     } else {
       state = state.onError(result.error!);
@@ -111,16 +103,9 @@ class SyncClientNotifier extends AutoDisposeNotifier<SyncClientState> {
   }
 
   Future<void> pullFromHub() async {
-    final address = state.currentHubAddress ?? state.savedHubAddress;
-    if (address == null) {
-      state = state.onError('No hub address configured');
-      return;
-    }
-
     state = state.startPulling();
 
-    final service = _createService(address);
-    final result = await service.pullFromHub(clientId: state.clientId);
+    final result = await _repo.pullFromHub(clientId: state.clientId);
 
     if (result.isSuccess) {
       state = state.onPullComplete();
@@ -132,28 +117,18 @@ class SyncClientNotifier extends AutoDisposeNotifier<SyncClientState> {
   }
 
   void reset() {
-    _client?.disconnect();
-    state = state.toIdle();
+    _repo.disconnect();
+    ref.invalidateSelf();
   }
 
   void retryConnection() {
-    final address = state.currentHubAddress ?? state.savedHubAddress;
-    if (address != null) {
-      stageToHub(address);
-    }
+    stageToHub();
   }
 
-  void clearSavedAddress() {
-    ref
-        .read(settingsNotifierProvider.notifier)
-        .updateSettings(ref.read(settingsProvider).copyWith());
-    state = state.withoutSavedAddress();
-  }
-
-  Future<void> _saveHubAddress(String address) async {
+  Future<void> _saveHubAddress() async {
     final settings = ref.read(settingsProvider);
     await ref
         .read(settingsNotifierProvider.notifier)
-        .updateSettings(settings.copyWith(savedSyncHubAddress: address));
+        .updateSettings(settings.copyWith(savedSyncHubAddress: _address));
   }
 }

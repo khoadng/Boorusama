@@ -8,6 +8,7 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 
 // Project imports:
 import '../sync_dto.dart';
+import 'sync_client_repo.dart';
 
 class SyncClientResult<T> {
   const SyncClientResult.success(this.data) : error = null;
@@ -67,10 +68,6 @@ enum HubMessageType {
 class SyncClient {
   SyncClient({
     required this.baseUrl,
-    this.onSyncConfirmed,
-    this.onSyncReset,
-    this.onDisconnected,
-    this.onError,
   }) : _dio = Dio(
          BaseOptions(
            baseUrl: baseUrl,
@@ -87,11 +84,9 @@ class SyncClient {
   WebSocketChannel? _channel;
   StreamSubscription? _subscription;
 
-  // Callbacks for hub messages
-  final void Function()? onSyncConfirmed;
-  final void Function()? onSyncReset;
-  final void Function()? onDisconnected;
-  final void Function(String message)? onError;
+  // Event stream
+  final _eventController = StreamController<SyncEvent>.broadcast();
+  Stream<SyncEvent> get events => _eventController.stream;
 
   bool get isConnected => _channel != null;
 
@@ -135,7 +130,7 @@ class SyncClient {
         onDone: () {
           _channel = null;
           _subscription = null;
-          onDisconnected?.call();
+          _eventController.add(SyncDisconnectedEvent());
         },
         onError: (error) {
           if (!completer.isCompleted) {
@@ -145,7 +140,7 @@ class SyncClient {
           }
           _channel = null;
           _subscription = null;
-          onDisconnected?.call();
+          _eventController.add(SyncDisconnectedEvent());
         },
       );
 
@@ -154,7 +149,7 @@ class SyncClient {
         jsonEncode({
           'action': 'connect',
           'deviceName': deviceName,
-          if (existingClientId != null) 'clientId': existingClientId,
+          'clientId': ?existingClientId,
         }),
       );
 
@@ -199,20 +194,20 @@ class SyncClient {
           }
 
         case 'syncConfirmed':
-          onSyncConfirmed?.call();
+          _eventController.add(SyncConfirmedEvent());
 
         case 'syncReset':
-          onSyncReset?.call();
+          _eventController.add(SyncResetEvent());
 
         case 'error':
           final errorMsg = data?['message'] as String? ?? 'Unknown error';
-          onError?.call(errorMsg);
+          _eventController.add(SyncErrorEvent(errorMsg));
           if (connectCompleter != null && !connectCompleter.isCompleted) {
             connectCompleter.complete(SyncClientResult.failure(errorMsg));
           }
       }
     } catch (e) {
-      onError?.call('Failed to parse message: $e');
+      _eventController.add(SyncErrorEvent('Failed to parse message: $e'));
     }
   }
 
@@ -400,6 +395,7 @@ class SyncClient {
 
   void dispose() {
     disconnect();
+    _eventController.close();
     _dio.close();
   }
 }

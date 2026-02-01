@@ -8,6 +8,7 @@ import 'package:shelf/shelf.dart' as shelf;
 import '../../types/backup_data_source.dart';
 import '../../types/backup_registry.dart';
 import 'sync_client.dart';
+import 'sync_client_repo.dart';
 
 class StageToHubResult {
   const StageToHubResult.success({required this.clientId}) : error = null;
@@ -28,8 +29,8 @@ class PullFromHubResult {
   bool get isSuccess => error == null;
 }
 
-/// Helper class for sync operations. Not a provider - managed by the notifier.
-class SyncService {
+/// Implements SyncClientRepo for sync operations.
+class SyncService implements SyncClientRepo {
   SyncService({
     required this.client,
     required this.registry,
@@ -40,6 +41,16 @@ class SyncService {
   final BackupRegistry registry;
   final String deviceName;
 
+  @override
+  Stream<SyncEvent> get events => client.events;
+
+  @override
+  void disconnect() => client.disconnect();
+
+  @override
+  void dispose() => client.dispose();
+
+  @override
   Future<StageToHubResult> stageToHub({String? existingClientId}) async {
     // Check health
     final healthResult = await client.checkHealth();
@@ -67,6 +78,7 @@ class SyncService {
     return StageToHubResult.success(clientId: clientId);
   }
 
+  @override
   Future<PullFromHubResult> pullFromHub({String? clientId}) async {
     final statusResult = await client.checkSyncStatus();
     if (statusResult.isFailure) {

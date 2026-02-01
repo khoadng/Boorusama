@@ -61,8 +61,9 @@ void main() {
         },
         onDisconnect: (clientId) async {
           state = state.copyWith(
-            connectedClients:
-                state.connectedClients.where((c) => c.id != clientId).toList(),
+            connectedClients: state.connectedClients
+                .where((c) => c.id != clientId)
+                .toList(),
           );
         },
         onStageBegin: (req) async {
@@ -94,7 +95,7 @@ void main() {
     });
 
     /// Helper to connect via WebSocket and return clientId
-    Future<String> connectClient(String deviceName) async {
+    Future<String> connectClient(String deviceName) {
       final uri = Uri.parse(serverUrl);
       final wsUrl = 'ws://${uri.host}:${uri.port}/ws';
       final channel = WebSocketChannel.connect(Uri.parse(wsUrl));
@@ -109,10 +110,12 @@ void main() {
         }
       });
 
-      channel.sink.add(jsonEncode({
-        'action': 'connect',
-        'deviceName': deviceName,
-      }));
+      channel.sink.add(
+        jsonEncode({
+          'action': 'connect',
+          'deviceName': deviceName,
+        }),
+      );
 
       return completer.future.timeout(const Duration(seconds: 5));
     }
@@ -131,10 +134,12 @@ void main() {
         }
       });
 
-      channel.sink.add(jsonEncode({
-        'action': 'connect',
-        'deviceName': 'Test Device',
-      }));
+      channel.sink.add(
+        jsonEncode({
+          'action': 'connect',
+          'deviceName': 'Test Device',
+        }),
+      );
 
       final clientId = await completer.future.timeout(
         const Duration(seconds: 5),
@@ -668,10 +673,12 @@ void main() {
         }
       });
 
-      channel.sink.add(jsonEncode({
-        'action': 'connect',
-        'deviceName': 'Test',
-      }));
+      channel.sink.add(
+        jsonEncode({
+          'action': 'connect',
+          'deviceName': 'Test',
+        }),
+      );
 
       await connectedCompleter.future;
 
@@ -706,21 +713,21 @@ class _MockBackupSource implements BackupDataSource {
 
   @override
   BackupCapabilities get capabilities => BackupCapabilities(
-        server: ServerCapability(
-          export: _export,
-          prepareImport: (_, __) => throw UnimplementedError(),
-        ),
-        sync: SyncCapability(
-          getUniqueIdFromJson: (json) => json['id']?.toString() ?? '',
-          getTimestampFromJson: hasTimestamps
-              ? (json) {
-                  final ts = json['updatedAt'] as String?;
-                  return ts != null ? DateTime.tryParse(ts) : null;
-                }
-              : null,
-          importResolved: (_) async {},
-        ),
-      );
+    server: ServerCapability(
+      export: _export,
+      prepareImport: (_, _) => throw UnimplementedError(),
+    ),
+    sync: SyncCapability(
+      getUniqueIdFromJson: (json) => json['id']?.toString() ?? '',
+      getTimestampFromJson: hasTimestamps
+          ? (json) {
+              final ts = json['updatedAt'] as String?;
+              return ts != null ? DateTime.tryParse(ts) : null;
+            }
+          : null,
+      importResolved: (_) async {},
+    ),
+  );
 
   Future<shelf.Response> _export(shelf.Request request) async {
     return shelf.Response.ok(

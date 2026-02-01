@@ -6,9 +6,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import '../../../settings/providers.dart';
 import '../../../themes/theme/types.dart';
 import '../../servers/discovery_client.dart';
 import '../../sync/client/sync_client_notifier.dart';
+import '../../sync/client/sync_service.dart';
 import '../../sync/client/types.dart';
 import '../../types.dart';
 import 'widgets/instruction_step.dart';
@@ -29,6 +31,7 @@ class _SyncClientPageState extends ConsumerState<SyncClientPage> {
   final _addressController = TextEditingController();
   final List<DiscoveredService> _discoveredHubs = [];
   late final DiscoveryClient _discoveryClient;
+  String? _activeAddress;
 
   @override
   void initState() {
@@ -44,15 +47,15 @@ class _SyncClientPageState extends ConsumerState<SyncClientPage> {
 
     final initialHub = widget.initialHub;
     if (initialHub != null) {
-      _addressController.text = initialHub.url;
+      final address = normalizeHubAddress(initialHub.url);
+      _addressController.text = address;
+      _activeAddress = address;
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted) return;
-        final notifier = ref.read(syncClientProvider.notifier);
-        notifier.reset();
-        notifier.stageToHub(initialHub.url);
+        ref.read(syncClientProvider(address).notifier).stageToHub();
       });
     } else {
-      final savedAddress = ref.read(syncClientProvider).savedHubAddress;
+      final savedAddress = ref.read(settingsProvider).savedSyncHubAddress;
       if (savedAddress != null) {
         _addressController.text = savedAddress;
       }
@@ -88,10 +91,18 @@ class _SyncClientPageState extends ConsumerState<SyncClientPage> {
     super.dispose();
   }
 
+  void _connectToHub(String address) {
+    final normalized = normalizeHubAddress(address);
+    setState(() => _activeAddress = normalized);
+    ref.read(syncClientProvider(normalized).notifier).stageToHub();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(syncClientProvider);
-    final notifier = ref.watch(syncClientProvider.notifier);
+    final address = _activeAddress;
+    final state = address != null
+        ? ref.watch(syncClientProvider(address))
+        : const SyncClientState(status: SyncClientStatus.idle);
 
     return Scaffold(
       appBar: AppBar(
@@ -107,20 +118,34 @@ class _SyncClientPageState extends ConsumerState<SyncClientPage> {
               _AddressInput(
                 controller: _addressController,
                 state: state,
-                notifier: notifier,
+                onConnect: _connectToHub,
+                onClear: () {
+                  _addressController.clear();
+                  setState(() => _activeAddress = null);
+                },
               ),
               const SizedBox(height: 16),
               _DiscoveredHubs(
                 hubs: _discoveredHubs,
                 state: state,
-                notifier: notifier,
                 onHubSelected: (hub) {
                   _addressController.text = hub.url;
-                  notifier.stageToHub(hub.url);
+                  _connectToHub(hub.url);
                 },
               ),
               const SizedBox(height: 16),
-              _StatusSection(state: state, notifier: notifier),
+              _StatusSection(
+                state: state,
+                onReset: address != null
+                    ? () =>
+                          ref.read(syncClientProvider(address).notifier).reset()
+                    : null,
+                onRetry: address != null
+                    ? () => ref
+                          .read(syncClientProvider(address).notifier)
+                          .retryConnection()
+                    : null,
+              ),
               const SizedBox(height: 24),
               const _ClientInstructions(),
             ],
@@ -135,12 +160,14 @@ class _AddressInput extends StatelessWidget {
   const _AddressInput({
     required this.controller,
     required this.state,
-    required this.notifier,
+    required this.onConnect,
+    required this.onClear,
   });
 
   final TextEditingController controller;
   final SyncClientState state;
-  final SyncClientNotifier notifier;
+  final void Function(String address) onConnect;
+  final VoidCallback onClear;
 
   @override
   Widget build(BuildContext context) {
@@ -171,13 +198,10 @@ class _AddressInput extends StatelessWidget {
             decoration: InputDecoration(
               hintText: 'e.g., 192.168.1.100:8765',
               border: const OutlineInputBorder(),
-              suffixIcon: state.savedHubAddress != null
+              suffixIcon: controller.text.isNotEmpty
                   ? IconButton(
                       icon: const Icon(Symbols.close),
-                      onPressed: () {
-                        controller.clear();
-                        notifier.clearSavedAddress();
-                      },
+                      onPressed: onClear,
                     )
                   : null,
             ),
@@ -196,7 +220,7 @@ class _AddressInput extends StatelessWidget {
                   : () {
                       final address = controller.text.trim();
                       if (address.isNotEmpty) {
-                        notifier.stageToHub(address);
+                        onConnect(address);
                       }
                     },
               icon: isLoading
@@ -232,13 +256,11 @@ class _DiscoveredHubs extends StatelessWidget {
   const _DiscoveredHubs({
     required this.hubs,
     required this.state,
-    required this.notifier,
     required this.onHubSelected,
   });
 
   final List<DiscoveredService> hubs;
   final SyncClientState state;
-  final SyncClientNotifier notifier;
   final void Function(DiscoveredService hub) onHubSelected;
 
   @override
@@ -336,11 +358,13 @@ class _HubTile extends StatelessWidget {
 class _StatusSection extends StatelessWidget {
   const _StatusSection({
     required this.state,
-    required this.notifier,
+    required this.onReset,
+    required this.onRetry,
   });
 
   final SyncClientState state;
-  final SyncClientNotifier notifier;
+  final VoidCallback? onReset;
+  final VoidCallback? onRetry;
 
   @override
   Widget build(BuildContext context) {
@@ -420,10 +444,11 @@ class _StatusSection extends StatelessWidget {
                   ),
                 ),
               ),
-              if (state.status == SyncClientStatus.error ||
-                  state.status == SyncClientStatus.completed)
+              if ((state.status == SyncClientStatus.error ||
+                      state.status == SyncClientStatus.completed) &&
+                  onReset != null)
                 TextButton(
-                  onPressed: () => notifier.reset(),
+                  onPressed: onReset,
                   child: const Text('Reset'),
                 ),
             ],
@@ -439,10 +464,13 @@ class _StatusSection extends StatelessWidget {
               ),
             ),
           ),
-          if (state.status == SyncClientStatus.waitingForConfirmation)
-            _WaitingActions(notifier: notifier),
-          if (state.status == SyncClientStatus.hubUnreachable)
-            _UnreachableActions(notifier: notifier),
+          if (state.status == SyncClientStatus.waitingForConfirmation &&
+              onReset != null)
+            _WaitingActions(onReset: onReset!),
+          if (state.status == SyncClientStatus.hubUnreachable &&
+              onReset != null &&
+              onRetry != null)
+            _UnreachableActions(onReset: onReset!, onRetry: onRetry!),
         ],
       ),
     );
@@ -450,9 +478,9 @@ class _StatusSection extends StatelessWidget {
 }
 
 class _WaitingActions extends StatelessWidget {
-  const _WaitingActions({required this.notifier});
+  const _WaitingActions({required this.onReset});
 
-  final SyncClientNotifier notifier;
+  final VoidCallback onReset;
 
   @override
   Widget build(BuildContext context) {
@@ -462,7 +490,7 @@ class _WaitingActions extends StatelessWidget {
         SizedBox(
           width: double.infinity,
           child: OutlinedButton.icon(
-            onPressed: () => notifier.reset(),
+            onPressed: onReset,
             icon: const Icon(Symbols.close, size: 18),
             label: const Text('Cancel'),
           ),
@@ -473,9 +501,13 @@ class _WaitingActions extends StatelessWidget {
 }
 
 class _UnreachableActions extends StatelessWidget {
-  const _UnreachableActions({required this.notifier});
+  const _UnreachableActions({
+    required this.onReset,
+    required this.onRetry,
+  });
 
-  final SyncClientNotifier notifier;
+  final VoidCallback onReset;
+  final VoidCallback onRetry;
 
   @override
   Widget build(BuildContext context) {
@@ -499,7 +531,7 @@ class _UnreachableActions extends StatelessWidget {
             Expanded(
               child: OutlinedButton.icon(
                 onPressed: () {
-                  notifier.retryConnection();
+                  onRetry();
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
                       content: Text('Retrying connection...'),
@@ -514,7 +546,7 @@ class _UnreachableActions extends StatelessWidget {
             const SizedBox(width: 8),
             Expanded(
               child: FilledButton.icon(
-                onPressed: () => notifier.reset(),
+                onPressed: onReset,
                 icon: const Icon(Symbols.restart_alt, size: 18),
                 label: const Text('Reset'),
               ),
