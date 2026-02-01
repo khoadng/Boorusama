@@ -103,7 +103,6 @@ class SyncHubService {
     if (existingIndex >= 0) {
       final updated = List<ConnectedClient>.from(state.connectedClients);
       updated[existingIndex] = updated[existingIndex].copyWith(
-        address: request.clientAddress,
         deviceName: request.deviceName,
       );
       return state.copyWith(connectedClients: updated);
@@ -114,7 +113,6 @@ class SyncHubService {
         ...state.connectedClients,
         ConnectedClient(
           id: clientId,
-          address: request.clientAddress,
           deviceName: request.deviceName,
           connectedAt: DateTime.now(),
         ),

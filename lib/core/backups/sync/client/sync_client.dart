@@ -1,8 +1,10 @@
 // Dart imports:
+import 'dart:async';
 import 'dart:convert';
 
 // Package imports:
 import 'package:dio/dio.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
 
 // Project imports:
 import '../sync_dto.dart';
@@ -19,8 +21,9 @@ class SyncClientResult<T> {
 }
 
 class ConnectResult {
-  const ConnectResult({required this.clientId});
+  const ConnectResult({required this.clientId, required this.phase});
   final String clientId;
+  final String phase;
 }
 
 class StageBeginResult {
@@ -53,19 +56,49 @@ class PullAllResult {
   final Map<String, List<Map<String, dynamic>>> sources;
 }
 
+/// Message types received from hub
+enum HubMessageType {
+  connected,
+  syncConfirmed,
+  syncReset,
+  error,
+}
+
 class SyncClient {
-  SyncClient({required this.baseUrl})
-    : _dio = Dio(
-        BaseOptions(
-          baseUrl: baseUrl,
-          connectTimeout: const Duration(seconds: 10),
-          receiveTimeout: const Duration(seconds: 30),
-          sendTimeout: const Duration(seconds: 30),
-        ),
-      );
+  SyncClient({
+    required this.baseUrl,
+    this.onSyncConfirmed,
+    this.onSyncReset,
+    this.onDisconnected,
+    this.onError,
+  }) : _dio = Dio(
+         BaseOptions(
+           baseUrl: baseUrl,
+           connectTimeout: const Duration(seconds: 10),
+           receiveTimeout: const Duration(seconds: 30),
+           sendTimeout: const Duration(seconds: 30),
+         ),
+       );
 
   final String baseUrl;
   final Dio _dio;
+
+  // WebSocket connection
+  WebSocketChannel? _channel;
+  StreamSubscription? _subscription;
+
+  // Callbacks for hub messages
+  final void Function()? onSyncConfirmed;
+  final void Function()? onSyncReset;
+  final void Function()? onDisconnected;
+  final void Function(String message)? onError;
+
+  bool get isConnected => _channel != null;
+
+  String get _wsUrl {
+    final uri = Uri.parse(baseUrl);
+    return 'ws://${uri.host}:${uri.port}/ws';
+  }
 
   Future<SyncClientResult<void>> checkHealth() async {
     try {
@@ -87,31 +120,110 @@ class SyncClient {
     required String deviceName,
   }) async {
     try {
-      final requestDto = ConnectRequestDto(
-        clientId: existingClientId,
-        deviceName: deviceName,
+      // Close existing connection if any
+      await disconnect();
+
+      // Connect via WebSocket
+      _channel = WebSocketChannel.connect(Uri.parse(_wsUrl));
+
+      final completer = Completer<SyncClientResult<ConnectResult>>();
+
+      _subscription = _channel!.stream.listen(
+        (message) {
+          _handleMessage(message as String, completer);
+        },
+        onDone: () {
+          _channel = null;
+          _subscription = null;
+          onDisconnected?.call();
+        },
+        onError: (error) {
+          if (!completer.isCompleted) {
+            completer.complete(
+              SyncClientResult.failure('WebSocket error: $error'),
+            );
+          }
+          _channel = null;
+          _subscription = null;
+          onDisconnected?.call();
+        },
       );
 
-      final response = await _dio.post(
-        '/connect',
-        data: jsonEncode(requestDto.toJson()),
-        options: Options(contentType: 'application/json'),
+      // Send connect message
+      _channel!.sink.add(
+        jsonEncode({
+          'action': 'connect',
+          'deviceName': deviceName,
+          if (existingClientId != null) 'clientId': existingClientId,
+        }),
       );
 
-      if (response.statusCode == 200) {
-        final dto = ConnectResponseDto.fromJson(
-          response.data as Map<String, dynamic>,
-        );
-        return SyncClientResult.success(ConnectResult(clientId: dto.clientId));
-      }
-
-      return SyncClientResult.failure(
-        'Failed to connect: ${response.statusCode}',
+      // Wait for connected response with timeout
+      return await completer.future.timeout(
+        const Duration(seconds: 10),
+        onTimeout: () {
+          disconnect();
+          return const SyncClientResult.failure('Connection timeout');
+        },
       );
-    } on DioException catch (e) {
-      return SyncClientResult.failure(e.message ?? 'Connection failed');
+    } catch (e) {
+      return SyncClientResult.failure('Failed to connect: $e');
     }
   }
+
+  void _handleMessage(
+    String message,
+    Completer<SyncClientResult<ConnectResult>>? connectCompleter,
+  ) {
+    try {
+      final json = jsonDecode(message) as Map<String, dynamic>;
+      final type = json['type'] as String?;
+      final data = json['data'] as Map<String, dynamic>?;
+
+      switch (type) {
+        case 'connected':
+          if (connectCompleter != null && !connectCompleter.isCompleted) {
+            final clientId = data?['clientId'] as String?;
+            final phase = data?['phase'] as String? ?? 'waiting';
+            if (clientId != null) {
+              connectCompleter.complete(
+                SyncClientResult.success(
+                  ConnectResult(clientId: clientId, phase: phase),
+                ),
+              );
+            } else {
+              connectCompleter.complete(
+                const SyncClientResult.failure('No clientId in response'),
+              );
+            }
+          }
+
+        case 'syncConfirmed':
+          onSyncConfirmed?.call();
+
+        case 'syncReset':
+          onSyncReset?.call();
+
+        case 'error':
+          final errorMsg = data?['message'] as String? ?? 'Unknown error';
+          onError?.call(errorMsg);
+          if (connectCompleter != null && !connectCompleter.isCompleted) {
+            connectCompleter.complete(SyncClientResult.failure(errorMsg));
+          }
+      }
+    } catch (e) {
+      onError?.call('Failed to parse message: $e');
+    }
+  }
+
+  Future<void> disconnect() async {
+    await _subscription?.cancel();
+    _subscription = null;
+    await _channel?.sink.close();
+    _channel = null;
+  }
+
+  // HTTP methods for data transfer (unchanged)
 
   Future<SyncClientResult<StageBeginResult>> stageBegin({
     required String clientId,
@@ -287,6 +399,7 @@ class SyncClient {
   }
 
   void dispose() {
+    disconnect();
     _dio.close();
   }
 }

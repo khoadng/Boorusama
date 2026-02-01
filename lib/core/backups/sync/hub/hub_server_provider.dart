@@ -51,6 +51,7 @@ class SyncHubNotifier extends Notifier<SyncHubState> {
       _server = SyncHubServer(
         stateGetter: () => state,
         onConnect: _handleConnect,
+        onDisconnect: _handleDisconnect,
         onStageBegin: _handleStageBegin,
         onStage: _handleStage,
         onStageComplete: _handleStageComplete,
@@ -105,7 +106,6 @@ class SyncHubNotifier extends Notifier<SyncHubState> {
       ConnectRequest(
         clientId: clientId,
         deviceName: request.deviceName,
-        clientAddress: request.clientAddress,
       ),
     );
 
@@ -115,6 +115,24 @@ class SyncHubNotifier extends Notifier<SyncHubState> {
     );
 
     return ConnectResponse(clientId: clientId, phase: state.phase);
+  }
+
+  Future<void> _handleDisconnect(String clientId) async {
+    final client = state.connectedClients
+        .where((c) => c.id == clientId)
+        .firstOrNull;
+    if (client == null) return;
+
+    state = state.copyWith(
+      connectedClients: state.connectedClients
+          .where((c) => c.id != clientId)
+          .toList(),
+    );
+
+    _logger.info(
+      _kHubServerName,
+      'Client disconnected: $clientId (${client.deviceName})',
+    );
   }
 
   Future<void> _handleStageBegin(StageBeginRequest request) async {
@@ -216,10 +234,12 @@ class SyncHubNotifier extends Notifier<SyncHubState> {
     await _service.importResolvedData(resolvedData);
 
     state = state.onSyncConfirmed(resolvedData);
+    _server?.notifySyncConfirmed();
     _logger.info(_kHubServerName, 'Sync confirmed, clients can now pull');
   }
 
   void resetSync() {
     state = state.onReset();
+    _server?.notifySyncReset();
   }
 }

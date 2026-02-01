@@ -261,7 +261,6 @@ class HubStatusDto {
 class ConnectedClientDto {
   const ConnectedClientDto({
     required this.id,
-    required this.address,
     required this.deviceName,
     required this.connectedAt,
     required this.expectedSources,
@@ -276,7 +275,6 @@ class ConnectedClientDto {
   factory ConnectedClientDto.fromModel(ConnectedClient client) =>
       ConnectedClientDto(
         id: client.id,
-        address: client.address,
         deviceName: client.deviceName,
         connectedAt: client.connectedAt.toIso8601String(),
         expectedSources: client.expectedSources,
@@ -289,7 +287,6 @@ class ConnectedClientDto {
       );
 
   final String id;
-  final String address;
   final String deviceName;
   final String connectedAt;
   final List<String> expectedSources;
@@ -302,7 +299,6 @@ class ConnectedClientDto {
 
   Map<String, dynamic> toJson() => {
     'id': id,
-    'address': address,
     'deviceName': deviceName,
     'connectedAt': connectedAt,
     'expectedSources': expectedSources,

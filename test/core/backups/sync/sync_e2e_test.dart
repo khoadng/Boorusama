@@ -1,9 +1,11 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shelf/shelf.dart' as shelf;
+import 'package:web_socket_channel/web_socket_channel.dart';
 
 import 'package:boorusama/core/backups/sync/hub/sync_hub_server.dart';
 import 'package:boorusama/core/backups/sync/hub/sync_hub_service.dart';
@@ -53,10 +55,15 @@ void main() {
             ConnectRequest(
               clientId: clientId,
               deviceName: req.deviceName,
-              clientAddress: req.clientAddress,
             ),
           );
           return ConnectResponse(clientId: clientId, phase: state.phase);
+        },
+        onDisconnect: (clientId) async {
+          state = state.copyWith(
+            connectedClients:
+                state.connectedClients.where((c) => c.id != clientId).toList(),
+          );
         },
         onStageBegin: (req) async {
           state = service.handleStageBegin(state, req);
@@ -86,14 +93,66 @@ void main() {
       dio.close();
     });
 
-    test('single client full flow with staging ack', () async {
-      // Connect
-      final connectRes = await dio.post(
-        '/connect',
-        data: jsonEncode({'deviceName': 'Device A'}),
-        options: Options(contentType: 'application/json'),
+    /// Helper to connect via WebSocket and return clientId
+    Future<String> connectClient(String deviceName) async {
+      final uri = Uri.parse(serverUrl);
+      final wsUrl = 'ws://${uri.host}:${uri.port}/ws';
+      final channel = WebSocketChannel.connect(Uri.parse(wsUrl));
+
+      final completer = Completer<String>();
+
+      channel.stream.listen((message) {
+        final json = jsonDecode(message as String) as Map<String, dynamic>;
+        if (json['type'] == 'connected') {
+          final clientId = json['data']['clientId'] as String;
+          completer.complete(clientId);
+        }
+      });
+
+      channel.sink.add(jsonEncode({
+        'action': 'connect',
+        'deviceName': deviceName,
+      }));
+
+      return completer.future.timeout(const Duration(seconds: 5));
+    }
+
+    test('client connects via WebSocket and disconnects', () async {
+      final uri = Uri.parse(serverUrl);
+      final wsUrl = 'ws://${uri.host}:${uri.port}/ws';
+      final channel = WebSocketChannel.connect(Uri.parse(wsUrl));
+
+      final completer = Completer<String>();
+
+      channel.stream.listen((message) {
+        final json = jsonDecode(message as String) as Map<String, dynamic>;
+        if (json['type'] == 'connected') {
+          completer.complete(json['data']['clientId'] as String);
+        }
+      });
+
+      channel.sink.add(jsonEncode({
+        'action': 'connect',
+        'deviceName': 'Test Device',
+      }));
+
+      final clientId = await completer.future.timeout(
+        const Duration(seconds: 5),
       );
-      final clientId = connectRes.data['clientId'];
+
+      expect(clientId, isNotEmpty);
+      expect(state.connectedClients.length, 1);
+      expect(state.connectedClients[0].deviceName, 'Test Device');
+
+      // Close WebSocket - should disconnect
+      await channel.sink.close();
+      await Future.delayed(const Duration(milliseconds: 100));
+
+      expect(state.connectedClients, isEmpty);
+    });
+
+    test('single client full flow with staging ack', () async {
+      final clientId = await connectClient('Device A');
 
       // Begin staging
       await dio.post(
@@ -148,12 +207,7 @@ void main() {
     });
 
     test('staging complete fails if sources missing', () async {
-      final connectRes = await dio.post(
-        '/connect',
-        data: jsonEncode({'deviceName': 'Device A'}),
-        options: Options(contentType: 'application/json'),
-      );
-      final clientId = connectRes.data['clientId'];
+      final clientId = await connectClient('Device A');
 
       // Begin staging with 2 sources
       await dio.post(
@@ -195,12 +249,7 @@ void main() {
 
     test('two clients with no conflicts merge data', () async {
       // Client A
-      final connectA = await dio.post(
-        '/connect',
-        data: jsonEncode({'deviceName': 'Device A'}),
-        options: Options(contentType: 'application/json'),
-      );
-      final clientIdA = connectA.data['clientId'];
+      final clientIdA = await connectClient('Device A');
 
       await dio.post(
         '/stage/begin',
@@ -227,12 +276,7 @@ void main() {
       );
 
       // Client B
-      final connectB = await dio.post(
-        '/connect',
-        data: jsonEncode({'deviceName': 'Device B'}),
-        options: Options(contentType: 'application/json'),
-      );
-      final clientIdB = connectB.data['clientId'];
+      final clientIdB = await connectClient('Device B');
 
       await dio.post(
         '/stage/begin',
@@ -275,13 +319,7 @@ void main() {
     });
 
     test('pull all returns all sources in single response', () async {
-      // Connect and stage
-      final connectRes = await dio.post(
-        '/connect',
-        data: jsonEncode({'deviceName': 'Device A'}),
-        options: Options(contentType: 'application/json'),
-      );
-      final clientId = connectRes.data['clientId'];
+      final clientId = await connectClient('Device A');
 
       await dio.post(
         '/stage/begin',
@@ -338,12 +376,7 @@ void main() {
         ('Device A', 'Version A'),
         ('Device B', 'Version B'),
       ]) {
-        final conn = await dio.post(
-          '/connect',
-          data: jsonEncode({'deviceName': name}),
-          options: Options(contentType: 'application/json'),
-        );
-        final clientId = conn.data['clientId'];
+        final clientId = await connectClient(name);
 
         await dio.post(
           '/stage/begin',
@@ -402,12 +435,7 @@ void main() {
       state = const SyncHubState.initial();
 
       // Device A with older timestamp
-      final connectA = await dio.post(
-        '/connect',
-        data: jsonEncode({'deviceName': 'Device A'}),
-        options: Options(contentType: 'application/json'),
-      );
-      final clientIdA = connectA.data['clientId'];
+      final clientIdA = await connectClient('Device A');
 
       await dio.post(
         '/stage/begin',
@@ -438,12 +466,7 @@ void main() {
       );
 
       // Device B with newer timestamp
-      final connectB = await dio.post(
-        '/connect',
-        data: jsonEncode({'deviceName': 'Device B'}),
-        options: Options(contentType: 'application/json'),
-      );
-      final clientIdB = connectB.data['clientId'];
+      final clientIdB = await connectClient('Device B');
 
       await dio.post(
         '/stage/begin',
@@ -488,12 +511,7 @@ void main() {
     });
 
     test('cannot stage during review', () async {
-      final connectRes = await dio.post(
-        '/connect',
-        data: jsonEncode({'deviceName': 'Device A'}),
-        options: Options(contentType: 'application/json'),
-      );
-      final clientId = connectRes.data['clientId'];
+      final clientId = await connectClient('Device A');
 
       // Simulate review in progress
       state = state.copyWith(phase: SyncHubPhase.reviewing);
@@ -527,12 +545,7 @@ void main() {
     });
 
     test('reset clears staging state', () async {
-      final connectRes = await dio.post(
-        '/connect',
-        data: jsonEncode({'deviceName': 'Device A'}),
-        options: Options(contentType: 'application/json'),
-      );
-      final clientId = connectRes.data['clientId'];
+      final clientId = await connectClient('Device A');
 
       await dio.post(
         '/stage/begin',
@@ -571,12 +584,7 @@ void main() {
       // Two clients stage data
       final clients = <String>[];
       for (final name in ['Device A', 'Device B']) {
-        final conn = await dio.post(
-          '/connect',
-          data: jsonEncode({'deviceName': name}),
-          options: Options(contentType: 'application/json'),
-        );
-        final clientId = conn.data['clientId'] as String;
+        final clientId = await connectClient(name);
         clients.add(clientId);
 
         await dio.post(
@@ -643,6 +651,38 @@ void main() {
       expect(state.allStagedClientsPulled, true);
       expect(state.phase, SyncHubPhase.completed); // Now complete!
     });
+
+    test('hub broadcasts syncConfirmed to connected clients', () async {
+      final uri = Uri.parse(serverUrl);
+      final wsUrl = 'ws://${uri.host}:${uri.port}/ws';
+      final channel = WebSocketChannel.connect(Uri.parse(wsUrl));
+
+      final messages = <String>[];
+      final connectedCompleter = Completer<void>();
+
+      channel.stream.listen((message) {
+        final json = jsonDecode(message as String) as Map<String, dynamic>;
+        messages.add(json['type'] as String);
+        if (json['type'] == 'connected') {
+          connectedCompleter.complete();
+        }
+      });
+
+      channel.sink.add(jsonEncode({
+        'action': 'connect',
+        'deviceName': 'Test',
+      }));
+
+      await connectedCompleter.future;
+
+      // Trigger sync confirmed broadcast
+      server.notifySyncConfirmed();
+      await Future.delayed(const Duration(milliseconds: 100));
+
+      expect(messages, contains('syncConfirmed'));
+
+      await channel.sink.close();
+    });
   });
 }
 
@@ -666,21 +706,21 @@ class _MockBackupSource implements BackupDataSource {
 
   @override
   BackupCapabilities get capabilities => BackupCapabilities(
-    server: ServerCapability(
-      export: _export,
-      prepareImport: (_, _) => throw UnimplementedError(),
-    ),
-    sync: SyncCapability(
-      getUniqueIdFromJson: (json) => json['id']?.toString() ?? '',
-      getTimestampFromJson: hasTimestamps
-          ? (json) {
-              final ts = json['updatedAt'] as String?;
-              return ts != null ? DateTime.tryParse(ts) : null;
-            }
-          : null,
-      importResolved: (_) async {},
-    ),
-  );
+        server: ServerCapability(
+          export: _export,
+          prepareImport: (_, __) => throw UnimplementedError(),
+        ),
+        sync: SyncCapability(
+          getUniqueIdFromJson: (json) => json['id']?.toString() ?? '',
+          getTimestampFromJson: hasTimestamps
+              ? (json) {
+                  final ts = json['updatedAt'] as String?;
+                  return ts != null ? DateTime.tryParse(ts) : null;
+                }
+              : null,
+          importResolved: (_) async {},
+        ),
+      );
 
   Future<shelf.Response> _export(shelf.Request request) async {
     return shelf.Response.ok(

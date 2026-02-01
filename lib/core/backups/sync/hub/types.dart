@@ -25,7 +25,6 @@ class SyncHubConfig extends Equatable {
 class ConnectedClient extends Equatable {
   const ConnectedClient({
     required this.id,
-    required this.address,
     required this.deviceName,
     required this.connectedAt,
     this.expectedSources = const [],
@@ -35,7 +34,6 @@ class ConnectedClient extends Equatable {
   });
 
   final String id;
-  final String address;
   final String deviceName;
   final DateTime connectedAt;
   final List<String> expectedSources;
@@ -53,7 +51,6 @@ class ConnectedClient extends Equatable {
 
   ConnectedClient copyWith({
     String? id,
-    String? address,
     String? deviceName,
     DateTime? connectedAt,
     List<String>? expectedSources,
@@ -62,7 +59,6 @@ class ConnectedClient extends Equatable {
     bool? hasPulled,
   }) => ConnectedClient(
     id: id ?? this.id,
-    address: address ?? this.address,
     deviceName: deviceName ?? this.deviceName,
     connectedAt: connectedAt ?? this.connectedAt,
     expectedSources: expectedSources ?? this.expectedSources,
@@ -97,7 +93,6 @@ class ConnectedClient extends Equatable {
   @override
   List<Object?> get props => [
     id,
-    address,
     deviceName,
     connectedAt,
     expectedSources,

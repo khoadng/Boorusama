@@ -85,7 +85,6 @@ class _SyncClientPageState extends ConsumerState<SyncClientPage> {
   void dispose() {
     _addressController.dispose();
     _discoveryClient.stopDiscovery();
-    ref.read(syncClientProvider.notifier).stopPolling();
     super.dispose();
   }
 
@@ -460,32 +459,13 @@ class _WaitingActions extends StatelessWidget {
     return Column(
       children: [
         const SizedBox(height: 12),
-        Row(
-          children: [
-            Expanded(
-              child: OutlinedButton.icon(
-                onPressed: () {
-                  notifier.startPolling();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Auto-checking for confirmation...'),
-                      duration: Duration(seconds: 2),
-                    ),
-                  );
-                },
-                icon: const Icon(Symbols.autorenew, size: 18),
-                label: const Text('Auto-check'),
-              ),
-            ),
-            const SizedBox(width: 8),
-            Expanded(
-              child: FilledButton.icon(
-                onPressed: () => notifier.checkSyncStatus(),
-                icon: const Icon(Symbols.refresh, size: 18),
-                label: const Text('Check Now'),
-              ),
-            ),
-          ],
+        SizedBox(
+          width: double.infinity,
+          child: OutlinedButton.icon(
+            onPressed: () => notifier.reset(),
+            icon: const Icon(Symbols.close, size: 18),
+            label: const Text('Cancel'),
+          ),
         ),
       ],
     );

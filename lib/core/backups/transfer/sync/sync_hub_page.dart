@@ -380,7 +380,7 @@ class _ClientRow extends StatelessWidget {
                   style: const TextStyle(fontWeight: FontWeight.w500),
                 ),
                 Text(
-                  client.address,
+                  client.stagingProgress,
                   style: TextStyle(
                     fontSize: 12,
                     color: colorScheme.hintColor,
