@@ -60,7 +60,8 @@ class WsConnectedData {
     final phaseStr = json['phase'] as String?;
     return WsConnectedData(
       clientId: json['clientId'] as String? ?? '',
-      phase: SyncHubPhase.values.where((e) => e.name == phaseStr).firstOrNull ??
+      phase:
+          SyncHubPhase.values.where((e) => e.name == phaseStr).firstOrNull ??
           SyncHubPhase.waiting,
     );
   }

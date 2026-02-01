@@ -99,11 +99,23 @@ class SyncHubRepoImpl implements SyncHubRepo {
 
   @override
   void removeClient(String clientId) {
+    // Remove client's staged data
+    final cleanedStagedData = <String, List<StagedSourceData>>{};
+    for (final entry in _state.stagedData.entries) {
+      final filtered = entry.value
+          .where((s) => s.clientId != clientId)
+          .toList();
+      if (filtered.isNotEmpty) {
+        cleanedStagedData[entry.key] = filtered;
+      }
+    }
+
     _setState(
       _state.copyWith(
         connectedClients: _state.connectedClients
             .where((c) => c.id != clientId)
             .toList(),
+        stagedData: cleanedStagedData,
       ),
     );
   }

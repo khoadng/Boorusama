@@ -705,6 +705,14 @@ class _TestSyncHubRepo implements SyncHubRepo {
   @override
   void removeClient(String clientId) {
     _connectedClients.removeWhere((c) => c.id == clientId);
+
+    // Also remove client's staged data
+    for (final sourceId in _stagedData.keys.toList()) {
+      _stagedData[sourceId]?.removeWhere((s) => s.clientId == clientId);
+      if (_stagedData[sourceId]?.isEmpty ?? false) {
+        _stagedData.remove(sourceId);
+      }
+    }
   }
 
   @override
