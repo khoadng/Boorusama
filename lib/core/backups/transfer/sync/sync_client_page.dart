@@ -97,6 +97,13 @@ class _SyncClientPageState extends ConsumerState<SyncClientPage> {
     ref.read(syncClientProvider(normalized).notifier).stageToHub();
   }
 
+  void _disconnect() {
+    final address = _activeAddress;
+    if (address != null) {
+      ref.read(syncClientProvider(address).notifier).reset();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final address = _activeAddress;
@@ -104,11 +111,11 @@ class _SyncClientPageState extends ConsumerState<SyncClientPage> {
         ? ref.watch(syncClientProvider(address))
         : const SyncClientState(status: SyncClientStatus.idle);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Sync Client'),
-      ),
-      body: Padding(
+    return PopScope(
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop) _disconnect();
+      },
+      child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: SingleChildScrollView(
           child: Column(

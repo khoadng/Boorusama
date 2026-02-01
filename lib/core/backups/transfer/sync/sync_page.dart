@@ -37,10 +37,7 @@ class _SyncPageState extends ConsumerState<SyncPage> {
     final connectedToWifi = ref.watch(connectedToWifiProvider);
 
     if (!connectedToWifi) {
-      return Scaffold(
-        appBar: AppBar(title: const Text('Sync')),
-        body: _buildNoWifi(context),
-      );
+      return _buildNoWifi(context);
     }
 
     if (_isHub) {
@@ -51,7 +48,7 @@ class _SyncPageState extends ConsumerState<SyncPage> {
       return SyncClientPage(initialHub: _selectedHub);
     }
 
-    return _buildDiscoveryPage();
+    return _buildDiscoveryContent();
   }
 
   Widget _buildNoWifi(BuildContext context) {
@@ -69,29 +66,42 @@ class _SyncPageState extends ConsumerState<SyncPage> {
     );
   }
 
-  Widget _buildDiscoveryPage() {
+  Widget _buildDiscoveryContent() {
     final discoveryState = ref.watch(syncDiscoveryProvider);
     final colorScheme = Theme.of(context).colorScheme;
 
-    return Scaffold(
-      appBar: AppBar(title: const Text('Sync')),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            _buildStatusCard(discoveryState, colorScheme),
-            const SizedBox(height: 24),
-            if (discoveryState.discoveredHubs.isNotEmpty) ...[
-              _buildDiscoveredHubs(discoveryState.discoveredHubs, colorScheme),
+    return CustomScrollView(
+      slivers: [
+        SliverPadding(
+          padding: const EdgeInsets.all(16),
+          sliver: SliverList(
+            delegate: SliverChildListDelegate([
+              _buildStatusCard(discoveryState, colorScheme),
               const SizedBox(height: 24),
-            ],
-            _buildActions(discoveryState, colorScheme),
-            const Spacer(),
-            _buildInstructions(colorScheme),
-          ],
+              if (discoveryState.discoveredHubs.isNotEmpty) ...[
+                _buildDiscoveredHubs(
+                  discoveryState.discoveredHubs,
+                  colorScheme,
+                ),
+                const SizedBox(height: 24),
+              ],
+              _buildActions(discoveryState, colorScheme),
+            ]),
+          ),
         ),
-      ),
+        SliverFillRemaining(
+          hasScrollBody: false,
+          child: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: _buildInstructions(colorScheme),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 

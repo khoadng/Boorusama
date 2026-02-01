@@ -43,28 +43,15 @@ class _SyncHubPageState extends ConsumerState<SyncHubPage> {
           notifier.stopHub();
         }
       },
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Sync Hub'),
-          actions: [
-            if (state.isRunning)
-              IconButton(
-                icon: const Icon(Symbols.stop),
-                onPressed: () => notifier.stopHub(),
-                tooltip: 'Stop Hub',
-              ),
-          ],
-        ),
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          child: connectedToWifi
-              ? _HubBody(
-                  state: state,
-                  notifier: notifier,
-                  portController: _portController,
-                )
-              : _buildNoWifi(context),
-        ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        child: connectedToWifi
+            ? _HubBody(
+                state: state,
+                notifier: notifier,
+                portController: _portController,
+              )
+            : _buildNoWifi(context),
       ),
     );
   }
