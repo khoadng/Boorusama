@@ -7,6 +7,7 @@ import 'package:dio/dio.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 // Project imports:
+import '../hub/types.dart';
 import '../sync_dto.dart';
 import 'sync_client_repo.dart';
 
@@ -24,7 +25,7 @@ class SyncClientResult<T> {
 class ConnectResult {
   const ConnectResult({required this.clientId, required this.phase});
   final String clientId;
-  final String phase;
+  final SyncHubPhase phase;
 }
 
 class StageBeginResult {
@@ -55,14 +56,6 @@ class PullResult {
 class PullAllResult {
   const PullAllResult({required this.sources});
   final Map<String, List<Map<String, dynamic>>> sources;
-}
-
-/// Message types received from hub
-enum HubMessageType {
-  connected,
-  syncConfirmed,
-  syncReset,
-  error,
 }
 
 class SyncClient {
@@ -145,13 +138,11 @@ class SyncClient {
       );
 
       // Send connect message
-      _channel!.sink.add(
-        jsonEncode({
-          'action': 'connect',
-          'deviceName': deviceName,
-          'clientId': ?existingClientId,
-        }),
+      final connectAction = WsConnectAction(
+        clientId: existingClientId,
+        deviceName: deviceName,
       );
+      _channel!.sink.add(jsonEncode(connectAction.toJson()));
 
       // Wait for connected response with timeout
       return await completer.future.timeout(
@@ -172,18 +163,16 @@ class SyncClient {
   ) {
     try {
       final json = jsonDecode(message) as Map<String, dynamic>;
-      final type = json['type'] as String?;
-      final data = json['data'] as Map<String, dynamic>?;
+      final wsMessage = WsMessage.fromJson(json);
 
-      switch (type) {
-        case 'connected':
+      switch (wsMessage.type) {
+        case WsMessageType.connected:
           if (connectCompleter != null && !connectCompleter.isCompleted) {
-            final clientId = data?['clientId'] as String?;
-            final phase = data?['phase'] as String? ?? 'waiting';
-            if (clientId != null) {
+            final data = WsConnectedData.fromJson(wsMessage.data ?? {});
+            if (data.clientId.isNotEmpty) {
               connectCompleter.complete(
                 SyncClientResult.success(
-                  ConnectResult(clientId: clientId, phase: phase),
+                  ConnectResult(clientId: data.clientId, phase: data.phase),
                 ),
               );
             } else {
@@ -193,18 +182,25 @@ class SyncClient {
             }
           }
 
-        case 'syncConfirmed':
+        case WsMessageType.syncConfirmed:
           _eventController.add(SyncConfirmedEvent());
 
-        case 'syncReset':
+        case WsMessageType.syncReset:
           _eventController.add(SyncResetEvent());
 
-        case 'error':
-          final errorMsg = data?['message'] as String? ?? 'Unknown error';
-          _eventController.add(SyncErrorEvent(errorMsg));
+        case WsMessageType.error:
+          final errorData = WsErrorData.fromJson(wsMessage.data ?? {});
+          _eventController.add(SyncErrorEvent(errorData.message));
           if (connectCompleter != null && !connectCompleter.isCompleted) {
-            connectCompleter.complete(SyncClientResult.failure(errorMsg));
+            connectCompleter.complete(
+              SyncClientResult.failure(errorData.message),
+            );
           }
+
+        case null:
+          _eventController.add(
+            SyncErrorEvent('Unknown message type: ${wsMessage.type}'),
+          );
       }
     } catch (e) {
       _eventController.add(SyncErrorEvent('Failed to parse message: $e'));

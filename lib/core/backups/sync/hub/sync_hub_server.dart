@@ -15,14 +15,6 @@ import '../sync_dto.dart';
 import 'sync_hub_repo.dart';
 import 'types.dart';
 
-/// Message types sent from hub to client via WebSocket
-enum HubMessageType {
-  connected,
-  syncConfirmed,
-  syncReset,
-  error,
-}
-
 class SyncHubServer {
   SyncHubServer({required this.repo});
 
@@ -99,33 +91,23 @@ class SyncHubServer {
     await _broadcast?.start();
   }
 
-  void sendToClient(String clientId, HubMessageType type, [Object? data]) {
-    final channel = _clients[clientId];
-    if (channel == null) return;
-
-    final message = jsonEncode({
-      'type': type.name,
-      'data': ?data,
-    });
-    channel.sink.add(message);
+  void _sendWs(WebSocketChannel channel, WsMessage message) {
+    channel.sink.add(jsonEncode(message.toJson()));
   }
 
-  void broadcast(HubMessageType type, [Object? data]) {
-    final message = jsonEncode({
-      'type': type.name,
-      'data': ?data,
-    });
+  void _broadcastWs(WsMessage message) {
+    final encoded = jsonEncode(message.toJson());
     for (final channel in _clients.values) {
-      channel.sink.add(message);
+      channel.sink.add(encoded);
     }
   }
 
   void notifySyncConfirmed() {
-    broadcast(HubMessageType.syncConfirmed);
+    _broadcastWs(const WsMessage(type: WsMessageType.syncConfirmed));
   }
 
   void notifySyncReset() {
-    broadcast(HubMessageType.syncReset);
+    _broadcastWs(const WsMessage(type: WsMessageType.syncReset));
   }
 
   void _handleWebSocket(WebSocketChannel channel, String? protocol) {
@@ -139,39 +121,27 @@ class SyncHubServer {
 
           switch (action) {
             case 'connect':
-              final deviceName = json['deviceName'] as String? ?? 'Unknown';
-              final existingId = json['clientId'] as String?;
+              final connectAction = WsConnectAction.fromJson(json);
 
-              clientId = existingId ?? repo.generateClientId();
+              clientId = connectAction.clientId ?? repo.generateClientId();
               _clients[clientId!] = channel;
 
-              repo.addClient(clientId!, deviceName);
+              repo.addClient(clientId!, connectAction.deviceName);
 
-              channel.sink.add(
-                jsonEncode({
-                  'type': HubMessageType.connected.name,
-                  'data': {
-                    'clientId': clientId,
-                    'phase': repo.phase.name,
-                  },
-                }),
+              final response = WsConnectedData(
+                clientId: clientId!,
+                phase: repo.phase,
               );
+              _sendWs(channel, response.toMessage());
 
             default:
-              channel.sink.add(
-                jsonEncode({
-                  'type': HubMessageType.error.name,
-                  'data': {'message': 'Unknown action: $action'},
-                }),
+              _sendWs(
+                channel,
+                WsErrorData(message: 'Unknown action: $action').toMessage(),
               );
           }
         } catch (e) {
-          channel.sink.add(
-            jsonEncode({
-              'type': HubMessageType.error.name,
-              'data': {'message': e.toString()},
-            }),
-          );
+          _sendWs(channel, WsErrorData(message: e.toString()).toMessage());
         }
       },
       onDone: () {

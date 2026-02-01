@@ -1,6 +1,103 @@
 // Project imports:
 import 'hub/types.dart';
 
+// ===== WebSocket Messages =====
+
+enum WsMessageType {
+  connected,
+  syncConfirmed,
+  syncReset,
+  error,
+}
+
+enum WsActionType {
+  connect,
+}
+
+class WsMessage {
+  const WsMessage({required this.type, this.data});
+
+  factory WsMessage.fromJson(Map<String, dynamic> json) {
+    final typeStr = json['type'] as String?;
+    return WsMessage(
+      type: WsMessageType.values.where((e) => e.name == typeStr).firstOrNull,
+      data: json['data'] as Map<String, dynamic>?,
+    );
+  }
+
+  final WsMessageType? type;
+  final Map<String, dynamic>? data;
+
+  Map<String, dynamic> toJson() => {
+    'type': type?.name,
+    if (data != null) 'data': data,
+  };
+}
+
+class WsConnectAction {
+  const WsConnectAction({this.clientId, required this.deviceName});
+
+  factory WsConnectAction.fromJson(Map<String, dynamic> json) =>
+      WsConnectAction(
+        clientId: json['clientId'] as String?,
+        deviceName: json['deviceName'] as String? ?? 'Unknown',
+      );
+
+  final String? clientId;
+  final String deviceName;
+
+  Map<String, dynamic> toJson() => {
+    'action': WsActionType.connect.name,
+    'clientId': clientId,
+    'deviceName': deviceName,
+  };
+}
+
+class WsConnectedData {
+  const WsConnectedData({required this.clientId, required this.phase});
+
+  factory WsConnectedData.fromJson(Map<String, dynamic> json) {
+    final phaseStr = json['phase'] as String?;
+    return WsConnectedData(
+      clientId: json['clientId'] as String? ?? '',
+      phase: SyncHubPhase.values.where((e) => e.name == phaseStr).firstOrNull ??
+          SyncHubPhase.waiting,
+    );
+  }
+
+  final String clientId;
+  final SyncHubPhase phase;
+
+  Map<String, dynamic> toJson() => {
+    'clientId': clientId,
+    'phase': phase.name,
+  };
+
+  WsMessage toMessage() => WsMessage(
+    type: WsMessageType.connected,
+    data: toJson(),
+  );
+}
+
+class WsErrorData {
+  const WsErrorData({required this.message});
+
+  factory WsErrorData.fromJson(Map<String, dynamic> json) => WsErrorData(
+    message: json['message'] as String? ?? 'Unknown error',
+  );
+
+  final String message;
+
+  Map<String, dynamic> toJson() => {'message': message};
+
+  WsMessage toMessage() => WsMessage(
+    type: WsMessageType.error,
+    data: toJson(),
+  );
+}
+
+// ===== HTTP DTOs =====
+
 // Connect
 class ConnectRequestDto {
   const ConnectRequestDto({
