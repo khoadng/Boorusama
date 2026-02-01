@@ -14,7 +14,12 @@ import '../../types.dart';
 import 'widgets/instruction_step.dart';
 
 class SyncClientPage extends ConsumerStatefulWidget {
-  const SyncClientPage({super.key});
+  const SyncClientPage({
+    super.key,
+    this.initialHub,
+  });
+
+  final DiscoveredService? initialHub;
 
   @override
   ConsumerState<SyncClientPage> createState() => _SyncClientPageState();
@@ -37,9 +42,17 @@ class _SyncClientPageState extends ConsumerState<SyncClientPage> {
 
     _startDiscovery();
 
-    final savedAddress = ref.read(syncClientProvider).savedHubAddress;
-    if (savedAddress != null) {
-      _addressController.text = savedAddress;
+    final initialHub = widget.initialHub;
+    if (initialHub != null) {
+      _addressController.text = initialHub.url;
+      Future.microtask(() {
+        ref.read(syncClientProvider.notifier).stageToHub(initialHub.url);
+      });
+    } else {
+      final savedAddress = ref.read(syncClientProvider).savedHubAddress;
+      if (savedAddress != null) {
+        _addressController.text = savedAddress;
+      }
     }
   }
 

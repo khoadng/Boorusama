@@ -64,37 +64,22 @@ class BackupSettingsSection extends ConsumerWidget {
         ),
         const SizedBox(height: 20),
         const _Title(
-          title: 'Sync Hub',
+          title: 'Sync',
         ),
         Padding(
           padding: const EdgeInsets.symmetric(
             vertical: 8,
             horizontal: 12,
           ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            spacing: 12,
-            children: [
-              Expanded(
-                child: DataTransferCard(
-                  icon: const Icon(Symbols.hub),
-                  title: 'Start Hub',
-                  onPressed: () {
-                    goToSyncDataPage(context, mode: TransferMode.syncHub);
-                  },
-                ),
-              ),
-              Expanded(
-                child: DataTransferCard(
-                  icon: const Icon(Symbols.sync),
-                  title: 'Sync',
-                  onPressed: () {
-                    goToSyncDataPage(context, mode: TransferMode.syncClient);
-                  },
-                ),
-              ),
-            ],
+          child: SizedBox(
+            width: double.infinity,
+            child: DataTransferCard(
+              icon: const Icon(Symbols.sync),
+              title: 'Sync Devices',
+              onPressed: () {
+                goToSyncDataPage(context, mode: TransferMode.sync);
+              },
+            ),
           ),
         ),
         const SizedBox(height: 20),
