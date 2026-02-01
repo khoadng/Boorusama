@@ -65,7 +65,16 @@ class DiscoveredService {
   final int port;
   final Map<String, String> attributes;
 
-  String get url => 'http://$host:$port';
+  String get url {
+    // Prefer IP from attributes if available (more reliable than mDNS hostname)
+    final ip = attributes['ip'];
+    final attrPort = attributes['port'];
+    if (ip != null && ip.isNotEmpty) {
+      final effectivePort = attrPort ?? port.toString();
+      return 'http://$ip:$effectivePort';
+    }
+    return 'http://$host:$port';
+  }
 }
 
 abstract class DiscoveryClientInterface {

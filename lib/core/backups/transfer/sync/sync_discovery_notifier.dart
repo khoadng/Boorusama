@@ -90,6 +90,7 @@ class SyncDiscoveryNotifier extends Notifier<SyncDiscoveryState> {
 
   void _handleServiceResolved(DiscoveredService service) {
     if (service.attributes['server'] != 'boorusama-hub') return;
+    if (service.host.isEmpty) return;
 
     final currentHubs = List<DiscoveredService>.from(state.discoveredHubs);
     if (!currentHubs.any((h) => h.name == service.name)) {

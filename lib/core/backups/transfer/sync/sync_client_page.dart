@@ -45,8 +45,11 @@ class _SyncClientPageState extends ConsumerState<SyncClientPage> {
     final initialHub = widget.initialHub;
     if (initialHub != null) {
       _addressController.text = initialHub.url;
-      Future.microtask(() {
-        ref.read(syncClientProvider.notifier).stageToHub(initialHub.url);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        final notifier = ref.read(syncClientProvider.notifier);
+        notifier.reset();
+        notifier.stageToHub(initialHub.url);
       });
     } else {
       final savedAddress = ref.read(syncClientProvider).savedHubAddress;
