@@ -101,13 +101,20 @@ class SyncHubRepoImpl implements SyncHubRepo {
 
   @override
   void removeClient(String clientId) {
+    final phase = _state.phase;
+
     // Check if client had staged data
     final hadStagedData = _state.stagedData.values.any(
       (list) => list.any((s) => s.clientId == clientId),
     );
 
-    // If past waiting phase and client had staged data, reset the sync
-    if (_state.phase != SyncHubPhase.waiting && hadStagedData) {
+    // During reviewing/resolved: reset sync if staged client disconnects
+    // (merge not done yet, need all participants)
+    final shouldReset =
+        hadStagedData &&
+        (phase == SyncHubPhase.reviewing || phase == SyncHubPhase.resolved);
+
+    if (shouldReset) {
       final updatedClients = _state.connectedClients
           .where((c) => c.id != clientId)
           .map((c) => c.onReset())
@@ -127,7 +134,8 @@ class SyncHubRepoImpl implements SyncHubRepo {
       return;
     }
 
-    // Otherwise just remove client and their staged data
+    // During waiting: remove client and their staged data
+    // During confirmed/completed: just remove client (merge already done)
     final cleanedStagedData = <String, List<StagedSourceData>>{};
     for (final entry in _state.stagedData.entries) {
       final filtered = entry.value

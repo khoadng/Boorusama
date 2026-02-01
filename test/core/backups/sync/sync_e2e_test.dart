@@ -709,8 +709,12 @@ class _TestSyncHubRepo implements SyncHubRepo {
       (list) => list.any((s) => s.clientId == clientId),
     );
 
-    // If past waiting phase and client had staged data, reset the sync
-    if (_phase != SyncHubPhase.waiting && hadStagedData) {
+    // During reviewing/resolved: reset sync if staged client disconnects
+    final shouldReset =
+        hadStagedData &&
+        (_phase == SyncHubPhase.reviewing || _phase == SyncHubPhase.resolved);
+
+    if (shouldReset) {
       _connectedClients.removeWhere((c) => c.id == clientId);
       for (var i = 0; i < _connectedClients.length; i++) {
         _connectedClients[i] = _connectedClients[i].onReset();
@@ -722,7 +726,8 @@ class _TestSyncHubRepo implements SyncHubRepo {
       return;
     }
 
-    // Otherwise just remove client and their staged data
+    // During waiting: remove client and their staged data
+    // During confirmed/completed: just remove client (merge already done)
     _connectedClients.removeWhere((c) => c.id == clientId);
     for (final sourceId in _stagedData.keys.toList()) {
       _stagedData[sourceId]?.removeWhere((s) => s.clientId == clientId);
