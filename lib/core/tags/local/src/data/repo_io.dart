@@ -1,12 +1,12 @@
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart' show join;
-import 'package:path_provider/path_provider.dart';
 
 // Project imports:
 import '../../../../../foundation/database/providers.dart';
 import '../../../../../foundation/database/utils.dart';
 import '../../../../../foundation/loggers.dart';
+import '../../../../../foundation/path/app_storage.dart';
 import '../types/tag_cache_repository.dart';
 import 'repo_empty.dart';
 import 'repo_sqlite.dart';
@@ -52,8 +52,7 @@ final tagCacheRepositoryProvider = FutureProvider<TagCacheRepository>(
   },
 );
 
-// TODO: should have one place to get the db path in case we want to change it
 Future<String> getTagCacheDbPath() async {
-  final applicationDocumentsDir = await getApplicationDocumentsDirectory();
-  return join(applicationDocumentsDir.path, 'data', kTagCacheDbName);
+  final basePath = await getAppStoragePath();
+  return join(basePath, 'data', kTagCacheDbName);
 }

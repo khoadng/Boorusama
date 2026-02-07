@@ -5,7 +5,3 @@ Future<String?> getAppTemporaryPath() async {
 Future<dynamic> getAppTemporaryDirectory() async {
   return null;
 }
-
-Future<dynamic> getAppDocumentsDirectory() async {
-  return null;
-}
