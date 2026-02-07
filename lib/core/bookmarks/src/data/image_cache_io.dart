@@ -63,13 +63,13 @@ class BookmarkImageCacheManager implements ImageCacheManager {
   }
 
   Future<Directory> _initializeCacheDirectory() async {
-    final appDir = await getAppDocumentsDirectory();
+    final basePath = await getAppStoragePath();
 
-    if (appDir == null) {
+    if (basePath.isEmpty) {
       throw Exception('Dir not found');
     }
 
-    final dirPath = join(appDir.path, 'bookmarks', 'images');
+    final dirPath = join(basePath, 'bookmarks', 'images');
     final dir = Directory(dirPath);
 
     if (!dir.existsSync()) {

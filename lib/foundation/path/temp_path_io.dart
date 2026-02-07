@@ -37,7 +37,3 @@ String _getAppWindowsTemporaryDirectoryName() {
 
   return sanitized;
 }
-
-Future<Directory?> getAppDocumentsDirectory() {
-  return getApplicationDocumentsDirectory();
-}

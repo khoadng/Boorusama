@@ -4,22 +4,12 @@ import 'dart:io';
 // Flutter imports:
 import 'package:flutter/services.dart';
 
-// Package imports:
-import 'package:path_provider/path_provider.dart';
-
 // Project imports:
+import '../path/app_storage.dart';
 import '../platform.dart';
 
-Future<String> initDbDirectory() async {
-  if (isWeb()) {
-    return '';
-  }
-
-  final dir = isAndroid()
-      ? await getApplicationDocumentsDirectory()
-      : await getApplicationSupportDirectory();
-
-  return dir.path;
+Future<String> initDbDirectory() {
+  return getAppStoragePath();
 }
 
 Future<void> initCert() async {
