@@ -21,6 +21,13 @@ class GelbooruV1Repository extends BooruRepositoryDefault {
   final Ref ref;
 
   @override
+  Map<String, String> extraHttpHeaders(BooruConfigAuth config) {
+    return {
+      'Referer': config.url,
+    };
+  }
+
+  @override
   PostRepository<Post> post(BooruConfigSearch config) {
     return ref.read(gelbooruV1PostRepoProvider(config));
   }
@@ -43,6 +50,8 @@ class GelbooruV1Repository extends BooruRepositoryDefault {
   @override
   BooruSiteValidator? siteValidator(BooruConfigAuth config) {
     final dio = ref.watch(defaultDioProvider(config));
+
+    dio.options.headers['Referer'] = config.url;
 
     return () => GelbooruV1Client(
       baseUrl: config.url,

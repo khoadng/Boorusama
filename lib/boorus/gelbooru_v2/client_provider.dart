@@ -49,7 +49,7 @@ final gelbooruV2DioProvider = Provider.family<Dio, BooruConfigAuth>((
   final gelbooruV2 = ref.watch(gelbooruV2Provider);
   final capabilities = gelbooruV2.getCapabilitiesForSite(config.url);
 
-  return newDio(
+  final dio = newDio(
     options: DioOptions(
       ddosProtectionHandler: ddosProtectionHandler,
       userAgent: ref.watch(defaultUserAgentProvider),
@@ -68,4 +68,8 @@ final gelbooruV2DioProvider = Provider.family<Dio, BooruConfigAuth>((
       ref.watch(defaultSlidingWindowRateLimitConfigInterceptorProvider),
     ],
   );
+
+  dio.options.headers['Referer'] = config.url;
+
+  return dio;
 });
