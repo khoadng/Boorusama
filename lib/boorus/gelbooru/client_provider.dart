@@ -31,7 +31,7 @@ final gelbooruDioProvider = Provider.family<Dio, BooruConfigAuth>((
   final ddosProtectionHandler = ref.watch(httpDdosProtectionBypassProvider);
   final loggerService = ref.watch(loggerProvider);
 
-  return newDio(
+  final dio = newDio(
     options: DioOptions(
       ddosProtectionHandler: ddosProtectionHandler,
       userAgent: ref.watch(defaultUserAgentProvider),
@@ -51,4 +51,8 @@ final gelbooruDioProvider = Provider.family<Dio, BooruConfigAuth>((
       ref.watch(defaultSlidingWindowRateLimitConfigInterceptorProvider),
     ],
   );
+
+  dio.options.headers['Referer'] = config.url;
+
+  return dio;
 });

@@ -10,6 +10,8 @@ final gelbooruV1ClientProvider =
     Provider.family<GelbooruV1Client, BooruConfigAuth>((ref, config) {
       final dio = ref.watch(defaultDioProvider(config));
 
+      dio.options.headers['Referer'] = config.url;
+
       return GelbooruV1Client(
         baseUrl: config.url,
         dio: dio,
