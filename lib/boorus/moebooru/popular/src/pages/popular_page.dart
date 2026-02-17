@@ -63,13 +63,17 @@ class _MoebooruPopularPageState extends ConsumerState<MoebooruPopularPage> {
               controller: controller,
               sliverHeaders: [
                 SliverToBoxAdapter(
-                  child: TimeScaleToggleSwitch(
-                    onToggle: (category) {
-                      selectedPopular.value = _convertToMoebooruPopularType(
-                        category,
-                      );
-                      controller.refresh();
-                    },
+                  child: ValueListenableBuilder(
+                    valueListenable: selectedPopular,
+                    builder: (_, type, _) => TimeScaleToggleSwitch(
+                      initialValue: _convertToTimeScale(type),
+                      onToggle: (category) {
+                        selectedPopular.value = _convertToMoebooruPopularType(
+                          category,
+                        );
+                        controller.refresh();
+                      },
+                    ),
                   ),
                 ),
               ],

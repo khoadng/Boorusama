@@ -73,11 +73,15 @@ class _ExplorePopularPageState extends ConsumerState<ExplorePopularPage> {
                       SliverList(
                         delegate: SliverChildListDelegate(
                           [
-                            TimeScaleToggleSwitch(
-                              onToggle: (scale) {
-                                selectedTimescale.value = scale;
-                                controller.refresh();
-                              },
+                            ValueListenableBuilder(
+                              valueListenable: selectedTimescale,
+                              builder: (_, scale, _) => TimeScaleToggleSwitch(
+                                initialValue: scale,
+                                onToggle: (scale) {
+                                  selectedTimescale.value = scale;
+                                  controller.refresh();
+                                },
+                              ),
                             ),
                             const SizedBox(height: 20),
                           ],

@@ -11,9 +11,11 @@ import 'types.dart';
 class TimeScaleToggleSwitch extends StatelessWidget {
   const TimeScaleToggleSwitch({
     required this.onToggle,
+    this.initialValue = TimeScale.day,
     super.key,
   });
 
+  final TimeScale initialValue;
   final void Function(TimeScale category) onToggle;
 
   @override
@@ -24,7 +26,7 @@ class TimeScaleToggleSwitch extends StatelessWidget {
           for (final entry in TimeScale.values)
             entry: _timeScaleToString(context, entry),
         },
-        initialValue: TimeScale.day,
+        initialValue: initialValue,
         onChanged: (value) => onToggle(value),
       ),
     );
