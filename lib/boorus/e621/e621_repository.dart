@@ -113,6 +113,11 @@ class E621Repository extends BooruRepositoryDefault {
   }
 
   @override
+  DownloadFileUrlExtractor downloadFileUrlExtractor(BooruConfigAuth config) {
+    return const E621DownloadFileUrlExtractor();
+  }
+
+  @override
   DownloadSourceProvider? downloadSource(BooruConfigAuth config) {
     return const E621DownloadSource();
   }
