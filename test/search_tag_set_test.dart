@@ -114,6 +114,19 @@ void main() {
       final set = SearchTagSet();
       expect(set.list, isEmpty);
     });
+
+    test('originalTag preserves spaces after round-trip serialization', () {
+      final original = SearchTagSet()
+        ..addTag(const TagSearchItem.raw(tag: '{1girl ~ blue_hair}'));
+
+      final serialized = original.toString();
+      final restored = SearchTagSet.fromString(serialized);
+
+      expect(
+        restored.spaceDelimitedOriginalTags,
+        equals('{1girl ~ blue_hair}'),
+      );
+    });
   });
 
   group('queryAsList', () {

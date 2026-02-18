@@ -75,12 +75,25 @@ class PostRepositoryBuilder<T extends Post> implements PostRepository<T> {
             ),
           );
         })
-      : getPosts(
-          controller.rawTagsString,
-          page,
-          limit: limit,
-          options: options,
-        );
+      : TaskEither.Do(($) async {
+          var lim = limit;
+
+          lim ??= await getSettings().then((value) => value.postsPerPage);
+
+          final tags = controller.tags.map((e) => e.originalTag).toList();
+          final composedTags = tagComposer.compose(tags);
+
+          return $(
+            tryFetchRemoteData(
+              fetcher: () => fetch(
+                composedTags,
+                page,
+                limit: lim,
+                options: options,
+              ),
+            ),
+          );
+        });
 
   @override
   PostOrError<T> getPost(

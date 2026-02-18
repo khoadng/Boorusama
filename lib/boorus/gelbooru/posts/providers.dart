@@ -33,13 +33,6 @@ final gelbooruPostRepoProvider =
                 ? gelbooruPostDtoToGelbooruPost(post, null)
                 : null;
           },
-          fetchFromController: (controller, page, {limit, options}) {
-            final tags = controller.tags.map((e) => e.originalTag).toList();
-
-            final newTags = tagComposer.compose(tags);
-
-            return client.getPostResults(newTags, page, limit: limit);
-          },
           getSettings: () async => ref.read(imageListingSettingsProvider),
         );
       },
