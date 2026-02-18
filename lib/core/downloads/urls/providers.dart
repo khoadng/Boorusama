@@ -75,13 +75,9 @@ final class UrlInsidePostExtractor implements DownloadFileUrlExtractor {
     required Post post,
     required String quality,
   }) async {
-    if (post.isVideo) return DownloadUrlData.urlOnly(post.videoUrl);
-
-    final urls = [
-      post.originalImageUrl,
-      post.sampleImageUrl,
-      post.thumbnailImageUrl,
-    ];
+    final urls = post.isVideo
+        ? [post.originalImageUrl, post.videoUrl, post.thumbnailImageUrl]
+        : [post.originalImageUrl, post.sampleImageUrl, post.thumbnailImageUrl];
 
     final url = switch (quality) {
       'original' => urls.firstWhereOrNull((e) => e.isNotEmpty),

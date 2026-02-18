@@ -8,6 +8,7 @@ import 'package:i18n/i18n.dart';
 // Project imports:
 import '../../../core/configs/config/types.dart';
 import '../../../core/downloads/filename/types.dart';
+import '../../../core/downloads/urls/providers.dart';
 import '../../../core/downloads/urls/types.dart';
 import '../../../core/posts/post/types.dart';
 import '../posts/types.dart';
@@ -84,6 +85,40 @@ const kE621PostSamples = [
     'index': '1',
   },
 ];
+
+final class E621DownloadFileUrlExtractor implements DownloadFileUrlExtractor {
+  const E621DownloadFileUrlExtractor();
+
+  @override
+  Future<DownloadUrlData?> getDownloadFileUrl({
+    required Post post,
+    required String quality,
+  }) async {
+    if (post case final E621Post p
+        when p.isVideo && p.videoVariants.isNotEmpty) {
+      final url = switch (quality) {
+        'original' =>
+          p.videoVariants[E621VideoVariantType.original]?.url ??
+              p.originalImageUrl,
+        'sample' =>
+          p.videoVariants[E621VideoVariantType.v720p]?.url ??
+              p.videoVariants[E621VideoVariantType.v480p]?.url ??
+              p.videoUrl,
+        'preview' => p.thumbnailImageUrl,
+        _ =>
+          p.videoVariants[E621VideoVariantType.original]?.url ??
+              p.originalImageUrl,
+      };
+
+      return url.isNotEmpty ? DownloadUrlData.urlOnly(url) : null;
+    }
+
+    return const UrlInsidePostExtractor().getDownloadFileUrl(
+      post: post,
+      quality: quality,
+    );
+  }
+}
 
 final class E621DownloadSource implements DownloadSourceProvider {
   const E621DownloadSource();
