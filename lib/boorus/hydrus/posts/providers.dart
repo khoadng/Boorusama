@@ -67,15 +67,6 @@ final hydrusPostRepoProvider =
 
             return file != null ? postDtoToPost(file, null) : null;
           },
-          fetchFromController: (controller, page, {limit, options}) {
-            final tags = controller.tags.map((e) => e.originalTag).toList();
-
-            return getPosts(
-              tagComposer.compose(tags),
-              page,
-              limit: limit,
-            );
-          },
           fetch: getPosts,
         );
       },

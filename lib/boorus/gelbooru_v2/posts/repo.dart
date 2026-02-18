@@ -52,20 +52,6 @@ class GelbooruV2PostRepository extends PostRepositoryBuilder<GelbooruV2Post> {
                  )
                : null;
          },
-         fetchFromController: (controller, page, {limit, options}) {
-           final tags = controller.tags.map((e) => e.originalTag).toList();
-
-           final newTags = tagComposer.compose(tags);
-
-           return _getPostResults(
-             newTags,
-             page,
-             limit: limit,
-             getPosts: fetcher,
-             imageUrlResolver: imageUrlResolver,
-             options: options,
-           );
-         },
        );
 
   static Future<PostResult<GelbooruV2Post>> _getPostResults(
