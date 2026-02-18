@@ -47,7 +47,15 @@ class _BackgroundDownloaderScopeState
             if (isAndroid()) {
               await MediaScanner.loadMedia(path: path);
             } else if (isIOS()) {
-              unawaited(Gal.putImage(path));
+              try {
+                final hasAccess = await Gal.hasAccess(toAlbum: true);
+                if (!hasAccess) {
+                  await Gal.requestAccess(toAlbum: true);
+                }
+                await Gal.putImage(path);
+              } on GalException catch (e) {
+                debugPrint('Failed to save image to gallery: ${e.type}');
+              }
             }
           },
         );
