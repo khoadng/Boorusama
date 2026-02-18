@@ -1,10 +1,15 @@
+// Dart imports:
 import 'dart:async';
 
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:video_player/video_player.dart';
 
+// Project imports:
 import 'package:boorusama/core/videos/engines/src/engines/video_player_booru_player.dart';
 import 'package:boorusama/core/videos/engines/types.dart';
 import 'package:boorusama/core/videos/lock/types.dart';

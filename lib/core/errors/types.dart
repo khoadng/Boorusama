@@ -16,17 +16,17 @@ abstract interface class AppErrorTranslator {
 
 class DefaultAppErrorTranslator implements AppErrorTranslator {
   @override
-  String translateAppError(BuildContext context, AppError error) =>
-      switch (error.type) {
-        AppErrorType.cannotReachServer =>
-          '${context.t.search.errors.cannot_reach_server}\n\n${error.message}',
-        AppErrorType.handshakeFailed =>
-          context.t.search.errors.handshake_failed,
-        AppErrorType.certificateError =>
-          context.t.search.errors.certificate_error,
-        AppErrorType.loadDataFromServerFailed =>
-          context.t.search.errors.failed_to_load_data,
-      };
+  String translateAppError(
+    BuildContext context,
+    AppError error,
+  ) => switch (error.type) {
+    AppErrorType.cannotReachServer =>
+      '${context.t.search.errors.cannot_reach_server}\n\n${error.message}',
+    AppErrorType.handshakeFailed => context.t.search.errors.handshake_failed,
+    AppErrorType.certificateError => context.t.search.errors.certificate_error,
+    AppErrorType.loadDataFromServerFailed =>
+      context.t.search.errors.failed_to_load_data,
+  };
 
   @override
   String translateServerError(BuildContext context, ServerError error) =>

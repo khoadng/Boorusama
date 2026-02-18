@@ -30,7 +30,9 @@ class DownloadNotifications {
       ),
     );
 
-    await flutterLocalNotificationsPlugin.initialize(settings: initializationSettings);
+    await flutterLocalNotificationsPlugin.initialize(
+      settings: initializationSettings,
+    );
 
     final notif = DownloadNotifications._(flutterLocalNotificationsPlugin);
 

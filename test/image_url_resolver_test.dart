@@ -1,5 +1,8 @@
-import 'package:boorusama/boorus/gelbooru/posts/types.dart';
+// Package imports:
 import 'package:flutter_test/flutter_test.dart';
+
+// Project imports:
+import 'package:boorusama/boorus/gelbooru/posts/types.dart';
 
 void main() {
   const resolver = GelbooruImageUrlResolver();

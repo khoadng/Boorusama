@@ -56,7 +56,12 @@ class SkipCertificateVerificationTile extends ConsumerWidget {
         if (skipCertVerification)
           WarningContainer(
             margin: const EdgeInsets.only(top: 8),
-            title: context.t.booru.network.http.skip_cert_verification_warning_title,
+            title: context
+                .t
+                .booru
+                .network
+                .http
+                .skip_cert_verification_warning_title,
             contentBuilder: (context) => Text(
               context.t.booru.network.http.skip_cert_verification_warning,
             ),
