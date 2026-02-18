@@ -42,7 +42,7 @@ class BulkDownloadNotifications {
     final streamController = StreamController<String>.broadcast();
 
     await flutterLocalNotificationsPlugin.initialize(
-      initializationSettings,
+      settings: initializationSettings,
       onDidReceiveNotificationResponse: (res) {
         streamController.add(res.id.toString());
       },
@@ -94,10 +94,10 @@ class BulkDownloadNotifications {
     );
 
     await _flutterLocalNotificationsPlugin?.show(
-      notificationId,
-      title,
-      body,
-      platformChannelSpecifics,
+      id: notificationId,
+      title: title,
+      body: body,
+      notificationDetails: platformChannelSpecifics,
       payload: payload,
     );
   }
@@ -140,10 +140,10 @@ class BulkDownloadNotifications {
     );
 
     await _flutterLocalNotificationsPlugin?.show(
-      id,
-      title,
-      body,
-      platformChannelSpecifics,
+      id: id,
+      title: title,
+      body: body,
+      notificationDetails: platformChannelSpecifics,
       payload: payload,
     );
 
@@ -187,10 +187,10 @@ class BulkDownloadNotifications {
     );
 
     await _flutterLocalNotificationsPlugin?.show(
-      sessionId.hashCode,
-      title,
-      body,
-      platformChannelSpecifics,
+      id: sessionId.hashCode,
+      title: title,
+      body: body,
+      notificationDetails: platformChannelSpecifics,
     );
   }
 
@@ -207,7 +207,7 @@ class BulkDownloadNotifications {
     }
 
     try {
-      await _flutterLocalNotificationsPlugin?.cancel(id);
+      await _flutterLocalNotificationsPlugin?.cancel(id: id);
       _activeNotifications
         ..remove(sessionId)
         ..remove(id.toString());
