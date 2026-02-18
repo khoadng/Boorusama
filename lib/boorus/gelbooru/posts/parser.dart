@@ -34,7 +34,7 @@ GelbooruPost gelbooruPostDtoToGelbooruPost(
     md5: dto.md5 ?? '',
     hasComment: dto.hasComments ?? false,
     hasParentOrChildren:
-        dto.hasChildren ?? false || (dto.parentId != null && dto.parentId != 0),
+        dto.hasChildren ?? (dto.parentId != null && dto.parentId != 0),
     fileSize: 0,
     score: dto.score ?? 0,
     createdAt: dto.createdAt != null ? parseRFC822String(dto.createdAt!) : null,

@@ -386,7 +386,7 @@ class _ExtendedImageState extends State<ExtendedImage>
   void didChangeDependencies() {
     _resolveImage();
 
-    if (TickerMode.of(context)) {
+    if (TickerMode.valuesOf(context).enabled) {
       _listenToStream();
     } else {
       _stopListeningToStream(keepStreamAlive: true);

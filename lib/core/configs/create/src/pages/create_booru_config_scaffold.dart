@@ -69,7 +69,7 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
     final editId = ref.watch(editBooruConfigIdProvider);
 
     final tabMap = {
-      if (authTab != null) CreateBooruConfigCategory.auth(context): authTab!,
+      CreateBooruConfigCategory.auth(context): ?authTab,
       CreateBooruConfigCategory.listing(context):
           listingTab ?? const DefaultBooruConfigListingView(),
       if (ref.watch(showPremiumFeatsProvider))
@@ -166,7 +166,7 @@ class CreateBooruConfigScaffold extends ConsumerWidget {
                           ],
                         ),
                       ),
-                    if (footer != null) footer!,
+                    ?footer,
                   ],
                 ),
               ),
