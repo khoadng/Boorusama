@@ -157,6 +157,7 @@ class BooruSelectorItem extends StatelessWidget {
                     config.auth,
                     width: logoSize,
                     height: logoSize,
+                    customIconUrl: config.profileIcon?.url,
                   ),
                 ),
               ),

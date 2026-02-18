@@ -22,11 +22,13 @@ import '../../../search/types.dart';
 import 'always_included_tags.dart';
 import 'booru_config_repository.dart';
 import 'granular_rating_filter.dart';
+import 'profile_icon_configs.dart';
 import 'types.dart';
 
 export 'always_included_tags.dart';
 export 'booru_login_details.dart';
 export 'booru_login_details_impl.dart';
+export 'profile_icon_configs.dart';
 export 'types.dart';
 
 class BooruConfig extends Equatable {
@@ -60,6 +62,7 @@ class BooruConfig extends Equatable {
     required this.viewerNotesFetchBehavior,
     required this.tooltipDisplayMode,
     this.networkSettings,
+    this.profileIcon,
   });
 
   factory BooruConfig.fromJson(Map<String, dynamic> json) {
@@ -124,6 +127,7 @@ class BooruConfig extends Equatable {
         json['tooltipDisplayMode'],
       ),
       networkSettings: NetworkSettings.tryParse(json['network']),
+      profileIcon: ProfileIconConfigs.tryParse(json['profileIcon']),
     );
   }
 
@@ -223,6 +227,7 @@ class BooruConfig extends Equatable {
   final BooruConfigViewerNotesFetchBehavior? viewerNotesFetchBehavior;
   final TooltipDisplayMode? tooltipDisplayMode;
   final NetworkSettings? networkSettings;
+  final ProfileIconConfigs? profileIcon;
 
   BooruConfig copyWith({
     String? url,
@@ -303,6 +308,7 @@ class BooruConfig extends Equatable {
     viewerNotesFetchBehavior,
     tooltipDisplayMode,
     networkSettings,
+    profileIcon,
   ];
 
   @override
@@ -342,6 +348,7 @@ class BooruConfig extends Equatable {
       'viewerNotesFetchBehavior': viewerNotesFetchBehavior?.index,
       'tooltipDisplayMode': ?tooltipDisplayMode?.toData(),
       'network': networkSettings?.toJson(),
+      'profileIcon': profileIcon?.toJson(),
     };
   }
 }

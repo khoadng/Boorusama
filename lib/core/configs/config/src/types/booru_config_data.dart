@@ -44,6 +44,7 @@ class BooruConfigData extends Equatable {
     required this.viewerNotesFetchBehavior,
     required this.tooltipDisplayMode,
     required this.networkSettings,
+    required this.profileIcon,
   });
 
   factory BooruConfigData.anonymous({
@@ -85,6 +86,7 @@ class BooruConfigData extends Equatable {
     viewerNotesFetchBehavior: null,
     tooltipDisplayMode: null,
     networkSettings: null,
+    profileIcon: null,
   );
 
   static BooruConfigData? fromJson(Map<String, dynamic> json) {
@@ -124,6 +126,7 @@ class BooruConfigData extends Equatable {
         viewerNotesFetchBehavior: json['viewerNotesFetchBehavior'] as int?,
         tooltipDisplayMode: json['tooltipDisplayMode'] as int?,
         networkSettings: json['network'] as String?,
+        profileIcon: json['profileIcon'] as String?,
       );
     } catch (e) {
       return null;
@@ -160,6 +163,7 @@ class BooruConfigData extends Equatable {
       'viewerNotesFetchBehavior': viewerNotesFetchBehavior,
       'tooltipDisplayMode': tooltipDisplayMode,
       'network': ?networkSettings,
+      'profileIcon': ?profileIcon,
     };
   }
 
@@ -191,6 +195,7 @@ class BooruConfigData extends Equatable {
   final int? viewerNotesFetchBehavior;
   final int? tooltipDisplayMode;
   final String? networkSettings;
+  final String? profileIcon;
 
   @override
   List<Object?> get props => [
@@ -222,6 +227,7 @@ class BooruConfigData extends Equatable {
     viewerNotesFetchBehavior,
     tooltipDisplayMode,
     networkSettings,
+    profileIcon,
   ];
 }
 
@@ -265,6 +271,10 @@ extension BooruConfigDataX on BooruConfigData {
   NetworkSettings? get networkSettingsTyped {
     return NetworkSettings.tryParse(networkSettings);
   }
+
+  ProfileIconConfigs? get profileIconTyped {
+    return ProfileIconConfigs.tryParse(profileIcon);
+  }
 }
 
 extension BooruConfigDataCopyWith on BooruConfigData {
@@ -297,6 +307,7 @@ extension BooruConfigDataCopyWith on BooruConfigData {
     BooruConfigViewerNotesFetchBehavior? Function()? viewerNotesFetchBehavior,
     TooltipDisplayMode? Function()? tooltipDisplayMode,
     NetworkSettings? Function()? networkSettings,
+    ProfileIconConfigs? Function()? profileIcon,
   }) {
     return BooruConfigData(
       booruId: booruId ?? this.booruId,
@@ -362,6 +373,9 @@ extension BooruConfigDataCopyWith on BooruConfigData {
       networkSettings: networkSettings != null
           ? networkSettings()?.toJsonString()
           : this.networkSettings,
+      profileIcon: profileIcon != null
+          ? profileIcon()?.toJsonString()
+          : this.profileIcon,
     );
   }
 }

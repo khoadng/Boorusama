@@ -218,4 +218,8 @@ class EditBooruConfigNotifier
   void updateNetworkSettings(
     NetworkSettings? networkSettings,
   ) => state = state.copyWith(networkSettings: () => networkSettings);
+
+  void updateProfileIcon(
+    ProfileIconConfigs? profileIcon,
+  ) => state = state.copyWith(profileIcon: () => profileIcon);
 }

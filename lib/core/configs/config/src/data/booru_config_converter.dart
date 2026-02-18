@@ -76,6 +76,9 @@ extension BooruConfigDataConverter on BooruConfigData? {
       networkSettings: NetworkSettings.tryParse(
         booruConfigData.networkSettings,
       ),
+      profileIcon: ProfileIconConfigs.tryParse(
+        booruConfigData.profileIcon,
+      ),
     );
   }
 }
@@ -111,6 +114,7 @@ extension BooruConfigConverter on BooruConfig {
       viewerNotesFetchBehavior: viewerNotesFetchBehavior?.index,
       tooltipDisplayMode: tooltipDisplayMode?.toData(),
       networkSettings: networkSettings?.toJsonString(),
+      profileIcon: profileIcon?.toJsonString(),
     );
   }
 }

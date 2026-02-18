@@ -13,6 +13,7 @@ import '../../../config/types.dart';
 import '../../../create/providers.dart';
 import '../widgets/appearance_config_card.dart';
 import '../widgets/home_screen_section.dart';
+import '../widgets/profile_icon_url_field.dart';
 import 'appearance_details_page.dart';
 import 'theme_configs_page.dart';
 
@@ -98,6 +99,8 @@ class BooruConfigLayoutView extends ConsumerWidget {
               ],
             ),
           ),
+          const Divider(),
+          const ProfileIconUrlField(),
           const Divider(),
           const HomeScreenSection(),
         ],

@@ -9,6 +9,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import '../../../../config_widgets/website_logo.dart';
 import '../../../../posts/sources/types.dart';
 import '../../../config/providers.dart';
+import '../../../config/types.dart';
 import '../../../create/routes.dart';
 
 class CurrentBooruTile extends ConsumerWidget {
@@ -44,11 +45,14 @@ class _Logo extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final config = ref.watchConfigAuth;
+    final config = ref.watchConfig;
 
     return Padding(
       padding: const EdgeInsets.all(8),
-      child: ConfigAwareWebsiteLogo.fromConfig(config),
+      child: ConfigAwareWebsiteLogo.fromConfig(
+        config.auth,
+        customIconUrl: config.profileIcon?.url,
+      ),
     );
   }
 }

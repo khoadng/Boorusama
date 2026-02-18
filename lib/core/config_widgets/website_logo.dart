@@ -19,6 +19,7 @@ class ConfigAwareWebsiteLogo extends ConsumerWidget {
     this.size = kFaviconSize,
     this.width,
     this.height,
+    this.customIconUrl,
   }) : _isFixedIcon = false;
 
   ConfigAwareWebsiteLogo.fromConfig(
@@ -26,6 +27,7 @@ class ConfigAwareWebsiteLogo extends ConsumerWidget {
     super.key,
     this.width,
     this.height,
+    this.customIconUrl,
   }) : url = _sourceFromType(config.booruType, config.url),
        size = kFaviconSize,
        _isFixedIcon = _isFixed(config.booruType);
@@ -36,6 +38,7 @@ class ConfigAwareWebsiteLogo extends ConsumerWidget {
     super.key,
     this.width,
     this.height,
+    this.customIconUrl,
   }) : url = _sourceFromType(booruType, url),
        size = kFaviconSize,
        _isFixedIcon = _isFixed(booruType);
@@ -50,9 +53,14 @@ class ConfigAwareWebsiteLogo extends ConsumerWidget {
   final double? width;
   final double? height;
   final bool _isFixedIcon;
+  final String? customIconUrl;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    if (customIconUrl case final iconUrl? when iconUrl.isNotEmpty) {
+      return _buildCustomIcon(ref, iconUrl);
+    }
+
     if (_isFixedIcon && url != null) {
       return _buildAssetImage(url!);
     }
@@ -64,6 +72,17 @@ class ConfigAwareWebsiteLogo extends ConsumerWidget {
             : _buildAssetImage(s.faviconUrl),
       ),
       () => _buildWebsiteLogo(ref, null),
+    );
+  }
+
+  Widget _buildCustomIcon(WidgetRef ref, String iconUrl) {
+    final dio = ref.watch(faviconDioProvider);
+
+    return WebsiteLogo(
+      url: iconUrl,
+      dio: dio,
+      size: width ?? height ?? size,
+      cacheManager: ref.watch(defaultImageCacheManagerProvider),
     );
   }
 
