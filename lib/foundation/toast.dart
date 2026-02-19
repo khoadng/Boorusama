@@ -54,6 +54,7 @@ void showSimpleSnackBar({
   final snackBarBehavior = behavior ?? SnackBarBehavior.floating;
   final snackbar = SnackBar(
     action: action,
+    persist: false,
     behavior: snackBarBehavior,
     duration: duration ?? const Duration(seconds: 4),
     elevation: 6,
