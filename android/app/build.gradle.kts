@@ -59,7 +59,7 @@ android {
    
     buildTypes {
         release {
-            signingConfig = if (hasValidKeystore) signingConfigs.getByName("release") else null
+            signingConfig = if (hasValidKeystore) signingConfigs.getByName("release") else signingConfigs.getByName("debug")
             ndk {
                 debugSymbolLevel = "SYMBOL_TABLE"
                 abiFilters.addAll(listOf("armeabi-v7a", "arm64-v8a", "x86_64"))
