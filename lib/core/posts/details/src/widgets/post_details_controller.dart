@@ -54,6 +54,13 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
     currentPage.value = page;
   }
 
+  void updateCurrentPost(int page) {
+    final post = posts.getOrNull(page);
+    if (post != null && currentPost.value != post) {
+      currentPost.value = post;
+    }
+  }
+
   void onPageSettled(int page) {
     if (page == currentSettledPage.value) return;
 
@@ -62,7 +69,6 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
     final post = posts.getOrNull(page);
 
     if (post != null) {
-      currentPost.value = post;
       _playback.resetProgress();
 
       WidgetsBinding.instance.addPostFrameCallback((_) {

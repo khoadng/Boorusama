@@ -174,8 +174,14 @@ class _PostDetailPageScaffoldState<T extends Post>
     final precisePage = _controller.precisePage.value;
 
     if (precisePage != null) {
-      final page = precisePage.floor();
-      if ((page - precisePage).abs() == 0) {
+      final page = precisePage.round();
+      final distance = (page - precisePage).abs();
+
+      if (distance <= 0.25) {
+        widget.controller.updateCurrentPost(page);
+      }
+
+      if (distance == 0) {
         widget.controller.onPageSettled(page);
       }
     }
