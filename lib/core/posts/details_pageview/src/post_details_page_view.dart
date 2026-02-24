@@ -560,7 +560,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
           controller: _controller.pageController,
           physics: blockSwipe
               ? const NeverScrollableScrollPhysics()
-              : const DefaultPageViewScrollPhysics(),
+              : const _PostDetailsPagePhysics(),
           itemCount: widget.itemCount,
           itemBuilder: (context, index) => _buildItem(index, blockSwipe),
         );
@@ -763,12 +763,17 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
   }
 }
 
-class DefaultPageViewScrollPhysics extends ScrollPhysics {
-  const DefaultPageViewScrollPhysics({super.parent});
+// Disables deferred image loading during page transitions.
+// Flutter's ScrollAwareImageProvider defers image loading when scroll velocity
+// is high, which can cause images (especially GIFs) to silently never load
+// if the widget is disposed before the deferred retry fires.
+// See https://github.com/flutter/flutter/pull/48536
+class _PostDetailsPagePhysics extends ScrollPhysics {
+  const _PostDetailsPagePhysics({super.parent});
 
   @override
-  DefaultPageViewScrollPhysics applyTo(ScrollPhysics? ancestor) {
-    return DefaultPageViewScrollPhysics(parent: buildParent(ancestor));
+  _PostDetailsPagePhysics applyTo(ScrollPhysics? ancestor) {
+    return _PostDetailsPagePhysics(parent: buildParent(ancestor));
   }
 
   @override
@@ -777,6 +782,13 @@ class DefaultPageViewScrollPhysics extends ScrollPhysics {
     stiffness: 400,
     damping: 40,
   );
+
+  @override
+  bool recommendDeferredLoading(
+    double velocity,
+    ScrollMetrics metrics,
+    BuildContext context,
+  ) => false;
 }
 
 const _kSwipeDownScaleFactor = 0.2;
