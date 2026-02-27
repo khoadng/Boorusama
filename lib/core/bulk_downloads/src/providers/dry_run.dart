@@ -11,7 +11,7 @@ import '../../../../foundation/loggers.dart';
 import '../../../../foundation/utils/duration_utils.dart';
 import '../../../configs/config/providers.dart';
 import '../../../configs/config/types.dart';
-import '../../../ddos/handler/providers.dart';
+import '../../../http/client/providers.dart';
 import '../../../downloads/filename/providers.dart';
 import '../../../downloads/filename/types.dart';
 import '../../../downloads/urls/providers.dart';
@@ -69,7 +69,7 @@ class DryRunNotifier extends FamilyAsyncNotifier<DryRunState, String> {
           ref.read(downloadFileUrlExtractorProvider(config.auth));
       final headers =
           downloadConfigs?.headers ??
-          ref.read(cachedBypassDdosHeadersProvider(config.url));
+          ref.read(httpHeadersProvider(config.auth));
       final fileNameBuilder =
           downloadConfigs?.fileNameBuilder ??
           ref.read(downloadFilenameBuilderProvider(config.auth)) ??
