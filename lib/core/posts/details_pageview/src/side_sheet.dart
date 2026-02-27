@@ -6,7 +6,7 @@ import '../../../themes/theme/types.dart';
 import 'constants.dart';
 import 'post_details_page_view_controller.dart';
 
-class SideSheet extends StatefulWidget {
+class SideSheet extends StatelessWidget {
   const SideSheet({
     required this.controller,
     required this.sheetBuilder,
@@ -17,32 +17,6 @@ class SideSheet extends StatefulWidget {
   final PostDetailsPageViewController controller;
   final AnimationController? animationController;
   final Widget Function(BuildContext, ScrollController?) sheetBuilder;
-
-  @override
-  State<SideSheet> createState() => _SideSheetState();
-}
-
-class _SideSheetState extends State<SideSheet> {
-  final _animating = ValueNotifier(false);
-
-  @override
-  void initState() {
-    super.initState();
-
-    widget.animationController?.addStatusListener(_onAnimationStatusChanged);
-  }
-
-  @override
-  void dispose() {
-    _animating.dispose();
-    widget.animationController?.removeStatusListener(_onAnimationStatusChanged);
-
-    super.dispose();
-  }
-
-  void _onAnimationStatusChanged(AnimationStatus status) {
-    _animating.value = status.isAnimating;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,38 +35,45 @@ class _SideSheetState extends State<SideSheet> {
           ),
         ),
         child: ValueListenableBuilder(
-          valueListenable: widget.controller.cooldown,
+          valueListenable: controller.cooldown,
           builder: (_, cooldown, _) => cooldown
               ? const Center(
                   child: CircularProgressIndicator(),
                 )
-              : widget.sheetBuilder(context, null),
+              : sheetBuilder(context, null),
         ),
       ),
     );
 
+    final anim = animationController;
+
+    if (anim != null) {
+      return AnimatedBuilder(
+        animation: anim,
+        builder: (_, _) {
+          // Show content whenever the panel is visually present (value > 0).
+          // This avoids a flash between animation completing and state updating.
+          if (anim.value > 0) return child;
+
+          return ValueListenableBuilder(
+            valueListenable: controller.sheetState,
+            builder: (_, state, _) => switch (state) {
+              SheetState.expanded => child,
+              SheetState.collapsed => const SizedBox.shrink(),
+              SheetState.hidden => Offstage(child: child),
+            },
+          );
+        },
+      );
+    }
+
     return ValueListenableBuilder(
-      valueListenable: _animating,
-      builder: (_, animating, _) => animating
-          ? ValueListenableBuilder(
-              valueListenable: widget.controller.sheetState,
-              builder: (_, state, _) => switch (state) {
-                // collapsed -> expanded, don't show the side sheet to prevent building it while animating
-                SheetState.collapsed => const SizedBox.shrink(),
-                _ => child,
-              },
-              child: child,
-            )
-          : ValueListenableBuilder(
-              valueListenable: widget.controller.sheetState,
-              builder: (_, state, _) => switch (state) {
-                SheetState.expanded => child,
-                SheetState.collapsed => const SizedBox.shrink(),
-                SheetState.hidden => Offstage(
-                  child: child,
-                ),
-              },
-            ),
+      valueListenable: controller.sheetState,
+      builder: (_, state, _) => switch (state) {
+        SheetState.expanded => child,
+        SheetState.collapsed => const SizedBox.shrink(),
+        SheetState.hidden => Offstage(child: child),
+      },
     );
   }
 }
