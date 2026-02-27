@@ -77,6 +77,8 @@ class CreateDownloadOptionsSheet extends ConsumerWidget {
     final validOptions = options.valid(androidSdkInt: androidSdkInt);
     final navigator = Navigator.of(context);
 
+    final startedMessage = context.t.download.notification.started;
+
     return CreateDownloadOptionsRawSheet(
       initial: initial,
       actions: Row(
@@ -134,7 +136,7 @@ class CreateDownloadOptionsSheet extends ConsumerWidget {
                             if (navigatorContext != null) {
                               showSnackBar(
                                 navigatorContext,
-                                context.t.download.notification.started,
+                                startedMessage,
                               );
                             }
                           },
