@@ -21,7 +21,6 @@ import '../../../../../core/settings/providers.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../../../../foundation/clipboard.dart';
 import '../../../../../foundation/url_launcher.dart';
-import '../../../configs/providers.dart';
 import '../../post/types.dart';
 import 'danbooru_post_preview.dart';
 
@@ -72,9 +71,6 @@ class DefaultDanbooruImageGridItem extends StatelessWidget {
                     final item = Consumer(
                       builder: (_, ref, _) {
                         final config = ref.watchConfigAuth;
-                        final loginDetails = ref.watch(
-                          danbooruLoginDetailsProvider(config),
-                        );
 
                         final gridThumbnailUrlBuilder = ref.watch(
                           gridThumbnailUrlGeneratorProvider(config),
@@ -94,9 +90,7 @@ class DefaultDanbooruImageGridItem extends StatelessWidget {
                           multiSelectEnabled: multiSelect,
                           quickActionButton:
                               quickActionButton ??
-                              (!post.isBanned &&
-                                      !multiSelect &&
-                                      loginDetails.hasLogin()
+                              (!post.isBanned && !multiSelect
                                   ? DefaultImagePreviewQuickActionButton(
                                       post: post,
                                     )
