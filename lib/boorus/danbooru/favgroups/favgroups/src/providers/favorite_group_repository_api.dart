@@ -64,18 +64,6 @@ class FavoriteGroupRepositoryApi implements FavoriteGroupRepository {
       .catchError((e) => false);
 
   @override
-  Future<bool> removeItemsFromFavoriteGroup({
-    required int id,
-    required List<int> itemIds,
-  }) => client
-      .patchFavoriteGroups(
-        groupId: id,
-        postIds: itemIds,
-      )
-      .then((value) => true)
-      .catchError((e) => false);
-
-  @override
   Future<bool> editFavoriteGroup({
     required int id,
     String? name,

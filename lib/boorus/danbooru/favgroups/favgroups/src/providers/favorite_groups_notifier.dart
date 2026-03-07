@@ -186,28 +186,6 @@ class FavoriteGroupsNotifier
       onFailure?.call('Failed to add posts to favgroup'.hc);
     }
   }
-
-  Future<void> removeFromGroup({
-    required DanbooruFavoriteGroup group,
-    required List<int> postIds,
-    void Function(String message, bool translatable)? onFailure,
-    void Function(DanbooruFavoriteGroup group)? onSuccess,
-  }) async {
-    final items = [...group.postIds]
-      ..removeWhere((element) => postIds.contains(element));
-
-    final success = await repo.removeItemsFromFavoriteGroup(
-      id: group.id,
-      itemIds: items,
-    );
-
-    if (success) {
-      onSuccess?.call(group.copyWith(postIds: items));
-      unawaited(refresh());
-    } else {
-      onFailure?.call('Failed to remove posts to favgroup', false);
-    }
-  }
 }
 
 extension FavoriteGroupsNotifierX on FavoriteGroupsNotifier {

@@ -28,9 +28,4 @@ abstract class FavoriteGroupRepository {
     required int id,
     required List<int> itemIds,
   });
-
-  Future<bool> removeItemsFromFavoriteGroup({
-    required int id,
-    required List<int> itemIds,
-  });
 }
