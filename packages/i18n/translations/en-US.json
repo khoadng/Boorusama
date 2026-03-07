@@ -748,7 +748,17 @@
     "group_item_counter": {
       "one": "$n post",
       "other": "$n posts"
-    }
+    },
+    "confirm_edit_title": "Review changes",
+    "confirm_edit_adding": {
+      "one": "$n new post will be added",
+      "other": "$n new posts will be added"
+    },
+    "confirm_edit_removing": {
+      "one": "$n post will be removed",
+      "other": "$n posts will be removed"
+    },
+    "invalid_post_ids": "Contains invalid IDs: {0}"
   },
   "favorite_tags": {
     "favorites": "Favorites",

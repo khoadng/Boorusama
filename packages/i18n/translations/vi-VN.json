@@ -747,7 +747,17 @@
     "group_item_counter": {
       "one": "$n ảnh",
       "other": "$n ảnh"
-    }
+    },
+    "confirm_edit_title": "Xác nhận thay đổi",
+    "confirm_edit_adding": {
+      "one": "Thêm $n ảnh",
+      "other": "Thêm $n ảnh"
+    },
+    "confirm_edit_removing": {
+      "one": "Xoá $n ảnh",
+      "other": "Xoá $n ảnh"
+    },
+    "invalid_post_ids": "ID không hợp lệ: {0}"
   },
   "favorite_tags": {
     "favorites": "Yêu thích",

@@ -67,9 +67,9 @@ class FavoriteGroupsNotifier
 
   Future<void> create({
     required BuildContext context,
-    required String initialIds,
     required String name,
     required bool isPrivate,
+    List<int> initialPostIds = const [],
     void Function(String message)? onFailure,
   }) async {
     final t = context.t;
@@ -85,14 +85,9 @@ class FavoriteGroupsNotifier
       return;
     }
 
-    final idString = initialIds.split(' ');
-    final ids = idString.map((e) => int.tryParse(e)).toList();
-
-    final validIds = ids.nonNulls.toList();
-
     final success = await repo.createFavoriteGroup(
       name: name,
-      initialItems: validIds,
+      initialItems: initialPostIds,
       isPrivate: isPrivate,
     );
 
@@ -118,31 +113,33 @@ class FavoriteGroupsNotifier
 
   Future<bool> edit({
     required DanbooruFavoriteGroup group,
-    String? initialIds,
+    List<int>? postIds,
     String? name,
     bool? isPrivate,
     void Function(String message)? onFailure,
   }) async {
-    final idString = initialIds?.split(' ') ?? [];
-    final ids = idString
-        .map(
-          (e) => int.tryParse(e),
-        )
-        .toList();
-
-    final validIds = ids.nonNulls.toList();
-    final success = await repo.editFavoriteGroup(
-      id: group.id,
-      name: name ?? group.name,
-      itemIds: initialIds != null ? validIds : null,
-      isPrivate: isPrivate ?? !group.isPublic,
-    );
-
-    if (success) {
-      unawaited(refresh());
-      return true;
-    } else {
+    if (postIds != null && postIds.isEmpty && group.postIds.isNotEmpty) {
       onFailure?.call('Fail to edit favorite group'.hc);
+      return false;
+    }
+
+    try {
+      final success = await repo.editFavoriteGroup(
+        id: group.id,
+        name: name ?? group.name,
+        itemIds: postIds,
+        isPrivate: isPrivate ?? !group.isPublic,
+      );
+
+      if (success) {
+        unawaited(refresh());
+        return true;
+      } else {
+        onFailure?.call('Fail to edit favorite group'.hc);
+        return false;
+      }
+    } on Exception catch (e) {
+      onFailure?.call(e.toString());
       return false;
     }
   }
@@ -200,7 +197,7 @@ extension FavoriteGroupsNotifierX on FavoriteGroupsNotifier {
 
     final success = await edit(
       group: group,
-      initialIds: updatedIds.join(' '),
+      postIds: updatedIds,
       onFailure: onFailure,
     );
 

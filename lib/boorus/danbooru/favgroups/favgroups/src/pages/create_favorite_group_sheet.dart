@@ -7,6 +7,7 @@ import 'package:i18n/i18n.dart';
 
 // Project imports:
 import '../../../../../../core/configs/config/providers.dart';
+import '../../../../../../core/configs/config/types.dart';
 import '../../../../../../core/widgets/widgets.dart';
 import '../../../../../../foundation/toast.dart';
 import '../providers/favorite_groups_notifier.dart';
@@ -52,6 +53,98 @@ class _EditFavoriteGroupDialogState
     super.dispose();
     textController.dispose();
     nameController.dispose();
+  }
+
+  void _confirmAndEdit({
+    required BuildContext context,
+    required BooruConfigSearch config,
+    required DanbooruFavoriteGroup group,
+    required String name,
+  }) {
+    final input = textController.text;
+    final parts = input.split(' ').where((e) => e.isNotEmpty);
+    final invalidParts = parts.where((e) => int.tryParse(e) == null).toList();
+
+    if (invalidParts.isNotEmpty) {
+      showErrorToast(
+        context,
+        context.t.favorite_groups.invalid_post_ids.replaceAll(
+          '{0}',
+          invalidParts.join(', '),
+        ),
+      );
+      return;
+    }
+
+    final newIds = _parsePostIds(input).toSet();
+    final oldIds = group.postIds.toSet();
+
+    final added = newIds.difference(oldIds);
+    final removed = oldIds.difference(newIds);
+
+    void doEdit() {
+      ref
+          .read(danbooruFavoriteGroupsProvider(config).notifier)
+          .edit(
+            group: group,
+            name: name,
+            isPrivate: isPrivate,
+            postIds: newIds.toList(),
+            onFailure: (message) => showErrorToast(context, message),
+          );
+    }
+
+    if (added.isEmpty && removed.isEmpty) {
+      Navigator.of(context).pop();
+      ref
+          .read(danbooruFavoriteGroupsProvider(config).notifier)
+          .edit(
+            group: group,
+            name: name,
+            isPrivate: isPrivate,
+            onFailure: (message) => showErrorToast(context, message),
+          );
+      return;
+    }
+
+    showDialog(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(dialogContext.t.favorite_groups.confirm_edit_title),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (added.isNotEmpty)
+              Text(
+                dialogContext.t.favorite_groups.confirm_edit_adding(
+                  n: added.length,
+                ),
+              ),
+            if (removed.isNotEmpty)
+              Text(
+                dialogContext.t.favorite_groups.confirm_edit_removing(
+                  n: removed.length,
+                ),
+              ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: Text(dialogContext.t.generic.action.cancel),
+          ),
+          FilledButton(
+            onPressed: () {
+              Navigator.of(dialogContext).pop();
+              Navigator.of(context).pop();
+              doEdit();
+            },
+            child: Text(dialogContext.t.generic.action.ok),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -150,8 +243,8 @@ class _EditFavoriteGroupDialogState
                   builder: (context, value, child) => FilledButton(
                     onPressed: nameController.text.isNotEmpty
                         ? () {
-                            Navigator.of(context).pop();
                             if (widget.initialData == null) {
+                              Navigator.of(context).pop();
                               ref
                                   .read(
                                     danbooruFavoriteGroupsProvider(
@@ -160,7 +253,9 @@ class _EditFavoriteGroupDialogState
                                   )
                                   .create(
                                     context: context,
-                                    initialIds: textController.text,
+                                    initialPostIds: _parsePostIds(
+                                      textController.text,
+                                    ),
                                     name: value.text,
                                     isPrivate: isPrivate,
                                     onFailure: (message) => showErrorToast(
@@ -169,21 +264,12 @@ class _EditFavoriteGroupDialogState
                                     ),
                                   );
                             } else {
-                              ref
-                                  .read(
-                                    danbooruFavoriteGroupsProvider(
-                                      config,
-                                    ).notifier,
-                                  )
-                                  .edit(
-                                    group: widget.initialData!,
-                                    name: value.text,
-                                    isPrivate: isPrivate,
-                                    initialIds: textController.text,
-                                    onFailure: (message) {
-                                      showErrorToast(context, message);
-                                    },
-                                  );
+                              _confirmAndEdit(
+                                context: context,
+                                config: config,
+                                group: widget.initialData!,
+                                name: value.text,
+                              );
                             }
                           }
                         : null,
@@ -198,3 +284,6 @@ class _EditFavoriteGroupDialogState
     );
   }
 }
+
+List<int> _parsePostIds(String input) =>
+    input.split(' ').map((e) => int.tryParse(e)).nonNulls.toList();
