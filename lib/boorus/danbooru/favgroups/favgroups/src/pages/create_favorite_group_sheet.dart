@@ -36,6 +36,7 @@ class _EditFavoriteGroupDialogState
   final textController = TextEditingController();
   final nameController = TextEditingController();
   var isPrivate = false;
+  var _loading = false;
 
   @override
   void initState() {
@@ -53,6 +54,35 @@ class _EditFavoriteGroupDialogState
     super.dispose();
     textController.dispose();
     nameController.dispose();
+  }
+
+  Future<void> _doEdit({
+    required BooruConfigSearch config,
+    required DanbooruFavoriteGroup group,
+    required String name,
+    List<int>? postIds,
+  }) async {
+    setState(() => _loading = true);
+
+    final success = await ref
+        .read(danbooruFavoriteGroupsProvider(config).notifier)
+        .edit(
+          group: group,
+          name: name,
+          isPrivate: isPrivate,
+          postIds: postIds,
+          onFailure: (message) {
+            if (mounted) showErrorToast(context, message);
+          },
+        );
+
+    if (!mounted) return;
+
+    if (success) {
+      Navigator.of(context).pop();
+    } else {
+      setState(() => _loading = false);
+    }
   }
 
   void _confirmAndEdit({
@@ -82,28 +112,8 @@ class _EditFavoriteGroupDialogState
     final added = newIds.difference(oldIds);
     final removed = oldIds.difference(newIds);
 
-    void doEdit() {
-      ref
-          .read(danbooruFavoriteGroupsProvider(config).notifier)
-          .edit(
-            group: group,
-            name: name,
-            isPrivate: isPrivate,
-            postIds: newIds.toList(),
-            onFailure: (message) => showErrorToast(context, message),
-          );
-    }
-
     if (added.isEmpty && removed.isEmpty) {
-      Navigator.of(context).pop();
-      ref
-          .read(danbooruFavoriteGroupsProvider(config).notifier)
-          .edit(
-            group: group,
-            name: name,
-            isPrivate: isPrivate,
-            onFailure: (message) => showErrorToast(context, message),
-          );
+      _doEdit(config: config, group: group, name: name);
       return;
     }
 
@@ -137,8 +147,12 @@ class _EditFavoriteGroupDialogState
           FilledButton(
             onPressed: () {
               Navigator.of(dialogContext).pop();
-              Navigator.of(context).pop();
-              doEdit();
+              _doEdit(
+                config: config,
+                group: group,
+                name: name,
+                postIds: newIds.toList(),
+              );
             },
             child: Text(dialogContext.t.generic.action.ok),
           ),
@@ -151,15 +165,8 @@ class _EditFavoriteGroupDialogState
   Widget build(BuildContext context) {
     final config = ref.watchConfigSearch;
 
-    return Container(
-      margin: const EdgeInsets.symmetric(
-        horizontal: 16,
-      ),
-      decoration: const BoxDecoration(
-        borderRadius: BorderRadius.all(
-          Radius.circular(8),
-        ),
-      ),
+    return _SheetFrame(
+      loading: _loading,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -234,14 +241,18 @@ class _EditFavoriteGroupDialogState
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(),
                   style: TextButton.styleFrom(
-                    foregroundColor: Theme.of(context).colorScheme.onSurface,
+                    foregroundColor: Theme.of(
+                      context,
+                    ).colorScheme.onSurface,
                   ),
-                  child: Text(context.t.favorite_groups.create_group_cancel),
+                  child: Text(
+                    context.t.favorite_groups.create_group_cancel,
+                  ),
                 ),
                 ValueListenableBuilder<TextEditingValue>(
                   valueListenable: nameController,
                   builder: (context, value, child) => FilledButton(
-                    onPressed: nameController.text.isNotEmpty
+                    onPressed: nameController.text.isNotEmpty && !_loading
                         ? () {
                             if (widget.initialData == null) {
                               Navigator.of(context).pop();
@@ -273,13 +284,50 @@ class _EditFavoriteGroupDialogState
                             }
                           }
                         : null,
-                    child: Text(context.t.favorite_groups.create_group_confirm),
+                    child: _loading
+                        ? const SizedBox(
+                            width: 16,
+                            height: 16,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                            ),
+                          )
+                        : Text(
+                            context.t.favorite_groups.create_group_confirm,
+                          ),
                   ),
                 ),
               ],
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _SheetFrame extends StatelessWidget {
+  const _SheetFrame({
+    required this.loading,
+    required this.child,
+  });
+
+  final bool loading;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return PopScope(
+      canPop: !loading,
+      child: AbsorbPointer(
+        absorbing: loading,
+        child: Container(
+          margin: const EdgeInsets.symmetric(horizontal: 16),
+          decoration: const BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+          ),
+          child: child,
+        ),
       ),
     );
   }
