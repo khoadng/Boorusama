@@ -35,7 +35,7 @@ final orderedConfigsProvider = FutureProvider.autoDispose<IList<BooruConfig>>((
   }
 });
 
-final firstMatchingConfigProvider =
+final firstMatchingConfigBySourceUrlProvider =
     Provider.family<BooruConfig?, (int, String)>(
       (ref, params) {
         final (id, url) = params;
@@ -59,6 +59,33 @@ final firstMatchingConfigProvider =
         });
 
         return config ?? idResult.firstOrNull;
+      },
+    );
+
+final firstMatchingConfigByBooruTypeProvider =
+    Provider.family<BooruConfig?, (int, String)>(
+      (ref, params) {
+        final (booruId, host) = params;
+        final configs = ref.watch(booruConfigProvider);
+        final idResult = configs
+            .where(
+              (config) =>
+                  config.auth.booruIdHint == booruId ||
+                  config.booruId == booruId,
+            )
+            .toList();
+
+        if (idResult.isEmpty) return null;
+
+        if (host.isNotEmpty) {
+          final match = idResult.firstWhereOrNull(
+            (config) => Uri.tryParse(config.auth.url)?.host == host,
+          );
+
+          if (match != null) return match;
+        }
+
+        return idResult.first;
       },
     );
 

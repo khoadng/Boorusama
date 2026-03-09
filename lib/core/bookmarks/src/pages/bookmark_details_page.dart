@@ -119,7 +119,7 @@ class _BookmarkDetailsPageState
           valueListenable: controller.currentPost,
           builder: (context, post, child) {
             final config = ref.watch(
-              firstMatchingConfigProvider((
+              firstMatchingConfigBySourceUrlProvider((
                 post.bookmark.booruId,
                 post.bookmark.sourceUrl,
               )),
@@ -137,7 +137,7 @@ class _BookmarkDetailsPageState
       itemBuilder: (context, index) {
         final post = posts[index];
         final config = ref.watch(
-          firstMatchingConfigProvider((
+          firstMatchingConfigBySourceUrlProvider((
             post.bookmark.booruId,
             post.bookmark.sourceUrl,
           )),
@@ -197,7 +197,7 @@ class BookmarkPostActionToolbar extends ConsumerWidget {
     final post = InheritedPost.of<BookmarkPost>(context);
     final controller = PostDetailsPageViewScope.of(context);
     final config = ref.watch(
-      firstMatchingConfigProvider((
+      firstMatchingConfigBySourceUrlProvider((
         post.bookmark.booruId,
         post.bookmark.sourceUrl,
       )),

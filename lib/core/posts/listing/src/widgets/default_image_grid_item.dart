@@ -33,6 +33,7 @@ class DefaultImageGridItem<T extends Post> extends StatelessWidget {
     this.leadingIcons,
     this.imageUrl,
     this.imageCacheManager,
+    this.imageConfig,
   });
 
   final int index;
@@ -44,6 +45,7 @@ class DefaultImageGridItem<T extends Post> extends StatelessWidget {
   final String? imageUrl;
   final ImageCacheManager? imageCacheManager;
   final BooruConfigAuth config;
+  final BooruConfigAuth? imageConfig;
 
   @override
   Widget build(BuildContext context) {
@@ -110,6 +112,7 @@ class DefaultImageGridItem<T extends Post> extends StatelessWidget {
                             post: post,
                             imageUrl: imgUrl,
                             imageCacheManager: imageCacheManager,
+                            config: imageConfig,
                           ),
                           leadingIcons: leadingIcons,
                         );
@@ -148,11 +151,13 @@ class _Image<T extends Post> extends ConsumerWidget {
     required this.imageUrl,
     super.key,
     this.imageCacheManager,
+    this.config,
   });
 
   final T post;
   final String imageUrl;
   final ImageCacheManager? imageCacheManager;
+  final BooruConfigAuth? config;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -164,7 +169,7 @@ class _Image<T extends Post> extends ConsumerWidget {
     );
 
     return BooruImage(
-      config: ref.watchConfigAuth,
+      config: config ?? ref.watchConfigAuth,
       aspectRatio: post.aspectRatio,
       imageUrl: imageUrl,
       borderRadius: BorderRadius.circular(

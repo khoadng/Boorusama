@@ -28,7 +28,7 @@ class _BookmarkTagTilesState extends ConsumerState<BookmarkTagTiles> {
     final post = InheritedPost.of<BookmarkPost>(context);
     final originalPost = post.toOriginalPost();
     final config = ref.watch(
-      firstMatchingConfigProvider((
+      firstMatchingConfigBySourceUrlProvider((
         post.bookmark.booruId,
         post.bookmark.sourceUrl,
       )),

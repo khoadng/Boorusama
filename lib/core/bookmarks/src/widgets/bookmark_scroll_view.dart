@@ -18,6 +18,7 @@ import '../../../../foundation/url_launcher.dart';
 import '../../../boorus/engine/providers.dart';
 import '../../../config_widgets/website_logo.dart';
 import '../../../configs/config/providers.dart';
+import '../../../configs/config/types.dart';
 import '../../../posts/listing/providers.dart';
 import '../../../posts/listing/widgets.dart';
 import '../../../posts/post/types.dart';
@@ -272,6 +273,14 @@ class _BookmarkScrollViewState extends ConsumerState<BookmarkScrollView> {
                 imageCacheManager: ref.watch(bookmarkImageCacheManagerProvider),
                 useHero: false,
                 config: auth,
+                imageConfig: ref
+                    .watch(
+                      firstMatchingConfigByBooruTypeProvider((
+                        post.bookmark.booruId,
+                        Uri.tryParse(post.bookmark.sourceUrl)?.host ?? '',
+                      )),
+                    )
+                    ?.auth,
                 leadingIcons: [
                   ClipRRect(
                     borderRadius: BorderRadius.circular(8),
