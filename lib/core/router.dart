@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../boorus/danbooru/router.dart';
+import '../boorus/eshuushuu/router.dart';
 import '../boorus/shimmie2/router.dart';
 import 'analytics/analytics_observer.dart';
 import 'router.dart';
@@ -28,6 +29,7 @@ final routerProvider = Provider<GoRouter>((ref) {
     routes: [
       Routes.home(ref),
       ...danbooruRoutes,
+      ...eshuushuuRoutes,
       ...shimmie2Routes,
     ],
   );

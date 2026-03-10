@@ -1284,5 +1284,18 @@
       "title": "Tiện ích",
       "failed_to_fetch": "Không thể tải danh sách tiện ích cho trang này"
     }
+  },
+  "eshuushuu": {
+    "personal_info": {
+      "title": "Thông tin cá nhân",
+      "gender": "Giới tính",
+      "location": "Vị trí",
+      "interests": "Sở thích",
+      "website": "Website"
+    },
+    "profile": {
+      "joined": "Tham gia",
+      "last_active": "Lần cuối"
+    }
   }
 }

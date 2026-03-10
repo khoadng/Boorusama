@@ -6,6 +6,7 @@ import 'types/auth_dto.dart';
 import 'types/autocomplete_dto.dart';
 import 'types/favorite_dto.dart';
 import 'types/post_dto.dart';
+import 'types/user_dto.dart';
 
 const _apiBase = '/api/v1';
 
@@ -21,17 +22,30 @@ class EShuushuuClient {
 
   String get baseUrl => _dio.options.baseUrl;
 
+  Future<UserDto?> getUser(int id) async {
+    final response = await _dio.get('$_apiBase/users/$id');
+
+    return switch (response.data) {
+      final Map<String, dynamic> json => UserDto.fromJson(json),
+      _ => null,
+    };
+  }
+
   Future<List<PostDto>> getPosts({
     List<int>? tagIds,
     int? favoritedByUserId,
+    int? userId,
     int? page,
+    int? perPage,
   }) async {
     final response = await _dio.get(
       '$_apiBase/images',
       queryParameters: {
         if (tagIds != null && tagIds.isNotEmpty) 'tags': tagIds.join('+'),
         'favorited_by_user_id': ?favoritedByUserId,
+        'user_id': ?userId,
         if (page != null && page > 1) 'page': page,
+        'per_page': ?perPage,
       },
     );
 

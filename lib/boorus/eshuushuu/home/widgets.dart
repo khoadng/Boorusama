@@ -11,7 +11,10 @@ import '../../../core/boorus/engine/providers.dart';
 import '../../../core/configs/config/providers.dart';
 import '../../../core/home/widgets.dart';
 import '../../../core/posts/favorites/routes.dart';
+import '../configs/extra_data.dart';
 import '../favorites/widgets.dart';
+import '../users/routes.dart';
+import '../users/widgets.dart';
 
 class EshuushuuHomePage extends ConsumerWidget {
   const EshuushuuHomePage({super.key});
@@ -23,10 +26,23 @@ class EshuushuuHomePage extends ConsumerWidget {
     final favoritePageBuilder = ref
         .watch(booruBuilderProvider(config))
         ?.favoritesPageBuilder;
+    final extraData = EshuushuuExtraData.fromPassHash(config.passHash);
+    final userId = extraData.userId;
+    final isLoggedIn = loginDetails.hasLogin() && userId != null;
 
     return HomePageScaffold(
       mobileMenu: [
-        if (favoritePageBuilder != null && loginDetails.hasLogin())
+        if (isLoggedIn)
+          SideMenuTile(
+            icon: const Icon(Symbols.account_box),
+            title: Text(context.t.profile.profile),
+            onTap: () => goToEshuushuuUserDetailsPage(
+              ref,
+              userId: userId,
+              username: config.login,
+            ),
+          ),
+        if (favoritePageBuilder != null && isLoggedIn)
           SideMenuTile(
             icon: const Icon(
               Symbols.favorite,
@@ -39,9 +55,17 @@ class EshuushuuHomePage extends ConsumerWidget {
           ),
       ],
       desktopMenuBuilder: (context, constraints) => [
-        if (favoritePageBuilder != null && loginDetails.hasLogin())
+        if (isLoggedIn)
           HomeNavigationTile(
             value: 1,
+            constraints: constraints,
+            selectedIcon: Symbols.account_box,
+            icon: Symbols.account_box,
+            title: context.t.profile.profile,
+          ),
+        if (favoritePageBuilder != null && isLoggedIn)
+          HomeNavigationTile(
+            value: 2,
             constraints: constraints,
             selectedIcon: Symbols.favorite,
             icon: Symbols.favorite,
@@ -49,7 +73,12 @@ class EshuushuuHomePage extends ConsumerWidget {
           ),
       ],
       desktopViews: [
-        if (favoritePageBuilder != null && loginDetails.hasLogin())
+        if (isLoggedIn)
+          EshuushuuUserDetailsPage(
+            userId: userId,
+            username: config.login,
+          ),
+        if (favoritePageBuilder != null && isLoggedIn)
           const EshuushuuFavoritesPage(),
       ],
     );

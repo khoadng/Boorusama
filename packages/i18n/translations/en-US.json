@@ -1288,5 +1288,18 @@
       "title": "Extensions",
       "failed_to_fetch": "Cannot fetch extension list for this instance"
     }
+  },
+  "eshuushuu": {
+    "personal_info": {
+      "title": "Personal Information",
+      "gender": "Gender",
+      "location": "Location",
+      "interests": "Interests",
+      "website": "Website"
+    },
+    "profile": {
+      "joined": "Joined",
+      "last_active": "Last active"
+    }
   }
 }
