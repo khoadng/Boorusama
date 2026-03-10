@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../core/boorus/defaults/types.dart';
+import '../../core/comments/types.dart';
 import '../../core/configs/config/types.dart';
 import '../../core/configs/create/create.dart';
 import '../../core/downloads/filename/types.dart';
@@ -13,6 +14,7 @@ import '../../core/posts/post/types.dart';
 import '../../core/tags/autocompletes/types.dart';
 import '../../core/tags/tag/types.dart';
 import 'client_provider.dart';
+import 'comments/providers.dart';
 import 'favorites/providers.dart';
 import 'posts/providers.dart';
 import 'tags/providers.dart';
@@ -67,6 +69,11 @@ class EshuushuuRepository extends BooruRepositoryDefault {
   @override
   TagExtractor tagExtractor(BooruConfigAuth config) {
     return ref.watch(eshuushuuTagExtractorProvider(config));
+  }
+
+  @override
+  CommentRepository comment(BooruConfigAuth config) {
+    return ref.read(eshuushuuCommentRepoProvider(config));
   }
 
   @override

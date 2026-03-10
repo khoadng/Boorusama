@@ -19,6 +19,7 @@ import '../../core/posts/details_parts/widgets.dart';
 import '../../core/search/search/routes.dart';
 import '../../core/search/search/widgets.dart';
 import 'favorites/widgets.dart';
+import 'comments/widgets.dart';
 import 'home/widgets.dart';
 import 'posts/providers.dart';
 import 'posts/types.dart';
@@ -27,6 +28,13 @@ import 'users/routes.dart';
 
 class EshuushuuBuilder extends BaseBooruBuilder {
   EshuushuuBuilder();
+
+  @override
+  CommentPageBuilder? get commentPageBuilder =>
+      (context, useAppBar, post) => EshuushuuCommentPage(
+        postId: post.id,
+        useAppBar: useAppBar,
+      );
 
   @override
   CreateConfigPageBuilder get createConfigPageBuilder =>

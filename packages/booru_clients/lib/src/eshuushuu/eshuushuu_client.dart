@@ -4,6 +4,7 @@ import 'package:coreutils/coreutils.dart';
 import 'package:dio/dio.dart';
 import 'types/auth_dto.dart';
 import 'types/autocomplete_dto.dart';
+import 'types/comment_dto.dart';
 import 'types/favorite_dto.dart';
 import 'types/post_dto.dart';
 import 'types/user_dto.dart';
@@ -52,6 +53,30 @@ class EShuushuuClient {
     return switch (response.data) {
       {'images': final List images} =>
         images.whereType<Map<String, dynamic>>().map(PostDto.fromJson).toList(),
+      _ => [],
+    };
+  }
+
+  Future<List<CommentDto>> getComments({
+    required int imageId,
+    int? page,
+    int? perPage,
+  }) async {
+    final response = await _dio.get(
+      '$_apiBase/comments',
+      queryParameters: {
+        'image_id': imageId,
+        if (page != null && page > 1) 'page': page,
+        'per_page': ?perPage,
+      },
+    );
+
+    return switch (response.data) {
+      {'comments': final List comments} =>
+        comments
+            .whereType<Map<String, dynamic>>()
+            .map(CommentDto.fromJson)
+            .toList(),
       _ => [],
     };
   }

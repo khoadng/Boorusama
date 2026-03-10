@@ -19,12 +19,14 @@ class CommentPageScaffold extends ConsumerStatefulWidget {
     required this.useAppBar,
     super.key,
     this.commentItemBuilder,
+    this.commentsTransformer,
     this.singlePage = true,
   });
 
   final int postId;
   final Widget Function(BuildContext context, Comment comment)?
   commentItemBuilder;
+  final List<Comment> Function(List<Comment> comments)? commentsTransformer;
   final bool useAppBar;
   final bool singlePage;
 
@@ -56,6 +58,10 @@ class _CommentPageScaffoldState extends ConsumerState<CommentPageScaffold> {
       widget.postId,
       page: pageKey,
     );
+
+    if (widget.commentsTransformer case final transform?) {
+      return transform(comments);
+    }
 
     return comments;
   }
