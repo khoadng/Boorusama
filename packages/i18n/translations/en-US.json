@@ -348,7 +348,8 @@
       "image_list": "Image list",
       "classic": "Classic",
       "standard": "Standard",
-      "masonry": "Masonry"
+      "masonry": "Masonry",
+      "detailed": "Detailed"
     },
     "image_grid": {
       "image_grid": "Image grid",

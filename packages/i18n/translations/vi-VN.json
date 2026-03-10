@@ -347,7 +347,8 @@
       "image_list": "Kiểu bố cục ảnh",
       "standard": "Tiêu chuẩn",
       "masonry": "Masonry",
-      "classic": "Cổ điển"
+      "classic": "Cổ điển",
+      "detailed": "Chi tiết"
     },
     "image_grid": {
       "image_grid": "Lưới ảnh",

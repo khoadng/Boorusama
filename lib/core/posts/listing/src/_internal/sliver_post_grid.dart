@@ -189,6 +189,13 @@ class SliverPostGrid<T extends Post> extends StatelessWidget {
                     childCount: data.length,
                     itemBuilder: itemBuilder,
                   ),
+                  ImageListType.detailed => SliverMasonryGrid.count(
+                    crossAxisCount: 1,
+                    mainAxisSpacing: spacing ?? 4,
+                    crossAxisSpacing: spacing ?? 4,
+                    childCount: data.length,
+                    itemBuilder: itemBuilder,
+                  ),
                   _ => SliverGrid(
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       childAspectRatio: aspectRatio ?? 1,
