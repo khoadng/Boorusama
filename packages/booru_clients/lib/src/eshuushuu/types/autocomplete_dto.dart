@@ -1,25 +1,57 @@
-import 'dart:convert';
-
 class AutocompleteDto {
   AutocompleteDto({
-    required this.value,
+    this.tagId,
+    this.title,
+    this.desc,
+    this.type,
+    this.dateAdded,
+    this.aliasOf,
+    this.aliasOfName,
+    this.isAlias,
+    this.usageCount,
   });
 
-  factory AutocompleteDto.fromString(String value) => AutocompleteDto(
-    value: value,
-  );
+  final int? tagId;
+  final String? title;
+  final String? desc;
+  final int? type;
+  final DateTime? dateAdded;
+  final int? aliasOf;
+  final String? aliasOfName;
+  final bool? isAlias;
+  final int? usageCount;
 
-  final String value;
+  factory AutocompleteDto.fromJson(Map<String, dynamic> json) {
+    return AutocompleteDto(
+      tagId: json['tag_id'] as int?,
+      title: json['title'] as String?,
+      desc: json['desc'] as String?,
+      type: json['type'] as int?,
+      dateAdded: _parseDate(json['date_added'] as String?),
+      aliasOf: json['alias_of'] as int?,
+      aliasOfName: json['alias_of_name'] as String?,
+      isAlias: json['is_alias'] as bool?,
+      usageCount: json['usage_count'] as int?,
+    );
+  }
 
   @override
-  String toString() => value;
+  String toString() => title ?? '';
 }
 
-List<AutocompleteDto> parseAutocomplete(String response) {
-  final lines = response.trim().split('\n');
-  return lines.where((line) => line.isNotEmpty).map((line) {
-    // Each line is a JSON string like "activewear"
-    final decoded = jsonDecode(line) as String;
-    return AutocompleteDto.fromString(decoded);
-  }).toList();
+DateTime? _parseDate(String? dateString) {
+  if (dateString == null) return null;
+  return DateTime.tryParse(dateString);
+}
+
+List<AutocompleteDto> parseAutocompleteFromApi(dynamic data) {
+  if (data is! Map<String, dynamic>) return [];
+
+  final tags = data['tags'] as List?;
+  if (tags == null) return [];
+
+  return tags
+      .whereType<Map<String, dynamic>>()
+      .map((json) => AutocompleteDto.fromJson(json))
+      .toList();
 }

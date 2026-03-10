@@ -27,14 +27,31 @@ class EshuushuuPost extends SimplePost {
     required super.createdAt,
     required super.uploaderName,
     required super.metadata,
-    required this.characters,
-    required this.artist,
-    required this.sourceTags,
-    required this.generalTags,
+    this.characters,
+    this.artist,
+    this.sourceTags,
+    this.generalTags,
+    this.largeImageUrl,
+    this.isFavorited,
+    this.favorites,
+    this.bayesianRating,
   });
 
   final Set<String>? characters;
   final Set<String>? artist;
   final Set<String>? sourceTags;
   final Set<String>? generalTags;
+  final String? largeImageUrl;
+  final bool? isFavorited;
+  final int? favorites;
+  final double? bayesianRating;
+
+  @override
+  Set<String>? get artistTags => artist;
+
+  @override
+  Set<String>? get characterTags => characters;
+
+  @override
+  Set<String>? get copyrightTags => sourceTags;
 }

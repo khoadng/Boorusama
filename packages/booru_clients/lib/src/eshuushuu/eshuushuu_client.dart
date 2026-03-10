@@ -1,8 +1,6 @@
 import 'package:dio/dio.dart';
 import 'types/autocomplete_dto.dart';
 import 'types/post_dto.dart';
-import 'types/search.dart';
-import 'types/tag_dto.dart';
 
 class EShuushuuClient {
   EShuushuuClient({
@@ -18,80 +16,72 @@ class EShuushuuClient {
     int? page,
   }) async {
     final response = await _dio.get(
-      '/search/results',
+      '/api/v1/images',
       queryParameters: {
-        if (tagIds.isNotEmpty) 'tags': tagIds.join(' '),
-        'page': ?switch (page) {
-          null => null,
-          final p when p > 1 => p,
-          _ => null,
-        },
+        if (tagIds.isNotEmpty) 'tags': tagIds.join('+'),
+        if (page != null && page > 1) 'page': page,
       },
     );
 
-    return parsePosts(response.data, baseUrl);
+    return _parseApiResponse(response.data);
   }
 
   Future<List<AutocompleteDto>> getAutocomplete({
     required String query,
-    TagType? type,
+    int limit = 10,
   }) async {
     final response = await _dio.get(
-      '/httpreq.php',
+      '/api/v1/tags/',
       queryParameters: {
-        'mode': 'tag_search',
-        'tags': query,
-        'type': type?.value ?? TagType.tag.valueStr,
+        'search': query,
+        'limit': limit,
       },
-      options: Options(
-        responseType: ResponseType.plain,
-      ),
     );
 
-    return parseAutocomplete(response.data as String);
+    return parseAutocompleteFromApi(response.data);
   }
 
   Future<List<PostDto>> getHomePage({
     int? page,
   }) async {
     final response = await _dio.get(
-      '/',
-      queryParameters: switch (page) {
-        null => null,
-        final p when p > 1 => {'page': p},
-        _ => null,
+      '/api/v1/images',
+      queryParameters: {
+        if (page != null && page > 1) 'page': page,
       },
     );
-    return parsePosts(response.data, baseUrl);
+
+    return _parseApiResponse(response.data);
   }
 
-  Future<List<int>> getTagIds(
-    EshuushuuSearchRequest request,
-  ) async {
-    if (request.isEmpty) return [];
+  Future<List<int>> resolveTagIds(List<String> tagNames) async {
+    final ids = <int>[];
+    for (final name in tagNames) {
+      final response = await _dio.get(
+        '/api/v1/tags/',
+        queryParameters: {
+          'search': name,
+          'limit': 1,
+        },
+      );
 
-    final response = await _dio.post(
-      '/search/process/',
-      data: request.toMap(),
-      options: Options(
-        followRedirects: false,
-        contentType: Headers.formUrlEncodedContentType,
-        validateStatus: (status) => status == 303,
-      ),
-    );
+      final results = parseAutocompleteFromApi(response.data);
+      if (results.isNotEmpty && results.first.tagId != null) {
+        ids.add(results.first.tagId!);
+      }
+    }
+    return ids;
+  }
 
-    final location = response.headers.value('location');
-    if (location == null) return [];
+  List<PostDto> _parseApiResponse(dynamic data) {
+    if (data is! Map<String, dynamic>) return [];
 
-    // Parse tag IDs from location like: http://e-shuushuu.net/search/results/?tags=7+720+216485
-    final uri = Uri.parse(location);
-    final tagsParam = uri.queryParameters['tags'];
-    if (tagsParam == null) return [];
+    final images = data['images'] as List?;
+    if (images == null) return [];
 
-    return tagsParam
-        .split(RegExp(r'[\s,]+'))
-        .map((id) => int.tryParse(id.trim()))
-        .whereType<int>()
+    return images
+        .whereType<Map<String, dynamic>>()
+        .map((json) => PostDto.fromJson(json))
         .toList();
   }
 }

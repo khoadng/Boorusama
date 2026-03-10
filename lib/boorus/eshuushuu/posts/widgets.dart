@@ -8,7 +8,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/posts/details_parts/widgets.dart';
 import '../../../core/search/search/routes.dart';
 import '../../../core/search/selected_tags/types.dart';
-import '../tags/parser.dart';
 import 'types.dart';
 
 class EshuushuuInheritedTagsTile extends ConsumerWidget {
@@ -20,10 +19,7 @@ class EshuushuuInheritedTagsTile extends ConsumerWidget {
       onTagTap: (tag) {
         final tagSet = SearchTagSet();
         tagSet.addTag(
-          TagSearchItem.fromString(
-            tag.name,
-            category: parseTagCategoryToEshuushuuTagType(tag.category).valueStr,
-          ),
+          TagSearchItem.fromString(tag.name),
         );
 
         goToSearchPage(

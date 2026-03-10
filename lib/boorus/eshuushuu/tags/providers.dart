@@ -1,5 +1,4 @@
 // Package imports:
-import 'package:booru_clients/eshuushuu.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -18,15 +17,11 @@ final eshuushuuAutoCompleteRepoProvider =
 
       return AutocompleteRepositoryBuilder(
         autocomplete: (query) async {
-          final type = TagType.tryParse(query.category) ?? TagType.tag;
           final tags = await client.getAutocomplete(
             query: query.text.toLowerCase(),
-            type: type,
           );
 
-          return tags
-              .map((e) => autocompleteDtoToAutocompleteData(e, type))
-              .toList();
+          return tags.map((e) => autocompleteDtoToAutocompleteData(e)).toList();
         },
       );
     });

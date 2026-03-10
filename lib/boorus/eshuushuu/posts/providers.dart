@@ -21,7 +21,6 @@ final eshuushuuPostRepoProvider =
           tagComposer: tagComposer,
           getSettings: () async => ref.read(imageListingSettingsProvider),
           fetchSingle: (id, {options}) {
-            // e-shuushuu doesn't support fetching single post by ID
             return Future.value();
           },
           fetch: (tags, page, {limit, options}) async {
@@ -33,8 +32,9 @@ final eshuushuuPostRepoProvider =
             return posts.toResult();
           },
           fetchFromController: (controller, page, {limit, options}) async {
-            final posts = await searchNotifier.searchByController(
-              controller,
+            final tags = controller.tags.map((e) => e.originalTag).toList();
+            final posts = await searchNotifier.searchByTags(
+              tags,
               page: page,
               limit: limit,
             );

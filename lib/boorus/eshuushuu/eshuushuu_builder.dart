@@ -1,14 +1,23 @@
+// Flutter imports:
+import 'package:flutter/material.dart';
+
+// Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 // Project imports:
 import '../../core/boorus/defaults/widgets.dart';
+import '../../core/configs/config/providers.dart';
 import '../../core/boorus/engine/types.dart';
 import '../../core/configs/config/types.dart';
 import '../../core/configs/create/widgets.dart';
 import '../../core/posts/details/widgets.dart';
 import '../../core/posts/details_parts/types.dart';
 import '../../core/posts/details_parts/widgets.dart';
+import '../../core/search/search/routes.dart';
+import '../../core/search/search/widgets.dart';
+import 'posts/providers.dart';
 import 'posts/types.dart';
 import 'posts/widgets.dart';
-import 'search/pages.dart';
 
 class EshuushuuBuilder extends BaseBooruBuilder {
   EshuushuuBuilder();
@@ -67,4 +76,25 @@ class EshuushuuBuilder extends BaseBooruBuilder {
           const DefaultInheritedFileDetailsSection<EshuushuuPost>(),
     },
   );
+}
+
+class EshuushuuSearchPage extends ConsumerWidget {
+  const EshuushuuSearchPage({
+    required this.params,
+    super.key,
+  });
+
+  final SearchParams params;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watchConfigSearch;
+    final postRepo = ref.watch(eshuushuuPostRepoProvider(config));
+
+    return SearchPageScaffold(
+      params: params,
+      fetcher: (page, controller) =>
+          postRepo.getPostsFromController(controller.tagSet, page),
+    );
+  }
 }

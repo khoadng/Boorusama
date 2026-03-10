@@ -7,17 +7,18 @@ import '../../../core/tags/categories/types.dart';
 
 AutocompleteData autocompleteDtoToAutocompleteData(
   AutocompleteDto dto,
-  TagType category,
 ) {
-  return AutocompleteData(
-    label: dto.value,
-    value: _normalizeTagName(dto.value),
-    category: parseEshuushuuTagTypeToCategoryName(category),
-  );
-}
+  final tagType = TagType.tryParse(dto.type) ?? TagType.tag;
+  final title = dto.title ?? '';
 
-String _normalizeTagName(String name) {
-  return name;
+  return AutocompleteData(
+    label: title,
+    value: title,
+    category: parseEshuushuuTagTypeToCategoryName(tagType),
+    postCount: dto.usageCount,
+    antecedent: dto.aliasOfName,
+    type: (dto.isAlias ?? false) ? AutocompleteData.alias : AutocompleteData.tag,
+  );
 }
 
 String parseEshuushuuTagTypeToCategoryName(TagType type) => switch (type) {
@@ -26,12 +27,3 @@ String parseEshuushuuTagTypeToCategoryName(TagType type) => switch (type) {
   TagType.character => TagCategory.character().name,
   TagType.source => TagCategory.copyright().name,
 };
-
-TagType parseTagCategoryToEshuushuuTagType(TagCategory category) =>
-    switch (category.name) {
-      final name when name == TagCategory.artist().name => TagType.artist,
-      final name when name == TagCategory.character().name => TagType.character,
-      final name when name == TagCategory.copyright().name => TagType.source,
-      final name when name == TagCategory.general().name => TagType.tag,
-      _ => TagType.tag,
-    };

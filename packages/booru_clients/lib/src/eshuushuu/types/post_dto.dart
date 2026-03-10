@@ -1,177 +1,143 @@
-import 'package:html/parser.dart' as parser;
-import 'package:html/dom.dart';
-import 'package:intl/intl.dart';
-
 class PostDto {
   PostDto({
-    this.id,
-    this.submittedBy,
-    this.submittedOn,
+    this.imageId,
     this.filename,
-    this.imageUrl,
-    this.thumbnailUrl,
-    this.fileSize,
+    this.ext,
+    this.originalFilename,
+    this.md5Hash,
+    this.filesize,
     this.width,
     this.height,
-    this.megapixels,
+    this.caption,
+    this.miscmeta,
+    this.status,
+    this.rating,
+    this.userId,
+    this.username,
+    this.userAvatarUrl,
+    this.dateAdded,
+    this.locked,
+    this.posts,
+    this.favorites,
+    this.bayesianRating,
+    this.numRatings,
+    this.medium,
+    this.large,
+    this.replacementId,
+    this.isFavorited,
+    this.userRating,
+    this.prevImageId,
+    this.nextImageId,
+    this.url,
+    this.thumbnailUrl,
+    this.mediumUrl,
+    this.largeUrl,
     this.tags,
-    this.source,
-    this.characters,
-    this.artist,
   });
 
-  final int? id;
-  final String? submittedBy;
-  final DateTime? submittedOn;
+  final int? imageId;
   final String? filename;
-  final String? imageUrl;
-  final String? thumbnailUrl;
-  final String? fileSize;
+  final String? ext;
+  final String? originalFilename;
+  final String? md5Hash;
+  final int? filesize;
   final int? width;
   final int? height;
-  final double? megapixels;
-  final List<String>? tags;
-  final List<String>? source;
-  final List<String>? characters;
-  final List<String>? artist;
+  final String? caption;
+  final String? miscmeta;
+  final int? status;
+  final double? rating;
+  final int? userId;
+  final String? username;
+  final String? userAvatarUrl;
+  final DateTime? dateAdded;
+  final int? locked;
+  final int? posts;
+  final int? favorites;
+  final double? bayesianRating;
+  final int? numRatings;
+  final int? medium;
+  final int? large;
+  final int? replacementId;
+  final bool? isFavorited;
+  final double? userRating;
+  final int? prevImageId;
+  final int? nextImageId;
+  final String? url;
+  final String? thumbnailUrl;
+  final String? mediumUrl;
+  final String? largeUrl;
+  final List<PostTagDto>? tags;
 
-  factory PostDto.fromHtml(Element postElement, String baseUrl) {
-    // Parse ID
-    final idString = postElement.id.replaceFirst('i', '');
-    final id = int.tryParse(idString);
-
-    // Parse metadata
-    final metaDiv = postElement.querySelector('div.meta');
-    final dl = metaDiv?.querySelector('dl');
-    final data = <String, String>{};
-
-    dl?.querySelectorAll('dt').forEach((dt) {
-      final label = dt.text.trim().replaceAll(':', '');
-      final dd = dt.nextElementSibling;
-      if (dd != null) {
-        data[label] = dd.text.trim();
-      }
-    });
-
-    // Parse date
-    final dateString = data['Submitted On'];
-    final submittedOn = dateString != null
-        ? _parseDateString(dateString)
-        : null;
-
-    // Parse dimensions
-    final dimensions = data['Dimensions'] ?? '';
-    final (w, h, mp) = _parseDimensions(dimensions);
-
-    // Parse other fields
-    final tags = _parseQuickTag(metaDiv, 'quicktag1_');
-    final source = _parseQuickTag(metaDiv, 'quicktag2_');
-    final artist = _parseQuickTag(metaDiv, 'quicktag3_');
-    final characters = _parseQuickTag(metaDiv, 'quicktag4_');
-
-    // Parse image URLs
-    final thumbLink = postElement.querySelector('a.thumb_image');
-    final imageHref = thumbLink?.attributes['href'];
-    final filename = imageHref?.split('/').lastOrNull;
-
-    final thumbnailSrc = thumbLink?.querySelector('img')?.attributes['src'];
-    final thumbnailUrl = thumbnailSrc != null
-        ? Uri.parse(baseUrl).resolve(thumbnailSrc).toString()
-        : null;
-
-    final imageUrl = imageHref != null
-        ? Uri.parse(baseUrl).resolve(imageHref).toString()
-        : null;
+  factory PostDto.fromJson(Map<String, dynamic> json) {
+    final user = json['user'] as Map<String, dynamic>?;
+    final tagsList = json['tags'] as List?;
 
     return PostDto(
-      id: id,
-      submittedBy: data['Submitted By'],
-      submittedOn: submittedOn,
-      filename: filename,
-      imageUrl: imageUrl,
-      thumbnailUrl: thumbnailUrl,
-      fileSize: data['File size'],
-      width: w,
-      height: h,
-      megapixels: mp,
-      tags: tags,
-      source: source,
-      characters: characters,
-      artist: artist,
+      imageId: json['image_id'] as int?,
+      filename: json['filename'] as String?,
+      ext: json['ext'] as String?,
+      originalFilename: json['original_filename'] as String?,
+      md5Hash: json['md5_hash'] as String?,
+      filesize: json['filesize'] as int?,
+      width: json['width'] as int?,
+      height: json['height'] as int?,
+      caption: json['caption'] as String?,
+      miscmeta: json['miscmeta'] as String?,
+      status: json['status'] as int?,
+      rating: (json['rating'] as num?)?.toDouble(),
+      userId: user?['user_id'] as int? ?? json['user_id'] as int?,
+      username: user?['username'] as String?,
+      userAvatarUrl: user?['avatar_url'] as String?,
+      dateAdded: _parseDate(json['date_added'] as String?),
+      locked: json['locked'] as int?,
+      posts: json['posts'] as int?,
+      favorites: json['favorites'] as int?,
+      bayesianRating: (json['bayesian_rating'] as num?)?.toDouble(),
+      numRatings: json['num_ratings'] as int?,
+      medium: json['medium'] as int?,
+      large: json['large'] as int?,
+      replacementId: json['replacement_id'] as int?,
+      isFavorited: json['is_favorited'] as bool?,
+      userRating: (json['user_rating'] as num?)?.toDouble(),
+      prevImageId: json['prev_image_id'] as int?,
+      nextImageId: json['next_image_id'] as int?,
+      url: json['url'] as String?,
+      thumbnailUrl: json['thumbnail_url'] as String?,
+      mediumUrl: json['medium_url'] as String?,
+      largeUrl: json['large_url'] as String?,
+      tags: tagsList
+          ?.whereType<Map<String, dynamic>>()
+          .map(PostTagDto.fromJson)
+          .toList(),
     );
   }
-
-  @override
-  String toString() {
-    return '''
-Post ID: ${id ?? 'N/A'}
-Submitted By: ${submittedBy ?? 'Unknown'}
-Submitted On: ${submittedOn?.toIso8601String() ?? 'Unknown date'}
-Filename: ${filename ?? 'Unknown'}
-File size: ${fileSize ?? 'Unknown'}
-Width: ${width ?? 'Unknown'}
-Height: ${height ?? 'Unknown'}
-Megapixels: ${megapixels ?? 'Unknown'}
-Tags: ${tags?.join(', ') ?? 'None'}
-Source: ${source?.join(', ') ?? 'Unknown'}
-Characters: ${characters?.join(', ') ?? 'None'}
-Artist: ${artist?.join(', ') ?? 'Unknown'}
-------------------------------------''';
-  }
 }
 
-List<PostDto> parsePosts(String html, String baseUrl) {
-  final document = parser.parse(html);
-  final postElements = document.querySelectorAll('div.image_thread');
-  final posts = <PostDto>[];
+class PostTagDto {
+  PostTagDto({
+    this.tagId,
+    this.title,
+    this.type,
+    this.typeName,
+  });
 
-  for (var postElement in postElements) {
-    posts.add(PostDto.fromHtml(postElement, baseUrl));
-  }
+  final int? tagId;
+  final String? title;
+  final int? type;
+  final String? typeName;
 
-  return posts;
-}
-
-DateTime? _parseDateString(String dateString) {
-  try {
-    // Remove ordinal suffix (st, nd, rd, th)
-    final cleaned = dateString.replaceAllMapped(
-      RegExp(r'(\d+)(st|nd|rd|th)'),
-      (match) => match.group(1)!,
+  factory PostTagDto.fromJson(Map<String, dynamic> json) {
+    return PostTagDto(
+      tagId: json['tag_id'] as int?,
+      title: json['title'] as String?,
+      type: json['type'] as int?,
+      typeName: json['type_name'] as String?,
     );
-
-    return DateFormat('MMMM d, y h:mm a').parse(cleaned);
-  } catch (e) {
-    return null;
   }
 }
 
-(int?, int?, double?) _parseDimensions(String dimensions) {
-  try {
-    final match = RegExp(
-      r'(\d+)x(\d+).*?([\d.]+)\s+MPixel',
-    ).firstMatch(dimensions);
-    if (match == null) return (null, null, null);
-
-    return (
-      int.tryParse(match.group(1) ?? ''),
-      int.tryParse(match.group(2) ?? ''),
-      double.tryParse(match.group(3) ?? ''),
-    );
-  } catch (e) {
-    return (null, null, null);
-  }
-}
-
-List<String>? _parseQuickTag(Element? metaDiv, String prefix) {
-  final dd = metaDiv?.querySelector('dd[id^="$prefix"]');
-  if (dd == null) return null;
-
-  return dd.querySelectorAll('span.tag').map((span) {
-    return span.text
-        .trim()
-        .replaceAll('"', '')
-        .replaceAll('\n', ' ')
-        .replaceAll(RegExp(r'\s+'), ' ');
-  }).toList();
+DateTime? _parseDate(String? dateString) {
+  if (dateString == null) return null;
+  return DateTime.tryParse(dateString);
 }
