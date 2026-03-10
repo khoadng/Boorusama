@@ -306,6 +306,11 @@ class AppTheme {
       ),
     ),
     colorScheme: colorScheme,
+    pageTransitionsTheme: const PageTransitionsTheme(
+      builders: {
+        TargetPlatform.android: ZoomPageTransitionsBuilder(),
+      },
+    ),
     scrollbarTheme: ScrollbarThemeData(
       thickness: WidgetStateProperty.all(4),
     ),
