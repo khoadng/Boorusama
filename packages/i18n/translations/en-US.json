@@ -404,7 +404,9 @@
         "horizontal": "Horizontal",
         "horizontal_description": "Gallery-style left/right swiping. Like photo galleries and media apps.",
         "vertical": "Vertical",
-        "vertical_description": "TikTok-style up/down swiping. Popular on short video platforms. Portrait mode only."
+        "vertical_description": "TikTok-style up/down swiping. Popular on short video platforms. Portrait mode only.",
+        "webtoon": "Webtoon",
+        "webtoon_description": "Tall images fit to screen width and scroll vertically. Best for comics and webtoons."
       },
       "mute_video": "Mute video by default",
       "double_tap_seek": "Double-tap to seek",

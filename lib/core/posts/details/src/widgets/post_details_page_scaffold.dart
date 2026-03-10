@@ -285,7 +285,8 @@ class _PostDetailPageScaffoldState<T extends Post>
     return Scaffold(
       body: PostDetailsPageView(
         viewMode: switch (swipeMode) {
-          PostDetailsSwipeMode.horizontal => ViewMode.horizontal,
+          PostDetailsSwipeMode.horizontal ||
+          PostDetailsSwipeMode.webtoon => ViewMode.horizontal,
           PostDetailsSwipeMode.vertical => ViewMode.vertical,
         },
         disableAnimation: reduceAnimations,

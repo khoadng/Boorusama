@@ -403,7 +403,9 @@
         "horizontal": "Ngang",
         "horizontal_description": "Vuốt trái/phải kiểu thư viện ảnh. Giống các ứng dụng xem ảnh và đa phương tiện.",
         "vertical": "Dọc",
-        "vertical_description": "Vuốt lên/xuống kiểu TikTok. Phổ biến trên các nền tảng video ngắn. Chỉ dùng chế độ dọc."
+        "vertical_description": "Vuốt lên/xuống kiểu TikTok. Phổ biến trên các nền tảng video ngắn. Chỉ dùng chế độ dọc.",
+        "webtoon": "Webtoon",
+        "webtoon_description": "Ảnh dài hiển thị vừa màn hình và cuộn dọc. Phù hợp với truyện tranh và webtoon."
       },
       "mute_video": "Mặc định tắt tiếng video",
       "double_tap_seek": "Chạm hai lần để tua",

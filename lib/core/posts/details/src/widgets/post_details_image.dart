@@ -26,6 +26,7 @@ class PostDetailsImage<T extends Post> extends StatelessWidget {
     super.key,
     this.heroTag,
     this.imageCacheManager,
+    this.fitWidthForTallImages = false,
   });
 
   final BooruConfigAuth config;
@@ -34,10 +35,25 @@ class PostDetailsImage<T extends Post> extends StatelessWidget {
   final String Function(T post)? thumbnailUrlBuilder;
   final ImageCacheManager? imageCacheManager;
   final T post;
+  final bool fitWidthForTallImages;
 
   @override
   Widget build(BuildContext context) {
     final aspectRatio = post.aspectRatio;
+
+    // When fitting width for tall images, skip the AspectRatio constraint
+    // so the image can render at its natural height
+    if (fitWidthForTallImages) {
+      return RawPostDetailsImage(
+        config: config,
+        post: post,
+        heroTag: heroTag,
+        imageUrlBuilder: imageUrlBuilder,
+        thumbnailUrlBuilder: thumbnailUrlBuilder,
+        imageCacheManager: imageCacheManager,
+        fitWidthForTallImages: true,
+      );
+    }
 
     return aspectRatio != null
         ? AspectRatio(
@@ -108,6 +124,7 @@ class RawPostDetailsImage<T extends Post> extends ConsumerWidget {
     this.thumbnailUrlBuilder,
     this.imageCacheManager,
     this.fit,
+    this.fitWidthForTallImages = false,
   });
 
   final BooruConfigAuth config;
@@ -117,6 +134,7 @@ class RawPostDetailsImage<T extends Post> extends ConsumerWidget {
   final ImageCacheManager? imageCacheManager;
   final T post;
   final BoxFit? fit;
+  final bool fitWidthForTallImages;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -148,16 +166,23 @@ class RawPostDetailsImage<T extends Post> extends ConsumerWidget {
       config: config,
       imageUrl: imageUrl,
       placeholderUrl: placeholderImageUrl,
-      aspectRatio: post.aspectRatio,
-      forceCover: post.aspectRatio != null,
+      aspectRatio: fitWidthForTallImages ? null : post.aspectRatio,
+      forceCover: fitWidthForTallImages ? false : post.aspectRatio != null,
       imageHeight: post.height,
       imageWidth: post.width,
-      forceFill: true,
-      fit: fit,
+      forceFill: !fitWidthForTallImages,
+      fit: fitWidthForTallImages ? BoxFit.fitWidth : fit,
       borderRadius: BorderRadius.zero,
       forceLoadPlaceholder: true,
       imageCacheManager: imageCacheManager,
     );
+
+    if (fitWidthForTallImages) {
+      return BooruHero(
+        tag: heroTag,
+        child: image,
+      );
+    }
 
     return BooruHero(
       tag: heroTag,

@@ -81,6 +81,22 @@ class ImageViewerSettingsSection extends ConsumerWidget {
                 );
               },
             ),
+            SettingsRadioCardEntry(
+              title: context.t.settings.image_viewer.swipe_modes.webtoon,
+              value: PostDetailsSwipeMode.webtoon.name,
+              groupValue: viewer.swipeMode.name,
+              subtitle: context
+                  .t
+                  .settings
+                  .image_viewer
+                  .swipe_modes
+                  .webtoon_description,
+              onSelected: (value) {
+                onUpdate(
+                  viewer.copyWith(swipeMode: PostDetailsSwipeMode.webtoon),
+                );
+              },
+            ),
           ],
         ),
         const Divider(thickness: 1),

@@ -32,6 +32,7 @@ class PostMedia<T extends Post> extends ConsumerWidget {
     required this.imageCacheManager,
     super.key,
     this.isPageSettled = false,
+    this.fitWidthForTallImages = false,
   });
 
   final T post;
@@ -42,6 +43,7 @@ class PostMedia<T extends Post> extends ConsumerWidget {
   final String Function(T post)? thumbnailUrlBuilder;
   final ImageCacheManager? imageCacheManager;
   final bool isPageSettled;
+  final bool fitWidthForTallImages;
 
   void _openSettings(WidgetRef ref) {
     openImageViewerSettingsPage(ref);
@@ -114,6 +116,7 @@ class PostMedia<T extends Post> extends ConsumerWidget {
             imageCacheManager: imageCacheManager,
             post: post,
             config: config,
+            fitWidthForTallImages: fitWidthForTallImages,
           );
   }
 }
