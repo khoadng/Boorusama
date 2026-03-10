@@ -114,45 +114,53 @@ class DefaultDanbooruImageGridItem extends StatelessWidget {
                           );
                         }
 
-                        return SliverPostGridImageGridItem(
-                          post: post,
+                        return OverflowClampedItem(
                           index: index,
-                          multiSelectEnabled: multiSelect,
-                          quickActionButton:
-                              quickActionButton ??
-                              (!post.isBanned && !multiSelect
-                                  ? DefaultImagePreviewQuickActionButton(
-                                      post: post,
-                                    )
-                                  : const SizedBox.shrink()),
-                          autoScrollOptions: AutoScrollOptions(
-                            controller: autoScrollController,
-                            index: index,
-                          ),
-                          onTap:
-                              onTap ??
-                              (post.isBanned
-                                  ? null
-                                  : () {
-                                      goToPostDetailsPageFromController(
-                                        ref: ref,
-                                        controller: controller,
-                                        initialIndex: index,
-                                        scrollController: autoScrollController,
-                                        initialThumbnailUrl: imgUrl,
-                                      );
-                                    }),
-                          image: _buildImage(post, imgUrl),
-                          score: post.isBanned ? null : post.score,
-                          blockOverlay:
-                              blockOverlay ??
-                              (post.isBanned
-                                  ? _buildBlockOverlayItem(
-                                      post,
-                                      artistTags,
-                                      context,
-                                    )
-                                  : null),
+                          scrollController: autoScrollController,
+                          childBuilder: (isClamped) =>
+                              SliverPostGridImageGridItem(
+                                post: post,
+                                index: index,
+                                multiSelectEnabled: multiSelect,
+                                quickActionButton:
+                                    quickActionButton ??
+                                    (!post.isBanned && !multiSelect
+                                        ? DefaultImagePreviewQuickActionButton(
+                                            post: post,
+                                          )
+                                        : const SizedBox.shrink()),
+                                autoScrollOptions: isClamped
+                                    ? null
+                                    : AutoScrollOptions(
+                                        controller: autoScrollController,
+                                        index: index,
+                                      ),
+                                onTap:
+                                    onTap ??
+                                    (post.isBanned
+                                        ? null
+                                        : () {
+                                            goToPostDetailsPageFromController(
+                                              ref: ref,
+                                              controller: controller,
+                                              initialIndex: index,
+                                              scrollController:
+                                                  autoScrollController,
+                                              initialThumbnailUrl: imgUrl,
+                                            );
+                                          }),
+                                image: _buildImage(post, imgUrl),
+                                score: post.isBanned ? null : post.score,
+                                blockOverlay:
+                                    blockOverlay ??
+                                    (post.isBanned
+                                        ? _buildBlockOverlayItem(
+                                            post,
+                                            artistTags,
+                                            context,
+                                          )
+                                        : null),
+                              ),
                         );
                       },
                     );
@@ -285,7 +293,6 @@ class DefaultDanbooruImageGridItem extends StatelessWidget {
             (value) => value.imageBorderRadius,
           ),
         );
-
         return BooruImage(
           config: ref.watchConfigAuth,
           aspectRatio: post.isBanned ? 0.8 : post.aspectRatio,

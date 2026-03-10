@@ -12,6 +12,7 @@ export 'src/widgets/post_duplicate_checker.dart';
 export 'src/widgets/default_selectable_item.dart';
 export 'src/widgets/default_image_quick_action_button.dart';
 export 'src/widgets/default_image_grid_item.dart';
+export 'src/widgets/overflow_clamped_item.dart';
 export 'src/widgets/detailed_post_card.dart';
 export 'src/widgets/post_grid_config_icon_button.dart';
 export 'src/widgets/post_preview.dart';

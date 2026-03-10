@@ -138,6 +138,7 @@ class Settings extends Equatable {
       imageGridAspectRatio: 0.7,
       postsPerPage: 60,
       animatedPostsDefaultState: AnimatedPostsDefaultState.defaultValue,
+      itemOverflowMode: ItemOverflowMode.none,
     ),
     viewer: ImageViewerSettings(
       swipeMode: PostDetailsSwipeMode.defaultValue,
@@ -626,6 +627,7 @@ class ImageListingSettings extends Equatable {
     required this.imageGridAspectRatio,
     required this.postsPerPage,
     required this.animatedPostsDefaultState,
+    required this.itemOverflowMode,
   });
 
   ImageListingSettings.fromJson(Map<String, dynamic> json)
@@ -650,7 +652,8 @@ class ImageListingSettings extends Equatable {
       imageGridSpacing = json['imageGridSpacing'] ?? 4,
       animatedPostsDefaultState = AnimatedPostsDefaultState.parse(
         json['animatedPostsDefaultState'],
-      );
+      ),
+      itemOverflowMode = ItemOverflowMode.parse(json['itemOverflowMode']);
 
   final GridSize gridSize;
   final ImageListType imageListType;
@@ -666,6 +669,7 @@ class ImageListingSettings extends Equatable {
   final double imageGridAspectRatio;
   final int postsPerPage;
   final AnimatedPostsDefaultState animatedPostsDefaultState;
+  final ItemOverflowMode itemOverflowMode;
 
   ImageListingSettings copyWith({
     GridSize? gridSize,
@@ -684,6 +688,7 @@ class ImageListingSettings extends Equatable {
     double? imageGridAspectRatio,
     int? postsPerPage,
     AnimatedPostsDefaultState? animatedPostsDefaultState,
+    ItemOverflowMode? itemOverflowMode,
   }) {
     return ImageListingSettings(
       gridSize: gridSize ?? this.gridSize,
@@ -703,6 +708,7 @@ class ImageListingSettings extends Equatable {
       postsPerPage: postsPerPage ?? this.postsPerPage,
       animatedPostsDefaultState:
           animatedPostsDefaultState ?? this.animatedPostsDefaultState,
+      itemOverflowMode: itemOverflowMode ?? this.itemOverflowMode,
     );
   }
 
@@ -721,6 +727,7 @@ class ImageListingSettings extends Equatable {
     'imageGridAspectRatio': imageGridAspectRatio,
     'postsPerPage': postsPerPage,
     'animatedPostsDefaultState': animatedPostsDefaultState.toData(),
+    'itemOverflowMode': itemOverflowMode.toData(),
   };
 
   @override
@@ -739,5 +746,6 @@ class ImageListingSettings extends Equatable {
     imageGridAspectRatio,
     postsPerPage,
     animatedPostsDefaultState,
+    itemOverflowMode,
   ];
 }
