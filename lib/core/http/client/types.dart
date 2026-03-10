@@ -5,6 +5,7 @@ export 'src/types/http_utils.dart';
 export 'src/types/network_protocol_info.dart';
 export 'src/types/request_deduplicator_mixin.dart';
 export 'src/interceptors/auth_error_response_interceptor.dart';
+export 'src/interceptors/auto_refresh_auth_interceptor.dart';
 export 'src/interceptors/cookie_injection_interceptor.dart';
 export 'src/interceptors/sliding_window_rate_limit_interceptor.dart';
 export 'src/interceptors/pagination_limit_error_interceptor.dart';

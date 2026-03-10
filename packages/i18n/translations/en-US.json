@@ -1127,7 +1127,9 @@
     "login_required": "You need to provide login details to use this feature.",
     "logged_in": "Logged in",
     "relogin": "Re-login",
-    "clear_credentials": "Clear"
+    "clear_credentials": "Clear",
+    "login": "Log in",
+    "login_expires": "Login expires:"
   },
   "captcha": {
     "title": "Solve the captcha",

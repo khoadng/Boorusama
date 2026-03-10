@@ -43,7 +43,7 @@ class EshuushuuSearchNotifier
     int? limit,
   }) async {
     if (tags.isEmpty) {
-      final dtos = await _client.getHomePage(page: page);
+      final dtos = await _client.getPosts(page: page);
       return _mapToPosts(dtos, page: page, tags: tags, limit: limit);
     }
 

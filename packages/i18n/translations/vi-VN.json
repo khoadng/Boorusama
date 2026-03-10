@@ -1123,7 +1123,9 @@
     "login_required": "Bạn cần đăng nhập để sử dụng tính năng này.",
     "logged_in": "Đã đăng nhập",
     "relogin": "Đăng nhập lại",
-    "clear_credentials": "Xóa thông tin"
+    "clear_credentials": "Xóa thông tin",
+    "login": "Đăng nhập",
+    "login_expires": "Đăng nhập hết hạn:"
   },
   "captcha": {
     "title": "Vui lòng giải captcha",

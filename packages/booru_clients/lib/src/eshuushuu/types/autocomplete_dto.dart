@@ -44,14 +44,11 @@ DateTime? _parseDate(String? dateString) {
   return DateTime.tryParse(dateString);
 }
 
-List<AutocompleteDto> parseAutocompleteFromApi(dynamic data) {
-  if (data is! Map<String, dynamic>) return [];
-
-  final tags = data['tags'] as List?;
-  if (tags == null) return [];
-
-  return tags
-      .whereType<Map<String, dynamic>>()
-      .map((json) => AutocompleteDto.fromJson(json))
-      .toList();
-}
+List<AutocompleteDto> parseAutocompleteFromApi(dynamic data) => switch (data) {
+  {'tags': final List tags} =>
+    tags
+        .whereType<Map<String, dynamic>>()
+        .map(AutocompleteDto.fromJson)
+        .toList(),
+  _ => [],
+};

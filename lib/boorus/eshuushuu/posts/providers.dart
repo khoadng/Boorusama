@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../core/configs/config/types.dart';
+import '../../../core/posts/favorites/providers.dart';
 import '../../../core/posts/post/providers.dart';
 import '../../../core/posts/post/types.dart';
 import '../../../core/search/queries/providers.dart';
@@ -29,6 +30,11 @@ final eshuushuuPostRepoProvider =
               page: page,
               limit: limit,
             );
+
+            if (options?.cascadeRequest ?? true) {
+              ref.read(favoritesProvider(config.auth).notifier).preload(posts);
+            }
+
             return posts.toResult();
           },
           fetchFromController: (controller, page, {limit, options}) async {
@@ -38,6 +44,11 @@ final eshuushuuPostRepoProvider =
               page: page,
               limit: limit,
             );
+
+            if (options?.cascadeRequest ?? true) {
+              ref.read(favoritesProvider(config.auth).notifier).preload(posts);
+            }
+
             return posts.toResult();
           },
         );
