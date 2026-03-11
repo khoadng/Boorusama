@@ -92,27 +92,6 @@ class _ImageListingSettingsSectionState
               _onUpdate(settings.copyWith(imageListType: value)),
           optionBuilder: (value) => Text(value.localize(context)),
         ),
-        if (settings.imageListType == ImageListType.masonry ||
-            settings.imageListType == ImageListType.detailed)
-          BooruSwitchListTile(
-            title: Text(
-              context.t.settings.appearance.compact_items,
-            ),
-            subtitle: Text(
-              context.t.settings.appearance.compact_items_description,
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.hintColor,
-              ),
-            ),
-            value: settings.itemOverflowMode.isActive,
-            onChanged: (value) => _onUpdate(
-              settings.copyWith(
-                itemOverflowMode: value
-                    ? ItemOverflowMode.clamp
-                    : ItemOverflowMode.none,
-              ),
-            ),
-          ),
         SettingsTile(
           title: Text(
             context.t.settings.image_grid.image_quality.image_quality,

@@ -306,8 +306,6 @@
       "show_post_list_config_header": "Hiển thị header tuỳ chỉnh",
       "auto_play_gif": "Tự động phát GIF",
       "blur_explicit_media": "Làm mờ nội dung nhạy cảm",
-      "compact_items": "Thu gọn nội dung dài",
-      "compact_items_description": "Ẩn bớt nội dung dài, nhấn để xem đầy đủ",
       "booru_config": "Hồ sơ booru",
       "booru_config_placement": "Vị trí hồ sơ booru",
       "booru_config_placement_options": {
