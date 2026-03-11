@@ -15,7 +15,7 @@ import 'preload_media.dart';
 import 'preload_strategy.dart';
 import 'types.dart';
 
-const kEnablePreloadLogging = true;
+const kEnablePreloadLogging = false;
 
 class PreloadManager {
   PreloadManager({
