@@ -83,38 +83,21 @@ class DefaultImageGridItem<T extends Post> extends StatelessWidget {
                               ),
                             );
 
-                        final imageListType = ref.watch(
-                          imageListingSettingsProvider.select(
-                            (v) => v.imageListType,
-                          ),
-                        );
-
-                        final tapHandler =
-                            onTap ??
-                            () {
-                              goToPostDetailsPageFromController(
-                                ref: ref,
-                                controller: controller,
-                                initialIndex: index,
-                                scrollController: autoScrollController,
-                                initialThumbnailUrl: imgUrl,
-                              );
-                            };
-
-                        if (imageListType == ImageListType.detailed) {
-                          return DetailedPostCard(
-                            post: post,
-                            config: config,
-                            imageUrl: imgUrl,
-                            onTap: tapHandler,
-                          );
-                        }
-
                         return SliverPostGridImageGridItem(
                           post: post,
                           index: index,
                           multiSelectEnabled: multiSelect,
-                          onTap: tapHandler,
+                          onTap:
+                              onTap ??
+                              () {
+                                goToPostDetailsPageFromController(
+                                  ref: ref,
+                                  controller: controller,
+                                  initialIndex: index,
+                                  scrollController: autoScrollController,
+                                  initialThumbnailUrl: imgUrl,
+                                );
+                              },
                           quickActionButton: !multiSelect
                               ? DefaultImagePreviewQuickActionButton(
                                   post: post,

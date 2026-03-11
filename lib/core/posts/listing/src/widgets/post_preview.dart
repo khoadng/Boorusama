@@ -69,14 +69,12 @@ class DefaultPostPreviewHeader extends ConsumerWidget {
     required this.auth,
     this.extraWidgets,
     this.style,
-    this.padding,
   });
 
   final Post post;
   final BooruConfigAuth auth;
   final TextStyle? style;
   final List<Widget>? extraWidgets;
-  final EdgeInsetsGeometry? padding;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -90,12 +88,10 @@ class DefaultPostPreviewHeader extends ConsumerWidget {
         );
 
     return Padding(
-      padding:
-          padding ??
-          const EdgeInsets.symmetric(
-            horizontal: 4,
-            vertical: 4,
-          ),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 4,
+        vertical: 4,
+      ),
       child: LayoutBuilder(
         builder: (context, constraints) {
           final isNarrow = constraints.maxWidth < 350;

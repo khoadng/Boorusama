@@ -8,10 +8,8 @@ import 'package:sliver_masonry_grid/sliver_masonry_grid.dart';
 // Project imports:
 import '../../../../images/booru_image.dart';
 import '../../../../images/utils.dart';
-import '../../../../settings/providers.dart';
 import '../_internal/raw_post_grid.dart';
 import '../types/image_list_type.dart';
-import 'detailed_post_card.dart';
 
 class SliverPostGridPlaceHolder extends ConsumerWidget {
   const SliverPostGridPlaceHolder({
@@ -64,10 +62,6 @@ class SliverPostGridPlaceHolder extends ConsumerWidget {
                 );
               },
             ),
-            ImageListType.detailed => _DetailedPlaceholder(
-              spacing: imageGridSpacing,
-              perPage: perPage,
-            ),
             _ => SliverGrid(
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 childAspectRatio: imageGridAspectRatio,
@@ -87,40 +81,6 @@ class SliverPostGridPlaceHolder extends ConsumerWidget {
             ),
           };
         },
-      ),
-    );
-  }
-}
-
-class _DetailedPlaceholder extends ConsumerWidget {
-  const _DetailedPlaceholder({
-    required this.spacing,
-    required this.perPage,
-  });
-
-  final double spacing;
-  final int perPage;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final gridSize = ref.watch(
-      imageListingSettingsProvider.select((v) => v.gridSize),
-    );
-    final cardHeight = detailedCardHeight(gridSize);
-
-    return SliverList(
-      delegate: SliverChildBuilderDelegate(
-        (context, index) => Padding(
-          padding: EdgeInsets.only(bottom: spacing),
-          child: ImagePlaceHolder(
-            height: cardHeight,
-            borderRadius: BorderRadius.circular(8),
-          ),
-        ),
-        childCount: perPage,
-        addRepaintBoundaries: false,
-        addAutomaticKeepAlives: false,
-        addSemanticIndexes: false,
       ),
     );
   }
