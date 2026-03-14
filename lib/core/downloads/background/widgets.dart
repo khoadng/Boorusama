@@ -5,7 +5,6 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 
 // Package imports:
-import 'package:background_downloader/background_downloader.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gal/gal.dart';
 
@@ -16,7 +15,7 @@ import '../../../foundation/platform.dart';
 import '../../configs/config/providers.dart';
 import '../../ddos/handler/providers.dart';
 import '../../download_manager/providers.dart';
-import 'downloader.dart';
+import 'types.dart';
 
 class BackgroundDownloaderScope extends ConsumerStatefulWidget {
   const BackgroundDownloaderScope({
@@ -104,6 +103,13 @@ class _BackgroundDownloaderScopeState
               .handleError(TaskErrorAdapter(update));
           if (handled) {
             ref.invalidate(bypassDdosHeadersProvider);
+            final headers = await ref.read(
+              bypassDdosHeadersProvider(update.task.url).future,
+            );
+            await FileDownloader().retryTask(
+              update.task,
+              headers: headers,
+            );
           }
         });
       }

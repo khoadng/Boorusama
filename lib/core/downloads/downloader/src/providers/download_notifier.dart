@@ -12,6 +12,7 @@ import '../../../../../foundation/permissions.dart';
 import '../../../../../foundation/platform.dart';
 import '../../../../../foundation/toast.dart';
 import '../../../../configs/config/types.dart';
+import '../../../../ddos/handler/providers.dart';
 import '../../../../http/client/types.dart';
 import '../../../../posts/post/types.dart';
 import '../../../../posts/sources/types.dart';
@@ -202,6 +203,10 @@ Future<DownloadTaskInfo?> _download(
 
     final fileName = await fileNameFuture;
 
+    final bypassHeaders = await ref.read(
+      bypassDdosHeadersProvider(urlData.url).future,
+    );
+
     final result = await service.download(
       DownloadOptions.fromSettings(
         params.settings,
@@ -217,6 +222,7 @@ Future<DownloadTaskInfo?> _download(
         filename: fileName,
         headers: {
           ...headers,
+          ...bypassHeaders,
           if (urlData.cookie != null)
             AppHttpHeaders.cookieHeader: urlData.cookie!,
         },
