@@ -23,12 +23,12 @@ void main() {
           expected: HttpClientAdapterType.defaultAdapter,
         ),
 
-        // Detected HTTP/2 on supported platforms
+        // macOS uses native adapter even with detected HTTP/2
         (
           customProtocol: null,
           detectedProtocol: NetworkProtocol.https_2_0,
           platform: const PlatformInfo.macOS(),
-          expected: HttpClientAdapterType.http2,
+          expected: HttpClientAdapterType.nativeAdapter,
         ),
 
         // Windows/Web use default adapter with detected HTTP/2
