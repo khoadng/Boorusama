@@ -1,3 +1,11 @@
+# 4.4.0
+- Custom profile icon
+- Instant feedback when favoriting or voting
+- [Eshuushuu] Support login, user profile, comments
+- [Danbooru] Added confirmation dialog before modifying favorite groups
+- Captcha dialog now auto-dismisses after challenge is solved
+- Various bug fixes for some sites
+
 # 4.3.0
 - [Gelbooru 0.2, Shimmie2] Add login and favorite support
 - Add random sort option for bookmark
