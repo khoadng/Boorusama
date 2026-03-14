@@ -237,7 +237,8 @@
       "unknown": "未知服务器错误，请将此错误反馈给开发者",
       "cannot_reach_server": "无法连接服务器，请检查您的连接",
       "failed_to_load_data": "从服务器加载数据失败，请稍后重试",
-      "handshake_failed": "连接失败，服务器兼容性问题"
+      "handshake_failed": "连接失败，服务器兼容性问题",
+      "certificate_error": "证书错误。服务器可能正在使用自签名证书。请尝试使用 HTTP 代替 HTTPS，或者在您的设备上安装该证书。"
     },
     "hint": "搜索...",
     "no_result": "我们搜遍了，但是没找到任何结果。",
