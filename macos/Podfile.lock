@@ -33,24 +33,19 @@ PODS:
     - FlutterMacOS
   - media_kit_video (0.0.1):
     - FlutterMacOS
-  - objective_c (0.0.1):
-    - FlutterMacOS
   - package_info_plus (0.0.1):
     - FlutterMacOS
   - pasteboard (0.0.1):
     - FlutterMacOS
-  - path_provider_foundation (0.0.1):
-    - Flutter
+  - purchases_flutter (9.14.0):
     - FlutterMacOS
-  - purchases_flutter (9.12.0):
-    - FlutterMacOS
-    - PurchasesHybridCommon (= 17.36.0)
-  - PurchasesHybridCommon (17.36.0):
-    - RevenueCat (= 5.58.0)
+    - PurchasesHybridCommon (= 17.46.1)
+  - PurchasesHybridCommon (17.46.1):
+    - RevenueCat (= 5.61.0)
   - rate_my_app (2.3.2):
     - Flutter
     - FlutterMacOS
-  - RevenueCat (5.58.0)
+  - RevenueCat (5.61.0)
   - screen_retriever_macos (0.0.1):
     - FlutterMacOS
   - share_plus (0.0.1):
@@ -58,25 +53,25 @@ PODS:
   - shared_preferences_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
-  - sqlite3 (3.50.4):
-    - sqlite3/common (= 3.50.4)
-  - sqlite3/common (3.50.4)
-  - sqlite3/dbstatvtab (3.50.4):
+  - sqlite3 (3.52.0):
+    - sqlite3/common (= 3.52.0)
+  - sqlite3/common (3.52.0)
+  - sqlite3/dbstatvtab (3.52.0):
     - sqlite3/common
-  - sqlite3/fts5 (3.50.4):
+  - sqlite3/fts5 (3.52.0):
     - sqlite3/common
-  - sqlite3/math (3.50.4):
+  - sqlite3/math (3.52.0):
     - sqlite3/common
-  - sqlite3/perf-threadsafe (3.50.4):
+  - sqlite3/perf-threadsafe (3.52.0):
     - sqlite3/common
-  - sqlite3/rtree (3.50.4):
+  - sqlite3/rtree (3.52.0):
     - sqlite3/common
-  - sqlite3/session (3.50.4):
+  - sqlite3/session (3.52.0):
     - sqlite3/common
   - sqlite3_flutter_libs (0.0.1):
     - Flutter
     - FlutterMacOS
-    - sqlite3 (~> 3.50.4)
+    - sqlite3 (~> 3.52.0)
     - sqlite3/dbstatvtab
     - sqlite3/fts5
     - sqlite3/math
@@ -114,10 +109,8 @@ DEPENDENCIES:
   - local_auth_darwin (from `Flutter/ephemeral/.symlinks/plugins/local_auth_darwin/darwin`)
   - media_kit_libs_macos_video (from `Flutter/ephemeral/.symlinks/plugins/media_kit_libs_macos_video/macos`)
   - media_kit_video (from `Flutter/ephemeral/.symlinks/plugins/media_kit_video/macos`)
-  - objective_c (from `Flutter/ephemeral/.symlinks/plugins/objective_c/macos`)
   - package_info_plus (from `Flutter/ephemeral/.symlinks/plugins/package_info_plus/macos`)
   - pasteboard (from `Flutter/ephemeral/.symlinks/plugins/pasteboard/macos`)
-  - path_provider_foundation (from `Flutter/ephemeral/.symlinks/plugins/path_provider_foundation/darwin`)
   - purchases_flutter (from `Flutter/ephemeral/.symlinks/plugins/purchases_flutter/macos`)
   - rate_my_app (from `Flutter/ephemeral/.symlinks/plugins/rate_my_app/darwin`)
   - screen_retriever_macos (from `Flutter/ephemeral/.symlinks/plugins/screen_retriever_macos/macos`)
@@ -167,14 +160,10 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/media_kit_libs_macos_video/macos
   media_kit_video:
     :path: Flutter/ephemeral/.symlinks/plugins/media_kit_video/macos
-  objective_c:
-    :path: Flutter/ephemeral/.symlinks/plugins/objective_c/macos
   package_info_plus:
     :path: Flutter/ephemeral/.symlinks/plugins/package_info_plus/macos
   pasteboard:
     :path: Flutter/ephemeral/.symlinks/plugins/pasteboard/macos
-  path_provider_foundation:
-    :path: Flutter/ephemeral/.symlinks/plugins/path_provider_foundation/darwin
   purchases_flutter:
     :path: Flutter/ephemeral/.symlinks/plugins/purchases_flutter/macos
   rate_my_app:
@@ -216,19 +205,17 @@ SPEC CHECKSUMS:
   mdk: 59bbe9e2ac2a052455ab1b076c245680d66cf6c0
   media_kit_libs_macos_video: 85a23e549b5f480e72cae3e5634b5514bc692f65
   media_kit_video: fa6564e3799a0a28bff39442334817088b7ca758
-  objective_c: ec13431e45ba099cb734eb2829a5c1cd37986cba
   package_info_plus: f0052d280d17aa382b932f399edf32507174e870
-  pasteboard: 278d8100149f940fb795d6b3a74f0720c890ecb7
-  path_provider_foundation: bb55f6dbba17d0dccd6737fe6f7f34fbd0376880
-  purchases_flutter: 377f7e197a482dec3d78cb0bb320fd19a08e80b1
-  PurchasesHybridCommon: 4767776bf65153d7a43f284439e7560c42d0c80a
+  pasteboard: b594eaf838d930b276d7a35a44a32b4f489170cb
+  purchases_flutter: 1e16564a7c62c3114e4e14c4282081cb41e67408
+  PurchasesHybridCommon: afaf46e9650f9399984196a6966c6d697d6122a2
   rate_my_app: cbb89973f870601f80f7bad63aba107260cabc5b
-  RevenueCat: 88bb4229115b2badcce0e5a97f3dd8cc952b38c8
+  RevenueCat: 9acbd29a62000b57d59efa16166290c4a119847b
   screen_retriever_macos: 452e51764a9e1cdb74b3c541238795849f21557f
   share_plus: 510bf0af1a42cd602274b4629920c9649c52f4cc
   shared_preferences_foundation: 7036424c3d8ec98dfe75ff1667cb0cd531ec82bb
-  sqlite3: 73513155ec6979715d3904ef53a8d68892d4032b
-  sqlite3_flutter_libs: 83f8e9f5b6554077f1d93119fe20ebaa5f3a9ef1
+  sqlite3: a51c07cf16e023d6c48abd5e5791a61a47354921
+  sqlite3_flutter_libs: b3e120efe9a82017e5552a620f696589ed4f62ab
   url_launcher_macos: f87a979182d112f911de6820aefddaf56ee9fbfd
   video_player_avfoundation: dd410b52df6d2466a42d28550e33e4146928280a
   wakelock_plus: 917609be14d812ddd9e9528876538b2263aaa03b

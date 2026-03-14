@@ -67,29 +67,24 @@ PODS:
     - Flutter
   - media_kit_video (0.0.1):
     - Flutter
-  - objective_c (0.0.1):
-    - Flutter
   - package_info_plus (0.4.5):
     - Flutter
   - pasteboard (0.0.1):
     - Flutter
-  - path_provider_foundation (0.0.1):
-    - Flutter
-    - FlutterMacOS
   - permission_handler_apple (9.3.0):
     - Flutter
-  - purchases_flutter (9.12.0):
+  - purchases_flutter (9.14.0):
     - Flutter
-    - PurchasesHybridCommon (= 17.36.0)
-  - PurchasesHybridCommon (17.36.0):
-    - RevenueCat (= 5.58.0)
+    - PurchasesHybridCommon (= 17.46.1)
+  - PurchasesHybridCommon (17.46.1):
+    - RevenueCat (= 5.61.0)
   - rate_my_app (2.3.2):
     - Flutter
     - FlutterMacOS
-  - RevenueCat (5.58.0)
-  - SDWebImage (5.21.6):
-    - SDWebImage/Core (= 5.21.6)
-  - SDWebImage/Core (5.21.6)
+  - RevenueCat (5.61.0)
+  - SDWebImage (5.21.7):
+    - SDWebImage/Core (= 5.21.7)
+  - SDWebImage/Core (5.21.7)
   - share_handler_ios (0.0.14):
     - Flutter
     - share_handler_ios/share_handler_ios_models (= 0.0.14)
@@ -103,25 +98,25 @@ PODS:
   - shared_preferences_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
-  - sqlite3 (3.50.4):
-    - sqlite3/common (= 3.50.4)
-  - sqlite3/common (3.50.4)
-  - sqlite3/dbstatvtab (3.50.4):
+  - sqlite3 (3.52.0):
+    - sqlite3/common (= 3.52.0)
+  - sqlite3/common (3.52.0)
+  - sqlite3/dbstatvtab (3.52.0):
     - sqlite3/common
-  - sqlite3/fts5 (3.50.4):
+  - sqlite3/fts5 (3.52.0):
     - sqlite3/common
-  - sqlite3/math (3.50.4):
+  - sqlite3/math (3.52.0):
     - sqlite3/common
-  - sqlite3/perf-threadsafe (3.50.4):
+  - sqlite3/perf-threadsafe (3.52.0):
     - sqlite3/common
-  - sqlite3/rtree (3.50.4):
+  - sqlite3/rtree (3.52.0):
     - sqlite3/common
-  - sqlite3/session (3.50.4):
+  - sqlite3/session (3.52.0):
     - sqlite3/common
   - sqlite3_flutter_libs (0.0.1):
     - Flutter
     - FlutterMacOS
-    - sqlite3 (~> 3.50.4)
+    - sqlite3 (~> 3.52.0)
     - sqlite3/dbstatvtab
     - sqlite3/fts5
     - sqlite3/math
@@ -159,10 +154,8 @@ DEPENDENCIES:
   - local_auth_darwin (from `.symlinks/plugins/local_auth_darwin/darwin`)
   - media_kit_libs_ios_video (from `.symlinks/plugins/media_kit_libs_ios_video/ios`)
   - media_kit_video (from `.symlinks/plugins/media_kit_video/ios`)
-  - objective_c (from `.symlinks/plugins/objective_c/ios`)
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
   - pasteboard (from `.symlinks/plugins/pasteboard/ios`)
-  - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
   - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
   - purchases_flutter (from `.symlinks/plugins/purchases_flutter/ios`)
   - rate_my_app (from `.symlinks/plugins/rate_my_app/darwin`)
@@ -219,14 +212,10 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/media_kit_libs_ios_video/ios"
   media_kit_video:
     :path: ".symlinks/plugins/media_kit_video/ios"
-  objective_c:
-    :path: ".symlinks/plugins/objective_c/ios"
   package_info_plus:
     :path: ".symlinks/plugins/package_info_plus/ios"
   pasteboard:
     :path: ".symlinks/plugins/pasteboard/ios"
-  path_provider_foundation:
-    :path: ".symlinks/plugins/path_provider_foundation/darwin"
   permission_handler_apple:
     :path: ".symlinks/plugins/permission_handler_apple/ios"
   purchases_flutter:
@@ -260,7 +249,7 @@ SPEC CHECKSUMS:
   connectivity_plus: cb623214f4e1f6ef8fe7403d580fdad517d2f7dd
   cupertino_http: 94ac07f5ff090b8effa6c5e2c47871d48ab7c86c
   device_info_plus: 21fcca2080fbcd348be798aa36c3e5ed849eefbe
-  disk_space_2: 2de4ee49f04eaf246d5bc123726977b55d972594
+  disk_space_2: 6679de97ec91ca990d1f22d75ad6bf7f463b8128
   DKImagePickerController: 946cec48c7873164274ecc4624d19e3da4c1ef3c
   DKPhotoGallery: b3834fecb755ee09a593d7c9e389d8b5d6deed60
   file_picker: a0560bc09d61de87f12d246fc47d2119e6ef37be
@@ -273,22 +262,20 @@ SPEC CHECKSUMS:
   mdk: 59bbe9e2ac2a052455ab1b076c245680d66cf6c0
   media_kit_libs_ios_video: 5a18affdb97d1f5d466dc79988b13eff6c5e2854
   media_kit_video: 1746e198cb697d1ffb734b1d05ec429d1fcd1474
-  objective_c: 89e720c30d716b036faf9c9684022048eee1eee2
   package_info_plus: af8e2ca6888548050f16fa2f1938db7b5a5df499
-  pasteboard: 49088aeb6119d51f976a421db60d8e1ab079b63c
-  path_provider_foundation: bb55f6dbba17d0dccd6737fe6f7f34fbd0376880
+  pasteboard: 3913b69d3f2be214970a8ae94e7e87fe76e47e98
   permission_handler_apple: 4ed2196e43d0651e8ff7ca3483a069d469701f2d
-  purchases_flutter: 9d559f16095fbcdb7b4def4cbc60e4a9fbd0ee1b
-  PurchasesHybridCommon: 4767776bf65153d7a43f284439e7560c42d0c80a
+  purchases_flutter: 1a27b709af72a506ddbc2f1255cae31ba101243d
+  PurchasesHybridCommon: afaf46e9650f9399984196a6966c6d697d6122a2
   rate_my_app: cbb89973f870601f80f7bad63aba107260cabc5b
-  RevenueCat: 88bb4229115b2badcce0e5a97f3dd8cc952b38c8
-  SDWebImage: 1bb6a1b84b6fe87b972a102bdc77dd589df33477
+  RevenueCat: 9acbd29a62000b57d59efa16166290c4a119847b
+  SDWebImage: e9fc87c1aab89a8ab1bbd74eba378c6f53be8abf
   share_handler_ios: e2244e990f826b2c8eaa291ac3831569438ba0fb
   share_handler_ios_models: fc638c9b4330dc7f082586c92aee9dfa0b87b871
   share_plus: 50da8cb520a8f0f65671c6c6a99b3617ed10a58a
   shared_preferences_foundation: 7036424c3d8ec98dfe75ff1667cb0cd531ec82bb
-  sqlite3: 73513155ec6979715d3904ef53a8d68892d4032b
-  sqlite3_flutter_libs: 83f8e9f5b6554077f1d93119fe20ebaa5f3a9ef1
+  sqlite3: a51c07cf16e023d6c48abd5e5791a61a47354921
+  sqlite3_flutter_libs: b3e120efe9a82017e5552a620f696589ed4f62ab
   SwiftyGif: 706c60cf65fa2bc5ee0313beece843c8eb8194d4
   url_launcher_ios: 7a95fa5b60cc718a708b8f2966718e93db0cef1b
   video_player_avfoundation: dd410b52df6d2466a42d28550e33e4146928280a
