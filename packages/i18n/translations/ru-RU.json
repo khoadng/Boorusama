@@ -131,9 +131,16 @@
         "comments": "Комментарии",
         "artist_posts": "Посты художника",
         "character_list": "Список персонажей",
-        "source": "Источник"
+        "source": "Источник",
+        "info_panel": "Информационная панель",
+        "related_posts": "Похожие посты",
+        "uploader_posts": "Загрузки пользователя"
       },
-      "uploader": "Автор"
+      "uploader": "Автор",
+      "approver": "Утвердивший",
+      "artist": "Художник",
+      "show_n_more": "Показать ещё $n",
+      "show_less": "Свернуть"
     },
     "action": {
       "view_comments": "Просмотреть комментарии",
@@ -147,7 +154,15 @@
       "copy_image": "Скопировать изображение",
       "slideshow": "Слайд-шоу",
       "edit": "Редактировать",
-      "use_default": "Использовать по умолчанию"
+      "use_default": "Использовать по умолчанию",
+      "favorite": "В избранное",
+      "unfavorite": "Из избранного",
+      "upvote": "Нравится",
+      "downvote": "Не нравится",
+      "view_artist": "Просмотр художника",
+      "none": "Нет",
+      "toggle_bookmark": "Закладка",
+      "toggle_favorite": "Избранное"
     },
     "statistics": {
       "stats_for_nerds": "Статистика для ботаников"
@@ -156,7 +171,12 @@
       "user_list": {
         "title": "Избранное"
       }
-    }
+    },
+    "counter": {
+      "one": "$n пост",
+      "other": "$n постов"
+    },
+    "hidden_count": "$hidden из $total"
   },
   "comment": {
     "comments": "Коментарии",
@@ -187,7 +207,11 @@
     "new": "Новое",
     "newest": "Новейший",
     "random": "Случайный",
-    "ordered": "Упорядоченный"
+    "ordered": "Упорядоченный",
+    "top": "Топ",
+    "daily": "За день",
+    "weekly": "За неделю",
+    "oldest": "Старые"
   },
   "search": {
     "errors": {
@@ -536,7 +560,21 @@
     "download": "Скачать",
     "invalid_folder_name_error": "Название папки не может содержать следующие символы: ",
     "folder_select_warning": "Приложение может сохранять файлы только в публичные папки <b>({0})</b> в Android 11+. <br><br> Примеры правильного местоположения:<br><b>[Внутреннее]</b> /storage/emulated/0/Download <br><b>[SD карта]</b> /storage/A1B2-C3D4/Download<br><br>Пожалуйста, выберите другое расположение или создайте новое если не существует. <br>Версия этого устройства: <b>{1}</b>.",
-    "storage_permission_explanation": "Разрешение на доступ к хранилищу необхдимо для сохранения загруженных файлов."
+    "storage_permission_explanation": "Разрешение на доступ к хранилищу необхдимо для сохранения загруженных файлов.",
+    "downloads": "Загрузки",
+    "retry_all": "Повторить все",
+    "notification": {
+      "started": "Загрузка начата"
+    },
+    "status": {
+      "in_progress": "В процессе",
+      "pending": "Ожидание",
+      "paused": "Пауза",
+      "completed": "Завершено",
+      "failed": "Ошибка",
+      "canceled": "Отменено",
+      "unknown": "Неизвестно"
+    }
   },
   "saved_search": {
     "saved_search": "Поисковые запросы",
@@ -561,6 +599,10 @@
     "counter": {
       "one": "Избранное",
       "other": "Избранные"
+    },
+    "update": {
+      "success": "Избранное обновлено",
+      "failure": "Не удалось обновить избранное"
     }
   },
   "favorite_groups": {
@@ -586,7 +628,18 @@
     "group_item_counter": {
       "one": "$n изображение",
       "other": "$n изображений"
-    }
+    },
+    "drag_hint": "Удерживайте и перетащите для сортировки",
+    "confirm_edit_title": "Просмотр изменений",
+    "confirm_edit_adding": {
+      "one": "Будет добавлен $n новый пост",
+      "other": "Будет добавлено $n новых постов"
+    },
+    "confirm_edit_removing": {
+      "one": "Будет удалён $n пост",
+      "other": "Будет удалено $n постов"
+    },
+    "invalid_post_ids": "Содержит недействительные ID: {0}"
   },
   "favorite_tags": {
     "favorites": "Избранные",
@@ -606,7 +659,9 @@
     "your_bookmarks": "Ваши закладки",
     "your_blacklist": "Ваш чёрный список",
     "bulk_download": "Массовая загрузка",
-    "get_support": "Обратиться в поддержку"
+    "get_support": "Обратиться в поддержку",
+    "home": "Главная",
+    "download_manager": "Менеджер загрузок"
   },
   "dateRange": {
     "day": "День",
@@ -655,7 +710,13 @@
     "many_added": "Добавлено {0} закладок",
     "failed_to_add_many": "Не удалось добавить закладки",
     "removed": "Закладка удалена",
-    "failed_to_remove": "Не удалось удалить закладку"
+    "failed_to_remove": "Не удалось удалить закладку",
+    "title": "Закладки",
+    "shuffle_tooltip": "Перемешать закладки",
+    "counter": {
+      "one": "$n закладка",
+      "other": "$n закладок"
+    }
   },
   "app_update": {
     "update": "Обновить приложение",
@@ -678,11 +739,58 @@
         "one": "$n секунда",
         "other": "$n секунд"
       }
+    },
+    "timeago": {
+      "days": "{days} дней назад",
+      "hours": "{hours} часов назад",
+      "minutes": "{minutes} минут назад",
+      "just_now": "Только что"
+    },
+    "months": {
+      "short": {
+        "jan": "Янв",
+        "feb": "Фев",
+        "mar": "Мар",
+        "apr": "Апр",
+        "may": "Май",
+        "jun": "Июн",
+        "jul": "Июл",
+        "aug": "Авг",
+        "sep": "Сен",
+        "oct": "Окт",
+        "nov": "Ноя",
+        "dec": "Дек"
+      }
+    },
+    "filter": {
+      "last_7_days": "Последние 7 дней",
+      "last_30_days": "Последние 30 дней",
+      "last_90_days": "Последние 90 дней",
+      "last_6_months": "Последние 6 месяцев",
+      "last_year": "Последний год"
     }
   },
   "tags": {
     "actions": {
-      "add_to_blacklist": "Добавить в чёрный список"
+      "add_to_blacklist": "Добавить в чёрный список",
+      "search": "Поиск тегов",
+      "search_single": "Поиск",
+      "copy": "Копировать теги",
+      "copy_single": "Копировать",
+      "blacklist": "Чёрный список",
+      "blacklist_global": "Чёрный список (глобальный)",
+      "add_to_blacklist_global": "Добавить в глобальный чёрный список"
+    },
+    "title": "Теги",
+    "filter_hint": "Фильтр...",
+    "added": "Добавлено",
+    "counter": {
+      "one": "$n тег",
+      "other": "$n тегов"
+    },
+    "other_counter": {
+      "one": "$n другой",
+      "other": "$n других"
     }
   },
   "bulk_downloads": {
@@ -703,5 +811,82 @@
   },
   "reminder": {
     "dont_show_again": "Больше не показывать"
+  },
+  "auth": {
+    "login_required": "Для использования этой функции необходимо ввести данные для входа.",
+    "logged_in": "Вы вошли",
+    "relogin": "Войти снова",
+    "clear_credentials": "Очистить",
+    "login": "Войти",
+    "login_expires": "Вход истекает:"
+  },
+  "captcha": {
+    "title": "Решите капчу",
+    "i_have_solved_it": "Я решил"
+  },
+  "select": {
+    "selected_items": "Выбрать элементы",
+    "items_selected": {
+      "one": "$n элемент выбран",
+      "other": "$n элементов выбрано"
+    },
+    "select_all": "Выбрать все",
+    "deselect_all": "Отменить выбор"
+  },
+  "artists": {
+    "title": "Художники",
+    "search": {
+      "name": "Имя",
+      "name_hint": "Имя, название группы или другое имя",
+      "name_tips": "*Поддерживает подстановочные знаки и регулярные выражения",
+      "url_hint": "URL или его часть"
+    }
+  },
+  "uploads": {
+    "counter": {
+      "one": "$n загрузка",
+      "other": "$n загрузок"
+    }
+  },
+  "infinite_scroll": {
+    "load_more": "Загрузить ещё",
+    "nore_more_data": "Больше ничего нет",
+    "page_label": "Страница $page",
+    "next_page": "Следующая страница",
+    "previous_page": "Предыдущая страница"
+  },
+  "donation": {
+    "donate": "Пожертвовать"
+  },
+  "video_player": {
+    "playback_speed": "Скорость воспроизведения",
+    "lock_screen": "Блокировка экрана",
+    "buffering": "Буферизация...",
+    "video_quality": "Качество видео",
+    "video_qualities": {
+      "auto": "Авто",
+      "sample": "Превью",
+      "original": "Оригинал"
+    },
+    "speed": {
+      "normal": "Обычная"
+    }
+  },
+  "eshuushuu": {
+    "personal_info": {
+      "title": "Личная информация",
+      "gender": "Пол",
+      "location": "Местоположение",
+      "interests": "Интересы",
+      "website": "Вебсайт"
+    },
+    "profile": {
+      "joined": "Присоединился",
+      "last_active": "Последняя активность"
+    }
+  },
+  "misc": {
+    "trailing_more": " ещё",
+    "trailing_less": " меньше"
   }
 }

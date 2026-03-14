@@ -238,7 +238,7 @@
       "cannot_reach_server": "无法连接服务器，请检查您的连接",
       "failed_to_load_data": "从服务器加载数据失败，请稍后重试",
       "handshake_failed": "连接失败，服务器兼容性问题",
-      "certificate_error": "证书错误。服务器可能正在使用自签名证书。请尝试使用 HTTP 代替 HTTPS，或者在您的设备上安装该证书。"
+      "certificate_error": "证书错误。服务器可能使用了自签名证书。请尝试使用 HTTP 代替 HTTPS，或在设备上安装该证书。"
     },
     "hint": "搜索...",
     "no_result": "我们搜遍了，但是没找到任何结果。",
@@ -734,7 +734,11 @@
       "one": "$n 个提交",
       "other": "$n 个提交"
     },
-    "drag_hint": "长按并拖动以重新排序"
+    "drag_hint": "长按并拖动以重新排序",
+    "confirm_edit_title": "确认更改",
+    "confirm_edit_adding": {"one": "将添加 $n 个新帖子", "other": "将添加 $n 个新帖子"},
+    "confirm_edit_removing": {"one": "将移除 $n 个帖子", "other": "将移除 $n 个帖子"},
+    "invalid_post_ids": "包含无效 ID：{0}"
   },
   "favorite_tags": {
     "favorites": "喜爱",
@@ -921,7 +925,11 @@
       },
       "http": {
         "protocol": "HTTP 协议",
-        "protocol_description": "更改 HTTP 协议可能有助于在某些站点或平台上的兼容性或性能。"
+        "protocol_description": "更改 HTTP 协议可能有助于在某些站点或平台上的兼容性或性能。",
+        "skip_cert_verification": "跳过证书验证",
+        "skip_cert_verification_description": "为自签名证书启用（例如本地服务器）",
+        "skip_cert_verification_warning_title": "安全警告",
+        "skip_cert_verification_warning": "证书验证已禁用。您的连接可能不安全。仅在受信任的本地服务器上使用。"
       }
     },
     "viewer": {
@@ -1137,7 +1145,9 @@
     "login_required": "您需要提供登录详细信息才能使用此功能。",
     "logged_in": "已登录",
     "relogin": "重新登录",
-    "clear_credentials": "清除"
+    "clear_credentials": "清除",
+    "login": "登录",
+    "login_expires": "登录过期："
   },
   "captcha": {
     "title": "解决验证码",
@@ -1272,5 +1282,9 @@
       "title": "扩展",
       "failed_to_fetch": "无法获取此实例的扩展列表"
     }
+  },
+  "eshuushuu": {
+    "personal_info": {"title": "个人信息", "gender": "性别", "location": "位置", "interests": "兴趣", "website": "网站"},
+    "profile": {"joined": "加入时间", "last_active": "最后活跃"}
   }
 }

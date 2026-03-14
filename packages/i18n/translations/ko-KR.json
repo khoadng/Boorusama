@@ -140,7 +140,8 @@
         "related_posts": "관련 게시물",
         "character_list": "캐릭터 목록",
         "uploader_posts": "업로더 게시물",
-        "source": "출저"
+        "source": "출저",
+        "pool": "풀"
       }
     },
     "action": {
@@ -733,7 +734,17 @@
       "one": "$n개 포스트",
       "other": "$n개 포스트"
     },
-    "drag_hint": "누르고 드래그 하여 재정렬하세요"
+    "drag_hint": "누르고 드래그 하여 재정렬하세요",
+    "confirm_edit_title": "변경 확인",
+    "confirm_edit_adding": {
+      "one": "$n개의 새 게시물이 추가됩니다",
+      "other": "$n개의 새 게시물이 추가됩니다"
+    },
+    "confirm_edit_removing": {
+      "one": "$n개의 게시물이 제거됩니다",
+      "other": "$n개의 게시물이 제거됩니다"
+    },
+    "invalid_post_ids": "잘못된 ID 포함: {0}"
   },
   "favorite_tags": {
     "favorites": "즐겨찾기",
@@ -1032,7 +1043,25 @@
   },
   "tags": {
     "actions": {
-      "add_to_blacklist": "블랙리스트에 추가"
+      "add_to_blacklist": "블랙리스트에 추가",
+      "search": "태그 검색",
+      "search_single": "검색",
+      "copy": "태그 복사",
+      "copy_single": "복사",
+      "blacklist": "블랙리스트",
+      "blacklist_global": "블랙리스트 (전체)",
+      "add_to_blacklist_global": "전체 블랙리스트에 추가"
+    },
+    "title": "태그",
+    "filter_hint": "필터...",
+    "added": "추가됨",
+    "counter": {
+      "one": "태그 $n개",
+      "other": "태그 $n개"
+    },
+    "other_counter": {
+      "one": "기타 $n개",
+      "other": "기타 $n개"
     }
   },
   "bulk_downloads": {
@@ -1135,5 +1164,86 @@
   },
   "donation": {
     "donate": "기부"
+  },
+  "auth": {
+    "login_required": "이 기능을 사용하려면 로그인 정보를 입력해야 합니다.",
+    "logged_in": "로그인됨",
+    "relogin": "재로그인",
+    "clear_credentials": "초기화",
+    "login": "로그인",
+    "login_expires": "로그인 만료:"
+  },
+  "captcha": {
+    "title": "캡차를 풀어주세요",
+    "i_have_solved_it": "풀었습니다"
+  },
+  "select": {
+    "selected_items": "항목 선택",
+    "items_selected": {
+      "one": "$n개 선택됨",
+      "other": "$n개 선택됨"
+    },
+    "select_all": "모두 선택",
+    "deselect_all": "모두 해제"
+  },
+  "posts": {
+    "counter": {
+      "one": "게시물 $n개",
+      "other": "게시물 $n개"
+    },
+    "hidden_count": "$total 중 $hidden개"
+  },
+  "artists": {
+    "title": "아티스트",
+    "search": {
+      "name": "이름",
+      "name_hint": "이름, 그룹명 또는 다른 이름",
+      "name_tips": "*와일드카드 및 정규식 지원",
+      "url_hint": "URL 또는 일부"
+    }
+  },
+  "uploads": {
+    "counter": {
+      "one": "업로드 $n개",
+      "other": "업로드 $n개"
+    }
+  },
+  "infinite_scroll": {
+    "load_more": "더 보기",
+    "nore_more_data": "더 이상 없습니다",
+    "page_label": "$page 페이지",
+    "next_page": "다음 페이지",
+    "previous_page": "이전 페이지"
+  },
+  "video_player": {
+    "playback_speed": "재생 속도",
+    "lock_screen": "화면 잠금",
+    "buffering": "버퍼링...",
+    "video_quality": "화질",
+    "video_qualities": {
+      "auto": "자동",
+      "sample": "샘플",
+      "original": "원본"
+    },
+    "speed": {
+      "normal": "보통"
+    }
+  },
+  "eshuushuu": {
+    "personal_info": {
+      "title": "개인 정보",
+      "gender": "성별",
+      "location": "위치",
+      "interests": "관심사",
+      "website": "웹사이트"
+    },
+    "profile": {
+      "joined": "가입일",
+      "last_active": "최근 활동"
+    }
+  },
+  "misc": {
+    "trailing_more": " 더",
+    "trailing_less": " 줄이기"
   }
 }

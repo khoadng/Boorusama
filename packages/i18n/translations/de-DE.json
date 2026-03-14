@@ -733,7 +733,17 @@
       "one": "$n Post",
       "other": "$n Posts"
     },
-    "drag_hint": "Lang drücken und ziehen, um neu anzuordnen"
+    "drag_hint": "Lang drücken und ziehen, um neu anzuordnen",
+    "confirm_edit_title": "Änderungen überprüfen",
+    "confirm_edit_adding": {
+      "one": "$n neuer Beitrag wird hinzugefügt",
+      "other": "$n neue Beiträge werden hinzugefügt"
+    },
+    "confirm_edit_removing": {
+      "one": "$n Beitrag wird entfernt",
+      "other": "$n Beiträge werden entfernt"
+    },
+    "invalid_post_ids": "Enthält ungültige IDs: {0}"
   },
   "favorite_tags": {
     "favorites": "Favoriten",
@@ -892,7 +902,13 @@
     "many_added": "{0} Lesezeichen hinzugefügt",
     "failed_to_add_many": "Lesezeichen konnten nicht hinzugefügt werden",
     "removed": "Lesezeichen entfernt",
-    "failed_to_remove": "Lesezeichen konnte nicht entfernt werden"
+    "failed_to_remove": "Lesezeichen konnte nicht entfernt werden",
+    "title": "Lesezeichen",
+    "shuffle_tooltip": "Lesezeichen mischen",
+    "counter": {
+      "one": "$n Lesezeichen",
+      "other": "$n Lesezeichen"
+    }
   },
   "app_update": {
     "update": "Update",
@@ -911,7 +927,25 @@
   },
   "tags": {
     "actions": {
-      "add_to_blacklist": "Zu Ausgeblendeten Tags hinzufügen"
+      "add_to_blacklist": "Zu Ausgeblendeten Tags hinzufügen",
+      "search": "Tags suchen",
+      "search_single": "Suchen",
+      "copy": "Tags kopieren",
+      "copy_single": "Kopieren",
+      "blacklist": "Blacklist",
+      "blacklist_global": "Blacklist (Global)",
+      "add_to_blacklist_global": "Zur globalen Blacklist hinzufügen"
+    },
+    "title": "Tags",
+    "filter_hint": "Filtern...",
+    "added": "Hinzugefügt",
+    "counter": {
+      "one": "$n Tag",
+      "other": "$n Tags"
+    },
+    "other_counter": {
+      "one": "$n anderes",
+      "other": "$n andere"
     }
   },
   "bulk_downloads": {
@@ -970,5 +1004,126 @@
   },
   "reminder": {
     "dont_show_again": "Nicht mehr anzeigen"
+  },
+  "auth": {
+    "login_required": "Sie müssen Anmeldedaten eingeben, um diese Funktion zu nutzen.",
+    "logged_in": "Angemeldet",
+    "relogin": "Erneut anmelden",
+    "clear_credentials": "Löschen",
+    "login": "Anmelden",
+    "login_expires": "Anmeldung läuft ab:"
+  },
+  "captcha": {
+    "title": "Captcha lösen",
+    "i_have_solved_it": "Ich habe es gelöst"
+  },
+  "select": {
+    "selected_items": "Elemente auswählen",
+    "items_selected": {
+      "one": "$n Element ausgewählt",
+      "other": "$n Elemente ausgewählt"
+    },
+    "select_all": "Alle auswählen",
+    "deselect_all": "Alle abwählen"
+  },
+  "posts": {
+    "counter": {
+      "one": "$n Beitrag",
+      "other": "$n Beiträge"
+    },
+    "hidden_count": "$hidden von $total"
+  },
+  "artists": {
+    "title": "Künstler",
+    "search": {
+      "name": "Name",
+      "name_hint": "Name, Gruppenname oder anderer Name",
+      "name_tips": "*Unterstützt Platzhalter und reguläre Ausdrücke",
+      "url_hint": "URL oder ein Teil davon"
+    }
+  },
+  "uploads": {
+    "counter": {
+      "one": "$n Upload",
+      "other": "$n Uploads"
+    }
+  },
+  "infinite_scroll": {
+    "load_more": "Mehr laden",
+    "nore_more_data": "Das war alles",
+    "page_label": "Seite $page",
+    "next_page": "Nächste Seite",
+    "previous_page": "Vorherige Seite"
+  },
+  "time": {
+    "counters": {
+      "second": {
+        "one": "$n Sekunde",
+        "other": "$n Sekunden"
+      }
+    },
+    "timeago": {
+      "days": "vor {days} Tagen",
+      "hours": "vor {hours} Stunden",
+      "minutes": "vor {minutes} Minuten",
+      "just_now": "Gerade eben"
+    },
+    "months": {
+      "short": {
+        "jan": "Jan",
+        "feb": "Feb",
+        "mar": "Mär",
+        "apr": "Apr",
+        "may": "Mai",
+        "jun": "Jun",
+        "jul": "Jul",
+        "aug": "Aug",
+        "sep": "Sep",
+        "oct": "Okt",
+        "nov": "Nov",
+        "dec": "Dez"
+      }
+    },
+    "filter": {
+      "last_7_days": "Letzte 7 Tage",
+      "last_30_days": "Letzte 30 Tage",
+      "last_90_days": "Letzte 90 Tage",
+      "last_6_months": "Letzte 6 Monate",
+      "last_year": "Letztes Jahr"
+    }
+  },
+  "donation": {
+    "donate": "Spenden"
+  },
+  "video_player": {
+    "playback_speed": "Wiedergabegeschwindigkeit",
+    "lock_screen": "Bildschirm sperren",
+    "buffering": "Puffern...",
+    "video_quality": "Videoqualität",
+    "video_qualities": {
+      "auto": "Auto",
+      "sample": "Vorschau",
+      "original": "Original"
+    },
+    "speed": {
+      "normal": "Normal"
+    }
+  },
+  "eshuushuu": {
+    "personal_info": {
+      "title": "Persönliche Informationen",
+      "gender": "Geschlecht",
+      "location": "Standort",
+      "interests": "Interessen",
+      "website": "Webseite"
+    },
+    "profile": {
+      "joined": "Beigetreten",
+      "last_active": "Zuletzt aktiv"
+    }
+  },
+  "misc": {
+    "trailing_more": " mehr",
+    "trailing_less": " weniger"
   }
 }

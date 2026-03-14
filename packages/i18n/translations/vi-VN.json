@@ -251,7 +251,8 @@
       "unknown": "Lỗi server không xác định, vui lòng báo cho dev",
       "cannot_reach_server": "Không thể kết nối tới máy chủ, vui lòng kiểm tra kết nối của bạn",
       "handshake_failed": "Kết nối thất bại, vấn đề tương thích với máy chủ",
-      "failed_to_load_data": "Không tải được dữ liệu từ máy chủ, vui lòng thử lại sau"
+      "failed_to_load_data": "Không tải được dữ liệu từ máy chủ, vui lòng thử lại sau",
+      "certificate_error": "Lỗi chứng chỉ. Máy chủ có thể đang sử dụng chứng chỉ tự ký. Hãy thử dùng HTTP thay vì HTTPS, hoặc cài đặt chứng chỉ trên thiết bị của bạn."
     },
     "hint": "Tìm...",
     "no_result": "Không tìm được kết quả phù hợp.",
@@ -926,7 +927,11 @@
       },
       "http": {
         "protocol": "Giao thức HTTP",
-        "protocol_description": "Thay đổi giao thức HTTP có thể giúp cải thiện tương thích hoặc hiệu suất trên một số trang web hoặc nền tảng."
+        "protocol_description": "Thay đổi giao thức HTTP có thể giúp cải thiện tương thích hoặc hiệu suất trên một số trang web hoặc nền tảng.",
+        "skip_cert_verification": "Bỏ qua xác minh chứng chỉ",
+        "skip_cert_verification_description": "Bật cho chứng chỉ tự ký (ví dụ: máy chủ nội bộ)",
+        "skip_cert_verification_warning_title": "Cảnh báo bảo mật",
+        "skip_cert_verification_warning": "Xác minh chứng chỉ đã bị tắt. Kết nối của bạn có thể không an toàn. Chỉ sử dụng cho các máy chủ nội bộ đáng tin cậy."
       }
     },
     "viewer": {

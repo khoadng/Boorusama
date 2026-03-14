@@ -23,13 +23,17 @@
       "search": "検索",
       "retry": "やり直し",
       "clear": "クリア",
-      "view_all": "全部見る"
+      "view_all": "全部見る",
+      "more": "もっと見る",
+      "apply": "適用",
+      "show_less": "折りたたむ"
     },
     "copied": "クリップボードにコピーしました",
     "app_restart_request": "この変更を有効にするにはアプリを再起動する必要があります",
     "warning": "警告",
     "default": "定番",
-    "version": "バージョン $version"
+    "version": "バージョン $version",
+    "no_content": "コンテンツなし"
   },
   "profile": {
     "favorites": "いいね",
@@ -94,9 +98,26 @@
       "add_to_bookmark": "ブックマークに追加",
       "remove_from_bookmark": "ブックマークから削除",
       "copy_and_open_saved_search": "コッピーして開く",
+      "duration": "再生時間",
+      "uploader": "アップローダー",
+      "approver": "承認者",
+      "artist": "アーティスト",
+      "show_n_more": "さらに$n件表示",
+      "show_less": "折りたたむ",
       "widgets": {
         "toolbar": "ツールバー",
-        "tags": "タッグ"
+        "tags": "タッグ",
+        "info_panel": "情報パネル",
+        "file_details": "ファイル詳細",
+        "pool": "プール",
+        "artist_info": "アーティスト情報",
+        "stats": "統計",
+        "comments": "コメント",
+        "artist_posts": "アーティストの投稿",
+        "related_posts": "関連投稿",
+        "character_list": "キャラクター一覧",
+        "uploader_posts": "アップローダーの投稿",
+        "source": "ソース"
       }
     },
     "action": {
@@ -111,13 +132,33 @@
       "view_original": "オリジナルを表示",
       "copy_image": "画像をコピー",
       "edit": "編集",
-      "use_default": "デフォルトを使う"
+      "use_default": "デフォルトを使う",
+      "unfavorite": "お気に入り解除",
+      "view_artist": "アーティストを見る",
+      "view_tags": "タグを見る",
+      "view_tag_history": "タグ履歴を見る",
+      "slideshow": "スライドショー",
+      "none": "なし",
+      "toggle_bookmark": "ブックマーク切替",
+      "toggle_favorite": "お気に入り切替"
     },
     "statistics": {
       "average": "平均",
       "highest": "最大",
       "lowest": "最低",
       "median": "中央"
+    },
+    "votes": {
+      "user_list": {
+        "title": "投票者",
+        "disclaimer": "マイナス投票と非公開投票は表示されません。"
+      }
+    },
+    "favorites": {
+      "user_list": {
+        "title": "お気に入りしたユーザー",
+        "disclaimer": "公開のお気に入りのみ表示されます。"
+      }
     }
   },
   "comment": {
@@ -147,7 +188,12 @@
     "explore": "探索",
     "new": "最新",
     "newest": "最も最新",
-    "oldest": "最古"
+    "oldest": "最古",
+    "top": "トップ",
+    "daily": "日間",
+    "weekly": "週間",
+    "random": "ランダム",
+    "ordered": "順序"
   },
   "search": {
     "errors": {
@@ -175,7 +221,8 @@
       "other": "$n件の結果"
     },
     "no_result_notice": "結果なし",
-    "search_in_progress_notice": "検索中..."
+    "search_in_progress_notice": "検索中...",
+    "raw_query": "生クエリ"
   },
   "pool": {
     "pool": "プール",
@@ -195,6 +242,12 @@
     },
     "detail": {
       "last_updated": "最終更新"
+    },
+    "pools": "プール",
+    "no_cover_image": "カバー画像なし",
+    "counter": {
+      "one": "プール",
+      "other": "プール"
     }
   },
   "settings": {
@@ -398,7 +451,21 @@
     "download": "ダウンロード",
     "invalid_folder_name_error": "フォルダには次の文字を含めることはできません： ",
     "folder_select_warning": "Android 11+では、<b>({0})</b>内のフォルダにのみダウンロードできます。例：<b>内部</b> /storage/emulated/0/Download、<b>SDカード</b> /storage/A1B2-C3D4/Download。別のフォルダを選ぶか、新しく作成してください。デバイスバージョン：<b>{1}</b>",
-    "storage_permission_explanation": "ダウンロードファイルを保存するにはストレージ権限が必要です。"
+    "storage_permission_explanation": "ダウンロードファイルを保存するにはストレージ権限が必要です。",
+    "downloads": "ダウンロード",
+    "retry_all": "すべて再試行",
+    "notification": {
+      "started": "ダウンロード開始"
+    },
+    "status": {
+      "in_progress": "進行中",
+      "pending": "待機中",
+      "paused": "一時停止",
+      "completed": "完了",
+      "failed": "失敗",
+      "canceled": "キャンセル",
+      "unknown": "不明"
+    }
   },
   "saved_search": {
     "saved_search": "保存された検索",
@@ -423,6 +490,10 @@
     "counter": {
       "one": "お気に入り",
       "other": "いいね"
+    },
+    "update": {
+      "success": "お気に入りを更新しました",
+      "failure": "お気に入りの更新に失敗しました"
     }
   },
   "favorite_groups": {
@@ -448,7 +519,18 @@
     "group_item_counter": {
       "one": "$n件の投稿",
       "other": "$n件の投稿"
-    }
+    },
+    "confirm_edit_title": "変更の確認",
+    "confirm_edit_adding": {
+      "one": "$n件の新しい投稿が追加されます",
+      "other": "$n件の新しい投稿が追加されます"
+    },
+    "confirm_edit_removing": {
+      "one": "$n件の投稿が削除されます",
+      "other": "$n件の投稿が削除されます"
+    },
+    "invalid_post_ids": "無効なIDが含まれています：{0}",
+    "drag_hint": "長押しでドラッグして並べ替え"
   },
   "favorite_tags": {
     "favorites": "お気に入り",
@@ -468,7 +550,9 @@
     "your_bookmarks": "ブックマーク",
     "your_blacklist": "ブラックリスト",
     "bulk_download": "一括ダウンロード",
-    "get_support": "サポートを受ける"
+    "get_support": "サポートを受ける",
+    "home": "ホーム",
+    "download_manager": "ダウンロードマネージャー"
   },
   "dateRange": {
     "day": "日",
@@ -517,7 +601,13 @@
     "many_added": "{0}ブックマーク追加",
     "failed_to_add_many": "ブックマークの追加に失敗しました",
     "removed": "ブックマークが削除されました",
-    "failed_to_remove": "ブックマークの削除に失敗しました"
+    "failed_to_remove": "ブックマークの削除に失敗しました",
+    "title": "ブックマーク",
+    "shuffle_tooltip": "ブックマークをシャッフル",
+    "counter": {
+      "one": "$n件のブックマーク",
+      "other": "$n件のブックマーク"
+    }
   },
   "app_update": {
     "update": "アップデート",
@@ -540,11 +630,58 @@
         "one": "$n 秒",
         "other": "$n 秒"
       }
+    },
+    "timeago": {
+      "days": "{days}日前",
+      "hours": "{hours}時間前",
+      "minutes": "{minutes}分前",
+      "just_now": "たった今"
+    },
+    "months": {
+      "short": {
+        "jan": "1月",
+        "feb": "2月",
+        "mar": "3月",
+        "apr": "4月",
+        "may": "5月",
+        "jun": "6月",
+        "jul": "7月",
+        "aug": "8月",
+        "sep": "9月",
+        "oct": "10月",
+        "nov": "11月",
+        "dec": "12月"
+      }
+    },
+    "filter": {
+      "last_7_days": "過去7日",
+      "last_30_days": "過去30日",
+      "last_90_days": "過去90日",
+      "last_6_months": "過去6ヶ月",
+      "last_year": "過去1年"
     }
   },
   "tags": {
+    "title": "タグ",
+    "filter_hint": "フィルター...",
+    "added": "追加済み",
     "actions": {
-      "add_to_blacklist": "ブラックリストに追加"
+      "add_to_blacklist": "ブラックリストに追加",
+      "search": "タグを検索",
+      "search_single": "検索",
+      "copy": "タグをコピー",
+      "copy_single": "コピー",
+      "blacklist": "ブラックリスト",
+      "blacklist_global": "ブラックリスト（グローバル）",
+      "add_to_blacklist_global": "グローバルブラックリストに追加"
+    },
+    "counter": {
+      "one": "$n個のタグ",
+      "other": "$n個のタグ"
+    },
+    "other_counter": {
+      "one": "他$n件",
+      "other": "他$n件"
     }
   },
   "bulk_downloads": {
@@ -593,6 +730,99 @@
   "sort": {
     "sort_by": "整理基準",
     "name": "名前順",
-    "recently_added": "新しい順"
+    "recently_added": "新しい順",
+    "name_asc": "名前 (A-Z)",
+    "name_desc": "名前 (Z-A)",
+    "recently_updated": "最近更新",
+    "recently_created": "最近作成",
+    "last_updated": "最終更新",
+    "count": "件数"
+  },
+  "reminder": {
+    "dont_show_again": "今後表示しない"
+  },
+  "donation": {
+    "donate": "寄付"
+  },
+  "auth": {
+    "login_required": "この機能を使用するにはログイン情報が必要です。",
+    "logged_in": "ログイン済み",
+    "relogin": "再ログイン",
+    "clear_credentials": "クリア",
+    "login": "ログイン",
+    "login_expires": "ログイン有効期限："
+  },
+  "captcha": {
+    "title": "キャプチャを解いてください",
+    "i_have_solved_it": "解決しました"
+  },
+  "select": {
+    "selected_items": "アイテムを選択",
+    "items_selected": {
+      "one": "$n件選択中",
+      "other": "$n件選択中"
+    },
+    "select_all": "すべて選択",
+    "deselect_all": "すべて解除"
+  },
+  "posts": {
+    "counter": {
+      "one": "$n件の投稿",
+      "other": "$n件の投稿"
+    },
+    "hidden_count": "$total中$hidden件"
+  },
+  "artists": {
+    "title": "アーティスト",
+    "search": {
+      "name": "名前",
+      "name_hint": "名前、グループ名、または別名",
+      "name_tips": "*ワイルドカードと正規表現に対応",
+      "url_hint": "URLまたはその一部"
+    }
+  },
+  "uploads": {
+    "counter": {
+      "one": "$n件のアップロード",
+      "other": "$n件のアップロード"
+    }
+  },
+  "infinite_scroll": {
+    "load_more": "もっと読み込む",
+    "nore_more_data": "以上です",
+    "page_label": "$pageページ",
+    "next_page": "次のページ",
+    "previous_page": "前のページ"
+  },
+  "video_player": {
+    "playback_speed": "再生速度",
+    "lock_screen": "画面ロック",
+    "buffering": "バッファリング中...",
+    "video_quality": "画質",
+    "video_qualities": {
+      "auto": "自動",
+      "sample": "サンプル",
+      "original": "オリジナル"
+    },
+    "speed": {
+      "normal": "通常"
+    }
+  },
+  "eshuushuu": {
+    "personal_info": {
+      "title": "個人情報",
+      "gender": "性別",
+      "location": "所在地",
+      "interests": "趣味",
+      "website": "ウェブサイト"
+    },
+    "profile": {
+      "joined": "参加日",
+      "last_active": "最終活動"
+    }
+  },
+  "misc": {
+    "trailing_more": " もっと",
+    "trailing_less": " 少なく"
   }
 }
