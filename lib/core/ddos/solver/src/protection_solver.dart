@@ -31,6 +31,17 @@ abstract class ProtectionSolver {
 
 typedef ContextProvider = BuildContext? Function();
 
+abstract class CookieRetriever {
+  Future<List<Cookie>> getCookies(String url);
+}
+
+class WebviewCookieRetriever implements CookieRetriever {
+  final _cookieManager = WebviewCookieManager();
+
+  @override
+  Future<List<Cookie>> getCookies(String url) => _cookieManager.getCookies(url);
+}
+
 class RawSolver implements ProtectionSolver {
   RawSolver({
     required this.protectionType,
@@ -38,7 +49,8 @@ class RawSolver implements ProtectionSolver {
     required this.autoCookieValidator,
     required this.contextProvider,
     required this.cookieJar,
-  });
+    CookieRetriever? cookieRetriever,
+  }) : _cookieRetriever = cookieRetriever ?? WebviewCookieRetriever();
 
   @override
   final String protectionType;
@@ -47,7 +59,7 @@ class RawSolver implements ProtectionSolver {
   final ContextProvider contextProvider;
   final LazyAsync<CookieJar> cookieJar;
 
-  final _cookieManager = WebviewCookieManager();
+  final CookieRetriever _cookieRetriever;
   var _solving = false;
 
   @override
@@ -84,6 +96,34 @@ class RawSolver implements ProtectionSolver {
     final navigator = Navigator.of(context);
 
     try {
+      final jar = await cookieJar();
+
+      // Wait for the WebView to potentially auto-solve the JS challenge
+      // before showing the dialog to the user.
+      final autoSolved = await waitForAutoSolve(
+        uri: uri,
+        jar: jar,
+        cookieRetriever: _cookieRetriever,
+        autoCookieValidator: autoCookieValidator,
+        isCancelled: () => !_solving,
+      );
+      if (autoSolved) {
+        _solving = false;
+        completer.complete(true);
+        return completer.future;
+      }
+
+      if (!context.mounted) {
+        _solving = false;
+        completer.complete(false);
+        return completer.future;
+      }
+
+      _monitorCookies(uri, jar, completer, (success) {
+        if (navigator.canPop()) navigator.pop(true);
+        if (!completer.isCompleted) completer.complete(success);
+      });
+
       final result = await showDialog<bool>(
         context: context,
         barrierDismissible: false,
@@ -97,9 +137,11 @@ class RawSolver implements ProtectionSolver {
               controller: controller,
               onCancel: () => dialogNavigator.pop(false),
               onSolved: () async {
-                final cookies = await _cookieManager.getCookies(uri.toString());
+                final cookies = await _cookieRetriever.getCookies(
+                  uri.toString(),
+                );
                 if (cookies.isNotEmpty) {
-                  await (await cookieJar()).saveFromResponse(uri, cookies);
+                  await jar.saveFromResponse(uri, cookies);
                   dialogNavigator.pop(true);
                 }
               },
@@ -108,12 +150,9 @@ class RawSolver implements ProtectionSolver {
         },
       );
 
-      _monitorCookies(uri, await cookieJar(), completer, (success) {
-        if (navigator.canPop()) navigator.pop();
-        if (!completer.isCompleted) completer.complete(success);
-      });
-
-      completer.complete(result ?? false);
+      if (!completer.isCompleted) {
+        completer.complete(result ?? false);
+      }
     } catch (e) {
       completer.complete(false);
     } finally {
@@ -141,7 +180,7 @@ class RawSolver implements ProtectionSolver {
       }
 
       try {
-        final cookies = await _cookieManager.getCookies(uri.toString());
+        final cookies = await _cookieRetriever.getCookies(uri.toString());
         final hasClearance = cookies.any(autoCookieValidator);
 
         if (hasClearance) {
@@ -157,6 +196,30 @@ class RawSolver implements ProtectionSolver {
 
   @override
   Future<void> cancel() async => _solving = false;
+}
+
+Future<bool> waitForAutoSolve({
+  required Uri uri,
+  required CookieJar jar,
+  required CookieRetriever cookieRetriever,
+  required bool Function(Cookie) autoCookieValidator,
+  required bool Function() isCancelled,
+  int maxAttempts = 5,
+  Duration pollInterval = const Duration(seconds: 1),
+}) async {
+  for (var i = 0; i < maxAttempts; i++) {
+    await Future.delayed(pollInterval);
+    if (isCancelled()) return false;
+
+    try {
+      final cookies = await cookieRetriever.getCookies(uri.toString());
+      if (cookies.any(autoCookieValidator)) {
+        await jar.saveFromResponse(uri, cookies);
+        return true;
+      }
+    } catch (_) {}
+  }
+  return false;
 }
 
 class CloudflareSolver implements ProtectionSolver {
