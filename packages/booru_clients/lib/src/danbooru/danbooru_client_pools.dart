@@ -19,8 +19,8 @@ mixin DanbooruClientPools {
     final response = await dio.get(
       '/pools.json',
       queryParameters: {
-        if (page != null) 'page': page,
-        if (limit != null) 'limit': limit,
+        'page': ?page,
+        'limit': ?limit,
         if (category != null) 'search[category]': category.name,
         if (order != null)
           'search[order]': switch (order) {
@@ -29,8 +29,8 @@ mixin DanbooruClientPools {
             PoolOrder.postCount => 'post_count',
             PoolOrder.name => 'name',
           },
-        if (name != null) 'search[name_matches]': name,
-        if (description != null) 'search[description_matches]': description,
+        'search[name_matches]': ?name,
+        'search[description_matches]': ?description,
       },
       cancelToken: cancelToken,
     );
@@ -49,7 +49,7 @@ mixin DanbooruClientPools {
       '/pools.json',
       queryParameters: {
         'search[post_ids_include_all]': postId,
-        if (limit != null) 'limit': limit,
+        'limit': ?limit,
       },
       cancelToken: cancelToken,
     );
@@ -70,7 +70,7 @@ mixin DanbooruClientPools {
       '/pools.json',
       queryParameters: {
         'search[post_ids_include_any]': postIds.join(' '),
-        if (limit != null) 'limit': limit,
+        'limit': ?limit,
       },
       cancelToken: cancelToken,
     );

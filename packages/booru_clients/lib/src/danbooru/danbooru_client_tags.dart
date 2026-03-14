@@ -21,7 +21,7 @@ mixin DanbooruClientTags {
       '/tags.json',
       queryParameters: {
         'search[name_comma]': tags.join(','),
-        if (page != null) 'page': page,
+        'page': ?page,
         if (hideEmpty != null) 'search[hide_empty]': hideEmpty ? 'yes' : 'no',
         'search[order]': 'count',
         'limit': limit,
@@ -67,7 +67,7 @@ mixin DanbooruClientTags {
         'search[order]': 'score_desc',
         'search[is_posted]': true,
         'only': _kAITagParams,
-        if (limit != null) 'limit': limit,
+        'limit': ?limit,
       },
       cancelToken: cancelToken,
     );

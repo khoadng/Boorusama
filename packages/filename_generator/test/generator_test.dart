@@ -1,6 +1,8 @@
 // Package imports:
 // ignore_for_file: experimental_member_use
 
+import 'dart:typed_data';
+
 import 'package:clock/clock.dart';
 import 'package:filename_generator/src/generator.dart';
 import 'package:test/test.dart';
@@ -544,4 +546,24 @@ class MockUuid implements Uuid {
 
   @override
   UuidValue v8gobj({V8GenericOptions? config}) => Namespace.dns.uuidValue;
+
+  @override
+  String v5FromBytes(String? namespace, Uint8List? name, {V5Options? config}) =>
+      '55555555-5555-5555-5555-555555555555';
+
+  @override
+  List<int> v5FromBytesBuffer(
+    String? namespace,
+    Uint8List? name,
+    List<int>? buffer, {
+    V5Options? config,
+    int offset = 0,
+  }) => [];
+
+  @override
+  UuidValue v5FromBytesObj(
+    String? namespace,
+    Uint8List? name, {
+    V5Options? config,
+  }) => Namespace.dns.uuidValue;
 }

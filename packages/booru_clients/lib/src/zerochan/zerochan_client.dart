@@ -54,8 +54,8 @@ class ZerochanClient {
       final response = await _dio.get(
         '/$tagString?json',
         queryParameters: {
-          if (page != null) 'p': page,
-          if (l != null) 'l': l,
+          'p': ?page,
+          'l': ?l,
           if (sort != null && (tags != null && tags.isNotEmpty))
             's': sort.queryParam,
         },

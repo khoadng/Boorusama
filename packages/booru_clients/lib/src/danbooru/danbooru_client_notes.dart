@@ -17,7 +17,7 @@ mixin DanbooruClientNotes {
       queryParameters: {
         'search[post_id]': postId,
         'limit': limit,
-        if (page != null) 'page': page,
+        'page': ?page,
       },
     );
 

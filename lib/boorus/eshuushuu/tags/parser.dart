@@ -17,7 +17,9 @@ AutocompleteData autocompleteDtoToAutocompleteData(
     category: parseEshuushuuTagTypeToCategoryName(tagType),
     postCount: dto.usageCount,
     antecedent: dto.aliasOfName,
-    type: (dto.isAlias ?? false) ? AutocompleteData.alias : AutocompleteData.tag,
+    type: (dto.isAlias ?? false)
+        ? AutocompleteData.alias
+        : AutocompleteData.tag,
   );
 }
 

@@ -16,8 +16,8 @@ mixin DanbooruClientPosts {
       '/posts.json',
       queryParameters: {
         if (tags != null && tags.isNotEmpty) 'tags': tags.join(' '),
-        if (page != null) 'page': page,
-        if (limit != null) 'limit': limit,
+        'page': ?page,
+        'limit': ?limit,
       },
     );
 
@@ -54,17 +54,12 @@ mixin DanbooruClientPosts {
         'post[rating]': rating,
         if (tags != null && tags.isNotEmpty) 'post[tag_string]': tags.join(' '),
         'post[source]': source,
-        if (artistCommentaryTitle != null)
-          'post[artist_commentary][original_title]': artistCommentaryTitle,
-        if (artistCommentaryDesc != null)
-          'post[artist_commentary][original_description]': artistCommentaryDesc,
-        if (translatedCommentaryTitle != null)
-          'post[artist_commentary][translated_title]':
-              translatedCommentaryTitle,
-        if (translatedCommentaryDesc != null)
-          'post[artist_commentary][translated_description]':
-              translatedCommentaryDesc,
-        if (parentId != null) 'post[parent_id]': parentId,
+        'post[artist_commentary][original_title]': ?artistCommentaryTitle,
+        'post[artist_commentary][original_description]': ?artistCommentaryDesc,
+        'post[artist_commentary][translated_title]': ?translatedCommentaryTitle,
+        'post[artist_commentary][translated_description]':
+            ?translatedCommentaryDesc,
+        'post[parent_id]': ?parentId,
       },
       options: Options(
         contentType: Headers.formUrlEncodedContentType,
@@ -140,10 +135,10 @@ mixin DanbooruClientPosts {
     final response = await dio.get(
       '/post_votes.json',
       queryParameters: {
-        if (page != null) 'page': page,
+        'page': ?page,
         'search[post_id]': postIds.join(','),
-        if (userId != null) 'search[user_id]': userId,
-        if (isDeleted != null) 'search[is_deleted]': isDeleted,
+        'search[user_id]': ?userId,
+        'search[is_deleted]': ?isDeleted,
         'limit': limit,
       },
     );

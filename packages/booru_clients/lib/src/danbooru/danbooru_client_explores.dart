@@ -20,8 +20,8 @@ mixin DanbooruClientExplores {
       queryParameters: {
         'date': _formatDate(date),
         'scale': scale.name,
-        if (page != null) 'page': page,
-        if (limit != null) 'limit': limit,
+        'page': ?page,
+        'limit': ?limit,
       },
     );
 

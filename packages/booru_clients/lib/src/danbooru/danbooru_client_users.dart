@@ -18,7 +18,7 @@ mixin DanbooruClientUsers {
       '/users.json',
       queryParameters: {
         'search[id]': ids.join(','),
-        if (limit != null) 'limit': limit,
+        'limit': ?limit,
       },
       cancelToken: cancelToken,
     );
@@ -76,8 +76,8 @@ mixin DanbooruClientUsers {
       '/user_feedbacks.json',
       queryParameters: {
         'search[user_id]': userId,
-        if (limit != null) 'limit': limit,
-        if (page != null) 'page': page,
+        'limit': ?limit,
+        'page': ?page,
       },
       cancelToken: cancelToken,
     );

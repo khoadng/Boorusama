@@ -91,7 +91,7 @@ class SankakuIdolClient implements SankakuClient {
       '/posts.json',
       queryParameters: {
         'page': page,
-        if (limit != null) 'limit': limit,
+        'limit': ?limit,
         if (tags != null && tags.isNotEmpty) 'tags': tags.join(' '),
       },
       options: Options(

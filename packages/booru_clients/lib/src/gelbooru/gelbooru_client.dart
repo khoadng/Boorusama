@@ -104,7 +104,7 @@ class GelbooruClient
             'json': '1',
             if (tags != null && tags.isNotEmpty) 'tags': tags.join(' '),
             if (page != null) 'pid': page - 1,
-            if (limit != null) 'limit': limit,
+            'limit': ?limit,
             if (userId != null) 'user_id': userId,
             if (apiKey != null) 'api_key': apiKey,
           },
@@ -178,7 +178,7 @@ class GelbooruClient
           'page': 'autocomplete2',
           'type': 'tag_query',
           'term': term,
-          if (limit != null) 'limit': limit,
+          'limit': ?limit,
           if (userId != null) 'user_id': userId,
           if (apiKey != null) 'api_key': apiKey,
         },
@@ -236,7 +236,7 @@ class GelbooruClient
         'page': 'post',
         's': 'view',
         'id': postId,
-        if (pid != null) 'pid': pid,
+        'pid': ?pid,
       },
     );
 

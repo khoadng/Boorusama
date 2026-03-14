@@ -135,7 +135,7 @@ class GelbooruV2Client with GelbooruClientFavorites {
         featureId: BooruFeatureId.autocomplete,
         params: {
           P.query: term,
-          if (limit != null) P.limit: limit,
+          P.limit: ?limit,
         },
       );
     } on Exception catch (_) {

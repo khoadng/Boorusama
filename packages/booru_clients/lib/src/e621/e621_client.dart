@@ -47,8 +47,8 @@ class E621Client {
       '/posts.json',
       queryParameters: {
         if (tags != null && tags.isNotEmpty) 'tags': tags.join(' '),
-        if (page != null) 'page': page,
-        if (limit != null) 'limit': limit,
+        'page': ?page,
+        'limit': ?limit,
       },
     );
 
@@ -116,8 +116,8 @@ class E621Client {
       queryParameters: {
         'group_by': 'comment',
         'search[post_id]': postId,
-        if (page != null) 'page': page,
-        if (limit != null) 'limit': limit,
+        'page': ?page,
+        'limit': ?limit,
       },
     );
 
@@ -189,7 +189,7 @@ class E621Client {
       queryParameters: {
         'search[name]': tags.join(','),
         'search[order]': order.name,
-        if (page != null) 'page': page,
+        'page': ?page,
         'limit': limit,
       },
       cancelToken: cancelToken,
@@ -213,7 +213,7 @@ class E621Client {
       queryParameters: {
         'search[name_matches]': '$name*',
         'search[order]': order.name,
-        if (page != null) 'page': page,
+        'page': ?page,
         'limit': limit,
       },
       cancelToken: cancelToken,
@@ -270,7 +270,7 @@ class E621Client {
       queryParameters: {
         'search[post_id]': postId,
         'limit': limit,
-        if (page != null) 'page': page,
+        'page': ?page,
       },
     );
 

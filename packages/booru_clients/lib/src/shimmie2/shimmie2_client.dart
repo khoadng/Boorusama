@@ -255,7 +255,7 @@ class Shimmie2Client {
           _kAuthTokenParam: token,
           'bulk_action': action.value,
           'bulk_selected_ids': '[${postIds.join(',')}]',
-          if (query case final q? when q.isNotEmpty) 'bulk_query': q,
+          'bulk_query': ?query,
           'submit_button': switch (action) {
             BulkAction.favorite => 'Favorite',
             BulkAction.unfavorite => 'Unfavorite',
@@ -282,7 +282,7 @@ class Shimmie2Client {
               _kAuthTokenParam: newToken,
               'bulk_action': action.value,
               'bulk_selected_ids': '[${postIds.join(',')}]',
-              if (query case final q? when q.isNotEmpty) 'bulk_query': q,
+              'bulk_query': ?query,
               'submit_button': switch (action) {
                 BulkAction.favorite => 'Favorite',
                 BulkAction.unfavorite => 'Unfavorite',

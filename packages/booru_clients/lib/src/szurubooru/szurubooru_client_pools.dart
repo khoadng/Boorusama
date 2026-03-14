@@ -15,9 +15,9 @@ mixin SzurubooruClientPools {
     final response = await dio.get(
       '/api/pools',
       queryParameters: {
-        if (offset != null) 'offset': offset,
+        'offset': ?offset,
         'limit': limit,
-        if (query != null) 'query': query,
+        'query': ?query,
       },
     );
 

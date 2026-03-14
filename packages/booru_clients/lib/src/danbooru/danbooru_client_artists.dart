@@ -29,9 +29,9 @@ mixin DanbooruClientArtists {
       queryParameters: {
         if (name != null && name.isNotEmpty) 'search[any_name_matches]': name,
         if (url != null && url.isNotEmpty) 'search[url_matches]': url,
-        if (isDeleted != null) 'search[is_deleted]': isDeleted,
-        if (isBanned != null) 'search[is_banned]': isBanned,
-        if (hasTag != null) 'search[has_tag]': hasTag,
+        'search[is_deleted]': ?isDeleted,
+        'search[is_banned]': ?isBanned,
+        'search[has_tag]': ?hasTag,
         if (order != null)
           'search[order]': switch (order) {
             ArtistOrder.recentCreated => 'created_at',
@@ -39,7 +39,7 @@ mixin DanbooruClientArtists {
             ArtistOrder.name => 'name',
             ArtistOrder.count => 'post_count',
           },
-        if (page != null) 'page': page,
+        'page': ?page,
         'only': includeTag == true ? _kArtistWithTagsParams : _kArtistParams,
       },
       cancelToken: cancelToken,

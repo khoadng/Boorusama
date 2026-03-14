@@ -67,8 +67,8 @@ mixin DanbooruClientFavorites {
     final response = await dio.get(
       '/posts/$postId/favorites.json',
       queryParameters: {
-        if (page != null) 'page': page,
-        if (limit != null) 'limit': limit,
+        'page': ?page,
+        'limit': ?limit,
       },
     );
 

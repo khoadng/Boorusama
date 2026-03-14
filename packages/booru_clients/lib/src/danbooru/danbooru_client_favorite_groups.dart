@@ -18,10 +18,10 @@ mixin DanbooruClientFavoriteGroups {
     final response = await dio.get(
       '/favorite_groups.json',
       queryParameters: {
-        if (page != null) 'page': page,
+        'page': ?page,
         'search[creator_name]': creatorName,
         'only': _kFavoriteGroupParams,
-        if (limit != null) 'limit': limit,
+        'limit': ?limit,
       },
     );
 
@@ -60,9 +60,9 @@ mixin DanbooruClientFavoriteGroups {
     bool? isPrivate,
   }) async {
     final formData = {
-      if (name != null) 'favorite_group[name]': name,
+      'favorite_group[name]': ?name,
       if (postIds != null) 'favorite_group[post_ids_string]': postIds.join(' '),
-      if (isPrivate != null) 'favorite_group[is_private]': isPrivate,
+      'favorite_group[is_private]': ?isPrivate,
     };
 
     final _ = await dio.patch(

@@ -35,7 +35,7 @@ mixin DanbooruClientComments {
       '/comments.json',
       queryParameters: {
         'search[post_id]': postId,
-        if (limit != null) 'limit': limit,
+        'limit': ?limit,
         'only': _kCommentParams,
       },
       cancelToken: cancelToken,

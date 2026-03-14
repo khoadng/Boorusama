@@ -24,9 +24,9 @@ mixin DanbooruClientForums {
     final response = await dio.get(
       '/forum_topics.json',
       queryParameters: {
-        if (page != null) 'page': page,
+        'page': ?page,
         if (order != null) 'search[order]': order.name,
-        if (limit != null) 'limit': limit,
+        'limit': ?limit,
         // 'only': _kForumParams,
       },
     );
@@ -45,8 +45,8 @@ mixin DanbooruClientForums {
       '/forum_posts.json',
       queryParameters: {
         'search[topic_id]': topicId,
-        if (page != null) 'page': page,
-        if (limit != null) 'limit': limit,
+        'page': ?page,
+        'limit': ?limit,
         'only': _kForumPostParams,
       },
     );
@@ -66,8 +66,8 @@ mixin DanbooruClientForums {
       queryParameters: {
         'search[forum_post_id]': forumPostId.toString(),
         // 'only': _kForumPostVoteParams,
-        if (limit != null) 'limit': limit,
-        if (page != null) 'page': page,
+        'limit': ?limit,
+        'page': ?page,
       },
     );
 

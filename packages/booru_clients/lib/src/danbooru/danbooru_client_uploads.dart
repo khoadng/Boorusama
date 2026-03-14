@@ -19,9 +19,9 @@ mixin DanbooruClientUploads {
     final response = await dio.get(
       '/users/$userId/uploads.json',
       queryParameters: {
-        if (page != null) 'page': page,
-        if (limit != null) 'limit': limit,
-        if (isPosted != null) 'search[is_posted]': isPosted,
+        'page': ?page,
+        'limit': ?limit,
+        'search[is_posted]': ?isPosted,
         if (order != null)
           'search[order]': switch (order) {
             UploadOrder.id => 'id',

@@ -41,7 +41,7 @@ class PhilomenaClient {
         if (tags != null)
           'q': tags.map((e) => e.replaceAll('_', ' ')).join(','),
         if (page != null && page > 1) 'page': page,
-        if (perPage != null) 'per_page': perPage,
+        'per_page': ?perPage,
         if (apiKey != null) 'key': apiKey,
       },
     );
@@ -79,8 +79,8 @@ class PhilomenaClient {
       '$kAPISearchPath/tags',
       queryParameters: {
         'q': query.replaceAll('_', ' '),
-        if (page != null) 'page': page,
-        if (perPage != null) 'per_page': perPage,
+        'page': ?page,
+        'per_page': ?perPage,
         if (apiKey != null) 'key': apiKey,
       },
     );

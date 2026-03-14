@@ -45,10 +45,10 @@ class HybooruClient {
       '/api/post',
       queryParameters: {
         if (query != null && query.isNotEmpty) 'query': query,
-        if (page != null) 'page': page,
-        if (pageSize != null) 'pageSize': pageSize,
-        if (hashes != null) 'hashes': hashes,
-        if (blurhash != null) 'blurhash': blurhash,
+        'page': ?page,
+        'pageSize': ?pageSize,
+        'hashes': ?hashes,
+        'blurhash': ?blurhash,
       },
     );
 
@@ -88,10 +88,10 @@ class HybooruClient {
       '/api/tags',
       queryParameters: {
         if (query != null && query.isNotEmpty) 'query': query,
-        if (sorting != null) 'sorting': sorting,
-        if (page != null) 'page': page,
-        if (pageSize != null) 'pageSize': pageSize,
-        if (full != null) 'full': full,
+        'sorting': ?sorting,
+        'page': ?page,
+        'pageSize': ?pageSize,
+        'full': ?full,
       },
     );
 

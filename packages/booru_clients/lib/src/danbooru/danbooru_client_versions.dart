@@ -28,10 +28,10 @@ mixin DanbooruClientVersions {
       cancelToken: cancelToken,
       queryParameters: {
         if (effectivePage != null) 'page': page,
-        if (limit != null) 'limit': limit,
-        if (id != null) 'search[post_id]': id,
-        if (updaterId != null) 'search[updater_id]': updaterId,
-        if (updaterName != null) 'search[updater_name]': updaterName,
+        'limit': ?limit,
+        'search[post_id]': ?id,
+        'search[updater_id]': ?updaterId,
+        'search[updater_name]': ?updaterName,
         if (addedTags != null && addedTags.isNotEmpty)
           'search[added_tags_include_all]': addedTags.join(' '),
         if (removedTags != null && removedTags.isNotEmpty)

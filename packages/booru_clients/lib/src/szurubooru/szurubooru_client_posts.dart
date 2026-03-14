@@ -21,7 +21,7 @@ mixin SzurubooruClientPosts {
     final response = await dio.get(
       '/api/posts',
       queryParameters: {
-        if (limit != null) 'limit': limit,
+        'limit': ?limit,
         if (page != null && page > 0) 'offset': (page - 1) * (limit ?? 100),
         if (tags != null && tags.isNotEmpty) 'query': tags.join(' '),
       },

@@ -14,8 +14,8 @@ mixin DanbooruClientSavedSearches {
     final response = await dio.get(
       '/saved_searches.json',
       queryParameters: {
-        if (page != null) 'page': page,
-        if (limit != null) 'limit': limit,
+        'page': ?page,
+        'limit': ?limit,
       },
     );
 
@@ -51,8 +51,8 @@ mixin DanbooruClientSavedSearches {
     String? query,
   }) async {
     final formData = {
-      if (query != null) 'saved_search[query]': query,
-      if (label != null) 'saved_search[label_string]': label,
+      'saved_search[query]': ?query,
+      'saved_search[label_string]': ?label,
     };
 
     if (formData.isEmpty) {

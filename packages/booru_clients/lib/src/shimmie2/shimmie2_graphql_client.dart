@@ -130,9 +130,9 @@ class Shimmie2GraphQLClient {
       fetchFields: () => _postFieldDiscovery.ensureDiscovered(),
       buildQuery: _buildPostsDiscoveryQuery,
       variables: {
-        if (tags != null) 'tags': tags,
+        'tags': ?tags,
         'offset': offset ?? 0,
-        if (limit != null) 'limit': limit,
+        'limit': ?limit,
       },
       parseData: (data) => switch (data) {
         {'posts': final List posts} =>

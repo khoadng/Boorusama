@@ -16,7 +16,7 @@ mixin DanbooruClientDmails {
       '/dmails.json',
       queryParameters: {
         if (folder != null) 'search[folder]': folder.name,
-        if (limit != null) 'limit': limit,
+        'limit': ?limit,
       },
       cancelToken: cancelToken,
     );
