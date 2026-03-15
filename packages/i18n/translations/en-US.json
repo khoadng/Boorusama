@@ -1129,7 +1129,8 @@
     "relogin": "Re-login",
     "clear_credentials": "Clear",
     "login": "Log in",
-    "login_expires": "Login expires:"
+    "login_expires": "Login expires:",
+    "session_expired": "Your session has expired. Please log in again to continue using authenticated features."
   },
   "captcha": {
     "title": "Solve the captcha",

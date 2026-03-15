@@ -11,6 +11,7 @@ AutoRefreshAuthInterceptor createEshuushuuAuthInterceptor({
   required String refreshToken,
   required String baseUrl,
   void Function(AuthTokenPair tokens)? onTokenRefreshed,
+  void Function()? onAuthFailed,
   void Function(String message)? onLog,
 }) {
   return AutoRefreshAuthInterceptor(
@@ -20,6 +21,7 @@ AutoRefreshAuthInterceptor createEshuushuuAuthInterceptor({
     baseUrl: baseUrl,
     refreshToken: refreshToken,
     onLog: onLog,
+    onAuthFailed: onAuthFailed,
     onRefresh: (currentRefreshToken) async {
       try {
         final client = EShuushuuClient(

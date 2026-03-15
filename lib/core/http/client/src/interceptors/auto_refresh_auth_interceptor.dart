@@ -45,6 +45,7 @@ class AutoRefreshAuthInterceptor extends Interceptor {
     required this.baseUrl,
     required Future<AuthTokenPair?> Function(String refreshToken) onRefresh,
     this.onTokenRefreshed,
+    this.onAuthFailed,
     this.onLog,
     required String refreshToken,
   }) : _refreshToken = refreshToken,
@@ -54,6 +55,7 @@ class AutoRefreshAuthInterceptor extends Interceptor {
   final String baseUrl;
   final Future<AuthTokenPair?> Function(String refreshToken) _onRefresh;
   final void Function(AuthTokenPair tokens)? onTokenRefreshed;
+  final void Function()? onAuthFailed;
   final void Function(String message)? onLog;
 
   String _refreshToken;
@@ -127,6 +129,7 @@ class AutoRefreshAuthInterceptor extends Interceptor {
         onLog?.call('Token refresh returned null');
         _accessToken = null;
         _tokenObtainedAt = null;
+        onAuthFailed?.call();
         return false;
       }
 
@@ -143,6 +146,7 @@ class AutoRefreshAuthInterceptor extends Interceptor {
       return true;
     } catch (e) {
       onLog?.call('Token refresh failed: $e');
+      onAuthFailed?.call();
       return false;
     } finally {
       _isRefreshing = false;

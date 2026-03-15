@@ -8,11 +8,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/configs/config/data.dart';
 import '../../core/configs/config/types.dart';
 import '../../core/configs/manage/providers.dart';
+import '../../core/router.dart';
 import '../../core/ddos/handler/providers.dart';
 import '../../core/http/client/providers.dart';
 import '../../core/http/client/types.dart';
 import '../../foundation/loggers.dart';
 import 'auth/auth_interceptor.dart';
+import 'auth/session_expired_dialog.dart';
 
 final eshuushuuClientProvider =
     Provider.family<EShuushuuClient, BooruConfigAuth>(
@@ -58,13 +60,32 @@ final eshuushuuDioProvider = Provider.family<Dio, BooruConfigAuth>((
           refreshToken: refreshToken,
           baseUrl: config.url,
           onLog: (message) => loggerService.info('Auth', message),
+          onAuthFailed: () {
+            showSessionExpiredDialog(
+              onReLogin: () {
+                final currentConfig = ref
+                    .read(booruConfigProvider)
+                    .firstWhereOrNull(
+                      (c) => c.url == config.url && c.login == config.login,
+                    );
+                if (currentConfig != null) {
+                  ref
+                      .read(routerProvider)
+                      .push(
+                        Uri(
+                          path: '/boorus/${currentConfig.id}/update',
+                          queryParameters: {'q': 'auth'},
+                        ).toString(),
+                      );
+                }
+              },
+            );
+          },
           onTokenRefreshed: (tokens) {
             final currentConfig = ref
                 .read(booruConfigProvider)
                 .firstWhereOrNull(
-                  (c) =>
-                      c.url == config.url &&
-                      c.login == config.login,
+                  (c) => c.url == config.url && c.login == config.login,
                 );
             if (currentConfig != null) {
               loggerService.info(

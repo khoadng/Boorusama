@@ -1130,7 +1130,8 @@
     "relogin": "Đăng nhập lại",
     "clear_credentials": "Xóa thông tin",
     "login": "Đăng nhập",
-    "login_expires": "Đăng nhập hết hạn:"
+    "login_expires": "Đăng nhập hết hạn:",
+    "session_expired": "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại để tiếp tục sử dụng các tính năng cần xác thực."
   },
   "captcha": {
     "title": "Vui lòng giải captcha",
