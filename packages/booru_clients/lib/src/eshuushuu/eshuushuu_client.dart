@@ -129,11 +129,20 @@ class EShuushuuClient {
     final response = await _dio.post(
       '$_apiBase/auth/refresh',
       options: Options(
+        validateStatus: (_) => true,
         headers: {
           'cookie': 'refresh_token=$refreshToken',
         },
       ),
     );
+
+    if (response.statusCode != null && response.statusCode! >= 400) {
+      throw DioException(
+        requestOptions: response.requestOptions,
+        response: response,
+        message: 'Refresh failed with ${response.statusCode}: ${response.data}',
+      );
+    }
 
     return extractTokensFromResponse(response);
   }

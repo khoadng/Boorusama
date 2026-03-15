@@ -11,6 +11,7 @@ AutoRefreshAuthInterceptor createEshuushuuAuthInterceptor({
   required String refreshToken,
   required String baseUrl,
   void Function(AuthTokenPair tokens)? onTokenRefreshed,
+  void Function(String message)? onLog,
 }) {
   return AutoRefreshAuthInterceptor(
     config: const AutoRefreshAuthConfig(
@@ -18,6 +19,7 @@ AutoRefreshAuthInterceptor createEshuushuuAuthInterceptor({
     ),
     baseUrl: baseUrl,
     refreshToken: refreshToken,
+    onLog: onLog,
     onRefresh: (currentRefreshToken) async {
       try {
         final client = EShuushuuClient(
@@ -27,14 +29,18 @@ AutoRefreshAuthInterceptor createEshuushuuAuthInterceptor({
         final tokens = await client.refresh(
           refreshToken: currentRefreshToken,
         );
-        if (tokens == null) return null;
+        if (tokens == null) {
+          onLog?.call('Refresh response had no tokens (missing set-cookie?)');
+          return null;
+        }
 
         return AuthTokenPair(
           accessToken: tokens.accessToken,
           refreshToken: tokens.refreshToken,
           expiresInSeconds: tokens.expiresIn,
         );
-      } catch (_) {
+      } catch (e) {
+        onLog?.call('Refresh request failed: $e');
         return null;
       }
     },

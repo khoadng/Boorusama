@@ -57,11 +57,20 @@ final eshuushuuDioProvider = Provider.family<Dio, BooruConfigAuth>((
         createEshuushuuAuthInterceptor(
           refreshToken: refreshToken,
           baseUrl: config.url,
+          onLog: (message) => loggerService.info('Auth', message),
           onTokenRefreshed: (tokens) {
             final currentConfig = ref
                 .read(booruConfigProvider)
-                .firstWhereOrNull((c) => c.auth == config);
+                .firstWhereOrNull(
+                  (c) =>
+                      c.url == config.url &&
+                      c.login == config.login,
+                );
             if (currentConfig != null) {
+              loggerService.info(
+                'Auth',
+                'Persisting rotated refresh token for config ${currentConfig.id}',
+              );
               ref
                   .read(booruConfigRepoProvider)
                   .update(
@@ -70,6 +79,11 @@ final eshuushuuDioProvider = Provider.family<Dio, BooruConfigAuth>((
                         .copyWith(apiKey: tokens.refreshToken)
                         .toBooruConfigData(),
                   );
+            } else {
+              loggerService.warn(
+                'Auth',
+                'Could not find config to persist rotated refresh token',
+              );
             }
           },
         ),
