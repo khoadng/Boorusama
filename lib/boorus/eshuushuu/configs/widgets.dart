@@ -12,6 +12,7 @@ import '../../../core/configs/auth/widgets.dart';
 import '../../../core/configs/create/providers.dart';
 import '../../../core/configs/create/widgets.dart';
 import '../../../core/themes/theme/types.dart';
+import '../../../core/widgets/info_container.dart';
 import 'extra_data.dart';
 
 final _eshuushuuLoginClientProvider = Provider.autoDispose
@@ -48,13 +49,24 @@ class EshuushuuAuthView extends ConsumerWidget {
     final configData = ref.watch(editBooruConfigProvider(configId));
     final isLoggedIn = configData.apiKey.isNotEmpty;
     final extraData = EshuushuuExtraData.fromPassHash(configData.passHash);
+    final expiry = extraData.tokenExpiry;
+    final isExpired = expiry != null && expiry.isBefore(DateTime.now());
 
     return Column(
       children: [
-        const SizedBox(height: 32),
+        if (isLoggedIn && isExpired) ...[
+          const SizedBox(height: 16),
+          WarningContainer(
+            margin: const EdgeInsets.symmetric(horizontal: 12),
+            title: context.t.generic.warning,
+            contentBuilder: (context) => Text(context.t.auth.session_expired),
+          ),
+          const SizedBox(height: 16),
+        ] else
+          const SizedBox(height: 32),
         Center(
           child: isLoggedIn
-              ? _buildLoggedInStatus(context, ref, extraData.tokenExpiry)
+              ? _buildLoggedInStatus(context, ref, expiry)
               : FilledButton(
                   onPressed: () => _showLoginSheet(context, ref),
                   child: Text(context.t.auth.login),
