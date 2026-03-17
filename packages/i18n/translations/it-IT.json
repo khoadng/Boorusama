@@ -19,17 +19,68 @@
       "verify": "Verifica",
       "retry": "Riprova",
       "create": "Crea",
-      "apply": "Applica"
+      "apply": "Applica",
+      "clear": "Pulisci",
+      "reset": "Ripristina",
+      "more": "Altro",
+      "show_all": "Mostra tutti",
+      "show_less": "Visualizza meno",
+      "search": "Cerca",
+      "view_all": "Visualizza tutti"
     },
     "copied": "Copiato",
-    "app_restart_request": "È necessario riavviare l'applicazione per applicare questo cambiamento"
+    "app_restart_request": "È necessario riavviare l'applicazione per applicare questo cambiamento",
+    "warning": "Avviso",
+    "default": "Predefinito",
+    "no_content": "Nessun contenuto",
+    "version": "Versione $version"
   },
   "profile": {
     "favorites": "Preferiti",
     "profile": "Profilo",
     "copy_user_id": "Copia ID Utente",
     "messages": {
-      "title": "Messaggi"
+      "title": "Messaggi",
+      "empty": "Non hai nessun messaggio",
+      "unread_message_notice": {
+        "one": "Hai $n messaggio non letto",
+        "other": "Hai $n messaggi non letti"
+      },
+      "categories": {
+        "all": "Tutti",
+        "received": "Ricevuto",
+        "unread": "Non letto",
+        "sent": "Mandato",
+        "deleted": "Cancellato"
+      },
+      "sender": "Mittente",
+      "recipient": "Destinatario",
+      "date": "Data"
+    },
+    "fail_to_load_profile": "Impossibile caricare il profilo",
+    "previous_names": "Nomi usati in precedenza",
+    "tabs": {
+      "info": "Informazioni",
+      "changes": "Cambiamenti",
+      "uploads": "Contenuti caricati"
+    },
+    "activity": {
+      "title": "Attività",
+      "comments": "Commenti",
+      "forum_posts": "Post del forum",
+      "favgroups": "Gruppi preferiti",
+      "uploads": "Contenuti caricati",
+      "tag_edits": "Modifiche tag"
+    },
+    "feedback": {
+      "title": "Feedback",
+      "user_feedbacks": "Feedback degli utenti",
+      "positive": "Positivo",
+      "negative": "Negativo",
+      "neutral": "Neutro"
+    },
+    "uploads": {
+      "top_n_copyright": "Top $n copyright"
     }
   },
   "network": {
@@ -410,5 +461,19 @@
       "minutes": "{minutes} minuti fa",
       "just_now": "Ora"
     }
+  },
+  "reminder": {
+    "dont_show_again": "Non mostrare più"
+  },
+  "sort": {
+    "sort_by": "Ordina per",
+    "name": "Nome",
+    "name_asc": "Nome (A-Z)",
+    "name_desc": "Nome (Z-A)",
+    "recently_added": "Aggiunto recentemente",
+    "recently_updated": "Aggiornato recentemente",
+    "recently_created": "Create recentemente",
+    "last_updated": "Ultimo aggiornato",
+    "count": "Quantità"
   }
 }
