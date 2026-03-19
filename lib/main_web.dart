@@ -1,16 +1,18 @@
 // Dart imports:
 import 'dart:js_interop';
 
+// Flutter imports:
+import 'package:flutter/material.dart';
+
 // Package imports:
 import 'package:web/web.dart' as web;
 
 // Project imports:
-import 'boot.dart';
-import 'foundation/boot.dart';
+import 'core/boorusama_app.dart';
+import 'foundation/filesystem.dart';
 import 'foundation/iap/iap.dart';
-import 'foundation/loggers.dart';
 
-void main() async {
+void main() {
   web.document.addEventListener(
     'contextmenu',
     (web.Event event) {
@@ -18,14 +20,12 @@ void main() async {
     }.toJS,
   );
 
-  await initializeApp(
-    bootFunc: (data) {
-      data.logger.debugBoot('Booting Web version');
-      return boot(
-        data.copyWith(
-          iapFunc: () => initDummyIap(),
-        ),
-      );
-    },
+  WidgetsFlutterBinding.ensureInitialized();
+
+  runApp(
+    BoorusamaApp(
+      fileSystem: const IoFileSystem(),
+      iapFunc: () => initDummyIap(),
+    ),
   );
 }

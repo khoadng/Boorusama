@@ -1,19 +1,19 @@
-// Project imports:
-import 'boot.dart';
-import 'foundation/boot.dart';
-import 'foundation/iap/iap.dart';
-import 'foundation/loggers.dart';
+// Flutter imports:
+import 'package:flutter/material.dart';
 
-void main() async {
-  await initializeApp(
-    bootFunc: (data) {
-      data.logger.debugBoot('Booting FOSS version');
-      return boot(
-        data.copyWith(
-          isFossBuild: true,
-          iapFunc: () => initDummyIap(),
-        ),
-      );
-    },
+// Project imports:
+import 'core/boorusama_app.dart';
+import 'foundation/filesystem.dart';
+import 'foundation/iap/iap.dart';
+
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  runApp(
+    BoorusamaApp(
+      fileSystem: const IoFileSystem(),
+      isFossBuild: true,
+      iapFunc: () => initDummyIap(),
+    ),
   );
 }

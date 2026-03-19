@@ -1,9 +1,12 @@
+// Flutter imports:
+import 'package:flutter/material.dart';
+
 // Project imports:
-import 'boot.dart';
+import 'core/boorusama_app.dart';
 import 'foundation/app_rating/src/rate_my_app_service.dart';
 import 'foundation/app_update/providers.dart';
 import 'foundation/app_update/types.dart';
-import 'foundation/boot.dart';
+import 'foundation/filesystem.dart';
 import 'foundation/iap/iap.dart';
 import 'foundation/loggers.dart';
 import 'foundation/platform.dart';
@@ -11,40 +14,35 @@ import 'foundation/vendors/google/google_play_services_impl.dart';
 import 'foundation/vendors/revenuecat/revenuecat.dart';
 
 void main() async {
-  await initializeApp(
-    bootFunc: (data) async {
-      data.logger.debugBoot('Check Cronet availability');
-      final cronet = CronetImpl(
-        gServices: GooglePlayServicesImpl(),
-      );
-      final cronetAvailable = await cronet.isAvailable();
+  WidgetsFlutterBinding.ensureInitialized();
 
-      return boot(
-        data.copyWith(
-          cronetAvailable: cronetAvailable,
-          appRatingService: const RateMyAppService(),
-          iapFunc: () => initIap(data.logger),
-          appUpdateChecker: (packageInfo) => isAndroid()
-              ? PlayStoreUpdateChecker(
-                  packageInfo: packageInfo,
-                  countryCode: 'US',
-                  languageCode: 'en',
-                )
-              : UnsupportedPlatformChecker(),
-        ),
-      );
-    },
+  final cronetAvailable = await CronetImpl(
+    gServices: GooglePlayServicesImpl(),
+  ).isAvailable();
+
+  runApp(
+    BoorusamaApp(
+      fileSystem: const IoFileSystem(),
+      cronetAvailable: cronetAvailable,
+      appRatingService: const RateMyAppService(),
+      iapFunc: () => _initIap(),
+      appUpdateChecker: (packageInfo) => isAndroid()
+          ? PlayStoreUpdateChecker(
+              packageInfo: packageInfo,
+              countryCode: 'US',
+              languageCode: 'en',
+            )
+          : UnsupportedPlatformChecker(),
+    ),
   );
 }
 
-Future<IAP> initIap(Logger logger) async {
-  final IAP iap;
+Future<IAP> _initIap() async {
+  final logger = await loggerWith(AppLogger(initialLevel: LogLevel.info));
 
   if (isMobilePlatform()) {
-    iap = (await initRevenuecatIap(logger)) ?? await initDummyIap();
-  } else {
-    iap = await initDummyIap();
+    return (await initRevenuecatIap(logger)) ?? await initDummyIap();
   }
 
-  return iap;
+  return initDummyIap();
 }
