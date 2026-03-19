@@ -1,10 +1,8 @@
-// Dart imports:
-import 'dart:io';
-
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import '../../../foundation/filesystem.dart';
 import '../../../foundation/info/device_info.dart';
 import '../../../foundation/permissions.dart';
 
@@ -24,24 +22,23 @@ class BackupUtils {
   }
 
   static Future<void> replaceFile(
+    AppFileSystem fs,
     String sourcePath,
     String destPath,
   ) async {
     final tempPath = '$destPath.${DateTime.now().microsecondsSinceEpoch}.tmp';
 
     try {
-      await File(sourcePath).copy(tempPath);
+      await fs.copyFile(sourcePath, tempPath);
 
-      final destFile = File(destPath);
-      if (destFile.existsSync()) {
-        await destFile.delete();
+      if (fs.fileExistsSync(destPath)) {
+        await fs.deleteFile(destPath);
       }
 
-      await File(tempPath).rename(destPath);
+      await fs.renameFile(tempPath, destPath);
     } catch (e) {
-      final tempFile = File(tempPath);
-      if (tempFile.existsSync()) {
-        await tempFile.delete();
+      if (fs.fileExistsSync(tempPath)) {
+        await fs.deleteFile(tempPath);
       }
       rethrow;
     }

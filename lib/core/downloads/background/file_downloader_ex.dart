@@ -1,21 +1,20 @@
-// Dart imports:
-import 'dart:io' hide HttpResponse;
-
 // Package imports:
 import 'package:background_downloader/background_downloader.dart';
 
 // Project imports:
+import '../../../foundation/filesystem.dart';
 import '../downloader/types.dart';
 
 extension FileDownloaderX on FileDownloader {
   Future<DownloadTaskInfo> enqueueIfNeeded(
     DownloadTask task, {
     bool? skipIfExists,
+    required AppFileSystem fs,
   }) async {
     final file = await task.filePath();
 
     if (skipIfExists ?? false) {
-      if (File(file).existsSync()) {
+      if (fs.fileExistsSync(file)) {
         return DownloadTaskInfo(
           path: file,
           id: task.taskId,

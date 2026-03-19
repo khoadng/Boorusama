@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import '../../../foundation/filesystem.dart';
 import '../../search/histories/providers.dart';
 import '../widgets/backup_restore_tile.dart';
 import 'sqlite_source.dart';
@@ -16,7 +17,8 @@ class SearchHistoryBackupSource extends SqliteBackupSource {
         id: 'search_histories',
         priority: 3,
         ref: ref,
-        dbPathGetter: getSearchHistoryDbPath,
+        dbPathGetter: () =>
+            getSearchHistoryDbPath(ref.read(appFileSystemProvider)),
         dbFileName: kSearchHistoryDbName,
         onImportComplete: () => ref.invalidate(searchHistoryRepoProvider),
       );

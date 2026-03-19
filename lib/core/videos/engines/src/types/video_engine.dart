@@ -6,7 +6,8 @@ enum VideoPlayerEngine {
   videoPlayerPlugin,
   mdk,
   mpv,
-  webview;
+  webview
+  ;
 
   factory VideoPlayerEngine.parse(dynamic value) => switch (value) {
     'auto' || '0' || 0 => auto,

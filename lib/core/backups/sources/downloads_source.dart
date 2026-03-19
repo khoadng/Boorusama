@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import '../../../foundation/filesystem.dart';
 import '../../bulk_downloads/providers.dart';
 import '../widgets/backup_restore_tile.dart';
 import 'sqlite_source.dart';
@@ -16,7 +17,7 @@ class DownloadsBackupSource extends SqliteBackupSource {
         id: 'downloads',
         priority: 4,
         ref: ref,
-        dbPathGetter: getDownloadsDbPath,
+        dbPathGetter: () => getDownloadsDbPath(ref.read(appFileSystemProvider)),
         dbFileName: kDownloadDbName,
         onImportComplete: () =>
             ref.invalidate(internalDownloadRepositoryProvider),

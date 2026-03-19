@@ -1,7 +1,8 @@
 enum DownloadQuality {
   original,
   sample,
-  preview;
+  preview
+  ;
 
   factory DownloadQuality.parse(dynamic value) => switch (value) {
     'original' || '0' || 0 => original,

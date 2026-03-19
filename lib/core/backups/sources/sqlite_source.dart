@@ -1,6 +1,3 @@
-// Dart imports:
-import 'dart:io';
-
 // Flutter imports:
 import 'package:flutter/material.dart';
 
@@ -12,6 +9,7 @@ import 'package:path/path.dart' as p;
 import 'package:shelf/shelf.dart' as shelf;
 
 // Project imports:
+import '../../../foundation/filesystem.dart';
 import '../preparation/version_checking.dart';
 import '../types/backup_data_source.dart';
 import '../utils/backup_utils.dart';
@@ -53,7 +51,9 @@ abstract class SqliteBackupSource implements BackupDataSource {
 
   Future<shelf.Response> _serveDatabase(shelf.Request request) async {
     final dbPath = await dbPathGetter();
+    final fs = ref.read(appFileSystemProvider);
     return createDbStreamResponse(
+      fs: fs,
       filePath: dbPath,
       fileName: dbFileName,
     );
@@ -76,8 +76,10 @@ abstract class SqliteBackupSource implements BackupDataSource {
   Future<void> _executeServerImport(String serverUrl) async {
     final dio = Dio(BaseOptions(baseUrl: serverUrl));
     final dbPath = await dbPathGetter();
+    final fs = ref.read(appFileSystemProvider);
 
     await downloadAndReplaceDb(
+      fs: fs,
       dio: dio,
       url: '/$id',
       filePath: dbPath,
@@ -90,9 +92,9 @@ abstract class SqliteBackupSource implements BackupDataSource {
     await BackupUtils.ensureStoragePermissions(ref);
 
     final dbPath = await dbPathGetter();
-    final file = File(dbPath);
+    final fs = ref.read(appFileSystemProvider);
 
-    if (!file.existsSync()) {
+    if (!fs.fileExistsSync(dbPath)) {
       return;
     }
 
@@ -100,7 +102,7 @@ abstract class SqliteBackupSource implements BackupDataSource {
     final fileName = 'boorusama_${id}_$timestamp.db';
     final destinationPath = p.join(directoryPath, fileName);
 
-    await file.copy(destinationPath);
+    await fs.copyFile(dbPath, destinationPath);
   }
 
   Future<ImportPreparation> _prepareFileImport(
@@ -108,8 +110,8 @@ abstract class SqliteBackupSource implements BackupDataSource {
     BuildContext? uiContext,
   ) async {
     // Validate SQLite header
-    final sourceFile = File(filePath);
-    final bytes = await sourceFile.openRead(0, 16).first;
+    final fs = ref.read(appFileSystemProvider);
+    final bytes = await fs.openRead(filePath, start: 0, end: 16).first;
     final header = bytes.take(16).toList();
 
     if (!_isSQLiteFile(header)) {
@@ -133,7 +135,8 @@ abstract class SqliteBackupSource implements BackupDataSource {
 
     final dbPath = await dbPathGetter();
 
-    await BackupUtils.replaceFile(sourcePath, dbPath);
+    final fs = ref.read(appFileSystemProvider);
+    await BackupUtils.replaceFile(fs, sourcePath, dbPath);
     onImportComplete();
   }
 

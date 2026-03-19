@@ -6,8 +6,8 @@ import 'package:sqlite3/sqlite3.dart';
 // Project imports:
 import '../../../../foundation/database/providers.dart';
 import '../../../../foundation/database/utils.dart';
+import '../../../../foundation/filesystem.dart';
 import '../../../../foundation/loggers.dart';
-import '../../../../foundation/path/app_storage.dart';
 import '../types/download_repository.dart';
 import 'repo_empty.dart';
 import 'repo_sqlite.dart';
@@ -28,7 +28,9 @@ final internalDownloadRepositoryProvider = FutureProvider<DownloadRepository>((
 ) async {
   final logger = ref.watch(loggerProvider);
   final dbFolderPath = await ref.watch(databaseFolderPathProvider.future);
+  final fs = ref.watch(appFileSystemProvider);
   final db = await createDb(
+    fs: fs,
     folderPath: dbFolderPath,
     name: kDownloadDbName,
     logger: logger,
@@ -63,7 +65,7 @@ Future<DownloadRepository> _createRepository(
   }
 }
 
-Future<String> getDownloadsDbPath() async {
-  final basePath = await getAppStoragePath();
+Future<String> getDownloadsDbPath(AppFileSystem fs) async {
+  final basePath = await fs.getAppStoragePath();
   return join(basePath, 'data', kDownloadDbName);
 }

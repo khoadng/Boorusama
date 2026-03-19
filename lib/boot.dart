@@ -38,7 +38,7 @@ import 'foundation/info/device_info.dart';
 import 'foundation/info/package_info.dart';
 import 'foundation/loggers.dart';
 import 'foundation/mobile.dart';
-import 'foundation/path.dart';
+import 'foundation/filesystem.dart';
 import 'foundation/platform.dart';
 import 'foundation/utils/file_utils.dart';
 import 'foundation/vendors/google/providers.dart';
@@ -54,8 +54,10 @@ Future<void> boot(BootData bootData) async {
     await window.initialize();
   }
 
+  const fs = IoFileSystem();
+
   logger.debugBoot("Load database's directory");
-  final dbDirectoryPath = await initDbDirectory();
+  final dbDirectoryPath = await initDbDirectory(fs);
 
   logger.debugBoot('Initialize Hive');
   Hive
@@ -112,7 +114,7 @@ Future<void> boot(BootData bootData) async {
   logger.debugBoot('Load all configs');
   final allConfigs = await booruUserRepo.getAll();
 
-  final tempPath = await getAppTemporaryPath();
+  final tempPath = await fs.getTemporaryPath();
 
   logger.debugBoot('Initialize misc data box');
   final miscDataBox = await Hive.openBox<String>(

@@ -7,6 +7,7 @@ import 'package:foundation/foundation.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
+import '../../../../../foundation/filesystem.dart';
 import '../../../../../foundation/toast.dart';
 import '../../../../../foundation/utils/file_utils.dart';
 import '../../../../images/providers.dart';
@@ -16,7 +17,8 @@ import '../../../../widgets/widgets.dart';
 const _kHideImageCacheWarningKey = 'hide_image_cache_warning';
 
 final _imageCachesProvider = FutureProvider<int>((ref) async {
-  final imageCacheSize = await getImageCacheSize();
+  final fs = ref.watch(appFileSystemProvider);
+  final imageCacheSize = await getImageCacheSize(fs);
 
   return imageCacheSize.size;
 });

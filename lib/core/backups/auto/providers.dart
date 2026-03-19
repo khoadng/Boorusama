@@ -4,6 +4,7 @@ import 'package:foundation/foundation.dart';
 import 'package:path/path.dart' as p;
 
 // Project imports:
+import '../../../foundation/filesystem.dart';
 import '../../../foundation/info/device_info.dart';
 import '../../../foundation/loggers.dart';
 import '../../../foundation/platform.dart';
@@ -37,13 +38,14 @@ final autoBackupDefaultDirectoryPathProvider = FutureProvider<String?>((
     if (hasScopeStorage) return null;
   }
 
-  final result = await tryGetDownloadDirectory();
-  final downloadsDir = switch (result) {
-    DownloadDirectorySuccess(:final directory) => directory,
+  final fs = ref.watch(appFileSystemProvider);
+  final result = await tryGetDownloadDirectory(fs);
+  final downloadsPath = switch (result) {
+    DownloadDirectorySuccess(:final path) => path,
     DownloadDirectoryFailure(:final message) => throw Exception(
       message ?? 'Could not find downloads directory',
     ),
   };
 
-  return p.join(downloadsDir.path, AutoBackupService.backupFolderName);
+  return p.join(downloadsPath, AutoBackupService.backupFolderName);
 });

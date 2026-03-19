@@ -9,6 +9,7 @@ import 'package:foundation/foundation.dart';
 import 'package:path/path.dart';
 
 // Project imports:
+import '../../../foundation/filesystem.dart';
 import '../../../foundation/loggers.dart';
 import '../../ddos/solver/types.dart';
 import '../downloader/types.dart';
@@ -22,12 +23,14 @@ class BackgroundDownloader implements DownloadService {
     this.downloadNotifications,
     this.androidSdkInt,
     this.logger,
+    required this.fs,
   });
 
   final VideoCacheManager? videoCacheManager;
   final DownloadNotifications? downloadNotifications;
   final int? androidSdkInt;
   final Logger? logger;
+  final AppFileSystem fs;
 
   @override
   Future<DownloadResult> download(DownloadOptions options) async {
@@ -144,6 +147,7 @@ class BackgroundDownloader implements DownloadService {
       final info = await FileDownloader().enqueueIfNeeded(
         task,
         skipIfExists: options.skipIfExists,
+        fs: fs,
       );
 
       return DownloadSuccess(info);
@@ -197,9 +201,9 @@ class BackgroundDownloader implements DownloadService {
 
   Future<(String?, BaseDirectory, DownloadError?)>
   _getDefaultDirectory() async {
-    return switch (await tryGetDownloadDirectory()) {
-      DownloadDirectorySuccess(:final directory) => (
-        directory.path,
+    return switch (await tryGetDownloadDirectory(fs)) {
+      DownloadDirectorySuccess(:final path) => (
+        path,
         BaseDirectory.root,
         null,
       ),
@@ -242,22 +246,19 @@ class BackgroundDownloader implements DownloadService {
     String filename,
     bool? skipIfExists,
   ) async {
-    final sourceFile = File(cachedPath);
-    if (!sourceFile.existsSync()) {
+    if (!fs.fileExistsSync(cachedPath)) {
       throw Exception('Cached file not found: $cachedPath');
     }
 
     // Ensure target directory exists
-    final targetDirectory = Directory(targetDir);
-    if (!targetDirectory.existsSync()) {
-      await targetDirectory.create(recursive: true);
+    if (!fs.directoryExistsSync(targetDir)) {
+      await fs.createDirectory(targetDir, recursive: true);
     }
 
     final targetPath = join(targetDir, filename);
-    final targetFile = File(targetPath);
 
     // Check if target file already exists
-    if ((skipIfExists ?? false) && targetFile.existsSync()) {
+    if ((skipIfExists ?? false) && fs.fileExistsSync(targetPath)) {
       // Show completion notification for existing file
       if (downloadNotifications case final notifications?) {
         unawaited(
@@ -280,7 +281,7 @@ class BackgroundDownloader implements DownloadService {
     }
 
     // Copy cached file to target location
-    await sourceFile.copy(targetPath);
+    await fs.copyFile(cachedPath, targetPath);
 
     // Show completion notification for successful copy
     if (downloadNotifications case final notifications?) {

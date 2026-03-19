@@ -12,6 +12,7 @@ import '../../../../foundation/clipboard.dart';
 import '../../../../foundation/loggers.dart';
 import '../../../../foundation/scrolling.dart';
 import '../../foundation/animations/constants.dart';
+import '../../foundation/filesystem.dart';
 import '../../foundation/toast.dart';
 import '../settings/providers.dart';
 import '../themes/theme/types.dart';
@@ -62,7 +63,8 @@ class _DebugLogsPageState extends ConsumerState<DebugLogsPage> {
           IconButton(
             icon: const Icon(Symbols.download),
             onPressed: () async {
-              await writeLogsToFile(context, logs);
+              final fs = ref.read(appFileSystemProvider);
+              await writeLogsToFile(fs, context, logs);
             },
           ),
         ],
@@ -97,10 +99,11 @@ class _DebugLogsPageState extends ConsumerState<DebugLogsPage> {
 }
 
 Future<void> writeLogsToFile(
+  AppFileSystem fs,
   BuildContext context,
   List<LogData> logs,
 ) async {
-  final result = await writeLogs(logs);
+  final result = await writeLogs(fs, logs);
 
   switch (result) {
     case WriteLogFailure(:final message):

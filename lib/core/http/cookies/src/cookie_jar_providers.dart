@@ -3,14 +3,17 @@ import 'package:coreutils/coreutils.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../foundation/path.dart';
+import '../../../../foundation/filesystem.dart';
 
 final cookieCacheDirPathProvider = Provider<LazyAsync<String?>>(
-  (ref) => LazyAsync(() async {
-    final tempPath = await getAppTemporaryPath();
+  (ref) {
+    final fs = ref.watch(appFileSystemProvider);
+    return LazyAsync(() async {
+      final tempPath = await fs.getTemporaryPath();
 
-    return tempPath;
-  }),
+      return tempPath;
+    });
+  },
   name: 'cookieCacheDirProvider',
 );
 

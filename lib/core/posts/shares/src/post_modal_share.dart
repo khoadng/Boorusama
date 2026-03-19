@@ -17,6 +17,7 @@ import '../../details/providers.dart';
 import '../../post/providers.dart';
 import '../../post/types.dart';
 import '../../sources/types.dart';
+import '../../../../foundation/filesystem.dart';
 import 'download_and_share.dart';
 import 'share.dart';
 
@@ -39,7 +40,8 @@ final _cachedImageFileProvider = FutureProvider.autoDispose
 
         // attach the extension to the file
         final newPath = filePath + effectiveExt;
-        final xFile = fileCopySync(filePath, newPath);
+        final fs = ref.watch(appFileSystemProvider);
+        final xFile = fileCopySync(fs, filePath, newPath);
 
         return xFile;
       },

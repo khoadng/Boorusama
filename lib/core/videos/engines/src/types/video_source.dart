@@ -1,6 +1,8 @@
 // Dart imports:
 import 'dart:convert';
-import 'dart:io';
+
+// Project imports:
+import '../../../../../foundation/filesystem.dart';
 
 /// Result of getting optimal URL from a video source
 sealed class VideoUrlResult {
@@ -54,26 +56,30 @@ class CachedVideoSource extends VideoSource {
     required this.cachedUrl,
     required super.originalUrl,
     this.fileSizeBytes,
+    this.fs,
   });
 
   /// Factory that automatically determines file size from cached URL
   factory CachedVideoSource.fromUrl({
     required String cachedUrl,
     required String originalUrl,
+    AppFileSystem? fs,
   }) {
     return CachedVideoSource(
       cachedUrl: cachedUrl,
       originalUrl: originalUrl,
-      fileSizeBytes: _getFileSize(cachedUrl),
+      fileSizeBytes: _getFileSize(cachedUrl, fs),
+      fs: fs,
     );
   }
 
   /// Gets file size from cached file URL, returns null if not accessible
-  static int? _getFileSize(String cachedUrl) {
+  static int? _getFileSize(String cachedUrl, AppFileSystem? fs) {
     try {
+      if (fs == null) return null;
       if (!cachedUrl.startsWith('file://')) return null;
-      final file = File(cachedUrl.replaceFirst('file://', ''));
-      return file.existsSync() ? file.lengthSync() : null;
+      final path = cachedUrl.replaceFirst('file://', '');
+      return fs.fileExistsSync(path) ? fs.fileSizeSync(path) : null;
     } catch (e) {
       return null;
     }
@@ -84,6 +90,8 @@ class CachedVideoSource extends VideoSource {
 
   /// Size of cached file in bytes (if available)
   final int? fileSizeBytes;
+
+  final AppFileSystem? fs;
 
   @override
   String get url => cachedUrl;
@@ -109,9 +117,10 @@ class CachedVideoSource extends VideoSource {
   /// Reads cached file bytes, returns null if file doesn't exist or can't be read
   List<int>? readBytes() {
     try {
+      if (fs == null) return null;
       if (!cachedUrl.startsWith('file://')) return null;
-      final file = File(cachedUrl.replaceFirst('file://', ''));
-      return file.existsSync() ? file.readAsBytesSync() : null;
+      final path = cachedUrl.replaceFirst('file://', '');
+      return fs!.fileExistsSync(path) ? fs!.readBytesSync(path) : null;
     } catch (e) {
       return null;
     }

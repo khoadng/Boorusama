@@ -1,31 +1,30 @@
-// Dart imports:
-import 'dart:io';
-
 // Package imports:
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
 import 'package:shelf/shelf.dart' as shelf;
 
+// Project imports:
+import '../../../foundation/filesystem.dart';
+
 const _kChecksumHeader = 'X-File-Checksum';
 
 Future<shelf.Response> createDbStreamResponse({
+  required AppFileSystem fs,
   required String filePath,
   required String fileName,
   String contentType = 'application/octet-stream',
   String checksumHeader = _kChecksumHeader,
 }) async {
-  final file = File(filePath);
-
-  if (!file.existsSync()) {
+  if (!fs.fileExistsSync(filePath)) {
     return shelf.Response.notFound('Database file not found');
   }
 
   // Calculate checksum by consuming the file stream.
-  final hash = await sha256.bind(file.openRead()).single;
+  final hash = await sha256.bind(fs.openRead(filePath)).single;
   final checksum = hash.toString();
 
   // Reopen file stream since the previous stream was consumed.
-  final fileStream = file.openRead();
+  final fileStream = fs.openRead(filePath);
 
   return shelf.Response.ok(
     fileStream,
@@ -38,14 +37,14 @@ Future<shelf.Response> createDbStreamResponse({
 }
 
 Future<void> downloadAndReplaceDb({
+  required AppFileSystem fs,
   required Dio dio,
   required String url,
   required String filePath,
   String checksumHeader = _kChecksumHeader,
 }) async {
   final tempFilePath = '$filePath.tmp';
-  final tempFile = File(tempFilePath);
-  final sink = tempFile.openWrite();
+  final sink = await fs.openWrite(tempFilePath);
 
   final response = await dio.get(
     url,
@@ -61,23 +60,25 @@ Future<void> downloadAndReplaceDb({
   await sink.addStream(response.data.stream.cast<List<int>>());
   await sink.close();
 
-  final checksum = await computeFileChecksum(tempFile);
+  final checksum = await computeFileChecksum(fs: fs, filePath: tempFilePath);
   if (checksum != expectedChecksum) {
-    if (tempFile.existsSync()) {
-      await tempFile.delete();
+    if (fs.fileExistsSync(tempFilePath)) {
+      await fs.deleteFile(tempFilePath);
     }
     throw Exception('Database file is corrupted');
   }
 
-  final currentDbFile = File(filePath);
-  if (currentDbFile.existsSync()) {
-    await currentDbFile.delete();
+  if (fs.fileExistsSync(filePath)) {
+    await fs.deleteFile(filePath);
   }
 
-  await tempFile.rename(filePath);
+  await fs.renameFile(tempFilePath, filePath);
 }
 
-Future<String> computeFileChecksum(File file) async {
-  final digest = await sha256.bind(file.openRead()).single;
+Future<String> computeFileChecksum({
+  required AppFileSystem fs,
+  required String filePath,
+}) async {
+  final digest = await sha256.bind(fs.openRead(filePath)).single;
   return digest.toString();
 }

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:isolate';
+import 'dart:typed_data';
 
 // Flutter imports:
 import 'package:flutter/material.dart';
@@ -17,6 +18,7 @@ import 'package:intl/intl.dart';
 import 'package:path/path.dart' as p;
 
 // Project imports:
+import '../../../foundation/filesystem.dart';
 import '../../../foundation/info/package_info.dart';
 import '../../../foundation/loggers.dart';
 import '../sources/providers.dart';
@@ -59,6 +61,7 @@ final bulkBackupServiceProvider = Provider<BulkBackupService>((ref) {
     appVersion: ref.watch(appVersionProvider),
     logger: ref.watch(loggerProvider),
     ref: ref,
+    fs: ref.watch(appFileSystemProvider),
   );
 });
 
@@ -68,12 +71,14 @@ class BulkBackupService {
     required this.appVersion,
     required this.logger,
     required this.ref,
+    required this.fs,
   });
 
   final BackupRegistry registry;
   final Version? appVersion;
   final Logger logger;
   final Ref ref;
+  final AppFileSystem fs;
 
   static const _manifestVersion = 1;
   static const _manifestFileName = 'manifest.json';
@@ -216,8 +221,8 @@ class BulkBackupService {
 
     logger.verbose('Backup.Export', 'Export target: $zipPath');
 
-    final tempDir = await Directory.systemTemp.createTemp('boorusama_backup_');
-    logger.verbose('Backup.Export', 'Created temp directory: ${tempDir.path}');
+    final tempDirPath = await fs.createTempDirectory('boorusama_backup_');
+    logger.verbose('Backup.Export', 'Created temp directory: $tempDirPath');
 
     try {
       // Filter sources by provided IDs
@@ -237,7 +242,7 @@ class BulkBackupService {
       // Export each selected source to temp directory
       for (final source in selectedSources) {
         logger.verbose('Backup.Export', 'Exporting source: ${source.id}');
-        final result = await _exportSource(source, tempDir);
+        final result = await _exportSource(source, tempDirPath);
         result.fold(
           (error) {
             logger.error(
@@ -283,12 +288,12 @@ class BulkBackupService {
         failed: failed,
       );
 
-      final manifestFile = File(p.join(tempDir.path, _manifestFileName));
-      await manifestFile.writeAsString(jsonEncode(manifest.toJson()));
+      final manifestPath = p.join(tempDirPath, _manifestFileName);
+      await fs.writeString(manifestPath, jsonEncode(manifest.toJson()));
       logger
         ..verbose('Backup.Export', 'Created manifest file')
         ..verbose('Backup.Export', 'Starting zip creation');
-      await _createZipWithProgress(tempDir.path, zipPath, onProgress);
+      await _createZipWithProgress(tempDirPath, zipPath, onProgress);
       logger.verbose('Backup.Export', 'Zip creation completed');
 
       return BulkExportResult(
@@ -303,7 +308,7 @@ class BulkBackupService {
     } finally {
       // Cleanup temp directory
       try {
-        await tempDir.delete(recursive: true);
+        await fs.deleteDirectory(tempDirPath, recursive: true);
         logger.verbose('Backup.Export', 'Cleaned up temp directory');
       } catch (e) {
         logger.warn('Backup.Export', 'Failed to cleanup temp directory: $e');
@@ -313,7 +318,7 @@ class BulkBackupService {
 
   Future<Either<ExportException, FileName>> _exportSource(
     BackupDataSource source,
-    Directory tempDir,
+    String tempDirPath,
   ) async {
     try {
       final fileCapability = source.capabilities.file;
@@ -322,12 +327,12 @@ class BulkBackupService {
       }
 
       // Get files before export
-      final filesBefore = _getDirectoryFiles(tempDir);
+      final filesBefore = _getDirectoryFiles(tempDirPath);
 
-      await fileCapability.export(tempDir.path);
+      await fileCapability.export(tempDirPath);
 
       // Get files after export to find what was created
-      final filesAfter = _getDirectoryFiles(tempDir);
+      final filesAfter = _getDirectoryFiles(tempDirPath);
       final newFiles = filesAfter
           .where((f) => !filesBefore.contains(f))
           .toList();
@@ -343,8 +348,12 @@ class BulkBackupService {
     }
   }
 
-  List<String> _getDirectoryFiles(Directory dir) {
-    return dir.listSync().whereType<File>().map((f) => f.path).toList();
+  List<String> _getDirectoryFiles(String dirPath) {
+    return fs
+        .listDirectorySync(dirPath)
+        .where((e) => e.isFile)
+        .map((e) => e.path)
+        .toList();
   }
 
   Future<void> _createZipWithProgress(
@@ -399,14 +408,14 @@ class BulkBackupService {
 
     await BackupUtils.ensureStoragePermissions(ref);
 
-    final tempDir = await Directory.systemTemp.createTemp('boorusama_import_');
+    final tempDirPath = await fs.createTempDirectory('boorusama_import_');
     logger.verbose(
       'Backup.Import',
-      'Created temp directory for import: ${tempDir.path}',
+      'Created temp directory for import: $tempDirPath',
     );
 
     try {
-      final bytes = await File(zipPath).readAsBytes();
+      final bytes = await fs.readBytes(zipPath);
       logger.verbose(
         'Backup.Import',
         'Read ${bytes.length} bytes from zip file',
@@ -422,16 +431,17 @@ class BulkBackupService {
         final filename = file.name;
         if (file.isFile) {
           final data = file.content as List<int>;
-          final extractedFile = File(p.join(tempDir.path, filename));
-          await extractedFile.create(recursive: true);
-          await extractedFile.writeAsBytes(data);
+          final extractedPath = p.join(tempDirPath, filename);
+          final extractedDir = p.dirname(extractedPath);
+          await fs.createDirectory(extractedDir, recursive: true);
+          await fs.writeBytes(extractedPath, Uint8List.fromList(data));
         }
       }
       logger.verbose('Backup.Import', 'Extracted all files from archive');
 
       // Read manifest
-      final manifestFile = File(p.join(tempDir.path, _manifestFileName));
-      if (!manifestFile.existsSync()) {
+      final manifestPath = p.join(tempDirPath, _manifestFileName);
+      if (!fs.fileExistsSync(manifestPath)) {
         logger.error(
           'Backup.Import',
           'Manifest file not found: $_manifestFileName',
@@ -441,7 +451,7 @@ class BulkBackupService {
         );
       }
 
-      final manifestContent = await manifestFile.readAsString();
+      final manifestContent = await fs.readString(manifestPath);
       final manifestJson = jsonDecode(manifestContent) as Map<String, dynamic>;
       final manifest = BulkBackupManifest.fromJson(manifestJson);
 
@@ -522,8 +532,8 @@ class BulkBackupService {
             continue;
           }
 
-          final sourceFile = File(p.join(tempDir.path, fileName));
-          if (!sourceFile.existsSync()) {
+          final sourceFilePath = p.join(tempDirPath, fileName);
+          if (!fs.fileExistsSync(sourceFilePath)) {
             logger.error(
               'Backup.Import',
               'Source file does not exist: $fileName for source: $sourceId',
@@ -546,7 +556,7 @@ class BulkBackupService {
             'Preparing import for source $sourceId from file: $fileName',
           );
           final preparation = await fileCapability.prepareImport(
-            sourceFile.path,
+            sourceFilePath,
             uiContext,
           );
 
@@ -582,7 +592,7 @@ class BulkBackupService {
     } finally {
       // Cleanup temp directory
       try {
-        await tempDir.delete(recursive: true);
+        await fs.deleteDirectory(tempDirPath, recursive: true);
         logger.verbose('Backup.Import', 'Cleaned up temp directory');
       } catch (e) {
         logger.warn('Backup.Import', 'Failed to cleanup temp directory: $e');

@@ -1,6 +1,5 @@
 // Dart imports:
 import 'dart:convert';
-import 'dart:io';
 
 // Package imports:
 import 'package:booru_clients/moebooru.dart';
@@ -8,19 +7,23 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../core/configs/config/types.dart';
-import '../../../foundation/path.dart';
+import '../../../foundation/filesystem.dart';
 import 'types.dart';
 
 final tagSummaryStoreProvider =
     Provider.family<TagSummaryStore, BooruConfigAuth>((ref, config) {
       final path = '${Uri.encodeComponent(config.url)}_tag_summary';
-      return FileTagSummaryStore(path);
+      return FileTagSummaryStore(
+        path,
+        ref.watch(appFileSystemProvider),
+      );
     });
 
 class FileTagSummaryStore implements TagSummaryStore {
-  FileTagSummaryStore(this.path);
+  FileTagSummaryStore(this.path, this._fs);
 
   final String path;
+  final AppFileSystem _fs;
   TagSummaryDto? _cache;
 
   @override
@@ -28,20 +31,20 @@ class FileTagSummaryStore implements TagSummaryStore {
     if (_cache != null) return _cache;
 
     try {
-      final tempPath = await getAppTemporaryPath();
+      final tempPath = await _fs.getTemporaryPath();
 
       if (tempPath == null) {
         _cache = null;
         return null;
       }
 
-      final file = File('$tempPath/$path');
+      final filePath = '$tempPath/$path';
 
-      if (file.existsSync()) {
-        final lastModified = file.lastModifiedSync();
+      if (_fs.fileExistsSync(filePath)) {
+        final lastModified = _fs.lastModifiedSync(filePath);
         final now = DateTime.now();
         if (now.difference(lastModified).inDays < 1) {
-          final content = await file.readAsString();
+          final content = await _fs.readString(filePath);
           final dto = TagSummaryDto.fromJson(json.decode(content));
           _cache = dto;
           return dto;
@@ -59,15 +62,15 @@ class FileTagSummaryStore implements TagSummaryStore {
   @override
   Future<void> save(TagSummaryDto dto) async {
     try {
-      final tempPath = await getAppTemporaryPath();
+      final tempPath = await _fs.getTemporaryPath();
 
       if (tempPath == null) {
         _cache = null;
         return;
       }
 
-      final file = File('$tempPath/$path');
-      await file.writeAsString(json.encode(dto.toJson()));
+      final filePath = '$tempPath/$path';
+      await _fs.writeString(filePath, json.encode(dto.toJson()));
       _cache = null;
     } catch (e) {
       _cache = null;
@@ -79,15 +82,15 @@ class FileTagSummaryStore implements TagSummaryStore {
   Future<void> clear() async {
     _cache = null;
     try {
-      final tempPath = await getAppTemporaryPath();
+      final tempPath = await _fs.getTemporaryPath();
 
       if (tempPath == null) {
         return;
       }
 
-      final file = File('$tempPath/$path');
-      if (file.existsSync()) {
-        await file.delete();
+      final filePath = '$tempPath/$path';
+      if (_fs.fileExistsSync(filePath)) {
+        await _fs.deleteFile(filePath);
       }
     } catch (e) {
       // Ignore errors when clearing

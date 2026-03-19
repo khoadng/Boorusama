@@ -2,6 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import '../../../foundation/filesystem.dart';
 import '../../../foundation/info/device_info.dart';
 import '../../../foundation/loggers.dart';
 import '../../videos/cache/providers.dart';
@@ -18,6 +19,7 @@ final backgroundDownloaderProvider = Provider<BackgroundDownloader>(
       videoCacheManager: ref.watch(videoCacheManagerProvider),
       downloadNotifications: ref.watch(downloadNotificationsProvider),
       logger: ref.watch(loggerProvider),
+      fs: ref.watch(appFileSystemProvider),
       androidSdkInt: ref.watch(
         deviceInfoProvider.select(
           (value) => value.androidDeviceInfo?.version.sdkInt,

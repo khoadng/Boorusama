@@ -1,11 +1,9 @@
-// Dart imports:
-import 'dart:io';
-
 // Package imports:
 import 'package:path/path.dart' show join;
 import 'package:sqlite3/sqlite3.dart';
 
 // Project imports:
+import '../filesystem.dart';
 import '../loggers/logger.dart';
 
 mixin DatabaseUtilsMixin {
@@ -24,13 +22,13 @@ mixin DatabaseUtilsMixin {
 }
 
 Future<Database?> createDb({
+  required AppFileSystem fs,
   required String folderPath,
   required String name,
   Logger? logger,
 }) async {
   try {
-    // Make sure the directory exists
-    await Directory(folderPath).create(recursive: true);
+    await fs.createDirectory(folderPath, recursive: true);
 
     return sqlite3.open(join(folderPath, name));
   } on Exception catch (e) {

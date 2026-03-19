@@ -5,8 +5,8 @@ import 'package:path/path.dart' show join;
 // Project imports:
 import '../../../../../foundation/database/providers.dart';
 import '../../../../../foundation/database/utils.dart';
+import '../../../../../foundation/filesystem.dart';
 import '../../../../../foundation/loggers.dart';
-import '../../../../../foundation/path/app_storage.dart';
 import '../types/tag_cache_repository.dart';
 import 'repo_empty.dart';
 import 'repo_sqlite.dart';
@@ -19,7 +19,9 @@ final tagCacheRepositoryProvider = FutureProvider<TagCacheRepository>(
     final logger = ref.watch(loggerProvider);
     final dbFolderPath = await ref.watch(databaseFolderPathProvider.future);
 
+    final fs = ref.watch(appFileSystemProvider);
     final db = await createDb(
+      fs: fs,
       folderPath: dbFolderPath,
       name: kTagCacheDbName,
       logger: logger,
@@ -52,7 +54,7 @@ final tagCacheRepositoryProvider = FutureProvider<TagCacheRepository>(
   },
 );
 
-Future<String> getTagCacheDbPath() async {
-  final basePath = await getAppStoragePath();
+Future<String> getTagCacheDbPath(AppFileSystem fs) async {
+  final basePath = await fs.getAppStoragePath();
   return join(basePath, 'data', kTagCacheDbName);
 }

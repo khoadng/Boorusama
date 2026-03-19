@@ -1,6 +1,3 @@
-// Dart imports:
-import 'dart:io';
-
 // Flutter imports:
 import 'package:flutter/material.dart';
 
@@ -13,6 +10,7 @@ import 'package:path/path.dart' show join;
 import 'package:shelf/shelf.dart' as shelf;
 
 // Project imports:
+import '../../../foundation/filesystem.dart';
 import '../../../foundation/clipboard.dart';
 import '../preparation/preparation_pipeline.dart';
 import '../preparation/version_checking.dart';
@@ -185,28 +183,28 @@ abstract class JsonBackupSource<T> implements BackupDataSource {
     String fileName,
     String content,
   ) async {
-    final dir = Directory(directoryPath);
-    if (!dir.existsSync()) {
-      await dir.create(recursive: true);
+    final fs = ref.read(appFileSystemProvider);
+
+    if (!fs.directoryExistsSync(directoryPath)) {
+      await fs.createDirectory(directoryPath, recursive: true);
     }
 
     final finalPath = join(directoryPath, fileName);
     final tempPath = '$finalPath.tmp';
-    final tempFile = File(tempPath);
 
     try {
-      await tempFile.writeAsString(content);
-      await tempFile.rename(finalPath);
+      await fs.writeString(tempPath, content);
+      await fs.renameFile(tempPath, finalPath);
     } catch (e) {
-      if (tempFile.existsSync()) {
-        await tempFile.delete();
+      if (fs.fileExistsSync(tempPath)) {
+        await fs.deleteFile(tempPath);
       }
       rethrow;
     }
   }
 
   Future<String> readFile(String path) {
-    final file = File(path);
-    return file.readAsString();
+    final fs = ref.read(appFileSystemProvider);
+    return fs.readString(path);
   }
 }

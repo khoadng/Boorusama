@@ -1,41 +1,44 @@
-// Dart imports:
-import 'dart:io';
-
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import '../../foundation/filesystem.dart';
 import '../../foundation/utils/file_utils.dart';
 import '../images/providers.dart';
 import '../tags/local/providers.dart';
 import '../videos/cache/providers.dart';
 import 'persistent/providers.dart';
 
-final appCacheSizeProvider = FutureProvider.autoDispose<DirectorySizeInfo>(
-  (
-    ref,
-  ) => getCacheSize().catchError((_) => DirectorySizeInfo.zero),
-);
+final appCacheSizeProvider = FutureProvider.autoDispose<DirectorySizeInfo>((
+  ref,
+) {
+  final fs = ref.watch(appFileSystemProvider);
+  return getCacheSize(fs).catchError((_) => DirectorySizeInfo.zero);
+});
 
-final imageCacheSizeProvider = FutureProvider.autoDispose<DirectorySizeInfo>(
-  (
-    ref,
-  ) => getImageCacheSize().catchError((_) => DirectorySizeInfo.zero),
-);
+final imageCacheSizeProvider = FutureProvider.autoDispose<DirectorySizeInfo>((
+  ref,
+) {
+  final fs = ref.watch(appFileSystemProvider);
+  return getImageCacheSize(fs).catchError((_) => DirectorySizeInfo.zero);
+});
 
-final tagCacheSizeProvider = FutureProvider.autoDispose<int>(
-  (ref) => _getTagCacheSize().catchError((_) => 0),
-);
+final tagCacheSizeProvider = FutureProvider.autoDispose<int>((ref) {
+  final fs = ref.watch(appFileSystemProvider);
+  return _getTagCacheSize(fs).catchError((_) => 0);
+});
 
-final diskSpaceInfoProvider = FutureProvider.autoDispose<DiskSpaceInfo>(
-  (
-    ref,
-  ) => DiskSpaceInfo.fromTempDir().catchError((_) => DiskSpaceInfo.zero),
-);
+final diskSpaceInfoProvider = FutureProvider.autoDispose<DiskSpaceInfo>((ref) {
+  final fs = ref.watch(appFileSystemProvider);
+  return DiskSpaceInfo.fromTempDir(fs).catchError((_) => DiskSpaceInfo.zero);
+});
 
-final videoCacheSizeProvider = FutureProvider.autoDispose<DirectorySizeInfo>(
-  (ref) => getVideoCacheSize().catchError((_) => DirectorySizeInfo.zero),
-);
+final videoCacheSizeProvider = FutureProvider.autoDispose<DirectorySizeInfo>((
+  ref,
+) {
+  final fs = ref.watch(appFileSystemProvider);
+  return getVideoCacheSize(fs).catchError((_) => DirectorySizeInfo.zero);
+});
 
 final persistentCacheSizeProvider = FutureProvider.autoDispose<int>(
   (ref) => _getPersistentCacheSize(ref).catchError((_) => 0),
@@ -181,7 +184,8 @@ class CacheSizeNotifier extends AutoDisposeAsyncNotifier<CacheSizeInfo> {
     await _withMinimumDelay(() async {
       final cacheManager = ref.read(defaultImageCacheManagerProvider);
       await clearImageCache(cacheManager);
-      await clearCache();
+      final fs = ref.read(appFileSystemProvider);
+      await clearCache(fs);
       await clearTagCacheDatabase(ref);
       await clearVideoCache(ref);
       await clearPersistentCache(ref);
@@ -227,9 +231,10 @@ class CacheSizeNotifier extends AutoDisposeAsyncNotifier<CacheSizeInfo> {
   }
 }
 
-Future<int> _getTagCacheSize() async {
-  final dbFile = await _getTagCacheFile();
-  return dbFile.existsSync() ? dbFile.statSync().size : 0;
+Future<int> _getTagCacheSize(AppFileSystem fs) async {
+  final dbPath = await getTagCacheDbPath(fs);
+  if (!fs.fileExistsSync(dbPath)) return 0;
+  return fs.fileSizeSync(dbPath);
 }
 
 Future<bool> clearTagCacheDatabase(Ref ref) async {
@@ -239,9 +244,10 @@ Future<bool> clearTagCacheDatabase(Ref ref) async {
 
     ref.invalidate(tagCacheRepositoryProvider);
 
-    final dbFile = await _getTagCacheFile();
-    if (dbFile.existsSync()) {
-      await dbFile.delete();
+    final fs = ref.read(appFileSystemProvider);
+    final dbPath = await getTagCacheDbPath(fs);
+    if (fs.fileExistsSync(dbPath)) {
+      await fs.deleteFile(dbPath);
 
       // Invalidate to make sure we not use the old database connection
       ref.invalidate(tagCacheRepositoryProvider);
@@ -253,11 +259,6 @@ Future<bool> clearTagCacheDatabase(Ref ref) async {
   } on Exception catch (_) {
     return false;
   }
-}
-
-Future<File> _getTagCacheFile() async {
-  final dbPath = await getTagCacheDbPath();
-  return File(dbPath);
 }
 
 Future<bool> clearVideoCache(Ref ref) async {

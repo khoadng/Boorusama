@@ -5,11 +5,11 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 
 // Project imports:
-import '../path/app_storage.dart';
+import '../filesystem.dart';
 import '../platform.dart';
 
-Future<String> initDbDirectory() {
-  return getAppStoragePath();
+Future<String> initDbDirectory(AppFileSystem fs) {
+  return fs.getAppStoragePath();
 }
 
 Future<void> initCert() async {

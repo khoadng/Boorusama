@@ -4,11 +4,12 @@ import 'package:hive_ce/hive.dart';
 
 // Project imports:
 import '../../../../../../core/configs/config/types.dart';
-import '../../../../../../foundation/path.dart';
+import '../../../../../../foundation/filesystem.dart';
 
 final danbooruCreatorHiveBoxProvider =
     FutureProvider.family<Box, BooruConfigAuth>((ref, config) async {
-      final tempPath = await getAppTemporaryPath();
+      final fs = ref.read(appFileSystemProvider);
+      final tempPath = await fs.getTemporaryPath();
 
       final danbooruCreatorBox = await Hive.openBox(
         '${Uri.encodeComponent(config.url)}_creators_v1',

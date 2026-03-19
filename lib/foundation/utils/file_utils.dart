@@ -1,12 +1,10 @@
-// Dart imports:
-import 'dart:io';
-
 // Package imports:
 import 'package:cache_manager/cache_manager.dart';
 import 'package:disk_space_2/disk_space_2.dart';
 import 'package:extended_image/extended_image.dart';
 
 // Project imports:
+import '../filesystem.dart';
 import '../path.dart';
 import '../platform.dart';
 
@@ -28,7 +26,8 @@ class DirectorySizeInfo {
 }
 
 Future<DirectorySizeInfo> getDirectorySize(
-  Directory dir, {
+  AppFileSystem fs,
+  String dirPath, {
   List<String> excludedDirNames = const [],
 }) async {
   var size = 0;
@@ -36,24 +35,27 @@ Future<DirectorySizeInfo> getDirectorySize(
   var directoryCount = 0;
 
   try {
-    await for (final entity in dir.list(followLinks: false)) {
-      if (entity is Directory) {
-        final dirName = basename(entity.path);
+    await for (final entry in fs.listDirectoryStream(
+      dirPath,
+      followLinks: false,
+    )) {
+      if (entry.isDirectory) {
+        final dirName = basename(entry.path);
         if (excludedDirNames.contains(dirName)) {
           continue;
         }
 
-        final subDirSizeInfo = await getDirectorySize(entity);
+        final subDirSizeInfo = await getDirectorySize(fs, entry.path);
         size += subDirSizeInfo.size;
         fileCount += subDirSizeInfo.fileCount;
         directoryCount += subDirSizeInfo.directoryCount + 1;
-      } else if (entity is File) {
-        size += await entity.length();
+      } else if (entry.isFile) {
+        size += await fs.fileSize(entry.path);
         fileCount++;
       }
     }
   } catch (e) {
-    // print(e.toString());
+    // ignore
   }
 
   return DirectorySizeInfo(
@@ -63,13 +65,14 @@ Future<DirectorySizeInfo> getDirectorySize(
   );
 }
 
-Future<DirectorySizeInfo> getCacheSize() async {
-  final cacheDir = await getAppTemporaryDirectory();
+Future<DirectorySizeInfo> getCacheSize(AppFileSystem fs) async {
+  final cacheDirPath = await fs.getTemporaryPath();
 
-  if (cacheDir == null) return DirectorySizeInfo.zero;
+  if (cacheDirPath == null) return DirectorySizeInfo.zero;
 
   return getDirectorySize(
-    cacheDir,
+    fs,
+    cacheDirPath,
     excludedDirNames: [
       cacheImageFolderName,
       VideoCacheManager.defaultSubPath,
@@ -77,38 +80,39 @@ Future<DirectorySizeInfo> getCacheSize() async {
   );
 }
 
-Future<DirectorySizeInfo> getImageCacheSize() async {
-  final cacheDir = await getAppTemporaryDirectory();
+Future<DirectorySizeInfo> getImageCacheSize(AppFileSystem fs) async {
+  final cacheDirPath = await fs.getTemporaryPath();
 
-  if (cacheDir == null) return DirectorySizeInfo.zero;
+  if (cacheDirPath == null) return DirectorySizeInfo.zero;
 
-  final path = join(cacheDir.path, cacheImageFolderName);
-  final imageCacheDir = Directory(path);
-  return getDirectorySize(imageCacheDir);
+  final path = join(cacheDirPath, cacheImageFolderName);
+  return getDirectorySize(fs, path);
 }
 
-Future<DirectorySizeInfo> getVideoCacheSize() async {
-  final cacheDir = await getAppTemporaryDirectory();
+Future<DirectorySizeInfo> getVideoCacheSize(AppFileSystem fs) async {
+  final cacheDirPath = await fs.getTemporaryPath();
 
-  if (cacheDir == null) return DirectorySizeInfo.zero;
+  if (cacheDirPath == null) return DirectorySizeInfo.zero;
 
-  final path = join(cacheDir.path, VideoCacheManager.defaultSubPath);
-  final videoCacheDir = Directory(path);
-  return getDirectorySize(videoCacheDir);
+  final path = join(cacheDirPath, VideoCacheManager.defaultSubPath);
+  return getDirectorySize(fs, path);
 }
 
-Future<void> clearCache() async {
-  final cacheDir = await getAppTemporaryDirectory();
+Future<void> clearCache(AppFileSystem fs) async {
+  final cacheDirPath = await fs.getTemporaryPath();
 
-  if (cacheDir == null) return;
+  if (cacheDirPath == null) return;
 
-  if (cacheDir.existsSync()) {
+  if (fs.directoryExistsSync(cacheDirPath)) {
     if (isWindows()) {
-      // On Windows, delete contents but keep the directory to avoid file lock issues
       try {
-        await for (final entity in cacheDir.list()) {
+        await for (final entry in fs.listDirectoryStream(cacheDirPath)) {
           try {
-            await entity.delete(recursive: true);
+            if (entry.isDirectory) {
+              await fs.deleteDirectory(entry.path, recursive: true);
+            } else {
+              await fs.deleteFile(entry.path);
+            }
           } catch (e) {
             // Silently ignore deletion errors for individual files/folders
           }
@@ -117,8 +121,7 @@ Future<void> clearCache() async {
         // Silently ignore if we can't list directory contents
       }
     } else {
-      // On other platforms, delete the entire directory
-      cacheDir.deleteSync(recursive: true);
+      fs.deleteDirectorySync(cacheDirPath, recursive: true);
     }
   }
 }
@@ -143,12 +146,12 @@ class DiskSpaceInfo {
     required this.totalSpace,
   });
 
-  static Future<DiskSpaceInfo> fromTempDir() async {
-    final tempDir = await getAppTemporaryDirectory();
+  static Future<DiskSpaceInfo> fromTempDir(AppFileSystem fs) async {
+    final tempDirPath = await fs.getTemporaryPath();
 
-    if (tempDir == null) return DiskSpaceInfo.zero;
+    if (tempDirPath == null) return DiskSpaceInfo.zero;
 
-    final freeSpace = await DiskSpace.getFreeDiskSpaceForPath(tempDir.path);
+    final freeSpace = await DiskSpace.getFreeDiskSpaceForPath(tempDirPath);
     final totalSpace = await DiskSpace.getTotalDiskSpace;
 
     // Convert from mebibytes (2^20 bytes) to bytes

@@ -1,6 +1,3 @@
-// Dart imports:
-import 'dart:io';
-
 // Flutter imports:
 import 'package:flutter/material.dart';
 
@@ -526,6 +523,5 @@ class BackupNotifier extends AutoDisposeNotifier<BackupState> {
 }
 
 bool _isPathAccessException(Exception e) {
-  return e is PathAccessException ||
-      e.toString().contains('PathAccessException');
+  return e.toString().contains('PathAccessException');
 }

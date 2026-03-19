@@ -1,6 +1,3 @@
-// Dart imports:
-import 'dart:io';
-
 // Flutter imports:
 import 'package:flutter/material.dart';
 
@@ -14,6 +11,7 @@ import 'package:i18n/i18n.dart';
 // Project imports:
 import '../animations/constants.dart';
 import '../error_monitor.dart';
+import '../filesystem.dart';
 import '../info/device_info.dart';
 import '../loggers.dart';
 import '../picker.dart';
@@ -173,8 +171,8 @@ class AppFailedToInitialize extends ConsumerWidget {
   ) => pickDirectoryPathToastOnError(
     context: context,
     onPick: (path) async {
-      final file = File('$path/boorusama_crash.txt');
-      await file.writeAsString(data);
+      const fs = IoFileSystem();
+      await fs.writeString('$path/boorusama_crash.txt', data);
       if (!context.mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(

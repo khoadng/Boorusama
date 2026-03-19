@@ -2,6 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import '../../../../foundation/filesystem.dart';
 import '../types/download_repository.dart';
 import 'repo_empty.dart';
 
@@ -19,6 +20,6 @@ final internalDownloadRepositoryProvider = FutureProvider<DownloadRepository>(
   (ref) => DownloadRepositoryEmpty(),
 );
 
-Future<String> getDownloadsDbPath() async {
+Future<String> getDownloadsDbPath(AppFileSystem fs) async {
   return '';
 }

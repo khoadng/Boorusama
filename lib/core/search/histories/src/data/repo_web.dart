@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../../foundation/database/indexed_db_store.dart';
+import '../../../../../foundation/filesystem.dart';
 import '../../../selected_tags/types.dart';
 import '../types/search_history.dart';
 import '../types/search_history_repository.dart';
@@ -19,7 +20,7 @@ final searchHistoryRepoProvider = FutureProvider<SearchHistoryRepository>(
   },
 );
 
-Future<String> getSearchHistoryDbPath() async {
+Future<String> getSearchHistoryDbPath(AppFileSystem fs) async {
   return '';
 }
 

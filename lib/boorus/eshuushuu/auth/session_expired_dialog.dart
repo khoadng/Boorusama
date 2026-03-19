@@ -7,7 +7,7 @@ import 'package:i18n/i18n.dart';
 // Project imports:
 import '../../../core/router.dart';
 
-bool _isDialogVisible = false;
+var _isDialogVisible = false;
 
 void showSessionExpiredDialog({
   required VoidCallback onReLogin,
