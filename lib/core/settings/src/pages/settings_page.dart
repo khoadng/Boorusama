@@ -38,6 +38,7 @@ import 'data_and_storage_page.dart';
 import 'download_page.dart';
 import 'help_us_translate_page.dart';
 import 'image_viewer_page.dart';
+import 'keybinds_page.dart';
 import 'language_page.dart';
 import 'privacy_page.dart';
 import 'search_settings_page.dart';
@@ -91,6 +92,13 @@ List<SettingEntry> _entries(BuildContext context) => [
     title: context.t.settings.accessibility.accessibility,
     icon: FontAwesomeIcons.universalAccess,
     content: const AccessibilityPage(),
+  ),
+  SettingEntry(
+    id: 'keybinds',
+    name: '/settings/keybinds',
+    title: context.t.settings.keybinds.keybinds,
+    icon: Symbols.keyboard,
+    content: const KeyboardShortcutsPage(),
   ),
   SettingEntry(
     id: 'viewer',

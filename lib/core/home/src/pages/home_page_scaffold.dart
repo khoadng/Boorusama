@@ -10,6 +10,7 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import '../../../../foundation/boot/providers.dart';
 import '../../../../foundation/display.dart';
+import '../../../../foundation/keyboard/keyboard.dart';
 import '../../../blacklists/widgets.dart';
 import '../../../bookmarks/widgets.dart';
 import '../../../boorus/engine/providers.dart';
@@ -22,6 +23,7 @@ import '../../../download_manager/widgets.dart';
 import '../../../premiums/providers.dart';
 import '../../../premiums/routes.dart';
 import '../../../premiums/types.dart';
+import '../../../router.dart';
 import '../../../search/search/widgets.dart';
 import '../../../settings/routes.dart';
 import '../../../tags/favorites/widgets.dart';
@@ -32,7 +34,6 @@ import '../controllers/home_page_controller.dart';
 import '../types/custom_home.dart';
 import '../widgets/booru_scope.dart';
 import '../widgets/home_navigation_tile.dart';
-import '../widgets/sidebar_keyboard_listener.dart';
 
 class HomePageScaffold extends ConsumerStatefulWidget {
   const HomePageScaffold({
@@ -70,8 +71,11 @@ class _HomePageScaffoldState extends ConsumerState<HomePageScaffold> {
   Widget build(BuildContext context) {
     return InheritedHomePageController(
       controller: controller,
-      child: HomePageSidebarKeyboardListener(
-        controller: controller,
+      child: GlobalShortcutScope(
+        handlers: {
+          kGlobalBack: () => navigatorKey.currentState?.maybePop(),
+          kGlobalToggleSidebar: () => controller.toggleMenu(),
+        },
         child: CustomContextMenuOverlay(
           child: Builder(
             builder: (context) {

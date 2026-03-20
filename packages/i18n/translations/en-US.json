@@ -648,7 +648,30 @@
     "contact_developer_description": "If you have any issues or suggestions, feel free to send me an email through this option",
     "feature_request_and_bug_report": "Feature request and bug report",
     "feature_request_and_bug_report_description": "Suggest features or report bugs through the GitHub repository",
-    "open_app_settings": "Open settings"
+    "open_app_settings": "Open settings",
+    "keybinds": {
+      "keybinds": "Keybinds",
+      "record_shortcut": "Record Keybind",
+      "press_any_key": "Press any key combination...",
+      "reset_all": "Reset All to Defaults",
+      "reset_confirm": "This will reset all keybinds to their default values. Continue?",
+      "not_set": "Not set",
+      "contexts": {
+        "global": "Global",
+        "post_details": "Post Details",
+        "home": "Home"
+      },
+      "actions": {
+        "go_back": "Go Back",
+        "toggle_sidebar": "Toggle Sidebar",
+        "next_post": "Next Post",
+        "previous_post": "Previous Post",
+        "toggle_overlay": "Toggle Overlay",
+        "close_viewer": "Close Viewer",
+        "view_original_image": "View Original Image",
+        "refresh": "Refresh"
+      }
+    }
   },
   "blacklisted_tags": {
     "remove": "Remove",

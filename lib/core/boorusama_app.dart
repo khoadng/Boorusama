@@ -17,17 +17,20 @@ import '../boorus/registry.dart';
 import '../foundation/app_rating/app_rating.dart';
 import '../foundation/app_rating/providers.dart';
 import '../foundation/app_update/providers.dart';
+import '../foundation/boot.dart';
+import '../foundation/boot/failsafe.dart';
 import '../foundation/boot/providers.dart';
 import '../foundation/filesystem.dart';
 import '../foundation/iap/iap.dart';
 import '../foundation/info/app_info.dart';
 import '../foundation/info/device_info.dart';
 import '../foundation/info/package_info.dart';
+import '../foundation/keyboard/keyboard.dart';
 import '../foundation/loggers.dart';
+import 'home/keybinds.dart';
+import 'posts/details_pageview/keybinds.dart';
 import '../foundation/mobile.dart';
 import '../foundation/platform.dart';
-import '../foundation/boot.dart';
-import '../foundation/boot/failsafe.dart';
 import '../foundation/utils/file_utils.dart';
 import '../foundation/vendors/google/providers.dart';
 import 'app.dart';
@@ -285,6 +288,23 @@ class _BoorusamaAppState extends State<BoorusamaApp> {
             appInfoProvider.overrideWithValue(result.appInfo),
             appLoggerProvider.overrideWithValue(result.appLogger),
             miscDataBoxProvider.overrideWithValue(result.miscDataBox),
+            shortcutRegistryProvider.overrideWithValue(
+              KeybindRegistry([
+                ...globalShortcuts,
+                ...postDetailsShortcuts,
+                ...homeShortcuts,
+              ]),
+            ),
+            shortcutBindingConfigProvider.overrideWith(
+              (ref) {
+                final registry = ref.watch(shortcutRegistryProvider);
+                final custom = ref
+                    .watch(settingsNotifierProvider)
+                    .shortcutBindings;
+                final defaults = registry.defaultBindings();
+                return custom?.mergeWithDefaults(defaults) ?? defaults;
+              },
+            ),
             isCronetAvailableProvider.overrideWithValue(
               widget.cronetAvailable,
             ),

@@ -3,7 +3,6 @@ import 'dart:async';
 
 // Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:extended_image/extended_image.dart';
@@ -73,26 +72,17 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
 
   @override
   Widget build(BuildContext context) {
-    return CallbackShortcuts(
-      bindings: {
-        const SingleActivator(LogicalKeyboardKey.escape): () =>
-            Navigator.of(context).pop(),
-      },
-      child: PopScope(
-        canPop: false,
-        onPopInvokedWithResult: (didPop, _) {
-          if (didPop) {
-            _pop(didPop);
-            return;
-          }
-
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop) {
           _pop(didPop);
-        },
-        child: Focus(
-          autofocus: true,
-          child: _buildBody(),
-        ),
-      ),
+          return;
+        }
+
+        _pop(didPop);
+      },
+      child: _buildBody(),
     );
   }
 

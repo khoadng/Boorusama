@@ -648,7 +648,30 @@
     "contact_developer_description": "Nếu có vấn đề hay góp ý thì liên hệ với mình qua địa chị email này",
     "feature_request_and_bug_report": "Yêu cầu chức năng và báo cáo lỗi",
     "feature_request_and_bug_report_description": "Gợi ý chức năng hoặc báo cáo lỗi thông qua GitHub repository",
-    "open_app_settings": "Mở cài đặt"
+    "open_app_settings": "Mở cài đặt",
+    "keybinds": {
+      "keybinds": "Phím tắt",
+      "record_shortcut": "Ghi phím tắt",
+      "press_any_key": "Nhấn tổ hợp phím bất kỳ...",
+      "reset_all": "Đặt lại tất cả",
+      "reset_confirm": "Thao tác này sẽ đặt lại tất cả phím tắt về mặc định. Tiếp tục?",
+      "not_set": "Chưa đặt",
+      "contexts": {
+        "global": "Toàn cục",
+        "post_details": "Chi tiết bài viết",
+        "home": "Trang chủ"
+      },
+      "actions": {
+        "go_back": "Quay lại",
+        "toggle_sidebar": "Ẩn/hiện thanh bên",
+        "next_post": "Bài tiếp theo",
+        "previous_post": "Bài trước",
+        "toggle_overlay": "Ẩn/hiện overlay",
+        "close_viewer": "Đóng trình xem",
+        "view_original_image": "Xem ảnh gốc",
+        "refresh": "Làm mới"
+      }
+    }
   },
   "blacklisted_tags": {
     "remove": "Xóa",
