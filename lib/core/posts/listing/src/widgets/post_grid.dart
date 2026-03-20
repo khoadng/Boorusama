@@ -200,24 +200,28 @@ class _PostGridState<T extends Post> extends ConsumerState<PostGrid<T>> {
               postController: widget.controller,
               itemBuilder: (context, index) => ValueListenableBuilder(
                 valueListenable: _disableHero,
-                builder: (_, disableHero, _) => GeneralPostContextMenu(
-                  index: index,
-                  controller: widget.controller,
-                  child:
-                      widget.itemBuilder?.call(
-                        context,
-                        index,
-                        _autoScrollController,
-                        !disableHero,
-                      ) ??
-                      DefaultImageGridItem(
-                        index: index,
-                        autoScrollController: _autoScrollController,
-                        controller: widget.controller,
-                        useHero: !disableHero,
-                        config: ref.watchConfigAuth,
-                      ),
-                ),
+                builder: (_, disableHero, _) {
+                  final customItem = widget.itemBuilder?.call(
+                    context,
+                    index,
+                    _autoScrollController,
+                    !disableHero,
+                  );
+
+                  if (customItem != null) return customItem;
+
+                  return GeneralPostContextMenu(
+                    index: index,
+                    controller: widget.controller,
+                    child: DefaultImageGridItem(
+                      index: index,
+                      autoScrollController: _autoScrollController,
+                      controller: widget.controller,
+                      useHero: !disableHero,
+                      config: ref.watchConfigAuth,
+                    ),
+                  );
+                },
               ),
             ),
       ),
