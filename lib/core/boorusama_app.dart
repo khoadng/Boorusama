@@ -260,8 +260,7 @@ class _BoorusamaAppState extends State<BoorusamaApp> {
                 ),
               ),
             ),
-            if (widget.appRatingService case final service?)
-              appRatingProvider.overrideWithValue(service),
+            appRatingProvider.overrideWithValue(widget.appRatingService),
             iapFuncProvider.overrideWithValue(widget.iapFunc),
             isFossBuildProvider.overrideWithValue(widget.isFossBuild),
             if (widget.appUpdateChecker case final builder?)
