@@ -10,6 +10,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:share_plus/share_plus.dart';
 
 // Project imports:
+import '../../../../foundation/filesystem.dart';
 import '../../../config_widgets/website_logo.dart';
 import '../../../configs/config/types.dart';
 import '../../../downloads/filename/types.dart';
@@ -17,7 +18,6 @@ import '../../details/providers.dart';
 import '../../post/providers.dart';
 import '../../post/types.dart';
 import '../../sources/types.dart';
-import '../../../../foundation/filesystem.dart';
 import 'download_and_share.dart';
 import 'share.dart';
 

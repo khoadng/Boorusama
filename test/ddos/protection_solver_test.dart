@@ -1,9 +1,14 @@
+// Dart imports:
 import 'dart:async';
 
-import 'package:coreutils/coreutils.dart';
+// Flutter imports:
 import 'package:flutter/widgets.dart';
+
+// Package imports:
+import 'package:coreutils/coreutils.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+// Project imports:
 import 'package:boorusama/core/ddos/solver/src/protection_detector.dart';
 import 'package:boorusama/core/ddos/solver/src/protection_orchestrator.dart';
 import 'package:boorusama/core/ddos/solver/src/protection_solver.dart';

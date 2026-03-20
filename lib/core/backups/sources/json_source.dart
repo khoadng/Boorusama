@@ -10,8 +10,8 @@ import 'package:path/path.dart' show join;
 import 'package:shelf/shelf.dart' as shelf;
 
 // Project imports:
-import '../../../foundation/filesystem.dart';
 import '../../../foundation/clipboard.dart';
+import '../../../foundation/filesystem.dart';
 import '../preparation/preparation_pipeline.dart';
 import '../preparation/version_checking.dart';
 import '../types/backup_data_source.dart';
