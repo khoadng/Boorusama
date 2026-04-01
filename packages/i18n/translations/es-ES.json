@@ -14,10 +14,18 @@
       "cancel": "Cancelar",
       "duplicate": "Duplicar",
       "select": "Seleccionar",
-      "view": "Ver"
+      "view": "Ver",
+      "save": "Guardar",
+      "retry": "Reintentar",
+      "more": "Más",
+      "apply": "Aplicar",
+      "show_all": "Mostrar Todo",
+      "show_less": "Mostrar Menos",
+      "search": "Buscar"
     },
     "copied": "Copiado",
-    "app_restart_request": "Necesitas reiniciar la aplicacion para que los cambios tengan efecto"
+    "app_restart_request": "Necesitas reiniciar la aplicacion para que los cambios tengan efecto",
+    "default": "Default"
   },
   "profile": {
     "favorites": "Favoritos",
