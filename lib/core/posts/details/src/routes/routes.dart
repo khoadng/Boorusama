@@ -150,7 +150,7 @@ class PostDetailsDataLoadingTransitionPage extends ConsumerWidget {
 
             final detailsContext = DetailsRouteContext(
               initialIndex: 0,
-              posts: [post],
+              posts: DetailsPostsListing.list(posts: [post]),
               scrollController: null,
               isDesktop: false,
               hero: false,

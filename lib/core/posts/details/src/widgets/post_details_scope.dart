@@ -10,6 +10,7 @@ import '../../../../../foundation/display.dart';
 import '../../../../settings/providers.dart';
 import '../../../details_pageview/widgets.dart';
 import '../../../post/types.dart';
+import '../routes/details_route_context.dart';
 import '../types/inherited_post.dart';
 import '../types/post_details.dart';
 import 'post_details_controller.dart';
@@ -28,7 +29,7 @@ class PostDetailsScope<T extends Post> extends ConsumerStatefulWidget {
 
   final int initialIndex;
   final String? initialThumbnailUrl;
-  final List<T> posts;
+  final DetailsPostsListing<T> posts;
   final String? dislclaimer;
   final AutoScrollController? scrollController;
   final Widget child;
@@ -72,7 +73,7 @@ class _PostDetailsLayoutSwitcherState<T extends Post>
       slideshowOptions: slideshowOptions,
       hoverToControlOverlay: hoverToControlOverlay,
       checkIfLargeScreen: () => context.isLargeScreen,
-      totalPage: widget.posts.length,
+      totalPagesNotifier: widget.posts.dynlen,
       disableAnimation: reduceAnimations,
       onBeforeSlideshowAdvance: (currentPage, nextPage) async {
         if (viewerSettings.slideshowVideoBehavior.isWaitForCompletion) {

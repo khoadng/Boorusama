@@ -12,7 +12,7 @@ import 'details_route_context.dart';
 
 void goToPostDetailsPageFromPosts<T extends Post>({
   required WidgetRef ref,
-  required List<T> posts,
+  required DetailsPostsListing<T> posts,
   required int initialIndex,
   required String? initialThumbnailUrl,
   AutoScrollController? scrollController,
@@ -33,7 +33,7 @@ void goToPostDetailsPageFromController<T extends Post>({
   AutoScrollController? scrollController,
 }) => goToPostDetailsPageCore(
   ref: ref,
-  posts: controller.items.toList(),
+  posts: DetailsPostsListing.controller(controller: controller),
   initialIndex: initialIndex,
   scrollController: scrollController,
   initialThumbnailUrl: initialThumbnailUrl,
@@ -42,7 +42,7 @@ void goToPostDetailsPageFromController<T extends Post>({
 
 void goToPostDetailsPageCore<T extends Post>({
   required WidgetRef ref,
-  required List<T> posts,
+  required DetailsPostsListing<T> posts,
   required int initialIndex,
   required bool hero,
   required String? initialThumbnailUrl,
@@ -75,8 +75,7 @@ void goToSinglePostDetailsPage<T extends Post>({
     ).toString(),
     extra: DetailsRouteContext(
       initialIndex: 0,
-      // ignore: prefer_const_literals_to_create_immutables
-      posts: <T>[],
+      posts: DetailsPostsListing.list(posts: <T>[]),
       scrollController: null,
       isDesktop: ref.context.isLargeScreen,
       hero: false,

@@ -61,7 +61,7 @@ class HydrusBuilder extends BaseBooruBuilder {
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder => (context, payload) {
-    final posts = payload.posts.map((e) => e as HydrusPost).toList();
+    final posts = payload.posts.listingMap((e) => e as HydrusPost);
 
     return PostDetailsScope(
       initialIndex: payload.initialIndex,

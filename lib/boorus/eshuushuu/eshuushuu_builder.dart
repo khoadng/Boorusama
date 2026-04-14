@@ -79,7 +79,7 @@ class EshuushuuBuilder extends BaseBooruBuilder {
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder => (context, payload) {
-    final posts = payload.posts.map((e) => e as EshuushuuPost).toList();
+    final posts = payload.posts.listingMap((e) => e as EshuushuuPost);
 
     return PostDetailsScope(
       initialIndex: payload.initialIndex,

@@ -34,7 +34,7 @@ enum ViewMode {
 class PostDetailsPageView extends StatefulWidget {
   const PostDetailsPageView({
     required this.sheetBuilder,
-    required this.itemCount,
+    required this.itemCountNotifier,
     required this.itemBuilder,
     required this.checkIfLargeScreen,
     super.key,
@@ -57,7 +57,7 @@ class PostDetailsPageView extends StatefulWidget {
 
   final Widget Function(BuildContext, ScrollController? scrollController)
   sheetBuilder;
-  final int itemCount;
+  final ValueNotifier<int> itemCountNotifier;
   final IndexedWidgetBuilder itemBuilder;
   final double maxSize;
   final double swipeDownThreshold;
@@ -172,7 +172,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
         PostDetailsPageViewController(
           initialPage: 0,
           checkIfLargeScreen: widget.checkIfLargeScreen,
-          totalPage: widget.itemCount,
+          totalPagesNotifier: widget.itemCountNotifier,
           viewMode: widget.viewMode,
         );
 
@@ -547,25 +547,31 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
     final isPortrait = !context.isLargeScreen;
 
     return ValueListenableBuilder(
-      valueListenable: _controller.sheetState,
-      builder: (_, state, _) {
-        final blockSwipe = !swipe || state.isExpanded || interacting;
+      valueListenable: widget.itemCountNotifier,
+      builder: (_, _, _) {
+      return ValueListenableBuilder(
+        valueListenable: _controller.sheetState,
+        builder: (_, state, _) {
+          final blockSwipe = !swipe || state.isExpanded || interacting;
 
-        return PageView.builder(
-          scrollDirection: useVerticalLayout ? Axis.vertical : Axis.horizontal,
-          onPageChanged: blockSwipe && !isPortrait
-              ? (_) => _controller.startCooldownTimer()
-              : null,
-          controller: _controller.pageController,
-          physics: blockSwipe
-              ? const NeverScrollableScrollPhysics()
-              : const _PostDetailsPagePhysics(),
-          itemCount: widget.itemCount,
-          itemBuilder: (context, index) => _buildItem(index, blockSwipe),
-        );
-      },
-    );
+          return PageView.builder(
+            scrollDirection: useVerticalLayout ? Axis.vertical : Axis.horizontal,
+            onPageChanged: blockSwipe && !isPortrait
+                ? (_) => _controller.startCooldownTimer()
+                : null,
+            controller: _controller.pageController,
+            physics: blockSwipe
+                ? const NeverScrollableScrollPhysics()
+                : const _PostDetailsPagePhysics(),
+            itemCount: widget.itemCountNotifier.value,
+            itemBuilder: (context, index) => _buildItem(index, blockSwipe),
+          );
+        },
+      );
+    }
+  );
   }
+  
 
   final _dummyAlwaysFalse = ValueNotifier(false);
 
@@ -574,16 +580,21 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
       final isVertical = useVerticalLayout;
 
       return [
-        PageNavButton(
-          alignment: isVertical
-              ? Alignment.bottomCenter
-              : Alignment.centerRight,
-          controller: _controller,
-          visibleWhen: (page) => page < widget.itemCount - 1,
-          icon: Icon(
-            isVertical ? Symbols.keyboard_arrow_down : Symbols.arrow_forward,
-          ),
-          onPressed: () => _controller.nextPage(duration: Duration.zero),
+        ValueListenableBuilder<int>(
+          valueListenable: widget.itemCountNotifier,
+          builder: (context, itemCount, _) {
+            return PageNavButton(
+              alignment: isVertical
+                  ? Alignment.bottomCenter
+                  : Alignment.centerRight,
+              controller: _controller,
+              visibleWhen: (page) => page < itemCount - 1,
+              icon: Icon(
+                isVertical ? Symbols.keyboard_arrow_down : Symbols.arrow_forward,
+              ),
+              onPressed: () => _controller.nextPage(duration: Duration.zero),
+            );
+          },
         ),
         PageNavButton(
           alignment: isVertical ? Alignment.topCenter : Alignment.centerLeft,
