@@ -14,7 +14,6 @@ import '../../../listing/providers.dart';
 import '../../../listing/types.dart';
 import '../../../post/types.dart';
 
-// ========== Internal Strategy Interface ==========
 abstract class _ListingStrategy {
   ValueNotifier<int>? get length;
   dynamic getItemAt(int index);
@@ -23,7 +22,6 @@ abstract class _ListingStrategy {
 }
 
 
-// ========== Public Wrapper Class ==========
 class DetailsPostsListing<T extends Post> extends ListBase<T> {
   // Static list constructor
   DetailsPostsListing.list({required List<T> this.posts})
@@ -107,7 +105,6 @@ class DetailsPostsListing<T extends Post> extends ListBase<T> {
   }
 }
 
-// ========== Infinite Strategy (exact replica of original logic) ==========
 class _InfiniteStrategy implements _ListingStrategy {
   _InfiniteStrategy(this.gridController, this.length);
 
@@ -122,8 +119,6 @@ class _InfiniteStrategy implements _ListingStrategy {
 
   @override
   dynamic getItemAt(int index) {
-    // The infinite strategy relies on the controller's items directly.
-    // No additional caching; just fetch from controller.
     return gridController.items.elementAtOrNull(index);
   }
 
@@ -150,9 +145,8 @@ class _InfiniteStrategy implements _ListingStrategy {
 
     final isLastVisible = seenLength >= currentlyLoaded - 1;
 
-    final currentItemCount = gridController.items.length;
-    if (isLastVisible && currentItemCount > currentlyLoaded) {
-      _reveal(currentItemCount);
+    if (isLastVisible) {
+      _reveal();
     }
   }
 
@@ -160,13 +154,17 @@ class _InfiniteStrategy implements _ListingStrategy {
     if (!gridController.hasMore) return;
     fetchPending = true;
     await gridController.fetchMore();
+    // already false means we already tried to reveal
+    if (!fetchPending) {
+      _reveal();
+    }
   }
 
-  void _reveal(int newLength) {
+  void _reveal() {    
     indexOffset = length.value;
     fetchPending = false;
     seenIndices.clear();
-    length.value = newLength;
+    length.value = gridController.items.length;
   }
 
 
@@ -176,7 +174,6 @@ class _InfiniteStrategy implements _ListingStrategy {
   
 }
 
-// ========== Paginated Strategy Implementation ==========
 class _PaginatedStrategy implements _ListingStrategy {
   _PaginatedStrategy(
     this._controller,
@@ -352,8 +349,7 @@ class _PaginatedStrategy implements _ListingStrategy {
   }
 
   @override
-  void dispose() {
-  }
+  void dispose() {}
 }
 
 class DetailsRouteContext<T extends Post> extends Equatable {
