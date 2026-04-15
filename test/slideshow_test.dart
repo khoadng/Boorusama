@@ -2,6 +2,7 @@
 import 'dart:async';
 
 // Package imports:
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 // Project imports:
@@ -98,6 +99,7 @@ void main() {
     SlideshowController createController({
       SlideshowOptions options = const SlideshowOptions(),
       SlideshowAdvanceCallback? onBeforeAdvance,
+      int totalPages = 3
     }) {
       return SlideshowController(
         onNavigateToPage: (page, skip) {
@@ -108,6 +110,7 @@ void main() {
         options: options,
         onBeforeAdvance: onBeforeAdvance,
         createTimer: timerController.createTimer,
+        totalPagesNotifier: ValueNotifier(totalPages)
       );
     }
 
@@ -115,7 +118,7 @@ void main() {
       test('stops advancing when stopped', () async {
         final controller = createController();
 
-        controller.start(0, 5);
+        controller.start(0);
         await timerController.triggerNext();
         controller.stop();
         timerController.clearHistory();
@@ -127,7 +130,7 @@ void main() {
       test('resume restarts timer and sets active state', () {
         final controller = createController();
 
-        controller.start(0, 5);
+        controller.start(0);
         controller.stop();
 
         expect(controller.isRunning, false);
@@ -144,14 +147,14 @@ void main() {
           ),
         );
 
-        controller.start(0, 3);
+        controller.start(0);
         await timerController.triggerNext();
         await timerController.triggerNext();
 
         controller.stop();
         navigatedPages.clear();
 
-        controller.start(0, 3);
+        controller.start(0);
         await timerController.triggerNext();
         await timerController.triggerNext();
 
@@ -178,9 +181,9 @@ void main() {
 
       for (final c in forwardNavigationCases) {
         test(c.description, () async {
-          final controller = createController();
+          final controller = createController(totalPages: c.totalPages);
 
-          controller.start(c.startPage, c.totalPages);
+          controller.start(c.startPage);
           await timerController.triggerNext();
 
           expect(navigatedPages, c.expected);
@@ -207,10 +210,12 @@ void main() {
           final controller = createController(
             options: const SlideshowOptions(
               direction: SlideshowDirection.backward,
+              
             ),
+            totalPages: c.totalPages
           );
 
-          controller.start(c.startPage, c.totalPages);
+          controller.start(c.startPage);
           await timerController.triggerNext();
 
           expect(navigatedPages, c.expected);
@@ -226,7 +231,7 @@ void main() {
             ),
           );
 
-          controller.start(0, 3);
+          controller.start(0);
 
           final seenPages = <int>{};
           for (var i = 0; i < 3; i++) {
@@ -271,7 +276,7 @@ void main() {
             ),
           );
 
-          controller.start(0, 5);
+          controller.start(0);
           await timerController.triggerNext();
 
           expect(navigatedSkipFlags.first, c.expected);
@@ -289,7 +294,7 @@ void main() {
           },
         );
 
-        controller.start(0, 3);
+        controller.start(0);
         await timerController.triggerNext();
         await timerController.triggerNext();
 

@@ -52,7 +52,7 @@ class Shimmie2Builder extends BaseBooruBuilder {
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder => (context, payload) {
-    final posts = payload.posts.map((e) => e as Shimmie2Post).toList();
+    final posts = payload.posts.listingMap((e) => e as Shimmie2Post);
 
     return PostDetailsScope(
       initialIndex: payload.initialIndex,

@@ -53,25 +53,36 @@ SlideshowNavigateCallback createDefaultSlideshowNavigateCallback(
 class SlideshowController {
   SlideshowController({
     required this.onNavigateToPage,
+    required ValueNotifier<int> totalPagesNotifier,
     this.options = const SlideshowOptions(),
     this.onBeforeAdvance,
     TimerFactory? createTimer,
-  }) : _state = ValueNotifier(const SlideshowState.idle()),
-       _createTimer = createTimer ?? Timer.new;
+  })  : _totalPagesNotifier = totalPagesNotifier,
+        _state = ValueNotifier(const SlideshowState.idle()),
+        _createTimer = createTimer ?? Timer.new {
+    _totalPagesListener = () => _handleTotalPagesChanged(totalPagesNotifier.value);
+    totalPagesNotifier.addListener(_totalPagesListener);
+  }
 
   final SlideshowAdvanceCallback? onBeforeAdvance;
   final SlideshowNavigateCallback onNavigateToPage;
   final TimerFactory _createTimer;
   SlideshowOptions options;
 
+  final ValueNotifier<int> _totalPagesNotifier;
   final ValueNotifier<SlideshowState> _state;
   Timer? _timer;
   var _skipOnBeforeAdvance = false;
+  late final VoidCallback _totalPagesListener;
 
   ValueListenable<SlideshowState> get state => _state;
   bool get isRunning => _state.value.isRunning;
 
-  void start(int startPage, int totalPages) {
+  void start(int startPage) {
+    final totalPages = _totalPagesNotifier.value;
+    assert(startPage >= 0 && startPage < totalPages,
+        'startPage must be in range [0, totalPages)');
+
     switch (_state.value) {
       case SlideshowRunning():
         return;
@@ -109,6 +120,7 @@ class SlideshowController {
   }
 
   void dispose() {
+    _totalPagesNotifier.removeListener(_totalPagesListener);
     _timer?.cancel();
     _state.dispose();
   }
@@ -126,9 +138,7 @@ class SlideshowController {
     switch (_state.value) {
       case SlideshowRunning() && final running:
         final nextState = running.advance();
-        final skipAnimation = running.shouldSkipAnimation(
-          options,
-        );
+        final skipAnimation = running.shouldSkipAnimation(options);
 
         if (!_skipOnBeforeAdvance) {
           await onBeforeAdvance?.call(
@@ -150,6 +160,20 @@ class SlideshowController {
   }
 
   void _transitionTo(SlideshowState newState) {
+    _state.value = newState;
+  }
+
+  void _handleTotalPagesChanged(int newTotalPages) {
+    assert(newTotalPages > 0, 'totalPages must never be zero');
+
+    final currentState = _state.value;
+    final newState = currentState.withUpdatedTotalPages(newTotalPages);
+
+    // If we have a new current page due to total getting smaller, trigger navigation to sync UI.
+    if (newState.currentPage != currentState.currentPage) {
+      // Navigate without animation (skip animation)
+      onNavigateToPage(newState.currentPage, true);
+    }
     _state.value = newState;
   }
 }

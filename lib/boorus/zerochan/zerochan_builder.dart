@@ -30,7 +30,7 @@ class ZerochanBuilder extends BaseBooruBuilder {
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder => (context, payload) {
-    final posts = payload.posts.map((e) => e as ZerochanPost).toList();
+    final posts = payload.posts.listingMap((e) => e as ZerochanPost);
 
     return PostDetailsScope(
       initialIndex: payload.initialIndex,

@@ -32,7 +32,7 @@ class DanbooruRelatedPostsSection extends ConsumerWidget {
       ),
       onTap: (index) => goToPostDetailsPageFromPosts(
         ref: ref,
-        posts: posts,
+        posts: DetailsPostsListing.list(posts: posts),
         initialIndex: index,
         initialThumbnailUrl: posts[index].url720x720,
       ),

@@ -49,7 +49,7 @@ class PhilomenaBuilder extends BaseBooruBuilder {
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder => (context, payload) {
-    final posts = payload.posts.map((e) => e as PhilomenaPost).toList();
+    final posts = payload.posts.listingMap((e) => e as PhilomenaPost);
 
     return PostDetailsScope(
       initialIndex: payload.initialIndex,

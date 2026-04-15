@@ -82,8 +82,7 @@ class DanbooruBuilder extends BaseBooruBuilder {
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder => (context, payload) {
-    final posts = payload.posts.map((e) => e as DanbooruPost).toList();
-
+    final posts = payload.posts.listingMap((e) => e as DanbooruPost);
     return PostDetailsScope<DanbooruPost>(
       initialIndex: payload.initialIndex,
       initialThumbnailUrl: payload.initialThumbnailUrl,

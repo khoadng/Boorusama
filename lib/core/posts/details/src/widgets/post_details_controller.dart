@@ -12,6 +12,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import '../../../../videos/engines/types.dart';
 import '../../../../videos/player/types.dart';
 import '../../../post/types.dart';
+import '../../routes.dart';
 
 const kSeekAnimationDuration = Duration(milliseconds: 400);
 const kPlayPauseAnimationDuration = Duration(milliseconds: 700);
@@ -36,11 +37,12 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
        currentSettledPage = ValueNotifier(null);
   final AutoScrollController? scrollController;
   final bool reduceAnimations;
-  final List<T> posts;
+  final DetailsPostsListing<T> posts;
   final int _initialPage;
   final String? initialThumbnailUrl;
   final String? dislclaimer;
   final int doubleTapSeekDuration;
+
 
   late ValueNotifier<int?> currentSettledPage;
   late ValueNotifier<int> currentPage;

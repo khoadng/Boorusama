@@ -64,7 +64,7 @@ class GelbooruV2PostDetailsPage extends ConsumerWidget {
       );
     }
 
-    final posts = payload.posts.map((e) => e as GelbooruV2Post).toList();
+    final posts = payload.posts.listingMap((e) => e as GelbooruV2Post);
 
     return PostDetailsScope(
       initialIndex: payload.initialIndex,
@@ -92,7 +92,7 @@ class _PayloadPostDetailsPage<T extends Post> extends ConsumerWidget {
     return PostDetailsScope(
       initialIndex: payload.initialIndex,
       initialThumbnailUrl: payload.initialThumbnailUrl,
-      posts: payload.posts.map((e) => e as GelbooruV2Post).toList(),
+      posts: payload.posts.listingMap((e) => e as GelbooruV2Post),
       scrollController: payload.scrollController,
       dislclaimer: payload.dislclaimer,
       child: const DefaultPostDetailsPage<GelbooruV2Post>(),
@@ -129,7 +129,7 @@ class _PostDetailsDataLoadingTransitionPage extends ConsumerWidget {
 
             final detailsContext = DetailsRouteContext(
               initialIndex: 0,
-              posts: [post],
+              posts: DetailsPostsListing.list(posts: [post]),
               scrollController: null,
               isDesktop: false,
               hero: false,
@@ -198,7 +198,7 @@ class GelbooruV2RelatedPostsSection extends ConsumerWidget {
                   ),
                   onTap: (index) => goToPostDetailsPageFromPosts(
                     ref: ref,
-                    posts: data,
+                    posts: DetailsPostsListing.list(posts: data),
                     initialIndex: index,
                     initialThumbnailUrl: data[index].sampleImageUrl,
                   ),

@@ -12,6 +12,7 @@ import '../../../configs/config/providers.dart';
 import '../../../configs/config/types.dart';
 import '../../../downloads/downloader/providers.dart';
 import '../../../downloads/filename/types.dart';
+import '../../../posts/details/routes.dart';
 import '../../../posts/details/types.dart';
 import '../../../posts/details/widgets.dart';
 import '../../../posts/details_parts/types.dart';
@@ -46,7 +47,7 @@ class BookmarkDetailsPage extends ConsumerWidget {
         return PostDetailsScope(
           initialIndex: initialIndex,
           initialThumbnailUrl: initialThumbnailUrl,
-          posts: posts,
+          posts: DetailsPostsListing.list(posts: posts),
           scrollController: null,
           dislclaimer: null,
           child: const BookmarkDetailsPageInternal(),

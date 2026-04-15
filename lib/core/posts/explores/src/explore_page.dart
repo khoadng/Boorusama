@@ -188,7 +188,7 @@ class ExploreList extends ConsumerWidget {
               child: GestureDetector(
                 onTap: () => goToPostDetailsPageFromPosts(
                   ref: ref,
-                  posts: filteredPosts,
+                  posts: DetailsPostsListing.list(posts: filteredPosts),
                   initialIndex: index,
                   initialThumbnailUrl: mediaUrlResolver.resolveMediaUrl(
                     post,

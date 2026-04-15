@@ -28,6 +28,7 @@ import '../../../details_pageview/widgets.dart';
 import '../../../details_parts/types.dart';
 import '../../../post/routes.dart';
 import '../../../post/types.dart';
+import '../../routes.dart';
 import '../types/post_details.dart';
 import '../types/post_details_swipe_mode.dart';
 import 'post_details_controller.dart';
@@ -56,7 +57,7 @@ class PostDetailsPageScaffold<T extends Post> extends ConsumerStatefulWidget {
     this.preferredPreviewParts,
   });
 
-  final List<T> posts;
+  final DetailsPostsListing<T> posts;
   final void Function()? onExpanded;
   final PostDetailsController<T> controller;
   final PostDetailsUIBuilder? uiBuilder;
@@ -89,7 +90,7 @@ class _PostDetailPageScaffoldState<T extends Post>
   ValueNotifier<bool> visibilityNotifier = ValueNotifier(false);
   late final _isInitPage = widget.isInitPage;
 
-  List<T> get posts => _posts;
+  DetailsPostsListing<T> get posts => _posts;
 
   @override
   void initState() {
@@ -102,6 +103,7 @@ class _PostDetailPageScaffoldState<T extends Post>
       widget.controller.onPageSettled(
         widget.controller.initialPage,
       );
+      _posts.setPostDetailsPageViewController(_controller);
     });
 
     widget.controller.isVideoPlaying.addListener(_isVideoPlayingChanged);
@@ -113,7 +115,7 @@ class _PostDetailPageScaffoldState<T extends Post>
 
     _volumeKeyPageNavigator ??= VolumeKeyPageNavigator(
       pageViewController: _controller,
-      totalPosts: _posts.length,
+      totalPosts: _posts.length, // FIXME: use _posts.dynlen notifier for when more posts get loaded
       visibilityNotifier: visibilityNotifier,
       enableVolumeKeyViewerNavigation: () => ref.read(
         settingsProvider.select((value) => value.volumeKeyViewerNavigation),
@@ -128,7 +130,7 @@ class _PostDetailPageScaffoldState<T extends Post>
     _volumeKeyPageNavigator?.dispose();
     widget.controller.isVideoPlaying.removeListener(_isVideoPlayingChanged);
     _controller.precisePage.removeListener(_onPrecisePageChanged);
-
+    widget.controller.posts.dispose();
     super.dispose();
   }
 
@@ -291,7 +293,8 @@ class _PostDetailPageScaffoldState<T extends Post>
           final post = posts[page];
 
           widget.controller.setPage(page);
-
+          final slideshowRunning = _pageViewController?.slideshowController.isRunning ?? false;
+          posts.markSeen(page, force: !slideshowRunning);
           _isInitPage.value = false;
 
           if (_controller.overlay.value) {
@@ -314,7 +317,7 @@ class _PostDetailPageScaffoldState<T extends Post>
         onExit: () {
           widget.controller.onExit();
         },
-        itemCount: posts.length,
+        itemCountNotifier: posts.dynlen,
         leftActions: [
           CircularIconButton(
             icon: const Icon(
