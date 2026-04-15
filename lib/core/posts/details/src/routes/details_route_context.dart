@@ -1,4 +1,5 @@
 // Package imports:
+import 'dart:async';
 import 'dart:collection';
 
 import 'package:equatable/equatable.dart';
@@ -11,192 +12,311 @@ import '../../../listing/providers.dart';
 import '../../../listing/types.dart';
 import '../../../post/types.dart';
 
-class _PaginationState {
-  /// A set tracking which indices (larger than indexOffset) have been accessed
-  final Set<int> seenIndices = {};
-  /// All indices below this offset were seen in a previous fetch cycle
-  /// and must not be re-added to [seenIndices].
-  var indexOffset = 0;
-
-  /// Whether we have dispatched a fetchMore call that hasn't been
-  /// reflected in a new reveal yet.
-  var fetchPending = false;
-  int get seenLength => seenIndices.length + indexOffset;
+// ========== Internal Strategy Interface ==========
+abstract class _ListingStrategy {
+  ValueNotifier<int>? get length;
+  dynamic getItemAt(int index);
+  void markSeen(int index, {bool force});
+  void dispose();
 }
 
+
+// ========== Public Wrapper Class ==========
 class DetailsPostsListing<T extends Post> extends ListBase<T> {
-  /// instantiate a version of this which handles a handles a static list
-  DetailsPostsListing.list({ required List<T> this.posts}):
-        gridController = null,
-        _getItem = ((index) => posts[index]),
-        _pagination = _PaginationState(),
+  // Static list constructor
+  DetailsPostsListing.list({required List<T> this.posts})
+      : gridController = null,
+        _convert = ((i) => i),
+        _strategy = null,
         dynlen = ValueNotifier<int>(posts.length);
 
-  /// instatiate a version of this which handles a controller. This should be preferred where possible.
-  DetailsPostsListing.controller({required PostGridController<dynamic> controller}):
-        gridController = controller,
-        posts = null,
-        _getItem = ((index) => controller.items.elementAtOrNull(index)),
-        _pagination = _PaginationState(),
-        dynlen = ValueNotifier<int>(controller.items.length) {
-    gridController!.itemsNotifier.addListener(_onItemsUpdated);
-  }
-   // shared-state constructor
-  DetailsPostsListing._shared(DetailsPostsListing<dynamic> source, this._getItem):
-        gridController = source.gridController,
+  // Controller constructor
+  DetailsPostsListing.controller({required PostGridController<dynamic> controller})
+      : gridController = controller,
+        posts = (controller.pageMode == PageMode.paginated) ? controller.items.toList() : null, // FIXME: paginated mode unimplemented
+        _convert = ((i) => (i)),
+        dynlen = ValueNotifier<int>(controller.items.length){
+          _strategy = (controller.pageMode == PageMode.paginated) ? null : _InfiniteStrategy(controller, dynlen);
+        }
+
+  // Shared-state constructor (for listingMap)
+  DetailsPostsListing._shared(DetailsPostsListing<dynamic> source, this._convert)
+      : gridController = source.gridController,
         posts = source.posts,
         dynlen = source.dynlen,
-        _pagination = source._pagination;
+        _strategy = source._strategy;
 
   final List<dynamic>? posts;
   final PostGridController<dynamic>? gridController;
   final ValueNotifier<int> dynlen;
-  final T? Function(int index) _getItem;
+  final T Function(dynamic) _convert;
+  _ListingStrategy? _strategy;
 
-  // --- pagination state ---
-  final _PaginationState _pagination;
 
   DetailsPostsListing<T2> listingMap<T2 extends Post>(T2 Function(T) converter) {
     return DetailsPostsListing<T2>._shared(
       this,
-      (index) => converter(this[index]),
+      (i) => converter(i)
+      // (item) {
+      //   if (item == null) return null;
+      //   return converter(item);
+      // },
     );
   }
-  
-  // ignore: avoid_setters_without_getters
-  set initial(int intialIndex) => _pagination.indexOffset = intialIndex;
 
-  @override
-  int get length => dynlen.value;
-
-  @override
-  set length(int _) {
-    // ListBase requires this to be implemented; mutations are not
-    // supported for the controller case.
-    throw UnsupportedError('DetailsPostsListing is read-only');
+  set initial(int initialIndex) {
+    final strat = _strategy;
+    if (strat is _InfiniteStrategy) {
+      strat.indexOffset = initialIndex;
+    }
   }
 
   @override
-  void operator []=(int index, T value) {
-    throw UnsupportedError('DetailsPostsListing is read-only');
+  int get length {
+    if (posts != null) return posts!.length;
+    return dynlen.value;
   }
-  
 
-  // hacky way to ensure paginated mode doesn't break
-  late T _latestItem;
+  @override
+  set length(int _) => throw UnsupportedError('DetailsPostsListing is read-only');
+
+  @override
+  void operator []=(int index, T value) => throw UnsupportedError('DetailsPostsListing is read-only');
+
   @override
   T operator [](int index) {
-    if (index == 1 || index == 2 || index == 3) {
-      return _latestItem;
+    // Static list case
+    if (posts != null) {
+      return _convert(posts![index]);
     }
-    var item = _getItem(index);
-    
-    if (item == null){
-      switch (gridController!.pageMode) {
-        case PageMode.infinite:
-          // this shouldn't happen, as fetch and reveal have already been triggered
-          throw RangeError.index(index, this);
-        case PageMode.paginated:
-          item = _latestItem;
-          _triggerFetch();
-      }
-    }
-    _latestItem = item;
-    return item;
+
+    // Controller case with strategy
+    return _convert(_strategy!.getItemAt(index));
+
+  }
+
+  void markSeen(int index, {bool force = false}) {
+    if (posts != null) return;
+    _strategy?.markSeen(index, force: force);
+  }
+
+  void dispose() {
+    _strategy?.dispose();
+    dynlen.dispose();
+  }
+}
+
+// ========== Infinite Strategy (exact replica of original logic) ==========
+class _InfiniteStrategy implements _ListingStrategy {
+  _InfiniteStrategy(this.gridController, this.length);
+
+  final PostGridController<dynamic> gridController;
+  Set<int> seenIndices = {};
+  var indexOffset = 0;
+  var fetchPending = false;
+  int get seenLength => seenIndices.length + indexOffset;
+  @override
+  final ValueNotifier<int> length;
+
+
+  @override
+  dynamic getItemAt(int index) {
+    // The infinite strategy relies on the controller's items directly.
+    // No additional caching; just fetch from controller.
+    return gridController.items.elementAtOrNull(index);
   }
 
   @override
-  List<T> toList({bool growable = false}) {
-    throw UnsupportedError('DetailsPostsListing cannot be cast to list'); 
-  }
-
-
   void markSeen(int index, {bool force = false}) {
-    // Only track indices that belong to the *current* fetch cycle.
-    if (gridController == null) return;
-    if (index < _pagination.indexOffset) return;
+    if (index < indexOffset) return;
 
     if (force) {
-      // force mark all previous ones as seen
-      _pagination.indexOffset = index;
-      _pagination.seenIndices.clear();
+      indexOffset = index;
+      seenIndices.clear();
     } else {
-      _pagination.seenIndices.add(index);
+      seenIndices.add(index);
     }
 
-    // Trigger a background fetch when ≥ 3/4 of visible items accessed
-    final visible = dynlen.value;
-    switch (gridController!.pageMode) {
-      case PageMode.infinite:
-        if (visible > 0 &&
-          _pagination.seenLength >= (visible * 3 / 4).ceil() &&
-          !_pagination.fetchPending &&
-          gridController!.hasMore &&
-          !gridController!.loading &&
-          !gridController!.refreshing) {
-            _triggerFetch();
-        }
-        
-        final currentItemCount = gridController!.items.length;
-        final isLastVisible = _pagination.seenLength >= visible;
+    final visible = length.value;
+    if (visible > 0 &&
+        seenLength >= (visible * 3 / 4).ceil() &&
+        !fetchPending &&
+        gridController.hasMore &&
+        !gridController.loading &&
+        !gridController.refreshing) {
+      _triggerFetch();
+    }
 
-        if (isLastVisible && currentItemCount > visible) {
-          _reveal(currentItemCount);
-        }
-      case PageMode.paginated:
-        if (index == length-1) {
-          _triggerFetch();
-        }
+    final isLastVisible = seenLength >= visible - 1;
+
+    final currentItemCount = gridController.items.length;
+    if (isLastVisible && currentItemCount > visible) {
+      _reveal(currentItemCount);
     }
   }
 
   Future<void> _triggerFetch() async {
-    if (!gridController!.hasMore) return;
-    _pagination.fetchPending = true;
-    switch (gridController!.pageMode) {
-      case PageMode.infinite:
-        await gridController!.fetchMore();
-      case PageMode.paginated:
-        await gridController!.goToNextPage();
-    }
+    if (!gridController.hasMore) return;
+    fetchPending = true;
+    await gridController.fetchMore();
   }
 
-  // ValueNotifier handler for PostGridController posts
-  void _onItemsUpdated() {
-    if (gridController == null) return;
-    if (gridController!.items.isEmpty) return;
-    _pagination.fetchPending = false;
-    switch (gridController!.pageMode) {
-      case PageMode.paginated:
-        // when paginating, jump to next page immediately
-        _reveal(gridController!.items.length);
-    
-      case PageMode.infinite:
-        // infinite only reveals when all seen
-    }
-  }
-
-  // reveal new items depending on criteria
   void _reveal(int newLength) {
-    if (gridController!.items.isEmpty) return;
-    switch (gridController!.pageMode) {
-      case PageMode.paginated:
-        // Completely new set of items → reset offset to zero.
-        _pagination.indexOffset = 0;
-      case PageMode.infinite:
-        // Existing items are preserved; offset by previous visible count.
-        _pagination.indexOffset = dynlen.value;
-    }
-
-    _pagination.seenIndices.clear();
-    dynlen.value = newLength;
+    indexOffset = length.value;
+    fetchPending = false;
+    seenIndices.clear();
+    length.value = newLength;
   }
 
+
+  @override
   void dispose() {
-    gridController?.itemsNotifier.removeListener(_onItemsUpdated);
-    dynlen.dispose();
   }
+  
+
 }
+
+// // ========== Paginated Strategy (sliding‑window cache) ==========
+// class _PaginatedStrategy implements _ListingStrategy {
+//   _PaginatedStrategy(this.gridController) {
+//     gridController.itemsNotifier.addListener(onItemsUpdated);
+//     gridController.pageNotifier.addListener(_onPageChanged);
+
+//     _currentControllerPage = gridController.page;
+//     if (gridController.items.isNotEmpty) {
+//       _pageCache[_currentControllerPage] = List.from(gridController.items);
+//     }
+//   }
+
+//   final PostGridController<dynamic> gridController;
+//   void Function(int) _updateLength = (l) => ();
+
+//   final Map<int, List<dynamic>> _pageCache = {};
+//   var _baseOffset = 0;
+//   var _currentControllerPage = 1;
+//   var _isLoadingPage = false;
+
+
+//   void _onPageChanged() {
+//     _currentControllerPage = gridController.page;
+//   }
+
+//   List<int> get _sortedPages => _pageCache.keys.toList()..sort();
+//   int get _cachedLength => _sortedPages.fold(0, (sum, p) => sum + _pageCache[p]!.length);
+
+//   @override
+//   int get length => _baseOffset + _cachedLength;
+
+
+//   @override
+//   dynamic? getItemAt(int index) {
+//     var runningOffset = _baseOffset;
+//     for (final page in _sortedPages) {
+//       final pageItems = _pageCache[page]!;
+//       if (index >= runningOffset && index < runningOffset + pageItems.length) {
+//         final localIndex = index - runningOffset;
+//         _prefetchIfNeeded(page, localIndex, pageItems.length);
+//         return pageItems[localIndex];
+//       }
+//       runningOffset += pageItems.length;
+//     }
+
+//     // Not in cache – determine direction
+//     int targetPage;
+//     if (_pageCache.isEmpty) {
+//       targetPage = 1;
+//     } else if (index < _baseOffset) {
+//       targetPage = _sortedPages.first - 1;   // need older page
+//     } else {
+//       targetPage = _sortedPages.last + 1;    // need newer page
+//     }
+
+//     Future.microtask(() => _loadPageIfNeeded(targetPage));
+//     return null;
+//   }
+
+//   void _prefetchIfNeeded(int page, int localIndex, int pageLength) {
+//     // Prefetch next page when near the end of current page
+//     if (localIndex >= pageLength - 2) {
+//       _loadPageIfNeeded(page + 1);
+//     }
+//     // Prefetch previous page when near the beginning (and not on first page)
+//     if (localIndex <= 1 && page > 1) {
+//       _loadPageIfNeeded(page - 1);
+//     }
+//   }
+
+//   Future<void> _loadPageIfNeeded(int page) async {
+//     if (_isLoadingPage) return;
+//     if (_pageCache.containsKey(page)) return;
+//     if (page < 1) return;
+
+//     _isLoadingPage = true;
+//     unawaited(Future.microtask(() async {
+//       try {
+//         // Snapshot current page before jumping away
+//         final currentPage = _currentControllerPage;
+//         if (gridController.items.isNotEmpty && !_pageCache.containsKey(currentPage)) {
+//           _addPageToCache(currentPage, List.from(gridController.items));
+//         }
+
+//         await gridController.jumpToPage(page);
+
+//         // Cache the newly loaded page
+//         if (gridController.items.isNotEmpty) {
+//           _addPageToCache(page, List.from(gridController.items));
+//         }
+
+//         _evictDistantPages(page);
+//         _updateLength(length);
+//       } finally {
+//         _isLoadingPage = false;
+//       }
+//     }));
+//   }
+
+//   void _addPageToCache(int page, List<dynamic> items) {
+//     final wasEmpty = _pageCache.isEmpty;
+//     final oldOldest = wasEmpty ? null : _sortedPages.first;
+
+//     _pageCache[page] = items;
+
+//     if (!wasEmpty && page < oldOldest!) {
+//       // New page is older than previous oldest → it is now cached,
+//       // so its items are no longer "evicted". Subtract from baseOffset.
+//       _baseOffset -= items.length;
+//     }
+//   }
+
+//   void _evictDistantPages(int centerPage) {
+//     final pagesToRemove = _pageCache.keys.where((p) => (p - centerPage).abs() > 1).toList();
+//     if (pagesToRemove.isEmpty) return;
+
+//     pagesToRemove.sort();
+//     for (final page in pagesToRemove) {
+//       if (page == _sortedPages.first) {
+//         // This is the oldest page in cache; it's being evicted.
+//         // Add its length to baseOffset.
+//         _baseOffset += _pageCache[page]!.length;
+//       }
+//       _pageCache.remove(page);
+//     }
+//   }
+
+//   @override
+//   void markSeen(int index, {bool force = false}) {
+//     getItemAt(index); // just ensure the page is loaded
+//   }
+
+
+//   @override
+//   void dispose() {
+//     gridController.itemsNotifier.removeListener(onItemsUpdated);
+//     gridController.pageNotifier.removeListener(_onPageChanged);
+//     _pageCache.clear();
+//   }
+// }
+
 
 class DetailsRouteContext<T extends Post> extends Equatable {
   DetailsRouteContext({
