@@ -31,7 +31,6 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
     required this.reduceAnimations,
     required this.dislclaimer,
     required this.doubleTapSeekDuration,
-    this.controller,
   }) : currentPage = ValueNotifier(initialPage),
        _initialPage = initialPage,
        currentPost = ValueNotifier(posts[initialPage]),
@@ -44,7 +43,6 @@ class PostDetailsController<T extends Post> extends ChangeNotifier {
   final String? initialThumbnailUrl;
   final String? dislclaimer;
   final int doubleTapSeekDuration;
-  final PostGridController<T>? controller;
 
 
   late ValueNotifier<int?> currentSettledPage;

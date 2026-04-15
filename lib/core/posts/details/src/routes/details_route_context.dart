@@ -4,10 +4,12 @@ import 'dart:collection';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import '../../../../configs/config/types.dart';
+import '../../../details_pageview/src/post_details_page_view_controller.dart';
 import '../../../listing/providers.dart';
 import '../../../listing/types.dart';
 import '../../../post/types.dart';
@@ -33,10 +35,10 @@ class DetailsPostsListing<T extends Post> extends ListBase<T> {
   // Controller constructor
   DetailsPostsListing.controller({required PostGridController<dynamic> controller})
       : gridController = controller,
-        posts = (controller.pageMode == PageMode.paginated) ? controller.items.toList() : null, // FIXME: paginated mode unimplemented
-        _convert = ((i) => (i)),
+        posts =  null,
+        _convert = ((i) => i),
         dynlen = ValueNotifier<int>(controller.items.length){
-          _strategy = (controller.pageMode == PageMode.paginated) ? null : _InfiniteStrategy(controller, dynlen);
+          _strategy = (controller.pageMode == PageMode.paginated) ? _PaginatedStrategy(controller, dynlen) : _InfiniteStrategy(controller, dynlen);
         }
 
   // Shared-state constructor (for listingMap)
@@ -57,17 +59,16 @@ class DetailsPostsListing<T extends Post> extends ListBase<T> {
     return DetailsPostsListing<T2>._shared(
       this,
       (i) => converter(i)
-      // (item) {
-      //   if (item == null) return null;
-      //   return converter(item);
-      // },
     );
   }
 
-  set initial(int initialIndex) {
+  void setPostDetailsPageViewController(PostDetailsPageViewController postDetailsPage) {
     final strat = _strategy;
+    
     if (strat is _InfiniteStrategy) {
-      strat.indexOffset = initialIndex;
+      strat.indexOffset = postDetailsPage.initialPage;
+    } else if (strat is _PaginatedStrategy) {
+      strat.postDetailsPage = postDetailsPage;
     }
   }
 
@@ -137,9 +138,9 @@ class _InfiniteStrategy implements _ListingStrategy {
       seenIndices.add(index);
     }
 
-    final visible = length.value;
-    if (visible > 0 &&
-        seenLength >= (visible * 3 / 4).ceil() &&
+    final currentlyLoaded = length.value;
+    if (currentlyLoaded > 0 &&
+        seenLength >= (currentlyLoaded * 3 / 4).ceil() &&
         !fetchPending &&
         gridController.hasMore &&
         !gridController.loading &&
@@ -147,10 +148,10 @@ class _InfiniteStrategy implements _ListingStrategy {
       _triggerFetch();
     }
 
-    final isLastVisible = seenLength >= visible - 1;
+    final isLastVisible = seenLength >= currentlyLoaded - 1;
 
     final currentItemCount = gridController.items.length;
-    if (isLastVisible && currentItemCount > visible) {
+    if (isLastVisible && currentItemCount > currentlyLoaded) {
       _reveal(currentItemCount);
     }
   }
@@ -173,153 +174,190 @@ class _InfiniteStrategy implements _ListingStrategy {
   void dispose() {
   }
   
-
 }
 
-// // ========== Paginated Strategy (sliding‑window cache) ==========
-// class _PaginatedStrategy implements _ListingStrategy {
-//   _PaginatedStrategy(this.gridController) {
-//     gridController.itemsNotifier.addListener(onItemsUpdated);
-//     gridController.pageNotifier.addListener(_onPageChanged);
+// ========== Paginated Strategy Implementation ==========
+class _PaginatedStrategy implements _ListingStrategy {
+  _PaginatedStrategy(
+    this._controller,
+    this._dynlen,
+  ):
+  _firstPage = _controller.pageNotifier.value,
+  _lastPage = _controller.pageNotifier.value,
+  _forwards = _controller.items.toList()
+   {
+    _updateLength();
+    // Immediately start loading the previous page if it exists.
+    if (_controller.hasPreviousPage()) {
+      _loadPreviousPage();
+    }
+  }
 
-//     _currentControllerPage = gridController.page;
-//     if (gridController.items.isNotEmpty) {
-//       _pageCache[_currentControllerPage] = List.from(gridController.items);
-//     }
-//   }
+  final PostGridController<dynamic> _controller;
+  final ValueNotifier<int> _dynlen;
+  PostDetailsPageViewController? postDetailsPage;
 
-//   final PostGridController<dynamic> gridController;
-//   void Function(int) _updateLength = (l) => ();
+  // Own storage: backwards (reversed order) and forwards (normal order)
+  final List<dynamic> _forwards; // initialize in constructor
+  final List<dynamic> _backwards = []; // stored as [..., page_{N-1}_last, ..., page_{N-1}_0]
+  int _firstPage; // smallest page number currently in _backwards
+  int _lastPage;  // largest page number currently in _forwards
 
-//   final Map<int, List<dynamic>> _pageCache = {};
-//   var _baseOffset = 0;
-//   var _currentControllerPage = 1;
-//   var _isLoadingPage = false;
+  // Seen indices management
+  final Set<int> _seenIndices = {};
+  int? _lastMarkedIndex;
 
+  // Loading guard
+  var _loading = false;
 
-//   void _onPageChanged() {
-//     _currentControllerPage = gridController.page;
-//   }
+  @override
+  ValueNotifier<int>? get length => _dynlen;
 
-//   List<int> get _sortedPages => _pageCache.keys.toList()..sort();
-//   int get _cachedLength => _sortedPages.fold(0, (sum, p) => sum + _pageCache[p]!.length);
+  @override
+  dynamic getItemAt(int index) {
+    final backLen = _backwards.length;
+    if (index < backLen) {
+      // Combined list: backwards part is reversed.
+      return _backwards[backLen - 1 - index];
+    } else {
+      return _forwards[index - backLen];
+    }
+  }
 
-//   @override
-//   int get length => _baseOffset + _cachedLength;
+  @override
+  void markSeen(int index, {bool force = false}) {
+    // force is ignored – we simply let the set grow as requested.
+    if (_seenIndices.add(index)) {
+      _lastMarkedIndex = index;
+    }
+    _maybeLoadMorePages();
+  }
 
+  void _maybeLoadMorePages() {
+    final totalLen = _dynlen.value;
+    final seenCount = _seenIndices.length;
 
-//   @override
-//   dynamic? getItemAt(int index) {
-//     var runningOffset = _baseOffset;
-//     for (final page in _sortedPages) {
-//       final pageItems = _pageCache[page]!;
-//       if (index >= runningOffset && index < runningOffset + pageItems.length) {
-//         final localIndex = index - runningOffset;
-//         _prefetchIfNeeded(page, localIndex, pageItems.length);
-//         return pageItems[localIndex];
-//       }
-//       runningOffset += pageItems.length;
-//     }
+    // Threshold: 3/4 of the currently loaded items have been marked.
+    final thresholdReached = seenCount >= (totalLen * 3 / 4).ceil();
 
-//     // Not in cache – determine direction
-//     int targetPage;
-//     if (_pageCache.isEmpty) {
-//       targetPage = 1;
-//     } else if (index < _baseOffset) {
-//       targetPage = _sortedPages.first - 1;   // need older page
-//     } else {
-//       targetPage = _sortedPages.last + 1;    // need newer page
-//     }
+    if (thresholdReached && _lastMarkedIndex != null) {
+      final center = totalLen / 2;
+      if (_lastMarkedIndex! > center) {
+        // User has moved to the second half → load next page.
+        if (_controller.hasNextPage() && !_loading) {
+          _loadNextPage();
+        }
+      } else {
+        // User is in the first half → load previous page.
+        if (_controller.hasPreviousPage() && !_loading) {
+          _loadPreviousPage();
+        }
+      }
+    } else {
+      // Immediate edge triggers.
+      if (_seenIndices.contains(0) &&
+          _controller.hasPreviousPage() &&
+          !_loading) {
+        _loadPreviousPage();
+      }
+      if (_seenIndices.contains(totalLen - 1) &&
+          _controller.hasNextPage() &&
+          !_loading) {
+        _loadNextPage();
+      }
+    }
+  }
 
-//     Future.microtask(() => _loadPageIfNeeded(targetPage));
-//     return null;
-//   }
+  Future<void> _loadPreviousPage() async {
+    if (_loading) return;
+    _loading = true;
 
-//   void _prefetchIfNeeded(int page, int localIndex, int pageLength) {
-//     // Prefetch next page when near the end of current page
-//     if (localIndex >= pageLength - 2) {
-//       _loadPageIfNeeded(page + 1);
-//     }
-//     // Prefetch previous page when near the beginning (and not on first page)
-//     if (localIndex <= 1 && page > 1) {
-//       _loadPageIfNeeded(page - 1);
-//     }
-//   }
+    final targetPage = _firstPage - 1;
+    if (!_controller.hasPreviousPage() || targetPage < 1) {
+      _loading = false;
+      return;
+    }
 
-//   Future<void> _loadPageIfNeeded(int page) async {
-//     if (_isLoadingPage) return;
-//     if (_pageCache.containsKey(page)) return;
-//     if (page < 1) return;
+    try {
+      final newPageItems = await _fetchPage(targetPage);
+      if (newPageItems.isEmpty) {
+        // No items on that page – treat as end of data.
+        _loading = false;
+        return;
+      }
 
-//     _isLoadingPage = true;
-//     unawaited(Future.microtask(() async {
-//       try {
-//         // Snapshot current page before jumping away
-//         final currentPage = _currentControllerPage;
-//         if (gridController.items.isNotEmpty && !_pageCache.containsKey(currentPage)) {
-//           _addPageToCache(currentPage, List.from(gridController.items));
-//         }
+      final addedCount = newPageItems.length;
 
-//         await gridController.jumpToPage(page);
+      // Insert new page at the beginning of the combined list.
+      // Backwards list stores pages in reverse order, so we append the new
+      // page’s items in reverse order.
+      _backwards.addAll(newPageItems.reversed);
+      _firstPage = targetPage;
 
-//         // Cache the newly loaded page
-//         if (gridController.items.isNotEmpty) {
-//           _addPageToCache(page, List.from(gridController.items));
-//         }
+      // Update length.
+      _updateLength();
 
-//         _evictDistantPages(page);
-//         _updateLength(length);
-//       } finally {
-//         _isLoadingPage = false;
-//       }
-//     }));
-//   }
+      // Shift existing seen indices because new items were inserted before them.
+      final updatedIndices = <int>{};
+      for (final idx in _seenIndices) {
+        updatedIndices.add(idx + addedCount);
+      }
+      _seenIndices.clear();
+      _seenIndices.addAll(updatedIndices);
+      if (_lastMarkedIndex != null) {
+        _lastMarkedIndex = _lastMarkedIndex! + addedCount;
+      }
+      postDetailsPage!.jumpToPage(postDetailsPage!.currentPage.value + addedCount);
+    } finally {
+      _loading = false;
+    }
+  }
 
-//   void _addPageToCache(int page, List<dynamic> items) {
-//     final wasEmpty = _pageCache.isEmpty;
-//     final oldOldest = wasEmpty ? null : _sortedPages.first;
+  Future<void> _loadNextPage() async {
+    if (_loading) return;
+    _loading = true;
 
-//     _pageCache[page] = items;
+    final targetPage = _lastPage + 1;
+    if (!_controller.hasNextPage()) {
+      _loading = false;
+      return;
+    }
 
-//     if (!wasEmpty && page < oldOldest!) {
-//       // New page is older than previous oldest → it is now cached,
-//       // so its items are no longer "evicted". Subtract from baseOffset.
-//       _baseOffset -= items.length;
-//     }
-//   }
+    try {
+      final newPageItems = await _fetchPage(targetPage);
+      if (newPageItems.isEmpty) {
+        _loading = false;
+        return;
+      }
 
-//   void _evictDistantPages(int centerPage) {
-//     final pagesToRemove = _pageCache.keys.where((p) => (p - centerPage).abs() > 1).toList();
-//     if (pagesToRemove.isEmpty) return;
+      // Append to forwards (normal order).
+      _forwards.addAll(newPageItems);
+      _lastPage = targetPage;
+      _updateLength();
 
-//     pagesToRemove.sort();
-//     for (final page in pagesToRemove) {
-//       if (page == _sortedPages.first) {
-//         // This is the oldest page in cache; it's being evicted.
-//         // Add its length to baseOffset.
-//         _baseOffset += _pageCache[page]!.length;
-//       }
-//       _pageCache.remove(page);
-//     }
-//   }
+      // No index shift needed when appending at the end.
+    } finally {
+      _loading = false;
+    }
+  }
 
-//   @override
-//   void markSeen(int index, {bool force = false}) {
-//     getItemAt(index); // just ensure the page is loaded
-//   }
+  Future<List<dynamic>> _fetchPage(int page) async {
+    // Use a completer to wait for the controller’s items to be updated.
+    await _controller.jumpToPage(page);
+    return _controller.items.toList();
+  }
 
+  void _updateLength() {
+      _dynlen.value = _backwards.length + _forwards.length;
+  }
 
-//   @override
-//   void dispose() {
-//     gridController.itemsNotifier.removeListener(onItemsUpdated);
-//     gridController.pageNotifier.removeListener(_onPageChanged);
-//     _pageCache.clear();
-//   }
-// }
-
+  @override
+  void dispose() {
+  }
+}
 
 class DetailsRouteContext<T extends Post> extends Equatable {
-  DetailsRouteContext({
+  const DetailsRouteContext({
     required this.initialIndex,
     required this.posts,
     required this.scrollController,
@@ -328,9 +366,7 @@ class DetailsRouteContext<T extends Post> extends Equatable {
     required this.initialThumbnailUrl,
     required this.configSearch,
     this.dislclaimer,
-  }){
-    posts.initial = initialIndex;
-  }
+  });
 
   DetailsRouteContext<T> copyWith({
     int? initialIndex,

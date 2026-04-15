@@ -103,6 +103,7 @@ class _PostDetailPageScaffoldState<T extends Post>
       widget.controller.onPageSettled(
         widget.controller.initialPage,
       );
+      _posts.setPostDetailsPageViewController(_controller);
     });
 
     widget.controller.isVideoPlaying.addListener(_isVideoPlayingChanged);
