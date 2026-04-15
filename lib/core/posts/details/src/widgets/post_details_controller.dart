@@ -11,7 +11,6 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 // Project imports:
 import '../../../../videos/engines/types.dart';
 import '../../../../videos/player/types.dart';
-import '../../../listing/providers.dart';
 import '../../../post/types.dart';
 import '../../routes.dart';
 
