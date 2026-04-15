@@ -169,10 +169,11 @@ class SlideshowController {
     final currentState = _state.value;
     final newState = currentState.withUpdatedTotalPages(newTotalPages);
 
-    // If we have a new current page due to total gettign smaller, trigger navigation to sync UI.
+    // If we have a new current page due to total getting smaller, trigger navigation to sync UI.
     if (newState.currentPage != currentState.currentPage) {
       // Navigate without animation (skip animation)
       onNavigateToPage(newState.currentPage, true);
     }
+    _state.value = newState;
   }
 }
