@@ -1,5 +1,6 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,9 +11,7 @@ import 'package:visibility_detector/visibility_detector.dart';
 
 // Project imports:
 import '../../../../../foundation/display.dart';
-import '../../../../../foundation/keyboard/keyboard.dart';
 import '../../../../../foundation/platform.dart';
-import '../../../details_pageview/keybinds.dart';
 import '../../../../analytics/providers.dart';
 import '../../../../boorus/engine/types.dart';
 import '../../../../cache/providers.dart';
@@ -225,9 +224,12 @@ class _PostDetailPageScaffoldState<T extends Post>
       },
     );
 
-    return ShortcutScope(
-      handlers: {
-        kPostDetailsViewOriginal: () => goToOriginalImagePage(
+    return CallbackShortcuts(
+      bindings: {
+        const SingleActivator(
+          LogicalKeyboardKey.keyF,
+          control: true,
+        ): () => goToOriginalImagePage(
           ref,
           widget.posts[_controller.page],
         ),

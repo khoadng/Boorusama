@@ -351,6 +351,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
   Widget build(BuildContext context) {
     return PostDetailsShortcuts(
       controller: _controller,
+      useVerticalLayout: useVerticalLayout,
       isLargeScreen: isLargeScreen,
       child: Stack(
         children: [

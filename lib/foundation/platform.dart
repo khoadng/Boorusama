@@ -17,7 +17,3 @@ bool isDesktopPlatform() =>
 bool isMobilePlatform() => isAndroid() || isIOS();
 
 bool hasStatusBar() => isMobilePlatform();
-
-/// Whether the device uses a Mac keyboard layout (Cmd key).
-/// True for macOS both native and web — the physical keyboard is what matters.
-bool hasMacKeyboard() => _platform == TargetPlatform.macOS;

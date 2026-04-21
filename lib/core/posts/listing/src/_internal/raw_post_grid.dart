@@ -1,5 +1,6 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:auto_scrolling/auto_scrolling.dart';
@@ -16,9 +17,8 @@ import 'package:sliver_tools/sliver_tools.dart';
 
 // Project imports:
 import '../../../../../foundation/display.dart';
-import '../../../../../foundation/keyboard/keyboard.dart';
+import '../../../../../foundation/keyboard.dart';
 import '../../../../haptics/types.dart';
-import '../../../../home/keybinds.dart';
 import '../../../../themes/theme/types.dart';
 import '../../../../widgets/animated_footer.dart';
 import '../../../../widgets/default_selection_bar.dart';
@@ -86,7 +86,7 @@ class RawPostGrid<T extends Post> extends StatefulWidget {
 }
 
 class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
-    with TickerProviderStateMixin {
+    with TickerProviderStateMixin, KeyboardListenerMixin {
   late final AutoScrollController _autoScrollController;
   late final SelectionModeController _selectionModeController;
   late SelectionOptions _selectionOptions;
@@ -113,6 +113,8 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
 
     _selectionOptions = widget.selectionOptions;
     _options = widget.options;
+
+    registerListener(_handleKeyEvent);
   }
 
   @override
@@ -132,8 +134,18 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
     }
   }
 
+  bool _handleKeyEvent(KeyEvent event) {
+    if (isKeyPressed(LogicalKeyboardKey.f5, event: event)) {
+      controller.refresh();
+    }
+
+    return false;
+  }
+
   @override
   void dispose() {
+    removeListener(_handleKeyEvent);
+
     if (widget.scrollController == null) {
       _autoScrollController.dispose();
     }
@@ -177,151 +189,146 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
-    return ShortcutScope(
-      handlers: {
-        kHomeRefresh: () => controller.refresh(),
-      },
-      child: ColoredBox(
-        color: colorScheme.surface,
-        child: ConditionalParentWidget(
-          condition: widget.safeArea,
-          conditionalBuilder: (child) => SafeArea(
-            bottom: false,
-            left: false,
-            child: child,
+    return ColoredBox(
+      color: colorScheme.surface,
+      child: ConditionalParentWidget(
+        condition: widget.safeArea,
+        conditionalBuilder: (child) => SafeArea(
+          bottom: false,
+          left: false,
+          child: child,
+        ),
+        child: _SelectionMode(
+          footer: widget.footer,
+          selectionModeController: _selectionModeController,
+          selectionOptions: _selectionOptions,
+          autoScrollController: _autoScrollController,
+          header: DefaultSelectionBar(
+            itemsCount: items.length,
+            appBar: const SizedBox.shrink(),
           ),
-          child: _SelectionMode(
-            footer: widget.footer,
-            selectionModeController: _selectionModeController,
-            selectionOptions: _selectionOptions,
-            autoScrollController: _autoScrollController,
-            header: DefaultSelectionBar(
-              itemsCount: items.length,
-              appBar: const SizedBox.shrink(),
-            ),
-            child: _Scaffold(
-              body: ConditionalParentWidget(
-                condition: kPreferredLayout.isMobile,
-                conditionalBuilder: (child) => BooruRefreshIndicator(
-                  edgeOffset: 60,
-                  displacement: 50,
-                  notificationPredicate: widget.enablePullToRefresh
-                      ? (_) => true
-                      : (_) => false,
-                  onRefresh: () async {
-                    _selectionModeController.deselectAll();
-                    await controller.refresh(
-                      maintainPage: true,
-                    );
-                  },
-                  child: child,
+          child: _Scaffold(
+            body: ConditionalParentWidget(
+              condition: kPreferredLayout.isMobile,
+              conditionalBuilder: (child) => BooruRefreshIndicator(
+                edgeOffset: 60,
+                displacement: 50,
+                notificationPredicate: widget.enablePullToRefresh
+                    ? (_) => true
+                    : (_) => false,
+                onRefresh: () async {
+                  _selectionModeController.deselectAll();
+                  await controller.refresh(
+                    maintainPage: true,
+                  );
+                },
+                child: child,
+              ),
+              child: ValueListenableBuilder(
+                valueListenable: refreshing,
+                builder: (_, refreshing, child) => _SwipeTo(
+                  pageMode: pageMode,
+                  controller: controller,
+                  refreshing: refreshing,
+                  onNextPage: widget.onNextPage,
+                  onPreviousPage: widget.onPreviousPage,
+                  options: _options,
+                  child: child!,
                 ),
-                child: ValueListenableBuilder(
-                  valueListenable: refreshing,
-                  builder: (_, refreshing, child) => _SwipeTo(
-                    pageMode: pageMode,
-                    controller: controller,
-                    refreshing: refreshing,
-                    onNextPage: widget.onNextPage,
-                    onPreviousPage: widget.onPreviousPage,
-                    options: _options,
-                    child: child!,
-                  ),
-                  child: PostGridOptionsProvider(
-                    options: _options,
-                    child: _CustomScrollView(
-                      controller: _autoScrollController,
-                      slivers: [
-                        if (widget.sliverHeaders != null)
-                          ...widget.sliverHeaders!.map(
-                            (e) => ListenableBuilder(
-                              listenable: _selectionModeController,
-                              builder: (_, _) {
-                                final multiSelect =
-                                    _selectionModeController.isActive;
+                child: PostGridOptionsProvider(
+                  options: _options,
+                  child: _CustomScrollView(
+                    controller: _autoScrollController,
+                    slivers: [
+                      if (widget.sliverHeaders != null)
+                        ...widget.sliverHeaders!.map(
+                          (e) => ListenableBuilder(
+                            listenable: _selectionModeController,
+                            builder: (_, _) {
+                              final multiSelect =
+                                  _selectionModeController.isActive;
 
-                                return SliverOffstage(
-                                  offstage: multiSelect,
-                                  sliver: e,
-                                );
-                              },
-                            ),
-                          ),
-                        SliverToBoxAdapter(
-                          child: PostControllerEventListener(
-                            controller: controller,
-                            onEvent: (event) {
-                              if (event is PostControllerRefreshStarted) {
-                                context.contextMenuOverlay.hide();
-                              }
+                              return SliverOffstage(
+                                offstage: multiSelect,
+                                sliver: e,
+                              );
                             },
-                            child: const SizedBox.shrink(),
                           ),
                         ),
+                      SliverToBoxAdapter(
+                        child: PostControllerEventListener(
+                          controller: controller,
+                          onEvent: (event) {
+                            if (event is PostControllerRefreshStarted) {
+                              context.contextMenuOverlay.hide();
+                            }
+                          },
+                          child: const SizedBox.shrink(),
+                        ),
+                      ),
+                      ConditionalValueListenableBuilder(
+                        valueListenable: refreshing,
+                        useFalseChildAsCache: true,
+                        trueChild: const SliverSizedBox.shrink(),
+                        falseChild: SliverPinnedHeader(
+                          child: widget.gridHeader,
+                        ),
+                      ),
+                      ConditionalValueListenableBuilder(
+                        valueListenable: refreshing,
+                        useFalseChildAsCache: true,
+                        trueChild: const SliverSizedBox.shrink(),
+                        falseChild: const SliverToBoxAdapter(
+                          child: HighresPreviewOnMobileDataWarningBanner(),
+                        ),
+                      ),
+                      ConditionalValueListenableBuilder(
+                        valueListenable: refreshing,
+                        useFalseChildAsCache: true,
+                        trueChild: const SliverSizedBox.shrink(),
+                        falseChild: const SliverToBoxAdapter(
+                          child: TooMuchCachedImagesWarningBanner(
+                            threshold: _kImageCacheThreshold,
+                          ),
+                        ),
+                      ),
+                      if (pageMode == PageMode.paginated)
+                        ConditionalValueListenableBuilder(
+                          valueListenable: refreshing,
+                          useFalseChildAsCache: true,
+                          falseChild: SliverToBoxAdapter(
+                            child: widget.topPageIndicator,
+                          ),
+                          trueChild: const SliverSizedBox.shrink(),
+                        ),
+                      widget.body,
+                      if (pageMode == PageMode.infinite)
+                        _buildLoadMore(colorScheme),
+                      if (pageMode == PageMode.paginated)
                         ConditionalValueListenableBuilder(
                           valueListenable: refreshing,
                           useFalseChildAsCache: true,
                           trueChild: const SliverSizedBox.shrink(),
-                          falseChild: SliverPinnedHeader(
-                            child: widget.gridHeader,
-                          ),
-                        ),
-                        ConditionalValueListenableBuilder(
-                          valueListenable: refreshing,
-                          useFalseChildAsCache: true,
-                          trueChild: const SliverSizedBox.shrink(),
-                          falseChild: const SliverToBoxAdapter(
-                            child: HighresPreviewOnMobileDataWarningBanner(),
-                          ),
-                        ),
-                        ConditionalValueListenableBuilder(
-                          valueListenable: refreshing,
-                          useFalseChildAsCache: true,
-                          trueChild: const SliverSizedBox.shrink(),
-                          falseChild: const SliverToBoxAdapter(
-                            child: TooMuchCachedImagesWarningBanner(
-                              threshold: _kImageCacheThreshold,
-                            ),
-                          ),
-                        ),
-                        if (pageMode == PageMode.paginated)
-                          ConditionalValueListenableBuilder(
-                            valueListenable: refreshing,
-                            useFalseChildAsCache: true,
-                            falseChild: SliverToBoxAdapter(
-                              child: widget.topPageIndicator,
-                            ),
-                            trueChild: const SliverSizedBox.shrink(),
-                          ),
-                        widget.body,
-                        if (pageMode == PageMode.infinite)
-                          _buildLoadMore(colorScheme),
-                        if (pageMode == PageMode.paginated)
-                          ConditionalValueListenableBuilder(
-                            valueListenable: refreshing,
-                            useFalseChildAsCache: true,
-                            trueChild: const SliverSizedBox.shrink(),
-                            falseChild: SliverToBoxAdapter(
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                  top: 40,
-                                  bottom: 20,
-                                ),
-                                child: widget.bottomPageIndicator,
+                          falseChild: SliverToBoxAdapter(
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                top: 40,
+                                bottom: 20,
                               ),
+                              child: widget.bottomPageIndicator,
                             ),
                           ),
-                        _SliverBottomGridPadding(
-                          selectionModeController: _selectionModeController,
-                          pageMode: pageMode,
                         ),
-                      ],
-                    ),
+                      _SliverBottomGridPadding(
+                        selectionModeController: _selectionModeController,
+                        pageMode: pageMode,
+                      ),
+                    ],
                   ),
                 ),
               ),
-              floatingActionButton: widget.scrollToTopButton,
             ),
+            floatingActionButton: widget.scrollToTopButton,
           ),
         ),
       ),

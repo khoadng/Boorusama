@@ -1,45 +1,59 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
-
-// Package imports:
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/services.dart';
 
 // Project imports:
-import '../../../../foundation/keyboard/keyboard.dart';
 import 'post_details_page_view_controller.dart';
-import '../keybinds.dart';
 
-class PostDetailsShortcuts extends ConsumerWidget {
+class PostDetailsShortcuts extends StatelessWidget {
   const PostDetailsShortcuts({
     required this.controller,
+    required this.useVerticalLayout,
     required this.isLargeScreen,
     required this.child,
     super.key,
   });
 
   final PostDetailsPageViewController controller;
+  final bool useVerticalLayout;
   final bool isLargeScreen;
   final Widget child;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return ValueListenableBuilder(
       valueListenable: controller.keyboardShortcutsEnabled,
-      builder: (context, shortcutsEnabled, _) => ShortcutScope(
-        handlers: shortcutsEnabled
+      builder: (context, shortcutsEnabled, _) => CallbackShortcuts(
+        bindings: shortcutsEnabled
             ? {
-                kPostDetailsNextPage: () => controller.nextPage(
-                  duration: isLargeScreen ? Duration.zero : null,
-                ),
-                kPostDetailsPreviousPage: () => controller.previousPage(
-                  duration: isLargeScreen ? Duration.zero : null,
-                ),
-                kPostDetailsToggleOverlay: () => controller.toggleOverlay(),
-                kPostDetailsClose: () => Navigator.of(context).maybePop(),
+                SingleActivator(
+                  useVerticalLayout
+                      ? LogicalKeyboardKey.arrowDown
+                      : LogicalKeyboardKey.arrowRight,
+                ): () {
+                  controller.nextPage(
+                    duration: isLargeScreen ? Duration.zero : null,
+                  );
+                },
+                SingleActivator(
+                  useVerticalLayout
+                      ? LogicalKeyboardKey.arrowUp
+                      : LogicalKeyboardKey.arrowLeft,
+                ): () {
+                  controller.previousPage(
+                    duration: isLargeScreen ? Duration.zero : null,
+                  );
+                },
+                const SingleActivator(LogicalKeyboardKey.keyO): () =>
+                    controller.toggleOverlay(),
+                const SingleActivator(LogicalKeyboardKey.escape): () =>
+                    Navigator.of(context).maybePop(),
               }
             : {},
-        autofocus: true,
-        child: child,
+        child: Focus(
+          autofocus: true,
+          child: child,
+        ),
       ),
     );
   }

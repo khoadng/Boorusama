@@ -8,7 +8,6 @@ import 'package:foundation/foundation.dart';
 // Project imports:
 import '../../../../foundation/applock/types.dart';
 import '../../../../foundation/caching/types.dart';
-import '../../../../foundation/keyboard/keyboard.dart';
 import '../../../analytics/types.dart';
 import '../../../backups/auto/types.dart';
 import '../../../configs/gesture/types.dart';
@@ -59,7 +58,6 @@ class Settings extends Equatable {
     required this.hapticFeedbackLevel,
     required this.autoBackup,
     required this.videoCacheMaxSize,
-    this.shortcutBindings,
   });
 
   Settings.fromJson(Map<String, dynamic> json)
@@ -122,10 +120,6 @@ class Settings extends Equatable {
       videoCacheMaxSize = switch (json['videoCacheMaxSize']) {
         final v? => CacheSize.tryParse(v) ?? CacheSize.oneGigabyte,
         _ => CacheSize.oneGigabyte,
-      },
-      shortcutBindings = switch (json['shortcutBindings']) {
-        final Map<String, dynamic> v => ShortcutBindingConfig.fromJson(v),
-        _ => null,
       };
 
   static const defaultSettings = Settings(
@@ -247,8 +241,6 @@ class Settings extends Equatable {
 
   final CacheSize videoCacheMaxSize;
 
-  final ShortcutBindingConfig? shortcutBindings;
-
   Settings copyWith({
     String? blacklistedTags,
     String? language,
@@ -282,7 +274,6 @@ class Settings extends Equatable {
     HapticFeedbackLevel? hapticFeedbackLevel,
     AutoBackupSettings? autoBackup,
     CacheSize? videoCacheMaxSize,
-    ShortcutBindingConfig? Function()? shortcutBindings,
   }) => Settings(
     listing: listing ?? this.listing,
     viewer: viewer ?? this.viewer,
@@ -327,9 +318,6 @@ class Settings extends Equatable {
     hapticFeedbackLevel: hapticFeedbackLevel ?? this.hapticFeedbackLevel,
     autoBackup: autoBackup ?? this.autoBackup,
     videoCacheMaxSize: videoCacheMaxSize ?? this.videoCacheMaxSize,
-    shortcutBindings: shortcutBindings != null
-        ? shortcutBindings()
-        : this.shortcutBindings,
   );
 
   Map<String, dynamic> toJson() {
@@ -369,9 +357,6 @@ class Settings extends Equatable {
       'hapticFeedbackLevel': hapticFeedbackLevel.toData(),
       'autoBackup': autoBackup.toJson(),
       'videoCacheMaxSize': videoCacheMaxSize.displayString(),
-      if (shortcutBindings case final bindings?
-          when bindings.bindings.isNotEmpty)
-        'shortcutBindings': bindings.toJson(),
     };
   }
 
@@ -408,7 +393,6 @@ class Settings extends Equatable {
     hapticFeedbackLevel,
     autoBackup,
     videoCacheMaxSize,
-    shortcutBindings,
   ];
 
   List<int> get booruConfigIdOrderList {
