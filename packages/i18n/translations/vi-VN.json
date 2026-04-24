@@ -410,7 +410,7 @@
       "enable_video_cache": "Bật bộ nhớ đệm video",
       "enable_video_cache_description": "Tải video trong lúc xem và lưu vào bộ nhớ đệm để giảm sử dụng dữ liệu và phát nhanh hơn khi xem lại.",
       "video": {
-        "video_player_engine": "Trình phát video",
+        "video_player_engine": "Trình phát veo",
         "engine": {
           "auto": "Tự động",
           "auto_description": "Tự động chọn trình phát tốt nhất dựa trên khả năng thiết bị của bạn.",
@@ -1286,8 +1286,8 @@
     "lock_screen": "Khoá màn hình",
     "buffering": "Đang tải...",
     "engine_not_supported": "Trình phát này không được hỗ trợ trên nền tảng hiện tại.",
-    "change_video_player_engine_suggest": "Nếu lỗi này xảy ra thường xuyên, cân nhắc sử dụng một trình phát video khác trong cài đặt.",
-    "change_video_player_engine_request": "Vui lòng đổi sang trình phát phim khác trong cài đặt.",
+    "change_video_player_engine_suggest": "Nếu lỗi này xảy ra thường xuyên, cân nhắc sử dụng một trình phát khác trong cài đặt.",
+    "change_video_player_engine_request": "Vui lòng đổi sang trình phát veo khác trong cài đặt.",
     "video_quality": "Chất lượng video",
     "video_qualities": {
       "auto": "Tự động",
