@@ -3,6 +3,7 @@ import 'dart:async';
 
 // Flutter imports:
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -12,6 +13,7 @@ import 'package:gal/gal.dart';
 import '../../../foundation/media_scanner.dart';
 import '../../../foundation/path.dart' as path;
 import '../../../foundation/platform.dart';
+import '../../../foundation/toast.dart';
 import '../../configs/config/providers.dart';
 import '../../ddos/handler/providers.dart';
 import '../../download_manager/providers.dart';
@@ -62,10 +64,12 @@ class _BackgroundDownloaderScopeState
         // retry 404 url
         WidgetsBinding.instance.addPostFrameCallback(
           (_) {
+            var willRetry = false;
             try {
               final config = ref.readConfigAuth;
 
               if (config.booruType.hasUnknownFullImageUrl) {
+                willRetry = true;
                 // retry after 1 second
                 Future.delayed(
                   const Duration(seconds: 1),
@@ -94,6 +98,10 @@ class _BackgroundDownloaderScopeState
             } catch (e) {
               // do nothing
             }
+
+            if (!willRetry) {
+              _showDownloadFailedToast(update);
+            }
           },
         );
       } else if (update.status case TaskStatus.failed) {
@@ -110,6 +118,8 @@ class _BackgroundDownloaderScopeState
               update.task,
               headers: headers,
             );
+          } else {
+            _showDownloadFailedToast(update);
           }
         });
       }
@@ -169,6 +179,16 @@ class _BackgroundDownloaderScopeState
 
   void myNotificationTapCallback(Task task, NotificationType notificationType) {
     widget.onTapNotification(task, notificationType);
+  }
+
+  void _showDownloadFailedToast(TaskStatusUpdate update) {
+    if (!mounted) return;
+
+    showErrorToast(
+      context,
+      'Download failed: ${update.task.filename}',
+      duration: const Duration(seconds: 5),
+    );
   }
 
   @override
