@@ -95,21 +95,20 @@ SankakuPost postDtoToPost(
 
   final timestamp = e.createdAt?.s;
 
-  // They changed the id to a string, so a workaround is needed until i can figure out a better way
-  // This workaround is just generating an autoincrement id to make the filtering work
-  // Update: They are reverting the id back to an int, not sure if they changed their mind again so i will keep this workaround
   final (id, sankakuId) = switch (e.id) {
-    // No id, so we generate pseudo id and a dummy string id
-    null => (idGenerator.generateId(), ''),
+    // No id, so we generate a pseudo id for shared post plumbing.
+    null => (idGenerator.generateId(), null),
     // Int id, which means they reverted back to int id
-    IntId i => (i.value, ''),
+    IntId i => (i.value, i),
     // String id, which means they are using string id
-    StringId s => (idGenerator.generateId(), s.value),
+    StringId s => (idGenerator.generateId(), s),
   };
 
   return SankakuPost(
     id: id,
     sankakuId: sankakuId,
+    isFavorited: e.isFavorited ?? false,
+    favoriteCount: e.favCount ?? 0,
     thumbnailImageUrl: e.previewUrl ?? '',
     sampleImageUrl: e.sampleUrl ?? '',
     originalImageUrl: e.fileUrl ?? '',

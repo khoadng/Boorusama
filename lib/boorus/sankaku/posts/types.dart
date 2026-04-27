@@ -1,4 +1,5 @@
 // Package imports:
+import 'package:booru_clients/sankaku.dart';
 import 'package:equatable/equatable.dart';
 
 // Project imports:
@@ -13,6 +14,8 @@ class SankakuPost extends Equatable
   SankakuPost({
     required this.id,
     required this.sankakuId,
+    required this.isFavorited,
+    required this.favoriteCount,
     required this.thumbnailImageUrl,
     required this.sampleImageUrl,
     required this.originalImageUrl,
@@ -129,7 +132,11 @@ class SankakuPost extends Equatable
   @override
   final String? uploaderName;
 
-  final String sankakuId;
+  final SankakuId? sankakuId;
+
+  final bool isFavorited;
+
+  final int favoriteCount;
 
   @override
   final PostMetadata? metadata;
@@ -164,7 +171,7 @@ class SankakuPostLinkGenerator implements PostLinkGenerator<SankakuPost> {
   }
 
   String? _getId(SankakuPost post) {
-    if (post.sankakuId.isNotEmpty) return post.sankakuId;
+    if (post.sankakuId != null) return post.sankakuId!.valueString;
     if (post.id != 0) return post.id.toString();
 
     return null;

@@ -9,6 +9,7 @@ import '../../../core/posts/post/types.dart';
 import '../../../core/search/queries/providers.dart';
 import '../../../core/settings/providers.dart';
 import '../client_provider.dart';
+import '../favorites/providers.dart';
 import 'parser.dart';
 import 'types.dart';
 
@@ -33,7 +34,15 @@ final sankakuPostRepoProvider =
 
             final post = await client.getPost(id: stringId.value);
 
-            return post != null ? postDtoToPost(post, idGenerator, null) : null;
+            if (post == null) return null;
+
+            final data = postDtoToPost(post, idGenerator, null);
+
+            ref.read(sankakuFavoritesProvider(config.auth).notifier).preload([
+              data,
+            ]);
+
+            return data;
           },
           fetch: (tags, page, {limit, options}) async {
             final posts = await client.getPosts(
@@ -42,7 +51,7 @@ final sankakuPostRepoProvider =
               limit: limit,
             );
 
-            return posts
+            final data = posts
                 .map(
                   (e) => postDtoToPost(
                     e,
@@ -54,8 +63,13 @@ final sankakuPostRepoProvider =
                     ),
                   ),
                 )
-                .toList()
-                .toResult();
+                .toList();
+
+            ref
+                .read(sankakuFavoritesProvider(config.auth).notifier)
+                .preload(data);
+
+            return data.toResult();
           },
         );
       },

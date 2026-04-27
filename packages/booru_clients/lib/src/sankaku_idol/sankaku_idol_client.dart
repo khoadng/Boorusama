@@ -124,6 +124,20 @@ class SankakuIdolClient implements SankakuClient {
     return null;
   }
 
+  @override
+  Future<bool> addToFavorites({
+    required SankakuId postId,
+  }) async {
+    return false;
+  }
+
+  @override
+  Future<bool> removeFromFavorites({
+    required SankakuId postId,
+  }) async {
+    return false;
+  }
+
   CancelToken? _autocompleteCancelToken;
 
   @override

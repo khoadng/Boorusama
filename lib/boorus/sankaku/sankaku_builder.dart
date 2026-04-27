@@ -1,3 +1,6 @@
+// Flutter imports:
+import 'package:flutter/material.dart';
+
 // Project imports:
 import '../../core/boorus/defaults/widgets.dart';
 import '../../core/boorus/engine/types.dart';
@@ -76,6 +79,12 @@ class SankakuBuilder extends BaseBooruBuilder {
   @override
   FavoritesPageBuilder? get favoritesPageBuilder =>
       (context) => const SankakuFavoritesPage();
+
+  @override
+  QuickFavoriteButtonBuilder get quickFavoriteButtonBuilder =>
+      (context, post) => post is SankakuPost
+      ? SankakuQuickFavoriteButton(post: post)
+      : const SizedBox.shrink();
 
   @override
   final postDetailsUIBuilder = kSankakuPostDetailsUIBuilder;

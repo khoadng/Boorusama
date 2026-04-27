@@ -115,14 +115,7 @@ class SankakuClient {
     int? page = 1,
     int? limit = 60,
   }) async {
-    var token = await _authStore.getToken();
-
-    if (token == null && username != null && password != null) {
-      token = await login(
-        username: username!,
-        password: password!,
-      );
-    }
+    final token = await _getToken();
 
     final response = await _dio.get(
       '/posts',
@@ -150,14 +143,7 @@ class SankakuClient {
   Future<PostDto?> getPost({
     required String id,
   }) async {
-    final token = await _authStore.getToken();
-
-    if (token == null && username != null && password != null) {
-      await login(
-        username: username!,
-        password: password!,
-      );
-    }
+    final token = await _getToken();
 
     final response = await _dio.get(
       '/posts/$id',
@@ -174,6 +160,44 @@ class SankakuClient {
     final data = response.data;
 
     return PostDto.fromJson(data);
+  }
+
+  Future<bool> addToFavorites({
+    required SankakuId postId,
+  }) async {
+    final token = await _getToken();
+
+    if (token == null) return false;
+
+    try {
+      await _dio.post(
+        '/posts/${Uri.encodeComponent(postId.valueString)}/favorite',
+        options: _authOptions(token),
+      );
+
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  Future<bool> removeFromFavorites({
+    required SankakuId postId,
+  }) async {
+    final token = await _getToken();
+
+    if (token == null) return false;
+
+    try {
+      await _dio.delete(
+        '/posts/${Uri.encodeComponent(postId.valueString)}/favorite',
+        options: _authOptions(token),
+      );
+
+      return true;
+    } catch (_) {
+      return false;
+    }
   }
 
   // Only a single global autocomplete request per client is allowed for now
@@ -234,4 +258,24 @@ class SankakuClient {
       rethrow;
     }
   }
+
+  Future<Token?> _getToken() async {
+    var token = await _authStore.getToken();
+
+    if (token == null && username != null && password != null) {
+      token = await login(
+        username: username!,
+        password: password!,
+      );
+    }
+
+    return token;
+  }
+
+  Options _authOptions(Token? token) => Options(
+    headers: {
+      if (token != null && token.accessToken != null && token.tokenType != null)
+        'Authorization': '${token.tokenType} ${token.accessToken}',
+    },
+  );
 }
