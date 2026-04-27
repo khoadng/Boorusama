@@ -42,7 +42,6 @@ class HttpProtectionHandler {
         final userAgent = await _orchestrator.getUserAgent();
 
         if (userAgent == null) {
-          _disabled = true;
           return existingHeaders;
         }
 
@@ -52,7 +51,6 @@ class HttpProtectionHandler {
 
       return headers;
     } catch (e) {
-      _disabled = true;
       return existingHeaders;
     }
   }

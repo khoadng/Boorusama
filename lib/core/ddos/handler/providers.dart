@@ -16,7 +16,8 @@ final httpDdosProtectionBypassProvider = Provider<HttpProtectionHandler>(
   (ref) {
     final cookieJar = ref.watch(cookieJarProvider);
     BuildContext? contextProvider() {
-      final context = navigatorKey.currentContext;
+      final context =
+          navigatorKey.currentContext ?? navigatorKey.currentState?.context;
 
       return context;
     }

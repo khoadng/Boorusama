@@ -88,6 +88,13 @@ void main() {
         body: '<html>Powered by cloudflare</html>',
         shouldDetect: false,
       ),
+      (
+        name: '403 with Cloudflare managed challenge page',
+        statusCode: 403,
+        body:
+            '<!DOCTYPE html><html lang="en-US"><head><title>Just a moment...</title></head><body><script src="https://challenges.cloudflare.com/turnstile/v0/api.js"></script></body></html>',
+        shouldDetect: true,
+      ),
     ];
 
     for (final c in cases) {

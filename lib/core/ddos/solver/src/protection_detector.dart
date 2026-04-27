@@ -41,6 +41,11 @@ class CloudflareDetector implements ProtectionDetector {
     }
 
     final bodyLower = body.toLowerCase();
+    if (bodyLower.contains('<title>just a moment') &&
+        bodyLower.contains('challenges.cloudflare.com')) {
+      return 1;
+    }
+
     final matchCount = _signatures.where(bodyLower.contains).length;
 
     return matchCount / _signatures.length;

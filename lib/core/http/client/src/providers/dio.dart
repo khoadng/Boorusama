@@ -10,7 +10,6 @@ import 'package:dio_http2_adapter/dio_http2_adapter.dart';
 import '../../../../../foundation/loggers.dart';
 import '../../../../proxy/client.dart';
 import '../../../../proxy/types.dart';
-import '../../../../router.dart';
 import '../data/client.dart';
 import '../interceptors/dio_image_deduplicate_interceptor.dart';
 import '../interceptors/dio_logger_interceptor.dart';
@@ -77,15 +76,12 @@ Dio newDio({
     skipCertificateVerification: options.skipCertificateVerification,
   );
 
-  final context = navigatorKey.currentContext;
-  if (context != null) {
-    dio.interceptors.add(
-      DioProtectionInterceptor(
-        protectionHandler: options.ddosProtectionHandler,
-        dio: dio,
-      ),
-    );
-  }
+  dio.interceptors.add(
+    DioProtectionInterceptor(
+      protectionHandler: options.ddosProtectionHandler,
+      dio: dio,
+    ),
+  );
 
   return dio;
 }
