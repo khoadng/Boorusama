@@ -75,8 +75,8 @@ class RawSolver implements ProtectionSolver {
 
     final controller = WebViewController();
     await controller.setJavaScriptMode(JavaScriptMode.unrestricted);
-    await controller.loadRequest(uri);
     if (userAgent != null) await controller.setUserAgent(userAgent);
+    await controller.loadRequest(uri);
 
     final completer = Completer<bool>();
     final context = contextProvider();
@@ -315,6 +315,51 @@ class AftV2Solver implements ProtectionSolver {
         cookie.name.contains('challenge') ||
         cookie.name.contains('verification') ||
         cookie.name.contains('aft'),
+  );
+
+  @override
+  String get protectionType => _solver.protectionType;
+
+  @override
+  bool get isSolving => _solver.isSolving;
+
+  @override
+  Future<bool> solve({
+    required Uri uri,
+    String? userAgent,
+  }) => _solver.solve(
+    uri: uri,
+    userAgent: userAgent,
+  );
+
+  @override
+  Future<void> cancel() => _solver.cancel();
+}
+
+class CaptchaAccessDeniedSolver implements ProtectionSolver {
+  CaptchaAccessDeniedSolver({
+    required this.contextProvider,
+    required this.cookieJar,
+  });
+
+  final ContextProvider contextProvider;
+  final LazyAsync<CookieJar> cookieJar;
+
+  late final _solver = RawSolver(
+    contextProvider: contextProvider,
+    cookieJar: cookieJar,
+    protectionType: 'captcha_access_denied',
+    protectionTitle: 'Solving CAPTCHA',
+    autoCookieValidator: (cookie) {
+      final cookieName = cookie.name.toLowerCase();
+
+      return cookieName.contains('captcha') ||
+          cookieName.contains('challenge') ||
+          cookieName.contains('verification') ||
+          cookieName.contains('clearance') ||
+          cookieName.contains('cf_') ||
+          cookieName.contains('__cf');
+    },
   );
 
   @override

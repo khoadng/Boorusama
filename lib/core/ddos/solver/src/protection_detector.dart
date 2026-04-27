@@ -138,6 +138,62 @@ class AftV2Detector implements ProtectionDetector {
   DetectionPhase get detectionPhase => DetectionPhase.response;
 }
 
+class CaptchaAccessDeniedDetector implements ProtectionDetector {
+  static final _captchaTitleRegex = RegExp(
+    r'<title>\s*captcha\s*</title>',
+    caseSensitive: false,
+  );
+
+  static const _statusCodes = <int>{403, 503};
+
+  static const _captchaSignatures = <String>[
+    'captcha-box',
+    'h-captcha',
+    'g-recaptcha',
+    'cf-turnstile',
+    'captcha_text',
+    'captcha_guid',
+  ];
+
+  @override
+  double getProtectionConfidence(HttpResponse? response, HttpError? error) {
+    final statusCode = error?.response?.statusCode ?? response?.statusCode;
+    final body = error?.response?.data ?? response?.data;
+
+    if (statusCode == null || body is! String) {
+      return 0;
+    }
+
+    if (!_statusCodes.contains(statusCode)) {
+      return 0;
+    }
+
+    final bodyLower = body.toLowerCase();
+    final hasCaptchaTitle = _captchaTitleRegex.hasMatch(body);
+    final hasAccessDenied = bodyLower.contains('access denied');
+    final matchCount = _captchaSignatures.where(bodyLower.contains).length;
+
+    if (hasCaptchaTitle && (hasAccessDenied || matchCount > 0)) {
+      return 1;
+    }
+
+    if (hasAccessDenied && matchCount > 0) {
+      return 0.8;
+    }
+
+    return 0;
+  }
+
+  @override
+  double get confidenceThreshold => 0.7;
+
+  @override
+  String get protectionType => 'captcha_access_denied';
+
+  @override
+  DetectionPhase get detectionPhase => DetectionPhase.error;
+}
+
 class AftDetector implements ProtectionDetector {
   static const _signatures = <String>[
     'anti-ddos flood protection and firewall',

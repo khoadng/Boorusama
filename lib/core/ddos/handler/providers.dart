@@ -28,6 +28,7 @@ final httpDdosProtectionBypassProvider = Provider<HttpProtectionHandler>(
           CloudflareDetector(),
           McChallengeDetector(),
           AftV2Detector(),
+          CaptchaAccessDeniedDetector(),
         ],
         solvers: [
           CloudflareSolver(
@@ -39,6 +40,10 @@ final httpDdosProtectionBypassProvider = Provider<HttpProtectionHandler>(
             cookieJar: cookieJar,
           ),
           AftV2Solver(
+            contextProvider: contextProvider,
+            cookieJar: cookieJar,
+          ),
+          CaptchaAccessDeniedSolver(
             contextProvider: contextProvider,
             cookieJar: cookieJar,
           ),

@@ -180,6 +180,69 @@ void main() {
     }
   });
 
+  group('CaptchaAccessDeniedDetector', () {
+    final detector = CaptchaAccessDeniedDetector();
+
+    test('detects 403 captcha access denied page', () {
+      final error = FakeHttpError(
+        response: FakeHttpResponse(
+          statusCode: 403,
+          data: '''
+            <html>
+              <head>
+                <title>CAPTCHA</title>
+              </head>
+              <body>
+                <div class="container">
+                  <h1>403</h1>
+                  <p>Access denied</p>
+                  <div class="captcha-box"></div>
+                </div>
+              </body>
+            </html>
+          ''',
+        ),
+      );
+
+      final confidence = detector.getProtectionConfidence(null, error);
+      expect(confidence >= detector.confidenceThreshold, true);
+    });
+
+    test('detects access denied page with captcha widget markers', () {
+      final error = FakeHttpError(
+        response: FakeHttpResponse(
+          statusCode: 403,
+          data: '<html>Access denied <div class="h-captcha"></div></html>',
+        ),
+      );
+
+      final confidence = detector.getProtectionConfidence(null, error);
+      expect(confidence >= detector.confidenceThreshold, true);
+    });
+
+    test('ignores generic access denied page', () {
+      final error = FakeHttpError(
+        response: FakeHttpResponse(
+          statusCode: 403,
+          data: '<html><body>Access denied</body></html>',
+        ),
+      );
+
+      final confidence = detector.getProtectionConfidence(null, error);
+      expect(confidence >= detector.confidenceThreshold, false);
+    });
+
+    test('ignores non-error captcha content', () {
+      final response = FakeHttpResponse(
+        statusCode: 200,
+        data: '<html><title>CAPTCHA</title><div class="captcha-box"></div>',
+      );
+
+      final confidence = detector.getProtectionConfidence(response, null);
+      expect(confidence >= detector.confidenceThreshold, false);
+    });
+  });
+
   group('AftDetector', () {
     final detector = AftDetector();
 
