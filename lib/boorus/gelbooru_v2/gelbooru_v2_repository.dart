@@ -1,3 +1,9 @@
+// Dart imports:
+import 'dart:async';
+
+// Flutter imports:
+import 'package:flutter/services.dart';
+
 // Package imports:
 import 'package:booru_clients/gelbooru.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,6 +16,7 @@ import '../../core/configs/config/types.dart';
 import '../../core/configs/create/create.dart';
 import '../../core/configs/gesture/types.dart';
 import '../../core/downloads/filename/types.dart';
+import '../../core/haptics/types.dart';
 import '../../core/notes/note/types.dart';
 import '../../core/posts/favorites/types.dart';
 import '../../core/posts/favorites/widgets.dart';
@@ -18,6 +25,7 @@ import '../../core/posts/listing/types.dart';
 import '../../core/posts/post/providers.dart';
 import '../../core/posts/post/types.dart';
 import '../../core/search/queries/types.dart';
+import '../../core/settings/providers.dart';
 import '../../core/tags/autocompletes/types.dart';
 import '../../core/tags/metatag/types.dart';
 import '../../core/tags/tag/types.dart';
@@ -149,18 +157,36 @@ class GelbooruV2Repository extends BooruRepositoryDefault {
 
   @override
   bool handlePostGesture(WidgetRef ref, String? action, Post post) =>
-      PostGestureHandler(
-        customActions: {
-          kToggleFavoriteAction: (ref, action, post) {
-            ref.toggleFavorite(post.id);
-
-            return true;
-          },
-        },
-      ).handle(ref, action, post);
+      handleGelbooruV2GestureAction(
+        action,
+        hapticLevel: ref.read(hapticFeedbackLevelProvider),
+        onToggleFavorite: () => ref.toggleFavorite(post.id),
+        defaultHandler: () =>
+            const PostGestureHandler().handle(ref, action, post),
+      );
 
   @override
   MetatagExtractor getMetatagExtractor(BooruConfigAuth config) {
     return ref.watch(gelbooruMetatagExtractorProvider(config));
   }
+}
+
+bool handleGelbooruV2GestureAction(
+  String? action, {
+  required HapticFeedbackLevel hapticLevel,
+  required bool Function() defaultHandler,
+  void Function()? onToggleFavorite,
+}) {
+  switch (action) {
+    case kToggleFavoriteAction:
+      onToggleFavorite?.call();
+    default:
+      return defaultHandler();
+  }
+
+  if (hapticLevel.isFull) {
+    unawaited(HapticFeedback.selectionClick());
+  }
+
+  return true;
 }
