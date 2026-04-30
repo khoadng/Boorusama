@@ -36,7 +36,7 @@
     "app_restart_request": "Cần khởi động lại ứng dụng để áp dụng thay đổi"
   },
   "reminder": {
-    "dont_show_again": "Đừng hiển thị lại"
+    "dont_show_again": "Đừng hiện lại"
   },
   "sort": {
     "sort_by": "Sắp xếp",
@@ -51,9 +51,9 @@
   },
   "profile": {
     "favorites": "Yêu thích",
-    "profile": "Hồ sơ",
+    "profile": "Nguồn",
     "copy_user_id": "Sao chép ID người dùng",
-    "fail_to_load_profile": "Không thể tải hồ sơ",
+    "fail_to_load_profile": "Không thể tải nguồn",
     "previous_names": "Tên trước đây",
     "tabs": {
       "info": "Thông tin",
@@ -112,49 +112,49 @@
   },
   "post": {
     "detail": {
-      "file_details": "Thông số ảnh",
-      "size": "Kích thước",
+      "file_details": "Chi tiết tệp",
+      "size": "Dung lượng",
       "resolution": "Độ phân giải",
       "rating": "Xếp loại",
-      "file_format": "Định dạng file",
+      "file_format": "Định dạng tệp",
       "duration": "Thời lượng",
       "uploader": "Người tải lên",
       "approver": "Người duyệt",
       "artist": "Họa sĩ",
       "share": {
-        "source": "Chia sẻ link nguồn",
-        "booru": "Chia sẻ link booru",
+        "source": "Chia sẻ đường dẫn nguồn",
+        "booru": "Chia sẻ đường dẫn Booru",
         "image": "Chia sẻ ảnh"
       },
       "show_original": "Xem bản gốc",
       "show_translated": "Xem bản dịch",
       "show_n_more": "Hiện thêm $n",
-      "show_less": "Hiện bớt",
+      "show_less": "Thu gọn",
       "login_required_notice": "Bạn cần đăng nhập để thực hiện tác vụ này",
       "open_wiki": "Mở wiki",
-      "add_to_favorites": "Thêm vào yêu thích",
-      "copy_and_open_saved_search": "Copy và mở saved search",
+      "add_to_favorites": "Thêm vào mục yêu thích",
+      "copy_and_open_saved_search": "Sao chép và mở tìm kiếm đã lưu",
       "score": {
         "one": "Điểm",
         "other": "Điểm"
       },
       "source_label": "Nguồn",
-      "related_posts": "Ảnh liên quan",
+      "related_posts": "Bài liên quan",
       "add_to_bookmark": "Thêm đánh dấu",
-      "remove_from_bookmark": "Xoá đánh dấu",
+      "remove_from_bookmark": "Xóa đánh dấu",
       "widgets": {
         "toolbar": "Thanh công cụ",
         "tags": "Thẻ",
         "info_panel": "Bảng thông tin",
-        "file_details": "Chi tiết file",
+        "file_details": "Chi tiết tệp",
         "pool": "Ảnh bộ",
         "artist_info": "Thông tin họa sĩ",
         "stats": "Thống kê",
         "comments": "Bình luận",
-        "artist_posts": "Ảnh của họa sĩ",
-        "related_posts": "Ảnh liên quan",
+        "artist_posts": "Bài của họa sĩ",
+        "related_posts": "Bài liên quan",
         "character_list": "Danh sách nhân vật",
-        "uploader_posts": "Ảnh của người tải lên",
+        "uploader_posts": "Bài của người tải lên",
         "source": "Nguồn"
       }
     },
@@ -182,13 +182,13 @@
     },
     "votes": {
       "user_list": {
-        "title": "Những ai đã bình chọn",
+        "title": "Người bình chọn",
         "disclaimer": "Bình chọn ẩn hoặc không thích sẽ không được hiển thị."
       }
     },
     "favorites": {
       "user_list": {
-        "title": "Những ai đã yêu thích",
+        "title": "Được yêu thích",
         "disclaimer": "Chỉ hiển thị các lượt yêu thích công khai."
       }
     },
@@ -209,9 +209,9 @@
       "hint": "Bình luận"
     },
     "list": {
-      "edit": "Sửa",
+      "edit": "Chỉnh sửa",
       "reply": "Trả lời",
-      "reply_to": "Gửi tới",
+      "reply_to": "Trả lời",
       "delete": "Xóa",
       "no_comments": "Không có bình luận",
       "last_updated": "Cập nhật lần cuối",
@@ -241,7 +241,7 @@
   "search": {
     "errors": {
       "tag_limit": "Số thẻ đã đạt mức tối đa. Nâng cấp tài khoản để có thể dùng nhiều thẻ hơn.",
-      "database_timeout": "Search bị hủy do tốn quá nhiều thời gian.",
+      "database_timeout": "Tìm kiếm bị hủy do tốn quá nhiều thời gian.",
       "rate_limited": "Bạn đã vượt giới hạn. Vui lòng thử lại sau",
       "pagination_limit": "Đã đạt đến giới hạn phân trang, không thể cuộn thêm.",
       "max_capacity": "Máy chủ đang quá tải và không thể xử lý thêm yêu cầu, vui lòng thử lại sau.",
@@ -254,7 +254,7 @@
       "failed_to_load_data": "Không tải được dữ liệu từ máy chủ, vui lòng thử lại sau",
       "certificate_error": "Lỗi chứng chỉ. Máy chủ có thể đang sử dụng chứng chỉ tự ký. Hãy thử dùng HTTP thay vì HTTPS, hoặc cài đặt chứng chỉ trên thiết bị của bạn."
     },
-    "hint": "Tìm...",
+    "hint": "Tìm kiếm...",
     "no_result": "Không tìm được kết quả phù hợp.",
     "metatags_notice": "Các thẻ truy vấn miễn phí không bị tính vào mức hạn tìm kiếm",
     "history": {
@@ -268,16 +268,16 @@
       "other": "$n Kết quả"
     },
     "no_result_notice": "Không có kết quả",
-    "search_in_progress_notice": "Đang tìm...",
+    "search_in_progress_notice": "Đang tìm kiếm...",
     "raw_query": "Truy vấn thô"
   },
   "pool": {
     "pool": "Ảnh bộ",
-    "pool_gallery": "Ảnh bộ",
+    "pool_gallery": "Thư viện ảnh bộ",
     "order": {
       "recent": "Gần đây",
       "new": "Mới",
-      "post_count": "Số lượng",
+      "post_count": "Số lượng bài",
       "name": "Tên"
     },
     "category": {
@@ -285,11 +285,11 @@
       "collection": "Bộ sưu tập"
     },
     "search": {
-      "hint": "Tìm ảnh"
+      "hint": "Tìm kiếm ảnh bộ"
     },
     "counter": {
-      "one": "Ảnh",
-      "other": "Ảnh"
+      "one": "Ảnh bộ",
+      "other": "Ảnh bộ"
     },
     "detail": {
       "last_updated": "Cập nhật lần cuối"
@@ -323,7 +323,7 @@
     "search": {
       "search": "Tìm kiếm",
       "auto_focus_search_bar": "Tự động bật bàn phím lên mỗi khi bấm vào thanh tìm kiếm",
-      "hide_bookmarked_posts_from_search_results": "Không hiện ảnh đã đánh dấu khi tìm kiếm",
+      "hide_bookmarked_posts_from_search_results": "Ẩn bài đã đánh dấu khỏi kết quả tìm kiếm",
       "search_bar": {
         "position": {
           "search_bar_position": "Vị trí thanh tìm kiếm",
@@ -353,7 +353,7 @@
     "image_grid": {
       "image_grid": "Lưới ảnh",
       "grid_size": {
-        "grid_size": "Cỡ ảnh",
+        "grid_size": "Cỡ lưới",
         "small": "Nhỏ",
         "medium": "Vừa",
         "large": "Lớn",
@@ -379,13 +379,13 @@
       "image_viewer": "Trình xem ảnh",
       "slideshow": "Trình chiếu",
       "slideshow_interval": "Thời gian chuyển ảnh",
-      "slideshow_video_behavior": "Cách trình chiếu xử lý veo",
-      "slideshow_video_behavior_explanation": "Thiết lập cách trình chiếu xử lý veo trong lúc chuyển tiếp",
+      "slideshow_video_behavior": "Chế độ phát veo khi trình chiếu",
+      "slideshow_video_behavior_explanation": "Thiết lập cách chuyển trang khi đang phát veo",
       "slideshow_video_behaviors": {
         "wait_for_completion": "Chờ phát xong",
         "wait_for_completion_description": "Chờ veo phát xong rồi mới chuyển sang trang tiếp theo",
         "fixed_interval": "Phát theo thời lượng cố định",
-        "fixed_interval_description": "Chuyển sang slide tiếp theo sau thời lượng cố định, dù video có đang phát hay không"
+        "fixed_interval_description": "Chuyển sang trang tiếp theo sau thời lượng cố định, dù veo có đang phát hay không"
       },
       "slideshow_mode": "Chế độ trình chiếu",
       "slideshow_modes": {
