@@ -48,31 +48,37 @@ class PostResult<T extends Post> extends Equatable {
   const PostResult({
     required this.posts,
     required this.total,
+    this.maxPage,
   });
 
-  PostResult.empty() : posts = <T>[], total = 0;
+  PostResult.empty() : posts = <T>[], total = 0, maxPage = null;
 
   PostResult<T> copyWith({
     List<T>? posts,
     int? Function()? total,
+    int? Function()? maxPage,
   }) => PostResult(
     posts: posts ?? this.posts,
     total: total != null ? total() : this.total,
+    maxPage: maxPage != null ? maxPage() : this.maxPage,
   );
 
   final List<T> posts;
   final int? total;
+  final int? maxPage;
 
   @override
-  List<Object?> get props => [posts, total];
+  List<Object?> get props => [posts, total, maxPage];
 }
 
 extension PostResultX<T extends Post> on List<T> {
   PostResult<T> toResult({
     int? total,
+    int? maxPage,
   }) => PostResult(
     posts: this,
     total: total,
+    maxPage: maxPage,
   );
 }
 

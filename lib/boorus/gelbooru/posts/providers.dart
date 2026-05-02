@@ -13,6 +13,8 @@ import '../tags/providers.dart';
 import 'parser.dart';
 import 'types.dart';
 
+const _gelbooruSearchDepthLimit = 40000;
+
 final gelbooruPostRepoProvider =
     Provider.family<PostRepository<GelbooruPost>, BooruConfigSearch>(
       (ref, config) {
@@ -44,26 +46,42 @@ extension GelbooruClientX on GelbooruClient {
     int page, {
     int? limit,
     PostFetchOptions? options,
-  }) =>
-      getPosts(
-        tags: tags,
-        page: page,
-        limit: limit,
-      ).then(
-        (value) => value.posts
-            .map(
-              (e) => gelbooruPostDtoToGelbooruPost(
-                e,
-                PostMetadata(
-                  page: page,
-                  search: tags.join(' '),
-                  limit: limit,
-                ),
-              ),
-            )
-            .toList()
-            .toResult(total: value.count),
-      );
+  }) async {
+    final maxPage = _gelbooruMaxAccessiblePage(limit);
+
+    if (maxPage != null && page > maxPage) {
+      return <GelbooruPost>[].toResult(maxPage: maxPage);
+    }
+
+    final value = await getPosts(
+      tags: tags,
+      page: page,
+      limit: limit,
+    );
+
+    return value.posts
+        .map(
+          (e) => gelbooruPostDtoToGelbooruPost(
+            e,
+            PostMetadata(
+              page: page,
+              search: tags.join(' '),
+              limit: limit,
+            ),
+          ),
+        )
+        .toList()
+        .toResult(
+          total: value.count,
+          maxPage: maxPage,
+        );
+  }
+}
+
+int? _gelbooruMaxAccessiblePage(int? limit) {
+  if (limit == null || limit <= 0) return null;
+
+  return (_gelbooruSearchDepthLimit - 1) ~/ limit;
 }
 
 final gelbooruUploaderQueryProvider =

@@ -90,6 +90,7 @@ class PostGridController<T extends Post> extends ChangeNotifier {
   int get total => _total;
 
   final ValueNotifier<int?> count = ValueNotifier(null);
+  final ValueNotifier<int?> maxPage = ValueNotifier(null);
   final ValueNotifier<bool> refreshingNotifier = ValueNotifier(false);
   final ValueNotifier<List<T>> itemsNotifier = ValueNotifier(const []);
   final ValueNotifier<int> pageNotifier = ValueNotifier(_kFirstPage);
@@ -276,6 +277,7 @@ class PostGridController<T extends Post> extends ChangeNotifier {
         (maintainPage || forcedPageMode) ? _page : _kFirstPage,
     };
     count.value = null;
+    maxPage.value = null;
     notifyListeners();
 
     final newItems = await (_pageMode == PageMode.infinite
@@ -291,6 +293,7 @@ class PostGridController<T extends Post> extends ChangeNotifier {
 
     _hasMore = newItems.posts.isNotEmpty;
     count.value = newItems.total;
+    maxPage.value = newItems.maxPage;
     _setRefreshing(false);
     _eventController.add(const PostControllerRefreshCompleted());
     notifyListeners();
@@ -323,6 +326,7 @@ class PostGridController<T extends Post> extends ChangeNotifier {
       }
       _loading = false;
       count.value = newItems.total;
+      maxPage.value = newItems.maxPage;
       notifyListeners();
     });
   }
@@ -346,6 +350,7 @@ class PostGridController<T extends Post> extends ChangeNotifier {
     }
     _setRefreshing(false);
     count.value = newItems.total;
+    maxPage.value = newItems.maxPage;
     notifyListeners();
   }
 
@@ -459,6 +464,7 @@ class PostGridController<T extends Post> extends ChangeNotifier {
 
     itemsNotifier.dispose();
     count.dispose();
+    maxPage.dispose();
     refreshingNotifier.dispose();
     pageNotifier.dispose();
     activeFilters.dispose();

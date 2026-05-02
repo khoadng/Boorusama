@@ -168,23 +168,37 @@ PaginationInfo calculatePaginationInfo({
   required int? itemPerPage,
   bool showLastPage = false,
   bool pageInput = true,
+  int? maxAccessiblePage,
   PaginationConfig config = const PaginationConfig(),
 }) {
   final totalPages = calculateTotalPage(totalResults, itemPerPage);
+  final accessibleTotalPages = _accessibleTotalPages(
+    totalPages: totalPages,
+    maxAccessiblePage: maxAccessiblePage,
+  );
+  final effectiveTotalResults = _effectiveTotalResults(
+    totalResults: totalResults,
+    itemPerPage: itemPerPage,
+    accessibleTotalPages: accessibleTotalPages,
+  );
+  final visibleLastPage = _visibleLastPage(
+    totalPages: totalPages,
+    accessibleTotalPages: accessibleTotalPages,
+  );
   var maxSelectablePage = config.getPageCount(maxWidth);
   late List<int> visiblePages;
 
   while (true) {
     visiblePages = generatePage(
       current: currentPage,
-      total: totalResults,
+      total: effectiveTotalResults,
       itemPerPage: itemPerPage,
       maxSelectablePage: maxSelectablePage,
     );
 
     if (_paginationWidth(
           pages: visiblePages,
-          totalPages: totalPages,
+          totalPages: visibleLastPage,
           showLastPage: showLastPage,
           pageInput: pageInput,
         ) <=
@@ -204,7 +218,7 @@ PaginationInfo calculatePaginationInfo({
       ? lastPage < visiblePages.length
       : false;
   final isSinglePage = visiblePages.length == 1 && visiblePages.first == 1;
-  final isLastPage = lastPage != null && lastPage == totalPages;
+  final isLastPage = lastPage != null && lastPage == accessibleTotalPages;
   final pageInputVisible = visiblePages.length > 1;
 
   return PaginationInfo(
@@ -215,6 +229,39 @@ PaginationInfo calculatePaginationInfo({
     isLastPage: isLastPage,
     pageInputVisible: pageInputVisible,
   );
+}
+
+int? _accessibleTotalPages({
+  required int? totalPages,
+  required int? maxAccessiblePage,
+}) {
+  if (totalPages == null) return maxAccessiblePage;
+  if (maxAccessiblePage == null) return totalPages;
+
+  return math.min(totalPages, maxAccessiblePage);
+}
+
+int? _effectiveTotalResults({
+  required int? totalResults,
+  required int? itemPerPage,
+  required int? accessibleTotalPages,
+}) {
+  if (totalResults == null ||
+      itemPerPage == null ||
+      accessibleTotalPages == null) {
+    return totalResults;
+  }
+
+  return math.min(totalResults, accessibleTotalPages * itemPerPage);
+}
+
+int? _visibleLastPage({
+  required int? totalPages,
+  required int? accessibleTotalPages,
+}) {
+  if (totalPages == null || accessibleTotalPages == null) return totalPages;
+
+  return totalPages <= accessibleTotalPages ? totalPages : null;
 }
 
 double _paginationWidth({
@@ -250,6 +297,7 @@ class PageSelector extends StatefulWidget {
     required this.onPageSelect,
     this.pageInput = true,
     this.showLastPage = false,
+    this.maxAccessiblePage,
     this.enableNextButton,
     this.enablePreviousButton,
   });
@@ -262,6 +310,7 @@ class PageSelector extends StatefulWidget {
   final void Function(int page) onPageSelect;
   final bool pageInput;
   final bool showLastPage;
+  final int? maxAccessiblePage;
   final ButtonEnableCallback? enableNextButton;
   final ButtonEnableCallback? enablePreviousButton;
 
@@ -276,6 +325,14 @@ class _PageSelectorState extends State<PageSelector> {
       widget.totalResults,
       widget.itemPerPage,
     );
+    final accessibleTotalPages = _accessibleTotalPages(
+      totalPages: totalPages,
+      maxAccessiblePage: widget.maxAccessiblePage,
+    );
+    final visibleLastPage = _visibleLastPage(
+      totalPages: totalPages,
+      accessibleTotalPages: accessibleTotalPages,
+    );
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -286,16 +343,17 @@ class _PageSelectorState extends State<PageSelector> {
           itemPerPage: widget.itemPerPage,
           showLastPage: widget.showLastPage,
           pageInput: widget.pageInput,
+          maxAccessiblePage: widget.maxAccessiblePage,
         );
 
         final showLastPageButton =
             widget.showLastPage &&
-            totalPages != null &&
-            !paginationInfo.pages.contains(totalPages);
+            visibleLastPage != null &&
+            !paginationInfo.pages.contains(visibleLastPage);
 
         final paginationContext = PaginationContext(
           currentPage: widget.currentPage,
-          totalPages: totalPages,
+          totalPages: accessibleTotalPages,
           info: paginationInfo,
         );
 
@@ -336,9 +394,9 @@ class _PageSelectorState extends State<PageSelector> {
               ),
             if (showLastPageButton)
               _PageButton(
-                page: totalPages,
+                page: visibleLastPage,
                 selected: false,
-                onTap: () => widget.onPageSelect(totalPages),
+                onTap: () => widget.onPageSelect(visibleLastPage),
               ),
             IconButton(
               onPressed: !enableNextButton ? null : widget.onNext,
@@ -360,10 +418,16 @@ class _PageSelectorState extends State<PageSelector> {
       widget.totalResults,
       widget.itemPerPage,
     );
+    final accessibleLastPage = _accessibleTotalPages(
+      totalPages: lastPage,
+      maxAccessiblePage: widget.maxAccessiblePage,
+    );
     final pageRaw = int.tryParse(value);
     // if the input is not a number or the page is out of range, clamp it to the last page
-    final page = pageRaw == null || (lastPage != null && pageRaw > lastPage)
-        ? lastPage
+    final page =
+        pageRaw == null ||
+            (accessibleLastPage != null && pageRaw > accessibleLastPage)
+        ? accessibleLastPage
         : pageRaw;
 
     if (page != null) {

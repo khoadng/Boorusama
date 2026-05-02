@@ -330,33 +330,37 @@ class _PageIndicator<T extends Post> extends ConsumerWidget {
     final postsPerPage = ref.watch(
       imageListingSettingsProvider.select((v) => v.postsPerPage),
     );
-
     return ValueListenableBuilder(
       valueListenable: controller.count,
       builder: (_, value, _) => ValueListenableBuilder(
-        valueListenable: controller.pageNotifier,
-        builder: (_, page, _) => PageSelector(
-          totalResults: value,
-          itemPerPage: postsPerPage,
-          currentPage: page,
-          enableNextButton: PaginationEnablers.notOnLastPage,
-          enablePreviousButton: PaginationEnablers.alwaysEnabled,
-          onPrevious: controller.hasPreviousPage()
-              ? () => _goToPreviousPage(
-                  controller,
-                  scrollController,
-                )
-              : null,
-          onNext: controller.hasNextPage()
-              ? () => _goToNextPage(
-                  controller,
-                  scrollController,
-                )
-              : null,
-          onPageSelect: (page) async {
-            await controller.jumpToPage(page);
-            scrollController.jumpTo(0);
-          },
+        valueListenable: controller.maxPage,
+        builder: (_, maxPage, _) => ValueListenableBuilder(
+          valueListenable: controller.pageNotifier,
+          builder: (_, page, _) => PageSelector(
+            totalResults: value,
+            itemPerPage: postsPerPage,
+            currentPage: page,
+            showLastPage: true,
+            maxAccessiblePage: maxPage,
+            enableNextButton: PaginationEnablers.notOnLastPage,
+            enablePreviousButton: PaginationEnablers.alwaysEnabled,
+            onPrevious: controller.hasPreviousPage()
+                ? () => _goToPreviousPage(
+                    controller,
+                    scrollController,
+                  )
+                : null,
+            onNext: controller.hasNextPage()
+                ? () => _goToNextPage(
+                    controller,
+                    scrollController,
+                  )
+                : null,
+            onPageSelect: (page) async {
+              await controller.jumpToPage(page);
+              scrollController.jumpTo(0);
+            },
+          ),
         ),
       ),
     );
