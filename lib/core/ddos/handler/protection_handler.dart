@@ -45,7 +45,16 @@ class HttpProtectionHandler {
           return existingHeaders;
         }
 
-        headers['cookie'] = cookies.cookieString;
+        final existingCookieKey = headers.keys.firstWhere(
+          (key) => key.toLowerCase() == 'cookie',
+          orElse: () => 'cookie',
+        );
+        final existingCookie = headers[existingCookieKey] ?? '';
+
+        headers[existingCookieKey] = CookieUtils.mergeCookieHeaders(
+          existingCookie,
+          cookies.cookieString,
+        );
         headers['user-agent'] = userAgent;
       }
 
