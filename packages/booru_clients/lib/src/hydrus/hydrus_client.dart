@@ -36,6 +36,24 @@ class HydrusClient {
     _kClientApiAccessKey: _dio.options.headers[_kClientApiAccessKey] as String,
   };
 
+  Future<AccessKeyVerificationDto> verifyAccessKey() async {
+    final response = await _dio.get('/verify_access_key');
+    final data = switch (response.data) {
+      final Map<String, dynamic> map => map,
+      final Map map => map.map((key, value) => MapEntry(key.toString(), value)),
+      final String text => switch (jsonDecode(text)) {
+        final Map<String, dynamic> map => map,
+        final Map map => map.map(
+          (key, value) => MapEntry(key.toString(), value),
+        ),
+        _ => throw const FormatException('Expected a JSON object response'),
+      },
+      _ => throw const FormatException('Expected a JSON object response'),
+    };
+
+    return AccessKeyVerificationDto.fromJson(data);
+  }
+
   // virtual session for each search, since hydrus doesn't use pagination
   final _sessions = <String, SearchSession>{};
 

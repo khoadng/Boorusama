@@ -48,7 +48,7 @@ class HydrusRepository extends BooruRepositoryDefault {
       baseUrl: config.url,
       apiKey: config.apiKey ?? '',
       dio: dio,
-    ).getFiles().then((value) => true);
+    ).verifyAccessKey().then((value) => value.canSearchFiles);
   }
 
   @override
