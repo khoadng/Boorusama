@@ -15,7 +15,6 @@ import '../../../../configs/config/types.dart';
 import '../../../../ddos/handler/providers.dart';
 import '../../../../http/client/types.dart';
 import '../../../../posts/post/types.dart';
-import '../../../../posts/sources/types.dart';
 import '../../../../router.dart';
 import '../../../../settings/types.dart';
 import '../../../filename/types.dart';
@@ -30,7 +29,9 @@ final downloadNotifierProvider =
     );
 
 typedef DownloadNotifierParams = ({
+  BooruConfigAuth auth,
   BooruConfigDownload download,
+  String? profileIconUrl,
   DownloadFileUrlExtractor downloadFileUrlExtractor,
   DownloadFilenameGenerator? filenameBuilder,
   DownloadObserver? observer,
@@ -214,7 +215,8 @@ Future<DownloadTaskInfo?> _download(
         metadata: DownloaderMetadata(
           thumbnailUrl: downloadable.thumbnailImageUrl,
           fileSize: downloadable.fileSize,
-          siteUrl: PostSource.from(downloadable.thumbnailImageUrl).url,
+          siteUrl: params.auth.url,
+          profileIconUrl: params.profileIconUrl,
           group: group,
           isVideo: downloadable.isVideo,
         ),

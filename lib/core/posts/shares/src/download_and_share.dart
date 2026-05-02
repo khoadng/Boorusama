@@ -54,7 +54,9 @@ final _downloadProvider =
       return ref
           .watch(
             downloadNotifierProvider((
+              auth: auth,
               download: download,
+              profileIconUrl: null,
               downloadFileUrlExtractor: ref.watch(
                 downloadFileUrlExtractorProvider(auth),
               ),

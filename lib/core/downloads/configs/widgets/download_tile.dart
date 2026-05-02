@@ -26,6 +26,7 @@ class DownloadTileBuilder extends StatelessWidget {
     this.thumbnailUrl,
     this.onCancel,
     this.siteUrl,
+    this.customIconUrl,
     this.onLongPress,
     this.onTap,
   });
@@ -38,6 +39,7 @@ class DownloadTileBuilder extends StatelessWidget {
   final Widget Function(String)? builder;
   final void Function()? onCancel;
   final String? siteUrl;
+  final String? customIconUrl;
   final void Function()? onLongPress;
   final VoidCallback? onTap;
 
@@ -108,6 +110,7 @@ class DownloadTileBuilder extends StatelessWidget {
                           url: siteUrl,
                           width: 18,
                           height: 18,
+                          customIconUrl: customIconUrl,
                         ),
                       Expanded(
                         child: Padding(

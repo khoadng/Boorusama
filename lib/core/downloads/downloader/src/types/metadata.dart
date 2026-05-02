@@ -11,6 +11,7 @@ class DownloaderMetadata extends Equatable {
     required this.fileSize,
     required this.siteUrl,
     required this.group,
+    this.profileIconUrl,
     this.isVideo = false,
   });
 
@@ -20,6 +21,7 @@ class DownloaderMetadata extends Equatable {
       fileSize: json['fileSize'],
       siteUrl: json['siteUrl'],
       group: json['group'],
+      profileIconUrl: json['profileIconUrl'],
       isVideo: json['isVideo'] ?? false,
     );
   }
@@ -35,6 +37,7 @@ class DownloaderMetadata extends Equatable {
   final int? fileSize;
   final String? siteUrl;
   final String? group;
+  final String? profileIconUrl;
   final bool isVideo;
 
   static const empty = DownloaderMetadata(
@@ -50,6 +53,7 @@ class DownloaderMetadata extends Equatable {
       'fileSize': fileSize,
       'siteUrl': siteUrl,
       'group': group,
+      'profileIconUrl': profileIconUrl,
       'isVideo': isVideo,
     };
   }
@@ -64,6 +68,7 @@ class DownloaderMetadata extends Equatable {
     fileSize,
     siteUrl,
     group,
+    profileIconUrl,
     isVideo,
   ];
 }

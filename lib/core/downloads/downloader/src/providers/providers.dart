@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../../foundation/loggers.dart';
 import '../../../../analytics/providers.dart';
 import '../../../../configs/config/types.dart';
+import '../../../../configs/manage/providers.dart';
 import '../../../../http/client/providers.dart';
 import '../../../../settings/providers.dart';
 import '../../../filename/providers.dart';
@@ -20,7 +21,13 @@ final downloadNotifierParamsProvider =
       (ref, params) {
         final (auth, download) = params;
         return (
+          auth: auth,
           download: download,
+          profileIconUrl: ref.watch(
+            currentReadOnlyBooruConfigProvider.select(
+              (value) => value.profileIcon?.url,
+            ),
+          ),
           downloadFileUrlExtractor: ref.watch(
             downloadFileUrlExtractorProvider(auth),
           ),

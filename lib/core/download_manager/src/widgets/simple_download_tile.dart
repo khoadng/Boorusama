@@ -57,6 +57,7 @@ class SimpleDownloadTile extends ConsumerWidget {
       url: task.task.url,
       thumbnailUrl: metadata.thumbnailUrl,
       siteUrl: metadata.siteUrl,
+      customIconUrl: metadata.profileIconUrl,
       fileSize: task.fileSize,
       networkSpeed: switch (task) {
         TaskStatusUpdate _ => null,
