@@ -15,6 +15,8 @@ import '../../../../configs/gesture/types.dart';
 import '../../../../videos/player/widgets.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../details_pageview/widgets.dart';
+import '../../../listing/providers.dart';
+import '../../../listing/types.dart';
 import '../../../post/types.dart';
 import '../providers/note_overlay_provider.dart';
 import 'play_pause_animation_overlay.dart';
@@ -103,6 +105,9 @@ class _PostDetailsItemState<T extends Post>
     }
 
     final initialThumbnailUrl = widget.detailsController.initialThumbnailUrl;
+    final initialPlaceholderMedia = initialThumbnailUrl != null
+        ? _initialPlaceholderMedia(post, initialThumbnailUrl)
+        : null;
 
     return ValueListenableBuilder(
       valueListenable: pageViewController.sheetState,
@@ -166,9 +171,9 @@ class _PostDetailsItemState<T extends Post>
                         videoAspectRatioBuilder: widget.videoAspectRatioBuilder,
                         imageCacheManager: widget.imageCacheManager,
                         // This is used to make sure we have a thumbnail to show instead of a black placeholder
-                        thumbnailUrlBuilder:
+                        placeholderMediaBuilder:
                             isInitPage && initialThumbnailUrl != null
-                            ? (_) => initialThumbnailUrl
+                            ? (_) => initialPlaceholderMedia!
                             : null,
                         controller: pageViewController,
                         isPageSettled: isPageSettled,
@@ -225,6 +230,27 @@ class _PostDetailsItemState<T extends Post>
           ),
         ),
       ),
+    );
+  }
+
+  GridThumbnailMedia _initialPlaceholderMedia(
+    T post,
+    String initialThumbnailUrl,
+  ) {
+    final generator = ref.watch(
+      gridThumbnailUrlGeneratorProvider(widget.authConfig),
+    );
+    final settings = ref.watch(
+      gridThumbnailSettingsProvider(widget.authConfig),
+    );
+    final media = generator.resolve(post, settings: settings);
+
+    return GridThumbnailMedia(
+      url: initialThumbnailUrl,
+      aspectRatio: media.aspectRatio,
+      placeholderUrl: media.placeholderUrl,
+      placeholderAspectRatio: media.placeholderAspectRatio,
+      placeholderFit: media.placeholderFit,
     );
   }
 }

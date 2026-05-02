@@ -14,15 +14,19 @@ import '../../../../notes/note/types.dart';
 import '../../../../notes/note/widgets.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../listing/providers.dart';
+import '../../../listing/types.dart';
 import '../../../post/types.dart';
 import '../providers/note_overlay_provider.dart';
+
+typedef PostDetailsPlaceholderMediaBuilder<T extends Post> =
+    GridThumbnailMedia Function(T post);
 
 class PostDetailsImage<T extends Post> extends StatelessWidget {
   const PostDetailsImage({
     required this.config,
     required this.imageUrlBuilder,
     required this.mediaAspectRatioBuilder,
-    required this.thumbnailUrlBuilder,
+    required this.placeholderMediaBuilder,
     required this.post,
     super.key,
     this.heroTag,
@@ -33,7 +37,7 @@ class PostDetailsImage<T extends Post> extends StatelessWidget {
   final String? heroTag;
   final String Function(T post)? imageUrlBuilder;
   final double? Function(T post)? mediaAspectRatioBuilder;
-  final String Function(T post)? thumbnailUrlBuilder;
+  final PostDetailsPlaceholderMediaBuilder<T>? placeholderMediaBuilder;
   final ImageCacheManager? imageCacheManager;
   final T post;
 
@@ -54,7 +58,7 @@ class PostDetailsImage<T extends Post> extends StatelessWidget {
                     heroTag: heroTag,
                     imageUrlBuilder: imageUrlBuilder,
                     mediaAspectRatioBuilder: mediaAspectRatioBuilder,
-                    thumbnailUrlBuilder: thumbnailUrlBuilder,
+                    placeholderMediaBuilder: placeholderMediaBuilder,
                     imageCacheManager: imageCacheManager,
                   ),
                   ..._buildNotes(ref),
@@ -68,7 +72,7 @@ class PostDetailsImage<T extends Post> extends StatelessWidget {
             heroTag: heroTag,
             imageUrlBuilder: imageUrlBuilder,
             mediaAspectRatioBuilder: mediaAspectRatioBuilder,
-            thumbnailUrlBuilder: thumbnailUrlBuilder,
+            placeholderMediaBuilder: placeholderMediaBuilder,
             imageCacheManager: imageCacheManager,
           );
   }
@@ -111,7 +115,7 @@ class RawPostDetailsImage<T extends Post> extends ConsumerWidget {
     this.heroTag,
     this.imageUrlBuilder,
     this.mediaAspectRatioBuilder,
-    this.thumbnailUrlBuilder,
+    this.placeholderMediaBuilder,
     this.imageCacheManager,
     this.fit,
   });
@@ -120,7 +124,7 @@ class RawPostDetailsImage<T extends Post> extends ConsumerWidget {
   final String? heroTag;
   final String Function(T post)? imageUrlBuilder;
   final double? Function(T post)? mediaAspectRatioBuilder;
-  final String Function(T post)? thumbnailUrlBuilder;
+  final PostDetailsPlaceholderMediaBuilder<T>? placeholderMediaBuilder;
   final ImageCacheManager? imageCacheManager;
   final T post;
   final BoxFit? fit;
@@ -153,18 +157,22 @@ class RawPostDetailsImage<T extends Post> extends ConsumerWidget {
       post,
       settings: gridThumbnailSettings,
     );
-    final placeholderImageUrl = thumbnailUrlBuilder != null
-        ? thumbnailUrlBuilder!(post)
-        : gridMedia.url;
-    final placeholderAspectRatio = thumbnailUrlBuilder != null
-        ? aspectRatio
-        : gridMedia.aspectRatio;
+    final placeholderMedia = placeholderMediaBuilder?.call(post) ?? gridMedia;
+    final usesPrimaryPlaceholderUrl = placeholderMedia.url.isNotEmpty;
+    final placeholderImageUrl = usesPrimaryPlaceholderUrl
+        ? placeholderMedia.url
+        : placeholderMedia.placeholderUrl;
+    final placeholderAspectRatio = usesPrimaryPlaceholderUrl
+        ? placeholderMedia.aspectRatio
+        : placeholderMedia.placeholderAspectRatio ??
+              placeholderMedia.aspectRatio;
 
     final image = BooruImage(
       config: config,
       imageUrl: imageUrl,
       placeholderUrl: placeholderImageUrl,
       placeholderAspectRatio: placeholderAspectRatio,
+      placeholderFit: placeholderMedia.placeholderFit,
       aspectRatio: aspectRatio,
       forceCover: aspectRatio != null,
       imageHeight: post.height,

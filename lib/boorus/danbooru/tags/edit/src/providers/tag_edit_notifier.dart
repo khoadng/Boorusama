@@ -6,6 +6,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import '../../../../../../core/posts/listing/types.dart';
 import '../../../../../../core/posts/rating/types.dart';
 import '../../../../posts/post/types.dart';
 import '../tag_edit_state.dart';
@@ -64,7 +65,7 @@ class TagEditParams extends Equatable {
     required this.postId,
     required this.imageAspectRatio,
     required this.imageUrl,
-    required this.placeholderUrl,
+    required this.placeholderMedia,
     required this.initialRating,
     required this.post,
   });
@@ -73,7 +74,7 @@ class TagEditParams extends Equatable {
   final int postId;
   final double imageAspectRatio;
   final String imageUrl;
-  final String placeholderUrl;
+  final GridThumbnailMedia placeholderMedia;
   final Rating? initialRating;
   final DanbooruPost post;
 
@@ -83,7 +84,7 @@ class TagEditParams extends Equatable {
     postId,
     imageAspectRatio,
     imageUrl,
-    placeholderUrl,
+    placeholderMedia,
     initialRating,
     post,
   ];

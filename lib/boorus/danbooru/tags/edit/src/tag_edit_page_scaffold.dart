@@ -210,7 +210,7 @@ class _Image extends ConsumerWidget {
         post: params.post,
         config: ref.watchConfigAuth,
         imageUrlBuilder: (_) => params.imageUrl,
-        thumbnailUrlBuilder: (_) => params.placeholderUrl,
+        placeholderMediaBuilder: (_) => params.placeholderMedia,
         imageCacheManager: ref.watch(
           defaultImageCacheManagerProvider,
         ),

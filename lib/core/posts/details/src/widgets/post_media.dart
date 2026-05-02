@@ -29,7 +29,7 @@ class PostMedia<T extends Post> extends ConsumerWidget {
     required this.imageUrlBuilder,
     required this.mediaAspectRatioBuilder,
     required this.videoAspectRatioBuilder,
-    required this.thumbnailUrlBuilder,
+    required this.placeholderMediaBuilder,
     required this.controller,
     required this.imageCacheManager,
     super.key,
@@ -43,7 +43,7 @@ class PostMedia<T extends Post> extends ConsumerWidget {
   final String Function(T post)? imageUrlBuilder;
   final double? Function(T post)? mediaAspectRatioBuilder;
   final double? Function(T post)? videoAspectRatioBuilder;
-  final String Function(T post)? thumbnailUrlBuilder;
+  final PostDetailsPlaceholderMediaBuilder<T>? placeholderMediaBuilder;
   final ImageCacheManager? imageCacheManager;
   final bool isPageSettled;
 
@@ -117,7 +117,7 @@ class PostMedia<T extends Post> extends ConsumerWidget {
             heroTag: heroTag,
             imageUrlBuilder: imageUrlBuilder,
             mediaAspectRatioBuilder: mediaAspectRatioBuilder,
-            thumbnailUrlBuilder: thumbnailUrlBuilder,
+            placeholderMediaBuilder: placeholderMediaBuilder,
             imageCacheManager: imageCacheManager,
             post: post,
             config: config,

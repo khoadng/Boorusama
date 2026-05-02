@@ -69,7 +69,7 @@ class _DanbooruTagEditPageState extends ConsumerState<DanbooruTagEditPage> {
         postId: widget.post.id,
         imageAspectRatio: widget.post.aspectRatio ?? 1,
         imageUrl: mediaResolver.resolveMediaUrl(widget.post, viewer),
-        placeholderUrl: placeholderMedia.url,
+        placeholderMedia: placeholderMedia,
         initialRating: initialRating,
         post: widget.post,
       ),

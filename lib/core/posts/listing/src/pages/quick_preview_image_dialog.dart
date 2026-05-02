@@ -58,7 +58,7 @@ class QuickPreviewImageDialog extends ConsumerWidget {
                   mediaAspectRatioBuilder: (post) => post.isVideo
                       ? post.effectiveVideoThumbnailAspectRatio
                       : post.effectiveSampleAspectRatio,
-                  thumbnailUrlBuilder: (post) => placeholderMedia.url,
+                  placeholderMediaBuilder: (_) => placeholderMedia,
                   imageCacheManager: ref.watch(
                     defaultImageCacheManagerProvider,
                   ),
