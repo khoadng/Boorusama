@@ -55,9 +55,7 @@ EshuushuuPost postDtoToPost(
     hasComment: hasComments,
     isTranslated: false,
     hasParentOrChildren: false,
-    source: PostSource.from(
-      sourceTags.isNotEmpty ? sourceTags.join(', ') : null,
-    ),
+    source: PostSource.from(_extractSource(e.miscmeta)),
     score: e.favorites ?? 0,
     duration: kNoduration,
     fileSize: e.filesize ?? 0,
@@ -85,4 +83,10 @@ EshuushuuPost postDtoToPost(
 
 String _normalizeTag(String tag) {
   return tag.toLowerCase().replaceAll('_', ' ').trim();
+}
+
+String? _extractSource(String? source) {
+  if (source == null || source.isEmpty) return null;
+
+  return RegExp(r'https?:\/\/\S+').firstMatch(source)?.group(0) ?? source;
 }
