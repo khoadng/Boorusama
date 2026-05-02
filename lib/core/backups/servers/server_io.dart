@@ -43,7 +43,7 @@ final dataSyncServerProvider = Provider<AppServerInterface>((ref) {
       connectedToWifiProvider,
       (previous, next) {
         if (next != previous) {
-          if (next) {
+          if (!next) {
             server.dispose();
           }
         }
@@ -103,7 +103,7 @@ class AppServer implements AppServerInterface {
       final server =
           await serve(
             handler,
-            address,
+            InternetAddress.anyIPv4,
             0,
           ).timeout(
             _config.requestTimeout,
@@ -117,7 +117,7 @@ class AppServer implements AppServerInterface {
 
       _server = server;
       _serverInfo = ServerInfo(
-        host: server.address.host,
+        host: address,
         port: server.port,
       );
       _isRunning = true;
@@ -137,7 +137,8 @@ class AppServer implements AppServerInterface {
     const maxRetries = 3;
 
     final server = _server;
-    if (server == null || !_isRunning) return;
+    final serverInfo = _serverInfo;
+    if (server == null || serverInfo == null || !_isRunning) return;
 
     while (retries < maxRetries) {
       try {
@@ -148,7 +149,7 @@ class AppServer implements AppServerInterface {
           attributes: {
             'server': 'boorusama',
             'version': _config.appVersion,
-            'ip': server.address.host,
+            'ip': serverInfo.host,
             'port': server.port.toString(),
           },
         );

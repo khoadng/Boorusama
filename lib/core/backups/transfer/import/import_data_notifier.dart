@@ -39,8 +39,8 @@ final importDataProvider = NotifierProvider.autoDispose
       ImportDataNotifier.new,
     );
 
-final serverCheckProvider =
-    NotifierProvider.autoDispose<ServerCheckNotifier, ServerCheckStatus>(
+final serverCheckProvider = NotifierProvider.autoDispose
+    .family<ServerCheckNotifier, ServerCheckStatus, String>(
       ServerCheckNotifier.new,
     );
 
@@ -51,13 +51,14 @@ enum ServerCheckStatus {
   unavailable,
 }
 
-class ServerCheckNotifier extends AutoDisposeNotifier<ServerCheckStatus> {
+class ServerCheckNotifier
+    extends AutoDisposeFamilyNotifier<ServerCheckStatus, String> {
   @override
-  ServerCheckStatus build() {
+  ServerCheckStatus build(String arg) {
     return ServerCheckStatus.initial;
   }
 
-  Future<void> check(String address) async {
+  Future<void> check() async {
     state = ServerCheckStatus.checking;
 
     final startTime = DateTime.now();
@@ -65,11 +66,13 @@ class ServerCheckNotifier extends AutoDisposeNotifier<ServerCheckStatus> {
     try {
       final dio = Dio(
         BaseOptions(
-          baseUrl: address,
+          baseUrl: arg,
+          connectTimeout: const Duration(seconds: 10),
+          receiveTimeout: const Duration(seconds: 10),
         ),
       );
 
-      final res = await dio.get('/health').timeout(const Duration(seconds: 10));
+      final res = await dio.get('/health');
       final elapsed = DateTime.now().difference(startTime).inMilliseconds;
 
       // Artificial delay to make sure things don't fly by too fast

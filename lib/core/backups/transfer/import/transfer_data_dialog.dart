@@ -346,10 +346,10 @@ class SelectDataStep extends ConsumerWidget {
     final state = ref.watch(importDataProvider(url));
     final options = state.tasks;
     final notifier = ref.watch(importDataProvider(url).notifier);
-    final serverCheckNotifier = ref.watch(serverCheckProvider.notifier);
-    final serverCheckStatus = ref.watch(serverCheckProvider);
+    final serverCheckNotifier = ref.watch(serverCheckProvider(url).notifier);
+    final serverCheckStatus = ref.watch(serverCheckProvider(url));
 
-    ref.listen(serverCheckProvider, (prev, next) {
+    ref.listen(serverCheckProvider(url), (prev, next) {
       if (prev == ServerCheckStatus.checking &&
           next == ServerCheckStatus.available) {
         notifier.startImport();
@@ -402,10 +402,13 @@ class SelectDataStep extends ConsumerWidget {
           onPressed: state.atLeastOneSelected
               ? switch (serverCheckStatus) {
                   ServerCheckStatus.initial => () {
-                    serverCheckNotifier.check(url);
+                    serverCheckNotifier.check();
                   },
                   ServerCheckStatus.available => () {
                     notifier.startImport();
+                  },
+                  ServerCheckStatus.unavailable => () {
+                    serverCheckNotifier.check();
                   },
                   _ => null,
                 }
@@ -419,7 +422,7 @@ class SelectDataStep extends ConsumerWidget {
                 ServerCheckStatus.available =>
                   context.t.settings.backup_and_restore.import,
                 ServerCheckStatus.checking => 'Verifying...',
-                ServerCheckStatus.unavailable => 'Unavailable',
+                ServerCheckStatus.unavailable => context.t.generic.action.retry,
               },
               style: const TextStyle(
                 fontWeight: FontWeight.w600,

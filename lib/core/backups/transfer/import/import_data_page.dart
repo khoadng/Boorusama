@@ -123,11 +123,7 @@ class _ImportDataPageState extends ConsumerState<ImportDataPage> {
                   final appVersion = Version.tryParse(
                     service.attributes['version'] ?? '',
                   );
-                  final url = Uri(
-                    scheme: 'http',
-                    host: service.host,
-                    port: service.port,
-                  );
+                  final url = service.url;
 
                   return Container(
                     padding: const EdgeInsets.symmetric(
@@ -200,7 +196,7 @@ class _ImportDataPageState extends ConsumerState<ImportDataPage> {
                           if (context.mounted) {
                             await showTransferOptionsDialog(
                               context,
-                              url: url.toString(),
+                              url: url,
                             );
                           }
                         },

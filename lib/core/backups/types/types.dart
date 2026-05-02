@@ -63,7 +63,22 @@ class DiscoveredService {
   final int port;
   final Map<String, String> attributes;
 
-  String get url => 'http://$host:$port';
+  String get resolvedHost {
+    final advertisedIp = attributes['ip'];
+
+    return advertisedIp != null && _isUsableHost(advertisedIp)
+        ? advertisedIp
+        : host;
+  }
+
+  String get url => Uri(
+    scheme: 'http',
+    host: resolvedHost,
+    port: port,
+  ).toString();
+
+  static bool _isUsableHost(String host) =>
+      host.isNotEmpty && host != '0.0.0.0' && host != '::';
 }
 
 abstract class DiscoveryClientInterface {

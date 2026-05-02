@@ -47,6 +47,12 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
+	<key>NSBonjourServices</key>
+	<array>
+		<string>_boorusama._tcp</string>
+	</array>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>$(PRODUCT_NAME) needs local network access to transfer data between your devices.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>$(PRODUCT_NAME) needs permission to access photos on your device</string>
 	<key>NSPhotoLibraryUsageDescription</key>
