@@ -39,9 +39,8 @@ final useGraphQLClientProvider = FutureProvider.family<bool, BooruConfigAuth>(
     );
 
     return switch (extensionsState) {
-      final Shimmie2ExtensionsData data => data.hasExtension(
-        KnownExtension.graphql,
-      ),
+      final Shimmie2ExtensionsData data =>
+        !data.isPartial && data.hasExtension(KnownExtension.graphql),
       _ => false,
     };
   },

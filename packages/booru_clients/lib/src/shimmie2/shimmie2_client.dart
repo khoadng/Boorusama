@@ -1,7 +1,9 @@
 // Dart imports:
 import 'dart:async';
+import 'dart:convert';
 
 // Package imports:
+import 'package:coreutils/coreutils.dart';
 import 'package:dio/dio.dart';
 import 'package:xml/xml.dart';
 
@@ -309,19 +311,26 @@ class Shimmie2Client {
   }
 
   Future<ExtensionsResult> getExtensions() async {
+    final internalResult = await _getInternalExtensions();
+    if (internalResult case ExtensionsSuccess()) return internalResult;
+
+    return _getLegacyExtensions();
+  }
+
+  Future<ExtensionsResult> _getLegacyExtensions() async {
     try {
       final response = await _dio.get(
         '/ext_doc',
         queryParameters: _authParams,
       );
 
-      return ExtensionDto.parseFromHtml(
+      final result = ExtensionDto.parseFromHtml(
         response.data,
         baseUrl: _dio.options.baseUrl,
       );
+
+      return result;
     } on DioException catch (e) {
-      // If the endpoint doesn't exist (404) or access is denied (403),
-      // the instance doesn't support extension listing
       if (e.response?.statusCode == 404 || e.response?.statusCode == 403) {
         return ExtensionsNotSupported();
       }
@@ -330,6 +339,40 @@ class Shimmie2Client {
       return ExtensionsNotSupported();
     }
   }
+
+  Future<ExtensionsResult> _getInternalExtensions() async {
+    try {
+      final response = await _dio.get(
+        '/api/internal/extensions',
+        queryParameters: _authParams,
+      );
+
+      return ExtensionDto.parseFromInternalJson(
+        _decodeJsonData(response.data),
+        version: _parseShimmieVersionFromHeaders(response.headers),
+      );
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 404 || e.response?.statusCode == 403) {
+        return ExtensionsNotSupported();
+      }
+      rethrow;
+    } catch (_) {
+      return ExtensionsNotSupported();
+    }
+  }
+}
+
+dynamic _decodeJsonData(dynamic data) => switch (data) {
+  final String s => jsonDecode(s),
+  _ => data,
+};
+
+Version? _parseShimmieVersionFromHeaders(Headers headers) {
+  final poweredBy = headers.value('x-powered-by');
+  if (poweredBy == null) return null;
+
+  final version = RegExp(r'Shimmie-(\d+\.\d+\.\d+)').firstMatch(poweredBy);
+  return Version.tryParse(version?.group(1));
 }
 
 FutureOr<List<PostDto>> _parsePosts(

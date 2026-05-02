@@ -3,6 +3,11 @@ import 'package:coreutils/coreutils.dart';
 import 'package:html/dom.dart';
 import 'package:html/parser.dart' as html_parser;
 
+enum ExtensionDiscoverySource {
+  legacyHtml,
+  internalJson,
+}
+
 class ExtensionDto {
   ExtensionDto({
     required this.name,
@@ -79,6 +84,30 @@ class ExtensionDto {
       return ExtensionsSuccess(
         extensions: extensions,
         version: _parseShimmieVersion(document),
+        source: ExtensionDiscoverySource.legacyHtml,
+      );
+    } catch (_) {
+      return ExtensionsNotSupported();
+    }
+  }
+
+  static ExtensionsResult parseFromInternalJson(
+    dynamic data, {
+    Version? version,
+  }) {
+    try {
+      final keys = switch (data) {
+        final List list => list.whereType<String>(),
+        _ => const Iterable<String>.empty(),
+      };
+
+      final extensions = keys.map(_fromInternalKey);
+
+      return ExtensionsSuccess(
+        extensions: extensions.toList(),
+        version: version,
+        source: ExtensionDiscoverySource.internalJson,
+        isPartial: true,
       );
     } catch (_) {
       return ExtensionsNotSupported();
@@ -93,6 +122,39 @@ class ExtensionDto {
   @override
   String toString() => '$category - $name: $description';
 }
+
+ExtensionDto _fromInternalKey(String key) => switch (key) {
+  'danbooru_api' => ExtensionDto(
+    name: 'Danbooru Client API',
+    description: '',
+    category: 'Integration',
+  ),
+  'graphql' => ExtensionDto(
+    name: 'GraphQL',
+    description: '',
+    category: 'Integration',
+  ),
+  'bulk_actions' => ExtensionDto(
+    name: 'Bulk Actions',
+    description: '',
+    category: 'General',
+  ),
+  'user_api_keys' => ExtensionDto(
+    name: 'User API Key',
+    description: '',
+    category: 'General',
+  ),
+  'favorites' => ExtensionDto(
+    name: 'Favorites',
+    description: '',
+    category: 'General',
+  ),
+  _ => ExtensionDto(
+    name: key,
+    description: '',
+    category: 'Unknown',
+  ),
+};
 
 String? _resolveDocLink(String? docLink, String? baseUrl) =>
     switch ((docLink, baseUrl)) {
@@ -122,10 +184,14 @@ class ExtensionsSuccess extends ExtensionsResult {
   ExtensionsSuccess({
     required this.extensions,
     this.version,
+    this.source = ExtensionDiscoverySource.legacyHtml,
+    this.isPartial = false,
   });
 
   final List<ExtensionDto> extensions;
   final Version? version;
+  final ExtensionDiscoverySource source;
+  final bool isPartial;
 }
 
 class ExtensionsNotSupported extends ExtensionsResult {}

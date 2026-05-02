@@ -98,17 +98,23 @@ class Shimmie2ExtensionsNotifier
     final result = await shimmie2Client.getExtensions();
 
     return switch (result) {
-      ExtensionsSuccess(:final extensions, :final version) => () {
-        final extensionsList = extensions.map(extensionDtoToExtension).toList();
-        final now = DateTime.now();
-        cache.set(cacheKey, extensionsList);
-        cache.setTimestamp(cacheKey, now);
-        return Shimmie2ExtensionsData(
-          extensions: extensionsList,
-          version: version,
-          lastUpdateTimestamp: now,
-        );
-      }(),
+      ExtensionsSuccess(:final extensions, :final version, :final isPartial) =>
+        () {
+          final extensionsList = extensions
+              .map(extensionDtoToExtension)
+              .toList();
+          final now = DateTime.now();
+          if (!isPartial) {
+            cache.set(cacheKey, extensionsList);
+            cache.setTimestamp(cacheKey, now);
+          }
+          return Shimmie2ExtensionsData(
+            extensions: extensionsList,
+            version: version,
+            isPartial: isPartial,
+            lastUpdateTimestamp: now,
+          );
+        }(),
       ExtensionsNotSupported() => const Shimmie2ExtensionsNotSupported(),
     };
   }
@@ -149,6 +155,7 @@ class Shimmie2ExtensionsData extends Shimmie2ExtensionsState {
   const Shimmie2ExtensionsData({
     required this.extensions,
     this.version,
+    this.isPartial = false,
     this.lastUpdateTimestamp,
   });
 
@@ -157,6 +164,7 @@ class Shimmie2ExtensionsData extends Shimmie2ExtensionsState {
 
   final List<Extension> extensions;
   final Version? version;
+  final bool isPartial;
   final DateTime? lastUpdateTimestamp;
 
   bool hasExtension(KnownExtension extension) =>
@@ -180,6 +188,7 @@ class Shimmie2ExtensionsData extends Shimmie2ExtensionsState {
   List<Object?> get props => [
     extensions,
     version,
+    isPartial,
     lastUpdateTimestamp,
   ];
 }
