@@ -39,7 +39,7 @@ AnimePicturesPost dtoToAnimePicturesPost(
     videoUrl: e.bigPreview ?? '',
     width: e.width?.toDouble() ?? 0,
     createdAt: e.pubtime != null ? DateTime.tryParse(e.pubtime!) : null,
-    uploaderId: null,
+    uploaderId: e.juserId,
     uploaderName: null,
     metadata: metadata,
     tagsCount: e.tagsCount ?? 0,

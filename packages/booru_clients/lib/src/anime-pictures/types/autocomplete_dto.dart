@@ -1,4 +1,5 @@
 // Project imports:
+import 'json_parsing.dart';
 import 'types.dart';
 
 class AutocompleteDto {
@@ -10,8 +11,8 @@ class AutocompleteDto {
   });
 
   factory AutocompleteDto.fromJson(Map<String, dynamic> json) {
-    final tag = json['t'] as String?;
-    final tag2 = json['t2'] as String?;
+    final tag = stringFromJson(json['t']);
+    final tag2 = stringFromJson(json['t2']);
     final cleanTag = stripBoldHtmlTags(tag);
     final cleanTag2 = stripBoldHtmlTags(tag2);
 
@@ -19,7 +20,7 @@ class AutocompleteDto {
       t: cleanTag,
       t2: cleanTag2,
       c: tagTypeFromInt(json['c']),
-      id: json['id'],
+      id: intFromJson(json['id']),
     );
   }
 

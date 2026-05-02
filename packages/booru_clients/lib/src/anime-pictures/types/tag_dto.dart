@@ -1,3 +1,6 @@
+// Project imports:
+import 'json_parsing.dart';
+
 enum AnimePicturesTagType {
   unknown,
   character,
@@ -9,17 +12,18 @@ enum AnimePicturesTagType {
   object,
 }
 
-AnimePicturesTagType? tagTypeFromInt(dynamic type) => switch (type) {
-  0 => AnimePicturesTagType.unknown,
-  1 => AnimePicturesTagType.character,
-  2 => AnimePicturesTagType.reference,
-  3 => AnimePicturesTagType.copyrightProduct,
-  4 => AnimePicturesTagType.author,
-  5 => AnimePicturesTagType.copyrightGame,
-  6 => AnimePicturesTagType.copyrightOther,
-  7 => AnimePicturesTagType.object,
-  _ => null,
-};
+AnimePicturesTagType? tagTypeFromInt(dynamic type) =>
+    switch (intFromJson(type)) {
+      0 => AnimePicturesTagType.unknown,
+      1 => AnimePicturesTagType.character,
+      2 => AnimePicturesTagType.reference,
+      3 => AnimePicturesTagType.copyrightProduct,
+      4 => AnimePicturesTagType.author,
+      5 => AnimePicturesTagType.copyrightGame,
+      6 => AnimePicturesTagType.copyrightOther,
+      7 => AnimePicturesTagType.object,
+      _ => null,
+    };
 
 class TagDto {
   const TagDto({
@@ -37,16 +41,16 @@ class TagDto {
 
   factory TagDto.fromJson(Map<String, dynamic> json) {
     return TagDto(
-      id: json['id'],
-      tag: json['tag'],
-      tagRu: json['tag_ru'],
-      tagJp: json['tag_jp'],
-      num: json['num'],
-      numPub: json['num_pub'],
+      id: intFromJson(json['id']),
+      tag: stringFromJson(json['tag']),
+      tagRu: stringFromJson(json['tag_ru']),
+      tagJp: stringFromJson(json['tag_jp']),
+      num: intFromJson(json['num']),
+      numPub: intFromJson(json['num_pub']),
       type: tagTypeFromInt(json['type']),
-      alias: json['alias'],
-      parent: json['parent'],
-      views: json['views'],
+      alias: stringFromJson(json['alias']),
+      parent: intFromJson(json['parent']),
+      views: intFromJson(json['views']),
     );
   }
 

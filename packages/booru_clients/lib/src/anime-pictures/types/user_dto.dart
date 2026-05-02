@@ -1,3 +1,6 @@
+// Project imports:
+import 'json_parsing.dart';
+
 class UserDto {
   const UserDto({
     required this.id,
@@ -11,19 +14,15 @@ class UserDto {
   });
 
   factory UserDto.fromJson(Map<String, dynamic> json) {
-    final registerDate = json['register_date'] != null
-        ? DateTime.tryParse(json['register_date'])
-        : null;
-
     return UserDto(
-      id: json['id'],
-      name: json['name'],
-      avatarVersion: json['avatar_version'],
-      isAvatar: json['isavatar'],
-      siteScore: json['site_score'],
-      groups: List<String>.from(json['groups']),
-      gender: json['gender'],
-      registerDate: registerDate,
+      id: intFromJson(json['id']),
+      name: stringFromJson(json['name']),
+      avatarVersion: intFromJson(json['avatar_version']),
+      isAvatar: boolFromJson(json['isavatar']),
+      siteScore: intFromJson(json['site_score']),
+      groups: stringListFromJson(json['groups']),
+      gender: intFromJson(json['gender']),
+      registerDate: dateTimeFromJson(json['register_date']),
     );
   }
 

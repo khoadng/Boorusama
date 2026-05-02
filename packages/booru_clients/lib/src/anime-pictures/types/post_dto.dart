@@ -1,4 +1,5 @@
 // Project imports:
+import 'json_parsing.dart';
 import 'types.dart';
 
 class PostDto {
@@ -6,6 +7,7 @@ class PostDto {
     this.id,
     this.md5,
     this.md5Pixels,
+    this.juserId,
     this.width,
     this.height,
     this.pubtime,
@@ -31,68 +33,73 @@ class PostDto {
   });
 
   factory PostDto.fromJson(Map<String, dynamic> json, String baseUrl) {
-    final extRaw = json['ext'];
-    final haveAlpha = json['have_alpha'];
+    final md5 = stringFromJson(json['md5']);
+    final extRaw = stringFromJson(json['ext']);
+    final haveAlpha = boolFromJson(json['have_alpha']);
 
     final small =
-        json['small_preview'] ??
+        stringFromJson(json['small_preview']) ??
         createUrl(
           baseUrl,
-          json['md5'],
+          md5,
           ImageUrlType.small,
           extRaw,
           haveAlpha,
         );
 
     final medium =
-        json['medium_preview'] ??
+        stringFromJson(json['medium_preview']) ??
         createUrl(
           baseUrl,
-          json['md5'],
+          md5,
           ImageUrlType.medium,
           extRaw,
           haveAlpha,
         );
 
     final big =
-        json['big_preview'] ??
+        stringFromJson(json['big_preview']) ??
         createUrl(
           baseUrl,
-          json['md5'],
+          md5,
           ImageUrlType.big,
           extRaw,
           haveAlpha,
         );
 
     return PostDto(
-      id: json['id'],
-      md5: json['md5'],
-      md5Pixels: json['md5_pixels'],
-      width: json['width'],
-      height: json['height'],
-      pubtime: json['pubtime'],
-      datetime: json['datetime'],
-      score: json['score'],
-      scoreNumber: json['score_number'],
-      size: json['size'],
-      downloadCount: json['download_count'],
-      erotics: switch (json['erotics']) {
+      id: intFromJson(json['id']),
+      md5: md5,
+      md5Pixels: stringFromJson(json['md5_pixels']),
+      juserId: intFromJson(json['juser_id']),
+      width: intFromJson(json['width']),
+      height: intFromJson(json['height']),
+      pubtime: stringFromJson(json['pubtime']),
+      datetime: stringFromJson(json['datetime']),
+      score: doubleFromJson(json['score']),
+      scoreNumber: intFromJson(json['score_number']),
+      size: intFromJson(json['size']),
+      downloadCount: intFromJson(json['download_count']),
+      erotics: switch (intFromJson(json['erotics'])) {
         0 => EroticLevel.none,
         1 => EroticLevel.light,
         2 => EroticLevel.moderate,
         3 => EroticLevel.hard,
         _ => null,
       },
-      color: json['color']?.cast<int>(),
-      ext: json['ext'],
-      status: json['status'],
-      statusType: json['status_type'],
-      redirectId: json['redirect_id'],
-      spoiler: json['spoiler'],
+      color: switch (json['color']) {
+        final List color => color.map(intFromJson).whereType<int>().toList(),
+        _ => null,
+      },
+      ext: extRaw,
+      status: intFromJson(json['status']),
+      statusType: intFromJson(json['status_type']),
+      redirectId: intFromJson(json['redirect_id']),
+      spoiler: boolFromJson(json['spoiler']),
       haveAlpha: haveAlpha,
-      tagsCount: json['tags_count'],
-      artefactsDegree: json['artefacts_degree'],
-      smoothDegree: json['smooth_degree'],
+      tagsCount: intFromJson(json['tags_count']),
+      artefactsDegree: doubleFromJson(json['artefacts_degree']),
+      smoothDegree: doubleFromJson(json['smooth_degree']),
       smallPreview: small,
       mediumPreview: medium,
       bigPreview: big,
@@ -102,11 +109,12 @@ class PostDto {
   final int? id;
   final String? md5;
   final String? md5Pixels;
+  final int? juserId;
   final int? width;
   final int? height;
   final String? pubtime;
   final String? datetime;
-  final int? score;
+  final double? score;
   final int? scoreNumber;
   final int? size;
   final int? downloadCount;
@@ -151,8 +159,14 @@ class PostDetailsTagDto {
 
   factory PostDetailsTagDto.fromJson(Map<String, dynamic> json) {
     return PostDetailsTagDto(
-      tag: json['tag'] != null ? TagDto.fromJson(json['tag']) : null,
-      user: json['user'] != null ? UserDto.fromJson(json['user']) : null,
+      tag: switch (mapFromJson(json['tag'])) {
+        final tag? => TagDto.fromJson(tag),
+        _ => null,
+      },
+      user: switch (mapFromJson(json['user'])) {
+        final user? => UserDto.fromJson(user),
+        _ => null,
+      },
     );
   }
 
@@ -168,10 +182,14 @@ class PostDetailsFavoritesUserDto {
 
   factory PostDetailsFavoritesUserDto.fromJson(Map<String, dynamic> json) {
     return PostDetailsFavoritesUserDto(
-      user: json['user'] != null ? UserDto.fromJson(json['user']) : null,
-      favorite: json['favorite'] != null
-          ? FavoriteDto.fromJson(json['favorite'])
-          : null,
+      user: switch (mapFromJson(json['user'])) {
+        final user? => UserDto.fromJson(user),
+        _ => null,
+      },
+      favorite: switch (mapFromJson(json['favorite'])) {
+        final favorite? => FavoriteDto.fromJson(favorite),
+        _ => null,
+      },
     );
   }
 
@@ -193,30 +211,29 @@ class PostDetailsDto {
 
   factory PostDetailsDto.fromJson(Map<String, dynamic> json, String baseUrl) {
     return PostDetailsDto(
-      post: json['post'] != null
-          ? PostDto.fromJson(json['post'], baseUrl)
-          : null,
-      user: json['user'] != null ? UserDto.fromJson(json['user']) : null,
-      moderator: json['moderator'] != null
-          ? UserDto.fromJson(json['moderator'])
-          : null,
-      tags: json['tags'] != null
-          ? (json['tags'] as List)
-                .map((item) => PostDetailsTagDto.fromJson(item))
-                .toList()
-          : null,
-      starIt: json['star_it'],
-      favoritesUsers: json['favorites_users'] != null
-          ? (json['favorites_users'] as List)
-                .map((item) => PostDetailsFavoritesUserDto.fromJson(item))
-                .toList()
-          : null,
-      fileUrl: json['file_url'],
-      tied: json['tied'] != null
-          ? (json['tied'] as List)
-                .map((item) => PostDto.fromJson(item, baseUrl))
-                .toList()
-          : null,
+      post: switch (mapFromJson(json['post'])) {
+        final post? => PostDto.fromJson(post, baseUrl),
+        _ => null,
+      },
+      user: switch (mapFromJson(json['user'])) {
+        final user? => UserDto.fromJson(user),
+        _ => null,
+      },
+      moderator: switch (mapFromJson(json['moderator'])) {
+        final moderator? => UserDto.fromJson(moderator),
+        _ => null,
+      },
+      tags: listFromJson(json['tags'], PostDetailsTagDto.fromJson),
+      starIt: boolFromJson(json['star_it']) ?? false,
+      favoritesUsers: listFromJson(
+        json['favorites_users'],
+        PostDetailsFavoritesUserDto.fromJson,
+      ),
+      fileUrl: stringFromJson(json['file_url']),
+      tied: listFromJson(
+        json['tied'],
+        (item) => PostDto.fromJson(item, baseUrl),
+      ),
     );
   }
 

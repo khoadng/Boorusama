@@ -1,3 +1,6 @@
+// Project imports:
+import 'json_parsing.dart';
+
 class FavoriteDto {
   FavoriteDto({
     required this.id,
@@ -8,15 +11,11 @@ class FavoriteDto {
   });
 
   factory FavoriteDto.fromJson(Map<String, dynamic> json) {
-    final addtime = json['addtime'] != null
-        ? DateTime.tryParse(json['addtime'])
-        : null;
-
     return FavoriteDto(
-      id: json['id'],
-      juserId: json['juser_id'],
-      post: json['post'],
-      addtime: addtime,
+      id: intFromJson(json['id']),
+      juserId: intFromJson(json['juser_id']),
+      post: intFromJson(json['post']),
+      addtime: dateTimeFromJson(json['addtime']),
       folder: json['folder'],
     );
   }
