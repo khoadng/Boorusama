@@ -20,7 +20,7 @@ HydrusPost postDtoToPost(FileDto file, PostMetadata? metadata) {
     hasParentOrChildren: false,
     source: PostSource.from(file.firstSource),
     score: 0,
-    duration: file.duration?.toDouble() ?? 0,
+    duration: file.duration ?? 0,
     fileSize: file.size ?? 0,
     format: file.ext ?? '',
     hasSound: file.hasAudio,

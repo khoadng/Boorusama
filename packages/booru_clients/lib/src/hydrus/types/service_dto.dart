@@ -71,7 +71,10 @@ class ServiceDto {
     required this.prettyType,
   });
 
-  static ServiceDto? fromJson(Map<String, dynamic> json, String key) {
+  static ServiceDto? fromJson(Map<String, dynamic> json, [String? key]) {
+    final serviceKey = key ?? json['service_key'] as String?;
+    if (serviceKey == null) return null;
+
     final rawType = json['type'] as int?;
     if (rawType == null) return null;
     final type = intToServiceType(rawType);
@@ -82,8 +85,8 @@ class ServiceDto {
         : '';
 
     return ServiceDto(
-      key: key,
-      name: json['name'] as String,
+      key: serviceKey,
+      name: json['name'] as String? ?? '',
       type: type,
       prettyType: prettyType,
     );

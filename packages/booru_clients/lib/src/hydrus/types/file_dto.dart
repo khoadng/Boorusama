@@ -46,7 +46,7 @@ class FileDto {
   factory FileDto.fromJson(
     Map<String, dynamic> json,
     String baseUrl,
-    Map<String, dynamic> servicesJson,
+    List<ServiceDto> services,
   ) {
     final fileId = json['file_id'] as int?;
     final imageUrl = baseUrl.endsWith('/')
@@ -56,10 +56,6 @@ class FileDto {
     final thumbnailUrl = baseUrl.endsWith('/')
         ? '${baseUrl}get_files/thumbnail?file_id=$fileId'
         : '$baseUrl/get_files/thumbnail?file_id=$fileId';
-
-    final services = servicesJson.entries
-        .map((e) => ServiceDto.fromJson(e.value, e.key))
-        .toList();
 
     final ratings = json['ratings'] as Map<String, dynamic>?;
 
@@ -85,7 +81,7 @@ class FileDto {
       height: json['height'] as int?,
       thumbnailWidth: json['thumbnail_width'] as int?,
       thumbnailHeight: json['thumbnail_height'] as int?,
-      duration: json['duration'] as int?,
+      duration: (json['duration'] as num?)?.toDouble(),
       timeModified: json['time_modified'] as int?,
       timeModifiedDetails:
           json['time_modified_details'] as Map<String, dynamic>?,
@@ -109,9 +105,7 @@ class FileDto {
           ? List<String>.from(json['known_urls'])
           : null,
       ratings: ratings,
-      tags: (json['tags'] as Map<String, dynamic>?)?.map(
-        (key, value) => MapEntry(key, value as Map<String, dynamic>),
-      ),
+      tags: _tagServices(json['tags']),
       imageUrl: imageUrl,
       thumbnailUrl: thumbnailUrl,
       faved: faved,
@@ -130,7 +124,7 @@ class FileDto {
   final int? height;
   final int? thumbnailWidth;
   final int? thumbnailHeight;
-  final int? duration;
+  final double? duration;
   final int? timeModified;
   final Map<String, dynamic>? timeModifiedDetails;
   final Map<String, dynamic>? fileServices;
@@ -159,23 +153,10 @@ class FileDto {
 
 extension FileDtoX on FileDto {
   Set<String> get allTags {
-    // join all storage tags
-    final storageTags = tags?.values
-        .map(
-          (e) => e['storage_tags'] != null
-              ? e['storage_tags'] as Map<String, dynamic>
-              : null,
-        )
-        .nonNulls
-        .expand((e) => e.values)
-        .expand((e) => e)
-        .toList();
+    final displayTags = _currentTags('display_tags');
+    if (displayTags.isNotEmpty) return displayTags;
 
-    if (storageTags == null) return {};
-
-    return {
-      for (final tag in storageTags) tag as String,
-    };
+    return _currentTags('storage_tags');
   }
 
   String? get firstSource {
@@ -183,6 +164,39 @@ extension FileDtoX on FileDto {
     if (sources == null) return null;
 
     return sources.firstOrNull;
+  }
+}
+
+Map<String, Map<String, dynamic>>? _tagServices(dynamic value) {
+  return switch (value) {
+    final Map map => map.map(
+      (key, value) => MapEntry(
+        key.toString(),
+        switch (value) {
+          final Map<String, dynamic> service => service,
+          final Map service => service.map(
+            (key, value) => MapEntry(key.toString(), value),
+          ),
+          _ => <String, dynamic>{},
+        },
+      ),
+    ),
+    _ => null,
+  };
+}
+
+extension on FileDto {
+  Set<String> _currentTags(String group) {
+    return {
+      for (final tagService in tags?.values ?? <Map<String, dynamic>>[])
+        ...switch (tagService[group]) {
+          final Map map => switch (map['0']) {
+            final List tags => tags.whereType<String>(),
+            _ => const Iterable<String>.empty(),
+          },
+          _ => const Iterable<String>.empty(),
+        },
+    };
   }
 }
 

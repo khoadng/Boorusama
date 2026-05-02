@@ -100,7 +100,7 @@ class FavoritesNotifier
     List<T> posts, {
     bool Function(T post)? selfFavorited,
   }) {
-    final data = <int, bool>{};
+    final data = state.unlock;
 
     for (final post in posts) {
       final favorited = selfFavorited != null ? selfFavorited(post) : false;

@@ -32,33 +32,22 @@ class HydrusClient {
 
   late Dio _dio;
 
-  Map<String, String> get apiKeyHeader => {
-    _kClientApiAccessKey: _dio.options.headers[_kClientApiAccessKey] as String,
-  };
+  Map<String, String> get apiKeyHeader =>
+      switch (_dio.options.headers[_kClientApiAccessKey]) {
+        final String apiKey when apiKey.isNotEmpty => {
+          _kClientApiAccessKey: apiKey,
+        },
+        _ => {},
+      };
 
   Future<AccessKeyVerificationDto> verifyAccessKey() async {
     final response = await _dio.get('/verify_access_key');
-    final data = switch (response.data) {
-      final Map<String, dynamic> map => map,
-      final Map map => map.map((key, value) => MapEntry(key.toString(), value)),
-      final String text => switch (jsonDecode(text)) {
-        final Map<String, dynamic> map => map,
-        final Map map => map.map(
-          (key, value) => MapEntry(key.toString(), value),
-        ),
-        _ => throw const FormatException('Expected a JSON object response'),
-      },
-      _ => throw const FormatException('Expected a JSON object response'),
-    };
 
-    return AccessKeyVerificationDto.fromJson(data);
+    return AccessKeyVerificationDto.fromJson(_responseMap(response.data));
   }
 
-  // virtual session for each search, since hydrus doesn't use pagination
-  final _sessions = <String, SearchSession>{};
-
   //TODO: should be handle in a separated class
-  Map<String, dynamic>? _services;
+  List<ServiceDto>? _services;
   DateTime? _servicesLastUpdated;
 
   Future<HydrusFiles> getFiles({
@@ -67,42 +56,32 @@ class HydrusClient {
     int? limit,
     String? sessionId,
   }) async {
-    final params = switch (tags) {
-      '' || null => jsonEncode(['system:everything']),
-      final List l =>
-        l.isEmpty ? jsonEncode(['system:everything']) : jsonEncode(l),
-      _ => jsonEncode(tags),
-    };
+    final lim = limit ?? 20;
+    final searchTags = _searchTags(tags);
+    final hasUserLimit = searchTags.any(
+      (tag) => tag.trim().toLowerCase().startsWith('system:limit'),
+    );
+    final requestedCount = page * lim;
+    final searchLimit = requestedCount + 1;
 
-    //TODO: for now just clear the session, doesn't have a use case yet
-    _sessions.clear();
+    if (!hasUserLimit) {
+      searchTags.add('system:limit = $searchLimit');
+    }
 
     final response = await _dio.get(
       '/get_files/search_files',
       queryParameters: {
-        'tags': params,
+        'tags': jsonEncode(searchTags),
       },
     );
 
-    final data = response.data;
-
-    final ids = data['file_ids'] as List<dynamic>;
+    final data = _responseMap(response.data);
+    final ids = switch (data['file_ids']) {
+      final List list => [for (final id in list) id as int],
+      _ => <int>[],
+    };
 
     if (ids.isEmpty) return (files: <FileDto>[], count: 0);
-
-    // check if user wants to continue session, else create new session
-    final session = sessionId != null
-        ? _sessions[sessionId]!
-        : SearchSession.create(
-            tags: tags,
-            fileIds: [for (final id in ids) id as int],
-          );
-
-    if (sessionId == null) {
-      _sessions[session.id] = session;
-    }
-
-    final lim = limit ?? 20;
 
     // paginate the results
     var start = (page - 1) * lim;
@@ -112,18 +91,21 @@ class HydrusClient {
       start = 0;
     }
 
-    if (end > session.fileIds.length) {
-      end = session.fileIds.length;
+    if (end > ids.length) {
+      end = ids.length;
     }
 
     // make sure start is less than end
     if (start >= end) return (files: <FileDto>[], count: 0);
 
-    final fileIds = session.fileIds.sublist(start, end);
+    final fileIds = ids.sublist(start, end);
 
     final files = await _getFiles(fileIds: fileIds);
 
-    return (files: files, count: session.fileIds.length);
+    return (
+      files: files,
+      count: !hasUserLimit && ids.length > requestedCount ? null : ids.length,
+    );
   }
 
   Future<FileDto?> getFile(int id) async {
@@ -141,17 +123,19 @@ class HydrusClient {
       },
     );
 
-    final metadata = res.data['metadata'] as List<dynamic>;
-    final services = res.data['services'] as Map<String, dynamic>;
-
-    _services = services;
+    final data = _responseMap(res.data);
+    final metadata = switch (data['metadata']) {
+      final List list => list,
+      _ => <dynamic>[],
+    };
+    final services = _servicesFromResponse(data);
 
     _updateServices(services);
 
     return metadata
         .map(
           (e) => FileDto.fromJson(
-            e,
+            _responseMap(e),
             _dio.options.baseUrl,
             services,
           ),
@@ -170,26 +154,20 @@ class HydrusClient {
       return getServices();
     }
 
-    return _services!.entries
-        .map((e) => ServiceDto.fromJson(e.value, e.key))
-        .nonNulls
-        .toList();
+    return _services!;
   }
 
   Future<List<ServiceDto>> getServices() async {
     final res = await _dio.get('/get_services');
 
-    final services = res.data['services'] as Map<String, dynamic>;
+    final services = _servicesFromResponse(_responseMap(res.data));
 
     _updateServices(services);
 
-    return services.entries
-        .map((e) => ServiceDto.fromJson(e.value, e.key))
-        .nonNulls
-        .toList();
+    return services;
   }
 
-  void _updateServices(Map<String, dynamic> services) {
+  void _updateServices(List<ServiceDto> services) {
     _services = services;
     _servicesLastUpdated = DateTime.now();
   }
@@ -205,9 +183,13 @@ class HydrusClient {
       },
     );
 
-    final data = response.data['tags'] as List<dynamic>;
+    final data = _responseMap(response.data);
+    final tags = switch (data['tags']) {
+      final List list => list,
+      _ => <dynamic>[],
+    };
 
-    return data.map((e) => AutocompleteDto.fromJson(e)).toList();
+    return tags.map((e) => AutocompleteDto.fromJson(_responseMap(e))).toList();
   }
 
   Future<bool> setRating({
@@ -230,6 +212,53 @@ class HydrusClient {
       return false;
     }
   }
+}
+
+Map<String, dynamic> _responseMap(dynamic data) {
+  return switch (data) {
+    final Map<String, dynamic> map => map,
+    final Map map => map.map((key, value) => MapEntry(key.toString(), value)),
+    final String text => _responseMap(jsonDecode(text)),
+    _ => throw const FormatException('Expected a JSON object response'),
+  };
+}
+
+List<String> _searchTags(dynamic tags) {
+  final searchTags = switch (tags) {
+    '' || null => <String>[],
+    final List list => [for (final tag in list) tag.toString()],
+    final String tag => [tag],
+    _ => [tags.toString()],
+  }..removeWhere((tag) => tag.trim().isEmpty);
+
+  return searchTags.isEmpty ? ['system:everything'] : searchTags;
+}
+
+List<ServiceDto> _servicesFromResponse(Map<String, dynamic> data) {
+  final servicesV2 = switch (data['services_v2']) {
+    final List list =>
+      list
+          .map((service) => ServiceDto.fromJson(_responseMap(service)))
+          .nonNulls
+          .toList(),
+    _ => <ServiceDto>[],
+  };
+
+  if (servicesV2.isNotEmpty) return servicesV2;
+
+  return switch (data['services']) {
+    final Map services =>
+      services.entries
+          .map(
+            (entry) => ServiceDto.fromJson(
+              _responseMap(entry.value),
+              entry.key.toString(),
+            ),
+          )
+          .nonNulls
+          .toList(),
+    _ => <ServiceDto>[],
+  };
 }
 
 extension HydrusClientX on HydrusClient {
