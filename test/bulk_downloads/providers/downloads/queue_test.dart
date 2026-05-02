@@ -1,4 +1,5 @@
 // Package imports:
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:foundation/foundation.dart';
@@ -11,6 +12,7 @@ import 'package:boorusama/core/bulk_downloads/src/types/bulk_download_error.dart
 import 'package:boorusama/core/bulk_downloads/src/types/download_options.dart';
 import 'package:boorusama/core/bulk_downloads/src/types/download_session.dart';
 import 'package:boorusama/core/search/selected_tags/types.dart';
+import 'package:boorusama/foundation/info/device_info.dart';
 import 'common.dart';
 
 void main() {
@@ -25,6 +27,7 @@ void main() {
     container = createBulkDownloadContainer(
       downloadRepository: repository,
       booruBuilder: MockBooruBuilder(),
+      deviceInfo: _androidDeviceInfo(AndroidVersions.android9),
     )..read(bulkDownloadProvider); // Initialize provider
   });
 
@@ -72,6 +75,25 @@ void main() {
         equals(DownloadSessionStatus.pending),
       );
     });
+
+    test(
+      'should use device sdk when queueing without download configs',
+      () async {
+        // Arrange
+        final notifier = container.read(bulkDownloadProvider.notifier);
+        final customPathOptions = downloadOptions.copyWith(
+          path: '/storage/emulated/0/test',
+        );
+
+        // Act
+        await notifier.queueDownloadLater(customPathOptions);
+
+        // Assert
+        final tasks = await repository.getTasks();
+        expect(tasks.length, equals(1));
+        expect(tasks.first.path, equals('/storage/emulated/0/test'));
+      },
+    );
 
     test('should start pending session when requested', () async {
       // Arrange
@@ -150,4 +172,43 @@ void main() {
       expect(state.error, isA<SessionNotFoundError>());
     });
   });
+}
+
+DeviceInfo _androidDeviceInfo(int sdkInt) {
+  return DeviceInfo(
+    androidDeviceInfo: AndroidDeviceInfo.setMockInitialValues(
+      version: AndroidBuildVersion.setMockInitialValues(
+        codename: 'REL',
+        incremental: '1',
+        previewSdkInt: 0,
+        release: '9',
+        sdkInt: sdkInt,
+      ),
+      board: 'test',
+      bootloader: 'test',
+      brand: 'test',
+      device: 'test',
+      display: 'test',
+      fingerprint: 'test',
+      hardware: 'test',
+      host: 'test',
+      id: 'test',
+      manufacturer: 'test',
+      model: 'test',
+      product: 'test',
+      name: 'test',
+      supported32BitAbis: const [],
+      supported64BitAbis: const [],
+      supportedAbis: const [],
+      tags: 'test',
+      type: 'test',
+      isPhysicalDevice: true,
+      freeDiskSize: 0,
+      totalDiskSize: 0,
+      systemFeatures: const [],
+      isLowRamDevice: false,
+      physicalRamSize: 0,
+      availableRamSize: 0,
+    ),
+  );
 }

@@ -10,6 +10,7 @@ import '../../../../foundation/info/device_info.dart';
 import '../providers/create_download_options_notifier.dart';
 import '../providers/saved_download_task_provider.dart';
 import '../types/download_options.dart';
+import '../types/download_options_validator.dart';
 import '../types/saved_download_task.dart';
 import 'create_download_options_sheet.dart';
 
@@ -35,12 +36,10 @@ class BulkDownloadEditSavedTaskPage extends ConsumerWidget {
       actions: Builder(
         builder: (context) {
           final options = ref.watch(createDownloadOptionsProvider(initial));
-          final androidSdkInt = ref.watch(
-            deviceInfoProvider.select(
-              (value) => value.androidDeviceInfo?.version.sdkInt,
-            ),
+          final validOptions = validDownloadOptions(
+            options: options,
+            deviceInfo: ref.watch(deviceInfoProvider),
           );
-          final validOptions = options.valid(androidSdkInt: androidSdkInt);
 
           return Row(
             spacing: 16,

@@ -7,6 +7,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import '../../../../foundation/info/device_info.dart';
 import '../../../../foundation/loggers.dart';
 import '../../../../foundation/permissions.dart';
 import '../../../../foundation/platform.dart';
@@ -26,6 +27,7 @@ import '../types/bulk_download_session.dart';
 import '../types/bulk_download_state.dart';
 import '../types/download_configs.dart';
 import '../types/download_options.dart';
+import '../types/download_options_validator.dart';
 import '../types/download_record.dart';
 import '../types/download_repository.dart';
 import '../types/download_session.dart';
@@ -311,10 +313,13 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
     DownloadConfigs? downloadConfigs,
     void Function(BulkDownloadOptionsError e)? onOptionsError,
   }) async {
-    final androidSdkVersion = downloadConfigs?.androidSdkVersion;
     final config = ref.readConfigAuth;
 
-    if (!options.valid(androidSdkInt: androidSdkVersion)) {
+    if (!validDownloadOptions(
+      options: options,
+      deviceInfo: ref.read(deviceInfoProvider),
+      downloadConfigs: downloadConfigs,
+    )) {
       onOptionsError?.call(const InvalidDownloadOptionsError());
       return;
     }
@@ -841,9 +846,11 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
     DownloadConfigs? downloadConfigs,
     void Function(BulkDownloadOptionsError e)? onOptionsError,
   }) async {
-    final androidSdkVersion = downloadConfigs?.androidSdkVersion;
-
-    if (!options.valid(androidSdkInt: androidSdkVersion)) {
+    if (!validDownloadOptions(
+      options: options,
+      deviceInfo: ref.read(deviceInfoProvider),
+      downloadConfigs: downloadConfigs,
+    )) {
       onOptionsError?.call(const InvalidDownloadOptionsError());
       return;
     }

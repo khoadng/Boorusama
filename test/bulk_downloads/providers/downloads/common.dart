@@ -327,6 +327,7 @@ ProviderContainer createBulkDownloadContainer({
   required DownloadRepository downloadRepository,
   required MockBooruBuilder booruBuilder,
   MediaPermissionManager? mediaPermissionManager,
+  DeviceInfo? deviceInfo,
   bool hasPremium = true,
   Stream<TaskUpdate>? taskUpdateStream,
   BooruConfigAuth? overrideConfig,
@@ -341,6 +342,7 @@ ProviderContainer createBulkDownloadContainer({
       hasPremium: hasPremium,
       taskUpdateStream: taskUpdateStream,
       overrideConfig: overrideConfig,
+      deviceInfo: deviceInfo,
     ),
   );
 
@@ -357,6 +359,7 @@ List<Override> getTestOverrides({
   MediaPermissionManager? mediaPermissionManager,
   BooruBuilder? booruBuilder,
   BulkDownloadNotifications? notifications,
+  DeviceInfo? deviceInfo,
   bool hasPremium = true,
   Stream<TaskUpdate>? taskUpdateStream,
   BooruConfigAuth? overrideConfig,
@@ -399,6 +402,7 @@ List<Override> getTestOverrides({
       (_) => taskUpdateStream ?? emptyTaskUpdateStream,
     ),
     taskFileSizeResolverProvider.overrideWith((_, _) => Future.value(0)),
+    deviceInfoProvider.overrideWithValue(deviceInfo ?? DeviceInfo.empty()),
     if (notifications != null)
       bulkDownloadNotificationProvider.overrideWith((_) => notifications),
   ];

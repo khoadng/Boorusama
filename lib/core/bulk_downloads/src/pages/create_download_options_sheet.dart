@@ -27,6 +27,7 @@ import '../providers/create_download_options_notifier.dart';
 import '../routes/route_utils.dart';
 import '../types/download_configs.dart';
 import '../types/download_options.dart';
+import '../types/download_options_validator.dart';
 import '../widgets/bulk_download_tag_list.dart';
 
 class CreateDownloadOptionsSheet extends ConsumerWidget {
@@ -69,12 +70,11 @@ class CreateDownloadOptionsSheet extends ConsumerWidget {
       tags: initialValue,
     );
     final options = ref.watch(createDownloadOptionsProvider(initial));
-    final androidSdkInt = ref.watch(
-      deviceInfoProvider.select(
-        (value) => value.androidDeviceInfo?.version.sdkInt,
-      ),
+    final deviceInfo = ref.watch(deviceInfoProvider);
+    final validOptions = validDownloadOptions(
+      options: options,
+      deviceInfo: deviceInfo,
     );
-    final validOptions = options.valid(androidSdkInt: androidSdkInt);
     final navigator = Navigator.of(context);
 
     final startedMessage = context.t.download.notification.started;
