@@ -338,7 +338,10 @@ FutureOr<List<PostDto>> _parsePosts(
 }) {
   final dtos = <PostDto>[];
   final xmlDocument = XmlDocument.parse(value.data);
-  final posts = xmlDocument.findAllElements('tag');
+  final postElements = xmlDocument.findAllElements('post').toList();
+  final posts = postElements.isNotEmpty
+      ? postElements
+      : xmlDocument.findAllElements('tag');
   for (final item in posts) {
     dtos.add(
       PostDto.fromXml(
