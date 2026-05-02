@@ -1,6 +1,8 @@
 include: all_lint_rules.yaml
 analyzer:
   exclude:
+    - build/**
+    - "**/build/**"
     - "**/*.g.dart"
     - "**/generated_plugin_registrant.dart"
     - "**/firebase_options.dart"
