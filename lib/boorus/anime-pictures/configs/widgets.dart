@@ -90,7 +90,6 @@ class _AnimePicturesAuthViewState extends ConsumerState<AnimePicturesAuthView> {
               if (cookies.isNotEmpty) {
                 final filtered = cookies
                     .where((e) => e.name != 'animepictures_gdpr')
-                    .where((e) => e.name != 'cf_clearance')
                     .where((e) => !e.name.startsWith('_ga'))
                     .toList();
 

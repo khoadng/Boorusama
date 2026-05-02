@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:convert';
+
 // Package imports:
 import 'package:dio/dio.dart';
 
@@ -85,7 +88,7 @@ class DioResponseAdapter implements HttpResponse {
   @override
   int? get statusCode => _response.statusCode;
   @override
-  dynamic get data => _response.data;
+  dynamic get data => _decodeData(_response.data);
   @override
   Uri get requestUri => _response.requestOptions.uri;
   @override
@@ -103,4 +106,17 @@ class DioErrorAdapter implements HttpError {
   Uri get requestUri => _error.requestOptions.uri;
   @override
   String? get message => _error.message;
+}
+
+dynamic _decodeData(dynamic data) => switch (data) {
+  final List<int> bytes => _tryDecodeBytes(bytes),
+  _ => data,
+};
+
+dynamic _tryDecodeBytes(List<int> bytes) {
+  try {
+    return utf8.decode(bytes);
+  } catch (_) {
+    return bytes;
+  }
 }

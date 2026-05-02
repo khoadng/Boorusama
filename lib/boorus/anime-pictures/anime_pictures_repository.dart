@@ -1,5 +1,6 @@
 // Package imports:
 import 'package:booru_clients/anime_pictures.dart';
+import 'package:coreutils/coreutils.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
@@ -9,6 +10,7 @@ import '../../core/configs/create/create.dart';
 import '../../core/downloads/filename/types.dart';
 import '../../core/downloads/urls/types.dart';
 import '../../core/http/client/providers.dart';
+import '../../core/http/client/types.dart';
 import '../../core/posts/post/providers.dart';
 import '../../core/posts/post/types.dart';
 import '../../core/tags/autocompletes/types.dart';
@@ -31,6 +33,19 @@ class AnimePicturesRepository extends BooruRepositoryDefault {
 
   @override
   final Ref ref;
+
+  @override
+  Map<String, String> extraHttpHeaders(BooruConfigAuth config) {
+    final cookie = CookieUtils.mergeCookieHeaders(
+      'sitelang=en',
+      config.passHash ?? '',
+    );
+
+    return {
+      'Referer': config.url,
+      AppHttpHeaders.cookieHeader: cookie,
+    };
+  }
 
   @override
   PostRepository<Post> post(BooruConfigSearch config) {
