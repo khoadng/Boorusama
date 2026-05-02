@@ -147,7 +147,7 @@ class DemoPost extends SimplePost {
         hasParentOrChildren: false,
         source: PostSource.none(),
         score: 56,
-        duration: 0,
+        duration: kNoduration,
         fileSize: 1024 * 1024 * 5,
         format: '.jpg',
         hasSound: null,

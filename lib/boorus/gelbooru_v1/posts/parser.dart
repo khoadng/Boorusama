@@ -25,7 +25,7 @@ GelbooruV1Post postDtoToPost(
     hasParentOrChildren: false,
     source: PostSource.none(),
     score: post.score ?? 0,
-    duration: 0,
+    duration: kNoduration,
     fileSize: 0,
     format: urlExtension(post.fileUrl),
     hasSound: null,

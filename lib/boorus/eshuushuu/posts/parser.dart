@@ -59,7 +59,7 @@ EshuushuuPost postDtoToPost(
       sourceTags.isNotEmpty ? sourceTags.join(', ') : null,
     ),
     score: e.favorites ?? 0,
-    duration: 0,
+    duration: kNoduration,
     fileSize: e.filesize ?? 0,
     format: e.ext ?? '',
     hasSound: null,

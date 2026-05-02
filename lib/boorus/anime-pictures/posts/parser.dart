@@ -29,7 +29,7 @@ AnimePicturesPost dtoToAnimePicturesPost(
     hasParentOrChildren: false,
     source: PostSource.none(),
     score: e.scoreNumber ?? 0,
-    duration: 0,
+    duration: kNoduration,
     fileSize: e.size ?? 0,
     format: e.ext ?? '',
     hasSound: null,

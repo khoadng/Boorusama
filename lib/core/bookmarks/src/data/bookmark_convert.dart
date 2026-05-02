@@ -160,7 +160,7 @@ extension BookmarkToPost on Bookmark {
     hasParentOrChildren: false,
     source: PostSource.from(sourceUrl),
     score: 0,
-    duration: 0,
+    duration: kNoduration,
     fileSize: 0,
     format: format ?? extension(originalUrl),
     hasSound: null,

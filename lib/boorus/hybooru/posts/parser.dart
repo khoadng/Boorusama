@@ -24,7 +24,7 @@ HybooruPost postSummaryToPost(
     hasParentOrChildren: false,
     source: PostSource.none(),
     score: 0,
-    duration: 0,
+    duration: kNoduration,
     fileSize: 0,
     format: e.extension ?? '',
     hasSound: null,

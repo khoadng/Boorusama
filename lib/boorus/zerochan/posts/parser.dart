@@ -24,7 +24,7 @@ ZerochanPost postDtoToPost(
     hasParentOrChildren: false,
     source: PostSource.from(e.source),
     score: 0,
-    duration: 0,
+    duration: kNoduration,
     fileSize: 0,
     format: path.extension(e.thumbnail ?? ''),
     hasSound: null,

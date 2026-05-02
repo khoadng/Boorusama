@@ -1,6 +1,8 @@
 // Package imports:
 import 'package:coreutils/coreutils.dart';
 
+const kNoduration = -1.0;
+
 mixin VideoInfoMixin {
   String get format;
   bool get isFlash => _format() == 'swf' || _format() == '.swf';

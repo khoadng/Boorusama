@@ -80,7 +80,7 @@ class DanbooruPost extends Equatable
     hasChildren: false,
     hasLarge: false,
     parentId: null,
-    duration: 0,
+    duration: kNoduration,
     variants: const PostVariants.none(),
     pixelHash: '',
     metadata: null,

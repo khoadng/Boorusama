@@ -35,7 +35,7 @@ Shimmie2Post postDtoToPost(
     },
     source: PostSource.from(e.source),
     score: e.score ?? e.numericScore ?? 0,
-    duration: 0,
+    duration: kNoduration,
     fileSize: e.filesize ?? 0,
     format: switch ((e.ext, e.fileName)) {
       (final ext?, _) => ext,

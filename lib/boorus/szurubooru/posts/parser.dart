@@ -49,7 +49,7 @@ SzurubooruPost postDtoToPost(
     hasParentOrChildren: (e.relationCount ?? 0) > 0,
     source: PostSource.from(e.source),
     score: e.score ?? 0,
-    duration: 0,
+    duration: kNoduration,
     fileSize: e.fileSize ?? 0,
     format: extension(e.contentUrl ?? ''),
     hasSound: e.flags?.contains('sound'),
