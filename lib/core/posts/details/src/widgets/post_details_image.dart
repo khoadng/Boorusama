@@ -181,6 +181,7 @@ class RawPostDetailsImage<T extends Post> extends ConsumerWidget {
       fit: fit,
       borderRadius: BorderRadius.zero,
       forceLoadPlaceholder: true,
+      hideMismatchedPlaceholder: true,
       imageCacheManager: imageCacheManager,
     );
 
