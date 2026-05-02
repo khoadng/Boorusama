@@ -61,7 +61,6 @@ class RawSolver implements ProtectionSolver {
 
   final CookieRetriever _cookieRetriever;
   var _solving = false;
-  var _pageLoaded = false;
 
   @override
   bool get isSolving => _solving;
@@ -73,7 +72,6 @@ class RawSolver implements ProtectionSolver {
   }) async {
     if (_solving) return false;
     _solving = true;
-    _pageLoaded = false;
 
     final completer = Completer<bool>();
     final context = contextProvider();
@@ -95,17 +93,11 @@ class RawSolver implements ProtectionSolver {
     try {
       final jar = await cookieJar();
       final controller = WebViewController();
+      final initialCookies = await _getMatchingCookieValues(uri);
 
       try {
         await controller.setJavaScriptMode(JavaScriptMode.unrestricted);
         if (userAgent != null) await controller.setUserAgent(userAgent);
-        await controller.setNavigationDelegate(
-          NavigationDelegate(
-            onPageFinished: (_) {
-              _pageLoaded = true;
-            },
-          ),
-        );
       } catch (_) {
         // Keep showing the solver; the page may still load with defaults.
       }
@@ -117,10 +109,16 @@ class RawSolver implements ProtectionSolver {
         return completer.future;
       }
 
-      _monitorCookies(uri, jar, completer, (success) {
-        if (navigator.canPop()) navigator.pop(true);
-        if (!completer.isCompleted) completer.complete(success);
-      });
+      _monitorCookies(
+        uri,
+        jar,
+        completer,
+        initialCookies,
+        (success) {
+          if (navigator.canPop()) navigator.pop(true);
+          if (!completer.isCompleted) completer.complete(success);
+        },
+      );
 
       final result = await showDialog<bool>(
         context: context,
@@ -138,7 +136,7 @@ class RawSolver implements ProtectionSolver {
                 final cookies = await _cookieRetriever.getCookies(
                   uri.toString(),
                 );
-                if (cookies.any(autoCookieValidator) || _pageLoaded) {
+                if (_hasNewMatchingCookie(cookies, initialCookies)) {
                   await jar.saveFromResponse(uri, cookies);
                   dialogNavigator.pop(true);
                 }
@@ -169,6 +167,7 @@ class RawSolver implements ProtectionSolver {
     Uri uri,
     CookieJar cookieJar,
     Completer<bool> completer,
+    Map<String, String> initialCookies,
     Function(bool) onSuccess,
   ) {
     Timer.periodic(const Duration(seconds: 1), (timer) async {
@@ -179,7 +178,7 @@ class RawSolver implements ProtectionSolver {
 
       try {
         final cookies = await _cookieRetriever.getCookies(uri.toString());
-        final hasClearance = cookies.any(autoCookieValidator);
+        final hasClearance = _hasNewMatchingCookie(cookies, initialCookies);
 
         if (hasClearance) {
           await cookieJar.saveFromResponse(uri, cookies);
@@ -189,6 +188,30 @@ class RawSolver implements ProtectionSolver {
       } catch (e) {
         debugPrint('Error checking cookies: $e');
       }
+    });
+  }
+
+  Future<Map<String, String>> _getMatchingCookieValues(Uri uri) async {
+    try {
+      final cookies = await _cookieRetriever.getCookies(uri.toString());
+
+      return {
+        for (final cookie in cookies)
+          if (autoCookieValidator(cookie)) cookie.name: cookie.value,
+      };
+    } catch (_) {
+      return {};
+    }
+  }
+
+  bool _hasNewMatchingCookie(
+    List<Cookie> cookies,
+    Map<String, String> initialCookies,
+  ) {
+    return cookies.any((cookie) {
+      if (!autoCookieValidator(cookie)) return false;
+
+      return initialCookies[cookie.name] != cookie.value;
     });
   }
 
