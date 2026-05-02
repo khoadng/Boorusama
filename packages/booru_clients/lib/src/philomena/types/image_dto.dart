@@ -45,17 +45,25 @@ class ImageDto {
       return ImageDto(
         tagCount: json['tag_count'],
         deletionReason: json['deletion_reason'],
-        sourceUrls: (json['source_urls'] as List?)
-            ?.map((e) => e as String)
-            .toList(),
+        sourceUrls: switch (json['source_urls']) {
+          final List l =>
+            l.map((e) => e as String?).whereType<String>().toList(),
+          _ => null,
+        },
         mimeType: json['mime_type'],
         downvotes: json['downvotes'],
-        intensities: IntensitiesDto.fromJson(json['intensities']),
+        intensities: switch (json['intensities']) {
+          final Map<String, dynamic> m => IntensitiesDto.fromJson(m),
+          _ => null,
+        },
         duration: json['duration'],
         duplicateOf: json['duplicate_of'],
         id: json['id'],
         name: json['name'],
-        representations: RepresentationsDto.fromJson(json['representations']),
+        representations: switch (json['representations']) {
+          final Map<String, dynamic> m => RepresentationsDto.fromJson(m),
+          _ => null,
+        },
         createdAt: json['created_at'] != null
             ? DateTime.tryParse(json['created_at'])
             : null,
@@ -79,7 +87,11 @@ class ImageDto {
         uploader: json['uploader'],
         width: json['width'],
         uploaderId: json['uploader_id'],
-        tags: (json['tags'] as List?)?.map((e) => e as String).toList(),
+        tags: switch (json['tags']) {
+          final List l =>
+            l.map((e) => e as String?).whereType<String>().toList(),
+          _ => null,
+        },
         height: json['height'],
         sha512Hash: json['sha512_hash'],
         size: json['size'],
