@@ -27,7 +27,7 @@ class QuickPreviewImageDialog extends ConsumerWidget {
     final gridThumbnailUrlBuilder = ref.watch(
       gridThumbnailUrlGeneratorProvider(config),
     );
-    final placeholderImageUrl = gridThumbnailUrlBuilder.generateUrl(
+    final placeholderMedia = gridThumbnailUrlBuilder.resolve(
       post,
       settings: ref.watch(gridThumbnailSettingsProvider(config)),
     );
@@ -55,7 +55,10 @@ class QuickPreviewImageDialog extends ConsumerWidget {
                   imageUrlBuilder: (post) => post.isVideo
                       ? post.videoThumbnailUrl
                       : post.sampleImageUrl,
-                  thumbnailUrlBuilder: (post) => placeholderImageUrl,
+                  mediaAspectRatioBuilder: (post) => post.isVideo
+                      ? post.effectiveVideoThumbnailAspectRatio
+                      : post.effectiveSampleAspectRatio,
+                  thumbnailUrlBuilder: (post) => placeholderMedia.url,
                   imageCacheManager: ref.watch(
                     defaultImageCacheManagerProvider,
                   ),

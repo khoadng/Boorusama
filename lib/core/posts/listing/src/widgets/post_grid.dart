@@ -25,6 +25,8 @@ import '../../widgets.dart';
 import '../_internal/raw_post_grid.dart';
 import '../_internal/sliver_post_grid.dart';
 import '../providers/internal_providers.dart';
+import '../providers/providers.dart';
+import '../types/grid_thumbnail_url_generator.dart';
 import '../types/page_mode.dart';
 import 'infinite_scroll_listener.dart';
 import 'post_grid_controller.dart';
@@ -529,6 +531,15 @@ class _SliverGrid<T extends Post> extends ConsumerWidget {
     final appErrorTranslator = ref.watch(
       appErrorTranslatorProvider(ref.watchConfigAuth),
     );
+    final auth = ref.watchConfigAuth;
+    final gridThumbnailUrlBuilder = ref.watch(
+      gridThumbnailUrlGeneratorProvider(auth),
+    );
+    final gridThumbnailSettings = ref.watch(
+      gridThumbnailSettingsProvider(auth),
+    );
+    final placeholderAspectRatio = gridThumbnailUrlBuilder
+        .resolveLoadingPlaceholderAspectRatio(settings: gridThumbnailSettings);
 
     return SliverPostGrid(
       itemBuilder: itemBuilder,
@@ -540,6 +551,7 @@ class _SliverGrid<T extends Post> extends ConsumerWidget {
       listType: imageListType,
       spacing: imageGridSpacing,
       aspectRatio: imageGridAspectRatio,
+      placeholderAspectRatio: placeholderAspectRatio,
       postsPerPage: postsPerPage,
       borderRadius: BorderRadius.circular(imageGridBorderRadius),
       httpHandshakeErrorActionBuilder: (context, error) =>

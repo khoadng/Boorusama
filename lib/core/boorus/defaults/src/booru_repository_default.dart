@@ -29,7 +29,6 @@ import '../../../posts/details/types.dart';
 import '../../../posts/details_parts/widgets.dart';
 import '../../../posts/favorites/providers.dart';
 import '../../../posts/favorites/types.dart';
-import '../../../posts/listing/providers.dart';
 import '../../../posts/listing/types.dart';
 import '../../../posts/post/routes.dart';
 import '../../../posts/post/types.dart';

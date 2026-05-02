@@ -18,6 +18,7 @@ class SliverPostGridPlaceHolder extends ConsumerWidget {
     this.listType,
     this.spacing,
     this.aspectRatio,
+    this.placeholderAspectRatio,
     this.borderRadius,
     this.postsPerPage,
   });
@@ -26,6 +27,7 @@ class SliverPostGridPlaceHolder extends ConsumerWidget {
   final ImageListType? listType;
   final double? spacing;
   final double? aspectRatio;
+  final double? placeholderAspectRatio;
   final BorderRadius? borderRadius;
   final int? postsPerPage;
 
@@ -59,6 +61,7 @@ class SliverPostGridPlaceHolder extends ConsumerWidget {
                 return createRandomPlaceholderContainer(
                   context,
                   borderRadius: imageBorderRadius,
+                  aspectRatio: placeholderAspectRatio,
                 );
               },
             ),

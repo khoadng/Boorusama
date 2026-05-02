@@ -80,7 +80,7 @@ class DefaultDanbooruImageGridItem extends StatelessWidget {
                           gridThumbnailSettingsProvider(config),
                         );
 
-                        final imgUrl = gridThumbnailUrlBuilder.generateUrl(
+                        final media = gridThumbnailUrlBuilder.resolve(
                           post,
                           settings: gridThumbnailSettings,
                         );
@@ -109,10 +109,10 @@ class DefaultDanbooruImageGridItem extends StatelessWidget {
                                         controller: controller,
                                         initialIndex: index,
                                         scrollController: autoScrollController,
-                                        initialThumbnailUrl: imgUrl,
+                                        initialThumbnailUrl: media.url,
                                       );
                                     }),
-                          image: _buildImage(post, imgUrl),
+                          image: _buildImage(post, media),
                           score: post.isBanned ? null : post.score,
                           blockOverlay:
                               blockOverlay ??
@@ -241,7 +241,10 @@ class DefaultDanbooruImageGridItem extends StatelessWidget {
     );
   }
 
-  Widget _buildImage(DanbooruPost post, String imgUrl) {
+  Widget _buildImage(
+    DanbooruPost post,
+    GridThumbnailMedia media,
+  ) {
     return Consumer(
       builder: (_, ref, _) {
         final imageListType = ref.watch(
@@ -258,14 +261,16 @@ class DefaultDanbooruImageGridItem extends StatelessWidget {
 
         return BooruImage(
           config: ref.watchConfigAuth,
-          aspectRatio: post.isBanned ? 0.8 : post.aspectRatio,
-          imageUrl: imgUrl,
+          aspectRatio: post.isBanned ? 0.8 : media.aspectRatio,
+          imageUrl: media.url,
           borderRadius: BorderRadius.circular(
             imageBorderRadius,
           ),
           forceCover: imageListType == ImageListType.standard,
           fit: imageListType == ImageListType.classic ? BoxFit.contain : null,
-          placeholderUrl: post.thumbnailImageUrl,
+          placeholderUrl: media.placeholderUrl,
+          placeholderAspectRatio: media.placeholderAspectRatio,
+          placeholderFit: media.placeholderFit,
         );
       },
     );

@@ -18,6 +18,7 @@ import '../../../post/types.dart';
 import '../../../post/widgets.dart';
 import '../../widgets.dart';
 import '../providers/providers.dart';
+import '../types/grid_thumbnail_url_generator.dart';
 import '../types/image_list_type.dart';
 import 'post_grid_controller.dart';
 
@@ -74,14 +75,20 @@ class DefaultImageGridItem<T extends Post> extends StatelessWidget {
                           gridThumbnailUrlGeneratorProvider(config),
                         );
 
-                        final imgUrl =
-                            imageUrl ??
-                            gridThumbnailUrlBuilder.generateUrl(
-                              post,
-                              settings: ref.watch(
-                                gridThumbnailSettingsProvider(config),
-                              ),
-                            );
+                        final thumbnailSettings = ref.watch(
+                          gridThumbnailSettingsProvider(config),
+                        );
+                        final media = imageUrl != null
+                            ? GridThumbnailMedia(
+                                url: imageUrl!,
+                                aspectRatio: post.aspectRatio,
+                                placeholderUrl: post.thumbnailImageUrl,
+                                placeholderAspectRatio: post.aspectRatio,
+                              )
+                            : gridThumbnailUrlBuilder.resolve(
+                                post,
+                                settings: thumbnailSettings,
+                              );
 
                         return SliverPostGridImageGridItem(
                           post: post,
@@ -95,7 +102,7 @@ class DefaultImageGridItem<T extends Post> extends StatelessWidget {
                                   controller: controller,
                                   initialIndex: index,
                                   scrollController: autoScrollController,
-                                  initialThumbnailUrl: imgUrl,
+                                  initialThumbnailUrl: media.url,
                                 );
                               },
                           quickActionButton: !multiSelect
@@ -109,8 +116,7 @@ class DefaultImageGridItem<T extends Post> extends StatelessWidget {
                           ),
                           score: post.score,
                           image: _Image(
-                            post: post,
-                            imageUrl: imgUrl,
+                            media: media,
                             imageCacheManager: imageCacheManager,
                             config: imageConfig,
                           ),
@@ -147,15 +153,13 @@ class DefaultImageGridItem<T extends Post> extends StatelessWidget {
 
 class _Image<T extends Post> extends ConsumerWidget {
   const _Image({
-    required this.post,
-    required this.imageUrl,
+    required this.media,
     super.key,
     this.imageCacheManager,
     this.config,
   });
 
-  final T post;
-  final String imageUrl;
+  final GridThumbnailMedia media;
   final ImageCacheManager? imageCacheManager;
   final BooruConfigAuth? config;
 
@@ -170,14 +174,16 @@ class _Image<T extends Post> extends ConsumerWidget {
 
     return BooruImage(
       config: config ?? ref.watchConfigAuth,
-      aspectRatio: post.aspectRatio,
-      imageUrl: imageUrl,
+      aspectRatio: media.aspectRatio,
+      imageUrl: media.url,
       borderRadius: BorderRadius.circular(
         imageBorderRadius,
       ),
       forceCover: imageListType == ImageListType.standard,
       fit: imageListType == ImageListType.classic ? BoxFit.contain : null,
-      placeholderUrl: post.thumbnailImageUrl,
+      placeholderUrl: media.placeholderUrl,
+      placeholderAspectRatio: media.placeholderAspectRatio,
+      placeholderFit: media.placeholderFit,
       imageCacheManager: imageCacheManager,
     );
   }

@@ -35,6 +35,8 @@ class PostDetailsItem<T extends Post> extends ConsumerStatefulWidget {
     required this.viewerConfig,
     required this.gestureConfig,
     required this.imageUrlBuilder,
+    required this.mediaAspectRatioBuilder,
+    required this.videoAspectRatioBuilder,
     super.key,
   });
 
@@ -48,6 +50,8 @@ class PostDetailsItem<T extends Post> extends ConsumerStatefulWidget {
   final BooruConfigViewer viewerConfig;
   final PostGestureConfig? gestureConfig;
   final String Function(T post) imageUrlBuilder;
+  final double? Function(T post) mediaAspectRatioBuilder;
+  final double? Function(T post) videoAspectRatioBuilder;
 
   @override
   ConsumerState<PostDetailsItem<T>> createState() => _PostDetailsItemState<T>();
@@ -158,6 +162,8 @@ class _PostDetailsItemState<T extends Post>
                         config: widget.authConfig,
                         viewer: widget.viewerConfig,
                         imageUrlBuilder: widget.imageUrlBuilder,
+                        mediaAspectRatioBuilder: widget.mediaAspectRatioBuilder,
+                        videoAspectRatioBuilder: widget.videoAspectRatioBuilder,
                         imageCacheManager: widget.imageCacheManager,
                         // This is used to make sure we have a thumbnail to show instead of a black placeholder
                         thumbnailUrlBuilder:

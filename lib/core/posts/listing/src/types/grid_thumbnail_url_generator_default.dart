@@ -5,83 +5,125 @@ import 'animated_posts_default_state.dart';
 import 'grid_size.dart';
 import 'grid_thumbnail_url_generator.dart';
 
-String defaultImageQualityMapper(
+GridThumbnailMedia defaultGridThumbnailMedia(
   Post post,
   GridThumbnailSettings settings,
 ) {
-  return switch (settings.imageQuality) {
-    ImageQuality.automatic => post.thumbnailImageUrl,
-    ImageQuality.low => post.thumbnailImageUrl,
-    ImageQuality.high =>
-      post.isVideo
-          ? post.thumbnailImageUrl
-          : switch (settings.gridSize) {
-              GridSize.micro || GridSize.tiny => post.thumbnailImageUrl,
-              _ => post.sampleImageUrl,
-            },
-    ImageQuality.highest =>
-      post.isVideo
-          ? post.thumbnailImageUrl
-          : switch (settings.gridSize) {
-              GridSize.micro || GridSize.tiny => post.thumbnailImageUrl,
-              _ => post.originalImageUrl,
-            },
-    ImageQuality.original =>
-      post.isVideo ? post.thumbnailImageUrl : post.originalImageUrl,
-  };
-}
-
-String defaultGifImageQualityMapper(
-  Post post,
-  GridThumbnailSettings settings,
-) {
-  return switch (settings.imageQuality) {
-    ImageQuality.automatic => switch (settings.animatedPostsDefaultState) {
-      AnimatedPostsDefaultState.autoplay => post.sampleImageUrl,
-      AnimatedPostsDefaultState.static => post.thumbnailImageUrl,
+  final aspectRatio = switch (post.isGif) {
+    true => switch (settings.imageQuality) {
+      ImageQuality.automatic => switch (settings.animatedPostsDefaultState) {
+        AnimatedPostsDefaultState.autoplay => post.effectiveSampleAspectRatio,
+        AnimatedPostsDefaultState.static => post.effectiveThumbnailAspectRatio,
+      },
+      ImageQuality.low => post.effectiveThumbnailAspectRatio,
+      ImageQuality.high => post.effectiveSampleAspectRatio,
+      ImageQuality.highest => post.effectiveSampleAspectRatio,
+      ImageQuality.original => post.effectiveOriginalAspectRatio,
     },
-    ImageQuality.low => post.thumbnailImageUrl,
-    ImageQuality.high => post.sampleImageUrl,
-    ImageQuality.highest => post.sampleImageUrl,
-    ImageQuality.original => post.originalImageUrl,
+    false => switch (settings.imageQuality) {
+      ImageQuality.automatic => post.effectiveThumbnailAspectRatio,
+      ImageQuality.low => post.effectiveThumbnailAspectRatio,
+      ImageQuality.high =>
+        post.isVideo
+            ? post.effectiveVideoThumbnailAspectRatio
+            : switch (settings.gridSize) {
+                GridSize.micro ||
+                GridSize.tiny => post.effectiveThumbnailAspectRatio,
+                _ => post.effectiveSampleAspectRatio,
+              },
+      ImageQuality.highest =>
+        post.isVideo
+            ? post.effectiveVideoThumbnailAspectRatio
+            : switch (settings.gridSize) {
+                GridSize.micro ||
+                GridSize.tiny => post.effectiveThumbnailAspectRatio,
+                _ => post.effectiveOriginalAspectRatio,
+              },
+      ImageQuality.original =>
+        post.isVideo
+            ? post.effectiveVideoThumbnailAspectRatio
+            : post.effectiveOriginalAspectRatio,
+    },
   };
+
+  return GridThumbnailMedia(
+    url: switch (post.isGif) {
+      true => switch (settings.imageQuality) {
+        ImageQuality.automatic => switch (settings.animatedPostsDefaultState) {
+          AnimatedPostsDefaultState.autoplay => post.sampleImageUrl,
+          AnimatedPostsDefaultState.static => post.thumbnailImageUrl,
+        },
+        ImageQuality.low => post.thumbnailImageUrl,
+        ImageQuality.high => post.sampleImageUrl,
+        ImageQuality.highest => post.sampleImageUrl,
+        ImageQuality.original => post.originalImageUrl,
+      },
+      false => switch (settings.imageQuality) {
+        ImageQuality.automatic => post.thumbnailImageUrl,
+        ImageQuality.low => post.thumbnailImageUrl,
+        ImageQuality.high =>
+          post.isVideo
+              ? post.thumbnailImageUrl
+              : switch (settings.gridSize) {
+                  GridSize.micro || GridSize.tiny => post.thumbnailImageUrl,
+                  _ => post.sampleImageUrl,
+                },
+        ImageQuality.highest =>
+          post.isVideo
+              ? post.thumbnailImageUrl
+              : switch (settings.gridSize) {
+                  GridSize.micro || GridSize.tiny => post.thumbnailImageUrl,
+                  _ => post.originalImageUrl,
+                },
+        ImageQuality.original =>
+          post.isVideo ? post.thumbnailImageUrl : post.originalImageUrl,
+      },
+    },
+    aspectRatio: aspectRatio,
+    placeholderUrl: post.thumbnailImageUrl,
+    placeholderAspectRatio: aspectRatio,
+  );
 }
 
-String thumbnailOnlyGifImageQualityMapper(
+GridThumbnailMedia _thumbnailOnlyGridThumbnailMedia(
   Post post,
   GridThumbnailSettings settings,
-) => post.thumbnailImageUrl;
+) {
+  final aspectRatio = post.effectiveThumbnailAspectRatio;
 
-String thumbnailOnlyImageQualityMapper(
-  Post post,
-  GridThumbnailSettings settings,
-) => post.thumbnailImageUrl;
+  return GridThumbnailMedia(
+    url: post.thumbnailImageUrl,
+    aspectRatio: aspectRatio,
+    placeholderUrl: post.thumbnailImageUrl,
+    placeholderAspectRatio: aspectRatio,
+  );
+}
 
-class DefaultGridThumbnailUrlGenerator implements GridThumbnailUrlGenerator {
+class DefaultGridThumbnailUrlGenerator
+    implements
+        GridThumbnailUrlGenerator,
+        GridLoadingPlaceholderAspectRatioResolver {
   const DefaultGridThumbnailUrlGenerator({
-    this.imageQualityMapper,
-    this.gifImageQualityMapper,
+    this.mediaMapper,
+    this.loadingPlaceholderAspectRatioResolver,
   });
 
   const DefaultGridThumbnailUrlGenerator.thumbnailOnly()
-    : imageQualityMapper = thumbnailOnlyImageQualityMapper,
-      gifImageQualityMapper = thumbnailOnlyGifImageQualityMapper;
+    : mediaMapper = _thumbnailOnlyGridThumbnailMedia,
+      loadingPlaceholderAspectRatioResolver = null;
 
-  final ImageQualityMapper? imageQualityMapper;
-  final GifImageQualityMapper? gifImageQualityMapper;
-
-  GifImageQualityMapper get _gifMapper =>
-      gifImageQualityMapper ?? defaultGifImageQualityMapper;
-
-  ImageQualityMapper get _imageMapper =>
-      imageQualityMapper ?? defaultImageQualityMapper;
+  final GridThumbnailMediaMapper? mediaMapper;
+  final double? Function(GridThumbnailSettings settings)?
+  loadingPlaceholderAspectRatioResolver;
 
   @override
-  String generateUrl(
+  GridThumbnailMedia resolve(
     Post post, {
     required GridThumbnailSettings settings,
-  }) => switch (post.isGif) {
-    true => _gifMapper(post, settings),
-    false => _imageMapper(post, settings),
-  };
+  }) => (mediaMapper ?? defaultGridThumbnailMedia)(post, settings);
+
+  @override
+  double? resolveLoadingPlaceholderAspectRatio({
+    required GridThumbnailSettings settings,
+  }) => loadingPlaceholderAspectRatioResolver?.call(settings);
 }

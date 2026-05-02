@@ -87,6 +87,10 @@ class _DanbooruPostDetailsPageState extends State<DanbooruPostDetailsPage> {
                     detailsController: detailsController,
                     imageUrlBuilder: (post) =>
                         mediaUrlResolver.resolveMediaUrl(post, viewer),
+                    mediaAspectRatioBuilder: (post) =>
+                        mediaUrlResolver.resolveMediaAspectRatio(post, viewer),
+                    videoAspectRatioBuilder: (post) =>
+                        mediaUrlResolver.resolveVideoAspectRatio(post, viewer),
                   );
                 },
                 actions: defaultActions(

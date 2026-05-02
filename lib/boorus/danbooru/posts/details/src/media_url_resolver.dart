@@ -47,4 +47,16 @@ class DanbooruMediaUrlResolver implements MediaUrlResolver {
     Post post,
     BooruConfigViewer config,
   ) => post.videoUrl;
+
+  @override
+  double? resolveMediaAspectRatio(
+    Post post,
+    BooruConfigViewer config,
+  ) => post.aspectRatio;
+
+  @override
+  double? resolveVideoAspectRatio(
+    Post post,
+    BooruConfigViewer config,
+  ) => post.effectiveVideoAspectRatio;
 }

@@ -94,10 +94,12 @@ class _UploaderPostsSectionState<T extends Post>
                                   posts: data,
                                   auth: auth,
                                   limit: effectiveLimit,
-                                  imageUrl: (p) => thumbUrlBuilder.generateUrl(
-                                    p,
-                                    settings: thumbSettings,
-                                  ),
+                                  imageUrl: (p) => thumbUrlBuilder
+                                      .resolve(
+                                        p,
+                                        settings: thumbSettings,
+                                      )
+                                      .url,
                                   onShowAll: () => _goToUploaderPage(q),
                                 )
                               : const SliverSizedBox(),

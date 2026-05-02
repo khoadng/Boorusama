@@ -24,6 +24,8 @@ class BooruImage extends ConsumerWidget {
     required this.config,
     super.key,
     this.placeholderUrl,
+    this.placeholderAspectRatio,
+    this.placeholderFit,
     this.borderRadius,
     this.fit,
     this.aspectRatio = 1,
@@ -40,6 +42,8 @@ class BooruImage extends ConsumerWidget {
   final BooruConfigAuth config;
   final String imageUrl;
   final String? placeholderUrl;
+  final double? placeholderAspectRatio;
+  final BoxFit? placeholderFit;
   final BorderRadius? borderRadius;
   final BoxFit? fit;
   final double? aspectRatio;
@@ -72,6 +76,8 @@ class BooruImage extends ConsumerWidget {
       dio: dio,
       imageUrl: imageUrl,
       placeholderUrl: placeholderUrl,
+      placeholderAspectRatio: placeholderAspectRatio,
+      placeholderFit: placeholderFit,
       borderRadius: borderRadius,
       fit: fit,
       aspectRatio: aspectRatio ?? fallbackAspectRatio,
@@ -96,6 +102,8 @@ class BooruRawImage extends StatelessWidget {
     required this.imageUrl,
     super.key,
     this.placeholderUrl,
+    this.placeholderAspectRatio,
+    this.placeholderFit,
     this.borderRadius,
     this.fit,
     this.aspectRatio = 1,
@@ -116,6 +124,8 @@ class BooruRawImage extends StatelessWidget {
   final Dio dio;
   final String imageUrl;
   final String? placeholderUrl;
+  final double? placeholderAspectRatio;
+  final BoxFit? placeholderFit;
   final BorderRadius? borderRadius;
   final BoxFit? fit;
   final double? aspectRatio;
@@ -190,19 +200,25 @@ class BooruRawImage extends StatelessWidget {
                                 );
 
                             return hasNetworkPlaceholder
-                                ? ExtendedImage.network(
-                                    url,
-                                    dio: dio,
-                                    headers: headers,
-                                    borderRadius: borderRadius,
-                                    width: width,
-                                    height: height,
-                                    fit: fit,
-                                    fetchStrategy: _fetchStrategy,
-                                    placeholderWidget: imagePlaceHolder,
-                                    platform: Theme.of(context).platform,
-                                    androidVersion: androidVersion,
-                                    cacheManager: imageCacheManager,
+                                ? _wrapPlaceholderAspectRatio(
+                                    ExtendedImage.network(
+                                      url,
+                                      dio: dio,
+                                      headers: headers,
+                                      borderRadius: borderRadius,
+                                      width: placeholderAspectRatio == null
+                                          ? width
+                                          : null,
+                                      height: placeholderAspectRatio == null
+                                          ? height
+                                          : null,
+                                      fit: placeholderFit ?? fit,
+                                      fetchStrategy: _fetchStrategy,
+                                      placeholderWidget: imagePlaceHolder,
+                                      platform: Theme.of(context).platform,
+                                      androidVersion: androidVersion,
+                                      cacheManager: imageCacheManager,
+                                    ),
                                   )
                                 : imagePlaceHolder;
                           },
@@ -216,6 +232,21 @@ class BooruRawImage extends StatelessWidget {
         },
       ),
     );
+  }
+
+  Widget _wrapPlaceholderAspectRatio(Widget child) {
+    final aspectRatio = placeholderAspectRatio;
+
+    return aspectRatio == null
+        ? child
+        : Center(
+            child: AspectRatio(
+              aspectRatio: aspectRatio,
+              child: SizedBox.expand(
+                child: child,
+              ),
+            ),
+          );
   }
 }
 

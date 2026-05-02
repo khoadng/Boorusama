@@ -16,6 +16,16 @@ abstract class MediaUrlResolver {
     Post post,
     BooruConfigViewer config,
   );
+
+  double? resolveMediaAspectRatio(
+    Post post,
+    BooruConfigViewer config,
+  );
+
+  double? resolveVideoAspectRatio(
+    Post post,
+    BooruConfigViewer config,
+  );
 }
 
 class DefaultMediaUrlResolver implements MediaUrlResolver {
@@ -55,10 +65,59 @@ class DefaultMediaUrlResolver implements MediaUrlResolver {
             };
 
   @override
+  double? resolveMediaAspectRatio(
+    Post post,
+    BooruConfigViewer config,
+  ) => post.isGif
+      ? post.effectiveSampleAspectRatio
+      : config.imageDetaisQuality.toOption().fold(
+              () => switch (imageQuality) {
+                ImageQuality.low => post.effectiveThumbnailAspectRatio,
+                ImageQuality.original =>
+                  post.isVideo
+                      ? post.effectiveVideoThumbnailAspectRatio
+                      : post.effectiveOriginalAspectRatio,
+                _ =>
+                  post.isVideo
+                      ? post.effectiveVideoThumbnailAspectRatio
+                      : post.effectiveSampleAspectRatio,
+              },
+              (quality) => switch (stringToGeneralPostQualityType(quality)) {
+                GeneralPostQualityType.preview =>
+                  post.effectiveThumbnailAspectRatio,
+                GeneralPostQualityType.sample =>
+                  post.isVideo
+                      ? post.effectiveVideoThumbnailAspectRatio
+                      : post.effectiveSampleAspectRatio,
+                GeneralPostQualityType.original =>
+                  post.isVideo
+                      ? post.effectiveVideoThumbnailAspectRatio
+                      : post.effectiveOriginalAspectRatio,
+              },
+            ) ??
+            switch (imageQuality) {
+              ImageQuality.low => post.effectiveThumbnailAspectRatio,
+              ImageQuality.original =>
+                post.isVideo
+                    ? post.effectiveVideoThumbnailAspectRatio
+                    : post.effectiveOriginalAspectRatio,
+              _ =>
+                post.isVideo
+                    ? post.effectiveVideoThumbnailAspectRatio
+                    : post.effectiveSampleAspectRatio,
+            };
+
+  @override
   String resolveVideoUrl(
     Post post,
     BooruConfigViewer config,
   ) => post.videoUrl;
+
+  @override
+  double? resolveVideoAspectRatio(
+    Post post,
+    BooruConfigViewer config,
+  ) => post.effectiveVideoAspectRatio;
 }
 
 class SampleMediaUrlResolver implements MediaUrlResolver {
@@ -71,8 +130,20 @@ class SampleMediaUrlResolver implements MediaUrlResolver {
   ) => post.sampleImageUrl;
 
   @override
+  double? resolveMediaAspectRatio(
+    Post post,
+    BooruConfigViewer config,
+  ) => post.effectiveSampleAspectRatio;
+
+  @override
   String resolveVideoUrl(
     Post post,
     BooruConfigViewer config,
   ) => post.videoUrl;
+
+  @override
+  double? resolveVideoAspectRatio(
+    Post post,
+    BooruConfigViewer config,
+  ) => post.effectiveVideoAspectRatio;
 }

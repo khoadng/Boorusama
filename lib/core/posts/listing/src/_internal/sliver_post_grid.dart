@@ -26,6 +26,7 @@ class SliverPostGrid<T extends Post> extends StatelessWidget {
     this.listType,
     this.spacing,
     this.aspectRatio,
+    this.placeholderAspectRatio,
     this.borderRadius,
     this.postsPerPage,
     this.httpErrorActionBuilder,
@@ -37,6 +38,7 @@ class SliverPostGrid<T extends Post> extends StatelessWidget {
   final ImageListType? listType;
   final double? spacing;
   final double? aspectRatio;
+  final double? placeholderAspectRatio;
   final BorderRadius? borderRadius;
   final int? postsPerPage;
 
@@ -154,6 +156,7 @@ class SliverPostGrid<T extends Post> extends StatelessWidget {
                       listType: listType,
                       spacing: spacing,
                       aspectRatio: aspectRatio,
+                      placeholderAspectRatio: placeholderAspectRatio,
                       borderRadius: borderRadius,
                       postsPerPage: postsPerPage,
                     )

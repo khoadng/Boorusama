@@ -17,6 +17,7 @@ import '../../../posts/details/widgets.dart';
 import '../../../posts/details_parts/types.dart';
 import '../../../posts/details_parts/widgets.dart';
 import '../../../posts/listing/providers.dart';
+import '../../../posts/post/types.dart';
 import '../../../posts/shares/widgets.dart';
 import '../../../posts/sources/types.dart';
 import '../../../widgets/adaptive_button_row.dart';
@@ -154,6 +155,8 @@ class _BookmarkDetailsPageState
           imageCacheManager: imageCacheManager,
           detailsController: controller,
           imageUrlBuilder: (post) => post.originalImageUrl,
+          mediaAspectRatioBuilder: (post) => post.effectiveOriginalAspectRatio,
+          videoAspectRatioBuilder: (post) => post.effectiveVideoAspectRatio,
         );
       },
     );

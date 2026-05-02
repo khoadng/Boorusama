@@ -58,7 +58,7 @@ class _DanbooruTagEditPageState extends ConsumerState<DanbooruTagEditPage> {
     final gridThumbnailUrlGenerator = ref.watch(
       gridThumbnailUrlGeneratorProvider(config),
     );
-    final placeholderUrl = gridThumbnailUrlGenerator.generateUrl(
+    final placeholderMedia = gridThumbnailUrlGenerator.resolve(
       widget.post,
       settings: gridThumbnailSettings,
     );
@@ -69,7 +69,7 @@ class _DanbooruTagEditPageState extends ConsumerState<DanbooruTagEditPage> {
         postId: widget.post.id,
         imageAspectRatio: widget.post.aspectRatio ?? 1,
         imageUrl: mediaResolver.resolveMediaUrl(widget.post, viewer),
-        placeholderUrl: placeholderUrl,
+        placeholderUrl: placeholderMedia.url,
         initialRating: initialRating,
         post: widget.post,
       ),

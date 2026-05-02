@@ -108,14 +108,13 @@ class _PostDetailsImagePreloaderState<T extends Post>
         ),
         final post when post.originalImageUrl == widget.imageUrlBuilder(post) =>
           ImageMedia.fromUrl(
-            gridThumbnailUrlBuilder.generateUrl(post, settings: settings),
+            gridThumbnailUrlBuilder.resolve(post, settings: settings).url,
             estimatedSizeBytes: post.fileSize,
           ),
         final post => ImageMedia(
-          thumbnailUrl: gridThumbnailUrlBuilder.generateUrl(
-            post,
-            settings: settings,
-          ),
+          thumbnailUrl: gridThumbnailUrlBuilder
+              .resolve(post, settings: settings)
+              .url,
           originalUrl: widget.imageUrlBuilder(post),
           estimatedSizeBytes: post.fileSize,
         ),

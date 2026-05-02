@@ -94,6 +94,10 @@ class _DefaultPostDetailsPageState<T extends Post>
               detailsController: controller,
               imageUrlBuilder: (post) =>
                   mediaUrlResolver.resolveMediaUrl(post, viewer),
+              mediaAspectRatioBuilder: (post) =>
+                  mediaUrlResolver.resolveMediaAspectRatio(post, viewer),
+              videoAspectRatioBuilder: (post) =>
+                  mediaUrlResolver.resolveVideoAspectRatio(post, viewer),
             );
           },
         ),

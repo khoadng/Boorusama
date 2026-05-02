@@ -67,9 +67,11 @@ final _aspectRatio = [
 Widget createRandomPlaceholderContainer(
   BuildContext context, {
   BorderRadius? borderRadius,
+  double? aspectRatio,
 }) {
   return AspectRatio(
-    aspectRatio: _aspectRatio[Random().nextInt(_aspectRatio.length - 1)],
+    aspectRatio:
+        aspectRatio ?? _aspectRatio[Random().nextInt(_aspectRatio.length - 1)],
     child: ImagePlaceHolder(
       borderRadius: borderRadius,
     ),

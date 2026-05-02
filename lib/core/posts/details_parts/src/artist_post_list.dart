@@ -99,11 +99,12 @@ class _DefaultInheritedArtistPostsSectionState<T extends Post>
                                                 auth: auth,
                                                 posts: data,
                                                 limit: effectiveLimit,
-                                                imageUrl: (p) =>
-                                                    thumbUrlBuilder.generateUrl(
+                                                imageUrl: (p) => thumbUrlBuilder
+                                                    .resolve(
                                                       p,
                                                       settings: thumbSettings,
-                                                    ),
+                                                    )
+                                                    .url,
                                                 onShowAll: () =>
                                                     _goToArtistPage(tag),
                                               )

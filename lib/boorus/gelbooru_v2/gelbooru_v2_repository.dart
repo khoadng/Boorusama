@@ -20,7 +20,6 @@ import '../../core/haptics/types.dart';
 import '../../core/notes/note/types.dart';
 import '../../core/posts/favorites/types.dart';
 import '../../core/posts/favorites/widgets.dart';
-import '../../core/posts/listing/providers.dart';
 import '../../core/posts/listing/types.dart';
 import '../../core/posts/post/providers.dart';
 import '../../core/posts/post/types.dart';

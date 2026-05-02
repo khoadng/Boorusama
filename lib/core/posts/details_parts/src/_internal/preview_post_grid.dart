@@ -60,6 +60,7 @@ class PreviewPostList<T extends Post> extends StatelessWidget {
                           aspectRatio: 0.6,
                           imageUrl: imageUrl(post),
                           placeholderUrl: post.thumbnailImageUrl,
+                          placeholderAspectRatio: 0.6,
                           fit: BoxFit.cover,
                         ),
                       ),

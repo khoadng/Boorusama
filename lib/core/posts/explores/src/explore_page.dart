@@ -180,6 +180,10 @@ class ExploreList extends ConsumerWidget {
         scrollDirection: Axis.horizontal,
         itemBuilder: (context, index) {
           final post = filteredPosts[index];
+          final mediaAspectRatio = mediaUrlResolver.resolveMediaAspectRatio(
+            post,
+            configViewer,
+          );
 
           return ExplicitContentBlockOverlay(
             rating: post.rating,
@@ -200,12 +204,13 @@ class ExploreList extends ConsumerWidget {
                   children: [
                     BooruImage(
                       config: configAuth,
-                      aspectRatio: post.aspectRatio,
+                      aspectRatio: mediaAspectRatio,
                       imageUrl: mediaUrlResolver.resolveMediaUrl(
                         post,
                         configViewer,
                       ),
                       placeholderUrl: post.thumbnailImageUrl,
+                      placeholderAspectRatio: mediaAspectRatio,
                     ),
                     if (post.isAnimated)
                       Positioned(

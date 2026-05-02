@@ -21,6 +21,7 @@ class PostDetailsImage<T extends Post> extends StatelessWidget {
   const PostDetailsImage({
     required this.config,
     required this.imageUrlBuilder,
+    required this.mediaAspectRatioBuilder,
     required this.thumbnailUrlBuilder,
     required this.post,
     super.key,
@@ -31,13 +32,15 @@ class PostDetailsImage<T extends Post> extends StatelessWidget {
   final BooruConfigAuth config;
   final String? heroTag;
   final String Function(T post)? imageUrlBuilder;
+  final double? Function(T post)? mediaAspectRatioBuilder;
   final String Function(T post)? thumbnailUrlBuilder;
   final ImageCacheManager? imageCacheManager;
   final T post;
 
   @override
   Widget build(BuildContext context) {
-    final aspectRatio = post.aspectRatio;
+    final aspectRatio =
+        mediaAspectRatioBuilder?.call(post) ?? post.effectiveSampleAspectRatio;
 
     return aspectRatio != null
         ? AspectRatio(
@@ -50,6 +53,7 @@ class PostDetailsImage<T extends Post> extends StatelessWidget {
                     post: post,
                     heroTag: heroTag,
                     imageUrlBuilder: imageUrlBuilder,
+                    mediaAspectRatioBuilder: mediaAspectRatioBuilder,
                     thumbnailUrlBuilder: thumbnailUrlBuilder,
                     imageCacheManager: imageCacheManager,
                   ),
@@ -63,6 +67,7 @@ class PostDetailsImage<T extends Post> extends StatelessWidget {
             post: post,
             heroTag: heroTag,
             imageUrlBuilder: imageUrlBuilder,
+            mediaAspectRatioBuilder: mediaAspectRatioBuilder,
             thumbnailUrlBuilder: thumbnailUrlBuilder,
             imageCacheManager: imageCacheManager,
           );
@@ -105,6 +110,7 @@ class RawPostDetailsImage<T extends Post> extends ConsumerWidget {
     super.key,
     this.heroTag,
     this.imageUrlBuilder,
+    this.mediaAspectRatioBuilder,
     this.thumbnailUrlBuilder,
     this.imageCacheManager,
     this.fit,
@@ -113,6 +119,7 @@ class RawPostDetailsImage<T extends Post> extends ConsumerWidget {
   final BooruConfigAuth config;
   final String? heroTag;
   final String Function(T post)? imageUrlBuilder;
+  final double? Function(T post)? mediaAspectRatioBuilder;
   final String Function(T post)? thumbnailUrlBuilder;
   final ImageCacheManager? imageCacheManager;
   final T post;
@@ -123,7 +130,9 @@ class RawPostDetailsImage<T extends Post> extends ConsumerWidget {
     final imageUrl = imageUrlBuilder != null
         ? imageUrlBuilder!(post)
         : post.thumbnailImageUrl;
-    final aspectRatio = post.aspectRatio;
+    final aspectRatio =
+        mediaAspectRatioBuilder?.call(post) ??
+        post.effectiveThumbnailAspectRatio;
 
     if (imageUrl.isEmpty) {
       return NullableAspectRatio(
@@ -137,19 +146,27 @@ class RawPostDetailsImage<T extends Post> extends ConsumerWidget {
     final gridThumbnailUrlBuilder = ref.watch(
       gridThumbnailUrlGeneratorProvider(config),
     );
+    final gridThumbnailSettings = ref.watch(
+      gridThumbnailSettingsProvider(config),
+    );
+    final gridMedia = gridThumbnailUrlBuilder.resolve(
+      post,
+      settings: gridThumbnailSettings,
+    );
     final placeholderImageUrl = thumbnailUrlBuilder != null
         ? thumbnailUrlBuilder!(post)
-        : gridThumbnailUrlBuilder.generateUrl(
-            post,
-            settings: ref.watch(gridThumbnailSettingsProvider(config)),
-          );
+        : gridMedia.url;
+    final placeholderAspectRatio = thumbnailUrlBuilder != null
+        ? aspectRatio
+        : gridMedia.aspectRatio;
 
     final image = BooruImage(
       config: config,
       imageUrl: imageUrl,
       placeholderUrl: placeholderImageUrl,
-      aspectRatio: post.aspectRatio,
-      forceCover: post.aspectRatio != null,
+      placeholderAspectRatio: placeholderAspectRatio,
+      aspectRatio: aspectRatio,
+      forceCover: aspectRatio != null,
       imageHeight: post.height,
       imageWidth: post.width,
       forceFill: true,
