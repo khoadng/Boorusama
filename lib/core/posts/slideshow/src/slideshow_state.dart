@@ -1,7 +1,6 @@
 // Project imports:
 import 'slideshow_direction.dart';
 import 'slideshow_options.dart';
-
 sealed class SlideshowState {
   const SlideshowState();
 
@@ -42,6 +41,60 @@ sealed class SlideshowState {
     SlideshowPaused(:final currentPage) => currentPage,
     _ => 0,
   };
+
+  SlideshowState withUpdatedTotalPages(int newTotalPages) => switch (this) {
+    // ignore: prefer_final_locals
+    SlideshowRunning s=> s._withUpdatedTotalPages(newTotalPages),
+    // ignore: prefer_final_locals
+    SlideshowPaused s => s._withUpdatedTotalPages(newTotalPages),
+    SlideshowIdle() => this,
+  };
+
+  /// Common adjustment logic for [SlideshowRunning] and [SlideshowPaused].
+  static ({
+    int currentPage,
+    List<int>? randomSequence,
+    int randomIndex,
+  }) _adjustForTotalPagesChange({
+    required int oldTotalPages,
+    required int newTotalPages,
+    required int currentPage,
+    List<int>? randomSequence,
+    required int randomIndex,
+  }) {
+
+    // Clamp current page to new bounds
+    final newCurrentPage = currentPage >= newTotalPages
+        ? newTotalPages - 1
+        : currentPage;
+
+    var newSequence = randomSequence;
+
+    if (randomSequence != null) {
+      if (newTotalPages > oldTotalPages) {
+        // Append newly added pages shuffled
+        final newPages = List.generate(
+          newTotalPages - oldTotalPages,
+          (i) => oldTotalPages + i,
+        )..shuffle();
+        newSequence = [...randomSequence, ...newPages];
+      } else if (newTotalPages < oldTotalPages) {
+        // Remove any pages beyond the new total
+        newSequence = randomSequence.where((p) => p < newTotalPages).toList();
+      }
+    }
+
+    var newRandomIndex = randomIndex;
+    if (newSequence != null && randomIndex >= newSequence.length) {
+      newRandomIndex = newSequence.length - 1;
+    }
+
+    return (
+      currentPage: newCurrentPage,
+      randomSequence: newSequence,
+      randomIndex: newRandomIndex,
+    );
+  }
 }
 
 final class SlideshowIdle extends SlideshowState {
@@ -95,11 +148,8 @@ final class SlideshowRunning extends SlideshowState {
         ? (randomIndex + 1) % (randomSequence?.length ?? 1)
         : randomIndex;
 
-    return SlideshowRunning(
+    return copyWith(
       currentPage: nextPage,
-      totalPages: totalPages,
-      direction: direction,
-      randomSequence: randomSequence,
       randomIndex: newRandomIndex,
     );
   }
@@ -107,7 +157,7 @@ final class SlideshowRunning extends SlideshowState {
   int _calculateNextPage() {
     return switch (direction) {
       SlideshowDirection.forward => (currentPage + 1) % totalPages,
-      SlideshowDirection.backward => (currentPage - 1) % totalPages,
+      SlideshowDirection.backward => (currentPage - 1 + totalPages) % totalPages,
       SlideshowDirection.random => _calculateRandomNextPage(),
     };
   }
@@ -138,6 +188,39 @@ final class SlideshowRunning extends SlideshowState {
       randomIndex: randomIndex,
     );
   }
+
+  SlideshowRunning copyWith({
+    int? currentPage,
+    int? totalPages,
+    SlideshowDirection? direction,
+    List<int>? randomSequence,
+    int? randomIndex,
+  }) {
+    return SlideshowRunning(
+      currentPage: currentPage ?? this.currentPage,
+      totalPages: totalPages ?? this.totalPages,
+      direction: direction ?? this.direction,
+      randomSequence: randomSequence ?? this.randomSequence,
+      randomIndex: randomIndex ?? this.randomIndex,
+    );
+  }
+
+  SlideshowRunning _withUpdatedTotalPages(int newTotalPages) {
+    final adjusted = SlideshowState._adjustForTotalPagesChange(
+      oldTotalPages: totalPages,
+      newTotalPages: newTotalPages,
+      currentPage: currentPage,
+      randomSequence: randomSequence,
+      randomIndex: randomIndex,
+    );
+
+    return copyWith(
+      currentPage: adjusted.currentPage,
+      totalPages: newTotalPages,
+      randomSequence: adjusted.randomSequence,
+      randomIndex: adjusted.randomIndex,
+    );
+  }
 }
 
 final class SlideshowPaused extends SlideshowState {
@@ -161,6 +244,37 @@ final class SlideshowPaused extends SlideshowState {
       direction: direction,
       randomSequence: randomSequence,
       randomIndex: randomIndex,
+    );
+  }
+
+  SlideshowPaused copyWith({
+    int? currentPage,
+    int? totalPages,
+    List<int>? randomSequence,
+    int? randomIndex,
+  }) {
+    return SlideshowPaused(
+      currentPage: currentPage ?? this.currentPage,
+      totalPages: totalPages ?? this.totalPages,
+      randomSequence: randomSequence ?? this.randomSequence,
+      randomIndex: randomIndex ?? this.randomIndex,
+    );
+  }
+
+  SlideshowPaused _withUpdatedTotalPages(int newTotalPages) {
+    final adjusted = SlideshowState._adjustForTotalPagesChange(
+      oldTotalPages: totalPages,
+      newTotalPages: newTotalPages,
+      currentPage: currentPage,
+      randomSequence: randomSequence,
+      randomIndex: randomIndex,
+    );
+
+    return copyWith(
+      currentPage: adjusted.currentPage,
+      totalPages: newTotalPages,
+      randomSequence: adjusted.randomSequence,
+      randomIndex: adjusted.randomIndex,
     );
   }
 }

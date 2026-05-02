@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../../../../settings/types.dart';
 import '../../../post/types.dart';
 import '../../../slideshow/types.dart';
+import '../routes/details_route_context.dart';
 import '../widgets/post_details_controller.dart';
 
 class PostDetailsData<T extends Post> {
@@ -13,7 +14,7 @@ class PostDetailsData<T extends Post> {
     required this.controller,
   });
 
-  final List<T> posts;
+  final DetailsPostsListing<T> posts;
   final PostDetailsController<T> controller;
 }
 

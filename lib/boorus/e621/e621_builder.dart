@@ -75,7 +75,7 @@ class E621Builder extends BaseBooruBuilder {
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder => (context, payload) {
-    final posts = payload.posts.map((e) => e as E621Post).toList();
+    final posts = payload.posts.listingMap((e) => e as E621Post);
 
     return PostDetailsScope(
       initialIndex: payload.initialIndex,

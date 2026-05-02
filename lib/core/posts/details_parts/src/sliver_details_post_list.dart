@@ -139,7 +139,7 @@ class SliverPreviewPostGrid<T extends Post> extends ConsumerWidget {
       isAI: post.isAI,
       onTap: () => goToPostDetailsPageFromPosts(
         ref: ref,
-        posts: posts,
+        posts: DetailsPostsListing.list(posts: posts),
         initialIndex: index,
         initialThumbnailUrl: post.thumbnailImageUrl,
       ),

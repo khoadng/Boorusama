@@ -295,7 +295,7 @@ class PostGridController<T extends Post> extends ChangeNotifier {
     _eventController.add(const PostControllerRefreshCompleted());
     notifyListeners();
   }
-
+  late Completer<void>? _fetchCompleter;
   // Loads more items
   Future<void> fetchMore({
     VoidCallback? onNoMoreData,
@@ -307,24 +307,30 @@ class PostGridController<T extends Post> extends ChangeNotifier {
     }
 
     _debounceTimer?.cancel();
+    _fetchCompleter = Completer<void>();  
     _debounceTimer = Timer(debounceDuration, () async {
-      _loading = true;
-      if (_pageMode == PageMode.infinite) {
-        _setPage(_page + 1);
-      }
-      notifyListeners();
+      try {
+        _loading = true;
+        if (_pageMode == PageMode.infinite) {
+          _setPage(_page + 1);
+        }
+        notifyListeners();
 
-      final newItems = await _fetchPosts(_page);
-      _hasMore = newItems.posts.isNotEmpty;
-      if (_hasMore) {
-        await _addAll(newItems.posts);
-      } else {
-        onNoMoreData?.call();
+        final newItems = await _fetchPosts(_page);
+        _hasMore = newItems.posts.isNotEmpty;
+        if (_hasMore) {
+          await _addAll(newItems.posts);
+        } else {
+          onNoMoreData?.call();
+        }
+        _loading = false;
+        count.value = newItems.total;
+        notifyListeners();
+      } finally {
+        _fetchCompleter!.complete();
       }
-      _loading = false;
-      count.value = newItems.total;
-      notifyListeners();
     });
+    return _fetchCompleter!.future; // allow awaiting the fetchMore completion
   }
 
   // Jump to a specific page without knowing the total pages and allowing page skips

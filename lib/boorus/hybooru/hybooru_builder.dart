@@ -30,7 +30,7 @@ class HybooruBuilder extends BaseBooruBuilder {
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder => (context, payload) {
-    final posts = payload.posts.map((e) => e as HybooruPost).toList();
+    final posts = payload.posts.listingMap((e) => e as HybooruPost);
 
     return PostDetailsScope(
       initialIndex: payload.initialIndex,

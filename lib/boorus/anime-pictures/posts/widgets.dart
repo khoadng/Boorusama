@@ -40,7 +40,7 @@ class AnimePicturesRelatedPostsSection extends ConsumerWidget {
                       mediaUrlResolver.resolveMediaUrl(post, configViewer),
                   onTap: (index) => goToPostDetailsPageFromPosts(
                     ref: ref,
-                    posts: posts,
+                    posts: DetailsPostsListing.list(posts: posts),
                     initialIndex: index,
                     initialThumbnailUrl: mediaUrlResolver.resolveMediaUrl(
                       posts[index],

@@ -17,7 +17,7 @@ import 'post_details_page_view.dart';
 class PostDetailsPageViewController extends ChangeNotifier {
   PostDetailsPageViewController({
     required this.initialPage,
-    required this.totalPage,
+    required this.totalPagesNotifier,
     required this.checkIfLargeScreen,
     this.disableAnimation = false,
     this.initialHideOverlay = false,
@@ -35,7 +35,7 @@ class PostDetailsPageViewController extends ChangeNotifier {
        _initialSlideshowOptions = slideshowOptions;
 
   final int initialPage;
-  final int totalPage;
+  final ValueNotifier<int> totalPagesNotifier;
   final bool initialHideOverlay;
   final double maxSize;
   final double thresholdSizeToExpand;
@@ -53,6 +53,7 @@ class PostDetailsPageViewController extends ChangeNotifier {
   final _sheetController = DraggableScrollableController();
   late final _slideshowController = SlideshowController(
     onNavigateToPage: createDefaultSlideshowNavigateCallback(_pageController),
+    totalPagesNotifier: totalPagesNotifier,
     options: _initialSlideshowOptions,
     onBeforeAdvance: onBeforeSlideshowAdvance,
   );
@@ -560,10 +561,7 @@ class PostDetailsPageViewController extends ChangeNotifier {
 
     hideAllUI();
 
-    _slideshowController.start(
-      page,
-      totalPage,
-    );
+    _slideshowController.start(page);
   }
 
   void stopSlideshow() {

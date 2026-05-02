@@ -20,7 +20,7 @@ class MoebooruPostDetailsPage extends StatelessWidget {
   const MoebooruPostDetailsPage({super.key});
 
   static Widget fromRouteData(DetailsRouteContext payload) {
-    final posts = payload.posts.map((e) => e as MoebooruPost).toList();
+    final posts = payload.posts.listingMap((e) => e as MoebooruPost);
 
     return PostDetailsScope(
       initialIndex: payload.initialIndex,
@@ -66,7 +66,7 @@ class _MoebooruPostDetailsPageState
   final _transformController = TransformationController();
   final _isInitPage = ValueNotifier(true);
 
-  List<MoebooruPost> get posts => data.posts;
+  DetailsPostsListing<MoebooruPost> get posts => data.posts;
   PostDetailsController<MoebooruPost> get controller => data.controller;
 
   @override

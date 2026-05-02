@@ -84,7 +84,7 @@ class SzurubooruBuilder extends BaseBooruBuilder {
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder => (context, payload) {
-    final posts = payload.posts.map((e) => e as SzurubooruPost).toList();
+    final posts = payload.posts.listingMap((e) => e as SzurubooruPost);
 
     return PostDetailsScope(
       initialIndex: payload.initialIndex,

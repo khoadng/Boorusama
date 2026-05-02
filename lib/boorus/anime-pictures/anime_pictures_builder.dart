@@ -52,7 +52,7 @@ class AnimePicturesBuilder extends BaseBooruBuilder {
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder => (context, payload) {
-    final posts = payload.posts.map((e) => e as AnimePicturesPost).toList();
+    final posts = payload.posts.listingMap((e) => e as AnimePicturesPost);
 
     return PostDetailsScope(
       initialIndex: payload.initialIndex,

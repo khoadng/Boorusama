@@ -58,7 +58,7 @@ class SankakuBuilder extends BaseBooruBuilder {
 
   @override
   PostDetailsPageBuilder get postDetailsPageBuilder => (context, payload) {
-    final posts = payload.posts.map((e) => e as SankakuPost).toList();
+    final posts = payload.posts.listingMap((e) => e as SankakuPost);
 
     return PostDetailsScope(
       initialIndex: payload.initialIndex,

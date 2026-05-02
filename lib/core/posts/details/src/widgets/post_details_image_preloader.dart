@@ -12,6 +12,7 @@ import '../../../listing/providers.dart';
 import '../../../media_preload/providers.dart';
 import '../../../media_preload/types.dart';
 import '../../../post/types.dart';
+import '../../routes.dart';
 import 'post_details_page_view_scope.dart';
 
 class PostDetailsImagePreloader<T extends Post> extends ConsumerStatefulWidget {
@@ -24,7 +25,7 @@ class PostDetailsImagePreloader<T extends Post> extends ConsumerStatefulWidget {
   });
 
   final BooruConfigAuth authConfig;
-  final List<T> posts;
+  final DetailsPostsListing<T> posts;
   final Widget child;
   final String Function(T post) imageUrlBuilder;
 
