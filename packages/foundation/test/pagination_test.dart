@@ -187,4 +187,42 @@ void main() {
       expect(pages, [1, 2, 3, 4]);
     });
   });
+
+  group('calculatePaginationInfo', () {
+    test('reserves width for large last page buttons', () {
+      final info = calculatePaginationInfo(
+        maxWidth: 260,
+        currentPage: 1,
+        totalResults: 9999999,
+        itemPerPage: 1,
+        showLastPage: true,
+      );
+
+      expect(info.pages, [1]);
+      expect(info.pageInputVisible, isFalse);
+    });
+
+    test('keeps more pages when no last page button is shown', () {
+      final info = calculatePaginationInfo(
+        maxWidth: 260,
+        currentPage: 1,
+        totalResults: 9999999,
+        itemPerPage: 1,
+        showLastPage: false,
+      );
+
+      expect(info.pages, [1, 2]);
+      expect(info.pageInputVisible, isTrue);
+    });
+  });
+
+  group('estimatePageButtonWidth', () {
+    test('grows with page digit count', () {
+      expect(estimatePageButtonWidth(1), 50);
+      expect(
+        estimatePageButtonWidth(9999999),
+        greaterThan(estimatePageButtonWidth(1)),
+      );
+    });
+  });
 }
