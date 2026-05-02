@@ -262,3 +262,12 @@
     protocol: https_1
     sites:
       - https://e-shuushuu.net/
+
+- nozomi:
+    metadata:
+      id: 35
+      display-name: Nozomi.la
+      single-site: true
+    protocol: https_2
+    sites:
+      - https://nozomi.la/

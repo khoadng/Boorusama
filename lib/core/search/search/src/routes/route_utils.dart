@@ -21,6 +21,7 @@ void goToSearchPage(
   int? position,
   QueryType? queryType,
   bool? fromSearchBar,
+  String? order,
 }) {
   ref.router.push(
     Uri(
@@ -32,6 +33,7 @@ void goToSearchPage(
         scrollPosition: position,
         queryType: queryType,
         fromSearchBar: fromSearchBar,
+        order: order,
       ).toQueryParams()) {
         final params when params.isNotEmpty => params,
         _ => null,

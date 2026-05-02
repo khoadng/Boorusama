@@ -1,0 +1,4 @@
+enum NozomiPostOrder {
+  date,
+  popular,
+}
