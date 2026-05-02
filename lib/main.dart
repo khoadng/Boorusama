@@ -38,7 +38,7 @@ void main() async {
 }
 
 Future<IAP> _initIap() async {
-  final logger = await loggerWith(AppLogger(initialLevel: LogLevel.info));
+  final logger = await loggerWith(AppLogger());
 
   if (isMobilePlatform()) {
     return (await initRevenuecatIap(logger)) ?? await initDummyIap();
