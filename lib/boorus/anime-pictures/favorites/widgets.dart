@@ -26,12 +26,15 @@ class AnimePicturesFavoritesPage extends ConsumerWidget {
     return FavoritesPageScaffold(
       favQueryBuilder: null,
       fetcher: (page) => TaskEither.Do(($) async {
-        final posts = await ref
+        final result = await ref
             .read(animePicturesClientProvider(config))
-            .getPosts(starsBy: uid, page: page)
-            .then((values) => values.map(dtoToAnimePicturesPost).toList());
+            .getPostsWithTotal(starsBy: uid, page: page);
+        final posts = result.posts.map(dtoToAnimePicturesPost).toList();
 
-        return posts.toResult();
+        return posts.toResult(
+          total: result.postsCount,
+          maxPage: result.appMaxPage,
+        );
       }),
     );
   }

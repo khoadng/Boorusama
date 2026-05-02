@@ -49,3 +49,10 @@ AnimePicturesPost dtoToAnimePicturesPost(
     ),
   );
 }
+
+extension AnimePicturesPostsDtoX on PostsDto {
+  int? get appMaxPage => switch (maxPages) {
+    final maxPages? => maxPages + 1,
+    _ => null,
+  };
+}

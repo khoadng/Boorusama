@@ -2,6 +2,40 @@
 import 'json_parsing.dart';
 import 'types.dart';
 
+class PostsDto {
+  const PostsDto({
+    required this.posts,
+    this.postsPerPage,
+    this.responsePostsCount,
+    this.pageNumber,
+    this.postsCount,
+    this.maxPages,
+  });
+
+  factory PostsDto.fromJson(Map<String, dynamic> json, String baseUrl) {
+    return PostsDto(
+      posts:
+          listFromJson(
+            json['posts'],
+            (item) => PostDto.fromJson(item, baseUrl),
+          ) ??
+          const [],
+      postsPerPage: intFromJson(json['posts_per_page']),
+      responsePostsCount: intFromJson(json['response_posts_count']),
+      pageNumber: intFromJson(json['page_number']),
+      postsCount: intFromJson(json['posts_count']),
+      maxPages: intFromJson(json['max_pages']),
+    );
+  }
+
+  final List<PostDto> posts;
+  final int? postsPerPage;
+  final int? responsePostsCount;
+  final int? pageNumber;
+  final int? postsCount;
+  final int? maxPages;
+}
+
 class PostDto {
   const PostDto({
     this.id,

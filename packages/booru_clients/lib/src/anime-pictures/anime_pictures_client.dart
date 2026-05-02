@@ -48,6 +48,24 @@ class AnimePicturesClient {
     int? starsBy,
     PostOrder? orderBy,
   }) async {
+    final result = await getPostsWithTotal(
+      tags: tags,
+      page: page,
+      limit: limit,
+      starsBy: starsBy,
+      orderBy: orderBy,
+    );
+
+    return result.posts;
+  }
+
+  Future<PostsDto> getPostsWithTotal({
+    List<String>? tags,
+    int? page,
+    int? limit,
+    int? starsBy,
+    PostOrder? orderBy,
+  }) async {
     final isEmpty = tags?.join(' ').isEmpty ?? true;
 
     final response = await _dio.get(
@@ -64,16 +82,13 @@ class AnimePicturesClient {
       },
     );
 
-    final results = response.data['posts'] as List;
-
-    return results
-        .map(
-          (item) => PostDto.fromJson(
-            item,
-            _dio.options.baseUrl,
-          ),
-        )
-        .toList();
+    return switch (response.data) {
+      final Map<String, dynamic> json => PostsDto.fromJson(
+        json,
+        _dio.options.baseUrl,
+      ),
+      _ => const PostsDto(posts: []),
+    };
   }
 
   Future<PostDetailsDto> getPostDetails({

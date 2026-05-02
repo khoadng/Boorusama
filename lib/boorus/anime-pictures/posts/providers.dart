@@ -35,13 +35,13 @@ final animePicturesPostRepoProvider =
             );
           },
           fetch: (tags, page, {limit, options}) async {
-            final posts = await client.getPosts(
+            final result = await client.getPostsWithTotal(
               tags: tags,
               page: page,
               limit: limit,
             );
 
-            return posts
+            return result.posts
                 .map(
                   (e) => dtoToAnimePicturesPost(
                     e,
@@ -53,7 +53,10 @@ final animePicturesPostRepoProvider =
                   ),
                 )
                 .toList()
-                .toResult();
+                .toResult(
+                  total: result.postsCount,
+                  maxPage: result.appMaxPage,
+                );
           },
           getSettings: () async => ref.read(imageListingSettingsProvider),
         );
