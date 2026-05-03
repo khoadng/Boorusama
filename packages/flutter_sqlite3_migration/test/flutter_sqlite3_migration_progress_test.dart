@@ -15,7 +15,7 @@ void main() {
     });
 
     tearDown(() {
-      db.dispose();
+      db.close();
     });
 
     test('tracks migration progress events correctly', () {

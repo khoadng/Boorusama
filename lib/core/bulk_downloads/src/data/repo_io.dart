@@ -36,7 +36,7 @@ final internalDownloadRepositoryProvider = FutureProvider<DownloadRepository>((
     logger: logger,
   );
 
-  ref.onDispose(() => db?.dispose());
+  ref.onDispose(() => db?.close());
 
   return _createRepository(logger, db);
 });
@@ -59,7 +59,7 @@ Future<DownloadRepository> _createRepository(
       );
       logger?.warn(_kServiceName, 'Fallback to empty repository');
 
-      db.dispose();
+      db.close();
       return DownloadRepositoryEmpty();
     }
   }

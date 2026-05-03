@@ -12,7 +12,7 @@ void main() {
     });
 
     tearDown(() {
-      db.dispose();
+      db.close();
     });
 
     test('runs migrations and sets user_version', () {
@@ -549,7 +549,7 @@ void main() {
     });
 
     tearDown(() {
-      db.dispose();
+      db.close();
     });
 
     test('executes out-of-order migrations in correct version sequence', () {

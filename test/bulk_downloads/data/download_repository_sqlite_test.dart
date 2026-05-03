@@ -32,7 +32,7 @@ void main() {
   });
 
   tearDown(() {
-    db.dispose();
+    db.close();
   });
 
   group('DownloadRepositorySqlite', () {

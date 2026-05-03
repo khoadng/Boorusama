@@ -24,7 +24,7 @@ void main() {
   });
 
   tearDown(() {
-    db.dispose();
+    db.close();
   });
 
   group('Running Sessions', () {

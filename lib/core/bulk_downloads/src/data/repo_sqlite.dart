@@ -669,7 +669,7 @@ class DownloadRepositorySqlite
         }
       });
     } finally {
-      batch.dispose();
+      batch.close();
     }
   }
 

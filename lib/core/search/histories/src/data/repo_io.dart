@@ -33,7 +33,7 @@ final searchHistoryRepoProvider = FutureProvider<SearchHistoryRepository>(
     }
 
     ref.onDispose(() {
-      db.dispose();
+      db.close();
     });
 
     try {
@@ -46,7 +46,7 @@ final searchHistoryRepoProvider = FutureProvider<SearchHistoryRepository>(
         )
         ..warn(_kServiceName, 'Fallback to empty search history repository');
 
-      db.dispose();
+      db.close();
       return EmptySearchHistoryRepository();
     }
   },

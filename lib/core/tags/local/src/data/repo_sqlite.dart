@@ -269,7 +269,7 @@ class TagCacheRepositorySqlite
           ]);
         }
       } finally {
-        stmt.dispose();
+        stmt.close();
       }
     });
   }
@@ -346,7 +346,7 @@ class TagCacheRepositorySqlite
   @override
   Future<void> dispose() async {
     if (!_disposed) {
-      db.dispose();
+      db.close();
       _disposed = true;
     }
   }

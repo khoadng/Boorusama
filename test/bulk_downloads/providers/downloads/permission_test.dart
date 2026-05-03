@@ -36,7 +36,7 @@ void main() {
     });
 
     tearDown(() {
-      db.dispose();
+      db.close();
       container.dispose();
     });
 

@@ -13,7 +13,7 @@ void main() {
     });
 
     tearDown(() {
-      db.dispose();
+      db.close();
     });
 
     test('creates migration history table', () {
@@ -150,7 +150,7 @@ void main() {
     });
 
     tearDown(() {
-      db.dispose();
+      db.close();
     });
 
     test('recreates corrupted history table schema', () {
@@ -223,7 +223,7 @@ void main() {
     });
 
     tearDown(() {
-      db.dispose();
+      db.close();
     });
 
     void setupDatabaseAtVersion2() {

@@ -13,7 +13,7 @@ void main() {
     });
 
     tearDown(() {
-      db.dispose();
+      db.close();
     });
 
     test('throws on non-positive target version', () {
