@@ -162,7 +162,20 @@
       "view_artist": "Просмотр художника",
       "none": "Нет",
       "toggle_bookmark": "Закладка",
-      "toggle_favorite": "Избранное"
+      "toggle_favorite": "Избранное",
+      "copy": "Копировать",
+      "media": "Медиа",
+      "links": "Ссылки",
+      "copy_image_description": "Копировать отображаемое изображение",
+      "copy_file_name": "Копировать имя файла",
+      "unavailable": "Недоступно",
+      "copy_post_link": "Копировать ссылку на пост",
+      "copy_source_link": "Копировать ссылку на источник",
+      "copy_image_link": "Копировать ссылку на изображение",
+      "copy_post_id": "Копировать ID поста",
+      "failed_to_get_image_url": "Не удалось получить URL изображения",
+      "failed_to_get_image_bytes": "Не удалось получить данные изображения",
+      "failed_to_copy_image": "Не удалось скопировать изображение: $e"
     },
     "statistics": {
       "stats_for_nerds": "Статистика для ботаников"

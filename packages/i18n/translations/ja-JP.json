@@ -140,7 +140,20 @@
       "slideshow": "スライドショー",
       "none": "なし",
       "toggle_bookmark": "ブックマーク切替",
-      "toggle_favorite": "お気に入り切替"
+      "toggle_favorite": "お気に入り切替",
+      "copy": "コピー",
+      "media": "メディア",
+      "links": "リンク",
+      "copy_image_description": "表示中の画像をコピー",
+      "copy_file_name": "ファイル名をコピー",
+      "unavailable": "利用不可",
+      "copy_post_link": "投稿リンクをコピー",
+      "copy_source_link": "ソースリンクをコピー",
+      "copy_image_link": "画像リンクをコピー",
+      "copy_post_id": "投稿IDをコピー",
+      "failed_to_get_image_url": "画像URLを取得できませんでした",
+      "failed_to_get_image_bytes": "画像データを取得できませんでした",
+      "failed_to_copy_image": "画像をコピーできませんでした: $e"
     },
     "statistics": {
       "average": "平均",

@@ -200,7 +200,20 @@
       "toggle_bookmark": "Toggle bookmark",
       "toggle_favorite": "Toggle favorite",
       "view_in_browser": "View in browser",
-      "view_original": "View original"
+      "view_original": "View original",
+      "copy": "Copy",
+      "media": "Media",
+      "links": "Links",
+      "copy_image_description": "Copy the displayed image",
+      "copy_file_name": "Copy file name",
+      "unavailable": "Unavailable",
+      "copy_post_link": "Copy post link",
+      "copy_source_link": "Copy source link",
+      "copy_image_link": "Copy image link",
+      "copy_post_id": "Copy post ID",
+      "failed_to_get_image_url": "Failed to get image URL",
+      "failed_to_get_image_bytes": "Failed to get image bytes",
+      "failed_to_copy_image": "Failed to copy image: $e"
     }
   },
   "comment": {

@@ -2,6 +2,7 @@
 - Add support for Nozomi
 - [Sankaku] Add favorite support
 - Add last-page jumping for sites that support it
+- Improve post details copy action with more media and link options
 - Improve Cloudflare/DDOS challenge handling
 - Improve data transfer reliability
 - Fix various site-specific issues

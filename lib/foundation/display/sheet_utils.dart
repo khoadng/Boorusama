@@ -55,6 +55,7 @@ Future<T?> showAdaptiveBottomSheet<T>(
           context: context,
           routeSettings: settings,
           builder: (context) => Dialog(
+            backgroundColor: backgroundColor,
             insetPadding: const EdgeInsets.symmetric(
               horizontal: 28,
               vertical: 24,

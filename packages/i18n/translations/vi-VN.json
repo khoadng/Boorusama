@@ -178,7 +178,20 @@
       "toggle_bookmark": "Bật/tắt đánh dấu",
       "toggle_favorite": "Bật/tắt yêu thích",
       "view_in_browser": "Xem bằng trình duyệt",
-      "view_original": "Xem ảnh gốc"
+      "view_original": "Xem ảnh gốc",
+      "copy": "Sao chép",
+      "media": "Phương tiện",
+      "links": "Liên kết",
+      "copy_image_description": "Sao chép ảnh đang hiển thị",
+      "copy_file_name": "Sao chép tên tệp",
+      "unavailable": "Không khả dụng",
+      "copy_post_link": "Sao chép liên kết bài đăng",
+      "copy_source_link": "Sao chép liên kết nguồn",
+      "copy_image_link": "Sao chép liên kết ảnh",
+      "copy_post_id": "Sao chép ID bài đăng",
+      "failed_to_get_image_url": "Không thể lấy URL ảnh",
+      "failed_to_get_image_bytes": "Không thể lấy dữ liệu ảnh",
+      "failed_to_copy_image": "Không thể sao chép ảnh: $e"
     },
     "votes": {
       "user_list": {

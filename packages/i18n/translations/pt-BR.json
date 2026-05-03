@@ -164,7 +164,20 @@
       "use_default": "Usar Padrão",
       "toggle_bookmark": "Alternar salvo",
       "toggle_favorite": "Alternar favorito",
-      "unfavorite": "Desfavoritar"
+      "unfavorite": "Desfavoritar",
+      "copy": "Copiar",
+      "media": "Mídia",
+      "links": "Links",
+      "copy_image_description": "Copiar a imagem exibida",
+      "copy_file_name": "Copiar nome do arquivo",
+      "unavailable": "Indisponível",
+      "copy_post_link": "Copiar link da postagem",
+      "copy_source_link": "Copiar link da fonte",
+      "copy_image_link": "Copiar link da imagem",
+      "copy_post_id": "Copiar ID da postagem",
+      "failed_to_get_image_url": "Falha ao obter URL da imagem",
+      "failed_to_get_image_bytes": "Falha ao obter dados da imagem",
+      "failed_to_copy_image": "Falha ao copiar imagem: $e"
     },
     "statistics": {
       "stats_for_nerds": "Estatísticas para nerds",
