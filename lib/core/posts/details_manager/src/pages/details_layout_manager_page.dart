@@ -1,5 +1,6 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -81,7 +82,7 @@ class DetailsLayoutManagerPage extends ConsumerWidget {
           child: Column(
             children: [
               _List(params: params),
-              const SizedBox(height: 16),
+              const SizedBox(height: 8),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -94,6 +95,9 @@ class DetailsLayoutManagerPage extends ConsumerWidget {
                     ),
                   ),
                 ],
+              ),
+              SizedBox(
+                height: MediaQuery.paddingOf(context).bottom,
               ),
             ],
           ),
@@ -199,6 +203,7 @@ class _List extends ConsumerWidget {
               ),
               onTap: () {
                 notifier.toggle(part);
+                HapticFeedback.selectionClick();
               },
             ),
           );
