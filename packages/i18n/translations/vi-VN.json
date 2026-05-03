@@ -10,7 +10,7 @@
       "add": "Thêm",
       "delete": "Xóa",
       "edit": "Sửa",
-      "ok": "Ô kê",
+      "ok": "OK",
       "cancel": "Huỷ",
       "duplicate": "Tạo bản sao",
       "select": "Chọn",
@@ -243,9 +243,9 @@
       "tag_limit": "Số thẻ đã đạt mức tối đa. Nâng cấp tài khoản để có thể dùng nhiều thẻ hơn.",
       "database_timeout": "Tìm kiếm bị hủy do tốn quá nhiều thời gian.",
       "rate_limited": "Bạn đã vượt giới hạn. Vui lòng thử lại sau",
-      "pagination_limit": "Đã đạt đến giới hạn phân trang, không thể cuộn thêm.",
-      "max_capacity": "Máy chủ đang quá tải và không thể xử lý thêm yêu cầu, vui lòng thử lại sau.",
-      "down": "Máy chủ đang sập, vui lòng thử lại sau.",
+      "pagination_limit": "Đã đạt đến giới hạn phân trang, không thể cuộn thêm",
+      "max_capacity": "Máy chủ đang quá tải và không thể xử lý thêm yêu cầu, vui lòng thử lại sau",
+      "down": "Máy chủ đang sập, vui lòng thử lại sau",
       "access_denied": "Truy cập bị từ chối",
       "forbidden": "Không có quyền truy cập",
       "unknown": "Lỗi máy chủ không xác định, vui lòng báo cho nhà phát triển",
@@ -379,13 +379,13 @@
       "image_viewer": "Trình xem ảnh",
       "slideshow": "Trình chiếu",
       "slideshow_interval": "Thời gian chuyển ảnh",
-      "slideshow_video_behavior": "Chế độ phát veo khi trình chiếu",
-      "slideshow_video_behavior_explanation": "Thiết lập cách chuyển trang khi đang phát veo",
+      "slideshow_video_behavior": "Chế độ phát video khi trình chiếu",
+      "slideshow_video_behavior_explanation": "Thiết lập cách chuyển trang khi đang phát video.",
       "slideshow_video_behaviors": {
         "wait_for_completion": "Chờ phát xong",
-        "wait_for_completion_description": "Chờ veo phát xong rồi mới chuyển sang trang tiếp theo",
+        "wait_for_completion_description": "Chờ video phát xong rồi mới chuyển sang trang tiếp theo",
         "fixed_interval": "Phát theo thời lượng cố định",
-        "fixed_interval_description": "Chuyển sang trang tiếp theo sau thời lượng cố định, dù veo có đang phát hay không"
+        "fixed_interval_description": "Chuyển sang trang tiếp theo sau thời lượng cố định, dù video có đang phát hay không"
       },
       "slideshow_mode": "Chế độ trình chiếu",
       "slideshow_modes": {
@@ -410,14 +410,14 @@
       "enable_video_cache": "Bật bộ nhớ đệm video",
       "enable_video_cache_description": "Tải video trong lúc xem và lưu vào bộ nhớ đệm để giảm sử dụng dữ liệu và phát nhanh hơn khi xem lại.",
       "video": {
-        "video_player_engine": "Trình phát veo",
+        "video_player_engine": "Trình phát video",
         "engine": {
           "auto": "Tự động",
           "auto_description": "Tự động chọn trình phát tốt nhất dựa trên khả năng thiết bị của bạn.",
           "default": "Mặc định",
           "default_description": "Hoạt động tốt với hầu hết thiết bị, có thể gặp sự cố với một số định dạng video hoặc thiết bị cũ.",
           "mdk_description": "Tải nhanh, hiệu suất tốt hơn với một số định dạng, nhưng không ổn định và có thể gây sập ứng dụng.",
-          "mpv_description": "Hỗ trợ định dạng và hiệu suất tốt, tôc độ tải chậm hơn.",
+          "mpv_description": "Hỗ trợ định dạng và hiệu suất tốt, tôc độ tải chậm hơn",
           "webview_description": "Tương thích tốt nhưng sử dụng nhiều tài nguyên và hiệu suất kém, chỉ nên dùng khi không còn lựa chọn nào khác."
         }
       }
@@ -622,7 +622,7 @@
       "accessibility": "Trợ năng",
       "reverseBooruConfigSelectorScrollDirection": "Đảo hướng cuộn thanh chọn hồ sơ booru",
       "swipeAreaToOpenSidebar": "Khu vực vuốt thanh bên",
-      "swipeAreaToOpenSidebarDescription": "Tinh chỉnh khu vực trống bên trái màn hình để thực hiện thao tác vuốt. Lưu ý, nếu giá trị thiết lập quá lớn thì sẽ không thể thực hiện các cử chỉ theo chiều ngang được",
+      "swipeAreaToOpenSidebarDescription": "Tinh chỉnh khu vực trống bên trái màn hình để thực hiện thao tác vuốt. Lưu ý, nếu giá trị thiết lập quá lớn thì sẽ không thể thực hiện các cử chỉ theo chiều ngang được.",
       "reduce_animations": "Giảm hiệu ứng động",
       "reduce_animations_description": "Một số tính năng có thể không hoạt động như mong đợi khi bật tùy chọn này.",
       "volume_navigation": "Dùng phím âm lượng để điều hướng",
@@ -645,7 +645,7 @@
     "source_code": "Mã nguồn",
     "support": "Hỗ trợ",
     "contact_developer": "Liên hệ với dev",
-    "contact_developer_description": "Nếu có vấn đề hay góp ý thì liên hệ với mình qua địa chỉ điện thư này",
+    "contact_developer_description": "Nếu có vấn đề hay góp ý thì liên hệ với mình qua địa chỉ email này",
     "feature_request_and_bug_report": "Yêu cầu chức năng và báo cáo lỗi",
     "feature_request_and_bug_report_description": "Gợi ý chức năng hoặc báo cáo lỗi thông qua GitHub repository",
     "open_app_settings": "Mở cài đặt"
@@ -844,10 +844,10 @@
     "next_step": "Tiếp",
     "site_url": "Địa chỉ trang web",
     "validation_empty_url": "URL rỗng",
-    "validation_invalid_url": "\"{0}\" không phải là một đường dẫn URL hợp lệ.",
-    "validation_invalid_http_url": "\"{0}\" không phải là một đường dẫn URL HTTP hoặc HTTPS.",
+    "validation_invalid_url": "\"{0}\" không phải là một đường dẫn URL hợp lệ",
+    "validation_invalid_http_url": "\"{0}\" không phải là một đường dẫn URL HTTP hoặc HTTPS",
     "validation_redundant_www": "\"{0}\" chứa \"www\" thừa không cần thiết",
-    "validation_contains_spaces": "\"{0}\" chứa khoảng trắng không cần thiết ở giữa.",
+    "validation_contains_spaces": "\"{0}\" chứa khoảng trắng không cần thiết ở giữa",
     "validation_missing_scheme": "\"{0}\" thiếu giao thức (ví dụ: https://)",
     "api_key": {
       "auth_error": {
@@ -1264,7 +1264,7 @@
     "buffering": "Đang tải...",
     "engine_not_supported": "Trình phát này không được hỗ trợ trên nền tảng hiện tại.",
     "change_video_player_engine_suggest": "Nếu lỗi này xảy ra thường xuyên, cân nhắc sử dụng một trình phát khác trong cài đặt.",
-    "change_video_player_engine_request": "Vui lòng đổi sang trình phát veo khác trong cài đặt.",
+    "change_video_player_engine_request": "Vui lòng đổi sang trình phát video khác trong cài đặt.",
     "video_quality": "Chất lượng video",
     "video_qualities": {
       "auto": "Tự động",
