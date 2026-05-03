@@ -1,0 +1,7 @@
+translations_dir: translations
+base_locale: en-US
+indent: 2
+preserve_format: true
+sort_keys: false
+newline_at_eof: true
+untranslated_strategy: leave_missing
