@@ -121,7 +121,7 @@ class _RotatingIconState extends State<_RotatingIcon>
         child: RotationTransition(
           // ignore: prefer_int_literals
           turns: Tween(begin: 0.0, end: 1.0).animate(_controller),
-          child: const Icon(
+          child: const FaIcon(
             FontAwesomeIcons.rotate,
             size: 14,
           ),

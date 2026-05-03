@@ -153,7 +153,11 @@ class _CreateSavedTaskButton extends ConsumerWidget {
 
     return CircularIconButton(
       backgroundColor: colorScheme.surfaceContainer,
-      icon: Icon(
+      constraints: const BoxConstraints(
+        minWidth: 32,
+        minHeight: 32,
+      ),
+      icon: FaIcon(
         FontAwesomeIcons.clone,
         size: 18,
         color: colorScheme.onSurfaceVariant,

@@ -181,7 +181,7 @@ class OptionSingleSearchableField<T extends Object> extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 8),
-              const Icon(
+              const FaIcon(
                 FontAwesomeIcons.caretDown,
                 size: 18,
               ),

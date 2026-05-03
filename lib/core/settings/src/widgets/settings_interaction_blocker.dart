@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
@@ -49,10 +48,9 @@ class SettingsInteractionBlocker extends StatelessWidget {
               children: [
                 Padding(
                   padding: const EdgeInsets.only(right: 8),
-                  child: FaIcon(
+                  child: Icon(
                     Icons.info,
                     color: Theme.of(context).colorScheme.error,
-                    size: 14,
                   ),
                 ),
                 Expanded(

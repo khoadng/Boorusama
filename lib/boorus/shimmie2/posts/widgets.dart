@@ -121,7 +121,7 @@ class Shimmie2MultiSelectionActions extends ConsumerWidget {
                           controller.disable();
                         }
                       },
-                icon: const Icon(
+                icon: const FaIcon(
                   FontAwesomeIcons.heartCirclePlus,
                   size: 20,
                 ),
@@ -145,7 +145,7 @@ class Shimmie2MultiSelectionActions extends ConsumerWidget {
                           controller.disable();
                         }
                       },
-                icon: const Icon(
+                icon: const FaIcon(
                   FontAwesomeIcons.heartCircleMinus,
                   size: 20,
                 ),

@@ -74,7 +74,7 @@ class NoteActionButton<T extends Post> extends StatelessWidget {
 
     if (showDownload) {
       return CircularIconButton(
-        icon: const FaIcon(
+        icon: const Icon(
           Symbols.translate,
         ),
         onPressed: onDownload,
@@ -83,13 +83,13 @@ class NoteActionButton<T extends Post> extends StatelessWidget {
 
     return CircularIconButton(
       icon: enableNotes
-          ? const Icon(
+          ? const FaIcon(
               FontAwesomeIcons.eyeSlash,
-              size: 18,
+              size: 20,
             )
-          : const Icon(
+          : const FaIcon(
               FontAwesomeIcons.eye,
-              size: 18,
+              size: 20,
             ),
       onPressed: onToggleNotes,
     );

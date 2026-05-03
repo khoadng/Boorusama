@@ -12,6 +12,7 @@ class CircularIconButton extends StatelessWidget {
     this.padding,
     this.backgroundColor,
     this.iconColor,
+    this.constraints,
   });
 
   final Widget icon;
@@ -19,14 +20,17 @@ class CircularIconButton extends StatelessWidget {
   final EdgeInsets? padding;
   final Color? backgroundColor;
   final Color? iconColor;
+  final BoxConstraints? constraints;
 
   @override
   Widget build(BuildContext context) {
     return ConstrainedBox(
-      constraints: const BoxConstraints(
-        minWidth: 40,
-        minHeight: 40,
-      ),
+      constraints:
+          constraints ??
+          const BoxConstraints(
+            minWidth: 40,
+            minHeight: 40,
+          ),
       child: Material(
         color:
             backgroundColor ??

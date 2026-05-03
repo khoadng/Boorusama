@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:foundation/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -114,12 +113,12 @@ class ImageGridItem extends StatelessWidget {
             if (isGif)
               const ImageOverlayIcon(
                 icon: Symbols.gif,
+                size: 24,
               )
             else if (isAnimated ?? false)
               if (duration == null || duration < 0)
                 const ImageOverlayIcon(
                   icon: Symbols.play_circle,
-                  size: 20,
                 )
               else
                 VideoPlayDurationIcon(
@@ -127,15 +126,15 @@ class ImageGridItem extends StatelessWidget {
                   hasSound: hasSound,
                 ),
             if (isTranslated ?? false)
-              const ImageOverlayIcon(icon: Symbols.g_translate, size: 20),
+              const ImageOverlayIcon(icon: Symbols.g_translate),
             if (hasComments ?? false)
-              const ImageOverlayIcon(icon: Symbols.comment, size: 20),
+              const ImageOverlayIcon(icon: Symbols.comment),
             if (hasParentOrChildren ?? false)
-              const ImageOverlayIcon(icon: FontAwesomeIcons.images, size: 16),
+              const ImageOverlayIcon(icon: Symbols.photo_library),
             if (isAI)
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 6),
-                height: 25,
+                height: 24,
                 decoration: BoxDecoration(
                   color: context.extendedColorScheme.surfaceContainerOverlayDim,
                   borderRadius: const BorderRadius.all(Radius.circular(4)),

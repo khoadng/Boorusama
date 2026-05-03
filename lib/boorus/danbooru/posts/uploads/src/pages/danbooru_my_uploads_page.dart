@@ -317,8 +317,8 @@ class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
                             (source) => Container(
                               padding: const EdgeInsets.all(4),
                               margin: const EdgeInsets.all(1),
-                              width: 25,
-                              height: 25,
+                              width: 24,
+                              height: 24,
                               decoration: BoxDecoration(
                                 color: Colors.black.withValues(alpha: 0.7),
                                 borderRadius: const BorderRadius.all(
@@ -387,7 +387,7 @@ class _DanbooruUploadGridState extends ConsumerState<DanbooruUploadGrid> {
         ),
         child: Row(
           children: [
-            const Icon(
+            const FaIcon(
               FontAwesomeIcons.images,
               color: Colors.white70,
               size: 16,

@@ -52,17 +52,17 @@ PODS:
     - Flutter
   - flutter_local_notifications (0.0.1):
     - Flutter
-  - fvp (0.35.2):
+  - fvp (0.36.1):
     - Flutter
     - FlutterMacOS
-    - mdk (~> 0.35.1)
+    - mdk (~> 0.36.0)
   - gal (1.0.0):
     - Flutter
     - FlutterMacOS
   - local_auth_darwin (0.0.1):
     - Flutter
     - FlutterMacOS
-  - mdk (0.35.1)
+  - mdk (0.36.0)
   - media_kit_libs_ios_video (1.0.4):
     - Flutter
   - media_kit_video (0.0.1):
@@ -73,15 +73,15 @@ PODS:
     - Flutter
   - permission_handler_apple (9.3.0):
     - Flutter
-  - purchases_flutter (9.14.0):
+  - purchases_flutter (10.0.1):
     - Flutter
-    - PurchasesHybridCommon (= 17.46.1)
-  - PurchasesHybridCommon (17.46.1):
-    - RevenueCat (= 5.61.0)
-  - rate_my_app (2.3.2):
+    - PurchasesHybridCommon (= 18.1.0)
+  - PurchasesHybridCommon (18.1.0):
+    - RevenueCat (= 5.68.0)
+  - rate_my_app (2.4.0):
     - Flutter
     - FlutterMacOS
-  - RevenueCat (5.61.0)
+  - RevenueCat (5.68.0)
   - SDWebImage (5.21.7):
     - SDWebImage/Core (= 5.21.7)
   - SDWebImage/Core (5.21.7)
@@ -226,20 +226,20 @@ SPEC CHECKSUMS:
   file_picker: a0560bc09d61de87f12d246fc47d2119e6ef37be
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
   flutter_avif_ios: 2553d2aafda56339cf924e943da89ad3f40af2dd
-  flutter_local_notifications: a5a732f069baa862e728d839dd2ebb904737effb
-  fvp: 4fe77c2b30122233a57f425dafd219ed35565809
+  flutter_local_notifications: 643a3eda1ce1c0599413ca31672536d423dee214
+  fvp: f8b3b61cf8c696ecaa5608ae0d282ba710e65ae9
   gal: baecd024ebfd13c441269ca7404792a7152fde89
   local_auth_darwin: c3ee6cce0a8d56be34c8ccb66ba31f7f180aaebb
-  mdk: 59bbe9e2ac2a052455ab1b076c245680d66cf6c0
+  mdk: 3bfb53e0bcc9643180eaa864360051f281e4c17b
   media_kit_libs_ios_video: 5a18affdb97d1f5d466dc79988b13eff6c5e2854
   media_kit_video: 1746e198cb697d1ffb734b1d05ec429d1fcd1474
   package_info_plus: af8e2ca6888548050f16fa2f1938db7b5a5df499
   pasteboard: 3913b69d3f2be214970a8ae94e7e87fe76e47e98
   permission_handler_apple: 4ed2196e43d0651e8ff7ca3483a069d469701f2d
-  purchases_flutter: 1a27b709af72a506ddbc2f1255cae31ba101243d
-  PurchasesHybridCommon: afaf46e9650f9399984196a6966c6d697d6122a2
-  rate_my_app: cbb89973f870601f80f7bad63aba107260cabc5b
-  RevenueCat: 9acbd29a62000b57d59efa16166290c4a119847b
+  purchases_flutter: 50a5d9fa83ee5605a8fc653792d667404ca90bce
+  PurchasesHybridCommon: 32902b8fad349cf549f096183926ee33af00e36a
+  rate_my_app: 1bd2a80b234634df4af8634da60fe7d0f695d57f
+  RevenueCat: c535d3739d51163f6d9d5dbd01c7b5d93b718ff5
   SDWebImage: e9fc87c1aab89a8ab1bbd74eba378c6f53be8abf
   share_handler_ios: e2244e990f826b2c8eaa291ac3831569438ba0fb
   share_handler_ios_models: fc638c9b4330dc7f082586c92aee9dfa0b87b871

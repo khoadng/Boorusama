@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:equatable/equatable.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
 import '../../../widgets/widgets.dart';
@@ -73,8 +74,26 @@ class SettingEntry {
   final String id;
   final String title;
   final Widget content;
-  final IconData icon;
+  final Object icon;
   final String name;
+}
+
+class SettingEntryIcon extends StatelessWidget {
+  const SettingEntryIcon({
+    required this.icon,
+    super.key,
+  });
+
+  final Object icon;
+
+  @override
+  Widget build(BuildContext context) {
+    return switch (icon) {
+      final FaIconData faIcon => FaIcon(faIcon),
+      final IconData iconData => Icon(iconData),
+      _ => const SizedBox.shrink(),
+    };
+  }
 }
 
 // This should be always constant

@@ -31,7 +31,7 @@ class TagHowToRateButton extends ConsumerWidget {
       splashRadius: 20,
       visualDensity: VisualDensity.compact,
       onPressed: () => launchExternalUrlString(url),
-      icon: const Icon(
+      icon: const FaIcon(
         FontAwesomeIcons.circleQuestion,
         size: 16,
       ),

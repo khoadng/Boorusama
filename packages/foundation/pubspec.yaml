@@ -14,7 +14,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_html: ^3.0.0-beta.2
-  font_awesome_flutter: ^10.8.0
+  font_awesome_flutter: ^11.0.0
   fpdart: ^1.1.0
   hive_ce: ^2.12.0
   intl: ^0.20.2

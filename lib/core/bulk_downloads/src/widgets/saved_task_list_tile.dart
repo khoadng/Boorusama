@@ -55,9 +55,11 @@ class SavedTaskListTile extends ConsumerWidget {
       },
       stackOverlay: const [
         Positioned.fill(
-          child: Icon(
-            FontAwesomeIcons.lock,
-            color: Colors.white,
+          child: Align(
+            child: FaIcon(
+              FontAwesomeIcons.lock,
+              color: Colors.white,
+            ),
           ),
         ),
       ],
@@ -133,7 +135,7 @@ class SavedTaskListTile extends ConsumerWidget {
                     ),
                   ),
                   _ActionButton(
-                    icon: const Icon(FontAwesomeIcons.play),
+                    icon: const FaIcon(FontAwesomeIcons.play),
                     onPressed: () {
                       notifier.run(
                         savedTask,
@@ -229,7 +231,6 @@ class _ActionButton extends StatelessWidget {
           iconTheme: IconThemeData(
             color: colorScheme.onSurfaceVariant,
             fill: 1,
-            size: 18,
           ),
         ),
         child: icon,

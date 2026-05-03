@@ -80,7 +80,7 @@ class FileDetailsSection extends StatelessWidget {
               borderRadius: BorderRadius.circular(4),
               child: Transform.scale(
                 scale: 0.8,
-                child: const Icon(
+                child: const FaIcon(
                   FontAwesomeIcons.copy,
                   size: 20,
                 ),

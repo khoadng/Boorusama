@@ -51,7 +51,7 @@ Future<void> pickSingleFilePath({
   void Function(Object error)? onError,
 }) async {
   try {
-    final result = await FilePicker.platform.pickFiles(
+    final result = await FilePicker.pickFiles(
       type: type,
       allowedExtensions: allowedExtensions,
     );
@@ -87,7 +87,7 @@ Future<void> pickDirectoryPath({
   String? initialDirectory,
 }) async {
   try {
-    final path = await FilePicker.platform.getDirectoryPath(
+    final path = await FilePicker.getDirectoryPath(
       initialDirectory: initialDirectory,
     );
 

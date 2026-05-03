@@ -25,7 +25,7 @@ class VideoPlayDurationIcon extends StatelessWidget {
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 4),
-      height: 25,
+      height: 24,
       decoration: BoxDecoration(
         color: background,
         borderRadius: const BorderRadius.all(Radius.circular(4)),
@@ -48,19 +48,22 @@ class VideoPlayDurationIcon extends StatelessWidget {
           ),
           hasSound.toOption().fold(
             () => const SizedBox.shrink(),
-            (sound) => sound
-                ? Icon(
-                    Symbols.volume_up_rounded,
-                    color: foreground,
-                    size: 18,
-                    fill: 1,
-                  )
-                : Icon(
-                    Symbols.volume_off_rounded,
-                    color: foreground,
-                    size: 18,
-                    fill: 1,
-                  ),
+            (sound) => Padding(
+              padding: const EdgeInsets.only(left: 1),
+              child: sound
+                  ? Icon(
+                      Symbols.volume_up_rounded,
+                      color: foreground,
+                      size: 18,
+                      fill: 1,
+                    )
+                  : Icon(
+                      Symbols.volume_off_rounded,
+                      color: foreground,
+                      size: 18,
+                      fill: 1,
+                    ),
+            ),
           ),
         ],
       ),

@@ -48,7 +48,7 @@ class FavoriteTagsPage extends ConsumerWidget {
                 ),
               );
             },
-            icon: const Icon(
+            icon: const FaIcon(
               FontAwesomeIcons.tags,
               fill: 1,
               size: 20,

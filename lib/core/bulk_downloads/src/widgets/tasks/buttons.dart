@@ -69,7 +69,7 @@ class _StopDryRunButton extends ConsumerWidget {
     final sessionId = session.id;
 
     return _ActionButton(
-      icon: const Icon(
+      icon: const FaIcon(
         FontAwesomeIcons.forward,
       ),
       onPressed: () {
@@ -92,7 +92,7 @@ class _StartPendingButton extends ConsumerWidget {
     final notifier = ref.watch(bulkDownloadProvider.notifier);
 
     return _ActionButton(
-      icon: const Icon(
+      icon: const FaIcon(
         FontAwesomeIcons.play,
       ),
       onPressed: () {
@@ -117,6 +117,10 @@ class _ActionButton extends StatelessWidget {
 
     return CircularIconButton(
       padding: const EdgeInsets.all(8),
+      constraints: const BoxConstraints(
+        minWidth: 32,
+        minHeight: 32,
+      ),
       backgroundColor: colorScheme.surfaceContainer,
       icon: Theme(
         data: ThemeData(
@@ -145,7 +149,7 @@ class _CancelAllButton extends ConsumerWidget {
     final sessionId = session.id;
 
     return _ActionButton(
-      icon: const Icon(
+      icon: const FaIcon(
         FontAwesomeIcons.stop,
       ),
       onPressed: () {
@@ -167,7 +171,7 @@ class _PauseAllButton extends ConsumerWidget {
     final sessionId = session.id;
 
     return _ActionButton(
-      icon: const Icon(
+      icon: const FaIcon(
         FontAwesomeIcons.pause,
       ),
       onPressed: () {
@@ -189,7 +193,7 @@ class _SuspendButton extends ConsumerWidget {
     final sessionId = session.id;
 
     return _ActionButton(
-      icon: const Icon(
+      icon: const FaIcon(
         FontAwesomeIcons.solidFloppyDisk,
       ),
       onPressed: () {
@@ -211,7 +215,7 @@ class _ResumeSuspensionButton extends ConsumerWidget {
     final sessionId = session.id;
 
     return _ActionButton(
-      icon: const Icon(
+      icon: const FaIcon(
         FontAwesomeIcons.play,
       ),
       onPressed: () {
@@ -248,7 +252,7 @@ class _ResumeAllButton extends ConsumerWidget {
     final sessionId = session.id;
 
     return _ActionButton(
-      icon: const Icon(
+      icon: const FaIcon(
         FontAwesomeIcons.play,
       ),
       onPressed: () {

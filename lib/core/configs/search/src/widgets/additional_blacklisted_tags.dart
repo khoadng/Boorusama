@@ -127,7 +127,7 @@ class AdditionalBlacklistedTags extends ConsumerWidget {
                       foregroundColor: colorScheme.onSurface,
                     ),
                     label: Text(context.t.generic.action.edit),
-                    icon: const Icon(
+                    icon: const FaIcon(
                       FontAwesomeIcons.pen,
                       size: 16,
                     ),
@@ -142,7 +142,7 @@ class AdditionalBlacklistedTags extends ConsumerWidget {
                         foregroundColor: colorScheme.onSurface,
                       ),
                       label: Text(context.t.generic.action.clear),
-                      icon: const Icon(
+                      icon: const FaIcon(
                         FontAwesomeIcons.xmark,
                         size: 16,
                       ),
