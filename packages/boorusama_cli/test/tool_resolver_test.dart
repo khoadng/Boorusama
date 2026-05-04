@@ -15,7 +15,7 @@ void main() {
 
     final resolver = ToolResolver(
       root: root,
-      env: const Env({}),
+      env: const Env({}, includePlatform: false),
       processRunner: ProcessRunner(logger: Logger()),
     );
 
@@ -32,7 +32,7 @@ void main() {
 
     final resolver = ToolResolver(
       root: root,
-      env: const Env({'BOORUSAMA_USE_FVM': 'false'}),
+      env: const Env({'BOORUSAMA_USE_FVM': 'false'}, includePlatform: false),
       processRunner: ProcessRunner(logger: Logger()),
     );
 

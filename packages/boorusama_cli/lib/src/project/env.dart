@@ -1,9 +1,10 @@
 import 'dart:io';
 
 final class Env {
-  const Env(this.values);
+  const Env(this.values, {this.includePlatform = true});
 
   final Map<String, String> values;
+  final bool includePlatform;
 
   static Env load(File file) {
     if (!file.existsSync()) return const Env({});
@@ -26,5 +27,6 @@ final class Env {
     return Env(values);
   }
 
-  String? operator [](String key) => values[key] ?? Platform.environment[key];
+  String? operator [](String key) =>
+      values[key] ?? (includePlatform ? Platform.environment[key] : null);
 }
