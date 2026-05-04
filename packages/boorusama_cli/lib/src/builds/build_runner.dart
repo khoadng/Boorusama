@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import '../io/archive.dart';
+import '../io/linux_architecture.dart';
 import '../io/logger.dart';
 import '../io/platform.dart';
 import '../io/process_runner.dart';
@@ -208,12 +209,14 @@ final class BuildRunner {
         options.foss ? '$app-$version-foss.zip' : '$app-$version.zip',
       BuildTarget.linux =>
         options.foss
-            ? '$app-$version-foss-linux-x64.tar.gz'
-            : '$app-$version-linux-x64.tar.gz',
+            ? '$app-$version-foss-linux-${_linuxArtifactArchitecture()}.tar.gz'
+            : '$app-$version-linux-${_linuxArtifactArchitecture()}.tar.gz',
       BuildTarget.web =>
         options.foss ? '$app-$version-foss-web.zip' : '$app-$version-web.zip',
     };
   }
+
+  String _linuxArtifactArchitecture() => currentLinuxArchitecture() ?? 'x64';
 
   void _printSummary(
     Project project,
