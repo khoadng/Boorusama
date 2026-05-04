@@ -25,7 +25,8 @@ final class BuildArgsParser {
       ..addFlag('debug', negatable: false)
       ..addFlag('profile', negatable: false)
       ..addFlag('no-codesign', negatable: false)
-      ..addFlag('fail-fast', negatable: false);
+      ..addFlag('fail-fast', negatable: false)
+      ..addFlag('flutter-verbose', negatable: false);
   }
 
   final parser = ArgParser();
@@ -105,6 +106,7 @@ final class BuildArgsParser {
       ci: _flag(results, 'ci'),
       noCodesign: _flag(results, 'no-codesign'),
       failFast: _flag(results, 'fail-fast'),
+      flutterVerbose: _flag(results, 'flutter-verbose'),
       extraFlutterArgs: flutterArgs,
     );
   }
@@ -200,6 +202,7 @@ Usage: boorusama build <format> [options]
     --profile
     --no-codesign
     --fail-fast
+    --flutter-verbose
 
 Unknown Flutter build options are passed through. Everything after -- is also passed through.
 '''

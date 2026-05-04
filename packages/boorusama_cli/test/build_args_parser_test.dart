@@ -45,6 +45,20 @@ void main() {
     expect(options.foss, isTrue);
   });
 
+  test('keeps CI logging separate from Flutter verbose output', () {
+    final options = parser.parse(['web', '--ci']);
+
+    expect(options.ci, isTrue);
+    expect(options.flutterVerbose, isFalse);
+    expect(options.extraFlutterArgs, isEmpty);
+  });
+
+  test('parses explicit Flutter verbose flag', () {
+    final options = parser.parse(['web', '--flutter-verbose']);
+
+    expect(options.flutterVerbose, isTrue);
+  });
+
   test('requires flavor for apk', () {
     expect(
       () => parser.parse(['apk', '--release']),

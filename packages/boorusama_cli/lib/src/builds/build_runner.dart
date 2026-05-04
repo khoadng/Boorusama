@@ -90,7 +90,7 @@ final class BuildRunner {
 
     flutterArgs.add(options.buildMode.flag);
     if (options.noCodesign) flutterArgs.add('--no-codesign');
-    if (options.ci) flutterArgs.add('--verbose');
+    if (options.flutterVerbose) flutterArgs.add('--verbose');
 
     if (options.flavor != null) {
       flutterArgs.addAll([

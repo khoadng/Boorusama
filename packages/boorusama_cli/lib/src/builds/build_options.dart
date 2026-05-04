@@ -16,6 +16,7 @@ final class BuildOptions {
     this.ci = false,
     this.noCodesign = false,
     this.failFast = false,
+    this.flutterVerbose = false,
   });
 
   final BuildTarget target;
@@ -28,6 +29,7 @@ final class BuildOptions {
   final bool ci;
   final bool noCodesign;
   final bool failFast;
+  final bool flutterVerbose;
   final List<String> extraFlutterArgs;
 
   BuildOptions copyWith({Directory? outputDir}) {
@@ -42,6 +44,7 @@ final class BuildOptions {
       ci: ci,
       noCodesign: noCodesign,
       failFast: failFast,
+      flutterVerbose: flutterVerbose,
       extraFlutterArgs: extraFlutterArgs,
     );
   }
