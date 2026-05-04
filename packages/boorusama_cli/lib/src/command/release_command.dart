@@ -177,9 +177,7 @@ final class ReleaseGithubCommand extends Command<int> {
         : await BuildRunner(tools: tools, logger: logger).run(
             BuildOptions(
               target: target.buildTarget,
-              flavor: target.buildTarget.requiresFlavor
-                  ? flavor ?? _defaultFlavor(target)
-                  : null,
+              flavor: _flavorFor(target, flavor),
               buildMode: BuildMode.release,
               outputDir: outputDir,
               foss: target == GithubReleaseTarget.apk,
@@ -209,10 +207,13 @@ final class ReleaseGithubCommand extends Command<int> {
     logger.info('Receipt: ${receipt.path}');
   }
 
-  String _defaultFlavor(GithubReleaseTarget target) {
+  String? _flavorFor(GithubReleaseTarget target, String? flavor) {
+    if (!target.buildTarget.requiresFlavor) return null;
+    if (flavor != null) return flavor;
     return switch (target) {
-      GithubReleaseTarget.apk || GithubReleaseTarget.dmg => 'prod',
+      GithubReleaseTarget.apk => 'prod',
       GithubReleaseTarget.ipa => 'dev',
+      GithubReleaseTarget.dmg => null,
       GithubReleaseTarget.windows ||
       GithubReleaseTarget.linux ||
       GithubReleaseTarget.all => throw StateError(
