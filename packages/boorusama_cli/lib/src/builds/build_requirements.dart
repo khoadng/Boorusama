@@ -21,7 +21,7 @@ final class BuildRequirements {
       BuildTarget.web || BuildTarget.windows => [toolchain.zip],
       BuildTarget.ipa => [toolchain.pod, toolchain.zip],
       BuildTarget.linux => [toolchain.tar],
-      BuildTarget.appimage => [toolchain.appImageTool],
+      BuildTarget.appimage => const [],
       BuildTarget.dmg => [toolchain.pod, toolchain.createDmg],
       BuildTarget.apk || BuildTarget.aab => const [],
     };

@@ -50,7 +50,7 @@ void main() {
     );
   });
 
-  test('appimage requires linux and appimagetool', () {
+  test('appimage requires linux and downloads appimagetool when needed', () {
     expect(
       BuildRequirements.requiredHost(BuildTarget.appimage),
       HostPlatform.linux,
@@ -60,7 +60,7 @@ void main() {
         BuildTarget.appimage,
         toolchain,
       ).map((tool) => tool.displayName),
-      ['appimagetool'],
+      isEmpty,
     );
   });
 

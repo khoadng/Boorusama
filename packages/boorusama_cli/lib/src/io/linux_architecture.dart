@@ -12,3 +12,11 @@ String? currentLinuxArchitecture() {
     _ => null,
   };
 }
+
+String? currentAppImageToolArchitecture() {
+  return switch (currentLinuxArchitecture()) {
+    'arm64' => 'aarch64',
+    'x64' => 'x86_64',
+    _ => null,
+  };
+}

@@ -164,7 +164,7 @@ final class BuildRunner {
             : tool == tools.toolchain.pod
             ? ' Install with: brew install cocoapods'
             : tool == tools.toolchain.appImageTool
-            ? ' Install appimagetool from AppImageKit.'
+            ? ' Install appimagetool or let appimage builds download it.'
             : '';
         throw ProcessFailure('${tool.displayName} not found.$hint');
       }

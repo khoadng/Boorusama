@@ -4,6 +4,7 @@ import '../builds/build_plan.dart';
 import '../io/process_runner.dart';
 import '../project/project.dart';
 import '../tool/tool_runner.dart';
+import 'appimage_tool.dart';
 import 'artifact.dart';
 import 'linux_bundle.dart';
 import 'packager.dart';
@@ -60,7 +61,7 @@ StartupNotify=true
     plan.outputDir.createSync(recursive: true);
     final target = File('${plan.outputDir.path}/${plan.artifactName}');
     if (target.existsSync()) target.deleteSync();
-    await _tools.appImageTool([
+    await AppImageTool(tools: _tools, logger: _tools.processRunner.logger).run([
       appDir.path,
       target.absolute.path,
     ], cwd: project.root);

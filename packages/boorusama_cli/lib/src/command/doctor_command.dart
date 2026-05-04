@@ -149,7 +149,7 @@ final class DoctorCommand extends Command<int> {
           : tool == tools.toolchain.pod
           ? 'brew install cocoapods'
           : tool == tools.toolchain.appImageTool
-          ? 'install appimagetool from AppImageKit'
+          ? 'optional; appimage builds download it when missing'
           : null;
       checks.add(await _toolExists(tool.displayName, tools, tool, hint: hint));
     }
