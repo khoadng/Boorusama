@@ -1,7 +1,7 @@
 import '../builds/build_target.dart';
 import '../io/platform.dart';
 
-enum GithubReleaseTarget { apk, dmg, windows, linux, all }
+enum GithubReleaseTarget { apk, ipa, dmg, windows, linux, all }
 
 extension GithubReleaseTargetParsing on GithubReleaseTarget {
   static GithubReleaseTarget? parse(String value) {
@@ -15,6 +15,7 @@ extension GithubReleaseTargetParsing on GithubReleaseTarget {
 extension GithubReleaseTargetBuild on GithubReleaseTarget {
   BuildTarget get buildTarget => switch (this) {
     GithubReleaseTarget.apk => BuildTarget.apk,
+    GithubReleaseTarget.ipa => BuildTarget.ipa,
     GithubReleaseTarget.dmg => BuildTarget.dmg,
     GithubReleaseTarget.windows => BuildTarget.windows,
     GithubReleaseTarget.linux => BuildTarget.linux,
@@ -28,6 +29,7 @@ extension GithubReleaseTargetBuild on GithubReleaseTarget {
       host == HostPlatform.macos ||
           host == HostPlatform.linux ||
           host == HostPlatform.windows,
+    GithubReleaseTarget.ipa => host == HostPlatform.macos,
     GithubReleaseTarget.dmg => host == HostPlatform.macos,
     GithubReleaseTarget.windows => host == HostPlatform.windows,
     GithubReleaseTarget.linux => host == HostPlatform.linux,

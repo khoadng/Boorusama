@@ -40,6 +40,8 @@ final class ReleaseGithubCommand extends Command<int> {
       ..addFlag('ci', abbr: 'c', negatable: false)
       ..addFlag('allow-dirty', negatable: false)
       ..addFlag('skip-build', negatable: false)
+      ..addFlag('no-codesign', negatable: false)
+      ..addOption('flavor', abbr: 'f', allowed: BoorusamaConfig.allowedFlavors)
       ..addOption(
         'output-dir',
         abbr: 'o',
@@ -55,7 +57,7 @@ final class ReleaseGithubCommand extends Command<int> {
 
   @override
   String get invocation =>
-      'boorusama release github <apk|dmg|windows|linux|all> [options]';
+      'boorusama release github <apk|ipa|dmg|windows|linux|all> [options]';
 
   @override
   Future<int> run() async {
@@ -67,7 +69,7 @@ final class ReleaseGithubCommand extends Command<int> {
     final target = GithubReleaseTargetParsing.parse(targetArg);
     if (target == null) {
       throw UsageException(
-        'Invalid GitHub release target: $targetArg. Valid targets: apk, dmg, windows, linux, all',
+        'Invalid GitHub release target: $targetArg. Valid targets: apk, ipa, dmg, windows, linux, all',
         usage,
       );
     }
@@ -77,6 +79,8 @@ final class ReleaseGithubCommand extends Command<int> {
     final ci = argResults?['ci'] as bool? ?? false;
     final allowDirty = argResults?['allow-dirty'] as bool? ?? false;
     final skipBuild = argResults?['skip-build'] as bool? ?? false;
+    final noCodesign = argResults?['no-codesign'] as bool? ?? false;
+    final flavor = argResults?['flavor'] as String?;
     final outputDir = Directory(
       argResults?['output-dir'] as String? ?? BoorusamaConfig.defaultOutputDir,
     );
@@ -129,6 +133,8 @@ final class ReleaseGithubCommand extends Command<int> {
           verbose: verbose,
           ci: ci,
           skipBuild: skipBuild,
+          noCodesign: noCodesign,
+          flavor: flavor,
         );
       }
 
@@ -152,6 +158,8 @@ final class ReleaseGithubCommand extends Command<int> {
     required bool verbose,
     required bool ci,
     required bool skipBuild,
+    required bool noCodesign,
+    required String? flavor,
   }) async {
     final host = currentHostPlatform();
     if (!target.supportedOn(host)) {
@@ -169,13 +177,16 @@ final class ReleaseGithubCommand extends Command<int> {
         : await BuildRunner(tools: tools, logger: logger).run(
             BuildOptions(
               target: target.buildTarget,
-              flavor: target.buildTarget.requiresFlavor ? 'prod' : null,
+              flavor: target.buildTarget.requiresFlavor
+                  ? flavor ?? _defaultFlavor(target)
+                  : null,
               buildMode: BuildMode.release,
               outputDir: outputDir,
               foss: target == GithubReleaseTarget.apk,
               ci: ci,
               verbose: verbose,
               dryRun: dryRun,
+              noCodesign: noCodesign,
               extraFlutterArgs: const [],
             ),
           );
@@ -196,6 +207,18 @@ final class ReleaseGithubCommand extends Command<int> {
         );
 
     logger.info('Receipt: ${receipt.path}');
+  }
+
+  String _defaultFlavor(GithubReleaseTarget target) {
+    return switch (target) {
+      GithubReleaseTarget.apk || GithubReleaseTarget.dmg => 'prod',
+      GithubReleaseTarget.ipa => 'dev',
+      GithubReleaseTarget.windows ||
+      GithubReleaseTarget.linux ||
+      GithubReleaseTarget.all => throw StateError(
+        '${target.name} does not require a flavor',
+      ),
+    };
   }
 }
 
