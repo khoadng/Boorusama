@@ -15,6 +15,14 @@ final class ToolRunner {
   final ProcessRunner processRunner;
   final Directory root;
 
+  ToolRunner withRoot(Directory root) {
+    return ToolRunner(
+      toolchain: toolchain,
+      processRunner: processRunner,
+      root: root,
+    );
+  }
+
   Future<void> flutter(List<String> args, {Directory? cwd}) =>
       _run(toolchain.flutter, args, cwd: cwd);
 

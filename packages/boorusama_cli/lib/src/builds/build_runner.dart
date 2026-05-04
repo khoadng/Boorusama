@@ -53,22 +53,21 @@ final class BuildRunner {
     FossBuild.warnAboutLeftoverBackups(project, logger);
 
     await _validatePlan(plan);
-    await Codegen(
-      processRunner: tools.processRunner,
-      logger: logger,
-    ).run(project);
-
     final foss = FossBuild(tools: tools, logger: logger);
     final artifact = await foss.guard(
       enabled: resolvedOptions.foss,
       project: project,
-      body: () async {
-        await Flutter(tools).build(project, plan);
+      body: (buildProject, buildTools) async {
+        await Codegen(
+          processRunner: buildTools.processRunner,
+          logger: logger,
+        ).run(buildProject);
+        await Flutter(buildTools).build(buildProject, plan);
         if (resolvedOptions.dryRun) {
           final file = File('${plan.outputDir.path}/${plan.artifactName}');
           return Artifact(type: _artifactType(plan), file: file);
         }
-        return _packager(plan).package(project, plan);
+        return _packager(plan).package(buildProject, plan);
       },
     );
 

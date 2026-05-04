@@ -1,10 +1,10 @@
-import 'dart:async';
 import 'dart:io';
 
 import '../io/logger.dart';
 import '../project/config.dart';
 import '../project/project.dart';
 import '../tool/tool_runner.dart';
+import 'build_workspace.dart';
 import 'foss_backups.dart';
 
 final class FossBuild {
@@ -12,15 +12,6 @@ final class FossBuild {
 
   final ToolRunner tools;
   final Logger logger;
-
-  File? _pubspecBackup;
-  File? _lockBackup;
-  File? _pubspec;
-  File? _lock;
-  var _hadLock = false;
-  var _restored = false;
-  StreamSubscription<ProcessSignal>? _sigintSubscription;
-  StreamSubscription<ProcessSignal>? _sigtermSubscription;
 
   static void warnAboutLeftoverBackups(Project project, Logger logger) {
     final backups = FossBackups.find(project.root);
@@ -35,47 +26,38 @@ final class FossBuild {
   Future<T> guard<T>({
     required bool enabled,
     required Project project,
-    required Future<T> Function() body,
+    required Future<T> Function(Project project, ToolRunner tools) body,
   }) async {
-    if (!enabled) return body();
+    if (!enabled) return body(project, tools);
 
-    _createBackups(project);
-    _installSignalHandlers();
+    final workspace = await BuildWorkspace.createFoss(
+      sourceRoot: project.root,
+      logger: logger,
+    );
+    final workspaceTools = tools.withRoot(workspace.root);
 
     try {
+      final workspaceProject = Project(
+        root: workspace.root,
+        pubspec: project.pubspec,
+        env: project.env,
+        git: project.git,
+      );
+
       logger.info('Preparing FOSS build - removing non-FOSS dependencies...');
-      _rewritePubspecForFoss();
+      _rewritePubspecForFoss(workspaceProject.root);
 
-      logger.info('Getting FOSS dependencies...');
-      await tools.flutter(['pub', 'get']);
+      logger.info('Getting FOSS dependencies in temporary workspace...');
+      await workspaceTools.flutter(['pub', 'get']);
 
-      return await body();
+      return await body(workspaceProject, workspaceTools);
     } finally {
-      await _removeSignalHandlers();
-      _restoreBackups();
+      await workspace.cleanup(logger);
     }
   }
 
-  void _createBackups(Project project) {
-    final pubspec = File('${project.root.path}/pubspec.yaml');
-    final lock = File('${project.root.path}/pubspec.lock');
-    final stamp = '${DateTime.now().millisecondsSinceEpoch}.$pid';
-
-    _pubspec = pubspec;
-    _lock = lock;
-    _pubspecBackup = File('${pubspec.path}.backup.$stamp');
-    _lockBackup = File('${lock.path}.backup.$stamp');
-    _hadLock = lock.existsSync();
-    _restored = false;
-
-    pubspec.copySync(_pubspecBackup!.path);
-    if (_hadLock) lock.copySync(_lockBackup!.path);
-  }
-
-  void _rewritePubspecForFoss() {
-    final pubspec = _pubspec;
-    if (pubspec == null) return;
-
+  void _rewritePubspecForFoss(Directory root) {
+    final pubspec = File('${root.path}/pubspec.yaml');
     var content = pubspec.readAsStringSync();
     for (final dep in BoorusamaConfig.fossExcludedDeps) {
       content = content
@@ -84,58 +66,5 @@ final class FossBuild {
           .join('\n');
     }
     pubspec.writeAsStringSync(content);
-  }
-
-  void _installSignalHandlers() {
-    if (!ProcessSignal.sigint.watch().isBroadcast) {
-      // ProcessSignal streams are broadcast on supported platforms; this branch
-      // is only here to keep the assumption explicit.
-    }
-
-    _sigintSubscription = ProcessSignal.sigint.watch().listen((_) {
-      logger.warning('Interrupted. Restoring FOSS build backups...');
-      _restoreBackups();
-      exit(130);
-    });
-
-    if (!Platform.isWindows) {
-      _sigtermSubscription = ProcessSignal.sigterm.watch().listen((_) {
-        logger.warning('Terminated. Restoring FOSS build backups...');
-        _restoreBackups();
-        exit(143);
-      });
-    }
-  }
-
-  Future<void> _removeSignalHandlers() async {
-    await _sigintSubscription?.cancel();
-    await _sigtermSubscription?.cancel();
-    _sigintSubscription = null;
-    _sigtermSubscription = null;
-  }
-
-  void _restoreBackups() {
-    if (_restored) return;
-    _restored = true;
-
-    final pubspec = _pubspec;
-    final lock = _lock;
-    final pubspecBackup = _pubspecBackup;
-    final lockBackup = _lockBackup;
-
-    if (pubspec != null &&
-        pubspecBackup != null &&
-        pubspecBackup.existsSync()) {
-      pubspecBackup.renameSync(pubspec.path);
-    }
-
-    if (_hadLock &&
-        lock != null &&
-        lockBackup != null &&
-        lockBackup.existsSync()) {
-      lockBackup.renameSync(lock.path);
-    }
-
-    logger.info('Restored original pubspec files');
   }
 }

@@ -39,10 +39,15 @@ final class Project {
     required Directory root,
     required Env env,
     required ToolRunner tools,
+    GitInfo? git,
   }) async {
     final pubspec = PubspecInfo.read(File('${root.path}/pubspec.yaml'));
-    final git = await GitInfo.read(tools);
-    return Project(root: root, pubspec: pubspec, env: env, git: git);
+    return Project(
+      root: root,
+      pubspec: pubspec,
+      env: env,
+      git: git ?? await GitInfo.read(tools),
+    );
   }
 
   static Directory _findRoot(Directory start) {

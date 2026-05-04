@@ -55,8 +55,11 @@ final class BuildCommand extends Command<int> {
 
       await BuildRunner(tools: tools, logger: logger).run(options);
       return 0;
-    } on Object catch (error) {
+    } on Object catch (error, stackTrace) {
       logger.error(error.toString());
+      if (options.verbose) {
+        logger.debug(stackTrace.toString());
+      }
       return 1;
     }
   }
