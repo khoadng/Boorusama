@@ -1,16 +1,14 @@
 import 'dart:ffi';
+import 'dart:io';
 
 String? currentLinuxArchitecture() {
-  final abi = Abi.current().toString().split('.').last;
-  return switch (abi) {
-    'linuxArm' => 'arm',
-    'linuxArm64' => 'arm64',
-    'linuxIA32' => 'ia32',
-    'linuxRiscv32' => 'riscv32',
-    'linuxRiscv64' => 'riscv64',
-    'linuxX64' => 'x64',
-    _ => null,
-  };
+  if (!Platform.isLinux) return null;
+
+  return linuxArchitectureFromIdentifiers([
+    Abi.current().toString(),
+    Platform.version,
+    Platform.operatingSystemVersion,
+  ]);
 }
 
 String? currentAppImageToolArchitecture() {
@@ -19,4 +17,34 @@ String? currentAppImageToolArchitecture() {
     'x64' => 'x86_64',
     _ => null,
   };
+}
+
+String? linuxArchitectureFromIdentifiers(Iterable<String> identifiers) {
+  final normalized = identifiers
+      .map(
+        (identifier) => identifier.toLowerCase().replaceAll(
+          RegExp('[^a-z0-9]'),
+          '',
+        ),
+      )
+      .join(' ');
+
+  if (normalized.contains('linuxarm64') ||
+      normalized.contains('linuxaarch64') ||
+      normalized.contains('aarch64')) {
+    return 'arm64';
+  }
+  if (normalized.contains('linuxx64') ||
+      normalized.contains('x8664') ||
+      normalized.contains('amd64')) {
+    return 'x64';
+  }
+  if (normalized.contains('linuxia32') || normalized.contains('i386')) {
+    return 'ia32';
+  }
+  if (normalized.contains('linuxriscv64')) return 'riscv64';
+  if (normalized.contains('linuxriscv32')) return 'riscv32';
+  if (normalized.contains('linuxarm')) return 'arm';
+
+  return null;
 }
