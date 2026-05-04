@@ -146,6 +146,8 @@ final class DoctorCommand extends Command<int> {
     )) {
       final hint = tool == tools.toolchain.createDmg
           ? 'brew install create-dmg'
+          : tool == tools.toolchain.pod
+          ? 'brew install cocoapods'
           : null;
       checks.add(await _toolExists(tool.displayName, tools, tool, hint: hint));
     }

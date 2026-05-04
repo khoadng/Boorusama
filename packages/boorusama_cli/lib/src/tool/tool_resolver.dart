@@ -25,6 +25,7 @@ final class ToolResolver {
       flutter: _flutter(useFvm),
       dart: _dart(useFvm),
       git: const ToolCommand('git'),
+      pod: const ToolCommand('pod'),
       zip: const ToolCommand('zip'),
       tar: const ToolCommand('tar'),
       createDmg: const ToolCommand('create-dmg'),

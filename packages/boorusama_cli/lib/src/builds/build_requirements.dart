@@ -18,11 +18,10 @@ final class BuildRequirements {
     Toolchain toolchain,
   ) {
     return switch (target) {
-      BuildTarget.web || BuildTarget.windows || BuildTarget.ipa => [
-        toolchain.zip,
-      ],
+      BuildTarget.web || BuildTarget.windows => [toolchain.zip],
+      BuildTarget.ipa => [toolchain.pod, toolchain.zip],
       BuildTarget.linux => [toolchain.tar],
-      BuildTarget.dmg => [toolchain.createDmg],
+      BuildTarget.dmg => [toolchain.pod, toolchain.createDmg],
       BuildTarget.apk || BuildTarget.aab => const [],
     };
   }

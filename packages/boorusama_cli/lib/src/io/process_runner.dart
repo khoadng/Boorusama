@@ -7,9 +7,10 @@ import 'package:path/path.dart' as p;
 import 'logger.dart';
 
 final class ProcessFailure implements Exception {
-  const ProcessFailure(this.message);
+  const ProcessFailure(this.message, {this.output = ''});
 
   final String message;
+  final String output;
 
   @override
   String toString() => message;
@@ -44,22 +45,32 @@ final class ProcessRunner {
       runInShell: Platform.isWindows,
     );
 
+    final output = StringBuffer();
     final stdoutDone = process.stdout
         .transform(utf8.decoder)
         .transform(const LineSplitter())
-        .listen(print)
+        .listen((line) {
+          output.writeln(line);
+          print(line);
+        })
         .asFuture<void>();
     final stderrDone = process.stderr
         .transform(utf8.decoder)
         .transform(const LineSplitter())
-        .listen(stderr.writeln)
+        .listen((line) {
+          output.writeln(line);
+          stderr.writeln(line);
+        })
         .asFuture<void>();
 
     final exitCode = await process.exitCode;
     await Future.wait([stdoutDone, stderrDone]);
 
     if (exitCode != 0) {
-      throw ProcessFailure('Command failed with exit code $exitCode: $command');
+      throw ProcessFailure(
+        'Command failed with exit code $exitCode: $command',
+        output: output.toString(),
+      );
     }
   }
 

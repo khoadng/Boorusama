@@ -24,6 +24,7 @@ void main() {
 
     expect(toolchain.flutter.displayName, 'fvm flutter');
     expect(toolchain.dart.displayName, 'fvm dart');
+    expect(toolchain.pod.displayName, 'pod');
   });
 
   test('uses system flutter and dart when fvm is disabled', () async {

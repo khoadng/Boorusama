@@ -11,6 +11,7 @@ void main() {
     flutter: ToolCommand('flutter'),
     dart: ToolCommand('dart'),
     git: ToolCommand('git'),
+    pod: ToolCommand('pod'),
     zip: ToolCommand('zip'),
     tar: ToolCommand('tar'),
     createDmg: ToolCommand('create-dmg'),
@@ -26,14 +27,25 @@ void main() {
     );
   });
 
-  test('dmg requires macos and create-dmg', () {
+  test('dmg requires macos, CocoaPods, and create-dmg', () {
     expect(BuildRequirements.requiredHost(BuildTarget.dmg), HostPlatform.macos);
     expect(
       BuildRequirements.requiredTools(
         BuildTarget.dmg,
         toolchain,
       ).map((tool) => tool.displayName),
-      ['create-dmg'],
+      ['pod', 'create-dmg'],
+    );
+  });
+
+  test('ipa requires macos, CocoaPods, and zip', () {
+    expect(BuildRequirements.requiredHost(BuildTarget.ipa), HostPlatform.macos);
+    expect(
+      BuildRequirements.requiredTools(
+        BuildTarget.ipa,
+        toolchain,
+      ).map((tool) => tool.displayName),
+      ['pod', 'zip'],
     );
   });
 

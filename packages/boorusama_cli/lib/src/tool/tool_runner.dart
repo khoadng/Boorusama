@@ -41,6 +41,9 @@ final class ToolRunner {
   Future<void> git(List<String> args, {Directory? cwd}) =>
       _run(toolchain.git, args, cwd: cwd);
 
+  Future<void> pod(List<String> args, {Directory? cwd}) =>
+      _run(toolchain.pod, args, cwd: cwd);
+
   Future<void> zip(List<String> args, {Directory? cwd}) =>
       _run(toolchain.zip, args, cwd: cwd);
 
@@ -57,6 +60,7 @@ final class ToolRunner {
     processRunner.logger.debug('Flutter: ${toolchain.flutter.displayName}');
     processRunner.logger.debug('Dart: ${toolchain.dart.displayName}');
     processRunner.logger.debug('Git: ${toolchain.git.displayName}');
+    processRunner.logger.debug('pod: ${toolchain.pod.displayName}');
     processRunner.logger.debug('zip: ${toolchain.zip.displayName}');
     processRunner.logger.debug('tar: ${toolchain.tar.displayName}');
     processRunner.logger.debug(

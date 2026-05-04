@@ -159,6 +159,8 @@ final class BuildRunner {
       if (!await tools.exists(tool)) {
         final hint = tool == tools.toolchain.createDmg
             ? ' Install with: brew install create-dmg'
+            : tool == tools.toolchain.pod
+            ? ' Install with: brew install cocoapods'
             : '';
         throw ProcessFailure('${tool.displayName} not found.$hint');
       }

@@ -1,5 +1,8 @@
 import 'dart:io';
 
+import 'package:path/path.dart' as p;
+
+import '../builds/build_mode.dart';
 import '../builds/build_plan.dart';
 import '../builds/build_target.dart';
 import '../io/process_runner.dart';
@@ -54,14 +57,14 @@ final class ApplePackager implements Packager {
   }
 
   Future<Artifact> _packageDmg(Project project, BuildPlan plan) async {
-    final app = Directory(
-      '${project.root.path}/build/macos/Build/Products/Release/boorusama.app',
-    );
+    final app = Directory(_macosAppPath(project, plan));
     if (!app.existsSync()) {
       throw ProcessFailure('macOS app not found at: ${app.path}');
     }
 
-    final tempApp = Directory('${project.root.path}/build/boorusama.app');
+    final tempApp = Directory(
+      '${project.root.path}/build/${p.basename(app.path)}',
+    );
     if (tempApp.existsSync()) tempApp.deleteSync(recursive: true);
     await _tools.processRunner.run('cp', [
       '-R',
@@ -82,5 +85,25 @@ final class ApplePackager implements Packager {
     final target = File('${plan.outputDir.path}/${plan.artifactName}');
     buildDmg.copySync(target.path);
     return Artifact(type: 'DMG', file: target);
+  }
+
+  String _macosAppPath(Project project, BuildPlan plan) {
+    final configuration = _appleBuildConfiguration(plan);
+    final appName = plan.flavor == 'dev'
+        ? 'Boorusama-DEV.app'
+        : 'Boorusama.app';
+    return '${project.root.path}/build/macos/Build/Products/$configuration/$appName';
+  }
+
+  String _appleBuildConfiguration(BuildPlan plan) {
+    final mode = switch (plan.buildMode) {
+      BuildMode.debug => 'Debug',
+      BuildMode.profile => 'Profile',
+      BuildMode.release => 'Release',
+    };
+
+    final flavor = plan.flavor;
+    if (flavor == null || flavor.isEmpty) return mode;
+    return '$mode-$flavor';
   }
 }
