@@ -211,9 +211,8 @@ final class ReleaseGithubCommand extends Command<int> {
     if (!target.buildTarget.requiresFlavor) return null;
     if (flavor != null) return flavor;
     return switch (target) {
-      GithubReleaseTarget.apk => 'prod',
+      GithubReleaseTarget.apk || GithubReleaseTarget.dmg => 'prod',
       GithubReleaseTarget.ipa => 'dev',
-      GithubReleaseTarget.dmg => null,
       GithubReleaseTarget.windows ||
       GithubReleaseTarget.linux ||
       GithubReleaseTarget.all => throw StateError(
