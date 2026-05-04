@@ -43,7 +43,7 @@ final class BuildWorkspace {
       final relative = _relativePath(root, entity);
       if (_shouldSkip(relative)) continue;
 
-      final targetPath = '${target.path}/${entity.uri.pathSegments.last}';
+      final targetPath = '${target.path}/${_basename(entity)}';
       if (entity is Directory) {
         final targetDir = Directory(targetPath)..createSync(recursive: true);
         _copyDirectory(entity, targetDir, root);
@@ -51,6 +51,11 @@ final class BuildWorkspace {
         entity.copySync(targetPath);
       }
     }
+  }
+
+  static String _basename(FileSystemEntity entity) {
+    final parts = entity.path.split(Platform.pathSeparator);
+    return parts.lastWhere((part) => part.isNotEmpty);
   }
 
   static bool _shouldSkip(String relativePath) {
