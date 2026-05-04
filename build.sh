@@ -10,4 +10,12 @@ if ! command -v fvm >/dev/null 2>&1; then
 fi
 
 cd "$CLI_DIR"
-exec env BOORUSAMA_ROOT="$ROOT" fvm dart run bin/boorusama.dart build "$@"
+
+case "${1:-}" in
+  doctor|help|--help|-h)
+    exec env BOORUSAMA_ROOT="$ROOT" fvm dart run bin/boorusama.dart "$@"
+    ;;
+  *)
+    exec env BOORUSAMA_ROOT="$ROOT" fvm dart run bin/boorusama.dart build "$@"
+    ;;
+esac

@@ -18,8 +18,14 @@ final class ToolRunner {
   Future<void> flutter(List<String> args, {Directory? cwd}) =>
       _run(toolchain.flutter, args, cwd: cwd);
 
+  Future<String> flutterOutput(List<String> args, {Directory? cwd}) =>
+      _output(toolchain.flutter, args, cwd: cwd);
+
   Future<void> dart(List<String> args, {Directory? cwd}) =>
       _run(toolchain.dart, args, cwd: cwd);
+
+  Future<String> dartOutput(List<String> args, {Directory? cwd}) =>
+      _output(toolchain.dart, args, cwd: cwd);
 
   Future<String> gitOutput(List<String> args, {Directory? cwd}) =>
       _output(toolchain.git, args, cwd: cwd);
