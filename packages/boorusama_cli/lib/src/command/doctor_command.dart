@@ -2,7 +2,10 @@ import 'dart:io';
 
 import 'package:args/command_runner.dart';
 
+import '../build/build_requirements.dart';
 import '../build/build_target.dart';
+import '../build/foss_backups.dart';
+import '../build/output_dir.dart';
 import '../io/logger.dart';
 import '../io/platform.dart';
 import '../io/process_runner.dart';
@@ -80,7 +83,7 @@ final class DoctorCommand extends Command<int> {
         )
         ..add(await _toolVersion('Dart', () => tools.dartOutput(['--version'])))
         ..add(await _toolExists('Git', tools, tools.toolchain.git))
-        ..add(_checkOutputDir(_resolveOutputDir(root, outputDir)))
+        ..add(_checkOutputDir(OutputDir.resolve(root, outputDir)))
         ..addAll(await _targetChecks(target, flavor, foss, env, tools))
         ..add(_checkFossBackups(root));
     } on Object catch (error) {
@@ -114,12 +117,7 @@ final class DoctorCommand extends Command<int> {
     if (target == null) return const [];
 
     final checks = <_CheckResult>[];
-    final requiredHost = switch (target) {
-      BuildTarget.ipa || BuildTarget.dmg => HostPlatform.macos,
-      BuildTarget.windows => HostPlatform.windows,
-      BuildTarget.linux => HostPlatform.linux,
-      BuildTarget.apk || BuildTarget.aab || BuildTarget.web => null,
-    };
+    final requiredHost = BuildRequirements.requiredHost(target);
 
     if (requiredHost != null) {
       final current = currentHostPlatform();
@@ -142,32 +140,22 @@ final class DoctorCommand extends Command<int> {
       );
     }
 
-    if (target == BuildTarget.web ||
-        target == BuildTarget.windows ||
-        target == BuildTarget.ipa) {
-      checks.add(await _toolExists('zip', tools, tools.toolchain.zip));
-    }
-    if (target == BuildTarget.linux) {
-      checks.add(await _toolExists('tar', tools, tools.toolchain.tar));
-    }
-    if (target == BuildTarget.dmg) {
-      checks.add(
-        await _toolExists(
-          'create-dmg',
-          tools,
-          tools.toolchain.createDmg,
-          hint: 'brew install create-dmg',
-        ),
-      );
+    for (final tool in BuildRequirements.requiredTools(
+      target,
+      tools.toolchain,
+    )) {
+      final hint = tool == tools.toolchain.createDmg
+          ? 'brew install create-dmg'
+          : null;
+      checks.add(await _toolExists(tool.displayName, tools, tool, hint: hint));
     }
 
-    if (!foss && flavor == 'prod') {
-      if (target == BuildTarget.apk || target == BuildTarget.aab) {
-        checks.add(_envKey(env, 'REVENUECAT_GOOGLE_API_KEY'));
-      }
-      if (target == BuildTarget.ipa) {
-        checks.add(_envKey(env, 'REVENUECAT_APPLE_API_KEY'));
-      }
+    for (final requirement in BuildRequirements.requiredEnv(
+      target: target,
+      flavor: flavor,
+      foss: foss,
+    )) {
+      checks.add(_envKey(env, requirement.key));
     }
 
     return checks;
@@ -198,11 +186,6 @@ final class DoctorCommand extends Command<int> {
     );
   }
 
-  Directory _resolveOutputDir(Directory root, Directory outputDir) {
-    if (outputDir.path.startsWith('/')) return outputDir;
-    return Directory('${root.path}/${outputDir.path}');
-  }
-
   _CheckResult _checkOutputDir(Directory outputDir) {
     try {
       if (!outputDir.existsSync()) outputDir.createSync(recursive: true);
@@ -225,16 +208,9 @@ final class DoctorCommand extends Command<int> {
   }
 
   _CheckResult _checkFossBackups(Directory root) {
-    final backups = root
-        .listSync()
-        .whereType<File>()
-        .where((file) {
-          final name = file.uri.pathSegments.last;
-          return name.startsWith('pubspec.yaml.backup.') ||
-              name.startsWith('pubspec.lock.backup.');
-        })
-        .map((file) => file.uri.pathSegments.last)
-        .toList();
+    final backups = FossBackups.find(
+      root,
+    ).map(FossBackups.displayName).toList();
 
     if (backups.isEmpty) return const _CheckResult.ok('FOSS backups', 'none');
     return _CheckResult.warning('FOSS backups', backups.join(', '));
