@@ -12,7 +12,7 @@ fi
 cd "$CLI_DIR"
 
 case "${1:-}" in
-  doctor|help|--help|-h)
+  doctor|release|help|--help|-h)
     exec env BOORUSAMA_ROOT="$ROOT" fvm dart run bin/boorusama.dart "$@"
     ;;
   *)

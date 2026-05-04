@@ -4,6 +4,7 @@ import 'package:args/command_runner.dart';
 
 import 'command/build_command.dart';
 import 'command/doctor_command.dart';
+import 'command/release_command.dart';
 
 Future<void> runBoorusamaCli(List<String> args) async {
   if (args.isEmpty || args.first == '--help' || args.first == '-h') {
@@ -16,10 +17,13 @@ Future<void> runBoorusamaCli(List<String> args) async {
     exit(exitCode);
   }
 
-  final runner = CommandRunner<int>(
-    'boorusama',
-    'Boorusama development tool.',
-  )..addCommand(DoctorCommand());
+  final runner =
+      CommandRunner<int>(
+          'boorusama',
+          'Boorusama development tool.',
+        )
+        ..addCommand(DoctorCommand())
+        ..addCommand(ReleaseCommand());
 
   final exitCode = await _run(runner, args);
   exit(exitCode);
@@ -44,7 +48,8 @@ void _printHelp() {
   print('');
   print('Available commands:');
   print('  build    Build Boorusama artifacts.');
-  print('  doctor   Check local build tooling. Placeholder for now.');
+  print('  doctor   Check local build requirements.');
+  print('  release  Run release flows.');
   print('');
   print('Run "boorusama help <command>" for more information about a command.');
 }
