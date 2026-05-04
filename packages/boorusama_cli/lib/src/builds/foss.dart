@@ -17,8 +17,8 @@ final class FossBuild {
   File? _lockBackup;
   File? _pubspec;
   File? _lock;
-  bool _hadLock = false;
-  bool _restored = false;
+  var _hadLock = false;
+  var _restored = false;
   StreamSubscription<ProcessSignal>? _sigintSubscription;
   StreamSubscription<ProcessSignal>? _sigtermSubscription;
 
@@ -59,7 +59,7 @@ final class FossBuild {
   void _createBackups(Project project) {
     final pubspec = File('${project.root.path}/pubspec.yaml');
     final lock = File('${project.root.path}/pubspec.lock');
-    final stamp = '${DateTime.now().millisecondsSinceEpoch}.${pid}';
+    final stamp = '${DateTime.now().millisecondsSinceEpoch}.$pid';
 
     _pubspec = pubspec;
     _lock = lock;

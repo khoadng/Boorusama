@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import '../build/build_plan.dart';
-import '../build/build_target.dart';
+import '../builds/build_plan.dart';
+import '../builds/build_target.dart';
 import '../io/process_runner.dart';
 import '../tool/tool_runner.dart';
 import '../project/project.dart';

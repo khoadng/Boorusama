@@ -1,4 +1,4 @@
-import '../build/build_plan.dart';
+import '../builds/build_plan.dart';
 import '../project/project.dart';
 import 'artifact.dart';
 

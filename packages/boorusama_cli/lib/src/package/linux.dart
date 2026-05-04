@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import '../build/build_plan.dart';
+import '../builds/build_plan.dart';
 import '../io/archive.dart';
 import '../io/process_runner.dart';
 import '../project/project.dart';

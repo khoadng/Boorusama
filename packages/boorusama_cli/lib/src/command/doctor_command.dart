@@ -2,10 +2,10 @@ import 'dart:io';
 
 import 'package:args/command_runner.dart';
 
-import '../build/build_requirements.dart';
-import '../build/build_target.dart';
-import '../build/foss_backups.dart';
-import '../build/output_dir.dart';
+import '../builds/build_requirements.dart';
+import '../builds/build_target.dart';
+import '../builds/foss_backups.dart';
+import '../builds/output_dir.dart';
 import '../io/logger.dart';
 import '../io/platform.dart';
 import '../io/process_runner.dart';
