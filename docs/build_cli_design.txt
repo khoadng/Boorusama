@@ -1,0 +1,569 @@
+Boorusama Build CLI Design
+
+Status: Draft
+Scope: Replace build.sh behavior with a repo-local Dart CLI.
+
+Overview
+
+Boorusama currently uses build.sh as the main local build orchestrator. The script builds Android APK/AAB, iOS IPA, macOS DMG, Windows ZIP, and web ZIP artifacts. It also contains project-specific behavior such as flavors, env files, Dart defines, FOSS builds, RevenueCat key validation, code generation, artifact naming, and platform checks.
+
+The script has grown past the point where shell is comfortable to maintain. The proposed direction is to introduce a Dart CLI package inside the monorepo and migrate build.sh behavior into it incrementally. The initial CLI scope is intentionally limited to build.sh parity. Release publishing, GitHub Release upload, Play Store upload, signing automation, notarization, Homebrew, winget, and Flathub are out of scope for the first version.
+
+Goals
+
+1. Move build orchestration from shell to Dart.
+2. Preserve the current build.sh user-facing behavior as much as possible.
+3. Keep build.sh working during migration.
+4. Make build behavior easier to test, extend, and run consistently across macOS, Windows, Linux, and CI.
+5. Add a real Linux artifact path during migration, because build.sh currently has only a Linux placeholder.
+6. Keep the project-specific build policy in one place: flavors, entrypoints, env files, artifact names, and FOSS behavior.
+
+Non-goals
+
+1. Do not implement GitHub Release publishing yet.
+2. Do not implement Google Play upload yet.
+3. Do not implement macOS notarization or Windows code signing yet.
+4. Do not redesign app monetization or premium behavior.
+5. Do not refactor the FOSS dependency architecture during the first migration.
+6. Do not make a generic Flutter build tool. The CLI should be specific to Boorusama.
+
+Package Location
+
+The CLI should live inside the existing workspace:
+
+packages/boorusama_cli/
+  pubspec.yaml
+  bin/boorusama.dart
+  lib/src/...
+
+The root pubspec.yaml workspace list should include:
+
+  - packages/boorusama_cli
+
+The package should be private:
+
+  publish_to: none
+
+Initial Command Shape
+
+The first CLI should expose one main command:
+
+  boorusama build <format> [options]
+
+Formats should match build.sh:
+
+  apk
+  aab
+  ipa
+  dmg
+  windows
+  linux
+  web
+
+Options should match build.sh where practical:
+
+  -f, --flavor <dev|prod>
+  -s, --foss
+  -o, --output-dir <dir>
+  -v, --verbose
+  -d, --dry-run
+  -c, --ci
+  --release
+  --debug
+  --profile
+  --no-codesign
+  --fail-fast
+  -h, --help
+
+Example commands:
+
+  dart run packages/boorusama_cli/bin/boorusama.dart build apk --release -f prod
+  dart run packages/boorusama_cli/bin/boorusama.dart build apk --release -f prod --foss
+  dart run packages/boorusama_cli/bin/boorusama.dart build aab --release -f prod
+  dart run packages/boorusama_cli/bin/boorusama.dart build ipa --release --no-codesign -f dev
+  dart run packages/boorusama_cli/bin/boorusama.dart build dmg --release -f prod
+  dart run packages/boorusama_cli/bin/boorusama.dart build windows --release
+  dart run packages/boorusama_cli/bin/boorusama.dart build linux --release
+  dart run packages/boorusama_cli/bin/boorusama.dart build web --release
+
+Compatibility Wrapper
+
+After the CLI has enough parity, build.sh can become a thin wrapper:
+
+  #!/usr/bin/env bash
+  set -e
+  dart run packages/boorusama_cli/bin/boorusama.dart build "$@"
+
+Until then, build.sh should remain available as the known-good path.
+
+Responsibilities To Migrate From build.sh
+
+The Dart CLI should own:
+
+1. Argument parsing and validation.
+2. Format validation.
+3. Flavor validation.
+4. Build mode validation.
+5. Host platform checks.
+6. Reading app name and version from root pubspec.yaml.
+7. Loading .env secrets.
+8. Building Flutter arguments.
+9. Adding --dart-define-from-file env/<flavor>.json.
+10. Adding target entrypoint: lib/main.dart or lib/main_foss.dart.
+11. Injecting GIT_COMMIT and GIT_BRANCH.
+12. Injecting BUILD_TIMESTAMP.
+13. Injecting IS_FOSS_BUILD.
+14. Injecting cronetHttpNoPlay for FOSS Android builds.
+15. Validating RevenueCat keys for prod mobile non-FOSS builds.
+16. Running ./gen.sh before builds.
+17. Preparing and restoring FOSS builds.
+18. Running flutter build.
+19. Copying or packaging artifacts to the output directory.
+20. Printing a build summary.
+
+Build Flow
+
+Every target should follow the same high-level flow:
+
+1. Locate repository root.
+2. Read project metadata from pubspec.yaml.
+3. Parse and validate CLI options.
+4. Detect host platform.
+5. Load .env if present.
+6. Build a target-specific build plan.
+7. Run code generation via ./gen.sh.
+8. Prepare FOSS mode if requested.
+9. Run flutter build with generated arguments.
+10. Package or copy the expected artifact.
+11. Restore any temporary FOSS changes.
+12. Print a summary.
+
+Suggested Internal Structure
+
+The CLI should use a Dart-style package layout with short, plain names. The goal is to keep command parsing, build planning, packaging, project metadata, and IO helpers separate without introducing enterprise-style layers.
+
+packages/boorusama_cli/
+  pubspec.yaml
+  bin/
+    boorusama.dart
+  lib/
+    boorusama_cli.dart
+    src/
+      cli.dart
+
+      command/
+        build_command.dart
+        doctor_command.dart
+
+      build/
+        build_mode.dart
+        build_options.dart
+        build_plan.dart
+        build_runner.dart
+        build_target.dart
+        codegen.dart
+        dart_defines.dart
+        flutter.dart
+        foss.dart
+
+      package/
+        android.dart
+        apple.dart
+        artifact.dart
+        linux.dart
+        packager.dart
+        windows.dart
+        web.dart
+
+      project/
+        config.dart
+        env.dart
+        git.dart
+        project.dart
+        pubspec.dart
+
+      tool/
+        tool_command.dart
+        tool_resolver.dart
+        tool_runner.dart
+        toolchain.dart
+
+      io/
+        archive.dart
+        logger.dart
+        platform.dart
+        process_runner.dart
+
+Folder Responsibilities
+
+command/
+
+Contains user-facing CLI commands and argument parsing. Command classes should stay thin: parse options, call the build layer, and print the result.
+
+build/
+
+Contains build-specific logic: build options, target/mode enums, build plans, Dart define construction, code generation, FOSS preparation, and Flutter invocation.
+
+package/
+
+Contains artifact packaging logic. Each platform family should have its own file so Android, Apple, Linux, Windows, and web output rules do not become one large function.
+
+project/
+
+Contains Boorusama repository knowledge: locating the repo root, reading pubspec.yaml, loading .env, reading git metadata, and storing project-specific config such as flavors, env files, entrypoints, and FOSS excluded dependencies.
+
+tool/
+
+Contains toolchain resolution and external tool execution policy. Flutter and Dart commands should go through this layer so the rest of the CLI does not know whether the project is using FVM or system tools.
+
+io/
+
+Contains small wrappers around system behavior: process execution, logging, archive helpers, and host platform detection.
+
+Toolchain Resolution
+
+The CLI uses .fvmrc as the only FVM project marker. Generated or legacy .fvm/* files are ignored for toolchain resolution.
+
+If .fvmrc exists at the repository root, the CLI requires fvm in PATH and runs Flutter and Dart as:
+
+  fvm flutter
+  fvm dart
+
+If .fvmrc does not exist, the CLI uses system tools:
+
+  flutter
+  dart
+
+Environment variables are available only as escape hatches:
+
+  BOORUSAMA_USE_FVM=false
+  BOORUSAMA_FLUTTER=/path/to/flutter
+  BOORUSAMA_DART=/path/to/dart
+
+There should be no --fvm CLI flag. Build and package code must not call raw flutter, dart, or fvm commands directly. They should call ToolRunner methods such as tools.flutter(...), tools.dart(...), and tools.gitOutput(...).
+
+Naming Guidance
+
+Use normal Dart naming. File names should be lowercase with underscores where useful. Class names should be direct and boring.
+
+Good examples:
+
+  BuildCommand
+  BuildOptions
+  BuildPlan
+  BuildRunner
+  DartDefines
+  FossBuild
+  Project
+  Pubspec
+  Git
+  Env
+  ProcessRunner
+
+Avoid broad or enterprise-style names unless the code genuinely needs them:
+
+  domain
+  infra
+  orchestrator
+  service
+  manager
+  engine
+  factory
+  strategy
+
+The command layer should not contain build rules. It should convert arguments into BuildOptions and delegate to BuildRunner.
+
+Core Types
+
+BuildTarget
+
+Represents the requested output format:
+
+  apk
+  aab
+  ipa
+  dmg
+  windows
+  linux
+  web
+
+BuildOptions
+
+Contains parsed command options:
+
+  target
+  flavor
+  buildMode
+  foss
+  outputDir
+  verbose
+  dryRun
+  ci
+  noCodesign
+  extraFlutterArgs
+
+ProjectInfo
+
+Contains metadata read from the repository:
+
+  appName
+  versionName
+  buildNumber
+  rootDir
+  gitCommit
+  gitBranch
+
+BuildPlan
+
+Contains the resolved build behavior:
+
+  flutterTarget
+  flutterArgs
+  entrypoint
+  envFile
+  expectedOutputPath
+  artifactName
+  requiredHostPlatform
+
+ProcessRunner
+
+A small wrapper around Process.start / Process.run. It should stream output, preserve exit codes, and produce clear failures.
+
+Artifact Naming
+
+The first migration can preserve current names to avoid changing too much at once:
+
+  APK:     boorusama-<version>-<flavor>.apk
+  APK FOSS: boorusama-<version>-<flavor>-foss.apk
+  AAB prod: boorusama-<version>.aab
+  AAB dev:  boorusama-<version>-dev.aab
+  IPA prod: boorusama_<version>.ipa
+  IPA dev:  boorusama_<version>-dev.ipa
+  DMG prod: boorusama-<version>.dmg
+  DMG dev:  boorusama-<version>-dev.dmg
+  Windows:  boorusama-<version>.zip
+  Web:      boorusama-<version>-web.zip
+
+Linux should be added as:
+
+  Linux: boorusama-<version>-linux-x64.tar.gz
+
+A later release-focused pass can revise artifact names to include platform and architecture everywhere.
+
+Target Behavior
+
+Android APK
+
+Equivalent to:
+
+  flutter build apk <resolved args>
+
+Expected output:
+
+  build/app/outputs/flutter-apk/app-<flavor>-<mode>.apk
+
+Copy to output directory with the selected artifact name.
+
+Android AAB
+
+Equivalent to:
+
+  flutter build appbundle <resolved args>
+
+Expected outputs:
+
+  build/app/outputs/bundle/devRelease/app-dev-release.aab
+  build/app/outputs/bundle/prodRelease/app-prod-release.aab
+
+Copy to output directory.
+
+iOS IPA
+
+Requires macOS.
+
+Equivalent to:
+
+  flutter build ios <resolved args>
+
+Then package the .app into an IPA by creating a Payload directory and zipping it.
+
+Existing expected app paths:
+
+  build/ios/Release-dev-iphoneos/Boorusama-DEV.app
+  build/ios/Release-prod-iphoneos/Boorusama.app
+
+macOS DMG
+
+Requires macOS and create-dmg.
+
+Equivalent to:
+
+  flutter build macos <resolved args>
+
+Then copy the .app and create a DMG using create-dmg.
+
+Existing expected app path:
+
+  build/macos/Build/Products/Release/boorusama.app
+
+Windows ZIP
+
+Requires Windows.
+
+Equivalent to:
+
+  flutter build windows <resolved args>
+
+Then zip the release directory:
+
+  build/windows/x64/runner/Release
+
+Linux TAR.GZ
+
+Requires Linux.
+
+Equivalent to:
+
+  flutter build linux <resolved args>
+
+Then tar the bundle directory:
+
+  build/linux/x64/release/bundle
+
+Output:
+
+  artifacts/boorusama-<version>-linux-x64.tar.gz
+
+Web ZIP
+
+Equivalent to:
+
+  flutter build web <resolved args>
+
+Then zip:
+
+  build/web
+
+FOSS Build Handling
+
+The first CLI version should preserve build.sh behavior for parity:
+
+1. Backup pubspec.yaml.
+2. Backup pubspec.lock if present.
+3. Remove non-FOSS dependencies from pubspec.yaml:
+
+   purchases_flutter:
+   rate_my_app:
+   google_api_availability:
+
+4. Run flutter pub get.
+5. Build using lib/main_foss.dart.
+6. Restore pubspec.yaml and pubspec.lock on exit.
+
+This logic should be isolated in one class, such as FossBuildGuard, so it can be replaced later.
+
+Long-term, FOSS builds should avoid mutating the working tree. That is not part of the first migration.
+
+Environment and Dart Defines
+
+For any flavored build, add:
+
+  --dart-define-from-file env/<flavor>.json
+
+Always add:
+
+  --dart-define GIT_COMMIT=<commit>
+  --dart-define GIT_BRANCH=<branch>
+  --dart-define BUILD_TIMESTAMP=<utc timestamp>
+  --dart-define IS_FOSS_BUILD=<true|false>
+
+For FOSS Android builds, add:
+
+  --dart-define cronetHttpNoPlay=true
+
+For non-FOSS prod Android APK/AAB, require:
+
+  REVENUECAT_GOOGLE_API_KEY
+
+For non-FOSS prod IPA, require:
+
+  REVENUECAT_APPLE_API_KEY
+
+Secrets should be loaded from .env if present, matching build.sh.
+
+Validation Rules
+
+1. apk, aab, ipa, and dmg require a flavor.
+2. Allowed flavors are dev and prod.
+3. Only one build mode can be selected.
+4. Default build mode is release.
+5. ipa and dmg require macOS.
+6. windows requires Windows.
+7. linux requires Linux.
+8. dmg requires create-dmg.
+9. zip/tar functionality should work cross-platform where possible. If using external tools, validate them early.
+10. Expected output files must exist after flutter build, otherwise fail with a clear message.
+
+Migration Plan
+
+Phase 1: CLI Skeleton
+
+1. Add packages/boorusama_cli.
+2. Add args, path, yaml dependencies.
+3. Implement boorusama build <format> parsing.
+4. Implement ProjectInfo parsing from pubspec.yaml.
+5. Implement ProcessRunner.
+6. Implement dry-run output.
+
+Phase 2: Easy Targets
+
+1. Implement web.
+2. Implement linux with tar.gz packaging.
+3. Verify artifacts land in artifacts/.
+
+Phase 3: Android
+
+1. Implement apk.
+2. Implement aab.
+3. Implement env file and Dart define handling.
+4. Implement RevenueCat key validation.
+5. Implement FOSS mode parity.
+
+Phase 4: Desktop Apple and Windows
+
+1. Implement dmg.
+2. Implement windows.
+3. Implement ipa.
+
+Phase 5: Wrapper
+
+1. Compare CLI output to build.sh output.
+2. Update README examples if needed.
+3. Replace build.sh with a thin wrapper once parity is acceptable.
+
+Success Criteria
+
+The migration is successful when these commands work through build.sh and the CLI:
+
+  ./build.sh apk --release -f prod
+  ./build.sh apk --release -f prod --foss
+  ./build.sh aab --release -f prod
+  ./build.sh ipa --release --no-codesign -f dev
+  ./build.sh dmg --release -f prod
+  ./build.sh windows --release
+  ./build.sh linux --release
+  ./build.sh web --release
+
+The generated artifacts should be copied or packaged into artifacts/ and the CLI should print a clear build summary.
+
+Open Questions
+
+1. Should the first CLI preserve current artifact names exactly, or move immediately to platform/architecture names?
+2. Should linux use tar.gz only at first, or should AppImage be part of the initial build migration?
+3. Should web remain part of the core build command, or be treated as experimental?
+4. Should non-FOSS desktop builds show premium UI with dummy IAP, or should GitHub desktop builds prefer FOSS/hidden premium mode later?
+5. Should FOSS builds continue mutating pubspec.yaml temporarily, or should the CLI build from a temporary copied workspace earlier than planned?
+
+Recommended Initial Decision
+
+Preserve build.sh behavior first, add Linux tar.gz as the only functional improvement, and avoid release publishing logic until the CLI fully replaces build.sh.
