@@ -10,11 +10,13 @@ final class ToolResolver {
     required this.root,
     required this.env,
     required this.processRunner,
+    this.toolExists,
   });
 
   final Directory root;
   final Env env;
   final ProcessRunner processRunner;
+  final Future<bool> Function(String executable)? toolExists;
 
   Future<Toolchain> resolve() async {
     final useFvm = await _shouldUseFvm();
@@ -39,7 +41,8 @@ final class ToolResolver {
   }
 
   Future<bool> _requireFvm() async {
-    if (await processRunner.exists('fvm')) return true;
+    final exists = toolExists ?? processRunner.exists;
+    if (await exists('fvm')) return true;
     throw const ProcessFailure(
       'This project has .fvmrc, but fvm was not found in PATH. Install fvm or set BOORUSAMA_USE_FVM=false to use system Flutter.',
     );

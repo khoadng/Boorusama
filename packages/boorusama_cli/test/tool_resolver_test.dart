@@ -17,6 +17,7 @@ void main() {
       root: root,
       env: const Env({}, includePlatform: false),
       processRunner: ProcessRunner(logger: Logger()),
+      toolExists: (_) async => true,
     );
 
     final toolchain = await resolver.resolve();
