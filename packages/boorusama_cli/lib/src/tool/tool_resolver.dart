@@ -28,6 +28,7 @@ final class ToolResolver {
       pod: const ToolCommand('pod'),
       zip: const ToolCommand('zip'),
       tar: const ToolCommand('tar'),
+      appImageTool: const ToolCommand('appimagetool'),
       createDmg: const ToolCommand('create-dmg'),
     );
   }

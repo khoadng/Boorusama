@@ -148,6 +148,8 @@ final class DoctorCommand extends Command<int> {
           ? 'brew install create-dmg'
           : tool == tools.toolchain.pod
           ? 'brew install cocoapods'
+          : tool == tools.toolchain.appImageTool
+          ? 'install appimagetool from AppImageKit'
           : null;
       checks.add(await _toolExists(tool.displayName, tools, tool, hint: hint));
     }

@@ -50,6 +50,9 @@ final class ToolRunner {
   Future<void> tar(List<String> args, {Directory? cwd}) =>
       _run(toolchain.tar, args, cwd: cwd);
 
+  Future<void> appImageTool(List<String> args, {Directory? cwd}) =>
+      _run(toolchain.appImageTool, args, cwd: cwd);
+
   Future<void> createDmg(List<String> args, {Directory? cwd}) =>
       _run(toolchain.createDmg, args, cwd: cwd);
 
@@ -63,6 +66,9 @@ final class ToolRunner {
     processRunner.logger.debug('pod: ${toolchain.pod.displayName}');
     processRunner.logger.debug('zip: ${toolchain.zip.displayName}');
     processRunner.logger.debug('tar: ${toolchain.tar.displayName}');
+    processRunner.logger.debug(
+      'appimagetool: ${toolchain.appImageTool.displayName}',
+    );
     processRunner.logger.debug(
       'create-dmg: ${toolchain.createDmg.displayName}',
     );

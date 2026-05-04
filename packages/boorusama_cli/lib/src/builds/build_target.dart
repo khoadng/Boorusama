@@ -5,6 +5,7 @@ enum BuildTarget {
   dmg,
   windows,
   linux,
+  appimage,
   web
   ;
 
@@ -21,7 +22,7 @@ enum BuildTarget {
     BuildTarget.ipa => 'ios',
     BuildTarget.dmg => 'macos',
     BuildTarget.windows => 'windows',
-    BuildTarget.linux => 'linux',
+    BuildTarget.linux || BuildTarget.appimage => 'linux',
     BuildTarget.web => 'web',
   };
 
@@ -30,6 +31,9 @@ enum BuildTarget {
     BuildTarget.aab ||
     BuildTarget.ipa ||
     BuildTarget.dmg => true,
-    BuildTarget.windows || BuildTarget.linux || BuildTarget.web => false,
+    BuildTarget.windows ||
+    BuildTarget.linux ||
+    BuildTarget.appimage ||
+    BuildTarget.web => false,
   };
 }

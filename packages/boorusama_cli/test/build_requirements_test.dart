@@ -14,6 +14,7 @@ void main() {
     pod: ToolCommand('pod'),
     zip: ToolCommand('zip'),
     tar: ToolCommand('tar'),
+    appImageTool: ToolCommand('appimagetool'),
     createDmg: ToolCommand('create-dmg'),
   );
 
@@ -46,6 +47,20 @@ void main() {
         toolchain,
       ).map((tool) => tool.displayName),
       ['pod', 'zip'],
+    );
+  });
+
+  test('appimage requires linux and appimagetool', () {
+    expect(
+      BuildRequirements.requiredHost(BuildTarget.appimage),
+      HostPlatform.linux,
+    );
+    expect(
+      BuildRequirements.requiredTools(
+        BuildTarget.appimage,
+        toolchain,
+      ).map((tool) => tool.displayName),
+      ['appimagetool'],
     );
   });
 

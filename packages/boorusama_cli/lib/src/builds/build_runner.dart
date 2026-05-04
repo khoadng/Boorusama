@@ -6,6 +6,7 @@ import '../io/logger.dart';
 import '../io/platform.dart';
 import '../io/process_runner.dart';
 import '../package/android.dart';
+import '../package/appimage.dart';
 import '../package/apple.dart';
 import '../package/artifact.dart';
 import '../package/linux.dart';
@@ -162,6 +163,8 @@ final class BuildRunner {
             ? ' Install with: brew install create-dmg'
             : tool == tools.toolchain.pod
             ? ' Install with: brew install cocoapods'
+            : tool == tools.toolchain.appImageTool
+            ? ' Install appimagetool from AppImageKit.'
             : '';
         throw ProcessFailure('${tool.displayName} not found.$hint');
       }
@@ -175,6 +178,7 @@ final class BuildRunner {
       BuildTarget.ipa || BuildTarget.dmg => ApplePackager(tools),
       BuildTarget.windows => WindowsPackager(archive),
       BuildTarget.linux => LinuxPackager(archive),
+      BuildTarget.appimage => AppImagePackager(tools),
       BuildTarget.web => WebPackager(archive),
     };
   }
@@ -186,6 +190,7 @@ final class BuildRunner {
     BuildTarget.dmg => 'DMG',
     BuildTarget.windows => 'Windows ZIP',
     BuildTarget.linux => 'Linux TAR.GZ',
+    BuildTarget.appimage => 'AppImage',
     BuildTarget.web => 'Web ZIP',
   };
 
@@ -211,6 +216,10 @@ final class BuildRunner {
         options.foss
             ? '$app-$version-foss-linux-${_linuxArtifactArchitecture()}.tar.gz'
             : '$app-$version-linux-${_linuxArtifactArchitecture()}.tar.gz',
+      BuildTarget.appimage =>
+        options.foss
+            ? '$app-$version-foss-linux-${_linuxArtifactArchitecture()}.AppImage'
+            : '$app-$version-linux-${_linuxArtifactArchitecture()}.AppImage',
       BuildTarget.web =>
         options.foss ? '$app-$version-foss-web.zip' : '$app-$version-web.zip',
     };

@@ -63,6 +63,7 @@ printf "%s" "\$*" > "${podArgs.path}"
           pod: ToolCommand(podScript.path),
           zip: const ToolCommand('zip'),
           tar: const ToolCommand('tar'),
+          appImageTool: const ToolCommand('appimagetool'),
           createDmg: const ToolCommand('create-dmg'),
         ),
         processRunner: runner,
