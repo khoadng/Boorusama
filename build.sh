@@ -38,7 +38,6 @@ else
     echo "[ERROR] Neither fvm nor $DART_BIN was found in PATH." >&2
     exit 127
   fi
-  echo "[WARN] fvm not found in PATH; using $DART_BIN. Set BOORUSAMA_USE_FVM=true to require fvm." >&2
   export BOORUSAMA_USE_FVM=false
   RUN_CMD=("$DART_BIN" run)
 fi
