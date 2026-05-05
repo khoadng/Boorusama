@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
 
@@ -60,8 +61,10 @@ class PersistentDismissableInfoContainer extends ConsumerWidget {
     this.mainColor,
     this.actions = const [],
     this.padding,
+    this.buttonsPadding,
     this.shouldShow,
     this.onDismiss,
+    this.onLinkTap,
   });
 
   final String storageKey;
@@ -69,8 +72,10 @@ class PersistentDismissableInfoContainer extends ConsumerWidget {
   final Color? mainColor;
   final List<Widget> actions;
   final EdgeInsetsGeometry? padding;
+  final EdgeInsetsGeometry? buttonsPadding;
   final bool Function()? shouldShow;
   final VoidCallback? onDismiss;
+  final OnTap? onLinkTap;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -81,6 +86,8 @@ class PersistentDismissableInfoContainer extends ConsumerWidget {
         content: content,
         mainColor: mainColor,
         padding: padding,
+        buttonsPadding: buttonsPadding,
+        onLinkTap: onLinkTap,
         actions: [
           ...actions,
           TextButton(

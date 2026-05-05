@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../foundation/display.dart';
+import '../../../announcements/widgets.dart';
 import '../../../configs/config/providers.dart';
 import '../../../posts/count/widgets.dart';
 import '../../../posts/listing/widgets.dart';
@@ -14,7 +15,6 @@ import '../../../search/search/types.dart';
 import '../../../search/selected_tags/providers.dart';
 import '../../../settings/providers.dart';
 import '../../../tags/metatag/providers.dart';
-import '../../../widgets/widgets.dart';
 import '../widgets/home_search_bar.dart';
 
 class MobileHomePageScaffold extends ConsumerStatefulWidget {

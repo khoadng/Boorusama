@@ -18,6 +18,8 @@ class DismissableInfoContainer extends StatefulWidget {
     this.mainColor,
     this.actions = const [],
     this.padding,
+    this.buttonsPadding,
+    this.onLinkTap,
   });
 
   final String content;
@@ -25,6 +27,8 @@ class DismissableInfoContainer extends StatefulWidget {
   final Color? mainColor;
   final List<Widget> actions;
   final EdgeInsetsGeometry? padding;
+  final EdgeInsetsGeometry? buttonsPadding;
+  final OnTap? onLinkTap;
 
   @override
   State<DismissableInfoContainer> createState() =>
@@ -81,7 +85,7 @@ class _DismissableInfoContainerState extends State<DismissableInfoContainer> {
               widget.padding ??
               const EdgeInsets.symmetric(
                 horizontal: 16,
-                vertical: 8,
+                vertical: 4,
               ),
           padding: const EdgeInsets.symmetric(
             horizontal: 4,
@@ -109,8 +113,15 @@ class _DismissableInfoContainerState extends State<DismissableInfoContainer> {
                           'body': Style(
                             color: colors?.foregroundColor,
                           ),
+                          'a': Style(
+                            color: colors?.foregroundColor,
+                            fontWeight: FontWeight.w600,
+                            textDecoration: TextDecoration.underline,
+                            textDecorationColor: colors?.foregroundColor,
+                          ),
                         },
                         data: widget.content,
+                        onLinkTap: widget.onLinkTap,
                       ),
                     ),
                   ),
@@ -121,10 +132,11 @@ class _DismissableInfoContainerState extends State<DismissableInfoContainer> {
               ),
               Container(
                 padding: widget.actions.isNotEmpty
-                    ? const EdgeInsets.only(
-                        left: 4,
-                        bottom: 8,
-                      )
+                    ? widget.buttonsPadding ??
+                          const EdgeInsets.only(
+                            left: 4,
+                            bottom: 8,
+                          )
                     : null,
                 child: OverflowBar(
                   children: widget.actions,

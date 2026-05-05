@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import '../../../../../core/widgets/widgets.dart';
+import '../../../../core/announcements/widgets.dart';
 import '../../../../core/configs/config/providers.dart';
 import '../../../../core/home/widgets.dart';
 import '../../../../core/posts/count/widgets.dart';
