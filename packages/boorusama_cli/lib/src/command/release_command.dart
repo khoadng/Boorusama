@@ -6,6 +6,7 @@ import '../builds/build_mode.dart';
 import '../builds/build_options.dart';
 import '../builds/build_runner.dart';
 import '../builds/build_target.dart';
+import '../builds/release_channel.dart';
 import '../io/logger.dart';
 import '../io/platform.dart';
 import '../io/process_runner.dart';
@@ -300,6 +301,7 @@ final class ReleasePlayCommand extends Command<int> {
             ci: ci,
             verbose: verbose,
             dryRun: dryRun,
+            releaseChannel: BuildReleaseChannel.play,
             extraFlutterArgs: const [],
           ),
         );

@@ -20,6 +20,7 @@ import 'build_options.dart';
 import 'build_requirements.dart';
 import 'build_plan.dart';
 import 'build_target.dart';
+import 'release_channel.dart';
 import 'output_dir.dart';
 import 'codegen.dart';
 import 'dart_defines.dart';
@@ -110,6 +111,7 @@ final class BuildRunner {
         gitCommit: project.git.commit,
         gitBranch: project.git.branch,
         foss: options.foss,
+        releaseChannel: options.releaseChannel.wireName,
         timestamp: DateTime.now(),
       ),
       ...DartDefines.androidFoss(options),

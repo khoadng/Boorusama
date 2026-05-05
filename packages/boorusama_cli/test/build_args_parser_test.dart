@@ -3,6 +3,7 @@ import 'package:test/test.dart';
 
 import 'package:boorusama_cli/src/builds/build_mode.dart';
 import 'package:boorusama_cli/src/builds/build_target.dart';
+import 'package:boorusama_cli/src/builds/release_channel.dart';
 import 'package:boorusama_cli/src/command/build_args_parser.dart';
 
 void main() {
@@ -57,6 +58,18 @@ void main() {
     final options = parser.parse(['web', '--flutter-verbose']);
 
     expect(options.flutterVerbose, isTrue);
+  });
+
+  test('defaults release channel to unknown', () {
+    final options = parser.parse(['web']);
+
+    expect(options.releaseChannel, BuildReleaseChannel.unknown);
+  });
+
+  test('parses release channel', () {
+    final options = parser.parse(['web', '--release-channel', 'github']);
+
+    expect(options.releaseChannel, BuildReleaseChannel.github);
   });
 
   test('requires flavor for apk', () {

@@ -14,6 +14,7 @@ final class DartDefines {
     required String gitCommit,
     required String gitBranch,
     required bool foss,
+    required String releaseChannel,
     required DateTime timestamp,
   }) {
     return {
@@ -21,6 +22,7 @@ final class DartDefines {
       'GIT_BRANCH': gitBranch,
       'BUILD_TIMESTAMP': timestamp.toUtc().toIso8601String(),
       'IS_FOSS_BUILD': foss.toString(),
+      'RELEASE_CHANNEL': releaseChannel,
     };
   }
 

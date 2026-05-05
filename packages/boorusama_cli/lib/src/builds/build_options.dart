@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'build_mode.dart';
 import 'build_target.dart';
+import 'release_channel.dart';
 
 final class BuildOptions {
   const BuildOptions({
@@ -17,6 +18,7 @@ final class BuildOptions {
     this.noCodesign = false,
     this.failFast = false,
     this.flutterVerbose = false,
+    this.releaseChannel = BuildReleaseChannel.unknown,
   });
 
   final BuildTarget target;
@@ -30,6 +32,7 @@ final class BuildOptions {
   final bool noCodesign;
   final bool failFast;
   final bool flutterVerbose;
+  final BuildReleaseChannel releaseChannel;
   final List<String> extraFlutterArgs;
 
   BuildOptions copyWith({Directory? outputDir}) {
@@ -45,6 +48,7 @@ final class BuildOptions {
       noCodesign: noCodesign,
       failFast: failFast,
       flutterVerbose: flutterVerbose,
+      releaseChannel: releaseChannel,
       extraFlutterArgs: extraFlutterArgs,
     );
   }

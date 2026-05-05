@@ -6,6 +6,7 @@ import 'package:args/command_runner.dart';
 import '../builds/build_mode.dart';
 import '../builds/build_options.dart';
 import '../builds/build_target.dart';
+import '../builds/release_channel.dart';
 import '../project/config.dart';
 
 final class BuildArgsParser {
@@ -26,6 +27,11 @@ final class BuildArgsParser {
       ..addFlag('profile', negatable: false)
       ..addFlag('no-codesign', negatable: false)
       ..addFlag('fail-fast', negatable: false)
+      ..addOption(
+        'release-channel',
+        allowed: BuildReleaseChannel.values.map((channel) => channel.wireName),
+        defaultsTo: BuildReleaseChannel.unknown.wireName,
+      )
       ..addFlag('flutter-verbose', negatable: false);
   }
 
@@ -107,6 +113,7 @@ final class BuildArgsParser {
       noCodesign: _flag(results, 'no-codesign'),
       failFast: _flag(results, 'fail-fast'),
       flutterVerbose: _flag(results, 'flutter-verbose'),
+      releaseChannel: _releaseChannel(results),
       extraFlutterArgs: flutterArgs,
     );
   }
@@ -182,6 +189,13 @@ final class BuildArgsParser {
     _fail('Expected --$name to be a string.');
   }
 
+  BuildReleaseChannel _releaseChannel(ArgResults results) {
+    final value = _requiredString(results, 'release-channel');
+    final channel = BuildReleaseChannelX.parse(value);
+    if (channel != null) return channel;
+    _fail('Invalid --release-channel: $value.');
+  }
+
   String _validTargetNames() =>
       BuildTarget.values.map((e) => e.name).join(', ');
 
@@ -202,6 +216,7 @@ Usage: boorusama build <format> [options]
     --profile
     --no-codesign
     --fail-fast
+    --release-channel  [unknown, github, play]
     --flutter-verbose
 
 Unknown Flutter build options are passed through. Everything after -- is also passed through.
