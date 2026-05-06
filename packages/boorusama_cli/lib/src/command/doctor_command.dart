@@ -150,6 +150,9 @@ final class DoctorCommand extends Command<int> {
           ? 'brew install cocoapods'
           : tool == tools.toolchain.appImageTool
           ? 'optional; appimage builds download it when missing'
+          : tool == tools.toolchain.flatpak ||
+                tool == tools.toolchain.flatpakBuilder
+          ? 'install with your distro package manager'
           : null;
       checks.add(await _toolExists(tool.displayName, tools, tool, hint: hint));
     }

@@ -9,6 +9,7 @@ import '../package/android.dart';
 import '../package/appimage.dart';
 import '../package/apple.dart';
 import '../package/artifact.dart';
+import '../package/flatpak.dart';
 import '../package/linux.dart';
 import '../package/packager.dart';
 import '../package/web.dart';
@@ -167,6 +168,10 @@ final class BuildRunner {
             ? ' Install with: brew install cocoapods'
             : tool == tools.toolchain.appImageTool
             ? ' Install appimagetool or let appimage builds download it.'
+            : tool == tools.toolchain.flatpak
+            ? ' Install with your distro package manager.'
+            : tool == tools.toolchain.flatpakBuilder
+            ? ' Install with your distro package manager.'
             : '';
         throw ProcessFailure('${tool.displayName} not found.$hint');
       }
@@ -181,6 +186,7 @@ final class BuildRunner {
       BuildTarget.windows => WindowsPackager(archive),
       BuildTarget.linux => LinuxPackager(archive),
       BuildTarget.appimage => AppImagePackager(tools),
+      BuildTarget.flatpak => FlatpakPackager(tools),
       BuildTarget.web => WebPackager(archive),
     };
   }
@@ -193,6 +199,7 @@ final class BuildRunner {
     BuildTarget.windows => 'Windows ZIP',
     BuildTarget.linux => 'Linux TAR.GZ',
     BuildTarget.appimage => 'AppImage',
+    BuildTarget.flatpak => 'Flatpak',
     BuildTarget.web => 'Web ZIP',
   };
 
@@ -222,6 +229,10 @@ final class BuildRunner {
         options.foss
             ? '$app-$version-foss-linux-${_linuxArtifactArchitecture()}.AppImage'
             : '$app-$version-linux-${_linuxArtifactArchitecture()}.AppImage',
+      BuildTarget.flatpak =>
+        options.foss
+            ? '$app-$version-foss-linux-${_linuxArtifactArchitecture()}.flatpak'
+            : '$app-$version-linux-${_linuxArtifactArchitecture()}.flatpak',
       BuildTarget.web =>
         options.foss ? '$app-$version-foss-web.zip' : '$app-$version-web.zip',
     };

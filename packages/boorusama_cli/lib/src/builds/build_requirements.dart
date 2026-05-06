@@ -9,7 +9,9 @@ final class BuildRequirements {
   static HostPlatform? requiredHost(BuildTarget target) => switch (target) {
     BuildTarget.ipa || BuildTarget.dmg => HostPlatform.macos,
     BuildTarget.windows => HostPlatform.windows,
-    BuildTarget.linux || BuildTarget.appimage => HostPlatform.linux,
+    BuildTarget.linux ||
+    BuildTarget.appimage ||
+    BuildTarget.flatpak => HostPlatform.linux,
     BuildTarget.apk || BuildTarget.aab || BuildTarget.web => null,
   };
 
@@ -22,6 +24,7 @@ final class BuildRequirements {
       BuildTarget.ipa => [toolchain.pod, toolchain.zip],
       BuildTarget.linux => [toolchain.tar],
       BuildTarget.appimage => const [],
+      BuildTarget.flatpak => [toolchain.flatpak, toolchain.flatpakBuilder],
       BuildTarget.dmg => [toolchain.pod, toolchain.createDmg],
       BuildTarget.apk || BuildTarget.aab => const [],
     };

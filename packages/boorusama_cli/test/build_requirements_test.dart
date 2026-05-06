@@ -15,6 +15,8 @@ void main() {
     zip: ToolCommand('zip'),
     tar: ToolCommand('tar'),
     appImageTool: ToolCommand('appimagetool'),
+    flatpak: ToolCommand('flatpak'),
+    flatpakBuilder: ToolCommand('flatpak-builder'),
     createDmg: ToolCommand('create-dmg'),
   );
 
@@ -61,6 +63,20 @@ void main() {
         toolchain,
       ).map((tool) => tool.displayName),
       isEmpty,
+    );
+  });
+
+  test('flatpak requires linux and flatpak tooling', () {
+    expect(
+      BuildRequirements.requiredHost(BuildTarget.flatpak),
+      HostPlatform.linux,
+    );
+    expect(
+      BuildRequirements.requiredTools(
+        BuildTarget.flatpak,
+        toolchain,
+      ).map((tool) => tool.displayName),
+      ['flatpak', 'flatpak-builder'],
     );
   });
 

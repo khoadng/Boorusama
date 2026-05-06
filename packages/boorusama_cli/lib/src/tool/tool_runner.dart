@@ -53,6 +53,12 @@ final class ToolRunner {
   Future<void> appImageTool(List<String> args, {Directory? cwd}) =>
       _run(toolchain.appImageTool, args, cwd: cwd);
 
+  Future<void> flatpak(List<String> args, {Directory? cwd}) =>
+      _run(toolchain.flatpak, args, cwd: cwd);
+
+  Future<void> flatpakBuilder(List<String> args, {Directory? cwd}) =>
+      _run(toolchain.flatpakBuilder, args, cwd: cwd);
+
   Future<void> createDmg(List<String> args, {Directory? cwd}) =>
       _run(toolchain.createDmg, args, cwd: cwd);
 
@@ -68,6 +74,10 @@ final class ToolRunner {
     processRunner.logger.debug('tar: ${toolchain.tar.displayName}');
     processRunner.logger.debug(
       'appimagetool: ${toolchain.appImageTool.displayName}',
+    );
+    processRunner.logger.debug('flatpak: ${toolchain.flatpak.displayName}');
+    processRunner.logger.debug(
+      'flatpak-builder: ${toolchain.flatpakBuilder.displayName}',
     );
     processRunner.logger.debug(
       'create-dmg: ${toolchain.createDmg.displayName}',

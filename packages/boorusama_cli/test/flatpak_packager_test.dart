@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:test/test.dart';
@@ -7,7 +8,7 @@ import 'package:boorusama_cli/src/builds/build_plan.dart';
 import 'package:boorusama_cli/src/builds/build_target.dart';
 import 'package:boorusama_cli/src/io/logger.dart';
 import 'package:boorusama_cli/src/io/process_runner.dart';
-import 'package:boorusama_cli/src/package/appimage.dart';
+import 'package:boorusama_cli/src/package/flatpak.dart';
 import 'package:boorusama_cli/src/project/env.dart';
 import 'package:boorusama_cli/src/project/git.dart';
 import 'package:boorusama_cli/src/project/project.dart';
@@ -17,7 +18,7 @@ import 'package:boorusama_cli/src/tool/tool_runner.dart';
 import 'package:boorusama_cli/src/tool/toolchain.dart';
 
 void main() {
-  test('creates an AppDir and runs appimagetool', () async {
+  test('builds a local Flatpak bundle from the Linux bundle', () async {
     final root = await Directory.systemTemp.createTemp('boorusama_cli_test_');
     addTearDown(() => root.deleteSync(recursive: true));
 
@@ -30,19 +31,32 @@ void main() {
       ..createSync(recursive: true);
     icon.writeAsStringSync('icon');
 
-    final appImageToolArgs = File('${root.path}/appimagetool_args');
-    final appImageToolScript = File('${root.path}/appimagetool_stub.sh');
-    appImageToolScript.writeAsStringSync('''
+    final flatpakBuilderArgs = File('${root.path}/flatpak_builder_args');
+    final flatpakManifest = File('${root.path}/flatpak_manifest.json');
+    final flatpakBuilderScript = File('${root.path}/flatpak_builder_stub.sh');
+    flatpakBuilderScript.writeAsStringSync('''
 #!/usr/bin/env bash
 set -euo pipefail
-printf "%s" "\$*" > "${appImageToolArgs.path}"
-test -f "\$1/AppRun"
-test -f "\$1/boorusama.desktop"
-test -f "\$1/boorusama.png"
-test -f "\$1/usr/bin/boorusama"
-touch "\$2"
+printf "%s" "\$*" > "${flatpakBuilderArgs.path}"
+manifest="\${@: -1}"
+test -f "\$manifest"
+cp "\$manifest" "${flatpakManifest.path}"
 ''');
-    await Process.run('chmod', ['+x', appImageToolScript.path]);
+    final flatpakArgs = File('${root.path}/flatpak_args');
+    final flatpakScript = File('${root.path}/flatpak_stub.sh');
+    flatpakScript.writeAsStringSync('''
+#!/usr/bin/env bash
+set -euo pipefail
+printf "%s" "\$*" > "${flatpakArgs.path}"
+test "\$1" = "build-bundle"
+test "\$4" = "$kFlatpakAppId"
+touch "\$3"
+''');
+    await Process.run('chmod', [
+      '+x',
+      flatpakBuilderScript.path,
+      flatpakScript.path,
+    ]);
 
     final tools = ToolRunner(
       toolchain: Toolchain(
@@ -52,21 +66,25 @@ touch "\$2"
         pod: const ToolCommand('pod'),
         zip: const ToolCommand('zip'),
         tar: const ToolCommand('tar'),
-        appImageTool: ToolCommand(appImageToolScript.path),
-        flatpak: const ToolCommand('flatpak'),
-        flatpakBuilder: const ToolCommand('flatpak-builder'),
+        appImageTool: const ToolCommand('appimagetool'),
+        flatpak: ToolCommand(flatpakScript.path),
+        flatpakBuilder: ToolCommand(flatpakBuilderScript.path),
         createDmg: const ToolCommand('create-dmg'),
       ),
       processRunner: ProcessRunner(logger: Logger()),
       root: root,
     );
 
-    final artifact = await AppImagePackager(
+    final artifact = await FlatpakPackager(
       tools,
     ).package(_project(root), _plan(root));
 
     expect(artifact.file.existsSync(), isTrue);
-    expect(appImageToolArgs.readAsStringSync(), contains('boorusama.AppDir'));
+    expect(flatpakArgs.readAsStringSync(), contains(kFlatpakAppId));
+
+    final manifest =
+        jsonDecode(flatpakManifest.readAsStringSync()) as Map<String, dynamic>;
+    expect(manifest['app-id'], kFlatpakAppId);
   });
 }
 
@@ -86,11 +104,11 @@ Project _project(Directory root) {
 
 BuildPlan _plan(Directory root) {
   return BuildPlan(
-    target: BuildTarget.appimage,
+    target: BuildTarget.flatpak,
     buildMode: BuildMode.release,
     flutterArgs: const ['--release'],
     outputDir: Directory('${root.path}/artifacts'),
-    artifactName: 'boorusama-linux-arm64.AppImage',
+    artifactName: 'boorusama-linux-arm64.flatpak',
     targetFile: 'lib/main.dart',
   );
 }

@@ -6,6 +6,7 @@ enum BuildTarget {
   windows,
   linux,
   appimage,
+  flatpak,
   web
   ;
 
@@ -22,7 +23,7 @@ enum BuildTarget {
     BuildTarget.ipa => 'ios',
     BuildTarget.dmg => 'macos',
     BuildTarget.windows => 'windows',
-    BuildTarget.linux || BuildTarget.appimage => 'linux',
+    BuildTarget.linux || BuildTarget.appimage || BuildTarget.flatpak => 'linux',
     BuildTarget.web => 'web',
   };
 
@@ -34,6 +35,7 @@ enum BuildTarget {
     BuildTarget.windows ||
     BuildTarget.linux ||
     BuildTarget.appimage ||
+    BuildTarget.flatpak ||
     BuildTarget.web => false,
   };
 }

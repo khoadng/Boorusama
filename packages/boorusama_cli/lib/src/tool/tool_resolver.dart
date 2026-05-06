@@ -29,6 +29,8 @@ final class ToolResolver {
       zip: const ToolCommand('zip'),
       tar: const ToolCommand('tar'),
       appImageTool: const ToolCommand('appimagetool'),
+      flatpak: const ToolCommand('flatpak'),
+      flatpakBuilder: const ToolCommand('flatpak-builder'),
       createDmg: const ToolCommand('create-dmg'),
     );
   }

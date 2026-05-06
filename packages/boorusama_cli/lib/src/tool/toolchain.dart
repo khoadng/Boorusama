@@ -9,6 +9,8 @@ final class Toolchain {
     required this.zip,
     required this.tar,
     required this.appImageTool,
+    required this.flatpak,
+    required this.flatpakBuilder,
     required this.createDmg,
   });
 
@@ -19,5 +21,7 @@ final class Toolchain {
   final ToolCommand zip;
   final ToolCommand tar;
   final ToolCommand appImageTool;
+  final ToolCommand flatpak;
+  final ToolCommand flatpakBuilder;
   final ToolCommand createDmg;
 }
