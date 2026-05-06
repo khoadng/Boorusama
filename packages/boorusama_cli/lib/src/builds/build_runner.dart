@@ -62,7 +62,7 @@ final class BuildRunner {
       project: project,
       body: (buildProject, buildTools) async {
         await Codegen(
-          processRunner: buildTools.processRunner,
+          tools: buildTools,
           logger: logger,
         ).run(buildProject);
         await Flutter(buildTools).build(buildProject, plan);
