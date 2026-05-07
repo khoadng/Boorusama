@@ -164,7 +164,20 @@
       "use_default": "ใช้ค่าเริ่มต้น",
       "toggle_bookmark": "เพิ่ม/ลบบุ๊กมาร์ก",
       "toggle_favorite": "เพิ่ม/ลบรายการโปรด",
-      "unfavorite": "ลบรายการโปรด"
+      "unfavorite": "ลบรายการโปรด",
+      "copy": "คัดลอก",
+      "media": "สื่อ",
+      "links": "ลิงก์",
+      "copy_file_name": "คัดลอกชื่อไฟล์",
+      "unavailable": "ไม่พร้อมใช้งาน",
+      "copy_post_link": "คัดลอกลิงก์โพสต์",
+      "copy_source_link": "คัดลอกลิงก์ต้นทาง",
+      "copy_image_link": "คัดลอกลิงก์ภาพ",
+      "copy_post_id": "คัดลอก ID โพสต์",
+      "failed_to_get_image_url": "ไม่สามารถโหลดลิงก์รูปภาพได้",
+      "failed_to_get_image_bytes": "ไม่สามารถโหลดข้อมูลขนาดไฟล์ภาพได้",
+      "failed_to_copy_image": "ไม่สามารถคัดลอกภาพ: $e",
+      "copy_image_description": "คัดลอกรูปภาพที่แสดงอยู่"
     },
     "statistics": {
       "stats_for_nerds": "สถิติสำหรับเด็กเนิร์ด",
