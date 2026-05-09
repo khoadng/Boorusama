@@ -190,9 +190,7 @@ final class GithubPublisher {
         );
       }
 
-      assets
-        ..add(artifact)
-        ..add(receipt.file);
+      assets.add(artifact);
     }
 
     assets.sort((a, b) => a.path.compareTo(b.path));
