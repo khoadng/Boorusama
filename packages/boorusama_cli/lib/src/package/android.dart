@@ -31,10 +31,20 @@ final class AndroidPackager implements Packager {
 
     plan.outputDir.createSync(recursive: true);
     final target = File('${plan.outputDir.path}/${plan.artifactName}');
-    source.copySync(target.path);
+    _copyOrMoveOnNoSpace(source, target);
     return Artifact(
       type: plan.target == BuildTarget.apk ? 'APK' : 'AAB',
       file: target,
     );
+  }
+
+  void _copyOrMoveOnNoSpace(File source, File target) {
+    try {
+      source.copySync(target.path);
+    } on FileSystemException catch (error) {
+      if (error.osError?.errorCode != 28) rethrow;
+      if (target.existsSync()) target.deleteSync();
+      source.renameSync(target.path);
+    }
   }
 }
