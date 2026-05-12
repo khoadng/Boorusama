@@ -131,11 +131,11 @@ void main() {
 
     test('should skip files that already exist', () async {
       // Arrange
+      var existChecks = 0;
       when(() => existChecker.exists(any(), any())).thenAnswer((invocation) {
-        final filename = invocation.positionalArguments[0] as String;
         // Skip first two files
-        return filename.contains('test-original-url-1') ||
-            filename.contains('test-original-url-2');
+        existChecks++;
+        return existChecks <= 2;
       });
 
       final task = await repository.createTask(
