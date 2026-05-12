@@ -74,6 +74,7 @@ class BoorusamaApp extends StatefulWidget {
 
 class _BoorusamaAppState extends State<BoorusamaApp> {
   late final Future<_InitResult> _initFuture;
+  Future<DeviceInfo>? _errorDeviceInfoFuture;
   AppLogger? _appLogger;
 
   @override
@@ -207,8 +208,12 @@ class _BoorusamaAppState extends State<BoorusamaApp> {
         logger: logger,
         miscDataBox: miscDataBox,
       );
-    } catch (e) {
-      logger.debugBoot('An error occurred during initialization');
+    } catch (e, stackTrace) {
+      logger.error(
+        'Boot',
+        'An error occurred during initialization: $e\n'
+            '${Trace.from(stackTrace).terse}',
+      );
       rethrow;
     }
   }
@@ -230,14 +235,30 @@ class _BoorusamaAppState extends State<BoorusamaApp> {
     final appLogger = _appLogger;
     if (appLogger == null) return const _DefaultLoading();
 
-    return MaterialApp(
-      theme: ThemeData.dark(),
-      debugShowCheckedModeBanner: false,
-      home: AppFailedToInitialize(
-        error: error,
-        stackTrace: stackTrace,
-        logs: appLogger.dump(),
-      ),
+    _errorDeviceInfoFuture ??= DeviceInfoService(
+      plugin: DeviceInfoPlugin(),
+    ).getDeviceInfo().catchError((_) => DeviceInfo.empty());
+
+    return FutureBuilder<DeviceInfo>(
+      future: _errorDeviceInfoFuture,
+      builder: (context, snapshot) {
+        final deviceInfo = snapshot.data ?? DeviceInfo.empty();
+
+        return ProviderScope(
+          overrides: [
+            deviceInfoProvider.overrideWithValue(deviceInfo),
+          ],
+          child: MaterialApp(
+            theme: ThemeData.dark(),
+            debugShowCheckedModeBanner: false,
+            home: AppFailedToInitialize(
+              error: error,
+              stackTrace: stackTrace,
+              logs: appLogger.dump(),
+            ),
+          ),
+        );
+      },
     );
   }
 
