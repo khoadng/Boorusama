@@ -122,6 +122,7 @@ final class BuildRunner {
       target: options.target,
       flavor: options.flavor,
       foss: options.foss,
+      noCodesign: options.noCodesign,
     )) {
       final key = project.env[requirement.key];
       if (key == null || key.isEmpty) {

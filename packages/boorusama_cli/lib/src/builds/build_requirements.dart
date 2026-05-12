@@ -34,6 +34,7 @@ final class BuildRequirements {
     required BuildTarget target,
     required String? flavor,
     required bool foss,
+    required bool noCodesign,
   }) {
     if (foss || flavor != 'prod') return const [];
 
@@ -42,6 +43,7 @@ final class BuildRequirements {
     }
 
     if (target == BuildTarget.ipa) {
+      if (noCodesign) return const [];
       return const [EnvRequirement('REVENUECAT_APPLE_API_KEY')];
     }
 
