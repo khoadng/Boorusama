@@ -113,14 +113,11 @@ jobs:
           brew install create-dmg
           sudo gem install cocoapods
 
-      - name: Install Dart dependencies
+      - name: Initialize workspace
         shell: bash
         run: |
           set -euo pipefail
-          flutter pub get
-          (cd packages/boorusama_cli && dart pub get)
-          (cd packages/i18n && dart pub get)
-          (cd packages/booru_clients && dart pub get)
+          ./init.sh
 
       - name: Build GitHub release artifact
         shell: bash
