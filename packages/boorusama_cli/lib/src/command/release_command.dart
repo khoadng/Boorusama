@@ -71,7 +71,7 @@ final class ReleaseGithubBuildCommand extends Command<int> {
 
   @override
   String get invocation =>
-      'boorusama release github build <apk|ipa|dmg|windows|linux|all> [options]';
+      'boorusama release github build <apk|ipa|dmg|windows-zip|linux-tar.gz|appimage|host> [options]';
 
   @override
   Future<int> run() async {
@@ -83,7 +83,7 @@ final class ReleaseGithubBuildCommand extends Command<int> {
     final target = GithubReleaseTargetParsing.parse(targetArg);
     if (target == null) {
       throw UsageException(
-        'Invalid GitHub release target: $targetArg. Valid targets: apk, ipa, dmg, windows, linux, all',
+        'Invalid GitHub release target: $targetArg. Valid targets: ${_targetList()}',
         usage,
       );
     }
@@ -124,7 +124,7 @@ final class ReleaseGithubBuildCommand extends Command<int> {
 
       await GitRelease(tools).requireCleanTree(allowDirty: allowDirty);
 
-      final targets = target == GithubReleaseTarget.all
+      final targets = target == GithubReleaseTarget.host
           ? githubTargetsForHost(currentHostPlatform())
           : [target];
 
@@ -175,11 +175,13 @@ final class ReleaseGithubBuildCommand extends Command<int> {
     final host = currentHostPlatform();
     if (!target.supportedOn(host)) {
       throw ProcessFailure(
-        '${target.name} release builds require a supported host. Current host is ${host.label}.',
+        '${target.wireName} release builds require a supported host. Current host is ${host.label}.',
       );
     }
 
-    logger.info('Preparing GitHub ${target.name} artifact for ${version.tag}');
+    logger.info(
+      'Preparing GitHub ${target.wireName} artifact for ${version.tag}',
+    );
 
     final artifact = await BuildRunner(tools: tools, logger: logger).run(
       BuildOptions(
@@ -205,7 +207,7 @@ final class ReleaseGithubBuildCommand extends Command<int> {
         await GithubReceipt(
           outputDir: artifact.files.first.parent,
         ).write(
-          target: target.name,
+          target: target.wireName,
           project: project,
           version: version,
           artifact: artifact,
@@ -221,10 +223,11 @@ final class ReleaseGithubBuildCommand extends Command<int> {
       GithubReleaseTarget.apk ||
       GithubReleaseTarget.ipa ||
       GithubReleaseTarget.dmg => 'prod',
-      GithubReleaseTarget.windows ||
-      GithubReleaseTarget.linux ||
-      GithubReleaseTarget.all => throw StateError(
-        '${target.name} does not require a flavor',
+      GithubReleaseTarget.windowsZip ||
+      GithubReleaseTarget.linuxTarGz ||
+      GithubReleaseTarget.appimage ||
+      GithubReleaseTarget.host => throw StateError(
+        '${target.wireName} does not require a flavor',
       ),
     };
   }
@@ -234,6 +237,12 @@ final class ReleaseGithubBuildCommand extends Command<int> {
       GithubReleaseTarget.apk => const ['--split-per-abi'],
       _ => const [],
     };
+  }
+
+  String _targetList() {
+    return GithubReleaseTarget.values
+        .map((target) => target.wireName)
+        .join(', ');
   }
 }
 
@@ -269,7 +278,7 @@ final class ReleaseGithubPublishCommand extends Command<int> {
         'target',
         allowed: [
           for (final target in GithubReleaseTarget.values)
-            if (target != GithubReleaseTarget.all) target.name,
+            if (target != GithubReleaseTarget.host) target.wireName,
         ],
         help: 'Required target receipt. Can be passed multiple times.',
       );
@@ -329,8 +338,9 @@ final class ReleaseGithubPublishCommand extends Command<int> {
                   GithubReleaseTarget.apk,
                   GithubReleaseTarget.ipa,
                   GithubReleaseTarget.dmg,
-                  GithubReleaseTarget.windows,
-                  GithubReleaseTarget.linux,
+                  GithubReleaseTarget.windowsZip,
+                  GithubReleaseTarget.linuxTarGz,
+                  GithubReleaseTarget.appimage,
                 ]
               : targets,
         ),

@@ -128,9 +128,11 @@ final class GithubPublisher {
     final selected = <_Receipt>[];
 
     for (final target in requiredTargets) {
-      final receipt = byTarget[target.name];
+      final receipt = byTarget[target.wireName];
       if (receipt == null) {
-        throw ProcessFailure('Missing GitHub release receipt: ${target.name}');
+        throw ProcessFailure(
+          'Missing GitHub release receipt: ${target.wireName}',
+        );
       }
       selected.add(receipt);
     }
