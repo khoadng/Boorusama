@@ -26,6 +26,6 @@ final class WebPackager implements Packager {
       output: target,
       workingDirectory: project.root,
     );
-    return Artifact(type: 'Web ZIP', file: target);
+    return Artifact.single(type: 'Web ZIP', file: target);
   }
 }

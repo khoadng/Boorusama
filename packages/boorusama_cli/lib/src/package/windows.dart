@@ -30,6 +30,6 @@ final class WindowsPackager implements Packager {
       output: target,
       workingDirectory: project.root,
     );
-    return Artifact(type: 'Windows ZIP', file: target);
+    return Artifact.single(type: 'Windows ZIP', file: target);
   }
 }

@@ -192,7 +192,7 @@ final class ReleaseGithubBuildCommand extends Command<int> {
         verbose: verbose,
         dryRun: dryRun,
         noCodesign: noCodesign,
-        extraFlutterArgs: const [],
+        extraFlutterArgs: _extraFlutterArgsFor(target),
       ),
     );
 
@@ -203,7 +203,7 @@ final class ReleaseGithubBuildCommand extends Command<int> {
 
     final receipt =
         await GithubReceipt(
-          outputDir: artifact.file.parent,
+          outputDir: artifact.files.first.parent,
         ).write(
           target: target.name,
           project: project,
@@ -225,6 +225,13 @@ final class ReleaseGithubBuildCommand extends Command<int> {
       GithubReleaseTarget.all => throw StateError(
         '${target.name} does not require a flavor',
       ),
+    };
+  }
+
+  List<String> _extraFlutterArgsFor(GithubReleaseTarget target) {
+    return switch (target) {
+      GithubReleaseTarget.apk => const ['--split-per-abi'],
+      _ => const [],
     };
   }
 }

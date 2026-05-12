@@ -69,7 +69,7 @@ final class BuildRunner {
         await Flutter(buildTools).build(buildProject, plan);
         if (resolvedOptions.dryRun) {
           final file = File('${plan.outputDir.path}/${plan.artifactName}');
-          return Artifact(type: _artifactType(plan), file: file);
+          return Artifact.single(type: _artifactType(plan), file: file);
         }
         return _packager(plan).package(buildProject, plan);
       },
@@ -256,7 +256,9 @@ final class BuildRunner {
     print('Duration: ${_formatDuration(duration)}');
     print('');
     print('Artifacts:');
-    print('  ${artifact.type}: ${artifact.file.path}');
+    for (final file in artifact.files) {
+      print('  ${artifact.type}: ${file.path}');
+    }
     print('');
     logger.info('Build completed successfully!');
   }

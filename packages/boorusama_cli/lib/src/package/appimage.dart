@@ -70,7 +70,7 @@ StartupNotify=true
         target.absolute.path,
       ], cwd: project.root);
 
-      return Artifact(type: 'AppImage', file: target);
+      return Artifact.single(type: 'AppImage', file: target);
     } finally {
       if (appDir.existsSync()) appDir.deleteSync(recursive: true);
     }

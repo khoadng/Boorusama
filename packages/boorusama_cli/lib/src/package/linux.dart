@@ -23,6 +23,6 @@ final class LinuxPackager implements Packager {
       output: target,
       workingDirectory: project.root,
     );
-    return Artifact(type: 'Linux TAR.GZ', file: target);
+    return Artifact.single(type: 'Linux TAR.GZ', file: target);
   }
 }

@@ -169,28 +169,33 @@ final class GithubPublisher {
         );
       }
 
-      final artifact = _findArtifact(artifactsDir, receipt.artifactFileName);
-      if (artifact == null) {
-        throw ProcessFailure(
-          'Artifact ${receipt.artifactFileName} for ${receipt.target} not found in ${artifactsDir.path}.',
+      for (final receiptArtifact in receipt.artifacts) {
+        final artifact = _findArtifact(
+          artifactsDir,
+          receiptArtifact.fileName,
         );
-      }
+        if (artifact == null) {
+          throw ProcessFailure(
+            'Artifact ${receiptArtifact.fileName} for ${receipt.target} not found in ${artifactsDir.path}.',
+          );
+        }
 
-      final actualSha = await GithubReceipt.sha256Of(artifact);
-      if (actualSha != receipt.artifactSha256) {
-        throw ProcessFailure(
-          'Artifact ${artifact.path} sha256 mismatch: $actualSha != ${receipt.artifactSha256}',
-        );
-      }
+        final actualSha = await GithubReceipt.sha256Of(artifact);
+        if (actualSha != receiptArtifact.sha256) {
+          throw ProcessFailure(
+            'Artifact ${artifact.path} sha256 mismatch: $actualSha != ${receiptArtifact.sha256}',
+          );
+        }
 
-      final actualSize = artifact.lengthSync();
-      if (actualSize != receipt.artifactSize) {
-        throw ProcessFailure(
-          'Artifact ${artifact.path} size mismatch: $actualSize != ${receipt.artifactSize}',
-        );
-      }
+        final actualSize = artifact.lengthSync();
+        if (actualSize != receiptArtifact.size) {
+          throw ProcessFailure(
+            'Artifact ${artifact.path} size mismatch: $actualSize != ${receiptArtifact.size}',
+          );
+        }
 
-      assets.add(artifact);
+        assets.add(artifact);
+      }
     }
 
     assets.sort((a, b) => a.path.compareTo(b.path));
@@ -232,9 +237,7 @@ final class _Receipt {
     required this.version,
     required this.tag,
     required this.commit,
-    required this.artifactFileName,
-    required this.artifactSha256,
-    required this.artifactSize,
+    required this.artifacts,
   });
 
   final File file;
@@ -243,9 +246,7 @@ final class _Receipt {
   final String version;
   final String tag;
   final String commit;
-  final String artifactFileName;
-  final String artifactSha256;
-  final int artifactSize;
+  final List<_ReceiptArtifact> artifacts;
 
   static _Receipt? tryRead(File file) {
     final Object? decoded;
@@ -257,9 +258,9 @@ final class _Receipt {
     if (decoded is! Map<String, Object?>) return null;
     if (decoded['kind'] != 'github-release-artifact') return null;
 
-    final artifact = decoded['artifact'];
-    if (artifact is! Map<String, Object?>) {
-      throw ProcessFailure('Invalid artifact receipt: ${file.path}');
+    final artifacts = decoded['artifacts'];
+    if (artifacts is! List<Object?> || artifacts.isEmpty) {
+      throw ProcessFailure('Invalid artifacts receipt: ${file.path}');
     }
 
     return _Receipt(
@@ -269,9 +270,9 @@ final class _Receipt {
       version: _requiredString(decoded, 'version', file),
       tag: _requiredString(decoded, 'tag', file),
       commit: _requiredString(decoded, 'commit', file),
-      artifactFileName: _requiredString(artifact, 'fileName', file),
-      artifactSha256: _requiredString(artifact, 'sha256', file),
-      artifactSize: _requiredInt(artifact, 'size', file),
+      artifacts: [
+        for (final artifact in artifacts) _ReceiptArtifact.read(artifact, file),
+      ],
     );
   }
 
@@ -293,5 +294,28 @@ final class _Receipt {
     final field = value[key];
     if (field is int) return field;
     throw ProcessFailure('Invalid receipt field "$key" in ${file.path}');
+  }
+}
+
+final class _ReceiptArtifact {
+  const _ReceiptArtifact({
+    required this.fileName,
+    required this.sha256,
+    required this.size,
+  });
+
+  final String fileName;
+  final String sha256;
+  final int size;
+
+  static _ReceiptArtifact read(Object? value, File file) {
+    if (value is! Map<String, Object?>) {
+      throw ProcessFailure('Invalid artifact entry in ${file.path}');
+    }
+    return _ReceiptArtifact(
+      fileName: _Receipt._requiredString(value, 'fileName', file),
+      sha256: _Receipt._requiredString(value, 'sha256', file),
+      size: _Receipt._requiredInt(value, 'size', file),
+    );
   }
 }

@@ -19,16 +19,17 @@ final class GithubReceipt {
     required ReleaseVersion version,
     required Artifact artifact,
   }) async {
-    if (!artifact.file.existsSync()) {
-      throw StateError(
-        'Expected artifact does not exist: ${artifact.file.path}',
-      );
+    for (final file in artifact.files) {
+      if (!file.existsSync()) {
+        throw StateError(
+          'Expected artifact does not exist: ${file.path}',
+        );
+      }
     }
 
     final receiptDir = Directory('${outputDir.path}/release/github');
     if (!receiptDir.existsSync()) receiptDir.createSync(recursive: true);
 
-    final fileName = p.basename(artifact.file.path);
     final receipt = <String, Object?>{
       'kind': 'github-release-artifact',
       'target': target,
@@ -38,13 +39,16 @@ final class GithubReceipt {
       'fullVersion': version.full,
       'tag': version.tag,
       'commit': project.git.commit,
-      'artifact': <String, Object?>{
-        'type': artifact.type,
-        'fileName': fileName,
-        'relativePath': fileName,
-        'sha256': await sha256Of(artifact.file),
-        'size': artifact.file.lengthSync(),
-      },
+      'artifacts': [
+        for (final file in artifact.files)
+          <String, Object?>{
+            'type': artifact.type,
+            'fileName': p.basename(file.path),
+            'relativePath': p.basename(file.path),
+            'sha256': await sha256Of(file),
+            'size': file.lengthSync(),
+          },
+      ],
     };
 
     final receiptFile = File('${receiptDir.path}/$target.json');

@@ -53,7 +53,7 @@ final class ApplePackager implements Packager {
         target.absolute.path,
         'Payload',
       ], cwd: Directory('${project.root.path}/build'));
-      return Artifact(type: 'IPA', file: target);
+      return Artifact.single(type: 'IPA', file: target);
     } finally {
       if (payload.existsSync()) payload.deleteSync(recursive: true);
     }
@@ -87,7 +87,7 @@ final class ApplePackager implements Packager {
       plan.outputDir.createSync(recursive: true);
       final target = File('${plan.outputDir.path}/${plan.artifactName}');
       buildDmg.copySync(target.path);
-      return Artifact(type: 'DMG', file: target);
+      return Artifact.single(type: 'DMG', file: target);
     } finally {
       if (tempApp.existsSync()) tempApp.deleteSync(recursive: true);
     }
