@@ -18,6 +18,7 @@ import '../../../core/search/search/routes.dart';
 import '../../../core/widgets/adaptive_button_row.dart';
 import '../../../core/widgets/booru_menu_button_row.dart';
 import '../configs/providers.dart';
+import '../pools/widgets.dart';
 import '../post_votes/widgets.dart';
 import '../posts/types.dart';
 import 'providers.dart';
@@ -170,6 +171,19 @@ class SzurubooruUploaderPostsSection extends ConsumerWidget {
   }
 }
 
+class SzurubooruPoolTileSection extends StatelessWidget {
+  const SzurubooruPoolTileSection({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final post = InheritedPost.of<SzurubooruPost>(context);
+
+    return SliverToBoxAdapter(
+      child: SzurubooruPoolTiles(pools: post.pools),
+    );
+  }
+}
+
 final kSzurubooruPostDetailsUIBuilder = PostDetailsUIBuilder(
   preview: {
     DetailsPart.toolbar: (context) => const SzurubooruPostActionToolbar(),
@@ -183,6 +197,7 @@ final kSzurubooruPostDetailsUIBuilder = PostDetailsUIBuilder(
         const DefaultInheritedFileDetailsSection<SzurubooruPost>(
           uploader: SzurubooruUploaderFileDetailTile(),
         ),
+    DetailsPart.pool: (context) => const SzurubooruPoolTileSection(),
     DetailsPart.uploaderPosts: (context) =>
         const SzurubooruUploaderPostsSection(),
   },

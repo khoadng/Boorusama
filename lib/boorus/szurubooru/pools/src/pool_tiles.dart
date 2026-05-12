@@ -5,25 +5,25 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../../../core/posts/pools/widgets.dart';
-import '../../../details/routes.dart';
-import '../types/danbooru_pool.dart';
+import '../../../../core/posts/pools/widgets.dart';
+import '../types.dart';
+import 'routes/route_utils.dart';
 
-class PoolTiles extends ConsumerWidget {
-  const PoolTiles({
+class SzurubooruPoolTiles extends ConsumerWidget {
+  const SzurubooruPoolTiles({
     required this.pools,
     super.key,
   });
 
-  final List<DanbooruPool> pools;
+  final List<SzurubooruPool> pools;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return PoolTileList<DanbooruPool>(
+    return PoolTileList<SzurubooruPool>(
       pools: pools,
       name: (pool) => pool.name,
       postCount: (pool) => pool.postCount,
-      onTap: goToPoolDetailPage,
+      onTap: goToSzurubooruPoolDetailPage,
     );
   }
 }

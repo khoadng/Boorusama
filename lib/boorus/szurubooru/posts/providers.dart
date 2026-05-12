@@ -18,7 +18,7 @@ import 'parser.dart';
 import 'types.dart';
 
 final szurubooruPostRepoProvider =
-    Provider.family<PostRepository, BooruConfigSearch>(
+    Provider.family<PostRepository<SzurubooruPost>, BooruConfigSearch>(
       (ref, config) {
         final client = ref.watch(szurubooruClientProvider(config.auth));
         final tagComposer = ref.watch(

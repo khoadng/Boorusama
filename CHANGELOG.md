@@ -1,6 +1,7 @@
 # Prereleased-2026.05.03
 - Add support for Nozomi
 - [Sankaku] Add favorite support
+- [Suzurubooru] Add pool support
 - Add last-page jumping for sites that support it
 - Improve post details copy action with more media and link options
 - Improve Cloudflare/DDOS challenge handling

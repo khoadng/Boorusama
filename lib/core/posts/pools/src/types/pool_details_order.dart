@@ -7,7 +7,8 @@ import 'package:i18n/i18n.dart';
 enum PoolDetailsOrder {
   order,
   latest,
-  oldest;
+  oldest
+  ;
 
   String localize(BuildContext context) => switch (this) {
     PoolDetailsOrder.order => context.t.explore.ordered,

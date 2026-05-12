@@ -6,6 +6,7 @@ import '../../../core/posts/post/types.dart';
 import '../../../core/posts/rating/types.dart';
 import '../../../core/posts/sources/types.dart';
 import '../../../core/tags/tag/types.dart';
+import '../pools/types.dart';
 
 class SzurubooruPost extends Equatable
     with
@@ -43,6 +44,7 @@ class SzurubooruPost extends Equatable
     required this.metadata,
     required this.tagDetails,
     required this.status,
+    required this.pools,
     this.createdAt,
     this.parentId,
     this.downvotes,
@@ -112,6 +114,8 @@ class SzurubooruPost extends Equatable
 
   @override
   final PostStatus? status;
+
+  final List<SzurubooruPool> pools;
 
   @override
   List<Object?> get props => [id];

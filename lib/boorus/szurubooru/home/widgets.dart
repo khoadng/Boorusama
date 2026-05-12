@@ -12,6 +12,8 @@ import '../../../core/home/widgets.dart';
 import '../../../core/posts/favorites/routes.dart';
 import '../configs/providers.dart';
 import '../favorites/widgets.dart';
+import '../pools/routes.dart';
+import '../pools/widgets.dart';
 
 class SzurubooruHomePage extends ConsumerWidget {
   const SzurubooruHomePage({
@@ -25,6 +27,11 @@ class SzurubooruHomePage extends ConsumerWidget {
 
     return HomePageScaffold(
       mobileMenu: [
+        SideMenuTile(
+          icon: const Icon(Symbols.photo_library),
+          title: Text(context.t.pool.pools),
+          onTap: () => goToSzurubooruPoolPage(ref),
+        ),
         if (loginDetails.hasLogin()) ...[
           SideMenuTile(
             icon: const Icon(Symbols.favorite),
@@ -34,9 +41,16 @@ class SzurubooruHomePage extends ConsumerWidget {
         ],
       ],
       desktopMenuBuilder: (context, constraints) => [
+        HomeNavigationTile(
+          value: 1,
+          constraints: constraints,
+          selectedIcon: Symbols.photo_library,
+          icon: Symbols.photo_library,
+          title: context.t.pool.pools,
+        ),
         if (loginDetails.hasLogin()) ...[
           HomeNavigationTile(
-            value: 1,
+            value: 2,
             constraints: constraints,
             selectedIcon: Symbols.favorite,
             icon: Symbols.favorite,
@@ -45,6 +59,7 @@ class SzurubooruHomePage extends ConsumerWidget {
         ],
       ],
       desktopViews: [
+        const SzurubooruPoolPage(),
         if (loginDetails.hasLogin()) ...[
           const SzurubooruFavoritesPage(),
         ],

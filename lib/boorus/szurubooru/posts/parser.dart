@@ -9,6 +9,7 @@ import '../../../core/posts/sources/types.dart';
 import '../../../core/tags/categories/types.dart';
 import '../../../core/tags/tag/types.dart';
 import '../../../foundation/path.dart';
+import '../pools/providers.dart';
 import 'types.dart';
 
 SzurubooruPost postDtoToPost(
@@ -67,5 +68,6 @@ SzurubooruPost postDtoToPost(
     commentCount: e.commentCount ?? 0,
     metadata: metadata,
     status: null,
+    pools: e.pools?.map(poolDtoToSzurubooruPool).nonNulls.toList() ?? const [],
   );
 }

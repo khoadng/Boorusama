@@ -118,6 +118,7 @@ app.*.symbols
 # *.g.dart
 *.mocks.dart
 artifacts/
+.tmp/
 
 .env
 
