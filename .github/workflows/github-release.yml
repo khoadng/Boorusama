@@ -1,0 +1,209 @@
+name: GitHub release
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: "Release tag. Leave empty to use the pubspec version tag."
+        required: false
+        default: ""
+      prerelease:
+        description: "Mark the draft release as a prerelease"
+        required: true
+        type: boolean
+        default: false
+      recreate_release:
+        description: "Delete an existing release and tag before publishing"
+        required: true
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    if: github.actor == 'khoadng'
+    name: Build ${{ matrix.target }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: apk
+            os: ubuntu-latest
+            artifact_name: boorusama-apk
+          - target: linux-tar.gz
+            os: ubuntu-latest
+            artifact_name: boorusama-linux-tar-gz
+          - target: appimage
+            os: ubuntu-latest
+            artifact_name: boorusama-appimage
+          - target: windows-zip
+            os: windows-latest
+            artifact_name: boorusama-windows-zip
+          - target: ipa
+            os: macos-latest
+            artifact_name: boorusama-ipa
+          - target: dmg
+            os: macos-latest
+            artifact_name: boorusama-dmg
+
+    env:
+      BOORUSAMA_USE_FVM: "false"
+      OUTPUT_DIR: release-artifacts/${{ matrix.target }}
+
+    steps:
+      - name: Check out Boorusama
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Set up Xcode
+        if: runner.os == 'macOS'
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - name: Set up Android SDK
+        if: matrix.target == 'apk'
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android SDK packages
+        if: matrix.target == 'apk'
+        shell: bash
+        run: |
+          set -euo pipefail
+          sdkmanager --install "platforms;android-36" "build-tools;36.0.0" "ndk;27.0.12077973"
+
+      - name: Install Linux desktop dependencies
+        if: matrix.target == 'linux-tar.gz' || matrix.target == 'appimage'
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y \
+            clang \
+            cmake \
+            libgtk-3-dev \
+            liblzma-dev \
+            libmpv-dev \
+            ninja-build \
+            pkg-config
+
+      - name: Install Windows packaging dependencies
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          choco install zip -y --no-progress
+
+      - name: Install Apple packaging dependencies
+        if: runner.os == 'macOS'
+        shell: bash
+        run: |
+          set -euo pipefail
+          brew install create-dmg
+          sudo gem install cocoapods
+
+      - name: Initialize workspace
+        shell: bash
+        run: |
+          set -euo pipefail
+          ./init.sh
+
+      - name: Build GitHub release artifact
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          args=(
+            release
+            github
+            build
+            "${{ matrix.target }}"
+            --ci
+            --output-dir
+            "$OUTPUT_DIR"
+          )
+
+          if [[ "${{ matrix.target }}" == "ipa" ]]; then
+            args+=(--no-codesign)
+          fi
+
+          ./build.sh "${args[@]}"
+
+      - name: Upload release artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact_name }}
+          path: ${{ env.OUTPUT_DIR }}/**
+          if-no-files-found: error
+
+  publish:
+    if: github.actor == 'khoadng'
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      GH_TOKEN: ${{ github.token }}
+      BOORUSAMA_USE_FVM: "false"
+    steps:
+      - name: Check out Boorusama
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: release-assets
+
+      - name: Delete existing release
+        if: inputs.recreate_release && inputs.release_tag != ''
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh release delete "${{ inputs.release_tag }}" \
+            --repo "${{ github.repository }}" \
+            --cleanup-tag \
+            --yes || true
+
+      - name: Publish draft GitHub release
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          args=(
+            release
+            github
+            publish
+            --ci
+            --repo
+            "${{ github.repository }}"
+            --artifacts-dir
+            release-assets
+          )
+
+          if [[ -n "${{ inputs.release_tag }}" ]]; then
+            args+=(--tag "${{ inputs.release_tag }}")
+            args+=(--title "Boorusama ${{ inputs.release_tag }}")
+          fi
+
+          if [[ "${{ inputs.prerelease }}" == "true" ]]; then
+            args+=(--prerelease)
+          fi
+
+          ./build.sh "${args[@]}"

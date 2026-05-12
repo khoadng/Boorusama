@@ -1,8 +1,12 @@
 import 'dart:io';
 
 final class Artifact {
-  const Artifact({required this.type, required this.file});
+  const Artifact({required this.type, required this.files});
+
+  Artifact.single({required this.type, required File file}) : files = [file];
 
   final String type;
-  final File file;
+  final List<File> files;
+
+  File get file => files.single;
 }

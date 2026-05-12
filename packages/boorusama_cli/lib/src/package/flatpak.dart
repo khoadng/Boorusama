@@ -53,7 +53,7 @@ final class FlatpakPackager implements Packager {
         kFlatpakAppId,
       ], cwd: project.root);
 
-      return Artifact(type: 'Flatpak', file: target);
+      return Artifact.single(type: 'Flatpak', file: target);
     } finally {
       if (root.existsSync()) root.deleteSync(recursive: true);
     }

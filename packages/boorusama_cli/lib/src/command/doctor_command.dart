@@ -161,6 +161,7 @@ final class DoctorCommand extends Command<int> {
       target: target,
       flavor: flavor,
       foss: foss,
+      noCodesign: false,
     )) {
       checks.add(_envKey(env, requirement.key));
     }

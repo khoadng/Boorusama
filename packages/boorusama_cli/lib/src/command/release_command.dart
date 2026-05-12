@@ -13,6 +13,7 @@ import '../io/process_runner.dart';
 import '../project/config.dart';
 import '../project/project.dart';
 import '../release/changelog.dart';
+import '../release/github_publisher.dart';
 import '../release/github_receipt.dart';
 import '../release/github_target.dart';
 import '../release/git_release.dart';
@@ -35,6 +36,19 @@ final class ReleaseCommand extends Command<int> {
 
 final class ReleaseGithubCommand extends Command<int> {
   ReleaseGithubCommand() {
+    addSubcommand(ReleaseGithubBuildCommand());
+    addSubcommand(ReleaseGithubPublishCommand());
+  }
+
+  @override
+  String get name => 'github';
+
+  @override
+  String get description => 'Run GitHub release flows.';
+}
+
+final class ReleaseGithubBuildCommand extends Command<int> {
+  ReleaseGithubBuildCommand() {
     argParser
       ..addFlag('dry-run', abbr: 'd', negatable: false)
       ..addFlag('verbose', abbr: 'v', negatable: false)
@@ -50,14 +64,14 @@ final class ReleaseGithubCommand extends Command<int> {
   }
 
   @override
-  String get name => 'github';
+  String get name => 'build';
 
   @override
   String get description => 'Build GitHub release artifacts.';
 
   @override
   String get invocation =>
-      'boorusama release github <apk|ipa|dmg|windows|linux|all> [options]';
+      'boorusama release github build <apk|ipa|dmg|windows-zip|linux-tar.gz|appimage|host> [options]';
 
   @override
   Future<int> run() async {
@@ -69,7 +83,7 @@ final class ReleaseGithubCommand extends Command<int> {
     final target = GithubReleaseTargetParsing.parse(targetArg);
     if (target == null) {
       throw UsageException(
-        'Invalid GitHub release target: $targetArg. Valid targets: apk, ipa, dmg, windows, linux, all',
+        'Invalid GitHub release target: $targetArg. Valid targets: ${_targetList()}',
         usage,
       );
     }
@@ -110,7 +124,7 @@ final class ReleaseGithubCommand extends Command<int> {
 
       await GitRelease(tools).requireCleanTree(allowDirty: allowDirty);
 
-      final targets = target == GithubReleaseTarget.all
+      final targets = target == GithubReleaseTarget.host
           ? githubTargetsForHost(currentHostPlatform())
           : [target];
 
@@ -161,11 +175,13 @@ final class ReleaseGithubCommand extends Command<int> {
     final host = currentHostPlatform();
     if (!target.supportedOn(host)) {
       throw ProcessFailure(
-        '${target.name} release builds require a supported host. Current host is ${host.label}.',
+        '${target.wireName} release builds require a supported host. Current host is ${host.label}.',
       );
     }
 
-    logger.info('Preparing GitHub ${target.name} artifact for ${version.tag}');
+    logger.info(
+      'Preparing GitHub ${target.wireName} artifact for ${version.tag}',
+    );
 
     final artifact = await BuildRunner(tools: tools, logger: logger).run(
       BuildOptions(
@@ -178,7 +194,7 @@ final class ReleaseGithubCommand extends Command<int> {
         verbose: verbose,
         dryRun: dryRun,
         noCodesign: noCodesign,
-        extraFlutterArgs: const [],
+        extraFlutterArgs: _extraFlutterArgsFor(target),
       ),
     );
 
@@ -189,9 +205,9 @@ final class ReleaseGithubCommand extends Command<int> {
 
     final receipt =
         await GithubReceipt(
-          outputDir: artifact.file.parent,
+          outputDir: artifact.files.first.parent,
         ).write(
-          target: target.name,
+          target: target.wireName,
           project: project,
           version: version,
           artifact: artifact,
@@ -204,14 +220,137 @@ final class ReleaseGithubCommand extends Command<int> {
     if (!target.buildTarget.requiresFlavor) return null;
     if (flavor != null) return flavor;
     return switch (target) {
-      GithubReleaseTarget.apk || GithubReleaseTarget.dmg => 'prod',
-      GithubReleaseTarget.ipa => 'dev',
-      GithubReleaseTarget.windows ||
-      GithubReleaseTarget.linux ||
-      GithubReleaseTarget.all => throw StateError(
-        '${target.name} does not require a flavor',
+      GithubReleaseTarget.apk ||
+      GithubReleaseTarget.ipa ||
+      GithubReleaseTarget.dmg => 'prod',
+      GithubReleaseTarget.windowsZip ||
+      GithubReleaseTarget.linuxTarGz ||
+      GithubReleaseTarget.appimage ||
+      GithubReleaseTarget.host => throw StateError(
+        '${target.wireName} does not require a flavor',
       ),
     };
+  }
+
+  List<String> _extraFlutterArgsFor(GithubReleaseTarget target) {
+    return switch (target) {
+      GithubReleaseTarget.apk => const ['--split-per-abi'],
+      _ => const [],
+    };
+  }
+
+  String _targetList() {
+    return GithubReleaseTarget.values
+        .map((target) => target.wireName)
+        .join(', ');
+  }
+}
+
+final class ReleaseGithubPublishCommand extends Command<int> {
+  ReleaseGithubPublishCommand() {
+    argParser
+      ..addFlag('dry-run', abbr: 'd', negatable: false)
+      ..addFlag('verbose', abbr: 'v', negatable: false)
+      ..addFlag('ci', abbr: 'c', negatable: false)
+      ..addFlag('draft', defaultsTo: true)
+      ..addFlag('prerelease', negatable: false)
+      ..addFlag('verify-tag', negatable: false)
+      ..addOption('repo', help: 'GitHub repository in OWNER/REPO form.')
+      ..addOption(
+        'tag',
+        help: 'Release tag. Defaults to the tag recorded in receipts.',
+      )
+      ..addOption(
+        'artifacts-dir',
+        abbr: 'a',
+        defaultsTo: BoorusamaConfig.defaultOutputDir,
+        help: 'Directory containing release artifacts and receipt JSON files.',
+      )
+      ..addOption(
+        'notes-file',
+        help: 'Markdown file to use as release notes.',
+      )
+      ..addOption(
+        'title',
+        help: 'Release title. Defaults to "Boorusama <version>".',
+      )
+      ..addMultiOption(
+        'target',
+        allowed: [
+          for (final target in GithubReleaseTarget.values)
+            if (target != GithubReleaseTarget.host) target.wireName,
+        ],
+        help: 'Required target receipt. Can be passed multiple times.',
+      );
+  }
+
+  @override
+  String get name => 'publish';
+
+  @override
+  String get description => 'Validate artifacts and create a GitHub release.';
+
+  @override
+  String get invocation =>
+      'boorusama release github publish --repo OWNER/REPO [options]';
+
+  @override
+  Future<int> run() async {
+    final repo = argResults?['repo'] as String?;
+    if (repo == null || repo.isEmpty) {
+      throw UsageException('--repo is required.', usage);
+    }
+
+    final dryRun = argResults?['dry-run'] as bool? ?? false;
+    final verbose = argResults?['verbose'] as bool? ?? false;
+    final ci = argResults?['ci'] as bool? ?? false;
+    final artifactsDir = Directory(
+      argResults?['artifacts-dir'] as String? ??
+          BoorusamaConfig.defaultOutputDir,
+    );
+    final targets = (argResults?['target'] as List<String>? ?? const [])
+        .map((target) => GithubReleaseTargetParsing.parse(target))
+        .nonNulls
+        .toList();
+    final logger = Logger(verbose: verbose, ci: ci);
+    final processRunner = ProcessRunner(logger: logger, dryRun: dryRun);
+
+    try {
+      final root = Project.findRoot();
+      await GithubPublisher(
+        root: root,
+        logger: logger,
+        processRunner: processRunner,
+      ).publish(
+        options: GithubPublishOptions(
+          repo: repo,
+          artifactsDir: artifactsDir,
+          tag: argResults?['tag'] as String?,
+          title: argResults?['title'] as String?,
+          notesFile: argResults?['notes-file'] == null
+              ? null
+              : File(argResults!['notes-file'] as String),
+          draft: argResults?['draft'] as bool? ?? true,
+          prerelease: argResults?['prerelease'] as bool? ?? false,
+          verifyTag: argResults?['verify-tag'] as bool? ?? false,
+          requiredTargets: targets.isEmpty
+              ? const [
+                  GithubReleaseTarget.apk,
+                  GithubReleaseTarget.ipa,
+                  GithubReleaseTarget.dmg,
+                  GithubReleaseTarget.windowsZip,
+                  GithubReleaseTarget.linuxTarGz,
+                  GithubReleaseTarget.appimage,
+                ]
+              : targets,
+        ),
+      );
+      return 0;
+    } on Object catch (error, stackTrace) {
+      logger.error(error.toString());
+      if (verbose) logger.debug(stackTrace.toString());
+      return 1;
+    }
   }
 }
 
