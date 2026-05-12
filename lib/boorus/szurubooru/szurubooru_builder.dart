@@ -7,7 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../core/boorus/defaults/widgets.dart';
 import '../../core/boorus/engine/types.dart';
-import '../../core/comments/widgets.dart';
 import '../../core/configs/config/providers.dart';
 import '../../core/configs/config/types.dart';
 import '../../core/configs/create/widgets.dart';
@@ -19,6 +18,7 @@ import '../../core/widgets/widgets.dart';
 import '../../foundation/html.dart';
 import 'configs/providers.dart';
 import 'configs/widgets.dart';
+import 'comments/widgets.dart';
 import 'favorites/widgets.dart';
 import 'home/widgets.dart';
 import 'posts/providers.dart';
@@ -63,7 +63,7 @@ class SzurubooruBuilder extends BaseBooruBuilder {
 
   @override
   CommentPageBuilder? get commentPageBuilder =>
-      (context, useAppBar, post) => CommentPageScaffold(
+      (context, useAppBar, post) => SzurubooruCommentPage(
         postId: post.id,
         useAppBar: useAppBar,
       );

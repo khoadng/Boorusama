@@ -6,12 +6,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../../../../core/comments/widgets.dart';
-import '../../../../../../core/configs/config/providers.dart';
-import '../../../comment/providers.dart';
+import '../../../../../core/comments/widgets.dart';
+import '../../../../../core/configs/config/providers.dart';
+import '../../providers.dart';
 
-class CommentCreatePage extends ConsumerWidget {
-  const CommentCreatePage({
+class SzurubooruCommentCreatePage extends ConsumerWidget {
+  const SzurubooruCommentCreatePage({
     required this.postId,
     super.key,
     this.initialContent,
@@ -21,14 +21,14 @@ class CommentCreatePage extends ConsumerWidget {
   final String? initialContent;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(context, ref) {
     final config = ref.watchConfigAuth;
 
     return CommentEditorPage(
       initialContent: initialContent,
       submitIcon: Symbols.send,
       onSubmit: (content) => ref
-          .read(danbooruCommentsProvider(config).notifier)
+          .read(szurubooruCommentsProvider(config).notifier)
           .send(
             postId: postId,
             content: content,

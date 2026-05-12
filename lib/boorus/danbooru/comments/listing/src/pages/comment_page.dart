@@ -1,23 +1,21 @@
 // Flutter imports:
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
-import 'package:i18n/i18n.dart';
 
 // Project imports:
+import '../../../../../../core/comments/widgets.dart';
 import '../../../../../../core/configs/config/providers.dart';
-import '../../../../../../foundation/utils/duration_utils.dart';
 import '../../../../configs/providers.dart';
 import '../../../comment/providers.dart';
 import '../../../comment/types.dart';
 import '../../../votes/providers.dart';
 import '../routes/route_utils.dart';
-import '../widgets/comment_box.dart';
 import '../widgets/comment_list.dart';
+import '../widgets/reply_header.dart';
 
-class CommentPage extends ConsumerStatefulWidget {
+class CommentPage extends ConsumerWidget {
   const CommentPage({
     required this.postId,
     super.key,
@@ -28,133 +26,70 @@ class CommentPage extends ConsumerStatefulWidget {
   final bool useAppBar;
 
   @override
-  ConsumerState<CommentPage> createState() => _CommentPageState();
-}
-
-class _CommentPageState extends ConsumerState<CommentPage> {
-  late final _focus = FocusNode();
-  final _commentReply = ValueNotifier<CommentData?>(null);
-  final isEditing = ValueNotifier(false);
-
-  @override
-  void initState() {
-    super.initState();
-    ref
-        .read(danbooruCommentsProvider(ref.readConfigAuth).notifier)
-        .load(widget.postId);
-
-    isEditing.addListener(_onEditing);
-
-    _focus.addListener(() {
-      if (_focus.hasPrimaryFocus) {
-        isEditing.value = true;
-      }
-    });
-  }
-
-  void _onEditing() {
-    if (!isEditing.value) {
-      _commentReply.value = null;
-      FocusManager.instance.primaryFocus?.unfocus();
-    }
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    isEditing.removeListener(_onEditing);
-    _focus.dispose();
-  }
-
-  void _pop() {
-    if (isEditing.value) {
-      isEditing.value = false;
-    } else {
-      Navigator.of(context).pop();
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfigAuth;
     final loginDetails = ref.watch(danbooruLoginDetailsProvider(config));
-    final comments = ref.watch(danbooruCommentsProvider(config))[widget.postId];
+    final comments = ref.watch(danbooruCommentsProvider(config))[postId];
+    final commentsNotifier = ref.watch(
+      danbooruCommentsProvider(config).notifier,
+    );
+    final commentVotesNotifier = ref.watch(
+      danbooruCommentVotesProvider(config).notifier,
+    );
 
-    return ValueListenableBuilder(
-      valueListenable: isEditing,
-      builder: (context, edit, child) {
-        return PopScope(
-          canPop: !edit,
-          onPopInvokedWithResult: (didPop, _) {
-            if (didPop) return;
-            _pop();
-          },
-          child: child!,
+    return CommentThreadPageScaffold<CommentData>(
+      useAppBar: useAppBar,
+      authenticated: loginDetails.hasLogin(),
+      comments: comments,
+      onLoad: () => commentsNotifier.load(postId),
+      onRefresh: () => commentsNotifier.load(postId, force: true),
+      replyHeaderBuilder: (context, comment) => ReplyHeader(comment: comment),
+      onOpenEditor: (content, replyTo) {
+        var initialContent = content;
+        if (replyTo != null) {
+          initialContent =
+              '[quote]\n${replyTo.authorName} said:\n\n${replyTo.body}\n[/quote]\n\n$content';
+        }
+
+        return goToCommentCreatePage(
+          ref,
+          postId: postId,
+          initialContent: initialContent,
         );
       },
-      child: Scaffold(
-        appBar: widget.useAppBar
-            ? AppBar(
-                title: Text(context.t.comment.comments),
-              )
-            : null,
-        body: SafeArea(
-          child: comments.toOption().fold(
-            () => const Center(
-              child: CircularProgressIndicator.adaptive(),
-            ),
-            (comments) => GestureDetector(
-              onTap: () => isEditing.value = false,
-              child: Column(
-                children: [
-                  Expanded(
-                    child: CommentList(
-                      comments: comments,
-                      authenticated: loginDetails.hasLogin(),
-                      onEdit: (comment) {
-                        goToCommentUpdatePage(
-                          ref,
-                          postId: widget.postId,
-                          commentId: comment.id,
-                          commentBody: comment.body,
-                        );
-                      },
-                      onReply: (comment) async {
-                        _commentReply.value = comment;
-                        await const Duration(milliseconds: 100).future;
-                        _focus.requestFocus();
-                      },
-                      onDelete: (comment) => ref
-                          .read(danbooruCommentsProvider(config).notifier)
-                          .delete(postId: widget.postId, comment: comment),
-                      onUpvote: (comment) => ref
-                          .read(
-                            danbooruCommentVotesProvider(config).notifier,
-                          )
-                          .guardUpvote(ref, comment.id),
-                      onDownvote: (comment) => ref
-                          .read(
-                            danbooruCommentVotesProvider(config).notifier,
-                          )
-                          .guardDownvote(ref, comment.id),
-                      onClearVote: (comment, commentVote) => ref
-                          .read(
-                            danbooruCommentVotesProvider(config).notifier,
-                          )
-                          .guardUnvote(ref, commentVote),
-                    ),
-                  ),
-                  if (loginDetails.hasLogin())
-                    CommentBox(
-                      focus: _focus,
-                      commentReply: _commentReply,
-                      postId: widget.postId,
-                      isEditing: isEditing,
-                    ),
-                ],
-              ),
-            ),
-          ),
+      onSend: (content, replyTo) => commentsNotifier.send(
+        postId: postId,
+        content: content,
+        replyTo: replyTo,
+      ),
+      commentListBuilder: (context, scrollController, onReply) => CommentList(
+        scrollController: scrollController,
+        comments: comments ?? const [],
+        authenticated: loginDetails.hasLogin(),
+        onEdit: (comment) {
+          goToCommentUpdatePage(
+            ref,
+            postId: postId,
+            commentId: comment.id,
+            commentBody: comment.body,
+          );
+        },
+        onReply: onReply,
+        onDelete: (comment) => commentsNotifier.delete(
+          postId: postId,
+          comment: comment,
+        ),
+        onUpvote: (comment) => commentVotesNotifier.guardUpvote(
+          ref,
+          comment.id,
+        ),
+        onDownvote: (comment) => commentVotesNotifier.guardDownvote(
+          ref,
+          comment.id,
+        ),
+        onClearVote: (comment, commentVote) => commentVotesNotifier.guardUnvote(
+          ref,
+          commentVote,
         ),
       ),
     );

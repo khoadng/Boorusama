@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../core/boorus/defaults/types.dart';
+import '../../core/comments/types.dart';
 import '../../core/configs/config/types.dart';
 import '../../core/configs/create/create.dart';
 import '../../core/downloads/filename/types.dart';
@@ -16,6 +17,7 @@ import '../../core/search/queries/types.dart';
 import '../../core/tags/autocompletes/types.dart';
 import '../../core/tags/tag/types.dart';
 import 'configs/providers.dart';
+import 'comments/providers.dart';
 import 'favorites/providers.dart';
 import 'notes/providers.dart';
 import 'posts/providers.dart';
@@ -40,6 +42,11 @@ class SzurubooruRepository extends BooruRepositoryDefault {
   @override
   FavoriteRepository favorite(BooruConfigAuth config) {
     return ref.watch(szurubooruFavoriteRepoProvider(config));
+  }
+
+  @override
+  CommentRepository comment(BooruConfigAuth config) {
+    return ref.watch(szurubooruCommentRepoProvider(config));
   }
 
   @override

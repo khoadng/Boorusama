@@ -1,15 +1,12 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
-// Package imports:
-import 'package:i18n/i18n.dart';
-
 // Project imports:
 import '../../../../../../core/comments/types.dart';
-import '../../../../../../core/widgets/widgets.dart';
+import '../../../../../../core/comments/widgets.dart';
 import '../../../comment/types.dart';
 import '../../../votes/types.dart';
-import 'comment_item.dart';
+import 'comment_item.dart' as danbooru;
 
 class CommentList extends StatelessWidget {
   const CommentList({
@@ -22,10 +19,12 @@ class CommentList extends StatelessWidget {
     required this.onDownvote,
     required this.onClearVote,
     super.key,
+    this.scrollController,
   });
 
   final List<CommentData> comments;
   final bool authenticated;
+  final ScrollController? scrollController;
   final void Function(CommentData comment) onReply;
   final void Function(CommentData comment) onEdit;
   final void Function(CommentData comment) onDelete;
@@ -36,49 +35,26 @@ class CommentList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return comments.isNotEmpty
-        ? ListView.builder(
-            padding: EdgeInsets.zero,
-            itemBuilder: (context, index) {
-              final comment = comments[index];
-
-              return ListTile(
-                title: CommentItem(
-                  hasVoteSection: true,
-                  onVoteChanged: (event, commentVote) => switch (event) {
-                    VoteEvent.upvoted => onUpvote(comment),
-                    VoteEvent.downvote => onDownvote(comment),
-                    VoteEvent.voteRemoved => onClearVote(comment, commentVote),
-                  },
-                  comment: comment,
-                  onReply: authenticated ? () => onReply(comment) : null,
-                  moreBuilder: (context) => authenticated
-                      ? BooruPopupMenuButton(
-                          items: [
-                            if (comment.isSelf)
-                              BooruPopupMenuItem(
-                                title: Text(context.t.comment.list.edit),
-                                onTap: () => onEdit(comment),
-                              ),
-                            BooruPopupMenuItem(
-                              title: Text(context.t.comment.list.reply),
-                              onTap: () => onReply(comment),
-                            ),
-                            if (comment.isSelf)
-                              BooruPopupMenuItem(
-                                title: Text(context.t.comment.list.delete),
-                                onTap: () => onDelete(comment),
-                              ),
-                          ],
-                        )
-                      : const SizedBox.shrink(),
-                ),
-              );
+    return CommentListView<CommentData>(
+      scrollController: scrollController,
+      comments: comments,
+      authenticated: authenticated,
+      isSelf: (comment) => comment.isSelf,
+      onEdit: onEdit,
+      onReply: onReply,
+      onDelete: onDelete,
+      itemBuilder: (context, comment, onReply, moreBuilder) =>
+          danbooru.CommentItem(
+            hasVoteSection: true,
+            onVoteChanged: (event, commentVote) => switch (event) {
+              VoteEvent.upvoted => onUpvote(comment),
+              VoteEvent.downvote => onDownvote(comment),
+              VoteEvent.voteRemoved => onClearVote(comment, commentVote),
             },
-            itemCount: comments.length,
-          )
-        : Center(
-            child: Text(context.t.comment.list.no_comments),
-          );
+            comment: comment,
+            onReply: onReply,
+            moreBuilder: moreBuilder,
+          ),
+    );
   }
 }

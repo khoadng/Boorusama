@@ -2,9 +2,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../../../core/router.dart';
+import '../../../../../core/router.dart';
 
-Future<String?> goToCommentCreatePage(
+Future<String?> goToSzurubooruCommentCreatePage(
   WidgetRef ref, {
   required int postId,
   String? initialContent,
@@ -14,7 +14,7 @@ Future<String?> goToCommentCreatePage(
       pathSegments: [
         '',
         'internal',
-        'danbooru',
+        'szurubooru',
         'posts',
         '$postId',
         'comments',
@@ -27,7 +27,7 @@ Future<String?> goToCommentCreatePage(
   );
 }
 
-Future<String?> goToCommentUpdatePage(
+Future<String?> goToSzurubooruCommentUpdatePage(
   WidgetRef ref, {
   required int postId,
   required int commentId,
@@ -38,7 +38,7 @@ Future<String?> goToCommentUpdatePage(
       pathSegments: [
         '',
         'internal',
-        'danbooru',
+        'szurubooru',
         'posts',
         '$postId',
         'comments',

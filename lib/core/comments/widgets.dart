@@ -1,5 +1,10 @@
+export 'src/pages/comment_editor_page.dart';
 export 'src/pages/comment_page_scaffold.dart';
+export 'src/pages/comment_thread_page_scaffold.dart';
+export 'src/widgets/comment_composer.dart';
 export 'src/widgets/comment_header.dart';
+export 'src/widgets/comment_list_view.dart';
+export 'src/widgets/comment_thread_item.dart';
 export 'src/widgets/comment_vote_section.dart';
 export 'src/widgets/youtube_preview_box.dart';
 export 'src/widgets/comment_item.dart';

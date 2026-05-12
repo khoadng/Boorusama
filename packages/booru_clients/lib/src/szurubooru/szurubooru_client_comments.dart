@@ -26,6 +26,73 @@ mixin SzurubooruClientComments {
     return results.map((e) => CommentDto.fromJson(e)).toList();
   }
 
+  Future<CommentDto> getComment({
+    required int commentId,
+  }) async {
+    final response = await dio.get('/api/comment/$commentId');
+
+    return CommentDto.fromJson(response.data);
+  }
+
+  Future<CommentDto> createComment({
+    required int postId,
+    required String text,
+  }) async {
+    final response = await dio.post(
+      '/api/comments',
+      data: {
+        'postId': postId,
+        'text': text,
+      },
+    );
+
+    return CommentDto.fromJson(response.data);
+  }
+
+  Future<CommentDto> updateComment({
+    required int commentId,
+    required String text,
+    int? version,
+  }) async {
+    final effectiveVersion =
+        version ??
+        _versionValue((await getComment(commentId: commentId)).version);
+
+    if (effectiveVersion == null) {
+      throw StateError('Comment version is required');
+    }
+
+    final response = await dio.put(
+      '/api/comment/$commentId',
+      data: {
+        'version': effectiveVersion,
+        'text': text,
+      },
+    );
+
+    return CommentDto.fromJson(response.data);
+  }
+
+  Future<void> deleteComment({
+    required int commentId,
+    int? version,
+  }) async {
+    final effectiveVersion =
+        version ??
+        _versionValue((await getComment(commentId: commentId)).version);
+
+    if (effectiveVersion == null) {
+      throw StateError('Comment version is required');
+    }
+
+    await dio.delete(
+      '/api/comment/$commentId',
+      data: {
+        'version': effectiveVersion,
+      },
+    );
+  }
+
   Future<CommentDto> upvoteComment({
     required int commentId,
   }) async {
@@ -65,3 +132,9 @@ mixin SzurubooruClientComments {
     return CommentDto.fromJson(response.data);
   }
 }
+
+int? _versionValue(SzurubooruVersion? version) => switch (version) {
+  IntVersion(value: final value) => value,
+  StringVersion(value: final value) => int.tryParse(value),
+  _ => null,
+};
