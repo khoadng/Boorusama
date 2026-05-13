@@ -8,6 +8,7 @@ import 'package:dio/dio.dart';
 import 'danbooru_client_artists.dart';
 import 'danbooru_client_comments.dart';
 import 'danbooru_client_dmails.dart';
+import 'danbooru_client_dtext.dart';
 import 'danbooru_client_explores.dart';
 import 'danbooru_client_favorite_groups.dart';
 import 'danbooru_client_favorites.dart';
@@ -31,6 +32,7 @@ class DanbooruClient
         DanbooruClientArtists,
         DanbooruClientComments,
         DanbooruClientDmails,
+        DanbooruClientDText,
         DanbooruClientExplores,
         DanbooruClientFavoriteGroups,
         DanbooruClientFavorites,

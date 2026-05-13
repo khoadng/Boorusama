@@ -15,4 +15,5 @@ export 'src/ast.dart'
         DTextTagRequestEmbed,
         DTextText;
 export 'src/options.dart';
+export 'src/html_document_renderer.dart' show DTextEmojiHtmlBuilder;
 export 'src/parser.dart' show DText;

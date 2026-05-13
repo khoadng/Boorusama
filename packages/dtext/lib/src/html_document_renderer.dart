@@ -1,7 +1,13 @@
 import 'ast.dart';
 
+typedef DTextEmojiHtmlBuilder = String Function(DTextEmoji emoji);
+
 class DTextHtmlDocumentRenderer {
-  const DTextHtmlDocumentRenderer();
+  const DTextHtmlDocumentRenderer({
+    this.emojiHtmlBuilder,
+  });
+
+  final DTextEmojiHtmlBuilder? emojiHtmlBuilder;
 
   String render(DTextDocument document) => renderNodes(document.children);
 
@@ -43,7 +49,8 @@ class DTextHtmlDocumentRenderer {
     DTextMediaEmbed(:final type, :final id, :final caption) =>
       '<media-embed data-type="${_escapeAttribute(type)}" data-id="${_escapeAttribute(id)}">${renderNodes(caption)}</media-embed>',
     DTextEmoji(:final name) =>
-      '<emoji data-name="${_uriEscape(name)}" data-mode="inline"></emoji>',
+      emojiHtmlBuilder?.call(node) ??
+          '<emoji data-name="${_uriEscape(name)}" data-mode="inline"></emoji>',
   };
 
   String _renderElement(

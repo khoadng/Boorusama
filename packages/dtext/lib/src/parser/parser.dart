@@ -11,8 +11,6 @@ import 'links.dart';
 import 'tags.dart';
 
 class DText {
-  static const _htmlRenderer = DTextHtmlDocumentRenderer();
-
   static String parse(
     String? input, {
     DTextOptions options = const DTextOptions(),
@@ -30,8 +28,12 @@ class DText {
     return parser.parseDocument();
   }
 
-  static String renderHtml(DTextDocument document) =>
-      _htmlRenderer.render(document);
+  static String renderHtml(
+    DTextDocument document, {
+    DTextEmojiHtmlBuilder? emojiHtmlBuilder,
+  }) => DTextHtmlDocumentRenderer(
+    emojiHtmlBuilder: emojiHtmlBuilder,
+  ).render(document);
 
   static DTextParseResult parseWithResult(
     String? input, {

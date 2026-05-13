@@ -6,8 +6,11 @@ import 'package:dtext/dtext.dart';
 import 'package:flutter_html/flutter_html.dart';
 
 // Project imports:
+import '../../configs/config/types.dart';
+import '../../text_markup/types.dart';
 import '../../themes/theme/types.dart';
 import '../../../foundation/html.dart';
+import 'dtext_emoji_renderer.dart';
 import 'dtext_renderer.dart';
 
 class DTextBody extends StatelessWidget {
@@ -15,6 +18,8 @@ class DTextBody extends StatelessWidget {
     required this.data,
     required this.booruUrl,
     super.key,
+    this.emojiMap = const {},
+    this.emojiImageConfig,
     this.style,
     this.onLinkTap,
     this.selectable = true,
@@ -22,6 +27,8 @@ class DTextBody extends StatelessWidget {
 
   final String data;
   final String booruUrl;
+  final Map<String, TextEmoji> emojiMap;
+  final BooruConfigAuth? emojiImageConfig;
   final Map<String, Style>? style;
   final OnTap? onLinkTap;
   final bool selectable;
@@ -29,13 +36,21 @@ class DTextBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     try {
+      final options = dtextOptionsForBooruUrl(booruUrl).copyWith(
+        isAllowedEmoji: emojiMap.isEmpty
+            ? null
+            : (name) => emojiMap.containsKey(name.toLowerCase()),
+      );
       final document = DText.parseDocument(
         data,
-        options: dtextOptionsForBooruUrl(booruUrl),
+        options: options,
       );
 
       return _DTextNodesView(
         nodes: document.children,
+        emojiMap: emojiMap,
+        emojiSize: dTextEmojiSizeForDocument(document),
+        emojiImageConfig: emojiImageConfig,
         style: style,
         onLinkTap: onLinkTap,
         selectable: selectable,
@@ -54,12 +69,18 @@ class DTextBody extends StatelessWidget {
 class _DTextNodesView extends StatelessWidget {
   const _DTextNodesView({
     required this.nodes,
+    required this.emojiMap,
+    required this.emojiSize,
+    required this.emojiImageConfig,
     required this.style,
     required this.onLinkTap,
     required this.selectable,
   });
 
   final List<DTextNode> nodes;
+  final Map<String, TextEmoji> emojiMap;
+  final double emojiSize;
+  final BooruConfigAuth? emojiImageConfig;
   final Map<String, Style>? style;
   final OnTap? onLinkTap;
   final bool selectable;
@@ -76,9 +97,19 @@ class _DTextNodesView extends StatelessWidget {
         AppHtml(
           data: DText.renderHtml(
             DTextDocument(children: List.of(htmlNodes)),
+            emojiHtmlBuilder: (emoji) => renderDTextEmojiHtml(
+              emoji,
+              emojiMap,
+              emojiSize,
+              supportsImageEmoji: emojiImageConfig != null,
+            ),
           ),
           style: _dtextHtmlStyle(style),
           onLinkTap: onLinkTap,
+          extensions: [
+            if (emojiImageConfig case final config?)
+              ...dTextEmojiHtmlExtensions(config),
+          ],
           selectable: selectable,
         ),
       );
@@ -91,6 +122,9 @@ class _DTextNodesView extends StatelessWidget {
         widgets.add(
           _DTextQuote(
             node: node as DTextElementNode,
+            emojiMap: emojiMap,
+            emojiSize: emojiSize,
+            emojiImageConfig: emojiImageConfig,
             style: style,
             onLinkTap: onLinkTap,
             selectable: selectable,
@@ -118,12 +152,18 @@ class _DTextNodesView extends StatelessWidget {
 class _DTextQuote extends StatelessWidget {
   const _DTextQuote({
     required this.node,
+    required this.emojiMap,
+    required this.emojiSize,
+    required this.emojiImageConfig,
     required this.style,
     required this.onLinkTap,
     required this.selectable,
   });
 
   final DTextElementNode node;
+  final Map<String, TextEmoji> emojiMap;
+  final double emojiSize;
+  final BooruConfigAuth? emojiImageConfig;
   final Map<String, Style>? style;
   final OnTap? onLinkTap;
   final bool selectable;
@@ -144,6 +184,9 @@ class _DTextQuote extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 6),
       child: _DTextNodesView(
         nodes: node.children,
+        emojiMap: emojiMap,
+        emojiSize: emojiSize,
+        emojiImageConfig: emojiImageConfig,
         style: style,
         onLinkTap: onLinkTap,
         selectable: selectable,

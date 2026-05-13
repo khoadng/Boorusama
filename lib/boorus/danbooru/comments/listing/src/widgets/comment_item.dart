@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../../../core/comments/types.dart';
 import '../../../../../../core/comments/widgets.dart';
 import '../../../../../../core/configs/config/providers.dart';
-import '../../../../../../core/dtext/dtext.dart';
+import '../../../../text_markup/widgets.dart';
 import '../../../../users/user/providers.dart';
 import '../../../comment/types.dart';
 import '../../../votes/providers.dart';
@@ -43,9 +43,9 @@ class CommentItem extends ConsumerWidget {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          DTextBody(
+          DanbooruDTextBody(
             data: comment.body,
-            booruUrl: config.url,
+            config: config,
           ),
           ...comment.uris
               .where((e) => e.host == youtubeUrl)

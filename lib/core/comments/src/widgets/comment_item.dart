@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 // Project imports:
 import '../../../configs/config/types.dart';
-import '../../../dtext/dtext.dart';
+import '../../../dtext/widgets.dart';
 import '../types/comment.dart';
 import 'comment_header.dart';
 

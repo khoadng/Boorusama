@@ -20,6 +20,24 @@ class DTextOptions {
   final String? domain;
   final Set<String> internalDomains;
   final EmojiPredicate? isAllowedEmoji;
+
+  DTextOptions copyWith({
+    bool? inline,
+    bool? enableMentions,
+    bool? enableMediaEmbeds,
+    String? baseUrl,
+    String? domain,
+    Set<String>? internalDomains,
+    EmojiPredicate? isAllowedEmoji,
+  }) => DTextOptions(
+    inline: inline ?? this.inline,
+    enableMentions: enableMentions ?? this.enableMentions,
+    enableMediaEmbeds: enableMediaEmbeds ?? this.enableMediaEmbeds,
+    baseUrl: baseUrl ?? this.baseUrl,
+    domain: domain ?? this.domain,
+    internalDomains: internalDomains ?? this.internalDomains,
+    isAllowedEmoji: isAllowedEmoji ?? this.isAllowedEmoji,
+  );
 }
 
 class DTextParseResult {

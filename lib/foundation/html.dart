@@ -13,12 +13,14 @@ class AppHtml extends StatefulWidget {
     super.key,
     this.style,
     this.onLinkTap,
+    this.extensions = const [],
     this.selectable = true,
   });
 
   final String data;
   final Map<String, Style>? style;
   final OnTap? onLinkTap;
+  final List<HtmlExtension> extensions;
   final bool selectable;
 
   static Map<String, Style> hintStyle(ColorScheme colorScheme) => {
@@ -59,6 +61,7 @@ class _AppHtmlState extends State<AppHtml> {
       data: widget.data,
       style: _mergeStyle(context, widget.style),
       onLinkTap: widget.onLinkTap,
+      extensions: widget.extensions,
     );
 
     return widget.selectable

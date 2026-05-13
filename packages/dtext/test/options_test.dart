@@ -45,5 +45,22 @@ void main() {
         '<p><a class="dtext-link" href="https://danbooru.donmai.us/login">https://danbooru.donmai.us/login</a></p>',
       );
     });
+
+    test('renders allowed emoji with custom html', () {
+      final document = DText.parseDocument(
+        'hello :smile:',
+        options: DTextOptions(
+          isAllowedEmoji: (name) => name == 'smile',
+        ),
+      );
+
+      expect(
+        DText.renderHtml(
+          document,
+          emojiHtmlBuilder: (emoji) => '<img src="/emoji/${emoji.name}.png">',
+        ),
+        '<p>hello <img src="/emoji/smile.png"></p>',
+      );
+    });
   });
 }

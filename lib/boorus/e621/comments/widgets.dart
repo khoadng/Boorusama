@@ -9,7 +9,7 @@ import '../../../core/comments/types.dart';
 import '../../../core/comments/widgets.dart';
 import '../../../core/configs/config/providers.dart';
 import '../../../core/configs/config/types.dart';
-import '../../../core/dtext/dtext.dart';
+import '../../../core/dtext/widgets.dart';
 
 class E621CommentPage extends ConsumerWidget {
   const E621CommentPage({

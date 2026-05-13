@@ -45,6 +45,7 @@ import '../../../tags/show/routes.dart';
 import '../../../tags/tag/colors.dart';
 import '../../../tags/tag/providers.dart';
 import '../../../tags/tag/types.dart';
+import '../../../text_markup/types.dart';
 import '../../engine/types.dart';
 
 abstract class BooruRepositoryDefault implements BooruRepository {
@@ -138,6 +139,11 @@ abstract class BooruRepositoryDefault implements BooruRepository {
   @override
   CommentRepository comment(BooruConfigAuth config) {
     return ref.watch(emptyCommentRepoProvider);
+  }
+
+  @override
+  TextMarkupRepository? textMarkup(BooruConfigAuth config) {
+    return null;
   }
 
   @override

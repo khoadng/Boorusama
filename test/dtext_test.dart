@@ -2,7 +2,7 @@
 import 'package:test/test.dart';
 
 // Project imports:
-import 'package:boorusama/core/dtext/dtext.dart';
+import 'package:boorusama/core/dtext/utils.dart';
 
 void main() {
   group('[dtext renderer]', () {
