@@ -82,6 +82,7 @@ class _AppHtmlState extends State<AppHtml> {
         ),
         'a': Style(
           color: Theme.of(context).colorScheme.primary,
+          textDecorationColor: Theme.of(context).colorScheme.primary,
         ),
       },
     };

@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import '../../../../foundation/html.dart';
 import '../../../configs/config/types.dart';
 import '../../../dtext/dtext.dart';
 import '../types/comment.dart';
@@ -31,11 +30,9 @@ class CommentItem extends StatelessWidget {
           createdAt: comment.createdAt,
         ),
         const SizedBox(height: 4),
-        AppHtml(
-          data: dtext(
-            comment.body,
-            booruUrl: config.url,
-          ),
+        DTextBody(
+          data: comment.body,
+          booruUrl: config.url,
         ),
       ],
     );

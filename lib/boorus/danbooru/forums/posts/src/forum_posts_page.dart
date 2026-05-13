@@ -11,7 +11,6 @@ import '../../../../../core/configs/config/providers.dart';
 import '../../../../../core/dtext/dtext.dart';
 import '../../../../../core/forums/forum_post.dart';
 import '../../../../../core/themes/theme/types.dart';
-import '../../../../../foundation/html.dart';
 import '../../../../../foundation/url_launcher.dart';
 import '../../../configs/providers.dart';
 import '../../../users/creator/providers.dart';
@@ -155,7 +154,7 @@ class _DanbooruForumPostsPageState
               );
             },
           ),
-          AppHtml(
+          DTextBody(
             onLinkTap: !loginDetails.hasStrictSFW
                 ? (url, attributes, element) =>
                       url != null ? launchExternalUrlString(url) : null
@@ -179,7 +178,8 @@ class _DanbooruForumPostsPageState
                 ),
               ),
             },
-            data: dtext(post.body, booruUrl: config.url),
+            data: post.body,
+            booruUrl: config.url,
           ),
           if (post.votes.isNotEmpty) ...[
             const SizedBox(height: 8),

@@ -6,8 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../../../../core/comments/types.dart';
 import '../../../../../../core/comments/widgets.dart';
+import '../../../../../../core/configs/config/providers.dart';
 import '../../../../../../core/dtext/dtext.dart';
-import '../../../../dtext/types.dart';
 import '../../../../users/user/providers.dart';
 import '../../../comment/types.dart';
 import '../../../votes/providers.dart';
@@ -32,6 +32,7 @@ class CommentItem extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final commentVote = ref.watch(danbooruCommentVoteProvider(comment.id));
+    final config = ref.watchConfigAuth;
 
     return CommentThreadItem(
       authorName: comment.authorName,
@@ -42,10 +43,9 @@ class CommentItem extends ConsumerWidget {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Dtext.parse(
-            parseDtext(comment.body),
-            '[quote]',
-            '[/quote]',
+          DTextBody(
+            data: comment.body,
+            booruUrl: config.url,
           ),
           ...comment.uris
               .where((e) => e.host == youtubeUrl)

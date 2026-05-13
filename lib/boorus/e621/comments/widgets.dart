@@ -58,13 +58,9 @@ class _CommentItem extends StatelessWidget {
           createdAt: comment.createdAt,
         ),
         const SizedBox(height: 4),
-        Dtext.parse(
-          dtext(
-            comment.body,
-            booruUrl: config.url,
-          ),
-          '<blockquote>',
-          '</blockquote>',
+        DTextBody(
+          data: comment.body,
+          booruUrl: config.url,
         ),
       ],
     );
