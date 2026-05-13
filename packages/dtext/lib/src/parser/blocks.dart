@@ -163,13 +163,20 @@ mixin DTextBlockParser on DTextParserContext {
   @override
   bool parseTable() {
     final tag = matchOpenTag(['table']);
-    if (tag == null) return false;
+    final hasExplicitTable = tag != null;
+    if (!hasExplicitTable && !_startsTableContent()) return false;
 
     renderer.closeLeafBlocks();
-    scanner.advance(tag.length);
+    if (tag != null) scanner.advance(tag.length);
     renderer.open(DTextElement.table, '<table class="striped">');
 
-    while (!scanner.isDone && !startsCloseTag('table')) {
+    while (!scanner.isDone) {
+      _consumeTableWhitespace();
+      if (hasExplicitTable && startsCloseTag('table')) break;
+      if (!hasExplicitTable && !_startsTableContent()) break;
+
+      if (_parseTableSection('thead', DTextElement.tableHead)) continue;
+      if (_parseTableSection('tbody', DTextElement.tableBody)) continue;
       if (parseTableTag('tr', DTextElement.tableRow, 'tr')) continue;
       if (parseTableTag('th', DTextElement.tableHeader, 'th')) continue;
       if (parseTableTag('td', DTextElement.tableCell, 'td')) continue;
@@ -177,9 +184,31 @@ mixin DTextBlockParser on DTextParserContext {
       renderer.writeCharEscaped(scanner.advanceOne().codeUnitAt(0));
     }
 
-    consumeCloseTag('table');
+    if (hasExplicitTable) consumeCloseTag('table');
     renderer.close(DTextElement.table);
     scanner.consumeNewline();
+    return true;
+  }
+
+  bool _parseTableSection(String dtextTag, DTextElement element) {
+    final tag = matchOpenTag([dtextTag]);
+    if (tag == null) return false;
+
+    scanner.advance(tag.length);
+    renderer.open(element, '<$dtextTag>');
+
+    while (!scanner.isDone && !startsCloseTag(dtextTag)) {
+      _consumeTableWhitespace();
+      if (startsCloseTag(dtextTag)) break;
+      if (parseTableTag('tr', DTextElement.tableRow, 'tr')) continue;
+      if (parseTableTag('th', DTextElement.tableHeader, 'th')) continue;
+      if (parseTableTag('td', DTextElement.tableCell, 'td')) continue;
+      if (parseEntity()) continue;
+      renderer.writeCharEscaped(scanner.advanceOne().codeUnitAt(0));
+    }
+
+    consumeCloseTag(dtextTag);
+    renderer.close(element);
     return true;
   }
 
@@ -192,21 +221,37 @@ mixin DTextBlockParser on DTextParserContext {
     renderer.open(element, '<$htmlTag>');
 
     while (!scanner.isDone && !startsCloseTag(dtextTag)) {
-      if (dtextTag == 'tr' &&
-          (parseTableTag('th', DTextElement.tableHeader, 'th') ||
-              parseTableTag('td', DTextElement.tableCell, 'td'))) {
-        continue;
-      }
-      parseInline(stopAtBlockBoundary: false, untilTag: dtextTag);
-      if (!scanner.isDone && scanner.current == '\n') {
-        scanner.advanceOne();
-        renderer.addLineBreak();
+      if (dtextTag == 'tr') {
+        _consumeTableWhitespace();
+        if (startsCloseTag(dtextTag)) break;
+        if (parseTableTag('th', DTextElement.tableHeader, 'th')) continue;
+        if (parseTableTag('td', DTextElement.tableCell, 'td')) continue;
+        if (parseEntity()) continue;
+        renderer.writeCharEscaped(scanner.advanceOne().codeUnitAt(0));
+      } else {
+        parseInline(stopAtBlockBoundary: false, untilTag: dtextTag);
+        if (!scanner.isDone && scanner.current == '\n') {
+          scanner.advanceOne();
+          renderer.addLineBreak();
+        }
       }
     }
 
     consumeCloseTag(dtextTag);
     renderer.close(element);
     return true;
+  }
+
+  bool _startsTableContent() =>
+      startsOpenTag(['thead', 'tbody', 'tr', 'th', 'td']);
+
+  void _consumeTableWhitespace() {
+    while (!scanner.isDone &&
+        (scanner.current == ' ' ||
+            scanner.current == '\t' ||
+            scanner.current == '\n')) {
+      scanner.advanceOne();
+    }
   }
 
   @override
@@ -317,7 +362,16 @@ mixin DTextBlockParser on DTextParserContext {
 
   @override
   bool isBlockStartForParagraphBoundary() {
-    if (startsOpenTag(['quote', 'blockquote', 'expand', 'code', 'table'])) {
+    if (startsOpenTag([
+      'quote',
+      'blockquote',
+      'expand',
+      'code',
+      'table',
+      'thead',
+      'tbody',
+      'tr',
+    ])) {
       return true;
     }
     if (startsOpenTag(['spoiler', 'spoilers', 'tn'])) {

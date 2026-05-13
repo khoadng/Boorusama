@@ -11,7 +11,9 @@ import '../../text_markup/types.dart';
 import '../../themes/theme/types.dart';
 import '../../../foundation/html.dart';
 import 'dtext_emoji_renderer.dart';
+import 'dtext_html.dart';
 import 'dtext_renderer.dart';
+import 'dtext_table.dart';
 
 class DTextBody extends StatelessWidget {
   const DTextBody({
@@ -58,7 +60,7 @@ class DTextBody extends StatelessWidget {
     } catch (_) {
       return AppHtml(
         data: renderPlainDTextFallback(data),
-        style: _dtextHtmlStyle(style),
+        style: dTextHtmlStyle(style),
         onLinkTap: onLinkTap,
         selectable: selectable,
       );
@@ -95,16 +97,13 @@ class _DTextNodesView extends StatelessWidget {
 
       widgets.add(
         AppHtml(
-          data: DText.renderHtml(
-            DTextDocument(children: List.of(htmlNodes)),
-            emojiHtmlBuilder: (emoji) => renderDTextEmojiHtml(
-              emoji,
-              emojiMap,
-              emojiSize,
-              supportsImageEmoji: emojiImageConfig != null,
-            ),
+          data: renderDTextNodesHtml(
+            htmlNodes,
+            emojiMap: emojiMap,
+            emojiSize: emojiSize,
+            emojiImageConfig: emojiImageConfig,
           ),
-          style: _dtextHtmlStyle(style),
+          style: dTextHtmlStyle(style),
           onLinkTap: onLinkTap,
           extensions: [
             if (emojiImageConfig case final config?)
@@ -121,6 +120,19 @@ class _DTextNodesView extends StatelessWidget {
         flushHtml();
         widgets.add(
           _DTextQuote(
+            node: node as DTextElementNode,
+            emojiMap: emojiMap,
+            emojiSize: emojiSize,
+            emojiImageConfig: emojiImageConfig,
+            style: style,
+            onLinkTap: onLinkTap,
+            selectable: selectable,
+          ),
+        );
+      } else if (_isTable(node)) {
+        flushHtml();
+        widgets.add(
+          DTextTable(
             node: node as DTextElementNode,
             emojiMap: emojiMap,
             emojiSize: emojiSize,
@@ -147,6 +159,9 @@ class _DTextNodesView extends StatelessWidget {
 
   bool _isQuote(DTextNode node) =>
       node is DTextElementNode && node.element == DTextElement.quote;
+
+  bool _isTable(DTextNode node) =>
+      node is DTextElementNode && node.element == DTextElement.table;
 }
 
 class _DTextQuote extends StatelessWidget {
@@ -194,15 +209,3 @@ class _DTextQuote extends StatelessWidget {
     );
   }
 }
-
-Map<String, Style> _dtextHtmlStyle(Map<String, Style>? baseStyle) => {
-  ...?baseStyle,
-  'body': Style(
-    fontSize: FontSize.medium,
-    margin: Margins.zero,
-    whiteSpace: WhiteSpace.pre,
-  ).merge(baseStyle?['body'] ?? Style()),
-  'p': Style(
-    margin: Margins.zero,
-  ).merge(baseStyle?['p'] ?? Style()),
-};

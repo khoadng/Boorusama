@@ -47,6 +47,8 @@ enum DTextElement {
   heading5,
   heading6,
   table,
+  tableHead,
+  tableBody,
   tableRow,
   tableHeader,
   tableCell,

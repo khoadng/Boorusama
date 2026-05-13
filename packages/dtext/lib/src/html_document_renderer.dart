@@ -58,6 +58,11 @@ class DTextHtmlDocumentRenderer {
     Map<String, String> attributes,
     List<DTextNode> children,
   ) {
+    if (element == DTextElement.tableHead ||
+        element == DTextElement.tableBody) {
+      return renderNodes(children);
+    }
+
     final (tag, defaultAttributes) = switch (element) {
       DTextElement.paragraph => ('p', const <String, String>{}),
       DTextElement.quote => ('blockquote', const <String, String>{}),
@@ -76,6 +81,9 @@ class DTextHtmlDocumentRenderer {
       DTextElement.table => (
         'table',
         const <String, String>{'class': 'striped'},
+      ),
+      DTextElement.tableHead || DTextElement.tableBody => throw StateError(
+        'Transparent table section should have been rendered before tag lookup.',
       ),
       DTextElement.tableRow => ('tr', const <String, String>{}),
       DTextElement.tableHeader => ('th', const <String, String>{}),

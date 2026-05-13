@@ -308,6 +308,8 @@ class DTextDocumentBuilder {
           DTextElement.expand ||
           DTextElement.unorderedList ||
           DTextElement.listItem ||
+          DTextElement.tableHead ||
+          DTextElement.tableBody ||
           DTextElement.tableRow ||
           DTextElement.tableHeader ||
           DTextElement.tableCell ||

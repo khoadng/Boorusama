@@ -123,6 +123,38 @@ void main() {
       );
     });
 
+    test('parses html table head and body sections', () {
+      expect(
+        DText.parse(
+          '<table>\n'
+          '<thead>\n'
+          '<tr>\n'
+          '<th>Post#</th>\n'
+          '<th>Date</th>\n'
+          '</tr>\n'
+          '</thead>\n'
+          '<tbody>\n'
+          '<tr>\n'
+          '<td>post #1</td>\n'
+          '<td>24-may-2005</td>\n'
+          '</tr>\n'
+          '</tbody>\n'
+          '</table>',
+        ),
+        '<table class="striped"><tr><th>Post#</th><th>Date</th></tr><tr><td><a class="dtext-link dtext-id-link dtext-post-id-link" href="/posts/1">post #1</a></td><td>24-may-2005</td></tr></table>',
+      );
+    });
+
+    test('wraps table sections without an explicit table tag', () {
+      expect(
+        DText.parse(
+          '<thead><tr><th>A</th></tr></thead>'
+          '<tbody><tr><td>post #1</td></tr></tbody>',
+        ),
+        '<table class="striped"><tr><th>A</th></tr><tr><td><a class="dtext-link dtext-id-link dtext-post-id-link" href="/posts/1">post #1</a></td></tr></table>',
+      );
+    });
+
     test('uses base url for relative links', () {
       expect(
         DText.parse(
