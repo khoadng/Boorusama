@@ -23,14 +23,15 @@ class DanbooruCharacterPage extends ConsumerWidget {
     return CustomContextMenuOverlay(
       child: DanbooruTagDetailsPage(
         tagName: characterName,
-        otherNames: switch (ref.watch(danbooruWikiProvider(characterName))) {
-          WikiStateLoading _ => const TagOtherNames(otherNames: null),
-          final WikiStateLoaded s => TagOtherNames(
-            otherNames: s.wiki.otherNames,
-          ),
-          WikiStateError _ => const SizedBox.shrink(),
-          WikiStateNotFound _ => const SizedBox.shrink(),
-        },
+        otherNames: ref
+            .watch(danbooruWikiProvider(characterName))
+            .when(
+              data: (wiki) => wiki == null
+                  ? const SizedBox.shrink()
+                  : TagOtherNames(otherNames: wiki.otherNames),
+              loading: () => const TagOtherNames(otherNames: null),
+              error: (_, _) => const SizedBox.shrink(),
+            ),
       ),
     );
   }

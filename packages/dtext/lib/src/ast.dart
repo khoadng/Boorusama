@@ -124,11 +124,13 @@ class DTextMediaEmbed extends DTextNode {
     required this.type,
     required this.id,
     required this.caption,
+    this.isGalleryItem = false,
   });
 
   final String type;
   final String id;
   final List<DTextNode> caption;
+  final bool isGalleryItem;
 }
 
 class DTextEmoji extends DTextNode {

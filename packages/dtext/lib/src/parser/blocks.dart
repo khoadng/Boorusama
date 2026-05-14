@@ -302,13 +302,19 @@ mixin DTextBlockParser on DTextParserContext {
     final type = match.group(2)!.toLowerCase();
     final id = match.group(3)!;
     final caption = match.group(4);
+    final isGalleryItem = match.group(1) != null;
     scanner.advance(match.group(0)!.length);
 
     renderer.closeLeafBlocks();
     final captionNodes = caption == null || caption.isEmpty
         ? const <DTextNode>[]
         : childParser(caption).parseInlineToNodes();
-    renderer.addMediaEmbed(type, id, captionNodes);
+    renderer.addMediaEmbed(
+      type,
+      id,
+      captionNodes,
+      isGalleryItem: isGalleryItem,
+    );
     return true;
   }
 

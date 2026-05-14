@@ -13,7 +13,32 @@ class DTextHtmlDocumentRenderer {
 
   String renderNodes(Iterable<DTextNode> nodes) {
     final buffer = StringBuffer();
-    for (final node in nodes) {
+    final nodeList = nodes.toList();
+
+    for (var i = 0; i < nodeList.length; i++) {
+      final node = nodeList[i];
+      if (node is DTextMediaEmbed && node.isGalleryItem) {
+        final galleryNodes = <DTextMediaEmbed>[];
+
+        while (i < nodeList.length) {
+          final galleryNode = nodeList[i];
+          if (galleryNode is! DTextMediaEmbed || !galleryNode.isGalleryItem) {
+            break;
+          }
+
+          galleryNodes.add(galleryNode);
+          i++;
+        }
+
+        i--;
+        buffer.write('<media-gallery>');
+        for (final galleryNode in galleryNodes) {
+          buffer.write(renderNode(galleryNode));
+        }
+        buffer.write('</media-gallery>');
+        continue;
+      }
+
       buffer.write(renderNode(node));
     }
 

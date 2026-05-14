@@ -66,9 +66,21 @@ class DTextDocumentBuilder {
     }
   }
 
-  void addMediaEmbed(String type, String id, List<DTextNode> caption) {
+  void addMediaEmbed(
+    String type,
+    String id,
+    List<DTextNode> caption, {
+    bool isGalleryItem = false,
+  }) {
     if (!options.inline) {
-      _append(DTextMediaEmbed(type: type, id: id, caption: caption));
+      _append(
+        DTextMediaEmbed(
+          type: type,
+          id: id,
+          caption: caption,
+          isGalleryItem: isGalleryItem,
+        ),
+      );
     }
   }
 

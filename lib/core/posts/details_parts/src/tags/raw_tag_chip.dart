@@ -32,6 +32,15 @@ class RawTagChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.widthOf(context);
+    final baseStyle =
+        Theme.of(context).textTheme.bodyMedium ??
+        DefaultTextStyle.of(context).style;
+    final labelStyle = baseStyle.copyWith(
+      color: foregroundColor,
+      fontWeight: FontWeight.w600,
+      height: 1,
+    );
+    final labelFontSize = labelStyle.fontSize ?? 14;
 
     return RawCompactChip(
       onTap: onTap,
@@ -50,12 +59,19 @@ class RawTagChip extends StatelessWidget {
         ),
         child: RichText(
           overflow: TextOverflow.ellipsis,
+          maxLines: 1,
+          strutStyle: StrutStyle(
+            fontSize: labelFontSize,
+            height: 1,
+            forceStrutHeight: true,
+          ),
+          textHeightBehavior: const TextHeightBehavior(
+            applyHeightToFirstAscent: false,
+            applyHeightToLastDescent: false,
+          ),
           text: TextSpan(
             text: _truncateText(text, maxTextLength),
-            style: TextStyle(
-              color: foregroundColor,
-              fontWeight: FontWeight.w600,
-            ),
+            style: labelStyle,
             children: [
               if (subtitle != null)
                 TextSpan(

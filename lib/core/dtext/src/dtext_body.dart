@@ -97,6 +97,7 @@ class _DTextNodesView extends StatelessWidget {
   Widget build(BuildContext context) {
     final widgets = <Widget>[];
     final htmlNodes = <DTextNode>[];
+    final galleryNodes = <DTextMediaEmbed>[];
 
     void flushHtml() {
       if (htmlNodes.isEmpty) return;
@@ -121,9 +122,28 @@ class _DTextNodesView extends StatelessWidget {
       htmlNodes.clear();
     }
 
+    void flushGallery() {
+      if (galleryNodes.isEmpty) return;
+
+      widgets.add(
+        DTextMediaEmbedGallery(
+          nodes: List.unmodifiable(galleryNodes),
+          mediaEmbedMap: mediaEmbedMap,
+          imageConfig: imageConfig,
+          emojiMap: emojiMap,
+          emojiSize: emojiSize,
+          style: style,
+          onLinkTap: onLinkTap,
+          selectable: selectable,
+        ),
+      );
+      galleryNodes.clear();
+    }
+
     for (final node in nodes) {
       if (_isQuote(node)) {
         flushHtml();
+        flushGallery();
         widgets.add(
           _DTextQuote(
             node: node as DTextElementNode,
@@ -138,6 +158,7 @@ class _DTextNodesView extends StatelessWidget {
         );
       } else if (_isTable(node)) {
         flushHtml();
+        flushGallery();
         widgets.add(
           DTextTable(
             node: node as DTextElementNode,
@@ -151,6 +172,12 @@ class _DTextNodesView extends StatelessWidget {
         );
       } else if (node is DTextMediaEmbed) {
         flushHtml();
+        if (node.isGalleryItem) {
+          galleryNodes.add(node);
+          continue;
+        }
+
+        flushGallery();
         widgets.add(
           DTextMediaEmbedView(
             node: node,
@@ -164,11 +191,13 @@ class _DTextNodesView extends StatelessWidget {
           ),
         );
       } else {
+        flushGallery();
         htmlNodes.add(node);
       }
     }
 
     flushHtml();
+    flushGallery();
     if (widgets.isEmpty) return const SizedBox.shrink();
     if (widgets.length == 1) return widgets.single;
 

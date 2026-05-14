@@ -11,7 +11,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import '../../../../../core/configs/config/providers.dart';
 import '../../../../../core/tags/tag/providers.dart';
 import '../../../../../core/widgets/widgets.dart';
-import '../../../wikis/types.dart';
+import '../../../wikis/routes.dart';
 import 'danbooru_related_tag.dart';
 
 class RelatedTagActionSheet extends ConsumerStatefulWidget {
@@ -83,10 +83,7 @@ class _RelatedTagActionSheetState extends ConsumerState<RelatedTagActionSheet> {
                 title: Text(context.t.tag.related.open_wiki),
                 onTap: () {
                   Navigator.of(context).pop();
-                  launchWikiPage(
-                    auth.url,
-                    tags[index].tag,
-                  );
+                  goToDanbooruWikiPage(ref, tags[index].tag);
                 },
               ),
             ],

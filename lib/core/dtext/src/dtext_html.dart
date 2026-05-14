@@ -1,3 +1,6 @@
+// Flutter imports:
+import 'package:flutter/widgets.dart';
+
 // Package imports:
 import 'package:dtext/dtext.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -17,6 +20,9 @@ Map<String, Style> dTextHtmlStyle(Map<String, Style>? baseStyle) => {
   'p': Style(
     margin: Margins.zero,
   ).merge(baseStyle?['p'] ?? Style()),
+  'a': Style(
+    textDecoration: TextDecoration.none,
+  ).merge(baseStyle?['a'] ?? Style()),
 };
 
 String renderDTextNodesHtml(

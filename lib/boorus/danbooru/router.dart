@@ -15,6 +15,7 @@ import 'users/details/routes.dart';
 import 'users/feedbacks/routes.dart';
 import 'users/user/routes.dart';
 import 'versions/routes.dart';
+import 'wikis/routes.dart';
 
 // Internal custom routes
 final danbooruCustomRoutes = [
@@ -46,4 +47,5 @@ final danbooruDirectRoutes = [
   danbooruPoolRoutes,
   danbooruUploadRoutes,
   danbooruUserFeedbackRoutes,
+  danbooruWikiRoutes,
 ];

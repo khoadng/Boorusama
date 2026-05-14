@@ -36,6 +36,10 @@ void main() {
         parse('foo\n!asset #5'),
         '<p>foo</p><media-embed data-type="asset" data-id="5"></media-embed>',
       );
+      expect(
+        parse('* !post #1\n* !post #2: caption'),
+        '<media-gallery><media-embed data-type="post" data-id="1"></media-embed><media-embed data-type="post" data-id="2">caption</media-embed></media-gallery>',
+      );
     });
 
     test('requires exact Danbooru embed syntax', () {
