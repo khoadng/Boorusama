@@ -50,41 +50,57 @@ class DanbooruWikiPage extends ConsumerWidget {
               );
             }
 
-            return ListView(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              children: [
-                Text(
-                  wiki.title.replaceAll('_', ' '),
-                  style: textTheme.headlineMedium?.copyWith(
-                    color: colorScheme.primary,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                if (wiki.otherNames.isNotEmpty)
-                  Wrap(
-                    spacing: 6,
-                    runSpacing: 6,
+            return CustomScrollView(
+              cacheExtent: 0,
+              slivers: [
+                SliverPadding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  sliver: SliverList.list(
                     children: [
-                      for (final name in wiki.otherNames)
-                        RawTagChip(
-                          text: name.replaceAll('_', ' '),
-                          maxTextLength: 100,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 4,
-                          ),
-                          backgroundColor: colorScheme.primary.withValues(
-                            alpha: 0.12,
-                          ),
-                          foregroundColor: colorScheme.primary,
-                          borderColor: colorScheme.primary.withValues(
-                            alpha: 0.35,
-                          ),
+                      Text(
+                        wiki.title.replaceAll('_', ' '),
+                        style: textTheme.headlineMedium?.copyWith(
+                          color: colorScheme.primary,
+                          fontWeight: FontWeight.w700,
                         ),
+                      ),
+                      if (wiki.otherNames.isNotEmpty)
+                        Wrap(
+                          spacing: 6,
+                          runSpacing: 6,
+                          children: [
+                            for (final name in wiki.otherNames)
+                              RawTagChip(
+                                text: name.replaceAll('_', ' '),
+                                maxTextLength: 100,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 4,
+                                ),
+                                backgroundColor: colorScheme.primary.withValues(
+                                  alpha: 0.12,
+                                ),
+                                foregroundColor: colorScheme.primary,
+                                borderColor: colorScheme.primary.withValues(
+                                  alpha: 0.35,
+                                ),
+                              ),
+                          ],
+                        ),
+                      const SizedBox(height: 16),
                     ],
                   ),
-                const SizedBox(height: 16),
-                DanbooruWikiDTextBody(data: wiki.body),
+                ),
+                SliverPadding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  sliver: DanbooruWikiDTextSliverBody(data: wiki.body),
+                ),
+                const SliverPadding(
+                  padding: EdgeInsets.only(bottom: 24),
+                  sliver: SliverToBoxAdapter(
+                    child: SizedBox.shrink(),
+                  ),
+                ),
               ],
             );
           },

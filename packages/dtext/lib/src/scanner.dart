@@ -1,3 +1,5 @@
+import 'characters.dart';
+
 class SourceScanner {
   SourceScanner(String source)
     : source = source.replaceAll('\r\n', '\n').replaceAll('\u0000', '');
@@ -7,32 +9,38 @@ class SourceScanner {
 
   bool get isDone => offset >= source.length;
 
-  bool get isAtLineStart => offset == 0 || source.codeUnitAt(offset - 1) == 10;
+  bool get isAtLineStart =>
+      offset == 0 || source.codeUnitAt(offset - 1) == lineFeedCode;
 
   String get rest => source.substring(offset);
 
   String? get current => isDone ? null : source[offset];
 
-  bool startsWith(String value, {bool caseSensitive = true}) {
-    if (offset + value.length > source.length) return false;
+  bool startsWith(String value, {bool caseSensitive = true}) =>
+      startsWithAt(offset, value, caseSensitive: caseSensitive);
 
-    final slice = source.substring(offset, offset + value.length);
-    return caseSensitive
-        ? slice == value
-        : slice.toLowerCase() == value.toLowerCase();
+  bool startsWithAt(
+    int start,
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    if (start + value.length > source.length) return false;
+
+    for (var i = 0; i < value.length; i++) {
+      final sourceUnit = source.codeUnitAt(start + i);
+      final valueUnit = value.codeUnitAt(i);
+      if (caseSensitive) {
+        if (sourceUnit != valueUnit) return false;
+      } else if (toAsciiLower(sourceUnit) != toAsciiLower(valueUnit)) {
+        return false;
+      }
+    }
+
+    return true;
   }
 
   bool startsWithAny(Iterable<String> values, {bool caseSensitive = true}) =>
       values.any((value) => startsWith(value, caseSensitive: caseSensitive));
-
-  String? match(RegExp regex) {
-    final result = regex.matchAsPrefix(rest);
-    if (result == null) return null;
-
-    return result.group(0);
-  }
-
-  Match? matchGroups(RegExp regex) => regex.matchAsPrefix(rest);
 
   String advance(int count) {
     final start = offset;
@@ -58,9 +66,7 @@ class SourceScanner {
   }
 
   String readUntil(String value, {bool caseSensitive = true}) {
-    final haystack = caseSensitive ? source : source.toLowerCase();
-    final needle = caseSensitive ? value : value.toLowerCase();
-    final index = haystack.indexOf(needle, offset);
+    final index = indexOf(value, start: offset, caseSensitive: caseSensitive);
     if (index < 0) {
       final text = source.substring(offset);
       offset = source.length;
@@ -73,11 +79,10 @@ class SourceScanner {
   }
 
   String readUntilCloseTag(String name) {
-    final lower = source.toLowerCase();
     final bracket = '[/${name.toLowerCase()}]';
     final angle = '</${name.toLowerCase()}>';
-    final bracketIndex = lower.indexOf(bracket, offset);
-    final angleIndex = lower.indexOf(angle, offset);
+    final bracketIndex = indexOf(bracket, start: offset, caseSensitive: false);
+    final angleIndex = indexOf(angle, start: offset, caseSensitive: false);
     final indexes = [bracketIndex, angleIndex].where((index) => index >= 0);
     if (indexes.isEmpty) {
       return readUntil('\u{0}');
@@ -87,6 +92,21 @@ class SourceScanner {
     final text = source.substring(offset, end);
     offset = end;
     return text;
+  }
+
+  int indexOf(
+    String value, {
+    int? start,
+    bool caseSensitive = true,
+  }) {
+    final from = start ?? offset;
+    if (value.isEmpty) return from;
+    final end = source.length - value.length;
+    for (var i = from; i <= end; i++) {
+      if (startsWithAt(i, value, caseSensitive: caseSensitive)) return i;
+    }
+
+    return -1;
   }
 
   bool consumeNewline() => consume('\n');

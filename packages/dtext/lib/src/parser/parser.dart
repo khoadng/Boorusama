@@ -5,6 +5,7 @@ import '../options.dart';
 import '../scanner.dart';
 
 import 'blocks.dart';
+import '../characters.dart';
 import 'context.dart';
 import 'inline.dart';
 import 'links.dart';
@@ -171,22 +172,110 @@ class DTextParser extends DTextParserContext
       }
       if (scanner.current == '\n') return;
 
-      if (parseEntity()) continue;
-      if (parseNodtext()) continue;
-      if (parseInlineTag()) continue;
-      if (parseInlineCode()) continue;
-      if (parseWikiLink()) continue;
-      if (parsePostSearchLink()) continue;
-      if (parseHtmlLink()) continue;
-      if (parseBbcodeLink()) continue;
-      if (parseNamedLink()) continue;
-      if (parseIdLink()) continue;
-      if (parseDelimitedUrl()) continue;
-      if (parseRawUrl()) continue;
-      if (parseMention()) continue;
-      if (parseEmoji()) continue;
+      final codeUnit = scanner.source.codeUnitAt(scanner.offset);
+
+      if (codeUnit == ampersandCode && parseEntity()) continue;
+      if ((codeUnit == leftBracketCode || codeUnit == lessThanCode) &&
+          parseNodtext()) {
+        continue;
+      }
+      if ((codeUnit == leftBracketCode || codeUnit == lessThanCode) &&
+          parseInlineTag()) {
+        continue;
+      }
+      if ((codeUnit == leftBracketCode || codeUnit == lessThanCode) &&
+          parseInlineCode()) {
+        continue;
+      }
+      if (_canStartBracketLink(codeUnit) && parseWikiLink()) continue;
+      if (_canStartBraceLink(codeUnit) && parsePostSearchLink()) continue;
+      if (codeUnit == lessThanCode && parseHtmlLink()) continue;
+      if (codeUnit == leftBracketCode && parseBbcodeLink()) continue;
+      if ((codeUnit == doubleQuoteCode || codeUnit == leftBracketCode) &&
+          parseNamedLink()) {
+        continue;
+      }
+      if (isAsciiAlphaNumeric(codeUnit) && parseIdLink()) continue;
+      if (codeUnit == lessThanCode && parseDelimitedUrl()) continue;
+      if (_canStartRawUrl(codeUnit) && parseRawUrl()) continue;
+      if ((codeUnit == atSignCode || codeUnit == lessThanCode) &&
+          parseMention()) {
+        continue;
+      }
+      if (codeUnit == colonCode && parseEmoji()) continue;
+      if (_parsePlainTextRun()) continue;
 
       renderer.writeCharEscaped(scanner.advanceOne().codeUnitAt(0));
     }
   }
+
+  bool _parsePlainTextRun() {
+    final start = scanner.offset;
+    var index = start;
+
+    while (index < scanner.source.length) {
+      final codeUnit = scanner.source.codeUnitAt(index);
+
+      if (codeUnit == lineFeedCode ||
+          codeUnit == ampersandCode ||
+          codeUnit == leftBracketCode ||
+          codeUnit == lessThanCode ||
+          codeUnit == leftBraceCode ||
+          codeUnit == doubleQuoteCode ||
+          codeUnit == atSignCode ||
+          codeUnit == colonCode) {
+        break;
+      }
+
+      if (isAsciiAlphaNumeric(codeUnit)) {
+        final wordStart = index;
+        index++;
+        while (index < scanner.source.length &&
+            isAsciiAlphaNumeric(scanner.source.codeUnitAt(index))) {
+          index++;
+        }
+
+        if (wordStart == start) {
+          while (index < scanner.source.length) {
+            final next = scanner.source.codeUnitAt(index);
+            if (next == lineFeedCode ||
+                next == ampersandCode ||
+                next == leftBracketCode ||
+                next == lessThanCode ||
+                next == leftBraceCode ||
+                next == doubleQuoteCode ||
+                next == atSignCode ||
+                next == colonCode) {
+              break;
+            }
+            if (isAsciiAlphaNumeric(next)) break;
+            index++;
+          }
+          break;
+        }
+
+        index = wordStart;
+        break;
+      }
+
+      index++;
+    }
+
+    if (index == start) return false;
+
+    renderer.writeEscaped(scanner.advance(index - start));
+    return true;
+  }
+
+  bool _canStartBracketLink(int codeUnit) =>
+      codeUnit == leftBracketCode || isAsciiAlphaNumeric(codeUnit);
+
+  bool _canStartBraceLink(int codeUnit) =>
+      codeUnit == leftBraceCode || isAsciiAlphaNumeric(codeUnit);
+
+  bool _canStartRawUrl(int codeUnit) =>
+      codeUnit == asciiLowerH ||
+      codeUnit == asciiUpperH ||
+      codeUnit == asciiLowerM ||
+      codeUnit == asciiUpperM;
 }

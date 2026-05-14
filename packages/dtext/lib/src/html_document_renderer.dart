@@ -1,4 +1,5 @@
 import 'ast.dart';
+import 'characters.dart';
 
 typedef DTextEmojiHtmlBuilder = String Function(DTextEmoji emoji);
 
@@ -185,8 +186,25 @@ class DTextHtmlDocumentRenderer {
 
   String _escapeAttribute(String value) => _escapeText(value);
 
-  String _uriEscape(String value) => Uri.encodeComponent(value).replaceAll(
-    RegExp('%7E', caseSensitive: false),
-    '~',
-  );
+  String _uriEscape(String value) =>
+      _restoreEscapedTilde(Uri.encodeComponent(value));
+
+  String _restoreEscapedTilde(String value) {
+    final buffer = StringBuffer();
+    var index = 0;
+    while (index < value.length) {
+      if (index + 2 < value.length &&
+          value.codeUnitAt(index) == percentCode &&
+          value.codeUnitAt(index + 1) == asciiDigit7 &&
+          asciiEqualsIgnoreCase(value.codeUnitAt(index + 2), asciiUpperE)) {
+        buffer.write('~');
+        index += 3;
+      } else {
+        buffer.writeCharCode(value.codeUnitAt(index));
+        index++;
+      }
+    }
+
+    return buffer.toString();
+  }
 }

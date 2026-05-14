@@ -1,20 +1,17 @@
 import '../entity.dart';
 import '../ast.dart';
 
+import '../characters.dart';
 import 'context.dart';
 
 mixin DTextInlineParser on DTextParserContext {
   @override
   bool parseEntity() {
-    final entity = matchEntity(scanner.rest);
+    final entity = matchEntityAt(scanner.source, scanner.offset);
     if (entity == null) return false;
 
-    scanner.advance(
-      dtextEntities.keys
-          .firstWhere((key) => scanner.rest.toLowerCase().startsWith(key))
-          .length,
-    );
-    renderer.writeEntity(entity);
+    scanner.advance(entity.length);
+    renderer.writeEntity(entity.value);
     return true;
   }
 
@@ -120,46 +117,125 @@ mixin DTextInlineParser on DTextParserContext {
       return false;
     }
 
-    final delimited = scanner.matchGroups(RegExp(r'<@([^\s\n>][^\n>]*)>'));
-    if (delimited != null) {
-      final name = delimited.group(1)!;
-      scanner.advance(delimited.group(0)!.length);
-      writeMention(name);
+    final delimitedName = _matchDelimitedMention();
+    if (delimitedName != null) {
+      scanner.advance(delimitedName.length + 3);
+      writeMention(delimitedName);
       return true;
     }
 
     if (!isMentionBoundary(scanner.offset - 1)) return false;
 
-    final match = scanner.matchGroups(
-      RegExp(r'@([._]?[^\s@.,:;!?()[\]{}"<>][^\s@]*[^\s@.,:;!?()[\]{}"<>])'),
-    );
-    if (match == null) return false;
-
-    final name = match.group(1)!;
+    final name = _matchMentionName();
+    if (name == null) return false;
     if (name.length < 2 || name.endsWith("'s") || name.endsWith("'d")) {
       return false;
     }
 
-    scanner.advance(match.group(0)!.length);
+    scanner.advance(name.length + 1);
     writeMention(name);
     return true;
+  }
+
+  String? _matchDelimitedMention() {
+    if (!scanner.startsWith('<@')) return null;
+
+    var index = scanner.offset + 2;
+    if (index >= scanner.source.length) return null;
+    final first = scanner.source.codeUnitAt(index);
+    if (isWhitespace(first) || first == greaterThanCode) return null;
+
+    final nameStart = index;
+    while (index < scanner.source.length) {
+      final codeUnit = scanner.source.codeUnitAt(index);
+      if (codeUnit == lineFeedCode) return null;
+      if (codeUnit == greaterThanCode) {
+        return scanner.source.substring(nameStart, index);
+      }
+      index++;
+    }
+
+    return null;
+  }
+
+  String? _matchMentionName() {
+    if (!scanner.startsWith('@')) return null;
+
+    var index = scanner.offset + 1;
+    if (index >= scanner.source.length) return null;
+
+    final first = scanner.source.codeUnitAt(index);
+    if (first == periodCode || first == underscoreCode) index++;
+    if (index >= scanner.source.length ||
+        _isMentionEdgeTerminator(scanner.source.codeUnitAt(index))) {
+      return null;
+    }
+
+    index++;
+    while (index < scanner.source.length) {
+      final codeUnit = scanner.source.codeUnitAt(index);
+      if (isWhitespace(codeUnit) || codeUnit == atSignCode) break;
+      index++;
+    }
+
+    if (_isMentionEdgeTerminator(scanner.source.codeUnitAt(index - 1))) {
+      return null;
+    }
+
+    return scanner.source.substring(scanner.offset + 1, index);
+  }
+
+  bool _isMentionEdgeTerminator(int codeUnit) {
+    if (isWhitespace(codeUnit)) return true;
+
+    return codeUnit == atSignCode ||
+        codeUnit == periodCode ||
+        codeUnit == commaCode ||
+        codeUnit == colonCode ||
+        codeUnit == semicolonCode ||
+        codeUnit == exclamationCode ||
+        codeUnit == questionCode ||
+        codeUnit == leftParenthesisCode ||
+        codeUnit == rightParenthesisCode ||
+        codeUnit == leftBracketCode ||
+        codeUnit == rightBracketCode ||
+        codeUnit == leftBraceCode ||
+        codeUnit == rightBraceCode ||
+        codeUnit == doubleQuoteCode ||
+        codeUnit == lessThanCode ||
+        codeUnit == greaterThanCode;
   }
 
   @override
   bool parseEmoji() {
     final allow = options.isAllowedEmoji;
-    if (allow == null) return false;
+    if (allow == null || !scanner.startsWith(':')) return false;
 
-    final match = scanner.matchGroups(RegExp(r':([A-Za-z0-9_]{3,32}):'));
-    if (match == null) return false;
+    var index = scanner.offset + 1;
+    final nameStart = index;
+    while (index < scanner.source.length &&
+        _isEmojiNameCodeUnit(scanner.source.codeUnitAt(index))) {
+      index++;
+    }
 
-    final name = match.group(1)!;
+    final nameLength = index - nameStart;
+    if (nameLength < 3 ||
+        nameLength > 32 ||
+        index >= scanner.source.length ||
+        scanner.source[index] != ':') {
+      return false;
+    }
+
+    final name = scanner.source.substring(nameStart, index);
     if (!allow(name)) return false;
 
-    scanner.advance(match.group(0)!.length);
+    scanner.advance(nameLength + 2);
     renderer.addEmoji(name);
     return true;
   }
+
+  bool _isEmojiNameCodeUnit(int codeUnit) =>
+      isAsciiAlphaNumeric(codeUnit) || codeUnit == underscoreCode;
 
   @override
   List<DTextNode> parseInlineToNodes() {

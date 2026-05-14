@@ -1,3 +1,5 @@
+import 'characters.dart';
+
 bool isInternalUrl(String url, String? domain) {
   if (url.startsWith('/') || url.startsWith('#')) return true;
   if (domain == null || domain.isEmpty) return false;
@@ -21,7 +23,7 @@ String normalizeHref(String url) {
     final schemeIndex = trimmed.indexOf('://');
     if (schemeIndex >= 0) {
       final authorityStart = schemeIndex + 3;
-      final authorityEnd = trimmed.indexOf(RegExp(r'[/?#]'), authorityStart);
+      final authorityEnd = _firstAuthorityTerminator(trimmed, authorityStart);
       final end = authorityEnd < 0 ? trimmed.length : authorityEnd;
       final authority = trimmed.substring(authorityStart, end);
       final at = authority.indexOf('@');
@@ -35,7 +37,7 @@ String normalizeHref(String url) {
   while (changed) {
     final before = trimmed;
     while (trimmed.isNotEmpty &&
-        RegExp(r'''[."'`,:;?}]$''').hasMatch(trimmed)) {
+        _isTrailingUrlPunctuation(trimmed.codeUnitAt(trimmed.length - 1))) {
       trimmed = trimmed.substring(0, trimmed.length - 1);
     }
     while (trimmed.endsWith(')') &&
@@ -53,7 +55,7 @@ bool isValidUrl(String url) {
   final lower = normalized.toLowerCase();
   if (lower.startsWith('mailto:')) {
     final address = normalized.substring(7);
-    return RegExp(r'^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$').hasMatch(address);
+    return _isValidEmailAddress(address);
   }
   if (url.startsWith('#')) return true;
   if (url.startsWith('/') && !url.startsWith('//')) return true;
@@ -71,7 +73,7 @@ bool isValidUrl(String url) {
 
 String normalizeWikiPage(String tag) {
   final normalized = tag.toLowerCase().replaceAll(' ', '_');
-  if (RegExp(r'^\d+$').hasMatch(normalized)) {
+  if (_isAllDigits(normalized)) {
     return '~$normalized';
   }
 
@@ -81,9 +83,8 @@ String normalizeWikiPage(String tag) {
 String normalizeAnchor(String anchor) {
   final buffer = StringBuffer('dtext-');
   for (final codeUnit in anchor.codeUnits) {
-    final char = String.fromCharCode(codeUnit);
-    if (RegExp('[A-Za-z0-9]').hasMatch(char)) {
-      buffer.write(char.toLowerCase());
+    if (isAsciiAlphaNumeric(codeUnit)) {
+      buffer.writeCharCode(toAsciiLower(codeUnit));
     } else {
       buffer.write('-');
     }
@@ -93,4 +94,73 @@ String normalizeAnchor(String anchor) {
 }
 
 String applyPipeTrick(String tag) =>
-    tag.replaceFirst(RegExp(r'[_ ]*\([^)]*\)$'), '').replaceAll('_', ' ');
+    _removeTrailingParenthetical(tag).replaceAll('_', ' ');
+
+int _firstAuthorityTerminator(String value, int start) {
+  for (var i = start; i < value.length; i++) {
+    final codeUnit = value.codeUnitAt(i);
+    if (codeUnit == slashCode ||
+        codeUnit == questionCode ||
+        codeUnit == hashCodeUnit) {
+      return i;
+    }
+  }
+
+  return -1;
+}
+
+bool _isTrailingUrlPunctuation(int codeUnit) =>
+    codeUnit == periodCode ||
+    codeUnit == doubleQuoteCode ||
+    codeUnit == singleQuoteCode ||
+    codeUnit == backtickCode ||
+    codeUnit == commaCode ||
+    codeUnit == colonCode ||
+    codeUnit == semicolonCode ||
+    codeUnit == questionCode ||
+    codeUnit == rightBraceCode;
+
+bool _isValidEmailAddress(String address) {
+  final at = address.indexOf('@');
+  if (at <= 0 || at != address.lastIndexOf('@')) return false;
+  if (at == address.length - 1) return false;
+
+  var lastDotAfterAt = -1;
+  for (var i = 0; i < address.length; i++) {
+    final codeUnit = address.codeUnitAt(i);
+    if (isWhitespace(codeUnit) ||
+        codeUnit == lessThanCode ||
+        codeUnit == greaterThanCode) {
+      return false;
+    }
+    if (i > at && codeUnit == periodCode) lastDotAfterAt = i;
+  }
+
+  return lastDotAfterAt > at + 1 && lastDotAfterAt < address.length - 1;
+}
+
+bool _isAllDigits(String value) {
+  if (value.isEmpty) return false;
+  for (var i = 0; i < value.length; i++) {
+    final codeUnit = value.codeUnitAt(i);
+    if (!isAsciiDigit(codeUnit)) return false;
+  }
+
+  return true;
+}
+
+String _removeTrailingParenthetical(String value) {
+  if (!value.endsWith(')')) return value;
+
+  final open = value.lastIndexOf('(');
+  if (open < 0) return value;
+
+  var end = open;
+  while (end > 0) {
+    final codeUnit = value.codeUnitAt(end - 1);
+    if (codeUnit != underscoreCode && codeUnit != spaceCode) break;
+    end--;
+  }
+
+  return value.substring(0, end);
+}

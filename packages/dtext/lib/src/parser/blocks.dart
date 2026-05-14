@@ -1,19 +1,18 @@
 import '../ast.dart';
 import '../url_normalizer.dart';
 
+import '../characters.dart';
 import 'context.dart';
 
 mixin DTextBlockParser on DTextParserContext {
   @override
   bool parseHeading() {
-    final match = scanner.matchGroups(
-      RegExp(r'h([1-6])(?:#([A-Za-z0-9_/#!:&-]+))?\.\s*'),
-    );
-    if (match == null) return false;
+    final heading = _matchHeading();
+    if (heading == null) return false;
 
-    scanner.advance(match.group(0)!.length);
-    final level = int.parse(match.group(1)!);
-    final id = match.group(2);
+    scanner.advance(heading.length);
+    final level = heading.level;
+    final id = heading.id;
     final element = switch (level) {
       1 => DTextElement.heading1,
       2 => DTextElement.heading2,
@@ -33,26 +32,22 @@ mixin DTextBlockParser on DTextParserContext {
 
   @override
   bool parseHr() {
-    final match = scanner.match(
-      RegExp(r'[ \t]*(?:\[hr\]|<hr>)[ \t]*(?:\n|$)', caseSensitive: false),
-    );
-    if (match == null) return false;
+    final length = _matchHrLength();
+    if (length == null) return false;
 
     renderer.closeLeafBlocks();
     renderer.addHorizontalRule();
-    scanner.advance(match.length);
+    scanner.advance(length);
     return true;
   }
 
   @override
   bool parseCodeFence() {
-    final match = scanner.matchGroups(
-      RegExp(r'```[ \t]*([A-Za-z0-9]*)[ \t]*\n'),
-    );
-    if (match == null) return false;
+    final fence = _matchCodeFence();
+    if (fence == null) return false;
 
-    scanner.advance(match.group(0)!.length);
-    final language = match.group(1)!;
+    scanner.advance(fence.length);
+    final language = fence.language;
     final code = scanner.readUntil('\n```');
     if (scanner.startsWith('\n```')) {
       scanner.advanceOne();
@@ -118,19 +113,13 @@ mixin DTextBlockParser on DTextParserContext {
 
   @override
   bool parseExpand() {
-    final match = scanner.matchGroups(
-      RegExp(
-        r'(?:\[expand(?:\s*=\s*|\s+)([^\]\n]*)\]|\[expand\]|<expand(?:\s*=\s*|\s+)([^>\n]*)>|<expand>)',
-        caseSensitive: false,
-      ),
-    );
-    if (match == null) return false;
+    final expand = _matchExpand();
+    if (expand == null) return false;
 
-    final title = match.group(1) ?? match.group(2) ?? 'Show';
     renderer.closeLeafBlocks();
-    scanner.advance(match.group(0)!.length);
+    scanner.advance(expand.length);
     scanner.consumeNewline();
-    renderer.openExpand(title);
+    renderer.openExpand(expand.title);
     parseBlocks(untilTag: 'expand');
     renderer.close(DTextElement.expand);
     scanner.consumeNewline();
@@ -256,12 +245,11 @@ mixin DTextBlockParser on DTextParserContext {
 
   @override
   bool parseListItem({String? untilTag}) {
-    final match = scanner.matchGroups(RegExp(r'(\*+)[ \t]+'));
-    if (match == null) return false;
+    final list = _matchListItem();
+    if (list == null) return false;
 
-    final depth = match.group(1)!.length;
-    scanner.advance(match.group(0)!.length);
-    renderer.openList(depth);
+    scanner.advance(list.length);
+    renderer.openList(list.depth);
     parseInline(stopAtBlockBoundary: false, untilTag: untilTag);
     scanner.consumeNewline();
     return true;
@@ -269,21 +257,18 @@ mixin DTextBlockParser on DTextParserContext {
 
   @override
   bool parseTagRequestEmbed() {
-    final match = scanner.matchGroups(
-      RegExp(r'\[(ta|ti|bur):(\d+)\]', caseSensitive: false),
-    );
-    if (match == null) return false;
+    final embed = _matchTagRequestEmbed();
+    if (embed == null) return false;
 
-    final type = switch (match.group(1)!.toLowerCase()) {
+    final type = switch (embed.kind) {
       'ta' => 'tag-alias',
       'ti' => 'tag-implication',
       _ => 'bulk-update-request',
     };
-    final id = match.group(2)!;
-    scanner.advance(match.group(0)!.length);
+    scanner.advance(embed.length);
 
     renderer.closeLeafBlocks();
-    renderer.addTagRequestEmbed(type, id);
+    renderer.addTagRequestEmbed(type, embed.id);
     scanner.consumeNewline();
     return true;
   }
@@ -292,28 +277,20 @@ mixin DTextBlockParser on DTextParserContext {
   bool parseMediaEmbed() {
     if (!options.enableMediaEmbeds) return false;
 
-    final match = scanner.matchGroups(
-      RegExp(
-        r'(\* )?!((?:post)|(?:asset)) #(\d+)(?::[ \t]+([^\n]+))?[ \t]*(?:\n|$)',
-      ),
-    );
-    if (match == null) return false;
+    final media = _matchMediaEmbed();
+    if (media == null) return false;
 
-    final type = match.group(2)!.toLowerCase();
-    final id = match.group(3)!;
-    final caption = match.group(4);
-    final isGalleryItem = match.group(1) != null;
-    scanner.advance(match.group(0)!.length);
+    scanner.advance(media.length);
 
     renderer.closeLeafBlocks();
-    final captionNodes = caption == null || caption.isEmpty
+    final captionNodes = media.caption == null || media.caption!.isEmpty
         ? const <DTextNode>[]
-        : childParser(caption).parseInlineToNodes();
+        : childParser(media.caption!).parseInlineToNodes();
     renderer.addMediaEmbed(
-      type,
-      id,
+      media.type,
+      media.id,
       captionNodes,
-      isGalleryItem: isGalleryItem,
+      isGalleryItem: media.isGalleryItem,
     );
     return true;
   }
@@ -345,9 +322,8 @@ mixin DTextBlockParser on DTextParserContext {
       index++;
     }
 
-    final rest = scanner.source.substring(index).toLowerCase();
-    return rest.startsWith('[/${tag.toLowerCase()}]') ||
-        rest.startsWith('</${tag.toLowerCase()}>');
+    return scanner.startsWithAt(index, '[/$tag]', caseSensitive: false) ||
+        scanner.startsWithAt(index, '</$tag>', caseSensitive: false);
   }
 
   @override
@@ -392,24 +368,312 @@ mixin DTextBlockParser on DTextParserContext {
       return lineTail.trim().isEmpty;
     }
 
-    return scanner.startsWith('```') ||
-        scanner.match(RegExp(r'h[1-6](?:#[A-Za-z0-9_/#!:&-]+)?\.\s*')) !=
-            null ||
-        scanner.match(RegExp(r'\*+[ \t]+')) != null ||
-        scanner.match(RegExp(r'[ \t]*(?:\[hr\]|<hr>)', caseSensitive: false)) !=
-            null ||
-        scanner.match(RegExp(r'\[(?:ta|ti|bur):\d+\]', caseSensitive: false)) !=
-            null;
+    return _matchCodeFence() != null ||
+        _matchHeading() != null ||
+        _matchListItem() != null ||
+        _matchHrLength() != null ||
+        _matchTagRequestEmbed() != null;
   }
 
   bool _startsMediaEmbed() {
     if (!options.enableMediaEmbeds) return false;
 
-    return scanner.match(
-          RegExp(
-            r'(\* )?!((?:post)|(?:asset)) #(\d+)(?::[ \t]+([^\n]+))?[ \t]*(?:\n|$)',
-          ),
-        ) !=
-        null;
+    return _matchMediaEmbed() != null;
+  }
+
+  ({int level, String? id, int length})? _matchHeading() {
+    final start = scanner.offset;
+    if (start + 3 > scanner.source.length ||
+        !asciiEqualsIgnoreCase(scanner.source.codeUnitAt(start), asciiLowerH)) {
+      return null;
+    }
+
+    final levelUnit = scanner.source.codeUnitAt(start + 1);
+    if (levelUnit < asciiDigit1 || levelUnit > asciiDigit6) return null;
+
+    var index = start + 2;
+    String? id;
+    if (index < scanner.source.length && scanner.source[index] == '#') {
+      final idStart = index + 1;
+      index = idStart;
+      while (index < scanner.source.length &&
+          _isHeadingIdCodeUnit(scanner.source.codeUnitAt(index))) {
+        index++;
+      }
+      if (index == idStart) return null;
+      id = scanner.source.substring(idStart, index);
+    }
+
+    if (index >= scanner.source.length || scanner.source[index] != '.') {
+      return null;
+    }
+    index++;
+
+    while (index < scanner.source.length &&
+        isSpaceTab(scanner.source.codeUnitAt(index))) {
+      index++;
+    }
+
+    return (level: levelUnit - asciiDigit0, id: id, length: index - start);
+  }
+
+  bool _isHeadingIdCodeUnit(int codeUnit) =>
+      isAsciiAlphaNumeric(codeUnit) ||
+      codeUnit == underscoreCode ||
+      codeUnit == slashCode ||
+      codeUnit == hashCodeUnit ||
+      codeUnit == exclamationCode ||
+      codeUnit == colonCode ||
+      codeUnit == ampersandCode ||
+      codeUnit == hyphenCode;
+
+  int? _matchHrLength() {
+    final start = scanner.offset;
+    var index = start;
+    while (index < scanner.source.length &&
+        isSpaceTab(scanner.source.codeUnitAt(index))) {
+      index++;
+    }
+
+    if (scanner.startsWithAt(index, '[hr]', caseSensitive: false)) {
+      index += 4;
+    } else if (scanner.startsWithAt(index, '<hr>', caseSensitive: false)) {
+      index += 4;
+    } else {
+      return null;
+    }
+
+    while (index < scanner.source.length &&
+        isSpaceTab(scanner.source.codeUnitAt(index))) {
+      index++;
+    }
+    if (index == scanner.source.length) return index - start;
+    if (scanner.source.codeUnitAt(index) != lineFeedCode) return null;
+
+    return index + 1 - start;
+  }
+
+  ({String language, int length})? _matchCodeFence() {
+    if (!scanner.startsWith('```')) return null;
+
+    final start = scanner.offset;
+    var index = start + 3;
+    while (index < scanner.source.length &&
+        isSpaceTab(scanner.source.codeUnitAt(index))) {
+      index++;
+    }
+
+    final languageStart = index;
+    while (index < scanner.source.length &&
+        isAsciiAlphaNumeric(scanner.source.codeUnitAt(index))) {
+      index++;
+    }
+    final language = scanner.source.substring(languageStart, index);
+
+    while (index < scanner.source.length &&
+        isSpaceTab(scanner.source.codeUnitAt(index))) {
+      index++;
+    }
+    if (index >= scanner.source.length ||
+        scanner.source.codeUnitAt(index) != lineFeedCode) {
+      return null;
+    }
+
+    return (language: language, length: index + 1 - start);
+  }
+
+  ({String title, int length})? _matchExpand() {
+    final start = scanner.offset;
+    final open = scanner.current;
+    if (open != '[' && open != '<') return null;
+    if (!scanner.startsWithAt(start + 1, 'expand', caseSensitive: false)) {
+      return null;
+    }
+
+    final close = open == '[' ? ']' : '>';
+    var index = start + 7;
+    var title = 'Show';
+    if (index < scanner.source.length && scanner.source[index] == close) {
+      return (title: title, length: index + 1 - start);
+    }
+
+    if (index >= scanner.source.length) return null;
+    final separator = scanner.source.codeUnitAt(index);
+    if (separator == equalsCode) {
+      index++;
+      while (index < scanner.source.length &&
+          isSpaceTab(scanner.source.codeUnitAt(index))) {
+        index++;
+      }
+    } else if (isSpaceTab(separator)) {
+      while (index < scanner.source.length &&
+          isSpaceTab(scanner.source.codeUnitAt(index))) {
+        index++;
+      }
+    } else {
+      return null;
+    }
+
+    final titleStart = index;
+    while (index < scanner.source.length) {
+      final codeUnit = scanner.source.codeUnitAt(index);
+      if (codeUnit == lineFeedCode) return null;
+      if (scanner.source[index] == close) {
+        final parsedTitle = scanner.source.substring(titleStart, index).trim();
+        if (parsedTitle.isNotEmpty) title = parsedTitle;
+        return (title: title, length: index + 1 - start);
+      }
+      index++;
+    }
+
+    return null;
+  }
+
+  ({int depth, int length})? _matchListItem() {
+    final start = scanner.offset;
+    var index = start;
+    while (index < scanner.source.length && scanner.source[index] == '*') {
+      index++;
+    }
+    final starsEnd = index;
+
+    if (index == start ||
+        index >= scanner.source.length ||
+        !isSpaceTab(scanner.source.codeUnitAt(index))) {
+      return null;
+    }
+
+    while (index < scanner.source.length &&
+        isSpaceTab(scanner.source.codeUnitAt(index))) {
+      index++;
+    }
+
+    return (depth: starsEnd - start, length: index - start);
+  }
+
+  ({String kind, String id, int length})? _matchTagRequestEmbed() {
+    final start = scanner.offset;
+    if (start + 6 > scanner.source.length || scanner.source[start] != '[') {
+      return null;
+    }
+
+    final kindStart = start + 1;
+    var kindLength = 0;
+    if (scanner.startsWithAt(kindStart, 'bur', caseSensitive: false)) {
+      kindLength = 3;
+    } else if (scanner.startsWithAt(kindStart, 'ta', caseSensitive: false) ||
+        scanner.startsWithAt(kindStart, 'ti', caseSensitive: false)) {
+      kindLength = 2;
+    } else {
+      return null;
+    }
+
+    var index = kindStart + kindLength;
+    if (index >= scanner.source.length || scanner.source[index] != ':') {
+      return null;
+    }
+    index++;
+
+    final idStart = index;
+    while (index < scanner.source.length &&
+        isAsciiDigit(scanner.source.codeUnitAt(index))) {
+      index++;
+    }
+    if (index == idStart ||
+        index >= scanner.source.length ||
+        scanner.source[index] != ']') {
+      return null;
+    }
+
+    return (
+      kind: scanner.source
+          .substring(kindStart, kindStart + kindLength)
+          .toLowerCase(),
+      id: scanner.source.substring(idStart, index),
+      length: index + 1 - start,
+    );
+  }
+
+  ({String type, String id, String? caption, bool isGalleryItem, int length})?
+  _matchMediaEmbed() {
+    final start = scanner.offset;
+    var index = start;
+    var isGalleryItem = false;
+    if (scanner.startsWithAt(index, '* ')) {
+      isGalleryItem = true;
+      index += 2;
+    }
+
+    if (index >= scanner.source.length || scanner.source[index] != '!') {
+      return null;
+    }
+    index++;
+
+    String type;
+    if (scanner.startsWithAt(index, 'post')) {
+      type = 'post';
+      index += 4;
+    } else if (scanner.startsWithAt(index, 'asset')) {
+      type = 'asset';
+      index += 5;
+    } else {
+      return null;
+    }
+
+    if (index + 2 > scanner.source.length ||
+        scanner.source[index] != ' ' ||
+        scanner.source[index + 1] != '#') {
+      return null;
+    }
+    index += 2;
+
+    final idStart = index;
+    while (index < scanner.source.length &&
+        isAsciiDigit(scanner.source.codeUnitAt(index))) {
+      index++;
+    }
+    if (index == idStart) return null;
+    final id = scanner.source.substring(idStart, index);
+
+    String? caption;
+    if (index < scanner.source.length && scanner.source[index] == ':') {
+      var captionStart = index + 1;
+      if (captionStart >= scanner.source.length ||
+          !isSpaceTab(scanner.source.codeUnitAt(captionStart))) {
+        return null;
+      }
+      while (captionStart < scanner.source.length &&
+          isSpaceTab(scanner.source.codeUnitAt(captionStart))) {
+        captionStart++;
+      }
+      index = captionStart;
+      while (index < scanner.source.length &&
+          scanner.source.codeUnitAt(index) != lineFeedCode) {
+        index++;
+      }
+      var captionEnd = index;
+      while (captionEnd > captionStart &&
+          isSpaceTab(scanner.source.codeUnitAt(captionEnd - 1))) {
+        captionEnd--;
+      }
+      caption = scanner.source.substring(captionStart, captionEnd);
+    }
+
+    while (index < scanner.source.length &&
+        isSpaceTab(scanner.source.codeUnitAt(index))) {
+      index++;
+    }
+    if (index < scanner.source.length) {
+      if (scanner.source.codeUnitAt(index) != lineFeedCode) return null;
+      index++;
+    }
+
+    return (
+      type: type,
+      id: id,
+      caption: caption,
+      isGalleryItem: isGalleryItem,
+      length: index - start,
+    );
   }
 }

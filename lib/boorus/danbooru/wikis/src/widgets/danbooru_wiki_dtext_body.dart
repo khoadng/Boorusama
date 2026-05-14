@@ -10,8 +10,8 @@ import '../../../../../core/configs/config/providers.dart';
 import '../../../text_markup/widgets.dart';
 import '../routes/route_utils.dart';
 
-class DanbooruWikiDTextBody extends ConsumerWidget {
-  const DanbooruWikiDTextBody({
+class DanbooruWikiDTextSliverBody extends ConsumerWidget {
+  const DanbooruWikiDTextSliverBody({
     required this.data,
     super.key,
   });
@@ -22,14 +22,12 @@ class DanbooruWikiDTextBody extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfigAuth;
 
-    return DefaultTextStyle.merge(
-      style: const TextStyle(fontSize: 15),
-      child: DanbooruDTextBody(
-        data: data,
-        config: config,
-        onLinkTap: (url, _, _) => openDanbooruWikiLink(ref, url),
-        style: _wikiDTextStyle(context),
-      ),
+    return DanbooruDTextSliverBody(
+      data: data,
+      config: config,
+      onLinkTap: (url, _, _) => openDanbooruWikiLink(ref, url),
+      style: _wikiDTextStyle(context),
+      selectable: false,
     );
   }
 }

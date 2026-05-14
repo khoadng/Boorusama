@@ -1,4 +1,5 @@
 import 'context.dart';
+import '../characters.dart';
 
 mixin DTextTagMatcher on DTextParserContext {
   @override
@@ -15,17 +16,47 @@ mixin DTextTagMatcher on DTextParserContext {
 
   @override
   ({String lexeme, String? language})? matchOpenCodeTag() {
-    final match = scanner.matchGroups(
-      RegExp(
-        r'(?:\[code(?:\s*=\s*([A-Za-z0-9]+))?\]|<code(?:\s*=\s*([A-Za-z0-9]+))?>)',
-        caseSensitive: false,
-      ),
-    );
-    if (match == null) return null;
+    if (!scanner.startsWith('[code', caseSensitive: false) &&
+        !scanner.startsWith('<code', caseSensitive: false)) {
+      return null;
+    }
+
+    final close = scanner.current == '[' ? ']' : '>';
+    final start = scanner.offset;
+    var index = start + 5;
+    var languageStart = -1;
+    var languageEnd = -1;
+
+    while (index < scanner.source.length &&
+        isSpaceTab(scanner.source.codeUnitAt(index))) {
+      index++;
+    }
+
+    if (index < scanner.source.length && scanner.source[index] == '=') {
+      index++;
+      while (index < scanner.source.length &&
+          isSpaceTab(scanner.source.codeUnitAt(index))) {
+        index++;
+      }
+
+      languageStart = index;
+      while (index < scanner.source.length &&
+          isAsciiAlphaNumeric(scanner.source.codeUnitAt(index))) {
+        index++;
+      }
+      languageEnd = index;
+    }
+
+    if (languageStart >= 0 && languageStart == languageEnd) return null;
+    if (index >= scanner.source.length || scanner.source[index] != close) {
+      return null;
+    }
 
     return (
-      lexeme: match.group(0)!,
-      language: match.group(1) ?? match.group(2),
+      lexeme: scanner.source.substring(start, index + 1),
+      language: languageStart < 0
+          ? null
+          : scanner.source.substring(languageStart, languageEnd),
     );
   }
 

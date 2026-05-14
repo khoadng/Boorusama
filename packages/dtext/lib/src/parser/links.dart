@@ -1,22 +1,115 @@
 import '../ast.dart';
 import '../url_normalizer.dart';
 
+import '../characters.dart';
 import 'context.dart';
+
+class _IdLinkDefinition {
+  const _IdLinkDefinition(this.prefix, this.className, this.url);
+
+  final String prefix;
+  final String className;
+  final String url;
+}
+
+class _IdLinkMatch {
+  const _IdLinkMatch({
+    required this.definition,
+    required this.key,
+    required this.id,
+    required this.page,
+    required this.length,
+  });
+
+  final _IdLinkDefinition definition;
+  final String key;
+  final String id;
+  final String? page;
+  final int length;
+}
+
+const _idLinks = <String, _IdLinkDefinition>{
+  'media asset': _IdLinkDefinition('asset', 'media-asset', '/media_assets/'),
+  'mod action': _IdLinkDefinition('mod action', 'mod-action', '/mod_actions/'),
+  'post': _IdLinkDefinition('post', 'post', '/posts/'),
+  'asset': _IdLinkDefinition('asset', 'media-asset', '/media_assets/'),
+  'appeal': _IdLinkDefinition('appeal', 'post-appeal', '/post_appeals/'),
+  'flag': _IdLinkDefinition('flag', 'post-flag', '/post_flags/'),
+  'note': _IdLinkDefinition('note', 'note', '/notes/'),
+  'forum': _IdLinkDefinition('forum', 'forum-post', '/forum_posts/'),
+  'topic': _IdLinkDefinition('topic', 'forum-topic', '/forum_topics/'),
+  'comment': _IdLinkDefinition('comment', 'comment', '/comments/'),
+  'dmail': _IdLinkDefinition('dmail', 'dmail', '/dmails/'),
+  'pool': _IdLinkDefinition('pool', 'pool', '/pools/'),
+  'user': _IdLinkDefinition('user', 'user', '/users/'),
+  'artist': _IdLinkDefinition('artist', 'artist', '/artists/'),
+  'ban': _IdLinkDefinition('ban', 'ban', '/bans/'),
+  'alias': _IdLinkDefinition('alias', 'tag-alias', '/tag_aliases/'),
+  'implication': _IdLinkDefinition(
+    'implication',
+    'tag-implication',
+    '/tag_implications/',
+  ),
+  'favgroup': _IdLinkDefinition(
+    'favgroup',
+    'favorite-group',
+    '/favorite_groups/',
+  ),
+  'modreport': _IdLinkDefinition(
+    'modreport',
+    'moderation-report',
+    '/moderation_reports/',
+  ),
+  'feedback': _IdLinkDefinition(
+    'feedback',
+    'user-feedback',
+    '/user_feedbacks/',
+  ),
+  'wiki': _IdLinkDefinition('wiki', 'wiki-page', '/wiki_pages/'),
+  'issue': _IdLinkDefinition(
+    'issue',
+    'github',
+    'https://github.com/danbooru/danbooru/issues/',
+  ),
+  'pull': _IdLinkDefinition(
+    'pull',
+    'github-pull',
+    'https://github.com/danbooru/danbooru/pull/',
+  ),
+  'commit': _IdLinkDefinition(
+    'commit',
+    'github-commit',
+    'https://github.com/danbooru/danbooru/commit/',
+  ),
+  'pixiv': _IdLinkDefinition(
+    'pixiv',
+    'pixiv',
+    'https://www.pixiv.net/artworks/',
+  ),
+  'twitter': _IdLinkDefinition(
+    'twitter',
+    'twitter',
+    'https://twitter.com/i/web/status/',
+  ),
+  'gelbooru': _IdLinkDefinition(
+    'gelbooru',
+    'gelbooru',
+    'https://gelbooru.com/index.php?page=post&s=view&id=',
+  ),
+};
 
 mixin DTextLinkParser on DTextParserContext {
   @override
   bool parseWikiLink() {
-    final match = scanner.matchGroups(
-      RegExp(r'([A-Za-z0-9]*)\[\[([^\]\n]+)\]\]([A-Za-z0-9]*)'),
-    );
+    final match = _matchDelimitedText('[[', ']]');
     if (match == null) return false;
 
-    final prefix = match.group(1)!;
-    final body = match.group(2)!.trim();
-    final suffix = match.group(3)!;
-    if (body.isEmpty || body.contains('\n')) return false;
+    final prefix = match.prefix;
+    final body = match.body.trim();
+    final suffix = match.suffix;
+    if (body.isEmpty) return false;
 
-    scanner.advance(match.group(0)!.length);
+    scanner.advance(match.length);
     final parts = body.split('|');
     final targetWithAnchor = parts.first.trim();
     final titleSource = parts.length > 1
@@ -57,17 +150,15 @@ mixin DTextLinkParser on DTextParserContext {
 
   @override
   bool parsePostSearchLink() {
-    final match = scanner.matchGroups(
-      RegExp(r'([A-Za-z0-9]*)\{\{([^\}\n]+)\}\}([A-Za-z0-9]*)'),
-    );
+    final match = _matchDelimitedText('{{', '}}');
     if (match == null) return false;
 
-    final prefix = match.group(1)!;
-    final body = match.group(2)!.trim();
-    final suffix = match.group(3)!;
-    if (body.isEmpty || body.contains('\n')) return false;
+    final prefix = match.prefix;
+    final body = match.body.trim();
+    final suffix = match.suffix;
+    if (body.isEmpty) return false;
 
-    scanner.advance(match.group(0)!.length);
+    scanner.advance(match.length);
     final separator = body.startsWith('|')
         ? body.indexOf('|', 1)
         : body.indexOf('|');
@@ -88,33 +179,26 @@ mixin DTextLinkParser on DTextParserContext {
 
   @override
   bool parseNamedLink() {
-    final textile = scanner.matchGroups(
-      RegExp(r'"([^"\n]+)":\[?([^\]\s\n]+)\]?'),
-    );
+    final textile = _matchTextileNamedLink();
     if (textile != null) {
-      final full = textile.group(0)!;
-      final title = textile.group(1)!;
-      final url = textile.group(2)!;
-      if (isUrlLike(url)) {
-        scanner.advance(full.length);
-        writeNamedUrl(normalizeHref(url), title);
+      if (isUrlLike(textile.url)) {
+        scanner.advance(textile.length);
+        writeNamedUrl(normalizeHref(textile.url), textile.title);
         return true;
       }
     }
 
     if (scanner.startsWith('[/')) return false;
-    final markdown = scanner.matchGroups(
-      RegExp(r'\[([^\]\n]+)\]\(([^\)\n]+)\)'),
-    );
+    final markdown = _matchMarkdownNamedLink();
     if (markdown == null) return false;
 
-    final first = markdown.group(1)!;
-    final second = markdown.group(2)!;
+    final first = markdown.first;
+    final second = markdown.second;
     final firstIsUrl = isUrlLike(first);
     final secondIsUrl = isUrlLike(second);
     if (!firstIsUrl && !secondIsUrl) return false;
 
-    scanner.advance(markdown.group(0)!.length);
+    scanner.advance(markdown.length);
     if (firstIsUrl) {
       writeNamedUrl(normalizeHref(first), second);
     } else {
@@ -125,39 +209,27 @@ mixin DTextLinkParser on DTextParserContext {
 
   @override
   bool parseHtmlLink() {
-    final match = scanner.matchGroups(
-      RegExp(
-        r'''<a\s+[^>]*href\s*=\s*(["'])(.*?)\1[^>]*>([\s\S]*?)</a>''',
-        caseSensitive: false,
-      ),
-    );
+    final match = _matchHtmlLink();
     if (match == null) return false;
 
-    final url = normalizeHref(match.group(2)!.trim());
-    final title = match.group(3)!;
+    final url = normalizeHref(match.url.trim());
+    final title = match.title;
     if (!isUrlLike(url) || title.isEmpty) return false;
 
-    scanner.advance(match.group(0)!.length);
+    scanner.advance(match.length);
     writeNamedUrl(url, title);
     return true;
   }
 
   @override
   bool parseBbcodeLink() {
-    final explicit = scanner.matchGroups(
-      RegExp(
-        r'''\[url\s*=\s*(?:"([^"\]\n]+)"|'([^'\]\n]+)'|([^\]\s\n]+))\s*\]''',
-        caseSensitive: false,
-      ),
-    );
+    final explicit = _matchExplicitBbcodeUrl();
     if (explicit != null) {
-      final url = normalizeHref(
-        (explicit.group(1) ?? explicit.group(2) ?? explicit.group(3)!).trim(),
-      );
+      final url = normalizeHref(explicit.url.trim());
       if (!isUrlLike(url)) return false;
 
       final start = scanner.offset;
-      scanner.advance(explicit.group(0)!.length);
+      scanner.advance(explicit.length);
       final title = scanner.readUntil('[/url]', caseSensitive: false);
       if (!scanner.startsWith('[/url]', caseSensitive: false)) {
         scanner.offset = start;
@@ -174,11 +246,10 @@ mixin DTextLinkParser on DTextParserContext {
       return true;
     }
 
-    final implicit = scanner.match(RegExp(r'\[url\]', caseSensitive: false));
-    if (implicit == null) return false;
+    if (!scanner.startsWith('[url]', caseSensitive: false)) return false;
 
     final start = scanner.offset;
-    scanner.advance(implicit.length);
+    scanner.advance(5);
     final url = scanner.readUntil('[/url]', caseSensitive: false).trim();
     if (!scanner.startsWith('[/url]', caseSensitive: false)) {
       scanner.offset = start;
@@ -196,97 +267,90 @@ mixin DTextLinkParser on DTextParserContext {
 
   @override
   bool parseIdLink() {
-    final idLinks = <String, (String, String, String)>{
-      'post': ('post', 'post', '/posts/'),
-      'asset': ('asset', 'media-asset', '/media_assets/'),
-      'media asset': ('asset', 'media-asset', '/media_assets/'),
-      'appeal': ('appeal', 'post-appeal', '/post_appeals/'),
-      'flag': ('flag', 'post-flag', '/post_flags/'),
-      'note': ('note', 'note', '/notes/'),
-      'forum': ('forum', 'forum-post', '/forum_posts/'),
-      'topic': ('topic', 'forum-topic', '/forum_topics/'),
-      'comment': ('comment', 'comment', '/comments/'),
-      'dmail': ('dmail', 'dmail', '/dmails/'),
-      'pool': ('pool', 'pool', '/pools/'),
-      'user': ('user', 'user', '/users/'),
-      'artist': ('artist', 'artist', '/artists/'),
-      'ban': ('ban', 'ban', '/bans/'),
-      'alias': ('alias', 'tag-alias', '/tag_aliases/'),
-      'implication': ('implication', 'tag-implication', '/tag_implications/'),
-      'favgroup': ('favgroup', 'favorite-group', '/favorite_groups/'),
-      'mod action': ('mod action', 'mod-action', '/mod_actions/'),
-      'modreport': ('modreport', 'moderation-report', '/moderation_reports/'),
-      'feedback': ('feedback', 'user-feedback', '/user_feedbacks/'),
-      'wiki': ('wiki', 'wiki-page', '/wiki_pages/'),
-      'issue': (
-        'issue',
-        'github',
-        'https://github.com/danbooru/danbooru/issues/',
-      ),
-      'pull': (
-        'pull',
-        'github-pull',
-        'https://github.com/danbooru/danbooru/pull/',
-      ),
-      'commit': (
-        'commit',
-        'github-commit',
-        'https://github.com/danbooru/danbooru/commit/',
-      ),
-      'pixiv': ('pixiv', 'pixiv', 'https://www.pixiv.net/artworks/'),
-      'twitter': ('twitter', 'twitter', 'https://twitter.com/i/web/status/'),
-      'gelbooru': (
-        'gelbooru',
-        'gelbooru',
-        'https://gelbooru.com/index.php?page=post&s=view&id=',
-      ),
-    };
+    final match = _matchIdLink();
+    if (match == null) return false;
 
-    for (final entry in idLinks.entries) {
-      final pattern = RegExp(
-        '${RegExp.escape(entry.key)} #(\\d+)(?:/p(\\d+))?',
-        caseSensitive: false,
+    scanner.advance(match.length);
+    final definition = match.definition;
+    if (match.key == 'topic' && match.page != null) {
+      writePagedLink(
+        'topic #',
+        match.id,
+        '/forum_topics/',
+        '?page=',
+        match.page!,
+        'forum-topic',
       );
-      final match = scanner.matchGroups(pattern);
-      if (match == null) continue;
-
-      scanner.advance(match.group(0)!.length);
-      final id = match.group(1)!;
-      final page = match.group(2);
-      if (entry.key == 'topic' && page != null) {
-        writePagedLink(
-          'topic #',
-          id,
-          '/forum_topics/',
-          '?page=',
-          page,
-          'forum-topic',
-        );
-      } else if (entry.key == 'pixiv' && page != null) {
-        writePagedLink(
-          'pixiv #',
-          id,
-          'https://www.pixiv.net/artworks/',
-          '#',
-          page,
-          'pixiv',
-        );
-      } else {
-        writeIdLink(entry.value.$1, entry.value.$2, entry.value.$3, id);
-      }
-      return true;
+    } else if (match.key == 'pixiv' && match.page != null) {
+      writePagedLink(
+        'pixiv #',
+        match.id,
+        'https://www.pixiv.net/artworks/',
+        '#',
+        match.page!,
+        'pixiv',
+      );
+    } else {
+      writeIdLink(
+        definition.prefix,
+        definition.className,
+        definition.url,
+        match.id,
+      );
     }
 
-    return false;
+    return true;
+  }
+
+  _IdLinkMatch? _matchIdLink() {
+    for (final entry in _idLinks.entries) {
+      final key = entry.key;
+      if (!scanner.startsWith(key, caseSensitive: false)) continue;
+
+      var index = scanner.offset + key.length;
+      if (!scanner.startsWithAt(index, ' #')) continue;
+      index += 2;
+
+      final idStart = index;
+      while (index < scanner.source.length &&
+          isAsciiDigit(scanner.source.codeUnitAt(index))) {
+        index++;
+      }
+      if (index == idStart) continue;
+
+      final idEnd = index;
+      String? page;
+      if (scanner.startsWithAt(index, '/p')) {
+        final pageStart = index + 2;
+        index = pageStart;
+        while (index < scanner.source.length &&
+            isAsciiDigit(scanner.source.codeUnitAt(index))) {
+          index++;
+        }
+        if (index == pageStart) {
+          index = idEnd;
+        } else {
+          page = scanner.source.substring(pageStart, index);
+        }
+      }
+
+      return _IdLinkMatch(
+        definition: entry.value,
+        key: key,
+        id: scanner.source.substring(idStart, idEnd),
+        page: page,
+        length: index - scanner.offset,
+      );
+    }
+
+    return null;
   }
 
   @override
   bool parseRawUrl() {
     if (!isUrlBoundary(scanner.offset - 1)) return false;
 
-    final match = scanner.match(
-      RegExp(r'(?:https?://|mailto:)[^\s<>\[\]]+', caseSensitive: false),
-    );
+    final match = _matchRawUrl();
     if (match == null) return false;
 
     final (url, leftovers) = trimUrl(match);
@@ -300,17 +364,330 @@ mixin DTextLinkParser on DTextParserContext {
 
   @override
   bool parseDelimitedUrl() {
-    final match = scanner.matchGroups(
-      RegExp(r'<((?:https?://|mailto:)[^<>\s]+)>', caseSensitive: false),
-    );
+    final match = _matchDelimitedUrl();
     if (match == null) return false;
 
-    final url = match.group(1)!;
-    if (!isValidUrl(url)) return false;
+    if (!isValidUrl(match.url)) return false;
 
-    scanner.advance(match.group(0)!.length);
-    writeUnnamedUrl(url);
+    scanner.advance(match.length);
+    writeUnnamedUrl(match.url);
     return true;
+  }
+
+  ({String prefix, String body, String suffix, int length})?
+  _matchDelimitedText(String open, String close) {
+    final start = scanner.offset;
+    var index = start;
+
+    while (index < scanner.source.length &&
+        isAsciiAlphaNumeric(scanner.source.codeUnitAt(index))) {
+      index++;
+    }
+    final prefixEnd = index;
+
+    if (!scanner.startsWithAt(index, open)) return null;
+    index += open.length;
+
+    final bodyStart = index;
+    while (index < scanner.source.length) {
+      final codeUnit = scanner.source.codeUnitAt(index);
+      if (codeUnit == lineFeedCode) return null;
+      if (scanner.startsWithAt(index, close)) break;
+      index++;
+    }
+    if (index >= scanner.source.length) return null;
+
+    final body = scanner.source.substring(bodyStart, index);
+    index += close.length;
+
+    final suffixStart = index;
+    while (index < scanner.source.length &&
+        isAsciiAlphaNumeric(scanner.source.codeUnitAt(index))) {
+      index++;
+    }
+
+    return (
+      prefix: scanner.source.substring(start, prefixEnd),
+      body: body,
+      suffix: scanner.source.substring(suffixStart, index),
+      length: index - start,
+    );
+  }
+
+  ({String title, String url, int length})? _matchTextileNamedLink() {
+    final start = scanner.offset;
+    if (!scanner.startsWith('"')) return null;
+
+    var index = start + 1;
+    final titleStart = index;
+    while (index < scanner.source.length) {
+      final codeUnit = scanner.source.codeUnitAt(index);
+      if (codeUnit == lineFeedCode) return null;
+      if (codeUnit == doubleQuoteCode) break;
+      index++;
+    }
+    if (index >= scanner.source.length || index == titleStart) return null;
+
+    final title = scanner.source.substring(titleStart, index);
+    index++;
+    if (index >= scanner.source.length || scanner.source[index] != ':') {
+      return null;
+    }
+    index++;
+
+    final bracketed =
+        index < scanner.source.length && scanner.source[index] == '[';
+    if (bracketed) index++;
+    final urlStart = index;
+    while (index < scanner.source.length) {
+      final codeUnit = scanner.source.codeUnitAt(index);
+      if (isWhitespace(codeUnit) || codeUnit == rightBracketCode) break;
+      index++;
+    }
+    if (index == urlStart) return null;
+
+    final url = scanner.source.substring(urlStart, index);
+    if (bracketed &&
+        index < scanner.source.length &&
+        scanner.source[index] == ']') {
+      index++;
+    }
+
+    return (title: title, url: url, length: index - start);
+  }
+
+  ({String first, String second, int length})? _matchMarkdownNamedLink() {
+    final start = scanner.offset;
+    if (!scanner.startsWith('[') || scanner.startsWith('[/')) return null;
+
+    var index = start + 1;
+    final firstStart = index;
+    while (index < scanner.source.length) {
+      final codeUnit = scanner.source.codeUnitAt(index);
+      if (codeUnit == lineFeedCode) return null;
+      if (codeUnit == rightBracketCode) break;
+      index++;
+    }
+    if (index >= scanner.source.length || index == firstStart) return null;
+
+    final first = scanner.source.substring(firstStart, index);
+    index++;
+    if (index >= scanner.source.length || scanner.source[index] != '(') {
+      return null;
+    }
+    index++;
+
+    final secondStart = index;
+    while (index < scanner.source.length) {
+      final codeUnit = scanner.source.codeUnitAt(index);
+      if (codeUnit == lineFeedCode) return null;
+      if (codeUnit == rightParenthesisCode) break;
+      index++;
+    }
+    if (index >= scanner.source.length || index == secondStart) return null;
+
+    return (
+      first: first,
+      second: scanner.source.substring(secondStart, index),
+      length: index + 1 - start,
+    );
+  }
+
+  ({String url, String title, int length})? _matchHtmlLink() {
+    final start = scanner.offset;
+    if (!scanner.startsWith('<a', caseSensitive: false)) return null;
+    if (start + 2 >= scanner.source.length ||
+        !isWhitespace(scanner.source.codeUnitAt(start + 2))) {
+      return null;
+    }
+
+    final openEnd = scanner.indexOf('>', start: start + 3);
+    if (openEnd < 0) return null;
+
+    final openTag = scanner.source.substring(start, openEnd + 1);
+    final href = _extractHref(openTag);
+    if (href == null) return null;
+
+    final closeStart = scanner.indexOf(
+      '</a>',
+      start: openEnd + 1,
+      caseSensitive: false,
+    );
+    if (closeStart < 0) return null;
+
+    return (
+      url: href,
+      title: scanner.source.substring(openEnd + 1, closeStart),
+      length: closeStart + 4 - start,
+    );
+  }
+
+  String? _extractHref(String openTag) {
+    var index = 2;
+    while (index < openTag.length) {
+      while (index < openTag.length &&
+          isWhitespace(openTag.codeUnitAt(index))) {
+        index++;
+      }
+
+      if (index >= openTag.length || openTag[index] == '>') return null;
+      final nameStart = index;
+      while (index < openTag.length &&
+          (isAsciiAlphaNumeric(openTag.codeUnitAt(index)) ||
+              openTag[index] == '-' ||
+              openTag[index] == '_')) {
+        index++;
+      }
+      if (index == nameStart) {
+        index++;
+        continue;
+      }
+
+      final name = openTag.substring(nameStart, index);
+      while (index < openTag.length &&
+          isWhitespace(openTag.codeUnitAt(index))) {
+        index++;
+      }
+      if (index >= openTag.length || openTag[index] != '=') continue;
+      index++;
+      while (index < openTag.length &&
+          isWhitespace(openTag.codeUnitAt(index))) {
+        index++;
+      }
+      if (index >= openTag.length) return null;
+
+      final quote = openTag[index];
+      if (quote != '"' && quote != "'") return null;
+      index++;
+      final valueStart = index;
+      while (index < openTag.length && openTag[index] != quote) {
+        index++;
+      }
+      if (index >= openTag.length) return null;
+
+      final value = openTag.substring(valueStart, index);
+      index++;
+      if (name.length == 4 && startsWithAsciiIgnoreCase(name, 0, 'href')) {
+        return value;
+      }
+    }
+
+    return null;
+  }
+
+  ({String url, int length})? _matchExplicitBbcodeUrl() {
+    final start = scanner.offset;
+    if (!scanner.startsWith('[url', caseSensitive: false)) return null;
+
+    var index = start + 4;
+    while (index < scanner.source.length &&
+        isSpaceTab(scanner.source.codeUnitAt(index))) {
+      index++;
+    }
+    if (index >= scanner.source.length || scanner.source[index] != '=') {
+      return null;
+    }
+    index++;
+    while (index < scanner.source.length &&
+        isSpaceTab(scanner.source.codeUnitAt(index))) {
+      index++;
+    }
+    if (index >= scanner.source.length) return null;
+
+    String url;
+    final quote = scanner.source[index];
+    if (quote == '"' || quote == "'") {
+      index++;
+      final urlStart = index;
+      while (index < scanner.source.length) {
+        final codeUnit = scanner.source.codeUnitAt(index);
+        if (codeUnit == lineFeedCode || codeUnit == rightBracketCode) {
+          return null;
+        }
+        if (scanner.source[index] == quote) break;
+        index++;
+      }
+      if (index >= scanner.source.length || index == urlStart) return null;
+      url = scanner.source.substring(urlStart, index);
+      index++;
+    } else {
+      final urlStart = index;
+      while (index < scanner.source.length) {
+        final codeUnit = scanner.source.codeUnitAt(index);
+        if (isWhitespace(codeUnit) || codeUnit == rightBracketCode) break;
+        index++;
+      }
+      if (index == urlStart) return null;
+      url = scanner.source.substring(urlStart, index);
+    }
+
+    while (index < scanner.source.length &&
+        isSpaceTab(scanner.source.codeUnitAt(index))) {
+      index++;
+    }
+    if (index >= scanner.source.length || scanner.source[index] != ']') {
+      return null;
+    }
+
+    return (url: url, length: index + 1 - start);
+  }
+
+  String? _matchRawUrl() {
+    final start = scanner.offset;
+    if (!_startsWithUrlScheme(scanner.source, start)) return null;
+
+    var index = start;
+    while (index < scanner.source.length &&
+        _isRawUrlCodeUnit(scanner.source.codeUnitAt(index))) {
+      index++;
+    }
+    if (index == start) return null;
+
+    return scanner.source.substring(start, index);
+  }
+
+  ({String url, int length})? _matchDelimitedUrl() {
+    final start = scanner.offset;
+    if (!scanner.startsWith('<')) return null;
+
+    var index = start + 1;
+    if (!_startsWithUrlScheme(scanner.source, index)) return null;
+
+    final urlStart = index;
+    while (index < scanner.source.length) {
+      final codeUnit = scanner.source.codeUnitAt(index);
+      if (isWhitespace(codeUnit) || codeUnit == lessThanCode) return null;
+      if (codeUnit == greaterThanCode) {
+        if (index == urlStart) return null;
+        return (
+          url: scanner.source.substring(urlStart, index),
+          length: index + 1 - start,
+        );
+      }
+      index++;
+    }
+
+    return null;
+  }
+
+  bool _startsWithUrlScheme(String source, int offset) =>
+      startsWithAsciiIgnoreCase(source, offset, 'http://') ||
+      startsWithAsciiIgnoreCase(source, offset, 'https://') ||
+      startsWithAsciiIgnoreCase(source, offset, 'mailto:');
+
+  bool _isRawUrlCodeUnit(int codeUnit) =>
+      !isWhitespace(codeUnit) &&
+      codeUnit != lessThanCode &&
+      codeUnit != greaterThanCode &&
+      codeUnit != leftBracketCode &&
+      codeUnit != rightBracketCode;
+
+  bool _containsWhitespace(String value) {
+    for (var i = 0; i < value.length; i++) {
+      if (isWhitespace(value.codeUnitAt(i))) return true;
+    }
+
+    return false;
   }
 
   @override
@@ -392,7 +769,7 @@ mixin DTextLinkParser on DTextParserContext {
     if (uri.query.isNotEmpty && segments[0] != 'posts') return false;
 
     final id = segments[1];
-    if (RegExp(r'^\d+$').hasMatch(id)) {
+    if (allAsciiDigits(id)) {
       final links = <String, (String, String, String)>{
         'posts': ('post', 'post', '/posts/'),
         'pools': ('pool', 'pool', '/pools/'),
@@ -467,17 +844,13 @@ mixin DTextLinkParser on DTextParserContext {
 
   @override
   bool isUrlLike(String value) {
-    if (value.isEmpty || value.contains(RegExp(r'\s'))) return false;
+    if (value.isEmpty || _containsWhitespace(value)) return false;
     if (value.startsWith('#')) return true;
     if (value == '/' || value == '//') return true;
     if (value.startsWith('/') && !value.startsWith('//')) return true;
     if (value.startsWith('//')) return isValidUrl(normalizeHref(value));
 
-    return RegExp(
-          r'^(?:https?://|mailto:)',
-          caseSensitive: false,
-        ).hasMatch(value) &&
-        isValidUrl(value);
+    return _startsWithUrlScheme(value, 0) && isValidUrl(value);
   }
 
   @override
@@ -485,11 +858,7 @@ mixin DTextLinkParser on DTextParserContext {
     if (offset < 0) return true;
 
     final code = scanner.source.codeUnitAt(offset);
-    final isAsciiLetter =
-        code >= 0x41 && code <= 0x5A || code >= 0x61 && code <= 0x7A;
-    final isDigit = code >= 0x30 && code <= 0x39;
-
-    return !isAsciiLetter && !isDigit;
+    return !isAsciiAlphaNumeric(code);
   }
 
   @override
@@ -498,7 +867,7 @@ mixin DTextLinkParser on DTextParserContext {
       if (value[i] != '#') continue;
 
       final next = value.codeUnitAt(i + 1);
-      if (next >= 0x41 && next <= 0x5A) return i;
+      if (isAsciiUpper(next)) return i;
     }
 
     return null;

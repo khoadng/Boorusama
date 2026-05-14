@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'ast.dart';
+import 'characters.dart';
 import 'options.dart';
 
 class DTextDocumentBuilder {
@@ -244,17 +245,12 @@ class DTextDocumentBuilder {
     final buffer = StringBuffer();
 
     for (final byte in utf8.encode(value)) {
-      final isDigit = byte >= 0x30 && byte <= 0x39;
-      final isUpper = byte >= 0x41 && byte <= 0x5A;
-      final isLower = byte >= 0x61 && byte <= 0x7A;
       final isUnreserved =
-          isDigit ||
-          isUpper ||
-          isLower ||
-          byte == 0x2D ||
-          byte == 0x5F ||
-          byte == 0x2E ||
-          byte == 0x7E;
+          isAsciiAlphaNumeric(byte) ||
+          byte == hyphenCode ||
+          byte == underscoreCode ||
+          byte == periodCode ||
+          byte == tildeCode;
 
       if (isUnreserved) {
         buffer.writeCharCode(byte);
@@ -262,7 +258,7 @@ class DTextDocumentBuilder {
         buffer
           ..write('%')
           ..write(hex[byte >> 4])
-          ..write(hex[byte & 0x0F]);
+          ..write(hex[byte & hexLowNibbleMask]);
       }
     }
 
@@ -337,15 +333,54 @@ class DTextDocumentBuilder {
 
   String? _extractClassLanguage(String? html) {
     if (html == null) return null;
-    final match = RegExp(r'class="language-([^"]+)"').firstMatch(html);
-    return match?.group(1);
+    final className = _extractQuotedAttribute(html, 'class');
+    const prefix = 'language-';
+    if (className == null || !className.startsWith(prefix)) return null;
+
+    return className.substring(prefix.length);
   }
 
   String? _extractId(String? html) {
     if (html == null) return null;
-    final match = RegExp(r'id="([^"]+)"').firstMatch(html);
-    return match?.group(1);
+    return _extractQuotedAttribute(html, 'id');
   }
+
+  String? _extractQuotedAttribute(String html, String name) {
+    var index = 0;
+    while (index < html.length) {
+      final found = html.indexOf(name, index);
+      if (found < 0) return null;
+      final before = found == 0 ? spaceCode : html.codeUnitAt(found - 1);
+      final afterIndex = found + name.length;
+      final after = afterIndex >= html.length
+          ? spaceCode
+          : html.codeUnitAt(afterIndex);
+      if (!_isAttributeBoundary(before) || after != equalsCode) {
+        index = found + 1;
+        continue;
+      }
+
+      final valueStart = afterIndex + 1;
+      if (valueStart >= html.length ||
+          html.codeUnitAt(valueStart) != doubleQuoteCode) {
+        index = found + 1;
+        continue;
+      }
+
+      final valueEnd = html.indexOf('"', valueStart + 1);
+      if (valueEnd < 0) return null;
+
+      return html.substring(valueStart + 1, valueEnd);
+    }
+
+    return null;
+  }
+
+  bool _isAttributeBoundary(int codeUnit) =>
+      codeUnit == spaceCode ||
+      codeUnit == horizontalTabCode ||
+      codeUnit == lineFeedCode ||
+      codeUnit == lessThanCode;
 
   bool _isInline(DTextElement element) => switch (element) {
     DTextElement.inlineBold ||
