@@ -1,8 +1,8 @@
-# Prereleased-2026.05.13
+# Prereleased-2026.05.14
 - Add support for Nozomi
 - [Sankaku] Add favorite support
 - [Suzurubooru] Add pool and comments support
-- [Danbooru] Support showing comment emojis
+- [Danbooru] Support displaying comment emojis and wiki content
 - Add last-page jumping for sites that support it
 - Improve Dtext rendering
 - Improve post details copy action with more media and link options
