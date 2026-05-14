@@ -84,7 +84,7 @@ class CommentsNotifier
         .then(_sortDescById);
 
     await ref
-        .read(textEmojiCacheProvider(arg).notifier)
+        .read(textMarkupCacheProvider(arg).notifier)
         .resolveBodies(comments.map((comment) => comment.body));
 
     state = {

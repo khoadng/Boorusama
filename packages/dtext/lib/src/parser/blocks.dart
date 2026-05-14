@@ -295,7 +295,6 @@ mixin DTextBlockParser on DTextParserContext {
     final match = scanner.matchGroups(
       RegExp(
         r'(\* )?!((?:post)|(?:asset)) #(\d+)(?::[ \t]+([^\n]+))?[ \t]*(?:\n|$)',
-        caseSensitive: false,
       ),
     );
     if (match == null) return false;
@@ -351,11 +350,12 @@ mixin DTextBlockParser on DTextParserContext {
 
     final previousOffset = scanner.offset;
     scanner.offset++;
+    final startsMediaEmbed = _startsMediaEmbed();
     while (!scanner.isDone &&
         (scanner.current == ' ' || scanner.current == '\t')) {
       scanner.offset++;
     }
-    final startsBlock = isBlockStartForParagraphBoundary();
+    final startsBlock = startsMediaEmbed || isBlockStartForParagraphBoundary();
     scanner.offset = previousOffset;
     return startsBlock;
   }
@@ -394,5 +394,16 @@ mixin DTextBlockParser on DTextParserContext {
             null ||
         scanner.match(RegExp(r'\[(?:ta|ti|bur):\d+\]', caseSensitive: false)) !=
             null;
+  }
+
+  bool _startsMediaEmbed() {
+    if (!options.enableMediaEmbeds) return false;
+
+    return scanner.match(
+          RegExp(
+            r'(\* )?!((?:post)|(?:asset)) #(\d+)(?::[ \t]+([^\n]+))?[ \t]*(?:\n|$)',
+          ),
+        ) !=
+        null;
   }
 }

@@ -30,15 +30,19 @@ class DanbooruDTextBody extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final emojiNames = extractTextEmojiShortcodes(data);
-    final emojiCache = ref.watch(textEmojiCacheProvider(config)).resolved;
+    final mediaRefs = extractTextMediaEmbedRefs(data);
+    final textMarkupCache = ref.watch(textMarkupCacheProvider(config));
 
     return DTextBody(
       data: data,
       booruUrl: config.url,
       emojiMap: {
-        for (final name in emojiNames) name: ?emojiCache[name],
+        for (final name in emojiNames) name: ?textMarkupCache.resolved[name],
       },
-      emojiImageConfig: config,
+      mediaEmbedMap: {
+        for (final ref in mediaRefs) ref: ?textMarkupCache.mediaEmbeds[ref],
+      },
+      imageConfig: config,
       style: style,
       onLinkTap: onLinkTap,
       selectable: selectable,

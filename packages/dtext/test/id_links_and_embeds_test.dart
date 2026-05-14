@@ -32,6 +32,26 @@ void main() {
         parse('!post #1234\n!asset #5'),
         '<media-embed data-type="post" data-id="1234"></media-embed><media-embed data-type="asset" data-id="5"></media-embed>',
       );
+      expect(
+        parse('foo\n!asset #5'),
+        '<p>foo</p><media-embed data-type="asset" data-id="5"></media-embed>',
+      );
+    });
+
+    test('requires exact Danbooru embed syntax', () {
+      expect(
+        parse('!Post #1234'),
+        '<p>!<a class="dtext-link dtext-id-link dtext-post-id-link" href="/posts/1234">post #1234</a></p>',
+      );
+      expect(
+        parse(' !post #1234'),
+        '<p> !<a class="dtext-link dtext-id-link dtext-post-id-link" href="/posts/1234">post #1234</a></p>',
+      );
+      expect(parse('!post  #1234'), '<p>!post  #1234</p>');
+      expect(
+        parse('!post #1234 trailing'),
+        '<p>!<a class="dtext-link dtext-id-link dtext-post-id-link" href="/posts/1234">post #1234</a> trailing</p>',
+      );
     });
   });
 }

@@ -12,6 +12,7 @@ import '../../themes/theme/types.dart';
 import '../../../foundation/html.dart';
 import 'dtext_emoji_renderer.dart';
 import 'dtext_html.dart';
+import 'dtext_media_embed.dart';
 import 'dtext_renderer.dart';
 import 'dtext_table.dart';
 
@@ -21,7 +22,8 @@ class DTextBody extends StatelessWidget {
     required this.booruUrl,
     super.key,
     this.emojiMap = const {},
-    this.emojiImageConfig,
+    this.mediaEmbedMap = const {},
+    this.imageConfig,
     this.style,
     this.onLinkTap,
     this.selectable = true,
@@ -30,7 +32,8 @@ class DTextBody extends StatelessWidget {
   final String data;
   final String booruUrl;
   final Map<String, TextEmoji> emojiMap;
-  final BooruConfigAuth? emojiImageConfig;
+  final Map<TextMediaEmbedRef, TextMediaEmbed> mediaEmbedMap;
+  final BooruConfigAuth? imageConfig;
   final Map<String, Style>? style;
   final OnTap? onLinkTap;
   final bool selectable;
@@ -52,7 +55,8 @@ class DTextBody extends StatelessWidget {
         nodes: document.children,
         emojiMap: emojiMap,
         emojiSize: dTextEmojiSizeForDocument(document),
-        emojiImageConfig: emojiImageConfig,
+        mediaEmbedMap: mediaEmbedMap,
+        imageConfig: imageConfig,
         style: style,
         onLinkTap: onLinkTap,
         selectable: selectable,
@@ -73,7 +77,8 @@ class _DTextNodesView extends StatelessWidget {
     required this.nodes,
     required this.emojiMap,
     required this.emojiSize,
-    required this.emojiImageConfig,
+    required this.mediaEmbedMap,
+    required this.imageConfig,
     required this.style,
     required this.onLinkTap,
     required this.selectable,
@@ -82,7 +87,8 @@ class _DTextNodesView extends StatelessWidget {
   final List<DTextNode> nodes;
   final Map<String, TextEmoji> emojiMap;
   final double emojiSize;
-  final BooruConfigAuth? emojiImageConfig;
+  final Map<TextMediaEmbedRef, TextMediaEmbed> mediaEmbedMap;
+  final BooruConfigAuth? imageConfig;
   final Map<String, Style>? style;
   final OnTap? onLinkTap;
   final bool selectable;
@@ -101,12 +107,12 @@ class _DTextNodesView extends StatelessWidget {
             htmlNodes,
             emojiMap: emojiMap,
             emojiSize: emojiSize,
-            emojiImageConfig: emojiImageConfig,
+            emojiImageConfig: imageConfig,
           ),
           style: dTextHtmlStyle(style),
           onLinkTap: onLinkTap,
           extensions: [
-            if (emojiImageConfig case final config?)
+            if (imageConfig case final config?)
               ...dTextEmojiHtmlExtensions(config),
           ],
           selectable: selectable,
@@ -123,7 +129,8 @@ class _DTextNodesView extends StatelessWidget {
             node: node as DTextElementNode,
             emojiMap: emojiMap,
             emojiSize: emojiSize,
-            emojiImageConfig: emojiImageConfig,
+            mediaEmbedMap: mediaEmbedMap,
+            imageConfig: imageConfig,
             style: style,
             onLinkTap: onLinkTap,
             selectable: selectable,
@@ -136,7 +143,21 @@ class _DTextNodesView extends StatelessWidget {
             node: node as DTextElementNode,
             emojiMap: emojiMap,
             emojiSize: emojiSize,
-            emojiImageConfig: emojiImageConfig,
+            emojiImageConfig: imageConfig,
+            style: style,
+            onLinkTap: onLinkTap,
+            selectable: selectable,
+          ),
+        );
+      } else if (node is DTextMediaEmbed) {
+        flushHtml();
+        widgets.add(
+          DTextMediaEmbedView(
+            node: node,
+            mediaEmbedMap: mediaEmbedMap,
+            imageConfig: imageConfig,
+            emojiMap: emojiMap,
+            emojiSize: emojiSize,
             style: style,
             onLinkTap: onLinkTap,
             selectable: selectable,
@@ -169,7 +190,8 @@ class _DTextQuote extends StatelessWidget {
     required this.node,
     required this.emojiMap,
     required this.emojiSize,
-    required this.emojiImageConfig,
+    required this.mediaEmbedMap,
+    required this.imageConfig,
     required this.style,
     required this.onLinkTap,
     required this.selectable,
@@ -178,7 +200,8 @@ class _DTextQuote extends StatelessWidget {
   final DTextElementNode node;
   final Map<String, TextEmoji> emojiMap;
   final double emojiSize;
-  final BooruConfigAuth? emojiImageConfig;
+  final Map<TextMediaEmbedRef, TextMediaEmbed> mediaEmbedMap;
+  final BooruConfigAuth? imageConfig;
   final Map<String, Style>? style;
   final OnTap? onLinkTap;
   final bool selectable;
@@ -201,7 +224,8 @@ class _DTextQuote extends StatelessWidget {
         nodes: node.children,
         emojiMap: emojiMap,
         emojiSize: emojiSize,
-        emojiImageConfig: emojiImageConfig,
+        mediaEmbedMap: mediaEmbedMap,
+        imageConfig: imageConfig,
         style: style,
         onLinkTap: onLinkTap,
         selectable: selectable,

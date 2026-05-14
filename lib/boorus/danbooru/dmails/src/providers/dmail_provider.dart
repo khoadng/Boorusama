@@ -40,7 +40,7 @@ class DmailsNotifier extends FamilyAsyncNotifier<List<Dmail>, BooruConfigAuth> {
     final resolvedDmails = dmails.map((e) => dmailDtoToDmail(e)).toList();
 
     await ref
-        .read(textEmojiCacheProvider(arg).notifier)
+        .read(textMarkupCacheProvider(arg).notifier)
         .resolveBodies(resolvedDmails.map((dmail) => dmail.body));
 
     return resolvedDmails;

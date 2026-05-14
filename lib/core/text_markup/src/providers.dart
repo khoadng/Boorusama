@@ -5,22 +5,25 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../boorus/engine/providers.dart';
 import '../../configs/config/types.dart';
 import 'types/text_emoji.dart';
+import 'types/text_media_embed.dart';
 
-final textEmojiCacheProvider =
+final textMarkupCacheProvider =
     NotifierProvider.family<
-      TextEmojiCacheNotifier,
-      TextEmojiCache,
+      TextMarkupCacheNotifier,
+      TextMarkupCache,
       BooruConfigAuth
-    >(TextEmojiCacheNotifier.new);
+    >(TextMarkupCacheNotifier.new);
 
-class TextEmojiCacheNotifier
-    extends FamilyNotifier<TextEmojiCache, BooruConfigAuth> {
+class TextMarkupCacheNotifier
+    extends FamilyNotifier<TextMarkupCache, BooruConfigAuth> {
   @override
-  TextEmojiCache build(BooruConfigAuth arg) {
-    return const TextEmojiCache();
+  TextMarkupCache build(BooruConfigAuth arg) {
+    return const TextMarkupCache();
   }
 
-  Future<Map<String, TextEmoji>> resolve(Set<String> names) async {
+  Future<Map<String, TextEmoji>> resolveEmojiShortcodes(
+    Set<String> names,
+  ) async {
     final normalizedNames = names
         .map((name) => name.toLowerCase())
         .where(isValidTextEmojiShortcode)
@@ -37,72 +40,159 @@ class TextEmojiCacheNotifier
     if (unresolved.isNotEmpty) {
       final repository = ref.read(booruRepoProvider(arg))?.textMarkup(arg);
       if (repository == null) {
-        state = state.withMissing(unresolved);
+        state = state.withMissingEmojis(unresolved);
       } else {
         final Map<String, TextEmoji> resolved;
         try {
           resolved = await repository.resolveEmojiShortcodes(unresolved);
         } catch (_) {
-          return _resolvedSubset(normalizedNames);
+          return _resolvedEmojiSubset(normalizedNames);
         }
 
         state = state
-            .withResolved(resolved)
-            .withMissing(
+            .withResolvedEmojis(resolved)
+            .withMissingEmojis(
               unresolved.where((name) => !resolved.containsKey(name)),
             );
       }
     }
 
-    return _resolvedSubset(normalizedNames);
+    return _resolvedEmojiSubset(normalizedNames);
+  }
+
+  Future<Map<TextMediaEmbedRef, TextMediaEmbed>> resolveMediaEmbeds(
+    Set<TextMediaEmbedRef> refs,
+  ) async {
+    final unresolved = refs
+        .where(
+          (ref) =>
+              !state.mediaEmbeds.containsKey(ref) &&
+              !state.missingMediaEmbeds.contains(ref),
+        )
+        .toSet();
+
+    if (unresolved.isNotEmpty) {
+      final repository = ref.read(booruRepoProvider(arg))?.textMarkup(arg);
+      if (repository == null) {
+        state = state.withMissingMediaEmbeds(unresolved);
+      } else {
+        final Map<TextMediaEmbedRef, TextMediaEmbed> resolved;
+        try {
+          resolved = await repository.resolveMediaEmbeds(unresolved);
+        } catch (_) {
+          return _resolvedMediaEmbedSubset(refs);
+        }
+
+        state = state
+            .withResolvedMediaEmbeds(resolved)
+            .withMissingMediaEmbeds(
+              unresolved.where((ref) => !resolved.containsKey(ref)),
+            );
+      }
+    }
+
+    return _resolvedMediaEmbedSubset(refs);
   }
 
   Future<void> resolveBodies(Iterable<String> bodies) async {
+    final bodyList = bodies.toList();
     final names = {
-      for (final body in bodies) ...extractTextEmojiShortcodes(body),
+      for (final body in bodyList) ...extractTextEmojiShortcodes(body),
+    };
+    final mediaRefs = {
+      for (final body in bodyList) ...extractTextMediaEmbedRefs(body),
     };
 
-    if (names.isEmpty) return;
+    if (names.isNotEmpty) {
+      await resolveEmojiShortcodes(names);
+    }
 
-    await resolve(names);
+    if (mediaRefs.isNotEmpty) {
+      await resolveMediaEmbeds(mediaRefs);
+    }
   }
 
-  Map<String, TextEmoji> _resolvedSubset(Set<String> names) =>
+  Map<String, TextEmoji> _resolvedEmojiSubset(Set<String> names) =>
       Map.unmodifiable({
         for (final name in names) name: ?state.resolved[name],
       });
+
+  Map<TextMediaEmbedRef, TextMediaEmbed> _resolvedMediaEmbedSubset(
+    Set<TextMediaEmbedRef> refs,
+  ) => Map.unmodifiable({
+    for (final ref in refs) ref: ?state.mediaEmbeds[ref],
+  });
 }
 
-class TextEmojiCache {
-  const TextEmojiCache({
+class TextMarkupCache {
+  const TextMarkupCache({
     this.resolved = const {},
     this.missing = const {},
+    this.mediaEmbeds = const {},
+    this.missingMediaEmbeds = const {},
   });
 
   final Map<String, TextEmoji> resolved;
   final Set<String> missing;
+  final Map<TextMediaEmbedRef, TextMediaEmbed> mediaEmbeds;
+  final Set<TextMediaEmbedRef> missingMediaEmbeds;
 
-  TextEmojiCache withResolved(Map<String, TextEmoji> values) {
+  TextMarkupCache withResolvedEmojis(Map<String, TextEmoji> values) {
     if (values.isEmpty) return this;
 
-    return TextEmojiCache(
+    return TextMarkupCache(
       resolved: Map.unmodifiable({
         ...resolved,
         ...values,
       }),
       missing: missing,
+      mediaEmbeds: mediaEmbeds,
+      missingMediaEmbeds: missingMediaEmbeds,
     );
   }
 
-  TextEmojiCache withMissing(Iterable<String> names) {
+  TextMarkupCache withMissingEmojis(Iterable<String> names) {
     final namesSet = names.toSet();
     if (namesSet.isEmpty) return this;
 
-    return TextEmojiCache(
+    return TextMarkupCache(
       resolved: resolved,
       missing: Set.unmodifiable({
         ...missing,
         ...namesSet,
+      }),
+      mediaEmbeds: mediaEmbeds,
+      missingMediaEmbeds: missingMediaEmbeds,
+    );
+  }
+
+  TextMarkupCache withResolvedMediaEmbeds(
+    Map<TextMediaEmbedRef, TextMediaEmbed> values,
+  ) {
+    if (values.isEmpty) return this;
+
+    return TextMarkupCache(
+      resolved: resolved,
+      missing: missing,
+      mediaEmbeds: Map.unmodifiable({
+        ...mediaEmbeds,
+        ...values,
+      }),
+      missingMediaEmbeds: missingMediaEmbeds,
+    );
+  }
+
+  TextMarkupCache withMissingMediaEmbeds(Iterable<TextMediaEmbedRef> refs) {
+    final refsSet = refs.toSet();
+    if (refsSet.isEmpty) return this;
+
+    return TextMarkupCache(
+      resolved: resolved,
+      missing: missing,
+      mediaEmbeds: mediaEmbeds,
+      missingMediaEmbeds: Set.unmodifiable({
+        ...missingMediaEmbeds,
+        ...refsSet,
       }),
     );
   }

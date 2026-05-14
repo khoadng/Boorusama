@@ -69,7 +69,7 @@ class _DanbooruForumPostsPageState
         );
 
     await ref
-        .read(textEmojiCacheProvider(config).notifier)
+        .read(textMarkupCacheProvider(config).notifier)
         .resolveBodies(newPosts.map((post) => post.body));
 
     if (!mounted) return;

@@ -13,6 +13,7 @@ import 'danbooru_client_explores.dart';
 import 'danbooru_client_favorite_groups.dart';
 import 'danbooru_client_favorites.dart';
 import 'danbooru_client_forums.dart';
+import 'danbooru_client_media_assets.dart';
 import 'danbooru_client_notes.dart';
 import 'danbooru_client_pools.dart';
 import 'danbooru_client_posts.dart';
@@ -37,6 +38,7 @@ class DanbooruClient
         DanbooruClientFavoriteGroups,
         DanbooruClientFavorites,
         DanbooruClientForums,
+        DanbooruClientMediaAssets,
         DanbooruClientNotes,
         DanbooruClientPools,
         DanbooruClientPosts,
