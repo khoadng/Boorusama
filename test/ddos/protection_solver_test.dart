@@ -322,29 +322,6 @@ void main() {
       expect(orchestrator.hasSolvedChallenge, true);
     });
 
-    test('only uses error-phase detectors for handleError', () async {
-      final orchestrator = ProtectionOrchestrator(
-        detectors: [McChallengeDetector()],
-        solvers: [fakeSolver],
-        userAgentProvider: fakeUaProvider,
-      );
-
-      final error = FakeHttpError(
-        response: FakeHttpResponse(
-          statusCode: 200,
-          data:
-              'mccaptcha mcchallenge _challenge/mccaptcha _challenge/verify captcha_text',
-        ),
-      );
-
-      final result = await orchestrator.handleError(
-        _FakeBuildContext(),
-        error,
-      );
-      expect(result, false);
-      expect(fakeSolver.solveCallCount, 0);
-    });
-
     test('only uses response-phase detectors for handleResponse', () async {
       final orchestrator = ProtectionOrchestrator(
         detectors: [CloudflareDetector()],
