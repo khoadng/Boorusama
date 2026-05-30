@@ -11,6 +11,7 @@ Wiki? wikiDtoToWiki(WikiDto d) {
       id: d.id!,
       title: d.title!,
       otherNames: List<String>.of(d.otherNames!),
+      type: WikiType.fromTitle(d.title!),
     );
   } catch (e) {
     return null;

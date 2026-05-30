@@ -32,4 +32,13 @@ mixin SzurubooruClientPools {
         )
         .toList();
   }
+
+  Future<PoolDto> getPool(int id) async {
+    final response = await dio.get('/api/pool/$id');
+
+    return PoolDto.fromJson(
+      response.data as Map<String, dynamic>,
+      baseUrl: dio.options.baseUrl,
+    );
+  }
 }

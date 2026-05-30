@@ -9,10 +9,9 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../../../../../core/configs/config/providers.dart';
-import '../../../../../core/dtext/dtext.dart';
 import '../../../../../foundation/url_launcher.dart';
 import '../../../configs/providers.dart';
-import '../../../dtext/types.dart';
+import '../../../text_markup/widgets.dart';
 import '../../../users/creator/providers.dart';
 import '../../../users/user/providers.dart';
 import '../providers/dmail_provider.dart';
@@ -113,10 +112,9 @@ class DanbooruDmailDetailsPage extends ConsumerWidget {
                         style: theme.textTheme.titleMedium,
                       ),
                       const SizedBox(height: 16),
-                      Dtext.parse(
-                        parseDtext(dmail.body),
-                        '[quote]',
-                        '[/quote]',
+                      DanbooruDTextBody(
+                        data: dmail.body,
+                        config: config,
                       ),
                       const SizedBox(height: 16),
                       if (!loginDetails.hasStrictSFW)

@@ -4,12 +4,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../../../../core/router.dart';
 
-void goToCommentCreatePage(
+Future<String?> goToCommentCreatePage(
   WidgetRef ref, {
   required int postId,
   String? initialContent,
 }) {
-  ref.router.push(
+  return ref.router.push<String>(
     Uri(
       pathSegments: [
         '',
@@ -27,13 +27,13 @@ void goToCommentCreatePage(
   );
 }
 
-void goToCommentUpdatePage(
+Future<String?> goToCommentUpdatePage(
   WidgetRef ref, {
   required int postId,
   required int commentId,
   required String commentBody,
 }) {
-  ref.router.push(
+  return ref.router.push<String>(
     Uri(
       pathSegments: [
         '',

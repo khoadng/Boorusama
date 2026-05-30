@@ -9,7 +9,7 @@ import '../../../core/comments/types.dart';
 import '../../../core/comments/widgets.dart';
 import '../../../core/configs/config/providers.dart';
 import '../../../core/configs/config/types.dart';
-import '../../../core/dtext/dtext.dart';
+import '../../../core/dtext/widgets.dart';
 
 class E621CommentPage extends ConsumerWidget {
   const E621CommentPage({
@@ -58,13 +58,9 @@ class _CommentItem extends StatelessWidget {
           createdAt: comment.createdAt,
         ),
         const SizedBox(height: 4),
-        Dtext.parse(
-          dtext(
-            comment.body,
-            booruUrl: config.url,
-          ),
-          '<blockquote>',
-          '</blockquote>',
+        DTextBody(
+          data: comment.body,
+          booruUrl: config.url,
         ),
       ],
     );

@@ -45,6 +45,7 @@ import '../../core/tags/autocompletes/types.dart';
 import '../../core/tags/metatag/types.dart';
 import '../../core/tags/show/routes.dart';
 import '../../core/tags/tag/types.dart';
+import '../../core/text_markup/types.dart';
 import '../../foundation/url_launcher.dart';
 import 'autocompletes/providers.dart';
 import 'blacklist/providers.dart';
@@ -62,6 +63,7 @@ import 'posts/votes/providers.dart';
 import 'syntax/providers.dart';
 import 'tags/tag/providers.dart';
 import 'tags/user_metatags/providers.dart';
+import 'text_markup/providers.dart';
 
 class DanbooruRepository extends BooruRepositoryDefault {
   const DanbooruRepository({
@@ -176,6 +178,11 @@ class DanbooruRepository extends BooruRepositoryDefault {
   @override
   CommentRepository comment(BooruConfigAuth config) {
     return ref.watch(danbooruCommentRepoProvider(config));
+  }
+
+  @override
+  TextMarkupRepository? textMarkup(BooruConfigAuth config) {
+    return ref.watch(danbooruTextMarkupRepositoryProvider(config));
   }
 
   @override

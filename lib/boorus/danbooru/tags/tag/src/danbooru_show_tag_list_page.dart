@@ -11,7 +11,7 @@ import '../../../../../core/tags/show/widgets.dart';
 import '../../../../../core/tags/tag/types.dart';
 import '../../../blacklist/providers.dart';
 import '../../../configs/providers.dart';
-import '../../../wikis/types.dart';
+import '../../../wikis/routes.dart';
 import 'danbooru_tag_context_menu.dart';
 
 class DanbooruShowTagListPage extends ConsumerWidget {
@@ -42,10 +42,7 @@ class DanbooruShowTagListPage extends ConsumerWidget {
         child: child,
       ),
       onOpenWiki: (tag) {
-        launchWikiPage(
-          auth.url,
-          tag.rawName,
-        );
+        goToDanbooruWikiPage(ref, tag.rawName);
       },
       onAddToBlacklist: loginDetails.hasLogin()
           ? (tag) {

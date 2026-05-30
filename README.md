@@ -50,8 +50,7 @@ cd Boorusama
 ```
 2. Install dependencies and generate boilerplate code:
 ```bash
-flutter pub get
-./gen.sh
+./init.sh
 ```
 3. Connect to an Android device or emulator and run the app:
 ```bash

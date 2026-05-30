@@ -1,68 +1,47 @@
+// Dart imports:
+import 'dart:async';
+
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../core/configs/config/providers.dart';
 import '../../../../core/configs/config/types.dart';
+import '../../../../core/text_markup/providers.dart';
 import 'data/providers.dart';
 import 'types/wiki.dart';
 
-final danbooruWikisProvider =
-    NotifierProvider.family<WikisNotifier, Map<String, Wiki?>, BooruConfigAuth>(
-      WikisNotifier.new,
+final danbooruWikiProvider =
+    AsyncNotifierProvider.family<WikiNotifier, Wiki?, String>(
+      WikiNotifier.new,
     );
 
-final danbooruWikiProvider = Provider.family<WikiState, String>((ref, tag) {
-  final config = ref.watchConfigAuth;
-  final wikis = ref.watch(danbooruWikisProvider(config));
-  if (wikis.containsKey(tag)) {
-    return wikis[tag] == null
-        ? const WikiStateNotFound()
-        : WikiStateLoaded(wikis[tag]!);
-  } else {
-    ref.read(danbooruWikisProvider(config).notifier).fetchWikiFor(tag);
-    return const WikiStateLoading();
-  }
-});
-
-class WikisNotifier
-    extends FamilyNotifier<Map<String, Wiki?>, BooruConfigAuth> {
+class WikiNotifier extends FamilyAsyncNotifier<Wiki?, String> {
   @override
-  Map<String, Wiki?> build(BooruConfigAuth arg) {
-    return {};
+  FutureOr<Wiki?> build(String arg) {
+    final config = ref.watchConfigAuth;
+    return _load(config, arg);
   }
 
-  Future<void> fetchWikiFor(String tag) async {
-    if (state.containsKey(tag)) return;
-
-    final wiki = await ref.read(danbooruWikiRepoProvider(arg)).getWikiFor(tag);
-    if (wiki != null) {
-      state = {
-        ...state,
-        tag: wiki,
-      };
-    }
+  Future<void> reload() async {
+    state = const AsyncLoading();
+    state = await AsyncValue.guard(
+      () => _load(ref.readConfigAuth, arg),
+    );
   }
-}
 
-sealed class WikiState {
-  const WikiState();
-}
+  Future<Wiki?> _load(BooruConfigAuth config, String title) async {
+    final wiki = await ref
+        .read(danbooruWikiRepoProvider(config))
+        .getWikiFor(
+          title,
+        );
+    if (wiki == null) return null;
 
-class WikiStateLoading extends WikiState {
-  const WikiStateLoading();
-}
+    await ref.read(textMarkupCacheProvider(config).notifier).resolveBodies([
+      wiki.body,
+    ]);
 
-class WikiStateLoaded extends WikiState {
-  const WikiStateLoaded(this.wiki);
-  final Wiki wiki;
-}
-
-class WikiStateError extends WikiState {
-  const WikiStateError(this.message);
-  final String message;
-}
-
-class WikiStateNotFound extends WikiState {
-  const WikiStateNotFound();
+    return wiki;
+  }
 }

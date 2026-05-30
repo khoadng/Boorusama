@@ -40,7 +40,7 @@ class DownloadFileNameBuilder<T extends Post>
       'tags': (post, config) => post.tags.join(' '),
       'extension':
           extensionHandler ??
-          (post, config) => urlExtension(config.downloadUrl).substring(1),
+          (post, config) => _extensionFromUrlOrPost(post, config.downloadUrl),
       if (hasMd5) 'md5': (post, config) => post.md5,
       if (hasRating) 'rating': (post, config) => post.rating.name,
       'index': (post, config) => config.index?.toString(),
@@ -240,7 +240,7 @@ class DownloadFileNameBuilder<T extends Post>
   }) => _generate(
     settings,
     config,
-    config.fileNameFormat,
+    config.fileNameFormat ?? defaultFileNameFormat,
     post,
     metadata: metadata,
     downloadUrl: downloadUrl,
@@ -259,7 +259,7 @@ class DownloadFileNameBuilder<T extends Post>
   }) => _generate(
     settings,
     config,
-    config.bulkFileNameFormat,
+    config.bulkFileNameFormat ?? defaultBulkDownloadFileNameFormat,
     post,
     metadata: metadata,
     downloadUrl: downloadUrl,
@@ -289,7 +289,8 @@ class DownloadFileNameBuilder<T extends Post>
     BooruConfigDownload downloadConfig,
     CancelToken? cancelToken,
   ) async {
-    final bulkFormat = downloadConfig.bulkFileNameFormat;
+    final bulkFormat =
+        downloadConfig.bulkFileNameFormat ?? defaultBulkDownloadFileNameFormat;
 
     final hasAsyncTokens = formatContainsAsyncToken(bulkFormat);
     // skip if no async tokens
@@ -383,6 +384,13 @@ class DownloadFileNameBuilder<T extends Post>
 
   @override
   final String defaultFileNameFormat;
+
+  String _extensionFromUrlOrPost(T post, String downloadUrl) {
+    final ext = urlExtension(downloadUrl);
+    final fallback = ext.isNotEmpty ? ext : post.format;
+
+    return fallback.startsWith('.') ? fallback.substring(1) : fallback;
+  }
 }
 
 bool _formatContainsAsyncTokens(

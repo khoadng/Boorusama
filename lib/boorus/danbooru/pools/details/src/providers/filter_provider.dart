@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../types/pool_details_order.dart';
+import '../../../../../../core/posts/pools/widgets.dart';
 
 class PoolFilterState extends Equatable {
   const PoolFilterState({

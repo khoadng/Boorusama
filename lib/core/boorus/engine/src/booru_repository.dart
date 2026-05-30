@@ -23,6 +23,7 @@ import '../../../tags/autocompletes/types.dart';
 import '../../../tags/metatag/types.dart';
 import '../../../tags/tag/colors.dart';
 import '../../../tags/tag/types.dart';
+import '../../../text_markup/types.dart';
 import 'booru_builder_types.dart';
 
 abstract class BooruRepository {
@@ -47,6 +48,7 @@ abstract class BooruRepository {
   TagExtractor tagExtractor(BooruConfigAuth config);
   MetatagExtractor? getMetatagExtractor(BooruConfigAuth config);
   CommentRepository comment(BooruConfigAuth config);
+  TextMarkupRepository? textMarkup(BooruConfigAuth config);
   Dio dio(BooruConfigAuth config);
   Map<String, String> extraHttpHeaders(BooruConfigAuth config);
   AppErrorTranslator appErrorTranslator(BooruConfigAuth config);

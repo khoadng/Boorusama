@@ -12,7 +12,7 @@ import '../../../../../foundation/clipboard.dart';
 import '../../../blacklist/providers.dart';
 import '../../../configs/providers.dart';
 import '../../../saved_searches/saved_search/routes.dart';
-import '../../../wikis/types.dart';
+import '../../../wikis/routes.dart';
 
 class DanbooruTagContextMenu extends ConsumerWidget {
   const DanbooruTagContextMenu({
@@ -32,10 +32,7 @@ class DanbooruTagContextMenu extends ConsumerWidget {
     return GeneralTagContextMenu(
       tag: tag,
       itemBindings: {
-        context.t.post.detail.open_wiki: () => launchWikiPage(
-          config.url,
-          tag,
-        ),
+        context.t.post.detail.open_wiki: () => goToDanbooruWikiPage(ref, tag),
         if (loginDetails.hasLogin())
           context.t.tags.actions.add_to_blacklist: () => ref
               .read(danbooruBlacklistedTagsProvider(config).notifier)

@@ -7,6 +7,7 @@ export 'comment_dto.dart';
 export 'comment_vote_dto.dart';
 export 'creator_dto.dart';
 export 'dmail_dto.dart';
+export 'dtext_preview.dart';
 export 'enums.dart';
 export 'favorite_dto.dart';
 export 'favorite_group_dto.dart';

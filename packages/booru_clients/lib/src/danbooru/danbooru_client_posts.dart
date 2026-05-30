@@ -34,6 +34,15 @@ mixin DanbooruClientPosts {
     return PostDto.fromJson(response.data);
   }
 
+  Future<List<PostDto>> getPostsByIds(Set<int> ids) {
+    if (ids.isEmpty) return Future.value(const []);
+
+    return getPosts(
+      tags: ['id:${ids.join(',')}'],
+      limit: ids.length,
+    );
+  }
+
   Future<PostDto> createPost({
     required int mediaAssetId,
     required String rating,

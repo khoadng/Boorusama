@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../../core/configs/config/types.dart';
+import '../../../../../core/text_markup/providers.dart';
 import '../../../client_provider.dart';
 import '../../../users/creator/providers.dart';
 import '../types/dmail.dart';
@@ -36,7 +37,13 @@ class DmailsNotifier extends FamilyAsyncNotifier<List<Dmail>, BooruConfigAuth> {
       );
     }
 
-    return dmails.map((e) => dmailDtoToDmail(e)).toList();
+    final resolvedDmails = dmails.map((e) => dmailDtoToDmail(e)).toList();
+
+    await ref
+        .read(textMarkupCacheProvider(arg).notifier)
+        .resolveBodies(resolvedDmails.map((dmail) => dmail.body));
+
+    return resolvedDmails;
   }
 
   Future<void> markAsRead(DmailId id) async {

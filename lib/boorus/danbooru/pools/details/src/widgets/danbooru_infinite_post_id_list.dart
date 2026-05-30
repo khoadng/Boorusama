@@ -9,6 +9,7 @@ import 'package:foundation/foundation.dart';
 import '../../../../../../core/configs/config/providers.dart';
 import '../../../../../../core/errors/types.dart';
 import '../../../../../../core/posts/listing/widgets.dart';
+import '../../../../../../core/posts/pools/widgets.dart';
 import '../../../../../../core/settings/providers.dart';
 import '../../../../../../core/widgets/widgets.dart';
 import '../../../../posts/listing/widgets.dart';
@@ -16,7 +17,6 @@ import '../../../../posts/post/providers.dart';
 import '../../../../posts/post/types.dart';
 import '../../../pool/types.dart';
 import '../providers/filter_provider.dart';
-import '../types/pool_posts_repo.dart';
 
 class DanbooruInfinitePostIdList extends ConsumerWidget {
   const DanbooruInfinitePostIdList({
@@ -41,8 +41,8 @@ class DanbooruInfinitePostIdList extends ConsumerWidget {
       child: PostScope<DanbooruPost>(
         key: ValueKey(order),
         fetcher: (page) => TaskEither.tryCatch(
-          () => repo.fetchPoolPosts(
-            pool: pool,
+          () => repo.fetchPostIds(
+            ids: pool.postIds ?? const [],
             page: page,
             perPage: perPage,
             order: order,

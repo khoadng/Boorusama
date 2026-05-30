@@ -92,7 +92,9 @@ class PostDto {
       comments: (json['comments'] as List<dynamic>?)
           ?.map((e) => CommentDto.fromJson(e as Map<String, dynamic>))
           .toList(),
-      pools: json['pools'] as List<dynamic>?,
+      pools: (json['pools'] as List<dynamic>?)
+          ?.map((e) => PoolDto.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
   }
   final int? id;
@@ -127,7 +129,7 @@ class PostDto {
   final bool? hasCustomThumbnail;
   final List<NoteDto>? notes;
   final List<CommentDto>? comments;
-  final List<dynamic>? pools;
+  final List<PoolDto>? pools;
 }
 
 class UserDto {

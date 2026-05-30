@@ -1,19 +1,16 @@
 // Flutter imports:
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import '../../../../../../core/comments/widgets.dart';
 import '../../../../../../core/configs/config/providers.dart';
-import '../../../../../../core/configs/config/types.dart';
-import '../../../../../../core/widgets/widgets.dart';
 import '../../../comment/providers.dart';
-import '../widgets/editor_spacer.dart';
 
-class CommentCreatePage extends ConsumerStatefulWidget {
+class CommentCreatePage extends ConsumerWidget {
   const CommentCreatePage({
     required this.postId,
     super.key,
@@ -24,86 +21,18 @@ class CommentCreatePage extends ConsumerStatefulWidget {
   final String? initialContent;
 
   @override
-  ConsumerState<CommentCreatePage> createState() => _CommentCreatePageState();
-}
-
-class _CommentCreatePageState extends ConsumerState<CommentCreatePage> {
-  late final textEditingController = TextEditingController(
-    text: widget.initialContent,
-  );
-
-  @override
-  void dispose() {
-    textEditingController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfigAuth;
 
-    return Scaffold(
-      body: SafeArea(
-        child: Container(
-          height: double.infinity,
-          margin: const EdgeInsets.all(4),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 8),
-                  child: Row(
-                    children: [
-                      IconButton(
-                        onPressed: () => Navigator.of(context).pop(),
-                        icon: const Icon(
-                          Symbols.close,
-                        ),
-                      ),
-                      const Expanded(child: Center()),
-                      IconButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                          _handleSend(textEditingController.text, config);
-                        },
-                        icon: const Icon(Symbols.send),
-                      ),
-                    ],
-                  ),
-                ),
-                const EditorSpacer(),
-                const SizedBox(height: 8),
-                Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: BooruTextField(
-                    controller: textEditingController,
-                    decoration: InputDecoration(
-                      filled: false,
-                      focusedBorder: InputBorder.none,
-                      hintText: '${context.t.comment.create.hint}...',
-                    ),
-                    autofocus: true,
-                    keyboardType: TextInputType.multiline,
-                    maxLines: null,
-                  ),
-                ),
-              ],
-            ),
+    return CommentEditorPage(
+      initialContent: initialContent,
+      submitIcon: Symbols.send,
+      onSubmit: (content) => ref
+          .read(danbooruCommentsProvider(config).notifier)
+          .send(
+            postId: postId,
+            content: content,
           ),
-        ),
-      ),
     );
-  }
-
-  void _handleSend(String content, BooruConfigAuth config) {
-    FocusScope.of(context).unfocus();
-    ref
-        .read(danbooruCommentsProvider(config).notifier)
-        .send(
-          postId: widget.postId,
-          content: content,
-        );
   }
 }

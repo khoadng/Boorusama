@@ -8,16 +8,16 @@ import 'package:foundation/widgets.dart';
 
 // Project imports:
 import '../../../../../core/configs/config/providers.dart';
-import '../../../../../core/dtext/dtext.dart';
 import '../../../../../core/forums/forum_post.dart';
+import '../../../../../core/text_markup/providers.dart';
 import '../../../../../core/themes/theme/types.dart';
-import '../../../../../foundation/html.dart';
 import '../../../../../foundation/url_launcher.dart';
 import '../../../configs/providers.dart';
 import '../../../users/creator/providers.dart';
 import '../../../users/details/routes.dart';
 import '../../../users/details/types.dart';
 import '../../../users/user/types.dart';
+import '../../../text_markup/widgets.dart';
 import '../../topics/types.dart';
 import 'data/providers.dart';
 import 'types/forum_post.dart';
@@ -59,13 +59,18 @@ class _DanbooruForumPostsPageState
       isLoading = true;
     });
 
+    final config = ref.readConfigAuth;
     final newPosts = await ref
-        .read(danbooruForumPostRepoProvider(ref.readConfigAuth))
+        .read(danbooruForumPostRepoProvider(config))
         .getForumPostsOrEmpty(
           widget.topic.id,
           page: page,
           limit: DanbooruForumUtils.postPerPage,
         );
+
+    await ref
+        .read(textMarkupCacheProvider(config).notifier)
+        .resolveBodies(newPosts.map((post) => post.body));
 
     if (!mounted) return;
 
@@ -155,7 +160,7 @@ class _DanbooruForumPostsPageState
               );
             },
           ),
-          AppHtml(
+          DanbooruDTextBody(
             onLinkTap: !loginDetails.hasStrictSFW
                 ? (url, attributes, element) =>
                       url != null ? launchExternalUrlString(url) : null
@@ -179,7 +184,8 @@ class _DanbooruForumPostsPageState
                 ),
               ),
             },
-            data: dtext(post.body, booruUrl: config.url),
+            data: post.body,
+            config: config,
           ),
           if (post.votes.isNotEmpty) ...[
             const SizedBox(height: 8),

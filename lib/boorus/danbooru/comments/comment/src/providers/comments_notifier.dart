@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../../../core/comments/types.dart';
 import '../../../../../../core/configs/config/providers.dart';
 import '../../../../../../core/configs/config/types.dart';
+import '../../../../../../core/text_markup/providers.dart';
 import '../../../../users/user/providers.dart';
 import '../../../../users/user/types.dart';
 import '../../../votes/providers.dart';
@@ -81,6 +82,10 @@ class CommentsNotifier
               .toList(),
         )
         .then(_sortDescById);
+
+    await ref
+        .read(textMarkupCacheProvider(arg).notifier)
+        .resolveBodies(comments.map((comment) => comment.body));
 
     state = {
       ...state,

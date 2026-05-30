@@ -111,44 +111,8 @@ void main() {
     }
   });
 
-  group('McChallengeDetector', () {
-    final detector = McChallengeDetector();
-
-    test('returns 0 when body is not a string', () {
-      final response = FakeHttpResponse(statusCode: 200);
-      expect(detector.getProtectionConfidence(response, null), 0);
-    });
-
-    final cases = [
-      (
-        name: 'page with McChallenge captcha',
-        statusCode: 200,
-        body:
-            '<html>mccaptcha mcchallenge _challenge/mccaptcha _challenge/verify captcha_text</html>',
-        shouldDetect: true,
-      ),
-      (
-        name: 'page with single McChallenge signature',
-        statusCode: 200,
-        body: '<html>mccaptcha</html>',
-        shouldDetect: false,
-      ),
-    ];
-
-    for (final c in cases) {
-      test('${c.shouldDetect ? "detects" : "ignores"} ${c.name}', () {
-        final response = FakeHttpResponse(
-          statusCode: c.statusCode,
-          data: c.body,
-        );
-        final confidence = detector.getProtectionConfidence(response, null);
-        expect(confidence >= detector.confidenceThreshold, c.shouldDetect);
-      });
-    }
-  });
-
-  group('AftV2Detector', () {
-    final detector = AftV2Detector();
+  group('AftDetector', () {
+    final detector = AftDetector();
 
     test('returns full confidence for high-confidence indicators', () {
       final response = FakeHttpResponse(
@@ -161,7 +125,7 @@ void main() {
 
     final cases = [
       (
-        name: 'page with enough AFT v2 signatures',
+        name: 'page with enough AFT signatures',
         statusCode: 200,
         body:
             '<html>Click the checkbox to continue verification challenge-checkbox challenge-container sendAnswer</html>',
@@ -248,38 +212,5 @@ void main() {
       final confidence = detector.getProtectionConfidence(response, null);
       expect(confidence >= detector.confidenceThreshold, false);
     });
-  });
-
-  group('AftDetector', () {
-    final detector = AftDetector();
-
-    final cases = [
-      (
-        name: 'page with AFT protection signatures',
-        statusCode: 403,
-        body:
-            '<html>Anti-DDoS Flood Protection and Firewall checking your browser countdownTimer</html>',
-        shouldDetect: true,
-      ),
-      (
-        name: 'page with unrelated content',
-        statusCode: 403,
-        body: '<html>Server Error</html>',
-        shouldDetect: false,
-      ),
-    ];
-
-    for (final c in cases) {
-      test('${c.shouldDetect ? "detects" : "ignores"} ${c.name}', () {
-        final error = FakeHttpError(
-          response: FakeHttpResponse(
-            statusCode: c.statusCode,
-            data: c.body,
-          ),
-        );
-        final confidence = detector.getProtectionConfidence(null, error);
-        expect(confidence >= detector.confidenceThreshold, c.shouldDetect);
-      });
-    }
   });
 }

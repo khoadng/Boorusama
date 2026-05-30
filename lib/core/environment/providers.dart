@@ -16,7 +16,6 @@ import 'types.dart';
 export 'data.dart';
 export 'types.dart';
 
-//FIXME: Need to set this from build.
 const _kReleaseChannel = String.fromEnvironment('RELEASE_CHANNEL');
 
 final appEnvironmentProvider = Provider<AppEnvironment>((ref) {
