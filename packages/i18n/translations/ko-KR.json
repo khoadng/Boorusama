@@ -164,7 +164,20 @@
       "edit": "수정",
       "use_default": "기본으로",
       "toggle_bookmark": "북마크 토글",
-      "toggle_favorite": "즐겨찾기 토글"
+      "toggle_favorite": "즐겨찾기 토글",
+      "copy": "복사",
+      "links": "링크",
+      "copy_image_description": "표시된 이미지 복사",
+      "copy_file_name": "파일 이름 복사",
+      "media": "미디어",
+      "unavailable": "사용 불가능",
+      "copy_post_link": "게시물 링크 복사",
+      "copy_source_link": "원본 링크 복사",
+      "copy_image_link": "이미지 링크 복사",
+      "copy_post_id": "게시물 ID 복사",
+      "failed_to_get_image_url": "이미지 URL을 가져오는데 실패했습니다",
+      "failed_to_get_image_bytes": "이미지 바이트를 가져오는데 실패했습니다",
+      "failed_to_copy_image": "이미지를 복사하는데 실패했습니다: $e"
     },
     "statistics": {
       "stats_for_nerds": "당신을 위한 정보",
@@ -757,7 +770,7 @@
     "rate": "평가",
     "cancel": "괜찮습니다",
     "later": "나중에",
-    "rationale": "앱이 마음에 드신다면 잠시 시간을 내어 평가해 주세요.\n몇 초면 되고, 이 프로젝트에 정말 큰 힘이 됩니다."
+    "rationale": "앱이 마음에 드신다면 잠시 시간을 내어 평가해 주세요. 몇 초면 되고, 이 프로젝트에 정말 큰 힘이 됩니다."
   },
   "sideMenu": {
     "settings": "설정",
@@ -1062,11 +1075,22 @@
     "other_counter": {
       "one": "기타 $n개",
       "other": "기타 $n개"
-    }
+    },
+    "loading_tags_error": "태그 로딩 오류: $error"
   },
   "bulk_downloads": {
     "options": {
-      "save_to_folder": "폴더에 저장"
+      "save_to_folder": "폴더에 저장",
+      "other_options": "기타 옵션",
+      "show_advanced_options": "고급 옵션 표시",
+      "enable_notification": "알림",
+      "excluded_tags": "제외된 태그",
+      "default_excluded_tags_from_source_list": "다음 소스에서 가져온 기본 차단 목록:",
+      "source_list": {
+        "one": "• $source로 부터 $count개 태그",
+        "other": "• $source로 부터 $count개 태그"
+      },
+      "excluded_tags_description": "이 배치에서 제외할 태그를 추가로 선택"
     },
     "created": "생성됨",
     "completed_with_no_new_files": "새로운 파일 없이 완료되었습니다",
@@ -1107,7 +1131,16 @@
       "profile_mismatch": "프로필 불일치",
       "current_site": "현재 사이트: ",
       "download_site": "다운로드 사이트: ",
-      "has_mismatch_warning": "다운로드 사이트가 현재 사이트 프로필과 일치하지 않습니다. 다운로드 사이트에 맞게 프로필을 변경해 주세요."
+      "has_mismatch_warning": "다운로드 사이트가 현재 사이트 프로필과 일치하지 않습니다. 다운로드 사이트에 맞게 프로필을 변경해 주세요.",
+      "continue": "그래도 계속하기",
+      "no_mismatch_warning": "이 다운로드 세션은 같은 사이트의 프로필을 쓰는 다른 자격 증명으로부터 시작되었습니다. 이는 문제가 될 수 있습니다. \n\n계속 하시겠습니까?"
+    },
+    "errors": {
+      "non_premium_template_limit": "템플릿은 하나만 허용됩니다. 더 많은 템플릿을 만드려면 $brand으로 업그레이드하세요.",
+      "non_premium_session_limit": "활성 다운로드 세션은 하나만 허용됩니다. 추가 세션을 원하는 경우 $brand으로 업그레이드하세요.",
+      "non_premium_resume": "저장된 다운로드 세션 복구는 $brand에서만 가능합니다.",
+      "non_premium_suspend": "다운로드 세션 저장은 $brand에서만 가능합니다.",
+      "running_session_deletion": "진행 중인 세션을 삭제할 수 없습니다"
     }
   },
   "premium": {
@@ -1126,9 +1159,9 @@
       "layout_customization": "레이아웃 & 홈 화면",
       "layout_customization_description": "표시할 정보량을 조절하고 즐겨찾기, 검색 등 원하는 홈 화면을 설정",
       "enhanced_bulk_download": "강화된 일괄 다운로드",
-      "enhanced_bulk_download_description": "무제한 템플릿, 다중 세션, 재시작 후에도 끊김 없는 이어받기",
+      "enhanced_bulk_download_description": "무제한 템플릿, 다중 세션, 재시작 후에도 끊김 없는 이어받기.",
       "support_development": "개발 지원",
-      "support_development_description": "개인 개발자가 프로젝트를 지속적으로 업데이트하고 개선할 수 있도록 지원"
+      "support_development_description": "개인 개발자가 프로젝트를 지속적으로 업데이트하고 개선할 수 있도록 지원합니다."
     },
     "thanks": {
       "title": "감사합니다!",
@@ -1171,7 +1204,8 @@
     "relogin": "재로그인",
     "clear_credentials": "초기화",
     "login": "로그인",
-    "login_expires": "로그인 만료:"
+    "login_expires": "로그인 만료:",
+    "session_expired": "세션이 만료되었습니다. 인증이 필요한 기능을 계속 사용하려면 다시 로그인해 주세요."
   },
   "captcha": {
     "title": "캡차를 풀어주세요",
@@ -1191,7 +1225,15 @@
       "one": "게시물 $n개",
       "other": "게시물 $n개"
     },
-    "hidden_count": "$total 중 $hidden개"
+    "hidden_count": "$total 중 $hidden개",
+    "actions": {
+      "view_options": "옵션 보기",
+      "edit_blacklist": "차단 목록 편집",
+      "edit_global_blacklist": "전역 차단 목록 편집",
+      "edit_booru_specific_blacklist": "특정 부루 차단 목록 편집",
+      "edit_profile_blacklist": "프로필 차단 목록 편집",
+      "stats": "통계"
+    }
   },
   "artists": {
     "title": "아티스트",
@@ -1213,7 +1255,10 @@
     "nore_more_data": "더 이상 없습니다",
     "page_label": "$page 페이지",
     "next_page": "다음 페이지",
-    "previous_page": "이전 페이지"
+    "previous_page": "이전 페이지",
+    "reminder": {
+      "highres": "주의: 앱이 현재 고화질 이미지를 표시하는데 모바일 데이터를 사용하고 있습니다."
+    }
   },
   "video_player": {
     "playback_speed": "재생 속도",
@@ -1227,7 +1272,11 @@
     },
     "speed": {
       "normal": "보통"
-    }
+    },
+    "change_video_player_engine_request": "설정에서 다른 비디오 플레이어 엔진을 선택해 주세요.",
+    "change_video_player_engine_suggest": "계속해서 발생하는 경우, 설정에서 다른 비디오 플레이어 엔진을 사용해 보세요.",
+    "engine_not_supported": "이 엔진은 현재 플랫폼에서 지원되지 않습니다.",
+    "current_video_quality_disclaimer": "이 세션은 현재 비디오에만 적용됩니다. 모든 비디오에 적용하려면 <a href=\"booru-profiles\">$video_profile_path</a> 에 이동하세요."
   },
   "eshuushuu": {
     "personal_info": {
@@ -1245,5 +1294,26 @@
   "misc": {
     "trailing_more": " 더",
     "trailing_less": " 줄이기"
+  },
+  "cache": {
+    "image": {
+      "reminder": {
+        "cleared": "캐시 정리함",
+        "failed": "캐시 정리에 실패했습니다",
+        "description": "앱에 저장된 이미지의 총 용량이 <b>$size</b> 입니다. 비워서 여유 용량을 만들겠습니까?"
+      }
+    }
+  },
+  "shimmie2": {
+    "extension": {
+      "title": "확장 기능",
+      "failed_to_fetch": "이 인스턴스에 대한 확장 기능 목록을 가져올 수 없습니다"
+    }
+  },
+  "window": {
+    "pin": {
+      "pin_toast": "창이 최상단에 고정됨",
+      "unpin_toast": "창이 최상단에서 고정 해제됨"
+    }
   }
 }
