@@ -26,7 +26,7 @@ val splitPerAbi = project.findProperty("split-per-abi") == "true"
 android {
     namespace = "com.degenk.boorusama"
     compileSdk = 36
-    ndkVersion = "27.0.12077973"
+    ndkVersion = "28.2.13676358"
 
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
