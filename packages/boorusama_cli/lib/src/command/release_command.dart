@@ -194,6 +194,7 @@ final class ReleaseGithubBuildCommand extends Command<int> {
         verbose: verbose,
         dryRun: dryRun,
         noCodesign: noCodesign,
+        releaseChannel: BuildReleaseChannel.github,
         extraFlutterArgs: _extraFlutterArgsFor(target),
       ),
     );

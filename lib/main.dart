@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'core/boorusama_app.dart';
 import 'foundation/app_rating/src/rate_my_app_service.dart';
 import 'foundation/app_update/providers.dart';
-import 'foundation/app_update/types.dart';
 import 'foundation/filesystem.dart';
 import 'foundation/iap/iap.dart';
 import 'foundation/loggers.dart';
@@ -26,13 +25,7 @@ void main() async {
       cronetAvailable: cronetAvailable,
       appRatingService: const RateMyAppService(),
       iapFunc: () => _initIap(),
-      appUpdateChecker: (packageInfo) => isAndroid()
-          ? PlayStoreUpdateChecker(
-              packageInfo: packageInfo,
-              countryCode: 'US',
-              languageCode: 'en',
-            )
-          : UnsupportedPlatformChecker(),
+      appUpdateChecker: createDefaultAppUpdateChecker,
     ),
   );
 }
