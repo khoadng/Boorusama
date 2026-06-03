@@ -1,18 +1,177 @@
 {
   "post": {
     "action": {
-      "view_comments": "Ver comentários"
+      "view_comments": "Ver comentários",
+      "share": "Partilhar",
+      "bookmark": "Adicionar aos marcadores",
+      "favorite": "Adicionar aos favoritos",
+      "unfavorite": "Remover dos favoritos",
+      "upvote": "Voto positivo",
+      "downvote": "Voto negativo",
+      "add_to_favorite_group": "Adicionar a grupo de favoritos",
+      "view_artist": "Ver artista",
+      "view_tags": "Ver etiquetas",
+      "view_tag_history": "Ver histórico de etiqueta",
+      "copy_image": "Copiar imagem",
+      "slideshow": "Apresentação de slides",
+      "none": "Nenhum",
+      "edit": "Editar",
+      "use_default": "Usar Predefinição",
+      "toggle_bookmark": "Alternar marcador",
+      "toggle_favorite": "Alternar favorito",
+      "view_in_browser": "Ver no navegador",
+      "view_original": "Ver original",
+      "copy": "Copiar",
+      "media": "Media",
+      "links": "Links",
+      "copy_image_description": "Copiar a imagem mostrada",
+      "copy_file_name": "Copiar nome do ficheiro",
+      "unavailable": "Indisponível",
+      "copy_post_link": "Copiar link da publicação",
+      "copy_source_link": "Copiar link da fonte",
+      "copy_image_link": "Copiar imagem do link",
+      "copy_post_id": "Copiar ID do post",
+      "failed_to_get_image_url": "Falha ao obter o URL da imagem",
+      "failed_to_get_image_bytes": "Falha ao obter os bytes da imagem",
+      "failed_to_copy_image": "Falha ao copiar a imagem: $e"
+    },
+    "detail": {
+      "file_details": "Detalhes de ficheiro",
+      "size": "Tamanho",
+      "resolution": "Resolução",
+      "rating": "Pontuação",
+      "file_format": "Formato do ficheiro",
+      "duration": "Duração",
+      "uploader": "Carregador",
+      "approver": "Aprovador",
+      "artist": "Artista",
+      "share": {
+        "source": "Partilhar link de fonte",
+        "booru": "Partilhar link booru",
+        "image": "Partilhar imagem"
+      },
+      "show_original": "Mostrar original",
+      "show_translated": "Mostrar traduzido",
+      "show_n_more": "Mostrar $n mais",
+      "show_less": "Mostrar menos",
+      "login_required_notice": "Tem que iniciar sessão para realizar esta ação",
+      "open_wiki": "Abrir wiki",
+      "add_to_favorites": "Adicionar aos favoritos",
+      "copy_and_open_saved_search": "Copiar e colar pesquisa guardada",
+      "score": {
+        "one": "Ponto",
+        "other": "Pontos"
+      },
+      "source_label": "Fonte",
+      "related_posts": "Publicações relacionadas",
+      "add_to_bookmark": "Adicionar aos marcadores",
+      "remove_from_bookmark": "Remover dos marcadores",
+      "widgets": {
+        "toolbar": "Barra de ferramentas",
+        "tags": "Etiquetas",
+        "info_panel": "Painel de informação",
+        "file_details": "Detalhes de ficheiro",
+        "pool": "Conjunto",
+        "artist_info": "Informação de artista",
+        "stats": "Estatísticas",
+        "comments": "Comentários",
+        "artist_posts": "Publicações do artista",
+        "related_posts": "Publicações relacionadas",
+        "character_list": "Lista de personagens",
+        "uploader_posts": "Carregamentos do uploader",
+        "source": "Fonte"
+      }
+    },
+    "statistics": {
+      "stats_for_nerds": "Estatísticas para nerds",
+      "average": "Média",
+      "highest": "Mais alto",
+      "lowest": "Mais baixo",
+      "median": "Media",
+      "25th_percentile": "25.º percentil",
+      "75th_percentile": "75.º percentil",
+      "90th_percentile": "90.º percentil"
+    },
+    "votes": {
+      "user_list": {
+        "title": "Eleitores",
+        "disclaimer": "Votos negativos e votos privados não são mostrados."
+      }
+    },
+    "favorites": {
+      "user_list": {
+        "title": "Adicionado aos favoritos por",
+        "disclaimer": "Apenas favoritos públicos são mostrados."
+      }
     }
   },
   "comment": {
-    "comments": "Comentários"
+    "comments": "Comentários",
+    "create": {
+      "hint": "Comentar"
+    },
+    "list": {
+      "edit": "Editar",
+      "reply": "Responder",
+      "reply_to": "Responder a",
+      "delete": "Eliminar",
+      "no_comments": "Não existem comentários",
+      "last_updated": "Última atualização",
+      "send": "Enviar"
+    },
+    "counter": {
+      "one": "Comentário",
+      "other": "Comentários"
+    }
   },
   "explore": {
     "popular": "Popular",
-    "most_viewed": "Mais vistos"
+    "most_viewed": "Mais vistos",
+    "latest": "Mais Recente",
+    "hot": "Em Destaque",
+    "see_more": "Ver mais",
+    "explore": "Explorar",
+    "top": "Topo",
+    "daily": "Diário",
+    "weekly": "Semanal",
+    "new": "Novo",
+    "newest": "Mais novo",
+    "oldest": "Mais antigo",
+    "random": "Aleatório",
+    "ordered": "Ordenado"
   },
   "search": {
-    "hint": "Procurar..."
+    "hint": "Procurar...",
+    "errors": {
+      "cannot_reach_server": "Não foi possível alcançar o servidor, por favor verifique a sua conexão",
+      "failed_to_load_data": "Falha ao carregar dados a partir do servidor, por favor tente mais tarde",
+      "handshake_failed": "Conexão falhada, problema de compatibilidade com o servidor",
+      "certificate_error": "Erro de certificado. O servidor pode estar a usar um certificado auto-assinado. Tente usar HTTP em vez de HTTPS, ou instale o certificado no seu dispositivo.",
+      "tag_limit": "Limite máximo de etiquetas alcançado. Aprimore a sua conte ou procure por mais etiquetas de uma só vez.",
+      "database_timeout": "A sua pesquisa demorou demasiado tempo a ser executada e foi cancelada.",
+      "rate_limited": "Está a ser limitado em termos de velocidade. Por favor tente novamente mais tarde",
+      "pagination_limit": "Chegou ao limite de paginação. Significa que não pode continuar a dar scroll",
+      "max_capacity": "O servidor está sob muita carga e não consegue lidar com pedido, por favor tente mais tarde",
+      "down": "O servidor está em baixo. Por favor tente mais tarde novamente",
+      "access_denied": "Acesso negado",
+      "forbidden": "Falha na autenticação",
+      "unknown": "Erro de servidor desconhecido, por favor comunique este problema com o desenvolvedor"
+    },
+    "no_result": "Nós procurámos em todo o lado, mas nenhum resultado foi encontrado.",
+    "metatags_notice": "Etiquetas meta grátis não contam para os limites de pesquisa de etiqueta",
+    "history": {
+      "history": "Histórico",
+      "clear": "Limpar"
+    },
+    "trending": "Em destaque",
+    "remove_all_selected": "Remover todas as etiquetas selecionadas",
+    "result_counter": {
+      "one": "$n Resultado",
+      "other": "$n Resultados"
+    },
+    "no_result_notice": "Nenhum resultado",
+    "search_in_progress_notice": "A procurar...",
+    "raw_query": "Consulta em formato bruto"
   },
   "settings": {
     "settings": "Definições",
@@ -20,7 +179,236 @@
       "language": "Idioma",
       "language_name": "Português"
     },
-    "help_us_translate": "Ajude-nos a traduzir"
+    "help_us_translate": "Ajude-nos a traduzir",
+    "app_settings": "Definições de Aplicação",
+    "appearance": {
+      "appearance": "Aparência",
+      "customize": "Personalizar",
+      "show_scores": "Mostrar pontuações",
+      "show_post_list_config_header": "Mostrar cabeçalho de configuração de publicações",
+      "auto_play_gif": "Reproduzir GIF automaticamente",
+      "blur_explicit_media": "Desfocar conteúdo explícito",
+      "booru_config": "Perfil booru",
+      "booru_config_placement": "Colocação do perfil Booru",
+      "booru_config_placement_options": {
+        "side": "Lado",
+        "bottom": "Fundo"
+      },
+      "booru_config_label": "Mostrar rótulo",
+      "booru_config_label_options": {
+        "always": "Sempre",
+        "never": "Nunca"
+      }
+    },
+    "general": "Geral",
+    "search": {
+      "search": "Procurar",
+      "auto_focus_search_bar": "Focar automaticamente na barra de pesquisa ao abrir a vista de pesquisa",
+      "search_bar": {
+        "position": {
+          "search_bar_position": "Posição da barra de pesquisa",
+          "top": "Topo",
+          "bottom": "Fundo"
+        },
+        "scroll_behavior": {
+          "persistent": "Barra de pesquisa consistente",
+          "persistent_description": "Manter a barra de pesquisa visível ao fazer scroll."
+        }
+      },
+      "hide_bookmarked_posts_from_search_results": "Esconder publicações marcadas dos resultados de pesquisa"
+    },
+    "information": "Informação",
+    "changelog": "Registo de alterações",
+    "infinite_scroll_warning": "Pode crashar a aplicação se der scroll durante muito tempo",
+    "result_layout": {
+      "result_layout": "Modo de página",
+      "infinite_scroll": "Scroll infinito",
+      "pagination": "Paginação"
+    },
+    "image_list": {
+      "image_list": "Lista de imagens",
+      "classic": "Clássica",
+      "standard": "Padrão",
+      "masonry": "Masonry"
+    },
+    "image_grid": {
+      "image_grid": "Grelha de imagens",
+      "grid_size": {
+        "grid_size": "Tamanho da grelha",
+        "micro": "Micro",
+        "tiny": "Minúsculo",
+        "small": "Pequeno",
+        "medium": "Médio",
+        "large": "Grande"
+      },
+      "image_quality": {
+        "image_quality": "Qualidade de imagem",
+        "auto": "Automático",
+        "high_quality_notice": "Alta qualidade de imagem levará mais tempo a carregar.",
+        "high": "Alta",
+        "low": "Baixa",
+        "original": "Original",
+        "automatic": "Automática",
+        "highest": "Mais alto"
+      },
+      "spacing": "Espaçamento",
+      "corner_radius": "Raio do canto",
+      "padding": "Preenchimento",
+      "aspect_ratio": "Proporção de aspeto"
+    },
+    "image_viewer": {
+      "image_viewer": "Visualizador de imagens",
+      "slideshow": "Apresentação de slides",
+      "slideshow_interval": "Intervalo da apresentação de slides",
+      "slideshow_video_behavior": "Comportamento do vídeo da apresentação de slides",
+      "slideshow_video_behavior_explanation": "Determina como é que a apresentação de slides lida com vídeos durante transições.",
+      "slideshow_video_behaviors": {
+        "wait_for_completion": "Esperar pelo completar",
+        "wait_for_completion_description": "Esperar que vídeos acabem antes de avançar para o slide seguinte",
+        "fixed_interval": "Intervalo fixo",
+        "fixed_interval_description": "Avança após um intervalo fixo, ainda que o vídeo ainda esteja a ser reproduzido"
+      },
+      "slideshow_mode": "Modo de apresentação de slides",
+      "slideshow_modes": {
+        "random": "Aleatório",
+        "forward": "Para a frente",
+        "backward": "Para trás"
+      },
+      "slideshow_skip": "Saltar transição de apresentação de slides",
+      "slideshow_interval_explanation": "Valores menores que 1 segundo saltam a transição automaticamente",
+      "swipe_mode": "Modo de deslizar",
+      "swipe_mode_disclaimer": "Alguns gestos personalizados podem não funcionar em todos os modos",
+      "swipe_modes": {
+        "horizontal": "Horizontal",
+        "horizontal_description": "Deslize para a esquerda/direita ao estilo de galeria. Tal como galerias de fotos e aplicações de multimédia.",
+        "vertical": "Vertical",
+        "vertical_description": "Deslize para cima/baixo ao estilo TikTok. Popular em plataformas de vídeo curto. Apenas em modo de retrato."
+      },
+      "mute_video": "Silenciar vídeo por predefinição",
+      "double_tap_seek": "Toque duplo para procurar",
+      "video_section_title": "Vídeo",
+      "manage_cache": "Gerir cache",
+      "enable_video_cache": "Ativar cache de vídeo",
+      "enable_video_cache_description": "Transferir vídeos durante streaming e fazer cache dos mesmos para reduzir utilização de dados e reprodução mais rápida em vistas subsequentes.",
+      "video": {
+        "video_player_engine": "Motor de reprodução de vídeo",
+        "engine": {
+          "auto": "Auto",
+          "auto_description": "Automaticamente seleciona o melhor motor baseado nas capacidades do seu dispositivo.",
+          "default": "Predefinição",
+          "default_description": "Funciona bem na maior parte dos dispositivos, pode ter problemas com alguns formatos de vídeo ou dispositivos mais antigos.",
+          "mdk_description": "Carregamento mais rápido, melhor desempenho para certos formatos de vídeo, mas instável e pode causar falhas.",
+          "mpv_description": "Bom suporte de formatos e desempenho, velocidade de carregamento mais lento",
+          "webview_description": "Compatibilidade boa mas com mais utilização de recursos e mau desempenho, utilize-a em último recurso."
+        }
+      }
+    },
+    "theme": {
+      "theme": "Tema",
+      "dark": "Escuro",
+      "light": "Claro",
+      "system": "Sistema",
+      "amoled_dark": "Meia-noite",
+      "dynamic_color": "Cor de tema dinâmica",
+      "dynamic_color_mobile_description": "Sincronizar cor de tema com papel de parede",
+      "dynamic_color_desktop_description": "Sincronizar cor de tema com a cor de acento do SO",
+      "dynamic_color_unsupported_description": "Este dispositivo não suporta cor dinâmica.",
+      "viewer": {
+        "colors": "Cores",
+        "color_variants": "Variações de Cores",
+        "dark_mode": "Modo escuro",
+        "harmonize_colors": "Harmonizar cores",
+        "harmonize_colors_description": "Ajusta cores de etiquetas para corresponder à cor de acento",
+        "groups": {
+          "basic": "Básico",
+          "builtin": "Embutido",
+          "accent": "Accento"
+        }
+      }
+    },
+    "privacy": {
+      "privacy": "Privacidade",
+      "enable_incognito_keyboard": "Ativar teclado incógnito",
+      "enable_incognito_keyboard_notice": "Afeta apenas Android.",
+      "enable_biometric_lock": "Ativar bloqueio biométrico",
+      "enable_biometric_lock_notice": "Apenas funciona em dispositivos com suporte de biométricas e que já tenham sido configurados."
+    },
+    "performance": {
+      "performance": "Desempenho",
+      "posts_per_page": "Publicações por página",
+      "posts_per_page_explain": "Número de miniaturas por página",
+      "cache_size": "Tamanho da cache",
+      "clear_cache": "Limpar",
+      "cache_size_info": "{0} em {1} ficheiros"
+    },
+    "debug_logs": {
+      "debug_logs": "Depurar registos",
+      "logs_copied": "Registos copiados para a área de transferência"
+    },
+    "download": {
+      "path": "Transferir caminho",
+      "select_a_folder": "Selecionar uma pasta",
+      "quality": "Transferir qualidade de imagem",
+      "skip_existing_files": "Saltar ficheiros existentes",
+      "skip_existing_files_explanation": "Isto irá impedir a transferência de ficheiros que já existem na pasta. Isto é útil quando não quer transferir o mesmo ficheiro várias vezes.",
+      "qualities": {
+        "original": "Original",
+        "sample": "Amostra",
+        "large": "Grande",
+        "preview": "Miniatura"
+      },
+      "title": "Transferir"
+    },
+    "need_more_questions": "Precisa de mais?",
+    "other_settings": "Outras configurações",
+    "data_and_storage": {
+      "data_and_storage": "Dados e Armazenamento",
+      "clear_cache_on_start_up": "Limpar cache de imagem durante o arranque",
+      "cache": "Cache",
+      "data": "Dados",
+      "all_cache": "Toda a cache",
+      "tag_cache": "Cache de tag",
+      "image_only_cache": "Cache de imagem apenas",
+      "video_cache": "Cache de vídeo",
+      "video_cache_limit": "Limite de cache de vídeo",
+      "video_cache_limit_description": "Tamanho máximo para cache de armazenamento de vídeo",
+      "no_limit": "Sem limite",
+      "bookmark_images": "Marcar imagens",
+      "loading": "A carregar...",
+      "storage": "Armazenamento",
+      "disk_space": {
+        "status_title": "$freeSpace livre de $totalSpace",
+        "groups": {
+          "system": "Sistema",
+          "images": "Imagens",
+          "videos": "Vídeos",
+          "others": "Outros",
+          "free": "Livre"
+        }
+      },
+      "error_loading_cache_info": "Erro ao carregar informação da cache"
+    },
+    "backup_and_restore": {
+      "backup_and_restore": "Cópia de Segurança e Restaurar",
+      "advanced_backup": "Cópia de Segurança Avançada",
+      "exporting": "A exportar...",
+      "export": "Exportar",
+      "import": "Importar",
+      "export_to_clipboard": "Exportar para a área de transferência",
+      "import_from_clipboard": "Importar da área de transferência",
+      "no_sources_selected": "Nenhuma fonte selecionada",
+      "export_success": "{source} exportada com sucesso",
+      "export_failed": "Falha ao exportar {source}: {error}",
+      "import_success": "{source} importado com sucesso",
+      "import_failed": "Falha ao importar {source}: {error}",
+      "transfer_data": "Transferir dados",
+      "send": "Enviar",
+      "receive": "Receber",
+      "backup_data": "Cópia de segurança de dados",
+      "advanced_export_import": "Exportar/importar avançado",
+      "auto_backup": "Cópia de segurança automática",
+      "auto_backup_tooltip": "Cópias de segurança são criadas quando abre a aplicação. Não"
+    }
   },
   "download": {
     "download": "Descarregar"
@@ -88,7 +476,8 @@
       "show_all": "Mostrar tudo",
       "show_less": "Mostrar menos",
       "search": "Procurar",
-      "view_all": "Ver todos"
+      "view_all": "Ver todos",
+      "ok": "OK"
     },
     "warning": "Alerta",
     "default": "Predefinido",
@@ -105,7 +494,7 @@
     "recently_added": "Adicionado recentemente",
     "recently_updated": "Atualizado recentemente",
     "recently_created": "Criado recentemente",
-    "last_updated": "Atualizado por ultimo",
+    "last_updated": "Última atualização",
     "count": "Contar"
   },
   "profile": {
@@ -113,6 +502,89 @@
     "profile": "Perfil",
     "copy_user_id": "Copiar ID do utilizador",
     "fail_to_load_profile": "Falha a carregar o perfil",
-    "previous_names": "Nomes Anteriores"
+    "previous_names": "Nomes Anteriores",
+    "tabs": {
+      "info": "Informação",
+      "uploads": "Carregamentos",
+      "changes": "Mudanças"
+    },
+    "uploads": {
+      "top_n_copyright": "Principais $n direitos de autor"
+    },
+    "activity": {
+      "title": "Atividade",
+      "uploads": "Carregamentos",
+      "tag_edits": "Edições de etiquetas",
+      "note_edits": "Edições de nota",
+      "comments": "Comentários",
+      "forum_posts": "Publicações no fórum",
+      "favgroups": "Grupos favoritos"
+    },
+    "feedback": {
+      "title": "Opiniões",
+      "user_feedbacks": "Opiniões de Utilizadores",
+      "positive": "Positivo",
+      "negative": "Negativo",
+      "neutral": "Neutro"
+    },
+    "messages": {
+      "title": "Mensagens",
+      "empty": "Não tem mensagens",
+      "unread_message_notice": {
+        "one": "Tem $n mensagem não lida",
+        "other": "Tem $n mensagens não lidas"
+      },
+      "categories": {
+        "all": "Todas",
+        "received": "Recebidas",
+        "unread": "Não Lidas",
+        "sent": "Enviadas",
+        "deleted": "Eliminadas"
+      },
+      "sender": "Remetente",
+      "recipient": "Recipiente",
+      "date": "Data"
+    }
+  },
+  "reminder": {
+    "dont_show_again": "Não mostar novamente"
+  },
+  "network": {
+    "unavailable": "Rede não disponível"
+  },
+  "tag": {
+    "related": {
+      "more": "Mais",
+      "related": "Relacionados",
+      "add_to_current_search": "Adicionar à pesquisa atual",
+      "negate_from_current_search": "Negar da pesquisa atual",
+      "open_wiki": "Abrir wiki"
+    }
+  },
+  "pool": {
+    "pool": "Conjunto",
+    "pools": "Conjuntos",
+    "pool_gallery": "Galeria de Conjunto",
+    "no_cover_image": "Sem imagem de capa",
+    "order": {
+      "recent": "Recente",
+      "new": "Novo",
+      "post_count": "Número de publicações",
+      "name": "Nome"
+    },
+    "category": {
+      "series": "Séries",
+      "collection": "Coleção"
+    },
+    "search": {
+      "hint": "Procurar um conjunto"
+    },
+    "counter": {
+      "one": "Conjunto",
+      "other": "Conjuntos"
+    },
+    "detail": {
+      "last_updated": "Última atualização"
+    }
   }
 }
