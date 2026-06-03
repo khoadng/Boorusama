@@ -407,7 +407,78 @@
       "backup_data": "Cópia de segurança de dados",
       "advanced_export_import": "Exportar/importar avançado",
       "auto_backup": "Cópia de segurança automática",
-      "auto_backup_tooltip": "Cópias de segurança são criadas quando abre a aplicação. Não"
+      "auto_backup_tooltip": "Cópias de segurança são criadas quando abre a aplicação. Não",
+      "backup_in_progress": "Cópia de segurança já está em progresso",
+      "export_operation_failed": "Exportação falhada: {erro}",
+      "import_operation_failed": "Importação falhada: {error}",
+      "export_partial_success": "{exported}/{total} itens exportados. {failed} falharam.",
+      "export_complete_success": "{exported} itens exportados com sucesso",
+      "export_no_items": "Exportação calhada: Nenhum item pôde ser exportado",
+      "import_results": "Importação completa: {results}",
+      "import_no_items": "Importação falhada: Nenhum item pôde ser importado",
+      "imported_count": "{count} importados",
+      "skipped_count": "{count} ignorados",
+      "failed_count": "{count} falhados",
+      "invalid_location_error": "Não foi possível exportar para esta localização, tente usar a pasta \"Transferências\" ou \"Documentos\". Crie uma se não existir.",
+      "invalid_backup_format_error": "Formato de cópia de segurança inválido",
+      "never": "Nunca",
+      "receive_data": {
+        "title": "Receber dados",
+        "nearby_devices": "Dispositivos por perto",
+        "no_devices_found(rich)": "Nenhum dispositivo encontrado. Comece a transferência no outro dispositivo primeiro.\n\nCarregue ${tapHere(_)} para adicionar um endereço IP manualmente.",
+        "ip_address": "Endereço IP",
+        "errors": {
+          "not_empty": "Endereço IP não pode estar vazio",
+          "port_required": "O endereço IP tem que conter uma porta",
+          "invalid": "Endereço IP inválido"
+        },
+        "choose_data_to_import": "Escolher data para importar"
+      },
+      "send_data": {
+        "name": "Nome",
+        "version": "Versão",
+        "status": {
+          "title": "Estado",
+          "broadcasting": "Transmissão",
+          "stopped": "Parado",
+          "running": "Em execução"
+        },
+        "how_to_transfer": "Como transferir",
+        "how_to_send(rich)": "• No dispositivo recetor, vá a ${settings(_)}\n• Selecione ${receive(_)} para começar a importar dados deste dispositivo\n• Permaneça nesta página até que a transferência complete",
+        "disclaimer": "A transferência pode não funcionar em redes de WiFi públicas (cafetarias, bibliotecas) devido a restrições de segurança. Por favor use uma rede privada como a sua rede WiFi de casa.",
+        "no_networks_error": "Uma conexão WiFi é necessária para transferir dados. Por favor conecte-se a uma rede WiFi e tente novamente."
+      },
+      "backward_import": {
+        "title": "Importação de uma versão mais antiga detetada",
+        "current_version": "Versão atual",
+        "exported_version": "Versão exportada",
+        "reconfirm_question": "Importação ao contrário pode não funcionar conforme o esperado, tem a certeza?"
+      },
+      "version_mismatch": {
+        "title": "Importação de uma versão diferente detetada",
+        "current_version": "Versão atual",
+        "imported_version": "Versão importada",
+        "confirmation_question": "A versão da aplicação do dispositivo que está a tentar importar é diferente da versão atual desta aplicação. Isto pode causar problemas de compatibilidade e potencial perda de dados. \n\nTem a certeza que quer continuar?"
+      }
+    },
+    "auto_backup": {
+      "enable_auto_backup": "Ativar Cópia de Segurança Automática",
+      "backup_frequency": "Frequência de Cópia de Segurança",
+      "backup_location": "Localização de Cópia de Segurança",
+      "maximum_backups": "Número Máximo de Cópias de Segurança",
+      "frequency": {
+        "daily": "Diariamente",
+        "weekly": "Semanalmente"
+      },
+      "backup_count": {
+        "one": "$n cópia de segurança",
+        "other": "$n cópias de segurança"
+      },
+      "change": "Mudar",
+      "last_backup": "Última cópia de segurança: $lastBackup",
+      "backup_needed": "Cópia de segurança necessária",
+      "up_to_date": "Atualizado",
+      "backing_up": "A fazer cópia de segurança..."
     }
   },
   "download": {
