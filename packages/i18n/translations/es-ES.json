@@ -8,7 +8,7 @@
     },
     "action": {
       "add": "Añadir",
-      "delete": "Borrar",
+      "delete": "Eliminar",
       "edit": "Editar",
       "ok": "Ok",
       "cancel": "Cancelar",
@@ -23,12 +23,13 @@
       "show_less": "Mostrar Menos",
       "search": "Buscar",
       "verify": "Verificar",
-      "clear": "Borrar",
+      "clear": "Limpiar",
       "create": "Crear",
-      "view_all": "Ver todo"
+      "view_all": "Ver todo",
+      "reset": "Reiniciar"
     },
     "copied": "Copiado",
-    "app_restart_request": "Necesitas reiniciar la aplicacion para que los cambios tengan efecto",
+    "app_restart_request": "Necesita reiniciar la aplicación para que los cambios tengan efecto",
     "default": "Default",
     "warning": "Advertencia",
     "no_content": "Ningún contenido",
@@ -60,17 +61,27 @@
     "previous_names": "Nombres previos",
     "tabs": {
       "info": "Info",
-      "changes": "Cambios"
+      "changes": "Cambios",
+      "uploads": "Subidas"
     },
     "activity": {
       "title": "Actividad",
       "uploads": "Subidas",
-      "comments": "Comentarios"
+      "comments": "Comentarios",
+      "tag_edits": "Ediciones de tag",
+      "note_edits": "Ediciones de notas",
+      "forum_posts": "Publicaciones de foro",
+      "favgroups": "Grupos favoritos"
     },
     "feedback": {
       "positive": "Positivo",
       "negative": "Negativo",
-      "neutral": "Neutral"
+      "neutral": "Neutral",
+      "title": "Opiniones",
+      "user_feedbacks": "Opiniones de usuarios"
+    },
+    "uploads": {
+      "top_n_copyright": "Top $n derechos de autor"
     }
   },
   "network": {
@@ -98,7 +109,7 @@
         "image": "Compartir imagen"
       },
       "show_original": "Mostrar original",
-      "show_translated": "Mostrar Traduccido",
+      "show_translated": "Mostrar Traducido",
       "login_required_notice": "Tienes que iniciar sesión para realizar esta acción",
       "open_wiki": "Abrir Wiki",
       "add_to_favorites": "Añadir a La Lista de Favoritos",
@@ -111,13 +122,84 @@
       "related_posts": "Artículos Relacionados",
       "add_to_bookmark": "Añadir a favoritos",
       "remove_from_bookmark": "Eliminar de favoritos",
-      "duration": "Duración"
+      "duration": "Duración",
+      "artist": "Artista",
+      "show_n_more": "Mostrar $n más",
+      "show_less": "Mostrar menos",
+      "widgets": {
+        "tags": "Tags",
+        "file_details": "Detalles del archivo",
+        "pool": "Banco",
+        "artist_info": "Info de artista",
+        "stats": "Estadísticas",
+        "comments": "Comentarios",
+        "character_list": "Lista de personajes",
+        "source": "Fuente",
+        "toolbar": "Herramientas",
+        "info_panel": "Panel de info",
+        "artist_posts": "Publicaciones por artista",
+        "related_posts": "Publicaciones relacionadas",
+        "uploader_posts": "Subidas por autor"
+      },
+      "uploader": "Autor",
+      "approver": "Aprobador"
     },
     "action": {
       "view_comments": "Ver comentarios",
       "add_to_favorite_group": "Añadir al grupo de Favoritos",
       "view_in_browser": "Ver en el navegador",
-      "view_original": "Ver Original"
+      "view_original": "Ver Original",
+      "share": "Compartir",
+      "view_artist": "Ver artista",
+      "view_tags": "Ver tags",
+      "view_tag_history": "Ver historial de tags",
+      "copy_image": "Copiar imagen",
+      "slideshow": "Presentación",
+      "edit": "Editar",
+      "copy": "Copiar",
+      "bookmark": "Marcador",
+      "favorite": "Marcar como favorito",
+      "unfavorite": "Desmarcar como favorito",
+      "upvote": "Upvote",
+      "downvote": "Downvote",
+      "none": "Ninguno",
+      "use_default": "Usar Default",
+      "toggle_bookmark": "Alternar marcador",
+      "toggle_favorite": "Alternar favorito",
+      "media": "Media",
+      "links": "Enlaces",
+      "copy_image_description": "Copiar la imagen mostrada",
+      "copy_file_name": "Copiar nombre del archivo",
+      "unavailable": "No disponible",
+      "copy_post_link": "Copiar enlace de publicación",
+      "copy_source_link": "Copiar enlace fuente",
+      "copy_image_link": "Copiar enlace de imagen",
+      "copy_post_id": "Copiar ID de publicación",
+      "failed_to_get_image_url": "No se pudo obtener el URL de la imagen",
+      "failed_to_get_image_bytes": "No se pudo obtener bytes de imagen",
+      "failed_to_copy_image": "No se pudo copiar imagen: $e"
+    },
+    "statistics": {
+      "stats_for_nerds": "Estadísticas para nerds",
+      "average": "Promedio",
+      "highest": "Más alto",
+      "lowest": "Más bajo",
+      "median": "Median",
+      "25th_percentile": "Percentil 25",
+      "75th_percentile": "Percentil 75",
+      "90th_percentile": "Percentil 90"
+    },
+    "votes": {
+      "user_list": {
+        "title": "Votantes",
+        "disclaimer": "No se muestran los Downvotes y los votos privados."
+      }
+    },
+    "favorites": {
+      "user_list": {
+        "title": "Favoritado por",
+        "disclaimer": "Sólo se muestran los favoritos públicos."
+      }
     }
   },
   "comment": {
@@ -130,8 +212,8 @@
       "reply": "Responder",
       "reply_to": "Respondiendo a",
       "delete": "Borrar",
-      "no_comments": "Aqui no hay comentarios",
-      "last_updated": "Ultima Acutualizacion",
+      "no_comments": "Aquí no hay comentarios",
+      "last_updated": "Ultima Actualización",
       "send": "Enviar"
     },
     "counter": {
@@ -141,12 +223,19 @@
   },
   "explore": {
     "latest": "Ultimo",
-    "popular": "Tendencias",
+    "popular": "Popular",
     "hot": "Caliente",
     "most_viewed": "Los más vistos",
     "see_more": "Mostrar mas",
     "explore": "Explorar",
-    "new": "Nuevo"
+    "new": "Nuevo",
+    "top": "Top",
+    "daily": "Diario",
+    "weekly": "Semanal",
+    "newest": "Más reciente",
+    "oldest": "Más viejo",
+    "ordered": "Ordenado",
+    "random": "Aleatorio"
   },
   "search": {
     "errors": {
@@ -158,27 +247,32 @@
       "down": "El servidor está caído. Por favor, inténtalo más tarde",
       "access_denied": "Acceso denegado",
       "forbidden": "Autenticación fallida",
-      "unknown": "Servidor No Encontrado, Porfavor Reportar a un Desarrollador"
+      "unknown": "Servidor no encontrado. Por favor, reporta este problema a un desarrollador",
+      "cannot_reach_server": "No se puede comunicar con el servidor, por favor revise su conexión",
+      "failed_to_load_data": "No se puede cargar dato del servidor, por favor prueba otra vez más tarde",
+      "handshake_failed": "Error de conexión, problema de compatibilidad del servidor",
+      "certificate_error": "Error de certificado. El servidor puede estar usando un certificado auto-firmado. Intente usar HTTP en lugar de HTTPS, o instale el certificado en su dispositivo."
     },
     "hint": "Buscar...",
-    "no_result": "Hemos buscado, pero no se encontraron resultados.",
-    "metatags_notice": "Los metatags gratuitos no afectan el límite de búsqueda de etiquetas",
+    "no_result": "Hemos buscado por todos lados, pero no se encontraron resultados.",
+    "metatags_notice": "Los metatags gratuitos no afectan el límite de búsqueda de tags",
     "history": {
       "history": "Historial",
       "clear": "Limpiar"
     },
-    "trending": "Tendencia",
+    "trending": "Tendencias",
     "remove_all_selected": "Remover todas las Etiquetas",
     "result_counter": {
       "one": "$n Resultado",
       "other": "$n Resultados"
     },
     "no_result_notice": "Ningún resultado",
-    "search_in_progress_notice": "Buscando..."
+    "search_in_progress_notice": "Buscando...",
+    "raw_query": "Consulta directa"
   },
   "pool": {
-    "pool": "Piscina",
-    "pool_gallery": "Galeria de Piscina",
+    "pool": "Banco",
+    "pool_gallery": "Galería de banco",
     "order": {
       "recent": "Reciente",
       "new": "Nuevo",
@@ -194,6 +288,12 @@
     },
     "detail": {
       "last_updated": "Ultima actualización"
+    },
+    "pools": "Bancos",
+    "no_cover_image": "Sin imagen de portada",
+    "counter": {
+      "one": "Banco",
+      "other": "Bancos"
     }
   },
   "settings": {
@@ -204,13 +304,36 @@
       "show_scores": "Mostrar puntuaciones",
       "show_post_list_config_header": "Mostrar encabezado de configuración de publicaciones",
       "booru_config": "Perfil de el Booru",
-      "booru_config_placement": "Ubicación del perfil de el Booru"
+      "booru_config_placement": "Ubicación del perfil de el Booru",
+      "customize": "Personalizar",
+      "auto_play_gif": "Auto-play GIF",
+      "blur_explicit_media": "Difuminar contenido explícito",
+      "booru_config_placement_options": {
+        "side": "Lado",
+        "bottom": "Abajo"
+      },
+      "booru_config_label": "Mostrar etiqueta",
+      "booru_config_label_options": {
+        "always": "Siempre",
+        "never": "Nunca"
+      }
     },
     "general": "General",
     "search": {
       "search": "Buscar",
       "auto_focus_search_bar": "Enfocar automáticamente la barra de búsqueda al abrir la vista de búsqueda por primera vez",
-      "hide_bookmarked_posts_from_search_results": "Ocultar publicaciones marcadas como favoritas de los resultados de búsqueda"
+      "hide_bookmarked_posts_from_search_results": "Ocultar publicaciones marcadas como favoritas de los resultados de búsqueda",
+      "search_bar": {
+        "position": {
+          "search_bar_position": "Posición de barra de búsqueda",
+          "top": "Superior",
+          "bottom": "Inferior"
+        },
+        "scroll_behavior": {
+          "persistent": "Barra de búsqueda persistente",
+          "persistent_description": "Mantener la barra de búsqueda visible mientras se desplaza."
+        }
+      }
     },
     "information": "Información",
     "changelog": "Lista de Cambios",
@@ -223,7 +346,8 @@
     "image_list": {
       "image_list": "Lista de Imágenes",
       "standard": "Estándar",
-      "masonry": "Mosaico"
+      "masonry": "Mosaico",
+      "classic": "Clásico"
     },
     "image_grid": {
       "image_grid": "Grid de Imágenes",
@@ -231,7 +355,9 @@
         "grid_size": "Tamaño del grid",
         "small": "Pequeño",
         "medium": "Mediano",
-        "large": "Grande"
+        "large": "Grande",
+        "micro": "Micro",
+        "tiny": "Minúsculo"
       },
       "image_quality": {
         "image_quality": "Calidad De la imagen",
@@ -240,7 +366,8 @@
         "low": "Bajo",
         "original": "Original",
         "automatic": "Automatizado",
-        "highest": "Más alto"
+        "highest": "Más alto",
+        "auto": "Auto"
       },
       "spacing": "Separación",
       "corner_radius": "Radio de las esquinas",
@@ -260,7 +387,37 @@
       "slideshow_skip": "Omitir imágenes",
       "slideshow_interval_explanation": "Valor menor a 1 segundo omitirá automáticamente la transición",
       "mute_video": "Silenciar video por predeterminado",
-      "video_section_title": "Video"
+      "video_section_title": "Video",
+      "slideshow_video_behavior": "Comportamiento de vídeo de presentación",
+      "slideshow_video_behavior_explanation": "Determina cómo la presentación maneja videos durante las transiciones.",
+      "slideshow_video_behaviors": {
+        "wait_for_completion": "Esperar la terminación",
+        "wait_for_completion_description": "Esperar a que los vídeos terminen antes de avanzar a la siguiente diapositiva",
+        "fixed_interval": "Intervalos fijos",
+        "fixed_interval_description": "Avance después del intervalo fijo, incluso si el vídeo está reproduciéndose"
+      },
+      "swipe_mode_disclaimer": "Algunos gestos personalizados pueden no funcionar en todos los modos",
+      "swipe_modes": {
+        "horizontal": "Horizontal",
+        "vertical": "Vertical",
+        "vertical_description": "Deslizamiento al estilo TikTok. Popular en plataformas de videos breves. Solo en modo de retrato.",
+        "horizontal_description": "Deslizamiento a la derecha e izquierda. Como galerías de fotos y aplicaciones multimedia."
+      },
+      "swipe_mode": "Modo deslizamiento",
+      "double_tap_seek": "Doble-tocar para buscar",
+      "manage_cache": "Manejar caché",
+      "enable_video_cache": "Activar caché de vídeo",
+      "enable_video_cache_description": "Descarga vídeos mientras se transmiten y guárdalos en el caché para reducir el uso de datos y una reproducción más rápida en las vistas posteriores.",
+      "video": {
+        "video_player_engine": "Motor de vídeo",
+        "engine": {
+          "auto": "Auto",
+          "auto_description": "Seleccionar el mejor motor basado en las capacidades de su dispositivo.",
+          "default": "Predeterminado",
+          "default_description": "Funciona bien con la mayoría de los dispositivos. Puede tener problemas con algunos formatos de vídeo o dispositivos antiguos.",
+          "mdk_description": "Carga rápida, mejor rendimiento con ciertos formatos de vídeo, pero inestable y puede causar fallos."
+        }
+      }
     },
     "language": {
       "language": "Idioma",
@@ -274,7 +431,16 @@
       "dynamic_color": "Tema de color dinámico",
       "dynamic_color_mobile_description": "Sincronizar el color del tema con el fondo de pantalla",
       "dynamic_color_desktop_description": "Sincronizar el color del tema con el color de acento del sistema operativo",
-      "dynamic_color_unsupported_description": "Este dispositivo no admite colores dinámicos."
+      "dynamic_color_unsupported_description": "Este dispositivo no admite colores dinámicos.",
+      "system": "Sistema",
+      "viewer": {
+        "colors": "Colores",
+        "color_variants": "Variantes de color",
+        "dark_mode": "Modo oscuro",
+        "groups": {
+          "basic": "Básico"
+        }
+      }
     },
     "privacy": {
       "privacy": "Privacidad",
@@ -292,7 +458,7 @@
       "cache_size_info": "{0} en {1} archivos"
     },
     "debug_logs": {
-      "debug_logs": "Registro DEBUG",
+      "debug_logs": "Historial de debug",
       "logs_copied": "Registro copiado"
     },
     "download": {
@@ -302,20 +468,67 @@
       "qualities": {
         "original": "Original",
         "sample": "Calidad",
-        "preview": "Miniatura"
+        "preview": "Miniatura",
+        "large": "Grande"
       },
-      "title": "Descargar"
+      "title": "Descargar",
+      "skip_existing_files_explanation": "Esto prevendrá el descargo de archivos si ya existen en la carpeta. Útil para cuando no quieres descargar el mismo archivo varias veces."
     },
     "help_us_translate": "Ayúdenos a traducir",
     "other_settings": "Otros Ajustes",
     "data_and_storage": {
       "data_and_storage": "Datos y almacenamiento",
-      "clear_cache_on_start_up": "Borrar caché de imágenes al iniciar"
+      "clear_cache_on_start_up": "Borrar caché de imágenes al iniciar",
+      "cache": "Caché",
+      "data": "Datos",
+      "all_cache": "Caché entero",
+      "tag_cache": "Caché de tag",
+      "image_only_cache": "Caché de sólo imagen",
+      "video_cache": "Caché de vídeo",
+      "video_cache_limit": "Límite de caché de vídeo",
+      "video_cache_limit_description": "Tamaño máximo para almacenamiento de caché de vídeo",
+      "no_limit": "Ningún Límite",
+      "bookmark_images": "Imágenes marcadas",
+      "loading": "Cargando...",
+      "storage": "Almacenamiento",
+      "disk_space": {
+        "status_title": "$freeSpace libre de $totalSpace",
+        "groups": {
+          "system": "Sistema",
+          "images": "Imágenes",
+          "videos": "Vídeos",
+          "others": "Otros",
+          "free": "Libre"
+        }
+      },
+      "error_loading_cache_info": "Error en cargar info de caché"
     },
     "backup_and_restore": {
       "backup_and_restore": "Copia de seguridad y restaurar",
       "import": "Importar",
-      "export": "Exportar"
+      "export": "Exportar",
+      "advanced_backup": "Copia de seguridad avanzada",
+      "exporting": "Exportando...",
+      "export_to_clipboard": "Exportar a portapapeles",
+      "import_from_clipboard": "Importar desde el portapapeles",
+      "no_sources_selected": "No se han seleccionado fuentes",
+      "export_success": "{source} se exportó exitosamente",
+      "export_failed": "No se pudo exportar {source}: {error}",
+      "import_success": "{source} se importó exitosamente",
+      "import_failed": "No se pudo importar {source}: {error}",
+      "transfer_data": "Transferir datos",
+      "send": "Enviar",
+      "receive": "Recibir",
+      "backup_data": "Datos de respaldo",
+      "advanced_export_import": "Exportación/importación avanzada",
+      "auto_backup": "Respaldo automática",
+      "auto_backup_tooltip": "Los respaldos se crean cuando se abre la aplicación. No se respalda cuando la aplicación está cerrada.",
+      "backup_in_progress": "Respaldo ya en progreso",
+      "export_operation_failed": "La exportación falló: {error}",
+      "import_operation_failed": "La importación falló: {error}",
+      "export_partial_success": "Se exportaron {exported}/{total} elementos. {failed} fallaron.",
+      "export_complete_success": "{exported} elementos se exportaron exitosamente",
+      "export_no_items": "La exportación falló: Ningún elemento se pudo exportar"
     },
     "image_details": {
       "ui_overlay": {
@@ -347,7 +560,8 @@
     "contact_developer_description": "Si tiene algún problema o sugerencia, no dude en enviarme un correo electrónico a través de esta opción",
     "feature_request_and_bug_report": "Solicitud de funciones e informe de errores",
     "feature_request_and_bug_report_description": "Sugerir funciones o informar errores a través del repositorio de GitHub",
-    "open_app_settings": "Abrir Ajustes"
+    "open_app_settings": "Abrir Ajustes",
+    "need_more_questions": "¿Necesitas más?"
   },
   "blacklisted_tags": {
     "remove": "Remover",
@@ -524,7 +738,7 @@
     "subscription_restored": "¡Suscripción restaurada!",
     "restore_failed": "Hubo un problema al restaurar tu suscripción. Por favor, inténtalo de nuevo más tarde.",
     "select_your_plan": "Elige tu plan",
-    "legal_disclaimer": "Al suscribirte, aceptas nuestros <a href=\"terms-of-service\">Términos de servicio</a> y <a href=\"privacy-policy\">Política de privacidad</a>. La suscripción se renueva automáticamente hasta que la canceles. Puedes cancelarla en cualquier momento hasta 24 horas antes de que finalice tu periodo actual.",
+    "legal_disclaimer": "Al suscribirte, aceptas nuestros <a href=\"terms-of-service\">Términos de servicio</a> y <a href=\"privacy-policy\">Política de privacidad</a>. La suscripción se renueva automáticamente hasta que la cancele. Puedes cancelarla en cualquier momento hasta 24 horas antes de que finalice tu periodo actual.",
     "benefits": {
       "exclusive_themes": "Temas exclusivos",
       "exclusive_themes_description": "Elige entre una variedad de temas para personalizar el aspecto de cada perfil",
@@ -566,6 +780,10 @@
     "recently_added": "Recién añadido",
     "recently_updated": "Recién actualizado",
     "recently_created": "Recién creado",
-    "count": "Contar"
+    "count": "Contar",
+    "last_updated": "Ultima actualización"
+  },
+  "reminder": {
+    "dont_show_again": "No mostrar de nuevo"
   }
 }
