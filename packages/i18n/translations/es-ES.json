@@ -21,18 +21,56 @@
       "apply": "Aplicar",
       "show_all": "Mostrar Todo",
       "show_less": "Mostrar Menos",
-      "search": "Buscar"
+      "search": "Buscar",
+      "verify": "Verificar",
+      "clear": "Borrar",
+      "create": "Crear",
+      "view_all": "Ver todo"
     },
     "copied": "Copiado",
     "app_restart_request": "Necesitas reiniciar la aplicacion para que los cambios tengan efecto",
-    "default": "Default"
+    "default": "Default",
+    "warning": "Advertencia",
+    "no_content": "Ningún contenido",
+    "version": "Versión $version"
   },
   "profile": {
     "favorites": "Favoritos",
     "profile": "Perfil",
     "copy_user_id": "Copiar ID de usuario",
     "messages": {
-      "title": "Mensajes"
+      "title": "Mensajes",
+      "empty": "No tienes mensajes",
+      "unread_message_notice": {
+        "one": "Tienes un mensaje sin leer",
+        "other": "Tienes $n mensajes sin leer"
+      },
+      "categories": {
+        "all": "Todo",
+        "received": "Recibido",
+        "unread": "Sin leer",
+        "sent": "Enviados",
+        "deleted": "Borrado"
+      },
+      "sender": "Remitente",
+      "recipient": "Receptor",
+      "date": "Fecha"
+    },
+    "fail_to_load_profile": "Fallar en mostrar perfil",
+    "previous_names": "Nombres previos",
+    "tabs": {
+      "info": "Info",
+      "changes": "Cambios"
+    },
+    "activity": {
+      "title": "Actividad",
+      "uploads": "Subidas",
+      "comments": "Comentarios"
+    },
+    "feedback": {
+      "positive": "Positivo",
+      "negative": "Negativo",
+      "neutral": "Neutral"
     }
   },
   "network": {
@@ -43,7 +81,8 @@
       "more": "Más",
       "related": "Relacionado",
       "add_to_current_search": "Añadir a la busqueda",
-      "open_wiki": "Abrir wiki"
+      "open_wiki": "Abrir wiki",
+      "negate_from_current_search": "Eliminar de búsqueda actual"
     }
   },
   "post": {
@@ -71,7 +110,8 @@
       "source_label": "Fuente",
       "related_posts": "Artículos Relacionados",
       "add_to_bookmark": "Añadir a favoritos",
-      "remove_from_bookmark": "Eliminar de favoritos"
+      "remove_from_bookmark": "Eliminar de favoritos",
+      "duration": "Duración"
     },
     "action": {
       "view_comments": "Ver comentarios",
@@ -517,5 +557,15 @@
     "options": {
       "save_to_folder": "Guardar a carpeta"
     }
+  },
+  "sort": {
+    "sort_by": "Ordenar por",
+    "name": "Nombre",
+    "name_asc": "Nombre (A-Z)",
+    "name_desc": "Nombre (Z-A)",
+    "recently_added": "Recién añadido",
+    "recently_updated": "Recién actualizado",
+    "recently_created": "Recién creado",
+    "count": "Contar"
   }
 }
