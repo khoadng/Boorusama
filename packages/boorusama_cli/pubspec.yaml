@@ -9,6 +9,8 @@ environment:
 dependencies:
   args: ^2.7.0
   crypto: ^3.0.6
+  googleapis: ^16.0.0
+  googleapis_auth: ^2.3.1
   path: ^1.9.0
   yaml: ^3.1.3
 

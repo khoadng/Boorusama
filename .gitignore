@@ -119,6 +119,7 @@ app.*.symbols
 *.mocks.dart
 artifacts/
 .tmp/
+.secret/
 
 .env
 
