@@ -160,6 +160,13 @@ final class ReleasePrepareService {
       lines[0] = '# ${plan.versionName}';
       changelog.writeAsStringSync('${lines.join('\n')}\n');
     }
+
+    onProgress?.call('Committing release preparation.');
+    await git.stageFiles(const ['pubspec.yaml', 'CHANGELOG.md']);
+    if (!await git.hasStagedChanges()) {
+      throw const ProcessFailure('No release preparation changes to commit.');
+    }
+    await git.commit('build: prepare for ${plan.versionName}');
   }
 
   ChangelogStatus _changelogStatus(File changelogFile, String versionName) {

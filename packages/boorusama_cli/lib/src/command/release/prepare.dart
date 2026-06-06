@@ -76,7 +76,7 @@ final class ReleasePrepareCommand extends Command<int> {
       await prepare.apply(plan);
       print('');
       print(
-        'Release branch prepared. Review, update changelog if needed, then commit.',
+        'Release branch prepared and committed: build: prepare for ${plan.versionName}',
       );
       return 0;
     } on Object catch (error, stackTrace) {

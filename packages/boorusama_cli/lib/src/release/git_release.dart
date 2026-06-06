@@ -41,6 +41,19 @@ final class GitRelease {
     return tools.git(['tag', '-a', tag, '-m', message]);
   }
 
+  Future<void> stageFiles(List<String> paths) {
+    return tools.git(['add', ...paths]);
+  }
+
+  Future<bool> hasStagedChanges() async {
+    final output = await tools.gitOutput(['diff', '--cached', '--name-only']);
+    return output.trim().isNotEmpty && output != 'unknown';
+  }
+
+  Future<void> commit(String message) {
+    return tools.git(['commit', '-m', message]);
+  }
+
   Future<void> checkoutBranch(String branch) {
     return tools.git(['checkout', branch]);
   }
