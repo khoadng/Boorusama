@@ -16,6 +16,7 @@ final class ReleasePreparePrinter {
     print('Checks:');
     _printLocalChecks(plan);
     _printGooglePlayChecks(plan);
+    _printGithubChecks(plan);
     print('');
     print('Mode: ${apply ? 'apply' : 'dry-run'}');
   }
@@ -82,7 +83,42 @@ final class ReleasePreparePrinter {
           _googlePlayVersionCodeLabel(plan),
         ),
       );
+      print(_versionNamePolicyLine(plan));
       _printGooglePlayInfo(plan);
+    }
+  }
+
+  void _printGithubChecks(ReleasePreparePlan plan) {
+    print('');
+    print('  GitHub:');
+    print(_checkLine(plan.github.repoConfigured, _githubRepoLabel(plan)));
+    print(
+      _checkLine(
+        plan.github.workflowFileExists,
+        'workflow file: ${plan.github.workflow}',
+      ),
+    );
+    print(_checkLine(plan.github.ghInstalled, 'GitHub CLI installed'));
+
+    if (plan.github.repoConfigured &&
+        plan.github.workflowFileExists &&
+        plan.github.ghInstalled) {
+      print(_checkLine(plan.github.authenticated, 'GitHub CLI authenticated'));
+      print(
+        _checkLine(
+          plan.github.workflowReadable,
+          'workflow readable on ${plan.github.repo}',
+        ),
+      );
+      print(
+        _checkLine(
+          plan.github.releaseLookupSucceeded && !plan.github.releaseExists,
+          _githubReleaseLabel(plan),
+        ),
+      );
+      if (plan.github.error != null) {
+        print(_infoLine('GitHub: ${plan.github.error}'));
+      }
     }
   }
 
@@ -90,6 +126,8 @@ final class ReleasePreparePrinter {
     final status = passed ? _green('OK') : _red('FAIL');
     return '    [$status] $label';
   }
+
+  String _warningLine(String label) => '    [${_yellow('WARN')}] $label';
 
   String _infoLine(String label) => '    [INFO] $label';
 
@@ -144,12 +182,43 @@ final class ReleasePreparePrinter {
 
   String _googlePlayVersionCodeLabel(ReleasePreparePlan plan) {
     final plannedVersionCode = _plannedVersionCode(plan);
-    final productionMaxVersionCode =
-        plan.googlePlay.api.productionMaxVersionCode;
-    if (productionMaxVersionCode == null) {
-      return 'planned versionCode available on Google Play production';
+    final maxVersionCode = plan.googlePlay.api.maxVersionCode;
+    if (maxVersionCode == null) {
+      return 'planned versionCode available on Google Play';
     }
-    return 'production versionCode: $productionMaxVersionCode -> $plannedVersionCode';
+    final track = plan.googlePlay.api.maxVersionCodeTrack;
+    final source = track == null ? 'Google Play' : 'Google Play $track';
+    return '$source versionCode: $maxVersionCode -> $plannedVersionCode';
+  }
+
+  String _versionNamePolicyLine(ReleasePreparePlan plan) {
+    final latest = plan.googlePlay.api.productionLatestVersionName;
+    final label = latest == null
+        ? 'production versionName readable'
+        : 'production versionName: $latest -> ${plan.versionName}';
+    return switch (plan.versionNamePolicy) {
+      VersionNamePolicy.unknown => _infoLine(label),
+      VersionNamePolicy.ok => _checkLine(true, label),
+      VersionNamePolicy.warnJump => _warningLine(
+        '$label (more than one version step)',
+      ),
+      VersionNamePolicy.blocked => _checkLine(false, label),
+    };
+  }
+
+  String _githubRepoLabel(ReleasePreparePlan plan) {
+    final repo = plan.github.repo;
+    if (repo == null || repo.isEmpty) {
+      return 'repository configured';
+    }
+    return 'repository: $repo';
+  }
+
+  String _githubReleaseLabel(ReleasePreparePlan plan) {
+    if (plan.github.releaseExists) {
+      return 'GitHub release ${plan.tag} does not exist';
+    }
+    return 'GitHub release ${plan.tag} available';
   }
 
   void _printGooglePlayInfo(ReleasePreparePlan plan) {
@@ -186,4 +255,7 @@ final class ReleasePreparePrinter {
 
   String _green(String value) =>
       stdout.hasTerminal ? '\x1B[0;32m$value\x1B[0m' : value;
+
+  String _yellow(String value) =>
+      stdout.hasTerminal ? '\x1B[0;33m$value\x1B[0m' : value;
 }

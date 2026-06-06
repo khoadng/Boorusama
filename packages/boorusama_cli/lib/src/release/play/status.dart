@@ -20,6 +20,35 @@ final class PlayReleaseStatus {
   final List<String> listingLanguages;
 
   int? get productionMaxVersionCode => production.maxVersionCode;
+
+  int? get maxVersionCode {
+    final codes = tracks
+        .map((track) => track.maxVersionCode)
+        .whereType<int>()
+        .toList();
+    if (codes.isEmpty) return null;
+    return codes.reduce((value, element) => value > element ? value : element);
+  }
+
+  PlayTrackStatus? get maxVersionCodeTrack {
+    PlayTrackStatus? maxTrack;
+    var maxCode = -1;
+    for (final track in tracks) {
+      final trackMax = track.maxVersionCode;
+      if (trackMax != null && trackMax > maxCode) {
+        maxCode = trackMax;
+        maxTrack = track;
+      }
+    }
+    return maxTrack;
+  }
+
+  PlayTrackStatus? trackByName(String name) {
+    for (final track in tracks) {
+      if (track.name == name) return track;
+    }
+    return null;
+  }
 }
 
 final class PlayTrackStatus {
@@ -44,6 +73,7 @@ final class PlayTrackRelease {
     required this.status,
     required this.versionCodes,
     required this.releaseNotesCount,
+    required this.releaseNotes,
     required this.userFraction,
   });
 
@@ -51,5 +81,16 @@ final class PlayTrackRelease {
   final String? status;
   final List<int> versionCodes;
   final int releaseNotesCount;
+  final List<PlayReleaseNoteStatus> releaseNotes;
   final double? userFraction;
+}
+
+final class PlayReleaseNoteStatus {
+  const PlayReleaseNoteStatus({
+    required this.language,
+    required this.text,
+  });
+
+  final String language;
+  final String text;
 }

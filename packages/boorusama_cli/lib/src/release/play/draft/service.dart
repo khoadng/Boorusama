@@ -10,8 +10,8 @@ import '../../../io/process_runner.dart';
 import '../../../project/project.dart';
 import '../../../tool/tool_runner.dart';
 import '../../changelog.dart';
-import '../../git_release.dart';
-import '../../release_version.dart';
+import '../../git/repository.dart';
+import '../../version/release_version.dart';
 import '../client.dart';
 import '../config.dart';
 import 'core.dart';
@@ -61,17 +61,17 @@ final class PlayDraftService {
 
     onProgress?.call('Checking Google Play release state.');
     final playStatus = await productionRepository.fetchStatus();
-    final productionMaxVersionCode = playStatus.productionMaxVersionCode;
+    final playMaxVersionCode = playStatus.maxVersionCode;
+    final playMaxVersionCodeTrack = playStatus.maxVersionCodeTrack?.name;
     final versionCode = int.tryParse(version.buildNumber ?? '');
     if (versionCode == null) {
       throw ProcessFailure(
         'Current pubspec version does not have a numeric build number: ${version.full}.',
       );
     }
-    if (productionMaxVersionCode != null &&
-        versionCode <= productionMaxVersionCode) {
+    if (playMaxVersionCode != null && versionCode <= playMaxVersionCode) {
       throw ProcessFailure(
-        'Current versionCode $versionCode is not newer than Google Play production $productionMaxVersionCode. Run release prepare <next-version> --apply first.',
+        'Current versionCode $versionCode is not newer than Google Play max $playMaxVersionCode. Run release prepare <next-version> --apply first.',
       );
     }
 
@@ -86,7 +86,8 @@ final class PlayDraftService {
           : File(bundlePath),
       releaseNotesLanguage: releaseNotesLanguage,
       metadata: metadata,
-      productionMaxVersionCode: productionMaxVersionCode,
+      playMaxVersionCode: playMaxVersionCode,
+      playMaxVersionCodeTrack: playMaxVersionCodeTrack,
       willBuild: bundlePath == null,
     );
   }

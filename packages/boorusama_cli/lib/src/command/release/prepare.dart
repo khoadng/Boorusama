@@ -3,7 +3,7 @@ import 'package:args/command_runner.dart';
 import '../../io/logger.dart';
 import '../../io/process_runner.dart';
 import '../../project/project.dart';
-import '../../release/git_release.dart';
+import '../../release/git/repository.dart';
 import '../../release/prepare/printer.dart';
 import '../../release/prepare/service.dart';
 import '../../tool/tool_resolver.dart';
@@ -14,7 +14,17 @@ final class ReleasePrepareCommand extends Command<int> {
     argParser
       ..addFlag('apply', negatable: false)
       ..addFlag('verbose', abbr: 'v', negatable: false)
-      ..addFlag('ci', abbr: 'c', negatable: false);
+      ..addFlag('ci', abbr: 'c', negatable: false)
+      ..addOption(
+        'github-repo',
+        help:
+            'GitHub repository in OWNER/REPO form. Falls back to env or GitHub origin.',
+      )
+      ..addOption(
+        'github-workflow',
+        defaultsTo: 'github-release.yml',
+        help: 'GitHub Actions workflow file to validate.',
+      );
   }
 
   @override
@@ -24,7 +34,8 @@ final class ReleasePrepareCommand extends Command<int> {
   String get description => 'Prepare a release branch and pubspec version.';
 
   @override
-  String get invocation => 'boorusama release prepare <version> [--apply]';
+  String get invocation =>
+      'boorusama release prepare <version> [--apply] [--github-repo OWNER/REPO]';
 
   @override
   Future<int> run() async {
@@ -36,6 +47,9 @@ final class ReleasePrepareCommand extends Command<int> {
     final apply = argResults?['apply'] as bool? ?? false;
     final verbose = argResults?['verbose'] as bool? ?? false;
     final ci = argResults?['ci'] as bool? ?? false;
+    final githubRepo = argResults?['github-repo'] as String?;
+    final githubWorkflow =
+        argResults?['github-workflow'] as String? ?? 'github-release.yml';
     final logger = Logger(verbose: verbose, ci: ci);
     final processRunner = ProcessRunner(logger: logger);
 
@@ -61,7 +75,11 @@ final class ReleasePrepareCommand extends Command<int> {
         onProgress: logger.info,
       );
       const printer = ReleasePreparePrinter();
-      final plan = await prepare.plan(versionName);
+      final plan = await prepare.plan(
+        versionName,
+        githubRepo: githubRepo,
+        githubWorkflow: githubWorkflow,
+      );
 
       printer.printPlan(plan, apply: apply);
       printer.printDiffPreview(plan);

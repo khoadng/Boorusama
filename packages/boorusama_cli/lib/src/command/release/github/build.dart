@@ -14,8 +14,8 @@ import '../../../project/project.dart';
 import '../../../release/changelog.dart';
 import '../../../release/github/receipt.dart';
 import '../../../release/github/target.dart';
-import '../../../release/git_release.dart';
-import '../../../release/release_version.dart';
+import '../../../release/git/repository.dart';
+import '../../../release/version/release_version.dart';
 import '../../../tool/tool_resolver.dart';
 import '../../../tool/tool_runner.dart';
 

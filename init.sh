@@ -1,18 +1,14 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-export BOORUSAMA_ROOT="$ROOT"
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/scripts/bootstrap.sh"
+bs_bootstrap_cli "${BASH_SOURCE[0]}" "init"
 CLI_DIR="$ROOT/packages/boorusama_cli"
-BOORUSAMA_SCRIPT_NAME="init"
-
-source "$ROOT/scripts/toolchain.sh"
 
 if (($# > 0)); then
   bs_die "init.sh does not accept arguments."
 fi
 
-bs_resolve_toolchain
 bs_log "Toolchain: $BOORUSAMA_TOOLCHAIN_SOURCE (${BOORUSAMA_FLUTTER_CMD[*]}, ${BOORUSAMA_DART_CMD[*]})"
 
 bs_install_fvm

@@ -6,7 +6,7 @@ import 'package:path/path.dart' as p;
 
 import '../../package/artifact.dart';
 import '../../project/project.dart';
-import '../release_version.dart';
+import '../version/release_version.dart';
 
 final class GithubReceipt {
   const GithubReceipt({required this.outputDir});

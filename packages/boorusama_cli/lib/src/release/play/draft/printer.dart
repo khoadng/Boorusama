@@ -11,7 +11,7 @@ final class PlayDraftPrinter {
     print('  track:    ${plan.track}');
     print('  version:  ${plan.version.full}');
     print('  name:     ${plan.metadata.name}');
-    print('  Play max: ${plan.productionMaxVersionCode ?? 'none'}');
+    print('  Play max: ${_playMaxLabel(plan)}');
     print(
       '  bundle:   ${plan.willBuild ? 'build prod AAB' : plan.bundle.path}',
     );
@@ -22,5 +22,13 @@ final class PlayDraftPrinter {
     print('');
     print('Release notes preview:');
     print(plan.metadata.consoleNotes);
+  }
+
+  String _playMaxLabel(PlayDraftPlan plan) {
+    final versionCode = plan.playMaxVersionCode;
+    if (versionCode == null) return 'none';
+    final track = plan.playMaxVersionCodeTrack;
+    if (track == null) return '$versionCode';
+    return '$versionCode ($track)';
   }
 }

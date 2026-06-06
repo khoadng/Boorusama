@@ -3,11 +3,11 @@ import 'dart:io';
 import 'package:args/args.dart';
 import 'package:args/command_runner.dart';
 
-import '../builds/build_mode.dart';
-import '../builds/build_options.dart';
-import '../builds/build_target.dart';
-import '../builds/release_channel.dart';
-import '../project/config.dart';
+import '../../builds/build_mode.dart';
+import '../../builds/build_options.dart';
+import '../../builds/build_target.dart';
+import '../../builds/release_channel.dart';
+import '../../project/config.dart';
 
 final class BuildArgsParser {
   BuildArgsParser() {

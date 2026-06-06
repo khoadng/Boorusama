@@ -1,11 +1,13 @@
 import 'package:args/command_runner.dart';
 
+import 'release/all.dart';
 import 'release/github.dart';
 import 'release/play.dart';
 import 'release/prepare.dart';
 
 final class ReleaseCommand extends Command<int> {
   ReleaseCommand() {
+    addSubcommand(ReleaseAllCommand());
     addSubcommand(ReleasePrepareCommand());
     addSubcommand(ReleasePlayCommand());
     addSubcommand(ReleaseGithubCommand());

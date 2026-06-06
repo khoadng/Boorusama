@@ -1,3 +1,6 @@
+import '../github/prepare.dart';
+import '../version/version_name.dart';
+
 final class ReleasePreparePlan {
   const ReleasePreparePlan({
     required this.currentVersion,
@@ -10,8 +13,10 @@ final class ReleasePreparePlan {
     required this.remoteBranchExists,
     required this.localTagExists,
     required this.remoteTagExists,
+    required this.alreadyPrepared,
     required this.changelogStatus,
     required this.googlePlay,
+    required this.github,
     required this.changes,
   });
 
@@ -25,8 +30,10 @@ final class ReleasePreparePlan {
   final bool remoteBranchExists;
   final bool localTagExists;
   final bool remoteTagExists;
+  final bool alreadyPrepared;
   final ChangelogStatus changelogStatus;
   final GooglePlayPreparePlan googlePlay;
+  final GithubPreparePlan github;
   final List<ReleasePrepareChange> changes;
 }
 
@@ -72,7 +79,10 @@ final class GooglePlayApiPreparePlan {
     required this.productionTrack,
     required this.productionReleaseCount,
     required this.productionMaxVersionCode,
+    required this.maxVersionCode,
+    required this.maxVersionCodeTrack,
     required this.productionLatestReleaseName,
+    required this.productionLatestVersionName,
     required this.productionLatestReleaseStatus,
     required this.trackCount,
     required this.defaultLanguage,
@@ -87,7 +97,10 @@ final class GooglePlayApiPreparePlan {
       productionTrack = 'production',
       productionReleaseCount = null,
       productionMaxVersionCode = null,
+      maxVersionCode = null,
+      maxVersionCodeTrack = null,
       productionLatestReleaseName = null,
+      productionLatestVersionName = null,
       productionLatestReleaseStatus = null,
       trackCount = null,
       defaultLanguage = null,
@@ -100,7 +113,10 @@ final class GooglePlayApiPreparePlan {
   final String productionTrack;
   final int? productionReleaseCount;
   final int? productionMaxVersionCode;
+  final int? maxVersionCode;
+  final String? maxVersionCodeTrack;
   final String? productionLatestReleaseName;
+  final String? productionLatestVersionName;
   final String? productionLatestReleaseStatus;
   final int? trackCount;
   final String? defaultLanguage;
@@ -111,10 +127,35 @@ final class GooglePlayApiPreparePlan {
       succeeded && productionReleaseCount != null;
 
   bool plannedVersionCodeIsNewer(int? plannedVersionCode) {
-    final productionMaxVersionCode = this.productionMaxVersionCode;
+    final maxVersionCode = this.maxVersionCode;
     return plannedVersionCode != null &&
-        (productionMaxVersionCode == null ||
-            plannedVersionCode > productionMaxVersionCode);
+        (maxVersionCode == null || plannedVersionCode > maxVersionCode);
+  }
+}
+
+enum VersionNamePolicy {
+  unknown,
+  ok,
+  warnJump,
+  blocked,
+}
+
+extension ReleasePrepareVersionNamePolicy on ReleasePreparePlan {
+  VersionNamePolicy get versionNamePolicy {
+    final productionVersion = VersionName.tryParse(
+      googlePlay.api.productionLatestVersionName,
+    );
+    final requestedVersion = VersionName.tryParse(versionName);
+    if (productionVersion == null || requestedVersion == null) {
+      return VersionNamePolicy.unknown;
+    }
+    if (requestedVersion.compareTo(productionVersion) <= 0) {
+      return VersionNamePolicy.blocked;
+    }
+    if (requestedVersion.isMoreThanOneStepAfter(productionVersion)) {
+      return VersionNamePolicy.warnJump;
+    }
+    return VersionNamePolicy.ok;
   }
 }
 

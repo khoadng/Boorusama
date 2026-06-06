@@ -3,8 +3,8 @@ import 'package:args/command_runner.dart';
 import '../../../io/logger.dart';
 import '../../../io/process_runner.dart';
 import '../../../project/project.dart';
-import '../../../release/git_release.dart';
-import '../../../release/release_version.dart';
+import '../../../release/git/repository.dart';
+import '../../../release/version/release_version.dart';
 import '../../../tool/tool_resolver.dart';
 import '../../../tool/tool_runner.dart';
 

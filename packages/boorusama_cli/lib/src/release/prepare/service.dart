@@ -1,15 +1,16 @@
 import 'dart:io';
-import 'dart:math' as math;
-
 import 'package:path/path.dart' as p;
 
 import '../../io/process_runner.dart';
 import '../../project/project.dart';
 import '../changelog.dart';
-import '../git_release.dart';
+import '../git/repository.dart';
+import '../github/prepare.dart';
 import '../play/client.dart';
 import '../play/config.dart';
 import '../play/status.dart';
+import '../version/prepare_plan.dart';
+import '../version/version_name.dart';
 import 'plan.dart';
 
 final class ReleasePrepareService {
@@ -25,24 +26,33 @@ final class ReleasePrepareService {
   final GitRelease git;
   final void Function(String message)? onProgress;
 
-  Future<ReleasePreparePlan> plan(String versionName) async {
+  Future<ReleasePreparePlan> plan(
+    String versionName, {
+    String? githubRepo,
+    String githubWorkflow = 'github-release.yml',
+  }) async {
     final currentBuildNumber = int.tryParse(project.pubspec.buildNumber ?? '');
     final googlePlay = await _googlePlayPlan();
-    final nextBuildNumber = _nextBuildNumber(
-      currentBuildNumber: currentBuildNumber,
-      googlePlay: googlePlay,
-    );
-    final nextFullVersion = nextBuildNumber == null
-        ? null
-        : '$versionName+$nextBuildNumber';
     final tag = 'v$versionName';
     final changelogFile = File('${root.path}/CHANGELOG.md');
     final changelogStatus = _changelogStatus(changelogFile, versionName);
+    final versionPlan = const ReleasePrepareVersionPlanner().plan(
+      currentVersionName: project.pubspec.versionName,
+      currentBuildNumber: currentBuildNumber,
+      requestedVersionName: versionName,
+      changelogStatus: changelogStatus,
+      googlePlayMaxVersionCode: googlePlay.api.maxVersionCode,
+    );
+    final github = await _githubPlan(
+      repo: githubRepo ?? await _githubRepoFromEnvOrGit(),
+      workflow: githubWorkflow,
+      tag: tag,
+    );
 
     return ReleasePreparePlan(
       currentVersion: project.pubspec.version,
       versionName: versionName,
-      nextFullVersion: nextFullVersion,
+      nextFullVersion: versionPlan.nextFullVersion,
       branch: versionName,
       tag: tag,
       workingTreeClean: await git.isWorkingTreeClean(),
@@ -50,19 +60,25 @@ final class ReleasePrepareService {
       remoteBranchExists: await git.remoteBranchExists(versionName),
       localTagExists: await git.localTagExists(tag),
       remoteTagExists: await git.remoteTagExists(tag),
+      alreadyPrepared: versionPlan.alreadyPrepared,
       changelogStatus: changelogStatus,
       googlePlay: googlePlay,
+      github: github,
       changes: _plannedChanges(
         changelogFile: changelogFile,
         changelogStatus: changelogStatus,
         currentVersion: project.pubspec.version,
-        nextFullVersion: nextFullVersion,
+        nextFullVersion: versionPlan.nextFullVersion,
         versionName: versionName,
       ),
     );
   }
 
   void validate(ReleasePreparePlan plan) {
+    validatePlan(plan);
+  }
+
+  static void validatePlan(ReleasePreparePlan plan) {
     if (!_isVersionName(plan.versionName)) {
       throw ProcessFailure(
         'Invalid release version: ${plan.versionName}. Expected X.Y.Z.',
@@ -71,16 +87,6 @@ final class ReleasePrepareService {
     if (plan.nextFullVersion == null) {
       throw ProcessFailure(
         'Current pubspec version does not have a numeric build number: ${plan.currentVersion}.',
-      );
-    }
-    if (!plan.workingTreeClean) {
-      throw const ProcessFailure(
-        'Working tree is not clean. Commit or stash changes before preparing a release.',
-      );
-    }
-    if (plan.localTagExists || plan.remoteTagExists) {
-      throw ProcessFailure(
-        'Release tag already exists: ${plan.tag}. Use a new version.',
       );
     }
     if (plan.changelogStatus == ChangelogStatus.missing) {
@@ -119,11 +125,63 @@ final class ReleasePrepareService {
         'Google Play API check failed: ${plan.googlePlay.api.error ?? 'unknown error'}.',
       );
     }
-    if (!plan.googlePlay.api.plannedVersionCodeIsNewer(
-      _plannedVersionCode(plan),
-    )) {
+    if (!plan.alreadyPrepared &&
+        !plan.googlePlay.api.plannedVersionCodeIsNewer(
+          _plannedVersionCode(plan),
+        )) {
       throw ProcessFailure(
-        'Planned versionCode ${_plannedVersionCode(plan)} is not newer than Google Play production ${plan.googlePlay.api.productionMaxVersionCode}.',
+        'Planned versionCode ${_plannedVersionCode(plan)} is not newer than Google Play max ${plan.googlePlay.api.maxVersionCode}.',
+      );
+    }
+    if (plan.versionNamePolicy == VersionNamePolicy.blocked) {
+      throw ProcessFailure(
+        'Release version ${plan.versionName} must be newer than Google Play production ${plan.googlePlay.api.productionLatestVersionName}.',
+      );
+    }
+    if (!plan.github.repoConfigured) {
+      throw const ProcessFailure(
+        'GitHub repository is not configured. Pass --github-repo OWNER/REPO, set GITHUB_RELEASE_REPOSITORY, or configure a GitHub origin remote.',
+      );
+    }
+    if (!plan.github.workflowFileExists) {
+      throw ProcessFailure(
+        'GitHub release workflow file does not exist: ${plan.github.workflow}.',
+      );
+    }
+    if (!plan.github.ghInstalled) {
+      throw const ProcessFailure(
+        'GitHub CLI not found. Install gh and authenticate before preparing a release.',
+      );
+    }
+    if (!plan.github.authenticated) {
+      throw ProcessFailure(
+        'GitHub CLI is not authenticated: ${plan.github.error ?? 'unknown error'}.',
+      );
+    }
+    if (!plan.github.workflowReadable) {
+      throw ProcessFailure(
+        'GitHub release workflow is not readable: ${plan.github.error ?? plan.github.workflow}.',
+      );
+    }
+    if (!plan.github.releaseLookupSucceeded) {
+      throw ProcessFailure(
+        'GitHub release lookup failed: ${plan.github.error ?? 'unknown error'}.',
+      );
+    }
+    if (plan.github.releaseExists && !plan.alreadyPrepared) {
+      throw ProcessFailure(
+        'GitHub release already exists for ${plan.tag}. Use a new version.',
+      );
+    }
+    if ((plan.localTagExists || plan.remoteTagExists) &&
+        !plan.alreadyPrepared) {
+      throw ProcessFailure(
+        'Release tag already exists: ${plan.tag}. Use a new version.',
+      );
+    }
+    if (!plan.workingTreeClean) {
+      throw const ProcessFailure(
+        'Working tree is not clean. Commit or stash changes before preparing a release.',
       );
     }
   }
@@ -225,6 +283,42 @@ final class ReleasePrepareService {
     );
   }
 
+  Future<GithubPreparePlan> _githubPlan({
+    required String? repo,
+    required String workflow,
+    required String tag,
+  }) {
+    return GithubPrepareChecker(
+      root: root,
+      processRunner: git.tools.processRunner,
+      onProgress: onProgress,
+    ).check(repo: repo, workflow: workflow, tag: tag);
+  }
+
+  Future<String?> _githubRepoFromEnvOrGit() async {
+    final fromEnv =
+        project.env['GITHUB_RELEASE_REPOSITORY'] ??
+        project.env['GITHUB_REPOSITORY'];
+    if (fromEnv != null && fromEnv.isNotEmpty) return fromEnv;
+
+    final origin = await git.tools.gitOutput(['remote', 'get-url', 'origin']);
+    if (origin == 'unknown' || origin.isEmpty) return null;
+    return _githubRepoFromRemoteUrl(origin);
+  }
+
+  String? _githubRepoFromRemoteUrl(String remoteUrl) {
+    final normalized = remoteUrl.trim().replaceFirst(RegExp(r'\.git$'), '');
+    final https = RegExp(
+      r'^https://github\.com/([^/]+/[^/]+)$',
+    ).firstMatch(normalized);
+    if (https != null) return https.group(1);
+
+    final ssh = RegExp(
+      r'^(?:git@github\.com:|ssh://git@github\.com/)([^/]+/[^/]+)$',
+    ).firstMatch(normalized);
+    return ssh?.group(1);
+  }
+
   Future<GooglePlayApiPreparePlan> _googlePlayApiPlan({
     required File serviceAccountJsonFile,
     required String packageName,
@@ -245,7 +339,10 @@ final class ReleasePrepareService {
         productionTrack: status.track,
         productionReleaseCount: status.production.releases.length,
         productionMaxVersionCode: status.productionMaxVersionCode,
+        maxVersionCode: status.maxVersionCode,
+        maxVersionCodeTrack: status.maxVersionCodeTrack?.name,
         productionLatestReleaseName: latestRelease?.name,
+        productionLatestVersionName: _releaseVersionName(latestRelease?.name),
         productionLatestReleaseStatus: latestRelease?.status,
         trackCount: status.tracks.length,
         defaultLanguage: status.defaultLanguage,
@@ -260,7 +357,10 @@ final class ReleasePrepareService {
         productionTrack: 'production',
         productionReleaseCount: null,
         productionMaxVersionCode: null,
+        maxVersionCode: null,
+        maxVersionCodeTrack: null,
         productionLatestReleaseName: null,
+        productionLatestVersionName: null,
         productionLatestReleaseStatus: null,
         trackCount: null,
         defaultLanguage: null,
@@ -268,22 +368,6 @@ final class ReleasePrepareService {
         listingLanguages: const [],
       );
     }
-  }
-
-  int? _nextBuildNumber({
-    required int? currentBuildNumber,
-    required GooglePlayPreparePlan googlePlay,
-  }) {
-    final localNextBuildNumber = currentBuildNumber == null
-        ? null
-        : currentBuildNumber + 1;
-    final playNextBuildNumber = googlePlay.api.productionMaxVersionCode == null
-        ? null
-        : googlePlay.api.productionMaxVersionCode! + 1;
-
-    if (localNextBuildNumber == null) return playNextBuildNumber;
-    if (playNextBuildNumber == null) return localNextBuildNumber;
-    return math.max(localNextBuildNumber, playNextBuildNumber);
   }
 
   PlayTrackRelease? _latestProductionRelease(PlayReleaseStatus status) {
@@ -314,7 +398,7 @@ final class ReleasePrepareService {
   }) {
     final changes = <ReleasePrepareChange>[];
 
-    if (nextFullVersion != null) {
+    if (nextFullVersion != null && currentVersion != nextFullVersion) {
       changes.add(
         ReleasePrepareChange(
           path: 'pubspec.yaml',
@@ -342,16 +426,23 @@ final class ReleasePrepareService {
     return changes;
   }
 
-  bool _isVersionName(String value) {
+  static bool _isVersionName(String value) {
     return RegExp(r'^\d+\.\d+\.\d+$').hasMatch(value);
   }
 
-  int? _plannedVersionCode(ReleasePreparePlan plan) {
+  static int? _plannedVersionCode(ReleasePreparePlan plan) {
     final nextFullVersion = plan.nextFullVersion;
     final separatorIndex = nextFullVersion?.lastIndexOf('+') ?? -1;
     if (nextFullVersion == null || separatorIndex < 0) {
       return null;
     }
     return int.tryParse(nextFullVersion.substring(separatorIndex + 1));
+  }
+
+  String? _releaseVersionName(String? releaseName) {
+    if (releaseName == null || releaseName.isEmpty) return null;
+    final match = RegExp(r'\((\d+\.\d+\.\d+)\)').firstMatch(releaseName);
+    if (match != null) return match.group(1);
+    return VersionName.tryParse(releaseName)?.toString();
   }
 }

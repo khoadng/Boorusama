@@ -6,7 +6,7 @@ import '../io/process_runner.dart';
 import '../project/project.dart';
 import '../tool/tool_resolver.dart';
 import '../tool/tool_runner.dart';
-import 'build_args_parser.dart';
+import 'builds/args_parser.dart';
 
 final class BuildCommand extends Command<int> {
   BuildCommand();

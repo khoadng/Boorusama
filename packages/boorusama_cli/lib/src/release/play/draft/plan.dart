@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import '../../release_version.dart';
+import '../../version/release_version.dart';
 import 'metadata.dart';
 
 final class PlayDraftPlan {
@@ -11,7 +11,8 @@ final class PlayDraftPlan {
     required this.bundle,
     required this.releaseNotesLanguage,
     required this.metadata,
-    required this.productionMaxVersionCode,
+    required this.playMaxVersionCode,
+    required this.playMaxVersionCodeTrack,
     required this.willBuild,
   });
 
@@ -21,6 +22,7 @@ final class PlayDraftPlan {
   final File bundle;
   final String releaseNotesLanguage;
   final PlayReleaseMetadata metadata;
-  final int? productionMaxVersionCode;
+  final int? playMaxVersionCode;
+  final String? playMaxVersionCodeTrack;
   final bool willBuild;
 }

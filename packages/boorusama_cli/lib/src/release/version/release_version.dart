@@ -1,4 +1,4 @@
-import '../project/pubspec.dart';
+import '../../project/pubspec.dart';
 
 final class ReleaseVersion {
   const ReleaseVersion({

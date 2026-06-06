@@ -1,7 +1,8 @@
-import '../io/process_runner.dart';
-import '../tool/tool_runner.dart';
+import '../../io/process_runner.dart';
+import '../../tool/tool_runner.dart';
+import 'tag_publish.dart';
 
-final class GitRelease {
+final class GitRelease implements ReleaseTagRepository {
   const GitRelease(this.tools);
 
   final ToolRunner tools;
@@ -41,6 +42,10 @@ final class GitRelease {
     return tools.git(['tag', '-a', tag, '-m', message]);
   }
 
+  Future<void> deleteLocalTag(String tag) {
+    return tools.git(['tag', '-d', tag]);
+  }
+
   Future<void> stageFiles(List<String> paths) {
     return tools.git(['add', ...paths]);
   }
@@ -66,6 +71,7 @@ final class GitRelease {
     return tools.git(['checkout', '-b', branch, '--track', 'origin/$branch']);
   }
 
+  @override
   Future<void> pushTag(String tag) {
     return tools.git(['push', 'origin', tag]);
   }
@@ -100,6 +106,32 @@ final class GitRelease {
       tag,
     ]);
     return output.trim().isNotEmpty && output != 'unknown';
+  }
+
+  @override
+  Future<String?> currentHead() async {
+    final output = await tools.gitOutput(['rev-parse', 'HEAD']);
+    if (output == 'unknown' || output.isEmpty) return null;
+    return output;
+  }
+
+  @override
+  Future<String?> localTagCommit(String tag) async {
+    final output = await tools.gitOutput(['rev-list', '-n', '1', tag]);
+    if (output == 'unknown' || output.isEmpty) return null;
+    return output;
+  }
+
+  @override
+  Future<String?> remoteTagCommit(String tag) async {
+    final output = await tools.gitOutput([
+      'ls-remote',
+      '--tags',
+      'origin',
+      tag,
+    ]);
+    if (output == 'unknown' || output.trim().isEmpty) return null;
+    return output.trim().split(RegExp(r'\s+')).first;
   }
 
   Future<void> requireLocalHeadMatchesTag(String tag) async {

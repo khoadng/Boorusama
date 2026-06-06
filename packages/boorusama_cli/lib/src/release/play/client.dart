@@ -158,6 +158,15 @@ final class GooglePlayReleaseRepository implements PlayReleaseRepository {
                 if (int.tryParse(code) != null) int.parse(code),
             ],
             releaseNotesCount: release.releaseNotes?.length ?? 0,
+            releaseNotes: [
+              for (final note
+                  in release.releaseNotes ?? const <LocalizedText>[])
+                if (note.language != null && note.text != null)
+                  PlayReleaseNoteStatus(
+                    language: note.language!,
+                    text: note.text!,
+                  ),
+            ],
             userFraction: release.userFraction,
           ),
       ],

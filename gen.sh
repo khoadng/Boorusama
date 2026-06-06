@@ -1,12 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-export BOORUSAMA_ROOT="$ROOT"
-BOORUSAMA_SCRIPT_NAME="gen"
-
-source "$ROOT/scripts/toolchain.sh"
-bs_resolve_toolchain
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/scripts/bootstrap.sh"
+bs_bootstrap_cli "${BASH_SOURCE[0]}" "gen"
 
 case "${1:-}" in
   i18n|booru)

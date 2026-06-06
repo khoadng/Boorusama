@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-exec "$ROOT/build.sh" release play "$@"
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/scripts/bootstrap.sh"
+bs_bootstrap_cli "${BASH_SOURCE[0]}" "release"
+bs_run_cli release all "$@"
