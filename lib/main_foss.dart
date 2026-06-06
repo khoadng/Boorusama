@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Project imports:
 import 'core/boorusama_app.dart';
+import 'foundation/app_update/providers.dart';
 import 'foundation/filesystem.dart';
 import 'foundation/iap/iap.dart';
 
@@ -14,6 +15,7 @@ void main() {
       fileSystem: const IoFileSystem(),
       isFossBuild: true,
       iapFunc: () => initDummyIap(),
+      appUpdateChecker: createDefaultAppUpdateChecker,
     ),
   );
 }

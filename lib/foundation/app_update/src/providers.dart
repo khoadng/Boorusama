@@ -7,12 +7,22 @@ import '../../platform.dart';
 import 'types/app_update_checker.dart';
 import 'types/update_status.dart';
 
+const _kReleaseChannel = String.fromEnvironment('RELEASE_CHANNEL');
+const _kReleaseChannelGithub = 'github';
+const _kReleaseChannelPlay = 'play';
+
 final shouldCheckForUpdateProvider = Provider<bool>((ref) {
-  return !ref.watch(isDevEnvironmentProvider) && isAndroid();
+  if (ref.watch(isDevEnvironmentProvider) || isWeb()) return false;
+
+  return switch (_kReleaseChannel) {
+    _kReleaseChannelPlay => isAndroid(),
+    _kReleaseChannelGithub => isMobilePlatform() || isDesktopPlatform(),
+    _ => false,
+  };
 });
 
 final appUpdateCheckerProvider = Provider<AppUpdateChecker>(
-  (ref) => throw UnimplementedError(),
+  (ref) => UnsupportedPlatformChecker(),
 );
 
 final appUpdateStatusProvider = FutureProvider<UpdateStatus>((ref) {

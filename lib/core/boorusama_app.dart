@@ -20,6 +20,7 @@ import '../foundation/app_update/providers.dart';
 import '../foundation/boot.dart';
 import '../foundation/boot/failsafe.dart';
 import '../foundation/boot/providers.dart';
+import '../foundation/display_mode.dart';
 import '../foundation/filesystem.dart';
 import '../foundation/iap/iap.dart';
 import '../foundation/info/app_info.dart';
@@ -91,6 +92,9 @@ class _BoorusamaAppState extends State<BoorusamaApp> {
 
     try {
       logger.debugBoot('App Start up');
+
+      logger.debugBoot('Configure display mode');
+      await DisplayModeService().preferHighRefreshRate(logger: logger);
 
       if (isDesktopPlatform()) {
         await window.initialize();

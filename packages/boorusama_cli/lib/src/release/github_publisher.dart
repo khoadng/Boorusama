@@ -5,8 +5,11 @@ import 'package:path/path.dart' as p;
 
 import '../io/logger.dart';
 import '../io/process_runner.dart';
+import 'changelog.dart';
 import 'github_receipt.dart';
 import 'github_target.dart';
+
+const _updateManifestFileName = 'boorusama-update.json';
 
 final class GithubPublishOptions {
   const GithubPublishOptions({
@@ -73,11 +76,27 @@ final class GithubPublisher {
       throw ProcessFailure('Release notes file not found: ${notesFile.path}');
     }
 
+    final notes = _resolveReleaseNotes(
+      notesFile: notesFile,
+      version: release.version,
+    );
+    final manifest = _writeUpdateManifest(
+      artifactsDir: artifactsDir,
+      repo: options.repo,
+      release: release,
+      receipts: selected,
+      notes: notes,
+    );
+    final releaseAssets = [
+      ...release.assets,
+      manifest,
+    ];
+
     final args = [
       'release',
       'create',
       release.tag,
-      for (final file in release.assets) file.path,
+      for (final file in releaseAssets) file.path,
       '--repo',
       options.repo,
       '--title',
@@ -88,14 +107,69 @@ final class GithubPublisher {
       if (notesFile != null) ...['--notes-file', notesFile.path],
       if (notesFile == null) ...[
         '--notes',
-        'Release ${release.version} from ${release.commit}.',
+        notes,
       ],
     ];
 
     logger.info(
-      'Creating GitHub release ${release.tag} in ${options.repo} with ${release.assets.length} assets.',
+      'Creating GitHub release ${release.tag} in ${options.repo} with ${releaseAssets.length} assets.',
     );
     await processRunner.run('gh', args, workingDirectory: root);
+  }
+
+  String _resolveReleaseNotes({
+    required File? notesFile,
+    required String version,
+  }) {
+    if (notesFile != null) return notesFile.readAsStringSync().trim();
+
+    try {
+      return Changelog(
+        File('${root.path}/CHANGELOG.md'),
+      ).sectionFor(version).trim();
+    } on Object catch (error) {
+      logger.warning(
+        'Falling back to generic release notes: $error',
+      );
+      return 'Release $version.';
+    }
+  }
+
+  File _writeUpdateManifest({
+    required Directory artifactsDir,
+    required String repo,
+    required _ReleaseAssets release,
+    required List<_Receipt> receipts,
+    required String notes,
+  }) {
+    final manifest = <String, Object?>{
+      'schemaVersion': 1,
+      'version': release.version,
+      'fullVersion': release.fullVersion,
+      if (release.buildNumber != null) 'buildNumber': release.buildNumber,
+      'tag': release.tag,
+      'releaseUrl': 'https://github.com/$repo/releases/tag/${release.tag}',
+      'notes': notes,
+      'artifacts': [
+        for (final receipt in receipts)
+          for (final artifact in receipt.artifacts)
+            <String, Object?>{
+              'target': receipt.target,
+              'type': artifact.type,
+              'fileName': artifact.fileName,
+              'relativePath': artifact.relativePath,
+              'sha256': artifact.sha256,
+              'size': artifact.size,
+            },
+      ],
+    };
+
+    final file = File(p.join(artifactsDir.path, _updateManifestFileName));
+    file.writeAsStringSync(
+      const JsonEncoder.withIndent('  ').convert(manifest),
+    );
+    logger.info('Update manifest: ${file.path}');
+    return file;
   }
 
   Directory _resolveArtifactsDir(Directory directory) {
@@ -160,6 +234,16 @@ final class GithubPublisher {
           'Receipt ${receipt.file.path} version mismatch: ${receipt.version} != ${first.version}',
         );
       }
+      if (receipt.fullVersion != first.fullVersion) {
+        throw ProcessFailure(
+          'Receipt ${receipt.file.path} full version mismatch: ${receipt.fullVersion} != ${first.fullVersion}',
+        );
+      }
+      if (receipt.buildNumber != first.buildNumber) {
+        throw ProcessFailure(
+          'Receipt ${receipt.file.path} build number mismatch: ${receipt.buildNumber} != ${first.buildNumber}',
+        );
+      }
       if (receipt.commit != first.commit) {
         throw ProcessFailure(
           'Receipt ${receipt.file.path} commit mismatch: ${receipt.commit} != ${first.commit}',
@@ -204,6 +288,8 @@ final class GithubPublisher {
     return _ReleaseAssets(
       tag: tag,
       version: first.version,
+      fullVersion: first.fullVersion,
+      buildNumber: first.buildNumber,
       commit: first.commit,
       assets: assets,
     );
@@ -221,12 +307,16 @@ final class _ReleaseAssets {
   const _ReleaseAssets({
     required this.tag,
     required this.version,
+    required this.fullVersion,
+    required this.buildNumber,
     required this.commit,
     required this.assets,
   });
 
   final String tag;
   final String version;
+  final String fullVersion;
+  final String? buildNumber;
   final String commit;
   final List<File> assets;
 }
@@ -237,6 +327,8 @@ final class _Receipt {
     required this.target,
     required this.app,
     required this.version,
+    required this.fullVersion,
+    required this.buildNumber,
     required this.tag,
     required this.commit,
     required this.artifacts,
@@ -246,6 +338,8 @@ final class _Receipt {
   final String target;
   final String app;
   final String version;
+  final String fullVersion;
+  final String? buildNumber;
   final String tag;
   final String commit;
   final List<_ReceiptArtifact> artifacts;
@@ -270,6 +364,10 @@ final class _Receipt {
       target: _requiredString(decoded, 'target', file),
       app: _requiredString(decoded, 'app', file),
       version: _requiredString(decoded, 'version', file),
+      fullVersion:
+          _optionalString(decoded, 'fullVersion') ??
+          _requiredString(decoded, 'version', file),
+      buildNumber: _optionalString(decoded, 'buildNumber'),
       tag: _requiredString(decoded, 'tag', file),
       commit: _requiredString(decoded, 'commit', file),
       artifacts: [
@@ -297,16 +395,27 @@ final class _Receipt {
     if (field is int) return field;
     throw ProcessFailure('Invalid receipt field "$key" in ${file.path}');
   }
+
+  static String? _optionalString(Map<String, Object?> value, String key) {
+    final field = value[key];
+    if (field == null) return null;
+    if (field is String && field.isNotEmpty) return field;
+    return null;
+  }
 }
 
 final class _ReceiptArtifact {
   const _ReceiptArtifact({
+    required this.type,
     required this.fileName,
+    required this.relativePath,
     required this.sha256,
     required this.size,
   });
 
+  final String type;
   final String fileName;
+  final String relativePath;
   final String sha256;
   final int size;
 
@@ -315,7 +424,11 @@ final class _ReceiptArtifact {
       throw ProcessFailure('Invalid artifact entry in ${file.path}');
     }
     return _ReceiptArtifact(
+      type: _Receipt._requiredString(value, 'type', file),
       fileName: _Receipt._requiredString(value, 'fileName', file),
+      relativePath:
+          _Receipt._optionalString(value, 'relativePath') ??
+          _Receipt._requiredString(value, 'fileName', file),
       sha256: _Receipt._requiredString(value, 'sha256', file),
       size: _Receipt._requiredInt(value, 'size', file),
     );
