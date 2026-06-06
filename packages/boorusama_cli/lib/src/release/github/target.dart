@@ -1,5 +1,5 @@
-import '../builds/build_target.dart';
-import '../io/platform.dart';
+import '../../builds/build_target.dart';
+import '../../io/platform.dart';
 
 enum GithubReleaseTarget {
   apk,

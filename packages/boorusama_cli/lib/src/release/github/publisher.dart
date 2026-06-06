@@ -3,11 +3,11 @@ import 'dart:io';
 
 import 'package:path/path.dart' as p;
 
-import '../io/logger.dart';
-import '../io/process_runner.dart';
-import 'changelog.dart';
-import 'github_receipt.dart';
-import 'github_target.dart';
+import '../../io/logger.dart';
+import '../../io/process_runner.dart';
+import '../changelog.dart';
+import 'receipt.dart';
+import 'target.dart';
 
 const _updateManifestFileName = 'boorusama-update.json';
 

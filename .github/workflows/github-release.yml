@@ -4,8 +4,8 @@ on:
   workflow_dispatch:
     inputs:
       release_tag:
-        description: "Release tag. Leave empty to use the pubspec version tag."
-        required: false
+        description: "Release tag to build and publish."
+        required: true
         default: ""
       prerelease:
         description: "Mark the draft release as a prerelease"
@@ -61,6 +61,8 @@ jobs:
     steps:
       - name: Check out Boorusama
         uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.release_tag }}
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
@@ -159,6 +161,8 @@ jobs:
     steps:
       - name: Check out Boorusama
         uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.release_tag }}
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
@@ -172,7 +176,7 @@ jobs:
           path: release-assets
 
       - name: Delete existing release
-        if: inputs.recreate_release && inputs.release_tag != ''
+        if: inputs.recreate_release
         shell: bash
         run: |
           set -euo pipefail
@@ -197,10 +201,8 @@ jobs:
             release-assets
           )
 
-          if [[ -n "${{ inputs.release_tag }}" ]]; then
-            args+=(--tag "${{ inputs.release_tag }}")
-            args+=(--title "Boorusama ${{ inputs.release_tag }}")
-          fi
+          args+=(--tag "${{ inputs.release_tag }}")
+          args+=(--title "Boorusama ${{ inputs.release_tag }}")
 
           if [[ "${{ inputs.prerelease }}" == "true" ]]; then
             args+=(--prerelease)
