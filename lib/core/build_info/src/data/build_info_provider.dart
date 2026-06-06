@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../../../foundation/info/package_info.dart';
+import '../../../environment/types.dart';
 import '../types/build_info.dart';
 
 final buildInfoProvider = Provider<BuildInfo?>(
@@ -26,6 +27,7 @@ final dummyBuildInfoProvider = Provider<BuildInfo>(
       DateTime.now(),
     ).toIso8601String(),
     isFossBuild: false,
+    releaseChannel: ReleaseChannel.play,
   ),
   name: 'dummyBuildInfoProvider',
 );

@@ -1,12 +1,16 @@
 // Package imports:
 import 'package:equatable/equatable.dart';
 
+// Project imports:
+import '../../../environment/types.dart';
+
 class BuildInfo extends Equatable {
   const BuildInfo({
     required this.gitCommit,
     required this.gitBranch,
     required this.buildTimestamp,
     required this.isFossBuild,
+    required this.releaseChannel,
   });
 
   static BuildInfo? fromEnvironment({
@@ -27,6 +31,10 @@ class BuildInfo extends Equatable {
     const isFossBuild = bool.fromEnvironment(
       'IS_FOSS_BUILD',
     );
+    const releaseChannelValue = String.fromEnvironment(
+      'RELEASE_CHANNEL',
+      defaultValue: 'unknown',
+    );
 
     if (gitCommit == 'unknown' ||
         gitBranch == 'unknown' ||
@@ -34,11 +42,12 @@ class BuildInfo extends Equatable {
       return null;
     }
 
-    return const BuildInfo(
+    return BuildInfo(
       gitCommit: gitCommit,
       gitBranch: gitBranch,
       buildTimestamp: buildTimestamp,
       isFossBuild: isFossBuild,
+      releaseChannel: releaseChannelFrom(releaseChannelValue),
     );
   }
 
@@ -46,6 +55,7 @@ class BuildInfo extends Equatable {
   final String gitBranch;
   final String buildTimestamp;
   final bool isFossBuild;
+  final ReleaseChannel releaseChannel;
 
   String shortGitCommit({
     int length = 7,
@@ -67,6 +77,8 @@ class BuildInfo extends Equatable {
     final parts = [
       version,
       if (isFossBuild) '(FOSS)',
+      if (releaseChannel != ReleaseChannel.unknown)
+        '(${releaseChannel.wireName})',
       '- ${shortGitCommit()}',
       if (timestamp case final t?) '\n${formatTimestamp(t)}',
     ];
@@ -81,5 +93,6 @@ class BuildInfo extends Equatable {
     gitBranch,
     buildTimestamp,
     isFossBuild,
+    releaseChannel,
   ];
 }
