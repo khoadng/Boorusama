@@ -346,7 +346,5 @@ extension BooruUrlErrorX on BooruUrlError {
       context.t.booru.validation_redundant_www.replaceAll('{0}', url),
     BooruUrlError.stringHasInbetweenSpaces =>
       context.t.booru.validation_contains_spaces.replaceAll('{0}', url),
-    BooruUrlError.missingScheme =>
-      context.t.booru.validation_missing_scheme.replaceAll('{0}', url),
   };
 }

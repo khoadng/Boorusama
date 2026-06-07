@@ -46,9 +46,24 @@ void main() {
       },
     );
 
-    test('returns BooruUrlError.missingScheme for URL without scheme', () {
+    test('defaults URL without scheme to https', () {
       final result = createBooruUri('danbooru.donmai.us');
-      expect(result, left(BooruUrlError.missingScheme));
+      expect(result, right(Uri.parse('https://danbooru.donmai.us/')));
+    });
+
+    test('defaults localhost URL without scheme to https', () {
+      final result = createBooruUri('localhost:8080');
+      expect(result, right(Uri.parse('https://localhost:8080/')));
+    });
+
+    test('defaults IP URL without scheme to https', () {
+      final result = createBooruUri('192.168.1.10:8080');
+      expect(result, right(Uri.parse('https://192.168.1.10:8080/')));
+    });
+
+    test('preserves explicit http URL', () {
+      final result = createBooruUri('http://192.168.1.10:8080');
+      expect(result, right(Uri.parse('http://192.168.1.10:8080/')));
     });
 
     test('returns BooruUrlError.notAnHttpOrHttpsUrl for non-HTTP(s) URL', () {

@@ -9,7 +9,6 @@ enum BooruUrlError {
   emptyUrl, // e.g. ''
   stringHasInbetweenSpaces, // e.g. 'https://danbooru.donmai.us/ posts/1234'
   invalidUrlFormat, // e.g. danbooru
-  missingScheme, // e.g. danbooru.donmai.us
   notAnHttpOrHttpsUrl, // e.g. ftp://danbooru.donmai.us
   redundantWww, // e.g. https://www.danbooru.donmai.us/
 }
@@ -22,7 +21,6 @@ typedef UriValidation = Validation<Uri>;
 typedef StringValidation = Validation<String>;
 
 final List<UriValidation> booruUriValidationConditions = [
-  (u) => u.scheme.isEmpty ? left(BooruUrlError.missingScheme) : right(u),
   (u) => !u.hasAuthority ? left(BooruUrlError.invalidUrlFormat) : right(u),
   (u) => !isLocalhost(u) && u.host.split('.').length < 2
       ? left(BooruUrlError.invalidUrlFormat)

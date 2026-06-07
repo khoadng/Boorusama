@@ -26,4 +26,17 @@ BooruUriOrError _validateUri(Uri uri) =>
 BooruUrlOrError _validateString(String s) =>
     validateSequentiallyUntilError(s, booruUrlValidationConditions);
 
-String _normalize(String s) => s.endsWith('/') ? s : '$s/';
+String _normalize(String s) {
+  final withScheme = _defaultSchemeIfMissing(s);
+
+  return _appendTrailingSlash(withScheme);
+}
+
+String _defaultSchemeIfMissing(String s) =>
+    _hasSchemePrefix(s) ? s : 'https://$s';
+
+String _appendTrailingSlash(String s) => s.endsWith('/') ? s : '$s/';
+
+bool _hasSchemePrefix(String s) => RegExp(
+  '^[a-zA-Z][a-zA-Z0-9+.-]*://',
+).hasMatch(s);
