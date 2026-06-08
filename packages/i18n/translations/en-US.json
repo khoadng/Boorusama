@@ -509,6 +509,7 @@
       "video_cache": "Video cache",
       "video_cache_limit": "Video cache limit",
       "video_cache_limit_description": "Maximum size for video cache storage",
+      "custom_cache_limit_option": "Custom...",
       "no_limit": "No Limit",
       "bookmark_images": "Bookmark images",
       "loading": "Loading...",

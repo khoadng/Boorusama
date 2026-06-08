@@ -25,6 +25,7 @@ class OptionDropDownButton<T> extends ConsumerStatefulWidget {
     this.alignment = AlignmentDirectional.centerEnd,
     this.backgroundColor,
     this.padding,
+    this.selectedItemBuilder,
   });
 
   final T value;
@@ -33,6 +34,7 @@ class OptionDropDownButton<T> extends ConsumerStatefulWidget {
   final AlignmentDirectional alignment;
   final Color? backgroundColor;
   final EdgeInsetsGeometry? padding;
+  final Widget Function(T value)? selectedItemBuilder;
 
   @override
   ConsumerState<OptionDropDownButton<T>> createState() =>
@@ -164,7 +166,9 @@ class _OptionDropDownButtonState<T>
                     )
                     case final item?)
                   Flexible(
-                    child: item.child,
+                    child:
+                        widget.selectedItemBuilder?.call(widget.value) ??
+                        item.child,
                   )
                 else
                   const SizedBox(

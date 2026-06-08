@@ -1,8 +1,6 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
-// Package imports:
-import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 import 'package:i18n/i18n.dart';
@@ -13,6 +11,8 @@ import '../../../../foundation/utils/file_utils.dart';
 import '../../../bookmarks/providers.dart';
 import '../../../cache/cache_notifier.dart';
 import '../../../cache/providers.dart';
+import '../../../videos/cache/types.dart';
+import '../../../videos/cache/widgets.dart';
 import '../../../widgets/settings_card.dart';
 import '../../../widgets/widgets.dart';
 import '../providers/settings_notifier.dart';
@@ -387,37 +387,51 @@ class _DataAndStoragePageState extends ConsumerState<DataAndStoragePage> {
     Settings settings,
     SettingsNotifier notifier,
   ) {
-    final options = _getVideoCacheMaxSizeOptions();
     final currentValue = settings.videoCacheMaxSize;
-    final selectedOption =
-        options.firstWhereOrNull(
-          (option) => option == currentValue,
-        ) ??
-        CacheSize.oneGigabyte;
+    final optionItems = VideoCacheLimitOptions.dropdownOptions();
+    final selectedOption = VideoCacheLimitOptions.selectedOption(currentValue);
 
-    return SettingsTile(
+    return SettingsTile<VideoCacheLimitOption>(
       title: Text(context.t.settings.data_and_storage.video_cache_limit),
       subtitle: Text(
         context.t.settings.data_and_storage.video_cache_limit_description,
       ),
       selectedOption: selectedOption,
-      items: options,
-      onChanged: (option) => notifier.updateSettings(
-        settings.copyWith(videoCacheMaxSize: option),
+      items: optionItems,
+      onChanged: (option) {
+        if (option.isCustom) {
+          showVideoCacheLimitDialog(
+            context,
+            currentValue: currentValue,
+          ).then((customSize) {
+            if (customSize == null) return;
+
+            notifier.updateSettings(
+              settings.copyWith(videoCacheMaxSize: customSize),
+            );
+          });
+          return;
+        }
+
+        final size = option.cacheSize;
+        if (size == null) return;
+
+        notifier.updateSettings(
+          settings.copyWith(videoCacheMaxSize: size),
+        );
+      },
+      optionBuilder: (option) => Text(
+        option.isCustom
+            ? context.t.settings.data_and_storage.custom_cache_limit_option
+            : _getCacheSizeLabel(context, option.cacheSize!),
       ),
-      optionBuilder: (option) => Text(_getCacheSizeLabel(context, option)),
+      selectedOptionBuilder: (option) => Text(
+        option.isCustom
+            ? _getCacheSizeLabel(context, currentValue)
+            : _getCacheSizeLabel(context, option.cacheSize!),
+      ),
     );
   }
-
-  List<CacheSize> _getVideoCacheMaxSizeOptions() => [
-    CacheSize.oneHundredMegabytes,
-    CacheSize.fiveHundredMegabytes,
-    CacheSize.oneGigabyte,
-    CacheSize.twoGigabytes,
-    CacheSize.fiveGigabytes,
-    CacheSize.tenGigabytes,
-    CacheSize.zero,
-  ];
 
   String _getCacheSizeLabel(BuildContext context, CacheSize cacheSize) =>
       switch (cacheSize) {

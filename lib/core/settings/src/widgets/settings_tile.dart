@@ -16,6 +16,7 @@ class SettingsTile<T> extends StatelessWidget {
     this.leading,
     this.padding,
     this.visualDensity,
+    this.selectedOptionBuilder,
   });
 
   final Widget title;
@@ -25,6 +26,7 @@ class SettingsTile<T> extends StatelessWidget {
   final Widget? leading;
   final List<T> items;
   final Widget Function(T item) optionBuilder;
+  final Widget Function(T item)? selectedOptionBuilder;
   final EdgeInsetsGeometry? padding;
   final VisualDensity? visualDensity;
 
@@ -42,6 +44,7 @@ class SettingsTile<T> extends StatelessWidget {
         onChanged: (newValue) {
           if (newValue != null) onChanged(newValue);
         },
+        selectedItemBuilder: selectedOptionBuilder,
         items: items
             .map(
               (value) => DropdownMenuItem<T>(
