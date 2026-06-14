@@ -17,11 +17,13 @@ class VideoCacheManager implements ImageCacheManager {
     this.evictionThreshold = 0.8,
     this.enableLogging = false,
     this.cacheDirName = defaultSubPath,
+    this.cacheRootPathProvider,
     MemoryCache? memoryCache,
   }) : _memoryCache = memoryCache ?? LRUMemoryCache();
 
   final String cacheDirName;
   final bool enableLogging;
+  final FutureOr<String> Function()? cacheRootPathProvider;
   final MemoryCache _memoryCache;
   final _keyCache = <String, String>{};
 
@@ -80,12 +82,17 @@ class VideoCacheManager implements ImageCacheManager {
   }
 
   @override
+  Future<void> clearAllCache() async {
+    _memoryCache.clear();
+  }
+
+  @override
   void invalidateCacheDirectory() {
     // No-op for web
   }
 
   Future<void> clearAllVideos() async {
-    _memoryCache.clear();
+    await clearAllCache();
   }
 
   Future<bool> isVideoCached(String url, {Duration? maxAge}) async {

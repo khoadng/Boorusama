@@ -42,6 +42,7 @@ import 'configs/config/types.dart';
 import 'configs/manage/providers.dart';
 import 'hive/hive_registrar.g.dart';
 import 'http/client/types.dart';
+import 'images/providers.dart';
 import 'settings/providers.dart';
 import 'settings/src/types/settings_repository.dart';
 import 'settings/types.dart';
@@ -185,7 +186,12 @@ class _BoorusamaAppState extends State<BoorusamaApp> {
 
       if (settings.clearImageCacheOnStartup) {
         logger.debugBoot('Clear image cache');
-        await clearImageCache(null);
+        final imageCacheManager = createDefaultImageCacheManager(fs);
+        try {
+          await clearImageCache(imageCacheManager);
+        } finally {
+          await imageCacheManager.dispose();
+        }
       }
 
       setupHttpOverrides();

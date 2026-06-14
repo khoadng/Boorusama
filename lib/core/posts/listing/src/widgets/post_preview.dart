@@ -13,6 +13,7 @@ import 'package:i18n/i18n.dart';
 // Project imports:
 import '../../../../configs/config/types.dart';
 import '../../../../configs/manage/providers.dart';
+import '../../../../images/providers.dart';
 import '../../../../http/client/providers.dart';
 import '../../../../search/search/routes.dart';
 import '../../../../tags/show/providers.dart';
@@ -150,6 +151,7 @@ class DefaultPostPreviewHeader extends ConsumerWidget {
                   url: source.faviconUrl,
                   size: 14,
                   dio: dio,
+                  cacheManager: ref.watch(defaultImageCacheManagerProvider),
                 ),
               ),
           ];

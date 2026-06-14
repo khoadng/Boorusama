@@ -37,21 +37,22 @@ class IoFileSystem implements AppFileSystem {
   Future<String?> getTemporaryPath() async {
     if (kIsWeb) return null;
 
-    final dir = await getTemporaryDirectory();
-
-    if (defaultTargetPlatform == TargetPlatform.windows) {
-      final name = _kAppTemporaryDirectoryName.isNotEmpty
-          ? _kAppTemporaryDirectoryName.replaceAll(' ', '_').toLowerCase()
-          : 'boorusama';
-
-      final appDirPath = p.join(dir.path, name);
-      if (!directoryExistsSync(appDirPath)) {
-        await createDirectory(appDirPath);
-      }
-      return appDirPath;
+    try {
+      return (await getApplicationCacheDirectory()).path;
+    } catch (_) {
+      // Fall back to system temp if the platform cannot provide an app cache dir.
     }
 
-    return dir.path;
+    final dir = await getTemporaryDirectory();
+    final name = _kAppTemporaryDirectoryName.isNotEmpty
+        ? _kAppTemporaryDirectoryName.replaceAll(' ', '_').toLowerCase()
+        : 'boorusama';
+
+    final appDirPath = p.join(dir.path, name);
+    if (!directoryExistsSync(appDirPath)) {
+      await createDirectory(appDirPath);
+    }
+    return appDirPath;
   }
 
   @override
@@ -61,12 +62,10 @@ class IoFileSystem implements AppFileSystem {
     try {
       return switch (defaultTargetPlatform) {
         TargetPlatform.android => _androidDownloadPath(),
-        TargetPlatform.iOS =>
-          (await getApplicationDocumentsDirectory()).path,
+        TargetPlatform.iOS => (await getApplicationDocumentsDirectory()).path,
         TargetPlatform.windows ||
         TargetPlatform.linux ||
-        TargetPlatform.macOS =>
-          (await getDownloadsDirectory())?.path,
+        TargetPlatform.macOS => (await getDownloadsDirectory())?.path,
         _ => null,
       };
     } catch (_) {

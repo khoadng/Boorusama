@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../foundation/info/app_info.dart';
 import '../../../foundation/networking.dart';
 import '../../../foundation/url_launcher.dart';
+import '../../images/providers.dart';
 import '../../posts/sources/types.dart';
 import '../../widgets/website_logo.dart';
 
@@ -115,6 +116,7 @@ class _DonationIcon extends ConsumerWidget {
         url: getFavicon(_getDonateUrl(url)),
         dio: dio,
         size: 40,
+        cacheManager: ref.watch(defaultImageCacheManagerProvider),
       ),
     );
   }

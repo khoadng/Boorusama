@@ -5,13 +5,15 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:dio/dio.dart';
 import 'package:extended_image/extended_image.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:html/parser.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../../../../foundation/url_launcher.dart';
+import '../../../images/providers.dart';
 
-class YoutubePreviewBox extends StatelessWidget {
+class YoutubePreviewBox extends ConsumerWidget {
   const YoutubePreviewBox({
     required this.uri,
     super.key,
@@ -20,9 +22,10 @@ class YoutubePreviewBox extends StatelessWidget {
   final Uri uri;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     try {
       final dio = Dio();
+      final cacheManager = ref.watch(defaultImageCacheManagerProvider);
       return FutureBuilder<PreviewUrlData>(
         future: dio
             .getUri(uri)
@@ -64,6 +67,7 @@ class YoutubePreviewBox extends StatelessWidget {
                               child: ExtendedImage.network(
                                 data.previewImage!,
                                 dio: dio,
+                                cacheManager: cacheManager,
                                 fit: BoxFit.contain,
                               ),
                             ),

@@ -197,6 +197,7 @@ class BookmarkImageCacheManager implements ImageCacheManager {
   }
 
   /// Clear all files in this cache directory
+  @override
   Future<void> clearAllCache() async {
     try {
       final cacheDirPath = await getCacheDirectory();

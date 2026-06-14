@@ -18,6 +18,9 @@ abstract class ImageCacheManager {
   /// Clears the cached file for the specified key
   Future<void> clearCache(String key);
 
+  /// Clears all cached files managed by this cache manager
+  Future<void> clearAllCache();
+
   /// Generates a cache key for a URL, optionally using a custom key
   String generateCacheKey(String url, {String? customKey});
 

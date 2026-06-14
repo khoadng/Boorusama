@@ -4,6 +4,7 @@ import 'package:cache_manager/cache_manager.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import '../../../foundation/filesystem.dart';
 import '../../../foundation/platform.dart';
 import '../../http/client/providers.dart';
 import '../../settings/providers.dart';
@@ -26,10 +27,16 @@ final videoCacheManagerProvider = Provider<VideoCacheManager?>(
 
     if (videoCacheSize.isZero) return null;
 
+    final fs = ref.watch(appFileSystemProvider);
     final manager = VideoCacheManager(
       maxTotalCacheSize: videoCacheSize.bytes,
       fileDownloader: FileDownloader(),
       dio: ref.watch(genericDioProvider),
+      cacheRootPathProvider: () async {
+        final path = await fs.getTemporaryPath();
+        if (path == null) throw Exception('Cache directory not available');
+        return path;
+      },
     );
 
     ref.onDispose(() {

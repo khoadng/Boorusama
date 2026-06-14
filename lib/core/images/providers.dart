@@ -5,6 +5,9 @@ import 'package:flutter/foundation.dart';
 import 'package:cache_manager/cache_manager.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+// Project imports:
+import '../../foundation/filesystem.dart';
+
 final defaultCachedImageFileProvider = FutureProvider.autoDispose
     .family<Uint8List?, String>(
       (ref, imageUrl) async {
@@ -18,12 +21,8 @@ final defaultCachedImageFileProvider = FutureProvider.autoDispose
 
 final defaultImageCacheManagerProvider = Provider<ImageCacheManager>(
   (ref) {
-    final manager = DefaultImageCacheManager(
-      enableLogging: kDebugMode,
-      memoryCache: LRUMemoryCache(
-        maxEntries: 500,
-      ),
-    );
+    final fs = ref.watch(appFileSystemProvider);
+    final manager = createDefaultImageCacheManager(fs);
 
     ref.onDispose(() {
       manager.dispose();
@@ -32,3 +31,17 @@ final defaultImageCacheManagerProvider = Provider<ImageCacheManager>(
     return manager;
   },
 );
+
+ImageCacheManager createDefaultImageCacheManager(AppFileSystem fs) {
+  return DefaultImageCacheManager(
+    enableLogging: kDebugMode,
+    cacheRootPathProvider: () async {
+      final path = await fs.getTemporaryPath();
+      if (path == null) throw Exception('Cache directory not available');
+      return path;
+    },
+    memoryCache: LRUMemoryCache(
+      maxEntries: 500,
+    ),
+  );
+}

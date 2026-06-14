@@ -20,6 +20,7 @@ class VideoCacheManager implements ImageCacheManager {
     this.maxItemSize = 100 * 1024 * 1024, // 100MB
     this.evictionThreshold = 0.8,
     this.enableLogging = false,
+    this.cacheRootPathProvider,
   });
 
   final String cacheDirName;
@@ -27,6 +28,7 @@ class VideoCacheManager implements ImageCacheManager {
   final int maxItemSize;
   final double evictionThreshold;
   final bool enableLogging;
+  final FutureOr<String> Function()? cacheRootPathProvider;
   final FileDownloader fileDownloader;
   final Dio dio;
 
@@ -58,8 +60,10 @@ class VideoCacheManager implements ImageCacheManager {
   }
 
   Future<Directory> _initializeCacheDirectory() async {
-    final tempDir = await getTemporaryDirectory();
-    final dirPath = join(tempDir.path, cacheDirName);
+    final rootPath = cacheRootPathProvider != null
+        ? await cacheRootPathProvider!()
+        : (await getTemporaryDirectory()).path;
+    final dirPath = join(rootPath, cacheDirName);
     final dir = Directory(dirPath);
 
     if (!dir.existsSync()) {
@@ -279,6 +283,9 @@ class VideoCacheManager implements ImageCacheManager {
       _log('Error clearing all video cache: $e');
     }
   }
+
+  @override
+  Future<void> clearAllCache() => clearAllVideos();
 
   @override
   void invalidateCacheDirectory() {

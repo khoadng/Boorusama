@@ -13,11 +13,13 @@ class DefaultImageCacheManager implements ImageCacheManager {
   DefaultImageCacheManager({
     this.cacheDirName = 'cacheimage',
     this.enableLogging = false,
+    this.cacheRootPathProvider,
     MemoryCache? memoryCache,
   }) : _memoryCache = memoryCache;
 
   final String cacheDirName;
   final bool enableLogging;
+  final FutureOr<String> Function()? cacheRootPathProvider;
   final MemoryCache? _memoryCache;
 
   Directory? _cacheDir;
@@ -51,8 +53,10 @@ class DefaultImageCacheManager implements ImageCacheManager {
   }
 
   Future<Directory> _initializeCacheDirectory() async {
-    final tempDir = await getTemporaryDirectory();
-    final dirPath = join(tempDir.path, cacheDirName);
+    final rootPath = cacheRootPathProvider != null
+        ? await cacheRootPathProvider!()
+        : (await getTemporaryDirectory()).path;
+    final dirPath = join(rootPath, cacheDirName);
     final dir = Directory(dirPath);
 
     if (!dir.existsSync()) {
@@ -187,6 +191,22 @@ class DefaultImageCacheManager implements ImageCacheManager {
       }
     } catch (e) {
       _log('Error clearing cache: $e');
+    }
+  }
+
+  @override
+  Future<void> clearAllCache() async {
+    try {
+      _memoryCache?.clear();
+
+      final cacheDir = await getCacheDirectory();
+      if (cacheDir.existsSync()) {
+        await cacheDir.delete(recursive: true);
+      }
+
+      invalidateCacheDirectory();
+    } catch (e) {
+      _log('Error clearing all cache: $e');
     }
   }
 

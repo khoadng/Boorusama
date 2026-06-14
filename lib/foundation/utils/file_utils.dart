@@ -104,40 +104,44 @@ Future<void> clearCache(AppFileSystem fs) async {
   if (cacheDirPath == null) return;
 
   if (fs.directoryExistsSync(cacheDirPath)) {
-    if (isWindows()) {
-      try {
-        await for (final entry in fs.listDirectoryStream(cacheDirPath)) {
-          try {
-            if (entry.isDirectory) {
-              await fs.deleteDirectory(entry.path, recursive: true);
-            } else {
-              await fs.deleteFile(entry.path);
-            }
-          } catch (e) {
-            // Silently ignore deletion errors for individual files/folders
+    try {
+      await for (final entry in fs.listDirectoryStream(cacheDirPath)) {
+        try {
+          if (entry.isDirectory) {
+            await fs.deleteDirectory(entry.path, recursive: true);
+          } else {
+            await fs.deleteFile(entry.path);
           }
+        } catch (e) {
+          // Silently ignore deletion errors for individual files/folders
         }
-      } catch (e) {
-        // Silently ignore if we can't list directory contents
       }
-    } else {
-      fs.deleteDirectorySync(cacheDirPath, recursive: true);
+    } catch (e) {
+      if (isWindows()) {
+        // Silently ignore if we can't list directory contents
+      } else {
+        try {
+          fs.deleteDirectorySync(cacheDirPath, recursive: true);
+          await fs.createDirectory(cacheDirPath, recursive: true);
+        } catch (_) {
+          // Silently ignore if we can't clear the directory
+        }
+      }
     }
   }
 }
 
 Future<bool> clearImageCache(ImageCacheManager? cacheManager) async {
-  final success = await clearDiskCachedImages();
-
   if (cacheManager != null) {
     try {
-      cacheManager.invalidateCacheDirectory();
+      await cacheManager.clearAllCache();
+      return true;
     } catch (e) {
-      // ignore errors
+      return false;
     }
   }
 
-  return success;
+  return clearDiskCachedImages();
 }
 
 class DiskSpaceInfo {

@@ -9,11 +9,13 @@ class DefaultImageCacheManager implements ImageCacheManager {
   DefaultImageCacheManager({
     this.cacheDirName = 'cacheimage',
     this.enableLogging = false,
+    this.cacheRootPathProvider,
     MemoryCache? memoryCache,
   }) : _memoryCache = memoryCache ?? LRUMemoryCache();
 
   final String cacheDirName;
   final bool enableLogging;
+  final FutureOr<String> Function()? cacheRootPathProvider;
   final MemoryCache _memoryCache;
   final _keyCache = <String, String>{};
 
@@ -41,6 +43,11 @@ class DefaultImageCacheManager implements ImageCacheManager {
   @override
   Future<void> clearCache(String key) async {
     _memoryCache.remove(key);
+  }
+
+  @override
+  Future<void> clearAllCache() async {
+    _memoryCache.clear();
   }
 
   @override
