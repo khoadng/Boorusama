@@ -1,4 +1,4 @@
-# Prereleased-2026.05.14
+# 4.5.0
 - Add support for Nozomi
 - [Sankaku] Add favorite support
 - [Suzurubooru] Add pool and comments support
