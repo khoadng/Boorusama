@@ -20,7 +20,8 @@ final class BuildRequirements {
     Toolchain toolchain,
   ) {
     return switch (target) {
-      BuildTarget.web || BuildTarget.windows => [toolchain.zip],
+      BuildTarget.web => [toolchain.zip],
+      BuildTarget.windows => [toolchain.tar],
       BuildTarget.ipa => [toolchain.pod, toolchain.zip],
       BuildTarget.linux => [toolchain.tar],
       BuildTarget.appimage => const [],

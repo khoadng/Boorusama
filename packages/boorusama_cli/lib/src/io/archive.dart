@@ -20,6 +20,18 @@ final class Archive {
     if (output.existsSync()) output.deleteSync();
     output.parent.createSync(recursive: true);
 
+    if (Platform.isWindows) {
+      await _tools.tar([
+        '-a',
+        '-cf',
+        output.absolute.path,
+        '-C',
+        source.absolute.path,
+        '.',
+      ], cwd: workingDirectory);
+      return;
+    }
+
     await _tools.zip(['-r', output.absolute.path, '.'], cwd: source);
   }
 

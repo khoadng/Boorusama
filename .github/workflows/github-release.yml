@@ -106,7 +106,7 @@ jobs:
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
-          choco install zip -y --no-progress
+          tar --version
 
       - name: Install Apple packaging dependencies
         if: runner.os == 'macOS'
