@@ -67,7 +67,7 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: stable
+          flutter-version: 3.41.9
           cache: true
 
       - name: Set up Xcode
@@ -133,6 +133,7 @@ jobs:
             build
             "${{ matrix.target }}"
             --ci
+            --allow-dirty
             --output-dir
             "$OUTPUT_DIR"
           )
@@ -167,7 +168,7 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: stable
+          flutter-version: 3.41.9
           cache: true
 
       - name: Download build artifacts
