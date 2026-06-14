@@ -130,8 +130,7 @@ final class GitRelease implements ReleaseTagRepository {
       'origin',
       tag,
     ]);
-    if (output == 'unknown' || output.trim().isEmpty) return null;
-    return output.trim().split(RegExp(r'\s+')).first;
+    return parseRemoteTagCommit(output, tag);
   }
 
   Future<void> requireLocalHeadMatchesTag(String tag) async {
@@ -159,4 +158,23 @@ final class GitRelease implements ReleaseTagRepository {
       );
     }
   }
+}
+
+String? parseRemoteTagCommit(String output, String tag) {
+  if (output == 'unknown' || output.trim().isEmpty) return null;
+
+  String? directTag;
+
+  for (final line in output.trim().split('\n')) {
+    final parts = line.trim().split(RegExp(r'\s+'));
+    if (parts.length < 2) continue;
+
+    final sha = parts[0];
+    final ref = parts[1];
+
+    if (ref == 'refs/tags/$tag^{}') return sha;
+    if (ref == 'refs/tags/$tag') directTag = sha;
+  }
+
+  return directTag;
 }
