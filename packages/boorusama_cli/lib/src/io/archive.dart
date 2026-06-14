@@ -21,14 +21,16 @@ final class Archive {
     output.parent.createSync(recursive: true);
 
     if (Platform.isWindows) {
-      await _tools.tar([
-        '-a',
-        '-cf',
+      await _tools.processRunner.run('powershell', [
+        '-NoProfile',
+        '-Command',
+        'Compress-Archive',
+        '-Path',
+        '${source.absolute.path}\\*',
+        '-DestinationPath',
         output.absolute.path,
-        '-C',
-        source.absolute.path,
-        '.',
-      ], cwd: workingDirectory);
+        '-Force',
+      ], workingDirectory: workingDirectory);
       return;
     }
 

@@ -21,7 +21,7 @@ final class BuildRequirements {
   ) {
     return switch (target) {
       BuildTarget.web => [toolchain.zip],
-      BuildTarget.windows => [toolchain.tar],
+      BuildTarget.windows => const [],
       BuildTarget.ipa => [toolchain.pod, toolchain.zip],
       BuildTarget.linux => [toolchain.tar],
       BuildTarget.appimage => const [],

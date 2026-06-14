@@ -106,7 +106,7 @@ jobs:
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
-          tar --version
+          Get-Command Compress-Archive
 
       - name: Install Apple packaging dependencies
         if: runner.os == 'macOS'
