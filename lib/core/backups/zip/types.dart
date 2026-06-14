@@ -6,16 +6,18 @@ class BulkExportResult {
     required this.success,
     required this.exported,
     required this.failed,
+    required this.skipped,
     required this.filePath,
   });
 
   final bool success;
   final List<String> exported;
   final List<String> failed;
+  final List<String> skipped;
   final String filePath;
 
   bool get hasFailures => failed.isNotEmpty;
-  int get totalSources => exported.length + failed.length;
+  int get totalSources => exported.length + failed.length + skipped.length;
 }
 
 class ZipPreviewResult {
@@ -37,6 +39,7 @@ class BulkBackupManifest {
     required this.exportDate,
     required this.sourceFiles,
     required this.failed,
+    required this.skipped,
   });
 
   factory BulkBackupManifest.fromJson(Map<String, dynamic> json) {
@@ -46,6 +49,7 @@ class BulkBackupManifest {
       exportDate: DateTime.parse(json['exportDate'] as String),
       sourceFiles: Map<String, String>.from(json['sourceFiles'] as Map? ?? {}),
       failed: List<String>.from(json['failed'] as List? ?? []),
+      skipped: List<String>.from(json['skipped'] as List? ?? []),
     );
   }
 
@@ -54,6 +58,7 @@ class BulkBackupManifest {
   final DateTime exportDate;
   final Map<String, String> sourceFiles; // sourceId -> filename
   final List<String> failed;
+  final List<String> skipped;
 
   List<String> get sources => sourceFiles.keys.toList();
 
@@ -63,6 +68,7 @@ class BulkBackupManifest {
     'exportDate': exportDate.toIso8601String(),
     'sourceFiles': sourceFiles,
     'failed': failed,
+    'skipped': skipped,
   };
 }
 

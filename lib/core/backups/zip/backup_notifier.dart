@@ -143,7 +143,7 @@ class BackupNotifier extends AutoDisposeNotifier<BackupState> {
 
       logger.verbose(
         'Backup.UI',
-        'Export completed: ${result.exported.length} exported, ${result.failed.length} failed',
+        'Export completed: ${result.exported.length} exported, ${result.skipped.length} skipped, ${result.failed.length} failed',
       );
 
       if (context.mounted) {

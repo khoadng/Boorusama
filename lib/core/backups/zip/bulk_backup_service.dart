@@ -13,7 +13,6 @@ import 'package:archive/archive_io.dart';
 import 'package:collection/collection.dart';
 import 'package:coreutils/coreutils.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:foundation/foundation.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart' as p;
 
@@ -53,6 +52,28 @@ class ZipProgressUpdate {
   final String? error;
 
   double get progress => totalFiles > 0 ? filesProcessed / totalFiles : 0.0;
+}
+
+sealed class _SourceExportResult {
+  const _SourceExportResult();
+}
+
+class _SourceExported extends _SourceExportResult {
+  const _SourceExported(this.fileName);
+
+  final FileName fileName;
+}
+
+class _SourceSkipped extends _SourceExportResult {
+  const _SourceSkipped(this.reason);
+
+  final String reason;
+}
+
+class _SourceFailed extends _SourceExportResult {
+  const _SourceFailed(this.error);
+
+  final ExportException error;
 }
 
 final bulkBackupServiceProvider = Provider<BulkBackupService>((ref) {
@@ -238,27 +259,32 @@ class BulkBackupService {
 
       final sourceFiles = <String, String>{};
       final failed = <String>[];
+      final skipped = <String>[];
 
       // Export each selected source to temp directory
       for (final source in selectedSources) {
         logger.verbose('Backup.Export', 'Exporting source: ${source.id}');
         final result = await _exportSource(source, tempDirPath);
-        result.fold(
-          (error) {
+        switch (result) {
+          case _SourceFailed(:final error):
             logger.error(
               'Backup.Export',
               'Failed to export source ${source.id}: $error',
             );
             failed.add(source.id);
-          },
-          (fileName) {
+          case _SourceSkipped(:final reason):
+            logger.verbose(
+              'Backup.Export',
+              'Skipped source ${source.id}: $reason',
+            );
+            skipped.add(source.id);
+          case _SourceExported(:final fileName):
             logger.verbose(
               'Backup.Export',
               'Successfully exported source ${source.id} to $fileName',
             );
             sourceFiles[source.id] = fileName;
-          },
-        );
+        }
       }
 
       // Add any requested source IDs that don't exist in registry
@@ -276,7 +302,7 @@ class BulkBackupService {
 
       logger.verbose(
         'Backup.Export',
-        'Export summary: ${sourceFiles.length} successful, ${failed.length} failed',
+        'Export summary: ${sourceFiles.length} successful, ${skipped.length} skipped, ${failed.length} failed',
       );
 
       // Create manifest
@@ -286,6 +312,7 @@ class BulkBackupService {
         exportDate: DateTime.now(),
         sourceFiles: sourceFiles,
         failed: failed,
+        skipped: skipped,
       );
 
       final manifestPath = p.join(tempDirPath, _manifestFileName);
@@ -294,12 +321,17 @@ class BulkBackupService {
         ..verbose('Backup.Export', 'Created manifest file')
         ..verbose('Backup.Export', 'Starting zip creation');
       await _createZipWithProgress(tempDirPath, zipPath, onProgress);
-      logger.verbose('Backup.Export', 'Zip creation completed');
+      final zipSize = await _verifyZipCreated(zipPath);
+      logger.verbose(
+        'Backup.Export',
+        'Zip creation completed: $zipPath ($zipSize bytes)',
+      );
 
       return BulkExportResult(
         success: sourceFiles.isNotEmpty,
         exported: sourceFiles.keys.toList(),
         failed: failed,
+        skipped: skipped,
         filePath: zipPath,
       );
     } catch (e) {
@@ -316,14 +348,14 @@ class BulkBackupService {
     }
   }
 
-  Future<Either<ExportException, FileName>> _exportSource(
+  Future<_SourceExportResult> _exportSource(
     BackupDataSource source,
     String tempDirPath,
   ) async {
     try {
       final fileCapability = source.capabilities.file;
       if (fileCapability == null) {
-        return left(const ExportException('No file export capability'));
+        return const _SourceSkipped('No file export capability');
       }
 
       // Get files before export
@@ -338,13 +370,13 @@ class BulkBackupService {
           .toList();
 
       if (newFiles.isEmpty) {
-        return left(const ExportException('No files created during export'));
+        return const _SourceSkipped('No files created during export');
       }
 
       // Use the first new file (sources should only create one file)
-      return right(p.basename(newFiles.first));
+      return _SourceExported(p.basename(newFiles.first));
     } catch (e) {
-      return left(ExportException('Export failed: $e'));
+      return _SourceFailed(ExportException('Export failed: $e'));
     }
   }
 
@@ -391,6 +423,19 @@ class BulkBackupService {
     );
 
     await completer.future;
+  }
+
+  Future<int> _verifyZipCreated(String zipPath) async {
+    if (!fs.fileExistsSync(zipPath)) {
+      throw Exception('Backup zip was not created: $zipPath');
+    }
+
+    final size = await fs.fileSize(zipPath);
+    if (size <= 0) {
+      throw Exception('Backup zip is empty: $zipPath');
+    }
+
+    return size;
   }
 
   Future<BulkImportResult> importFromZip(

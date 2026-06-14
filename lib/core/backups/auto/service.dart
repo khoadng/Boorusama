@@ -50,7 +50,7 @@ class AutoBackupService {
 
       logger.verbose(
         'AutoBackup',
-        'Auto backup completed: ${result.exported.length} sources exported',
+        'Auto backup completed: ${result.exported.length} sources exported, ${result.skipped.length} skipped',
       );
 
       if (result.hasFailures) {
