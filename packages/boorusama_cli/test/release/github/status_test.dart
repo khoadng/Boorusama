@@ -79,8 +79,9 @@ void main() {
 
     test('is waiting when workflow run completed successfully', () async {
       final repository = _FakeGithubStatusRepository(
+        tagCommitOutput: 'abc123',
         workflowRunsOutput:
-            '[{"status":"completed","conclusion":"success","url":"https://example.com/run"}]',
+            '[{"headSha":"abc123","status":"completed","conclusion":"success","url":"https://example.com/run"}]',
       );
       final service = ReleaseGithubStatusService(repository);
 
@@ -96,8 +97,9 @@ void main() {
 
     test('is pending when workflow run is still running', () async {
       final repository = _FakeGithubStatusRepository(
+        tagCommitOutput: 'abc123',
         workflowRunsOutput:
-            '[{"status":"in_progress","conclusion":null,"url":"https://example.com/run"}]',
+            '[{"headSha":"abc123","status":"in_progress","conclusion":null,"url":"https://example.com/run"}]',
       );
       final service = ReleaseGithubStatusService(repository);
 
@@ -113,8 +115,9 @@ void main() {
 
     test('blocks when workflow run failed', () {
       final repository = _FakeGithubStatusRepository(
+        tagCommitOutput: 'abc123',
         workflowRunsOutput:
-            '[{"status":"completed","conclusion":"failure","url":"https://example.com/run"}]',
+            '[{"headSha":"abc123","status":"completed","conclusion":"failure","url":"https://example.com/run"}]',
       );
       final service = ReleaseGithubStatusService(repository);
 
@@ -127,6 +130,60 @@ void main() {
         throwsA(isA<ProcessFailure>()),
       );
     });
+
+    test('ignores stale workflow runs when current tag does not exist', () async {
+      final repository = _FakeGithubStatusRepository(
+        workflowRunsOutput:
+            '[{"headSha":"old123","status":"completed","conclusion":"startup_failure","url":"https://example.com/run"}]',
+      );
+      final service = ReleaseGithubStatusService(repository);
+
+      expect(
+        await service.status(
+          repo: 'owner/repo',
+          tag: 'v1.2.3',
+          workflow: 'github-release.yml',
+        ),
+        ReleaseFlowStepStatus.pending,
+      );
+      expect(repository.workflowRunsCalls, isZero);
+    });
+
+    test('ignores stale workflow runs for a previous tag commit', () async {
+      final repository = _FakeGithubStatusRepository(
+        tagCommitOutput: 'new123',
+        workflowRunsOutput:
+            '[{"headSha":"old123","status":"completed","conclusion":"startup_failure","url":"https://example.com/run"}]',
+      );
+      final service = ReleaseGithubStatusService(repository);
+
+      expect(
+        await service.status(
+          repo: 'owner/repo',
+          tag: 'v1.2.3',
+          workflow: 'github-release.yml',
+        ),
+        ReleaseFlowStepStatus.pending,
+      );
+    });
+
+    test('uses matching workflow run when stale run is listed first', () async {
+      final repository = _FakeGithubStatusRepository(
+        tagCommitOutput: 'new123',
+        workflowRunsOutput:
+            '[{"headSha":"old123","status":"completed","conclusion":"failure","url":"https://example.com/old"},{"headSha":"new123","status":"completed","conclusion":"success","url":"https://example.com/new"}]',
+      );
+      final service = ReleaseGithubStatusService(repository);
+
+      expect(
+        await service.status(
+          repo: 'owner/repo',
+          tag: 'v1.2.3',
+          workflow: 'github-release.yml',
+        ),
+        ReleaseFlowStepStatus.waitingManualPublish,
+      );
+    });
   });
 }
 
@@ -136,13 +193,16 @@ final class _FakeGithubStatusRepository
     this.installed = true,
     this.releaseViewOutput,
     this.workflowRunsOutput,
+    this.tagCommitOutput,
   });
 
   final bool installed;
   final String? releaseViewOutput;
   final String? workflowRunsOutput;
+  final String? tagCommitOutput;
   var releaseViewCalls = 0;
   var workflowRunsCalls = 0;
+  var tagCommitCalls = 0;
 
   @override
   Future<bool> ghInstalled() async => installed;
@@ -164,5 +224,11 @@ final class _FakeGithubStatusRepository
   }) async {
     workflowRunsCalls++;
     return workflowRunsOutput;
+  }
+
+  @override
+  Future<String?> tagCommit(String tag) async {
+    tagCommitCalls++;
+    return tagCommitOutput;
   }
 }

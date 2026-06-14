@@ -16,6 +16,8 @@ abstract interface class ReleaseGithubStatusRepository {
     required String workflow,
     required String tag,
   });
+
+  Future<String?> tagCommit(String tag);
 }
 
 final class ReleaseGithubStatusService {
@@ -48,12 +50,17 @@ final class ReleaseGithubStatusService {
           : ReleaseFlowStepStatus.complete;
     }
 
+    final currentTagCommit = await repository.tagCommit(tag);
+    if (currentTagCommit == null || currentTagCommit.isEmpty) {
+      return ReleaseFlowStepStatus.pending;
+    }
+
     final workflowOutput = await repository.workflowRuns(
       repo: repo,
       workflow: workflow,
       tag: tag,
     );
-    final run = _latestRun(workflowOutput);
+    final run = _latestRun(workflowOutput, currentTagCommit: currentTagCommit);
     if (run == null) return ReleaseFlowStepStatus.pending;
 
     if (run.status == 'completed' && run.conclusion == 'success') {
@@ -80,7 +87,10 @@ final class ReleaseGithubStatusService {
     );
   }
 
-  _GithubWorkflowRun? _latestRun(String? output) {
+  _GithubWorkflowRun? _latestRun(
+    String? output, {
+    required String currentTagCommit,
+  }) {
     if (output == null || output.isEmpty) return null;
     final decoded = jsonDecode(output);
     final runs = decoded is List
@@ -88,15 +98,17 @@ final class ReleaseGithubStatusService {
         : decoded is Map && decoded['workflow_runs'] is List
         ? decoded['workflow_runs'] as List
         : const <Object?>[];
-    if (runs.isEmpty) return null;
-    final firstRun = runs.first;
-    if (firstRun is! Map) return null;
-    final run = firstRun;
-    return _GithubWorkflowRun(
-      status: run['status'] as String?,
-      conclusion: run['conclusion'] as String?,
-      url: run['url'] as String?,
-    );
+    for (final run in runs) {
+      if (run is! Map) continue;
+      if (run['headSha'] != currentTagCommit) continue;
+      return _GithubWorkflowRun(
+        status: run['status'] as String?,
+        conclusion: run['conclusion'] as String?,
+        url: run['url'] as String?,
+      );
+    }
+
+    return null;
   }
 }
 

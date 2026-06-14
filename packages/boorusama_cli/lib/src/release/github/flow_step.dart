@@ -179,14 +179,21 @@ final class RealReleaseGithubStep
         '--branch',
         tag,
         '--json',
-        'status,conclusion,url',
+        'status,conclusion,url,headSha',
         '--limit',
-        '1',
+        '10',
       ],
       workingDirectory: root,
     );
     if (output == 'unknown' || output.isEmpty) return null;
     return output;
+  }
+
+  @override
+  Future<String?> tagCommit(String tag) async {
+    final output = await tools.gitOutput(['rev-list', '-n', '1', tag]);
+    if (output == 'unknown' || output.trim().isEmpty) return null;
+    return output.trim();
   }
 
   @override
