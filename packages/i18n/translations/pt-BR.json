@@ -159,7 +159,7 @@
       "view_tag_history": "Ver histórico de tags",
       "copy_image": "Copiar imagem",
       "slideshow": "Apresentação de Slides",
-      "none": "Nenhuma",
+      "none": "Nenhum",
       "edit": "Editar",
       "use_default": "Usar Padrão",
       "toggle_bookmark": "Alternar marcação",
@@ -321,7 +321,7 @@
     "general": "Geral",
     "search": {
       "search": "Pesquisar",
-      "auto_focus_search_bar": "Auto focar a barra de pesquisa quando abrir a visualização de pesquisa pela primeira vez",
+      "auto_focus_search_bar": "Focar automaticamente na barra de pesquisa ao abrir a tela de pesquisa pela primeira vez",
       "hide_bookmarked_posts_from_search_results": "Esconder posts marcados dos resultados de pesquisa",
       "search_bar": {
         "position": {
@@ -508,10 +508,11 @@
           "free": "Disponível"
         }
       },
-      "error_loading_cache_info": "Erro ao carregar informação do cache"
+      "error_loading_cache_info": "Erro ao carregar informação do cache",
+      "custom_cache_limit_option": "Personalizado..."
     },
     "backup_and_restore": {
-      "backup_and_restore": "Backup e Restaurar",
+      "backup_and_restore": "Backup e Restauração",
       "import": "Importar",
       "export": "Exportar",
       "advanced_backup": "Backup Avançado",
@@ -604,7 +605,7 @@
       "reduce_animations": "Reduzir animações",
       "reduce_animations_description": "Algumas funcionalidades podem não funcionar como esperado quando isso estiver habilitado.",
       "volume_navigation": "Usar teclas de volume para navegação",
-      "volume_navigation_description": "Navegar entre posts usando as teclas de volume enquanto estiver no visualizador de imagens.",
+      "volume_navigation_description": "Navegar entre posts usando as teclas de volume enquanto estiver no visualizador de imagem.",
       "haptic_feedback": {
         "haptic_feedback": "Feedback háptico",
         "haptic_feedback_level": {
@@ -804,7 +805,7 @@
     "validation_invalid_http_url": "\"{0}\" não é uma URL HTTP ou HTTPS",
     "validation_redundant_www": "\"{0}\" contém um \"www\" redundante",
     "validation_contains_spaces": "\"{0}\" contém espaços entre linhas",
-    "validation_missing_scheme": "\"{0}\" está faltando um esquema (e.g. https://)",
+    "validation_missing_scheme": "Falta um esquema em \"{0}\" (p.ex. https://)",
     "misc": "Outros",
     "authentication": {
       "title": "Autenticação",
@@ -837,7 +838,7 @@
       }
     },
     "api_key_instructions": {
-      "variants_1": "*Faça login na sua conta no navegador, visite <b><a href=\"api-credentials\">My Account > Options > API Access Credentials</a></b> para conseguir sua chave API. Se você ver uma chave API vazia como <b>&api_key=&user_id=<your_id></b>, cheque <b>Generate New Key?</b> e clique no botão <b>Save</b> no final para gerar uma nova chave API. Caso contrário, copie a chave e cole-a no campo acima. Você também pode copiar toda a string da seção <b>API Access Credentials</b> e tocar no botão abaixo.",
+      "variants_1": "*Faça login na sua conta no navegador, acesse <b><a href=\"api-credentials\">Minha conta > Opções > Credenciais de acesso à API</a></b> para obter sua chave de API. Se você vir uma chave de API vazia como <b>&api_key=&user_id=<your_id></b>, marque <b>Gerar nova chave?</b> e clique no botão <b>Salvar</b> na parte inferior para gerar uma nova chave de API. Caso contrário, copie a chave e cole-a no campo acima. Você também pode copiar toda a sequência de caracteres da seção <b>Credenciais de acesso à API</b> e tocar no botão abaixo.",
       "variants_2": "*Logue na sua conta no navegador, visite <b>My Account > Options > API Access Credentials</b>. Cheque se estiver lá. Caso contrário, o site não suporta credenciais, e você pode ignorar isso.",
       "shimmie2": {
         "danbooru_api_extension_notice": "O aplicativo requer a extensão <b>Cliente de API Danbooru</b> esteja instalada no site para funcionar.",
@@ -898,7 +899,7 @@
     "search": {
       "title": "Pesquisa",
       "include_in_search": "Inclua essas tags em todas as pesquisas",
-      "exclude_from_search": "Exclua essas tags de todas as pesquisas",
+      "exclude_from_search": "Exclua essas tags em todas as pesquisas",
       "include_exclude_tooltip": "Essas tags serão adicionadas a todas as pesquisas realizadas pelo aplicativo, não apenas às que você fizer manualmente.",
       "preview_tags": "Pré-visualização",
       "any_search_query": "<qualquer consulta de pesquisa>",
@@ -959,8 +960,8 @@
     "appearance": {
       "title": "Aparência",
       "image_viewer_layout": {
-        "title": "Layout do visualizador de imagens",
-        "preview_widgets": "Pré-visualização do widgets",
+        "title": "Layout do visualizador",
+        "preview_widgets": "Pré-visualização de widgets",
         "full_info_widgets": "Widgets com informações completas",
         "widget_title": "Widgets",
         "storage_tooltip": "Todas as alterações são salvas no seu perfil atual.",
@@ -1111,9 +1112,9 @@
     "upgrade": "Fazer upgrade",
     "subscribe": "Assinar",
     "unlock_more_theme_with_premium": "Desbloqueie mais temas com o $brand",
-    "restore_subscription": "Restaurar compra",
-    "subscription_restored": "Compra restaurada!",
-    "restore_failed": "Ocorreu um problema ao restaurar sua compra. Tente novamente mais tarde.",
+    "restore_subscription": "Restaurar assinatura",
+    "subscription_restored": "Assinatura restaurada!",
+    "restore_failed": "Ocorreu um problema ao restaurar sua assinatura. Tente novamente mais tarde.",
     "select_your_plan": "Escolha seu plano",
     "legal_disclaimer": "Ao assinar, você concorda com nossos <a href=\"terms-of-service\">Termos de Serviço</a> e <a href=\"privacy-policy\">Política de Privacidade</a>. A assinatura é renovada automaticamente até ser cancelada. Você pode cancelar a qualquer momento até 24 horas antes do fim do período atual.",
     "benefits": {
