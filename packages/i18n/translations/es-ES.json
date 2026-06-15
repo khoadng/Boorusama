@@ -29,7 +29,7 @@
       "reset": "Reiniciar"
     },
     "copied": "Copiado",
-    "app_restart_request": "Necesita reiniciar la aplicación para que los cambios tengan efecto",
+    "app_restart_request": "Necesitas reiniciar la app para que los cambios tengan efecto",
     "default": "Default",
     "warning": "Advertencia",
     "no_content": "Ningún contenido",
@@ -50,7 +50,7 @@
         "all": "Todo",
         "received": "Recibido",
         "unread": "Sin leer",
-        "sent": "Enviados",
+        "sent": "Enviado",
         "deleted": "Borrado"
       },
       "sender": "Remitente",
@@ -81,7 +81,7 @@
       "user_feedbacks": "Opiniones de usuarios"
     },
     "uploads": {
-      "top_n_copyright": "Top $n derechos de autor"
+      "top_n_copyright": "Top $n copyrights"
     }
   },
   "network": {
@@ -298,7 +298,7 @@
   },
   "settings": {
     "settings": "Ajustes",
-    "app_settings": "Ajustes de aplicación",
+    "app_settings": "Ajustes de app",
     "appearance": {
       "appearance": "Apariencia",
       "show_scores": "Mostrar puntuaciones",
@@ -337,7 +337,7 @@
     },
     "information": "Información",
     "changelog": "Lista de Cambios",
-    "infinite_scroll_warning": "Si haces un scroll excesivo, la aplicación podría bloquearse",
+    "infinite_scroll_warning": "Si haces un scroll excesivo, la app podría bloquearse",
     "result_layout": {
       "result_layout": "Modo Pagina",
       "infinite_scroll": "Scroll Infinito",
@@ -415,7 +415,9 @@
           "auto_description": "Seleccionar el mejor motor basado en las capacidades de su dispositivo.",
           "default": "Predeterminado",
           "default_description": "Funciona bien con la mayoría de los dispositivos. Puede tener problemas con algunos formatos de vídeo o dispositivos antiguos.",
-          "mdk_description": "Carga rápida, mejor rendimiento con ciertos formatos de vídeo, pero inestable y puede causar fallos."
+          "mdk_description": "Carga rápida, mejor rendimiento con ciertos formatos de vídeo, pero inestable y puede causar fallos.",
+          "mpv_description": "Amplia compatibilidad de formato y de alto rendimiento, pero puede tardar más en carga",
+          "webview_description": "Amplia compatibilidad, pero requiere mayor uso de recursos y de bajo rendimiento: usa como última opción."
         }
       }
     },
@@ -438,8 +440,12 @@
         "color_variants": "Variantes de color",
         "dark_mode": "Modo oscuro",
         "groups": {
-          "basic": "Básico"
-        }
+          "basic": "Básico",
+          "builtin": "Integrado",
+          "accent": "Acento"
+        },
+        "harmonize_colors": "Armonizar colores",
+        "harmonize_colors_description": "Ajusta los colores de tag para que coincidan con el color de acento"
       }
     },
     "privacy": {
@@ -451,8 +457,8 @@
     },
     "performance": {
       "performance": "Gestion",
-      "posts_per_page": "Posts por pagina",
-      "posts_per_page_explain": "Numero de miniaturas por pagina",
+      "posts_per_page": "Posts por página",
+      "posts_per_page_explain": "Numero de miniaturas por página",
       "cache_size": "Tamaño del cache",
       "clear_cache": "Liberar cache",
       "cache_size_info": "{0} en {1} archivos"
@@ -472,7 +478,8 @@
         "large": "Grande"
       },
       "title": "Descargar",
-      "skip_existing_files_explanation": "Esto prevendrá el descargo de archivos si ya existen en la carpeta. Útil para cuando no quieres descargar el mismo archivo varias veces."
+      "skip_existing_files_explanation": "Esto prevendrá el descargo de archivos si ya existen en la carpeta. Útil para cuando no quieres descargar el mismo archivo varias veces.",
+      "skip_existing_files": "Saltar archivos existentes"
     },
     "help_us_translate": "Ayúdenos a traducir",
     "other_settings": "Otros Ajustes",
@@ -501,7 +508,8 @@
           "free": "Libre"
         }
       },
-      "error_loading_cache_info": "Error en cargar info de caché"
+      "error_loading_cache_info": "Error en cargar info de caché",
+      "custom_cache_limit_option": "Custom..."
     },
     "backup_and_restore": {
       "backup_and_restore": "Copia de seguridad y restaurar",
@@ -522,13 +530,59 @@
       "backup_data": "Datos de respaldo",
       "advanced_export_import": "Exportación/importación avanzada",
       "auto_backup": "Respaldo automática",
-      "auto_backup_tooltip": "Los respaldos se crean cuando se abre la aplicación. No se respalda cuando la aplicación está cerrada.",
+      "auto_backup_tooltip": "Los respaldos se crean cuando se abre la app. No se respalda cuando la app está cerrada.",
       "backup_in_progress": "Respaldo ya en progreso",
       "export_operation_failed": "La exportación falló: {error}",
       "import_operation_failed": "La importación falló: {error}",
       "export_partial_success": "Se exportaron {exported}/{total} elementos. {failed} fallaron.",
       "export_complete_success": "{exported} elementos se exportaron exitosamente",
-      "export_no_items": "La exportación falló: Ningún elemento se pudo exportar"
+      "export_no_items": "La exportación falló: Ningún elemento se pudo exportar",
+      "import_results": "Importación completada: {results}",
+      "import_no_items": "La importación falló: No se pudieron importar objetos",
+      "imported_count": "{count} importados",
+      "skipped_count": "{count} se saltaron",
+      "failed_count": "{count} fallaron",
+      "invalid_location_error": "No se puede exportar a esta ubicación, trata de usar la carpeta de \"Descargas\" o \"Documentos\". Crea uno si no existe.",
+      "invalid_backup_format_error": "Formato de respaldo inválido",
+      "never": "Nunca",
+      "receive_data": {
+        "title": "Recibir datos",
+        "nearby_devices": "Dispositivos cercanos",
+        "no_devices_found(rich)": "No se encontraron dispositivos. Primero, inicia la transferencia en el otro dispositivo. \n\nPulse ${tapHere(_)} para añadir manualmente por dirección IP.",
+        "ip_address": "Dirección IP",
+        "errors": {
+          "not_empty": "La dirección IP no puede estar vacía",
+          "port_required": "Dirección IP debe contener un puerto",
+          "invalid": "Dirección IP inválida"
+        },
+        "choose_data_to_import": "Elige datos para importar"
+      },
+      "send_data": {
+        "name": "Nombre",
+        "version": "Versión",
+        "status": {
+          "title": "Estado",
+          "broadcasting": "Transmisión",
+          "stopped": "Detenido",
+          "running": "Activo"
+        },
+        "how_to_transfer": "Cómo transferir",
+        "how_to_send(rich)": "• En el dispositivo de recepción, vaya a ${settings(_)}\n• Seleccione ${receive(_)} para comenzar a importar datos de este dispositivo\n• Quédate en esta página hasta que la transferencia complete",
+        "disclaimer": "Es posible que la transferencia no funcione en redes públicas de WiFi (coffee shops, bibliotecas) debido a restricciones de seguridad. Por favor, utiliza una red privada como tu WiFi de casa.",
+        "no_networks_error": "Se requiere una conexión WiFi para transferir datos. Por favor, conéctate a una red WiFi y inténtalo de nuevo."
+      },
+      "backward_import": {
+        "title": "Importación de una versión anterior detectada",
+        "current_version": "Versión actual",
+        "exported_version": "Versión exportada",
+        "reconfirm_question": "Es posible que la importación inversa no funcione como se espera. ¿Estás seguro?"
+      },
+      "version_mismatch": {
+        "title": "Importación de una versión diferente detectada",
+        "current_version": "Versión actual",
+        "imported_version": "Versión importada",
+        "confirmation_question": "La versión de app del dispositivo que intentas importar es distinta de la versión actual. Esto puede causar problemas de compatibilidad y pérdida de datos.\n\n¿Seguro que quieres continuar?"
+      }
     },
     "image_details": {
       "ui_overlay": {
@@ -547,7 +601,20 @@
       "accessibility": "Accesibilidad",
       "reverseBooruConfigSelectorScrollDirection": "Dirección de desplazamiento inverso de los perfiles booru",
       "swipeAreaToOpenSidebar": "Área de deslizamiento de la barra lateral",
-      "swipeAreaToOpenSidebarDescription": "La cantidad de área en el lado izquierdo de la pantalla que se puede usar para activar un deslizamiento. Los valores grandes bloquearán todos los gestos horizontales, como el gesto de deslizar la paginación."
+      "swipeAreaToOpenSidebarDescription": "La cantidad de área en el lado izquierdo de la pantalla que se puede usar para activar un deslizamiento. Los valores grandes bloquearán todos los gestos horizontales, como el gesto de deslizar la paginación.",
+      "reduce_animations": "Reducir animaciones",
+      "reduce_animations_description": "Es posible que algunas características no funcionen como se espera cuando esto está activo.",
+      "volume_navigation": "Utiliza las teclas de volumen para navegar",
+      "volume_navigation_description": "Navega entre publicaciones utilizando las teclas de volumen cuando en el visor de imágenes.",
+      "haptic_feedback": {
+        "haptic_feedback": "Feedback háptico",
+        "haptic_feedback_level": {
+          "none": "Ninguno",
+          "subtle": "Sutil",
+          "standard": "Estándar",
+          "playful": "Divertido"
+        }
+      }
     },
     "booru_settings": {
       "edit_current_profile": "Editar perfil actual",
@@ -561,7 +628,27 @@
     "feature_request_and_bug_report": "Solicitud de funciones e informe de errores",
     "feature_request_and_bug_report_description": "Sugerir funciones o informar errores a través del repositorio de GitHub",
     "open_app_settings": "Abrir Ajustes",
-    "need_more_questions": "¿Necesitas más?"
+    "need_more_questions": "¿Necesitas más?",
+    "auto_backup": {
+      "enable_auto_backup": "Activar respaldo automático",
+      "backup_frequency": "Frecuencia de respaldo",
+      "backup_location": "Ubicación de respaldo",
+      "maximum_backups": "Cantidad máxima de respaldos",
+      "frequency": {
+        "daily": "Diario",
+        "weekly": "Semanal"
+      },
+      "backup_count": {
+        "one": "$n respaldo",
+        "other": "$n respaldos"
+      },
+      "change": "Cambiar",
+      "last_backup": "Último respaldo: $lastBackup",
+      "backup_needed": "Respaldo necesario",
+      "up_to_date": "Actualizado",
+      "backing_up": "Creando respaldo...",
+      "backup_now": "Crear respaldo ahora"
+    }
   },
   "blacklisted_tags": {
     "remove": "Remover",
@@ -580,7 +667,33 @@
     "download": "Descargar",
     "invalid_folder_name_error": "La carpeta no puede contener los siguientes caracteres: ",
     "folder_select_warning": "La app solo puede descargar archivos dentro de directorios públicos <b>({0})</b> para Android 11+. <br><br>Ejemplos de ubicaciones válidas:<br><b>[Interno]</b> /storage/emulated/0/Download <br><b>[Tarjeta SD]</b> /storage/A1B2-C3D4/Download<br><br>Por favor, elige otro directorio o crea uno nuevo si no existe. <br>La versión de este dispositivo es <b>{1}</b>.",
-    "storage_permission_explanation": "Permisos de almacenamiento necesarios para descargar imagenes."
+    "storage_permission_explanation": "Permisos de almacenamiento necesarios para descargar imagenes.",
+    "downloads": "Descargas",
+    "retry_all": "Reintentar todos",
+    "nothing_to_clear": "No hay nada que borrar",
+    "no_active_sessions": "No hay sesiones de descarga activas",
+    "nothing_to_show": "Nada que mostrar, las actualizaciones de descarga están vacías",
+    "notification": {
+      "started": "Descarga comenzó"
+    },
+    "status": {
+      "in_progress": "En progreso",
+      "pending": "Pendiente",
+      "paused": "Pausado",
+      "completed": "Completado",
+      "failed": "Fallado",
+      "canceled": "Cancelado",
+      "unknown": "Desconocido"
+    },
+    "empty_states": {
+      "no_pending_downloads": "No hay descargas pendientes",
+      "no_paused_downloads": "No hay descargas pausadas",
+      "no_downloads_in_progress": "No hay descargas en progreso",
+      "no_completed_downloads": "No hay descargas completadas",
+      "no_canceled_downloads": "No hay descargas canceladas",
+      "no_failed_downloads": "No hay descargas falladas",
+      "no_downloads": "No hay descargas"
+    }
   },
   "saved_search": {
     "saved_search": "Busqueda guardada",
@@ -605,6 +718,10 @@
     "counter": {
       "one": "Favorito",
       "other": "Favoritos"
+    },
+    "update": {
+      "success": "Favoritos actualizados",
+      "failure": "No se pudo actualizar los favoritos"
     }
   },
   "favorite_groups": {
@@ -630,7 +747,18 @@
     "group_item_counter": {
       "one": "$n Post",
       "other": "$n Posts"
-    }
+    },
+    "drag_hint": "Mantén pulsado y arrastra para reordenar",
+    "confirm_edit_title": "Revisar cambios",
+    "confirm_edit_adding": {
+      "one": "$n publicación nueva se añadirá",
+      "other": "$n publicaciones nueva se añadirán"
+    },
+    "confirm_edit_removing": {
+      "one": "$n publicación se eliminará",
+      "other": "$n publicaciones se eliminarán"
+    },
+    "invalid_post_ids": "Contiene IDs inválidos: {0}"
   },
   "favorite_tags": {
     "favorites": "Favoritos",
@@ -643,14 +771,16 @@
     "rate": "Calificar",
     "cancel": "No gracias",
     "later": "Despues",
-    "rationale": "Si te gusta la aplicación, por favor, tómate un momento para dejar una reseña. No te llevará más que unos segundos y realmente ayuda a este proyecto."
+    "rationale": "Si te gusta la app, por favor, tómate un momento para dejar una reseña. No te llevará más que unos segundos y realmente ayuda a este proyecto."
   },
   "sideMenu": {
     "settings": "Configuración",
     "your_bookmarks": "Guardado",
     "your_blacklist": "Blacklist",
     "bulk_download": "Descarga en masa",
-    "get_support": "Obtén apoyo"
+    "get_support": "Obtén apoyo",
+    "home": "Inicio",
+    "download_manager": "Gestor de descargas"
   },
   "dateRange": {
     "day": "Dia",
@@ -678,14 +808,123 @@
     "validation_missing_scheme": "A \"{0}\" le falta un esquema (por ejemplo, https://)",
     "misc": "Varios",
     "authentication": {
-      "title": "Autenticación"
+      "title": "Autenticación",
+      "gelbooru": {
+        "basic_auth": "Basic Auth (requerido)",
+        "advanced_auth": "Advanced Auth (opcional)",
+        "fav_button_tooltip_title": "Sobre el botón de favorito",
+        "fav_button_tooltip_description": "No hay forma de verificar si una imagen ya está marcada como favorita. Sin embargo, verás un indicador visual después de pulsar “Favorito”. No te preocupes, tus favoritos se guardan en la página."
+      }
     },
     "gestures": {
       "title": "Gestos"
     },
     "downloads": {
       "title": "Descargar"
-    }
+    },
+    "api_key_instructions": {
+      "variants_1": "*Accede tu cuenta on th, visit <b><a href=\"api-credentials\">My Account > Options > API Access Credentials</a></b> para recibir tu API key. Si ves un API key vacío como <b>&api_key=&user_id=<your_id></b>, presiona <b>Generate New Key?</b> y presiona <b>Save</b> para generar un API key nuevo. Si no, copia el key y pégalo arriba. También puedes copiar el string de <b>API Access Credentials</b> y pulsar el botón abajo.",
+      "variants_2": "*Accede tu cuenta en el navegador, visita <b>My Account > Options > API Access Credentials</b>. Verifica si está ahí. Si no, la página no soporta credenciales y puedes ignorar esto.",
+      "shimmie2": {
+        "view_extension_docs": "Ver documentación de extensión"
+      }
+    },
+    "search": {
+      "blacklist": "Lista negra",
+      "empty_blacklist": "Sin tags",
+      "empty_blacklist_with_replace_notice": "Una lista negra vacía en modo de reemplazo desactiva prácticamente la lista negra.",
+      "blacklist_overridden": {
+        "replace_notice": "Reemplazado por la lista negra del perfil en <b><a href=\"booru-profiles\">Perfil</a></b>.",
+        "merge_notice": "Fusionado con la configuración de la lista negra del perfil <b><a href=\"booru-profiles\">Perfil</a></b>."
+      },
+      "blacklist_combine_mode": {
+        "title": "Modo de combinación",
+        "merge": "Fusionar",
+        "merge_description": "Fusionar esta lista negra con las demás.",
+        "replace": "Reemplazar",
+        "replace_description": "Anular la lista negra global con esta. Útil cuando deseas tener una lista negra que sólo se utiliza para este perfil sin afectar a la lista negra global."
+      },
+      "title": "Buscar",
+      "include_in_search": "Incluir estos tags en cada búsqueda",
+      "exclude_from_search": "Excluir estos tags en cada búsqueda",
+      "include_exclude_tooltip": "Estos tags se agregarán a cada búsqueda que la app haga, no solo las que pidas manualmente.",
+      "preview_tags": "Prever",
+      "any_search_query": "<cualquier búsqueda>"
+    },
+    "network": {
+      "title": "Red",
+      "proxy": {
+        "title": "Proxy",
+        "select_type": "<Seleccionar>",
+        "type": "Tipo de Proxy",
+        "host_or_ip": "Host o IP (*)",
+        "host_or_ip_hint": "por ejemplo, proxy.host.com o 123.456.789.0",
+        "port": "Puerto (*)",
+        "port_hint": "por ejemplo, 8080",
+        "username": "Username",
+        "username_hint": "username (opcional)",
+        "password": "Contraseña",
+        "password_hint": "contraseña (opcional)",
+        "test": {
+          "state": {
+            "idle": "Proxy de prueba",
+            "testing": "Verificando...",
+            "slow": "Respuesta lenta?"
+          },
+          "success": "Configuración de proxy válida",
+          "failure": "No se pudo conectar al proxy, por favor verifica tus configuraciones y intenta de nuevo"
+        }
+      },
+      "http": {
+        "protocol": "Protocolo HTTP",
+        "protocol_description": "Cambiando el protocolo de HTTP puede ayudar con compatibilidad o rendimiento en ciertas páginas o plataformas.",
+        "skip_cert_verification": "Saltar verificación de certificado",
+        "skip_cert_verification_description": "Activar para certificados autofirmados (p. ej. servidores locales)",
+        "skip_cert_verification_warning_title": "Advertencia de seguridad",
+        "skip_cert_verification_warning": "Se desactivó la verificación de certificado. Tu conexión podrá ser insegura. Solo usa esto con servidores locales confiables."
+      }
+    },
+    "viewer": {
+      "auto_fetch_notes": "Notas automáticas",
+      "auto_fetch_notes_description": "Buscar y mostrar automáticamente las notas cuando sea posible."
+    },
+    "add_profile_to_continue": "Añade un perfil para continuar",
+    "add_profile": "Añadir perfil",
+    "unsaved_changes": "Tienes cambios sin guardar",
+    "unsaved_changes_discard": "No guardar",
+    "deletion": {
+      "title": "Eliminar '${profileName}'",
+      "confirmation": "¿Estás seguro que quieres borrar este perfil? Esta acción no se puede deshacer."
+    },
+    "invalid_booru_warning": "Parece que la página no está funcionando en el motor seleccionado. Por favor, intenta con otro.",
+    "unknown_engine_selection_request": "Selecciona un motor de booru para continuar",
+    "new_profile_leave_as_empty_tips": "¿No estás seguro? Déjalo como es; puedes cambiarlo más tarde.",
+    "using_status": "usando ${booru}",
+    "paste_from_clipboard": "Pegar del portapapeles",
+    "no_profiles_available": "No hay perfiles disponibles",
+    "unsaved_changes_reconfirm_question": "¿Quieres guardar tus cambios? Tus cambios se perderán si no los guardas.",
+    "content_filtering": {
+      "none": "Ninguno",
+      "moderate": "Moderado",
+      "aggressive": "Agresivo",
+      "custom": "Personalizado"
+    },
+    "api_key": {
+      "auth_error": {
+        "edit_api_key": "Editar API key",
+        "empty_key_warning": "Esta página podrá requerir que entres tu API key o contraseña para acceder su contenido.",
+        "invalid_key_warning": "Verifica tu API key o credenciales: podrán ser inválidas o expiradas."
+      }
+    },
+    "invalid_selected_profile": "El perfil seleccionado actual es inválido",
+    "invalid_selected_profile_selection_request": "Seleccione un perfil de la lista de abajo para continuar",
+    "choose_a_custom_filtering": {
+      "one": "Elige una calificación que quisieras excluir de la búsqueda.",
+      "other": "Elige calificaciones que quisieras excluir de la búsqueda."
+    },
+    "hide_deleted_description": "Ocultar imágenes de baja calidad, pero a veces incluye algunas decentes.",
+    "hide_banned_label": "Ocultar publicaciones baneadas",
+    "hide_banned_description": "Oculta completamente imágenes que han sido baneadas por el sitio."
   },
   "blacklist": {
     "manage": {
@@ -785,5 +1024,34 @@
   },
   "reminder": {
     "dont_show_again": "No mostrar de nuevo"
+  },
+  "eshuushuu": {
+    "profile": {
+      "last_active": "Última actividad"
+    },
+    "personal_info": {
+      "location": "Ubicación",
+      "interests": "Intereses",
+      "gender": "Género",
+      "title": "Información personal"
+    }
+  },
+  "shimmie2": {
+    "extension": {
+      "title": "Extensiones"
+    }
+  },
+  "cache": {
+    "image": {
+      "reminder": {
+        "failed": "No se pudo limpiar el caché",
+        "cleared": "Caché limpiado"
+      }
+    }
+  },
+  "video_player": {
+    "speed": {
+      "normal": "Normal"
+    }
   }
 }
