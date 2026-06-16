@@ -819,7 +819,8 @@
       }
     },
     "gestures": {
-      "title": "Gestos"
+      "title": "Gestos",
+      "override_notice": "Para anular los gestos predeterminados de este perfil, seleccione \"Ninguno\" para mantener el comportamiento original."
     },
     "downloads": {
       "title": "Descargar",
@@ -832,15 +833,21 @@
         "available_token_options": "Opciones disponibles",
         "no_options_available": "No hay opciones disponibles",
         "slow_token_warning": "Este token ralentizará tus descargas ya que requiere búsquedas adicionales para cada archivo."
-      }
+      },
+      "leave_empty_to_use_global": "Déjelo en blanco para usar la ubicación de descarga en la configuración.",
+      "custom_filename_format": "Formato de nombre de archivo personalizado"
     },
     "api_key_instructions": {
       "variants_1": "*Accede tu cuenta on th, visit <b><a href=\"api-credentials\">My Account > Options > API Access Credentials</a></b> para recibir tu API key. Si ves un API key vacío como <b>&api_key=&user_id=<your_id></b>, presiona <b>Generate New Key?</b> y presiona <b>Save</b> para generar un API key nuevo. Si no, copia el key y pégalo arriba. También puedes copiar el string de <b>API Access Credentials</b> y pulsar el botón abajo.",
       "variants_2": "*Accede tu cuenta en el navegador, visita <b>My Account > Options > API Access Credentials</b>. Verifica si está ahí. Si no, la página no soporta credenciales y puedes ignorar esto.",
       "shimmie2": {
         "view_extension_docs": "Ver documentación de extensión",
-        "user_api_key_notice": "Esta app requiere la extension de <b>User API Key</b> para poder instalarse y acceder contenidos privados."
-      }
+        "user_api_key_notice": "Esta app requiere la extension de <b>User API Key</b> para poder instalarse y acceder contenidos privados.",
+        "danbooru_api_extension_notice": "La aplicación requiere que la extensión <b>Danbooru Client API</b> esté instalada en el sitio para poder funcionar."
+      },
+      "variants_3": "*Inicia sesión en tu cuenta en el navegador y visita <b><a href=\"api-credentials\">Mi cuenta > Clave API</a></b>. Copia tu clave o crea una nueva si es necesario, asegurándote de que todos los permisos estén activados para el correcto funcionamiento de la aplicación.",
+      "variants_4": "*Inicia sesión en tu cuenta en el navegador y visita <b>Cuenta > Tokens de inicio de sesión</b>. Copia tu <b>Token de inicio de sesión web</b> o crea uno nuevo si es necesario y pégalo aquí. Si usas el <b>Token de inicio de sesión web</b>, cerrar sesión en el navegador hará que el token quede inválido.",
+      "variants_5": "*Inicia sesión en tu cuenta en el navegador, visita <b><a href=\"api-credentials\">Mi cuenta > Opciones > Credenciales de acceso API</a></b> para obtener tu clave API. Copia la clave y pégala en el campo de arriba. También puedes copiar la cadena de texto completa desde la sección <b>Credenciales de acceso API</b> y tocar el botón de abajo."
     },
     "search": {
       "blacklist": "Lista negra",
@@ -951,18 +958,28 @@
           "start_limited_preview": "Iniciar prevista de $previewMinutes minutos",
           "continue_preview_and_apply": "Continuar prevista y aplicar",
           "currently_in_preview": "Estás previendo un diseño personalizado.",
-          "time_left": "Tiempo restante:"
+          "time_left": "Tiempo restante:",
+          "preview_expired": "La vista previa de tu diseño ha finalizado. Actualiza tu cuenta para seguir utilizando diseños premium o inicia una nueva vista previa."
         },
         "title": "Diseño de visor de imagen",
         "preview_widgets": "Prever widgets",
         "full_info_widgets": "Widgets de información completa"
       },
-      "title": "Apariencia"
+      "title": "Apariencia",
+      "home_screen": "Pantalla de inicio",
+      "home_screen_description": "Cambiar la pantalla de inicio predeterminada al abrir este perfil.",
+      "turn_on": "Encender",
+      "turn_on_description": "Anular el tema global usando el tema de este perfil"
     },
     "listing": {
       "title": "Lista",
       "thumbnail_button": "Botón de Thumbnail",
-      "overridden_notice": "Estas configuraciones se sobrescriben por una lista personalizada. En su lugar, ve a <b><a href=\"booru-profiles\">Profile's Listing</a></b>."
+      "overridden_notice": "Estas configuraciones se sobrescriben por una lista personalizada. En su lugar, ve a <b><a href=\"booru-profiles\">Profile's Listing</a></b>.",
+      "thumbnail_button_description": "Cambiar el botón predeterminado en la esquina inferior derecha de la miniatura.",
+      "tooltip_on_hover_title": "Mostrar la descripción emergente al pasar el cursor",
+      "tooltip_on_hover_description": "Mostrar información de vista previa al pasar el cursor sobre la miniatura.",
+      "enable_profile_specific_settings": "Habilitar la configuración específica del perfil",
+      "enable_profile_specific_settings_description": "Anula la configuración global para este perfil. Si está habilitada, la configuración global se ignorará hasta que se desactive."
     }
   },
   "blacklist": {
