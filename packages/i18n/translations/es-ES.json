@@ -529,7 +529,7 @@
       "receive": "Recibir",
       "backup_data": "Datos de respaldo",
       "advanced_export_import": "Exportación/importación avanzada",
-      "auto_backup": "Respaldo automática",
+      "auto_backup": "Respaldo automático",
       "auto_backup_tooltip": "Los respaldos se crean cuando se abre la app. No se respalda cuando la app está cerrada.",
       "backup_in_progress": "Respaldo ya en progreso",
       "export_operation_failed": "La exportación falló: {error}",
