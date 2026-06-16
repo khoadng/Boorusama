@@ -813,20 +813,33 @@
         "basic_auth": "Basic Auth (requerido)",
         "advanced_auth": "Advanced Auth (opcional)",
         "fav_button_tooltip_title": "Sobre el botón de favorito",
-        "fav_button_tooltip_description": "No hay forma de verificar si una imagen ya está marcada como favorita. Sin embargo, verás un indicador visual después de pulsar “Favorito”. No te preocupes, tus favoritos se guardan en la página."
+        "fav_button_tooltip_description": "No hay forma de verificar si una imagen ya está marcada como favorita. Sin embargo, verás un indicador visual después de pulsar “Favorito”. No te preocupes, tus favoritos se guardan en el sitio web.",
+        "basic_auth_description": "Dar esta información permite acceso de lectura a tu cuenta. Esto se requiere por Gelbooru a partir de 06/2025.",
+        "advanced_auth_description": "Dar esta información te permitirá editar tus favoritos y también obtendrás permisos de escritura. Si cambias tu contraseña, tendrás que iniciar sesión de nuevo."
       }
     },
     "gestures": {
       "title": "Gestos"
     },
     "downloads": {
-      "title": "Descargar"
+      "title": "Descargar",
+      "custom_filename_format_invidual": "Descarga individual",
+      "custom_filename_format_bulk": "Descarga masiva",
+      "bulk_slow_token_warning": "Usando tokens lentos en una descarga masiva se DEMORA en prepararse antes de descargar. Considera no usándolas.",
+      "filename": {
+        "available_tokens": "Tokens disponibles: ",
+        "no_token_error": "Token $token no está disponible",
+        "available_token_options": "Opciones disponibles",
+        "no_options_available": "No hay opciones disponibles",
+        "slow_token_warning": "Este token ralentizará tus descargas ya que requiere búsquedas adicionales para cada archivo."
+      }
     },
     "api_key_instructions": {
       "variants_1": "*Accede tu cuenta on th, visit <b><a href=\"api-credentials\">My Account > Options > API Access Credentials</a></b> para recibir tu API key. Si ves un API key vacío como <b>&api_key=&user_id=<your_id></b>, presiona <b>Generate New Key?</b> y presiona <b>Save</b> para generar un API key nuevo. Si no, copia el key y pégalo arriba. También puedes copiar el string de <b>API Access Credentials</b> y pulsar el botón abajo.",
       "variants_2": "*Accede tu cuenta en el navegador, visita <b>My Account > Options > API Access Credentials</b>. Verifica si está ahí. Si no, la página no soporta credenciales y puedes ignorar esto.",
       "shimmie2": {
-        "view_extension_docs": "Ver documentación de extensión"
+        "view_extension_docs": "Ver documentación de extensión",
+        "user_api_key_notice": "Esta app requiere la extension de <b>User API Key</b> para poder instalarse y acceder contenidos privados."
       }
     },
     "search": {
@@ -849,7 +862,8 @@
       "exclude_from_search": "Excluir estos tags en cada búsqueda",
       "include_exclude_tooltip": "Estos tags se agregarán a cada búsqueda que la app haga, no solo las que pidas manualmente.",
       "preview_tags": "Prever",
-      "any_search_query": "<cualquier búsqueda>"
+      "any_search_query": "<cualquier búsqueda>",
+      "enable_profile_specific_settings": "Activar lista negra de perfil"
     },
     "network": {
       "title": "Red",
@@ -886,7 +900,8 @@
     },
     "viewer": {
       "auto_fetch_notes": "Notas automáticas",
-      "auto_fetch_notes_description": "Buscar y mostrar automáticamente las notas cuando sea posible."
+      "auto_fetch_notes_description": "Buscar y mostrar automáticamente las notas cuando sea posible.",
+      "overridden_notice": "Estas configuraciones se sobrescriben por un visor personalizado. En su lugar, ve a <b><a href=\"booru-profiles\">Profile's Viewer</a></b>."
     },
     "add_profile_to_continue": "Añade un perfil para continuar",
     "add_profile": "Añadir perfil",
@@ -924,7 +939,31 @@
     },
     "hide_deleted_description": "Ocultar imágenes de baja calidad, pero a veces incluye algunas decentes.",
     "hide_banned_label": "Ocultar publicaciones baneadas",
-    "hide_banned_description": "Oculta completamente imágenes que han sido baneadas por el sitio."
+    "hide_banned_description": "Oculta completamente imágenes que han sido baneadas por el sitio web.",
+    "appearance": {
+      "image_viewer_layout": {
+        "widget_title": "Widgets",
+        "storage_tooltip": "Todos los cambios se guardan en tu perfil actual.",
+        "rearrange_tip": "Reordenar elementos o ocultar contenido",
+        "preview": {
+          "title": "Prevista de diseño",
+          "description": "Prevé tu diseño custom por $previewMinutes minutos. Después de eso, puedes actualizarlo a $brand para seguir usándolo, o intenta de nuevo.",
+          "start_limited_preview": "Iniciar prevista de $previewMinutes minutos",
+          "continue_preview_and_apply": "Continuar prevista y aplicar",
+          "currently_in_preview": "Estás previendo un diseño personalizado.",
+          "time_left": "Tiempo restante:"
+        },
+        "title": "Diseño de visor de imagen",
+        "preview_widgets": "Prever widgets",
+        "full_info_widgets": "Widgets de información completa"
+      },
+      "title": "Apariencia"
+    },
+    "listing": {
+      "title": "Lista",
+      "thumbnail_button": "Botón de Thumbnail",
+      "overridden_notice": "Estas configuraciones se sobrescriben por una lista personalizada. En su lugar, ve a <b><a href=\"booru-profiles\">Profile's Listing</a></b>."
+    }
   },
   "blacklist": {
     "manage": {
@@ -938,7 +977,12 @@
     "many_added": "Se han añadido {0} marcadores",
     "failed_to_add_many": "Error al añadir marcadores",
     "removed": "Marcador eliminado",
-    "failed_to_remove": "No se ha podido eliminar el marcador"
+    "failed_to_remove": "No se ha podido eliminar el marcador",
+    "counter": {
+      "one": "$n marcador",
+      "other": "$n marcadores"
+    },
+    "shuffle_tooltip": "Shuffle marcadores"
   },
   "app_update": {
     "update": "Actualización",
@@ -961,6 +1005,35 @@
         "one": "$n segundo",
         "other": "$n segundos"
       }
+    },
+    "months": {
+      "short": {
+        "jan": "Ene",
+        "feb": "Feb",
+        "mar": "Mar",
+        "apr": "Abr",
+        "may": "May",
+        "jun": "Jun",
+        "jul": "Jul",
+        "aug": "Ago",
+        "sep": "Sep",
+        "oct": "Oct",
+        "nov": "Nov",
+        "dec": "Dic"
+      }
+    },
+    "filter": {
+      "last_7_days": "Últimos 7 días",
+      "last_30_days": "Últimos 30 días",
+      "last_90_days": "Últimos 90 días",
+      "last_6_months": "Últimos 6 meses",
+      "last_year": "Año pasado"
+    },
+    "timeago": {
+      "days": "hace {days} días",
+      "hours": "hace {hours} horas",
+      "minutes": "hace {minutes} minutos",
+      "just_now": "Ahora"
     }
   },
   "tags": {
@@ -1008,7 +1081,53 @@
   },
   "bulk_downloads": {
     "options": {
-      "save_to_folder": "Guardar a carpeta"
+      "save_to_folder": "Guardar a carpeta",
+      "other_options": "Otras opciones",
+      "show_advanced_options": "Mostrar opciones avanzadas",
+      "enable_notification": "Notificaciones",
+      "excluded_tags": "Tags excluidos",
+      "excluded_tags_description": "Seleccionar tags adicionales para excluir de este lote"
+    },
+    "created": "Creado",
+    "completed_with_no_new_files": "Completado sin nuevos archivos",
+    "scanning_page": {
+      "preparing": "Preparando...",
+      "preparing_with_page": "Preparando, página $page...",
+      "with_page": "Escaneando página $page...",
+      "null_page": "Iniciando...",
+      "with_page_and_index": "Escaneando página $page, elemento $index..."
+    },
+    "file_counter": {
+      "one": "$n archivo",
+      "other": "$n archivos"
+    },
+    "status": {
+      "suspended": "Guardado"
+    },
+    "actions": {
+      "create": "Crear",
+      "delete": "Eliminar",
+      "copy_path": "Copiar ruta",
+      "new_download": "Nueva descarga",
+      "add_to_queue": "Añadir a la lista"
+    },
+    "errors": {
+      "running_session_deletion": "No se puede eliminar una sesión en curso"
+    },
+    "completed": {
+      "title": "Completado",
+      "empty": "No hay sesiones de descarga completadas",
+      "clear_all": "Borrar todo"
+    },
+    "auth_changed": {
+      "continue": "Continuar de todos modos"
+    },
+    "templates": {
+      "title": "Plantillas",
+      "empty": "No hay plantillas",
+      "create": "Crear una plantilla",
+      "created": "Plantilla creada",
+      "run": "Ejecutar plantilla"
     }
   },
   "sort": {
@@ -1033,7 +1152,8 @@
       "location": "Ubicación",
       "interests": "Intereses",
       "gender": "Género",
-      "title": "Información personal"
+      "title": "Información personal",
+      "website": "Sitio web"
     }
   },
   "shimmie2": {
@@ -1052,6 +1172,25 @@
   "video_player": {
     "speed": {
       "normal": "Normal"
+    },
+    "video_qualities": {
+      "original": "Original"
     }
+  },
+  "donation": {
+    "donate": "Donar"
+  },
+  "auth": {
+    "clear_credentials": "Borrar",
+    "login": "Iniciar sesión",
+    "login_expires": "El acceso expira:",
+    "session_expired": "Tu sesión ha expirado. Por favor inicia sesión de nuevo para continuar utilizando características autenticadas."
+  },
+  "captcha": {
+    "title": "Resolver el captcha",
+    "i_have_solved_it": "Lo he resuelto"
+  },
+  "select": {
+    "selected_items": "Seleccionar elementos"
   }
 }
