@@ -148,7 +148,7 @@ class GelbooruPost extends Equatable
 class GelbooruImageUrlResolver implements ImageUrlResolver {
   const GelbooruImageUrlResolver();
 
-  static const _currentImageHost = 'img2.gelbooru.com';
+  static const _currentImageHost = 'img4.gelbooru.com';
   static final _imgHostPattern = RegExp(r'^img\d+\.gelbooru\.com$');
 
   @override
