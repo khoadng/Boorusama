@@ -128,7 +128,7 @@ final class GitRelease implements ReleaseTagRepository {
       'ls-remote',
       '--tags',
       'origin',
-      tag,
+      '$tag*',
     ]);
     return parseRemoteTagCommit(output, tag);
   }

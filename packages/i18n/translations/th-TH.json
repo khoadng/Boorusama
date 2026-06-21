@@ -508,7 +508,8 @@
           "free": "พื้นที่คงเหลือ"
         },
         "status_title": "พื้นที่เหลือ $freeSpace จาก $totalSpace"
-      }
+      },
+      "custom_cache_limit_option": "ปรับแต่งเอง..."
     },
     "backup_and_restore": {
       "backup_and_restore": "สำรอง และเรียกคืนข้อมูล",

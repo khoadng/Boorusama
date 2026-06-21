@@ -49,8 +49,8 @@
       "categories": {
         "all": "Все",
         "unread": "Непрочитанные",
-        "sent": "Отправить",
-        "deleted": "Удаленно",
+        "sent": "Отправленные",
+        "deleted": "Удалённые",
         "received": "Доставленные"
       },
       "date": "Дата",
@@ -90,29 +90,29 @@
   "tag": {
     "related": {
       "more": "Больше",
-      "related": "Связанные",
-      "add_to_current_search": "Добавить к запросу",
+      "related": "Схожие",
+      "add_to_current_search": "Добавить в текущий поиск",
       "open_wiki": "Открыть wiki",
       "negate_from_current_search": "Исключить из текущего поиска"
     }
   },
   "post": {
     "detail": {
-      "file_details": "Детали",
+      "file_details": "Детали файла",
       "size": "Размер",
       "resolution": "Разрешение",
       "rating": "Рейтинг",
       "file_format": "Формат файла",
       "share": {
         "source": "Поделиться ссылкой на первоисточник",
-        "booru": "Поделиться ссылкой на сайт",
+        "booru": "Поделиться ссылкой на booru сайт",
         "image": "Поделиться изображением"
       },
       "show_original": "Показать оригинал",
       "show_translated": "Показать перевод",
       "login_required_notice": "Вы должны войти в аккаунт для совершения действия",
       "open_wiki": "Открыть wiki",
-      "add_to_favorites": "Добавить в любимое",
+      "add_to_favorites": "Добавить в любимые",
       "copy_and_open_saved_search": "Сохранить и открыть сохранённый запрос",
       "score": {
         "one": "Очко",
@@ -138,8 +138,8 @@
         "related_posts": "Похожие посты",
         "uploader_posts": "Загрузки пользователя"
       },
-      "uploader": "Автор",
-      "approver": "Утвердивший",
+      "uploader": "Загрузил",
+      "approver": "Утвердил",
       "artist": "Художник",
       "show_n_more": "Показать ещё $n",
       "show_less": "Свернуть"
@@ -868,7 +868,7 @@
     "recently_added": "Недавно добавленно",
     "recently_updated": "Недавно обновлено",
     "recently_created": "Недавно созданные",
-    "last_updated": "Последние обновленныё",
+    "last_updated": "Последние обновлённые",
     "name": "Имя",
     "name_asc": "Имя (A-Z)",
     "name_desc": "Имя (Z-A)",

@@ -34,6 +34,8 @@ typedef ContextProvider = BuildContext? Function();
 typedef ChallengeCompletionValidator =
     Future<bool> Function(WebViewController controller);
 
+const _ddosSolverLogSnippetLength = 2000;
+
 abstract class CookieRetriever {
   Future<List<Cookie>> getCookies(String url);
 }
@@ -99,6 +101,12 @@ class RawSolver implements ProtectionSolver {
       final jar = await cookieJar();
       final controller = WebViewController();
       final initialCookies = await _getMatchingCookieValues(uri);
+      var hasFinishedPageLoad = false;
+      debugPrint(
+        '[DDOS:$protectionType] start uri=$uri '
+        'userAgent=${userAgent ?? '<default>'} '
+        'initialMatchingCookies=${initialCookies.keys.join(',')}',
+      );
 
       try {
         await controller.setJavaScriptMode(JavaScriptMode.unrestricted);
@@ -106,7 +114,9 @@ class RawSolver implements ProtectionSolver {
         if (challengeCompletionValidator != null) {
           await controller.setNavigationDelegate(
             NavigationDelegate(
-              onPageFinished: (_) {
+              onPageFinished: (url) {
+                hasFinishedPageLoad = true;
+                debugPrint('[DDOS:$protectionType] page finished url=$url');
                 unawaited(
                   _completeIfSolved(
                     uri: uri,
@@ -140,6 +150,7 @@ class RawSolver implements ProtectionSolver {
         controller: controller,
         completer: completer,
         initialCookies: initialCookies,
+        allowPageValidation: () => hasFinishedPageLoad,
         onSuccess: () {
           if (navigator.canPop()) navigator.pop(true);
         },
@@ -198,6 +209,7 @@ class RawSolver implements ProtectionSolver {
     required WebViewController controller,
     required Completer<bool> completer,
     required Map<String, String> initialCookies,
+    bool Function()? allowPageValidation,
     required VoidCallback onSuccess,
   }) {
     Timer.periodic(const Duration(seconds: 1), (timer) async {
@@ -212,6 +224,7 @@ class RawSolver implements ProtectionSolver {
         controller: controller,
         completer: completer,
         initialCookies: initialCookies,
+        allowPageValidation: allowPageValidation?.call() ?? true,
         onSuccess: onSuccess,
       );
 
@@ -225,26 +238,57 @@ class RawSolver implements ProtectionSolver {
     required WebViewController controller,
     required Completer<bool> completer,
     required Map<String, String> initialCookies,
+    bool allowPageValidation = true,
     VoidCallback? onSuccess,
   }) async {
     if (completer.isCompleted) return true;
 
     try {
       final cookies = await _cookieRetriever.getCookies(uri.toString());
+      final currentUrl = await _safeCurrentUrl(controller);
+      debugPrint(
+        '[DDOS:$protectionType] check uri=$uri '
+        'currentUrl=${currentUrl ?? '<unknown>'} '
+        'cookies=${_formatCookies(cookies)}',
+      );
 
       if (_hasNewMatchingCookie(cookies, initialCookies)) {
         await jar.saveFromResponse(uri, cookies);
+        debugPrint('[DDOS:$protectionType] complete via matching cookie');
         if (!completer.isCompleted) completer.complete(true);
         onSuccess?.call();
         return true;
       }
 
       final validator = challengeCompletionValidator;
-      if (validator == null || !await validator(controller)) return false;
+      if (validator == null) {
+        debugPrint('[DDOS:$protectionType] pending cookie-only solver');
+        return false;
+      }
+
+      if (!allowPageValidation) {
+        debugPrint(
+          '[DDOS:$protectionType] pending page validator until page finished',
+        );
+        return false;
+      }
+
+      final solvedByPage = await validator(controller);
+      debugPrint('[DDOS:$protectionType] page validator=$solvedByPage');
+
+      if (!solvedByPage) {
+        final pageSource = await _getPageSource(controller);
+        debugPrint(
+          '[DDOS:$protectionType] pending page='
+          '${_formatPageSnippet(pageSource)}',
+        );
+        return false;
+      }
 
       if (cookies.isNotEmpty) {
         await jar.saveFromResponse(uri, cookies);
       }
+      debugPrint('[DDOS:$protectionType] complete via page content');
       if (!completer.isCompleted) completer.complete(true);
       onSuccess?.call();
       return true;
@@ -322,6 +366,7 @@ class CloudflareSolver implements ProtectionSolver {
     protectionTitle: 'Solving Cloudflare Challenge',
     autoCookieValidator: (cookie) =>
         cookie.name.toLowerCase() == 'cf_clearance',
+    challengeCompletionValidator: _isCloudflareSolved,
   );
 
   @override
@@ -393,7 +438,6 @@ bool isAftSolvedPage(String value) {
   final lower = normalized.toLowerCase();
   const failureMarkers = [
     '403 forbidden',
-    'access denied',
     'failure!',
     'challenge has expired',
     'reloading the page to try again',
@@ -405,7 +449,13 @@ bool isAftSolvedPage(String value) {
     'challenge_generated',
     'challenge-checkbox',
     'challenge-container',
+    'challenge-prompt',
+    'checkbox-status',
     'x-verification-challenge',
+    'powseed',
+    'sendanswer',
+    'i am not a robot',
+    'it is now okay to proceed',
     'wait for signal before clicking',
   ];
   if (challengeMarkers.any(lower.contains)) return false;
@@ -414,20 +464,57 @@ bool isAftSolvedPage(String value) {
 }
 
 Future<bool> _isAftSolved(WebViewController controller) async {
-  final visibleText = await _getVisiblePageText(controller);
+  final pageSource = await _getPageSource(controller);
 
-  return isAftSolvedPage(visibleText);
+  return isAftSolvedPage(pageSource);
 }
 
-Future<String> _getVisiblePageText(WebViewController controller) async {
+bool isCloudflareSolvedPage(String value) {
+  final normalized = value.trim();
+  if (normalized.isEmpty) return false;
+
+  final lower = normalized.toLowerCase();
+  const failureMarkers = [
+    '403 forbidden',
+  ];
+  if (failureMarkers.any(lower.contains)) return false;
+
+  const challengeMarkers = [
+    'cf_chl',
+    'cf-ray',
+    'cf-turnstile',
+    'cf-mitigated',
+    'challenges.cloudflare.com',
+    '/cdn-cgi/challenge-platform',
+    'challenge-platform',
+    'challenge-error-text',
+    'enable javascript and cookies',
+    'just a moment',
+    'checking if the site connection is secure',
+    'captcha-box',
+    'h-captcha',
+    'g-recaptcha',
+  ];
+  if (challengeMarkers.any(lower.contains)) return false;
+
+  return true;
+}
+
+Future<bool> _isCloudflareSolved(WebViewController controller) async {
+  final pageSource = await _getPageSource(controller);
+
+  return isCloudflareSolvedPage(pageSource);
+}
+
+Future<String> _getPageSource(WebViewController controller) async {
   try {
     final result = await controller.runJavaScriptReturningResult('''
 (() => {
   const body = document.body;
   const root = document.documentElement;
 
-  return (body && (body.innerText || body.textContent)) ||
-    (root && (root.innerText || root.textContent)) ||
+  return (root && root.outerHTML) ||
+    (body && (body.innerText || body.textContent)) ||
     '';
 })()
 ''');
@@ -448,6 +535,35 @@ String _javaScriptResultAsString(Object? result) {
   } catch (_) {
     return result;
   }
+}
+
+Future<String?> _safeCurrentUrl(WebViewController controller) async {
+  try {
+    return controller.currentUrl();
+  } catch (_) {
+    return null;
+  }
+}
+
+String _formatCookies(List<Cookie> cookies) {
+  if (cookies.isEmpty) return '[]';
+
+  return cookies
+      .map(
+        (cookie) =>
+            '{name:${cookie.name}, domain:${cookie.domain}, '
+            'path:${cookie.path}, expires:${cookie.expires}, '
+            'secure:${cookie.secure}, httpOnly:${cookie.httpOnly}, '
+            'valueLength:${cookie.value.length}}',
+      )
+      .join(', ');
+}
+
+String _formatPageSnippet(String value) {
+  final normalized = value.replaceAll(RegExp(r'\s+'), ' ').trim();
+  if (normalized.length <= _ddosSolverLogSnippetLength) return normalized;
+
+  return '${normalized.substring(0, _ddosSolverLogSnippetLength)}...';
 }
 
 class CaptchaAccessDeniedSolver implements ProtectionSolver {
