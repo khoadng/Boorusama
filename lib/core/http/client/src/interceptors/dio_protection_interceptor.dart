@@ -103,6 +103,15 @@ class DioProtectionInterceptor extends Interceptor {
     options.extra[_protectionRetryKey] = true;
 
     try {
+      final headers = await _protectionHandler.prepareRequestHeaders(
+        options.uri,
+        options.headers.map((k, v) => MapEntry(k, v.toString())),
+      );
+
+      options.headers
+        ..clear()
+        ..addAll(headers);
+
       return await _dio.fetch(options);
     } finally {
       if (previous == null) {
