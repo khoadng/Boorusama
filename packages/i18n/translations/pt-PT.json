@@ -386,7 +386,8 @@
           "free": "Livre"
         }
       },
-      "error_loading_cache_info": "Erro ao carregar informação da cache"
+      "error_loading_cache_info": "Erro ao carregar informação da cache",
+      "custom_cache_limit_option": "Personalizado..."
     },
     "backup_and_restore": {
       "backup_and_restore": "Cópia de Segurança e Restaurar",
