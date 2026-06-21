@@ -25,7 +25,7 @@ class ProtectionOrchestrator {
 
   var _hasSolvedChallenge = false;
 
-  // Key to track which URIs are currently being processed
+  // Key to track which protection challenges are currently being processed.
   final Map<String, Completer<bool>> _inProgress = {};
 
   bool get hasSolvedChallenge => _hasSolvedChallenge;
@@ -34,12 +34,6 @@ class ProtectionOrchestrator {
     Uri uri,
     ProtectionDetector? Function() detectProtection,
   ) async {
-    final uriKey = uri.toString();
-
-    if (_inProgress.containsKey(uriKey)) {
-      return _inProgress[uriKey]!.future;
-    }
-
     final detector = detectProtection();
     if (detector == null) {
       return false;
@@ -50,8 +44,14 @@ class ProtectionOrchestrator {
       return false;
     }
 
+    final protectionKey = '${detector.protectionType}:${uri.origin}';
+    final inProgress = _inProgress[protectionKey];
+    if (inProgress != null) {
+      return inProgress.future;
+    }
+
     final completer = Completer<bool>();
-    _inProgress[uriKey] = completer;
+    _inProgress[protectionKey] = completer;
 
     final userAgent = await _userAgentProvider.getUserAgent();
 
@@ -68,7 +68,7 @@ class ProtectionOrchestrator {
       completer.complete(false);
       return false;
     } finally {
-      _inProgress.remove(uriKey);
+      _inProgress.remove(protectionKey);
     }
   }
 

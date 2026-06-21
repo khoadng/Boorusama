@@ -47,6 +47,10 @@ final httpDdosProtectionBypassProvider = Provider<HttpProtectionHandler>(
       ),
       contextProvider: contextProvider,
       cookieJar: cookieJar,
+      onSolved: () {
+        ref.invalidate(bypassDdosHeadersProvider);
+        ref.invalidate(cachedBypassDdosHeadersProvider);
+      },
     );
   },
 );
