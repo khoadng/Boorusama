@@ -3,7 +3,7 @@
     "done": "完成",
     "errors": {
       "no_data": "无可用数据",
-      "unknown": "某些错误",
+      "unknown": "出现未知错误",
       "error": "错误"
     },
     "action": {
@@ -164,7 +164,20 @@
       "edit": "编辑",
       "use_default": "使用默认",
       "toggle_bookmark": "切换书签",
-      "toggle_favorite": "切换收藏"
+      "toggle_favorite": "切换收藏",
+      "copy": "复制",
+      "copy_image_description": "复制显示的图像",
+      "copy_file_name": "复制文件名",
+      "unavailable": "不可用",
+      "copy_source_link": "复制源文件链接",
+      "copy_image_link": "复制图像链接",
+      "copy_post_id": "复制条目ID",
+      "failed_to_get_image_url": "获取图像链接失败",
+      "failed_to_copy_image": "复制图像失败：$e",
+      "media": "媒体",
+      "links": "链接",
+      "copy_post_link": "复制条目链接",
+      "failed_to_get_image_bytes": "获取图像数据失败"
     },
     "statistics": {
       "stats_for_nerds": "极客统计",
@@ -495,7 +508,8 @@
           "free": "剩余"
         }
       },
-      "error_loading_cache_info": "加载缓存信息出错"
+      "error_loading_cache_info": "加载缓存信息出错",
+      "custom_cache_limit_option": "自定义……"
     },
     "backup_and_restore": {
       "backup_and_restore": "备份与恢复",
@@ -642,7 +656,7 @@
     "blacklisted_tags": "标签黑名单",
     "load_error": "加载标签黑名单失败",
     "updated": "标签黑名单已更新",
-    "limitation_notice": "仅支持 <b>NOT</b> 运算符、 <b>OR</b> 运算符、<b>评分</b>元标签和<b>评级</b>元标签\n\n使用其它黑名单在当前版本不可用。",
+    "limitation_notice": "仅支持 <b>NOT</b> 运算符、 <b>OR</b> 运算符、<b>score</b>元标签和<b>rating</b>元标签\n\n当前版本不可使用其它元标签的黑名单。",
     "failed_to_add": "添加标签失败",
     "failed_to_remove": "移除标签失败",
     "blacklisted_header_title": "黑名单",
@@ -736,8 +750,14 @@
     },
     "drag_hint": "长按并拖动以重新排序",
     "confirm_edit_title": "确认更改",
-    "confirm_edit_adding": {"one": "将添加 $n 个新帖子", "other": "将添加 $n 个新帖子"},
-    "confirm_edit_removing": {"one": "将移除 $n 个帖子", "other": "将移除 $n 个帖子"},
+    "confirm_edit_adding": {
+      "one": "将添加 $n 个新帖子",
+      "other": "将添加 $n 个新帖子"
+    },
+    "confirm_edit_removing": {
+      "one": "将移除 $n 个帖子",
+      "other": "将移除 $n 个帖子"
+    },
     "invalid_post_ids": "包含无效 ID：{0}"
   },
   "favorite_tags": {
@@ -783,7 +803,7 @@
     "validation_empty_url": "地址为空",
     "validation_invalid_url": "\"{0}\" 不是有效的地址",
     "validation_invalid_http_url": "\"{0}\" 不是HTTP或HTTPS地址",
-    "validation_redundant_www": "\"{0}\" 包含了多余的 \"WWW\"",
+    "validation_redundant_www": "\"{0}\" 包含了多余的 \"www\"",
     "validation_contains_spaces": "\"{0}\" 中包含了空格",
     "validation_missing_scheme": "\"{0}\" 未指明协议（比如https://）",
     "misc": "混杂",
@@ -1147,7 +1167,8 @@
     "relogin": "重新登录",
     "clear_credentials": "清除",
     "login": "登录",
-    "login_expires": "登录过期："
+    "login_expires": "登录过期：",
+    "session_expired": "您的会话已过期。请再次登录以继续使用需验证的功能。"
   },
   "captcha": {
     "title": "解决验证码",
@@ -1284,7 +1305,16 @@
     }
   },
   "eshuushuu": {
-    "personal_info": {"title": "个人信息", "gender": "性别", "location": "位置", "interests": "兴趣", "website": "网站"},
-    "profile": {"joined": "加入时间", "last_active": "最后活跃"}
+    "personal_info": {
+      "title": "个人信息",
+      "gender": "性别",
+      "location": "位置",
+      "interests": "兴趣",
+      "website": "网站"
+    },
+    "profile": {
+      "joined": "加入时间",
+      "last_active": "最近活跃"
+    }
   }
 }
