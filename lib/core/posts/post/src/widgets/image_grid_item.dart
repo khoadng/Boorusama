@@ -199,7 +199,7 @@ class ImageScoreWidget extends StatelessWidget {
       constraints: const BoxConstraints(minWidth: 28),
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
       decoration: const BoxDecoration(
-        color: Colors.black,
+        color: Colors.black54,
         borderRadius: BorderRadius.all(Radius.circular(8)),
       ),
       child: Text(
