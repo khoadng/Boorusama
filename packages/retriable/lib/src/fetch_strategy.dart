@@ -11,6 +11,7 @@ bool _defaultTransientHttpStatusCodePredicate(int statusCode) {
 const defaultTransientHttpStatusCodes = <int>[
   0,
   408,
+  429,
   500,
   502,
   503,
@@ -42,7 +43,7 @@ class FetchStrategyBuilder {
       return FetchInstructions.attempt(uri: uri, timeout: timeout);
     }
 
-    if (!failure.isRetriableFailure ||
+    if (!failure.isRetriableFailureWith(transientHttpStatusCodePredicate) ||
         failure.totalDuration > totalFetchTimeout ||
         failure.attemptCount >= maxAttempts) {
       return FetchInstructions.giveUp(uri: uri, silent: silent);
@@ -104,8 +105,10 @@ class FetchFailure implements Exception {
   final dynamic originalException;
 
   bool get isRetriableFailure =>
-      (httpStatusCode != null &&
-          _defaultTransientHttpStatusCodePredicate(httpStatusCode!)) ||
+      isRetriableFailureWith(_defaultTransientHttpStatusCodePredicate);
+
+  bool isRetriableFailureWith(bool Function(int statusCode) predicate) =>
+      (httpStatusCode != null && predicate(httpStatusCode!)) ||
       isSocketException(originalException);
 
   @override

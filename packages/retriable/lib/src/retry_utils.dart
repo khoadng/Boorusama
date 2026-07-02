@@ -58,7 +58,9 @@ Future<Response<T>?> tryGetResponse<T>(
           : FetchFailure(
               totalDuration: stopwatch.elapsed,
               attemptCount: attemptCount,
-              originalException: error,
+              originalException: error is DioException
+                  ? error.error ?? error
+                  : error,
               httpStatusCode: error is DioException
                   ? error.response?.statusCode
                   : null,

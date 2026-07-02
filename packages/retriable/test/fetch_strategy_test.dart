@@ -38,6 +38,40 @@ void main() {
       expect(instructions.shouldGiveUp, isTrue);
     });
 
+    test('should retry on rate limit response', () async {
+      const builder = FetchStrategyBuilder();
+      final strategy = builder.build();
+      final uri = Uri.parse('https://example.com');
+      final failure = FetchFailure(
+        totalDuration: const Duration(seconds: 1),
+        attemptCount: 1,
+        httpStatusCode: 429,
+        uri: uri,
+      );
+
+      final instructions = await strategy(uri, failure);
+
+      expect(instructions.shouldGiveUp, isFalse);
+    });
+
+    test('should respect custom transient status predicate', () async {
+      const builder = FetchStrategyBuilder(
+        transientHttpStatusCodePredicate: _isCustomTransientStatusCode,
+      );
+      final strategy = builder.build();
+      final uri = Uri.parse('https://example.com');
+      final failure = FetchFailure(
+        totalDuration: const Duration(seconds: 1),
+        attemptCount: 1,
+        httpStatusCode: 418,
+        uri: uri,
+      );
+
+      final instructions = await strategy(uri, failure);
+
+      expect(instructions.shouldGiveUp, isFalse);
+    });
+
     test('should respect total fetch timeout', () async {
       const builder = FetchStrategyBuilder(
         totalFetchTimeout: Duration(seconds: 5),
@@ -81,3 +115,5 @@ void main() {
     });
   });
 }
+
+bool _isCustomTransientStatusCode(int statusCode) => statusCode == 418;
