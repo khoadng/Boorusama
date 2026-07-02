@@ -160,8 +160,8 @@
       "bookmark": "Marcador",
       "favorite": "Marcar como favorito",
       "unfavorite": "Desmarcar como favorito",
-      "upvote": "Upvote",
-      "downvote": "Downvote",
+      "upvote": "Voto positivo",
+      "downvote": "Voto negativo",
       "none": "Ninguno",
       "use_default": "Usar Default",
       "toggle_bookmark": "Alternar marcador",
@@ -659,7 +659,7 @@
     "limitation_notice": "Solo admite el operador <b>NO</b>, el operador <b>O</b>, la metetiqueta <b>score</b> y la metetiqueta <b>rating</b>\n\nLa prohibición mediante el uso de otras metetiquetas no funcionará en la versión actual.",
     "failed_to_add": "Error al añadir etiqueta",
     "failed_to_remove": "No se ha podido eliminar la etiqueta",
-    "blacklisted_header_title": "Lista negra",
+    "blacklisted_header_title": "Listado negro",
     "disable_all": "Desactivar todo",
     "reenable_all": "Volver a habilitar todas"
   },
@@ -711,7 +711,7 @@
     "saved_search_examples": "Ejemplos",
     "saved_search_try": "Intentalo",
     "saved_search_query": "Query",
-    "saved_search_labels": "Etiquetas",
+    "saved_search_labels": "Etiquetas*",
     "saved_search_labels_description": "*Una lista de etiquetas para ayudar a categorizar esta búsqueda. Separadas por espacios."
   },
   "favorites": {
@@ -969,7 +969,8 @@
       "home_screen": "Pantalla de inicio",
       "home_screen_description": "Cambiar la pantalla de inicio predeterminada al abrir este perfil.",
       "turn_on": "Encender",
-      "turn_on_description": "Anular el tema global usando el tema de este perfil"
+      "turn_on_description": "Anular el tema global usando el tema de este perfil",
+      "overridden_notice": "Estos ajustes son sobrescritos por tema personal. Vaya a la página <b><a href=\"booru-profiles\">Apariencia de Perfil</a></b> en su lugar."
     },
     "listing": {
       "title": "Lista",
@@ -999,7 +1000,8 @@
       "one": "$n marcador",
       "other": "$n marcadores"
     },
-    "shuffle_tooltip": "Shuffle marcadores"
+    "shuffle_tooltip": "Shuffle marcadores",
+    "title": "Marcadores"
   },
   "app_update": {
     "update": "Actualización",
@@ -1055,7 +1057,26 @@
   },
   "tags": {
     "actions": {
-      "add_to_blacklist": "Añadir a la Lista de Bloqueados"
+      "add_to_blacklist": "Añadir a lista negra",
+      "search": "Búsqueda de Etiquetas",
+      "search_single": "Búsqueda",
+      "copy": "Copiar Etiquetas",
+      "copy_single": "Copiar",
+      "blacklist": "Lista negra",
+      "blacklist_global": "Lista negra (Global)",
+      "add_to_blacklist_global": "Añade a lista negra global"
+    },
+    "title": "Etiquetas",
+    "filter_hint": "Filtro…",
+    "loading_tags_error": "Error al cargar etiquetas: $error",
+    "added": "Añadido",
+    "counter": {
+      "one": "$n etiqueta",
+      "other": "$n etiquetas"
+    },
+    "other_counter": {
+      "one": "$n otra",
+      "other": "$n otras"
     }
   },
   "premium": {
@@ -1075,7 +1096,7 @@
       "layout_customization_description": "Personaliza cuánta información ves y establece tu pantalla de inicio preferida (Marcadores, Búsqueda, etc.)",
       "enhanced_bulk_download": "Descarga masiva mejorada",
       "enhanced_bulk_download_description": "Plantillas ilimitadas, múltiples sesiones y reanudación automática tras reiniciar.",
-      "support_development": "Apoyar el desarrollo",
+      "support_development": "Asistencia del desarrollo",
       "support_development_description": "Ayuda a un desarrollador independiente a mantener el proyecto en marcha con actualizaciones y mejoras periódicas."
     },
     "thanks": {
@@ -1103,7 +1124,12 @@
       "show_advanced_options": "Mostrar opciones avanzadas",
       "enable_notification": "Notificaciones",
       "excluded_tags": "Tags excluidos",
-      "excluded_tags_description": "Seleccionar tags adicionales para excluir de este lote"
+      "excluded_tags_description": "Seleccionar tags adicionales para excluir de este lote",
+      "default_excluded_tags_from_source_list": "Etiquetas de listado en negro por defecto desde los siguiente orígenes:",
+      "source_list": {
+        "one": "• $count etiquetada desde $source",
+        "other": "• $count etiquetadas desde $source"
+      }
     },
     "created": "Creado",
     "completed_with_no_new_files": "Completado sin nuevos archivos",
@@ -1129,7 +1155,11 @@
       "add_to_queue": "Añadir a la lista"
     },
     "errors": {
-      "running_session_deletion": "No se puede eliminar una sesión en curso"
+      "running_session_deletion": "No se puede eliminar una sesión en curso",
+      "non_premium_template_limit": "Solo se permite una plantilla. Mejora a $brand para crear más plantillas.",
+      "non_premium_session_limit": "Solo está permitida una sesión de descarga activa. Mejore a $brand para sesiones adicionales.",
+      "non_premium_resume": "Continúe sesiones de descarga guardadas solo están disponibles en $brand.",
+      "non_premium_suspend": "Guarda sesiones de descarga solo están disponibles en $brand."
     },
     "completed": {
       "title": "Completado",
@@ -1137,7 +1167,12 @@
       "clear_all": "Borrar todo"
     },
     "auth_changed": {
-      "continue": "Continuar de todos modos"
+      "continue": "Continuar de todos modos",
+      "profile_mismatch": "Perfil no coincidente",
+      "current_site": "Sitio actual: ",
+      "download_site": "Sitio descarga: ",
+      "has_mismatch_warning": "El sitio de descarga no coincide con el perfil del sitio actual. Cambie su perfil para coincida el sitio de descarga.",
+      "no_mismatch_warning": "Esta sesión de descarga fue inicializada utilizando un perfil desde el mismo sitio pero con credenciales diferentes. Esto puede dirigir a incidencias.\n\n¿Desea continuar?"
     },
     "templates": {
       "title": "Plantillas",
@@ -1163,7 +1198,8 @@
   },
   "eshuushuu": {
     "profile": {
-      "last_active": "Última actividad"
+      "last_active": "Última actividad",
+      "joined": "Ingresado"
     },
     "personal_info": {
       "location": "Ubicación",
@@ -1175,14 +1211,16 @@
   },
   "shimmie2": {
     "extension": {
-      "title": "Extensiones"
+      "title": "Extensiones",
+      "failed_to_fetch": "No se puede obtener la lista de extensión para esta instancia"
     }
   },
   "cache": {
     "image": {
       "reminder": {
-        "failed": "No se pudo limpiar el caché",
-        "cleared": "Caché limpiado"
+        "failed": "No fue capaz de purgar el caché",
+        "cleared": "Caché vaciado",
+        "description": "La app tiene almacenada <b>$size</b> valor de imágenes. ¿Le gustaría purgarla para liberar algo de espacio?"
       }
     }
   },
@@ -1191,8 +1229,18 @@
       "normal": "Normal"
     },
     "video_qualities": {
-      "original": "Original"
-    }
+      "original": "Original",
+      "auto": "Automático",
+      "sample": "Muestra"
+    },
+    "playback_speed": "Velocidad de reproducción",
+    "lock_screen": "Bloquear pantalla",
+    "engine_not_supported": "Este motor no está mantenido en la plataforma actual.",
+    "change_video_player_engine_suggest": "Si sucede esto en una base usual, considere utilizar un motor de reproducción de vídeo diferente en los ajustes.",
+    "change_video_player_engine_request": "Cambie a un motor del reproductor de vídeo diferente en los ajustes.",
+    "video_quality": "Calidad de vídeo",
+    "current_video_quality_disclaimer": "Esta sección solo se aplica al vídeo actual. Para todos los vídeos, vaya a <a href=\"booru-profiles\">$video_profile_path</a>.",
+    "buffering": "Cargando…"
   },
   "donation": {
     "donate": "Donar"
@@ -1201,13 +1249,72 @@
     "clear_credentials": "Borrar",
     "login": "Iniciar sesión",
     "login_expires": "El acceso expira:",
-    "session_expired": "Tu sesión ha expirado. Por favor inicia sesión de nuevo para continuar utilizando características autenticadas."
+    "session_expired": "Tu sesión ha expirado. Por favor inicia sesión de nuevo para continuar utilizando características autenticadas.",
+    "login_required": "Necesita proporcionar detalles de inicio de sesión para utilizar esta característica.",
+    "logged_in": "Iniciada sesión",
+    "relogin": "Reinicie"
   },
   "captcha": {
     "title": "Resolver el captcha",
     "i_have_solved_it": "Lo he resuelto"
   },
   "select": {
-    "selected_items": "Seleccionar elementos"
+    "selected_items": "Seleccionar elementos",
+    "items_selected": {
+      "one": "$n ítem seleccionado",
+      "other": "$n ítemes seleccionados"
+    },
+    "select_all": "Seleccionar todo",
+    "deselect_all": "Deseleccionar todo"
+  },
+  "posts": {
+    "actions": {
+      "view_options": "Vista de opciones",
+      "edit_blacklist": "Editar lista negra",
+      "edit_global_blacklist": "Editar lista negra global",
+      "edit_booru_specific_blacklist": "Editar listas negras específicas de Booru's",
+      "edit_profile_blacklist": "Editar lista negar del perfil",
+      "stats": "Estds"
+    },
+    "hidden_count": "$hidden de $total",
+    "counter": {
+      "one": "$n correo",
+      "other": "$n correos"
+    }
+  },
+  "misc": {
+    "trailing_more": " más",
+    "trailing_less": " menos"
+  },
+  "artists": {
+    "title": "Artistas",
+    "search": {
+      "name": "Nombre",
+      "name_hint": "Nombre, nombre del grupo, u otro nombre",
+      "name_tips": "*Admite comodines y expregs",
+      "url_hint": "URL o una parte de esto"
+    }
+  },
+  "uploads": {
+    "counter": {
+      "one": "$n subida",
+      "other": "%n subidas"
+    }
+  },
+  "infinite_scroll": {
+    "reminder": {
+      "highres": "Cuidado: la app está exhibiendo imágenes de resolución alta utilizando datos de móvil."
+    },
+    "load_more": "Cargar más",
+    "nore_more_data": "Esto es todo por ahora",
+    "page_label": "Página $page",
+    "next_page": "Siguiente página",
+    "previous_page": "Anterior página"
+  },
+  "window": {
+    "pin": {
+      "pin_toast": "Ventana pinchada en la cima",
+      "unpin_toast": "Ventana despinchada desde la cima"
+    }
   }
 }
