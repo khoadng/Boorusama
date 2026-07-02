@@ -24,6 +24,7 @@ import '../../../themes/theme/types.dart';
 import '../../../widgets/widgets.dart';
 import '../providers/bulk_download_notifier.dart';
 import '../providers/create_download_options_notifier.dart';
+import '../policies/bulk_download_policy.dart';
 import '../routes/route_utils.dart';
 import '../types/download_configs.dart';
 import '../types/download_options.dart';
@@ -186,6 +187,8 @@ class _CreateDownloadOptionsRawSheetState
     final params = widget.initial;
     final notifier = ref.watch(createDownloadOptionsProvider(params).notifier);
     final options = ref.watch(createDownloadOptionsProvider(params));
+    final config = ref.watchConfigAuth;
+    final policy = ref.watch(bulkDownloadPolicyProvider(config));
 
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
@@ -210,6 +213,36 @@ class _CreateDownloadOptionsRawSheetState
           },
           onHistoryTap: notifier.addFromSearchHistory,
         ),
+        if (policy.isPolite)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+            child: Material(
+              color: colorScheme.secondaryContainer,
+              borderRadius: BorderRadius.circular(8),
+              child: Padding(
+                padding: const EdgeInsets.all(12),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(
+                      Symbols.hourglass_empty,
+                      size: 18,
+                      color: colorScheme.onSecondaryContainer,
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        'This site uses a protected download flow. Bulk downloads will run slowly, one file at a time, with visible waiting periods.',
+                        style: textTheme.bodySmall?.copyWith(
+                          color: colorScheme.onSecondaryContainer,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
         if (!widget.advancedToggle)
           const Divider(
             height: 16,

@@ -21,6 +21,7 @@ import '../../../search/selected_tags/types.dart';
 import '../../../settings/providers.dart';
 import '../data/filesystem.dart';
 import '../data/providers.dart';
+import '../policies/bulk_download_policy.dart';
 import '../types/bulk_download_error.dart';
 import '../types/download_configs.dart';
 import '../types/download_record.dart';
@@ -28,6 +29,7 @@ import '../types/download_session.dart';
 import '../types/download_task.dart';
 import 'dry_run_state.dart';
 import 'providers.dart';
+import 'runtime_status.dart';
 
 final dryRunNotifierProvider =
     AsyncNotifierProvider.family<DryRunNotifier, DryRunState, String>(
@@ -91,11 +93,17 @@ class DryRunNotifier extends FamilyAsyncNotifier<DryRunState, String> {
       final asyncTokenDelay =
           downloadConfigs?.asyncTokenDelay ??
           const Duration(milliseconds: 1000);
+      final policy = ref.read(bulkDownloadPolicyProvider(config.auth));
+      final runtimeStatus = ref.read(
+        bulkDownloadRuntimeStatusProvider.notifier,
+      );
 
       var page = 1;
       final tags = SearchTagSet.fromString(task.tags);
       final sessionId = session.id;
       final allRecords = <DownloadRecord>[];
+      var consecutiveMissingUrls = 0;
+      var reachedPolicyLimit = false;
 
       if (tags.isEmpty) {
         await _setFailedState(const EmptyTagsError().toString());
@@ -174,12 +182,59 @@ class DryRunNotifier extends FamilyAsyncNotifier<DryRunState, String> {
           }
 
           final item = rawPosts[i];
+          final resolveDelay = policy.delayBeforeResolvingUrl(
+            page: page,
+            pageIndex: i,
+          );
+          final shouldContinueAfterDelay = await _waitWithStatus(
+            sessionId,
+            resolveDelay,
+            cancelToken,
+            BulkDownloadRuntimeStage.waitingBeforeRequest,
+            page: page,
+            index: i + 1,
+          );
+
+          if (!shouldContinueAfterDelay) {
+            allRecords.addAll(records);
+            await _setCancelledState(
+              page,
+              allRecords: allRecords,
+            );
+            return;
+          }
+
+          runtimeStatus.set(
+            sessionId,
+            BulkDownloadRuntimeStatus(
+              stage: BulkDownloadRuntimeStage.resolvingProtectedLink,
+              page: page,
+              index: i + 1,
+            ),
+          );
+
           final urlData = await downloadFileUrlExtractor?.getDownloadFileUrl(
             post: item,
             quality: task.quality ?? settings.downloadQuality.name,
           );
+          runtimeStatus.clear(sessionId);
 
-          if (urlData == null || urlData.url.isEmpty) continue;
+          if (urlData == null || urlData.url.isEmpty) {
+            consecutiveMissingUrls++;
+            final maxMissingUrls = policy.maxConsecutiveMissingUrls;
+
+            if (maxMissingUrls > 0 &&
+                consecutiveMissingUrls >= maxMissingUrls) {
+              await _setFailedState(
+                'Stopped after $consecutiveMissingUrls protected links could not be resolved.',
+              );
+              return;
+            }
+
+            continue;
+          }
+
+          consecutiveMissingUrls = 0;
 
           final fileName = await fileNameBuilder.generateForBulkDownload(
             settings,
@@ -230,6 +285,16 @@ class DryRunNotifier extends FamilyAsyncNotifier<DryRunState, String> {
             'Post ${item.id} processed, fileName: $fileName, downloadUrl: ${urlData.url}',
           );
           cumulativeIndex++;
+
+          final maxRecords = policy.maxRecordsPerSession;
+          if (maxRecords != null &&
+              allRecords.length + records.length >= maxRecords) {
+            reachedPolicyLimit = true;
+            l._log(
+              'Policy limit of $maxRecords records reached for session $sessionId',
+            );
+            break;
+          }
         }
 
         allRecords.addAll(records);
@@ -245,13 +310,30 @@ class DryRunNotifier extends FamilyAsyncNotifier<DryRunState, String> {
           'Dry run page $page processed, found ${records.length} valid records',
         );
 
+        if (reachedPolicyLimit) {
+          l._log('Ending dry run because policy limit was reached');
+          break;
+        }
+
         page++;
 
-        final delay = downloadConfigs?.delayBetweenRequests;
-        if (delay != null) {
-          await delay.future;
-        } else {
-          await Future.delayed(const Duration(milliseconds: 200));
+        final delay =
+            downloadConfigs?.delayBetweenRequests ??
+            policy.delayBetweenPages(currentPage: page - 1);
+        final shouldContinueAfterDelay = await _waitWithStatus(
+          sessionId,
+          delay,
+          cancelToken,
+          BulkDownloadRuntimeStage.waitingBeforeRequest,
+          page: page,
+        );
+
+        if (!shouldContinueAfterDelay) {
+          await _setCancelledState(
+            page - 1,
+            allRecords: allRecords,
+          );
+          return;
         }
 
         l._log('Fetching page $page for session $sessionId');
@@ -282,7 +364,49 @@ class DryRunNotifier extends FamilyAsyncNotifier<DryRunState, String> {
       );
     } catch (e) {
       await _setFailedState(e.toString());
+    } finally {
+      ref.read(bulkDownloadRuntimeStatusProvider.notifier).clear(session.id);
     }
+  }
+
+  Future<bool> _waitWithStatus(
+    String sessionId,
+    Duration delay,
+    CancelToken cancelToken,
+    BulkDownloadRuntimeStage stage, {
+    int? page,
+    int? index,
+  }) async {
+    if (delay <= Duration.zero) return true;
+
+    final runtimeStatus = ref.read(bulkDownloadRuntimeStatusProvider.notifier);
+    var remaining = delay;
+
+    while (remaining > Duration.zero) {
+      if (cancelToken.isCancelled) {
+        runtimeStatus.clear(sessionId);
+        return false;
+      }
+
+      runtimeStatus.set(
+        sessionId,
+        BulkDownloadRuntimeStatus(
+          stage: stage,
+          remaining: remaining,
+          page: page,
+          index: index,
+        ),
+      );
+
+      final tick = remaining > const Duration(seconds: 1)
+          ? const Duration(seconds: 1)
+          : remaining;
+      await tick.future;
+      remaining -= tick;
+    }
+
+    runtimeStatus.clear(sessionId);
+    return !cancelToken.isCancelled;
   }
 
   Future<PreloadResult> _preload(

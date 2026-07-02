@@ -22,6 +22,7 @@ import '../../../premiums/providers.dart';
 import '../data/filesystem.dart';
 import '../data/providers.dart';
 import '../notifications/providers.dart';
+import '../policies/bulk_download_policy.dart';
 import '../types/bulk_download_error.dart';
 import '../types/bulk_download_session.dart';
 import '../types/bulk_download_state.dart';
@@ -39,6 +40,7 @@ import 'dry_run.dart';
 import 'dry_run_state.dart';
 import 'saved_task_lock_notifier.dart';
 import 'session_cancellation_provider.dart';
+import 'runtime_status.dart';
 
 // Package imports:
 import 'package:background_downloader/background_downloader.dart'
@@ -1049,6 +1051,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
       sessionId,
       status: DownloadSessionStatus.completed,
     );
+    ref.read(bulkDownloadRuntimeStatusProvider.notifier).clear(sessionId);
 
     // Calculate final statistics and cleanup
     final stats = await _withRepo(
@@ -1208,6 +1211,15 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
       session,
     );
 
+    if (status == DownloadSessionStatus.completed ||
+        status == DownloadSessionStatus.failed ||
+        status == DownloadSessionStatus.cancelled ||
+        status == DownloadSessionStatus.allSkipped ||
+        status == DownloadSessionStatus.paused ||
+        status == DownloadSessionStatus.suspended) {
+      ref.read(bulkDownloadRuntimeStatusProvider.notifier).clear(sessionId);
+    }
+
     // Handle notifications based on status and notification settings
     final notification = ref.read(bulkDownloadNotificationProvider);
 
@@ -1324,6 +1336,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
   }) async {
     final fallbackDownloader = ref.read(downloadServiceProvider);
     final downloader = downloadConfigs?.downloader ?? fallbackDownloader;
+    final policy = ref.read(bulkDownloadPolicyProvider(ref.readConfigAuth));
 
     for (var currentPage = startPage; currentPage <= endPage; currentPage++) {
       final currentSession = await _updateSession(
@@ -1348,14 +1361,29 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
         currentPage,
         downloader,
         downloadConfigs,
+        policy,
       );
 
-      final delay = downloadConfigs?.delayBetweenRequests;
-      if (delay != null) {
-        await delay.future;
-      } else {
-        await const Duration(milliseconds: 200).future;
+      final sessionAfterPage = await _withRepoNull(
+        (repo) => repo.getSession(sessionId),
+      );
+      if (sessionAfterPage?.status != DownloadSessionStatus.running) {
+        break;
       }
+
+      if (currentPage == endPage) {
+        break;
+      }
+
+      final delay =
+          downloadConfigs?.delayBetweenRequests ??
+          policy.delayBetweenPages(currentPage: currentPage);
+      await _waitWithRuntimeStatus(
+        sessionId,
+        delay,
+        BulkDownloadRuntimeStage.waitingBeforeRequest,
+        page: currentPage + 1,
+      );
     }
   }
 
@@ -1365,6 +1393,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
     int currentPage,
     d.DownloadService downloader,
     DownloadConfigs? downloadConfigs,
+    BulkDownloadPolicy policy,
   ) async {
     final records = await _withRepo(
       (repo) => repo.getRecordsBySessionId(
@@ -1412,6 +1441,22 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
               status: DownloadRecordStatus.failed,
             ),
           );
+          if (policy.shouldStopAfterTerminalFailure(error)) {
+            ref
+                .read(bulkDownloadRuntimeStatusProvider.notifier)
+                .set(
+                  sessionId,
+                  const BulkDownloadRuntimeStatus(
+                    stage: BulkDownloadRuntimeStage.backingOff,
+                  ),
+                );
+            await _updateSession(
+              sessionId,
+              status: DownloadSessionStatus.failed,
+              error: error.toString(),
+            );
+            return;
+          }
         case d.DownloadSuccess(:final info):
           await _withRepo(
             (repo) => repo.updateRecord(
@@ -1421,16 +1466,153 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
               status: DownloadRecordStatus.downloading,
             ),
           );
+          if (policy.waitForRecordCompletion) {
+            final terminalRecord = await _waitForRecordCompletion(
+              sessionId: sessionId,
+              downloadId: info.id,
+              page: currentPage,
+              index: record.pageIndex + 1,
+            );
+
+            final error = terminalRecord?.error;
+            if (error != null && policy.shouldStopAfterTerminalFailure(error)) {
+              ref
+                  .read(bulkDownloadRuntimeStatusProvider.notifier)
+                  .set(
+                    sessionId,
+                    const BulkDownloadRuntimeStatus(
+                      stage: BulkDownloadRuntimeStage.backingOff,
+                    ),
+                  );
+              await _updateSession(
+                sessionId,
+                status: DownloadSessionStatus.failed,
+                error: error,
+              );
+              return;
+            }
+          }
       }
 
       // Delay to prevent too many requests
-      final delay = downloadConfigs?.delayBetweenDownloads;
-      if (delay != null) {
-        await delay.future;
-      } else {
-        await const Duration(milliseconds: 200).future;
-      }
+      final delay =
+          downloadConfigs?.delayBetweenDownloads ??
+          policy.delayBetweenDownloads(
+            record: record,
+            recordIndex: record.pageIndex,
+          );
+      await _waitWithRuntimeStatus(
+        sessionId,
+        delay,
+        BulkDownloadRuntimeStage.waitingBeforeDownload,
+        page: currentPage,
+        index: record.pageIndex + 1,
+      );
     }
+  }
+
+  Future<DownloadRecord?> _waitForRecordCompletion({
+    required String sessionId,
+    required String downloadId,
+    required int page,
+    required int index,
+  }) async {
+    DateTime? failedAt;
+
+    while (true) {
+      final session = await _withRepoNull((repo) => repo.getSession(sessionId));
+      if (session?.status != DownloadSessionStatus.running) {
+        return null;
+      }
+
+      final record = await _withRepoNull(
+        (repo) => repo.getRecordByDownloadId(sessionId, downloadId),
+      );
+
+      final status = record?.status;
+      if (status == DownloadRecordStatus.failed) {
+        failedAt ??= DateTime.now();
+
+        final solverGraceElapsed =
+            DateTime.now().difference(failedAt) >= const Duration(seconds: 20);
+
+        if (!solverGraceElapsed) {
+          ref
+              .read(bulkDownloadRuntimeStatusProvider.notifier)
+              .set(
+                sessionId,
+                BulkDownloadRuntimeStatus(
+                  stage: BulkDownloadRuntimeStage.waitingForProtectionRetry,
+                  page: page,
+                  index: index,
+                ),
+              );
+          await const Duration(seconds: 1).future;
+          continue;
+        }
+      } else {
+        failedAt = null;
+      }
+
+      if (status == DownloadRecordStatus.completed ||
+          status == DownloadRecordStatus.failed ||
+          status == DownloadRecordStatus.cancelled) {
+        ref.read(bulkDownloadRuntimeStatusProvider.notifier).clear(sessionId);
+        return record;
+      }
+
+      ref
+          .read(bulkDownloadRuntimeStatusProvider.notifier)
+          .set(
+            sessionId,
+            BulkDownloadRuntimeStatus(
+              stage: BulkDownloadRuntimeStage.waitingForCurrentDownload,
+              page: page,
+              index: index,
+            ),
+          );
+      await const Duration(seconds: 1).future;
+    }
+  }
+
+  Future<bool> _waitWithRuntimeStatus(
+    String sessionId,
+    Duration delay,
+    BulkDownloadRuntimeStage stage, {
+    int? page,
+    int? index,
+  }) async {
+    if (delay <= Duration.zero) return true;
+
+    final runtimeStatus = ref.read(bulkDownloadRuntimeStatusProvider.notifier);
+    var remaining = delay;
+
+    while (remaining > Duration.zero) {
+      final session = await _withRepoNull((repo) => repo.getSession(sessionId));
+      if (session?.status != DownloadSessionStatus.running) {
+        runtimeStatus.clear(sessionId);
+        return false;
+      }
+
+      runtimeStatus.set(
+        sessionId,
+        BulkDownloadRuntimeStatus(
+          stage: stage,
+          remaining: remaining,
+          page: page,
+          index: index,
+        ),
+      );
+
+      final tick = remaining > const Duration(seconds: 1)
+          ? const Duration(seconds: 1)
+          : remaining;
+      await tick.future;
+      remaining -= tick;
+    }
+
+    runtimeStatus.clear(sessionId);
+    return true;
   }
 
   Future<SavedDownloadTask?> createSavedTaskFromOptions(

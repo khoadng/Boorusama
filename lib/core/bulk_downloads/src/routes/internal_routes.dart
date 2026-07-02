@@ -10,6 +10,7 @@ import '../../../downloads/downloader/providers.dart';
 import '../../../router.dart';
 import '../../../widgets/widgets.dart';
 import '../pages/create_download_options_sheet.dart';
+import '../policies/bulk_download_policy.dart';
 
 Future<void> goToBulkDownloadCompletedPage(WidgetRef ref) async {
   await ref.router.push(
@@ -42,8 +43,9 @@ void goToNewBulkDownloadTaskPage(
   bool showStartNotification = true,
 }) {
   final config = ref.readConfigAuth;
+  final policy = ref.read(bulkDownloadPolicyProvider(config));
 
-  if (!config.booruType.canDownloadMultipleFiles) {
+  if (!policy.canCreateBulkTask) {
     showBulkDownloadUnsupportErrorToast(context);
     return;
   }

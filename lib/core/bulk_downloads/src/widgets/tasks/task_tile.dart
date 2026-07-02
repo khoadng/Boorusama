@@ -25,6 +25,7 @@ import '../../providers/bulk_download_notifier.dart';
 import '../../providers/dry_run.dart';
 import '../../providers/dry_run_state.dart';
 import '../../providers/providers.dart';
+import '../../providers/runtime_status.dart';
 import '../../types/bulk_download_error_interpreter.dart';
 import '../../types/bulk_download_session.dart';
 import '../../types/download_session.dart';
@@ -337,6 +338,9 @@ class _InfoText extends ConsumerWidget {
     final fileSize = stats.estimatedDownloadSize;
     final totalItems = stats.totalItems;
     final status = session.session.status;
+    final runtimeStatus = ref.watch(
+      bulkDownloadRuntimeStatusProvider.select((value) => value[session.id]),
+    );
 
     final fileSizeText = fileSize != null && fileSize > 0
         ? Filesize.parse(fileSize, round: 1)
@@ -350,51 +354,60 @@ class _InfoText extends ConsumerWidget {
     ].nonNulls.join(' • ');
 
     return Text(
-      switch (status) {
-        DownloadSessionStatus.pending => context.t.bulk_downloads.created,
-        DownloadSessionStatus.dryRun =>
-          ref
-              .watch(dryRunNotifierProvider(session.id))
-              .maybeWhen(
-                data: (data) => switch (data) {
-                  DryRunState(
-                    status: DryRunStatusRunning(
-                      isPreparing: true,
-                    ),
-                    :final currentPage,
-                  ) =>
-                    currentPage != null
-                        ? context.t.bulk_downloads.scanning_page
-                              .preparing_with_page(
+      runtimeStatus != null
+          ? _runtimeStatusText(runtimeStatus)
+          : switch (status) {
+              DownloadSessionStatus.pending => context.t.bulk_downloads.created,
+              DownloadSessionStatus.dryRun =>
+                ref
+                    .watch(dryRunNotifierProvider(session.id))
+                    .maybeWhen(
+                      data: (data) => switch (data) {
+                        DryRunState(
+                          status: DryRunStatusRunning(
+                            isPreparing: true,
+                          ),
+                          :final currentPage,
+                        ) =>
+                          currentPage != null
+                              ? context.t.bulk_downloads.scanning_page
+                                    .preparing_with_page(
+                                      page: currentPage,
+                                    )
+                              : context
+                                    .t
+                                    .bulk_downloads
+                                    .scanning_page
+                                    .preparing,
+                        DryRunState(
+                          status: DryRunStatusRunning(),
+                          :final currentPage?,
+                          :final currentItemIndex?,
+                        ) =>
+                          context.t.bulk_downloads.scanning_page
+                              .with_page_and_index(
                                 page: currentPage,
-                              )
-                        : context.t.bulk_downloads.scanning_page.preparing,
-                  DryRunState(
-                    status: DryRunStatusRunning(),
-                    :final currentPage?,
-                    :final currentItemIndex?,
-                  ) =>
-                    context.t.bulk_downloads.scanning_page.with_page_and_index(
-                      page: currentPage,
-                      index: currentItemIndex + 1,
+                                index: currentItemIndex + 1,
+                              ),
+                        DryRunState(
+                          status: DryRunStatusRunning(),
+                          :final currentPage?,
+                          currentItemIndex: _,
+                        ) =>
+                          context.t.bulk_downloads.scanning_page.with_page(
+                            page: currentPage,
+                          ),
+                        final _ =>
+                          context.t.bulk_downloads.scanning_page.null_page,
+                      },
+                      orElse: () =>
+                          context.t.bulk_downloads.scanning_page.null_page,
                     ),
-                  DryRunState(
-                    status: DryRunStatusRunning(),
-                    :final currentPage?,
-                    currentItemIndex: _,
-                  ) =>
-                    context.t.bulk_downloads.scanning_page.with_page(
-                      page: currentPage,
-                    ),
-                  final _ => context.t.bulk_downloads.scanning_page.null_page,
-                },
-                orElse: () => context.t.bulk_downloads.scanning_page.null_page,
-              ),
-        DownloadSessionStatus.failed => context.t.generic.errors.error,
-        DownloadSessionStatus.allSkipped =>
-          context.t.bulk_downloads.completed_with_no_new_files,
-        _ => infoText,
-      },
+              DownloadSessionStatus.failed => context.t.generic.errors.error,
+              DownloadSessionStatus.allSkipped =>
+                context.t.bulk_downloads.completed_with_no_new_files,
+              _ => infoText,
+            },
       maxLines: 1,
       overflow: TextOverflow.fade,
       softWrap: false,
@@ -403,6 +416,33 @@ class _InfoText extends ConsumerWidget {
         fontSize: 12,
       ),
     );
+  }
+
+  String _runtimeStatusText(BulkDownloadRuntimeStatus status) {
+    final prefix = switch (status.stage) {
+      BulkDownloadRuntimeStage.resolvingProtectedLink =>
+        'Resolving protected link',
+      BulkDownloadRuntimeStage.waitingBeforeRequest =>
+        'Waiting before next request',
+      BulkDownloadRuntimeStage.waitingBeforeDownload =>
+        'Waiting before next download',
+      BulkDownloadRuntimeStage.waitingForCurrentDownload =>
+        'Downloading one file at a time',
+      BulkDownloadRuntimeStage.waitingForProtectionRetry =>
+        'Waiting for protection retry',
+      BulkDownloadRuntimeStage.backingOff => 'Backing off after site response',
+    };
+    final target = switch ((status.page, status.index)) {
+      (final page?, final index?) => ' • page $page, item $index',
+      (final page?, null) => ' • page $page',
+      _ => '',
+    };
+    final remaining = status.remaining;
+    final suffix = remaining != null && remaining > Duration.zero
+        ? ' • ${remaining.inSeconds + 1}s'
+        : '';
+
+    return '$prefix$target$suffix';
   }
 }
 

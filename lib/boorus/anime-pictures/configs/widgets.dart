@@ -53,7 +53,7 @@ class CreateAnimePicturesConfigPage extends ConsumerWidget {
                   const SizedBox(width: 8),
                   Flexible(
                     child: Text(
-                      "Bulk download and blacklist won't work for this booru.",
+                      'Bulk download uses a slow polite mode for this booru. Blacklist filtering is limited.',
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ),
