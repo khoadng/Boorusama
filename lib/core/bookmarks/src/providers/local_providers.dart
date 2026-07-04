@@ -28,22 +28,29 @@ enum BookmarkSortType {
 List<Bookmark> filterBookmarks({
   required List<Bookmark> bookmarks,
   required List<String> selectedTags,
+  required List<String> excludedTags,
   required BookmarkSortType sortType,
   String? selectedBooruUrl,
   BookmarkShuffleState? shuffleState,
 }) {
   final tagsList = selectedTags;
+  final excludeList = excludedTags;
+
+  final hasFilters =
+      selectedBooruUrl != null || tagsList.isNotEmpty || excludeList.isNotEmpty;
 
   // Filter bookmarks based on URL and tags.
-  final filtered = selectedBooruUrl == null && tagsList.isEmpty
-      ? bookmarks
-      : bookmarks.where(
+  final filtered = hasFilters
+      ? bookmarks.where(
           (bookmark) =>
               (selectedBooruUrl == null ||
                   bookmark.sourceUrl.contains(selectedBooruUrl)) &&
               (tagsList.isEmpty ||
-                  tagsList.every((tag) => bookmark.tags.contains(tag))),
-        );
+                  tagsList.every((tag) => bookmark.tags.contains(tag))) &&
+              (excludeList.isEmpty ||
+                  excludeList.every((tag) => !bookmark.tags.contains(tag))),
+        )
+      : bookmarks;
 
   final sorted = filtered
       .sorted(

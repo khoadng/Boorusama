@@ -84,9 +84,13 @@ class _BookmarkSearchBarState extends ConsumerState<BookmarkSearchBar> {
                 child: _Overlay(
                   controller: widget.controller,
                   onTap: (tag) {
+                    final text = widget.controller.text;
+                    final lastSegment = text.split(' ').last;
+                    final isExcluding = lastSegment.startsWith('-');
+                    final adjustedTag = isExcluding ? '-${tag.tag}' : tag.tag;
                     widget.controller.text = replaceOrAppendTag(
-                      widget.controller.text,
-                      tag.tag,
+                      text,
+                      adjustedTag,
                     );
                     _search();
                   },
