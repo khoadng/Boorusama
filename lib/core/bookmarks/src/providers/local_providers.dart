@@ -48,7 +48,11 @@ List<Bookmark> filterBookmarks({
               (tagsList.isEmpty ||
                   tagsList.every((tag) => bookmark.tags.contains(tag))) &&
               (excludeList.isEmpty ||
-                  excludeList.every((tag) => !bookmark.tags.contains(tag))),
+                  excludeList.every(
+                    (tag) =>
+                        !bookmark.tags.contains(tag) &&
+                        !bookmark.sourceUrl.contains(tag),
+                  )),
         )
       : bookmarks;
 
