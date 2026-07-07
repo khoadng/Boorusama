@@ -16,9 +16,9 @@
       "save": "Simpan",
       "verify": "Verifikasi",
       "retry": "Coba Lagi",
-      "clear": "Bersih",
+      "clear": "Bersihkan",
       "create": "Buat",
-      "reset": "Atur Ulang",
+      "reset": "Setel Ulang",
       "more": "Lebih Banyak",
       "view": "Lihat",
       "apply": "Terapkan",
@@ -26,9 +26,9 @@
       "show_less": "Tampilkan sedikit",
       "search": "Pencarian",
       "view_all": "Lihat semua",
-      "ok": "OK"
+      "ok": "Oke"
     },
-    "warning": "Perhatian",
+    "warning": "Peringatan",
     "default": "Bawaan",
     "copied": "Disalin",
     "no_content": "Tidak ada konten",
@@ -44,10 +44,10 @@
     "name_asc": "Nama (A-Z)",
     "name_desc": "Nama (Z-A)",
     "recently_added": "Baru ditambahkan",
-    "recently_updated": "Baru Diperbarui",
+    "recently_updated": "Baru diperbarui",
     "recently_created": "Baru dibuat",
     "last_updated": "Terakhir diperbarui",
-    "count": "Hitungan"
+    "count": "Jumlah"
   },
   "profile": {
     "favorites": "Favorit",
@@ -61,16 +61,16 @@
       "info": "Informasi"
     },
     "uploads": {
-      "top_n_copyright": "Atas $n hakcipta"
+      "top_n_copyright": "Atas $n hak cipta"
     },
     "activity": {
       "title": "Aktivitas",
       "uploads": "Unggahan",
       "tag_edits": "Suntingan tagar",
-      "note_edits": "Suntingan Catatan",
-      "comments": "Komentar",
+      "note_edits": "Suntingan catatan",
+      "comments": "Tanggapan",
       "forum_posts": "Postingan Forum",
-      "favgroups": "Grub Favorit"
+      "favgroups": "Grup Favorit"
     },
     "feedback": {
       "title": "Umpan Balik",
@@ -105,7 +105,7 @@
     "related": {
       "more": "Lebih banyak",
       "related": "Terkait",
-      "add_to_current_search": "Tambahkan untuk pencarian saat ini",
+      "add_to_current_search": "Tambahkan ke pencarian saat ini",
       "negate_from_current_search": "Meniadakan pencarian saat ini",
       "open_wiki": "Buka wiki"
     }
@@ -136,12 +136,12 @@
       "copy_and_open_saved_search": "Salin dan buka pencarian tersimpan",
       "score": {
         "one": "Poin",
-        "other": "Poin-Poin"
+        "other": "Poin"
       },
       "source_label": "Sumber",
       "related_posts": "Postingan terkait",
-      "add_to_bookmark": "Tambahkan ke tandai",
-      "remove_from_bookmark": "Memindahkan dari tandai",
+      "add_to_bookmark": "Tambahkan ke penanda",
+      "remove_from_bookmark": "Menglepaskan dari penanda",
       "widgets": {
         "toolbar": "Bilah alat",
         "tags": "Tagar",
@@ -149,7 +149,7 @@
         "pool": "Kumpulan",
         "artist_info": "Info seniman",
         "stats": "Statistik",
-        "comments": "Komentar",
+        "comments": "Tanggapan",
         "artist_posts": "Postingan seniman",
         "related_posts": "Postingan terkait",
         "character_list": "Daftar karakter",
@@ -159,7 +159,7 @@
       }
     },
     "statistics": {
-      "stats_for_nerds": "Catatan untuk kutu buku",
+      "stats_for_nerds": "Catatan untuk para kutu buku",
       "average": "Rata-rata",
       "highest": "Paling tinggi",
       "lowest": "Paling rendah",
@@ -188,7 +188,7 @@
       "upvote": "Beri suara positif",
       "downvote": "Beri suara negatif",
       "view_comments": "Lihat komentar",
-      "add_to_favorite_group": "Tambahkan ke grub favorit",
+      "add_to_favorite_group": "Tambahkan ke grup favorit",
       "view_artist": "Lihat seniman",
       "view_tags": "Lihat tagar",
       "view_tag_history": "Lihat riwayat tagar",
@@ -197,7 +197,7 @@
       "none": "Tidak ada",
       "edit": "Sunting",
       "use_default": "Gunakan Bawaan",
-      "toggle_bookmark": "Alihkan ke penanda",
+      "toggle_bookmark": "Alihkan penanda",
       "toggle_favorite": "Alihkan favorit",
       "view_in_browser": "Lihat di peramban",
       "view_original": "Lihat asli",
@@ -217,7 +217,7 @@
     }
   },
   "comment": {
-    "comments": "Komentar",
+    "comments": "Tanggapan",
     "create": {
       "hint": "Komentar"
     },
@@ -232,7 +232,7 @@
     },
     "counter": {
       "one": "Komentar",
-      "other": "Komentar"
+      "other": "Tanggapan"
     }
   },
   "explore": {
@@ -253,32 +253,32 @@
   },
   "search": {
     "errors": {
-      "cannot_reach_server": "Tidak dapat terhubung ke server, harap periksa koneksi Anda",
+      "cannot_reach_server": "Tidak dapat terhubung ke server, harap periksa koneksi anda",
       "failed_to_load_data": "Gagal memuat data dari server, silakan coba lagi nanti",
       "handshake_failed": "Koneksi gagal, masalah kompatibilitas server",
-      "certificate_error": "Kesalahan sertifikat. Server mungkin menggunakan sertifikat yang ditandatangani sendiri. Coba gunakan HTTP sebagai ganti HTTPS, atau instal sertifikat di perangkat Anda.",
-      "tag_limit": "Batas tag maksimum telah tercapai. Tingkatkan akun Anda untuk mencari lebih banyak tag sekaligus.",
-      "database_timeout": "Pencarian Anda membutuhkan waktu terlalu lama untuk dieksekusi dan telah dibatalkan.",
+      "certificate_error": "Kesalahan sertifikat. Server mungkin menggunakan sertifikat yang ditandatangani sendiri. Coba gunakan HTTP sebagai ganti HTTPS, atau instal sertifikat di perangkat anda.",
+      "tag_limit": "Batas tagar maksimum telah tercapai. Tingkatkan akun anda untuk mencari lebih banyak tagar sekaligus.",
+      "database_timeout": "Pencarian anda membutuhkan waktu terlalu lama untuk dieksekusi dan telah dibatalkan.",
       "rate_limited": "Anda sedang dibatasi jumlah permintaan. Silakan coba lagi nanti",
-      "pagination_limit": "Anda telah mencapai batas penomoran halaman. Artinya Anda tidak dapat menggulir lebih jauh",
+      "pagination_limit": "Anda telah mencapai batas penomoran halaman. Artinya anda tidak dapat menggulir lebih jauh",
       "max_capacity": "Server sedang mengalami beban berat dan tidak dapat menangani permintaan, silakan coba lagi nanti",
       "down": "Server sedang merosot. Silakan coba lagi nanti",
       "access_denied": "Akses ditolak",
       "forbidden": "Otentikasi gagal",
-      "unknown": "Terjadi kesalahan server yang tidak diketahui, harap laporkan masalah ini kepada pengembang"
+      "unknown": "Terjadi galat server yang tidak diketahui, harap laporkan masalah ini kepada pengembang"
     },
     "hint": "Cari...",
     "no_result": "Kami sudah mencari ke mana-mana, tetapi tidak menemukan hasil apa pun.",
     "metatags_notice": "Metatag gratis tidak akan dihitung dalam batasan pencarian tagar",
     "history": {
       "history": "Riwayat",
-      "clear": "Bersih"
+      "clear": "Bersihkan"
     },
     "trending": "Sedang Tren",
     "remove_all_selected": "Menghapus semua tagar terpilih",
     "result_counter": {
       "one": "$n Hasil",
-      "other": "$n Hasil lebih"
+      "other": "$n Hasil"
     },
     "no_result_notice": "Tidak ada hasil",
     "search_in_progress_notice": "Mencari...",
@@ -314,7 +314,7 @@
     "settings": "Pengaturan",
     "app_settings": "Setelan Aplikasi",
     "appearance": {
-      "appearance": "Tampilan",
+      "appearance": "Antarmuka",
       "customize": "Kustomisasi",
       "show_scores": "Tampilkan skor",
       "show_post_list_config_header": "Tampilkan judul konfigurasi postingan",
@@ -350,8 +350,8 @@
       "hide_bookmarked_posts_from_search_results": "Sembunyikan postingan yang ditandai dari hasil pencarian"
     },
     "information": "Informasi",
-    "changelog": "Log Pergantian",
-    "infinite_scroll_warning": "Aplikasi mungkin akan macet jika Anda menggulir terlalu lama",
+    "changelog": "Log Perubahan",
+    "infinite_scroll_warning": "Aplikasi mungkin akan macet jika anda menggulir terlalu lama",
     "result_layout": {
       "result_layout": "Mode halaman",
       "infinite_scroll": "Gulir tanpa batas",
@@ -381,7 +381,7 @@
         "low": "Rendah",
         "original": "Asli",
         "automatic": "Otomatis",
-        "highest": "Tertinggi"
+        "highest": "Paling tinggi"
       },
       "spacing": "Jarak",
       "corner_radius": "Radius sudut",
@@ -389,7 +389,7 @@
       "aspect_ratio": "Rasio aspek"
     },
     "image_viewer": {
-      "image_viewer": "Peninjau gambar",
+      "image_viewer": "Penampil gambar",
       "slideshow": "Tayangan slide",
       "slideshow_interval": "Rentang tayangan slide",
       "slideshow_video_behavior": "Perilaku video tayangan slide",
@@ -409,7 +409,7 @@
       "slideshow_skip": "Lewati transisi tayangan slide",
       "slideshow_interval_explanation": "Nilai kurang dari 1 detik akan secara otomatis melewati transisi",
       "swipe_mode": "Mode geser",
-      "swipe_mode_disclaimer": "Beberapa gerakan kustom mungkin tidak berfungsi di semua mode",
+      "swipe_mode_disclaimer": "Beberapa isyarat kustom mungkin tidak berfungsi di semua mode",
       "swipe_modes": {
         "horizontal_description": "Geser ke kiri/kanan ala galeri. Seperti galeri foto dan aplikasi media.",
         "vertical": "Vertikal",
@@ -420,15 +420,15 @@
       "double_tap_seek": "Ketuk dua kali untuk mencari",
       "manage_cache": "Kelola cache",
       "enable_video_cache": "Hidupkan cache video",
-      "enable_video_cache_description": "Unduh video saat streaming dan simpan dalam cache untuk mengurangi penggunaan data dan mempercepat pemutaran pada penayangan berikutnya.",
+      "enable_video_cache_description": "Unduh video saat pengaliran dan simpan dalam cache untuk mengurangi penggunaan data dan mempercepat pemutaran pada penayangan berikutnya.",
       "video": {
         "video_player_engine": "Mesin pemutar video",
         "engine": {
           "auto": "Otomatis",
-          "auto_description": "Secara otomatis memilih mesin pencari terbaik berdasarkan kemampuan perangkat Anda.",
+          "auto_description": "Secara otomatis memilih mesin terbaik berdasarkan kemampuan perangkat anda.",
           "default": "Bawaan",
           "default_description": "Berfungsi dengan baik di sebagian besar perangkat, mungkin mengalami masalah dengan beberapa format video atau perangkat lama.",
-          "mdk_description": "Pemuatan cepat, performa lebih baik untuk format video tertentu, tetapi tidak stabil dan dapat menyebabkan kerusakan.",
+          "mdk_description": "Pemuatan cepat, performa lebih baik untuk format video tertentu, tetapi tidak stabil dan dapat menyebabkan kemacetan.",
           "mpv_description": "Dukungan format dan performa yang baik, waktu pemuatan lebih lambat",
           "webview_description": "Kompatibilitas baik tetapi penggunaan sumber daya lebih tinggi dan kinerja buruk, gunakan sebagai pilihan terakhir."
         }
@@ -457,7 +457,7 @@
         "harmonize_colors_description": "Menyelaraskan warna tagar agar sesuai dengan warna aksen",
         "groups": {
           "basic": "Dasar",
-          "builtin": "Terpasang",
+          "builtin": "Tertanam",
           "accent": "Aksen"
         }
       }
@@ -471,7 +471,7 @@
     },
     "performance": {
       "performance": "Kinerja",
-      "posts_per_page": "Posting per halaman",
+      "posts_per_page": "Postingan per halaman",
       "posts_per_page_explain": "Jumlah keluku per halaman",
       "cache_size": "Ukuran cache",
       "clear_cache": "Bersihkan",
@@ -486,14 +486,14 @@
       "select_a_folder": "Pilih sebuah folder",
       "quality": "Unduh kualitas gambar",
       "skip_existing_files": "Lewati berkas yang sudah ada",
-      "skip_existing_files_explanation": "Ini akan mencegah pengunduhan berkas yang sudah ada di dalam folder. Ini berguna ketika Anda tidak ingin mengunduh file yang sama beberapa kali.",
+      "skip_existing_files_explanation": "Ini akan mencegah pengunduhan berkas yang sudah ada di dalam folder. Ini berguna ketika anda tidak ingin mengunduh file yang sama beberapa kali.",
       "qualities": {
         "original": "Asli",
         "sample": "Sampel",
         "large": "Besar",
         "preview": "Keluku"
       },
-      "title": "Unduh"
+      "title": "Unduhan"
     },
     "help_us_translate": "Bantu kami terjemahkan",
     "need_more_questions": "Butuh lebih?",
@@ -508,12 +508,12 @@
       "video_cache_limit": "Batas cache video",
       "video_cache_limit_description": "Ukuran maksimum untuk penyimpanan cache video",
       "custom_cache_limit_option": "Kustom...",
-      "no_limit": "Tanpa Batasan",
+      "no_limit": "Tidak Ada Batasan",
       "bookmark_images": "Gambar penanda",
       "loading": "Memuat...",
       "storage": "Penyimpanan",
       "disk_space": {
-        "status_title": "$freeRuang bebas of $totalRuang",
+        "status_title": "$freeRuang bebas dari $totalRuang",
         "groups": {
           "system": "Sistem",
           "images": "Gambar",
@@ -528,7 +528,7 @@
     },
     "backup_and_restore": {
       "backup_and_restore": "Cadangan dan Pulihkan",
-      "advanced_backup": "Cadangan Tambahan",
+      "advanced_backup": "Cadangan Tingkat Lanjut",
       "exporting": "Mengekspor...",
       "export": "Ekspor",
       "import": "Impor",
@@ -544,7 +544,7 @@
       "backup_data": "Cadangan data",
       "advanced_export_import": "Impor/Ekspor tambahan",
       "auto_backup": "Cadangan otomatis",
-      "auto_backup_tooltip": "Cadangan data dibuat saat Anda membuka aplikasi. Tidak ada pencadangan yang terjadi saat aplikasi ditutup.",
+      "auto_backup_tooltip": "Cadangan data dibuat saat anda membuka aplikasi. Tidak ada pencadangan yang terjadi saat aplikasi ditutup.",
       "backup_in_progress": "Proses pencadangan sedang berlangsung",
       "export_operation_failed": "Ekspor gagal: {error}",
       "import_operation_failed": "Impor gagal: {error}",
@@ -580,22 +580,22 @@
           "stopped": "Dihentikan",
           "running": "Menjalankan"
         },
-        "how_to_transfer": "Bagaimana untuk transfer",
+        "how_to_transfer": "Cara mentransfer",
         "how_to_send(rich)": "• Pada perangkat penerima, pergi ke ${settings(_)}\n• Pilih ${receive(_)} untuk memulai impor data dari perangkat ini\n• Tetaplah di halaman ini hingga transfer selesai",
-        "disclaimer": "Transfer mungkin tidak berfungsi di jaringan WiFi publik (kedai kopi, perpustakaan) karena pembatasan keamanan. Harap gunakan jaringan pribadi seperti WiFi rumah Anda.",
+        "disclaimer": "Transfer mungkin tidak berfungsi di jaringan WiFi publik (kedai kopi, perpustakaan) karena pembatasan keamanan. Harap gunakan jaringan pribadi seperti WiFi rumah anda.",
         "no_networks_error": "Koneksi WiFi diperlukan untuk mentransfer data. Silakan sambungkan ke jaringan WiFi dan coba lagi."
       },
       "backward_import": {
         "title": "Impor dari versi lama terdeteksi",
         "current_version": "Versi saat ini",
         "exported_version": "Versi diekspor",
-        "reconfirm_question": "Impor mundur mungkin tidak berfungsi semestinya, apakah Anda yakin?"
+        "reconfirm_question": "Impor mundur mungkin tidak berfungsi semestinya, apakah anda yakin?"
       },
       "version_mismatch": {
         "title": "Impor dari versi berbeda terdeteksi",
         "current_version": "Versi saat ini",
         "imported_version": "Versi diimpor",
-        "confirmation_question": "Versi aplikasi pada perangkat yang Anda coba impor berbeda dengan versi aplikasi saat ini. Hal ini dapat menyebabkan masalah kompatibilitas dan potensi kehilangan data.\n\nApakah Anda yakin ingin melanjutkan?"
+        "confirmation_question": "Versi aplikasi pada perangkat yang anda coba impor berbeda dengan versi aplikasi saat ini. Hal ini dapat menyebabkan masalah kompatibilitas dan potensi kehilangan data.\n\nApakah anda yakin ingin melanjutkan?"
       },
       "transfer_data": "Transfer data"
     },
@@ -609,7 +609,7 @@
         "weekly": "Mingguan"
       },
       "backup_count": {
-        "one": "$n cadangkan",
+        "one": "$n cadangan",
         "other": "$n cadangan"
       },
       "change": "Ubah",
@@ -659,7 +659,7 @@
     "source_code": "Kode sumber",
     "support": "Dukungan",
     "contact_developer": "Kontak pengembang",
-    "contact_developer_description": "Jika Anda memiliki masalah atau saran, jangan ragu untuk mengirimkan email kepada kami melalui opsi ini",
+    "contact_developer_description": "Jika anda memiliki masalah atau saran, jangan ragu untuk mengirimkan email kepada kami melalui opsi ini",
     "feature_request_and_bug_report": "Permintaan fitur dan laporan bug",
     "feature_request_and_bug_report_description": "Sarankan fitur atau laporkan bug melalui repositori GitHub",
     "open_app_settings": "Buka pengaturan"
@@ -706,7 +706,7 @@
       "no_downloads": "Tidak ada unduhan"
     },
     "invalid_folder_name_error": "Sebuah folder tidak boleh mengandung karakter-karakter berikut: ",
-    "folder_select_warning": "Aplikasi ini hanya dapat mengunduh file di dalam direktori publik <b>({0})</b> untuk Android 11+. <br><br> Contoh lokasi yang valid:<br><b>[Internal]</b> /storage/emulated/0/Download <br><b>[Kartu SD]</b> /storage.",
+    "folder_select_warning": "Aplikasi ini hanya dapat mengunduh file di dalam direktori publik <b> ({0}) </b> untuk Android 11+. <br><br> Contoh lokasi yang valid: <br><b> [inter]</b> / penyimpanan / digambar / 0 / Download <br><b> [kartu SD] </b> /storage/A1B2-C3D4/Download<br><br>Pilih direktori lain atau buat yang baru jika tidak ada. <br> Versi perangkat ini <b>{1}</b>.",
     "storage_permission_explanation": "Izin penyimpanan diperlukan untuk menyimpan file yang diunduh."
   },
   "saved_search": {
@@ -739,11 +739,11 @@
     }
   },
   "favorite_groups": {
-    "favorite_groups": "Grub favorit",
-    "empty_group_notice": "Tidak ada grub favorit",
-    "create_group": "Buat grub",
-    "edit_group": "Sunting grub",
-    "add_to_group_dialog_title": "Tambahkan ke grub favorit",
+    "favorite_groups": "Grup favorit",
+    "empty_group_notice": "Tidak ada grup favorit",
+    "create_group": "Buat grup",
+    "edit_group": "Sunting grup",
+    "add_to_group_dialog_title": "Tambahkan ke grup favorit",
     "add_to": "Tambahkan ke",
     "create": "Buat",
     "private": "Pribadi",
@@ -785,7 +785,7 @@
     "rate": "Menilai",
     "cancel": "Tidak terima kasih",
     "later": "Mungkin nanti",
-    "rationale": "Jika Anda menyukai aplikasi ini, mohon luangkan sedikit waktu untuk memberikan ulasan. Hanya butuh beberapa detik dan itu sangat membantu proyek ini."
+    "rationale": "Jika anda menyukai aplikasi ini, mohon luangkan sedikit waktu untuk memberikan ulasan. Hanya butuh beberapa detik saja dan itu sangat membantu proyek ini."
   },
   "sideMenu": {
     "home": "Beranda",
@@ -803,12 +803,518 @@
   },
   "booru": {
     "api_key_instructions": {
-      "variants_1": "*Masuk ke akun Anda di peramban, kunjungi <b><a href=\"api-credentials\">Akun saya > Opsi > Akses Kredensial API</a></b> untuk mendapatkan kunci API Anda. Jika Anda melihat kunci API kosong seperti <b>&kunci_api=&id_pengguna=<id_anda></b>, kutu <b>Hasilkan kunci baru?</b> dan klik <b>Simpan</b> tombol di bagian paling bawah untuk membuat kunci API baru. Atau, salin kuncinya dan tempelkan ke kolom di atas. Anda juga dapat menyalin seluruh string dari <b>Akses Kredensial API</b> bagian ini dan ketuk tombol di bawah.",
-      "variants_2": "*Masuk ke akun Anda di peramban, kunjungi <b>Akun Saya > Opsi > Kredensial Akses API</b>. Periksa apakah opsi tersebut ada. Jika tidak, situs tersebut tidak mendukung kredensial, dan Anda dapat mengabaikannya.",
-      "variants_3": "*Masuk ke akun Anda di peramban, kunjungi <b><a href=\"api-credentials\">Akun Saya > Kunci API</a></b>.Salin kunci anda atau buat yang baru jika diperlukan, pastikan semua izin diaktifkan agar aplikasi berfungsi dengan baik.",
-      "variants_4": "*Masuk ke akun anda di peramban, kunjungi <b>Akun > Token masuk</b>. Salin <b>Token Masuk Web</b> atau buat yang baru jika perlu dan tempelkan di sini. Jika Anda menggunakan <b>Token Login Web</b>, logout dari browser akan membuat token tersebut tidak valid.",
-      "variants_5": "*Log in to your account on the browser, visit <b><a href=\"api-credentials\">My Account > Options > API Access Credentials</a></b> to get your API key. Copy the key and paste it into the field above. You can also copy the whole string from the <b>API Access Credentials</b> section and tap the button below."
+      "variants_1": "*Masuk ke akun anda di peramban, kunjungi <b><a href=\"api-credentials\">Akun Saya > Opsi > Kredensial Akses API</a></b> untuk mendapatkan kunci API anda. Jika anda melihat kunci API kosong seperti <b>&kunci_api=&id_pengguna=<id_anda></b>, kutu <b>Hasilkan Kunci Baru?</b> dan klik <b>Simpan</b> tombol di bagian paling bawah untuk membuat kunci API baru. Atau, salin kuncinya dan tempelkan ke kolom di atas. Anda juga dapat menyalin seluruh string dari <b>Kredensial Akses API</b> bagian ini dan ketuk tombol di bawah.",
+      "variants_2": "*Masuk ke akun anda di peramban, kunjungi <b>Akun Saya > Opsi > Kredensial Akses API</b>. Periksa apakah opsi tersebut ada. Jika tidak, situs tersebut tidak mendukung kredensial, dan anda dapat mengabaikannya.",
+      "variants_3": "*Masuk ke akun anda di peramban, kunjungi <b><a href=\"api-credentials\">Akun Saya > Kunci API</a></b>.Salin kunci anda atau buat yang baru jika diperlukan, pastikan semua izin diaktifkan agar aplikasi berfungsi dengan baik.",
+      "variants_4": "*Masuk ke akun anda di peramban, kunjungi <b>Akun > Token masuk</b>. Salin <b>Token Masuk Web</b> atau buat yang baru jika perlu dan tempelkan di sini. Jika anda menggunakan <b>Token Login Web</b>, logout dari browser akan membuat token tersebut tidak valid.",
+      "variants_5": "* Masuk ke akun anda di browser, kunjungi <b><a href=\"api-credentials\">Akun Saya > Pilihan > Kredential Akses API</a></b> untuk mendapatkan kunci API anda. Salin kunci dan tempelkan ke lapangan di atas. Anda juga dapat menyalin seluruh string dari bagian <b>Kredential Akses API</b> dan ketuk tombol di bawah ini.",
+      "shimmie2": {
+        "view_extension_docs": "Lihat ekstensi dokumentasi",
+        "danbooru_api_extension_notice": "Aplikasi ini memerlukan ekstensi <b>API Klien Danbooru</b> yang terpasang di situs agar dapat berfungsi.",
+        "user_api_key_notice": "Aplikasi ini membutuhkan ekstensi <b>Kunci API Pengguna</b> untuk dipasang di situs di situs untuk login dan akses konten pribadi."
+      }
     },
-    "unknown_engine_selection_request": "Pilih mesin booru untuk melanjutkan"
+    "unknown_engine_selection_request": "Pilih mesin booru untuk melanjutkan",
+    "new_profile_leave_as_empty_tips": "Tidak yakin? Biarkan saja seperti itu, Anda bisa mengubahnya nanti.",
+    "using_status": "menggunakan ${booru}",
+    "paste_from_clipboard": "Tempel dari papan klip",
+    "booru_engine_input_label": "Mesin booru (*)",
+    "config_name_label": "Nama profil (*)",
+    "no_profiles_available": "Tidak ada profil tersedia",
+    "add_profile_to_continue": "Tambahkan profil untuk melanjutkan",
+    "add_profile": "Tambahkan Profil",
+    "unsaved_changes": "Anda memiliki perubahan yang belum disimpan",
+    "unsaved_changes_discard": "Jangan simpan",
+    "unsaved_changes_reconfirm_question": "Apakah anda ingin menyimpan perubahan anda? Perubahan Anda akan hilang jika anda tidak menyimpannya.",
+    "site_url_label": "URL Situs",
+    "login_name_label": "Masuk",
+    "password_api_key_label": "Kunci API",
+    "password_label": "Kata sandi",
+    "content_filtering_label": "Penyaringan konten",
+    "content_filtering": {
+      "none": "Tidak ada",
+      "moderate": "Berimbang",
+      "aggressive": "Agresif",
+      "custom": "Kustom"
+    },
+    "choose_a_custom_filtering": {
+      "one": "Pilih peringkat yang ingin anda kecualikan dari pencarian.",
+      "other": "Pilih peringkat yang ingin anda kecualikan dari pencarian."
+    },
+    "hide_deleted_label": "Sembunyikan postingan yang dihapus",
+    "hide_deleted_description": "Sembunyikan gambar berkualitas rendah, beberapa gambar yang layak mungkin juga disembunyikan.",
+    "hide_banned_label": "Sembunyikan postingan yang dilarang",
+    "hide_banned_description": "Sembunyikan sepenuhnya gambar yang telah dilarang oleh situs tersebut.",
+    "config_booru_confirm": "Oke",
+    "add_a_booru_site": "Buat profil baru",
+    "next_step": "Selanjutnya",
+    "site_url": "URL Situs",
+    "validation_empty_url": "URL kosong",
+    "validation_invalid_url": "\"{0}\" bukan URL yang valid",
+    "validation_invalid_http_url": "\"{0}\" bukan URL HTTP atau HTTPS",
+    "validation_redundant_www": "\"{0}\" berisi \"www\" yang berlebihan",
+    "validation_contains_spaces": "\"{0}\" berisi spasi di antaranya",
+    "validation_missing_scheme": "\"{0}\" tidak memiliki skema (misalnya https://)",
+    "api_key": {
+      "auth_error": {
+        "edit_api_key": "Sunting kunci API",
+        "empty_key_warning": "Situs ini mungkin mengharuskan anda memasukkan kunci API atau kata sandi anda untuk mengakses kontennya.",
+        "invalid_key_warning": "Periksa kunci API atau kredensial anda, karena mungkin tidak valid atau telah kedaluwarsa."
+      }
+    },
+    "misc": "Lain-lain",
+    "authentication": {
+      "title": "Otentikasi",
+      "gelbooru": {
+        "basic_auth": "Otentikasi Dasar (diperlukan)",
+        "basic_auth_description": "Memberikan informasi ini memberi aplikasi akses baca ke akun anda. Ini diwajibkan oleh Gelbooru mulai Juni 2025.",
+        "advanced_auth": "Otentikasi Tingkat Lanjut (opsional)",
+        "advanced_auth_description": "Memberikan informasi ini memungkinkan anda untuk menyunting favorit anda dan memberikan akses tulis ke akun anda. Perlu diingat bahwa jika anda mengubah kata sandi, anda perlu masuk kembali.",
+        "fav_button_tooltip_title": "Tentang tombol favorit",
+        "fav_button_tooltip_description": "Tidak ada cara lain untuk memeriksa apakah sebuah gambar sudah ditambahkan ke favorit. Meskipun anda dapat melihat indikator visual setelah menambahkan gambar ke favorit, indikator tersebut akan disetel ulang saat anda memulai ulang aplikasi. Jangan khawatir, favorit anda akan tetap tersimpan di situs web."
+      }
+    },
+    "listing": {
+      "title": "Daftar",
+      "thumbnail_button": "Tombol keluku",
+      "thumbnail_button_description": "Ubah tombol bawaan di bagian kanan bawah keluku.",
+      "tooltip_on_hover_title": "Tampilkan tipsalat pada lintasan",
+      "tooltip_on_hover_description": "Tampilkan informasi pratinjau saat mengarahkan kursor ke atas keluku.",
+      "enable_profile_specific_settings": "Hidupkan pengaturan khusus profil",
+      "enable_profile_specific_settings_description": "Timpa pengaturan global untuk profil ini. Jika dihidupkan, pengaturan global akan diabaikan hingga opsi ini dimatikan.",
+      "overridden_notice": "Pengaturan ini akan ditimpa oleh daftar kustom. Silakan kunjungi halaman <b><a href=\"booru-profiles\">Daftar Profil</a></b> sebagai gantinya."
+    },
+    "search": {
+      "title": "Pencarian",
+      "include_in_search": "Sertakan tagar ini di setiap pencarian",
+      "exclude_from_search": "Kecualikan tagar ini dari setiap pencarian",
+      "include_exclude_tooltip": "Tagar-tagar ini akan ditambahkan ke setiap pencarian yang dilakukan aplikasi, bukan hanya pencarian yang anda lakukan secara manual.",
+      "preview_tags": "Pratinjau",
+      "any_search_query": "<kueri pencarian apapun>",
+      "enable_profile_specific_settings": "Hidupkan daftar hitam khusus profil",
+      "blacklist": "Daftar hitam",
+      "empty_blacklist": "Tidak ada tagar",
+      "empty_blacklist_with_replace_notice": "Mengosongkan daftar hitam dengan mode penggantian akan secara efektif menonaktifkan daftar hitam sepenuhnya.",
+      "blacklist_overridden": {
+        "replace_notice": "Digantikan oleh pengaturan <b><a href=\"booru-profiles\">Daftar Hitam Profil</a></b>.",
+        "merge_notice": "Digabung dengan <b><a href=\"booru-profiles\">Daftar Hitam Profil</a></b> pengaturan."
+      },
+      "blacklist_combine_mode": {
+        "title": "Mode kombinasi",
+        "merge": "Gabungkan",
+        "merge_description": "Gabungkan daftar hitam ini dengan daftar hitam lainnya.",
+        "replace": "Menggantikan",
+        "replace_description": "Ganti daftar hitam global dengan daftar hitam ini. Berguna ketika anda ingin memiliki daftar hitam yang hanya digunakan untuk profil ini tanpa memengaruhi daftar hitam global."
+      }
+    },
+    "network": {
+      "title": "Jaringan",
+      "proxy": {
+        "title": "Proksi",
+        "select_type": "<Pilih>",
+        "type": "Jenis Proksi",
+        "host_or_ip": "Host atau IP (*)",
+        "username": "Nama pengguna",
+        "username_hint": "nama pengguna (opsional)",
+        "password": "Kata sandi",
+        "password_hint": "kata sandi (opsional)",
+        "test": {
+          "state": {
+            "idle": "Uji proksi",
+            "testing": "Memeriksa...",
+            "slow": "Respon lambat?"
+          },
+          "success": "Pengaturan proksi valid",
+          "failure": "Gagal terhubung ke proksi, harap periksa pengaturan anda dan coba lagi"
+        },
+        "host_or_ip_hint": "m.c. proxy.host.com atau 123.456.789.0",
+        "port": "Port (*)",
+        "port_hint": "m.c. 8080"
+      },
+      "http": {
+        "protocol": "Protokol HTTP",
+        "protocol_description": "Mengubah protokol HTTP dapat membantu meningkatkan kompatibilitas atau kinerja pada situs atau platform tertentu.",
+        "skip_cert_verification": "Lewati verifikasi sertifikat",
+        "skip_cert_verification_description": "Hidupkan untuk sertifikat yang ditandatangani sendiri (m.c., server lokal)",
+        "skip_cert_verification_warning_title": "Peringatan Keamanan",
+        "skip_cert_verification_warning": "Verifikasi sertifikat dimatikan. Koneksi anda mungkin tidak aman. Gunakan ini hanya untuk server lokal yang tepercaya."
+      }
+    },
+    "viewer": {
+      "auto_fetch_notes": "Ambil catatan otomatis",
+      "auto_fetch_notes_description": "Secara otomatis mengambil dan menampilkan catatan jika memungkinkan.",
+      "overridden_notice": "Pengaturan ini akan tertimpa oleh penampil kustom. Buka halaman <b><a href=\"booru-profiles\">Penampil Profil</a></b> sebagai gantinya."
+    },
+    "gestures": {
+      "title": "Isyarat",
+      "override_notice": "Ganti isyarat bawaan untuk profil ini, pilih \"Tidak ada\" untuk mempertahankan perilaku aslinya."
+    },
+    "downloads": {
+      "title": "Unduh",
+      "leave_empty_to_use_global": "Biarkan kosong untuk menggunakan lokasi unduhan di pengaturan.",
+      "custom_filename_format": "Format nama berkas kustom",
+      "custom_filename_format_invidual": "Unduhan pribadi",
+      "custom_filename_format_bulk": "Unduhan massal",
+      "bulk_slow_token_warning": "Menggunakan token lambat dalam pengunduhan massal akan membutuhkan waktu yang sangat lama untuk pemanasan sebelum memulai pengunduhan sebenarnya, pertimbangkan untuk tidak menggunakannya jika memungkinkan.",
+      "filename": {
+        "available_tokens": "Token tersedia: ",
+        "no_token_error": "Token $token tidak tersedia",
+        "available_token_options": "Pilihan tersedia",
+        "no_options_available": "Pilihan tidak tersedia",
+        "slow_token_warning": "Token ini akan memperlambat unduhan anda karena memerlukan pengambilan data tambahan untuk setiap berkas."
+      }
+    },
+    "appearance": {
+      "title": "Antarmuka",
+      "image_viewer_layout": {
+        "title": "Tata letak penampil gambar",
+        "preview_widgets": "Pratinjau jendela alat",
+        "full_info_widgets": "Informasi penuh jendela alat",
+        "widget_title": "Jendela alat",
+        "storage_tooltip": "Semua perubahan akan tersimpan ke profil anda saat ini.",
+        "rearrange_tip": "Susun ulang item atau sembunyikan konten",
+        "preview": {
+          "title": "Pratinjau Tata Letak",
+          "description": "Pratinjau tata letak kustom anda selama $previewMinutes menit. Setelah itu, anda dapat meningkatkan ke $brand untuk terus menggunakannya atau mencoba lagi sebanyak yang anda inginkan.",
+          "start_limited_preview": "Mulai $previewMinutes-menit Pratinjau",
+          "continue_preview_and_apply": "Lanjutkan Pratinjau & Terapkan",
+          "currently_in_preview": "Anda saat ini sedang melihat pratinjau tata letak khusus.",
+          "time_left": "Waktu tersisa:",
+          "preview_expired": "Pratinjau tata letak anda telah berakhir. Tingkatkan keanggotaan anda untuk terus menggunakan tata letak premium atau mulai pratinjau baru."
+        }
+      },
+      "home_screen": "Layar beranda",
+      "home_screen_description": "Ubah layar beranda bawaan saat membuka profil ini.",
+      "turn_on": "Hidupkan",
+      "turn_on_description": "Ganti tema global dengan tema profil ini",
+      "overridden_notice": "Pengaturan ini akan ditimpa oleh tema kustom. Silakan kunjungi halaman <b><a href=\"booru-profiles\">Tampilan Profil</a></b> sebagai gantinya."
+    },
+    "deletion": {
+      "title": "Hapus '${profileName}'",
+      "confirmation": "Apakah anda yakin anda ingin menghapus profil ini? Tindakan ini tidak dapat dibatalkan."
+    },
+    "invalid_booru_warning": "Tampaknya seperti situs tidak berjalan di mesin yang dipilih. Silahkan coba dengan yang lain.",
+    "invalid_selected_profile": "Profil yang saat ini dipilih tidak valid",
+    "invalid_selected_profile_selection_request": "Pilih profil dari daftar di bawah ini untuk melanjutkan"
+  },
+  "blacklist": {
+    "manage": {
+      "title": "Daftar hitam",
+      "empty_blacklist": "Tidak ada tagar terlarang"
+    }
+  },
+  "bookmark": {
+    "title": "Penanda",
+    "added": "Penanda ditambahkan",
+    "failed_to_add": "Gagal menambahkan penanda",
+    "many_added": "{0} penanda ditambahkan",
+    "failed_to_add_many": "Gagal menambahkan penanda",
+    "removed": "Penanda dihapus",
+    "failed_to_remove": "Gagal menghapus penanda",
+    "shuffle_tooltip": "Penanda acak",
+    "counter": {
+      "one": "$n tandai",
+      "other": "$n penanda"
+    }
+  },
+  "app_update": {
+    "update": "Perbarui",
+    "later": "Nanti",
+    "whats_new": "Apa yang baru?",
+    "update_available": "Perbaruan tersedia"
+  },
+  "forum": {
+    "forum": "Forum"
+  },
+  "gestures": {
+    "swipe_down": "Geser kebawah",
+    "double_tap": "Ketuk ganda",
+    "long_press": "Tekan dan tahan",
+    "tap": "Ketuk"
+  },
+  "time": {
+    "counters": {
+      "second": {
+        "one": "$n detik",
+        "other": "$n detikan"
+      }
+    },
+    "timeago": {
+      "days": "{days} hari yang lalu",
+      "hours": "{hours} jam yang lalu",
+      "minutes": "{minutes} menit yang lalu",
+      "just_now": "Baru saja"
+    },
+    "months": {
+      "short": {
+        "jan": "Jan",
+        "feb": "Feb",
+        "mar": "Mar",
+        "apr": "Apr",
+        "may": "Mei",
+        "jun": "Jun",
+        "jul": "Jul",
+        "aug": "Ags",
+        "sep": "Sep",
+        "oct": "Okt",
+        "nov": "Nov",
+        "dec": "Des"
+      }
+    },
+    "filter": {
+      "last_7_days": "7 hari terakhir",
+      "last_30_days": "30 hari terakhir",
+      "last_90_days": "90 hari terakhir",
+      "last_6_months": "6 bulan terakhir",
+      "last_year": "Tahun lalu"
+    }
+  },
+  "donation": {
+    "donate": "Donasi"
+  },
+  "bulk_downloads": {
+    "created": "Dibuat",
+    "completed_with_no_new_files": "Selesai tanpa berkas baru",
+    "scanning_page": {
+      "preparing": "Menyiapkan...",
+      "preparing_with_page": "Menyiapkan, halaman $page...",
+      "with_page": "Memindai halaman $page...",
+      "null_page": "Menginisialisasi...",
+      "with_page_and_index": "Memindai halaman $page, barang $index..."
+    },
+    "file_counter": {
+      "one": "$n berkas",
+      "other": "$n berkas"
+    },
+    "status": {
+      "suspended": "Tersimpan"
+    },
+    "actions": {
+      "create": "Buat",
+      "delete": "Hapus",
+      "copy_path": "Jalur salinan",
+      "new_download": "Unduhan baru",
+      "add_to_queue": "Tambahkan ke daftar"
+    },
+    "templates": {
+      "title": "Templat",
+      "empty": "Tidak ada templat",
+      "create": "Buat templat",
+      "created": "Templat dibuat",
+      "run": "Jalankan templat"
+    },
+    "completed": {
+      "title": "Berhasil",
+      "empty": "'Tidak ada sesi unduhan selesai",
+      "clear_all": "Bersihkan semua"
+    },
+    "auth_changed": {
+      "profile_mismatch": "Ketidaksesuaian profil",
+      "current_site": "Situs saat ini: ",
+      "download_site": "Situs unduhan: ",
+      "has_mismatch_warning": "Situs unduhan tidak sesuai dengan profil situs saat ini. Harap ubah profil anda agar sesuai dengan situs unduhan.",
+      "no_mismatch_warning": "Sesi unduhan ini diprakarsaikan menggunakan profil dari situs yang sama tetapi dengan kredensial yang berbeda. Ini dapat menyebabkan masalah.\n\nApakah Anda ingin melanjutkan?",
+      "continue": "Lanjutkan saja"
+    },
+    "options": {
+      "other_options": "Pilihan lain",
+      "save_to_folder": "Simpan ke folder",
+      "show_advanced_options": "Tampilkan opsi tingkat lanjut",
+      "enable_notification": "Notifikasi",
+      "excluded_tags": "Tagar terkecuali",
+      "excluded_tags_description": "Pilih tagar tambahan untuk mengecualikan dari paket ini",
+      "default_excluded_tags_from_source_list": "Tagar di daftar hitam bawaan dari sumber berikut:",
+      "source_list": {
+        "one": "• tagar $count dari $source",
+        "other": "• tagar $count dari $source"
+      }
+    },
+    "errors": {
+      "non_premium_template_limit": "Hanya satu templat yang diperbolehkan. Tingkatkan ke $ merek untuk membuat lebih banyak templat.",
+      "non_premium_session_limit": "Hanya satu sesi unduh aktif diperbolehkan. Tingkatkan ke $ merek untuk sesi tambahan.",
+      "non_premium_resume": "Melanjutkan sesi unduhan yang disimpan hanya tersedia di $brand.",
+      "non_premium_suspend": "Sesi unduhan tersimpan hanya tersedia di $brand.",
+      "running_session_deletion": "Tidak dapat menghapus sesi berjalan"
+    }
+  },
+  "auth": {
+    "login_required": "Anda perlu memberikan rincian login untuk menggunakan fitur ini.",
+    "logged_in": "Masuk",
+    "relogin": "Masuk ulang",
+    "clear_credentials": "Bersihkan",
+    "login": "Masuk",
+    "login_expires": "Masuk berakhir:",
+    "session_expired": "Sesi Anda telah berakhir. Silahkan masuk lagi untuk terus menggunakan fitur yang otentik."
+  },
+  "captcha": {
+    "title": "Selesaikan captcha",
+    "i_have_solved_it": "Saya telah mengatasinya"
+  },
+  "select": {
+    "selected_items": "Pilih item",
+    "items_selected": {
+      "one": "$n item yang dipilih",
+      "other": "$n item dipilih"
+    },
+    "select_all": "Pilih semua",
+    "deselect_all": "Urungkan semua"
+  },
+  "tags": {
+    "title": "Tagar",
+    "loading_tags_error": "Kesalahan memuat tagar: $error",
+    "added": "Ditambahkan",
+    "actions": {
+      "search": "Pencarian Tagar",
+      "search_single": "Cari",
+      "copy": "Salin Tagar",
+      "copy_single": "Salin",
+      "blacklist": "Daftar hitam",
+      "blacklist_global": "Daftar hitam (Global)",
+      "add_to_blacklist": "Tambahkan ke daftar hitam",
+      "add_to_blacklist_global": "Tambahkan ke daftar hitam global"
+    },
+    "filter_hint": "Menyaring...",
+    "counter": {
+      "one": "$n tagar",
+      "other": "$n tagar"
+    },
+    "other_counter": {
+      "one": "$n lain",
+      "other": "$n lainnya"
+    }
+  },
+  "posts": {
+    "actions": {
+      "view_options": "Lihat Pilihan",
+      "edit_blacklist": "Sunting Daftar Hitam",
+      "edit_global_blacklist": "Sunting Daftar Hitam Global",
+      "edit_booru_specific_blacklist": "Sunting Daftar Hitam Spesifik Booru",
+      "edit_profile_blacklist": "Ubah Daftar Hitam Profil",
+      "stats": "Statistik"
+    },
+    "hidden_count": "$hidden dari $total",
+    "counter": {
+      "one": "$n posting",
+      "other": "$n postingan"
+    }
+  },
+  "premium": {
+    "get_premium": "Dapatkan $brand",
+    "upgrade": "Tingkatkan",
+    "subscribe": "Berlangganan",
+    "unlock_more_theme_with_premium": "Buka lebih banyak tema dengan $brand",
+    "restore_subscription": "Pulihkan langganan",
+    "subscription_restored": "Langganan telah dipulihkan!",
+    "restore_failed": "Ada masalah memulihkan berlangganan anda. Silahkan coba lagi nanti.",
+    "select_your_plan": "Pilih rencana anda",
+    "legal_disclaimer": "Dengan berlangganan, anda setuju untuk <a href=\"terms-of-service\">Ketentuan Layanan</a> dan <a href=\"privacy-policy\">Kebijakan Privasi</a>. Langganan secara otomatis memperbarui sampai dibatalkan. Anda dapat membatalkan kapan saja hingga 24 jam sebelum periode akhir anda saat ini.",
+    "benefits": {
+      "exclusive_themes": "Tema Eksklusif",
+      "exclusive_themes_description": "Pilih dari berbagai tema untuk mempersonalisasi setiap tampilan profil",
+      "layout_customization": "Tata Letak & Layar Beranda",
+      "layout_customization_description": "Sesuaikan berapa banyak info yang anda lihat, dan atur layar beranda pilihan anda (Penanda, Pencarian, dll)",
+      "enhanced_bulk_download": "Pengunduh Massal yang Ditingkatkan",
+      "enhanced_bulk_download_description": "Templat tak terbatas, beberapa sesi dan rangkuman mulus setelah mulai ulang.",
+      "support_development": "Dukung Pengembangan",
+      "support_development_description": "Bantu seorang pengembang menjaga proyek berjalan dengan pembaruan dan perbaikan rutin."
+    },
+    "thanks": {
+      "title": "Terima kasih!",
+      "description": "Sekarang anda sudah dapat mengakses fitur premium. Nikmatilah!",
+      "confirm": "Mengerti!"
+    },
+    "changelog": {
+      "thanks_for_supporting": "Terima kasih telah mendukung perkembangan aplikasi ini dengan berlangganan di $brand!",
+      "support_reminder": "Jika anda menikmati pembaruan ini, pertimbangkan mendukung pekerjaan kami untuk menjaga perbaikan mendatang."
+    },
+    "per": {
+      "year": "/ tahun",
+      "month": "/ bulan"
+    },
+    "packages": {
+      "monthly": "Bulanan",
+      "annual": "Tahunan"
+    }
+  },
+  "misc": {
+    "trailing_more": " lebih banyak",
+    "trailing_less": " lebih sedikit"
+  },
+  "artists": {
+    "title": "Seniman",
+    "search": {
+      "name": "Nama",
+      "name_hint": "Nama, nama grup, atau nama lain",
+      "name_tips": "* Mendukung wildcards dan regexe",
+      "url_hint": "URL atau bagian darinya"
+    }
+  },
+  "uploads": {
+    "counter": {
+      "one": "$n unggah",
+      "other": "$n unggahan"
+    }
+  },
+  "infinite_scroll": {
+    "reminder": {
+      "highres": "Perhatian: Aplikasi ini menampilkan gambar resolusi tinggi menggunakan data seluler."
+    },
+    "load_more": "Muat lebih",
+    "nore_more_data": "Itu saja untuk saat ini",
+    "page_label": "Halaman $page",
+    "next_page": "Halaman selanjutnya",
+    "previous_page": "Halaman sebelumnya"
+  },
+  "window": {
+    "pin": {
+      "pin_toast": "Jendela disematkan di atas",
+      "unpin_toast": "Jendela dicabut dari atas"
+    }
+  },
+  "video_player": {
+    "playback_speed": "Kecepatan pemutaran",
+    "lock_screen": "Layar kunci",
+    "buffering": "Pemuatan...",
+    "engine_not_supported": "Mesin ini tidak didukung pada platform saat ini.",
+    "change_video_player_engine_suggest": "Jika ini terjadi secara teratur, pertimbangkan menggunakan mesin pemutar video yang berbeda dalam pengaturan.",
+    "change_video_player_engine_request": "Silakan ubah ke mesin pemutar video yang berbeda dalam pengaturan.",
+    "video_quality": "Kualitas video",
+    "video_qualities": {
+      "auto": "Otomatis",
+      "sample": "Sampel",
+      "original": "Asli"
+    },
+    "current_video_quality_disclaimer": "Bagian ini hanya berlaku untuk video saat ini. Untuk semua video, pergi ke <a href=\"booru-profiles\">$ video_profile_path</a>.",
+    "speed": {
+      "normal": "Normal"
+    }
+  },
+  "cache": {
+    "image": {
+      "reminder": {
+        "description": "Aplikasi ini telah disimpan <b> $ ukuran</b> bernilai gambar. Apakah anda ingin membersihkannya untuk membebaskan beberapa ruang?",
+        "cleared": "Cache dibersihkan",
+        "failed": "Gagal membersihkan cache"
+      }
+    }
+  },
+  "shimmie2": {
+    "extension": {
+      "title": "Ekstensi",
+      "failed_to_fetch": "Tidak dapat mengambil daftar ekstensi untuk kasus ini"
+    }
+  },
+  "eshuushuu": {
+    "personal_info": {
+      "title": "Informasi Personal",
+      "gender": "Jenis kelamin",
+      "location": "Lokasi",
+      "interests": "Minat",
+      "website": "Situs web"
+    },
+    "profile": {
+      "joined": "Bergabung",
+      "last_active": "Aktif terakhir kali"
+    }
   }
 }
