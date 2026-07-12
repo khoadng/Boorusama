@@ -548,14 +548,20 @@
           "port_required": "IP-адрес должен содержать порт",
           "invalid": "Неверный IP-адрес"
         },
-        "choose_data_to_import": "Выбрать данные для импорта"
+        "choose_data_to_import": "Выбрать данные для импорта",
+        "title": "Прием данных",
+        "no_devices_found(rich)": "Устройства не найдены. Сначала запустите передачу данных на другом устройстве.\n\nНажмите ${tapHere(_)}, чтобы добавить устройство вручную по IP-адресу."
       },
       "send_data": {
         "version": "Версия",
         "status": {
           "title": "Статус",
-          "stopped": "Остановлено"
-        }
+          "stopped": "Остановлено",
+          "broadcasting": "Трансляция",
+          "running": "Запуск"
+        },
+        "name": "Имя",
+        "how_to_transfer": "Как перевести"
       },
       "backward_import": {
         "title": "Обнаружен импорт из более старой версии",
@@ -575,7 +581,8 @@
       "export_complete_success": "Успешно экспортировано {exported} элементов",
       "import_results": "Импорт завершен: {results}",
       "imported_count": "{count} импортировано",
-      "skipped_count": "{count} пропущено"
+      "skipped_count": "{count} пропущено",
+      "export_partial_success": "Экспортировано {exported}/{total} элементов. {failed} не удалось."
     },
     "image_details": {
       "ui_overlay": {
@@ -598,9 +605,14 @@
       "volume_navigation": "Использовать кнопки громкости для навигации",
       "haptic_feedback": {
         "haptic_feedback_level": {
-          "none": "Ничего"
-        }
-      }
+          "none": "Ничего",
+          "subtle": "Тонкий",
+          "standard": "Стандартный",
+          "playful": "Игривый"
+        },
+        "haptic_feedback": "Тактильная обратная связь"
+      },
+      "reduce_animations": "Уменьшить количество анимаций"
     },
     "booru_settings": {
       "edit_current_profile": "Редактировать текущий профиль",
