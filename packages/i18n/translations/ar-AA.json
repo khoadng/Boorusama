@@ -258,7 +258,7 @@
       "handshake_failed": "فشلت مصافحة الاتصال الآمن (Handshake)",
       "certificate_error": "خطأ في الشهادة. قد يستخدم الخادم شهادة موقعة ذاتياً. جرب استخدام HTTP بدلاً من HTTPS، أو قم بتثبيت الشهادة على جهازك.",
       "tag_limit": "تم الوصول إلى الحد الأقصى للوسوم. قم بترقية حسابك للبحث عن المزيد من الوسوم في وقت واحد.",
-      "database_timeout": "انتهت مهلة قاعدة البيانات",
+      "database_timeout": "استغرقت عملية البحث وقت طويل و تم إلغاؤها.",
       "rate_limited": "تم تقييد الطلبات (تجاوز حد السرعة)",
       "pagination_limit": "تم تجاوز حد تصفح الصفحات",
       "max_capacity": "الخادم بكامل طاقته الاستيعابية حاليًا",
@@ -267,9 +267,9 @@
       "forbidden": "الوصول غير مسموح به (Forbidden)",
       "unknown": "خطأ بحث غير معروف"
     },
-    "hint": "ابحث عن الوسوم أو الفنانين",
-    "no_result": "لا توجد نتائج",
-    "metatags_notice": "يمكنك استخدام وسوم التعريف (Metatags) لتصفية نتائج البحث.",
+    "hint": "ابحث...",
+    "no_result": "لم نعثر على نتائج.",
+    "metatags_notice": "لن يتم احتساب العلامات المجانية ضمن حدود البحث عن العلامات",
     "history": {
       "history": "السجل",
       "clear": "مسح السجل"
@@ -280,7 +280,7 @@
       "one": "نتيجة واحدة",
       "other": "نتائج"
     },
-    "no_result_notice": "لم يتم العثور على نتائج تطابق بحثك.",
+    "no_result_notice": "لم يتم العثور على نتائج",
     "search_in_progress_notice": "جاري البحث، يرجى الانتظار...",
     "raw_query": "الاستعلام الخام (Raw Query)"
   },
@@ -300,7 +300,7 @@
       "collection": "مجموعة/تجميعة"
     },
     "search": {
-      "hint": "ابحث في الألبومات..."
+      "hint": "ابحث في المجموعات"
     },
     "counter": {
       "one": "ألبوم واحد",
@@ -344,7 +344,7 @@
         },
         "scroll_behavior": {
           "persistent": "شريط بحث ثابت",
-          "persistent_description": "إبقاء شريط البحث مرئيًا عند التمرير لأسفل"
+          "persistent_description": "إبقاء شريط البحث مرئيًا عند التمرير لأسفل."
         }
       },
       "hide_bookmarked_posts_from_search_results": "إخفاء المنشورات المحفوظة من نتائج البحث"
@@ -396,9 +396,9 @@
       "slideshow_video_behavior_explanation": "تحديد كيفية التعامل مع الفيديوهات عند تفعيل التشغيل التلقائي للشرائح.",
       "slideshow_video_behaviors": {
         "wait_for_completion": "الانتظار حتى انتهاء تشغيل الفيديو",
-        "wait_for_completion_description": "ينتقل إلى العنصر التالي فقط بعد انتهاء الفيديو بالكامل.",
+        "wait_for_completion_description": "انتظار انتهاء مقاطع الفيديو قبل الانتقال إلى الشريحة التالية",
         "fixed_interval": "استخدام فاصل زمني ثابت",
-        "fixed_interval_description": "ينتقل إلى العنصر التالي بعد انقضاء الفاصل الزمني المحدد، بغض النظر عن حالة تشغيل الفيديو."
+        "fixed_interval_description": "تقدم بعد فترة ثابتة، حتى لو كان الفيديو لا يزال يعمل"
       },
       "slideshow_mode": "وضع عرض الشرائح",
       "slideshow_modes": {
@@ -407,9 +407,9 @@
         "backward": "للخلف"
       },
       "slideshow_skip": "تخطي في عرض الشرائح",
-      "slideshow_interval_explanation": "الوقت المستغرق لعرض كل صورة بالثواني.",
+      "slideshow_interval_explanation": "القيمة التي تقل عن ثانية واحدة ستتجاوز تلقائياً مرحلة الانتقال",
       "swipe_mode": "وضع السحب (Swipe)",
-      "swipe_mode_disclaimer": "قد يتطلب هذا الخيار إعادة تشغيل عارض الصور ليتم تطبيقه.",
+      "swipe_mode_disclaimer": "قد لا تعمل بعض الإيماءات في كل الحالات",
       "swipe_modes": {
         "horizontal": "أفقي",
         "horizontal_description": "السحب يمينًا ويسارًا للتنقل بين الصور.",
@@ -430,7 +430,7 @@
           "default": "الافتراضي (مشغل النظام)",
           "default_description": "استخدام مشغل الفيديو المدمج في نظام أندرويد.",
           "mdk_description": "تحميل سريع، أداء أفضل لبعض صيغ الفيديو، ولكنه غير مستقر وقد يتسبب في تعطل التطبيق.",
-          "mpv_description": "دعم جيد للصيغ وأداء جيد، وقت تحميل أبطأ.",
+          "mpv_description": "دعم جيد للصيغ وأداء جيد، وقت تحميل أبطأ",
           "webview_description": "تشغيل مقاطع الفيديو عبر عرض الويب المدمج (WebView)."
         }
       }
@@ -446,15 +446,15 @@
       "system": "افتراضي النظام",
       "amoled_dark": "داكن خالص",
       "dynamic_color": "الألوان الديناميكية",
-      "dynamic_color_mobile_description": "استخدام ألوان النظام المتغيرة (Material You) للهاتف.",
-      "dynamic_color_desktop_description": "تطبيق الألوان الديناميكية على نظام سطح المكتب.",
+      "dynamic_color_mobile_description": "لون التطبيق من خلفية الهاتف",
+      "dynamic_color_desktop_description": "مزامنة لون السمة مع لون التمييز الخاص بنظام التشغيل",
       "dynamic_color_unsupported_description": "الألوان الديناميكية غير مدعومة على إصدار جهازك الحالي.",
       "viewer": {
         "colors": "ألوان العارض",
         "color_variants": "تنوع الألوان",
         "dark_mode": "الوضع الداكن للعارض",
         "harmonize_colors": "تناغم الألوان",
-        "harmonize_colors_description": "جعل الألوان متناسقة مع لون الخلفية والمظهر العام.",
+        "harmonize_colors_description": "ضبط ألوان الوسوم لتتناسب مع لون الخلفية",
         "groups": {
           "basic": "أساسي",
           "builtin": "مدمج",
@@ -472,10 +472,10 @@
     "performance": {
       "performance": "الأداء",
       "posts_per_page": "عدد المنشورات في الصفحة",
-      "posts_per_page_explain": "زيادة هذا العدد قد تؤدي إلى إبطاء تحميل نتائج البحث والصفحات.",
+      "posts_per_page_explain": "عدد الصور المصغرة في كل صفحة",
       "cache_size": "حجم الذاكرة المؤقتة",
       "clear_cache": "مسح الذاكرة المؤقتة",
-      "cache_size_info": "يعرض المساحة المستهلكة حاليًا بواسطة الملفات المؤقتة."
+      "cache_size_info": "{0} في {1} ملفات"
     },
     "debug_logs": {
       "debug_logs": "سجلات تصحيح الأخطاء",
@@ -508,8 +508,8 @@
       "image_only_cache": "الذاكرة المؤقتة للصور فقط",
       "video_cache": "الذاكرة المؤقتة للفيديو",
       "video_cache_limit": "حد الذاكرة المؤقتة للفيديو",
-      "video_cache_limit_description": "وضع حد أقصى لحجم الفيديوهات المخزنة مؤقتًا على جهازك.",
-      "custom_cache_limit_option": "خيار مخصص لحد الكاش",
+      "video_cache_limit_description": "الحد الاقصى لحجم الفيديوهات المخزنة مؤقتًا على جهازك",
+      "custom_cache_limit_option": "مخصص..",
       "no_limit": "بلا حدود",
       "bookmark_images": "حفظ صور الإشارات المرجعية مؤقتًا",
       "loading": "جاري التحميل...",
@@ -545,11 +545,11 @@
       "backup_data": "نسخ البيانات احتياطيًا",
       "advanced_export_import": "تصدير/استيراد متقدم",
       "auto_backup": "نسخ احتياطي تلقائي",
-      "auto_backup_tooltip": "تمكين أو إعداد النسخ الاحتياطي التلقائي للبيانات",
-      "backup_in_progress": "جاري النسخ الاحتياطي...",
+      "auto_backup_tooltip": "يتم إنشاء النسخ الاحتياطية عند فتح التطبيق. لا يتم إجراء أي نسخ احتياطية عند إغلاق التطبيق.",
+      "backup_in_progress": "النسخ الاحتياطي قيد التنفيذ بالفعل",
       "export_operation_failed": "فشلت عملية التصدير",
       "import_operation_failed": "فشلت عملية الاستيراد",
-      "export_partial_success": "تم التصدير بنجاح جزئي",
+      "export_partial_success": "تم تصدير {exported}/{total} عنصر. فشل تصدير {failed} عنصر.",
       "export_complete_success": "اكتمل التصدير بنجاح",
       "export_no_items": "لا توجد عناصر لتصديرها",
       "import_results": "نتائج الاستيراد",
@@ -557,7 +557,7 @@
       "imported_count": "المستوردة",
       "skipped_count": "المتخطاة",
       "failed_count": "الفاشلة",
-      "invalid_location_error": "موقع النسخ الاحتياطي غير صالح",
+      "invalid_location_error": "لا يمكن التصدير إلى هذا الموقع، جرب استخدام مجلد \"التنزيلات\" (Downloads) أو \"المستندات\" (Documents). قم بإنشاء مجلد إذا لم يكن موجوداً.",
       "invalid_backup_format_error": "صيغة ملف النسخ الاحتياطي غير صالحة",
       "never": "أبدًا",
       "receive_data": {
@@ -577,14 +577,14 @@
         "version": "الإصدار",
         "status": {
           "title": "الحالة",
-          "broadcasting": "جاري البحث والبث للأجهزة القريبة...",
+          "broadcasting": "بث",
           "stopped": "متوقف",
           "running": "قيد التشغيل"
         },
         "how_to_transfer": "كيفية نقل البيانات",
         "how_to_send(rich)": "• على الجهاز المستقبِل، انتقل إلى ${settings(*)}\n• اختر ${receive(*)} لبدء استيراد البيانات من هذا الجهاز\n• ابقَ في هذه الصفحة حتى يكتمل النقل",
         "disclaimer": "سيتم إرسال بياناتك بشكل مباشر وآمن عبر شبكتك المحلية فقط.",
-        "no_networks_error": "لا يوجد اتصال بالشبكة المحلية"
+        "no_networks_error": "مطلوب اتصال بالإنترنت عبر Wi-Fi لنقل البيانات. يرجى الاتصال بشبكة Wi-Fi والمحاولة مرة أخرى."
       },
       "backward_import": {
         "title": "استيراد من إصدار أحدث",
@@ -659,9 +659,9 @@
     "source_code": "الكود المصدري",
     "support": "الدعم والمساعدة",
     "contact_developer": "التواصل مع المطور",
-    "contact_developer_description": "راسل المطور مباشرة للاستفسارات والاقتراحات.",
+    "contact_developer_description": "إذا كان لديك أي مشاكل أو اقتراحات، فلا تتردد في إرسال بريد إلكتروني إليّ من خلال هذا الخيار",
     "feature_request_and_bug_report": "طلب ميزة أو الإبلاغ عن مشكلة",
-    "feature_request_and_bug_report_description": "ساعدنا في تحسين وتطوير التطبيق.",
+    "feature_request_and_bug_report_description": "قدم اقتراحات لمميزات او ابلغ عن اخطأ",
     "open_app_settings": "فتح إعدادات التطبيق"
   },
   "blacklisted_tags": {
@@ -740,7 +740,7 @@
   },
   "favorite_groups": {
     "favorite_groups": "مجموعات المفضلة",
-    "empty_group_notice": "هذه المجموعة فارغة حاليًا.",
+    "empty_group_notice": "لا توجد مجموعة مفضلة",
     "create_group": "إنشاء مجموعة مفضلة جديدة",
     "edit_group": "تعديل المجموعة",
     "add_to_group_dialog_title": "إضافة إلى مجموعة المفضلة",
@@ -749,14 +749,14 @@
     "private": "خاصة (سرية)",
     "items_added_notification_popup": "تمت إضافة العناصر إلى المجموعة بنجاح",
     "group_name": "اسم المجموعة",
-    "group_name_hint": "أدخل اسم المجموعة هنا...",
+    "group_name_hint": "مجموعة جديدة",
     "all_posts": "كافة المنشورات",
     "initial_posts_hint": "معرفات المنشورات الأولية (اختياري، مفصولة بمسافات)",
     "is_private_group_option": "جعل المجموعة خاصة",
     "create_group_cancel": "إلغاء",
     "create_group_confirm": "إنشاء",
-    "max_limit_warning": "لقد وصلت للحد الأقصى للمجموعات المسموح بها.",
-    "duplicate_items_warning_notification": "بعض هذه العناصر مضافة بالفعل إلى هذه المجموعة.",
+    "max_limit_warning": "لقد وصلت للحد الأقصى للمجموعات المسموح بها",
+    "duplicate_items_warning_notification": "بعض هذه العناصر مضافة بالفعل إلى هذه المجموعة",
     "detete_confirmation": "هل أنت متأكد من رغبتك في حذف هذه المجموعة؟",
     "drag_hint": "اسحب لإعادة ترتيب العناصر",
     "group_item_counter": {
@@ -777,7 +777,7 @@
   "favorite_tags": {
     "favorites": "الوسوم المفضلة",
     "import_hint": "الصق وسومك هنا مفصولة بسطور جديدة أو بمسافات لاستيرادها دفعة واحدة.",
-    "export_notification": "تم تصدير الوسوم المفضلة إلى الحافظة بنجاح.",
+    "export_notification": "تم تصدير الوسوم المفضلة إلى الحافظة بنجاح",
     "favorite_tags": "الوسوم المفضلة"
   },
   "rating": {
@@ -819,16 +819,16 @@
       "confirmation": "هل أنت متأكد من رغبتك في حذف موقع البورو هذا؟ ستفقد جميع الإعدادات المحلية والمحفوظات الخاصة به."
     },
     "invalid_booru_warning": "تعذر التحقق من موقع البورو المدخل، يرجى التأكد من الرابط والمحاولة مجددًا.",
-    "invalid_selected_profile": "الحساب المحدد غير صالح أو تم حذفه.",
-    "invalid_selected_profile_selection_request": "يرجى اختيار حساب صالح أو تهيئة حساب جديد للمتابعة.",
-    "unknown_engine_selection_request": "محرك البورو غير معروف، يرجى تحديد نوع المحرك الصحيح يدويًا.",
+    "invalid_selected_profile": "الملف الشخصي المحدد غير صالح أو تم حذفه",
+    "invalid_selected_profile_selection_request": "اختر ملفاً شخصياً من القائمة أدناه للمتابعة",
+    "unknown_engine_selection_request": "اختر محرك البورو للمتابعة",
     "new_profile_leave_as_empty_tips": "تلميح: يمكنك ترك حقول اسم المستخدم وكلمة المرور فارغة لتصفح الموقع كمجهول (دون تسجيل).",
     "using_status": "قيد الاستخدام حاليًا",
     "paste_from_clipboard": "لصق من الحافظة",
     "booru_engine_input_label": "محرك البورو (Booru Engine)",
     "config_name_label": "اسم التهيئة (اسم الموقع)",
     "no_profiles_available": "لا تتوفر أي حسابات حاليًا",
-    "add_profile_to_continue": "يرجى إضافة حساب بورو جديد للمتابعة والبدء في استخدام التطبيق.",
+    "add_profile_to_continue": "اضف حساب للمتابعة",
     "add_profile": "إضافة حساب",
     "unsaved_changes": "هناك تغييرات غير محفوظة",
     "unsaved_changes_discard": "تجاهل التغييرات",
@@ -845,8 +845,8 @@
       "custom": "تصفية مخصصة"
     },
     "choose_a_custom_filtering": {
-      "one": "تصفية مخصصة واحدة محددة",
-      "other": "تصفيات مخصصة محددة"
+      "one": "اختر تصنيف لا تريده يظهر في البحث.",
+      "other": "اختر التصنيفات التي ترغب في استبعادها من البحث."
     },
     "hide_deleted_label": "إخفاء المنشورات المحذوفة",
     "hide_deleted_description": "منع عرض وتصفية الصور المحذوفة من الموقع.",
@@ -856,15 +856,15 @@
     "add_a_booru_site": "إضافة موقع بورو جديد",
     "next_step": "الخطوة التالية",
     "site_url": "رابط الموقع",
-    "validation_empty_url": "رابط الموقع مطلوب ولا يمكن تركه فارغًا.",
-    "validation_invalid_url": "الرابط المدخل غير صالح، يرجى التحقق من كتابته بشكل صحيح.",
-    "validation_invalid_http_url": "يجب أن يبدأ الرابط بـ http:// أو https:// المعتمدة.",
-    "validation_redundant_www": "يرجى إدخال الرابط بدون بادئة \"www.\" إذا كان الموقع لا يتطلبها.",
-    "validation_contains_spaces": "الرابط يحتوي على مسافات، يرجى إزالتها.",
-    "validation_missing_scheme": "بروتوكول الاتصال (http/https) مفقود من الرابط.",
+    "validation_empty_url": "رابط الموقع فارغ",
+    "validation_invalid_url": "\"{0}\" ليس رابطاً (URL) صالحاً",
+    "validation_invalid_http_url": "\"{0}\" ليس رابطاً من نوع HTTP أو HTTPS صالحاً",
+    "validation_redundant_www": "\"{0}\" يحتوي على \"www\" زائدة",
+    "validation_contains_spaces": "\"{0}\" يحتوي على مسافات بينية",
+    "validation_missing_scheme": "\"{0}\" يفتقد إلى مخطط (مثلاً https://)",
     "api_key": {
       "auth_error": {
-        "edit_api_key": "خطأ في المصادقة: يرجى التحقق من مفتاح API وتعديله.",
+        "edit_api_key": "تعديل مفتاح الAPI",
         "empty_key_warning": "حقل مفتاح API فارغ. يتطلب هذا الموقع مفتاحًا للوصول لكافة الميزات.",
         "invalid_key_warning": "يبدو أن مفتاح API المدخل غير صالح، يرجى إعادة التحقق منه من حسابك."
       }
@@ -900,7 +900,7 @@
       "any_search_query": "أي استعلام بحث",
       "enable_profile_specific_settings": "تفعيل إعدادات بحث مخصصة للحساب",
       "blacklist": "القائمة السوداء الخاصة بالحساب",
-      "empty_blacklist": "القائمة السوداء فارغة حاليًا. يمكنك إضافة وسوم لمنع ظهورها.",
+      "empty_blacklist": "لا توجد وسوم",
       "empty_blacklist_with_replace_notice": "القائمة السوداء فارغة، سيتم تفعيل القائمة العامة ما لم تقم بإضافتها.",
       "blacklist_overridden": {
         "replace_notice": "تم استبدالها بإعدادات <b><a href=\"booru-profiles\">Profile's Blacklist</a></b>.",
@@ -934,15 +934,15 @@
             "testing": "جاري اختبار اتصال الوكيل...",
             "slow": "اتصال بطيئ؟"
           },
-          "success": "تم الاتصال بنجاح! الوكيل يعمل بشكل صحيح.",
-          "failure": "فشل الاتصال، يرجى التحقق من إعدادات الوكيل."
+          "success": "إعدادات الوكيل صالحة",
+          "failure": "فشل الاتصال، يرجى التحقق من إعدادات الوكيل وحاول مرة أخرى"
         }
       },
       "http": {
         "protocol": "بروتوكول HTTP",
         "protocol_description": "اختيار إصدار بروتوكول HTTP المستخدم لطلبات الشبكة وتنزيل الملفات.",
         "skip_cert_verification": "تخطي التحقق من الشهادات الأمنية",
-        "skip_cert_verification_description": "تفعيل للشهادات الموقعة ذاتياً (على سبيل المثال، الخوادم المحلية).",
+        "skip_cert_verification_description": "تفعيل للشهادات الموقعة ذاتياً (على سبيل المثال، الخوادم المحلية)",
         "skip_cert_verification_warning_title": "تحذير أمني",
         "skip_cert_verification_warning": "تم تعطيل التحقق من الشهادة. قد لا يكون اتصالك آمناً. استخدم هذا فقط للخوادم المحلية الموثوقة."
       }
@@ -965,9 +965,9 @@
       "bulk_slow_token_warning": "تنبيه: استخدام بعض الرموز المعقدة (Tokens) قد يبطئ من سرعة التنزيل الجماعي بشكل كبير.",
       "filename": {
         "available_tokens": "الرموز المتاحة لاسم الملف (Tokens) ",
-        "no_token_error": "يجب تضمين رمز فريد واحد على الأقل في الصيغة لمنع استبدال الملفات وتداخل أسمائها مسبقًا.",
+        "no_token_error": "الرمز $token غير متوفر",
         "available_token_options": "الخيارات المتاحة للرمز المحدد",
-        "no_options_available": "لا توجد خيارات إضافية متوفرة لهذا الرمز.",
+        "no_options_available": "لا توجد خيارات متاحة",
         "slow_token_warning": "تنبيه: هذا الرمز يتطلب جلب بيانات إضافية من الخادم، مما يجعله أبطأ عند التنزيل."
       }
     },
@@ -978,8 +978,8 @@
         "preview_widgets": "عناصر المعاينة السريعة",
         "full_info_widgets": "عناصر عرض التفاصيل الكاملة",
         "widget_title": "عنوان العنصر",
-        "storage_tooltip": "تلميح التخزين للعنصر",
-        "rearrange_tip": "اسحب العناصر التفاعلية لإعادة ترتيب تخطيط العارض بالشكل الذي يناسبك.",
+        "storage_tooltip": "تم حفظ جميع التغييرات في ملفك الشخصي الحالي.",
+        "rearrange_tip": "إعادة ترتيب العناصر أو إخفاء المحتوى",
         "preview": {
           "title": "وضع معاينة التخطيط",
           "description": "يسمح لك بمعاينة وتجربة التخطيط الجديد مؤقتًا قبل تطبيقه وحفظه نهائيًا.",
@@ -993,14 +993,14 @@
       "home_screen": "الشاشة الرئيسية للبورو",
       "home_screen_description": "تعيين هذا الحساب كشاشة بداية مخصصة عند فتح التطبيق.",
       "turn_on": "تشغيل الميزة",
-      "turn_on_description": "تفعيل تخصيص الشاشة الرئيسية لهذا الحساب.",
+      "turn_on_description": "تجاوز السمة العامة باستخدام سمة هذا الملف الشخصي",
       "overridden_notice": "هذه الإعدادات يتم تجاوزها بواسطة سمة (مظهر) مخصصة. انتقل إلى صفحة <b><a href=\"booru-profiles\">Profile's Appearance</a></b> بدلاً من ذلك."
     }
   },
   "blacklist": {
     "manage": {
       "title": "إدارة القائمة السوداء",
-      "empty_blacklist": "القائمة السوداء فارغة حاليًا. يمكنك إضافة الكلمات والوسوم لمنع ظهور المحتوى غير المرغوب به."
+      "empty_blacklist": "القائمة السوداء فارغة"
     }
   },
   "bookmark": {
@@ -1074,7 +1074,7 @@
   },
   "bulk_downloads": {
     "created": "تم إنشاء جلسة التنزيل الجماعي بنجاح",
-    "completed_with_no_new_files": "اكتملت العملية، لم يتم العثور على ملفات جديدة لتنزيلها.",
+    "completed_with_no_new_files": "اكتملت العملية بدون العثور على ملفات جديدة",
     "scanning_page": {
       "preparing": "جاري تحضير قائمة التنزيل وفحص الملفات...",
       "preparing_with_page": "جاري تحضير وتجهيز الصفحة %s...",
@@ -1112,7 +1112,7 @@
       "profile_mismatch": "عدم تطابق البيانات الشخصية",
       "current_site": "الموقع الحالي ",
       "download_site": "موقع التحميل ",
-      "has_mismatch_warning": "يوجد عدم تطابق",
+      "has_mismatch_warning": "موقع التنزيل لا يتطابق مع ملف تعريف الموقع الحالي. يرجى تغيير ملفك الشخصي ليتوافق مع موقع التنزيل.",
       "no_mismatch_warning": "بدأت جلسة التنزيل هذه باستخدام ملف تعريف من نفس الموقع ولكن ببيانات اعتماد مختلفة. قد يؤدي هذا إلى حدوث مشكلات.\n\nهل أنت متأكد من رغبتك في المتابعة؟",
       "continue": "متابعة"
     },
@@ -1130,21 +1130,21 @@
       }
     },
     "errors": {
-      "non_premium_template_limit": "تم الوصول لحد القوالب بدون الاشتراك المميز",
-      "non_premium_session_limit": "تم الوصول لحد الجلسات بدون الاشتراك المميز",
-      "non_premium_resume": "ميزة استئناف التحميل متاحة فقط للمشتركين المميزين",
-      "non_premium_suspend": "ميزة إيقاف التحميل متاحة فقط للمشتركين المميزين",
+      "non_premium_template_limit": "يُسمح بنموذج واحد فقط. قم بالترقية إلى $brand لإنشاء المزيد من النماذج.",
+      "non_premium_session_limit": "يُسمح بجلسة تنزيل نشطة واحدة فقط. قم بالترقية إلى $brand للحصول على جلسات إضافية.",
+      "non_premium_resume": "استئناف جلسات التنزيل المحفوظة متاح فقط في $brand.",
+      "non_premium_suspend": "حفظ جلسات التنزيل متاح فقط في $brand.",
       "running_session_deletion": "لا يمكن حذف جلسة قيد التشغيل"
     }
   },
   "auth": {
-    "login_required": "يرجى تسجيل الدخول",
+    "login_required": "تحتاج إلى تقديم تفاصيل تسجيل الدخول لاستخدام هذه الميزة.",
     "logged_in": "تم تسجيل الدخول",
     "relogin": "إعادة تسجيل الدخول",
     "clear_credentials": "مسح بيانات الدخول",
     "login": "دخول",
     "login_expires": "انتهاء الجلسة:",
-    "session_expired": "انتهت صلاحية الجلسة"
+    "session_expired": "لقد انتهت صلاحية جلستك. يرجى تسجيل الدخول مرة أخرى لمواصلة استخدام الميزات التي تتطلب المصادقة."
   },
   "captcha": {
     "title": "التحقق",
@@ -1161,7 +1161,7 @@
   },
   "tags": {
     "title": "الوسوم",
-    "filter_hint": "ابحث عن الوسوم",
+    "filter_hint": "تصفية...",
     "loading_tags_error": "خطأ في تحميل الوسوم",
     "added": "تم إضافة الوسم",
     "actions": {
@@ -1205,7 +1205,7 @@
     "unlock_more_theme_with_premium": "افتح المزيد من المواضيع بالاشتراك المميز",
     "restore_subscription": "استعادة الاشتراك",
     "subscription_restored": "تم استعادة الاشتراك!",
-    "restore_failed": "فشل استعادة الاشتراك",
+    "restore_failed": "فشل استعادة الاشتراك، حاول مره أخرى لاحقاً.",
     "select_your_plan": "اختر خطتك",
     "legal_disclaimer": "بالاشتراك، أنت توافق على <a href=\"terms-of-service\">شروط الخدمة</a> و<a href=\"privacy-policy\">سياسة الخصوصية</a> الخاصة بنا. يتم تجديد الاشتراك تلقائياً ما لم يتم إلغاؤه. يمكنك الإلغاء في أي وقت قبل 24 ساعة على الأقل من نهاية فترتك الحالية.",
     "benefits": {
@@ -1214,9 +1214,9 @@
       "layout_customization": "تخصيص التخطيط",
       "layout_customization_description": "خصص تخطيط التطبيق حسب رغبتك",
       "enhanced_bulk_download": "تحميل جماعي محسّن",
-      "enhanced_bulk_download_description": "حمّل الصور بكميات أكبر بسرعة أفضل",
+      "enhanced_bulk_download_description": "قوالب غير محدودة، جلسات متعددة، واستئناف سلس بعد إعادة التشغيل.",
       "support_development": "دعم التطوير",
-      "support_development_description": "ادعم تطوير وتحسين التطبيق"
+      "support_development_description": "ادعم المطور المستقبل لتطوير وتحسين التطبيق."
     },
     "thanks": {
       "title": "شكراً لك!",
@@ -1225,7 +1225,7 @@
     },
     "changelog": {
       "thanks_for_supporting": "شكراً لدعمك تطوير هذا التطبيق عبر اشتراكك في $brand!",
-      "support_reminder": "تذكير بدعمك الغالي"
+      "support_reminder": "إذا كنت تستمتع بهذه التحديثات، ففكر في دعم عملي لمواصلة تقديم التحسينات."
     },
     "per": {
       "year": "سنوياً",
@@ -1237,7 +1237,7 @@
     }
   },
   "misc": {
-    "trailing_more": " ...",
+    "trailing_more": " . المزيد",
     "trailing_less": " ↑"
   },
   "artists": {
@@ -1257,7 +1257,7 @@
   },
   "infinite_scroll": {
     "reminder": {
-      "highres": "تنبيه: الصور عالية الدقة قد تستهلك البيانات أكثر"
+      "highres": "تنبيه: التطبيق يعرض صور عالية الدقة باستخدام بيانات الهاتف."
     },
     "load_more": "تحميل المزيد",
     "nore_more_data": "لا توجد بيانات إضافية",
@@ -1275,8 +1275,8 @@
     "playback_speed": "سرعة التشغيل",
     "lock_screen": "قفل الشاشة",
     "buffering": "جاري التخزين المؤقت...",
-    "engine_not_supported": "محرك التشغيل غير مدعوم",
-    "change_video_player_engine_suggest": "يُقترح تغيير محرك التشغيل",
+    "engine_not_supported": "محرك التشغيل غير مدعوم على جهازك.",
+    "change_video_player_engine_suggest": "إذا كان هذا يحدث بشكل متكرر، ففكر في استخدام محرك مشغل فيديو مختلف في الإعدادات.",
     "change_video_player_engine_request": "يرجى اختيار محرك تشغيل فيديو آخر من للاعدادت.",
     "video_quality": "جودة الفيديو",
     "video_qualities": {
