@@ -1,4 +1,5 @@
 export 'booru_chip.dart';
+export 'app_lock_scope.dart';
 export 'center_play_button.dart';
 export 'choice_option_selector_list.dart';
 export 'conditional_parent_widget.dart';

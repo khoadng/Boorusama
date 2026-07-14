@@ -1,114 +1,404 @@
 // Dart imports:
 import 'dart:async';
+import 'dart:ui';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 import 'package:kurumi/kurumi.dart';
 import 'package:kurumi/material.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import '../../pincode/pincode.dart';
 import '../../loggers.dart';
-import '../../networking.dart';
+import '../../platform.dart';
+import 'app_lock_session.dart';
+import 'app_lock_type.dart';
+import 'app_privacy_platform.dart';
 import 'biometrics.dart';
 
 class AppLock extends ConsumerStatefulWidget {
   const AppLock({
     required this.child,
+    required this.type,
+    required this.timeout,
     super.key,
-    this.enable = true,
+    this.hideAppPreviewWhenBackgrounded = true,
   });
 
-  final bool enable;
+  final AppLockType type;
+  final Duration timeout;
+  final bool hideAppPreviewWhenBackgrounded;
   final Widget child;
 
   @override
   ConsumerState<AppLock> createState() => _AppLockState();
 }
 
-class _AppLockState extends ConsumerState<AppLock> {
-  late var unlocked = !widget.enable;
+class _AppLockState extends ConsumerState<AppLock> with WidgetsBindingObserver {
+  late final _session = AppLockSession(
+    config: _config,
+    now: DateTime.now,
+  );
+  var _authenticating = false;
+  late var _buildProtectedContent = !_session.locked;
+
+  AppLockSessionConfig get _config => AppLockSessionConfig(
+    type: widget.type,
+    timeout: widget.timeout,
+    hideAppPreviewWhenBackgrounded: widget.hideAppPreviewWhenBackgrounded,
+  );
 
   @override
   void initState() {
     super.initState();
-    if (widget.enable) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        unawaited(_authenticate(ref.read(biometricsProvider)));
-      });
+    WidgetsBinding.instance.addObserver(this);
+    unawaited(_syncNativePrivacyCover());
+  }
+
+  @override
+  void didUpdateWidget(covariant AppLock oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.hideAppPreviewWhenBackgrounded !=
+        widget.hideAppPreviewWhenBackgrounded) {
+      unawaited(_syncNativePrivacyCover());
     }
+
+    setState(() {
+      _session.updateConfig(_config);
+      if (!_session.locked) {
+        _buildProtectedContent = true;
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    unawaited(AppPrivacyPlatform.setPrivacyCoverEnabled(false));
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    setState(() => _session.didChangeAppLifecycleState(state));
+  }
+
+  Future<void> _syncNativePrivacyCover() async {
+    if (!isApple()) return;
+
+    await AppPrivacyPlatform.setPrivacyCoverEnabled(
+      widget.hideAppPreviewWhenBackgrounded,
+    );
   }
 
   Future<void> _authenticate(LocalAuthentication localAuth) async {
+    if (_authenticating) return;
+
     final logger = ref.read(loggerProvider)
       ..info('Local Auth', 'Authenticating...');
 
-    try {
-      final didAuthenticate = await startAuthenticate(localAuth);
+    setState(() => _authenticating = true);
 
-      if (didAuthenticate) {
+    try {
+      final didAuthenticate = await startAuthenticate(
+        localAuth,
+        localizedReason:
+            context.t.settings.privacy.app_lock.authenticate_reason,
+      );
+
+      if (didAuthenticate && mounted) {
+        logger.info('Local Auth', 'Authenticated');
         setState(() {
-          logger.info('Local Auth', 'Authenticated');
-          unlocked = true;
+          _session.unlock();
+          _buildProtectedContent = true;
         });
       }
     } catch (e) {
       logger.error('Local Auth', 'Failed to authenticate: $e');
+    } finally {
+      if (mounted) {
+        setState(() => _authenticating = false);
+      }
     }
+  }
+
+  void _unlock() {
+    setState(() {
+      _session.unlock();
+      _buildProtectedContent = true;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final localAuth = ref.watch(biometricsProvider);
-
-    ref.listen(
-      networkStateProvider,
-      (previous, next) {
-        // Just here to create the stream
-      },
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        if (_buildProtectedContent) widget.child else const SizedBox.expand(),
+        if (_buildProtectedContent &&
+            _session.privacyCoverVisible &&
+            !_session.locked)
+          const Positioned.fill(
+            child: AppPrivacyCover(),
+          ),
+        if (_session.locked)
+          Positioned.fill(
+            child: _LockSurface(
+              type: widget.type,
+              authenticating: _authenticating,
+              onBiometricUnlock: () =>
+                  _authenticate(ref.read(biometricsProvider)),
+              onPinUnlocked: _unlock,
+            ),
+          ),
+      ],
     );
+  }
+}
+
+class _LockSurface extends ConsumerWidget {
+  const _LockSurface({
+    required this.type,
+    required this.authenticating,
+    required this.onBiometricUnlock,
+    required this.onPinUnlocked,
+  });
+
+  final AppLockType type;
+  final bool authenticating;
+  final VoidCallback onBiometricUnlock;
+  final VoidCallback onPinUnlocked;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Material(
-      child: ref
-          .watch(canUseBiometricLockProvider)
-          .when(
-            data: (canUse) {
-              if (canUse && !unlocked) {
-                return Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Please authenticate to use the app',
-                        style: Kurumi.themeOf(context).textTheme.titleMedium,
-                      ),
-                      const SizedBox(height: 16),
-                      IconButton(
-                        onPressed: () => _authenticate(localAuth),
-                        icon: Icon(
-                          Symbols.fingerprint,
-                          size: 72,
-                          color: Kurumi.themeOf(context).colorScheme.primary,
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              }
-
-              return widget.child;
-            },
-            loading: () => const DelayedRenderWidget(
-              delay: Duration(milliseconds: 500),
-              child: Material(
-                child: Center(
-                  child: CircularProgressIndicator(),
+      color: colorScheme.surface,
+      child: SafeArea(
+        child: Align(
+          alignment: Alignment.topCenter,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 380),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(20, 32, 20, 24),
+              child: switch (type) {
+                 AppLockType.pin => _PinLockSurface(
+                   onUnlocked: onPinUnlocked,
+                   onDeviceUnlock: onBiometricUnlock,
+                 ),
+                AppLockType.biometrics => _BiometricLockSurface(
+                  authenticating: authenticating,
+                  onUnlock: onBiometricUnlock,
                 ),
-              ),
+                AppLockType.none => const SizedBox.shrink(),
+              },
             ),
-            error: (error, stack) => widget.child,
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _PinLockSurface extends ConsumerWidget {
+  const _PinLockSurface({
+    required this.onUnlocked,
+    required this.onDeviceUnlock,
+  });
+
+  final VoidCallback onUnlocked;
+  final VoidCallback onDeviceUnlock;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final repository = ref.watch(pinCredentialRepositoryProvider);
+
+    return FutureBuilder(
+      future: repository.hasPin(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        final hasPin = snapshot.data ?? false;
+        if (!hasPin) {
+          return PinSetupPanel(
+            title: context.t.settings.privacy.app_lock.set_pin,
+            onSubmit: (pin) async {
+              await repository.setPin(pin);
+              onUnlocked();
+            },
+          );
+        }
+
+        return PinUnlockPanel(
+          title: context.t.settings.privacy.app_lock.unlock_app,
+          onSubmit: repository.verifyPin,
+          onUnlocked: onUnlocked,
+          onDeviceUnlock:
+              (ref.watch(canUseBiometricLockProvider).valueOrNull ?? false)
+              ? onDeviceUnlock
+              : null,
+        );
+      },
+    );
+  }
+}
+
+class _BiometricLockSurface extends ConsumerWidget {
+  const _BiometricLockSurface({
+    required this.authenticating,
+    required this.onUnlock,
+  });
+
+  final bool authenticating;
+  final VoidCallback onUnlock;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return ref
+        .watch(canUseBiometricLockProvider)
+        .when(
+          data: (canUse) {
+            if (!canUse) {
+              return const _LockMessage(
+                icon: Symbols.lock,
+                title: null,
+                message: null,
+                messageType: _LockMessageType.biometricUnavailable,
+              );
+            }
+
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  context.t.settings.privacy.app_lock.authenticate_to_use_app,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                const SizedBox(height: 16),
+                IconButton(
+                  onPressed: authenticating ? null : onUnlock,
+                  icon: Icon(
+                    Symbols.fingerprint,
+                    size: 72,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                ),
+                if (authenticating) ...[
+                  const SizedBox(height: 16),
+                  const CircularProgressIndicator(),
+                ],
+              ],
+            );
+          },
+          loading: () => const DelayedRenderWidget(
+            delay: Duration(milliseconds: 500),
+            child: Center(child: CircularProgressIndicator()),
+          ),
+          error: (error, stack) => const _LockMessage(
+            icon: Symbols.lock,
+            title: null,
+            message: null,
+            messageType: _LockMessageType.biometricFailed,
+          ),
+        );
+  }
+}
+
+class AppPrivacyCover extends StatelessWidget {
+  const AppPrivacyCover({super.key});
+
+  static const _blurSigma = 96.0;
+  static const _scrimOpacity = 0.42;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return ClipRect(
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: _blurSigma, sigmaY: _blurSigma),
+        child: ColoredBox(
+          color: colorScheme.scrim.withValues(alpha: _scrimOpacity),
+          child: const SizedBox.expand(),
+        ),
+      ),
+    );
+  }
+}
+
+enum _LockMessageType {
+  custom,
+  biometricUnavailable,
+  biometricFailed,
+  locked,
+}
+
+class _LockMessage extends StatelessWidget {
+  const _LockMessage({
+    required this.icon,
+    required this.title,
+    required this.message,
+    this.messageType = _LockMessageType.custom,
+  });
+
+  final IconData icon;
+  final String? title;
+  final String? message;
+  final _LockMessageType messageType;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final appLock = context.t.settings.privacy.app_lock;
+    final resolvedTitle =
+        title ??
+        switch (messageType) {
+          _LockMessageType.biometricUnavailable =>
+            appLock.biometric_unavailable,
+          _LockMessageType.biometricFailed => appLock.biometric_failed,
+          _LockMessageType.locked => appLock.locked_title,
+          _LockMessageType.custom => '',
+        };
+    final resolvedMessage =
+        message ??
+        switch (messageType) {
+          _LockMessageType.biometricUnavailable =>
+            appLock.biometric_unavailable_description,
+          _LockMessageType.biometricFailed =>
+            appLock.biometric_failed_description,
+          _LockMessageType.locked => appLock.locked_description,
+          _LockMessageType.custom => '',
+        };
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(
+          icon,
+          size: 56,
+          color: colorScheme.primary,
+        ),
+        const SizedBox(height: 16),
+        Text(
+          resolvedTitle,
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
+        const SizedBox(height: 8),
+        Text(
+          resolvedMessage,
+          textAlign: TextAlign.center,
+          style: TextStyle(color: colorScheme.outline),
+        ),
+      ],
     );
   }
 }

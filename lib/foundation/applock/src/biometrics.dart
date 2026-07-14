@@ -23,9 +23,13 @@ final canUseBiometricLockProvider = FutureProvider<bool>((ref) async {
   return hardwareSupport;
 });
 
-Future<bool> startAuthenticate(LocalAuthentication localAuth) async {
+Future<bool> startAuthenticate(
+  LocalAuthentication localAuth, {
+  required String localizedReason,
+}) async {
   final didAuthenticate = await localAuth.authenticate(
-    localizedReason: 'Please authenticate',
+    localizedReason: localizedReason,
+    persistAcrossBackgrounding: true,
   );
 
   return didAuthenticate;

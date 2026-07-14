@@ -1,7 +1,8 @@
 enum AppLockType {
   none,
   biometrics,
-  pin;
+  pin
+  ;
 
   factory AppLockType.parse(dynamic value) => switch (value) {
     'none' || '0' || 0 => none,
@@ -13,7 +14,8 @@ enum AppLockType {
   static const AppLockType defaultValue = none;
 
   bool get isBiometric => this == biometrics;
-  bool get appLockEnabled => isBiometric;
+  bool get isPin => this == pin;
+  bool get appLockEnabled => this != none;
 
   dynamic toData() => index;
 }

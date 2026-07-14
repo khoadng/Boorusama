@@ -7,6 +7,9 @@ import 'package:kurumi/material.dart';
 // Project imports:
 import '../../../widgets/widgets.dart';
 
+typedef SettingsPageContentOpener =
+    void Function(BuildContext context, SettingEntry entry);
+
 class SettingsPageScaffold extends StatelessWidget {
   const SettingsPageScaffold({
     required this.title,
@@ -75,6 +78,35 @@ class SettingEntry {
   final Widget content;
   final Object icon;
   final String name;
+}
+
+class SettingsPageNavigationScope extends InheritedWidget {
+  const SettingsPageNavigationScope({
+    required this.openContent,
+    required super.child,
+    super.key,
+  });
+
+  final SettingsPageContentOpener openContent;
+
+  static SettingsPageNavigationScope of(BuildContext context) {
+    final item = context
+        .dependOnInheritedWidgetOfExactType<SettingsPageNavigationScope>();
+
+    if (item == null) {
+      throw FlutterError(
+        'SettingsPageNavigationScope.of was called with a context that '
+        'does not contain a SettingsPageNavigationScope.',
+      );
+    }
+
+    return item;
+  }
+
+  @override
+  bool updateShouldNotify(SettingsPageNavigationScope oldWidget) {
+    return openContent != oldWidget.openContent;
+  }
 }
 
 class SettingEntryIcon extends StatelessWidget {

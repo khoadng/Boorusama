@@ -107,15 +107,17 @@ class _App extends ConsumerWidget {
                   statusBarIconBrightness: context.onBrightness,
                 ),
                 child: AppTitleBar(
-                  child: Column(
-                    children: [
-                      const NetworkUnavailableIndicatorWithState(),
-                      Expanded(
-                        child: NetworkUnavailableRemovePadding(
-                          child: child!,
+                  child: AppLockScope(
+                    child: Column(
+                      children: [
+                        const NetworkUnavailableIndicatorWithState(),
+                        Expanded(
+                          child: NetworkUnavailableRemovePadding(
+                            child: child!,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),

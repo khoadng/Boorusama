@@ -134,6 +134,7 @@ class SettingsPage extends ConsumerStatefulWidget {
 
 class _SettingsPageState extends ConsumerState<SettingsPage> {
   final _selected = ValueNotifier<String?>(null);
+  final _nestedEntry = ValueNotifier<SettingEntry?>(null);
 
   @override
   Widget build(BuildContext context) {
@@ -141,6 +142,30 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
       context,
       showDeveloperOptions: ref.watch(isDevEnvironmentProvider),
     );
+
+    void openContent(BuildContext context, SettingEntry entry) {
+      final options = SettingsPageScope.of(context).options;
+
+      if (options.dense) {
+        _nestedEntry.value = entry;
+        return;
+      }
+
+      Navigator.of(context).push(
+        CupertinoPageRoute(
+          settings: RouteSettings(
+            name: entry.name,
+          ),
+          builder: (_) => SettingsPageNavigationScope(
+            openContent: openContent,
+            child: SettingsPageScope(
+              options: options,
+              child: entry.content,
+            ),
+          ),
+        ),
+      );
+    }
 
     return Theme(
       data: Kurumi.themeOf(context).copyWith(
@@ -152,46 +177,63 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
         appBar: AppBar(
           title: Text(context.t.settings.settings),
         ),
-        body: SettingsPageDynamicScope(
-          options: SettingsPageDynamicOptions(
-            scrollTo: widget.scrollTo,
-          ),
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              //TODO: Don't separate the settings page into two pages, merge them into one to prevent code duplication and unnecessary rebuilds when resizing the window
-              return constraints.maxWidth > _kThresholdWidth
-                  ? SettingsPageScope(
-                      options: SettingsPageOptions(
-                        showIcon: false,
-                        dense: true,
-                        entries: entries,
-                      ),
-                      child: ValueListenableBuilder(
-                        valueListenable: _selected,
-                        builder: (_, selected, _) => SettingsLargePage(
-                          initial: selected ?? widget.initial,
-                          onTabChanged: (tab) => _selected.value = tab,
+        body: SettingsPageNavigationScope(
+          openContent: openContent,
+          child: SettingsPageDynamicScope(
+            options: SettingsPageDynamicOptions(
+              scrollTo: widget.scrollTo,
+            ),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                //TODO: Don't separate the settings page into two pages, merge them into one to prevent code duplication and unnecessary rebuilds when resizing the window
+                return constraints.maxWidth > _kThresholdWidth
+                    ? SettingsPageScope(
+                        options: SettingsPageOptions(
+                          showIcon: false,
+                          dense: true,
+                          entries: entries,
                         ),
-                      ),
-                    )
-                  : SettingsPageScope(
-                      options: SettingsPageOptions(
-                        showIcon: true,
-                        dense: false,
-                        entries: entries,
-                      ),
-                      child: ValueListenableBuilder(
-                        valueListenable: _selected,
-                        builder: (_, selected, _) => SettingsSmallPage(
-                          initial: selected ?? widget.initial,
+                        child: ValueListenableBuilder(
+                          valueListenable: _selected,
+                          builder: (_, selected, _) => ValueListenableBuilder(
+                            valueListenable: _nestedEntry,
+                            builder: (_, nestedEntry, _) => SettingsLargePage(
+                              initial: selected ?? widget.initial,
+                              onTabChanged: (tab) {
+                                _selected.value = tab;
+                                _nestedEntry.value = null;
+                              },
+                              nestedEntry: nestedEntry,
+                            ),
+                          ),
                         ),
-                      ),
-                    );
-            },
+                      )
+                    : SettingsPageScope(
+                        options: SettingsPageOptions(
+                          showIcon: true,
+                          dense: false,
+                          entries: entries,
+                        ),
+                        child: ValueListenableBuilder(
+                          valueListenable: _selected,
+                          builder: (_, selected, _) => SettingsSmallPage(
+                            initial: selected ?? widget.initial,
+                          ),
+                        ),
+                      );
+              },
+            ),
           ),
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _selected.dispose();
+    _nestedEntry.dispose();
+    super.dispose();
   }
 }
 
@@ -219,6 +261,7 @@ class _SettingsSmallPageState extends ConsumerState<SettingsSmallPage> {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         // open the initial page
         final entry = _findInitialPage(initial);
+        final openContent = SettingsPageNavigationScope.of(context).openContent;
 
         if (entry != null) {
           Navigator.of(context).push(
@@ -226,19 +269,22 @@ class _SettingsSmallPageState extends ConsumerState<SettingsSmallPage> {
               settings: RouteSettings(
                 name: entry.name,
               ),
-              builder: (_) => Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: SettingsPageScope(
-                      options: SettingsPageScope.of(context).options,
-                      child: entry.content,
+              builder: (_) => SettingsPageNavigationScope(
+                openContent: openContent,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: SettingsPageScope(
+                        options: SettingsPageScope.of(context).options,
+                        child: entry.content,
+                      ),
                     ),
-                  ),
-                  const WidthThresholdPopper(
-                    targetWidth: _kThresholdWidth,
-                  ),
-                ],
+                    const WidthThresholdPopper(
+                      targetWidth: _kThresholdWidth,
+                    ),
+                  ],
+                ),
               ),
             ),
           );
@@ -289,6 +335,7 @@ class _SettingsSmallPageState extends ConsumerState<SettingsSmallPage> {
   Widget build(BuildContext context) {
     ref.watch(settingsProvider.select((value) => value.language));
     final options = SettingsPageScope.of(context).options;
+    final openContent = SettingsPageNavigationScope.of(context).openContent;
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -311,9 +358,12 @@ class _SettingsSmallPageState extends ConsumerState<SettingsSmallPage> {
                         settings: RouteSettings(
                           name: entry.name,
                         ),
-                        builder: (_) => SettingsPageScope(
-                          options: options,
-                          child: entry.content,
+                        builder: (_) => SettingsPageNavigationScope(
+                          openContent: openContent,
+                          child: SettingsPageScope(
+                            options: options,
+                            child: entry.content,
+                          ),
                         ),
                       ),
                     ),
@@ -336,10 +386,12 @@ class SettingsLargePage extends ConsumerStatefulWidget {
     super.key,
     this.initial,
     this.onTabChanged,
+    this.nestedEntry,
   });
 
   final String? initial;
   final void Function(String tab)? onTabChanged;
+  final SettingEntry? nestedEntry;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -357,7 +409,9 @@ class _SettingsLargePageState extends ConsumerState<SettingsLargePage> {
     final options = SettingsPageScope.of(context).options;
     for (final entry in options.entries) {
       // fuzzy search
-      if (entry.title.toLowerCase().contains(initial.toLowerCase())) {
+      final normalizedInitial = initial.toLowerCase();
+      if (entry.id.toLowerCase() == normalizedInitial ||
+          entry.title.toLowerCase().contains(normalizedInitial)) {
         return options.entries.indexOf(entry);
       }
     }
@@ -366,8 +420,20 @@ class _SettingsLargePageState extends ConsumerState<SettingsLargePage> {
   }
 
   @override
+  void didUpdateWidget(covariant SettingsLargePage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (widget.initial != oldWidget.initial) {
+      _selectedEntry = _findInitialIndex(widget.initial);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final entries = SettingsPageScope.of(context).options.entries;
+    final nestedEntry = widget.nestedEntry;
+    final selectedContent =
+        nestedEntry?.content ?? entries[_selectedEntry].content;
 
     // ref.watch(settingsProvider.select((value) => value.language));
     final options = SettingsPageScope.of(context).options;
@@ -394,7 +460,7 @@ class _SettingsLargePageState extends ConsumerState<SettingsLargePage> {
                           (a) => a?.logScreenView(entry.name),
                         );
 
-                    widget.onTabChanged?.call(entry.title);
+                    widget.onTabChanged?.call(entry.id);
                   }),
                 ),
               const SettingsPageOtherSection(),
@@ -414,7 +480,7 @@ class _SettingsLargePageState extends ConsumerState<SettingsLargePage> {
               constraints: const BoxConstraints(
                 maxWidth: 600,
               ),
-              child: entries[_selectedEntry].content,
+              child: selectedContent,
             ),
           ),
         ),

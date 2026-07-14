@@ -44,6 +44,8 @@ class Settings extends Equatable {
     required this.enableDynamicColoring,
     required this.clearImageCacheOnStartup,
     required this.appLockType,
+    required this.appLockTimeoutSeconds,
+    required this.hideAppPreviewWhenBackgrounded,
     required this.bookmarkFilterType,
     required this.booruConfigSelectorPosition,
     required this.booruConfigSelectorScrollDirection,
@@ -88,6 +90,9 @@ class Settings extends Equatable {
       enableDynamicColoring = json['enableDynamicColoring'] ?? false,
       clearImageCacheOnStartup = json['clearImageCacheOnStartup'] ?? false,
       appLockType = AppLockType.parse(json['appLockType']),
+      appLockTimeoutSeconds = json['appLockTimeoutSeconds'] ?? 0,
+      hideAppPreviewWhenBackgrounded =
+          json['hideAppPreviewWhenBackgrounded'] ?? true,
       bookmarkFilterType = BookmarkFilterType.parse(json['bookmarkFilterType']),
       booruConfigSelectorPosition = BooruConfigSelectorPosition.parse(
         json['booruConfigSelectorPosition'],
@@ -171,6 +176,8 @@ class Settings extends Equatable {
     enableDynamicColoring: false,
     clearImageCacheOnStartup: false,
     appLockType: AppLockType.defaultValue,
+    appLockTimeoutSeconds: 0,
+    hideAppPreviewWhenBackgrounded: true,
     bookmarkFilterType: BookmarkFilterType.defaultValue,
     booruConfigSelectorPosition: BooruConfigSelectorPosition.defaultValue,
     booruConfigSelectorScrollDirection: BooruConfigScrollDirection.defaultValue,
@@ -216,6 +223,10 @@ class Settings extends Equatable {
   final bool clearImageCacheOnStartup;
 
   final AppLockType appLockType;
+
+  final int appLockTimeoutSeconds;
+
+  final bool hideAppPreviewWhenBackgrounded;
 
   final BookmarkFilterType bookmarkFilterType;
 
@@ -263,6 +274,8 @@ class Settings extends Equatable {
     bool? enableDynamicColoring,
     bool? clearImageCacheOnStartup,
     AppLockType? appLockType,
+    int? appLockTimeoutSeconds,
+    bool? hideAppPreviewWhenBackgrounded,
     BookmarkFilterType? bookmarkFilterType,
     PostGestureConfig? postGestures,
     BooruConfigSelectorPosition? booruConfigSelectorPosition,
@@ -302,6 +315,9 @@ class Settings extends Equatable {
     clearImageCacheOnStartup:
         clearImageCacheOnStartup ?? this.clearImageCacheOnStartup,
     appLockType: appLockType ?? this.appLockType,
+    appLockTimeoutSeconds: appLockTimeoutSeconds ?? this.appLockTimeoutSeconds,
+    hideAppPreviewWhenBackgrounded:
+        hideAppPreviewWhenBackgrounded ?? this.hideAppPreviewWhenBackgrounded,
     bookmarkFilterType: bookmarkFilterType ?? this.bookmarkFilterType,
     booruConfigSelectorPosition:
         booruConfigSelectorPosition ?? this.booruConfigSelectorPosition,
@@ -351,6 +367,8 @@ class Settings extends Equatable {
       'enableDynamicColoring': enableDynamicColoring,
       'clearImageCacheOnStartup': clearImageCacheOnStartup,
       'appLockType': appLockType.toData(),
+      'appLockTimeoutSeconds': appLockTimeoutSeconds,
+      'hideAppPreviewWhenBackgrounded': hideAppPreviewWhenBackgrounded,
       'bookmarkFilterType': bookmarkFilterType.toData(),
       'booruConfigSelectorPosition': booruConfigSelectorPosition.toData(),
       'booruConfigSelectorScrollDirection': booruConfigSelectorScrollDirection
@@ -389,6 +407,8 @@ class Settings extends Equatable {
     enableDynamicColoring,
     clearImageCacheOnStartup,
     appLockType,
+    appLockTimeoutSeconds,
+    hideAppPreviewWhenBackgrounded,
     bookmarkFilterType,
     booruConfigSelectorPosition,
     booruConfigSelectorScrollDirection,
