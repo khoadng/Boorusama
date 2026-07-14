@@ -11,10 +11,8 @@ import 'package:i18n/i18n.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
+import 'pin_controller.dart';
 import 'pin_credential.dart';
-
-const _pinMinLength = 4;
-const _pinLength = 4;
 
 Future<bool> showPinSetupDialog(
   BuildContext context,
@@ -108,104 +106,78 @@ class PinSetupPanel extends StatefulWidget {
 }
 
 class _PinSetupPanelState extends State<PinSetupPanel> {
-  var _step = _PinSetupStep.create;
-  var _pin = '';
-  String? _firstPin;
-  var _saving = false;
-  String? _error;
+  late final PinSetupController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = PinSetupController()..addListener(_controllerChanged);
+  }
+
+  @override
+  void dispose() {
+    _controller
+      ..removeListener(_controllerChanged)
+      ..dispose();
+    super.dispose();
+  }
+
+  void _controllerChanged() {
+    if (mounted) setState(() {});
+  }
 
   void _appendDigit(String digit) {
-    if (_saving || _pin.length >= _pinLength) return;
+    if (!_controller.canEdit) return;
 
     unawaited(HapticFeedback.selectionClick());
 
-    setState(() {
-      _pin += digit;
-      _error = null;
-    });
-
-    if (_pin.length == _pinLength) {
-      unawaited(_completeStep());
-    }
+    unawaited(
+      _controller.enterDigit(digit, widget.onSubmit).then((result) {
+        if (result == PinSetupResult.mismatch) {
+          unawaited(HapticFeedback.heavyImpact());
+        }
+      }),
+    );
   }
 
   void _deleteDigit() {
-    if (_saving || _pin.isEmpty) return;
-
-    unawaited(HapticFeedback.selectionClick());
-
-    setState(() {
-      _pin = _pin.substring(0, _pin.length - 1);
-      _error = null;
-    });
+    if (_controller.deleteDigit() != PinSetupResult.ignored) {
+      unawaited(HapticFeedback.selectionClick());
+    }
   }
 
-  Future<void> _completeStep() async {
+  String? _errorText(BuildContext context) {
+    final error = _controller.error;
+    if (error == null) return null;
+
     final appLock = context.t.settings.privacy.app_lock;
-
-    if (_pin.length < _pinMinLength) {
-      setState(() => _error = appLock.pin_too_short(length: _pinMinLength));
-      return;
-    }
-
-    if (_step == _PinSetupStep.create) {
-      setState(() {
-        _firstPin = _pin;
-        _pin = '';
-        _step = _PinSetupStep.confirm;
-        _error = null;
-      });
-      return;
-    }
-
-    final pin = _firstPin;
-    if (pin == null || _pin != pin) {
-      unawaited(HapticFeedback.heavyImpact());
-      setState(() {
-        _pin = '';
-        _error = appLock.pin_mismatch;
-      });
-      return;
-    }
-
-    setState(() {
-      _saving = true;
-      _error = null;
-    });
-
-    try {
-      await widget.onSubmit(pin);
-    } finally {
-      if (mounted) {
-        setState(() => _saving = false);
-      }
-    }
+    return switch (error) {
+      PinSetupError.tooShort => appLock.pin_too_short(
+        length: _controller.pinMinLength,
+      ),
+      PinSetupError.mismatch => appLock.pin_mismatch,
+    };
   }
 
   @override
   Widget build(BuildContext context) {
     final appLock = context.t.settings.privacy.app_lock;
-    final createStep = _step == _PinSetupStep.create;
+    final createStep = _controller.step == PinSetupStep.create;
 
     return _PinPadSurface(
       title: createStep ? appLock.create_pin_title : appLock.confirm_pin_title,
       subtitle: createStep
           ? appLock.choose_four_digit_pin
           : appLock.enter_pin_again,
-      pinLength: _pinLength,
-      enteredLength: _pin.length,
-      errorText: _error,
-      busy: _saving,
+      pinLength: _controller.pinLength,
+      enteredLength: _controller.enteredLength,
+      errorText: _errorText(context),
+      busy: _controller.saving,
       onDigit: _appendDigit,
       onDelete: _deleteDigit,
-      onBack: _saving ? null : widget.onCancel,
+      onBack: _controller.saving ? null : widget.onCancel,
     );
   }
-}
-
-enum _PinSetupStep {
-  create,
-  confirm,
 }
 
 class PinUnlockPanel extends StatefulWidget {
@@ -229,120 +201,75 @@ class PinUnlockPanel extends StatefulWidget {
 }
 
 class _PinUnlockPanelState extends State<PinUnlockPanel> {
+  late final PinUnlockController _controller;
   Timer? _errorTimer;
-  var _pin = '';
-  var _failedAttempts = 0;
-  var _checking = false;
-  var _showErrorState = false;
-  DateTime? _retryAfter;
-  String? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = PinUnlockController()..addListener(_controllerChanged);
+  }
 
   @override
   void dispose() {
     _errorTimer?.cancel();
+    _controller
+      ..removeListener(_controllerChanged)
+      ..dispose();
     super.dispose();
   }
 
-  void _appendDigit(String digit) {
-    if (_checking || _showErrorState || _pin.length >= _pinLength) return;
+  void _controllerChanged() {
+    if (mounted) setState(() {});
+  }
 
-    final retryAfter = _retryAfter;
-    if (retryAfter != null && DateTime.now().isBefore(retryAfter)) {
-      setState(() {
-        _showErrorState = true;
-        _error = context.t.settings.privacy.app_lock.try_again_in(
-          seconds: retryAfter.difference(DateTime.now()).inSeconds + 1,
-        );
-      });
-      return;
-    }
+  void _appendDigit(String digit) {
+    if (!_controller.canEdit) return;
 
     unawaited(HapticFeedback.selectionClick());
 
-    setState(() {
-      _pin += digit;
-      _error = null;
-    });
+    unawaited(
+      _controller.enterDigit(digit, widget.onSubmit).then((result) {
+        if (!mounted) return;
 
-    if (_pin.length == _pinLength) {
-      unawaited(_submit());
-    }
+        switch (result) {
+          case PinUnlockResult.unlocked:
+            widget.onUnlocked();
+          case PinUnlockResult.incorrect || PinUnlockResult.retryLocked:
+            unawaited(HapticFeedback.heavyImpact());
+            _scheduleErrorClear();
+          case PinUnlockResult.ignored || PinUnlockResult.digitEntered:
+            break;
+        }
+      }),
+    );
   }
 
   void _deleteDigit() {
-    if (_checking || _showErrorState || _pin.isEmpty) return;
-
-    unawaited(HapticFeedback.selectionClick());
-
-    setState(() {
-      _pin = _pin.substring(0, _pin.length - 1);
-      _error = null;
-    });
-  }
-
-  Future<void> _submit() async {
-    final appLock = context.t.settings.privacy.app_lock;
-    final retryAfter = _retryAfter;
-    if (retryAfter != null && DateTime.now().isBefore(retryAfter)) {
-      setState(() {
-        _error = appLock.try_again_in(
-          seconds: retryAfter.difference(DateTime.now()).inSeconds + 1,
-        );
-      });
-      return;
-    }
-
-    setState(() {
-      _checking = true;
-      _error = null;
-    });
-
-    try {
-      final ok = await widget.onSubmit(_pin);
-      if (ok) {
-        widget.onUnlocked();
-        return;
-      }
-
-      unawaited(HapticFeedback.heavyImpact());
-
-      _failedAttempts += 1;
-      if (_failedAttempts >= 5) {
-        final seconds = (_failedAttempts - 4) * 5;
-        _retryAfter = DateTime.now().add(Duration(seconds: seconds));
-        _showError(seconds: seconds);
-      } else {
-        _showError();
-      }
-    } finally {
-      if (mounted) {
-        setState(() => _checking = false);
-      }
+    if (_controller.deleteDigit() != PinUnlockResult.ignored) {
+      unawaited(HapticFeedback.selectionClick());
     }
   }
 
-  void _showError({int? seconds}) {
+  void _scheduleErrorClear() {
     _errorTimer?.cancel();
 
-    setState(() {
-      _pin = '';
-      _showErrorState = true;
-      _error = seconds != null
-          ? context.t.settings.privacy.app_lock.try_again_in(seconds: seconds)
-          : null;
-    });
+    final seconds = _controller.retrySeconds;
+    final duration = seconds == null
+        ? _controller.errorDisplayDuration
+        : Duration(seconds: seconds);
 
-    _errorTimer = Timer(
-      Duration(milliseconds: seconds == null ? 900 : seconds * 1000),
-      () {
-        if (!mounted) return;
+    _errorTimer = Timer(duration, _controller.clearError);
+  }
 
-        setState(() {
-          _showErrorState = false;
-          _error = null;
-        });
-      },
-    );
+  String? _subtitle(BuildContext context) {
+    final appLock = context.t.settings.privacy.app_lock;
+    final seconds = _controller.retrySeconds;
+
+    if (!_controller.showErrorState) return appLock.enter_your_pin;
+    if (seconds == null) return null;
+
+    return appLock.try_again_in(seconds: seconds);
   }
 
   @override
@@ -350,17 +277,17 @@ class _PinUnlockPanelState extends State<PinUnlockPanel> {
     final appLock = context.t.settings.privacy.app_lock;
 
     return _PinPadSurface(
-      title: _showErrorState ? appLock.incorrect_pin : widget.title,
-      subtitle: _showErrorState ? _error : appLock.enter_your_pin,
-      pinLength: _pinLength,
-      enteredLength: _showErrorState ? _pinLength : _pin.length,
-      busy: _checking,
-      errorState: _showErrorState,
+      title: _controller.showErrorState ? appLock.incorrect_pin : widget.title,
+      subtitle: _subtitle(context),
+      pinLength: _controller.pinLength,
+      enteredLength: _controller.enteredLength,
+      busy: _controller.checking,
+      errorState: _controller.showErrorState,
       showLockIcon: true,
-      showKeypad: !_showErrorState,
+      showKeypad: _controller.showKeypad,
       onDigit: _appendDigit,
       onDelete: _deleteDigit,
-      onBack: _checking ? null : widget.onCancel,
+      onBack: _controller.checking ? null : widget.onCancel,
       onDeviceUnlock: widget.onDeviceUnlock,
     );
   }
