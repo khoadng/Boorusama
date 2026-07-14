@@ -106,7 +106,8 @@
       "share": {
         "source": "Compartir link de el orígen",
         "booru": "Compartir link de Booru",
-        "image": "Compartir imagen"
+        "image": "Compartir imagen",
+        "file": "Compartir archivo"
       },
       "show_original": "Mostrar original",
       "show_translated": "Mostrar Traducido",
