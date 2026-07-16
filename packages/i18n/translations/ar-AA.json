@@ -124,7 +124,8 @@
       "share": {
         "source": "‍ مشاركة رابط المصدر",
         "booru": "Booru",
-        "image": "الصورة"
+        "image": "الصورة",
+        "file": "مشاركة الملف"
       },
       "show_original": "عرض الأصلي",
       "show_translated": "عرض المترجم",
