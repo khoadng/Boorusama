@@ -124,7 +124,8 @@
       "share": {
         "source": "Berbagi tautan sumber",
         "booru": "Berbagi tautan booru",
-        "image": "Berbagi gambar"
+        "image": "Berbagi gambar",
+        "file": "Berbagi berkas"
       },
       "show_original": "Tampilkan asli",
       "show_translated": "Tampilkan terjemahan",
