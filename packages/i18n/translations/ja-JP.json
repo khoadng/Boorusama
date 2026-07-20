@@ -279,7 +279,9 @@
       "booru_config_label_options": {
         "always": "常に",
         "never": "しない"
-      }
+      },
+      "blur_explicit_media": "露骨なコンテンツをぼかす",
+      "auto_play_gif": "GIFを自動再生"
     },
     "general": "一般",
     "search": {
@@ -600,7 +602,46 @@
     },
     "downloads": {
       "title": "ダウンロード"
-    }
+    },
+    "api_key": {
+      "auth_error": {
+        "empty_key_warning": "このサイトでは、コンテンツのアクセスにAPIキーまたはパスワードの入力が必要な可能性があります。",
+        "edit_api_key": "APIキーを編集"
+      }
+    },
+    "listing": {
+      "title": "リスト",
+      "enable_profile_specific_settings": "プロフィール固有の設定を有効にする",
+      "enable_profile_specific_settings_description": "このプロファイルでグローバル設定を上書きします。有効にすると、グローバル設定は無効にするまでプロファイルで無視されます。"
+    },
+    "search": {
+      "title": "検索"
+    },
+    "network": {
+      "title": "ネットワーク",
+      "proxy": {
+        "title": "プロキシ",
+        "select_type": "<選択>",
+        "type": "プロキシタイプ",
+        "host_or_ip": "ホストまたはIP (*)",
+        "host_or_ip_hint": "例: proxy.host.com、123.456.789.0",
+        "port": "ポート (*)",
+        "port_hint": "例: 8080",
+        "username": "ユーザー名",
+        "username_hint": "ユーザー名 (オプション)",
+        "password": "パスワード",
+        "password_hint": "パスワード (オプション)",
+        "test": {
+          "state": {
+            "idle": "プロキシをテスト"
+          }
+        }
+      }
+    },
+    "unsaved_changes": "保存されていない変更があります",
+    "unsaved_changes_discard": "破棄",
+    "unsaved_changes_reconfirm_question": "変更を保存しますか？保存しないと変更内容は失われます。",
+    "using_status": "${booru} を使用"
   },
   "blacklist": {
     "manage": {
