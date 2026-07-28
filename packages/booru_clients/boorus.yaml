@@ -271,3 +271,13 @@
     protocol: https_2
     sites:
       - https://nozomi.la/
+
+- sizebooru:
+    metadata:
+      id: 36
+      name: sizebooru
+      display-name: Size Booru
+      single-site: true
+    protocol: https_1
+    sites:
+      - https://sizebooru.com/

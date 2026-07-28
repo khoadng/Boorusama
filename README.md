@@ -35,6 +35,7 @@ Supported imageboards:
 - Hydrus Network
 - Hybooru
 - anime-pictures
+- Size Booru
 
 ## Installation
 
