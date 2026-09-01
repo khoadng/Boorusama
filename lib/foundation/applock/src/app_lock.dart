@@ -5,7 +5,6 @@ import 'dart:ui';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
-import 'package:kurumi/kurumi.dart';
 import 'package:kurumi/material.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -78,7 +77,9 @@ class _AppLockState extends ConsumerState<AppLock> with WidgetsBindingObserver {
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    unawaited(AppPrivacyPlatform.setPrivacyCoverEnabled(false));
+    if (isApple()) {
+      unawaited(AppPrivacyPlatform.setPrivacyCoverEnabled(false));
+    }
     super.dispose();
   }
 
@@ -180,32 +181,46 @@ class _LockSurface extends ConsumerWidget {
     return Material(
       color: colorScheme.surface,
       child: SafeArea(
-        child: Align(
-          alignment: Alignment.topCenter,
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 380),
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(20, 32, 20, 24),
-              child: switch (type) {
-                 AppLockType.pin => _PinLockSurface(
-                   onUnlocked: onPinUnlocked,
-                   onDeviceUnlock: onBiometricUnlock,
-                 ),
-                AppLockType.biometrics => _BiometricLockSurface(
-                  authenticating: authenticating,
-                  onUnlock: onBiometricUnlock,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            const padding = EdgeInsets.fromLTRB(20, 32, 20, 24);
+            final minimumContentHeight = constraints.maxHeight > 56
+                ? constraints.maxHeight - 56
+                : 0.0;
+
+            return SingleChildScrollView(
+              padding: padding,
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minHeight: minimumContentHeight),
+                child: Center(
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 760),
+                    child: switch (type) {
+                      AppLockType.pin => _PinLockSurface(
+                        onUnlocked: onPinUnlocked,
+                        onDeviceUnlock: onBiometricUnlock,
+                      ),
+                      AppLockType.biometrics => ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 380),
+                        child: _BiometricLockSurface(
+                          authenticating: authenticating,
+                          onUnlock: onBiometricUnlock,
+                        ),
+                      ),
+                      AppLockType.none => const SizedBox.shrink(),
+                    },
+                  ),
                 ),
-                AppLockType.none => const SizedBox.shrink(),
-              },
-            ),
-          ),
+              ),
+            );
+          },
         ),
       ),
     );
   }
 }
 
-class _PinLockSurface extends ConsumerWidget {
+class _PinLockSurface extends ConsumerStatefulWidget {
   const _PinLockSurface({
     required this.onUnlocked,
     required this.onDeviceUnlock,
@@ -215,34 +230,38 @@ class _PinLockSurface extends ConsumerWidget {
   final VoidCallback onDeviceUnlock;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final repository = ref.watch(pinCredentialRepositoryProvider);
+  ConsumerState<_PinLockSurface> createState() => _PinLockSurfaceState();
+}
 
-    return FutureBuilder(
-      future: repository.hasPin(),
+class _PinLockSurfaceState extends ConsumerState<_PinLockSurface> {
+  late final repository = ref.read(pinCredentialRepositoryProvider);
+  late final Future<bool> hasPin = repository.hasPin();
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<bool>(
+      future: hasPin,
       builder: (context, snapshot) {
-        if (!snapshot.hasData) {
+        if (snapshot.connectionState != ConnectionState.done) {
           return const Center(child: CircularProgressIndicator());
         }
 
-        final hasPin = snapshot.data ?? false;
-        if (!hasPin) {
-          return PinSetupPanel(
-            title: context.t.settings.privacy.app_lock.set_pin,
-            onSubmit: (pin) async {
-              await repository.setPin(pin);
-              onUnlocked();
-            },
+        if (snapshot.hasError || snapshot.data != true) {
+          return const _LockMessage(
+            icon: Symbols.lock,
+            title: null,
+            message: null,
+            messageType: _LockMessageType.locked,
           );
         }
 
         return PinUnlockPanel(
           title: context.t.settings.privacy.app_lock.unlock_app,
           onSubmit: repository.verifyPin,
-          onUnlocked: onUnlocked,
+          onUnlocked: widget.onUnlocked,
           onDeviceUnlock:
               (ref.watch(canUseBiometricLockProvider).valueOrNull ?? false)
-              ? onDeviceUnlock
+              ? widget.onDeviceUnlock
               : null,
         );
       },

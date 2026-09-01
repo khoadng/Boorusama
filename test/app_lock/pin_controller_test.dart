@@ -2,7 +2,7 @@
 import 'package:flutter_test/flutter_test.dart';
 
 // Project imports:
-import 'package:boorusama/foundation/pincode/pincode.dart';
+import 'package:boorusama/foundation/pincode/src/pin_controller.dart';
 
 void main() {
   group('PinSetupController', () {
@@ -121,6 +121,23 @@ void main() {
       );
       expect(controller.retrySeconds, 3);
       expect(controller.showErrorState, isTrue);
+    });
+
+    test('verification failure restores an editable controller', () async {
+      final controller = PinUnlockController();
+
+      await expectLater(
+        _enterUnlockPin(
+          controller,
+          '1234',
+          verifyPin: (_) => Future<bool>.error(StateError('storage failed')),
+        ),
+        throwsStateError,
+      );
+
+      expect(controller.checking, isFalse);
+      expect(controller.canEdit, isTrue);
+      expect(controller.enteredLength, 0);
     });
   });
 }

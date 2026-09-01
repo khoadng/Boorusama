@@ -1,5 +1,6 @@
 // Dart imports:
 import 'dart:convert';
+import 'dart:isolate';
 import 'dart:math';
 
 // Package imports:
@@ -8,8 +9,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_ce/hive.dart';
 
 const _pinCredentialKey = 'pin_credential';
-const _pinCredentialVersion = 1;
+const _pinCredentialVersion = 2;
 const _pinDerivationIterations = 30000;
+const _pinSaltLength = 32;
 
 final pinCredentialRepositoryProvider = Provider<PinCredentialRepository>(
   (ref) => PinCredentialRepository(
@@ -53,9 +55,13 @@ class PinCredential {
 }
 
 class PinCredentialRepository {
-  PinCredentialRepository(this._box);
+  PinCredentialRepository(
+    this._box, {
+    this.keyDeriver = const PinKeyDeriver(),
+  });
 
   final Future<Box<String>> _box;
+  final PinKeyDeriver keyDeriver;
 
   Future<bool> hasPin() async => await getPinCredential() != null;
 
@@ -71,7 +77,10 @@ class PinCredentialRepository {
       final credential = PinCredential.fromJson(json);
       if (credential.version != _pinCredentialVersion ||
           credential.salt.isEmpty ||
-          credential.verifier.isEmpty) {
+          credential.verifier.isEmpty ||
+          credential.iterations != _pinDerivationIterations ||
+          !_hasValidSalt(credential.salt) ||
+          !_isSha256Hex(credential.verifier)) {
         return null;
       }
 
@@ -87,7 +96,7 @@ class PinCredentialRepository {
     final credential = PinCredential(
       version: _pinCredentialVersion,
       salt: salt,
-      verifier: _derivePinVerifier(
+      verifier: await keyDeriver.derive(
         pin: pin,
         salt: salt,
         iterations: _pinDerivationIterations,
@@ -103,7 +112,7 @@ class PinCredentialRepository {
     final credential = await getPinCredential();
     if (credential == null) return false;
 
-    final verifier = _derivePinVerifier(
+    final verifier = await keyDeriver.derive(
       pin: pin,
       salt: credential.salt,
       iterations: credential.iterations,
@@ -120,24 +129,65 @@ class PinCredentialRepository {
 
 String _randomSalt() {
   final random = Random.secure();
-  final bytes = List<int>.generate(32, (_) => random.nextInt(256));
+  final bytes = List<int>.generate(
+    _pinSaltLength,
+    (_) => random.nextInt(256),
+  );
   return base64Url.encode(bytes);
 }
 
-String _derivePinVerifier({
+class PinKeyDeriver {
+  const PinKeyDeriver();
+
+  Future<String> derive({
+    required String pin,
+    required String salt,
+    required int iterations,
+  }) {
+    if (iterations <= 0) {
+      throw ArgumentError.value(iterations, 'iterations', 'Must be positive');
+    }
+
+    return Isolate.run(
+      () => _derivePbkdf2Sha256(
+        pin: pin,
+        salt: salt,
+        iterations: iterations,
+      ),
+    );
+  }
+}
+
+String _derivePbkdf2Sha256({
   required String pin,
   required String salt,
   required int iterations,
 }) {
-  final key = utf8.encode(salt);
-  var digest = Hmac(sha256, key).convert(utf8.encode(pin));
+  final hmac = Hmac(sha256, utf8.encode(pin));
+  final saltBytes = base64Url.decode(salt);
+  final firstBlock = [...saltBytes, 0, 0, 0, 1];
+  var u = hmac.convert(firstBlock).bytes;
+  final derived = List<int>.from(u);
 
   for (var i = 1; i < iterations; i++) {
-    digest = Hmac(sha256, key).convert(digest.bytes);
+    u = hmac.convert(u).bytes;
+    for (var byte = 0; byte < derived.length; byte++) {
+      derived[byte] ^= u[byte];
+    }
   }
 
-  return digest.toString();
+  return Digest(derived).toString();
 }
+
+bool _hasValidSalt(String salt) {
+  try {
+    return base64Url.decode(salt).length == _pinSaltLength;
+  } catch (_) {
+    return false;
+  }
+}
+
+bool _isSha256Hex(String value) => RegExp(r'^[0-9a-f]{64}$').hasMatch(value);
 
 bool _constantTimeEquals(String a, String b) {
   if (a.length != b.length) return false;

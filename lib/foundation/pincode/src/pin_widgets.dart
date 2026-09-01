@@ -2,12 +2,12 @@
 import 'dart:async';
 
 // Flutter imports:
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
+import 'package:kurumi/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
@@ -25,9 +25,9 @@ Future<bool> showPinSetupDialog(
         barrierColor: Theme.of(context).colorScheme.scrim,
         pageBuilder: (context, animation, secondaryAnimation) =>
             _PinFullscreenScaffold(
+              onBack: () => Navigator.of(context).pop(false),
               child: PinSetupPanel(
                 title: context.t.settings.privacy.app_lock.set_pin,
-                onCancel: () => Navigator.of(context).pop(false),
                 onSubmit: (pin) async {
                   await repository.setPin(pin);
                   if (context.mounted) Navigator.of(context).pop(true);
@@ -41,9 +41,11 @@ Future<bool> showPinSetupDialog(
 class _PinFullscreenScaffold extends StatelessWidget {
   const _PinFullscreenScaffold({
     required this.child,
+    required this.onBack,
   });
 
   final Widget child;
+  final VoidCallback onBack;
 
   @override
   Widget build(BuildContext context) {
@@ -52,12 +54,34 @@ class _PinFullscreenScaffold extends StatelessWidget {
     return Material(
       color: colorScheme.surface,
       child: SafeArea(
-        child: Align(
-          alignment: Alignment.topCenter,
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(20, 32, 20, 24),
-            child: child,
-          ),
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  const padding = EdgeInsets.fromLTRB(20, 64, 20, 24);
+                  final minimumContentHeight = constraints.maxHeight > 88
+                      ? constraints.maxHeight - 88
+                      : 0.0;
+
+                  return SingleChildScrollView(
+                    padding: padding,
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        minHeight: minimumContentHeight,
+                      ),
+                      child: Center(child: child),
+                    ),
+                  );
+                },
+              ),
+            ),
+            PositionedDirectional(
+              start: 8,
+              top: 8,
+              child: BackButton(onPressed: onBack),
+            ),
+          ],
         ),
       ),
     );
@@ -76,11 +100,11 @@ Future<bool> showPinVerifyDialog(
         barrierColor: Theme.of(context).colorScheme.scrim,
         pageBuilder: (context, animation, secondaryAnimation) =>
             _PinFullscreenScaffold(
+              onBack: () => Navigator.of(context).pop(false),
               child: PinUnlockPanel(
                 title:
                     title ??
                     context.t.settings.privacy.app_lock.enter_current_pin,
-                onCancel: () => Navigator.of(context).pop(false),
                 onSubmit: repository.verifyPin,
                 onUnlocked: () => Navigator.of(context).pop(true),
               ),
@@ -94,11 +118,9 @@ class PinSetupPanel extends StatefulWidget {
     required this.title,
     required this.onSubmit,
     super.key,
-    this.onCancel,
   });
 
   final String title;
-  final VoidCallback? onCancel;
   final Future<void> Function(String pin) onSubmit;
 
   @override
@@ -175,7 +197,6 @@ class _PinSetupPanelState extends State<PinSetupPanel> {
       busy: _controller.saving,
       onDigit: _appendDigit,
       onDelete: _deleteDigit,
-      onBack: _controller.saving ? null : widget.onCancel,
     );
   }
 }
@@ -186,12 +207,10 @@ class PinUnlockPanel extends StatefulWidget {
     required this.onSubmit,
     required this.onUnlocked,
     super.key,
-    this.onCancel,
     this.onDeviceUnlock,
   });
 
   final String title;
-  final VoidCallback? onCancel;
   final VoidCallback? onDeviceUnlock;
   final Future<bool> Function(String pin) onSubmit;
   final VoidCallback onUnlocked;
@@ -287,7 +306,6 @@ class _PinUnlockPanelState extends State<PinUnlockPanel> {
       showKeypad: _controller.showKeypad,
       onDigit: _appendDigit,
       onDelete: _deleteDigit,
-      onBack: _controller.checking ? null : widget.onCancel,
       onDeviceUnlock: widget.onDeviceUnlock,
     );
   }
@@ -306,7 +324,6 @@ class _PinPadSurface extends StatelessWidget {
     this.errorState = false,
     this.showLockIcon = false,
     this.showKeypad = true,
-    this.onBack,
     this.onDeviceUnlock,
   });
 
@@ -319,7 +336,6 @@ class _PinPadSurface extends StatelessWidget {
   final bool errorState;
   final bool showLockIcon;
   final bool showKeypad;
-  final VoidCallback? onBack;
   final VoidCallback? onDeviceUnlock;
   final ValueChanged<String> onDigit;
   final VoidCallback onDelete;
@@ -330,96 +346,125 @@ class _PinPadSurface extends StatelessWidget {
     final contentColor = errorState ? colorScheme.error : colorScheme.onSurface;
     final accentColor = errorState ? colorScheme.error : colorScheme.primary;
     final secondaryTextColor = colorScheme.onSurfaceVariant;
+    final viewport = MediaQuery.sizeOf(context);
+    final useColumns =
+        viewport.width >= 600 &&
+        (viewport.height < 600 || viewport.width >= 840);
+    final keypadRowHeight = useColumns && viewport.height < 600
+        ? ((viewport.height - 96) / 4).clamp(56.0, 76.0)
+        : 76.0;
 
-    return ConstrainedBox(
-      constraints: const BoxConstraints(maxWidth: 380),
-      child: Stack(
-        children: [
-          if (onBack != null)
-            Align(
-              alignment: Alignment.topLeft,
-              child: IconButton(
-                onPressed: busy ? null : onBack,
-                icon: const Icon(Icons.arrow_back_ios_new_rounded),
-              ),
-            ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(8, 8, 8, 16),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (showLockIcon) ...[
-                  Icon(
-                    Symbols.lock,
-                    size: 64,
-                    color: accentColor,
-                  ),
-                  const SizedBox(height: 20),
-                ] else if (onBack != null) ...[
-                  const SizedBox(height: 44),
-                ],
-                Text(
-                  title,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    color: contentColor,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                if (subtitle case final subtitle?) ...[
-                  const SizedBox(height: 8),
-                  Text(
-                    subtitle,
+    final status = Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (showLockIcon) ...[
+          Icon(
+            Symbols.lock,
+            size: 64,
+            color: accentColor,
+          ),
+          const SizedBox(height: 20),
+        ],
+        Text(
+          title,
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+            color: contentColor,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        SizedBox(
+          height: 48,
+          child: subtitle == null
+              ? null
+              : Center(
+                  child: Text(
+                    subtitle!,
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       color: secondaryTextColor,
                     ),
                   ),
-                ],
-                const SizedBox(height: 34),
-                _PinDots(
-                  length: pinLength,
-                  enteredLength: enteredLength,
-                  color: accentColor,
-                  errorState: errorState,
                 ),
-                if (errorText case final error?) ...[
-                  const SizedBox(height: 12),
-                  Text(
-                    error,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: colorScheme.error),
-                  ),
-                ],
-                const SizedBox(height: 36),
-                if (showKeypad)
-                  _PinKeypad(
-                    enabled: !busy,
-                    onDigit: onDigit,
-                    onDelete: onDelete,
-                  )
-                else
-                  const SizedBox(height: 304),
-                if (busy) ...[
-                  const SizedBox(height: 20),
-                  const SizedBox.square(
+        ),
+        SizedBox(height: useColumns ? 16 : 20),
+        _PinDots(
+          length: pinLength,
+          enteredLength: enteredLength,
+          color: accentColor,
+          errorState: errorState,
+        ),
+        SizedBox(
+          height: 36,
+          child: busy
+              ? const Center(
+                  child: SizedBox.square(
                     dimension: 20,
                     child: CircularProgressIndicator(strokeWidth: 2),
                   ),
-                ],
-                if (onDeviceUnlock != null) ...[
-                  const SizedBox(height: 20),
-                  TextButton(
-                    onPressed: busy ? null : onDeviceUnlock,
-                    child: Text(
-                      context.t.settings.privacy.app_lock.use_device_unlock,
-                    ),
+                )
+              : errorText == null
+              ? null
+              : Center(
+                  child: Text(
+                    errorText!,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: colorScheme.error),
                   ),
-                ],
-              ],
+                ),
+        ),
+      ],
+    );
+
+    final controls = ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: 340),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (showKeypad)
+            _PinKeypad(
+              enabled: !busy,
+              rowHeight: keypadRowHeight,
+              onDigit: onDigit,
+              onDelete: onDelete,
+            )
+          else
+            SizedBox(height: keypadRowHeight * 4),
+          if (onDeviceUnlock != null) ...[
+            const SizedBox(height: 20),
+            TextButton(
+              onPressed: busy ? null : onDeviceUnlock,
+              child: Text(
+                context.t.settings.privacy.app_lock.use_device_unlock,
+              ),
             ),
-          ),
+          ],
         ],
+      ),
+    );
+
+    return Align(
+      child: ConstrainedBox(
+        constraints: BoxConstraints(maxWidth: useColumns ? 760 : 380),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(8, 8, 8, 16),
+          child: useColumns
+              ? Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Expanded(child: status),
+                    const SizedBox(width: 48),
+                    Expanded(child: controls),
+                  ],
+                )
+              : Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    status,
+                    controls,
+                  ],
+                ),
+        ),
       ),
     );
   }
@@ -473,37 +518,42 @@ class _PinDots extends StatelessWidget {
 class _PinKeypad extends StatelessWidget {
   const _PinKeypad({
     required this.enabled,
+    required this.rowHeight,
     required this.onDigit,
     required this.onDelete,
   });
 
   final bool enabled;
+  final double rowHeight;
   final ValueChanged<String> onDigit;
   final VoidCallback onDelete;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 340,
+      width: double.infinity,
       child: Column(
         children: [
           _PinKeypadRow(
             values: const ['1', '2', '3'],
             enabled: enabled,
+            height: rowHeight,
             onDigit: onDigit,
           ),
           _PinKeypadRow(
             values: const ['4', '5', '6'],
             enabled: enabled,
+            height: rowHeight,
             onDigit: onDigit,
           ),
           _PinKeypadRow(
             values: const ['7', '8', '9'],
             enabled: enabled,
+            height: rowHeight,
             onDigit: onDigit,
           ),
           SizedBox(
-            height: 76,
+            height: rowHeight,
             child: Row(
               children: [
                 const Expanded(child: SizedBox.shrink()),
@@ -533,17 +583,19 @@ class _PinKeypadRow extends StatelessWidget {
   const _PinKeypadRow({
     required this.values,
     required this.enabled,
+    required this.height,
     required this.onDigit,
   });
 
   final List<String> values;
   final bool enabled;
+  final double height;
   final ValueChanged<String> onDigit;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 76,
+      height: height,
       child: Row(
         children: [
           for (final value in values)

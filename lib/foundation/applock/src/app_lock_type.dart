@@ -1,8 +1,7 @@
 enum AppLockType {
   none,
   biometrics,
-  pin
-  ;
+  pin;
 
   factory AppLockType.parse(dynamic value) => switch (value) {
     'none' || '0' || 0 => none,

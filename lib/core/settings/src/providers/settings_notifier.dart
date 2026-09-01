@@ -31,7 +31,7 @@ class SettingsNotifier extends Notifier<Settings> {
     return initialSettings;
   }
 
-  Future<void> updateWith(
+  Future<bool> updateWith(
     Settings Function(Settings) selector,
   ) {
     final currentSettings = state;
@@ -40,7 +40,7 @@ class SettingsNotifier extends Notifier<Settings> {
     return updateSettings(newSettings);
   }
 
-  Future<void> updateSettings(Settings settings) async {
+  Future<bool> updateSettings(Settings settings) async {
     final currentSettings = state;
     final success = await ref.read(settingsRepoProvider).save(settings);
 
@@ -69,5 +69,7 @@ class SettingsNotifier extends Notifier<Settings> {
             ),
           );
     }
+
+    return success;
   }
 }

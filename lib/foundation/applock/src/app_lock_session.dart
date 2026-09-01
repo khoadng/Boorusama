@@ -63,6 +63,7 @@ class AppLockSession {
   void unlock() {
     _locked = false;
     _privacyCoverVisible = false;
+    _backgroundedAt = null;
   }
 
   void didChangeAppLifecycleState(AppLifecycleState state) {

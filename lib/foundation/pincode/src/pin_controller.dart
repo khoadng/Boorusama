@@ -212,7 +212,17 @@ class PinUnlockController extends ChangeNotifier {
     _retrySeconds = null;
     notifyListeners();
 
-    final ok = await verifyPin(_pin);
+    late final bool ok;
+    try {
+      ok = await verifyPin(_pin);
+    } catch (_) {
+      _pin = '';
+      _checking = false;
+      _showErrorState = false;
+      _retrySeconds = null;
+      notifyListeners();
+      rethrow;
+    }
     if (ok) {
       _pin = '';
       _failedAttempts = 0;

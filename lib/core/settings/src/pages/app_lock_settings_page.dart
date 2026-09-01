@@ -1,9 +1,8 @@
-// Flutter imports:
-import 'package:flutter/material.dart';
-
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
+import 'package:kurumi/kurumi.dart';
+import 'package:kurumi/material.dart';
 
 // Project imports:
 import '../../../../foundation/applock/applock.dart';
@@ -12,7 +11,6 @@ import '../providers/settings_notifier.dart';
 import '../providers/settings_provider.dart';
 import '../types/settings.dart';
 import '../widgets/settings_page_scaffold.dart';
-import '../widgets/settings_tile.dart';
 
 class AppLockSettingsPage extends ConsumerWidget {
   const AppLockSettingsPage({
@@ -27,7 +25,7 @@ class AppLockSettingsPage extends ConsumerWidget {
     return SettingsPageScaffold(
       title: Text(appLock.title),
       children: [
-        SettingsTile<AppLockType>(
+        KurumiSettingsTile<AppLockType>(
           title: Text(appLock.title),
           subtitle: Text(appLock.description),
           selectedOption: settings.appLockType,
@@ -50,7 +48,7 @@ class AppLockSettingsPage extends ConsumerWidget {
             onTap: () => _changePin(context, ref),
           ),
         if (settings.appLockType.appLockEnabled)
-          SettingsTile<int>(
+          KurumiSettingsTile<int>(
             title: Text(appLock.lock_after),
             subtitle: Text(appLock.lock_after_description),
             selectedOption: settings.appLockTimeoutSeconds,
@@ -157,25 +155,22 @@ Future<void> _changeLockType(
       if (!context.mounted) return;
 
       if (!canUse) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              context.t.settings.privacy.app_lock.biometric_not_available,
-            ),
-          ),
+        Kurumi.showErrorToast(
+          context,
+          context.t.settings.privacy.app_lock.biometric_not_available,
         );
         return;
       }
 
-      await notifier.updateWith(
+      final saved = await notifier.updateWith(
         (settings) => settings.copyWith(appLockType: type),
       );
-      if (wasPin) await credentialRepository.clearPin();
+      if (saved && wasPin) await credentialRepository.clearPin();
     case AppLockType.none:
-      await notifier.updateWith(
+      final saved = await notifier.updateWith(
         (settings) => settings.copyWith(appLockType: type),
       );
-      if (wasPin) await credentialRepository.clearPin();
+      if (saved && wasPin) await credentialRepository.clearPin();
   }
 }
 
@@ -186,9 +181,8 @@ Future<void> _changePin(BuildContext context, WidgetRef ref) async {
   final changed = await showPinSetupDialog(context, ref);
   if (!changed || !context.mounted) return;
 
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(
-      content: Text(context.t.settings.privacy.app_lock.pin_updated),
-    ),
+  Kurumi.showSuccessToast(
+    context,
+    context.t.settings.privacy.app_lock.pin_updated,
   );
 }

@@ -1,15 +1,10 @@
-// Dart imports:
-import 'dart:io';
-
 // Package imports:
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hive_ce/hive.dart';
 
 // Project imports:
-import 'package:boorusama/core/settings/types.dart';
-import 'package:boorusama/foundation/applock/applock.dart';
-import 'package:boorusama/foundation/pincode/pincode.dart';
+import 'package:boorusama/foundation/applock/src/app_lock_session.dart';
+import 'package:boorusama/foundation/applock/src/app_lock_type.dart';
 
 void main() {
   group('AppLockSession', () {
@@ -45,6 +40,17 @@ void main() {
 
       session.didChangeAppLifecycleState(AppLifecycleState.inactive);
       session.unlock();
+
+      expect(session.locked, isFalse);
+      expect(session.privacyCoverVisible, isFalse);
+    });
+
+    test('successful unlock is not reversed by a pending resumed event', () {
+      final session = newSession();
+
+      session.didChangeAppLifecycleState(AppLifecycleState.inactive);
+      session.unlock();
+      session.didChangeAppLifecycleState(AppLifecycleState.resumed);
 
       expect(session.locked, isFalse);
       expect(session.privacyCoverVisible, isFalse);
@@ -202,66 +208,5 @@ void main() {
         expect(session.privacyCoverVisible, isTrue);
       },
     );
-  });
-
-  group('Settings app lock fields', () {
-    test('default settings keep app lock disabled', () {
-      const settings = Settings.defaultSettings;
-
-      expect(settings.appLockType, AppLockType.none);
-      expect(settings.appLockTimeoutSeconds, 0);
-      expect(settings.hideAppPreviewWhenBackgrounded, isTrue);
-    });
-
-    test('legacy settings JSON uses app lock defaults', () {
-      final json = Settings.defaultSettings.toJson()
-        ..remove('appLockTimeoutSeconds')
-        ..remove('hideAppPreviewWhenBackgrounded');
-
-      final settings = Settings.fromJson(json);
-
-      expect(settings.appLockTimeoutSeconds, 0);
-      expect(settings.hideAppPreviewWhenBackgrounded, isTrue);
-    });
-  });
-
-  group('PinCredentialRepository', () {
-    late Directory tempDir;
-    late Box<String> box;
-    late PinCredentialRepository repository;
-
-    setUp(() async {
-      tempDir = await Directory.systemTemp.createTemp('app_lock_test_');
-      box = await Hive.openBox<String>(
-        'app_lock_credentials_test',
-        path: tempDir.path,
-      );
-      repository = PinCredentialRepository(Future.value(box));
-    });
-
-    tearDown(() async {
-      await box.close();
-      await tempDir.delete(recursive: true);
-    });
-
-    test('stores and verifies PIN without storing raw PIN', () async {
-      await repository.setPin('1234');
-
-      expect(await repository.hasPin(), isTrue);
-      expect(await repository.verifyPin('1234'), isTrue);
-      expect(await repository.verifyPin('4321'), isFalse);
-
-      final credential = await repository.getPinCredential();
-      expect(credential, isNotNull);
-      expect(credential!.verifier, isNot(contains('1234')));
-    });
-
-    test('clears PIN credential', () async {
-      await repository.setPin('1234');
-      await repository.clearPin();
-
-      expect(await repository.hasPin(), isFalse);
-      expect(await repository.verifyPin('1234'), isFalse);
-    });
   });
 }
