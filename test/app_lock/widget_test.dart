@@ -4,6 +4,7 @@ import 'dart:io';
 
 // Flutter imports:
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 // Package imports:
@@ -192,6 +193,25 @@ void main() {
       tester.getTopLeft(find.text('1')).dy,
       keypadTopBeforeMismatch,
     );
+  });
+
+  testWidgets('PIN panels accept a physical keyboard', (tester) async {
+    await _pumpPinSetup(tester, const Size(1200, 800));
+
+    for (final key in [
+      LogicalKeyboardKey.digit1,
+      LogicalKeyboardKey.digit2,
+      LogicalKeyboardKey.digit3,
+    ]) {
+      await tester.sendKeyEvent(key);
+      await tester.pump();
+    }
+    await tester.sendKeyEvent(LogicalKeyboardKey.backspace);
+    await tester.sendKeyEvent(LogicalKeyboardKey.digit3);
+    await tester.sendKeyEvent(LogicalKeyboardKey.digit4);
+    await tester.pump();
+
+    expect(find.text('Confirm PIN'), findsOneWidget);
   });
 
   testWidgets('PIN verification loading does not move the keypad', (

@@ -12,9 +12,9 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import '../../pincode/pincode.dart';
 import '../../loggers.dart';
-import '../../platform.dart';
 import 'app_lock_session.dart';
 import 'app_lock_type.dart';
+import 'app_lock_capabilities.dart';
 import 'app_privacy_platform.dart';
 import 'biometrics.dart';
 
@@ -37,6 +37,7 @@ class AppLock extends ConsumerStatefulWidget {
 }
 
 class _AppLockState extends ConsumerState<AppLock> with WidgetsBindingObserver {
+  late final bool _hasNativePrivacyCover;
   late final _session = AppLockSession(
     config: _config,
     now: DateTime.now,
@@ -53,6 +54,9 @@ class _AppLockState extends ConsumerState<AppLock> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
+    _hasNativePrivacyCover = ref
+        .read(appLockCapabilitiesProvider)
+        .nativePrivacyCover;
     WidgetsBinding.instance.addObserver(this);
     unawaited(_syncNativePrivacyCover());
   }
@@ -77,7 +81,7 @@ class _AppLockState extends ConsumerState<AppLock> with WidgetsBindingObserver {
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    if (isApple()) {
+    if (_hasNativePrivacyCover) {
       unawaited(AppPrivacyPlatform.setPrivacyCoverEnabled(false));
     }
     super.dispose();
@@ -89,7 +93,7 @@ class _AppLockState extends ConsumerState<AppLock> with WidgetsBindingObserver {
   }
 
   Future<void> _syncNativePrivacyCover() async {
-    if (!isApple()) return;
+    if (!_hasNativePrivacyCover) return;
 
     await AppPrivacyPlatform.setPrivacyCoverEnabled(
       widget.hideAppPreviewWhenBackgrounded,

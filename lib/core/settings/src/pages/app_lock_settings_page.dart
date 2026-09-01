@@ -21,6 +21,7 @@ class AppLockSettingsPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final settings = ref.watch(settingsProvider);
     final appLock = context.t.settings.privacy.app_lock;
+    final capabilities = ref.watch(appLockCapabilitiesProvider);
 
     return SettingsPageScaffold(
       title: Text(appLock.title),
@@ -29,7 +30,11 @@ class AppLockSettingsPage extends ConsumerWidget {
           title: Text(appLock.title),
           subtitle: Text(appLock.description),
           selectedOption: settings.appLockType,
-          items: _appLockTypes,
+          items: [
+            AppLockType.none,
+            AppLockType.pin,
+            if (capabilities.deviceAuthentication) AppLockType.biometrics,
+          ],
           optionBuilder: (value) => Text(appLockTypeLabel(context, value)),
           selectedOptionBuilder: (value) =>
               Text(appLockTypeLabel(context, value)),
@@ -79,19 +84,13 @@ const _timeoutOptions = [
   900,
 ];
 
-const _appLockTypes = [
-  AppLockType.none,
-  AppLockType.pin,
-  AppLockType.biometrics,
-];
-
 String appLockTypeLabel(BuildContext context, AppLockType type) {
   final appLock = context.t.settings.privacy.app_lock;
 
   return switch (type) {
     AppLockType.none => appLock.off,
     AppLockType.pin => appLock.pin,
-    AppLockType.biometrics => appLock.biometrics,
+    AppLockType.biometrics => appLock.device_authentication,
   };
 }
 
@@ -133,10 +132,12 @@ Future<void> _changeLockType(
 
   final notifier = ref.read(settingsNotifierProvider.notifier);
   final credentialRepository = ref.read(pinCredentialRepositoryProvider);
-  final wasPin = settings.appLockType.isPin;
+  final oldType = settings.appLockType;
+  final wasPin = oldType.isPin;
+  final wasDeviceAuthentication = oldType.isBiometric;
 
-  if (wasPin) {
-    final verified = await showPinVerifyDialog(context, ref);
+  if (oldType.appLockEnabled) {
+    final verified = await _verifyCurrentLock(context, ref, oldType);
     if (!verified) return;
   }
 
@@ -144,12 +145,18 @@ Future<void> _changeLockType(
 
   switch (type) {
     case AppLockType.pin:
+      final hadPin = await credentialRepository.hasPin();
+      if (!context.mounted) return;
+
       final saved = await showPinSetupDialog(context, ref);
       if (!saved) return;
 
-      await notifier.updateWith(
+      final settingsSaved = await notifier.updateWith(
         (settings) => settings.copyWith(appLockType: type),
       );
+      if (!settingsSaved && !hadPin) {
+        await credentialRepository.clearPin();
+      }
     case AppLockType.biometrics:
       final canUse = await ref.read(canUseBiometricLockProvider.future);
       if (!context.mounted) return;
@@ -162,20 +169,29 @@ Future<void> _changeLockType(
         return;
       }
 
-      final saved = await notifier.updateWith(
+      final settingsSaved = await notifier.updateWith(
         (settings) => settings.copyWith(appLockType: type),
       );
-      if (saved && wasPin) await credentialRepository.clearPin();
+      if (settingsSaved && wasPin) {
+        await credentialRepository.clearPin();
+      }
     case AppLockType.none:
       final saved = await notifier.updateWith(
         (settings) => settings.copyWith(appLockType: type),
       );
-      if (saved && wasPin) await credentialRepository.clearPin();
+      if (saved && (wasPin || wasDeviceAuthentication)) {
+        await credentialRepository.clearPin();
+      }
   }
 }
 
 Future<void> _changePin(BuildContext context, WidgetRef ref) async {
-  final verified = await showPinVerifyDialog(context, ref);
+  final type = ref.read(settingsProvider).appLockType;
+  final verified = await _verifyCurrentLock(
+    context,
+    ref,
+    type,
+  );
   if (!verified || !context.mounted) return;
 
   final changed = await showPinSetupDialog(context, ref);
@@ -185,4 +201,28 @@ Future<void> _changePin(BuildContext context, WidgetRef ref) async {
     context,
     context.t.settings.privacy.app_lock.pin_updated,
   );
+}
+
+Future<bool> _verifyCurrentLock(
+  BuildContext context,
+  WidgetRef ref,
+  AppLockType type,
+) async {
+  if (type.isPin) return showPinVerifyDialog(context, ref);
+  if (!type.isBiometric) return true;
+
+  try {
+    return await startAuthenticate(
+      ref.read(biometricsProvider),
+      localizedReason: context.t.settings.privacy.app_lock.authenticate_reason,
+    );
+  } catch (_) {
+    if (context.mounted) {
+      Kurumi.showErrorToast(
+        context,
+        context.t.settings.privacy.app_lock.biometric_not_available,
+      );
+    }
+    return false;
+  }
 }

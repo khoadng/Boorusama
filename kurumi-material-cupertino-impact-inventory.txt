@@ -1,0 +1,297 @@
+Kurumi Material/Cupertino Impact Inventory
+===========================================
+
+Date: 2026-08-08
+Baseline: 31acf9de1 (master, latest commit)
+Working tree: compatibility entrypoints and app import migration (uncommitted)
+Scope: lib/, packages/, test/
+Method: source inventory with ripgrep symbol/import counts. Counts are
+constructor/reference counts, not an AST proof of semantic ownership.
+
+Executive summary
+-----------------
+
+“Kurumi absorbs Material and Cupertino” has two different meanings:
+
+1. Import façade: app files stop importing package:flutter/material.dart and
+   package:flutter/cupertino.dart directly, while Kurumi re-exports or bridges
+   those Flutter APIs. This is mechanically possible, but it does not move
+   visual ownership; it makes Kurumi a framework umbrella.
+2. Design ownership: Material/Cupertino visual surfaces are replaced by Kurumi
+   primitives whose tokens, semantics, responsive behavior, and desktop policy
+   are owned by Kurumi. This is the actual design-system migration.
+
+The first option touches hundreds of files. The second option is smaller in
+file count but much higher risk because each surface needs visual and behavior
+parity. They should be tracked separately.
+
+Impact radius
+-------------
+
+Application code (lib/):
+
+- 2,148 Dart files total.
+- 0 files import flutter/material.dart directly; 746 use
+  package:kurumi/material.dart.
+- 0 files import flutter/cupertino.dart directly; 41 use
+  package:kurumi/cupertino.dart.
+- 0 lib files retain a direct Material/Cupertino import.
+- 464 lib files import the main package:kurumi/kurumi.dart API; the
+  compatibility entrypoints are used in addition to that API where needed.
+- The compatibility entrypoints now cover the complete previous app import
+  radius, so no further lib files need an import-boundary migration.
+- Before this working-tree migration, Material imports were concentrated in
+  lib/core (481 files) and lib/boorus (246 files); lib/foundation had 15 and
+  lib/dev had 1. Those counts now describe the compatibility surface's
+  consumers, not direct Flutter dependencies.
+- Before migration, Cupertino imports were split between lib/boorus (21
+  files) and lib/core (20 files); those consumers now use Kurumi's Cupertino
+  entrypoint.
+
+Workspace packages:
+
+- 88 package Dart files import Material and 2 import Cupertino.
+- packages/kurumi owns 76 Material imports and 1 Cupertino import across its
+  84 source files. The two compatibility entrypoints export Flutter's
+  corresponding libraries; the other framework references are internal
+  implementation dependencies and should remain inside Kurumi.
+- The other package imports are in extended_image (5 Material, 1 Cupertino),
+  foundation (5 Material), i18n (1 Material), and sliver_masonry_grid
+  (1 Material). These packages do not depend on Kurumi and should not be
+  pulled into the design-system package; doing so would create the wrong
+  dependency direction.
+
+Tests:
+
+- 56 Dart test files exist; 3 import Material and none import Cupertino.
+- Test imports can be cleaned after the public Kurumi API settles, but they are
+  not part of the runtime ownership boundary.
+
+What the imports are carrying
+------------------------------
+
+The Kurumi Material compatibility import remains an umbrella for both visual
+constructors and basic Flutter types/tokens. In lib/ the most common references
+are:
+
+  reference/type       files   matches
+  -------------------  ------  -------
+  Theme.of (direct)       0        0
+  Kurumi.themeOf         305      636
+  Colors.                119      242
+  Color                  100      464
+  EdgeInsets              334      825
+  TextStyle               161      332
+  BorderRadius            128      196
+  BoxDecoration            84      107
+  MediaQuery               55       76
+  Material                 53       60
+  InkWell                  52       58
+  SafeArea                 54       61
+  VisualDensity            54       67
+  InputDecoration          25       36
+
+481 of the 746 compatibility-importing files do not contain one of the main
+constructor families inventoried below. They mostly use colors, theme data,
+layout types, text styles, media-query values, or low-level Material behavior.
+The import boundary is now centralized, but these uses still require a
+deliberate framework façade or semantic-token migration to become Kurumi-owned.
+The direct app reads of Material `Theme.of` are gone; the 636
+`Kurumi.themeOf` reads are a parity-preserving bridge and remain a later
+token-specific migration surface.
+
+Direct visual constructor radius (lib/)
+---------------------------------------
+
+These are the high-value surfaces that would need a Kurumi owner. The first
+number is files; the second is references.
+
+  Material surface             files   refs   current Kurumi coverage
+  ---------------------------  ------  -----  ------------------------
+  Scaffold                        89    106   none
+  AppBar                          71     83   none
+  SliverAppBar                    13     14   none
+  ListTile                        61     84   none
+  Card                            11     13   none
+  ExpansionTile                    5      7   none
+  TabBar                           6      6   none
+  TabBarView                        5      5   none
+  FilledButton                     60     80   KurumiButton used in 4 files
+  ElevatedButton                   15     16   no shared equivalent
+  TextButton                       43     51   no shared equivalent
+  OutlinedButton                    1      1   no shared equivalent
+  IconButton                        89    124   circular variant used in 14 files
+  FloatingActionButton               2      2   no shared equivalent
+  Checkbox family                    6      6   no Kurumi checkbox primitive
+  Radio family                       1      2   no Kurumi radio primitive
+  AlertDialog                        9      9   parity exceptions remain
+  Dialog                             3      3   parity exceptions remain
+  showDialog                         20     21   route API, not a visual primitive
+  showGeneralDialog                   5      5   route API, feature-specific
+  showDatePicker                      1      1   no Kurumi date-picker API
+  MaterialApp                         4      4   app/bootstrap boundary
+
+Already centralized from the earlier migration:
+
+- No direct app TextField/TextFormField, Switch, Slider, RawChip/ChoiceChip/
+  FilterChip/ActionChip, PopupMenuButton, SegmentedButton, or raw
+  showModalBottomSheet constructor remains. Their consumers use Kurumi or an
+  app wrapper around Kurumi.
+- Existing Kurumi usage includes 13 TextField files, 13 TextFormField files,
+  25 SwitchListTile files, 2 Slider files, 11 segmented-control files, 29
+  selectable-chip files, 22 popup-menu files, 21 KurumiDialog files, and 14
+  circular-icon-button files.
+- 266 unique lib files contain one of the main shell/control constructors
+  above. By area: 183 core files, 78 booru files, 4 foundation files, and 1
+  dev file.
+
+Cupertino radius
+-----------------
+
+Cupertino is much smaller as a widget surface but is concentrated in routing:
+
+- 20 files construct CupertinoPage (29 references).
+- 15 files construct CupertinoPageRoute (19 references).
+- No direct CupertinoButton, CupertinoTextField, CupertinoSwitch,
+  CupertinoPicker, CupertinoAlertDialog, CupertinoActionSheet, or Cupertino
+  navigation scaffold constructor remains.
+- 15 files use both Kurumi compatibility entrypoints; these remain the
+  highest-risk files because they combine platform routing with Material
+  content.
+
+The route usages fall into two groups:
+
+- GoRouter page builders returning CupertinoPage. These can be centralized by
+  moving the platform-page decision in core/routers/common.dart into Kurumi.
+- Imperative CupertinoPageRoute pushes from feature widgets. These need a
+  Kurumi page-route API that preserves Cupertino transition, settings, and
+  result typing; a text replacement is not sufficient.
+
+What should move under Kurumi
+-----------------------------
+
+Move/own in Kurumi (true design-system work):
+
+1. Theme and semantic tokens.
+   Kurumi now owns color schemes, extended color schemes, semantic color roles,
+   material theme construction, slider shapes, durations, and KurumiTheme. The
+   current `Kurumi.themeOf` API is intentionally still backed by Material for
+   visual parity. Finish the shared typography, spacing, elevation, shape,
+   motion, and component-theme tokens there. Keep Boorusama-specific
+   providers/extensions in the app and feed them into Kurumi theme
+   construction.
+
+2. Shared shell surfaces.
+   Define parity-preserving KurumiScaffold, KurumiAppBar, KurumiListTile,
+   KurumiCard, KurumiTabBar, and KurumiTabBarView only after comparing their
+   current desktop/mobile behavior. The 89 Scaffold and 71 AppBar files are
+   consumers; they are not 160 independent designs. Start from the repeated
+   app scaffolds and leave domain page composition in lib/.
+
+3. Action/control families.
+   Add a small set of explicit Kurumi button variants (filled, text, outlined,
+   icon, floating) and checkbox/radio primitives. Preserve each feature’s
+   callback, validation, loading, provider, and localization logic in lib/.
+   Do not replace 130 IconButton references with one generic widget without
+   classifying circular, toolbar, media, and desktop variants first.
+
+4. Platform page APIs.
+   Add Kurumi page/page-route wrappers for the 49 Cupertino references. Keep
+   route destinations, GoRouter policy, and feature navigation in the app;
+   Kurumi should own the transition/platform surface.
+
+5. Dialog and picker primitives only where parity exists.
+   The current raw AlertDialog/Dialog sites have native action semantics or
+   explicit desktop dimensions. Add a Kurumi alert/date-picker API only after
+   it can preserve those contracts; do not force them into KurumiDialog.
+
+What should remain outside Kurumi
+---------------------------------
+
+- MaterialApp/root bootstrap, ProviderScope, localization, GoRouter route
+  destinations, and app failure/reboot orchestration.
+- Feature pages, domain wrappers, providers, persistence, booru color rules,
+  media/download workflows, and localized action labels.
+- BuildContext, Widget, Color, EdgeInsets, TextStyle, MediaQuery, and other
+  Flutter framework value types as raw implementation types. Kurumi can expose
+  semantic tokens, but should not recreate the Flutter type system.
+- extended_image, foundation, i18n, and sliver_masonry_grid package internals.
+  They have independent dependency boundaries and should not depend on Kurumi
+  merely to hide a Flutter import.
+
+Import strategy decision
+------------------------
+
+Do not export all of flutter/material.dart and flutter/cupertino.dart from the
+existing kurumi.dart barrel. That would make every Flutter framework symbol a
+public Kurumi API, create collisions with design primitives, and turn the
+design-system package into a kitchen-sink framework façade.
+
+The import-boundary requirement is now implemented with separate temporary
+entrypoints: `package:kurumi/material.dart` and
+`package:kurumi/cupertino.dart`. Each re-exports its corresponding Flutter
+library, and all app files under `lib/` use those entrypoints instead of direct
+Flutter imports. This centralizes the dependency boundary but should not be
+mistaken for visual ownership migration. Keep the entrypoints explicitly
+temporary, enforce that new visual constructors still go through Kurumi
+primitives, and remove framework exports as the real primitives land.
+
+Recommended migration waves
+----------------------------
+
+Wave 0 — contract and guardrail
+
+- Decide whether the acceptance criterion is import removal, visual ownership,
+  or both.
+- Add a lint/check that blocks new direct shared-surface constructors and
+  requires a documented exception for native platform dialogs.
+- Keep packages/kurumi’s internal Material/Cupertino imports allowed.
+
+Wave 1 — platform routing (low visual risk)
+
+- Add KurumiPage/KurumiPageRoute equivalents.
+- Migrate core/routers/common.dart first, then the 20 CupertinoPage and 15
+  CupertinoPageRoute consumers.
+- Verify mobile transition, route settings, back behavior, and result values.
+
+Wave 2 — repeated app shell primitives (high radius)
+
+- Inventory repeated AppBar/Scaffold/ListTile/Card variants and define only the
+  variants that are visually identical.
+- Migrate one vertical slice at a time (settings, backups, search, posts), with
+  mobile and desktop screenshots before/after.
+
+Wave 3 — action and selection controls
+
+- Unify button/icon/checkbox/radio variants and accessibility semantics.
+- Keep workflow wrappers and provider logic in lib/.
+
+Wave 4 — framework façade cleanup (in progress)
+
+- Completed the import/API cleanup with separate Material and Cupertino
+  compatibility entrypoints under Kurumi. This is not a design migration.
+- Remove the bridge exports only after all true Kurumi primitives are in place.
+
+Risk summary
+------------
+
+- Mechanical import façade: completed for 746 Material and 41 Cupertino app
+  imports; low visual change but high diff/churn and a larger public API.
+- True shared-surface migration: at least 266 lib files; high visual,
+  accessibility, desktop-layout, and route-transition risk.
+- Theme/token migration: 636 parity-bridge reads across 305 files and 100+
+  color/style files remain; this has the highest chance of subtle desktop and
+  dynamic-color regressions.
+- Cupertino routing: 35 files and 49 references; behavior risk is concentrated
+  but should be handled by one Kurumi route API.
+
+Conclusion
+----------
+
+Kurumi should absorb the app’s visual language and platform surface decisions,
+not blindly absorb Flutter’s entire namespace. The current separate
+Material/Cupertino entrypoints satisfy the import-boundary requirement while
+keeping the main Kurumi barrel design-focused. The safe long-term boundary is
+to move shared visual primitives, semantic tokens, and platform route shells
+under Kurumi while keeping Flutter value types and app workflows available to
+feature code, then retire the compatibility exports as ownership migrates.

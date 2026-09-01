@@ -1,12 +1,14 @@
 // Dart imports:
 import 'dart:convert';
-import 'dart:isolate';
 import 'dart:math';
 
 // Package imports:
-import 'package:crypto/crypto.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_ce/hive.dart';
+
+// Project imports:
+import 'pin_key_deriver_native.dart'
+    if (dart.library.js_interop) 'pin_key_deriver_web.dart';
 
 const _pinCredentialKey = 'pin_credential';
 const _pinCredentialVersion = 2;
@@ -148,35 +150,12 @@ class PinKeyDeriver {
       throw ArgumentError.value(iterations, 'iterations', 'Must be positive');
     }
 
-    return Isolate.run(
-      () => _derivePbkdf2Sha256(
-        pin: pin,
-        salt: salt,
-        iterations: iterations,
-      ),
+    return derivePinKey(
+      pin: pin,
+      salt: salt,
+      iterations: iterations,
     );
   }
-}
-
-String _derivePbkdf2Sha256({
-  required String pin,
-  required String salt,
-  required int iterations,
-}) {
-  final hmac = Hmac(sha256, utf8.encode(pin));
-  final saltBytes = base64Url.decode(salt);
-  final firstBlock = [...saltBytes, 0, 0, 0, 1];
-  var u = hmac.convert(firstBlock).bytes;
-  final derived = List<int>.from(u);
-
-  for (var i = 1; i < iterations; i++) {
-    u = hmac.convert(u).bytes;
-    for (var byte = 0; byte < derived.length; byte++) {
-      derived[byte] ^= u[byte];
-    }
-  }
-
-  return Digest(derived).toString();
 }
 
 bool _hasValidSalt(String salt) {

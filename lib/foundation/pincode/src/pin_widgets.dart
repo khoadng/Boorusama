@@ -443,27 +443,46 @@ class _PinPadSurface extends StatelessWidget {
       ),
     );
 
-    return Align(
-      child: ConstrainedBox(
-        constraints: BoxConstraints(maxWidth: useColumns ? 760 : 380),
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(8, 8, 8, 16),
-          child: useColumns
-              ? Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Expanded(child: status),
-                    const SizedBox(width: 48),
-                    Expanded(child: controls),
-                  ],
-                )
-              : Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    status,
-                    controls,
-                  ],
-                ),
+    return Focus(
+      autofocus: true,
+      onKeyEvent: (node, event) {
+        if (event is! KeyDownEvent || busy) return KeyEventResult.ignored;
+
+        final character = event.character;
+        if (character != null && RegExp(r'^\d$').hasMatch(character)) {
+          onDigit(character);
+          return KeyEventResult.handled;
+        }
+        if (event.logicalKey == LogicalKeyboardKey.backspace ||
+            event.logicalKey == LogicalKeyboardKey.delete) {
+          onDelete();
+          return KeyEventResult.handled;
+        }
+
+        return KeyEventResult.ignored;
+      },
+      child: Align(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: useColumns ? 760 : 380),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(8, 8, 8, 16),
+            child: useColumns
+                ? Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Expanded(child: status),
+                      const SizedBox(width: 48),
+                      Expanded(child: controls),
+                    ],
+                  )
+                : Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      status,
+                      controls,
+                    ],
+                  ),
+          ),
         ),
       ),
     );

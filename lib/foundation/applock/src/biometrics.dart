@@ -2,6 +2,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:local_auth/local_auth.dart';
 
+// Project imports:
+import 'app_lock_capabilities.dart';
+
 final biometricsProvider = Provider<LocalAuthentication>((ref) {
   return LocalAuthentication();
 });
@@ -16,6 +19,10 @@ final biometricDeviceSupportProvider = FutureProvider<bool>((ref) async {
 });
 
 final canUseBiometricLockProvider = FutureProvider<bool>((ref) async {
+  if (!ref.watch(appLockCapabilitiesProvider).deviceAuthentication) {
+    return false;
+  }
+
   final hardwareSupport = await ref.watch(
     biometricDeviceSupportProvider.future,
   );

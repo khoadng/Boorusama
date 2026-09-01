@@ -2,6 +2,7 @@
 
 #include <optional>
 
+#include "app_privacy_channel.h"
 #include "flutter/generated_plugin_registrant.h"
 
 FlutterWindow::FlutterWindow(const flutter::DartProject& project)
@@ -27,6 +28,12 @@ bool FlutterWindow::OnCreate() {
   RegisterPlugins(flutter_controller_->engine());
   SetChildContent(flutter_controller_->view()->GetNativeWindow());
 
+  app_privacy_channel_ = std::make_unique<AppPrivacyChannel>(
+      GetHandle(), flutter_controller_->engine()->messenger());
+  if (!app_privacy_channel_->Initialize()) {
+    return false;
+  }
+
   flutter_controller_->engine()->SetNextFrameCallback([&]() {
     this->Show();
   });
@@ -40,6 +47,7 @@ bool FlutterWindow::OnCreate() {
 }
 
 void FlutterWindow::OnDestroy() {
+  app_privacy_channel_.reset();
   if (flutter_controller_) {
     flutter_controller_ = nullptr;
   }
@@ -51,6 +59,19 @@ LRESULT
 FlutterWindow::MessageHandler(HWND hwnd, UINT const message,
                               WPARAM const wparam,
                               LPARAM const lparam) noexcept {
+  switch (message) {
+    case WM_ACTIVATE:
+      if (app_privacy_channel_) {
+        app_privacy_channel_->SetAppActive(LOWORD(wparam) != WA_INACTIVE);
+      }
+      break;
+    case WM_SIZE:
+      if (app_privacy_channel_) {
+        app_privacy_channel_->Resize();
+      }
+      break;
+  }
+
   // Give Flutter, including plugins, an opportunity to handle window messages.
   if (flutter_controller_) {
     std::optional<LRESULT> result =
