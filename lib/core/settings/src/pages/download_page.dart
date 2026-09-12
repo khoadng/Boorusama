@@ -16,6 +16,7 @@ import '../../../configs/config/widgets.dart';
 import '../../../configs/create/routes.dart';
 import '../../../configs/manage/providers.dart';
 import '../../../downloads/configs/widgets.dart';
+import '../../../downloads/sidecar/widgets.dart';
 import '../../../downloads/downloader/providers.dart';
 import '../../../downloads/downloader/types.dart';
 import '../../widgets.dart';
@@ -152,6 +153,12 @@ class _DownloadPageState extends ConsumerState<DownloadPage> {
               ),
             );
           },
+        ),
+        SidecarFormatTile(
+          value: settings.downloadSidecarFormat,
+          onChanged: (value) => notifer.updateSettings(
+            settings.copyWith(downloadSidecarFormat: value),
+          ),
         ),
         const BooruConfigMoreSettingsRedirectCard.download(),
       ],

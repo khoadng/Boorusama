@@ -13,6 +13,7 @@ import '../../../foundation/loggers.dart';
 import '../../ddos/solver/types.dart';
 import '../downloader/types.dart';
 import '../path/types.dart';
+import '../sidecar/data.dart';
 import 'file_downloader_ex.dart';
 
 class BackgroundDownloader implements DownloadService {
@@ -21,12 +22,14 @@ class BackgroundDownloader implements DownloadService {
     this.androidSdkInt,
     this.logger,
     required this.fs,
+    required this.sidecarStore,
   });
 
   final VideoCacheManager? videoCacheManager;
   final int? androidSdkInt;
   final Logger? logger;
   final AppFileSystem fs;
+  final Future<SidecarStore> sidecarStore;
 
   @override
   Future<DownloadResult> download(DownloadOptions options) async {
@@ -112,16 +115,7 @@ class BackgroundDownloader implements DownloadService {
     required DownloadOptions options,
   }) async {
     try {
-      final cacheResult = await _tryDownloadFromCache(
-        targetDir: targetDir,
-        options: options,
-      );
-
-      if (cacheResult case final result?) {
-        return result;
-      }
-
-      final task = DownloadTask(
+      var task = DownloadTask(
         url: options.url,
         filename: _sanitizeFilename(
           options.filename,
@@ -137,15 +131,59 @@ class BackgroundDownloader implements DownloadService {
         requiresWiFi: options.networkConstraint.requiresWiFi,
       );
 
+      SidecarStore? sidecars;
+      if (options.sidecar case final snapshot?) {
+        final path = await task.filePath();
+        if ((options.skipIfExists ?? false) && fs.fileExistsSync(path)) {
+          return DownloadSkipped(DownloadTaskInfo(path: path, id: task.taskId));
+        }
+        sidecars = await sidecarStore;
+        await sidecars.prepare(task.taskId, path, snapshot);
+        task = task.copyWith(
+          metaData: DownloaderMetadata.fromJson({
+            ...?options.metadata?.toJson(),
+            'sidecarId': task.taskId,
+          }).toJsonString(),
+          options: TaskOptions(onTaskFinished: onBackgroundSidecarFinished),
+        );
+      }
+
+      final cacheResult = await _tryDownloadFromCache(
+        targetDir: targetDir,
+        options: options,
+      );
+      if (cacheResult case final result?) {
+        if (sidecars != null) {
+          if (result case DownloadCompleted(:final info)) {
+            try {
+              await sidecars.complete(task.taskId, info.path);
+            } catch (error) {
+              logger?.error(
+                'BackgroundDownloader',
+                'Metadata finalization failed: ${error.runtimeType}',
+                sensitiveMessage: error.toString(),
+              );
+            }
+          } else {
+            await sidecars.discard(task.taskId);
+          }
+        }
+        return result;
+      }
+
       _log(
         'Starting download: ${options.url} to $targetDir/${options.filename}',
       );
 
-      return FileDownloader().enqueueIfNeeded(
+      final result = await FileDownloader().enqueueIfNeeded(
         task,
         skipIfExists: options.skipIfExists,
         fs: fs,
       );
+      if (sidecars != null && result is! DownloadEnqueued) {
+        await sidecars.discard(task.taskId);
+      }
+      return result;
     } on FileSystemException catch (e) {
       return DownloadFailure(
         FileSystemDownloadError(

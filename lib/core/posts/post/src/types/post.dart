@@ -68,5 +68,13 @@ extension PostImageX on Post {
 }
 
 extension PostX on Post {
+  Iterable<String> get knownSourceUrls => switch (this) {
+    final PostSourceUrls post => post.sourceUrls,
+    _ => [?source.url],
+  };
   String get relationshipQuery => hasParent ? 'parent:$parentId' : 'parent:$id';
+}
+
+abstract interface class PostSourceUrls {
+  Iterable<String> get sourceUrls;
 }

@@ -18,6 +18,7 @@ import '../../../download_activity/activity.dart';
 import '../../../downloads/downloader/providers.dart';
 import '../../../downloads/downloader/types.dart';
 import '../../../downloads/filename/types.dart';
+import '../../../downloads/sidecar/types.dart';
 import '../../../http/client/providers.dart';
 import '../../../posts/post/providers.dart';
 import '../../../posts/post/types.dart';
@@ -274,6 +275,16 @@ class BookmarkNotifier extends AsyncNotifier<BookmarkState> {
           DownloadOptions.fromSettings(
             settings,
             config: download,
+            sidecar: settings.downloadSidecarFormat == SidecarFormat.off
+                ? null
+                : SidecarSnapshot(
+                    format: settings.downloadSidecarFormat,
+                    quality: DownloadQuality.original.name,
+                    tags: bookmark.tags,
+                    postId: bookmark.postId?.toString(),
+                    site: bookmark.sourceUrl,
+                    urls: [?bookmark.realSourceUrl],
+                  ),
             url: bookmark.originalUrl,
             metadata: DownloaderMetadata(
               thumbnailUrl: bookmark.thumbnailUrl,

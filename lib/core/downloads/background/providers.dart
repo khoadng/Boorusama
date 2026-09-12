@@ -6,6 +6,7 @@ import '../../../foundation/filesystem.dart';
 import '../../../foundation/info/device_info.dart';
 import '../../../foundation/loggers.dart';
 import '../../videos/cache/providers.dart';
+import '../sidecar/providers.dart';
 import 'downloader.dart';
 import 'notification.dart';
 
@@ -25,6 +26,7 @@ final backgroundDownloaderProvider = Provider<BackgroundDownloader>(
       videoCacheManager: ref.watch(videoCacheManagerProvider),
       logger: ref.watch(loggerProvider),
       fs: ref.watch(appFileSystemProvider),
+      sidecarStore: ref.watch(sidecarStoreProvider.future),
       androidSdkInt: ref.watch(
         deviceInfoProvider.select(
           (value) => value.androidDeviceInfo?.version.sdkInt,

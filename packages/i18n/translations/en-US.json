@@ -535,6 +535,13 @@
       "logs_copied": "Logs copied to clipboard"
     },
     "download": {
+      "sidecar": {
+        "title": "Save metadata",
+        "description": "Save tags or post information beside downloaded files.",
+        "off": "Off",
+        "tags": "Tags (.txt)",
+        "json": "Metadata (.json)"
+      },
       "path": "Download path",
       "select_a_folder": "Select a folder",
       "quality": "Download image quality",

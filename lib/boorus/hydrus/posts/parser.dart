@@ -34,5 +34,6 @@ HydrusPost postDtoToPost(FileDto file, PostMetadata? metadata) {
     createdAt: null,
     metadata: metadata,
     ownFavorite: file.faved,
+    sourceUrls: List.unmodifiable(file.knownUrls ?? const <String>[]),
   );
 }

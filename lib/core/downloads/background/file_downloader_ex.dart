@@ -1,5 +1,6 @@
 // Package imports:
 import 'package:background_downloader/background_downloader.dart';
+import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../../foundation/filesystem.dart';
@@ -24,7 +25,16 @@ extension FileDownloaderX on FileDownloader {
       }
     }
 
-    await enqueue(task);
+    final accepted = await enqueue(task);
+    if (!accepted) {
+      return DownloadFailure(
+        GenericDownloadError(
+          savedPath: const None(),
+          fileName: task.filename,
+          message: 'Download could not be enqueued',
+        ),
+      );
+    }
 
     return DownloadEnqueued(
       DownloadTaskInfo(

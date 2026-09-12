@@ -8,6 +8,7 @@ import 'package:boorusama/core/bulk_downloads/src/types/download_options.dart';
 import 'package:boorusama/core/bulk_downloads/src/types/download_record.dart';
 import 'package:boorusama/core/bulk_downloads/src/types/download_session.dart';
 import 'package:boorusama/core/search/selected_tags/search_tag_set.dart';
+import 'package:boorusama/core/downloads/sidecar/types.dart';
 import '../providers/downloads/common.dart';
 
 final _options = DownloadOptions(
@@ -35,6 +36,95 @@ void main() {
   });
 
   group('DownloadRepositorySqlite', () {
+    test(
+      'preserves sidecar choice and snapshot through saved jobs and sessions',
+      () async {
+        final task = await repository.createTask(
+          _options.copyWith(sidecarFormat: () => SidecarFormat.json),
+        );
+        final saved = await repository.createSavedTask(task, 'With metadata');
+        expect(
+          (await repository.getSavedTask(saved.id))!.task.sidecarFormat,
+          SidecarFormat.json,
+        );
+        expect(
+          (await repository.getSavedTasks()).single.task.sidecarFormat,
+          SidecarFormat.json,
+        );
+
+        final session = await repository.createSession(task, _auth);
+        final snapshot = SidecarSnapshot(
+          format: SidecarFormat.json,
+          tags: const ['artist:test'],
+          quality: 'original',
+          postId: '123',
+          urls: const ['https://example.org/posts/123'],
+        );
+        await repository.createRecord(
+          DownloadRecord(
+            url: 'https://example.org/123.jpg',
+            sessionId: session.id,
+            status: DownloadRecordStatus.pending,
+            page: 1,
+            pageIndex: 0,
+            createdAt: DateTime.now(),
+            fileName: '123.jpg',
+            sidecar: snapshot,
+          ),
+        );
+
+        final reloaded = DownloadRepositorySqlite(db);
+        expect(
+          (await reloaded.getTask(task.id))!.sidecarFormat,
+          SidecarFormat.json,
+        );
+        expect(
+          (await reloaded.getSession(session.id))!.task!.sidecarFormat,
+          SidecarFormat.json,
+        );
+        expect(
+          (await reloaded.getRecordsBySessionId(session.id)).single.sidecar,
+          snapshot,
+        );
+      },
+    );
+
+    test(
+      'upgrade from version 1 preserves existing saved jobs and records',
+      () async {
+        final task = await repository.createTask(_options);
+        final saved = await repository.createSavedTask(task, 'Existing job');
+        final session = await repository.createSession(task, _auth);
+        await repository.createRecord(
+          DownloadRecord(
+            url: 'https://example.org/existing.jpg',
+            sessionId: session.id,
+            status: DownloadRecordStatus.pending,
+            page: 1,
+            pageIndex: 0,
+            createdAt: DateTime.now(),
+            fileName: 'existing.jpg',
+          ),
+        );
+        db
+          ..execute('ALTER TABLE download_tasks DROP COLUMN sidecar_format')
+          ..execute('ALTER TABLE download_records DROP COLUMN sidecar')
+          ..execute('DELETE FROM migrations_history WHERE version = 2')
+          ..userVersion = 1;
+
+        final migrated = DownloadRepositorySqlite(db)..initialize();
+        final savedTask = (await migrated.getSavedTask(saved.id))!;
+        expect(savedTask.name, 'Existing job');
+        expect(savedTask.task.path, task.path);
+        expect(savedTask.task.sidecarFormat, isNull);
+        final records = await migrated.getRecordsBySessionId(session.id);
+        expect(records.single.fileName, 'existing.jpg');
+        expect(records.single.status, DownloadRecordStatus.pending);
+        expect(records.single.sidecar, isNull);
+        expect(db.userVersion, 2);
+      },
+    );
+
     test('migrates version 0 tasks without presentation state', () async {
       final migrationDb = sqlite3.openInMemory();
       addTearDown(migrationDb.close);
@@ -71,7 +161,7 @@ void main() {
 
       expect(columns, isNot(contains('notifications')));
       expect((await migrated.getTask('legacy'))?.path, '/downloads');
-      expect(migrationDb.userVersion, 1);
+      expect(migrationDb.userVersion, 2);
     });
 
     group('core operations', () {

@@ -1,7 +1,7 @@
 // Project imports:
 import '../../../core/posts/post/types.dart';
 
-class HydrusPost extends SimplePost {
+class HydrusPost extends SimplePost implements PostSourceUrls {
   HydrusPost({
     required super.id,
     required super.thumbnailImageUrl,
@@ -28,7 +28,10 @@ class HydrusPost extends SimplePost {
     required super.uploaderName,
     required super.metadata,
     required this.ownFavorite,
+    this.sourceUrls = const [],
   });
 
   final bool? ownFavorite;
+  @override
+  final List<String> sourceUrls;
 }

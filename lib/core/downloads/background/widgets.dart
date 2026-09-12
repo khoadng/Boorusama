@@ -17,6 +17,9 @@ import '../../ddos/handler/providers.dart';
 import '../../ddos/solver/types.dart';
 import '../../download_manager/providers.dart';
 import 'types.dart';
+import '../sidecar/data.dart';
+import '../sidecar/providers.dart';
+import '../downloader/types.dart' show DownloaderMetadata;
 
 class BackgroundDownloadRuntime extends ConsumerStatefulWidget {
   const BackgroundDownloadRuntime({
@@ -38,6 +41,23 @@ class _BackgroundDownloadRuntimeState
 
   Future<void> _update(TaskUpdate update) async {
     if (update case TaskStatusUpdate()) {
+      // Includes undelivered native completion updates replayed after restart.
+      // The headless callback handles completion while the app is not running.
+      try {
+        if (DownloaderMetadata.fromJsonString(update.task.metaData).sidecarId !=
+            null) {
+          final store = await ref.read(sidecarStoreProvider.future);
+          await finishDownloadSidecar(update, store: store);
+        }
+      } catch (error) {
+        ref
+            .read(loggerProvider)
+            .error(
+              'Download',
+              'Metadata finalization failed: ${error.runtimeType}',
+              sensitiveMessage: error.toString(),
+            );
+      }
       final attempt = _attempts.putIfAbsent(
         update.task.taskId,
         () => ref
@@ -183,6 +203,17 @@ class _BackgroundDownloadRuntimeState
 
   @override
   Widget build(BuildContext context) {
+    ref.listen(sidecarRecoveryProvider, (_, next) {
+      if (next case AsyncError(:final error)) {
+        ref
+            .read(loggerProvider)
+            .error(
+              'Download',
+              'Metadata recovery failed: ${error.runtimeType}',
+              sensitiveMessage: error.toString(),
+            );
+      }
+    });
     return widget.child;
   }
 }

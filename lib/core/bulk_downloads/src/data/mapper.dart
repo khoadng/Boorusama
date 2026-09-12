@@ -7,6 +7,7 @@ import 'package:sqlite3/sqlite3.dart';
 
 // Project imports:
 import '../types/download_record.dart';
+import '../../../downloads/sidecar/types.dart';
 import '../types/download_session.dart';
 import '../types/download_task.dart';
 
@@ -30,6 +31,9 @@ DownloadTask mapToTask(Row row) {
     perPage: row['per_page'] as int,
     concurrency: row['concurrency'] as int,
     tags: row['tags'] as String?,
+    sidecarFormat: row['sidecar_format'] == null
+        ? null
+        : SidecarFormat.parse(row['sidecar_format']),
   );
 }
 
@@ -83,5 +87,12 @@ DownloadRecord mapToRecord(Row row) {
     headers: headers,
     thumbnailImageUrl: row['thumbnail_url'],
     sourceUrl: row['source_url'],
+    sidecar: switch (row['sidecar']) {
+      null => null,
+      final String value => SidecarSnapshot.fromJson(
+        jsonDecode(value) as Map<String, dynamic>,
+      ),
+      _ => throw const FormatException('Invalid sidecar data: expected text'),
+    },
   );
 }

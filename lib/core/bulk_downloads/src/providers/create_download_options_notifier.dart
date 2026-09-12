@@ -9,6 +9,7 @@ import '../../../../foundation/info/device_info.dart';
 import '../../../search/histories/types.dart';
 import '../../../search/selected_tags/types.dart';
 import '../types/download_options.dart';
+import '../../../downloads/sidecar/types.dart';
 
 class CreateDownloadOptionsNotifier
     extends AutoDisposeFamilyNotifier<DownloadOptions, DownloadOptions> {
@@ -22,6 +23,7 @@ class CreateDownloadOptionsNotifier
       concurrency: arg.concurrency,
       tags: arg.tags,
       blacklistedTags: arg.blacklistedTags,
+      sidecarFormat: arg.sidecarFormat,
     );
   }
 
@@ -30,6 +32,9 @@ class CreateDownloadOptionsNotifier
       tags: state.tags.clone()..addTagFromSearchHistory(history),
     );
   }
+
+  void setSidecarFormat(SidecarFormat? format) =>
+      state = state.copyWith(sidecarFormat: () => format);
 
   void addTag(TagSearchItem tag) {
     state = state.copyWith(

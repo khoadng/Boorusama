@@ -14,6 +14,8 @@ import '../../../../ddos/handler/providers.dart';
 import '../../../../download_activity/activity.dart';
 import '../../../../http/client/types.dart';
 import '../../../../posts/post/types.dart';
+import '../../../../posts/post/providers.dart';
+import '../../../sidecar/types.dart';
 import '../../../../router.dart';
 import '../../../../settings/types.dart';
 import '../../../filename/types.dart';
@@ -207,6 +209,17 @@ Future<DownloadTaskInfo?> _download(
       DownloadOptions.fromSettings(
         params.settings,
         config: downloadConfig,
+        sidecar: params.settings.downloadSidecarFormat == SidecarFormat.off
+            ? null
+            : SidecarSnapshot.fromPost(
+                downloadable,
+                format: params.settings.downloadSidecarFormat,
+                quality: params.settings.downloadQuality.name,
+                site: params.auth.url,
+                postUrl: ref
+                    .read(postLinkGeneratorProvider(params.auth))
+                    .getLink(downloadable),
+              ),
         metadata: DownloaderMetadata(
           thumbnailUrl: downloadable.thumbnailImageUrl,
           fileSize: downloadable.fileSize,
@@ -305,15 +318,26 @@ void showDownloadErrorToast(
 }
 
 void showDownloadStartToast(BuildContext context, {String? message}) {
+  final colorScheme = Theme.of(context).colorScheme;
+
   showToast(
     message ?? context.t.download.notification.started,
-    context: context,
-    position: const ToastPosition(
-      align: Alignment.bottomCenter,
+    position: ToastPosition.bottom,
+    margin: const EdgeInsets.symmetric(
+      horizontal: 20,
+      vertical: 60,
     ),
-    textPadding: const EdgeInsets.all(12),
-    textStyle: TextStyle(color: Kurumi.themeOf(context).colorScheme.surface),
-    backgroundColor: Kurumi.themeOf(context).colorScheme.onSurface,
+    textPadding: const EdgeInsets.symmetric(
+      horizontal: 8,
+      vertical: 4,
+    ),
+    duration: const Duration(seconds: 2),
+    backgroundColor: colorScheme.surfaceContainerHigh,
+    textStyle: TextStyle(
+      color: colorScheme.onSurfaceVariant,
+      fontSize: 14,
+      fontWeight: FontWeight.w500,
+    ),
   );
 }
 

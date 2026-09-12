@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 
 // Project imports:
 import '../../../search/selected_tags/types.dart';
+import '../../../downloads/sidecar/types.dart';
 
 class DownloadTask extends Equatable {
   const DownloadTask({
@@ -16,6 +17,7 @@ class DownloadTask extends Equatable {
     this.quality,
     this.tags,
     this.blacklistedTags,
+    this.sidecarFormat,
   });
 
   factory DownloadTask.empty() {
@@ -45,6 +47,9 @@ class DownloadTask extends Equatable {
     concurrency: json['concurrency'] as int? ?? 1,
     tags: json['tags'] as String?,
     blacklistedTags: json['blacklistedTags'] as String?,
+    sidecarFormat: json['sidecarFormat'] == null
+        ? null
+        : SidecarFormat.parse(json['sidecarFormat']),
   );
 
   final String id;
@@ -57,6 +62,7 @@ class DownloadTask extends Equatable {
   final int concurrency;
   final String? tags;
   final String? blacklistedTags;
+  final SidecarFormat? sidecarFormat;
 
   String? get prettyTags => tags == null
       ? null
@@ -70,6 +76,7 @@ class DownloadTask extends Equatable {
     int? concurrency,
     String? tags,
     String? blacklistedTags,
+    SidecarFormat? Function()? sidecarFormat,
   }) => DownloadTask(
     id: id,
     path: path ?? this.path,
@@ -81,6 +88,7 @@ class DownloadTask extends Equatable {
     concurrency: concurrency ?? this.concurrency,
     tags: tags ?? this.tags,
     blacklistedTags: blacklistedTags ?? this.blacklistedTags,
+    sidecarFormat: sidecarFormat != null ? sidecarFormat() : this.sidecarFormat,
   );
 
   Map<String, dynamic> toJson() => {
@@ -94,6 +102,7 @@ class DownloadTask extends Equatable {
     'concurrency': concurrency,
     'tags': tags,
     'blacklistedTags': blacklistedTags,
+    'sidecarFormat': sidecarFormat?.name,
   };
 
   @override
@@ -108,5 +117,6 @@ class DownloadTask extends Equatable {
     concurrency,
     tags,
     blacklistedTags,
+    sidecarFormat,
   ];
 }

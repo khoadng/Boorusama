@@ -46,9 +46,7 @@ void main() {
       // Arrange
       when(() => existChecker.exists(any(), any())).thenAnswer((i) {
         final filename = i.positionalArguments[0] as String;
-        return filename.contains(
-          'test-original-url-1',
-        ); // Only first file exists
+        return filename == 'file_1_0.jpg'; // Only first file exists.
       });
 
       final task = await repository.createTask(_options);
@@ -59,6 +57,8 @@ void main() {
         task,
         downloadConfigs: _defaultConfigs.copyWith(
           existChecker: existChecker,
+          fileNameBuilder: MockAsyncFilenameBuilder(),
+          asyncTokenDelay: Duration.zero,
         ),
       );
 

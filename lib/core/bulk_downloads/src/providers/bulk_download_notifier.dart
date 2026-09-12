@@ -298,7 +298,10 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
     }
 
     final task = await _withRepo((repo) => repo.createTask(options));
-    final _ = await _withRepo((repo) => repo.createSession(task, config));
+    final _ = await _withRepo(
+      (repo) =>
+          repo.createSession(_resolveSidecar(task, downloadConfigs), config),
+    );
     await _loadTasks();
 
     return;
@@ -860,12 +863,13 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
     DownloadConfigs? downloadConfigs,
   }) async {
     final config = ref.readConfigAuth;
+    final resolvedTask = _resolveSidecar(task, downloadConfigs);
     final initialSession = await _withRepo(
-      (repo) => repo.createSession(task, config),
+      (repo) => repo.createSession(resolvedTask, config),
     );
 
     await _startDownloadWithSession(
-      task,
+      resolvedTask,
       initialSession,
       downloadConfigs: downloadConfigs,
     );
@@ -910,6 +914,14 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
         error: () => e is BulkDownloadError ? e : Exception(e.toString()),
       );
     }
+  }
+
+  DownloadTask _resolveSidecar(DownloadTask task, DownloadConfigs? configs) {
+    final format =
+        task.sidecarFormat ??
+        configs?.settings?.downloadSidecarFormat ??
+        ref.read(settingsProvider).downloadSidecarFormat;
+    return task.copyWith(sidecarFormat: () => format);
   }
 
   Future<bool> deleteSession(String sessionId) async {
@@ -1325,6 +1337,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
           url: record.url,
           path: task.path,
           filename: record.fileName,
+          sidecar: record.sidecar,
           skipIfExists: false, // We already handled this in the dry run
           headers: record.headers,
           metadata: d.DownloaderMetadata(

@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 
 // Project imports:
 import '../../../downloads/path/types.dart';
+import '../../../downloads/sidecar/types.dart';
 import '../../../search/selected_tags/types.dart';
 import 'download_task.dart';
 
@@ -15,6 +16,7 @@ class DownloadOptions extends Equatable {
     required this.tags,
     this.quality,
     this.blacklistedTags,
+    this.sidecarFormat,
   });
 
   factory DownloadOptions.initial({
@@ -39,6 +41,7 @@ class DownloadOptions extends Equatable {
       concurrency: task.concurrency,
       tags: SearchTagSet.fromString(task.tags),
       blacklistedTags: task.blacklistedTags,
+      sidecarFormat: task.sidecarFormat,
     );
   }
 
@@ -55,6 +58,7 @@ class DownloadOptions extends Equatable {
       concurrency: concurrency,
       tags: tags.toString(),
       blacklistedTags: blacklistedTags,
+      sidecarFormat: sidecarFormat,
     );
   }
 
@@ -65,6 +69,7 @@ class DownloadOptions extends Equatable {
   final int concurrency;
   final SearchTagSet tags;
   final String? blacklistedTags;
+  final SidecarFormat? sidecarFormat;
 
   DownloadOptions copyWith({
     String? path,
@@ -74,6 +79,7 @@ class DownloadOptions extends Equatable {
     int? concurrency,
     SearchTagSet? tags,
     String? Function()? blacklistedTags,
+    SidecarFormat? Function()? sidecarFormat,
   }) {
     return DownloadOptions(
       path: path ?? this.path,
@@ -85,6 +91,9 @@ class DownloadOptions extends Equatable {
       blacklistedTags: blacklistedTags != null
           ? blacklistedTags()
           : this.blacklistedTags,
+      sidecarFormat: sidecarFormat != null
+          ? sidecarFormat()
+          : this.sidecarFormat,
     );
   }
 
@@ -97,6 +106,7 @@ class DownloadOptions extends Equatable {
     concurrency,
     tags,
     blacklistedTags,
+    sidecarFormat,
   ];
 }
 

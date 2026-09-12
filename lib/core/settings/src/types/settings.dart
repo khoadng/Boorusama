@@ -13,6 +13,7 @@ import '../../../analytics/types.dart';
 import '../../../backups/auto/types.dart';
 import '../../../configs/gesture/types.dart';
 import '../../../downloads/downloader/types.dart';
+import '../../../downloads/sidecar/types.dart';
 import '../../../haptics/types.dart';
 import '../../../home/types.dart';
 import '../../../images/types.dart';
@@ -55,6 +56,7 @@ class Settings extends Equatable {
     required this.downloadFileExistedBehavior,
     required this.downloadNotificationsEnabled,
     required this.downloadNetworkPolicy,
+    this.downloadSidecarFormat = SidecarFormat.off,
     required this.colors,
     required this.volumeKeyViewerNavigation,
     required this.searchBarScrollBehavior,
@@ -109,6 +111,9 @@ class Settings extends Equatable {
       ),
       downloadNotificationsEnabled =
           json['downloadNotificationsEnabled'] as bool? ?? true,
+      downloadSidecarFormat = SidecarFormat.parse(
+        json['downloadSidecarFormat'],
+      ),
       downloadNetworkPolicy = DownloadNetworkPolicy.parse(
         json['downloadNetworkPolicy'],
       ),
@@ -248,6 +253,7 @@ class Settings extends Equatable {
   final DownloadFileExistedBehavior downloadFileExistedBehavior;
 
   final bool downloadNotificationsEnabled;
+  final SidecarFormat downloadSidecarFormat;
 
   final DownloadNetworkPolicy downloadNetworkPolicy;
 
@@ -293,6 +299,7 @@ class Settings extends Equatable {
     DownloadFileExistedBehavior? downloadFileExistedBehavior,
     bool? downloadNotificationsEnabled,
     DownloadNetworkPolicy? downloadNetworkPolicy,
+    SidecarFormat? downloadSidecarFormat,
     ImageListingSettings? listing,
     ImageViewerSettings? viewer,
     ColorSettings? colors,
@@ -343,6 +350,7 @@ class Settings extends Equatable {
     downloadNotificationsEnabled:
         downloadNotificationsEnabled ?? this.downloadNotificationsEnabled,
     downloadNetworkPolicy: downloadNetworkPolicy ?? this.downloadNetworkPolicy,
+    downloadSidecarFormat: downloadSidecarFormat ?? this.downloadSidecarFormat,
     colors: colors ?? this.colors,
     volumeKeyViewerNavigation:
         volumeKeyViewerNavigation ?? this.volumeKeyViewerNavigation,
@@ -388,6 +396,7 @@ class Settings extends Equatable {
       'downloadFileExistedBehavior': downloadFileExistedBehavior.toData(),
       'downloadNotificationsEnabled': downloadNotificationsEnabled,
       'downloadNetworkPolicy': downloadNetworkPolicy.toData(),
+      'downloadSidecarFormat': downloadSidecarFormat.name,
       'colors': colors?.toJson(),
       'volumeKeyViewerNavigation': volumeKeyViewerNavigation,
       'searchBarScrollBehavior': searchBarScrollBehavior.toData(),
@@ -428,6 +437,7 @@ class Settings extends Equatable {
     downloadFileExistedBehavior,
     downloadNotificationsEnabled,
     downloadNetworkPolicy,
+    downloadSidecarFormat,
     colors,
     volumeKeyViewerNavigation,
     searchBarScrollBehavior,

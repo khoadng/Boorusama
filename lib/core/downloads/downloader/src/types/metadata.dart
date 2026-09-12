@@ -13,6 +13,7 @@ class DownloaderMetadata extends Equatable {
     required this.group,
     this.profileIconUrl,
     this.isVideo = false,
+    this.sidecarId,
   });
 
   factory DownloaderMetadata.fromJson(Map<String, dynamic> json) {
@@ -23,6 +24,7 @@ class DownloaderMetadata extends Equatable {
       group: json['group'],
       profileIconUrl: json['profileIconUrl'],
       isVideo: json['isVideo'] ?? false,
+      sidecarId: json['sidecarId'] as String?,
     );
   }
 
@@ -39,6 +41,7 @@ class DownloaderMetadata extends Equatable {
   final String? group;
   final String? profileIconUrl;
   final bool isVideo;
+  final String? sidecarId;
 
   static const empty = DownloaderMetadata(
     thumbnailUrl: null,
@@ -55,6 +58,7 @@ class DownloaderMetadata extends Equatable {
       'group': group,
       'profileIconUrl': profileIconUrl,
       'isVideo': isVideo,
+      if (sidecarId != null) 'sidecarId': sidecarId,
     };
   }
 
@@ -70,5 +74,6 @@ class DownloaderMetadata extends Equatable {
     group,
     profileIconUrl,
     isVideo,
+    sidecarId,
   ];
 }

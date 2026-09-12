@@ -12,6 +12,8 @@ import 'package:boorusama/core/bulk_downloads/src/types/bulk_download_error.dart
 import 'package:boorusama/core/bulk_downloads/src/types/download_options.dart';
 import 'package:boorusama/core/bulk_downloads/src/types/download_session.dart';
 import 'package:boorusama/core/search/selected_tags/types.dart';
+import 'package:boorusama/core/settings/types.dart';
+import 'package:boorusama/core/downloads/sidecar/types.dart';
 import 'package:boorusama/foundation/info/device_info.dart';
 import 'common.dart';
 
@@ -74,6 +76,44 @@ void main() {
         equals(DownloadSessionStatus.pending),
       );
     });
+
+    test(
+      'queued metadata choice survives settings changes before preparation',
+      () async {
+        final notifier = container.read(bulkDownloadProvider.notifier);
+        await notifier.queueDownloadLater(
+          downloadOptions,
+          downloadConfigs: downloadConfigs.copyWith(
+            settings: Settings.defaultSettings.copyWith(
+              downloadSidecarFormat: SidecarFormat.json,
+            ),
+          ),
+        );
+        final task = (await repository.getTasks()).single;
+        final session = (await repository.getSessionsByTaskId(task.id)).single;
+        expect(task.sidecarFormat, isNull); // Saved choice still inherits.
+        expect(session.task!.sidecarFormat, SidecarFormat.json);
+
+        await notifier.startPendingSession(
+          session.id,
+          downloadConfigs: downloadConfigs.copyWith(
+            settings: Settings.defaultSettings.copyWith(
+              downloadSidecarFormat: SidecarFormat.off,
+            ),
+          ),
+        );
+        final records = await repository.getRecordsBySessionId(session.id);
+        expect(records, isNotEmpty);
+        expect(
+          records.map((record) => record.sidecar!.format),
+          everyElement(SidecarFormat.json),
+        );
+        expect(
+          records.first.sidecar!.tags,
+          containsAll(DownloadTestConstants.posts.first.tags),
+        );
+      },
+    );
 
     test(
       'should use device sdk when queueing without download configs',

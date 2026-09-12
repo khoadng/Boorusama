@@ -10,6 +10,7 @@ import 'package:uuid/uuid.dart';
 // Project imports:
 import '../../../../foundation/database/utils.dart';
 import '../../../configs/config/types.dart';
+import '../../../downloads/sidecar/types.dart';
 import '../types/bulk_download_session.dart';
 import '../types/download_options.dart';
 import '../types/download_record.dart';
@@ -20,7 +21,7 @@ import '../types/download_task.dart';
 import '../types/saved_download_task.dart';
 import 'mapper.dart';
 
-const _kDownloadVersion = 1;
+const _kDownloadVersion = 2;
 
 class DownloadRepositorySqlite
     with DatabaseUtilsMixin
@@ -39,6 +40,18 @@ class DownloadRepositorySqlite
       db: db,
       targetVersion: _kDownloadVersion,
       migrations: [
+        BasicMigration(
+          version: 2,
+          description: 'Persist download metadata format and snapshots',
+          onUp: (context) {
+            context.execute(
+              'ALTER TABLE download_tasks ADD COLUMN sidecar_format TEXT',
+            );
+            context.execute(
+              'ALTER TABLE download_records ADD COLUMN sidecar TEXT',
+            );
+          },
+        ),
         BasicMigration(
           version: 1,
           description: 'Remove notification presentation from download tasks',
@@ -171,7 +184,7 @@ class DownloadRepositorySqlite
         '''
         UPDATE download_tasks 
         SET path = ?, skip_if_exists = ?, quality = ?,
-            updated_at = ?, per_page = ?, concurrency = ?, tags = ?, blacklisted_tags = ? 
+            updated_at = ?, per_page = ?, concurrency = ?, tags = ?, blacklisted_tags = ?, sidecar_format = ?
         WHERE id = ?
         ''',
         [
@@ -183,6 +196,7 @@ class DownloadRepositorySqlite
           newTask.concurrency,
           newTask.tags,
           newTask.blacklistedTags,
+          newTask.sidecarFormat?.name,
           taskId,
         ],
       );
@@ -203,14 +217,15 @@ class DownloadRepositorySqlite
       concurrency: options.concurrency,
       tags: options.tags.toString(),
       blacklistedTags: options.blacklistedTags?.toString(),
+      sidecarFormat: options.sidecarFormat,
     );
 
     db.execute(
       '''
       INSERT INTO download_tasks (
         id, path, skip_if_exists, quality,
-        created_at, updated_at, per_page, concurrency, tags, blacklisted_tags
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        created_at, updated_at, per_page, concurrency, tags, blacklisted_tags, sidecar_format
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       ''',
       [
         task.id,
@@ -223,6 +238,7 @@ class DownloadRepositorySqlite
         task.concurrency,
         task.tags,
         task.blacklistedTags,
+        task.sidecarFormat?.name,
       ],
     );
     return task;
@@ -352,6 +368,7 @@ class DownloadRepositorySqlite
         t.path,
         t.skip_if_exists,
         t.quality,
+        t.sidecar_format,
         t.created_at as task_created_at,
         t.updated_at as task_updated_at,
         t.per_page,
@@ -389,6 +406,9 @@ class DownloadRepositorySqlite
         concurrency: row['concurrency'] as int,
         tags: row['tags'] as String?,
         blacklistedTags: row['blacklisted_tags'] as String?,
+        sidecarFormat: row['sidecar_format'] == null
+            ? null
+            : SidecarFormat.parse(row['sidecar_format']),
       );
       final stats = DownloadSessionStats(
         id: null,
@@ -623,8 +643,8 @@ class DownloadRepositorySqlite
       INSERT OR IGNORE INTO download_records (
         url, session_id, status, page, page_index, created_at,
         file_size, file_name, extension, error, download_id,
-        headers, thumbnail_url, source_url
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        headers, thumbnail_url, source_url, sidecar
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       ''',
       [
         record.url,
@@ -641,6 +661,10 @@ class DownloadRepositorySqlite
         if (record.headers != null) jsonEncode(record.headers) else null,
         record.thumbnailImageUrl,
         record.sourceUrl,
+        if (record.sidecar != null)
+          jsonEncode(record.sidecar!.toJson())
+        else
+          null,
       ],
     );
   }
@@ -653,8 +677,8 @@ class DownloadRepositorySqlite
       INSERT OR IGNORE INTO download_records (
         url, session_id, status, page, page_index, created_at,
         file_size, file_name, extension, error, download_id,
-        headers, thumbnail_url, source_url
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        headers, thumbnail_url, source_url, sidecar
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ''');
 
     try {
@@ -675,6 +699,10 @@ class DownloadRepositorySqlite
             if (record.headers != null) jsonEncode(record.headers) else null,
             record.thumbnailImageUrl,
             record.sourceUrl,
+            if (record.sidecar != null)
+              jsonEncode(record.sidecar!.toJson())
+            else
+              null,
           ]);
         }
       });
@@ -1001,7 +1029,7 @@ class DownloadRepositorySqlite
         t.per_page,
         t.concurrency,
         t.tags,
-        t.blacklisted_tags
+        t.blacklisted_tags, t.sidecar_format
       FROM saved_download_tasks s
       INNER JOIN download_tasks t ON s.task_id = t.id
       ORDER BY s.created_at DESC
@@ -1027,7 +1055,11 @@ class DownloadRepositorySqlite
 
       return SavedDownloadTask(
         id: row['id'] as int,
-        task: task,
+        task: task.copyWith(
+          sidecarFormat: () => row['sidecar_format'] == null
+              ? null
+              : SidecarFormat.parse(row['sidecar_format']),
+        ),
         name: row['name'] as String?,
         createdAt: DateTime.fromMillisecondsSinceEpoch(
           row['created_at'] as int,
@@ -1064,7 +1096,7 @@ class DownloadRepositorySqlite
         t.per_page,
         t.concurrency,
         t.tags,
-        t.blacklisted_tags
+        t.blacklisted_tags, t.sidecar_format
       FROM saved_download_tasks s
       INNER JOIN download_tasks t ON s.task_id = t.id
       WHERE s.id = ?
@@ -1077,6 +1109,9 @@ class DownloadRepositorySqlite
     final row = results.first;
     final task = DownloadTask(
       id: row['task_id'] as String,
+      sidecarFormat: row['sidecar_format'] == null
+          ? null
+          : SidecarFormat.parse(row['sidecar_format']),
       path: row['path'] as String,
       skipIfExists: row['skip_if_exists'] == 1,
       quality: row['quality'] as String?,
