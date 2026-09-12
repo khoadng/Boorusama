@@ -1052,12 +1052,13 @@ packages:
     source: hosted
     version: "3.0.2"
   libavif:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      name: libavif
-      sha256: e96c31379cd472786133085ec18b977c79d3965a1a339bf283447e7b85955268
-      url: "https://pub.dev"
-    source: hosted
+      path: "packages/libavif"
+      ref: "0f286d670be82c32272b4c51cc3fc1672127cb9a"
+      resolved-ref: "0f286d670be82c32272b4c51cc3fc1672127cb9a"
+      url: "https://github.com/dartgfx/libavif.git"
+    source: git
     version: "0.1.1"
   like_button:
     dependency: "direct main"
@@ -1300,12 +1301,13 @@ packages:
     source: hosted
     version: "0.19.2"
   native_toolchain_rust:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      name: native_toolchain_rust
-      sha256: faa57d2258a3b0fd2a634054f54e4496c9fcbd971977e7d2b7e6916d56892857
-      url: "https://pub.dev"
-    source: hosted
+      path: native_toolchain_rust
+      ref: fca16906b7f3ea0668a650387f367153d35f896f
+      resolved-ref: fca16906b7f3ea0668a650387f367153d35f896f
+      url: "https://github.com/khoadng/native_toolchain_rust.git"
+    source: git
     version: "1.0.4+0"
   nm:
     dependency: transitive

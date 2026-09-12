@@ -9,6 +9,16 @@ dependency_overrides:
       url: https://github.com/khoadng/riverpod.git
       path: packages/flutter_riverpod
       ref: 5a513c5aeee5a91d7cf5aa9a6e6a414b822bdee9
+  libavif:
+    git:
+      url: https://github.com/dartgfx/libavif.git
+      path: packages/libavif
+      ref: 0f286d670be82c32272b4c51cc3fc1672127cb9a
+  native_toolchain_rust:
+    git:
+      url: https://github.com/khoadng/native_toolchain_rust.git
+      path: native_toolchain_rust
+      ref: fca16906b7f3ea0668a650387f367153d35f896f
   riverpod:
     git:
       url: https://github.com/khoadng/riverpod.git
