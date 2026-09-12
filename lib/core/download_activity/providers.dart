@@ -168,23 +168,14 @@ DownloadActivity downloadActivityFromBulkSession(
     DownloadSessionStatus.suspended => DownloadActivityPhase.suspended,
     DownloadSessionStatus.cancelled => DownloadActivityPhase.cancelled,
   };
-  final resolvedProgress = switch (phase) {
-    DownloadActivityPhase.completed || DownloadActivityPhase.skipped => 1.0,
-    _ => progress,
-  };
-  final prettyTags = value.task.prettyTags;
 
   return DownloadActivity(
     id: session.id,
     kind: DownloadActivityKind.bulk,
     phase: phase,
-    label: prettyTags == null || prettyTags.isEmpty
-        ? value.task.path
-        : prettyTags,
-    progress: resolvedProgress,
-    completedItems: resolvedProgress == null
-        ? null
-        : (resolvedProgress * total).round(),
+    label: value.task.prettyTags ?? 'Download',
+    progress: progress,
+    completedItems: progress == null ? null : (progress * total).round(),
     totalItems: total,
     thumbnailUrl: value.stats.coverUrl,
     error: session.error,

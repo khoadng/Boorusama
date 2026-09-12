@@ -1133,64 +1133,52 @@ void main() {
   });
 
   group('Session Completion Scheduling', () {
-    test(
-      'waits for completed records to persist before completing the session',
-      () async {
-        // Arrange
-        final taskUpdateStreamController = StreamController<TaskUpdate>();
-        final fileSizeCompleter = Completer<int>();
-        final myContainer = createBulkDownloadContainer(
-          downloadRepository: repository,
-          booruBuilder: MockBooruBuilder(),
-          taskUpdateStream: taskUpdateStreamController.stream,
-          taskFileSizeResolver: (_) => fileSizeCompleter.future,
-        );
+    test('should trigger completion check when all records complete', () async {
+      // Arrange
+      final taskUpdateStreamController = StreamController<TaskUpdate>();
+      final myContainer = createBulkDownloadContainer(
+        downloadRepository: repository,
+        booruBuilder: MockBooruBuilder(),
+        taskUpdateStream: taskUpdateStreamController.stream,
+      );
 
-        addTearDown(() {
-          taskUpdateStreamController.close();
-          myContainer.dispose();
-        });
+      addTearDown(() {
+        taskUpdateStreamController.close();
+        myContainer.dispose();
+      });
 
-        // Act
-        final task = await repository.createTask(_options);
-        final notifier = myContainer.read(bulkDownloadProvider.notifier);
-        await notifier.downloadFromTaskId(
-          task.id,
-          downloadConfigs: _defaultConfigs,
-        );
+      // Act
+      final task = await repository.createTask(_options);
+      final notifier = myContainer.read(bulkDownloadProvider.notifier);
+      await notifier.downloadFromTaskId(
+        task.id,
+        downloadConfigs: _defaultConfigs,
+      );
 
-        final sessions = await repository.getSessionsByTaskId(task.id);
-        final sessionId = sessions.first.id;
-        final records = await repository.getRecordsBySessionId(sessionId);
+      final sessions = await repository.getSessionsByTaskId(task.id);
+      final sessionId = sessions.first.id;
+      final records = await repository.getRecordsBySessionId(sessionId);
 
-        for (final record in records) {
-          taskUpdateStreamController.add(
-            TaskStatusUpdate(
-              DownloadTask(
-                taskId: record.downloadId,
-                url: record.url,
-                group: sessionId,
-              ),
-              TaskStatus.complete,
+      for (final record in records) {
+        taskUpdateStreamController.add(
+          TaskStatusUpdate(
+            DownloadTask(
+              taskId: record.downloadId,
+              url: record.url,
+              group: sessionId,
             ),
-          );
-        }
-
-        await Future.delayed(const Duration(milliseconds: 150));
-        var session = await repository.getSession(sessionId);
-        expect(session?.status, DownloadSessionStatus.running);
-
-        fileSizeCompleter.complete(64);
-        session = await _waitForSessionStatus(
-          repository,
-          sessionId,
-          DownloadSessionStatus.completed,
+            TaskStatus.complete,
+          ),
         );
+      }
 
-        // Assert
-        expect(session.status, DownloadSessionStatus.completed);
-      },
-    );
+      // Allow completion check to process
+      await Future.delayed(const Duration(milliseconds: 200));
+
+      // Assert
+      final session = await repository.getSession(sessionId);
+      expect(session?.status, equals(DownloadSessionStatus.completed));
+    });
 
     test(
       'should not complete session when some records are still pending',
@@ -1334,20 +1322,4 @@ void main() {
       },
     );
   });
-}
-
-Future<DownloadSession> _waitForSessionStatus(
-  DownloadRepository repository,
-  String sessionId,
-  DownloadSessionStatus status,
-) async {
-  for (var attempt = 0; attempt < 100; attempt++) {
-    final session = await repository.getSession(sessionId);
-    if (session?.status == status) return session!;
-    await Future.delayed(const Duration(milliseconds: 10));
-  }
-
-  final session = await repository.getSession(sessionId);
-  expect(session?.status, status);
-  return session!;
 }

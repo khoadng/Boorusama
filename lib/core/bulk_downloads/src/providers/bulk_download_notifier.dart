@@ -104,6 +104,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
 
   @override
   BulkDownloadState build() {
+    final completionTimers = <String, Timer>{};
     final progressUpdateTimers = <String, Timer>{};
 
     final progressNotifier = ref.watch(bulkDownloadProgressProvider.notifier);
@@ -137,6 +138,18 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
       );
     }
 
+    void scheduleCompletionCheck(String sessionId) {
+      completionTimers[sessionId]?.cancel();
+
+      completionTimers[sessionId] = Timer(
+        const Duration(milliseconds: 100),
+        () {
+          tryCompleteSession(sessionId);
+          completionTimers.remove(sessionId);
+        },
+      );
+    }
+
     ref
       ..listen(
         downloadTaskStreamProvider,
@@ -148,7 +161,38 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
               }
 
               if (event is TaskStatusUpdate) {
-                unawaited(_applyTaskStatusUpdate(event));
+                if (event.status == TaskStatus.complete) {
+                  ref
+                      .read(taskFileSizeResolverProvider(event.task).future)
+                      .then(
+                        (fileSize) {
+                          updateRecordFromTaskStream(
+                            event.task.group,
+                            event.task.taskId,
+                            DownloadRecordStatus.completed,
+                            fileSize: fileSize,
+                          );
+                        },
+                      );
+
+                  scheduleCompletionCheck(event.task.group);
+                }
+
+                updateRecordFromTaskStream(
+                  event.task.group,
+                  event.task.taskId,
+                  switch (event.status) {
+                    TaskStatus.enqueued => DownloadRecordStatus.pending,
+                    TaskStatus.running => DownloadRecordStatus.downloading,
+                    TaskStatus.complete => DownloadRecordStatus.completed,
+                    TaskStatus.notFound => DownloadRecordStatus.failed,
+                    TaskStatus.failed => DownloadRecordStatus.failed,
+                    TaskStatus.canceled => DownloadRecordStatus.cancelled,
+                    TaskStatus.waitingToRetry =>
+                      DownloadRecordStatus.downloading,
+                    TaskStatus.paused => DownloadRecordStatus.paused,
+                  },
+                );
               } else if (event is TaskProgressUpdate) {
                 scheduleProgressUpdate(event.task.group);
               }
@@ -157,6 +201,10 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
         },
       )
       ..onDispose(() {
+        for (final timer in completionTimers.values) {
+          timer.cancel();
+        }
+
         for (final timer in progressUpdateTimers.values) {
           timer.cancel();
         }
@@ -166,41 +214,6 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
 
     _loadTasks(init: true);
     return const BulkDownloadState();
-  }
-
-  Future<void> _applyTaskStatusUpdate(TaskStatusUpdate event) async {
-    final group = event.task.group;
-    final taskId = event.task.taskId;
-
-    if (event.status == TaskStatus.complete) {
-      final fileSize = await ref.read(
-        taskFileSizeResolverProvider(event.task).future,
-      );
-      await updateRecordFromTaskStream(
-        group,
-        taskId,
-        DownloadRecordStatus.completed,
-        fileSize: fileSize,
-      );
-      await tryCompleteSession(group);
-      return;
-    }
-
-    await updateRecordFromTaskStream(
-      group,
-      taskId,
-      switch (event.status) {
-        TaskStatus.enqueued => DownloadRecordStatus.pending,
-        TaskStatus.running => DownloadRecordStatus.downloading,
-        TaskStatus.notFound || TaskStatus.failed => DownloadRecordStatus.failed,
-        TaskStatus.canceled => DownloadRecordStatus.cancelled,
-        TaskStatus.waitingToRetry => DownloadRecordStatus.downloading,
-        TaskStatus.paused => DownloadRecordStatus.paused,
-        TaskStatus.complete => throw StateError(
-          'Completed task updates must use the completion path.',
-        ),
-      },
-    );
   }
 
   Future<void> ensureIntegrity() async {

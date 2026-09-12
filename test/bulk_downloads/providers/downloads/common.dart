@@ -271,7 +271,6 @@ ProviderContainer createBulkDownloadContainer({
   DeviceInfo? deviceInfo,
   bool hasPremium = true,
   Stream<TaskUpdate>? taskUpdateStream,
-  Future<int> Function(Task task)? taskFileSizeResolver,
   BooruConfigAuth? overrideConfig,
 }) {
   final container = ProviderContainer(
@@ -282,7 +281,6 @@ ProviderContainer createBulkDownloadContainer({
       booruBuilder: booruBuilder,
       hasPremium: hasPremium,
       taskUpdateStream: taskUpdateStream,
-      taskFileSizeResolver: taskFileSizeResolver,
       overrideConfig: overrideConfig,
       deviceInfo: deviceInfo,
     ),
@@ -303,7 +301,6 @@ List<Override> getTestOverrides({
   DeviceInfo? deviceInfo,
   bool hasPremium = true,
   Stream<TaskUpdate>? taskUpdateStream,
-  Future<int> Function(Task task)? taskFileSizeResolver,
   BooruConfigAuth? overrideConfig,
 }) {
   return [
@@ -340,9 +337,7 @@ List<Override> getTestOverrides({
     downloadTaskStreamProvider.overrideWith(
       (_) => taskUpdateStream ?? emptyTaskUpdateStream,
     ),
-    taskFileSizeResolverProvider.overrideWith(
-      (_, task) => taskFileSizeResolver?.call(task) ?? Future.value(0),
-    ),
+    taskFileSizeResolverProvider.overrideWith((_, _) => Future.value(0)),
     deviceInfoProvider.overrideWithValue(deviceInfo ?? DeviceInfo.empty()),
   ];
 }
