@@ -329,15 +329,16 @@ class _ExtendedImageState extends State<ExtendedImage>
                 child: const SizedBox.shrink(),
               ),
         LoadState.completed => _getCompletedWidget(),
-        LoadState.failed =>
-          widget.errorWidget ??
+        LoadState.failed => GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: reLoadImage,
+          child:
+              widget.errorWidget ??
               Container(
                 alignment: Alignment.center,
-                child: GestureDetector(
-                  onTap: () => reLoadImage(),
-                  child: const Text('Failed to load image'),
-                ),
+                child: const Text('Failed to load image'),
               ),
+        ),
       },
     );
 
