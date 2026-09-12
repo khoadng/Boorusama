@@ -130,6 +130,7 @@ class _SliverHomeSearchBarState
       final child = ColoredBox(
         color: colorScheme.surface,
         child: DesktopSearchbar(
+          key: ValueKey(widget.config),
           onSearch: _onSearch,
           selectedTagController: selectedTagController,
         ),

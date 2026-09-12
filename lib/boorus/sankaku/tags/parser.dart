@@ -3,14 +3,24 @@ import 'package:booru_clients/sankaku.dart';
 
 // Project imports:
 import '../../../core/tags/autocompletes/types.dart';
+import 'metatags.dart';
 
 AutocompleteData tagDtoToAutocompleteData(TagDto e) {
   if (e case TagDto(type: 9, name: final name?)) {
+    final separator = name.indexOf(':');
+    final prefix = separator > 0 ? name.substring(0, separator) : null;
+    final recognized = kSankakuMetatags.any((tag) => tag.name == prefix);
     return AutocompleteData(
-      label: name,
+      type: switch (prefix) {
+        'fav' || 'user' => AutocompleteData.user,
+        'pool' => AutocompleteData.pool,
+        _ => null,
+      },
+      label: recognized && separator < name.length - 1
+          ? name.substring(separator + 1)
+          : name,
       value: name,
       postCount: e.count,
-      category: e.type?.toString(),
     );
   }
 

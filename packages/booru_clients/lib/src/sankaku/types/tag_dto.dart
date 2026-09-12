@@ -27,9 +27,18 @@ class TagDto {
       nameEn: json['name_en'],
       nameJa: json['name_ja'],
       type: json['type'],
-      count: json['count'],
-      postCount: json['post_count'],
-      poolCount: json['pool_count'],
+      count: switch (json['count']) {
+        '' => null,
+        final value => value as int?,
+      },
+      postCount: switch (json['post_count']) {
+        '' => null,
+        final value => value as int?,
+      },
+      poolCount: switch (json['pool_count']) {
+        '' => null,
+        final value => value as int?,
+      },
       seriesCount: json['series_count'],
       locale: json['locale'],
       rating: json['rating'],

@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kurumi/kurumi.dart';
 import 'package:kurumi/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
 import '../../../../../boorus/danbooru/posts/search/src/widgets/danbooru_metatags_section.dart';
@@ -20,6 +21,7 @@ import '../../../selected_tags/providers.dart';
 import '../../../selected_tags/types.dart';
 import '../../../suggestions/providers.dart';
 import '../../../suggestions/widgets.dart';
+import '../../../syntax/providers.dart';
 import '../types/constants.dart';
 import '../views/search_landing_view.dart';
 import 'search_app_bar.dart';
@@ -41,7 +43,9 @@ class DesktopSearchbar extends ConsumerStatefulWidget {
 }
 
 class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
-  final textEditingController = TextEditingController();
+  late final textEditingController = RichTextController(
+    matchers: [?ref.read(queryMatcherProvider(ref.readConfigAuth))],
+  );
   late final selectedTagController = widget.selectedTagController;
   final focus = FocusNode();
 

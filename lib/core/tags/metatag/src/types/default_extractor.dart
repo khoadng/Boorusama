@@ -28,7 +28,9 @@ class DefaultMetatagExtractor implements MetatagExtractor {
   }
 
   @override
-  bool hasMetatag(String query) =>
-      metatags?.toList().any((tag) => query.startsWith('${tag.name}:')) ??
-      false;
+  bool hasMetatag(String query) {
+    final operator = FilterOperator.fromString(query.getFirstCharacter());
+    final tagQuery = stripFilterOperator(query, operator);
+    return metatags?.any((tag) => tagQuery.startsWith('${tag.name}:')) ?? false;
+  }
 }
