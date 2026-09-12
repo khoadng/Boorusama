@@ -205,45 +205,47 @@ class _LogsList extends StatelessWidget {
           return const SizedBox.shrink();
         }
 
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(
-                log.dateTime.toString(),
-                style: TextStyle(
-                  color: colors.muted,
+        return SelectionArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  log.dateTime.toString(),
+                  style: TextStyle(
+                    color: colors.muted,
+                  ),
                 ),
-              ),
-              Wrap(
-                children: [
-                  Text(
-                    '[${log.serviceName}]: ',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      color: colors.text,
+                Wrap(
+                  children: [
+                    Text(
+                      '[${log.serviceName}]: ',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: colors.text,
+                      ),
                     ),
-                  ),
-                  ReadMoreText(
-                    log.message,
-                    annotations: annotations,
-                    trimCollapsedText: context.t.misc.trailing_more,
-                    trimExpandedText: context.t.misc.trailing_less,
-                    trimMode: TrimMode.Line,
-                    trimLines: 3,
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: switch (log.level) {
-                        LogLevel.warning => colors.warning,
-                        LogLevel.error => colors.error,
-                        _ => colors.text,
-                      },
+                    ReadMoreText(
+                      log.message,
+                      annotations: annotations,
+                      trimCollapsedText: context.t.misc.trailing_more,
+                      trimExpandedText: context.t.misc.trailing_less,
+                      trimMode: TrimMode.Line,
+                      trimLines: 3,
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: switch (log.level) {
+                          LogLevel.warning => colors.warning,
+                          LogLevel.error => colors.error,
+                          _ => colors.text,
+                        },
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            ],
+                  ],
+                ),
+              ],
+            ),
           ),
         );
       },
