@@ -10,6 +10,7 @@ resolution: workspace
 
 dependencies:
   dio: ^5.0.0
+  http_parser: ^4.1.2
   http_client_helper: ^3.0.0
 
 dev_dependencies:

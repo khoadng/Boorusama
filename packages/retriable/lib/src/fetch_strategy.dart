@@ -39,23 +39,45 @@ class FetchStrategyBuilder {
 
   FetchStrategy build() => (uri, failure) async {
     if (failure == null) {
-      return FetchInstructions.attempt(uri: uri, timeout: timeout);
+      return FetchInstructions.attempt(
+        uri: uri,
+        timeout: _boundedTimeout(totalFetchTimeout),
+      );
     }
 
-    if (!failure.isRetriableFailure ||
-        failure.totalDuration > totalFetchTimeout ||
+    final retriable = switch (failure.httpStatusCode) {
+      final status? => transientHttpStatusCodePredicate(status),
+      _ => failure.isRetriableFailure,
+    };
+    final remaining = totalFetchTimeout - failure.totalDuration;
+    if (!retriable ||
+        remaining <= Duration.zero ||
         failure.attemptCount >= maxAttempts) {
       return FetchInstructions.giveUp(uri: uri, silent: silent);
     }
 
-    final pauseBetweenRetries =
+    final backoff =
         initialPauseBetweenRetries *
         math.pow(exponentialBackoffMultiplier, failure.attemptCount - 1);
+    final retryAfter = failure.retryAfter ?? Duration.zero;
+    final pauseBetweenRetries = retryAfter > backoff ? retryAfter : backoff;
+    if (pauseBetweenRetries >= remaining) {
+      return FetchInstructions.giveUp(uri: uri, silent: silent);
+    }
 
-    await Future.delayed(pauseBetweenRetries);
-
-    return FetchInstructions.attempt(uri: uri, timeout: timeout);
+    final waiting = Stopwatch()..start();
+    await Future<void>.delayed(pauseBetweenRetries);
+    final budget = remaining - waiting.elapsed;
+    if (budget <= Duration.zero) {
+      return FetchInstructions.giveUp(uri: uri, silent: silent);
+    }
+    return FetchInstructions.attempt(
+      uri: uri,
+      timeout: _boundedTimeout(budget),
+    );
   };
+  Duration _boundedTimeout(Duration remaining) =>
+      timeout < remaining ? timeout : remaining;
 }
 
 typedef FetchStrategy =
@@ -95,6 +117,7 @@ class FetchFailure implements Exception {
     this.httpStatusCode,
     this.uri,
     this.originalException,
+    this.retryAfter,
   }) : assert(attemptCount > 0, 'attemptCount must be greater than 0');
 
   final Duration totalDuration;
@@ -102,6 +125,9 @@ class FetchFailure implements Exception {
   final int? httpStatusCode;
   final Uri? uri;
   final dynamic originalException;
+
+  /// Minimum delay requested by the server, relative to this failure.
+  final Duration? retryAfter;
 
   bool get isRetriableFailure =>
       (httpStatusCode != null &&

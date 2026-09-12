@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
+import 'package:http_parser/http_parser.dart';
 
 import 'fetch_strategy.dart';
 
@@ -63,6 +64,9 @@ Future<Response<T>?> tryGetResponse<T>(
                   ? error.response?.statusCode
                   : null,
               uri: instructions.uri,
+              retryAfter: error is DioException
+                  ? _retryAfter(error.response?.headers)
+                  : null,
             );
       instructions = await strategy(instructions.uri, lastFailure);
       _debugCheckInstructions(instructions);
@@ -91,4 +95,20 @@ void _debugCheckInstructions(FetchInstructions? instructions) {
     }
     return true;
   }());
+}
+
+Duration? _retryAfter(Headers? headers) {
+  final values = headers?['retry-after'];
+  if (values == null || values.length != 1) return null;
+  final value = values.single.trim();
+  if (RegExp(r'^\d+$').hasMatch(value)) {
+    final seconds = int.tryParse(value);
+    return seconds == null ? null : Duration(seconds: seconds);
+  }
+  try {
+    final delay = parseHttpDate(value).difference(DateTime.now().toUtc());
+    return delay.isNegative ? Duration.zero : delay;
+  } on FormatException {
+    return null;
+  }
 }
