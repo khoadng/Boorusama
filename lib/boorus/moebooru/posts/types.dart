@@ -42,6 +42,9 @@ class MoebooruPost extends Equatable
 
   @override
   final int id;
+
+  @override
+  String get sitePostId => id.toString();
   @override
   final Set<String> tags;
   @override

@@ -5,6 +5,15 @@ import 'package:booru_clients/sankaku.dart';
 import '../../../core/tags/autocompletes/types.dart';
 
 AutocompleteData tagDtoToAutocompleteData(TagDto e) {
+  if (e case TagDto(type: 9, name: final name?)) {
+    return AutocompleteData(
+      label: name,
+      value: name,
+      postCount: e.count,
+      category: e.type?.toString(),
+    );
+  }
+
   final alias = e.aliasOf;
   // if alias is available, we use the alias name instead and point to the original tag
   return alias != null

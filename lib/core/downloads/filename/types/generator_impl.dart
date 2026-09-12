@@ -34,7 +34,7 @@ class DownloadFileNameBuilder<T extends Post>
     final customHandlers = tokenHandlers.toMap();
 
     baseTokenHandlers = {
-      'id': (post, config) => post.id.toString(),
+      'id': (post, config) => post.sitePostId,
       'tags': (post, config) => post.tags.join(' '),
       'extension':
           extensionHandler ??

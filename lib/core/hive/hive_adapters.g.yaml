@@ -31,7 +31,7 @@ types:
         index: 3
   BookmarkHiveObject:
     typeId: 4
-    nextIndex: 15
+    nextIndex: 16
     fields:
       booruId:
         index: 0
@@ -63,3 +63,5 @@ types:
         index: 13
       metadata:
         index: 14
+      sitePostId:
+        index: 15

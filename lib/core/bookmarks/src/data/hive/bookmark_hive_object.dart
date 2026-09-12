@@ -18,6 +18,7 @@ class BookmarkHiveObject extends HiveObject {
     required this.format,
     required this.postId,
     required this.metadata,
+    this.sitePostId,
   });
 
   int? booruId;
@@ -35,4 +36,5 @@ class BookmarkHiveObject extends HiveObject {
   String? format;
   int? postId;
   Map<String, String>? metadata;
+  String? sitePostId;
 }

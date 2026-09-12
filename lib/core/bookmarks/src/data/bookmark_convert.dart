@@ -39,6 +39,7 @@ Either<BookmarkGetError, List<Bookmark>> tryMapBookmarkHiveObjectsToBookmarks(
           format: hiveObject.format,
           imageUrlResolver: imageUrlResolver(hiveObject.booruId),
           postId: hiveObject.postId,
+          sitePostId: hiveObject.sitePostId,
           metadata: hiveObject.metadata ?? {},
         ),
       )
@@ -69,6 +70,7 @@ Either<BookmarkGetError, Bookmark> tryMapBookmarkHiveObjectToBookmark(
     format: hiveObject.format,
     imageUrlResolver: imageUrlResolver(hiveObject.booruId),
     postId: hiveObject.postId,
+    sitePostId: hiveObject.sitePostId,
     metadata: hiveObject.metadata ?? {},
   ),
   (o, s) => BookmarkGetError.nullField,
@@ -90,6 +92,7 @@ BookmarkHiveObject favoriteToHiveObject(Bookmark bookmark) {
     realSourceUrl: bookmark.realSourceUrl,
     format: bookmark.format,
     postId: bookmark.postId,
+    sitePostId: bookmark.sitePostId,
     metadata: bookmark.metadata,
   );
 }
@@ -126,6 +129,9 @@ class BookmarkPost extends SimplePost {
   final PostSource realSourceUrl;
   final Bookmark bookmark;
   final int? originalPostId;
+
+  @override
+  String? get sitePostId => bookmark.sitePostId;
 
   Post toOriginalPost() {
     return bookmark.toPost(

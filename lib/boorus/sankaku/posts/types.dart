@@ -134,6 +134,9 @@ class SankakuPost extends Equatable
 
   final SankakuId? sankakuId;
 
+  @override
+  String? get sitePostId => sankakuId?.valueString;
+
   final bool isFavorited;
 
   final int favoriteCount;
@@ -159,7 +162,7 @@ class SankakuPostLinkGenerator implements PostLinkGenerator<SankakuPost> {
   };
 
   String _getLink(SankakuPost post) {
-    final id = _getId(post);
+    final id = post.sitePostId;
 
     if (id == null) return '';
 
@@ -168,12 +171,5 @@ class SankakuPostLinkGenerator implements PostLinkGenerator<SankakuPost> {
         : baseUrl;
 
     return '$url/post/$id';
-  }
-
-  String? _getId(SankakuPost post) {
-    if (post.sankakuId != null) return post.sankakuId!.valueString;
-    if (post.id != 0) return post.id.toString();
-
-    return null;
   }
 }

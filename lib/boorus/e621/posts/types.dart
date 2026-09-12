@@ -61,6 +61,9 @@ class E621Post extends Equatable
 
   @override
   final int id;
+
+  @override
+  String get sitePostId => id.toString();
   @override
   Set<String> get tags => {
     ...characterTags,

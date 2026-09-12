@@ -122,13 +122,14 @@ class BookmarkHiveObjectAdapter extends TypeAdapter<BookmarkHiveObject> {
       format: fields[12] as String?,
       postId: (fields[13] as num?)?.toInt(),
       metadata: (fields[14] as Map?)?.cast<String, String>(),
+      sitePostId: fields[15] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, BookmarkHiveObject obj) {
     writer
-      ..writeByte(15)
+      ..writeByte(16)
       ..writeByte(0)
       ..write(obj.booruId)
       ..writeByte(1)
@@ -158,7 +159,9 @@ class BookmarkHiveObjectAdapter extends TypeAdapter<BookmarkHiveObject> {
       ..writeByte(13)
       ..write(obj.postId)
       ..writeByte(14)
-      ..write(obj.metadata);
+      ..write(obj.metadata)
+      ..writeByte(15)
+      ..write(obj.sitePostId);
   }
 
   @override

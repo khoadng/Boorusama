@@ -289,7 +289,7 @@ class BookmarkNotifier extends AsyncNotifier<BookmarkState> {
                     format: settings.downloadSidecarFormat,
                     quality: DownloadQuality.original.name,
                     tags: bookmark.tags,
-                    postId: bookmark.postId?.toString(),
+                    postId: bookmark.sitePostId,
                     site: bookmark.sourceUrl,
                     urls: [?bookmark.realSourceUrl],
                   ),

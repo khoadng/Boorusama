@@ -31,7 +31,7 @@ class SidecarSnapshot extends Equatable {
     format: format,
     tags: post.tags,
     quality: quality,
-    postId: post.id.toString(),
+    postId: post.sitePostId,
     site: site,
     postUrl: postUrl,
     urls: urls ?? post.knownSourceUrls,

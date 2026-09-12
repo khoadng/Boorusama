@@ -73,6 +73,9 @@ class DummyPost implements Post {
   final double height;
   @override
   final int id;
+
+  @override
+  String get sitePostId => id.toString();
   @override
   final bool isAnimated;
   @override

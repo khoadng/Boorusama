@@ -30,6 +30,9 @@ abstract class Post
     with MediaInfoMixin, ImageInfoMixin, VideoInfoMixin
     implements TagDetails {
   int get id;
+
+  /// The site's identifier for exports, not the app's internal identity.
+  String? get sitePostId;
   DateTime? get createdAt;
   String get thumbnailImageUrl;
   String get sampleImageUrl;

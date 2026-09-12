@@ -4,6 +4,7 @@ import 'package:foundation/foundation.dart';
 
 // Project imports:
 import '../../../../foundation/path.dart';
+import '../../../boorus/booru/types.dart';
 import '../../../posts/post/types.dart';
 
 class Bookmark extends Equatable with ImageInfoMixin, TagListCheckMixin {
@@ -25,10 +26,13 @@ class Bookmark extends Equatable with ImageInfoMixin, TagListCheckMixin {
     required ImageUrlResolver imageUrlResolver,
     required this.postId,
     required this.metadata,
+    String? sitePostId,
   }) : _originalUrl = originalUrl,
        _sampleUrl = sampleUrl,
        _thumbnailUrl = thumbnailUrl,
-       _resolver = imageUrlResolver;
+       _resolver = imageUrlResolver,
+       sitePostId =
+           sitePostId ?? _restoreSitePostId(booruId, sourceUrl, postId);
 
   factory Bookmark.fromJson(
     Map<String, dynamic> json, {
@@ -51,6 +55,7 @@ class Bookmark extends Equatable with ImageInfoMixin, TagListCheckMixin {
       format: json['format'] as String?,
       imageUrlResolver: imageUrlResolver,
       postId: json['postId'] as int?,
+      sitePostId: json['sitePostId'] as String?,
       metadata:
           (json['metadata'] as Map<String, dynamic>?)?.map(
             (k, v) => MapEntry(k, v.toString()),
@@ -79,6 +84,7 @@ class Bookmark extends Equatable with ImageInfoMixin, TagListCheckMixin {
   final String? realSourceUrl;
   final String? format;
   final int? postId;
+  final String? sitePostId;
   final Map<String, String> metadata;
 
   static Map<String, String> toMetadata(PostMetadata? metadata) {
@@ -162,6 +168,7 @@ class Bookmark extends Equatable with ImageInfoMixin, TagListCheckMixin {
     realSourceUrl,
     format,
     postId,
+    sitePostId,
     metadata,
   ];
 
@@ -181,6 +188,7 @@ class Bookmark extends Equatable with ImageInfoMixin, TagListCheckMixin {
     String? Function()? realSourceUrl,
     String? Function()? format,
     int? Function()? postId,
+    String? Function()? sitePostId,
     Map<String, String>? metadata,
     ImageUrlResolver? imageUrlResolver,
   }) {
@@ -203,6 +211,7 @@ class Bookmark extends Equatable with ImageInfoMixin, TagListCheckMixin {
       format: format != null ? format() : this.format,
       imageUrlResolver: imageUrlResolver ?? _resolver,
       postId: postId != null ? postId() : this.postId,
+      sitePostId: sitePostId != null ? sitePostId() : this.sitePostId,
       metadata: metadata ?? this.metadata,
     );
   }
@@ -224,9 +233,27 @@ class Bookmark extends Equatable with ImageInfoMixin, TagListCheckMixin {
       'realSourceUrl': realSourceUrl,
       'format': format,
       'postId': postId,
+      'sitePostId': sitePostId,
       'metadata': Map<String, String>.from(metadata),
     };
   }
+}
+
+String? _restoreSitePostId(int booruId, String sourceUrl, int? postId) {
+  if (BooruType.fromLegacyId(booruId) != BooruType.sankaku) {
+    return postId?.toString();
+  }
+
+  final uri = Uri.tryParse(sourceUrl);
+  if (uri == null ||
+      !const {'http', 'https'}.contains(uri.scheme) ||
+      uri.host.isEmpty) {
+    return null;
+  }
+  return switch (uri.pathSegments) {
+    ['post', final id] when RegExp(r'^[a-zA-Z0-9]+$').hasMatch(id) => id,
+    _ => null,
+  };
 }
 
 Set<String> _parseTags(dynamic tags) => switch (tags) {

@@ -74,6 +74,9 @@ class GelbooruPost extends Equatable
   final int id;
 
   @override
+  String get sitePostId => id.toString();
+
+  @override
   final String md5;
 
   @override

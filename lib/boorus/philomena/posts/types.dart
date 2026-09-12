@@ -50,6 +50,9 @@ class PhilomenaPost extends Equatable
 
   @override
   final int id;
+
+  @override
+  String get sitePostId => id.toString();
   @override
   final DateTime? createdAt;
   @override

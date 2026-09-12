@@ -89,6 +89,9 @@ class DanbooruPost extends Equatable
 
   @override
   final int id;
+
+  @override
+  String get sitePostId => id.toString();
   @override
   final String thumbnailImageUrl;
   @override

@@ -27,6 +27,7 @@ class BookmarkHiveRepository implements BookmarkRepository {
     final favoriteHiveObject = BookmarkHiveObject(
       booruId: booruId,
       postId: post.id,
+      sitePostId: post.sitePostId,
       createdAt: now,
       updatedAt: now,
       thumbnailUrl: post.thumbnailImageUrl,
