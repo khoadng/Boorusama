@@ -1446,6 +1446,11 @@
       "failed_to_fetch": "Cannot fetch extension list for this instance"
     }
   },
+  "sankaku": {
+    "errors": {
+      "exclusion_search_restricted": "Sankaku restricts this exclusion search for your account. Try adding a non-excluded tag."
+    }
+  },
   "eshuushuu": {
     "personal_info": {
       "title": "Personal Information",

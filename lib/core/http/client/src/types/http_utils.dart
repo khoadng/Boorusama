@@ -29,6 +29,10 @@ TaskEither<BooruError, T> tryFetchRemoteData<T>({
   (error, stackTrace) => switch (error) {
     DioException(:final response?) => ServerError(
       httpStatusCode: response.statusCode,
+      code: switch (response.data) {
+        {'code': final String code} => code,
+        _ => null,
+      },
       message: switch (response.data) {
         final String s => s,
         {'message': final String s} => s,

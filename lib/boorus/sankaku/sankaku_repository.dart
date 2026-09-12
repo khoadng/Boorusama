@@ -9,11 +9,13 @@ import '../../core/boorus/defaults/types.dart';
 import '../../core/configs/config/types.dart';
 import '../../core/configs/create/create.dart';
 import '../../core/downloads/filename/types.dart';
+import '../../core/errors/types.dart';
 import '../../core/http/client/providers.dart';
 import '../../core/posts/post/types.dart';
 import '../../core/tags/autocompletes/types.dart';
 import '../../core/tags/metatag/types.dart';
 import '../../core/tags/tag/types.dart';
+import 'errors/error_translator.dart';
 import 'posts/providers.dart';
 import 'posts/types.dart';
 import 'tags/providers.dart';
@@ -23,6 +25,10 @@ class SankakuRepository extends BooruRepositoryDefault {
 
   @override
   final Ref ref;
+
+  @override
+  AppErrorTranslator appErrorTranslator(BooruConfigAuth config) =>
+      ref.watch(sankakuAppErrorTranslatorProvider);
 
   @override
   PostRepository<Post> post(BooruConfigSearch config) {

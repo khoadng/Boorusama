@@ -35,15 +35,17 @@ class ServerError extends BooruError with Equatable {
   ServerError({
     required this.httpStatusCode,
     required super.message,
+    this.code,
   });
 
   final int? httpStatusCode;
+  final String? code;
 
   @override
   String toString() => 'HTTP error with status code $httpStatusCode';
 
   @override
-  List<Object?> get props => [httpStatusCode, message];
+  List<Object?> get props => [httpStatusCode, message, code];
 }
 
 class UnknownError extends BooruError {
