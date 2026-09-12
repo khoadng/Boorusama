@@ -3,7 +3,7 @@ import '../../../debug/types.dart';
 import '../../../debug/data.dart' show redactLogMessage;
 
 /// Compacts completed, unchanged timer checks without changing solver behavior.
-/// Only already-redacted entries are retained between observations.
+/// Retains full details for published state changes.
 class ProtectionPollLogBuffer {
   final _sessions = <int, _PollSession>{};
 
@@ -97,7 +97,7 @@ class ProtectionPollLogBuffer {
         ' pageReason=${page?.reason.name} marker=${page?.matchedMarker}'
         ' suppressedTimerChecks=${session.suppressed}',
       );
-      // Retain the opted-in page snapshot on published state changes only.
+      // Retain the page snapshot on published state changes only.
       final sensitive = check.entries
           .where((entry) => entry.sensitiveMessage != null)
           .map((entry) => entry.sensitiveMessage!)
@@ -122,16 +122,6 @@ class ProtectionPollLogBuffer {
     }
     if (check.detailed) output.addAll(check.takeEntries());
     return output;
-  }
-
-  void discardSensitiveDetails() {
-    for (final session in _sessions.values) {
-      for (final check in session.checks.values) {
-        for (var i = 0; i < check.entries.length; i++) {
-          check.entries[i] = check.entries[i].withoutSensitiveDetails();
-        }
-      }
-    }
   }
 
   void clear() => _sessions.clear();

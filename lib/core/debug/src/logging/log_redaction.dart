@@ -1,3 +1,11 @@
+const _credentialFieldPattern =
+    'api[_-]?key|key|pass(?:word)?[_-]?hash|password|passwd|access[_-]?token|refresh[_-]?token|auth[_-]?token|token|secret|client[_-]?secret|cf_clearance';
+
+final _credentialField = RegExp(
+  '^(?:$_credentialFieldPattern)\$',
+  caseSensitive: false,
+);
+
 /// Redacts credential-bearing fields in legacy text messages. Structured
 /// producers must supply a safe message instead of relying on text detection
 /// for arbitrary server bodies or exceptions.
@@ -15,15 +23,16 @@ String redactLogMessage(String message) {
   );
   return result.replaceAllMapped(
     RegExp(
-      r'''(["']?(?:api[_-]?key|pass(?:word)?[_-]?hash|password|passwd|access[_-]?token|refresh[_-]?token|auth[_-]?token|token|secret|client[_-]?secret|cf_clearance)["']?\s*[:=]\s*)(?:\[REDACTED\]|"[^"]*"|'[^']*'|[^\s,;&}\]]+)''',
+      r'''(?<![\w-])(["']?(?:''' +
+          _credentialFieldPattern +
+          r''')["']?\s*[:=]\s*)(?:\[REDACTED\]|"[^"]*"|'[^']*'|[^\s,;&}\]]+)''',
       caseSensitive: false,
     ),
     (match) => '${match[1]}[REDACTED]',
   );
 }
 
-/// Preserve routing information, but never query values, fragments or userinfo.
-/// Unknown sites may use arbitrary parameter names for credentials.
+/// Preserve diagnostic query parameters; redact only known credential fields.
 String redactLogUri(Uri uri) {
   if (!uri.hasScheme || uri.host.isEmpty) return '[REDACTED URL]';
   return uri
@@ -31,7 +40,12 @@ String redactLogUri(Uri uri) {
       .replace(
         userInfo: '',
         queryParameters: uri.hasQuery
-            ? {for (final key in uri.queryParametersAll.keys) key: '[REDACTED]'}
+            ? {
+                for (final entry in uri.queryParametersAll.entries)
+                  entry.key: _credentialField.hasMatch(entry.key)
+                      ? entry.value.map((_) => '[REDACTED]').toList()
+                      : entry.value,
+              }
             : null,
       )
       .toString();

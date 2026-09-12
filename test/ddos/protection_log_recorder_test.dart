@@ -74,16 +74,16 @@ void main() {
         ),
       );
       expect(logger.logs, hasLength(1));
-      logger.applyCaptureOptions(
-        const LogCaptureOptions(includeSensitiveDetails: true),
+      logger.applyOptions(
+        LogOptions.defaults,
       );
-      logger.applyCaptureOptions(LogCaptureOptions.defaults);
+      logger.applyOptions(const LogOptions(redactSensitiveDetails: true));
       expect(logger.logs, hasLength(1));
     },
   );
 
   test(
-    'typed recorder keeps sensitive payloads separate and honors capture changes',
+    'typed recorder redacts and restores previously captured payloads',
     () {
       final logger = AppLogger();
       final recorder = ProtectionLogRecorder(logger);
@@ -123,6 +123,8 @@ void main() {
       }
 
       emit();
+      expect(logger.dump(), contains('BODY_SECRET'));
+      logger.applyOptions(const LogOptions(redactSensitiveDetails: true));
       expect(logger.dump(), isNot(contains('SECRET')));
       expect(logger.dump(), contains('reason=challengeMarker'));
       expect(logger.dump(), contains('check=${check.id}'));
@@ -131,10 +133,9 @@ void main() {
         logger.logs.every((entry) => entry.sensitiveMessage == null),
         isTrue,
       );
-      logger.applyCaptureOptions(
-        const LogCaptureOptions(includeSensitiveDetails: true),
+      logger.applyOptions(
+        LogOptions.defaults,
       );
-      emit();
       expect(logger.dump(), contains('BODY_SECRET'));
       expect(logger.dump(), contains('QUERY_SECRET'));
       expect(logger.dump(), contains('NAV_SECRET'));
@@ -142,7 +143,7 @@ void main() {
         logger.logs.map((entry) => entry.safeMessage).join('\n'),
         isNot(contains('SECRET')),
       );
-      logger.applyCaptureOptions(LogCaptureOptions.defaults);
+      logger.applyOptions(const LogOptions(redactSensitiveDetails: true));
       expect(logger.dump(), isNot(contains('SECRET')));
       check.finish(CheckOutcome.pageRejected, alreadyCompleted: false);
     },
@@ -152,8 +153,8 @@ void main() {
     'credential comparison events have no credential payload even with capture enabled',
     () {
       final logger = AppLogger()
-        ..applyCaptureOptions(
-          const LogCaptureOptions(includeSensitiveDetails: true),
+        ..applyOptions(
+          LogOptions.defaults,
         );
       final recorder = ProtectionLogRecorder(logger);
       addTearDown(recorder.dispose);

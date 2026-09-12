@@ -4,7 +4,7 @@ import 'protection_poll_log_buffer.dart';
 import '../../../../foundation/loggers/logger.dart';
 
 /// Keeps pre-detection context out of the visible log. Entries have already
-/// passed capture/redaction policy, and retain their original timestamps.
+/// retained full details and their original timestamps.
 class ProtectionLogBuffer implements LogCaptureBuffer {
   static const _maxAttempts = 64;
   static const _maxEntriesPerAttempt = 16;
@@ -45,16 +45,6 @@ class ProtectionLogBuffer implements LogCaptureBuffer {
     final entries = List<LogData>.of(attempt.entries);
     attempt.entries.clear();
     return entries;
-  }
-
-  @override
-  void discardSensitiveDetails() {
-    _polls.discardSensitiveDetails();
-    for (final attempt in _attempts.values) {
-      for (var i = 0; i < attempt.entries.length; i++) {
-        attempt.entries[i] = attempt.entries[i].withoutSensitiveDetails();
-      }
-    }
   }
 
   @override

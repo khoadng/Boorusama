@@ -86,18 +86,18 @@ void main() {
       expect(logger.logs, hasLength(4));
       expect(logger.logs.first.dateTime.isAfter(beforeDetection), isFalse);
       expect(logger.logs[1].message, contains('/post.json'));
-      expect(logger.dump(), isNot(contains('SECRET')));
+      expect(logger.dump(), contains('SECRET'));
       attempt.record(const SolverReportedResult(false));
       expect(logger.logs, hasLength(5));
     },
   );
 
   test(
-    'disabling capture discards sensitive pending context before it can be published',
+    'redaction preserves sensitive pending context for later inclusion',
     () {
       final logger = AppLogger()
-        ..applyCaptureOptions(
-          const LogCaptureOptions(includeSensitiveDetails: true),
+        ..applyOptions(
+          LogOptions.defaults,
         );
       final recorder = ProtectionLogRecorder(logger);
       addTearDown(recorder.dispose);
@@ -112,14 +112,14 @@ void main() {
           Uri.parse('https://example.com?key=OLD_SECRET'),
         ),
       );
-      logger.applyCaptureOptions(LogCaptureOptions.defaults);
-      logger.applyCaptureOptions(
-        const LogCaptureOptions(includeSensitiveDetails: true),
+      logger.applyOptions(const LogOptions(redactSensitiveDetails: true));
+      logger.applyOptions(
+        LogOptions.defaults,
       );
       attempt.record(
         const DetectorEvaluated(type: 'cloudflare', score: 1, threshold: 0.3),
       );
-      expect(logger.dump(), isNot(contains('OLD_SECRET')));
+      expect(logger.dump(), contains('OLD_SECRET'));
       attempt.record(
         const RequestSent(method: 'GET', backend: 'test', retry: true),
         sensitive: ProtectionRequestDetails(

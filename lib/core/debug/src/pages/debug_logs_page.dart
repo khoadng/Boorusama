@@ -38,7 +38,7 @@ class _DebugLogsPageState extends ConsumerState<DebugLogsPage> {
   @override
   Widget build(BuildContext context) {
     final logs = ref.watch(debugLogsProvider);
-    final sensitiveCapture = ref.watch(includeSensitiveLogsProvider);
+    final redactSensitiveDetails = ref.watch(redactSensitiveLogsProvider);
     final selectedCategory = ref.watch(selectedDebugLogCategoryProvider);
 
     void copyLogsToClipboard() {
@@ -75,20 +75,20 @@ class _DebugLogsPageState extends ConsumerState<DebugLogsPage> {
             items: [
               KurumiPopupMenuItem(
                 title: Text(
-                  sensitiveCapture
-                      ? 'Stop sensitive capture'.hc
-                      : 'Start sensitive capture'.hc,
+                  redactSensitiveDetails
+                      ? 'Include sensitive details'.hc
+                      : 'Redact sensitive details'.hc,
                 ),
                 onTap: () async {
                   try {
                     await ref
-                        .read(logCaptureOptionsProvider.notifier)
-                        .setIncludeSensitiveDetails(!sensitiveCapture);
+                        .read(logOptionsProvider.notifier)
+                        .setRedactSensitiveDetails(!redactSensitiveDetails);
                   } catch (_) {
                     if (context.mounted) {
                       Kurumi.showErrorToast(
                         context,
-                        'Could not save sensitive capture preference'.hc,
+                        'Could not save log redaction preference'.hc,
                       );
                     }
                   }

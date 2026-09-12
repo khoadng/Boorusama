@@ -113,9 +113,9 @@ class _BoorusamaAppState extends State<BoorusamaApp> {
         ..init(dbDirectoryPath)
         ..registerAdapters();
 
-      final logCaptureRepository = createLogCaptureRepository();
-      final logCaptureOptions = await logCaptureRepository.load();
-      appLogger.applyCaptureOptions(logCaptureOptions);
+      final logOptionsRepository = createLogOptionsRepository();
+      final logOptions = await logOptionsRepository.load();
+      appLogger.applyOptions(logOptions);
 
       logger.debugBoot('Load app info');
       final appInfo = await getAppInfo();
@@ -244,8 +244,8 @@ class _BoorusamaAppState extends State<BoorusamaApp> {
         deviceInfo: deviceInfo,
         appInfo: appInfo,
         appLogger: appLogger,
-        logCaptureRepository: logCaptureRepository,
-        logCaptureOptions: logCaptureOptions,
+        logOptionsRepository: logOptionsRepository,
+        logOptions: logOptions,
         logger: logger,
         miscDataBox: miscDataBox,
       );
@@ -354,11 +354,11 @@ class _BoorusamaAppState extends State<BoorusamaApp> {
             packageInfoProvider.overrideWithValue(result.packageInfo),
             appInfoProvider.overrideWithValue(result.appInfo),
             appLoggerProvider.overrideWithValue(result.appLogger),
-            logCaptureRepositoryProvider.overrideWithValue(
-              result.logCaptureRepository,
+            logOptionsRepositoryProvider.overrideWithValue(
+              result.logOptionsRepository,
             ),
-            logCaptureOptionsProvider.overrideWith(
-              () => LogCaptureOptionsNotifier(result.logCaptureOptions),
+            logOptionsProvider.overrideWith(
+              () => LogOptionsNotifier(result.logOptions),
             ),
             miscDataBoxProvider.overrideWithValue(result.miscDataBox),
             isCronetAvailableProvider.overrideWithValue(
@@ -397,8 +397,8 @@ class _InitResult {
     required this.deviceInfo,
     required this.appInfo,
     required this.appLogger,
-    required this.logCaptureRepository,
-    required this.logCaptureOptions,
+    required this.logOptionsRepository,
+    required this.logOptions,
     required this.logger,
     required this.miscDataBox,
   });
@@ -417,8 +417,8 @@ class _InitResult {
   final DeviceInfo deviceInfo;
   final AppInfo appInfo;
   final AppLogger appLogger;
-  final LogCaptureRepository logCaptureRepository;
-  final LogCaptureOptions logCaptureOptions;
+  final LogOptionsRepository logOptionsRepository;
+  final LogOptions logOptions;
   final Logger logger;
   final Box<String> miscDataBox;
 }

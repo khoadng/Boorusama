@@ -1,5 +1,5 @@
 import '../../../../foundation/loggers/logger.dart';
-import '../types/log_capture_options.dart';
+import '../types/log_options.dart';
 import '../types/log_data.dart';
 import 'log_formatter.dart';
 import '../types/log_capture_buffer.dart';
@@ -21,7 +21,7 @@ class AppLogger extends ChangeNotifier implements Logger {
 
   Map<String, String> get reportContext => Map.unmodifiable({
     ..._reportContext,
-    'sensitiveCapture': '$_includeSensitiveDetails',
+    'sensitiveDetailsRedacted': '$_redactSensitiveDetails',
   });
 
   void updateReportContext(Map<String, String> values) {
@@ -35,22 +35,11 @@ class AppLogger extends ChangeNotifier implements Logger {
   final List<LogData> _logs = [];
   final _captureBuffers = <LogCaptureBuffer>{};
   LogLevel _currentLevel;
-  var _includeSensitiveDetails = false;
+  var _redactSensitiveDetails = false;
 
-  bool get includeSensitiveDetails => _includeSensitiveDetails;
-
-  void applyCaptureOptions(LogCaptureOptions options) {
-    final value = options.includeSensitiveDetails;
-    if (_includeSensitiveDetails == value) return;
-    _includeSensitiveDetails = value;
-    if (!value) {
-      for (final buffer in _captureBuffers) {
-        buffer.discardSensitiveDetails();
-      }
-      for (var i = 0; i < _logs.length; i++) {
-        _logs[i] = _logs[i].withoutSensitiveDetails();
-      }
-    }
+  void applyOptions(LogOptions options) {
+    if (_redactSensitiveDetails == options.redactSensitiveDetails) return;
+    _redactSensitiveDetails = options.redactSensitiveDetails;
     notifyListeners();
   }
 
@@ -70,19 +59,18 @@ class AppLogger extends ChangeNotifier implements Logger {
     _append(_createEntry(level, serviceName, message, sensitiveMessage));
   }
 
-  /// Attaches pending capture to clear/revocation; detach when its owner ends.
+  /// Attaches pending capture to log clearing; detach when its owner ends.
   VoidCallback attachCaptureBuffer(LogCaptureBuffer buffer) {
     if (!_captureBuffers.add(buffer)) {
       throw StateError('Capture buffer is already attached');
     }
-    if (!_includeSensitiveDetails) buffer.discardSensitiveDetails();
     return () {
       _captureBuffers.remove(buffer);
       buffer.clearAtOrBelow(LogLevel.error);
     };
   }
 
-  /// Applies capture policy now, preserving the observation's timestamp even
+  /// Captures details now, preserving the observation's timestamp even
   /// when a producer delays publication. Null means the level is disabled.
   LogData? captureEntry(
     String serviceName,
@@ -93,7 +81,7 @@ class AppLogger extends ChangeNotifier implements Logger {
       ? _createEntry(level, serviceName, message, sensitiveMessage)
       : null;
 
-  /// Publishes captured entries, enforcing the current policy again.
+  /// Publishes captured entries without losing their original details.
   void publishEntries(Iterable<LogData> entries) {
     for (final entry in entries) {
       if (!entry.level.shouldLog(_currentLevel)) continue;
@@ -102,9 +90,7 @@ class AppLogger extends ChangeNotifier implements Logger {
           dateTime: entry.dateTime,
           serviceName: redactLogMessage(entry.serviceName),
           safeMessage: redactLogMessage(entry.safeMessage),
-          sensitiveMessage: _includeSensitiveDetails
-              ? entry.sensitiveMessage
-              : null,
+          sensitiveMessage: entry.sensitiveMessage,
           level: entry.level,
         ),
       );
@@ -122,9 +108,7 @@ class AppLogger extends ChangeNotifier implements Logger {
       dateTime: DateTime.now(),
       serviceName: redactLogMessage(serviceName),
       safeMessage: safe,
-      sensitiveMessage: _includeSensitiveDetails
-          ? sensitiveMessage ?? (safe != message ? message : null)
-          : null,
+      sensitiveMessage: sensitiveMessage ?? (safe != message ? message : null),
       level: level,
     );
   }
@@ -135,7 +119,7 @@ class AppLogger extends ChangeNotifier implements Logger {
       entry.serviceName,
       entry.safeMessage,
       level: entry.level,
-      sensitiveMessage: entry.sensitiveMessage,
+      sensitiveMessage: _redactSensitiveDetails ? null : entry.sensitiveMessage,
     );
     notifyListeners();
   }
@@ -163,7 +147,11 @@ class AppLogger extends ChangeNotifier implements Logger {
   void debug(String serviceName, String message, {String? sensitiveMessage}) =>
       _record(LogLevel.debug, serviceName, message, sensitiveMessage);
 
-  List<LogData> get logs => List.unmodifiable(_logs);
+  List<LogData> get logs => List.unmodifiable(
+    _redactSensitiveDetails
+        ? _logs.map((entry) => entry.withoutSensitiveDetails())
+        : _logs,
+  );
   String dump() => formatLogs(logs, context: reportContext);
 
   void clearLogsAtOrBelow(LogLevel level) {

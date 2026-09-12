@@ -13,7 +13,7 @@ enum LogLevel {
 
 /// Messages must contain safe diagnostic text. Supply raw server bodies,
 /// exceptions or credential-bearing URLs only as `sensitiveMessage` arguments;
-/// the application logging policy retains those only during explicit opt-in.
+/// the application controls how those details are displayed and exported.
 abstract class Logger {
   String getDebugName();
 

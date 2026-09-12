@@ -70,11 +70,11 @@ void main() {
   );
 
   test(
-    'capture disabled mid-check removes pending sensitive page contents',
+    'redaction mid-check preserves pending page contents',
     () {
       final h = _Harness();
-      h.logger.applyCaptureOptions(
-        const LogCaptureOptions(includeSensitiveDetails: true),
+      h.logger.applyOptions(
+        LogOptions.defaults,
       );
       h.start(1);
       h.emit(
@@ -84,9 +84,9 @@ void main() {
         ),
         sensitive: const ProtectionPageContents('PRIVATE_PAGE'),
       );
-      h.logger.applyCaptureOptions(LogCaptureOptions.defaults);
-      h.logger.applyCaptureOptions(
-        const LogCaptureOptions(includeSensitiveDetails: true),
+      h.logger.applyOptions(const LogOptions(redactSensitiveDetails: true));
+      h.logger.applyOptions(
+        LogOptions.defaults,
       );
       h.emit(
         const CompletionCheckFinished(
@@ -94,7 +94,7 @@ void main() {
           alreadyCompleted: false,
         ),
       );
-      expect(h.logger.dump(), isNot(contains('PRIVATE_PAGE')));
+      expect(h.logger.dump(), contains('PRIVATE_PAGE'));
     },
   );
 
@@ -114,8 +114,8 @@ void main() {
     'published state retains opted-in snapshot and acceptance is never suppressed',
     () {
       final h = _Harness();
-      h.logger.applyCaptureOptions(
-        const LogCaptureOptions(includeSensitiveDetails: true),
+      h.logger.applyOptions(
+        LogOptions.defaults,
       );
       h.start(1);
       h.emit(

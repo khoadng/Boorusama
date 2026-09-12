@@ -30,16 +30,14 @@ class ProtectionLogRecorder {
         ' url=${redactLogMessage(url)}',
       ProtectionPageContents() || null => '',
     };
-    final rawDetails = _logger.includeSensitiveDetails
-        ? switch (sensitive) {
-            ProtectionRequestDetails(:final uri, :final userAgent) =>
-              ' uri=$uri${userAgent == null ? '' : ' userAgent=$userAgent'}',
-            ProtectionNavigationDetails(:final url) => ' url=$url',
-            ProtectionPageContents(:final contents) =>
-              ' page=${contents.length > 2000 ? contents.substring(0, 2000) : contents}',
-            null => null,
-          }
-        : null;
+    final rawDetails = switch (sensitive) {
+      ProtectionRequestDetails(:final uri, :final userAgent) =>
+        ' uri=$uri${userAgent == null ? '' : ' userAgent=$userAgent'}',
+      ProtectionNavigationDetails(:final url) => ' url=$url',
+      ProtectionPageContents(:final contents) =>
+        ' page=${contents.length > 2000 ? contents.substring(0, 2000) : contents}',
+      null => null,
+    };
     final entry = _logger.captureEntry(
       'Verification',
       '$safe$safeDetails',
