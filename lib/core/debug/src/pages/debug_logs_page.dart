@@ -66,6 +66,7 @@ class _DebugLogsPageState extends ConsumerState<DebugLogsPage> {
                 fs,
                 context,
                 ref.read(appLoggerProvider).logs,
+                reportContext: ref.read(appLoggerProvider).reportContext,
               );
             },
           ),
@@ -129,9 +130,10 @@ class _DebugLogsPageState extends ConsumerState<DebugLogsPage> {
 Future<void> writeLogsToFile(
   AppFileSystem fs,
   BuildContext context,
-  List<LogData> logs,
-) async {
-  final result = await writeLogs(fs, logs);
+  List<LogData> logs, {
+  Map<String, String> reportContext = const {},
+}) async {
+  final result = await writeLogs(fs, logs, context: reportContext);
 
   switch (result) {
     case WriteLogFailure(:final message):

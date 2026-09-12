@@ -120,11 +120,16 @@ void main() {
         ..applyCaptureOptions(
           const LogCaptureOptions(includeSensitiveDetails: true),
         );
+      store.updateReportContext({
+        'app': '1.2.3+45',
+        'networkTransports': 'wifi',
+      });
       store.info('Network', 'safe', sensitiveMessage: 'RAW_SECRET');
       final sensitiveFile = await writeDebugLogsToFilePath(
         const IoFileSystem(),
         directory.path,
         store.logs,
+        context: store.reportContext,
       );
       expect(await File(sensitiveFile).readAsString(), store.dump());
       expect(store.dump(), contains('SENSITIVE DETAILS INCLUDED'));
@@ -133,6 +138,7 @@ void main() {
         const IoFileSystem(),
         directory.path,
         store.logs,
+        context: store.reportContext,
       );
       expect(await File(safeFile).readAsString(), store.dump());
       expect(store.dump(), isNot(contains('RAW_SECRET')));

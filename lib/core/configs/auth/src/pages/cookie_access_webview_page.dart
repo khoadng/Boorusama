@@ -1,11 +1,15 @@
 // Package imports:
 import 'package:coreutils/coreutils.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
 import 'package:kurumi/material.dart';
 import 'package:webview_cookie_manager/webview_cookie_manager.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-class CookieAccessWebViewPage extends StatefulWidget {
+// Project imports:
+import '../../../../../foundation/loggers.dart';
+
+class CookieAccessWebViewPage extends ConsumerStatefulWidget {
   const CookieAccessWebViewPage({
     required this.url,
     required this.onGet,
@@ -16,20 +20,46 @@ class CookieAccessWebViewPage extends StatefulWidget {
   final void Function(List<Cookie> cookies) onGet;
 
   @override
-  State<CookieAccessWebViewPage> createState() =>
+  ConsumerState<CookieAccessWebViewPage> createState() =>
       _CookieAccessWebViewPageState();
 }
 
-class _CookieAccessWebViewPageState extends State<CookieAccessWebViewPage> {
+class _CookieAccessWebViewPageState
+    extends ConsumerState<CookieAccessWebViewPage> {
+  late final Logger _logger;
   final controller = WebViewController();
+
+  void _log(String message) => _logger.info(
+    'Login',
+    'login=${identityHashCode(this)} $message',
+  );
 
   @override
   void initState() {
     super.initState();
 
+    _logger = ref.read(loggerProvider);
+    _log('opened host=${Uri.parse(widget.url).host}');
     controller
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onPageStarted: (url) =>
+              _log('page started host=${Uri.tryParse(url)?.host}'),
+          onPageFinished: (url) =>
+              _log('page finished host=${Uri.tryParse(url)?.host}'),
+          onWebResourceError: (error) => _log(
+            'resource error code=${error.errorCode} type=${error.errorType} mainFrame=${error.isForMainFrame}',
+          ),
+        ),
+      )
       ..loadRequest(Uri.parse(widget.url))
       ..setJavaScriptMode(JavaScriptMode.unrestricted);
+  }
+
+  @override
+  void dispose() {
+    _log('closed');
+    super.dispose();
   }
 
   @override
@@ -44,8 +74,16 @@ class _CookieAccessWebViewPageState extends State<CookieAccessWebViewPage> {
           _buildBanner('Press the button below after you logged in.'.hc),
           FilledButton(
             onPressed: () async {
-              final cookies = await WebviewCookieManager().getCookies(
-                widget.url,
+              _log('cookie access requested');
+              final List<Cookie> cookies;
+              try {
+                cookies = await WebviewCookieManager().getCookies(widget.url);
+              } catch (error) {
+                _log('cookie access failed type=${error.runtimeType}');
+                rethrow;
+              }
+              _log(
+                'cookie access count=${cookies.length} passHashPresent=${cookies.any((c) => c.name == 'pass_hash')} userIdPresent=${cookies.any((c) => c.name == 'user_id')}',
               );
               widget.onGet(cookies);
             },

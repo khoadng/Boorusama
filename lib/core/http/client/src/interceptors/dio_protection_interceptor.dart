@@ -15,6 +15,18 @@ class DioProtectionInterceptor extends Interceptor {
   }) : _protectionHandler = protectionHandler,
        _dio = dio;
 
+  static const _attemptKey = 'boorusama.protection_attempt';
+
+  ProtectionAttempt _attempt(RequestOptions options) =>
+      options.extra.putIfAbsent(
+            _attemptKey,
+            () => _protectionHandler.beginAttempt(
+              options.uri,
+              ProtectionSource.dio,
+            ),
+          )
+          as ProtectionAttempt;
+
   static const _protectionRetryKey = 'boorusama.ddos_protection_retry';
 
   final HttpProtectionHandler _protectionHandler;
@@ -25,14 +37,30 @@ class DioProtectionInterceptor extends Interceptor {
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
+    final attempt = _attempt(options);
+    attempt.record(
+      RequestSent(
+        method: options.method,
+        retry: _isProtectionRetry(options),
+        backend: _dio.httpClientAdapter.runtimeType.toString(),
+      ),
+      sensitive: ProtectionRequestDetails(options.uri),
+    );
     try {
       final headers = await _protectionHandler.prepareRequestHeaders(
         options.uri,
         options.headers.map((k, v) => MapEntry(k, v.toString())),
+        attempt: _attempt(options),
       );
 
       options.headers.addAll(headers);
     } catch (e) {
+      attempt.record(
+        ProtectionOperationFailed(
+          ProtectionOperation.prepareHeaders,
+          e.runtimeType.toString(),
+        ),
+      );
       // Continue with request even if header preparation fails
     }
 
@@ -44,6 +72,13 @@ class DioProtectionInterceptor extends Interceptor {
     Response response,
     ResponseInterceptorHandler handler,
   ) async {
+    final attempt = _attempt(response.requestOptions);
+    attempt.record(
+      ResponseReceived(
+        status: response.statusCode,
+        retry: _isProtectionRetry(response.requestOptions),
+      ),
+    );
     if (_isProtectionRetry(response.requestOptions)) {
       return super.onResponse(response, handler);
     }
@@ -51,6 +86,7 @@ class DioProtectionInterceptor extends Interceptor {
     try {
       final isProtection = await _protectionHandler.handleResponse(
         DioResponseAdapter(response),
+        attempt: attempt,
       );
 
       if (isProtection) {
@@ -62,6 +98,12 @@ class DioProtectionInterceptor extends Interceptor {
         return;
       }
     } catch (e) {
+      attempt.record(
+        ProtectionOperationFailed(
+          ProtectionOperation.recoveryOrRetry,
+          e.runtimeType.toString(),
+        ),
+      );
       // Continue with normal response if handling fails
     }
 
@@ -73,12 +115,23 @@ class DioProtectionInterceptor extends Interceptor {
     DioException err,
     ErrorInterceptorHandler handler,
   ) async {
+    final attempt = _attempt(err.requestOptions);
+    attempt.record(
+      ResponseReceived(
+        status: err.response?.statusCode,
+        errorType: err.type.name,
+        retry: _isProtectionRetry(err.requestOptions),
+      ),
+    );
     if (_isProtectionRetry(err.requestOptions)) {
       return handler.next(err);
     }
 
     try {
-      final solved = await _protectionHandler.handleError(DioErrorAdapter(err));
+      final solved = await _protectionHandler.handleError(
+        DioErrorAdapter(err),
+        attempt: attempt,
+      );
 
       if (solved) {
         final response = await _retryAfterProtection(err.requestOptions);
@@ -87,6 +140,12 @@ class DioProtectionInterceptor extends Interceptor {
         return;
       }
     } catch (e) {
+      attempt.record(
+        ProtectionOperationFailed(
+          ProtectionOperation.recoveryOrRetry,
+          e.runtimeType.toString(),
+        ),
+      );
       // If handling fails, continue with the error
     }
 
@@ -99,6 +158,9 @@ class DioProtectionInterceptor extends Interceptor {
   Future<Response<dynamic>> _retryAfterProtection(
     RequestOptions options,
   ) async {
+    final attempt = _attempt(options);
+    attempt.retries++;
+    attempt.record(RetryDispatched(attempt.retries));
     final previous = options.extra[_protectionRetryKey];
     options.extra[_protectionRetryKey] = true;
 
@@ -106,6 +168,7 @@ class DioProtectionInterceptor extends Interceptor {
       final headers = await _protectionHandler.prepareRequestHeaders(
         options.uri,
         options.headers.map((k, v) => MapEntry(k, v.toString())),
+        attempt: _attempt(options),
       );
 
       options.headers

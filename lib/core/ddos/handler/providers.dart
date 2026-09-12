@@ -6,9 +6,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 // Project imports:
-import '../../../foundation/loggers.dart';
 import '../../http/cookies/providers.dart';
 import '../../router.dart';
+import '../../debug/providers.dart';
+import '../diagnostics/providers.dart';
 import '../solver/providers.dart';
 import '../solver/types.dart';
 import 'protection_handler.dart';
@@ -16,7 +17,7 @@ import 'protection_handler.dart';
 final httpDdosProtectionBypassProvider = Provider<HttpProtectionHandler>(
   (ref) {
     final cookieJar = ref.watch(cookieJarProvider);
-    final logger = ref.watch(loggerProvider);
+    final recorder = ref.watch(protectionLogRecorderProvider);
     BuildContext? contextProvider() {
       final context =
           navigatorKey.currentContext ?? navigatorKey.currentState?.context;
@@ -25,8 +26,20 @@ final httpDdosProtectionBypassProvider = Provider<HttpProtectionHandler>(
     }
 
     return HttpProtectionHandler(
+      onEvent: recorder.record,
       orchestrator: ProtectionOrchestrator(
-        userAgentProvider: WebViewUserAgentProvider(),
+        userAgentProvider: WebViewUserAgentProvider(
+          onUserAgent: (ua) {
+            final engine =
+                RegExp(
+                  '(?:Chrome|AppleWebKit)/[0-9.]+',
+                ).firstMatch(ua ?? '')?.group(0) ??
+                'unknown';
+            ref.read(appLoggerProvider).updateReportContext({
+              'webViewEngineFromUserAgent': engine,
+            });
+          },
+        ),
         detectors: [
           CloudflareDetector(),
           AftDetector(),
@@ -34,29 +47,14 @@ final httpDdosProtectionBypassProvider = Provider<HttpProtectionHandler>(
         ],
         solvers: [
           CloudflareSolver(
-            onLog: (message, {sensitiveMessage}) => logger.info(
-              'Verification',
-              message,
-              sensitiveMessage: sensitiveMessage,
-            ),
             contextProvider: contextProvider,
             cookieJar: cookieJar,
           ),
           AftSolver(
-            onLog: (message, {sensitiveMessage}) => logger.info(
-              'Verification',
-              message,
-              sensitiveMessage: sensitiveMessage,
-            ),
             contextProvider: contextProvider,
             cookieJar: cookieJar,
           ),
           CaptchaAccessDeniedSolver(
-            onLog: (message, {sensitiveMessage}) => logger.info(
-              'Verification',
-              message,
-              sensitiveMessage: sensitiveMessage,
-            ),
             contextProvider: contextProvider,
             cookieJar: cookieJar,
           ),

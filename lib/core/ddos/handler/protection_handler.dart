@@ -10,6 +10,7 @@ class HttpProtectionHandler {
     required ContextProvider contextProvider,
     required LazyAsync<CookieJar> cookieJar,
     this.maxRetries = 3,
+    this.onEvent,
     void Function()? onSolved,
   }) : _orchestrator = orchestrator,
        _cookieJar = cookieJar,
@@ -24,6 +25,18 @@ class HttpProtectionHandler {
   // Track retry attempts
   final Map<String, int> _retryAttempts = {};
   final int maxRetries;
+  final ProtectionEventSink? onEvent;
+
+  ProtectionAttempt beginAttempt(Uri uri, ProtectionSource source) {
+    final attempt = ProtectionAttempt(
+      source: source,
+      host: uri.host,
+      onEvent: onEvent,
+    );
+    attempt.record(const AttemptStarted());
+    return attempt;
+  }
+
   var _disabled = false;
 
   bool get isDisabled => _disabled;
@@ -33,18 +46,32 @@ class HttpProtectionHandler {
   /// Prepares request headers with cookie and user agent information
   Future<Map<String, String>> prepareRequestHeaders(
     Uri uri,
-    Map<String, String> existingHeaders,
-  ) async {
-    if (_disabled) return existingHeaders;
+    Map<String, String> existingHeaders, {
+    ProtectionAttempt? attempt,
+  }) async {
+    if (_disabled) {
+      attempt?.record(
+        const HeaderPreparationSkipped(HeaderPreparationSkipReason.disabled),
+      );
+      return existingHeaders;
+    }
 
     try {
       final cookies = await (await _cookieJar()).loadForRequest(uri);
       final headers = Map<String, String>.from(existingHeaders);
 
+      attempt?.record(
+        CookieLookupCompleted(CookieStore.requestJar, cookies.length),
+      );
       if (cookies.isNotEmpty) {
         final userAgent = await _orchestrator.getUserAgent();
 
         if (userAgent == null) {
+          attempt?.record(
+            const HeaderPreparationSkipped(
+              HeaderPreparationSkipReason.userAgentUnavailable,
+            ),
+          );
           return existingHeaders;
         }
 
@@ -61,34 +88,64 @@ class HttpProtectionHandler {
         headers['user-agent'] = userAgent;
       }
 
+      attempt?.observeHeaders(headers);
       return headers;
     } catch (e) {
+      attempt?.record(
+        ProtectionOperationFailed(
+          ProtectionOperation.prepareHeaders,
+          e.runtimeType.toString(),
+        ),
+      );
       return existingHeaders;
     }
   }
 
   /// Handles HTTP response and returns true if a protection was detected and handled
-  Future<bool> handleResponse(HttpResponse response) async {
-    if (_disabled) return false;
+  Future<bool> handleResponse(
+    HttpResponse response, {
+    ProtectionAttempt? attempt,
+  }) async {
+    if (_disabled) {
+      attempt?.record(const RecoveryStopped(RecoveryStopReason.disabled));
+      return false;
+    }
 
     try {
-      final solved = await _orchestrator.handleResponse(response);
+      final solved = await _orchestrator.handleResponse(
+        response,
+        attempt: attempt,
+      );
       if (solved) _onSolved?.call();
 
       return solved;
     } catch (e) {
+      attempt?.record(
+        ProtectionOperationFailed(
+          ProtectionOperation.handler,
+          e.runtimeType.toString(),
+        ),
+      );
       return false;
     }
   }
 
   /// Handles HTTP error and returns true if a protection was detected and solved
-  Future<bool> handleError(HttpError error) async {
-    if (_disabled) return false;
+  Future<bool> handleError(
+    HttpError error, {
+    ProtectionAttempt? attempt,
+  }) async {
+    if (_disabled) {
+      attempt?.record(const RecoveryStopped(RecoveryStopReason.disabled));
+      return false;
+    }
 
     final uriString = error.requestUri.toString();
     final retryCount = _retryAttempts[uriString] ?? 0;
 
+    attempt?.record(RetryBudgetObserved(retryCount, maxRetries));
     if (retryCount >= maxRetries) {
+      attempt?.record(const RecoveryStopped(RecoveryStopReason.retryLimit));
       _retryAttempts.remove(uriString);
       return false;
     }
@@ -97,10 +154,15 @@ class HttpProtectionHandler {
       final context = _contextProvider();
 
       if (context == null) {
+        attempt?.record(const RecoveryStopped(RecoveryStopReason.noContext));
         return false;
       }
 
-      final solved = await _orchestrator.handleError(context, error);
+      final solved = await _orchestrator.handleError(
+        context,
+        error,
+        attempt: attempt,
+      );
 
       if (solved) {
         _onSolved?.call();
@@ -108,6 +170,12 @@ class HttpProtectionHandler {
         return true;
       }
     } catch (e) {
+      attempt?.record(
+        ProtectionOperationFailed(
+          ProtectionOperation.handler,
+          e.runtimeType.toString(),
+        ),
+      );
       // Fall through to return false
     }
 

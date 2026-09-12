@@ -14,6 +14,7 @@ import '../../../foundation/path.dart' as path;
 import '../../../foundation/platform.dart';
 import '../../configs/config/providers.dart';
 import '../../ddos/handler/providers.dart';
+import '../../ddos/solver/types.dart';
 import '../../download_manager/providers.dart';
 import 'types.dart';
 
@@ -31,20 +32,32 @@ class BackgroundDownloadRuntime extends ConsumerStatefulWidget {
 
 class _BackgroundDownloadRuntimeState
     extends ConsumerState<BackgroundDownloadRuntime> {
+  final _attempts = <String, ProtectionAttempt>{};
+
   late StreamSubscription<TaskUpdate> downloadUpdates;
 
   Future<void> _update(TaskUpdate update) async {
     if (update case TaskStatusUpdate()) {
-      final logger = ref.read(loggerProvider);
-      final taskLabel =
-          'task=${update.task.taskId} '
-          'host=${Uri.tryParse(update.task.url)?.host}';
-      logger.info(
-        'Download',
-        '$taskLabel status=${update.status.name} '
-            'httpStatus=${TaskErrorAdapter(update).response.statusCode} '
-            'exceptionType=${update.exception?.runtimeType}',
+      final attempt = _attempts.putIfAbsent(
+        update.task.taskId,
+        () => ref
+            .read(httpDdosProtectionBypassProvider)
+            .beginAttempt(
+              Uri.parse(update.task.url),
+              ProtectionSource.download,
+            ),
       );
+      attempt.record(
+        DownloadStatusObserved(
+          taskId: update.task.taskId,
+          status: update.status.name,
+          httpStatus: TaskErrorAdapter(update).response.statusCode,
+          errorType: update.exception?.runtimeType.toString(),
+          retries: attempt.retries,
+        ),
+        sensitive: ProtectionRequestDetails(Uri.parse(update.task.url)),
+      );
+      attempt.observeHeaders(update.task.headers);
       if (update.status case TaskStatus.complete) {
         WidgetsBinding.instance.addPostFrameCallback(
           (_) async {
@@ -99,23 +112,37 @@ class _BackgroundDownloadRuntimeState
       } else if (update.status case TaskStatus.failed) {
         final handled = await ref
             .read(httpDdosProtectionBypassProvider)
-            .handleError(TaskErrorAdapter(update));
-        logger.info('Download', '$taskLabel protectionHandled=$handled');
+            .handleError(TaskErrorAdapter(update), attempt: attempt);
         if (handled) {
-          ref.invalidate(bypassDdosHeadersProvider);
-          final headers = await ref.read(
-            bypassDdosHeadersProvider(update.task.url).future,
-          );
-          logger.info(
-            'Download',
-            '$taskLabel retry requested cookiePresent=${headers.containsKey('cookie')} '
-                'userAgentPresent=${headers.containsKey('user-agent')}',
-          );
-          await FileDownloader().retryTask(update.task, headers: headers);
-          logger.info('Download', '$taskLabel retry enqueue returned');
-          return;
+          attempt.record(const RetryPreparationStarted());
+          try {
+            ref.invalidate(bypassDdosHeadersProvider);
+            final headers = await ref.read(
+              bypassDdosHeadersProvider(update.task.url).future,
+            );
+            attempt.retries++;
+            attempt.record(RetryDispatched(attempt.retries));
+            final enqueued = await FileDownloader().retryTask(
+              update.task,
+              headers: headers,
+              onPrepared: attempt.observeHeaders,
+            );
+            attempt.record(RetryEnqueued(enqueued));
+            if (!enqueued) _attempts.remove(update.task.taskId);
+            return;
+          } catch (error) {
+            attempt.record(
+              ProtectionOperationFailed(
+                ProtectionOperation.enqueueRetry,
+                error.runtimeType.toString(),
+              ),
+            );
+            _attempts.remove(update.task.taskId);
+            rethrow;
+          }
         }
       }
+      if (update.status.isFinalState) _attempts.remove(update.task.taskId);
     }
 
     ref.read(downloadTaskUpdatesProvider.notifier).addOrUpdate(update);
@@ -130,6 +157,9 @@ class _BackgroundDownloadRuntimeState
 
     FileDownloader().addTaskQueue(tq);
 
+    ref
+        .read(loggerProvider)
+        .info('Download', 'backend configured androidCronet=true');
     FileDownloader().configure(
       globalConfig: (
         Config.holdingQueue,
@@ -147,6 +177,7 @@ class _BackgroundDownloadRuntimeState
   void dispose() {
     super.dispose();
     downloadUpdates.cancel();
+    _attempts.clear();
     FileDownloader().resetUpdates();
   }
 

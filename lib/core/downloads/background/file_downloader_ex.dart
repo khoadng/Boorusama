@@ -34,13 +34,16 @@ extension FileDownloaderX on FileDownloader {
     );
   }
 
-  Future<void> retryTask(
+  Future<bool> retryTask(
     Task task, {
     Map<String, String>? headers,
+    void Function(Map<String, String>)? onPrepared,
+    // Preserve asynchronous delivery of header preparation failures.
+    // ignore: unnecessary_async
   }) async {
     if (headers == null || headers.isEmpty) {
-      await enqueue(task);
-      return;
+      onPrepared?.call(task.headers);
+      return enqueue(task);
     }
 
     final mergedHeaders = Map<String, String>.from(task.headers);
@@ -52,6 +55,7 @@ extension FileDownloaderX on FileDownloader {
       mergedHeaders[header.key] = header.value;
     }
 
-    await enqueue(task.copyWith(headers: mergedHeaders));
+    onPrepared?.call(mergedHeaders);
+    return enqueue(task.copyWith(headers: mergedHeaders));
   }
 }

@@ -181,6 +181,9 @@ class _BoorusamaAppState extends State<BoorusamaApp> {
 
       logger.debugBoot('Initialize package info');
       final packageInfo = await PackageInfo.fromPlatform();
+      appLogger.updateReportContext({
+        'app': '${packageInfo.version}+${packageInfo.buildNumber}',
+      });
 
       final tagInfoOverride = await createTagInfoOverride(logger: logger);
 
@@ -188,6 +191,16 @@ class _BoorusamaAppState extends State<BoorusamaApp> {
       final deviceInfo = await DeviceInfoService(
         plugin: DeviceInfoPlugin(),
       ).getDeviceInfo();
+
+      appLogger.updateReportContext({
+        'osVersion':
+            deviceInfo.androidDeviceInfo?.version.release ??
+            deviceInfo.iosDeviceInfo?.systemVersion ??
+            deviceInfo.macOsDeviceInfo?.osRelease ??
+            deviceInfo.windowsDeviceInfo?.displayVersion ??
+            deviceInfo.linuxDeviceInfo?.versionId ??
+            'unknown',
+      });
 
       logger.debugBoot('Initialize i18n');
       await ensureI18nInitialized(settings.language);

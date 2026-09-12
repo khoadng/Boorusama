@@ -15,6 +15,7 @@ import '../foundation/platform.dart';
 import 'analytics/widgets.dart';
 import 'backups/auto/trigger.dart';
 import 'router.dart';
+import 'debug/widgets.dart';
 import 'settings/providers.dart';
 import 'themes/theme/widgets.dart';
 import 'widgets/widgets.dart';
@@ -29,7 +30,7 @@ class App extends StatelessWidget {
       child: AnalyticsScope(
         child: AutoBackupAppLifecycle(
           child: NetworkListener(
-            child: _App(),
+            child: DiagnosticContextScope(child: _App()),
           ),
         ),
       ),

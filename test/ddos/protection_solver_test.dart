@@ -12,6 +12,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:boorusama/core/ddos/solver/src/protection_detector.dart';
 import 'package:boorusama/core/ddos/solver/src/protection_orchestrator.dart';
 import 'package:boorusama/core/ddos/solver/src/protection_solver.dart';
+import 'package:boorusama/core/ddos/solver/src/protection_diagnostics.dart';
 import 'package:boorusama/core/ddos/solver/src/types.dart';
 import 'package:boorusama/core/ddos/solver/src/user_agent_provider.dart';
 
@@ -62,7 +63,11 @@ class FakeProtectionSolver implements ProtectionSolver {
   bool get isSolving => false;
 
   @override
-  Future<bool> solve({required Uri uri, String? userAgent}) async {
+  Future<bool> solve({
+    required Uri uri,
+    String? userAgent,
+    ProtectionSession? diagnostics,
+  }) async {
     solveCallCount++;
     return solveResult;
   }
@@ -292,8 +297,41 @@ void main() {
         ),
       );
 
-      final first = orchestrator.handleError(_FakeBuildContext(), error);
-      final second = orchestrator.handleError(_FakeBuildContext(), error);
+      final records = <ProtectionRecord>[];
+      final firstAttempt = ProtectionAttempt(
+        source: ProtectionSource.dio,
+        host: error.requestUri.host,
+        onEvent: (record, {sensitive}) => records.add(record),
+      );
+      final secondAttempt = ProtectionAttempt(
+        source: ProtectionSource.dio,
+        host: error.requestUri.host,
+        onEvent: (record, {sensitive}) => records.add(record),
+      );
+      final first = orchestrator.handleError(
+        _FakeBuildContext(),
+        error,
+        attempt: firstAttempt,
+      );
+      final second = orchestrator.handleError(
+        _FakeBuildContext(),
+        error,
+        attempt: secondAttempt,
+      );
+      expect(firstAttempt.id, isNot(secondAttempt.id));
+      expect(secondAttempt.session, same(firstAttempt.session));
+      final attachments = records
+          .map((record) => record.event)
+          .whereType<SolverAttached>()
+          .toList();
+      expect(attachments.map((event) => event.joined), [false, true]);
+      expect(attachments.map((event) => event.solverId).toSet(), {
+        firstAttempt.session!.id,
+      });
+      expect(
+        records.map((record) => record.event).whereType<DetectorEvaluated>(),
+        hasLength(2),
+      );
 
       solveCompleter.complete(true);
 
@@ -374,7 +412,11 @@ class _SlowSolver implements ProtectionSolver {
   bool get isSolving => false;
 
   @override
-  Future<bool> solve({required Uri uri, String? userAgent}) {
+  Future<bool> solve({
+    required Uri uri,
+    String? userAgent,
+    ProtectionSession? diagnostics,
+  }) {
     solveCallCount++;
     return completer.future;
   }
@@ -390,7 +432,11 @@ class _ThrowingSolver implements ProtectionSolver {
   bool get isSolving => false;
 
   @override
-  Future<bool> solve({required Uri uri, String? userAgent}) {
+  Future<bool> solve({
+    required Uri uri,
+    String? userAgent,
+    ProtectionSession? diagnostics,
+  }) {
     throw Exception('Solver crashed');
   }
 

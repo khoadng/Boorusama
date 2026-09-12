@@ -10,6 +10,8 @@ import 'package:webview_flutter/webview_flutter.dart';
 
 // Project imports:
 import 'protection_overlay.dart';
+import 'protection_diagnostics.dart';
+import 'page_inspection.dart';
 
 abstract class ProtectionSolver {
   /// The type of protection this solver handles
@@ -22,6 +24,7 @@ abstract class ProtectionSolver {
   Future<bool> solve({
     required Uri uri,
     String? userAgent,
+    ProtectionSession? diagnostics,
   });
 
   /// Cancels an ongoing solving process if possible
@@ -29,8 +32,6 @@ abstract class ProtectionSolver {
 }
 
 typedef ContextProvider = BuildContext? Function();
-typedef ChallengeCompletionValidator =
-    Future<bool> Function(WebViewController controller);
 
 abstract class CookieRetriever {
   Future<List<Cookie>> getCookies(String url);
@@ -50,8 +51,7 @@ class RawSolver implements ProtectionSolver {
     required this.autoCookieValidator,
     required this.contextProvider,
     required this.cookieJar,
-    this.challengeCompletionValidator,
-    this.onLog,
+    this.pageEvaluator,
     CookieRetriever? cookieRetriever,
   }) : _cookieRetriever = cookieRetriever ?? WebviewCookieRetriever();
 
@@ -61,9 +61,7 @@ class RawSolver implements ProtectionSolver {
   final bool Function(Cookie) autoCookieValidator;
   final ContextProvider contextProvider;
   final LazyAsync<CookieJar> cookieJar;
-  final ChallengeCompletionValidator? challengeCompletionValidator;
-  final void Function(String message, {String? sensitiveMessage})? onLog;
-
+  final PageEvaluator? pageEvaluator;
   final CookieRetriever _cookieRetriever;
   var _solving = false;
 
@@ -74,151 +72,206 @@ class RawSolver implements ProtectionSolver {
   Future<bool> solve({
     required Uri uri,
     String? userAgent,
+    ProtectionSession? diagnostics,
   }) async {
+    final session =
+        diagnostics ?? ProtectionSession(host: uri.host, type: protectionType);
     if (_solving) {
-      onLog?.call('$protectionType host=${uri.host} skipped: solver busy');
+      session.record(const RecoveryStopped(RecoveryStopReason.busy));
       return false;
     }
     _solving = true;
-
     final completer = Completer<bool>();
-    void log(String message, {String? sensitiveMessage}) => onLog?.call(
-      '$protectionType session=${identityHashCode(completer)} '
-      'host=${uri.host} $message',
-      sensitiveMessage: sensitiveMessage == null
-          ? null
-          : '$protectionType session=${identityHashCode(completer)} '
-                'host=${uri.host} $sensitiveMessage',
+    session.record(
+      const SolverStarted(),
+      sensitive: ProtectionRequestDetails(uri, userAgent: userAgent),
     );
-    log('started', sensitiveMessage: 'started uri=$uri userAgent=$userAgent');
     final context = contextProvider();
-
     if (context == null) {
-      log('unavailable: no context');
+      session.record(const RecoveryStopped(RecoveryStopReason.noContext));
       _solving = false;
       completer.complete(false);
       return completer.future;
     }
-
     if (!context.mounted) {
-      log('unavailable: context unmounted');
+      session.record(
+        const RecoveryStopped(RecoveryStopReason.unmountedContext),
+      );
       _solving = false;
       completer.complete(false);
       return completer.future;
     }
-
     final navigator = Navigator.of(context);
+    ModalRoute<dynamic>? dialogRoute;
+    void recordClose(
+      ProtectionTrace trace,
+      DialogCloseTrigger trigger,
+      NavigatorState target,
+      bool canPop,
+    ) {
+      trace.record(
+        DialogCloseRequested(
+          trigger: trigger,
+          navigatorId: identityHashCode(target),
+          routeId: dialogRoute == null ? null : identityHashCode(dialogRoute),
+          routeIsCurrent: dialogRoute?.isCurrent,
+          canPop: canPop,
+          alreadyCompleted: completer.isCompleted,
+        ),
+      );
+    }
+
+    void autoClose(ProtectionCheck check, DialogCloseTrigger trigger) {
+      final canPop = navigator.canPop();
+      recordClose(check, trigger, navigator, canPop);
+      if (canPop) navigator.pop(true);
+    }
 
     try {
       final jar = await cookieJar();
       final controller = WebViewController();
-      final initialCookies = await _getMatchingCookieValues(uri);
-      log('initial matching cookies=${initialCookies.length}');
+      final initialCookies = await _getMatchingCookieValues(uri, session);
+      session.record(
+        CookieLookupCompleted(
+          CookieStore.webView,
+          initialCookies.length,
+          matchingOnly: true,
+        ),
+      );
       var hasFinishedPageLoad = false;
-
       try {
         await controller.setJavaScriptMode(JavaScriptMode.unrestricted);
         if (userAgent != null) await controller.setUserAgent(userAgent);
-        if (challengeCompletionValidator != null) {
+        if (pageEvaluator != null) {
           await controller.setNavigationDelegate(
             NavigationDelegate(
-              onPageStarted: (url) {
-                log(
-                  'page started host=${Uri.tryParse(url)?.host}',
-                  sensitiveMessage: 'page started url=$url',
-                );
-              },
-              onWebResourceError: (error) {
-                log(
-                  'web resource error code=${error.errorCode} '
-                  'type=${error.errorType} mainFrame=${error.isForMainFrame}',
-                );
-              },
+              onPageStarted: (url) => session.record(
+                PageNavigationObserved(
+                  PageNavigationPhase.started,
+                  Uri.tryParse(url)?.host,
+                ),
+                sensitive: ProtectionNavigationDetails(url),
+              ),
+              onWebResourceError: (error) => session.record(
+                WebResourceFailed(
+                  code: error.errorCode,
+                  type: error.errorType?.name,
+                  mainFrame: error.isForMainFrame,
+                ),
+              ),
               onPageFinished: (url) {
                 hasFinishedPageLoad = true;
-                log(
-                  'page finished host=${Uri.tryParse(url)?.host}',
-                  sensitiveMessage: 'page finished url=$url',
+                session.record(
+                  PageNavigationObserved(
+                    PageNavigationPhase.finished,
+                    Uri.tryParse(url)?.host,
+                  ),
+                  sensitive: ProtectionNavigationDetails(url),
                 );
+                final check = session.beginCheck(CheckTrigger.pageFinished);
                 unawaited(
                   _completeIfSolved(
-                    log: (message, {sensitiveMessage}) => log(
-                      'page callback: $message',
-                      sensitiveMessage: sensitiveMessage,
-                    ),
+                    check: check,
                     uri: uri,
                     jar: jar,
                     controller: controller,
                     completer: completer,
                     initialCookies: initialCookies,
-                    onSuccess: () {
-                      if (navigator.canPop()) navigator.pop(true);
-                    },
+                    onCredentials: (cookies) =>
+                        session.observeCompletion(cookies, userAgent),
+                    onSuccess: () =>
+                        autoClose(check, DialogCloseTrigger.pageFinished),
                   ),
                 );
               },
             ),
           );
         }
-      } catch (e) {
-        log('WebView setup exception type=${e.runtimeType}');
-        // Keep showing the solver; the page may still load with defaults.
+      } catch (error) {
+        session.record(
+          ProtectionOperationFailed(
+            ProtectionOperation.webViewSetup,
+            error.runtimeType.toString(),
+          ),
+        );
+        // Preserve the existing policy: setup failures do not dismiss the solver.
       }
       unawaited(
-        controller.loadRequest(uri).catchError((Object e) {
-          log('load request exception type=${e.runtimeType}');
+        controller.loadRequest(uri).catchError((Object error) {
+          session.record(
+            ProtectionOperationFailed(
+              ProtectionOperation.loadRequest,
+              error.runtimeType.toString(),
+            ),
+          );
         }),
       );
-
       if (!context.mounted) {
+        session.record(
+          const RecoveryStopped(RecoveryStopReason.unmountedContext),
+        );
         _solving = false;
         completer.complete(false);
         return completer.future;
       }
-
       _monitorCompletion(
-        log: log,
+        session: session,
         uri: uri,
         jar: jar,
         controller: controller,
         completer: completer,
         initialCookies: initialCookies,
+        onCredentials: (cookies) =>
+            session.observeCompletion(cookies, userAgent),
         allowPageValidation: () => hasFinishedPageLoad,
-        onSuccess: () {
-          if (navigator.canPop()) navigator.pop(true);
-        },
+        onSuccess: (check) => autoClose(check, DialogCloseTrigger.timer),
       );
-
-      log('opening dialog');
+      session.record(const DialogOpening());
       final result = await showDialog<bool>(
         context: context,
         barrierDismissible: false,
         routeSettings: const RouteSettings(name: 'challenge_solver'),
         builder: (dialogContext) {
           final dialogNavigator = Navigator.of(dialogContext);
-
+          final route = ModalRoute.of(dialogContext);
+          if (!identical(route, dialogRoute)) {
+            dialogRoute = route;
+            session.record(
+              DialogPresented(route == null ? null : identityHashCode(route)),
+            );
+          }
           return Dialog.fullscreen(
             child: ProtectionOverlay(
               url: uri.toString(),
               controller: controller,
               onCancel: () {
-                log('cancel pressed');
+                recordClose(
+                  session,
+                  DialogCloseTrigger.cancel,
+                  dialogNavigator,
+                  dialogNavigator.canPop(),
+                );
                 dialogNavigator.pop(false);
               },
               onSolved: () async {
+                final check = session.beginCheck(CheckTrigger.manual);
                 final solved = await _completeIfSolved(
-                  log: (message, {sensitiveMessage}) => log(
-                    'manual: $message',
-                    sensitiveMessage: sensitiveMessage,
-                  ),
+                  check: check,
                   uri: uri,
                   jar: jar,
                   controller: controller,
                   completer: completer,
                   initialCookies: initialCookies,
+                  onCredentials: (cookies) =>
+                      session.observeCompletion(cookies, userAgent),
                 );
-
                 if (solved) {
+                  recordClose(
+                    check,
+                    DialogCloseTrigger.manual,
+                    dialogNavigator,
+                    dialogNavigator.canPop(),
+                  );
                   dialogNavigator.pop(true);
                 }
               },
@@ -226,20 +279,19 @@ class RawSolver implements ProtectionSolver {
           );
         },
       );
-
-      log('dialog closed result=$result');
-      if (!completer.isCompleted) {
-        completer.complete(result ?? false);
-      }
-    } catch (e) {
-      log('solver exception type=${e.runtimeType}');
+      session.record(DialogClosed(result));
+      if (!completer.isCompleted) completer.complete(result ?? false);
+    } catch (error) {
+      session.record(
+        ProtectionOperationFailed(
+          ProtectionOperation.solver,
+          error.runtimeType.toString(),
+        ),
+      );
       completer.complete(false);
     } finally {
       _solving = false;
-      // Force completer to resolve if somehow still pending
-      if (!completer.isCompleted) {
-        completer.complete(false);
-      }
+      if (!completer.isCompleted) completer.complete(false);
     }
     return completer.future.whenComplete(() {
       _solving = false;
@@ -247,119 +299,141 @@ class RawSolver implements ProtectionSolver {
   }
 
   void _monitorCompletion({
-    required void Function(String, {String? sensitiveMessage}) log,
+    required ProtectionSession session,
     required Uri uri,
     required CookieJar jar,
     required WebViewController controller,
     required Completer<bool> completer,
     required Map<String, String> initialCookies,
+    required void Function(Map<String, String>) onCredentials,
     bool Function()? allowPageValidation,
-    required VoidCallback onSuccess,
+    required void Function(ProtectionCheck) onSuccess,
   }) {
     Timer.periodic(const Duration(seconds: 1), (timer) async {
       if (!_solving || completer.isCompleted) {
         timer.cancel();
         return;
       }
-
+      final check = session.beginCheck(CheckTrigger.timer);
       final solved = await _completeIfSolved(
-        log: (message, {sensitiveMessage}) => log(
-          'timer: $message',
-          sensitiveMessage: sensitiveMessage,
-        ),
+        check: check,
         uri: uri,
         jar: jar,
         controller: controller,
         completer: completer,
         initialCookies: initialCookies,
+        onCredentials: onCredentials,
         allowPageValidation: allowPageValidation?.call() ?? true,
-        onSuccess: onSuccess,
+        onSuccess: () => onSuccess(check),
       );
-
       if (solved) timer.cancel();
     });
   }
 
   Future<bool> _completeIfSolved({
-    required void Function(String, {String? sensitiveMessage}) log,
+    required ProtectionCheck check,
     required Uri uri,
     required CookieJar jar,
     required WebViewController controller,
     required Completer<bool> completer,
     required Map<String, String> initialCookies,
+    required void Function(Map<String, String>) onCredentials,
     bool allowPageValidation = true,
     VoidCallback? onSuccess,
   }) async {
-    if (completer.isCompleted) {
-      log('check after session completed');
-      return true;
-    }
-    log('check started');
-
+    var outcome = CheckOutcome.failed;
+    var alreadyCompleted = completer.isCompleted;
     try {
+      if (completer.isCompleted) {
+        outcome = CheckOutcome.alreadyCompleted;
+        return true;
+      }
       final cookies = await _cookieRetriever.getCookies(uri.toString());
-      final currentUrl = await _safeCurrentUrl(controller);
-
-      log(
-        'cookies=${cookies.length} '
-        'matching=${cookies.where(autoCookieValidator).length} '
-        'changed=${_hasNewMatchingCookie(cookies, initialCookies)} '
-        'currentHost=${Uri.tryParse(currentUrl ?? '')?.host}',
+      final currentUrl = await _safeCurrentUrl(controller, check);
+      final changed = _hasNewMatchingCookie(cookies, initialCookies);
+      check.record(
+        CookiesObserved(
+          count: cookies.length,
+          matching: cookies.where(autoCookieValidator).length,
+          changed: changed,
+          currentHost: Uri.tryParse(currentUrl ?? '')?.host,
+        ),
       );
-      if (_hasNewMatchingCookie(cookies, initialCookies)) {
+      if (changed) {
         await jar.saveFromResponse(uri, cookies);
-        log(
-          'success via changed cookie alreadyCompleted=${completer.isCompleted}',
-        );
+        alreadyCompleted = completer.isCompleted;
+        onCredentials({
+          for (final cookie in cookies)
+            if (autoCookieValidator(cookie)) cookie.name: cookie.value,
+        });
         if (!completer.isCompleted) completer.complete(true);
+        outcome = CheckOutcome.changedCookie;
         onSuccess?.call();
         return true;
       }
-
-      final validator = challengeCompletionValidator;
-      if (validator == null) {
+      final evaluator = pageEvaluator;
+      if (evaluator == null) {
+        outcome = CheckOutcome.cookieOnly;
         return false;
       }
-
       if (!allowPageValidation) {
+        outcome = CheckOutcome.pageNotFinished;
         return false;
       }
-
-      final solvedByPage = await validator(controller);
-      log('page accepted=$solvedByPage');
-
-      if (!solvedByPage) {
-        final page = await _getPageSource(controller);
-        log(
-          'challenge pending pageLength=${page.length}',
-          sensitiveMessage:
-              'challenge pending page=${page.length > 2000 ? page.substring(0, 2000) : page}',
-        );
+      final evaluation = await inspectChallengePage(
+        readSource: () => _getPageSource(controller),
+        evaluate: evaluator,
+        diagnostics: check,
+      );
+      if (!evaluation.accepted) {
+        outcome = CheckOutcome.pageRejected;
         return false;
       }
-
-      if (cookies.isNotEmpty) {
-        await jar.saveFromResponse(uri, cookies);
-      }
-      log('success via page content alreadyCompleted=${completer.isCompleted}');
+      if (cookies.isNotEmpty) await jar.saveFromResponse(uri, cookies);
+      onCredentials({
+        for (final cookie in cookies)
+          if (autoCookieValidator(cookie)) cookie.name: cookie.value,
+      });
+      alreadyCompleted = completer.isCompleted;
       if (!completer.isCompleted) completer.complete(true);
+      outcome = CheckOutcome.pageAccepted;
       onSuccess?.call();
       return true;
-    } catch (e) {
-      log('check exception type=${e.runtimeType}');
+    } catch (error) {
+      outcome = CheckOutcome.failed;
+      check.record(
+        ProtectionOperationFailed(
+          ProtectionOperation.completionCheck,
+          error.runtimeType.toString(),
+        ),
+      );
       return false;
+    } finally {
+      if (outcome != CheckOutcome.changedCookie &&
+          outcome != CheckOutcome.pageAccepted) {
+        alreadyCompleted = completer.isCompleted;
+      }
+      check.finish(outcome, alreadyCompleted: alreadyCompleted);
     }
   }
 
-  Future<Map<String, String>> _getMatchingCookieValues(Uri uri) async {
+  Future<Map<String, String>> _getMatchingCookieValues(
+    Uri uri,
+    ProtectionSession session,
+  ) async {
     try {
       final cookies = await _cookieRetriever.getCookies(uri.toString());
-
       return {
         for (final cookie in cookies)
           if (autoCookieValidator(cookie)) cookie.name: cookie.value,
       };
-    } catch (_) {
+    } catch (error) {
+      session.record(
+        ProtectionOperationFailed(
+          ProtectionOperation.initialCookieLookup,
+          error.runtimeType.toString(),
+        ),
+      );
       return {};
     }
   }
@@ -367,13 +441,11 @@ class RawSolver implements ProtectionSolver {
   bool _hasNewMatchingCookie(
     List<Cookie> cookies,
     Map<String, String> initialCookies,
-  ) {
-    return cookies.any((cookie) {
-      if (!autoCookieValidator(cookie)) return false;
-
-      return initialCookies[cookie.name] != cookie.value;
-    });
-  }
+  ) => cookies.any(
+    (cookie) =>
+        autoCookieValidator(cookie) &&
+        initialCookies[cookie.name] != cookie.value,
+  );
 
   @override
   Future<void> cancel() async => _solving = false;
@@ -407,22 +479,19 @@ class CloudflareSolver implements ProtectionSolver {
   CloudflareSolver({
     required this.contextProvider,
     required this.cookieJar,
-    this.onLog,
   });
 
   final ContextProvider contextProvider;
   final LazyAsync<CookieJar> cookieJar;
-  final void Function(String message, {String? sensitiveMessage})? onLog;
 
   late final _solver = RawSolver(
-    onLog: onLog,
     contextProvider: contextProvider,
     cookieJar: cookieJar,
     protectionType: 'cloudflare',
     protectionTitle: 'Solving Cloudflare Challenge',
     autoCookieValidator: (cookie) =>
         cookie.name.toLowerCase() == 'cf_clearance',
-    challengeCompletionValidator: _isCloudflareSolved,
+    pageEvaluator: evaluateCloudflarePage,
   );
 
   @override
@@ -435,9 +504,11 @@ class CloudflareSolver implements ProtectionSolver {
   Future<bool> solve({
     required Uri uri,
     String? userAgent,
+    ProtectionSession? diagnostics,
   }) => _solver.solve(
     uri: uri,
     userAgent: userAgent,
+    diagnostics: diagnostics,
   );
 
   @override
@@ -448,15 +519,12 @@ class AftSolver implements ProtectionSolver {
   AftSolver({
     required this.contextProvider,
     required this.cookieJar,
-    this.onLog,
   });
 
   final ContextProvider contextProvider;
   final LazyAsync<CookieJar> cookieJar;
-  final void Function(String message, {String? sensitiveMessage})? onLog;
 
   late final _solver = RawSolver(
-    onLog: onLog,
     contextProvider: contextProvider,
     cookieJar: cookieJar,
     protectionType: 'aft',
@@ -468,7 +536,7 @@ class AftSolver implements ProtectionSolver {
           cookieName.contains('verification') ||
           cookieName.contains('aft');
     },
-    challengeCompletionValidator: _isAftSolved,
+    pageEvaluator: evaluateAftPage,
   );
 
   @override
@@ -481,93 +549,19 @@ class AftSolver implements ProtectionSolver {
   Future<bool> solve({
     required Uri uri,
     String? userAgent,
+    ProtectionSession? diagnostics,
   }) => _solver.solve(
     uri: uri,
     userAgent: userAgent,
+    diagnostics: diagnostics,
   );
 
   @override
   Future<void> cancel() => _solver.cancel();
 }
 
-bool isAftSolvedPage(String value) {
-  final normalized = value.trim();
-  if (normalized.isEmpty) return false;
-
-  final lower = normalized.toLowerCase();
-  const failureMarkers = [
-    '403 forbidden',
-    'failure!',
-    'challenge has expired',
-    'reloading the page to try again',
-  ];
-  if (failureMarkers.any(lower.contains)) return false;
-
-  const challengeMarkers = [
-    'challenge_id',
-    'challenge_generated',
-    'challenge-checkbox',
-    'challenge-container',
-    'challenge-prompt',
-    'checkbox-status',
-    'x-verification-challenge',
-    'powseed',
-    'sendanswer',
-    'i am not a robot',
-    'it is now okay to proceed',
-    'wait for signal before clicking',
-  ];
-  if (challengeMarkers.any(lower.contains)) return false;
-
-  return true;
-}
-
-Future<bool> _isAftSolved(WebViewController controller) async {
-  final pageSource = await _getPageSource(controller);
-
-  return isAftSolvedPage(pageSource);
-}
-
-bool isCloudflareSolvedPage(String value) {
-  final normalized = value.trim();
-  if (normalized.isEmpty) return false;
-
-  final lower = normalized.toLowerCase();
-  const failureMarkers = [
-    '403 forbidden',
-  ];
-  if (failureMarkers.any(lower.contains)) return false;
-
-  const challengeMarkers = [
-    'cf_chl',
-    'cf-ray',
-    'cf-turnstile',
-    'cf-mitigated',
-    'challenges.cloudflare.com',
-    '/cdn-cgi/challenge-platform',
-    'challenge-platform',
-    'challenge-error-text',
-    'enable javascript and cookies',
-    'just a moment',
-    'checking if the site connection is secure',
-    'captcha-box',
-    'h-captcha',
-    'g-recaptcha',
-  ];
-  if (challengeMarkers.any(lower.contains)) return false;
-
-  return true;
-}
-
-Future<bool> _isCloudflareSolved(WebViewController controller) async {
-  final pageSource = await _getPageSource(controller);
-
-  return isCloudflareSolvedPage(pageSource);
-}
-
 Future<String> _getPageSource(WebViewController controller) async {
-  try {
-    final result = await controller.runJavaScriptReturningResult('''
+  final result = await controller.runJavaScriptReturningResult('''
 (() => {
   const body = document.body;
   const root = document.documentElement;
@@ -578,10 +572,7 @@ Future<String> _getPageSource(WebViewController controller) async {
 })()
 ''');
 
-    return _javaScriptResultAsString(result);
-  } catch (_) {
-    return '';
-  }
+  return _javaScriptResultAsString(result);
 }
 
 String _javaScriptResultAsString(Object? result) {
@@ -596,10 +587,25 @@ String _javaScriptResultAsString(Object? result) {
   }
 }
 
-Future<String?> _safeCurrentUrl(WebViewController controller) async {
+Future<String?> _safeCurrentUrl(
+  WebViewController controller,
+  ProtectionCheck check,
+) async {
+  void recordFailure(Object error) => check.record(
+    ProtectionOperationFailed(
+      ProtectionOperation.currentUrl,
+      error.runtimeType.toString(),
+    ),
+  );
   try {
-    return controller.currentUrl();
-  } catch (_) {
+    // Preserve the existing distinction: an asynchronous failure propagates
+    // to the completion check; a synchronous lookup failure yields no URL.
+    return controller.currentUrl().catchError((Object error, StackTrace stack) {
+      recordFailure(error);
+      Error.throwWithStackTrace(error, stack);
+    });
+  } catch (error) {
+    recordFailure(error);
     return null;
   }
 }
@@ -608,15 +614,12 @@ class CaptchaAccessDeniedSolver implements ProtectionSolver {
   CaptchaAccessDeniedSolver({
     required this.contextProvider,
     required this.cookieJar,
-    this.onLog,
   });
 
   final ContextProvider contextProvider;
   final LazyAsync<CookieJar> cookieJar;
-  final void Function(String message, {String? sensitiveMessage})? onLog;
 
   late final _solver = RawSolver(
-    onLog: onLog,
     contextProvider: contextProvider,
     cookieJar: cookieJar,
     protectionType: 'captcha_access_denied',
@@ -638,9 +641,11 @@ class CaptchaAccessDeniedSolver implements ProtectionSolver {
   Future<bool> solve({
     required Uri uri,
     String? userAgent,
+    ProtectionSession? diagnostics,
   }) => _solver.solve(
     uri: uri,
     userAgent: userAgent,
+    diagnostics: diagnostics,
   );
 
   @override

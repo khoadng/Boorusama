@@ -7,6 +7,7 @@ import 'package:kurumi/material.dart';
 
 // Project imports:
 import '../../../config/types.dart';
+import '../../../../../foundation/loggers.dart';
 import '../../../create/providers.dart';
 import '../pages/cookie_access_webview_page.dart';
 
@@ -148,6 +149,7 @@ class AdvancedAuthSection extends ConsumerWidget {
     WidgetRef ref,
     BooruConfig config,
   ) {
+    final logger = ref.read(loggerProvider);
     final loginUrl = getLoginUrl();
 
     if (loginUrl == null || loginUrl.isEmpty) {
@@ -166,6 +168,10 @@ class AdvancedAuthSection extends ConsumerWidget {
           onGet: (cookies) {
             if (cookies.isNotEmpty) {
               if (onGetCookies != null) {
+                logger.info(
+                  'Login',
+                  'cookie import delegated to source callback',
+                );
                 onGetCookies!(cookies);
                 Navigator.of(context).pop();
                 return;
@@ -176,6 +182,10 @@ class AdvancedAuthSection extends ConsumerWidget {
               );
               final uid = cookies.firstWhereOrNull((e) => e.name == 'user_id');
 
+              logger.info(
+                'Login',
+                'cookie import passHashPresent=${passHash != null} userIdPresent=${uid != null}',
+              );
               if (passHash != null) {
                 ref.editNotifier.updatePassHash(
                   passHash.value,
@@ -185,11 +195,18 @@ class AdvancedAuthSection extends ConsumerWidget {
                   loginController.text = uid.value;
                 }
                 onCookiesReceived?.call(cookies);
+                logger.info('Login', 'cookie import applied');
               } else {
+                logger.info(
+                  'Login',
+                  'cookie import rejected reason=missing_pass_hash',
+                );
                 Kurumi.showErrorToast(context, 'No hashed password found');
               }
 
               Navigator.of(context).pop();
+            } else {
+              logger.info('Login', 'cookie import skipped reason=no_cookies');
             }
           },
         ),

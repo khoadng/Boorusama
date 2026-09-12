@@ -6,6 +6,9 @@ abstract class UserAgentProvider {
 }
 
 class WebViewUserAgentProvider implements UserAgentProvider {
+  WebViewUserAgentProvider({this.onUserAgent});
+
+  final void Function(String?)? onUserAgent;
   String? _userAgent;
 
   @override
@@ -14,9 +17,9 @@ class WebViewUserAgentProvider implements UserAgentProvider {
       return _userAgent;
     }
 
-    // ignore: join_return_with_assignment
     _userAgent ??= await WebViewController().getUserAgent();
 
+    onUserAgent?.call(_userAgent);
     return _userAgent;
   }
 }
