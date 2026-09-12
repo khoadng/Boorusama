@@ -75,7 +75,7 @@ class SliverPostGridImageGridItem<T extends Post> extends ConsumerWidget {
     final scoreWidget = showScoresInGrid
         ? score.toOption().fold(
             () => null,
-            (s) => ImageScoreWidget(score: s),
+            (s) => s == 0 ? null : ImageScoreWidget(score: s),
           )
         : null;
 
@@ -124,7 +124,7 @@ class SliverPostGridImageGridItem<T extends Post> extends ConsumerWidget {
             hasParentOrChildren: post.hasParentOrChildren,
             hasSound: post.hasSound,
             duration: post.duration,
-            scoreWidget: scoreWidget ?? const SizedBox.shrink(),
+            scoreWidget: scoreWidget,
           ),
           if (overlay != null) ...[
             Positioned.fill(

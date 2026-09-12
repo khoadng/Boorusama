@@ -18,6 +18,7 @@ import '../../../../proxy/types.dart';
 import '../../../../settings/types.dart';
 import '../../../../themes/configs/types.dart';
 import '../../../gesture/types.dart';
+import '../../../listing/types.dart';
 import '../../../network/types.dart';
 import '../../../search/types.dart';
 import 'always_included_tags.dart';
@@ -52,7 +53,7 @@ class BooruConfig extends Equatable {
     required this.videoQuality,
     required this.granularRatingFilters,
     required this.postGestures,
-    required this.defaultPreviewImageButtonAction,
+    this.thumbnailActions = const ThumbnailActions.defaultActions(),
     required this.listing,
     required this.viewerConfigs,
     required this.theme,
@@ -98,8 +99,7 @@ class BooruConfig extends Equatable {
           : PostGestureConfig.fromJson(
               json['postGestures'] as Map<String, dynamic>,
             ),
-      defaultPreviewImageButtonAction:
-          json['defaultPreviewImageButtonAction'] as String?,
+      thumbnailActions: ThumbnailActions.fromConfigJson(json),
       listing: json['listing'] == null
           ? null
           : ListingConfigs.fromJson(json['listing'] as Map<String, dynamic>),
@@ -151,7 +151,6 @@ class BooruConfig extends Equatable {
     videoQuality: null,
     granularRatingFilters: null,
     postGestures: null,
-    defaultPreviewImageButtonAction: null,
     listing: null,
     viewerConfigs: null,
     theme: null,
@@ -187,7 +186,6 @@ class BooruConfig extends Equatable {
     videoQuality: null,
     granularRatingFilters: null,
     postGestures: null,
-    defaultPreviewImageButtonAction: null,
     listing: null,
     viewerConfigs: null,
     theme: null,
@@ -217,7 +215,7 @@ class BooruConfig extends Equatable {
   final String? videoQuality;
   final GranularRatingFilter? granularRatingFilters;
   final PostGestureConfig? postGestures;
-  final String? defaultPreviewImageButtonAction;
+  final ThumbnailActions thumbnailActions;
   final ListingConfigs? listing;
   final ViewerConfigs? viewerConfigs;
   final ThemeConfigs? theme;
@@ -231,6 +229,7 @@ class BooruConfig extends Equatable {
   final ProfileIconConfigs? profileIcon;
 
   BooruConfig copyWith({
+    ThumbnailActions? thumbnailActions,
     String? url,
     String? apiKey,
     String? login,
@@ -260,7 +259,7 @@ class BooruConfig extends Equatable {
       videoQuality: videoQuality,
       granularRatingFilters: granularRatingFilters,
       postGestures: postGestures,
-      defaultPreviewImageButtonAction: defaultPreviewImageButtonAction,
+      thumbnailActions: thumbnailActions ?? this.thumbnailActions,
       listing: listing,
       viewerConfigs: viewerConfigs != null
           ? viewerConfigs()
@@ -298,7 +297,7 @@ class BooruConfig extends Equatable {
     videoQuality,
     granularRatingFilters,
     postGestures,
-    defaultPreviewImageButtonAction,
+    thumbnailActions,
     listing,
     viewerConfigs,
     theme,
@@ -338,7 +337,7 @@ class BooruConfig extends Equatable {
       if (granularRatingFilters case final filter?)
         'granularRatingFilterString': filter.toFilterString(),
       'postGestures': postGestures?.toJson(),
-      'defaultPreviewImageButtonAction': defaultPreviewImageButtonAction,
+      'thumbnailActions': thumbnailActions.toJson(),
       'listing': listing?.toJson(),
       'viewer': viewerConfigs?.toJson(),
       'theme': theme?.toJson(),
@@ -712,28 +711,11 @@ mixin BooruConfigSearchFilterMixin {
 extension BooruConfigX on BooruConfig {
   bool isDefault() => id == -1;
 
-  ImageQuickActionType get defaultPreviewImageButtonActionType =>
-      switch (defaultPreviewImageButtonAction) {
-        kDownloadAction => ImageQuickActionType.download,
-        kToggleBookmarkAction => ImageQuickActionType.bookmark,
-        kViewArtistAction => ImageQuickActionType.artist,
-        '' => ImageQuickActionType.none,
-        _ => ImageQuickActionType.defaultAction,
-      };
-
   BooruConfigAuth get auth => BooruConfigAuth.fromConfig(this);
   BooruConfigSearch get search => BooruConfigSearch.fromConfig(this);
   BooruConfigFilter get filter => BooruConfigFilter.fromConfig(this);
   BooruConfigViewer get viewer => BooruConfigViewer.fromConfig(this);
   BooruConfigDownload get download => BooruConfigDownload.fromConfig(this);
-}
-
-enum ImageQuickActionType {
-  none,
-  defaultAction,
-  download,
-  bookmark,
-  artist,
 }
 
 class LayoutConfigs extends Equatable {

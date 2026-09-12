@@ -1,11 +1,12 @@
 // Package imports:
 import 'package:foundation/foundation.dart';
-import 'package:kurumi/material.dart';
 
 // Project imports:
 import '../../core/boorus/defaults/widgets.dart';
 import '../../core/boorus/engine/types.dart';
 import '../../core/configs/config/types.dart';
+import '../../core/configs/config/providers.dart';
+import '../../core/posts/favorites/providers.dart';
 import '../../core/configs/create/widgets.dart';
 import '../../core/configs/manage/widgets.dart';
 import '../../core/downloads/filename/types.dart';
@@ -135,12 +136,15 @@ class DanbooruBuilder extends BaseBooruBuilder {
 
   @override
   QuickFavoriteButtonBuilder get quickFavoriteButtonBuilder =>
-      (context, post) => castOrNull<DanbooruPost>(post).toOption().fold(
-        () => const SizedBox.shrink(),
-        (post) => DanbooruQuickFavoriteButton(
-          post: post,
-        ),
-      );
+      (context, ref, post) =>
+          !ref.watch(canFavoriteProvider(ref.watchConfigAuth))
+          ? null
+          : castOrNull<DanbooruPost>(post).toOption().fold(
+              () => null,
+              (post) => DanbooruQuickFavoriteButton(
+                post: post,
+              ),
+            );
 
   @override
   MultiSelectionActionsBuilder? get multiSelectionActionsBuilder =>

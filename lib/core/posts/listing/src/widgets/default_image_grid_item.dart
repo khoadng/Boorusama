@@ -104,7 +104,7 @@ class DefaultImageGridItem<T extends Post> extends StatelessWidget {
                                 );
                               },
                           quickActionButton: !multiSelect
-                              ? DefaultImagePreviewQuickActionButton(
+                              ? DefaultImagePreviewQuickActions(
                                   post: post,
                                 )
                               : null,

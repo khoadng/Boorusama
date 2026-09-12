@@ -53,8 +53,9 @@ typedef FavoritesPageBuilder =
     );
 
 typedef QuickFavoriteButtonBuilder =
-    Widget Function(
+    Widget? Function(
       BuildContext context,
+      WidgetRef ref,
       Post post,
     );
 

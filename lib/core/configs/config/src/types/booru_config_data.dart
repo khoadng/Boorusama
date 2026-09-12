@@ -10,6 +10,7 @@ import '../../../../proxy/types.dart';
 import '../../../../settings/types.dart';
 import '../../../../themes/configs/types.dart';
 import '../../../gesture/types.dart';
+import '../../../listing/types.dart';
 import '../../../search/types.dart';
 import 'booru_config.dart';
 import 'granular_rating_filter.dart';
@@ -33,7 +34,7 @@ class BooruConfigData extends Equatable {
     required this.videoQuality,
     required this.granularRatingFilterString,
     required this.postGestures,
-    required this.defaultPreviewImageButtonAction,
+    this.thumbnailActions = const ThumbnailActions.defaultActions(),
     required this.listing,
     required this.viewerConfigs,
     required this.theme,
@@ -75,7 +76,6 @@ class BooruConfigData extends Equatable {
     videoQuality: videoQuality,
     granularRatingFilterString: null,
     postGestures: null,
-    defaultPreviewImageButtonAction: null,
     listing: null,
     viewerConfigs: null,
     theme: null,
@@ -112,8 +112,7 @@ class BooruConfigData extends Equatable {
         granularRatingFilterString:
             json['granularRatingFilterString'] as String?,
         postGestures: json['postGestures'] as String?,
-        defaultPreviewImageButtonAction:
-            json['defaultPreviewImageButtonAction'] as String?,
+        thumbnailActions: ThumbnailActions.fromConfigJson(json),
         listing: json['listing'] as String?,
         viewerConfigs: json['viewer'] as String?,
         theme: json['theme'] as String?,
@@ -152,7 +151,7 @@ class BooruConfigData extends Equatable {
       'videoQuality': videoQuality,
       'granularRatingFilterString': granularRatingFilterString,
       'postGestures': postGestures,
-      'defaultPreviewImageButtonAction': defaultPreviewImageButtonAction,
+      'thumbnailActions': thumbnailActions.toJson(),
       'listing': listing,
       'viewer': viewerConfigs,
       'theme': theme,
@@ -184,7 +183,7 @@ class BooruConfigData extends Equatable {
   final String? videoQuality;
   final String? granularRatingFilterString;
   final String? postGestures;
-  final String? defaultPreviewImageButtonAction;
+  final ThumbnailActions thumbnailActions;
   final String? listing;
   final String? viewerConfigs;
   final String? theme;
@@ -216,7 +215,7 @@ class BooruConfigData extends Equatable {
     videoQuality,
     granularRatingFilterString,
     postGestures,
-    defaultPreviewImageButtonAction,
+    thumbnailActions,
     listing,
     viewerConfigs,
     theme,
@@ -296,7 +295,7 @@ extension BooruConfigDataCopyWith on BooruConfigData {
     String? Function()? videoQuality,
     Set<Rating>? Function()? granularRatingFilter,
     PostGestureConfig? Function()? postGestures,
-    String? Function()? defaultPreviewImageButtonAction,
+    ThumbnailActions? thumbnailActions,
     ListingConfigs? Function()? listing,
     ViewerConfigs? Function()? viewerConfigs,
     ThemeConfigs? Function()? theme,
@@ -346,9 +345,7 @@ extension BooruConfigDataCopyWith on BooruConfigData {
           ? postGestures()?.toJsonString() ??
                 const PostGestureConfig.undefined().toJsonString()
           : this.postGestures,
-      defaultPreviewImageButtonAction: defaultPreviewImageButtonAction != null
-          ? defaultPreviewImageButtonAction()
-          : this.defaultPreviewImageButtonAction,
+      thumbnailActions: thumbnailActions ?? this.thumbnailActions,
       listing: listing != null ? listing()?.toJsonString() : this.listing,
       viewerConfigs: viewerConfigs != null
           ? viewerConfigs()?.toJsonString()

@@ -89,7 +89,7 @@ class DefaultDanbooruImageGridItem extends StatelessWidget {
                           quickActionButton:
                               quickActionButton ??
                               (!post.isBanned && !multiSelect
-                                  ? DefaultImagePreviewQuickActionButton(
+                                  ? DefaultImagePreviewQuickActions(
                                       post: post,
                                     )
                                   : const SizedBox.shrink()),

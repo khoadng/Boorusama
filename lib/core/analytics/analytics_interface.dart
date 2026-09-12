@@ -82,8 +82,8 @@ extension AnalyticsInterfaceX on AnalyticsInterface {
 
     unawaited(
       _logChangedEvent(
-        oldValue: oldValue.defaultPreviewImageButtonAction ?? '<none>',
-        newValue: newValue.defaultPreviewImageButtonAction ?? '<none>',
+        oldValue: oldValue.thumbnailActions.toJson().join(','),
+        newValue: newValue.thumbnailActions.toJson().join(','),
         eventName: 'preview_img_btn_changed',
         source: SettingsChangedSource.configs,
       ),

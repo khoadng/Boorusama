@@ -95,6 +95,8 @@ class BookmarkPostLikeButtonButton extends ConsumerWidget {
     final isLoading = bookmarkStateAsync.isLoading;
 
     return LikeButton(
+      likeCountPadding: EdgeInsets.zero,
+      padding: const EdgeInsets.all(1.5),
       isLiked: isBookmarked,
       onTap: isLoading
           ? null

@@ -28,39 +28,42 @@ class QuickFavoriteButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final hapticsLevel = ref.watch(hapticFeedbackLevelProvider);
 
-    return Container(
-      padding: const EdgeInsets.only(
-        top: 2,
-        bottom: 1,
-        right: 1,
-        left: 3,
-      ),
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: context.extendedColorScheme.surfaceContainerOverlay,
-      ),
-      child: LikeButton(
-        isLiked: isFaved,
-        onTap: (isLiked) {
-          final liked = !isLiked;
-          onFavToggle?.call(!isLiked);
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        Container(
+          width: 33,
+          height: 33,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: context.extendedColorScheme.surfaceContainerOverlay,
+          ),
+        ),
+        LikeButton(
+          likeCountPadding: EdgeInsets.zero,
+          padding: const EdgeInsets.all(1.5),
+          isLiked: isFaved,
+          onTap: (isLiked) {
+            final liked = !isLiked;
+            onFavToggle?.call(!isLiked);
 
-          if (liked && hapticsLevel.isBalanceAndAbove) {
-            HapticFeedback.mediumImpact();
-          }
+            if (liked && hapticsLevel.isBalanceAndAbove) {
+              HapticFeedback.mediumImpact();
+            }
 
-          return Future.value(liked);
-        },
-        likeBuilder: (isLiked) {
-          return Icon(
-            isLiked ? Symbols.favorite : Symbols.favorite,
-            color: isLiked
-                ? context.colors.upvoteColor
-                : context.extendedColorScheme.onSurfaceContainerOverlay,
-            fill: isLiked ? 1 : 0,
-          );
-        },
-      ),
+            return Future.value(liked);
+          },
+          likeBuilder: (isLiked) {
+            return Icon(
+              isLiked ? Symbols.favorite : Symbols.favorite,
+              color: isLiked
+                  ? context.colors.upvoteColor
+                  : context.extendedColorScheme.onSurfaceContainerOverlay,
+              fill: isLiked ? 1 : 0,
+            );
+          },
+        ),
+      ],
     );
   }
 }

@@ -1,10 +1,11 @@
 // Package imports:
-import 'package:kurumi/material.dart';
 
 // Project imports:
 import '../../core/boorus/defaults/widgets.dart';
 import '../../core/boorus/engine/types.dart';
 import '../../core/configs/config/types.dart';
+import '../../core/configs/config/providers.dart';
+import 'favorites/providers.dart';
 import '../../core/configs/create/widgets.dart';
 import '../../core/configs/manage/widgets.dart';
 import '../../core/downloads/filename/types.dart';
@@ -82,9 +83,12 @@ class SankakuBuilder extends BaseBooruBuilder {
 
   @override
   QuickFavoriteButtonBuilder get quickFavoriteButtonBuilder =>
-      (context, post) => post is SankakuPost
-      ? SankakuQuickFavoriteButton(post: post)
-      : const SizedBox.shrink();
+      (context, ref, post) =>
+          post is SankakuPost &&
+              post.sankakuId != null &&
+              ref.watch(sankakuCanFavoriteProvider(ref.watchConfigAuth))
+          ? SankakuQuickFavoriteButton(post: post)
+          : null;
 
   @override
   final postDetailsUIBuilder = kSankakuPostDetailsUIBuilder;

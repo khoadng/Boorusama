@@ -1,5 +1,6 @@
 // Project imports:
 import '../../../configs/config/types.dart';
+import '../../../configs/config/providers.dart';
 import '../../../configs/create/widgets.dart';
 import '../../../configs/manage/widgets.dart';
 import '../../../downloads/filename/types.dart';
@@ -9,6 +10,7 @@ import '../../../posts/details/widgets.dart';
 import '../../../posts/details_parts/types.dart';
 import '../../../posts/details_parts/widgets.dart';
 import '../../../posts/favorites/widgets.dart';
+import '../../../posts/favorites/providers.dart';
 import '../../../posts/listing/widgets.dart';
 import '../../../posts/statistics/types.dart';
 import '../../../posts/statistics/widgets.dart';
@@ -59,9 +61,12 @@ class BaseBooruBuilder implements BooruBuilder {
   FavoritesPageBuilder? get favoritesPageBuilder => null;
   @override
   QuickFavoriteButtonBuilder get quickFavoriteButtonBuilder =>
-      (context, post) => DefaultQuickFavoriteButton(
-        post: post,
-      );
+      (context, ref, post) =>
+          ref.watch(canFavoriteProvider(ref.watchConfigAuth))
+          ? DefaultQuickFavoriteButton(
+              post: post,
+            )
+          : null;
 
   @override
   ArtistPageBuilder? get artistPageBuilder => null;

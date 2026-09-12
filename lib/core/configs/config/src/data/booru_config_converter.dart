@@ -43,8 +43,7 @@ extension BooruConfigDataConverter on BooruConfigData? {
       postGestures: booruConfigData.postGestures == null
           ? null
           : PostGestureConfig.fromJsonString(booruConfigData.postGestures),
-      defaultPreviewImageButtonAction:
-          booruConfigData.defaultPreviewImageButtonAction,
+      thumbnailActions: booruConfigData.thumbnailActions,
       listing: booruConfigData.listing == null
           ? null
           : ListingConfigs.fromJsonString(booruConfigData.listing),
@@ -103,7 +102,7 @@ extension BooruConfigConverter on BooruConfig {
       videoQuality: videoQuality,
       granularRatingFilterString: granularRatingFilters?.toFilterString(),
       postGestures: postGestures?.toJsonString(),
-      defaultPreviewImageButtonAction: defaultPreviewImageButtonAction,
+      thumbnailActions: thumbnailActions,
       listing: listing?.toJsonString(),
       viewerConfigs: viewerConfigs?.toJsonString(),
       theme: theme?.toJsonString(),

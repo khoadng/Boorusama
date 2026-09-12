@@ -15,6 +15,7 @@ import '../../../config/data.dart';
 import '../../../config/providers.dart';
 import '../../../config/types.dart';
 import '../../../gesture/types.dart';
+import '../../../listing/types.dart';
 import '../../../manage/providers.dart';
 import '../../../search/types.dart';
 import '../types/edit_booru_config_id.dart';
@@ -153,10 +154,10 @@ class EditBooruConfigNotifier
     String? videoQuality,
   ) => state = state.copyWith(videoQuality: () => videoQuality);
 
-  void updateDefaultPreviewImageButtonAction(
-    String? defaultPreviewImageButtonAction,
+  void updateThumbnailActions(
+    ThumbnailActions actions,
   ) => state = state.copyWith(
-    defaultPreviewImageButtonAction: () => defaultPreviewImageButtonAction,
+    thumbnailActions: actions,
   );
 
   void updateTooltipDisplayMode(
