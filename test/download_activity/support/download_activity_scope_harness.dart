@@ -25,20 +25,24 @@ final _activitiesProvider = StateProvider<List<DownloadActivity>>(
 );
 
 class DownloadActivityScopeHarness {
-  DownloadActivityScopeHarness()
-    : _notifications = _RecordingDownloadNotifications(),
-      _permissionManager = _RecordingNotificationPermissionManager(),
-      _settingsNotifier = _TestSettingsNotifier(Settings.defaultSettings) {
+  DownloadActivityScopeHarness({
+    bool useRealActivities = false,
+    List<Override> overrides = const [],
+  }) : _notifications = _RecordingDownloadNotifications(),
+       _permissionManager = _RecordingNotificationPermissionManager(),
+       _settingsNotifier = _TestSettingsNotifier(Settings.defaultSettings) {
     _container = ProviderContainer(
       overrides: [
         settingsNotifierProvider.overrideWith(() => _settingsNotifier),
-        downloadActivitiesProvider.overrideWith(
-          (ref) => ref.watch(_activitiesProvider),
-        ),
+        if (!useRealActivities)
+          downloadActivitiesProvider.overrideWith(
+            (ref) => ref.watch(_activitiesProvider),
+          ),
         downloadNotificationsProvider.overrideWithValue(_notifications),
         notificationPermissionManagerProvider.overrideWithValue(
           _permissionManager,
         ),
+        ...overrides,
       ],
     );
   }

@@ -101,8 +101,11 @@ void main() {
         expect(activity.kind, DownloadActivityKind.bulk);
         expect(activity.phase, entry.value);
         expect(activity.label, 'cat dog');
-        expect(activity.progress, 0.4);
-        expect(activity.completedItems, 4);
+        final completed =
+            entry.key == DownloadSessionStatus.completed ||
+            entry.key == DownloadSessionStatus.allSkipped;
+        expect(activity.progress, completed ? 1 : 0.4);
+        expect(activity.completedItems, completed ? 10 : 4);
         expect(activity.totalItems, 10);
       });
     }
