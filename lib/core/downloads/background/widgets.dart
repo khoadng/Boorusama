@@ -8,6 +8,7 @@ import 'package:kurumi/cupertino.dart';
 import 'package:kurumi/material.dart';
 
 // Project imports:
+import '../../../foundation/loggers.dart';
 import '../../../foundation/media_scanner.dart';
 import '../../../foundation/path.dart' as path;
 import '../../../foundation/platform.dart';
@@ -34,6 +35,16 @@ class _BackgroundDownloadRuntimeState
 
   Future<void> _update(TaskUpdate update) async {
     if (update case TaskStatusUpdate()) {
+      final logger = ref.read(loggerProvider);
+      final taskLabel =
+          'task=${update.task.taskId} '
+          'host=${Uri.tryParse(update.task.url)?.host}';
+      logger.info(
+        'Download',
+        '$taskLabel status=${update.status.name} '
+            'httpStatus=${TaskErrorAdapter(update).response.statusCode} '
+            'exceptionType=${update.exception?.runtimeType}',
+      );
       if (update.status case TaskStatus.complete) {
         WidgetsBinding.instance.addPostFrameCallback(
           (_) async {
@@ -89,12 +100,19 @@ class _BackgroundDownloadRuntimeState
         final handled = await ref
             .read(httpDdosProtectionBypassProvider)
             .handleError(TaskErrorAdapter(update));
+        logger.info('Download', '$taskLabel protectionHandled=$handled');
         if (handled) {
           ref.invalidate(bypassDdosHeadersProvider);
           final headers = await ref.read(
             bypassDdosHeadersProvider(update.task.url).future,
           );
+          logger.info(
+            'Download',
+            '$taskLabel retry requested cookiePresent=${headers.containsKey('cookie')} '
+                'userAgentPresent=${headers.containsKey('user-agent')}',
+          );
           await FileDownloader().retryTask(update.task, headers: headers);
+          logger.info('Download', '$taskLabel retry enqueue returned');
           return;
         }
       }

@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 // Project imports:
+import '../../../foundation/loggers.dart';
 import '../../http/cookies/providers.dart';
 import '../../router.dart';
 import '../solver/providers.dart';
@@ -15,6 +16,7 @@ import 'protection_handler.dart';
 final httpDdosProtectionBypassProvider = Provider<HttpProtectionHandler>(
   (ref) {
     final cookieJar = ref.watch(cookieJarProvider);
+    final logger = ref.watch(loggerProvider);
     BuildContext? contextProvider() {
       final context =
           navigatorKey.currentContext ?? navigatorKey.currentState?.context;
@@ -32,14 +34,17 @@ final httpDdosProtectionBypassProvider = Provider<HttpProtectionHandler>(
         ],
         solvers: [
           CloudflareSolver(
+            onLog: (message) => logger.info('Verification', message),
             contextProvider: contextProvider,
             cookieJar: cookieJar,
           ),
           AftSolver(
+            onLog: (message) => logger.info('Verification', message),
             contextProvider: contextProvider,
             cookieJar: cookieJar,
           ),
           CaptchaAccessDeniedSolver(
+            onLog: (message) => logger.info('Verification', message),
             contextProvider: contextProvider,
             cookieJar: cookieJar,
           ),
