@@ -1,3 +1,14 @@
+# Prereleased-2026.09.13
+- Add PIN app lock and app-preview blur for privacy
+- Add an option to download only over Wi-Fi
+- Add optional metadata files alongside downloads
+- Support up to two quick actions on post thumbnails
+- Add per-profile media host overrides
+- Improve favorite tag and label management
+- [Anime-Pictures] Add bulk download support
+- [Sankaku] Improve search and download filenames
+- Add Arabic and Indonesian; update Turkish, Tamil, and Spanish translations
+
 # 4.5.0
 - Add support for Nozomi
 - [Sankaku] Add favorite support
