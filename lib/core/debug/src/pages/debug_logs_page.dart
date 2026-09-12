@@ -16,6 +16,7 @@ import '../data/log_export.dart';
 import '../providers/providers.dart';
 import '../types/log_data.dart';
 import '../types/write_log_status.dart';
+import '../widgets/log_text_highlighting.dart';
 
 class DebugLogsPage extends ConsumerStatefulWidget {
   const DebugLogsPage({
@@ -190,6 +191,8 @@ class _LogsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Kurumi.themeOf(context).colorScheme;
+    final colors = LogTextColors.forBrightness(colorScheme.brightness);
+    final annotations = logTextAnnotations(colors);
 
     return ListView.builder(
       padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -210,7 +213,7 @@ class _LogsList extends StatelessWidget {
               Text(
                 log.dateTime.toString(),
                 style: TextStyle(
-                  color: colorScheme.hintColor,
+                  color: colors.muted,
                 ),
               ),
               Wrap(
@@ -218,12 +221,13 @@ class _LogsList extends StatelessWidget {
                   Text(
                     '[${log.serviceName}]: ',
                     style: TextStyle(
-                      fontWeight: FontWeight.w800,
-                      color: colorScheme.primary,
+                      fontWeight: FontWeight.w600,
+                      color: colors.text,
                     ),
                   ),
                   ReadMoreText(
                     log.message,
+                    annotations: annotations,
                     trimCollapsedText: context.t.misc.trailing_more,
                     trimExpandedText: context.t.misc.trailing_less,
                     trimMode: TrimMode.Line,
@@ -231,13 +235,9 @@ class _LogsList extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 13,
                       color: switch (log.level) {
-                        LogLevel.info => colorScheme.onSurface.withAlpha(222),
-                        LogLevel.warning => Colors.yellow.withAlpha(222),
-                        LogLevel.error => colorScheme.error,
-                        LogLevel.verbose => colorScheme.onSurface.withAlpha(
-                          222,
-                        ),
-                        LogLevel.debug => colorScheme.onSurface.withAlpha(222),
+                        LogLevel.warning => colors.warning,
+                        LogLevel.error => colors.error,
+                        _ => colors.text,
                       },
                     ),
                   ),
