@@ -7,6 +7,7 @@ import 'package:kurumi/material.dart';
 
 // Project imports:
 import '../../../../foundation/caching/types.dart';
+import '../../../../foundation/platform.dart';
 import '../../../../foundation/utils/file_utils.dart';
 import '../../../bookmarks/providers.dart';
 import '../../../cache/cache_notifier.dart';
@@ -16,6 +17,7 @@ import '../../../videos/cache/widgets.dart';
 import '../providers/settings_notifier.dart';
 import '../providers/settings_provider.dart';
 import '../types/settings.dart';
+import '../widgets/cache_locations_section.dart';
 import '../widgets/settings_page_scaffold.dart';
 import '../widgets/storage_segment_bar.dart';
 
@@ -67,6 +69,7 @@ class _DataAndStoragePageState extends ConsumerState<DataAndStoragePage> {
       children: [
         _buildDiskSpace(),
         _buildCacheSection(settings, notifier),
+        if (!isWeb()) const CacheLocationsSection(),
         _buildDataSection(),
       ],
     );

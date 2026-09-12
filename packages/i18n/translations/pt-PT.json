@@ -627,7 +627,8 @@
       "show_less": "Mostrar menos",
       "search": "Procurar",
       "view_all": "Ver todos",
-      "ok": "OK"
+      "ok": "OK",
+      "copy_path": "Copiar caminho"
     },
     "warning": "Alerta",
     "default": "Predefinido",
@@ -1130,7 +1131,6 @@
     "actions": {
       "create": "Criar",
       "delete": "Eliminar",
-      "copy_path": "Copiar caminho",
       "new_download": "Novo download",
       "add_to_queue": "Adicionar à Lista"
     },

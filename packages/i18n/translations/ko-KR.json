@@ -26,7 +26,8 @@
       "show_all": "모두 보기",
       "show_less": "접기",
       "search": "검색",
-      "view_all": "모두 보기"
+      "view_all": "모두 보기",
+      "copy_path": "경로 복사"
     },
     "copied": "복사됨",
     "app_restart_request": "이 변경 사항이 적용되려면 앱을 다시 시작해야 합니다",
@@ -1113,7 +1114,6 @@
     "actions": {
       "create": "생성",
       "delete": "삭제",
-      "copy_path": "경로 복사",
       "new_download": "신규 다운로드",
       "add_to_queue": "리스트에 추가"
     },

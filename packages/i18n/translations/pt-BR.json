@@ -26,7 +26,8 @@
       "show_all": "Mostrar todos",
       "show_less": "Mostrar menos",
       "search": "Pesquisar",
-      "view_all": "Ver todos"
+      "view_all": "Ver todos",
+      "copy_path": "Copiar caminho"
     },
     "copied": "Copiado",
     "app_restart_request": "Você precisa reiniciar o aplicativo para esta mudança ter efeito",
@@ -1076,7 +1077,6 @@
     "actions": {
       "create": "Criar",
       "delete": "Excluir",
-      "copy_path": "Copiar caminho",
       "new_download": "Novo download",
       "add_to_queue": "Adicionar à Lista"
     },

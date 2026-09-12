@@ -26,7 +26,8 @@
       "show_all": "Hiện tất cả",
       "show_less": "Hiện ít hơn",
       "search": "Tìm kiếm",
-      "view_all": "Xem tất cả"
+      "view_all": "Xem tất cả",
+      "copy_path": "Sao chép đường dẫn"
     },
     "warning": "Cảnh báo",
     "default": "Mặc định",
@@ -1091,7 +1092,6 @@
     "actions": {
       "create": "Tạo",
       "delete": "Xoá",
-      "copy_path": "Sao chép đường dẫn",
       "new_download": "Bắt đầu tải xuống",
       "add_to_queue": "Thêm vào danh sách chờ"
     },

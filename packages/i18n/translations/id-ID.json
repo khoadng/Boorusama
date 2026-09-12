@@ -26,7 +26,8 @@
       "show_less": "Tampilkan sedikit",
       "search": "Pencarian",
       "view_all": "Lihat semua",
-      "ok": "Oke"
+      "ok": "Oke",
+      "copy_path": "Jalur salinan"
     },
     "warning": "Peringatan",
     "default": "Bawaan",
@@ -1093,7 +1094,6 @@
     "actions": {
       "create": "Buat",
       "delete": "Hapus",
-      "copy_path": "Jalur salinan",
       "new_download": "Unduhan baru",
       "add_to_queue": "Tambahkan ke daftar"
     },

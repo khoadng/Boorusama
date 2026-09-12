@@ -26,7 +26,8 @@
       "show_all": "عرض الكل",
       "show_less": "عرض أقل",
       "search": "بحث",
-      "view_all": "عرض جميع العناصر"
+      "view_all": "عرض جميع العناصر",
+      "copy_path": "نسخ المسار"
     },
     "warning": "تحذير",
     "default": "الافتراضي",
@@ -1093,7 +1094,6 @@
     "actions": {
       "create": "إنشاء",
       "delete": "حذف",
-      "copy_path": "نسخ المسار",
       "new_download": "تحميل جديد",
       "add_to_queue": "إضافة للقائمة"
     },

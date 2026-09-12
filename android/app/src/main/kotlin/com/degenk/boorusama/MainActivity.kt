@@ -8,5 +8,6 @@ class MainActivity: FlutterFragmentActivity() {
         super.configureFlutterEngine(flutterEngine)
         val messenger = flutterEngine.dartExecutor.binaryMessenger
         MediaScannerChannel(applicationContext, messenger).register()
+        CacheDocumentsChannel(this, messenger).register()
     }
 }

@@ -213,7 +213,7 @@ class _ContextMenu extends ConsumerWidget {
             },
           ),
           ContextMenuButtonConfig(
-            context.t.bulk_downloads.actions.copy_path,
+            context.t.generic.action.copy_path,
             onPressed: () => AppClipboard.copyWithDefaultToast(context, path),
           ),
         ],

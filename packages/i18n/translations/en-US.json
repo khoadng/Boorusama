@@ -26,7 +26,8 @@
       "show_all": "Show all",
       "show_less": "Show less",
       "search": "Search",
-      "view_all": "View all"
+      "view_all": "View all",
+      "copy_path": "Copy path"
     },
     "requirement": {
       "android": {
@@ -566,6 +567,11 @@
       "tag_cache": "Tag cache",
       "image_only_cache": "Image only cache",
       "video_cache": "Video cache",
+      "cache_locations": {
+        "title": "Cache locations",
+        "private_storage": "Private app storage. Unavailable in file managers.",
+        "open_folder": "Open folder"
+      },
       "video_cache_limit": "Video cache limit",
       "video_cache_limit_description": "Maximum size for video cache storage",
       "custom_cache_limit_option": "Custom...",
@@ -1210,7 +1216,6 @@
     "actions": {
       "create": "Create",
       "delete": "Delete",
-      "copy_path": "Copy path",
       "new_download": "New download",
       "add_to_queue": "Add to List"
     },

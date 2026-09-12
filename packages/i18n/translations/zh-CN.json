@@ -26,7 +26,8 @@
       "show_all": "显示所有",
       "show_less": "显示更少",
       "search": "搜索",
-      "view_all": "查看全部"
+      "view_all": "查看全部",
+      "copy_path": "复制路径"
     },
     "copied": "已复制",
     "app_restart_request": "该修改需要重启应用生效",
@@ -1112,7 +1113,6 @@
     "actions": {
       "create": "创建",
       "delete": "删除",
-      "copy_path": "复制路径",
       "new_download": "新建下载",
       "add_to_queue": "添加到列表"
     },
