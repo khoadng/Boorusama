@@ -94,9 +94,7 @@ class YamlConfigGenerator {
 
       final canDownloadMultipleFiles =
           metadata['canDownloadMultipleFiles'] ?? true;
-      if (!canDownloadMultipleFiles) {
-        params.add('canDownloadMultipleFiles: false,');
-      }
+      params.add('canDownloadMultipleFiles: $canDownloadMultipleFiles,');
 
       final hasUnknownFullImageUrl =
           metadata['hasUnknownFullImageUrl'] ?? false;

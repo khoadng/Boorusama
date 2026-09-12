@@ -122,13 +122,7 @@ class AnimePicturesClient {
     return results.map((item) => AutocompleteDto.fromJson(item)).toList();
   }
 
-  final _downloadUrlCache = <int, AnimePicturesDownloadUrlData>{};
-
   Future<AnimePicturesDownloadUrlData?> getDownloadUrl(int postId) async {
-    if (_downloadUrlCache.containsKey(postId)) {
-      return _downloadUrlCache[postId];
-    }
-
     final postDetails = await getPostDetails(id: postId);
 
     final fileUrl = postDetails.fileUrl;
@@ -175,14 +169,10 @@ class AnimePicturesClient {
           : '',
     );
 
-    final data = (
+    return (
       url: location,
       cookie: cookieString,
     );
-
-    _downloadUrlCache[postId] = data;
-
-    return data;
   }
 
   Future<List<PostDto>> getTopPosts({

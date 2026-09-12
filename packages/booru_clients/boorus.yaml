@@ -238,7 +238,6 @@
       id: 32
       name: animePictures
       display-name: Anime Pictures
-      can-download-multiple-files: false
       single-site: true
     protocol: https_1
     login-url: https://anime-pictures.net/login?lang=en

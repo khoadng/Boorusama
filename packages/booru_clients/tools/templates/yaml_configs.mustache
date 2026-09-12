@@ -37,7 +37,7 @@ class BooruType extends Equatable {
     required this.yamlName,
     required this.id,
     required this.displayName,
-    this.canDownloadMultipleFiles = true,
+    required this.canDownloadMultipleFiles,
     this.hasUnknownFullImageUrl = false,
     this.postCountMethod = PostCountMethod.notSupported,
     this.isSingleSite = false,
@@ -57,6 +57,7 @@ class BooruType extends Equatable {
     yamlName: '',
     id: 0,
     displayName: 'UNKNOWN',
+    canDownloadMultipleFiles: true,
     isSingleSite: true,
   );
 
