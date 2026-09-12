@@ -12,8 +12,9 @@ import 'package:flutter/semantics.dart';
 import 'package:path/path.dart' as path;
 import 'package:retriable/retriable.dart';
 
-import 'cached_network_avif_image.dart';
 import 'dio_extended_image_provider.dart';
+import 'network_decoder_native.dart'
+    if (dart.library.js_interop) 'network_decoder_web.dart';
 import 'image/raw_image.dart';
 import 'utils.dart';
 
@@ -109,40 +110,30 @@ class ExtendedImage extends StatefulWidget {
   }) : assert(cacheWidth == null || cacheWidth > 0),
        assert(cacheHeight == null || cacheHeight > 0),
        image = ExtendedResizeImage.resizeIfNeeded(
-         provider:
-             shouldUseAvif(
-               url,
-               platform: platform,
-               androidVersion: androidVersion,
-             )
-             ? CustomCachedNetworkAvifImageProvider(
-                 url,
-                 scale: scale,
-                 headers: headers,
-                 cacheManager: cacheManager,
-                 dio: dio,
-                 cancelToken: cancelToken,
-                 fetchStrategy: fetchStrategy,
-                 cacheKey: cacheKey,
-                 cacheMaxAge: cacheMaxAge ?? kDefaultImageCacheDuration,
-                 cacheWidth: cacheWidth,
-                 cacheHeight: cacheHeight,
-               )
-             : DioExtendedNetworkImageProvider(
-                 url,
-                 dio: dio,
-                 scale: scale,
-                 headers: headers,
-                 cache: cache,
-                 cancelToken: cancelToken,
-                 cacheKey: cacheKey,
-                 printError: printError,
-                 cacheRawData: cacheRawData,
-                 imageCacheName: imageCacheName,
-                 cacheMaxAge: cacheMaxAge ?? kDefaultImageCacheDuration,
-                 fetchStrategy: fetchStrategy,
-                 cacheManager: cacheManager,
-               ),
+         provider: networkImageDecoder(
+           useAvif: shouldUseAvif(
+             url,
+             platform: platform,
+             androidVersion: androidVersion,
+           ),
+           cacheWidth: cacheWidth,
+           cacheHeight: cacheHeight,
+           source: DioExtendedNetworkImageProvider(
+             url,
+             dio: dio,
+             scale: scale,
+             headers: headers,
+             cache: cache,
+             cancelToken: cancelToken,
+             cacheKey: cacheKey,
+             printError: printError,
+             cacheRawData: cacheRawData,
+             imageCacheName: imageCacheName,
+             cacheMaxAge: cacheMaxAge ?? kDefaultImageCacheDuration,
+             fetchStrategy: fetchStrategy,
+             cacheManager: cacheManager,
+           ),
+         ),
          compressionRatio: compressionRatio,
          maxBytes: maxBytes,
          cacheWidth: cacheWidth,

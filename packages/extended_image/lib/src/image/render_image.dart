@@ -8,49 +8,31 @@ import 'painting.dart';
 class ExtendedRenderImage extends RenderBox {
   /// Creates a render box that displays an image.
   ///
-  /// The [scale], [alignment], [repeat], [matchTextDirection] and [filterQuality] arguments
-  /// must not be null. The [textDirection] argument must not be null if
-  /// [alignment] will need resolving or if [matchTextDirection] is true.
+  /// The [_scale], [_alignment], [_repeat], [_matchTextDirection] and [_filterQuality] arguments
+  /// must not be null. The [_textDirection] argument must not be null if
+  /// [_alignment] will need resolving or if [_matchTextDirection] is true.
   ExtendedRenderImage({
-    ui.Image? image,
+    this._image,
     this.debugImageLabel,
-    double? width,
-    double? height,
-    double scale = 1.0,
-    Color? color,
-    Animation<double>? opacity,
-    BlendMode? colorBlendMode,
-    BoxFit? fit,
-    AlignmentGeometry alignment = Alignment.center,
-    ImageRepeat repeat = ImageRepeat.noRepeat,
-    Rect? centerSlice,
-    bool matchTextDirection = false,
-    TextDirection? textDirection,
-    bool invertColors = false,
-    bool isAntiAlias = false,
-    FilterQuality filterQuality = FilterQuality.low,
-    Rect? sourceRect,
-    BorderRadius? borderRadius,
-    EdgeInsets layoutInsets = EdgeInsets.zero,
-  }) : _image = image,
-       _width = width,
-       _height = height,
-       _scale = scale,
-       _color = color,
-       _opacity = opacity,
-       _colorBlendMode = colorBlendMode,
-       _fit = fit,
-       _alignment = alignment,
-       _repeat = repeat,
-       _centerSlice = centerSlice,
-       _matchTextDirection = matchTextDirection,
-       _invertColors = invertColors,
-       _textDirection = textDirection,
-       _isAntiAlias = isAntiAlias,
-       _filterQuality = filterQuality,
-       _sourceRect = sourceRect,
-       _borderRadius = borderRadius,
-       _layoutInsets = layoutInsets {
+    this._width,
+    this._height,
+    this._scale = 1.0,
+    this._color,
+    this._opacity,
+    this._colorBlendMode,
+    this._fit,
+    this._alignment = Alignment.center,
+    this._repeat = ImageRepeat.noRepeat,
+    this._centerSlice,
+    this._matchTextDirection = false,
+    this._textDirection,
+    this._invertColors = false,
+    this._isAntiAlias = false,
+    this._filterQuality = FilterQuality.low,
+    this._sourceRect,
+    this._borderRadius,
+    this._layoutInsets = EdgeInsets.zero,
+  }) {
     _updateColorFilter();
   }
 
