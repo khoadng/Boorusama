@@ -1,5 +1,6 @@
 // Package imports:
 import 'package:booru_clients/shimmie2.dart';
+import 'package:coreutils/coreutils.dart';
 import 'package:path/path.dart' show extension;
 
 // Project imports:
@@ -37,11 +38,7 @@ Shimmie2Post postDtoToPost(
     score: e.score ?? e.numericScore ?? 0,
     duration: kNoduration,
     fileSize: e.filesize ?? 0,
-    format: switch ((e.ext, e.fileName)) {
-      (final ext?, _) => ext,
-      (_, final fileName?) => extension(fileName),
-      _ => '',
-    },
+    format: _resolveFormat(e),
     hasSound: null,
     height: e.height?.toDouble() ?? 0,
     md5: e.md5 ?? '',
@@ -75,4 +72,16 @@ Shimmie2Post postDtoToPost(
     votes: e.votes,
     myVote: e.myVote,
   );
+}
+
+String _resolveFormat(PostDto post) {
+  final candidates = [
+    post.ext ?? '',
+    extension(post.fileName ?? ''),
+    urlExtension(post.fileUrl),
+  ];
+  return candidates
+      .firstWhere((value) => value.isNotEmpty, orElse: () => '')
+      .replaceFirst(RegExp(r'^\.'), '')
+      .toLowerCase();
 }

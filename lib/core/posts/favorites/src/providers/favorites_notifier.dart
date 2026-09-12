@@ -74,13 +74,13 @@ class FavoritesNotifier
 
     if (postIdsToCheck.isEmpty) return;
 
-    final cache = state.unlock;
-
     final favoritedPosts = await repo.filterFavoritedPosts(postIdsToCheck);
 
-    // Update cache with results
+    // Merge into current state; another lookup or user action may have resolved
+    // these IDs while the request was pending.
+    final cache = state.unlock;
     for (final postId in postIdsToCheck) {
-      cache[postId] = favoritedPosts.contains(postId);
+      cache.putIfAbsent(postId, () => favoritedPosts.contains(postId));
     }
 
     state = cache.lock;

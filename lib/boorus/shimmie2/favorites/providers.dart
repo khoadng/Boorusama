@@ -26,6 +26,15 @@ final shimmie2FavoriteRepoProvider =
               ),
           remove: (postId) => client.removeFavorite(postId: postId),
           isFavorited: (post) => false,
+          filter: (postIds) =>
+              switch (ref.read(shimmie2LoginDetailsProvider(config)).username) {
+                final username? when username.isNotEmpty =>
+                  client.filterFavoritesFromUsername(
+                    username: username,
+                    postIds: postIds,
+                  ),
+                _ => Future.value(const <int>[]),
+              },
           canFavorite: () =>
               ref.read(shimmie2CanFavoriteProvider(config)).valueOrNull ??
               false,

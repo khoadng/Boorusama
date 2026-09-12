@@ -90,6 +90,7 @@ class Shimmie2Client {
 
     final response = await _dio.get(
       '/api/danbooru/find_posts',
+      options: Options(headers: _authHeaders),
       queryParameters: {
         if (!isEmpty) 'tags': tags?.join(' '),
         'page': ?page,
@@ -102,6 +103,29 @@ class Shimmie2Client {
       response,
       baseUrl: _dio.options.baseUrl,
     );
+  }
+
+  /// Returns the requested IDs favorited by [username], in request order.
+  /// Exact ID batches fit the Danbooru API's 100-result maximum without paging
+  /// through unrelated favorites. Request failures propagate to the caller.
+  Future<List<int>> filterFavoritesFromUsername({
+    required String username,
+    required List<int> postIds,
+  }) async {
+    if (username.isEmpty || postIds.isEmpty) return const [];
+
+    final ids = postIds.toSet().toList();
+    final favorites = <int>{};
+    const batchSize = 100;
+    for (var offset = 0; offset < ids.length; offset += batchSize) {
+      final batch = ids.skip(offset).take(batchSize).toList();
+      final posts = await getPosts(
+        tags: ['favorited_by=$username', 'id=${batch.join(',')}'],
+        limit: batchSize,
+      );
+      favorites.addAll(posts.map((post) => post.id).whereType<int>());
+    }
+    return ids.where(favorites.contains).toList();
   }
 
   Future<List<AutocompleteDto>> getAutocomplete({

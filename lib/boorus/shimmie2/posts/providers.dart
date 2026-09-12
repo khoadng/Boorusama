@@ -4,11 +4,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../core/configs/config/types.dart';
 import '../../../core/posts/details/types.dart';
+import '../../../core/posts/favorites/providers.dart';
 import '../../../core/posts/post/providers.dart';
 import '../../../core/posts/post/types.dart';
 import '../../../core/search/queries/providers.dart';
 import '../../../core/settings/providers.dart';
 import '../clients/providers.dart';
+import '../favorites/providers.dart';
 import 'parser.dart';
 import 'types.dart';
 
@@ -35,7 +37,7 @@ final shimmie2PostRepoProvider =
               useGraphQL: useGraphQL,
             );
 
-            return posts
+            final result = posts
                 .map(
                   (e) => postDtoToPost(
                     e,
@@ -46,8 +48,16 @@ final shimmie2PostRepoProvider =
                     ),
                   ),
                 )
-                .toList()
-                .toResult();
+                .toList();
+
+            if (await ref.read(
+              shimmie2CanFavoriteProvider(config.auth).future,
+            )) {
+              await ref
+                  .read(favoritesProvider(config.auth).notifier)
+                  .checkFavorites(result.map((post) => post.id).toList());
+            }
+            return result.toResult();
           },
           getSettings: () async => ref.read(imageListingSettingsProvider),
         );
