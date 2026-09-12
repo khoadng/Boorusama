@@ -314,7 +314,7 @@
         "side": "Lateral",
         "bottom": "Inferior"
       },
-      "booru_config_label": "Mostrar rótulo",
+      "booru_config_label": "Mostrar etiqueta",
       "booru_config_label_options": {
         "always": "Sempre",
         "never": "Nunca"
@@ -766,7 +766,58 @@
     "favorites": "Favoritos",
     "import_hint": "Preencha sua linha de tag aqui. Espaço delimitado.",
     "export_notification": "Linha de tag copiada para a área de transferência",
-    "title": "Tags favoritas"
+    "title": "Tags favoritas",
+    "manage_labels": "Gerenciar etiquetas",
+    "add_favorite": "Adicionar favorito",
+    "duplicate_error": "Esse favorito já existe",
+    "search_hint": "Encontrar tags salvas",
+    "unlabelled": "Sem etiqueta",
+    "copy_exact_value": "Copiar valor exato",
+    "deleted": "Favorito excluído",
+    "undo": "Desfazer",
+    "raw_badge": "BRUTO",
+    "filtered_empty": "Nenhuma tag salva corresponde a esses filtros",
+    "empty": "Salve tags e consultas em formato bruto para reutilizá-las aqui",
+    "filter": {
+      "all_types": "Todos os tipos",
+      "raw": "Bruto",
+      "any_label": "Qualquer etiqueta",
+      "no_group": "Sem grupo",
+      "by_label": "Por marca",
+      "label_picker_title": "Filtrar por etiqueta"
+    },
+    "labels": {
+      "title": "Etiquetas",
+      "all": "Todas as etiquetas",
+      "search_hint": "Encontrar etiquetas",
+      "empty": "As etiquetas aparecem depois que você as atribui a um favorito",
+      "no_match": "Nenhuma etiqueta corresponde a esta pesquisa",
+      "rename": "Renomear",
+      "merge_into": "Unir em…",
+      "remove_from_all": "Remover de todos os favoritos",
+      "favorite_count": {
+        "one": "$n favorito",
+        "other": "$n favoritos"
+      },
+      "remove_title": "Remover etiqueta",
+      "remove_description": {
+        "one": "Isso remove “$label” do $n favorito. O favorito não será excluído.",
+        "other": "Isso remove “$label” dos $n favoritos. Os favoritos não serão excluídos."
+      },
+      "rename_title": "Renomear etiqueta",
+      "label_hint": "Etiqueta",
+      "merge_title": "Unir etiqueca",
+      "merge": "Unir",
+      "merge_source_into": "Unir “$label” em"
+    },
+    "editor": {
+      "enter_value": "Insira um valor",
+      "edit_title": "Editar favorito",
+      "tag": "Tag",
+      "advanced_options": "Mostrar opções avançadas",
+      "add_label": "Adicionar etiqueta",
+      "suggestions": "Sugestões"
+    }
   },
   "rating": {
     "rate_request": "Avalie este aplicativo",
@@ -911,7 +962,7 @@
       "empty_blacklist_with_replace_notice": "Esvaziar a lista negra no modo de substituição desativará completamente a lista negra.",
       "blacklist_overridden": {
         "replace_notice": "Substituído pelas configurações de <b><a href=\"booru-profiles\">Lista negra do Perfil</a></b>.",
-        "merge_notice": "Combinado às configurações de <b><a href=\"booru-profiles\">Lista negra do Perfil</a></b>."
+        "merge_notice": "Unido às configurações de <b><a href=\"booru-profiles\">Lista negra do Perfil</a></b>."
       },
       "blacklist_combine_mode": {
         "title": "Modo de combinação",

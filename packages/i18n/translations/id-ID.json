@@ -780,7 +780,58 @@
     "favorites": "Favorit",
     "import_hint": "Masukkan string tagar anda di sini. Dipisahkan oleh spasi.",
     "export_notification": "String tagar tersalin ke papan tombol",
-    "title": "Tagar favorit"
+    "title": "Tagar favorit",
+    "manage_labels": "Kelola label",
+    "add_favorite": "Tambahkan ke favorit",
+    "duplicate_error": "Favorit ini sudah ada",
+    "search_hint": "Cari tagar yang tersimpan",
+    "unlabelled": "Tak berlabel",
+    "copy_exact_value": "Salin nilai yang tepat",
+    "deleted": "Favorit dihapus",
+    "undo": "Urungkan",
+    "raw_badge": "MENTAH",
+    "filtered_empty": "Tidak ada tagar yang tersimpan sesuai dengan filter ini",
+    "empty": "Simpan tagar dan kueri mentah untuk menggunakannya kembali di sini",
+    "filter": {
+      "all_types": "Semua jenis",
+      "raw": "Mentah",
+      "any_label": "Beberapa label",
+      "no_group": "Tidak ada grup",
+      "by_label": "Dengan label",
+      "label_picker_title": "Saring dengan label"
+    },
+    "labels": {
+      "title": "Pelabelan",
+      "all": "Semua label",
+      "search_hint": "Temukan label",
+      "empty": "Label muncul setelah anda menetapkan mereka ke favorit",
+      "no_match": "Tidak ada label yang sesuai dengan pencarian ini",
+      "rename": "Ganti nama",
+      "merge_into": "Menggabungkan ke dalam…",
+      "remove_from_all": "Singkirkan dari semua favorit",
+      "favorite_count": {
+        "one": "$n favorit",
+        "other": "$n unggulan"
+      },
+      "remove_title": "Singkirkan label",
+      "remove_description": {
+        "one": "Ini menghapus \"$label\" dari favorit $n. Favorit tidak akan dihapus.",
+        "other": "Ini menghapus \"$label\" dari favorit $n. Favorit tidak akan dihapus."
+      },
+      "rename_title": "Namai ulang label",
+      "label_hint": "Label",
+      "merge_title": "Gabungkan label",
+      "merge": "Gabungkan",
+      "merge_source_into": "Gabungkan \"$label\" ke"
+    },
+    "editor": {
+      "enter_value": "Masukkan nilai",
+      "edit_title": "Sunting favorit",
+      "tag": "Tagar",
+      "advanced_options": "Tampilkan opsi tingkat lanjut",
+      "add_label": "Tambahkan label",
+      "suggestions": "Saran"
+    }
   },
   "rating": {
     "rate_request": "Beri nilai aplikasi ini",

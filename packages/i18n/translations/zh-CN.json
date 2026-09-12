@@ -107,7 +107,8 @@
       "share": {
         "source": "分享资源链接",
         "booru": "分享booru链接",
-        "image": "分享图片"
+        "image": "分享图片",
+        "file": "分享文件"
       },
       "show_original": "显示原图",
       "show_translated": "显示翻译",

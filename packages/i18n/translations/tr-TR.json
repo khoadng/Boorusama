@@ -2,8 +2,8 @@
   "generic": {
     "done": "Tamam",
     "errors": {
-      "no_data": "ulaşılabilir veri yok",
-      "unknown": "Birşeyler ters gitti",
+      "no_data": "Kullanılabilir veri yok",
+      "unknown": "Bir şeyler ters gitti",
       "error": "Hata"
     },
     "action": {
@@ -14,32 +14,48 @@
       "cancel": "İptal",
       "duplicate": "Çoğalt",
       "select": "Seç",
-      "view": "Görünüm",
+      "view": "Görüntüle",
       "save": "Kaydet",
       "verify": "Doğrula",
       "retry": "Tekrar dene",
       "clear": "Temizle",
       "create": "Oluştur",
       "reset": "Sıfırla",
-      "more": "Daha",
+      "more": "Daha fazla",
       "apply": "Uygula",
-      "show_all": "Hepsini göster",
+      "show_all": "Tümünü göster",
       "show_less": "Daha az göster",
       "search": "Ara",
-      "view_all": "Hepsini görüntüle"
+      "view_all": "Tümünü görüntüle"
     },
     "copied": "Kopyalandı",
     "warning": "Uyarı",
     "default": "Varsayılan",
-    "version": "Versiyon $version",
-    "app_restart_request": "Değişikliğin uygulanması için yeniden başlatmanız gerek"
+    "version": "Sürüm $version",
+    "app_restart_request": "Değişikliğin uygulanması için yeniden başlatman gerek",
+    "no_content": "İçerik bulunamadı"
   },
   "profile": {
     "favorites": "Favoriler",
     "profile": "Profil",
     "copy_user_id": "Kullanıcı kimliğini kopyala",
     "messages": {
-      "title": "Mesajlar"
+      "title": "Mesajlar",
+      "empty": "Hiç mesajın yok",
+      "unread_message_notice": {
+        "one": "$n okunmamış mesajın var",
+        "other": "$n okunmamış mesajın var"
+      },
+      "categories": {
+        "all": "Tümü",
+        "received": "Alınan",
+        "unread": "Okunmamış",
+        "sent": "Gönderilen",
+        "deleted": "Silinen"
+      },
+      "sender": "Gönderen",
+      "recipient": "Alıcı",
+      "date": "Tarih"
     },
     "fail_to_load_profile": "Profil yüklenemedi",
     "previous_names": "Önceki isimler",
@@ -47,6 +63,25 @@
       "info": "Bilgi",
       "uploads": "Yüklemeler",
       "changes": "Değişiklikler"
+    },
+    "uploads": {
+      "top_n_copyright": "En çok geçen $n telif hakkı"
+    },
+    "activity": {
+      "title": "Etkinlik",
+      "uploads": "Yüklemeler",
+      "tag_edits": "Etiket düzenlemeleri",
+      "note_edits": "Not düzenlemeleri",
+      "comments": "Yorumlar",
+      "forum_posts": "Forum gönderileri",
+      "favgroups": "Favori grupları"
+    },
+    "feedback": {
+      "title": "Geri bildirimler",
+      "user_feedbacks": "Kullanıcı geri bildirimleri",
+      "positive": "Olumlu",
+      "negative": "Olumsuz",
+      "neutral": "Nötr"
     }
   },
   "network": {
@@ -57,7 +92,8 @@
       "more": "Daha fazla",
       "related": "İlişkili",
       "add_to_current_search": "Mevcut aramaya ekle",
-      "open_wiki": "Wiki'yi aç"
+      "open_wiki": "Wiki'yi aç",
+      "negate_from_current_search": "Mevcut aramadan hariç tut"
     }
   },
   "post": {
@@ -70,7 +106,8 @@
       "share": {
         "source": "Kaynak linkini paylaş",
         "booru": "Booru linkini paylaş",
-        "image": "Görüntüyü paylaş"
+        "image": "Görüntüyü paylaş",
+        "file": "Dosyayı paylaş"
       },
       "show_original": "Orijinali göster",
       "show_translated": "Çevrilmişi göster",
@@ -85,13 +122,85 @@
       "source_label": "Kaynak",
       "related_posts": "İlişkili gönderiler",
       "add_to_bookmark": "Yer imlerine ekle",
-      "remove_from_bookmark": "Yer imlerinden kaldır"
+      "remove_from_bookmark": "Yer imlerinden kaldır",
+      "duration": "Süre",
+      "uploader": "Yükleyen",
+      "approver": "Onaylayan",
+      "artist": "Sanatçı",
+      "show_n_more": "$n tane daha göster",
+      "show_less": "Daha az göster",
+      "widgets": {
+        "toolbar": "Araç çubuğu",
+        "tags": "Etiketler",
+        "info_panel": "Bilgi paneli",
+        "file_details": "Dosya detayları",
+        "pool": "Seri",
+        "artist_info": "Sanatçı bilgileri",
+        "stats": "İstatistikler",
+        "comments": "Yorumlar",
+        "artist_posts": "Sanatçı gönderileri",
+        "related_posts": "İlgili gönderiler",
+        "character_list": "Karakter listesi",
+        "uploader_posts": "Yükleyenin paylaşımları",
+        "source": "Kaynak"
+      }
     },
     "action": {
       "view_comments": "Yorumları görüntüle",
       "add_to_favorite_group": "Favori gruba ekle",
       "view_in_browser": "Tarayıcıda aç",
-      "view_original": "Orijinalini göster"
+      "view_original": "Orijinalini göster",
+      "share": "Paylaş",
+      "bookmark": "Yer işaretlerine ekle",
+      "favorite": "Favorile",
+      "unfavorite": "Favorilerden çıkar",
+      "upvote": "Artıla",
+      "downvote": "Eksile",
+      "view_artist": "Sanatçıyı görüntüle",
+      "view_tags": "Etiketleri görüntüle",
+      "view_tag_history": "Etiket geçmişini görüntüle",
+      "copy_image": "Resmi kopyala",
+      "slideshow": "Slayt",
+      "none": "Hiçbiri",
+      "edit": "Düzenle",
+      "use_default": "Varsayılanı Kullan",
+      "toggle_bookmark": "Yer işaretlerine ekle/çıkar",
+      "toggle_favorite": "Favorilere ekle/çıkar",
+      "copy": "Kopyala",
+      "media": "Medya",
+      "links": "Bağlantılar",
+      "copy_image_description": "Gösterilen resmi kopyala",
+      "copy_file_name": "Dosya adını kopyala",
+      "unavailable": "Kullanılamıyor",
+      "copy_post_link": "Gönderi bağlantısını kopyala",
+      "copy_source_link": "Kaynak bağlantısını kopyala",
+      "copy_image_link": "Resim bağlantısını kopyala",
+      "copy_post_id": "Gönderi kimliğini kopyala",
+      "failed_to_get_image_url": "Resim URL'si alınamadı",
+      "failed_to_get_image_bytes": "Resim verisi alınamadı",
+      "failed_to_copy_image": "Resim kopyalanamadı: $e"
+    },
+    "statistics": {
+      "stats_for_nerds": "Meraklısı için istatistikler",
+      "average": "Ortalama",
+      "highest": "En Yüksek",
+      "lowest": "En Düşük",
+      "median": "Medyan",
+      "25th_percentile": "25. yüzdelik",
+      "75th_percentile": "75.yüzdelik",
+      "90th_percentile": "90.yüzdelik"
+    },
+    "votes": {
+      "user_list": {
+        "title": "Oylayanlar",
+        "disclaimer": "Eksi oylar ve gizli oylar gösterilmez."
+      }
+    },
+    "favorites": {
+      "user_list": {
+        "title": "Favorileyen",
+        "disclaimer": "Yalnızca herkese açık favoriler gösterilir."
+      }
     }
   },
   "comment": {
@@ -120,7 +229,14 @@
     "most_viewed": "En çok görüntülenen",
     "see_more": "Daha fazlasını gör",
     "explore": "Keşfet",
-    "new": "Yeni"
+    "new": "Yeni",
+    "top": "En iyiler",
+    "daily": "Günlük",
+    "weekly": "Haftalık",
+    "newest": "En yeniler",
+    "oldest": "En eskiler",
+    "random": "Rastgele",
+    "ordered": "Sıralı"
   },
   "search": {
     "errors": {
@@ -132,7 +248,11 @@
       "down": "Sunucu çöktü. Lütfen daha sonra tekrar deneyin",
       "access_denied": "Erişim engellendi",
       "forbidden": "Yetkilendime başarısız",
-      "unknown": "Bilinmeyen sunucu hatası, lütfen geliştiriciye bu sorunu bildirin"
+      "unknown": "Bilinmeyen sunucu hatası, lütfen geliştiriciye bu sorunu bildirin",
+      "cannot_reach_server": "Sunucuya ulaşılamıyor, lütfen bağlantını kontrol et",
+      "failed_to_load_data": "Sunucudan veri yüklenemedi, lütfen daha sonra tekrar dene",
+      "handshake_failed": "Bağlantı kurulamadı, sunucu uyumluluk sorunu",
+      "certificate_error": "Sertifika hatası. Sunucu kendinden imzalı bir sertifika kullanıyor olabilir. HTTPS yerine HTTP kullanmayı dene veya sertifikayı cihazına yükle."
     },
     "hint": "Ara...",
     "no_result": "Derinlemesine aradık, fakat hiçbir sonuç bulunamadı.",
@@ -148,7 +268,8 @@
       "other": "$n Sonuçlar"
     },
     "no_result_notice": "Sonuç yok",
-    "search_in_progress_notice": "Aranıyor..."
+    "search_in_progress_notice": "Aranıyor...",
+    "raw_query": "Ham sorgu"
   },
   "pool": {
     "pool": "Havuz",
@@ -168,6 +289,12 @@
     },
     "detail": {
       "last_updated": "Son güncelleeme"
+    },
+    "pools": "Seriler",
+    "no_cover_image": "Kapak resmi yok",
+    "counter": {
+      "one": "Seri",
+      "other": "Seriler"
     }
   },
   "settings": {
@@ -176,19 +303,379 @@
     "appearance": {
       "appearance": "Uygulama Görünümü",
       "show_scores": "Puanları göster",
-      "booru_config": "Booru profili"
+      "booru_config": "Booru profili",
+      "customize": "Özelleştir",
+      "show_post_list_config_header": "Gönderi yapılandırma başlığını göster",
+      "auto_play_gif": "GIF'leri otomatik oynat",
+      "blur_explicit_media": "Yetişkin içerikleri bulanıklaştır",
+      "booru_config_placement": "Booru profili yerleşimi",
+      "booru_config_placement_options": {
+        "side": "Yan",
+        "bottom": "Alt"
+      },
+      "booru_config_label": "Yazıyı göster",
+      "booru_config_label_options": {
+        "always": "Her zaman",
+        "never": "Asla"
+      }
     },
     "language": {
       "language": "Dil",
       "language_name": "Türkçe"
-    }
+    },
+    "general": "Genel",
+    "search": {
+      "search": "Arama",
+      "auto_focus_search_bar": "Arama ekranını ilk açtığında arama çubuğuna otomatik odaklan",
+      "search_bar": {
+        "position": {
+          "search_bar_position": "Arama çubuğu pozisyonu",
+          "top": "Üst",
+          "bottom": "Alt"
+        },
+        "scroll_behavior": {
+          "persistent": "Kalıcı arama çubuğu",
+          "persistent_description": "Kaydırırkan arama çubuğu görünür olsun."
+        }
+      },
+      "hide_bookmarked_posts_from_search_results": "Yer işaretli gönderileri arama sonuçlarında gizle"
+    },
+    "information": "Bilgilendirme",
+    "changelog": "Değişim Kaydı",
+    "infinite_scroll_warning": "Uzun süre kaydırırsan uygulama çökebilir",
+    "result_layout": {
+      "result_layout": "Sayfa modu",
+      "infinite_scroll": "Sonsuz kaydırma",
+      "pagination": "Sayfalandırma"
+    },
+    "image_list": {
+      "image_list": "Resim listesi",
+      "classic": "Klasik",
+      "standard": "Standart",
+      "masonry": "Tuğla ızgara"
+    },
+    "image_grid": {
+      "image_grid": "Resim ızgarası",
+      "grid_size": {
+        "grid_size": "Izgara boyutu",
+        "micro": "Mikro",
+        "tiny": "Minik",
+        "small": "Küçük",
+        "medium": "Orta",
+        "large": "Büyük"
+      },
+      "image_quality": {
+        "image_quality": "Resim kalitesi",
+        "auto": "Oto",
+        "high_quality_notice": "Yüksek kaliteli resimlerin yüklenmesi daha uzun sürer.",
+        "high": "Yüksek",
+        "low": "Düşük",
+        "original": "Orijinal",
+        "automatic": "Otomatik",
+        "highest": "En yüksek"
+      },
+      "spacing": "Boşluk",
+      "corner_radius": "Köşe yarıçapı",
+      "padding": "İç boşluk",
+      "aspect_ratio": "En-boy oranı"
+    },
+    "image_viewer": {
+      "image_viewer": "Resim görüntüleyici",
+      "slideshow": "Slayt",
+      "slideshow_interval": "Slayt geçiş süresi",
+      "slideshow_video_behavior": "Slayt gösterisi video davranışı",
+      "slideshow_video_behavior_explanation": "Slayt gösterisinin geçişlerde videoları nasıl ele alacağını belirler.",
+      "slideshow_video_behaviors": {
+        "wait_for_completion": "Tamamlanmasını bekle",
+        "wait_for_completion_description": "Bir sonraki slayda geçmeden önce videoların bitmesini bekle",
+        "fixed_interval": "Sabit süre",
+        "fixed_interval_description": "Video oynatılıyor olsa bile sabit süreden sonra ilerle"
+      },
+      "slideshow_mode": "Slayt modu",
+      "slideshow_modes": {
+        "random": "Rastgele",
+        "forward": "İleri",
+        "backward": "Geri"
+      },
+      "slideshow_skip": "Slayt gösterisi geçişini atla",
+      "slideshow_interval_explanation": "1 saniyeden küçük bir değer, geçişi otomatik olarak atlar",
+      "swipe_mode": "Kaydırma modu",
+      "swipe_mode_disclaimer": "Bazı özel hareketler tüm modlarda çalışmayabilir",
+      "swipe_modes": {
+        "horizontal": "Yatay",
+        "horizontal_description": "Galeri tarzında sola/sağa kaydırma. Fotoğraf galerileri ve medya uygulamalarındaki gibi.",
+        "vertical": "Dikey",
+        "vertical_description": "TikTok tarzı yukarı/aşağı kaydırma. Kısa video platformlarında popülerdir. Yalnızca dikey modda çalışır."
+      },
+      "mute_video": "Videoları varsayılan olarak sessize al",
+      "double_tap_seek": "İleri/geri sarmak için çift dokun",
+      "video_section_title": "Video",
+      "manage_cache": "Önbelleği yönet",
+      "enable_video_cache": "Video önbelleğini aç",
+      "enable_video_cache_description": "Veri kullanımını azaltmak ve sonraki izlemelerde daha hızlı oynatmak için videoları akış sırasında indirip önbelleğe al.",
+      "video": {
+        "video_player_engine": "Video oynatıcı motoru",
+        "engine": {
+          "auto": "Oto",
+          "auto_description": "Cihazın özelliklerine göre en iyi motoru otomatik olarak seçer.",
+          "default": "Varsayılan",
+          "default_description": "Çoğu cihazla iyi çalışır; ancak bazı video formatları veya eski cihazlarla sorun yaşanabilir.",
+          "mdk_description": "Hızlı yükleme ve belirli video formatlarında daha iyi performans sağlar; ancak kararsızdır ve çökmelere neden olabilir.",
+          "mpv_description": "İyi format desteği ve performans sağlar, ancak yükleme süresi daha yavaştır",
+          "webview_description": "İyi uyumluluk sağlar ancak kaynak kullanımı daha yüksektir ve performansı düşüktür; son çare olarak kullanılması önerilir."
+        }
+      }
+    },
+    "theme": {
+      "theme": "Tema",
+      "dark": "Koyu",
+      "light": "Açık",
+      "system": "Sistem",
+      "amoled_dark": "Gece yarısı",
+      "dynamic_color": "Dinamik tema rengi",
+      "dynamic_color_mobile_description": "Tema rengini duvar kağıdıyla eşitle",
+      "dynamic_color_desktop_description": "Tema rengini işletim sisteminin vurgu rengiyle eşitle",
+      "dynamic_color_unsupported_description": "Bu cihaz dinamik renk özelliğini desteklemiyor.",
+      "viewer": {
+        "colors": "Renkler",
+        "color_variants": "Renk Varyantları",
+        "dark_mode": "Koyu mod",
+        "harmonize_colors": "Renkleri uyumlaştır",
+        "harmonize_colors_description": "Etiket renklerini vurgu rengiyle uyumlu olacak şekilde ayarlar",
+        "groups": {
+          "basic": "Temel",
+          "builtin": "Yerleşik",
+          "accent": "Vurgu"
+        }
+      }
+    },
+    "privacy": {
+      "privacy": "Gizlilik",
+      "enable_incognito_keyboard": "Gizli klavyeyi etkinleştir",
+      "enable_incognito_keyboard_notice": "Yalnızca Android'i etkiler.",
+      "enable_biometric_lock": "Biyometrik kilidi etkinleştir",
+      "enable_biometric_lock_notice": "Yalnızca biyometrik desteği olan ve kurulumu yapılmış cihazlarda çalışır."
+    },
+    "performance": {
+      "performance": "Performans",
+      "posts_per_page": "Sayfa başına gönderi",
+      "posts_per_page_explain": "Sayfa başına küçük resim sayısı",
+      "cache_size": "Önbellek boyutu",
+      "clear_cache": "Temizle",
+      "cache_size_info": "{1} dosyada {0}"
+    },
+    "debug_logs": {
+      "debug_logs": "Hata ayıklama kayıtları",
+      "logs_copied": "Kayıtlar panoya kopyalandı"
+    },
+    "download": {
+      "path": "İndirme dizini",
+      "select_a_folder": "Bir klasör seç",
+      "quality": "Resim indirme kalitesi",
+      "skip_existing_files": "Zaten indirilen dosyaları atla",
+      "skip_existing_files_explanation": "Klasörde halihazırda bulunan dosyaların indirilmesini önler. Aynı dosyanın birden fazla kez indirilmesini istemediğin durumlarda kullanışlıdır.",
+      "qualities": {
+        "original": "Orijinal",
+        "sample": "Örnek",
+        "large": "Büyük",
+        "preview": "Küçük Resim"
+      },
+      "title": "İndirme"
+    },
+    "help_us_translate": "Çevirmemize yardımcı ol",
+    "need_more_questions": "Daha fazlasına mı ihtiyacın var?",
+    "other_settings": "Diğer ayarlar",
+    "data_and_storage": {
+      "data_and_storage": "Veri ve Depolama",
+      "clear_cache_on_start_up": "Açılışta resim önbelleğini temizle",
+      "cache": "Önbellek",
+      "data": "Veri",
+      "all_cache": "Tüm önbellek",
+      "tag_cache": "Etiket önbelleği",
+      "image_only_cache": "Yalnızca resim önbelleği",
+      "video_cache": "Video önbelleği",
+      "video_cache_limit": "Video önbellek limiti",
+      "video_cache_limit_description": "Video önbellek depolaması için maksimum boyut",
+      "custom_cache_limit_option": "Özel...",
+      "no_limit": "Limitsiz",
+      "bookmark_images": "Yer işareti resimleri",
+      "loading": "Yükleniyor...",
+      "storage": "Depolama",
+      "disk_space": {
+        "status_title": "$freeSpace boş / $totalSpace",
+        "groups": {
+          "system": "Sistem",
+          "images": "Resimler",
+          "videos": "Videolar",
+          "others": "Diğerleri",
+          "free": "Boş"
+        }
+      },
+      "error_loading_cache_info": "Önbellek bilgileri yüklenemedi"
+    },
+    "backup_and_restore": {
+      "backup_and_restore": "Yedekle ve Geri Yükle",
+      "advanced_backup": "Gelişmiş Yedekleme",
+      "exporting": "Dışa Aktarılıyor...",
+      "export": "Dışa Aktar",
+      "import": "İçe Aktar",
+      "export_to_clipboard": "Panoya aktar",
+      "import_from_clipboard": "Panodan aktar",
+      "no_sources_selected": "Hiçbir kaynak seçilmedi",
+      "export_success": "{source} başarıyla dışa aktarıldı",
+      "export_failed": "{source} dışa aktarılamadı: {error}",
+      "import_success": "{source} başarıyla içe aktarıldı",
+      "import_failed": "{source} içe aktarılamadı: {error}",
+      "transfer_data": "Verileri aktar",
+      "send": "Gönder",
+      "receive": "Al",
+      "backup_data": "Verileri yedekle",
+      "advanced_export_import": "Gelişmiş dışa/içe aktarma",
+      "auto_backup": "Oto yedekleme",
+      "auto_backup_tooltip": "Uygulamayı açtığında yedeklemeler oluşturulur. Uygulama kapalıyken yedekleme yapılmaz.",
+      "backup_in_progress": "Yedekleme işlemi devam ediyor",
+      "export_operation_failed": "Dışa aktarılamadı: {error}",
+      "import_operation_failed": "İçe aktarılamadı: {error}",
+      "export_partial_success": "{exported}/{total} öğe dışa aktarıldı. {failed} başarısız oldu.",
+      "export_complete_success": "{exported} öğe başarıyla dışa aktarıldı",
+      "export_no_items": "Dışa aktarma başarısız: Hiçbir öğe dışa aktarılamadı",
+      "import_results": "İçe Aktarma tamamlandı: {results}",
+      "import_no_items": "İçe aktarma başarısız: Hiçbir öğe içe aktarılamadı",
+      "imported_count": "{count} öğe içe aktarıldı",
+      "skipped_count": "{count} öğe atlandı",
+      "failed_count": "{count} başarısız oldu",
+      "invalid_location_error": "Bu konuma aktarım yapılamıyor, lütfen \"İndirilenler\" veya \"Belgeler\" klasörünü kullanmayı dene. Yoksa, bir tane oluştur.",
+      "invalid_backup_format_error": "Geçersiz yedekleme formatı",
+      "never": "Asla",
+      "receive_data": {
+        "title": "Veri al",
+        "nearby_devices": "Yakınlardaki cihazlar",
+        "no_devices_found(rich)": "Hiçbir cihaz bulunamadı. Önce diğer cihazda aktarım işlemini başlat.\n\nIP adresiyle manuel olarak eklemek için ${tapHere(_)} öğesine dokun.",
+        "ip_address": "IP adresi",
+        "errors": {
+          "not_empty": "IP adresi boş bırakılamaz",
+          "port_required": "IP adresi bir bağlantı noktası içermeli",
+          "invalid": "Geçersiz IP adresi"
+        },
+        "choose_data_to_import": "İçe aktarılacak verileri seç"
+      },
+      "send_data": {
+        "name": "Ad",
+        "version": "Sürüm",
+        "status": {
+          "title": "Durum",
+          "broadcasting": "Yayınlanıyor",
+          "stopped": "Durdu",
+          "running": "Çalışıyor"
+        },
+        "how_to_transfer": "Nasıl aktarılır",
+        "how_to_send(rich)": "• Alıcı cihazda, ${settings(_)} seçeneğine git\n• Bu cihazdan veri aktarımını başlatmak için ${receive(_)} seçeneğini seç\n• Aktarım tamamlanana kadar bu sayfada kal",
+        "disclaimer": "Güvenlik kısıtlamaları nedeniyle, kamuya açık Wi-Fi ağlarında (kahve dükkanları, kütüphaneler) aktarım işlemi gerçekleşmeyebilir. Lütfen evindeki Wi-Fi gibi özel bir ağ kullan.",
+        "no_networks_error": "Veri aktarımı için Wi-Fi bağlantısı gerekli. Lütfen bir Wi-Fi ağına bağlan ve tekrar dene."
+      },
+      "backward_import": {
+        "title": "Eski bir sürümden içe aktarma tespit edildi",
+        "current_version": "Mevcut sürüm",
+        "exported_version": "Dışa aktarılan sürüm",
+        "reconfirm_question": "Geriye dönük içe aktarma beklendiği gibi çalışmayabilir. Emin misin?"
+      },
+      "version_mismatch": {
+        "title": "Farklı bir sürümden içe aktarma tespit edildi",
+        "current_version": "Mevcut sürüm",
+        "imported_version": "İçe aktarılan sürüm",
+        "confirmation_question": "İçe aktarmaya çalıştığın cihazın uygulama sürümü, uygulamanın mevcut sürümünden farklı. Bu durum, uyumluluk sorunlarına ve olası veri kaybına neden olabilir. \n\nDevam etmek istediğinden emin misin?"
+      }
+    },
+    "auto_backup": {
+      "enable_auto_backup": "Oto Yedeklemeyi Etkinleştir",
+      "backup_frequency": "Yedekleme Sıklığı",
+      "backup_location": "Yedekleme Konumu",
+      "maximum_backups": "Maksimum Yedekleme",
+      "frequency": {
+        "daily": "Günlük",
+        "weekly": "Haftalık"
+      },
+      "backup_count": {
+        "one": "$n yedek",
+        "other": "$n yedek"
+      },
+      "change": "Değiştir",
+      "last_backup": "Son yedekleme: $lastBackup",
+      "backup_needed": "Yedekleme gerekli",
+      "up_to_date": "Güncel",
+      "backing_up": "Yedekleniyor...",
+      "backup_now": "Hemen Yedekle"
+    },
+    "image_details": {
+      "ui_overlay": {
+        "show": "Göster",
+        "hide": "Gizle",
+        "ui_overlay": "Arayüz katmanı"
+      }
+    },
+    "page_indicator": {
+      "page_indicator": "Sayfa gösterge konumu",
+      "top": "Üst",
+      "bottom": "Alt",
+      "both": "Her ikisi"
+    },
+    "accessibility": {
+      "accessibility": "Erişilebilirlik",
+      "reverseBooruConfigSelectorScrollDirection": "Booru profillerinin kaydırma yönünü tersine çevir",
+      "swipeAreaToOpenSidebar": "Kenar çubuğunun kaydırma alanı",
+      "swipeAreaToOpenSidebarDescription": "Ekranın sol tarafında kaydırma hareketini tetiklemek için kullanılabilecek alanın genişliği. Yüksek değerler, sayfa geçişi kaydırma hareketi gibi tüm yatay hareketleri engelleyecektir.",
+      "reduce_animations": "Animasyonları azalt",
+      "reduce_animations_description": "Bu özellik etkinleştirildiğinde bazı işlevler beklendiği gibi çalışmayabilir.",
+      "volume_navigation": "Gezinmek için ses tuşlarını kullan",
+      "volume_navigation_description": "Resim görüntüleyicideyken ses tuşlarını kullanarak gönderiler arasında gezin.",
+      "haptic_feedback": {
+        "haptic_feedback": "Dokunsal geri bildirim",
+        "haptic_feedback_level": {
+          "none": "Yok",
+          "subtle": "Hafif",
+          "standard": "Standart",
+          "playful": "Hareketli"
+        }
+      }
+    },
+    "booru_settings": {
+      "edit_current_profile": "Mevcut profili düzenle",
+      "booru_settings": "Booru ayarları"
+    },
+    "contribute": "Katkıda bulun",
+    "source_code": "Kaynak kodu",
+    "support": "Destek",
+    "contact_developer": "Geliştiriciye ulaş",
+    "contact_developer_description": "Herhangi bir sorunun veya önerin varsa, bu seçenek aracılığıyla bana e-posta göndermekten çekinme",
+    "feature_request_and_bug_report": "Özellik isteği ve hata bildirimi",
+    "feature_request_and_bug_report_description": "GitHub reposu aracılığıyla özellik önerilerinde bulunabilir veya hataları bildirebilirsin",
+    "open_app_settings": "Ayarları aç"
   },
   "forum": {
     "forum": "Forum"
   },
   "tags": {
     "actions": {
-      "add_to_blacklist": "Karalisteye ekle"
+      "add_to_blacklist": "Karalisteye ekle",
+      "search": "Etiketleri Ara",
+      "search_single": "Ara",
+      "copy": "Etiketleri Kopyala",
+      "copy_single": "Kopyala",
+      "blacklist": "Engelle",
+      "blacklist_global": "Engelle (Global)",
+      "add_to_blacklist_global": "Genel engelleme listesine ekle"
+    },
+    "title": "Etiketler",
+    "filter_hint": "Filtrele...",
+    "loading_tags_error": "Etiketler yüklenemedi: $error",
+    "added": "Eklendi",
+    "counter": {
+      "one": "$n etiket",
+      "other": "$n etiket"
+    },
+    "other_counter": {
+      "one": "$n diğer",
+      "other": "$n diğer"
     }
   },
   "reminder": {
@@ -196,11 +683,690 @@
   },
   "sort": {
     "sort_by": "Sırala",
-    "name": "İsim",
-    "name_asc": "İsim (A-Z)",
-    "name_desc": "İsim (Z-A)",
-    "recently_added": "Yakınlarda eklendi",
-    "recently_updated": "Yakınlarda güncellendi",
-    "recently_created": "Yakınlarda oluşturuldu"
+    "name": "Ad",
+    "name_asc": "Ad (A-Z)",
+    "name_desc": "Ad (Z-A)",
+    "recently_added": "Yakınlarda eklenen",
+    "recently_updated": "Yakınlarda güncellenen",
+    "recently_created": "Yakınlarda oluşturulan",
+    "last_updated": "Son güncelleme",
+    "count": "Adet"
+  },
+  "blacklisted_tags": {
+    "remove": "Kaldır",
+    "edit": "Düzenle",
+    "blacklisted_tags": "Engellenen etiketler",
+    "load_error": "Engellenen etiketler yüklenemedi",
+    "updated": "Engellenen etiketler güncellendi",
+    "limitation_notice": "Yalnızca <b>NOT</b> ve <b>OR</b> operatörleri ile <b>score</b> ve <b>rating</b> meta etiketleri desteklenir.\n\nMevcut sürümde diğer meta etiketleriyle engelleme yapılamaz.",
+    "failed_to_add": "Etiket eklenemedi",
+    "failed_to_remove": "Etiket kaldırılamadı",
+    "blacklisted_header_title": "Engellenenler",
+    "disable_all": "Tümünü devre dışı bırak",
+    "reenable_all": "Tümünü yeniden etkinleştir"
+  },
+  "download": {
+    "download": "İndir",
+    "downloads": "İndirilenler",
+    "retry_all": "Tümünü yeniden dene",
+    "nothing_to_clear": "Temizlenecek öge yok",
+    "no_active_sessions": "Etkin indirme oturumu yok",
+    "nothing_to_show": "Gösterilecek öğe yok, indirme listesi boş",
+    "notification": {
+      "started": "İndirme işlemi başladı"
+    },
+    "status": {
+      "in_progress": "Devam Ediyor",
+      "pending": "Bekliyor",
+      "paused": "Duraklatıldı",
+      "completed": "Tamamlandı",
+      "failed": "Başarısız",
+      "canceled": "İptal edildi",
+      "unknown": "Bilinmeyen"
+    },
+    "empty_states": {
+      "no_pending_downloads": "Bekleyen indirme işlemi yok",
+      "no_paused_downloads": "Duraklatılan indirme işlemi yok",
+      "no_downloads_in_progress": "Devam eden indirme işlemi yok",
+      "no_completed_downloads": "Tamamlanan indirme işlemi yok",
+      "no_canceled_downloads": "İptal edilen indirme işlemi yok",
+      "no_failed_downloads": "Başarısız olan indirme işlemi yok",
+      "no_downloads": "İndirme yok"
+    },
+    "invalid_folder_name_error": "Klasör, aşağıdaki karakterlerden hiçbirini içermemeli: ",
+    "folder_select_warning": "Android 11 ve üzeri için uygulama yalnızca genel klasörlere <b>({0})</b> dosya indirebilir. <br><br> Geçerli konum örnekleri:<br><b>[Dahili Depolama]</b> /storage/emulated/0/Download <br><b>[SD kart]</b> /storage/A1B2-C3D4/Download<br><br>Lütfen başka bir klasör seç veya yoksa yeni bir tane oluştur. <br>Bu cihazın sürümü: <b>{1}</b>.",
+    "storage_permission_explanation": "İndirilen dosyaları kaydetmek için depolama izni gerekli."
+  },
+  "saved_search": {
+    "saved_search": "Kaydedilen arama",
+    "saved_search_counter": {
+      "one": "$n arama",
+      "other": "$n arama"
+    },
+    "add_saved_search": "Kaydedilen arama ekle",
+    "saved_search_added": "Kaydedilen arama eklendi",
+    "empty_saved_search": "Henüz hiç arama eklemedin",
+    "update_saved_search": "Kaydedilen aramayı güncelle",
+    "saved_search_updated": "Kaydedilen arama güncellendi",
+    "saved_search_feed": "Akış",
+    "saved_search_help": "Nedir?",
+    "saved_search_examples": "Örnekler",
+    "saved_search_try": "Dene",
+    "saved_search_query": "Sorgu",
+    "saved_search_labels": "Etiketler*",
+    "saved_search_labels_description": "Bu aramayı kategorize etmeye yardımcı olacak etiket listesi. Boşlukla ayrılır."
+  },
+  "favorites": {
+    "counter": {
+      "one": "Favori",
+      "other": "Favoriler"
+    },
+    "update": {
+      "success": "Favoriler güncellendi",
+      "failure": "Favoriler güncellenemedi"
+    }
+  },
+  "favorite_groups": {
+    "favorite_groups": "Favori Gruplar",
+    "empty_group_notice": "Favori grup bulunamadı",
+    "create_group": "Grup oluştur",
+    "edit_group": "Grubu düzenle",
+    "add_to_group_dialog_title": "Favori gruba ekle",
+    "add_to": "Gruba ekle",
+    "create": "Oluştur",
+    "private": "Gizli",
+    "items_added_notification_popup": "{0} gönderi {1} grubuna eklendi",
+    "group_name": "Grup adı",
+    "group_name_hint": "Yeni grup",
+    "all_posts": "Gönderiler",
+    "initial_posts_hint": "ID numaralarını aralarında boşluk bırakarak gir (İsteğe bağlı)",
+    "is_private_group_option": "Gizli grup",
+    "create_group_cancel": "İptal",
+    "create_group_confirm": "TAMAM",
+    "max_limit_warning": "Üyeler en fazla 10 favori grubu oluşturabilir",
+    "duplicate_items_warning_notification": "Girilen gönderiler zaten grupta mevcut",
+    "detete_confirmation": "Bu favori grubunu silmek istediğinizden emin misin?",
+    "drag_hint": "Sırayı değiştirmek için uzun basılı tut ve sürükle",
+    "group_item_counter": {
+      "one": "$n gönderi",
+      "other": "$n gönderi"
+    },
+    "confirm_edit_title": "Değişiklikleri gözden geçir",
+    "confirm_edit_adding": {
+      "one": "$n yeni gönderi eklenecek",
+      "other": "$n yeni gönderi eklenecek"
+    },
+    "confirm_edit_removing": {
+      "one": "$n gönderi kaldırılacak",
+      "other": "$n gönderi kaldırılacak"
+    },
+    "invalid_post_ids": "Geçersiz ID'ler içeriyor: {0}"
+  },
+  "favorite_tags": {
+    "favorites": "Favoriler",
+    "import_hint": "Etiketleri aralarında boşluk bırakarak buraya gir.",
+    "export_notification": "Etiket dizesi panoya kopyalandı",
+    "title": "Favori etiketler",
+    "manage_labels": "Etiketleri yönet",
+    "add_favorite": "Favori ekle",
+    "duplicate_error": "Bu favori zaten mevcut",
+    "search_hint": "Kaydedilen etiketleri bul",
+    "unlabelled": "Etiketsiz",
+    "copy_exact_value": "Tam değeri kopyala",
+    "deleted": "Favori silindi",
+    "undo": "Geri al",
+    "raw_badge": "HAM",
+    "filtered_empty": "Bu filtrelere uyan kaydedilmiş etiket bulunamadı",
+    "empty": "Etiketleri ve ham sorguları buraya kaydet, daha sonra tekrar kullanabilirsin",
+    "filter": {
+      "all_types": "Tüm türler",
+      "raw": "Ham",
+      "any_label": "Herhangi bir etiket",
+      "no_group": "Grupsuz",
+      "by_label": "Etikete göre",
+      "label_picker_title": "Etikete göre filtrele"
+    },
+    "labels": {
+      "title": "Etiketler",
+      "all": "Tüm etiketler",
+      "search_hint": "Etiketleri bul",
+      "empty": "Etiketler, bir favoriye atadıktan sonra görünür",
+      "no_match": "Bu aramayla eşleşen etiket yok",
+      "rename": "Yeniden adlandır",
+      "merge_into": "Şununla birleştir…",
+      "remove_from_all": "Tüm favorilerden kaldır",
+      "favorite_count": {
+        "one": "$n favori",
+        "other": "$n favori"
+      },
+      "remove_title": "Etiketi kaldır",
+      "remove_description": {
+        "one": "Bu işlem, $n favoriden “$label” öğesini kaldırır. Favori silinmez.",
+        "other": "Bu işlem, $n favoriden “$label” öğesini kaldırır. Favoriler silinmez."
+      },
+      "rename_title": "Etiketi yeniden adlandır",
+      "label_hint": "Etiket",
+      "merge_title": "Etiketi birleştir",
+      "merge": "Birleştir",
+      "merge_source_into": "“$label” etiketini şununla birleştir"
+    },
+    "editor": {
+      "enter_value": "Bir değer gir",
+      "edit_title": "Favoriyi düzenle",
+      "tag": "Etiket",
+      "advanced_options": "Gelişmiş seçenekleri göster",
+      "add_label": "Etiket ekle",
+      "suggestions": "Öneriler"
+    }
+  },
+  "rating": {
+    "rate_request": "Bu uygulamayı değerlendir",
+    "rate": "Değerlendir",
+    "cancel": "Hayır teşekkürler",
+    "later": "Belki sonra",
+    "rationale": "Uygulamayı beğendiysen, lütfen biraz zaman ayırıp bir değerlendirme yaz. Birkaç saniyeden fazla sürmez ve bu projeye gerçekten çok yardımcı olur."
+  },
+  "sideMenu": {
+    "home": "Ana Sayfa",
+    "settings": "Ayarlar",
+    "your_bookmarks": "Yer işaretlerin",
+    "your_blacklist": "Engellenenler",
+    "bulk_download": "Çoklu indirme",
+    "download_manager": "İndirme yöneticisi",
+    "get_support": "Destek al"
+  },
+  "dateRange": {
+    "day": "Gün",
+    "week": "Hafta",
+    "month": "Ay"
+  },
+  "booru": {
+    "api_key_instructions": {
+      "variants_1": "*Tarayıcıdan hesabına giriş yap ve API anahtarını almak için <b><a href=\"api-credentials\">My Account > Options > API Access Credentials</a></b> bölümüne git. <b>&api_key=&user_id=<your_id></b> şeklinde boş bir API anahtarı görüyorsan, yeni bir anahtar oluşturmak için <b>Generate New Key?</b> kutucuğunu işaretle ve en alttaki <b>Save</b> butonuna tıkla. Aksi takdirde anahtarı kopyalayıp yukarıdaki alana yapıştır. Ayrıca <b>API Access Credentials</b> bölümündeki tüm metni kopyalayıp aşağıdaki butona da dokunabilirsin.",
+      "variants_2": "*Tarayıcıdan hesabına giriş yap ve <b>My Account > Options > API Access Credentials</b> bölümüne git. Orada olup olmadığını kontrol et. Yoksa site kimlik bilgilerini desteklemiyor demektir, bunu görmezden gelebilirsin.",
+      "variants_3": "*Tarayıcıdan hesabına giriş yap ve <b><a href=\"api-credentials\">My Account > API Key</a></b> bölümüne git. Anahtarını kopyala veya gerekirse yenisini oluştur; uygulamanın düzgün çalışabilmesi için tüm izinlerin açık olduğundan emin ol.",
+      "variants_4": "*Tarayıcıdan hesabına giriş yap ve <b>Account > Login tokens</b> bölümüne git. <b>Web Login Token</b> kodunu kopyala veya gerekirse yenisini oluşturup buraya yapıştır. Eğer <b>Web Login Token</b> kullanırsan, tarayıcıdan çıkış yaptığında bu token geçersiz hale gelir.",
+      "variants_5": "*Tarayıcıdan hesabına giriş yap ve API anahtarını almak için <b><a href=\"api-credentials\">My Account > Options > API Access Credentials</a></b> bölümüne git. Anahtarı kopyala ve yukarıdaki alana yapıştır. Ayrıca <b>API Access Credentials</b> bölümündeki metnin tamamını kopyalayıp aşağıdaki butona da dokunabilirsin.",
+      "shimmie2": {
+        "danbooru_api_extension_notice": "Uygulamanın çalışabilmesi için sitede <b>Danbooru Client API</b> eklentisinin kurulu olması gerekir.",
+        "user_api_key_notice": "Giriş yapabilmek ve özel içeriklere erişebilmek için sitede <b>User API Key</b> eklentisinin kurulu olması gerekir.",
+        "view_extension_docs": "Eklenti dokümantasyonunu görüntüle"
+      }
+    },
+    "deletion": {
+      "title": "'${profileName}' profilini sil",
+      "confirmation": "Bu profili silmek istediğinden emin misin? Bu işlem geri alınamaz."
+    },
+    "invalid_booru_warning": "Görünüşe göre site, seçilen motor üzerinde çalışmıyor. Lütfen başka bir motorla dene.",
+    "invalid_selected_profile": "Mevcut seçili profil geçersiz",
+    "invalid_selected_profile_selection_request": "Devam etmek için aşağıdaki listeden bir profil seç",
+    "unknown_engine_selection_request": "Devam etmek için bir booru motoru seç",
+    "new_profile_leave_as_empty_tips": "Emin değil misin? Olduğu gibi bırak, daha sonra değiştirebilirsin.",
+    "using_status": "${booru} kullanımda",
+    "paste_from_clipboard": "Panodan yapıştır",
+    "booru_engine_input_label": "Booru motoru (*)",
+    "config_name_label": "Profil adı (*)",
+    "no_profiles_available": "Kullanılabilir profil yok",
+    "add_profile_to_continue": "Devam etmek için bir profil ekle",
+    "add_profile": "Profil Ekle",
+    "unsaved_changes": "Kaydedilmemiş değişikliklerin var",
+    "unsaved_changes_discard": "Kaydetme",
+    "unsaved_changes_reconfirm_question": "Değişikliklerini kaydetmek istiyor musun? Kaydetmezsen değişikliklerin kaybolacaktır.",
+    "site_url_label": "Site URL",
+    "login_name_label": "Giriş Yap",
+    "password_api_key_label": "API anahtarı",
+    "password_label": "Şifre",
+    "content_filtering_label": "İçerik filtreleme",
+    "content_filtering": {
+      "none": "Yok",
+      "moderate": "Orta",
+      "aggressive": "Katı",
+      "custom": "Özel"
+    },
+    "choose_a_custom_filtering": {
+      "one": "Aramadan hariç tutmak istediğin bir derecelendirme seç.",
+      "other": "Aramadan hariç tutmak istediğin derecelendirmeleri seç."
+    },
+    "hide_deleted_label": "Silinen gönderileri gizle",
+    "hide_deleted_description": "Düşük kaliteli resimleri gizle; bazı iyi resimler de gizlenebilir.",
+    "hide_banned_label": "Yasaklanan gönderileri gizle",
+    "hide_banned_description": "Site tarafından yasaklanmış resimleri tamamen gizle.",
+    "config_booru_confirm": "TAMAM",
+    "add_a_booru_site": "Yeni bir profil oluştur",
+    "next_step": "Sonraki",
+    "site_url": "Site URL",
+    "validation_empty_url": "URL boş",
+    "validation_invalid_url": "\"{0}\" geçerli bir URL değil",
+    "validation_invalid_http_url": "\"{0}\" bir HTTP veya HTTPS URL'si değil",
+    "validation_redundant_www": "\"{0}\" içinde gereksiz \"www\" bulunuyor",
+    "validation_contains_spaces": "\"{0}\" arasında boşluklar var",
+    "validation_missing_scheme": "\"{0}\"da şema eksik (örn. https://)",
+    "api_key": {
+      "auth_error": {
+        "edit_api_key": "API anahtarını düzenle",
+        "empty_key_warning": "Bu site, içeriğine erişebilmen için API anahtarını veya şifreni girmeni isteyebilir.",
+        "invalid_key_warning": "API anahtarını veya kimlik bilgilerini kontrol et; bunlar geçersiz olabilir veya süresi dolmuş olabilir."
+      }
+    },
+    "misc": "Çeşitli",
+    "authentication": {
+      "title": "Yetkilendirme",
+      "gelbooru": {
+        "basic_auth": "Temel Yetkilendirme (gerekli)",
+        "basic_auth_description": "Bu bilgileri paylaşman, uygulamanın hesabına okuma erişimi elde etmesini sağlar. Bu, Gelbooru tarafından 06/2025 tarihinden itibaren zorunlu kılınmıştır.",
+        "advanced_auth": "Gelişmiş Yetkilendirme (İsteğe Bağlı)",
+        "advanced_auth_description": "Bu bilgileri girmen, favorilerini düzenlemeni sağlar ve hesabına yazma erişimi verir. Şifreni değiştirirsen, yeniden oturum açman gerekeceğini lütfen unutma.",
+        "fav_button_tooltip_title": "Favori butonu hakkında",
+        "fav_button_tooltip_description": "Bir resmin daha önce favorilere eklenip eklenmediğini kontrol etmenin bir yolu yok. Bir resmi favorilere ekledikten sonra görsel bir gösterge görsen de, uygulamayı yeniden başlattığında bu sıfırlanır. İçin rahat olsun, favorilerin sitede hâlâ kayıtlıdır."
+      }
+    },
+    "listing": {
+      "title": "Listeleme",
+      "thumbnail_button": "Küçük Resim Butonu",
+      "thumbnail_button_description": "Küçük resmin sağ alt köşesindeki varsayılan düğmeyi değiştir.",
+      "tooltip_on_hover_title": "Üzerine gelindiğinde ipucunu göster",
+      "tooltip_on_hover_description": "Küçük resmin üzerine gelince önizleme bilgilerini göster.",
+      "enable_profile_specific_settings": "Profilin kendine özgü ayarlarını etkinleştir",
+      "enable_profile_specific_settings_description": "Bu profil için genel ayarları geçersiz kıl. Etkinleştirildiğinde, bu ayar devre dışı bırakılana kadar genel ayarlar göz ardı edilecek.",
+      "overridden_notice": "Bu ayarlar, özel listeleme tarafından geçersiz kılınır. Bunun yerine <b><a href=\"booru-profiles\">Profil Listeleme</a></b> sayfasına git."
+    },
+    "search": {
+      "title": "Arama",
+      "include_in_search": "Bu etiketleri her aramaya ekle",
+      "exclude_from_search": "Bu etiketleri tüm aramalardan hariç tut",
+      "include_exclude_tooltip": "Bu etiketler, yalnızca senin manuel olarak yaptığın aramalara değil, uygulamanın gerçekleştirdiği her aramaya eklenecektir.",
+      "preview_tags": "Önizleme",
+      "any_search_query": "<herhangi bir arama sorgusu>",
+      "enable_profile_specific_settings": "Profil özelinde engellemeyi etkinleştir",
+      "blacklist": "Engellenenler",
+      "empty_blacklist": "Etiket yok",
+      "empty_blacklist_with_replace_notice": "Değiştirme modunda boş bir engelleme listesi, engelleme listesini tamamen devre dışı bırakır.",
+      "blacklist_overridden": {
+        "replace_notice": "<b><a href=\"booru-profiles\">Profil Engelleme Listesi</a></b> ayarlarıyla değiştirildi.",
+        "merge_notice": "<b><a href=\"booru-profiles\">Profil Engelleme Listesi</a></b> ayarlarıyla birleştirildi."
+      },
+      "blacklist_combine_mode": {
+        "title": "Birleştirme modu",
+        "merge": "Birleştir",
+        "merge_description": "Bu engelleme listesini diğer engelleme listeleriyle birleştir.",
+        "replace": "Değiştir",
+        "replace_description": "Genel engelleme listesini bu engelleme listesiyle geçersiz kıl. Genel engelleme listesini etkilemeden, yalnızca bu profile özel bir liste kullanmak istediğinde işine yarar."
+      }
+    },
+    "network": {
+      "title": "Ağ",
+      "proxy": {
+        "title": "Proxy",
+        "select_type": "<Seç>",
+        "type": "Proxy Türü",
+        "host_or_ip": "Host veya IP (*)",
+        "host_or_ip_hint": "örn. proxy.host.com veya 123.456.789.0",
+        "port": "Port (*)",
+        "port_hint": "örn. 8080",
+        "username": "Kullanıcı adı",
+        "username_hint": "kullanıcı adı (isteğe bağlı)",
+        "password": "Şifre",
+        "password_hint": "şifre (isteğe bağlı)",
+        "test": {
+          "state": {
+            "idle": "Proxy'i test et",
+            "testing": "Kontrol ediliyor...",
+            "slow": "Yanıt yavaş mı?"
+          },
+          "success": "Proxy ayarları geçerli",
+          "failure": "Proxy'ye bağlanılamadı; lütfen ayarlarını kontrol et ve tekrar dene"
+        }
+      },
+      "http": {
+        "protocol": "HTTP Protokolü",
+        "protocol_description": "HTTP protokolünü değiştirmek, belirli sitelerde veya platformlarda uyumluluk veya performans açısından faydalı olabilir.",
+        "skip_cert_verification": "Sertifika doğrulamasını atla",
+        "skip_cert_verification_description": "Kendinden imzalı sertifikalar için etkinleştir (örn. yerel sunucular)",
+        "skip_cert_verification_warning_title": "Güvenlik Uyarısı",
+        "skip_cert_verification_warning": "Sertifika doğrulaması devre dışı. Bağlantın güvenli olmayabilir. Bunu yalnızca güvenilir yerel sunucular için kullan."
+      }
+    },
+    "viewer": {
+      "auto_fetch_notes": "Notları otomatik olarak getir",
+      "auto_fetch_notes_description": "Mümkün olduğunda notları otomatik olarak al ve görüntüle.",
+      "overridden_notice": "Bu ayarlar, özel görüntüleyici tarafından geçersiz kılındı. Bunun yerine <b><a href=\"booru-profiles\">Profil Görüntüleyicisi</a></b> sayfasına git."
+    },
+    "gestures": {
+      "title": "Hareketler",
+      "override_notice": "Bu profil için varsayılan hareketleri geçersiz kıl; orijinal davranışı korumak için \"Yok\" seçeneğini seç."
+    },
+    "downloads": {
+      "title": "İndirme",
+      "leave_empty_to_use_global": "Ayarlar'daki indirme konumunu kullanmak için bu alanı boş bırak.",
+      "custom_filename_format": "Özel dosya adı formatı",
+      "custom_filename_format_invidual": "Tek tek indirme",
+      "custom_filename_format_bulk": "Toplu indirme",
+      "bulk_slow_token_warning": "Toplu indirmede yavaş token'ların kullanılması, asıl indirmenin başlamasından önce hazırlık aşamasının ÇOK uzun sürmesine neden olur; mümkünse bunları kullanmamayı düşün.",
+      "filename": {
+        "available_tokens": "Kullanılabilir değişkenler: ",
+        "no_token_error": "$token değişkeni kullanılamıyor",
+        "available_token_options": "Kullanılabilir seçenekler",
+        "no_options_available": "Kullanılabilir seçenek yok",
+        "slow_token_warning": "Bu değişken, her dosya için ek veri alımı gerektirdiği için indirme hızını yavaşlatır."
+      }
+    },
+    "appearance": {
+      "title": "Görünüm",
+      "image_viewer_layout": {
+        "title": "Resim görüntüleyici düzeni",
+        "preview_widgets": "Önizleme widget'ları",
+        "full_info_widgets": "Tam bilgi widget'ları",
+        "widget_title": "Widget'lar",
+        "storage_tooltip": "Tüm değişiklikler mevcut profiline kaydedilir.",
+        "rearrange_tip": "Öğeleri yeniden düzenle veya içeriği gizle",
+        "preview": {
+          "title": "Düzen Önizlemesi",
+          "description": "Özel düzenini $previewMinutes dakika boyunca önizle. Bu sürenin sonunda, kullanmaya devam etmek için $brand sürümüne geçebilir veya istediğin kadar yeniden deneyebilirsin.",
+          "start_limited_preview": "$previewMinutes dakikalık önizlemeyi başlat",
+          "continue_preview_and_apply": "Önizlemeye Devam Et ve Uygula",
+          "currently_in_preview": "Şu anda özel bir düzeni önizliyorsun.",
+          "time_left": "Kalan süre:",
+          "preview_expired": "Düzen önizlemen sona erdi. Premium düzenleri kullanmaya devam etmek için yükseltme yap veya yeni bir önizleme başlat."
+        }
+      },
+      "home_screen": "Ana ekran",
+      "home_screen_description": "Bu profili açarken varsayılan ana ekranı değiştir.",
+      "turn_on": "Aç",
+      "turn_on_description": "Bu profilin temasını kullanarak genel temayı geçersiz kıl",
+      "overridden_notice": "Bu ayarlar, özel tema tarafından geçersiz kılınır. Bunun yerine <b><a href=\"booru-profiles\">Profil Görünümü</a></b> sayfasına git."
+    }
+  },
+  "blacklist": {
+    "manage": {
+      "title": "Engellenenler",
+      "empty_blacklist": "Engellenen etiket yok"
+    }
+  },
+  "bookmark": {
+    "title": "Yer işaretleri",
+    "added": "Yer işareti eklendi",
+    "failed_to_add": "Yer işareti eklenemedi",
+    "many_added": "{0} yer işareti eklendi",
+    "failed_to_add_many": "Yer işareti eklenemedi",
+    "removed": "Yer işareti kaldırıldı",
+    "failed_to_remove": "Yer işareti kaldırılamadı",
+    "shuffle_tooltip": "Yer işaretlerini karıştır",
+    "counter": {
+      "one": "$n yer işareti",
+      "other": "$n yer işareti"
+    }
+  },
+  "app_update": {
+    "update": "Güncelle",
+    "later": "Daha Sonra",
+    "whats_new": "Neler yani?",
+    "update_available": "Güncelleme var"
+  },
+  "gestures": {
+    "swipe_down": "Aşağı kaydır",
+    "double_tap": "Çift tıklama",
+    "long_press": "Uzun basma",
+    "tap": "Tıkla"
+  },
+  "time": {
+    "counters": {
+      "second": {
+        "one": "$n saniye",
+        "other": "$n saniye"
+      }
+    },
+    "timeago": {
+      "days": "{days} gün önce",
+      "hours": "{hours} saat önce",
+      "minutes": "{minutes} dakika önce",
+      "just_now": "Az önce"
+    },
+    "months": {
+      "short": {
+        "jan": "Oca",
+        "feb": "Şub",
+        "mar": "Mar",
+        "apr": "Nis",
+        "may": "May",
+        "jun": "Haz",
+        "jul": "Tem",
+        "aug": "Ağu",
+        "sep": "Eyl",
+        "oct": "Eki",
+        "nov": "Kas",
+        "dec": "Ara"
+      }
+    },
+    "filter": {
+      "last_7_days": "Son 7 gün",
+      "last_30_days": "Son 30 gün",
+      "last_90_days": "Son 90 gün",
+      "last_6_months": "Son 6 ay",
+      "last_year": "Son yıl"
+    }
+  },
+  "donation": {
+    "donate": "Bağış Yap"
+  },
+  "bulk_downloads": {
+    "created": "Oluşturuldu",
+    "completed_with_no_new_files": "Yeni dosya eklenmeden tamamlandı",
+    "scanning_page": {
+      "preparing": "Hazırlanıyor...",
+      "preparing_with_page": "Hazırlanıyor, sayfa $page...",
+      "with_page": "$page sayfası taranıyor...",
+      "null_page": "Başlatılıyor...",
+      "with_page_and_index": "$page. sayfa, $index. öğe taranıyor..."
+    },
+    "file_counter": {
+      "one": "$n dosya",
+      "other": "$n dosya"
+    },
+    "status": {
+      "suspended": "Kaydedildi"
+    },
+    "actions": {
+      "create": "Oluştur",
+      "delete": "Sil",
+      "copy_path": "Yolu kopyala",
+      "new_download": "Yeni indirme",
+      "add_to_queue": "Listeye Ekle"
+    },
+    "templates": {
+      "title": "Şablonlar",
+      "empty": "Şablon yok",
+      "create": "Yeni bir şablon oluştur",
+      "created": "Şablon oluşturuldu",
+      "run": "Şablonu çalıştır"
+    },
+    "completed": {
+      "title": "Tamamlandı",
+      "empty": "'Tamamlanmış indirme oturumu yok",
+      "clear_all": "Tümünü temizle"
+    },
+    "auth_changed": {
+      "profile_mismatch": "Profil uyuşmazlığı",
+      "current_site": "Mevcut site: ",
+      "download_site": "İndirme sitesi: ",
+      "has_mismatch_warning": "İndirme sitesi, mevcut site profiliyle uyuşmuyor. Lütfen profilini indirme sitesiyle uyumlu hale getir.",
+      "no_mismatch_warning": "Bu indirme işlemi, aynı siteden alınan ancak farklı kimlik bilgilerine sahip bir profil kullanılarak başlatıldı. Bu durum sorunlara yol açabilir. \n\nDevam etmek istiyor musun?",
+      "continue": "Yine de devam et"
+    },
+    "options": {
+      "other_options": "Diğer seçenekler",
+      "save_to_folder": "Klasöre kaydet",
+      "show_advanced_options": "Gelişmiş seçenekleri göster",
+      "enable_notification": "Bildirimler",
+      "excluded_tags": "Hariç tutulan etiketler",
+      "excluded_tags_description": "Bu gruptan hariç tutulacak ek etiketleri seç",
+      "default_excluded_tags_from_source_list": "Aşağıdaki kaynaklardan gelen varsayılan engellenen etiketler:",
+      "source_list": {
+        "one": "• $source kaynağından $count etiketi",
+        "other": "• $source kaynağından $count etiketleri"
+      }
+    },
+    "errors": {
+      "non_premium_template_limit": "Yalnızca bir şablon kullanılmasına izin verilir. Daha fazla şablon oluşturmak için $brand sürümüne yükselt.",
+      "non_premium_session_limit": "Aynı anda yalnızca bir aktif indirme oturumu izin verilir. Ek oturumlar için $brand sürümüne yükselt.",
+      "non_premium_resume": "Kaydedilmiş indirme oturumlarını devam ettirme özelliği yalnızca $brand’da mevcuttur.",
+      "non_premium_suspend": "İndirme oturumlarını kaydetme özelliği yalnızca $brand’da mevcuttur.",
+      "running_session_deletion": "Çalışmakta olan bir oturumu silemezsin"
+    }
+  },
+  "auth": {
+    "login_required": "Bu özelliği kullanmak için giriş bilgilerini girmen gerekli.",
+    "logged_in": "Giriş Yapıldı",
+    "relogin": "Tekrar Giriş Yap",
+    "clear_credentials": "Temizle",
+    "login": "Giriş Yap",
+    "login_expires": "Oturumun sona erme tarihi:",
+    "session_expired": "Oturumunun süresi doldu. Kimlik doğrulaması gerektiren özellikleri kullanmaya devam etmek için tekrar giriş yap."
+  },
+  "captcha": {
+    "title": "Captcha'yı çöz",
+    "i_have_solved_it": "Çözdüm"
+  },
+  "select": {
+    "selected_items": "Ögeleri seç",
+    "items_selected": {
+      "one": "$n öge seçildi",
+      "other": "$n öge seçildi"
+    },
+    "select_all": "Tümünü seç",
+    "deselect_all": "Tüm seçimleri kaldır"
+  },
+  "posts": {
+    "actions": {
+      "view_options": "Seçenekleri Görüntüle",
+      "edit_blacklist": "Engel Listesini Düzenle",
+      "edit_global_blacklist": "Genel engel listesini düzenle",
+      "edit_booru_specific_blacklist": "Booru'nun özel engelini düzenle",
+      "edit_profile_blacklist": "Profil engel listesini düzenle",
+      "stats": "İstatistikler"
+    },
+    "hidden_count": "$total öğeden $hidden tanesi gizli",
+    "counter": {
+      "one": "$n gönderi",
+      "other": "$n gönderi"
+    }
+  },
+  "premium": {
+    "get_premium": "$brand Edin",
+    "upgrade": "Yükselt",
+    "subscribe": "Abone Ol",
+    "unlock_more_theme_with_premium": "$brane ile daha fazla tema açın",
+    "restore_subscription": "Aboneliği geri yükle",
+    "subscription_restored": "Abonelik geri yüklendi!",
+    "restore_failed": "Aboneliğini geri yüklerken bir sorun oluştu. Lütfen daha sonra tekrar dene.",
+    "select_your_plan": "Planını seç",
+    "legal_disclaimer": "Abone olarak, <a href=\"terms-of-service\">Hizmet Şartlarımız</a> ve <a href=\"privacy-policy\">Gizlilik Politikamız</a>'ı kabul etmiş olursun. Abonelik, iptal edilene kadar otomatik olarak yenilenir. Mevcut döneminin sona ermesinden en geç 24 saat öncesine kadar istediğin zaman iptal edebilirsin.",
+    "benefits": {
+      "exclusive_themes": "Özel Temalar",
+      "exclusive_themes_description": "Her bir profilin görünümünü kişiselleştirmek için çeşitli temalar arasından seçim yap",
+      "layout_customization": "Düzen ve Ana Ekran",
+      "layout_customization_description": "Görüntülemek istediğin bilgi miktarını özelleştir ve tercih ettiğin ana ekranı (Yer İşaretleri, Arama vb.) ayarla",
+      "enhanced_bulk_download": "Gelişmiş Toplu İndirme",
+      "enhanced_bulk_download_description": "Sınırsız şablon, birden fazla oturum ve yeniden başlatma sonrasında kesintisiz devam etme.",
+      "support_development": "Gelişimi Destekle",
+      "support_development_description": "Tek başına çalışan bir geliştiricinin, düzenli güncellemeler ve iyileştirmelerle projesini sürdürmesine yardımcı ol."
+    },
+    "thanks": {
+      "title": "Teşekkürler!",
+      "description": "Artık premium özelliklere erişebilirsin. Keyfini çıkar!",
+      "confirm": "Anladım!"
+    },
+    "changelog": {
+      "thanks_for_supporting": "$brand’a abone olarak bu uygulamanın geliştirilmesine destek olduğun için teşekkürler!",
+      "support_reminder": "Bu güncellemeleri beğeniyorsan, iyileştirmelerin devam etmesi için çalışmalarımı desteklemeyi düşün."
+    },
+    "per": {
+      "year": "/ yıl",
+      "month": "/ ay"
+    },
+    "packages": {
+      "monthly": "Aylık",
+      "annual": "Yıllık"
+    }
+  },
+  "misc": {
+    "trailing_more": " daha fazla",
+    "trailing_less": " daha az"
+  },
+  "artists": {
+    "title": "Sanatçılar",
+    "search": {
+      "name": "Ad",
+      "name_hint": "Ad, grup adı veya başka bir ad",
+      "name_tips": "*Özel arama karakterleri ve düzenli ifadeleri destekler",
+      "url_hint": "URL veya URL'nin bir kısmı"
+    }
+  },
+  "uploads": {
+    "counter": {
+      "one": "$n yükleme",
+      "other": "$n yükleme"
+    }
+  },
+  "infinite_scroll": {
+    "reminder": {
+      "highres": "Dikkat: Uygulama, mobil veri kullanarak yüksek çözünürlüklü resimler gösteriyor."
+    },
+    "load_more": "Daha fazla yükle",
+    "nore_more_data": "Şimdilik hepsi bu kadar",
+    "page_label": "Sayfa $page",
+    "next_page": "Sonraki sayfa",
+    "previous_page": "Önceki sayfa"
+  },
+  "window": {
+    "pin": {
+      "pin_toast": "Pencere üste sabitlendi",
+      "unpin_toast": "Pencerenin üste sabitlemesi kaldırıldı"
+    }
+  },
+  "video_player": {
+    "playback_speed": "Oynatma hızı",
+    "lock_screen": "Ekranı kilitle",
+    "buffering": "Arabelleğe alınıyor...",
+    "engine_not_supported": "Bu motor, mevcut platformda desteklenmiyor.",
+    "change_video_player_engine_suggest": "Bu durum düzenli olarak tekrarlanıyorsa, ayarlardan farklı bir video oynatıcı motoru kullanmayı düşün.",
+    "change_video_player_engine_request": "Lütfen ayarlardan farklı bir video oynatıcı motoruna geç.",
+    "video_quality": "Video kalitesi",
+    "video_qualities": {
+      "auto": "Oto",
+      "sample": "Örnek",
+      "original": "Orijinal"
+    },
+    "current_video_quality_disclaimer": "Bu bölüm yalnızca mevcut videoya uygulanır. Tüm videolar için <a href=\"booru-profiles\">$video_profile_path</a> adresine git.",
+    "speed": {
+      "normal": "Normal"
+    }
+  },
+  "cache": {
+    "image": {
+      "reminder": {
+        "description": "Uygulama <b>$size</b> yer kaplayan görsel biriktirdi. Hafızada yer açmak için temizlensin mi?",
+        "cleared": "Önbellek temizlendi",
+        "failed": "Önbellek temizlenemedi"
+      }
+    }
+  },
+  "shimmie2": {
+    "extension": {
+      "title": "Eklentiler",
+      "failed_to_fetch": "Bu sunucu için eklenti listesi alınamadı"
+    }
+  },
+  "eshuushuu": {
+    "personal_info": {
+      "title": "Kişisel Bilgiler",
+      "gender": "Cinsiyet",
+      "location": "Konum",
+      "interests": "İlgiler",
+      "website": "Website"
+    },
+    "profile": {
+      "joined": "Katılma",
+      "last_active": "Son aktiflik"
+    }
   }
 }

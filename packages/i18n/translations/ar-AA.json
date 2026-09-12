@@ -134,7 +134,7 @@
       "show_less": "عرض أقل",
       "login_required_notice": "يرجى تسجيل الدخول للمتابعة",
       "open_wiki": "فتح الويكي",
-      "add_to_favorites": "إضافة للمفضلة",
+      "add_to_favorites": "إضافة  إلى المفضلة",
       "copy_and_open_saved_search": "نسخ وفتح البحث المحفوظ",
       "score": {
         "one": "نقطة واحدة",
@@ -185,7 +185,7 @@
     "action": {
       "share": "مشاركة",
       "bookmark": "إضافة علامة مرجعية",
-      "favorite": "إضافة للمفضلة",
+      "favorite": "المفضلة",
       "unfavorite": "إزالة من المفضلة",
       "upvote": "تصويت إيجابي",
       "downvote": "تصويت سلبي",
@@ -780,7 +780,31 @@
     "favorites": "الوسوم المفضلة",
     "import_hint": "الصق وسومك هنا مفصولة بسطور جديدة أو بمسافات لاستيرادها دفعة واحدة.",
     "export_notification": "تم تصدير الوسوم المفضلة إلى الحافظة بنجاح",
-    "title": "الوسوم المفضلة"
+    "title": "الوسوم المفضلة",
+    "manage_labels": "إدارة التصنيفات",
+    "add_favorite": "إضافة إلى المفضلة",
+    "duplicate_error": "موجود بي الفعل",
+    "search_hint": "أبحث عن وسم محفوظ",
+    "unlabelled": "غير مصنف",
+    "copy_exact_value": "نسخ القيمة الدقيقة",
+    "deleted": "حُذفت المفضلة",
+    "undo": "تراجع",
+    "raw_badge": "خام",
+    "filtered_empty": "لا توجد وسوم محفوظة تطابق هذه المُرشحات",
+    "empty": "احفظ الوسوم والاستعلامات الخام لإعادة استخدامها هنا",
+    "filter": {
+      "all_types": "جميع الأنواع",
+      "raw": "خام",
+      "any_label": "أي تصنيف",
+      "no_group": "ليست مجموعة",
+      "by_label": "التصنيف",
+      "label_picker_title": "فرز بي التصنيف"
+    },
+    "labels": {
+      "title": "تصنيفات",
+      "all": "كل التصنيفات",
+      "search_hint": "اعثر على تصنيف"
+    }
   },
   "rating": {
     "rate_request": "قيم التطبيق",
