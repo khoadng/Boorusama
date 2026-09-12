@@ -65,7 +65,7 @@ Future<Response<T>?> tryGetResponse<T>(
                   : null,
               uri: instructions.uri,
               retryAfter: error is DioException
-                  ? _retryAfter(error.response?.headers)
+                  ? retryAfterFromHeaders(error.response?.headers)
                   : null,
             );
       instructions = await strategy(instructions.uri, lastFailure);
@@ -97,7 +97,8 @@ void _debugCheckInstructions(FetchInstructions? instructions) {
   }());
 }
 
-Duration? _retryAfter(Headers? headers) {
+/// Parses Retry-After seconds or an HTTP date; invalid or absent values return null.
+Duration? retryAfterFromHeaders(Headers? headers) {
   final values = headers?['retry-after'];
   if (values == null || values.length != 1) return null;
   final value = values.single.trim();
