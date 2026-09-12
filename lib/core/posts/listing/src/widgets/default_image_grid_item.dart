@@ -180,7 +180,9 @@ class _Image<T extends Post> extends ConsumerWidget {
       forceCover: imageListType == ImageListType.standard,
       fit: imageListType == ImageListType.classic ? BoxFit.contain : null,
       placeholderUrl: media.placeholderUrl,
-      placeholderAspectRatio: media.placeholderAspectRatio,
+      placeholderAspectRatio: imageListType == ImageListType.masonry
+          ? media.placeholderAspectRatio
+          : null,
       placeholderFit: media.placeholderFit,
       imageCacheManager: imageCacheManager,
     );

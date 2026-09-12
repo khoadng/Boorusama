@@ -267,7 +267,9 @@ class DefaultDanbooruImageGridItem extends StatelessWidget {
           forceCover: imageListType == ImageListType.standard,
           fit: imageListType == ImageListType.classic ? BoxFit.contain : null,
           placeholderUrl: media.placeholderUrl,
-          placeholderAspectRatio: media.placeholderAspectRatio,
+          placeholderAspectRatio: imageListType == ImageListType.masonry
+              ? media.placeholderAspectRatio
+              : null,
           placeholderFit: media.placeholderFit,
         );
       },
