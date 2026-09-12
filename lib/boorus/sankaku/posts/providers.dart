@@ -6,10 +6,10 @@ import '../../../core/configs/config/types.dart';
 import '../../../core/posts/details/types.dart';
 import '../../../core/posts/post/providers.dart';
 import '../../../core/posts/post/types.dart';
-import '../../../core/search/queries/providers.dart';
 import '../../../core/settings/providers.dart';
 import '../client_provider.dart';
 import '../favorites/providers.dart';
+import '../search/tag_query_composer.dart';
 import 'parser.dart';
 import 'types.dart';
 
@@ -22,7 +22,7 @@ final sankakuPostRepoProvider =
       (ref, config) {
         final client = ref.watch(sankakuClientProvider(config.auth));
         final idGenerator = ref.watch(sankakuPseudoIdGeneratorProvider);
-        final tagComposer = ref.watch(defaultTagQueryComposerProvider(config));
+        final tagComposer = ref.watch(sankakuTagQueryComposerProvider(config));
 
         return PostRepositoryBuilder(
           tagComposer: tagComposer,

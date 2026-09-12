@@ -12,12 +12,14 @@ import '../../core/downloads/filename/types.dart';
 import '../../core/errors/types.dart';
 import '../../core/http/client/providers.dart';
 import '../../core/posts/post/types.dart';
+import '../../core/search/queries/types.dart';
 import '../../core/tags/autocompletes/types.dart';
 import '../../core/tags/metatag/types.dart';
 import '../../core/tags/tag/types.dart';
 import 'errors/error_translator.dart';
 import 'posts/providers.dart';
 import 'posts/types.dart';
+import 'search/tag_query_composer.dart';
 import 'tags/providers.dart';
 
 class SankakuRepository extends BooruRepositoryDefault {
@@ -29,6 +31,10 @@ class SankakuRepository extends BooruRepositoryDefault {
   @override
   AppErrorTranslator appErrorTranslator(BooruConfigAuth config) =>
       ref.watch(sankakuAppErrorTranslatorProvider);
+
+  @override
+  TagQueryComposer tagComposer(BooruConfigSearch config) =>
+      ref.watch(sankakuTagQueryComposerProvider(config));
 
   @override
   PostRepository<Post> post(BooruConfigSearch config) {
