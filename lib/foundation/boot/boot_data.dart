@@ -10,7 +10,6 @@ import '../loggers.dart';
 class BootData {
   const BootData({
     required this.logger,
-    required this.appLogger,
     this.iapFunc,
     this.isFossBuild = false,
     this.googleApiAvailable = false,
@@ -21,7 +20,6 @@ class BootData {
 
   BootData copyWith({
     Logger? logger,
-    AppLogger? appLogger,
     Future<IAP> Function()? iapFunc,
     bool? isFossBuild,
     bool? cronetAvailable,
@@ -30,7 +28,6 @@ class BootData {
   }) {
     return BootData(
       logger: logger ?? this.logger,
-      appLogger: appLogger ?? this.appLogger,
       iapFunc: iapFunc ?? this.iapFunc,
       isFossBuild: isFossBuild ?? this.isFossBuild,
       cronetAvailable: cronetAvailable ?? this.cronetAvailable,
@@ -40,7 +37,6 @@ class BootData {
   }
 
   final Logger logger;
-  final AppLogger appLogger;
   final Future<IAP> Function()? iapFunc;
   final bool isFossBuild;
   final bool googleApiAvailable;

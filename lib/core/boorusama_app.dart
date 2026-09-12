@@ -30,6 +30,9 @@ import '../foundation/platform.dart';
 import '../foundation/utils/file_utils.dart';
 import '../foundation/vendors/google/providers.dart';
 import 'app.dart';
+import 'debug/data.dart';
+import 'debug/types.dart';
+import 'debug/providers.dart';
 import 'boorus/booru/providers.dart';
 import 'boorus/booru/types.dart';
 import 'boorus/engine/providers.dart';
@@ -87,9 +90,9 @@ class _BoorusamaAppState extends State<BoorusamaApp> {
   }
 
   Future<_InitResult> _initialize() async {
-    final appLogger = AppLogger(initialLevel: LogLevel.debug);
+    final appLogger = createAppLogger(initialLevel: LogLevel.debug);
     _appLogger = appLogger;
-    final logger = await loggerWith(appLogger);
+    final logger = appLogger;
     final fs = widget.fileSystem;
 
     try {
@@ -109,6 +112,10 @@ class _BoorusamaAppState extends State<BoorusamaApp> {
       Hive
         ..init(dbDirectoryPath)
         ..registerAdapters();
+
+      final logCaptureRepository = createLogCaptureRepository();
+      final logCaptureOptions = await logCaptureRepository.load();
+      appLogger.applyCaptureOptions(logCaptureOptions);
 
       logger.debugBoot('Load app info');
       final appInfo = await getAppInfo();
@@ -224,13 +231,17 @@ class _BoorusamaAppState extends State<BoorusamaApp> {
         deviceInfo: deviceInfo,
         appInfo: appInfo,
         appLogger: appLogger,
+        logCaptureRepository: logCaptureRepository,
+        logCaptureOptions: logCaptureOptions,
         logger: logger,
         miscDataBox: miscDataBox,
       );
     } catch (e, stackTrace) {
       logger.error(
         'Boot',
-        'An error occurred during initialization: $e\n'
+        'Initialization failed: ${e.runtimeType}',
+        sensitiveMessage:
+            'An error occurred during initialization: $e\n'
             '${Trace.from(stackTrace).terse}',
       );
       rethrow;
@@ -330,6 +341,12 @@ class _BoorusamaAppState extends State<BoorusamaApp> {
             packageInfoProvider.overrideWithValue(result.packageInfo),
             appInfoProvider.overrideWithValue(result.appInfo),
             appLoggerProvider.overrideWithValue(result.appLogger),
+            logCaptureRepositoryProvider.overrideWithValue(
+              result.logCaptureRepository,
+            ),
+            logCaptureOptionsProvider.overrideWith(
+              () => LogCaptureOptionsNotifier(result.logCaptureOptions),
+            ),
             miscDataBoxProvider.overrideWithValue(result.miscDataBox),
             isCronetAvailableProvider.overrideWithValue(
               widget.cronetAvailable,
@@ -367,6 +384,8 @@ class _InitResult {
     required this.deviceInfo,
     required this.appInfo,
     required this.appLogger,
+    required this.logCaptureRepository,
+    required this.logCaptureOptions,
     required this.logger,
     required this.miscDataBox,
   });
@@ -385,6 +404,8 @@ class _InitResult {
   final DeviceInfo deviceInfo;
   final AppInfo appInfo;
   final AppLogger appLogger;
+  final LogCaptureRepository logCaptureRepository;
+  final LogCaptureOptions logCaptureOptions;
   final Logger logger;
   final Box<String> miscDataBox;
 }

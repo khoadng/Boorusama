@@ -255,7 +255,8 @@ Future<DownloadTaskInfo?> _download(
 
         logger.error(
           'Single Download',
-          msg,
+          'Download failed: ${e.error.runtimeType}',
+          sensitiveMessage: msg,
         );
       }(),
     };

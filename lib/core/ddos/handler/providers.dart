@@ -34,17 +34,29 @@ final httpDdosProtectionBypassProvider = Provider<HttpProtectionHandler>(
         ],
         solvers: [
           CloudflareSolver(
-            onLog: (message) => logger.info('Verification', message),
+            onLog: (message, {sensitiveMessage}) => logger.info(
+              'Verification',
+              message,
+              sensitiveMessage: sensitiveMessage,
+            ),
             contextProvider: contextProvider,
             cookieJar: cookieJar,
           ),
           AftSolver(
-            onLog: (message) => logger.info('Verification', message),
+            onLog: (message, {sensitiveMessage}) => logger.info(
+              'Verification',
+              message,
+              sensitiveMessage: sensitiveMessage,
+            ),
             contextProvider: contextProvider,
             cookieJar: cookieJar,
           ),
           CaptchaAccessDeniedSolver(
-            onLog: (message) => logger.info('Verification', message),
+            onLog: (message, {sensitiveMessage}) => logger.info(
+              'Verification',
+              message,
+              sensitiveMessage: sensitiveMessage,
+            ),
             contextProvider: contextProvider,
             cookieJar: cookieJar,
           ),

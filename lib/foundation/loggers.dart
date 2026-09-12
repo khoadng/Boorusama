@@ -1,4 +1,3 @@
-export 'loggers/app_logger.dart';
 export 'loggers/console.dart';
 export 'loggers/console_logger.dart';
 export 'loggers/logger.dart';

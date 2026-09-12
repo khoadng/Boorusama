@@ -32,8 +32,6 @@ typedef ContextProvider = BuildContext? Function();
 typedef ChallengeCompletionValidator =
     Future<bool> Function(WebViewController controller);
 
-const _ddosSolverLogSnippetLength = 2000;
-
 abstract class CookieRetriever {
   Future<List<Cookie>> getCookies(String url);
 }
@@ -64,7 +62,7 @@ class RawSolver implements ProtectionSolver {
   final ContextProvider contextProvider;
   final LazyAsync<CookieJar> cookieJar;
   final ChallengeCompletionValidator? challengeCompletionValidator;
-  final void Function(String message)? onLog;
+  final void Function(String message, {String? sensitiveMessage})? onLog;
 
   final CookieRetriever _cookieRetriever;
   var _solving = false;
@@ -84,11 +82,15 @@ class RawSolver implements ProtectionSolver {
     _solving = true;
 
     final completer = Completer<bool>();
-    void log(String message) => onLog?.call(
+    void log(String message, {String? sensitiveMessage}) => onLog?.call(
       '$protectionType session=${identityHashCode(completer)} '
       'host=${uri.host} $message',
+      sensitiveMessage: sensitiveMessage == null
+          ? null
+          : '$protectionType session=${identityHashCode(completer)} '
+                'host=${uri.host} $sensitiveMessage',
     );
-    log('started');
+    log('started', sensitiveMessage: 'started uri=$uri userAgent=$userAgent');
     final context = contextProvider();
 
     if (context == null) {
@@ -113,11 +115,6 @@ class RawSolver implements ProtectionSolver {
       final initialCookies = await _getMatchingCookieValues(uri);
       log('initial matching cookies=${initialCookies.length}');
       var hasFinishedPageLoad = false;
-      debugPrint(
-        '[DDOS:$protectionType] start uri=$uri '
-        'userAgent=${userAgent ?? '<default>'} '
-        'initialMatchingCookies=${initialCookies.keys.join(',')}',
-      );
 
       try {
         await controller.setJavaScriptMode(JavaScriptMode.unrestricted);
@@ -126,7 +123,10 @@ class RawSolver implements ProtectionSolver {
           await controller.setNavigationDelegate(
             NavigationDelegate(
               onPageStarted: (url) {
-                log('page started host=${Uri.tryParse(url)?.host}');
+                log(
+                  'page started host=${Uri.tryParse(url)?.host}',
+                  sensitiveMessage: 'page started url=$url',
+                );
               },
               onWebResourceError: (error) {
                 log(
@@ -136,11 +136,16 @@ class RawSolver implements ProtectionSolver {
               },
               onPageFinished: (url) {
                 hasFinishedPageLoad = true;
-                log('page finished host=${Uri.tryParse(url)?.host}');
-                debugPrint('[DDOS:$protectionType] page finished url=$url');
+                log(
+                  'page finished host=${Uri.tryParse(url)?.host}',
+                  sensitiveMessage: 'page finished url=$url',
+                );
                 unawaited(
                   _completeIfSolved(
-                    log: (message) => log('page callback: $message'),
+                    log: (message, {sensitiveMessage}) => log(
+                      'page callback: $message',
+                      sensitiveMessage: sensitiveMessage,
+                    ),
                     uri: uri,
                     jar: jar,
                     controller: controller,
@@ -202,7 +207,10 @@ class RawSolver implements ProtectionSolver {
               },
               onSolved: () async {
                 final solved = await _completeIfSolved(
-                  log: (message) => log('manual: $message'),
+                  log: (message, {sensitiveMessage}) => log(
+                    'manual: $message',
+                    sensitiveMessage: sensitiveMessage,
+                  ),
                   uri: uri,
                   jar: jar,
                   controller: controller,
@@ -239,7 +247,7 @@ class RawSolver implements ProtectionSolver {
   }
 
   void _monitorCompletion({
-    required void Function(String) log,
+    required void Function(String, {String? sensitiveMessage}) log,
     required Uri uri,
     required CookieJar jar,
     required WebViewController controller,
@@ -255,7 +263,10 @@ class RawSolver implements ProtectionSolver {
       }
 
       final solved = await _completeIfSolved(
-        log: (message) => log('timer: $message'),
+        log: (message, {sensitiveMessage}) => log(
+          'timer: $message',
+          sensitiveMessage: sensitiveMessage,
+        ),
         uri: uri,
         jar: jar,
         controller: controller,
@@ -270,7 +281,7 @@ class RawSolver implements ProtectionSolver {
   }
 
   Future<bool> _completeIfSolved({
-    required void Function(String) log,
+    required void Function(String, {String? sensitiveMessage}) log,
     required Uri uri,
     required CookieJar jar,
     required WebViewController controller,
@@ -288,11 +299,6 @@ class RawSolver implements ProtectionSolver {
     try {
       final cookies = await _cookieRetriever.getCookies(uri.toString());
       final currentUrl = await _safeCurrentUrl(controller);
-      debugPrint(
-        '[DDOS:$protectionType] check uri=$uri '
-        'currentUrl=${currentUrl ?? '<unknown>'} '
-        'cookies=${_formatCookies(cookies)}',
-      );
 
       log(
         'cookies=${cookies.length} '
@@ -305,7 +311,6 @@ class RawSolver implements ProtectionSolver {
         log(
           'success via changed cookie alreadyCompleted=${completer.isCompleted}',
         );
-        debugPrint('[DDOS:$protectionType] complete via matching cookie');
         if (!completer.isCompleted) completer.complete(true);
         onSuccess?.call();
         return true;
@@ -313,26 +318,22 @@ class RawSolver implements ProtectionSolver {
 
       final validator = challengeCompletionValidator;
       if (validator == null) {
-        debugPrint('[DDOS:$protectionType] pending cookie-only solver');
         return false;
       }
 
       if (!allowPageValidation) {
-        debugPrint(
-          '[DDOS:$protectionType] pending page validator until page finished',
-        );
         return false;
       }
 
       final solvedByPage = await validator(controller);
       log('page accepted=$solvedByPage');
-      debugPrint('[DDOS:$protectionType] page validator=$solvedByPage');
 
       if (!solvedByPage) {
-        final pageSource = await _getPageSource(controller);
-        debugPrint(
-          '[DDOS:$protectionType] pending page='
-          '${_formatPageSnippet(pageSource)}',
+        final page = await _getPageSource(controller);
+        log(
+          'challenge pending pageLength=${page.length}',
+          sensitiveMessage:
+              'challenge pending page=${page.length > 2000 ? page.substring(0, 2000) : page}',
         );
         return false;
       }
@@ -341,13 +342,11 @@ class RawSolver implements ProtectionSolver {
         await jar.saveFromResponse(uri, cookies);
       }
       log('success via page content alreadyCompleted=${completer.isCompleted}');
-      debugPrint('[DDOS:$protectionType] complete via page content');
       if (!completer.isCompleted) completer.complete(true);
       onSuccess?.call();
       return true;
     } catch (e) {
       log('check exception type=${e.runtimeType}');
-      debugPrint('Error checking challenge completion: $e');
       return false;
     }
   }
@@ -413,7 +412,7 @@ class CloudflareSolver implements ProtectionSolver {
 
   final ContextProvider contextProvider;
   final LazyAsync<CookieJar> cookieJar;
-  final void Function(String message)? onLog;
+  final void Function(String message, {String? sensitiveMessage})? onLog;
 
   late final _solver = RawSolver(
     onLog: onLog,
@@ -454,7 +453,7 @@ class AftSolver implements ProtectionSolver {
 
   final ContextProvider contextProvider;
   final LazyAsync<CookieJar> cookieJar;
-  final void Function(String message)? onLog;
+  final void Function(String message, {String? sensitiveMessage})? onLog;
 
   late final _solver = RawSolver(
     onLog: onLog,
@@ -605,27 +604,6 @@ Future<String?> _safeCurrentUrl(WebViewController controller) async {
   }
 }
 
-String _formatCookies(List<Cookie> cookies) {
-  if (cookies.isEmpty) return '[]';
-
-  return cookies
-      .map(
-        (cookie) =>
-            '{name:${cookie.name}, domain:${cookie.domain}, '
-            'path:${cookie.path}, expires:${cookie.expires}, '
-            'secure:${cookie.secure}, httpOnly:${cookie.httpOnly}, '
-            'valueLength:${cookie.value.length}}',
-      )
-      .join(', ');
-}
-
-String _formatPageSnippet(String value) {
-  final normalized = value.replaceAll(RegExp(r'\s+'), ' ').trim();
-  if (normalized.length <= _ddosSolverLogSnippetLength) return normalized;
-
-  return '${normalized.substring(0, _ddosSolverLogSnippetLength)}...';
-}
-
 class CaptchaAccessDeniedSolver implements ProtectionSolver {
   CaptchaAccessDeniedSolver({
     required this.contextProvider,
@@ -635,7 +613,7 @@ class CaptchaAccessDeniedSolver implements ProtectionSolver {
 
   final ContextProvider contextProvider;
   final LazyAsync<CookieJar> cookieJar;
-  final void Function(String message)? onLog;
+  final void Function(String message, {String? sensitiveMessage})? onLog;
 
   late final _solver = RawSolver(
     onLog: onLog,

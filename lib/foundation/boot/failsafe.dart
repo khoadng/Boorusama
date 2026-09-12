@@ -11,18 +11,16 @@ import 'package:kurumi/material.dart';
 import '../error_monitor.dart';
 import '../filesystem.dart';
 import '../info/device_info.dart';
-import '../loggers.dart';
 import '../picker.dart';
 
 Future<void> failsafe({
   required Object error,
   required StackTrace stackTrace,
-  required AppLogger appLogger,
+  required String logs,
 }) async {
   final deviceInfo = await DeviceInfoService(
     plugin: DeviceInfoPlugin(),
   ).getDeviceInfo();
-  final logs = appLogger.dump();
 
   runApp(
     ProviderScope(

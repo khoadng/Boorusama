@@ -7,7 +7,7 @@ import 'foundation/app_rating/src/rate_my_app_service.dart';
 import 'foundation/app_update/providers.dart';
 import 'foundation/filesystem.dart';
 import 'foundation/iap/iap.dart';
-import 'foundation/loggers.dart';
+import 'core/debug/data.dart';
 import 'foundation/platform.dart';
 import 'foundation/vendors/google/google_play_services_impl.dart';
 import 'foundation/vendors/revenuecat/revenuecat.dart';
@@ -31,7 +31,7 @@ void main() async {
 }
 
 Future<IAP> _initIap() async {
-  final logger = await loggerWith(AppLogger());
+  final logger = createAppLogger();
 
   if (isMobilePlatform()) {
     return (await initRevenuecatIap(logger)) ?? await initDummyIap();

@@ -3,10 +3,11 @@ import 'package:intl/intl.dart';
 import 'package:path/path.dart' as p;
 
 // Project imports:
-import '../../foundation/filesystem.dart';
-import '../../foundation/loggers.dart';
-import '../downloads/path/types.dart';
-import 'types.dart';
+import '../../../../foundation/filesystem.dart';
+import '../types/log_data.dart';
+import '../logging/log_formatter.dart';
+import '../../../downloads/path/types.dart';
+import '../types/write_log_status.dart';
 
 Future<WriteLogStatus> writeLogs(
   AppFileSystem fs,
@@ -27,12 +28,6 @@ Future<String> writeDebugLogsToFilePath(
 ) async {
   final timestamp = DateFormat('yyyyMMdd_HHmmss').format(DateTime.now());
   final filePath = p.join(directoryPath, 'boorusama_logs_$timestamp.txt');
-  final buffer = StringBuffer();
-  for (final log in logs) {
-    buffer.write(
-      '[${log.dateTime}][${log.serviceName}]: ${log.message}\n',
-    );
-  }
-  await fs.writeString(filePath, buffer.toString());
+  await fs.writeString(filePath, formatLogs(logs));
   return filePath;
 }

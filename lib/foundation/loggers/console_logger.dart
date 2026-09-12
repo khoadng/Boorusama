@@ -52,27 +52,37 @@ class ConsoleLogger extends Logger {
   String getDebugName() => 'Console Logger';
 
   @override
-  void info(String serviceName, String message) {
-    developer.log(_composeMessage(serviceName, message, blue));
+  void info(String serviceName, String message, {String? sensitiveMessage}) {
+    developer.log(
+      _composeMessage(serviceName, sensitiveMessage ?? message, blue),
+    );
   }
 
   @override
-  void warn(String serviceName, String message) {
-    developer.log(_composeMessage(serviceName, message, yellow));
+  void warn(String serviceName, String message, {String? sensitiveMessage}) {
+    developer.log(
+      _composeMessage(serviceName, sensitiveMessage ?? message, yellow),
+    );
   }
 
   @override
-  void error(String serviceName, String message) {
-    developer.log(_composeMessage(serviceName, message, red));
+  void error(String serviceName, String message, {String? sensitiveMessage}) {
+    developer.log(
+      _composeMessage(serviceName, sensitiveMessage ?? message, red),
+    );
   }
 
   @override
-  void verbose(String serviceName, String message) {
-    developer.log(_composeMessage(serviceName, message, cyan));
+  void verbose(String serviceName, String message, {String? sensitiveMessage}) {
+    developer.log(
+      _composeMessage(serviceName, sensitiveMessage ?? message, cyan),
+    );
   }
 
   @override
-  void debug(String serviceName, String message) {
-    developer.log(_composeMessage(serviceName, message, green));
+  void debug(String serviceName, String message, {String? sensitiveMessage}) {
+    developer.log(
+      _composeMessage(serviceName, sensitiveMessage ?? message, green),
+    );
   }
 }

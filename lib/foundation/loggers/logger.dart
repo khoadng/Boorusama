@@ -11,14 +11,17 @@ enum LogLevel {
   bool shouldLog(LogLevel threshold) => priority >= threshold.priority;
 }
 
+/// Messages must contain safe diagnostic text. Supply raw server bodies,
+/// exceptions or credential-bearing URLs only as `sensitiveMessage` arguments;
+/// the application logging policy retains those only during explicit opt-in.
 abstract class Logger {
   String getDebugName();
 
-  void info(String serviceName, String message);
-  void warn(String serviceName, String message);
-  void error(String serviceName, String message);
-  void verbose(String serviceName, String message);
-  void debug(String serviceName, String message);
+  void info(String serviceName, String message, {String? sensitiveMessage});
+  void warn(String serviceName, String message, {String? sensitiveMessage});
+  void error(String serviceName, String message, {String? sensitiveMessage});
+  void verbose(String serviceName, String message, {String? sensitiveMessage});
+  void debug(String serviceName, String message, {String? sensitiveMessage});
 }
 
 extension LoggerX on Logger {
@@ -26,19 +29,20 @@ extension LoggerX on Logger {
     String serviceName,
     String message, {
     LogLevel? level,
+    String? sensitiveMessage,
   }) {
     switch (level) {
       case LogLevel.warning:
-        warn(serviceName, message);
+        warn(serviceName, message, sensitiveMessage: sensitiveMessage);
       case LogLevel.error:
-        error(serviceName, message);
+        error(serviceName, message, sensitiveMessage: sensitiveMessage);
       case LogLevel.verbose:
-        verbose(serviceName, message);
+        verbose(serviceName, message, sensitiveMessage: sensitiveMessage);
       case LogLevel.debug:
-        debug(serviceName, message);
+        debug(serviceName, message, sensitiveMessage: sensitiveMessage);
       case LogLevel.info:
       case null:
-        info(serviceName, message);
+        info(serviceName, message, sensitiveMessage: sensitiveMessage);
     }
   }
 

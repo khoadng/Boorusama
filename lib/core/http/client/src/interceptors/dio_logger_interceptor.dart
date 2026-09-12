@@ -3,6 +3,7 @@ import 'package:coreutils/coreutils.dart';
 import 'package:dio/dio.dart';
 
 // Project imports:
+import '../../../../debug/data.dart';
 import '../../../../../foundation/loggers.dart';
 import '../types/http_utils.dart';
 
@@ -30,7 +31,11 @@ class LoggingInterceptor extends Interceptor {
       return;
     }
 
-    logger.info('Network', 'Sending ${options.method} to ${options.uri}');
+    logger.info(
+      'Network',
+      'Sending ${options.method} to ${redactLogUri(options.uri)}',
+      sensitiveMessage: 'Sending ${options.method} to ${options.uri}',
+    );
     requestTimeLogs[options.uri.toString()] = DateTime.now();
     super.onRequest(options, handler);
   }
@@ -49,7 +54,9 @@ class LoggingInterceptor extends Interceptor {
 
     logger.info(
       'Network',
-      'Completed ${response.requestOptions.method} to ${response.requestOptions.uri} with status: ${response.statusCodeOrZero}$durationText$serverRuntimeText',
+      'Completed ${response.requestOptions.method} to ${redactLogUri(response.requestOptions.uri)} with status: ${response.statusCodeOrZero}$durationText$serverRuntimeText',
+      sensitiveMessage:
+          'Completed ${response.requestOptions.method} to ${response.requestOptions.uri} with status: ${response.statusCodeOrZero}$durationText$serverRuntimeText',
     );
     super.onResponse(response, handler);
   }
@@ -58,7 +65,7 @@ class LoggingInterceptor extends Interceptor {
   void onError(DioException err, ErrorInterceptorHandler handler) {
     final response = err.response;
 
-    if (_shouldIgnoreRequest(response?.requestOptions)) {
+    if (_shouldIgnoreRequest(err.requestOptions)) {
       super.onError(err, handler);
       return;
     }
@@ -69,10 +76,16 @@ class LoggingInterceptor extends Interceptor {
     if (response != null) {
       logger.info(
         'Network',
-        'Completed ${response.requestOptions.method} to ${response.requestOptions.uri} with status: ${response.statusCodeOrZero}, body ${response.data}$durationText',
+        'Completed ${response.requestOptions.method} to ${redactLogUri(response.requestOptions.uri)} with status: ${response.statusCodeOrZero}, body [OMITTED]$durationText',
+        sensitiveMessage:
+            'Completed ${response.requestOptions.method} to ${response.requestOptions.uri} with status: ${response.statusCodeOrZero}, body ${response.data}$durationText',
       );
     } else {
-      logger.error('Network', 'Completed with error: ${err.message}');
+      logger.error(
+        'Network',
+        'Request to ${redactLogUri(err.requestOptions.uri)} failed: ${err.type.name}',
+        sensitiveMessage: 'Completed with error: ${err.message}',
+      );
     }
     super.onError(err, handler);
   }

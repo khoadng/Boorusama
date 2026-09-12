@@ -17,7 +17,11 @@ class SettingsRepositoryLoggerInterceptor implements SettingsRepository {
   @override
   SettingsOrError load() =>
       repository.load().map((settings) => settings).mapLeft((error) {
-        _logger.error('Settings', 'Failed to load settings: $error');
+        _logger.error(
+          'Settings',
+          'Failed to load settings: ${error.runtimeType}',
+          sensitiveMessage: 'Failed to load settings: $error',
+        );
         return error;
       });
 }

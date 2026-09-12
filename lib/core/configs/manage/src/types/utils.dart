@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 
 // Project imports:
 import '../../../config/types.dart';
+import '../../../../debug/data.dart';
 
 BooruConfig? getConfigFromLink(
   BooruConfig? Function(int id) findConfigById,
@@ -13,7 +14,7 @@ BooruConfig? getConfigFromLink(
 
   if (uri == null) return null;
 
-  _print('Deep link: $uri');
+  _print('Deep link: ${redactLogUri(uri)}');
 
   // check for '/?cid=1' format only '/settings/?cid=1' is not allowed
   final isBooruConfigDeepLink = uri.pathSegments.isEmpty;
@@ -37,7 +38,7 @@ BooruConfig? getConfigFromLink(
 
   if (config == null) return null;
 
-  _print('Deep link config found: $config');
+  _print('Deep link config found: id=$configId');
 
   return config;
 }
