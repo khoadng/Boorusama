@@ -11,6 +11,7 @@ import '../../../../../foundation/vendors/google/providers.dart';
 import '../../../../boorus/booru/providers.dart';
 import '../../../../boorus/engine/providers.dart';
 import '../../../../configs/config/types.dart';
+import '../../../../configs/network/providers.dart';
 import '../../../../ddos/handler/providers.dart';
 import '../interceptors/sliding_window_rate_limit_interceptor.dart';
 import '../types/dio_options.dart';
@@ -33,7 +34,10 @@ final defaultDioProvider = Provider.family<Dio, BooruConfigAuth>((ref, config) {
       baseUrl: config.url,
       proxySettings: config.proxySettings,
       skipCertificateVerification:
-          config.networkSettings?.httpSettings?.skipCertificateVerification ??
+          ref
+              .watch(networkSettingsProvider(config))
+              .httpSettings
+              ?.skipCertificateVerification ??
           false,
     ),
     additionalInterceptors: [
@@ -57,6 +61,32 @@ final genericDioProvider = Provider<Dio>(
     );
   },
 );
+
+// Replacement media hosts must not inherit source-site authentication
+// interceptors, cookies or default credentials.
+final mediaOverrideDioProvider = Provider.autoDispose
+    .family<Dio, BooruConfigAuth>((ref, config) {
+      final dio = newDio(
+        options: DioOptions(
+          ddosProtectionHandler: ref.watch(httpDdosProtectionBypassProvider),
+          baseUrl: '',
+          userAgent: ref.watch(defaultUserAgentProvider),
+          loggerService: ref.watch(loggerProvider),
+          networkProtocolInfo: ref.watch(
+            defaultNetworkProtocolInfoProvider(config),
+          ),
+          proxySettings: config.proxySettings,
+          skipCertificateVerification:
+              ref
+                  .watch(networkSettingsProvider(config))
+                  .httpSettings
+                  ?.skipCertificateVerification ??
+              false,
+        ),
+      );
+      ref.onDispose(dio.close);
+      return dio;
+    });
 
 // Don't use this provider inside any of other providers that used inside any of the booru repositories.
 // It is only used for widget only to prevent circular dependencies.
@@ -137,9 +167,9 @@ final defaultNetworkProtocolInfoProvider =
           booruDb.getBooruFromId(config.booruIdHint);
       final detectedProtocol = booru?.getSiteProtocol(config.url);
 
-      final customProtocol = config
-          .networkSettings
-          ?.httpSettings
+      final customProtocol = ref
+          .watch(networkSettingsProvider(config))
+          .httpSettings
           ?.protocolOption
           .toNetworkProtocol();
 

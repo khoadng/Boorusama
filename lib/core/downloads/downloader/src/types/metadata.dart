@@ -14,6 +14,7 @@ class DownloaderMetadata extends Equatable {
     this.profileIconUrl,
     this.isVideo = false,
     this.sidecarId,
+    this.mediaHostOverridden = false,
   });
 
   factory DownloaderMetadata.fromJson(Map<String, dynamic> json) {
@@ -25,6 +26,7 @@ class DownloaderMetadata extends Equatable {
       profileIconUrl: json['profileIconUrl'],
       isVideo: json['isVideo'] ?? false,
       sidecarId: json['sidecarId'] as String?,
+      mediaHostOverridden: json['mediaHostOverridden'] as bool? ?? false,
     );
   }
 
@@ -42,6 +44,7 @@ class DownloaderMetadata extends Equatable {
   final String? profileIconUrl;
   final bool isVideo;
   final String? sidecarId;
+  final bool mediaHostOverridden;
 
   static const empty = DownloaderMetadata(
     thumbnailUrl: null,
@@ -59,6 +62,7 @@ class DownloaderMetadata extends Equatable {
       'profileIconUrl': profileIconUrl,
       'isVideo': isVideo,
       if (sidecarId != null) 'sidecarId': sidecarId,
+      if (mediaHostOverridden) 'mediaHostOverridden': true,
     };
   }
 
@@ -75,5 +79,6 @@ class DownloaderMetadata extends Equatable {
     profileIconUrl,
     isVideo,
     sidecarId,
+    mediaHostOverridden,
   ];
 }

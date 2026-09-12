@@ -1,6 +1,9 @@
 // Dart imports:
 import 'dart:async';
 
+// Flutter imports:
+import 'package:flutter/foundation.dart';
+
 // Package imports:
 import 'package:cache_manager/cache_manager.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -120,7 +123,7 @@ class _BooruVideoState extends ConsumerState<BooruVideo> {
     super.didUpdateWidget(oldWidget);
 
     if (widget.url != oldWidget.url ||
-        widget.headers != oldWidget.headers ||
+        !mapEquals(widget.headers, oldWidget.headers) ||
         widget.videoPlayerEngine != oldWidget.videoPlayerEngine) {
       _log(
         widget.logger?.verbose,

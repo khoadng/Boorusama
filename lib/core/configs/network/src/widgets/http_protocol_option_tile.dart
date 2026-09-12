@@ -6,7 +6,6 @@ import 'package:kurumi/material.dart';
 
 // Project imports:
 import '../../../../http/configs/types.dart';
-import '../../../config/types.dart';
 import '../../../create/providers.dart';
 
 class HttpProtocolOptionTile extends ConsumerWidget {
@@ -16,15 +15,10 @@ class HttpProtocolOptionTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final networkSettings = ref.watch(
-      editBooruConfigProvider(
-        ref.watch(editBooruConfigIdProvider),
-      ).select((value) => value.networkSettingsTyped),
-    );
+    final networkSettings = ref.watch(editBooruConfigNetworkProvider);
 
     final currentProtocol =
-        networkSettings?.httpSettings?.protocolOption ??
-        HttpProtocolOption.auto;
+        networkSettings.httpSettings?.protocolOption ?? HttpProtocolOption.auto;
 
     return KurumiSettingsTile<HttpProtocolOption>(
       padding: const EdgeInsets.only(left: 4),
@@ -35,14 +29,13 @@ class HttpProtocolOptionTile extends ConsumerWidget {
       selectedOption: currentProtocol,
       onChanged: (value) {
         final newHttpSettings =
-            (networkSettings?.httpSettings ?? const HttpSettings()).copyWith(
+            (networkSettings.httpSettings ?? const HttpSettings()).copyWith(
               protocol: () => value.toData(),
             );
 
-        final newNetworkSettings = (networkSettings ?? const NetworkSettings())
-            .copyWith(
-              httpSettings: () => newHttpSettings,
-            );
+        final newNetworkSettings = networkSettings.copyWith(
+          httpSettings: () => newHttpSettings,
+        );
 
         ref.editNotifier.updateNetworkSettings(newNetworkSettings);
       },

@@ -1,6 +1,3 @@
-// Dart imports:
-import 'dart:async';
-
 // Package imports:
 import 'package:dio/dio.dart';
 
@@ -14,7 +11,7 @@ class ImageRequestDeduplicateInterceptor extends Interceptor {
 
   final bool Function(Uri uri) isImageRequest;
 
-  final _pendingRequests = <String, Completer<Response>>{};
+  final _pendingRequests = <String, List<RequestInterceptorHandler>>{};
 
   String _deduplicateKey(RequestOptions options) {
     return options.uri.toString();
@@ -38,22 +35,9 @@ class ImageRequestDeduplicateInterceptor extends Interceptor {
 
     // Check if there's already a pending request with the same key
     if (_pendingRequests.containsKey(key)) {
-      // A request is already in-flight, we will complete this request by attaching to the existing future
-      final existingCompleter = _pendingRequests[key]!;
-
-      // When the existingCompleter completes, we just fulfill the new request with the same response
-      existingCompleter.future.then(
-        (response) {
-          handler.resolve(response);
-        },
-        onError: (err) {
-          handler.reject(err);
-        },
-      );
+      _pendingRequests[key]!.add(handler);
     } else {
-      // No existing request, so create a new Completer for this key
-      final completer = Completer<Response>();
-      _pendingRequests[key] = completer;
+      _pendingRequests[key] = [];
 
       handler.next(options);
     }
@@ -63,11 +47,8 @@ class ImageRequestDeduplicateInterceptor extends Interceptor {
   void onResponse(Response response, ResponseInterceptorHandler handler) {
     final key = _deduplicateKey(response.requestOptions);
 
-    // If we have a completer for this response, complete it
-    final completer = _pendingRequests[key];
-    if (completer != null && !completer.isCompleted) {
-      completer.complete(response);
-      _pendingRequests.remove(key);
+    for (final waiting in _pendingRequests.remove(key) ?? const []) {
+      waiting.resolve(response);
     }
 
     handler.next(response);
@@ -77,11 +58,8 @@ class ImageRequestDeduplicateInterceptor extends Interceptor {
   void onError(DioException err, ErrorInterceptorHandler handler) {
     final key = _deduplicateKey(err.requestOptions);
 
-    // Complete the future with an error if still pending
-    final completer = _pendingRequests[key];
-    if (completer != null && !completer.isCompleted) {
-      completer.completeError(err);
-      _pendingRequests.remove(key);
+    for (final waiting in _pendingRequests.remove(key) ?? const []) {
+      waiting.reject(err);
     }
 
     handler.next(err);

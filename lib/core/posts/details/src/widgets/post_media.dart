@@ -6,6 +6,8 @@ import 'package:kurumi/material.dart';
 // Project imports:
 import '../../../../../foundation/loggers.dart';
 import '../../../../configs/config/types.dart';
+import '../../../../configs/network/providers.dart';
+import '../../../../ddos/handler/providers.dart';
 import '../../../../developer_options/blocked_media_placeholder.dart';
 import '../../../../developer_options/providers.dart';
 import '../../../../http/client/providers.dart';
@@ -88,9 +90,12 @@ class PostMedia<T extends Post> extends ConsumerWidget {
                       ),
                     );
 
+                    final request = ref
+                        .watch(networkSettingsProvider(config))
+                        .resolveMedia(videoUrl, headers: headers);
                     return BooruVideo(
                       heroTag: heroTag,
-                      url: videoUrl,
+                      url: request.url,
                       aspectRatio:
                           videoAspectRatioBuilder?.call(post) ??
                           post.effectiveVideoAspectRatio,
@@ -108,7 +113,13 @@ class PostMedia<T extends Post> extends ConsumerWidget {
                       speed: ref.watch(playbackSpeedProvider(videoUrl)),
                       thumbnailUrl: post.videoThumbnailUrl,
                       onOpenSettings: () => _openSettings(ref),
-                      headers: headers,
+                      headers: {
+                        ...request.headers,
+                        if (request.overridden)
+                          ...ref.watch(
+                            cachedBypassDdosHeadersProvider(request.url),
+                          ),
+                      },
                       videoPlayerEngine: ref.watch(
                         imageViewerSettingsProvider.select(
                           (value) => value.videoPlayerEngine,

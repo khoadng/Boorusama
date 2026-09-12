@@ -12,6 +12,8 @@ import '../../../../foundation/permissions.dart';
 import '../../../../foundation/utils/duration_utils.dart';
 import '../../../analytics/providers.dart';
 import '../../../configs/config/providers.dart';
+import '../../../configs/config/types.dart';
+import '../../../ddos/handler/providers.dart';
 import '../../../download_manager/providers.dart';
 import '../../../downloads/downloader/providers.dart';
 import '../../../downloads/downloader/types.dart' as d;
@@ -322,6 +324,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
     String sessionId, {
     DownloadConfigs? downloadConfigs,
   }) async {
+    final network = ref.readConfigNetwork;
     final session = await _withRepo((repo) => repo.getSession(sessionId));
 
     if (session == null) {
@@ -359,6 +362,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
     await _startDownloadWithSession(
       task,
       session,
+      network: network,
       downloadConfigs: downloadConfigs,
     );
   }
@@ -366,6 +370,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
   Future<void> _startDownloadWithSession(
     DownloadTask task,
     DownloadSession session, {
+    required NetworkSettings network,
     DownloadConfigs? downloadConfigs,
   }) async {
     final path = task.path;
@@ -538,6 +543,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
       await _downloadSessionPages(
         sessionId: sessionId,
         task: task,
+        network: network,
         startPage: 1,
         endPage: dryRunState.totalPages,
         downloadConfigs: downloadConfigs,
@@ -639,6 +645,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
     String sessionId, {
     DownloadConfigs? downloadConfigs,
   }) async {
+    final network = ref.readConfigNetwork;
     try {
       final hasPremium = ref.read(hasPremiumProvider);
       if (!hasPremium) {
@@ -714,6 +721,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
         sessionId: sessionId,
         task: task,
         startPage: page,
+        network: network,
         endPage: totalPages,
         downloadConfigs: downloadConfigs,
         networkConstraint: networkConstraint,
@@ -727,6 +735,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
     String sessionId, {
     DownloadConfigs? downloadConfigs,
   }) async {
+    final network = ref.readConfigNetwork;
     try {
       final currentSession = await _withRepo(
         (repo) => repo.getSession(sessionId),
@@ -821,6 +830,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
         sessionId: sessionId,
         task: task,
         startPage: page,
+        network: network,
         endPage: totalPages,
         downloadConfigs: downloadConfigs,
         networkConstraint: networkConstraint,
@@ -874,6 +884,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
     DownloadConfigs? downloadConfigs,
   }) async {
     final config = ref.readConfigAuth;
+    final network = ref.readConfigNetwork;
     final resolvedTask = _resolveSidecar(task, downloadConfigs);
     final initialSession = await _withRepo(
       (repo) => repo.createSession(resolvedTask, config),
@@ -882,6 +893,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
     await _startDownloadWithSession(
       resolvedTask,
       initialSession,
+      network: network,
       downloadConfigs: downloadConfigs,
     );
   }
@@ -1303,6 +1315,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
   }
 
   Future<void> _downloadSessionPages({
+    required NetworkSettings network,
     required String sessionId,
     required DownloadTask task,
     required int startPage,
@@ -1337,6 +1350,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
         downloader,
         downloadConfigs,
         networkConstraint,
+        network,
       );
 
       final delay = downloadConfigs?.delayBetweenRequests;
@@ -1355,6 +1369,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
     d.DownloadService downloader,
     DownloadConfigs? downloadConfigs,
     d.DownloadNetworkConstraint networkConstraint,
+    NetworkSettings network,
   ) async {
     final records = await _withRepo(
       (repo) => repo.getRecordsBySessionId(
@@ -1376,15 +1391,23 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
         break;
       }
 
+      final request = network.resolveMedia(
+        record.url,
+        headers: record.headers ?? const {},
+      );
+      final bypassHeaders = request.overridden
+          ? await ref.read(bypassDdosHeadersProvider(request.url).future)
+          : const <String, String>{};
       final result = await downloader.download(
         d.DownloadOptions(
-          url: record.url,
+          url: request.url,
           path: task.path,
           filename: record.fileName,
           sidecar: record.sidecar,
           skipIfExists: false, // We already handled this in the dry run
-          headers: record.headers,
+          headers: {...request.headers, ...bypassHeaders},
           metadata: d.DownloaderMetadata(
+            mediaHostOverridden: request.overridden,
             thumbnailUrl: record.thumbnailImageUrl,
             fileSize: record.fileSize,
             siteUrl: PostSource.from(record.thumbnailImageUrl).url,

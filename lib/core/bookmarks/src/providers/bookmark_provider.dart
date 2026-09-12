@@ -14,6 +14,8 @@ import 'package:kurumi/kurumi.dart';
 import '../../../boorus/booru/types.dart';
 import '../../../boorus/engine/providers.dart';
 import '../../../configs/config/types.dart';
+import '../../../configs/network/providers.dart';
+import '../../../ddos/handler/providers.dart';
 import '../../../download_activity/activity.dart';
 import '../../../downloads/downloader/providers.dart';
 import '../../../downloads/downloader/types.dart';
@@ -271,6 +273,12 @@ class BookmarkNotifier extends AsyncNotifier<BookmarkState> {
           downloadUrl: bookmark.originalUrl,
         );
 
+        final request = ref
+            .read(networkSettingsProvider(auth))
+            .resolveMedia(bookmark.originalUrl, headers: headers);
+        final bypassHeaders = request.overridden
+            ? await ref.read(bypassDdosHeadersProvider(request.url).future)
+            : const <String, String>{};
         final result = await downloader.download(
           DownloadOptions.fromSettings(
             settings,
@@ -285,15 +293,16 @@ class BookmarkNotifier extends AsyncNotifier<BookmarkState> {
                     site: bookmark.sourceUrl,
                     urls: [?bookmark.realSourceUrl],
                   ),
-            url: bookmark.originalUrl,
+            url: request.url,
             metadata: DownloaderMetadata(
+              mediaHostOverridden: request.overridden,
               thumbnailUrl: bookmark.thumbnailUrl,
               fileSize: null,
               siteUrl: bookmark.sourceUrl,
               group: null,
             ),
             filename: fileName,
-            headers: headers,
+            headers: {...request.headers, ...bypassHeaders},
             networkConstraint: networkConstraint,
           ),
         );

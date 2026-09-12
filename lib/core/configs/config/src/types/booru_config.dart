@@ -18,6 +18,7 @@ import '../../../../proxy/types.dart';
 import '../../../../settings/types.dart';
 import '../../../../themes/configs/types.dart';
 import '../../../gesture/types.dart';
+import '../../../network/types.dart';
 import '../../../search/types.dart';
 import 'always_included_tags.dart';
 import 'booru_config_repository.dart';
@@ -593,6 +594,8 @@ class BooruConfigDownload extends Equatable {
 class NetworkSettings extends Equatable {
   const NetworkSettings({
     this.httpSettings,
+    this.mediaHostOverrides = const [],
+    this.mediaHostOverridesEnabled = true,
   });
 
   static NetworkSettings? tryParse(dynamic data) {
@@ -606,6 +609,18 @@ class NetworkSettings extends Equatable {
     return switch (json) {
       final Map<String, dynamic> map => NetworkSettings(
         httpSettings: HttpSettings.tryParse(map['http']),
+        mediaHostOverrides: switch (map['mediaHostOverrides']) {
+          null => const [],
+          final List values => List.unmodifiable(
+            values.map(
+              (value) =>
+                  MediaHostOverride.fromJson(value as Map<String, dynamic>),
+            ),
+          ),
+          _ => throw const FormatException('Invalid media host overrides'),
+        },
+        mediaHostOverridesEnabled:
+            map['mediaHostOverridesEnabled'] as bool? ?? true,
       ),
       _ => null,
     };
@@ -620,25 +635,54 @@ class NetworkSettings extends Equatable {
   }
 
   final HttpSettings? httpSettings;
+  final List<MediaHostOverride> mediaHostOverrides;
+  final bool mediaHostOverridesEnabled;
+
+  List<MediaHostOverride> get activeMediaHostOverrides =>
+      mediaHostOverridesEnabled ? mediaHostOverrides : const [];
+
+  MediaRequest resolveMedia(
+    String url, {
+    Map<String, String> headers = const {},
+  }) => MediaRequest.resolve(
+    url,
+    overrides: activeMediaHostOverrides,
+    headers: headers,
+  );
 
   NetworkSettings copyWith({
     HttpSettings? Function()? httpSettings,
+    List<MediaHostOverride>? mediaHostOverrides,
+    bool? mediaHostOverridesEnabled,
   }) {
     return NetworkSettings(
       httpSettings: httpSettings != null ? httpSettings() : this.httpSettings,
+      mediaHostOverrides: mediaHostOverrides == null
+          ? this.mediaHostOverrides
+          : List.unmodifiable(mediaHostOverrides),
+      mediaHostOverridesEnabled:
+          mediaHostOverridesEnabled ?? this.mediaHostOverridesEnabled,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'http': httpSettings?.toJson(),
+      'mediaHostOverrides': mediaHostOverrides
+          .map((value) => value.toJson())
+          .toList(),
+      'mediaHostOverridesEnabled': mediaHostOverridesEnabled,
     };
   }
 
   String toJsonString() => jsonEncode(toJson());
 
   @override
-  List<Object?> get props => [httpSettings];
+  List<Object?> get props => [
+    httpSettings,
+    mediaHostOverrides,
+    mediaHostOverridesEnabled,
+  ];
 }
 
 mixin BooruConfigAuthMixin {

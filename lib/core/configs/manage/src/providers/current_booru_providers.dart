@@ -7,6 +7,7 @@ import '../../../../settings/providers.dart';
 import '../../../../themes/configs/types.dart';
 import '../../../config/types.dart';
 import '../../../gesture/types.dart';
+import '../../../network/providers.dart';
 
 final currentBooruConfigProvider =
     NotifierProvider<CurrentBooruConfigNotifier, BooruConfig>(
@@ -38,6 +39,13 @@ final currentReadOnlyBooruConfigSearchProvider = Provider<BooruConfigSearch>(
   (ref) =>
       ref.watch(currentBooruConfigProvider.select((value) => value.search)),
   name: 'currentReadOnlyBooruConfigSearchProvider',
+);
+
+final currentReadOnlyBooruConfigNetworkProvider = Provider<NetworkSettings>(
+  (ref) => ref.watch(
+    networkSettingsProvider(ref.watch(currentReadOnlyBooruConfigAuthProvider)),
+  ),
+  name: 'currentReadOnlyBooruConfigNetworkProvider',
 );
 
 final currentReadOnlyBooruConfigFilterProvider = Provider<BooruConfigFilter>(

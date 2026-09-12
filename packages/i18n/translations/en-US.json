@@ -1047,6 +1047,17 @@
     },
     "network": {
       "title": "Network",
+      "media_hosts": {
+        "title": "Media host overrides",
+        "description": "Replace media hosts for this profile. Only use hosts you trust, file paths and query parameters are sent to them.",
+        "active": "Media override active",
+        "add": "Add override",
+        "from": "Original host",
+        "to": "Replacement host",
+        "invalid_host": "Enter a hostname without a scheme, port or path.",
+        "duplicate_host": "This host already has an override.",
+        "same_host": "Choose a different replacement host."
+      },
       "proxy": {
         "title": "Proxy",
         "select_type": "<Select>",

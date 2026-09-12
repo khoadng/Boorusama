@@ -1,5 +1,6 @@
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 import 'package:kurumi/kurumi.dart';
 import 'package:kurumi/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -90,6 +91,22 @@ class _Tile extends ConsumerWidget {
                 color: Kurumi.themeOf(context).colorScheme.outline,
               ),
             ),
+        if (ref.watchConfigNetwork.activeMediaHostOverrides.isNotEmpty)
+          InkWell(
+            onTap: () => goToUpdateBooruConfigPage(
+              ref,
+              config: ref.readConfig,
+              initialTab: 'network',
+            ),
+            child: Text(
+              context.t.booru.network.media_hosts.active,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: Kurumi.themeOf(context).colorScheme.primary,
+              ),
+            ),
+          ),
       ],
     );
   }

@@ -129,7 +129,7 @@ class _BackgroundDownloadRuntimeState
         }
 
         if (willRetry) return;
-      } else if (update.status case TaskStatus.failed) {
+      } else if (update.status == TaskStatus.failed) {
         final handled = await ref
             .read(httpDdosProtectionBypassProvider)
             .handleError(TaskErrorAdapter(update), attempt: attempt);
@@ -144,7 +144,7 @@ class _BackgroundDownloadRuntimeState
             attempt.record(RetryDispatched(attempt.retries));
             final enqueued = await FileDownloader().retryTask(
               update.task,
-              headers: headers,
+              bypassHeaders: headers,
               onPrepared: attempt.observeHeaders,
             );
             attempt.record(RetryEnqueued(enqueued));

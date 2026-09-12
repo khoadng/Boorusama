@@ -41,17 +41,20 @@ class RetryAllFailedButton extends ConsumerWidget {
                   final dt = castOrNull<DownloadTask>(task.task);
 
                   if (dt == null) continue;
-                  //FIXME: need to centralize the headers injection
-                  ref.invalidate(cachedBypassDdosHeadersProvider);
+                  ref.invalidate(bypassDdosHeadersProvider(dt.url));
                   WidgetsBinding.instance.addPostFrameCallback(
-                    (_) {
+                    (_) async {
                       final headers = ref.read(
                         httpHeadersProvider(config.auth),
                       );
 
-                      FileDownloader().retryTask(
+                      final bypassHeaders = await ref.read(
+                        bypassDdosHeadersProvider(dt.url).future,
+                      );
+                      await FileDownloader().retryTask(
                         dt,
                         headers: headers,
+                        bypassHeaders: bypassHeaders,
                       );
                     },
                   );

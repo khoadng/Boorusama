@@ -19,6 +19,15 @@ final editBooruConfigProvider = NotifierProvider.autoDispose
       EditBooruConfigNotifier.new,
     );
 
+final editBooruConfigNetworkProvider = Provider.autoDispose<NetworkSettings>(
+  (ref) => ref.watch(
+    editBooruConfigProvider(ref.watch(editBooruConfigIdProvider)).select(
+      (value) => value.networkSettingsTyped ?? const NetworkSettings(),
+    ),
+  ),
+  dependencies: [editBooruConfigIdProvider, editBooruConfigProvider],
+);
+
 extension UpdateDataX on WidgetRef {
   EditBooruConfigNotifier get editNotifier =>
       read(editBooruConfigProvider(read(editBooruConfigIdProvider)).notifier);

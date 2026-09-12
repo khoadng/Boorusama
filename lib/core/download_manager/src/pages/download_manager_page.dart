@@ -297,15 +297,17 @@ class _DownloadManagerPageState extends ConsumerState<DownloadManagerPage> {
               FileDownloader().resume(dt);
             },
             onRestart: () {
-              //FIXME: need to centralize the headers injection
-              ref.invalidate(cachedBypassDdosHeadersProvider);
+              ref.invalidate(bypassDdosHeadersProvider(task.task.url));
               WidgetsBinding.instance.addPostFrameCallback(
-                (_) {
+                (_) async {
                   final headers = ref.read(httpHeadersProvider(config.auth));
-
-                  FileDownloader().retryTask(
+                  final bypassHeaders = await ref.read(
+                    bypassDdosHeadersProvider(task.task.url).future,
+                  );
+                  await FileDownloader().retryTask(
                     task.task,
                     headers: headers,
+                    bypassHeaders: bypassHeaders,
                   );
                 },
               );

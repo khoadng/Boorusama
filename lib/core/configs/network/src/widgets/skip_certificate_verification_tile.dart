@@ -6,7 +6,6 @@ import 'package:kurumi/material.dart';
 
 // Project imports:
 import '../../../../http/configs/types.dart';
-import '../../../config/types.dart';
 import '../../../create/providers.dart';
 
 class SkipCertificateVerificationTile extends ConsumerWidget {
@@ -16,14 +15,10 @@ class SkipCertificateVerificationTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final networkSettings = ref.watch(
-      editBooruConfigProvider(
-        ref.watch(editBooruConfigIdProvider),
-      ).select((value) => value.networkSettingsTyped),
-    );
+    final networkSettings = ref.watch(editBooruConfigNetworkProvider);
 
     final skipCertVerification =
-        networkSettings?.httpSettings?.skipCertificateVerification ?? false;
+        networkSettings.httpSettings?.skipCertificateVerification ?? false;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -38,15 +33,13 @@ class SkipCertificateVerificationTile extends ConsumerWidget {
           value: skipCertVerification,
           onChanged: (value) {
             final newHttpSettings =
-                (networkSettings?.httpSettings ?? const HttpSettings())
-                    .copyWith(
-                      skipCertificateVerification: () => value,
-                    );
-
-            final newNetworkSettings =
-                (networkSettings ?? const NetworkSettings()).copyWith(
-                  httpSettings: () => newHttpSettings,
+                (networkSettings.httpSettings ?? const HttpSettings()).copyWith(
+                  skipCertificateVerification: () => value,
                 );
+
+            final newNetworkSettings = networkSettings.copyWith(
+              httpSettings: () => newHttpSettings,
+            );
 
             ref.editNotifier.updateNetworkSettings(newNetworkSettings);
           },

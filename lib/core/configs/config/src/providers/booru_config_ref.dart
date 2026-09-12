@@ -18,6 +18,12 @@ extension BooruWidgetRef on WidgetRef {
   BooruConfigAuth get watchConfigAuth =>
       watch(currentReadOnlyBooruConfigAuthProvider);
 
+  NetworkSettings get readConfigNetwork =>
+      read(currentReadOnlyBooruConfigNetworkProvider);
+
+  NetworkSettings get watchConfigNetwork =>
+      watch(currentReadOnlyBooruConfigNetworkProvider);
+
   BooruConfigSearch get readConfigSearch =>
       read(currentReadOnlyBooruConfigSearchProvider);
 
@@ -62,6 +68,12 @@ extension BooruAutoDisposeProviderRef<T> on Ref<T> {
 
   BooruConfigAuth get watchConfigAuth =>
       watch(currentReadOnlyBooruConfigAuthProvider);
+
+  NetworkSettings get readConfigNetwork =>
+      read(currentReadOnlyBooruConfigNetworkProvider);
+
+  NetworkSettings get watchConfigNetwork =>
+      watch(currentReadOnlyBooruConfigNetworkProvider);
 
   BooruConfigSearch get readConfigSearch =>
       read(currentReadOnlyBooruConfigSearchProvider);

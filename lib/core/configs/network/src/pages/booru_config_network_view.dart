@@ -12,6 +12,7 @@ import '../widgets/proxy_type_option_tile.dart';
 import '../widgets/proxy_username_input.dart';
 import '../widgets/skip_certificate_verification_tile.dart';
 import '../widgets/test_proxy_button.dart';
+import '../widgets/media_host_overrides_section.dart';
 
 class BooruConfigNetworkView extends ConsumerWidget {
   const BooruConfigNetworkView({
@@ -42,6 +43,8 @@ class BooruConfigNetworkView extends ConsumerWidget {
           ProxyPasswordInput(),
           SizedBox(height: 12),
           TestProxyButton(),
+          Divider(),
+          MediaHostOverridesSection(),
         ],
       ),
     );

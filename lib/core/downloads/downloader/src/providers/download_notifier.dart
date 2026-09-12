@@ -10,6 +10,7 @@ import '../../../../../foundation/loggers.dart';
 import '../../../../../foundation/permissions.dart';
 import '../../../../../foundation/platform.dart';
 import '../../../../configs/config/types.dart';
+import '../../../../configs/network/providers.dart';
 import '../../../../ddos/handler/providers.dart';
 import '../../../../download_activity/activity.dart';
 import '../../../../http/client/types.dart';
@@ -201,8 +202,17 @@ Future<DownloadTaskInfo?> _download(
 
     final fileName = await fileNameFuture;
 
+    final network = ref.read(networkSettingsProvider(params.auth));
+    final request = network.resolveMedia(
+      urlData.url,
+      headers: {
+        ...headers,
+        if (urlData.cookie != null)
+          AppHttpHeaders.cookieHeader: urlData.cookie!,
+      },
+    );
     final bypassHeaders = await ref.read(
-      bypassDdosHeadersProvider(urlData.url).future,
+      bypassDdosHeadersProvider(request.url).future,
     );
 
     final result = await service.download(
@@ -221,6 +231,7 @@ Future<DownloadTaskInfo?> _download(
                     .getLink(downloadable),
               ),
         metadata: DownloaderMetadata(
+          mediaHostOverridden: request.overridden,
           thumbnailUrl: downloadable.thumbnailImageUrl,
           fileSize: downloadable.fileSize,
           siteUrl: params.auth.url,
@@ -228,12 +239,12 @@ Future<DownloadTaskInfo?> _download(
           group: group,
           isVideo: downloadable.isVideo,
         ),
-        url: urlData.url,
+        url: request.url,
         filename: fileName,
         headers: {
-          ...headers,
+          ...request.headers,
           ...bypassHeaders,
-          if (urlData.cookie != null)
+          if (!request.overridden && urlData.cookie != null)
             AppHttpHeaders.cookieHeader: urlData.cookie!,
         },
         customPath: downloadPath,
