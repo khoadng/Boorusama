@@ -177,7 +177,7 @@ class Settings extends Equatable {
     clearImageCacheOnStartup: false,
     appLockType: AppLockType.defaultValue,
     appLockTimeoutSeconds: 0,
-    hideAppPreviewWhenBackgrounded: true,
+    hideAppPreviewWhenBackgrounded: false,
     bookmarkFilterType: BookmarkFilterType.defaultValue,
     booruConfigSelectorPosition: BooruConfigSelectorPosition.defaultValue,
     booruConfigSelectorScrollDirection: BooruConfigScrollDirection.defaultValue,
