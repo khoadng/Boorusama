@@ -93,9 +93,9 @@ class Settings extends Equatable {
       enableDynamicColoring = json['enableDynamicColoring'] ?? false,
       clearImageCacheOnStartup = json['clearImageCacheOnStartup'] ?? false,
       appLockType = AppLockType.parse(json['appLockType']),
-      appLockTimeoutSeconds = json['appLockTimeoutSeconds'] ?? 0,
+      appLockTimeoutSeconds = json['appLockTimeoutSeconds'] ?? 30,
       hideAppPreviewWhenBackgrounded =
-          json['hideAppPreviewWhenBackgrounded'] ?? true,
+          json['hideAppPreviewWhenBackgrounded'] ?? false,
       bookmarkFilterType = BookmarkFilterType.parse(json['bookmarkFilterType']),
       booruConfigSelectorPosition = BooruConfigSelectorPosition.parse(
         json['booruConfigSelectorPosition'],
@@ -185,8 +185,8 @@ class Settings extends Equatable {
     enableDynamicColoring: false,
     clearImageCacheOnStartup: false,
     appLockType: AppLockType.defaultValue,
-    appLockTimeoutSeconds: 0,
-    hideAppPreviewWhenBackgrounded: true,
+    appLockTimeoutSeconds: 30,
+    hideAppPreviewWhenBackgrounded: false,
     bookmarkFilterType: BookmarkFilterType.defaultValue,
     booruConfigSelectorPosition: BooruConfigSelectorPosition.defaultValue,
     booruConfigSelectorScrollDirection: BooruConfigScrollDirection.defaultValue,
