@@ -17,6 +17,10 @@ on:
         required: true
         type: boolean
         default: false
+      windows_only:
+        description: "Build only Windows; skip release publication."
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -34,25 +38,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - target: apk
-            os: ubuntu-latest
-            artifact_name: boorusama-apk
-          - target: linux-tar.gz
-            os: ubuntu-latest
-            artifact_name: boorusama-linux-tar-gz
-          - target: appimage
-            os: ubuntu-latest
-            artifact_name: boorusama-appimage
-          - target: windows-zip
-            os: windows-latest
-            artifact_name: boorusama-windows-zip
-          - target: ipa
-            os: macos-latest
-            artifact_name: boorusama-ipa
-          - target: dmg
-            os: macos-latest
-            artifact_name: boorusama-dmg
+        include: ${{ fromJSON(inputs.windows_only &&
+          '[{"target":"windows-zip","os":"windows-latest","artifact_name":"boorusama-windows-zip"}]' ||
+          '[{"target":"apk","os":"ubuntu-latest","artifact_name":"boorusama-apk"},
+            {"target":"linux-tar.gz","os":"ubuntu-latest","artifact_name":"boorusama-linux-tar-gz"},
+            {"target":"appimage","os":"ubuntu-latest","artifact_name":"boorusama-appimage"},
+            {"target":"windows-zip","os":"windows-latest","artifact_name":"boorusama-windows-zip"},
+            {"target":"ipa","os":"macos-latest","artifact_name":"boorusama-ipa"},
+            {"target":"dmg","os":"macos-latest","artifact_name":"boorusama-dmg"}]') }}
 
     env:
       BOORUSAMA_USE_FVM: "false"
@@ -167,7 +160,24 @@ jobs:
             args+=(--no-codesign)
           fi
 
-          ./build.sh "${args[@]}"
+          if [[ "${{ matrix.target }}" == "windows-zip" ]]; then
+            args+=(--flutter-verbose)
+          fi
+
+          ./build.sh "${args[@]}" 2>&1 | tee "$RUNNER_TEMP/boorusama-build.log"
+
+      - name: Upload build diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: diagnostics-${{ matrix.target }}
+          include-hidden-files: true
+          retention-days: 7
+          path: |
+            ${{ runner.temp }}/boorusama-build.log
+            .dart_tool/hooks_runner/**/stdout.txt
+            .dart_tool/hooks_runner/**/stderr.txt
+            .dart_tool/hooks_runner/**/meson-log.txt
 
       - name: Upload release artifact
         uses: actions/upload-artifact@v7
@@ -177,7 +187,7 @@ jobs:
           if-no-files-found: error
 
   publish:
-    if: github.actor == 'khoadng'
+    if: github.actor == 'khoadng' && !inputs.windows_only
     needs: build
     runs-on: ubuntu-latest
     timeout-minutes: 20

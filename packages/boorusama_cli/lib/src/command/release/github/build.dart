@@ -24,6 +24,7 @@ final class ReleaseGithubBuildCommand extends Command<int> {
     argParser
       ..addFlag('dry-run', abbr: 'd', negatable: false)
       ..addFlag('verbose', abbr: 'v', negatable: false)
+      ..addFlag('flutter-verbose', negatable: false)
       ..addFlag('ci', abbr: 'c', negatable: false)
       ..addFlag('allow-dirty', negatable: false)
       ..addFlag('no-codesign', negatable: false)
@@ -116,6 +117,7 @@ final class ReleaseGithubBuildCommand extends Command<int> {
           outputDir: outputDir,
           dryRun: dryRun,
           verbose: verbose,
+          flutterVerbose: argResults?['flutter-verbose'] as bool? ?? false,
           ci: ci,
           noCodesign: noCodesign,
           flavor: flavor,
@@ -140,6 +142,7 @@ final class ReleaseGithubBuildCommand extends Command<int> {
     required Directory outputDir,
     required bool dryRun,
     required bool verbose,
+    required bool flutterVerbose,
     required bool ci,
     required bool noCodesign,
     required String? flavor,
@@ -164,6 +167,7 @@ final class ReleaseGithubBuildCommand extends Command<int> {
         foss: target == GithubReleaseTarget.apk,
         ci: ci,
         verbose: verbose,
+        flutterVerbose: flutterVerbose,
         dryRun: dryRun,
         noCodesign: noCodesign,
         releaseChannel: BuildReleaseChannel.github,
