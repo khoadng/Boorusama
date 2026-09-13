@@ -86,10 +86,6 @@ class KurumiTooltip extends StatelessWidget {
       child: child,
     );
 
-    if (message case final message?) {
-      return Semantics(tooltip: message, child: tooltip);
-    }
-
-    return tooltip;
+    return Semantics(tooltip: message, child: tooltip);
   }
 }

@@ -320,16 +320,17 @@ class _KurumiRawInteractiveViewerState extends State<KurumiRawInteractiveViewer>
           child: widget.child,
         );
 
-        final child =
-            enable && (widget.onTap != null || widget.onLongPress != null)
-            ? Semantics(
-                button: true,
-                enabled: true,
-                onTap: widget.onTap,
-                onLongPress: widget.onLongPress,
-                child: interactiveChild,
-              )
-            : interactiveChild;
+        final hasAction = widget.onTap != null || widget.onLongPress != null;
+
+        // Keep the subtree stable when interaction is toggled so media retains
+        // its state while the details panel opens or closes.
+        final child = Semantics(
+          button: enable && hasAction ? true : null,
+          enabled: enable && hasAction ? true : null,
+          onTap: enable ? widget.onTap : null,
+          onLongPress: enable ? widget.onLongPress : null,
+          child: interactiveChild,
+        );
 
         return InteractiveViewer(
           minScale: _kFallbackMinScale,

@@ -137,13 +137,11 @@ class _KurumiSelectableItemState extends State<KurumiSelectableItem>
       ],
     );
 
-    final semanticChild = isInSelectionMode
-        ? Semantics(
-            container: true,
-            selected: isSelected,
-            child: child,
-          )
-        : child;
+    final semanticChild = Semantics(
+      container: isInSelectionMode,
+      selected: isInSelectionMode ? isSelected : null,
+      child: child,
+    );
 
     return AnimatedBuilder(
       animation: _scaleController,

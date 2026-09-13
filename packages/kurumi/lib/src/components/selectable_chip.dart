@@ -136,8 +136,9 @@ class KurumiSelectableChip extends StatelessWidget {
       mouseCursor: mouseCursor,
     );
 
-    return onSelected != null || selected
-        ? Semantics(selected: selected, child: chip)
-        : chip;
+    return Semantics(
+      selected: onSelected != null || selected ? selected : null,
+      child: chip,
+    );
   }
 }

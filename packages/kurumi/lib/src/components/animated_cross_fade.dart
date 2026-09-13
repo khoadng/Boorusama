@@ -21,17 +21,13 @@ class KurumiAnimatedCrossFade extends StatelessWidget {
     final reduceMotion =
         KurumiTheme.maybeBehaviorOf(context)?.reduceMotion ?? false;
 
-    if (reduceMotion) {
-      return crossFadeState == CrossFadeState.showFirst
-          ? firstChild
-          : secondChild;
-    }
-
     return AnimatedCrossFade(
       firstChild: firstChild,
       secondChild: secondChild,
       crossFadeState: crossFadeState,
-      duration: duration ?? const Duration(milliseconds: 250),
+      duration: reduceMotion
+          ? Duration.zero
+          : duration ?? const Duration(milliseconds: 250),
     );
   }
 }

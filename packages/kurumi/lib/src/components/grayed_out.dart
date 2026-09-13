@@ -18,32 +18,29 @@ class KurumiGrayedOut extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final content = grayedOut
-        ? Stack(
-            children: [
-              Opacity(
-                opacity: opacity ?? 0.3,
-                child: IgnorePointer(
-                  child: child,
+    return Semantics(
+      button: grayedOut && onTap != null ? true : null,
+      onTap: grayedOut ? onTap : null,
+      child: Stack(
+        children: [
+          Opacity(
+            opacity: grayedOut ? opacity ?? 0.3 : 1,
+            child: IgnorePointer(
+              ignoring: grayedOut,
+              child: child,
+            ),
+          ),
+          if (grayedOut) ...[
+            ...stackOverlay,
+            if (onTap != null)
+              Positioned.fill(
+                child: GestureDetector(
+                  onTap: onTap,
                 ),
               ),
-              ...stackOverlay,
-              if (onTap != null)
-                Positioned.fill(
-                  child: GestureDetector(
-                    onTap: onTap,
-                  ),
-                ),
-            ],
-          )
-        : child;
-
-    return !grayedOut || onTap == null
-        ? content
-        : Semantics(
-            button: true,
-            onTap: onTap,
-            child: content,
-          );
+          ],
+        ],
+      ),
+    );
   }
 }

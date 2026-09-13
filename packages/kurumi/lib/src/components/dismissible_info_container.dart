@@ -43,11 +43,9 @@ class _KurumiDismissibleInfoContainerState
         final small = constraints.maxWidth < 700;
 
         final content = Container(
-          constraints: small
-              ? null
-              : const BoxConstraints(
-                  maxWidth: 700,
-                ),
+          constraints: BoxConstraints(
+            maxWidth: small ? double.infinity : 700,
+          ),
           child: Stack(
             children: [
               _buildContent(context),
@@ -56,7 +54,7 @@ class _KurumiDismissibleInfoContainerState
           ),
         );
 
-        return small ? content : Row(children: [content]);
+        return Row(children: [Flexible(child: content)]);
       },
     );
   }

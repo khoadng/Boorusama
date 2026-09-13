@@ -99,16 +99,15 @@ class _KurumiSearchBarState extends State<KurumiSearchBar> {
       controller: controller,
     );
 
-    final searchField = !widget.enabled && widget.onTap != null
-        ? Semantics(
-            button: true,
-            enabled: true,
-            label: widget.hintText,
-            onTap: widget.onTap,
-            excludeSemantics: true,
-            child: textField,
-          )
-        : textField;
+    final actsAsButton = !widget.enabled && widget.onTap != null;
+    final searchField = Semantics(
+      button: actsAsButton ? true : null,
+      enabled: actsAsButton ? true : null,
+      label: actsAsButton ? widget.hintText : null,
+      onTap: actsAsButton ? widget.onTap : null,
+      excludeSemantics: actsAsButton,
+      child: textField,
+    );
 
     final searchBar = DecoratedBox(
       decoration: BoxDecoration(
