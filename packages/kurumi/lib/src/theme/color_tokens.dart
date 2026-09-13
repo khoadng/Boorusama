@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 abstract final class KurumiColorTokens {
   static const lightWhite = Color.fromARGB(255, 220, 220, 220);

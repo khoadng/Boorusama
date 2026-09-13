@@ -1,5 +1,5 @@
 import 'dart:ui' as ui show Image;
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 // /// Used by [paintImage] to report image sizes drawn at the end of the frame.
 // Map<String, ImageSizeInfo> _pendingImageSizeInfo = <String, ImageSizeInfo>{};

@@ -36,12 +36,11 @@ class RenderSliverMasonryGrid extends RenderSliverMultiBoxAdaptor {
   /// than zero.
   RenderSliverMasonryGrid({
     required super.childManager,
-    required SliverSimpleGridDelegate gridDelegate,
+    required this._gridDelegate,
     required double mainAxisSpacing,
     required double crossAxisSpacing,
   }) : assert(mainAxisSpacing >= 0),
        assert(crossAxisSpacing >= 0),
-       _gridDelegate = gridDelegate,
        _mainAxisSpacing = mainAxisSpacing,
        _crossAxisSpacing = crossAxisSpacing;
 

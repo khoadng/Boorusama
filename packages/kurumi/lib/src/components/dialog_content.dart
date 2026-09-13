@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// The existing wide-content dialog frame used by long-form app dialogs.
 class KurumiDialogContent extends StatelessWidget {

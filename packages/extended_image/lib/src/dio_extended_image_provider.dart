@@ -6,7 +6,7 @@ import 'dart:ui' as ui show Codec;
 import 'package:cache_manager/cache_manager.dart';
 import 'package:extended_image_library/extended_image_library.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 // Package imports:
 import 'package:dio/dio.dart';

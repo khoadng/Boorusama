@@ -2,7 +2,7 @@
 import 'dart:math';
 
 // Flutter imports:
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 
 /// Fallback max zoom scale when content size is unknown. Limits zoom-in.

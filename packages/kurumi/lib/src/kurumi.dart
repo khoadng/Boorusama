@@ -1,7 +1,7 @@
 // ignore_for_file: use_full_hex_values_for_flutter_colors
 
-import 'package:flutter/material.dart';
-import 'package:flutter/material.dart' as material;
+import 'package:material_ui/material_ui.dart';
+import 'package:material_ui/material_ui.dart' as material;
 import 'package:dynamic_color/dynamic_color.dart';
 
 import 'components/adaptive_sheet.dart' as adaptive_sheet;

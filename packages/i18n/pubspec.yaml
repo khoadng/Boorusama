@@ -3,8 +3,8 @@ description: A package for managing internationalization in Boorusama.
 publish_to: none
 
 environment:
-  sdk: ^3.9.0
-  flutter: ">=1.17.0"
+  sdk: ^3.12.0
+  flutter: ">=3.44.0"
 
 resolution: workspace
 
@@ -14,8 +14,7 @@ dependencies:
   intl: ^0.20.2
   flutter:
     sdk: flutter
-  flutter_localizations:
-    sdk: flutter
+  material_ui: ^1.2.0
   flutter_riverpod: 2.6.1
   timeago: ^3.7.0
   slang: ^4.9.0

@@ -19,6 +19,8 @@ dependencies:
       ref: fork
   flutter:
     sdk: flutter
+  material_ui: ^1.2.0
+  cupertino_ui: ^1.0.2
   flutter_libavif: ^0.1.1
   path: ^1.8.3
   path_provider: ^2.1.2

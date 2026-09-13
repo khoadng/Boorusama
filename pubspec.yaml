@@ -74,7 +74,7 @@ dependencies:
   dio: ^5.7.0
   disk_space_2: ^1.0.10
   dio_http2_adapter: ^2.5.3
-  dynamic_color: ^1.7.0
+  dynamic_color: ^2.1.0
   equatable: ^2.0.5
   expandable: ^5.0.1
   fast_immutable_collections: ^11.0.0
@@ -82,6 +82,8 @@ dependencies:
   fl_chart: ^1.0.0
   flutter:
     sdk: flutter
+  material_ui: ^1.2.0
+  cupertino_ui: ^1.0.2
   flutter_displaymode: ^0.7.0
   flutter_html: ^3.0.0-beta.2
   flutter_local_notifications: ^22.0.1
@@ -158,8 +160,6 @@ dev_dependencies:
   flutter_launcher_icons:
     git: https://github.com/fluttercommunity/flutter_launcher_icons.git
   flutter_lints: ^6.0.0
-  flutter_localizations:
-    sdk: flutter
   flutter_test:
     sdk: flutter
   hive_ce_generator: ^1.9.3

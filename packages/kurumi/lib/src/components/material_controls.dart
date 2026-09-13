@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Exact Material controls exposed through Kurumi for parity migrations.
 typedef KurumiMaterialSegmentedButton<T> = SegmentedButton<T>;

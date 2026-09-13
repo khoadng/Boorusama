@@ -4,7 +4,7 @@ import 'package:boorusama/core/ddos/solver/src/protection_diagnostics.dart';
 import 'package:boorusama/core/ddos/solver/src/protection_overlay.dart';
 import 'package:boorusama/core/ddos/solver/src/protection_solver.dart';
 import 'package:coreutils/coreutils.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:i18n/i18n.dart';
 import 'package:kurumi/kurumi.dart';

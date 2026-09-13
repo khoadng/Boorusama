@@ -16,11 +16,13 @@ dependencies:
     git:
       url: https://github.com/khoadng/flutter-context-menu.git
       ref: 3e46518ea7823aebae8838754c21353bd2d44189
-  dynamic_color: ^1.7.0
+  dynamic_color: ^2.1.0
   equatable: ^2.0.8
   font_awesome_flutter: ^11.0.0
   flutter:
     sdk: flutter
+  material_ui: ^1.2.0
+  cupertino_ui: ^1.0.2
   material_symbols_icons: ^4.2785.1
   modal_bottom_sheet: ^3.0.0-pre
   oktoast: ^3.4.0

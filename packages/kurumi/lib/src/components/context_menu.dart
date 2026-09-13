@@ -1,5 +1,5 @@
 import 'package:anchor_ui/anchor_ui.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../accessibility/behavior.dart';
 import '../foundation/platform.dart';

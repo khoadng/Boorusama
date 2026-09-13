@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:anchor_ui/anchor_ui.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../foundation/platform.dart';
 import 'anchor.dart';

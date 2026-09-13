@@ -6,7 +6,7 @@
 import 'dart:math' as math;
 
 // Flutter imports:
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 const Duration _kUnconfirmedSplashDuration = Duration(milliseconds: 100);
 const Duration _kSplashFadeDuration = Duration(milliseconds: 300);
@@ -126,7 +126,7 @@ class FasterInkSplash extends InteractiveInkFeature {
   FasterInkSplash({
     required MaterialInkController controller,
     required super.referenceBox,
-    required TextDirection textDirection,
+    required this._textDirection,
     Offset? position,
     required Color color,
     bool containedInkWell = false,
@@ -151,7 +151,6 @@ class FasterInkSplash extends InteractiveInkFeature {
          rectCallback,
        ),
        _repositionToReferenceBox = !containedInkWell,
-       _textDirection = textDirection,
        super(controller: controller, color: color) {
     _radiusController =
         AnimationController(
