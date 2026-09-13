@@ -3,11 +3,11 @@
 - Add an option to download only over Wi-Fi
 - Add optional metadata files alongside downloads
 - Support up to two quick actions on post thumbnails
+- Settings are now searchable
 - Add per-profile media host overrides
 - Improve favorite tag and label management
 - [Anime-Pictures] Add bulk download support
-- [Sankaku] Improve search and download filenames
-- Add Arabic and Indonesian; update Turkish, Tamil, and Spanish translations
+- Add Arabic and Indonesian, update Turkish, Tamil, and Spanish translations
 
 # 4.5.0
 - Add support for Nozomi
