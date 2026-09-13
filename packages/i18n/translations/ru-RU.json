@@ -1001,5 +1001,15 @@
       "stats": "Статистика"
     },
     "hidden_count": "$hidden из $total"
+  },
+  "settings_search": {
+    "title": "Поиск настроек",
+    "select_setting": "Выберите настройку для просмотра",
+    "overridden": "Переопределено профилем $profile",
+    "custom_location": "Другое расположение",
+    "app_folder": "Используется папка загрузок приложения",
+    "enable_profile": "Для изменения включите настройки профиля",
+    "profile_icon": "Значок профиля",
+    "thumbnail_actions": "Действия с миниатюрами"
   }
 }

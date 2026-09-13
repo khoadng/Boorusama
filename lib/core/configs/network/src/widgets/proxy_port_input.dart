@@ -5,6 +5,8 @@ import 'package:kurumi/kurumi.dart';
 import 'package:kurumi/material.dart';
 
 // Project imports:
+import '../../../../settings/data.dart';
+import '../../../../settings/widgets.dart';
 import '../../../config/types.dart';
 import '../../../create/providers.dart';
 
@@ -21,23 +23,26 @@ class ProxyPortInput extends ConsumerWidget {
 
     final initialValue = proxySettings?.port.toString() ?? '';
 
-    return KurumiTextFormField(
-      initialValue: initialValue == '0' ? '' : initialValue,
-      onChanged: (value) {
-        final port = int.tryParse(value);
+    return SettingAnchor(
+      id: SettingsIndex.network.proxyPort.id,
+      child: KurumiTextFormField(
+        initialValue: initialValue == '0' ? '' : initialValue,
+        onChanged: (value) {
+          final port = int.tryParse(value);
 
-        if (port == null) {
-          return;
-        }
+          if (port == null) {
+            return;
+          }
 
-        ref.editNotifier.updateProxySettings(
-          proxySettings?.copyWith(port: port),
-        );
-      },
-      keyboardType: TextInputType.number,
-      decoration: InputDecoration(
-        labelText: context.t.booru.network.proxy.port,
-        hintText: context.t.booru.network.proxy.port_hint,
+          ref.editNotifier.updateProxySettings(
+            proxySettings?.copyWith(port: port),
+          );
+        },
+        keyboardType: TextInputType.number,
+        decoration: InputDecoration(
+          labelText: SettingsIndex.network.proxyPort.title(context),
+          hintText: context.t.booru.network.proxy.port_hint,
+        ),
       ),
     );
   }

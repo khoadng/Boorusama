@@ -10,5 +10,15 @@
       "delete": "हटाना",
       "edit": "संपादन"
     }
+  },
+  "settings_search": {
+    "title": "सेटिंग खोजें",
+    "select_setting": "देखने के लिए कोई सेटिंग चुनें",
+    "overridden": "$profile द्वारा बदला गया",
+    "custom_location": "कस्टम स्थान",
+    "app_folder": "ऐप का डाउनलोड फ़ोल्डर उपयोग करता है",
+    "enable_profile": "बदलने के लिए प्रोफ़ाइल की अपनी सेटिंग चालू करें",
+    "profile_icon": "प्रोफ़ाइल आइकन",
+    "thumbnail_actions": "थंबनेल कार्रवाइयाँ"
   }
 }

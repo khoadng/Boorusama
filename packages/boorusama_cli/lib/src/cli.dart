@@ -5,6 +5,7 @@ import 'package:args/command_runner.dart';
 import 'command/build_command.dart';
 import 'command/doctor_command.dart';
 import 'command/gen_command.dart';
+import 'command/settings_command.dart';
 import 'command/release_command.dart';
 
 Future<void> runBoorusamaCli(List<String> args) async {
@@ -24,6 +25,7 @@ Future<void> runBoorusamaCli(List<String> args) async {
           'Boorusama development tool.',
         )
         ..addCommand(GenCommand())
+        ..addCommand(SettingsCommand())
         ..addCommand(I18nCommand())
         ..addCommand(BooruCommand())
         ..addCommand(DoctorCommand())
@@ -57,6 +59,7 @@ void _printHelp() {
   print('  gen      Generate all repo code.');
   print('  i18n     Run i18n tooling.');
   print('  release  Run release flows.');
+  print('  settings Generate settings catalog bindings.');
   print('');
   print('Run "boorusama help <command>" for more information about a command.');
 }

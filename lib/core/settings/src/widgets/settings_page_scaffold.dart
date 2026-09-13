@@ -47,15 +47,17 @@ class SettingsPageScaffold extends StatelessWidget {
                 contentPadding: EdgeInsets.zero,
               ),
             ),
-            child: ListView(
+            child: SingleChildScrollView(
               padding:
                   padding ??
                   const EdgeInsets.symmetric(
                     horizontal: 16,
                   ),
-              shrinkWrap: true,
               primary: false,
-              children: children,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: children,
+              ),
             ),
           ),
         ),

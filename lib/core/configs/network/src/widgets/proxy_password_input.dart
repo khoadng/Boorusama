@@ -5,6 +5,8 @@ import 'package:kurumi/kurumi.dart';
 import 'package:kurumi/material.dart';
 
 // Project imports:
+import '../../../../settings/data.dart';
+import '../../../../settings/widgets.dart';
 import '../../../config/types.dart';
 import '../../../create/providers.dart';
 
@@ -19,16 +21,21 @@ class ProxyPasswordInput extends ConsumerWidget {
       ).select((value) => value.proxySettingsTyped),
     );
 
-    return KurumiTextFormField(
-      initialValue: proxySettings?.password,
-      onChanged: (value) {
-        ref.editNotifier.updateProxySettings(
-          proxySettings?.copyWith(password: () => value),
-        );
-      },
-      decoration: InputDecoration(
-        labelText: context.t.booru.network.proxy.password,
-        hintText: context.t.booru.network.proxy.password_hint,
+    return SettingAnchor(
+      id: SettingsIndex.network.proxyPassword.id,
+      child: KurumiTextFormField(
+        initialValue: proxySettings?.password,
+        onChanged: (value) {
+          ref.editNotifier.updateProxySettings(
+            proxySettings?.copyWith(password: () => value),
+          );
+        },
+        decoration: InputDecoration(
+          labelText: SettingsIndex.network.proxyPassword.title(
+            context,
+          ),
+          hintText: context.t.booru.network.proxy.password_hint,
+        ),
       ),
     );
   }

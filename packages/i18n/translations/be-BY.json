@@ -234,5 +234,15 @@
     "options": {
       "save_to_folder": "Сахраніць у"
     }
+  },
+  "settings_search": {
+    "title": "Пошук налад",
+    "select_setting": "Выберыце наладу для прагляду",
+    "overridden": "Перавызначана профілем $profile",
+    "custom_location": "Уласнае размяшчэнне",
+    "app_folder": "Выкарыстоўваецца папка спамповак праграмы",
+    "enable_profile": "Для змены ўключыце налады профілю",
+    "profile_icon": "Значок профілю",
+    "thumbnail_actions": "Дзеянні з мініяцюрамі"
   }
 }

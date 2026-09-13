@@ -1366,5 +1366,15 @@
       "joined": "Katılma",
       "last_active": "Son aktiflik"
     }
+  },
+  "settings_search": {
+    "title": "Ayarlarda ara",
+    "select_setting": "Görüntülemek için bir ayar seçin",
+    "overridden": "$profile tarafından geçersiz kılındı",
+    "custom_location": "Özel konum",
+    "app_folder": "Uygulamanın indirme klasörünü kullanır",
+    "enable_profile": "Değiştirmek için profile özgü ayarları etkinleştirin",
+    "profile_icon": "Profil simgesi",
+    "thumbnail_actions": "Küçük resim eylemleri"
   }
 }

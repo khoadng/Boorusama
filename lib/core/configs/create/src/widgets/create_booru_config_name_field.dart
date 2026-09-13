@@ -5,6 +5,8 @@ import 'package:kurumi/kurumi.dart';
 import 'package:kurumi/material.dart';
 
 // Project imports:
+import '../../../../settings/data.dart';
+import '../../../../settings/widgets.dart';
 import '../providers/providers.dart';
 
 class BooruConfigNameField extends ConsumerWidget {
@@ -16,11 +18,14 @@ class BooruConfigNameField extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final id = ref.watch(editBooruConfigIdProvider);
 
-    return CreateBooruConfigNameField(
-      text: ref.watch(
-        editBooruConfigProvider(id).select((value) => value.name),
+    return SettingAnchor(
+      id: SettingsIndex.profile.name.id,
+      child: CreateBooruConfigNameField(
+        text: ref.watch(
+          editBooruConfigProvider(id).select((value) => value.name),
+        ),
+        onChanged: (value) => ref.editNotifier.updateName(value),
       ),
-      onChanged: (value) => ref.editNotifier.updateName(value),
     );
   }
 }

@@ -12,7 +12,9 @@ import '../../../../videos/engines/types.dart';
 import '../../../../videos/player/types.dart';
 import '../../../../widgets/widgets.dart';
 import '../../../routes.dart';
+import '../../generated/settings_index.g.dart';
 import '../../types/settings.dart';
+import '../../widgets/setting_anchor.dart';
 
 class ImageViewerSettingsSection extends ConsumerWidget {
   const ImageViewerSettingsSection({
@@ -30,205 +32,263 @@ class ImageViewerSettingsSection extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         KurumiSettingsHeader(label: context.t.settings.general),
-        KurumiSettingsTile(
-          title: Text(
-            context.t.settings.image_details.ui_overlay.ui_overlay,
+        SettingAnchor(
+          id: SettingsIndex.viewer.overlay.id,
+          child: KurumiSettingsTile(
+            title: Text(
+              SettingsIndex.viewer.overlay.title(
+                context,
+              ),
+            ),
+            selectedOption: viewer.postDetailsOverlayInitialState,
+            items: PostDetailsOverlayInitialState.values,
+            onChanged: (value) => onUpdate(
+              viewer.copyWith(postDetailsOverlayInitialState: value),
+            ),
+            optionBuilder: (value) => Text(value.localize(context)),
           ),
-          selectedOption: viewer.postDetailsOverlayInitialState,
-          items: PostDetailsOverlayInitialState.values,
-          onChanged: (value) => onUpdate(
-            viewer.copyWith(postDetailsOverlayInitialState: value),
-          ),
-          optionBuilder: (value) => Text(value.localize(context)),
         ),
-        KurumiSettingsRadioCard(
-          title: context.t.settings.image_viewer.swipe_mode,
-          subtitle: context.t.settings.image_viewer.swipe_mode_disclaimer,
-          entries: [
-            KurumiSettingsRadioCardEntry(
-              title: context.t.settings.image_viewer.swipe_modes.horizontal,
-              value: PostDetailsSwipeMode.horizontal.name,
-              groupValue: viewer.swipeMode.name,
-              subtitle: context
-                  .t
-                  .settings
-                  .image_viewer
-                  .swipe_modes
-                  .horizontal_description,
-              onSelected: (value) {
-                onUpdate(
-                  viewer.copyWith(swipeMode: PostDetailsSwipeMode.horizontal),
-                );
-              },
+        SettingAnchor(
+          id: SettingsIndex.viewer.swipeMode.id,
+          child: KurumiSettingsRadioCard(
+            title: SettingsIndex.viewer.swipeMode.title(
+              context,
             ),
-            KurumiSettingsRadioCardEntry(
-              title: context.t.settings.image_viewer.swipe_modes.vertical,
-              value: PostDetailsSwipeMode.vertical.name,
-              groupValue: viewer.swipeMode.name,
-              subtitle: context
-                  .t
-                  .settings
-                  .image_viewer
-                  .swipe_modes
-                  .vertical_description,
-              onSelected: (value) {
-                onUpdate(
-                  viewer.copyWith(swipeMode: PostDetailsSwipeMode.vertical),
-                );
-              },
-            ),
-          ],
+            subtitle: context.t.settings.image_viewer.swipe_mode_disclaimer,
+            entries: [
+              KurumiSettingsRadioCardEntry(
+                title: context.t.settings.image_viewer.swipe_modes.horizontal,
+                value: PostDetailsSwipeMode.horizontal.name,
+                groupValue: viewer.swipeMode.name,
+                subtitle: context
+                    .t
+                    .settings
+                    .image_viewer
+                    .swipe_modes
+                    .horizontal_description,
+                onSelected: (value) {
+                  onUpdate(
+                    viewer.copyWith(swipeMode: PostDetailsSwipeMode.horizontal),
+                  );
+                },
+              ),
+              KurumiSettingsRadioCardEntry(
+                title: context.t.settings.image_viewer.swipe_modes.vertical,
+                value: PostDetailsSwipeMode.vertical.name,
+                groupValue: viewer.swipeMode.name,
+                subtitle: context
+                    .t
+                    .settings
+                    .image_viewer
+                    .swipe_modes
+                    .vertical_description,
+                onSelected: (value) {
+                  onUpdate(
+                    viewer.copyWith(swipeMode: PostDetailsSwipeMode.vertical),
+                  );
+                },
+              ),
+            ],
+          ),
         ),
         const Divider(thickness: 1),
         KurumiSettingsHeader(label: context.t.settings.image_viewer.slideshow),
-        KurumiSettingsTile(
-          title: Text(context.t.settings.image_viewer.slideshow_mode),
-          selectedOption: viewer.slideshowDirection,
-          items: SlideshowDirection.values,
-          onChanged: (value) => onUpdate(
-            viewer.copyWith(slideshowDirection: value),
-          ),
-          optionBuilder: (value) => Text(value.localize(context)),
-        ),
-        KurumiSettingsTile(
-          title: Text(context.t.settings.image_viewer.slideshow_interval),
-          subtitle: Text(
-            context.t.settings.image_viewer.slideshow_interval_explanation,
-          ),
-          selectedOption: viewer.slideshowInterval,
-          items: getSlideShowIntervalPossibleValue(),
-          onChanged: (newValue) => onUpdate(
-            viewer.copyWith(slideshowInterval: newValue),
-          ),
-          optionBuilder: (value) => Text(
-            context.t.time.counters.second(
-              n: value < 1 ? value : value.toInt(),
+        SettingAnchor(
+          id: SettingsIndex.viewer.slideshowMode.id,
+          child: KurumiSettingsTile(
+            title: Text(
+              SettingsIndex.viewer.slideshowMode.title(
+                context,
+              ),
             ),
+            selectedOption: viewer.slideshowDirection,
+            items: SlideshowDirection.values,
+            onChanged: (value) => onUpdate(
+              viewer.copyWith(slideshowDirection: value),
+            ),
+            optionBuilder: (value) => Text(value.localize(context)),
           ),
         ),
-        KurumiSwitchListTile(
-          title: Text(context.t.settings.image_viewer.slideshow_skip),
-          value: viewer.slideshowTransitionType.isSkip,
-          onChanged: (value) => onUpdate(
-            viewer.copyWith(
-              slideshowTransitionType: value
-                  ? SlideshowTransitionType.none
-                  : SlideshowTransitionType.natural,
+        SettingAnchor(
+          id: SettingsIndex.viewer.slideshowInterval.id,
+          child: KurumiSettingsTile(
+            title: Text(
+              SettingsIndex.viewer.slideshowInterval.title(
+                context,
+              ),
+            ),
+            subtitle: Text(
+              context.t.settings.image_viewer.slideshow_interval_explanation,
+            ),
+            selectedOption: viewer.slideshowInterval,
+            items: getSlideShowIntervalPossibleValue(),
+            onChanged: (newValue) => onUpdate(
+              viewer.copyWith(slideshowInterval: newValue),
+            ),
+            optionBuilder: (value) => Text(
+              context.t.time.counters.second(
+                n: value < 1 ? value : value.toInt(),
+              ),
             ),
           ),
         ),
-        KurumiSettingsRadioCard(
-          title: context.t.settings.image_viewer.slideshow_video_behavior,
-          subtitle: context
-              .t
-              .settings
-              .image_viewer
-              .slideshow_video_behavior_explanation,
-          entries: [
-            KurumiSettingsRadioCardEntry(
-              title: context
-                  .t
-                  .settings
-                  .image_viewer
-                  .slideshow_video_behaviors
-                  .wait_for_completion,
-              value: SlideshowVideoBehavior.waitForCompletion,
-              groupValue: viewer.slideshowVideoBehavior,
-              subtitle: context
-                  .t
-                  .settings
-                  .image_viewer
-                  .slideshow_video_behaviors
-                  .wait_for_completion_description,
-              onSelected: (value) {
-                onUpdate(
-                  viewer.copyWith(
-                    slideshowVideoBehavior:
-                        SlideshowVideoBehavior.waitForCompletion,
-                  ),
-                );
-              },
+        SettingAnchor(
+          id: SettingsIndex.viewer.slideshowSkip.id,
+          child: KurumiSwitchListTile(
+            title: Text(
+              SettingsIndex.viewer.slideshowSkip.title(
+                context,
+              ),
             ),
-            KurumiSettingsRadioCardEntry(
-              title: context
-                  .t
-                  .settings
-                  .image_viewer
-                  .slideshow_video_behaviors
-                  .fixed_interval,
-              value: SlideshowVideoBehavior.fixedInterval,
-              groupValue: viewer.slideshowVideoBehavior,
-              subtitle: context
-                  .t
-                  .settings
-                  .image_viewer
-                  .slideshow_video_behaviors
-                  .fixed_interval_description,
-              onSelected: (value) {
-                onUpdate(
-                  viewer.copyWith(
-                    slideshowVideoBehavior:
-                        SlideshowVideoBehavior.fixedInterval,
-                  ),
-                );
-              },
+            value: viewer.slideshowTransitionType.isSkip,
+            onChanged: (value) => onUpdate(
+              viewer.copyWith(
+                slideshowTransitionType: value
+                    ? SlideshowTransitionType.none
+                    : SlideshowTransitionType.natural,
+              ),
             ),
-          ],
+          ),
+        ),
+        SettingAnchor(
+          id: SettingsIndex.viewer.slideshowVideoBehavior.id,
+          child: KurumiSettingsRadioCard(
+            title: SettingsIndex.viewer.slideshowVideoBehavior.title(context),
+            subtitle: context
+                .t
+                .settings
+                .image_viewer
+                .slideshow_video_behavior_explanation,
+            entries: [
+              KurumiSettingsRadioCardEntry(
+                title: context
+                    .t
+                    .settings
+                    .image_viewer
+                    .slideshow_video_behaviors
+                    .wait_for_completion,
+                value: SlideshowVideoBehavior.waitForCompletion,
+                groupValue: viewer.slideshowVideoBehavior,
+                subtitle: context
+                    .t
+                    .settings
+                    .image_viewer
+                    .slideshow_video_behaviors
+                    .wait_for_completion_description,
+                onSelected: (value) {
+                  onUpdate(
+                    viewer.copyWith(
+                      slideshowVideoBehavior:
+                          SlideshowVideoBehavior.waitForCompletion,
+                    ),
+                  );
+                },
+              ),
+              KurumiSettingsRadioCardEntry(
+                title: context
+                    .t
+                    .settings
+                    .image_viewer
+                    .slideshow_video_behaviors
+                    .fixed_interval,
+                value: SlideshowVideoBehavior.fixedInterval,
+                groupValue: viewer.slideshowVideoBehavior,
+                subtitle: context
+                    .t
+                    .settings
+                    .image_viewer
+                    .slideshow_video_behaviors
+                    .fixed_interval_description,
+                onSelected: (value) {
+                  onUpdate(
+                    viewer.copyWith(
+                      slideshowVideoBehavior:
+                          SlideshowVideoBehavior.fixedInterval,
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
         ),
         const Divider(thickness: 1),
         KurumiSettingsHeader(
           label: context.t.settings.image_viewer.video_section_title,
         ),
-        SettingsNavigationTile(
-          title: context.t.settings.image_viewer.video.video_player_engine,
-          value: viewer.videoPlayerEngine,
-          valueBuilder: (engine) => VideoEngineUtils.getUnderlyingEngineName(
-            engine,
-            platform: Kurumi.themeOf(context).platform,
-            context: context,
-          ),
-          onTap: () {
-            Kurumi.showAppModalBottomSheet(
+        SettingAnchor(
+          id: SettingsIndex.viewer.videoEngine.id,
+          child: SettingsNavigationTile(
+            title: SettingsIndex.viewer.videoEngine.title(context),
+            value: viewer.videoPlayerEngine,
+            valueBuilder: (engine) => VideoEngineUtils.getUnderlyingEngineName(
+              engine,
+              platform: Kurumi.themeOf(context).platform,
               context: context,
-              builder: (context) => _VideoEngineSelectorSheet(
-                currentEngine: viewer.videoPlayerEngine,
-                onChanged: (engine) => onUpdate(
-                  viewer.copyWith(videoPlayerEngine: engine),
+            ),
+            onTap: () {
+              Kurumi.showAppModalBottomSheet(
+                context: context,
+                builder: (context) => _VideoEngineSelectorSheet(
+                  currentEngine: viewer.videoPlayerEngine,
+                  onChanged: (engine) => onUpdate(
+                    viewer.copyWith(videoPlayerEngine: engine),
+                  ),
                 ),
-              ),
-            );
-          },
+              );
+            },
+          ),
         ),
-        KurumiSwitchListTile(
-          title: Text(context.t.settings.image_viewer.mute_video),
-          value: viewer.videoAudioDefaultState.muteByDefault,
-          onChanged: (value) => onUpdate(
-            viewer.copyWith(
-              videoAudioDefaultState: value
-                  ? VideoAudioDefaultState.mute
-                  : VideoAudioDefaultState.unmute,
+        SettingAnchor(
+          id: SettingsIndex.viewer.muteVideo.id,
+          child: KurumiSwitchListTile(
+            title: Text(
+              SettingsIndex.viewer.muteVideo.title(
+                context,
+              ),
+            ),
+            value: viewer.videoAudioDefaultState.muteByDefault,
+            onChanged: (value) => onUpdate(
+              viewer.copyWith(
+                videoAudioDefaultState: value
+                    ? VideoAudioDefaultState.mute
+                    : VideoAudioDefaultState.unmute,
+              ),
             ),
           ),
         ),
-        KurumiSettingsTile(
-          title: Text(context.t.settings.image_viewer.double_tap_seek),
-          selectedOption: viewer.doubleTapSeekDuration,
-          items: getDoubleTapSeekDurationPossibleValues(),
-          onChanged: (value) => onUpdate(
-            viewer.copyWith(doubleTapSeekDuration: value),
-          ),
-          optionBuilder: (value) => Text(
-            context.t.time.counters.second(n: value),
+        SettingAnchor(
+          id: SettingsIndex.viewer.doubleTapSeek.id,
+          child: KurumiSettingsTile(
+            title: Text(
+              SettingsIndex.viewer.doubleTapSeek.title(
+                context,
+              ),
+            ),
+            selectedOption: viewer.doubleTapSeekDuration,
+            items: getDoubleTapSeekDurationPossibleValues(),
+            onChanged: (value) => onUpdate(
+              viewer.copyWith(doubleTapSeekDuration: value),
+            ),
+            optionBuilder: (value) => Text(
+              context.t.time.counters.second(n: value),
+            ),
           ),
         ),
-        KurumiSwitchListTile(
-          title: Text(context.t.settings.image_viewer.enable_video_cache),
-          subtitle: Text(
-            context.t.settings.image_viewer.enable_video_cache_description,
-          ),
-          value: viewer.enableVideoCache,
-          onChanged: (value) => onUpdate(
-            viewer.copyWith(enableVideoCache: value),
+        SettingAnchor(
+          id: SettingsIndex.viewer.videoCache.id,
+          child: KurumiSwitchListTile(
+            title: Text(
+              SettingsIndex.viewer.videoCache.title(
+                context,
+              ),
+            ),
+            subtitle: Text(
+              context.t.settings.image_viewer.enable_video_cache_description,
+            ),
+            value: viewer.enableVideoCache,
+            onChanged: (value) => onUpdate(
+              viewer.copyWith(enableVideoCache: value),
+            ),
           ),
         ),
         TextButton(

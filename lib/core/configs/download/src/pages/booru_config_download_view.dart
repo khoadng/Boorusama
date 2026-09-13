@@ -7,6 +7,8 @@ import 'package:kurumi/material.dart';
 // Project imports:
 import '../../../../../foundation/info/device_info.dart';
 import '../../../../downloads/configs/widgets.dart';
+import '../../../../settings/data.dart';
+import '../../../../settings/widgets.dart';
 import '../../../create/providers.dart';
 import '../widgets/custom_download_file_name_section.dart';
 
@@ -36,13 +38,16 @@ class BooruConfigDownloadView extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          DownloadFolderSelectorSection(
-            storagePath: customDownloadLocation,
-            deviceInfo: ref.watch(deviceInfoProvider),
-            onPathChanged: (path) =>
-                ref.editNotifier.updateCustomDownloadLocation(path),
-            title: Text(
-              context.t.settings.download.path,
+          SettingAnchor(
+            id: SettingsIndex.downloads.folder.id,
+            child: DownloadFolderSelectorSection(
+              storagePath: customDownloadLocation,
+              deviceInfo: ref.watch(deviceInfoProvider),
+              onPathChanged: (path) =>
+                  ref.editNotifier.updateCustomDownloadLocation(path),
+              title: Text(
+                context.t.settings.download.path,
+              ),
             ),
           ),
           const SizedBox(height: 4),
@@ -57,6 +62,11 @@ class BooruConfigDownloadView extends ConsumerWidget {
           const SizedBox(height: 8),
           CustomDownloadFileNameSection(
             config: config,
+            bulkFormat: ref.watch(
+              editBooruConfigProvider(
+                id,
+              ).select((value) => value.customBulkDownloadFileNameFormat),
+            ),
             format: customDownloadFileNameFormat,
             onIndividualDownloadChanged: (value) =>
                 ref.editNotifier.updateCustomDownloadFileNameFormat(value),

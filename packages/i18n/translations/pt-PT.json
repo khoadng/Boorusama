@@ -1314,5 +1314,15 @@
       "joined": "Juntado em",
       "last_active": "Última atividade em"
     }
+  },
+  "settings_search": {
+    "title": "Pesquisar definições",
+    "select_setting": "Selecione uma definição para a visualizar",
+    "overridden": "Substituído por $profile",
+    "custom_location": "Localização personalizada",
+    "app_folder": "Usa a pasta de transferências da aplicação",
+    "enable_profile": "Ative as definições específicas do perfil para alterar",
+    "profile_icon": "Ícone do perfil",
+    "thumbnail_actions": "Ações das miniaturas"
   }
 }

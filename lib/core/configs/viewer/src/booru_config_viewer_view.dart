@@ -5,6 +5,7 @@ import 'package:kurumi/kurumi.dart';
 import 'package:kurumi/material.dart';
 
 // Project imports:
+import '../../../settings/data.dart';
 import '../../../settings/types.dart';
 import '../../../settings/widgets.dart';
 import '../../config/types.dart';
@@ -15,13 +16,13 @@ class BooruConfigViewerView extends ConsumerWidget {
   const BooruConfigViewerView({
     super.key,
     this.postDetailsResolution,
-    this.autoLoadNotes,
     this.videoQuality,
+    this.autoLoadNotes,
   });
 
   final Widget? postDetailsResolution;
-  final Widget? autoLoadNotes;
   final Widget? videoQuality;
+  final Widget? autoLoadNotes;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -48,30 +49,33 @@ class BooruConfigViewerView extends ConsumerWidget {
             ?autoLoadNotes,
             const SizedBox(height: 16),
             const Divider(),
-            KurumiSwitchListTile(
-              title: Text(
-                context.t.booru.listing.enable_profile_specific_settings,
+            SettingAnchor(
+              id: SettingsIndex.viewer.profileOverrides.id,
+              child: KurumiSwitchListTile(
+                title: Text(
+                  SettingsIndex.viewer.profileOverrides.title(context),
+                ),
+                subtitle: Text(
+                  context
+                      .t
+                      .booru
+                      .listing
+                      .enable_profile_specific_settings_description,
+                ),
+                value: viewerEnabled,
+                onChanged: (value) {
+                  if (value) {
+                    ref.editNotifier.updateViewerConfigs(
+                      ViewerConfigs(
+                        settings: Settings.defaultSettings.viewer,
+                        enable: true,
+                      ),
+                    );
+                  } else {
+                    ref.editNotifier.updateViewerConfigs(null);
+                  }
+                },
               ),
-              subtitle: Text(
-                context
-                    .t
-                    .booru
-                    .listing
-                    .enable_profile_specific_settings_description,
-              ),
-              value: viewerEnabled,
-              onChanged: (value) {
-                if (value) {
-                  ref.editNotifier.updateViewerConfigs(
-                    ViewerConfigs(
-                      settings: Settings.defaultSettings.viewer,
-                      enable: true,
-                    ),
-                  );
-                } else {
-                  ref.editNotifier.updateViewerConfigs(null);
-                }
-              },
             ),
             KurumiGrayedOut(
               grayedOut: !viewerEnabled,

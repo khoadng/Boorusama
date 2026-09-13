@@ -1,10 +1,11 @@
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:i18n/i18n.dart';
 import 'package:kurumi/kurumi.dart';
 import 'package:kurumi/material.dart';
 
 // Project imports:
+import '../../../../settings/data.dart';
+import '../../../../settings/widgets.dart';
 import '../../../create/providers.dart';
 import '../providers/blacklist_configs_notifier.dart';
 
@@ -20,13 +21,18 @@ class EnableAdditionalBlacklistSwitch extends ConsumerWidget {
       blacklistConfigsProvider(ref.watch(editBooruConfigIdProvider)).notifier,
     );
 
-    return KurumiSwitchListTile(
-      contentPadding: const EdgeInsets.only(left: 4),
-      title: Text(
-        context.t.booru.search.enable_profile_specific_settings,
+    return SettingAnchor(
+      id: SettingsIndex.profileSearch.profileOverrides.id,
+      child: KurumiSwitchListTile(
+        contentPadding: const EdgeInsets.only(left: 4),
+        title: Text(
+          SettingsIndex.profileSearch.profileOverrides.title(
+            context,
+          ),
+        ),
+        value: blacklistConfigs.enable,
+        onChanged: (value) => notifier.changeEnable(value),
       ),
-      value: blacklistConfigs.enable,
-      onChanged: (value) => notifier.changeEnable(value),
     );
   }
 }

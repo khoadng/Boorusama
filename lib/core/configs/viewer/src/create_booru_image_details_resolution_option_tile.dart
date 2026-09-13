@@ -6,6 +6,8 @@ import 'package:kurumi/material.dart';
 
 // Project imports:
 import '../../../posts/post/types.dart';
+import '../../../settings/data.dart';
+import '../../../settings/widgets.dart';
 
 class CreateBooruGeneralPostDetailsResolutionOptionTile
     extends StatelessWidget {
@@ -45,28 +47,33 @@ class CreateBooruImageDetailsResolutionOptionTile<T> extends StatelessWidget {
     // set to Auto when value is null or empty
     final item = (value?.isNotEmpty ?? false) ? value : 'Auto';
 
-    return ListTile(
-      contentPadding: EdgeInsets.zero,
-      visualDensity: VisualDensity.compact,
-      title: Text(context.t.settings.image_grid.image_quality.image_quality),
-      subtitle: Text(
-        context.t.settings.image_grid.image_quality.high_quality_notice,
-      ),
-      trailing: KurumiOptionDropDownButton(
-        alignment: AlignmentDirectional.centerStart,
-        value: item,
-        onChanged: (value) => onChanged(value),
-        items: items
-            .append('Auto')
-            .map(
-              (e) => DropdownMenuItem(
-                value: e,
-                child: e == 'Auto'
-                    ? Text(context.t.settings.image_grid.image_quality.auto)
-                    : Text(e.sentenceCase),
-              ),
-            )
-            .toList(),
+    return SettingAnchor(
+      id: SettingsIndex.viewer.imageQuality.id,
+      child: ListTile(
+        contentPadding: EdgeInsets.zero,
+        visualDensity: VisualDensity.compact,
+        title: Text(
+          SettingsIndex.viewer.imageQuality.title(context),
+        ),
+        subtitle: Text(
+          context.t.settings.image_grid.image_quality.high_quality_notice,
+        ),
+        trailing: KurumiOptionDropDownButton(
+          alignment: AlignmentDirectional.centerStart,
+          value: item,
+          onChanged: (value) => onChanged(value),
+          items: items
+              .append('Auto')
+              .map(
+                (e) => DropdownMenuItem(
+                  value: e,
+                  child: e == 'Auto'
+                      ? Text(context.t.settings.image_grid.image_quality.auto)
+                      : Text(e.sentenceCase),
+                ),
+              )
+              .toList(),
+        ),
       ),
     );
   }

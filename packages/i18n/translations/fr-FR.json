@@ -477,5 +477,15 @@
     "options": {
       "save_to_folder": "Enregistrer dans un dossier"
     }
+  },
+  "settings_search": {
+    "title": "Rechercher un réglage",
+    "select_setting": "Sélectionnez un réglage pour l’afficher",
+    "overridden": "Remplacé par $profile",
+    "custom_location": "Emplacement personnalisé",
+    "app_folder": "Utilise le dossier de téléchargement de l’application",
+    "enable_profile": "Activez les réglages propres au profil pour modifier",
+    "profile_icon": "Icône du profil",
+    "thumbnail_actions": "Actions des miniatures"
   }
 }

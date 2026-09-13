@@ -7,8 +7,10 @@ import 'package:kurumi/material.dart';
 // Project imports:
 import '../../../haptics/types.dart';
 import '../../../home/types.dart';
+import '../generated/settings_index.g.dart';
 import '../providers/settings_notifier.dart';
 import '../providers/settings_provider.dart';
+import '../widgets/setting_anchor.dart';
 import '../widgets/settings_page_scaffold.dart';
 
 class AccessibilityPage extends ConsumerStatefulWidget {
@@ -29,79 +31,106 @@ class _AccessibilityPageState extends ConsumerState<AccessibilityPage> {
     return SettingsPageScaffold(
       title: Text(context.t.settings.accessibility.accessibility),
       children: [
-        KurumiSwitchListTile(
-          title: Text(
-            context
-                .t
-                .settings
-                .accessibility
-                .reverseBooruConfigSelectorScrollDirection,
-          ),
-          value: settings.booruConfigSelectorScrollDirection.isReversed,
-          onChanged: (value) => notifer.updateSettings(
-            settings.copyWith(
-              booruConfigSelectorScrollDirection: value
-                  ? BooruConfigScrollDirection.reversed
-                  : BooruConfigScrollDirection.normal,
+        SettingAnchor(
+          id: SettingsIndex.accessibility.reverseProfileScroll.id,
+          child: KurumiSwitchListTile(
+            title: Text(
+              SettingsIndex.accessibility.reverseProfileScroll.title(context),
+            ),
+            value: settings.booruConfigSelectorScrollDirection.isReversed,
+            onChanged: (value) => notifer.updateSettings(
+              settings.copyWith(
+                booruConfigSelectorScrollDirection: value
+                    ? BooruConfigScrollDirection.reversed
+                    : BooruConfigScrollDirection.normal,
+              ),
             ),
           ),
         ),
-        KurumiSettingsTile(
-          title: Text(context.t.settings.accessibility.swipeAreaToOpenSidebar),
-          subtitle: Text(
-            context.t.settings.accessibility.swipeAreaToOpenSidebarDescription,
-            style: TextStyle(
-              color: Kurumi.themeOf(context).colorScheme.hintColor,
+        SettingAnchor(
+          id: SettingsIndex.accessibility.sidebarSwipeArea.id,
+          child: KurumiSettingsTile(
+            title: Text(
+              SettingsIndex.accessibility.sidebarSwipeArea.title(
+                context,
+              ),
             ),
-          ),
-          selectedOption: settings.swipeAreaToOpenSidebarPercentage,
-          items: getSwipeAreaPossibleValue(),
-          onChanged: (newValue) {
-            notifer.updateSettings(
-              settings.copyWith(swipeAreaToOpenSidebarPercentage: newValue),
-            );
-          },
-          optionBuilder: (value) => Text(
-            '$value%',
-          ),
-        ),
-        KurumiSwitchListTile(
-          title: Text(context.t.settings.accessibility.reduce_animations),
-          subtitle: Text(
-            context.t.settings.accessibility.reduce_animations_description,
-          ),
-          value: settings.reduceAnimations,
-          onChanged: (value) => notifer.updateSettings(
-            settings.copyWith(
-              reduceAnimations: value,
+            subtitle: Text(
+              context
+                  .t
+                  .settings
+                  .accessibility
+                  .swipeAreaToOpenSidebarDescription,
+              style: TextStyle(
+                color: Kurumi.themeOf(context).colorScheme.hintColor,
+              ),
             ),
-          ),
-        ),
-        KurumiSwitchListTile(
-          title: Text(context.t.settings.accessibility.volume_navigation),
-          subtitle: Text(
-            context.t.settings.accessibility.volume_navigation_description,
-          ),
-          value: settings.volumeKeyViewerNavigation,
-          onChanged: (value) => notifer.updateSettings(
-            settings.copyWith(
-              volumeKeyViewerNavigation: value,
+            selectedOption: settings.swipeAreaToOpenSidebarPercentage,
+            items: getSwipeAreaPossibleValue(),
+            onChanged: (newValue) {
+              notifer.updateSettings(
+                settings.copyWith(swipeAreaToOpenSidebarPercentage: newValue),
+              );
+            },
+            optionBuilder: (value) => Text(
+              '$value%',
             ),
           ),
         ),
-        KurumiSettingsTile(
-          title: Text(
-            context.t.settings.accessibility.haptic_feedback.haptic_feedback,
+        SettingAnchor(
+          id: SettingsIndex.accessibility.reduceAnimations.id,
+          child: KurumiSwitchListTile(
+            title: Text(
+              SettingsIndex.accessibility.reduceAnimations.title(
+                context,
+              ),
+            ),
+            subtitle: Text(
+              context.t.settings.accessibility.reduce_animations_description,
+            ),
+            value: settings.reduceAnimations,
+            onChanged: (value) => notifer.updateSettings(
+              settings.copyWith(
+                reduceAnimations: value,
+              ),
+            ),
           ),
-          selectedOption: settings.hapticFeedbackLevel,
-          items: HapticFeedbackLevel.values,
-          onChanged: (newValue) {
-            notifer.updateSettings(
-              settings.copyWith(hapticFeedbackLevel: newValue),
-            );
-          },
-          optionBuilder: (value) => Text(
-            value.localize(context),
+        ),
+        SettingAnchor(
+          id: SettingsIndex.accessibility.volumeNavigation.id,
+          child: KurumiSwitchListTile(
+            title: Text(
+              SettingsIndex.accessibility.volumeNavigation.title(
+                context,
+              ),
+            ),
+            subtitle: Text(
+              context.t.settings.accessibility.volume_navigation_description,
+            ),
+            value: settings.volumeKeyViewerNavigation,
+            onChanged: (value) => notifer.updateSettings(
+              settings.copyWith(
+                volumeKeyViewerNavigation: value,
+              ),
+            ),
+          ),
+        ),
+        SettingAnchor(
+          id: SettingsIndex.accessibility.hapticFeedback.id,
+          child: KurumiSettingsTile(
+            title: Text(
+              SettingsIndex.accessibility.hapticFeedback.title(context),
+            ),
+            selectedOption: settings.hapticFeedbackLevel,
+            items: HapticFeedbackLevel.values,
+            onChanged: (newValue) {
+              notifer.updateSettings(
+                settings.copyWith(hapticFeedbackLevel: newValue),
+              );
+            },
+            optionBuilder: (value) => Text(
+              value.localize(context),
+            ),
           ),
         ),
       ],

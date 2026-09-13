@@ -1,0 +1,738 @@
+version: 1
+facts:
+- hasProfile
+- mobileDownloadPolicy
+- hasPremium
+- showPremium
+- incognitoKeyboardAvailable
+- appLockIsPin
+- appLockEnabled
+- appListingPaginated
+- profileListingPaginated
+- profileListingEnabled
+- profileViewerEnabled
+- customDownloadFolder
+menus:
+  app:
+  - appearance
+  - language
+  - download
+  - dataAndStorage
+  - backupAndRestore
+  - search
+  - accessibility
+  - viewer
+  - privacy
+  profile:
+  - auth
+  - listing
+  - appearance
+  - download
+  - search
+  - gestures
+  - viewer
+  - network
+categories:
+  appearance:
+    icon:
+      family: FontAwesomeIcons
+      name: paintRoller
+    app:
+      title: settings.appearance.appearance
+      route: /settings/appearance
+    profile:
+      title: booru.appearance.title
+      tab: appearance
+      when:
+        showPremium: true
+    keywords:
+    - theme
+    - colors
+    - dark
+    - light
+    - layout
+  language:
+    icon:
+      family: FontAwesomeIcons
+      name: language
+    app:
+      title: settings.language.language
+      route: /settings/language
+    keywords:
+    - translation
+    - locale
+    - language
+  download:
+    icon:
+      family: FontAwesomeIcons
+      name: download
+    app:
+      title: settings.download.title
+      route: /settings/download
+    profile:
+      title: booru.downloads.title
+      tab: download
+  dataAndStorage:
+    icon:
+      family: FontAwesomeIcons
+      name: database
+    app:
+      title: settings.data_and_storage.data_and_storage
+      route: /settings/data_and_storage
+  backupAndRestore:
+    icon:
+      family: FontAwesomeIcons
+      name: cloudArrowDown
+    app:
+      title: settings.backup_and_restore.backup_and_restore
+      route: /settings/backup_and_restore
+    keywords:
+    - backup
+    - restore
+    - export
+    - import
+    - transfer
+  search:
+    icon:
+      family: FontAwesomeIcons
+      name: magnifyingGlass
+    app:
+      title: settings.search.search
+      route: /settings/search
+    profile:
+      title: booru.search.title
+      tab: search
+  accessibility:
+    icon:
+      family: FontAwesomeIcons
+      name: universalAccess
+    app:
+      title: settings.accessibility.accessibility
+      route: /settings/accessibility
+  viewer:
+    icon:
+      family: FontAwesomeIcons
+      name: image
+    app:
+      title: settings.image_viewer.image_viewer
+      route: /settings/image_viewer
+    profile:
+      title: settings.image_viewer.image_viewer
+      tab: viewer
+  privacy:
+    icon:
+      family: FontAwesomeIcons
+      name: shieldHalved
+    app:
+      title: settings.privacy.privacy
+      route: /settings/privacy
+  developerOptions:
+    icon:
+      family: FontAwesomeIcons
+      name: code
+    app:
+      title:
+        literal: Developer options
+      route: /settings/developer_options
+      pageEntry: false
+  appLock:
+    icon:
+      family: Symbols
+      name: lock
+    app:
+      title: settings.privacy.app_lock.title
+      route: /settings/privacy/app_lock
+      parent: privacy
+      pageEntry: false
+  auth:
+    icon:
+      family: Symbols
+      name: key
+    profile:
+      title: booru.authentication.title
+      tab: auth
+      boorus: [anime-pictures, danbooru, e621, eshuushuu, gelbooru, gelbooru_v2, hydrus, moebooru, philomena, sankaku, shimmie2, szurubooru]
+    keywords:
+    - login
+    - account
+    - authentication
+    - api
+    - key
+    - password
+    - cookies
+    - credentials
+  listing:
+    icon:
+      family: Symbols
+      name: grid_view
+    profile:
+      title: booru.listing.title
+      tab: listing
+  gestures:
+    icon:
+      family: Symbols
+      name: swipe
+    profile:
+      title: booru.gestures.title
+      tab: gestures
+  network:
+    icon:
+      family: Symbols
+      name: language
+    profile:
+      title: booru.network.title
+      tab: network
+groups:
+  appearance:
+    scopes:
+      app:
+        category: appearance
+    settings:
+      colors:
+        title: settings.theme.viewer.colors
+        keywords:
+        - dark
+        - light
+        - system
+        - customize
+        scopes:
+          app:
+            when:
+              hasPremium: true
+      theme:
+        title: settings.theme.theme
+        keywords:
+        - dark
+        - light
+        - system
+        - amoled
+        scopes:
+          app:
+            when:
+              hasPremium: false
+      dynamicColor:
+        title: settings.theme.dynamic_color
+        scopes:
+          app:
+            when:
+              hasPremium: false
+  downloads:
+    scopes:
+      app:
+        category: download
+    settings:
+      sidecar:
+        title: settings.download.sidecar.title
+        keywords:
+        - metadata
+        - tags
+        - json
+        - export
+      folder:
+        title: settings.download.path
+        keywords:
+        - folder
+        - location
+        - directory
+        - save
+        - storage
+        scopes:
+          app:
+            status:
+            - when:
+                hasProfile: true
+                customDownloadFolder: true
+              text: settings_search.overridden
+              arguments:
+                profile: profileLabel
+          profile:
+            category: download
+            status:
+            - when:
+                customDownloadFolder: true
+              text: settings_search.custom_location
+            - text: settings_search.app_folder
+      quality:
+        title: settings.download.quality
+        optionLabels:
+        - settings.download.qualities.original
+        - settings.download.qualities.sample
+        - settings.download.qualities.preview
+        keywords:
+        - original
+        - sample
+        - preview
+        - resolution
+      network:
+        title: settings.download.network.title
+        optionLabels:
+        - settings.download.network.any_network
+        - settings.download.network.wifi_only
+        - settings.download.network.ask_on_mobile_data
+        keywords:
+        - wifi
+        - wi-fi
+        - cellular
+        - mobile
+        - data
+        scopes:
+          app:
+            when:
+              mobileDownloadPolicy: true
+      notifications:
+        title: bulk_downloads.options.enable_notification
+      skipExistingFiles:
+        title: settings.download.skip_existing_files
+        description: settings.download.skip_existing_files_explanation
+        keywords:
+        - duplicates
+        - overwrite
+  search:
+    scopes:
+      app:
+        category: search
+    settings:
+      autoFocus:
+        title: settings.search.auto_focus_search_bar
+      persistentBar:
+        title: settings.search.search_bar.scroll_behavior.persistent
+        description: settings.search.search_bar.scroll_behavior.persistent_description
+      barPosition:
+        title: settings.search.search_bar.position.search_bar_position
+      hideBookmarkedPosts:
+        title: settings.search.hide_bookmarked_posts_from_search_results
+  accessibility:
+    scopes:
+      app:
+        category: accessibility
+    settings:
+      reverseProfileScroll:
+        title: settings.accessibility.reverseBooruConfigSelectorScrollDirection
+        keywords:
+        - reverseBooruConfigSelectorScrollDirection
+      sidebarSwipeArea:
+        title: settings.accessibility.swipeAreaToOpenSidebar
+        description: settings.accessibility.swipeAreaToOpenSidebarDescription
+        keywords:
+        - swipeAreaToOpenSidebar
+      reduceAnimations:
+        title: settings.accessibility.reduce_animations
+        description: settings.accessibility.reduce_animations_description
+        keywords:
+        - motion
+        - animation
+      volumeNavigation:
+        title: settings.accessibility.volume_navigation
+        description: settings.accessibility.volume_navigation_description
+      hapticFeedback:
+        title: settings.accessibility.haptic_feedback.haptic_feedback
+        keywords:
+        - vibration
+        - vibrate
+  privacy:
+    scopes:
+      app:
+        category: privacy
+        searchable: false
+    settings:
+      appLock:
+        title: settings.privacy.app_lock.title
+        keywords:
+        - pin
+        - biometrics
+        - fingerprint
+        - face
+        - security
+        - password
+      hideAppPreview:
+        title: settings.privacy.app_lock.hide_app_preview
+        description: settings.privacy.app_lock.hide_app_preview_description
+      incognitoKeyboard:
+        title: settings.privacy.enable_incognito_keyboard
+        description: settings.privacy.enable_incognito_keyboard_notice
+        scopes:
+          app:
+            when:
+              incognitoKeyboardAvailable: true
+  appLock:
+    scopes:
+      app:
+        category: appLock
+    settings:
+      type:
+        title: settings.privacy.app_lock.title
+        description: settings.privacy.app_lock.description
+        keywords:
+        - pin
+        - biometrics
+        - fingerprint
+        - face
+        - security
+        - password
+      changePin:
+        title: settings.privacy.app_lock.change_pin
+        description: settings.privacy.app_lock.change_pin_description
+        scopes:
+          app:
+            when:
+              appLockIsPin: true
+      timeout:
+        title: settings.privacy.app_lock.lock_after
+        description: settings.privacy.app_lock.lock_after_description
+        scopes:
+          app:
+            when:
+              appLockEnabled: true
+  storage:
+    scopes:
+      app:
+        category: dataAndStorage
+    settings:
+      clearCacheOnStartUp:
+        title: settings.data_and_storage.clear_cache_on_start_up
+        keywords:
+        - delete
+        - clean
+      imageOnlyCache:
+        title: settings.data_and_storage.image_only_cache
+      videoCache:
+        title: settings.data_and_storage.video_cache
+      tagCache:
+        title: settings.data_and_storage.tag_cache
+      allCache:
+        title: settings.data_and_storage.all_cache
+      bookmarkImages:
+        title: settings.data_and_storage.bookmark_images
+      videoCacheLimit:
+        title: settings.data_and_storage.video_cache_limit
+        description: settings.data_and_storage.video_cache_limit_description
+  listing:
+    scopes:
+      app:
+        category: appearance
+      profile:
+        category: listing
+        status:
+        - when:
+            profileListingEnabled: false
+          text: settings_search.enable_profile
+    settings:
+      gridSize:
+        title: settings.image_grid.grid_size.grid_size
+      list:
+        title: settings.image_list.image_list
+      imageQuality:
+        title: settings.image_grid.image_quality.image_quality
+        keywords:
+        - original
+        - sample
+        - preview
+        - resolution
+      layout:
+        title: settings.result_layout.result_layout
+      pageIndicator:
+        title: settings.page_indicator.page_indicator
+        scopes:
+          app:
+            when:
+              appListingPaginated: true
+          profile:
+            when:
+              profileListingPaginated: true
+      postsPerPage:
+        title: settings.performance.posts_per_page
+        description: settings.performance.posts_per_page_explain
+      showScores:
+        title: settings.appearance.show_scores
+      showConfigHeader:
+        title: settings.appearance.show_post_list_config_header
+      blurExplicitMedia:
+        title: settings.appearance.blur_explicit_media
+      autoPlayGif:
+        title: settings.appearance.auto_play_gif
+      cornerRadius:
+        title: settings.image_grid.corner_radius
+      spacing:
+        title: settings.image_grid.spacing
+      padding:
+        title: settings.image_grid.padding
+      aspectRatio:
+        title: settings.image_grid.aspect_ratio
+      profilePlacement:
+        title: settings.appearance.booru_config_placement
+        scopes:
+          profile: false
+      profileLabel:
+        title: settings.appearance.booru_config_label
+        scopes:
+          profile: false
+      tooltip:
+        title: booru.listing.tooltip_on_hover_title
+        description: booru.listing.tooltip_on_hover_description
+        keywords:
+        - mouse
+        - preview
+        scopes:
+          app: false
+          profile:
+            status: []
+      thumbnailActions:
+        title: settings_search.thumbnail_actions
+        keywords:
+        - primary
+        - secondary
+        - buttons
+        - favorite
+        - bookmark
+        - download
+        - grid
+        scopes:
+          app: false
+          profile:
+            status: []
+      profileOverrides:
+        title: booru.listing.enable_profile_specific_settings
+        description: booru.listing.enable_profile_specific_settings_description
+        scopes:
+          app: false
+          profile:
+            status: []
+  viewer:
+    scopes:
+      app:
+        category: viewer
+      profile:
+        category: viewer
+        status:
+        - when:
+            profileViewerEnabled: false
+          text: settings_search.enable_profile
+    settings:
+      overlay:
+        title: settings.image_details.ui_overlay.ui_overlay
+      swipeMode:
+        title: settings.image_viewer.swipe_mode
+        keywords:
+        - horizontal
+        - vertical
+        - direction
+      slideshowMode:
+        title: settings.image_viewer.slideshow_mode
+      slideshowInterval:
+        title: settings.image_viewer.slideshow_interval
+        description: settings.image_viewer.slideshow_interval_explanation
+      slideshowSkip:
+        title: settings.image_viewer.slideshow_skip
+      slideshowVideoBehavior:
+        title: settings.image_viewer.slideshow_video_behavior
+      videoEngine:
+        title: settings.image_viewer.video.video_player_engine
+      muteVideo:
+        title: settings.image_viewer.mute_video
+        keywords:
+        - sound
+        - audio
+        - silent
+      doubleTapSeek:
+        title: settings.image_viewer.double_tap_seek
+      videoCache:
+        title: settings.image_viewer.enable_video_cache
+        description: settings.image_viewer.enable_video_cache_description
+      profileOverrides:
+        title: booru.listing.enable_profile_specific_settings
+        description: booru.listing.enable_profile_specific_settings_description
+        scopes:
+          app: false
+          profile:
+            status: []
+      imageQuality:
+        title: settings.image_grid.image_quality.image_quality
+        description: settings.image_grid.image_quality.high_quality_notice
+        keywords:
+        - original
+        - sample
+        - preview
+        - resolution
+        scopes:
+          app: false
+          profile:
+            status: []
+      autoFetchNotes:
+        title: booru.viewer.auto_fetch_notes
+        description: booru.viewer.auto_fetch_notes_description
+        scopes:
+          app: false
+          profile:
+            boorus: [danbooru, e621, gelbooru, gelbooru_v2]
+            status: []
+      videoQuality:
+        title: video_player.video_quality
+        keywords:
+        - original
+        - sample
+        - preview
+        - resolution
+        scopes:
+          app: false
+          profile:
+            boorus: [e621]
+            status: []
+  profileAppearance:
+    scopes:
+      profile:
+        category: appearance
+    settings:
+      theme:
+        title: settings.theme.theme
+        keywords:
+        - colors
+        - dark
+        - light
+        - customize
+      viewerLayout:
+        title: booru.appearance.image_viewer_layout.title
+        keywords:
+        - details
+        - reorder
+        - sections
+      icon:
+        title: settings_search.profile_icon
+        keywords:
+        - avatar
+        - image
+        - url
+      homeScreen:
+        title: booru.appearance.home_screen
+        description: booru.appearance.home_screen_description
+  profile:
+    scopes:
+      profile:
+        category: listing
+    settings:
+      name:
+        title: booru.config_name_label
+        keywords:
+        - profile
+        - rename
+  gestures:
+    scopes:
+      profile:
+        category: gestures
+    settings:
+      previewLongPress:
+        title: gestures.long_press
+        section: settings.image_grid.image_grid
+        keywords:
+        - thumbnail
+        - grid
+        - preview
+        - hold
+        - gesture
+      swipeDown:
+        title: gestures.swipe_down
+        section: settings.image_viewer.image_viewer
+      doubleTap:
+        title: gestures.double_tap
+        section: settings.image_viewer.image_viewer
+      longPress:
+        title: gestures.long_press
+        section: settings.image_viewer.image_viewer
+      tap:
+        title: gestures.tap
+        section: settings.image_grid.image_grid
+  network:
+    scopes:
+      profile:
+        category: network
+    settings:
+      mediaHosts:
+        title: booru.network.media_hosts.title
+        keywords:
+        - host
+        - override
+        - cdn
+        - image
+        - domain
+      proxyPassword:
+        title: booru.network.proxy.password
+      proxy:
+        title: booru.network.proxy.title
+      proxyType:
+        title: booru.network.proxy.type
+      skipCertificateVerification:
+        title: booru.network.http.skip_cert_verification
+        description: booru.network.http.skip_cert_verification_description
+      proxyPort:
+        title: booru.network.proxy.port
+      proxyHost:
+        title: booru.network.proxy.host_or_ip
+      proxyUsername:
+        title: booru.network.proxy.username
+      httpProtocol:
+        title: booru.network.http.protocol
+        description: booru.network.http.protocol_description
+  profileSearch:
+    scopes:
+      profile:
+        category: search
+    settings:
+      excludeTags:
+        title: booru.search.exclude_from_search
+        keywords:
+        - tags
+        - always
+        - default
+        - query
+      includeTags:
+        title: booru.search.include_in_search
+        keywords:
+        - tags
+        - always
+        - default
+        - query
+      hideDeleted:
+        title: booru.hide_deleted_label
+        keywords:
+        - removed
+        - posts
+        scopes:
+          profile:
+            boorus: [danbooru]
+      rating:
+        title: booru.content_filtering_label
+        keywords:
+        - rating
+        - filter
+        - safe
+        - sensitive
+        - questionable
+        - explicit
+        - nsfw
+        scopes:
+          profile:
+            boorus: [danbooru, e621, gelbooru, gelbooru_v2, moebooru, szurubooru]
+      profileOverrides:
+        title: booru.search.enable_profile_specific_settings
+      hideBanned:
+        title: booru.hide_banned_label
+        description: booru.hide_banned_description
+        scopes:
+          profile:
+            boorus: [danbooru]
+  profileDownloads:
+    scopes:
+      profile:
+        category: download
+    settings:
+      filenameFormat:
+        title: booru.downloads.custom_filename_format_invidual
+        keywords:
+        - naming
+        - rename
+        - template
+      bulkFilenameFormat:
+        title: booru.downloads.custom_filename_format_bulk
+        keywords:
+        - naming
+        - rename
+        - template

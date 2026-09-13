@@ -7,9 +7,11 @@ import 'package:kurumi/material.dart';
 // Project imports:
 import '../../../../foundation/applock/applock.dart';
 import '../../../../foundation/pincode/pincode.dart';
+import '../generated/settings_index.g.dart';
 import '../providers/settings_notifier.dart';
 import '../providers/settings_provider.dart';
 import '../types/settings.dart';
+import '../widgets/setting_anchor.dart';
 import '../widgets/settings_page_scaffold.dart';
 
 class AppLockSettingsPage extends ConsumerWidget {
@@ -26,50 +28,70 @@ class AppLockSettingsPage extends ConsumerWidget {
     return SettingsPageScaffold(
       title: Text(appLock.title),
       children: [
-        KurumiSettingsTile<AppLockType>(
-          title: Text(appLock.title),
-          subtitle: Text(appLock.description),
-          selectedOption: settings.appLockType,
-          items: [
-            AppLockType.none,
-            AppLockType.pin,
-            if (capabilities.deviceAuthentication) AppLockType.biometrics,
-          ],
-          optionBuilder: (value) => Text(appLockTypeLabel(context, value)),
-          selectedOptionBuilder: (value) =>
-              Text(appLockTypeLabel(context, value)),
-          onChanged: (value) => _changeLockType(
-            context,
-            ref,
-            settings,
-            value,
+        SettingAnchor(
+          id: SettingsIndex.appLock.type.id,
+          child: KurumiSettingsTile<AppLockType>(
+            title: Text(
+              SettingsIndex.appLock.type.title(context),
+            ),
+            subtitle: Text(appLock.description),
+            selectedOption: settings.appLockType,
+            items: [
+              AppLockType.none,
+              AppLockType.pin,
+              if (capabilities.deviceAuthentication) AppLockType.biometrics,
+            ],
+            optionBuilder: (value) => Text(appLockTypeLabel(context, value)),
+            selectedOptionBuilder: (value) =>
+                Text(appLockTypeLabel(context, value)),
+            onChanged: (value) => _changeLockType(
+              context,
+              ref,
+              settings,
+              value,
+            ),
           ),
         ),
         if (settings.appLockType.isPin)
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            title: Text(appLock.change_pin),
-            subtitle: Text(appLock.change_pin_description),
-            onTap: () => _changePin(context, ref),
+          SettingAnchor(
+            id: SettingsIndex.appLock.changePin.id,
+            child: ListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(
+                SettingsIndex.appLock.changePin.title(
+                  context,
+                ),
+              ),
+              subtitle: Text(appLock.change_pin_description),
+              onTap: () => _changePin(context, ref),
+            ),
           ),
         if (settings.appLockType.appLockEnabled)
-          KurumiSettingsTile<int>(
-            title: Text(appLock.lock_after),
-            subtitle: Text(appLock.lock_after_description),
-            selectedOption: settings.appLockTimeoutSeconds,
-            items: _timeoutOptions,
-            optionBuilder: (value) => Text(appLockTimeoutLabel(context, value)),
-            selectedOptionBuilder: (value) =>
-                Text(appLockTimeoutLabel(context, value)),
-            onChanged: (value) {
-              ref
-                  .read(settingsNotifierProvider.notifier)
-                  .updateWith(
-                    (settings) => settings.copyWith(
-                      appLockTimeoutSeconds: value,
-                    ),
-                  );
-            },
+          SettingAnchor(
+            id: SettingsIndex.appLock.timeout.id,
+            child: KurumiSettingsTile<int>(
+              title: Text(
+                SettingsIndex.appLock.timeout.title(
+                  context,
+                ),
+              ),
+              subtitle: Text(appLock.lock_after_description),
+              selectedOption: settings.appLockTimeoutSeconds,
+              items: _timeoutOptions,
+              optionBuilder: (value) =>
+                  Text(appLockTimeoutLabel(context, value)),
+              selectedOptionBuilder: (value) =>
+                  Text(appLockTimeoutLabel(context, value)),
+              onChanged: (value) {
+                ref
+                    .read(settingsNotifierProvider.notifier)
+                    .updateWith(
+                      (settings) => settings.copyWith(
+                        appLockTimeoutSeconds: value,
+                      ),
+                    );
+              },
+            ),
           ),
       ],
     );

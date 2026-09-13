@@ -9,10 +9,12 @@ import '../../../../home/types.dart';
 import '../../../../images/types.dart';
 import '../../../../posts/listing/types.dart';
 import '../../../../posts/post/types.dart';
+import '../../generated/settings_index.g.dart';
 import '../../providers/settings_notifier.dart';
 import '../../providers/settings_provider.dart';
 import '../../types/settings.dart';
 import '../../types/utils.dart';
+import '../../widgets/setting_anchor.dart';
 
 class ImageListingSettingsSection extends ConsumerStatefulWidget {
   const ImageListingSettingsSection({
@@ -71,126 +73,176 @@ class _ImageListingSettingsSectionState
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        KurumiSettingsTile(
-          title: Text(context.t.settings.image_grid.grid_size.grid_size),
-          selectedOption: settings.gridSize,
-          items: GridSize.sortedValues,
-          onChanged: (value) => _onUpdate(settings.copyWith(gridSize: value)),
-          optionBuilder: (value) => Text(value.localize(context)),
-        ),
-        KurumiSettingsTile(
-          title: Text(context.t.settings.image_list.image_list),
-          selectedOption: settings.imageListType,
-          items: ImageListType.values,
-          onChanged: (value) =>
-              _onUpdate(settings.copyWith(imageListType: value)),
-          optionBuilder: (value) => Text(value.localize(context)),
-        ),
-        KurumiSettingsTile(
-          title: Text(
-            context.t.settings.image_grid.image_quality.image_quality,
-          ),
-          subtitle: settings.imageQuality == ImageQuality.highest
-              ? Text(
-                  context
-                      .t
-                      .settings
-                      .image_grid
-                      .image_quality
-                      .high_quality_notice,
-                  style: TextStyle(
-                    color: Kurumi.themeOf(context).colorScheme.hintColor,
-                  ),
-                )
-              : null,
-          selectedOption: settings.imageQuality,
-          items: ImageQuality.nonOriginalValues,
-          onChanged: (value) =>
-              _onUpdate(settings.copyWith(imageQuality: value)),
-          optionBuilder: (value) => Text(value.localize(context)),
-        ),
-        KurumiSettingsTile(
-          title: Text(context.t.settings.result_layout.result_layout),
-          selectedOption: settings.pageMode,
-          subtitle: settings.pageMode == PageMode.infinite
-              ? Text(context.t.settings.infinite_scroll_warning)
-              : null,
-          items: const [...PageMode.values],
-          onChanged: (value) => _onUpdate(settings.copyWith(pageMode: value)),
-          optionBuilder: (value) => Text(value.localize(context)),
-        ),
-        if (settings.pageMode == PageMode.paginated)
-          KurumiSettingsTile(
-            title: Text(context.t.settings.page_indicator.page_indicator),
-            selectedOption: settings.pageIndicatorPosition,
-            items: const [...PageIndicatorPosition.values],
-            onChanged: (value) =>
-                _onUpdate(settings.copyWith(pageIndicatorPosition: value)),
+        SettingAnchor(
+          id: SettingsIndex.listing.gridSize.id,
+          child: KurumiSettingsTile(
+            title: Text(
+              SettingsIndex.listing.gridSize.title(context),
+            ),
+            selectedOption: settings.gridSize,
+            items: GridSize.sortedValues,
+            onChanged: (value) => _onUpdate(settings.copyWith(gridSize: value)),
             optionBuilder: (value) => Text(value.localize(context)),
           ),
-        KurumiSettingsTile(
-          title: Text(context.t.settings.performance.posts_per_page),
-          subtitle: Text(
-            context.t.settings.performance.posts_per_page_explain,
-            style: TextStyle(
-              color: Kurumi.themeOf(context).colorScheme.hintColor,
+        ),
+        SettingAnchor(
+          id: SettingsIndex.listing.list.id,
+          child: KurumiSettingsTile(
+            title: Text(
+              SettingsIndex.listing.list.title(context),
             ),
+            selectedOption: settings.imageListType,
+            items: ImageListType.values,
+            onChanged: (value) =>
+                _onUpdate(settings.copyWith(imageListType: value)),
+            optionBuilder: (value) => Text(value.localize(context)),
           ),
-          selectedOption: settings.postsPerPage,
-          items: getPostsPerPagePossibleValue(),
-          onChanged: (newValue) {
-            _onUpdate(
-              settings.copyWith(
-                postsPerPage: newValue,
+        ),
+        SettingAnchor(
+          id: SettingsIndex.listing.imageQuality.id,
+          child: KurumiSettingsTile(
+            title: Text(
+              SettingsIndex.listing.imageQuality.title(
+                context,
               ),
-            );
-          },
-          optionBuilder: (value) => Text(
-            value.toString(),
+            ),
+            subtitle: settings.imageQuality == ImageQuality.highest
+                ? Text(
+                    context
+                        .t
+                        .settings
+                        .image_grid
+                        .image_quality
+                        .high_quality_notice,
+                    style: TextStyle(
+                      color: Kurumi.themeOf(context).colorScheme.hintColor,
+                    ),
+                  )
+                : null,
+            selectedOption: settings.imageQuality,
+            items: ImageQuality.nonOriginalValues,
+            onChanged: (value) =>
+                _onUpdate(settings.copyWith(imageQuality: value)),
+            optionBuilder: (value) => Text(value.localize(context)),
           ),
         ),
-        KurumiSwitchListTile(
-          title: Text(context.t.settings.appearance.show_scores),
-          value: settings.showScoresInGrid,
-          onChanged: (value) =>
-              _onUpdate(settings.copyWith(showScoresInGrid: value)),
-        ),
-        KurumiSwitchListTile(
-          title: Text(
-            context.t.settings.appearance.show_post_list_config_header,
+        SettingAnchor(
+          id: SettingsIndex.listing.layout.id,
+          child: KurumiSettingsTile(
+            title: Text(
+              SettingsIndex.listing.layout.title(context),
+            ),
+            selectedOption: settings.pageMode,
+            subtitle: settings.pageMode == PageMode.infinite
+                ? Text(context.t.settings.infinite_scroll_warning)
+                : null,
+            items: const [...PageMode.values],
+            onChanged: (value) => _onUpdate(settings.copyWith(pageMode: value)),
+            optionBuilder: (value) => Text(value.localize(context)),
           ),
-          value: settings.showPostListConfigHeader,
-          onChanged: (value) => _onUpdate(
-            settings.copyWith(
-              showPostListConfigHeader: value,
+        ),
+        if (settings.pageMode == PageMode.paginated)
+          SettingAnchor(
+            id: SettingsIndex.listing.pageIndicator.id,
+            child: KurumiSettingsTile(
+              title: Text(
+                SettingsIndex.listing.pageIndicator.title(context),
+              ),
+              selectedOption: settings.pageIndicatorPosition,
+              items: const [...PageIndicatorPosition.values],
+              onChanged: (value) =>
+                  _onUpdate(settings.copyWith(pageIndicatorPosition: value)),
+              optionBuilder: (value) => Text(value.localize(context)),
+            ),
+          ),
+        SettingAnchor(
+          id: SettingsIndex.listing.postsPerPage.id,
+          child: KurumiSettingsTile(
+            title: Text(
+              SettingsIndex.listing.postsPerPage.title(
+                context,
+              ),
+            ),
+            subtitle: Text(
+              context.t.settings.performance.posts_per_page_explain,
+              style: TextStyle(
+                color: Kurumi.themeOf(context).colorScheme.hintColor,
+              ),
+            ),
+            selectedOption: settings.postsPerPage,
+            items: getPostsPerPagePossibleValue(),
+            onChanged: (newValue) {
+              _onUpdate(
+                settings.copyWith(
+                  postsPerPage: newValue,
+                ),
+              );
+            },
+            optionBuilder: (value) => Text(
+              value.toString(),
             ),
           ),
         ),
-        KurumiSwitchListTile(
-          title: Text(
-            context.t.settings.appearance.blur_explicit_media,
+        SettingAnchor(
+          id: SettingsIndex.listing.showScores.id,
+          child: KurumiSwitchListTile(
+            title: Text(
+              SettingsIndex.listing.showScores.title(
+                context,
+              ),
+            ),
+            value: settings.showScoresInGrid,
+            onChanged: (value) =>
+                _onUpdate(settings.copyWith(showScoresInGrid: value)),
           ),
-          value: settings.mediaBlurCondition.blurExplicitMedia,
-          onChanged: (value) => _onUpdate(
-            settings.copyWith(
-              mediaBlurCondition: value
-                  ? MediaBlurCondition.explicitOnly
-                  : MediaBlurCondition.none,
+        ),
+        SettingAnchor(
+          id: SettingsIndex.listing.showConfigHeader.id,
+          child: KurumiSwitchListTile(
+            title: Text(
+              SettingsIndex.listing.showConfigHeader.title(context),
+            ),
+            value: settings.showPostListConfigHeader,
+            onChanged: (value) => _onUpdate(
+              settings.copyWith(
+                showPostListConfigHeader: value,
+              ),
             ),
           ),
         ),
-        KurumiSwitchListTile(
-          title: Text(
-            context.t.settings.appearance.auto_play_gif,
+        SettingAnchor(
+          id: SettingsIndex.listing.blurExplicitMedia.id,
+          child: KurumiSwitchListTile(
+            title: Text(
+              SettingsIndex.listing.blurExplicitMedia.title(context),
+            ),
+            value: settings.mediaBlurCondition.blurExplicitMedia,
+            onChanged: (value) => _onUpdate(
+              settings.copyWith(
+                mediaBlurCondition: value
+                    ? MediaBlurCondition.explicitOnly
+                    : MediaBlurCondition.none,
+              ),
+            ),
           ),
-          value:
-              settings.animatedPostsDefaultState ==
-              AnimatedPostsDefaultState.autoplay,
-          onChanged: (value) => _onUpdate(
-            settings.copyWith(
-              animatedPostsDefaultState: value
-                  ? AnimatedPostsDefaultState.autoplay
-                  : AnimatedPostsDefaultState.static,
+        ),
+        SettingAnchor(
+          id: SettingsIndex.listing.autoPlayGif.id,
+          child: KurumiSwitchListTile(
+            title: Text(
+              SettingsIndex.listing.autoPlayGif.title(
+                context,
+              ),
+            ),
+            value:
+                settings.animatedPostsDefaultState ==
+                AnimatedPostsDefaultState.autoplay,
+            onChanged: (value) => _onUpdate(
+              settings.copyWith(
+                animatedPostsDefaultState: value
+                    ? AnimatedPostsDefaultState.autoplay
+                    : AnimatedPostsDefaultState.static,
+              ),
             ),
           ),
         ),
@@ -212,15 +264,20 @@ class _ImageListingSettingsSectionState
     return ValueListenableBuilder(
       valueListenable: _borderRadiusSliderValue,
       builder: (context, value, child) {
-        return KurumiSettingsSliderTile(
-          title: context.t.settings.image_grid.corner_radius,
-          divisions: 20,
-          max: 20,
-          value: value,
-          onChangeEnd: (value) =>
-              _onUpdate(settings.copyWith(imageBorderRadius: value)),
-          onChanged: (value) => _borderRadiusSliderValue.value = value,
-          padding: EdgeInsets.zero,
+        return SettingAnchor(
+          id: SettingsIndex.listing.cornerRadius.id,
+          child: KurumiSettingsSliderTile(
+            title: SettingsIndex.listing.cornerRadius.title(
+              context,
+            ),
+            divisions: 20,
+            max: 20,
+            value: value,
+            onChangeEnd: (value) =>
+                _onUpdate(settings.copyWith(imageBorderRadius: value)),
+            onChanged: (value) => _borderRadiusSliderValue.value = value,
+            padding: EdgeInsets.zero,
+          ),
         );
       },
     );
@@ -230,15 +287,20 @@ class _ImageListingSettingsSectionState
     return ValueListenableBuilder(
       valueListenable: _spacingSliderValue,
       builder: (context, value, child) {
-        return KurumiSettingsSliderTile(
-          title: context.t.settings.image_grid.spacing,
-          divisions: 10,
-          max: 10,
-          value: value,
-          onChangeEnd: (value) =>
-              _onUpdate(settings.copyWith(imageGridSpacing: value)),
-          onChanged: (value) => _spacingSliderValue.value = value,
-          padding: EdgeInsets.zero,
+        return SettingAnchor(
+          id: SettingsIndex.listing.spacing.id,
+          child: KurumiSettingsSliderTile(
+            title: SettingsIndex.listing.spacing.title(
+              context,
+            ),
+            divisions: 10,
+            max: 10,
+            value: value,
+            onChangeEnd: (value) =>
+                _onUpdate(settings.copyWith(imageGridSpacing: value)),
+            onChanged: (value) => _spacingSliderValue.value = value,
+            padding: EdgeInsets.zero,
+          ),
         );
       },
     );
@@ -248,15 +310,20 @@ class _ImageListingSettingsSectionState
     return ValueListenableBuilder(
       valueListenable: _paddingSliderValue,
       builder: (context, value, child) {
-        return KurumiSettingsSliderTile(
-          title: context.t.settings.image_grid.padding,
-          divisions: 8,
-          max: 32,
-          value: value,
-          onChangeEnd: (value) =>
-              _onUpdate(settings.copyWith(imageGridPadding: value)),
-          onChanged: (value) => _paddingSliderValue.value = value,
-          padding: EdgeInsets.zero,
+        return SettingAnchor(
+          id: SettingsIndex.listing.padding.id,
+          child: KurumiSettingsSliderTile(
+            title: SettingsIndex.listing.padding.title(
+              context,
+            ),
+            divisions: 8,
+            max: 32,
+            value: value,
+            onChangeEnd: (value) =>
+                _onUpdate(settings.copyWith(imageGridPadding: value)),
+            onChanged: (value) => _paddingSliderValue.value = value,
+            padding: EdgeInsets.zero,
+          ),
         );
       },
     );
@@ -266,16 +333,21 @@ class _ImageListingSettingsSectionState
     return ValueListenableBuilder(
       valueListenable: _aspectRatioSliderValue,
       builder: (context, value, child) {
-        return KurumiSettingsSliderTile(
-          title: context.t.settings.image_grid.aspect_ratio,
-          divisions: 10,
-          max: 1.5,
-          min: 0.5,
-          value: value,
-          onChangeEnd: (value) =>
-              _onUpdate(settings.copyWith(imageGridAspectRatio: value)),
-          onChanged: (value) => _aspectRatioSliderValue.value = value,
-          padding: EdgeInsets.zero,
+        return SettingAnchor(
+          id: SettingsIndex.listing.aspectRatio.id,
+          child: KurumiSettingsSliderTile(
+            title: SettingsIndex.listing.aspectRatio.title(
+              context,
+            ),
+            divisions: 10,
+            max: 1.5,
+            min: 0.5,
+            value: value,
+            onChangeEnd: (value) =>
+                _onUpdate(settings.copyWith(imageGridAspectRatio: value)),
+            onChanged: (value) => _aspectRatioSliderValue.value = value,
+            padding: EdgeInsets.zero,
+          ),
         );
       },
     );
@@ -299,23 +371,35 @@ class LayoutSection extends ConsumerWidget {
         KurumiSettingsHeader(
           label: context.t.settings.appearance.booru_config,
         ),
-        KurumiSettingsTile(
-          title: Text(context.t.settings.appearance.booru_config_placement),
-          selectedOption: settings.booruConfigSelectorPosition,
-          items: const [...BooruConfigSelectorPosition.values],
-          onChanged: (value) => notifier.updateSettings(
-            settings.copyWith(booruConfigSelectorPosition: value),
+        SettingAnchor(
+          id: SettingsIndex.listing.profilePlacement.id,
+          child: KurumiSettingsTile(
+            title: Text(
+              SettingsIndex.listing.profilePlacement.title(context),
+            ),
+            selectedOption: settings.booruConfigSelectorPosition,
+            items: const [...BooruConfigSelectorPosition.values],
+            onChanged: (value) => notifier.updateSettings(
+              settings.copyWith(booruConfigSelectorPosition: value),
+            ),
+            optionBuilder: (value) => Text(value.localize(context)),
           ),
-          optionBuilder: (value) => Text(value.localize(context)),
         ),
-        KurumiSettingsTile(
-          title: Text(context.t.settings.appearance.booru_config_label),
-          selectedOption: settings.booruConfigLabelVisibility,
-          items: const [...BooruConfigLabelVisibility.values],
-          onChanged: (value) => notifier.updateSettings(
-            settings.copyWith(booruConfigLabelVisibility: value),
+        SettingAnchor(
+          id: SettingsIndex.listing.profileLabel.id,
+          child: KurumiSettingsTile(
+            title: Text(
+              SettingsIndex.listing.profileLabel.title(
+                context,
+              ),
+            ),
+            selectedOption: settings.booruConfigLabelVisibility,
+            items: const [...BooruConfigLabelVisibility.values],
+            onChanged: (value) => notifier.updateSettings(
+              settings.copyWith(booruConfigLabelVisibility: value),
+            ),
+            optionBuilder: (value) => Text(value.localize(context)),
           ),
-          optionBuilder: (value) => Text(value.localize(context)),
         ),
       ],
     );

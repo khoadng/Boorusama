@@ -15,9 +15,11 @@ import '../../../../premiums/types.dart';
 import '../../../../themes/colors/providers.dart';
 import '../../../../themes/theme/types.dart';
 import '../../../../themes/viewers/widgets.dart';
+import '../../generated/settings_index.g.dart';
 import '../../providers/settings_notifier.dart';
 import '../../providers/settings_provider.dart';
 import '../../types/settings.dart';
+import '../../widgets/setting_anchor.dart';
 import '../../widgets/settings_interaction_blocker.dart';
 import '../../widgets/settings_page_scaffold.dart';
 import 'image_listing_settings_section.dart';
@@ -49,16 +51,19 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ThemeListTile(
-                  updateMethod: ThemeUpdateMethod.applyDirectly,
-                  colorSettings: settings.colors,
-                  onThemeUpdated: (colors) {
-                    notifier.updateSettings(
-                      settings.copyWith(
-                        colors: colors,
-                      ),
-                    );
-                  },
+                SettingAnchor(
+                  id: SettingsIndex.appearance.colors.id,
+                  child: ThemeListTile(
+                    updateMethod: ThemeUpdateMethod.applyDirectly,
+                    colorSettings: settings.colors,
+                    onThemeUpdated: (colors) {
+                      notifier.updateSettings(
+                        settings.copyWith(
+                          colors: colors,
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ],
             ),
@@ -88,43 +93,53 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        KurumiSettingsTile(
-          title: Text(context.t.settings.theme.theme),
-          selectedOption: settings.themeMode,
-          items: KurumiThemeMode.values,
-          onChanged: (value) =>
-              notifier.updateSettings(settings.copyWith(themeMode: value)),
-          optionBuilder: (value) => Text(value.localize(context)),
+        SettingAnchor(
+          id: SettingsIndex.appearance.theme.id,
+          child: KurumiSettingsTile(
+            title: Text(SettingsIndex.appearance.theme.title(context)),
+            selectedOption: settings.themeMode,
+            items: KurumiThemeMode.values,
+            onChanged: (value) =>
+                notifier.updateSettings(settings.copyWith(themeMode: value)),
+            optionBuilder: (value) => Text(value.localize(context)),
+          ),
         ),
         Builder(
           builder: (context) {
-            return KurumiSwitchListTile(
-              title: Text(context.t.settings.theme.dynamic_color),
-              subtitle: dynamicColorSupported
-                  ? !isDesktopPlatform()
-                        ? Text(
-                            context
-                                .t
-                                .settings
-                                .theme
-                                .dynamic_color_mobile_description,
-                          )
-                        : Text(
-                            context
-                                .t
-                                .settings
-                                .theme
-                                .dynamic_color_desktop_description,
-                          )
-                  : Text(
-                      '${!isDesktopPlatform() ? context.t.settings.theme.dynamic_color_mobile_description : context.t.settings.theme.dynamic_color_desktop_description}. ${context.t.settings.theme.dynamic_color_unsupported_description}',
-                    ),
-              value: settings.enableDynamicColoring,
-              onChanged: dynamicColorSupported
-                  ? (value) => notifier.updateSettings(
-                      settings.copyWith(enableDynamicColoring: value),
-                    )
-                  : null,
+            return SettingAnchor(
+              id: SettingsIndex.appearance.dynamicColor.id,
+              child: KurumiSwitchListTile(
+                title: Text(
+                  SettingsIndex.appearance.dynamicColor.title(
+                    context,
+                  ),
+                ),
+                subtitle: dynamicColorSupported
+                    ? !isDesktopPlatform()
+                          ? Text(
+                              context
+                                  .t
+                                  .settings
+                                  .theme
+                                  .dynamic_color_mobile_description,
+                            )
+                          : Text(
+                              context
+                                  .t
+                                  .settings
+                                  .theme
+                                  .dynamic_color_desktop_description,
+                            )
+                    : Text(
+                        '${!isDesktopPlatform() ? context.t.settings.theme.dynamic_color_mobile_description : context.t.settings.theme.dynamic_color_desktop_description}. ${context.t.settings.theme.dynamic_color_unsupported_description}',
+                      ),
+                value: settings.enableDynamicColoring,
+                onChanged: dynamicColorSupported
+                    ? (value) => notifier.updateSettings(
+                        settings.copyWith(enableDynamicColoring: value),
+                      )
+                    : null,
+              ),
             );
           },
         ),

@@ -14,10 +14,12 @@ import '../../../cache/cache_notifier.dart';
 import '../../../cache/providers.dart';
 import '../../../videos/cache/types.dart';
 import '../../../videos/cache/widgets.dart';
+import '../generated/settings_index.g.dart';
 import '../providers/settings_notifier.dart';
 import '../providers/settings_provider.dart';
 import '../types/settings.dart';
 import '../widgets/cache_locations_section.dart';
+import '../widgets/setting_anchor.dart';
 import '../widgets/settings_page_scaffold.dart';
 import '../widgets/storage_segment_bar.dart';
 
@@ -230,14 +232,19 @@ class _DataAndStoragePageState extends ConsumerState<DataAndStoragePage> {
           const Divider(height: 1),
           _buildAllCacheItem(),
           const Divider(height: 1),
-          KurumiSwitchListTile(
-            contentPadding: const EdgeInsets.symmetric(horizontal: 4),
-            value: settings.clearImageCacheOnStartup,
-            title: Text(
-              context.t.settings.data_and_storage.clear_cache_on_start_up,
-            ),
-            onChanged: (value) => notifier.updateSettings(
-              settings.copyWith(clearImageCacheOnStartup: value),
+          SettingAnchor(
+            id: SettingsIndex.storage.clearCacheOnStartUp.id,
+            child: KurumiSwitchListTile(
+              contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+              value: settings.clearImageCacheOnStartup,
+              title: Text(
+                SettingsIndex.storage.clearCacheOnStartUp.title(
+                  context,
+                ),
+              ),
+              onChanged: (value) => notifier.updateSettings(
+                settings.copyWith(clearImageCacheOnStartup: value),
+              ),
             ),
           ),
           const Divider(height: 1),
@@ -257,60 +264,72 @@ class _DataAndStoragePageState extends ConsumerState<DataAndStoragePage> {
   Widget _buildImageCacheItem() {
     final imageCacheAsync = ref.watch(imageCacheSizeProvider);
 
-    return ListTile(
-      contentPadding: const EdgeInsets.symmetric(horizontal: 4),
-      title: Text(context.t.settings.data_and_storage.image_only_cache),
-      subtitle: imageCacheAsync.when(
-        data: (imageCacheSize) => Text(
-          context.t.settings.performance.cache_size_info
-              .replaceAll(
-                '{0}',
-                Filesize.parse(imageCacheSize.size),
-              )
-              .replaceAll(
-                '{1}',
-                imageCacheSize.fileCount.toString(),
-              ),
+    return SettingAnchor(
+      id: SettingsIndex.storage.imageOnlyCache.id,
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+        title: Text(
+          SettingsIndex.storage.imageOnlyCache.title(context),
         ),
-        loading: () => Text(context.t.settings.data_and_storage.loading),
-        error: (_, _) =>
-            Text(context.t.settings.data_and_storage.error_loading_cache_info),
-      ),
-      trailing: FilledButton(
-        onPressed: imageCacheAsync.isLoading
-            ? null
-            : () => ref.read(cacheSizeProvider.notifier).clearAppImageCache(),
-        child: Text(context.t.settings.performance.clear_cache),
+        subtitle: imageCacheAsync.when(
+          data: (imageCacheSize) => Text(
+            context.t.settings.performance.cache_size_info
+                .replaceAll(
+                  '{0}',
+                  Filesize.parse(imageCacheSize.size),
+                )
+                .replaceAll(
+                  '{1}',
+                  imageCacheSize.fileCount.toString(),
+                ),
+          ),
+          loading: () => Text(context.t.settings.data_and_storage.loading),
+          error: (_, _) => Text(
+            context.t.settings.data_and_storage.error_loading_cache_info,
+          ),
+        ),
+        trailing: FilledButton(
+          onPressed: imageCacheAsync.isLoading
+              ? null
+              : () => ref.read(cacheSizeProvider.notifier).clearAppImageCache(),
+          child: Text(context.t.settings.performance.clear_cache),
+        ),
       ),
     );
   }
 
   Widget _buildVideoCacheItem() {
     final cacheSizeAsync = ref.watch(videoCacheSizeProvider);
-    return ListTile(
-      contentPadding: const EdgeInsets.symmetric(horizontal: 4),
-      title: Text(context.t.settings.data_and_storage.video_cache),
-      subtitle: cacheSizeAsync.when(
-        data: (sizeInfo) => Text(
-          context.t.settings.performance.cache_size_info
-              .replaceAll(
-                '{0}',
-                Filesize.parse(sizeInfo.size),
-              )
-              .replaceAll(
-                '{1}',
-                sizeInfo.fileCount.toString(),
-              ),
+    return SettingAnchor(
+      id: SettingsIndex.storage.videoCache.id,
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+        title: Text(
+          SettingsIndex.storage.videoCache.title(context),
         ),
-        loading: () => Text(context.t.settings.data_and_storage.loading),
-        error: (_, _) =>
-            Text(context.t.settings.data_and_storage.error_loading_cache_info),
-      ),
-      trailing: FilledButton(
-        onPressed: cacheSizeAsync.isLoading
-            ? null
-            : () => ref.read(cacheSizeProvider.notifier).clearAppVideoCache(),
-        child: Text(context.t.settings.performance.clear_cache),
+        subtitle: cacheSizeAsync.when(
+          data: (sizeInfo) => Text(
+            context.t.settings.performance.cache_size_info
+                .replaceAll(
+                  '{0}',
+                  Filesize.parse(sizeInfo.size),
+                )
+                .replaceAll(
+                  '{1}',
+                  sizeInfo.fileCount.toString(),
+                ),
+          ),
+          loading: () => Text(context.t.settings.data_and_storage.loading),
+          error: (_, _) => Text(
+            context.t.settings.data_and_storage.error_loading_cache_info,
+          ),
+        ),
+        trailing: FilledButton(
+          onPressed: cacheSizeAsync.isLoading
+              ? null
+              : () => ref.read(cacheSizeProvider.notifier).clearAppVideoCache(),
+          child: Text(context.t.settings.performance.clear_cache),
+        ),
       ),
     );
   }
@@ -318,20 +337,26 @@ class _DataAndStoragePageState extends ConsumerState<DataAndStoragePage> {
   Widget _buildTagCacheItem() {
     final tagCacheAsync = ref.watch(tagCacheSizeProvider);
 
-    return ListTile(
-      contentPadding: const EdgeInsets.symmetric(horizontal: 4),
-      title: Text(context.t.settings.data_and_storage.tag_cache),
-      subtitle: tagCacheAsync.when(
-        data: (tagCacheSize) => Text(Filesize.parse(tagCacheSize)),
-        loading: () => Text(context.t.settings.data_and_storage.loading),
-        error: (_, _) =>
-            Text(context.t.settings.data_and_storage.error_loading_cache_info),
-      ),
-      trailing: FilledButton(
-        onPressed: tagCacheAsync.isLoading
-            ? null
-            : () => ref.read(cacheSizeProvider.notifier).clearAppTagCache(),
-        child: Text(context.t.settings.performance.clear_cache),
+    return SettingAnchor(
+      id: SettingsIndex.storage.tagCache.id,
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+        title: Text(
+          SettingsIndex.storage.tagCache.title(context),
+        ),
+        subtitle: tagCacheAsync.when(
+          data: (tagCacheSize) => Text(Filesize.parse(tagCacheSize)),
+          loading: () => Text(context.t.settings.data_and_storage.loading),
+          error: (_, _) => Text(
+            context.t.settings.data_and_storage.error_loading_cache_info,
+          ),
+        ),
+        trailing: FilledButton(
+          onPressed: tagCacheAsync.isLoading
+              ? null
+              : () => ref.read(cacheSizeProvider.notifier).clearAppTagCache(),
+          child: Text(context.t.settings.performance.clear_cache),
+        ),
       ),
     );
   }
@@ -339,20 +364,26 @@ class _DataAndStoragePageState extends ConsumerState<DataAndStoragePage> {
   Widget _buildAllCacheItem() {
     final cacheSizeAsync = ref.watch(cacheSizeProvider);
 
-    return ListTile(
-      contentPadding: const EdgeInsets.symmetric(horizontal: 4),
-      title: Text(context.t.settings.data_and_storage.all_cache),
-      subtitle: cacheSizeAsync.when(
-        data: (sizeInfo) => Text(Filesize.parse(sizeInfo.totalSize)),
-        loading: () => Text(context.t.settings.data_and_storage.loading),
-        error: (_, _) =>
-            Text(context.t.settings.data_and_storage.error_loading_cache_info),
-      ),
-      trailing: FilledButton(
-        onPressed: cacheSizeAsync.isLoading
-            ? null
-            : () => ref.read(cacheSizeProvider.notifier).clearAllCache(),
-        child: Text(context.t.settings.performance.clear_cache),
+    return SettingAnchor(
+      id: SettingsIndex.storage.allCache.id,
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+        title: Text(
+          SettingsIndex.storage.allCache.title(context),
+        ),
+        subtitle: cacheSizeAsync.when(
+          data: (sizeInfo) => Text(Filesize.parse(sizeInfo.totalSize)),
+          loading: () => Text(context.t.settings.data_and_storage.loading),
+          error: (_, _) => Text(
+            context.t.settings.data_and_storage.error_loading_cache_info,
+          ),
+        ),
+        trailing: FilledButton(
+          onPressed: cacheSizeAsync.isLoading
+              ? null
+              : () => ref.read(cacheSizeProvider.notifier).clearAllCache(),
+          child: Text(context.t.settings.performance.clear_cache),
+        ),
       ),
     );
   }
@@ -360,25 +391,31 @@ class _DataAndStoragePageState extends ConsumerState<DataAndStoragePage> {
   Widget _buildBookmarkImageDataItem() {
     final cacheInfo = ref.watch(bookmarkCacheInfoProvider);
 
-    return ListTile(
-      contentPadding: const EdgeInsets.symmetric(horizontal: 4),
-      title: Text(context.t.settings.data_and_storage.bookmark_images),
-      subtitle: cacheInfo.when(
-        data: (data) => Text(
-          Filesize.parse(data.$1),
+    return SettingAnchor(
+      id: SettingsIndex.storage.bookmarkImages.id,
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+        title: Text(
+          SettingsIndex.storage.bookmarkImages.title(context),
         ),
-        loading: () => Text(context.t.settings.data_and_storage.loading),
-        error: (_, _) =>
-            Text(context.t.settings.data_and_storage.error_loading_cache_info),
-      ),
-      trailing: FilledButton(
-        onPressed: cacheInfo.isLoading
-            ? null
-            : () {
-                ref.read(bookmarkImageCacheManagerProvider)?.clearAllCache();
-                ref.invalidate(bookmarkCacheInfoProvider);
-              },
-        child: Text(context.t.settings.performance.clear_cache),
+        subtitle: cacheInfo.when(
+          data: (data) => Text(
+            Filesize.parse(data.$1),
+          ),
+          loading: () => Text(context.t.settings.data_and_storage.loading),
+          error: (_, _) => Text(
+            context.t.settings.data_and_storage.error_loading_cache_info,
+          ),
+        ),
+        trailing: FilledButton(
+          onPressed: cacheInfo.isLoading
+              ? null
+              : () {
+                  ref.read(bookmarkImageCacheManagerProvider)?.clearAllCache();
+                  ref.invalidate(bookmarkCacheInfoProvider);
+                },
+          child: Text(context.t.settings.performance.clear_cache),
+        ),
       ),
     );
   }
@@ -391,44 +428,49 @@ class _DataAndStoragePageState extends ConsumerState<DataAndStoragePage> {
     final optionItems = VideoCacheLimitOptions.dropdownOptions();
     final selectedOption = VideoCacheLimitOptions.selectedOption(currentValue);
 
-    return KurumiSettingsTile<VideoCacheLimitOption>(
-      title: Text(context.t.settings.data_and_storage.video_cache_limit),
-      subtitle: Text(
-        context.t.settings.data_and_storage.video_cache_limit_description,
-      ),
-      selectedOption: selectedOption,
-      items: optionItems,
-      onChanged: (option) {
-        if (option.isCustom) {
-          showVideoCacheLimitDialog(
-            context,
-            currentValue: currentValue,
-          ).then((customSize) {
-            if (customSize == null) return;
+    return SettingAnchor(
+      id: SettingsIndex.storage.videoCacheLimit.id,
+      child: KurumiSettingsTile<VideoCacheLimitOption>(
+        title: Text(
+          SettingsIndex.storage.videoCacheLimit.title(context),
+        ),
+        subtitle: Text(
+          context.t.settings.data_and_storage.video_cache_limit_description,
+        ),
+        selectedOption: selectedOption,
+        items: optionItems,
+        onChanged: (option) {
+          if (option.isCustom) {
+            showVideoCacheLimitDialog(
+              context,
+              currentValue: currentValue,
+            ).then((customSize) {
+              if (customSize == null) return;
 
-            notifier.updateSettings(
-              settings.copyWith(videoCacheMaxSize: customSize),
-            );
-          });
-          return;
-        }
+              notifier.updateSettings(
+                settings.copyWith(videoCacheMaxSize: customSize),
+              );
+            });
+            return;
+          }
 
-        final size = option.cacheSize;
-        if (size == null) return;
+          final size = option.cacheSize;
+          if (size == null) return;
 
-        notifier.updateSettings(
-          settings.copyWith(videoCacheMaxSize: size),
-        );
-      },
-      optionBuilder: (option) => Text(
-        option.isCustom
-            ? context.t.settings.data_and_storage.custom_cache_limit_option
-            : _getCacheSizeLabel(context, option.cacheSize!),
-      ),
-      selectedOptionBuilder: (option) => Text(
-        option.isCustom
-            ? _getCacheSizeLabel(context, currentValue)
-            : _getCacheSizeLabel(context, option.cacheSize!),
+          notifier.updateSettings(
+            settings.copyWith(videoCacheMaxSize: size),
+          );
+        },
+        optionBuilder: (option) => Text(
+          option.isCustom
+              ? context.t.settings.data_and_storage.custom_cache_limit_option
+              : _getCacheSizeLabel(context, option.cacheSize!),
+        ),
+        selectedOptionBuilder: (option) => Text(
+          option.isCustom
+              ? _getCacheSizeLabel(context, currentValue)
+              : _getCacheSizeLabel(context, option.cacheSize!),
+        ),
       ),
     );
   }

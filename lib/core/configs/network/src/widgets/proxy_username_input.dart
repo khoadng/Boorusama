@@ -5,6 +5,8 @@ import 'package:kurumi/kurumi.dart';
 import 'package:kurumi/material.dart';
 
 // Project imports:
+import '../../../../settings/data.dart';
+import '../../../../settings/widgets.dart';
 import '../../../config/types.dart';
 import '../../../create/providers.dart';
 
@@ -19,16 +21,21 @@ class ProxyUsernameInput extends ConsumerWidget {
       ).select((value) => value.proxySettingsTyped),
     );
 
-    return KurumiTextFormField(
-      initialValue: proxySettings?.username,
-      onChanged: (value) {
-        ref.editNotifier.updateProxySettings(
-          proxySettings?.copyWith(username: () => value),
-        );
-      },
-      decoration: InputDecoration(
-        labelText: context.t.booru.network.proxy.username,
-        hintText: context.t.booru.network.proxy.username_hint,
+    return SettingAnchor(
+      id: SettingsIndex.network.proxyUsername.id,
+      child: KurumiTextFormField(
+        initialValue: proxySettings?.username,
+        onChanged: (value) {
+          ref.editNotifier.updateProxySettings(
+            proxySettings?.copyWith(username: () => value),
+          );
+        },
+        decoration: InputDecoration(
+          labelText: SettingsIndex.network.proxyUsername.title(
+            context,
+          ),
+          hintText: context.t.booru.network.proxy.username_hint,
+        ),
       ),
     );
   }

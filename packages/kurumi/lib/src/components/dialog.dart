@@ -39,13 +39,13 @@ class KurumiDialog extends StatelessWidget {
       child: CallbackShortcuts(
         bindings: {
           const SingleActivator(LogicalKeyboardKey.escape): () =>
-              Navigator.pop(context),
+              Navigator.maybePop(context),
         },
         child: Stack(
           alignment: Alignment.center,
           children: [
             GestureDetector(
-              onTap: dismissible ? () => Navigator.pop(context) : null,
+              onTap: dismissible ? () => Navigator.maybePop(context) : null,
               child: Container(
                 color: barrierColor ?? Colors.transparent,
                 width: size.width,

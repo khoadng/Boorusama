@@ -1,9 +1,10 @@
 // Package imports:
-import 'package:i18n/i18n.dart';
 import 'package:kurumi/kurumi.dart';
 import 'package:kurumi/material.dart';
 
 // Project imports:
+import '../../../../settings/data.dart';
+import '../../../../settings/widgets.dart';
 
 class CreateBooruHideDeletedSwitch extends StatelessWidget {
   const CreateBooruHideDeletedSwitch({
@@ -19,12 +20,15 @@ class CreateBooruHideDeletedSwitch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return KurumiSwitchListTile(
-      contentPadding: EdgeInsets.zero,
-      title: Text(context.t.booru.hide_deleted_label),
-      value: value ?? false,
-      onChanged: onChanged,
-      subtitle: subtitle,
+    return SettingAnchor(
+      id: SettingsIndex.profileSearch.hideDeleted.id,
+      child: KurumiSwitchListTile(
+        contentPadding: EdgeInsets.zero,
+        title: Text(SettingsIndex.profileSearch.hideDeleted.title(context)),
+        value: value ?? false,
+        onChanged: onChanged,
+        subtitle: subtitle,
+      ),
     );
   }
 }

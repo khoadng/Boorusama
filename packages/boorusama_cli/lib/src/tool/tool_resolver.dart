@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import '../io/process_runner.dart';
@@ -52,11 +53,33 @@ final class ToolResolver {
     );
   }
 
+  ToolCommand _fvmTool(String relativePath) {
+    final selected = File('${root.path}/.fvm/fvm_config.json');
+    final config = File('${root.path}/.fvmrc');
+    final executable = File('${root.path}/.fvm/flutter_sdk/$relativePath');
+    if (!selected.existsSync() ||
+        !config.existsSync() ||
+        !executable.existsSync()) {
+      throw const ProcessFailure(
+        'Configured FVM SDK is missing. Run fvm install first.',
+      );
+    }
+    final requested = (jsonDecode(config.readAsStringSync()) as Map)['flutter'];
+    final installed =
+        (jsonDecode(selected.readAsStringSync()) as Map)['flutterSdkVersion'];
+    if (requested != installed) {
+      throw const ProcessFailure(
+        'FVM SDK selection is stale. Run fvm install to apply .fvmrc.',
+      );
+    }
+    return ToolCommand(executable.path);
+  }
+
   ToolCommand _flutter(bool useFvm) {
     final custom = env['BOORUSAMA_FLUTTER'];
     if (custom != null && custom.isNotEmpty) return ToolCommand(custom);
     return useFvm
-        ? const ToolCommand('fvm', ['flutter'])
+        ? _fvmTool('bin/flutter${Platform.isWindows ? '.bat' : ''}')
         : const ToolCommand('flutter');
   }
 
@@ -64,7 +87,9 @@ final class ToolResolver {
     final custom = env['BOORUSAMA_DART'];
     if (custom != null && custom.isNotEmpty) return ToolCommand(custom);
     return useFvm
-        ? const ToolCommand('fvm', ['dart'])
+        ? _fvmTool(
+            'bin/cache/dart-sdk/bin/dart${Platform.isWindows ? '.exe' : ''}',
+          )
         : const ToolCommand('dart');
   }
 }

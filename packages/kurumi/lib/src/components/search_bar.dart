@@ -14,6 +14,7 @@ class KurumiSearchBar extends StatefulWidget {
     this.controller,
     this.hintText,
     this.onSubmitted,
+    this.textInputAction,
     this.constraints,
     this.focus,
     this.dense,
@@ -31,6 +32,7 @@ class KurumiSearchBar extends StatefulWidget {
   final BoxConstraints? constraints;
   final ValueChanged<String>? onChanged;
   final ValueChanged<String>? onSubmitted;
+  final TextInputAction? textInputAction;
   final TextEditingController? controller;
   final String? hintText;
   final FocusNode? focus;
@@ -66,6 +68,7 @@ class _KurumiSearchBarState extends State<KurumiSearchBar> {
       focusNode: widget.focus,
       cursorHeight: widget.cursorHeight,
       keyboardType: TextInputType.text,
+      textInputAction: widget.textInputAction,
       autocorrect: false,
       onTapOutside: (event) {
         if (widget.onTapOutside == null) {

@@ -6,6 +6,7 @@ import 'package:i18n/i18n.dart';
 import 'package:kurumi/cupertino.dart';
 import 'package:kurumi/kurumi.dart';
 import 'package:kurumi/material.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
@@ -20,103 +21,18 @@ import '../../../changelogs/routes.dart';
 import '../../../configs/config/providers.dart';
 import '../../../configs/create/routes.dart';
 import '../../../debug/routes.dart';
-import '../../../developer_options/l10n.dart';
-import '../../../developer_options/widgets.dart';
 import '../../../premiums/providers.dart';
 import '../../../premiums/routes.dart';
 import '../../../premiums/types.dart';
 import '../providers/settings_provider.dart';
+import '../routes/settings_search_route_utils.dart';
 import '../widgets/settings_page_scaffold.dart';
 import 'about_page.dart';
-import 'accessibility_page.dart';
-import 'appearance/appearance_page.dart';
-import 'backup_and_restore_page.dart';
-import 'data_and_storage_page.dart';
-import 'download_page.dart';
 import 'help_us_translate_page.dart';
-import 'image_viewer_page.dart';
-import 'language_page.dart';
-import 'privacy_page.dart';
-import 'search_settings_page.dart';
+import 'settings_categories.dart';
+import 'settings_search_page.dart';
 
-List<SettingEntry> _entries(
-  BuildContext context, {
-  required bool showDeveloperOptions,
-}) => [
-  SettingEntry(
-    id: 'appearance',
-    name: '/settings/appearance',
-    title: context.t.settings.appearance.appearance,
-    icon: FontAwesomeIcons.paintRoller,
-    content: const AppearancePage(),
-  ),
-  SettingEntry(
-    id: 'language',
-    name: '/settings/language',
-    title: context.t.settings.language.language,
-    icon: FontAwesomeIcons.language,
-    content: const LanguagePage(),
-  ),
-  SettingEntry(
-    id: 'download',
-    name: '/settings/download',
-    title: context.t.settings.download.title,
-    icon: FontAwesomeIcons.download,
-    content: const DownloadPage(),
-  ),
-  SettingEntry(
-    id: 'data_and_storage',
-    name: '/settings/data_and_storage',
-    title: context.t.settings.data_and_storage.data_and_storage,
-    icon: FontAwesomeIcons.database,
-    content: const DataAndStoragePage(),
-  ),
-  SettingEntry(
-    id: 'backup_and_restore',
-    name: '/settings/backup_and_restore',
-    title: context.t.settings.backup_and_restore.backup_and_restore,
-    icon: FontAwesomeIcons.cloudArrowDown,
-    content: const BackupAndRestorePage(),
-  ),
-  SettingEntry(
-    id: 'search',
-    name: '/settings/search',
-    title: context.t.settings.search.search,
-    icon: FontAwesomeIcons.magnifyingGlass,
-    content: const SearchSettingsPage(),
-  ),
-  SettingEntry(
-    id: 'accessibility',
-    name: '/settings/accessibility',
-    title: context.t.settings.accessibility.accessibility,
-    icon: FontAwesomeIcons.universalAccess,
-    content: const AccessibilityPage(),
-  ),
-  SettingEntry(
-    id: 'viewer',
-    name: '/settings/image_viewer',
-    title: context.t.settings.image_viewer.image_viewer,
-    icon: FontAwesomeIcons.image,
-    content: const ImageViewerPage(),
-  ),
-  SettingEntry(
-    id: 'privacy',
-    name: '/settings/privacy',
-    title: context.t.settings.privacy.privacy,
-    icon: FontAwesomeIcons.shieldHalved,
-    content: const PrivacyPage(),
-  ),
-  if (showDeveloperOptions)
-    SettingEntry(
-      id: 'developer_options',
-      name: '/settings/developer_options',
-      title: context.t.developerOptions.title,
-      icon: FontAwesomeIcons.code,
-      content: const DeveloperOptionsPage(),
-    ),
-];
-
-const double _kThresholdWidth = 650;
+const double _kThresholdWidth = 700;
 
 class SettingsPage extends ConsumerStatefulWidget {
   const SettingsPage({
@@ -138,7 +54,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final entries = _entries(
+    final entries = settingsCategories(
       context,
       showDeveloperOptions: ref.watch(isDevEnvironmentProvider),
     );
@@ -167,61 +83,80 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
       );
     }
 
-    return Theme(
-      data: Kurumi.themeOf(context).copyWith(
-        iconTheme: Kurumi.themeOf(context).iconTheme.copyWith(
-          size: 18,
+    return LayoutBuilder(
+      builder: (context, layout) => Theme(
+        data: Kurumi.themeOf(context).copyWith(
+          iconTheme: Kurumi.themeOf(context).iconTheme.copyWith(
+            size: 18,
+          ),
         ),
-      ),
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(context.t.settings.settings),
-        ),
-        body: SettingsPageNavigationScope(
-          openContent: openContent,
-          child: SettingsPageDynamicScope(
-            options: SettingsPageDynamicOptions(
-              scrollTo: widget.scrollTo,
-            ),
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                //TODO: Don't separate the settings page into two pages, merge them into one to prevent code duplication and unnecessary rebuilds when resizing the window
-                return constraints.maxWidth > _kThresholdWidth
-                    ? SettingsPageScope(
-                        options: SettingsPageOptions(
-                          showIcon: false,
-                          dense: true,
-                          entries: entries,
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text(context.t.settings.settings),
+            bottom: layout.maxWidth >= _kThresholdWidth
+                ? null
+                : PreferredSize(
+                    preferredSize: const Size.fromHeight(64),
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+                      child: KurumiSearchBar(
+                        hintText: context.t.settings_search.title,
+                        leading: const Padding(
+                          padding: EdgeInsets.all(8),
+                          child: Icon(Symbols.search),
                         ),
-                        child: ValueListenableBuilder(
-                          valueListenable: _selected,
-                          builder: (_, selected, _) => ValueListenableBuilder(
-                            valueListenable: _nestedEntry,
-                            builder: (_, nestedEntry, _) => SettingsLargePage(
-                              initial: selected ?? widget.initial,
-                              onTabChanged: (tab) {
-                                _selected.value = tab;
-                                _nestedEntry.value = null;
-                              },
-                              nestedEntry: nestedEntry,
+                        onTap: () => openSettingsSearch(context),
+                        enabled: false,
+                      ),
+                    ),
+                  ),
+          ),
+          body: SettingsPageNavigationScope(
+            openContent: openContent,
+            child: SettingsPageDynamicScope(
+              options: SettingsPageDynamicOptions(
+                scrollTo: widget.scrollTo,
+              ),
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  //TODO: Don't separate the settings page into two pages, merge them into one to prevent code duplication and unnecessary rebuilds when resizing the window
+                  return constraints.maxWidth >= _kThresholdWidth
+                      ? SettingsPageScope(
+                          options: SettingsPageOptions(
+                            showIcon: false,
+                            dense: true,
+                            entries: entries,
+                          ),
+                          child: ValueListenableBuilder(
+                            valueListenable: _selected,
+                            builder: (_, selected, _) => ValueListenableBuilder(
+                              valueListenable: _nestedEntry,
+                              builder: (_, nestedEntry, _) => SettingsLargePage(
+                                initial: selected ?? widget.initial,
+                                onTabChanged: (tab) {
+                                  _selected.value = tab;
+                                  _nestedEntry.value = null;
+                                },
+                                nestedEntry: nestedEntry,
+                              ),
                             ),
                           ),
-                        ),
-                      )
-                    : SettingsPageScope(
-                        options: SettingsPageOptions(
-                          showIcon: true,
-                          dense: false,
-                          entries: entries,
-                        ),
-                        child: ValueListenableBuilder(
-                          valueListenable: _selected,
-                          builder: (_, selected, _) => SettingsSmallPage(
-                            initial: selected ?? widget.initial,
+                        )
+                      : SettingsPageScope(
+                          options: SettingsPageOptions(
+                            showIcon: true,
+                            dense: false,
+                            entries: entries,
                           ),
-                        ),
-                      );
-              },
+                          child: ValueListenableBuilder(
+                            valueListenable: _selected,
+                            builder: (_, selected, _) => SettingsSmallPage(
+                              initial: selected ?? widget.initial,
+                            ),
+                          ),
+                        );
+                },
+              ),
             ),
           ),
         ),
@@ -432,65 +367,36 @@ class _SettingsLargePageState extends ConsumerState<SettingsLargePage> {
   Widget build(BuildContext context) {
     final entries = SettingsPageScope.of(context).options.entries;
     final nestedEntry = widget.nestedEntry;
-    final selectedContent =
-        nestedEntry?.content ?? entries[_selectedEntry].content;
 
-    // ref.watch(settingsProvider.select((value) => value.language));
-    final options = SettingsPageScope.of(context).options;
-
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        SizedBox(
-          width: 240,
-          child: ListView(
-            children: [
-              for (final entry in entries)
-                SettingTile(
-                  title: entry.title,
-                  leading: SettingEntryIcon(icon: entry.icon),
-                  selected: entries.indexOf(entry) == _selectedEntry,
-                  showLeading: options.showIcon,
-                  onTap: () => setState(() {
-                    _selectedEntry = entries.indexOf(entry);
-                    ref
-                        .read(analyticsProvider)
-                        .whenData(
-                          (a) => a?.logScreenView(entry.name),
-                        );
-
-                    widget.onTabChanged?.call(entry.id);
-                  }),
-                ),
-              const SettingsPageOtherSection(),
-              const _Divider(),
-              const _Footer(),
-            ],
-          ),
-        ),
-        const VerticalDivider(
-          width: 1,
-        ),
-        Flexible(
-          child: MediaQuery.removePadding(
-            context: context,
-            removeLeft: true,
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(
-                maxWidth: 600,
-              ),
-              child: selectedContent,
+    return SettingsSearchPage(
+      initialEntry: nestedEntry ?? entries[_selectedEntry],
+      navigationBuilder: (context, selected, select, editProfile) => ListView(
+        children: [
+          for (final entry in entries)
+            SettingTile(
+              title: entry.title,
+              leading: SettingEntryIcon(icon: entry.icon),
+              selected: entry.id == selected?.id,
+              showLeading: true,
+              onTap: () async {
+                await select(entry);
+                ref
+                    .read(analyticsProvider)
+                    .whenData((a) => a?.logScreenView(entry.name));
+              },
             ),
-          ),
-        ),
-      ],
+          SettingsPageOtherSection(onEditProfile: editProfile),
+          const _Divider(),
+          const _Footer(),
+        ],
+      ),
     );
   }
 }
 
 class SettingsPageOtherSection extends ConsumerWidget {
-  const SettingsPageOtherSection({super.key});
+  const SettingsPageOtherSection({this.onEditProfile, super.key});
+  final VoidCallback? onEditProfile;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final appInfo = ref.watch(appInfoProvider);
@@ -509,10 +415,12 @@ class SettingsPageOtherSection extends ConsumerWidget {
             leading: const FaIcon(
               FontAwesomeIcons.gear,
             ),
-            onTap: () => goToUpdateBooruConfigPage(
-              ref,
-              config: ref.watchConfig,
-            ),
+            onTap:
+                onEditProfile ??
+                () => goToUpdateBooruConfigPage(
+                  ref,
+                  config: ref.watchConfig,
+                ),
           ),
         ],
         const Divider(),

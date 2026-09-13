@@ -1463,5 +1463,15 @@
       "joined": "Joined",
       "last_active": "Last active"
     }
+  },
+  "settings_search": {
+    "title": "Search settings",
+    "select_setting": "Select a setting to view it",
+    "overridden": "Overridden by $profile",
+    "custom_location": "Custom location",
+    "app_folder": "Uses app download folder",
+    "enable_profile": "Enable profile-specific settings to change",
+    "profile_icon": "Profile icon",
+    "thumbnail_actions": "Thumbnail actions"
   }
 }

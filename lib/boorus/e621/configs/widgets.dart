@@ -10,6 +10,8 @@ import '../../../core/configs/create/providers.dart';
 import '../../../core/configs/create/widgets.dart';
 import '../../../core/configs/search/widgets.dart';
 import '../../../core/configs/viewer/widgets.dart';
+import '../../../core/settings/data.dart';
+import '../../../core/settings/widgets.dart';
 import '../posts/types.dart';
 
 class CreateE621ConfigPage extends StatelessWidget {
@@ -52,26 +54,33 @@ class E621VideoQualityOptionTile extends ConsumerWidget {
       ).select((value) => value.videoQuality),
     );
 
-    return ListTile(
-      contentPadding: EdgeInsets.zero,
-      visualDensity: VisualDensity.compact,
-      title: Text(context.t.video_player.video_quality),
-      trailing: KurumiOptionDropDownButton(
-        alignment: AlignmentDirectional.centerStart,
-        value: E621VideoVariantType.tryParse(quality),
-        onChanged: (value) => ref.editNotifier.updateVideoQuality(
-          value?.value,
+    return SettingAnchor(
+      id: SettingsIndex.viewer.videoQuality.id,
+      child: ListTile(
+        contentPadding: EdgeInsets.zero,
+        visualDensity: VisualDensity.compact,
+        title: Text(
+          SettingsIndex.viewer.videoQuality.title(
+            context,
+          ),
         ),
-        items: [
-          for (final quality in [null, ...E621VideoVariantType.values])
-            DropdownMenuItem(
-              value: E621VideoVariantType.tryParse(quality?.value),
-              child: Text(
-                quality?.getLabel(context) ??
-                    context.t.video_player.video_qualities.auto,
+        trailing: KurumiOptionDropDownButton(
+          alignment: AlignmentDirectional.centerStart,
+          value: E621VideoVariantType.tryParse(quality),
+          onChanged: (value) => ref.editNotifier.updateVideoQuality(
+            value?.value,
+          ),
+          items: [
+            for (final quality in [null, ...E621VideoVariantType.values])
+              DropdownMenuItem(
+                value: E621VideoVariantType.tryParse(quality?.value),
+                child: Text(
+                  quality?.getLabel(context) ??
+                      context.t.video_player.video_qualities.auto,
+                ),
               ),
-            ),
-        ],
+          ],
+        ),
       ),
     );
   }

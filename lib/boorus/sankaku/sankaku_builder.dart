@@ -1,5 +1,3 @@
-// Package imports:
-
 // Project imports:
 import '../../core/boorus/defaults/widgets.dart';
 import '../../core/boorus/engine/types.dart';

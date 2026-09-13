@@ -450,5 +450,15 @@
     "options": {
       "save_to_folder": "Salvați într-un dosar"
     }
+  },
+  "settings_search": {
+    "title": "Caută setări",
+    "select_setting": "Selectează o setare pentru a o afișa",
+    "overridden": "Suprascris de $profile",
+    "custom_location": "Locație personalizată",
+    "app_folder": "Folosește folderul de descărcări al aplicației",
+    "enable_profile": "Activează setările specifice profilului pentru a modifica",
+    "profile_icon": "Pictograma profilului",
+    "thumbnail_actions": "Acțiuni pentru miniaturi"
   }
 }

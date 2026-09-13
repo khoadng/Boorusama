@@ -1315,5 +1315,15 @@
       "pin_toast": "창이 최상단에 고정됨",
       "unpin_toast": "창이 최상단에서 고정 해제됨"
     }
+  },
+  "settings_search": {
+    "title": "설정 검색",
+    "select_setting": "표시할 설정을 선택하세요",
+    "overridden": "$profile에서 재정의됨",
+    "custom_location": "사용자 지정 위치",
+    "app_folder": "앱 다운로드 폴더 사용",
+    "enable_profile": "변경하려면 프로필별 설정을 활성화하세요",
+    "profile_icon": "프로필 아이콘",
+    "thumbnail_actions": "썸네일 동작"
   }
 }

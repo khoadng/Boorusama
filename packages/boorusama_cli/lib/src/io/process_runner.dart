@@ -16,7 +16,7 @@ final class ProcessFailure implements Exception {
   String toString() => message;
 }
 
-final class ProcessRunner {
+base class ProcessRunner {
   const ProcessRunner({required this.logger, this.dryRun = false});
 
   final Logger logger;

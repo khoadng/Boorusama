@@ -48,11 +48,9 @@ class KurumiSettingsRadioCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 12),
-          DecoratedBox(
-            decoration: BoxDecoration(
-              color: colorScheme.surfaceContainerLow,
-              borderRadius: BorderRadius.circular(12),
-            ),
+          Material(
+            color: colorScheme.surfaceContainerLow,
+            borderRadius: BorderRadius.circular(12),
             child: Column(
               children: [
                 for (final entry in entries)

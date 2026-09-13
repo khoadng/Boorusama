@@ -6,6 +6,8 @@ import 'package:kurumi/material.dart';
 
 // Project imports:
 import '../../../../http/configs/types.dart';
+import '../../../../settings/data.dart';
+import '../../../../settings/widgets.dart';
 import '../../../create/providers.dart';
 
 class HttpProtocolOptionTile extends ConsumerWidget {
@@ -20,32 +22,37 @@ class HttpProtocolOptionTile extends ConsumerWidget {
     final currentProtocol =
         networkSettings.httpSettings?.protocolOption ?? HttpProtocolOption.auto;
 
-    return KurumiSettingsTile<HttpProtocolOption>(
-      padding: const EdgeInsets.only(left: 4),
-      visualDensity: VisualDensity.compact,
-      optionAlignment: AlignmentDirectional.centerStart,
-      title: Text(context.t.booru.network.http.protocol),
-      subtitle: Text(context.t.booru.network.http.protocol_description),
-      selectedOption: currentProtocol,
-      onChanged: (value) {
-        final newHttpSettings =
-            (networkSettings.httpSettings ?? const HttpSettings()).copyWith(
-              protocol: () => value.toData(),
-            );
+    return SettingAnchor(
+      id: SettingsIndex.network.httpProtocol.id,
+      child: KurumiSettingsTile<HttpProtocolOption>(
+        padding: const EdgeInsets.only(left: 4),
+        visualDensity: VisualDensity.compact,
+        optionAlignment: AlignmentDirectional.centerStart,
+        title: Text(
+          SettingsIndex.network.httpProtocol.title(context),
+        ),
+        subtitle: Text(context.t.booru.network.http.protocol_description),
+        selectedOption: currentProtocol,
+        onChanged: (value) {
+          final newHttpSettings =
+              (networkSettings.httpSettings ?? const HttpSettings()).copyWith(
+                protocol: () => value.toData(),
+              );
 
-        final newNetworkSettings = networkSettings.copyWith(
-          httpSettings: () => newHttpSettings,
-        );
+          final newNetworkSettings = networkSettings.copyWith(
+            httpSettings: () => newHttpSettings,
+          );
 
-        ref.editNotifier.updateNetworkSettings(newNetworkSettings);
-      },
-      items: HttpProtocolOption.values,
-      optionBuilder: (e) => Text(
-        switch (e) {
-          HttpProtocolOption.auto => 'Auto',
-          HttpProtocolOption.https1_1 => 'HTTPS/1.1',
-          HttpProtocolOption.https2_0 => 'HTTPS/2.0',
+          ref.editNotifier.updateNetworkSettings(newNetworkSettings);
         },
+        items: HttpProtocolOption.values,
+        optionBuilder: (e) => Text(
+          switch (e) {
+            HttpProtocolOption.auto => 'Auto',
+            HttpProtocolOption.https1_1 => 'HTTPS/1.1',
+            HttpProtocolOption.https2_0 => 'HTTPS/2.0',
+          },
+        ),
       ),
     );
   }
