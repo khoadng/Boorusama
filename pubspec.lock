@@ -725,11 +725,12 @@ packages:
   fvp:
     dependency: "direct main"
     description:
-      name: fvp
-      sha256: ac06c5ecdf65abb2ce413c9ca6c73fd74bff7c394879c17a98d6b94056b71c52
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.37.3"
+      path: "."
+      ref: "7ec7d111a8494ffec3bce7df22cf157e96a203f8"
+      resolved-ref: "7ec7d111a8494ffec3bce7df22cf157e96a203f8"
+      url: "https://github.com/khoadng/fvp.git"
+    source: git
+    version: "0.37.3+boorusama.1"
   gal:
     dependency: "direct main"
     description:
@@ -2191,19 +2192,21 @@ packages:
   video_player:
     dependency: "direct main"
     description:
-      name: video_player
-      sha256: "20ef311160e2ced020a62f38e4cc399a1bf289e722fc5fe37c9d7b18e44c9e8d"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.13.0"
+      path: "packages/video_player/video_player"
+      ref: c32f6280eff5e9f0fe7c72a51fd74e7bb25d0bb5
+      resolved-ref: c32f6280eff5e9f0fe7c72a51fd74e7bb25d0bb5
+      url: "https://github.com/khoadng/packages.git"
+    source: git
+    version: "2.13.0+boorusama.1"
   video_player_android:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      name: video_player_android
-      sha256: "5121de08444d00363efdda630a69ad4d27a208a9f7586482d4909a44a1cdbc63"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.11.0"
+      path: "packages/video_player/video_player_android"
+      ref: c32f6280eff5e9f0fe7c72a51fd74e7bb25d0bb5
+      resolved-ref: c32f6280eff5e9f0fe7c72a51fd74e7bb25d0bb5
+      url: "https://github.com/khoadng/packages.git"
+    source: git
+    version: "2.11.0+boorusama.1"
   video_player_avfoundation:
     dependency: transitive
     description:
@@ -2213,21 +2216,23 @@ packages:
     source: hosted
     version: "2.11.0"
   video_player_platform_interface:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      name: video_player_platform_interface
-      sha256: "92c0fbabe20c788e71fd10d26cea998d0d253282e65d145aed0818731cf593ce"
-      url: "https://pub.dev"
-    source: hosted
-    version: "6.9.0"
+      path: "packages/video_player/video_player_platform_interface"
+      ref: c32f6280eff5e9f0fe7c72a51fd74e7bb25d0bb5
+      resolved-ref: c32f6280eff5e9f0fe7c72a51fd74e7bb25d0bb5
+      url: "https://github.com/khoadng/packages.git"
+    source: git
+    version: "6.9.0+boorusama.1"
   video_player_web:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      name: video_player_web
-      sha256: "9f3c00be2ef9b76a95d94ac5119fb843dca6f2c69e6c9968f6f2b6c9e7afbdeb"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.4.0"
+      path: "packages/video_player/video_player_web"
+      ref: c32f6280eff5e9f0fe7c72a51fd74e7bb25d0bb5
+      resolved-ref: c32f6280eff5e9f0fe7c72a51fd74e7bb25d0bb5
+      url: "https://github.com/khoadng/packages.git"
+    source: git
+    version: "2.4.0+boorusama.1"
   visibility_detector:
     dependency: "direct main"
     description:

@@ -21,8 +21,8 @@ class MediaKitBooruPlayer implements BooruPlayer {
   final bool enableHardwareAcceleration;
   final Wakelock wakelock;
 
-  late final Player _player;
-  late final VideoController _videoController;
+  late Player _player;
+  late VideoController _videoController;
 
   final _positionController = StreamController<Duration>.broadcast();
   final _playingController = StreamController<bool>.broadcast();
@@ -39,6 +39,10 @@ class MediaKitBooruPlayer implements BooruPlayer {
   var _isDisposed = false;
   var _isInitialized = false;
   var _hasPlayedOnce = false;
+  var _sourceGeneration = 0;
+
+  @override
+  final ValueNotifier<bool> firstFrameRendered = ValueNotifier(false);
 
   @override
   bool isPlatformSupported() => true;
@@ -107,6 +111,15 @@ class MediaKitBooruPlayer implements BooruPlayer {
     );
 
     _setupStreamListeners();
+    final controller = _videoController;
+    final generation = ++_sourceGeneration;
+    unawaited(
+      controller.waitUntilFirstFrameRendered.then((_) {
+        if (!_isDisposed && generation == _sourceGeneration) {
+          firstFrameRendered.value = true;
+        }
+      }),
+    );
     await _openMedia(source, config);
 
     _isInitialized = true;
@@ -123,7 +136,18 @@ class MediaKitBooruPlayer implements BooruPlayer {
     }
 
     _hasPlayedOnce = false;
-    await _openMedia(source, config);
+    _sourceGeneration++;
+    firstFrameRendered.value = false;
+    // MediaKit's first-frame future belongs to a controller, not a media URL.
+    // Replace its renderer so readiness cannot leak from the previous source.
+    _isInitialized = false;
+    _bufferingDelayTimer?.cancel();
+    await _positionSubscription?.cancel();
+    await _playingSubscription?.cancel();
+    await _bufferingSubscription?.cancel();
+    await _durationSubscription?.cancel();
+    await _player.dispose();
+    await initialize(source, config: config);
   }
 
   void _handleSmartBuffering(bool buffering) {
@@ -259,6 +283,7 @@ class MediaKitBooruPlayer implements BooruPlayer {
   void dispose() {
     if (_isDisposed) return;
     _isDisposed = true;
+    firstFrameRendered.dispose();
 
     wakelock.disable();
 

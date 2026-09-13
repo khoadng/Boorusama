@@ -1,4 +1,28 @@
 dependency_overrides:
+  fvp:
+    git:
+      url: https://github.com/khoadng/fvp.git
+      ref: 7ec7d111a8494ffec3bce7df22cf157e96a203f8
+  video_player:
+    git:
+      url: https://github.com/khoadng/packages.git
+      ref: c32f6280eff5e9f0fe7c72a51fd74e7bb25d0bb5
+      path: packages/video_player/video_player
+  video_player_platform_interface:
+    git:
+      url: https://github.com/khoadng/packages.git
+      ref: c32f6280eff5e9f0fe7c72a51fd74e7bb25d0bb5
+      path: packages/video_player/video_player_platform_interface
+  video_player_android:
+    git:
+      url: https://github.com/khoadng/packages.git
+      ref: c32f6280eff5e9f0fe7c72a51fd74e7bb25d0bb5
+      path: packages/video_player/video_player_android
+  video_player_web:
+    git:
+      url: https://github.com/khoadng/packages.git
+      ref: c32f6280eff5e9f0fe7c72a51fd74e7bb25d0bb5
+      path: packages/video_player/video_player_web
   background_downloader:
     git:
       url: https://github.com/khoadng/background_downloader.git

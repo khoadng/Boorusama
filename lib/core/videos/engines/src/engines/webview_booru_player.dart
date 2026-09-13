@@ -42,6 +42,10 @@ class WebViewBooruPlayer implements BooruPlayer {
   var _isDisposed = false;
   var _isPlaying = false;
   var _hasPlayedOnce = false;
+
+  @override
+  final ValueNotifier<bool> firstFrameRendered = ValueNotifier(false);
+  var _sourceGeneration = 0;
   var _isPageLoaded = false;
   var _hasPendingPlay = false;
   Duration _currentPosition = Duration.zero;
@@ -69,6 +73,14 @@ class WebViewBooruPlayer implements BooruPlayer {
       controller.setHorizontalScrollBarEnabled(false),
       controller.setOverScrollMode(WebViewOverScrollMode.never),
       controller.setJavaScriptMode(JavaScriptMode.unrestricted),
+      controller.addJavaScriptChannel(
+        'FirstVideoFrame',
+        onMessageReceived: (message) {
+          if (!_isDisposed && message.message == '$_sourceGeneration') {
+            firstFrameRendered.value = true;
+          }
+        },
+      ),
       // Skip setBackgroundColor on macOS due to unimplemented opaque property
       if (!isMacOS()) controller.setBackgroundColor(_backgroundColor),
       if (controller.platform
@@ -81,6 +93,8 @@ class WebViewBooruPlayer implements BooruPlayer {
 
   Future<void> _loadVideoUrl(String url, bool autoplay) async {
     if (_webViewController == null) return;
+    _sourceGeneration++;
+    firstFrameRendered.value = false;
 
     await _webViewController!.setNavigationDelegate(
       NavigationDelegate(
@@ -301,6 +315,11 @@ class WebViewBooruPlayer implements BooruPlayer {
   <video id="video" allowfullscreen playsinline width="100%" height="100%" style="background-color:$colorText;" $mutedText $autoplayText loop poster="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
     <source src="$url#t=0.01" type="$videoType" />
   </video>
+  <script>
+    document.getElementById('video').requestVideoFrameCallback(function() {
+      FirstVideoFrame.postMessage('$_sourceGeneration');
+    });
+  </script>
 </body>
 </html>''';
   }
@@ -450,6 +469,7 @@ class WebViewBooruPlayer implements BooruPlayer {
   void dispose() {
     if (_isDisposed) return;
     _isDisposed = true;
+    firstFrameRendered.dispose();
 
     wakelock.disable();
 

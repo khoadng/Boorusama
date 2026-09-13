@@ -88,6 +88,7 @@ class _BooruVideoState extends ConsumerState<BooruVideo> {
   StreamSubscription<bool>? _bufferingSubscription;
   var _isBuffering = false;
   var _isDisposing = false;
+  var _isPreparingSource = false;
   Timer? _cacheDelayTimer;
   String? _cachingUrl;
 
@@ -176,6 +177,8 @@ class _BooruVideoState extends ConsumerState<BooruVideo> {
   Future<void> _initializePlayer() async {
     if (!mounted || _isDisposing) return;
 
+    setState(() => _isPreparingSource = true);
+
     try {
       _log(
         widget.logger?.debug,
@@ -212,6 +215,7 @@ class _BooruVideoState extends ConsumerState<BooruVideo> {
           _updatePlayerSettings();
 
           if (mounted && !_isDisposing) {
+            _isPreparingSource = false;
             setState(() {});
             if (_player case final player?) {
               widget.onVideoPlayerCreated?.call(player);
@@ -296,6 +300,7 @@ class _BooruVideoState extends ConsumerState<BooruVideo> {
         );
 
         _player = player;
+        _isPreparingSource = false;
         setState(() {});
         widget.onVideoPlayerCreated?.call(player);
 
@@ -320,6 +325,7 @@ class _BooruVideoState extends ConsumerState<BooruVideo> {
       if (mounted) {
         setState(() {
           _error = error.toString();
+          _isPreparingSource = false;
         });
       }
     }
@@ -467,6 +473,53 @@ class _BooruVideoState extends ConsumerState<BooruVideo> {
     });
   }
 
+  Widget _buildMedia({
+    required BooruPlayer? player,
+    required String? thumbnailUrl,
+    required double aspectRatio,
+    bool isBuffering = false,
+  }) => AspectRatio(
+    aspectRatio: aspectRatio,
+    child: KurumiHero(
+      tag: widget.heroTag,
+      child: Stack(
+        children: [
+          Positioned.fill(
+            child:
+                player?.buildPlayerWidget(context) ?? const SizedBox.shrink(),
+          ),
+          if (thumbnailUrl case final url?)
+            Positioned.fill(
+              child: ValueListenableBuilder(
+                valueListenable:
+                    player?.firstFrameRendered ??
+                    const AlwaysStoppedAnimation(false),
+                builder: (_, rendered, child) => IgnorePointer(
+                  child: Opacity(
+                    opacity: rendered && !_isPreparingSource ? 0 : 1,
+                    child: child,
+                  ),
+                ),
+                child: Consumer(
+                  builder: (_, ref, _) => BooruImage(
+                    config: ref.watchConfigAuth,
+                    borderRadius: BorderRadius.zero,
+                    aspectRatio: aspectRatio,
+                    imageUrl: url,
+                  ),
+                ),
+              ),
+            ),
+          if (isBuffering)
+            _BufferingOverlay(
+              thumbnailUrl: thumbnailUrl,
+              aspectRatio: aspectRatio,
+            ),
+        ],
+      ),
+    ),
+  );
+
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -477,34 +530,11 @@ class _BooruVideoState extends ConsumerState<BooruVideo> {
           :final isBuffering,
           :final aspectRatio,
         ) =>
-          AspectRatio(
+          _buildMedia(
+            player: player,
+            thumbnailUrl: thumbnailUrl,
             aspectRatio: aspectRatio,
-            child: KurumiHero(
-              tag: widget.heroTag,
-              child: Stack(
-                children: [
-                  if (thumbnailUrl case final url?)
-                    Positioned.fill(
-                      child: Consumer(
-                        builder: (_, ref, _) => BooruImage(
-                          config: ref.watchConfigAuth,
-                          borderRadius: BorderRadius.zero,
-                          aspectRatio: aspectRatio,
-                          imageUrl: url,
-                        ),
-                      ),
-                    ),
-                  Positioned.fill(
-                    child: player.buildPlayerWidget(context),
-                  ),
-                  if (isBuffering)
-                    _BufferingOverlay(
-                      thumbnailUrl: thumbnailUrl,
-                      aspectRatio: aspectRatio,
-                    ),
-                ],
-              ),
-            ),
+            isBuffering: isBuffering,
           ),
         VideoPlayerUnsupported() => VideoPlayerErrorContainer(
           title: context.t.video_player.engine_not_supported,
@@ -520,24 +550,10 @@ class _BooruVideoState extends ConsumerState<BooruVideo> {
           :final thumbnailUrl,
           :final aspectRatio,
         ) =>
-          KurumiHero(
-            tag: widget.heroTag,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Flexible(
-                  child: Consumer(
-                    builder: (_, ref, _) => BooruImage(
-                      config: ref.watchConfigAuth,
-                      borderRadius: BorderRadius.zero,
-                      aspectRatio: aspectRatio,
-                      imageUrl: thumbnailUrl,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+          _buildMedia(
+            player: null,
+            thumbnailUrl: thumbnailUrl,
+            aspectRatio: aspectRatio,
           ),
         VideoPlayerLoading() => const KurumiHero(
           tag: null,

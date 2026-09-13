@@ -21,6 +21,9 @@ class MockWakelock extends Mock implements Wakelock {}
 // ignore: avoid_implementing_value_types
 class FakeVideoPlayerValue extends Fake implements VideoPlayerValue {
   @override
+  bool get hasRenderedFirstFrame => false;
+
+  @override
   bool get isInitialized => true;
 
   @override
