@@ -106,15 +106,20 @@ jobs:
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
+          $buildPath = $env:PATH
           choco install meson ninja nasm --yes --no-progress
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           Import-Module "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
           Update-SessionEnvironment
           # Strawberry ships unrelated MinGW tools, including a broken ccache.
           # Keep those out of this MSVC build without removing Perl itself.
-          $env:PATH = ($env:PATH -split ';' | Where-Object {
+          $nasmDirectory = Join-Path $env:ProgramFiles 'NASM'
+          if (-not (Test-Path (Join-Path $nasmDirectory 'nasm.exe'))) {
+            throw "Installed NASM was not found in $nasmDirectory"
+          }
+          $env:PATH = (("$nasmDirectory;$buildPath;$env:PATH" -split ';' | Where-Object {
             $_ -and $_.Trim().Trim('"').TrimEnd('\', '/') -notmatch '(?i)[\\/]Strawberry[\\/]c[\\/]bin$'
-          }) -join ';'
+          }) | Select-Object -Unique) -join ';'
           "PATH=$env:PATH" | Add-Content -Path $env:GITHUB_ENV
           Get-Command Compress-Archive
 
