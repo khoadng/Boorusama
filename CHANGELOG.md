@@ -1,4 +1,4 @@
-# Prereleased-2026.09.13
+# Prereleased-2026.09.14
 - Add PIN app lock and app-preview blur for privacy
 - Add an option to download only over Wi-Fi
 - Add optional metadata files alongside downloads
