@@ -101,7 +101,7 @@ class CacheDocumentsProvider : DocumentsProvider() {
         val cursor = MatrixCursor(projection ?: ROOT_COLUMNS)
         if (!labels.contains("images") || !labels.contains("videos")) return cursor
         for (kind in listOf("images", "videos")) {
-            cursor.addRow(cursor.columnNames.map { column ->
+            cursor.addRow(cursor.columnNames.map<String, Any?> { column ->
                 when (column) {
                     Root.COLUMN_ROOT_ID, Root.COLUMN_DOCUMENT_ID -> kind
                     Root.COLUMN_TITLE -> context!!.getString(R.string.app_name)

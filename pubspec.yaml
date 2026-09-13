@@ -5,8 +5,8 @@ publish_to: "none"
 version: 4.5.0+185
 
 environment:
-  sdk: ^3.12.0
-  flutter: ^3.44.0
+  sdk: ^3.13.0
+  flutter: ^3.47.0
 
 workspace:
   - packages/kurumi
@@ -97,7 +97,8 @@ dependencies:
   go_router: ^17.0.0
   google_api_availability: ^5.0.0
   hive_ce: ^2.12.0
-  html: ^0.15.4
+  # flutter_html 3.0.0 still relies on Element.matches, removed in html 0.15.7.
+  html: 0.15.6
   http: ^1.1.0
   infinite_scroll_pagination: ^5.1.0
   intl: ^0.20.2
@@ -145,10 +146,6 @@ dependencies:
   video_player: ^2.9.2
   visibility_detector: ^0.4.0+2
   wakelock_plus: ^1.4.0
-  webview_cookie_manager:
-    git:
-       url: https://github.com/khoadng/webview_cookie_manager
-       ref: ffb49899077d68af449262784bc4e837aa767392
   webview_flutter: ^4.10.0
   webview_flutter_android: ^4.0.0
   webview_flutter_wkwebview: ^3.23.0

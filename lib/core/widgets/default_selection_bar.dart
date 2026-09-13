@@ -115,38 +115,39 @@ class _SelectionAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
       actions: [
         if (count != null && count > 0)
-          selectAll
-              ? Semantics(
-                  label: context.t.generic.action.select,
-                  button: true,
-                  onTap: controller.deselectAll,
-                  excludeSemantics: true,
-                  child: IconButton(
-                    onPressed: () {
-                      controller.deselectAll();
-                    },
-                    icon: Icon(
-                      Symbols.select_all,
-                      color: Kurumi.themeOf(context).colorScheme.primary,
-                    ),
-                  ),
-                )
-              : Semantics(
-                  label: context.t.generic.action.select,
-                  button: true,
-                  onTap: () => controller.selectAll(
-                    List.generate(count, (index) => index),
-                  ),
-                  excludeSemantics: true,
-                  child: IconButton(
-                    onPressed: () {
-                      controller.selectAll(
-                        List.generate(count, (index) => index),
-                      );
-                    },
-                    icon: const Icon(Symbols.select_all),
-                  ),
+          if (selectAll)
+            Semantics(
+              label: context.t.generic.action.select,
+              button: true,
+              onTap: controller.deselectAll,
+              excludeSemantics: true,
+              child: IconButton(
+                onPressed: () {
+                  controller.deselectAll();
+                },
+                icon: Icon(
+                  Symbols.select_all,
+                  color: Kurumi.themeOf(context).colorScheme.primary,
                 ),
+              ),
+            )
+          else
+            Semantics(
+              label: context.t.generic.action.select,
+              button: true,
+              onTap: () => controller.selectAll(
+                List.generate(count, (index) => index),
+              ),
+              excludeSemantics: true,
+              child: IconButton(
+                onPressed: () {
+                  controller.selectAll(
+                    List.generate(count, (index) => index),
+                  );
+                },
+                icon: const Icon(Symbols.select_all),
+              ),
+            ),
       ],
     );
   }

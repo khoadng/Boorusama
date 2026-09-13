@@ -5,7 +5,6 @@ import 'dart:convert';
 // Package imports:
 import 'package:coreutils/coreutils.dart';
 import 'package:kurumi/material.dart';
-import 'package:webview_cookie_manager/webview_cookie_manager.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 // Project imports:
@@ -38,10 +37,19 @@ abstract class CookieRetriever {
 }
 
 class WebviewCookieRetriever implements CookieRetriever {
-  final _cookieManager = WebviewCookieManager();
+  final _cookieManager = WebViewCookieManager();
 
   @override
-  Future<List<Cookie>> getCookies(String url) => _cookieManager.getCookies(url);
+  Future<List<Cookie>> getCookies(String url) async {
+    final cookies = await _cookieManager.getCookies(domain: Uri.parse(url));
+
+    return [
+      for (final cookie in cookies)
+        Cookie(cookie.name, cookie.value)
+          ..domain = cookie.domain
+          ..path = cookie.path,
+    ];
+  }
 }
 
 class RawSolver implements ProtectionSolver {
@@ -212,7 +220,7 @@ class RawSolver implements ProtectionSolver {
         );
         _solving = false;
         completer.complete(false);
-        return completer.future;
+        return await completer.future;
       }
       _monitorCompletion(
         session: session,
@@ -600,7 +608,10 @@ Future<String?> _safeCurrentUrl(
   try {
     // Preserve the existing distinction: an asynchronous failure propagates
     // to the completion check; a synchronous lookup failure yields no URL.
-    return controller.currentUrl().catchError((Object error, StackTrace stack) {
+    return await controller.currentUrl().catchError((
+      Object error,
+      StackTrace stack,
+    ) {
       recordFailure(error);
       Error.throwWithStackTrace(error, stack);
     });

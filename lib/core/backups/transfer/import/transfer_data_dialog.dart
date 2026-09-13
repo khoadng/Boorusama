@@ -154,98 +154,98 @@ class ImportingStep extends ConsumerWidget {
         ),
         if (!isDone)
           _buildCancelButton(context, isDone, reloadPayload, settings)
-        else
-          forceRestart
-              ? Column(
-                  mainAxisSize: MainAxisSize.min,
+        else if (forceRestart)
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'PLEASE CLOSE AND REOPEN THE APP'.hc,
+                style: const TextStyle(
+                  fontWeight: FontWeight.w900,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 12,
+                  horizontal: 8,
+                ),
+                decoration: BoxDecoration(
+                  color: colorScheme.errorContainer.withValues(
+                    alpha: 0.2,
+                  ),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Row(
                   children: [
-                    Text(
-                      'PLEASE CLOSE AND REOPEN THE APP'.hc,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w900,
-                      ),
+                    Icon(
+                      Icons.info,
+                      color: colorScheme.error,
                     ),
-                    const SizedBox(height: 8),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 12,
-                        horizontal: 8,
-                      ),
-                      decoration: BoxDecoration(
-                        color: colorScheme.errorContainer.withValues(
-                          alpha: 0.2,
-                        ),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.info,
-                            color: colorScheme.error,
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Text(
-                              'This is required to apply all changes and prevent data corruption.',
-                              style: theme.textTheme.bodyMedium?.copyWith(
-                                color: colorScheme.error,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                )
-              : reloadPayload != null
-              ? Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    FilledButton(
-                      onPressed: () {
-                        Reboot.start(
-                          context,
-                          RebootData(
-                            config: reloadPayload.selectedConfig,
-                            configs: reloadPayload.configs,
-                            settings: reloadPayload.settings ?? settings,
-                          ),
-                        );
-                      },
-                      child: const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 14),
-                        child: Text(
-                          'Restart App',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                          ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        'This is required to apply all changes and prevent data corruption.',
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: colorScheme.error,
                         ),
                       ),
                     ),
-                    const SizedBox(height: 8),
-                    _buildCancelButton(
-                      context,
-                      isDone,
-                      reloadPayload,
-                      settings,
-                    ),
                   ],
-                )
-              : FilledButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    child: Text(
-                      context.t.generic.done,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w600,
-                      ),
+                ),
+              ),
+            ],
+          )
+        else if (reloadPayload != null)
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              FilledButton(
+                onPressed: () {
+                  Reboot.start(
+                    context,
+                    RebootData(
+                      config: reloadPayload.selectedConfig,
+                      configs: reloadPayload.configs,
+                      settings: reloadPayload.settings ?? settings,
+                    ),
+                  );
+                },
+                child: const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 14),
+                  child: Text(
+                    'Restart App',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),
+              ),
+              const SizedBox(height: 8),
+              _buildCancelButton(
+                context,
+                isDone,
+                reloadPayload,
+                settings,
+              ),
+            ],
+          )
+        else
+          FilledButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 14),
+              child: Text(
+                context.t.generic.done,
+                style: const TextStyle(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ),
       ],
     );
   }

@@ -110,7 +110,7 @@ class RevenuecatPurchase implements i.Purchaser {
       if (entitlement == null) {
         logger.error(_kServiceName, 'Entitlement not found: $kPremiumKey');
 
-        return Future.value(false);
+        return false;
       }
 
       return entitlement.isActive;
@@ -140,7 +140,7 @@ class RevenuecatPurchase implements i.Purchaser {
       if (entitlement == null) {
         logger.error(_kServiceName, 'Entitlement not found: $kPremiumKey');
 
-        return Future.value(false);
+        return false;
       }
 
       logger

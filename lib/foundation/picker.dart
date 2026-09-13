@@ -47,20 +47,13 @@ Future<void> pickSingleFilePath({
   void Function(Object error)? onError,
 }) async {
   try {
-    final result = await FilePicker.pickFiles(
+    final file = await FilePicker.pickFile(
       type: type,
       allowedExtensions: allowedExtensions,
     );
 
-    if (result == null) {
-      onCanceled?.call();
-      return;
-    }
-
-    final file = result.files.singleOrNull;
-
     if (file == null) {
-      onError?.call('No file picked');
+      onCanceled?.call();
       return;
     }
 

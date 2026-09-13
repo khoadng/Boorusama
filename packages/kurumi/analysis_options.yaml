@@ -4,6 +4,8 @@ analyzer:
   errors:
     missing_return: error
     parameter_assignments: error
+  exclude:
+    - build/**
 
 formatter:
   trailing_commas: preserve

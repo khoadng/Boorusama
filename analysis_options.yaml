@@ -6,7 +6,17 @@ analyzer:
     - "**/*.g.dart"
     - "**/generated_plugin_registrant.dart"
     - "**/firebase_options.dart"
+    - android/**
+    - ios/**
+    - web/**
+    - windows/**
+    - macos/**
+    - linux/**
   errors:
+    # These rules are intentionally disabled below even though Dart 3.13
+    # deprecated their configuration entries.
+    deprecated_lint: ignore
+
     # Otherwise cause the import of all_lint_rules to warn because of some rules conflicts.
     # We explicitly enabled even conflicting rules and are fixing the conflict
     # in this file

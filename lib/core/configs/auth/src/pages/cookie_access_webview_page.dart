@@ -3,7 +3,6 @@ import 'package:coreutils/coreutils.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
 import 'package:kurumi/material.dart';
-import 'package:webview_cookie_manager/webview_cookie_manager.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 // Project imports:
@@ -77,7 +76,15 @@ class _CookieAccessWebViewPageState
               _log('cookie access requested');
               final List<Cookie> cookies;
               try {
-                cookies = await WebviewCookieManager().getCookies(widget.url);
+                final webViewCookies = await WebViewCookieManager().getCookies(
+                  domain: Uri.parse(widget.url),
+                );
+                cookies = [
+                  for (final cookie in webViewCookies)
+                    Cookie(cookie.name, cookie.value)
+                      ..domain = cookie.domain
+                      ..path = cookie.path,
+                ];
               } catch (error) {
                 _log('cookie access failed type=${error.runtimeType}');
                 rethrow;

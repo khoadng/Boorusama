@@ -1,4 +1,6 @@
 import java.util.Properties
+import com.android.build.api.dsl.ApplicationExtension
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     id("com.android.application")
@@ -23,19 +25,19 @@ val hasValidKeystore = keystorePropertiesFile.exists() &&
     file(keystoreProperties["storeFile"] as String).exists()
 val splitPerAbi = project.findProperty("split-per-abi") == "true"
 
-android {
+extensions.configure<ApplicationExtension> {
     namespace = "com.degenk.boorusama"
     compileSdk = 36
     ndkVersion = "28.2.13676358"
+
+    buildFeatures {
+        resValues = true
+    }
 
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
-    }
-
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_17.toString()
     }
 
     defaultConfig {
@@ -84,6 +86,12 @@ android {
             dimension = "boorusama"
             resValue("string", "app_name", "Boorusama")
         }
+    }
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget = JvmTarget.JVM_17
     }
 }
 

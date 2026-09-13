@@ -1464,7 +1464,7 @@ class BulkDownloadNotifier extends Notifier<BulkDownloadState> {
   }) async {
     try {
       final task = await _withRepo((repo) => repo.createTask(options));
-      return createSavedTask(task, name: name);
+      return await createSavedTask(task, name: name);
     } catch (e) {
       state = state.copyWith(error: () => e);
       return null;

@@ -20,7 +20,7 @@ class DanbooruArtistRepositoryApi implements DanbooruArtistRepository {
     CancelToken? cancelToken,
   }) async {
     try {
-      return client
+      return await client
           .getFirstMatchingArtist(
             name: name,
             cancelToken: cancelToken,
