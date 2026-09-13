@@ -6,7 +6,6 @@ import 'package:flutter/services.dart';
 import 'package:auto_scrolling/auto_scrolling.dart';
 import 'package:context_menus/context_menus.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:foundation/widgets.dart';
 import 'package:i18n/i18n.dart';
 import 'package:kurumi/kurumi.dart';
@@ -404,7 +403,7 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
           padding: const EdgeInsets.symmetric(vertical: 20),
           sliver: SliverToBoxAdapter(
             child: Center(
-              child: SpinKitPulse(
+              child: KurumiPulseIndicator(
                 color: colorScheme.onSurface,
               ),
             ),

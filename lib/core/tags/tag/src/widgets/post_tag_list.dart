@@ -1,5 +1,4 @@
 // Package imports:
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:kurumi/kurumi.dart';
 import 'package:kurumi/material.dart';
 
@@ -27,7 +26,7 @@ class PostTagList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (tags == null) {
-      return SpinKitPulse(
+      return KurumiPulseIndicator(
         size: 42,
         color: Kurumi.themeOf(context).colorScheme.onSurface,
       );

@@ -1,7 +1,7 @@
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kurumi/kurumi.dart';
 import 'package:kurumi/material.dart';
-import 'package:percent_indicator/percent_indicator.dart';
 
 // Project imports:
 import '../../providers/bulk_progress.dart';
@@ -48,17 +48,8 @@ class _PercentProgressBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const animateFromLastPercent = true;
-
-    return LinearPercentIndicator(
-      lineHeight: 2,
-      percent: progress,
-      progressColor: Colors.red,
-      padding: const EdgeInsets.symmetric(
-        horizontal: 4,
-      ),
-      animation: animateFromLastPercent,
-      animateFromLastPercent: animateFromLastPercent,
+    return KurumiLinearProgressIndicator(
+      value: progress,
       trailing: Text(
         '${(progress * 100).floor()}%',
       ),

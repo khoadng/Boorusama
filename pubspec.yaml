@@ -55,7 +55,6 @@ dependencies:
     path: packages/dtext
 
   anchor_ui: ^0.0.6
-  android_intent_plus: ^6.0.0
   archive: ^4.0.7
   animated_list_plus: ^0.5.2
   auto_scrolling: ^0.4.0
@@ -90,7 +89,6 @@ dependencies:
   flutter_markdown_plus: ^1.0.12
   flutter_riverpod: 2.6.1
   flutter_scatter: ^0.2.0
-  flutter_spinkit: ^5.2.0
   flutter_svg: ^2.0.10+1
   flutter_widget_from_html_core: ^0.17.0
   font_awesome_flutter: ^11.0.0
@@ -104,7 +102,6 @@ dependencies:
   http: ^1.1.0
   infinite_scroll_pagination: ^5.1.0
   intl: ^0.20.2
-  like_button: ^2.0.5
   local_auth: ^3.0.0
   lottie: ^3.1.2
   material_symbols_icons: ^4.2785.1
@@ -119,14 +116,11 @@ dependencies:
   package_info_plus: ^10.2.0
   pasteboard: ^0.5.0
   path: ^1.8.3
-  path_drawing: ^1.0.1
   path_provider: ^2.1.2
-  percent_indicator: ^4.2.3
   permission_handler: ^12.0.0+1
   purchases_flutter: ^10.0.1
   rate_my_app: ^2.2.0
   readmore: ^3.0.0
-  reorderable_grid_view: ^2.2.8
   reorderables:
     git:
       url: https://github.com/khoadng/reorderables.git
@@ -138,7 +132,6 @@ dependencies:
   shelf: ^1.4.1
   selection_mode: ^0.0.6
   sliver_tools: ^0.2.12
-  smooth_page_indicator: ^2.0.1
   socks5_proxy: ^2.0.0
   sqlite3: ^3.3.1
   stack_trace: ^1.11.0

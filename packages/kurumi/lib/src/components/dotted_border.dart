@@ -1,5 +1,4 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:path_drawing/path_drawing.dart';
 
 class KurumiDottedBorder extends StatelessWidget {
   KurumiDottedBorder({
@@ -62,14 +61,6 @@ class KurumiDottedBorder extends StatelessWidget {
       ],
     );
   }
-
-  bool _isValidDashPattern(List<double>? dashPattern) {
-    final dashSet = dashPattern?.toSet();
-    if (dashSet == null) return false;
-    if (dashSet.length == 1 && dashSet.elementAt(0) == 0.0) return false;
-    if (dashSet.isEmpty) return false;
-    return true;
-  }
 }
 
 enum KurumiBorderType { circle, rrect, rect, oval }
@@ -87,7 +78,7 @@ class KurumiDashedPainter extends CustomPainter {
     this.strokeCap = StrokeCap.butt,
     this.customPath,
     this.padding = EdgeInsets.zero,
-  }) : assert(dashPattern.isNotEmpty, 'Dash Pattern cannot be empty');
+  }) : assert(_isValidDashPattern(dashPattern), 'Invalid dash pattern');
 
   final double strokeWidth;
   final List<double> dashPattern;
@@ -125,23 +116,20 @@ class KurumiDashedPainter extends CustomPainter {
     }
 
     final path = customPath != null
-        ? dashPath(
-            customPath!(sz),
-            dashArray: CircularIntervalList(dashPattern),
-          )
+        ? _dashPath(customPath!(sz), dashPattern)
         : _getPath(sz);
 
     canvas.drawPath(path, paint);
   }
 
-  Path _getPath(Size size) => dashPath(
+  Path _getPath(Size size) => _dashPath(
     switch (borderType) {
       KurumiBorderType.circle => _getCirclePath(size),
       KurumiBorderType.rrect => _getRRectPath(size, radius),
       KurumiBorderType.rect => _getRectPath(size),
       KurumiBorderType.oval => _getOvalPath(size),
     },
-    dashArray: CircularIntervalList(dashPattern),
+    dashPattern,
   );
 
   Path _getCirclePath(Size size) {
@@ -206,6 +194,37 @@ class KurumiDashedPainter extends CustomPainter {
         oldDelegate.padding != padding ||
         oldDelegate.borderType != borderType;
   }
+}
+
+bool _isValidDashPattern(List<double> pattern) =>
+    pattern.isNotEmpty &&
+    pattern.every((interval) => interval >= 0) &&
+    pattern.any((interval) => interval > 0);
+
+Path _dashPath(Path source, List<double> pattern) {
+  final destination = Path();
+
+  for (final metric in source.computeMetrics()) {
+    var distance = 0.0;
+    var intervalIndex = 0;
+    var draw = true;
+
+    while (distance < metric.length) {
+      final interval = pattern[intervalIndex];
+      if (draw && interval > 0) {
+        destination.addPath(
+          metric.extractPath(distance, distance + interval),
+          Offset.zero,
+        );
+      }
+
+      distance += interval;
+      intervalIndex = (intervalIndex + 1) % pattern.length;
+      draw = !draw;
+    }
+  }
+
+  return destination;
 }
 
 class KurumiDottedBorderButton extends StatelessWidget {

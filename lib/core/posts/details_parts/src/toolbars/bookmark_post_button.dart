@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
 import 'package:kurumi/kurumi.dart';
 import 'package:kurumi/material.dart';
-import 'package:like_button/like_button.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
@@ -94,8 +93,7 @@ class BookmarkPostLikeButtonButton extends ConsumerWidget {
         false;
     final isLoading = bookmarkStateAsync.isLoading;
 
-    return LikeButton(
-      likeCountPadding: EdgeInsets.zero,
+    return KurumiLikeButton(
       padding: const EdgeInsets.all(1.5),
       isLiked: isBookmarked,
       onTap: isLoading
@@ -114,7 +112,7 @@ class BookmarkPostLikeButtonButton extends ConsumerWidget {
 
               return Future.value(!isLiked);
             },
-      likeBuilder: (isLiked) {
+      builder: (isLiked) {
         return Icon(
           isLiked ? Symbols.bookmark : Symbols.bookmark,
           color: isLiked

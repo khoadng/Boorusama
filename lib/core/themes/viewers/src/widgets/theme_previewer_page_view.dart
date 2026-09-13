@@ -1,11 +1,10 @@
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
+import 'package:kurumi/kurumi.dart';
 import 'package:kurumi/material.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 // Project imports:
-import '../../../../../foundation/display.dart';
 import '../providers/theme_previewer_notifier.dart';
 import 'page_preview.dart';
 
@@ -65,7 +64,7 @@ class _ThemePreviewPageViewState extends State<ThemePreviewPageView> {
             builder: (_, ref, _) {
               final colorScheme = ref.watch(themePreviewerSchemeProvider);
 
-              return SmoothPageIndicator(
+              return KurumiPageIndicator(
                 onDotClicked: (index) {
                   _pageController.animateToPage(
                     index,
@@ -75,11 +74,11 @@ class _ThemePreviewPageViewState extends State<ThemePreviewPageView> {
                 },
                 controller: _pageController,
                 count: pages.length,
-                effect: WormEffect(
-                  activeDotColor: colorScheme.primary,
-                  dotColor: colorScheme.outlineVariant.withValues(alpha: 0.25),
-                  dotHeight: 8,
+                activeColor: colorScheme.primary,
+                inactiveColor: colorScheme.outlineVariant.withValues(
+                  alpha: 0.25,
                 ),
+                dotHeight: 8,
               );
             },
           ),

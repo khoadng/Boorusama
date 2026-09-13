@@ -3,8 +3,8 @@ import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kurumi/kurumi.dart';
 import 'package:kurumi/material.dart';
-import 'package:like_button/like_button.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
@@ -39,8 +39,7 @@ class QuickFavoriteButton extends ConsumerWidget {
             color: context.extendedColorScheme.surfaceContainerOverlay,
           ),
         ),
-        LikeButton(
-          likeCountPadding: EdgeInsets.zero,
+        KurumiLikeButton(
           padding: const EdgeInsets.all(1.5),
           isLiked: isFaved,
           onTap: (isLiked) {
@@ -53,7 +52,7 @@ class QuickFavoriteButton extends ConsumerWidget {
 
             return Future.value(liked);
           },
-          likeBuilder: (isLiked) {
+          builder: (isLiked) {
             return Icon(
               isLiked ? Symbols.favorite : Symbols.favorite,
               color: isLiked

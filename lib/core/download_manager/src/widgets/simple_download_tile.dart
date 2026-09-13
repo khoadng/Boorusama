@@ -5,7 +5,6 @@ import 'package:i18n/i18n.dart';
 import 'package:kurumi/kurumi.dart';
 import 'package:kurumi/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
-import 'package:percent_indicator/percent_indicator.dart';
 import 'package:readmore/readmore.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -145,12 +144,8 @@ class SimpleDownloadTile extends ConsumerWidget {
           final TaskStatusUpdate s => _TaskSubtitle(task: s),
           final TaskProgressUpdate p =>
             p.progress >= 0
-                ? LinearPercentIndicator(
-                    lineHeight: 2,
-                    percent: p.progress,
-                    padding: const EdgeInsets.symmetric(horizontal: 4),
-                    animation: true,
-                    animateFromLastPercent: true,
+                ? KurumiLinearProgressIndicator(
+                    value: p.progress,
                     trailing: Text(
                       '${(p.progress * 100).floor()}%',
                     ),
@@ -315,8 +310,7 @@ extension TaskExceptionX on TaskException {
     final responseCode = map['httpResponseCode'] as int?;
 
     return switch (responseCode) {
-      416 =>
-        'HTTP 416 Requested range not satisfiable, this is likely because you have an invalid download location or filename rule. Please change the download location or filename rule and try again.',
+      416 => 'HTTP 416 Requested range not satisfiable, this is likely because you have an invalid download location or filename rule. Please change the download location or filename rule and try again.',
       _ => 'Failed: $description',
     };
   }

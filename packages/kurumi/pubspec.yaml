@@ -26,7 +26,6 @@ dependencies:
   material_symbols_icons: ^4.2785.1
   modal_bottom_sheet: ^3.0.0-pre
   oktoast: ^3.4.0
-  path_drawing: ^1.0.1
   scroll_to_index: ^3.0.1
   window_manager: ^0.5.1
 

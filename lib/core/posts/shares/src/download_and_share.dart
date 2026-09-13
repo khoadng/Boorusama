@@ -6,7 +6,6 @@ import 'package:i18n/i18n.dart';
 import 'package:kurumi/kurumi.dart';
 import 'package:kurumi/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
-import 'package:percent_indicator/percent_indicator.dart';
 import 'package:share_plus/share_plus.dart';
 
 // Project imports:
@@ -193,12 +192,8 @@ class DownloadAndShareDialogInternal extends ConsumerWidget {
                       )
                     : const SizedBox(width: 48),
                 subtitle: task is TaskProgressUpdate && task.progress >= 0
-                    ? LinearPercentIndicator(
-                        lineHeight: 2,
-                        percent: task.progress,
-                        padding: const EdgeInsets.symmetric(horizontal: 4),
-                        animation: true,
-                        animateFromLastPercent: true,
+                    ? KurumiLinearProgressIndicator(
+                        value: task.progress,
                         trailing: Text('${(task.progress * 100).floor()}%'),
                       )
                     : const SizedBox.shrink(),
