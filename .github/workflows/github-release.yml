@@ -87,6 +87,14 @@ jobs:
           set -euo pipefail
           sdkmanager --install "platforms;android-36" "build-tools;36.0.0" "ndk;28.2.13676358"
 
+      - name: Install Linux native build tools
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y meson ninja-build nasm
+
       - name: Install Linux desktop dependencies
         if: matrix.target == 'linux-tar.gz' || matrix.target == 'appimage'
         shell: bash
@@ -99,22 +107,34 @@ jobs:
             libgtk-3-dev \
             liblzma-dev \
             libmpv-dev \
-            ninja-build \
             pkg-config
 
-      - name: Install Windows packaging dependencies
+      - name: Install Windows build and packaging dependencies
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
+          choco install meson ninja nasm --yes --no-progress
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          Import-Module "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
+          Update-SessionEnvironment
+          $env:PATH -split ';' | Where-Object { $_ } | Add-Content -Path $env:GITHUB_PATH
           Get-Command Compress-Archive
 
-      - name: Install Apple packaging dependencies
+      - name: Install Apple build and packaging dependencies
         if: runner.os == 'macOS'
         shell: bash
         run: |
           set -euo pipefail
-          brew install create-dmg
+          brew install create-dmg meson ninja nasm
           sudo gem install cocoapods
+
+      - name: Check native build tools
+        shell: bash
+        run: |
+          set -euo pipefail
+          meson --version
+          ninja --version
+          nasm --version
 
       - name: Initialize workspace
         shell: bash
