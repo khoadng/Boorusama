@@ -136,6 +136,11 @@ jobs:
           ninja --version
           nasm --version
 
+      - name: Enable Git long paths on Windows
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: git config --global core.longpaths true
+
       - name: Initialize workspace
         shell: bash
         run: |
