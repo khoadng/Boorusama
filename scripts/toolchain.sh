@@ -97,6 +97,11 @@ bs_install_fvm() {
 
 bs_run_cli() {
   local cli_dir="$BOORUSAMA_ROOT/packages/boorusama_cli"
+  if [[ "$BOORUSAMA_USE_FVM_RESOLVED" == true && -z "${BOORUSAMA_DART:-}" ]]; then
+    local sdk_dart="$BOORUSAMA_ROOT/.fvm/flutter_sdk/bin/cache/dart-sdk/bin/dart"
+    [[ -x "$sdk_dart" ]] || bs_die "Configured FVM SDK is missing. Run fvm install first."
+    BOORUSAMA_DART_CMD=("$sdk_dart")
+  fi
   cd "$cli_dir"
-  exec env BOORUSAMA_ROOT="$BOORUSAMA_ROOT" "${BOORUSAMA_DART_CMD[@]}" run bin/boorusama.dart "$@"
+  exec env BOORUSAMA_ROOT="$BOORUSAMA_ROOT" "${BOORUSAMA_DART_CMD[@]}" run boorusama_cli:boorusama "$@"
 }
