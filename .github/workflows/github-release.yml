@@ -110,7 +110,12 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           Import-Module "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
           Update-SessionEnvironment
-          $env:PATH -split ';' | Where-Object { $_ } | Add-Content -Path $env:GITHUB_PATH
+          # Strawberry ships unrelated MinGW tools, including a broken ccache.
+          # Keep those out of this MSVC build without removing Perl itself.
+          $env:PATH = ($env:PATH -split ';' | Where-Object {
+            $_ -and $_.Trim().Trim('"').TrimEnd('\', '/') -notmatch '(?i)[\\/]Strawberry[\\/]c[\\/]bin$'
+          }) -join ';'
+          "PATH=$env:PATH" | Add-Content -Path $env:GITHUB_ENV
           Get-Command Compress-Archive
 
       - name: Select Visual Studio CMake for Windows native builds
@@ -149,6 +154,22 @@ jobs:
         if: runner.os == 'Windows'
         shell: pwsh
         run: git config --global core.longpaths true
+
+      - name: Check Windows compiler cache selection
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          foreach ($name in @('ccache', 'sccache')) {
+            $tool = Get-Command $name -CommandType Application -ErrorAction SilentlyContinue
+            if ($tool) {
+              Write-Host "Using ${name}: $($tool.Source)"
+              if ($tool.Source -match '(?i)[\\/]Strawberry[\\/]c[\\/]bin[\\/]') {
+                throw "Strawberry compiler tools must not be on the build PATH: $($tool.Source)"
+              }
+              & $tool.Source --version
+              if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+            }
+          }
 
       - name: Initialize workspace
         shell: bash
