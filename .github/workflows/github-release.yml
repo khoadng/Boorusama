@@ -113,6 +113,22 @@ jobs:
           $env:PATH -split ';' | Where-Object { $_ } | Add-Content -Path $env:GITHUB_PATH
           Get-Command Compress-Archive
 
+      - name: Select Visual Studio CMake for Windows native builds
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $vswhere = Join-Path ${env:ProgramFiles(x86)} 'Microsoft Visual Studio\Installer\vswhere.exe'
+          $installation = & $vswhere -latest -products '*' -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 Microsoft.VisualStudio.Component.VC.CMake.Project -property installationPath
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          if (-not $installation) { throw 'Visual Studio with C++ and CMake tools was not found.' }
+          $cmake = Join-Path $installation 'Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe'
+          if (-not (Test-Path $cmake)) { throw "Visual Studio CMake was not found: $cmake" }
+          "CMAKE=$cmake" | Add-Content -Path $env:GITHUB_ENV
+          Split-Path $cmake | Add-Content -Path $env:GITHUB_PATH
+          Write-Host "Using CMake: $cmake"
+          & $cmake --version
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
       - name: Install Apple build and packaging dependencies
         if: runner.os == 'macOS'
         shell: bash
