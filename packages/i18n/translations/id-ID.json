@@ -34,7 +34,12 @@
     "copied": "Disalin",
     "no_content": "Tidak ada konten",
     "app_restart_request": "Anda perlu memulai ulang aplikasi agar perubahan ini berlaku",
-    "version": "Versi $version"
+    "version": "Versi $version",
+    "requirement": {
+      "android": {
+        "version_or_later": "Memerlukan Android $version atau versi lebih baru"
+      }
+    }
   },
   "reminder": {
     "dont_show_again": "Jangan tampilkan lagi"
@@ -469,7 +474,53 @@
       "enable_incognito_keyboard": "Hidupkan papan tombol penyamaran",
       "enable_incognito_keyboard_notice": "Hanya memengaruhi Android.",
       "enable_biometric_lock": "Hidupkan kunci biometrik",
-      "enable_biometric_lock_notice": "Hanya berfungsi pada perangkat yang mendukung biometrik dan telah disetel."
+      "enable_biometric_lock_notice": "Hanya berfungsi pada perangkat yang mendukung biometrik dan telah disetel.",
+      "app_lock": {
+        "title": "Kunci aplikasi",
+        "description": "Memerlukan autentikasi sebelum membuka aplikasi.",
+        "off": "Nonaktif",
+        "pin": "PIN",
+        "biometrics": "Biometrik",
+        "device_authentication": "Autentikasi perangkat",
+        "summary": "$type, $timeout",
+        "change_pin": "Ubah PIN",
+        "change_pin_description": "Perbarui PIN kunci aplikasi.",
+        "lock_after": "Kunci setelah",
+        "lock_after_description": "Kunci saat aplikasi berada di latar belakang.",
+        "timeout_immediately": "Segera",
+        "timeout_seconds": "$seconds detik",
+        "timeout_one_minute": "1 menit",
+        "timeout_minutes": "$minutes menit",
+        "hide_app_preview": "Sembunyikan pratinjau aplikasi",
+        "hide_app_preview_description": "Buramkan konten aplikasi saat meninggalkan aplikasi.",
+        "set_pin": "Atur PIN aplikasi",
+        "create_pin_title": "Buat PIN",
+        "confirm_pin_title": "Konfirmasi PIN",
+        "choose_four_digit_pin": "Pilih PIN 4 digit untuk melindungi aplikasi.",
+        "enter_pin_again": "Masukkan kembali PIN.",
+        "enter_your_pin": "Masukkan PIN Anda",
+        "use_device_unlock": "Gunakan buka kunci perangkat",
+        "enter_current_pin": "Masukkan PIN saat ini",
+        "pin_label": "PIN",
+        "confirm_pin_label": "Konfirmasi PIN",
+        "pin_too_short": "PIN harus terdiri dari setidaknya $length digit.",
+        "pin_mismatch": "PIN tidak cocok.",
+        "unlock": "Buka kunci",
+        "unlock_app": "Buka kunci Boorusama",
+        "incorrect_pin": "PIN salah",
+        "try_again_in": "Coba lagi dalam $seconds detik.",
+        "incorrect_pin_try_again_in": "PIN salah. Coba lagi dalam $seconds detik.",
+        "pin_updated": "PIN diperbarui.",
+        "biometric_unavailable": "Autentikasi perangkat tidak tersedia",
+        "biometric_unavailable_description": "Siapkan atau pulihkan autentikasi perangkat dalam pengaturan sistem.",
+        "biometric_failed": "Autentikasi perangkat gagal",
+        "biometric_failed_description": "Coba lagi setelah memulihkan autentikasi perangkat dalam pengaturan sistem.",
+        "biometric_not_available": "Autentikasi perangkat tidak tersedia.",
+        "authenticate_to_use_app": "Silakan lakukan autentikasi untuk menggunakan aplikasi",
+        "authenticate_reason": "Silakan lakukan autentikasi",
+        "locked_title": "Boorusama terkunci",
+        "locked_description": "Lakukan autentikasi untuk melanjutkan."
+      }
     },
     "performance": {
       "performance": "Kinerja",
@@ -495,7 +546,21 @@
         "large": "Besar",
         "preview": "Keluku"
       },
-      "title": "Unduhan"
+      "title": "Unduhan",
+      "sidecar": {
+        "title": "Simpan metadata",
+        "description": "Simpan tag atau informasi posting di samping file yang diunduh.",
+        "off": "Nonaktif",
+        "tags": "Tag (.txt)",
+        "json": "Metadata (.json)"
+      },
+      "network": {
+        "title": "Jaringan unduhan",
+        "description": "Pilih apakah unduhan dapat menggunakan data seluler.",
+        "any_network": "Jaringan apa pun",
+        "wifi_only": "Hanya Wi-Fi",
+        "ask_on_mobile_data": "Tanyakan saat menggunakan data seluler"
+      }
     },
     "help_us_translate": "Bantu kami terjemahkan",
     "need_more_questions": "Butuh lebih?",
@@ -526,7 +591,12 @@
       },
       "error_loading_cache_info": "Terjadi galat saat memuat informasi cache",
       "cache": "Cache",
-      "data": "Data"
+      "data": "Data",
+      "cache_locations": {
+        "title": "Lokasi cache",
+        "private_storage": "Penyimpanan aplikasi pribadi. Tidak tersedia di pengelola file.",
+        "open_folder": "Buka folder"
+      }
     },
     "backup_and_restore": {
       "backup_and_restore": "Cadangan dan Pulihkan",
@@ -696,7 +766,8 @@
       "completed": "Berhasil",
       "failed": "Gagal",
       "canceled": "Dibatalkan",
-      "unknown": "Tidak diketahui"
+      "unknown": "Tidak diketahui",
+      "waiting_for_wifi": "Menunggu Wi-Fi"
     },
     "empty_states": {
       "no_pending_downloads": "Tidak ada unduhan tertunda",
@@ -709,7 +780,14 @@
     },
     "invalid_folder_name_error": "Sebuah folder tidak boleh mengandung karakter-karakter berikut: ",
     "folder_select_warning": "Aplikasi ini hanya dapat mengunduh file di dalam direktori publik <b> ({0}) </b> untuk Android 11+. <br><br> Contoh lokasi yang valid: <br><b> [inter]</b> / penyimpanan / digambar / 0 / Download <br><b> [kartu SD] </b> /storage/A1B2-C3D4/Download<br><br>Pilih direktori lain atau buat yang baru jika tidak ada. <br> Versi perangkat ini <b>{1}</b>.",
-    "storage_permission_explanation": "Izin penyimpanan diperlukan untuk menyimpan file yang diunduh."
+    "storage_permission_explanation": "Izin penyimpanan diperlukan untuk menyimpan file yang diunduh.",
+    "network_prompt": {
+      "title": "Unduh menggunakan data seluler?",
+      "description": "Wi-Fi tidak tersedia. Anda dapat mengunduh sekarang menggunakan data seluler atau mengantrikan unduhan hingga Wi-Fi tersedia.",
+      "remember_for_session": "Ingat untuk sesi ini",
+      "wait_for_wifi": "Tunggu Wi-Fi",
+      "use_mobile_data": "Gunakan data seluler"
+    }
   },
   "saved_search": {
     "saved_search": "Pencarian tersimpan",
@@ -935,7 +1013,10 @@
       "tooltip_on_hover_description": "Tampilkan informasi pratinjau saat mengarahkan kursor ke atas keluku.",
       "enable_profile_specific_settings": "Hidupkan pengaturan khusus profil",
       "enable_profile_specific_settings_description": "Timpa pengaturan global untuk profil ini. Jika dihidupkan, pengaturan global akan diabaikan hingga opsi ini dimatikan.",
-      "overridden_notice": "Pengaturan ini akan ditimpa oleh daftar kustom. Silakan kunjungi halaman <b><a href=\"booru-profiles\">Daftar Profil</a></b> sebagai gantinya."
+      "overridden_notice": "Pengaturan ini akan ditimpa oleh daftar kustom. Silakan kunjungi halaman <b><a href=\"booru-profiles\">Daftar Profil</a></b> sebagai gantinya.",
+      "thumbnail_primary_action": "Tindakan utama thumbnail",
+      "thumbnail_secondary_action": "Tindakan sekunder thumbnail",
+      "thumbnail_secondary_action_description": "Disembunyikan saat thumbnail terlalu kecil."
     },
     "search": {
       "title": "Pencarian",
@@ -991,6 +1072,17 @@
         "skip_cert_verification_description": "Hidupkan untuk sertifikat yang ditandatangani sendiri (m.c., server lokal)",
         "skip_cert_verification_warning_title": "Peringatan Keamanan",
         "skip_cert_verification_warning": "Verifikasi sertifikat dimatikan. Koneksi anda mungkin tidak aman. Gunakan ini hanya untuk server lokal yang tepercaya."
+      },
+      "media_hosts": {
+        "title": "Penggantian host media",
+        "description": "Ganti host media untuk profil ini. Gunakan hanya host yang Anda percayai karena jalur file dan parameter kueri akan dikirimkan kepadanya.",
+        "active": "Penggantian media aktif",
+        "add": "Tambahkan penggantian",
+        "from": "Host asli",
+        "to": "Host pengganti",
+        "invalid_host": "Masukkan nama host tanpa skema, port, atau jalur.",
+        "duplicate_host": "Host ini sudah memiliki penggantian.",
+        "same_host": "Pilih host pengganti yang berbeda."
       }
     },
     "viewer": {
@@ -1367,6 +1459,11 @@
     "profile": {
       "joined": "Bergabung",
       "last_active": "Aktif terakhir kali"
+    }
+  },
+  "sankaku": {
+    "errors": {
+      "exclusion_search_restricted": "Sankaku membatasi pencarian pengecualian ini untuk akun Anda. Coba tambahkan tag yang tidak dikecualikan."
     }
   }
 }
