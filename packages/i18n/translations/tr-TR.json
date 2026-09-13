@@ -26,7 +26,8 @@
       "show_all": "Tümünü göster",
       "show_less": "Daha az göster",
       "search": "Ara",
-      "view_all": "Tümünü görüntüle"
+      "view_all": "Tümünü görüntüle",
+      "copy_path": "Yolu kopyala"
     },
     "copied": "Kopyalandı",
     "warning": "Uyarı",
@@ -962,8 +963,6 @@
     },
     "listing": {
       "title": "Listeleme",
-      "thumbnail_button": "Küçük Resim Butonu",
-      "thumbnail_button_description": "Küçük resmin sağ alt köşesindeki varsayılan düğmeyi değiştir.",
       "tooltip_on_hover_title": "Üzerine gelindiğinde ipucunu göster",
       "tooltip_on_hover_description": "Küçük resmin üzerine gelince önizleme bilgilerini göster.",
       "enable_profile_specific_settings": "Profilin kendine özgü ayarlarını etkinleştir",
@@ -1168,7 +1167,6 @@
     "actions": {
       "create": "Oluştur",
       "delete": "Sil",
-      "copy_path": "Yolu kopyala",
       "new_download": "Yeni indirme",
       "add_to_queue": "Listeye Ekle"
     },
@@ -1254,7 +1252,7 @@
     "get_premium": "$brand Edin",
     "upgrade": "Yükselt",
     "subscribe": "Abone Ol",
-    "unlock_more_theme_with_premium": "$brane ile daha fazla tema açın",
+    "unlock_more_theme_with_premium": "$brand ile daha fazla tema açın",
     "restore_subscription": "Aboneliği geri yükle",
     "subscription_restored": "Abonelik geri yüklendi!",
     "restore_failed": "Aboneliğini geri yüklerken bir sorun oluştu. Lütfen daha sonra tekrar dene.",

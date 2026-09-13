@@ -890,8 +890,6 @@
     },
     "listing": {
       "title": "列表",
-      "thumbnail_button": "缩略图按钮",
-      "thumbnail_button_description": "更改缩略图右下角的默认按钮。",
       "tooltip_on_hover_title": "悬停时显示工具提示",
       "tooltip_on_hover_description": "悬停在缩略图上时显示预览信息。",
       "enable_profile_specific_settings": "启用配置文件的特定设置",

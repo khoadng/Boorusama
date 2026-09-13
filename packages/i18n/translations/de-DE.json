@@ -860,8 +860,6 @@
     },
     "listing": {
       "title": "Auflistung",
-      "thumbnail_button": "Schaltfläche für Miniaturansicht",
-      "thumbnail_button_description": "Ändern Sie die Standardschaltfläche unten rechts in der Miniaturansicht.",
       "tooltip_on_hover_title": "Tooltip beim Darüberfahren anzeigen",
       "tooltip_on_hover_description": "Zeige Vorschau-Informationen an, wenn du über die Miniaturansicht fährst.",
       "enable_profile_specific_settings": "Profil-spezifische Einstellungen aktivieren",

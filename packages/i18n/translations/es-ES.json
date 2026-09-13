@@ -976,9 +976,7 @@
     },
     "listing": {
       "title": "Lista",
-      "thumbnail_button": "Botón de Thumbnail",
       "overridden_notice": "Estas configuraciones se sobrescriben por una lista personalizada. En su lugar, ve a <b><a href=\"booru-profiles\">Profile's Listing</a></b>.",
-      "thumbnail_button_description": "Cambiar el botón predeterminado en la esquina inferior derecha de la miniatura.",
       "tooltip_on_hover_title": "Mostrar la descripción emergente al pasar el cursor",
       "tooltip_on_hover_description": "Mostrar información de vista previa al pasar el cursor sobre la miniatura.",
       "enable_profile_specific_settings": "Habilitar la configuración específica del perfil",

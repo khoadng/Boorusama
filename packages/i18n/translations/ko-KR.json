@@ -890,8 +890,6 @@
     },
     "listing": {
       "title": "목록화",
-      "thumbnail_button": "썸네일 버튼",
-      "thumbnail_button_description": "썸네일 오른쪽 하단의 기본 버튼을 변경하세요.",
       "tooltip_on_hover_title": "마우스를 올려 툴팁 표시",
       "tooltip_on_hover_description": "썸네일에 마우스를 올릴 시 미리보기 정보 보기.",
       "enable_profile_specific_settings": "프로필별 설정을 활성화합니다",

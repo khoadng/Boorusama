@@ -883,8 +883,6 @@
     },
     "listing": {
       "title": "Hiển thị",
-      "thumbnail_button": "Nút trên ảnh thu nhỏ",
-      "thumbnail_button_description": "Chọn nút mặc định hiển thị ở góc dưới bên phải ảnh thu nhỏ.",
       "tooltip_on_hover_title": "Hiển thị tooltip",
       "tooltip_on_hover_description": "Hiển thị thông tin xem trước khi di chuột qua ảnh thu nhỏ.",
       "enable_profile_specific_settings": "Dùng cài đặt riêng cho hồ sơ này",

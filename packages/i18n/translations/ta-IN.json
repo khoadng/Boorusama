@@ -889,8 +889,6 @@
     },
     "listing": {
       "title": "பட்டியல்",
-      "thumbnail_button": "சிறுபடத்தின் பொத்தான்",
-      "thumbnail_button_description": "சிறுபடத்தின் வலது கீழே உள்ள இயல்புநிலை பொத்தானை மாற்றவும்.",
       "tooltip_on_hover_title": "வட்டமிடுவதில் உதவிக்குறிப்பைக் காட்டு",
       "tooltip_on_hover_description": "சிறுபடத்தில் வட்டமிடும்போது முன்னோட்டத் தகவலைக் காட்டு.",
       "enable_profile_specific_settings": "சுயவிவரத்தின் குறிப்பிட்ட அமைப்புகளை இயக்கவும்",

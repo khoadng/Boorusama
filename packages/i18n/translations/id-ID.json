@@ -929,8 +929,6 @@
     },
     "listing": {
       "title": "Daftar",
-      "thumbnail_button": "Tombol keluku",
-      "thumbnail_button_description": "Ubah tombol bawaan di bagian kanan bawah keluku.",
       "tooltip_on_hover_title": "Tampilkan tipsalat pada lintasan",
       "tooltip_on_hover_description": "Tampilkan informasi pratinjau saat mengarahkan kursor ke atas keluku.",
       "enable_profile_specific_settings": "Hidupkan pengaturan khusus profil",

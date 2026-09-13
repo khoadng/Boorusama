@@ -909,8 +909,6 @@
     },
     "listing": {
       "title": "خيارات تصفح القائمة",
-      "thumbnail_button": "عرض الصور المصغرة",
-      "thumbnail_button_description": "إظهار زر مخصص لمعاينة الصورة المصغرة في القائمة لتسهيل التصفح السريع.",
       "tooltip_on_hover_title": "تلميح عند التمرير",
       "tooltip_on_hover_description": "عرض معلومات المنشور الأساسية بمجرد تمرير مؤشر الفأرة فوقه (للأجهزة المدعومة).",
       "enable_profile_specific_settings": "تفعيل إعدادات مخصصة لهذا الحساب",

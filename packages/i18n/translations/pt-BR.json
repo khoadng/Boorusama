@@ -941,8 +941,6 @@
     },
     "listing": {
       "title": "Listagem",
-      "thumbnail_button": "Botão da miniatura",
-      "thumbnail_button_description": "Altere o botão padrão localizado no canto inferior direito da miniatura.",
       "tooltip_on_hover_title": "Mostrar dica de ferramenta ao passar o mouse",
       "tooltip_on_hover_description": "Mostrar informações de pré-visualização ao passar o mouse sobre a miniatura.",
       "enable_profile_specific_settings": "Ativar as configurações específicas do perfil",
