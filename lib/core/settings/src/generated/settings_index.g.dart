@@ -1,13 +1,11 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND.
 // Source: settings.yaml; regenerate with boorusama settings gen.
 
-// Package imports:
 import 'package:i18n/i18n.dart';
 
-// Project imports:
-import '../types/settings_search_entry.dart';
 import 'settings_category.g.dart';
 import 'settings_environment.g.dart';
+import '../types/settings_search_entry.dart';
 
 class SettingsAppearance {
   SettingsAppearance._();

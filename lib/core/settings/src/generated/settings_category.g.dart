@@ -1,13 +1,11 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND.
 // Source: settings.yaml; regenerate with boorusama settings gen.
 
-// Package imports:
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:i18n/i18n.dart';
 import 'package:kurumi/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
-// Project imports:
 import 'settings_environment.g.dart';
 
 enum SettingsSearchScope { app, profile }
