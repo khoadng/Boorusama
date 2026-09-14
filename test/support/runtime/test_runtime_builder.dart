@@ -16,6 +16,10 @@ import 'package:boorusama/foundation/filesystem.dart';
 import 'package:boorusama/foundation/networking/connectivity_service.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/pincode/pincode.dart';
+import 'package:boorusama/foundation/webview_user_agent.dart';
+import 'package:boorusama/foundation/picker.dart';
+import 'package:boorusama/foundation/url_launcher.dart';
+import 'package:boorusama/core/http/cookies/providers.dart';
 
 import '../boorusama_test_runtime.dart';
 
@@ -26,6 +30,10 @@ final class TestBoorusamaRuntimeBuilder {
   ConnectivityService? _connectivityService;
   DeviceAuthenticator? _deviceAuthenticator;
   PinCredentialRepositoryFactory? _pinCredentialRepositoryFactory;
+  WebViewUserAgentService? _webViewUserAgentService;
+  CookieJarFactory? _cookieJarFactory;
+  AppFilePicker? _appFilePicker;
+  ExternalUrlLauncher? _externalUrlLauncher;
   AppFileSystem? _fileSystem;
   BoorusamaInitialState? _initialState;
   BooruDb? _booruDb;
@@ -66,6 +74,30 @@ final class TestBoorusamaRuntimeBuilder {
     PinCredentialRepositoryFactory value,
   ) {
     _pinCredentialRepositoryFactory = value;
+    return this;
+  }
+
+  TestBoorusamaRuntimeBuilder withWebViewUserAgentService(
+    WebViewUserAgentService value,
+  ) {
+    _webViewUserAgentService = value;
+    return this;
+  }
+
+  TestBoorusamaRuntimeBuilder withCookieJarFactory(CookieJarFactory value) {
+    _cookieJarFactory = value;
+    return this;
+  }
+
+  TestBoorusamaRuntimeBuilder withFilePicker(AppFilePicker value) {
+    _appFilePicker = value;
+    return this;
+  }
+
+  TestBoorusamaRuntimeBuilder withExternalUrlLauncher(
+    ExternalUrlLauncher value,
+  ) {
+    _externalUrlLauncher = value;
     return this;
   }
 
@@ -176,6 +208,10 @@ final class TestBoorusamaRuntimeBuilder {
     connectivityService: _connectivityService,
     deviceAuthenticator: _deviceAuthenticator,
     pinCredentialRepositoryFactory: _pinCredentialRepositoryFactory,
+    webViewUserAgentService: _webViewUserAgentService,
+    cookieJarFactory: _cookieJarFactory,
+    appFilePicker: _appFilePicker,
+    externalUrlLauncher: _externalUrlLauncher,
     fileSystem: _fileSystem,
     initialState: _initialState,
     booruDb: _booruDb,

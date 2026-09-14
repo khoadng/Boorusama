@@ -80,6 +80,7 @@ class AutoBackupSection extends ConsumerWidget {
               trailing: TextButton(
                 onPressed: () => pickDirectoryPathToastOnError(
                   context: context,
+                  picker: ref.read(appFilePickerProvider),
                   onPick: (path) => _updateSettings(
                     settingsNotifier,
                     settings.copyWith(userSelectedPath: () => path),

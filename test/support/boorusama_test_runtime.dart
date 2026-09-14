@@ -26,6 +26,10 @@ import 'package:boorusama/foundation/info/device_info.dart';
 import 'package:boorusama/foundation/networking/connectivity_service.dart';
 import 'package:boorusama/foundation/pincode/pincode.dart';
 import 'package:boorusama/foundation/platform.dart';
+import 'package:boorusama/foundation/picker.dart';
+import 'package:boorusama/foundation/url_launcher.dart';
+import 'package:boorusama/foundation/webview_user_agent.dart';
+import 'package:boorusama/core/http/cookies/providers.dart';
 
 import 'fakes/memory_app_file_system.dart';
 import 'fakes/memory_repositories.dart';
@@ -43,6 +47,10 @@ BoorusamaRuntime createTestBoorusamaRuntime({
   ConnectivityService? connectivityService,
   DeviceAuthenticator? deviceAuthenticator,
   PinCredentialRepositoryFactory? pinCredentialRepositoryFactory,
+  WebViewUserAgentService? webViewUserAgentService,
+  CookieJarFactory? cookieJarFactory,
+  AppFilePicker? appFilePicker,
+  ExternalUrlLauncher? externalUrlLauncher,
   AppFileSystem? fileSystem,
   BoorusamaInitialState? initialState,
   BooruDb? booruDb,
@@ -75,6 +83,12 @@ BoorusamaRuntime createTestBoorusamaRuntime({
     initialState: state,
     dependencies: BoorusamaRuntimeDependencies(
       fileSystem: fileSystem ?? MemoryAppFileSystem(),
+      webViewUserAgentService:
+          webViewUserAgentService ?? const TestWebViewUserAgentService(),
+      cookieJarFactory: cookieJarFactory ?? const MemoryCookieJarFactory(),
+      appFilePicker: appFilePicker ?? TestAppFilePicker(),
+      externalUrlLauncher:
+          externalUrlLauncher ?? RecordingExternalUrlLauncher(),
       booruDb: booruDb ?? const BooruDb(boorus: {}),
       booruRegistry: booruRegistry ?? BooruRegistry(),
       bookmarkRepositoryFactory:

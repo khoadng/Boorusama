@@ -1,3 +1,6 @@
+// Flutter imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 // Package imports:
 import 'package:i18n/i18n.dart';
 import 'package:kurumi/kurumi.dart';
@@ -10,7 +13,7 @@ import '../../../../foundation/info/device_info.dart';
 import '../../../../foundation/picker.dart';
 import '../../path/types.dart';
 
-class DownloadFolderSelectorSection extends StatefulWidget {
+class DownloadFolderSelectorSection extends ConsumerStatefulWidget {
   const DownloadFolderSelectorSection({
     required this.storagePath,
     required this.deviceInfo,
@@ -30,12 +33,12 @@ class DownloadFolderSelectorSection extends StatefulWidget {
   final Color? backgroundColor;
 
   @override
-  State<DownloadFolderSelectorSection> createState() =>
+  ConsumerState<DownloadFolderSelectorSection> createState() =>
       _DownloadFolderSelectorSectionState();
 }
 
 class _DownloadFolderSelectorSectionState
-    extends State<DownloadFolderSelectorSection> {
+    extends ConsumerState<DownloadFolderSelectorSection> {
   late String? storagePath = widget.storagePath;
 
   @override
@@ -139,6 +142,7 @@ class _DownloadFolderSelectorSectionState
 
   Future<void> _pickFolder() => pickDirectoryPathToastOnError(
     context: context,
+    picker: ref.read(appFilePickerProvider),
     onPick: (path) => widget.onPathChanged(path),
   );
 }

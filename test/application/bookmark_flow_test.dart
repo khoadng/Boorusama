@@ -1,6 +1,5 @@
 // Flutter imports:
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter/widgets.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
@@ -20,28 +19,28 @@ void main() {
         booruBackend: backend,
         runtime: backend.createRuntime(bookmarkRepository: repository),
       );
-      addTearDown(harness.dispose);
 
-      await harness.pump(tester);
-      await harness.openFirstPost(tester);
+      try {
+        await harness.pump(tester);
+        await harness.openFirstPost(tester);
 
-      final bookmarkButton = find.descendant(
-        of: find.byType(BookmarkPostButton),
-        matching: find.byIcon(Symbols.bookmark),
-      );
-      await tester.tap(bookmarkButton);
-      await harness.settle(tester);
+        final bookmarkButton = find.descendant(
+          of: find.byType(BookmarkPostButton),
+          matching: find.byIcon(Symbols.bookmark),
+        );
+        await tester.tap(bookmarkButton);
+        await harness.settle(tester);
 
-      expect(repository.bookmarks, hasLength(1));
-      expect(find.byIcon(Symbols.bookmark), findsOneWidget);
+        expect(repository.bookmarks, hasLength(1));
+        expect(find.byIcon(Symbols.bookmark), findsOneWidget);
 
-      await tester.tap(bookmarkButton);
-      await harness.settle(tester);
+        await tester.tap(bookmarkButton);
+        await harness.settle(tester);
 
-      expect(repository.bookmarks, isEmpty);
-      await tester.pumpWidget(const SizedBox.shrink());
-      await tester.pump(const Duration(seconds: 3));
-      await tester.pump(const Duration(milliseconds: 500));
+        expect(repository.bookmarks, isEmpty);
+      } finally {
+        await harness.teardown(tester);
+      }
     },
   );
 }

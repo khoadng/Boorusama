@@ -14,6 +14,9 @@ import '../../foundation/networking/connectivity_service.dart';
 import '../../foundation/pincode/pincode.dart';
 import '../../foundation/platform.dart';
 import '../../foundation/window.dart';
+import '../../foundation/webview_user_agent.dart';
+import '../../foundation/picker.dart';
+import '../../foundation/url_launcher.dart';
 import '../boorus/booru/types.dart';
 import '../boorus/engine/types.dart';
 import '../bookmarks/types.dart';
@@ -26,6 +29,7 @@ import '../debug/types.dart';
 import '../developer_options/src/developer_options_repository.dart';
 import '../developer_options/types.dart';
 import '../downloads/downloader/types.dart';
+import '../http/cookies/providers.dart';
 import '../search/histories/types.dart';
 import '../settings/src/types/settings_repository.dart';
 import '../settings/types.dart';
@@ -87,6 +91,10 @@ final class BoorusamaRuntimeDependencies {
     required this.windowService,
     required this.isFossBuild,
     required this.isCronetAvailable,
+    required this.webViewUserAgentService,
+    required this.cookieJarFactory,
+    required this.appFilePicker,
+    required this.externalUrlLauncher,
     this.appRatingService,
     required this.iapFactory,
     this.appUpdateChecker,
@@ -123,4 +131,8 @@ final class BoorusamaRuntimeDependencies {
   final WindowService windowService;
   final bool isFossBuild;
   final bool isCronetAvailable;
+  final WebViewUserAgentService webViewUserAgentService;
+  final CookieJarFactory cookieJarFactory;
+  final AppFilePicker appFilePicker;
+  final ExternalUrlLauncher externalUrlLauncher;
 }

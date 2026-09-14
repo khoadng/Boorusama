@@ -72,6 +72,7 @@ class InformationSection extends ConsumerWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final compact = constraints.maxWidth > 600;
+        final launcher = ref.read(externalUrlLauncherProvider);
 
         return Padding(
           padding:
@@ -83,14 +84,18 @@ class InformationSection extends ConsumerWidget {
                 right: 12,
               ),
           child: compact
-              ? _buildCompactLayout(context, ref)
-              : _buildVerticalLayout(context, ref),
+              ? _buildCompactLayout(context, ref, launcher)
+              : _buildVerticalLayout(context, ref, launcher),
         );
       },
     );
   }
 
-  Widget _buildVerticalLayout(BuildContext context, WidgetRef ref) {
+  Widget _buildVerticalLayout(
+    BuildContext context,
+    WidgetRef ref,
+    ExternalUrlLauncher launcher,
+  ) {
     final createdAt = this.createdAt;
 
     return Row(
@@ -124,7 +129,7 @@ class InformationSection extends ConsumerWidget {
         ),
         if (source != null && showSource)
           if (source case final WebSource source) ...[
-            _buildSource(source),
+            _buildSource(source, launcher: launcher),
           ],
       ],
     );
@@ -177,7 +182,11 @@ class InformationSection extends ConsumerWidget {
     );
   }
 
-  Widget _buildCompactLayout(BuildContext context, WidgetRef ref) {
+  Widget _buildCompactLayout(
+    BuildContext context,
+    WidgetRef ref,
+    ExternalUrlLauncher launcher,
+  ) {
     final createdAt = this.createdAt;
 
     return Row(
@@ -211,7 +220,7 @@ class InformationSection extends ConsumerWidget {
         if (source != null && showSource)
           if (source case final WebSource source) ...[
             const _DotSeparator(),
-            _buildSource(source, compact: true),
+            _buildSource(source, compact: true, launcher: launcher),
           ],
       ],
     );
@@ -220,9 +229,10 @@ class InformationSection extends ConsumerWidget {
   Widget _buildSource(
     WebSource source, {
     bool compact = false,
+    required ExternalUrlLauncher launcher,
   }) {
     return GestureDetector(
-      onTap: () => launchExternalUrl(source.uri),
+      onTap: () => launcher.launch(source.uri),
       child: ConfigAwareWebsiteLogo(
         url: source.url,
         size: compact ? 20 : kFaviconSize,

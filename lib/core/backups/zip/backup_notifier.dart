@@ -207,6 +207,7 @@ class BackupNotifier extends AutoDisposeNotifier<BackupState> {
     try {
       await BackupFilePicker.pickFile(
         context: context,
+        picker: ref.read(appFilePickerProvider),
         platform: ref.read(appPlatformProvider),
         androidDeviceInfo: ref.read(deviceInfoProvider).androidDeviceInfo,
         allowedExtensions: ['zip'],
@@ -451,6 +452,7 @@ class BackupNotifier extends AutoDisposeNotifier<BackupState> {
 
     await pickDirectoryPathToastOnError(
       context: context,
+      picker: ref.read(appFilePickerProvider),
       onPick: (path) {
         selectedPath = path;
       },

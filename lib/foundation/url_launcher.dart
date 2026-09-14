@@ -1,15 +1,37 @@
-// Package imports:
-import 'package:url_launcher/url_launcher.dart';
-import 'package:url_launcher/url_launcher_string.dart';
+// Flutter imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+// Project imports:
+import 'plugin_external_url_launcher.dart';
+
+enum ExternalLaunchMode {
+  externalApplication,
+  platformDefault,
+  inAppWebView,
+}
+
+abstract interface class ExternalUrlLauncher {
+  Future<bool> launch(
+    Uri url, {
+    ExternalLaunchMode mode = ExternalLaunchMode.externalApplication,
+  });
+}
+
+final externalUrlLauncherProvider = Provider<ExternalUrlLauncher>(
+  (_) => throw UnimplementedError(
+    'externalUrlLauncherProvider must be overridden',
+  ),
+);
 
 Future<bool> launchExternalUrl(
   Uri url, {
   void Function()? onError,
-  LaunchMode? mode,
+  ExternalLaunchMode mode = ExternalLaunchMode.externalApplication,
+  ExternalUrlLauncher? launcher,
 }) async {
-  if (!await launchUrl(
+  if (!await (launcher ?? const PluginExternalUrlLauncher()).launch(
     url,
-    mode: mode ?? LaunchMode.externalApplication,
+    mode: mode,
   )) {
     onError?.call();
 
@@ -22,16 +44,11 @@ Future<bool> launchExternalUrl(
 Future<bool> launchExternalUrlString(
   String url, {
   void Function()? onError,
-  LaunchMode? mode,
-}) async {
-  if (!await launchUrlString(
-    url,
-    mode: mode ?? LaunchMode.externalApplication,
-  )) {
-    onError?.call();
-
-    return false;
-  }
-
-  return true;
-}
+  ExternalLaunchMode mode = ExternalLaunchMode.externalApplication,
+  ExternalUrlLauncher? launcher,
+}) => launchExternalUrl(
+  Uri.parse(url),
+  onError: onError,
+  mode: mode,
+  launcher: launcher,
+);

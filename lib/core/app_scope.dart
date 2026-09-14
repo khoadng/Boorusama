@@ -22,6 +22,9 @@ import '../foundation/pincode/pincode.dart';
 import '../foundation/platform.dart';
 import '../foundation/vendors/google/providers.dart';
 import '../foundation/window.dart';
+import '../foundation/webview_user_agent.dart';
+import '../foundation/picker.dart';
+import '../foundation/url_launcher.dart';
 import 'boorus/booru/providers.dart';
 import 'boorus/engine/providers.dart';
 import 'bootstrap/boorusama_runtime.dart';
@@ -30,6 +33,7 @@ import 'configs/manage/providers.dart';
 import 'debug/providers.dart';
 import 'developer_options/providers.dart';
 import 'downloads/downloader/providers.dart';
+import 'http/cookies/providers.dart';
 import 'search/histories/src/data/providers.dart';
 import 'settings/providers.dart';
 import 'tags/favorites/src/providers/providers.dart';
@@ -82,6 +86,14 @@ List<Override> buildBoorusamaOverrides(
   return [
     appFileSystemProvider.overrideWithValue(dependencies.fileSystem),
     appPlatformProvider.overrideWithValue(dependencies.platform),
+    webViewUserAgentServiceProvider.overrideWithValue(
+      dependencies.webViewUserAgentService,
+    ),
+    cookieJarFactoryProvider.overrideWithValue(dependencies.cookieJarFactory),
+    appFilePickerProvider.overrideWithValue(dependencies.appFilePicker),
+    externalUrlLauncherProvider.overrideWithValue(
+      dependencies.externalUrlLauncher,
+    ),
     connectivityServiceProvider.overrideWithValue(
       dependencies.connectivityService,
     ),

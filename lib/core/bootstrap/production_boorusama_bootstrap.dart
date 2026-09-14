@@ -28,6 +28,9 @@ import '../../foundation/mobile.dart';
 import '../../foundation/networking/plugin_connectivity_service.dart';
 import '../../foundation/platform.dart';
 import '../../foundation/pincode/pincode.dart';
+import '../../foundation/plugin_app_file_picker.dart';
+import '../../foundation/plugin_webview_user_agent_service.dart';
+import '../../foundation/plugin_external_url_launcher.dart';
 import '../../foundation/utils/file_utils.dart';
 import '../../foundation/vendors/google/google_play_services_impl.dart';
 import '../../foundation/window.dart';
@@ -44,6 +47,7 @@ import '../developer_options/types.dart';
 import '../downloads/downloader/providers.dart';
 import '../hive/hive_registrar.g.dart';
 import '../http/client/types.dart';
+import '../http/cookies/src/plugin_cookie_jar_factory.dart';
 import '../images/providers.dart';
 import '../settings/providers.dart';
 import '../search/histories/providers.dart';
@@ -224,6 +228,10 @@ final class ProductionBoorusamaBootstrap implements BoorusamaBootstrap {
         ),
         dependencies: BoorusamaRuntimeDependencies(
           fileSystem: fileSystem,
+          webViewUserAgentService: const PluginWebViewUserAgentService(),
+          cookieJarFactory: PluginCookieJarFactory(fileSystem: fileSystem),
+          appFilePicker: const PluginAppFilePicker(),
+          externalUrlLauncher: const PluginExternalUrlLauncher(),
           booruDb: booruDb,
           booruRegistry: booruRegistry,
           bookmarkRepositoryFactory: const HiveBookmarkRepositoryFactory(),

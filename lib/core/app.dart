@@ -19,7 +19,9 @@ import 'widgets/widgets.dart';
 import 'window/widgets.dart';
 
 class BoorusamaCoreApp extends ConsumerWidget {
-  const BoorusamaCoreApp({super.key});
+  const BoorusamaCoreApp({super.key, this.toastDuration});
+
+  final Duration? toastDuration;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -37,6 +39,7 @@ class BoorusamaCoreApp extends ConsumerWidget {
     );
 
     return OKToast(
+      duration: toastDuration,
       child: ThemeBuilder(
         builder: (theme, themeMode) {
           return MaterialApp.router(

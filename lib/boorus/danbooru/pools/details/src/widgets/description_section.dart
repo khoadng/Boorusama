@@ -1,7 +1,6 @@
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kurumi/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
 import '../../../../../../core/configs/config/providers.dart';
@@ -66,12 +65,12 @@ class PoolDescriptionSection extends ConsumerWidget {
     if (att.contains('dtext-external-link')) {
       launchExternalUrl(
         Uri.parse(url),
-        mode: LaunchMode.inAppWebView,
+        mode: ExternalLaunchMode.inAppWebView,
       );
     } else if (att.contains('dtext-wiki-link')) {
       launchExternalUrl(
         Uri.parse('$endpoint$url'),
-        mode: LaunchMode.inAppWebView,
+        mode: ExternalLaunchMode.inAppWebView,
       );
       // ignore: no-empty-block
     } else if (att.contains('dtext-post-search-link')) {

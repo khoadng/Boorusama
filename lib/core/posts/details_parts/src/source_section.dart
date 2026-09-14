@@ -1,5 +1,6 @@
 // Package imports:
 import 'package:i18n/i18n.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kurumi/kurumi.dart';
 import 'package:kurumi/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -31,7 +32,7 @@ class DefaultInheritedSourceSection<T extends Post> extends StatelessWidget {
   }
 }
 
-class SourceSection extends StatelessWidget {
+class SourceSection extends ConsumerWidget {
   const SourceSection({
     required this.source,
     super.key,
@@ -42,7 +43,7 @@ class SourceSection extends StatelessWidget {
   final WebSource source;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -65,7 +66,9 @@ class SourceSection extends StatelessWidget {
             color: Colors.transparent,
             borderRadius: BorderRadius.circular(4),
             child: InkWell(
-              onTap: () => launchExternalUrlString(source.url),
+              onTap: () => ref
+                  .read(externalUrlLauncherProvider)
+                  .launch(Uri.parse(source.url)),
               child: DecoratedBox(
                 decoration: BoxDecoration(
                   border: Border.all(

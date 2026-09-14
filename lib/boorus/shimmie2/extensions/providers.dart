@@ -14,6 +14,7 @@ import '../../../core/http/client/providers.dart';
 import '../../../core/http/client/types.dart';
 import '../../../foundation/loggers.dart';
 import '../../../foundation/platform.dart';
+import '../../../foundation/lazy_managed.dart';
 import 'cache.dart';
 import 'parser.dart';
 import 'types.dart';
@@ -56,14 +57,19 @@ final shimmie2VersionProvider = FutureProvider.family<Version?, String>(
   },
 );
 
-final _extensionsCacheFactoryProvider = Provider<ExtensionsCacheFactory>(
+final shimmie2ExtensionsCacheFactoryProvider = Provider<ExtensionsCacheFactory>(
   (_) => const HiveExtensionsCacheFactory(),
 );
 
-final _extensionsCacheProvider = Provider<ExtensionsCache>(
+final shimmie2ExtensionsCacheProvider = Provider<ExtensionsCache>(
   (ref) {
-    final factory = ref.watch(_extensionsCacheFactoryProvider);
-    return LazyExtensionsCache(factory.create);
+    final factory = ref.watch(shimmie2ExtensionsCacheFactoryProvider);
+    final managed = LazyManaged<ExtensionsCache>(
+      create: factory.create,
+      dispose: factory.dispose,
+    );
+    ref.onDispose(managed.close);
+    return LazyExtensionsCache(managed.get);
   },
 );
 
@@ -80,7 +86,7 @@ class Shimmie2ExtensionsNotifier
 
   @override
   Future<Shimmie2ExtensionsState> build(String arg) async {
-    final cache = ref.watch(_extensionsCacheProvider);
+    final cache = ref.watch(shimmie2ExtensionsCacheProvider);
     final cacheKey = _cacheKey(arg);
 
     try {
@@ -134,7 +140,7 @@ class Shimmie2ExtensionsNotifier
 
   Future<void> refresh() async {
     final baseUrl = arg;
-    final cache = ref.read(_extensionsCacheProvider);
+    final cache = ref.read(shimmie2ExtensionsCacheProvider);
     final cacheKey = _cacheKey(baseUrl);
 
     await cache.remove(cacheKey);

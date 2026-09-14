@@ -1,6 +1,9 @@
 // Flutter imports:
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:oktoast/oktoast.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
 // Project imports:
 import 'package:boorusama/core/app.dart';
@@ -40,7 +43,7 @@ final class HeadlessAppHarness {
       BoorusamaAppScope(
         runtime: runtime,
         additionalOverrides: additionalOverrides,
-        child: const BoorusamaCoreApp(),
+        child: const BoorusamaCoreApp(toastDuration: Duration.zero),
       ),
     );
     await tester.pump();
@@ -95,5 +98,15 @@ final class HeadlessAppHarness {
     await pumpUntilFound(tester, find.byType(PostDetailsPageScaffold));
   }
 
-  void dispose() {}
+  void dispose() {
+    dismissAllToast();
+    VisibilityDetectorController.instance.notifyNow();
+  }
+
+  Future<void> teardown(WidgetTester tester) async {
+    dispose();
+    await tester.pumpWidget(const SizedBox());
+    VisibilityDetectorController.instance.notifyNow();
+    await tester.pump();
+  }
 }

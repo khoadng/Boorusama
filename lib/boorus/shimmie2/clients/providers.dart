@@ -5,23 +5,29 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../core/configs/config/types.dart';
 import '../../../core/http/client/providers.dart';
+import '../../../foundation/lazy_managed.dart';
 import '../extensions/providers.dart';
 import '../extensions/types.dart';
 import 'cache.dart';
 
-final _graphQLCacheFactoryProvider = Provider<GraphQLCacheFactory>(
+final shimmie2GraphQLCacheFactoryProvider = Provider<GraphQLCacheFactory>(
   (_) => const HiveGraphQLCacheFactory(),
 );
 
-final _graphQLCacheProvider = Provider<GraphQLCache>((ref) {
-  final factory = ref.watch(_graphQLCacheFactoryProvider);
-  return LazyGraphQLCache(factory.create);
+final shimmie2GraphQLCacheProvider = Provider<GraphQLCache>((ref) {
+  final factory = ref.watch(shimmie2GraphQLCacheFactoryProvider);
+  final managed = LazyManaged<GraphQLCache>(
+    create: factory.create,
+    dispose: factory.dispose,
+  );
+  ref.onDispose(managed.close);
+  return LazyGraphQLCache(managed.get);
 });
 
 final shimmie2ClientProvider = Provider.family<Shimmie2Client, BooruConfigAuth>(
   (ref, config) {
     final dio = ref.watch(defaultDioProvider(config));
-    final cache = ref.watch(_graphQLCacheProvider);
+    final cache = ref.watch(shimmie2GraphQLCacheProvider);
 
     return Shimmie2Client(
       dio: dio,

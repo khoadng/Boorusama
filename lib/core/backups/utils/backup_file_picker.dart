@@ -14,12 +14,18 @@ class BackupFilePicker {
     required BuildContext context,
     required AppPlatform platform,
     required AndroidDeviceInfo? androidDeviceInfo,
+    required AppFilePicker picker,
     required void Function(String path) onPick,
     List<String> allowedExtensions = const ['json'],
     bool forceAnyFileType = false,
   }) {
     if (forceAnyFileType) {
-      return _pickFileManualExtensionCheck(context, allowedExtensions, onPick);
+      return _pickFileManualExtensionCheck(
+        context,
+        allowedExtensions,
+        onPick,
+        picker,
+      );
     }
 
     if (platform.isAndroid) {
@@ -31,14 +37,16 @@ class BackupFilePicker {
           context,
           allowedExtensions,
           onPick,
+          picker,
         );
       }
     }
 
     return pickSingleFilePathToastOnError(
       context: context,
-      type: FileType.custom,
+      customFileType: true,
       allowedExtensions: allowedExtensions,
+      picker: picker,
       onPick: onPick,
     );
   }
@@ -47,8 +55,10 @@ class BackupFilePicker {
     BuildContext context,
     List<String> allowedExtensions,
     void Function(String path) onPick,
+    AppFilePicker picker,
   ) => pickSingleFilePathToastOnError(
     context: context,
+    picker: picker,
     onPick: (path) {
       final ext = p.extension(path);
 

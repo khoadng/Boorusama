@@ -1,7 +1,6 @@
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kurumi/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
 import '../../../../../../core/configs/config/providers.dart';
@@ -41,7 +40,7 @@ class DanbooruMetatagsSection extends ConsumerWidget {
           ? () {
               launchExternalUrl(
                 Uri.parse(cheatSheet),
-                mode: LaunchMode.platformDefault,
+                mode: ExternalLaunchMode.platformDefault,
               );
             }
           : null,

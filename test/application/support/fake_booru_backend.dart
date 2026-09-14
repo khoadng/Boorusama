@@ -26,6 +26,7 @@ import 'package:boorusama/core/search/selected_tags/types.dart';
 import 'package:boorusama/core/settings/types.dart';
 import 'package:boorusama/core/tags/favorites/types.dart';
 import 'package:boorusama/core/tags/autocompletes/autocomplete_repository.dart';
+import 'package:boorusama/foundation/pincode/pincode.dart';
 
 import '../../support/boorusama_test_runtime.dart';
 
@@ -117,6 +118,7 @@ final class FakeBooruBackend {
     BookmarkRepository? bookmarkRepository,
     DownloadService? downloadService,
     FavoriteTagRepository? favoriteTagRepository,
+    PinCredentialRepositoryFactory? pinCredentialRepositoryFactory,
   }) {
     final effectiveConfigs = configs ?? [config];
     final effectiveInitialConfig = initialConfig ?? effectiveConfigs.first;
@@ -141,6 +143,7 @@ final class FakeBooruBackend {
       bookmarkRepository: bookmarkRepository,
       downloadService: downloadService,
       favoriteTagRepository: favoriteTagRepository,
+      pinCredentialRepositoryFactory: pinCredentialRepositoryFactory,
     );
   }
 
