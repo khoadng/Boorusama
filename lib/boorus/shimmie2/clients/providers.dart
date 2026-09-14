@@ -1,7 +1,6 @@
 // Package imports:
 import 'package:booru_clients/shimmie2.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hive_ce/hive.dart';
 
 // Project imports:
 import '../../../core/configs/config/types.dart';
@@ -10,10 +9,13 @@ import '../extensions/providers.dart';
 import '../extensions/types.dart';
 import 'cache.dart';
 
+final _graphQLCacheFactoryProvider = Provider<GraphQLCacheFactory>(
+  (_) => const HiveGraphQLCacheFactory(),
+);
+
 final _graphQLCacheProvider = Provider<GraphQLCache>((ref) {
-  return LazyGraphQLCache(() async {
-    return GraphQLCacheHive(await Hive.openBox('shimmie2_graphql_cache'));
-  });
+  final factory = ref.watch(_graphQLCacheFactoryProvider);
+  return LazyGraphQLCache(factory.create);
 });
 
 final shimmie2ClientProvider = Provider.family<Shimmie2Client, BooruConfigAuth>(

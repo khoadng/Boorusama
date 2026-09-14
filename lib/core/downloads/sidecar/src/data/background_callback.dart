@@ -1,9 +1,16 @@
 import 'package:background_downloader/background_downloader.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../../foundation/filesystem.dart';
 import '../../../downloader/types.dart';
 import 'providers.dart';
 import 'sidecar_store.dart';
+
+ProviderContainer createBackgroundSidecarContainer() => ProviderContainer(
+  overrides: [
+    appFileSystemProvider.overrideWithValue(const IoFileSystem()),
+  ],
+);
 
 @pragma('vm:entry-point')
 Future<void> onBackgroundSidecarFinished(TaskStatusUpdate update) async {
@@ -12,7 +19,7 @@ Future<void> onBackgroundSidecarFinished(TaskStatusUpdate update) async {
     return;
   }
   // The headless isolate has no access to the application's provider scope.
-  final container = ProviderContainer();
+  final container = createBackgroundSidecarContainer();
   try {
     final store = await container.read(sidecarStoreProvider.future);
     await finishDownloadSidecar(update, store: store);

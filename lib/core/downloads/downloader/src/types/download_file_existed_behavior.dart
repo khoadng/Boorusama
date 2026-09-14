@@ -1,8 +1,7 @@
 enum DownloadFileExistedBehavior {
   appDecide,
   skip,
-  overwrite
-  ;
+  overwrite;
 
   factory DownloadFileExistedBehavior.parse(dynamic value) => switch (value) {
     'appDecide' || '0' || 0 => appDecide,

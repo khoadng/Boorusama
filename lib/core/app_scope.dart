@@ -6,6 +6,7 @@ import 'package:kurumi/material.dart';
 // Project imports:
 import '../boorus/registry.dart';
 import 'blacklists/providers.dart';
+import 'bookmarks/providers.dart';
 import '../foundation/app_rating/providers.dart';
 import '../foundation/applock/applock.dart';
 import '../foundation/app_update/providers.dart';
@@ -17,6 +18,7 @@ import '../foundation/info/package_info.dart';
 import '../foundation/iap/iap.dart';
 import '../foundation/loggers/providers.dart';
 import '../foundation/networking/connectivity_service.dart';
+import '../foundation/pincode/pincode.dart';
 import '../foundation/platform.dart';
 import '../foundation/vendors/google/providers.dart';
 import '../foundation/window.dart';
@@ -28,7 +30,6 @@ import 'configs/manage/providers.dart';
 import 'debug/providers.dart';
 import 'developer_options/providers.dart';
 import 'downloads/downloader/providers.dart';
-import 'http/client/providers.dart';
 import 'search/histories/src/data/providers.dart';
 import 'settings/providers.dart';
 import 'tags/favorites/src/providers/providers.dart';
@@ -39,11 +40,13 @@ class BoorusamaAppScope extends StatelessWidget {
   const BoorusamaAppScope({
     required this.runtime,
     required this.child,
+    this.additionalOverrides = const [],
     super.key,
   });
 
   final BoorusamaRuntime runtime;
   final Widget child;
+  final List<Override> additionalOverrides;
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +61,10 @@ class BoorusamaAppScope extends StatelessWidget {
       builder: (context, data, key) => BooruLocalization(
         child: ProviderScope(
           key: key,
-          overrides: buildBoorusamaOverrides(runtime, data),
+          overrides: [
+            ...buildBoorusamaOverrides(runtime, data),
+            ...additionalOverrides,
+          ],
           child: child,
         ),
       ),
@@ -82,6 +88,9 @@ List<Override> buildBoorusamaOverrides(
     deviceAuthenticatorProvider.overrideWithValue(
       dependencies.deviceAuthenticator,
     ),
+    pinCredentialRepositoryFactoryProvider.overrideWithValue(
+      dependencies.pinCredentialRepositoryFactory,
+    ),
     windowServiceProvider.overrideWithValue(dependencies.windowService),
     booruEngineRegistryProvider.overrideWith(
       (ref) => ref.watch(
@@ -101,26 +110,21 @@ List<Override> buildBoorusamaOverrides(
         (_) => builder(dependencies.packageInfo),
       ),
     booruDbProvider.overrideWithValue(dependencies.booruDb),
-    if (dependencies.globalBlacklistedTagRepository
-        case final globalBlacklistedTagRepository?)
-      globalBlacklistedTagRepoProvider.overrideWith(
-        (_) => globalBlacklistedTagRepository,
-      ),
-    if (dependencies.downloadService case final downloadService?)
-      downloadServiceProvider.overrideWithValue(downloadService),
-    if (dependencies.httpHeadersBuilder case final httpHeadersBuilder?)
-      httpHeadersProvider.overrideWith(
-        (ref, config) => httpHeadersBuilder(config),
-      ),
-    if (dependencies.favoriteTagRepository case final favoriteTagRepository?)
-      favoriteTagRepoProvider.overrideWith(
-        (_) => favoriteTagRepository,
-      ),
-    if (dependencies.searchHistoryRepository
-        case final searchHistoryRepository?)
-      searchHistoryRepoProvider.overrideWith(
-        (_) => searchHistoryRepository,
-      ),
+    bookmarkRepositoryFactoryProvider.overrideWithValue(
+      dependencies.bookmarkRepositoryFactory,
+    ),
+    globalBlacklistedTagRepositoryFactoryProvider.overrideWithValue(
+      dependencies.globalBlacklistedTagRepositoryFactory,
+    ),
+    favoriteTagRepositoryFactoryProvider.overrideWithValue(
+      dependencies.favoriteTagRepositoryFactory,
+    ),
+    searchHistoryRepositoryFactoryProvider.overrideWithValue(
+      dependencies.searchHistoryRepositoryFactory,
+    ),
+    downloadServiceFactoryProvider.overrideWithValue(
+      dependencies.downloadServiceFactory,
+    ),
     tagInfoProvider.overrideWithValue(dependencies.tagInfo),
     settingsRepoProvider.overrideWithValue(dependencies.settingsRepository),
     developerOptionsRepositoryProvider.overrideWithValue(

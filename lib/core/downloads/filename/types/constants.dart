@@ -2,13 +2,11 @@ const kDanbooruPostSamples = [
   {
     'id': '123456',
     'artist': 'artist_x_(abc) artist_2',
-    'character':
-        'lumine_(genshin_impact) lumine_(sweets_paradise)_(genshin_impact) aether_(genshin_impact)',
+    'character': 'lumine_(genshin_impact) lumine_(sweets_paradise)_(genshin_impact) aether_(genshin_impact)',
     'copyright': 'genshin_impact fate/grand_order',
     'general': '1girl solo',
     'meta': 'highres translated',
-    'tags':
-        '1girl solo genshin_impact lumine_(genshin_impact) lumine_(sweets_paradise)_(genshin_impact) aether_(genshin_impact) highres translated',
+    'tags': '1girl solo genshin_impact lumine_(genshin_impact) lumine_(sweets_paradise)_(genshin_impact) aether_(genshin_impact) highres translated',
     'extension': 'jpg',
     'md5': '9cf364e77f46183e2ebd75de757488e2',
     'width': '2232',

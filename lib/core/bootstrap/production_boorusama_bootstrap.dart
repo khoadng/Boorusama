@@ -27,10 +27,13 @@ import '../../foundation/loggers.dart';
 import '../../foundation/mobile.dart';
 import '../../foundation/networking/plugin_connectivity_service.dart';
 import '../../foundation/platform.dart';
+import '../../foundation/pincode/pincode.dart';
 import '../../foundation/utils/file_utils.dart';
 import '../../foundation/vendors/google/google_play_services_impl.dart';
 import '../../foundation/window.dart';
 import '../boorus/booru/providers.dart';
+import '../bookmarks/src/data/hive/factory.dart';
+import '../blacklists/src/data/hive/factory.dart';
 import '../cache/hive_misc_data_store.dart';
 import '../cache/hive_persistent_cache_store.dart';
 import '../configs/config/data.dart';
@@ -38,10 +41,13 @@ import '../configs/config/types.dart';
 import '../debug/data.dart';
 import '../developer_options/src/developer_options_repository.dart';
 import '../developer_options/types.dart';
+import '../downloads/downloader/providers.dart';
 import '../hive/hive_registrar.g.dart';
 import '../http/client/types.dart';
 import '../images/providers.dart';
 import '../settings/providers.dart';
+import '../search/histories/providers.dart';
+import '../tags/favorites/src/data/favorite_tag_repository_factory_hive.dart';
 import '../settings/types.dart';
 import '../tags/configs/providers.dart';
 import '../window/providers.dart' as window;
@@ -220,6 +226,19 @@ final class ProductionBoorusamaBootstrap implements BoorusamaBootstrap {
           fileSystem: fileSystem,
           booruDb: booruDb,
           booruRegistry: booruRegistry,
+          bookmarkRepositoryFactory: const HiveBookmarkRepositoryFactory(),
+          globalBlacklistedTagRepositoryFactory:
+              HiveGlobalBlacklistedTagRepositoryFactory(
+                path: dbDirectoryPath,
+              ),
+          favoriteTagRepositoryFactory:
+              const HiveFavoriteTagRepositoryFactory(),
+          searchHistoryRepositoryFactory:
+              createProductionSearchHistoryRepositoryFactory(
+                fileSystem: fileSystem,
+                logger: logger,
+              ),
+          downloadServiceFactory: createProductionDownloadServiceFactory(),
           settingsRepository: settingsRepository,
           developerOptionsRepository: developerOptionsRepository,
           booruConfigRepository: booruConfigRepository,
@@ -238,6 +257,8 @@ final class ProductionBoorusamaBootstrap implements BoorusamaBootstrap {
           platform: currentAppPlatform(),
           connectivityService: PluginConnectivityService(),
           deviceAuthenticator: LocalAuthDeviceAuthenticator(),
+          pinCredentialRepositoryFactory:
+              const HivePinCredentialRepositoryFactory(),
           windowService: PluginWindowService(),
           isFossBuild: isFossBuild,
           isCronetAvailable: isCronetAvailable,

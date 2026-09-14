@@ -11,10 +11,12 @@ import '../../foundation/info/app_info.dart';
 import '../../foundation/info/device_info.dart';
 import '../../foundation/loggers.dart';
 import '../../foundation/networking/connectivity_service.dart';
+import '../../foundation/pincode/pincode.dart';
 import '../../foundation/platform.dart';
 import '../../foundation/window.dart';
 import '../boorus/booru/types.dart';
 import '../boorus/engine/types.dart';
+import '../bookmarks/types.dart';
 import '../blacklists/types.dart';
 import '../cache/misc_data_store.dart';
 import '../cache/persistent_cache_store.dart';
@@ -24,10 +26,10 @@ import '../debug/types.dart';
 import '../developer_options/src/developer_options_repository.dart';
 import '../developer_options/types.dart';
 import '../downloads/downloader/types.dart';
-import '../search/histories/src/types/search_history_repository.dart';
+import '../search/histories/types.dart';
 import '../settings/src/types/settings_repository.dart';
 import '../settings/types.dart';
-import '../tags/favorites/src/types/favorite_tag.dart';
+import '../tags/favorites/types.dart';
 import '../tags/configs/src/tag_info.dart';
 
 final class BoorusamaRuntime {
@@ -61,11 +63,11 @@ final class BoorusamaRuntimeDependencies {
     required this.fileSystem,
     required this.booruDb,
     required this.booruRegistry,
-    this.globalBlacklistedTagRepository,
-    this.downloadService,
-    this.httpHeadersBuilder,
-    this.favoriteTagRepository,
-    this.searchHistoryRepository,
+    required this.bookmarkRepositoryFactory,
+    required this.globalBlacklistedTagRepositoryFactory,
+    required this.favoriteTagRepositoryFactory,
+    required this.searchHistoryRepositoryFactory,
+    required this.downloadServiceFactory,
     required this.settingsRepository,
     required this.developerOptionsRepository,
     required this.booruConfigRepository,
@@ -81,6 +83,7 @@ final class BoorusamaRuntimeDependencies {
     required this.platform,
     required this.connectivityService,
     required this.deviceAuthenticator,
+    required this.pinCredentialRepositoryFactory,
     required this.windowService,
     required this.isFossBuild,
     required this.isCronetAvailable,
@@ -92,12 +95,12 @@ final class BoorusamaRuntimeDependencies {
   final AppFileSystem fileSystem;
   final BooruDb booruDb;
   final BooruRegistry booruRegistry;
-  final GlobalBlacklistedTagRepository? globalBlacklistedTagRepository;
-  final DownloadService? downloadService;
-  final Map<String, String> Function(BooruConfigAuth config)?
-  httpHeadersBuilder;
-  final FavoriteTagRepository? favoriteTagRepository;
-  final SearchHistoryRepository? searchHistoryRepository;
+  final BookmarkRepositoryFactory bookmarkRepositoryFactory;
+  final GlobalBlacklistedTagRepositoryFactory
+  globalBlacklistedTagRepositoryFactory;
+  final FavoriteTagRepositoryFactory favoriteTagRepositoryFactory;
+  final SearchHistoryRepositoryFactory searchHistoryRepositoryFactory;
+  final DownloadServiceFactory downloadServiceFactory;
   final SettingsRepository settingsRepository;
   final DeveloperOptionsRepository developerOptionsRepository;
   final BooruConfigRepository booruConfigRepository;
@@ -116,6 +119,7 @@ final class BoorusamaRuntimeDependencies {
   final AppPlatform platform;
   final ConnectivityService connectivityService;
   final DeviceAuthenticator deviceAuthenticator;
+  final PinCredentialRepositoryFactory pinCredentialRepositoryFactory;
   final WindowService windowService;
   final bool isFossBuild;
   final bool isCronetAvailable;

@@ -11,6 +11,8 @@ class FavoriteTagRepositoryHive implements FavoriteTagRepository {
 
   final Box<FavoriteTagHiveObject> box;
 
+  Future<void> close() => box.close();
+
   @override
   Future<FavoriteTag?> deleteFirst(String name) async {
     try {

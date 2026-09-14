@@ -18,6 +18,8 @@ class SearchHistoryRepositorySqlite
   @override
   final Database db;
 
+  void close() => db.close();
+
   void initialize() {
     _createTableIfNotExists();
     DbMigrationManager.create(

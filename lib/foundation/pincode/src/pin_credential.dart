@@ -15,10 +15,75 @@ const _pinCredentialVersion = 2;
 const _pinDerivationIterations = 30000;
 const _pinSaltLength = 32;
 
-final pinCredentialRepositoryProvider = Provider<PinCredentialRepository>(
-  (ref) => PinCredentialRepository(
+abstract interface class PinCredentialStore {
+  Future<String?> get(String key);
+
+  Future<void> put(String key, String value);
+
+  Future<void> delete(String key);
+
+  Future<void> close();
+}
+
+final class HivePinCredentialStore implements PinCredentialStore {
+  const HivePinCredentialStore(this._box);
+
+  final Future<Box<String>> _box;
+
+  @override
+  Future<String?> get(String key) async => (await _box).get(key);
+
+  @override
+  Future<void> put(String key, String value) async {
+    await (await _box).put(key, value);
+  }
+
+  @override
+  Future<void> delete(String key) async {
+    await (await _box).delete(key);
+  }
+
+  @override
+  Future<void> close() async {
+    await (await _box).close();
+  }
+}
+
+abstract interface class PinCredentialRepositoryFactory {
+  PinCredentialRepository create();
+
+  Future<void> dispose(PinCredentialRepository repository);
+}
+
+final class HivePinCredentialRepositoryFactory
+    implements PinCredentialRepositoryFactory {
+  const HivePinCredentialRepositoryFactory();
+
+  @override
+  PinCredentialRepository create() => PinCredentialRepository(
     Hive.openBox<String>('app_lock_credentials'),
-  ),
+  );
+
+  @override
+  Future<void> dispose(PinCredentialRepository repository) =>
+      repository.close();
+}
+
+final pinCredentialRepositoryFactoryProvider =
+    Provider<PinCredentialRepositoryFactory>(
+      (_) => throw UnimplementedError(
+        'pinCredentialRepositoryFactoryProvider must be overridden',
+      ),
+      name: 'pinCredentialRepositoryFactoryProvider',
+    );
+
+final pinCredentialRepositoryProvider = Provider<PinCredentialRepository>(
+  (ref) {
+    final factory = ref.watch(pinCredentialRepositoryFactoryProvider);
+    final repository = factory.create();
+    ref.onDispose(() => factory.dispose(repository));
+    return repository;
+  },
   name: 'pinCredentialRepositoryProvider',
 );
 
@@ -58,18 +123,24 @@ class PinCredential {
 
 class PinCredentialRepository {
   PinCredentialRepository(
-    this._box, {
+    Future<Box<String>> box, {
+    this.keyDeriver = const PinKeyDeriver(),
+  }) : _store = HivePinCredentialStore(box);
+
+  PinCredentialRepository.fromStore(
+    this._store, {
     this.keyDeriver = const PinKeyDeriver(),
   });
 
-  final Future<Box<String>> _box;
+  final PinCredentialStore _store;
   final PinKeyDeriver keyDeriver;
+
+  Future<void> close() => _store.close();
 
   Future<bool> hasPin() async => await getPinCredential() != null;
 
   Future<PinCredential?> getPinCredential() async {
-    final box = await _box;
-    final value = box.get(_pinCredentialKey);
+    final value = await _store.get(_pinCredentialKey);
     if (value == null || value.isEmpty) return null;
 
     try {
@@ -93,7 +164,6 @@ class PinCredentialRepository {
   }
 
   Future<void> setPin(String pin) async {
-    final box = await _box;
     final salt = _randomSalt();
     final credential = PinCredential(
       version: _pinCredentialVersion,
@@ -107,7 +177,7 @@ class PinCredentialRepository {
       createdAt: DateTime.now(),
     );
 
-    await box.put(_pinCredentialKey, jsonEncode(credential.toJson()));
+    await _store.put(_pinCredentialKey, jsonEncode(credential.toJson()));
   }
 
   Future<bool> verifyPin(String pin) async {
@@ -124,8 +194,7 @@ class PinCredentialRepository {
   }
 
   Future<void> clearPin() async {
-    final box = await _box;
-    await box.delete(_pinCredentialKey);
+    await _store.delete(_pinCredentialKey);
   }
 }
 

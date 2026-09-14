@@ -8,7 +8,6 @@ import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hive_ce/hive.dart';
 
 // Project imports:
 import '../../../core/http/client/providers.dart';
@@ -57,10 +56,15 @@ final shimmie2VersionProvider = FutureProvider.family<Version?, String>(
   },
 );
 
+final _extensionsCacheFactoryProvider = Provider<ExtensionsCacheFactory>(
+  (_) => const HiveExtensionsCacheFactory(),
+);
+
 final _extensionsCacheProvider = Provider<ExtensionsCache>(
-  (ref) => LazyExtensionsCache(() async {
-    return ExtensionsCacheHive(await Hive.openBox('shimmie2_extensions_cache'));
-  }),
+  (ref) {
+    final factory = ref.watch(_extensionsCacheFactoryProvider);
+    return LazyExtensionsCache(factory.create);
+  },
 );
 
 final shimmie2ExtensionsProvider =

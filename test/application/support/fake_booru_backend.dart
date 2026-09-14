@@ -8,12 +8,15 @@ import 'package:boorusama/core/boorus/booru/types.dart';
 import 'package:boorusama/core/boorus/defaults/src/booru_repository_default.dart';
 import 'package:boorusama/core/boorus/defaults/widgets.dart';
 import 'package:boorusama/core/boorus/engine/types.dart';
+import 'package:boorusama/core/bookmarks/types.dart';
 import 'package:boorusama/core/bootstrap/boorusama_runtime.dart';
 import 'package:boorusama/core/configs/config/types.dart';
 import 'package:boorusama/core/configs/create/create.dart';
 import 'package:boorusama/core/debug/types.dart';
 import 'package:boorusama/core/developer_options/types.dart';
 import 'package:boorusama/core/downloads/filename/types.dart';
+import 'package:boorusama/core/downloads/downloader/types.dart';
+import 'package:boorusama/core/downloads/urls/types.dart';
 import 'package:boorusama/core/posts/post/types.dart';
 import 'package:boorusama/core/posts/post/providers.dart';
 import 'package:boorusama/core/posts/rating/types.dart';
@@ -21,17 +24,20 @@ import 'package:boorusama/core/posts/sources/types.dart';
 import 'package:boorusama/core/search/queries/tag_query_composer.dart';
 import 'package:boorusama/core/search/selected_tags/types.dart';
 import 'package:boorusama/core/settings/types.dart';
+import 'package:boorusama/core/tags/favorites/types.dart';
 import 'package:boorusama/core/tags/autocompletes/autocomplete_repository.dart';
 
 import '../../support/boorusama_test_runtime.dart';
 
 final class FakeBooruPostRequest {
   const FakeBooruPostRequest({
+    required this.siteUrl,
     required this.tags,
     required this.page,
     required this.resultIds,
   });
 
+  final String siteUrl;
   final List<String> tags;
   final int page;
   final List<int> resultIds;
@@ -60,6 +66,22 @@ final class FakeBooruBackend {
           tags: const {'landscape'},
         ),
       ] {
+    configB = BooruConfig.fromJson({
+      ...config.toJson(),
+      'id': 2,
+      'url': 'https://headless-b.booru.test/',
+      'name': 'Headless Booru B',
+    });
+    postsB = [
+      TestPost(
+        id: 201,
+        tags: const {'dog', 'green_eyes'},
+      ),
+      TestPost(
+        id: 202,
+        tags: const {'cityscape'},
+      ),
+    ];
     registry.register(
       BooruType.danbooru,
       BooruComponents(
@@ -75,6 +97,8 @@ final class FakeBooruBackend {
 
   final BooruConfig config;
   final List<TestPost> posts;
+  late final BooruConfig configB;
+  late final List<TestPost> postsB;
   final requests = <Object>[];
   final registry = BooruRegistry();
 
@@ -86,32 +110,50 @@ final class FakeBooruBackend {
     },
   );
 
-  BoorusamaRuntime createRuntime({Settings? settings}) {
+  BoorusamaRuntime createRuntime({
+    Settings? settings,
+    List<BooruConfig>? configs,
+    BooruConfig? initialConfig,
+    BookmarkRepository? bookmarkRepository,
+    DownloadService? downloadService,
+    FavoriteTagRepository? favoriteTagRepository,
+  }) {
+    final effectiveConfigs = configs ?? [config];
+    final effectiveInitialConfig = initialConfig ?? effectiveConfigs.first;
     final effectiveSettings =
-        settings ??
+        settings?.copyWith(
+          currentBooruConfigId: effectiveInitialConfig.id,
+        ) ??
         Settings.defaultSettings.copyWith(
-          currentBooruConfigId: config.id,
+          currentBooruConfigId: effectiveInitialConfig.id,
         );
 
     return createTestBoorusamaRuntime(
       initialState: BoorusamaInitialState(
-        initialConfig: config,
-        configs: [config],
+        initialConfig: effectiveInitialConfig,
+        configs: effectiveConfigs,
         settings: effectiveSettings,
         developerOptions: DeveloperOptions.defaults,
         logOptions: LogOptions.defaults,
       ),
       booruDb: booruDb,
       booruRegistry: registry,
+      bookmarkRepository: bookmarkRepository,
+      downloadService: downloadService,
+      favoriteTagRepository: favoriteTagRepository,
     );
   }
 
   PostResult<Post> fetchPosts({
+    required String siteUrl,
     required List<String> tags,
     required int page,
   }) {
-    final matchingPosts = page == 1 ? _filterPosts(tags) : <TestPost>[];
+    final matchingPosts = page == 1
+        ? _filterPosts(tags, siteUrl: siteUrl)
+        : <TestPost>[];
     final request = FakeBooruPostRequest(
+      siteUrl: siteUrl,
       tags: List.unmodifiable(tags),
       page: page,
       resultIds: matchingPosts.map((post) => post.id).toList(growable: false),
@@ -120,12 +162,12 @@ final class FakeBooruBackend {
 
     return PostResult(
       posts: List<Post>.unmodifiable(matchingPosts),
-      total: page == 1 ? matchingPosts.length : posts.length,
+      total: page == 1 ? matchingPosts.length : _postsFor(siteUrl).length,
       maxPage: 1,
     );
   }
 
-  Post? fetchPost(PostId postId) {
+  Post? fetchPost(PostId postId, {required String siteUrl}) {
     final id = switch (postId) {
       NumericPostId(:final value) => value,
       StringPostId(:final value) => int.tryParse(value),
@@ -133,13 +175,16 @@ final class FakeBooruBackend {
     if (id == null) return null;
 
     requests.add(FakeBooruDetailsRequest(id));
-    for (final post in posts) {
+    for (final post in _postsFor(siteUrl)) {
       if (post.id == id) return post;
     }
     return null;
   }
 
-  List<TestPost> _filterPosts(List<String> tags) {
+  List<TestPost> _filterPosts(
+    List<String> tags, {
+    required String siteUrl,
+  }) {
     final positiveTags = <String>[];
     final negativeTags = <String>[];
 
@@ -154,7 +199,7 @@ final class FakeBooruBackend {
       }
     }
 
-    return posts
+    return _postsFor(siteUrl)
         .where((post) {
           final postTags = post.tags.map(_normalizeTag).toSet();
           return positiveTags.every(postTags.contains) &&
@@ -162,6 +207,9 @@ final class FakeBooruBackend {
         })
         .toList(growable: false);
   }
+
+  List<TestPost> _postsFor(String siteUrl) =>
+      siteUrl == configB.url ? postsB : posts;
 
   String _normalizeTag(String tag) => tag.trim().toLowerCase();
 }
@@ -180,6 +228,10 @@ final class _FakeBooruRepository extends BooruRepositoryDefault {
   @override
   AutocompleteRepository autocomplete(BooruConfigAuth config) =>
       EmptyAutocompleteRepository();
+
+  @override
+  DownloadFileUrlExtractor downloadFileUrlExtractor(BooruConfigAuth config) =>
+      _FakeDownloadFileUrlExtractor(config.url);
 
   @override
   PostRepository<Post> post(BooruConfigSearch config) => _FakePostRepository(
@@ -206,6 +258,23 @@ final class _FakeBooruRepository extends BooruRepositoryDefault {
       () async => true;
 }
 
+final class _FakeDownloadFileUrlExtractor implements DownloadFileUrlExtractor {
+  const _FakeDownloadFileUrlExtractor(this.baseUrl);
+
+  final String baseUrl;
+
+  String get normalizedBaseUrl => baseUrl.endsWith('/')
+      ? baseUrl.substring(0, baseUrl.length - 1)
+      : baseUrl;
+
+  @override
+  Future<DownloadUrlData> getDownloadFileUrl({
+    required Post post,
+    required String quality,
+  }) async =>
+      DownloadUrlData.urlOnly('$normalizedBaseUrl/posts/${post.id}.jpg');
+}
+
 final class _FakePostRepository implements PostRepository<Post> {
   _FakePostRepository({
     required this.backend,
@@ -223,6 +292,7 @@ final class _FakePostRepository implements PostRepository<Post> {
     PostFetchOptions? options,
   }) => TaskEither.right(
     backend.fetchPosts(
+      siteUrl: config.auth.url,
       tags: tags.isEmpty ? const [] : tags.split(' '),
       page: page,
     ),
@@ -236,6 +306,7 @@ final class _FakePostRepository implements PostRepository<Post> {
     PostFetchOptions? options,
   }) => TaskEither.right(
     backend.fetchPosts(
+      siteUrl: config.auth.url,
       tags: controller.rawTags,
       page: page,
     ),
@@ -245,7 +316,9 @@ final class _FakePostRepository implements PostRepository<Post> {
   PostOrError<Post> getPost(
     PostId id, {
     PostFetchOptions? options,
-  }) => TaskEither.right(backend.fetchPost(id));
+  }) => TaskEither.right(
+    backend.fetchPost(id, siteUrl: config.auth.url),
+  );
 
   @override
   TagQueryComposer get tagComposer => DefaultTagQueryComposer(config: config);

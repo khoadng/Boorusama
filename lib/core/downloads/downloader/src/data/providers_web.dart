@@ -6,10 +6,45 @@ import 'package:foundation/foundation.dart';
 import '../../../../configs/config/types.dart';
 import '../providers/download_notifier.dart';
 import '../types/download.dart';
+import '../types/download_service_factory.dart';
+
+final downloadServiceFactoryProvider = Provider<DownloadServiceFactory>(
+  (_) => throw UnimplementedError(
+    'downloadServiceFactoryProvider must be overridden',
+  ),
+  name: 'downloadServiceFactoryProvider',
+);
+
+DownloadServiceFactory createProductionDownloadServiceFactory() =>
+    const WebDownloadServiceFactory();
 
 final downloadServiceProvider = Provider<DownloadService>(
-  (ref) => const WebDownloadService(),
+  (ref) {
+    final factory = ref.watch(downloadServiceFactoryProvider);
+    final service = factory.create(
+      const DownloadServiceDependencies(
+        fileSystem: null,
+        logger: null,
+        sidecarStore: null,
+        videoCacheManager: null,
+        androidSdkInt: null,
+      ),
+    );
+    ref.onDispose(() => factory.dispose(service));
+    return service;
+  },
 );
+
+final class WebDownloadServiceFactory implements DownloadServiceFactory {
+  const WebDownloadServiceFactory();
+
+  @override
+  DownloadService create(DownloadServiceDependencies dependencies) =>
+      const WebDownloadService();
+
+  @override
+  Future<void> dispose(DownloadService service) async {}
+}
 
 final downloadMultipleFileCheckProvider =
     Provider.family<MultipleFileDownloadCheck, BooruConfigAuth>(

@@ -13,6 +13,8 @@ class HiveBlacklistedTagRepository implements GlobalBlacklistedTagRepository {
 
   late Box<BlacklistedTagHiveObject> _box;
 
+  Future<void> close() => _box.close();
+
   Future<void> init(String path) async {
     _box = await Hive.openBox<BlacklistedTagHiveObject>(_boxName, path: path);
   }

@@ -18,6 +18,27 @@ abstract class ExtensionsCache {
   Future<void> setTimestamp(String key, DateTime timestamp);
 }
 
+abstract interface class ExtensionsCacheFactory {
+  Future<ExtensionsCache> create();
+
+  Future<void> dispose(ExtensionsCache cache);
+}
+
+final class HiveExtensionsCacheFactory implements ExtensionsCacheFactory {
+  const HiveExtensionsCacheFactory();
+
+  @override
+  Future<ExtensionsCache> create() async =>
+      ExtensionsCacheHive(await Hive.openBox('shimmie2_extensions_cache'));
+
+  @override
+  Future<void> dispose(ExtensionsCache cache) async {
+    if (cache case final ExtensionsCacheHive hiveCache) {
+      await hiveCache.box.close();
+    }
+  }
+}
+
 class LazyExtensionsCache implements ExtensionsCache {
   LazyExtensionsCache(Future<ExtensionsCache> Function() cacheFactory)
     : _lazyCache = LazyAsync(cacheFactory);
