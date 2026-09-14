@@ -32,7 +32,12 @@ final class BuildArgsParser {
         allowed: BuildReleaseChannel.values.map((channel) => channel.wireName),
         defaultsTo: BuildReleaseChannel.unknown.wireName,
       )
-      ..addFlag('flutter-verbose', negatable: false);
+      ..addFlag('flutter-verbose', negatable: false)
+      ..addFlag(
+        'offline',
+        negatable: false,
+        help: 'Resolve dependencies without network access.',
+      );
   }
 
   final parser = ArgParser();
@@ -113,6 +118,7 @@ final class BuildArgsParser {
       noCodesign: _flag(results, 'no-codesign'),
       failFast: _flag(results, 'fail-fast'),
       flutterVerbose: _flag(results, 'flutter-verbose'),
+      offline: _flag(results, 'offline'),
       releaseChannel: _releaseChannel(results),
       extraFlutterArgs: flutterArgs,
     );
@@ -218,6 +224,7 @@ Usage: boorusama build <format> [options]
     --fail-fast
     --release-channel  [unknown, github, play]
     --flutter-verbose
+    --offline          Resolve dependencies without network access.
 
 Unknown Flutter build options are passed through. Everything after -- is also passed through.
 '''

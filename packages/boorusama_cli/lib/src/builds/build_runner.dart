@@ -60,6 +60,7 @@ final class BuildRunner {
     final foss = FossBuild(tools: tools, logger: logger);
     final artifact = await foss.guard(
       enabled: resolvedOptions.foss,
+      offline: resolvedOptions.offline,
       project: project,
       body: (buildProject, buildTools) async {
         await Codegen(
@@ -113,7 +114,7 @@ final class BuildRunner {
         gitBranch: project.git.branch,
         foss: options.foss,
         releaseChannel: options.releaseChannel.wireName,
-        timestamp: DateTime.now(),
+        timestamp: DartDefines.buildTimestamp(),
       ),
       ...DartDefines.androidFoss(options),
     };
@@ -136,6 +137,7 @@ final class BuildRunner {
     flutterArgs
       ..addAll(DartDefines.args(defines))
       ..addAll(['-t', targetFile])
+      ..addAll([if (options.offline) '--no-pub'])
       ..addAll(options.extraFlutterArgs);
 
     return BuildPlan(

@@ -18,6 +18,7 @@ final class BuildOptions {
     this.noCodesign = false,
     this.failFast = false,
     this.flutterVerbose = false,
+    this.offline = false,
     this.releaseChannel = BuildReleaseChannel.unknown,
   });
 
@@ -32,6 +33,7 @@ final class BuildOptions {
   final bool noCodesign;
   final bool failFast;
   final bool flutterVerbose;
+  final bool offline;
   final BuildReleaseChannel releaseChannel;
   final List<String> extraFlutterArgs;
 
@@ -48,6 +50,7 @@ final class BuildOptions {
       noCodesign: noCodesign,
       failFast: failFast,
       flutterVerbose: flutterVerbose,
+      offline: offline,
       releaseChannel: releaseChannel,
       extraFlutterArgs: extraFlutterArgs,
     );

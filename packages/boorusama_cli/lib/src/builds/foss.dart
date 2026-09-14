@@ -1,4 +1,7 @@
+import 'dart:convert';
 import 'dart:io';
+
+import 'package:yaml/yaml.dart';
 
 import '../io/logger.dart';
 import '../project/config.dart';
@@ -25,10 +28,17 @@ final class FossBuild {
 
   Future<T> guard<T>({
     required bool enabled,
+    required bool offline,
     required Project project,
     required Future<T> Function(Project project, ToolRunner tools) body,
   }) async {
-    if (!enabled) return body(project, tools);
+    if (!enabled) {
+      if (offline) {
+        logger.info('Resolving dependencies from the local cache...');
+        await tools.flutter(['pub', 'get', '--offline']);
+      }
+      return body(project, tools);
+    }
 
     final workspace = await BuildWorkspace.createFoss(
       sourceRoot: project.root,
@@ -46,9 +56,16 @@ final class FossBuild {
 
       logger.info('Preparing FOSS build - removing non-FOSS dependencies...');
       _rewritePubspecForFoss(workspaceProject.root);
+      if (offline) {
+        _writeOfflineOverrides(project.root, workspaceProject.root);
+      }
 
       logger.info('Getting FOSS dependencies in temporary workspace...');
-      await workspaceTools.flutter(['pub', 'get']);
+      await workspaceTools.flutter([
+        'pub',
+        'get',
+        if (offline) '--offline',
+      ]);
 
       return await body(workspaceProject, workspaceTools);
     } finally {
@@ -66,5 +83,59 @@ final class FossBuild {
           .join('\n');
     }
     pubspec.writeAsStringSync(content);
+  }
+
+  void _writeOfflineOverrides(Directory sourceRoot, Directory targetRoot) {
+    final lockFile = File('${sourceRoot.path}/pubspec.lock');
+    final packageConfig = File(
+      '${sourceRoot.path}/.dart_tool/package_config.json',
+    );
+    if (!lockFile.existsSync() || !packageConfig.existsSync()) return;
+
+    final lock = loadYaml(lockFile.readAsStringSync()) as YamlMap;
+    final lockedPackages = lock['packages'] as YamlMap?;
+    if (lockedPackages == null) return;
+
+    for (final entity in targetRoot.listSync(recursive: true)) {
+      if (entity is File &&
+          entity.uri.pathSegments.last == 'pubspec_overrides.yaml') {
+        entity.deleteSync();
+      }
+    }
+
+    final externalPackages =
+        <String>{
+          for (final entry in lockedPackages.entries)
+            if ((entry.value as YamlMap)['source'] == 'git' ||
+                (entry.value as YamlMap)['source'] == 'hosted')
+              entry.key as String,
+        }..removeAll(
+          BoorusamaConfig.fossExcludedDeps.map(
+            (dependency) => dependency.substring(0, dependency.length - 1),
+          ),
+        );
+
+    final config = jsonDecode(packageConfig.readAsStringSync()) as Map;
+    final configUri = packageConfig.parent.uri;
+    final paths = <String, String>{};
+    for (final package in (config['packages'] as List).cast<Map>()) {
+      final name = package['name'] as String;
+      if (!externalPackages.contains(name)) continue;
+      paths[name] = configUri
+          .resolve(package['rootUri'] as String)
+          .toFilePath();
+    }
+    if (paths.isEmpty) return;
+
+    final names = paths.keys.toList()..sort();
+    final content = StringBuffer('dependency_overrides:\n');
+    for (final name in names) {
+      content
+        ..writeln('  $name:')
+        ..writeln('    path: ${jsonEncode(paths[name])}');
+    }
+    File(
+      '${targetRoot.path}/pubspec_overrides.yaml',
+    ).writeAsStringSync(content.toString());
   }
 }

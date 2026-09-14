@@ -150,6 +150,8 @@ dependencies:
 
 dev_dependencies:
   build_runner: ^2.4.13
+  i18n_cli:
+    path: packages/i18n_cli
   flutter_launcher_icons:
     git: https://github.com/fluttercommunity/flutter_launcher_icons.git
   flutter_lints: ^6.0.0
