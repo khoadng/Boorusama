@@ -82,9 +82,10 @@ class _BackgroundDownloadRuntimeState
         WidgetsBinding.instance.addPostFrameCallback(
           (_) async {
             final path = await update.task.filePath();
-            if (isAndroid()) {
+            final platform = ref.read(appPlatformProvider);
+            if (platform.isAndroid) {
               await MediaScanner.loadMedia(path: path);
-            } else if (isIOS()) {
+            } else if (platform.isIOS) {
               try {
                 final hasAccess = await Gal.hasAccess(toAlbum: true);
                 if (!hasAccess) {

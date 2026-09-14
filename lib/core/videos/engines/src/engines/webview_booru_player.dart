@@ -21,12 +21,14 @@ import '../types/video_source.dart';
 class WebViewBooruPlayer implements BooruPlayer {
   WebViewBooruPlayer({
     required this.wakelock,
+    required this.platform,
     String? userAgent,
     Color backgroundColor = Colors.black,
   }) : _userAgent = userAgent,
        _backgroundColor = backgroundColor;
 
   final Wakelock wakelock;
+  final AppPlatform platform;
   final String? _userAgent;
   final Color _backgroundColor;
 
@@ -53,10 +55,11 @@ class WebViewBooruPlayer implements BooruPlayer {
   String? _currentUrl;
 
   @override
-  bool isPlatformSupported() => !isWindows() && !isLinux();
+  bool isPlatformSupported() =>
+      platform != AppPlatform.windows && platform != AppPlatform.linux;
 
   Future<void> _setupWebViewController() async {
-    final params = switch (isApple()) {
+    final params = switch (platform.isIOS || platform == AppPlatform.macos) {
       true => WebKitWebViewControllerCreationParams(
         allowsInlineMediaPlayback: true,
         mediaTypesRequiringUserAction: const <PlaybackMediaTypes>{},
@@ -82,7 +85,8 @@ class WebViewBooruPlayer implements BooruPlayer {
         },
       ),
       // Skip setBackgroundColor on macOS due to unimplemented opaque property
-      if (!isMacOS()) controller.setBackgroundColor(_backgroundColor),
+      if (platform != AppPlatform.macos)
+        controller.setBackgroundColor(_backgroundColor),
       if (controller.platform
           case final AndroidWebViewController androidController) ...[
         AndroidWebViewController.enableDebugging(false),

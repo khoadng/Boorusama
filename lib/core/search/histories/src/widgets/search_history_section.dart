@@ -1,4 +1,5 @@
 // Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 import 'package:i18n/i18n.dart';
 import 'package:kurumi/kurumi.dart';
@@ -12,7 +13,7 @@ import '../../../../../foundation/platform.dart';
 import '../../../selected_tags/types.dart';
 import '../types/search_history.dart';
 
-class SearchHistorySection extends StatelessWidget {
+class SearchHistorySection extends ConsumerWidget {
   const SearchHistorySection({
     required this.onHistoryTap,
     required this.histories,
@@ -31,7 +32,7 @@ class SearchHistorySection extends StatelessWidget {
   final bool? reverseScheme;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return histories.isNotEmpty
         ? RemoveLeftPaddingOnLargeScreen(
             child: Column(
@@ -67,7 +68,9 @@ class SearchHistorySection extends StatelessWidget {
                         ),
                         contentPadding: const EdgeInsets.only(left: 8),
                         onTap: () => onHistoryTap(item),
-                        minTileHeight: isDesktopPlatform() ? 0 : null,
+                        minTileHeight: ref.watch(appPlatformProvider).isDesktop
+                            ? 0
+                            : null,
                         subtitle: showTime
                             ? DateTooltip(
                                 date: item.createdAt,

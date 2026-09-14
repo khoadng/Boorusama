@@ -1,13 +1,8 @@
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hive_ce/hive.dart';
 
-final miscDataBoxProvider = Provider<Box<String>>(
-  (ref) {
-    throw UnimplementedError();
-  },
-  name: 'miscDataBoxProvider',
-);
+// Project imports:
+import 'misc_data_store.dart';
 
 final miscDataProvider = NotifierProvider.autoDispose
     .family<MiscDataNotifier, String, String>(MiscDataNotifier.new);
@@ -15,13 +10,13 @@ final miscDataProvider = NotifierProvider.autoDispose
 class MiscDataNotifier extends AutoDisposeFamilyNotifier<String, String> {
   @override
   String build(String arg) {
-    final miscDataBox = ref.watch(miscDataBoxProvider);
-    return miscDataBox.get(arg) ?? '';
+    final miscDataStore = ref.watch(miscDataStoreProvider);
+    return miscDataStore.get(arg) ?? '';
   }
 
   Future<void> put(String value) async {
-    final miscDataBox = ref.watch(miscDataBoxProvider);
-    await miscDataBox.put(arg, value);
+    final miscDataStore = ref.watch(miscDataStoreProvider);
+    await miscDataStore.put(arg, value);
 
     state = value;
   }

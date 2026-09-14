@@ -5,6 +5,7 @@ import 'dart:async';
 import 'package:cache_manager/cache_manager.dart';
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 import 'package:i18n/i18n.dart';
@@ -50,6 +51,9 @@ final bookmarkUrlResolverProvider = Provider.autoDispose
     });
 
 class BookmarkNotifier extends AsyncNotifier<BookmarkState> {
+  BuildContext? get _navigationContext =>
+      ref.read(appNavigationProvider).navigatorKey.currentContext;
+
   ImageCacheManager? get _cacheManager =>
       ref.read(bookmarkImageCacheManagerProvider);
 
@@ -332,7 +336,7 @@ class BookmarkNotifier extends AsyncNotifier<BookmarkState> {
         .toList();
 
     if (failures.isNotEmpty) {
-      final context = navigatorKey.currentContext;
+      final context = _navigationContext;
 
       final uniqueErrors = failures
           .map((e) => e.error.getErrorMessage())
@@ -356,7 +360,7 @@ extension BookmarkCubitToastX on BookmarkNotifier {
     BooruConfigAuth config,
     Post post,
   ) async {
-    final context = navigatorKey.currentContext;
+    final context = _navigationContext;
 
     if (context == null || !context.mounted) {
       return;
@@ -377,7 +381,7 @@ extension BookmarkCubitToastX on BookmarkNotifier {
     String booruUrl,
     Iterable<Post> posts,
   ) async {
-    final context = navigatorKey.currentContext;
+    final context = _navigationContext;
 
     if (context == null || !context.mounted) {
       return;
@@ -399,7 +403,7 @@ extension BookmarkCubitToastX on BookmarkNotifier {
     BookmarkUniqueId bookmarkId, {
     void Function()? onSuccess,
   }) async {
-    final context = navigatorKey.currentContext;
+    final context = _navigationContext;
 
     if (context == null || !context.mounted) {
       return;

@@ -169,8 +169,8 @@ class _TaskSubtitle extends ConsumerWidget {
 
   final TaskStatusUpdate task;
 
-  String _prettifyFilePathIfNeeded(String path) {
-    if (isAndroid()) {
+  String _prettifyFilePathIfNeeded(String path, AppPlatform platform) {
+    if (platform.isAndroid) {
       if (path.startsWith('/storage/emulated/0/')) {
         return path.replaceAll('/storage/emulated/0/', '/');
       }
@@ -188,6 +188,7 @@ class _TaskSubtitle extends ConsumerWidget {
         task.task.requiresWiFi &&
         !ref.watch(connectedToWifiProvider) &&
         status == TaskStatus.enqueued;
+    final platform = ref.watch(appPlatformProvider);
 
     return ReadMoreText(
       exception == null
@@ -198,7 +199,8 @@ class _TaskSubtitle extends ConsumerWidget {
                       ref
                           .watch(_filePathProvider(task.task))
                           .maybeWhen(
-                            data: (data) => _prettifyFilePathIfNeeded(data),
+                            data: (data) =>
+                                _prettifyFilePathIfNeeded(data, platform),
                             orElse: () => '...',
                           ),
                     _ => status.name.sentenceCase,

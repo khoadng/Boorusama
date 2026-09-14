@@ -119,7 +119,7 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
                 : null,
           ),
           actions: [
-            if (isMobilePlatform())
+            if (ref.watch(appPlatformProvider).isMobile)
               AnimatedSwitcher(
                 duration: Durations.extralong1,
                 reverseDuration: const Duration(milliseconds: 10),
@@ -145,7 +145,7 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
                       )
                     : null,
               ),
-            if (isDesktopPlatform())
+            if (ref.watch(appPlatformProvider).isDesktop)
               AnimatedSwitcher(
                 duration: Durations.extralong1,
                 reverseDuration: const Duration(milliseconds: 10),

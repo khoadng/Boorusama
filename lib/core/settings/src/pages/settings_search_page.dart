@@ -167,7 +167,7 @@ class _SettingsSearchPageState extends ConsumerState<SettingsSearchPage> {
     final entries = buildSettingsSearchCatalog(
       context,
       settings: ref.watch(settingsProvider),
-      mobileDownloadPolicy: isAndroid() || isIOS(),
+      mobileDownloadPolicy: ref.watch(appPlatformProvider).isMobile,
       hasPremium: ref.watch(hasPremiumProvider),
       showPremium: ref.watch(showPremiumFeatsProvider),
       incognitoKeyboardAvailable: ref.watch(trackerProvider).hasValue,

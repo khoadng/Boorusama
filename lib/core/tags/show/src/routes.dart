@@ -35,7 +35,7 @@ Future<bool?> goToShowTaglistPage(
   }
 
   return Kurumi.showAdaptiveSheet(
-    navigatorKey.currentContext ?? ref.context,
+    ref.read(appNavigationProvider).navigatorKey.currentContext ?? ref.context,
     expand: true,
     settings: const RouteSettings(
       name: 'view_tag_list',

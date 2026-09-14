@@ -235,7 +235,7 @@ Future<bool> _verifyCurrentLock(
 
   try {
     return await startAuthenticate(
-      ref.read(biometricsProvider),
+      ref.read(deviceAuthenticatorProvider),
       localizedReason: context.t.settings.privacy.app_lock.authenticate_reason,
     );
   } catch (_) {

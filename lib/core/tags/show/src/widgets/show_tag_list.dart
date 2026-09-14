@@ -242,7 +242,7 @@ class _TagTileState extends State<_TagTile> {
                   ref,
                   tag: widget.tag.rawName,
                 ),
-          trailing: isDesktopPlatform()
+          trailing: ref.watch(appPlatformProvider).isDesktop
               ? ValueListenableBuilder(
                   valueListenable: _hover,
                   builder: (_, isHovered, _) => isHovered

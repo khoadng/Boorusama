@@ -157,7 +157,7 @@ class _PostDetailPageScaffoldState<T extends Post>
   }
 
   void _isVideoPlayingChanged() {
-    if (context.isLargeScreen && isDesktopPlatform()) {
+    if (context.isLargeScreen && ref.read(appPlatformProvider).isDesktop) {
       // force overlay to be on when video is not playing
       if (!widget.controller.isVideoPlaying.value) {
         _controller.disableHoverToControlOverlay();

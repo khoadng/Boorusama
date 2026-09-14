@@ -5,13 +5,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../foundation/filesystem.dart';
 import '../../../foundation/info/device_info.dart';
 import '../../../foundation/loggers.dart';
+import '../../../foundation/platform.dart';
 import '../../videos/cache/providers.dart';
 import '../sidecar/providers.dart';
 import 'downloader.dart';
 import 'notification.dart';
 
 final downloadNotificationsProvider = Provider<DownloadNotifications>((ref) {
-  final notifications = DownloadNotifications.uninitialized();
+  final notifications = DownloadNotifications.uninitialized(
+    platform: ref.watch(appPlatformProvider),
+  );
   ref.onDispose(notifications.dispose);
   return notifications;
 });

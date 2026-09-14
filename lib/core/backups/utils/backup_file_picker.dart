@@ -12,6 +12,7 @@ import '../../../../foundation/platform.dart';
 class BackupFilePicker {
   static Future<void> pickFile({
     required BuildContext context,
+    required AppPlatform platform,
     required AndroidDeviceInfo? androidDeviceInfo,
     required void Function(String path) onPick,
     List<String> allowedExtensions = const ['json'],
@@ -21,7 +22,7 @@ class BackupFilePicker {
       return _pickFileManualExtensionCheck(context, allowedExtensions, onPick);
     }
 
-    if (isAndroid()) {
+    if (platform.isAndroid) {
       final androidVersion = androidDeviceInfo?.version.sdkInt;
       // Android 9 or lower will need to use any file type
       if (androidVersion != null &&

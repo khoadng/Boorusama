@@ -33,7 +33,7 @@ final danbooruCurrentUserProvider =
       if (!loginDetails.hasLogin()) return null;
 
       // First, we try to get the user id from the cache
-      final miscData = await ref.watch(persistentCacheBoxProvider.future);
+      final miscData = ref.watch(persistentCacheStoreProvider);
       final key =
           '${_kCurrentUserIdKey}_${Uri.encodeComponent(config.url)}_${config.login}';
       final cached = miscData.get(key);

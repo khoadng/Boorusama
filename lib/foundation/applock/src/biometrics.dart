@@ -1,16 +1,17 @@
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:local_auth/local_auth.dart';
 
 // Project imports:
 import 'app_lock_capabilities.dart';
+import 'device_authenticator.dart';
 
-final biometricsProvider = Provider<LocalAuthentication>((ref) {
-  return LocalAuthentication();
-});
+final deviceAuthenticatorProvider = Provider<DeviceAuthenticator>(
+  (_) => throw UnimplementedError(),
+  name: 'deviceAuthenticatorProvider',
+);
 
 final biometricDeviceSupportProvider = FutureProvider<bool>((ref) async {
-  final auth = ref.watch(biometricsProvider);
+  final auth = ref.watch(deviceAuthenticatorProvider);
   final canAuthenticateWithBiometrics = await auth.canCheckBiometrics;
   final canAuthenticate =
       canAuthenticateWithBiometrics || await auth.isDeviceSupported();
@@ -31,12 +32,11 @@ final canUseBiometricLockProvider = FutureProvider<bool>((ref) async {
 });
 
 Future<bool> startAuthenticate(
-  LocalAuthentication localAuth, {
+  DeviceAuthenticator deviceAuthenticator, {
   required String localizedReason,
 }) async {
-  final didAuthenticate = await localAuth.authenticate(
+  final didAuthenticate = await deviceAuthenticator.authenticate(
     localizedReason: localizedReason,
-    persistAcrossBackgrounding: true,
   );
 
   return didAuthenticate;

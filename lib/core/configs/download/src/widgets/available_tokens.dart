@@ -23,7 +23,7 @@ class AvailableTokens extends ConsumerWidget {
         downloadFilenameBuilder?.availableTokens ?? <TokenInfo>{};
 
     return Wrap(
-      runSpacing: isDesktopPlatform() ? 4 : -4,
+      runSpacing: ref.watch(appPlatformProvider).isDesktop ? 4 : -4,
       spacing: 4,
       crossAxisAlignment: WrapCrossAlignment.center,
       children: [

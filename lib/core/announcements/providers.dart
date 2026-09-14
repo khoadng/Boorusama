@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../../foundation/loggers.dart';
+import '../../foundation/platform.dart';
 import '../../foundation/vendors/google/providers.dart';
 import '../cache/persistent/providers.dart';
 import '../configs/config/providers.dart';
@@ -29,6 +30,7 @@ final announcementDioProvider = Provider<Dio>((ref) {
     userAgent: ref.watch(defaultUserAgentProvider),
     logger: ref.watch(loggerProvider),
     protocolInfo: NetworkProtocolInfo.generic(
+      appPlatform: ref.watch(appPlatformProvider),
       cronetAvailable: ref.watch(isCronetAvailableProvider),
     ),
   );
@@ -65,16 +67,13 @@ final announcementRepositoryProvider = Provider<AnnouncementRepository>((ref) {
   );
 });
 
-final dismissedAnnouncementIdsProvider = FutureProvider<Set<String>>((
-  ref,
-) async {
+final dismissedAnnouncementIdsProvider = FutureProvider<Set<String>>((ref) {
   try {
-    final box = await ref.watch(persistentCacheBoxProvider.future);
+    final store = ref.watch(persistentCacheStoreProvider);
 
-    return box.keys
-        .whereType<String>()
+    return store.keys
         .where((key) => key.startsWith(kAnnouncementDismissedPrefix))
-        .where((key) => box.get(key) == 'true')
+        .where((key) => store.get(key) == 'true')
         .map((key) => key.substring(kAnnouncementDismissedPrefix.length))
         .toSet();
   } catch (_) {

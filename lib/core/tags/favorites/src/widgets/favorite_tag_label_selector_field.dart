@@ -29,26 +29,30 @@ class FavoriteTagLabelSelectorField extends StatelessWidget {
           constraints: const BoxConstraints(
             maxWidth: 160,
           ),
-          child: OptionSingleSearchableField(
-            backgroundColor: Kurumi.themeOf(
-              context,
-            ).colorScheme.surfaceContainerHigh,
-            sheetTitle: context.t.favorite_tags.labels.title,
-            optionValueBuilder: (option) => option == kSpecialLabelKeyForAll
-                ? context.t.favorite_tags.labels.all
-                : option,
-            value: selected == ''
-                ? context.t.favorite_tags.labels.all
-                : selected,
-            items: [
-              kSpecialLabelKeyForAll,
-              ...labels,
-            ],
-            onSelect: (value) {
-              if (value == null) return;
-              final v = value == kSpecialLabelKeyForAll ? '' : value;
-              onSelect(v);
-            },
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerRight,
+            child: OptionSingleSearchableField(
+              backgroundColor: Kurumi.themeOf(
+                context,
+              ).colorScheme.surfaceContainerHigh,
+              sheetTitle: context.t.favorite_tags.labels.title,
+              optionValueBuilder: (option) => option == kSpecialLabelKeyForAll
+                  ? context.t.favorite_tags.labels.all
+                  : option,
+              value: selected == ''
+                  ? context.t.favorite_tags.labels.all
+                  : selected,
+              items: [
+                kSpecialLabelKeyForAll,
+                ...labels,
+              ],
+              onSelect: (value) {
+                if (value == null) return;
+                final v = value == kSpecialLabelKeyForAll ? '' : value;
+                onSelect(v);
+              },
+            ),
           ),
         ),
       ],

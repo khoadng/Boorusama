@@ -9,17 +9,13 @@ import 'package:kurumi/material.dart';
 import '../cache/persistent/providers.dart';
 import 'dismissable_info_container.dart';
 
-final dismissedStateProvider = FutureProvider.family<bool, String>((
-  ref,
-  key,
-) async {
-  final box = await ref.watch(persistentCacheBoxProvider.future);
-  return box.get(key) == 'true';
+final dismissedStateProvider = FutureProvider.family<bool, String>((ref, key) {
+  final store = ref.watch(persistentCacheStoreProvider);
+  return store.get(key) == 'true';
 });
 
 Future<void> dismissPersistently(WidgetRef ref, String storageKey) async {
-  final box = await ref.read(persistentCacheBoxProvider.future);
-  await box.put(storageKey, 'true');
+  await ref.read(persistentCacheStoreProvider).put(storageKey, 'true');
   ref.invalidate(dismissedStateProvider(storageKey));
 }
 

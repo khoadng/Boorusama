@@ -8,6 +8,7 @@ import 'package:kurumi/material.dart';
 import '../../../foundation/html.dart';
 import '../../../foundation/info/device_info.dart';
 import '../../../foundation/picker.dart';
+import '../../../foundation/platform.dart';
 import '../../downloads/path/types.dart';
 import '../../settings/providers.dart';
 import '../zip/providers.dart';
@@ -215,6 +216,7 @@ class _StatusTile extends ConsumerWidget {
       backupProvider.select((s) => s.isActive),
     );
     final settings = ref.watch(settingsProvider.select((s) => s.autoBackup));
+    final platform = ref.watch(appPlatformProvider);
 
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 16),
@@ -224,11 +226,11 @@ class _StatusTile extends ConsumerWidget {
         ),
       ),
       subtitle: Text(
-        settings.shouldBackup
+        settings.shouldBackup(platform)
             ? context.t.settings.auto_backup.backup_needed
             : context.t.settings.auto_backup.up_to_date,
         style: theme.textTheme.bodySmall?.copyWith(
-          color: settings.shouldBackup
+          color: settings.shouldBackup(platform)
               ? colorScheme.error
               : colorScheme.primary,
           fontWeight: FontWeight.w500,

@@ -127,58 +127,60 @@ class _SearchPageScaffoldState<T extends Post>
 
   @override
   Widget build(BuildContext context) {
-    return RawSearchPageScaffold(
-      fetcher: widget.fetcher,
-      params: widget.params,
-      tagsController: _tagsController,
-      controller: _controller,
-      selectionModeController: _searchModeController,
-      onQueryChanged: (query) {
-        ref
-            .read(suggestionsNotifierProvider(ref.readConfigAuth).notifier)
-            .getSuggestions(query);
-      },
-      extraHeaders: widget.extraHeaders,
-      landingView:
-          widget.landingViewBuilder?.call(_controller) ??
-          DefaultMobileSearchLandingView(
-            controller: _controller,
-          ),
-      itemBuilder: widget.itemBuilder,
-      searchSuggestions: DefaultSearchSuggestions(
-        multiSelectController: _searchModeController,
-        config: ref.watchConfigAuth,
-      ),
-      resultHeader: ValueListenableBuilder(
-        valueListenable: _controller.tagString,
-        builder: (context, value, _) => ValueListenableBuilder(
-          valueListenable: _postController,
-          builder: (context, postController, child) => postController != null
-              ? ResultHeaderFromController(
-                  controller: postController,
-                  onRefresh: null,
-                  hasCount:
-                      ref.watchConfigAuth.booruType.postCountMethod ==
-                      PostCountMethod.search,
-                )
-              : const SizedBox.shrink(),
+    return Material(
+      child: RawSearchPageScaffold(
+        fetcher: widget.fetcher,
+        params: widget.params,
+        tagsController: _tagsController,
+        controller: _controller,
+        selectionModeController: _searchModeController,
+        onQueryChanged: (query) {
+          ref
+              .read(suggestionsNotifierProvider(ref.readConfigAuth).notifier)
+              .getSuggestions(query);
+        },
+        extraHeaders: widget.extraHeaders,
+        landingView:
+            widget.landingViewBuilder?.call(_controller) ??
+            DefaultMobileSearchLandingView(
+              controller: _controller,
+            ),
+        itemBuilder: widget.itemBuilder,
+        searchSuggestions: DefaultSearchSuggestions(
+          multiSelectController: _searchModeController,
+          config: ref.watchConfigAuth,
         ),
-      ),
-      searchRegion:
-          widget.searchRegionBuilder?.call(
-            _postController,
-            _controller,
-          ) ??
-          DefaultSearchRegion(
-            controller: _controller,
-            initialQuery: widget.initialQuery,
-            postController: _postController,
+        resultHeader: ValueListenableBuilder(
+          valueListenable: _controller.tagString,
+          builder: (context, value, _) => ValueListenableBuilder(
+            valueListenable: _postController,
+            builder: (context, postController, child) => postController != null
+                ? ResultHeaderFromController(
+                    controller: postController,
+                    onRefresh: null,
+                    hasCount:
+                        ref.watchConfigAuth.booruType.postCountMethod ==
+                        PostCountMethod.search,
+                  )
+                : const SizedBox.shrink(),
           ),
-      onPostControllerCreated: (controller) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          _postController.value = controller;
-        });
-      },
+        ),
+        searchRegion:
+            widget.searchRegionBuilder?.call(
+              _postController,
+              _controller,
+            ) ??
+            DefaultSearchRegion(
+              controller: _controller,
+              initialQuery: widget.initialQuery,
+              postController: _postController,
+            ),
+        onPostControllerCreated: (controller) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _postController.value = controller;
+          });
+        },
+      ),
     );
   }
 }

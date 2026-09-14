@@ -14,6 +14,7 @@ import 'package:hive_ce/hive.dart';
 import '../../../core/http/client/providers.dart';
 import '../../../core/http/client/types.dart';
 import '../../../foundation/loggers.dart';
+import '../../../foundation/platform.dart';
 import 'cache.dart';
 import 'parser.dart';
 import 'types.dart';
@@ -37,7 +38,9 @@ final shimmie2AnonymousDioProvider = Provider.family<Dio, String>(
       baseUrl: baseUrl,
       userAgent: ref.watch(defaultUserAgentProvider),
       logger: loggerService,
-      protocolInfo: NetworkProtocolInfo.generic(),
+      protocolInfo: NetworkProtocolInfo.generic(
+        appPlatform: ref.watch(appPlatformProvider),
+      ),
     );
   },
 );

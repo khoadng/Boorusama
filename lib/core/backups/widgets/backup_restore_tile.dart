@@ -7,6 +7,7 @@ import 'package:kurumi/material.dart';
 // Project imports:
 import '../../../foundation/info/device_info.dart';
 import '../../../foundation/picker.dart';
+import '../../../foundation/platform.dart';
 import '../preparation/preparation_pipeline.dart';
 import '../types/backup_data_source.dart';
 import '../types/types.dart';
@@ -192,6 +193,7 @@ class DefaultBackupTile extends ConsumerWidget {
 
     BackupFilePicker.pickFile(
       context: context,
+      platform: ref.read(appPlatformProvider),
       androidDeviceInfo: ref.read(deviceInfoProvider).androidDeviceInfo,
       allowedExtensions: fileExtensions,
       forceAnyFileType: forceAnyFileType,

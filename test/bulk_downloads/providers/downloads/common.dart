@@ -39,9 +39,13 @@ import 'package:boorusama/core/search/selected_tags/types.dart';
 import 'package:boorusama/core/settings/providers.dart';
 import 'package:boorusama/core/settings/types.dart';
 import 'package:boorusama/foundation/info/device_info.dart';
+import 'package:boorusama/foundation/filesystem.dart';
 import 'package:boorusama/foundation/loggers.dart';
 import 'package:boorusama/foundation/permissions.dart';
+import 'package:boorusama/foundation/platform.dart';
+
 import '../../common.dart';
+import '../../../support/boorusama_test_runtime.dart';
 
 class MockMediaPermissionManager extends Mock
     implements MediaPermissionManager {}
@@ -344,6 +348,8 @@ List<Override> getTestOverrides({
       (_, task) => taskFileSizeResolver?.call(task) ?? Future.value(0),
     ),
     deviceInfoProvider.overrideWithValue(deviceInfo ?? DeviceInfo.empty()),
+    appFileSystemProvider.overrideWithValue(MemoryAppFileSystem()),
+    appPlatformProvider.overrideWithValue(AppPlatform.unknown),
   ];
 }
 

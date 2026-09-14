@@ -2,7 +2,7 @@
 import 'package:booru_clients/generated.dart';
 
 // Project imports:
-import '../../../../../foundation/platform.dart' as platform_utils;
+import '../../../../../foundation/platform.dart';
 
 class NetworkProtocolInfo {
   const NetworkProtocolInfo({
@@ -12,11 +12,15 @@ class NetworkProtocolInfo {
   });
 
   /// Creates a NetworkProtocolInfo for generic HTTP clients without proxy
-  factory NetworkProtocolInfo.generic({bool? cronetAvailable}) {
+  factory NetworkProtocolInfo.generic({
+    required AppPlatform appPlatform,
+    bool? cronetAvailable,
+  }) {
     return NetworkProtocolInfo(
       customProtocol: null,
       detectedProtocol: null,
-      platform: PlatformInfo.fromCurrent(
+      platform: PlatformInfo.fromAppPlatform(
+        appPlatform,
         cronetAvailable: cronetAvailable,
       ),
     );
@@ -82,13 +86,16 @@ class PlatformInfo {
     required this.cronetAvailable,
   });
 
-  factory PlatformInfo.fromCurrent({bool? cronetAvailable}) {
+  factory PlatformInfo.fromAppPlatform(
+    AppPlatform appPlatform, {
+    bool? cronetAvailable,
+  }) {
     return PlatformInfo(
-      isAndroid: platform_utils.isAndroid(),
-      isIOS: platform_utils.isIOS(),
-      isMacOS: platform_utils.isMacOS(),
-      isWindows: platform_utils.isWindows(),
-      isWeb: platform_utils.isWeb(),
+      isAndroid: appPlatform.isAndroid,
+      isIOS: appPlatform.isIOS,
+      isMacOS: appPlatform == AppPlatform.macos,
+      isWindows: appPlatform == AppPlatform.windows,
+      isWeb: appPlatform == AppPlatform.web,
       cronetAvailable: cronetAvailable ?? false,
     );
   }

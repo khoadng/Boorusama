@@ -2,17 +2,14 @@
 import 'package:i18n/i18n.dart';
 import 'package:kurumi/material.dart';
 
-// Project imports:
-import '../../../core/router.dart';
-
 var _isDialogVisible = false;
 
 void showSessionExpiredDialog({
+  required BuildContext? context,
   required VoidCallback onReLogin,
 }) {
   if (_isDialogVisible) return;
 
-  final context = navigatorKey.currentContext;
   if (context == null || !context.mounted) return;
 
   _isDialogVisible = true;

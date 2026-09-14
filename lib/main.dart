@@ -2,30 +2,27 @@
 import 'package:kurumi/material.dart';
 
 // Project imports:
-import 'core/boorusama_app.dart';
+import 'core/bootstrap/production_boorusama_bootstrap.dart';
+import 'core/bootstrap/bootstrap_host.dart';
 import 'foundation/app_rating/src/rate_my_app_service.dart';
 import 'foundation/app_update/providers.dart';
 import 'foundation/filesystem.dart';
 import 'foundation/iap/iap.dart';
 import 'core/debug/data.dart';
 import 'foundation/platform.dart';
-import 'foundation/vendors/google/google_play_services_impl.dart';
 import 'foundation/vendors/revenuecat/revenuecat.dart';
 
-void main() async {
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
-  final cronetAvailable = await CronetImpl(
-    gServices: GooglePlayServicesImpl(),
-  ).isAvailable();
-
   runApp(
-    BoorusamaApp(
-      fileSystem: const IoFileSystem(),
-      cronetAvailable: cronetAvailable,
-      appRatingService: const RateMyAppService(),
-      iapFunc: () => _initIap(),
-      appUpdateChecker: createDefaultAppUpdateChecker,
+    const BoorusamaBootstrapHost(
+      bootstrap: ProductionBoorusamaBootstrap(
+        fileSystem: IoFileSystem(),
+        appRatingService: RateMyAppService(),
+        iapFactory: _initIap,
+        appUpdateChecker: createDefaultAppUpdateChecker,
+      ),
     ),
   );
 }

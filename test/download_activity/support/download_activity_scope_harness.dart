@@ -19,6 +19,7 @@ import 'package:boorusama/core/settings/providers.dart';
 import 'package:boorusama/core/settings/types.dart';
 import 'package:boorusama/foundation/loggers.dart';
 import 'package:boorusama/foundation/permissions.dart';
+import 'package:boorusama/foundation/platform.dart';
 
 final _activitiesProvider = StateProvider<List<DownloadActivity>>(
   (ref) => const [],
@@ -42,6 +43,7 @@ class DownloadActivityScopeHarness {
         notificationPermissionManagerProvider.overrideWithValue(
           _permissionManager,
         ),
+        appPlatformProvider.overrideWithValue(AppPlatform.unknown),
         ...overrides,
       ],
     );
@@ -120,7 +122,8 @@ class _RecordingNotificationPermissionManager
 }
 
 class _RecordingDownloadNotifications extends DownloadNotifications {
-  _RecordingDownloadNotifications() : super.uninitialized();
+  _RecordingDownloadNotifications()
+    : super.uninitialized(platform: AppPlatform.unknown);
 
   final events = <String>[];
   Completer<void>? progressGate;

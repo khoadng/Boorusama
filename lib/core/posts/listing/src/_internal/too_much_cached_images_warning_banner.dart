@@ -49,7 +49,11 @@ class TooMuchCachedImagesWarningBanner extends ConsumerWidget {
                   onPressed: () async {
                     final success = await clearImageCache(cacheManager);
 
-                    final c = navigatorKey.currentState?.context;
+                    final c = ref
+                        .read(appNavigationProvider)
+                        .navigatorKey
+                        .currentState
+                        ?.context;
 
                     if (c != null && c.mounted) {
                       if (success) {

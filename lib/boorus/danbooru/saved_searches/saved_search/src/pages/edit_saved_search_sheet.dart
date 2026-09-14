@@ -24,7 +24,10 @@ class CreateSavedSearchSheet extends ConsumerWidget {
     final notifier = ref.watch(
       danbooruSavedSearchesProvider(ref.watchConfigAuth).notifier,
     );
-    final navigatorContext = navigatorKey.currentContext;
+    final navigatorContext = ref
+        .watch(appNavigationProvider)
+        .navigatorKey
+        .currentContext;
 
     return SavedSearchSheet(
       initialValue: initialValue != null
@@ -58,7 +61,10 @@ class EditSavedSearchSheet extends ConsumerWidget {
     final notifier = ref.watch(
       danbooruSavedSearchesProvider(ref.watchConfigAuth).notifier,
     );
-    final navigatorContext = navigatorKey.currentContext;
+    final navigatorContext = ref
+        .watch(appNavigationProvider)
+        .navigatorKey
+        .currentContext;
 
     return SavedSearchSheet(
       title: context.t.saved_search.update_saved_search,

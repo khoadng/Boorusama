@@ -79,7 +79,7 @@ class _DownloadPageState extends ConsumerState<DownloadPage> {
           ),
         ),
         const SizedBox(height: 4),
-        if (isAndroid() || isIOS()) ...[
+        if (ref.watch(appPlatformProvider).isMobile) ...[
           SettingAnchor(
             id: SettingsIndex.downloads.network.id,
             child: KurumiSettingsTile(

@@ -6,13 +6,15 @@ import 'iap_impl.dart';
 import 'purchaser.dart';
 import 'subscription.dart';
 
-final iapFuncProvider = Provider<Future<IAP> Function()?>((ref) => null);
+typedef IapFactory = Future<IAP> Function();
 
-final iapProvider = FutureProvider<IAP>((ref) async {
-  final iapFunc = ref.watch(iapFuncProvider);
-  final iap = iapFunc != null ? await iapFunc() : await initDummyIap();
+final iapFactoryProvider = Provider<IapFactory>(
+  (_) => throw UnimplementedError(),
+  name: 'iapFactoryProvider',
+);
 
-  return iap;
+final iapProvider = FutureProvider<IAP>((ref) {
+  return ref.watch(iapFactoryProvider)();
 });
 
 final subscriptionManagerProvider = FutureProvider<SubscriptionManager>((

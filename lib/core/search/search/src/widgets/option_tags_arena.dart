@@ -1,4 +1,5 @@
 // Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kurumi/kurumi.dart';
 import 'package:kurumi/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -15,7 +16,7 @@ class OptionTagsArenaController extends ChangeNotifier {
   }
 }
 
-class OptionTagsArena extends StatefulWidget {
+class OptionTagsArena extends ConsumerStatefulWidget {
   const OptionTagsArena({
     required this.title,
     required this.children,
@@ -32,10 +33,10 @@ class OptionTagsArena extends StatefulWidget {
   final OptionTagsArenaController? controller;
 
   @override
-  State<OptionTagsArena> createState() => _OptionTagsArenaState();
+  ConsumerState<OptionTagsArena> createState() => _OptionTagsArenaState();
 }
 
-class _OptionTagsArenaState extends State<OptionTagsArena> {
+class _OptionTagsArenaState extends ConsumerState<OptionTagsArena> {
   late final controller = widget.controller ?? OptionTagsArenaController();
 
   @override
@@ -54,7 +55,7 @@ class _OptionTagsArenaState extends State<OptionTagsArena> {
         _buildHeader(),
         Wrap(
           spacing: 4,
-          runSpacing: isDesktopPlatform() ? 4 : 0,
+          runSpacing: ref.watch(appPlatformProvider).isDesktop ? 4 : 0,
           children: widget.children,
         ),
       ],
