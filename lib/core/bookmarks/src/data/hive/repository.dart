@@ -15,6 +15,8 @@ class BookmarkHiveRepository implements BookmarkRepository {
 
   final Box<BookmarkHiveObject> _box;
 
+  Future<void> close() => _box.close();
+
   @override
   Future<Bookmark> addBookmark(
     int booruId,

@@ -361,7 +361,10 @@ class BookmarkContextMenu extends ConsumerWidget {
         if (!loginDetails.hasStrictSFW)
           KurumiContextMenuTile(
             title: 'Open source in browser',
-            onTap: () => launchExternalUrlString(post.bookmark.sourceUrl),
+            onTap: () => launchExternalUrlString(
+              post.bookmark.sourceUrl,
+              launcher: ref.read(externalUrlLauncherProvider),
+            ),
           ),
         if (ref.watch(isDevEnvironmentProvider))
           if (post.bookmark.booruId == auth.booruId)

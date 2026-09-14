@@ -31,8 +31,11 @@ class DonationPage extends ConsumerWidget {
               const _HeaderSection(),
               const SizedBox(height: 32),
               switch (ref.watch(networkStateProvider)) {
-                final NetworkConnectedState _ => _buildIconButtons(appInfo),
-                _ => _buildTextButtons(appInfo),
+                final NetworkConnectedState _ => _buildIconButtons(
+                  appInfo,
+                  ref,
+                ),
+                _ => _buildTextButtons(appInfo, ref),
               },
               const SizedBox(height: 16),
             ],
@@ -42,13 +45,16 @@ class DonationPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildTextButtons(AppInfo appInfo) {
+  Widget _buildTextButtons(AppInfo appInfo, WidgetRef ref) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: appInfo.donationUrls
           .map(
             (url) => TextButton(
-              onPressed: () => launchExternalUrlString(url),
+              onPressed: () => launchExternalUrlString(
+                url,
+                launcher: ref.read(externalUrlLauncherProvider),
+              ),
               child: Text(url),
             ),
           )
@@ -56,7 +62,7 @@ class DonationPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildIconButtons(AppInfo appInfo) {
+  Widget _buildIconButtons(AppInfo appInfo, WidgetRef ref) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       spacing: 24,
@@ -110,7 +116,10 @@ class _DonationIcon extends ConsumerWidget {
     final dio = ref.watch(_dioProvider);
 
     return GestureDetector(
-      onTap: () => launchExternalUrlString(url),
+      onTap: () => launchExternalUrlString(
+        url,
+        launcher: ref.read(externalUrlLauncherProvider),
+      ),
       child: WebsiteLogo(
         url: getFavicon(_getDonateUrl(url)),
         dio: dio,

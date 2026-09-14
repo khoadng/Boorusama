@@ -285,7 +285,10 @@ class PostGestureHandler {
 
   void handleOpenSource(WidgetRef ref, Post post) {
     post.source.whenWeb(
-      (source) => launchExternalUrlString(source.url),
+      (source) => launchExternalUrlString(
+        source.url,
+        launcher: ref.read(externalUrlLauncherProvider),
+      ),
       () => false,
     );
   }

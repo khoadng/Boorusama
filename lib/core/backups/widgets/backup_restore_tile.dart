@@ -7,6 +7,7 @@ import 'package:kurumi/material.dart';
 // Project imports:
 import '../../../foundation/info/device_info.dart';
 import '../../../foundation/picker.dart';
+import '../../../foundation/platform.dart';
 import '../preparation/preparation_pipeline.dart';
 import '../types/backup_data_source.dart';
 import '../types/types.dart';
@@ -142,7 +143,7 @@ class DefaultBackupTile extends ConsumerWidget {
   void _handleAction(BuildContext context, WidgetRef ref, String actionType) {
     switch (actionType) {
       case 'export':
-        _handleFileExport(context);
+        _handleFileExport(context, ref);
       case 'import':
         _handleFileImport(context, ref);
       case 'exportClipboard':
@@ -154,12 +155,13 @@ class DefaultBackupTile extends ConsumerWidget {
     }
   }
 
-  void _handleFileExport(BuildContext context) {
+  void _handleFileExport(BuildContext context, WidgetRef ref) {
     final fileCapability = source.capabilities.file;
     if (fileCapability == null) return;
 
     pickDirectoryPathToastOnError(
       context: context,
+      picker: ref.read(appFilePickerProvider),
       onPick: (path) async {
         try {
           await fileCapability.export(path);
@@ -192,6 +194,8 @@ class DefaultBackupTile extends ConsumerWidget {
 
     BackupFilePicker.pickFile(
       context: context,
+      picker: ref.read(appFilePickerProvider),
+      platform: ref.read(appPlatformProvider),
       androidDeviceInfo: ref.read(deviceInfoProvider).androidDeviceInfo,
       allowedExtensions: fileExtensions,
       forceAnyFileType: forceAnyFileType,

@@ -13,6 +13,7 @@ import '../../../../boorus/engine/providers.dart';
 import '../../../../configs/config/types.dart';
 import '../../../../configs/network/providers.dart';
 import '../../../../ddos/handler/providers.dart';
+import '../../../../../foundation/platform.dart';
 import '../interceptors/sliding_window_rate_limit_interceptor.dart';
 import '../types/dio_options.dart';
 import '../types/http_utils.dart';
@@ -56,6 +57,7 @@ final genericDioProvider = Provider<Dio>(
       userAgent: ref.watch(defaultUserAgentProvider),
       logger: loggerService,
       protocolInfo: NetworkProtocolInfo.generic(
+        appPlatform: ref.watch(appPlatformProvider),
         cronetAvailable: cronetAvailable,
       ),
     );
@@ -176,7 +178,8 @@ final defaultNetworkProtocolInfoProvider =
       return NetworkProtocolInfo(
         customProtocol: customProtocol,
         detectedProtocol: detectedProtocol,
-        platform: PlatformInfo.fromCurrent(
+        platform: PlatformInfo.fromAppPlatform(
+          ref.watch(appPlatformProvider),
           cronetAvailable: cronetAvailable,
         ),
       );

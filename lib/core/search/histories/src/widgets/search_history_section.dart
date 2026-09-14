@@ -1,4 +1,5 @@
 // Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 import 'package:i18n/i18n.dart';
 import 'package:kurumi/kurumi.dart';
@@ -12,7 +13,7 @@ import '../../../../../foundation/platform.dart';
 import '../../../selected_tags/types.dart';
 import '../types/search_history.dart';
 
-class SearchHistorySection extends StatelessWidget {
+class SearchHistorySection extends ConsumerWidget {
   const SearchHistorySection({
     required this.onHistoryTap,
     required this.histories,
@@ -31,7 +32,7 @@ class SearchHistorySection extends StatelessWidget {
   final bool? reverseScheme;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return histories.isNotEmpty
         ? RemoveLeftPaddingOnLargeScreen(
             child: Column(
@@ -59,25 +60,31 @@ class SearchHistorySection extends StatelessWidget {
                 ...histories
                     .take(maxHistory)
                     .map(
-                      (item) => ListTile(
-                        visualDensity: VisualDensity.compact,
-                        title: SearchHistoryQueryWidget(
-                          history: item,
-                          reverseScheme: reverseScheme,
-                        ),
-                        contentPadding: const EdgeInsets.only(left: 8),
-                        onTap: () => onHistoryTap(item),
-                        minTileHeight: isDesktopPlatform() ? 0 : null,
-                        subtitle: showTime
-                            ? DateTooltip(
-                                date: item.createdAt,
-                                child: Text(
-                                  item.createdAt.fuzzify(
-                                    locale: Localizations.localeOf(context),
+                      (item) => Material(
+                        color: Colors.transparent,
+                        child: ListTile(
+                          visualDensity: VisualDensity.compact,
+                          title: SearchHistoryQueryWidget(
+                            history: item,
+                            reverseScheme: reverseScheme,
+                          ),
+                          contentPadding: const EdgeInsets.only(left: 8),
+                          onTap: () => onHistoryTap(item),
+                          minTileHeight:
+                              ref.watch(appPlatformProvider).isDesktop
+                              ? 0
+                              : null,
+                          subtitle: showTime
+                              ? DateTooltip(
+                                  date: item.createdAt,
+                                  child: Text(
+                                    item.createdAt.fuzzify(
+                                      locale: Localizations.localeOf(context),
+                                    ),
                                   ),
-                                ),
-                              )
-                            : null,
+                                )
+                              : null,
+                        ),
                       ),
                     ),
               ],

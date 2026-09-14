@@ -156,7 +156,7 @@ class OptionTagsArenaNoEdit extends ConsumerWidget {
         const SizedBox(height: 2),
         Wrap(
           spacing: 4,
-          runSpacing: isDesktopPlatform() ? 4 : 0,
+          runSpacing: ref.watch(appPlatformProvider).isDesktop ? 4 : 0,
           children: children,
         ),
       ],

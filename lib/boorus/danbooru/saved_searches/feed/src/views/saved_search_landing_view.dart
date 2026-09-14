@@ -41,6 +41,7 @@ class SavedSearchLandingView extends ConsumerWidget {
                     TextButton(
                       onPressed: () => launchExternalUrl(
                         Uri.parse(savedSearchHelpUrl),
+                        launcher: ref.read(externalUrlLauncherProvider),
                       ),
                       child: Text(context.t.saved_search.saved_search_help),
                     ),
@@ -66,16 +67,13 @@ class SavedSearchLandingView extends ConsumerWidget {
             _ExampleContainer(
               title: 'Follow specific characters from an artist',
               query: 'artistA (characterA or characterB or characterC)',
-              explain:
-                  'Follow posts that feature characterA or characterB or characterC from artistA.',
+              explain: 'Follow posts that feature characterA or characterB or characterC from artistA.',
               onTry: (query) => _onAddSearch(ref, context, query: query),
             ),
             _ExampleContainer(
               title: 'Follow a specific thing',
-              query:
-                  'artistA ((characterA 1girl -ocean) or (characterB swimsuit))',
-              explain:
-                  'Follow posts that feature characterA with 1girl tag but without the ocean tag or characterB with swimsuit tag from artistA.',
+              query: 'artistA ((characterA 1girl -ocean) or (characterB swimsuit))',
+              explain: 'Follow posts that feature characterA with 1girl tag but without the ocean tag or characterB with swimsuit tag from artistA.',
               onTry: (query) => _onAddSearch(ref, context, query: query),
             ),
             _ExampleContainer(

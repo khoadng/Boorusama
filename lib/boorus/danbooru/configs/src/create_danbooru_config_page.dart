@@ -58,7 +58,10 @@ class CreateDanbooruConfigPage extends ConsumerWidget {
         customInstruction: DefaultBooruInstructionHtmlText(
           context.t.booru.api_key_instructions.variants_3,
           onApiLinkTap: () {
-            launchExternalUrlString(getDanbooruProfileUrl(config.url));
+            launchExternalUrlString(
+              getDanbooruProfileUrl(config.url),
+              launcher: ref.read(externalUrlLauncherProvider),
+            );
           },
         ),
       ),

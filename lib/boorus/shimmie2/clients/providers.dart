@@ -1,25 +1,33 @@
 // Package imports:
 import 'package:booru_clients/shimmie2.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hive_ce/hive.dart';
 
 // Project imports:
 import '../../../core/configs/config/types.dart';
 import '../../../core/http/client/providers.dart';
+import '../../../foundation/lazy_managed.dart';
 import '../extensions/providers.dart';
 import '../extensions/types.dart';
 import 'cache.dart';
 
-final _graphQLCacheProvider = Provider<GraphQLCache>((ref) {
-  return LazyGraphQLCache(() async {
-    return GraphQLCacheHive(await Hive.openBox('shimmie2_graphql_cache'));
-  });
+final shimmie2GraphQLCacheFactoryProvider = Provider<GraphQLCacheFactory>(
+  (_) => const HiveGraphQLCacheFactory(),
+);
+
+final shimmie2GraphQLCacheProvider = Provider<GraphQLCache>((ref) {
+  final factory = ref.watch(shimmie2GraphQLCacheFactoryProvider);
+  final managed = LazyManaged<GraphQLCache>(
+    create: factory.create,
+    dispose: factory.dispose,
+  );
+  ref.onDispose(managed.close);
+  return LazyGraphQLCache(managed.get);
 });
 
 final shimmie2ClientProvider = Provider.family<Shimmie2Client, BooruConfigAuth>(
   (ref, config) {
     final dio = ref.watch(defaultDioProvider(config));
-    final cache = ref.watch(_graphQLCacheProvider);
+    final cache = ref.watch(shimmie2GraphQLCacheProvider);
 
     return Shimmie2Client(
       dio: dio,

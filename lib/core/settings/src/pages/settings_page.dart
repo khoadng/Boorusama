@@ -7,7 +7,6 @@ import 'package:kurumi/cupertino.dart';
 import 'package:kurumi/kurumi.dart';
 import 'package:kurumi/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
 import '../../../../core/widgets/widgets.dart';
@@ -439,7 +438,7 @@ class SettingsPageOtherSection extends ConsumerWidget {
                   onTap: () => url != null
                       ? launchExternalUrl(
                           Uri.parse(url),
-                          mode: LaunchMode.externalApplication,
+                          launcher: ref.read(externalUrlLauncherProvider),
                         )
                       : Kurumi.showErrorToast(
                           context,
@@ -533,7 +532,7 @@ class SettingsPageOtherSection extends ConsumerWidget {
           ),
           onTap: () => launchExternalUrl(
             Uri.parse(appInfo.githubUrl),
-            mode: LaunchMode.externalApplication,
+            launcher: ref.read(externalUrlLauncherProvider),
           ),
         ),
         const Divider(),
@@ -548,7 +547,7 @@ class SettingsPageOtherSection extends ConsumerWidget {
           ),
           onTap: () => launchExternalUrl(
             Uri.parse('mailto:${appInfo.supportEmail}'),
-            mode: LaunchMode.externalApplication,
+            launcher: ref.read(externalUrlLauncherProvider),
           ),
         ),
         SettingTile(
@@ -560,7 +559,7 @@ class SettingsPageOtherSection extends ConsumerWidget {
           ),
           onTap: () => launchExternalUrl(
             Uri.parse('${appInfo.githubUrl}/issues'),
-            mode: LaunchMode.externalApplication,
+            launcher: ref.read(externalUrlLauncherProvider),
           ),
         ),
         const SizedBox(height: 16),
@@ -634,14 +633,14 @@ class _Footer extends ConsumerWidget {
           IconButton(
             onPressed: () => launchExternalUrl(
               Uri.parse(ref.read(appInfoProvider).githubUrl),
-              mode: LaunchMode.externalApplication,
+              launcher: ref.read(externalUrlLauncherProvider),
             ),
             icon: const FaIcon(FontAwesomeIcons.squareGithub),
           ),
           IconButton(
             onPressed: () => launchExternalUrl(
               Uri.parse(ref.read(appInfoProvider).discordUrl),
-              mode: LaunchMode.externalApplication,
+              launcher: ref.read(externalUrlLauncherProvider),
             ),
             icon: const FaIcon(FontAwesomeIcons.discord),
           ),

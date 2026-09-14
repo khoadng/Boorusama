@@ -279,9 +279,15 @@ class _LegalDisclaimerText extends ConsumerWidget {
         data: context.t.premium.legal_disclaimer,
         onLinkTap: (url, attributes, element) {
           if (url == 'terms-of-service') {
-            launchExternalUrlString(appInfo.termsOfServiceUrl);
+            launchExternalUrlString(
+              appInfo.termsOfServiceUrl,
+              launcher: ref.read(externalUrlLauncherProvider),
+            );
           } else if (url == 'privacy-policy') {
-            launchExternalUrlString(appInfo.privacyPolicyUrl);
+            launchExternalUrlString(
+              appInfo.privacyPolicyUrl,
+              launcher: ref.read(externalUrlLauncherProvider),
+            );
           }
         },
       ),

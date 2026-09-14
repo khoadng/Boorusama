@@ -39,7 +39,7 @@ class _EntryPageState extends ConsumerState<EntryPage> {
 
   @override
   Widget build(BuildContext context) {
-    if (isAndroid() || isIOS()) {
+    if (ref.watch(appPlatformProvider).isMobile) {
       ref.listen(
         deviceStoragePermissionProvider,
         (previous, state) {

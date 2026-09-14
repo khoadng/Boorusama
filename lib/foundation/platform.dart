@@ -2,6 +2,7 @@
 import 'package:flutter/foundation.dart';
 
 // Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kurumi/kurumi.dart';
 
 final _platform = defaultTargetPlatform;
@@ -16,7 +17,26 @@ enum AppPlatform {
   unknown,
 }
 
+final appPlatformProvider = Provider<AppPlatform>(
+  (_) => throw UnimplementedError(),
+  name: 'appPlatformProvider',
+);
+
 extension AppPlatformX on AppPlatform {
+  bool get isAndroid => this == AppPlatform.android;
+
+  bool get isIOS => this == AppPlatform.ios;
+
+  bool get isDesktop => switch (this) {
+    AppPlatform.macos || AppPlatform.windows || AppPlatform.linux => true,
+    AppPlatform.android ||
+    AppPlatform.ios ||
+    AppPlatform.web ||
+    AppPlatform.unknown => false,
+  };
+
+  bool get isMobile => isAndroid || isIOS;
+
   String get wireName => switch (this) {
     AppPlatform.android => 'android',
     AppPlatform.ios => 'ios',

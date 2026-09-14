@@ -8,13 +8,11 @@ import 'tag_info_service.dart';
 
 final tagInfoProvider = Provider<TagInfo>((ref) => throw UnimplementedError());
 
-Future<Override> createTagInfoOverride({
+Future<TagInfo> loadTagInfo({
   required Logger logger,
-}) async {
+}) {
   logger.debugBoot('Initialize tag info');
-  final tagInfo = await TagInfoService.create().then(
+  return TagInfoService.create().then(
     (value) => value.getInfo(),
   );
-
-  return tagInfoProvider.overrideWithValue(tagInfo);
 }

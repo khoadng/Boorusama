@@ -126,6 +126,7 @@ class DanbooruPostContextMenu extends ConsumerWidget {
             onTap: () {
               launchExternalUrlString(
                 postLinkGenerator.getLink(post),
+                launcher: ref.read(externalUrlLauncherProvider),
               );
             },
           ),

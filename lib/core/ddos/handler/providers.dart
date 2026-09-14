@@ -3,10 +3,10 @@ import 'package:flutter/widgets.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 
 // Project imports:
 import '../../http/cookies/providers.dart';
+import '../../../foundation/webview_user_agent.dart';
 import '../../router.dart';
 import '../../debug/providers.dart';
 import '../diagnostics/providers.dart';
@@ -19,8 +19,8 @@ final httpDdosProtectionBypassProvider = Provider<HttpProtectionHandler>(
     final cookieJar = ref.watch(cookieJarProvider);
     final recorder = ref.watch(protectionLogRecorderProvider);
     BuildContext? contextProvider() {
-      final context =
-          navigatorKey.currentContext ?? navigatorKey.currentState?.context;
+      final key = ref.read(appNavigationProvider).navigatorKey;
+      final context = key.currentContext ?? key.currentState?.context;
 
       return context;
     }
@@ -29,6 +29,7 @@ final httpDdosProtectionBypassProvider = Provider<HttpProtectionHandler>(
       onEvent: recorder.record,
       orchestrator: ProtectionOrchestrator(
         userAgentProvider: WebViewUserAgentProvider(
+          service: ref.watch(webViewUserAgentServiceProvider),
           onUserAgent: (ua) {
             final engine =
                 RegExp(
@@ -82,8 +83,9 @@ final bypassDdosHeadersProvider =
           .map((c) => '${c.name}=${c.value}')
           .join('; ');
 
-      final webviewController = WebViewController();
-      final userAgent = await webviewController.getUserAgent();
+      final userAgent = await ref
+          .watch(webViewUserAgentServiceProvider)
+          .getUserAgent();
 
       return {
         if (cookieString.isNotEmpty) 'cookie': cookieString,

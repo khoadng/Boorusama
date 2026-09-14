@@ -3,17 +3,17 @@ import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:foundation/foundation.dart';
-import 'package:hive_ce/hive.dart';
 
 // Project imports:
 import 'types.dart';
+import '../cache/persistent_cache_store.dart';
 
 const _assetUrl = 'CHANGELOG.md';
 
 class ChangelogRepositoryImpl implements ChangelogRepository {
-  const ChangelogRepositoryImpl(this._dataBox);
+  const ChangelogRepositoryImpl(this._dataStore);
 
-  final Box<String> _dataBox;
+  final PersistentCacheStore _dataStore;
 
   @override
   Future<ChangelogData> loadLatestChangelog() async {
@@ -33,7 +33,7 @@ class ChangelogRepositoryImpl implements ChangelogRepository {
       buffer.writeln(line);
     }
 
-    final previousVersionKey = _dataBox.get(kPreviousVersionKey);
+    final previousVersionKey = _dataStore.get(kPreviousVersionKey);
     final previousVersion = previousVersionKey != null
         ? ReleaseVersion.getVersionFromChangelogKey(previousVersionKey)
         : null;
@@ -55,8 +55,8 @@ class ChangelogRepositoryImpl implements ChangelogRepository {
     if (key == null) return;
 
     final currentTime = DateTime.now().dateOnly();
-    await _dataBox.put(key, currentTime.toIso8601String());
-    await _dataBox.put(kPreviousVersionKey, key);
+    await _dataStore.put(key, currentTime.toIso8601String());
+    await _dataStore.put(kPreviousVersionKey, key);
   }
 
   @override
@@ -66,13 +66,13 @@ class ChangelogRepositoryImpl implements ChangelogRepository {
     // Invalid version
     if (key == null) return false;
 
-    final value = _dataBox.get(key);
+    final value = _dataStore.get(key);
 
     // Already seen
     if (value != null) {
       // Check if previous version is set, if not, we will set it
-      if (_dataBox.get(kPreviousVersionKey) == null) {
-        await _dataBox.put(kPreviousVersionKey, key);
+      if (_dataStore.get(kPreviousVersionKey) == null) {
+        await _dataStore.put(kPreviousVersionKey, key);
       }
 
       return false;

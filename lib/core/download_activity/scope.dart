@@ -175,6 +175,7 @@ class _DownloadActivityScopeState extends ConsumerState<DownloadActivityScope> {
     DownloadNotifications notifications,
     DownloadActivity activity,
   ) async {
+    final isIOS = ref.read(appPlatformProvider).isIOS;
     if (activity.kind == DownloadActivityKind.single) {
       if (activity.phase == DownloadActivityPhase.completed &&
           activity.completionSource == DownloadCompletionSource.cache) {
@@ -203,7 +204,7 @@ class _DownloadActivityScopeState extends ConsumerState<DownloadActivityScope> {
         );
       case DownloadActivityPhase.running:
         final total = activity.totalItems;
-        if (!isIOS() && total != null && total > 0) {
+        if (!isIOS && total != null && total > 0) {
           await notifications.showBulkProgress(
             activity.id,
             activity.label,

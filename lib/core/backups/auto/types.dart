@@ -69,8 +69,7 @@ class AutoBackupEntry {
 
 enum AutoBackupFrequency {
   daily(Duration(days: 1)),
-  weekly(Duration(days: 7))
-  ;
+  weekly(Duration(days: 7));
 
   const AutoBackupFrequency(this.duration);
 
@@ -114,12 +113,12 @@ class AutoBackupSettings extends Equatable {
   final String? userSelectedPath;
   final DateTime? lastBackupTime;
 
-  bool get shouldBackup {
+  bool shouldBackup(AppPlatform platform) {
     // Not enabled - no backup
     if (!enabled) return false;
 
     // Android requires user-selected path
-    if (isAndroid() && (userSelectedPath?.isEmpty ?? true)) {
+    if (platform.isAndroid && (userSelectedPath?.isEmpty ?? true)) {
       return false;
     }
 

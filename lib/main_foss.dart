@@ -2,7 +2,8 @@
 import 'package:kurumi/material.dart';
 
 // Project imports:
-import 'core/boorusama_app.dart';
+import 'core/bootstrap/production_boorusama_bootstrap.dart';
+import 'core/bootstrap/bootstrap_host.dart';
 import 'foundation/app_update/providers.dart';
 import 'foundation/filesystem.dart';
 import 'foundation/iap/iap.dart';
@@ -11,11 +12,13 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
   runApp(
-    BoorusamaApp(
-      fileSystem: const IoFileSystem(),
-      isFossBuild: true,
-      iapFunc: () => initDummyIap(),
-      appUpdateChecker: createDefaultAppUpdateChecker,
+    const BoorusamaBootstrapHost(
+      bootstrap: ProductionBoorusamaBootstrap(
+        fileSystem: IoFileSystem(),
+        isFossBuild: true,
+        iapFactory: initDummyIap,
+        appUpdateChecker: createDefaultAppUpdateChecker,
+      ),
     ),
   );
 }

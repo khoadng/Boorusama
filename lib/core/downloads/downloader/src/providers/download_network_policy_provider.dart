@@ -16,7 +16,7 @@ final downloadNetworkSessionProvider = Provider<DownloadNetworkSession>(
 );
 
 final wifiDownloadConstraintSupportedProvider = Provider<bool>((ref) {
-  if (!isAndroid()) return true;
+  if (!ref.watch(appPlatformProvider).isAndroid) return true;
 
   final sdkInt = ref.watch(
     deviceInfoProvider.select(
@@ -46,7 +46,11 @@ Future<DownloadNetworkConstraint?> resolveDownloadNetworkConstraint(
         policy: policy,
         isMobileDataOnly: isMobileDataOnly,
         prompt: () async {
-          final context = navigatorKey.currentState?.context;
+          final context = ref
+              .read(appNavigationProvider)
+              .navigatorKey
+              .currentState
+              ?.context;
           if (context == null || !context.mounted) {
             return null;
           }

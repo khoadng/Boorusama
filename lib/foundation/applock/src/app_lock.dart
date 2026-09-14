@@ -6,7 +6,6 @@ import 'dart:ui';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
 import 'package:kurumi/material.dart';
-import 'package:local_auth/local_auth.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
@@ -17,6 +16,7 @@ import 'app_lock_type.dart';
 import 'app_lock_capabilities.dart';
 import 'app_privacy_platform.dart';
 import 'biometrics.dart';
+import 'device_authenticator.dart';
 
 class AppLock extends ConsumerStatefulWidget {
   const AppLock({
@@ -100,7 +100,7 @@ class _AppLockState extends ConsumerState<AppLock> with WidgetsBindingObserver {
     );
   }
 
-  Future<void> _authenticate(LocalAuthentication localAuth) async {
+  Future<void> _authenticate(DeviceAuthenticator deviceAuthenticator) async {
     if (_authenticating) return;
 
     final logger = ref.read(loggerProvider)
@@ -110,7 +110,7 @@ class _AppLockState extends ConsumerState<AppLock> with WidgetsBindingObserver {
 
     try {
       final didAuthenticate = await startAuthenticate(
-        localAuth,
+        deviceAuthenticator,
         localizedReason:
             context.t.settings.privacy.app_lock.authenticate_reason,
       );
@@ -156,7 +156,7 @@ class _AppLockState extends ConsumerState<AppLock> with WidgetsBindingObserver {
               type: widget.type,
               authenticating: _authenticating,
               onBiometricUnlock: () =>
-                  _authenticate(ref.read(biometricsProvider)),
+                  _authenticate(ref.read(deviceAuthenticatorProvider)),
               onPinUnlocked: _unlock,
             ),
           ),

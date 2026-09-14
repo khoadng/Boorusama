@@ -87,7 +87,10 @@ class _UploadToDanbooruState extends ConsumerState<UploadToDanbooru> {
 
                     final encodedUri = Uri.encodeFull(uri.toString());
                     final url = '${booruUrl}uploads/new?url=$encodedUri';
-                    launchExternalUrlString(url);
+                    launchExternalUrlString(
+                      url,
+                      launcher: ref.read(externalUrlLauncherProvider),
+                    );
                   },
                   child: Text(context.t.generic.action.ok),
                 ),

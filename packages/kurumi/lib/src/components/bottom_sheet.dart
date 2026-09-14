@@ -20,13 +20,12 @@ class KurumiBottomSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: backgroundColor ?? colorScheme.surfaceContainer,
-        borderRadius: const BorderRadius.vertical(
-          top: Radius.circular(16),
-        ),
+    return Material(
+      color: backgroundColor ?? colorScheme.surfaceContainer,
+      borderRadius: const BorderRadius.vertical(
+        top: Radius.circular(16),
       ),
+      clipBehavior: Clip.antiAlias,
       child: SafeArea(
         top: useSafeArea,
         child: Column(

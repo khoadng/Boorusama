@@ -33,56 +33,51 @@ class ThemeBuilder extends ConsumerWidget {
     final systemDarkMode =
         MediaQuery.platformBrightnessOf(context) == Brightness.dark;
 
-    return KurumiDynamicColorBuilder(
-      builder: (lightOrigin, darkOrigin) {
-        final (light, dark) = enableDynamicColor
-            ? (lightOrigin, darkOrigin)
-            : (null, null);
+    final dynamicColors = ref.watch(dynamicColorSchemesProvider);
+    final (light, dark) = enableDynamicColor
+        ? (dynamicColors.light, dynamicColors.dark)
+        : (null, null);
 
-        final customColorScheme = hasPremium
-            ? (ref.watchThemeConfigs?.enable ?? false)
-                  ? getSchemeFromColorSettings(
-                      ref.watchThemeConfigs?.colors,
-                      dynamicDarkScheme: dark,
-                      dynamicLightScheme: light,
-                      systemDarkMode: systemDarkMode,
-                    )
-                  : getSchemeFromColorSettings(
-                      colors,
-                      dynamicDarkScheme: dark,
-                      dynamicLightScheme: light,
-                      systemDarkMode: systemDarkMode,
-                    )
-            : null;
+    final customColorScheme = hasPremium
+        ? (ref.watchThemeConfigs?.enable ?? false)
+              ? getSchemeFromColorSettings(
+                  ref.watchThemeConfigs?.colors,
+                  dynamicDarkScheme: dark,
+                  dynamicLightScheme: light,
+                  systemDarkMode: systemDarkMode,
+                )
+              : getSchemeFromColorSettings(
+                  colors,
+                  dynamicDarkScheme: dark,
+                  dynamicLightScheme: light,
+                  systemDarkMode: systemDarkMode,
+                )
+        : null;
 
-        final scheme =
-            customColorScheme ??
-            Kurumi.generateColorScheme(
-              theme,
-              dynamicDarkScheme: dark,
-              dynamicLightScheme: light,
-              systemDarkMode: systemDarkMode,
-            );
-
-        return Builder(
-          builder: (context) => ProviderScope(
-            overrides: [
-              dynamicColorSupportProvider.overrideWithValue(
-                lightOrigin != null && darkOrigin != null,
-              ),
-              colorSchemeProvider.overrideWithValue(scheme),
-            ],
-            child: builder(
-              Kurumi.themeFrom(
-                customColorScheme != null ? null : theme,
-                colorScheme: scheme,
-                systemDarkMode: systemDarkMode,
-              ).withBoorusamaColors(),
-              theme.toSystem(),
-            ),
-          ),
+    final scheme =
+        customColorScheme ??
+        Kurumi.generateColorScheme(
+          theme,
+          dynamicLightScheme: light,
+          dynamicDarkScheme: dark,
+          systemDarkMode: systemDarkMode,
         );
-      },
+
+    return ProviderScope(
+      overrides: [
+        dynamicColorSupportProvider.overrideWithValue(
+          dynamicColors.light != null && dynamicColors.dark != null,
+        ),
+        colorSchemeProvider.overrideWithValue(scheme),
+      ],
+      child: builder(
+        Kurumi.themeFrom(
+          customColorScheme != null ? null : theme,
+          colorScheme: scheme,
+          systemDarkMode: systemDarkMode,
+        ).withBoorusamaColors(),
+        theme.toSystem(),
+      ),
     );
   }
 }

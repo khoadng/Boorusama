@@ -261,7 +261,10 @@ class DanbooruRepository extends BooruRepositoryDefault {
         ),
         onViewOriginal: () => goToOriginalImagePage(ref, post),
         onOpenSource: () => post.source.whenWeb(
-          (source) => launchExternalUrlString(source.url),
+          (source) => launchExternalUrlString(
+            source.url,
+            launcher: ref.read(externalUrlLauncherProvider),
+          ),
           () => false,
         ),
         onToggleFavorite: () => ref.toggleFavorite(post.id),

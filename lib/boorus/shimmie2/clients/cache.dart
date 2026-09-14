@@ -8,6 +8,27 @@ import 'package:hive_ce/hive.dart';
 // Project imports:
 import '../shared/cache_mixin.dart';
 
+abstract interface class GraphQLCacheFactory {
+  Future<GraphQLCache> create();
+
+  Future<void> dispose(GraphQLCache cache);
+}
+
+final class HiveGraphQLCacheFactory implements GraphQLCacheFactory {
+  const HiveGraphQLCacheFactory();
+
+  @override
+  Future<GraphQLCache> create() async =>
+      GraphQLCacheHive(await Hive.openBox('shimmie2_graphql_cache'));
+
+  @override
+  Future<void> dispose(GraphQLCache cache) async {
+    if (cache case final GraphQLCacheHive hiveCache) {
+      await hiveCache.box.close();
+    }
+  }
+}
+
 class GraphQLCacheHive with Shimmie2CacheMixin implements GraphQLCache {
   GraphQLCacheHive(this.box);
 

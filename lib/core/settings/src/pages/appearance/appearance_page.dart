@@ -89,6 +89,7 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
     final dynamicColorSupported = ref.watch(dynamicColorSupportProvider);
     final notifier = ref.watch(settingsNotifierProvider.notifier);
     final colorScheme = Kurumi.themeOf(context).colorScheme;
+    final isDesktop = ref.watch(appPlatformProvider).isDesktop;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -115,7 +116,7 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
                   ),
                 ),
                 subtitle: dynamicColorSupported
-                    ? !isDesktopPlatform()
+                    ? !isDesktop
                           ? Text(
                               context
                                   .t
@@ -131,7 +132,7 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
                                   .dynamic_color_desktop_description,
                             )
                     : Text(
-                        '${!isDesktopPlatform() ? context.t.settings.theme.dynamic_color_mobile_description : context.t.settings.theme.dynamic_color_desktop_description}. ${context.t.settings.theme.dynamic_color_unsupported_description}',
+                        '${!isDesktop ? context.t.settings.theme.dynamic_color_mobile_description : context.t.settings.theme.dynamic_color_desktop_description}. ${context.t.settings.theme.dynamic_color_unsupported_description}',
                       ),
                 value: settings.enableDynamicColoring,
                 onChanged: dynamicColorSupported

@@ -27,7 +27,11 @@ Future<bool> openDanbooruWikiPageInBrowser(
   String wikiPageName,
 ) {
   final config = ref.readConfigAuth;
-  return launchWikiPage(config.url, wikiPageName);
+  return launchWikiPage(
+    config.url,
+    wikiPageName,
+    launcher: ref.read(externalUrlLauncherProvider),
+  );
 }
 
 void openDanbooruWikiLink(WidgetRef ref, String? url) {
@@ -49,5 +53,8 @@ void openDanbooruWikiLink(WidgetRef ref, String? url) {
   final resolvedUri = !uri.hasScheme && baseUri != null
       ? baseUri.resolveUri(uri)
       : uri;
-  launchExternalUrl(resolvedUri);
+  launchExternalUrl(
+    resolvedUri,
+    launcher: ref.read(externalUrlLauncherProvider),
+  );
 }

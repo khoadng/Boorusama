@@ -17,7 +17,7 @@ import '../../../lock/providers.dart';
 import 'desktop_video_option_sheet.dart';
 import 'mobile_video_option_sheet.dart';
 
-class MoreOptionsControlButton extends StatelessWidget {
+class MoreOptionsControlButton extends ConsumerWidget {
   const MoreOptionsControlButton({
     required this.speed,
     required this.onSpeedChanged,
@@ -32,8 +32,8 @@ class MoreOptionsControlButton extends StatelessWidget {
   final AnchorController? popoverController;
 
   @override
-  Widget build(BuildContext context) {
-    return isDesktopPlatform() && popoverController != null
+  Widget build(BuildContext context, WidgetRef ref) {
+    return ref.watch(appPlatformProvider).isDesktop && popoverController != null
         ? DesktopVideoOptionButton(
             speed: speed,
             onSpeedChanged: onSpeedChanged,

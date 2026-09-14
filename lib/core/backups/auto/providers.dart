@@ -26,7 +26,7 @@ final autoBackupServiceProvider = Provider<AutoBackupService>((ref) {
 final autoBackupDefaultDirectoryPathProvider = FutureProvider<String?>((
   ref,
 ) async {
-  if (isAndroid()) {
+  if (ref.watch(appPlatformProvider).isAndroid) {
     final deviceInfo = ref.watch(deviceInfoProvider);
     final hasScopeStorage =
         hasScopedStorage(

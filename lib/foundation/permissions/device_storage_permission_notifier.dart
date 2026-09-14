@@ -34,7 +34,7 @@ class DeviceStoragePermissionNotifier
     extends AsyncNotifier<DeviceStoragePermissionState> {
   @override
   Future<DeviceStoragePermissionState> build() async {
-    if (isMobilePlatform()) {
+    if (ref.watch(appPlatformProvider).isMobile) {
       final logger = ref.watch(loggerProvider);
       final deviceInfo = ref.watch(deviceInfoProvider);
 

@@ -1,13 +1,17 @@
-// Package imports:
-import 'package:webview_flutter/webview_flutter.dart';
+// Project imports:
+import '../../../../foundation/webview_user_agent.dart';
 
 abstract class UserAgentProvider {
   Future<String?> getUserAgent();
 }
 
 class WebViewUserAgentProvider implements UserAgentProvider {
-  WebViewUserAgentProvider({this.onUserAgent});
+  WebViewUserAgentProvider({
+    required this.service,
+    this.onUserAgent,
+  });
 
+  final WebViewUserAgentService service;
   final void Function(String?)? onUserAgent;
   String? _userAgent;
 
@@ -17,7 +21,7 @@ class WebViewUserAgentProvider implements UserAgentProvider {
       return _userAgent;
     }
 
-    _userAgent ??= await WebViewController().getUserAgent();
+    _userAgent ??= await service.getUserAgent();
 
     onUserAgent?.call(_userAgent);
     return _userAgent;

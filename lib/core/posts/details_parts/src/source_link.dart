@@ -1,5 +1,6 @@
 // Package imports:
 import 'package:foundation/foundation.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
 import 'package:kurumi/kurumi.dart';
 import 'package:kurumi/material.dart';
@@ -9,7 +10,7 @@ import '../../../../foundation/clipboard.dart';
 import '../../../../foundation/display/media_query_utils.dart';
 import '../../../../foundation/url_launcher.dart';
 
-class SourceLink extends StatelessWidget {
+class SourceLink extends ConsumerWidget {
   const SourceLink({
     required this.title,
     required this.actionBuilder,
@@ -24,7 +25,7 @@ class SourceLink extends StatelessWidget {
   final String name;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return RemoveLeftPaddingOnLargeScreen(
       child: ListTile(
         visualDensity: VisualDensity.compact,
@@ -43,7 +44,10 @@ class SourceLink extends StatelessWidget {
                 },
                 onTap: () {
                   if (url == null) return;
-                  launchExternalUrl(Uri.parse(url!));
+                  launchExternalUrl(
+                    Uri.parse(url!),
+                    launcher: ref.read(externalUrlLauncherProvider),
+                  );
                 },
                 child: Text(
                   url.toString(),

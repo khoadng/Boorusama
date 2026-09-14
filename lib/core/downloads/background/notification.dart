@@ -9,10 +9,11 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import '../../../foundation/platform.dart';
 
 class DownloadNotifications {
-  DownloadNotifications.uninitialized()
+  DownloadNotifications.uninitialized({required this.platform})
     : _flutterLocalNotificationsPlugin = null,
       _tapController = StreamController<String>.broadcast();
 
+  final AppPlatform platform;
   FlutterLocalNotificationsPlugin? _flutterLocalNotificationsPlugin;
   final StreamController<String> _tapController;
   var _isInitialized = false;
@@ -22,7 +23,7 @@ class DownloadNotifications {
   Stream<String> get tapStream => _tapController.stream;
 
   Future<void> _ensureInitialized() async {
-    if (_isInitialized || isWindows()) return;
+    if (_isInitialized || platform == AppPlatform.windows) return;
 
     final pending = _initialization;
     if (pending != null) {
@@ -86,7 +87,7 @@ class DownloadNotifications {
     String? customMessage,
     bool fromCache = false,
   }) async {
-    if (isWindows()) return;
+    if (platform == AppPlatform.windows) return;
 
     await _ensureInitialized();
 
@@ -124,7 +125,7 @@ class DownloadNotifications {
     String filename, {
     String? error,
   }) async {
-    if (isWindows()) return;
+    if (platform == AppPlatform.windows) return;
 
     await _ensureInitialized();
 
@@ -158,7 +159,7 @@ class DownloadNotifications {
     String title,
     String body,
   ) async {
-    if (isWindows()) return;
+    if (platform == AppPlatform.windows) return;
     await _ensureInitialized();
 
     final details = NotificationDetails(
@@ -193,7 +194,7 @@ class DownloadNotifications {
     required int completed,
     required int total,
   }) async {
-    if (isWindows()) return;
+    if (platform == AppPlatform.windows) return;
     await _ensureInitialized();
 
     final details = NotificationDetails(
@@ -228,7 +229,7 @@ class DownloadNotifications {
     String title, {
     required int total,
   }) async {
-    if (isWindows()) return;
+    if (platform == AppPlatform.windows) return;
     await _ensureInitialized();
 
     const details = NotificationDetails(
@@ -251,7 +252,7 @@ class DownloadNotifications {
   }
 
   Future<void> cancelBulk(String sessionId) async {
-    if (isWindows()) return;
+    if (platform == AppPlatform.windows) return;
     await _ensureInitialized();
     await _flutterLocalNotificationsPlugin?.cancel(id: sessionId.hashCode);
     _activeBulkNotifications.remove(sessionId);

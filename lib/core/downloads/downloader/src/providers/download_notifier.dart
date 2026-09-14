@@ -56,7 +56,9 @@ class DownloadNotifier extends FamilyNotifier<void, DownloadNotifierParams> {
 
   Future<PermissionStatus?> _getPermissionStatus() async {
     final perm = await ref.read(deviceStoragePermissionProvider.future);
-    return isAndroid() || isIOS() ? perm.storagePermission : null;
+    return ref.read(appPlatformProvider).isMobile
+        ? perm.storagePermission
+        : null;
   }
 
   Future<DownloadTaskInfo?> download(
@@ -87,7 +89,11 @@ class DownloadNotifier extends FamilyNotifier<void, DownloadNotifierParams> {
   }) async {
     // ensure that the booru supports bulk download
     if (!arg.canDownloadMultipleFiles()) {
-      final context = navigatorKey.currentState?.context;
+      final context = ref
+          .read(appNavigationProvider)
+          .navigatorKey
+          .currentState
+          ?.context;
 
       showBulkDownloadUnsupportErrorToast(context);
       return;

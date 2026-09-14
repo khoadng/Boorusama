@@ -5,16 +5,19 @@ import 'package:hive_ce/hive.dart';
 // Project imports:
 import '../../../../../../core/configs/config/types.dart';
 import '../../../../../../foundation/filesystem.dart';
+import '../data/factory.dart';
+
+final danbooruCreatorBoxFactoryProvider = Provider<DanbooruCreatorBoxFactory>(
+  (ref) => HiveDanbooruCreatorBoxFactory(
+    fileSystem: ref.watch(appFileSystemProvider),
+  ),
+);
 
 final danbooruCreatorHiveBoxProvider =
     FutureProvider.family<Box, BooruConfigAuth>((ref, config) async {
-      final fs = ref.read(appFileSystemProvider);
-      final tempPath = await fs.getTemporaryPath();
-
-      final danbooruCreatorBox = await Hive.openBox(
-        '${Uri.encodeComponent(config.url)}_creators_v1',
-        path: tempPath,
-      );
+      final factory = ref.watch(danbooruCreatorBoxFactoryProvider);
+      final danbooruCreatorBox = await factory.create(config);
+      ref.onDispose(() => factory.dispose(danbooruCreatorBox));
 
       return danbooruCreatorBox;
     });

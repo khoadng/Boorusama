@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
 import 'package:kurumi/kurumi.dart';
 import 'package:kurumi/material.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 
 // Project imports:
 import '../../../core/configs/auth/widgets.dart';
@@ -17,6 +16,7 @@ import '../../../core/configs/network/widgets.dart';
 import '../../../core/widgets/booru_version_chip.dart';
 import '../../../foundation/html.dart';
 import '../../../foundation/path.dart';
+import '../../../foundation/url_launcher.dart';
 import '../extensions/providers.dart';
 
 class CreateShimmie2ConfigPage extends ConsumerWidget {
@@ -200,7 +200,7 @@ class Shimmie2BooruUrlField extends ConsumerWidget {
   }
 }
 
-class _ViewDocsButton extends StatelessWidget {
+class _ViewDocsButton extends ConsumerWidget {
   const _ViewDocsButton({
     required this.config,
   });
@@ -208,7 +208,7 @@ class _ViewDocsButton extends StatelessWidget {
   final BooruConfig config;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return TextButton(
       style: TextButton.styleFrom(
         visualDensity: VisualDensity.compact,
@@ -217,7 +217,10 @@ class _ViewDocsButton extends StatelessWidget {
         ),
       ),
       onPressed: () {
-        launchUrlString(join(config.url, 'ext_doc'));
+        launchExternalUrlString(
+          join(config.url, 'ext_doc'),
+          launcher: ref.read(externalUrlLauncherProvider),
+        );
       },
       child: Text(
         context.t.booru.api_key_instructions.shimmie2.view_extension_docs,

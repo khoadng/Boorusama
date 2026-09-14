@@ -22,7 +22,7 @@ GoRoute searchRoutes(Ref ref) => GoRoute(
       child: const SearchPage(),
     );
 
-    return switch (isDesktopPlatform()) {
+    return switch (ref.watch(appPlatformProvider).isDesktop) {
       true => CustomTransitionPage(
         key: state.pageKey,
         name: state.name,

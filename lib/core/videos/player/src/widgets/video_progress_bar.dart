@@ -1,11 +1,12 @@
 // Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kurumi/material.dart';
 import 'package:video_player/video_player.dart';
 
 // Project imports:
 import '../../../../../foundation/platform.dart';
 
-class VideoProgressBar extends StatefulWidget {
+class VideoProgressBar extends ConsumerStatefulWidget {
   const VideoProgressBar({
     required this.duration,
     required this.position,
@@ -44,10 +45,10 @@ class VideoProgressBar extends StatefulWidget {
   final bool indeterminate;
 
   @override
-  State<VideoProgressBar> createState() => _VideoProgressBarState();
+  ConsumerState<VideoProgressBar> createState() => _VideoProgressBarState();
 }
 
-class _VideoProgressBarState extends State<VideoProgressBar> {
+class _VideoProgressBarState extends ConsumerState<VideoProgressBar> {
   final isDragging = ValueNotifier(false);
   final isHovering = ValueNotifier(false);
   final isIndeterminate = ValueNotifier(false);
@@ -102,7 +103,7 @@ class _VideoProgressBarState extends State<VideoProgressBar> {
   }
 
   Widget _buildBar() {
-    final isDesktop = isDesktopPlatform();
+    final isDesktop = ref.watch(appPlatformProvider).isDesktop;
 
     return ValueListenableBuilder(
       valueListenable: isHovering,

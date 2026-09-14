@@ -12,9 +12,6 @@ PODS:
     - Flutter
     - share_handler_ios_models
   - share_handler_ios_models (0.0.9)
-  - webview_cookie_manager (0.0.1):
-    - Flutter
-    - FlutterMacOS
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
@@ -22,7 +19,6 @@ DEPENDENCIES:
   - media_kit_video (from `.symlinks/plugins/media_kit_video/ios`)
   - share_handler_ios (from `.symlinks/plugins/share_handler_ios/ios`)
   - share_handler_ios_models (from `.symlinks/plugins/share_handler_ios/ios/Models`)
-  - webview_cookie_manager (from `.symlinks/plugins/webview_cookie_manager/darwin`)
 
 EXTERNAL SOURCES:
   Flutter:
@@ -35,8 +31,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/share_handler_ios/ios"
   share_handler_ios_models:
     :path: ".symlinks/plugins/share_handler_ios/ios/Models"
-  webview_cookie_manager:
-    :path: ".symlinks/plugins/webview_cookie_manager/darwin"
 
 SPEC CHECKSUMS:
   Flutter: 71a624a5bc0c04062bf19101d501e466baf2fb47
@@ -44,7 +38,6 @@ SPEC CHECKSUMS:
   media_kit_video: 1746e198cb697d1ffb734b1d05ec429d1fcd1474
   share_handler_ios: e2244e990f826b2c8eaa291ac3831569438ba0fb
   share_handler_ios_models: fc638c9b4330dc7f082586c92aee9dfa0b87b871
-  webview_cookie_manager: 7ae5076dafaf10ec5d747e1a1174091ecbaf1116
 
 PODFILE CHECKSUM: 8a7c9fbd15f58f757739c2893866ed609e975503
 

@@ -1,16 +1,33 @@
-// Package imports:
-import 'package:file_picker/file_picker.dart';
-import 'package:kurumi/kurumi.dart';
-import 'package:kurumi/material.dart';
+// Flutter imports:
+import 'package:flutter/widgets.dart';
 
-export 'package:file_picker/file_picker.dart' show FileType;
+// Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kurumi/kurumi.dart';
+
+abstract interface class AppFilePicker {
+  Future<String?> pickFile({
+    List<String>? allowedExtensions,
+    bool customFileType = false,
+  });
+
+  Future<String?> pickDirectory({String? initialDirectory});
+}
+
+final appFilePickerProvider = Provider<AppFilePicker>(
+  (_) => throw UnimplementedError(
+    'appFilePickerProvider must be overridden',
+  ),
+);
 
 Future<void> pickDirectoryPathToastOnError({
   required BuildContext context,
   required void Function(String path) onPick,
   void Function()? onCanceled,
   String? initialDirectory,
+  required AppFilePicker picker,
 }) => pickDirectoryPath(
+  picker: picker,
   onPick: onPick,
   onCanceled: onCanceled,
   onError: (e) {
@@ -25,10 +42,12 @@ Future<void> pickDirectoryPathToastOnError({
 Future<void> pickSingleFilePathToastOnError({
   required BuildContext context,
   required void Function(String path) onPick,
-  FileType type = FileType.any,
+  bool customFileType = false,
   List<String>? allowedExtensions,
+  required AppFilePicker picker,
 }) => pickSingleFilePath(
-  type: type,
+  picker: picker,
+  customFileType: customFileType,
   allowedExtensions: allowedExtensions,
   onPick: onPick,
   onError: (e) {
@@ -41,29 +60,24 @@ Future<void> pickSingleFilePathToastOnError({
 
 Future<void> pickSingleFilePath({
   required void Function(String path) onPick,
-  FileType type = FileType.any,
+  bool customFileType = false,
   List<String>? allowedExtensions,
   void Function()? onCanceled,
   void Function(Object error)? onError,
+  required AppFilePicker picker,
 }) async {
   try {
-    final file = await FilePicker.pickFile(
-      type: type,
+    final path = await picker.pickFile(
+      customFileType: customFileType,
       allowedExtensions: allowedExtensions,
     );
 
-    if (file == null) {
+    if (path == null) {
       onCanceled?.call();
       return;
     }
 
-    final path = file.path;
-
-    if (path != null) {
-      onPick(path);
-    } else {
-      onError?.call('File path is null');
-    }
+    onPick(path);
   } catch (error) {
     onError?.call(error);
   }
@@ -74,9 +88,10 @@ Future<void> pickDirectoryPath({
   void Function()? onCanceled,
   void Function(Object error)? onError,
   String? initialDirectory,
+  required AppFilePicker picker,
 }) async {
   try {
-    final path = await FilePicker.getDirectoryPath(
+    final path = await picker.pickDirectory(
       initialDirectory: initialDirectory,
     );
 

@@ -4,12 +4,18 @@ import 'package:hive_ce/hive.dart';
 
 // Project imports:
 import '../../../../../../core/configs/config/types.dart';
+import 'factory.dart';
+
+final danbooruUploadHideBoxFactoryProvider =
+    Provider<DanbooruUploadHideBoxFactory>(
+      (_) => const HiveDanbooruUploadHideBoxFactory(),
+    );
 
 final danbooruUploadHideBoxProvider =
     FutureProvider.family<Box<String>, BooruConfigAuth>((ref, config) async {
-      final box = await Hive.openBox<String>(
-        '${Uri.encodeComponent(config.url)}_hide_uploads_v1',
-      );
+      final factory = ref.watch(danbooruUploadHideBoxFactoryProvider);
+      final box = await factory.create(config);
+      ref.onDispose(() => factory.dispose(box));
 
       return box;
     });

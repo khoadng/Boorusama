@@ -2,6 +2,7 @@
 import 'dart:async';
 
 // Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kurumi/kurumi.dart';
 import 'package:kurumi/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -28,7 +29,7 @@ enum ViewMode {
   vertical,
 }
 
-class PostDetailsPageView extends StatefulWidget {
+class PostDetailsPageView extends ConsumerStatefulWidget {
   const PostDetailsPageView({
     required this.sheetBuilder,
     required this.itemCount,
@@ -80,10 +81,11 @@ class PostDetailsPageView extends StatefulWidget {
   final Widget Function(BuildContext context, Widget child)? mainContentBuilder;
 
   @override
-  State<PostDetailsPageView> createState() => _PostDetailsPageViewState();
+  ConsumerState<PostDetailsPageView> createState() =>
+      _PostDetailsPageViewState();
 }
 
-class _PostDetailsPageViewState extends State<PostDetailsPageView>
+class _PostDetailsPageViewState extends ConsumerState<PostDetailsPageView>
     with TickerProviderStateMixin {
   final _pointerCount = ValueNotifier(0);
   final _interacting = ValueNotifier(false);
@@ -654,7 +656,7 @@ class _PostDetailsPageViewState extends State<PostDetailsPageView>
             ),
           ),
         ),
-        if (isDesktopPlatform())
+        if (ref.read(appPlatformProvider).isDesktop)
           ...buildNavButtons()
         else if (!isSmall)
           if (blockSwipe) ...buildNavButtons(),

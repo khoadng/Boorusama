@@ -72,9 +72,11 @@ class AutoBackupAppLifecycle extends ConsumerStatefulWidget {
   const AutoBackupAppLifecycle({
     required this.child,
     super.key,
+    this.onAppLaunch,
   });
 
   final Widget child;
+  final Future<void> Function()? onAppLaunch;
 
   @override
   ConsumerState<AutoBackupAppLifecycle> createState() =>
@@ -88,7 +90,12 @@ class _AutoBackupAppLifecycleState extends ConsumerState<AutoBackupAppLifecycle>
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(backupTriggerProvider.notifier).triggerOnAppLaunch();
+      final onAppLaunch = widget.onAppLaunch;
+      if (onAppLaunch != null) {
+        onAppLaunch();
+      } else {
+        ref.read(backupTriggerProvider.notifier).triggerOnAppLaunch();
+      }
     });
   }
 

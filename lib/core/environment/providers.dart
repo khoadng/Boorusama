@@ -8,7 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../foundation/boot/providers.dart';
 import '../../foundation/info/device_info.dart';
 import '../../foundation/info/package_info.dart';
-import '../../foundation/platform.dart' as app_platform;
+import '../../foundation/platform.dart';
 import '../settings/providers.dart';
 import 'data.dart';
 import 'types.dart';
@@ -23,7 +23,7 @@ final appEnvironmentProvider = Provider<AppEnvironment>((ref) {
 
   return AppEnvironment(
     appVersion: ref.watch(appVersionProvider),
-    platform: app_platform.currentAppPlatform(),
+    platform: ref.watch(appPlatformProvider),
     build: currentAppBuild(
       isFoss: ref.watch(isFossBuildProvider),
       environment: ref.watch(currentEnvironmentProvider),

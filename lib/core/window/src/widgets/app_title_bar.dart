@@ -20,13 +20,21 @@ class AppTitleBar extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final appInfo = ref.watch(appInfoProvider);
     final appName = appInfo.appName;
+    final platform = ref.watch(appPlatformProvider);
+    final isDesktop = switch (platform) {
+      AppPlatform.macos || AppPlatform.windows || AppPlatform.linux => true,
+      AppPlatform.android ||
+      AppPlatform.ios ||
+      AppPlatform.web ||
+      AppPlatform.unknown => false,
+    };
 
-    if (!isDesktopPlatform()) return child;
+    if (!isDesktop) return child;
 
     final colorScheme = Kurumi.themeOf(context).colorScheme;
 
     return KurumiDesktopWindowFrame(
-      isMacOS: isMacOS(),
+      isMacOS: platform == AppPlatform.macos,
       backgroundColor: colorScheme.surface,
       brightness: colorScheme.brightness,
       logo: Image.asset(

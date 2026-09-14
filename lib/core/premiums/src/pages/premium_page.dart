@@ -33,7 +33,10 @@ class PremiumPage extends ConsumerWidget {
           cur.when(
             data: (success) {
               // When purchase is successful, this page is replaced with the manage page so we need a global context to show the dialog
-              final context = navigatorKey.currentContext;
+              final context = ref
+                  .read(appNavigationProvider)
+                  .navigatorKey
+                  .currentContext;
 
               if (context == null) return;
 
@@ -250,7 +253,10 @@ class _RestorePremiumButton extends ConsumerWidget {
           (res) {
             if (context.mounted) {
               if (res) {
-                final navigatorContext = navigatorKey.currentContext;
+                final navigatorContext = ref
+                    .read(appNavigationProvider)
+                    .navigatorKey
+                    .currentContext;
                 navigator.pop();
 
                 if (navigatorContext != null) {

@@ -148,7 +148,12 @@ class TagEditUploadSource extends ConsumerWidget {
                               onPressed: () {
                                 final url =
                                     '${ref.readConfigAuth.url}/artists/new?artist[source]=${post.pageUrl}';
-                                launchExternalUrlString(url);
+                                launchExternalUrlString(
+                                  url,
+                                  launcher: ref.read(
+                                    externalUrlLauncherProvider,
+                                  ),
+                                );
                               },
                               child: Text(context.t.generic.action.create),
                             ),

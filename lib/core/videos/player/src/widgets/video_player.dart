@@ -95,7 +95,7 @@ class _BooruVideoState extends ConsumerState<BooruVideo> {
   VideoPlayerEngine get _resolvedEngine => VideoPlayerState.resolveVideoEngine(
     engine: widget.videoPlayerEngine,
     url: widget.url,
-    isAndroid: isAndroid(),
+    isAndroid: ref.read(appPlatformProvider).isAndroid,
   );
 
   VideoPlayerState get _currentState => VideoPlayerState.fromPlayerState(
@@ -240,6 +240,7 @@ class _BooruVideoState extends ConsumerState<BooruVideo> {
       final oldPlayer = _player;
       final player = createBooruPlayer(
         engine: _resolvedEngine,
+        platform: ref.read(appPlatformProvider),
         userAgent: widget.userAgent,
       );
 

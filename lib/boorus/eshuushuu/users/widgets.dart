@@ -5,7 +5,6 @@ import 'package:i18n/i18n.dart';
 import 'package:intl/intl.dart';
 import 'package:kurumi/kurumi.dart';
 import 'package:kurumi/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
 import '../../../core/configs/config/providers.dart';
@@ -16,6 +15,7 @@ import '../../../core/posts/post/types.dart';
 import '../../../core/users/widgets.dart';
 import '../../../core/widgets/widgets.dart';
 import '../../../foundation/clipboard.dart';
+import '../../../foundation/url_launcher.dart';
 import '../client_provider.dart';
 import '../posts/parser.dart' as parser;
 import 'providers.dart';
@@ -402,13 +402,13 @@ class _StatsItem extends StatelessWidget {
   }
 }
 
-class _PersonalInfoCard extends StatelessWidget {
+class _PersonalInfoCard extends ConsumerWidget {
   const _PersonalInfoCard({required this.user});
 
   final EshuushuuUser user;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final hintColor = Kurumi.themeOf(context).colorScheme.hintColor;
 
     final t = context.t.eshuushuu.personal_info;
@@ -433,9 +433,9 @@ class _PersonalInfoCard extends StatelessWidget {
                   const SizedBox(width: 16),
                   Expanded(
                     child: InkWell(
-                      onTap: () => launchUrl(
+                      onTap: () => launchExternalUrl(
                         Uri.parse(website),
-                        mode: LaunchMode.externalApplication,
+                        launcher: ref.read(externalUrlLauncherProvider),
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,

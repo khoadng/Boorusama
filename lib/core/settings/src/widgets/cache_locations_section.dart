@@ -64,7 +64,7 @@ class _CacheLocationsSectionState extends ConsumerState<CacheLocationsSection> {
                         path: join(root, VideoCacheManager.defaultSubPath),
                         kind: CacheDocumentKind.videos,
                       ),
-                      if (isIOS()) ...[
+                      if (ref.watch(appPlatformProvider).isIOS) ...[
                         ListTile(
                           contentPadding: const EdgeInsets.symmetric(
                             horizontal: 4,
@@ -103,6 +103,7 @@ class _CacheLocation extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final labels = context.t.settings.data_and_storage.cache_locations;
+    final platform = ref.watch(appPlatformProvider);
 
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 4),
@@ -120,13 +121,13 @@ class _CacheLocation extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SelectableText(path),
-          if (isAndroid() || isWindows() || isMacOS() || isLinux())
+          if (platform.isAndroid || platform.isDesktop)
             TextButton.icon(
               icon: const Icon(Icons.folder_open),
               label: Text(labels.open_folder),
               onPressed: () async {
                 try {
-                  if (isAndroid()) {
+                  if (platform.isAndroid) {
                     await CacheDocuments.open(
                       kind,
                       imagesLabel:
@@ -143,7 +144,11 @@ class _CacheLocation extends ConsumerWidget {
                     throw StateError('Cache folder does not exist');
                   }
                   final opened = await launchExternalUrl(
-                    Uri.directory(path, windows: isWindows()),
+                    Uri.directory(
+                      path,
+                      windows: platform == AppPlatform.windows,
+                    ),
+                    launcher: ref.read(externalUrlLauncherProvider),
                   );
                   if (!opened) throw StateError('Could not open cache folder');
                 } catch (_) {

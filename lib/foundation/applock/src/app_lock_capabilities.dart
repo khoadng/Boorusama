@@ -37,6 +37,6 @@ class AppLockCapabilities {
 }
 
 final appLockCapabilitiesProvider = Provider<AppLockCapabilities>(
-  (ref) => AppLockCapabilities.forPlatform(currentAppPlatform()),
+  (ref) => AppLockCapabilities.forPlatform(ref.watch(appPlatformProvider)),
   name: 'appLockCapabilitiesProvider',
 );

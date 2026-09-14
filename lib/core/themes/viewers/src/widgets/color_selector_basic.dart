@@ -21,6 +21,7 @@ class BasicColorSelector extends ConsumerWidget {
     final currentColors = ref.watch(themePreviewerColorsProvider);
     final enableDynamicColoring = currentColors.enableDynamicColoring;
     final dynamicColorSupported = ref.watch(dynamicColorSupportProvider);
+    final isDesktop = ref.watch(appPlatformProvider).isDesktop;
     final basicColors = ref.watch(
       themePreviewerProvider.select(
         (value) => value.basicColors,
@@ -66,7 +67,7 @@ class BasicColorSelector extends ConsumerWidget {
           KurumiSwitchListTile(
             title: Text(context.t.settings.theme.dynamic_color),
             subtitle: dynamicColorSupported
-                ? !isDesktopPlatform()
+                ? !isDesktop
                       ? Text(
                           context
                               .t
@@ -82,7 +83,7 @@ class BasicColorSelector extends ConsumerWidget {
                               .dynamic_color_desktop_description,
                         )
                 : Text(
-                    '${!isDesktopPlatform() ? context.t.settings.theme.dynamic_color_mobile_description : context.t.settings.theme.dynamic_color_desktop_description}. ${context.t.settings.theme.dynamic_color_unsupported_description}',
+                    '${!isDesktop ? context.t.settings.theme.dynamic_color_mobile_description : context.t.settings.theme.dynamic_color_desktop_description}. ${context.t.settings.theme.dynamic_color_unsupported_description}',
                   ),
             value: enableDynamicColoring,
             onChanged: dynamicColorSupported

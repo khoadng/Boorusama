@@ -9,6 +9,7 @@ import 'package:kurumi/material.dart';
 import '../../../foundation/info/device_info.dart';
 import '../../../foundation/loggers.dart';
 import '../../../foundation/picker.dart';
+import '../../../foundation/platform.dart';
 import '../../settings/providers.dart';
 import '../auto/providers.dart';
 import '../auto/types.dart';
@@ -206,6 +207,8 @@ class BackupNotifier extends AutoDisposeNotifier<BackupState> {
     try {
       await BackupFilePicker.pickFile(
         context: context,
+        picker: ref.read(appFilePickerProvider),
+        platform: ref.read(appPlatformProvider),
         androidDeviceInfo: ref.read(deviceInfoProvider).androidDeviceInfo,
         allowedExtensions: ['zip'],
         onPick: (path) async {
@@ -339,7 +342,7 @@ class BackupNotifier extends AutoDisposeNotifier<BackupState> {
       return;
     }
 
-    if (!settings.shouldBackup) {
+    if (!settings.shouldBackup(ref.read(appPlatformProvider))) {
       logger.verbose('Backup.Auto', 'Auto backup skipped - conditions not met');
       return;
     }
@@ -449,6 +452,7 @@ class BackupNotifier extends AutoDisposeNotifier<BackupState> {
 
     await pickDirectoryPathToastOnError(
       context: context,
+      picker: ref.read(appFilePickerProvider),
       onPick: (path) {
         selectedPath = path;
       },

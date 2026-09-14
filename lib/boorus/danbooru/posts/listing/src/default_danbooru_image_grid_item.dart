@@ -24,7 +24,7 @@ import 'danbooru_post_preview.dart';
 
 const _kBannedTextThreshold = 200.0;
 
-class DefaultDanbooruImageGridItem extends StatelessWidget {
+class DefaultDanbooruImageGridItem extends ConsumerWidget {
   const DefaultDanbooruImageGridItem({
     required this.index,
     required this.autoScrollController,
@@ -45,7 +45,7 @@ class DefaultDanbooruImageGridItem extends StatelessWidget {
   final Widget? quickActionButton;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final selectionModeController = SelectionMode.of(context);
 
     return ListenableBuilder(
@@ -119,6 +119,7 @@ class DefaultDanbooruImageGridItem extends StatelessWidget {
                                       post,
                                       artistTags,
                                       context,
+                                      ref.read(externalUrlLauncherProvider),
                                     )
                                   : null),
                         );
@@ -153,6 +154,7 @@ class DefaultDanbooruImageGridItem extends StatelessWidget {
     DanbooruPost post,
     List<String> artistTags,
     BuildContext context,
+    ExternalUrlLauncher launcher,
   ) {
     return BlockOverlayItem(
       overlay: SingleChildScrollView(
@@ -233,7 +235,10 @@ class DefaultDanbooruImageGridItem extends StatelessWidget {
         ),
       ),
       onTap: switch (post.source) {
-        final WebSource source => () => launchExternalUrlString(source.url),
+        final WebSource source => () => launchExternalUrlString(
+          source.url,
+          launcher: launcher,
+        ),
         _ => null,
       },
     );

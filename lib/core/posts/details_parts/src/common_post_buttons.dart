@@ -72,8 +72,10 @@ class CommonPostButtonsBuilder extends ConsumerWidget {
           SimpleButtonData(
             icon: Icons.open_in_browser,
             title: context.t.post.action.view_in_browser,
-            onPressed: () =>
-                launchExternalUrlString(postLinkGenerator.getLink(post)),
+            onPressed: () => launchExternalUrlString(
+              postLinkGenerator.getLink(post),
+              launcher: ref.read(externalUrlLauncherProvider),
+            ),
           ),
       if (config != null)
         if (post.tags.isNotEmpty)
