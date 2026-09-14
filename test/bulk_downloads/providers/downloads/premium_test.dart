@@ -266,54 +266,63 @@ void main() {
       expect(savedTasks.first.name, 'First Task');
     });
 
-    test('locks all saved tasks except first one when premium expires', () async {
-      // Arrange - Create container with premium enabled
-      final container = createBulkDownloadContainer(
-        downloadRepository: repository,
-        booruBuilder: MockBooruBuilder(),
-      );
+    test(
+      'locks all saved tasks except first one when premium expires',
+      () async {
+        // Arrange - Create container with premium enabled
+        final container = createBulkDownloadContainer(
+          downloadRepository: repository,
+          booruBuilder: MockBooruBuilder(),
+        );
 
-      final notifier = container.read(bulkDownloadProvider.notifier);
+        final notifier = container.read(bulkDownloadProvider.notifier);
 
-      // Create multiple saved tasks while having premium
-      final task1 = await repository.createTask(
-        DownloadTestConstants.defaultOptions,
-      );
-      final task2 = await repository.createTask(
-        DownloadTestConstants.defaultOptions,
-      );
-      final task3 = await repository.createTask(
-        DownloadTestConstants.defaultOptions,
-      );
+        // Create multiple saved tasks while having premium
+        final task1 = await repository.createTask(
+          DownloadTestConstants.defaultOptions,
+        );
+        final task2 = await repository.createTask(
+          DownloadTestConstants.defaultOptions,
+        );
+        final task3 = await repository.createTask(
+          DownloadTestConstants.defaultOptions,
+        );
 
-      final savedTask1 = await notifier.createSavedTask(task1, name: 'Task 1');
-      await Future.delayed(const Duration(milliseconds: 5));
-      final savedTask2 = await notifier.createSavedTask(task2, name: 'Task 2');
-      await Future.delayed(const Duration(milliseconds: 5));
-      final _ = await notifier.createSavedTask(task3, name: 'Task 3');
-      await Future.delayed(const Duration(milliseconds: 5));
+        final savedTask1 = await notifier.createSavedTask(
+          task1,
+          name: 'Task 1',
+        );
+        await Future.delayed(const Duration(milliseconds: 5));
+        final savedTask2 = await notifier.createSavedTask(
+          task2,
+          name: 'Task 2',
+        );
+        await Future.delayed(const Duration(milliseconds: 5));
+        final _ = await notifier.createSavedTask(task3, name: 'Task 3');
+        await Future.delayed(const Duration(milliseconds: 5));
 
-      // Verify all tasks can be accessed with premium
-      final savedTasks = await repository.getSavedTasks();
-      expect(savedTasks.length, 3);
+        // Verify all tasks can be accessed with premium
+        final savedTasks = await repository.getSavedTasks();
+        expect(savedTasks.length, 3);
 
-      // Act - Simulate premium expiration by recreating container without premium
-      final nonPremiumContainer = createBulkDownloadContainer(
-        downloadRepository: repository,
-        booruBuilder: MockBooruBuilder(),
-        hasPremium: false,
-      );
+        // Act - Simulate premium expiration by recreating container without premium
+        final nonPremiumContainer = createBulkDownloadContainer(
+          downloadRepository: repository,
+          booruBuilder: MockBooruBuilder(),
+          hasPremium: false,
+        );
 
-      // Verify lock states
-      final lockState = await nonPremiumContainer.read(
-        savedTaskLockProvider.future,
-      );
-      expect(
-        lockState.lockedIds,
-        // All except the newest task should be locked
-        {savedTask1!.task.id, savedTask2!.task.id},
-      );
-    });
+        // Verify lock states
+        final lockState = await nonPremiumContainer.read(
+          savedTaskLockProvider.future,
+        );
+        expect(
+          lockState.lockedIds,
+          // All except the newest task should be locked
+          {savedTask1!.task.id, savedTask2!.task.id},
+        );
+      },
+    );
 
     test(
       'automatically unlocks saved tasks when premium is restored',

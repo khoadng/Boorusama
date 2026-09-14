@@ -1,5 +1,7 @@
+// Package imports:
 import 'package:hive_ce/hive.dart';
 
+// Project imports:
 import '../types.dart';
 
 const _automaticMediaLoadingEnabledKey = 'automatic_media_loading_enabled';

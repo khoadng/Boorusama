@@ -1,6 +1,8 @@
+// Package imports:
 import 'package:path/path.dart' as p;
 import 'package:uuid/uuid.dart';
 
+// Project imports:
 import '../../../../../foundation/filesystem.dart';
 import '../serialization/metadata_json_encoder.dart';
 import '../serialization/tags_txt_encoder.dart';

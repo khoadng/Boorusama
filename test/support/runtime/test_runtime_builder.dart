@@ -1,26 +1,26 @@
 // ignore_for_file: avoid_returning_this
 
+// Project imports:
 import 'package:boorusama/core/blacklists/types.dart';
+import 'package:boorusama/core/bookmarks/types.dart';
 import 'package:boorusama/core/boorus/booru/types.dart';
 import 'package:boorusama/core/boorus/engine/types.dart';
-import 'package:boorusama/core/bookmarks/types.dart';
 import 'package:boorusama/core/bootstrap/boorusama_runtime.dart';
+import 'package:boorusama/core/configs/config/src/types/booru_config_repository.dart';
 import 'package:boorusama/core/downloads/downloader/types.dart';
+import 'package:boorusama/core/http/cookies/providers.dart';
 import 'package:boorusama/core/search/histories/src/types/search_history_repository.dart';
 import 'package:boorusama/core/search/histories/src/types/search_history_repository_factory.dart';
-import 'package:boorusama/core/configs/config/src/types/booru_config_repository.dart';
 import 'package:boorusama/core/settings/src/types/settings_repository.dart';
 import 'package:boorusama/core/tags/favorites/types.dart';
 import 'package:boorusama/foundation/applock/src/device_authenticator.dart';
 import 'package:boorusama/foundation/filesystem.dart';
 import 'package:boorusama/foundation/networking/connectivity_service.dart';
-import 'package:boorusama/foundation/platform.dart';
-import 'package:boorusama/foundation/pincode/pincode.dart';
-import 'package:boorusama/foundation/webview_user_agent.dart';
 import 'package:boorusama/foundation/picker.dart';
+import 'package:boorusama/foundation/pincode/pincode.dart';
+import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
-import 'package:boorusama/core/http/cookies/providers.dart';
-
+import 'package:boorusama/foundation/webview_user_agent.dart';
 import '../boorusama_test_runtime.dart';
 
 /// Fluent construction for tests that need to replace one runtime boundary.

@@ -1,5 +1,7 @@
+// Dart imports:
 import 'dart:convert';
 
+// Project imports:
 import '../types/sidecar_snapshot.dart';
 
 String encodeMetadataJson(SidecarSnapshot snapshot, String filename) =>

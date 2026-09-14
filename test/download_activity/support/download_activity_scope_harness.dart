@@ -1,14 +1,12 @@
 // Dart imports:
 import 'dart:async';
 
-// Flutter imports:
-import 'package:material_ui/material_ui.dart';
-import 'package:flutter_test/flutter_test.dart';
-
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:i18n/i18n.dart';
 import 'package:kurumi/kurumi.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:oktoast/oktoast.dart';
 
 // Project imports:

@@ -66,8 +66,7 @@ void main() {
       expect(
         allCompleted,
         isTrue,
-        reason:
-            'All disposals should complete before their respective calls return',
+        reason: 'All disposals should complete before their respective calls return',
       );
     });
 

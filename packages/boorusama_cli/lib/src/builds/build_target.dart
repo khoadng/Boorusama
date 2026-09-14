@@ -7,8 +7,7 @@ enum BuildTarget {
   linux,
   appimage,
   flatpak,
-  web
-  ;
+  web;
 
   static BuildTarget? parse(String value) {
     for (final target in values) {

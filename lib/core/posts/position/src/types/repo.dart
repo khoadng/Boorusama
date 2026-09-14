@@ -48,8 +48,9 @@ abstract interface class PageFinderRepository {
   );
 }
 
-typedef PageFinderHandler =
-    Future<PageFinderResult> Function(PageFinderQuery query);
+typedef PageFinderHandler = Future<PageFinderResult> Function(
+  PageFinderQuery query,
+);
 
 class PageFinderBuilder implements PageFinderRepository {
   PageFinderBuilder({

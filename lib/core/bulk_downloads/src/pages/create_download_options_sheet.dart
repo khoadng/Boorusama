@@ -1,9 +1,6 @@
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
-
-import '../../../downloads/sidecar/widgets.dart';
-
 import 'package:kurumi/kurumi.dart';
 import 'package:kurumi/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -16,6 +13,7 @@ import '../../../configs/config/providers.dart';
 import '../../../configs/search/types.dart';
 import '../../../downloads/configs/widgets/download_folder_selector_section.dart';
 import '../../../downloads/downloader/types.dart' as d;
+import '../../../downloads/sidecar/widgets.dart';
 import '../../../navigation/app_navigation.dart';
 import '../../../router.dart';
 import '../../../search/search/routes.dart';

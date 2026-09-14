@@ -7,8 +7,8 @@ import 'package:boorusama/core/bulk_downloads/src/data/repo_sqlite.dart';
 import 'package:boorusama/core/bulk_downloads/src/types/download_options.dart';
 import 'package:boorusama/core/bulk_downloads/src/types/download_record.dart';
 import 'package:boorusama/core/bulk_downloads/src/types/download_session.dart';
-import 'package:boorusama/core/search/selected_tags/search_tag_set.dart';
 import 'package:boorusama/core/downloads/sidecar/types.dart';
+import 'package:boorusama/core/search/selected_tags/search_tag_set.dart';
 import '../providers/downloads/common.dart';
 
 final _options = DownloadOptions(

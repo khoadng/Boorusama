@@ -3,14 +3,14 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:coreutils/coreutils.dart';
 
 // Project imports:
+import 'package:boorusama/core/http/cookies/providers.dart';
 import 'package:boorusama/foundation/applock/src/device_authenticator.dart';
 import 'package:boorusama/foundation/networking/connectivity_service.dart';
 import 'package:boorusama/foundation/picker.dart';
 import 'package:boorusama/foundation/pincode/pincode.dart';
-import 'package:boorusama/foundation/window.dart';
-import 'package:boorusama/core/http/cookies/providers.dart';
-import 'package:boorusama/foundation/webview_user_agent.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
+import 'package:boorusama/foundation/webview_user_agent.dart';
+import 'package:boorusama/foundation/window.dart';
 
 final class TestConnectivityService implements ConnectivityService {
   const TestConnectivityService({this.result = ConnectivityResult.wifi});

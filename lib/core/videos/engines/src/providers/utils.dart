@@ -5,8 +5,8 @@ import 'package:flutter/widgets.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
-import '../../../lock/types.dart';
 import '../../../../../foundation/platform.dart';
+import '../../../lock/types.dart';
 import '../engines/media_kit_booru_player.dart';
 import '../engines/video_player_booru_player.dart';
 import '../engines/webview_booru_player.dart';

@@ -1,10 +1,14 @@
+// Dart imports:
 import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:boorusama/core/http/client/types.dart';
+// Package imports:
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+// Project imports:
+import 'package:boorusama/core/http/client/types.dart';
 
 class RecordingAdapter implements HttpClientAdapter {
   RecordingAdapter({this.retryAfter = '1', this.status = 429});

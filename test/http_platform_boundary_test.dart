@@ -1,7 +1,9 @@
+// Package imports:
 import 'package:coreutils/coreutils.dart';
-import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
 
+// Project imports:
 import 'package:boorusama/core/ddos/solver/src/user_agent_provider.dart';
 import 'package:boorusama/core/http/cookies/providers.dart';
 import 'package:boorusama/foundation/webview_user_agent.dart';

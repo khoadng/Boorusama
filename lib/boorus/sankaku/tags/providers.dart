@@ -12,8 +12,8 @@ import '../../../core/tags/metatag/widgets.dart';
 import '../../../core/tags/tag/types.dart';
 import '../client_provider.dart';
 import '../posts/types.dart';
-import 'parser.dart';
 import 'metatags.dart';
+import 'parser.dart';
 
 final sankakuMetatagExtractorProvider = Provider<MetatagExtractor>(
   (ref) =>

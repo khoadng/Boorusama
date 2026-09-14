@@ -8,9 +8,9 @@ import 'package:kurumi/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 // Project imports:
-import 'protection_overlay.dart';
-import 'protection_diagnostics.dart';
 import 'page_inspection.dart';
+import 'protection_diagnostics.dart';
+import 'protection_overlay.dart';
 
 abstract class ProtectionSolver {
   /// The type of protection this solver handles

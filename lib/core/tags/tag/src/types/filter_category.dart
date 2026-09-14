@@ -6,10 +6,9 @@ enum TagFilterCategory {
   popular,
 }
 
-typedef TagFilterCategoryStringBuilder =
-    Option<String> Function(
-      TagFilterCategory category,
-    );
+typedef TagFilterCategoryStringBuilder = Option<String> Function(
+  TagFilterCategory category,
+);
 
 String queryFromTagFilterCategory({
   required TagFilterCategory category,

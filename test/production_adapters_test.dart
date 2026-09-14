@@ -13,13 +13,13 @@ import 'package:boorusama/core/bulk_downloads/src/data/repo_io.dart';
 import 'package:boorusama/core/cache/hive_misc_data_store.dart';
 import 'package:boorusama/core/cache/hive_persistent_cache_store.dart';
 import 'package:boorusama/core/debug/data.dart';
+import 'package:boorusama/core/hive/hive_adapters.dart';
+import 'package:boorusama/core/posts/post/types.dart';
 import 'package:boorusama/core/search/histories/src/data/repo_io.dart';
 import 'package:boorusama/core/search/selected_tags/types.dart';
 import 'package:boorusama/core/tags/favorites/src/data/favorite_tag_repository_factory_hive.dart';
 import 'package:boorusama/core/tags/local/src/data/repo_io.dart';
-import 'package:boorusama/core/hive/hive_adapters.dart';
 import 'package:boorusama/foundation/filesystem.dart';
-import 'package:boorusama/core/posts/post/types.dart';
 
 void main() {
   late Directory root;

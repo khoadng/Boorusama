@@ -4,17 +4,15 @@ import 'package:dio/dio.dart';
 // Project imports:
 import 'user.dart';
 
-typedef UserListFetcher<T extends User> =
-    Future<List<T>> Function(
-      List<int> ids, {
-      CancelToken? cancelToken,
-    });
+typedef UserListFetcher<T extends User> = Future<List<T>> Function(
+  List<int> ids, {
+  CancelToken? cancelToken,
+});
 
-typedef UserByNameFetcher<T extends User> =
-    Future<T?> Function(
-      String name, {
-      CancelToken? cancelToken,
-    });
+typedef UserByNameFetcher<T extends User> = Future<T?> Function(
+  String name, {
+  CancelToken? cancelToken,
+});
 
 abstract class UserRepository<T extends User> {
   Future<T> getUserById(int id);

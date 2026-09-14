@@ -11,16 +11,16 @@ import '../../foundation/info/app_info.dart';
 import '../../foundation/info/device_info.dart';
 import '../../foundation/loggers.dart';
 import '../../foundation/networking/connectivity_service.dart';
+import '../../foundation/picker.dart';
 import '../../foundation/pincode/pincode.dart';
 import '../../foundation/platform.dart';
-import '../../foundation/window.dart';
-import '../../foundation/webview_user_agent.dart';
-import '../../foundation/picker.dart';
 import '../../foundation/url_launcher.dart';
+import '../../foundation/webview_user_agent.dart';
+import '../../foundation/window.dart';
+import '../blacklists/types.dart';
+import '../bookmarks/types.dart';
 import '../boorus/booru/types.dart';
 import '../boorus/engine/types.dart';
-import '../bookmarks/types.dart';
-import '../blacklists/types.dart';
 import '../cache/misc_data_store.dart';
 import '../cache/persistent_cache_store.dart';
 import '../configs/config/types.dart';
@@ -33,8 +33,8 @@ import '../http/cookies/providers.dart';
 import '../search/histories/types.dart';
 import '../settings/src/types/settings_repository.dart';
 import '../settings/types.dart';
-import '../tags/favorites/types.dart';
 import '../tags/configs/src/tag_info.dart';
+import '../tags/favorites/types.dart';
 
 final class BoorusamaRuntime {
   const BoorusamaRuntime({

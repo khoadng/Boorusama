@@ -1,5 +1,7 @@
+// Package imports:
 import 'package:hive_ce/hive.dart';
 
+// Project imports:
 import '../types/log_options.dart';
 import '../types/log_options_repository.dart';
 

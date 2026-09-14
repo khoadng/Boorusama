@@ -4,36 +4,35 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
+import 'package:boorusama/core/bookmarks/types.dart';
 import 'package:boorusama/core/boorus/booru/types.dart';
 import 'package:boorusama/core/boorus/defaults/src/booru_repository_default.dart';
 import 'package:boorusama/core/boorus/defaults/widgets.dart';
 import 'package:boorusama/core/boorus/engine/types.dart';
-import 'package:boorusama/core/bookmarks/types.dart';
 import 'package:boorusama/core/bootstrap/boorusama_runtime.dart';
 import 'package:boorusama/core/configs/config/types.dart';
 import 'package:boorusama/core/configs/create/create.dart';
 import 'package:boorusama/core/debug/types.dart';
 import 'package:boorusama/core/developer_options/types.dart';
-import 'package:boorusama/core/downloads/filename/types.dart';
 import 'package:boorusama/core/downloads/downloader/types.dart';
+import 'package:boorusama/core/downloads/filename/types.dart';
 import 'package:boorusama/core/downloads/urls/types.dart';
 import 'package:boorusama/core/posts/details_parts/types.dart';
 import 'package:boorusama/core/posts/details_parts/widgets.dart';
-import 'package:boorusama/core/posts/post/types.dart';
 import 'package:boorusama/core/posts/post/providers.dart';
+import 'package:boorusama/core/posts/post/types.dart';
 import 'package:boorusama/core/posts/rating/types.dart';
 import 'package:boorusama/core/posts/sources/types.dart';
-import 'package:boorusama/core/search/queries/tag_query_composer.dart';
 import 'package:boorusama/core/search/histories/src/types/search_history_repository.dart';
+import 'package:boorusama/core/search/queries/tag_query_composer.dart';
 import 'package:boorusama/core/search/selected_tags/types.dart';
 import 'package:boorusama/core/settings/types.dart';
-import 'package:boorusama/core/tags/favorites/types.dart';
 import 'package:boorusama/core/tags/autocompletes/autocomplete_repository.dart';
+import 'package:boorusama/core/tags/favorites/types.dart';
 import 'package:boorusama/foundation/filesystem.dart';
 import 'package:boorusama/foundation/picker.dart';
-import 'package:boorusama/foundation/url_launcher.dart';
 import 'package:boorusama/foundation/pincode/pincode.dart';
-
+import 'package:boorusama/foundation/url_launcher.dart';
 import '../../support/boorusama_test_runtime.dart';
 
 final class FakeBooruPostRequest {

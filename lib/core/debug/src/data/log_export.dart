@@ -4,9 +4,9 @@ import 'package:path/path.dart' as p;
 
 // Project imports:
 import '../../../../foundation/filesystem.dart';
-import '../types/log_data.dart';
-import '../logging/log_formatter.dart';
 import '../../../downloads/path/types.dart';
+import '../logging/log_formatter.dart';
+import '../types/log_data.dart';
 import '../types/write_log_status.dart';
 
 Future<WriteLogStatus> writeLogs(

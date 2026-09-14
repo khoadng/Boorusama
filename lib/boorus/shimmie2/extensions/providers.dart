@@ -12,9 +12,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import '../../../core/http/client/providers.dart';
 import '../../../core/http/client/types.dart';
+import '../../../foundation/lazy_managed.dart';
 import '../../../foundation/loggers.dart';
 import '../../../foundation/platform.dart';
-import '../../../foundation/lazy_managed.dart';
 import 'cache.dart';
 import 'parser.dart';
 import 'types.dart';

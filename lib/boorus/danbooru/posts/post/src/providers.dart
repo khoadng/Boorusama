@@ -72,10 +72,9 @@ final danbooruPostRepoProvider =
       );
     });
 
-typedef PostFetchTransformer =
-    Future<PostResult<DanbooruPost>> Function(
-      PostResult<DanbooruPost> posts,
-    );
+typedef PostFetchTransformer = Future<PostResult<DanbooruPost>> Function(
+  PostResult<DanbooruPost> posts,
+);
 
 Future<PostResult<DanbooruPost>> transformPosts(
   Ref ref,

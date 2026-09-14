@@ -1,13 +1,17 @@
+// Dart imports:
 import 'dart:io';
 import 'dart:typed_data';
 
+// Package imports:
+import 'package:dio/dio.dart';
+import 'package:flutter_test/flutter_test.dart';
+
+// Project imports:
 import 'package:boorusama/core/debug/data.dart';
 import 'package:boorusama/core/debug/types.dart';
 import 'package:boorusama/core/http/client/src/interceptors/dio_logger_interceptor.dart';
 import 'package:boorusama/foundation/filesystem.dart';
 import 'package:boorusama/foundation/loggers.dart';
-import 'package:dio/dio.dart';
-import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   test('URL redaction removes fragments without adding a trailing marker', () {

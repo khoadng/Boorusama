@@ -1,15 +1,15 @@
 // Project imports:
 import '../../core/boorus/defaults/widgets.dart';
 import '../../core/boorus/engine/types.dart';
-import '../../core/configs/config/types.dart';
 import '../../core/configs/config/providers.dart';
-import 'favorites/providers.dart';
+import '../../core/configs/config/types.dart';
 import '../../core/configs/create/widgets.dart';
 import '../../core/configs/manage/widgets.dart';
 import '../../core/downloads/filename/types.dart';
 import '../../core/posts/details/widgets.dart';
 import 'artists/widgets.dart';
 import 'configs/widgets.dart';
+import 'favorites/providers.dart';
 import 'favorites/widgets.dart';
 import 'home/widgets.dart';
 import 'posts/types.dart';

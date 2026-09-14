@@ -1,13 +1,14 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kurumi/kurumi.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import 'package:boorusama/core/tags/favorites/widgets.dart';
 import 'package:boorusama/core/tags/favorites/src/pages/edit_favorite_tag_sheet.dart';
-
+import 'package:boorusama/core/tags/favorites/widgets.dart';
 import '../support/boorusama_test_runtime.dart';
 import 'support/fake_booru_backend.dart';
 import 'support/headless_app_harness.dart';

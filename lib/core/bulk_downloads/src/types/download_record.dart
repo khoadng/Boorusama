@@ -1,5 +1,7 @@
 // Package imports:
 import 'package:equatable/equatable.dart';
+
+// Project imports:
 import '../../../downloads/sidecar/types.dart';
 
 enum DownloadRecordStatus {

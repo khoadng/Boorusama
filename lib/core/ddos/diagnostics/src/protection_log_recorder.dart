@@ -1,5 +1,6 @@
-import '../../solver/types.dart';
+// Project imports:
 import '../../../debug/data.dart';
+import '../../solver/types.dart';
 import 'protection_log_buffer.dart';
 
 class ProtectionLogRecorder {

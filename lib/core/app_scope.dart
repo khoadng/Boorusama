@@ -5,26 +5,26 @@ import 'package:kurumi/material.dart';
 
 // Project imports:
 import '../boorus/registry.dart';
-import 'blacklists/providers.dart';
-import 'bookmarks/providers.dart';
 import '../foundation/app_rating/providers.dart';
-import '../foundation/applock/applock.dart';
 import '../foundation/app_update/providers.dart';
+import '../foundation/applock/applock.dart';
 import '../foundation/boot/providers.dart';
 import '../foundation/filesystem.dart';
+import '../foundation/iap/iap.dart';
 import '../foundation/info/app_info.dart';
 import '../foundation/info/device_info.dart';
 import '../foundation/info/package_info.dart';
-import '../foundation/iap/iap.dart';
 import '../foundation/loggers/providers.dart';
 import '../foundation/networking/connectivity_service.dart';
+import '../foundation/picker.dart';
 import '../foundation/pincode/pincode.dart';
 import '../foundation/platform.dart';
-import '../foundation/vendors/google/providers.dart';
-import '../foundation/window.dart';
-import '../foundation/webview_user_agent.dart';
-import '../foundation/picker.dart';
 import '../foundation/url_launcher.dart';
+import '../foundation/vendors/google/providers.dart';
+import '../foundation/webview_user_agent.dart';
+import '../foundation/window.dart';
+import 'blacklists/providers.dart';
+import 'bookmarks/providers.dart';
 import 'boorus/booru/providers.dart';
 import 'boorus/engine/providers.dart';
 import 'bootstrap/boorusama_runtime.dart';
@@ -36,8 +36,8 @@ import 'downloads/downloader/providers.dart';
 import 'http/cookies/providers.dart';
 import 'search/histories/src/data/providers.dart';
 import 'settings/providers.dart';
-import 'tags/favorites/src/providers/providers.dart';
 import 'tags/configs/providers.dart';
+import 'tags/favorites/src/providers/providers.dart';
 import 'widgets/widgets.dart';
 
 class BoorusamaAppScope extends StatelessWidget {

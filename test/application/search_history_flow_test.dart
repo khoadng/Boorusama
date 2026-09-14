@@ -1,13 +1,16 @@
+// Flutter imports:
 import 'package:flutter/widgets.dart';
+
+// Package imports:
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kurumi/kurumi.dart';
 
+// Project imports:
 import 'package:boorusama/core/home/src/widgets/home_search_bar.dart';
 import 'package:boorusama/core/search/search/src/widgets/search_button.dart';
-
+import '../support/fakes/memory_repositories.dart';
 import 'support/fake_booru_backend.dart';
 import 'support/headless_app_harness.dart';
-import '../support/fakes/memory_repositories.dart';
 
 void main() {
   testWidgets('persists a search in history through the real search flow', (

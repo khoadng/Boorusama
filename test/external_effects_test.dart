@@ -3,11 +3,11 @@ import 'dart:async';
 
 // Flutter imports:
 import 'package:flutter/widgets.dart';
-import 'package:flutter_test/flutter_test.dart';
 
 // Package imports:
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 // Project imports:
 import 'package:boorusama/core/backups/auto/trigger.dart';

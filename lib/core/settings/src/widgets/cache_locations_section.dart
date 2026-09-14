@@ -7,8 +7,8 @@ import 'package:kurumi/kurumi.dart';
 import 'package:kurumi/material.dart';
 
 // Project imports:
-import '../../../../foundation/clipboard.dart';
 import '../../../../foundation/cache_documents.dart';
+import '../../../../foundation/clipboard.dart';
 import '../../../../foundation/filesystem.dart';
 import '../../../../foundation/path.dart';
 import '../../../../foundation/platform.dart';

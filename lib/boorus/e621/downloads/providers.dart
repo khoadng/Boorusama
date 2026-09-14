@@ -53,8 +53,7 @@ const kE621PostSamples = [
     'general': 'male solo',
     'meta': 'highres translated',
     'species': 'mammal hedgehog',
-    'tags':
-        'male solo sonic_the_hedgehog classic_sonic sonic_the_hedgehog_(comics) sonic_the_hedgehog_(series) highres translated mammal hedgehog',
+    'tags': 'male solo sonic_the_hedgehog classic_sonic sonic_the_hedgehog_(comics) sonic_the_hedgehog_(series) highres translated mammal hedgehog',
     'extension': 'jpg',
     'md5': '9cf364e77f46183e2ebd75de757488e2',
     'width': '2232',

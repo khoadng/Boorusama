@@ -1,7 +1,8 @@
-import '../../solver/types.dart';
-import '../../../debug/types.dart';
-import 'protection_poll_log_buffer.dart';
+// Project imports:
 import '../../../../foundation/loggers/logger.dart';
+import '../../../debug/types.dart';
+import '../../solver/types.dart';
+import 'protection_poll_log_buffer.dart';
 
 /// Keeps pre-detection context out of the visible log. Entries have already
 /// retained full details and their original timestamps.

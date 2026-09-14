@@ -1,8 +1,11 @@
+// Package imports:
+import 'package:flutter_test/flutter_test.dart';
+
+// Project imports:
 import 'package:boorusama/core/ddos/diagnostics/data.dart';
+import 'package:boorusama/core/ddos/solver/types.dart';
 import 'package:boorusama/core/debug/data.dart';
 import 'package:boorusama/core/debug/types.dart';
-import 'package:boorusama/core/ddos/solver/types.dart';
-import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   test(

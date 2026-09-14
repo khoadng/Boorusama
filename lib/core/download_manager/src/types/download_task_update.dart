@@ -47,18 +47,20 @@ extension DownloadTaskStateX on DownloadTaskUpdateState {
 
   Map<String, List<TaskUpdate>> get tasks => {..._tasks};
 
-  List<TaskUpdate> completed(String group) => all(group)
-      .whereType<TaskStatusUpdate>()
-      .where((e) => e.status == TaskStatus.complete)
-      .toList();
+  List<TaskUpdate> completed(String group) =>
+      all(group)
+          .whereType<TaskStatusUpdate>()
+          .where((e) => e.status == TaskStatus.complete)
+          .toList();
 
   List<TaskUpdate> inProgress(String group) =>
       all(group).whereType<TaskProgressUpdate>().toList();
 
-  List<TaskUpdate> pending(String group) => all(group)
-      .whereType<TaskStatusUpdate>()
-      .where((e) => e.status == TaskStatus.enqueued)
-      .toList();
+  List<TaskUpdate> pending(String group) =>
+      all(group)
+          .whereType<TaskStatusUpdate>()
+          .where((e) => e.status == TaskStatus.enqueued)
+          .toList();
 
   List<TaskUpdate> failed(String group) => all(group)
       .whereType<TaskStatusUpdate>()
@@ -67,13 +69,15 @@ extension DownloadTaskStateX on DownloadTaskUpdateState {
       )
       .toList();
 
-  List<TaskUpdate> canceled(String group) => all(group)
-      .whereType<TaskStatusUpdate>()
-      .where((e) => e.status == TaskStatus.canceled)
-      .toList();
+  List<TaskUpdate> canceled(String group) =>
+      all(group)
+          .whereType<TaskStatusUpdate>()
+          .where((e) => e.status == TaskStatus.canceled)
+          .toList();
 
-  List<TaskUpdate> paused(String group) => all(group)
-      .whereType<TaskStatusUpdate>()
-      .where((e) => e.status == TaskStatus.paused)
-      .toList();
+  List<TaskUpdate> paused(String group) =>
+      all(group)
+          .whereType<TaskStatusUpdate>()
+          .where((e) => e.status == TaskStatus.paused)
+          .toList();
 }

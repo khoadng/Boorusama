@@ -2,10 +2,10 @@
 import 'package:kurumi/material.dart';
 
 // Project imports:
+import '../foundation/networking.dart';
 import 'analytics/widgets.dart';
 import 'backups/auto/trigger.dart';
 import 'debug/widgets.dart';
-import '../foundation/networking.dart';
 import 'themes/colors/dynamic_color.dart';
 
 class BoorusamaExternalEffects extends StatelessWidget {

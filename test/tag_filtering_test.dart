@@ -827,18 +827,21 @@ void main() {
       );
     });
 
-    test('should return false for uploaderid metatag with non-numeric value', () {
-      // "uploaderid:abc" yields uploader id -1, so evaluation returns false unless "-1" is in tags.
-      final data = TagFilterData(
-        tags: {'uploaderid:abc'},
-        rating: Rating.general,
-        score: 0,
-      );
-      expect(
-        checkIfTagsContainsRawTagExpression(data, 'uploaderid:abc'),
-        false,
-      );
-    });
+    test(
+      'should return false for uploaderid metatag with non-numeric value',
+      () {
+        // "uploaderid:abc" yields uploader id -1, so evaluation returns false unless "-1" is in tags.
+        final data = TagFilterData(
+          tags: {'uploaderid:abc'},
+          rating: Rating.general,
+          score: 0,
+        );
+        expect(
+          checkIfTagsContainsRawTagExpression(data, 'uploaderid:abc'),
+          false,
+        );
+      },
+    );
 
     test('should treat unknown metatag prefix as regular tag', () {
       // "unknown:value" is not registered, so it becomes a TagType.

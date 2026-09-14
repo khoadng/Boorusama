@@ -1,3 +1,4 @@
+// Project imports:
 import '../types/log_data.dart';
 
 String formatLogEntry(LogData log) =>

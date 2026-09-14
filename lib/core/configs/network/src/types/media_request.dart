@@ -1,5 +1,7 @@
+// Package imports:
 import 'package:equatable/equatable.dart';
 
+// Project imports:
 import 'media_host_override.dart';
 
 final class MediaRequest extends Equatable {

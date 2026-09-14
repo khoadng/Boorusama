@@ -35,9 +35,11 @@ class _Shimmie2HomePageState extends ConsumerState<Shimmie2HomePage> {
     return HomePageScaffold(
       mobileMenu: [
         if (favoritePageBuilder != null)
-          if (ref.watch(shimmie2CanFavoriteProvider(config)) case AsyncData(
-            value: final canFavorite,
-          ) when canFavorite)
+          if (ref.watch(shimmie2CanFavoriteProvider(config))
+              case AsyncData(
+                value: final canFavorite,
+              )
+              when canFavorite)
             SideMenuTile(
               icon: const Icon(
                 Symbols.favorite,

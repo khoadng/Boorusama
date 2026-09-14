@@ -13,23 +13,20 @@ import 'slideshow_state.dart';
 
 const kDefaultAutoSlideDuration = Duration(seconds: 5);
 
-typedef SlideshowAdvanceCallback =
-    Future<void> Function(
-      int currentPage,
-      int nextPage,
-    );
+typedef SlideshowAdvanceCallback = Future<void> Function(
+  int currentPage,
+  int nextPage,
+);
 
-typedef SlideshowNavigateCallback =
-    Future<void> Function(
-      int targetPage,
-      bool skipAnimation,
-    );
+typedef SlideshowNavigateCallback = Future<void> Function(
+  int targetPage,
+  bool skipAnimation,
+);
 
-typedef TimerFactory =
-    Timer Function(
-      Duration duration,
-      void Function() callback,
-    );
+typedef TimerFactory = Timer Function(
+  Duration duration,
+  void Function() callback,
+);
 
 SlideshowNavigateCallback createDefaultSlideshowNavigateCallback(
   PageController pageController,

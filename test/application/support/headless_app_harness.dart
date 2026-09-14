@@ -1,7 +1,9 @@
 // Flutter imports:
-import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/widgets.dart';
+
+// Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
@@ -11,7 +13,6 @@ import 'package:boorusama/core/app_scope.dart';
 import 'package:boorusama/core/bootstrap/boorusama_runtime.dart';
 import 'package:boorusama/core/posts/details/widgets.dart';
 import 'package:boorusama/core/posts/listing/widgets.dart';
-
 import 'fake_booru_backend.dart';
 
 final class HeadlessAppHarness {

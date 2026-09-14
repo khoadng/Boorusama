@@ -62,7 +62,10 @@ final eshuushuuDioProvider = Provider.family<Dio, BooruConfigAuth>((
           onLog: (message) => loggerService.info('Auth', message),
           onAuthFailed: () {
             showSessionExpiredDialog(
-              context: ref.read(appNavigationProvider).navigatorKey.currentContext,
+              context: ref
+                  .read(appNavigationProvider)
+                  .navigatorKey
+                  .currentContext,
               onReLogin: () {
                 final currentConfig = ref
                     .read(booruConfigProvider)

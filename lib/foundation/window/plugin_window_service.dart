@@ -1,5 +1,7 @@
+// Package imports:
 import 'package:window_manager/window_manager.dart' as window_manager;
 
+// Project imports:
 import 'window_service.dart';
 
 final class PluginWindowService implements WindowService {

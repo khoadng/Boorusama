@@ -82,19 +82,17 @@ extension PostResultX<T extends Post> on List<T> {
   );
 }
 
-typedef PostFutureFetcher<T extends Post> =
-    Future<PostResult<T>> Function(
-      List<String> tags,
-      int page, {
-      int? limit,
-      PostFetchOptions? options,
-    });
+typedef PostFutureFetcher<T extends Post> = Future<PostResult<T>> Function(
+  List<String> tags,
+  int page, {
+  int? limit,
+  PostFetchOptions? options,
+});
 
-typedef PostSingleFutureFetcher<T extends Post> =
-    Future<T?> Function(
-      PostId id, {
-      PostFetchOptions? options,
-    });
+typedef PostSingleFutureFetcher<T extends Post> = Future<T?> Function(
+  PostId id, {
+  PostFetchOptions? options,
+});
 
 typedef PostFutureControllerFetcher<T extends Post> =
     Future<PostResult<T>> Function(

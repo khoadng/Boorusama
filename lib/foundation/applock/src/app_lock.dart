@@ -9,11 +9,11 @@ import 'package:kurumi/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../pincode/pincode.dart';
 import '../../loggers.dart';
+import '../../pincode/pincode.dart';
+import 'app_lock_capabilities.dart';
 import 'app_lock_session.dart';
 import 'app_lock_type.dart';
-import 'app_lock_capabilities.dart';
 import 'app_privacy_platform.dart';
 import 'biometrics.dart';
 import 'device_authenticator.dart';

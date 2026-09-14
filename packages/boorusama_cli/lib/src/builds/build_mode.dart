@@ -1,8 +1,7 @@
 enum BuildMode {
   release,
   debug,
-  profile
-  ;
+  profile;
 
   String get flag => '--$name';
 }

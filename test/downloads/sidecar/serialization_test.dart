@@ -1,8 +1,12 @@
+// Dart imports:
 import 'dart:convert';
 
+// Package imports:
+import 'package:flutter_test/flutter_test.dart';
+
+// Project imports:
 import 'package:boorusama/core/downloads/sidecar/serialization.dart';
 import 'package:boorusama/core/downloads/sidecar/types.dart';
-import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   test('JSON exports deterministic provenance without request credentials', () {

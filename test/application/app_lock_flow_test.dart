@@ -1,15 +1,19 @@
+// Dart imports:
 import 'dart:convert';
 
-import 'package:crypto/crypto.dart';
+// Flutter imports:
 import 'package:flutter/widgets.dart';
+
+// Package imports:
+import 'package:crypto/crypto.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
-import 'package:boorusama/core/settings/types.dart';
+// Project imports:
 import 'package:boorusama/core/settings/src/pages/app_lock_settings_page.dart';
+import 'package:boorusama/core/settings/types.dart';
 import 'package:boorusama/foundation/applock/applock.dart';
 import 'package:boorusama/foundation/pincode/pincode.dart';
-
 import '../support/boorusama_test_runtime.dart';
 import 'support/fake_booru_backend.dart';
 import 'support/headless_app_harness.dart';

@@ -3,8 +3,8 @@ import 'package:coreutils/coreutils.dart';
 import 'package:dio/dio.dart';
 
 // Project imports:
-import '../../../../debug/data.dart';
 import '../../../../../foundation/loggers.dart';
+import '../../../../debug/data.dart';
 import '../types/http_utils.dart';
 
 const _kImageExtensions = {

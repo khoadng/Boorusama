@@ -1,3 +1,4 @@
+// Project imports:
 import '../types/sidecar_snapshot.dart';
 
 String encodeTagsTxt(SidecarSnapshot snapshot) {

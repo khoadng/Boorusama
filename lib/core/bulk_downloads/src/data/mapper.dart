@@ -6,8 +6,8 @@ import 'package:foundation/foundation.dart';
 import 'package:sqlite3/sqlite3.dart';
 
 // Project imports:
-import '../types/download_record.dart';
 import '../../../downloads/sidecar/types.dart';
+import '../types/download_record.dart';
 import '../types/download_session.dart';
 import '../types/download_task.dart';
 

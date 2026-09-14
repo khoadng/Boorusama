@@ -30,11 +30,10 @@ class DirectionHistoryOptions {
   final int highConfidenceThreshold;
 }
 
-typedef Preloader =
-    Future<void> Function(
-      String url,
-      CancelToken cancelToken,
-    );
+typedef Preloader = Future<void> Function(
+  String url,
+  CancelToken cancelToken,
+);
 
 enum ScrollSpeed {
   crawling, // < 0.2 pages/sec (very deliberate reading)

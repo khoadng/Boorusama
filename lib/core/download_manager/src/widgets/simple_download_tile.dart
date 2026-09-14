@@ -9,8 +9,8 @@ import 'package:readmore/readmore.dart';
 import 'package:share_plus/share_plus.dart';
 
 // Project imports:
-import '../../../../foundation/platform.dart';
 import '../../../../foundation/networking/network_provider.dart';
+import '../../../../foundation/platform.dart';
 import '../../../../foundation/url_launcher.dart';
 import '../../../downloads/background/types.dart';
 import '../../../downloads/configs/widgets.dart';

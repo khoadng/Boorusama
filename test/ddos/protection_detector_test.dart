@@ -60,8 +60,7 @@ void main() {
       (
         name: '403 with full CloudFlare challenge page',
         statusCode: 403,
-        body:
-            '<html>cf_chl cloudflare ddos challenge jschl Ray ID: abc123</html>',
+        body: '<html>cf_chl cloudflare ddos challenge jschl Ray ID: abc123</html>',
         shouldDetect: true,
       ),
       (
@@ -91,8 +90,7 @@ void main() {
       (
         name: '403 with Cloudflare managed challenge page',
         statusCode: 403,
-        body:
-            '<!DOCTYPE html><html lang="en-US"><head><title>Just a moment...</title></head><body><script src="https://challenges.cloudflare.com/turnstile/v0/api.js"></script></body></html>',
+        body: '<!DOCTYPE html><html lang="en-US"><head><title>Just a moment...</title></head><body><script src="https://challenges.cloudflare.com/turnstile/v0/api.js"></script></body></html>',
         shouldDetect: true,
       ),
     ];
@@ -127,8 +125,7 @@ void main() {
       (
         name: 'page with enough AFT signatures',
         statusCode: 200,
-        body:
-            '<html>Click the checkbox to continue verification challenge-checkbox challenge-container sendAnswer</html>',
+        body: '<html>Click the checkbox to continue verification challenge-checkbox challenge-container sendAnswer</html>',
         shouldDetect: true,
       ),
       (

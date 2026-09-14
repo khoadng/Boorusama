@@ -10,9 +10,9 @@ import 'package:flutter_test/flutter_test.dart';
 
 // Project imports:
 import 'package:boorusama/core/ddos/solver/src/protection_detector.dart';
+import 'package:boorusama/core/ddos/solver/src/protection_diagnostics.dart';
 import 'package:boorusama/core/ddos/solver/src/protection_orchestrator.dart';
 import 'package:boorusama/core/ddos/solver/src/protection_solver.dart';
-import 'package:boorusama/core/ddos/solver/src/protection_diagnostics.dart';
 import 'package:boorusama/core/ddos/solver/src/types.dart';
 import 'package:boorusama/core/ddos/solver/src/user_agent_provider.dart';
 

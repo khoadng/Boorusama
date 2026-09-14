@@ -38,14 +38,13 @@ import 'package:boorusama/core/search/queries/types.dart';
 import 'package:boorusama/core/search/selected_tags/types.dart';
 import 'package:boorusama/core/settings/providers.dart';
 import 'package:boorusama/core/settings/types.dart';
-import 'package:boorusama/foundation/info/device_info.dart';
 import 'package:boorusama/foundation/filesystem.dart';
+import 'package:boorusama/foundation/info/device_info.dart';
 import 'package:boorusama/foundation/loggers.dart';
 import 'package:boorusama/foundation/permissions.dart';
 import 'package:boorusama/foundation/platform.dart';
-
-import '../../common.dart';
 import '../../../support/boorusama_test_runtime.dart';
+import '../../common.dart';
 
 class MockMediaPermissionManager extends Mock
     implements MediaPermissionManager {}

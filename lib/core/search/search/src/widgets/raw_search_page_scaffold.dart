@@ -27,14 +27,13 @@ import '../routes/params.dart';
 import '../types/search_bar_position.dart';
 import 'search_controller.dart';
 
-typedef IndexedSelectableSearchWidgetBuilder<T extends Post> =
-    Widget Function(
-      BuildContext context,
-      int index,
-      AutoScrollController autoScrollController,
-      PostGridController<T> controller,
-      bool useHero,
-    );
+typedef IndexedSelectableSearchWidgetBuilder<T extends Post> = Widget Function(
+  BuildContext context,
+  int index,
+  AutoScrollController autoScrollController,
+  PostGridController<T> controller,
+  bool useHero,
+);
 
 const kSearchBarHeight = kToolbarHeight;
 const _kSelectedTagHeight = 48.0;

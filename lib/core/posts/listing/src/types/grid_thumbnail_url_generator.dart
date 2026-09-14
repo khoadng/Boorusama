@@ -42,11 +42,10 @@ class GridThumbnailMedia extends Equatable {
   ];
 }
 
-typedef GridThumbnailMediaMapper =
-    GridThumbnailMedia Function(
-      Post post,
-      GridThumbnailSettings settings,
-    );
+typedef GridThumbnailMediaMapper = GridThumbnailMedia Function(
+  Post post,
+  GridThumbnailSettings settings,
+);
 
 abstract class GridLoadingPlaceholderAspectRatioResolver {
   double? resolveLoadingPlaceholderAspectRatio({

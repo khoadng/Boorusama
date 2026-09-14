@@ -3,9 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import '../logging/app_logger.dart';
+import '../types/log_data.dart';
 import '../types/log_options.dart';
 import '../types/log_options_repository.dart';
-import '../types/log_data.dart';
 import 'log_options_notifier.dart';
 
 final appLoggerProvider = Provider<AppLogger>(

@@ -1,12 +1,18 @@
+// Dart imports:
 import 'dart:typed_data';
 
+// Flutter imports:
+import 'package:flutter/widgets.dart';
+
+// Package imports:
+import 'package:coreutils/coreutils.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter_test/flutter_test.dart';
+
+// Project imports:
 import 'package:boorusama/core/ddos/handler/types.dart';
 import 'package:boorusama/core/ddos/solver/types.dart';
 import 'package:boorusama/core/http/client/src/interceptors/dio_protection_interceptor.dart';
-import 'package:coreutils/coreutils.dart';
-import 'package:dio/dio.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_test/flutter_test.dart';
 
 import 'protection_solver_test.dart'
     show FakeCookieJar, FakeUserAgentProvider, FakeHttpError;

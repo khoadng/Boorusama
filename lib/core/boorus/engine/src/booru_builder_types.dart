@@ -15,154 +15,130 @@ import '../../../search/search/routes.dart';
 import '../../../tags/autocompletes/types.dart';
 import '../../../tags/tag/colors.dart';
 
-typedef CreateConfigPageBuilder =
-    Widget Function(
-      BuildContext context,
-      EditBooruConfigId id, {
-      Color? backgroundColor,
-    });
+typedef CreateConfigPageBuilder = Widget Function(
+  BuildContext context,
+  EditBooruConfigId id, {
+  Color? backgroundColor,
+});
 
-typedef UpdateConfigPageBuilder =
-    Widget Function(
-      BuildContext context,
-      EditBooruConfigId id, {
-      Color? backgroundColor,
-      String? initialTab,
-    });
+typedef UpdateConfigPageBuilder = Widget Function(
+  BuildContext context,
+  EditBooruConfigId id, {
+  Color? backgroundColor,
+  String? initialTab,
+});
 
-typedef HomePageBuilder =
-    Widget Function(
-      BuildContext context,
-    );
+typedef HomePageBuilder = Widget Function(
+  BuildContext context,
+);
 
-typedef SearchPageBuilder =
-    Widget Function(
-      BuildContext context,
-      SearchParams params,
-    );
+typedef SearchPageBuilder = Widget Function(
+  BuildContext context,
+  SearchParams params,
+);
 
-typedef PostDetailsPageBuilder =
-    Widget Function(
-      BuildContext context,
-      DetailsRouteContext detailsContext,
-    );
+typedef PostDetailsPageBuilder = Widget Function(
+  BuildContext context,
+  DetailsRouteContext detailsContext,
+);
 
-typedef FavoritesPageBuilder =
-    Widget Function(
-      BuildContext context,
-    );
+typedef FavoritesPageBuilder = Widget Function(
+  BuildContext context,
+);
 
-typedef QuickFavoriteButtonBuilder =
-    Widget? Function(
-      BuildContext context,
-      WidgetRef ref,
-      Post post,
-    );
+typedef QuickFavoriteButtonBuilder = Widget? Function(
+  BuildContext context,
+  WidgetRef ref,
+  Post post,
+);
 
-typedef MultiSelectionActionsBuilder =
-    Widget Function(
-      BuildContext context,
-      SelectionModeController controller,
-      PostGridController<Post> postController,
-    );
+typedef MultiSelectionActionsBuilder = Widget Function(
+  BuildContext context,
+  SelectionModeController controller,
+  PostGridController<Post> postController,
+);
 
-typedef ArtistPageBuilder =
-    Widget Function(
-      BuildContext context,
-      String artistName,
-    );
+typedef ArtistPageBuilder = Widget Function(
+  BuildContext context,
+  String artistName,
+);
 
-typedef CharacterPageBuilder =
-    Widget Function(
-      BuildContext context,
-      String characterName,
-    );
+typedef CharacterPageBuilder = Widget Function(
+  BuildContext context,
+  String characterName,
+);
 
-typedef CommentPageBuilder =
-    Widget Function(
-      BuildContext context,
-      bool useAppBar,
-      Post post,
-    );
+typedef CommentPageBuilder = Widget Function(
+  BuildContext context,
+  bool useAppBar,
+  Post post,
+);
 
-typedef GranularRatingFilterer =
-    bool Function(
-      Post post,
-      BooruConfigSearch config,
-    );
-typedef GranularRatingQueryBuilder =
-    List<String> Function(
-      List<String> currentQuery,
-      BooruConfigSearch config,
-    );
+typedef GranularRatingFilterer = bool Function(
+  Post post,
+  BooruConfigSearch config,
+);
+typedef GranularRatingQueryBuilder = List<String> Function(
+  List<String> currentQuery,
+  BooruConfigSearch config,
+);
 
-typedef TagColorBuilder =
-    Color? Function(
-      TagColorOptions options,
-    );
+typedef TagColorBuilder = Color? Function(
+  TagColorOptions options,
+);
 
-typedef TagColorsBuilder =
-    TagColors Function(
-      TagColorsOptions options,
-    );
+typedef TagColorsBuilder = TagColors Function(
+  TagColorsOptions options,
+);
 
-typedef PostImageDetailsUrlBuilder =
-    String Function(
-      ImageQuality imageQuality,
-      Post post,
-      BooruConfigViewer config,
-    );
+typedef PostImageDetailsUrlBuilder = String Function(
+  ImageQuality imageQuality,
+  Post post,
+  BooruConfigViewer config,
+);
 
-typedef PostStatisticsPageBuilder =
-    Widget Function(
-      BuildContext context,
-      Iterable<Post> posts,
-    );
+typedef PostStatisticsPageBuilder = Widget Function(
+  BuildContext context,
+  Iterable<Post> posts,
+);
 
-typedef PostGestureHandlerBuilder =
-    bool Function(
-      WidgetRef ref,
-      String? action,
-      Post post,
-    );
+typedef PostGestureHandlerBuilder = bool Function(
+  WidgetRef ref,
+  String? action,
+  Post post,
+);
 
-typedef TagSuggestionItemBuilder =
-    Widget Function(
-      BooruConfigAuth config,
-      AutocompleteData tag,
-      bool dense,
-      String currentQuery,
-      ValueChanged<AutocompleteData> onItemTap,
-    );
+typedef TagSuggestionItemBuilder = Widget Function(
+  BooruConfigAuth config,
+  AutocompleteData tag,
+  bool dense,
+  String currentQuery,
+  ValueChanged<AutocompleteData> onItemTap,
+);
 
-typedef HomeViewBuilder =
-    Widget Function(
-      BuildContext context,
-    );
+typedef HomeViewBuilder = Widget Function(
+  BuildContext context,
+);
 
-typedef ViewTagListBuilder =
-    Widget Function(
-      BuildContext context,
-      Post post,
-      bool initiallyMultiSelectEnabled,
-      BooruConfigAuth auth,
-    );
+typedef ViewTagListBuilder = Widget Function(
+  BuildContext context,
+  Post post,
+  bool initiallyMultiSelectEnabled,
+  BooruConfigAuth auth,
+);
 
-typedef CreateUnknownBooruWidgetsBuilder =
-    Widget Function(
-      BuildContext context,
-    );
+typedef CreateUnknownBooruWidgetsBuilder = Widget Function(
+  BuildContext context,
+);
 
-typedef VideoQualitySelectionBuilder =
-    Widget? Function(
-      BuildContext context,
-      Post post, {
-      void Function(Widget page)? onPushPage,
-      void Function()? onPopPage,
-    });
+typedef VideoQualitySelectionBuilder = Widget? Function(
+  BuildContext context,
+  Post post, {
+  void Function(Widget page)? onPushPage,
+  void Function()? onPopPage,
+});
 
-typedef SessionRestoreBuilder =
-    Widget Function(
-      BuildContext context,
-      PaginationSnapshot snapshot,
-    );
+typedef SessionRestoreBuilder = Widget Function(
+  BuildContext context,
+  PaginationSnapshot snapshot,
+);

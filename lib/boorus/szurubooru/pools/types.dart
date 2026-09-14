@@ -10,8 +10,7 @@ enum SzurubooruPoolOrder {
   latest,
   newest,
   postCount,
-  name
-  ;
+  name;
 
   String localize(BuildContext context) => switch (this) {
     SzurubooruPoolOrder.latest => context.t.pool.order.recent,

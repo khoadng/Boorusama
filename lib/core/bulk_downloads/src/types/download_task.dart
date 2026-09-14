@@ -2,8 +2,8 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import '../../../search/selected_tags/types.dart';
 import '../../../downloads/sidecar/types.dart';
+import '../../../search/selected_tags/types.dart';
 
 class DownloadTask extends Equatable {
   const DownloadTask({

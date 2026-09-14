@@ -3,8 +3,7 @@ import 'package:meta/meta.dart';
 
 enum TextMediaEmbedType {
   post,
-  asset
-  ;
+  asset;
 
   static TextMediaEmbedType? parse(String value) {
     return switch (value.toLowerCase()) {

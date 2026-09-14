@@ -5,10 +5,10 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../http/cookies/providers.dart';
 import '../../../foundation/webview_user_agent.dart';
-import '../../router.dart';
 import '../../debug/providers.dart';
+import '../../http/cookies/providers.dart';
+import '../../router.dart';
 import '../diagnostics/providers.dart';
 import '../solver/providers.dart';
 import '../solver/types.dart';

@@ -16,10 +16,10 @@ import '../../configs/config/providers.dart';
 import '../../ddos/handler/providers.dart';
 import '../../ddos/solver/types.dart';
 import '../../download_manager/providers.dart';
-import 'types.dart';
+import '../downloader/types.dart' show DownloaderMetadata;
 import '../sidecar/data.dart';
 import '../sidecar/providers.dart';
-import '../downloader/types.dart' show DownloaderMetadata;
+import 'types.dart';
 
 class BackgroundDownloadRuntime extends ConsumerStatefulWidget {
   const BackgroundDownloadRuntime({

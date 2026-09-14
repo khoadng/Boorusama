@@ -1,6 +1,8 @@
+// Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart' as p;
 
+// Project imports:
 import '../../../../../foundation/filesystem.dart';
 import 'sidecar_store.dart';
 

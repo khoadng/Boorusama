@@ -7,8 +7,10 @@ import 'package:kurumi/material.dart';
 // Project imports:
 import '../../../widgets/widgets.dart';
 
-typedef SettingsPageContentOpener =
-    void Function(BuildContext context, SettingEntry entry);
+typedef SettingsPageContentOpener = void Function(
+  BuildContext context,
+  SettingEntry entry,
+);
 
 class SettingsPageScaffold extends StatelessWidget {
   const SettingsPageScaffold({

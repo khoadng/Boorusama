@@ -1,4 +1,4 @@
-// Flutter imports:
+// Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 enum ExternalLaunchMode {

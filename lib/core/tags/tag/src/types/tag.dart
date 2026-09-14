@@ -69,17 +69,15 @@ class Tag extends Equatable {
   List<Object?> get props => [name, label, category, postCount];
 }
 
-typedef TagFetcher =
-    FutureOr<List<Tag>> Function(
-      Post post,
-      ExtractOptions options,
-    );
+typedef TagFetcher = FutureOr<List<Tag>> Function(
+  Post post,
+  ExtractOptions options,
+);
 
-typedef TagFetcherBatch =
-    FutureOr<List<Tag>> Function(
-      List<Post> posts,
-      ExtractOptions options,
-    );
+typedef TagFetcherBatch = FutureOr<List<Tag>> Function(
+  List<Post> posts,
+  ExtractOptions options,
+);
 
 class ExtractOptions {
   const ExtractOptions({

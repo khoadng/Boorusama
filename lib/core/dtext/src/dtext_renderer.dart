@@ -4,11 +4,10 @@ import 'dart:convert';
 // Package imports:
 import 'package:dtext/dtext.dart' as dtext_parser;
 
-typedef DTextDocumentParser =
-    dtext_parser.DTextDocument Function(
-      String value,
-      dtext_parser.DTextOptions options,
-    );
+typedef DTextDocumentParser = dtext_parser.DTextDocument Function(
+  String value,
+  dtext_parser.DTextOptions options,
+);
 
 String renderDText(
   String value, {

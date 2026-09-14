@@ -1,5 +1,7 @@
+// Package imports:
 import 'package:equatable/equatable.dart';
 
+// Project imports:
 import '../../../../posts/post/types.dart';
 import 'sidecar_format.dart';
 

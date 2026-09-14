@@ -4,8 +4,10 @@ import 'package:path/path.dart' show extension;
 // Project imports:
 import '../../../engines/types.dart';
 
-typedef CacheDelayCallback =
-    Duration Function(String url, VideoPlayerState state);
+typedef CacheDelayCallback = Duration Function(
+  String url,
+  VideoPlayerState state,
+);
 
 sealed class VideoPlayerState {
   const VideoPlayerState();

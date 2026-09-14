@@ -6,8 +6,8 @@ import 'package:kurumi/material.dart';
 import '../../../configs/config/types.dart';
 import '../../../configs/create/create.dart';
 import '../pages/settings_search_page.dart';
-import '../widgets/settings_search_view.dart';
 import '../types/settings_search_entry.dart';
+import '../widgets/settings_search_view.dart';
 import 'settings_page_route.dart';
 
 Future<void> openSettingsSearch(

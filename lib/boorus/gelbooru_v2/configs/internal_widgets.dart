@@ -17,8 +17,7 @@ class GelbooruV2ApiKeyField extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return CreateBooruApiKeyField(
       controller: controller,
-      hintText:
-          'e.g. 2e89f79b593ed40fd8641235f002221374e50d6343d3afe1687fc70decae58dcf',
+      hintText: 'e.g. 2e89f79b593ed40fd8641235f002221374e50d6343d3afe1687fc70decae58dcf',
       onChanged: ref.editNotifier.updateApiKey,
     );
   }

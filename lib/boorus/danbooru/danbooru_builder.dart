@@ -4,15 +4,15 @@ import 'package:foundation/foundation.dart';
 // Project imports:
 import '../../core/boorus/defaults/widgets.dart';
 import '../../core/boorus/engine/types.dart';
-import '../../core/configs/config/types.dart';
 import '../../core/configs/config/providers.dart';
-import '../../core/posts/favorites/providers.dart';
+import '../../core/configs/config/types.dart';
 import '../../core/configs/create/widgets.dart';
 import '../../core/configs/manage/widgets.dart';
 import '../../core/downloads/filename/types.dart';
 import '../../core/home/types.dart';
 import '../../core/home/widgets.dart';
 import '../../core/posts/details/widgets.dart';
+import '../../core/posts/favorites/providers.dart';
 import '../../core/posts/listing/providers.dart';
 import '../../core/posts/listing/widgets.dart';
 import '../../core/posts/statistics/types.dart';

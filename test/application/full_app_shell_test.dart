@@ -1,12 +1,15 @@
+// Flutter imports:
 import 'package:flutter/widgets.dart';
+
+// Package imports:
 import 'package:flutter_test/flutter_test.dart';
 
+// Project imports:
+import 'package:boorusama/core/announcements/providers.dart';
 import 'package:boorusama/core/app.dart';
 import 'package:boorusama/core/app_external_effects.dart';
 import 'package:boorusama/core/app_scope.dart';
-import 'package:boorusama/core/announcements/providers.dart';
 import 'package:boorusama/core/home/src/widgets/booru_scope.dart';
-
 import 'support/fake_booru_backend.dart';
 
 void main() {

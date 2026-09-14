@@ -1,6 +1,7 @@
-import '../../solver/types.dart';
-import '../../../debug/types.dart';
+// Project imports:
 import '../../../debug/data.dart' show redactLogMessage;
+import '../../../debug/types.dart';
+import '../../solver/types.dart';
 
 /// Compacts completed, unchanged timer checks without changing solver behavior.
 /// Retains full details for published state changes.

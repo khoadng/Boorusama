@@ -19,13 +19,12 @@ class DioProtectionInterceptor extends Interceptor {
 
   ProtectionAttempt _attempt(RequestOptions options) =>
       options.extra.putIfAbsent(
-            _attemptKey,
-            () => _protectionHandler.beginAttempt(
-              options.uri,
-              ProtectionSource.dio,
-            ),
-          )
-          as ProtectionAttempt;
+        _attemptKey,
+        () => _protectionHandler.beginAttempt(
+          options.uri,
+          ProtectionSource.dio,
+        ),
+      ) as ProtectionAttempt;
 
   static const _protectionRetryKey = 'boorusama.ddos_protection_retry';
 

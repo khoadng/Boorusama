@@ -1,7 +1,12 @@
+// Dart imports:
 import 'dart:async';
+
+// Package imports:
 import 'package:flutter_test/flutter_test.dart';
-import 'package:boorusama/core/ddos/solver/src/protection_diagnostics.dart';
+
+// Project imports:
 import 'package:boorusama/core/ddos/solver/src/page_inspection.dart';
+import 'package:boorusama/core/ddos/solver/src/protection_diagnostics.dart';
 
 void main() {
   test(

@@ -1,9 +1,7 @@
-// Flutter imports:
-import 'package:flutter_test/flutter_test.dart';
-
 // Package imports:
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:kurumi/material.dart';
 
 // Project imports:
@@ -13,7 +11,6 @@ import 'package:boorusama/core/widgets/reboot.dart';
 import 'package:boorusama/foundation/applock/src/app_lock_capabilities.dart';
 import 'package:boorusama/foundation/networking/network_provider.dart';
 import 'package:boorusama/foundation/platform.dart';
-
 import '../../riverpod_test_utils.dart';
 import '../../support/boorusama_test_app.dart';
 import '../../support/boorusama_test_runtime.dart';

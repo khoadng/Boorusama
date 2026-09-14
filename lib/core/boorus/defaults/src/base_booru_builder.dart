@@ -1,6 +1,6 @@
 // Project imports:
-import '../../../configs/config/types.dart';
 import '../../../configs/config/providers.dart';
+import '../../../configs/config/types.dart';
 import '../../../configs/create/widgets.dart';
 import '../../../configs/manage/widgets.dart';
 import '../../../downloads/filename/types.dart';
@@ -9,8 +9,8 @@ import '../../../home/widgets.dart';
 import '../../../posts/details/widgets.dart';
 import '../../../posts/details_parts/types.dart';
 import '../../../posts/details_parts/widgets.dart';
-import '../../../posts/favorites/widgets.dart';
 import '../../../posts/favorites/providers.dart';
+import '../../../posts/favorites/widgets.dart';
 import '../../../posts/listing/widgets.dart';
 import '../../../posts/statistics/types.dart';
 import '../../../posts/statistics/widgets.dart';

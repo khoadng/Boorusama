@@ -1,14 +1,16 @@
+// Dart imports:
 import 'dart:async';
 
+// Package imports:
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kurumi/material.dart';
 
+// Project imports:
 import 'package:boorusama/core/app.dart';
-import 'package:boorusama/core/bootstrap/bootstrap_host.dart';
 import 'package:boorusama/core/bootstrap/boorusama_bootstrap.dart';
 import 'package:boorusama/core/bootstrap/boorusama_runtime.dart';
+import 'package:boorusama/core/bootstrap/bootstrap_host.dart';
 import 'package:boorusama/foundation/boot/crash_report_writer.dart';
-
 import '../../support/boorusama_test_runtime.dart';
 
 void main() {

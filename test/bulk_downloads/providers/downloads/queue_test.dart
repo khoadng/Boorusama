@@ -11,9 +11,9 @@ import 'package:boorusama/core/bulk_downloads/src/providers/bulk_download_notifi
 import 'package:boorusama/core/bulk_downloads/src/types/bulk_download_error.dart';
 import 'package:boorusama/core/bulk_downloads/src/types/download_options.dart';
 import 'package:boorusama/core/bulk_downloads/src/types/download_session.dart';
+import 'package:boorusama/core/downloads/sidecar/types.dart';
 import 'package:boorusama/core/search/selected_tags/types.dart';
 import 'package:boorusama/core/settings/types.dart';
-import 'package:boorusama/core/downloads/sidecar/types.dart';
 import 'package:boorusama/foundation/info/device_info.dart';
 import 'common.dart';
 

@@ -12,11 +12,10 @@ import '../types/video_engine.dart';
 import '../types/video_source.dart';
 import 'fvp_manager.dart';
 
-typedef VideoControllerFactory =
-    VideoPlayerController Function(
-      VideoSource source,
-      VideoConfig? config,
-    );
+typedef VideoControllerFactory = VideoPlayerController Function(
+  VideoSource source,
+  VideoConfig? config,
+);
 
 VideoPlayerController _defaultControllerFactory(
   VideoSource source,

@@ -1,3 +1,4 @@
+// Project imports:
 import 'favorite_tag.dart';
 
 abstract interface class FavoriteTagRepositoryFactory {

@@ -1,10 +1,9 @@
-// Flutter imports:
+// Package imports:
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import 'package:boorusama/core/posts/details_parts/widgets.dart';
-
 import '../support/boorusama_test_runtime.dart';
 import 'support/fake_booru_backend.dart';
 import 'support/headless_app_harness.dart';

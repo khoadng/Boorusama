@@ -1,9 +1,11 @@
+// Package imports:
 import 'package:booru_clients/shimmie2.dart';
-import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
 
-import 'package:boorusama/boorus/shimmie2/clients/providers.dart';
+// Project imports:
 import 'package:boorusama/boorus/shimmie2/clients/cache.dart';
+import 'package:boorusama/boorus/shimmie2/clients/providers.dart';
 import 'package:boorusama/boorus/shimmie2/extensions/cache.dart';
 import 'package:boorusama/boorus/shimmie2/extensions/providers.dart';
 import 'package:boorusama/boorus/shimmie2/extensions/types.dart';

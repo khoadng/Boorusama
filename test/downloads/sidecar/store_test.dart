@@ -1,10 +1,14 @@
+// Dart imports:
 import 'dart:io';
 
+// Package imports:
+import 'package:flutter_test/flutter_test.dart';
+import 'package:path/path.dart' as p;
+
+// Project imports:
 import 'package:boorusama/core/downloads/sidecar/data.dart';
 import 'package:boorusama/core/downloads/sidecar/types.dart';
 import 'package:boorusama/foundation/filesystem.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:path/path.dart' as p;
 
 void main() {
   late Directory root;

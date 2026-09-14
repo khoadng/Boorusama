@@ -2,8 +2,8 @@
 import 'package:flutter/foundation.dart';
 
 // Project imports:
-import '../../../config/types.dart';
 import '../../../../debug/data.dart';
+import '../../../config/types.dart';
 
 BooruConfig? getConfigFromLink(
   BooruConfig? Function(int id) findConfigById,

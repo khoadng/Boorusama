@@ -29,13 +29,12 @@ import '../types/page_mode.dart';
 import 'infinite_scroll_listener.dart';
 import 'post_grid_controller.dart';
 
-typedef IndexedSelectableWidgetBuilder<T extends Post> =
-    Widget Function(
-      BuildContext context,
-      int index,
-      AutoScrollController autoScrollController,
-      bool useHero,
-    );
+typedef IndexedSelectableWidgetBuilder<T extends Post> = Widget Function(
+  BuildContext context,
+  int index,
+  AutoScrollController autoScrollController,
+  bool useHero,
+);
 
 class PostGrid<T extends Post> extends ConsumerStatefulWidget {
   const PostGrid({

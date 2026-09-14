@@ -3,13 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kurumi/material.dart';
 
 // Project imports:
+import '../../foundation/boot/crash_report_writer.dart';
+import '../../foundation/boot/failsafe.dart';
+import '../../foundation/boot/file_system_crash_report_writer.dart';
+import '../../foundation/info/device_info.dart';
 import '../app.dart';
 import '../app_external_effects.dart';
 import '../app_scope.dart';
-import '../../foundation/boot/failsafe.dart';
-import '../../foundation/boot/crash_report_writer.dart';
-import '../../foundation/boot/file_system_crash_report_writer.dart';
-import '../../foundation/info/device_info.dart';
 import 'boorusama_bootstrap.dart';
 import 'boorusama_runtime.dart';
 

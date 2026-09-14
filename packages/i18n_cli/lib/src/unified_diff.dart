@@ -190,8 +190,7 @@ final class _LineEdit {
 enum _LineEditKind {
   context(' '),
   add('+'),
-  delete('-')
-  ;
+  delete('-');
 
   const _LineEditKind(this.prefix);
 

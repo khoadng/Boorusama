@@ -2,8 +2,8 @@
 import 'package:kurumi/material.dart';
 
 // Project imports:
-import 'core/bootstrap/production_boorusama_bootstrap.dart';
 import 'core/bootstrap/bootstrap_host.dart';
+import 'core/bootstrap/production_boorusama_bootstrap.dart';
 import 'foundation/app_update/providers.dart';
 import 'foundation/filesystem.dart';
 import 'foundation/iap/iap.dart';

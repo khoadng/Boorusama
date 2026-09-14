@@ -1,5 +1,7 @@
+// Package imports:
 import 'package:hive_ce/hive.dart';
 
+// Project imports:
 import '../user_metatag_repository.dart';
 
 abstract interface class DanbooruUserMetatagRepositoryFactory {

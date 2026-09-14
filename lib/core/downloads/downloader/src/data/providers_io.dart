@@ -2,13 +2,13 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import '../../../../configs/config/types.dart';
-import '../../../../videos/cache/providers.dart';
-import '../../../sidecar/providers.dart';
-import '../../../background/factory.dart';
 import '../../../../../foundation/filesystem.dart';
 import '../../../../../foundation/info/device_info.dart';
 import '../../../../../foundation/loggers.dart';
+import '../../../../configs/config/types.dart';
+import '../../../../videos/cache/providers.dart';
+import '../../../background/factory.dart';
+import '../../../sidecar/providers.dart';
 import '../providers/download_notifier.dart';
 import '../types/download.dart';
 import '../types/download_service_factory.dart';

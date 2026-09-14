@@ -1,12 +1,13 @@
+// Project imports:
 import 'protection_event.dart';
+
 export 'protection_event.dart';
 export 'page_evaluation.dart';
 
-typedef ProtectionEventSink =
-    void Function(
-      ProtectionRecord record, {
-      ProtectionSensitiveDetails? sensitive,
-    });
+typedef ProtectionEventSink = void Function(
+  ProtectionRecord record, {
+  ProtectionSensitiveDetails? sensitive,
+});
 var _nextDiagnosticId = 0;
 
 class ProtectionScope {

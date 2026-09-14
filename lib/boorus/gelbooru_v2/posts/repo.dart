@@ -7,19 +7,17 @@ import '../../../core/posts/post/types.dart';
 import 'parser.dart';
 import 'types.dart';
 
-typedef GelbooruV2PostFetcher =
-    Future<GelbooruV2Posts> Function(
-      List<String> tags,
-      int page, {
-      int? limit,
-      PostFetchOptions? options,
-    });
+typedef GelbooruV2PostFetcher = Future<GelbooruV2Posts> Function(
+  List<String> tags,
+  int page, {
+  int? limit,
+  PostFetchOptions? options,
+});
 
-typedef GelbooruV2PostSingleFetcher =
-    Future<PostV2Dto?> Function(
-      int id, {
-      PostFetchOptions? options,
-    });
+typedef GelbooruV2PostSingleFetcher = Future<PostV2Dto?> Function(
+  int id, {
+  PostFetchOptions? options,
+});
 
 class GelbooruV2PostRepository extends PostRepositoryBuilder<GelbooruV2Post> {
   GelbooruV2PostRepository({

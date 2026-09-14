@@ -1,15 +1,21 @@
+// Dart imports:
 import 'dart:io';
 
-import 'package:boorusama/core/downloads/background/downloader.dart';
-import 'package:boorusama/core/downloads/downloader/types.dart';
-import 'package:boorusama/core/downloads/sidecar/types.dart';
-import 'package:boorusama/core/downloads/sidecar/data.dart';
-import 'package:boorusama/foundation/filesystem.dart';
-import 'package:cache_manager/cache_manager.dart';
+// Flutter imports:
 import 'package:flutter/foundation.dart';
+
+// Package imports:
+import 'package:cache_manager/cache_manager.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:path/path.dart' as p;
+
+// Project imports:
+import 'package:boorusama/core/downloads/background/downloader.dart';
+import 'package:boorusama/core/downloads/downloader/types.dart';
+import 'package:boorusama/core/downloads/sidecar/data.dart';
+import 'package:boorusama/core/downloads/sidecar/types.dart';
+import 'package:boorusama/foundation/filesystem.dart';
 
 class _Cache extends Mock implements VideoCacheManager {}
 

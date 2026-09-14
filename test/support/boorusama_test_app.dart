@@ -1,14 +1,11 @@
-// Flutter imports:
-import 'package:flutter_test/flutter_test.dart';
-
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 // Project imports:
 import 'package:boorusama/core/app.dart';
 import 'package:boorusama/core/app_scope.dart';
 import 'package:boorusama/core/bootstrap/boorusama_runtime.dart';
-
 import 'boorusama_test_runtime.dart';
 
 Future<void> pumpBoorusamaCoreApp(

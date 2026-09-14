@@ -5,9 +5,9 @@ import 'package:path/path.dart' show join;
 // Project imports:
 import '../../../../configs/config/types.dart';
 import '../../../../settings/types.dart';
-import 'metadata.dart';
 import '../../../sidecar/types.dart';
 import 'download_network_policy.dart';
+import 'metadata.dart';
 
 class DownloadOptions extends Equatable {
   const DownloadOptions({

@@ -22,10 +22,9 @@ typedef ItemRefresher<T extends Post> = Future<PostResult<T>> Function();
 
 typedef HiddenData = ({String name, int count, bool active});
 
-typedef PostGridFetcher<T extends Post> =
-    PostsOrErrorCore<T> Function(
-      int page,
-    );
+typedef PostGridFetcher<T extends Post> = PostsOrErrorCore<T> Function(
+  int page,
+);
 
 extension TagCountX on Map<String, Set<int>> {
   int get totalNonDuplicatesPostCount => values.expand((e) => e).toSet().length;

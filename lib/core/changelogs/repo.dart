@@ -5,8 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
-import 'types.dart';
 import '../cache/persistent_cache_store.dart';
+import 'types.dart';
 
 const _assetUrl = 'CHANGELOG.md';
 

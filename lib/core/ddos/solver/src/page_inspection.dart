@@ -1,3 +1,4 @@
+// Project imports:
 import 'protection_diagnostics.dart';
 
 /// Read once: the event and the solver's decision describe the same document.

@@ -2,16 +2,17 @@
 import 'package:package_info_plus/package_info_plus.dart';
 
 // Project imports:
-import 'package:boorusama/core/boorus/booru/types.dart';
-import 'package:boorusama/core/boorus/engine/types.dart';
 import 'package:boorusama/core/blacklists/types.dart';
 import 'package:boorusama/core/bookmarks/types.dart';
+import 'package:boorusama/core/boorus/booru/types.dart';
+import 'package:boorusama/core/boorus/engine/types.dart';
 import 'package:boorusama/core/bootstrap/boorusama_runtime.dart';
 import 'package:boorusama/core/configs/config/types.dart';
 import 'package:boorusama/core/debug/data.dart';
 import 'package:boorusama/core/debug/types.dart';
 import 'package:boorusama/core/developer_options/types.dart';
 import 'package:boorusama/core/downloads/downloader/types.dart';
+import 'package:boorusama/core/http/cookies/providers.dart';
 import 'package:boorusama/core/search/histories/src/types/search_history_repository.dart';
 import 'package:boorusama/core/search/histories/src/types/search_history_repository_factory.dart';
 import 'package:boorusama/core/settings/src/types/settings_repository.dart';
@@ -24,13 +25,11 @@ import 'package:boorusama/foundation/iap/iap.dart';
 import 'package:boorusama/foundation/info/app_info.dart';
 import 'package:boorusama/foundation/info/device_info.dart';
 import 'package:boorusama/foundation/networking/connectivity_service.dart';
+import 'package:boorusama/foundation/picker.dart';
 import 'package:boorusama/foundation/pincode/pincode.dart';
 import 'package:boorusama/foundation/platform.dart';
-import 'package:boorusama/foundation/picker.dart';
 import 'package:boorusama/foundation/url_launcher.dart';
 import 'package:boorusama/foundation/webview_user_agent.dart';
-import 'package:boorusama/core/http/cookies/providers.dart';
-
 import 'fakes/memory_app_file_system.dart';
 import 'fakes/memory_repositories.dart';
 import 'fakes/test_platform_services.dart';

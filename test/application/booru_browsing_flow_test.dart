@@ -1,5 +1,7 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
@@ -7,10 +9,9 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:boorusama/core/home/src/widgets/home_search_bar.dart';
 import 'package:boorusama/core/posts/details/widgets.dart';
 import 'package:boorusama/core/posts/listing/widgets.dart';
-import 'package:boorusama/core/search/search/widgets.dart';
 import 'package:boorusama/core/search/search/src/widgets/search_app_bar.dart';
 import 'package:boorusama/core/search/search/src/widgets/search_button.dart';
-
+import 'package:boorusama/core/search/search/widgets.dart';
 import 'support/fake_booru_backend.dart';
 import 'support/headless_app_harness.dart';
 

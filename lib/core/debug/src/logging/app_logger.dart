@@ -1,10 +1,13 @@
-import '../../../../foundation/loggers/logger.dart';
-import '../types/log_options.dart';
-import '../types/log_data.dart';
-import 'log_formatter.dart';
-import '../types/log_capture_buffer.dart';
-import 'log_redaction.dart';
+// Flutter imports:
 import 'package:flutter/foundation.dart';
+
+// Project imports:
+import '../../../../foundation/loggers/logger.dart';
+import '../types/log_capture_buffer.dart';
+import '../types/log_data.dart';
+import '../types/log_options.dart';
+import 'log_formatter.dart';
+import 'log_redaction.dart';
 
 class AppLogger extends ChangeNotifier implements Logger {
   AppLogger({LogLevel initialLevel = LogLevel.info, this.output})

@@ -117,8 +117,7 @@ class SzurubooruSearchPage extends ConsumerWidget {
         notice: !loginDetails.hasLogin()
             ? KurumiInfoContainer(
                 contentBuilder: (context) => const AppHtml(
-                  data:
-                      'You need to log in to use <b>Szurubooru</b> tag completion.',
+                  data: 'You need to log in to use <b>Szurubooru</b> tag completion.',
                 ),
               )
             : null,
