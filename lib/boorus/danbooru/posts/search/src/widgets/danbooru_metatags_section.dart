@@ -41,6 +41,7 @@ class DanbooruMetatagsSection extends ConsumerWidget {
               launchExternalUrl(
                 Uri.parse(cheatSheet),
                 mode: ExternalLaunchMode.platformDefault,
+                launcher: ref.read(externalUrlLauncherProvider),
               );
             }
           : null,

@@ -42,6 +42,7 @@ class PoolDescriptionSection extends ConsumerWidget {
                             attributes,
                             url,
                             data.descriptionEndpointRefUrl,
+                            ref.read(externalUrlLauncherProvider),
                           )
                         : null,
                     data: data.description,
@@ -56,6 +57,7 @@ class PoolDescriptionSection extends ConsumerWidget {
     Map<String, String> attributes,
     String? url,
     String endpoint,
+    ExternalUrlLauncher launcher,
   ) {
     if (url == null) return;
 
@@ -66,11 +68,13 @@ class PoolDescriptionSection extends ConsumerWidget {
       launchExternalUrl(
         Uri.parse(url),
         mode: ExternalLaunchMode.inAppWebView,
+        launcher: launcher,
       );
     } else if (att.contains('dtext-wiki-link')) {
       launchExternalUrl(
         Uri.parse('$endpoint$url'),
         mode: ExternalLaunchMode.inAppWebView,
+        launcher: launcher,
       );
       // ignore: no-empty-block
     } else if (att.contains('dtext-post-search-link')) {

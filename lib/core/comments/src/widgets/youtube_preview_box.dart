@@ -56,7 +56,10 @@ class YoutubePreviewBox extends ConsumerWidget {
                       style: Kurumi.themeOf(context).textTheme.bodySmall,
                     ),
                     TextButton(
-                      onPressed: () => launchExternalUrl(uri),
+                      onPressed: () => launchExternalUrl(
+                        uri,
+                        launcher: ref.read(externalUrlLauncherProvider),
+                      ),
                       child: Text(
                         data.title,
                         style: Kurumi.themeOf(
@@ -91,7 +94,12 @@ class YoutubePreviewBox extends ConsumerWidget {
                                     color: Colors.black87,
                                   ),
                                   child: IconButton(
-                                    onPressed: () => launchExternalUrl(uri),
+                                    onPressed: () => launchExternalUrl(
+                                      uri,
+                                      launcher: ref.read(
+                                        externalUrlLauncherProvider,
+                                      ),
+                                    ),
                                     icon: const Icon(Symbols.play_arrow),
                                   ),
                                 ),

@@ -52,7 +52,7 @@ class _AnnouncementBannerState extends ConsumerState<AppAnnouncementBanner> {
   }
 }
 
-class _AnnouncementContainer extends StatelessWidget {
+class _AnnouncementContainer extends ConsumerWidget {
   const _AnnouncementContainer({
     required this.announcement,
   });
@@ -60,14 +60,16 @@ class _AnnouncementContainer extends StatelessWidget {
   final AppAnnouncement announcement;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final launcher = ref.read(externalUrlLauncherProvider);
+
     if (announcement.isLegacy || !announcement.dismissible) {
       return DismissableInfoContainer(
         content: announcement.contentHtml,
         forceShow: true,
         mainColor: Colors.orange[600],
-        actions: _buildActions(context, announcement),
-        onLinkTap: _openAnnouncementLink,
+        actions: _buildActions(context, announcement, launcher),
+        onLinkTap: (url, _, _) => _openAnnouncementUrl(url, launcher),
         buttonsPadding: EdgeInsets.zero,
       );
     }
@@ -76,8 +78,8 @@ class _AnnouncementContainer extends StatelessWidget {
       storageKey: announcement.dismissalKey,
       content: announcement.contentHtml,
       mainColor: _colorForSeverity(announcement.severity),
-      actions: _buildActions(context, announcement),
-      onLinkTap: _openAnnouncementLink,
+      actions: _buildActions(context, announcement, launcher),
+      onLinkTap: (url, _, _) => _openAnnouncementUrl(url, launcher),
       buttonsPadding: EdgeInsets.zero,
     );
   }
@@ -85,6 +87,7 @@ class _AnnouncementContainer extends StatelessWidget {
   List<Widget> _buildActions(
     BuildContext context,
     AppAnnouncement announcement,
+    ExternalUrlLauncher launcher,
   ) {
     return [
       for (final action in announcement.actions)
@@ -92,29 +95,28 @@ class _AnnouncementContainer extends StatelessWidget {
           style: TextButton.styleFrom(
             foregroundColor: Kurumi.themeOf(context).colorScheme.onSurface,
           ),
-          onPressed: () => _openAnnouncementAction(action),
+          onPressed: () => _openAnnouncementAction(action, launcher),
           child: Text(action.label),
         ),
     ];
   }
 }
 
-void _openAnnouncementLink(String? url, _, _) {
-  _openAnnouncementUrl(url);
+void _openAnnouncementAction(
+  AppAnnouncementAction action,
+  ExternalUrlLauncher launcher,
+) {
+  _openAnnouncementUrl(action.url, launcher);
 }
 
-void _openAnnouncementAction(AppAnnouncementAction action) {
-  _openAnnouncementUrl(action.url);
-}
-
-void _openAnnouncementUrl(String? url) {
+void _openAnnouncementUrl(String? url, ExternalUrlLauncher launcher) {
   if (url == null) return;
 
   final uri = Uri.tryParse(url);
   if (uri == null) return;
   if (uri.scheme != 'http' && uri.scheme != 'https') return;
 
-  launchExternalUrl(uri);
+  launchExternalUrl(uri, launcher: launcher);
 }
 
 Color? _colorForSeverity(BoorusamaAnnouncementSeverity severity) {

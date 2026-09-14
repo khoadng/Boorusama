@@ -1,5 +1,6 @@
 // Package imports:
 import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
 import 'package:kurumi/kurumi.dart';
 import 'package:kurumi/material.dart';
@@ -18,7 +19,7 @@ enum TranlationState {
   translated,
 }
 
-class ArtistSection extends StatefulWidget {
+class ArtistSection extends ConsumerStatefulWidget {
   const ArtistSection({
     required this.commentary,
     required this.artistTags,
@@ -31,10 +32,10 @@ class ArtistSection extends StatefulWidget {
   final PostSource source;
 
   @override
-  State<ArtistSection> createState() => _ArtistSectionState();
+  ConsumerState<ArtistSection> createState() => _ArtistSectionState();
 }
 
-class _ArtistSectionState extends State<ArtistSection> {
+class _ArtistSectionState extends ConsumerState<ArtistSection> {
   late var display = widget.commentary.isTranslated
       ? TranlationState.translated
       : TranlationState.original;
@@ -96,7 +97,10 @@ class _ArtistSectionState extends State<ArtistSection> {
                       },
                       data: getDescriptionText(display, commentary),
                       onLinkTap: (url, attributes, element) => url != null
-                          ? launchExternalUrl(Uri.parse(url))
+                          ? launchExternalUrl(
+                              Uri.parse(url),
+                              launcher: ref.read(externalUrlLauncherProvider),
+                            )
                           : null,
                     ),
                   ),

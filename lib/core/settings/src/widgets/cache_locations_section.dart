@@ -148,6 +148,7 @@ class _CacheLocation extends ConsumerWidget {
                       path,
                       windows: platform == AppPlatform.windows,
                     ),
+                    launcher: ref.read(externalUrlLauncherProvider),
                   );
                   if (!opened) throw StateError('Could not open cache folder');
                 } catch (_) {

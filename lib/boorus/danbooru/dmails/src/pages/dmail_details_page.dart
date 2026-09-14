@@ -121,6 +121,7 @@ class DanbooruDmailDetailsPage extends ConsumerWidget {
                           onPressed: () {
                             launchExternalUrlString(
                               '${config.url}dmails/${dmail.id}',
+                              launcher: ref.read(externalUrlLauncherProvider),
                             );
                           },
                           child: Text(

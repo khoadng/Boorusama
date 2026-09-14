@@ -309,6 +309,8 @@ final class MemoryFavoriteTagRepository implements FavoriteTagRepository {
 final class MemorySearchHistoryRepository implements SearchHistoryRepository {
   final _histories = <SearchHistory>[];
 
+  List<SearchHistory> get historiesForTest => List.unmodifiable(_histories);
+
   @override
   Future<List<SearchHistory>> getHistories() async =>
       List.unmodifiable(_histories);

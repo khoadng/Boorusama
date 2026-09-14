@@ -13,7 +13,7 @@ void main() {
     'starts from the test runtime and navigates between primary screens',
     (tester) async {
       final harness = HeadlessAppHarness();
-      addTearDown(harness.dispose);
+      addTearDown(() => harness.teardown(tester));
 
       await harness.pump(tester);
       await harness.settle(tester);

@@ -438,6 +438,7 @@ class SettingsPageOtherSection extends ConsumerWidget {
                   onTap: () => url != null
                       ? launchExternalUrl(
                           Uri.parse(url),
+                          launcher: ref.read(externalUrlLauncherProvider),
                         )
                       : Kurumi.showErrorToast(
                           context,
@@ -531,6 +532,7 @@ class SettingsPageOtherSection extends ConsumerWidget {
           ),
           onTap: () => launchExternalUrl(
             Uri.parse(appInfo.githubUrl),
+            launcher: ref.read(externalUrlLauncherProvider),
           ),
         ),
         const Divider(),
@@ -545,6 +547,7 @@ class SettingsPageOtherSection extends ConsumerWidget {
           ),
           onTap: () => launchExternalUrl(
             Uri.parse('mailto:${appInfo.supportEmail}'),
+            launcher: ref.read(externalUrlLauncherProvider),
           ),
         ),
         SettingTile(
@@ -556,6 +559,7 @@ class SettingsPageOtherSection extends ConsumerWidget {
           ),
           onTap: () => launchExternalUrl(
             Uri.parse('${appInfo.githubUrl}/issues'),
+            launcher: ref.read(externalUrlLauncherProvider),
           ),
         ),
         const SizedBox(height: 16),
@@ -629,12 +633,14 @@ class _Footer extends ConsumerWidget {
           IconButton(
             onPressed: () => launchExternalUrl(
               Uri.parse(ref.read(appInfoProvider).githubUrl),
+              launcher: ref.read(externalUrlLauncherProvider),
             ),
             icon: const FaIcon(FontAwesomeIcons.squareGithub),
           ),
           IconButton(
             onPressed: () => launchExternalUrl(
               Uri.parse(ref.read(appInfoProvider).discordUrl),
+              launcher: ref.read(externalUrlLauncherProvider),
             ),
             icon: const FaIcon(FontAwesomeIcons.discord),
           ),

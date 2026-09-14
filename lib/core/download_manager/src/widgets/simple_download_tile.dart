@@ -66,7 +66,10 @@ class SimpleDownloadTile extends ConsumerWidget {
       onLongPress: () {
         Kurumi.showModalBottomSheet(
           context: context,
-          builder: (_) => _ModalOptions(task: task),
+          builder: (_) => _ModalOptions(
+            task: task,
+            launcher: ref.read(externalUrlLauncherProvider),
+          ),
         );
       },
       onTap: onTap,
@@ -231,9 +234,11 @@ class _TaskSubtitle extends ConsumerWidget {
 class _ModalOptions extends ConsumerWidget {
   const _ModalOptions({
     required this.task,
+    required this.launcher,
   });
 
   final TaskUpdate task;
+  final ExternalUrlLauncher launcher;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -257,7 +262,10 @@ class _ModalOptions extends ConsumerWidget {
               ),
               title: Text(context.t.post.action.view_in_browser),
               onTap: () {
-                launchExternalUrlString(task.task.url);
+                launchExternalUrlString(
+                  task.task.url,
+                  launcher: launcher,
+                );
                 navigator.pop();
               },
             ),

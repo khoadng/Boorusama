@@ -18,14 +18,15 @@ import 'themes/theme/widgets.dart';
 import 'widgets/widgets.dart';
 import 'window/widgets.dart';
 
-class BoorusamaCoreApp extends ConsumerWidget {
-  const BoorusamaCoreApp({super.key, this.toastDuration});
+final toastDurationProvider = Provider<Duration?>((_) => null);
 
-  final Duration? toastDuration;
+class BoorusamaCoreApp extends ConsumerWidget {
+  const BoorusamaCoreApp({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(routerProvider);
+    final toastDuration = ref.watch(toastDurationProvider);
     final appInfo = ref.watch(appInfoProvider);
     final reduceAnimations = ref.watch(
       settingsProvider.select((value) => value.reduceAnimations),

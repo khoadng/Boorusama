@@ -10,6 +10,7 @@ import 'foundation/filesystem.dart';
 import 'foundation/iap/iap.dart';
 import 'core/debug/data.dart';
 import 'foundation/platform.dart';
+import 'foundation/vendors/google/google_play_services_impl.dart';
 import 'foundation/vendors/revenuecat/revenuecat.dart';
 
 void main() {
@@ -22,9 +23,16 @@ void main() {
         appRatingService: RateMyAppService(),
         iapFactory: _initIap,
         appUpdateChecker: createDefaultAppUpdateChecker,
+        cronetAvailabilityLoader: _loadCronetAvailability,
       ),
     ),
   );
+}
+
+Future<bool> _loadCronetAvailability() {
+  return CronetImpl(
+    gServices: GooglePlayServicesImpl(),
+  ).isAvailable();
 }
 
 Future<IAP> _initIap() async {

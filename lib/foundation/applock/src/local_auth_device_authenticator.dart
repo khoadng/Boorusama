@@ -6,8 +6,8 @@ import 'device_authenticator.dart';
 
 final class LocalAuthDeviceAuthenticator implements DeviceAuthenticator {
   LocalAuthDeviceAuthenticator({
-    LocalAuthentication? localAuthentication,
-  }) : _localAuthentication = localAuthentication ?? LocalAuthentication();
+    required LocalAuthentication localAuthentication,
+  }) : _localAuthentication = localAuthentication;
 
   final LocalAuthentication _localAuthentication;
 

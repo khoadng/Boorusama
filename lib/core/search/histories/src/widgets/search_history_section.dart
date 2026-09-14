@@ -60,27 +60,31 @@ class SearchHistorySection extends ConsumerWidget {
                 ...histories
                     .take(maxHistory)
                     .map(
-                      (item) => ListTile(
-                        visualDensity: VisualDensity.compact,
-                        title: SearchHistoryQueryWidget(
-                          history: item,
-                          reverseScheme: reverseScheme,
-                        ),
-                        contentPadding: const EdgeInsets.only(left: 8),
-                        onTap: () => onHistoryTap(item),
-                        minTileHeight: ref.watch(appPlatformProvider).isDesktop
-                            ? 0
-                            : null,
-                        subtitle: showTime
-                            ? DateTooltip(
-                                date: item.createdAt,
-                                child: Text(
-                                  item.createdAt.fuzzify(
-                                    locale: Localizations.localeOf(context),
+                      (item) => Material(
+                        color: Colors.transparent,
+                        child: ListTile(
+                          visualDensity: VisualDensity.compact,
+                          title: SearchHistoryQueryWidget(
+                            history: item,
+                            reverseScheme: reverseScheme,
+                          ),
+                          contentPadding: const EdgeInsets.only(left: 8),
+                          onTap: () => onHistoryTap(item),
+                          minTileHeight:
+                              ref.watch(appPlatformProvider).isDesktop
+                              ? 0
+                              : null,
+                          subtitle: showTime
+                              ? DateTooltip(
+                                  date: item.createdAt,
+                                  child: Text(
+                                    item.createdAt.fuzzify(
+                                      locale: Localizations.localeOf(context),
+                                    ),
                                   ),
-                                ),
-                              )
-                            : null,
+                                )
+                              : null,
+                        ),
                       ),
                     ),
               ],

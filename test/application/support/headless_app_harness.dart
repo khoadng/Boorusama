@@ -28,7 +28,7 @@ final class HeadlessAppHarness {
     );
   }
 
-  const HeadlessAppHarness._(
+  HeadlessAppHarness._(
     this.runtime,
     this.booruBackend,
     this.additionalOverrides,
@@ -37,13 +37,22 @@ final class HeadlessAppHarness {
   final BoorusamaRuntime runtime;
   final FakeBooruBackend booruBackend;
   final List<Override> additionalOverrides;
+  var _didTearDown = false;
+  Duration? _previousVisibilityUpdateInterval;
 
   Future<void> pump(WidgetTester tester) async {
+    final visibilityController = VisibilityDetectorController.instance;
+    _previousVisibilityUpdateInterval ??= visibilityController.updateInterval;
+    visibilityController.updateInterval = Duration.zero;
+
     await tester.pumpWidget(
       BoorusamaAppScope(
         runtime: runtime,
-        additionalOverrides: additionalOverrides,
-        child: const BoorusamaCoreApp(toastDuration: Duration.zero),
+        additionalOverrides: [
+          ...additionalOverrides,
+          toastDurationProvider.overrideWithValue(Duration.zero),
+        ],
+        child: const BoorusamaCoreApp(),
       ),
     );
     await tester.pump();
@@ -100,13 +109,20 @@ final class HeadlessAppHarness {
 
   void dispose() {
     dismissAllToast();
-    VisibilityDetectorController.instance.notifyNow();
   }
 
   Future<void> teardown(WidgetTester tester) async {
+    if (_didTearDown) return;
+
     dispose();
     await tester.pumpWidget(const SizedBox());
-    VisibilityDetectorController.instance.notifyNow();
+    final visibilityController = VisibilityDetectorController.instance;
+    visibilityController.notifyNow();
     await tester.pump();
+    final previousInterval = _previousVisibilityUpdateInterval;
+    if (previousInterval != null) {
+      visibilityController.updateInterval = previousInterval;
+    }
+    _didTearDown = true;
   }
 }

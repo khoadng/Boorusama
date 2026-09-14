@@ -24,7 +24,7 @@ void main() {
           favoriteTagRepository: repository,
         ),
       );
-      addTearDown(harness.dispose);
+      addTearDown(() => harness.teardown(tester));
 
       await harness.pump(tester);
       await tester.tap(find.byIcon(Symbols.menu).first);

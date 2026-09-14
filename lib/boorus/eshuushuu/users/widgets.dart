@@ -402,13 +402,13 @@ class _StatsItem extends StatelessWidget {
   }
 }
 
-class _PersonalInfoCard extends StatelessWidget {
+class _PersonalInfoCard extends ConsumerWidget {
   const _PersonalInfoCard({required this.user});
 
   final EshuushuuUser user;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final hintColor = Kurumi.themeOf(context).colorScheme.hintColor;
 
     final t = context.t.eshuushuu.personal_info;
@@ -433,7 +433,10 @@ class _PersonalInfoCard extends StatelessWidget {
                   const SizedBox(width: 16),
                   Expanded(
                     child: InkWell(
-                      onTap: () => launchExternalUrl(Uri.parse(website)),
+                      onTap: () => launchExternalUrl(
+                        Uri.parse(website),
+                        launcher: ref.read(externalUrlLauncherProvider),
+                      ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [

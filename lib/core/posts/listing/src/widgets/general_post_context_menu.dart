@@ -119,7 +119,10 @@ class GeneralPostContextMenu extends ConsumerWidget {
               KurumiContextMenuTile(
                 title: context.t.post.action.view_in_browser,
                 onTap: () {
-                  launchExternalUrlString(postLinkGenerator.getLink(post));
+                  launchExternalUrlString(
+                    postLinkGenerator.getLink(post),
+                    launcher: ref.read(externalUrlLauncherProvider),
+                  );
                 },
               ),
             KurumiContextMenuTile(

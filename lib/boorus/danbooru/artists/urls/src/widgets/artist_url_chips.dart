@@ -1,4 +1,5 @@
 // Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kurumi/material.dart';
 
 // Project imports:
@@ -6,7 +7,7 @@ import '../../../../../../core/config_widgets/website_logo.dart';
 import '../../../../../../core/posts/sources/types.dart';
 import '../../../../../../foundation/url_launcher.dart';
 
-class DanbooruArtistUrlChips extends StatelessWidget {
+class DanbooruArtistUrlChips extends ConsumerWidget {
   const DanbooruArtistUrlChips({
     required this.artistUrls,
     super.key,
@@ -17,7 +18,7 @@ class DanbooruArtistUrlChips extends StatelessWidget {
   final WrapAlignment? alignment;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Wrap(
       spacing: 8,
       runSpacing: 8,
@@ -28,7 +29,10 @@ class DanbooruArtistUrlChips extends StatelessWidget {
             (source) => Tooltip(
               message: source.url,
               child: InkWell(
-                onTap: () => launchExternalUrlString(source.url),
+                onTap: () => launchExternalUrlString(
+                  source.url,
+                  launcher: ref.read(externalUrlLauncherProvider),
+                ),
                 child: ConfigAwareWebsiteLogo(
                   url: source.url,
                   size: 24,

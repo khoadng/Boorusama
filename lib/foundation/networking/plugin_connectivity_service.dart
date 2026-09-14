@@ -6,8 +6,8 @@ import 'connectivity_service.dart';
 
 final class PluginConnectivityService implements ConnectivityService {
   PluginConnectivityService({
-    Connectivity? connectivity,
-  }) : _connectivity = connectivity ?? Connectivity();
+    required Connectivity connectivity,
+  }) : _connectivity = connectivity;
 
   final Connectivity _connectivity;
 

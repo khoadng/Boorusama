@@ -1,9 +1,12 @@
 import 'dart:convert';
 
 import 'package:crypto/crypto.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 import 'package:boorusama/core/settings/types.dart';
+import 'package:boorusama/core/settings/src/pages/app_lock_settings_page.dart';
 import 'package:boorusama/foundation/applock/applock.dart';
 import 'package:boorusama/foundation/pincode/pincode.dart';
 
@@ -29,7 +32,7 @@ void main() {
         pinCredentialRepositoryFactory: pinFactory,
       ),
     );
-    addTearDown(harness.dispose);
+    addTearDown(() => harness.teardown(tester));
 
     await harness.pump(tester);
     await harness.pumpUntilFound(
@@ -47,6 +50,90 @@ void main() {
     expect(find.text('Unlock Boorusama'), findsNothing);
     expect(await pinStore.get('pin_credential'), isNotNull);
   });
+
+  testWidgets('configures, uses, and disables PIN locking through the UI', (
+    tester,
+  ) async {
+    final pinStore = MemoryPinCredentialStore();
+    final pinFactory = _FastPinCredentialRepositoryFactory(pinStore);
+    final backend = FakeBooruBackend();
+    final harness = HeadlessAppHarness(
+      booruBackend: backend,
+      runtime: backend.createRuntime(
+        settings: Settings.defaultSettings.copyWith(
+          appLockTimeoutSeconds: 0,
+        ),
+        pinCredentialRepositoryFactory: pinFactory,
+      ),
+    );
+    addTearDown(() => harness.teardown(tester));
+
+    await harness.pump(tester);
+    await harness.settle(tester);
+    await _openSettings(tester, harness);
+
+    await tester.tap(find.text('Privacy'));
+    await tester.pump();
+    await harness.settle(tester);
+    await tester.tap(find.text('App lock'));
+    await tester.pump();
+    await harness.settle(tester);
+
+    await tester.tap(find.byIcon(Symbols.keyboard_arrow_down).first);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('PIN').last);
+    await tester.pump();
+    await _enterPin(tester, '1234');
+    await _enterPin(tester, '1234');
+    await harness.settle(tester);
+
+    final settingsRepository =
+        harness.runtime.dependencies.settingsRepository
+            as MemorySettingsRepository;
+    expect(pinStore.get('pin_credential'), completion(isNotNull));
+    expect(settingsRepository.savedSettings.last.appLockType, AppLockType.pin);
+    expect(find.byType(AppLockSettingsPage), findsOneWidget);
+
+    WidgetsBinding.instance.handleAppLifecycleStateChanged(
+      AppLifecycleState.inactive,
+    );
+    await tester.pump();
+    await harness.pumpUntilFound(tester, find.text('Unlock Boorusama'));
+
+    await _enterPin(tester, '4321');
+    expect(find.text('Incorrect PIN'), findsOneWidget);
+    await tester.pump(const Duration(seconds: 1));
+    await _enterPin(tester, '1234');
+    await harness.settle(tester);
+    expect(find.text('Unlock Boorusama'), findsNothing);
+
+    await tester.tap(find.byIcon(Symbols.keyboard_arrow_down).first);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Off').last);
+    await tester.pump();
+    await _enterPin(tester, '1234');
+    await harness.settle(tester);
+
+    expect(settingsRepository.savedSettings.last.appLockType, AppLockType.none);
+    expect(await pinStore.get('pin_credential'), isNull);
+  });
+}
+
+Future<void> _openSettings(
+  WidgetTester tester,
+  HeadlessAppHarness harness,
+) async {
+  final settingsIcon = find.byIcon(Symbols.settings);
+  if (settingsIcon.evaluate().isNotEmpty) {
+    await tester.tap(settingsIcon.last);
+  } else {
+    await tester.tap(find.byIcon(Symbols.menu).first);
+    await tester.pump();
+    await harness.settle(tester);
+    await tester.tap(find.text('Settings').last);
+  }
+  await tester.pump();
+  await harness.settle(tester);
 }
 
 final class _FastPinCredentialRepositoryFactory

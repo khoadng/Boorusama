@@ -17,15 +17,21 @@ import 'package:boorusama/core/developer_options/types.dart';
 import 'package:boorusama/core/downloads/filename/types.dart';
 import 'package:boorusama/core/downloads/downloader/types.dart';
 import 'package:boorusama/core/downloads/urls/types.dart';
+import 'package:boorusama/core/posts/details_parts/types.dart';
+import 'package:boorusama/core/posts/details_parts/widgets.dart';
 import 'package:boorusama/core/posts/post/types.dart';
 import 'package:boorusama/core/posts/post/providers.dart';
 import 'package:boorusama/core/posts/rating/types.dart';
 import 'package:boorusama/core/posts/sources/types.dart';
 import 'package:boorusama/core/search/queries/tag_query_composer.dart';
+import 'package:boorusama/core/search/histories/src/types/search_history_repository.dart';
 import 'package:boorusama/core/search/selected_tags/types.dart';
 import 'package:boorusama/core/settings/types.dart';
 import 'package:boorusama/core/tags/favorites/types.dart';
 import 'package:boorusama/core/tags/autocompletes/autocomplete_repository.dart';
+import 'package:boorusama/foundation/filesystem.dart';
+import 'package:boorusama/foundation/picker.dart';
+import 'package:boorusama/foundation/url_launcher.dart';
 import 'package:boorusama/foundation/pincode/pincode.dart';
 
 import '../../support/boorusama_test_runtime.dart';
@@ -61,6 +67,11 @@ final class FakeBooruBackend {
         TestPost(
           id: 101,
           tags: const {'cat', 'blue_hair'},
+          source: RawWebSource(
+            faviconUrl: null,
+            url: 'https://source.booru.test/101',
+            uri: Uri.parse('https://source.booru.test/101'),
+          ),
         ),
         TestPost(
           id: 102,
@@ -87,7 +98,7 @@ final class FakeBooruBackend {
       BooruType.danbooru,
       BooruComponents(
         parser: DefaultBooruParser(config: BooruYamlConfigs.danbooru),
-        createBuilder: BaseBooruBuilder.new,
+        createBuilder: _FakeBooruBuilder.new,
         createRepository: (ref) => _FakeBooruRepository(
           ref: ref,
           backend: this,
@@ -119,6 +130,10 @@ final class FakeBooruBackend {
     DownloadService? downloadService,
     FavoriteTagRepository? favoriteTagRepository,
     PinCredentialRepositoryFactory? pinCredentialRepositoryFactory,
+    SearchHistoryRepository? searchHistoryRepository,
+    AppFilePicker? appFilePicker,
+    AppFileSystem? fileSystem,
+    ExternalUrlLauncher? externalUrlLauncher,
   }) {
     final effectiveConfigs = configs ?? [config];
     final effectiveInitialConfig = initialConfig ?? effectiveConfigs.first;
@@ -143,6 +158,10 @@ final class FakeBooruBackend {
       bookmarkRepository: bookmarkRepository,
       downloadService: downloadService,
       favoriteTagRepository: favoriteTagRepository,
+      searchHistoryRepository: searchHistoryRepository,
+      appFilePicker: appFilePicker,
+      fileSystem: fileSystem,
+      externalUrlLauncher: externalUrlLauncher,
       pinCredentialRepositoryFactory: pinCredentialRepositoryFactory,
     );
   }
@@ -331,6 +350,7 @@ final class TestPost extends SimplePost {
   TestPost({
     required super.id,
     required super.tags,
+    PostSource? source,
   }) : super(
          thumbnailImageUrl: '',
          sampleImageUrl: '',
@@ -339,7 +359,7 @@ final class TestPost extends SimplePost {
          hasComment: false,
          isTranslated: false,
          hasParentOrChildren: false,
-         source: PostSource.none(),
+         source: source ?? PostSource.none(),
          score: 10,
          duration: kNoduration,
          fileSize: 1024,
@@ -357,4 +377,19 @@ final class TestPost extends SimplePost {
          downvotes: null,
          uploaderName: null,
        );
+}
+
+final class _FakeBooruBuilder extends BaseBooruBuilder {
+  @override
+  PostDetailsUIBuilder get postDetailsUIBuilder => PostDetailsUIBuilder(
+    preview: {
+      DetailsPart.toolbar: (context) =>
+          const DefaultInheritedPostActionToolbar(),
+    },
+    full: {
+      DetailsPart.toolbar: (context) =>
+          const DefaultInheritedPostActionToolbar(),
+      DetailsPart.source: (context) => const DefaultInheritedSourceSection(),
+    },
+  );
 }

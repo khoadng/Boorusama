@@ -52,7 +52,10 @@ class ApiKeyVerifyDialog extends ConsumerWidget {
                 );
 
             if (uri != null) {
-              launchExternalUrl(uri);
+              launchExternalUrl(
+                uri,
+                launcher: ref.read(externalUrlLauncherProvider),
+              );
 
               Navigator.of(context).pop();
             } else {

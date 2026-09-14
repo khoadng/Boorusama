@@ -12,7 +12,7 @@ void main() {
     'persists a settings change made through the real settings UI',
     (tester) async {
       final harness = HeadlessAppHarness();
-      addTearDown(harness.dispose);
+      addTearDown(() => harness.teardown(tester));
 
       await harness.pump(tester);
       await harness.settle(tester);

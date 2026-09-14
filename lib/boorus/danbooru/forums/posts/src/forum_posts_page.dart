@@ -160,8 +160,12 @@ class _DanbooruForumPostsPageState
           ),
           DanbooruDTextBody(
             onLinkTap: !loginDetails.hasStrictSFW
-                ? (url, attributes, element) =>
-                      url != null ? launchExternalUrlString(url) : null
+                ? (url, attributes, element) => url != null
+                      ? launchExternalUrlString(
+                          url,
+                          launcher: ref.read(externalUrlLauncherProvider),
+                        )
+                      : null
                 : null,
             style: {
               'body': Style(

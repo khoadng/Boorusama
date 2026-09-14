@@ -1,9 +1,6 @@
 // Flutter imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-// Project imports:
-import 'plugin_external_url_launcher.dart';
-
 enum ExternalLaunchMode {
   externalApplication,
   platformDefault,
@@ -27,9 +24,9 @@ Future<bool> launchExternalUrl(
   Uri url, {
   void Function()? onError,
   ExternalLaunchMode mode = ExternalLaunchMode.externalApplication,
-  ExternalUrlLauncher? launcher,
+  required ExternalUrlLauncher launcher,
 }) async {
-  if (!await (launcher ?? const PluginExternalUrlLauncher()).launch(
+  if (!await launcher.launch(
     url,
     mode: mode,
   )) {
@@ -45,7 +42,7 @@ Future<bool> launchExternalUrlString(
   String url, {
   void Function()? onError,
   ExternalLaunchMode mode = ExternalLaunchMode.externalApplication,
-  ExternalUrlLauncher? launcher,
+  required ExternalUrlLauncher launcher,
 }) => launchExternalUrl(
   Uri.parse(url),
   onError: onError,

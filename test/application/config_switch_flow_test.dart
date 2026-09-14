@@ -24,7 +24,7 @@ void main() {
           ),
         ),
       );
-      addTearDown(harness.dispose);
+      addTearDown(() => harness.teardown(tester));
 
       await harness.pump(tester);
       await harness.pumpUntilFound(

@@ -5,9 +5,6 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kurumi/kurumi.dart';
 
-// Project imports:
-import 'plugin_app_file_picker.dart';
-
 abstract interface class AppFilePicker {
   Future<String?> pickFile({
     List<String>? allowedExtensions,
@@ -28,7 +25,7 @@ Future<void> pickDirectoryPathToastOnError({
   required void Function(String path) onPick,
   void Function()? onCanceled,
   String? initialDirectory,
-  AppFilePicker? picker,
+  required AppFilePicker picker,
 }) => pickDirectoryPath(
   picker: picker,
   onPick: onPick,
@@ -47,7 +44,7 @@ Future<void> pickSingleFilePathToastOnError({
   required void Function(String path) onPick,
   bool customFileType = false,
   List<String>? allowedExtensions,
-  AppFilePicker? picker,
+  required AppFilePicker picker,
 }) => pickSingleFilePath(
   picker: picker,
   customFileType: customFileType,
@@ -67,10 +64,10 @@ Future<void> pickSingleFilePath({
   List<String>? allowedExtensions,
   void Function()? onCanceled,
   void Function(Object error)? onError,
-  AppFilePicker? picker,
+  required AppFilePicker picker,
 }) async {
   try {
-    final path = await (picker ?? const PluginAppFilePicker()).pickFile(
+    final path = await picker.pickFile(
       customFileType: customFileType,
       allowedExtensions: allowedExtensions,
     );
@@ -91,10 +88,10 @@ Future<void> pickDirectoryPath({
   void Function()? onCanceled,
   void Function(Object error)? onError,
   String? initialDirectory,
-  AppFilePicker? picker,
+  required AppFilePicker picker,
 }) async {
   try {
-    final path = await (picker ?? const PluginAppFilePicker()).pickDirectory(
+    final path = await picker.pickDirectory(
       initialDirectory: initialDirectory,
     );
 

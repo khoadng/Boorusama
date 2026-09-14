@@ -6,8 +6,10 @@ import 'package:flutter/foundation.dart';
 
 // Package imports:
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:hive_ce/hive.dart';
 import 'package:i18n/i18n.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:stack_trace/stack_trace.dart';
 
@@ -32,7 +34,6 @@ import '../../foundation/plugin_app_file_picker.dart';
 import '../../foundation/plugin_webview_user_agent_service.dart';
 import '../../foundation/plugin_external_url_launcher.dart';
 import '../../foundation/utils/file_utils.dart';
-import '../../foundation/vendors/google/google_play_services_impl.dart';
 import '../../foundation/window.dart';
 import '../boorus/booru/providers.dart';
 import '../bookmarks/src/data/hive/factory.dart';
@@ -65,6 +66,7 @@ final class ProductionBoorusamaBootstrap implements BoorusamaBootstrap {
     this.isFossBuild = false,
     this.appRatingService,
     this.appUpdateChecker,
+    this.cronetAvailabilityLoader,
   });
 
   final AppFileSystem fileSystem;
@@ -72,6 +74,7 @@ final class ProductionBoorusamaBootstrap implements BoorusamaBootstrap {
   final bool isFossBuild;
   final AppRatingService? appRatingService;
   final AppUpdateBuilder? appUpdateChecker;
+  final Future<bool> Function()? cronetAvailabilityLoader;
 
   @override
   Future<BoorusamaRuntime> initialize() async {
@@ -263,8 +266,12 @@ final class ProductionBoorusamaBootstrap implements BoorusamaBootstrap {
           iapFactory: iapFactory,
           appUpdateChecker: appUpdateChecker,
           platform: currentAppPlatform(),
-          connectivityService: PluginConnectivityService(),
-          deviceAuthenticator: LocalAuthDeviceAuthenticator(),
+          connectivityService: PluginConnectivityService(
+            connectivity: Connectivity(),
+          ),
+          deviceAuthenticator: LocalAuthDeviceAuthenticator(
+            localAuthentication: LocalAuthentication(),
+          ),
           pinCredentialRepositoryFactory:
               const HivePinCredentialRepositoryFactory(),
           windowService: PluginWindowService(),
@@ -290,9 +297,6 @@ final class ProductionBoorusamaBootstrap implements BoorusamaBootstrap {
 
   Future<bool> _loadCronetAvailability() async {
     if (isFossBuild || !isAndroid()) return false;
-
-    return CronetImpl(
-      gServices: GooglePlayServicesImpl(),
-    ).isAvailable();
+    return await cronetAvailabilityLoader?.call() ?? false;
   }
 }

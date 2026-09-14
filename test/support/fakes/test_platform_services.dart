@@ -58,16 +58,23 @@ final class TestAppFilePicker implements AppFilePicker {
 
   String? filePath;
   String? directoryPath;
+  final pickedFiles = <String>[];
+  final pickedDirectories = <String>[];
 
   @override
   Future<String?> pickFile({
     List<String>? allowedExtensions,
     bool customFileType = false,
-  }) async => filePath;
+  }) async {
+    if (filePath case final path?) pickedFiles.add(path);
+    return filePath;
+  }
 
   @override
-  Future<String?> pickDirectory({String? initialDirectory}) async =>
-      directoryPath;
+  Future<String?> pickDirectory({String? initialDirectory}) async {
+    if (directoryPath case final path?) pickedDirectories.add(path);
+    return directoryPath;
+  }
 }
 
 final class RecordingExternalUrlLauncher implements ExternalUrlLauncher {

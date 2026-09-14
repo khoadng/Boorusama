@@ -20,7 +20,7 @@ void main() {
     (tester) async {
       final backend = FakeBooruBackend();
       final harness = HeadlessAppHarness(booruBackend: backend);
-      addTearDown(harness.dispose);
+      addTearDown(() => harness.teardown(tester));
 
       await harness.pump(tester);
       await harness.settle(tester);
@@ -94,7 +94,7 @@ void main() {
     'opens a known fake post in the real details flow',
     (tester) async {
       final harness = HeadlessAppHarness();
-      addTearDown(harness.dispose);
+      addTearDown(() => harness.teardown(tester));
 
       await harness.pump(tester);
       await harness.pumpUntilFound(

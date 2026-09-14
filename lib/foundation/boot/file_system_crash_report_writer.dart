@@ -1,4 +1,5 @@
 // Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kurumi/material.dart';
 import 'package:kurumi/kurumi.dart';
 
@@ -14,6 +15,7 @@ final class FileSystemCrashReportWriter implements CrashReportWriter {
   Future<void> save(BuildContext context, String data) =>
       pickDirectoryPathToastOnError(
         context: context,
+        picker: ProviderScope.containerOf(context).read(appFilePickerProvider),
         onPick: (path) async {
           const fs = IoFileSystem();
           await fs.writeString('$path/boorusama_crash.txt', data);
