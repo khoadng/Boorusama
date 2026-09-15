@@ -28,7 +28,9 @@ class LanguagePage extends ConsumerWidget {
     );
 
     return ConditionalParentWidget(
-      condition: !SettingsPageScope.of(context).options.dense,
+      condition:
+          !SettingsPageScope.of(context).options.dense &&
+          !SettingsPageScope.of(context).options.shellOwnsHeader,
       conditionalBuilder: (child) => Scaffold(
         appBar: AppBar(
           title: Text(context.t.settings.language.language),

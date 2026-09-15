@@ -5,6 +5,7 @@ import 'package:material_symbols_icons/symbols.dart';
 // Project imports:
 import 'package:boorusama/core/home/src/widgets/booru_scope.dart';
 import 'package:boorusama/core/settings/src/pages/settings_page.dart';
+
 import 'support/headless_app_harness.dart';
 
 void main() {
@@ -33,7 +34,12 @@ void main() {
 
       expect(find.byType(SettingsPage), findsOneWidget);
 
-      await tester.pageBack();
+      final closeSettings = find.byTooltip('Close');
+      if (closeSettings.evaluate().isNotEmpty) {
+        await tester.tap(closeSettings.last);
+      } else {
+        await tester.tap(find.byTooltip('Back').last);
+      }
       await tester.pump();
       await harness.settle(tester);
 

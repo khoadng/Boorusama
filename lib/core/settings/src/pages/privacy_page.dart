@@ -35,6 +35,7 @@ class PrivacyPage extends ConsumerWidget {
             context,
             SettingEntry(
               id: 'app_lock',
+              parentId: 'privacy',
               name: '/settings/privacy/app_lock',
               title: appLock.title,
               icon: Icons.lock,

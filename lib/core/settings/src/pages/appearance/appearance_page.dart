@@ -161,19 +161,20 @@ class _AppearancePageState extends ConsumerState<AppearancePage> {
                 ),
                 TextButton(
                   onPressed: () {
-                    Navigator.of(context).push(
-                      CupertinoPageRoute(
-                        builder: (context) => ThemePreviewer(
-                          updateMethod: ThemeUpdateMethod.applyDirectly,
-                          colorSettings: settings.colors,
-                          onThemeUpdated: (colors) {
-                            notifier.updateSettings(
-                              settings.copyWith(colors: colors),
-                            );
-                          },
-                        ),
-                      ),
-                    );
+                    SettingsPageNavigationScope.applicationNavigatorOf(context)
+                        .push(
+                          CupertinoPageRoute(
+                            builder: (context) => ThemePreviewer(
+                              updateMethod: ThemeUpdateMethod.applyDirectly,
+                              colorSettings: settings.colors,
+                              onThemeUpdated: (colors) {
+                                notifier.updateSettings(
+                                  settings.copyWith(colors: colors),
+                                );
+                              },
+                            ),
+                          ),
+                        );
                   },
                   child: Text(context.t.generic.action.view),
                 ),

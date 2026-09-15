@@ -14,6 +14,7 @@ import 'package:boorusama/core/settings/src/pages/app_lock_settings_page.dart';
 import 'package:boorusama/core/settings/types.dart';
 import 'package:boorusama/foundation/applock/applock.dart';
 import 'package:boorusama/foundation/pincode/pincode.dart';
+
 import '../support/boorusama_test_runtime.dart';
 import 'support/fake_booru_backend.dart';
 import 'support/headless_app_harness.dart';
@@ -76,7 +77,21 @@ void main() {
     await harness.settle(tester);
     await _openSettings(tester, harness);
 
-    await tester.tap(find.text('Privacy'));
+    final privacy = find.text('Privacy');
+    if (privacy.evaluate().isEmpty) {
+      final navigationList = find.byKey(
+        const ValueKey('settings-compact-index-list'),
+      );
+      await tester.scrollUntilVisible(
+        privacy,
+        200,
+        scrollable: find.descendant(
+          of: navigationList,
+          matching: find.byType(Scrollable),
+        ),
+      );
+    }
+    await tester.tap(privacy);
     await tester.pump();
     await harness.settle(tester);
     await tester.tap(find.text('App lock'));
@@ -84,7 +99,8 @@ void main() {
     await harness.settle(tester);
 
     await tester.tap(find.byIcon(Symbols.keyboard_arrow_down).first);
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await harness.settle(tester);
     await tester.tap(find.text('PIN').last);
     await tester.pump();
     await _enterPin(tester, '1234');
@@ -112,7 +128,8 @@ void main() {
     expect(find.text('Unlock Boorusama'), findsNothing);
 
     await tester.tap(find.byIcon(Symbols.keyboard_arrow_down).first);
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await harness.settle(tester);
     await tester.tap(find.text('Off').last);
     await tester.pump();
     await _enterPin(tester, '1234');
