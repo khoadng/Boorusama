@@ -39,11 +39,17 @@ class DownloadSource extends Equatable {
   const DownloadSource({
     required this.url,
     required this.name,
-  });
+  }) : quality = null;
+
+  const DownloadSource.quality({
+    required this.quality,
+    required this.name,
+  }) : url = '';
 
   final String url;
   final String name;
+  final String? quality;
 
   @override
-  List<Object?> get props => [url, name];
+  List<Object?> get props => [url, name, quality];
 }

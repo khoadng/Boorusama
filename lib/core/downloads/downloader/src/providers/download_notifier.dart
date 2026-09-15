@@ -64,6 +64,7 @@ class DownloadNotifier extends FamilyNotifier<void, DownloadNotifierParams> {
   Future<DownloadTaskInfo?> download(
     Post post, {
     String? overrideUrl,
+    String? quality,
   }) async {
     final perm = await _getPermissionStatus();
     final observer = arg.observer;
@@ -74,6 +75,7 @@ class DownloadNotifier extends FamilyNotifier<void, DownloadNotifierParams> {
       params: arg,
       permission: perm,
       overrideUrl: overrideUrl,
+      quality: quality,
       onStarted: () {
         observer?.onSingleDownloadStart();
       },
@@ -140,6 +142,7 @@ Future<DownloadTaskInfo?> _download(
   void Function()? onStarted,
   //FIXME: bad solution, need better design
   String? overrideUrl,
+  String? quality,
   DownloadNetworkConstraint? networkConstraint,
 }) async {
   final downloadConfig = params.download;
@@ -153,18 +156,13 @@ Future<DownloadTaskInfo?> _download(
     deviceStoragePermissionProvider.notifier,
   );
 
-  final extractedUrlData = await params.downloadFileUrlExtractor
-      .getDownloadFileUrl(
-        post: downloadable,
-        quality: params.settings.downloadQuality.name,
-      );
-
+  final effectiveQuality = quality ?? params.settings.downloadQuality.name;
   final urlData = overrideUrl != null
-      ? DownloadUrlData(
-          url: overrideUrl,
-          cookie: null,
-        )
-      : extractedUrlData;
+      ? DownloadUrlData.urlOnly(overrideUrl)
+      : await params.downloadFileUrlExtractor.getDownloadFileUrl(
+          post: downloadable,
+          quality: effectiveQuality,
+        );
 
   if (fileNameBuilder == null) {
     logger.error('Single Download', 'No file name builder found, aborting...');
@@ -230,7 +228,7 @@ Future<DownloadTaskInfo?> _download(
             : SidecarSnapshot.fromPost(
                 downloadable,
                 format: params.settings.downloadSidecarFormat,
-                quality: params.settings.downloadQuality.name,
+                quality: effectiveQuality,
                 site: params.auth.url,
                 postUrl: ref
                     .read(postLinkGeneratorProvider(params.auth))

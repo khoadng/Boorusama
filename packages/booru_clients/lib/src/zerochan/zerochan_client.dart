@@ -27,9 +27,17 @@ class ZerochanClient {
                  'User-Agent': 'My test client - anon',
                },
              ),
-           );
+           ) {
+    final configuredBaseUrl = baseUrl ?? _dio.options.baseUrl;
+    _baseUrl = configuredBaseUrl.isNotEmpty ? configuredBaseUrl : _kZerochanUrl;
+
+    if (_dio.options.baseUrl.isEmpty) {
+      _dio.options = _dio.options.copyWith(baseUrl: _baseUrl);
+    }
+  }
 
   final Dio _dio;
+  late final String _baseUrl;
   final void Function(String message)? logger;
 
   /// Input tag must be in snake case
@@ -98,18 +106,53 @@ class ZerochanClient {
     );
 
     final data = response.data;
+    final json = data is String ? jsonDecode(data) : data;
 
-    if (data is String) {
-      final json = _parsePostResponse(data);
-
-      if (json case final Map m) {
-        if (m.isEmpty) return null;
-      }
-
-      return PostDto.fromJson(json);
+    if (json is! Map) {
+      throw const FormatException('Zerochan detail response is not an object');
     }
 
-    return null;
+    if (json.isEmpty) return null;
+
+    return PostDto.fromJson(Map<String, dynamic>.from(json));
+  }
+
+  /// Resolves the explicit media URLs needed for a download.
+  ///
+  /// Asiachan currently serves a broken detail JSON response, so it uses the
+  /// post page directly. Zerochan uses its detail API and only falls back to
+  /// the post page when the API does not provide a usable original URL.
+  Future<ZerochanDownloadUrls?> getDownloadUrls(int postId) async {
+    try {
+      if (_isAsiachan) {
+        return await _getDownloadUrlsFromHtml(postId);
+      }
+
+      PostDto? detail;
+      try {
+        detail = await getPost(id: postId);
+      } on FormatException {
+        // Some post detail responses are malformed. The normal post page is
+        // a compatible fallback for those responses.
+      } on TypeError {
+        // Treat an invalid detail shape like malformed JSON.
+      }
+
+      final apiUrls = _downloadUrlsFromPost(detail, postId);
+      if (apiUrls?.full case final full? when full.isNotEmpty) {
+        return apiUrls;
+      }
+
+      final htmlUrls = await _getDownloadUrlsFromHtml(postId);
+      return _mergeDownloadUrls(apiUrls, htmlUrls);
+    } on DioException catch (error) {
+      if (error.response?.statusCode case final status?
+          when status == 404 || status == 410) {
+        return null;
+      }
+
+      rethrow;
+    }
   }
 
   Future<List<TagDto>> getTagsFromPostId({
@@ -155,6 +198,81 @@ class ZerochanClient {
 
     return parseAutocomplete(data);
   }
+
+  bool get _isAsiachan {
+    final host = Uri.tryParse(_baseUrl)?.host.toLowerCase() ?? '';
+    return host == 'asiachan.com' || host.endsWith('.asiachan.com');
+  }
+
+  Future<ZerochanDownloadUrls?> _getDownloadUrlsFromHtml(int postId) async {
+    final response = await _dio.get(
+      '/$postId',
+      options: Options(
+        responseType: ResponseType.plain,
+      ),
+    );
+
+    final document = parse(response.data?.toString() ?? '');
+    final pageUri = _postUri(postId);
+    final anchorUrl = document
+        .querySelector('#large a.preview[href]')
+        ?.attributes['href'];
+    final fullUrl = _resolveHttpUrl(anchorUrl, pageUri);
+
+    if (fullUrl != null) {
+      return ZerochanDownloadUrls(full: fullUrl);
+    }
+
+    for (final meta in document.querySelectorAll('meta')) {
+      final property = meta.attributes['property']?.toLowerCase();
+      final name = meta.attributes['name']?.toLowerCase();
+      if (property != 'og:image' && name != 'og:image') continue;
+
+      final url = _resolveHttpUrl(meta.attributes['content'], pageUri);
+      if (url != null && _looksLikePostFullImage(url, postId)) {
+        return ZerochanDownloadUrls(full: url);
+      }
+    }
+
+    return null;
+  }
+
+  ZerochanDownloadUrls? _downloadUrlsFromPost(PostDto? post, int postId) {
+    if (post == null) return null;
+
+    final pageUri = _postUri(postId);
+    final urls = ZerochanDownloadUrls(
+      full: _resolveHttpUrl(post.full, pageUri),
+      large: _resolveHttpUrl(post.large, pageUri),
+      medium: _resolveHttpUrl(post.medium, pageUri),
+      small: _resolveHttpUrl(post.small, pageUri),
+    );
+
+    return urls.isUseful ? urls : null;
+  }
+
+  ZerochanDownloadUrls? _mergeDownloadUrls(
+    ZerochanDownloadUrls? first,
+    ZerochanDownloadUrls? second,
+  ) {
+    final merged = ZerochanDownloadUrls(
+      full: first?.full ?? second?.full,
+      large: first?.large ?? second?.large,
+      medium: first?.medium ?? second?.medium,
+      small: first?.small ?? second?.small,
+    );
+
+    return merged.isUseful ? merged : null;
+  }
+
+  Uri _postUri(int postId) {
+    final baseUri = Uri.parse(_baseUrl);
+    return baseUri.replace(
+      path: '/$postId',
+      query: null,
+      fragment: null,
+    );
+  }
 }
 
 dynamic _parsePostResponse(dynamic data) {
@@ -166,6 +284,23 @@ dynamic _parsePostResponse(dynamic data) {
 
     return jsonDecode(cleanned);
   }
+}
+
+String? _resolveHttpUrl(String? rawUrl, Uri pageUri) {
+  final value = rawUrl?.trim();
+  if (value == null || value.isEmpty) return null;
+
+  final uri = pageUri.resolve(value);
+  if ((uri.scheme != 'http' && uri.scheme != 'https') || uri.host.isEmpty) {
+    return null;
+  }
+
+  return uri.toString();
+}
+
+bool _looksLikePostFullImage(String url, int postId) {
+  final path = Uri.parse(url).path.toLowerCase();
+  return path.contains(postId.toString()) && path.contains('full');
 }
 
 // This is a workaround for the fact that the Zerochan API returns HTML

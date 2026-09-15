@@ -29,6 +29,18 @@ final zerochanClientProvider = Provider.family<ZerochanClient, BooruConfigAuth>(
   },
 );
 
+final zerochanRateLimitInterceptorProvider =
+    Provider<SlidingWindowRateLimitInterceptor>(
+      (ref) => SlidingWindowRateLimitInterceptor(
+        config: SlidingWindowRateLimitConfig(
+          requestsPerWindow: 1,
+          windowSizeMs: 1200,
+          retryAfterFallback: const Duration(seconds: 30),
+          resolver: (_) => true,
+        ),
+      ),
+    );
+
 final zerochanDioProvider = Provider.family<Dio, BooruConfigAuth>((
   ref,
   config,
@@ -50,14 +62,7 @@ final zerochanDioProvider = Provider.family<Dio, BooruConfigAuth>((
       proxySettings: config.proxySettings,
     ),
     additionalInterceptors: [
-      // 55 requests per minute (conservative buffer below 60 to avoid hitting limits)
-      SlidingWindowRateLimitInterceptor(
-        config: const SlidingWindowRateLimitConfig(
-          requestsPerWindow: 55,
-          windowSizeMs: 60000,
-          maxDelayMs: 10000,
-        ),
-      ),
+      ref.watch(zerochanRateLimitInterceptorProvider),
     ],
   );
 });

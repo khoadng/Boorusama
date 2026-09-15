@@ -5,7 +5,7 @@
 - Support up to two quick actions on post thumbnails
 - Add per-profile media host overrides
 - Improve favorite tag and label management
-- [Anime-Pictures] Add bulk download support
+- [Anime-Pictures/Zerochan] Add bulk download support
 - Add Arabic and Indonesian, update Turkish, Tamil, and Spanish translations
 
 # 4.5.0
