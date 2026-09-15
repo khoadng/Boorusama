@@ -17,21 +17,39 @@ import 'package:test/test.dart';
 
 void main() {
   test('retries a Flutter build when a native-asset input changes', () async {
-    final processRunner = _FailOnceProcessRunner(
+    final processRunner = _FailingProcessRunner(
       const ProcessFailure(
         'Flutter build failed.',
         output: 'File modified during build. Build must be rerun.',
       ),
+      failureCount: 2,
     );
 
     await Flutter(_tools(processRunner)).build(_project, _plan);
 
-    expect(processRunner.runCount, 2);
+    expect(processRunner.runCount, 3);
+  });
+
+  test('stops retrying native-asset changes after the retry limit', () async {
+    final processRunner = _FailingProcessRunner(
+      const ProcessFailure(
+        'Flutter build failed.',
+        output: 'File modified during build. Build must be rerun.',
+      ),
+      failureCount: 6,
+    );
+
+    await expectLater(
+      Flutter(_tools(processRunner)).build(_project, _plan),
+      throwsA(isA<ProcessFailure>()),
+    );
+    expect(processRunner.runCount, 6);
   });
 
   test('does not retry unrelated Flutter failures', () async {
-    final processRunner = _FailOnceProcessRunner(
+    final processRunner = _FailingProcessRunner(
       const ProcessFailure('Flutter build failed.', output: 'compile error'),
+      failureCount: 1,
     );
 
     await expectLater(
@@ -80,10 +98,12 @@ ToolRunner _tools(ProcessRunner processRunner) => ToolRunner(
   root: Directory.current,
 );
 
-final class _FailOnceProcessRunner extends ProcessRunner {
-  _FailOnceProcessRunner(this.failure) : super(logger: Logger());
+final class _FailingProcessRunner extends ProcessRunner {
+  _FailingProcessRunner(this.failure, {required this.failureCount})
+    : super(logger: Logger());
 
   final ProcessFailure failure;
+  final int failureCount;
   var runCount = 0;
 
   @override
@@ -94,6 +114,6 @@ final class _FailOnceProcessRunner extends ProcessRunner {
     Map<String, String>? environment,
   }) async {
     runCount++;
-    if (runCount == 1) throw failure;
+    if (runCount <= failureCount) throw failure;
   }
 }
