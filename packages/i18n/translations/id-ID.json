@@ -1366,15 +1366,5 @@
       "joined": "Bergabung",
       "last_active": "Aktif terakhir kali"
     }
-  },
-  "settings_search": {
-    "title": "Cari pengaturan",
-    "select_setting": "Pilih pengaturan untuk melihatnya",
-    "overridden": "Ditimpa oleh $profile",
-    "custom_location": "Lokasi khusus",
-    "app_folder": "Menggunakan folder unduhan aplikasi",
-    "enable_profile": "Aktifkan pengaturan khusus profil untuk mengubah",
-    "profile_icon": "Ikon profil",
-    "thumbnail_actions": "Tindakan gambar mini"
   }
 }

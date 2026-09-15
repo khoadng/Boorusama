@@ -5,13 +5,14 @@ import 'package:kurumi/kurumi.dart';
 import 'package:kurumi/material.dart';
 
 // Project imports:
-import '../../../../settings/data.dart';
 import '../../../../settings/types.dart';
 import '../../../../settings/widgets.dart';
 import '../../../config/types.dart';
 import '../../../create/providers.dart';
 import '../widgets/thumbnail_actions_section.dart';
 import '../widgets/tooltip_toggle.dart';
+
+// Flutter imports:
 
 class DefaultBooruConfigListingView extends ConsumerWidget {
   const DefaultBooruConfigListingView({
@@ -60,28 +61,22 @@ class BooruConfigListingView extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SettingAnchor(
-              id: SettingsIndex.listing.thumbnailActions.id,
-              child: const ThumbnailActionsSection(),
-            ),
+            const ThumbnailActionsSection(),
             const Divider(),
-            SettingAnchor(
-              id: SettingsIndex.listing.profileOverrides.id,
-              child: KurumiSwitchListTile(
-                title: Text(
-                  SettingsIndex.listing.profileOverrides.title(context),
-                ),
-                subtitle: Text(
-                  context
-                      .t
-                      .booru
-                      .listing
-                      .enable_profile_specific_settings_description,
-                ),
-                value: enable,
-                onChanged: (value) => ref.editNotifier.updateListing(
-                  listing.copyWith(enable: value),
-                ),
+            KurumiSwitchListTile(
+              title: Text(
+                context.t.booru.listing.enable_profile_specific_settings,
+              ),
+              subtitle: Text(
+                context
+                    .t
+                    .booru
+                    .listing
+                    .enable_profile_specific_settings_description,
+              ),
+              value: enable,
+              onChanged: (value) => ref.editNotifier.updateListing(
+                listing.copyWith(enable: value),
               ),
             ),
             KurumiGrayedOut(

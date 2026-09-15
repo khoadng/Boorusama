@@ -6,8 +6,6 @@ import 'package:kurumi/material.dart';
 
 // Project imports:
 import '../../../../posts/listing/types.dart';
-import '../../../../settings/data.dart';
-import '../../../../settings/widgets.dart';
 import '../../../create/providers.dart';
 
 class ListingTooltipToggle extends ConsumerWidget {
@@ -23,23 +21,20 @@ class ListingTooltipToggle extends ConsumerWidget {
       ),
     );
 
-    return SettingAnchor(
-      id: SettingsIndex.listing.tooltip.id,
-      child: KurumiSwitchListTile(
-        title: Text(
-          SettingsIndex.listing.tooltip.title(context),
-        ),
-        subtitle: Text(
-          context.t.booru.listing.tooltip_on_hover_description,
-        ),
-        value: tooltipMode?.isEnabled ?? true,
-        onChanged: (value) {
-          final newMode = value
-              ? TooltipDisplayMode.enabled
-              : TooltipDisplayMode.disabled;
-          ref.editNotifier.updateTooltipDisplayMode(newMode);
-        },
+    return KurumiSwitchListTile(
+      title: Text(
+        context.t.booru.listing.tooltip_on_hover_title,
       ),
+      subtitle: Text(
+        context.t.booru.listing.tooltip_on_hover_description,
+      ),
+      value: tooltipMode?.isEnabled ?? true,
+      onChanged: (value) {
+        final newMode = value
+            ? TooltipDisplayMode.enabled
+            : TooltipDisplayMode.disabled;
+        ref.editNotifier.updateTooltipDisplayMode(newMode);
+      },
     );
   }
 }

@@ -8,8 +8,6 @@ import 'package:kurumi/material.dart';
 import '../../../../boorus/engine/providers.dart';
 import '../../../../home/types.dart';
 import '../../../../premiums/widgets.dart';
-import '../../../../settings/data.dart';
-import '../../../../settings/widgets.dart';
 import '../../../config/types.dart';
 import '../../../create/providers.dart';
 
@@ -30,32 +28,27 @@ class HomeScreenSection extends ConsumerWidget {
     final data = booruBuilder?.customHomeViewBuilders ?? kDefaultAltHomeView;
 
     return PremiumInteractionBlock(
-      child: SettingAnchor(
-        id: SettingsIndex.profileAppearance.homeScreen.id,
-        child: ListTile(
-          contentPadding: EdgeInsets.zero,
-          visualDensity: VisualDensity.compact,
-          title: Text(
-            SettingsIndex.profileAppearance.homeScreen.title(context),
+      child: ListTile(
+        contentPadding: EdgeInsets.zero,
+        visualDensity: VisualDensity.compact,
+        title: Text(context.t.booru.appearance.home_screen),
+        subtitle: Text(
+          context.t.booru.appearance.home_screen_description,
+        ),
+        trailing: KurumiOptionDropDownButton(
+          alignment: AlignmentDirectional.centerStart,
+          value: layout.home,
+          onChanged: (value) => ref.editNotifier.updateLayout(
+            layout.copyWith(home: () => value),
           ),
-          subtitle: Text(
-            context.t.booru.appearance.home_screen_description,
-          ),
-          trailing: KurumiOptionDropDownButton(
-            alignment: AlignmentDirectional.centerStart,
-            value: layout.home,
-            onChanged: (value) => ref.editNotifier.updateLayout(
-              layout.copyWith(home: () => value),
-            ),
-            items: data.keys
-                .map(
-                  (value) => DropdownMenuItem(
-                    value: value,
-                    child: Text(_describeView(context, data, value)),
-                  ),
-                )
-                .toList(),
-          ),
+          items: data.keys
+              .map(
+                (value) => DropdownMenuItem(
+                  value: value,
+                  child: Text(_describeView(context, data, value)),
+                ),
+              )
+              .toList(),
         ),
       ),
     );

@@ -1339,15 +1339,5 @@
       "joined": "تاريخ الانضمام",
       "last_active": "آخر نشاط"
     }
-  },
-  "settings_search": {
-    "title": "البحث في الإعدادات",
-    "select_setting": "اختر إعدادًا لعرضه",
-    "overridden": "تم التجاوز بواسطة $profile",
-    "custom_location": "موقع مخصص",
-    "app_folder": "يستخدم مجلد تنزيل التطبيق",
-    "enable_profile": "فعّل إعدادات الملف الشخصي للتغيير",
-    "profile_icon": "أيقونة الملف الشخصي",
-    "thumbnail_actions": "إجراءات الصور المصغرة"
   }
 }

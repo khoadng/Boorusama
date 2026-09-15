@@ -12,9 +12,6 @@ import '../../../../boorus/booru/types.dart';
 import '../../../../config_widgets/website_logo.dart';
 import '../../../../posts/sources/types.dart';
 import '../../../../premiums/providers.dart';
-import '../../../../settings/routes.dart';
-import '../../../../settings/types.dart' show SettingsSearchEntry;
-import '../../../../settings/widgets.dart';
 import '../../../appearance/widgets.dart';
 import '../../../config/data.dart';
 import '../../../config/types.dart';
@@ -30,7 +27,7 @@ import '../providers/providers.dart';
 import '../types/edit_booru_config_id.dart';
 import 'unsaved_alert_dialog.dart';
 
-class CreateBooruConfigScaffold extends ConsumerStatefulWidget {
+class CreateBooruConfigScaffold extends ConsumerWidget {
   const CreateBooruConfigScaffold({
     required this.initialTab,
     super.key,
@@ -66,208 +63,117 @@ class CreateBooruConfigScaffold extends ConsumerStatefulWidget {
 
   final bool Function(BooruConfigData config)? canSubmit;
   @override
-  ConsumerState<CreateBooruConfigScaffold> createState() =>
-      _CreateBooruConfigScaffoldState();
-}
-
-class _CreateBooruConfigScaffoldState
-    extends ConsumerState<CreateBooruConfigScaffold> {
-  String? _searchTab;
-  String? _searchTarget;
-  var _searchRequest = 0;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final editId = ref.watch(editBooruConfigIdProvider);
 
     final tabMap = {
-      CreateBooruConfigCategory.auth(context): ?widget.authTab,
+      CreateBooruConfigCategory.auth(context): ?authTab,
       CreateBooruConfigCategory.listing(context):
-          widget.listingTab ?? const DefaultBooruConfigListingView(),
+          listingTab ?? const DefaultBooruConfigListingView(),
       if (ref.watch(showPremiumFeatsProvider))
         CreateBooruConfigCategory.appearance(context):
-            widget.layoutTab ?? const DefaultBooruConfigLayoutView(),
+            layoutTab ?? const DefaultBooruConfigLayoutView(),
       CreateBooruConfigCategory.download(context):
-          widget.downloadTab ?? const BooruConfigDownloadView(),
+          downloadTab ?? const BooruConfigDownloadView(),
       CreateBooruConfigCategory.search(context):
-          widget.searchTab ?? const DefaultBooruConfigSearchView(),
+          searchTab ?? const DefaultBooruConfigSearchView(),
       CreateBooruConfigCategory.gestures(context):
-          widget.gestureTab ?? const DefaultBooruConfigGesturesView(),
+          gestureTab ?? const DefaultBooruConfigGesturesView(),
       CreateBooruConfigCategory.viewer(context):
-          widget.imageViewerTab ?? const BooruConfigViewerView(),
+          imageViewerTab ?? const BooruConfigViewerView(),
       CreateBooruConfigCategory.network(context):
-          widget.networkTab ?? const BooruConfigNetworkView(),
+          networkTab ?? const BooruConfigNetworkView(),
     };
 
-    final revealRequest =
-        _searchRequest + (SettingReveal.maybeOf(context)?.request ?? 0);
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final wide =
-            constraints.maxWidth >= 700 &&
-            InlineSettingsSearch.maybeOf(context) == null;
-        void openProfileResult(SettingsSearchEntry result) {
-          if (!mounted) return;
-          setState(() {
-            _searchTab = result.category.id;
-            _searchTarget = result.target;
-            _searchRequest++;
-          });
-        }
-
-        return SettingReveal(
-          target: _searchRequest == 0
-              ? SettingReveal.maybeOf(context)?.target
-              : _searchTarget,
-          request: revealRequest,
-          child: Scaffold(
-            backgroundColor: widget.backgroundColor,
-            appBar: AppBar(
-              titleSpacing: 0,
-              title: SelectedBooruChip(
-                booruType: editId.booruType,
-                url: editId.url,
-                version: widget.version,
-              ),
-              actions: [
-                if (!wide)
-                  IconButton(
-                    tooltip: context.t.settings_search.title,
-                    icon: const Icon(Icons.search),
-                    onPressed: () => openSettingsSearch(
-                      context,
-                      editingProfile: ref.read(initialBooruConfigProvider),
-                      editingId: editId,
-                      onOpenProfile: openProfileResult,
-                    ),
-                  ),
-                CreateOrUpdateBooruConfigButton(canSubmit: widget.canSubmit),
-              ],
-            ),
-            body: SafeArea(
-              child: Column(
-                children: [
-                  const BooruConfigPopScope(),
-                  const SizedBox(height: 8),
-                  if (!wide) const BooruConfigNameField(),
-                  Expanded(
-                    child: _TabControllerProvider(
-                      selectionRequest: revealRequest,
-                      initialIndex: _findInitialIndexFromQuery(
-                        _searchTab ?? widget.initialTab,
-                        tabMap,
+    return Scaffold(
+      backgroundColor: backgroundColor,
+      appBar: AppBar(
+        titleSpacing: 0,
+        title: SelectedBooruChip(
+          booruType: editId.booruType,
+          url: editId.url,
+          version: version,
+        ),
+        actions: [
+          CreateOrUpdateBooruConfigButton(canSubmit: canSubmit),
+        ],
+      ),
+      body: SafeArea(
+        child: Column(
+          children: [
+            const BooruConfigPopScope(),
+            const SizedBox(height: 8),
+            const BooruConfigNameField(),
+            Expanded(
+              child: _TabControllerProvider(
+                initialIndex: _findInitialIndexFromQuery(
+                  initialTab,
+                  tabMap,
+                ),
+                tabMap: tabMap,
+                length: tabMap.length,
+                animationDuration: Screen.of(context).size != ScreenSize.small
+                    ? Duration.zero
+                    : null,
+                builder: (controller) => Column(
+                  children: [
+                    const SizedBox(height: 4),
+                    TabBar(
+                      controller: controller,
+                      labelPadding: const EdgeInsets.symmetric(
+                        horizontal: 12,
                       ),
-                      tabMap: tabMap,
-                      length: tabMap.length,
-                      animationDuration:
-                          Screen.of(context).size != ScreenSize.small
-                          ? Duration.zero
-                          : null,
-                      builder: (controller) {
-                        final content = Column(
-                          children: [
-                            if (wide) const BooruConfigNameField(),
-                            const SizedBox(height: 4),
-                            if (!wide)
-                              TabBar(
-                                controller: controller,
-                                labelPadding: const EdgeInsets.symmetric(
-                                  horizontal: 12,
-                                ),
-                                isScrollable: true,
-                                tabs: [
-                                  for (final tab in tabMap.keys)
-                                    Tab(text: tab.title),
-                                ],
-                              ),
-                            Expanded(
-                              child: Container(
-                                constraints: const BoxConstraints(
-                                  maxWidth: 700,
-                                ),
-                                child: TabBarView(
-                                  controller: controller,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  children: [
-                                    for (final tab in tabMap.values) tab,
-                                  ],
-                                ),
-                              ),
-                            ),
-                            if (editId.isNew)
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 12,
-                                  vertical: 12,
-                                ),
-                                child: Column(
-                                  children: [
-                                    Text(
-                                      context
-                                          .t
-                                          .booru
-                                          .new_profile_leave_as_empty_tips,
-                                      style: Kurumi.themeOf(context)
-                                          .textTheme
-                                          .titleSmall
-                                          ?.copyWith(
-                                            color: Kurumi.themeOf(
-                                              context,
-                                            ).colorScheme.hintColor,
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w400,
-                                          ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ?widget.footer,
-                          ],
-                        );
-                        if (!wide) return content;
-                        final entry = SettingEntry(
-                          id: 'profile-editor',
-                          title:
-                              context.t.settings.booru_settings.booru_settings,
-                          name: '/boorus/${editId.id}/update',
-                          icon: Icons.settings,
-                          content: content,
-                        );
-                        return SettingsSearchPage(
-                          editingProfile: ref.watch(initialBooruConfigProvider),
-                          editingId: editId,
-                          initialEntry: entry,
-                          onOpenProfile: openProfileResult,
-                          navigationBuilder: (context, selected, select, _) =>
-                              ListView(
-                                children: [
-                                  for (final tab in tabMap.keys)
-                                    ListTile(
-                                      title: Text(tab.title),
-                                      selected:
-                                          controller.index ==
-                                          tabMap.keys.toList().indexOf(tab),
-                                      onTap: () {
-                                        setState(() {
-                                          _searchTab = tab.id;
-                                          _searchTarget = null;
-                                          _searchRequest++;
-                                        });
-                                        select(entry);
-                                      },
-                                    ),
-                                ],
-                              ),
-                        );
-                      },
+                      isScrollable: true,
+                      tabs: [
+                        for (final tab in tabMap.keys) Tab(text: tab.title),
+                      ],
                     ),
-                  ),
-                ],
+                    Expanded(
+                      child: Container(
+                        constraints: const BoxConstraints(
+                          maxWidth: 700,
+                        ),
+                        child: TabBarView(
+                          controller: controller,
+                          physics: const NeverScrollableScrollPhysics(),
+                          children: [
+                            for (final tab in tabMap.values) tab,
+                          ],
+                        ),
+                      ),
+                    ),
+                    if (editId.isNew)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 12,
+                        ),
+                        child: Column(
+                          children: [
+                            Text(
+                              context.t.booru.new_profile_leave_as_empty_tips,
+                              style: Kurumi.themeOf(context)
+                                  .textTheme
+                                  .titleSmall
+                                  ?.copyWith(
+                                    color: Kurumi.themeOf(
+                                      context,
+                                    ).colorScheme.hintColor,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ?footer,
+                  ],
+                ),
               ),
             ),
-          ),
-        );
-      },
+          ],
+        ),
+      ),
     );
   }
 }
@@ -386,14 +292,12 @@ class _TabControllerProvider extends ConsumerStatefulWidget {
     required this.length,
     required this.builder,
     this.initialIndex,
-    this.selectionRequest = 0,
   });
 
   final Map<CreateBooruConfigCategory, Widget> tabMap;
   final Duration? animationDuration;
   final int length;
   final int? initialIndex;
-  final int selectionRequest;
   final Widget Function(TabController controller) builder;
 
   @override
@@ -418,16 +322,6 @@ class _TabControllerProviderState extends ConsumerState<_TabControllerProvider>
     _controller.addListener(_onTabChanged);
 
     _onTabChanged();
-  }
-
-  @override
-  void didUpdateWidget(covariant _TabControllerProvider oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if ((widget.initialIndex != oldWidget.initialIndex ||
-            widget.selectionRequest != oldWidget.selectionRequest) &&
-        widget.initialIndex != null) {
-      _controller.index = widget.initialIndex!;
-    }
   }
 
   void _onTabChanged() {

@@ -1315,15 +1315,5 @@
       "pin_toast": "Ventana pinchada en la cima",
       "unpin_toast": "Ventana despinchada desde la cima"
     }
-  },
-  "settings_search": {
-    "title": "Buscar ajustes",
-    "select_setting": "Selecciona un ajuste para verlo",
-    "overridden": "Reemplazado por $profile",
-    "custom_location": "Ubicación personalizada",
-    "app_folder": "Usa la carpeta de descargas de la aplicación",
-    "enable_profile": "Activa los ajustes específicos del perfil para modificar",
-    "profile_icon": "Icono del perfil",
-    "thumbnail_actions": "Acciones de miniaturas"
   }
 }

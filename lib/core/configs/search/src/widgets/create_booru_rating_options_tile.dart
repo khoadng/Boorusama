@@ -7,8 +7,6 @@ import 'package:kurumi/material.dart';
 // Project imports:
 import '../../../../boorus/engine/providers.dart';
 import '../../../../posts/rating/types.dart';
-import '../../../../settings/data.dart';
-import '../../../../settings/widgets.dart';
 import '../../../config/types.dart';
 
 class CreateBooruRatingOptionsTile extends StatelessWidget {
@@ -38,31 +36,28 @@ class CreateBooruRatingOptionsTile extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        SettingAnchor(
-          id: SettingsIndex.profileSearch.rating.id,
-          child: ListTile(
-            contentPadding: EdgeInsets.zero,
-            visualDensity: VisualDensity.compact,
-            title: Text(SettingsIndex.profileSearch.rating.title(context)),
-            trailing: KurumiOptionDropDownButton(
-              alignment: AlignmentDirectional.centerStart,
-              value: value ?? BooruConfigRatingFilter.none,
-              onChanged: (value) {
-                onChanged.call(value);
+        ListTile(
+          contentPadding: EdgeInsets.zero,
+          visualDensity: VisualDensity.compact,
+          title: Text(context.t.booru.content_filtering_label),
+          trailing: KurumiOptionDropDownButton(
+            alignment: AlignmentDirectional.centerStart,
+            value: value ?? BooruConfigRatingFilter.none,
+            onChanged: (value) {
+              onChanged.call(value);
 
-                if (value != BooruConfigRatingFilter.custom) {
-                  onGranularRatingFiltersChanged?.call(null);
-                }
-              },
-              items: BooruConfigRatingFilter.values
-                  .map(
-                    (value) => DropdownMenuItem(
-                      value: value,
-                      child: Text(value.getFilterRatingTerm(context)),
-                    ),
-                  )
-                  .toList(),
-            ),
+              if (value != BooruConfigRatingFilter.custom) {
+                onGranularRatingFiltersChanged?.call(null);
+              }
+            },
+            items: BooruConfigRatingFilter.values
+                .map(
+                  (value) => DropdownMenuItem(
+                    value: value,
+                    child: Text(value.getFilterRatingTerm(context)),
+                  ),
+                )
+                .toList(),
           ),
         ),
         if (value == BooruConfigRatingFilter.custom) ...[

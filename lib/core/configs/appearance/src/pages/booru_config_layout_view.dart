@@ -1,13 +1,12 @@
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i18n/i18n.dart';
 import 'package:kurumi/cupertino.dart';
 import 'package:kurumi/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../../../../boorus/engine/providers.dart';
-import '../../../../settings/data.dart';
-import '../../../../settings/widgets.dart';
 import '../../../config/types.dart';
 import '../../../create/providers.dart';
 import '../widgets/appearance_config_card.dart';
@@ -48,13 +47,32 @@ class BooruConfigLayoutView extends ConsumerWidget {
             child: Row(
               children: [
                 Expanded(
-                  child: SettingAnchor(
-                    id: SettingsIndex.profileAppearance.theme.id,
+                  child: AppearanceConfigCard(
+                    icon: const Icon(Symbols.color_lens),
+                    title: context.t.settings.theme.theme,
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        CupertinoPageRoute(
+                          builder: (context) => ProviderScope(
+                            overrides: [
+                              editBooruConfigIdProvider.overrideWithValue(
+                                ref.watch(editBooruConfigIdProvider),
+                              ),
+                            ],
+                            child: const ThemeConfigsPage(),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(width: 12),
+                if (uiBuilder != null)
+                  Expanded(
                     child: AppearanceConfigCard(
-                      icon: const Icon(Symbols.color_lens),
-                      title: SettingsIndex.profileAppearance.theme.title(
-                        context,
-                      ),
+                      icon: const Icon(Symbols.info_rounded),
+                      title:
+                          context.t.booru.appearance.image_viewer_layout.title,
                       onPressed: () {
                         Navigator.of(context).push(
                           CupertinoPageRoute(
@@ -63,54 +81,24 @@ class BooruConfigLayoutView extends ConsumerWidget {
                                 editBooruConfigIdProvider.overrideWithValue(
                                   ref.watch(editBooruConfigIdProvider),
                                 ),
+                                initialBooruConfigProvider.overrideWithValue(
+                                  ref.watch(initialBooruConfigProvider),
+                                ),
                               ],
-                              child: const ThemeConfigsPage(),
+                              child: AppearanceDetailsPage(
+                                uiBuilder: uiBuilder,
+                              ),
                             ),
                           ),
                         );
                       },
                     ),
                   ),
-                ),
-                const SizedBox(width: 12),
-                if (uiBuilder != null)
-                  Expanded(
-                    child: SettingAnchor(
-                      id: SettingsIndex.profileAppearance.viewerLayout.id,
-                      child: AppearanceConfigCard(
-                        icon: const Icon(Symbols.info_rounded),
-                        title: SettingsIndex.profileAppearance.viewerLayout
-                            .title(context),
-                        onPressed: () {
-                          Navigator.of(context).push(
-                            CupertinoPageRoute(
-                              builder: (context) => ProviderScope(
-                                overrides: [
-                                  editBooruConfigIdProvider.overrideWithValue(
-                                    ref.watch(editBooruConfigIdProvider),
-                                  ),
-                                  initialBooruConfigProvider.overrideWithValue(
-                                    ref.watch(initialBooruConfigProvider),
-                                  ),
-                                ],
-                                child: AppearanceDetailsPage(
-                                  uiBuilder: uiBuilder,
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ),
               ],
             ),
           ),
           const Divider(),
-          SettingAnchor(
-            id: SettingsIndex.profileAppearance.icon.id,
-            child: const ProfileIconUrlField(),
-          ),
+          const ProfileIconUrlField(),
           const Divider(),
           const HomeScreenSection(),
         ],

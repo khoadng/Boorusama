@@ -403,15 +403,5 @@
     "options": {
       "save_to_folder": "儲存至資料夾"
     }
-  },
-  "settings_search": {
-    "title": "搜尋設定",
-    "select_setting": "選取一項設定以檢視",
-    "overridden": "已由$profile覆寫",
-    "custom_location": "自訂位置",
-    "app_folder": "使用應用程式下載資料夾",
-    "enable_profile": "啟用此設定檔的獨立設定以進行變更",
-    "profile_icon": "設定檔圖示",
-    "thumbnail_actions": "縮圖操作"
   }
 }

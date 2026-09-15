@@ -6,8 +6,6 @@ import 'package:kurumi/material.dart';
 
 // Project imports:
 import '../../../../proxy/types.dart';
-import '../../../../settings/data.dart';
-import '../../../../settings/widgets.dart';
 import '../../../config/types.dart';
 import '../../../create/providers.dart';
 
@@ -24,36 +22,33 @@ class ProxyTypeOptionTile extends ConsumerWidget {
       ).select((value) => value.proxySettingsTyped),
     );
 
-    return SettingAnchor(
-      id: SettingsIndex.network.proxyType.id,
-      child: ListTile(
-        contentPadding: const EdgeInsets.only(left: 4),
-        visualDensity: VisualDensity.compact,
-        title: Text(
-          SettingsIndex.network.proxyType.title(context),
+    return ListTile(
+      contentPadding: const EdgeInsets.only(left: 4),
+      visualDensity: VisualDensity.compact,
+      title: Text(
+        context.t.booru.network.proxy.type,
+      ),
+      trailing: KurumiOptionDropDownButton(
+        alignment: AlignmentDirectional.centerStart,
+        value: proxySettings?.type,
+        onChanged: (value) => ref.editNotifier.updateProxySettings(
+          proxySettings?.copyWith(type: value),
         ),
-        trailing: KurumiOptionDropDownButton(
-          alignment: AlignmentDirectional.centerStart,
-          value: proxySettings?.type,
-          onChanged: (value) => ref.editNotifier.updateProxySettings(
-            proxySettings?.copyWith(type: value),
-          ),
-          items: ProxyType.values
-              .map(
-                (e) => DropdownMenuItem(
-                  value: e,
-                  child: Text(
-                    switch (e) {
-                      ProxyType.unknown =>
-                        context.t.booru.network.proxy.select_type,
-                      ProxyType.http => 'HTTP(S)',
-                      ProxyType.socks5 => 'SOCKS5',
-                    },
-                  ),
+        items: ProxyType.values
+            .map(
+              (e) => DropdownMenuItem(
+                value: e,
+                child: Text(
+                  switch (e) {
+                    ProxyType.unknown =>
+                      context.t.booru.network.proxy.select_type,
+                    ProxyType.http => 'HTTP(S)',
+                    ProxyType.socks5 => 'SOCKS5',
+                  },
                 ),
-              )
-              .toList(),
-        ),
+              ),
+            )
+            .toList(),
       ),
     );
   }

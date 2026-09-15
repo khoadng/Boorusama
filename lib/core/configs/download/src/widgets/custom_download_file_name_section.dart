@@ -7,8 +7,6 @@ import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
 import '../../../../downloads/filename/providers.dart';
-import '../../../../settings/data.dart';
-import '../../../../settings/widgets.dart';
 import '../../../config/types.dart';
 import 'available_tokens.dart';
 import 'download_format_card.dart';
@@ -17,7 +15,6 @@ import 'filename_preview.dart';
 class CustomDownloadFileNameSection extends ConsumerStatefulWidget {
   const CustomDownloadFileNameSection({
     required this.config,
-    required this.bulkFormat,
     super.key,
     this.format,
     this.onIndividualDownloadChanged,
@@ -25,7 +22,6 @@ class CustomDownloadFileNameSection extends ConsumerStatefulWidget {
   });
 
   final String? format;
-  final String? bulkFormat;
   final void Function(String value)? onIndividualDownloadChanged;
   final void Function(String value)? onBulkDownloadChanged;
 
@@ -49,12 +45,12 @@ class _CustomDownloadFileNameSectionState
         ?.textMatchers;
 
     individualTextController = RichTextController(
-      text: widget.format,
+      text: widget.config.customDownloadFileNameFormat,
       matchers: textMatchers,
     );
 
     bulkTextController = RichTextController(
-      text: widget.bulkFormat,
+      text: widget.config.customBulkDownloadFileNameFormat,
       matchers: textMatchers,
     );
 
@@ -91,49 +87,39 @@ class _CustomDownloadFileNameSectionState
           ),
         ),
         const SizedBox(height: 8),
-        SettingAnchor(
-          id: SettingsIndex.profileDownloads.filenameFormat.id,
-          child: DownloadFormatCard(
-            textController: individualTextController,
-            title: SettingsIndex.profileDownloads.filenameFormat.title(
-              context,
-            ),
-            downloadFilenameBuilder: downloadFilenameBuilder,
-            defaultFileNameFormat: defaultFileNameFormat,
-            format: widget.format,
-            onChanged: widget.onIndividualDownloadChanged,
-            config: widget.config,
-          ),
+        DownloadFormatCard(
+          textController: individualTextController,
+          title: context.t.booru.downloads.custom_filename_format_invidual,
+          downloadFilenameBuilder: downloadFilenameBuilder,
+          defaultFileNameFormat: defaultFileNameFormat,
+          format: widget.format,
+          onChanged: widget.onIndividualDownloadChanged,
+          config: widget.config,
         ),
         const SizedBox(height: 8),
-        SettingAnchor(
-          id: SettingsIndex.profileDownloads.bulkFilenameFormat.id,
-          child: DownloadFormatCard(
-            textController: bulkTextController,
-            title: SettingsIndex.profileDownloads.bulkFilenameFormat.title(
-              context,
+        DownloadFormatCard(
+          textController: bulkTextController,
+          title: context.t.booru.downloads.custom_filename_format_bulk,
+          downloadFilenameBuilder: downloadFilenameBuilder,
+          defaultFileNameFormat: defaultBulkDownloadFileNameFormat,
+          format: widget.config.customBulkDownloadFileNameFormat,
+          onChanged: widget.onBulkDownloadChanged,
+          config: widget.config,
+          previewBuilder: (generator, format) => Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 12,
+              vertical: 4,
             ),
-            downloadFilenameBuilder: downloadFilenameBuilder,
-            defaultFileNameFormat: defaultBulkDownloadFileNameFormat,
-            format: widget.bulkFormat,
-            onChanged: widget.onBulkDownloadChanged,
-            config: widget.config,
-            previewBuilder: (generator, format) => Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 12,
-                vertical: 4,
-              ),
-              child: Column(
-                children: generator
-                    .generateSamples(format)
-                    .map(
-                      (e) => FilenamePreview(
-                        filename: e,
-                        padding: const EdgeInsets.symmetric(vertical: 4),
-                      ),
-                    )
-                    .toList(),
-              ),
+            child: Column(
+              children: generator
+                  .generateSamples(format)
+                  .map(
+                    (e) => FilenamePreview(
+                      filename: e,
+                      padding: const EdgeInsets.symmetric(vertical: 4),
+                    ),
+                  )
+                  .toList(),
             ),
           ),
         ),

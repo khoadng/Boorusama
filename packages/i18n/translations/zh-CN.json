@@ -1315,15 +1315,5 @@
       "joined": "加入时间",
       "last_active": "最近活跃"
     }
-  },
-  "settings_search": {
-    "title": "搜索设置",
-    "select_setting": "选择一项设置以查看",
-    "overridden": "已被$profile覆盖",
-    "custom_location": "自定义位置",
-    "app_folder": "使用应用下载文件夹",
-    "enable_profile": "启用此配置的独立设置以进行更改",
-    "profile_icon": "配置图标",
-    "thumbnail_actions": "缩略图操作"
   }
 }

@@ -475,15 +475,5 @@
     "recently_created": "Create recentemente",
     "last_updated": "Ultimo aggiornato",
     "count": "Quantità"
-  },
-  "settings_search": {
-    "title": "Cerca impostazioni",
-    "select_setting": "Seleziona un’impostazione per visualizzarla",
-    "overridden": "Sovrascritto da $profile",
-    "custom_location": "Posizione personalizzata",
-    "app_folder": "Usa la cartella di download dell’app",
-    "enable_profile": "Abilita le impostazioni specifiche del profilo per modificare",
-    "profile_icon": "Icona del profilo",
-    "thumbnail_actions": "Azioni delle miniature"
   }
 }

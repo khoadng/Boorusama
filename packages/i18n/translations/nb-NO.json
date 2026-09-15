@@ -262,15 +262,5 @@
     "options": {
       "save_to_folder": "Lagre i mappe"
     }
-  },
-  "settings_search": {
-    "title": "Søk i innstillinger",
-    "select_setting": "Velg en innstilling for å vise den",
-    "overridden": "Overstyrt av $profile",
-    "custom_location": "Egendefinert plassering",
-    "app_folder": "Bruker appens nedlastingsmappe",
-    "enable_profile": "Aktiver profilspesifikke innstillinger for å endre",
-    "profile_icon": "Profilikon",
-    "thumbnail_actions": "Miniatyrhandlinger"
   }
 }

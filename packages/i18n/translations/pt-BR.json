@@ -1366,15 +1366,5 @@
       "joined": "Registrou-se",
       "last_active": "Última atividade"
     }
-  },
-  "settings_search": {
-    "title": "Buscar configurações",
-    "select_setting": "Selecione uma configuração para visualizar",
-    "overridden": "Substituído por $profile",
-    "custom_location": "Local personalizado",
-    "app_folder": "Usa a pasta de downloads do aplicativo",
-    "enable_profile": "Ative as configurações específicas do perfil para alterar",
-    "profile_icon": "Ícone do perfil",
-    "thumbnail_actions": "Ações de miniaturas"
   }
 }

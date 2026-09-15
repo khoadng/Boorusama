@@ -5,8 +5,6 @@ import 'package:kurumi/kurumi.dart';
 import 'package:kurumi/material.dart';
 
 // Project imports:
-import '../../../../settings/data.dart';
-import '../../../../settings/widgets.dart';
 import '../../../config/types.dart';
 import '../../../create/providers.dart';
 import '../types/actions.dart';
@@ -54,82 +52,65 @@ class BooruConfigGesturesView extends ConsumerWidget {
           BooruConfigSettingsHeader(
             label: context.t.settings.image_viewer.image_viewer,
           ),
-          SettingAnchor(
-            id: SettingsIndex.gestures.swipeDown.id,
-            child: _GestureConfigTile(
-              label: SettingsIndex.gestures.swipeDown.title(context),
-              value: postGesturesConfigTyped?.fullview?.swipeDown,
-              onChanged: (value) {
-                ref.editNotifier.updateGesturesConfigData(
-                  postGesturesConfigTyped?.withFulviewSwipeDown(value),
-                );
-              },
-              actions: fullviewGestureActions,
-              describeAction: describePostDetailsAction,
-            ),
+          _GestureConfigTile(
+            label: context.t.gestures.swipe_down,
+            value: postGesturesConfigTyped?.fullview?.swipeDown,
+            onChanged: (value) {
+              ref.editNotifier.updateGesturesConfigData(
+                postGesturesConfigTyped?.withFulviewSwipeDown(value),
+              );
+            },
+            actions: fullviewGestureActions,
+            describeAction: describePostDetailsAction,
           ),
-          SettingAnchor(
-            id: SettingsIndex.gestures.doubleTap.id,
-            child: _GestureConfigTile(
-              label: SettingsIndex.gestures.doubleTap.title(context),
-              value: postGesturesConfigTyped?.fullview?.doubleTap,
-              onChanged: (value) {
-                ref.editNotifier.updateGesturesConfigData(
-                  postGesturesConfigTyped?.withFulviewDoubleTap(value),
-                );
-              },
-              actions: fullviewGestureActions,
-              describeAction: describePostDetailsAction,
-            ),
+          _GestureConfigTile(
+            label: context.t.gestures.double_tap,
+            value: postGesturesConfigTyped?.fullview?.doubleTap,
+            onChanged: (value) {
+              ref.editNotifier.updateGesturesConfigData(
+                postGesturesConfigTyped?.withFulviewDoubleTap(value),
+              );
+            },
+            actions: fullviewGestureActions,
+            describeAction: describePostDetailsAction,
           ),
-          SettingAnchor(
-            id: SettingsIndex.gestures.longPress.id,
-            child: _GestureConfigTile(
-              label: SettingsIndex.gestures.longPress.title(context),
-              value: postGesturesConfigTyped?.fullview?.longPress,
-              onChanged: (value) {
-                ref.editNotifier.updateGesturesConfigData(
-                  postGesturesConfigTyped?.withFulviewLongPress(value),
-                );
-              },
-              actions: fullviewGestureActions,
-              describeAction: describePostDetailsAction,
-            ),
+          _GestureConfigTile(
+            label: context.t.gestures.long_press,
+            value: postGesturesConfigTyped?.fullview?.longPress,
+            onChanged: (value) {
+              ref.editNotifier.updateGesturesConfigData(
+                postGesturesConfigTyped?.withFulviewLongPress(value),
+              );
+            },
+            actions: fullviewGestureActions,
+            describeAction: describePostDetailsAction,
           ),
 
           const Divider(thickness: 0.5, height: 32),
           BooruConfigSettingsHeader(
             label: context.t.settings.image_grid.image_grid,
           ),
-          SettingAnchor(
-            id: SettingsIndex.gestures.tap.id,
-            child: _GestureConfigTile(
-              label: SettingsIndex.gestures.tap.title(context),
-              value: postGesturesConfigTyped?.preview?.tap,
-              onChanged: (value) {
-                ref.editNotifier.updateGesturesConfigData(
-                  postGesturesConfigTyped?.withPreviewTap(value),
-                );
-              },
-              actions: previewGestureActions,
-              describeAction: describePostDetailsAction,
-            ),
+          _GestureConfigTile(
+            label: context.t.gestures.tap,
+            value: postGesturesConfigTyped?.preview?.tap,
+            onChanged: (value) {
+              ref.editNotifier.updateGesturesConfigData(
+                postGesturesConfigTyped?.withPreviewTap(value),
+              );
+            },
+            actions: previewGestureActions,
+            describeAction: describePostDetailsAction,
           ),
-          SettingAnchor(
-            id: SettingsIndex.gestures.previewLongPress.id,
-            child: _GestureConfigTile(
-              label: SettingsIndex.gestures.previewLongPress.title(
-                context,
-              ),
-              value: postGesturesConfigTyped?.preview?.longPress,
-              onChanged: (value) {
-                ref.editNotifier.updateGesturesConfigData(
-                  postGesturesConfigTyped?.withPreviewLongPress(value),
-                );
-              },
-              actions: previewGestureActions,
-              describeAction: describePostDetailsAction,
-            ),
+          _GestureConfigTile(
+            label: context.t.gestures.long_press,
+            value: postGesturesConfigTyped?.preview?.longPress,
+            onChanged: (value) {
+              ref.editNotifier.updateGesturesConfigData(
+                postGesturesConfigTyped?.withPreviewLongPress(value),
+              );
+            },
+            actions: previewGestureActions,
+            describeAction: describePostDetailsAction,
           ),
           const SizedBox(height: 32),
           Text(

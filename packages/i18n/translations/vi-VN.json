@@ -1313,15 +1313,5 @@
       "joined": "Tham gia",
       "last_active": "Lần cuối"
     }
-  },
-  "settings_search": {
-    "title": "Tìm cài đặt",
-    "select_setting": "Chọn một cài đặt để xem",
-    "overridden": "Bị ghi đè bởi $profile",
-    "custom_location": "Vị trí tùy chỉnh",
-    "app_folder": "Dùng thư mục tải xuống của ứng dụng",
-    "enable_profile": "Bật cài đặt riêng cho hồ sơ để thay đổi",
-    "profile_icon": "Biểu tượng hồ sơ",
-    "thumbnail_actions": "Thao tác ảnh thu nhỏ"
   }
 }

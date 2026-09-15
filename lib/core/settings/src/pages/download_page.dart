@@ -2,8 +2,8 @@
 import 'package:flutter/gestures.dart';
 
 // Package imports:
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
 import 'package:kurumi/kurumi.dart';
 import 'package:kurumi/material.dart';
@@ -16,11 +16,10 @@ import '../../../configs/config/widgets.dart';
 import '../../../configs/create/routes.dart';
 import '../../../configs/manage/providers.dart';
 import '../../../downloads/configs/widgets.dart';
+import '../../../downloads/sidecar/widgets.dart';
 import '../../../downloads/downloader/providers.dart';
 import '../../../downloads/downloader/types.dart';
-import '../../../downloads/sidecar/widgets.dart';
 import '../../widgets.dart';
-import '../generated/settings_index.g.dart';
 import '../providers/settings_notifier.dart';
 import '../providers/settings_provider.dart';
 import '../widgets/settings_page_scaffold.dart';
@@ -47,133 +46,113 @@ class _DownloadPageState extends ConsumerState<DownloadPage> {
       title: Text(context.t.settings.download.title),
       children: [
         DownloadSettingsInteractionBlocker(
-          child: SettingAnchor(
-            id: SettingsIndex.downloads.folder.id,
-            child: DownloadFolderSelectorSection(
-              storagePath: settings.downloadPath,
-              onPathChanged: (path) =>
-                  notifer.updateSettings(settings.copyWith(downloadPath: path)),
-              deviceInfo: ref.watch(deviceInfoProvider),
-            ),
+          child: DownloadFolderSelectorSection(
+            storagePath: settings.downloadPath,
+            onPathChanged: (path) =>
+                notifer.updateSettings(settings.copyWith(downloadPath: path)),
+            deviceInfo: ref.watch(deviceInfoProvider),
           ),
         ),
         const SizedBox(height: 12),
-        SettingAnchor(
-          id: SettingsIndex.downloads.quality.id,
-          child: KurumiSettingsTile(
-            title: Text(SettingsIndex.downloads.quality.title(context)),
-            selectedOption: settings.downloadQuality,
-            items: DownloadQuality.values,
-            onChanged: (value) => notifer.updateSettings(
-              settings.copyWith(downloadQuality: value),
+        KurumiSettingsTile(
+          title: Text(context.t.settings.download.quality),
+          selectedOption: settings.downloadQuality,
+          items: DownloadQuality.values,
+          onChanged: (value) =>
+              notifer.updateSettings(settings.copyWith(downloadQuality: value)),
+          optionBuilder: (value) => switch (value) {
+            DownloadQuality.original => Text(
+              context.t.settings.download.qualities.original,
             ),
-            optionBuilder: (value) => switch (value) {
-              DownloadQuality.original => Text(
-                context.t.settings.download.qualities.original,
-              ),
-              DownloadQuality.sample => Text(
-                context.t.settings.download.qualities.sample,
-              ),
-              DownloadQuality.preview => Text(
-                context.t.settings.download.qualities.preview,
-              ),
-            },
-          ),
+            DownloadQuality.sample => Text(
+              context.t.settings.download.qualities.sample,
+            ),
+            DownloadQuality.preview => Text(
+              context.t.settings.download.qualities.preview,
+            ),
+          },
         ),
         const SizedBox(height: 4),
         if (ref.watch(appPlatformProvider).isMobile) ...[
-          SettingAnchor(
-            id: SettingsIndex.downloads.network.id,
-            child: KurumiSettingsTile(
-              title: Text(SettingsIndex.downloads.network.title(context)),
-              subtitle: Column(
+          KurumiSettingsTile(
+            title: Text(context.t.settings.download.network.title),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(context.t.settings.download.network.description),
+                if (!wifiDownloadConstraintSupported)
+                  Text(
+                    context.t.generic.requirement.android.version_or_later(
+                      version: AndroidVersions.android9.release,
+                    ),
+                  ),
+              ],
+            ),
+            selectedOption: settings.downloadNetworkPolicy,
+            items: DownloadNetworkPolicy.values,
+            onChanged: (value) => notifer.updateSettings(
+              settings.copyWith(downloadNetworkPolicy: value),
+            ),
+            isOptionEnabled: (value) =>
+                value != DownloadNetworkPolicy.wifiOnly ||
+                wifiDownloadConstraintSupported,
+            optionBuilder: (value) {
+              final label = switch (value) {
+                DownloadNetworkPolicy.anyNetwork =>
+                  context.t.settings.download.network.any_network,
+                DownloadNetworkPolicy.wifiOnly =>
+                  context.t.settings.download.network.wifi_only,
+                DownloadNetworkPolicy.askOnMobileData =>
+                  context.t.settings.download.network.ask_on_mobile_data,
+              };
+
+              if (value != DownloadNetworkPolicy.wifiOnly ||
+                  wifiDownloadConstraintSupported) {
+                return Text(label);
+              }
+
+              return Column(
+                mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(context.t.settings.download.network.description),
-                  if (!wifiDownloadConstraintSupported)
-                    Text(
-                      context.t.generic.requirement.android.version_or_later(
-                        version: AndroidVersions.android9.release,
-                      ),
+                  Text(label),
+                  Text(
+                    context.t.generic.requirement.android.version_or_later(
+                      version: AndroidVersions.android9.release,
                     ),
+                    style: Theme.of(context).textTheme.labelSmall,
+                  ),
                 ],
-              ),
-              selectedOption: settings.downloadNetworkPolicy,
-              items: DownloadNetworkPolicy.values,
-              onChanged: (value) => notifer.updateSettings(
-                settings.copyWith(downloadNetworkPolicy: value),
-              ),
-              isOptionEnabled: (value) =>
-                  value != DownloadNetworkPolicy.wifiOnly ||
-                  wifiDownloadConstraintSupported,
-              optionBuilder: (value) {
-                final label = switch (value) {
-                  DownloadNetworkPolicy.anyNetwork =>
-                    context.t.settings.download.network.any_network,
-                  DownloadNetworkPolicy.wifiOnly =>
-                    context.t.settings.download.network.wifi_only,
-                  DownloadNetworkPolicy.askOnMobileData =>
-                    context.t.settings.download.network.ask_on_mobile_data,
-                };
-
-                if (value != DownloadNetworkPolicy.wifiOnly ||
-                    wifiDownloadConstraintSupported) {
-                  return Text(label);
-                }
-
-                return Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(label),
-                    Text(
-                      context.t.generic.requirement.android.version_or_later(
-                        version: AndroidVersions.android9.release,
-                      ),
-                      style: Theme.of(context).textTheme.labelSmall,
-                    ),
-                  ],
-                );
-              },
-            ),
+              );
+            },
           ),
           const SizedBox(height: 4),
         ],
-        SettingAnchor(
-          id: SettingsIndex.downloads.notifications.id,
-          child: KurumiSwitchListTile(
-            title: Text(
-              SettingsIndex.downloads.notifications.title(context),
-            ),
-            value: settings.downloadNotificationsEnabled,
-            onChanged: (value) async {
-              await notifer.updateSettings(
-                settings.copyWith(downloadNotificationsEnabled: value),
-              );
-            },
-          ),
+        KurumiSwitchListTile(
+          title: Text(context.t.bulk_downloads.options.enable_notification),
+          value: settings.downloadNotificationsEnabled,
+          onChanged: (value) async {
+            await notifer.updateSettings(
+              settings.copyWith(downloadNotificationsEnabled: value),
+            );
+          },
         ),
         const SizedBox(height: 4),
-        SettingAnchor(
-          id: SettingsIndex.downloads.skipExistingFiles.id,
-          child: KurumiSwitchListTile(
-            title: Text(
-              SettingsIndex.downloads.skipExistingFiles.title(context),
-            ),
-            subtitle: Text(
-              context.t.settings.download.skip_existing_files_explanation,
-            ),
-            value: settings.downloadFileExistedBehavior.skipDownloadIfExists,
-            onChanged: (value) async {
-              await notifer.updateSettings(
-                settings.copyWith(
-                  downloadFileExistedBehavior: value
-                      ? DownloadFileExistedBehavior.skip
-                      : DownloadFileExistedBehavior.appDecide,
-                ),
-              );
-            },
+        KurumiSwitchListTile(
+          title: Text(context.t.settings.download.skip_existing_files),
+          subtitle: Text(
+            context.t.settings.download.skip_existing_files_explanation,
           ),
+          value: settings.downloadFileExistedBehavior.skipDownloadIfExists,
+          onChanged: (value) async {
+            await notifer.updateSettings(
+              settings.copyWith(
+                downloadFileExistedBehavior: value
+                    ? DownloadFileExistedBehavior.skip
+                    : DownloadFileExistedBehavior.appDecide,
+              ),
+            );
+          },
         ),
         SidecarFormatTile(
           value: settings.downloadSidecarFormat,

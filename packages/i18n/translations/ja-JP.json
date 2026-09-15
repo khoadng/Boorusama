@@ -878,15 +878,5 @@
   "misc": {
     "trailing_more": " もっと",
     "trailing_less": " 少なく"
-  },
-  "settings_search": {
-    "title": "設定を検索",
-    "select_setting": "設定を選択して表示",
-    "overridden": "$profileにより上書き",
-    "custom_location": "カスタム保存先",
-    "app_folder": "アプリのダウンロードフォルダを使用",
-    "enable_profile": "変更するにはプロファイル固有の設定を有効にしてください",
-    "profile_icon": "プロファイルアイコン",
-    "thumbnail_actions": "サムネイル操作"
   }
 }

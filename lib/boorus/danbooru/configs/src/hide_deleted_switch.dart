@@ -9,8 +9,6 @@ import '../../../../core/configs/config/types.dart';
 import '../../../../core/configs/create/providers.dart';
 import '../../../../core/configs/search/widgets.dart';
 import '../../../../core/configs/viewer/widgets.dart';
-import '../../../../core/settings/data.dart';
-import '../../../../core/settings/widgets.dart';
 import '../../posts/post/types.dart';
 
 class DanbooruHideDeletedSwitch extends ConsumerWidget {
@@ -54,19 +52,13 @@ class DanbooruHideBannedSwitch extends ConsumerWidget {
       ),
     );
 
-    return SettingAnchor(
-      id: SettingsIndex.profileSearch.hideBanned.id,
-      child: KurumiSwitchListTile(
-        contentPadding: EdgeInsets.zero,
-        title: Text(
-          SettingsIndex.profileSearch.hideBanned.title(context),
-        ),
-        value: bannedVis.isHidden,
-        onChanged: (value) =>
-            ref.editNotifier.updateBannedPostVisibility(value),
-        subtitle: Text(
-          context.t.booru.hide_banned_description,
-        ),
+    return KurumiSwitchListTile(
+      contentPadding: EdgeInsets.zero,
+      title: Text(context.t.booru.hide_banned_label),
+      value: bannedVis.isHidden,
+      onChanged: (value) => ref.editNotifier.updateBannedPostVisibility(value),
+      subtitle: Text(
+        context.t.booru.hide_banned_description,
       ),
     );
   }

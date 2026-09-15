@@ -5,8 +5,6 @@ import 'package:kurumi/kurumi.dart';
 import 'package:kurumi/material.dart';
 
 // Project imports:
-import '../../../../settings/data.dart';
-import '../../../../settings/widgets.dart';
 import '../../../config/types.dart';
 import '../../../create/providers.dart';
 
@@ -21,21 +19,16 @@ class ProxyHostInput extends ConsumerWidget {
       ).select((value) => value.proxySettingsTyped),
     );
 
-    return SettingAnchor(
-      id: SettingsIndex.network.proxyHost.id,
-      child: KurumiTextFormField(
-        initialValue: proxySettings?.host,
-        onChanged: (value) {
-          ref.editNotifier.updateProxySettings(
-            proxySettings?.copyWith(host: value),
-          );
-        },
-        decoration: InputDecoration(
-          labelText: SettingsIndex.network.proxyHost.title(
-            context,
-          ),
-          hintText: context.t.booru.network.proxy.host_or_ip_hint,
-        ),
+    return KurumiTextFormField(
+      initialValue: proxySettings?.host,
+      onChanged: (value) {
+        ref.editNotifier.updateProxySettings(
+          proxySettings?.copyWith(host: value),
+        );
+      },
+      decoration: InputDecoration(
+        labelText: context.t.booru.network.proxy.host_or_ip,
+        hintText: context.t.booru.network.proxy.host_or_ip_hint,
       ),
     );
   }

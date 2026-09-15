@@ -1123,15 +1123,5 @@
   "misc": {
     "trailing_more": " mehr",
     "trailing_less": " weniger"
-  },
-  "settings_search": {
-    "title": "Einstellungen suchen",
-    "select_setting": "Eine Einstellung zum Anzeigen auswählen",
-    "overridden": "Durch $profile überschrieben",
-    "custom_location": "Benutzerdefinierter Speicherort",
-    "app_folder": "Verwendet den Downloadordner der App",
-    "enable_profile": "Zum Ändern profilspezifische Einstellungen aktivieren",
-    "profile_icon": "Profilsymbol",
-    "thumbnail_actions": "Vorschaubildaktionen"
   }
 }

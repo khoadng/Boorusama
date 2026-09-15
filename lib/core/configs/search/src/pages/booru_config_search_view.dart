@@ -7,8 +7,6 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../../../../search/search/routes.dart';
-import '../../../../settings/data.dart';
-import '../../../../settings/widgets.dart';
 import '../../../config/types.dart';
 import '../../../create/providers.dart';
 import '../../../create/widgets.dart';
@@ -30,18 +28,18 @@ class DefaultBooruConfigSearchView extends ConsumerWidget {
     final config = ref.watch(initialBooruConfigProvider);
 
     return BooruConfigSearchView(
-      config: config.auth,
       hasRatingFilter: hasRatingFilter,
+      config: config.auth,
     );
   }
 }
 
 class BooruConfigSearchView extends ConsumerWidget {
   const BooruConfigSearchView({
+    required this.hasRatingFilter,
     required this.config,
     super.key,
     this.extras,
-    this.hasRatingFilter = false,
   });
 
   final bool hasRatingFilter;
@@ -78,14 +76,11 @@ class BooruConfigSearchView extends ConsumerWidget {
           Row(
             children: [
               Flexible(
-                child: SettingAnchor(
-                  id: SettingsIndex.profileSearch.includeTags.id,
-                  child: Text(
-                    SettingsIndex.profileSearch.includeTags.title(context),
-                    style: TextStyle(
-                      color: colorScheme.onSurface.withValues(alpha: 0.8),
-                      fontSize: 13,
-                    ),
+                child: Text(
+                  context.t.booru.search.include_in_search,
+                  style: TextStyle(
+                    color: colorScheme.onSurface.withValues(alpha: 0.8),
+                    fontSize: 13,
                   ),
                 ),
               ),
@@ -104,14 +99,11 @@ class BooruConfigSearchView extends ConsumerWidget {
           Row(
             children: [
               Flexible(
-                child: SettingAnchor(
-                  id: SettingsIndex.profileSearch.excludeTags.id,
-                  child: Text(
-                    SettingsIndex.profileSearch.excludeTags.title(context),
-                    style: TextStyle(
-                      color: colorScheme.onSurface.withValues(alpha: 0.8),
-                      fontSize: 13,
-                    ),
+                child: Text(
+                  context.t.booru.search.exclude_from_search,
+                  style: TextStyle(
+                    color: colorScheme.onSurface.withValues(alpha: 0.8),
+                    fontSize: 13,
                   ),
                 ),
               ),
