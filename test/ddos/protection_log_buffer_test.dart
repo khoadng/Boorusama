@@ -16,6 +16,7 @@ import 'package:boorusama/core/ddos/solver/types.dart';
 import 'package:boorusama/core/debug/data.dart';
 import 'package:boorusama/core/debug/types.dart';
 import 'package:boorusama/core/http/client/src/interceptors/dio_protection_interceptor.dart';
+
 import 'protection_solver_test.dart' show FakeCookieJar, FakeUserAgentProvider;
 
 void main() {

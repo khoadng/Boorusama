@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:boorusama/core/bulk_downloads/providers.dart';
 import 'package:boorusama/core/bulk_downloads/types.dart';
 import 'package:boorusama/foundation/networking/network_provider.dart';
+
 import 'support/download_activity_scope_harness.dart';
 
 void main() {

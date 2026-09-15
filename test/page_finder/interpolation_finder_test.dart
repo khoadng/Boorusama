@@ -4,6 +4,7 @@ import 'package:test/test.dart';
 // Project imports:
 import 'package:boorusama/core/posts/position/src/types/interpolation_finder.dart';
 import 'package:boorusama/core/posts/position/types.dart';
+
 import 'common_test_cases.dart';
 import 'mock_repository.dart';
 

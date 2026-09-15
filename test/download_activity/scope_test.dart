@@ -7,6 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 // Project imports:
 import 'package:boorusama/core/download_activity/activity.dart';
 import 'package:boorusama/core/downloads/downloader/types.dart';
+
 import 'support/download_activity_scope_harness.dart';
 
 void main() {

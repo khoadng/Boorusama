@@ -1,5 +1,7 @@
-// Package imports:
+// Flutter imports:
 import 'package:flutter/services.dart';
+
+// Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:foundation/foundation.dart';
@@ -31,8 +33,8 @@ import '../types/settings_navigation_state.dart';
 import '../widgets/settings_page_scaffold.dart';
 import 'about_page.dart';
 import 'accessibility_page.dart';
-import 'appearance/appearance_page.dart';
 import 'app_lock_settings_page.dart';
+import 'appearance/appearance_page.dart';
 import 'backup_and_restore_page.dart';
 import 'data_and_storage_page.dart';
 import 'download_page.dart';

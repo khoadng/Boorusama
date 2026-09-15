@@ -2,8 +2,8 @@
 import 'package:flutter/gestures.dart';
 
 // Package imports:
-import 'package:foundation/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foundation/foundation.dart';
 import 'package:i18n/i18n.dart';
 import 'package:kurumi/kurumi.dart';
 import 'package:kurumi/material.dart';
@@ -16,9 +16,9 @@ import '../../../configs/config/widgets.dart';
 import '../../../configs/create/routes.dart';
 import '../../../configs/manage/providers.dart';
 import '../../../downloads/configs/widgets.dart';
-import '../../../downloads/sidecar/widgets.dart';
 import '../../../downloads/downloader/providers.dart';
 import '../../../downloads/downloader/types.dart';
+import '../../../downloads/sidecar/widgets.dart';
 import '../../widgets.dart';
 import '../providers/settings_notifier.dart';
 import '../providers/settings_provider.dart';

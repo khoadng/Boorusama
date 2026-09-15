@@ -20,6 +20,7 @@ import 'package:boorusama/core/settings/src/types/settings_repository.dart';
 import 'package:boorusama/core/tracking/providers.dart';
 import 'package:boorusama/core/tracking/types.dart';
 import 'package:boorusama/foundation/loggers.dart';
+
 import 'riverpod_test_utils.dart';
 
 class InMemoryBooruConfigRepository implements BooruConfigRepository {

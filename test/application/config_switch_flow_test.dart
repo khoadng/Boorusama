@@ -8,6 +8,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:boorusama/core/home/types.dart';
 import 'package:boorusama/core/posts/listing/widgets.dart';
 import 'package:boorusama/core/settings/types.dart';
+
 import 'support/fake_booru_backend.dart';
 import 'support/headless_app_harness.dart';
 

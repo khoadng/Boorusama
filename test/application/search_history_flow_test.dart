@@ -8,6 +8,7 @@ import 'package:kurumi/kurumi.dart';
 // Project imports:
 import 'package:boorusama/core/home/src/widgets/home_search_bar.dart';
 import 'package:boorusama/core/search/search/src/widgets/search_button.dart';
+
 import '../support/fakes/memory_repositories.dart';
 import 'support/fake_booru_backend.dart';
 import 'support/headless_app_harness.dart';

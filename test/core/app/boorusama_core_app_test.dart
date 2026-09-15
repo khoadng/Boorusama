@@ -11,6 +11,7 @@ import 'package:boorusama/core/widgets/reboot.dart';
 import 'package:boorusama/foundation/applock/src/app_lock_capabilities.dart';
 import 'package:boorusama/foundation/networking/network_provider.dart';
 import 'package:boorusama/foundation/platform.dart';
+
 import '../../riverpod_test_utils.dart';
 import '../../support/boorusama_test_app.dart';
 import '../../support/boorusama_test_runtime.dart';

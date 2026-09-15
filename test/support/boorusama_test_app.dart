@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:boorusama/core/app.dart';
 import 'package:boorusama/core/app_scope.dart';
 import 'package:boorusama/core/bootstrap/boorusama_runtime.dart';
+
 import 'boorusama_test_runtime.dart';
 
 Future<void> pumpBoorusamaCoreApp(

@@ -15,6 +15,7 @@ import 'package:boorusama/core/downloads/sidecar/types.dart';
 import 'package:boorusama/core/search/selected_tags/types.dart';
 import 'package:boorusama/core/settings/types.dart';
 import 'package:boorusama/foundation/info/device_info.dart';
+
 import 'common.dart';
 
 void main() {

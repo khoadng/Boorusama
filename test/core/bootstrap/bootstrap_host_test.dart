@@ -11,6 +11,7 @@ import 'package:boorusama/core/bootstrap/boorusama_bootstrap.dart';
 import 'package:boorusama/core/bootstrap/boorusama_runtime.dart';
 import 'package:boorusama/core/bootstrap/bootstrap_host.dart';
 import 'package:boorusama/foundation/boot/crash_report_writer.dart';
+
 import '../../support/boorusama_test_runtime.dart';
 
 void main() {

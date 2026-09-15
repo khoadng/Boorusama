@@ -9,6 +9,7 @@ import 'package:boorusama/core/bulk_downloads/src/providers/bulk_download_notifi
 import 'package:boorusama/core/bulk_downloads/src/types/download_record.dart';
 import 'package:boorusama/core/bulk_downloads/src/types/download_session.dart';
 import 'package:boorusama/core/bulk_downloads/src/types/saved_download_task.dart';
+
 import 'common.dart';
 
 final _options = DownloadTestConstants.defaultOptions;

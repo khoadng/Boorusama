@@ -13,6 +13,7 @@ import 'package:boorusama/core/app_scope.dart';
 import 'package:boorusama/core/bootstrap/boorusama_runtime.dart';
 import 'package:boorusama/core/posts/details/widgets.dart';
 import 'package:boorusama/core/posts/listing/widgets.dart';
+
 import 'fake_booru_backend.dart';
 
 final class HeadlessAppHarness {

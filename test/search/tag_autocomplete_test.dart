@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 // Project imports:
 import 'package:boorusama/core/tags/autocompletes/types.dart';
 import 'package:boorusama/core/tags/metatag/types.dart';
+
 import 'common.dart';
 
 final _defaultExtractor = DefaultMetatagExtractor(

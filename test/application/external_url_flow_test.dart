@@ -9,6 +9,7 @@ import 'package:boorusama/core/app_scope.dart';
 import 'package:boorusama/core/config_widgets/website_logo.dart';
 import 'package:boorusama/core/posts/details_parts/src/source_section.dart';
 import 'package:boorusama/core/posts/sources/types.dart';
+
 import '../support/boorusama_test_runtime.dart';
 import 'support/fake_booru_backend.dart';
 import 'support/headless_app_harness.dart';

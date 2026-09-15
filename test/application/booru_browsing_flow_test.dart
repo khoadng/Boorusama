@@ -12,6 +12,7 @@ import 'package:boorusama/core/posts/listing/widgets.dart';
 import 'package:boorusama/core/search/search/src/widgets/search_app_bar.dart';
 import 'package:boorusama/core/search/search/src/widgets/search_button.dart';
 import 'package:boorusama/core/search/search/widgets.dart';
+
 import 'support/fake_booru_backend.dart';
 import 'support/headless_app_harness.dart';
 
