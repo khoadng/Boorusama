@@ -8,6 +8,9 @@
 
 let
   inherit (pkgs) lib stdenv;
+  # The wrapped SDK overlays Nix-provided engine artifacts onto Flutter's
+  # otherwise immutable source tree.
+  flutterRoot = flutter;
 
   workspaceDart = pkgs.writeShellScriptBin "boorusama-dart" ''
     if [[ "$PWD" != */packages/boorusama_cli && "''${1:-}" == run ]]; then
@@ -44,9 +47,73 @@ let
     exec ${flutter}/bin/dart "$@"
   '';
 
-  versionLine = lib.findFirst (
-    line: lib.hasPrefix "version:" line
-  ) (throw "version is missing from pubspec.yaml") (lib.splitString "\n" (builtins.readFile (src + "/pubspec.yaml")));
+  flutterToolsSnapshot =
+    pkgs.runCommand "boorusama-flutter-tools.snapshot"
+      {
+        nativeBuildInputs = with pkgs; [
+          git
+          jq
+          which
+        ];
+      }
+      ''
+        package_config="$NIX_BUILD_TOP/package_config.json"
+        hooks_runner="$NIX_BUILD_TOP/hooks_runner"
+        flutter_tools="$NIX_BUILD_TOP/flutter_tools"
+        cp ${flutterRoot}/packages/flutter_tools/.dart_tool/package_config.json "$package_config"
+        cp -RL ${flutterRoot}/packages/flutter_tools "$flutter_tools"
+        chmod -R u+w "$flutter_tools"
+        hooks_runner_source="$(jq -r '.packages[] | select(.name == "hooks_runner") | .rootUri' "$package_config")"
+        hooks_runner_source="''${hooks_runner_source#file://}"
+        hooks_runner_source="''${hooks_runner_source%/.}"
+        cp -R "$hooks_runner_source" "$hooks_runner"
+        chmod -R u+w "$hooks_runner"
+
+        substituteInPlace "$hooks_runner/lib/src/dependencies_hash_file/dependencies_hash_file.dart" \
+          --replace-fail \
+            ".isAfter(fileSystemValidBeforeLastModified)) {" \
+            ".isAfter(fileSystemValidBeforeLastModified) &&
+              !uri.toFilePath(windows: false).startsWith('/nix/store/')) {"
+
+        # Match nixpkgs' flutter-tools build: the engine artifacts are already
+        # supplied by the wrapped SDK and must never be downloaded during a build.
+        substituteInPlace "$flutter_tools/lib/src/flutter_cache.dart" \
+          --replace-fail "registerArtifact(FlutterEngineStamp(this, logger));" ""
+
+        jq \
+          --arg hooksRunner "file://$hooks_runner/." \
+          --arg flutterTools "file://$flutter_tools" \
+          '(.packages[] | select(.name == "hooks_runner") | .rootUri) = $hooksRunner
+           | (.packages[] | select(.name == "flutter_tools") | .rootUri) = $flutterTools' \
+          "$package_config" > "$package_config.tmp"
+        mv "$package_config.tmp" "$package_config"
+
+        mkdir -p "$out"
+        export HOME="$NIX_BUILD_TOP/home"
+        export FLUTTER_ALREADY_LOCKED=true
+        mkdir -p "$HOME"
+        ${flutterRoot}/bin/cache/dart-sdk/bin/dart \
+          --snapshot="$out/flutter_tools.snapshot" \
+          --snapshot-kind=app-jit \
+          --packages="$package_config" \
+          --define=NIX_FLUTTER_HOST_PLATFORM=${stdenv.hostPlatform.system} \
+          --no-enable-mirrors \
+          "$flutter_tools/bin/flutter_tools.dart" \
+          > /dev/null
+      '';
+
+  workspaceFlutter = pkgs.writeShellScriptBin "boorusama-flutter" ''
+    export FLUTTER_ROOT=${flutterRoot}
+    export FLUTTER_ALREADY_LOCKED=true
+    exec ${flutterRoot}/bin/cache/dart-sdk/bin/dart \
+      --disable-dart-dev \
+      --packages=${flutterRoot}/packages/flutter_tools/.dart_tool/package_config.json \
+      ${flutterToolsSnapshot}/flutter_tools.snapshot "$@"
+  '';
+
+  versionLine =
+    lib.findFirst (line: lib.hasPrefix "version:" line) (throw "version is missing from pubspec.yaml")
+      (lib.splitString "\n" (builtins.readFile (src + "/pubspec.yaml")));
   version = lib.trim (lib.removePrefix "version:" versionLine);
   pubspecLock = lib.importJSON ./pubspec.lock.json;
   gitHashes = lib.importJSON ./git-hashes.json;
@@ -105,7 +172,12 @@ let
       postPatch ? "",
     }:
     stdenv.mkDerivation {
-      inherit pname version src postPatch;
+      inherit
+        pname
+        version
+        src
+        postPatch
+        ;
       inherit (src) passthru;
       dontConfigure = true;
       dontBuild = true;
@@ -154,26 +226,26 @@ flutter.buildFlutterApplication {
         pname = "native-toolchain-rust";
         inherit version src;
         postPatch = ''
-          sed -i "/logger.info('Running cargo build');/,/environment: {/ {
-            s/processRunner.invokeRustup(/processRunner.invoke('cargo',/
-            /^[[:space:]]*'run',[[:space:]]*$/d
-            /^[[:space:]]*toolchainChannel,[[:space:]]*$/d
-            /^[[:space:]]*'cargo',[[:space:]]*$/d
-            /environment: {/a\        'CARGO_HOME': Platform.environment['HOME']! + '/.cargo',
-            /environment: {/a\        'CARGO_NET_OFFLINE': 'true',
-          }" native_toolchain_rust/lib/src/build_runner.dart
-          substituteInPlace native_toolchain_rust/lib/src/build_runner.dart \
-            --replace-fail "processRunner.invokeRustup([" "processRunner.invoke('rustc', [" \
-            --replace-fail "'show'," "'--version'," \
-            --replace-fail "'active-toolchain'," ""
-          test "$(grep -c "processRunner.invoke('cargo'," native_toolchain_rust/lib/src/build_runner.dart)" -eq 1
-          test "$(grep -c "processRunner.invoke('rustc'," native_toolchain_rust/lib/src/build_runner.dart)" -eq 1
-          ! grep -q "invokeRustup" native_toolchain_rust/lib/src/build_runner.dart
-          substituteInPlace native_toolchain_rust/lib/src/process_runner.dart \
-            --replace-fail "if (result.exitCode != 0) {" \
-              "if (result.exitCode != 0) {
-        stderr.write(result.stderr);
-        stdout.write(result.stdout);"
+            sed -i "/logger.info('Running cargo build');/,/environment: {/ {
+              s/processRunner.invokeRustup(/processRunner.invoke('cargo',/
+              /^[[:space:]]*'run',[[:space:]]*$/d
+              /^[[:space:]]*toolchainChannel,[[:space:]]*$/d
+              /^[[:space:]]*'cargo',[[:space:]]*$/d
+              /environment: {/a\        'CARGO_HOME': Platform.environment['HOME']! + '/.cargo',
+              /environment: {/a\        'CARGO_NET_OFFLINE': 'true',
+            }" native_toolchain_rust/lib/src/build_runner.dart
+            substituteInPlace native_toolchain_rust/lib/src/build_runner.dart \
+              --replace-fail "processRunner.invokeRustup([" "processRunner.invoke('rustc', [" \
+              --replace-fail "'show'," "'--version'," \
+              --replace-fail "'active-toolchain'," ""
+            test "$(grep -c "processRunner.invoke('cargo'," native_toolchain_rust/lib/src/build_runner.dart)" -eq 1
+            test "$(grep -c "processRunner.invoke('rustc'," native_toolchain_rust/lib/src/build_runner.dart)" -eq 1
+            ! grep -q "invokeRustup" native_toolchain_rust/lib/src/build_runner.dart
+            substituteInPlace native_toolchain_rust/lib/src/process_runner.dart \
+              --replace-fail "if (result.exitCode != 0) {" \
+                "if (result.exitCode != 0) {
+          stderr.write(result.stderr);
+          stdout.write(result.stdout);"
         '';
       };
   };
@@ -261,6 +333,7 @@ flutter.buildFlutterApplication {
   '';
 
   BOORUSAMA_USE_FVM = "false";
+  BOORUSAMA_FLUTTER = "${workspaceFlutter}/bin/boorusama-flutter";
   BOORUSAMA_DART = "${workspaceDart}/bin/boorusama-dart";
   BOORUSAMA_GIT_COMMIT = gitCommit;
   BOORUSAMA_GIT_BRANCH = gitBranch;
