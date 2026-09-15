@@ -3,7 +3,6 @@
 - Add an option to download only over Wi-Fi
 - Add optional metadata files alongside downloads
 - Support up to two quick actions on post thumbnails
-- Settings are now searchable
 - Add per-profile media host overrides
 - Improve favorite tag and label management
 - [Anime-Pictures] Add bulk download support
