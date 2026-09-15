@@ -11,12 +11,14 @@ import '../error_monitor.dart';
 import '../info/device_info.dart';
 import 'crash_report_writer.dart';
 import 'file_system_crash_report_writer.dart';
+import 'runtime_error_widget.dart';
 
 Future<void> failsafe({
   required Object error,
   required StackTrace stackTrace,
   required String logs,
 }) async {
+  initializeRuntimeErrorWidget();
   final deviceInfo = await DeviceInfoService(
     plugin: DeviceInfoPlugin(),
   ).getDeviceInfo();

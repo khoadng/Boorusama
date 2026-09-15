@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import '../../../foundation/platform.dart';
 import '../../../foundation/webview_user_agent.dart';
 import '../../debug/providers.dart';
 import '../../http/cookies/providers.dart';
@@ -18,6 +19,8 @@ final httpDdosProtectionBypassProvider = Provider<HttpProtectionHandler>(
   (ref) {
     final cookieJar = ref.watch(cookieJarProvider);
     final recorder = ref.watch(protectionLogRecorderProvider);
+    final platform = ref.watch(appPlatformProvider);
+    final supportsEmbeddedWebView = platform.supportsEmbeddedWebView;
     BuildContext? contextProvider() {
       final key = ref.read(appNavigationProvider).navigatorKey;
       final context = key.currentContext ?? key.currentState?.context;
@@ -28,38 +31,42 @@ final httpDdosProtectionBypassProvider = Provider<HttpProtectionHandler>(
     return HttpProtectionHandler(
       onEvent: recorder.record,
       orchestrator: ProtectionOrchestrator(
-        userAgentProvider: WebViewUserAgentProvider(
-          service: ref.watch(webViewUserAgentServiceProvider),
-          onUserAgent: (ua) {
-            final engine =
-                RegExp(
-                  '(?:Chrome|AppleWebKit)/[0-9.]+',
-                ).firstMatch(ua ?? '')?.group(0) ??
-                'unknown';
-            ref.read(appLoggerProvider).updateReportContext({
-              'webViewEngineFromUserAgent': engine,
-            });
-          },
-        ),
+        userAgentProvider: supportsEmbeddedWebView
+            ? WebViewUserAgentProvider(
+                service: ref.watch(webViewUserAgentServiceProvider),
+                onUserAgent: (ua) {
+                  final engine =
+                      RegExp(
+                        '(?:Chrome|AppleWebKit)/[0-9.]+',
+                      ).firstMatch(ua ?? '')?.group(0) ??
+                      'unknown';
+                  ref.read(appLoggerProvider).updateReportContext({
+                    'webViewEngineFromUserAgent': engine,
+                  });
+                },
+              )
+            : const UnavailableUserAgentProvider(),
         detectors: [
           CloudflareDetector(),
           AftDetector(),
           CaptchaAccessDeniedDetector(),
         ],
-        solvers: [
-          CloudflareSolver(
-            contextProvider: contextProvider,
-            cookieJar: cookieJar,
-          ),
-          AftSolver(
-            contextProvider: contextProvider,
-            cookieJar: cookieJar,
-          ),
-          CaptchaAccessDeniedSolver(
-            contextProvider: contextProvider,
-            cookieJar: cookieJar,
-          ),
-        ],
+        solvers: supportsEmbeddedWebView
+            ? [
+                CloudflareSolver(
+                  contextProvider: contextProvider,
+                  cookieJar: cookieJar,
+                ),
+                AftSolver(
+                  contextProvider: contextProvider,
+                  cookieJar: cookieJar,
+                ),
+                CaptchaAccessDeniedSolver(
+                  contextProvider: contextProvider,
+                  cookieJar: cookieJar,
+                ),
+              ]
+            : const [],
       ),
       contextProvider: contextProvider,
       cookieJar: cookieJar,

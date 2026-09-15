@@ -6,6 +6,7 @@ import 'package:kurumi/material.dart';
 import '../../foundation/boot/crash_report_writer.dart';
 import '../../foundation/boot/failsafe.dart';
 import '../../foundation/boot/file_system_crash_report_writer.dart';
+import '../../foundation/boot/runtime_error_widget.dart';
 import '../../foundation/info/device_info.dart';
 import '../app.dart';
 import '../app_external_effects.dart';
@@ -35,6 +36,7 @@ class _BoorusamaBootstrapHostState extends State<BoorusamaBootstrapHost> {
   @override
   void initState() {
     super.initState();
+    initializeRuntimeErrorWidget();
     _runtimeFuture = widget.bootstrap.initialize();
   }
 

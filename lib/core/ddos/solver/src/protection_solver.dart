@@ -492,10 +492,12 @@ class CloudflareSolver implements ProtectionSolver {
   final ContextProvider contextProvider;
   final LazyAsync<CookieJar> cookieJar;
 
-  late final _solver = RawSolver(
+  RawSolver? _solver;
+
+  RawSolver get _solverInstance => _solver ??= RawSolver(
     contextProvider: contextProvider,
     cookieJar: cookieJar,
-    protectionType: 'cloudflare',
+    protectionType: protectionType,
     protectionTitle: 'Solving Cloudflare Challenge',
     autoCookieValidator: (cookie) =>
         cookie.name.toLowerCase() == 'cf_clearance',
@@ -503,24 +505,24 @@ class CloudflareSolver implements ProtectionSolver {
   );
 
   @override
-  String get protectionType => _solver.protectionType;
+  String get protectionType => 'cloudflare';
 
   @override
-  bool get isSolving => _solver.isSolving;
+  bool get isSolving => _solver?.isSolving ?? false;
 
   @override
   Future<bool> solve({
     required Uri uri,
     String? userAgent,
     ProtectionSession? diagnostics,
-  }) => _solver.solve(
+  }) => _solverInstance.solve(
     uri: uri,
     userAgent: userAgent,
     diagnostics: diagnostics,
   );
 
   @override
-  Future<void> cancel() => _solver.cancel();
+  Future<void> cancel() => _solver?.cancel() ?? Future.value();
 }
 
 class AftSolver implements ProtectionSolver {
@@ -532,10 +534,12 @@ class AftSolver implements ProtectionSolver {
   final ContextProvider contextProvider;
   final LazyAsync<CookieJar> cookieJar;
 
-  late final _solver = RawSolver(
+  RawSolver? _solver;
+
+  RawSolver get _solverInstance => _solver ??= RawSolver(
     contextProvider: contextProvider,
     cookieJar: cookieJar,
-    protectionType: 'aft',
+    protectionType: protectionType,
     protectionTitle: 'Solving verification challenge',
     autoCookieValidator: (cookie) {
       final cookieName = cookie.name.toLowerCase();
@@ -548,24 +552,24 @@ class AftSolver implements ProtectionSolver {
   );
 
   @override
-  String get protectionType => _solver.protectionType;
+  String get protectionType => 'aft';
 
   @override
-  bool get isSolving => _solver.isSolving;
+  bool get isSolving => _solver?.isSolving ?? false;
 
   @override
   Future<bool> solve({
     required Uri uri,
     String? userAgent,
     ProtectionSession? diagnostics,
-  }) => _solver.solve(
+  }) => _solverInstance.solve(
     uri: uri,
     userAgent: userAgent,
     diagnostics: diagnostics,
   );
 
   @override
-  Future<void> cancel() => _solver.cancel();
+  Future<void> cancel() => _solver?.cancel() ?? Future.value();
 }
 
 Future<String> _getPageSource(WebViewController controller) async {
@@ -630,10 +634,12 @@ class CaptchaAccessDeniedSolver implements ProtectionSolver {
   final ContextProvider contextProvider;
   final LazyAsync<CookieJar> cookieJar;
 
-  late final _solver = RawSolver(
+  RawSolver? _solver;
+
+  RawSolver get _solverInstance => _solver ??= RawSolver(
     contextProvider: contextProvider,
     cookieJar: cookieJar,
-    protectionType: 'captcha_access_denied',
+    protectionType: protectionType,
     protectionTitle: 'Solving CAPTCHA',
     autoCookieValidator: (cookie) {
       final cookieName = cookie.name.toLowerCase();
@@ -643,22 +649,22 @@ class CaptchaAccessDeniedSolver implements ProtectionSolver {
   );
 
   @override
-  String get protectionType => _solver.protectionType;
+  String get protectionType => 'captcha_access_denied';
 
   @override
-  bool get isSolving => _solver.isSolving;
+  bool get isSolving => _solver?.isSolving ?? false;
 
   @override
   Future<bool> solve({
     required Uri uri,
     String? userAgent,
     ProtectionSession? diagnostics,
-  }) => _solver.solve(
+  }) => _solverInstance.solve(
     uri: uri,
     userAgent: userAgent,
     diagnostics: diagnostics,
   );
 
   @override
-  Future<void> cancel() => _solver.cancel();
+  Future<void> cancel() => _solver?.cancel() ?? Future.value();
 }

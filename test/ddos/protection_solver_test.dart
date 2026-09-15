@@ -108,6 +108,35 @@ class FakeHttpError implements HttpError {
 }
 
 void main() {
+  group('solver metadata', () {
+    late LazyAsync<CookieJar> cookieJar;
+
+    setUp(() {
+      cookieJar = LazyAsync(() async => FakeCookieJar());
+    });
+
+    test('does not initialize platform webviews', () async {
+      final solvers = <ProtectionSolver>[
+        CloudflareSolver(contextProvider: () => null, cookieJar: cookieJar),
+        AftSolver(contextProvider: () => null, cookieJar: cookieJar),
+        CaptchaAccessDeniedSolver(
+          contextProvider: () => null,
+          cookieJar: cookieJar,
+        ),
+      ];
+
+      expect(
+        solvers.map((solver) => solver.protectionType),
+        ['cloudflare', 'aft', 'captcha_access_denied'],
+      );
+      expect(solvers.every((solver) => !solver.isSolving), isTrue);
+
+      for (final solver in solvers) {
+        await solver.cancel();
+      }
+    });
+  });
+
   group('waitForAutoSolve', () {
     late FakeCookieRetriever cookieRetriever;
     late FakeCookieJar cookieJar;

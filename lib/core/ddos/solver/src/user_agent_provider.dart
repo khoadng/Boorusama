@@ -5,6 +5,13 @@ abstract class UserAgentProvider {
   Future<String?> getUserAgent();
 }
 
+class UnavailableUserAgentProvider implements UserAgentProvider {
+  const UnavailableUserAgentProvider();
+
+  @override
+  Future<String?> getUserAgent() async => null;
+}
+
 class WebViewUserAgentProvider implements UserAgentProvider {
   WebViewUserAgentProvider({
     required this.service,
