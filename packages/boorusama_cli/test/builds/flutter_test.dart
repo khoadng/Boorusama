@@ -16,7 +16,22 @@ import 'package:boorusama_cli/src/tool/toolchain.dart';
 import 'package:test/test.dart';
 
 void main() {
+  late Directory projectRoot;
+
+  setUp(() {
+    projectRoot = Directory.systemTemp.createTempSync('flutter-build-test-');
+  });
+
+  tearDown(() {
+    if (projectRoot.existsSync()) {
+      projectRoot.deleteSync(recursive: true);
+    }
+  });
+
   test('retries when a native-asset input changes', () async {
+    final failedOutput = Directory('${projectRoot.path}/build/linux')
+      ..createSync(recursive: true);
+    File('${failedOutput.path}/partial-output').writeAsStringSync('partial');
     final processRunner = _FailingProcessRunner(
       const ProcessFailure(
         'Flutter build failed.',
@@ -25,9 +40,13 @@ void main() {
       failureCount: 1,
     );
 
-    await Flutter(_tools(processRunner)).build(_project, _plan);
+    await Flutter(_tools(processRunner)).build(
+      _projectAt(projectRoot),
+      _plan,
+    );
 
     expect(processRunner.runCount, 2);
+    expect(failedOutput.existsSync(), isFalse);
   });
 
   test('stops retrying native-asset changes after the retry limit', () async {
@@ -40,7 +59,7 @@ void main() {
     );
 
     await expectLater(
-      Flutter(_tools(processRunner)).build(_project, _plan),
+      Flutter(_tools(processRunner)).build(_projectAt(projectRoot), _plan),
       throwsA(isA<ProcessFailure>()),
     );
     expect(processRunner.runCount, 3);
@@ -53,15 +72,15 @@ void main() {
     );
 
     await expectLater(
-      Flutter(_tools(processRunner)).build(_project, _plan),
+      Flutter(_tools(processRunner)).build(_projectAt(projectRoot), _plan),
       throwsA(isA<ProcessFailure>()),
     );
     expect(processRunner.runCount, 1);
   });
 }
 
-final _project = Project(
-  root: Directory.current,
+Project _projectAt(Directory root) => Project(
+  root: root,
   pubspec: const PubspecInfo(
     name: 'boorusama',
     version: '1.0.0',
