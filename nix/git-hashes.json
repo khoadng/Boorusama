@@ -1,0 +1,17 @@
+{
+  "background_downloader": "sha256-sl1XBniZweyu7a84pR2XdAAABZClOMfy2MFCMyM1KJ0=",
+  "context_menus": "sha256-jW6sqtp6ofZW1ylqRPwrVqt6MiuzVrXYJ3U5gYXYhQk=",
+  "extended_image_library": "sha256-PEnZzJL08BtrcRqEA+9KmbDhIZou2D8YkBn1u4LCNZc=",
+  "flutter_launcher_icons": "sha256-oHQrBjxc9tFshlyGcXU8FdYD8pKFW6O/GDc9r9VZLNU=",
+  "flutter_riverpod": "sha256-cTeAe0652nGK3M2ZsixpQMfJ3ICbH28TFDR15m0xDDk=",
+  "fvp": "sha256-z9u8bQtYWp9vqVWWRk3lh6hXBuVivlHwrI8WnjDvPYU=",
+  "graphql_flutter": "sha256-GBqnOwVhcAUE86m4Vdd7sSJ/OwaDAWTemxK97ksy/3U=",
+  "libavif": "sha256-LV8LnB8f9E5DRcvZyZE8C37qfAGoL3tgh0QABPGHWyE=",
+  "native_toolchain_rust": "sha256-ET65U68pzlE7+Gv6hlKTWVQSKVpWDXYzx0SLAAr4/Ec=",
+  "reorderables": "sha256-01IIyshxRaACOWfa3qaqw6l/l1oUFCbgqU6p5QlloZI=",
+  "riverpod": "sha256-cTeAe0652nGK3M2ZsixpQMfJ3ICbH28TFDR15m0xDDk=",
+  "video_player": "sha256-akbNYpp8mb/6PsV7MuFVro4e4q6i5uNx5lUDPSWdTwY=",
+  "video_player_android": "sha256-akbNYpp8mb/6PsV7MuFVro4e4q6i5uNx5lUDPSWdTwY=",
+  "video_player_platform_interface": "sha256-akbNYpp8mb/6PsV7MuFVro4e4q6i5uNx5lUDPSWdTwY=",
+  "video_player_web": "sha256-akbNYpp8mb/6PsV7MuFVro4e4q6i5uNx5lUDPSWdTwY="
+}

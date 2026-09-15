@@ -1,7 +1,25 @@
+import 'dart:io';
+
 import 'build_options.dart';
 
 final class DartDefines {
   const DartDefines._();
+
+  static DateTime buildTimestamp({
+    Map<String, String>? environment,
+    DateTime Function()? now,
+  }) {
+    final value = (environment ?? Platform.environment)['SOURCE_DATE_EPOCH'];
+    if (value == null || value.isEmpty) return (now ?? DateTime.now)();
+
+    final seconds = int.tryParse(value);
+    if (seconds == null || seconds < 0) {
+      throw FormatException(
+        'SOURCE_DATE_EPOCH must be a non-negative Unix timestamp: $value',
+      );
+    }
+    return DateTime.fromMillisecondsSinceEpoch(seconds * 1000, isUtc: true);
+  }
 
   static List<String> args(Map<String, String> values) {
     return [

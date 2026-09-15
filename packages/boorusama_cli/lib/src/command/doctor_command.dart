@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:args/command_runner.dart';
@@ -12,6 +13,7 @@ import '../io/process_runner.dart';
 import '../project/config.dart';
 import '../project/env.dart';
 import '../project/project.dart';
+import '../tool/flutter_version_policy.dart';
 import '../tool/tool_command.dart';
 import '../tool/tool_resolver.dart';
 import '../tool/tool_runner.dart';
@@ -67,6 +69,8 @@ final class DoctorCommand extends Command<int> {
         root: root,
       );
 
+      final flutterVersionOutput = await tools.flutterOutput(['--version']);
+
       results
         ..add(_CheckResult.ok('Project root', root.path))
         ..add(
@@ -75,12 +79,7 @@ final class DoctorCommand extends Command<int> {
             File('${root.path}/.fvmrc').existsSync() ? '.fvmrc' : 'not present',
           ),
         )
-        ..add(
-          await _toolVersion(
-            'Flutter',
-            () => tools.flutterOutput(['--version']),
-          ),
-        )
+        ..add(_checkFlutterVersion(root, env, flutterVersionOutput))
         ..add(await _toolVersion('Dart', () => tools.dartOutput(['--version'])))
         ..add(await _toolExists('Git', tools, tools.toolchain.git))
         ..add(_checkOutputDir(OutputDir.resolve(root, outputDir)))
@@ -179,6 +178,60 @@ final class DoctorCommand extends Command<int> {
     }
     return _CheckResult.ok(name, output.split('\n').first);
   }
+
+  _CheckResult _checkFlutterVersion(
+    Directory root,
+    Env env,
+    String output,
+  ) {
+    if (output == 'unknown' || output.isEmpty) {
+      return const _CheckResult.error('Flutter', 'not available');
+    }
+
+    final marker = File('${root.path}/.fvmrc');
+    if (!marker.existsSync()) {
+      return _CheckResult.ok('Flutter', output.split('\n').first);
+    }
+
+    final config =
+        jsonDecode(marker.readAsStringSync()) as Map<String, Object?>;
+    final expected = config['flutter'] as String?;
+    if (expected == null || expected.isEmpty) {
+      return const _CheckResult.error(
+        'Flutter',
+        '.fvmrc does not contain a Flutter version',
+      );
+    }
+
+    final sourceBuild = env['BOORUSAMA_USE_FVM'] == 'false';
+    final assessment = FlutterVersionPolicy.assess(
+      expectedVersion: expected,
+      flutterVersionOutput: output,
+      sourceBuild: sourceBuild,
+    );
+    final actual = assessment.actualVersion ?? output.split('\n').first;
+
+    return switch (assessment.compatibility) {
+      FlutterVersionCompatibility.exact => _CheckResult.ok(
+        'Flutter',
+        actual,
+      ),
+      FlutterVersionCompatibility.sourcePatchDifference => _CheckResult.warning(
+        'Flutter',
+        '$actual (source build; official toolchain is $expected)',
+      ),
+      FlutterVersionCompatibility.incompatible => _CheckResult.error(
+        'Flutter',
+        '$actual is unsupported; expected ${sourceBuild ? '${_series(expected)}.x for source builds' : '$expected for official builds'}',
+      ),
+      FlutterVersionCompatibility.unparseable => _CheckResult.error(
+        'Flutter',
+        'could not compare $actual with .fvmrc version $expected',
+      ),
+    };
+  }
+
+  String _series(String version) => version.split('.').take(2).join('.');
 
   Future<_CheckResult> _toolExists(
     String name,

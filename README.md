@@ -74,3 +74,6 @@ Feel free to send me feedback on [Discord](https://discord.gg/tvyYVxjfBr) or [fi
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+
+Linux contributors can use the Nix development environment documented in
+[docs/nix.md](docs/nix.md).
