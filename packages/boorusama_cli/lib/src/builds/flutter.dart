@@ -21,11 +21,21 @@ final class Flutter {
     try {
       await _tools.flutter(args);
     } on ProcessFailure catch (error) {
+      if (_shouldRetryAfterFileModified(error)) {
+        _tools.processRunner.logger.info(
+          'A native-asset input changed during the first build pass. Retrying ${plan.target.flutterTarget} build...',
+        );
+        await _tools.flutter(args);
+        return;
+      }
       if (!_shouldRetryWithUpdatedPods(plan.target, error)) rethrow;
       await _updatePods(project, plan.target);
       await _tools.flutter(args);
     }
   }
+
+  bool _shouldRetryAfterFileModified(ProcessFailure error) =>
+      error.output.contains('File modified during build. Build must be rerun.');
 
   bool _shouldRetryWithUpdatedPods(BuildTarget target, ProcessFailure error) {
     if (target != BuildTarget.dmg && target != BuildTarget.ipa) return false;
