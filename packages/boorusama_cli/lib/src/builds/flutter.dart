@@ -33,7 +33,6 @@ final class Flutter {
           _tools.processRunner.logger.info(
             'A native-asset input changed during build. Retrying ${plan.target.flutterTarget} build ($fileModifiedRetries/$_maxFileModifiedRetries)...',
           );
-          await _discardFailedPlatformBuild(project, plan.target);
           continue;
         }
         if (updatedPods || !_shouldRetryWithUpdatedPods(plan.target, error)) {
@@ -47,27 +46,6 @@ final class Flutter {
 
   bool _shouldRetryAfterFileModified(ProcessFailure error) =>
       error.output.contains('File modified during build. Build must be rerun.');
-
-  Future<void> _discardFailedPlatformBuild(
-    Project project,
-    BuildTarget target,
-  ) async {
-    final directory = Directory(
-      '${project.root.path}/build/${_platformBuildDirectory(target)}',
-    );
-    if (directory.existsSync()) {
-      await directory.delete(recursive: true);
-    }
-  }
-
-  String _platformBuildDirectory(BuildTarget target) => switch (target) {
-    BuildTarget.apk || BuildTarget.aab => 'app',
-    BuildTarget.ipa => 'ios',
-    BuildTarget.dmg => 'macos',
-    BuildTarget.windows => 'windows',
-    BuildTarget.linux || BuildTarget.appimage || BuildTarget.flatpak => 'linux',
-    BuildTarget.web => 'web',
-  };
 
   bool _shouldRetryWithUpdatedPods(BuildTarget target, ProcessFailure error) {
     if (target != BuildTarget.dmg && target != BuildTarget.ipa) return false;
