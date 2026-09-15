@@ -9,6 +9,8 @@ import 'build_target.dart';
 final class Flutter {
   const Flutter(this._tools);
 
+  static const _maxFileModifiedRetries = 2;
+
   final ToolRunner _tools;
 
   Future<void> build(Project project, BuildPlan plan) async {
@@ -18,14 +20,32 @@ final class Flutter {
       ...plan.flutterArgs,
     ];
 
-    try {
-      await _tools.flutter(args);
-    } on ProcessFailure catch (error) {
-      if (!_shouldRetryWithUpdatedPods(plan.target, error)) rethrow;
-      await _updatePods(project, plan.target);
-      await _tools.flutter(args);
+    var fileModifiedRetries = 0;
+    var updatedPods = false;
+    while (true) {
+      try {
+        await _tools.flutter(args);
+        return;
+      } on ProcessFailure catch (error) {
+        if (_shouldRetryAfterFileModified(error) &&
+            fileModifiedRetries < _maxFileModifiedRetries) {
+          fileModifiedRetries++;
+          _tools.processRunner.logger.info(
+            'A native-asset input changed during build. Retrying ${plan.target.flutterTarget} build ($fileModifiedRetries/$_maxFileModifiedRetries)...',
+          );
+          continue;
+        }
+        if (updatedPods || !_shouldRetryWithUpdatedPods(plan.target, error)) {
+          rethrow;
+        }
+        await _updatePods(project, plan.target);
+        updatedPods = true;
+      }
     }
   }
+
+  bool _shouldRetryAfterFileModified(ProcessFailure error) =>
+      error.output.contains('File modified during build. Build must be rerun.');
 
   bool _shouldRetryWithUpdatedPods(BuildTarget target, ProcessFailure error) {
     if (target != BuildTarget.dmg && target != BuildTarget.ipa) return false;

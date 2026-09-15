@@ -324,6 +324,23 @@ flutter.buildFlutterApplication {
 
   desktopItems = [ desktopItem ];
 
+  # Flutter 3.47's Linux engine does not fall back to system fonts when its
+  # default Roboto family is unavailable. Bundle the family so text renders on
+  # minimal NixOS installations and in VMs.
+  postPatch = ''
+    mkdir -p assets/fonts
+    cp ${pkgs.roboto}/share/fonts/truetype/Roboto-Regular.ttf assets/fonts/
+    cp ${pkgs.roboto}/share/fonts/truetype/Roboto-Italic.ttf assets/fonts/
+    cp ${pkgs.roboto}/share/fonts/truetype/Roboto-Medium.ttf assets/fonts/
+    cp ${pkgs.roboto}/share/fonts/truetype/Roboto-MediumItalic.ttf assets/fonts/
+    cp ${pkgs.roboto}/share/fonts/truetype/Roboto-Bold.ttf assets/fonts/
+    cp ${pkgs.roboto}/share/fonts/truetype/Roboto-BoldItalic.ttf assets/fonts/
+    substituteInPlace pubspec.yaml \
+      --replace-fail \
+        "  uses-material-design: true" \
+        $'  uses-material-design: true\n  fonts:\n    - family: Roboto\n      fonts:\n        - asset: assets/fonts/Roboto-Regular.ttf\n        - asset: assets/fonts/Roboto-Italic.ttf\n          style: italic\n        - asset: assets/fonts/Roboto-Medium.ttf\n          weight: 500\n        - asset: assets/fonts/Roboto-MediumItalic.ttf\n          weight: 500\n          style: italic\n        - asset: assets/fonts/Roboto-Bold.ttf\n          weight: 700\n        - asset: assets/fonts/Roboto-BoldItalic.ttf\n          weight: 700\n          style: italic'
+  '';
+
   # CMake and Meson are needed by Flutter's Linux plugins, but the application
   # has no repository-root configure step. Keep the Dart/Flutter setup hooks so
   # Nix installs the generated, immutable package configuration.
