@@ -339,6 +339,21 @@ flutter.buildFlutterApplication {
       --replace-fail \
         "  uses-material-design: true" \
         $'  uses-material-design: true\n  fonts:\n    - family: Roboto\n      fonts:\n        - asset: assets/fonts/Roboto-Regular.ttf\n        - asset: assets/fonts/Roboto-Italic.ttf\n          style: italic\n        - asset: assets/fonts/Roboto-Medium.ttf\n          weight: 500\n        - asset: assets/fonts/Roboto-MediumItalic.ttf\n          weight: 500\n          style: italic\n        - asset: assets/fonts/Roboto-Bold.ttf\n          weight: 700\n        - asset: assets/fonts/Roboto-BoldItalic.ttf\n          weight: 700\n          style: italic'
+
+    # Flutter 3.47 on AArch64 can submit the first frame before bundled fonts
+    # are registered. Since that frame is not invalidated afterward, text then
+    # remains invisible for the process lifetime. Load the Nix-only font assets
+    # before runApp so registration is deterministic.
+    substituteInPlace lib/main_foss.dart \
+      --replace-fail \
+        "import 'package:kurumi/material.dart';" \
+        $'import \'package:flutter/services.dart\';\nimport \'package:kurumi/material.dart\';' \
+      --replace-fail \
+        "void main() {" \
+        "Future<void> main() async {" \
+      --replace-fail \
+        "  WidgetsFlutterBinding.ensureInitialized();" \
+        $'  WidgetsFlutterBinding.ensureInitialized();\n\n  final roboto = FontLoader(\'Roboto\')\n    ..addFont(rootBundle.load(\'assets/fonts/Roboto-Regular.ttf\'))\n    ..addFont(rootBundle.load(\'assets/fonts/Roboto-Italic.ttf\'))\n    ..addFont(rootBundle.load(\'assets/fonts/Roboto-Medium.ttf\'))\n    ..addFont(rootBundle.load(\'assets/fonts/Roboto-MediumItalic.ttf\'))\n    ..addFont(rootBundle.load(\'assets/fonts/Roboto-Bold.ttf\'))\n    ..addFont(rootBundle.load(\'assets/fonts/Roboto-BoldItalic.ttf\'));\n  await roboto.load();'
   '';
 
   # CMake and Meson are needed by Flutter's Linux plugins, but the application

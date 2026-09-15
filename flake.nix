@@ -20,8 +20,6 @@
         );
       expectedFlutterSeries = flutterSeries expectedFlutterVersion;
       supportsFlutter = flutter: flutterSeries flutter.version == expectedFlutterSeries;
-      shortRevision =
-        revision: if revision == "unknown" then revision else builtins.substring 0 7 revision;
       unsupportedFlutterMessage = flutter:
         "Boorusama source builds require Flutter ${expectedFlutterSeries}.x; nixpkgs provides ${flutter.version}";
     in
@@ -38,9 +36,7 @@
           boorusama = assert nixpkgs.lib.assertMsg (supportsFlutter flutter) (unsupportedFlutterMessage flutter); import ./nix/package.nix {
             inherit pkgs flutter;
             src = source;
-            # BuildInfo only exposes the short revision. Embedding the full hash
-            # also corrupts glyph rendering in Flutter 3.47 AArch64 release builds.
-            gitCommit = shortRevision (self.rev or self.dirtyRev or "unknown");
+            gitCommit = self.rev or self.dirtyRev or "unknown";
             gitBranch = "nix";
           };
         in
