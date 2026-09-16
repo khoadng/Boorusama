@@ -34,7 +34,12 @@
     "warning": "Aviso",
     "default": "Padrão",
     "no_content": "Sem conteúdo",
-    "version": "Versão $version"
+    "version": "Versão $version",
+    "requirement": {
+      "android": {
+        "version_or_later": "Requer Android $version ou versão posterior"
+      }
+    }
   },
   "profile": {
     "favorites": "Favoritos",
@@ -455,7 +460,53 @@
       "enable_incognito_keyboard": "Ativar teclado icógnito",
       "enable_incognito_keyboard_notice": "Só afeta Android.",
       "enable_biometric_lock": "Ativar desbloqueio biométrico",
-      "enable_biometric_lock_notice": "Só funciona em dispositivos com função biométrica suportada que foi configurada."
+      "enable_biometric_lock_notice": "Só funciona em dispositivos com função biométrica suportada que foi configurada.",
+      "app_lock": {
+        "title": "Bloquear aplicativo",
+        "description": "Exigir autenticação antes de abrir o aplicativo.",
+        "off": "Desligado",
+        "pin": "PIN",
+        "biometrics": "Biometria",
+        "device_authentication": "Autenticação do dispositivo",
+        "summary": "$type, $timeout",
+        "change_pin": "Alterar PIN",
+        "change_pin_description": "Atualizar o PIN de bloqueio do aplicativo.",
+        "lock_after": "Bloquear depois",
+        "lock_after_description": "Bloquear quando o aplicativo estiver em segundo plano.",
+        "timeout_immediately": "Imediatamente",
+        "timeout_seconds": "$seconds segundos",
+        "timeout_one_minute": "1 minuto",
+        "timeout_minutes": "$minutes minutos",
+        "hide_app_preview": "Ocultar prévia do aplicativo",
+        "hide_app_preview_description": "Desfocar o conteúdo do aplicativo ao sair dele.",
+        "set_pin": "Definir PIN do aplicativo",
+        "create_pin_title": "Criar PIN",
+        "confirm_pin_title": "Confirmar PIN",
+        "choose_four_digit_pin": "Escolha um PIN de 4 dígitos para proteger o aplicativo.",
+        "enter_pin_again": "Digite o PIN novamente.",
+        "enter_your_pin": "Digite seu PIN",
+        "use_device_unlock": "Usar desbloqueio do dispositivo",
+        "enter_current_pin": "Digite o PIN atual",
+        "pin_label": "PIN",
+        "confirm_pin_label": "Confirmar PIN",
+        "pin_too_short": "O PIN deve ter, no mínimo, $length dígitos.",
+        "pin_mismatch": "Os PINs não coincidem.",
+        "unlock": "Desbloquear",
+        "unlock_app": "Desbloquear Boorusama",
+        "incorrect_pin": "PIN incorreto",
+        "try_again_in": "Tente novamente em $seconds segundos.",
+        "incorrect_pin_try_again_in": "PIN incorreto. Tente novamente em $seconds segundos.",
+        "pin_updated": "PIN atualizado.",
+        "biometric_unavailable": "A autenticação do dispositivo não está disponível",
+        "biometric_unavailable_description": "Configure ou restaure a autenticação do dispositivo nas configurações do sistema.",
+        "biometric_failed": "Falha na autenticação do dispositivo",
+        "biometric_failed_description": "Tente novamente após restaurar a autenticação do dispositivo nas configurações do sistema.",
+        "biometric_not_available": "A autenticação do dispositivo não está disponível.",
+        "authenticate_to_use_app": "Por favor, faça a autenticação para usar o aplicativo",
+        "authenticate_reason": "Por favor, faça a autenticação",
+        "locked_title": "Boorusama está bloqueado",
+        "locked_description": "Faça a autenticação para continuar."
+      }
     },
     "performance": {
       "performance": "Desempenho",
@@ -481,7 +532,21 @@
       },
       "title": "Baixar",
       "skip_existing_files": "Pular arquivos existentes",
-      "skip_existing_files_explanation": "Isso impedirá o download de arquivos que já existem na pasta. Isso é útil quando você não deseja baixar o mesmo arquivo várias vezes."
+      "skip_existing_files_explanation": "Isso impedirá o download de arquivos que já existem na pasta. Isso é útil quando você não deseja baixar o mesmo arquivo várias vezes.",
+      "sidecar": {
+        "title": "Salvar metadados",
+        "description": "Salve tags ou informações da publicação junto aos arquivos baixados.",
+        "off": "Desligado",
+        "tags": "Tags (.txt)",
+        "json": "Metadados (.json)"
+      },
+      "network": {
+        "title": "Rede de downloads",
+        "description": "Escolha se os downloads podem usar dados móveis.",
+        "any_network": "Qualquer rede",
+        "wifi_only": "Somente Wi-Fi",
+        "ask_on_mobile_data": "Perguntar ao usar dados móveis"
+      }
     },
     "help_us_translate": "Nos ajude a traduzir",
     "other_settings": "Outras configurações",
@@ -511,7 +576,12 @@
         }
       },
       "error_loading_cache_info": "Erro ao carregar informação do cache",
-      "custom_cache_limit_option": "Personalizado..."
+      "custom_cache_limit_option": "Personalizado...",
+      "cache_locations": {
+        "title": "Locais do cache",
+        "private_storage": "Armazenamento privado do aplicativo. Indisponível em gerenciadores de arquivos.",
+        "open_folder": "Abrir pasta"
+      }
     },
     "backup_and_restore": {
       "backup_and_restore": "Backup e Restauração",
@@ -685,7 +755,8 @@
       "completed": "Completo",
       "failed": "Falhou",
       "canceled": "Cancelado",
-      "unknown": "Desconhecido"
+      "unknown": "Desconhecido",
+      "waiting_for_wifi": "Aguardando o Wi-Fi"
     },
     "empty_states": {
       "no_pending_downloads": "Nenhum download pendente",
@@ -695,6 +766,13 @@
       "no_canceled_downloads": "Nenhum download cancelado",
       "no_failed_downloads": "Nenhum download falho",
       "no_downloads": "Nenhum download"
+    },
+    "network_prompt": {
+      "title": "Baixar usando dados móveis?",
+      "description": "O Wi-Fi não está disponível. Você pode fazer o download agora usando dados móveis ou agendar o download para quando o Wi-Fi estiver disponível.",
+      "remember_for_session": "Lembrar nesta sessão",
+      "wait_for_wifi": "Aguarde a conexão Wi-Fi",
+      "use_mobile_data": "Usar dados móveis"
     }
   },
   "saved_search": {
@@ -945,7 +1023,10 @@
       "tooltip_on_hover_description": "Mostrar informações de pré-visualização ao passar o mouse sobre a miniatura.",
       "enable_profile_specific_settings": "Ativar as configurações específicas do perfil",
       "enable_profile_specific_settings_description": "Substituir as configurações globais para este perfil. Se ativada, as configurações globais serão ignoradas até que esta opção seja desativada.",
-      "overridden_notice": "Essas configurações são substituídas pela listagem personalizada. Acesse a página <b><a href=\"booru-profiles\">Listagem do perfil</a></b> em vez disso."
+      "overridden_notice": "Essas configurações são substituídas pela listagem personalizada. Acesse a página <b><a href=\"booru-profiles\">Listagem do perfil</a></b> em vez disso.",
+      "thumbnail_primary_action": "Ação principal da miniatura",
+      "thumbnail_secondary_action": "Ação secundária da miniatura",
+      "thumbnail_secondary_action_description": "Oculta quando a miniatura é muito pequena."
     },
     "search": {
       "title": "Pesquisa",
@@ -1001,6 +1082,17 @@
         "skip_cert_verification_description": "Ativar certificados autoassinados (p.ex., servidores locais)",
         "skip_cert_verification_warning_title": "Aviso de segurança",
         "skip_cert_verification_warning": "A verificação de certificados está desativada. Sua conexão pode não ser segura. Utilize esta opção apenas para servidores locais confiáveis."
+      },
+      "media_hosts": {
+        "title": "Substituições de mídia",
+        "description": "Substitua os servidores de mídia deste perfil. Utilize apenas servidores em que você confia, pois os caminhos dos arquivos e os parâmetros de consulta são enviados a eles.",
+        "active": "Substituição de mídia ativada",
+        "add": "Adicionar substituição",
+        "from": "Host original",
+        "to": "Host substituto",
+        "invalid_host": "Digite um nome de host sem esquema, porta ou caminho.",
+        "duplicate_host": "Esse host já possui uma substituição.",
+        "same_host": "Escolha um host substituto diferente."
       }
     },
     "viewer": {
@@ -1365,6 +1457,11 @@
     "profile": {
       "joined": "Registrou-se",
       "last_active": "Última atividade"
+    }
+  },
+  "sankaku": {
+    "errors": {
+      "exclusion_search_restricted": "O Sankaku restringe essa pesquisa de exclusão à sua conta. Tente adicionar uma tag que não esteja excluída."
     }
   }
 }
