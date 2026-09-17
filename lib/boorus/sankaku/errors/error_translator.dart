@@ -16,6 +16,10 @@ class SankakuAppErrorTranslator extends DefaultAppErrorTranslator {
   @override
   String translateServerError(BuildContext context, ServerError error) =>
       switch (error.code) {
+        'snackbar__anonymous_tags-limit' =>
+          context.t.sankaku.errors.anonymous_tag_limit,
+        'snackbar__account_regular_tags-limit' =>
+          context.t.sankaku.errors.account_tag_limit,
         'snackbar__account_regular_excluded-tags-limit' =>
           context.t.sankaku.errors.exclusion_search_restricted,
         _ => super.translateServerError(context, error),

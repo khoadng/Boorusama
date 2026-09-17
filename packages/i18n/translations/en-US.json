@@ -1448,6 +1448,8 @@
   },
   "sankaku": {
     "errors": {
+      "anonymous_tag_limit": "Sankaku rejected this search because anonymous users can only search with a limited number of tags. Use fewer tags or sign in.",
+      "account_tag_limit": "Sankaku rejected this search because your account can only search with a limited number of tags. Use fewer tags or upgrade your account.",
       "exclusion_search_restricted": "Sankaku restricts this exclusion search for your account. Try adding a non-excluded tag."
     }
   },
