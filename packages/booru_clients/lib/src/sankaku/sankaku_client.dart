@@ -8,10 +8,10 @@ import 'types/types.dart';
 const _kFakeBrowserHeader =
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/111.0';
 
-const _kFallbackSankakuHeader = {
-  'User-Agent': _kFakeBrowserHeader,
+const _kSankakuApiHeaders = {
   'Content-Type': 'application/json',
-  'Accept': 'application/json',
+  'Accept': 'application/vnd.sankaku.api+json;v=2',
+  'Origin': 'https://sankaku.app',
 };
 
 const _kSankakuApiUrl = 'https://sankakuapi.com';
@@ -45,10 +45,18 @@ class SankakuClient {
     _dio = dio ?? Dio();
     _baseUrl = baseUrl;
 
-    _dio.options = BaseOptions(
-      baseUrl: _convertBaseUrlToApiUrl(baseUrl),
-      headers: headers ?? _kFallbackSankakuHeader,
-    );
+    final mergedHeaders = <String, dynamic>{
+      ..._kSankakuApiHeaders,
+      ..._dio.options.headers,
+      ...?headers,
+    };
+    if (!mergedHeaders.keys.any((key) => key.toLowerCase() == 'user-agent')) {
+      mergedHeaders['User-Agent'] = _kFakeBrowserHeader;
+    }
+
+    _dio.options
+      ..baseUrl = _convertBaseUrlToApiUrl(baseUrl)
+      ..headers = mergedHeaders;
 
     _authStore = authStore ?? InMemoryAuthStore();
   }
