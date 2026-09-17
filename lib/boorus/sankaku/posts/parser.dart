@@ -11,20 +11,32 @@ import '../tags/categories.dart';
 import 'types.dart';
 
 List<Tag> sankakuTagDtosToTags(List<TagDto>? tags) {
-  return tags
-          ?.map((e) {
-            final name = e.tagName;
-            if (name == null || name.isEmpty) return null;
+  if (tags == null) return const [];
 
-            return Tag(
-              name: name,
-              category: sankakuTagCategoryFromApiId(e.type),
-              postCount: e.postCount ?? e.count ?? 0,
-            );
-          })
-          .nonNulls
-          .toList(growable: false) ??
-      const [];
+  final parsed = <Object, Tag>{};
+  for (final dto in tags) {
+    final name = dto.tagName;
+    if (name == null || name.isEmpty) continue;
+
+    final key = switch (dto.id) {
+      final id? => (id: id),
+      null => (name: name, type: dto.type),
+    };
+    final tag = Tag(
+      name: name,
+      category: sankakuTagCategoryFromApiId(dto.type),
+      postCount: dto.postCount ?? dto.count ?? 0,
+    );
+    final existing = parsed[key];
+
+    if (existing == null) {
+      parsed[key] = tag;
+    } else if (tag.postCount > existing.postCount) {
+      parsed[key] = existing.copyWith(null, null, tag.postCount);
+    }
+  }
+
+  return parsed.values.toList(growable: false);
 }
 
 SankakuPost postDtoToPost(
