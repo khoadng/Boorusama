@@ -7,6 +7,7 @@ import 'token.dart';
 abstract interface class AuthStore {
   Future<void> saveToken(Token token);
   Future<Token?> getToken();
+  Future<void> clearToken();
 }
 
 class AuthStoreBuilder {
@@ -34,6 +35,11 @@ class AuthStoreBuilder {
 
 class InMemoryAuthStore implements AuthStore {
   Token? _token;
+
+  @override
+  Future<void> clearToken() async {
+    _token = null;
+  }
 
   @override
   Future<Token?> getToken() async {
