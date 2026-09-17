@@ -75,13 +75,7 @@ final sankakuTagExtractorProvider =
           sorter: TagSorter.defaults(),
           fetcher: (post, options) {
             if (post case final SankakuPost sankakuPost) {
-              return [
-                ...sankakuPost.artistDetailsTags,
-                ...sankakuPost.characterDetailsTags,
-                ...sankakuPost.copyrightDetailsTags,
-                ...sankakuPost.generalDetailsTags,
-                ...sankakuPost.metaDetailsTags,
-              ];
+              return sankakuPost.detailedTags;
             } else {
               return TagExtractor.extractTagsFromGenericPost(post);
             }

@@ -6,6 +6,7 @@ import 'package:equatable/equatable.dart';
 import '../../../core/posts/post/types.dart';
 import '../../../core/posts/rating/types.dart';
 import '../../../core/posts/sources/types.dart';
+import '../../../core/tags/categories/types.dart';
 import '../../../core/tags/tag/types.dart';
 
 class SankakuPost extends Equatable
@@ -19,7 +20,6 @@ class SankakuPost extends Equatable
     required this.thumbnailImageUrl,
     required this.sampleImageUrl,
     required this.originalImageUrl,
-    required this.tags,
     required this.rating,
     required this.hasComment,
     required this.isTranslated,
@@ -35,11 +35,7 @@ class SankakuPost extends Equatable
     required this.videoThumbnailUrl,
     required this.videoUrl,
     required this.width,
-    required this.artistDetailsTags,
-    required this.characterDetailsTags,
-    required this.copyrightDetailsTags,
-    required this.generalDetailsTags,
-    required this.metaDetailsTags,
+    required List<Tag> detailedTags,
     required this.uploaderId,
     required this.uploaderName,
     required this.metadata,
@@ -47,11 +43,28 @@ class SankakuPost extends Equatable
     this.createdAt,
     this.parentId,
     this.downvotes,
-  }) : artistTags = artistDetailsTags.map((e) => e.name).toSet(),
-       characterTags = characterDetailsTags.map((e) => e.name).toSet(),
-       copyrightTags = copyrightDetailsTags.map((e) => e.name).toSet(),
-       generalTags = generalDetailsTags.map((e) => e.name).toSet(),
-       metaTags = metaDetailsTags.map((e) => e.name).toSet();
+  }) : detailedTags = List.unmodifiable(detailedTags),
+       tags = detailedTags.map((e) => e.name).toSet(),
+       artistTags = detailedTags
+           .where((e) => e.category == TagCategory.artist())
+           .map((e) => e.name)
+           .toSet(),
+       characterTags = detailedTags
+           .where((e) => e.category == TagCategory.character())
+           .map((e) => e.name)
+           .toSet(),
+       copyrightTags = detailedTags
+           .where((e) => e.category == TagCategory.copyright())
+           .map((e) => e.name)
+           .toSet(),
+       generalTags = detailedTags
+           .where((e) => e.category == TagCategory.general())
+           .map((e) => e.name)
+           .toSet(),
+       metaTags = detailedTags
+           .where((e) => e.category.name == TagCategory.meta().name)
+           .map((e) => e.name)
+           .toSet();
 
   @override
   final int id;
@@ -116,15 +129,7 @@ class SankakuPost extends Equatable
 
   final Set<String> metaTags;
 
-  final List<Tag> artistDetailsTags;
-
-  final List<Tag> characterDetailsTags;
-
-  final List<Tag> copyrightDetailsTags;
-
-  final List<Tag> generalDetailsTags;
-
-  final List<Tag> metaDetailsTags;
+  final List<Tag> detailedTags;
 
   @override
   final int? uploaderId;

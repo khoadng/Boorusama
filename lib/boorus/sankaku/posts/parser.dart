@@ -6,9 +6,26 @@ import 'package:coreutils/coreutils.dart';
 import '../../../core/posts/post/types.dart';
 import '../../../core/posts/rating/types.dart';
 import '../../../core/posts/sources/types.dart';
-import '../../../core/tags/categories/types.dart';
 import '../../../core/tags/tag/types.dart';
+import '../tags/categories.dart';
 import 'types.dart';
+
+List<Tag> sankakuTagDtosToTags(List<TagDto>? tags) {
+  return tags
+          ?.map((e) {
+            final name = e.tagName;
+            if (name == null || name.isEmpty) return null;
+
+            return Tag(
+              name: name,
+              category: sankakuTagCategoryFromApiId(e.type),
+              postCount: e.postCount ?? e.count ?? 0,
+            );
+          })
+          .nonNulls
+          .toList(growable: false) ??
+      const [];
+}
 
 SankakuPost postDtoToPost(
   PostDto e,
@@ -18,80 +35,7 @@ SankakuPost postDtoToPost(
   final hasParent = e.parentId != null;
   final hasChilren = e.hasChildren ?? false;
   final hasParentOrChildren = hasParent || hasChilren;
-  final artistTags =
-      e.tags
-          ?.where(
-            (e) => TagCategory.fromLegacyId(e.type) == TagCategory.artist(),
-          )
-          .map(
-            (e) => Tag(
-              name: e.tagName ?? '????',
-              category: TagCategory.artist(),
-              postCount: e.postCount ?? 0,
-            ),
-          )
-          .toList() ??
-      [];
-
-  final characterTags =
-      e.tags
-          ?.where(
-            (e) => TagCategory.fromLegacyId(e.type) == TagCategory.character(),
-          )
-          .map(
-            (e) => Tag(
-              name: e.tagName ?? '????',
-              category: TagCategory.character(),
-              postCount: e.postCount ?? 0,
-            ),
-          )
-          .toList() ??
-      [];
-
-  final copyrightTags =
-      e.tags
-          ?.where(
-            (e) => TagCategory.fromLegacyId(e.type) == TagCategory.copyright(),
-          )
-          .map(
-            (e) => Tag(
-              name: e.tagName ?? '????',
-              category: TagCategory.copyright(),
-              postCount: e.postCount ?? 0,
-            ),
-          )
-          .toList() ??
-      [];
-
-  final generalTags =
-      e.tags
-          ?.where(
-            (e) => TagCategory.fromLegacyId(e.type) == TagCategory.general(),
-          )
-          .map(
-            (e) => Tag(
-              name: e.tagName ?? '????',
-              category: TagCategory.general(),
-              postCount: e.postCount ?? 0,
-            ),
-          )
-          .toList() ??
-      [];
-
-  final metaTags =
-      e.tags
-          ?.where(
-            (e) => TagCategory.fromLegacyId(e.type) == TagCategory.meta(),
-          )
-          .map(
-            (e) => Tag(
-              name: e.tagName ?? '????',
-              category: TagCategory.meta(),
-              postCount: e.postCount ?? 0,
-            ),
-          )
-          .toList() ??
-      [];
+  final detailedTags = sankakuTagDtosToTags(e.tags);
 
   final timestamp = e.createdAt?.s;
 
@@ -112,7 +56,6 @@ SankakuPost postDtoToPost(
     thumbnailImageUrl: e.previewUrl ?? '',
     sampleImageUrl: e.sampleUrl ?? '',
     originalImageUrl: e.fileUrl ?? '',
-    tags: e.tags?.map((e) => e.tagName).nonNulls.toSet() ?? {},
     rating: Rating.parse(e.rating),
     hasComment: e.hasComments ?? false,
     isTranslated: false,
@@ -133,11 +76,7 @@ SankakuPost postDtoToPost(
     videoThumbnailUrl: e.previewUrl ?? '',
     videoUrl: e.fileUrl ?? '',
     width: e.width?.toDouble() ?? 0,
-    artistDetailsTags: artistTags,
-    characterDetailsTags: characterTags,
-    copyrightDetailsTags: copyrightTags,
-    generalDetailsTags: generalTags,
-    metaDetailsTags: metaTags,
+    detailedTags: detailedTags,
     createdAt: timestamp != null
         ? DateTime.fromMillisecondsSinceEpoch(timestamp * 1000)
         : null,
