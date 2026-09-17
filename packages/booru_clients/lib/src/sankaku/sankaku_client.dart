@@ -110,8 +110,25 @@ class SankakuClient {
     );
 
     final data = response.data;
+    if (data is! Map<String, dynamic>) {
+      throw const SankakuAuthenticationException(
+        'Invalid authentication response',
+      );
+    }
 
     final token = Token.fromJson(data);
+    if (token.success != true ||
+        token.tokenType == null ||
+        token.tokenType!.isEmpty ||
+        token.accessToken == null ||
+        token.accessToken!.isEmpty) {
+      final message = switch (data) {
+        {'error': final String error} when error.isNotEmpty => error,
+        {'code': final String code} when code.isNotEmpty => code,
+        _ => 'Authentication failed',
+      };
+      throw SankakuAuthenticationException(message);
+    }
 
     await _authStore.saveToken(token);
 
@@ -286,4 +303,13 @@ class SankakuClient {
         'Authorization': '${token.tokenType} ${token.accessToken}',
     },
   );
+}
+
+class SankakuAuthenticationException implements Exception {
+  const SankakuAuthenticationException(this.message);
+
+  final String message;
+
+  @override
+  String toString() => 'SankakuAuthenticationException: $message';
 }
