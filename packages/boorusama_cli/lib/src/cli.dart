@@ -6,6 +6,7 @@ import 'command/build_command.dart';
 import 'command/doctor_command.dart';
 import 'command/gen_command.dart';
 import 'command/release_command.dart';
+import 'command/setup_command.dart';
 
 Future<void> runBoorusamaCli(List<String> args) async {
   if (args.isEmpty || args.first == '--help' || args.first == '-h') {
@@ -27,7 +28,8 @@ Future<void> runBoorusamaCli(List<String> args) async {
         ..addCommand(I18nCommand())
         ..addCommand(BooruCommand())
         ..addCommand(DoctorCommand())
-        ..addCommand(ReleaseCommand());
+        ..addCommand(ReleaseCommand())
+        ..addCommand(SetupCommand());
 
   final exitCode = await _run(runner, args);
   exit(exitCode);
@@ -57,6 +59,7 @@ void _printHelp() {
   print('  gen      Generate all repo code.');
   print('  i18n     Run i18n tooling.');
   print('  release  Run release flows.');
+  print('  setup    Install repository build dependencies.');
   print('');
   print('Run "boorusama help <command>" for more information about a command.');
 }

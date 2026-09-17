@@ -34,8 +34,36 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  preflight:
+    if: github.actor == 'khoadng'
+    name: Validate shared toolchain
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      BOORUSAMA_USE_FVM: "false"
+    steps:
+      - name: Check out Boorusama
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.release_tag }}
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version-file: .fvmrc
+          cache: true
+
+      - name: Validate Flutter and Dart dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          flutter --version
+          dart --version
+          flutter pub get --enforce-lockfile
+
   build:
     if: github.actor == 'khoadng'
+    needs: preflight
     name: Build ${{ matrix.target }}
     runs-on: ${{ matrix.os }}
     timeout-minutes: 120
@@ -64,7 +92,7 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: 3.44.6
+          flutter-version-file: .fvmrc
           cache: true
 
       - name: Set up Xcode
@@ -75,14 +103,15 @@ jobs:
 
       - name: Set up Android SDK
         if: matrix.target == 'apk'
-        uses: android-actions/setup-android@v3
+        uses: android-actions/setup-android@v4
+        with:
+          packages: platform-tools
 
       - name: Install Android SDK packages
         if: matrix.target == 'apk'
         shell: bash
-        run: |
-          set -euo pipefail
-          sdkmanager --install "platforms;android-36" "build-tools;36.0.0" "ndk;28.2.13676358"
+        working-directory: packages/boorusama_cli
+        run: dart run boorusama_cli:boorusama setup android-sdk --ci
 
       - name: Install Linux native build tools
         if: runner.os == 'Linux'
@@ -249,7 +278,7 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: 3.44.6
+          flutter-version-file: .fvmrc
           cache: true
 
       - name: Download build artifacts
