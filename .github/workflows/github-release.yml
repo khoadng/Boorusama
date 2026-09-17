@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       release_tag:
-        description: "Release tag to build and publish."
+        description: "Release tag or branch to build"
         required: true
         default: ""
       prerelease:
@@ -15,6 +15,10 @@ on:
       recreate_release:
         description: "Delete an existing release and tag before publishing"
         required: true
+        type: boolean
+        default: false
+      smoke_run:
+        description: "Build all platforms; skip release publication."
         type: boolean
         default: false
       windows_only:
@@ -38,7 +42,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include: ${{ fromJSON(inputs.windows_only &&
+        include: ${{ fromJSON(inputs.windows_only && !inputs.smoke_run &&
           '[{"target":"windows-zip","os":"windows-latest","artifact_name":"boorusama-windows-zip"}]' ||
           '[{"target":"apk","os":"ubuntu-latest","artifact_name":"boorusama-apk"},
             {"target":"linux-tar.gz","os":"ubuntu-latest","artifact_name":"boorusama-linux-tar-gz"},
@@ -229,7 +233,7 @@ jobs:
           if-no-files-found: error
 
   publish:
-    if: github.actor == 'khoadng' && !inputs.windows_only
+    if: github.actor == 'khoadng' && !inputs.smoke_run && !inputs.windows_only
     needs: build
     runs-on: ubuntu-latest
     timeout-minutes: 20
