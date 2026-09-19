@@ -79,22 +79,24 @@ class ProtectionOrchestrator {
     );
     _inProgress[protectionKey] = (completion: completer, session: session);
 
-    session.record(const UserAgentLookupStarted());
-    final String? userAgent;
+    var completed = false;
     try {
-      userAgent = await _userAgentProvider.getUserAgent();
-    } catch (error) {
-      session.record(
-        ProtectionOperationFailed(
-          ProtectionOperation.userAgentLookup,
-          error.runtimeType.toString(),
-        ),
-      );
-      rethrow;
-    }
-    session.record(UserAgentObserved(userAgent != null));
-
-    try {
+      session.record(const UserAgentLookupStarted());
+      final String? userAgent;
+      try {
+        userAgent = await _userAgentProvider.getUserAgent();
+      } catch (error) {
+        session.record(
+          ProtectionOperationFailed(
+            ProtectionOperation.userAgentLookup,
+            error.runtimeType.toString(),
+          ),
+        );
+        completer.complete(false);
+        completed = true;
+        return false;
+      }
+      session.record(UserAgentObserved(userAgent != null));
       final result = await solver.solve(
         uri: uri,
         userAgent: userAgent,
@@ -103,6 +105,7 @@ class ProtectionOrchestrator {
 
       attempt?.record(SolverReportedResult(result));
       completer.complete(result);
+      completed = true;
       _hasSolvedChallenge = result;
       return result;
     } catch (e) {
@@ -113,8 +116,10 @@ class ProtectionOrchestrator {
         ),
       );
       completer.complete(false);
+      completed = true;
       return false;
     } finally {
+      if (!completed && !completer.isCompleted) completer.complete(false);
       _inProgress.remove(protectionKey);
     }
   }

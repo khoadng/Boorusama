@@ -1,20 +1,24 @@
+// Flutter imports:
+import 'package:flutter/foundation.dart';
+
 // Package imports:
 import 'package:i18n/i18n.dart';
 import 'package:kurumi/material.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 
 class ProtectionOverlay extends StatefulWidget {
   const ProtectionOverlay({
     required this.url,
-    required this.controller,
+    required this.browser,
     required this.onCancel,
     required this.onSolved,
+    this.browserReady,
     super.key,
   });
   final String url;
-  final WebViewController controller;
+  final Widget browser;
   final VoidCallback onCancel;
   final VoidCallback onSolved;
+  final ValueListenable<bool>? browserReady;
 
   @override
   State<ProtectionOverlay> createState() => _ProtectionOverlayState();
@@ -37,11 +41,17 @@ class _ProtectionOverlayState extends State<ProtectionOverlay> {
                 Expanded(
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(8),
-                    child: WebViewWidget(controller: widget.controller),
+                    child: widget.browser,
                   ),
                 ),
                 const SizedBox(height: 16),
-                _buildButtons(),
+                if (widget.browserReady case final browserReady?)
+                  ValueListenableBuilder<bool>(
+                    valueListenable: browserReady,
+                    builder: (_, ready, _) => _buildButtons(ready),
+                  )
+                else
+                  _buildButtons(true),
               ],
             ),
           ),
@@ -73,7 +83,7 @@ class _ProtectionOverlayState extends State<ProtectionOverlay> {
     );
   }
 
-  Widget _buildButtons() {
+  Widget _buildButtons(bool browserReady) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
@@ -86,7 +96,7 @@ class _ProtectionOverlayState extends State<ProtectionOverlay> {
           child: Text(context.t.generic.action.cancel),
         ),
         FilledButton(
-          onPressed: widget.onSolved,
+          onPressed: browserReady ? widget.onSolved : null,
           child: Text(context.t.captcha.i_have_solved_it),
         ),
       ],

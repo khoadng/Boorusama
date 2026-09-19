@@ -111,6 +111,8 @@ HttpClientAdapter _createHttpClientAdapter({
       _createProxyAdapter(proxySettings, logger),
     NativeAdapterConfig(:final userAgent, :final logger) =>
       _createNativeAdapter(userAgent, logger),
+    WinHttpAdapterConfig(:final userAgent, :final logger) =>
+      _createWinHttpAdapter(userAgent, logger),
     Http2AdapterConfig(:final logger) => _createHttp2Adapter(logger),
   };
 }
@@ -153,6 +155,19 @@ HttpClientAdapter _createNativeAdapter(String? userAgent, Logger? logger) {
     logger?.warn(
       'Network',
       'Native adapter failed, falling back to default: $e',
+    );
+    return _createDefaultAdapter(logger, false);
+  }
+}
+
+HttpClientAdapter _createWinHttpAdapter(String? userAgent, Logger? logger) {
+  try {
+    logger?.info('Network', 'Using Windows WinHTTP adapter');
+    return newWinHttpAdapter(userAgent: userAgent);
+  } catch (e) {
+    logger?.warn(
+      'Network',
+      'WinHTTP adapter failed, falling back to default: $e',
     );
     return _createDefaultAdapter(logger, false);
   }

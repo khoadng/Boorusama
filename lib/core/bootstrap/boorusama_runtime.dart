@@ -5,6 +5,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import '../../foundation/app_rating/app_rating.dart';
 import '../../foundation/applock/src/device_authenticator.dart';
 import '../../foundation/boot.dart';
+import '../../foundation/browser/types.dart';
 import '../../foundation/filesystem.dart';
 import '../../foundation/iap/iap.dart';
 import '../../foundation/info/app_info.dart';
@@ -92,6 +93,7 @@ final class BoorusamaRuntimeDependencies {
     required this.isFossBuild,
     required this.isCronetAvailable,
     required this.webViewUserAgentService,
+    required this.embeddedBrowserFactory,
     required this.cookieJarFactory,
     required this.appFilePicker,
     required this.externalUrlLauncher,
@@ -132,6 +134,7 @@ final class BoorusamaRuntimeDependencies {
   final bool isFossBuild;
   final bool isCronetAvailable;
   final WebViewUserAgentService webViewUserAgentService;
+  final EmbeddedBrowserFactory embeddedBrowserFactory;
   final CookieJarFactory cookieJarFactory;
   final AppFilePicker appFilePicker;
   final ExternalUrlLauncher externalUrlLauncher;

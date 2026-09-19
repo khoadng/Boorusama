@@ -144,6 +144,8 @@ dependencies:
   webview_flutter: ^4.10.0
   webview_flutter_android: ^4.0.0
   webview_flutter_wkwebview: ^3.23.0
+  webview_flutter_windows: 1.2.0
+  win_http: ^0.2.2
   window_manager: ^0.5.1 
   yaml: ^3.1.2
   web: ^1.1.1

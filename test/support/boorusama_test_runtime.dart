@@ -20,6 +20,8 @@ import 'package:boorusama/core/settings/types.dart';
 import 'package:boorusama/core/tags/configs/src/tag_info.dart';
 import 'package:boorusama/core/tags/favorites/types.dart';
 import 'package:boorusama/foundation/applock/src/device_authenticator.dart';
+import 'package:boorusama/foundation/browser/unsupported_embedded_browser.dart';
+import 'package:boorusama/foundation/browser/types.dart';
 import 'package:boorusama/foundation/filesystem.dart';
 import 'package:boorusama/foundation/iap/iap.dart';
 import 'package:boorusama/foundation/info/app_info.dart';
@@ -48,6 +50,7 @@ BoorusamaRuntime createTestBoorusamaRuntime({
   DeviceAuthenticator? deviceAuthenticator,
   PinCredentialRepositoryFactory? pinCredentialRepositoryFactory,
   WebViewUserAgentService? webViewUserAgentService,
+  EmbeddedBrowserFactory? embeddedBrowserFactory,
   CookieJarFactory? cookieJarFactory,
   AppFilePicker? appFilePicker,
   ExternalUrlLauncher? externalUrlLauncher,
@@ -85,6 +88,8 @@ BoorusamaRuntime createTestBoorusamaRuntime({
       fileSystem: fileSystem ?? MemoryAppFileSystem(),
       webViewUserAgentService:
           webViewUserAgentService ?? const TestWebViewUserAgentService(),
+      embeddedBrowserFactory:
+          embeddedBrowserFactory ?? const UnsupportedEmbeddedBrowserFactory(),
       cookieJarFactory: cookieJarFactory ?? const MemoryCookieJarFactory(),
       appFilePicker: appFilePicker ?? TestAppFilePicker(),
       externalUrlLauncher:
