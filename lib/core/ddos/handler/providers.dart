@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import '../../../foundation/browser/providers.dart';
 import '../../../foundation/platform.dart';
 import '../../../foundation/webview_user_agent.dart';
 import '../../debug/providers.dart';
@@ -21,6 +22,9 @@ final httpDdosProtectionBypassProvider = Provider<HttpProtectionHandler>(
     final recorder = ref.watch(protectionLogRecorderProvider);
     final platform = ref.watch(appPlatformProvider);
     final supportsEmbeddedWebView = platform.supportsEmbeddedWebView;
+    final browserFactory = supportsEmbeddedWebView
+        ? ref.watch(embeddedBrowserFactoryProvider)
+        : null;
     BuildContext? contextProvider() {
       final key = ref.read(appNavigationProvider).navigatorKey;
       final context = key.currentContext ?? key.currentState?.context;
@@ -56,14 +60,17 @@ final httpDdosProtectionBypassProvider = Provider<HttpProtectionHandler>(
                 CloudflareSolver(
                   contextProvider: contextProvider,
                   cookieJar: cookieJar,
+                  browserFactory: browserFactory,
                 ),
                 AftSolver(
                   contextProvider: contextProvider,
                   cookieJar: cookieJar,
+                  browserFactory: browserFactory,
                 ),
                 CaptchaAccessDeniedSolver(
                   contextProvider: contextProvider,
                   cookieJar: cookieJar,
+                  browserFactory: browserFactory,
                 ),
               ]
             : const [],

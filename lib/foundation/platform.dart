@@ -38,11 +38,11 @@ extension AppPlatformX on AppPlatform {
   bool get isMobile => isAndroid || isIOS;
 
   bool get supportsEmbeddedWebView => switch (this) {
-    AppPlatform.android || AppPlatform.ios || AppPlatform.macos => true,
-    AppPlatform.windows ||
-    AppPlatform.linux ||
-    AppPlatform.web ||
-    AppPlatform.unknown => false,
+    AppPlatform.android ||
+    AppPlatform.ios ||
+    AppPlatform.macos ||
+    AppPlatform.windows => true,
+    AppPlatform.linux || AppPlatform.web || AppPlatform.unknown => false,
   };
 
   String get wireName => switch (this) {

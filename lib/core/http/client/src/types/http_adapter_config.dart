@@ -43,6 +43,10 @@ sealed class HttpAdapterConfig extends Equatable {
         userAgent: userAgent,
         logger: logger,
       ),
+      HttpClientAdapterType.winHttp => WinHttpAdapterConfig(
+        userAgent: userAgent,
+        logger: logger,
+      ),
       HttpClientAdapterType.defaultAdapter => DefaultAdapterConfig(
         logger: logger,
       ),
@@ -78,6 +82,19 @@ class ProxyAdapterConfig extends HttpAdapterConfig {
 
 class NativeAdapterConfig extends HttpAdapterConfig {
   const NativeAdapterConfig({
+    required this.userAgent,
+    required this.logger,
+  });
+
+  final String? userAgent;
+  final Logger? logger;
+
+  @override
+  List<Object?> get props => [userAgent, logger];
+}
+
+class WinHttpAdapterConfig extends HttpAdapterConfig {
+  const WinHttpAdapterConfig({
     required this.userAgent,
     required this.logger,
   });

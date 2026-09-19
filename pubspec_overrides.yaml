@@ -2,7 +2,7 @@ dependency_overrides:
   fvp:
     git:
       url: https://github.com/khoadng/fvp.git
-      ref: 7ec7d111a8494ffec3bce7df22cf157e96a203f8
+      ref: 4fa14a3181a27c934cc4c2298c6d891aff463ee5
   video_player:
     git:
       url: https://github.com/khoadng/packages.git
@@ -26,7 +26,7 @@ dependency_overrides:
   background_downloader:
     git:
       url: https://github.com/khoadng/background_downloader.git
-      ref: fd67fff9ee4ad4cdf415dc3285289cad9289cefe
+      ref: 3aed772d993117d4f9a1cab3cb7acff982ea453b
   cronet_http: ^1.7.0
   flutter_riverpod:
     git:

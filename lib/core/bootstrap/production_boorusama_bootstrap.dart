@@ -19,6 +19,7 @@ import '../../foundation/app_rating/app_rating.dart';
 import '../../foundation/applock/src/local_auth_device_authenticator.dart';
 import '../../foundation/boot.dart';
 import '../../foundation/boot/providers.dart';
+import '../../foundation/browser/factory.dart';
 import '../../foundation/display_mode.dart';
 import '../../foundation/filesystem.dart';
 import '../../foundation/iap/iap.dart';
@@ -221,6 +222,12 @@ final class ProductionBoorusamaBootstrap implements BoorusamaBootstrap {
         ..clearLogsAtOrBelow(LogLevel.verbose)
         ..updateLevel(LogLevel.info);
 
+      final platform = currentAppPlatform();
+      final embeddedBrowserFactory = createEmbeddedBrowserFactory(
+        platform: platform,
+        fileSystem: fileSystem,
+      );
+
       return BoorusamaRuntime(
         initialState: BoorusamaInitialState(
           initialConfig: initialConfig ?? BooruConfig.empty,
@@ -231,7 +238,10 @@ final class ProductionBoorusamaBootstrap implements BoorusamaBootstrap {
         ),
         dependencies: BoorusamaRuntimeDependencies(
           fileSystem: fileSystem,
-          webViewUserAgentService: const PluginWebViewUserAgentService(),
+          webViewUserAgentService: PluginWebViewUserAgentService(
+            factory: embeddedBrowserFactory,
+          ),
+          embeddedBrowserFactory: embeddedBrowserFactory,
           cookieJarFactory: PluginCookieJarFactory(fileSystem: fileSystem),
           appFilePicker: const PluginAppFilePicker(),
           externalUrlLauncher: const PluginExternalUrlLauncher(),
@@ -265,7 +275,7 @@ final class ProductionBoorusamaBootstrap implements BoorusamaBootstrap {
           appRatingService: appRatingService,
           iapFactory: iapFactory,
           appUpdateChecker: appUpdateChecker,
-          platform: currentAppPlatform(),
+          platform: platform,
           connectivityService: PluginConnectivityService(
             connectivity: Connectivity(),
           ),

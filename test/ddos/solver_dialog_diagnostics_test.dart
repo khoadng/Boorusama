@@ -134,6 +134,68 @@ void main() {
       },
     );
   }
+
+  testWidgets(
+    'changed clearance cookie does not close an active challenge page',
+    (tester) async {
+      final platform = _WebViewPlatform();
+      WebViewPlatform.instance = platform;
+      final cookieJar = FakeCookieJar();
+      final cookieRetriever = FakeCookieRetriever();
+      var cookieReads = 0;
+      cookieRetriever.onGetCookies = (_) {
+        cookieReads++;
+        return cookieReads == 1
+            ? []
+            : [Cookie('cf_clearance', 'candidate-token')];
+      };
+      late BuildContext pageContext;
+      await tester.pumpWidget(
+        BooruLocalization(
+          child: MaterialApp(
+            builder: (context, child) => KurumiTheme(
+              data: KurumiThemeData.fromMaterial(Theme.of(context)),
+              child: child!,
+            ),
+            home: Builder(
+              builder: (context) {
+                pageContext = context;
+                return const Scaffold(body: Text('Home'));
+              },
+            ),
+          ),
+        ),
+      );
+      final solver = RawSolver(
+        protectionType: 'cloudflare',
+        protectionTitle: 'Challenge',
+        autoCookieValidator: (cookie) => cookie.name == 'cf_clearance',
+        contextProvider: () => pageContext,
+        cookieJar: LazyAsync(() async => cookieJar),
+        cookieRetriever: cookieRetriever,
+        pageEvaluator: evaluateCloudflarePage,
+      );
+
+      final result = solver.solve(uri: Uri.parse('https://example.com/image'));
+      await tester.pumpAndSettle();
+
+      platform.delegate.finished!('https://example.com/image');
+      await tester.pump();
+
+      expect(find.byType(ProtectionOverlay), findsOneWidget);
+      expect(cookieJar.saved, isEmpty);
+
+      platform.controller.source = '<html>normal page</html>';
+      platform.delegate.finished!('https://example.com/image');
+      await tester.pumpAndSettle();
+
+      expect(await result, isTrue);
+      expect(find.byType(ProtectionOverlay), findsNothing);
+      expect(cookieJar.saved.values.single.single.name, 'cf_clearance');
+      await tester.pump(const Duration(seconds: 1));
+      expect(tester.takeException(), isNull);
+    },
+  );
 }
 
 class _WebViewPlatform extends WebViewPlatform {

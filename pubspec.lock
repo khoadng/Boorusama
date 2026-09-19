@@ -85,8 +85,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: fd67fff9ee4ad4cdf415dc3285289cad9289cefe
-      resolved-ref: fd67fff9ee4ad4cdf415dc3285289cad9289cefe
+      ref: "3aed772d993117d4f9a1cab3cb7acff982ea453b"
+      resolved-ref: "3aed772d993117d4f9a1cab3cb7acff982ea453b"
       url: "https://github.com/khoadng/background_downloader.git"
     source: git
     version: "9.6.1"
@@ -758,11 +758,11 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "7ec7d111a8494ffec3bce7df22cf157e96a203f8"
-      resolved-ref: "7ec7d111a8494ffec3bce7df22cf157e96a203f8"
+      ref: "4fa14a3181a27c934cc4c2298c6d891aff463ee5"
+      resolved-ref: "4fa14a3181a27c934cc4c2298c6d891aff463ee5"
       url: "https://github.com/khoadng/fvp.git"
     source: git
-    version: "0.37.3+boorusama.1"
+    version: "0.37.3+boorusama.2"
   gal:
     dependency: "direct main"
     description:
@@ -2337,6 +2337,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.15.1"
+  webview_flutter_windows:
+    dependency: "direct main"
+    description:
+      name: webview_flutter_windows
+      sha256: "5e1222be978b408b7f4297eec7ff6048000de92f29dbb6cbd04155c11d53677c"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.0"
   webview_flutter_wkwebview:
     dependency: "direct main"
     description:
@@ -2361,6 +2369,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.3"
+  win_http:
+    dependency: "direct main"
+    description:
+      name: win_http
+      sha256: ebc4d37e2c0e6800cc200e40d289d3bac22fc17d40fce3ae7909d49a20da77bc
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.2"
   window_manager:
     dependency: "direct main"
     description:
