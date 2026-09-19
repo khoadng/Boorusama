@@ -309,6 +309,7 @@ class _ExtendedImageState extends State<ExtendedImage>
   ImageStreamCompleterHandle? _completerHandle;
 
   ImageStreamListener? _imageStreamListener;
+  late final VoidCallback _reloadCallback;
 
   @override
   Widget build(BuildContext context) {
@@ -329,16 +330,12 @@ class _ExtendedImageState extends State<ExtendedImage>
                 child: const SizedBox.shrink(),
               ),
         LoadState.completed => _getCompletedWidget(),
-        LoadState.failed => GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: reLoadImage,
-          child:
-              widget.errorWidget ??
+        LoadState.failed =>
+          widget.errorWidget ??
               Container(
                 alignment: Alignment.center,
                 child: const Text('Failed to load image'),
               ),
-        ),
       },
     );
 
@@ -390,6 +387,10 @@ class _ExtendedImageState extends State<ExtendedImage>
   void dispose() {
     assert(_imageStream != null);
 
+    if (identical(_controller._reload, _reloadCallback)) {
+      _controller._reload = null;
+    }
+
     if (widget.controller == null) {
       _controller.dispose();
     }
@@ -414,6 +415,8 @@ class _ExtendedImageState extends State<ExtendedImage>
   @override
   void initState() {
     super.initState();
+    _reloadCallback = _reloadImage;
+    _controller._reload = _reloadCallback;
     WidgetsBinding.instance.addObserver(this);
     _scrollAwareContext = DisposableBuildContext<State<ExtendedImage>>(this);
   }
@@ -424,7 +427,7 @@ class _ExtendedImageState extends State<ExtendedImage>
     super.reassemble();
   }
 
-  void reLoadImage() {
+  void _reloadImage() {
     _resolveImage(true);
   }
 
@@ -606,9 +609,16 @@ class ExtendedImageController extends ChangeNotifier {
 
   final _cumulativeBytesLoaded = ValueNotifier<int?>(null);
   final _expectedTotalBytes = ValueNotifier<int?>(null);
+  VoidCallback? _reload;
 
   int? get cumulativeBytesLoaded => _cumulativeBytesLoaded.value;
   int? get expectedTotalBytes => _expectedTotalBytes.value;
+
+  /// Reloads the attached image.
+  ///
+  /// Consumers that offer retry behavior should call this from an explicit
+  /// retry control instead of making the entire failed image tappable.
+  void reload() => _reload?.call();
 
   void updateBytesLoaded(int loaded, int? total) {
     _cumulativeBytesLoaded.value = loaded;
