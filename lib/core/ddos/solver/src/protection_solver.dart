@@ -5,28 +5,26 @@ import 'dart:convert';
 // Package imports:
 import 'package:coreutils/coreutils.dart';
 import 'package:kurumi/material.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 
 // Project imports:
+import '../../../../../foundation/browser/cookie_conversion.dart';
+import '../../../../../foundation/browser/flutter_embedded_browser.dart';
+import '../../../../../foundation/browser/types.dart';
+import '../../../widgets/embedded_browser_host.dart';
 import 'page_inspection.dart';
 import 'protection_diagnostics.dart';
 import 'protection_overlay.dart';
 
 abstract class ProtectionSolver {
-  /// The type of protection this solver handles
   String get protectionType;
-
-  /// Whether this solver is currently busy solving a challenge
   bool get isSolving;
 
-  /// Solves the protection challenge and returns when done
   Future<bool> solve({
     required Uri uri,
     String? userAgent,
     ProtectionSession? diagnostics,
   });
 
-  /// Cancels an ongoing solving process if possible
   Future<void> cancel();
 }
 
@@ -36,20 +34,40 @@ abstract class CookieRetriever {
   Future<List<Cookie>> getCookies(String url);
 }
 
-class WebviewCookieRetriever implements CookieRetriever {
-  final _cookieManager = WebViewCookieManager();
+final class _SessionCookieRetriever implements CookieRetriever {
+  _SessionCookieRetriever(this.session, this.conversionNow);
+
+  final EmbeddedBrowserSession session;
+  final DateTime Function() conversionNow;
 
   @override
   Future<List<Cookie>> getCookies(String url) async {
-    final cookies = await _cookieManager.getCookies(domain: Uri.parse(url));
-
-    return [
-      for (final cookie in cookies)
-        Cookie(cookie.name, cookie.value)
-          ..domain = cookie.domain
-          ..path = cookie.path,
-    ];
+    final uri = Uri.parse(url);
+    return browserCookiesForRequest(
+      uri: uri,
+      cookies: await session.getCookies(uri),
+      now: conversionNow(),
+    );
   }
+}
+
+final class _RawSolverRun {
+  _RawSolverRun(this.session);
+
+  final ProtectionSession session;
+  EmbeddedBrowserSession? browser;
+  Map<String, String> initialCookies = const {};
+  Timer? pollTimer;
+  Future<bool>? inFlightCheck;
+  DialogRoute<bool>? route;
+  NavigatorState? navigator;
+  Future<void> Function()? cancel;
+  var generation = 0;
+  var pageFinished = false;
+  var mainFrameFailed = false;
+  var terminal = false;
+  String? effectiveUserAgent;
+  final browserReady = ValueNotifier<bool>(false);
 }
 
 class RawSolver implements ProtectionSolver {
@@ -60,8 +78,9 @@ class RawSolver implements ProtectionSolver {
     required this.contextProvider,
     required this.cookieJar,
     this.pageEvaluator,
-    CookieRetriever? cookieRetriever,
-  }) : _cookieRetriever = cookieRetriever ?? WebviewCookieRetriever();
+    this.cookieRetriever,
+    EmbeddedBrowserFactory? browserFactory,
+  }) : browserFactory = browserFactory ?? FlutterEmbeddedBrowserFactory();
 
   @override
   final String protectionType;
@@ -70,7 +89,9 @@ class RawSolver implements ProtectionSolver {
   final ContextProvider contextProvider;
   final LazyAsync<CookieJar> cookieJar;
   final PageEvaluator? pageEvaluator;
-  final CookieRetriever _cookieRetriever;
+  final CookieRetriever? cookieRetriever;
+  final EmbeddedBrowserFactory browserFactory;
+  _RawSolverRun? _run;
   var _solving = false;
 
   @override
@@ -89,206 +110,254 @@ class RawSolver implements ProtectionSolver {
       return false;
     }
     _solving = true;
-    final completer = Completer<bool>();
+    final run = _RawSolverRun(session);
+    _run = run;
     session.record(
       const SolverStarted(),
       sensitive: ProtectionRequestDetails(uri, userAgent: userAgent),
     );
+
     final context = contextProvider();
-    if (context == null) {
-      session.record(const RecoveryStopped(RecoveryStopReason.noContext));
-      _solving = false;
-      completer.complete(false);
-      return completer.future;
+    if (context == null || !context.mounted) {
+      session.record(
+        RecoveryStopped(
+          context == null
+              ? RecoveryStopReason.noContext
+              : RecoveryStopReason.unmountedContext,
+        ),
+      );
+      _finishSolver(run);
+      return false;
     }
-    if (!context.mounted) {
+
+    final navigator = Navigator.of(context, rootNavigator: true);
+    run.navigator = navigator;
+    final jar = await cookieJar();
+    if (!navigator.mounted) {
       session.record(
         const RecoveryStopped(RecoveryStopReason.unmountedContext),
       );
-      _solving = false;
-      completer.complete(false);
-      return completer.future;
+      _finishSolver(run);
+      return false;
     }
-    final navigator = Navigator.of(context);
-    ModalRoute<dynamic>? dialogRoute;
-    void recordClose(
-      ProtectionTrace trace,
-      DialogCloseTrigger trigger,
-      NavigatorState target,
-      bool canPop,
-    ) {
-      trace.record(
+
+    Future<void> finish(
+      bool result,
+      DialogCloseTrigger trigger, {
+      ProtectionTrace? trace,
+    }) async {
+      if (run.terminal) return;
+      run.terminal = true;
+      run.generation++;
+      run.pollTimer?.cancel();
+      run.pollTimer = null;
+      run.browserReady.value = false;
+      final route = run.route;
+      (trace ?? session).record(
         DialogCloseRequested(
           trigger: trigger,
-          navigatorId: identityHashCode(target),
-          routeId: dialogRoute == null ? null : identityHashCode(dialogRoute),
-          routeIsCurrent: dialogRoute?.isCurrent,
-          canPop: canPop,
-          alreadyCompleted: completer.isCompleted,
+          navigatorId: identityHashCode(navigator),
+          routeId: route == null ? null : identityHashCode(route),
+          routeIsCurrent: route?.isCurrent,
+          canPop: navigator.canPop(),
+          alreadyCompleted: false,
         ),
       );
+      if (route != null && route.isActive) {
+        if (route.isCurrent) {
+          navigator.pop(result);
+        } else {
+          navigator.removeRoute(route, result);
+        }
+      }
     }
 
-    void autoClose(ProtectionCheck check, DialogCloseTrigger trigger) {
-      final canPop = navigator.canPop();
-      recordClose(check, trigger, navigator, canPop);
-      if (canPop) navigator.pop(true);
-    }
+    run.cancel = () => finish(false, DialogCloseTrigger.cancel);
 
     try {
-      final jar = await cookieJar();
-      final controller = WebViewController();
-      final initialCookies = await _getMatchingCookieValues(uri, session);
-      session.record(
-        CookieLookupCompleted(
-          CookieStore.webView,
-          initialCookies.length,
-          matchingOnly: true,
-        ),
-      );
-      var hasFinishedPageLoad = false;
-      try {
-        await controller.setJavaScriptMode(JavaScriptMode.unrestricted);
-        if (userAgent != null) await controller.setUserAgent(userAgent);
-        if (pageEvaluator != null) {
-          await controller.setNavigationDelegate(
-            NavigationDelegate(
-              onPageStarted: (url) => session.record(
-                PageNavigationObserved(
-                  PageNavigationPhase.started,
-                  Uri.tryParse(url)?.host,
-                ),
-                sensitive: ProtectionNavigationDetails(url),
-              ),
-              onWebResourceError: (error) => session.record(
-                WebResourceFailed(
-                  code: error.errorCode,
-                  type: error.errorType?.name,
-                  mainFrame: error.isForMainFrame,
-                ),
-              ),
-              onPageFinished: (url) {
-                hasFinishedPageLoad = true;
-                session.record(
-                  PageNavigationObserved(
-                    PageNavigationPhase.finished,
-                    Uri.tryParse(url)?.host,
-                  ),
-                  sensitive: ProtectionNavigationDetails(url),
-                );
-                final check = session.beginCheck(CheckTrigger.pageFinished);
-                unawaited(
-                  _completeIfSolved(
-                    check: check,
-                    uri: uri,
-                    jar: jar,
-                    controller: controller,
-                    completer: completer,
-                    initialCookies: initialCookies,
-                    onCredentials: (cookies) =>
-                        session.observeCompletion(cookies, userAgent),
-                    onSuccess: () =>
-                        autoClose(check, DialogCloseTrigger.pageFinished),
-                  ),
-                );
-              },
-            ),
-          );
-        }
-      } catch (error) {
-        session.record(
-          ProtectionOperationFailed(
-            ProtectionOperation.webViewSetup,
-            error.runtimeType.toString(),
-          ),
-        );
-        // Preserve the existing policy: setup failures do not dismiss the solver.
-      }
-      unawaited(
-        controller.loadRequest(uri).catchError((Object error) {
-          session.record(
-            ProtectionOperationFailed(
-              ProtectionOperation.loadRequest,
-              error.runtimeType.toString(),
-            ),
-          );
-        }),
-      );
-      if (!context.mounted) {
-        session.record(
-          const RecoveryStopped(RecoveryStopReason.unmountedContext),
-        );
-        _solving = false;
-        completer.complete(false);
-        return await completer.future;
-      }
-      _monitorCompletion(
-        session: session,
-        uri: uri,
-        jar: jar,
-        controller: controller,
-        completer: completer,
-        initialCookies: initialCookies,
-        onCredentials: (cookies) =>
-            session.observeCompletion(cookies, userAgent),
-        allowPageValidation: () => hasFinishedPageLoad,
-        onSuccess: (check) => autoClose(check, DialogCloseTrigger.timer),
-      );
       session.record(const DialogOpening());
       final result = await showDialog<bool>(
-        context: context,
+        context: navigator.context,
         barrierDismissible: false,
         routeSettings: const RouteSettings(name: 'challenge_solver'),
         builder: (dialogContext) {
-          final dialogNavigator = Navigator.of(dialogContext);
           final route = ModalRoute.of(dialogContext);
-          if (!identical(route, dialogRoute)) {
-            dialogRoute = route;
-            session.record(
-              DialogPresented(route == null ? null : identityHashCode(route)),
-            );
+          if (route is DialogRoute<bool>) {
+            run.route = route;
+            session.record(DialogPresented(identityHashCode(route)));
           }
           return Dialog.fullscreen(
             child: ProtectionOverlay(
               url: uri.toString(),
-              controller: controller,
-              onCancel: () {
-                recordClose(
-                  session,
-                  DialogCloseTrigger.cancel,
-                  dialogNavigator,
-                  dialogNavigator.canPop(),
-                );
-                dialogNavigator.pop(false);
-              },
-              onSolved: () async {
-                final check = session.beginCheck(CheckTrigger.manual);
-                final solved = await _completeIfSolved(
-                  check: check,
+              browserReady: run.browserReady,
+              browser: EmbeddedBrowserHost(
+                factory: browserFactory,
+                initialUri: uri,
+                userAgent: userAgent,
+                onSessionClosing: () {
+                  run.browser = null;
+                  run.generation++;
+                  run.pollTimer?.cancel();
+                  run.pollTimer = null;
+                  run.pageFinished = false;
+                  run.mainFrameFailed = false;
+                  run.browserReady.value = false;
+                },
+                onFailure: (error) => session.record(
+                  ProtectionOperationFailed(
+                    ProtectionOperation.webViewSetup,
+                    error.code ?? error.reason.name,
+                  ),
+                ),
+                onEvent: (event) {
+                  if (run.terminal) return;
+                  switch (event.kind) {
+                    case BrowserEventKind.navigationStarted:
+                      run.pageFinished = false;
+                      run.mainFrameFailed = false;
+                      session.record(
+                        PageNavigationObserved(
+                          PageNavigationPhase.started,
+                          event.uri?.host,
+                        ),
+                        sensitive: ProtectionNavigationDetails(
+                          event.uri?.toString() ?? '',
+                        ),
+                      );
+                    case BrowserEventKind.urlChanged:
+                      break;
+                    case BrowserEventKind.navigationCompleted:
+                      run.pageFinished = true;
+                      session.record(
+                        PageNavigationObserved(
+                          PageNavigationPhase.finished,
+                          event.uri?.host,
+                        ),
+                        sensitive: ProtectionNavigationDetails(
+                          event.uri?.toString() ?? '',
+                        ),
+                      );
+                      unawaited(
+                        _check(
+                          run: run,
+                          uri: uri,
+                          jar: jar,
+                          trigger: CheckTrigger.pageFinished,
+                          finish: (check) => finish(
+                            true,
+                            DialogCloseTrigger.pageFinished,
+                            trace: check,
+                          ),
+                        ),
+                      );
+                    case BrowserEventKind.loadError:
+                      if (event.isForMainFrame ?? true) {
+                        run.mainFrameFailed = true;
+                        session.record(
+                          WebResourceFailed(
+                            code: event.errorCode ?? -1,
+                            type: event.errorType,
+                            mainFrame: event.isForMainFrame,
+                          ),
+                        );
+                      }
+                  }
+                },
+                onReady: (browser) async {
+                  run.browser = browser;
+                  run.generation++;
+                  run.pageFinished = false;
+                  run.mainFrameFailed = false;
+                  final effectiveRetriever =
+                      cookieRetriever ??
+                      _SessionCookieRetriever(browser, DateTime.now);
+                  try {
+                    final cookies = await effectiveRetriever.getCookies(
+                      uri.toString(),
+                    );
+                    run.initialCookies = {
+                      for (final cookie in cookies)
+                        if (autoCookieValidator(cookie))
+                          cookie.name: cookie.value,
+                    };
+                    session.record(
+                      CookieLookupCompleted(
+                        CookieStore.webView,
+                        run.initialCookies.length,
+                        matchingOnly: true,
+                      ),
+                    );
+                    var actualUserAgent = userAgent?.trim().isNotEmpty ?? false
+                        ? userAgent
+                        : null;
+                    if (actualUserAgent == null) {
+                      try {
+                        actualUserAgent = await browser.getUserAgent();
+                      } catch (_) {
+                        // Older Flutter WebView platform fakes may not expose
+                        // UA lookup. The visible mobile browser can still
+                        // operate; Windows requires a known UA for handoff.
+                      }
+                    }
+                    if (browser.backend == BrowserBackend.windowsWebView2 &&
+                        (actualUserAgent == null ||
+                            actualUserAgent.trim().isEmpty)) {
+                      throw const EmbeddedBrowserException(
+                        reason:
+                            EmbeddedBrowserFailureReason.initializationFailed,
+                        code: 'user_agent_unavailable',
+                      );
+                    }
+                    run.effectiveUserAgent = actualUserAgent;
+                    run.browserReady.value = true;
+                    run.pollTimer = Timer.periodic(
+                      const Duration(seconds: 1),
+                      (_) => unawaited(
+                        _check(
+                          run: run,
+                          uri: uri,
+                          jar: jar,
+                          trigger: CheckTrigger.timer,
+                          finish: (check) => finish(
+                            true,
+                            DialogCloseTrigger.timer,
+                            trace: check,
+                          ),
+                        ),
+                      ),
+                    );
+                  } catch (error) {
+                    session.record(
+                      ProtectionOperationFailed(
+                        ProtectionOperation.initialCookieLookup,
+                        error.runtimeType.toString(),
+                      ),
+                    );
+                    if (error is EmbeddedBrowserException) rethrow;
+                  }
+                },
+              ),
+              onCancel: () =>
+                  unawaited(finish(false, DialogCloseTrigger.cancel)),
+              onSolved: () => unawaited(
+                _check(
+                  run: run,
                   uri: uri,
                   jar: jar,
-                  controller: controller,
-                  completer: completer,
-                  initialCookies: initialCookies,
-                  onCredentials: (cookies) =>
-                      session.observeCompletion(cookies, userAgent),
-                );
-                if (solved) {
-                  recordClose(
-                    check,
+                  trigger: CheckTrigger.manual,
+                  finish: (check) => finish(
+                    true,
                     DialogCloseTrigger.manual,
-                    dialogNavigator,
-                    dialogNavigator.canPop(),
-                  );
-                  dialogNavigator.pop(true);
-                }
-              },
+                    trace: check,
+                  ),
+                ),
+              ),
             ),
           );
         },
       );
       session.record(DialogClosed(result));
-      if (!completer.isCompleted) completer.complete(result ?? false);
+      return result ?? false;
     } catch (error) {
       session.record(
         ProtectionOperationFailed(
@@ -296,69 +365,63 @@ class RawSolver implements ProtectionSolver {
           error.runtimeType.toString(),
         ),
       );
-      completer.complete(false);
+      return false;
     } finally {
+      run.pollTimer?.cancel();
+      run.browserReady.dispose();
+      if (identical(_run, run)) _run = null;
       _solving = false;
-      if (!completer.isCompleted) completer.complete(false);
     }
-    return completer.future.whenComplete(() {
-      _solving = false;
-    });
   }
 
-  void _monitorCompletion({
-    required ProtectionSession session,
+  Future<bool> _check({
+    required _RawSolverRun run,
     required Uri uri,
     required CookieJar jar,
-    required WebViewController controller,
-    required Completer<bool> completer,
-    required Map<String, String> initialCookies,
-    required void Function(Map<String, String>) onCredentials,
-    bool Function()? allowPageValidation,
-    required void Function(ProtectionCheck) onSuccess,
+    required CheckTrigger trigger,
+    required Future<void> Function(ProtectionCheck check) finish,
   }) {
-    Timer.periodic(const Duration(seconds: 1), (timer) async {
-      if (!_solving || completer.isCompleted) {
-        timer.cancel();
-        return;
-      }
-      final check = session.beginCheck(CheckTrigger.timer);
-      final solved = await _completeIfSolved(
-        check: check,
-        uri: uri,
-        jar: jar,
-        controller: controller,
-        completer: completer,
-        initialCookies: initialCookies,
-        onCredentials: onCredentials,
-        allowPageValidation: allowPageValidation?.call() ?? true,
-        onSuccess: () => onSuccess(check),
-      );
-      if (solved) timer.cancel();
-    });
+    final previous = run.inFlightCheck;
+    if (previous != null) return previous;
+    final check = run.session.beginCheck(trigger);
+    late Future<bool> current;
+    current =
+        _completeIfSolved(
+          run: run,
+          check: check,
+          uri: uri,
+          jar: jar,
+          finish: finish,
+        ).whenComplete(() {
+          if (identical(run.inFlightCheck, current)) run.inFlightCheck = null;
+        });
+    run.inFlightCheck = current;
+    return current;
   }
 
   Future<bool> _completeIfSolved({
+    required _RawSolverRun run,
     required ProtectionCheck check,
     required Uri uri,
     required CookieJar jar,
-    required WebViewController controller,
-    required Completer<bool> completer,
-    required Map<String, String> initialCookies,
-    required void Function(Map<String, String>) onCredentials,
-    bool allowPageValidation = true,
-    VoidCallback? onSuccess,
+    required Future<void> Function(ProtectionCheck check) finish,
   }) async {
     var outcome = CheckOutcome.failed;
-    var alreadyCompleted = completer.isCompleted;
     try {
-      if (completer.isCompleted) {
+      if (!_active(run)) {
         outcome = CheckOutcome.alreadyCompleted;
-        return true;
+        return false;
       }
-      final cookies = await _cookieRetriever.getCookies(uri.toString());
-      final currentUrl = await _safeCurrentUrl(controller, check);
-      final changed = _hasNewMatchingCookie(cookies, initialCookies);
+      final browser = run.browser;
+      if (browser == null || !run.browserReady.value) return false;
+      final generation = run.generation;
+      final retriever =
+          cookieRetriever ?? _SessionCookieRetriever(browser, DateTime.now);
+      final cookies = await retriever.getCookies(uri.toString());
+      if (!_active(run) || run.generation != generation) return false;
+      final currentUrl = await _safeCurrentUrl(browser, check);
+      if (!_active(run) || run.generation != generation) return false;
+      final changed = _hasNewMatchingCookie(cookies, run.initialCookies);
       check.record(
         CookiesObserved(
           count: cookies.length,
@@ -367,48 +430,51 @@ class RawSolver implements ProtectionSolver {
           currentHost: Uri.tryParse(currentUrl ?? '')?.host,
         ),
       );
-      if (changed) {
-        await jar.saveFromResponse(uri, cookies);
-        alreadyCompleted = completer.isCompleted;
-        onCredentials({
-          for (final cookie in cookies)
-            if (autoCookieValidator(cookie)) cookie.name: cookie.value,
-        });
-        if (!completer.isCompleted) completer.complete(true);
-        outcome = CheckOutcome.changedCookie;
-        onSuccess?.call();
-        return true;
-      }
       final evaluator = pageEvaluator;
       if (evaluator == null) {
-        outcome = CheckOutcome.cookieOnly;
-        return false;
+        if (!changed) {
+          outcome = CheckOutcome.cookieOnly;
+          return false;
+        }
+        await jar.saveFromResponse(uri, cookies);
+        if (!_active(run) || run.generation != generation) return false;
+        _recordCredentials(run, cookies);
+        outcome = CheckOutcome.changedCookie;
+        await finish(check);
+        return true;
       }
-      if (!allowPageValidation) {
+
+      // A challenge can write its clearance cookie before the browser has
+      // finished the verification navigation. Treating that cookie alone as
+      // success closes WebView2 mid-challenge and hands an unusable token to
+      // the HTTP client. Solvers with page heuristics must confirm the finished
+      // document before exporting any cookies.
+      if (!run.pageFinished || run.mainFrameFailed) {
         outcome = CheckOutcome.pageNotFinished;
         return false;
       }
+      final current = Uri.tryParse(currentUrl ?? '');
+      if (current == null || !_sameOrigin(current, uri)) {
+        outcome = CheckOutcome.pageRejected;
+        return false;
+      }
       final evaluation = await inspectChallengePage(
-        readSource: () => _getPageSource(controller),
+        readSource: () => _getPageSource(browser),
         evaluate: evaluator,
         diagnostics: check,
       );
+      if (!_active(run) || run.generation != generation) return false;
       if (!evaluation.accepted) {
         outcome = CheckOutcome.pageRejected;
         return false;
       }
       if (cookies.isNotEmpty) await jar.saveFromResponse(uri, cookies);
-      onCredentials({
-        for (final cookie in cookies)
-          if (autoCookieValidator(cookie)) cookie.name: cookie.value,
-      });
-      alreadyCompleted = completer.isCompleted;
-      if (!completer.isCompleted) completer.complete(true);
+      if (!_active(run) || run.generation != generation) return false;
+      _recordCredentials(run, cookies);
       outcome = CheckOutcome.pageAccepted;
-      onSuccess?.call();
+      await finish(check);
       return true;
     } catch (error) {
-      outcome = CheckOutcome.failed;
       check.record(
         ProtectionOperationFailed(
           ProtectionOperation.completionCheck,
@@ -417,33 +483,18 @@ class RawSolver implements ProtectionSolver {
       );
       return false;
     } finally {
-      if (outcome != CheckOutcome.changedCookie &&
-          outcome != CheckOutcome.pageAccepted) {
-        alreadyCompleted = completer.isCompleted;
-      }
-      check.finish(outcome, alreadyCompleted: alreadyCompleted);
+      check.finish(outcome, alreadyCompleted: run.terminal);
     }
   }
 
-  Future<Map<String, String>> _getMatchingCookieValues(
-    Uri uri,
-    ProtectionSession session,
-  ) async {
-    try {
-      final cookies = await _cookieRetriever.getCookies(uri.toString());
-      return {
-        for (final cookie in cookies)
-          if (autoCookieValidator(cookie)) cookie.name: cookie.value,
-      };
-    } catch (error) {
-      session.record(
-        ProtectionOperationFailed(
-          ProtectionOperation.initialCookieLookup,
-          error.runtimeType.toString(),
-        ),
-      );
-      return {};
-    }
+  bool _active(_RawSolverRun run) =>
+      identical(_run, run) && !run.terminal && _solving;
+
+  void _recordCredentials(_RawSolverRun run, List<Cookie> cookies) {
+    run.session.observeCompletion({
+      for (final cookie in cookies)
+        if (autoCookieValidator(cookie)) cookie.name: cookie.value,
+    }, run.effectiveUserAgent);
   }
 
   bool _hasNewMatchingCookie(
@@ -455,8 +506,18 @@ class RawSolver implements ProtectionSolver {
         initialCookies[cookie.name] != cookie.value,
   );
 
+  void _finishSolver(_RawSolverRun run) {
+    run.terminal = true;
+    _solving = false;
+    run.browserReady.dispose();
+  }
+
   @override
-  Future<void> cancel() async => _solving = false;
+  Future<void> cancel() async {
+    final run = _run;
+    if (run == null) return;
+    await run.cancel?.call();
+  }
 }
 
 Future<bool> waitForAutoSolve({
@@ -471,7 +532,6 @@ Future<bool> waitForAutoSolve({
   for (var i = 0; i < maxAttempts; i++) {
     await Future.delayed(pollInterval);
     if (isCancelled()) return false;
-
     try {
       final cookies = await cookieRetriever.getCookies(uri.toString());
       if (cookies.any(autoCookieValidator)) {
@@ -487,16 +547,18 @@ class CloudflareSolver implements ProtectionSolver {
   CloudflareSolver({
     required this.contextProvider,
     required this.cookieJar,
+    this.browserFactory,
   });
 
   final ContextProvider contextProvider;
   final LazyAsync<CookieJar> cookieJar;
-
+  final EmbeddedBrowserFactory? browserFactory;
   RawSolver? _solver;
 
   RawSolver get _solverInstance => _solver ??= RawSolver(
     contextProvider: contextProvider,
     cookieJar: cookieJar,
+    browserFactory: browserFactory,
     protectionType: protectionType,
     protectionTitle: 'Solving Cloudflare Challenge',
     autoCookieValidator: (cookie) =>
@@ -506,10 +568,8 @@ class CloudflareSolver implements ProtectionSolver {
 
   @override
   String get protectionType => 'cloudflare';
-
   @override
   bool get isSolving => _solver?.isSolving ?? false;
-
   @override
   Future<bool> solve({
     required Uri uri,
@@ -520,7 +580,6 @@ class CloudflareSolver implements ProtectionSolver {
     userAgent: userAgent,
     diagnostics: diagnostics,
   );
-
   @override
   Future<void> cancel() => _solver?.cancel() ?? Future.value();
 }
@@ -529,21 +588,22 @@ class AftSolver implements ProtectionSolver {
   AftSolver({
     required this.contextProvider,
     required this.cookieJar,
+    this.browserFactory,
   });
 
   final ContextProvider contextProvider;
   final LazyAsync<CookieJar> cookieJar;
-
+  final EmbeddedBrowserFactory? browserFactory;
   RawSolver? _solver;
 
   RawSolver get _solverInstance => _solver ??= RawSolver(
     contextProvider: contextProvider,
     cookieJar: cookieJar,
+    browserFactory: browserFactory,
     protectionType: protectionType,
     protectionTitle: 'Solving verification challenge',
     autoCookieValidator: (cookie) {
       final cookieName = cookie.name.toLowerCase();
-
       return cookieName.contains('challenge') ||
           cookieName.contains('verification') ||
           cookieName.contains('aft');
@@ -553,10 +613,8 @@ class AftSolver implements ProtectionSolver {
 
   @override
   String get protectionType => 'aft';
-
   @override
   bool get isSolving => _solver?.isSolving ?? false;
-
   @override
   Future<bool> solve({
     required Uri uri,
@@ -567,13 +625,12 @@ class AftSolver implements ProtectionSolver {
     userAgent: userAgent,
     diagnostics: diagnostics,
   );
-
   @override
   Future<void> cancel() => _solver?.cancel() ?? Future.value();
 }
 
-Future<String> _getPageSource(WebViewController controller) async {
-  final result = await controller.runJavaScriptReturningResult('''
+Future<String> _getPageSource(EmbeddedBrowserSession session) async {
+  final result = await session.evaluateJavaScript('''
 (() => {
   const body = document.body;
   const root = document.documentElement;
@@ -583,14 +640,12 @@ Future<String> _getPageSource(WebViewController controller) async {
     '';
 })()
 ''');
-
   return _javaScriptResultAsString(result);
 }
 
 String _javaScriptResultAsString(Object? result) {
   if (result == null) return '';
   if (result is! String) return result.toString();
-
   try {
     final decoded = jsonDecode(result);
     return decoded is String ? decoded : result;
@@ -600,60 +655,53 @@ String _javaScriptResultAsString(Object? result) {
 }
 
 Future<String?> _safeCurrentUrl(
-  WebViewController controller,
+  EmbeddedBrowserSession session,
   ProtectionCheck check,
 ) async {
-  void recordFailure(Object error) => check.record(
-    ProtectionOperationFailed(
-      ProtectionOperation.currentUrl,
-      error.runtimeType.toString(),
-    ),
-  );
   try {
-    // Preserve the existing distinction: an asynchronous failure propagates
-    // to the completion check; a synchronous lookup failure yields no URL.
-    return await controller.currentUrl().catchError((
-      Object error,
-      StackTrace stack,
-    ) {
-      recordFailure(error);
-      Error.throwWithStackTrace(error, stack);
-    });
+    return (await session.currentUri())?.toString();
   } catch (error) {
-    recordFailure(error);
+    check.record(
+      ProtectionOperationFailed(
+        ProtectionOperation.currentUrl,
+        error.runtimeType.toString(),
+      ),
+    );
     return null;
   }
 }
+
+bool _sameOrigin(Uri a, Uri b) =>
+    a.scheme == b.scheme && a.host == b.host && a.port == b.port;
 
 class CaptchaAccessDeniedSolver implements ProtectionSolver {
   CaptchaAccessDeniedSolver({
     required this.contextProvider,
     required this.cookieJar,
+    this.browserFactory,
   });
 
   final ContextProvider contextProvider;
   final LazyAsync<CookieJar> cookieJar;
-
+  final EmbeddedBrowserFactory? browserFactory;
   RawSolver? _solver;
 
   RawSolver get _solverInstance => _solver ??= RawSolver(
     contextProvider: contextProvider,
     cookieJar: cookieJar,
+    browserFactory: browserFactory,
     protectionType: protectionType,
     protectionTitle: 'Solving CAPTCHA',
     autoCookieValidator: (cookie) {
       final cookieName = cookie.name.toLowerCase();
-
       return cookieName == 'cf_clearance' || cookieName.contains('clearance');
     },
   );
 
   @override
   String get protectionType => 'captcha_access_denied';
-
   @override
   bool get isSolving => _solver?.isSolving ?? false;
-
   @override
   Future<bool> solve({
     required Uri uri,
@@ -664,7 +712,6 @@ class CaptchaAccessDeniedSolver implements ProtectionSolver {
     userAgent: userAgent,
     diagnostics: diagnostics,
   );
-
   @override
   Future<void> cancel() => _solver?.cancel() ?? Future.value();
 }

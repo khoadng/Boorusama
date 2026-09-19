@@ -6,8 +6,8 @@ import 'package:kurumi/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../core/comments/widgets.dart';
 import '../../../core/comments/types.dart';
+import '../../../core/comments/widgets.dart';
 import '../../../core/configs/config/providers.dart';
 import '../../../core/configs/config/types.dart';
 import '../gelbooru_v2_provider.dart';

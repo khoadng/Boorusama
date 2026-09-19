@@ -2,9 +2,13 @@
 import 'dart:io';
 
 // Package imports:
+import 'package:dio/dio.dart';
 import 'package:native_dio_adapter/native_dio_adapter.dart';
 
-NativeAdapter newNativeAdapter({String? userAgent}) {
+// Project imports:
+import 'winhttp_dio_adapter.dart';
+
+HttpClientAdapter newNativeAdapter({String? userAgent}) {
   return NativeAdapter(
     createCronetEngine: () => CronetEngine.build(
       // We have our own cache interceptor
@@ -23,6 +27,9 @@ NativeAdapter newNativeAdapter({String? userAgent}) {
           ..httpShouldSetCookies = false,
   );
 }
+
+HttpClientAdapter newWinHttpAdapter({String? userAgent}) =>
+    WinHttpDioAdapter(userAgent: userAgent);
 
 class AppHttpOverrides extends HttpOverrides {
   @override

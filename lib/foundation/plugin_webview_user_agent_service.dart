@@ -1,12 +1,12 @@
-// Package imports:
-import 'package:webview_flutter/webview_flutter.dart';
-
 // Project imports:
+import 'browser/types.dart';
 import 'webview_user_agent.dart';
 
 final class PluginWebViewUserAgentService implements WebViewUserAgentService {
-  const PluginWebViewUserAgentService();
+  const PluginWebViewUserAgentService({required this.factory});
+
+  final EmbeddedBrowserFactory factory;
 
   @override
-  Future<String?> getUserAgent() => WebViewController().getUserAgent();
+  Future<String?> getUserAgent() => factory.getDefaultUserAgent();
 }

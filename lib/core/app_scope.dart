@@ -9,6 +9,7 @@ import '../foundation/app_rating/providers.dart';
 import '../foundation/app_update/providers.dart';
 import '../foundation/applock/applock.dart';
 import '../foundation/boot/providers.dart';
+import '../foundation/browser/providers.dart';
 import '../foundation/filesystem.dart';
 import '../foundation/iap/iap.dart';
 import '../foundation/info/app_info.dart';
@@ -88,6 +89,9 @@ List<Override> buildBoorusamaOverrides(
     appPlatformProvider.overrideWithValue(dependencies.platform),
     webViewUserAgentServiceProvider.overrideWithValue(
       dependencies.webViewUserAgentService,
+    ),
+    embeddedBrowserFactoryProvider.overrideWithValue(
+      dependencies.embeddedBrowserFactory,
     ),
     cookieJarFactoryProvider.overrideWithValue(dependencies.cookieJarFactory),
     appFilePickerProvider.overrideWithValue(dependencies.appFilePicker),

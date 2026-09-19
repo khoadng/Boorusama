@@ -75,17 +75,13 @@ class HttpProtectionHandler {
           return existingHeaders;
         }
 
-        final existingCookieKey = headers.keys.firstWhere(
-          (key) => key.toLowerCase() == 'cookie',
-          orElse: () => 'cookie',
-        );
-        final existingCookie = headers[existingCookieKey] ?? '';
-
-        headers[existingCookieKey] = CookieUtils.mergeCookieHeaders(
+        final existingCookie = _headerValue(headers, 'cookie') ?? '';
+        final mergedCookie = CookieUtils.mergeCookieHeaders(
           existingCookie,
           cookies.cookieString,
         );
-        headers['user-agent'] = userAgent;
+        _setHeader(headers, 'cookie', mergedCookie);
+        _setHeader(headers, 'user-agent', userAgent);
       }
 
       attempt?.observeHeaders(headers);
@@ -99,6 +95,22 @@ class HttpProtectionHandler {
       );
       return existingHeaders;
     }
+  }
+
+  static String? _headerValue(Map<String, String> headers, String name) {
+    for (final entry in headers.entries) {
+      if (entry.key.toLowerCase() == name) return entry.value;
+    }
+    return null;
+  }
+
+  static void _setHeader(
+    Map<String, String> headers,
+    String name,
+    String value,
+  ) {
+    headers.removeWhere((key, _) => key.toLowerCase() == name);
+    headers[name] = value;
   }
 
   /// Handles HTTP response and returns true if a protection was detected and handled

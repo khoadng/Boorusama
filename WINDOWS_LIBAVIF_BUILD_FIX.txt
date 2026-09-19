@@ -1,0 +1,445 @@
+Windows libavif/native-assets build failure: investigation and fixes
+====================================================================
+
+Project tested
+--------------
+
+Project: boorusama
+Platform: Windows x64, debug build
+Working project path: V:\01_Work\Projects\boorusama
+Verified command: fvm flutter build windows --debug
+Verified result: build\windows\x64\runner\Debug\boorusama.exe
+
+Relevant versions
+-----------------
+
+Project SDK constraints:
+  Dart: ^3.12.0
+  Flutter: ^3.44.0
+
+Working SDK:
+  Flutter 3.44.6 through FVM
+  Dart 3.12.2
+
+Non-working global SDK:
+  Flutter 3.41.9
+  Dart 3.11.5
+
+Native packages involved:
+  flutter_libavif 0.1.1
+  libavif 0.1.1
+  native_toolchain_rust 1.0.4+0
+
+Build tools used after setup:
+  Meson 1.12.0
+  Ninja 1.10.2 (1.13.2 was also installed through pip)
+  NASM 3.02
+  ccache 4.14
+  Rust/Cargo 1.92.0
+  Visual Studio 2022 17.8.3 / MSVC 14.38.33130
+  Windows SDK 10.0.22621.0
+
+
+Summary of confirmed problems
+-----------------------------
+
+1. The global Flutter SDK was too old for this project.
+
+   Running plain "flutter" selected Flutter 3.41.9 and Dart 3.11.5.
+   Pub resolution failed because boorusama requires Dart ^3.12.0.
+
+   Fix:
+     Use Flutter 3.44.6 through FVM:
+
+       fvm flutter pub get
+       fvm flutter build windows --debug
+       fvm flutter run -d windows
+
+   IDEs should use this Flutter SDK directory:
+
+     C:\Users\Admin\fvm\versions\3.44.6
+
+
+2. libavif's native build prerequisites were not installed.
+
+   The first real native-assets exception was:
+
+     Bad state: libavif builds its vendored dav1d decoder from source
+     with Meson. Install "meson" and ensure it is available on PATH.
+
+   libavif 0.1.1's hook/build.dart explicitly requires:
+
+     meson
+     ninja
+     nasm (for x86/x64 targets)
+     Rust/Cargo
+     CMake and a C compiler
+
+   Setup commands used:
+
+     py -3.12 -m pip install meson
+     py -3.12 -m pip install ninja
+
+   NASM was installed from the official 3.02 Windows x64 ZIP because the
+   existing Chocolatey installation required elevation and Winget's NASM
+   installer did not support --scope user on this machine.
+
+   Installed/exposed paths:
+
+     C:\Users\Admin\AppData\Local\Programs\nasm-3.02\nasm-3.02\nasm.exe
+     C:\Users\Admin\bin\nasm.exe
+     C:\Users\Admin\bin\ndisasm.exe
+
+   The NASM directory was also added to the user's PATH.
+
+   Useful prerequisite check:
+
+     meson --version
+     ninja --version
+     nasm --version
+     cargo --version
+
+
+3. An obsolete ccache was selected by Meson.
+
+   Meson found ccache 4.3 in Chocolatey's MinGW directory and warned:
+
+     Visual Studio support requires ccache 4.6 or higher.
+     You have ccache 4.3.
+
+   ccache 4.14 was installed with:
+
+     winget install --id Ccache.Ccache --exact --scope user --silent \
+       --accept-package-agreements --accept-source-agreements
+
+   Since C:\ProgramData\chocolatey\bin appeared before Winget's link in PATH,
+   the 4.14 executable was copied to the earlier user bin directory:
+
+     C:\Users\Admin\bin\ccache.exe
+
+   After that, Get-Command ccache resolved to the 4.14 executable.
+
+   PR relevance:
+     libavif should document the minimum supported ccache version on Windows,
+     or avoid selecting ccache versions that Meson reports as unsupported for
+     the Visual Studio backend.
+
+
+4. native_toolchain_rust creates an excessively deep Cargo target directory.
+
+   native_toolchain_rust 1.0.4+0 currently computes its target directory as:
+
+     final outputDir =
+         path.join(path.fromUri(input.outputDirectory), 'target');
+
+   With Flutter native hooks, this produced a path similar to:
+
+     V:\01_Work\Projects\boorusama\.dart_tool\hooks_runner\shared\libavif\
+       build\e03e7423be\target\x86_64-pc-windows-msvc\release\build\
+       libavif_native-087eedc2efaea15a\out\build\...
+
+   MSBuild then failed before or during CMake/dav1d compilation with errors
+   including:
+
+     FileTracker error FTK1011: could not create the new file tracking log
+     file ... The system cannot find the path specified.
+
+     fatal error C1083: Cannot open compiler generated file: '':
+     Invalid argument
+
+   Windows LongPathsEnabled was already set to 1, so enabling long paths did
+   not solve the MSBuild/FileTracker behavior.
+
+   Local cache workaround applied in:
+
+     C:\Users\Admin\AppData\Local\Pub\Cache\hosted\pub.dev\
+       native_toolchain_rust-1.0.4+0\lib\src\build_runner.dart
+
+   Local code change:
+
+     BEFORE
+
+       final outputDir =
+           path.join(path.fromUri(input.outputDirectory), 'target');
+
+     AFTER (machine-specific proof of fix only)
+
+       final outputDir = Platform.isWindows
+           ? path.join(r'V:\native_toolchain_rust', input.packageName)
+           : path.join(path.fromUri(input.outputDirectory), 'target');
+
+   This produced:
+
+     V:\native_toolchain_rust\libavif
+
+   IMPORTANT: The hardcoded V: path is not suitable for an upstream PR. It was
+   only used to prove that shortening the Cargo/CMake output tree fixes the
+   MSBuild failures.
+
+   Suggested upstream native_toolchain_rust fix:
+
+     - Add a supported RustBuilder target-directory option, or derive a shared
+       shallow target directory such as:
+
+         <project>\.dart_tool\native_toolchain_rust\<package>
+
+     - Continue separating targets by Cargo target triple and build profile.
+     - Do not put the target beneath Windows TEMP. MSBuild emits MSB8029 when
+       intermediate/output directories reside under TEMP.
+     - Add a Windows test whose project/output paths are long enough to
+       reproduce FTK1011/C1083.
+     - If exposing an environment-variable override, verify that Flutter's
+       native hook runner forwards it. A CARGO_TARGET_DIR variable set in the
+       parent shell was not forwarded to the hook in this test.
+
+
+5. libavif 0.1.1 expects the wrong dav1d filename on MSVC.
+
+   After dav1d built successfully, libavif's Rust build script panicked:
+
+     The local dav1d build did not produce dav1d.lib under
+     V:\native_toolchain_rust\libavif\...\out
+
+   The vendored libavif/Meson build actually produced:
+
+     _deps\dav1d-install\lib\libdav1d.a
+
+   The released and current upstream build.rs contains:
+
+     fn dav1d_library_name(target: &str) -> &'static str {
+         if target.contains("msvc") {
+             "dav1d.lib"
+         } else {
+             "libdav1d.a"
+         }
+     }
+
+   Upstream source:
+     https://github.com/dartgfx/libavif/blob/main/packages/libavif/native/build.rs
+
+   Local cache workaround applied in:
+
+     C:\Users\Admin\AppData\Local\Pub\Cache\hosted\pub.dev\
+       libavif-0.1.1\native\build.rs
+
+   Local code change, simplified:
+
+     - Search for libdav1d.a on MSVC instead of dav1d.lib.
+     - Copy libdav1d.a to dav1d.lib.
+     - Use the copied dav1d.lib directory for Cargo's native link search.
+
+   Exact local logic added after locating the library:
+
+     let dav1d_library = if target.contains("msvc") {
+         let msvc_library = dav1d_library.with_file_name("dav1d.lib");
+         fs::copy(&dav1d_library, &msvc_library).unwrap_or_else(|error| {
+             panic!(
+                 "Failed to copy {} to {}: {error}",
+                 dav1d_library.display(),
+                 msvc_library.display()
+             )
+         });
+         msvc_library
+     } else {
+         dav1d_library
+     };
+
+   The local filename function was changed to return libdav1d.a for MSVC.
+
+   Suggested upstream libavif fix:
+
+     - On MSVC, accept both dav1d.lib and libdav1d.a so the build remains
+       compatible if the vendored build changes its output naming later.
+     - When only libdav1d.a exists, either:
+
+         a. copy/rename it to dav1d.lib before emitting
+            cargo:rustc-link-lib=static=dav1d, or
+
+         b. use an appropriate verbatim Rust linker directive if all supported
+            Rust versions handle the .a archive reliably on MSVC.
+
+     - Prefer dav1d.lib if both files exist.
+     - Add a Windows MSVC CI job that performs a clean native build and checks
+       that the resulting Dart/Flutter library loads.
+     - Add a unit/helper test for the possible dav1d output filenames.
+
+   A robust lookup shape for the PR could be:
+
+     if target.contains("msvc") {
+         find dav1d.lib first;
+         otherwise find libdav1d.a and normalize it to dav1d.lib;
+     } else {
+         find libdav1d.a;
+     }
+
+
+Messages that were not the cause
+--------------------------------
+
+The following output was informational and required no fix:
+
+  Nuget.exe not found, trying to download or use cached version.
+
+NuGet packages were downloaded or found in the cache successfully. The build
+continued beyond CMake configuration.
+
+This was also unrelated:
+
+  105 packages have newer versions incompatible with dependency constraints.
+
+Dependency resolution completed successfully; the failures came from native
+asset compilation.
+
+
+Clean reproduction procedure
+----------------------------
+
+1. Select Flutter 3.44.6/Dart 3.12.2:
+
+     fvm flutter --version
+     fvm dart --version
+
+2. Confirm native tools:
+
+     meson --version
+     ninja --version
+     nasm --version
+     cargo --version
+     ccache --version
+
+3. Clear generated project output after changing native build scripts:
+
+     fvm flutter clean
+
+4. Build with verbose output for the actual hook exception:
+
+     fvm flutter build windows --debug -v
+
+5. Normal verification command:
+
+     fvm flutter build windows --debug
+
+6. Expected result:
+
+     Built build\windows\x64\runner\Debug\boorusama.exe
+
+7. Run:
+
+     fvm flutter run -d windows
+
+
+Final verification
+------------------
+
+The ordinary, unfiltered command below completed successfully after all fixes:
+
+  fvm flutter build windows --debug
+
+Output:
+
+  Building Windows application... 50.1s
+  Built build\windows\x64\runner\Debug\boorusama.exe
+
+The remaining fvp linker message was a warning, not a failure:
+
+  LNK4075: ignoring '/INCREMENTAL' due to '/OPT:ICF' specification
+
+
+Local machine changes and diagnostic artifacts
+----------------------------------------------
+
+Required/local setup changes:
+
+  - Installed Meson 1.12.0 with Python 3.12 pip.
+  - Installed Ninja 1.13.2 with Python 3.12 pip (the shell may still resolve
+    the already-working Ninja 1.10.2 first).
+  - Installed NASM 3.02 per-user and exposed it through C:\Users\Admin\bin.
+  - Installed ccache 4.14 per-user and exposed it through
+    C:\Users\Admin\bin so it precedes Chocolatey's ccache 4.3.
+  - Patched the two Pub-cache files described above.
+  - Native Cargo output now lives at V:\native_toolchain_rust\libavif.
+
+Temporary diagnostic paths were also created while isolating path behavior:
+
+  V:\b\p
+    Junction to V:\01_Work\Projects\boorusama. It is not required by the
+    final working build.
+
+  V:\t
+    Temporary native target directory from an earlier experiment. It is not
+    required by the final working build.
+
+  C:\Users\Admin\native_toolchain_rust
+    Failed same-drive target experiment. It is not required by the final
+    working build.
+
+The Pub-cache patches are local and can be overwritten by pub cache repair,
+package re-downloads, or a version upgrade. They should be replaced by package
+releases containing the upstream fixes.
+
+
+Maintainer CARGO_TARGET_DIR approach tested on 2026-09-12
+---------------------------------------------------------
+
+Issue comment tested:
+
+  https://github.com/GregoryConrad/native_toolchain_rust/issues/107#issuecomment-5619055497
+
+The suggested approach was to pass CARGO_TARGET_DIR using the existing
+RustBuilder.extraCargoEnvironmentVariables field. It was tested exactly by:
+
+  1. Restoring native_toolchain_rust's original outputDir implementation.
+  2. Returning the following Windows environment entry from libavif's
+     _cargoEnvironment function, which is already passed to RustBuilder as
+     extraCargoEnvironmentVariables:
+
+       {'CARGO_TARGET_DIR': r'V:\maintainer_cargo_target'}
+
+  3. Running fvm flutter clean.
+  4. Running fvm flutter build windows --debug -v.
+
+Result: this approach does not work with native_toolchain_rust 1.0.4+0.
+
+The verbose log showed that RustBuilder passed the environment variable
+correctly, but also passed its own explicit command-line target directory:
+
+  Environment:
+
+    CARGO_TARGET_DIR=V:\maintainer_cargo_target
+
+  Cargo arguments:
+
+    cargo build ... --target-dir
+      V:\01_Work\Projects\boorusama\.dart_tool\hooks_runner\shared\libavif\
+      build\e03e7423be\target
+
+Cargo's explicit --target-dir argument takes precedence over the
+CARGO_TARGET_DIR environment variable. The requested directory
+V:\maintainer_cargo_target was not created. Cargo used the original deep hook
+path and reproduced the same errors:
+
+  FileTracker error FTK1011: could not create the new file tracking log file
+  The system cannot find the path specified.
+
+Conclusion for issue #107:
+
+  - extraCargoEnvironmentVariables successfully forwards CARGO_TARGET_DIR.
+  - It cannot override the unconditional --target-dir argument currently
+    generated by RustBuildRunner.
+  - RustBuildRunner must either omit --target-dir when CARGO_TARGET_DIR is
+    supplied, use that environment value to compute outputDir, or expose a
+    dedicated targetDirectory configuration field.
+  - binaryFilePath must use the same effective target directory, so merely
+    removing the CLI argument without updating output-path calculation may
+    make artifact discovery fail.
+
+After this test, the temporary libavif CARGO_TARGET_DIR injection was removed
+and the known-working shallow outputDir cache patch was restored.
+
+
+Repository state
+----------------
+
+No boorusama source or dependency file had to be changed for the successful
+build. Before this report was added, the only tracked working-tree change was
+.fvmrc, which already selected Flutter 3.44.6 instead of "stable".
