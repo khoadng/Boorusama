@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 
 import '../common/endpoint.dart';
 import '../common/feature.dart';
+import '../common/feature_sort.dart';
 import '../common/request_handler.dart';
 import '../gelbooru/gelbooru_client_favorites.dart';
 import '../gelbooru/types/types.dart';
@@ -146,6 +147,7 @@ class GelbooruV2Client with GelbooruClientFavorites {
   Future<CommentPageDto> getComments({
     required int postId,
     String? cursor,
+    FeatureSortSelection? sort,
   }) => _requestHandler.makeRequest(
     featureId: BooruFeatureId.comments,
     params: {
@@ -156,6 +158,7 @@ class GelbooruV2Client with GelbooruClientFavorites {
       },
     },
     context: {P.postId: postId},
+    sort: sort,
   );
 
   Future<List<NoteDto>> getNotesFromPostId({required int postId}) =>

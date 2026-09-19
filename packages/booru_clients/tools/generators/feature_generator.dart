@@ -62,12 +62,18 @@ class FeatureGenerator extends TemplateGenerator<BooruConfig> {
     String featureId,
     List<CapabilityField>? capabilities,
     Map<String, ActionConfig> actions, {
+    SortingConfig? sorting,
     int indentLevel = 4,
   }) {
     final baseIndent = ' ' * indentLevel;
     final paramIndent = ' ' * (indentLevel + 2);
     final params = <String>[];
 
+    if (sorting != null) {
+      params.add(
+        '$paramIndent${'sorting'}: ${_buildSorting(sorting, indentLevel)},',
+      );
+    }
     for (final capability in capabilities ?? const <CapabilityField>[]) {
       params.add(
         '$paramIndent${kebabToCamel(capability.name)}: ${_formatDartValue(capability.value)},',
@@ -84,6 +90,18 @@ class FeatureGenerator extends TemplateGenerator<BooruConfig> {
     return '''${featureId.capitalize()}Feature(
 ${params.join('\n')}
 $baseIndent)''';
+  }
+
+  String _buildSorting(SortingConfig sorting, int indentLevel) {
+    final argumentIndent = ' ' * (indentLevel + 4);
+    final closingIndent = ' ' * (indentLevel + 2);
+
+    return '''FeatureSortConfig(
+$argumentIndent transport: FeatureSortTransport.${_enumName(sorting.transport)},
+$argumentIndent key: ${_quote(sorting.key)},
+$argumentIndent defaultOrder: ${_quote(sorting.defaultOrder)},
+$argumentIndent values: ${_formatStringMap(sorting.values)},
+$closingIndent)''';
   }
 
   String _buildActionMap(Map<String, ActionConfig> actions, int indentLevel) {
@@ -126,6 +144,7 @@ $closingIndent}''';
 
   String _enumName(String value) => switch (value) {
     'session-cookie' => 'sessionCookie',
+    'query-parameter' => 'queryParameter',
     _ => value,
   };
 

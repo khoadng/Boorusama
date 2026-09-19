@@ -147,9 +147,20 @@ String _extractBodyText(Element element) {
       return;
     }
 
-    if (node is Element && node.localName == 'br') {
-      buffer.write('\n');
-      return;
+    if (node is Element) {
+      if (_isQuoteElement(node)) {
+        buffer.write('[quote]\n');
+        for (final child in node.nodes) {
+          visit(child);
+        }
+        buffer.write('\n[/quote]\n');
+        return;
+      }
+
+      if (node.localName == 'br') {
+        buffer.write('\n');
+        return;
+      }
     }
 
     for (final child in node.nodes) {
@@ -160,6 +171,10 @@ String _extractBodyText(Element element) {
   visit(element);
   return buffer.toString().trim();
 }
+
+bool _isQuoteElement(Element element) =>
+    element.localName == 'blockquote' ||
+    (element.localName == 'div' && element.classes.contains('quote'));
 
 Map<int, int> _extractR34ScriptScores(Document document) {
   final scores = <int, int>{};

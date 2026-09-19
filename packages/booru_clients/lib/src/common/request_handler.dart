@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
+import 'package:coreutils/coreutils.dart';
 import 'endpoint.dart';
 import 'feature.dart';
+import 'feature_sort.dart';
 
 typedef AuthParamsBuilder = Map<String, String> Function();
 typedef ContextBuilder = Map<String, dynamic> Function(Map<String, dynamic>?);
@@ -24,6 +26,7 @@ class RequestHandler {
     required BooruFeatureId featureId,
     Map<String, dynamic>? params,
     Map<String, dynamic>? context,
+    FeatureSortSelection? sort,
   }) async {
     final endpoint = config.getEndpoint(featureId);
 
@@ -32,11 +35,46 @@ class RequestHandler {
     }
 
     final stringParams = _buildRequestParams(params ?? {});
-    final url = endpoint.buildUrl(baseUrl, stringParams);
+    var url = endpoint.buildUrl(baseUrl, stringParams);
     final requestContext = buildContext(context);
+    Options? options;
 
-    final response = await dio.get(url);
+    if (sort != null) {
+      switch (sort.transport) {
+        case FeatureSortTransport.cookie:
+          options = Options(
+            headers: {
+              'cookie': CookieUtils.mergeCookieHeaders(
+                _baseCookieHeader(),
+                '${sort.key}=${sort.value}',
+              ),
+            },
+          );
+        case FeatureSortTransport.queryParameter:
+          final uri = Uri.parse(url);
+          url = uri
+              .replace(
+                queryParameters: {
+                  ...uri.queryParameters,
+                  sort.key: sort.value,
+                },
+              )
+              .toString();
+      }
+    }
+
+    final response = await dio.get(url, options: options);
     return endpoint.parseResponse(response, requestContext) as T;
+  }
+
+  String _baseCookieHeader() {
+    for (final entry in dio.options.headers.entries) {
+      if (entry.key.toLowerCase() == 'cookie') {
+        return entry.value?.toString() ?? '';
+      }
+    }
+
+    return '';
   }
 
   Map<String, String> _buildRequestParams(Map<String, dynamic> params) {

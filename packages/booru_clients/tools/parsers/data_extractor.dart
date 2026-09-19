@@ -114,6 +114,7 @@ class DataExtractor {
         parser: config['parser'],
         userParams: Map<String, String>.from(config['user-params'] ?? {}),
         actions: _parseActions(config['actions'], 'feature "$featureId"'),
+        sorting: _parseSorting(config['sorting'], 'feature "$featureId"'),
         capabilities: _parseTypedCapabilities(config['capabilities']),
       );
     }
@@ -253,6 +254,7 @@ class DataExtractor {
             ? Map<String, String>.from(config['user-params'])
             : null,
         actions: _parseActions(config['actions'], 'override "$featureId"'),
+        sorting: _parseSorting(config['sorting'], 'override "$featureId"'),
         capabilities: _parseTypedCapabilities(config['capabilities']),
       );
     }
@@ -350,6 +352,53 @@ class DataExtractor {
     }
 
     return result;
+  }
+
+  static SortingConfig? _parseSorting(dynamic value, String location) {
+    if (value == null) return null;
+    if (value is! YamlMap) {
+      throw FormatException('$location sorting must be a map');
+    }
+
+    final transport = value['transport'];
+    final key = value['key'];
+    final defaultOrder = value['default'];
+    final values = _parseStringMap(
+      value['values'],
+      '$location sorting values',
+    );
+
+    const transports = {'cookie', 'query-parameter'};
+    if (transport is! String || !transports.contains(transport)) {
+      throw FormatException(
+        '$location sorting has unsupported transport "$transport"',
+      );
+    }
+    if (key is! String || key.trim().isEmpty) {
+      throw FormatException('$location sorting must have a non-empty key');
+    }
+    if (defaultOrder is! String || !values.containsKey(defaultOrder)) {
+      throw FormatException(
+        '$location sorting default must reference one of its values',
+      );
+    }
+    if (values.isEmpty) {
+      throw FormatException('$location sorting must define values');
+    }
+    if (transport == 'cookie' &&
+        (key.contains(RegExp(r'[;\r\n]')) ||
+            values.values.any((entry) => entry.contains(RegExp(r'[;\r\n]'))))) {
+      throw FormatException(
+        '$location sorting contains an invalid cookie key or value',
+      );
+    }
+
+    return SortingConfig(
+      transport: transport,
+      key: key,
+      defaultOrder: defaultOrder,
+      values: values,
+    );
   }
 
   static Map<String, String> _parseStringMap(dynamic value, String location) {

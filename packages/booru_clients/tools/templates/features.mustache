@@ -3,19 +3,22 @@ abstract class BooruFeature extends Equatable {
     this.id,
     this.endpointType, {
     Map<String, FeatureActionEndpoint> actions = const {},
+    this.sorting,
   }) : actions = Map.unmodifiable(actions);
   final BooruFeatureId id;
   final EndpointType endpointType;
   final Map<String, FeatureActionEndpoint> actions;
+  final FeatureSortConfig? sorting;
 
   @override
-  List<Object?> get props => [id, endpointType, actions];
+  List<Object?> get props => [id, endpointType, actions, sorting];
 }
 
 {{#featureClasses}}
 class {{className}} extends BooruFeature {
   {{className}}({
     super.actions,
+    super.sorting,
 {{#hasCapabilities}}
 {{#capabilities}}
     required this.{{name}},

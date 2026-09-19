@@ -1,5 +1,6 @@
 library;
 
+export 'src/common/feature_sort.dart';
 export 'src/gelbooru/gelbooru_client.dart';
 export 'src/gelbooru/gelbooru_client_favorites.dart';
 export 'src/gelbooru_v1/gelbooru_v1_client.dart';

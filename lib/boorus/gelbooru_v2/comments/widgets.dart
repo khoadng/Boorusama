@@ -7,6 +7,7 @@ import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
 import '../../../core/comments/widgets.dart';
+import '../../../core/comments/types.dart';
 import '../../../core/configs/config/providers.dart';
 import '../../../core/configs/config/types.dart';
 import '../gelbooru_v2_provider.dart';
@@ -35,11 +36,22 @@ class GelbooruV2CommentPage extends ConsumerWidget {
       'page' || 'offset' || 'cursor' => true,
       _ => false,
     };
+    final sorting = commentsCapabilities?.sorting;
+    final sortOrders = {
+      for (final order in CommentSortOrder.values)
+        if (sorting?.values.containsKey(order.name) ?? false) order,
+    };
+    final initialSortOrder = CommentSortOrder.values.firstWhere(
+      (order) => order.name == sorting?.defaultOrder,
+      orElse: () => CommentSortOrder.newest,
+    );
 
     return CommentPageScaffold(
       postId: postId,
       useAppBar: useAppBar,
       singlePage: !hasPagination,
+      sortOrders: sortOrders,
+      initialSortOrder: initialSortOrder,
       commentItemBuilder: (context, comment) => switch (comment) {
         final GelbooruV2Comment comment => GelbooruV2CommentItem(
           comment: comment,

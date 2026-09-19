@@ -18,6 +18,7 @@ class SiteGenerator extends TemplateGenerator<BooruConfig> {
           featureId,
           feature.capabilities,
           actions: feature.actions,
+          sorting: feature.sorting,
         ),
       };
     }).toList();
@@ -45,11 +46,13 @@ class SiteGenerator extends TemplateGenerator<BooruConfig> {
           ),
           'hasFeature':
               override.capabilities?.isNotEmpty == true ||
-              override.actions.isNotEmpty,
+              override.actions.isNotEmpty ||
+              override.sorting != null,
           'featureConstructor': _buildFeatureConstructor(
             featureId,
             override.capabilities,
             actions: override.actions,
+            sorting: override.sorting,
             indentLevel: 10, // Extra indentation for overrides
           ),
         };
@@ -121,11 +124,13 @@ class $className extends EndpointOverride {
     String featureId,
     List<CapabilityField>? capabilities, {
     Map<String, ActionConfig> actions = const {},
+    SortingConfig? sorting,
     int indentLevel = 4,
   }) => FeatureGenerator().buildFeatureConstructor(
     featureId,
     capabilities,
     actions,
+    sorting: sorting,
     indentLevel: indentLevel,
   );
 

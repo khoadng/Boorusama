@@ -21,6 +21,7 @@ class FeatureConfig {
     this.parser,
     required this.userParams,
     this.actions = const {},
+    this.sorting,
     this.capabilities,
   });
 
@@ -29,7 +30,22 @@ class FeatureConfig {
   final String? parser;
   final Map<String, String> userParams;
   final Map<String, ActionConfig> actions;
+  final SortingConfig? sorting;
   final List<CapabilityField>? capabilities;
+}
+
+class SortingConfig {
+  const SortingConfig({
+    required this.transport,
+    required this.key,
+    required this.defaultOrder,
+    required this.values,
+  });
+
+  final String transport;
+  final String key;
+  final String defaultOrder;
+  final Map<String, String> values;
 }
 
 class ActionConfig {
@@ -91,6 +107,7 @@ class OverrideConfig {
     this.parser,
     this.userParams,
     this.actions = const {},
+    this.sorting,
     this.capabilities,
   });
 
@@ -99,6 +116,7 @@ class OverrideConfig {
   final String? parser;
   final Map<String, String>? userParams;
   final Map<String, ActionConfig> actions;
+  final SortingConfig? sorting;
   final List<CapabilityField>? capabilities;
 }
 

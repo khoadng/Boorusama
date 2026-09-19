@@ -126,6 +126,11 @@
             user-params: {post-id: "id", cursor: "cursor", tags: "tags"}
             capabilities:
               pagination-type: "cursor"
+            sorting:
+              transport: cookie
+              key: comments_direction
+              default: newest
+              values: {newest: desc, oldest: asc}
             actions:
               upvote:
                 method: get

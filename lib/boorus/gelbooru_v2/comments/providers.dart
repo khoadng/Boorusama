@@ -47,7 +47,12 @@ final gelbooruV2CommentRepoProvider =
       ref,
       config,
     ) {
+      final gelbooruV2 = ref.watch(gelbooruV2Provider);
       final client = ref.watch(gelbooruV2ClientProvider(config));
+      final sorting = gelbooruV2
+          .getCapabilitiesForSite(config.url)
+          ?.comments
+          ?.sorting;
       return CommentRepositoryBuilder<GelbooruV2Comment>(
         fetch: (postId, {page}) => client
             .getComments(
@@ -58,13 +63,14 @@ final gelbooruV2CommentRepoProvider =
                   .map(gelboorucommentDtoToGelbooruComment)
                   .toList(),
             ),
-        fetchPage: (postId, {required pageKey}) async {
+        fetchPage: (postId, {required pageKey, sortOrder}) async {
           final result = await client.getComments(
             postId: postId,
             cursor: switch (pageKey) {
               CursorCommentPageKey(:final cursor) => cursor,
               _ => null,
             },
+            sort: sorting?.select(sortOrder?.name),
           );
           return CommentPage(
             items: result.comments

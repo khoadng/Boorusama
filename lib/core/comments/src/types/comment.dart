@@ -25,7 +25,13 @@ abstract class CommentRepository<T extends Comment> {
   Future<CommentPage<T>> getCommentPage(
     int postId, {
     required CommentPageKey pageKey,
+    CommentSortOrder? sortOrder,
   });
+}
+
+enum CommentSortOrder {
+  newest,
+  oldest,
 }
 
 sealed class CommentPageKey {
@@ -76,6 +82,7 @@ class CommentRepositoryBuilder<T extends Comment>
   final Future<CommentPage<T>> Function(
     int postId, {
     required CommentPageKey pageKey,
+    CommentSortOrder? sortOrder,
   })?
   fetchPage;
 
@@ -99,9 +106,14 @@ class CommentRepositoryBuilder<T extends Comment>
   Future<CommentPage<T>> getCommentPage(
     int postId, {
     required CommentPageKey pageKey,
+    CommentSortOrder? sortOrder,
   }) async {
     if (fetchPage case final fetchPage?) {
-      return fetchPage(postId, pageKey: pageKey);
+      return fetchPage(
+        postId,
+        pageKey: pageKey,
+        sortOrder: sortOrder,
+      );
     }
 
     final page = switch (pageKey) {
@@ -169,5 +181,6 @@ class EmptyCommentRepository<T extends Comment>
   Future<CommentPage<T>> getCommentPage(
     int postId, {
     required CommentPageKey pageKey,
+    CommentSortOrder? sortOrder,
   }) async => const CommentPage(items: []);
 }
