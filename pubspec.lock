@@ -85,8 +85,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: fd67fff9ee4ad4cdf415dc3285289cad9289cefe
-      resolved-ref: fd67fff9ee4ad4cdf415dc3285289cad9289cefe
+      ref: f09dd55ad183ef4a3144dcd69c317fdcc7df9078
+      resolved-ref: f09dd55ad183ef4a3144dcd69c317fdcc7df9078
       url: "https://github.com/khoadng/background_downloader.git"
     source: git
     version: "9.6.1"
