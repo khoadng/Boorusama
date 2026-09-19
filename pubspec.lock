@@ -758,11 +758,11 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "7ec7d111a8494ffec3bce7df22cf157e96a203f8"
-      resolved-ref: "7ec7d111a8494ffec3bce7df22cf157e96a203f8"
+      ref: "4fa14a3181a27c934cc4c2298c6d891aff463ee5"
+      resolved-ref: "4fa14a3181a27c934cc4c2298c6d891aff463ee5"
       url: "https://github.com/khoadng/fvp.git"
     source: git
-    version: "0.37.3+boorusama.1"
+    version: "0.37.3+boorusama.2"
   gal:
     dependency: "direct main"
     description:
