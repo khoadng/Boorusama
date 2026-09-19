@@ -225,6 +225,10 @@
   },
   "comment": {
     "comments": "Comments",
+    "vote": {
+      "success": "Comment upvoted",
+      "already_voted": "You already voted on this comment"
+    },
     "create": {
       "hint": "Comment"
     },

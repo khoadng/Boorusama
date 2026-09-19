@@ -9,6 +9,7 @@ class CommentDto {
     this.creator,
     this.id,
     this.creatorId,
+    this.score,
   });
 
   factory CommentDto.fromXml(xml.XmlElement element) {
@@ -19,6 +20,7 @@ class CommentDto {
       creator: element.getAttribute('creator'),
       id: element.getAttribute('id'),
       creatorId: element.getAttribute('creator_id'),
+      score: int.tryParse(element.getAttribute('score') ?? ''),
     );
   }
   final String? createdAt;
@@ -27,7 +29,18 @@ class CommentDto {
   final String? creator;
   final String? id;
   final String? creatorId;
+  final int? score;
 
   @override
   String toString() => body ?? '';
+}
+
+class CommentPageDto {
+  const CommentPageDto({
+    required this.comments,
+    this.nextCursor,
+  });
+
+  final List<CommentDto> comments;
+  final String? nextCursor;
 }

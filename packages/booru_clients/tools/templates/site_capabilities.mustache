@@ -1,4 +1,4 @@
-static const _defaults = <BooruFeatureId, BooruFeature>{
+static final _defaults = <BooruFeatureId, BooruFeature>{
 {{#defaults}}
     BooruFeatureId.{{featureId}}: {{{featureConstructor}}},
 {{/defaults}}
@@ -27,7 +27,7 @@ static const _defaults = <BooruFeatureId, BooruFeature>{
     );
   }
 
-  static const _siteCapabilities = <String, SiteCapabilities>{
+  static final _siteCapabilities = <String, SiteCapabilities>{
 {{#sites}}
     '{{{url}}}': SiteCapabilities(
       siteUrl: '{{{url}}}',

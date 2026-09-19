@@ -1,20 +1,30 @@
 abstract class BooruFeature extends Equatable {
-  const BooruFeature(this.id, this.endpointType);
+  BooruFeature(
+    this.id,
+    this.endpointType, {
+    Map<String, FeatureActionEndpoint> actions = const {},
+  }) : actions = Map.unmodifiable(actions);
   final BooruFeatureId id;
   final EndpointType endpointType;
+  final Map<String, FeatureActionEndpoint> actions;
 
   @override
-  List<Object?> get props => [id, endpointType];
+  List<Object?> get props => [id, endpointType, actions];
 }
 
 {{#featureClasses}}
 class {{className}} extends BooruFeature {
+  {{className}}({
+    super.actions,
 {{#hasCapabilities}}
-  const {{className}}({
 {{#capabilities}}
     required this.{{name}},
 {{/capabilities}}
-  }) : super(BooruFeatureId.{{featureId}}, EndpointType.{{endpointType}});
+{{/hasCapabilities}}
+  }) : super(
+    BooruFeatureId.{{featureId}},
+    EndpointType.{{endpointType}},
+  );
 
 {{#capabilities}}
   final {{type}} {{name}};
@@ -27,10 +37,6 @@ class {{className}} extends BooruFeature {
     {{name}},
 {{/capabilities}}
   ];
-{{/hasCapabilities}}
-{{^hasCapabilities}}
-  const {{className}}() : super(BooruFeatureId.{{featureId}}, EndpointType.{{endpointType}});
-{{/hasCapabilities}}
 }
 
 {{/featureClasses}}

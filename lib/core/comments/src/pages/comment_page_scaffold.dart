@@ -35,28 +35,29 @@ class CommentPageScaffold extends ConsumerStatefulWidget {
 }
 
 class _CommentPageScaffoldState extends ConsumerState<CommentPageScaffold> {
+  CommentPageKey? _nextPageKey = const InitialCommentPageKey();
+
   late final _pagingController = PagingController(
     getNextPageKey: (state) {
-      if (widget.singlePage && state.nextIntPageKey > 1) {
-        return null;
-      }
-
-      return state.lastPageIsEmpty ? null : state.nextIntPageKey;
+      if (state.keys == null) return const InitialCommentPageKey();
+      return state.lastPageIsEmpty ? null : _nextPageKey;
     },
     fetchPage: _fetchPage,
   );
 
-  Future<List<Comment>> _fetchPage(int pageKey) async {
+  Future<List<Comment>> _fetchPage(CommentPageKey pageKey) async {
     final repo = ref.read(
       commentRepoProvider(ref.watchConfigAuth),
     );
 
     if (repo == null) return [];
 
-    final comments = await repo.getComments(
+    final page = await repo.getCommentPage(
       widget.postId,
-      page: pageKey,
+      pageKey: pageKey,
     );
+    _nextPageKey = widget.singlePage ? null : page.nextPageKey;
+    final comments = page.items;
 
     if (widget.commentsTransformer case final transform?) {
       return transform(comments);

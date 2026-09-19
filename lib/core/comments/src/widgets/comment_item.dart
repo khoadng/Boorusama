@@ -12,11 +12,13 @@ class CommentItem extends StatelessWidget {
   const CommentItem({
     required this.comment,
     required this.config,
+    this.footerBuilder,
     super.key,
   });
 
   final Comment comment;
   final BooruConfigAuth config;
+  final Widget Function(BuildContext context)? footerBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -24,9 +26,8 @@ class CommentItem extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CommentHeader(
-          authorName: comment.creatorName == null
-              ? comment.creatorId?.toString() ?? 'Anon'
-              : comment.creatorName!,
+          authorName:
+              comment.creatorName ?? comment.creatorId?.toString() ?? 'Anon',
           authorTitleColor: Kurumi.themeOf(context).colorScheme.primary,
           createdAt: comment.createdAt,
         ),
@@ -35,6 +36,7 @@ class CommentItem extends StatelessWidget {
           data: comment.body,
           booruUrl: config.url,
         ),
+        if (footerBuilder case final buildFooter?) buildFooter(context),
       ],
     );
   }

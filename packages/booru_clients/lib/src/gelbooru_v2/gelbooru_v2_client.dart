@@ -35,7 +35,7 @@ class GelbooruV2Client with GelbooruClientFavorites {
               GelbooruV2Config.defaultFeatures[BooruFeatureId.autocomplete]!,
           parser: parseGelAutocomplete,
         ),
-        Endpoint<List<CommentDto>>.fromFeature(
+        Endpoint<CommentPageDto>.fromFeature(
           feature: GelbooruV2Config.defaultFeatures[BooruFeatureId.comments]!,
           parser: parseGelComments,
         ),
@@ -143,11 +143,19 @@ class GelbooruV2Client with GelbooruClientFavorites {
     }
   }
 
-  Future<List<CommentDto>> getComments({
+  Future<CommentPageDto> getComments({
     required int postId,
+    String? cursor,
   }) => _requestHandler.makeRequest(
     featureId: BooruFeatureId.comments,
-    params: {P.postId: postId},
+    params: {
+      P.postId: postId,
+      if (cursor != null) ...{
+        P.tags: 'id:$postId',
+        P.cursor: cursor,
+      },
+    },
+    context: {P.postId: postId},
   );
 
   Future<List<NoteDto>> getNotesFromPostId({required int postId}) =>

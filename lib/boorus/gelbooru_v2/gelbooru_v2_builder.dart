@@ -1,7 +1,6 @@
 // Project imports:
 import '../../core/boorus/defaults/widgets.dart';
 import '../../core/boorus/engine/types.dart';
-import '../../core/comments/widgets.dart';
 import '../../core/configs/config/types.dart';
 import '../../core/configs/create/widgets.dart';
 import '../../core/configs/manage/widgets.dart';
@@ -9,6 +8,7 @@ import '../../core/downloads/filename/types.dart';
 import '../../core/home/types.dart';
 import 'artists/widgets.dart';
 import 'configs/widgets.dart';
+import 'comments/widgets.dart';
 import 'favorites/widgets.dart';
 import 'home/types.dart';
 import 'home/widgets.dart';
@@ -89,7 +89,7 @@ class GelbooruV2Builder extends BaseBooruBuilder {
 
   @override
   CommentPageBuilder? get commentPageBuilder =>
-      (context, useAppBar, post) => CommentPageScaffold(
+      (context, useAppBar, post) => GelbooruV2CommentPage(
         postId: post.id,
         useAppBar: useAppBar,
       );

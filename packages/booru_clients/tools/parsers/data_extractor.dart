@@ -2,6 +2,18 @@ import 'package:yaml/yaml.dart';
 import '../models/booru_config.dart';
 
 class DataExtractor {
+  static const _builtInSemanticParams = {
+    'api-key',
+    'comment-id',
+    'cursor',
+    'limit',
+    'page',
+    'post-id',
+    'query',
+    'tags',
+    'user-id',
+  };
+
   static BooruConfig? extractGelbooruV2Config(YamlList yamlData) {
     for (final entry in yamlData) {
       if (entry is YamlMap && entry.containsKey('gelbooru_v2')) {
@@ -65,6 +77,11 @@ class DataExtractor {
     final features = _parseFeatures(configMap['features']);
     final defaultAuth = _parseAuthConfig(configMap['auth']);
     final sites = _parseSites(configMap['sites'], defaultAuth);
+    _validateActionConfigs(
+      features: features,
+      sites: sites,
+      knownParams: _knownParams(configMap),
+    );
 
     return BooruConfig(
       name: 'gelbooru_v2',
@@ -96,6 +113,7 @@ class DataExtractor {
         endpoint: config['endpoint'] ?? '',
         parser: config['parser'],
         userParams: Map<String, String>.from(config['user-params'] ?? {}),
+        actions: _parseActions(config['actions'], 'feature "$featureId"'),
         capabilities: _parseTypedCapabilities(config['capabilities']),
       );
     }
@@ -234,6 +252,7 @@ class DataExtractor {
         userParams: config['user-params'] != null
             ? Map<String, String>.from(config['user-params'])
             : null,
+        actions: _parseActions(config['actions'], 'override "$featureId"'),
         capabilities: _parseTypedCapabilities(config['capabilities']),
       );
     }
@@ -257,6 +276,7 @@ class DataExtractor {
           if (userParams != null) {
             allParams.addAll(userParams.keys.cast<String>());
           }
+          _extractActionParams(feature['actions'], allParams);
         }
       }
     }
@@ -274,10 +294,242 @@ class DataExtractor {
                 if (userParams != null) {
                   allParams.addAll(userParams.keys.cast<String>());
                 }
+                _extractActionParams(override['actions'], allParams);
               }
             }
           }
         }
+      }
+    }
+  }
+
+  static Map<String, ActionConfig> _parseActions(
+    dynamic actions,
+    String location,
+  ) {
+    if (actions == null) return {};
+    if (actions is! YamlMap) {
+      throw FormatException('$location actions must be a map');
+    }
+
+    final result = <String, ActionConfig>{};
+    for (final entry in actions.entries) {
+      final actionName = entry.key;
+      if (actionName is! String || actionName.trim().isEmpty) {
+        throw FormatException(
+          '$location contains an action with an empty name',
+        );
+      }
+      if (entry.value is! YamlMap) {
+        throw FormatException(
+          '$location action "$actionName" must be a map',
+        );
+      }
+
+      final config = entry.value as YamlMap;
+      result[actionName] = ActionConfig(
+        name: actionName,
+        method: config['method']?.toString() ?? '',
+        endpoint: config['endpoint']?.toString() ?? '',
+        baseUrl: config['base-url']?.toString(),
+        auth: config['auth']?.toString() ?? '',
+        response: config['response']?.toString() ?? '',
+        fixedParams: _parseStringMap(
+          config['params'],
+          '$location action "$actionName" params',
+        ),
+        userParams: _parseStringMap(
+          config['user-params'],
+          '$location action "$actionName" user-params',
+        ),
+        requiredParams: _parseStringSet(
+          config['required-user-params'],
+          '$location action "$actionName" required-user-params',
+        ),
+      );
+    }
+
+    return result;
+  }
+
+  static Map<String, String> _parseStringMap(dynamic value, String location) {
+    if (value == null) return {};
+    if (value is! YamlMap) {
+      throw FormatException('$location must be a map');
+    }
+
+    final result = <String, String>{};
+    for (final entry in value.entries) {
+      final key = entry.key;
+      final entryValue = entry.value;
+      if (key is! String || key.isEmpty) {
+        throw FormatException('$location contains an empty key');
+      }
+      if (entryValue is! String) {
+        throw FormatException('$location values must be strings');
+      }
+      result[key] = entryValue;
+    }
+
+    return result;
+  }
+
+  static Set<String> _parseStringSet(dynamic value, String location) {
+    if (value == null) {
+      throw FormatException('$location is required');
+    }
+    if (value is! YamlList) {
+      throw FormatException('$location must be a list');
+    }
+
+    final result = <String>{};
+    for (final entry in value) {
+      if (entry is! String || entry.isEmpty) {
+        throw FormatException('$location must contain non-empty strings');
+      }
+      result.add(entry);
+    }
+
+    return result;
+  }
+
+  static Set<String> _knownParams(YamlMap config) {
+    final knownParams = <String>{
+      ..._builtInSemanticParams,
+      ..._parseGlobalParams(config['global-user-params']).keys,
+    };
+
+    void addFeatureParams(dynamic features) {
+      if (features is! YamlMap) return;
+      for (final feature in features.values) {
+        if (feature is YamlMap && feature['user-params'] is YamlMap) {
+          knownParams.addAll(
+            (feature['user-params'] as YamlMap).keys.cast<String>(),
+          );
+        }
+      }
+    }
+
+    addFeatureParams(config['features']);
+
+    final sites = config['sites'];
+    if (sites is YamlList) {
+      for (final site in sites) {
+        if (site is! YamlMap || site['overrides'] is! YamlMap) continue;
+        final overrides = site['overrides'] as YamlMap;
+        addFeatureParams(overrides);
+      }
+    }
+
+    return knownParams;
+  }
+
+  static void _validateActionConfigs({
+    required Map<String, FeatureConfig> features,
+    required List<SiteConfig> sites,
+    required Set<String> knownParams,
+  }) {
+    for (final entry in features.entries) {
+      _validateActions(
+        entry.value.actions,
+        'feature "${entry.key}"',
+        knownParams,
+      );
+    }
+    for (final site in sites) {
+      for (final entry in site.overrides.entries) {
+        _validateActions(
+          entry.value.actions,
+          'site "${site.url}" override "${entry.key}"',
+          knownParams,
+        );
+      }
+    }
+  }
+
+  static void _validateActions(
+    Map<String, ActionConfig> actions,
+    String location,
+    Set<String> knownParams,
+  ) {
+    final names = <String>{};
+    const methods = {'get', 'post'};
+    const authModes = {'none', 'session-cookie'};
+    const responseTypes = {'empty', 'integer', 'text', 'json'};
+
+    for (final entry in actions.entries) {
+      final action = entry.value;
+      if (!names.add(action.name) || action.name.trim().isEmpty) {
+        throw FormatException(
+          '$location contains a duplicate or empty action name',
+        );
+      }
+      if (!methods.contains(action.method)) {
+        throw FormatException(
+          '$location action "${action.name}" has unsupported method "${action.method}"',
+        );
+      }
+      if (action.endpoint.trim().isEmpty) {
+        throw FormatException(
+          '$location action "${action.name}" must have a non-empty endpoint',
+        );
+      }
+      if (!authModes.contains(action.auth)) {
+        throw FormatException(
+          '$location action "${action.name}" has unsupported auth mode "${action.auth}"',
+        );
+      }
+      if (!responseTypes.contains(action.response)) {
+        throw FormatException(
+          '$location action "${action.name}" has unsupported response type "${action.response}"',
+        );
+      }
+
+      final mappedWireParams = <String>{};
+      for (final entry in action.userParams.entries) {
+        final semanticName = entry.key;
+        final wireName = entry.value;
+        if (!knownParams.contains(semanticName)) {
+          throw FormatException(
+            '$location action "${action.name}" uses unknown semantic parameter "$semanticName"',
+          );
+        }
+        if (wireName.isEmpty || !mappedWireParams.add(wireName)) {
+          throw FormatException(
+            '$location action "${action.name}" maps multiple inputs to wire parameter "$wireName"',
+          );
+        }
+      }
+      for (final semanticName in action.requiredParams) {
+        if (!knownParams.contains(semanticName)) {
+          throw FormatException(
+            '$location action "${action.name}" uses unknown required semantic parameter "$semanticName"',
+          );
+        }
+        final wireName = action.userParams[semanticName];
+        if (wireName == null || wireName.isEmpty) {
+          throw FormatException(
+            '$location action "${action.name}" is missing a mapping for required semantic parameter "$semanticName"',
+          );
+        }
+      }
+      for (final key in action.fixedParams.keys) {
+        if (key.isEmpty) {
+          throw FormatException(
+            '$location action "${action.name}" contains an empty fixed parameter name',
+          );
+        }
+      }
+    }
+  }
+
+  static void _extractActionParams(dynamic actions, Set<String> allParams) {
+    if (actions is! YamlMap) return;
+    for (final action in actions.values) {
+      if (action is YamlMap && action['user-params'] is YamlMap) {
+        allParams.addAll(
+          (action['user-params'] as YamlMap).keys.cast<String>(),
+        );
       }
     }
   }

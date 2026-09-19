@@ -65,7 +65,7 @@ List<AutocompleteDto> parseGelAutocomplete(
   };
 }
 
-List<CommentDto> parseGelComments(
+CommentPageDto parseGelComments(
   Response response,
   Map<String, dynamic> context,
 ) {
@@ -75,7 +75,7 @@ List<CommentDto> parseGelComments(
   for (final item in comments) {
     dtos.add(CommentDto.fromXml(item));
   }
-  return dtos;
+  return CommentPageDto(comments: dtos);
 }
 
 List<NoteDto> parseGelNotesHtml(

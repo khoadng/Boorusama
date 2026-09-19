@@ -1,5 +1,6 @@
 import 'package:codegen/codegen.dart';
 import '../models/booru_config.dart';
+import 'feature_generator.dart';
 
 class SiteGenerator extends TemplateGenerator<BooruConfig> {
   @override
@@ -16,6 +17,7 @@ class SiteGenerator extends TemplateGenerator<BooruConfig> {
         'featureConstructor': _buildFeatureConstructor(
           featureId,
           feature.capabilities,
+          actions: feature.actions,
         ),
       };
     }).toList();
@@ -41,10 +43,13 @@ class SiteGenerator extends TemplateGenerator<BooruConfig> {
           'paramMapping': TemplateUtils.buildParamMapping(
             override.userParams ?? {},
           ),
-          'hasFeature': override.capabilities?.isNotEmpty == true,
+          'hasFeature':
+              override.capabilities?.isNotEmpty == true ||
+              override.actions.isNotEmpty,
           'featureConstructor': _buildFeatureConstructor(
             featureId,
             override.capabilities,
+            actions: override.actions,
             indentLevel: 10, // Extra indentation for overrides
           ),
         };
@@ -95,7 +100,7 @@ class SiteGenerator extends TemplateGenerator<BooruConfig> {
         final className = '${featureId.capitalize()}EndpointOverride';
         classes.add('''
 class $className extends EndpointOverride {
-  const $className({
+  $className({
     super.parserStrategy,
     super.path,
     super.baseUrl,
@@ -115,33 +120,14 @@ class $className extends EndpointOverride {
   String _buildFeatureConstructor(
     String featureId,
     List<CapabilityField>? capabilities, {
+    Map<String, ActionConfig> actions = const {},
     int indentLevel = 4,
-  }) {
-    if (capabilities == null || capabilities.isEmpty) {
-      return '${featureId.capitalize()}Feature()';
-    }
-
-    final baseIndent = ' ' * indentLevel;
-    final paramIndent = ' ' * (indentLevel + 2);
-
-    if (capabilities.length == 1) {
-      final cap = capabilities.first;
-      return '''${featureId.capitalize()}Feature(
-$paramIndent${kebabToCamel(cap.name)}: ${_formatDartValue(cap.value)},
-$baseIndent)''';
-    }
-
-    final params = capabilities
-        .map(
-          (cap) =>
-              '$paramIndent${kebabToCamel(cap.name)}: ${_formatDartValue(cap.value)},',
-        )
-        .join('\n');
-
-    return '''${featureId.capitalize()}Feature(
-$params
-$baseIndent)''';
-  }
+  }) => FeatureGenerator().buildFeatureConstructor(
+    featureId,
+    capabilities,
+    actions,
+    indentLevel: indentLevel,
+  );
 
   String _generateFeatureGetters(BooruConfig config) {
     final featuresWithOverrides = <String>{};
@@ -162,13 +148,5 @@ $baseIndent)''';
         .join('\n\n');
 
     return getters;
-  }
-
-  String _formatDartValue(dynamic value) {
-    return switch (value.runtimeType) {
-      const (bool) || const (int) || const (double) => value.toString(),
-      const (String) => "'$value'",
-      _ => "'$value'",
-    };
   }
 }

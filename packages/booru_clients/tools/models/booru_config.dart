@@ -20,6 +20,7 @@ class FeatureConfig {
     required this.endpoint,
     this.parser,
     required this.userParams,
+    this.actions = const {},
     this.capabilities,
   });
 
@@ -27,7 +28,32 @@ class FeatureConfig {
   final String endpoint;
   final String? parser;
   final Map<String, String> userParams;
+  final Map<String, ActionConfig> actions;
   final List<CapabilityField>? capabilities;
+}
+
+class ActionConfig {
+  const ActionConfig({
+    required this.name,
+    required this.method,
+    required this.endpoint,
+    this.baseUrl,
+    required this.auth,
+    required this.response,
+    required this.fixedParams,
+    required this.userParams,
+    required this.requiredParams,
+  });
+
+  final String name;
+  final String method;
+  final String endpoint;
+  final String? baseUrl;
+  final String auth;
+  final String response;
+  final Map<String, String> fixedParams;
+  final Map<String, String> userParams;
+  final Set<String> requiredParams;
 }
 
 class SiteConfig {
@@ -64,6 +90,7 @@ class OverrideConfig {
     this.endpoint,
     this.parser,
     this.userParams,
+    this.actions = const {},
     this.capabilities,
   });
 
@@ -71,6 +98,7 @@ class OverrideConfig {
   final String? endpoint;
   final String? parser;
   final Map<String, String>? userParams;
+  final Map<String, ActionConfig> actions;
   final List<CapabilityField>? capabilities;
 }
 

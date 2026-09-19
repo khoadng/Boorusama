@@ -1,6 +1,8 @@
 // Package imports:
 import 'package:dio/dio.dart';
 
+import 'gelbooru_session.dart';
+
 enum GelbooruFavoriteStatus {
   unknown,
   success,
@@ -20,7 +22,9 @@ mixin GelbooruClientFavorites {
   Future<GelbooruFavoriteStatus> addFavorite({
     required int postId,
   }) async {
-    if (userId == null || passHash == null) {
+    final currentUserId = userId;
+    final currentPassHash = passHash;
+    if (currentUserId == null || currentPassHash == null) {
       return GelbooruFavoriteStatus.userNotLoggedIn;
     }
 
@@ -30,7 +34,10 @@ mixin GelbooruClientFavorites {
         'id': postId,
       },
       options: Options(
-        headers: _buildHeaders(),
+        headers: buildGelbooruSessionHeaders(
+          userId: currentUserId,
+          passHash: currentPassHash,
+        ),
       ),
     );
 
@@ -45,7 +52,9 @@ mixin GelbooruClientFavorites {
   Future<void> removeFavorite({
     required int postId,
   }) async {
-    if (userId == null || passHash == null) {
+    final currentUserId = userId;
+    final currentPassHash = passHash;
+    if (currentUserId == null || currentPassHash == null) {
       throw Exception('User not logged in');
     }
 
@@ -58,12 +67,11 @@ mixin GelbooruClientFavorites {
       },
       options: Options(
         validateStatus: (status) => status == 200 || status == 302,
-        headers: _buildHeaders(),
+        headers: buildGelbooruSessionHeaders(
+          userId: currentUserId,
+          passHash: currentPassHash,
+        ),
       ),
     );
   }
-
-  Map<String, dynamic> _buildHeaders() => {
-    'cookie': 'user_id=$userId; pass_hash=$passHash',
-  };
 }
