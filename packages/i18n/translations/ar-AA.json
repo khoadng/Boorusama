@@ -34,7 +34,12 @@
     "copied": "تم النسخ",
     "no_content": "لا يوجد محتوى",
     "version": "الإصدار $version",
-    "app_restart_request": "يرجى إعادة تشغيل التطبيق"
+    "app_restart_request": "يرجى إعادة تشغيل التطبيق",
+    "requirement": {
+      "android": {
+        "version_or_later": "مطلوب أندرويد $version أو احدث"
+      }
+    }
   },
   "reminder": {
     "dont_show_again": "عدم الظهور مجدداً"
@@ -469,7 +474,24 @@
       "enable_incognito_keyboard": "تفعيل لوحة المفاتيح المتخفية",
       "enable_incognito_keyboard_notice": "توجيه لوحة المفاتيح لعدم تسجيل الكلمات المقترحة أو سجل الكتابة أثناء البحث.",
       "enable_biometric_lock": "تفعيل القفل الحيوي (بصمة الإصبع/الوجه)",
-      "enable_biometric_lock_notice": "طلب المصادقة الحيوية عند فتح التطبيق لحماية الخصوصية."
+      "enable_biometric_lock_notice": "طلب المصادقة الحيوية عند فتح التطبيق لحماية الخصوصية.",
+      "app_lock": {
+        "title": "قفل التطبيق",
+        "description": "مطلوب التحقق قبل فتح التطبيق.",
+        "off": "إيقاف",
+        "pin": "مفتاح مرور",
+        "biometrics": "بصمة الإصبع",
+        "device_authentication": "المصادقة",
+        "change_pin": "تغيير رمز المرور",
+        "change_pin_description": "حدث رمز المرور.",
+        "lock_after": "قفل بعد مضي",
+        "lock_after_description": "قفل التطبيق عند إزالته من الخلفية.",
+        "timeout_immediately": "فوراً",
+        "timeout_one_minute": "دقيقة واحدة",
+        "hide_app_preview": "حجب معاينة التطبيق",
+        "hide_app_preview_description": "تمويه محتوى التطبيق في شاشة التطبيقات.",
+        "set_pin": "تعين رمز مرور"
+      }
     },
     "performance": {
       "performance": "الأداء",
@@ -495,7 +517,10 @@
         "large": "كبيرة",
         "preview": "معاينة مصغرة"
       },
-      "title": "التنزيل"
+      "title": "التنزيل",
+      "sidecar": {
+        "title": "حفظ البيانات الوصفية"
+      }
     },
     "help_us_translate": "ساعدنا في الترجمة",
     "need_more_questions": "هل لديك أسئلة أخرى؟",
