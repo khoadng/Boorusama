@@ -37,10 +37,10 @@ class KurumiContextMenu extends StatelessWidget {
           ),
           decoration: BoxDecoration(
             color: colorScheme.surfaceContainerLow,
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(16),
             boxShadow: kElevationToShadow[4],
             border: Border.all(
-              color: colorScheme.outlineVariant,
+              color: colorScheme.outlineVariant.withValues(alpha: 0.3),
             ),
           ),
           constraints: const BoxConstraints(
@@ -145,7 +145,7 @@ class KurumiContextMenuTile extends StatelessWidget {
           child: InkWell(
             hoverColor: enabled ? colorScheme.primary : Colors.transparent,
             customBorder: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(4),
+              borderRadius: BorderRadius.circular(12),
             ),
             onTap: enabled ? handleTap : null,
             child: Container(
@@ -154,7 +154,7 @@ class KurumiContextMenuTile extends StatelessWidget {
                 horizontal: 8,
               ),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(4),
+                borderRadius: BorderRadius.circular(12),
               ),
               child: Text(
                 title,

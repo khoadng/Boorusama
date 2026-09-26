@@ -432,7 +432,7 @@ class _KurumiAdaptiveButtonRowState extends State<KurumiAdaptiveButtonRow> {
                   color: Colors.transparent,
                   child: InkWell(
                     onTap: handleTap,
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(12),
                     child: Padding(
                       padding: EdgeInsets.symmetric(
                         horizontal: 8,

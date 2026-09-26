@@ -30,7 +30,7 @@ class _KurumiHoverAwareContainerState extends State<KurumiHoverAwareContainer> {
           color: isHovered
               ? Theme.of(context).colorScheme.surfaceContainer
               : Colors.transparent,
-          borderRadius: widget.borderRadius ?? BorderRadius.circular(6),
+          borderRadius: widget.borderRadius ?? BorderRadius.circular(16),
         ),
         child: widget.child,
       ),

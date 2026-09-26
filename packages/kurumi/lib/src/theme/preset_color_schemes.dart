@@ -1,5 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 
+import 'color_schemes.dart';
 import 'color_tokens.dart';
 import 'grayscale_shades.dart';
 
@@ -9,6 +10,10 @@ import 'grayscale_shades.dart';
 /// actual visual values while the application remains responsible for how
 /// users select and persist them.
 abstract final class KurumiPresetColorSchemes {
+  static const pixelLight = KurumiColorSchemes.light;
+  static const pixelDark = KurumiColorSchemes.dark;
+  static const pixelAmoled = KurumiColorSchemes.amoledDark;
+
   static const danbooruDark = ColorScheme(
     brightness: Brightness.dark,
     secondaryContainer: Color(0xff2c2c3e),

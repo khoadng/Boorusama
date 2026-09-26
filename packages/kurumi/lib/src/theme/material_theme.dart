@@ -50,6 +50,7 @@ class KurumiMaterialTheme {
     required ColorScheme colorScheme,
     bool isDesktop = false,
   }) => ThemeData(
+    useMaterial3: true,
     appBarTheme: AppBarTheme(
       scrolledUnderElevation: 0,
       surfaceTintColor: Colors.transparent,
@@ -75,28 +76,76 @@ class KurumiMaterialTheme {
       shape: StadiumBorder(),
       side: BorderSide.none,
     ),
-    cardTheme: const CardThemeData(
+    cardTheme: CardThemeData(
       elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(8)),
+      color: colorScheme.surfaceContainerLow,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(16)),
       ),
     ),
     dialogTheme: DialogThemeData(
       surfaceTintColor: Colors.transparent,
-      backgroundColor: colorScheme.surfaceContainer,
+      backgroundColor: colorScheme.surfaceContainerHigh,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(8)),
+        borderRadius: BorderRadius.all(Radius.circular(28)),
       ),
+    ),
+    bottomSheetTheme: BottomSheetThemeData(
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+      ),
+      backgroundColor: colorScheme.surfaceContainerLow,
+      surfaceTintColor: Colors.transparent,
+      showDragHandle: true,
+      dragHandleColor: colorScheme.onSurfaceVariant.withAlpha(100),
+    ),
+    drawerTheme: DrawerThemeData(
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.horizontal(right: Radius.circular(28)),
+      ),
+      backgroundColor: colorScheme.surfaceContainerLow,
+    ),
+    navigationBarTheme: NavigationBarThemeData(
+      elevation: 0,
+      backgroundColor: colorScheme.surfaceContainer,
+      indicatorColor: colorScheme.secondaryContainer,
+      indicatorShape: const StadiumBorder(),
+      height: 80,
+    ),
+    navigationDrawerTheme: NavigationDrawerThemeData(
+      backgroundColor: colorScheme.surfaceContainerLow,
+      indicatorShape: const StadiumBorder(),
+      indicatorColor: colorScheme.secondaryContainer,
+    ),
+    navigationRailTheme: NavigationRailThemeData(
+      backgroundColor: colorScheme.surfaceContainerLow,
+      indicatorShape: const StadiumBorder(),
+      indicatorColor: colorScheme.secondaryContainer,
+    ),
+    snackBarTheme: SnackBarThemeData(
+      behavior: SnackBarBehavior.floating,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(16)),
+      ),
+      backgroundColor: colorScheme.inverseSurface,
+      contentTextStyle: TextStyle(color: colorScheme.onInverseSurface),
+      insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.transparent,
         shadowColor: Colors.transparent,
         elevation: 0,
+        shape: const StadiumBorder(),
       ),
     ),
-    floatingActionButtonTheme: const FloatingActionButtonThemeData(
-      shape: CircleBorder(),
+    floatingActionButtonTheme: FloatingActionButtonThemeData(
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(16)),
+      ),
+      backgroundColor: colorScheme.primaryContainer,
+      foregroundColor: colorScheme.onPrimaryContainer,
+      elevation: 2,
     ),
     iconTheme: IconThemeData(
       color: colorScheme.onSurface,
@@ -107,25 +156,26 @@ class KurumiMaterialTheme {
       ),
       floatingLabelBehavior: FloatingLabelBehavior.always,
       filled: true,
+      fillColor: colorScheme.surfaceContainerHigh,
       enabledBorder: const OutlineInputBorder(
-        borderRadius: BorderRadius.all(Radius.circular(8)),
+        borderRadius: BorderRadius.all(Radius.circular(16)),
         borderSide: BorderSide.none,
       ),
       focusedBorder: OutlineInputBorder(
-        borderRadius: const BorderRadius.all(Radius.circular(8)),
+        borderRadius: const BorderRadius.all(Radius.circular(16)),
         borderSide: BorderSide(
           color: colorScheme.primary,
           width: 2,
         ),
       ),
       errorBorder: const OutlineInputBorder(
-        borderRadius: BorderRadius.all(Radius.circular(8)),
+        borderRadius: BorderRadius.all(Radius.circular(16)),
         borderSide: BorderSide(
           width: 2,
         ),
       ),
       focusedErrorBorder: const OutlineInputBorder(
-        borderRadius: BorderRadius.all(Radius.circular(8)),
+        borderRadius: BorderRadius.all(Radius.circular(16)),
         borderSide: BorderSide(
           width: 2,
         ),
@@ -150,11 +200,13 @@ class KurumiMaterialTheme {
       thickness: WidgetStateProperty.all(4),
     ),
     sliderTheme: SliderThemeData(
-      trackHeight: 1,
-      thumbColor: colorScheme.onSurface,
+      trackHeight: 4,
+      thumbColor: colorScheme.primary,
+      activeTrackColor: colorScheme.primary,
+      inactiveTrackColor: colorScheme.secondaryContainer,
       trackShape: const KurumiCustomSliderTrackShape(),
-      thumbShape: const KurumiCustomSliderThumbShape(),
-      overlayShape: const KurumiCustomSliderOverlayShape(),
+      thumbShape: const KurumiCustomSliderThumbShape(enabledThumbRadius: 8),
+      overlayShape: const KurumiCustomSliderOverlayShape(thumbRadius: 16),
     ),
     switchTheme: SwitchThemeData(
       thumbColor: WidgetStateProperty.resolveWith(

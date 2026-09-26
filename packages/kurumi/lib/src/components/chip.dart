@@ -62,7 +62,7 @@ class KurumiChip extends StatelessWidget {
                   : Colors.transparent,
               shape: RoundedRectangleBorder(
                 borderRadius:
-                    borderRadius ?? const BorderRadius.all(Radius.circular(8)),
+                    borderRadius ?? const BorderRadius.all(Radius.circular(16)),
               ),
               side: showBorder
                   ? BorderSide(

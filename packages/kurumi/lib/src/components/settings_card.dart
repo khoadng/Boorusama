@@ -58,11 +58,11 @@ class KurumiSettingsCard extends StatelessWidget {
                   colorScheme.surfaceContainerHigh,
               },
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(24),
               ),
               child: InkWell(
                 customBorder: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(24),
                 ),
                 onTap: onTap,
                 child: Container(

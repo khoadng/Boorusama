@@ -189,14 +189,16 @@ class _KurumiOptionDropDownButtonState<T>
           elevation: widget.elevation,
           margin: widget.margin,
           shape: widget.borderSide == null
-              ? null
+              ? RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                )
               : RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(16),
                   side: widget.borderSide!,
                 ),
           child: InkWell(
             onTap: handleTap,
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(16),
             child: Padding(
               padding:
                   widget.padding ??
@@ -278,7 +280,7 @@ class _OptionDropDownItem<T> extends StatelessWidget {
         color: Colors.transparent,
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(12),
           child: Container(
             margin: const EdgeInsets.symmetric(
               vertical: 2,
@@ -289,8 +291,8 @@ class _OptionDropDownItem<T> extends StatelessWidget {
             ),
             decoration: isSelected && !showSelectedCheckmark
                 ? BoxDecoration(
-                    color: colorScheme.primaryContainer.withValues(alpha: 0.3),
-                    borderRadius: BorderRadius.circular(8),
+                    color: colorScheme.secondaryContainer,
+                    borderRadius: BorderRadius.circular(12),
                   )
                 : null,
             child: Row(

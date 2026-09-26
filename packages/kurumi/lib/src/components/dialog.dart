@@ -53,18 +53,15 @@ class KurumiDialog extends StatelessWidget {
               ),
             ),
             Material(
-              color: Theme.of(context).colorScheme.surface,
+              color: Theme.of(context).colorScheme.surfaceContainerHigh,
+              elevation: 6,
               shape: RoundedRectangleBorder(
-                borderRadius: borderRadius ?? BorderRadius.circular(8),
-                side: BorderSide(
-                  color: Theme.of(context).colorScheme.outline,
-                  width: 0.25,
-                ),
+                borderRadius: borderRadius ?? BorderRadius.circular(28),
               ),
               child: Container(
                 constraints: BoxConstraints(
                   maxWidth: min(
-                    size.width * 0.8,
+                    size.width * 0.85,
                     width ?? 500,
                   ),
                   maxHeight: min(
@@ -73,10 +70,10 @@ class KurumiDialog extends StatelessWidget {
                   ),
                 ),
                 decoration: BoxDecoration(
-                  borderRadius: borderRadius ?? BorderRadius.circular(8),
+                  borderRadius: borderRadius ?? BorderRadius.circular(28),
                   color: color,
                 ),
-                padding: padding ?? const EdgeInsets.all(16),
+                padding: padding ?? const EdgeInsets.all(24),
                 child: child,
               ),
             ),

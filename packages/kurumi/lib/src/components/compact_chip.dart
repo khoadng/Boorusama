@@ -39,7 +39,7 @@ class KurumiCompactChip extends StatelessWidget {
       backgroundColor: backgroundColor,
       foregroundColor: textColor,
       shape: RoundedRectangleBorder(
-        borderRadius: borderRadius ?? BorderRadius.circular(4),
+        borderRadius: borderRadius ?? BorderRadius.circular(8),
       ),
     );
   }

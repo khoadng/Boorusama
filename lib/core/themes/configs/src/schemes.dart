@@ -11,6 +11,14 @@ import 'color_settings.dart';
 
 final preDefinedColorSettings = [
   ColorSettings.fromPredefinedScheme(
+    'pixel_dark',
+    nickname: 'Pixel Dark (Material You)',
+  ),
+  ColorSettings.fromPredefinedScheme(
+    'pixel_light',
+    nickname: 'Pixel Light (Material You)',
+  ),
+  ColorSettings.fromPredefinedScheme(
     'danbooru_dark',
     nickname: 'Dark Blue',
   ),
@@ -93,6 +101,8 @@ ColorScheme getSchemeFromBasic(
 
 ColorScheme? getSchemeFromPredefined(String? name) {
   return switch (name) {
+    'pixel_dark' => KurumiPresetColorSchemes.pixelDark,
+    'pixel_light' => KurumiPresetColorSchemes.pixelLight,
     'danbooru_dark' => KurumiPresetColorSchemes.danbooruDark,
     'danbooru_light' => KurumiPresetColorSchemes.danbooruLight,
     'green' => KurumiPresetColorSchemes.green,

@@ -43,7 +43,7 @@ class BooruSelectorItem extends StatelessWidget {
     return Material(
       key: ValueKey(config.id),
       color: Colors.transparent,
-      borderRadius: BorderRadius.circular(8),
+      borderRadius: BorderRadius.circular(16),
       child: Container(
         margin: direction == Axis.vertical
             ? EdgeInsets.symmetric(
@@ -56,7 +56,7 @@ class BooruSelectorItem extends StatelessWidget {
         child: InkWell(
           hoverColor: Kurumi.themeOf(context).hoverColor.withValues(alpha: 0.1),
           customBorder: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(16),
           ),
           onSecondaryTap: () => show(),
           onTap: onTap,
@@ -78,66 +78,25 @@ class BooruSelectorItem extends StatelessWidget {
     return Stack(
       alignment: Alignment.center,
       children: [
-        if (direction == Axis.horizontal)
-          Align(
-            alignment: Alignment.topCenter,
+        if (selected)
+          Positioned.fill(
             child: Container(
-              width: 48,
-              height: 4,
+              margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
               decoration: BoxDecoration(
-                borderRadius: const BorderRadius.only(
-                  bottomLeft: Radius.circular(4),
-                  bottomRight: Radius.circular(4),
-                ),
-                border: Border(
-                  top: BorderSide(
-                    color: selected
-                        ? Kurumi.themeOf(context).colorScheme.primary
-                        : Colors.transparent,
-                    width: 4,
-                  ),
-                ),
-              ),
-            ),
-          )
-        else
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Container(
-              width: 4,
-              height: 48,
-              decoration: BoxDecoration(
-                borderRadius: const BorderRadius.only(
-                  topRight: Radius.circular(4),
-                  bottomRight: Radius.circular(4),
-                ),
-                border: Border(
-                  top: BorderSide(
-                    color: selected
-                        ? Kurumi.themeOf(context).colorScheme.primary
-                        : Colors.transparent,
-                    width: 48,
-                  ),
-                ),
+                color: Kurumi.themeOf(context)
+                    .colorScheme
+                    .secondaryContainer
+                    .withValues(alpha: 0.6),
+                borderRadius: BorderRadius.circular(16),
               ),
             ),
           ),
-        Container(
+        SizedBox(
           width: direction == Axis.vertical
               ? 60
               : hideLabel
               ? 52
               : 64,
-          decoration: BoxDecoration(
-            border: direction == Axis.vertical
-                ? const Border(
-                    left: BorderSide(
-                      color: Colors.transparent,
-                      width: 4,
-                    ),
-                  )
-                : null,
-          ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -152,7 +111,7 @@ class BooruSelectorItem extends StatelessWidget {
                       )
                     : null,
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(12),
                   child: ConfigAwareWebsiteLogo.fromConfig(
                     config.auth,
                     width: logoSize,
@@ -177,8 +136,17 @@ class BooruSelectorItem extends StatelessWidget {
                     textAlign: TextAlign.center,
                     maxLines: direction == Axis.vertical ? 3 : 1,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 10,
+                      fontWeight:
+                          selected ? FontWeight.bold : FontWeight.normal,
+                      color: selected
+                          ? Kurumi.themeOf(context)
+                              .colorScheme
+                              .onSecondaryContainer
+                          : Kurumi.themeOf(context)
+                              .colorScheme
+                              .onSurfaceVariant,
                     ),
                   ),
                 ),

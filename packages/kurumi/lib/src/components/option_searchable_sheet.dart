@@ -72,7 +72,7 @@ class _KurumiOptionSearchableSheetState<T extends Object>
                 hintText: widget.searchHint,
                 suffixIcon: const Icon(Icons.search),
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(28),
                 ),
               ),
             ),
@@ -139,7 +139,7 @@ class KurumiOptionSingleSearchableField<T extends Object>
             ),
             decoration: BoxDecoration(
               color: backgroundColor,
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(16),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,

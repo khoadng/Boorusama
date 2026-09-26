@@ -73,11 +73,11 @@ class _KurumiDismissibleInfoContainerState
         horizontal: 4,
       ),
       decoration: BoxDecoration(
-        borderRadius: const BorderRadius.all(Radius.circular(4)),
+        borderRadius: const BorderRadius.all(Radius.circular(16)),
         color: colors?.backgroundColor,
         border: colors != null
             ? Border.all(
-                color: colors.borderColor,
+                color: colors.borderColor.withValues(alpha: 0.3),
               )
             : null,
       ),

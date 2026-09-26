@@ -16,7 +16,7 @@ class KurumiImageErrorPlaceholder extends StatelessWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surfaceContainerLow,
         borderRadius:
-            borderRadius ?? const BorderRadius.all(Radius.circular(8)),
+            borderRadius ?? const BorderRadius.all(Radius.circular(12)),
       ),
       child: LayoutBuilder(
         builder: (context, constraints) => Container(

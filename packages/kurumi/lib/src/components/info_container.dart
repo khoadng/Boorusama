@@ -106,10 +106,10 @@ class _KurumiTemplateContainerState extends State<KurumiTemplateContainer> {
           ),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
-        borderRadius: const BorderRadius.all(Radius.circular(4)),
+        borderRadius: const BorderRadius.all(Radius.circular(16)),
         border: widget.borderColor != null
             ? Border.all(
-                color: widget.borderColor!,
+                color: widget.borderColor!.withValues(alpha: 0.3),
               )
             : null,
       ),
@@ -118,7 +118,10 @@ class _KurumiTemplateContainerState extends State<KurumiTemplateContainer> {
         children: [
           Container(
             height: 40,
-            color: widget.titleBackgroundColor,
+            decoration: BoxDecoration(
+              color: widget.titleBackgroundColor,
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+            ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
