@@ -226,6 +226,10 @@
     "counter": {
       "one": "Comentário",
       "other": "Comentários"
+    },
+    "vote": {
+      "already_voted": "Você já votou neste comentário",
+      "success": "Comentário votado"
     }
   },
   "explore": {
@@ -1461,7 +1465,9 @@
   },
   "sankaku": {
     "errors": {
-      "exclusion_search_restricted": "O Sankaku restringe essa pesquisa de exclusão à sua conta. Tente adicionar uma tag que não esteja excluída."
+      "exclusion_search_restricted": "O Sankaku restringe essa pesquisa de exclusão à sua conta. Tente adicionar uma tag que não esteja excluída.",
+      "anonymous_tag_limit": "O Sankaku rejeitou essa pesquisa porque usuários anônimos só podem pesquisar com um número limitado de tags. Use menos tags ou faça login.",
+      "account_tag_limit": "O Sankaku rejeitou essa pesquisa porque sua conta só permite pesquisar com um número limitado de tags. Use menos tags ou faça um upgrade da sua conta."
     }
   }
 }
