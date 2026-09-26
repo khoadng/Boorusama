@@ -19,7 +19,7 @@ class KurumiSquareChip extends StatelessWidget {
       decoration: BoxDecoration(
         color: color,
         borderRadius:
-            borderRadius ?? const BorderRadius.all(Radius.circular(2)),
+            borderRadius ?? const BorderRadius.all(Radius.circular(6)),
       ),
       child: label,
     );

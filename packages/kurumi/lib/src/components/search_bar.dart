@@ -109,25 +109,36 @@ class _KurumiSearchBarState extends State<KurumiSearchBar> {
       child: textField,
     );
 
-    final searchBar = DecoratedBox(
+    final searchBar = Container(
+      constraints: const BoxConstraints(minHeight: 52),
       decoration: BoxDecoration(
         color: colorScheme.brightness == Brightness.dark
             ? colorScheme.surfaceContainerHigh
             : colorScheme.surfaceContainerHighest,
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(28),
+        boxShadow: [
+          BoxShadow(
+            color: colorScheme.shadow.withValues(alpha: 0.06),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: GestureDetector(
         onTap: () => widget.onTap?.call(),
-        child: Row(
-          children: [
-            const SizedBox(width: 4),
-            widget.leading ?? const SizedBox(width: 8),
-            const SizedBox(width: 4),
-            Expanded(
-              child: searchField,
-            ),
-            widget.trailing ?? const SizedBox.shrink(),
-          ],
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 6),
+          child: Row(
+            children: [
+              widget.leading ?? const SizedBox(width: 12),
+              const SizedBox(width: 4),
+              Expanded(
+                child: searchField,
+              ),
+              widget.trailing ?? const SizedBox.shrink(),
+              const SizedBox(width: 4),
+            ],
+          ),
         ),
       ),
     );

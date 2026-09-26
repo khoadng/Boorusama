@@ -77,9 +77,9 @@ class _NavigationTileContainer extends StatelessWidget {
         vertical: 2,
       ),
       child: Material(
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.circular(28),
         color: selected
-            ? Theme.of(context).colorScheme.secondary
+            ? Theme.of(context).colorScheme.secondaryContainer
             : Colors.transparent,
         child: child,
       ),
@@ -112,7 +112,7 @@ class _NavigationContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       hoverColor: Theme.of(context).hoverColor.withAlpha(25),
-      borderRadius: BorderRadius.circular(4),
+      borderRadius: BorderRadius.circular(28),
       onTap: switch (onTap) {
         final callback? => () => callback(value),
         null => null,
@@ -120,8 +120,8 @@ class _NavigationContent extends StatelessWidget {
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 4),
         padding: EdgeInsets.symmetric(
-          horizontal: 8,
-          vertical: showIcon ? 4 : 6,
+          horizontal: 16,
+          vertical: showIcon ? 8 : 10,
         ),
         child: switch ((icon: showIcon, title: showTitle)) {
           (icon: true, title: true) => Row(

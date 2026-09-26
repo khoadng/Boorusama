@@ -49,8 +49,8 @@ class _KurumiSegmentedButtonState<T> extends State<KurumiSegmentedButton<T>> {
             style: selected == entry.key
                 ? widget.selectedTextStyle ??
                       TextStyle(
-                        fontWeight: FontWeight.w500,
-                        color: colorScheme.onPrimary,
+                        fontWeight: FontWeight.w600,
+                        color: colorScheme.onSecondaryContainer,
                       )
                 : widget.unselectedTextStyle ??
                       TextStyle(
@@ -59,16 +59,16 @@ class _KurumiSegmentedButtonState<T> extends State<KurumiSegmentedButton<T>> {
                       ),
           ),
       },
-      height: 32,
+      height: 36,
       fixedWidth: widget.fixedWidth,
       thumbDecoration: BoxDecoration(
-        color: widget.selectedColor ?? colorScheme.primary,
-        borderRadius: BorderRadius.circular(8),
+        color: widget.selectedColor ?? colorScheme.secondaryContainer,
+        borderRadius: BorderRadius.circular(20),
       ),
       innerPadding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
-        color: widget.unselectedColor ?? colorScheme.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(24),
+        color: widget.unselectedColor ?? colorScheme.surfaceContainerHigh,
       ),
       onValueChanged: (value) {
         setState(() {

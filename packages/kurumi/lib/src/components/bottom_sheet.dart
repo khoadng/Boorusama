@@ -21,9 +21,9 @@ class KurumiBottomSheet extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Material(
-      color: backgroundColor ?? colorScheme.surfaceContainer,
+      color: backgroundColor ?? colorScheme.surfaceContainerLow,
       borderRadius: const BorderRadius.vertical(
-        top: Radius.circular(16),
+        top: Radius.circular(28),
       ),
       clipBehavior: Clip.antiAlias,
       child: SafeArea(

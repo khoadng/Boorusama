@@ -22,7 +22,7 @@ class KurumiImagePlaceholder extends StatelessWidget {
           context,
         ).colorScheme.surfaceContainerHigh.withValues(alpha: 0.5),
         borderRadius:
-            borderRadius ?? const BorderRadius.all(Radius.circular(8)),
+            borderRadius ?? const BorderRadius.all(Radius.circular(12)),
       ),
       child: const SizedBox.shrink(),
     );

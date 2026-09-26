@@ -22,7 +22,7 @@ class KurumiSideMenuTile extends StatelessWidget {
         child: InkWell(
           onTap: onTap,
           customBorder: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(28),
           ),
           child: DefaultTextStyle(
             style: Theme.of(context).textTheme.titleSmall ?? const TextStyle(),

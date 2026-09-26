@@ -156,9 +156,9 @@ class _OverlayContainer extends StatelessWidget {
             (isDesktop
                 ? colorScheme.surfaceContainerHighest
                 : colorScheme.surface),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: colorScheme.outlineVariant,
+          color: colorScheme.outlineVariant.withValues(alpha: 0.3),
           width: 0.5,
         ),
         boxShadow: [

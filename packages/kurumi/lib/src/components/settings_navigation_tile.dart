@@ -36,10 +36,10 @@ class KurumiSettingsEntryTile extends StatelessWidget {
           color: selected
               ? Theme.of(context).colorScheme.primaryContainer
               : Colors.transparent,
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(16),
           child: InkWell(
             hoverColor: Theme.of(context).hoverColor.withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(16),
             onTap: onTap,
             child: Container(
               margin: EdgeInsets.symmetric(

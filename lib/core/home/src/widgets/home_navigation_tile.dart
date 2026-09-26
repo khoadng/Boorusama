@@ -51,7 +51,7 @@ class HomeNavigationTile extends StatelessWidget {
             selected ? selectedIcon : icon,
             fill: 1,
             color: selected
-                ? Kurumi.themeOf(context).colorScheme.onSecondary
+                ? Kurumi.themeOf(context).colorScheme.onSecondaryContainer
                 : null,
           ),
           icon: Icon(
@@ -59,8 +59,8 @@ class HomeNavigationTile extends StatelessWidget {
             color:
                 forceIconColor ??
                 (selected
-                    ? Kurumi.themeOf(context).colorScheme.onSecondary
-                    : null),
+                    ? Kurumi.themeOf(context).colorScheme.onSecondaryContainer
+                    : Kurumi.themeOf(context).colorScheme.onSurfaceVariant),
             fill: forceFillIcon ? 1 : 0,
           ),
           title: Text(
@@ -69,9 +69,10 @@ class HomeNavigationTile extends StatelessWidget {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
+              fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
               color: selected
-                  ? Kurumi.themeOf(context).colorScheme.onSecondary
-                  : null,
+                  ? Kurumi.themeOf(context).colorScheme.onSecondaryContainer
+                  : Kurumi.themeOf(context).colorScheme.onSurfaceVariant,
             ),
           ),
           onTap: enabled

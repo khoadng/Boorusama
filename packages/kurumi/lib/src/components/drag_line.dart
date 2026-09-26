@@ -12,11 +12,11 @@ class KurumiDragLine extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: padding,
-      width: 48,
-      height: 6,
+      width: 32,
+      height: 4,
       decoration: ShapeDecoration(
         shape: const StadiumBorder(),
-        color: Theme.of(context).colorScheme.outline,
+        color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.4),
       ),
     );
   }

@@ -25,7 +25,7 @@ class KurumiCustomContextMenuOverlay extends StatelessWidget {
       cardBuilder: (context, children) => Material(
         color:
             backgroundColor ?? Theme.of(context).colorScheme.surfaceContainer,
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.circular(16),
         elevation: 4,
         child: Container(
           padding: const EdgeInsets.all(8),
@@ -137,7 +137,7 @@ class _KurumiContextMenuTileSurface extends StatelessWidget {
         hoverColor: hoverColor,
         onTap: onTap,
         customBorder: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(4),
+          borderRadius: BorderRadius.circular(12),
         ),
         child: Padding(
           padding: EdgeInsets.symmetric(
