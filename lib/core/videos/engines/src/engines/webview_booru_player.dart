@@ -3,12 +3,14 @@ import 'dart:async';
 
 // Package imports:
 import 'package:kurumi/kurumi.dart';
+import 'package:path/path.dart' as p;
 import 'package:kurumi/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 
 // Project imports:
+import '../../../../../foundation/filesystem.dart';
 import '../../../../../foundation/platform.dart';
 import '../../../../themes/colors/types.dart';
 import '../../../lock/types.dart';
@@ -22,6 +24,7 @@ class WebViewBooruPlayer implements BooruPlayer {
   WebViewBooruPlayer({
     required this.wakelock,
     required this.platform,
+    required this.fileSystem,
     String? userAgent,
     Color backgroundColor = Colors.black,
   }) : _userAgent = userAgent,
@@ -29,6 +32,7 @@ class WebViewBooruPlayer implements BooruPlayer {
 
   final Wakelock wakelock;
   final AppPlatform platform;
+  final AppFileSystem fileSystem;
   final String? _userAgent;
   final Color _backgroundColor;
 
@@ -53,6 +57,9 @@ class WebViewBooruPlayer implements BooruPlayer {
   Duration _currentPosition = Duration.zero;
   Duration _currentDuration = Duration.zero;
   String? _currentUrl;
+
+  // Page written next to a cached video so the WebView can read the file
+  String? _pagePath;
 
   @override
   bool isPlatformSupported() =>
@@ -95,12 +102,13 @@ class WebViewBooruPlayer implements BooruPlayer {
     ]);
   }
 
-  Future<void> _loadVideoUrl(String url, bool autoplay) async {
-    if (_webViewController == null) return;
+  Future<void> _loadVideo(VideoSource source, bool autoplay) async {
+    final controller = _webViewController;
+    if (controller == null) return;
     _sourceGeneration++;
     firstFrameRendered.value = false;
 
-    await _webViewController!.setNavigationDelegate(
+    await controller.setNavigationDelegate(
       NavigationDelegate(
         onPageFinished: (url) {
           _onPageLoadComplete(autoplay);
@@ -114,14 +122,23 @@ class WebViewBooruPlayer implements BooruPlayer {
       ),
     );
 
-    final html = _urlToHtml(
-      url,
+    final html = _videoHtml(
+      source,
       backgroundColor: _backgroundColor,
       muted: false, // Will be set via setVolume
       autoplay: autoplay,
     );
 
-    await _webViewController!.loadHtmlString(html);
+    switch (source) {
+      case StreamingVideoSource():
+        await _deletePage();
+        if (controller.platform case final AndroidWebViewController android) {
+          await android.setAllowFileAccess(false);
+        }
+        await controller.loadHtmlString(html);
+      case CachedVideoSource(:final filePath):
+        await _loadCachedPage(controller, html, filePath);
+    }
 
     // Fallback: if page doesn't trigger onPageFinished within 2 seconds,
     // assume it's loaded (common issue with loadHtmlString on some platforms)
@@ -130,6 +147,56 @@ class WebViewBooruPlayer implements BooruPlayer {
         _onPageLoadComplete(autoplay);
       }
     });
+  }
+
+  // WebViews only read local files from a page that is itself a local file,
+  // so the page is written beside the video and read access is limited to
+  // the video's directory.
+  Future<void> _loadCachedPage(
+    WebViewController controller,
+    String html,
+    String videoPath,
+  ) async {
+    final videoDir = p.dirname(videoPath);
+    final pagePath = p.join(
+      videoDir,
+      _kPageDirName,
+      'player_${identityHashCode(this)}.html',
+    );
+
+    final pageDir = p.dirname(pagePath);
+
+    // Pages from a previous run are left behind when the app is killed
+    if (!_stalePagesPruned) {
+      _stalePagesPruned = true;
+      if (await fileSystem.directoryExists(pageDir)) {
+        await fileSystem.deleteDirectory(pageDir, recursive: true);
+      }
+    }
+
+    await fileSystem.createDirectory(pageDir, recursive: true);
+    await fileSystem.writeString(pagePath, html);
+    _pagePath = pagePath;
+
+    switch (controller.platform) {
+      case final WebKitWebViewController webKit:
+        await webKit.loadFileWithParams(
+          WebKitLoadFileParams(
+            absoluteFilePath: pagePath,
+            readAccessPath: videoDir,
+          ),
+        );
+      case _:
+        await controller.loadFile(pagePath);
+    }
+  }
+
+  Future<void> _deletePage() async {
+    final pagePath = _pagePath;
+    if (pagePath == null) return;
+
+    _pagePath = null;
+    await fileSystem.deleteFileIfExists(pagePath);
   }
 
   void _resetState() {
@@ -147,11 +214,9 @@ class WebViewBooruPlayer implements BooruPlayer {
   }) async {
     if (_isDisposed) throw StateError('Player has been disposed');
 
-    final finalUrl = _getOptimalUrlForWebView(source);
-
-    _currentUrl = finalUrl;
+    _currentUrl = source.url;
     await _setupWebViewController();
-    await _loadVideoUrl(finalUrl, config?.autoplay ?? false);
+    await _loadVideo(source, config?.autoplay ?? false);
   }
 
   @override
@@ -161,16 +226,14 @@ class WebViewBooruPlayer implements BooruPlayer {
   }) async {
     if (_isDisposed || _webViewController == null) return;
 
-    final url = _getOptimalUrlForWebView(source);
-
-    if (_currentUrl == url) return;
+    if (_currentUrl == source.url) return;
 
     await pause();
     await setVolume(0);
 
-    _currentUrl = url;
+    _currentUrl = source.url;
     _resetState();
-    await _loadVideoUrl(url, config?.autoplay ?? false);
+    await _loadVideo(source, config?.autoplay ?? false);
   }
 
   Future<dynamic> _runJavaScriptSafely(
@@ -272,12 +335,13 @@ class WebViewBooruPlayer implements BooruPlayer {
     _onPositionChanged(current, total);
   }
 
-  String _urlToHtml(
-    String url, {
+  String _videoHtml(
+    VideoSource source, {
     Color backgroundColor = Colors.black,
     bool? muted,
     bool autoplay = false,
   }) {
+    final url = source.url;
     final colorText = backgroundColor.hexWithoutAlpha;
     final mutedText = (muted ?? false) ? 'muted' : '';
     // Can't really autoplay in WebView, user gesture needed (except on Android maybe)
@@ -286,14 +350,7 @@ class WebViewBooruPlayer implements BooruPlayer {
         ? autoplay
         : false;
     final autoplayText = autoplayValue ? 'autoplay' : '';
-
-    final videoType = switch (url.toLowerCase()) {
-      final u when u.contains('.webm') => 'video/webm',
-      final u when u.contains('.mp4') => 'video/mp4',
-      final u when u.contains('.mov') => 'video/quicktime',
-      final u when u.contains('.avi') => 'video/x-msvideo',
-      _ => 'video/mp4', // Default to mp4
-    };
+    final videoType = source.mimeType;
 
     return '''
 <!DOCTYPE html>
@@ -489,45 +546,11 @@ class WebViewBooruPlayer implements BooruPlayer {
     _playingController.close();
     _bufferingController.close();
     _durationController.close();
-  }
 
-  /// Gets the optimal URL for WebView based on VideoSource data
-  String _getOptimalUrlForWebView(VideoSource source) {
-    return switch (source) {
-      StreamingVideoSource() => source.url,
-      CachedVideoSource() when !source.isSmallEnoughFor(10 * 1024 * 1024) =>
-        source.originalUrl, // Too large, fall back to streaming
-      CachedVideoSource() => _getCachedVideoUrl(source),
-    };
-  }
-
-  /// Gets URL for cached video with WebView-specific logging
-  String _getCachedVideoUrl(CachedVideoSource source) {
-    debugPrint('WebView: Converting cached file to data URL: ${source.url}');
-
-    final result = source.getOptimalUrl(preferDataUrl: true);
-
-    return switch (result) {
-      CachedUrlResult(:final url, :final isDataUrl) => switch (isDataUrl) {
-        true => _logDataUrlSuccess(source, url),
-        false => url, // Using cached file path directly
-      },
-      StreamingFallbackResult(:final url, :final reason) =>
-        _logFallbackToStreaming(url, reason),
-    };
-  }
-
-  String _logDataUrlSuccess(CachedVideoSource source, String url) {
-    debugPrint(
-      'WebView: Successfully converted cached file (${source.fileSizeMB?.toStringAsFixed(1)}MB) to data URL',
-    );
-    return url;
-  }
-
-  String _logFallbackToStreaming(String url, String? reason) {
-    debugPrint(
-      'WebView: Falling back to streaming: $url${reason != null ? ' ($reason)' : ''}',
-    );
-    return url;
+    unawaited(_deletePage());
   }
 }
+
+const _kPageDirName = 'webview';
+
+var _stalePagesPruned = false;

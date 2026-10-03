@@ -12,6 +12,7 @@ import 'package:kurumi/kurumi.dart';
 import 'package:kurumi/material.dart';
 
 // Project imports:
+import '../../../../../foundation/filesystem.dart';
 import '../../../../../foundation/loggers.dart';
 import '../../../../../foundation/platform.dart';
 import '../../../../configs/config/providers.dart';
@@ -241,6 +242,7 @@ class _BooruVideoState extends ConsumerState<BooruVideo> {
       final player = createBooruPlayer(
         engine: _resolvedEngine,
         platform: ref.read(appPlatformProvider),
+        fileSystem: ref.read(appFileSystemProvider),
         userAgent: widget.userAgent,
       );
 
@@ -388,47 +390,35 @@ class _BooruVideoState extends ConsumerState<BooruVideo> {
     super.dispose();
   }
 
-  /// Creates a VideoSource with caching information
+  /// Creates a VideoSource, preferring a valid cached file
   Future<VideoSource> _createVideoSource() async {
     final cacheManager = widget.cacheManager;
     if (cacheManager == null) {
       return StreamingVideoSource(widget.url);
     }
 
-    final cachedUrl = await _getOptimalVideoUrl(
-      cacheManager,
-      widget.url,
-      headers: widget.headers,
-    );
+    final cachedPath = await _getCachedVideoPath(cacheManager, widget.url);
 
-    return switch (cachedUrl == widget.url) {
-      true => StreamingVideoSource(widget.url),
-      false => CachedVideoSource.fromUrl(
-        cachedUrl: cachedUrl,
+    return switch (cachedPath) {
+      null => StreamingVideoSource(widget.url),
+      final path => CachedVideoSource(
+        filePath: path,
         originalUrl: widget.url,
       ),
     };
   }
 
-  /// Returns cached URL if available, otherwise returns streaming URL
-  Future<String> _getOptimalVideoUrl(
+  Future<String?> _getCachedVideoPath(
     VideoCacheManager cacheManager,
     String originalUrl, {
-    Map<String, String>? headers,
     Duration? maxAge = const Duration(days: 7),
   }) async {
     final isCached = await cacheManager.isVideoCached(
       originalUrl,
       maxAge: maxAge,
     );
-    if (isCached) {
-      final cachedPath = await cacheManager.getCachedVideoPath(originalUrl);
-      if (cachedPath != null) {
-        return 'file://$cachedPath';
-      }
-    }
 
-    return originalUrl;
+    return isCached ? cacheManager.getCachedVideoPath(originalUrl) : null;
   }
 
   void _scheduleDelayedCaching() {

@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:i18n/i18n.dart';
 
 // Project imports:
+import '../../../../../foundation/filesystem.dart';
 import '../../../../../foundation/platform.dart';
 import '../../../lock/types.dart';
 import '../engines/media_kit_booru_player.dart';
@@ -16,11 +17,13 @@ import '../types/video_engine.dart';
 BooruPlayer createBooruPlayer({
   required VideoPlayerEngine engine,
   required AppPlatform platform,
+  required AppFileSystem fileSystem,
   String? userAgent,
 }) => switch (engine) {
   VideoPlayerEngine.webview => WebViewBooruPlayer(
     wakelock: Wakelock(),
     platform: platform,
+    fileSystem: fileSystem,
     //FIXME: pass user agent for other impl as well?
     userAgent: userAgent,
   ),
