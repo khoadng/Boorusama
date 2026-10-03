@@ -18,6 +18,8 @@ import 'package:boorusama/core/boorus/defaults/src/booru_repository_default.dart
 import 'package:boorusama/core/boorus/defaults/widgets.dart';
 import 'package:boorusama/core/boorus/engine/types.dart';
 import 'package:boorusama/core/bootstrap/boorusama_runtime.dart';
+import 'package:boorusama/core/comments/types.dart';
+import 'package:boorusama/core/comments/widgets.dart';
 import 'package:boorusama/core/configs/config/providers.dart';
 import 'package:boorusama/core/configs/config/types.dart';
 import 'package:boorusama/core/configs/create/create.dart';
@@ -221,6 +223,9 @@ final class FakeBooruBackend {
 
   /// Tags offered as search suggestions when they start with the typed text.
   final autocompleteTags = <String>[];
+
+  /// Comments shown on the comments page, by post ID.
+  final comments = <int, List<Comment>>{};
   final postCompletions = <int>[];
   final pendingPostGates = <FakeBooruPostGate>[];
   final unexpectedPostRequests = <FakeBooruPostRequest>[];
@@ -572,6 +577,17 @@ final class _FakeBooruRepository extends BooruRepositoryDefault {
       );
 
   @override
+  CommentRepository comment(BooruConfigAuth config) => CommentRepositoryBuilder(
+    fetch: (postId, {page}) async => switch (page) {
+      null || 1 => backend.comments[postId] ?? const [],
+      _ => const [],
+    },
+    create: (postId, body) async => false,
+    update: (commentId, body) async => false,
+    delete: (commentId) async {},
+  );
+
+  @override
   DownloadFileUrlExtractor downloadFileUrlExtractor(BooruConfigAuth config) =>
       _FakeDownloadFileUrlExtractor(config.url);
 
@@ -686,6 +702,14 @@ final class _FakeBooruBuilder extends BaseBooruBuilder {
   @override
   FavoritesPageBuilder? get favoritesPageBuilder =>
       (context) => const _FakeFavoritesPage();
+
+  @override
+  CommentPageBuilder? get commentPageBuilder =>
+      (context, useAppBar, post) => CommentPageScaffold(
+        postId: post.id,
+        useAppBar: useAppBar,
+        sortOrders: const {CommentSortOrder.newest, CommentSortOrder.oldest},
+      );
 
   @override
   ArtistPageBuilder? get artistPageBuilder =>

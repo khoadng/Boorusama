@@ -10,15 +10,20 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:boorusama/core/changelogs/dialog.dart';
 import 'package:boorusama/core/changelogs/providers.dart';
 import 'package:boorusama/core/changelogs/types.dart';
+import 'package:boorusama/core/comments/types.dart';
 import 'package:boorusama/core/configs/create/src/widgets/create_config_button.dart';
 import 'package:boorusama/core/home/src/pages/entry_page.dart';
 import 'package:boorusama/core/posts/details_manager/widgets.dart';
+import 'package:boorusama/core/posts/details_parts/widgets.dart';
+import 'package:boorusama/core/posts/post/src/pages/original_image_page.dart';
 import 'package:boorusama/core/premiums/providers.dart';
 import 'package:boorusama/core/tags/favorites/src/widgets/favorite_tag_label_selector_field.dart';
 import 'package:boorusama/core/search/search/src/views/search_landing_view.dart';
 import 'package:boorusama/core/search/search/src/widgets/desktop_search_bar.dart';
+import 'package:boorusama/core/search/suggestions/tag_suggestion_items.dart';
 import 'package:boorusama/core/settings/src/pages/settings_page.dart';
 
+import '../support/fakes/memory_repositories.dart';
 import 'support/app_flow_finders.dart';
 import 'support/fake_booru_backend.dart';
 import 'support/fake_image_dio.dart';
@@ -189,6 +194,37 @@ void main() {
     },
   );
 
+  testWidgets('remote moves from a typed query into its tag suggestions', (
+    tester,
+  ) async {
+    final keys = await _mountOnTv(tester);
+    await _typeSearch(keys, 'cat');
+
+    await keys.arrow(TraversalDirection.down);
+    expect(keys.isFocusWithin(_tagSuggestions), isTrue);
+
+    expect(
+      await keys.unreachableIn(
+        _tagSuggestions,
+        reopen: () async {
+          await _typeSearch(keys, 'cat');
+          await keys.arrow(TraversalDirection.down);
+        },
+      ),
+      isEmpty,
+    );
+  });
+
+  testWidgets('tag suggestions for a typed query show clearly where focus is', (
+    tester,
+  ) async {
+    final keys = await _mountOnTv(tester);
+    await _typeSearch(keys, 'cat');
+    await keys.arrow(TraversalDirection.down);
+
+    expect(await keys.faintFocus(within: _tagSuggestions), isEmpty);
+  });
+
   testWidgets('search suggestions show clearly where focus is', (
     tester,
   ) async {
@@ -247,10 +283,15 @@ void main() {
       prepare: (KeyboardFlowDriver keys) =>
           _openRoute(keys, '$_editProfilePath?q=listing'),
     ),
+    (
+      name: 'blacklisted tag menu',
+      button: _blacklistTileMenu,
+      prepare: _openBlacklist,
+    ),
   ];
   for (final c in menus) {
     Future<KeyboardFlowDriver> openMenu(WidgetTester tester) async {
-      final keys = await _mountOnTv(tester);
+      final keys = await _mountOnTv(tester, blacklistedTags: ['spoilers']);
       await c.prepare(keys);
       await _openMenuWithRemote(keys, c.button);
       return keys;
@@ -291,23 +332,47 @@ void main() {
   final popups = [
     (
       name: 'blacklist add dialog',
-      prepare: (KeyboardFlowDriver keys) =>
-          _openRoute(keys, '/global_blacklisted_tags'),
+      prepare: _openBlacklist,
       button: _iconButton(Symbols.add),
+      returnsTo: _iconButton(Symbols.add),
+      direct: false,
     ),
     (
       name: 'blacklist sort sheet',
-      prepare: (KeyboardFlowDriver keys) =>
-          _openRoute(keys, '/global_blacklisted_tags'),
+      prepare: _openBlacklist,
       button: _iconButton(Icons.sort),
+      returnsTo: _iconButton(Icons.sort),
+      direct: false,
+    ),
+    (
+      name: 'blacklist edit dialog',
+      prepare: (KeyboardFlowDriver keys) async {
+        await _openBlacklist(keys);
+        await _openMenuWithRemote(keys, _blacklistTileMenu);
+      },
+      button: find.ancestor(
+        of: find.descendant(of: _openMenu, matching: find.text('Edit')),
+        matching: find.byType(KurumiPopupMenuItem),
+      ),
+      returnsTo: _blacklistTileMenu,
+      // The menu closes as soon as an arrow leaves it; its own walk proves
+      // the item reachable.
+      direct: true,
+    ),
+    (
+      name: 'comments sheet',
+      prepare: _openPostInfoWithRemote,
+      button: find.byType(CommentPostButton),
+      returnsTo: find.byType(CommentPostButton),
+      direct: false,
     ),
   ];
   for (final c in popups) {
     Future<KeyboardFlowDriver> openPopup(WidgetTester tester) async {
-      final keys = await _mountOnTv(tester);
+      final keys = await _mountOnTv(tester, blacklistedTags: ['spoilers']);
       await c.prepare(keys);
-      final opener = ModalRoute.of(tester.element(c.button));
-      await keys.navigateTo(c.button);
+      final opener = ModalRoute.of(tester.element(c.returnsTo));
+      await (c.direct ? keys.focusOn(c.button) : keys.navigateTo(c.button));
       await keys.select();
       await keys.harness.pumpUntil(
         tester,
@@ -326,7 +391,7 @@ void main() {
       await keys.back();
       await keys.harness.settle(tester);
 
-      expect(keys.isFocusWithin(c.button), isTrue);
+      expect(keys.isFocusWithin(c.returnsTo), isTrue);
     });
 
     for (final check in screenChecks) {
@@ -368,6 +433,38 @@ void main() {
     });
   }
 
+  for (final c in screenChecks) {
+    testWidgets('the original image viewer ${c.name}', (tester) async {
+      final keys = await _openOriginalImageViewer(tester);
+
+      expect(await c.check(keys), isEmpty);
+    });
+  }
+
+  testWidgets(
+    'a key press brings back the original image viewer controls hidden by a '
+    'tap',
+    (tester) async {
+      final keys = await _openOriginalImageViewer(tester);
+      final close = _iconButton(Symbols.close);
+
+      await tester.tapAt(tester.getCenter(find.byType(OriginalImagePage)));
+      await keys.harness.settle(tester);
+      expect(close, findsNothing);
+
+      await keys.arrow(TraversalDirection.down);
+      await keys.harness.settle(tester);
+      expect(keys.isFocusWithin(close), isTrue);
+
+      await keys.select();
+      await keys.harness.pumpUntil(
+        tester,
+        () => find.byType(OriginalImagePage).evaluate().isEmpty,
+        description: 'original image viewer to close',
+      );
+    },
+  );
+
   final screens = [
     (
       name: 'home',
@@ -395,6 +492,23 @@ void main() {
 
       expect(await keys.faintFocus(), isEmpty);
     });
+  }
+
+  final phoneScreens = [
+    (name: 'home', open: (KeyboardFlowDriver _) => Future<void>.value()),
+    (name: 'post details', open: _openPostWithRemote),
+    for (final path in ['/search', '/settings', '/bookmarks'])
+      (name: path, open: (KeyboardFlowDriver keys) => _openRoute(keys, path)),
+  ];
+  for (final c in phoneScreens) {
+    for (final check in screenChecks) {
+      testWidgets('the ${c.name} phone screen ${check.name}', (tester) async {
+        final keys = await _mountOnTv(tester, viewport: kMobileViewport);
+        await c.open(keys);
+
+        expect(await check.check(keys), isEmpty);
+      });
+    }
   }
 }
 
@@ -433,6 +547,18 @@ final _searchField = find.descendant(
   of: find.byType(DesktopSearchbar),
   matching: find.byType(EditableText),
 );
+
+Finder get _tagSuggestions => find.byType(TagSuggestionItems);
+
+/// Types [query] into the search bar and waits for its tag suggestions.
+Future<void> _typeSearch(KeyboardFlowDriver keys, String query) async {
+  final tester = keys.tester;
+  tester.state<EditableTextState>(_searchField).widget.focusNode.requestFocus();
+  await keys.harness.settle(tester);
+  await tester.enterText(_searchField, query);
+  await keys.harness.pumpUntilFound(tester, _tagSuggestions);
+  await keys.harness.settle(tester);
+}
 
 /// Starts typing in the search bar and moves down into its suggestions.
 Future<void> _openSearchSuggestions(KeyboardFlowDriver keys) async {
@@ -491,6 +617,42 @@ Future<void> _openMenuWithRemote(
   expect(keys.isFocusWithin(_openMenu), isTrue);
 }
 
+Future<void> _openBlacklist(KeyboardFlowDriver keys) =>
+    _openRoute(keys, '/global_blacklisted_tags');
+
+final _blacklistTileMenu = find
+    .ancestor(
+      of: find.byIcon(Icons.more_vert),
+      matching: find.byType(KurumiPopupMenuButton),
+    )
+    .first;
+
+Future<KeyboardFlowDriver> _openOriginalImageViewer(
+  WidgetTester tester,
+) async {
+  final keys = await _mountOnTv(
+    tester,
+    posts: [
+      TestPost(id: 101, originalImageUrl: 'https://example.com/101.jpg'),
+    ],
+  );
+  await _openPostInfoWithRemote(keys);
+  await _openMenuWithRemote(keys, _postMenuButton);
+  await keys.focusOn(_menuItem('View original'));
+  await keys.select();
+  await keys.harness.pumpUntilFound(tester, find.byType(OriginalImagePage));
+  await keys.harness.settle(tester);
+  return keys;
+}
+
+/// The focusable item labelled [label] in the open menu.
+Finder _menuItem(String label) => find
+    .ancestor(
+      of: find.descendant(of: _openMenu, matching: find.text(label)),
+      matching: find.byType(Focus),
+    )
+    .first;
+
 final _profileDropdown = find
     .byWidgetPredicate((widget) => widget is KurumiOptionDropDownButton)
     .first;
@@ -523,22 +685,48 @@ Future<KeyboardFlowDriver> _mountOnTv(
   bool showChangelog = false,
   bool showPremiumFeatures = false,
   List<TestPost>? posts,
+  List<String> blacklistedTags = const [],
+  Size viewport = kTvViewport,
 }) async {
   final backend = FakeBooruBackend()
-    ..enqueuePosts(page: 1, posts: posts ?? testPostRange(101, 101));
+    ..enqueuePosts(page: 1, posts: posts ?? testPostRange(101, 101))
+    ..autocompleteTags.addAll(['cat', 'cat_ears', 'cat_tail']);
+  backend.comments[101] = [
+    SimpleComment(
+      id: 1,
+      body: 'Nice colors',
+      createdAt: DateTime(2026),
+      updatedAt: null,
+      creatorName: 'tester',
+    ),
+  ];
+  final blacklist = MemoryGlobalBlacklistedTagRepository();
+  for (final tag in blacklistedTags) {
+    await blacklist.addTag(tag);
+  }
   final harness = await HeadlessAppHarness.mount(
     tester,
     booruBackend: backend,
-    viewportSize: kTvViewport,
+    runtime: backend.createRuntime(globalBlacklistedTagRepository: blacklist),
+    viewportSize: viewport,
     additionalOverrides: [
       changelogRepositoryProvider.overrideWith(
         (ref) => _FakeChangelogRepository(showChangelog: showChangelog),
       ),
       deterministicFaviconDioOverride(),
+      deterministicImageDioOverride(),
       if (showPremiumFeatures)
         showPremiumFeatsProvider.overrideWith((ref) => true),
     ],
   );
+  // A blacklist makes the grid filter posts in a real isolate, which only
+  // finishes while real time passes.
+  for (var i = 0; i < 50 && postTile(101).evaluate().isEmpty; i++) {
+    await tester.runAsync(
+      () => Future<void>.delayed(const Duration(milliseconds: 20)),
+    );
+    await tester.pump();
+  }
   await harness.pumpUntilFound(tester, postTile(101));
   await harness.settle(tester);
 
