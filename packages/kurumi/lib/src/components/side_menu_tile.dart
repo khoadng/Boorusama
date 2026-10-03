@@ -35,7 +35,7 @@ class KurumiSideMenuTile extends StatelessWidget {
                   const SizedBox(width: 8),
                   icon,
                   const SizedBox(width: 12),
-                  title,
+                  Flexible(child: title),
                 ],
               ),
             ),
