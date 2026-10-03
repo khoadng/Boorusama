@@ -61,5 +61,11 @@ String _danbooruGridThumbnailUrl(
             GridSize.tiny => post.url720x720,
             _ => post.urlSample,
           },
-  ImageQuality.original => post.urlOriginal,
+  ImageQuality.original => switch ((
+    post.isGif,
+    settings.animatedPostsDefaultState,
+  )) {
+    (true, AnimatedPostsDefaultState.static) => post.url720x720,
+    _ => post.urlOriginal,
+  },
 };

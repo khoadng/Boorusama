@@ -9,18 +9,21 @@ GridThumbnailMedia defaultGridThumbnailMedia(
   Post post,
   GridThumbnailSettings settings,
 ) {
-  final aspectRatio = switch (post.isGif) {
-    true => switch (settings.imageQuality) {
-      ImageQuality.automatic => switch (settings.animatedPostsDefaultState) {
-        AnimatedPostsDefaultState.autoplay => post.effectiveSampleAspectRatio,
-        AnimatedPostsDefaultState.static => post.effectiveThumbnailAspectRatio,
+  final aspectRatio = switch ((
+    post.isGif,
+    settings.animatedPostsDefaultState,
+  )) {
+    (true, AnimatedPostsDefaultState.static) =>
+      post.effectiveThumbnailAspectRatio,
+    (true, AnimatedPostsDefaultState.autoplay) =>
+      switch (settings.imageQuality) {
+        ImageQuality.automatic => post.effectiveSampleAspectRatio,
+        ImageQuality.low => post.effectiveThumbnailAspectRatio,
+        ImageQuality.high => post.effectiveSampleAspectRatio,
+        ImageQuality.highest => post.effectiveSampleAspectRatio,
+        ImageQuality.original => post.effectiveOriginalAspectRatio,
       },
-      ImageQuality.low => post.effectiveThumbnailAspectRatio,
-      ImageQuality.high => post.effectiveSampleAspectRatio,
-      ImageQuality.highest => post.effectiveSampleAspectRatio,
-      ImageQuality.original => post.effectiveOriginalAspectRatio,
-    },
-    false => switch (settings.imageQuality) {
+    (false, _) => switch (settings.imageQuality) {
       ImageQuality.automatic => post.effectiveThumbnailAspectRatio,
       ImageQuality.low => post.effectiveThumbnailAspectRatio,
       ImageQuality.high =>
@@ -47,18 +50,17 @@ GridThumbnailMedia defaultGridThumbnailMedia(
   };
 
   return GridThumbnailMedia(
-    url: switch (post.isGif) {
-      true => switch (settings.imageQuality) {
-        ImageQuality.automatic => switch (settings.animatedPostsDefaultState) {
-          AnimatedPostsDefaultState.autoplay => post.sampleImageUrl,
-          AnimatedPostsDefaultState.static => post.thumbnailImageUrl,
+    url: switch ((post.isGif, settings.animatedPostsDefaultState)) {
+      (true, AnimatedPostsDefaultState.static) => post.thumbnailImageUrl,
+      (true, AnimatedPostsDefaultState.autoplay) =>
+        switch (settings.imageQuality) {
+          ImageQuality.automatic => post.sampleImageUrl,
+          ImageQuality.low => post.thumbnailImageUrl,
+          ImageQuality.high => post.sampleImageUrl,
+          ImageQuality.highest => post.sampleImageUrl,
+          ImageQuality.original => post.originalImageUrl,
         },
-        ImageQuality.low => post.thumbnailImageUrl,
-        ImageQuality.high => post.sampleImageUrl,
-        ImageQuality.highest => post.sampleImageUrl,
-        ImageQuality.original => post.originalImageUrl,
-      },
-      false => switch (settings.imageQuality) {
+      (false, _) => switch (settings.imageQuality) {
         ImageQuality.automatic => post.thumbnailImageUrl,
         ImageQuality.low => post.thumbnailImageUrl,
         ImageQuality.high =>
