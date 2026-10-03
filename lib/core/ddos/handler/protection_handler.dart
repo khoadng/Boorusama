@@ -117,6 +117,7 @@ class HttpProtectionHandler {
   Future<bool> handleResponse(
     HttpResponse response, {
     ProtectionAttempt? attempt,
+    Uri? challengeUri,
   }) async {
     if (_disabled) {
       attempt?.record(const RecoveryStopped(RecoveryStopReason.disabled));
@@ -127,6 +128,7 @@ class HttpProtectionHandler {
       final solved = await _orchestrator.handleResponse(
         response,
         attempt: attempt,
+        challengeUri: challengeUri,
       );
       if (solved) _onSolved?.call();
 
@@ -146,6 +148,7 @@ class HttpProtectionHandler {
   Future<bool> handleError(
     HttpError error, {
     ProtectionAttempt? attempt,
+    Uri? challengeUri,
   }) async {
     if (_disabled) {
       attempt?.record(const RecoveryStopped(RecoveryStopReason.disabled));
@@ -174,6 +177,7 @@ class HttpProtectionHandler {
         context,
         error,
         attempt: attempt,
+        challengeUri: challengeUri,
       );
 
       if (solved) {

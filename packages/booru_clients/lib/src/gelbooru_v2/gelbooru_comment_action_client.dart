@@ -1,3 +1,4 @@
+import 'package:coreutils/coreutils.dart';
 import 'package:dio/dio.dart';
 
 import '../common/feature.dart';
@@ -159,6 +160,7 @@ final class GelbooruCommentActionClient {
       validateStatus: (status) =>
           status != null && status >= 200 && status < 300,
       headers: headers,
+      extra: stateChangingRequestExtra,
     );
   }
 

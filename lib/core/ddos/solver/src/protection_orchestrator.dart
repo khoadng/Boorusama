@@ -34,9 +34,17 @@ class ProtectionOrchestrator {
 
   Future<bool> _handleProtection(
     Uri uri,
+    Uri challengeUri,
     ProtectionDetector? Function() detectProtection,
     ProtectionAttempt? attempt,
   ) async {
+    if (challengeUri.origin != uri.origin) {
+      throw ArgumentError.value(
+        challengeUri,
+        'challengeUri',
+        'must share the origin of $uri',
+      );
+    }
     final detector = detectProtection();
     if (detector == null) {
       attempt?.record(const RecoveryStopped(RecoveryStopReason.noDetector));
@@ -98,7 +106,7 @@ class ProtectionOrchestrator {
       }
       session.record(UserAgentObserved(userAgent != null));
       final result = await solver.solve(
-        uri: uri,
+        uri: challengeUri,
         userAgent: userAgent,
         diagnostics: session,
       );
@@ -124,38 +132,45 @@ class ProtectionOrchestrator {
     }
   }
 
+  /// [challengeUri] is the page the solver opens. It defaults to the request
+  /// URI and must share its origin.
   Future<bool> handleError(
     BuildContext context,
     HttpError error, {
     ProtectionAttempt? attempt,
+    Uri? challengeUri,
   }) {
-    final errorDetectors = _detectors
-        .where((d) => d.detectionPhase == DetectionPhase.error)
-        .toList();
-
     return _handleProtection(
       error.requestUri,
-      () {
-        for (final d in errorDetectors) {
-          final confidence = d.getProtectionConfidence(null, error);
-          attempt?.record(
-            DetectorEvaluated(
-              type: d.protectionType,
-              score: confidence,
-              threshold: d.confidenceThreshold,
-            ),
-          );
-          if (confidence >= d.confidenceThreshold) return d;
-        }
-        return null;
-      },
+      challengeUri ?? error.requestUri,
+      () => _detectError(error, attempt),
       attempt,
     );
+  }
+
+  ProtectionDetector? _detectError(
+    HttpError error,
+    ProtectionAttempt? attempt,
+  ) {
+    for (final d in _detectors) {
+      if (d.detectionPhase != DetectionPhase.error) continue;
+      final confidence = d.getProtectionConfidence(null, error);
+      attempt?.record(
+        DetectorEvaluated(
+          type: d.protectionType,
+          score: confidence,
+          threshold: d.confidenceThreshold,
+        ),
+      );
+      if (confidence >= d.confidenceThreshold) return d;
+    }
+    return null;
   }
 
   Future<bool> handleResponse(
     HttpResponse response, {
     ProtectionAttempt? attempt,
+    Uri? challengeUri,
   }) {
     final responseDetectors = _detectors
         .where((d) => d.detectionPhase == DetectionPhase.response)
@@ -163,6 +178,7 @@ class ProtectionOrchestrator {
 
     return _handleProtection(
       response.requestUri,
+      challengeUri ?? response.requestUri,
       () {
         for (final d in responseDetectors) {
           final confidence = d.getProtectionConfidence(response, null);

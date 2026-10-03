@@ -1,4 +1,5 @@
 // Package imports:
+import 'package:coreutils/coreutils.dart';
 import 'package:dio/dio.dart';
 
 import 'gelbooru_session.dart';
@@ -38,6 +39,7 @@ mixin GelbooruClientFavorites {
           userId: currentUserId,
           passHash: currentPassHash,
         ),
+        extra: stateChangingRequestExtra,
       ),
     );
 
@@ -71,6 +73,7 @@ mixin GelbooruClientFavorites {
           userId: currentUserId,
           passHash: currentPassHash,
         ),
+        extra: stateChangingRequestExtra,
       ),
     );
   }

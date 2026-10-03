@@ -2,6 +2,7 @@
 import 'dart:convert';
 
 // Package imports:
+import 'package:coreutils/coreutils.dart';
 import 'package:dio/dio.dart';
 
 // Project imports:
@@ -86,6 +87,7 @@ class DioProtectionInterceptor extends Interceptor {
       final isProtection = await _protectionHandler.handleResponse(
         DioResponseAdapter(response),
         attempt: attempt,
+        challengeUri: challengeUriFor(response.requestOptions),
       );
 
       if (isProtection) {
@@ -130,6 +132,7 @@ class DioProtectionInterceptor extends Interceptor {
       final solved = await _protectionHandler.handleError(
         DioErrorAdapter(err),
         attempt: attempt,
+        challengeUri: challengeUriFor(err.requestOptions),
       );
 
       if (solved) {
@@ -183,6 +186,26 @@ class DioProtectionInterceptor extends Interceptor {
       }
     }
   }
+}
+
+/// The page a challenge browser opens for [options]. Replaying a request in
+/// the browser repeats its side effects, so state-changing requests open the
+/// site's base page on the same origin instead.
+Uri challengeUriFor(RequestOptions options) {
+  final uri = options.uri;
+  final replayable =
+      options.method.toUpperCase() == 'GET' &&
+      options.extra[stateChangingRequestKey] != true;
+  if (replayable) return uri;
+
+  final base = Uri.tryParse(options.baseUrl);
+  return switch (base) {
+    final base?
+        when (base.isScheme('http') || base.isScheme('https')) &&
+            base.origin == uri.origin =>
+      base,
+    _ => Uri.parse('${uri.origin}/'),
+  };
 }
 
 class DioResponseAdapter implements HttpResponse {
