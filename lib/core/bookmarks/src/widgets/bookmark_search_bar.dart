@@ -190,6 +190,7 @@ class _OverlayState extends ConsumerState<_Overlay> {
         AsyncData(:final value) when value.suggestions.isNotEmpty =>
           ListView.builder(
             shrinkWrap: true,
+            padding: EdgeInsets.zero,
             itemCount: value.suggestions.length,
             itemBuilder: (context, index) {
               final tag = value.suggestions[index];
