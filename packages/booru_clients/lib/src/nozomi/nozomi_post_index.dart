@@ -196,7 +196,7 @@ class NozomiPostIndex {
       url,
       options: Options(
         responseType: ResponseType.bytes,
-        headers: {'Range': 'bytes=0-3'},
+        headers: _rangeHeaders(0, 3),
         validateStatus: (status) =>
             status != null &&
             (status == 200 || status == 206 || status == 404 || status == 416),
@@ -238,9 +238,7 @@ class NozomiPostIndex {
       url,
       options: Options(
         responseType: ResponseType.bytes,
-        headers: {
-          'Range': 'bytes=$offset-$end',
-        },
+        headers: _rangeHeaders(offset, end),
         validateStatus: (status) =>
             status != null &&
             (status == 200 || status == 206 || status == 404 || status == 416),
@@ -270,6 +268,13 @@ class NozomiPostIndex {
     return (ids: ids.take(limit).toList(), total: total);
   }
 }
+
+/// The index host ignores `Range` and sends the whole file when gzip is
+/// accepted, so range requests ask for the identity encoding.
+Map<String, String> _rangeHeaders(int start, int end) => {
+  'Range': 'bytes=$start-$end',
+  'Accept-Encoding': 'identity',
+};
 
 int? _extractTotalIds(
   Response response, {

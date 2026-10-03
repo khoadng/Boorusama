@@ -67,6 +67,7 @@ void main() {
 
       for (final request in requests) {
         expect(request.headers['Range'], 'bytes=0-3');
+        expect(request.headers['Accept-Encoding'], 'identity');
       }
       expect(requests, hasLength(2));
     });
