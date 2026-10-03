@@ -17,6 +17,7 @@ void goToSearchHistoryPage(
       name: RouterPageConstant.searchHistories,
     ),
     useSafeArea: true,
+    isScrollControlled: true,
     builder: (context) => FullHistoryPage(
       onTap: onTap,
     ),
