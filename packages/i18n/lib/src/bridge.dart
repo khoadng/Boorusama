@@ -25,7 +25,7 @@ extension I18nX on BuildContext {
   List<Locale> get supportedLocales => AppLocaleUtils.supportedLocales;
 
   void setLocale(Locale locale) =>
-      LocaleSettings.setLocaleRaw(locale.languageCode);
+      LocaleSettings.setLocaleRaw(locale.toLanguageTag());
 
   void setLocaleLanguage(BooruLanguage? lang) {
     if (lang == null) return;
