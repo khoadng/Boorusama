@@ -15,13 +15,14 @@ import '../../../../foundation/url_launcher.dart';
 import '../../../downloads/background/types.dart';
 import '../../../downloads/configs/widgets.dart';
 import '../../../downloads/downloader/types.dart';
+import '../data/file_downloader_task_client.dart';
 import '../providers/task_update_ex.dart';
 
 final _checkResumableProvider = FutureProvider.autoDispose.family<bool, Task>((
   ref,
   task,
 ) {
-  return FileDownloader().taskCanResume(task);
+  return ref.watch(downloadTaskClientProvider).canResume(task);
 });
 
 class SimpleDownloadTile extends ConsumerWidget {
@@ -162,7 +163,7 @@ class SimpleDownloadTile extends ConsumerWidget {
 }
 
 final _filePathProvider = FutureProvider.autoDispose.family<String, Task>(
-  (ref, task) => task.filePath(),
+  (ref, task) => ref.watch(downloadTaskClientProvider).filePath(task),
 );
 
 class _TaskSubtitle extends ConsumerWidget {

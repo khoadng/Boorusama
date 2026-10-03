@@ -20,6 +20,7 @@ import '../../../widgets/default_selection_bar.dart';
 import '../../../widgets/widgets.dart';
 import '../../types.dart';
 import '../l10n.dart';
+import '../data/file_downloader_task_client.dart';
 import '../providers/download_task_updates_notifier.dart';
 import '../providers/internal_providers.dart';
 import '../widgets/download_filter_options.dart';
@@ -232,7 +233,9 @@ class _DownloadManagerPageState extends ConsumerState<DownloadManagerPage> {
                               ? () async {
                                   final futures = selectedItems
                                       .map(
-                                        (task) => task.task.filePath(),
+                                        (task) => ref
+                                            .read(downloadTaskClientProvider)
+                                            .filePath(task.task),
                                       )
                                       .toList();
                                   final paths = await Future.wait(futures);
@@ -280,21 +283,21 @@ class _DownloadManagerPageState extends ConsumerState<DownloadManagerPage> {
 
               if (dt == null) return;
 
-              FileDownloader().resume(dt);
+              ref.read(downloadTaskClientProvider).resume(dt);
             },
             onPause: () {
               final dt = castOrNull<DownloadTask>(task.task);
 
               if (dt == null) return;
 
-              FileDownloader().pause(dt);
+              ref.read(downloadTaskClientProvider).pause(dt);
             },
             onResumeFailed: () {
               final dt = castOrNull<DownloadTask>(task.task);
 
               if (dt == null) return;
 
-              FileDownloader().resume(dt);
+              ref.read(downloadTaskClientProvider).resume(dt);
             },
             onRestart: () {
               ref.invalidate(bypassDdosHeadersProvider(task.task.url));
@@ -304,16 +307,18 @@ class _DownloadManagerPageState extends ConsumerState<DownloadManagerPage> {
                   final bypassHeaders = await ref.read(
                     bypassDdosHeadersProvider(task.task.url).future,
                   );
-                  await FileDownloader().retryTask(
-                    task.task,
-                    headers: headers,
-                    bypassHeaders: bypassHeaders,
-                  );
+                  await ref
+                      .read(downloadTaskClientProvider)
+                      .retry(
+                        task.task,
+                        headers: headers,
+                        bypassHeaders: bypassHeaders,
+                      );
                 },
               );
             },
             onCancel: () {
-              FileDownloader().cancelTaskWithId(task.task.taskId);
+              ref.read(downloadTaskClientProvider).cancel(task.task.taskId);
             },
           ),
         );

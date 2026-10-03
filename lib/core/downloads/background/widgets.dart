@@ -166,8 +166,7 @@ class _BackgroundDownloadRuntimeState
       if (update.status.isFinalState) _attempts.remove(update.task.taskId);
     }
 
-    ref.read(downloadTaskUpdatesProvider.notifier).addOrUpdate(update);
-    ref.read(downloadTaskStreamControllerProvider).add(update);
+    ref.read(downloadTaskEventIngressProvider).publish(update);
   }
 
   @override
