@@ -18,17 +18,17 @@ import 'package:boorusama/core/bulk_downloads/src/types/download_configs.dart';
 import 'package:boorusama/core/bulk_downloads/src/types/download_record.dart';
 import 'package:boorusama/core/bulk_downloads/src/types/download_session.dart';
 import 'package:boorusama/core/bulk_downloads/src/widgets/tasks/task_tile.dart';
-import 'package:boorusama/core/download_manager/providers.dart';
 import 'package:boorusama/core/download_manager/src/pages/download_manager_page.dart';
 import 'package:boorusama/core/download_manager/src/widgets/simple_download_tile.dart';
 import 'package:boorusama/core/downloads/downloader/providers.dart';
-import 'package:boorusama/core/downloads/downloader/types.dart' as app_download;
 import 'package:boorusama/core/downloads/urls/providers.dart';
 import 'package:boorusama/core/posts/post/providers.dart';
 import 'package:boorusama/core/search/selected_tags/types.dart';
 import 'package:boorusama/foundation/permissions.dart';
 
 import '../bulk_downloads/providers/downloads/common.dart';
+import 'support/controlled_download_service.dart';
+import 'support/download_event_driver.dart';
 import 'support/fake_booru_backend.dart';
 import 'support/headless_app_harness.dart';
 
@@ -38,7 +38,9 @@ void main() {
     (tester) async {
       final database = sqlite3.openInMemory();
       final repository = DownloadRepositorySqlite(database)..initialize();
-      final downloads = _ControlledDownloadService();
+      final downloads = ControlledDownloadService(
+        taskIdBuilder: (index) => 'bulk-flow-$index',
+      );
       final backend = FakeBooruBackend();
       final harness = HeadlessAppHarness(
         booruBackend: backend,
@@ -103,16 +105,11 @@ void main() {
         }
         final sessionId = downloads.requests.first.metadata!.group!;
         final backgroundTasks = downloads.createBackgroundTasks(sessionId);
+        final events = DownloadEventDriver(container);
         for (final task in backgroundTasks) {
-          final update = bg.TaskStatusUpdate(task, bg.TaskStatus.running);
-          final progress = bg.TaskProgressUpdate(task, 0.25);
-          container
-              .read(downloadTaskUpdatesProvider.notifier)
-              .addOrUpdate(
-                progress,
-              );
-          container.read(downloadTaskStreamControllerProvider).add(update);
-          container.read(downloadTaskStreamControllerProvider).add(progress);
+          events
+            ..status(task, bg.TaskStatus.running)
+            ..progress(task, 0.25);
         }
         await harness.pumpUntilFound(
           tester,
@@ -168,16 +165,7 @@ void main() {
           isNotEmpty,
         );
 
-        final lateUpdate = bg.TaskStatusUpdate(
-          backgroundTasks.first,
-          bg.TaskStatus.complete,
-        );
-        container
-            .read(downloadTaskUpdatesProvider.notifier)
-            .addOrUpdate(
-              lateUpdate,
-            );
-        container.read(downloadTaskStreamControllerProvider).add(lateUpdate);
+        events.status(backgroundTasks.first, bg.TaskStatus.complete);
         await tester.pump(const Duration(seconds: 1));
 
         expect(
@@ -199,45 +187,3 @@ Finder _taskActionIcons() => find.descendant(
   of: find.byType(BulkDownloadTaskTile),
   matching: find.byType(FaIcon),
 );
-
-final class _ControlledDownloadService implements app_download.DownloadService {
-  final requests = <app_download.DownloadOptions>[];
-  final pausedGroups = <String>[];
-  final cancelledGroups = <String>[];
-
-  @override
-  Future<app_download.DownloadResult> download(
-    app_download.DownloadOptions options,
-  ) async {
-    final id = 'bulk-flow-${requests.length}';
-    requests.add(options);
-    return app_download.DownloadEnqueued(
-      app_download.DownloadTaskInfo(path: options.path ?? '', id: id),
-    );
-  }
-
-  List<bg.DownloadTask> createBackgroundTasks(String group) => [
-    for (var index = 0; index < requests.length; index++)
-      bg.DownloadTask(
-        taskId: 'bulk-flow-$index',
-        url: requests[index].url,
-        filename: requests[index].filename,
-        group: group,
-        metaData: requests[index].metadata?.toJsonString() ?? '',
-      ),
-  ];
-
-  @override
-  Future<void> pauseAll(String group) async {
-    pausedGroups.add(group);
-  }
-
-  @override
-  Future<void> resumeAll(String group) async {}
-
-  @override
-  Future<bool> cancelAll(String group) async {
-    cancelledGroups.add(group);
-    return true;
-  }
-}

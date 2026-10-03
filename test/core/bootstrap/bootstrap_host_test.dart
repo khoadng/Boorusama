@@ -15,58 +15,81 @@ import 'package:boorusama/foundation/boot/crash_report_writer.dart';
 import '../../support/boorusama_test_runtime.dart';
 
 void main() {
-  testWidgets('renders the app after bootstrap succeeds', (tester) async {
-    await tester.pumpWidget(
-      MaterialApp(
-        home: BoorusamaBootstrapHost(
-          bootstrap: _ImmediateBootstrap(createTestBoorusamaRuntime()),
+  _testWidgetsRestoringErrorBuilder(
+    'renders the app after bootstrap succeeds',
+    (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: BoorusamaBootstrapHost(
+            bootstrap: _ImmediateBootstrap(createTestBoorusamaRuntime()),
+          ),
         ),
-      ),
-    );
-    await tester.pumpAndSettle();
+      );
+      await tester.pumpAndSettle();
 
-    expect(find.byType(BoorusamaCoreApp), findsOneWidget);
-  });
+      expect(find.byType(BoorusamaCoreApp), findsOneWidget);
+    },
+  );
 
-  testWidgets('renders its loading widget while bootstrap is pending', (
-    tester,
-  ) async {
-    final completer = Completer<BoorusamaRuntime>();
-    await tester.pumpWidget(
-      MaterialApp(
-        home: BoorusamaBootstrapHost(
-          bootstrap: _DeferredBootstrap(completer),
-          loading: const Text('Loading test'),
+  _testWidgetsRestoringErrorBuilder(
+    'renders its loading widget while bootstrap is pending',
+    (
+      tester,
+    ) async {
+      final completer = Completer<BoorusamaRuntime>();
+      await tester.pumpWidget(
+        MaterialApp(
+          home: BoorusamaBootstrapHost(
+            bootstrap: _DeferredBootstrap(completer),
+            loading: const Text('Loading test'),
+          ),
         ),
-      ),
-    );
+      );
 
-    expect(find.text('Loading test'), findsOneWidget);
-    completer.complete(createTestBoorusamaRuntime());
-    await tester.pumpAndSettle();
+      expect(find.text('Loading test'), findsOneWidget);
+      completer.complete(createTestBoorusamaRuntime());
+      await tester.pumpAndSettle();
 
-    expect(find.byType(BoorusamaCoreApp), findsOneWidget);
-  });
+      expect(find.byType(BoorusamaCoreApp), findsOneWidget);
+    },
+  );
 
-  testWidgets('renders the crash report UI when bootstrap fails', (
-    tester,
-  ) async {
-    final writer = _RecordingCrashReportWriter();
-    await tester.pumpWidget(
-      MaterialApp(
-        home: BoorusamaBootstrapHost(
-          bootstrap: _FailingBootstrap(),
-          crashReportWriter: writer,
+  _testWidgetsRestoringErrorBuilder(
+    'renders the crash report UI when bootstrap fails',
+    (
+      tester,
+    ) async {
+      final writer = _RecordingCrashReportWriter();
+      await tester.pumpWidget(
+        MaterialApp(
+          home: BoorusamaBootstrapHost(
+            bootstrap: _FailingBootstrap(),
+            crashReportWriter: writer,
+          ),
         ),
-      ),
-    );
-    await tester.pumpAndSettle();
+      );
+      await tester.pumpAndSettle();
 
-    expect(find.textContaining('test failure'), findsOneWidget);
-    await tester.tap(find.byIcon(Icons.download));
-    await tester.pump();
+      expect(find.textContaining('test failure'), findsOneWidget);
+      await tester.tap(find.byIcon(Icons.download));
+      await tester.pump();
 
-    expect(writer.savedData, contains('known test log'));
+      expect(writer.savedData, contains('known test log'));
+    },
+  );
+}
+
+void _testWidgetsRestoringErrorBuilder(
+  String description,
+  WidgetTesterCallback callback,
+) {
+  testWidgets(description, (tester) async {
+    final originalBuilder = ErrorWidget.builder;
+    try {
+      await callback(tester);
+    } finally {
+      ErrorWidget.builder = originalBuilder;
+    }
   });
 }
 

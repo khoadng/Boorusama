@@ -177,6 +177,8 @@ final class MemorySettingsRepository implements SettingsRepository {
   Settings _settings;
   final savedSettings = <Settings>[];
 
+  Settings get settings => _settings;
+
   @override
   Future<bool> save(Settings setting) async {
     _settings = setting;
@@ -389,24 +391,48 @@ final class MemoryDeveloperOptionsRepository
 }
 
 final class MemoryBooruConfigRepository implements BooruConfigRepository {
+  MemoryBooruConfigRepository({Iterable<BooruConfig> configs = const []}) {
+    seed(configs);
+  }
+
   final _configs = <BooruConfig>[];
+  var _nextId = 1;
+
+  List<BooruConfig> get configs => List.unmodifiable(_configs);
+
+  /// Replaces the contents while retaining the IDs assigned by the caller.
+  void seed(Iterable<BooruConfig> configs) {
+    _configs
+      ..clear()
+      ..addAll(configs);
+    final largestId = _configs.fold<int>(0, (maxId, config) {
+      return config.id > maxId ? config.id : maxId;
+    });
+    if (_nextId <= largestId) _nextId = largestId + 1;
+  }
 
   @override
   Future<BooruConfig?> add(BooruConfigData data) async {
-    final config = data.toBooruConfig(id: _configs.length + 1);
-    if (config != null) _configs.add(config);
+    final config = data.toBooruConfig(id: _nextId);
+    if (config != null) {
+      _configs.add(config);
+      _nextId++;
+    }
     return config;
   }
 
   @override
   Future<List<BooruConfig>> addAll(List<BooruConfig> configs) async {
-    final added = <BooruConfig>[];
     for (final config in configs) {
-      final data = config.toBooruConfigData();
-      final result = await add(data);
-      if (result != null) added.add(result);
+      final index = _configs.indexWhere((item) => item.id == config.id);
+      if (index == -1) {
+        _configs.add(config);
+      } else {
+        _configs[index] = config;
+      }
+      if (_nextId <= config.id) _nextId = config.id + 1;
     }
-    return added;
+    return List.unmodifiable(configs);
   }
 
   @override
