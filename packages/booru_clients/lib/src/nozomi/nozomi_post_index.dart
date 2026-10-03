@@ -11,6 +11,7 @@ const _kNozomiIndexUrl = 'https://n.nozomi.la/index.nozomi';
 const _kNozomiPopularIndexUrl =
     'https://j.gold-usergeneratedcontent.net/index-Popular.nozomi';
 const _kNozomiContentUrl = 'https://j.gold-usergeneratedcontent.net';
+const _kMaxConcurrentCountLookups = 8;
 
 class NozomiPostIndex {
   NozomiPostIndex({
@@ -146,6 +147,74 @@ class NozomiPostIndex {
       },
       estimateCost: (ids) => ids.length,
     );
+  }
+
+  Future<NozomiTagCountLookup> resolveTagCounts(Iterable<String> tags) async {
+    final normalizedTags = tags
+        .map(_sanitizeTag)
+        .where((tag) => tag.isNotEmpty)
+        .toSet()
+        .toList();
+    final counts = <String, int>{};
+    final missing = <String>{};
+
+    for (
+      var start = 0;
+      start < normalizedTags.length;
+      start += _kMaxConcurrentCountLookups
+    ) {
+      final batch = normalizedTags
+          .skip(start)
+          .take(
+            _kMaxConcurrentCountLookups,
+          );
+      final results = await Future.wait(
+        batch.map((tag) async => (tag: tag, count: await _tagPostCount(tag))),
+      );
+
+      for (final result in results) {
+        switch (result.count) {
+          case final int count:
+            counts[result.tag] = count;
+          case null:
+            missing.add(result.tag);
+        }
+      }
+    }
+
+    return NozomiTagCountLookup(counts: counts, missing: missing);
+  }
+
+  /// Reads the post count from the size of the tag's index file, which holds
+  /// 4 bytes per post, so only the first post id is downloaded.
+  Future<int?> _tagPostCount(String tag) async {
+    final url = _tagNozomiUrl(tag, NozomiPostOrder.date);
+    final cached = _indexCache.get(url);
+    if (cached != null) return (await cached).length;
+
+    final response = await _dio.get<List<int>>(
+      url,
+      options: Options(
+        responseType: ResponseType.bytes,
+        headers: {'Range': 'bytes=0-3'},
+        validateStatus: (status) =>
+            status != null &&
+            (status == 200 || status == 206 || status == 404 || status == 416),
+      ),
+    );
+
+    return switch (response.statusCode) {
+      404 => null,
+      416 => 0,
+      _ =>
+        _extractTotalIds(
+              response,
+              fallbackIds: _decodeNozomiBytes(response.data ?? const []).length,
+            ) ??
+            (throw FormatException(
+              'Missing content-range in partial response for $url',
+            )),
+    };
   }
 
   Future<({List<int> ids, int? total})> _fetchIdsPageResult(

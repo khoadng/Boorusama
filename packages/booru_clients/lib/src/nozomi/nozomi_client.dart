@@ -51,7 +51,7 @@ class NozomiClient {
   }) => _tagIndex.autocomplete(query: query, limit: limit);
 
   Future<NozomiTagCountLookup> resolveTagCounts(Iterable<String> tags) {
-    return _tagIndex.resolveCounts(tags);
+    return _postIndex.resolveTagCounts(tags);
   }
 
   Future<Map<String, int>> getTagCounts(Iterable<String> tags) async {

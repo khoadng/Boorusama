@@ -14,7 +14,7 @@ class NozomiTagIndex {
            bucketCache ??
            NozomiMemoryCache<Map<String, int>>(
              maxEntries: 27,
-             maxTotalCost: 0,
+             maxTotalCost: 1000000,
            );
 
   final Dio _dio;
@@ -44,39 +44,6 @@ class NozomiTagIndex {
     }
 
     return results;
-  }
-
-  Future<NozomiTagCountLookup> resolveCounts(Iterable<String> tags) async {
-    final normalizedTags = tags.map(_sanitizeTag).where((tag) {
-      return tag.isNotEmpty;
-    }).toSet();
-
-    if (normalizedTags.isEmpty) {
-      return const NozomiTagCountLookup(counts: {}, missing: {});
-    }
-
-    final bucketKeys = normalizedTags.map(_bucketKey).toSet();
-    final buckets = await Future.wait(
-      bucketKeys.map((key) async => MapEntry(key, await _getBucket(key))),
-    );
-    final bucketByKey = Map<String, Map<String, int>>.fromEntries(buckets);
-    final counts = <String, int>{};
-    final missing = <String>{};
-
-    for (final tag in normalizedTags) {
-      final count = bucketByKey[_bucketKey(tag)]?[tag];
-
-      if (count == null) {
-        missing.add(tag);
-      } else {
-        counts[tag] = count;
-      }
-    }
-
-    return NozomiTagCountLookup(
-      counts: counts,
-      missing: missing,
-    );
   }
 
   Future<Map<String, int>> _getBucket(String key) {
