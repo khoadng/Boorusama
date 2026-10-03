@@ -76,6 +76,8 @@ class PostGridController<T extends Post> extends ChangeNotifier {
   var _hasMore = true;
   var _loading = false;
   var _refreshing = false;
+  var _refreshRequested = false;
+  bool? _pendingMaintainPage;
 
   var _total = 0;
 
@@ -267,35 +269,53 @@ class PostGridController<T extends Post> extends ChangeNotifier {
   Future<void> refresh({
     bool maintainPage = false,
   }) async {
-    if (_refreshing) return;
+    if (_refreshing) {
+      _refreshRequested = true;
+      _pendingMaintainPage = maintainPage;
+      return;
+    }
     _setRefreshing(true);
     _eventController.add(const PostControllerRefreshStarted());
-    _page = switch (_pageMode) {
-      PageMode.infinite => _kFirstPage,
-      PageMode.paginated =>
-        (maintainPage || forcedPageMode) ? _page : _kFirstPage,
-    };
-    count.value = null;
-    maxPage.value = null;
     notifyListeners();
 
-    final newItems = await (_pageMode == PageMode.infinite
-        ? _refreshPosts()
-        : _fetchPosts(_page));
+    var keepPage = maintainPage;
+    while (true) {
+      _refreshRequested = false;
+      _pendingMaintainPage = null;
+      _setPage(switch (_pageMode) {
+        PageMode.infinite => _kFirstPage,
+        PageMode.paginated =>
+          (keepPage || forcedPageMode) ? _page : _kFirstPage,
+      });
+      count.value = null;
+      maxPage.value = null;
 
-    if (!mountedChecker()) return;
+      final newItems = await (_pageMode == PageMode.infinite
+          ? _refreshPosts()
+          : _fetchPosts(_page));
 
-    _clear();
-    await _addAll(newItems.posts);
+      if (!mountedChecker()) return;
 
-    if (!mountedChecker()) return;
+      // A query or profile change can request a refresh while the previous
+      // fetch is still in flight. Discard its result and fetch the latest state.
+      if (_refreshRequested) {
+        keepPage = _pendingMaintainPage ?? false;
+        continue;
+      }
 
-    _hasMore = newItems.posts.isNotEmpty;
-    count.value = newItems.total;
-    maxPage.value = newItems.maxPage;
-    _setRefreshing(false);
-    _eventController.add(const PostControllerRefreshCompleted());
-    notifyListeners();
+      _clear();
+      await _addAll(newItems.posts);
+
+      if (!mountedChecker()) return;
+
+      _hasMore = newItems.posts.isNotEmpty;
+      count.value = newItems.total;
+      maxPage.value = newItems.maxPage;
+      _setRefreshing(false);
+      _eventController.add(const PostControllerRefreshCompleted());
+      notifyListeners();
+      return;
+    }
   }
 
   // Loads more items
