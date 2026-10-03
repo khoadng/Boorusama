@@ -4,9 +4,14 @@ import 'dart:collection';
 // Package imports:
 import 'package:equatable/equatable.dart';
 
+const double kSettingsWideBreakpoint = 700;
+
 enum SettingsPresentation {
   compact,
-  wide,
+  wide;
+
+  factory SettingsPresentation.fromWidth(double width) =>
+      width >= kSettingsWideBreakpoint ? wide : compact;
 }
 
 class SettingsNavigationState extends Equatable {
@@ -20,9 +25,22 @@ class SettingsNavigationState extends Equatable {
 
   String? get currentDestinationId => path.lastOrNull;
 
-  bool get isIndex => path.isEmpty;
+  // The wide layout always shows a destination, so an empty path stands for
+  // the default category there.
+  List<String> visiblePath({
+    required SettingsPresentation presentation,
+    required SettingsDestinationCatalog catalog,
+  }) => switch (presentation) {
+    SettingsPresentation.wide when path.isEmpty => [
+      ?catalog.defaultCategoryId,
+    ],
+    _ => path,
+  };
 
-  bool get canGoBack => path.isNotEmpty;
+  bool canGoBack(SettingsPresentation presentation) => switch (presentation) {
+    SettingsPresentation.compact => path.isNotEmpty,
+    SettingsPresentation.wide => path.length > 1,
+  };
 
   SettingsNavigationState copyWith({
     Iterable<String>? path,
@@ -62,6 +80,8 @@ class SettingsDestinationCatalog {
     ...parentById.keys,
   };
 
+  String? get defaultCategoryId => categoryIds.firstOrNull;
+
   bool isCategory(String id) => categoryIds.contains(id);
 
   bool isDestination(String id) => destinationIds.contains(id);
@@ -80,22 +100,10 @@ class SettingsDestinationCatalog {
     return List.unmodifiable(path);
   }
 
-  List<String>? resolve(String? value) {
-    if (value == null || value.isEmpty) return null;
-
-    final normalized = value.toLowerCase();
-    String? match;
-    for (final id in destinationIds) {
-      if (id.toLowerCase() == normalized) {
-        match = id;
-        break;
-      }
-      if (match == null && id.toLowerCase().contains(normalized)) {
-        match = id;
-      }
-    }
-    return match == null ? null : pathFor(match);
-  }
+  List<String> resolveInitialPath(String? id) => switch (id) {
+    final id? => pathFor(id) ?? const [],
+    null => const [],
+  };
 
   void _validate() {
     final ids = destinationIds;
@@ -124,19 +132,4 @@ class SettingsDestinationCatalog {
       }
     }
   }
-}
-
-List<String> resolveSettingsInitialPath({
-  required SettingsDestinationCatalog catalog,
-  required SettingsPresentation presentation,
-  String? initialDestination,
-}) {
-  final resolved = catalog.resolve(initialDestination);
-  if (resolved != null) return resolved;
-
-  if (presentation == SettingsPresentation.wide &&
-      catalog.isCategory('appearance')) {
-    return const ['appearance'];
-  }
-  return const [];
 }

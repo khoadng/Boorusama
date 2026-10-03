@@ -5,7 +5,6 @@ import 'package:kurumi/kurumi.dart';
 import 'package:kurumi/material.dart';
 
 // Project imports:
-import '../../../../core/widgets/widgets.dart';
 import '../providers/settings_notifier.dart';
 import '../providers/settings_provider.dart';
 import '../widgets/settings_page_scaffold.dart';
@@ -27,41 +26,27 @@ class LanguagePage extends ConsumerWidget {
       selectedLanguageString,
     );
 
-    return ConditionalParentWidget(
-      condition:
-          !SettingsPageScope.of(context).options.dense &&
-          !SettingsPageScope.of(context).options.shellOwnsHeader,
-      conditionalBuilder: (child) => Scaffold(
-        appBar: AppBar(
-          title: Text(context.t.settings.language.language),
-        ),
-        body: child,
-      ),
-      child: SafeArea(
-        child: ListView.builder(
-          itemCount: supportedLanguages.length,
-          itemBuilder: (context, index) {
-            final language = supportedLanguages[index];
+    return RadioGroup(
+      groupValue: selectedLanguage,
+      onChanged: (value) {
+        if (value == null) return;
+        final settings = ref.read(settingsProvider);
 
-            return RadioGroup(
-              groupValue: selectedLanguage,
-              onChanged: (value) {
-                if (value == null) return;
-                final settings = ref.read(settingsProvider);
-
-                notifer.updateSettings(
-                  settings.copyWith(language: value.locale),
-                );
-                context.setLocaleLanguage(value);
-              },
-              child: RadioListTile(
-                activeColor: Kurumi.themeOf(context).colorScheme.primary,
-                value: language,
-                title: Text(language.name),
-              ),
-            );
-          },
-        ),
+        notifer.updateSettings(
+          settings.copyWith(language: value.locale),
+        );
+        context.setLocaleLanguage(value);
+      },
+      child: SettingsPageScaffold(
+        title: Text(context.t.settings.language.language),
+        children: [
+          for (final language in supportedLanguages)
+            RadioListTile(
+              activeColor: Kurumi.themeOf(context).colorScheme.primary,
+              value: language,
+              title: Text(language.name),
+            ),
+        ],
       ),
     );
   }

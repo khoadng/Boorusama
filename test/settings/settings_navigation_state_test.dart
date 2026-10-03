@@ -13,30 +13,17 @@ void main() {
       parentById: const {'app_lock': 'privacy'},
     );
 
-    test('resolves compact, wide, and nested initial destinations', () {
-      expect(
-        resolveSettingsInitialPath(
-          catalog: catalog,
-          presentation: SettingsPresentation.compact,
-        ),
-        isEmpty,
-      );
-      expect(
-        resolveSettingsInitialPath(
-          catalog: catalog,
-          presentation: SettingsPresentation.wide,
-        ),
-        ['appearance'],
-      );
-      expect(
-        resolveSettingsInitialPath(
-          catalog: catalog,
-          presentation: SettingsPresentation.compact,
-          initialDestination: 'app_lock',
-        ),
-        ['privacy', 'app_lock'],
-      );
-    });
+    final initialCases = [
+      (initial: null, path: <String>[]),
+      (initial: 'privacy', path: ['privacy']),
+      (initial: 'app_lock', path: ['privacy', 'app_lock']),
+      (initial: 'priv', path: <String>[]),
+    ];
+    for (final c in initialCases) {
+      test('opens ${c.initial} at ${c.path}', () {
+        expect(catalog.resolveInitialPath(c.initial), c.path);
+      });
+    }
 
     test('rejects unknown parents and cycles', () {
       expect(
@@ -53,6 +40,60 @@ void main() {
         throwsArgumentError,
       );
     });
+  });
+
+  group('presentation', () {
+    final catalog = SettingsDestinationCatalog(
+      categoryIds: const {'appearance', 'privacy'},
+      parentById: const {'app_lock': 'privacy'},
+    );
+
+    final cases = [
+      (
+        path: <String>[],
+        presentation: SettingsPresentation.compact,
+        visible: <String>[],
+        canGoBack: false,
+      ),
+      (
+        path: <String>[],
+        presentation: SettingsPresentation.wide,
+        visible: ['appearance'],
+        canGoBack: false,
+      ),
+      (
+        path: ['privacy'],
+        presentation: SettingsPresentation.compact,
+        visible: ['privacy'],
+        canGoBack: true,
+      ),
+      (
+        path: ['privacy'],
+        presentation: SettingsPresentation.wide,
+        visible: ['privacy'],
+        canGoBack: false,
+      ),
+      (
+        path: ['privacy', 'app_lock'],
+        presentation: SettingsPresentation.wide,
+        visible: ['privacy', 'app_lock'],
+        canGoBack: true,
+      ),
+    ];
+    for (final c in cases) {
+      test(
+        '${c.presentation.name} layout at ${c.path} shows ${c.visible} '
+        'and ${c.canGoBack ? 'goes back' : 'closes'} on back',
+        () {
+          final state = SettingsNavigationState(path: c.path);
+          expect(
+            state.visiblePath(presentation: c.presentation, catalog: catalog),
+            c.visible,
+          );
+          expect(state.canGoBack(c.presentation), c.canGoBack);
+        },
+      );
+    }
   });
 
   group('SettingsNavigationState', () {
@@ -115,7 +156,7 @@ void main() {
         final notifier = container.read(
           settingsNavigationProvider(seed).notifier,
         );
-        notifier.openNested('app_lock');
+        notifier.open('app_lock');
         expect(container.read(settingsNavigationProvider(seed)).path, [
           'privacy',
           'app_lock',
@@ -126,7 +167,7 @@ void main() {
         ]);
         notifier.back();
         expect(container.read(settingsNavigationProvider(seed)).path, isEmpty);
-        notifier.selectCategory('appearance');
+        notifier.open('appearance');
         expect(container.read(settingsNavigationProvider(seed)).path, [
           'appearance',
         ]);
@@ -153,15 +194,15 @@ void main() {
         settingsNavigationProvider(seed).notifier,
       );
 
-      notifier.selectCategory('privacy');
+      notifier.open('privacy');
       final topLevelState = container.read(settingsNavigationProvider(seed));
-      notifier.selectCategory('privacy');
+      notifier.open('privacy');
       expect(
         container.read(settingsNavigationProvider(seed)),
         same(topLevelState),
       );
-      notifier.openNested('app_lock');
-      notifier.selectCategory('privacy');
+      notifier.open('app_lock');
+      notifier.open('privacy');
       expect(container.read(settingsNavigationProvider(seed)).path, [
         'privacy',
       ]);
@@ -200,7 +241,7 @@ void main() {
 
         container
             .read(settingsNavigationProvider(first).notifier)
-            .openNested('app_lock');
+            .open('app_lock');
         expect(container.read(settingsNavigationProvider(equalFirst)).path, [
           'privacy',
           'app_lock',
@@ -235,8 +276,8 @@ void main() {
         settingsNavigationProvider(seed).notifier,
       );
 
-      notifier.selectCategory('missing');
-      notifier.openNested('missing');
+      notifier.open('missing');
+      notifier.open('missing');
       notifier.back();
       expect(container.read(settingsNavigationProvider(seed)).path, isEmpty);
     });

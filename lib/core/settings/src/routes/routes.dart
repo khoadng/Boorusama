@@ -6,6 +6,7 @@ import 'package:kurumi/kurumi.dart';
 import '../../../../foundation/display.dart';
 import '../../../router.dart';
 import '../pages/settings_page.dart';
+import '../types/settings_navigation_state.dart';
 import 'settings_adaptive_page.dart';
 
 final settingsRoutes = GoRoute(
@@ -21,8 +22,11 @@ final settingsRoutes = GoRoute(
     final reduceAnimations =
         MediaQuery.disableAnimationsOf(context) ||
         (KurumiTheme.maybeBehaviorOf(context)?.reduceMotion ?? false);
-    final wide = MediaQuery.sizeOf(context).width >= 700;
-    final animate = !wide && !reduceAnimations;
+    final presentation = SettingsPresentation.fromWidth(
+      MediaQuery.sizeOf(context).width,
+    );
+    final animate =
+        presentation == SettingsPresentation.compact && !reduceAnimations;
 
     return SettingsAdaptivePage<void>(
       key: state.pageKey,

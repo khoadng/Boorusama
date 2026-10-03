@@ -31,17 +31,9 @@ class PrivacyPage extends ConsumerWidget {
           title: Text(appLock.title),
           subtitle: Text(appLockSummary(context, settings)),
           trailing: const Icon(Icons.chevron_right),
-          onTap: () => SettingsPageNavigationScope.of(context).openContent(
+          onTap: () => SettingsPageNavigationScope.of(
             context,
-            SettingEntry(
-              id: 'app_lock',
-              parentId: 'privacy',
-              name: '/settings/privacy/app_lock',
-              title: appLock.title,
-              icon: Icons.lock,
-              content: const AppLockSettingsPage(),
-            ),
-          ),
+          ).openDestination('app_lock'),
         ),
         KurumiSwitchListTile(
           title: Text(appLock.hide_app_preview),

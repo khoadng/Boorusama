@@ -5,7 +5,6 @@ import 'package:kurumi/material.dart';
 
 // Project imports:
 import '../../../configs/config/widgets.dart';
-import '../../../router.dart';
 import '../providers/settings_notifier.dart';
 import '../providers/settings_provider.dart';
 import '../widgets/more_settings_redirect_card.dart';
@@ -42,16 +41,9 @@ class _ImageViewerPageState extends ConsumerState<ImageViewerPage> {
           extraActions: [
             RedirectAction(
               label: context.t.settings.accessibility.accessibility,
-              onPressed: () {
-                ref.router.push(
-                  Uri(
-                    path: '/settings',
-                    queryParameters: {
-                      'initial': 'accessibility',
-                    },
-                  ).toString(),
-                );
-              },
+              onPressed: () => SettingsPageNavigationScope.of(
+                context,
+              ).openDestination('accessibility'),
             ),
           ],
         ),

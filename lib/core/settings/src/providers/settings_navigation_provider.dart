@@ -28,26 +28,20 @@ class SettingsNavigationNotifier
   SettingsNavigationState build(SettingsNavigationSeed seed) =>
       SettingsNavigationState(path: seed.initialPath);
 
-  void selectCategory(String categoryId) {
-    final catalog = ref.read(settingsDestinationCatalogProvider);
-    if (!catalog.isCategory(categoryId)) return;
-
-    final current = state.selectedCategoryId;
-    if (current == categoryId && state.path.length == 1) return;
-
-    state = SettingsNavigationState(path: [categoryId]);
-  }
-
-  void openNested(String destinationId) {
+  bool open(String destinationId) {
     final catalog = ref.read(settingsDestinationCatalogProvider);
     final path = catalog.pathFor(destinationId);
-    if (path == null || path.length < 2) return;
+    if (path == null) return false;
 
-    state = SettingsNavigationState(path: path);
+    final next = SettingsNavigationState(path: path);
+    if (next == state) return false;
+
+    state = next;
+    return true;
   }
 
   void back() {
-    if (!state.canGoBack) return;
+    if (state.path.isEmpty) return;
     state = SettingsNavigationState(
       path: state.path.take(state.path.length - 1),
     );
