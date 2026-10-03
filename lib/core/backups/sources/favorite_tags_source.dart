@@ -22,7 +22,10 @@ class FavoriteTagsBackupSource extends JsonBackupSource<List<FavoriteTag>> {
         priority: 1,
         version: kFavoriteTagsBackupVersion,
         appVersion: ref.read(appVersionProvider),
-        dataGetter: () async => ref.read(favoriteTagsProvider),
+        dataGetter: () async {
+          final repo = await ref.read(favoriteTagRepoProvider.future);
+          return repo.getAll();
+        },
         executor: (tags, _) async {
           final repo = await ref.read(favoriteTagRepoProvider.future);
           await repo.createFrom(tags);
