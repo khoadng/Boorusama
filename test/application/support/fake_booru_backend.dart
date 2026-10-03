@@ -39,7 +39,7 @@ import 'package:boorusama/core/search/queries/tag_query_composer.dart';
 import 'package:boorusama/core/search/selected_tags/types.dart';
 import 'package:boorusama/core/settings/types.dart';
 import 'package:boorusama/core/settings/src/types/settings_repository.dart';
-import 'package:boorusama/core/tags/autocompletes/autocomplete_repository.dart';
+import 'package:boorusama/core/tags/autocompletes/types.dart';
 import 'package:boorusama/core/tags/favorites/types.dart';
 import 'package:boorusama/core/tags/tag/types.dart';
 import 'package:boorusama/foundation/filesystem.dart';
@@ -218,6 +218,9 @@ final class FakeBooruBackend {
   late final BooruConfig configB;
   late final List<TestPost> postsB;
   final requests = <Object>[];
+
+  /// Tags offered as search suggestions when they start with the typed text.
+  final autocompleteTags = <String>[];
   final postCompletions = <int>[];
   final pendingPostGates = <FakeBooruPostGate>[];
   final unexpectedPostRequests = <FakeBooruPostRequest>[];
@@ -560,7 +563,13 @@ final class _FakeBooruRepository extends BooruRepositoryDefault {
 
   @override
   AutocompleteRepository autocomplete(BooruConfigAuth config) =>
-      EmptyAutocompleteRepository();
+      AutocompleteRepositoryBuilder(
+        autocomplete: (query) async => [
+          for (final tag in backend.autocompleteTags)
+            if (tag.startsWith(query.text))
+              AutocompleteData(label: tag, value: tag),
+        ],
+      );
 
   @override
   DownloadFileUrlExtractor downloadFileUrlExtractor(BooruConfigAuth config) =>

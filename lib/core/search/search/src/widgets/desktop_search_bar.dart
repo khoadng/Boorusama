@@ -92,6 +92,7 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
         ),
         arrowShape: const NoArrow(),
         placement: Placement.bottomStart,
+        fitToAvailableSpace: true,
         spacing: 4,
         overlayBuilder: (context) => _buildOverlay(focus),
         child: child,
@@ -147,103 +148,100 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
     final size = MediaQuery.sizeOf(context);
     final auth = ref.watchConfigAuth;
 
-    return SingleChildScrollView(
-      child: Container(
-        constraints: BoxConstraints(
-          maxWidth: min(
-            size.width * 0.7,
-            kSearchAppBarWidth,
-          ),
-          maxHeight: min(size.height * 0.8, 400),
+    return Container(
+      constraints: BoxConstraints(
+        maxWidth: min(
+          size.width * 0.7,
+          kSearchAppBarWidth,
         ),
-        child: ValueListenableBuilder(
-          valueListenable: textEditingController,
-          builder: (context, query, child) {
-            final suggestionTags = ref.watch(
-              suggestionProvider((auth, query.text)),
-            );
+        maxHeight: min(size.height * 0.8, 400),
+      ),
+      child: ValueListenableBuilder(
+        valueListenable: textEditingController,
+        builder: (context, query, child) {
+          final suggestionTags = ref.watch(
+            suggestionProvider((auth, query.text)),
+          );
 
-            return query.text.isNotEmpty
-                ? TagSuggestionItems(
-                    config: auth,
-                    dense: true,
+          return query.text.isNotEmpty
+              ? TagSuggestionItems(
+                  config: auth,
+                  dense: true,
+                  backgroundColor: colorScheme.surfaceContainer,
+                  tags: suggestionTags,
+                  currentQuery: query.text,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 4,
+                  ).copyWith(bottom: 4, top: 4),
+                  onItemTap: (tag) {
+                    final operator = getFilterOperator(
+                      textEditingController.text,
+                    );
+                    final operatorPrefix = operator.toString();
+                    selectedTagController.addTag(
+                      TagSearchItem.fromString(
+                        '$operatorPrefix${tag.value}',
+                        extractor: ref.watch(
+                          metatagExtractorProvider(auth),
+                        ),
+                      ),
+                    );
+                    textEditingController.clear();
+                    focusNode.unfocus();
+                  },
+                )
+              : Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 8,
+                  ),
+                  decoration: BoxDecoration(
+                    color: colorScheme.surfaceContainer,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: SearchLandingView(
+                    disableAnimation: true,
+                    reverse: false,
                     backgroundColor: colorScheme.surfaceContainer,
-                    tags: suggestionTags,
-                    currentQuery: query.text,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 4,
-                    ).copyWith(bottom: 4, top: 4),
-                    onItemTap: (tag) {
-                      final operator = getFilterOperator(
-                        textEditingController.text,
-                      );
-                      final operatorPrefix = operator.toString();
-                      selectedTagController.addTag(
-                        TagSearchItem.fromString(
-                          '$operatorPrefix${tag.value}',
-                          extractor: ref.watch(
-                            metatagExtractorProvider(auth),
+                    child: DefaultSearchLandingChildren(
+                      reverse: false,
+                      children: [
+                        DefaultQueryActionsSection(
+                          onTagAdded: (value) => selectedTagController.addTag(
+                            TagSearchItem.raw(tag: value),
                           ),
                         ),
-                      );
-                      textEditingController.clear();
-                      focusNode.unfocus();
-                    },
-                  )
-                : Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 8,
-                    ),
-                    decoration: BoxDecoration(
-                      color: colorScheme.surfaceContainer,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: SearchLandingView(
-                      disableAnimation: true,
-                      reverse: false,
-                      backgroundColor: colorScheme.surfaceContainer,
-                      child: DefaultSearchLandingChildren(
-                        reverse: false,
-                        children: [
-                          DefaultQueryActionsSection(
-                            onTagAdded: (value) => selectedTagController.addTag(
-                              TagSearchItem.raw(tag: value),
-                            ),
-                          ),
-                          //FIXME: move this out of here
-                          if (auth.booruType == BooruType.danbooru)
-                            DanbooruMetatagsSection(
-                              onOptionTap: (value) {
-                                textEditingController.text = '$value:';
-                                textEditingController
-                                    .setTextAndCollapseSelection(
-                                      '$value:',
-                                    );
-                                setState(() {});
-                              },
-                            ),
-                          DefaultFavoriteTagsSection(
-                            onTagTap: (value) {
-                              selectedTagController.addTagFromFavTag(value);
-                              focusNode.unfocus();
-                            },
-                          ),
-                          DefaultSearchHistorySection(
-                            reverseScheme: true,
-                            onHistoryTap: (value) {
-                              selectedTagController.addTagFromSearchHistory(
-                                value,
+                        //FIXME: move this out of here
+                        if (auth.booruType == BooruType.danbooru)
+                          DanbooruMetatagsSection(
+                            onOptionTap: (value) {
+                              textEditingController.text = '$value:';
+                              textEditingController.setTextAndCollapseSelection(
+                                '$value:',
                               );
-                              focusNode.unfocus();
+                              setState(() {});
                             },
                           ),
-                        ],
-                      ),
+                        DefaultFavoriteTagsSection(
+                          onTagTap: (value) {
+                            selectedTagController.addTagFromFavTag(value);
+                            focusNode.unfocus();
+                          },
+                        ),
+                        DefaultSearchHistorySection(
+                          reverseScheme: true,
+                          onHistoryTap: (value) {
+                            selectedTagController.addTagFromSearchHistory(
+                              value,
+                            );
+                            focusNode.unfocus();
+                          },
+                        ),
+                      ],
                     ),
-                  );
-          },
-        ),
+                  ),
+                );
+        },
       ),
     );
   }

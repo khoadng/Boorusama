@@ -459,7 +459,12 @@ class SearchRegionSafeArea extends ConsumerWidget {
         Expanded(
           child: child,
         ),
-        if (searchBarPosition == SearchBarPosition.bottom) displacement,
+        switch (searchBarPosition) {
+          SearchBarPosition.bottom => displacement,
+          SearchBarPosition.top => SizedBox(
+            height: MediaQuery.viewInsetsOf(context).bottom,
+          ),
+        },
       ],
     );
   }

@@ -150,7 +150,9 @@ class OptionTagsArenaNoEdit extends ConsumerWidget {
                 ),
               ],
             ),
-            titleTrailing ?? const SizedBox.shrink(),
+            Flexible(
+              child: titleTrailing ?? const SizedBox.shrink(),
+            ),
           ],
         ),
         const SizedBox(height: 2),

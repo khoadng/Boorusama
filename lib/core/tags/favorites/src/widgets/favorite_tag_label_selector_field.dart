@@ -23,35 +23,38 @@ class FavoriteTagLabelSelectorField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisSize: MainAxisSize.min,
       children: [
-        Container(
-          margin: const EdgeInsets.all(4),
-          constraints: const BoxConstraints(
-            maxWidth: 160,
-          ),
-          child: FittedBox(
-            fit: BoxFit.scaleDown,
-            alignment: Alignment.centerRight,
-            child: OptionSingleSearchableField(
-              backgroundColor: Kurumi.themeOf(
-                context,
-              ).colorScheme.surfaceContainerHigh,
-              sheetTitle: context.t.favorite_tags.labels.title,
-              optionValueBuilder: (option) => option == kSpecialLabelKeyForAll
-                  ? context.t.favorite_tags.labels.all
-                  : option,
-              value: selected == ''
-                  ? context.t.favorite_tags.labels.all
-                  : selected,
-              items: [
-                kSpecialLabelKeyForAll,
-                ...labels,
-              ],
-              onSelect: (value) {
-                if (value == null) return;
-                final v = value == kSpecialLabelKeyForAll ? '' : value;
-                onSelect(v);
-              },
+        Flexible(
+          child: Container(
+            margin: const EdgeInsets.all(4),
+            constraints: const BoxConstraints(
+              maxWidth: 160,
+            ),
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.centerRight,
+              child: OptionSingleSearchableField(
+                backgroundColor: Kurumi.themeOf(
+                  context,
+                ).colorScheme.surfaceContainerHigh,
+                sheetTitle: context.t.favorite_tags.labels.title,
+                optionValueBuilder: (option) => option == kSpecialLabelKeyForAll
+                    ? context.t.favorite_tags.labels.all
+                    : option,
+                value: selected == ''
+                    ? context.t.favorite_tags.labels.all
+                    : selected,
+                items: [
+                  kSpecialLabelKeyForAll,
+                  ...labels,
+                ],
+                onSelect: (value) {
+                  if (value == null) return;
+                  final v = value == kSpecialLabelKeyForAll ? '' : value;
+                  onSelect(v);
+                },
+              ),
             ),
           ),
         ),

@@ -27,6 +27,9 @@ import 'package:boorusama/core/posts/details/widgets.dart';
 import 'package:boorusama/core/posts/listing/widgets.dart';
 
 import 'fake_booru_backend.dart';
+import 'soft_keyboard.dart';
+
+export 'soft_keyboard.dart';
 
 /// Logical size used by the phone-layout journeys.
 const kMobileViewport = Size(390, 844);
@@ -37,6 +40,7 @@ final class HeadlessAppHarness {
     FakeBooruBackend? booruBackend,
     List<Override> additionalOverrides = const [],
     Size? viewportSize,
+    TestPhone? phone,
   }) {
     final backend = booruBackend ?? FakeBooruBackend();
     return HeadlessAppHarness._(
@@ -44,6 +48,7 @@ final class HeadlessAppHarness {
       backend,
       additionalOverrides,
       viewportSize,
+      phone,
     );
   }
 
@@ -52,6 +57,7 @@ final class HeadlessAppHarness {
     this.booruBackend,
     this.additionalOverrides,
     this.viewportSize,
+    this.phone,
   );
 
   /// Creates a harness, registers its teardown, and mounts the app.
@@ -61,12 +67,14 @@ final class HeadlessAppHarness {
     FakeBooruBackend? booruBackend,
     List<Override> additionalOverrides = const [],
     Size? viewportSize,
+    TestPhone? phone,
   }) async {
     final harness = HeadlessAppHarness(
       runtime: runtime,
       booruBackend: booruBackend,
       additionalOverrides: additionalOverrides,
       viewportSize: viewportSize,
+      phone: phone,
     );
     addTearDown(() => harness.teardown(tester));
     _stubDownloaderChannel(tester);
@@ -87,7 +95,14 @@ final class HeadlessAppHarness {
   final FakeBooruBackend booruBackend;
   final List<Override> additionalOverrides;
   final Size? viewportSize;
+
+  /// Phone whose on-screen keyboard follows the app's text input.
+  final TestPhone? phone;
+  SoftKeyboard? _keyboard;
   var _didTearDown = false;
+
+  SoftKeyboard get keyboard =>
+      _keyboard ?? (throw StateError('Mount the harness with a phone first'));
 
   /// The image cache writes through dart:io, which the in-memory test file
   /// system cannot back, so it gets a real throwaway directory.
@@ -100,6 +115,12 @@ final class HeadlessAppHarness {
   Future<void> pump(WidgetTester tester) async {
     final size = viewportSize;
     if (size != null) setViewport(tester, size);
+    if (phone case final phone? when _keyboard == null) {
+      setViewport(tester, phone.size);
+      final keyboard = SoftKeyboard(tester, phone)..apply();
+      addTearDown(keyboard.reset);
+      _keyboard = keyboard;
+    }
     final visibilityController = VisibilityDetectorController.instance;
     _previousVisibilityUpdateInterval ??= visibilityController.updateInterval;
     visibilityController.updateInterval = Duration.zero;
@@ -134,8 +155,13 @@ final class HeadlessAppHarness {
     Duration step = const Duration(milliseconds: 50),
   }) async {
     for (var i = 0; i < maxPumps; i++) {
+      _keyboard?.sync();
       await tester.pump(step);
-      if (!tester.binding.hasScheduledFrame) return;
+      final keyboardSettled = switch (_keyboard) {
+        final keyboard? => keyboard.isShown == tester.testTextInput.isVisible,
+        null => true,
+      };
+      if (!tester.binding.hasScheduledFrame && keyboardSettled) return;
     }
   }
 
@@ -163,6 +189,7 @@ final class HeadlessAppHarness {
   }) async {
     for (var i = 0; i < maxPumps; i++) {
       if (condition()) return;
+      _keyboard?.sync();
       await tester.pump(step);
     }
 

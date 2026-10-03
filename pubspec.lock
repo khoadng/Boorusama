@@ -28,10 +28,11 @@ packages:
   anchor_ui:
     dependency: "direct main"
     description:
-      name: anchor_ui
-      sha256: cb59e3038279381c1956f739582da1ba0f3781de908b121dcab3248f41839f8b
-      url: "https://pub.dev"
-    source: hosted
+      path: "packages/anchor_ui"
+      ref: dfb2c3199681025e2f8615bbafbe490f576c342f
+      resolved-ref: dfb2c3199681025e2f8615bbafbe490f576c342f
+      url: "https://github.com/khoadng/anchor.git"
+    source: git
     version: "0.0.9"
   android_file_picker:
     dependency: transitive
@@ -547,12 +548,13 @@ packages:
     source: sdk
     version: "0.0.0"
   flutter_anchor:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      name: flutter_anchor
-      sha256: cd620fe71911dbe8616bb657828b60830c4a4f806a682a8ff437c83bd90a73d6
-      url: "https://pub.dev"
-    source: hosted
+      path: "packages/flutter_anchor"
+      ref: dfb2c3199681025e2f8615bbafbe490f576c342f
+      resolved-ref: dfb2c3199681025e2f8615bbafbe490f576c342f
+      url: "https://github.com/khoadng/anchor.git"
+    source: git
     version: "0.0.13"
   flutter_displaymode:
     dependency: "direct main"
