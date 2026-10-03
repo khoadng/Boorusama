@@ -48,3 +48,13 @@ dependency_overrides:
       url: https://github.com/khoadng/riverpod.git
       path: packages/riverpod
       ref: 5a513c5aeee5a91d7cf5aa9a6e6a414b822bdee9
+  dio_http2_adapter:
+    git:
+      url: https://github.com/khoadng/dio.git
+      path: plugins/http2_adapter
+      ref: c3a4abb882ac0344e6e96c4dc84687eac0276241
+  http2:
+    git:
+      url: https://github.com/khoadng/http.git
+      path: pkgs/http2
+      ref: 852f8ecf461c2ac8df627b6ae78a8ec5bf60d94a

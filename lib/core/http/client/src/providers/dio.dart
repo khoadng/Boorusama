@@ -178,7 +178,12 @@ HttpClientAdapter _createHttp2Adapter(Logger? logger) {
   return Http2Adapter(
     ConnectionManager(
       idleTimeout: const Duration(seconds: 30),
+      clientSettings: const ClientSettings(
+        streamWindowSize: 6 << 20,
+        connectionWindowSize: 15 << 20,
+      ),
     ),
+    autoUncompress: true,
   );
 }
 

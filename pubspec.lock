@@ -390,10 +390,11 @@ packages:
   dio_http2_adapter:
     dependency: "direct main"
     description:
-      name: dio_http2_adapter
-      sha256: "92c9dd3c3a80bf50f8ac3cde5751a02b63b9149eb9084dd5c0aede286ad10269"
-      url: "https://pub.dev"
-    source: hosted
+      path: "plugins/http2_adapter"
+      ref: c3a4abb882ac0344e6e96c4dc84687eac0276241
+      resolved-ref: c3a4abb882ac0344e6e96c4dc84687eac0276241
+      url: "https://github.com/khoadng/dio.git"
+    source: git
     version: "2.9.0"
   dio_web_adapter:
     dependency: transitive
@@ -933,13 +934,14 @@ packages:
     source: hosted
     version: "1.6.0"
   http2:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      name: http2
-      sha256: "382d3aefc5bd6dc68c6b892d7664f29b5beb3251611ae946a98d35158a82bbfa"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.3.1"
+      path: "pkgs/http2"
+      ref: "852f8ecf461c2ac8df627b6ae78a8ec5bf60d94a"
+      resolved-ref: "852f8ecf461c2ac8df627b6ae78a8ec5bf60d94a"
+      url: "https://github.com/khoadng/http.git"
+    source: git
+    version: "3.2.0-wip"
   http_client_helper:
     dependency: transitive
     description:
