@@ -53,6 +53,8 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
   var overlay = true;
   var zoom = false;
   var turn = ValueNotifier<double>(0);
+  final _closeNode = FocusNode();
+  final _pageNode = FocusNode(skipTraversal: true);
 
   @override
   void initState() {
@@ -62,8 +64,32 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
     });
   }
 
-  Future<void> _pop(bool didPop) async {
-    await setDeviceToAutoRotateMode();
+  @override
+  void dispose() {
+    _closeNode.dispose();
+    _pageNode.dispose();
+    super.dispose();
+  }
+
+  // Hiding the overlay removes every control, so focus waits on the page,
+  // where Escape still works and any other key brings the controls back.
+  KeyEventResult _onPageKey(FocusNode node, KeyEvent event) {
+    if (!node.hasPrimaryFocus ||
+        overlay ||
+        event is! KeyDownEvent ||
+        event.logicalKey == LogicalKeyboardKey.escape) {
+      return KeyEventResult.ignored;
+    }
+
+    setState(() => _setOverlay(true));
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => _closeNode.requestFocus(),
+    );
+    return KeyEventResult.handled;
+  }
+
+  void _pop(bool didPop) {
+    unawaited(setDeviceToAutoRotateMode());
     unawaited(showSystemStatus());
 
     if (mounted && !didPop) {
@@ -80,16 +106,10 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
       },
       child: PopScope(
         canPop: false,
-        onPopInvokedWithResult: (didPop, _) {
-          if (didPop) {
-            _pop(didPop);
-            return;
-          }
-
-          _pop(didPop);
-        },
+        onPopInvokedWithResult: (didPop, _) => _pop(didPop),
         child: Focus(
-          autofocus: true,
+          focusNode: _pageNode,
+          onKeyEvent: _onPageKey,
           child: _buildBody(),
         ),
       ),
@@ -113,6 +133,8 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
             reverseDuration: const Duration(milliseconds: 10),
             child: overlay
                 ? IconButton(
+                    focusNode: _closeNode,
+                    autofocus: true,
                     icon: const Icon(Symbols.close, color: Colors.white),
                     onPressed: () => _pop(false),
                   )
@@ -210,6 +232,7 @@ class _OriginalImagePageState extends ConsumerState<OriginalImagePage> {
 
   void _setOverlay(bool value) {
     overlay = value;
+    if (!overlay && _closeNode.hasFocus) _pageNode.requestFocus();
 
     if (overlay) {
       showSystemStatus();
