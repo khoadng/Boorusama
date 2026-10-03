@@ -45,7 +45,9 @@ class AppHtml extends StatefulWidget {
 }
 
 class _AppHtmlState extends State<AppHtml> {
-  final _focusNode = FocusNode();
+  // Read-only text: arrows would only extend the selection and trap D-pad
+  // users, so arrow traversal passes over it. Pointer selection still works.
+  final _focusNode = FocusNode(skipTraversal: true);
 
   @override
   void dispose() {

@@ -48,11 +48,15 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
   );
   late final selectedTagController = widget.selectedTagController;
   final focus = FocusNode();
+  final suggestionsFocus = FocusScopeNode(
+    debugLabel: 'DesktopSearchSuggestions',
+  );
 
   @override
   void dispose() {
     textEditingController.dispose();
     focus.dispose();
+    suggestionsFocus.dispose();
     super.dispose();
   }
 
@@ -79,6 +83,7 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
       dense: true,
       autofocus: false,
       focusNode: focus,
+      suggestionsFocus: suggestionsFocus,
       height: kToolbarHeight * 0.9,
       controller: textEditingController,
       searchBarBuilder: (context, child) => AnchorPopover(
@@ -127,7 +132,17 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
     );
   }
 
-  Widget _buildOverlay(FocusNode focusNode) {
+  Widget _buildOverlay(FocusNode focusNode) => Actions(
+    actions: {
+      DirectionalFocusIntent: _ReturnToFieldAction(focusNode),
+    },
+    child: FocusScope(
+      node: suggestionsFocus,
+      child: _buildSuggestions(focusNode),
+    ),
+  );
+
+  Widget _buildSuggestions(FocusNode focusNode) {
     final colorScheme = Kurumi.themeOf(context).colorScheme;
     final size = MediaQuery.sizeOf(context);
     final auth = ref.watchConfigAuth;
@@ -231,5 +246,24 @@ class _DesktopSearchbarState extends ConsumerState<DesktopSearchbar> {
         ),
       ),
     );
+  }
+}
+
+/// Up past the first suggestion returns to the search field so typing can
+/// continue; other arrows move between suggestions as usual.
+class _ReturnToFieldAction extends KurumiDirectionalFocusAction {
+  _ReturnToFieldAction(this.field);
+
+  final FocusNode field;
+
+  @override
+  void invoke(DirectionalFocusIntent intent) {
+    if (intent.direction != TraversalDirection.up) {
+      return super.invoke(intent);
+    }
+
+    final moved =
+        primaryFocus?.focusInDirection(TraversalDirection.up) ?? false;
+    if (!moved) field.requestFocus();
   }
 }

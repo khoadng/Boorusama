@@ -23,6 +23,7 @@ class SearchAppBar extends ConsumerWidget {
     this.onTapOutside,
     this.innerSearchButton,
     this.searchBarBuilder,
+    this.suggestionsFocus,
   });
 
   final TextEditingController controller;
@@ -38,6 +39,7 @@ class SearchAppBar extends ConsumerWidget {
   final double? height;
   final VoidCallback? onTapOutside;
   final Widget Function(BuildContext context, Widget child)? searchBarBuilder;
+  final FocusScopeNode? suggestionsFocus;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -46,6 +48,7 @@ class SearchAppBar extends ConsumerWidget {
       autofocus: autofocus ?? false,
       onTapOutside: onTapOutside,
       focus: focusNode,
+      suggestionsFocus: suggestionsFocus,
       controller: controller,
       leading: leading,
       trailing: ValueListenableBuilder(

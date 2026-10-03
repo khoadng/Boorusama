@@ -26,7 +26,7 @@ class LanguagePage extends ConsumerWidget {
       selectedLanguageString,
     );
 
-    return RadioGroup(
+    return KurumiRadioGroup(
       groupValue: selectedLanguage,
       onChanged: (value) {
         if (value == null) return;

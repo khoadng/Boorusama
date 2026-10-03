@@ -44,6 +44,12 @@ class BoorusamaCoreApp extends ConsumerWidget {
       child: ThemeBuilder(
         builder: (theme, themeMode) {
           return MaterialApp.router(
+            actions: {
+              ...WidgetsApp.defaultActions,
+              DirectionalFocusIntent: KurumiDirectionalFocusAction(),
+              ExtendSelectionVerticallyToAdjacentLineIntent:
+                  KurumiLeaveSingleLineFieldAction(),
+            },
             builder: (context, child) =>
                 // These bridges can be removed once all third-party packages use
                 // the standalone Material and Cupertino libraries.
@@ -104,17 +110,19 @@ class BoorusamaCoreApp extends ConsumerWidget {
                             statusBarBrightness: theme.brightness,
                             statusBarIconBrightness: context.onBrightness,
                           ),
-                          child: AppTitleBar(
-                            child: AppLockScope(
-                              child: Column(
-                                children: [
-                                  const NetworkUnavailableIndicatorWithState(),
-                                  Expanded(
-                                    child: NetworkUnavailableRemovePadding(
-                                      child: child!,
+                          child: KurumiFocusRing(
+                            child: AppTitleBar(
+                              child: AppLockScope(
+                                child: Column(
+                                  children: [
+                                    const NetworkUnavailableIndicatorWithState(),
+                                    Expanded(
+                                      child: NetworkUnavailableRemovePadding(
+                                        child: child!,
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
                           ),

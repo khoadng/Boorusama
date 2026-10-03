@@ -4,17 +4,21 @@ import 'dart:collection';
 
 // Package imports:
 import 'package:dio/dio.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:foundation/foundation.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/danbooru.dart';
+import 'package:boorusama/core/artists/widgets.dart';
 import 'package:boorusama/core/bookmarks/types.dart';
 import 'package:boorusama/core/boorus/booru/types.dart';
 import 'package:boorusama/core/boorus/defaults/src/booru_repository_default.dart';
 import 'package:boorusama/core/boorus/defaults/widgets.dart';
 import 'package:boorusama/core/boorus/engine/types.dart';
 import 'package:boorusama/core/bootstrap/boorusama_runtime.dart';
+import 'package:boorusama/core/configs/config/providers.dart';
 import 'package:boorusama/core/configs/config/types.dart';
 import 'package:boorusama/core/configs/create/create.dart';
 import 'package:boorusama/core/debug/types.dart';
@@ -26,6 +30,7 @@ import 'package:boorusama/core/errors/error.dart';
 import 'package:boorusama/core/blacklists/types.dart';
 import 'package:boorusama/core/posts/details_parts/types.dart';
 import 'package:boorusama/core/posts/details_parts/widgets.dart';
+import 'package:boorusama/core/posts/favorites/widgets.dart';
 import 'package:boorusama/core/posts/post/providers.dart';
 import 'package:boorusama/core/posts/post/types.dart';
 import 'package:boorusama/core/posts/sources/types.dart';
@@ -36,6 +41,7 @@ import 'package:boorusama/core/settings/types.dart';
 import 'package:boorusama/core/settings/src/types/settings_repository.dart';
 import 'package:boorusama/core/tags/autocompletes/autocomplete_repository.dart';
 import 'package:boorusama/core/tags/favorites/types.dart';
+import 'package:boorusama/core/tags/tag/types.dart';
 import 'package:boorusama/foundation/filesystem.dart';
 import 'package:boorusama/foundation/platform.dart';
 import 'package:boorusama/foundation/picker.dart';
@@ -223,8 +229,10 @@ final class FakeBooruBackend {
 
   BooruDb get booruDb => BooruDb(
     boorus: {
-      BooruType.danbooru: const BooruScaffold(
+      // Core widgets look up Danbooru-only data for this type, as in the app.
+      BooruType.danbooru: const Danbooru(
         config: _testDanbooruYaml,
+        sites: [],
       ),
     },
   );
@@ -665,4 +673,58 @@ final class _FakeBooruBuilder extends BaseBooruBuilder {
       DetailsPart.source: (context) => const DefaultInheritedSourceSection(),
     },
   );
+
+  @override
+  FavoritesPageBuilder? get favoritesPageBuilder =>
+      (context) => const _FakeFavoritesPage();
+
+  @override
+  ArtistPageBuilder? get artistPageBuilder =>
+      (context, artistName) => _FakeArtistPage(artistName: artistName);
+
+  // Engines without character data reuse the artist page.
+  @override
+  CharacterPageBuilder? get characterPageBuilder =>
+      (context, characterName) => _FakeArtistPage(artistName: characterName);
+}
+
+class _FakeFavoritesPage extends ConsumerWidget {
+  const _FakeFavoritesPage();
+
+  static const _query = 'fav:tester';
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final repo = ref.watch(postRepoProvider(ref.watchConfigSearch));
+
+    return FavoritesPageScaffold(
+      favQueryBuilder: () => _query,
+      fetcher: (page) => repo.getPosts(_query, page),
+    );
+  }
+}
+
+class _FakeArtistPage extends ConsumerWidget {
+  const _FakeArtistPage({required this.artistName});
+
+  final String artistName;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final repo = ref.watch(postRepoProvider(ref.watchConfigSearch));
+
+    return ArtistPageScaffold(
+      artistName: artistName,
+      fetcher: (page, category) => repo.getPosts(
+        queryFromTagFilterCategory(
+          category: category,
+          tag: artistName,
+          builder: (category) => category == TagFilterCategory.popular
+              ? some('order:score')
+              : none(),
+        ),
+        page,
+      ),
+    );
+  }
 }

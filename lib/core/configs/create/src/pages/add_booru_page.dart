@@ -218,12 +218,14 @@ class _AddBooruPageInternalState extends ConsumerState<AddBooruPageInternal> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                context.t.booru.add_a_booru_site,
-                style: Kurumi.themeOf(context).textTheme.headlineSmall!
-                    .copyWith(
-                      fontWeight: FontWeight.w900,
-                    ),
+              Flexible(
+                child: Text(
+                  context.t.booru.add_a_booru_site,
+                  style: Kurumi.themeOf(context).textTheme.headlineSmall!
+                      .copyWith(
+                        fontWeight: FontWeight.w900,
+                      ),
+                ),
               ),
               IconButton(
                 onPressed: Navigator.of(context).pop,

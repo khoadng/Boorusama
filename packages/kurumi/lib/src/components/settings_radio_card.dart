@@ -1,5 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 
+import 'radio_group.dart';
+
 class KurumiSettingsRadioCard extends StatelessWidget {
   const KurumiSettingsRadioCard({
     required this.title,
@@ -48,11 +50,11 @@ class KurumiSettingsRadioCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 12),
-          DecoratedBox(
-            decoration: BoxDecoration(
-              color: colorScheme.surfaceContainerLow,
-              borderRadius: BorderRadius.circular(12),
-            ),
+          // A Material, not a DecoratedBox, so the tiles' focus and ink
+          // highlights paint above the card background.
+          Material(
+            color: colorScheme.surfaceContainerLow,
+            borderRadius: BorderRadius.circular(12),
             child: Column(
               children: [
                 for (final entry in entries)
@@ -90,7 +92,7 @@ class KurumiSettingsRadioCardEntry<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RadioGroup<T>(
+    return KurumiRadioGroup<T>(
       groupValue: groupValue,
       onChanged: (value) {
         if (value != null) onSelected(value);

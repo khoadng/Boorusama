@@ -284,6 +284,7 @@ class _Header extends StatelessWidget {
           ),
           IconButton(
             splashRadius: 18,
+            autofocus: true,
             onPressed: () => Navigator.of(context).maybePop(),
             icon: const Icon(Icons.close),
           ),

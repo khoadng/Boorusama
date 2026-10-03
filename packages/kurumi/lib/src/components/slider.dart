@@ -1,5 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 
+import '../accessibility/behavior.dart';
 import '../theme/theme.dart';
 
 class KurumiSlider extends StatelessWidget {
@@ -50,6 +51,17 @@ class KurumiSlider extends StatelessWidget {
   Widget build(BuildContext context) {
     final behavior = KurumiTheme.maybeBehaviorOf(context);
 
+    // Directional mode keeps left/right for adjusting the value and leaves
+    // up/down to move focus, so D-pad users are not trapped on the slider.
+    return MediaQuery(
+      data: MediaQuery.of(context).copyWith(
+        navigationMode: NavigationMode.directional,
+      ),
+      child: _buildSlider(behavior),
+    );
+  }
+
+  Widget _buildSlider(KurumiBehaviorData? behavior) {
     return Slider(
       value: value,
       onChanged: onChanged == null

@@ -1,8 +1,13 @@
+// Dart imports:
+import 'dart:io';
+
 // Flutter imports:
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 // Package imports:
 import 'package:background_downloader/background_downloader.dart' as bg;
+import 'package:cache_manager/cache_manager.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:oktoast/oktoast.dart';
@@ -17,6 +22,7 @@ import 'package:boorusama/core/bootstrap/boorusama_runtime.dart';
 import 'package:boorusama/core/download_manager/providers.dart';
 import 'package:boorusama/core/download_manager/src/pages/download_manager_page.dart';
 import 'package:boorusama/core/download_manager/types.dart';
+import 'package:boorusama/core/images/providers.dart';
 import 'package:boorusama/core/posts/details/widgets.dart';
 import 'package:boorusama/core/posts/listing/widgets.dart';
 
@@ -63,8 +69,18 @@ final class HeadlessAppHarness {
       viewportSize: viewportSize,
     );
     addTearDown(() => harness.teardown(tester));
+    _stubDownloaderChannel(tester);
     await harness.pump(tester);
     return harness;
+  }
+
+  /// The downloader configures itself at startup; without a stub that call
+  /// fails as soon as a test lets real async work run.
+  static void _stubDownloaderChannel(WidgetTester tester) {
+    const channel = MethodChannel('com.bbflight.background_downloader');
+    final messenger = tester.binding.defaultBinaryMessenger
+      ..setMockMethodCallHandler(channel, (_) async => null);
+    addTearDown(() => messenger.setMockMethodCallHandler(channel, null));
   }
 
   final BoorusamaRuntime runtime;
@@ -72,6 +88,12 @@ final class HeadlessAppHarness {
   final List<Override> additionalOverrides;
   final Size? viewportSize;
   var _didTearDown = false;
+
+  /// The image cache writes through dart:io, which the in-memory test file
+  /// system cannot back, so it gets a real throwaway directory.
+  late final _imageCacheDirectory = Directory.systemTemp.createTempSync(
+    'boorusama_images_',
+  );
   var _didConfigureViewport = false;
   Duration? _previousVisibilityUpdateInterval;
 
@@ -89,6 +111,14 @@ final class HeadlessAppHarness {
           appAnnouncementsProvider.overrideWith(
             (ref) => Future.value(const []),
           ),
+          defaultImageCacheManagerProvider.overrideWith((ref) {
+            final manager = DefaultImageCacheManager(
+              cacheRootPathProvider: () =>
+                  Future.value(_imageCacheDirectory.path),
+            );
+            ref.onDispose(manager.dispose);
+            return manager;
+          }),
           ...additionalOverrides,
           toastDurationProvider.overrideWithValue(Duration.zero),
         ],
@@ -240,6 +270,9 @@ final class HeadlessAppHarness {
       visibilityController.updateInterval = previousInterval;
     }
     _didTearDown = true;
+    if (_imageCacheDirectory.existsSync()) {
+      _imageCacheDirectory.deleteSync(recursive: true);
+    }
     booruBackend.expectNoUnexpectedPostRequests();
   }
 }

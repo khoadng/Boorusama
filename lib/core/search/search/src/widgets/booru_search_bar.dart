@@ -22,6 +22,7 @@ class BooruSearchBar extends StatelessWidget {
     this.onFocusChanged,
     this.contentPadding,
     this.cursorHeight,
+    this.suggestionsFocus,
   });
 
   final VoidCallback? onTap;
@@ -40,6 +41,7 @@ class BooruSearchBar extends StatelessWidget {
   final void Function(bool value)? onFocusChanged;
   final EdgeInsetsGeometry? contentPadding;
   final double? cursorHeight;
+  final FocusScopeNode? suggestionsFocus;
 
   @override
   Widget build(BuildContext context) => KurumiSearchBar(
@@ -60,5 +62,6 @@ class BooruSearchBar extends StatelessWidget {
     onFocusChanged: onFocusChanged,
     contentPadding: contentPadding,
     cursorHeight: cursorHeight,
+    suggestionsFocus: suggestionsFocus,
   );
 }

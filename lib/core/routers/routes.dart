@@ -56,10 +56,7 @@ class Routes {
       child: const AppRatingScope(
         child: DownloaderScope(
           child: CustomContextMenuOverlay(
-            child: Focus(
-              autofocus: true,
-              child: EntryPage(),
-            ),
+            child: EntryPage(),
           ),
         ),
       ),

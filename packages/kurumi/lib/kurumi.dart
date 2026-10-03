@@ -65,6 +65,9 @@ export 'src/components/route_transition.dart'
         kurumiParallaxSlideInTransitionBuilder,
         kurumiLeftToRightTransitionBuilder,
         kurumiFadeTransitionBuilder;
+export 'src/components/cross_scope_focus.dart';
+export 'src/components/focus_ring.dart';
+export 'src/components/radio_group.dart';
 export 'src/components/search_bar.dart';
 export 'src/components/selectable_item.dart';
 export 'src/components/selectable_chip.dart';

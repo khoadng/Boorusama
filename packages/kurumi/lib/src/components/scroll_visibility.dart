@@ -81,12 +81,9 @@ class _KurumiScrollToTopState extends State<KurumiScrollToTop>
 
   @override
   Widget build(BuildContext context) {
-    return FadeTransition(
-      opacity: _animationController,
-      child: ScaleTransition(
-        scale: _animationController,
-        child: widget.child,
-      ),
+    return _HideWhenDismissed(
+      animation: _animationController,
+      child: widget.child,
     );
   }
 }
@@ -171,11 +168,36 @@ class _KurumiScrollToBottomState extends State<KurumiScrollToBottom>
 
   @override
   Widget build(BuildContext context) {
+    return _HideWhenDismissed(
+      animation: _animationController,
+      child: widget.child,
+    );
+  }
+}
+
+class _HideWhenDismissed extends StatelessWidget {
+  const _HideWhenDismissed({
+    required this.animation,
+    required this.child,
+  });
+
+  final AnimationController animation;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
     return FadeTransition(
-      opacity: _animationController,
+      opacity: animation,
       child: ScaleTransition(
-        scale: _animationController,
-        child: widget.child,
+        scale: animation,
+        child: AnimatedBuilder(
+          animation: animation,
+          builder: (context, child) => ExcludeFocus(
+            excluding: animation.isDismissed,
+            child: child!,
+          ),
+          child: child,
+        ),
       ),
     );
   }
