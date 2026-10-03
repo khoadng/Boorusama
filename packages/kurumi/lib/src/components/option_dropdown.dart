@@ -278,6 +278,7 @@ class _OptionDropDownItem<T> extends StatelessWidget {
         color: Colors.transparent,
         child: InkWell(
           onTap: onTap,
+          autofocus: isSelected,
           borderRadius: BorderRadius.circular(8),
           child: Container(
             margin: const EdgeInsets.symmetric(

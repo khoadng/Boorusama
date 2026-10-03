@@ -22,6 +22,7 @@ export 'src/components/adaptive_sheet.dart'
 export 'src/components/action_animation_overlay.dart';
 export 'src/components/animated_cross_fade.dart';
 export 'src/components/anchor.dart';
+export 'src/components/back_handler.dart';
 export 'src/components/bottom_sheet.dart' hide showKurumiModalBottomSheet;
 export 'src/components/bottom_sheet_actions.dart';
 export 'src/components/bottom_sheet_header.dart';

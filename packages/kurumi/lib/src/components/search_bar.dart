@@ -1,6 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 
+import 'back_handler.dart';
 import 'text_field.dart';
 
 class KurumiSearchBar extends StatefulWidget {
@@ -220,11 +221,9 @@ class _KurumiSearchBarState extends State<KurumiSearchBar> {
     return switch (widget.suggestionsFocus) {
       final suggestions? => ListenableBuilder(
         listenable: Listenable.merge([_fieldNode, suggestions]),
-        builder: (context, child) => PopScope(
-          canPop: !_fieldNode.hasFocus && !suggestions.hasFocus,
-          onPopInvokedWithResult: (didPop, _) {
-            if (!didPop) _barNode.requestFocus();
-          },
+        builder: (context, child) => KurumiBackHandler(
+          enabled: _fieldNode.hasFocus || suggestions.hasFocus,
+          onBack: _barNode.requestFocus,
           child: child!,
         ),
         child: searchBar,

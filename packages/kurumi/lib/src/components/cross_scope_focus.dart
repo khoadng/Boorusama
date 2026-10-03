@@ -196,11 +196,14 @@ FocusNode? nearestFocusInDirection(
   );
 }
 
-/// Lets up and down leave a single-line text field, where they would only
-/// move the caret to the start or end. Multi-line fields keep their default.
+/// Lets arrows leave a single-line text field: up and down always, where
+/// they would only move the caret to the start or end, and left and right
+/// once the caret is already at that end. Multi-line fields keep their
+/// default.
 ///
-/// Register it under [ExtendSelectionVerticallyToAdjacentLineIntent]; it is
-/// typed on the parent intent to match the text field action it overrides.
+/// Register it under [ExtendSelectionVerticallyToAdjacentLineIntent] and
+/// [ExtendSelectionByCharacterIntent]; it is typed on their parent intent to
+/// match the text field actions it overrides.
 class KurumiLeaveSingleLineFieldAction
     extends ContextAction<DirectionalCaretMovementIntent> {
   // Outside a text field there is no default to override; staying disabled
@@ -218,18 +221,32 @@ class KurumiLeaveSingleLineFieldAction
   ]) {
     final focusContext = primaryFocus?.context;
     final field = focusContext?.findAncestorWidgetOfExactType<EditableText>();
+    final direction = switch ((field, intent)) {
+      (EditableText(maxLines: 1), _) when !intent.collapseSelection => null,
+      (
+        EditableText(maxLines: 1),
+        ExtendSelectionVerticallyToAdjacentLineIntent(),
+      ) =>
+        intent.forward ? TraversalDirection.down : TraversalDirection.up,
+      (
+        EditableText(maxLines: 1, :final controller),
+        ExtendSelectionByCharacterIntent(),
+      )
+          when _caretAtEnd(controller.value, forward: intent.forward) =>
+        intent.forward ? TraversalDirection.right : TraversalDirection.left,
+      _ => null,
+    };
 
-    return switch ((field, focusContext)) {
-      (EditableText(maxLines: 1), final focusContext?)
-          when intent.collapseSelection =>
-        Actions.maybeInvoke(
-          focusContext,
-          DirectionalFocusIntent(
-            intent.forward ? TraversalDirection.down : TraversalDirection.up,
-            ignoreTextFields: false,
-          ),
-        ),
+    return switch ((direction, focusContext)) {
+      (final direction?, final focusContext?) => Actions.maybeInvoke(
+        focusContext,
+        DirectionalFocusIntent(direction, ignoreTextFields: false),
+      ),
       _ => callingAction?.invoke(intent),
     };
   }
+
+  static bool _caretAtEnd(TextEditingValue value, {required bool forward}) =>
+      value.selection.isCollapsed &&
+      value.selection.baseOffset == (forward ? value.text.length : 0);
 }

@@ -49,6 +49,8 @@ class BoorusamaCoreApp extends ConsumerWidget {
               DirectionalFocusIntent: KurumiDirectionalFocusAction(),
               ExtendSelectionVerticallyToAdjacentLineIntent:
                   KurumiLeaveSingleLineFieldAction(),
+              ExtendSelectionByCharacterIntent:
+                  KurumiLeaveSingleLineFieldAction(),
             },
             builder: (context, child) =>
                 // These bridges can be removed once all third-party packages use

@@ -108,6 +108,18 @@ final class KeyboardFlowDriver {
     );
   }
 
+  /// Focuses [target] directly, for restoring a known starting point between
+  /// walks once [navigateTo] has proven the target reachable.
+  Future<void> focusOn(Finder target) async {
+    final node = _topRouteScope().traversalDescendants
+        .where((node) => _isWithin(node, target))
+        .firstOrNull;
+    if (node == null) {
+      throw TestFailure('Nothing focusable in ${_describeFinder(target)}');
+    }
+    await _jumpTo(node);
+  }
+
   /// Ways a remote user gets stuck on the top screen, starting from the
   /// current focus: controls no arrow path reaches, controls no arrow leaves,
   /// and arrows that send focus somewhere invisible.
@@ -227,17 +239,20 @@ final class KeyboardFlowDriver {
   /// Controls on a surface that closes once focus leaves it, such as a
   /// popover, that no arrow path from the current focus reaches without
   /// leaving it. [reopen] restores the starting focus after an arrow closes
-  /// the surface. Controls are told apart by position, since reopening
-  /// rebuilds them.
+  /// the surface. Controls are told apart by their position in scrolled
+  /// content, since reopening rebuilds them and revealing one scrolls it.
   Future<List<String>> unreachableIn(
     Finder surface, {
     required Future<void> Function() reopen,
   }) async {
     final targets = {
       for (final node in focusTargets(within: surface))
-        if (node is! FocusScopeNode) node.rect: describeNode(node),
+        if (node is! FocusScopeNode) _contentRect(node): describeNode(node),
     };
-    final start = focusedNode?.rect;
+    final start = switch (focusedNode) {
+      final node? => _contentRect(node),
+      null => null,
+    };
     if (start == null) {
       return ['nothing is focused on ${_describeFinder(surface)}'];
     }
@@ -253,7 +268,10 @@ final class KeyboardFlowDriver {
         }
         await arrow(direction);
 
-        final to = focusedNode?.rect;
+        final to = switch (focusedNode) {
+          final node? => _contentRect(node),
+          null => null,
+        };
         if (to == null || !isFocusWithin(surface)) continue;
         if (paths.containsKey(to)) continue;
         paths[to] = [...paths[from]!, direction];
@@ -268,12 +286,12 @@ final class KeyboardFlowDriver {
     ];
   }
 
-  /// Traversable focus targets in the focus scope around [within], or on the
-  /// top screen. Controls scrolled off-screen count, since arrows should
-  /// scroll them into view.
+  /// Traversable focus targets in the focus scope of [within], or on the top
+  /// screen. Controls scrolled off-screen count, since arrows should scroll
+  /// them into view.
   List<FocusNode> focusTargets({Finder? within}) =>
       switch (within) {
-            final within? => FocusScope.of(tester.element(within.first)),
+            final within? => _scopeOf(within),
             null => _topRouteScope(),
           }.traversalDescendants
           .where(
@@ -283,6 +301,38 @@ final class KeyboardFlowDriver {
                 !node.rect.isEmpty,
           )
           .toList(growable: false);
+
+  /// [node]'s rect with every scroll view around it scrolled back to the
+  /// start, so it stays the same however far the content is scrolled.
+  static Rect _contentRect(FocusNode node) {
+    var rect = node.rect;
+    final context = node.context;
+    if (context == null) return rect;
+
+    for (
+      var scrollable = Scrollable.maybeOf(context);
+      scrollable != null;
+      scrollable = Scrollable.maybeOf(scrollable.context)
+    ) {
+      final pixels = scrollable.position.pixels;
+      rect = rect.shift(switch (scrollable.axisDirection) {
+        AxisDirection.down => Offset(0, pixels),
+        AxisDirection.up => Offset(0, -pixels),
+        AxisDirection.right => Offset(pixels, 0),
+        AxisDirection.left => Offset(-pixels, 0),
+      });
+    }
+    return rect;
+  }
+
+  /// The focus scope around [surface], or the scope it is itself.
+  FocusScopeNode _scopeOf(Finder surface) {
+    final element = tester.element(surface.first);
+    return switch (element.widget) {
+      FocusScope(focusNode: final FocusScopeNode node) => node,
+      _ => FocusScope.of(element),
+    };
+  }
 
   /// Breadth-first walk over arrow presses. Each visited node is re-focused
   /// directly before every press, so the walk does not depend on press order,

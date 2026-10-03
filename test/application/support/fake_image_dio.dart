@@ -7,15 +7,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/core/http/client/providers.dart';
 
 /// Returns the same small PNG for every requested image URL in widget tests.
-Override deterministicImageDioOverride() => dioForWidgetProvider.overrideWith((
-  ref,
-  _,
-) {
-  final dio = Dio();
-  dio.httpClientAdapter = _FixedImageAdapter();
+Override deterministicImageDioOverride() =>
+    dioForWidgetProvider.overrideWith((ref, _) => _fixedImageDio(ref));
+
+/// Serves site favicons, which otherwise reach the network, as a small PNG.
+Override deterministicFaviconDioOverride() =>
+    faviconDioProvider.overrideWith(_fixedImageDio);
+
+Dio _fixedImageDio(Ref ref) {
+  final dio = Dio()..httpClientAdapter = _FixedImageAdapter();
   ref.onDispose(dio.close);
   return dio;
-});
+}
 
 final class _FixedImageAdapter implements HttpClientAdapter {
   static final _png = base64Decode(

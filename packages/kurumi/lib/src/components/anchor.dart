@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:anchor_ui/anchor_ui.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../foundation/platform.dart';
 import '../theme/theme.dart';
+import 'back_handler.dart';
 
 class KurumiAnchor extends StatefulWidget {
   const KurumiAnchor({
@@ -39,6 +42,8 @@ class KurumiAnchor extends StatefulWidget {
 class _KurumiAnchorState extends State<KurumiAnchor>
     with SingleTickerProviderStateMixin {
   late final AnimationController _animationController;
+  final _overlayScope = FocusScopeNode(debugLabel: 'KurumiAnchorOverlay');
+  FocusNode? _opener;
 
   @override
   void initState() {
@@ -52,15 +57,33 @@ class _KurumiAnchorState extends State<KurumiAnchor>
   @override
   void dispose() {
     _animationController.dispose();
+    _overlayScope.dispose();
     super.dispose();
   }
 
   void _handleShowRequested(VoidCallback showOverlay) {
+    _opener = FocusManager.instance.primaryFocus;
     showOverlay();
     _animationController.forward();
+    // Autofocus, like a selected option's, applies in a microtask after the
+    // overlay's first frame; only without it does the first item take focus.
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => scheduleMicrotask(() {
+        if (!mounted || !widget.controller.isShowing) return;
+        if (_overlayScope.focusedChild != null) return;
+        _overlayScope.traversalDescendants.firstOrNull?.requestFocus();
+      }),
+    );
   }
 
   void _handleHideRequested(VoidCallback hideOverlay) {
+    final opener = _opener;
+    _opener = null;
+    // Only when the menu still holds focus, so a route opened from a menu
+    // item keeps it.
+    if (_overlayScope.hasFocus && opener?.context != null) {
+      opener?.requestFocus();
+    }
     _animationController.reverse().then((_) {
       if (mounted) {
         hideOverlay();
@@ -74,13 +97,9 @@ class _KurumiAnchorState extends State<KurumiAnchor>
 
     return ListenableBuilder(
       listenable: widget.controller,
-      builder: (context, child) => PopScope(
-        canPop: !widget.controller.isShowing,
-        onPopInvokedWithResult: (didPop, result) {
-          if (!didPop && widget.controller.isShowing) {
-            widget.controller.hide();
-          }
-        },
+      builder: (context, child) => KurumiBackHandler(
+        enabled: widget.controller.isShowing,
+        onBack: widget.controller.hide,
         child: child!,
       ),
       child: RawAnchor(
@@ -109,29 +128,40 @@ class _KurumiAnchorState extends State<KurumiAnchor>
         ),
         onShow: widget.onShow,
         onHide: widget.onHide,
-        overlayBuilder: (context) {
-          final shouldReduceAnimation =
-              widget.reduceAnimation ??
-              KurumiTheme.maybeBehaviorOf(context)?.reduceMotion ??
-              false;
-
-          return switch ((isDesktop, shouldReduceAnimation)) {
-            (true, _) || (_, true) => _OverlayContainer(
-              backgroundColor: widget.backgroundColor,
-              builder: widget.overlayBuilder,
-            ),
-            _ => _AnimatedOverlay(
-              controller: _animationController,
-              child: _OverlayContainer(
-                backgroundColor: widget.backgroundColor,
-                builder: widget.overlayBuilder,
-              ),
-            ),
-          };
-        },
+        overlayBuilder: (context) => FocusScope(
+          node: _overlayScope,
+          onFocusChange: (hasFocus) {
+            if (!hasFocus && widget.controller.isShowing) {
+              widget.controller.hide();
+            }
+          },
+          child: Builder(builder: _buildOverlay),
+        ),
         child: widget.child,
       ),
     );
+  }
+
+  Widget _buildOverlay(BuildContext context) {
+    final isDesktop = kurumiIsDesktopPlatform();
+    final shouldReduceAnimation =
+        widget.reduceAnimation ??
+        KurumiTheme.maybeBehaviorOf(context)?.reduceMotion ??
+        false;
+
+    return switch ((isDesktop, shouldReduceAnimation)) {
+      (true, _) || (_, true) => _OverlayContainer(
+        backgroundColor: widget.backgroundColor,
+        builder: widget.overlayBuilder,
+      ),
+      _ => _AnimatedOverlay(
+        controller: _animationController,
+        child: _OverlayContainer(
+          backgroundColor: widget.backgroundColor,
+          builder: widget.overlayBuilder,
+        ),
+      ),
+    };
   }
 }
 

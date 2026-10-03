@@ -159,52 +159,56 @@ class _List extends ConsumerWidget {
       children: allParts.map(
         (part) {
           final isSelected = state.isSelected(part);
-          return Container(
+          return Padding(
             key: ValueKey(part),
             padding: const EdgeInsets.symmetric(
-              horizontal: 4,
-            ),
-            margin: const EdgeInsets.symmetric(
               vertical: 4,
             ),
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: colorScheme.outlineVariant,
-                width: 0.1,
-              ),
+            child: Material(
               color: isSelected
                   ? colorScheme.surfaceContainerLow
                   : colorScheme.surfaceContainerLowest,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: ListTile(
-              leading: Icon(
-                Icons.drag_indicator,
-                color: isSelected
-                    ? colorScheme.hintColor
-                    : colorScheme.hintColor.withValues(alpha: 0.5),
+              shape: RoundedRectangleBorder(
+                side: BorderSide(
+                  color: colorScheme.outlineVariant,
+                  width: 0.1,
+                ),
+                borderRadius: BorderRadius.circular(8),
               ),
-              trailing: Checkbox(
-                value: isSelected,
-                onChanged: (value) {
-                  notifier.toggle(part);
-                },
-              ),
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 8,
-              ),
-              title: Text(
-                translateDetailsPart(context, part),
-                style: TextStyle(
-                  color: isSelected
-                      ? null
-                      : colorScheme.onSurface.withValues(alpha: 0.6),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 4,
+                ),
+                child: ListTile(
+                  leading: Icon(
+                    Icons.drag_indicator,
+                    color: isSelected
+                        ? colorScheme.hintColor
+                        : colorScheme.hintColor.withValues(alpha: 0.5),
+                  ),
+                  trailing: Checkbox(
+                    value: isSelected,
+                    onChanged: (value) {
+                      notifier.toggle(part);
+                    },
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                  ),
+                  title: Text(
+                    translateDetailsPart(context, part),
+                    style: TextStyle(
+                      color: isSelected
+                          ? null
+                          : colorScheme.onSurface.withValues(alpha: 0.6),
+                    ),
+                  ),
+                  onTap: () {
+                    notifier.toggle(part);
+                    HapticFeedback.selectionClick();
+                  },
                 ),
               ),
-              onTap: () {
-                notifier.toggle(part);
-                HapticFeedback.selectionClick();
-              },
             ),
           );
         },

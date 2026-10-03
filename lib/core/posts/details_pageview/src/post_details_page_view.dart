@@ -388,13 +388,14 @@ class _PostDetailsPageViewState extends ConsumerState<PostDetailsPageView>
                     false => !state.isExpanded,
                   },
                   onPopInvokedWithResult: (didPop, _) {
-                    if (didPop) {
-                      _onPop();
-                    } else {
-                      if (_controller.isExpanded) {
+                    switch ((didPop, isLargeScreen)) {
+                      case (true, _):
+                        _onPop();
+                      // A large screen never blocks the pop itself, so a
+                      // blocked pop belongs to something else, like a menu.
+                      case (false, false) when _controller.isExpanded:
                         _controller.resetSheet();
-                        return;
-                      }
+                      case _:
                     }
                   },
                   child: const SizedBox.shrink(),

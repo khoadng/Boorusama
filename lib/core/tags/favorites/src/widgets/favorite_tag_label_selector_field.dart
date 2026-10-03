@@ -22,6 +22,10 @@ class FavoriteTagLabelSelectorField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Read now: the sheet builds options after this field may be gone, as a
+    // search popover closes once the sheet takes focus.
+    final allLabel = context.t.favorite_tags.labels.all;
+
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -39,12 +43,9 @@ class FavoriteTagLabelSelectorField extends StatelessWidget {
                   context,
                 ).colorScheme.surfaceContainerHigh,
                 sheetTitle: context.t.favorite_tags.labels.title,
-                optionValueBuilder: (option) => option == kSpecialLabelKeyForAll
-                    ? context.t.favorite_tags.labels.all
-                    : option,
-                value: selected == ''
-                    ? context.t.favorite_tags.labels.all
-                    : selected,
+                optionValueBuilder: (option) =>
+                    option == kSpecialLabelKeyForAll ? allLabel : option,
+                value: selected == '' ? allLabel : selected,
                 items: [
                   kSpecialLabelKeyForAll,
                   ...labels,

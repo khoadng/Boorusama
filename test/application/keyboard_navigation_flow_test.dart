@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kurumi/kurumi.dart';
+import 'package:kurumi/material.dart' as km;
 import 'package:material_symbols_icons/symbols.dart';
 
 import 'package:boorusama/core/changelogs/dialog.dart';
@@ -11,16 +12,31 @@ import 'package:boorusama/core/changelogs/providers.dart';
 import 'package:boorusama/core/changelogs/types.dart';
 import 'package:boorusama/core/configs/create/src/widgets/create_config_button.dart';
 import 'package:boorusama/core/home/src/pages/entry_page.dart';
+import 'package:boorusama/core/posts/details_manager/widgets.dart';
+import 'package:boorusama/core/premiums/providers.dart';
+import 'package:boorusama/core/tags/favorites/src/widgets/favorite_tag_label_selector_field.dart';
 import 'package:boorusama/core/search/search/src/views/search_landing_view.dart';
 import 'package:boorusama/core/search/search/src/widgets/desktop_search_bar.dart';
 import 'package:boorusama/core/settings/src/pages/settings_page.dart';
 
 import 'support/app_flow_finders.dart';
 import 'support/fake_booru_backend.dart';
+import 'support/fake_image_dio.dart';
 import 'support/headless_app_harness.dart';
 import 'support/keyboard_flow_driver.dart';
 
 void main() {
+  final screenChecks = [
+    (
+      name: 'has no remote dead ends',
+      check: (KeyboardFlowDriver keys) => keys.focusProblems(),
+    ),
+    (
+      name: 'shows clearly where focus is',
+      check: (KeyboardFlowDriver keys) => keys.faintFocus(),
+    ),
+  ];
+
   testWidgets('remote can open a post and return home without touching', (
     tester,
   ) async {
@@ -146,6 +162,33 @@ void main() {
     );
   });
 
+  testWidgets(
+    'remote opens the tag label sheet from search suggestions and returns '
+    'to the search',
+    (tester) async {
+      final keys = await _mountOnTv(tester);
+      await _openSearchSuggestions(keys);
+      final labels = find.descendant(
+        of: _searchSuggestions,
+        matching: find.byType(FavoriteTagLabelSelectorField),
+      );
+      // Reachability is covered by the suggestions walk, which closing the
+      // popover on the way would defeat here.
+      await keys.focusOn(labels);
+
+      await keys.select();
+      await keys.harness.pumpUntil(
+        tester,
+        () => _searchSuggestions.evaluate().isEmpty,
+        description: 'labels sheet to cover the suggestions',
+      );
+      await keys.back();
+
+      expect(keys.isFocusWithin(_searchField), isTrue);
+      expect(_searchSuggestions, findsOneWidget);
+    },
+  );
+
   testWidgets('search suggestions show clearly where focus is', (
     tester,
   ) async {
@@ -191,6 +234,139 @@ void main() {
       description: 'settings to close',
     );
   });
+
+  final menus = [
+    (
+      name: 'post menu',
+      button: _postMenuButton,
+      prepare: _openPostInfoWithRemote,
+    ),
+    (
+      name: 'profile dropdown',
+      button: _profileDropdown,
+      prepare: (KeyboardFlowDriver keys) =>
+          _openRoute(keys, '$_editProfilePath?q=listing'),
+    ),
+  ];
+  for (final c in menus) {
+    Future<KeyboardFlowDriver> openMenu(WidgetTester tester) async {
+      final keys = await _mountOnTv(tester);
+      await c.prepare(keys);
+      await _openMenuWithRemote(keys, c.button);
+      return keys;
+    }
+
+    testWidgets('remote back closes the ${c.name} and returns to its button', (
+      tester,
+    ) async {
+      final keys = await openMenu(tester);
+      final route = ModalRoute.of(tester.element(c.button));
+
+      await keys.back();
+
+      expect(_openMenu.evaluate(), isEmpty);
+      expect(route?.isCurrent, isTrue);
+      expect(keys.isFocusWithin(c.button), isTrue);
+    });
+
+    testWidgets('remote can reach every ${c.name} item', (tester) async {
+      final keys = await openMenu(tester);
+
+      expect(
+        await keys.unreachableIn(
+          _openMenu,
+          reopen: () => _openMenuWithRemote(keys, c.button, direct: true),
+        ),
+        isEmpty,
+      );
+    });
+
+    testWidgets('${c.name} shows clearly where focus is', (tester) async {
+      final keys = await openMenu(tester);
+
+      expect(await keys.faintFocus(within: _openMenu), isEmpty);
+    });
+  }
+
+  final popups = [
+    (
+      name: 'blacklist add dialog',
+      prepare: (KeyboardFlowDriver keys) =>
+          _openRoute(keys, '/global_blacklisted_tags'),
+      button: _iconButton(Symbols.add),
+    ),
+    (
+      name: 'blacklist sort sheet',
+      prepare: (KeyboardFlowDriver keys) =>
+          _openRoute(keys, '/global_blacklisted_tags'),
+      button: _iconButton(Icons.sort),
+    ),
+  ];
+  for (final c in popups) {
+    Future<KeyboardFlowDriver> openPopup(WidgetTester tester) async {
+      final keys = await _mountOnTv(tester);
+      await c.prepare(keys);
+      final opener = ModalRoute.of(tester.element(c.button));
+      await keys.navigateTo(c.button);
+      await keys.select();
+      await keys.harness.pumpUntil(
+        tester,
+        () => opener?.isCurrent == false,
+        description: '${c.name} to open',
+      );
+      await keys.harness.settle(tester);
+      return keys;
+    }
+
+    testWidgets('remote back closes the ${c.name} and returns to its button', (
+      tester,
+    ) async {
+      final keys = await openPopup(tester);
+
+      await keys.back();
+      await keys.harness.settle(tester);
+
+      expect(keys.isFocusWithin(c.button), isTrue);
+    });
+
+    for (final check in screenChecks) {
+      testWidgets('the ${c.name} ${check.name}', (tester) async {
+        final keys = await openPopup(tester);
+
+        expect(await check.check(keys), isEmpty);
+      });
+    }
+  }
+
+  testWidgets('remote opens a dropdown on its selected option', (
+    tester,
+  ) async {
+    final keys = await _mountOnTv(tester);
+    await _openRoute(keys, '$_editProfilePath?q=listing');
+    await _openMenuWithRemote(keys, _profileDropdown);
+
+    expect(
+      keys.isFocusWithin(
+        find.descendant(
+          of: _openMenu,
+          matching: find.byWidgetPredicate(
+            (widget) =>
+                widget is Semantics && (widget.properties.selected ?? false),
+          ),
+        ),
+      ),
+      isTrue,
+    );
+  });
+
+  for (final c in screenChecks) {
+    testWidgets('the details layout manager screen ${c.name}', (tester) async {
+      final keys = await _mountOnTv(tester, showPremiumFeatures: true);
+      await _openDetailsLayoutManager(keys);
+
+      expect(await c.check(keys), isEmpty);
+    });
+  }
 
   final screens = [
     (
@@ -284,9 +460,68 @@ Future<void> _openPostWithRemote(KeyboardFlowDriver keys) async {
   await keys.harness.settle(keys.tester);
 }
 
+final _postMenuButton = find
+    .ancestor(of: find.byIcon(Icons.more_horiz), matching: find.byType(Focus))
+    .first;
+
+final _openMenu = find.byWidgetPredicate(
+  (widget) =>
+      widget is FocusScope &&
+      widget.focusNode?.debugLabel == 'KurumiAnchorOverlay',
+  description: 'open menu',
+);
+
+/// Opens the menu behind [button] and expects focus to move into it.
+/// [direct] focuses the button without arrows, to restart a walk from a
+/// known point once the button is proven reachable.
+Future<void> _openMenuWithRemote(
+  KeyboardFlowDriver keys,
+  Finder button, {
+  bool direct = false,
+}) async {
+  if (_openMenu.evaluate().isNotEmpty) await keys.back();
+  await keys.harness.pumpUntil(
+    keys.tester,
+    () => _openMenu.evaluate().isEmpty,
+    description: 'menu to close',
+  );
+  await (direct ? keys.focusOn(button) : keys.navigateTo(button));
+  await keys.select();
+  await keys.harness.pumpUntilFound(keys.tester, _openMenu);
+  expect(keys.isFocusWithin(_openMenu), isTrue);
+}
+
+final _profileDropdown = find
+    .byWidgetPredicate((widget) => widget is KurumiOptionDropDownButton)
+    .first;
+
+Future<void> _openDetailsLayoutManager(KeyboardFlowDriver keys) async {
+  await _openPostInfoWithRemote(keys);
+  await keys.navigateTo(find.byType(AddCustomDetailsButton));
+  await keys.select();
+  await keys.harness.pumpUntilFound(
+    keys.tester,
+    find.byType(DetailsLayoutManagerPage),
+  );
+  await keys.harness.settle(keys.tester);
+}
+
+Future<void> _openPostInfoWithRemote(KeyboardFlowDriver keys) async {
+  await _openPostWithRemote(keys);
+  await keys.navigateTo(
+    find.ancestor(
+      of: find.byType(KurumiInfoCircleIcon),
+      matching: find.byType(KurumiCircularIconButton),
+    ),
+  );
+  await keys.select();
+  await keys.harness.settle(keys.tester);
+}
+
 Future<KeyboardFlowDriver> _mountOnTv(
   WidgetTester tester, {
   bool showChangelog = false,
+  bool showPremiumFeatures = false,
   List<TestPost>? posts,
 }) async {
   final backend = FakeBooruBackend()
@@ -299,6 +534,9 @@ Future<KeyboardFlowDriver> _mountOnTv(
       changelogRepositoryProvider.overrideWith(
         (ref) => _FakeChangelogRepository(showChangelog: showChangelog),
       ),
+      deterministicFaviconDioOverride(),
+      if (showPremiumFeatures)
+        showPremiumFeatsProvider.overrideWith((ref) => true),
     ],
   );
   await harness.pumpUntilFound(tester, postTile(101));
@@ -311,6 +549,9 @@ Finder _sidebarTile(IconData icon) => find.ancestor(
   of: find.byIcon(icon),
   matching: find.byType(KurumiNavigationTile),
 );
+
+Finder _iconButton(IconData icon) =>
+    find.ancestor(of: find.byIcon(icon), matching: find.byType(km.IconButton));
 
 Finder _detailsBackButton() => find.ancestor(
   of: find.byIcon(Symbols.arrow_back_ios),
