@@ -24,6 +24,10 @@ class HttpProtectionHandler {
 
   // Track retry attempts
   final Map<String, int> _retryAttempts = {};
+
+  // Origins where a reported solve did not unblock this client. Reopening the
+  // solver there only repeats the same failed handoff.
+  final Set<String> _blockedAfterSolve = {};
   final int maxRetries;
   final ProtectionEventSink? onEvent;
 
@@ -155,6 +159,13 @@ class HttpProtectionHandler {
       return false;
     }
 
+    if (_blockedAfterSolve.contains(error.requestUri.origin)) {
+      attempt?.record(
+        const RecoveryStopped(RecoveryStopReason.blockedAfterSolve),
+      );
+      return false;
+    }
+
     final uriString = error.requestUri.toString();
     final retryCount = _retryAttempts[uriString] ?? 0;
 
@@ -197,6 +208,17 @@ class HttpProtectionHandler {
 
     return false;
   }
+
+  /// Records the outcome of the retry sent after a reported solve. A retry
+  /// that is still blocked stops further solving for its origin until a
+  /// request there succeeds.
+  void observeRetryError(HttpError error, {ProtectionAttempt? attempt}) {
+    if (!_orchestrator.detectsErrorProtection(error)) return;
+    attempt?.record(const RetryStillBlocked());
+    _blockedAfterSolve.add(error.requestUri.origin);
+  }
+
+  void observeSuccess(Uri uri) => _blockedAfterSolve.remove(uri.origin);
 
   /// Resets retry attempts for a specific URI
   void resetRetryAttempts(Uri uri) {

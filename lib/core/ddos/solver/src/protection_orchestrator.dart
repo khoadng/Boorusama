@@ -148,6 +148,9 @@ class ProtectionOrchestrator {
     );
   }
 
+  bool detectsErrorProtection(HttpError error) =>
+      _detectError(error, null) != null;
+
   ProtectionDetector? _detectError(
     HttpError error,
     ProtectionAttempt? attempt,

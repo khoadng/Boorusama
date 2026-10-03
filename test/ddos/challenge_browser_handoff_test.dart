@@ -133,6 +133,39 @@ void main() {
     },
   );
 
+  testWidgets(
+    'after a solve that leaves the app blocked, later requests fail without reopening the challenge',
+    (tester) async {
+      final site = _Site(blockedBody: _turnstileCaptchaPage);
+      final harness = await _Harness.pump(tester, site: site);
+
+      final first = await harness.sendAction(tester);
+      final second = await harness.sendAction(tester);
+
+      expect(first.result, 'HTTP 403');
+      expect(first.challengeShown, isTrue);
+      expect(second.result, 'HTTP 403');
+      expect(second.challengeShown, isFalse);
+      expect(site.browserPaths, hasLength(1));
+    },
+  );
+
+  testWidgets(
+    'a successful request to the site lets the challenge open again',
+    (tester) async {
+      final site = _Site(blockedBody: _turnstileCaptchaPage);
+      final harness = await _Harness.pump(tester, site: site);
+
+      await harness.sendAction(tester);
+      final open = await harness.send(tester, _openPath);
+      final retried = await harness.sendAction(tester);
+
+      expect(open.result, 'HTTP 200 "done"');
+      expect(retried.challengeShown, isTrue);
+      expect(site.browserPaths, hasLength(2));
+    },
+  );
+
   group('known bug #704', skip: _brandedTitleNotDetected, () {
     test('detects a captcha page whose title includes the site name', () {
       final error = _Error(

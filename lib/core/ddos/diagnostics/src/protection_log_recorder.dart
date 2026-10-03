@@ -129,5 +129,6 @@ String _formatEvent(ProtectionEvent event) => switch (event) {
     'task=$taskId status=$status httpStatus=$httpStatus exceptionType=$errorType retries=$retries',
   RetryPreparationStarted() => 'retry preparation started',
   RetryDispatched(:final number) => 'retry dispatched number=$number',
+  RetryStillBlocked() => 'retry still blocked after solve',
   RetryEnqueued(:final accepted) => 'retry enqueue accepted=$accepted',
 };

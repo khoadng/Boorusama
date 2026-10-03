@@ -79,6 +79,7 @@ class DioProtectionInterceptor extends Interceptor {
         retry: _isProtectionRetry(response.requestOptions),
       ),
     );
+    _protectionHandler.observeSuccess(response.requestOptions.uri);
     if (_isProtectionRetry(response.requestOptions)) {
       return super.onResponse(response, handler);
     }
@@ -125,6 +126,10 @@ class DioProtectionInterceptor extends Interceptor {
       ),
     );
     if (_isProtectionRetry(err.requestOptions)) {
+      _protectionHandler.observeRetryError(
+        DioErrorAdapter(err),
+        attempt: attempt,
+      );
       return handler.next(err);
     }
 

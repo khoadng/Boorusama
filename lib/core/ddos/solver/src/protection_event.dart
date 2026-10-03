@@ -16,6 +16,7 @@ enum RecoveryStopReason {
   noDetector,
   missingSolver,
   busy,
+  blockedAfterSolve,
 }
 
 enum HeaderPreparationSkipReason { disabled, userAgentUnavailable }
@@ -273,6 +274,12 @@ final class DownloadStatusObserved extends ProtectionEvent {
 
 final class RetryPreparationStarted extends ProtectionEvent {
   const RetryPreparationStarted();
+}
+
+/// The retry after a reported solve was still blocked, so the solver's
+/// credentials do not unblock this client for the origin.
+final class RetryStillBlocked extends ProtectionEvent {
+  const RetryStillBlocked();
 }
 
 final class RetryDispatched extends ProtectionEvent {
