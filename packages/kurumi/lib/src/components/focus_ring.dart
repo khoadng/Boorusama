@@ -1,3 +1,5 @@
+import 'package:flutter/gestures.dart';
+import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 
 import 'cross_scope_focus.dart';
@@ -7,6 +9,8 @@ import 'cross_scope_focus.dart';
 /// the app root; touch and mouse users never see it.
 ///
 /// Controls that arrows skip, such as a page-wide key handler, get no ring.
+/// A mouse click keeps Flutter in keyboard highlight mode, so the ring also
+/// hides on any pointer press and returns with the next key press.
 class KurumiFocusRing extends StatefulWidget {
   const KurumiFocusRing({
     required this.child,
@@ -21,6 +25,7 @@ class KurumiFocusRing extends StatefulWidget {
 
 class _KurumiFocusRingState extends State<KurumiFocusRing> {
   Rect? _ring;
+  var _pointerActive = false;
 
   @override
   void initState() {
@@ -28,6 +33,8 @@ class _KurumiFocusRingState extends State<KurumiFocusRing> {
     FocusManager.instance
       ..addListener(_scheduleSync)
       ..addHighlightModeListener(_onHighlightModeChanged);
+    GestureBinding.instance.pointerRouter.addGlobalRoute(_onPointer);
+    HardwareKeyboard.instance.addHandler(_onKey);
     _syncAfterFrame();
   }
 
@@ -36,7 +43,23 @@ class _KurumiFocusRingState extends State<KurumiFocusRing> {
     FocusManager.instance
       ..removeListener(_scheduleSync)
       ..removeHighlightModeListener(_onHighlightModeChanged);
+    GestureBinding.instance.pointerRouter.removeGlobalRoute(_onPointer);
+    HardwareKeyboard.instance.removeHandler(_onKey);
     super.dispose();
+  }
+
+  void _onPointer(PointerEvent event) {
+    if (event is! PointerDownEvent || _pointerActive) return;
+    _pointerActive = true;
+    _scheduleSync();
+  }
+
+  bool _onKey(KeyEvent event) {
+    if (event is KeyDownEvent && _pointerActive) {
+      _pointerActive = false;
+      _scheduleSync();
+    }
+    return false;
   }
 
   void _onHighlightModeChanged(FocusHighlightMode _) => _scheduleSync();
@@ -63,7 +86,8 @@ class _KurumiFocusRingState extends State<KurumiFocusRing> {
     };
     return switch ((FocusManager.instance.highlightMode, node, origin)) {
       (FocusHighlightMode.traditional, final node?, final origin?)
-          when node is! FocusScopeNode &&
+          when !_pointerActive &&
+              node is! FocusScopeNode &&
               !node.skipTraversal &&
               (node.context?.mounted ?? false) =>
         switch (visibleFocusRect(node)) {

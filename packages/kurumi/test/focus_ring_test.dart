@@ -1,5 +1,7 @@
 // Flutter imports:
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 // Package imports:
@@ -59,4 +61,47 @@ void main() {
       );
     });
   }
+
+  testWidgets(
+    'focus ring hides after a mouse click and returns on the next key press',
+    (tester) async {
+      final previous = FocusManager.instance.highlightStrategy;
+      FocusManager.instance.highlightStrategy =
+          FocusHighlightStrategy.alwaysTraditional;
+      addTearDown(() => FocusManager.instance.highlightStrategy = previous);
+
+      final node = FocusNode();
+      addTearDown(node.dispose);
+      await tester.pumpWidget(
+        MaterialApp(
+          home: KurumiFocusRing(
+            child: Center(
+              child: TextButton(
+                focusNode: node,
+                onPressed: () {},
+                child: const Text('Open'),
+              ),
+            ),
+          ),
+        ),
+      );
+      node.requestFocus();
+      await tester.pump();
+      await tester.pump();
+      final ring = paints..drrect();
+
+      final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+      await mouse.down(const Offset(5, 5));
+      await mouse.up();
+      await tester.pump();
+      await tester.pump();
+      expect(node.hasFocus, isTrue);
+      expect(find.byType(KurumiFocusRing), isNot(ring));
+
+      await tester.sendKeyEvent(LogicalKeyboardKey.shift);
+      await tester.pump();
+      await tester.pump();
+      expect(find.byType(KurumiFocusRing), ring);
+    },
+  );
 }

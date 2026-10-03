@@ -195,10 +195,14 @@ class ImageGridItem extends StatelessWidget {
         Positioned.fill(
           child: Material(
             color: Colors.transparent,
-            child: ImageInkWellWithBorderOnFocus(
+            child: InkWell(
+              focusColor: Kurumi.themeOf(
+                context,
+              ).colorScheme.primary.withAlpha(50),
+              highlightColor: Colors.transparent,
+              splashFactory: FasterInkSplash.splashFactory,
+              splashColor: splashColor ?? Colors.black38,
               onTap: onTap,
-              borderRadius: borderRadius,
-              splashColor: splashColor,
             ),
           ),
         ),
@@ -241,82 +245,6 @@ class ImageScoreWidget extends StatelessWidget {
           fontWeight: FontWeight.w800,
         ),
       ),
-    );
-  }
-}
-
-class ImageInkWellWithBorderOnFocus extends StatefulWidget {
-  const ImageInkWellWithBorderOnFocus({
-    super.key,
-    this.onTap,
-    this.borderRadius,
-    this.splashColor,
-  });
-
-  final void Function()? onTap;
-  final BorderRadius? borderRadius;
-  final Color? splashColor;
-
-  @override
-  State<ImageInkWellWithBorderOnFocus> createState() =>
-      _ImageInkWellWithBorderOnFocusState();
-}
-
-class _ImageInkWellWithBorderOnFocusState
-    extends State<ImageInkWellWithBorderOnFocus> {
-  var node = FocusNode();
-  late final isFocused = ValueNotifier(node.hasFocus);
-  @override
-  void initState() {
-    super.initState();
-    node.addListener(_onFocusChange);
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    node
-      ..removeListener(_onFocusChange)
-      ..dispose();
-  }
-
-  void _onFocusChange() {
-    isFocused.value = node.hasFocus;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        ValueListenableBuilder(
-          valueListenable: isFocused,
-          builder: (context, focused, child) {
-            return focused
-                ? Positioned.fill(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius:
-                            widget.borderRadius ??
-                            const BorderRadius.all(Radius.circular(8)),
-                        border: Border.all(
-                          color: Kurumi.themeOf(context).colorScheme.primary,
-                          width: 6,
-                        ),
-                      ),
-                    ),
-                  )
-                : const SizedBox.shrink();
-          },
-        ),
-        InkWell(
-          focusNode: node,
-          focusColor: Kurumi.themeOf(context).colorScheme.primary.withAlpha(50),
-          highlightColor: Colors.transparent,
-          splashFactory: FasterInkSplash.splashFactory,
-          splashColor: widget.splashColor ?? Colors.black38,
-          onTap: widget.onTap,
-        ),
-      ],
     );
   }
 }
