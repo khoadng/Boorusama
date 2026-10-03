@@ -95,7 +95,7 @@ class DownloadTaskUpdatesNotifier extends Notifier<DownloadTaskUpdateState> {
     final totalTasks = state.tasks;
     final group = update.task.group;
 
-    final updates = totalTasks[group] ?? [];
+    final updates = [...?totalTasks[group]];
 
     final index = updates.indexWhere((element) => element.task == update.task);
 
