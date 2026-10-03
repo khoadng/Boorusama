@@ -93,6 +93,12 @@ void main() {
         body: '<!DOCTYPE html><html lang="en-US"><head><title>Just a moment...</title></head><body><script src="https://challenges.cloudflare.com/turnstile/v0/api.js"></script></body></html>',
         shouldDetect: true,
       ),
+      (
+        name: '403 with challenge page restyled under the site name',
+        statusCode: 403,
+        body: '<html><head><title>Example CAPTCHA</title></head><body><div class="captcha-box"><script>window._cf_chl_opt = {cType: \'managed\'};</script></div></body></html>',
+        shouldDetect: true,
+      ),
     ];
 
     for (final c in cases) {

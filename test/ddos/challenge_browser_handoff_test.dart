@@ -20,9 +20,6 @@ import 'package:boorusama/foundation/browser/types.dart';
 
 import 'protection_solver_test.dart' show FakeUserAgentProvider;
 
-const _brandedTitleNotDetected =
-    'Known bug #704: captcha pages titled with the site name are not detected';
-
 // A captcha page branded with the site's name instead of a bare "CAPTCHA".
 const _brandedCaptchaPage = '''
 <html>
@@ -165,22 +162,6 @@ void main() {
       expect(site.browserPaths, hasLength(2));
     },
   );
-
-  group('known bug #704', skip: _brandedTitleNotDetected, () {
-    test('detects a captcha page whose title includes the site name', () {
-      final error = _Error(
-        _Response(403, _brandedCaptchaPage),
-        Uri.parse('https://example.com$_actionPath'),
-      );
-      final detected = _detectors().any(
-        (d) =>
-            d.detectionPhase == DetectionPhase.error &&
-            d.getProtectionConfidence(null, error) >= d.confidenceThreshold,
-      );
-
-      expect(detected, isTrue);
-    });
-  });
 }
 
 List<ProtectionDetector> _detectors() => [
@@ -428,28 +409,4 @@ class _Browser implements EmbeddedBrowserSession {
 
   @override
   Future<void> dispose() => _events.close();
-}
-
-class _Response implements HttpResponse {
-  _Response(this.statusCode, this.data);
-
-  @override
-  final int? statusCode;
-  @override
-  final dynamic data;
-  @override
-  Uri get requestUri => Uri.parse('https://example.com');
-  @override
-  Map<String, dynamic> get headers => {};
-}
-
-class _Error implements HttpError {
-  _Error(this.response, this.requestUri);
-
-  @override
-  final HttpResponse? response;
-  @override
-  final Uri requestUri;
-  @override
-  String? get message => null;
 }

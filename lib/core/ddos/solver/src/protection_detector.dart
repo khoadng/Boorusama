@@ -41,6 +41,9 @@ class CloudflareDetector implements ProtectionDetector {
     }
 
     final bodyLower = body.toLowerCase();
+    // Challenge options are only emitted on challenge pages, so this holds even
+    // when a site restyles the page with its own title and copy.
+    if (bodyLower.contains('_cf_chl_opt')) return 1;
     if (bodyLower.contains('<title>just a moment') &&
         bodyLower.contains('challenges.cloudflare.com')) {
       return 1;
