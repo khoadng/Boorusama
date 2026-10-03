@@ -3,7 +3,11 @@ import 'dart:math';
 
 // Flutter imports:
 import 'package:material_ui/material_ui.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
+
+// Project imports:
+import '../vendor/flutter/interactive_viewer.dart' as vendor;
 
 /// Fallback max zoom scale when content size is unknown. Limits zoom-in.
 const _kFallbackMaxScale = 10.0;
@@ -201,6 +205,10 @@ class _KurumiRawInteractiveViewerState extends State<KurumiRawInteractiveViewer>
   // Track if max zoom haptic feedback has been triggered
   var _hasTriggeredMaxZoomHaptic = false;
 
+  // Panning is only enabled while zoomed so single-finger drags at rest go to
+  // enclosing scrollables such as the details page view.
+  late var _isZoomed = _computeIsZoomed();
+
   @override
   void initState() {
     super.initState();
@@ -226,6 +234,7 @@ class _KurumiRawInteractiveViewerState extends State<KurumiRawInteractiveViewer>
       final newController = widget.controller ?? TransformationController();
       _controller = newController;
       _controller.addListener(_onChanged);
+      _setZoomed(_computeIsZoomed());
     }
 
     if (oldWidget.enable != widget.enable) {
@@ -258,12 +267,10 @@ class _KurumiRawInteractiveViewerState extends State<KurumiRawInteractiveViewer>
       maxScale: maxScale,
       minScale: _kFallbackMinScale,
       transformationMatrix: _controller.value,
-      isZoomed: !Matrix4.diagonal3Values(
-        _controller.value.right.x,
-        _controller.value.up.y,
-        _controller.value.forward.z,
-      ).isIdentity(),
+      isZoomed: _computeIsZoomed(),
     );
+
+    _setZoomed(details.isZoomed);
 
     if (_enableHapticFeedback) {
       if (details.isAtMaxZoom && !_hasTriggeredMaxZoomHaptic) {
@@ -275,6 +282,28 @@ class _KurumiRawInteractiveViewerState extends State<KurumiRawInteractiveViewer>
     }
 
     widget.onTransformationChanged?.call(details);
+  }
+
+  bool _computeIsZoomed() => !Matrix4.diagonal3Values(
+    _controller.value.right.x,
+    _controller.value.up.y,
+    _controller.value.forward.z,
+  ).isIdentity();
+
+  void _setZoomed(bool value) {
+    if (value == _isZoomed) return;
+
+    void apply() {
+      if (!mounted || value == _isZoomed) return;
+      setState(() => _isZoomed = value);
+    }
+
+    switch (SchedulerBinding.instance.schedulerPhase) {
+      case SchedulerPhase.persistentCallbacks:
+        SchedulerBinding.instance.addPostFrameCallback((_) => apply());
+      case _:
+        apply();
+    }
   }
 
   @override
@@ -332,11 +361,11 @@ class _KurumiRawInteractiveViewerState extends State<KurumiRawInteractiveViewer>
           child: interactiveChild,
         );
 
-        return InteractiveViewer(
+        return vendor.InteractiveViewer(
           minScale: _kFallbackMinScale,
           maxScale: _calcMaxScale(widget.contentSize, containerSize),
           transformationController: _controller,
-          panEnabled: enable && widget.panEnabled,
+          panEnabled: enable && widget.panEnabled && _isZoomed,
           scaleEnabled: enable && widget.scaleEnabled,
           child: child,
         );

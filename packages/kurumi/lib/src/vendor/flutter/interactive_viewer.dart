@@ -4,16 +4,21 @@
 //
 // Vendored from flutter/flutter 3.47.2 (framework revision d3b14c8769),
 // packages/flutter/lib/src/widgets/interactive_viewer.dart.
+// Local change: the scale gesture uses the vendored [ScaleGestureRecognizer]
+// with `panCausesAcceptance: widget.panEnabled`, pending an upstream proposal.
+// Delete this file once a Flutter release ships the same behavior.
 
 // ignore_for_file: type=lint
 
 import 'dart:math' as math;
 
 import 'package:flutter/foundation.dart' show clampDouble;
-import 'package:flutter/gestures.dart';
+import 'package:flutter/gestures.dart' hide ScaleGestureRecognizer;
 import 'package:flutter/physics.dart';
 import 'package:flutter/widgets.dart' hide InteractiveViewer;
 import 'package:vector_math/vector_math_64.dart' show Quad, Vector3;
+
+import 'scale.dart';
 
 /// A widget that enables pan and zoom interactions with its child.
 ///
@@ -1067,13 +1072,24 @@ class _InteractiveViewerState extends State<InteractiveViewer> with TickerProvid
     return Listener(
       key: _parentKey,
       onPointerSignal: _receivedPointerSignal,
-      child: GestureDetector(
+      child: RawGestureDetector(
         behavior: HitTestBehavior.opaque, // Necessary when panning off screen.
-        onScaleEnd: _onScaleEnd,
-        onScaleStart: _onScaleStart,
-        onScaleUpdate: _onScaleUpdate,
-        trackpadScrollCausesScale: widget.trackpadScrollCausesScale,
-        trackpadScrollToScaleFactor: Offset(0, -1 / widget.scaleFactor),
+        gestures: <Type, GestureRecognizerFactory>{
+          ScaleGestureRecognizer: GestureRecognizerFactoryWithHandlers<ScaleGestureRecognizer>(
+            () => ScaleGestureRecognizer(debugOwner: this),
+            (ScaleGestureRecognizer instance) {
+              instance
+                ..onStart = _onScaleStart
+                ..onUpdate = _onScaleUpdate
+                ..onEnd = _onScaleEnd
+                ..dragStartBehavior = DragStartBehavior.start
+                ..gestureSettings = MediaQuery.maybeGestureSettingsOf(context)
+                ..trackpadScrollCausesScale = widget.trackpadScrollCausesScale
+                ..trackpadScrollToScaleFactor = Offset(0, -1 / widget.scaleFactor)
+                ..panCausesAcceptance = widget.panEnabled;
+            },
+          ),
+        },
         child: child,
       ),
     );

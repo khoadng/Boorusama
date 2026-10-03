@@ -4,6 +4,9 @@
 //
 // Vendored from flutter/flutter 3.47.2 (framework revision d3b14c8769),
 // packages/flutter/lib/src/gestures/scale.dart.
+// Local change: [ScaleGestureRecognizer.panCausesAcceptance], pending an
+// upstream proposal.
+// Delete this file once a Flutter release ships the same option.
 
 // ignore_for_file: type=lint
 
@@ -124,6 +127,7 @@ class ScaleGestureRecognizer extends OneSequenceGestureRecognizer {
     this.dragStartBehavior = DragStartBehavior.down,
     this.trackpadScrollCausesScale = false,
     this.trackpadScrollToScaleFactor = kDefaultTrackpadScrollToScaleFactor,
+    this.panCausesAcceptance = true,
   });
 
   /// Determines what point is used as the starting point in all calculations
@@ -166,6 +170,16 @@ class ScaleGestureRecognizer extends OneSequenceGestureRecognizer {
 
   /// The pointers are no longer in contact with the screen.
   GestureScaleEndCallback? onEnd;
+
+  /// Whether moving the focal point past the pan slop is enough for this
+  /// recognizer to win the gesture arena.
+  ///
+  /// When false, the recognizer only accepts once the span or scale of the
+  /// pointers changes, so single-pointer drags go to competing recognizers
+  /// such as an enclosing [Scrollable].
+  ///
+  /// Defaults to true.
+  bool panCausesAcceptance;
 
   _ScaleState _state = _ScaleState.ready;
 
@@ -515,7 +529,8 @@ class ScaleGestureRecognizer extends OneSequenceGestureRecognizer {
       final double spanDelta = (_currentSpan - _initialSpan).abs();
       final double focalPointDelta = (_currentFocalPoint! - _initialFocalPoint).distance;
       if (spanDelta > computeScaleSlop(event.kind) ||
-          focalPointDelta > computePanSlop(event.kind, gestureSettings) ||
+          (panCausesAcceptance &&
+              focalPointDelta > computePanSlop(event.kind, gestureSettings)) ||
           math.max(_scaleFactor / _pointerScaleFactor, _pointerScaleFactor / _scaleFactor) > 1.05) {
         resolve(GestureDisposition.accepted);
       }
