@@ -9,68 +9,87 @@ import 'package:boorusama/core/ddos/solver/src/page_inspection.dart';
 import 'package:boorusama/core/ddos/solver/src/protection_diagnostics.dart';
 
 void main() {
-  test(
-    'evaluation preserves marker precedence and existing acceptance rules',
-    () {
-      for (final evaluate in [evaluateCloudflarePage, evaluateAftPage]) {
-        expect(evaluate('  ').reason, PageDecisionReason.emptyDocument);
-        final failure = evaluate(
-          '<html>403 FORBIDDEN challenge_id cf_chl</html>',
-        );
-        expect(failure.accepted, isFalse);
-        expect(failure.reason, PageDecisionReason.failureMarker);
-        expect(failure.matchedMarker, '403 forbidden');
-        // This intentionally characterizes the existing permissive rule.
-        final unfamiliar = evaluate('<html>Please verify your age</html>');
-        expect(unfamiliar.accepted, isTrue);
-        expect(unfamiliar.reason, PageDecisionReason.noKnownMarkers);
-      }
-      expect(evaluateCloudflarePage('CF_CHL').matchedMarker, 'cf_chl');
-      expect(
-        evaluateCloudflarePage('CF_CHL').reason,
-        PageDecisionReason.challengeMarker,
-      );
-      expect(
-        evaluateAftPage('CHALLENGE HAS EXPIRED').reason,
-        PageDecisionReason.failureMarker,
-      );
-      expect(
-        evaluateAftPage('challenge_id').reason,
-        PageDecisionReason.challengeMarker,
-      );
-    },
-  );
+  test('verification-site pages keep failure ahead of challenge markers', () {
+    for (final evaluate in [evaluateCloudflarePage, evaluateAftPage]) {
+      expect(evaluate('  ').reason, PageDecisionReason.emptyDocument);
+    }
+    final failure = evaluateAftPage('<html>403 FORBIDDEN challenge_id</html>');
+    expect(failure.reason, PageDecisionReason.failureMarker);
+    expect(failure.matchedMarker, '403 forbidden');
+    expect(
+      evaluateAftPage('challenge_id').reason,
+      PageDecisionReason.challengeMarker,
+    );
+    expect(
+      evaluateAftPage('<html>Please verify your age</html>').accepted,
+      isTrue,
+    );
+  });
 
+  const challengeScript =
+      '<script>window._cf_chl_opt = {cType: "managed"};</script>';
   final cloudflarePages = [
     (
-      page: '<div class="captcha-box"><script>_cf_chl_opt</script></div>',
-      accepted: false,
+      name: 'challenge page restyled by the site',
+      page:
+          '<html><head><title>Example CAPTCHA</title></head><body><div class="captcha-box">$challengeScript</div></body></html>',
+      reason: PageDecisionReason.challengeMarker,
     ),
     (
-      page: '<script src="/cdn-cgi/challenge-platform/h/b/orchestrate/chl_page/v1"></script>',
-      accepted: false,
+      name: 'translated challenge page',
+      page: '<html><head><title>Doar un moment...</title><script src="/cdn-cgi/challenge-platform/h/b/orchestrate/chl_page/v1"></script></head></html>',
+      reason: PageDecisionReason.challengeMarker,
     ),
     (
+      name: 'challenge page still running',
+      page: '<html><head><title>Just a moment...</title></head><body><div id="challenge-spinner"></div></body></html>',
+      reason: PageDecisionReason.challengeMarker,
+    ),
+    (
+      name: 'access denied page',
+      page: '<html><head><title>Access denied | example.com used Cloudflare to restrict access</title></head><body><div id="cf-error-details"></div></body></html>',
+      reason: PageDecisionReason.blockedMarker,
+    ),
+    (
+      name: 'attention required page',
+      page: '<html><head><title>Attention Required! | Cloudflare</title></head></html>',
+      reason: PageDecisionReason.blockedMarker,
+    ),
+    (
+      name: 'forbidden page',
+      page: '<html><head><title>403 Forbidden</title></head><body>nginx</body></html>',
+      reason: PageDecisionReason.failureMarker,
+    ),
+    (
+      name: 'page that only configures hCaptcha',
       page: '<script>window.captchaCSSClass = "h-captcha";</script>',
-      accepted: true,
+      reason: PageDecisionReason.noKnownMarkers,
     ),
-    (page: '<form><div class="g-recaptcha"></div></form>', accepted: true),
     (
+      name: 'page with a reCAPTCHA form',
+      page: '<form><div class="g-recaptcha"></div></form>',
+      reason: PageDecisionReason.noKnownMarkers,
+    ),
+    (
+      name: 'page with a Turnstile widget',
       page: '<div class="cf-turnstile"></div><script src="https://challenges.cloudflare.com/turnstile/v0/api.js"></script>',
-      accepted: true,
+      reason: PageDecisionReason.noKnownMarkers,
     ),
     (
+      name: 'page with bot detection script',
       page: "<script>a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';</script>",
-      accepted: true,
+      reason: PageDecisionReason.noKnownMarkers,
+    ),
+    (
+      name: 'page that mentions the challenge in text',
+      page: '<html><body><p>Just a moment... cf_chl _cf_chl_opt</p></body></html>',
+      reason: PageDecisionReason.noKnownMarkers,
     ),
   ];
   for (final c in cloudflarePages) {
-    test(
-      'cloudflare page ${c.page} is ${c.accepted ? 'accepted' : 'rejected'}',
-      () {
-        expect(evaluateCloudflarePage(c.page).accepted, c.accepted);
-      },
-    );
+    test('cloudflare ${c.name} is judged ${c.reason.name}', () {
+      expect(evaluateCloudflarePage(c.page).reason, c.reason);
+    });
   }
 
   test(
@@ -89,7 +108,9 @@ void main() {
       var reads = 0;
       final check = session.beginCheck(CheckTrigger.pageFinished);
       final result = await inspectChallengePage(
-        readSource: () async => ++reads == 1 ? 'cf_chl SECRET' : 'normal page',
+        readSource: () async => ++reads == 1
+            ? '<script>_cf_chl_opt</script> SECRET'
+            : 'normal page',
         evaluate: evaluateCloudflarePage,
         diagnostics: check,
       );
@@ -101,10 +122,10 @@ void main() {
           .single;
       expect(event.evaluation, same(result));
       expect(event.evaluation.accepted, isFalse);
-      expect(event.length, 'cf_chl SECRET'.length);
+      expect(event.length, '<script>_cf_chl_opt</script> SECRET'.length);
       expect(
         (details.single as ProtectionPageContents).contents,
-        'cf_chl SECRET',
+        '<script>_cf_chl_opt</script> SECRET',
       );
       expect(records.map((record) => record.scope.checkId).toSet(), {check.id});
     },
@@ -170,7 +191,7 @@ void main() {
         diagnostics: page,
       );
       page.finish(CheckOutcome.pageAccepted, alreadyCompleted: false);
-      pending.complete('cf_chl');
+      pending.complete('<script>_cf_chl_opt</script>');
       await first;
       timer.finish(CheckOutcome.pageRejected, alreadyCompleted: true);
       final manual = session.beginCheck(CheckTrigger.manual);

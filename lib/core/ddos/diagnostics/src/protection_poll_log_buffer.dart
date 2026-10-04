@@ -65,6 +65,7 @@ class ProtectionPollLogBuffer {
       final pending =
           !event.alreadyCompleted &&
           (event.outcome == CheckOutcome.pageRejected ||
+              event.outcome == CheckOutcome.pageBlocked ||
               event.outcome == CheckOutcome.pageNotFinished ||
               event.outcome == CheckOutcome.cookieOnly);
       if (check.detailed || !pending) {

@@ -1294,7 +1294,8 @@
   },
   "captcha": {
     "title": "Solve the captcha",
-    "i_have_solved_it": "I have solved it"
+    "i_have_solved_it": "I have solved it",
+    "blocked_by_site": "This site blocked access from your network. Try turning off your VPN or proxy, or switching networks."
   },
   "select": {
     "selected_items": "Select items",

@@ -1,6 +1,10 @@
+// Package imports:
+import 'package:html/parser.dart' as html;
+
 enum PageDecisionReason {
   emptyDocument,
   failureMarker,
+  blockedMarker,
   challengeMarker,
   noKnownMarkers,
 }
@@ -12,6 +16,9 @@ class PageEvaluation {
       matchedMarker = null;
   const PageEvaluation.failure(String marker)
     : reason = PageDecisionReason.failureMarker,
+      matchedMarker = marker;
+  const PageEvaluation.blocked(String marker)
+    : reason = PageDecisionReason.blockedMarker,
       matchedMarker = marker;
   const PageEvaluation.challenge(String marker)
     : reason = PageDecisionReason.challengeMarker,
@@ -63,33 +70,61 @@ PageEvaluation evaluateAftPage(String value) {
   return const PageEvaluation.noKnownMarkers();
 }
 
+/// Judges the parsed document rather than its text: cleared pages can still
+/// load Turnstile, hCaptcha or Cloudflare's bot detection scripts, while the
+/// challenge page always defines `_cf_chl_opt` or loads its orchestrate script.
 PageEvaluation evaluateCloudflarePage(String value) {
-  final normalized = value.trim();
-  if (normalized.isEmpty) return const PageEvaluation.empty();
+  if (value.trim().isEmpty) return const PageEvaluation.empty();
 
-  final lower = normalized.toLowerCase();
-  const failureMarkers = [
-    '403 forbidden',
-  ];
-  for (final marker in failureMarkers) {
-    if (lower.contains(marker)) return PageEvaluation.failure(marker);
+  final document = html.parse(value);
+  final title = (document.querySelector('title')?.text ?? '')
+      .trim()
+      .toLowerCase();
+
+  if (title.contains('403 forbidden')) {
+    return const PageEvaluation.failure('title:403 forbidden');
   }
 
-  // Only the challenge page itself. Cleared pages can still embed Turnstile,
-  // hCaptcha or Cloudflare's /cdn-cgi/challenge-platform/scripts/ detection.
-  const challengeMarkers = [
-    'cf_chl',
-    'cf-ray',
-    'cf-mitigated',
-    '/cdn-cgi/challenge-platform/h/',
-    'challenge-error-text',
-    'enable javascript and cookies',
-    'just a moment',
-    'checking if the site connection is secure',
-    'captcha-box',
+  const blockedTitles = ['access denied', 'attention required! | cloudflare'];
+  for (final blocked in blockedTitles) {
+    if (title.startsWith(blocked)) {
+      return PageEvaluation.blocked('title:$blocked');
+    }
+  }
+  const blockedSelectors = ['#cf-error-details', '.cf-error-title'];
+  for (final selector in blockedSelectors) {
+    if (document.querySelector(selector) != null) {
+      return PageEvaluation.blocked(selector);
+    }
+  }
+
+  for (final script in document.querySelectorAll('script')) {
+    if (script.text.contains('_cf_chl_opt')) {
+      return const PageEvaluation.challenge('script:_cf_chl_opt');
+    }
+    final src = script.attributes['src'] ?? '';
+    if (src.contains('/cdn-cgi/challenge-platform/h/')) {
+      return const PageEvaluation.challenge(
+        'script:/cdn-cgi/challenge-platform/h/',
+      );
+    }
+  }
+  const challengeSelectors = [
+    '#challenge-running',
+    '#cf-challenge-running',
+    '#challenge-spinner',
+    '#challenge-error-text',
+    '#cf-please-wait',
+    '#trk_jschal_js',
+    '#turnstile-wrapper',
   ];
-  for (final marker in challengeMarkers) {
-    if (lower.contains(marker)) return PageEvaluation.challenge(marker);
+  for (final selector in challengeSelectors) {
+    if (document.querySelector(selector) != null) {
+      return PageEvaluation.challenge(selector);
+    }
+  }
+  if (title == 'just a moment...') {
+    return const PageEvaluation.challenge('title:just a moment...');
   }
 
   return const PageEvaluation.noKnownMarkers();

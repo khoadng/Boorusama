@@ -49,6 +49,7 @@ enum CheckOutcome {
   cookieOnly,
   pageNotFinished,
   pageRejected,
+  pageBlocked,
   failed,
 }
 

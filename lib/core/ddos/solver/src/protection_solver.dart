@@ -68,6 +68,7 @@ final class _RawSolverRun {
   var terminal = false;
   String? effectiveUserAgent;
   final browserReady = ValueNotifier<bool>(false);
+  final blocked = ValueNotifier<bool>(false);
 }
 
 class RawSolver implements ProtectionSolver {
@@ -195,6 +196,7 @@ class RawSolver implements ProtectionSolver {
             child: ProtectionOverlay(
               url: uri.toString(),
               browserReady: run.browserReady,
+              blocked: run.blocked,
               browser: EmbeddedBrowserHost(
                 factory: browserFactory,
                 initialUri: uri,
@@ -370,6 +372,7 @@ class RawSolver implements ProtectionSolver {
     } finally {
       run.pollTimer?.cancel();
       run.browserReady.dispose();
+      run.blocked.dispose();
       if (identical(_run, run)) _run = null;
       _solving = false;
     }
@@ -465,8 +468,12 @@ class RawSolver implements ProtectionSolver {
         diagnostics: check,
       );
       if (!_active(run) || run.generation != generation) return false;
+      final blocked = evaluation.reason == PageDecisionReason.blockedMarker;
+      run.blocked.value = blocked;
       if (!evaluation.accepted) {
-        outcome = CheckOutcome.pageRejected;
+        outcome = blocked
+            ? CheckOutcome.pageBlocked
+            : CheckOutcome.pageRejected;
         return false;
       }
       final exported = await _exportCookies(run, uri, jar, cookies);

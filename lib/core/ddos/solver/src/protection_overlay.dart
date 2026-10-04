@@ -12,6 +12,7 @@ class ProtectionOverlay extends StatefulWidget {
     required this.onCancel,
     required this.onSolved,
     this.browserReady,
+    this.blocked,
     super.key,
   });
   final String url;
@@ -19,6 +20,9 @@ class ProtectionOverlay extends StatefulWidget {
   final VoidCallback onCancel;
   final VoidCallback onSolved;
   final ValueListenable<bool>? browserReady;
+
+  /// The site refused this network outright, so no challenge will appear.
+  final ValueListenable<bool>? blocked;
 
   @override
   State<ProtectionOverlay> createState() => _ProtectionOverlayState();
@@ -38,6 +42,13 @@ class _ProtectionOverlayState extends State<ProtectionOverlay> {
               children: [
                 _buildHeader(),
                 const SizedBox(height: 16),
+                if (widget.blocked case final blocked?)
+                  ValueListenableBuilder<bool>(
+                    valueListenable: blocked,
+                    builder: (_, isBlocked, _) => isBlocked
+                        ? _buildBlockedNotice()
+                        : const SizedBox.shrink(),
+                  ),
                 Expanded(
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(8),
@@ -80,6 +91,24 @@ class _ProtectionOverlayState extends State<ProtectionOverlay> {
           onPressed: widget.onCancel,
         ),
       ],
+    );
+  }
+
+  Widget _buildBlockedNotice() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: Row(
+        children: [
+          const Icon(Icons.block, color: Colors.orange),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              context.t.captcha.blocked_by_site,
+              style: const TextStyle(color: Colors.white),
+            ),
+          ),
+        ],
+      ),
     );
   }
 

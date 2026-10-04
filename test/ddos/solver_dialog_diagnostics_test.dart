@@ -260,6 +260,73 @@ void main() {
       },
     );
   }
+  testWidgets(
+    'blocked page explains the block and keeps the dialog open until cleared',
+    (tester) async {
+      final platform = _WebViewPlatform();
+      WebViewPlatform.instance = platform;
+      final records = <ProtectionRecord>[];
+      late BuildContext pageContext;
+      await tester.pumpWidget(
+        BooruLocalization(
+          child: MaterialApp(
+            builder: (context, child) => KurumiTheme(
+              data: KurumiThemeData.fromMaterial(Theme.of(context)),
+              child: child!,
+            ),
+            home: Builder(
+              builder: (context) {
+                pageContext = context;
+                return const Scaffold(body: Text('Home'));
+              },
+            ),
+          ),
+        ),
+      );
+      final solver = RawSolver(
+        protectionType: 'cloudflare',
+        protectionTitle: 'Challenge',
+        autoCookieValidator: (cookie) => cookie.name == 'cf_clearance',
+        contextProvider: () => pageContext,
+        cookieJar: LazyAsync(() async => FakeCookieJar()),
+        cookieRetriever: FakeCookieRetriever(),
+        pageEvaluator: evaluateCloudflarePage,
+      );
+      final result = solver.solve(
+        uri: Uri.parse('https://example.com/index.php'),
+        diagnostics: ProtectionSession(
+          host: 'example.com',
+          type: 'cloudflare',
+          onEvent: (record, {sensitive}) => records.add(record),
+        ),
+      );
+      await tester.pumpAndSettle();
+      final blockedNotice = find.byIcon(Icons.block);
+
+      platform.controller.source = '<html><head><title>Access denied | example.com</title></head></html>';
+      platform.delegate.finished!('https://example.com/index.php');
+      await tester.pumpAndSettle();
+
+      expect(find.byType(ProtectionOverlay), findsOneWidget);
+      expect(blockedNotice, findsOneWidget);
+      expect(
+        records
+            .map((record) => record.event)
+            .whereType<CompletionCheckFinished>()
+            .map((event) => event.outcome),
+        contains(CheckOutcome.pageBlocked),
+      );
+
+      platform.controller.source = '<html>normal page</html>';
+      platform.delegate.finished!('https://example.com/index.php');
+      await tester.pumpAndSettle();
+
+      expect(await result, isTrue);
+      expect(find.byType(ProtectionOverlay), findsNothing);
+      await tester.pump(const Duration(seconds: 1));
+      expect(tester.takeException(), isNull);
+    },
+  );
 }
 
 class _WebViewPlatform extends WebViewPlatform {
@@ -281,7 +348,7 @@ class _WebViewPlatform extends WebViewPlatform {
 
 class _Controller extends PlatformWebViewController {
   _Controller(super.params) : super.implementation();
-  var source = '<html>cf_chl</html>';
+  var source = '<html><script>window._cf_chl_opt = {};</script></html>';
   Uri? loadedUri;
   var reads = 0;
   @override
