@@ -9,7 +9,6 @@ import 'package:kurumi/kurumi.dart';
 import 'package:kurumi/material.dart';
 
 // Project imports:
-import '../../../widgets/widgets.dart';
 import '../data/providers.dart';
 import '../providers/bulk_download_notifier.dart';
 import '../types/bulk_download_session.dart';
@@ -55,42 +54,40 @@ class _BulkDownloadCompletedPageState
   Widget build(BuildContext context) {
     final notifier = ref.watch(bulkDownloadProvider.notifier);
 
-    return CustomContextMenuOverlay(
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(context.t.bulk_downloads.completed.title),
-          actions: [
-            KurumiPopupMenuButton(
-              items: [
-                KurumiPopupMenuItem(
-                  title: Text(context.t.bulk_downloads.completed.clear_all),
-                  onTap: () {
-                    notifier.deleteAllCompletedSessions();
-                    _refreshList();
-                  },
-                ),
-              ],
-            ),
-          ],
-        ),
-        body: KurumiRefreshIndicator(
-          onRefresh: _refreshList,
-          child: PagingListener(
-            controller: _pagingController,
-            builder: (context, state, fetchNextPage) => PagedListView(
-              state: state,
-              fetchNextPage: fetchNextPage,
-              builderDelegate: PagedChildBuilderDelegate<BulkDownloadSession>(
-                itemBuilder: (context, session, index) =>
-                    BulkDownloadCompletedSessionTile(
-                      session: session,
-                      onDelete: _refreshList,
-                    ),
-                noItemsFoundIndicatorBuilder: (context) => Center(
-                  child: Text(
-                    context.t.bulk_downloads.completed.empty,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(context.t.bulk_downloads.completed.title),
+        actions: [
+          KurumiPopupMenuButton(
+            items: [
+              KurumiPopupMenuItem(
+                title: Text(context.t.bulk_downloads.completed.clear_all),
+                onTap: () {
+                  notifier.deleteAllCompletedSessions();
+                  _refreshList();
+                },
+              ),
+            ],
+          ),
+        ],
+      ),
+      body: KurumiRefreshIndicator(
+        onRefresh: _refreshList,
+        child: PagingListener(
+          controller: _pagingController,
+          builder: (context, state, fetchNextPage) => PagedListView(
+            state: state,
+            fetchNextPage: fetchNextPage,
+            builderDelegate: PagedChildBuilderDelegate<BulkDownloadSession>(
+              itemBuilder: (context, session, index) =>
+                  BulkDownloadCompletedSessionTile(
+                    session: session,
+                    onDelete: _refreshList,
                   ),
+              noItemsFoundIndicatorBuilder: (context) => Center(
+                child: Text(
+                  context.t.bulk_downloads.completed.empty,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
             ),

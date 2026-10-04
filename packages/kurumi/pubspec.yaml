@@ -12,10 +12,6 @@ dependencies:
   animated_list_plus: ^0.5.2
   anchor_ui: ^0.0.6
   collection: ^1.17.0
-  context_menus:
-    git:
-      url: https://github.com/khoadng/flutter-context-menu.git
-      ref: 3e46518ea7823aebae8838754c21353bd2d44189
   dynamic_color: ^2.1.0
   equatable: ^2.0.8
   font_awesome_flutter: ^11.0.0

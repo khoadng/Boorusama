@@ -4,7 +4,6 @@ import 'package:kurumi/material.dart';
 
 // Project imports:
 import '../../../../../../core/tags/details/widgets.dart';
-import '../../../../../../core/widgets/custom_context_menu_overlay.dart';
 import '../../../../tags/details/widgets.dart';
 import '../../../urls/widgets.dart';
 import '../providers/artist_notifier.dart';
@@ -27,27 +26,25 @@ class _DanbooruArtistPageState extends ConsumerState<DanbooruArtistPage> {
   Widget build(BuildContext context) {
     final artist = ref.watch(danbooruArtistProvider(widget.artistName));
 
-    return CustomContextMenuOverlay(
-      child: DanbooruTagDetailsPage(
-        tagName: widget.artistName,
-        otherNames: artist.when(
-          data: (data) => data.otherNames.isNotEmpty
-              ? TagOtherNames(otherNames: data.otherNames)
-              : const SizedBox.shrink(),
-          error: (error, stackTrace) => const SizedBox(height: 40, width: 40),
-          loading: () => const TagOtherNames(otherNames: null),
-        ),
-        extras: [
-          const SizedBox(height: 8),
-          artist.when(
-            data: (artist) => DanbooruArtistUrlChips(
-              artistUrls: artist.activeUrls.map((e) => e.url).toList(),
-            ),
-            loading: () => const SizedBox(height: 24),
-            error: (e, st) => const SizedBox.shrink(),
-          ),
-        ],
+    return DanbooruTagDetailsPage(
+      tagName: widget.artistName,
+      otherNames: artist.when(
+        data: (data) => data.otherNames.isNotEmpty
+            ? TagOtherNames(otherNames: data.otherNames)
+            : const SizedBox.shrink(),
+        error: (error, stackTrace) => const SizedBox(height: 40, width: 40),
+        loading: () => const TagOtherNames(otherNames: null),
       ),
+      extras: [
+        const SizedBox(height: 8),
+        artist.when(
+          data: (artist) => DanbooruArtistUrlChips(
+            artistUrls: artist.activeUrls.map((e) => e.url).toList(),
+          ),
+          loading: () => const SizedBox(height: 24),
+          error: (e, st) => const SizedBox.shrink(),
+        ),
+      ],
     );
   }
 }

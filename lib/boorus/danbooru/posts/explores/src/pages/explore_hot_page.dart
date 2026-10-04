@@ -6,7 +6,6 @@ import 'package:kurumi/material.dart';
 // Project imports:
 import '../../../../../../core/configs/config/providers.dart';
 import '../../../../../../core/posts/listing/widgets.dart';
-import '../../../../../../core/widgets/widgets.dart';
 import '../../../listing/widgets.dart';
 import '../providers.dart';
 import '../widgets/explore_sliver_app_bar.dart';
@@ -23,30 +22,28 @@ class ExploreHotPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watchConfigSearch;
 
-    return CustomContextMenuOverlay(
-      child: PostScope(
-        fetcher: (page) =>
-            ref.read(danbooruExploreRepoProvider(config)).getHotPosts(page),
-        builder: (context, controller) => PostGrid(
-          controller: controller,
-          itemBuilder: (context, index, scrollController, useHero) =>
-              DanbooruPostListingContextMenu(
+    return PostScope(
+      fetcher: (page) =>
+          ref.read(danbooruExploreRepoProvider(config)).getHotPosts(page),
+      builder: (context, controller) => PostGrid(
+        controller: controller,
+        itemBuilder: (context, index, scrollController, useHero) =>
+            DanbooruPostListingContextMenu(
+              index: index,
+              controller: controller,
+              child: DefaultDanbooruImageGridItem(
                 index: index,
+                autoScrollController: scrollController,
                 controller: controller,
-                child: DefaultDanbooruImageGridItem(
-                  index: index,
-                  autoScrollController: scrollController,
-                  controller: controller,
-                  useHero: useHero,
-                ),
+                useHero: useHero,
               ),
-          sliverHeaders: [
-            ExploreSliverAppBar(
-              title: context.t.explore.hot,
-              onBack: onBack,
             ),
-          ],
-        ),
+        sliverHeaders: [
+          ExploreSliverAppBar(
+            title: context.t.explore.hot,
+            onBack: onBack,
+          ),
+        ],
       ),
     );
   }

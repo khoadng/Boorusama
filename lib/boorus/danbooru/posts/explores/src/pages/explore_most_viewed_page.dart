@@ -10,7 +10,6 @@ import '../../../../../../core/configs/config/providers.dart';
 import '../../../../../../core/posts/explores/widgets.dart';
 import '../../../../../../core/posts/listing/widgets.dart';
 import '../../../../../../core/posts/post/types.dart';
-import '../../../../../../core/widgets/widgets.dart';
 import '../../../listing/widgets.dart';
 import '../../../post/types.dart';
 import '../providers.dart';
@@ -36,59 +35,57 @@ class _ExploreMostViewedPageState extends ConsumerState<ExploreMostViewedPage> {
   Widget build(BuildContext context) {
     final config = ref.watchConfigSearch;
 
-    return CustomContextMenuOverlay(
-      child: PostScope(
-        fetcher: (page) => page > 1
-            ? TaskEither.fromEither(Either.of(<DanbooruPost>[].toResult()))
-            : ref
-                  .read(danbooruExploreRepoProvider(config))
-                  .getMostViewedPosts(selectedDateNotifier.value),
-        builder: (context, controller) => ColoredBox(
-          color: Kurumi.themeOf(context).colorScheme.surface,
-          child: SafeArea(
-            child: Column(
-              children: [
-                Expanded(
-                  child: PostGrid(
-                    controller: controller,
-                    safeArea: false,
-                    itemBuilder: (context, index, scrollController, useHero) =>
-                        DanbooruPostListingContextMenu(
+    return PostScope(
+      fetcher: (page) => page > 1
+          ? TaskEither.fromEither(Either.of(<DanbooruPost>[].toResult()))
+          : ref
+                .read(danbooruExploreRepoProvider(config))
+                .getMostViewedPosts(selectedDateNotifier.value),
+      builder: (context, controller) => ColoredBox(
+        color: Kurumi.themeOf(context).colorScheme.surface,
+        child: SafeArea(
+          child: Column(
+            children: [
+              Expanded(
+                child: PostGrid(
+                  controller: controller,
+                  safeArea: false,
+                  itemBuilder: (context, index, scrollController, useHero) =>
+                      DanbooruPostListingContextMenu(
+                        index: index,
+                        controller: controller,
+                        child: DefaultDanbooruImageGridItem(
                           index: index,
+                          autoScrollController: scrollController,
                           controller: controller,
-                          child: DefaultDanbooruImageGridItem(
-                            index: index,
-                            autoScrollController: scrollController,
-                            controller: controller,
-                            useHero: useHero,
-                          ),
+                          useHero: useHero,
                         ),
-                    sliverHeaders: [
-                      ExploreSliverAppBar(
-                        title: context.t.explore.most_viewed,
-                        onBack: widget.onBack,
                       ),
-                    ],
-                  ),
-                ),
-                Container(
-                  color: Kurumi.themeOf(
-                    context,
-                  ).bottomNavigationBarTheme.backgroundColor,
-                  child: ValueListenableBuilder(
-                    valueListenable: selectedDateNotifier,
-                    builder: (_, date, _) => DateTimeSelector(
-                      onDateChanged: (date) {
-                        selectedDateNotifier.value = date;
-                        controller.refresh();
-                      },
-                      date: date,
-                      backgroundColor: Colors.transparent,
+                  sliverHeaders: [
+                    ExploreSliverAppBar(
+                      title: context.t.explore.most_viewed,
+                      onBack: widget.onBack,
                     ),
+                  ],
+                ),
+              ),
+              Container(
+                color: Kurumi.themeOf(
+                  context,
+                ).bottomNavigationBarTheme.backgroundColor,
+                child: ValueListenableBuilder(
+                  valueListenable: selectedDateNotifier,
+                  builder: (_, date, _) => DateTimeSelector(
+                    onDateChanged: (date) {
+                      selectedDateNotifier.value = date;
+                      controller.refresh();
+                    },
+                    date: date,
+                    backgroundColor: Colors.transparent,
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

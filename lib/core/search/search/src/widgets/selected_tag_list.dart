@@ -1,5 +1,4 @@
 // Package imports:
-import 'package:context_menus/context_menus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i18n/i18n.dart';
 import 'package:kurumi/kurumi.dart';
@@ -155,7 +154,7 @@ class SelectedTagList extends StatelessWidget {
 }
 
 class SelectedTagContextMenu extends ConsumerWidget
-    with TagContextMenuButtonConfigMixin {
+    with TagContextMenuItemsMixin {
   const SelectedTagContextMenu({
     required this.tag,
     required this.child,
@@ -167,18 +166,16 @@ class SelectedTagContextMenu extends ConsumerWidget
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return ContextMenuRegion(
-      contextMenu: GenericContextMenu(
-        buttonConfigs: [
-          copyButton(context, tag),
-          ContextMenuButtonConfig(
-            context.t.post.detail.add_to_favorites,
-            onPressed: () {
-              ref.read(favoriteTagsProvider.notifier).add(tag, isRaw: true);
-            },
-          ),
-        ],
-      ),
+    return KurumiContextMenu(
+      menuItemsBuilder: (_) => [
+        copyButton(context, tag),
+        KurumiContextMenuTile(
+          title: context.t.post.detail.add_to_favorites,
+          onTap: () {
+            ref.read(favoriteTagsProvider.notifier).add(tag, isRaw: true);
+          },
+        ),
+      ],
       child: child,
     );
   }

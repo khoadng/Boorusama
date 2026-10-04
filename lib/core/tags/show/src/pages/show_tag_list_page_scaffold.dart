@@ -11,7 +11,6 @@ import '../../../../posts/post/types.dart';
 import '../../../../search/search/widgets.dart';
 import '../../../../settings/providers.dart';
 import '../../../../widgets/default_selection_bar.dart';
-import '../../../../widgets/widgets.dart';
 import '../providers.dart';
 
 class ShowTagListPageScaffold extends ConsumerStatefulWidget {
@@ -61,59 +60,57 @@ class _ShowTagListPageScaffoldState
   Widget build(BuildContext context) {
     final params = (widget.auth, widget.post);
 
-    return CustomContextMenuOverlay(
-      child: SelectionMode(
-        scrollController: widget.scrollController,
-        controller: _selectionModeController,
-        options: ref.watch(selectionOptionsProvider),
-        child: Scaffold(
-          appBar: DefaultSelectionAppBar(
-            itemsCount: ref.watch(showTagsProvider(params)).valueOrNull?.length,
-            appBar: AppBar(
-              title: Text(context.t.tags.title),
-              centerTitle: false,
-              actions: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: KurumiPopupMenuButton(
-                    items: [
-                      KurumiPopupMenuItem(
-                        title: Text(context.t.generic.action.select),
-                        icon: const Icon(Icons.select_all),
-                        onTap: () {
-                          _selectionModeController.enable();
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          body: Stack(
-            children: [
-              Column(
-                children: [
-                  _buildSearchBar(),
-                  const SizedBox(height: 4),
-                  Expanded(
-                    child: SelectionCanvas(
-                      child: widget.list,
+    return SelectionMode(
+      scrollController: widget.scrollController,
+      controller: _selectionModeController,
+      options: ref.watch(selectionOptionsProvider),
+      child: Scaffold(
+        appBar: DefaultSelectionAppBar(
+          itemsCount: ref.watch(showTagsProvider(params)).valueOrNull?.length,
+          appBar: AppBar(
+            title: Text(context.t.tags.title),
+            centerTitle: false,
+            actions: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: KurumiPopupMenuButton(
+                  items: [
+                    KurumiPopupMenuItem(
+                      title: Text(context.t.generic.action.select),
+                      icon: const Icon(Icons.select_all),
+                      onTap: () {
+                        _selectionModeController.enable();
+                      },
                     ),
-                  ),
-                ],
-              ),
-              ListenableBuilder(
-                listenable: _selectionModeController,
-                builder: (context, _) => Positioned(
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  child: widget.actionBar,
+                  ],
                 ),
               ),
             ],
           ),
+        ),
+        body: Stack(
+          children: [
+            Column(
+              children: [
+                _buildSearchBar(),
+                const SizedBox(height: 4),
+                Expanded(
+                  child: SelectionCanvas(
+                    child: widget.list,
+                  ),
+                ),
+              ],
+            ),
+            ListenableBuilder(
+              listenable: _selectionModeController,
+              builder: (context, _) => Positioned(
+                left: 0,
+                right: 0,
+                bottom: 0,
+                child: widget.actionBar,
+              ),
+            ),
+          ],
         ),
       ),
     );

@@ -4,7 +4,6 @@ import 'package:kurumi/material.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import '../../../widgets/widgets.dart';
 import '../widgets/bookmark_scroll_view.dart';
 
 class BookmarkPage extends ConsumerStatefulWidget {
@@ -30,12 +29,10 @@ class _BookmarkPageState extends ConsumerState<BookmarkPage> {
 
   @override
   Widget build(BuildContext context) {
-    return CustomContextMenuOverlay(
-      child: Scaffold(
-        body: BookmarkScrollView(
-          scrollController: _scrollController,
-          searchController: _searchController,
-        ),
+    return Scaffold(
+      body: BookmarkScrollView(
+        scrollController: _scrollController,
+        searchController: _searchController,
       ),
     );
   }

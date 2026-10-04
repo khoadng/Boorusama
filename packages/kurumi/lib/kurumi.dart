@@ -31,7 +31,6 @@ export 'src/components/chip.dart';
 export 'src/components/circular_icon_button.dart';
 export 'src/components/compact_chip.dart';
 export 'src/components/context_menu.dart';
-export 'src/components/custom_context_menu_overlay.dart';
 export 'src/components/desktop_window.dart';
 export 'src/components/dialog.dart';
 export 'src/components/dialog_content.dart';

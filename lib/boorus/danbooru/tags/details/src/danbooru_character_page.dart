@@ -4,7 +4,6 @@ import 'package:kurumi/material.dart';
 
 // Project imports:
 import '../../../../../core/tags/details/widgets.dart';
-import '../../../../../core/widgets/widgets.dart';
 import '../../../wikis/providers.dart';
 import 'danbooru_tag_details_page.dart';
 
@@ -18,19 +17,17 @@ class DanbooruCharacterPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return CustomContextMenuOverlay(
-      child: DanbooruTagDetailsPage(
-        tagName: characterName,
-        otherNames: ref
-            .watch(danbooruWikiProvider(characterName))
-            .when(
-              data: (wiki) => wiki == null
-                  ? const SizedBox.shrink()
-                  : TagOtherNames(otherNames: wiki.otherNames),
-              loading: () => const TagOtherNames(otherNames: null),
-              error: (_, _) => const SizedBox.shrink(),
-            ),
-      ),
+    return DanbooruTagDetailsPage(
+      tagName: characterName,
+      otherNames: ref
+          .watch(danbooruWikiProvider(characterName))
+          .when(
+            data: (wiki) => wiki == null
+                ? const SizedBox.shrink()
+                : TagOtherNames(otherNames: wiki.otherNames),
+            loading: () => const TagOtherNames(otherNames: null),
+            error: (_, _) => const SizedBox.shrink(),
+          ),
     );
   }
 }

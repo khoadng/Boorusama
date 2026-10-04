@@ -1,5 +1,4 @@
 // Package imports:
-import 'package:context_menus/context_menus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:foundation/foundation.dart';
@@ -271,43 +270,41 @@ class _ContextMenu extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final path = session.task.path;
 
-    return ContextMenuRegion(
-      contextMenu: GenericContextMenu(
-        buttonConfigs: [
-          ContextMenuButtonConfig(
-            context.t.bulk_downloads.actions.delete,
-            onPressed: () async {
-              await ref
-                  .read(bulkDownloadProvider.notifier)
-                  .deleteSession(session.session.id);
-              onDelete();
-            },
-          ),
-          ContextMenuButtonConfig(
-            context.t.generic.action.copy_path,
-            onPressed: () => AppClipboard.copyWithDefaultToast(context, path),
-          ),
-          ContextMenuButtonConfig(
-            context.t.bulk_downloads.templates.create,
-            onPressed: () async {
-              final navigator = Navigator.of(context);
-              final success = await ref
-                  .read(savedDownloadTasksProvider.notifier)
-                  .create(session.task);
+    return KurumiContextMenu(
+      menuItemsBuilder: (_) => [
+        KurumiContextMenuTile(
+          title: context.t.bulk_downloads.actions.delete,
+          onTap: () async {
+            await ref
+                .read(bulkDownloadProvider.notifier)
+                .deleteSession(session.session.id);
+            onDelete();
+          },
+        ),
+        KurumiContextMenuTile(
+          title: context.t.generic.action.copy_path,
+          onTap: () => AppClipboard.copyWithDefaultToast(context, path),
+        ),
+        KurumiContextMenuTile(
+          title: context.t.bulk_downloads.templates.create,
+          onTap: () async {
+            final navigator = Navigator.of(context);
+            final success = await ref
+                .read(savedDownloadTasksProvider.notifier)
+                .create(session.task);
 
-              if (success) {
-                await navigator.push(
-                  CupertinoPageRoute(
-                    builder: (context) => const BulkDownloadSavedTaskPage(),
-                  ),
-                );
-              } else {
-                // Do nothing
-              }
-            },
-          ),
-        ],
-      ),
+            if (success) {
+              await navigator.push(
+                CupertinoPageRoute(
+                  builder: (context) => const BulkDownloadSavedTaskPage(),
+                ),
+              );
+            } else {
+              // Do nothing
+            }
+          },
+        ),
+      ],
       child: child,
     );
   }

@@ -12,7 +12,7 @@ class BooruSelectorItem extends StatelessWidget {
   const BooruSelectorItem({
     required this.config,
     required this.onTap,
-    required this.show,
+    required this.onContextMenu,
     required this.selected,
     required this.dragController,
     super.key,
@@ -22,8 +22,8 @@ class BooruSelectorItem extends StatelessWidget {
 
   final BooruConfig config;
   final bool selected;
-  final void Function() show;
   final void Function() onTap;
+  final void Function(Offset position, {bool fromKeyboard}) onContextMenu;
   final Axis direction;
   final bool hideLabel;
   final DragStateController dragController;
@@ -53,20 +53,34 @@ class BooruSelectorItem extends StatelessWidget {
                 bottom: 4,
                 left: 4,
               ),
-        child: InkWell(
-          hoverColor: Kurumi.themeOf(context).hoverColor.withValues(alpha: 0.1),
-          customBorder: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
-          onSecondaryTap: () => show(),
-          onTap: onTap,
-          child: ListenableBuilder(
-            listenable: dragController,
-            builder: (context, _) => _PopoverTooltip(
-              hideLabel: hideLabel && !dragController.isDragging,
-              direction: direction,
-              config: config,
-              child: _build(context, logoSize),
+        child: CallbackShortcuts(
+          bindings: {
+            for (final trigger in KurumiContextMenu.keyboardTriggers)
+              trigger: () => switch (FocusManager.instance.primaryFocus) {
+                final focused? => onContextMenu(
+                  focused.rect.bottomLeft,
+                  fromKeyboard: true,
+                ),
+                null => null,
+              },
+          },
+          child: InkWell(
+            hoverColor: Kurumi.themeOf(context).hoverColor
+                .withValues(alpha: 0.1),
+            customBorder: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+            onSecondaryTapDown: (details) =>
+                onContextMenu(details.globalPosition),
+            onTap: onTap,
+            child: ListenableBuilder(
+              listenable: dragController,
+              builder: (context, _) => _PopoverTooltip(
+                hideLabel: hideLabel && !dragController.isDragging,
+                direction: direction,
+                config: config,
+                child: _build(context, logoSize),
+              ),
             ),
           ),
         ),

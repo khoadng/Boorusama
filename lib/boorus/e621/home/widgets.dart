@@ -9,7 +9,6 @@ import 'package:material_symbols_icons/symbols.dart';
 import '../../../core/configs/config/providers.dart';
 import '../../../core/home/widgets.dart';
 import '../../../core/posts/favorites/routes.dart';
-import '../../../core/widgets/widgets.dart';
 import '../configs/providers.dart';
 import '../favorites/widgets.dart';
 import '../popular/widgets.dart';
@@ -41,9 +40,7 @@ class _E621HomePageState extends ConsumerState<E621HomePage> {
                 appBar: AppBar(
                   title: Text(context.t.explore.popular),
                 ),
-                body: const CustomContextMenuOverlay(
-                  child: E621PopularPage(),
-                ),
+                body: const E621PopularPage(),
               ),
             ),
           ),

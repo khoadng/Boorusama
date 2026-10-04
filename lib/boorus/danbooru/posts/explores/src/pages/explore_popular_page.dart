@@ -9,7 +9,6 @@ import '../../../../../../core/configs/config/providers.dart';
 import '../../../../../../core/posts/explores/types.dart';
 import '../../../../../../core/posts/explores/widgets.dart';
 import '../../../../../../core/posts/listing/widgets.dart';
-import '../../../../../../core/widgets/widgets.dart';
 import '../../../listing/widgets.dart';
 import '../providers.dart';
 import '../widgets/explore_sliver_app_bar.dart';
@@ -35,80 +34,78 @@ class _ExplorePopularPageState extends ConsumerState<ExplorePopularPage> {
     final config = ref.watchConfigSearch;
     final colorScheme = Kurumi.themeOf(context).colorScheme;
 
-    return CustomContextMenuOverlay(
-      child: PostScope(
-        fetcher: (page) => ref
-            .read(danbooruExploreRepoProvider(config))
-            .getPopularPosts(
-              selectedDateNotifier.value,
-              page,
-              selectedTimescale.value,
-            ),
-        builder: (context, controller) => ColoredBox(
-          color: colorScheme.surface,
-          child: SafeArea(
-            child: Column(
-              children: [
-                Expanded(
-                  child: PostGrid(
-                    controller: controller,
-                    safeArea: false,
-                    itemBuilder: (context, index, scrollController, useHero) =>
-                        DanbooruPostListingContextMenu(
+    return PostScope(
+      fetcher: (page) => ref
+          .read(danbooruExploreRepoProvider(config))
+          .getPopularPosts(
+            selectedDateNotifier.value,
+            page,
+            selectedTimescale.value,
+          ),
+      builder: (context, controller) => ColoredBox(
+        color: colorScheme.surface,
+        child: SafeArea(
+          child: Column(
+            children: [
+              Expanded(
+                child: PostGrid(
+                  controller: controller,
+                  safeArea: false,
+                  itemBuilder: (context, index, scrollController, useHero) =>
+                      DanbooruPostListingContextMenu(
+                        index: index,
+                        controller: controller,
+                        child: DefaultDanbooruImageGridItem(
                           index: index,
+                          autoScrollController: scrollController,
                           controller: controller,
-                          child: DefaultDanbooruImageGridItem(
-                            index: index,
-                            autoScrollController: scrollController,
-                            controller: controller,
-                            useHero: useHero,
-                          ),
+                          useHero: useHero,
                         ),
-                    sliverHeaders: [
-                      ExploreSliverAppBar(
-                        title: context.t.explore.popular,
-                        onBack: widget.onBack,
                       ),
-                      SliverList(
-                        delegate: SliverChildListDelegate(
-                          [
-                            ValueListenableBuilder(
-                              valueListenable: selectedTimescale,
-                              builder: (_, scale, _) => TimeScaleToggleSwitch(
-                                initialValue: scale,
-                                onToggle: (scale) {
-                                  selectedTimescale.value = scale;
-                                  controller.refresh();
-                                },
-                              ),
+                  sliverHeaders: [
+                    ExploreSliverAppBar(
+                      title: context.t.explore.popular,
+                      onBack: widget.onBack,
+                    ),
+                    SliverList(
+                      delegate: SliverChildListDelegate(
+                        [
+                          ValueListenableBuilder(
+                            valueListenable: selectedTimescale,
+                            builder: (_, scale, _) => TimeScaleToggleSwitch(
+                              initialValue: scale,
+                              onToggle: (scale) {
+                                selectedTimescale.value = scale;
+                                controller.refresh();
+                              },
                             ),
-                            const SizedBox(height: 20),
-                          ],
-                        ),
+                          ),
+                          const SizedBox(height: 20),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-                ColoredBox(
-                  color: colorScheme.surfaceContainer,
-                  child: ValueListenableBuilder(
-                    valueListenable: selectedDateNotifier,
-                    builder: (_, date, _) => ValueListenableBuilder(
-                      valueListenable: selectedTimescale,
-                      builder: (_, scale, _) => DateTimeSelector(
-                        onDateChanged: (date) {
-                          selectedDateNotifier.value = date;
-                          controller.refresh();
-                        },
-                        date: date,
-                        scale: scale,
-                        backgroundColor: Colors.transparent,
-                      ),
+              ),
+              ColoredBox(
+                color: colorScheme.surfaceContainer,
+                child: ValueListenableBuilder(
+                  valueListenable: selectedDateNotifier,
+                  builder: (_, date, _) => ValueListenableBuilder(
+                    valueListenable: selectedTimescale,
+                    builder: (_, scale, _) => DateTimeSelector(
+                      onDateChanged: (date) {
+                        selectedDateNotifier.value = date;
+                        controller.refresh();
+                      },
+                      date: date,
+                      scale: scale,
+                      backgroundColor: Colors.transparent,
                     ),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

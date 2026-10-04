@@ -1,5 +1,4 @@
 // Package imports:
-import 'package:context_menus/context_menus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foundation/foundation.dart';
 import 'package:i18n/i18n.dart';
@@ -203,21 +202,19 @@ class _ContextMenu extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final path = session.task.path;
 
-    return ContextMenuRegion(
-      contextMenu: GenericContextMenu(
-        buttonConfigs: [
-          ContextMenuButtonConfig(
-            context.t.bulk_downloads.actions.delete,
-            onPressed: () {
-              ref.read(bulkDownloadProvider.notifier).deleteSession(session.id);
-            },
-          ),
-          ContextMenuButtonConfig(
-            context.t.generic.action.copy_path,
-            onPressed: () => AppClipboard.copyWithDefaultToast(context, path),
-          ),
-        ],
-      ),
+    return KurumiContextMenu(
+      menuItemsBuilder: (_) => [
+        KurumiContextMenuTile(
+          title: context.t.bulk_downloads.actions.delete,
+          onTap: () {
+            ref.read(bulkDownloadProvider.notifier).deleteSession(session.id);
+          },
+        ),
+        KurumiContextMenuTile(
+          title: context.t.generic.action.copy_path,
+          onTap: () => AppClipboard.copyWithDefaultToast(context, path),
+        ),
+      ],
       child: child,
     );
   }

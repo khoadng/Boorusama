@@ -10,7 +10,6 @@ import '../../../core/boorus/engine/providers.dart';
 import '../../../core/configs/config/providers.dart';
 import '../../../core/home/widgets.dart';
 import '../../../core/posts/favorites/routes.dart';
-import '../../../core/widgets/widgets.dart';
 import '../configs/providers.dart';
 import '../popular/widgets.dart';
 
@@ -47,9 +46,7 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
                 appBar: AppBar(
                   title: Text(context.t.explore.popular),
                 ),
-                body: const CustomContextMenuOverlay(
-                  child: MoebooruPopularPage(),
-                ),
+                body: const MoebooruPopularPage(),
               ),
             ),
           ),
@@ -67,9 +64,7 @@ class _MoebooruHomePageState extends ConsumerState<MoebooruHomePage> {
                 appBar: AppBar(
                   title: Text(context.t.explore.hot),
                 ),
-                body: const CustomContextMenuOverlay(
-                  child: MoebooruPopularRecentPage(),
-                ),
+                body: const MoebooruPopularRecentPage(),
               ),
             ),
           ),

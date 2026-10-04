@@ -9,7 +9,6 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import '../../../../search/search/routes.dart';
-import '../../../../widgets/widgets.dart';
 import '../../../listing/providers.dart';
 import '../../../listing/widgets.dart';
 import '../../../post/types.dart';
@@ -37,43 +36,41 @@ class FavoritesPageScaffold<T extends Post> extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return CustomContextMenuOverlay(
-      child: PostScope(
-        fetcher: (page) => fetcher(page),
-        builder: (context, controller) => PostGrid(
-          controller: controller,
-          itemBuilder: itemBuilder != null
-              ? (context, index, autoScrollController, useHero) => itemBuilder!(
-                  context,
-                  index,
-                  autoScrollController,
-                  controller,
-                  useHero,
-                )
-              : null,
-          sliverHeaders: [
-            SliverAppBar(
-              title: Text(context.t.profile.favorites),
-              floating: true,
-              elevation: 0,
-              shadowColor: Colors.transparent,
-              backgroundColor: Kurumi.themeOf(context).colorScheme.surface,
-              actions: [
-                if (favQueryBuilder != null)
-                  IconButton(
-                    icon: const Icon(Symbols.search),
-                    onPressed: () {
-                      goToSearchPage(
-                        ref,
-                        tag: favQueryBuilder!(),
-                      );
-                    },
-                  ),
-              ],
-            ),
-            const SliverSizedBox(height: 5),
-          ],
-        ),
+    return PostScope(
+      fetcher: (page) => fetcher(page),
+      builder: (context, controller) => PostGrid(
+        controller: controller,
+        itemBuilder: itemBuilder != null
+            ? (context, index, autoScrollController, useHero) => itemBuilder!(
+                context,
+                index,
+                autoScrollController,
+                controller,
+                useHero,
+              )
+            : null,
+        sliverHeaders: [
+          SliverAppBar(
+            title: Text(context.t.profile.favorites),
+            floating: true,
+            elevation: 0,
+            shadowColor: Colors.transparent,
+            backgroundColor: Kurumi.themeOf(context).colorScheme.surface,
+            actions: [
+              if (favQueryBuilder != null)
+                IconButton(
+                  icon: const Icon(Symbols.search),
+                  onPressed: () {
+                    goToSearchPage(
+                      ref,
+                      tag: favQueryBuilder!(),
+                    );
+                  },
+                ),
+            ],
+          ),
+          const SliverSizedBox(height: 5),
+        ],
       ),
     );
   }

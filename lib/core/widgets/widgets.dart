@@ -3,7 +3,6 @@ export 'app_lock_scope.dart';
 export 'center_play_button.dart';
 export 'choice_option_selector_list.dart';
 export 'conditional_parent_widget.dart';
-export 'custom_context_menu_overlay.dart';
 export 'date_tooltip.dart';
 export 'dismissable_info_container.dart';
 export 'persistent_dismissable_info_container.dart';

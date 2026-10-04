@@ -13,7 +13,6 @@ import '../../../core/developer_options/providers.dart';
 import '../../../core/posts/listing/widgets.dart';
 import '../../../core/posts/post/types.dart';
 import '../../../core/users/widgets.dart';
-import '../../../core/widgets/widgets.dart';
 import '../../../foundation/clipboard.dart';
 import '../../../foundation/url_launcher.dart';
 import '../client_provider.dart';
@@ -513,24 +512,22 @@ class _EshuushuuUserPostsTab extends ConsumerWidget {
     final config = ref.watchConfigAuth;
     final client = ref.watch(eshuushuuClientProvider(config));
 
-    return CustomContextMenuOverlay(
-      child: PostScope(
-        fetcher: (page) => TaskEither.Do(($) async {
-          final dtos = await client.getPosts(
-            userId: isUploads ? userId : null,
-            favoritedByUserId: isUploads ? null : userId,
-            page: page,
-          );
+    return PostScope(
+      fetcher: (page) => TaskEither.Do(($) async {
+        final dtos = await client.getPosts(
+          userId: isUploads ? userId : null,
+          favoritedByUserId: isUploads ? null : userId,
+          page: page,
+        );
 
-          final posts = dtos
-              .map((dto) => parser.postDtoToPost(dto, null))
-              .toList();
+        final posts = dtos
+            .map((dto) => parser.postDtoToPost(dto, null))
+            .toList();
 
-          return posts.toResult();
-        }),
-        builder: (context, controller) => PostGrid(
-          controller: controller,
-        ),
+        return posts.toResult();
+      }),
+      builder: (context, controller) => PostGrid(
+        controller: controller,
       ),
     );
   }

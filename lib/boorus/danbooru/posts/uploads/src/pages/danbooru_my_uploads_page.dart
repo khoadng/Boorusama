@@ -15,7 +15,6 @@ import '../../../../../../core/posts/listing/providers.dart';
 import '../../../../../../core/posts/listing/widgets.dart';
 import '../../../../../../core/posts/post/types.dart';
 import '../../../../../../core/posts/sources/types.dart';
-import '../../../../../../core/widgets/widgets.dart';
 import '../../../../users/user/providers.dart';
 import '../../../listing/widgets.dart';
 import '../providers/providers.dart';
@@ -93,59 +92,57 @@ class _DanbooruMyUploadsPageState
       danbooruUploadHideProvider(config).notifier,
     );
 
-    return CustomContextMenuOverlay(
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text('My Uploads'.hc),
-          actions: [
-            ref
-                .watch(danbooruUploadHideProvider(config))
-                .maybeWhen(
-                  data: (state) => KurumiPopupMenuButton(
-                    items: [
-                      KurumiPopupMenuItem(
-                        title: Text(
-                          state.showHiddenUploads
-                              ? 'Hide hidden'.hc
-                              : 'Show hidden'.hc,
-                        ),
-                        onTap: () {
-                          hideNofifier.toggleShowHidden();
-                        },
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('My Uploads'.hc),
+        actions: [
+          ref
+              .watch(danbooruUploadHideProvider(config))
+              .maybeWhen(
+                data: (state) => KurumiPopupMenuButton(
+                  items: [
+                    KurumiPopupMenuItem(
+                      title: Text(
+                        state.showHiddenUploads
+                            ? 'Hide hidden'.hc
+                            : 'Show hidden'.hc,
                       ),
-                    ],
-                  ),
-                  orElse: () => const SizedBox.shrink(),
+                      onTap: () {
+                        hideNofifier.toggleShowHidden();
+                      },
+                    ),
+                  ],
                 ),
+                orElse: () => const SizedBox.shrink(),
+              ),
+        ],
+      ),
+      body: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            TabBar(
+              controller: tabController,
+              isScrollable: true,
+              tabs: const [
+                Tab(text: 'Unposted'),
+                Tab(text: 'Posted'),
+              ],
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: TabBarView(
+                  physics: const NeverScrollableScrollPhysics(),
+                  controller: tabController,
+                  children: [
+                    _buildTab(UploadTabType.unposted),
+                    _buildTab(UploadTabType.posted),
+                  ],
+                ),
+              ),
+            ),
           ],
-        ),
-        body: SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              TabBar(
-                controller: tabController,
-                isScrollable: true,
-                tabs: const [
-                  Tab(text: 'Unposted'),
-                  Tab(text: 'Posted'),
-                ],
-              ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: TabBarView(
-                    physics: const NeverScrollableScrollPhysics(),
-                    controller: tabController,
-                    children: [
-                      _buildTab(UploadTabType.unposted),
-                      _buildTab(UploadTabType.posted),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
         ),
       ),
     );

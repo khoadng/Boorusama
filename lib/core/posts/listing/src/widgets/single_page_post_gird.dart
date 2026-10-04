@@ -4,7 +4,6 @@ import 'package:foundation/foundation.dart';
 import 'package:kurumi/material.dart';
 
 // Project imports:
-import '../../../../widgets/widgets.dart';
 import '../../../post/types.dart';
 import 'post_grid.dart';
 import 'post_scope.dart';
@@ -29,17 +28,15 @@ class _SinglePagePostListScaffoldState<T extends Post>
     extends ConsumerState<SinglePagePostListScaffold<T>> {
   @override
   Widget build(BuildContext context) {
-    return CustomContextMenuOverlay(
-      child: PostScope(
-        fetcher: (page) => TaskEither.Do(
-          ($) async => page == 1 ? widget.posts.toResult() : <T>[].toResult(),
-        ),
-        builder: (context, controller) => PostGrid(
-          controller: controller,
-          sliverHeaders: [
-            if (widget.sliverHeaders != null) ...widget.sliverHeaders!,
-          ],
-        ),
+    return PostScope(
+      fetcher: (page) => TaskEither.Do(
+        ($) async => page == 1 ? widget.posts.toResult() : <T>[].toResult(),
+      ),
+      builder: (context, controller) => PostGrid(
+        controller: controller,
+        sliverHeaders: [
+          if (widget.sliverHeaders != null) ...widget.sliverHeaders!,
+        ],
       ),
     );
   }

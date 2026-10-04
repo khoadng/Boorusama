@@ -18,25 +18,23 @@ class SavedSearchFeedPage extends ConsumerWidget {
     final config = ref.watchConfigAuth;
 
     return BooruConfigAuthFailsafe(
-      builder: (_) => CustomContextMenuOverlay(
-        child: ref
-            .watch(danbooruSavedSearchesProvider(config))
-            .when(
-              data: (searches) => searches.isNotEmpty
-                  ? SavedSearchFeedContentView(
-                      searches: searches,
-                    )
-                  : const SavedSearchLandingView(),
-              error: (error, stackTrace) => const Scaffold(
-                body: ErrorBox(),
-              ),
-              loading: () => const Scaffold(
-                body: Center(
-                  child: CircularProgressIndicator.adaptive(),
-                ),
+      builder: (_) => ref
+          .watch(danbooruSavedSearchesProvider(config))
+          .when(
+            data: (searches) => searches.isNotEmpty
+                ? SavedSearchFeedContentView(
+                    searches: searches,
+                  )
+                : const SavedSearchLandingView(),
+            error: (error, stackTrace) => const Scaffold(
+              body: ErrorBox(),
+            ),
+            loading: () => const Scaffold(
+              body: Center(
+                child: CircularProgressIndicator.adaptive(),
               ),
             ),
-      ),
+          ),
     );
   }
 }

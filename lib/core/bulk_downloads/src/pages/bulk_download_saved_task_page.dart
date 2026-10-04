@@ -6,7 +6,6 @@ import 'package:kurumi/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 // Project imports:
-import '../../../widgets/widgets.dart';
 import '../providers/bulk_download_notifier.dart';
 import '../providers/saved_download_task_provider.dart';
 import '../providers/saved_task_lock_notifier.dart';
@@ -23,37 +22,35 @@ class BulkDownloadSavedTaskPage extends ConsumerWidget {
     final tasksAsync = ref.watch(savedDownloadTasksProvider);
     final notifier = ref.watch(savedDownloadTasksProvider.notifier);
 
-    return CustomContextMenuOverlay(
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(context.t.bulk_downloads.templates.title),
-          actions: const [
-            _AddButton(),
-          ],
-        ),
-        body: KurumiRefreshIndicator(
-          onRefresh: () => notifier.refresh(),
-          child: tasksAsync.when(
-            loading: () => const Center(child: CircularProgressIndicator()),
-            error: (error, stack) => Center(child: Text('Error: $error')),
-            data: (tasks) => tasks.isEmpty
-                ? Center(
-                    child: Text(
-                      context.t.bulk_downloads.templates.empty,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  )
-                : ListView.builder(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 8,
-                      horizontal: 12,
-                    ),
-                    itemCount: tasks.length,
-                    itemBuilder: (context, index) => SavedTaskListTile(
-                      savedTask: tasks[index],
-                    ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(context.t.bulk_downloads.templates.title),
+        actions: const [
+          _AddButton(),
+        ],
+      ),
+      body: KurumiRefreshIndicator(
+        onRefresh: () => notifier.refresh(),
+        child: tasksAsync.when(
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (error, stack) => Center(child: Text('Error: $error')),
+          data: (tasks) => tasks.isEmpty
+              ? Center(
+                  child: Text(
+                    context.t.bulk_downloads.templates.empty,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
-          ),
+                )
+              : ListView.builder(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 8,
+                    horizontal: 12,
+                  ),
+                  itemCount: tasks.length,
+                  itemBuilder: (context, index) => SavedTaskListTile(
+                    savedTask: tasks[index],
+                  ),
+                ),
         ),
       ),
     );

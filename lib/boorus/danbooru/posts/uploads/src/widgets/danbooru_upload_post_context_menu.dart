@@ -1,5 +1,4 @@
 // Package imports:
-import 'package:anchor_ui/anchor_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kurumi/kurumi.dart';
 import 'package:kurumi/material.dart';
@@ -21,38 +20,14 @@ class DanbooruUploadPostContextMenu extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return AnchorContextMenu(
-      menuBuilder: (context) {
-        return Container(
-          decoration: BoxDecoration(
-            color: Kurumi.themeOf(context).colorScheme.surfaceContainer,
-            borderRadius: BorderRadius.circular(8),
-            boxShadow: kElevationToShadow[4],
-          ),
-          constraints: const BoxConstraints(
-            maxWidth: 220,
-          ),
-          child: ListView(
-            padding: const EdgeInsets.symmetric(
-              vertical: 8,
-              horizontal: 4,
-            ),
-            shrinkWrap: true,
-            children: [
-              KurumiContextMenuTile(
-                title: 'Hide upload',
-                onTap: () {
-                  context.hideMenu();
-                  onVisibilityChanged(false);
-                },
-              ),
-            ],
-          ),
-        );
-      },
-      childBuilder: (context) => KurumiAdaptiveContextMenuGestureTrigger(
-        child: child,
-      ),
+    return KurumiContextMenu(
+      menuItemsBuilder: (context) => [
+        KurumiContextMenuTile(
+          title: 'Hide upload',
+          onTap: () => onVisibilityChanged(false),
+        ),
+      ],
+      child: child,
     );
   }
 }

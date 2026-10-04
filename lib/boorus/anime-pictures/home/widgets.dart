@@ -10,7 +10,6 @@ import '../../../core/boorus/engine/providers.dart';
 import '../../../core/configs/config/providers.dart';
 import '../../../core/home/widgets.dart';
 import '../../../core/posts/favorites/routes.dart';
-import '../../../core/widgets/custom_context_menu_overlay.dart';
 import '../favorites/widgets.dart';
 import '../tops/widgets.dart';
 import '../users/widgets.dart';
@@ -47,9 +46,7 @@ class _AnimePicturesHomePageState extends ConsumerState<AnimePicturesHomePage> {
                 appBar: AppBar(
                   title: Text(context.t.explore.top),
                 ),
-                body: const CustomContextMenuOverlay(
-                  child: AnimePicturesTopPage(),
-                ),
+                body: const AnimePicturesTopPage(),
               ),
             ),
           ),

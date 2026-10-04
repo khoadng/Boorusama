@@ -10,7 +10,6 @@ import '../../../core/posts/explores/types.dart';
 import '../../../core/posts/explores/widgets.dart';
 import '../../../core/posts/listing/widgets.dart';
 import '../../../core/posts/post/types.dart';
-import '../../../core/widgets/widgets.dart';
 import '../posts/types.dart';
 import 'providers.dart';
 import 'types.dart';
@@ -36,49 +35,47 @@ class _E621PopularPageState extends ConsumerState<E621PopularPage> {
 
   @override
   Widget build(BuildContext context) {
-    return CustomContextMenuOverlay(
-      child: Scaffold(
-        body: SafeArea(
-          child: PostScope(
-            fetcher: (page) => page > 1
-                ? TaskEither.of(<E621Post>[].toResult())
-                : repo.getPopularPosts(selectedDate, scale),
-            builder: (context, controller) => Column(
-              children: [
-                Container(
-                  color: Kurumi.themeOf(
-                    context,
-                  ).bottomNavigationBarTheme.backgroundColor,
-                  child: ValueListenableBuilder<DateTime>(
-                    valueListenable: selectedDateNotifier,
-                    builder: (context, d, _) => ValueListenableBuilder(
-                      valueListenable: selectedTimescale,
-                      builder: (_, scale, _) => DateTimeSelector(
-                        onDateChanged: (date) {
-                          selectedDateNotifier.value = date;
-                          controller.refresh();
-                        },
-                        date: d,
-                        scale: scale,
-                        backgroundColor: Colors.transparent,
-                      ),
+    return Scaffold(
+      body: SafeArea(
+        child: PostScope(
+          fetcher: (page) => page > 1
+              ? TaskEither.of(<E621Post>[].toResult())
+              : repo.getPopularPosts(selectedDate, scale),
+          builder: (context, controller) => Column(
+            children: [
+              Container(
+                color: Kurumi.themeOf(
+                  context,
+                ).bottomNavigationBarTheme.backgroundColor,
+                child: ValueListenableBuilder<DateTime>(
+                  valueListenable: selectedDateNotifier,
+                  builder: (context, d, _) => ValueListenableBuilder(
+                    valueListenable: selectedTimescale,
+                    builder: (_, scale, _) => DateTimeSelector(
+                      onDateChanged: (date) {
+                        selectedDateNotifier.value = date;
+                        controller.refresh();
+                      },
+                      date: d,
+                      scale: scale,
+                      backgroundColor: Colors.transparent,
                     ),
                   ),
                 ),
-                TimeScaleToggleSwitch(
-                  onToggle: (category) {
-                    selectedTimescale.value = category;
-                    controller.refresh();
-                  },
+              ),
+              TimeScaleToggleSwitch(
+                onToggle: (category) {
+                  selectedTimescale.value = category;
+                  controller.refresh();
+                },
+              ),
+              const SizedBox(height: 12),
+              Expanded(
+                child: PostGrid(
+                  controller: controller,
                 ),
-                const SizedBox(height: 12),
-                Expanded(
-                  child: PostGrid(
-                    controller: controller,
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

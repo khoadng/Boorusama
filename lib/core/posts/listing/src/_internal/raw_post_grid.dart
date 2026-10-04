@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:auto_scrolling/auto_scrolling.dart';
-import 'package:context_menus/context_menus.dart';
 import 'package:equatable/equatable.dart';
 import 'package:foundation/widgets.dart';
 import 'package:i18n/i18n.dart';
@@ -28,7 +27,6 @@ import '../types/grid_size.dart';
 import '../types/grid_utils.dart';
 import '../types/page_mode.dart';
 import '../widgets/conditional_value_listenable_builder.dart';
-import '../widgets/post_controller_event_listener.dart';
 import '../widgets/post_grid_controller.dart';
 import 'highres_preview_on_mobile_data_warning_banner.dart';
 import 'swipe_to.dart';
@@ -255,17 +253,6 @@ class _RawPostGridState<T extends Post> extends State<RawPostGrid<T>>
                             },
                           ),
                         ),
-                      SliverToBoxAdapter(
-                        child: PostControllerEventListener(
-                          controller: controller,
-                          onEvent: (event) {
-                            if (event is PostControllerRefreshStarted) {
-                              context.contextMenuOverlay.hide();
-                            }
-                          },
-                          child: const SizedBox.shrink(),
-                        ),
-                      ),
                       ConditionalValueListenableBuilder(
                         valueListenable: refreshing,
                         useFalseChildAsCache: true,

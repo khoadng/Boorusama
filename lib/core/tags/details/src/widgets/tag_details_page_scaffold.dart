@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kurumi/material.dart';
 
 // Project imports:
-import '../../../../../core/widgets/widgets.dart';
 import '../../../../../foundation/display.dart';
 import '../../../../../foundation/platform.dart';
 import '../../../../posts/post/types.dart';
@@ -42,70 +41,68 @@ class _TagDetailsPageState<T extends Post>
     extends ConsumerState<TagDetailsPageScaffold<T>> {
   @override
   Widget build(BuildContext context) {
-    return CustomContextMenuOverlay(
-      child: TagDetailsRegion(
-        detailsBuilder: (context) => Column(
-          children: [
-            TagTitleName(tagName: widget.tagName),
-            const SizedBox(height: 12),
-            widget.otherNames,
-            ...widget.extras ?? [],
-            if (ref.watch(appPlatformProvider).isDesktop)
-              const SizedBox(height: 36)
-            else
-              const SizedBox.shrink(),
-          ],
-        ),
-        builder: (context) {
-          final widgets = [
-            () => TagTitleName(tagName: widget.tagName),
-            () => Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: widget.otherNames,
-                ),
-              ],
-            ),
-            if (widget.extras != null)
-              for (final extra in widget.extras!) () => extra,
-            () => const SizedBox(height: 20),
-            () => Padding(
-              padding: const EdgeInsets.only(bottom: 10),
-              child: CategoryToggleSwitch(
-                onToggle: (category) {
-                  widget.onCategoryToggle?.call(category);
-                },
+    return TagDetailsRegion(
+      detailsBuilder: (context) => Column(
+        children: [
+          TagTitleName(tagName: widget.tagName),
+          const SizedBox(height: 12),
+          widget.otherNames,
+          ...widget.extras ?? [],
+          if (ref.watch(appPlatformProvider).isDesktop)
+            const SizedBox(height: 36)
+          else
+            const SizedBox.shrink(),
+        ],
+      ),
+      builder: (context) {
+        final widgets = [
+          () => TagTitleName(tagName: widget.tagName),
+          () => Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                child: widget.otherNames,
               ),
+            ],
+          ),
+          if (widget.extras != null)
+            for (final extra in widget.extras!) () => extra,
+          () => const SizedBox(height: 20),
+          () => Padding(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: CategoryToggleSwitch(
+              onToggle: (category) {
+                widget.onCategoryToggle?.call(category);
+              },
             ),
-          ];
+          ),
+        ];
 
-          return widget.gridBuilder.call(
-            context,
-            [
-              if (!context.isLargeScreen) ...[
-                TagDetailsSlilverAppBar(
-                  tagName: widget.tagName,
-                ),
-                SliverList.builder(
-                  itemCount: widgets.length,
-                  itemBuilder: (context, index) => widgets[index].call(),
-                ),
-              ] else
-                SliverPadding(
-                  padding: const EdgeInsets.only(bottom: 10),
-                  sliver: SliverToBoxAdapter(
-                    child: CategoryToggleSwitch(
-                      onToggle: (category) {
-                        widget.onCategoryToggle?.call(category);
-                      },
-                    ),
+        return widget.gridBuilder.call(
+          context,
+          [
+            if (!context.isLargeScreen) ...[
+              TagDetailsSlilverAppBar(
+                tagName: widget.tagName,
+              ),
+              SliverList.builder(
+                itemCount: widgets.length,
+                itemBuilder: (context, index) => widgets[index].call(),
+              ),
+            ] else
+              SliverPadding(
+                padding: const EdgeInsets.only(bottom: 10),
+                sliver: SliverToBoxAdapter(
+                  child: CategoryToggleSwitch(
+                    onToggle: (category) {
+                      widget.onCategoryToggle?.call(category);
+                    },
                   ),
                 ),
-            ],
-          );
-        },
-      ),
+              ),
+          ],
+        );
+      },
     );
   }
 }

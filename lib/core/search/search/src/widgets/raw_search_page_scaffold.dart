@@ -250,38 +250,36 @@ class _SearchPageScaffoldState<T extends Post>
   Widget build(BuildContext context) {
     final colorScheme = Kurumi.themeOf(context).colorScheme;
 
-    return CustomContextMenuOverlay(
-      child: InheritedSearchPageController(
-        controller: _controller,
-        child: ColoredBox(
-          color: colorScheme.surface,
-          child: SafeArea(
-            bottom: false,
-            child: Stack(
-              children: [
-                ValueListenableBuilder(
-                  valueListenable: _controller.didSearchOnce,
-                  builder: (context, searchOnce, child) {
-                    return searchOnce
-                        ? _buildResult()
-                        : _Landing(
-                            landingView: widget.landingView,
-                            selectionModeController: _selectionModeController,
-                          );
-                  },
-                ),
-                _SearchOptionsView(
-                  landingView: widget.landingView,
-                  selectionModeController: _selectionModeController,
-                ),
-                widget.searchSuggestions,
-                _SearchBarPositioned(
-                  selectionModeController: _selectionModeController,
-                  searchBarAnimController: _searchBarAnimController,
-                  child: widget.searchRegion,
-                ),
-              ],
-            ),
+    return InheritedSearchPageController(
+      controller: _controller,
+      child: ColoredBox(
+        color: colorScheme.surface,
+        child: SafeArea(
+          bottom: false,
+          child: Stack(
+            children: [
+              ValueListenableBuilder(
+                valueListenable: _controller.didSearchOnce,
+                builder: (context, searchOnce, child) {
+                  return searchOnce
+                      ? _buildResult()
+                      : _Landing(
+                          landingView: widget.landingView,
+                          selectionModeController: _selectionModeController,
+                        );
+                },
+              ),
+              _SearchOptionsView(
+                landingView: widget.landingView,
+                selectionModeController: _selectionModeController,
+              ),
+              widget.searchSuggestions,
+              _SearchBarPositioned(
+                selectionModeController: _selectionModeController,
+                searchBarAnimController: _searchBarAnimController,
+                child: widget.searchRegion,
+              ),
+            ],
           ),
         ),
       ),

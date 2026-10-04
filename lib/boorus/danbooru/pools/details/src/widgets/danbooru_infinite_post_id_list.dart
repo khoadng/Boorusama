@@ -9,7 +9,6 @@ import '../../../../../../core/errors/types.dart';
 import '../../../../../../core/posts/listing/widgets.dart';
 import '../../../../../../core/posts/pools/widgets.dart';
 import '../../../../../../core/settings/providers.dart';
-import '../../../../../../core/widgets/widgets.dart';
 import '../../../../posts/listing/widgets.dart';
 import '../../../../posts/post/providers.dart';
 import '../../../../posts/post/types.dart';
@@ -35,38 +34,36 @@ class DanbooruInfinitePostIdList extends ConsumerWidget {
     final order = ref.watch(poolFilterProvider.select((state) => state.order));
     final repo = ref.watch(danbooruPostRepoProvider(config));
 
-    return CustomContextMenuOverlay(
-      child: PostScope<DanbooruPost>(
-        key: ValueKey(order),
-        fetcher: (page) => TaskEither.tryCatch(
-          () => repo.fetchPostIds(
-            ids: pool.postIds ?? const [],
-            page: page,
-            perPage: perPage,
-            order: order,
-          ),
-          (error, stackTrace) => UnknownError(
-            error: error,
-            message: error.toString(),
-          ),
+    return PostScope<DanbooruPost>(
+      key: ValueKey(order),
+      fetcher: (page) => TaskEither.tryCatch(
+        () => repo.fetchPostIds(
+          ids: pool.postIds ?? const [],
+          page: page,
+          perPage: perPage,
+          order: order,
         ),
-        builder: (context, controller) => PostGrid(
-          controller: controller,
-          itemBuilder: (context, index, scrollController, useHero) =>
-              DanbooruPostListingContextMenu(
+        (error, stackTrace) => UnknownError(
+          error: error,
+          message: error.toString(),
+        ),
+      ),
+      builder: (context, controller) => PostGrid(
+        controller: controller,
+        itemBuilder: (context, index, scrollController, useHero) =>
+            DanbooruPostListingContextMenu(
+              index: index,
+              controller: controller,
+              child: DefaultDanbooruImageGridItem(
                 index: index,
+                autoScrollController: scrollController,
                 controller: controller,
-                child: DefaultDanbooruImageGridItem(
-                  index: index,
-                  autoScrollController: scrollController,
-                  controller: controller,
-                  useHero: useHero,
-                ),
+                useHero: useHero,
               ),
-          sliverHeaders: [
-            ...?sliverHeaders,
-          ],
-        ),
+            ),
+        sliverHeaders: [
+          ...?sliverHeaders,
+        ],
       ),
     );
   }

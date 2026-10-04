@@ -10,7 +10,6 @@ import '../../../../../core/configs/auth/widgets.dart';
 import '../../../../../core/configs/config/providers.dart';
 import '../../../../../core/posts/listing/widgets.dart';
 import '../../../../../core/search/search/routes.dart';
-import '../../../../../core/widgets/widgets.dart';
 import '../../listing/widgets.dart';
 import '../../post/providers.dart';
 import 'types/favorite.dart';
@@ -44,41 +43,39 @@ class DanbooruFavoritesPageInternal extends ConsumerWidget {
     final query = buildFavoriteQuery(username);
     final postRepo = ref.watch(danbooruPostRepoProvider(config));
 
-    return CustomContextMenuOverlay(
-      child: PostScope(
-        fetcher: (page) => postRepo.getPosts(query, page),
-        builder: (context, controller) => PostGrid(
-          controller: controller,
-          itemBuilder: (context, index, scrollController, useHero) =>
-              DanbooruPostListingContextMenu(
+    return PostScope(
+      fetcher: (page) => postRepo.getPosts(query, page),
+      builder: (context, controller) => PostGrid(
+        controller: controller,
+        itemBuilder: (context, index, scrollController, useHero) =>
+            DanbooruPostListingContextMenu(
+              index: index,
+              controller: controller,
+              child: DefaultDanbooruImageGridItem(
                 index: index,
+                autoScrollController: scrollController,
                 controller: controller,
-                child: DefaultDanbooruImageGridItem(
-                  index: index,
-                  autoScrollController: scrollController,
-                  controller: controller,
-                  useHero: useHero,
-                ),
+                useHero: useHero,
               ),
-          sliverHeaders: [
-            SliverAppBar(
-              title: Text(context.t.profile.favorites),
-              floating: true,
-              actions: [
-                IconButton(
-                  icon: const Icon(Symbols.search),
-                  onPressed: () {
-                    goToSearchPage(
-                      ref,
-                      tag: query,
-                    );
-                  },
-                ),
-              ],
             ),
-            const SliverSizedBox(height: 5),
-          ],
-        ),
+        sliverHeaders: [
+          SliverAppBar(
+            title: Text(context.t.profile.favorites),
+            floating: true,
+            actions: [
+              IconButton(
+                icon: const Icon(Symbols.search),
+                onPressed: () {
+                  goToSearchPage(
+                    ref,
+                    tag: query,
+                  );
+                },
+              ),
+            ],
+          ),
+          const SliverSizedBox(height: 5),
+        ],
       ),
     );
   }

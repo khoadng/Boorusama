@@ -26,7 +26,6 @@ import '../router.dart';
 import '../search/search/routes.dart';
 import '../settings/routes.dart';
 import '../tags/favorites/routes.dart';
-import '../widgets/widgets.dart';
 
 ///
 /// When navigate to a page, must query the booru builders first to get the correct builder.
@@ -55,9 +54,7 @@ class Routes {
       path: state.uri.toString(),
       child: const AppRatingScope(
         child: DownloaderScope(
-          child: CustomContextMenuOverlay(
-            child: EntryPage(),
-          ),
+          child: EntryPage(),
         ),
       ),
     ),

@@ -20,7 +20,6 @@ import '../../../../../core/posts/listing/routes.dart';
 import '../../../../../core/posts/listing/widgets.dart';
 import '../../../../../core/posts/post/types.dart';
 import '../../../../../core/search/search/routes.dart';
-import '../../../../../core/widgets/widgets.dart';
 import '../../../posts/listing/widgets.dart';
 import '../../../posts/post/providers.dart';
 import '../../../posts/post/types.dart';
@@ -54,46 +53,44 @@ class _FavoriteGroupDetailsPageState
   Widget build(BuildContext context) {
     final config = ref.watchConfigSearch;
 
-    return CustomContextMenuOverlay(
-      child: Scaffold(
-        body: PostScope(
-          fetcher: (page) => TaskEither.Do(($) {
-            return getPostsFromIdQueue(
-              postIds,
-              page - 1,
-              limit: 200,
-            );
-          }),
-          builder: (context, controller) => PostGrid(
-            controller: controller,
-            sliverHeaders: [
-              SliverAppBar(
-                centerTitle: false,
-                title: Text(widget.group.name.replaceAll('_', ' ')),
-                actions: [
-                  _buildSearchButton(),
-                  _buildDownloadButton(),
-                  _buildEditButton(controller, config),
-                ],
-                floating: true,
-                snap: true,
-                pinned: true,
-                backgroundColor: Kurumi.themeOf(context).colorScheme.surface,
-              ),
-            ],
-            itemBuilder: (context, index, autoScrollController, useHero) {
-              return DanbooruPostListingContextMenu(
+    return Scaffold(
+      body: PostScope(
+        fetcher: (page) => TaskEither.Do(($) {
+          return getPostsFromIdQueue(
+            postIds,
+            page - 1,
+            limit: 200,
+          );
+        }),
+        builder: (context, controller) => PostGrid(
+          controller: controller,
+          sliverHeaders: [
+            SliverAppBar(
+              centerTitle: false,
+              title: Text(widget.group.name.replaceAll('_', ' ')),
+              actions: [
+                _buildSearchButton(),
+                _buildDownloadButton(),
+                _buildEditButton(controller, config),
+              ],
+              floating: true,
+              snap: true,
+              pinned: true,
+              backgroundColor: Kurumi.themeOf(context).colorScheme.surface,
+            ),
+          ],
+          itemBuilder: (context, index, autoScrollController, useHero) {
+            return DanbooruPostListingContextMenu(
+              index: index,
+              controller: controller,
+              child: DefaultDanbooruImageGridItem(
                 index: index,
+                autoScrollController: autoScrollController,
                 controller: controller,
-                child: DefaultDanbooruImageGridItem(
-                  index: index,
-                  autoScrollController: autoScrollController,
-                  controller: controller,
-                  useHero: useHero,
-                ),
-              );
-            },
-          ),
+                useHero: useHero,
+              ),
+            );
+          },
         ),
       ),
     );
