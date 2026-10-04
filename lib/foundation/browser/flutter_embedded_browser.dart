@@ -143,7 +143,6 @@ final class _FlutterEmbeddedBrowserSession implements EmbeddedBrowserSession {
     return _controller.runJavaScriptReturningResult(source);
   }
 
-  @override
   // webview_flutter's cookie read drops attributes on iOS and macOS and, on
   // Android, reports the request URL as each cookie's domain.
   @override
