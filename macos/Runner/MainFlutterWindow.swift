@@ -3,6 +3,7 @@ import FlutterMacOS
 
 class MainFlutterWindow: NSWindow {
   private var appPrivacyChannel: AppPrivacyChannel?
+  private var webViewCookieChannel: WebViewCookieChannel?
 
   override func awakeFromNib() {
     let flutterViewController = FlutterViewController.init()
@@ -16,6 +17,10 @@ class MainFlutterWindow: NSWindow {
       messenger: flutterViewController.engine.binaryMessenger
     )
     appPrivacyChannel?.register()
+    webViewCookieChannel = WebViewCookieChannel(
+      messenger: flutterViewController.engine.binaryMessenger
+    )
+    webViewCookieChannel?.register()
 
     super.awakeFromNib()
   }

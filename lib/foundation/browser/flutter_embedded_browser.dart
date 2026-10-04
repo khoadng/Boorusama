@@ -9,6 +9,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 
 // Project imports:
 import 'types.dart';
+import 'webview_cookie_channel.dart';
 
 final class FlutterEmbeddedBrowserFactory implements EmbeddedBrowserFactory {
   FlutterEmbeddedBrowserFactory();
@@ -143,18 +144,12 @@ final class _FlutterEmbeddedBrowserSession implements EmbeddedBrowserSession {
   }
 
   @override
-  Future<List<BrowserCookie>> getCookies(Uri uri) async {
+  // webview_flutter's cookie read drops attributes on iOS and macOS and, on
+  // Android, reports the request URL as each cookie's domain.
+  @override
+  Future<List<BrowserCookie>> getCookies(Uri uri) {
     _checkAlive();
-    final cookies = await WebViewCookieManager().getCookies(domain: uri);
-    return [
-      for (final cookie in cookies)
-        BrowserCookie(
-          name: cookie.name,
-          value: cookie.value,
-          domain: cookie.domain,
-          path: cookie.path,
-        ),
-    ];
+    return WebViewCookieChannel.getCookies(uri);
   }
 
   @override

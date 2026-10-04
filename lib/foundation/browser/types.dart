@@ -61,6 +61,7 @@ final class BrowserCookie {
     this.isSecure,
     this.isHttpOnly,
     this.sameSite,
+    this.createdUtc,
   });
 
   final String name;
@@ -71,6 +72,9 @@ final class BrowserCookie {
   final bool? isSecure;
   final bool? isHttpOnly;
   final BrowserCookieSameSite? sameSite;
+
+  /// When the browser stored this cookie, if the platform reports it.
+  final DateTime? createdUtc;
 }
 
 enum EmbeddedBrowserFailureReason {

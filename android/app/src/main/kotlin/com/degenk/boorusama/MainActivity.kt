@@ -9,5 +9,6 @@ class MainActivity: FlutterFragmentActivity() {
         val messenger = flutterEngine.dartExecutor.binaryMessenger
         MediaScannerChannel(applicationContext, messenger).register()
         CacheDocumentsChannel(this, messenger).register()
+        WebViewCookieChannel(messenger).register()
     }
 }

@@ -5,6 +5,7 @@ import flutter_local_notifications
 @main
 @objc class AppDelegate: FlutterAppDelegate, FlutterImplicitEngineDelegate {
   private var appPrivacyChannel: AppPrivacyChannel?
+  private var webViewCookieChannel: WebViewCookieChannel?
 
   override func application(
     _ application: UIApplication,
@@ -28,5 +29,7 @@ import flutter_local_notifications
     ) else { return }
     appPrivacyChannel = AppPrivacyChannel(messenger: registrar.messenger())
     appPrivacyChannel?.register()
+    webViewCookieChannel = WebViewCookieChannel(messenger: registrar.messenger())
+    webViewCookieChannel?.register()
   }
 }

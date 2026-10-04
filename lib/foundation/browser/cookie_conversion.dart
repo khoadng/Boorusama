@@ -17,7 +17,7 @@ List<Cookie> browserCookiesForRequest({
   final requestPath = uri.path.isEmpty ? '/' : uri.path;
   final result = <Cookie>[];
 
-  for (final browserCookie in cookies) {
+  for (final browserCookie in _newestPerScope(cookies)) {
     if (browserCookie.name.isEmpty) continue;
     final expires = browserCookie.expiresUtc?.toUtc();
     if (expires != null && !expires.isAfter(now.toUtc())) continue;
@@ -50,6 +50,34 @@ List<Cookie> browserCookiesForRequest({
   }
 
   return result;
+}
+
+/// A browser can hold two cookies with the same name, domain and path, such
+/// as a partitioned and an unpartitioned copy. The browser picks between them
+/// itself, but a request jar would send both. When the browser reports
+/// creation times, keep only the newest; otherwise leave the choice to the
+/// caller.
+Iterable<BrowserCookie> _newestPerScope(List<BrowserCookie> cookies) {
+  final groups = <(String, String, String), List<BrowserCookie>>{};
+  for (final cookie in cookies) {
+    final key = (
+      cookie.name,
+      cookie.domain.trim().toLowerCase(),
+      cookie.path.isEmpty ? '/' : cookie.path,
+    );
+    (groups[key] ??= []).add(cookie);
+  }
+  return groups.values.expand(
+    (group) => switch (group) {
+      [_] => group,
+      _ when group.every((cookie) => cookie.createdUtc != null) => [
+        group.reduce(
+          (a, b) => b.createdUtc!.isAfter(a.createdUtc!) ? b : a,
+        ),
+      ],
+      _ => group,
+    },
+  );
 }
 
 bool _pathMatches(String requestPath, String cookiePath) {
